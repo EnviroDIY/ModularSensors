@@ -1,4 +1,13 @@
-// MayFlyOnboardSensors.cpp
+/*
+ *MayFlyOnboardSensors.cpp
+ *This file is part of the EnviroDIY modular sensors library for Arduino
+ *
+ *Work in progress by Sara Damiano taken from code written
+ *by Shannon Hicks and templates from USU.
+ *
+ *This file is for the onboard "sensors" on the EnviroDIY Mayfly
+ *It is dependent on the EnviroDIY DS3231 library.
+*/
 
 #include "Arduino.h"
 #include "Sensor.h"
@@ -17,6 +26,13 @@ MayFlyOnboardSensors::MayFlyOnboardSensors(void)
 // The destructor - leave empty
 MayFlyOnboardSensors::~MayFlyOnboardSensors(void) {}
 
+// The sensor name
+String MayFlyOnboardSensors::getSensorName(void)
+{
+    sensorName = F("EnviroDIY Mayfly");
+    return sensorName;
+}
+
 // How to update the onboard sensors
 bool MayFlyOnboardSensors::update(void)
 {
@@ -32,13 +48,6 @@ bool MayFlyOnboardSensors::update(void)
     // Return true when finished
     Serial.print("updated sensor");
     return true;
-}
-
-// The sensor name
-String MayFlyOnboardSensors::getSensorName(void)
-{
-    sensorName = F("EnviroDIY Mayfly");
-    return sensorName;
 }
 
 
@@ -60,7 +69,7 @@ String MayFlyOnboardTemp::getVarUnit(void)
 
 float MayFlyOnboardTemp::getValue(void)
 {
-    return 0.1;
+    return sensorValue_temp;
 }
 
 
