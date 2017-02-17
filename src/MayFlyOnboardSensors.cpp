@@ -22,15 +22,23 @@ MayFlyOnboardSensors::MayFlyOnboardSensors(void)
     _batteryPin = A6;
 }
 
-// The destructor - leave empty
-// MayFlyOnboardSensors::~MayFlyOnboardSensors(void) {}
-
 // The sensor name
 String MayFlyOnboardSensors::getSensorName(void)
 {
-    sensorName = F("EnviroDIY Mayfly");
+    sensorName = F("EnviroDIYMayfly");
     return sensorName;
 }
+
+// The location of the sensor on the Mayfly
+String MayFlyOnboardSensors::getSensorLocation(void)
+{
+    sensorLocation = String(_batteryPin);
+    return sensorLocation;
+}
+
+// The static variables that need to be updated
+float MayFlyOnboardSensors::sensorValue_temp = 0;
+float MayFlyOnboardSensors::sensorValue_battery = 0;
 
 // How to update the onboard sensors
 bool MayFlyOnboardSensors::update(void)
@@ -38,14 +46,18 @@ bool MayFlyOnboardSensors::update(void)
     // Get the temperature from the Mayfly's real time clock
     rtc.convertTemperature();  //convert current temperature into registers
     float tempVal = rtc.getTemperature();
-    sensorValue_temp = tempVal;
+    MayFlyOnboardSensors::sensorValue_temp = tempVal;
 
     // Get the battery voltage
     float rawBattery = analogRead(_batteryPin);
-    sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
+    MayFlyOnboardSensors::sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
+
+    // Prints for debugging
+    Serial.print(F("------updated"));
+    Serial.print(getSensorName());
+    Serial.println(F(" sensor------"));
 
     // Return true when finished
-    Serial.println(F("----updated sensor----"));
     return true;
 }
 

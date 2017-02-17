@@ -23,6 +23,7 @@ public:
 
     bool update(void) override;
     String getSensorName(void) override;
+    String getSensorLocation(void) override;
 
     virtual String getVarName(void) = 0;
     virtual String getVarUnit(void) = 0;
@@ -30,11 +31,12 @@ public:
 protected:
     SENSOR_STATUS sensorStatus;
     String sensorName;
+    String sensorLocation;
     String varName;
     String unit;
     int _batteryPin;
-    float sensorValue_temp;
-    float sensorValue_battery;
+    static float sensorValue_temp;
+    static float sensorValue_battery;
 };
 
 

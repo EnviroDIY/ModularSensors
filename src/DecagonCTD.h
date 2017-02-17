@@ -27,6 +27,7 @@ public:
 
     bool update(void) override;
     String getSensorName(void) override;
+    String getSensorLocation(void) override;
 
     virtual String getVarName(void) = 0;
     virtual String getVarUnit(void) = 0;
@@ -34,14 +35,15 @@ public:
 protected:
     SENSOR_STATUS sensorStatus;
     String sensorName;
+    String sensorLocation;
     String varName;
     String unit;
     char _CTDaddress;
     int _numReadings;
     int _dataPin;
-    float sensorValue_cond;
-    float sensorValue_temp;
-    float sensorValue_depth;
+    static float sensorValue_cond;
+    static float sensorValue_temp;
+    static float sensorValue_depth;
 };
 
 
@@ -54,10 +56,6 @@ public:
     String getVarName(void) override;
     String getVarUnit(void) override;
     float getValue(void) override;
-protected:
-    char _CTDaddress;
-    int _numReadings;
-    int _dataPin;
 };
 
 
@@ -70,10 +68,6 @@ public:
     String getVarName(void) override;
     String getVarUnit(void) override;
     float getValue(void) override;
-protected:
-    char _CTDaddress;
-    int _numReadings;
-    int _dataPin;
 };
 
 
@@ -86,10 +80,6 @@ public:
     String getVarName(void) override;
     String getVarUnit(void) override;
     float getValue(void) override;
-protected:
-    char _CTDaddress;
-    int _numReadings;
-    int _dataPin;
 };
 
 #endif

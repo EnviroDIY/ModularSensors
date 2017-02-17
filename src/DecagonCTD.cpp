@@ -25,13 +25,24 @@ DecagonCTD::DecagonCTD(char CTDaddress, int numReadings, int dataPin)
   _dataPin = dataPin;
 }
 
-
 // The sensor name
 String DecagonCTD::getSensorName(void)
 {
-    sensorName = F("Decagon CTD-10");
+    sensorName = F("DecagonCTD-10");
     return sensorName;
 }
+
+// The sensor installation location on the Mayfly
+String DecagonCTD::getSensorLocation(void)
+{
+    sensorLocation = String(_CTDaddress) + "_" + String(_dataPin);
+    return sensorLocation;
+}
+
+// The static variables that need to be updated
+float DecagonCTD::sensorValue_cond = 0;
+float DecagonCTD::sensorValue_temp = 0;
+float DecagonCTD::sensorValue_depth = 0;
 
 // Uses SDI-12 to communicate with a Decagon Devices CTD
 bool DecagonCTD::update(){
@@ -70,6 +81,10 @@ bool DecagonCTD::update(){
   sensorValue_depth /= numRead_f ;
   sensorValue_temp /= numRead_f ;
   sensorValue_cond /= numRead_f ;
+
+  DecagonCTD::sensorValue_cond = sensorValue_cond;
+  DecagonCTD::sensorValue_temp = sensorValue_temp;
+  DecagonCTD::sensorValue_depth = sensorValue_depth;
 
   return true;
 }
