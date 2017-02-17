@@ -53,7 +53,7 @@ bool MayFlyOnboardSensors::update(void)
     MayFlyOnboardSensors::sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
 
     // Prints for debugging
-    Serial.print(F("------updated"));
+    Serial.print(F("------updated "));
     Serial.print(getSensorName());
     Serial.println(F(" sensor------"));
 
