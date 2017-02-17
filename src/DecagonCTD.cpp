@@ -13,11 +13,11 @@
  *http://manuals.decagon.com/Integration%20Guides/CTD%20Integrators%20Guide.pdf
 */
 
-#include "Arduino.h"
-#include "Sensor.h"
+#include <Arduino.h>
 #include "DecagonCTD.h"
 #include <SDI12_Mod.h>
 
+// The constructor - need the SDI-12 address, the number of readings to average, and the datapin
 DecagonCTD::DecagonCTD(char CTDaddress, int numReadings, int dataPin)
 {
   _CTDaddress = CTDaddress;
@@ -25,8 +25,6 @@ DecagonCTD::DecagonCTD(char CTDaddress, int numReadings, int dataPin)
   _dataPin = dataPin;
 }
 
-// The destructor - leave empty
-DecagonCTD::~DecagonCTD(void) {}
 
 // The sensor name
 String DecagonCTD::getSensorName(void)
@@ -55,7 +53,7 @@ bool DecagonCTD::update(){
     mySDI12.sendCommand(command);
     delay(500);
     if (mySDI12.available() > 0) {
-      float junk = mySDI12.parseFloat();  // First return is the sensor address
+      mySDI12.parseFloat();  // First return is the sensor address
       int x = mySDI12.parseInt();  // Depth measurement in millimeters
       float y = mySDI12.parseFloat();  // Temperature measurement in °C
       int z = mySDI12.parseInt();  // Bulk Electrical Conductivity measurement in μS/cm.
@@ -78,8 +76,6 @@ bool DecagonCTD::update(){
 
 
 
-DecagonCTD_Cond::DecagonCTD_Cond(void) {}
-DecagonCTD_Cond::~DecagonCTD_Cond(void) {}
 
 String DecagonCTD_Cond::getVarName(void)
 {
@@ -100,8 +96,6 @@ float DecagonCTD_Cond::getValue(void)
 
 
 
-DecagonCTD_Temp::DecagonCTD_Temp(void) {}
-DecagonCTD_Temp::~DecagonCTD_Temp(void) {}
 
 String DecagonCTD_Temp::getVarName(void)
 {
@@ -122,8 +116,6 @@ float DecagonCTD_Temp::getValue(void)
 
 
 
-DecagonCTD_Depth::DecagonCTD_Depth(void) {}
-DecagonCTD_Depth::~DecagonCTD_Depth(void) {}
 
 String DecagonCTD_Depth::getVarName(void)
 {

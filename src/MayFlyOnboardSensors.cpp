@@ -9,8 +9,7 @@
  *It is dependent on the EnviroDIY DS3231 library.
 */
 
-#include "Arduino.h"
-#include "Sensor.h"
+#include <Arduino.h>
 #include "MayFlyOnboardSensors.h"
 #include <Sodaq_DS3231.h>
 
@@ -24,7 +23,7 @@ MayFlyOnboardSensors::MayFlyOnboardSensors(void)
 }
 
 // The destructor - leave empty
-MayFlyOnboardSensors::~MayFlyOnboardSensors(void) {}
+// MayFlyOnboardSensors::~MayFlyOnboardSensors(void) {}
 
 // The sensor name
 String MayFlyOnboardSensors::getSensorName(void)
@@ -52,8 +51,6 @@ bool MayFlyOnboardSensors::update(void)
 
 
 
-MayFlyOnboardTemp::MayFlyOnboardTemp(void) {}
-MayFlyOnboardTemp::~MayFlyOnboardTemp(void) {}
 
 String MayFlyOnboardTemp::getVarName(void)
 {
@@ -73,8 +70,8 @@ float MayFlyOnboardTemp::getValue(void)
 }
 
 
-MayFlyOnboardBatt::MayFlyOnboardBatt(void) {}
-MayFlyOnboardBatt::~MayFlyOnboardBatt(void) {}
+
+
 String MayFlyOnboardBatt::getVarName(void)
 {
     varName = F("batteryVoltage");

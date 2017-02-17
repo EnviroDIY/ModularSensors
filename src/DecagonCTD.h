@@ -13,18 +13,17 @@
  *http://manuals.decagon.com/Integration%20Guides/CTD%20Integrators%20Guide.pdf
 */
 
-#ifndef _DECAGONCTD_h
-#define _DECAGONCTD_h
-#include "Arduino.h"
+#ifndef DecagonCTD_h
+#define DecagonCTD_h
 
-#include "Sensor.h"
+#include <Arduino.h>
+#include "SensorBase.h"
 
 // The main class for the Mayfly
 class DecagonCTD : public virtual SensorBase
 {
 public:
     DecagonCTD(char CTDaddress, int numReadings, int dataPin);
-    virtual ~DecagonCTD(void);
 
     bool update(void) override;
     String getSensorName(void) override;
@@ -50,12 +49,15 @@ protected:
 class DecagonCTD_Cond : public virtual DecagonCTD
 {
 public:
-    DecagonCTD_Cond(void);
-    ~DecagonCTD_Cond(void);
+    using DecagonCTD::DecagonCTD;
 
     String getVarName(void) override;
     String getVarUnit(void) override;
     float getValue(void) override;
+protected:
+    char _CTDaddress;
+    int _numReadings;
+    int _dataPin;
 };
 
 
@@ -63,12 +65,15 @@ public:
 class DecagonCTD_Temp : public virtual DecagonCTD
 {
 public:
-    DecagonCTD_Temp(void);
-    ~DecagonCTD_Temp(void);
+    using DecagonCTD::DecagonCTD;
 
     String getVarName(void) override;
     String getVarUnit(void) override;
     float getValue(void) override;
+protected:
+    char _CTDaddress;
+    int _numReadings;
+    int _dataPin;
 };
 
 
@@ -76,12 +81,15 @@ public:
 class DecagonCTD_Depth : public virtual DecagonCTD
 {
 public:
-    DecagonCTD_Depth(void);
-    ~DecagonCTD_Depth(void);
+    using DecagonCTD::DecagonCTD;
 
     String getVarName(void) override;
     String getVarUnit(void) override;
     float getValue(void) override;
+protected:
+    char _CTDaddress;
+    int _numReadings;
+    int _dataPin;
 };
 
 #endif

@@ -9,18 +9,18 @@
  *It is dependent on the EnviroDIY DS3231 library.
 */
 
-#ifndef _MayFlyOnboardSensors_h
-#define _MayFlyOnboardSensors_h
-#include "Arduino.h"
+#ifndef MayFlyOnboardSensors_h
+#define MayFlyOnboardSensors_h
 
-#include "Sensor.h"
+#include <Arduino.h>
+#include "SensorBase.h"
 
 // The main class for the Mayfly
 class MayFlyOnboardSensors : public virtual SensorBase
 {
 public:
     MayFlyOnboardSensors(void);
-    virtual ~MayFlyOnboardSensors(void);
+    // virtual ~MayFlyOnboardSensors(void);
 
     bool update(void) override;
     String getSensorName(void) override;
@@ -43,8 +43,7 @@ protected:
 class MayFlyOnboardTemp : public virtual MayFlyOnboardSensors
 {
 public:
-    MayFlyOnboardTemp(void);
-    ~MayFlyOnboardTemp(void);
+    using MayFlyOnboardSensors::MayFlyOnboardSensors;
 
     String getVarName(void) override;
     String getVarUnit(void) override;
@@ -56,8 +55,7 @@ public:
 class MayFlyOnboardBatt : public virtual MayFlyOnboardSensors
 {
 public:
-    MayFlyOnboardBatt(void);
-    ~MayFlyOnboardBatt(void);
+    using MayFlyOnboardSensors::MayFlyOnboardSensors;
 
     String getVarName(void) override;
     String getVarUnit(void) override;
