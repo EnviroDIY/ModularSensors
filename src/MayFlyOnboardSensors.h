@@ -20,7 +20,6 @@ class MayFlyOnboardSensors : public virtual SensorBase
 {
 public:
     MayFlyOnboardSensors(void);
-    // virtual ~MayFlyOnboardSensors(void);
 
     bool update(void) override;
     String getSensorName(void) override;

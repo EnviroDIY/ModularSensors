@@ -45,7 +45,7 @@ bool MayFlyOnboardSensors::update(void)
     sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
 
     // Return true when finished
-    Serial.print("updated sensor");
+    Serial.println(F("----updated sensor----"));
     return true;
 }
 
