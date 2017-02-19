@@ -14,7 +14,7 @@
 
 
 // The constructor - need the power pin, the excite pin, and the data pin
-MaxbotixSonar::MaxbotixSonar(int excitePin, int dataPin)
+MaxbotixSonar::MaxbotixSonar(int excitePin, int dataPin) : SensorBase()
 {
     _excitePin = excitePin;
     _dataPin = dataPin;
@@ -123,6 +123,15 @@ bool MaxbotixSonar::update(){
 }
 
 
+
+
+MaxbotixSonar_Depth::MaxbotixSonar_Depth(int excitePin, int dataPin) 
+: MaxbotixSonar(excitePin, dataPin)
+{
+    _excitePin = excitePin;
+    _dataPin = dataPin;
+    setup();
+}
 
 String MaxbotixSonar_Depth::getVarName(void)
 {

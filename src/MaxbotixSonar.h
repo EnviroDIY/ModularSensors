@@ -50,7 +50,7 @@ private:
 class MaxbotixSonar_Depth : public virtual MaxbotixSonar
 {
 public:
-    using MaxbotixSonar::MaxbotixSonar;
+    MaxbotixSonar_Depth(int excitePin, int dataPin);
 
     String getVarName(void) override;
     String getVarUnit(void) override;

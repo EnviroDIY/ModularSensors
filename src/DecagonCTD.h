@@ -54,7 +54,7 @@ protected:
 class DecagonCTD_Cond : public virtual DecagonCTD
 {
 public:
-    using DecagonCTD::DecagonCTD;
+    DecagonCTD_Cond(int numReadings, char CTDaddress, int powerPin, int dataPin);
 
     String getVarName(void) override;
     String getVarUnit(void) override;
@@ -67,7 +67,7 @@ public:
 class DecagonCTD_Temp : public virtual DecagonCTD
 {
 public:
-    using DecagonCTD::DecagonCTD;
+    DecagonCTD_Temp(int numReadings, char CTDaddress, int powerPin, int dataPin);
 
     String getVarName(void) override;
     String getVarUnit(void) override;
@@ -80,7 +80,7 @@ public:
 class DecagonCTD_Depth : public virtual DecagonCTD
 {
 public:
-    using DecagonCTD::DecagonCTD;
+    DecagonCTD_Depth(int numReadings, char CTDaddress, int powerPin, int dataPin);
 
     String getVarName(void) override;
     String getVarUnit(void) override;

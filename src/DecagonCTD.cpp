@@ -19,7 +19,7 @@
 
 // The constructor - need the SDI-12 address, the number of readings to average,
 // the power pin, and the data pin
-DecagonCTD::DecagonCTD(int numReadings, char CTDaddress, int powerPin, int dataPin)
+DecagonCTD::DecagonCTD(int numReadings, char CTDaddress, int powerPin, int dataPin) : SensorBase()
 {
   _numReadings = numReadings;
   _CTDaddress = CTDaddress;
@@ -119,6 +119,10 @@ bool DecagonCTD::update(){
 
 
 
+DecagonCTD_Cond::DecagonCTD_Cond(int numReadings, char CTDaddress, int powerPin, int dataPin)
+ : DecagonCTD(numReadings, CTDaddress, powerPin, dataPin)
+{}
+
 String DecagonCTD_Cond::getVarName(void)
 {
     varName = F("specificConductance");
@@ -145,6 +149,10 @@ return column;
 
 
 
+DecagonCTD_Temp::DecagonCTD_Temp(int numReadings, char CTDaddress, int powerPin, int dataPin)
+ : DecagonCTD(numReadings, CTDaddress, powerPin, dataPin)
+{}
+
 String DecagonCTD_Temp::getVarName(void)
 {
     varName = F("temperature");
@@ -170,6 +178,10 @@ return column;
 
 
 
+
+DecagonCTD_Depth::DecagonCTD_Depth(int numReadings, char CTDaddress, int powerPin, int dataPin)
+ : DecagonCTD(numReadings, CTDaddress, powerPin, dataPin)
+{}
 
 String DecagonCTD_Depth::getVarName(void)
 {

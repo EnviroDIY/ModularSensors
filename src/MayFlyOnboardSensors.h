@@ -19,7 +19,7 @@
 class MayFlyOnboardSensors : public virtual SensorBase
 {
 public:
-    MayFlyOnboardSensors(void);
+    MayFlyOnboardSensors(int batteryPin);
 
     bool update(void) override;
     String getSensorName(void) override;
@@ -45,7 +45,7 @@ protected:
 class MayFlyOnboardTemp : public virtual MayFlyOnboardSensors
 {
 public:
-    using MayFlyOnboardSensors::MayFlyOnboardSensors;
+    MayFlyOnboardTemp(int batteryPin);
 
     String getVarName(void) override;
     String getVarUnit(void) override;
@@ -58,7 +58,7 @@ public:
 class MayFlyOnboardBatt : public virtual MayFlyOnboardSensors
 {
 public:
-    using MayFlyOnboardSensors::MayFlyOnboardSensors;
+    MayFlyOnboardBatt(int batteryPin);
 
     String getVarName(void) override;
     String getVarUnit(void) override;

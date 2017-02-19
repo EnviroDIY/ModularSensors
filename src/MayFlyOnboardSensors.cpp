@@ -15,11 +15,11 @@
 
 
 
-// The constructor - what happens when initializing the onboard sensors
+// The constructor - needs to reference the super-class constructor
 // only need to tell it the battery pin
-MayFlyOnboardSensors::MayFlyOnboardSensors(void)
+MayFlyOnboardSensors::MayFlyOnboardSensors(int batteryPin) : SensorBase()
 {
-    _batteryPin = A6;
+    _batteryPin = batteryPin;
 }
 
 // The sensor name
@@ -63,6 +63,10 @@ bool MayFlyOnboardSensors::update(void)
 
 
 
+// The constructor - needs to reference the super-class constructor
+MayFlyOnboardTemp::MayFlyOnboardTemp(int batteryPin) : MayFlyOnboardSensors(batteryPin)
+{
+}
 
 String MayFlyOnboardTemp::getVarName(void)
 {
@@ -89,6 +93,10 @@ String MayFlyOnboardTemp::getDreamHost(void)
 
 
 
+
+MayFlyOnboardBatt::MayFlyOnboardBatt(int batteryPin) : MayFlyOnboardSensors(batteryPin)
+{
+}
 
 String MayFlyOnboardBatt::getVarName(void)
 {
