@@ -136,6 +136,12 @@ float DecagonCTD_Cond::getValue(void)
     return sensorValue_cond;
 }
 
+String DecagonCTD_Cond::getDreamHost(void)
+{
+String column = F("CTDcond");
+return column;
+}
+
 
 
 
@@ -156,6 +162,12 @@ float DecagonCTD_Temp::getValue(void)
     return sensorValue_temp;
 }
 
+String DecagonCTD_Temp::getDreamHost(void)
+{
+String column = F("CTDtemp");
+return column;
+}
+
 
 
 
@@ -174,4 +186,10 @@ String DecagonCTD_Depth::getVarUnit(void)
 float DecagonCTD_Depth::getValue(void)
 {
     return sensorValue_depth;
+}
+
+String DecagonCTD_Depth::getDreamHost(void)
+{
+String column = F("CTDdepth");
+return column;
 }

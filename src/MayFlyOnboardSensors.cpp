@@ -81,6 +81,12 @@ float MayFlyOnboardTemp::getValue(void)
     return sensorValue_temp;
 }
 
+String MayFlyOnboardTemp::getDreamHost(void)
+{
+    String column = F("BoardTemp");
+    return column;
+}
+
 
 
 
@@ -100,4 +106,10 @@ String MayFlyOnboardBatt::getVarUnit(void)
 float MayFlyOnboardBatt::getValue(void)
 {
     return sensorValue_battery;
+}
+
+String MayFlyOnboardBatt::getDreamHost(void)
+{
+    String column = F("Battery");
+    return column;
 }

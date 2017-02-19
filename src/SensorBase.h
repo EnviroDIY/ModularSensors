@@ -53,6 +53,8 @@ public:
     virtual String getVarUnit(void) = 0;
     // This returns the current value of the variable as a float
     virtual float getValue(void) = 0;
+    // This returns the dreamhost PHP tag - for old SWRC dreamhost system
+    virtual String getDreamHost(void) = 0;
 protected:
     SENSOR_STATUS sensorStatus;
     String sensorName;

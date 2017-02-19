@@ -140,3 +140,9 @@ float MaxbotixSonar_Depth::getValue(void)
 {
     return sensorValue_depth;
 }
+
+String MaxbotixSonar_Depth::getDreamHost(void)
+{
+    String column = F("SonarRange");
+    return column;
+}

@@ -28,6 +28,7 @@ public:
     virtual String getVarName(void) = 0;
     virtual String getVarUnit(void) = 0;
     virtual float getValue(void) = 0;
+    virtual String getDreamHost(void) = 0;
 protected:
     SENSOR_STATUS sensorStatus;
     String sensorName;
@@ -49,6 +50,7 @@ public:
     String getVarName(void) override;
     String getVarUnit(void) override;
     float getValue(void) override;
+    String getDreamHost(void) override;
 };
 
 
@@ -61,6 +63,7 @@ public:
     String getVarName(void) override;
     String getVarUnit(void) override;
     float getValue(void) override;
+    String getDreamHost(void) override;
 };
 
 #endif
