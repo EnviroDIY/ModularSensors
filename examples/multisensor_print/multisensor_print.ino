@@ -16,14 +16,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // -----------------------------------------------
 // 1. Include all sensors and necessary files here
 // -----------------------------------------------
-#include <Arduino.h>
 #include <avr/sleep.h>
 #include <SD.h>
 #include <SPI.h>
+#include <RTCTimer.h>
 #include <Sodaq_DS3231.h>
 #include <Sodaq_PcInt_PCINT0.h>
 #include <GPRSbee.h>
-#include <RTCTimer.h>
 #include "Config.h"
 
 // The timer functions for the RTC
