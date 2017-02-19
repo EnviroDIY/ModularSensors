@@ -16,4 +16,4 @@ install:
     - pio update
 
 script:
-    - platformio ci --lib="." --board=mayfly
+    - platformio ci --lib="." --board=mayfly --project-conf=platformio.ini
