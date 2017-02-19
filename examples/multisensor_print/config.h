@@ -11,20 +11,27 @@ int batteryPin = A6;
 
 // change to the proper pins for Decagon CTD
 // sdi-12 data pin is usually, pin 7 on shield 3.0
-const int SDI12_PIN = 7;
 const int CTDaddress = 1;  // The SDI-12 Address of the CTD
 const int numberReadings = 10;  // The number of readings to average
+const int SDI12_PIN = 7;
 const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
 
 // Change to the proper excite and recieve pin for Maxbotix Sonar.
 const int SonarExcite = 10;
 const int SonarData = 11;
 
+// change to the proper pins for Decagon 5TM
+// sdi-12 data pin is usually, pin 7 on shield 3.0
+const int TMaddress = 1;  // The SDI-12 Address of the 5-TM
+// const int SDI12_PIN = 7;
+// const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
+
 // -----------------------------------------------
 // 2. Include all sensors and necessary files here
 // -----------------------------------------------
 #include <MayFlyOnboardSensors.h>
 #include <DecagonCTD.h>
+#include <Decagon5TM.h>
 #include <MaxbotixSonar.h>
 
 
@@ -63,6 +70,9 @@ SensorBase* SENSOR_LIST[] = {
     new DecagonCTD_Cond(numberReadings, CTDaddress, switchedPower, SDI12_PIN),
     new DecagonCTD_Temp(numberReadings, CTDaddress, switchedPower, SDI12_PIN),
     new DecagonCTD_Depth(numberReadings, CTDaddress, switchedPower, SDI12_PIN),
+    new Decagon5TM_Temp(TMaddress, switchedPower, SDI12_PIN),
+    new Decagon5TM_Ea(TMaddress, switchedPower, SDI12_PIN),
+    new Decagon5TM_VWC(TMaddress, switchedPower, SDI12_PIN),
     new MaxbotixSonar_Depth(SonarExcite, SonarData)
     // new YOUR_sensorName_HERE()
 };
