@@ -19,7 +19,7 @@
 #include <Arduino.h>
 #include "SensorBase.h"
 
-// The main class for the Mayfly
+// The main class for the Decagon CTD
 class DecagonCTD : public virtual SensorBase
 {
 public:

@@ -26,6 +26,12 @@ const int TMaddress = 1;  // The SDI-12 Address of the 5-TM
 // const int SDI12_PIN = 7;
 // const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
 
+// change to the proper pins for Decagon 5TM
+// sdi-12 data pin is usually, pin 7 on shield 3.0
+const int OSBLowPin = 0;  // The low voltage analog pin
+const int OSBHighPin = 1;  // The high voltage analog pin
+// const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
+
 // -----------------------------------------------
 // 2. Include all sensors and necessary files here
 // -----------------------------------------------
@@ -33,6 +39,7 @@ const int TMaddress = 1;  // The SDI-12 Address of the 5-TM
 #include <DecagonCTD.h>
 #include <Decagon5TM.h>
 #include <MaxbotixSonar.h>
+#include <CampbellOSB3.h>
 
 
 // -----------------------------------------------
@@ -65,15 +72,17 @@ const char* APN = "apn.konekt.io";  // The APN for the GPRSBee
 // 5. The array that contains all valid sensors
 // -----------------------------------------------
 SensorBase* SENSOR_LIST[] = {
-    new MayFlyOnboardTemp(batteryPin),
-    new MayFlyOnboardBatt(batteryPin),
     new DecagonCTD_Cond(numberReadings, CTDaddress, switchedPower, SDI12_PIN),
     new DecagonCTD_Temp(numberReadings, CTDaddress, switchedPower, SDI12_PIN),
     new DecagonCTD_Depth(numberReadings, CTDaddress, switchedPower, SDI12_PIN),
     new Decagon5TM_Temp(TMaddress, switchedPower, SDI12_PIN),
     new Decagon5TM_Ea(TMaddress, switchedPower, SDI12_PIN),
     new Decagon5TM_VWC(TMaddress, switchedPower, SDI12_PIN),
-    new MaxbotixSonar_Depth(SonarExcite, SonarData)
+    new MaxbotixSonar_Depth(SonarExcite, SonarData),
+    new CampbellOSB3_TurbLow(switchedPower, OSBLowPin, OSBHighPin),
+    new CampbellOSB3_TurbHigh(switchedPower, OSBLowPin, OSBHighPin),
+    new MayFlyOnboardTemp(batteryPin),
+    new MayFlyOnboardBatt(batteryPin)
     // new YOUR_sensorName_HERE()
 };
 

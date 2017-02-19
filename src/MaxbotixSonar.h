@@ -16,7 +16,7 @@
 #include <SoftwareSerial_PCINT12.h>
 #include "SensorBase.h"
 
-// The main class for the Mayfly
+// The main class for the Maxbotix Sonar
 class MaxbotixSonar : public virtual SensorBase
 {
 public:

@@ -1,5 +1,5 @@
 /*
- *Decagon5TM.h
+ *CampbellOSB3.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Work in progress by Sara Damiano taken from code written
@@ -9,17 +9,17 @@
  *It is dependent on the EnviroDIY SDI-12 library.
 */
 
-#ifndef Decagon5TM_h
-#define Decagon5TM_h
+#ifndef CampbellOSB3_h
+#define CampbellOSB3_h
 
 #include <Arduino.h>
 #include "SensorBase.h"
 
-// The main class for the Decagon 5TM
-class Decagon5TM : public virtual SensorBase
+// The main class for the Campbell OSB3
+class CampbellOSB3 : public virtual SensorBase
 {
 public:
-    Decagon5TM(char TMaddress, int powerPin, int dataPin);
+    CampbellOSB3(int powerPin, int dataPinLow, int dataPinHigh);
     SENSOR_STATUS setup(void) override;
 
     bool update(void) override;
@@ -36,20 +36,19 @@ protected:
     String sensorLocation;
     String varName;
     String unit;
-    char _TMaddress;
     int _powerPin;
-    int _dataPin;
-    static float sensorValue_Ea;
-    static float sensorValue_temp;
-    static float sensorValue_VWC;
+    int16_t _dataPinLow;
+    int16_t _dataPinHigh;
+    static float sensorValue_TurbLow;
+    static float sensorValue_TurbHigh;
 };
 
 
-// Defines the "Ea/Matric Potential Sensor"
-class Decagon5TM_Ea : public virtual Decagon5TM
+// Defines the "Low Turbidity Sensor"
+class CampbellOSB3_TurbLow : public virtual CampbellOSB3
 {
 public:
-    Decagon5TM_Ea(char TMaddress, int powerPin, int dataPin);
+    CampbellOSB3_TurbLow(int powerPin, int dataPinLow, int dataPinHigh);
 
     String getVarName(void) override;
     String getVarUnit(void) override;
@@ -58,24 +57,11 @@ public:
 };
 
 
-// Defines the "Temperature Sensor"
-class Decagon5TM_Temp : public virtual Decagon5TM
+// Defines the "High Turbidity Sensor"
+class CampbellOSB3_TurbHigh : public virtual CampbellOSB3
 {
 public:
-    Decagon5TM_Temp(char TMaddress, int powerPin, int dataPin);
-
-    String getVarName(void) override;
-    String getVarUnit(void) override;
-    float getValue(void) override;
-    String getDreamHost(void) override;
-};
-
-
-// Defines the "Volumetric Water Content Sensor"
-class Decagon5TM_VWC : public virtual Decagon5TM
-{
-public:
-    Decagon5TM_VWC(char TMaddress, int powerPin, int dataPin);
+    CampbellOSB3_TurbHigh(int powerPin, int dataPinLow, int dataPinHigh);
 
     String getVarName(void) override;
     String getVarUnit(void) override;

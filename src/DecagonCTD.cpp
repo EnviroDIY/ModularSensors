@@ -58,7 +58,7 @@ float DecagonCTD::sensorValue_depth = 0;
 // Uses SDI-12 to communicate with a Decagon Devices CTD
 bool DecagonCTD::update(){
 
-  SDI12 mySDI12(_dataPin);
+  SDI12 CTDSDI12(_dataPin);
 
   // Turn on power to the sensor
   delay(500);
@@ -71,27 +71,27 @@ bool DecagonCTD::update(){
     String command = "";
     command += _CTDaddress;
     command += "M!"; // SDI-12 measurement command format  [address]['M'][!]
-    mySDI12.sendCommand(command);
+    CTDSDI12.sendCommand(command);
     delay(500); // wait a while
-    mySDI12.flush(); // we don't care about what it sends back
+    CTDSDI12.flush(); // we don't care about what it sends back
 
     command = "";
     command += _CTDaddress;
     command += "D0!"; // SDI-12 command to get data [address][D][dataOption][!]
-    mySDI12.sendCommand(command);
+    CTDSDI12.sendCommand(command);
     delay(500);
-    if (mySDI12.available() > 0) {
-      mySDI12.parseFloat();  // First return is the sensor address
-      int x = mySDI12.parseInt();  // Depth measurement in millimeters
-      float y = mySDI12.parseFloat();  // Temperature measurement in °C
-      int z = mySDI12.parseInt();  // Bulk Electrical Conductivity measurement in μS/cm.
+    if (CTDSDI12.available() > 0) {
+      CTDSDI12.parseFloat();  // First return is the sensor address
+      int x = CTDSDI12.parseInt();  // Depth measurement in millimeters
+      float y = CTDSDI12.parseFloat();  // Temperature measurement in °C
+      int z = CTDSDI12.parseInt();  // Bulk Electrical Conductivity measurement in μS/cm.
 
       sensorValue_depth += x;
       sensorValue_temp += y;
       sensorValue_cond += z;
     }
 
-    mySDI12.flush();
+    CTDSDI12.flush();
   }     // end of averaging loop
 
   float numRead_f = (float) _numReadings;

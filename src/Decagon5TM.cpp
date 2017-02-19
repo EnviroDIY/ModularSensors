@@ -53,7 +53,7 @@ float Decagon5TM::sensorValue_VWC = 0;
 // Uses SDI-12 to communicate with a Decagon Devices CTD
 bool Decagon5TM::update(){
 
-  SDI12 mySDI12(_dataPin);
+  SDI12 TMSDI12(_dataPin);
 
   // Turn on power to the sensor
   delay(500);
@@ -66,21 +66,21 @@ bool Decagon5TM::update(){
     sensorValue_VWC = 0.0;
     command += _dataPin;
     command += "M!"; // SDI-12 measurement command format  [address]['M'][!]
-    mySDI12.sendCommand(command);
+    TMSDI12.sendCommand(command);
     delay(500); // wait a while
-    mySDI12.flush(); // we don't care about what it sends back
+    TMSDI12.flush(); // we don't care about what it sends back
 
     command = "";
     command += _dataPin;
     command += "D0!"; // SDI-12 command to get data [address][D][dataOption][!]
-    mySDI12.sendCommand(command);
+    TMSDI12.sendCommand(command);
     delay(500);
 
-       if(mySDI12.available() > 0)
+       if(TMSDI12.available() > 0)
        {
-          mySDI12.parseFloat();
-          sensorValue_Ea = mySDI12.parseFloat();
-          sensorValue_temp = mySDI12.parseFloat();
+          TMSDI12.parseFloat();
+          sensorValue_Ea = TMSDI12.parseFloat();
+          sensorValue_temp = TMSDI12.parseFloat();
 
           //the TOPP equation used to calculate VWC
           sensorValue_VWC = (4.3e-6*(sensorValue_Ea*sensorValue_Ea*sensorValue_Ea))
@@ -89,7 +89,7 @@ bool Decagon5TM::update(){
                                  - 5.3e-2 ;
 
        }
-        mySDI12.flush();
+        TMSDI12.flush();
 
   Decagon5TM::sensorValue_Ea = sensorValue_Ea;
   Decagon5TM::sensorValue_temp = sensorValue_temp;
