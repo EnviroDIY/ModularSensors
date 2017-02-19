@@ -13,7 +13,7 @@
 #define MaxbotixSonar_h
 
 #include <Arduino.h>
-#include <SoftwareSerial_PCINT12.h>
+#include <SoftwareSerialMod.h>
 #include "SensorBase.h"
 
 // The main class for the Mayfly

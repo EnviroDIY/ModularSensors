@@ -14,7 +14,7 @@
 */
 
 #include <Arduino.h>
-#include <SDI12_PCINT3.h>
+#include <SDI12_Mod.h>
 #include "DecagonCTD.h"
 
 // The constructor - need the SDI-12 address, the number of readings to average,
