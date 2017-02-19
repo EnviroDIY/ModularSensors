@@ -14,15 +14,26 @@
 */
 
 #include <Arduino.h>
+#include <SDI12_PCINT3.h>
 #include "DecagonCTD.h"
-#include <SDI12_Mod.h>
 
-// The constructor - need the SDI-12 address, the number of readings to average, and the datapin
-DecagonCTD::DecagonCTD(char CTDaddress, int numReadings, int dataPin)
+// The constructor - need the SDI-12 address, the number of readings to average,
+// the power pin, and the data pin
+DecagonCTD::DecagonCTD(int numReadings, char CTDaddress, int powerPin, int dataPin)
 {
-  _CTDaddress = CTDaddress;
   _numReadings = numReadings;
+  _CTDaddress = CTDaddress;
+  _powerPin = powerPin;
   _dataPin = dataPin;
+  setup();
+}
+
+// The function to set up connection to a sensor.
+SENSOR_STATUS DecagonCTD::setup(void)
+{
+    pinMode(_powerPin, OUTPUT);
+    digitalWrite(_powerPin, LOW);
+    return SENSOR_READY;
 }
 
 // The sensor name
@@ -49,8 +60,14 @@ bool DecagonCTD::update(){
 
   SDI12 mySDI12(_dataPin);
 
-  for (int j = 0; j < _numReadings; j++) {   //averages x readings in this one loop
+  // Turn on power to the sensor
+  delay(500);
+  digitalWrite(_powerPin, HIGH);
+  delay(1000);
 
+  // averages x readings in this one loop
+  for (int j = 0; j < _numReadings; j++)
+  {
     String command = "";
     command += _CTDaddress;
     command += "M!"; // SDI-12 measurement command format  [address]['M'][!]
@@ -90,6 +107,10 @@ bool DecagonCTD::update(){
   Serial.print(F("------updated "));
   Serial.print(getSensorName());
   Serial.println(F(" sensor------"));
+
+  // Turn off power to the sensor
+  digitalWrite(_powerPin, LOW);
+  delay(100);
 
   // Return true when finished
   return true;

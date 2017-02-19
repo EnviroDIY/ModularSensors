@@ -23,7 +23,8 @@
 class DecagonCTD : public virtual SensorBase
 {
 public:
-    DecagonCTD(char CTDaddress, int numReadings, int dataPin);
+    DecagonCTD(int numReadings, char CTDaddress, int powerPin, int dataPin);
+    SENSOR_STATUS setup(void) override;
 
     bool update(void) override;
     String getSensorName(void) override;
@@ -40,6 +41,7 @@ protected:
     String unit;
     char _CTDaddress;
     int _numReadings;
+    int _powerPin;
     int _dataPin;
     static float sensorValue_cond;
     static float sensorValue_temp;
