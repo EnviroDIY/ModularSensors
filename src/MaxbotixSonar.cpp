@@ -25,13 +25,11 @@ SENSOR_STATUS MaxbotixSonar::setup(void)
 {
     // define serial port for recieving data
     // output from maxSonar is inverted requiring true to be set.
-    Serial.println("Setup start");
     SoftwareSerialMod sonarSerial(_excitePin, -1);
     _sonarSerial = &sonarSerial;
     _sonarSerial->begin(9600);
     pinMode(_excitePin, OUTPUT);
     digitalWrite(_excitePin, LOW);
-    Serial.println("Setup end");
     return SENSOR_READY;
 }
 
@@ -63,7 +61,7 @@ float MaxbotixSonar::sensorValue_depth = 0;
 // Uses SDI-12 to communicate with a Decagon Devices CTD
 bool MaxbotixSonar::update(){
 
-    Serial.println("starting update");
+    Serial.println("starting maxbotix update");
     int range_try = 0;
     int result;
     char inData[5];  //char array to read data into
@@ -74,26 +72,29 @@ bool MaxbotixSonar::update(){
     digitalWrite(_excitePin, HIGH);
     delay(1000);
 
-    Serial.println("Flushing serial");
-    _sonarSerial->flush();  // Clear cache ready for next reading
-
-    while (stringComplete == false)
+    Serial.println("Checking serial availability");
+    if (_sonarSerial->available())
     {
-        // Serial.print("OK reading! ");  //debug line
-
+        Serial.println("Flushing serial");
+        _sonarSerial->flush();  // Clear cache ready for next reading
+    }
+    int timeout = 15000; // only try for 15 seconds
+    while ((timeout > 0) && stringComplete == false)
+    {
         Serial.println("Checking serial availability");
         if (_sonarSerial->available())
         {
+            Serial.println("Looking for reading");  //debug line
             char rByte = _sonarSerial->read();  //read serial input for "R" to mark start of data
             if(rByte == 'R')
             {
-                //Serial.println("rByte set");
+                Serial.println("rByte set");
                 while (index < 4)  //read next three character for range from sensor
                 {
                     if (_sonarSerial->available())
                     {
                         inData[index] = _sonarSerial->read();
-                        //Serial.println(inData[index]);  //Debug line
+                        Serial.println(inData[index]);  //Debug line
 
                         index++;  // Increment where to write next
                     }
@@ -106,14 +107,22 @@ bool MaxbotixSonar::update(){
 
             stringComplete = true;  // Set completion of read to true
             result = atoi(inData);  // Changes string data into an integer for use
+            Serial.println("Result recieved");  //debug line
             if (result == 300 && range_try < 20)
             {
+                Serial.println("Bad result, retrying");  //debug line
                 stringComplete = false;
                 range_try++;
             }
         }
+        else
+        {
+            delay(1);
+            timeout--;
+        }
     }
 
+    Serial.println("Turning off excite pin");
     digitalWrite(_excitePin, LOW);
 
     MaxbotixSonar::sensorValue_depth = result;
