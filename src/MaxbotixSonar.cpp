@@ -31,7 +31,7 @@ SENSOR_STATUS MaxbotixSonar::setup(void)
 // The sensor name
 String MaxbotixSonar::getSensorName(void)
 {
-    sensorName = F("MaxbotixSonar");
+    sensorName = F("MaxBotixMaxSonar");
     return sensorName;
 }
 
