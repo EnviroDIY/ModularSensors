@@ -64,10 +64,9 @@ bool MaxbotixSonar::update(){
     digitalWrite(_excitePin, HIGH);
     delay(1000);
 
-    int timeout = 15000; // only try for 15 seconds
+    int timeout = 150; // only try for 15 seconds
     while ((timeout > 0) && stringComplete == false)
     {
-        Serial.println("Checking serial availability");
         if (sonarSerial.available())
         {
             Serial.println("Looking for reading");  //debug line
@@ -103,7 +102,7 @@ bool MaxbotixSonar::update(){
         }
         else
         {
-            delay(1);
+            delay(10);
             timeout--;
         }
     }
