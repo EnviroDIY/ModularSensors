@@ -22,7 +22,6 @@ class MaxbotixSonar : public virtual SensorBase
 public:
     MaxbotixSonar(int excitePin, int dataPin);
     SENSOR_STATUS setup(void) override;
-    bool sleep(void) override;
 
     bool update(void) override;
     String getSensorName(void) override;
@@ -41,8 +40,6 @@ protected:
     int _excitePin;
     int _dataPin;
     static float sensorValue_depth;
-private:
-    SoftwareSerialMod *_sonarSerial;
 };
 
 

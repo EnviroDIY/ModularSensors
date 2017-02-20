@@ -23,22 +23,9 @@ MaxbotixSonar::MaxbotixSonar(int excitePin, int dataPin) : SensorBase()
 // The function to set up connection to a sensor.
 SENSOR_STATUS MaxbotixSonar::setup(void)
 {
-    // define serial port for recieving data
-    // output from maxSonar is inverted requiring true to be set.
-    SoftwareSerialMod sonarSerial(_excitePin, -1);
-    _sonarSerial = &sonarSerial;
-    _sonarSerial->begin(9600);
     pinMode(_excitePin, OUTPUT);
     digitalWrite(_excitePin, LOW);
     return SENSOR_READY;
-}
-
-// The function to put a sensor to sleep
-// Need to flush the serial port
-bool MaxbotixSonar::sleep(void)
-{
-    _sonarSerial->flush();
-    return true;
 }
 
 // The sensor name
@@ -61,6 +48,11 @@ float MaxbotixSonar::sensorValue_depth = 0;
 // Uses SDI-12 to communicate with a Decagon Devices CTD
 bool MaxbotixSonar::update(){
 
+    // define serial port for recieving data
+    // output from maxSonar is inverted requiring true to be set.
+    SoftwareSerialMod sonarSerial(_excitePin, -1);
+    sonarSerial.begin(9600);
+
     Serial.println("starting maxbotix update");
     int range_try = 0;
     int result;
@@ -76,18 +68,18 @@ bool MaxbotixSonar::update(){
     while ((timeout > 0) && stringComplete == false)
     {
         Serial.println("Checking serial availability");
-        if (_sonarSerial->available())
+        if (sonarSerial.available())
         {
             Serial.println("Looking for reading");  //debug line
-            char rByte = _sonarSerial->read();  //read serial input for "R" to mark start of data
+            char rByte = sonarSerial.read();  //read serial input for "R" `to mark start of data
             if(rByte == 'R')
             {
                 Serial.println("rByte set");
                 while (index < 4)  //read next three character for range from sensor
                 {
-                    if (_sonarSerial->available())
+                    if (sonarSerial.available())
                     {
-                        inData[index] = _sonarSerial->read();
+                        inData[index] = sonarSerial.read();
                         Serial.println(inData[index]);  //Debug line
 
                         index++;  // Increment where to write next
