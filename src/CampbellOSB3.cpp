@@ -20,7 +20,6 @@ CampbellOSB3::CampbellOSB3(int powerPin, int dataPinLow, int dataPinHigh) : Sens
   _powerPin = powerPin;
   _dataPinLow = dataPinLow;
   _dataPinHigh = dataPinHigh;
-  setup();
 }
 
 // The function to set up connection to a sensor.

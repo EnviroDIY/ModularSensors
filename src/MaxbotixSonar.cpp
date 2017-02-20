@@ -18,9 +18,6 @@ MaxbotixSonar::MaxbotixSonar(int excitePin, int dataPin) : SensorBase()
 {
     _excitePin = excitePin;
     _dataPin = dataPin;
-    Serial.println("Setup start1");
-    setup();
-    Serial.println("Setup end2");
 }
 
 // The function to set up connection to a sensor.
@@ -28,13 +25,13 @@ SENSOR_STATUS MaxbotixSonar::setup(void)
 {
     // define serial port for recieving data
     // output from maxSonar is inverted requiring true to be set.
-    Serial.println("Setup start2");
+    Serial.println("Setup start");
     SoftwareSerialMod sonarSerial(_excitePin, -1);
     _sonarSerial = &sonarSerial;
     _sonarSerial->begin(9600);
     pinMode(_excitePin, OUTPUT);
     digitalWrite(_excitePin, LOW);
-    Serial.println("Setup end1");
+    Serial.println("Setup end");
     return SENSOR_READY;
 }
 

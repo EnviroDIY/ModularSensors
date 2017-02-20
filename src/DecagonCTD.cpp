@@ -25,7 +25,6 @@ DecagonCTD::DecagonCTD(int numReadings, char CTDaddress, int powerPin, int dataP
   _CTDaddress = CTDaddress;
   _powerPin = powerPin;
   _dataPin = dataPin;
-  setup();
 }
 
 // The function to set up connection to a sensor.

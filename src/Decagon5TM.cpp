@@ -20,7 +20,6 @@ Decagon5TM::Decagon5TM(char TMaddress, int powerPin, int dataPin) : SensorBase()
   _TMaddress = TMaddress;
   _powerPin = powerPin;
   _dataPin = dataPin;
-  setup();
 }
 
 // The function to set up connection to a sensor.

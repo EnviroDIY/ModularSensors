@@ -13,9 +13,7 @@
 
 // The constructor
 SensorBase::SensorBase(void)
-{
-    setup();
-}
+{}
 
 
 // The function to set up connection to a sensor.
