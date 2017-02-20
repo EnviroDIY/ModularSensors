@@ -63,21 +63,25 @@ float MaxbotixSonar::sensorValue_depth = 0;
 // Uses SDI-12 to communicate with a Decagon Devices CTD
 bool MaxbotixSonar::update(){
 
+    Serial.println("starting update");
     int range_try = 0;
     int result;
     char inData[5];  //char array to read data into
     int index = 0;
     bool stringComplete = false;
 
+    Serial.println("Turning on excite pin");
     digitalWrite(_excitePin, HIGH);
     delay(1000);
 
+    Serial.println("Flushing serial");
     _sonarSerial->flush();  // Clear cache ready for next reading
 
     while (stringComplete == false)
     {
         // Serial.print("OK reading! ");  //debug line
 
+        Serial.println("Checking serial availability");
         if (_sonarSerial->available())
         {
             char rByte = _sonarSerial->read();  //read serial input for "R" to mark start of data
