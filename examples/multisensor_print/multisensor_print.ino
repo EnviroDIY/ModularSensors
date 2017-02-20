@@ -115,7 +115,7 @@ void setupLogFile()
     //  while (true);
   }
 
-  fileName += String(LoggerID) + "_" + getDateTime_ISO8601().substring(1,10);
+  fileName += String(LoggerID) + "_" + getDateTime_ISO8601().substring(0,10);
   // Check if the file already exists
   bool oldFile = SD.exists(fileName);
 
@@ -175,19 +175,25 @@ bool updateAllSensors()
     {
         success &= SENSOR_LIST[i]->update();
         // Prints for debugging
-        Serial.print(F("------Updated "));
+        Serial.print(F("--- Updated "));
         Serial.print(SENSOR_LIST[i]->getSensorName());
-        Serial.println(F(" ------"));
+        Serial.print(F(" for "));
+        Serial.print(SENSOR_LIST[i]->getVarName());
 
         // Check for and skip the updates of any identical sensors
-        if (SENSOR_LIST[i+1]->getSensorLocation() == SENSOR_LIST[i]->getSensorLocation())
+        for (int j = i+1; j < sensorCount; j++)
         {
-            // Prints for debugging
-            Serial.print(F("------Skipped Updating "));
-            Serial.print(SENSOR_LIST[i+1]->getSensorName());
-            Serial.println(F(" ------"));
-            i++;
-        };
+            if (SENSOR_LIST[i]->getSensorName() == SENSOR_LIST[j]->getSensorName() &&
+                SENSOR_LIST[i]->getSensorLocation() == SENSOR_LIST[j]->getSensorLocation())
+            {
+                // Prints for debugging
+                Serial.print(F(" and "));
+                Serial.print(SENSOR_LIST[i+1]->getVarName());
+                i++;
+            }
+            else {break;}
+        }
+        Serial.println(F(" ---"));
     }
 
     return success;
