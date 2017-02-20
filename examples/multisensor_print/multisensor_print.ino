@@ -213,7 +213,7 @@ String generateSensorDataCSV(void)
 void logData(String rec)
 {
   // Re-open the file
-  File logFile = SD.open(FILE_NAME, FILE_WRITE);
+  File logFile = SD.open(fileName, FILE_WRITE);
 
   // Write the CSV data
   logFile.println(rec);
