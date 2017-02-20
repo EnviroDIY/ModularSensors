@@ -50,6 +50,10 @@ const char *SKETCH_NAME = "modular_sensors.ino";
 // Logger ID, for data file on SD card
 const char *LoggerID = "Mayfly_160073";
 
+// The file name to save data on the SD card as
+// This MUST be no longer than 8 character + 3 character extension.
+const char *FILE_NAME = "MF160073.csv";
+
 // Register your site and get these tokens from data.envirodiy.org
 const char *REGISTRATION_TOKEN = "5a3e8d07-8821-4240-91c9-26c610966b2c";
 const char *SAMPLING_FEATURE = "39bf098f-d11d-4ea6-9be3-6a073969b019";

@@ -33,7 +33,7 @@ long currentepochtime = 0;
 char currentTime[26] = "";
 
 // For the file name
-String fileName = "";
+// String fileName = "";
 
 // For the number of sensors
 int sensorCount = 0;
@@ -115,12 +115,12 @@ void setupLogFile()
     //  while (true);
   }
 
-  fileName += String(LoggerID) + "_" + getDateTime_ISO8601().substring(0,10);
+  // fileName += String(LoggerID) + F("_") + getDateTime_ISO8601().substring(0,10) + F(".txt");
   // Check if the file already exists
-  bool oldFile = SD.exists(fileName);
+  bool oldFile = SD.exists(FILE_NAME);
 
   // Open the file in write mode
-  File logFile = SD.open(fileName, FILE_WRITE);
+  File logFile = SD.open(FILE_NAME, FILE_WRITE);
 
   // Add header information if the file did not already exist
   if (!oldFile)
@@ -219,7 +219,7 @@ String generateSensorDataCSV(void)
 void logData(String rec)
 {
   // Re-open the file
-  File logFile = SD.open(fileName, FILE_WRITE);
+  File logFile = SD.open(FILE_NAME, FILE_WRITE);
 
   // Write the CSV data
   logFile.println(rec);
