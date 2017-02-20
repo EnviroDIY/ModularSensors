@@ -53,14 +53,12 @@ bool MaxbotixSonar::update(){
     SoftwareSerialMod sonarSerial(_excitePin, -1);
     sonarSerial.begin(9600);
 
-    Serial.println("starting maxbotix update");
     int range_try = 0;
-    int result;
+    int result = 0;
     char inData[5];  //char array to read data into
     int index = 0;
     bool stringComplete = false;
 
-    Serial.println("Turning on excite pin");
     digitalWrite(_excitePin, HIGH);
     delay(1000);
 
@@ -69,17 +67,17 @@ bool MaxbotixSonar::update(){
     {
         if (sonarSerial.available())
         {
-            Serial.println("Looking for reading");  //debug line
+            // Serial.println("Looking for reading");  //debug line
             char rByte = sonarSerial.read();  //read serial input for "R" `to mark start of data
             if(rByte == 'R')
             {
-                Serial.println("rByte set");
+                // Serial.println("rByte set");  //debug line
                 while (index < 4)  //read next three character for range from sensor
                 {
                     if (sonarSerial.available())
                     {
                         inData[index] = sonarSerial.read();
-                        Serial.println(inData[index]);  //Debug line
+                        // Serial.println(inData[index]);  //Debug line
 
                         index++;  // Increment where to write next
                     }
@@ -92,22 +90,21 @@ bool MaxbotixSonar::update(){
 
             stringComplete = true;  // Set completion of read to true
             result = atoi(inData);  // Changes string data into an integer for use
-            Serial.println("Result recieved");  //debug line
+            // Serial.println("Result recieved");  //debug line
             if (result == 300 && range_try < 20)
             {
-                Serial.println("Bad result, retrying");  //debug line
+                // Serial.println("Bad result, retrying");  //debug line
                 stringComplete = false;
                 range_try++;
             }
         }
         else
         {
-            delay(10);
+            delay(100);
             timeout--;
         }
     }
 
-    Serial.println("Turning off excite pin");
     digitalWrite(_excitePin, LOW);
 
     MaxbotixSonar::sensorValue_depth = result;
