@@ -113,11 +113,6 @@ bool MaxbotixSonar::update(){
 
     MaxbotixSonar::sensorValue_depth = result;
 
-    // Prints for debugging
-    Serial.print(F("------updated "));
-    Serial.print(getSensorName());
-    Serial.println(F(" sensor------"));
-
     // Return true when finished
     return true;
 }
@@ -125,7 +120,7 @@ bool MaxbotixSonar::update(){
 
 
 
-MaxbotixSonar_Depth::MaxbotixSonar_Depth(int excitePin, int dataPin) 
+MaxbotixSonar_Depth::MaxbotixSonar_Depth(int excitePin, int dataPin)
 : MaxbotixSonar(excitePin, dataPin)
 {
     _excitePin = excitePin;

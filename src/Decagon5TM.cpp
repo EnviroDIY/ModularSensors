@@ -95,11 +95,6 @@ bool Decagon5TM::update(){
   Decagon5TM::sensorValue_temp = sensorValue_temp;
   Decagon5TM::sensorValue_VWC = sensorValue_VWC;
 
-  // Prints for debugging
-  Serial.print(F("------updated "));
-  Serial.print(getSensorName());
-  Serial.println(F(" sensor------"));
-
   // Turn off power to the sensor
   digitalWrite(_powerPin, LOW);
   delay(100);

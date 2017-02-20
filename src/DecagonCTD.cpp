@@ -103,11 +103,6 @@ bool DecagonCTD::update(){
   DecagonCTD::sensorValue_temp = sensorValue_temp;
   DecagonCTD::sensorValue_depth = sensorValue_depth;
 
-  // Prints for debugging
-  Serial.print(F("------updated "));
-  Serial.print(getSensorName());
-  Serial.println(F(" sensor------"));
-
   // Turn off power to the sensor
   digitalWrite(_powerPin, LOW);
   delay(100);

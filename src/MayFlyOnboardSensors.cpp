@@ -51,12 +51,7 @@ bool MayFlyOnboardSensors::update(void)
     // Get the battery voltage
     float rawBattery = analogRead(_batteryPin);
     MayFlyOnboardSensors::sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
-
-    // Prints for debugging
-    Serial.print(F("------updated "));
-    Serial.print(getSensorName());
-    Serial.println(F(" sensor------"));
-
+    
     // Return true when finished
     return true;
 }

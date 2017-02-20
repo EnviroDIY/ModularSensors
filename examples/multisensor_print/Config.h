@@ -26,8 +26,7 @@ const int TMaddress = 1;  // The SDI-12 Address of the 5-TM
 // const int SDI12_PIN = 7;
 // const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
 
-// change to the proper pins for Decagon 5TM
-// sdi-12 data pin is usually, pin 7 on shield 3.0
+// change to the proper pins for Campbell OSB 3+
 const int OSBLowPin = 0;  // The low voltage analog pin
 const int OSBHighPin = 1;  // The high voltage analog pin
 // const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
@@ -48,8 +47,8 @@ const int OSBHighPin = 1;  // The high voltage analog pin
 // Skecth file name
 const char *SKETCH_NAME = "modular_sensors.ino";
 
-// Data header, for data log file on SD card
-const char *FILE_NAME = "Mayfly_160073";
+// Logger ID, for data file on SD card
+const char *LoggerID = "Mayfly_160073";
 
 // Register your site and get these tokens from data.envirodiy.org
 const char *REGISTRATION_TOKEN = "5a3e8d07-8821-4240-91c9-26c610966b2c";
@@ -58,6 +57,13 @@ const int TIME_ZONE = -5;
 
 const char *UUIDs[] =
 {
+"fec11d32-0658-4ef0-8a27-bdffa2104e31", "a7329b1b-b002-4fa8-afba-ae83b82ab8e9",
+"fec11d32-0658-4ef0-8a27-bdffa2104e31", "a7329b1b-b002-4fa8-afba-ae83b82ab8e9",
+"fec11d32-0658-4ef0-8a27-bdffa2104e31", "a7329b1b-b002-4fa8-afba-ae83b82ab8e9",
+"fec11d32-0658-4ef0-8a27-bdffa2104e31", "a7329b1b-b002-4fa8-afba-ae83b82ab8e9",
+"fec11d32-0658-4ef0-8a27-bdffa2104e31", "a7329b1b-b002-4fa8-afba-ae83b82ab8e9",
+"fec11d32-0658-4ef0-8a27-bdffa2104e31", "a7329b1b-b002-4fa8-afba-ae83b82ab8e9",
+"fec11d32-0658-4ef0-8a27-bdffa2104e31", "a7329b1b-b002-4fa8-afba-ae83b82ab8e9",
 "fec11d32-0658-4ef0-8a27-bdffa2104e31", "a7329b1b-b002-4fa8-afba-ae83b82ab8e9"
 };
 

@@ -77,11 +77,6 @@ bool CampbellOSB3::update(){
     CampbellOSB3::sensorValue_TurbLow = sensorValue_TurbLow;
     CampbellOSB3::sensorValue_TurbHigh = sensorValue_TurbHigh;
 
-    // Prints for debugging
-    Serial.print(F("------updated "));
-    Serial.print(getSensorName());
-    Serial.println(F(" sensor------"));
-
     // Turn off power to the sensor
     digitalWrite(_powerPin, LOW);
     delay(100);
