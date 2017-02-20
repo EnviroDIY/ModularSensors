@@ -72,12 +72,6 @@ bool MaxbotixSonar::update(){
     digitalWrite(_excitePin, HIGH);
     delay(1000);
 
-    Serial.println("Checking serial availability");
-    if (_sonarSerial->available())
-    {
-        Serial.println("Flushing serial");
-        _sonarSerial->flush();  // Clear cache ready for next reading
-    }
     int timeout = 15000; // only try for 15 seconds
     while ((timeout > 0) && stringComplete == false)
     {
