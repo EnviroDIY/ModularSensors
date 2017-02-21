@@ -8,7 +8,7 @@ cache:
         - "~/.platformio"
 
 env:
-    - PLATFORMIO_CI_SRC=examples/multisensor_print
+    - PLATFORMIO_CI_SRC=examples/multisensor_print/multisensor_print.ino
 
 install:
     - pip install -U platformio
