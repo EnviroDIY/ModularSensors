@@ -19,7 +19,8 @@
 class CampbellOSB3 : public virtual SensorBase
 {
 public:
-    CampbellOSB3(int powerPin, int dataPinLow, int dataPinHigh);
+    CampbellOSB3(int powerPin, int dataPin,
+                 float A, float B, float C);
     SENSOR_STATUS setup(void) override;
 
     bool update(void) override;
@@ -28,9 +29,9 @@ public:
     bool sleep(void) override;
     bool wake(void) override;
 
-    virtual String getVarName(void) = 0;
-    virtual String getVarUnit(void) = 0;
-    virtual float getValue(void) = 0;
+    String getVarName(void) override;
+    String getVarUnit(void) override;
+    float getValue(void) override;
     virtual String getDreamHost(void) = 0;
 protected:
     SENSOR_STATUS sensorStatus;
@@ -39,10 +40,11 @@ protected:
     String varName;
     String unit;
     int _powerPin;
-    int16_t _dataPinLow;
-    int16_t _dataPinHigh;
-    static float sensorValue_TurbLow;
-    static float sensorValue_TurbHigh;
+    int16_t _dataPin;
+    float _A;
+    float _B;
+    float _C;
+    static float sensorValue;
 };
 
 
@@ -50,11 +52,9 @@ protected:
 class CampbellOSB3_TurbLow : public virtual CampbellOSB3
 {
 public:
-    CampbellOSB3_TurbLow(int powerPin, int dataPinLow, int dataPinHigh);
+    CampbellOSB3_TurbLow(int powerPin, int dataPin,
+                         float A, float B, float C);
 
-    String getVarName(void) override;
-    String getVarUnit(void) override;
-    float getValue(void) override;
     String getDreamHost(void) override;
 };
 
@@ -63,11 +63,9 @@ public:
 class CampbellOSB3_TurbHigh : public virtual CampbellOSB3
 {
 public:
-    CampbellOSB3_TurbHigh(int powerPin, int dataPinLow, int dataPinHigh);
+    CampbellOSB3_TurbHigh(int powerPin, int dataPin,
+                          float A, float B, float C);
 
-    String getVarName(void) override;
-    String getVarUnit(void) override;
-    float getValue(void) override;
     String getDreamHost(void) override;
 };
 

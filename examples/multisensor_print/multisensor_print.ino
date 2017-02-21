@@ -67,27 +67,27 @@ String getDateTime_ISO8601(void)
   DateTime dt(rtc.makeDateTime(getNow()));
   //Convert it to a String
   dt.addToString(dateTimeStr);
-  dateTimeStr.replace(" ", "T");
+  dateTimeStr.replace(F(" "), F("T"));
   String tzString = String(TIME_ZONE);
   if (-24 <= TIME_ZONE && TIME_ZONE <= -10)
   {
-      tzString += ":00";
+      tzString += F(":00");
   }
   else if (-10 < TIME_ZONE && TIME_ZONE < 0)
   {
-      tzString = tzString.substring(0,1) + "0" + tzString.substring(1,2) + ":00";
+      tzString = tzString.substring(0,1) + F("0") + tzString.substring(1,2) + F(":00");
   }
   else if (TIME_ZONE == 0)
   {
-      tzString = "Z";
+      tzString = F("Z");
   }
   else if (0 < TIME_ZONE && TIME_ZONE < 10)
   {
-      tzString = "+0" + tzString + ":00";
+      tzString = "+0" + tzString + F(":00");
   }
   else if (10 <= TIME_ZONE && TIME_ZONE <= 24)
   {
-      tzString = "+" + tzString + ":00";
+      tzString = "+" + tzString + F(":00");
   }
   dateTimeStr += tzString;
   return dateTimeStr;
@@ -130,7 +130,7 @@ void setupLogFile()
     logFile.print(F("Sampling Feature UUID: "));
     logFile.println(SAMPLING_FEATURE);
 
-    String dataHeader = "\"Timestamp\", ";
+    String dataHeader = F("\"Timestamp\", ");
     for (int i = 0; i < sensorCount; i++)
     {
         dataHeader += "\"" + String(SENSOR_LIST[i]->getSensorName());
@@ -139,7 +139,7 @@ void setupLogFile()
         dataHeader += " (" + String(UUIDs[i]) + ")\"";
         if (i + 1 != sensorCount)
         {
-            dataHeader += ", ";
+            dataHeader += F(", ");
         }
     }
 
@@ -194,7 +194,8 @@ bool updateAllSensors()
             }
             else {break;}
         }
-        Serial.println(F(" ---"));
+        Serial.println(F(" ---"));  // For Debugging
+        delay(250);  // A short delay before next sensor;
     }
 
     return success;
@@ -202,14 +203,14 @@ bool updateAllSensors()
 
 String generateSensorDataCSV(void)
 {
-    String csvString = "";
+    String csvString = String(currentTime) + F(", ");
 
     for (int i = 0; i < sensorCount; i++)
     {
         csvString += String(SENSOR_LIST[i]->getValue());
         if (i + 1 != sensorCount)
         {
-            csvString += ", ";
+            csvString += F(", ");
         }
     }
 
@@ -276,6 +277,8 @@ void loop()
     digitalWrite(GREEN_LED, HIGH);
     // Print a line to show new reading
     Serial.println(F("------------------------------------------\n"));
+    Serial.print(F("Free RAM: "));
+    Serial.println(freeRam());
     // Get the sensor value(s), store as string
     updateAllSensors();
     // Print the data to the screen
@@ -286,5 +289,5 @@ void loop()
     digitalWrite(GREEN_LED, LOW);
 
     // Wait for the next reading
-    delay(LOGGING_INTERVAL*1000);
+    delay(LOGGING_INTERVAL*1000*10 - sensorCount*250);
 }
