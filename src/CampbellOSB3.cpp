@@ -30,6 +30,20 @@ SENSOR_STATUS CampbellOSB3::setup(void)
     return SENSOR_READY;
 }
 
+// The function to put the sensor to sleep
+bool CampbellOSB3::sleep(void)
+{
+    digitalWrite(_powerPin, LOW);
+    return true;
+}
+
+// The function to wake up the sensor
+bool CampbellOSB3::wake(void)
+{
+    digitalWrite(_powerPin, HIGH);
+    return true;
+}
+
 // The sensor name
 String CampbellOSB3::getSensorName(void)
 {
@@ -51,13 +65,18 @@ float CampbellOSB3::sensorValue_TurbHigh = 0;
 // Uses Auxillary ADD to convert data
 bool CampbellOSB3::update(){
 
-  // Start the Auxillary ADD
-  Adafruit_ADS1115 ads;     /* Use this for the 16-bit version */
-
-    // Turn on power to the sensor
+    // Start the Auxillary ADD
+    Adafruit_ADS1115 ads;     /* Use this for the 16-bit version */
     delay(500);
-    digitalWrite(_powerPin, HIGH);
-    delay(1000);
+
+    // Check if the power is on, turn it on if not
+    bool wasOff = false;
+    if (bitRead(digitalPinToPort(_powerPin), digitalPinToBitMask(_powerPin)) == LOW)
+    {
+        wasOff = true;
+        digitalWrite(_powerPin, HIGH);
+        delay(1000);
+    }
 
     int16_t adc0, adc1; // tells which channels are to be read
 
@@ -76,9 +95,9 @@ bool CampbellOSB3::update(){
     CampbellOSB3::sensorValue_TurbLow = sensorValue_TurbLow;
     CampbellOSB3::sensorValue_TurbHigh = sensorValue_TurbHigh;
 
-    // Turn off power to the sensor
-    digitalWrite(_powerPin, LOW);
-    delay(100);
+    // Turn the power back off it it had been turned on
+    if (wasOff)
+        {digitalWrite(_powerPin, LOW);}
 
     // Return true when finished
     return true;

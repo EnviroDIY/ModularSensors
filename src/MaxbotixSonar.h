@@ -22,6 +22,8 @@ class MaxBotixSonar : public virtual SensorBase
 public:
     MaxBotixSonar(int powerPin, int dataPin);
     SENSOR_STATUS setup(void) override;
+    bool sleep(void) override;
+    bool wake(void) override;
 
     bool update(void) override;
     String getSensorName(void) override;

@@ -32,6 +32,20 @@ SENSOR_STATUS MaxBotixSonar::setup(void)
     return SENSOR_READY;
 }
 
+// The function to put the sensor to sleep
+bool MaxBotixSonar::sleep(void)
+{
+    digitalWrite(_powerPin, LOW);
+    return true;
+}
+
+// The function to wake up the sensor
+bool MaxBotixSonar::wake(void)
+{
+    digitalWrite(_powerPin, HIGH);
+    return true;
+}
+
 // The sensor name
 String MaxBotixSonar::getSensorName(void)
 {
@@ -48,28 +62,6 @@ String MaxBotixSonar::getSensorLocation(void)
 
 // The static variables that need to be updated
 float MaxBotixSonar::sensorValue_depth = 0;
-
-// This breaks the data from the MaxBotix into lines
-void processIncomingByte (const byte inByte, char* inputLine, int maxLineLength)
-{
-    static int lineIndex = 0;
-    inputLine = {};
-
-    switch (inByte)
-    {
-        case '\r':   // MaxBotix signifies end of text with carriage return
-            inputLine[lineIndex] = 0;  // terminating null byte
-            // reset buffer for next time
-            lineIndex = 0;
-            break;
-
-        default:
-            // keep adding if not full ... allow for terminating null byte
-            if (lineIndex < (maxLineLength - 1))
-            inputLine [lineIndex++] = inByte;
-            break;
-    }  // end of switch
-} // end of processIncomingByte
 
 
 // Uses TLL Communication to get data from MaxBotix
@@ -89,14 +81,18 @@ bool MaxBotixSonar::update(){
     bool stringComplete = false;
     int rangeAttempts = 0;
 
-    Serial.println(F("Turning on Power Pin"));  // debug line
-    digitalWrite(_powerPin, HIGH);
-    delay(1000);
+    // Check if the power is on, turn it on if not
+    bool wasOff = false;
+    if (bitRead(digitalPinToPort(_powerPin), digitalPinToBitMask(_powerPin)) == LOW)
+    {
+        wasOff = true;
+        pinMode(_powerPin, OUTPUT);
+        digitalWrite(_powerPin, HIGH);
+        delay(1000);
+    }
 
-    Serial.println(F("Beginning detection for Sonar"));  // debug line
-
+    // Serial.println(F("Beginning detection for Sonar"));  // debug line
     sonarSerial.flush();  // Clear cache ready for next reading
-
     while (stringComplete == false)
     {
         while (sonarSerial.available())
@@ -105,18 +101,18 @@ bool MaxBotixSonar::update(){
             char rByte = sonarSerial.read();  //read serial input for "R" to mark start of data
             if(rByte == 'R')
             {
-                Serial.println(F("'R' Byte found, reading next 4 characters:")); // Debug line
+                // Serial.println(F("'R' Byte found, reading next 4 characters:")); // Debug line
                 while (index < 4)  //read next three character for range from sensor
                 {
                     if (sonarSerial.available())
                     {
                         inData[index] = sonarSerial.read();
-                        Serial.print(inData[index]);  // Debug line
+                        // Serial.print(inData[index]);  // Debug line
                         index++;  // Increment where to write next
                     }
                 }
                 inData[index] = 0x00;  //add a padding byte at end for atoi() function
-                Serial.println();  // Debug line
+                // Serial.println();  // Debug line
             }
             rByte = 0;  // Reset the rByte ready for next reading
             index = 0;  // Reset index ready for next reading
@@ -125,15 +121,16 @@ bool MaxBotixSonar::update(){
             result = atoi(inData);  // Changes string data into an integer for use
             if ((result == 300 || result == 500 || result == 4999 || result == 9999) && rangeAttempts < 20)
             {
-                Serial.println(F("Bad or Suspicious Result, Retrying")); // Debug line
+                // Serial.println(F("Bad or Suspicious Result, Retrying")); // Debug line
                 stringComplete = false;
                 rangeAttempts++;
             }
         }
     }
 
-    Serial.println(F("Turning off Power Pin"));  // debug line
-    digitalWrite(_powerPin, LOW);
+    // Turn the power back off it it had been turned on
+    if (wasOff)
+        {digitalWrite(_powerPin, LOW);}
 
     MaxBotixSonar::sensorValue_depth = result;
 

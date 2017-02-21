@@ -25,6 +25,8 @@ public:
     bool update(void) override;
     String getSensorName(void) override;
     String getSensorLocation(void) override;
+    bool sleep(void) override;
+    bool wake(void) override;
 
     virtual String getVarName(void) = 0;
     virtual String getVarUnit(void) = 0;

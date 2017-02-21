@@ -13,6 +13,7 @@
 
 
 #include <Arduino.h>
+#include <pins_arduino.h>
 
 enum SENSOR_STATUS
 {

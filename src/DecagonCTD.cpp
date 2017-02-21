@@ -27,6 +27,20 @@ DecagonCTD::DecagonCTD(int numReadings, char CTDaddress, int powerPin, int dataP
   _dataPin = dataPin;
 }
 
+// The function to put the sensor to sleep
+bool DecagonCTD::sleep(void)
+{
+    digitalWrite(_powerPin, LOW);
+    return true;
+}
+
+// The function to wake up the sensor
+bool DecagonCTD::wake(void)
+{
+    digitalWrite(_powerPin, HIGH);
+    return true;
+}
+
 // The function to set up connection to a sensor.
 SENSOR_STATUS DecagonCTD::setup(void)
 {
@@ -57,57 +71,63 @@ float DecagonCTD::sensorValue_depth = 0;
 // Uses SDI-12 to communicate with a Decagon Devices CTD
 bool DecagonCTD::update(){
 
-  SDI12 CTDSDI12(_dataPin);
+    SDI12 CTDSDI12(_dataPin);
 
-  // Turn on power to the sensor
-  delay(500);
-  digitalWrite(_powerPin, HIGH);
-  delay(1000);
-
-  // averages x readings in this one loop
-  for (int j = 0; j < _numReadings; j++)
-  {
-    String command = "";
-    command += _CTDaddress;
-    command += "M!"; // SDI-12 measurement command format  [address]['M'][!]
-    CTDSDI12.sendCommand(command);
-    delay(500); // wait a while
-    CTDSDI12.flush(); // we don't care about what it sends back
-
-    command = "";
-    command += _CTDaddress;
-    command += "D0!"; // SDI-12 command to get data [address][D][dataOption][!]
-    CTDSDI12.sendCommand(command);
-    delay(500);
-    if (CTDSDI12.available() > 0) {
-      CTDSDI12.parseFloat();  // First return is the sensor address
-      int x = CTDSDI12.parseInt();  // Depth measurement in millimeters
-      float y = CTDSDI12.parseFloat();  // Temperature measurement in °C
-      int z = CTDSDI12.parseInt();  // Bulk Electrical Conductivity measurement in μS/cm.
-
-      sensorValue_depth += x;
-      sensorValue_temp += y;
-      sensorValue_cond += z;
+    // Check if the power is on, turn it on if not
+    bool wasOff = false;
+    if (bitRead(digitalPinToPort(_powerPin), digitalPinToBitMask(_powerPin)) == LOW)
+    {
+        wasOff = true;
+        pinMode(_powerPin, OUTPUT);
+        digitalWrite(_powerPin, HIGH);
+        delay(1000);
     }
 
-    CTDSDI12.flush();
-  }     // end of averaging loop
+    // averages x readings in this one loop
+    for (int j = 0; j < _numReadings; j++)
+    {
+        String command = "";
+        command += _CTDaddress;
+        command += "M!"; // SDI-12 measurement command format  [address]['M'][!]
+        CTDSDI12.sendCommand(command);
+        delay(500); // wait a while
+        CTDSDI12.flush(); // we don't care about what it sends back
 
-  float numRead_f = (float) _numReadings;
-  sensorValue_depth /= numRead_f ;
-  sensorValue_temp /= numRead_f ;
-  sensorValue_cond /= numRead_f ;
+        command = "";
+        command += _CTDaddress;
+        command += "D0!"; // SDI-12 command to get data [address][D][dataOption][!]
+        CTDSDI12.sendCommand(command);
+        delay(500);
+        if (CTDSDI12.available() > 0)
+        {
+            CTDSDI12.parseFloat();  // First return is the sensor address
+            int x = CTDSDI12.parseInt();  // Depth measurement in millimeters
+            float y = CTDSDI12.parseFloat();  // Temperature measurement in °C
+            int z = CTDSDI12.parseInt();  // Bulk Electrical Conductivity measurement in μS/cm.
 
-  DecagonCTD::sensorValue_cond = sensorValue_cond;
-  DecagonCTD::sensorValue_temp = sensorValue_temp;
-  DecagonCTD::sensorValue_depth = sensorValue_depth;
+            sensorValue_depth += x;
+            sensorValue_temp += y;
+            sensorValue_cond += z;
+        }
+        CTDSDI12.flush();
+    }     // end of averaging loop
 
-  // Turn off power to the sensor
-  digitalWrite(_powerPin, LOW);
-  delay(100);
+    float numRead_f = (float) _numReadings;
+    sensorValue_depth /= numRead_f ;
+    sensorValue_temp /= numRead_f ;
+    sensorValue_cond /= numRead_f ;
 
-  // Return true when finished
-  return true;
+    DecagonCTD::sensorValue_cond = sensorValue_cond;
+    DecagonCTD::sensorValue_temp = sensorValue_temp;
+    DecagonCTD::sensorValue_depth = sensorValue_depth;
+
+
+    // Turn the power back off it it had been turned on
+    if (wasOff)
+        {digitalWrite(_powerPin, LOW);}
+
+    // Return true when finished
+    return true;
 }
 
 

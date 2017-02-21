@@ -30,6 +30,20 @@ SENSOR_STATUS Decagon5TM::setup(void)
     return SENSOR_READY;
 }
 
+// The function to put the sensor to sleep
+bool Decagon5TM::sleep(void)
+{
+    digitalWrite(_powerPin, LOW);
+    return true;
+}
+
+// The function to wake up the sensor
+bool Decagon5TM::wake(void)
+{
+    digitalWrite(_powerPin, HIGH);
+    return true;
+}
+
 // The sensor name
 String Decagon5TM::getSensorName(void)
 {
@@ -54,10 +68,14 @@ bool Decagon5TM::update(){
 
   SDI12 TMSDI12(_dataPin);
 
-  // Turn on power to the sensor
-  delay(500);
-  digitalWrite(_powerPin, HIGH);
-  delay(1000);
+  // Check if the power is on, turn it on if not
+  bool wasOff = false;
+  if (bitRead(digitalPinToPort(_powerPin), digitalPinToBitMask(_powerPin)) == LOW)
+  {
+      wasOff = true;
+      digitalWrite(_powerPin, HIGH);
+      delay(1000);
+  }
 
     String command = "";
     sensorValue_Ea = 0.0;
@@ -94,9 +112,9 @@ bool Decagon5TM::update(){
   Decagon5TM::sensorValue_temp = sensorValue_temp;
   Decagon5TM::sensorValue_VWC = sensorValue_VWC;
 
-  // Turn off power to the sensor
-  digitalWrite(_powerPin, LOW);
-  delay(100);
+  // Turn the power back off it it had been turned on
+  if (wasOff)
+      {digitalWrite(_powerPin, LOW);}
 
   // Return true when finished
   return true;
