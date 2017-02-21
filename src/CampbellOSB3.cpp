@@ -48,7 +48,7 @@ String CampbellOSB3::getSensorLocation(void)
 float CampbellOSB3::sensorValue_TurbLow = 0;
 float CampbellOSB3::sensorValue_TurbHigh = 0;
 
-// Uses SDI-12 to communicate with a Decagon Devices CTD
+// Uses Auxillary ADD to convert data
 bool CampbellOSB3::update(){
 
   // Start the Auxillary ADD

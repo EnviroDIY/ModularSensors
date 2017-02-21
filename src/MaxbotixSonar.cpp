@@ -1,113 +1,141 @@
  /*
- *MaxbotixSonar.cpp
+ *MaxBotixSonar.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Work in progress by Sara Damiano taken from code written
  *by Shannon Hicks and templates from USU.
  *
- *This file is for the Maxbotix Sonar Library
+ *This file is for the MaxBotix Sonar Library
  *It is dependent on Software Serial.
+ *
+ * Information on the MaxBotix Sonar communication protocol can be found here:
+ * http://www.MaxBotix.com/documents/HRXL-MaxSonar-WR_Datasheet.pdf
  */
 
 #include <Arduino.h>
-#include "MaxbotixSonar.h"
+#include "MaxBotixSonar.h"
 
 
 // The constructor - need the power pin, the excite pin, and the data pin
-MaxbotixSonar::MaxbotixSonar(int excitePin, int dataPin) : SensorBase()
+MaxBotixSonar::MaxBotixSonar(int powerPin, int dataPin) : SensorBase()
 {
-    _excitePin = excitePin;
+    _powerPin = powerPin;
     _dataPin = dataPin;
 }
 
 // The function to set up connection to a sensor.
-SENSOR_STATUS MaxbotixSonar::setup(void)
+SENSOR_STATUS MaxBotixSonar::setup(void)
 {
-    pinMode(_excitePin, OUTPUT);
-    digitalWrite(_excitePin, LOW);
+    pinMode(_powerPin, OUTPUT);
+    pinMode(_dataPin, INPUT);
+    digitalWrite(_powerPin, LOW);
     return SENSOR_READY;
 }
 
 // The sensor name
-String MaxbotixSonar::getSensorName(void)
+String MaxBotixSonar::getSensorName(void)
 {
     sensorName = F("MaxBotixMaxSonar");
     return sensorName;
 }
 
 // The sensor installation location on the Mayfly
-String MaxbotixSonar::getSensorLocation(void)
+String MaxBotixSonar::getSensorLocation(void)
 {
-    sensorLocation = String(_excitePin) + "_" + String(_dataPin);
+    sensorLocation = String(_powerPin) + "_" + String(_dataPin);
     return sensorLocation;
 }
 
 // The static variables that need to be updated
-float MaxbotixSonar::sensorValue_depth = 0;
+float MaxBotixSonar::sensorValue_depth = 0;
 
-// Uses SDI-12 to communicate with a Decagon Devices CTD
-bool MaxbotixSonar::update(){
+// This breaks the data from the MaxBotix into lines
+void processIncomingByte (const byte inByte, char* inputLine, int maxLineLength)
+{
+    static int lineIndex = 0;
+    inputLine = {};
+
+    switch (inByte)
+    {
+        case '\r':   // MaxBotix signifies end of text with carriage return
+            inputLine[lineIndex] = 0;  // terminating null byte
+            // reset buffer for next time
+            lineIndex = 0;
+            break;
+
+        default:
+            // keep adding if not full ... allow for terminating null byte
+            if (lineIndex < (maxLineLength - 1))
+            inputLine [lineIndex++] = inByte;
+            break;
+    }  // end of switch
+} // end of processIncomingByte
+
+
+// Uses TLL Communication to get data from MaxBotix
+bool MaxBotixSonar::update(){
 
     // define serial port for recieving data
     // output from maxSonar is inverted requiring true to be set.
-    SoftwareSerialMod sonarSerial(_excitePin, -1);
+    SoftwareSerialMod sonarSerial(_dataPin, -1);
     sonarSerial.begin(9600);
 
-    int range_try = 0;
-    int result = 0;
-    char inData[5];  //char array to read data into
+    // Sonar sends a result just above it's max range when it gets a bad reading
+    // For 10m models, this is 9999, for 5m models it's 4999
+    int badResult = 9999;
+    int result = badResult;  // initialize the result with a bad reading
+    char inData[5];  // char array to read data into
     int index = 0;
     bool stringComplete = false;
+    int rangeAttempts = 0;
 
-    digitalWrite(_excitePin, HIGH);
+    Serial.println(F("Turning on Power Pin"));  // debug line
+    digitalWrite(_powerPin, HIGH);
     delay(1000);
 
-    int timeout = 150; // only try for 15 seconds
-    while ((timeout > 0) && stringComplete == false)
+    Serial.println(F("Beginning detection for Sonar"));  // debug line
+
+    sonarSerial.flush();  // Clear cache ready for next reading
+
+    while (stringComplete == false)
     {
-        if (sonarSerial.available())
+        while (sonarSerial.available())
         {
-            // Serial.println("Looking for reading");  //debug line
-            char rByte = sonarSerial.read();  //read serial input for "R" `to mark start of data
+            delay(3);  // It just works better with this delay.  4 is too much, 2 is too little.
+            char rByte = sonarSerial.read();  //read serial input for "R" to mark start of data
             if(rByte == 'R')
             {
-                // Serial.println("rByte set");  //debug line
+                Serial.println(F("'R' Byte found, reading next 4 characters:")); // Debug line
                 while (index < 4)  //read next three character for range from sensor
                 {
                     if (sonarSerial.available())
                     {
                         inData[index] = sonarSerial.read();
-                        // Serial.println(inData[index]);  //Debug line
-
+                        Serial.print(inData[index]);  // Debug line
                         index++;  // Increment where to write next
                     }
                 }
                 inData[index] = 0x00;  //add a padding byte at end for atoi() function
+                Serial.println();  // Debug line
             }
-
-            rByte = 0;  //reset the rByte ready for next reading
+            rByte = 0;  // Reset the rByte ready for next reading
             index = 0;  // Reset index ready for next reading
 
             stringComplete = true;  // Set completion of read to true
             result = atoi(inData);  // Changes string data into an integer for use
-            // Serial.println("Result recieved");  //debug line
-            if (result == 300 && range_try < 20)
+            if ((result == 300 || result == 500 || result == 4999 || result == 9999) && rangeAttempts < 20)
             {
-                // Serial.println("Bad result, retrying");  //debug line
+                Serial.println(F("Bad or Suspicious Result, Retrying")); // Debug line
                 stringComplete = false;
-                range_try++;
+                rangeAttempts++;
             }
-        }
-        else
-        {
-            delay(100);
-            timeout--;
         }
     }
 
-    digitalWrite(_excitePin, LOW);
+    Serial.println(F("Turning off Power Pin"));  // debug line
+    digitalWrite(_powerPin, LOW);
 
-    MaxbotixSonar::sensorValue_depth = result;
+    MaxBotixSonar::sensorValue_depth = result;
 
     // Return true when finished
     return true;
@@ -116,32 +144,32 @@ bool MaxbotixSonar::update(){
 
 
 
-MaxbotixSonar_Depth::MaxbotixSonar_Depth(int excitePin, int dataPin)
-: MaxbotixSonar(excitePin, dataPin)
+MaxBotixSonar_Depth::MaxBotixSonar_Depth(int powerPin, int dataPin)
+: MaxBotixSonar(powerPin, dataPin)
 {
-    _excitePin = excitePin;
+    _powerPin = powerPin;
     _dataPin = dataPin;
     setup();
 }
 
-String MaxbotixSonar_Depth::getVarName(void)
+String MaxBotixSonar_Depth::getVarName(void)
 {
     varName = F("waterDepth");
     return varName;
 }
 
-String MaxbotixSonar_Depth::getVarUnit(void)
+String MaxBotixSonar_Depth::getVarUnit(void)
 {
     String unit = F("millimeter");
     return unit;
 }
 
-float MaxbotixSonar_Depth::getValue(void)
+float MaxBotixSonar_Depth::getValue(void)
 {
     return sensorValue_depth;
 }
 
-String MaxbotixSonar_Depth::getDreamHost(void)
+String MaxBotixSonar_Depth::getDreamHost(void)
 {
     String column = F("SonarRange");
     return column;

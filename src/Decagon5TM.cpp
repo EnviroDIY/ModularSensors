@@ -49,7 +49,7 @@ float Decagon5TM::sensorValue_Ea = 0;
 float Decagon5TM::sensorValue_temp = 0;
 float Decagon5TM::sensorValue_VWC = 0;
 
-// Uses SDI-12 to communicate with a Decagon Devices CTD
+// Uses SDI-12 to communicate with a Decagon Devices 5TM
 bool Decagon5TM::update(){
 
   SDI12 TMSDI12(_dataPin);

@@ -17,8 +17,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // 1. Include all sensors and necessary files here
 // -----------------------------------------------
 #include <avr/sleep.h>
-#include <SD.h>
 #include <SPI.h>
+#include <SdFat.h>
 #include <RTCTimer.h>
 #include <Sodaq_DS3231.h>
 #include <Sodaq_PcInt_PCINT0.h>
@@ -32,8 +32,9 @@ RTCTimer timer;
 long currentepochtime = 0;
 char currentTime[26] = "";
 
-// For the file name
-// String fileName = "";
+// The SD initialization
+SdFat SD;
+String fileName = String(FILE_NAME);  // For the file name
 
 // For the number of sensors
 int sensorCount = 0;
@@ -115,12 +116,12 @@ void setupLogFile()
     //  while (true);
   }
 
-  // fileName += String(LoggerID) + F("_") + getDateTime_ISO8601().substring(0,10) + F(".txt");
+  fileName += String(LoggerID) + F("_") + getDateTime_ISO8601().substring(0,10) + F(".txt");
   // Check if the file already exists
-  bool oldFile = SD.exists(FILE_NAME);
+  bool oldFile = SD.exists(fileName.c_str());
 
   // Open the file in write mode
-  File logFile = SD.open(FILE_NAME, FILE_WRITE);
+  File logFile = SD.open(fileName, FILE_WRITE);
 
   // Add header information if the file did not already exist
   if (!oldFile)
@@ -219,7 +220,7 @@ String generateSensorDataCSV(void)
 void logData(String rec)
 {
   // Re-open the file
-  File logFile = SD.open(FILE_NAME, FILE_WRITE);
+  File logFile = SD.open(fileName, FILE_WRITE);
 
   // Write the CSV data
   logFile.println(rec);
@@ -285,5 +286,5 @@ void loop()
     digitalWrite(GREEN_LED, LOW);
 
     // Wait for the next reading
-    delay(LOGGING_INTERVAL);
+    delay(LOGGING_INTERVAL*1000);
 }

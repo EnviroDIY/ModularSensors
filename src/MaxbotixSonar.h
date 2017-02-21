@@ -1,26 +1,26 @@
 /*
- *MaxbotixSonar.h
+ *MaxBotixSonar.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Work in progress by Sara Damiano taken from code written
  *by Shannon Hicks and templates from USU.
  *
- *This file is for the Maxbotix Sonar Library
+ *This file is for the MaxBotix Sonar Library
  *It is dependent on Software Serial.
 */
 
-#ifndef MaxbotixSonar_h
-#define MaxbotixSonar_h
+#ifndef MaxBotixSonar_h
+#define MaxBotixSonar_h
 
 #include <Arduino.h>
 #include <SoftwareSerial_PCINT12.h>
 #include "SensorBase.h"
 
-// The main class for the Maxbotix Sonar
-class MaxbotixSonar : public virtual SensorBase
+// The main class for the MaxBotix Sonar
+class MaxBotixSonar : public virtual SensorBase
 {
 public:
-    MaxbotixSonar(int excitePin, int dataPin);
+    MaxBotixSonar(int powerPin, int dataPin);
     SENSOR_STATUS setup(void) override;
 
     bool update(void) override;
@@ -37,17 +37,17 @@ protected:
     String sensorLocation;
     String varName;
     String unit;
-    int _excitePin;
+    int _powerPin;
     int _dataPin;
     static float sensorValue_depth;
 };
 
 
 // Defines the "Depth Sensor"
-class MaxbotixSonar_Depth : public virtual MaxbotixSonar
+class MaxBotixSonar_Depth : public virtual MaxBotixSonar
 {
 public:
-    MaxbotixSonar_Depth(int excitePin, int dataPin);
+    MaxBotixSonar_Depth(int powerPin, int dataPin);
 
     String getVarName(void) override;
     String getVarUnit(void) override;
