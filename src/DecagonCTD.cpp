@@ -75,7 +75,8 @@ bool DecagonCTD::update(){
 
     // Check if the power is on, turn it on if not
     bool wasOff = false;
-    if (bitRead(digitalPinToPort(_powerPin), digitalPinToBitMask(_powerPin)) == LOW)
+    int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
+    if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
     {
         wasOff = true;
         pinMode(_powerPin, OUTPUT);

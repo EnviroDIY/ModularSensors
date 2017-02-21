@@ -17,8 +17,9 @@ const int CTDData = 7;  // The pin the CTD is attached to
 const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
 
 // Change to the proper excite (power) and recieve pin for MaxBotix Sonar.
+// The power must be continually on for the MaxBotix.
 const int SonarData = 11;
-// const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
+const int SonarExcite = 10;
 
 // change to the proper pins for Decagon 5TM
 // sdi-12 data pin is usually, pin 7 on shield 3.0
@@ -43,7 +44,7 @@ const float OSBHigh_C = 2.0709E-01;  // The "C" value from the high range calibr
 // -----------------------------------------------
 // 2. Include all sensors and necessary files here
 // -----------------------------------------------
-#include <MayFlyOnboardSensors.h>
+#include <MayflyOnboardSensors.h>
 #include <DecagonCTD.h>
 #include <Decagon5TM.h>
 #include <MaxBotixSonar.h>
@@ -91,17 +92,17 @@ const char* APN = "apn.konekt.io";  // The APN for the GPRSBee
 // 5. The array that contains all valid sensors
 // -----------------------------------------------
 SensorBase* SENSOR_LIST[] = {
-    new DecagonCTD_Cond(numberReadings, CTDSDI12address, switchedPower, CTDData),
-    new DecagonCTD_Temp(numberReadings, CTDSDI12address, switchedPower, CTDData),
-    new DecagonCTD_Depth(numberReadings, CTDSDI12address, switchedPower, CTDData),
+    // new DecagonCTD_Cond(numberReadings, CTDSDI12address, switchedPower, CTDData),
+    // new DecagonCTD_Temp(numberReadings, CTDSDI12address, switchedPower, CTDData),
+    // new DecagonCTD_Depth(numberReadings, CTDSDI12address, switchedPower, CTDData),
     new Decagon5TM_Temp(TMSDI12address, switchedPower, TMData),
-    new Decagon5TM_Ea(TMSDI12address, switchedPower, TMData),
-    new Decagon5TM_VWC(TMSDI12address, switchedPower, TMData),
-    new MaxBotixSonar_Depth(switchedPower, SonarData),
+    // new Decagon5TM_Ea(TMSDI12address, switchedPower, TMData),
+    // new Decagon5TM_VWC(TMSDI12address, switchedPower, TMData),
+    new MaxBotixSonar_Depth(SonarExcite, SonarData),
     new CampbellOSB3_TurbLow(switchedPower, OSBLowPin, OSBLow_A, OSBLow_B, OSBLow_C),
-    new CampbellOSB3_TurbHigh(switchedPower, OSBHighPin, OSBHigh_A, OSBHigh_B, OSBHigh_C),
-    new MayFlyOnboardTemp(batteryPin),
-    new MayFlyOnboardBatt(batteryPin)
+    // new CampbellOSB3_TurbHigh(switchedPower, OSBHighPin, OSBHigh_A, OSBHigh_B, OSBHigh_C),
+    new MayflyOnboardTemp(batteryPin),
+    new MayflyOnboardBatt(batteryPin)
     // new YOUR_sensorName_HERE()
 };
 

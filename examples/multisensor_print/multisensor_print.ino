@@ -274,20 +274,31 @@ void setup()
 void loop()
 {
     // Turn on the LED
-    digitalWrite(GREEN_LED, HIGH);
+    // digitalWrite(GREEN_LED, HIGH);
     // Print a line to show new reading
     Serial.println(F("------------------------------------------\n"));
     Serial.print(F("Free RAM: "));
     Serial.println(freeRam());
+
+    // Turn on the LED
+    digitalWrite(GREEN_LED, HIGH);
+    // Power the sensors;
+    digitalWrite(switchedPower, HIGH);
     // Get the sensor value(s), store as string
     updateAllSensors();
+    Serial.print(F("Free RAM: "));
+    Serial.println(freeRam());
     // Print the data to the screen
     Serial.println(generateSensorDataCSV());
     //Save the data record to the log file
     logData(generateSensorDataCSV());
+    // Cut Power to the sensors;
+    digitalWrite(switchedPower, LOW);
     // Turn off the LED
     digitalWrite(GREEN_LED, LOW);
+    Serial.print(F("Free RAM: "));
+    Serial.println(freeRam());
 
     // Wait for the next reading
-    delay(LOGGING_INTERVAL*1000*10 - sensorCount*250);
+    delay(5000);
 }

@@ -1,5 +1,5 @@
 /*
- *MayFlyOnboardSensors.h
+ *MayflyOnboardSensors.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Work in progress by Sara Damiano taken from code written
@@ -9,17 +9,17 @@
  *It is dependent on the EnviroDIY DS3231 library.
 */
 
-#ifndef MayFlyOnboardSensors_h
-#define MayFlyOnboardSensors_h
+#ifndef MayflyOnboardSensors_h
+#define MayflyOnboardSensors_h
 
 #include <Arduino.h>
 #include "SensorBase.h"
 
 // The main class for the Mayfly
-class MayFlyOnboardSensors : public virtual SensorBase
+class MayflyOnboardSensors : public virtual SensorBase
 {
 public:
-    MayFlyOnboardSensors(int batteryPin);
+    MayflyOnboardSensors(int batteryPin);
 
     bool update(void) override;
     String getSensorName(void) override;
@@ -42,10 +42,10 @@ protected:
 
 
 // Defines the "Temperature Sensor"
-class MayFlyOnboardTemp : public virtual MayFlyOnboardSensors
+class MayflyOnboardTemp : public virtual MayflyOnboardSensors
 {
 public:
-    MayFlyOnboardTemp(int batteryPin);
+    MayflyOnboardTemp(int batteryPin);
 
     String getVarName(void) override;
     String getVarUnit(void) override;
@@ -55,10 +55,10 @@ public:
 
 
 // Defines the "Battery Sensor"
-class MayFlyOnboardBatt : public virtual MayFlyOnboardSensors
+class MayflyOnboardBatt : public virtual MayflyOnboardSensors
 {
 public:
-    MayFlyOnboardBatt(int batteryPin);
+    MayflyOnboardBatt(int batteryPin);
 
     String getVarName(void) override;
     String getVarUnit(void) override;
