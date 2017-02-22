@@ -13,9 +13,9 @@
  *http://manuals.decagon.com/Integration%20Guides/CTD%20Integrators%20Guide.pdf
 */
 
-#include <Arduino.h>
-#include <SDI12_PCINT3.h>
 #include "DecagonCTD.h"
+#include <SDI12_PCINT3.h>
+
 
 // The constructor - need the SDI-12 address, the number of readings to average,
 // the power pin, and the data pin

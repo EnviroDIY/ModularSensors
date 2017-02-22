@@ -32,17 +32,13 @@ String MayflyOnboardSensors::getSensorName(void)
     return sensorName;
 }
 
-// The location of the sensor on the Mayfly
-String MayflyOnboardSensors::getSensorLocation(void)
-{
-    sensorLocation = String(_batteryPin);
-    return sensorLocation;
-}
-
 // The static variables that need to be updated
 float MayflyOnboardSensors::sensorValue_temp = 0;
 float MayflyOnboardSensors::sensorValue_battery = 0;
 float MayflyOnboardSensors::sensorValue_freeRam = 0;
+unsigned long MayflyOnboardTemp::sensorLastUpdated = 0;
+unsigned long MayflyOnboardBatt::sensorLastUpdated = 0;
+unsigned long MayflyFreeRam::sensorLastUpdated = 0;
 
 
 
@@ -60,6 +56,13 @@ bool MayflyOnboardTemp::update(void)
 
     // Return true when finished
     return true;
+}
+
+// The location of the sensor on the Mayfly
+String MayflyOnboardTemp::getSensorLocation(void)
+{
+    sensorLocation = "DS3231";
+    return sensorLocation;
 }
 
 String MayflyOnboardTemp::getVarName(void)
@@ -109,6 +112,13 @@ bool MayflyOnboardBatt::update(void)
     return true;
 }
 
+// The location of the sensor on the Mayfly
+String MayflyOnboardBatt::getSensorLocation(void)
+{
+    sensorLocation = String(_batteryPin);
+    return sensorLocation;
+}
+
 String MayflyOnboardBatt::getVarName(void)
 {
     varName = F("batteryVoltage");
@@ -152,6 +162,13 @@ bool MayflyFreeRam::update(void)
 
     // Return true when finished
     return true;
+}
+
+// The location of the sensor on the Mayfly
+String MayflyFreeRam::getSensorLocation(void)
+{
+    sensorLocation = "AtMega1284P";
+    return sensorLocation;
 }
 
 String MayflyFreeRam::getVarName(void)

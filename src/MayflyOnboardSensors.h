@@ -24,7 +24,7 @@ public:
 
     virtual bool update(void)  = 0;
     String getSensorName(void) override;
-    String getSensorLocation(void) override;
+    virtual String getSensorLocation(void) =0 ;
 
     virtual String getVarName(void) = 0;
     virtual String getVarUnit(void) = 0;
@@ -51,6 +51,7 @@ public:
     MayflyOnboardTemp(char const *version);
 
     bool update(void) override;
+    String getSensorLocation(void) override;
 
     String getVarName(void) override;
     String getVarUnit(void) override;
@@ -68,6 +69,7 @@ public:
     MayflyOnboardBatt(char const *version);
 
     bool update(void) override;
+    String getSensorLocation(void) override;
 
     String getVarName(void) override;
     String getVarUnit(void) override;
@@ -85,6 +87,7 @@ public:
     MayflyFreeRam(char const *version);
 
     bool update(void) override;
+    String getSensorLocation(void) override;
 
     String getVarName(void) override;
     String getVarUnit(void) override;
