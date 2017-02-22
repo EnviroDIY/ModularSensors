@@ -62,6 +62,7 @@ String Decagon5TM::getSensorLocation(void)
 float Decagon5TM::sensorValue_Ea = 0;
 float Decagon5TM::sensorValue_temp = 0;
 float Decagon5TM::sensorValue_VWC = 0;
+unsigned long Decagon5TM::sensorLastUpdated;
 
 // Uses SDI-12 to communicate with a Decagon Devices 5TM
 bool Decagon5TM::update(){
@@ -112,6 +113,7 @@ bool Decagon5TM::update(){
   Decagon5TM::sensorValue_Ea = sensorValue_Ea;
   Decagon5TM::sensorValue_temp = sensorValue_temp;
   Decagon5TM::sensorValue_VWC = sensorValue_VWC;
+  Decagon5TM::sensorLastUpdated = millis();
 
   // Turn the power back off it it had been turned on
   if (wasOff)
@@ -142,6 +144,8 @@ String Decagon5TM_Ea::getVarUnit(void)
 
 float Decagon5TM_Ea::getValue(void)
 {
+    if (millis() > 30000 and millis() > Decagon5TM::sensorLastUpdated + 30000)
+        {Decagon5TM::update();}
     return sensorValue_Ea;
 }
 
@@ -172,6 +176,8 @@ String Decagon5TM_Temp::getVarUnit(void)
 
 float Decagon5TM_Temp::getValue(void)
 {
+    if (millis() > 30000 and millis() > Decagon5TM::sensorLastUpdated + 30000)
+        {Decagon5TM::update();}
     return sensorValue_temp;
 }
 
@@ -202,6 +208,8 @@ String Decagon5TM_VWC::getVarUnit(void)
 
 float Decagon5TM_VWC::getValue(void)
 {
+    if (millis() > 30000 and millis() > Decagon5TM::sensorLastUpdated + 30000)
+        {Decagon5TM::update();}
     return sensorValue_VWC;
 }
 

@@ -67,6 +67,7 @@ String DecagonCTD::getSensorLocation(void)
 float DecagonCTD::sensorValue_cond = 0;
 float DecagonCTD::sensorValue_temp = 0;
 float DecagonCTD::sensorValue_depth = 0;
+unsigned long DecagonCTD::sensorLastUpdated;
 
 // Uses SDI-12 to communicate with a Decagon Devices CTD
 bool DecagonCTD::update(){
@@ -91,8 +92,10 @@ bool DecagonCTD::update(){
         command += _CTDaddress;
         command += "M!"; // SDI-12 measurement command format  [address]['M'][!]
         CTDSDI12.sendCommand(command);
-        delay(500); // wait a while
-        CTDSDI12.flush(); // we don't care about what it sends back
+        delay(500); // wait while the measurment is taken.
+        // It will return approximately how long it will take to take a measurement
+        // We aren't intereted in that number and will let the data flush.
+        CTDSDI12.flush();
 
         command = "";
         command += _CTDaddress;
@@ -121,6 +124,7 @@ bool DecagonCTD::update(){
     DecagonCTD::sensorValue_cond = sensorValue_cond;
     DecagonCTD::sensorValue_temp = sensorValue_temp;
     DecagonCTD::sensorValue_depth = sensorValue_depth;
+    DecagonCTD::sensorLastUpdated = millis();
 
 
     // Turn the power back off it it had been turned on
@@ -152,6 +156,8 @@ String DecagonCTD_Cond::getVarUnit(void)
 
 float DecagonCTD_Cond::getValue(void)
 {
+    if (millis() > 30000 and millis() > DecagonCTD::sensorLastUpdated + 30000)
+        {DecagonCTD::update();}
     return sensorValue_cond;
 }
 
@@ -182,6 +188,8 @@ String DecagonCTD_Temp::getVarUnit(void)
 
 float DecagonCTD_Temp::getValue(void)
 {
+    if (millis() > 30000 and millis() > DecagonCTD::sensorLastUpdated + 30000)
+        {DecagonCTD::update();}
     return sensorValue_temp;
 }
 
@@ -212,6 +220,8 @@ String DecagonCTD_Depth::getVarUnit(void)
 
 float DecagonCTD_Depth::getValue(void)
 {
+    if (millis() > 30000 and millis() > DecagonCTD::sensorLastUpdated + 30000)
+        {DecagonCTD::update();}
     return sensorValue_depth;
 }
 

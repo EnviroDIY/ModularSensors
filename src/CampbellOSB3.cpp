@@ -64,6 +64,7 @@ String CampbellOSB3::getSensorLocation(void)
 
 // The static variables that need to be updated
 float CampbellOSB3::sensorValue = 0;
+unsigned long CampbellOSB3::sensorLastUpdated;
 
 // Uses Auxillary ADD to convert data
 bool CampbellOSB3::update(){
@@ -95,6 +96,7 @@ bool CampbellOSB3::update(){
     sensorValue =  (4.6641 * square (voltage)) + (92.512 * voltage) - 0.38548;
 
     CampbellOSB3::sensorValue = sensorValue;
+    CampbellOSB3::sensorLastUpdated = millis();
 
     // Turn the power back off it it had been turned on
     if (wasOff)
@@ -118,7 +120,9 @@ String CampbellOSB3::getVarUnit(void)
 
 float CampbellOSB3::getValue(void)
 {
-    return sensorValue;
+    if (millis() > 30000 and millis() > CampbellOSB3::sensorLastUpdated + 30000)
+        {CampbellOSB3::update();}
+    return CampbellOSB3::sensorValue;
 }
 
 

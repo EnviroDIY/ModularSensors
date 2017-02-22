@@ -27,7 +27,7 @@ SENSOR_STATUS SensorBase::setup(void)
 // By default, returns ready
 SENSOR_STATUS SensorBase::getStatus(void)
 {
-    return sensorStatus;
+    return SENSOR_READY;
 }
 
 // The function to put a sensor to sleep

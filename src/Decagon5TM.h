@@ -44,6 +44,7 @@ protected:
     static float sensorValue_Ea;
     static float sensorValue_temp;
     static float sensorValue_VWC;
+    static unsigned long sensorLastUpdated;
 };
 
 

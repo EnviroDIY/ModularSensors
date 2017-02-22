@@ -42,6 +42,7 @@ protected:
     int _powerPin;
     int _dataPin;
     static float sensorValue_depth;
+    static unsigned long sensorLastUpdated;
 };
 
 

@@ -45,6 +45,7 @@ protected:
     float _B;
     float _C;
     static float sensorValue;
+    static unsigned long sensorLastUpdated;
 };
 
 

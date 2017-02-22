@@ -56,6 +56,8 @@ public:
     String getVarUnit(void) override;
     float getValue(void) override;
     String getDreamHost(void) override;
+private:
+    static unsigned long sensorLastUpdated;
 };
 
 
@@ -71,6 +73,8 @@ public:
     String getVarUnit(void) override;
     float getValue(void) override;
     String getDreamHost(void) override;
+private:
+    static unsigned long sensorLastUpdated;
 };
 
 
@@ -86,6 +90,8 @@ public:
     String getVarUnit(void) override;
     float getValue(void) override;
     String getDreamHost(void) override;
+private:
+    static unsigned long sensorLastUpdated;
 };
 
 #endif

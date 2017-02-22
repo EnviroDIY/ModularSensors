@@ -56,6 +56,7 @@ bool MayflyOnboardTemp::update(void)
     rtc.convertTemperature();  //convert current temperature into registers
     float tempVal = rtc.getTemperature();
     MayflyOnboardSensors::sensorValue_temp = tempVal;
+    MayflyOnboardTemp::sensorLastUpdated = millis();
 
     // Return true when finished
     return true;
@@ -75,6 +76,8 @@ String MayflyOnboardTemp::getVarUnit(void)
 
 float MayflyOnboardTemp::getValue(void)
 {
+    if (millis() > 30000 and millis() > MayflyOnboardTemp::sensorLastUpdated + 30000)
+        {MayflyOnboardTemp::update();}
     return sensorValue_temp;
 }
 
@@ -99,6 +102,7 @@ bool MayflyOnboardBatt::update(void)
         // Get the battery voltage
         float rawBattery = analogRead(_batteryPin);
         MayflyOnboardSensors::sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
+        MayflyOnboardBatt::sensorLastUpdated = millis();
     }
 
     // Return true when finished
@@ -120,6 +124,8 @@ String MayflyOnboardBatt::getVarUnit(void)
 
 float MayflyOnboardBatt::getValue(void)
 {
+    if (millis() > 30000 and millis() > MayflyOnboardBatt::sensorLastUpdated + 30000)
+        {MayflyOnboardBatt::update();}
     return sensorValue_battery;
 }
 
@@ -142,6 +148,7 @@ bool MayflyFreeRam::update(void)
       extern int __heap_start, *__brkval;
       int v;
       MayflyOnboardSensors::sensorValue_freeRam = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+      MayflyFreeRam::sensorLastUpdated = millis();
 
     // Return true when finished
     return true;
@@ -162,6 +169,8 @@ String MayflyFreeRam::getVarUnit(void)
 
 float MayflyFreeRam::getValue(void)
 {
+    if (millis() > 30000 and millis() > MayflyFreeRam::sensorLastUpdated + 30000)
+        {MayflyFreeRam::update();}
     return sensorValue_freeRam;
 }
 

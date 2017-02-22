@@ -18,7 +18,7 @@ To use a sensor in your sketch, you must include SensorBase.h in your script AND
 ### These are the functions for each variable returned by a sensor
 - getVarName(void) - This returns the variable's name using http://vocabulary.odm2.org/variablename/ as a string
 - getVarUnit(void) - This returns the variable's unit using http://vocabulary.odm2.org/units/ as a string
-- getValue(void) - This returns the current value of the variable as a float.  You must call the update function before calling getValue
+- getValue(void) - This returns the current value of the variable as a float.  You should call the update function before calling getValue.  If the getValue function sees that the update function has not been called within the last 30 seconds, it will re-call it.
 
 
 ## Available sensors

@@ -62,6 +62,7 @@ String MaxBotixSonar::getSensorLocation(void)
 
 // The static variables that need to be updated
 float MaxBotixSonar::sensorValue_depth = 0;
+unsigned long MaxBotixSonar::sensorLastUpdated;
 
 
 // Uses TLL Communication to get data from MaxBotix
@@ -135,6 +136,7 @@ bool MaxBotixSonar::update(){
         {digitalWrite(_powerPin, LOW);}
 
     MaxBotixSonar::sensorValue_depth = result;
+    MaxBotixSonar::sensorLastUpdated = millis();
 
     // Return true when finished
     return true;
@@ -165,6 +167,8 @@ String MaxBotixSonar_Depth::getVarUnit(void)
 
 float MaxBotixSonar_Depth::getValue(void)
 {
+    if (millis() > 30000 and millis() > MaxBotixSonar::sensorLastUpdated + 30000)
+        {MaxBotixSonar::update();}
     return sensorValue_depth;
 }
 

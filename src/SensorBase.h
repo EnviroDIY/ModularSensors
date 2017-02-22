@@ -58,11 +58,6 @@ public:
     virtual String getDreamHost(void) = 0;
 protected:
     SENSOR_STATUS sensorStatus;
-    String sensorName;
-    String sensorLocation;
-    String varName;
-    String unit;
-    float sensorValue;
 };
 
 #endif
