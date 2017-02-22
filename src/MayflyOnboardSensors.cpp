@@ -15,11 +15,14 @@
 
 
 
+// Set the pin to read the battery voltage
+int _batteryPin = A6;
+
 // The constructor - needs to reference the super-class constructor
 // only need to tell it the battery pin
-MayflyOnboardSensors::MayflyOnboardSensors(int batteryPin) : SensorBase()
+MayflyOnboardSensors::MayflyOnboardSensors(char const *version) :SensorBase()
 {
-    _batteryPin = batteryPin;
+    _version = version;
 }
 
 // The sensor name
@@ -39,28 +42,23 @@ String MayflyOnboardSensors::getSensorLocation(void)
 // The static variables that need to be updated
 float MayflyOnboardSensors::sensorValue_temp = 0;
 float MayflyOnboardSensors::sensorValue_battery = 0;
+float MayflyOnboardSensors::sensorValue_freeRam = 0;
+
+
+
+// The constructor - needs to reference the super-class constructor
+MayflyOnboardTemp::MayflyOnboardTemp(char const *version) : MayflyOnboardSensors(version) {}
 
 // How to update the onboard sensors
-bool MayflyOnboardSensors::update(void)
+bool MayflyOnboardTemp::update(void)
 {
     // Get the temperature from the Mayfly's real time clock
     rtc.convertTemperature();  //convert current temperature into registers
     float tempVal = rtc.getTemperature();
     MayflyOnboardSensors::sensorValue_temp = tempVal;
 
-    // Get the battery voltage
-    float rawBattery = analogRead(_batteryPin);
-    MayflyOnboardSensors::sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
-    
     // Return true when finished
     return true;
-}
-
-
-
-// The constructor - needs to reference the super-class constructor
-MayflyOnboardTemp::MayflyOnboardTemp(int batteryPin) : MayflyOnboardSensors(batteryPin)
-{
 }
 
 String MayflyOnboardTemp::getVarName(void)
@@ -89,8 +87,22 @@ String MayflyOnboardTemp::getDreamHost(void)
 
 
 
-MayflyOnboardBatt::MayflyOnboardBatt(int batteryPin) : MayflyOnboardSensors(batteryPin)
+
+// The constructor - needs to reference the super-class constructor
+MayflyOnboardBatt::MayflyOnboardBatt(char const *version) : MayflyOnboardSensors(version) {}
+
+// How to update the onboard sensors
+bool MayflyOnboardBatt::update(void)
 {
+    if (strcmp(_version, "v0.3") == 0)
+    {
+        // Get the battery voltage
+        float rawBattery = analogRead(_batteryPin);
+        MayflyOnboardSensors::sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
+    }
+
+    // Return true when finished
+    return true;
 }
 
 String MayflyOnboardBatt::getVarName(void)
@@ -114,5 +126,47 @@ float MayflyOnboardBatt::getValue(void)
 String MayflyOnboardBatt::getDreamHost(void)
 {
     String column = F("Battery");
+    return column;
+}
+
+
+
+
+// The constructor - needs to reference the super-class constructor
+MayflyFreeRam::MayflyFreeRam(char const *version) : MayflyOnboardSensors(version) {}
+
+// How to update the onboard sensors
+bool MayflyFreeRam::update(void)
+{
+    // Used only for debugging - can be removed
+      extern int __heap_start, *__brkval;
+      int v;
+      MayflyOnboardSensors::sensorValue_freeRam = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+
+    // Return true when finished
+    return true;
+}
+
+String MayflyFreeRam::getVarName(void)
+{
+    varName = F("Free SRAM");
+    return varName;
+}
+
+
+String MayflyFreeRam::getVarUnit(void)
+{
+    unit = F("Bit");
+    return unit;
+}
+
+float MayflyFreeRam::getValue(void)
+{
+    return sensorValue_freeRam;
+}
+
+String MayflyFreeRam::getDreamHost(void)
+{
+    String column = F("FreeRam");
     return column;
 }

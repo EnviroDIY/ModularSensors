@@ -6,8 +6,8 @@
 // 1. Sensor Location Information
 // -----------------------------------------------
 
-// Set the pin to read the battery voltage
-int batteryPin = A6;
+// Mayfly version number
+const char *MFVersion = "v0.3";
 
 // change to the proper pins for Decagon CTD
 // sdi-12 data pin is usually, pin 7 on shield 3.0
@@ -101,8 +101,9 @@ SensorBase* SENSOR_LIST[] = {
     new MaxBotixSonar_Depth(SonarExcite, SonarData),
     new CampbellOSB3_TurbLow(switchedPower, OSBLowPin, OSBLow_A, OSBLow_B, OSBLow_C),
     // new CampbellOSB3_TurbHigh(switchedPower, OSBHighPin, OSBHigh_A, OSBHigh_B, OSBHigh_C),
-    new MayflyOnboardTemp(batteryPin),
-    new MayflyOnboardBatt(batteryPin)
+    new MayflyOnboardTemp(MFVersion),
+    new MayflyOnboardBatt(MFVersion),
+    new MayflyFreeRam(MFVersion)
     // new YOUR_sensorName_HERE()
 };
 

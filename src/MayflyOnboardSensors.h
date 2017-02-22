@@ -15,13 +15,14 @@
 #include <Arduino.h>
 #include "SensorBase.h"
 
+
 // The main class for the Mayfly
 class MayflyOnboardSensors : public virtual SensorBase
 {
 public:
-    MayflyOnboardSensors(int batteryPin);
+    MayflyOnboardSensors(char const *version);
 
-    bool update(void) override;
+    virtual bool update(void)  = 0;
     String getSensorName(void) override;
     String getSensorLocation(void) override;
 
@@ -36,8 +37,10 @@ protected:
     String varName;
     String unit;
     int _batteryPin;
+    const char *_version;
     static float sensorValue_temp;
     static float sensorValue_battery;
+    static float sensorValue_freeRam;
 };
 
 
@@ -45,7 +48,9 @@ protected:
 class MayflyOnboardTemp : public virtual MayflyOnboardSensors
 {
 public:
-    MayflyOnboardTemp(int batteryPin);
+    MayflyOnboardTemp(char const *version);
+
+    bool update(void) override;
 
     String getVarName(void) override;
     String getVarUnit(void) override;
@@ -58,7 +63,24 @@ public:
 class MayflyOnboardBatt : public virtual MayflyOnboardSensors
 {
 public:
-    MayflyOnboardBatt(int batteryPin);
+    MayflyOnboardBatt(char const *version);
+
+    bool update(void) override;
+
+    String getVarName(void) override;
+    String getVarUnit(void) override;
+    float getValue(void) override;
+    String getDreamHost(void) override;
+};
+
+
+// Defines the "Free Ram" This is not a sensor at all but a board diagnostidc
+class MayflyFreeRam : public virtual MayflyOnboardSensors
+{
+public:
+    MayflyFreeRam(char const *version);
+
+    bool update(void) override;
 
     String getVarName(void) override;
     String getVarUnit(void) override;

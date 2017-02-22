@@ -8,12 +8,13 @@ cache:
         - "~/.platformio"
 
 env:
-    - PLATFORMIO_CI_SRC=examples/multisensor_print/multisensor_print.ino
+    - PLATFORMIO_CI_SRC=examples/multisensor_print/
 
 install:
     - pip install -U platformio
     - pio upgrade
     - pio update
+    - git clone --depth 1 https://github.com/EnviroDIY/Libraries.git EnviroDIYLibs
 
 script:
-    - platformio ci --lib="." --board=mayfly --project-conf=platformio.ini
+    - platformio ci --lib="." --b=mayfly --o="lib_extra_dirs=EnviroDIYLibs" --o="lib_ignore=EnviroDIY_ModularSensors"
