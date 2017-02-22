@@ -5,8 +5,8 @@
  *Work in progress by Sara Damiano taken from code written
  *by Shannon Hicks and templates from USU.
  *
- *This file is for the Decagon Devices 5TM Soild Moisture probe
- *It is dependent on the EnviroDIY SDI-12 library.
+ *This file is for the Campbell Scientific OSB-3+
+ *This is dependent on the Adafruit ADS1015 library.
 */
 
 #ifndef CampbellOSB3_h
@@ -49,10 +49,10 @@ protected:
 
 
 // Defines the "Low Turbidity Sensor"
-class CampbellOSB3_TurbLow : public virtual CampbellOSB3
+class CampbellOSB3_Turbidity : public virtual CampbellOSB3
 {
 public:
-    CampbellOSB3_TurbLow(int powerPin, int dataPin,
+    CampbellOSB3_Turbidity(int powerPin, int dataPin,
                          float A, float B, float C);
 
     String getDreamHost(void) override;

@@ -4,10 +4,9 @@
  *
  *Work in progress by Sara Damiano taken from code written
  *by Shannon Hicks and templates from USU.
-
  *
- *This file is for the Decagon Devices 5TM Soil Moisture probe
- *It is dependent on the EnviroDIY SDI-12 library.
+ *This file is for the Campbell Scientific OSB-3+
+ *This is dependent on the Adafruit ADS1015 library.
 */
 
 #include <Arduino.h>
@@ -125,12 +124,12 @@ float CampbellOSB3::getValue(void)
 
 
 
-CampbellOSB3_TurbLow::CampbellOSB3_TurbLow(int powerPin, int dataPin,
+CampbellOSB3_Turbidity::CampbellOSB3_Turbidity(int powerPin, int dataPin,
                                            float A, float B, float C)
  : CampbellOSB3(powerPin, dataPin, A, B, C)
 {}
 
-String CampbellOSB3_TurbLow::getDreamHost(void)
+String CampbellOSB3_Turbidity::getDreamHost(void)
 {
 String column = F("TurbLow");
 return column;

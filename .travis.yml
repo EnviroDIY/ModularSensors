@@ -17,4 +17,4 @@ install:
     - git clone --depth 1 https://github.com/EnviroDIY/Libraries.git EnviroDIYLibs
 
 script:
-    - platformio ci --lib="." --b=mayfly --o="lib_extra_dirs=EnviroDIYLibs" --o="lib_ignore=EnviroDIY_ModularSensors"
+    - platformio ci --lib="." --board=mayfly --project-option="lib_extra_dirs=EnviroDIYLibs" --project-option="lib_ignore=EnviroDIY_ModularSensors"

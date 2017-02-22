@@ -99,7 +99,7 @@ SensorBase* SENSOR_LIST[] = {
     // new Decagon5TM_Ea(TMSDI12address, switchedPower, TMData),
     // new Decagon5TM_VWC(TMSDI12address, switchedPower, TMData),
     new MaxBotixSonar_Depth(SonarExcite, SonarData),
-    new CampbellOSB3_TurbLow(switchedPower, OSBLowPin, OSBLow_A, OSBLow_B, OSBLow_C),
+    new CampbellOSB3_Turbidity(switchedPower, OSBLowPin, OSBLow_A, OSBLow_B, OSBLow_C),
     // new CampbellOSB3_TurbHigh(switchedPower, OSBHighPin, OSBHigh_A, OSBHigh_B, OSBHigh_C),
     new MayflyOnboardTemp(MFVersion),
     new MayflyOnboardBatt(MFVersion),
