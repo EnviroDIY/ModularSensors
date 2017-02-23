@@ -108,13 +108,9 @@ bool setupSensors()
 // Initializes the SDcard and prints a header to it
 void setupLogFile()
 {
-  // Initialise the SD card
-  if (!SD.begin(SD_SS_PIN))
-  {
-    Serial.println(F("Error: SD card failed to initialise or is missing."));
-    //Hang
-    //  while (true);
-  }
+    // Initialise the SD card
+    if (!SD.begin(SD_SS_PIN))
+    {Serial.println(F("Error: SD card failed to initialise or is missing."));    }
 
   fileName += String(LoggerID) + F("_") + getDateTime_ISO8601().substring(0,10) + F(".txt");
   // Check if the file already exists
@@ -217,6 +213,22 @@ String generateSensorDataCSV(void)
     return csvString;
 }
 
+String checkSensorLocations(void)
+{
+    String locationString = String(currentTime) + F(", ");
+
+    for (int i = 0; i < sensorCount; i++)
+    {
+        locationString += String(SENSOR_LIST[i]->getSensorLocation());
+        if (i + 1 != sensorCount)
+        {
+            locationString += F(", ");
+        }
+    }
+
+    return locationString;
+}
+
 // Writes a string to a text file on the SD Card
 void logData(String rec)
 {
@@ -290,6 +302,7 @@ void loop()
     Serial.println(freeRam());
     // Print the data to the screen
     Serial.println(generateSensorDataCSV());
+    Serial.println(checkSensorLocations());
     //Save the data record to the log file
     logData(generateSensorDataCSV());
     // Cut Power to the sensors;

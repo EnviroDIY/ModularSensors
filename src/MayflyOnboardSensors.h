@@ -38,9 +38,6 @@ protected:
     String unit;
     int _batteryPin;
     const char *_version;
-    static float sensorValue_temp;
-    static float sensorValue_battery;
-    static float sensorValue_freeRam;
 };
 
 
@@ -58,6 +55,7 @@ public:
     float getValue(void) override;
     String getDreamHost(void) override;
 private:
+    static float sensorValue_temp;
     static unsigned long sensorLastUpdated;
 };
 
@@ -76,6 +74,7 @@ public:
     float getValue(void) override;
     String getDreamHost(void) override;
 private:
+    static float sensorValue_battery;
     static unsigned long sensorLastUpdated;
 };
 
@@ -94,6 +93,7 @@ public:
     float getValue(void) override;
     String getDreamHost(void) override;
 private:
+    static float sensorValue_freeRam;
     static unsigned long sensorLastUpdated;
 };
 

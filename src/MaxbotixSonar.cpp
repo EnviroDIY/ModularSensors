@@ -70,7 +70,7 @@ bool MaxBotixSonar::update(){
 
     // define serial port for recieving data
     // output from maxSonar is inverted requiring true to be set.
-    SoftwareSerialMod sonarSerial(_dataPin, -1);
+    SoftwareSerial sonarSerial(_dataPin, -1);
     sonarSerial.begin(9600);
 
     // Sonar sends a result just above it's max range when it gets a bad reading
@@ -119,15 +119,29 @@ bool MaxBotixSonar::update(){
             rByte = 0;  // Reset the rByte ready for next reading
             index = 0;  // Reset index ready for next reading
 
-            stringComplete = true;  // Set completion of read to true
-            result = atoi(inData);  // Changes string data into an integer for use
-            if ((result == 300 || result == 500 || result == 4999 || result == 9999) && rangeAttempts < 20)
+            // Make sure R is not part of the header, part number, or RoHS warning line
+            // ie, "HRXL-MaxSonar-WRL" or "RoHS 1.8b078  0713"
+            if (inData[0] == 0) {}
+            else if (inData[1] != 'X' && inData[1] != 'L' && inData[1] != 'S' &&
+                     inData[1] != 'o' && inData[1] != 'H' && inData[1] != '\r')
             {
-                // Serial.println(F("Bad or Suspicious Result, Retrying")); // Debug line
-                result = badResult;
-                stringComplete = false;
-                rangeAttempts++;
+                stringComplete = true;  // Set completion of read to true
+                result = atoi(inData);  // Changes string data into an integer for use
+                memset(&inData[0], 0, sizeof(inData));  // Empty the inData array.
+                if ((result == 300 || result == 500 || result == 4999 || result == 9999)
+                    && rangeAttempts < 30)
+                {
+                    result = badResult;
+                    stringComplete = false;
+                    rangeAttempts++;
+                    // Serial.print(F("Bad or Suspicious Result, Retry Attempt #")); // Debug line
+                    // Serial.println(rangeAttempts); // Debug line
+                }
             }
+            else
+                // Serial.println(F("Ignoring header line")); // Debug line
+                memset(&inData[0], 0, sizeof(inData));  // Empty the inData array.
+
         }
     }
 
@@ -139,6 +153,7 @@ bool MaxBotixSonar::update(){
     MaxBotixSonar::sensorLastUpdated = millis();
 
     // Return true when finished
+    sonarSerial.flush();  // Clear cache ready for next reading
     return true;
 }
 

@@ -92,14 +92,14 @@ const char* APN = "apn.konekt.io";  // The APN for the GPRSBee
 // 5. The array that contains all valid sensors
 // -----------------------------------------------
 SensorBase* SENSOR_LIST[] = {
-    new DecagonCTD_Cond(numberReadings, CTDSDI12address, switchedPower, CTDData),
-    new DecagonCTD_Temp(numberReadings, CTDSDI12address, switchedPower, CTDData),
-    new DecagonCTD_Depth(numberReadings, CTDSDI12address, switchedPower, CTDData),
+    // new DecagonCTD_Cond(numberReadings, CTDSDI12address, switchedPower, CTDData),
+    // new DecagonCTD_Temp(numberReadings, CTDSDI12address, switchedPower, CTDData),
+    // new DecagonCTD_Depth(numberReadings, CTDSDI12address, switchedPower, CTDData),
     new Decagon5TM_Temp(TMSDI12address, switchedPower, TMData),
     new Decagon5TM_Ea(TMSDI12address, switchedPower, TMData),
     new Decagon5TM_VWC(TMSDI12address, switchedPower, TMData),
     new MaxBotixSonar_Depth(SonarExcite, SonarData),
-    new CampbellOSB3_Turbidity(switchedPower, OSBLowPin, OSBLow_A, OSBLow_B, OSBLow_C),
+    // new CampbellOSB3_Turbidity(switchedPower, OSBLowPin, OSBLow_A, OSBLow_B, OSBLow_C),
     // new CampbellOSB3_TurbHigh(switchedPower, OSBHighPin, OSBHigh_A, OSBHigh_B, OSBHigh_C),
     new MayflyOnboardTemp(MFVersion),
     new MayflyOnboardBatt(MFVersion),
