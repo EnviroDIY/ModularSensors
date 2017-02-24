@@ -313,5 +313,5 @@ void loop()
     Serial.println(freeRam());
 
     // Wait for the next reading
-    delay(5000);
+    delay(10000);
 }

@@ -68,6 +68,7 @@ unsigned long Decagon5TM::sensorLastUpdated;
 bool Decagon5TM::update(){
 
   SDI12 TMSDI12(_dataPin);
+  TMSDI12.setDiagStream(Serial);  // For debugging
 
   // Check if the power is on, turn it on if not
   bool wasOff = false;
@@ -146,7 +147,7 @@ float Decagon5TM_Ea::getValue(void)
 {
     if (millis() > 30000 and millis() > Decagon5TM::sensorLastUpdated + 30000)
         {Decagon5TM::update();}
-    return sensorValue_Ea;
+    return Decagon5TM::sensorValue_Ea;
 }
 
 String Decagon5TM_Ea::getDreamHost(void)
@@ -178,7 +179,7 @@ float Decagon5TM_Temp::getValue(void)
 {
     if (millis() > 30000 and millis() > Decagon5TM::sensorLastUpdated + 30000)
         {Decagon5TM::update();}
-    return sensorValue_temp;
+    return Decagon5TM::sensorValue_temp;
 }
 
 String Decagon5TM_Temp::getDreamHost(void)
@@ -210,7 +211,7 @@ float Decagon5TM_VWC::getValue(void)
 {
     if (millis() > 30000 and millis() > Decagon5TM::sensorLastUpdated + 30000)
         {Decagon5TM::update();}
-    return sensorValue_VWC;
+    return Decagon5TM::sensorValue_VWC;
 }
 
 String Decagon5TM_VWC::getDreamHost(void)

@@ -45,10 +45,10 @@ const float OSBHigh_C = 2.0709E-01;  // The "C" value from the high range calibr
 // 2. Include all sensors and necessary files here
 // -----------------------------------------------
 #include <MayflyOnboardSensors.h>
-#include <DecagonCTD.h>
+// #include <DecagonCTD.h>
 #include <Decagon5TM.h>
 #include <MaxBotixSonar.h>
-#include <CampbellOSB3.h>
+// #include <CampbellOSB3.h>
 
 
 // -----------------------------------------------
@@ -103,7 +103,7 @@ SensorBase* SENSOR_LIST[] = {
     // new CampbellOSB3_TurbHigh(switchedPower, OSBHighPin, OSBHigh_A, OSBHigh_B, OSBHigh_C),
     new MayflyOnboardTemp(MFVersion),
     new MayflyOnboardBatt(MFVersion),
-    new MayflyFreeRam(MFVersion)
+    // new MayflyFreeRam(MFVersion)
     // new YOUR_sensorName_HERE()
 };
 
