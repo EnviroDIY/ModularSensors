@@ -14,15 +14,14 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 **************************************************************************/
 // -----------------------------------------------
-// 1. Include all sensors and necessary files here
+// 1. Include all required libraries
 // -----------------------------------------------
 #include <avr/sleep.h>
 #include <SPI.h>
 #include <SdFat.h>
-#include <RTCTimer.h>
-#include <Sodaq_DS3231.h>
-#include <Sodaq_PcInt_PCINT0.h>
-#include <GPRSbee.h>
+#include <RTCTimer.h>        // Works with the DS3231 RTC to easily perform scheduled tasks.
+#include <Sodaq_DS3231.h>    // Controls the DS3231 Real Time Clock (RTC) built into the EnviroDIY Mayfly.
+#include <GPRSbee.h>         // Communicates with the GPRSBee radio module to send data over cellular network.
 #include "Config.h"
 
 // The timer functions for the RTC
@@ -38,6 +37,8 @@ String fileName = String(FILE_NAME);  // For the file name
 
 // For the number of sensors
 int sensorCount = 0;
+
+
 // -----------------------------------------------
 // 8. Working functions
 // -----------------------------------------------
@@ -147,7 +148,7 @@ void setupLogFile()
   logFile.close();
 }
 
-// Flashess to Mayfly's LED's
+// Flashes to Mayfly's LED's
 void greenred4flash()
 {
   for (int i = 1; i <= 4; i++) {
@@ -242,8 +243,9 @@ void logData(String rec)
   logFile.close();
 }
 
-
+// -----------------------------------------------
 // Main setup function
+// -----------------------------------------------
 void setup()
 {
     // Start the primary serial connection
@@ -283,6 +285,9 @@ void setup()
     Serial.println(F(" variables being recorded"));
 }
 
+// -----------------------------------------------
+// Main loop function
+// -----------------------------------------------
 void loop()
 {
     // Turn on the LED

@@ -3,46 +3,46 @@
 
 
 // -----------------------------------------------
-// 1. Sensor Location Information
+// 1. Sensor pin locations, addresses and related settings
 // -----------------------------------------------
 
 // Mayfly version number
 const char *MFVersion = "v0.3";
 
-// change to the proper pins for Decagon CTD
+// Decagon CTD: pin settings
 // sdi-12 data pin is usually, pin 7 on shield 3.0
 const int CTDSDI12address = 1;  // The SDI-12 Address of the CTD
 const int numberReadings = 10;  // The number of readings to average
 const int CTDData = 7;  // The pin the CTD is attached to
 const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
 
-// Change to the proper excite (power) and recieve pin for MaxBotix Sonar.
+// MaxBotix Sonar: pin settings
 // The power must be continually on for the MaxBotix.
-const int SonarData = 11;
-const int SonarExcite = 10;
+const int SonarData = 11;     // recieve pin
+const int SonarExcite = 10;   // excite (power) pin
 
-// change to the proper pins for Decagon 5TM
+// Decagon 5TM: pin settings
 // sdi-12 data pin is usually, pin 7 on shield 3.0
 const int TMSDI12address = 2;  // The SDI-12 Address of the 5-TM
 const int TMData = 7;  // The pin the 5TM is attached to
 // const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
 
-// change to the proper pins for Campbell OSB 3+
-//  Campbell Campbell OSB 3+ Low Range calibration
+// Campbell OSB 3+: pin settings
+//   Campbell OSB 3+ Low Range calibration
 const int OSBLowPin = 0;  // The low voltage analog pin
 const float OSBLow_A = -2.4763E-07;  // The "A" value (X^2) from the low range calibration
 const float OSBLow_B = 1.0569E-01;  // The "B" value (X) from the low range calibration
 const float OSBLow_C = -2.9928E-01;  // The "C" value from the low range calibration
-//  Campbell Campbell OSB 3+ High Range calibration
+//   Campbell OSB 3+ High Range calibration
 const int OSBHighPin = 1;  // The high voltage analog pin
 const float OSBHigh_A = 3.5310E-05;  // The "A" value (X^2) from the high range calibration
 const float OSBHigh_B = 4.0111E-01;  // The "B" value (X) from the high range calibration
 const float OSBHigh_C = 2.0709E-01;  // The "C" value from the high range calibration
-
 // const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
 
+
 // -----------------------------------------------
-// 2. Include all sensors and necessary files here
+// 2. Include all required libraries
 // -----------------------------------------------
 #include <MayflyOnboardSensors.h>
 // #include <DecagonCTD.h>
