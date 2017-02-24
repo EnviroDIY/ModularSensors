@@ -25,6 +25,7 @@ Decagon5TM::Decagon5TM(char TMaddress, int powerPin, int dataPin) : SensorBase()
 // The function to set up connection to a sensor.
 SENSOR_STATUS Decagon5TM::setup(void)
 {
+    pinMode(_dataPin, INPUT);
     pinMode(_powerPin, OUTPUT);
     digitalWrite(_powerPin, LOW);
     return SENSOR_READY;
@@ -68,7 +69,9 @@ unsigned long Decagon5TM::sensorLastUpdated;
 bool Decagon5TM::update(){
 
   SDI12 TMSDI12(_dataPin);
-  TMSDI12.setDiagStream(Serial);  // For debugging
+  // TMSDI12.setDiagStream(Serial);  // For debugging
+  TMSDI12.begin();
+  delay(500); // allow things to settle
 
   // Check if the power is on, turn it on if not
   bool wasOff = false;
@@ -84,20 +87,21 @@ bool Decagon5TM::update(){
     sensorValue_Ea = 0.0;
     sensorValue_temp = 0.0;
     sensorValue_VWC = 0.0;
-    command += _dataPin;
+    command += _TMaddress;
     command += "M!"; // SDI-12 measurement command format  [address]['M'][!]
     TMSDI12.sendCommand(command);
     delay(500); // wait a while
     TMSDI12.flush(); // we don't care about what it sends back
 
     command = "";
-    command += _dataPin;
+    command += _TMaddress;
     command += "D0!"; // SDI-12 command to get data [address][D][dataOption][!]
     TMSDI12.sendCommand(command);
     delay(500);
 
        if(TMSDI12.available() > 0)
        {
+        //   Serial.println(F("Recieving data"));
           TMSDI12.parseFloat();
           sensorValue_Ea = TMSDI12.parseFloat();
           sensorValue_temp = TMSDI12.parseFloat();

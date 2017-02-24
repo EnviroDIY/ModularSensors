@@ -21,7 +21,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <SdFat.h>
 #include <RTCTimer.h>        // Works with the DS3231 RTC to easily perform scheduled tasks.
 #include <Sodaq_DS3231.h>    // Controls the DS3231 Real Time Clock (RTC) built into the EnviroDIY Mayfly.
-#include <Sodaq_PcInt_PCINT0.h> // Administrates and handles pin change interrupts  
+#include <Sodaq_PcInt_PCINT0.h> // Administrates and handles pin change interrupts
 #include <GPRSbee.h>         // Communicates with the GPRSBee radio module to send data over cellular network.
 #include "Config.h"
 
@@ -291,32 +291,24 @@ void setup()
 // -----------------------------------------------
 void loop()
 {
-    // Turn on the LED
-    // digitalWrite(GREEN_LED, HIGH);
     // Print a line to show new reading
-    Serial.println(F("------------------------------------------\n"));
-    Serial.print(F("Free RAM: "));
-    Serial.println(freeRam());
-
+    Serial.println(F("------------------------------------------"));
     // Turn on the LED
     digitalWrite(GREEN_LED, HIGH);
     // Power the sensors;
     digitalWrite(switchedPower, HIGH);
     // Get the sensor value(s), store as string
     updateAllSensors();
-    Serial.print(F("Free RAM: "));
-    Serial.println(freeRam());
     // Print the data to the screen
     Serial.println(generateSensorDataCSV());
-    Serial.println(checkSensorLocations());
     //Save the data record to the log file
     logData(generateSensorDataCSV());
     // Cut Power to the sensors;
     digitalWrite(switchedPower, LOW);
     // Turn off the LED
     digitalWrite(GREEN_LED, LOW);
-    Serial.print(F("Free RAM: "));
-    Serial.println(freeRam());
+    // Print a to close it off
+    Serial.println(F("------------------------------------------\n"));
 
     // Wait for the next reading
     delay(10000);

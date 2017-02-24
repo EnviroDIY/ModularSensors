@@ -11,7 +11,7 @@ const char *MFVersion = "v0.3";
 
 // Decagon CTD: pin settings
 // sdi-12 data pin is usually, pin 7 on shield 3.0
-const int CTDSDI12address = 1;  // The SDI-12 Address of the CTD
+const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const int numberReadings = 10;  // The number of readings to average
 const int CTDData = 7;  // The pin the CTD is attached to
 const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
@@ -23,7 +23,7 @@ const int SonarExcite = 10;   // excite (power) pin
 
 // Decagon 5TM: pin settings
 // sdi-12 data pin is usually, pin 7 on shield 3.0
-const int TMSDI12address = 2;  // The SDI-12 Address of the 5-TM
+const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
 const int TMData = 7;  // The pin the 5TM is attached to
 // const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
 
@@ -92,12 +92,12 @@ const char* APN = "apn.konekt.io";  // The APN for the GPRSBee
 // 5. The array that contains all valid sensors
 // -----------------------------------------------
 SensorBase* SENSOR_LIST[] = {
-    // new DecagonCTD_Cond(numberReadings, CTDSDI12address, switchedPower, CTDData),
-    // new DecagonCTD_Temp(numberReadings, CTDSDI12address, switchedPower, CTDData),
-    // new DecagonCTD_Depth(numberReadings, CTDSDI12address, switchedPower, CTDData),
-    new Decagon5TM_Temp(TMSDI12address, switchedPower, TMData),
-    new Decagon5TM_Ea(TMSDI12address, switchedPower, TMData),
-    new Decagon5TM_VWC(TMSDI12address, switchedPower, TMData),
+    // new DecagonCTD_Cond(numberReadings, *CTDSDI12address, switchedPower, CTDData),
+    // new DecagonCTD_Temp(numberReadings, *CTDSDI12address, switchedPower, CTDData),
+    // new DecagonCTD_Depth(numberReadings, *CTDSDI12address, switchedPower, CTDData),
+    new Decagon5TM_Temp(*TMSDI12address, switchedPower, TMData),
+    new Decagon5TM_Ea(*TMSDI12address, switchedPower, TMData),
+    new Decagon5TM_VWC(*TMSDI12address, switchedPower, TMData),
     new MaxBotixSonar_Depth(SonarExcite, SonarData),
     // new CampbellOSB3_Turbidity(switchedPower, OSBLowPin, OSBLow_A, OSBLow_B, OSBLow_C),
     // new CampbellOSB3_TurbHigh(switchedPower, OSBHighPin, OSBHigh_A, OSBHigh_B, OSBHigh_C),

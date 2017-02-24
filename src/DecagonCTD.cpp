@@ -44,6 +44,7 @@ bool DecagonCTD::wake(void)
 // The function to set up connection to a sensor.
 SENSOR_STATUS DecagonCTD::setup(void)
 {
+    pinMode(_dataPin, INPUT);
     pinMode(_powerPin, OUTPUT);
     digitalWrite(_powerPin, LOW);
     return SENSOR_READY;
@@ -73,6 +74,9 @@ unsigned long DecagonCTD::sensorLastUpdated;
 bool DecagonCTD::update(){
 
     SDI12 CTDSDI12(_dataPin);
+    // CTDSDI12.setDiagStream(Serial);  // For debugging
+    CTDSDI12.begin();
+    delay(500); // allow things to settle
 
     // Check if the power is on, turn it on if not
     bool wasOff = false;

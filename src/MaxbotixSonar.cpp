@@ -93,72 +93,75 @@ bool MaxBotixSonar::update(){
         delay(1000);
     }
 
-    Serial.println(F("Beginning detection for Sonar"));  // debug line
-    sonarSerial.flush();  // Clear cache ready for next reading
-    while (sonarSerial.available() && stringComplete == false)
+    // Serial.println(F("Beginning detection for Sonar"));  // debug line
+    while (stringComplete == false && rangeAttempts < 50)
     {
-        bool Rread = false;
-        char rByte = sonarSerial.read();  //read serial input for "R" to mark start of data
-        if(rByte == 'R')
+        while (sonarSerial.available())
         {
-            Serial.println(F("'R' Byte found, reading next 4 characters:")); // Debug line
-            while (index < 4)  //read next three character for range from sensor
+            bool Rread = false;
+            delay(3); // Let the buffer fill a little
+            char rByte = sonarSerial.read();  //read serial input for "R" to mark start of data
+            if(rByte == 'R')
             {
+                // Serial.println(F("'R' Byte found, reading next 4 characters:")); // Debug line
+                while (index < 4)  //read next three character for range from sensor
+                {
+                    delay(3); // Let the buffer fill a little
                     inData[index] = sonarSerial.read();
-                    Serial.print(inData[index]);  // Debug line
+                    // Serial.print(inData[index]);  // Debug line
                     index++;  // Increment where to write next
+                }
+                inData[index] = 0x00;  //add a padding byte at end for atoi() function
+                Rread = true;
+                // Serial.println();  // Debug line
+                // Serial.print(F("inData[0]:")); // Debug line
+                // Serial.println(inData[0]);  // Debug line
+                // Serial.print(F("inData[1]:")); // Debug line
+                // Serial.println(inData[1]);  // Debug line
+                // Serial.print(F("inData[2]:")); // Debug line
+                // Serial.println(inData[2]);  // Debug line
+                // Serial.print(F("inData[3]:")); // Debug line
+                // Serial.println(inData[3]);  // Debug line
+                // Serial.print(F("inData[4]:")); // Debug line
+                // Serial.println(inData[4]);  // Debug line
             }
-            inData[index] = 0x00;  //add a padding byte at end for atoi() function
-            Rread = true;
-            Serial.println();  // Debug line
-            Serial.print(F("inData[0]:")); // Debug line
-            Serial.println(inData[0]);  // Debug line
-            Serial.print(F("inData[1]:")); // Debug line
-            Serial.println(inData[1]);  // Debug line
-            Serial.print(F("inData[2]:")); // Debug line
-            Serial.println(inData[2]);  // Debug line
-            Serial.print(F("inData[3]:")); // Debug line
-            Serial.println(inData[3]);  // Debug line
-            Serial.print(F("inData[4]:")); // Debug line
-            Serial.println(inData[4]);  // Debug line
-        }
-        rByte = 0;  // Reset the rByte ready for next reading
-        index = 0;  // Reset index ready for next reading
+            rByte = 0;  // Reset the rByte ready for next reading
+            index = 0;  // Reset index ready for next reading
 
-        // Make sure R is not part of the header, part number, or RoHS warning line
-        // ie, "HRXL-MaxSonar-WRL" or "RoHS 1.8b078  0713"
-        if (Rread && inData[0] != 'R' && inData[1] != 'X' && inData[1] != 'L' && inData[1] != 'S'
-                  && inData[1] != 'o' && inData[1] != 'H' && inData[1] != '\r')
-        {
-            result = atoi(inData);  // Changes string data into an integer for use
-            Serial.print(F("This converts to: ")); // Debug line
-            Serial.println(result);  // Debug line
-            memset(&inData[0], 0, sizeof(inData));  // Empty the inData array.
-            if ((result == 300 || result == 500 || result == 4999 || result == 9999)
-                && rangeAttempts < 100)
+            // Make sure R is not part of the header, part number, or RoHS warning line
+            // ie, "HRXL-MaxSonar-WRL" or "RoHS 1.8b078  0713"
+            if (Rread && inData[0] != 'R' && inData[1] != 'X' && inData[1] != 'L' && inData[1] != 'S'
+                      && inData[1] != 'o' && inData[1] != 'H' && inData[1] != '\r')
             {
-                result = badResult;
-                MaxBotixSonar::sensorValue_depth = result;
-                stringComplete = false;
-                rangeAttempts++;
-                Serial.print(F("Bad or Suspicious Result, Retry Attempt #")); // Debug line
-                Serial.println(rangeAttempts); // Debug line
+                result = atoi(inData);  // Changes string data into an integer for use
+                // Serial.print(F("This converts to: ")); // Debug line
+                // Serial.println(result);  // Debug line
+                memset(&inData[0], 0, sizeof(inData));  // Empty the inData array.
+                if (result == 300 || result == 500 || result == 4999 || result == 9999)
+                {
+                    result = badResult;
+                    MaxBotixSonar::sensorValue_depth = result;
+                    stringComplete = false;
+                    rangeAttempts++;
+                    // Serial.print(F("Bad or Suspicious Result, Retry Attempt #")); // Debug line
+                    // Serial.println(rangeAttempts); // Debug line
+                }
+                else
+                {
+                    stringComplete = true;  // Set completion of read to true
+                    // Serial.println(F("Good result found"));  // Debug line
+                }
             }
-            else
+            else if (Rread)
             {
-                stringComplete = true;  // Set completion of read to true
-                Serial.println(F("Good result found"));  // Debug line
+                // Serial.println(F("Ignoring header line")); // Debug line
+                memset(&inData[0], 0, sizeof(inData));  // Empty the inData array.
             }
-        }
-        else if (Rread)
-        {
-            Serial.println(F("Ignoring header line")); // Debug line
-            memset(&inData[0], 0, sizeof(inData));  // Empty the inData array.
         }
     }
 
     MaxBotixSonar::sensorValue_depth = result;
-    Serial.println(MaxBotixSonar::sensorValue_depth);
+    // Serial.println(MaxBotixSonar::sensorValue_depth);  // Debug line
 
     // Turn the power back off it it had been turned on
     if (wasOff)
