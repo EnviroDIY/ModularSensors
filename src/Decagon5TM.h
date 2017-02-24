@@ -13,6 +13,7 @@
 #define Decagon5TM_h
 
 #include <Arduino.h>
+#include <SDI12_PCINT3.h>
 #include "SensorBase.h"
 
 // The main class for the Decagon 5TM
@@ -33,6 +34,7 @@ public:
     virtual float getValue(void) = 0;
     virtual String getDreamHost(void) = 0;
 protected:
+    SDI12 mySDI12;
     SENSOR_STATUS sensorStatus;
     String sensorName;
     String sensorLocation;

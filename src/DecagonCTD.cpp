@@ -14,23 +14,69 @@
 */
 
 #include "DecagonCTD.h"
-#include <SDI12_PCINT3.h>
 
 
 // The constructor - need the SDI-12 address, the number of readings to average,
 // the power pin, and the data pin
-DecagonCTD::DecagonCTD(int numReadings, char CTDaddress, int powerPin, int dataPin) : SensorBase()
+DecagonCTD::DecagonCTD(int numReadings, char CTDaddress, int powerPin, int dataPin) : SensorBase(), mySDI12(dataPin)
 {
   _numReadings = numReadings;
   _CTDaddress = CTDaddress;
   _powerPin = powerPin;
   _dataPin = dataPin;
+  // setup();
+}
+
+// The function to set up connection to a sensor.
+// This starts the SDI12 and verifies the sensor is connected
+SENSOR_STATUS DecagonCTD::setup(void)
+{
+    pinMode(_dataPin, INPUT);
+    pinMode(_powerPin, OUTPUT);
+    digitalWrite(_powerPin, HIGH);  // Need power to check connection
+
+    // mySDI12.setDiagStream(Serial);  // For debugging
+    mySDI12.begin();
+    delay(500); // allow things to settle
+
+
+    String myCommand = "";
+    myCommand = "";
+    myCommand += (char) _CTDaddress; // sends basic 'acknowledge' command [address][!]
+    myCommand += "!";
+
+    for(int j = 0; j < 3; j++)  // goes through three rapid contact attempts
+    {
+        mySDI12.sendCommand(myCommand);
+        if(mySDI12.available()>1) break;
+        delay(30);
+    }
+    if(mySDI12.available()>2) // if it hears anything it assumes the sensor is there
+    {
+        mySDI12.flush();
+            mySDI12.flush();
+            Serial.print(F("Successfully connected to DecagonCTD 5TM at pin "));
+            Serial.print(_dataPin);
+            Serial.print(F(" and SDI-12 address "));
+            Serial.println(_CTDaddress);
+        return SENSOR_READY;
+    }
+    else {   // otherwise it is vacant.
+        mySDI12.flush();
+        Serial.print(F("Failed to connect to DecagonCTD expected at pin "));
+        Serial.print(_dataPin);
+        Serial.print(F(" and SDI-12 address "));
+        Serial.println(_CTDaddress);
+        return SENSOR_ERROR;
+    }
+    digitalWrite(_powerPin, LOW);  // Turn the power back off.
 }
 
 // The function to put the sensor to sleep
 bool DecagonCTD::sleep(void)
 {
     digitalWrite(_powerPin, LOW);
+    mySDI12.flush();
     return true;
 }
 
@@ -39,15 +85,6 @@ bool DecagonCTD::wake(void)
 {
     digitalWrite(_powerPin, HIGH);
     return true;
-}
-
-// The function to set up connection to a sensor.
-SENSOR_STATUS DecagonCTD::setup(void)
-{
-    pinMode(_dataPin, INPUT);
-    pinMode(_powerPin, OUTPUT);
-    digitalWrite(_powerPin, LOW);
-    return SENSOR_READY;
 }
 
 // The sensor name
@@ -73,11 +110,6 @@ unsigned long DecagonCTD::sensorLastUpdated;
 // Uses SDI-12 to communicate with a Decagon Devices CTD
 bool DecagonCTD::update(){
 
-    SDI12 CTDSDI12(_dataPin);
-    // CTDSDI12.setDiagStream(Serial);  // For debugging
-    CTDSDI12.begin();
-    delay(500); // allow things to settle
-
     // Check if the power is on, turn it on if not
     bool wasOff = false;
     int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
@@ -95,29 +127,29 @@ bool DecagonCTD::update(){
         String command = "";
         command += _CTDaddress;
         command += "M!"; // SDI-12 measurement command format  [address]['M'][!]
-        CTDSDI12.sendCommand(command);
+        mySDI12.sendCommand(command);
         delay(500); // wait while the measurment is taken.
         // It will return approximately how long it will take to take a measurement
         // We aren't intereted in that number and will let the data flush.
-        CTDSDI12.flush();
+        mySDI12.flush();
 
         command = "";
         command += _CTDaddress;
         command += "D0!"; // SDI-12 command to get data [address][D][dataOption][!]
-        CTDSDI12.sendCommand(command);
+        mySDI12.sendCommand(command);
         delay(500);
-        if (CTDSDI12.available() > 0)
+        if (mySDI12.available() > 0)
         {
-            CTDSDI12.parseFloat();  // First return is the sensor address
-            int x = CTDSDI12.parseInt();  // Depth measurement in millimeters
-            float y = CTDSDI12.parseFloat();  // Temperature measurement in °C
-            int z = CTDSDI12.parseInt();  // Bulk Electrical Conductivity measurement in μS/cm.
+            mySDI12.parseFloat();  // First return is the sensor address
+            int x = mySDI12.parseInt();  // Depth measurement in millimeters
+            float y = mySDI12.parseFloat();  // Temperature measurement in °C
+            int z = mySDI12.parseInt();  // Bulk Electrical Conductivity measurement in μS/cm.
 
             sensorValue_depth += x;
             sensorValue_temp += y;
             sensorValue_cond += z;
         }
-        CTDSDI12.flush();
+        mySDI12.flush();
     }     // end of averaging loop
 
     float numRead_f = (float) _numReadings;

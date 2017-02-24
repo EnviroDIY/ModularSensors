@@ -24,12 +24,14 @@ CampbellOSB3::CampbellOSB3(int powerPin, int dataPin,
   _A = A;
   _B = B;
   _C = C;
+  // setup();
 }
 
 // The function to set up connection to a sensor.
 SENSOR_STATUS CampbellOSB3::setup(void)
 {
     pinMode(_powerPin, OUTPUT);
+    pinMode(_dataPin, INPUT);
     digitalWrite(_powerPin, LOW);
     return SENSOR_READY;
 }
