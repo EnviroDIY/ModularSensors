@@ -71,7 +71,7 @@ String DecagonSDI12::getSensorName(void)
     myCommand += "I!"; // sends 'info' command [address][I][!]
     mySDI12.sendCommand(myCommand);
    // Serial.println(myCommand);  // For debugging
-    delay(1000);
+    delay(30);
 
     // wait for acknowlegement with format:
     // [address][SDI12 support (2 char)][vendor (8 char)][model (6 char)][version (3 char)][serial number (<14 char)]
@@ -140,7 +140,7 @@ bool DecagonSDI12::update()
         myCommand += "M!"; // SDI-12 measurement myCommand format  [address]['M'][!]
         mySDI12.sendCommand(myCommand);
        // Serial.println(myCommand);  // For debugging
-        delay(100);
+        delay(30);
 
         // wait for acknowlegement with format [address][ttt (3 char, seconds)][number of measurments available, 0-9]
         sdiResponse = "";

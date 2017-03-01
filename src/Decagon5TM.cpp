@@ -4,19 +4,23 @@
  *
  *Work in progress by Sara Damiano taken from code written
  *by Shannon Hicks and templates from USU.
-
  *
  *This file is for the Decagon Devices 5TM Soil Moisture probe
- *It is dependent on the EnviroDIY SDI-12 library.
+ *It is dependent on the EnviroDIY SDI-12 library and the DecagonSDI12 super class.
+ *
+ *Documentation fo the SDI-12 Protocol commands and responses
+ *for the Decagon 5TM can be found at:
+ * http://manuals.decagon.com/Integration%20Guides/5TM%20Integrators%20Guide.pdf
 */
 
 #include "Decagon5TM.h"
 
-// The constructor - need the SDI-12 address, the power pin, and the data pin
+// The constructor - need the SDI-12 address, the power pin, the data pin, and the number of readings
 Decagon5TM::Decagon5TM(char SDI12address, int powerPin, int dataPin, int numReadings)
  : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings)
 {}
 
+// The static variables that need to be updated
 unsigned long Decagon5TM::sensorLastUpdated = 0;
 bool Decagon5TM::update(void)
 {
