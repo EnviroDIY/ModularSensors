@@ -14,13 +14,13 @@
 
 // The constructor - need the SDI-12 address, the power pin, and the data pin
 DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin, int numReadings)
-    : SensorBase(), mySDI12(dataPin)
+    : SensorBase()
 {
     _SDI12address = SDI12address;
     _powerPin = powerPin;
     _dataPin = dataPin;
     _numReadings = numReadings;
-    // setup();
+    setup();
 }
 
 // The function to set up connection to a sensor.
@@ -28,51 +28,13 @@ SENSOR_STATUS DecagonSDI12::setup(void)
 {
     pinMode(_dataPin, INPUT);
     pinMode(_powerPin, OUTPUT);
-
-    digitalWrite(_powerPin, HIGH);  // Need power to check connection
-
-    // mySDI12.setDiagStream(Serial);  // For debugging
-    mySDI12.begin();
-    delay(500); // allow things to settle
-
-    String myCommand = "";
-    myCommand = "I";
-    myCommand += (char) _SDI12address; // sends basic 'info' command [address][!]
-    myCommand += "!";
-
-    int i = 0;
-    while (mySDI12.available() < 2 and i < 3)// goes through three rapid contact attempts
-    {
-        mySDI12.sendCommand(myCommand);
-        delay(500);
-        i++;
-    }
-    if(mySDI12.available()) // if it hears anything it assumes a sensor is there
-    {
-        mySDI12.flush();
-        Serial.print(F("Successfully connected to Decagon SDI-12 device at pin "));
-        Serial.print(_dataPin);
-        Serial.print(F(" and SDI-12 address "));
-        Serial.println(_SDI12address);
-        return SENSOR_READY;
-    }
-    else {   // otherwise it is vacant.
-        mySDI12.flush();
-        Serial.print(F("Failed to connect to Decagon SDI-12 device expected at pin "));
-        Serial.print(_dataPin);
-        Serial.print(F(" and SDI-12 address "));
-        Serial.println(_SDI12address);
-        return SENSOR_ERROR;
-    }
-    // return SENSOR_READY;
-
-    digitalWrite(_powerPin, LOW);  // Turn the power back off.
+    digitalWrite(_powerPin, LOW);
+    return SENSOR_READY;
 }
 
 // The function to put the sensor to sleep
 bool DecagonSDI12::sleep(void)
 {
-    mySDI12.flush();
     digitalWrite(_powerPin, LOW);
     return true;
 }
@@ -87,8 +49,10 @@ bool DecagonSDI12::wake(void)
 // The sensor name
 String DecagonSDI12::getSensorName(void)
 {
-    // Make sure the SDI-12 is active
-    mySDI12.setActive();
+    SDI12 mySDI12(_dataPin);
+    // mySDI12.setDiagStream(Serial);  // For debugging
+    mySDI12.begin();
+    delay(500); // allow things to settle
 
     // Check if the power is on, turn it on if not
     bool wasOff = false;
@@ -138,8 +102,10 @@ float DecagonSDI12::sensorValues[9] = {0};  // Know that all Decagon SDI12 senso
 // Uses SDI-12 to communicate with a Decagon Devices 5TM
 bool DecagonSDI12::update()
 {
-    // Make sure the SDI-12 is active
-    mySDI12.setActive();
+    SDI12 mySDI12(_dataPin);
+    // mySDI12.setDiagStream(Serial);  // For debugging
+    mySDI12.begin();
+    delay(500); // allow things to settle
 
     // Check if the power is on, turn it on if not
     bool wasOff = false;

@@ -42,7 +42,6 @@ public:
     virtual float getValue(void) = 0;
     virtual String getDreamHost(void) = 0;
 protected:
-    SDI12 mySDI12;
     SENSOR_STATUS sensorStatus;
     String sensorName;
     String sensorLocation;
