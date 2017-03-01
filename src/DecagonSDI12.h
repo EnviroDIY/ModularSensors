@@ -52,6 +52,8 @@ private:
     int _powerPin;
     int _dataPin;
     int _numReadings;
+    String myCommand;
+    String sdiResponse;
 };
 
 #endif

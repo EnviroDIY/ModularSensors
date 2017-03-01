@@ -93,8 +93,8 @@ const char* APN = "apn.konekt.io";  // The APN for the GPRSBee
 // -----------------------------------------------
 SensorBase* SENSOR_LIST[] = {
     new Decagon5TM_Temp(*TMSDI12address, switchedPower, TMData),
-    // new Decagon5TM_Ea(*TMSDI12address, switchedPower, TMData),
-    // new Decagon5TM_VWC(*TMSDI12address, switchedPower, TMData),
+    new Decagon5TM_Ea(*TMSDI12address, switchedPower, TMData),
+    new Decagon5TM_VWC(*TMSDI12address, switchedPower, TMData),
     // new DecagonCTD_Cond(*CTDSDI12address, switchedPower, CTDData, numberReadings),
     // new DecagonCTD_Temp(*CTDSDI12address, switchedPower, CTDData, numberReadings),
     // new DecagonCTD_Depth(*CTDSDI12address, switchedPower, CTDData, numberReadings),
