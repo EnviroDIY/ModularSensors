@@ -264,15 +264,6 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenred4flash();
 
-    // Count the number of sensors
-    sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
-
-    // Set up all the sensors
-    setupSensors();
-
-    // Set up the log file
-    setupLogFile();
-
     // Print a start-up note to the first serial port
     Serial.println(F("WebSDL Device: EnviroDIY Mayfly"));
     Serial.print(F("Now running "));
@@ -281,9 +272,33 @@ void setup()
     Serial.println(freeRam());
     Serial.print(F("Current Mayfly RTC time is: "));
     Serial.println(getDateTime_ISO8601());
+
+    // Count the number of sensors
+    sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
     Serial.print(F("There are "));
     Serial.print(String(sensorCount));
     Serial.println(F(" variables being recorded"));
+
+    // Set up all the sensors  make 5 attempts before giving up
+    int setupTries = 0;
+    bool success = false;
+    while (setupTries < 5)
+    {
+        if (setupSensors() == true) {
+            success = true;
+            break;
+        }
+        else {setupTries++;}
+    }
+    if (success != true)
+    {
+        Serial.println(F("Set up failed!"));
+        // leave the Red LED on
+        digitalWrite(RED_LED, HIGH);
+    }
+
+    // Set up the log file
+    setupLogFile();
 }
 
 // -----------------------------------------------

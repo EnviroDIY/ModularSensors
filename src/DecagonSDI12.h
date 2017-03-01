@@ -28,10 +28,10 @@
 class DecagonSDI12 : public virtual SensorBase
 {
 public:
-    DecagonSDI12(char SDI12address, int powerPin, int dataPin, int numReadings);
+    DecagonSDI12(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
     SENSOR_STATUS setup(void) override;
 
-    bool update(void) override;
+    virtual bool update(void);
     String getSensorName(void) override;
     String getSensorLocation(void) override;
     bool sleep(void) override;
@@ -46,13 +46,13 @@ protected:
     SENSOR_STATUS sensorStatus;
     String sensorName;
     String sensorLocation;
+    static int numMeasurements;
+    static float sensorValues[];
+private:
     char _SDI12address;
     int _powerPin;
     int _dataPin;
     int _numReadings;
-    static int numMeasurements;
-    static unsigned long sensorLastUpdated;
-    static float sensorValues[];
 };
 
 #endif
