@@ -17,7 +17,8 @@
 
 // The constructor - need the SDI-12 address, the power pin, the data pin, and the number of readings
 Decagon5TM::Decagon5TM(char SDI12address, int powerPin, int dataPin, int numReadings)
- : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings)
+ : SensorBase(dataPin),
+   DecagonSDI12(SDI12address, powerPin, dataPin, numReadings)
 {}
 
 // The static variables that need to be updated
@@ -37,99 +38,43 @@ bool Decagon5TM::update(void)
 
 
 Decagon5TM_Ea::Decagon5TM_Ea(char SDI12address, int powerPin, int dataPin, int numReadings)
- : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings), Decagon5TM(SDI12address, powerPin, dataPin, numReadings)
+ : SensorBase(dataPin, F(""), F("waterPotential"), F("kilopascal"), F("soilEa")),
+   DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
+   Decagon5TM(SDI12address, powerPin, dataPin, numReadings)
 {}
-
-String Decagon5TM_Ea::getVarName(void)
-{
-    varName = F("waterPotential");
-    return varName;
-}
-
-String Decagon5TM_Ea::getVarUnit(void)
-{
-    String unit = F("kilopascal");
-    return unit;
-}
 
 float Decagon5TM_Ea::getValue(void)
 {
-    if ((millis() > 30000 and millis() > Decagon5TM::sensorLastUpdated + 30000) or Decagon5TM::sensorLastUpdated == 0)
-        {
-            Serial.println(F("Value out of date, updating"));  // For debugging
-            Decagon5TM::update();
-        }
+    checkForUpdate();
     return Decagon5TM::sensorValue_ea;
-}
-
-String Decagon5TM_Ea::getDreamHost(void)
-{
-    String column = F("soilEa");
-    return column;
 }
 
 
 
 
 Decagon5TM_Temp::Decagon5TM_Temp(char SDI12address, int powerPin, int dataPin, int numReadings)
- : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings), Decagon5TM(SDI12address, powerPin, dataPin, numReadings)
+ : SensorBase(dataPin, F(""), F("temperature"), F("degreeCelsius"), F("soiltemp")),
+   DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
+   Decagon5TM(SDI12address, powerPin, dataPin, numReadings)
 {}
-
-String Decagon5TM_Temp::getVarName(void)
-{
-    varName = F("temperature");
-    return varName;
-}
-
-String Decagon5TM_Temp::getVarUnit(void)
-{
-    String unit = F("degreeCelsius");
-    return unit;
-}
 
 float Decagon5TM_Temp::getValue(void)
 {
-    if ((millis() > 30000 and millis() > Decagon5TM::sensorLastUpdated + 30000) or Decagon5TM::sensorLastUpdated == 0)
-    {
-        Serial.println(F("Value out of date, updating"));  // For debugging
-        Decagon5TM::update();
-    }
+    checkForUpdate();
     return Decagon5TM::sensorValue_temp;
 }
-
-String Decagon5TM_Temp::getDreamHost(void)
-{
-    String column = F("soiltemp");
-    return column;
-}
-
 
 
 
 Decagon5TM_VWC::Decagon5TM_VWC(char SDI12address, int powerPin, int dataPin, int numReadings)
- : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings), Decagon5TM(SDI12address, powerPin, dataPin, numReadings)
+ : SensorBase(dataPin, F(""), F("volumetricWaterContent"), F("percent"), F("soilVWC")),
+   DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
+   Decagon5TM(SDI12address, powerPin, dataPin, numReadings)
 {}
-
-String Decagon5TM_VWC::getVarName(void)
-{
-    varName = F("volumetricWaterContent");
-    return varName;
-}
-
-String Decagon5TM_VWC::getVarUnit(void)
-{
-    String unit = F("percent");
-    return unit;
-}
 
 float Decagon5TM_VWC::getValue(void)
 {
-    if ((millis() > 30000 and millis() > Decagon5TM::sensorLastUpdated + 30000) or Decagon5TM::sensorLastUpdated == 0)
-    {
-        Serial.println(F("Value out of date, updating"));  // For debugging
-        Decagon5TM::update();
-    }
-
+    checkForUpdate();
     //the TOPP equation used to calculate VWC
     ea = Decagon5TM::sensorValue_ea;
     sensorValue_VWC = (4.3e-6*(ea*ea*ea))
@@ -137,10 +82,4 @@ float Decagon5TM_VWC::getValue(void)
                       + (2.92e-2 * ea)
                       - 5.3e-2 ;
     return sensorValue_VWC;
-}
-
-String Decagon5TM_VWC::getDreamHost(void)
-{
-    String column = F("soilVWC");
-    return column;
 }

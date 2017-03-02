@@ -14,7 +14,7 @@
 
 // The constructor - need the SDI-12 address, the power pin, and the data pin
 DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin, int numReadings)
-    : SensorBase()
+    : SensorBase(dataPin)
 {
     _SDI12address = SDI12address;
     _powerPin = powerPin;

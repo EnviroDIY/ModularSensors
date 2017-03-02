@@ -25,17 +25,8 @@ public:
     Decagon5TM(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
 
     bool update(void) override;
-
-    virtual String getVarName(void) = 0;
-    virtual String getVarUnit(void) = 0;
     virtual float getValue(void) = 0;
-    virtual String getDreamHost(void) = 0;
 protected:
-    SDI12 mySDI12;
-    SENSOR_STATUS sensorStatus;
-    String sensorName;
-    String sensorLocation;
-    static int numMeasurements;
     static unsigned long sensorLastUpdated;
     static float sensorValue_ea;
     static float sensorValue_temp;
@@ -48,13 +39,7 @@ class Decagon5TM_Ea : public virtual Decagon5TM
 public:
     Decagon5TM_Ea(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
 
-    String getVarName(void) override;
-    String getVarUnit(void) override;
     float getValue(void) override;
-    String getDreamHost(void) override;
-private:
-    String varName;
-    String unit;
 };
 
 
@@ -64,13 +49,7 @@ class Decagon5TM_Temp : public virtual Decagon5TM
 public:
     Decagon5TM_Temp(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
 
-    String getVarName(void) override;
-    String getVarUnit(void) override;
     float getValue(void) override;
-    String getDreamHost(void) override;
-private:
-    String varName;
-    String unit;
 };
 
 
@@ -80,13 +59,8 @@ class Decagon5TM_VWC : public virtual Decagon5TM
 public:
     Decagon5TM_VWC(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
 
-    String getVarName(void) override;
-    String getVarUnit(void) override;
     float getValue(void) override;
-    String getDreamHost(void) override;
 private:
-    String varName;
-    String unit;
     float ea;
     float sensorValue_VWC;
 };

@@ -12,34 +12,55 @@
 #include "SensorBase.h"
 
 // The constructor
-SensorBase::SensorBase(void)
-{}
+SensorBase::SensorBase(int dataPin, String sensorName, String varName, String varUnit, String dreamHost)
+{
+    _dataPin = dataPin;
+    _sensorName = sensorName;
+    _varName = varName;
+    _varUnit = varUnit;
+    _dreamHost = dreamHost;
+}
+
+// This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
+String SensorBase::getSensorLocation(void){return String(_dataPin);};
+// This returns the name of the sensor.
+String SensorBase::getSensorName(void){return _sensorName;};
+// This returns the variable's name using http://vocabulary.odm2.org/variablename/
+String SensorBase::getVarName(void){return _varName;};
+// This returns the variable's unit using http://vocabulary.odm2.org/units/
+String SensorBase::getVarUnit(void){return _varUnit;};
+// This returns the dreamhost PHP tag - for old SWRC dreamhost system
+String SensorBase::getDreamHost(void){return _dreamHost;};
 
 
 // The function to set up connection to a sensor.
 // By default, returns ready
-SENSOR_STATUS SensorBase::setup(void)
-{
-    return SENSOR_READY;
-}
+SENSOR_STATUS SensorBase::setup(void){return SENSOR_READY;}
 
 // The function to return the status of a sensor
 // By default, returns ready
-SENSOR_STATUS SensorBase::getStatus(void)
-{
-    return SENSOR_READY;
-}
+SENSOR_STATUS SensorBase::getStatus(void){return SENSOR_READY;}
 
 // The function to put a sensor to sleep
 // By default, returns true
-bool SensorBase::sleep(void)
-{
-    return true;
-}
+bool SensorBase::sleep(void){return true;}
 
 // The function to wake up a sensor
 // By default, returns true
-bool SensorBase::wake(void)
+bool SensorBase::wake(void){return true;}
+
+
+// The function to update a sensor
+// By default, returns true
+bool SensorBase::update(void){return true;}
+// This function checks if a sensor needs to be updated or not
+unsigned long sensorLastUpdated = 0;
+bool SensorBase::checkForUpdate(void)
 {
-    return true;
+    if ((millis() > 30000 and millis() > sensorLastUpdated + 30000) or sensorLastUpdated == 0)
+    {
+        Serial.println(F("Value out of date, updating"));  // For debugging
+        return(update());
+    }
+    else return(true);
 }
