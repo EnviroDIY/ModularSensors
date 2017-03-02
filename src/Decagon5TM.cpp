@@ -21,10 +21,14 @@ Decagon5TM::Decagon5TM(char SDI12address, int powerPin, int dataPin, int numRead
 {}
 
 // The static variables that need to be updated
+float Decagon5TM::sensorValue_ea = 0;
+float Decagon5TM::sensorValue_temp = 0;
 unsigned long Decagon5TM::sensorLastUpdated = 0;
 bool Decagon5TM::update(void)
 {
     DecagonSDI12::update();
+    Decagon5TM::sensorValue_ea = DecagonSDI12::sensorValues[0];
+    Decagon5TM::sensorValue_temp = DecagonSDI12::sensorValues[1];
     // Make note of the last time updated
     Decagon5TM::sensorLastUpdated = millis();
     return true;
@@ -55,7 +59,7 @@ float Decagon5TM_Ea::getValue(void)
             Serial.println(F("Value out of date, updating"));  // For debugging
             Decagon5TM::update();
         }
-    return DecagonSDI12::sensorValues[0];
+    return Decagon5TM::sensorValue_ea;
 }
 
 String Decagon5TM_Ea::getDreamHost(void)
@@ -90,7 +94,7 @@ float Decagon5TM_Temp::getValue(void)
         Serial.println(F("Value out of date, updating"));  // For debugging
         Decagon5TM::update();
     }
-    return DecagonSDI12::sensorValues[1];
+    return Decagon5TM::sensorValue_temp;
 }
 
 String Decagon5TM_Temp::getDreamHost(void)
@@ -127,7 +131,7 @@ float Decagon5TM_VWC::getValue(void)
     }
 
     //the TOPP equation used to calculate VWC
-    ea = DecagonSDI12::sensorValues[0];
+    ea = Decagon5TM::sensorValue_ea;
     sensorValue_VWC = (4.3e-6*(ea*ea*ea))
                       - (5.5e-4*(ea*ea))
                       + (2.92e-2 * ea)

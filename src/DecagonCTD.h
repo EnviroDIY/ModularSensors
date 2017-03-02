@@ -36,7 +36,9 @@ protected:
     String sensorLocation;
     static int numMeasurements;
     static unsigned long sensorLastUpdated;
-    static float sensorValues[];
+    static float sensorValue_depth;
+    static float sensorValue_temp;
+    static float sensorValue_cond;
 };
 
 

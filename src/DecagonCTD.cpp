@@ -23,10 +23,16 @@ DecagonCTD::DecagonCTD(char SDI12address, int powerPin, int dataPin, int numRead
 
 
 // The static variables that need to be updated
+float DecagonCTD::sensorValue_depth = 0;
+float DecagonCTD::sensorValue_temp = 0;
+float DecagonCTD::sensorValue_cond = 0;
 unsigned long DecagonCTD::sensorLastUpdated = 0;
 bool DecagonCTD::update()
 {
     DecagonSDI12::update();
+    DecagonCTD::sensorValue_depth = DecagonSDI12::sensorValues[0];
+    DecagonCTD::sensorValue_temp = DecagonSDI12::sensorValues[1];
+    DecagonCTD::sensorValue_cond = DecagonSDI12::sensorValues[2];
     // Make note of the last time updated
     DecagonCTD::sensorLastUpdated = millis();
     return true;
@@ -58,7 +64,7 @@ float DecagonCTD_Depth::getValue(void)
         Serial.println(F("Value out of date, updating"));  // For debugging
         DecagonCTD::update();
     }
-    return DecagonSDI12::sensorValues[0];
+    return DecagonCTD::sensorValue_depth;
 }
 
 String DecagonCTD_Depth::getDreamHost(void)
@@ -93,7 +99,7 @@ float DecagonCTD_Temp::getValue(void)
         Serial.println(F("Value out of date, updating"));  // For debugging
         DecagonCTD::update();
     }
-    return DecagonSDI12::sensorValues[1];
+    return DecagonCTD::sensorValue_temp;
 }
 
 String DecagonCTD_Temp::getDreamHost(void)
@@ -128,7 +134,7 @@ float DecagonCTD_Cond::getValue(void)
         Serial.println(F("Value out of date, updating"));  // For debugging
         DecagonCTD::update();
     }
-    return DecagonSDI12::sensorValues[2];
+    return DecagonCTD::sensorValue_cond;
 }
 
 String DecagonCTD_Cond::getDreamHost(void)
