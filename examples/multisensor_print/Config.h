@@ -47,8 +47,8 @@ const float OSBHigh_C = 2.0709E-01;  // The "C" value from the high range calibr
 #include <MayflyOnboardSensors.h>
 #include <DecagonCTD.h>
 #include <Decagon5TM.h>
-#include <MaxBotixSonar.h>
 #include <CampbellOSB3.h>
+#include <MaxBotixSonar.h>
 
 
 // -----------------------------------------------

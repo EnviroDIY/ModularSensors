@@ -315,7 +315,7 @@ void setup()
     Serial.println(F("Setting up the file on the SD Card"));
     setupLogFile();
 
-    Serial.println(F("Setup finished!"));    
+    Serial.println(F("Setup finished!"));
     Serial.println(F("------------------------------------------\n"));
 }
 
