@@ -53,8 +53,11 @@ String DecagonCTD_Depth::getVarUnit(void)
 
 float DecagonCTD_Depth::getValue(void)
 {
-    if (millis() > 30000 and millis() > DecagonCTD::sensorLastUpdated + 30000)
-        {DecagonCTD::update();}
+    if ((millis() > 30000 and millis() > DecagonCTD::sensorLastUpdated + 30000) or DecagonCTD::sensorLastUpdated == 0)
+    {
+        Serial.println(F("Value out of date, updating"));  // For debugging
+        DecagonCTD::update();
+    }
     return DecagonSDI12::sensorValues[0];
 }
 
@@ -85,8 +88,11 @@ String DecagonCTD_Temp::getVarUnit(void)
 
 float DecagonCTD_Temp::getValue(void)
 {
-    if (millis() > 30000 and millis() > DecagonCTD::sensorLastUpdated + 30000)
-        {DecagonCTD::update();}
+    if ((millis() > 30000 and millis() > DecagonCTD::sensorLastUpdated + 30000) or DecagonCTD::sensorLastUpdated == 0)
+    {
+        Serial.println(F("Value out of date, updating"));  // For debugging
+        DecagonCTD::update();
+    }
     return DecagonSDI12::sensorValues[1];
 }
 
@@ -117,8 +123,11 @@ String DecagonCTD_Cond::getVarUnit(void)
 
 float DecagonCTD_Cond::getValue(void)
 {
-    if (millis() > 30000 and millis() > DecagonCTD::sensorLastUpdated + 30000)
-        {DecagonCTD::update();}
+    if ((millis() > 30000 and millis() > DecagonCTD::sensorLastUpdated + 30000) or DecagonCTD::sensorLastUpdated == 0)
+    {
+        Serial.println(F("Value out of date, updating"));  // For debugging
+        DecagonCTD::update();
+    }
     return DecagonSDI12::sensorValues[2];
 }
 

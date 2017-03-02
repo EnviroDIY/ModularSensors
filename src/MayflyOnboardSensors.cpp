@@ -76,7 +76,7 @@ String MayflyOnboardTemp::getVarUnit(void)
 
 float MayflyOnboardTemp::getValue(void)
 {
-    if (millis() > 30000 and millis() > MayflyOnboardTemp::sensorLastUpdated + 30000)
+    if ((millis() > 30000 and millis() > MayflyOnboardTemp::sensorLastUpdated + 30000) or MayflyOnboardTemp::sensorLastUpdated == 0)
         {MayflyOnboardTemp::update();}
     return MayflyOnboardTemp::sensorValue_temp;
 }
@@ -133,7 +133,7 @@ String MayflyOnboardBatt::getVarUnit(void)
 
 float MayflyOnboardBatt::getValue(void)
 {
-    if (millis() > 30000 and millis() > MayflyOnboardBatt::sensorLastUpdated + 30000)
+    if ((millis() > 30000 and millis() > MayflyOnboardBatt::sensorLastUpdated + 30000) or MayflyOnboardBatt::sensorLastUpdated == 0)
         {MayflyOnboardBatt::update();}
     return MayflyOnboardBatt::sensorValue_battery;
 }
@@ -185,7 +185,7 @@ String MayflyFreeRam::getVarUnit(void)
 
 float MayflyFreeRam::getValue(void)
 {
-    if (millis() > 30000 and millis() > MayflyFreeRam::sensorLastUpdated + 30000)
+    if ((millis() > 30000 and millis() > MayflyFreeRam::sensorLastUpdated + 30000) or MayflyFreeRam::sensorLastUpdated == 0)
         {MayflyFreeRam::update();}
     return MayflyFreeRam::sensorValue_freeRam;
 }

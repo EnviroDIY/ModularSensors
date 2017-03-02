@@ -50,8 +50,11 @@ String Decagon5TM_Ea::getVarUnit(void)
 
 float Decagon5TM_Ea::getValue(void)
 {
-    if (millis() > 30000 and millis() > Decagon5TM::sensorLastUpdated + 30000)
-        {Decagon5TM::update();}
+    if ((millis() > 30000 and millis() > Decagon5TM::sensorLastUpdated + 30000) or Decagon5TM::sensorLastUpdated == 0)
+        {
+            Serial.println(F("Value out of date, updating"));  // For debugging
+            Decagon5TM::update();
+        }
     return DecagonSDI12::sensorValues[0];
 }
 
@@ -82,8 +85,11 @@ String Decagon5TM_Temp::getVarUnit(void)
 
 float Decagon5TM_Temp::getValue(void)
 {
-    if (millis() > 30000 and millis() > Decagon5TM::sensorLastUpdated + 30000)
-        {Decagon5TM::update();}
+    if ((millis() > 30000 and millis() > Decagon5TM::sensorLastUpdated + 30000) or Decagon5TM::sensorLastUpdated == 0)
+    {
+        Serial.println(F("Value out of date, updating"));  // For debugging
+        Decagon5TM::update();
+    }
     return DecagonSDI12::sensorValues[1];
 }
 
@@ -114,8 +120,11 @@ String Decagon5TM_VWC::getVarUnit(void)
 
 float Decagon5TM_VWC::getValue(void)
 {
-    if (millis() > 30000 and millis() > Decagon5TM::sensorLastUpdated + 30000)
-        {Decagon5TM::update();}
+    if ((millis() > 30000 and millis() > Decagon5TM::sensorLastUpdated + 30000) or Decagon5TM::sensorLastUpdated == 0)
+    {
+        Serial.println(F("Value out of date, updating"));  // For debugging
+        Decagon5TM::update();
+    }
 
     //the TOPP equation used to calculate VWC
     ea = DecagonSDI12::sensorValues[0];

@@ -198,8 +198,11 @@ String MaxBotixSonar_Depth::getVarUnit(void)
 
 float MaxBotixSonar_Depth::getValue(void)
 {
-    if (millis() > 30000 and millis() > MaxBotixSonar::sensorLastUpdated + 30000)
-        {MaxBotixSonar::update();}
+    if ((millis() > 30000 and millis() > MaxBotixSonar::sensorLastUpdated + 30000) or MaxBotixSonar::sensorLastUpdated == 0)
+    {
+        Serial.println(F("Value out of date, updating"));  // For debugging
+        MaxBotixSonar::update();
+    }
     return MaxBotixSonar::sensorValue_depth;
 }
 
