@@ -1,5 +1,5 @@
 #pragma once
-#include "SensorBase.h"
+#include <SensorBase.h>
 
 
 // -----------------------------------------------
@@ -98,7 +98,7 @@ SensorBase* SENSOR_LIST[] = {
     new DecagonCTD_Depth(*CTDSDI12address, switchedPower, CTDData, numberReadings),
     new DecagonCTD_Temp(*CTDSDI12address, switchedPower, CTDData, numberReadings),
     new DecagonCTD_Cond(*CTDSDI12address, switchedPower, CTDData, numberReadings),
-    // new MaxBotixSonar_Range(SonarExcite, SonarData),
+    new MaxBotixSonar_Range(SonarExcite, SonarData),
     new CampbellOSB3_Turbidity(switchedPower, OSBLowPin, OSBLow_A, OSBLow_B, OSBLow_C),
     new CampbellOSB3_TurbHigh(switchedPower, OSBHighPin, OSBHigh_A, OSBHigh_B, OSBHigh_C),
     new MayflyOnboardTemp(MFVersion),

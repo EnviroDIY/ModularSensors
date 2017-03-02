@@ -79,8 +79,9 @@ bool MaxBotixSonar_Range::update(){
         delay(1000);
     }
 
-   // Serial.println(F("Beginning detection for Sonar"));  // For debugging
-    while (stringComplete == false && rangeAttempts < 50)
+    // Serial.println(F("Beginning detection for Sonar"));  // For debugging
+    unsigned long timerStart = millis();
+    while (stringComplete == false && rangeAttempts < 50 && (millis() - timerStart) < 30000)
     {
         while (sonarSerial.available())
         {
@@ -89,27 +90,27 @@ bool MaxBotixSonar_Range::update(){
             char rByte = sonarSerial.read();  //read serial input for "R" to mark start of data
             if(rByte == 'R')
             {
-               // Serial.println(F("'R' Byte found, reading next 4 characters:")); // For debugging
+                // Serial.println(F("'R' Byte found, reading next 4 characters:")); // For debugging
                 while (index < 4)  //read next three character for range from sensor
                 {
                     delay(3); // Let the buffer fill a little
                     inData[index] = sonarSerial.read();
-                   // Serial.print(inData[index]);  // For debugging
+                    // Serial.print(inData[index]);  // For debugging
                     index++;  // Increment where to write next
                 }
                 inData[index] = 0x00;  //add a padding byte at end for atoi() function
                 Rread = true;
-               // Serial.println();  // For debugging
-               // Serial.print(F("inData[0]:")); // For debugging
-               // Serial.println(inData[0]);  // For debugging
-               // Serial.print(F("inData[1]:")); // For debugging
-               // Serial.println(inData[1]);  // For debugging
-               // Serial.print(F("inData[2]:")); // For debugging
-               // Serial.println(inData[2]);  // For debugging
-               // Serial.print(F("inData[3]:")); // For debugging
-               // Serial.println(inData[3]);  // For debugging
-               // Serial.print(F("inData[4]:")); // For debugging
-               // Serial.println(inData[4]);  // For debugging
+                // Serial.println();  // For debugging
+                // Serial.print(F("inData[0]:")); // For debugging
+                // Serial.println(inData[0]);  // For debugging
+                // Serial.print(F("inData[1]:")); // For debugging
+                // Serial.println(inData[1]);  // For debugging
+                // Serial.print(F("inData[2]:")); // For debugging
+                // Serial.println(inData[2]);  // For debugging
+                // Serial.print(F("inData[3]:")); // For debugging
+                // Serial.println(inData[3]);  // For debugging
+                // Serial.print(F("inData[4]:")); // For debugging
+                // Serial.println(inData[4]);  // For debugging
             }
             rByte = 0;  // Reset the rByte ready for next reading
             index = 0;  // Reset index ready for next reading
@@ -120,8 +121,8 @@ bool MaxBotixSonar_Range::update(){
                       && inData[1] != 'o' && inData[1] != 'H' && inData[1] != '\r')
             {
                 result = atoi(inData);  // Changes string data into an integer for use
-               // Serial.print(F("This converts to: ")); // For debugging
-               // Serial.println(result);  // For debugging
+                // Serial.print(F("This converts to: ")); // For debugging
+                // Serial.println(result);  // For debugging
                 memset(&inData[0], 0, sizeof(inData));  // Empty the inData array.
                 if (result == 300 || result == 500 || result == 4999 || result == 9999)
                 {
@@ -129,25 +130,25 @@ bool MaxBotixSonar_Range::update(){
                     sensorValue_depth = result;
                     stringComplete = false;
                     rangeAttempts++;
-                   // Serial.print(F("Bad or Suspicious Result, Retry Attempt #")); // For debugging
-                   // Serial.println(rangeAttempts); // For debugging
+                    // Serial.print(F("Bad or Suspicious Result, Retry Attempt #")); // For debugging
+                    // Serial.println(rangeAttempts); // For debugging
                 }
                 else
                 {
                     stringComplete = true;  // Set completion of read to true
-                   // Serial.println(F("Good result found"));  // For debugging
+                    // Serial.println(F("Good result found"));  // For debugging
                 }
             }
             else if (Rread)
             {
-               // Serial.println(F("Ignoring header line")); // For debugging
+                // Serial.println(F("Ignoring header line")); // For debugging
                 memset(&inData[0], 0, sizeof(inData));  // Empty the inData array.
             }
         }
     }
 
     sensorValue_depth = result;
-   // Serial.println(MaxBotixSonar::sensorValue_depth);  // For debugging
+    // Serial.println(MaxBotixSonar::sensorValue_depth);  // For debugging
 
     // Turn the power back off it it had been turned on
     if (wasOff)
