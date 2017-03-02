@@ -122,8 +122,11 @@ String CampbellOSB3::getVarUnit(void)
 
 float CampbellOSB3::getValue(void)
 {
-    if (millis() > 30000 and millis() > CampbellOSB3::sensorLastUpdated + 30000)
-        {CampbellOSB3::update();}
+    if ((millis() > 30000 and millis() > CampbellOSB3::sensorLastUpdated + 30000) or CampbellOSB3::sensorLastUpdated == 0)
+    {
+        Serial.println(F("Value out of date, updating"));  // For debugging
+        CampbellOSB3::update();
+    }
     return CampbellOSB3::sensorValue;
 }
 
