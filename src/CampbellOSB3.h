@@ -23,17 +23,11 @@ public:
                  float A, float B, float C);
     String getSensorLocation(void) override;
 
-    SENSOR_STATUS setup(void) override;
-    bool sleep(void) override;
-    bool wake(void) override;
-
     bool update(void) override;
 
     float getValue(void) override;
 protected:
     String sensorLocation;
-    int _powerPin;
-    int16_t _dataPin;
     float _A;
     float _B;
     float _C;

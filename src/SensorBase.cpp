@@ -12,13 +12,15 @@
 #include "SensorBase.h"
 
 // The constructor
-SensorBase::SensorBase(int dataPin, String sensorName, String varName, String varUnit, String dreamHost)
+SensorBase::SensorBase(int dataPin, int powerPin, String sensorName, String varName, String varUnit, String dreamHost)
 {
+    _powerPin = powerPin;
     _dataPin = dataPin;
     _sensorName = sensorName;
     _varName = varName;
     _varUnit = varUnit;
     _dreamHost = dreamHost;
+    setup();
 }
 
 // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
@@ -33,21 +35,60 @@ String SensorBase::getVarUnit(void){return _varUnit;};
 String SensorBase::getDreamHost(void){return _dreamHost;};
 
 
+// This is a helper function to check if the power needs to be turned on
+bool SensorBase::checkPowerOn(void)
+{
+    int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
+    if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
+        {return false;}
+    else {return true;}
+}
+
+// This is a helper function to turn on sensor power
+void SensorBase::powerUp(void)
+{
+    // Serial.println(F("Powering on Sensor"));  // For debugging
+    digitalWrite(_powerPin, HIGH);
+    delay(1000);
+}
+
+// This is a helper function to turn off sensor power
+void SensorBase::powerDown(void)
+{
+    // Serial.println(F("Turning off Power"));  // For debugging
+    digitalWrite(_powerPin, LOW);
+}
+
+
 // The function to set up connection to a sensor.
-// By default, returns ready
-SENSOR_STATUS SensorBase::setup(void){return SENSOR_READY;}
+// By default, sets pin modes and returns ready
+SENSOR_STATUS SensorBase::setup(void)
+{
+    pinMode(_powerPin, OUTPUT);
+    pinMode(_dataPin, INPUT);
+    digitalWrite(_powerPin, LOW);
+    return SENSOR_READY;
+}
 
 // The function to return the status of a sensor
-// By default, returns ready
+// By default, simply returns ready
 SENSOR_STATUS SensorBase::getStatus(void){return SENSOR_READY;}
 
 // The function to put a sensor to sleep
-// By default, returns true
-bool SensorBase::sleep(void){return true;}
+// By default, powers up and returns true
+bool SensorBase::sleep(void)
+{
+    powerDown();
+    return true;
+}
 
 // The function to wake up a sensor
-// By default, returns true
-bool SensorBase::wake(void){return true;}
+// By default, powers down and returns true
+bool SensorBase::wake(void)
+{
+    if(!checkPowerOn()){powerUp();}
+    return true;
+}
 
 
 // This function checks if a sensor needs to be updated or not

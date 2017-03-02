@@ -15,15 +15,12 @@
 
 // The constructor - need the power pin, and the two data pins
 CampbellOSB3::CampbellOSB3(int powerPin, int dataPin, float A, float B, float C)
-  : SensorBase(dataPin)
+  : SensorBase(dataPin, powerPin)
 {
-  _powerPin = powerPin;
-  _dataPin = dataPin;
-  _dataPin = dataPin;
-  _A = A;
-  _B = B;
-  _C = C;
-  // setup();
+    _A = A;
+    _B = B;
+    _C = C;
+    setup();
 }
 
 // The sensor installation location on the Mayfly
@@ -31,29 +28,6 @@ String CampbellOSB3::getSensorLocation(void)
 {
     sensorLocation = "ads" + String(_dataPin);
     return sensorLocation;
-}
-
-// The function to set up connection to a sensor.
-SENSOR_STATUS CampbellOSB3::setup(void)
-{
-    pinMode(_powerPin, OUTPUT);
-    pinMode(_dataPin, INPUT);
-    digitalWrite(_powerPin, LOW);
-    return SENSOR_READY;
-}
-
-// The function to put the sensor to sleep
-bool CampbellOSB3::sleep(void)
-{
-    digitalWrite(_powerPin, LOW);
-    return true;
-}
-
-// The function to wake up the sensor
-bool CampbellOSB3::wake(void)
-{
-    digitalWrite(_powerPin, HIGH);
-    return true;
 }
 
 // The static variables that need to be updated
@@ -68,14 +42,8 @@ bool CampbellOSB3::update(){
     delay(500);
 
     // Check if the power is on, turn it on if not
-    bool wasOff = false;
-    int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
-    if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
-    {
-        wasOff = true;
-        digitalWrite(_powerPin, HIGH);
-        delay(1000);
-    }
+    bool wasOn = checkPowerOn();
+    if(!wasOn){powerUp();}
 
     int16_t adc0; // tells which channels are to be read
 
@@ -93,8 +61,7 @@ bool CampbellOSB3::update(){
     CampbellOSB3::sensorLastUpdated = millis();
 
     // Turn the power back off it it had been turned on
-    if (wasOff)
-        {digitalWrite(_powerPin, LOW);}
+    if(!wasOn){powerDown();}
 
     // Return true when finished
     return true;
@@ -110,7 +77,7 @@ float CampbellOSB3::getValue(void)
 
 
 CampbellOSB3_Turbidity::CampbellOSB3_Turbidity(int powerPin, int dataPin, float A, float B, float C)
-  : SensorBase(dataPin, F("CampbellOSB3+"), F("turbidity"), F("nephelometricTurbidityUnit"), F("TurbLow")),
+  : SensorBase(dataPin, powerPin, F("CampbellOSB3+"), F("turbidity"), F("nephelometricTurbidityUnit"), F("TurbLow")),
     CampbellOSB3(powerPin, dataPin, A, B, C)
 {}
 
@@ -118,6 +85,6 @@ CampbellOSB3_Turbidity::CampbellOSB3_Turbidity(int powerPin, int dataPin, float 
 
 
 CampbellOSB3_TurbHigh::CampbellOSB3_TurbHigh(int powerPin, int dataPin, float A, float B, float C)
-  : SensorBase(dataPin, F("CampbellOSB3+"), F("turbidity"), F("nephelometricTurbidityUnit"), F("TurbHigh")),
+  : SensorBase(dataPin, powerPin, F("CampbellOSB3+"), F("turbidity"), F("nephelometricTurbidityUnit"), F("TurbHigh")),
     CampbellOSB3(powerPin, dataPin, A, B, C)
 {}

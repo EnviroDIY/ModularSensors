@@ -32,11 +32,6 @@ public:
     String getSensorName(void) override;
     String getSensorLocation(void) override;
 
-    SENSOR_STATUS setup(void) override;
-
-    bool sleep(void) override;
-    bool wake(void) override;
-
     virtual bool update(void);
 
     virtual float getValue(void) = 0;
@@ -48,8 +43,6 @@ protected:
     static float sensorValues[];
 private:
     char _SDI12address;
-    int _powerPin;
-    int _dataPin;
     int _numReadings;
     String myCommand;
     String sdiResponse;

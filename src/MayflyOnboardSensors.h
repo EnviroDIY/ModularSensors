@@ -59,7 +59,7 @@ private:
 class MayflyFreeRam : public virtual SensorBase
 {
 public:
-    MayflyFreeRam(char const *version);
+    MayflyFreeRam(void);
 
     bool update(void) override;
     String getSensorLocation(void) override;

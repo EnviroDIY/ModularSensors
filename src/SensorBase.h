@@ -28,7 +28,8 @@ enum SENSOR_STATUS
 class SensorBase
 {
 public:
-    SensorBase(int dataPin = -1, String sensorName = "Unknown", String varName = "Unknown",
+    SensorBase(int dataPin = -1, int powerPin = -1,
+               String sensorName = "Unknown", String varName = "Unknown",
                String varUnit = "Unknown", String dreamHost = "Unknown");
 
     // These functions are dependent on the constructor and return the constructor values
@@ -62,13 +63,17 @@ public:
     virtual float getValue(void) = 0;
 protected:
     bool checkForUpdate(unsigned long sensorLastUpdated);
+    bool checkPowerOn(void);
+    void powerUp(void);
+    void powerDown(void);
+    int _dataPin;
+    int _powerPin;
     SENSOR_STATUS sensorStatus;
 private:
     String _sensorName;
     String _varName;
     String _varUnit;
     String _dreamHost;
-    int _dataPin;
 };
 
 #endif

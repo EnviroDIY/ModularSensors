@@ -14,36 +14,11 @@
 
 // The constructor - need the SDI-12 address, the power pin, and the data pin
 DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin, int numReadings)
-    : SensorBase(dataPin)
+    : SensorBase(dataPin, powerPin)
 {
     _SDI12address = SDI12address;
-    _powerPin = powerPin;
-    _dataPin = dataPin;
     _numReadings = numReadings;
     setup();
-}
-
-// The function to set up connection to a sensor.
-SENSOR_STATUS DecagonSDI12::setup(void)
-{
-    pinMode(_dataPin, INPUT);
-    pinMode(_powerPin, OUTPUT);
-    digitalWrite(_powerPin, LOW);
-    return SENSOR_READY;
-}
-
-// The function to put the sensor to sleep
-bool DecagonSDI12::sleep(void)
-{
-    digitalWrite(_powerPin, LOW);
-    return true;
-}
-
-// The function to wake up the sensor
-bool DecagonSDI12::wake(void)
-{
-    digitalWrite(_powerPin, HIGH);
-    return true;
 }
 
 // The sensor name
@@ -54,15 +29,8 @@ String DecagonSDI12::getSensorName(void)
     delay(500); // allow things to settle
 
     // Check if the power is on, turn it on if not
-    bool wasOff = false;
-    int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
-    if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
-    {
-        wasOff = true;
-       // Serial.println(F("Powering on Sensor"));  // For debugging
-        digitalWrite(_powerPin, HIGH);
-        delay(1000);
-    }
+    bool wasOn = checkPowerOn();
+    if(!wasOn){powerUp();}
 
    // Serial.println(F("Getting sensor info"));  // For debugging
     myCommand = "";
@@ -90,8 +58,7 @@ String DecagonSDI12::getSensorName(void)
     mySDI12.flush();
 
     // Turn the power back off it it had been turned on
-    if (wasOff)
-        {digitalWrite(_powerPin, LOW);}
+    if(!wasOn){powerDown();}
 
     return sensorName;
 }
@@ -114,15 +81,8 @@ bool DecagonSDI12::update()
     delay(500); // allow things to settle
 
     // Check if the power is on, turn it on if not
-    bool wasOff = false;
-    int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
-    if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
-    {
-        wasOff = true;
-       // Serial.println(F("Powering on Sensor"));  // For debugging
-        digitalWrite(_powerPin, HIGH);
-        delay(1000);
-    }
+    bool wasOn = checkPowerOn();
+    if(!wasOn){powerUp();}
 
     // Clear values before starting loop
     for (int i = 0; i <9; i++)
@@ -214,11 +174,7 @@ bool DecagonSDI12::update()
     }
 
     // Turn the power back off it it had been turned on
-    if (wasOff)
-        {
-            digitalWrite(_powerPin, LOW);
-           // Serial.println(F("Turning off Power"));  // For debugging
-        }
+    if(!wasOn){powerDown();}
 
     // Return true when finished
     return true;

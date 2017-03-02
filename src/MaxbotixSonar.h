@@ -22,16 +22,10 @@ class MaxBotixSonar_Range : public virtual SensorBase
 public:
     MaxBotixSonar_Range(int powerPin, int dataPin);
 
-    SENSOR_STATUS setup(void) override;
-    bool sleep(void) override;
-    bool wake(void) override;
-
     bool update(void) override;
 
     float getValue(void) override;
 protected:
-    int _powerPin;
-    int _dataPin;
     float sensorValue_depth;
     static unsigned long sensorLastUpdated;
 };

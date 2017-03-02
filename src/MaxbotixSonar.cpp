@@ -18,38 +18,11 @@
 
 // The constructor - need the power pin, the excite pin, and the data pin
 MaxBotixSonar_Range::MaxBotixSonar_Range(int powerPin, int dataPin)
-  : SensorBase(powerPin, F("MaxBotixMaxSonar"), F("distance"), F("millimeter"), F("SonarRange"))
-{
-    _powerPin = powerPin;
-    _dataPin = dataPin;
-}
-
-// The function to set up connection to a sensor.
-SENSOR_STATUS MaxBotixSonar_Range::setup(void)
-{
-    pinMode(_powerPin, OUTPUT);
-    pinMode(_dataPin, INPUT);
-    digitalWrite(_powerPin, LOW);
-    return SENSOR_READY;
-}
-
-// The function to put the sensor to sleep
-bool MaxBotixSonar_Range::sleep(void)
-{
-    digitalWrite(_powerPin, LOW);
-    return true;
-}
-
-// The function to wake up the sensor
-bool MaxBotixSonar_Range::wake(void)
-{
-    digitalWrite(_powerPin, HIGH);
-    return true;
-}
+  : SensorBase(dataPin, powerPin, F("MaxBotixMaxSonar"), F("distance"), F("millimeter"), F("SonarRange"))
+{}
 
 // The static variables that need to be updated
 unsigned long MaxBotixSonar_Range::sensorLastUpdated;
-
 
 // Uses TLL Communication to get data from MaxBotix
 bool MaxBotixSonar_Range::update(){
@@ -69,15 +42,8 @@ bool MaxBotixSonar_Range::update(){
     int rangeAttempts = 0;
 
     // Check if the power is on, turn it on if not
-    bool wasOff = false;
-    int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
-    if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
-    {
-        wasOff = true;
-        pinMode(_powerPin, OUTPUT);
-        digitalWrite(_powerPin, HIGH);
-        delay(1000);
-    }
+    bool wasOn = checkPowerOn();
+    if(!wasOn){powerUp();}
 
     // Serial.println(F("Beginning detection for Sonar"));  // For debugging
     unsigned long timerStart = millis();
@@ -151,8 +117,7 @@ bool MaxBotixSonar_Range::update(){
     // Serial.println(MaxBotixSonar::sensorValue_depth);  // For debugging
 
     // Turn the power back off it it had been turned on
-    if (wasOff)
-        {digitalWrite(_powerPin, LOW);}
+    if(!wasOn){powerDown();}
 
     // Return true when finished
     sonarSerial.flush();  // Clear cache ready for next reading

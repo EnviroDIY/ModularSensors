@@ -103,7 +103,7 @@ SensorBase* SENSOR_LIST[] = {
     new CampbellOSB3_TurbHigh(switchedPower, OSBHighPin, OSBHigh_A, OSBHigh_B, OSBHigh_C),
     new MayflyOnboardTemp(MFVersion),
     new MayflyOnboardBatt(MFVersion),
-    new MayflyFreeRam(MFVersion)
+    new MayflyFreeRam()
     // new YOUR_sensorName_HERE()
 };
 

@@ -14,7 +14,7 @@ install:
     - pip install -U platformio
     - pio upgrade
     - pio update
-    - git clone --shallow-submodules https://github.com/EnviroDIY/Libraries.git EnviroDIYLibs
+    - git clone https://github.com/EnviroDIY/Libraries.git EnviroDIYLibs
 
 script:
 - platformio ci -v --lib="." --board=mayfly --project-option="lib_extra_dirs = EnviroDIYLibs" --project-option="lib_ignore = EnviroDIY_ModularSensors" --project-option="lib_ldf_mode = deep+"

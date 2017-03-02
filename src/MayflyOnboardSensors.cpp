@@ -26,7 +26,7 @@ unsigned long MayflyFreeRam::sensorLastUpdated = 0;
 
 
 MayflyOnboardTemp::MayflyOnboardTemp(char const *version)
-  : SensorBase(-1, F("EnviroDIYMayfly"), F("temperatureDatalogger"), F("degreeCelsius"), F("BoardTemp"))
+  : SensorBase(-1, -1, F("EnviroDIYMayfly"), F("temperatureDatalogger"), F("degreeCelsius"), F("BoardTemp"))
 { _version = version; }
 // The location of the sensor on the Mayfly
 String MayflyOnboardTemp::getSensorLocation(void)
@@ -57,7 +57,7 @@ float MayflyOnboardTemp::getValue(void)
 
 // The constructor - needs to reference the super-class constructor
 MayflyOnboardBatt::MayflyOnboardBatt(char const *version)
-  : SensorBase(-1, F("EnviroDIYMayfly"), F("batteryVoltage"), F("Volt"), F("Battery"))
+  : SensorBase(-1, -1, F("EnviroDIYMayfly"), F("batteryVoltage"), F("Volt"), F("Battery"))
 { _version = version; }
 
 // The location of the sensor on the Mayfly
@@ -103,9 +103,9 @@ float MayflyOnboardBatt::getValue(void)
 
 
 // The constructor - needs to reference the super-class constructor
-MayflyFreeRam::MayflyFreeRam(char const *version)
-  : SensorBase(-1, F("EnviroDIYMayfly"), F("Free SRAM"), F("Bit"), F("FreeRam"))
-{ _version = version; }
+MayflyFreeRam::MayflyFreeRam(void)
+  : SensorBase(-1, -1, F("EnviroDIYMayfly"), F("Free SRAM"), F("Bit"), F("FreeRam"))
+{}
 
 // The location of the sensor on the Mayfly
 String MayflyFreeRam::getSensorLocation(void)
