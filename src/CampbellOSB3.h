@@ -21,20 +21,17 @@ class CampbellOSB3 : public virtual SensorBase
 public:
     CampbellOSB3(int powerPin, int dataPin,
                  float A, float B, float C);
-    SENSOR_STATUS setup(void) override;
-
-    bool update(void) override;
     String getSensorLocation(void) override;
+
+    SENSOR_STATUS setup(void) override;
     bool sleep(void) override;
     bool wake(void) override;
 
+    bool update(void) override;
+
     float getValue(void) override;
 protected:
-    SENSOR_STATUS sensorStatus;
-    String sensorName;
     String sensorLocation;
-    String varName;
-    String unit;
     int _powerPin;
     int16_t _dataPin;
     float _A;
@@ -45,6 +42,8 @@ protected:
 };
 
 
+// Subclasses are ONLY needed because of the different dreamhost column tags
+// All that is needed for these are the constructors
 // Defines the "Low Turbidity Sensor"
 class CampbellOSB3_Turbidity : public virtual CampbellOSB3
 {

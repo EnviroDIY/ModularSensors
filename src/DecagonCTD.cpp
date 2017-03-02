@@ -50,7 +50,7 @@ DecagonCTD_Depth::DecagonCTD_Depth(char SDI12address, int powerPin, int dataPin,
 
 float DecagonCTD_Depth::getValue(void)
 {
-    checkForUpdate();
+    checkForUpdate(DecagonCTD::sensorLastUpdated);
     return DecagonCTD::sensorValue_depth;
 }
 
@@ -65,7 +65,7 @@ DecagonCTD_Temp::DecagonCTD_Temp(char SDI12address, int powerPin, int dataPin, i
 
 float DecagonCTD_Temp::getValue(void)
 {
-    checkForUpdate();
+    checkForUpdate(DecagonCTD::sensorLastUpdated);
     return DecagonCTD::sensorValue_temp;
 }
 
@@ -80,6 +80,6 @@ DecagonCTD_Cond::DecagonCTD_Cond(char SDI12address, int powerPin, int dataPin, i
 
 float DecagonCTD_Cond::getValue(void)
 {
-    checkForUpdate();
+    checkForUpdate(DecagonCTD::sensorLastUpdated);
     return DecagonCTD::sensorValue_cond;
 }

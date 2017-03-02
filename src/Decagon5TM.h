@@ -25,6 +25,7 @@ public:
     Decagon5TM(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
 
     bool update(void) override;
+    
     virtual float getValue(void) = 0;
 protected:
     static unsigned long sensorLastUpdated;

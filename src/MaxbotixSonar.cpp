@@ -17,14 +17,15 @@
 
 
 // The constructor - need the power pin, the excite pin, and the data pin
-MaxBotixSonar::MaxBotixSonar(int powerPin, int dataPin) : SensorBase()
+MaxBotixSonar_Range::MaxBotixSonar_Range(int powerPin, int dataPin)
+  : SensorBase(powerPin, F("MaxBotixMaxSonar"), F("distance"), F("millimeter"), F("SonarRange"))
 {
     _powerPin = powerPin;
     _dataPin = dataPin;
 }
 
 // The function to set up connection to a sensor.
-SENSOR_STATUS MaxBotixSonar::setup(void)
+SENSOR_STATUS MaxBotixSonar_Range::setup(void)
 {
     pinMode(_powerPin, OUTPUT);
     pinMode(_dataPin, INPUT);
@@ -33,40 +34,25 @@ SENSOR_STATUS MaxBotixSonar::setup(void)
 }
 
 // The function to put the sensor to sleep
-bool MaxBotixSonar::sleep(void)
+bool MaxBotixSonar_Range::sleep(void)
 {
     digitalWrite(_powerPin, LOW);
     return true;
 }
 
 // The function to wake up the sensor
-bool MaxBotixSonar::wake(void)
+bool MaxBotixSonar_Range::wake(void)
 {
     digitalWrite(_powerPin, HIGH);
     return true;
 }
 
-// The sensor name
-String MaxBotixSonar::getSensorName(void)
-{
-    sensorName = F("MaxBotixMaxSonar");
-    return sensorName;
-}
-
-// The sensor installation location on the Mayfly
-String MaxBotixSonar::getSensorLocation(void)
-{
-    sensorLocation = String(_powerPin) + "_" + String(_dataPin);
-    return sensorLocation;
-}
-
 // The static variables that need to be updated
-float MaxBotixSonar::sensorValue_depth = 0.00;
-unsigned long MaxBotixSonar::sensorLastUpdated;
+unsigned long MaxBotixSonar_Range::sensorLastUpdated;
 
 
 // Uses TLL Communication to get data from MaxBotix
-bool MaxBotixSonar::update(){
+bool MaxBotixSonar_Range::update(){
 
     // define serial port for recieving data
     // output from maxSonar is inverted requiring true to be set.
@@ -93,7 +79,7 @@ bool MaxBotixSonar::update(){
         delay(1000);
     }
 
-    // Serial.println(F("Beginning detection for Sonar"));  // For debugging
+   // Serial.println(F("Beginning detection for Sonar"));  // For debugging
     while (stringComplete == false && rangeAttempts < 50)
     {
         while (sonarSerial.available())
@@ -103,27 +89,27 @@ bool MaxBotixSonar::update(){
             char rByte = sonarSerial.read();  //read serial input for "R" to mark start of data
             if(rByte == 'R')
             {
-                // Serial.println(F("'R' Byte found, reading next 4 characters:")); // For debugging
+               // Serial.println(F("'R' Byte found, reading next 4 characters:")); // For debugging
                 while (index < 4)  //read next three character for range from sensor
                 {
                     delay(3); // Let the buffer fill a little
                     inData[index] = sonarSerial.read();
-                    // Serial.print(inData[index]);  // For debugging
+                   // Serial.print(inData[index]);  // For debugging
                     index++;  // Increment where to write next
                 }
                 inData[index] = 0x00;  //add a padding byte at end for atoi() function
                 Rread = true;
-                // Serial.println();  // For debugging
-                // Serial.print(F("inData[0]:")); // For debugging
-                // Serial.println(inData[0]);  // For debugging
-                // Serial.print(F("inData[1]:")); // For debugging
-                // Serial.println(inData[1]);  // For debugging
-                // Serial.print(F("inData[2]:")); // For debugging
-                // Serial.println(inData[2]);  // For debugging
-                // Serial.print(F("inData[3]:")); // For debugging
-                // Serial.println(inData[3]);  // For debugging
-                // Serial.print(F("inData[4]:")); // For debugging
-                // Serial.println(inData[4]);  // For debugging
+               // Serial.println();  // For debugging
+               // Serial.print(F("inData[0]:")); // For debugging
+               // Serial.println(inData[0]);  // For debugging
+               // Serial.print(F("inData[1]:")); // For debugging
+               // Serial.println(inData[1]);  // For debugging
+               // Serial.print(F("inData[2]:")); // For debugging
+               // Serial.println(inData[2]);  // For debugging
+               // Serial.print(F("inData[3]:")); // For debugging
+               // Serial.println(inData[3]);  // For debugging
+               // Serial.print(F("inData[4]:")); // For debugging
+               // Serial.println(inData[4]);  // For debugging
             }
             rByte = 0;  // Reset the rByte ready for next reading
             index = 0;  // Reset index ready for next reading
@@ -134,34 +120,34 @@ bool MaxBotixSonar::update(){
                       && inData[1] != 'o' && inData[1] != 'H' && inData[1] != '\r')
             {
                 result = atoi(inData);  // Changes string data into an integer for use
-                // Serial.print(F("This converts to: ")); // For debugging
-                // Serial.println(result);  // For debugging
+               // Serial.print(F("This converts to: ")); // For debugging
+               // Serial.println(result);  // For debugging
                 memset(&inData[0], 0, sizeof(inData));  // Empty the inData array.
                 if (result == 300 || result == 500 || result == 4999 || result == 9999)
                 {
                     result = badResult;
-                    MaxBotixSonar::sensorValue_depth = result;
+                    sensorValue_depth = result;
                     stringComplete = false;
                     rangeAttempts++;
-                    // Serial.print(F("Bad or Suspicious Result, Retry Attempt #")); // For debugging
-                    // Serial.println(rangeAttempts); // For debugging
+                   // Serial.print(F("Bad or Suspicious Result, Retry Attempt #")); // For debugging
+                   // Serial.println(rangeAttempts); // For debugging
                 }
                 else
                 {
                     stringComplete = true;  // Set completion of read to true
-                    // Serial.println(F("Good result found"));  // For debugging
+                   // Serial.println(F("Good result found"));  // For debugging
                 }
             }
             else if (Rread)
             {
-                // Serial.println(F("Ignoring header line")); // For debugging
+               // Serial.println(F("Ignoring header line")); // For debugging
                 memset(&inData[0], 0, sizeof(inData));  // Empty the inData array.
             }
         }
     }
 
-    MaxBotixSonar::sensorValue_depth = result;
-    // Serial.println(MaxBotixSonar::sensorValue_depth);  // For debugging
+    sensorValue_depth = result;
+   // Serial.println(MaxBotixSonar::sensorValue_depth);  // For debugging
 
     // Turn the power back off it it had been turned on
     if (wasOff)
@@ -169,45 +155,13 @@ bool MaxBotixSonar::update(){
 
     // Return true when finished
     sonarSerial.flush();  // Clear cache ready for next reading
-    MaxBotixSonar::sensorLastUpdated = millis();
+    MaxBotixSonar_Range::sensorLastUpdated = millis();
     return true;
 }
 
 
-
-
-MaxBotixSonar_Depth::MaxBotixSonar_Depth(int powerPin, int dataPin)
-: MaxBotixSonar(powerPin, dataPin)
+float MaxBotixSonar_Range::getValue(void)
 {
-    _powerPin = powerPin;
-    _dataPin = dataPin;
-    setup();
-}
-
-String MaxBotixSonar_Depth::getVarName(void)
-{
-    varName = F("waterDepth");
-    return varName;
-}
-
-String MaxBotixSonar_Depth::getVarUnit(void)
-{
-    String unit = F("millimeter");
-    return unit;
-}
-
-float MaxBotixSonar_Depth::getValue(void)
-{
-    if ((millis() > 30000 and millis() > MaxBotixSonar::sensorLastUpdated + 30000) or MaxBotixSonar::sensorLastUpdated == 0)
-    {
-        Serial.println(F("Value out of date, updating"));  // For debugging
-        MaxBotixSonar::update();
-    }
-    return MaxBotixSonar::sensorValue_depth;
-}
-
-String MaxBotixSonar_Depth::getDreamHost(void)
-{
-    String column = F("SonarRange");
-    return column;
+    checkForUpdate(MaxBotixSonar_Range::sensorLastUpdated);
+    return sensorValue_depth;
 }

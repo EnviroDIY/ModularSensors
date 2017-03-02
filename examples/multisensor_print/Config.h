@@ -1,5 +1,5 @@
 #pragma once
-#include <SensorBase.h>
+#include "SensorBase.h"
 
 
 // -----------------------------------------------
@@ -48,7 +48,7 @@ const float OSBHigh_C = 2.0709E-01;  // The "C" value from the high range calibr
 #include <DecagonCTD.h>
 #include <Decagon5TM.h>
 #include <MaxBotixSonar.h>
-// #include <CampbellOSB3.h>
+#include <CampbellOSB3.h>
 
 
 // -----------------------------------------------
@@ -98,9 +98,9 @@ SensorBase* SENSOR_LIST[] = {
     new DecagonCTD_Depth(*CTDSDI12address, switchedPower, CTDData, numberReadings),
     new DecagonCTD_Temp(*CTDSDI12address, switchedPower, CTDData, numberReadings),
     new DecagonCTD_Cond(*CTDSDI12address, switchedPower, CTDData, numberReadings),
-    // new MaxBotixSonar_Depth(SonarExcite, SonarData),
-    // new CampbellOSB3_Turbidity(switchedPower, OSBLowPin, OSBLow_A, OSBLow_B, OSBLow_C),
-    // new CampbellOSB3_TurbHigh(switchedPower, OSBHighPin, OSBHigh_A, OSBHigh_B, OSBHigh_C),
+    // new MaxBotixSonar_Range(SonarExcite, SonarData),
+    new CampbellOSB3_Turbidity(switchedPower, OSBLowPin, OSBLow_A, OSBLow_B, OSBLow_C),
+    new CampbellOSB3_TurbHigh(switchedPower, OSBHighPin, OSBHigh_A, OSBHigh_B, OSBHigh_C),
     new MayflyOnboardTemp(MFVersion),
     new MayflyOnboardBatt(MFVersion),
     new MayflyFreeRam(MFVersion)

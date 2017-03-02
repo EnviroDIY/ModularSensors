@@ -14,9 +14,8 @@
 #include "CampbellOSB3.h"
 
 // The constructor - need the power pin, and the two data pins
-CampbellOSB3::CampbellOSB3(int powerPin, int dataPin,
-                           float A, float B, float C)
-                         : SensorBase()
+CampbellOSB3::CampbellOSB3(int powerPin, int dataPin, float A, float B, float C)
+  : SensorBase(dataPin)
 {
   _powerPin = powerPin;
   _dataPin = dataPin;
@@ -25,6 +24,13 @@ CampbellOSB3::CampbellOSB3(int powerPin, int dataPin,
   _B = B;
   _C = C;
   // setup();
+}
+
+// The sensor installation location on the Mayfly
+String CampbellOSB3::getSensorLocation(void)
+{
+    sensorLocation = "ads" + String(_dataPin);
+    return sensorLocation;
 }
 
 // The function to set up connection to a sensor.
@@ -48,20 +54,6 @@ bool CampbellOSB3::wake(void)
 {
     digitalWrite(_powerPin, HIGH);
     return true;
-}
-
-// The sensor name
-String CampbellOSB3::getSensorName(void)
-{
-    sensorName = F("CampbellOSB3+");
-    return sensorName;
-}
-
-// The sensor installation location on the Mayfly
-String CampbellOSB3::getSensorLocation(void)
-{
-    sensorLocation = "ads" + String(_dataPin);
-    return sensorLocation;
 }
 
 // The static variables that need to be updated
@@ -108,51 +100,24 @@ bool CampbellOSB3::update(){
     return true;
 }
 
-String CampbellOSB3::getVarName(void)
-{
-    varName = F("turbidity");
-    return varName;
-}
-
-String CampbellOSB3::getVarUnit(void)
-{
-    String unit = F("nephelometricTurbidityUnit");
-    return unit;
-}
-
 float CampbellOSB3::getValue(void)
 {
-    if ((millis() > 30000 and millis() > CampbellOSB3::sensorLastUpdated + 30000) or CampbellOSB3::sensorLastUpdated == 0)
-    {
-        Serial.println(F("Value out of date, updating"));  // For debugging
-        CampbellOSB3::update();
-    }
+    checkForUpdate(CampbellOSB3::sensorLastUpdated);
     return CampbellOSB3::sensorValue;
 }
 
 
 
 
-CampbellOSB3_Turbidity::CampbellOSB3_Turbidity(int powerPin, int dataPin,
-                                           float A, float B, float C)
- : CampbellOSB3(powerPin, dataPin, A, B, C)
+CampbellOSB3_Turbidity::CampbellOSB3_Turbidity(int powerPin, int dataPin, float A, float B, float C)
+  : SensorBase(dataPin, F("CampbellOSB3+"), F("turbidity"), F("nephelometricTurbidityUnit"), F("TurbLow")),
+    CampbellOSB3(powerPin, dataPin, A, B, C)
 {}
 
-String CampbellOSB3_Turbidity::getDreamHost(void)
-{
-String column = F("TurbLow");
-return column;
-}
 
 
 
-CampbellOSB3_TurbHigh::CampbellOSB3_TurbHigh(int powerPin, int dataPin,
-                                             float A, float B, float C)
- : CampbellOSB3(powerPin, dataPin, A, B, C)
+CampbellOSB3_TurbHigh::CampbellOSB3_TurbHigh(int powerPin, int dataPin, float A, float B, float C)
+  : SensorBase(dataPin, F("CampbellOSB3+"), F("turbidity"), F("nephelometricTurbidityUnit"), F("TurbHigh")),
+    CampbellOSB3(powerPin, dataPin, A, B, C)
 {}
-
-String CampbellOSB3_TurbHigh::getDreamHost(void)
-{
-String column = F("TurbHigh");
-return column;
-}

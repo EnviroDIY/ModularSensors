@@ -45,7 +45,7 @@ Decagon5TM_Ea::Decagon5TM_Ea(char SDI12address, int powerPin, int dataPin, int n
 
 float Decagon5TM_Ea::getValue(void)
 {
-    checkForUpdate();
+    checkForUpdate(Decagon5TM::sensorLastUpdated);
     return Decagon5TM::sensorValue_ea;
 }
 
@@ -60,7 +60,7 @@ Decagon5TM_Temp::Decagon5TM_Temp(char SDI12address, int powerPin, int dataPin, i
 
 float Decagon5TM_Temp::getValue(void)
 {
-    checkForUpdate();
+    checkForUpdate(Decagon5TM::sensorLastUpdated);
     return Decagon5TM::sensorValue_temp;
 }
 
@@ -74,7 +74,7 @@ Decagon5TM_VWC::Decagon5TM_VWC(char SDI12address, int powerPin, int dataPin, int
 
 float Decagon5TM_VWC::getValue(void)
 {
-    checkForUpdate();
+    checkForUpdate(Decagon5TM::sensorLastUpdated);
     //the TOPP equation used to calculate VWC
     ea = Decagon5TM::sensorValue_ea;
     sensorValue_VWC = (4.3e-6*(ea*ea*ea))
