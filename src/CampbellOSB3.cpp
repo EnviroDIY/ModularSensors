@@ -14,47 +14,13 @@
 #include "CampbellOSB3.h"
 
 // The constructor - need the power pin, and the two data pins
-CampbellOSB3::CampbellOSB3(int powerPin, int dataPin,
-                           float A, float B, float C)
-                         : SensorBase()
+CampbellOSB3::CampbellOSB3(int powerPin, int dataPin, float A, float B, float C)
+  : SensorBase(dataPin, powerPin)
 {
-  _powerPin = powerPin;
-  _dataPin = dataPin;
-  _dataPin = dataPin;
-  _A = A;
-  _B = B;
-  _C = C;
-  // setup();
-}
-
-// The function to set up connection to a sensor.
-SENSOR_STATUS CampbellOSB3::setup(void)
-{
-    pinMode(_powerPin, OUTPUT);
-    pinMode(_dataPin, INPUT);
-    digitalWrite(_powerPin, LOW);
-    return SENSOR_READY;
-}
-
-// The function to put the sensor to sleep
-bool CampbellOSB3::sleep(void)
-{
-    digitalWrite(_powerPin, LOW);
-    return true;
-}
-
-// The function to wake up the sensor
-bool CampbellOSB3::wake(void)
-{
-    digitalWrite(_powerPin, HIGH);
-    return true;
-}
-
-// The sensor name
-String CampbellOSB3::getSensorName(void)
-{
-    sensorName = F("CampbellOSB3+");
-    return sensorName;
+    _A = A;
+    _B = B;
+    _C = C;
+    setup();
 }
 
 // The sensor installation location on the Mayfly
@@ -76,14 +42,8 @@ bool CampbellOSB3::update(){
     delay(500);
 
     // Check if the power is on, turn it on if not
-    bool wasOff = false;
-    int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
-    if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
-    {
-        wasOff = true;
-        digitalWrite(_powerPin, HIGH);
-        delay(1000);
-    }
+    bool wasOn = checkPowerOn();
+    if(!wasOn){powerUp();}
 
     int16_t adc0; // tells which channels are to be read
 
@@ -101,58 +61,30 @@ bool CampbellOSB3::update(){
     CampbellOSB3::sensorLastUpdated = millis();
 
     // Turn the power back off it it had been turned on
-    if (wasOff)
-        {digitalWrite(_powerPin, LOW);}
+    if(!wasOn){powerDown();}
 
     // Return true when finished
     return true;
 }
 
-String CampbellOSB3::getVarName(void)
-{
-    varName = F("turbidity");
-    return varName;
-}
-
-String CampbellOSB3::getVarUnit(void)
-{
-    String unit = F("nephelometricTurbidityUnit");
-    return unit;
-}
-
 float CampbellOSB3::getValue(void)
 {
-    if ((millis() > 30000 and millis() > CampbellOSB3::sensorLastUpdated + 30000) or CampbellOSB3::sensorLastUpdated == 0)
-    {
-        Serial.println(F("Value out of date, updating"));  // For debugging
-        CampbellOSB3::update();
-    }
+    checkForUpdate(CampbellOSB3::sensorLastUpdated);
     return CampbellOSB3::sensorValue;
 }
 
 
 
 
-CampbellOSB3_Turbidity::CampbellOSB3_Turbidity(int powerPin, int dataPin,
-                                           float A, float B, float C)
- : CampbellOSB3(powerPin, dataPin, A, B, C)
+CampbellOSB3_Turbidity::CampbellOSB3_Turbidity(int powerPin, int dataPin, float A, float B, float C)
+  : SensorBase(dataPin, powerPin, F("CampbellOSB3+"), F("turbidity"), F("nephelometricTurbidityUnit"), F("TurbLow")),
+    CampbellOSB3(powerPin, dataPin, A, B, C)
 {}
 
-String CampbellOSB3_Turbidity::getDreamHost(void)
-{
-String column = F("TurbLow");
-return column;
-}
 
 
 
-CampbellOSB3_TurbHigh::CampbellOSB3_TurbHigh(int powerPin, int dataPin,
-                                             float A, float B, float C)
- : CampbellOSB3(powerPin, dataPin, A, B, C)
+CampbellOSB3_TurbHigh::CampbellOSB3_TurbHigh(int powerPin, int dataPin, float A, float B, float C)
+  : SensorBase(dataPin, powerPin, F("CampbellOSB3+"), F("turbidity"), F("nephelometricTurbidityUnit"), F("TurbHigh")),
+    CampbellOSB3(powerPin, dataPin, A, B, C)
 {}
-
-String CampbellOSB3_TurbHigh::getDreamHost(void)
-{
-String column = F("TurbHigh");
-return column;
-}

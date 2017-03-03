@@ -26,16 +26,8 @@ public:
 
     bool update(void) override;
 
-    virtual String getVarName(void) = 0;
-    virtual String getVarUnit(void) = 0;
     virtual float getValue(void) = 0;
-    virtual String getDreamHost(void) = 0;
 protected:
-    SDI12 mySDI12;
-    SENSOR_STATUS sensorStatus;
-    String sensorName;
-    String sensorLocation;
-    static int numMeasurements;
     static unsigned long sensorLastUpdated;
     static float sensorValue_depth;
     static float sensorValue_temp;
@@ -49,13 +41,7 @@ class DecagonCTD_Depth : public virtual DecagonCTD
 public:
     DecagonCTD_Depth(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
 
-    String getVarName(void) override;
-    String getVarUnit(void) override;
     float getValue(void) override;
-    String getDreamHost(void) override;
-private:
-    String varName;
-    String unit;
 };
 
 
@@ -65,13 +51,7 @@ class DecagonCTD_Temp : public virtual DecagonCTD
 public:
     DecagonCTD_Temp(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
 
-    String getVarName(void) override;
-    String getVarUnit(void) override;
     float getValue(void) override;
-    String getDreamHost(void) override;
-private:
-    String varName;
-    String unit;
 };
 
 
@@ -81,13 +61,7 @@ class DecagonCTD_Cond : public virtual DecagonCTD
 public:
     DecagonCTD_Cond(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
 
-    String getVarName(void) override;
-    String getVarUnit(void) override;
     float getValue(void) override;
-    String getDreamHost(void) override;
-private:
-    String varName;
-    String unit;
 };
 
 #endif

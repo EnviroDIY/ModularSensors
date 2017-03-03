@@ -15,20 +15,6 @@
 
 
 
-// The constructor - needs to reference the super-class constructor
-// only need to tell it the battery pin
-MayflyOnboardSensors::MayflyOnboardSensors(char const *version) :SensorBase()
-{
-    _version = version;
-}
-
-// The sensor name
-String MayflyOnboardSensors::getSensorName(void)
-{
-    sensorName = F("EnviroDIYMayfly");
-    return sensorName;
-}
-
 // The static variables that need to be updated
 float MayflyOnboardTemp::sensorValue_temp = 0;
 float MayflyOnboardBatt::sensorValue_battery = 0;
@@ -39,8 +25,15 @@ unsigned long MayflyFreeRam::sensorLastUpdated = 0;
 
 
 
-// The constructor - needs to reference the super-class constructor
-MayflyOnboardTemp::MayflyOnboardTemp(char const *version) : MayflyOnboardSensors(version) {}
+MayflyOnboardTemp::MayflyOnboardTemp(char const *version)
+  : SensorBase(-1, -1, F("EnviroDIYMayfly"), F("temperatureDatalogger"), F("degreeCelsius"), F("BoardTemp"))
+{ _version = version; }
+// The location of the sensor on the Mayfly
+String MayflyOnboardTemp::getSensorLocation(void)
+{
+    sensorLocation = F("DS3231");
+    return sensorLocation;
+}
 
 // How to update the onboard sensors
 bool MayflyOnboardTemp::update(void)
@@ -55,61 +48,17 @@ bool MayflyOnboardTemp::update(void)
     return true;
 }
 
-// The location of the sensor on the Mayfly
-String MayflyOnboardTemp::getSensorLocation(void)
-{
-    sensorLocation = "DS3231";
-    return sensorLocation;
-}
-
-String MayflyOnboardTemp::getVarName(void)
-{
-    varName = F("temperatureDatalogger");
-    return varName;
-}
-
-String MayflyOnboardTemp::getVarUnit(void)
-{
-    String unit = F("degreeCelsius");
-    return unit;
-}
-
 float MayflyOnboardTemp::getValue(void)
 {
-    if ((millis() > 30000 and millis() > MayflyOnboardTemp::sensorLastUpdated + 30000) or MayflyOnboardTemp::sensorLastUpdated == 0)
-        {MayflyOnboardTemp::update();}
+    checkForUpdate(MayflyOnboardTemp::sensorLastUpdated);
     return MayflyOnboardTemp::sensorValue_temp;
 }
 
-String MayflyOnboardTemp::getDreamHost(void)
-{
-    String column = F("BoardTemp");
-    return column;
-}
-
-
-
-
 
 // The constructor - needs to reference the super-class constructor
-MayflyOnboardBatt::MayflyOnboardBatt(char const *version) : MayflyOnboardSensors(version){}
-
-// How to update the onboard sensors
-bool MayflyOnboardBatt::update(void)
-{
-    if (strcmp(_version, "v0.3") == 0)
-    {
-        // Set the pin to read the battery voltage
-        int _batteryPin = A6;
-        // Get the battery voltage
-        float rawBattery = analogRead(_batteryPin);
-        MayflyOnboardBatt::sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
-        MayflyOnboardBatt::sensorLastUpdated = millis();
-    }
-
-    // Return true when finished
-    return true;
-}
+MayflyOnboardBatt::MayflyOnboardBatt(char const *version)
+  : SensorBase(-1, -1, F("EnviroDIYMayfly"), F("batteryVoltage"), F("Volt"), F("Battery"))
+{ _version = version; }
 
 // The location of the sensor on the Mayfly
 String MayflyOnboardBatt::getSensorLocation(void)
@@ -118,37 +67,52 @@ String MayflyOnboardBatt::getSensorLocation(void)
     return sensorLocation;
 }
 
-String MayflyOnboardBatt::getVarName(void)
+// How to update the onboard sensors
+bool MayflyOnboardBatt::update(void)
 {
-    varName = F("batteryVoltage");
-    return varName;
-}
+    if (strcmp(_version, "v0.3") == 0 or strcmp(_version, "v0.4") == 0)
+    {
+        // Set the pin to read the battery voltage
+        int _batteryPin = A6;
+        // Get the battery voltage
+        float rawBattery = analogRead(_batteryPin);
+        MayflyOnboardBatt::sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
+        MayflyOnboardBatt::sensorLastUpdated = millis();
+    }
+    if (strcmp(_version, "v0.5") == 0)
+    {
+        // Set the pin to read the battery voltage
+        int _batteryPin = A6;
+        // Get the battery voltage
+        float rawBattery = analogRead(_batteryPin);
+        MayflyOnboardBatt::sensorValue_battery = (3.3 / 1023.) * 4.7 * rawBattery;
+        MayflyOnboardBatt::sensorLastUpdated = millis();
+    }
 
-
-String MayflyOnboardBatt::getVarUnit(void)
-{
-    unit = F("Volt");
-    return unit;
+    // Return true when finished
+    return true;
 }
 
 float MayflyOnboardBatt::getValue(void)
 {
-    if ((millis() > 30000 and millis() > MayflyOnboardBatt::sensorLastUpdated + 30000) or MayflyOnboardBatt::sensorLastUpdated == 0)
-        {MayflyOnboardBatt::update();}
+    checkForUpdate(MayflyOnboardBatt::sensorLastUpdated);
     return MayflyOnboardBatt::sensorValue_battery;
-}
-
-String MayflyOnboardBatt::getDreamHost(void)
-{
-    String column = F("Battery");
-    return column;
 }
 
 
 
 
 // The constructor - needs to reference the super-class constructor
-MayflyFreeRam::MayflyFreeRam(char const *version) : MayflyOnboardSensors(version) {}
+MayflyFreeRam::MayflyFreeRam(void)
+  : SensorBase(-1, -1, F("EnviroDIYMayfly"), F("Free SRAM"), F("Bit"), F("FreeRam"))
+{}
+
+// The location of the sensor on the Mayfly
+String MayflyFreeRam::getSensorLocation(void)
+{
+    sensorLocation = "AtMega1284P";
+    return sensorLocation;
+}
 
 // How to update the onboard sensors
 bool MayflyFreeRam::update(void)
@@ -163,35 +127,8 @@ bool MayflyFreeRam::update(void)
     return true;
 }
 
-// The location of the sensor on the Mayfly
-String MayflyFreeRam::getSensorLocation(void)
-{
-    sensorLocation = "AtMega1284P";
-    return sensorLocation;
-}
-
-String MayflyFreeRam::getVarName(void)
-{
-    varName = F("Free SRAM");
-    return varName;
-}
-
-
-String MayflyFreeRam::getVarUnit(void)
-{
-    unit = F("Bit");
-    return unit;
-}
-
 float MayflyFreeRam::getValue(void)
 {
-    if ((millis() > 30000 and millis() > MayflyFreeRam::sensorLastUpdated + 30000) or MayflyFreeRam::sensorLastUpdated == 0)
-        {MayflyFreeRam::update();}
+    checkForUpdate(MayflyFreeRam::sensorLastUpdated);
     return MayflyFreeRam::sensorValue_freeRam;
-}
-
-String MayflyFreeRam::getDreamHost(void)
-{
-    String column = F("FreeRam");
-    return column;
 }

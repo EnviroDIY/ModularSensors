@@ -17,56 +17,15 @@
 
 
 // The constructor - need the power pin, the excite pin, and the data pin
-MaxBotixSonar::MaxBotixSonar(int powerPin, int dataPin) : SensorBase()
-{
-    _powerPin = powerPin;
-    _dataPin = dataPin;
-}
-
-// The function to set up connection to a sensor.
-SENSOR_STATUS MaxBotixSonar::setup(void)
-{
-    pinMode(_powerPin, OUTPUT);
-    pinMode(_dataPin, INPUT);
-    digitalWrite(_powerPin, LOW);
-    return SENSOR_READY;
-}
-
-// The function to put the sensor to sleep
-bool MaxBotixSonar::sleep(void)
-{
-    digitalWrite(_powerPin, LOW);
-    return true;
-}
-
-// The function to wake up the sensor
-bool MaxBotixSonar::wake(void)
-{
-    digitalWrite(_powerPin, HIGH);
-    return true;
-}
-
-// The sensor name
-String MaxBotixSonar::getSensorName(void)
-{
-    sensorName = F("MaxBotixMaxSonar");
-    return sensorName;
-}
-
-// The sensor installation location on the Mayfly
-String MaxBotixSonar::getSensorLocation(void)
-{
-    sensorLocation = String(_powerPin) + "_" + String(_dataPin);
-    return sensorLocation;
-}
+MaxBotixSonar_Range::MaxBotixSonar_Range(int powerPin, int dataPin)
+  : SensorBase(dataPin, powerPin, F("MaxBotixMaxSonar"), F("distance"), F("millimeter"), F("SonarRange"))
+{}
 
 // The static variables that need to be updated
-float MaxBotixSonar::sensorValue_depth = 0.00;
-unsigned long MaxBotixSonar::sensorLastUpdated;
-
+unsigned long MaxBotixSonar_Range::sensorLastUpdated;
 
 // Uses TLL Communication to get data from MaxBotix
-bool MaxBotixSonar::update(){
+bool MaxBotixSonar_Range::update(){
 
     // define serial port for recieving data
     // output from maxSonar is inverted requiring true to be set.
@@ -83,18 +42,12 @@ bool MaxBotixSonar::update(){
     int rangeAttempts = 0;
 
     // Check if the power is on, turn it on if not
-    bool wasOff = false;
-    int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
-    if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
-    {
-        wasOff = true;
-        pinMode(_powerPin, OUTPUT);
-        digitalWrite(_powerPin, HIGH);
-        delay(1000);
-    }
+    bool wasOn = checkPowerOn();
+    if(!wasOn){powerUp();}
 
     // Serial.println(F("Beginning detection for Sonar"));  // For debugging
-    while (stringComplete == false && rangeAttempts < 50)
+    unsigned long timerStart = millis();
+    while (stringComplete == false && rangeAttempts < 50 && (millis() - timerStart) < 30000)
     {
         while (sonarSerial.available())
         {
@@ -140,7 +93,7 @@ bool MaxBotixSonar::update(){
                 if (result == 300 || result == 500 || result == 4999 || result == 9999)
                 {
                     result = badResult;
-                    MaxBotixSonar::sensorValue_depth = result;
+                    sensorValue_depth = result;
                     stringComplete = false;
                     rangeAttempts++;
                     // Serial.print(F("Bad or Suspicious Result, Retry Attempt #")); // For debugging
@@ -160,54 +113,21 @@ bool MaxBotixSonar::update(){
         }
     }
 
-    MaxBotixSonar::sensorValue_depth = result;
+    sensorValue_depth = result;
     // Serial.println(MaxBotixSonar::sensorValue_depth);  // For debugging
 
     // Turn the power back off it it had been turned on
-    if (wasOff)
-        {digitalWrite(_powerPin, LOW);}
+    if(!wasOn){powerDown();}
 
     // Return true when finished
     sonarSerial.flush();  // Clear cache ready for next reading
-    MaxBotixSonar::sensorLastUpdated = millis();
+    MaxBotixSonar_Range::sensorLastUpdated = millis();
     return true;
 }
 
 
-
-
-MaxBotixSonar_Depth::MaxBotixSonar_Depth(int powerPin, int dataPin)
-: MaxBotixSonar(powerPin, dataPin)
+float MaxBotixSonar_Range::getValue(void)
 {
-    _powerPin = powerPin;
-    _dataPin = dataPin;
-    setup();
-}
-
-String MaxBotixSonar_Depth::getVarName(void)
-{
-    varName = F("waterDepth");
-    return varName;
-}
-
-String MaxBotixSonar_Depth::getVarUnit(void)
-{
-    String unit = F("millimeter");
-    return unit;
-}
-
-float MaxBotixSonar_Depth::getValue(void)
-{
-    if ((millis() > 30000 and millis() > MaxBotixSonar::sensorLastUpdated + 30000) or MaxBotixSonar::sensorLastUpdated == 0)
-    {
-        Serial.println(F("Value out of date, updating"));  // For debugging
-        MaxBotixSonar::update();
-    }
-    return MaxBotixSonar::sensorValue_depth;
-}
-
-String MaxBotixSonar_Depth::getDreamHost(void)
-{
-    String column = F("SonarRange");
-    return column;
+    checkForUpdate(MaxBotixSonar_Range::sensorLastUpdated);
+    return sensorValue_depth;
 }
