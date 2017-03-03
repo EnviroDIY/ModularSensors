@@ -21,8 +21,8 @@ DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin, int num
     setup();
 }
 
-// The sensor name
-String DecagonSDI12::getSensorName(void)
+// A helper functeion to run the "sensor info" SDI12 command
+void DecagonSDI12::getSensorInfo(void)
 {
     SDI12 mySDI12(_dataPin);
     mySDI12.begin();
@@ -53,15 +53,46 @@ String DecagonSDI12::getSensorName(void)
         }
     }
    // if (sdiResponse.length() > 1) Serial.println(sdiResponse);  // For debugging
-    sensorName = sdiResponse.substring(3,17);
-    sensorName.trim();
+    _sensorName = sdiResponse.substring(3,17);
+    _sensorName.trim();
+    _sensorVendor = sdiResponse.substring(3,11);
+    _sensorVendor.trim();
+    _sensorModel = sdiResponse.substring(11,17);
+    _sensorModel.trim();
+    _sensorVersion = sdiResponse.substring(17,20);
+    _sensorVersion.trim();
+    _sensorSerialNumber = sdiResponse.substring(20,17);
+    _sensorSerialNumber.trim();
     mySDI12.flush();
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
 
-    return sensorName;
 }
+
+// The sensor name
+String DecagonSDI12::getSensorName(void)
+{return SensorBase::getSensorName();}
+
+// The sensor name
+String DecagonSDI12::getSensorVendor(void)
+{return _sensorVendor;}
+
+// The sensor name
+String DecagonSDI12::getSensorModel(void)
+{return _sensorModel;}
+
+// The sensor name
+String DecagonSDI12::getSensorVersion(void)
+{return _sensorVersion;}
+
+// The sensor name
+String DecagonSDI12::getSensorSerialNumber(void)
+{return _sensorSerialNumber;}
+
+// The sensor name
+String DecagonSDI12::getSensorName(void)
+{return SensorBase::getSensorName();}
 
 // The sensor installation location on the Mayfly
 String DecagonSDI12::getSensorLocation(void)
