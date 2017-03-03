@@ -1,20 +1,20 @@
 /*
- *CampbellOSB3.cpp
+ *CampbellOBS3.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Work in progress by Sara Damiano taken from code written
  *by Shannon Hicks and templates from USU.
  *
- *This file is for the Campbell Scientific OSB-3+
+ *This file is for the Campbell Scientific OBS-3+
  *This is dependent on the Adafruit ADS1015 library.
 */
 
 #include <Arduino.h>
 #include <Adafruit_ADS1015.h>
-#include "CampbellOSB3.h"
+#include "CampbellOBS3.h"
 
 // The constructor - need the power pin, and the two data pins
-CampbellOSB3::CampbellOSB3(int powerPin, int dataPin, float A, float B, float C)
+CampbellOBS3::CampbellOBS3(int powerPin, int dataPin, float A, float B, float C)
   : SensorBase(dataPin, powerPin)
 {
     _A = A;
@@ -24,18 +24,18 @@ CampbellOSB3::CampbellOSB3(int powerPin, int dataPin, float A, float B, float C)
 }
 
 // The sensor installation location on the Mayfly
-String CampbellOSB3::getSensorLocation(void)
+String CampbellOBS3::getSensorLocation(void)
 {
     sensorLocation = "ads" + String(_dataPin);
     return sensorLocation;
 }
 
 // The static variables that need to be updated
-float CampbellOSB3::sensorValue = 0;
-unsigned long CampbellOSB3::sensorLastUpdated;
+float CampbellOBS3::sensorValue = 0;
+unsigned long CampbellOBS3::sensorLastUpdated;
 
 // Uses Auxillary ADD to convert data
-bool CampbellOSB3::update(){
+bool CampbellOBS3::update(){
 
     // Start the Auxillary ADD
     Adafruit_ADS1115 ads;     /* Use this for the 16-bit version */
@@ -57,8 +57,8 @@ bool CampbellOSB3::update(){
     // TODO:  set this up so calibration can be input at top for each instrument
     sensorValue =  (4.6641 * square (voltage)) + (92.512 * voltage) - 0.38548;
 
-    CampbellOSB3::sensorValue = sensorValue;
-    CampbellOSB3::sensorLastUpdated = millis();
+    CampbellOBS3::sensorValue = sensorValue;
+    CampbellOBS3::sensorLastUpdated = millis();
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
@@ -67,24 +67,24 @@ bool CampbellOSB3::update(){
     return true;
 }
 
-float CampbellOSB3::getValue(void)
+float CampbellOBS3::getValue(void)
 {
-    checkForUpdate(CampbellOSB3::sensorLastUpdated);
-    return CampbellOSB3::sensorValue;
+    checkForUpdate(CampbellOBS3::sensorLastUpdated);
+    return CampbellOBS3::sensorValue;
 }
 
 
 
 
-CampbellOSB3_Turbidity::CampbellOSB3_Turbidity(int powerPin, int dataPin, float A, float B, float C)
-  : SensorBase(dataPin, powerPin, F("CampbellOSB3+"), F("turbidity"), F("nephelometricTurbidityUnit"), F("TurbLow")),
-    CampbellOSB3(powerPin, dataPin, A, B, C)
+CampbellOBS3_Turbidity::CampbellOBS3_Turbidity(int powerPin, int dataPin, float A, float B, float C)
+  : SensorBase(dataPin, powerPin, F("CampbellOBS3+"), F("turbidity"), F("nephelometricTurbidityUnit"), F("TurbLow")),
+    CampbellOBS3(powerPin, dataPin, A, B, C)
 {}
 
 
 
 
-CampbellOSB3_TurbHigh::CampbellOSB3_TurbHigh(int powerPin, int dataPin, float A, float B, float C)
-  : SensorBase(dataPin, powerPin, F("CampbellOSB3+"), F("turbidity"), F("nephelometricTurbidityUnit"), F("TurbHigh")),
-    CampbellOSB3(powerPin, dataPin, A, B, C)
+CampbellOBS3_TurbHigh::CampbellOBS3_TurbHigh(int powerPin, int dataPin, float A, float B, float C)
+  : SensorBase(dataPin, powerPin, F("CampbellOBS3+"), F("turbidity"), F("nephelometricTurbidityUnit"), F("TurbHigh")),
+    CampbellOBS3(powerPin, dataPin, A, B, C)
 {}
