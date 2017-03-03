@@ -196,7 +196,7 @@ bool updateAllSensors()
         // Check for and skip the updates of any identical sensors
         for (int j = i+1; j < sensorCount; j++)
         {
-            if (/*SENSOR_LIST[i]->getSensorName() == SENSOR_LIST[j]->getSensorName() &&*/
+            if (SENSOR_LIST[i]->getSensorName() == SENSOR_LIST[j]->getSensorName() &&
                 SENSOR_LIST[i]->getSensorLocation() == SENSOR_LIST[j]->getSensorLocation())
             {
                 // Prints for debugging

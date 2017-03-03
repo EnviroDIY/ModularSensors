@@ -13,13 +13,19 @@ const char *MFVersion = "v0.3";
 // sdi-12 data pin is usually, pin 7 on shield 3.0
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const int numberReadings = 10;  // The number of readings to average
-const int CTDData = 7;  // The pin the CTD is attached to
+const int SDI12Data = 7;  // The pin the CTD is attached to
 const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
 
 // Decagon 5TM: pin settings
 // sdi-12 data pin is usually, pin 7 on shield 3.0
 const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
-const int TMData = 7;  // The pin the 5TM is attached to
+// const int SDI12Data = 7;  // The pin the 5TM is attached to
+// const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
+
+// Decagon ES2: pin settings
+// sdi-12 data pin is usually, pin 7 on shield 3.0
+const char *ES2DI12address = "3";  // The SDI-12 Address of the 5-TM
+// const int SDI12Data = 7;  // The pin the 5TM is attached to
 // const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
 
 // MaxBotix Sonar: pin settings
@@ -27,17 +33,17 @@ const int TMData = 7;  // The pin the 5TM is attached to
 const int SonarData = 11;     // recieve pin
 const int SonarExcite = 10;   // excite (power) pin
 
-// Campbell OSB 3+: pin settings
-//   Campbell OSB 3+ Low Range calibration
-const int OSBLowPin = 0;  // The low voltage analog pin
-const float OSBLow_A = -2.4763E-07;  // The "A" value (X^2) from the low range calibration
-const float OSBLow_B = 1.0569E-01;  // The "B" value (X) from the low range calibration
-const float OSBLow_C = -2.9928E-01;  // The "C" value from the low range calibration
-//   Campbell OSB 3+ High Range calibration
-const int OSBHighPin = 1;  // The high voltage analog pin
-const float OSBHigh_A = 3.5310E-05;  // The "A" value (X^2) from the high range calibration
-const float OSBHigh_B = 4.0111E-01;  // The "B" value (X) from the high range calibration
-const float OSBHigh_C = 2.0709E-01;  // The "C" value from the high range calibration
+// Campbell OBS 3+: pin settings
+//   Campbell OBS 3+ Low Range calibration
+const int OBSLowPin = 0;  // The low voltage analog pin
+const float OBSLow_A = -2.4763E-07;  // The "A" value (X^2) from the low range calibration
+const float OBSLow_B = 1.0569E-01;  // The "B" value (X) from the low range calibration
+const float OBSLow_C = -2.9928E-01;  // The "C" value from the low range calibration
+//   Campbell OBS 3+ High Range calibration
+const int OBSHighPin = 1;  // The high voltage analog pin
+const float OBSHigh_A = 3.5310E-05;  // The "A" value (X^2) from the high range calibration
+const float OBSHigh_B = 4.0111E-01;  // The "B" value (X) from the high range calibration
+const float OBSHigh_C = 2.0709E-01;  // The "C" value from the high range calibration
 // const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
 
 
@@ -47,7 +53,8 @@ const float OSBHigh_C = 2.0709E-01;  // The "C" value from the high range calibr
 #include <MayflyOnboardSensors.h>
 #include <DecagonCTD.h>
 #include <Decagon5TM.h>
-#include <CampbellOSB3.h>
+#include <DecagonES2.h>
+#include <CampbellOBS3.h>
 #include <MaxBotixSonar.h>
 
 
@@ -92,15 +99,17 @@ const char* APN = "apn.konekt.io";  // The APN for the GPRSBee
 // 5. The array that contains all valid sensors
 // -----------------------------------------------
 SensorBase* SENSOR_LIST[] = {
-    new Decagon5TM_Ea(*TMSDI12address, switchedPower, TMData),
-    new Decagon5TM_Temp(*TMSDI12address, switchedPower, TMData),
-    new Decagon5TM_VWC(*TMSDI12address, switchedPower, TMData),
-    new DecagonCTD_Depth(*CTDSDI12address, switchedPower, CTDData, numberReadings),
-    new DecagonCTD_Temp(*CTDSDI12address, switchedPower, CTDData, numberReadings),
-    new DecagonCTD_Cond(*CTDSDI12address, switchedPower, CTDData, numberReadings),
+    new DecagonCTD_Depth(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
+    new DecagonCTD_Temp(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
+    new DecagonCTD_Cond(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
+    new Decagon5TM_Ea(*TMSDI12address, switchedPower, SDI12Data),
+    new Decagon5TM_Temp(*TMSDI12address, switchedPower, SDI12Data),
+    new Decagon5TM_VWC(*TMSDI12address, switchedPower, SDI12Data),
+    new DecagonES2_Cond(*ES2DI12address, switchedPower, SDI12Data),
+    new DecagonES2_Temp(*ES2DI12address, switchedPower, SDI12Data),
     new MaxBotixSonar_Range(SonarExcite, SonarData),
-    new CampbellOSB3_Turbidity(switchedPower, OSBLowPin, OSBLow_A, OSBLow_B, OSBLow_C),
-    new CampbellOSB3_TurbHigh(switchedPower, OSBHighPin, OSBHigh_A, OSBHigh_B, OSBHigh_C),
+    new CampbellOBS3_Turbidity(switchedPower, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C),
+    new CampbellOBS3_TurbHigh(switchedPower, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C),
     new MayflyOnboardTemp(MFVersion),
     new MayflyOnboardBatt(MFVersion),
     new MayflyFreeRam()
