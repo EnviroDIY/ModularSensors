@@ -13,13 +13,19 @@ const char *MFVersion = "v0.3";
 // sdi-12 data pin is usually, pin 7 on shield 3.0
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const int numberReadings = 10;  // The number of readings to average
-const int CTDData = 7;  // The pin the CTD is attached to
+const int SDI12Data = 7;  // The pin the CTD is attached to
 const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
 
 // Decagon 5TM: pin settings
 // sdi-12 data pin is usually, pin 7 on shield 3.0
 const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
-const int TMData = 7;  // The pin the 5TM is attached to
+// const int SDI12Data = 7;  // The pin the 5TM is attached to
+// const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
+
+// Decagon ES2: pin settings
+// sdi-12 data pin is usually, pin 7 on shield 3.0
+const char *ES2DI12address = "3";  // The SDI-12 Address of the 5-TM
+// const int SDI12Data = 7;  // The pin the 5TM is attached to
 // const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
 
 // MaxBotix Sonar: pin settings
@@ -47,6 +53,7 @@ const float OBSHigh_C = 2.0709E-01;  // The "C" value from the high range calibr
 #include <MayflyOnboardSensors.h>
 #include <DecagonCTD.h>
 #include <Decagon5TM.h>
+#include <DecagonES2.h>
 #include <CampbellOBS3.h>
 #include <MaxBotixSonar.h>
 
@@ -92,12 +99,14 @@ const char* APN = "apn.konekt.io";  // The APN for the GPRSBee
 // 5. The array that contains all valid sensors
 // -----------------------------------------------
 SensorBase* SENSOR_LIST[] = {
-    new Decagon5TM_Ea(*TMSDI12address, switchedPower, TMData),
-    new Decagon5TM_Temp(*TMSDI12address, switchedPower, TMData),
-    new Decagon5TM_VWC(*TMSDI12address, switchedPower, TMData),
-    new DecagonCTD_Depth(*CTDSDI12address, switchedPower, CTDData, numberReadings),
-    new DecagonCTD_Temp(*CTDSDI12address, switchedPower, CTDData, numberReadings),
-    new DecagonCTD_Cond(*CTDSDI12address, switchedPower, CTDData, numberReadings),
+    new DecagonCTD_Depth(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
+    new DecagonCTD_Temp(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
+    new DecagonCTD_Cond(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
+    new Decagon5TM_Ea(*TMSDI12address, switchedPower, SDI12Data),
+    new Decagon5TM_Temp(*TMSDI12address, switchedPower, SDI12Data),
+    new Decagon5TM_VWC(*TMSDI12address, switchedPower, SDI12Data),
+    new DecagonES2_Cond(*ES2DI12address, switchedPower, SDI12Data),
+    new DecagonES2_Temp(*ES2DI12address, switchedPower, SDI12Data),
     new MaxBotixSonar_Range(SonarExcite, SonarData),
     new CampbellOBS3_Turbidity(switchedPower, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C),
     new CampbellOBS3_TurbHigh(switchedPower, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C),
