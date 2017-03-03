@@ -16,17 +16,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // -----------------------------------------------
 // 1. Include all required libraries
 // -----------------------------------------------
-#include <avr/sleep.h>
-#include <SPI.h>
-#include <SdFat.h>
-#include <RTCTimer.h>        // Works with the DS3231 RTC to easily perform scheduled tasks.
 #include <Sodaq_DS3231.h>    // Controls the DS3231 Real Time Clock (RTC) built into the EnviroDIY Mayfly.
-#include <Sodaq_PcInt_PCINT0.h> // Administrates and handles pin change interrupts
-#include <GPRSbee.h>         // Communicates with the GPRSBee radio module to send data over cellular network.
+#include <SdFat.h>  // Controls communication with the SD card
 #include "Config.h"
 
-// The timer functions for the RTC
-RTCTimer timer;
 
 // Variables for the timer function
 long currentepochtime = 0;
