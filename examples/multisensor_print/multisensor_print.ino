@@ -200,7 +200,7 @@ bool updateAllSensors()
             else {break;}
         }
         Serial.println(F(" ---"));  // For Debugging
-        delay(250);  // A short delay before next sensor;
+        // delay(250);  // A short delay before next sensor - is this needed??;
     }
 
     return success;
@@ -320,20 +320,22 @@ void loop()
 {
     // Print a line to show new reading
     Serial.println(F("------------------------------------------"));
-    // Turn on the LED
-    digitalWrite(GREEN_LED, HIGH);
     // Power the sensors;
     digitalWrite(switchedPower, HIGH);
+    // One second warm-up time
+    // delay(1000);
+    // Turn on the LED to show we're taking a reading
+    digitalWrite(GREEN_LED, HIGH);
     // Get the sensor value(s), store as string
     updateAllSensors();
     // Print the data to the screen
     Serial.println(generateSensorDataCSV());
     //Save the data record to the log file
     logData(generateSensorDataCSV());
+    // Turn off the LED to show we're done with the reading
+    digitalWrite(GREEN_LED, LOW);
     // Cut Power to the sensors;
     digitalWrite(switchedPower, LOW);
-    // Turn off the LED
-    digitalWrite(GREEN_LED, LOW);
     // Print a to close it off
     Serial.println(F("------------------------------------------\n"));
 

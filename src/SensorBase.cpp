@@ -2,8 +2,7 @@
  *SensorBase.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
- *Work in progress by Sara Damiano taken from code written
- *by Shannon Hicks and templates from USU.
+ *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the sensor base class.
 */
@@ -49,7 +48,7 @@ void SensorBase::powerUp(void)
 {
     // Serial.println(F("Powering on Sensor"));  // For debugging
     digitalWrite(_powerPin, HIGH);
-    delay(1000);
+    delay(500);
 }
 
 // This is a helper function to turn off sensor power
@@ -75,7 +74,7 @@ SENSOR_STATUS SensorBase::setup(void)
 SENSOR_STATUS SensorBase::getStatus(void){return SENSOR_READY;}
 
 // The function to put a sensor to sleep
-// By default, powers up and returns true
+// By default, powers down and returns true
 bool SensorBase::sleep(void)
 {
     powerDown();
@@ -83,7 +82,7 @@ bool SensorBase::sleep(void)
 }
 
 // The function to wake up a sensor
-// By default, powers down and returns true
+// By default, powers up and returns true
 bool SensorBase::wake(void)
 {
     if(!checkPowerOn()){powerUp();}

@@ -2,8 +2,7 @@
  *MaxBotixSonar.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
- *Work in progress by Sara Damiano taken from code written
- *by Shannon Hicks and templates from USU.
+ *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the MaxBotix Sonar Library
  *It is dependent on Software Serial.
@@ -20,7 +19,9 @@
 class MaxBotixSonar_Range : public virtual SensorBase
 {
 public:
-    MaxBotixSonar_Range(int powerPin, int dataPin);
+    MaxBotixSonar_Range(int powerPin, int dataPin, int triggerPin = -1);
+
+    SENSOR_STATUS setup(void) override;
 
     bool update(void) override;
 
@@ -28,6 +29,11 @@ public:
 protected:
     float sensorValue_depth;
     static unsigned long sensorLastUpdated;
+private:
+    int _triggerPin;
+    int result;
+    bool stringComplete;
+    int rangeAttempts;
 };
 
 #endif
