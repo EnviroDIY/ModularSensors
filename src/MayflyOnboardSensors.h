@@ -16,52 +16,28 @@
 #include "SensorBase.h"
 
 
-// The main class for the Mayfly
-class MayflyOnboardSensors : public virtual SensorBase
-{
-public:
-    MayflyOnboardSensors(char const *version);
-
-    virtual bool update(void)  = 0;
-    String getSensorName(void) override;
-    virtual String getSensorLocation(void) =0 ;
-
-    virtual String getVarName(void) = 0;
-    virtual String getVarUnit(void) = 0;
-    virtual float getValue(void) = 0;
-    virtual String getDreamHost(void) = 0;
-protected:
-    SENSOR_STATUS sensorStatus;
-    String sensorName;
-    String sensorLocation;
-    String varName;
-    String unit;
-    int _batteryPin;
-    const char *_version;
-};
+// There is no ""Main" class for the Mayfly, these are really 3 independent classes
 
 
 // Defines the "Temperature Sensor"
-class MayflyOnboardTemp : public virtual MayflyOnboardSensors
+class MayflyOnboardTemp : public virtual SensorBase
 {
 public:
     MayflyOnboardTemp(char const *version);
-
-    bool update(void) override;
     String getSensorLocation(void) override;
 
-    String getVarName(void) override;
-    String getVarUnit(void) override;
+    bool update(void) override;
     float getValue(void) override;
-    String getDreamHost(void) override;
 private:
+    const char *_version;
+    String sensorLocation;
     static float sensorValue_temp;
     static unsigned long sensorLastUpdated;
 };
 
 
 // Defines the "Battery Sensor"
-class MayflyOnboardBatt : public virtual MayflyOnboardSensors
+class MayflyOnboardBatt : public virtual SensorBase
 {
 public:
     MayflyOnboardBatt(char const *version);
@@ -69,30 +45,29 @@ public:
     bool update(void) override;
     String getSensorLocation(void) override;
 
-    String getVarName(void) override;
-    String getVarUnit(void) override;
     float getValue(void) override;
-    String getDreamHost(void) override;
 private:
+    const char *_version;
+    int _batteryPin;
+    String sensorLocation;
     static float sensorValue_battery;
     static unsigned long sensorLastUpdated;
 };
 
 
 // Defines the "Free Ram" This is not a sensor at all but a board diagnostidc
-class MayflyFreeRam : public virtual MayflyOnboardSensors
+class MayflyFreeRam : public virtual SensorBase
 {
 public:
-    MayflyFreeRam(char const *version);
+    MayflyFreeRam(void);
 
     bool update(void) override;
     String getSensorLocation(void) override;
 
-    String getVarName(void) override;
-    String getVarUnit(void) override;
     float getValue(void) override;
-    String getDreamHost(void) override;
 private:
+    const char *_version;
+    String sensorLocation;
     static float sensorValue_freeRam;
     static unsigned long sensorLastUpdated;
 };

@@ -49,7 +49,6 @@ Temporary Items
 # PyCharm
 .idea/
 
-
 # Atom / PlatformIO
 .pioenvs
 .piolibdeps
@@ -58,10 +57,5 @@ Temporary Items
 lib/readme.txt
 
 # Other
-SRGD_Home_profile_2026.xml
-SWRC_profile_2026.xml
-POST_test.py
-examples/post_test_1
-examples/post_test_2
 examples/sonar_test
 examples/SDI12_test

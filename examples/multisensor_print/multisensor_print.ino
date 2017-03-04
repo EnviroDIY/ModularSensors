@@ -16,17 +16,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // -----------------------------------------------
 // 1. Include all required libraries
 // -----------------------------------------------
-#include <avr/sleep.h>
-#include <SPI.h>
-#include <SdFat.h>
-#include <RTCTimer.h>        // Works with the DS3231 RTC to easily perform scheduled tasks.
 #include <Sodaq_DS3231.h>    // Controls the DS3231 Real Time Clock (RTC) built into the EnviroDIY Mayfly.
-#include <Sodaq_PcInt_PCINT0.h> // Administrates and handles pin change interrupts
-#include <GPRSbee.h>         // Communicates with the GPRSBee radio module to send data over cellular network.
+#include <SdFat.h>  // Controls communication with the SD card
 #include "Config.h"
 
-// The timer functions for the RTC
-RTCTimer timer;
 
 // Variables for the timer function
 long currentepochtime = 0;
@@ -101,9 +94,23 @@ bool setupSensors()
     bool success = true;
     for (int i = 0; i < sensorCount; i++)
     {
-        success &= SENSOR_LIST[i]->setup();
+        // Check for and skip the set up of any identical sensors
+        for (int j = i+1; j < sensorCount; j++)
+        {
+            success &= SENSOR_LIST[i]->setup();
+            if (SENSOR_LIST[i]->setup() == false)
+            {
+                Serial.print(F("Failed to set up "));
+                Serial.print(SENSOR_LIST[i]->getSensorName());
+                Serial.print(F(" expected to be installed at "));
+                Serial.println(SENSOR_LIST[i]->getSensorLocation());
+            }
+            if (SENSOR_LIST[i]->getSensorName() == SENSOR_LIST[j]->getSensorName() &&
+                SENSOR_LIST[i]->getSensorLocation() == SENSOR_LIST[j]->getSensorLocation())
+            { i++; }
+            else {break;}
+        }
     }
-
     return success;
 }
 
@@ -114,7 +121,7 @@ void setupLogFile()
     if (!SD.begin(SD_SS_PIN))
     {Serial.println(F("Error: SD card failed to initialise or is missing."));    }
 
-  fileName += String(LoggerID) + F("_") + getDateTime_ISO8601().substring(0,10) + F(".txt");
+  fileName += String(LoggerID) + F("_") + getDateTime_ISO8601().substring(0,10) + F(".csv");
   // Check if the file already exists
   bool oldFile = SD.exists(fileName.c_str());
 
@@ -264,15 +271,6 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenred4flash();
 
-    // Count the number of sensors
-    sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
-
-    // Set up all the sensors
-    setupSensors();
-
-    // Set up the log file
-    setupLogFile();
-
     // Print a start-up note to the first serial port
     Serial.println(F("WebSDL Device: EnviroDIY Mayfly"));
     Serial.print(F("Now running "));
@@ -281,10 +279,39 @@ void setup()
     Serial.println(freeRam());
     Serial.print(F("Current Mayfly RTC time is: "));
     Serial.println(getDateTime_ISO8601());
+
+    // Count the number of sensors
+    sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
     Serial.print(F("There are "));
     Serial.print(String(sensorCount));
     Serial.println(F(" variables being recorded"));
+
+    // Set up all the sensors  make 5 attempts before giving up
+    int setupTries = 0;
+    bool success = false;
+    while (setupTries < 5)
+    {
+        if (setupSensors() == true) {
+            success = true;
+            break;
+        }
+        else {setupTries++;}
+    }
+    if (success != true)
+    {
+        Serial.println(F("Set up failed!"));
+        // leave the Red LED on
+        digitalWrite(RED_LED, HIGH);
+    }
+
+    // Set up the log file
+    Serial.println(F("Setting up the file on the SD Card"));
+    setupLogFile();
+
+    Serial.println(F("Setup finished!"));
+    Serial.println(F("------------------------------------------\n"));
 }
+
 
 // -----------------------------------------------
 // Main loop function

@@ -6,7 +6,7 @@
  *by Shannon Hicks and templates from USU.
  *
  *This file is for the Decagon Devices CTD-10
- *It is dependent on the EnviroDIY SDI-12 library.
+ *It is dependent on the EnviroDIY SDI-12 library and the DecagonSDI12 super class.
  *
  *Documentation fo the SDI-12 Protocol commands and responses
  *for the Decagon CTD-10 can be found at:
@@ -14,223 +14,72 @@
 */
 
 #include "DecagonCTD.h"
-#include <SDI12_PCINT3.h>
 
 
-// The constructor - need the SDI-12 address, the number of readings to average,
-// the power pin, and the data pin
-DecagonCTD::DecagonCTD(int numReadings, char CTDaddress, int powerPin, int dataPin) : SensorBase()
-{
-  _numReadings = numReadings;
-  _CTDaddress = CTDaddress;
-  _powerPin = powerPin;
-  _dataPin = dataPin;
-}
+// The constructor - need the SDI-12 address, the power pin, the data pin, and the number of readings
+DecagonCTD::DecagonCTD(char SDI12address, int powerPin, int dataPin, int numReadings)
+ : SensorBase(dataPin, powerPin),
+   DecagonSDI12(SDI12address, powerPin, dataPin, numReadings)
+{}
 
-// The function to put the sensor to sleep
-bool DecagonCTD::sleep(void)
-{
-    digitalWrite(_powerPin, LOW);
-    return true;
-}
-
-// The function to wake up the sensor
-bool DecagonCTD::wake(void)
-{
-    digitalWrite(_powerPin, HIGH);
-    return true;
-}
-
-// The function to set up connection to a sensor.
-SENSOR_STATUS DecagonCTD::setup(void)
-{
-    pinMode(_dataPin, INPUT);
-    pinMode(_powerPin, OUTPUT);
-    digitalWrite(_powerPin, LOW);
-    return SENSOR_READY;
-}
-
-// The sensor name
-String DecagonCTD::getSensorName(void)
-{
-    sensorName = F("DecagonCTD-10");
-    return sensorName;
-}
-
-// The sensor installation location on the Mayfly
-String DecagonCTD::getSensorLocation(void)
-{
-    sensorLocation = String(_CTDaddress) + "_" + String(_dataPin);
-    return sensorLocation;
-}
 
 // The static variables that need to be updated
-float DecagonCTD::sensorValue_cond = 0;
-float DecagonCTD::sensorValue_temp = 0;
 float DecagonCTD::sensorValue_depth = 0;
-unsigned long DecagonCTD::sensorLastUpdated;
-
-// Uses SDI-12 to communicate with a Decagon Devices CTD
-bool DecagonCTD::update(){
-
-    SDI12 CTDSDI12(_dataPin);
-    // CTDSDI12.setDiagStream(Serial);  // For debugging
-    CTDSDI12.begin();
-    delay(500); // allow things to settle
-
-    // Check if the power is on, turn it on if not
-    bool wasOff = false;
-    int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
-    if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
-    {
-        wasOff = true;
-        pinMode(_powerPin, OUTPUT);
-        digitalWrite(_powerPin, HIGH);
-        delay(1000);
-    }
-
-    // averages x readings in this one loop
-    for (int j = 0; j < _numReadings; j++)
-    {
-        String command = "";
-        command += _CTDaddress;
-        command += "M!"; // SDI-12 measurement command format  [address]['M'][!]
-        CTDSDI12.sendCommand(command);
-        delay(500); // wait while the measurment is taken.
-        // It will return approximately how long it will take to take a measurement
-        // We aren't intereted in that number and will let the data flush.
-        CTDSDI12.flush();
-
-        command = "";
-        command += _CTDaddress;
-        command += "D0!"; // SDI-12 command to get data [address][D][dataOption][!]
-        CTDSDI12.sendCommand(command);
-        delay(500);
-        if (CTDSDI12.available() > 0)
-        {
-            CTDSDI12.parseFloat();  // First return is the sensor address
-            int x = CTDSDI12.parseInt();  // Depth measurement in millimeters
-            float y = CTDSDI12.parseFloat();  // Temperature measurement in °C
-            int z = CTDSDI12.parseInt();  // Bulk Electrical Conductivity measurement in μS/cm.
-
-            sensorValue_depth += x;
-            sensorValue_temp += y;
-            sensorValue_cond += z;
-        }
-        CTDSDI12.flush();
-    }     // end of averaging loop
-
-    float numRead_f = (float) _numReadings;
-    sensorValue_depth /= numRead_f ;
-    sensorValue_temp /= numRead_f ;
-    sensorValue_cond /= numRead_f ;
-
-    DecagonCTD::sensorValue_cond = sensorValue_cond;
-    DecagonCTD::sensorValue_temp = sensorValue_temp;
-    DecagonCTD::sensorValue_depth = sensorValue_depth;
+float DecagonCTD::sensorValue_temp = 0;
+float DecagonCTD::sensorValue_cond = 0;
+unsigned long DecagonCTD::sensorLastUpdated = 0;
+bool DecagonCTD::update()
+{
+    DecagonSDI12::update();
+    DecagonCTD::sensorValue_depth = DecagonSDI12::sensorValues[0];
+    DecagonCTD::sensorValue_temp = DecagonSDI12::sensorValues[1];
+    DecagonCTD::sensorValue_cond = DecagonSDI12::sensorValues[2];
+    // Make note of the last time updated
     DecagonCTD::sensorLastUpdated = millis();
-
-
-    // Turn the power back off it it had been turned on
-    if (wasOff)
-        {digitalWrite(_powerPin, LOW);}
-
-    // Return true when finished
     return true;
 }
 
 
 
 
-DecagonCTD_Cond::DecagonCTD_Cond(int numReadings, char CTDaddress, int powerPin, int dataPin)
- : DecagonCTD(numReadings, CTDaddress, powerPin, dataPin)
+DecagonCTD_Depth::DecagonCTD_Depth(char SDI12address, int powerPin, int dataPin, int numReadings)
+ : SensorBase(dataPin, powerPin, F("DecagonCTD"), F("waterDepth"), F("millimeter"), F("CTDdepth")),
+   DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
+   DecagonCTD(SDI12address, powerPin, dataPin, numReadings)
 {}
-
-String DecagonCTD_Cond::getVarName(void)
-{
-    varName = F("specificConductance");
-    return varName;
-}
-
-String DecagonCTD_Cond::getVarUnit(void)
-{
-    String unit = F("microsiemenPerCentimeter");
-    return unit;
-}
-
-float DecagonCTD_Cond::getValue(void)
-{
-    if (millis() > 30000 and millis() > DecagonCTD::sensorLastUpdated + 30000)
-        {DecagonCTD::update();}
-    return sensorValue_cond;
-}
-
-String DecagonCTD_Cond::getDreamHost(void)
-{
-String column = F("CTDcond");
-return column;
-}
-
-
-
-
-DecagonCTD_Temp::DecagonCTD_Temp(int numReadings, char CTDaddress, int powerPin, int dataPin)
- : DecagonCTD(numReadings, CTDaddress, powerPin, dataPin)
-{}
-
-String DecagonCTD_Temp::getVarName(void)
-{
-    varName = F("temperature");
-    return varName;
-}
-
-String DecagonCTD_Temp::getVarUnit(void)
-{
-    String unit = F("degreeCelsius");
-    return unit;
-}
-
-float DecagonCTD_Temp::getValue(void)
-{
-    if (millis() > 30000 and millis() > DecagonCTD::sensorLastUpdated + 30000)
-        {DecagonCTD::update();}
-    return sensorValue_temp;
-}
-
-String DecagonCTD_Temp::getDreamHost(void)
-{
-String column = F("CTDtemp");
-return column;
-}
-
-
-
-
-DecagonCTD_Depth::DecagonCTD_Depth(int numReadings, char CTDaddress, int powerPin, int dataPin)
- : DecagonCTD(numReadings, CTDaddress, powerPin, dataPin)
-{}
-
-String DecagonCTD_Depth::getVarName(void)
-{
-    varName = F("waterDepth");
-    return varName;
-}
-
-String DecagonCTD_Depth::getVarUnit(void)
-{
-    String unit = F("millimeter");
-    return unit;
-}
 
 float DecagonCTD_Depth::getValue(void)
 {
-    if (millis() > 30000 and millis() > DecagonCTD::sensorLastUpdated + 30000)
-        {DecagonCTD::update();}
-    return sensorValue_depth;
+    checkForUpdate(DecagonCTD::sensorLastUpdated);
+    return DecagonCTD::sensorValue_depth;
 }
 
-String DecagonCTD_Depth::getDreamHost(void)
+
+
+
+DecagonCTD_Temp::DecagonCTD_Temp(char SDI12address, int powerPin, int dataPin, int numReadings)
+ : SensorBase(dataPin, powerPin, F("DecagonCTD"), F("temperature"), F("degreeCelsius"), F("CTDtemp")),
+   DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
+   DecagonCTD(SDI12address, powerPin, dataPin, numReadings)
+{}
+
+float DecagonCTD_Temp::getValue(void)
 {
-String column = F("CTDdepth");
-return column;
+    checkForUpdate(DecagonCTD::sensorLastUpdated);
+    return DecagonCTD::sensorValue_temp;
+}
+
+
+
+
+DecagonCTD_Cond::DecagonCTD_Cond(char SDI12address, int powerPin, int dataPin, int numReadings)
+ : SensorBase(dataPin, powerPin, F("DecagonCTD"), F("specificConductance"), F("microsiemenPerCentimeter"), F("CTDcond")),
+   DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
+   DecagonCTD(SDI12address, powerPin, dataPin, numReadings)
+{}
+
+float DecagonCTD_Cond::getValue(void)
+{
+    checkForUpdate(DecagonCTD::sensorLastUpdated);
+    return DecagonCTD::sensorValue_cond;
 }

@@ -28,7 +28,22 @@ enum SENSOR_STATUS
 class SensorBase
 {
 public:
-    SensorBase(void);
+    SensorBase(int dataPin = -1, int powerPin = -1,
+               String sensorName = "Unknown", String varName = "Unknown",
+               String varUnit = "Unknown", String dreamHost = "Unknown");
+
+    // These functions are dependent on the constructor and return the constructor values
+    // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
+    virtual String getSensorLocation(void);
+    // This gets the name of the sensor.
+    virtual String getSensorName(void);
+    // This gets the variable's name using http://vocabulary.odm2.org/variablename/
+    String getVarName(void);
+    // This gets the variable's unit using http://vocabulary.odm2.org/units/
+    String getVarUnit(void);
+    // This returns the dreamhost PHP tag - for old SWRC dreamhost system
+    String getDreamHost(void);
+
     // These next functions have defaults.
     // This sets up the sensor, if necessary.  Defaults to ready.
     virtual SENSOR_STATUS setup(void);
@@ -40,24 +55,25 @@ public:
     virtual bool wake(void);
 
     // These next functions must be implemented for ever sensor
-    // This gets the name of the sensor.  .
-    virtual String getSensorName(void) = 0;
-    // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
-    virtual String getSensorLocation(void) = 0;
     // This updates the sensor's values
     virtual bool update(void) = 0;
 
     // These next functions must be implemented for ever variable
-    // This gets the variable's name using http://vocabulary.odm2.org/variablename/
-    virtual String getVarName(void) = 0;
-    // This gets the variable's unit using http://vocabulary.odm2.org/units/
-    virtual String getVarUnit(void) = 0;
     // This returns the current value of the variable as a float
     virtual float getValue(void) = 0;
-    // This returns the dreamhost PHP tag - for old SWRC dreamhost system
-    virtual String getDreamHost(void) = 0;
 protected:
+    bool checkForUpdate(unsigned long sensorLastUpdated);
+    bool checkPowerOn(void);
+    void powerUp(void);
+    void powerDown(void);
+    int _dataPin;
+    int _powerPin;
     SENSOR_STATUS sensorStatus;
+private:
+    String _sensorName;
+    String _varName;
+    String _varUnit;
+    String _dreamHost;
 };
 
 #endif
