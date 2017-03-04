@@ -61,8 +61,8 @@ bool MaxBotixSonar_Range::update(){
     // define serial port for recieving data
     SoftwareSerial sonarSerial(_dataPin, -1);
     sonarSerial.begin(9600);
-    // Even the slowest sensors should respond at a rate of 6Hz.
-    sonarSerial.setTimeout(200);
+    // Even the slowest sensors should respond at a rate of 6Hz (166ms).
+    sonarSerial.setTimeout(180);
 
     // Note:  if the power is on for >160ms before SoftwareSerial starts
     // the header lines will already have been sent and lost
