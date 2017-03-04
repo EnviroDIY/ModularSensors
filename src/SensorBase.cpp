@@ -75,7 +75,7 @@ SENSOR_STATUS SensorBase::setup(void)
 SENSOR_STATUS SensorBase::getStatus(void){return SENSOR_READY;}
 
 // The function to put a sensor to sleep
-// By default, powers up and returns true
+// By default, powers down and returns true
 bool SensorBase::sleep(void)
 {
     powerDown();
@@ -83,7 +83,7 @@ bool SensorBase::sleep(void)
 }
 
 // The function to wake up a sensor
-// By default, powers down and returns true
+// By default, powers up and returns true
 bool SensorBase::wake(void)
 {
     if(!checkPowerOn()){powerUp();}
