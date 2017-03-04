@@ -2,8 +2,7 @@
  *MaxBotixSonar.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
- *Work in progress by Sara Damiano taken from code written
- *by Shannon Hicks and templates from USU.
+ *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the MaxBotix Sonar Library
  *It is dependent on Software Serial.
@@ -32,6 +31,9 @@ protected:
     static unsigned long sensorLastUpdated;
 private:
     int _triggerPin;
+    int result;
+    bool stringComplete;
+    int rangeAttempts;
 };
 
 #endif

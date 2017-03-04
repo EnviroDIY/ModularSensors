@@ -31,9 +31,9 @@ const char *ES2DI12address = "3";  // The SDI-12 Address of the 5-TM
 // MaxBotix Sonar: pin settings
 // The power must be continually on for the MaxBotix.
 const int SonarData = 10;     // recieve pin
-// const int SonarExcite = 11;   // excite (power) pin
-const int SonarExcite = 22;   // excite (power) pin
-const int SonarTrigger = 11;   // excite (power) pin
+// const int SonarTrigger = 11;   // excite (power) pin
+const int SonarTrigger = -1;   // excite (power) pin
+// const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
 
 // Campbell OBS 3+: pin settings
 //   Campbell OBS 3+ Low Range calibration
@@ -109,7 +109,7 @@ SensorBase* SENSOR_LIST[] = {
     // new Decagon5TM_VWC(*TMSDI12address, switchedPower, SDI12Data),
     // new DecagonES2_Cond(*ES2DI12address, switchedPower, SDI12Data),
     // new DecagonES2_Temp(*ES2DI12address, switchedPower, SDI12Data),
-    new MaxBotixSonar_Range(SonarExcite, SonarData, SonarTrigger),
+    new MaxBotixSonar_Range(switchedPower, SonarData, SonarTrigger),
     // new CampbellOBS3_Turbidity(switchedPower, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C),
     // new CampbellOBS3_TurbHigh(switchedPower, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C),
     new MayflyOnboardTemp(MFVersion),

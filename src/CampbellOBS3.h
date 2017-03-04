@@ -2,8 +2,7 @@
  *CampbellOBS3.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
- *Work in progress by Sara Damiano taken from code written
- *by Shannon Hicks and templates from USU.
+ *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the Campbell Scientific OBS-3+
  *This is dependent on the Adafruit ADS1015 library.

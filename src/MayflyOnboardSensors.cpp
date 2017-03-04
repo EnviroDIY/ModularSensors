@@ -2,8 +2,7 @@
  *MayflyOnboardSensors.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
- *Work in progress by Sara Damiano taken from code written
- *by Shannon Hicks and templates from USU.
+ *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the onboard "sensors" on the EnviroDIY Mayfly
  *It is dependent on the EnviroDIY DS3231 library.
