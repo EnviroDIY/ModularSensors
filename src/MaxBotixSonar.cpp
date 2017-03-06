@@ -75,12 +75,12 @@ bool MaxBotixSonar_Range::update(){
     stringComplete = false;
     rangeAttempts = 0;
 
-    Serial.println(F("Beginning detection for Sonar"));  // For debugging
+    // Serial.println(F("Beginning detection for Sonar"));  // For debugging
     while (stringComplete == false && rangeAttempts < 50)
     {
         if(_triggerPin != -1)
         {
-            Serial.println(F("Triggering Sonar"));  // For debugging
+            // Serial.println(F("Triggering Sonar"));  // For debugging
             digitalWrite(_triggerPin, HIGH);
             delay(1);
             digitalWrite(_triggerPin, LOW);
@@ -89,7 +89,7 @@ bool MaxBotixSonar_Range::update(){
 
         result = sonarSerial.parseInt();
         sonarSerial.read();  // To throw away the carriage return
-        Serial.println(result);  // For debugging
+        // Serial.println(result);  // For debugging
         rangeAttempts++;
 
         // If it cannot obtain a result , the sonar is supposed to send a value
@@ -99,18 +99,18 @@ bool MaxBotixSonar_Range::update(){
         // If the result becomes garbled or the sonar is disconnected, the parseInt function returns 0.
         if (result == 0 || result == 300 || result == 500 || result == 4999 || result == 9999)
         {
-            Serial.print(F("Bad or Suspicious Result, Retry Attempt #"));  // For debugging
-            Serial.println(rangeAttempts);  // For debugging
+            // Serial.print(F("Bad or Suspicious Result, Retry Attempt #"));  // For debugging
+            // Serial.println(rangeAttempts);  // For debugging
         }
         else
         {
-            Serial.println(F("Good result found"));  // For debugging
+            // Serial.println(F("Good result found"));  // For debugging
             stringComplete = true;  // Set completion of read to true
         }
     }
 
     sensorValue_depth = result;
-    Serial.println(sensorValue_depth);  // For debugging
+    // Serial.println(sensorValue_depth);  // For debugging
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
