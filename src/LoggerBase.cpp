@@ -154,6 +154,7 @@ String LoggerBase::checkSensorLocations(void)
 
 bool LoggerBase::sensorsSleep()
 {
+    Serial.println(F("Putting sensors to sleep."));
     bool success = true;
     for (int i = 0; i < _sensorCount; i++)
     {
@@ -165,6 +166,7 @@ bool LoggerBase::sensorsSleep()
 
 bool LoggerBase::sensorsWake()
 {
+    Serial.println(F("Waking sensors."));
     bool success = true;
     for (int i = 0; i < _sensorCount; i++)
     {

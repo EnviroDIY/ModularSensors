@@ -13,6 +13,18 @@
 #include <Sodaq_DS3231.h>
 
 
+// No power pin to switch, only returns true
+bool MayflyOnboardSensors::sleep(void)
+{
+    return true;
+}
+
+// No power pin to switch, only returns true
+bool MayflyOnboardSensors::wake(void)
+{
+    return true;
+}
+
 
 // The static variables that need to be updated
 float MayflyOnboardTemp::sensorValue_temp = 0;
@@ -21,7 +33,6 @@ float MayflyFreeRam::sensorValue_freeRam = 0;
 unsigned long MayflyOnboardTemp::sensorLastUpdated = 0;
 unsigned long MayflyOnboardBatt::sensorLastUpdated = 0;
 unsigned long MayflyFreeRam::sensorLastUpdated = 0;
-
 
 
 MayflyOnboardTemp::MayflyOnboardTemp(char const *version)

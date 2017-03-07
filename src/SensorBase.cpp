@@ -38,14 +38,21 @@ bool SensorBase::checkPowerOn(void)
 {
     int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
     if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
-        {return false;}
-    else {return true;}
+    {
+        Serial.println(F("Power was off."));  // For debugging
+        return false;
+    }
+    else
+    {
+        Serial.println(F("Power was on."));  // For debugging        
+        return true;
+    }
 }
 
 // This is a helper function to turn on sensor power
 void SensorBase::powerUp(void)
 {
-    // Serial.println(F("Powering on Sensor"));  // For debugging
+    Serial.println(F("Powering on Sensor"));  // For debugging
     digitalWrite(_powerPin, HIGH);
     delay(500);
 }
@@ -53,7 +60,7 @@ void SensorBase::powerUp(void)
 // This is a helper function to turn off sensor power
 void SensorBase::powerDown(void)
 {
-    // Serial.println(F("Turning off Power"));  // For debugging
+    Serial.println(F("Turning off Power"));  // For debugging
     digitalWrite(_powerPin, LOW);
 }
 
