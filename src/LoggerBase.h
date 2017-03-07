@@ -4,7 +4,7 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for the logging functions - ie, saving to an SD card.
+ *This file is for the basic logging functions - ie, saving to an SD card.
 */
 
 #ifndef LoggerBase_h
@@ -13,6 +13,7 @@
 
 #include <Arduino.h>
 #include <Sodaq_DS3231.h>  // To communicate with the clock
+#include <RTCTimer.h>  // To handle timing on a schedule
 #include "SensorBase.h"
 
 
@@ -40,13 +41,18 @@ public:
     // Public functions for logging data
     void setupLogFile(void);
     String generateSensorDataCSV(void);
-    void logData(String rec);
+    void logToSD(String rec);
 
     // Convience functions to do it all
     void setup(int interruptPin = -1, uint8_t periodicity = EveryMinute);
-    void log(int loggingIntervalMinutes, int ledPin = -1);
+    virtual void log(int loggingIntervalMinutes, int ledPin = -1);
 
-private:
+protected:
+    static char currentTime[26];
+    static long currentepochtime;
+    RTCTimer timer;
+    static bool sleep;
+
     // Private functions for the timer and sleep modes
     static void checkTime(uint32_t ts);
     static void wakeISR(void);
@@ -57,6 +63,7 @@ private:
     bool sensorsWake(void);
     void systemSleep(void);
 
+private:
     static int _timeZone;
     int _SDCardPin;
     SensorBase **_sensorList;
@@ -66,10 +73,6 @@ private:
     const char **_UUIDs;
 
     static String _fileName;
-
-    static char currentTime[26];
-    static long currentepochtime;
-    bool sleep;
 };
 
 

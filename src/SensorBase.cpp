@@ -39,12 +39,12 @@ bool SensorBase::checkPowerOn(void)
     int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
     if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
     {
-        Serial.println(F("Power was off."));  // For debugging
+        // Serial.println(F("Power was off."));  // For debugging
         return false;
     }
     else
     {
-        Serial.println(F("Power was on."));  // For debugging        
+        // Serial.println(F("Power was on."));  // For debugging
         return true;
     }
 }
@@ -52,7 +52,7 @@ bool SensorBase::checkPowerOn(void)
 // This is a helper function to turn on sensor power
 void SensorBase::powerUp(void)
 {
-    Serial.println(F("Powering on Sensor"));  // For debugging
+    // Serial.println(F("Powering on Sensor"));  // For debugging
     digitalWrite(_powerPin, HIGH);
     delay(500);
 }
@@ -60,7 +60,7 @@ void SensorBase::powerUp(void)
 // This is a helper function to turn off sensor power
 void SensorBase::powerDown(void)
 {
-    Serial.println(F("Turning off Power"));  // For debugging
+    // Serial.println(F("Turning off Power"));  // For debugging
     digitalWrite(_powerPin, LOW);
 }
 
@@ -103,8 +103,8 @@ bool SensorBase::checkForUpdate(unsigned long sensorLastUpdated)
     {
         Serial.print(F("It has been "));
         Serial.print((millis() - sensorLastUpdated)/1000);
-       // Serial.println(F(" seconds since the sensor value was checked"));  // For debugging
-       // Serial.println(F("Value out of date, updating"));  // For debugging
+        // Serial.println(F(" seconds since the sensor value was checked"));  // For debugging
+        // Serial.println(F("Value out of date, updating"));  // For debugging
         return(update());
     }
     else return(true);

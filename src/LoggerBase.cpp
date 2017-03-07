@@ -4,10 +4,9 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for the logging functions - ie, saving to an SD card.
+ *This file is for the basic logging functions - ie, saving to an SD card.
 */
 
-#include <RTCTimer.h>  // To handle timing on a schedule
 #include <Sodaq_PcInt_PCINT0.h>  // To handle pin change interrupts for the clock
 #include <avr/sleep.h>  // To handle the processor sleep modes
 #include <SdFat.h>  // To communicate with the SD card
@@ -23,8 +22,11 @@ RTCTimer timer;
 char LoggerBase::currentTime[26] = "";
 long LoggerBase::currentepochtime = 0;
 int LoggerBase::_timeZone = 0;
+bool LoggerBase::sleep = false;
 
-// Constructor (should there be an init??)
+// Initialization - cannot do this in constructor because it must happen
+// within the setup and if using the constuctor cannot control when
+// it happens
 void LoggerBase::init(int timeZone, int SDCardPin, int sensorCount,
                       SensorBase *SENSOR_LIST[],
                       const char *loggerID/* = 0*/,
@@ -34,7 +36,6 @@ void LoggerBase::init(int timeZone, int SDCardPin, int sensorCount,
     _timeZone = timeZone;
     _SDCardPin = SDCardPin;
     _sensorList = SENSOR_LIST;
-    // Count the number of sensors
     _sensorCount = sensorCount;
     _loggerID = loggerID;
     _samplingFeature = samplingFeature;
@@ -154,7 +155,7 @@ String LoggerBase::checkSensorLocations(void)
 
 bool LoggerBase::sensorsSleep()
 {
-    Serial.println(F("Putting sensors to sleep."));
+    // Serial.println(F("Putting sensors to sleep."));  // For debugging
     bool success = true;
     for (int i = 0; i < _sensorCount; i++)
     {
@@ -166,7 +167,7 @@ bool LoggerBase::sensorsSleep()
 
 bool LoggerBase::sensorsWake()
 {
-    Serial.println(F("Waking sensors."));
+    // Serial.println(F("Waking sensors."));  // For debugging
     bool success = true;
     for (int i = 0; i < _sensorCount; i++)
     {
@@ -187,10 +188,10 @@ bool LoggerBase::updateAllSensors(void)
     {
         success &= _sensorList[i]->update();
         // Prints for debugging
-        Serial.print(F("--- Updated "));
-        Serial.print(_sensorList[i]->getSensorName());
-        Serial.print(F(" for "));
-        Serial.print(_sensorList[i]->getVarName());
+        // Serial.print(F("--- Updated "));  // For debugging
+        // Serial.print(_sensorList[i]->getSensorName());  // For debugging
+        // Serial.print(F(" for "));  // For debugging
+        // Serial.print(_sensorList[i]->getVarName());  // For debugging
 
         // Check for and skip the updates of any identical sensors
         for (int j = i+1; j < _sensorCount; j++)
@@ -199,13 +200,13 @@ bool LoggerBase::updateAllSensors(void)
                 _sensorList[i]->getSensorLocation() == _sensorList[j]->getSensorLocation())
             {
                 // Prints for debugging
-                Serial.print(F(" and "));
-                Serial.print(_sensorList[i+1]->getVarName());
+                // Serial.print(F(" and "));  // For debugging
+                // Serial.print(_sensorList[i+1]->getVarName());  // For debugging
                 i++;
             }
             else {break;}
         }
-        Serial.println(F(" ---"));  // For Debugging
+        // Serial.println(F(" ---"));  // For Debugging
         // delay(250);  // A short delay before next sensor - is this necessary??
     }
 
@@ -392,7 +393,7 @@ String LoggerBase::generateSensorDataCSV(void)
 
 // Writes a string to a text file on the SD Card
 // By default writes a comma-separated line
-void LoggerBase::logData(String rec)
+void LoggerBase::logToSD(String rec)
 {
   // Re-open the file
   File logFile = SD.open(LoggerBase::_fileName, FILE_WRITE);
@@ -455,7 +456,7 @@ void LoggerBase::setup(int interruptPin /*= -1*/, uint8_t periodicity /*= EveryM
     // Setup sleep mode, if an interrupt pin is given
     if(interruptPin != -1)
     {
-        sleep = true;
+        LoggerBase::sleep = true;
         setupSleep(interruptPin, periodicity);
     }
 
@@ -480,7 +481,7 @@ void LoggerBase::log(int loggingIntervalMinutes, int ledPin/* = -1*/)
         updateAllSensors();
 
         //Save the data record to the log file
-        logData(generateSensorDataCSV());
+        logToSD(generateSensorDataCSV());
         Serial.println(generateSensorDataCSV());  // for debugging
 
         // Turn off the LED
