@@ -19,7 +19,6 @@ CampbellOBS3::CampbellOBS3(int powerPin, int dataPin, float A, float B, float C)
     _A = A;
     _B = B;
     _C = C;
-    setup();
 }
 
 // The sensor installation location on the Mayfly

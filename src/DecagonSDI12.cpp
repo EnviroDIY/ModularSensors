@@ -17,7 +17,6 @@ DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin, int num
 {
     _SDI12address = SDI12address;
     _numReadings = numReadings;
-    setup();
 }
 
 // A helper functeion to run the "sensor info" SDI12 command

@@ -19,7 +19,6 @@ SensorBase::SensorBase(int dataPin, int powerPin, String sensorName, String varN
     _varName = varName;
     _varUnit = varUnit;
     _dreamHost = dreamHost;
-    setup();
 }
 
 // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)

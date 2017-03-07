@@ -20,20 +20,23 @@ SdFat SD;
 RTCTimer timer;
 
 // Set up the static variables for the current time and timer functions
-static char currentTime[26] = "";
-static long currentepochtime = 0;
+char LoggerBase::currentTime[26] = "";
+long LoggerBase::currentepochtime = 0;
+int LoggerBase::_timeZone = 0;
 
 // Constructor (should there be an init??)
-Logger::Logger(int timeZone, int SDCardPin, SensorBase *SENSOR_LIST[],
-               char *loggerID/* = 0*/,
-               char *samplingFeature/* = 0*/,
-               char *UUIDs[]/* = 0*/)
+void LoggerBase::init(int timeZone, int SDCardPin, int sensorCount,
+                      SensorBase *SENSOR_LIST[],
+                      const char *loggerID/* = 0*/,
+                      const char *samplingFeature/* = 0*/,
+                      const char *UUIDs[]/* = 0*/)
 {
     _timeZone = timeZone;
     _SDCardPin = SDCardPin;
     _sensorList = SENSOR_LIST;
+    // Count the number of sensors
+    _sensorCount = sensorCount;
     _loggerID = loggerID;
-    _sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
     _samplingFeature = samplingFeature;
     _UUIDs = UUIDs;
 };
@@ -45,7 +48,7 @@ Logger::Logger(int timeZone, int SDCardPin, SensorBase *SENSOR_LIST[],
 
 // Helper function to get the current date/time from the RTC
 // as a unix timestamp - and apply the correct time zone.
-uint32_t Logger::getNow(void)
+uint32_t LoggerBase::getNow(void)
 {
   currentepochtime = rtc.now().getEpoch();
   currentepochtime += _timeZone*3600;
@@ -53,7 +56,7 @@ uint32_t Logger::getNow(void)
 }
 
 // This function returns the datetime from the realtime clock as an ISO 8601 formated string
-String Logger::getDateTime_ISO8601(void)
+String LoggerBase::getDateTime_ISO8601(void)
 {
     String dateTimeStr;
     //Create a DateTime object from the current time
@@ -91,26 +94,65 @@ String Logger::getDateTime_ISO8601(void)
 //  Functions for interfacing with sensors.
 // ============================================================================
 
-// Return the number of sensors, in case someone wants it
-uint8_t Logger::countSensors(void)
-{
-    // Count the number of sensors
-    return _sensorCount;
-}
-
 // This sets up the sensors, generally setting pin modes and the like
-bool Logger::setupSensors(void)
+bool LoggerBase::setupSensors(void)
 {
     bool success = true;
+    bool sensorSuccess = false;
+    int setupTries = 0;
     for (int i = 0; i < _sensorCount; i++)
     {
-        success &= _sensorList[i]->setup();
-    }
+        // Make 5 attempts before giving up
+        while(setupTries < 5)
+        {
+            sensorSuccess = _sensorList[i]->setup();
+            // Prints for debugging
+            if(sensorSuccess)
+            {
+                Serial.print(F("--- Successfully set up "));
+                Serial.print(_sensorList[i]->getSensorName());
+                Serial.println(F(" ---"));
+                break;
+            }
+            else
+            {
+                Serial.print(F("--- Setup for  "));
+                Serial.print(_sensorList[i]->getSensorName());
+                Serial.println(F(" failed! ---"));
+                setupTries++;
+            }
+        }
+        success &= sensorSuccess;
 
+        // Check for and skip the setup of any identical sensors
+        for (int j = i+1; j < _sensorCount; j++)
+        {
+            if (_sensorList[i]->getSensorName() == _sensorList[j]->getSensorName() &&
+                _sensorList[i]->getSensorLocation() == _sensorList[j]->getSensorLocation())
+            {i++;}
+            else {break;}
+        }
+    }
     return success;
 }
 
-bool Logger::sensorsSleep()
+String LoggerBase::checkSensorLocations(void)
+{
+    String locationString = String(currentTime) + F(", ");
+
+    for (int i = 0; i < _sensorCount; i++)
+    {
+        locationString += String(_sensorList[i]->getSensorLocation());
+        if (i + 1 != _sensorCount)
+        {
+            locationString += F(", ");
+        }
+    }
+
+    return locationString;
+}
+
+bool LoggerBase::sensorsSleep()
 {
     bool success = true;
     for (int i = 0; i < _sensorCount; i++)
@@ -121,7 +163,7 @@ bool Logger::sensorsSleep()
     return success;
 }
 
-bool Logger::sensorsWake()
+bool LoggerBase::sensorsWake()
 {
     bool success = true;
     for (int i = 0; i < _sensorCount; i++)
@@ -133,7 +175,7 @@ bool Logger::sensorsWake()
 }
 
 // This function updates the values for any connected sensors.
-bool Logger::updateAllSensors(void)
+bool LoggerBase::updateAllSensors(void)
 {
     // Get the clock time when we begin updating sensors
     getDateTime_ISO8601().toCharArray(currentTime, 26) ;
@@ -177,18 +219,18 @@ bool Logger::updateAllSensors(void)
 // can continue while the timer counts down.
 // ============================================================================
 
-
 // This sets up the function to be called by the timer with no return of its own.
 // This structure is required by the timer library.
 // See http://support.sodaq.com/sodaq-one/adding-a-timer-to-schedule-readings/
-void Logger::checkTime(uint32_t ts)
+void LoggerBase::checkTime(uint32_t ts)
 {
   // Update the current date/time
   getNow();
+  // Serial.println(getNow()); // For debugging
 }
 
 // Set-up the RTC Timer events
-void Logger::setupTimer(uint32_t period)
+void LoggerBase::setupTimer(uint32_t period)
 {
     // Instruct the RTCTimer how to get the current time reading (ie, what function to use)
     // The units of the time returned by this function determine the units of the
@@ -205,7 +247,7 @@ void Logger::setupTimer(uint32_t period)
 }
 
 // Set up the Interrupt Service Request for waking - in this case, doing nothing
-void Logger::wakeISR(void)
+void LoggerBase::wakeISR(void)
 {
   //Leave this blank
 }
@@ -215,52 +257,66 @@ void Logger::wakeISR(void)
 //  Functions for sleeping the logger
 // ============================================================================
 
-// Sets up the sleep mode (used on device wake-up)
-void Logger::setupSleep(int interruptPin, uint8_t periodicity /*= EveryMinute*/)
+// Sets up the sleep mode
+void LoggerBase::setupSleep(int interruptPin, uint8_t periodicity /*= EveryMinute*/)
 {
-    // Attach the RTC alarm pin to a pin that can accept pin-change interrupts
+    // Set the pin attached to the RTC alarm to be in the right mode to listen to
+    // an interrupt and attach the "Wake" ISR to it.
     pinMode(interruptPin, INPUT_PULLUP);
     PcInt::attachInterrupt(interruptPin, wakeISR);
 
     // Put the RTC itself into in alarm mode - that is, allowing it to send interrupts
     // Essentially, we're telling the clock to send a signal over the alarm pin
-    // (interrupt pin) at this rate.  For the general purpose of logging, I'm
-    // defaulting this to EveryMinute
+    // (interrupt pin) at this rate.
     rtc.enableInterrupts(periodicity);
 
     // Set the sleep mode
+    // In the avr/sleep.h file, the call names of these 5 sleep modes are to be found:
+    // SLEEP_MODE_IDLE         -the least power savings
+    // SLEEP_MODE_ADC
+    // SLEEP_MODE_PWR_SAVE
+    // SLEEP_MODE_STANDBY
+    // SLEEP_MODE_PWR_DOWN     -the most power savings
     set_sleep_mode(SLEEP_MODE_PWR_DOWN);
 }
 
 // Puts the system to sleep to conserve battery life.
-void Logger::systemSleep(void)
+void LoggerBase::systemSleep(void)
 {
-  // This method handles any sensor specific sleep setup
-  sensorsSleep();
+    // Serial.println(F("Putting system to sleep."));  // For debugging
+    // This method handles any sensor specific sleep setup
+    sensorsSleep();
 
-  // Wait until the serial ports have finished transmitting
-  Serial.flush();
-  Serial1.flush();
+    // Wait until the serial ports have finished transmitting
+    // This does not clear their buffers, it just waits until they are finished
+    Serial.flush();
+    Serial1.flush();
 
-  // This clears the interrrupt flag in status register.
-  // The next timed interrupt will not be sent until this is cleared
-  rtc.clearINTStatus();
+    // This clears the interrrupt flag in status register of the clock
+    // The next timed interrupt will not be sent until this is cleared
+    rtc.clearINTStatus();
 
-  // Disable ADC
-  ADCSRA &= ~_BV(ADEN);
+    // Disable the processor ADC
+    ADCSRA &= ~_BV(ADEN);
 
-  // Sleep time
-  noInterrupts();
-  sleep_enable();
-  interrupts();
-  sleep_cpu();
-  sleep_disable();
+    // Sleep time
+    // Disables interrupts
+    noInterrupts();
+    // Prepare the processor for by setting the SE (sleep enable) bit.
+    sleep_enable();
+    // Re-enables interrupts
+    interrupts();
+    // Actually put the processor into sleep mode.
+    // This must happen after the SE bit is set.
+    sleep_cpu();
 
-  // Enable ADC
-  ADCSRA |= _BV(ADEN);
-
-  // This method handles any sensor specific wake setup
-  sensorsWake();
+    // Serial.println(F("Waking up!"));  // For debugging
+    // Clear the SE (sleep enable) bit.
+    sleep_disable();
+    // Re-enable the processor ADC
+    ADCSRA |= _BV(ADEN);
+    // This method handles any sensor specific wake setup
+    sensorsWake();
 }
 
 
@@ -268,8 +324,10 @@ void Logger::systemSleep(void)
 //  Functions for logging data to an SD card
 // ============================================================================
 
+// Sets up the filename
+String LoggerBase::_fileName = "";
 // Initializes the SDcard and prints a header to it
-void Logger::setupLogFile(void)
+void LoggerBase::setupLogFile(void)
 {
   // Initialise the SD card
   if (!SD.begin(_SDCardPin))
@@ -277,12 +335,13 @@ void Logger::setupLogFile(void)
     Serial.println(F("Error: SD card failed to initialise or is missing."));
   }
 
-  _fileName = String(_loggerID) + F("_") + getDateTime_ISO8601().substring(0,10) + F(".txt");
+  LoggerBase::_fileName = String(_loggerID) + F("_");
+  LoggerBase::_fileName += getDateTime_ISO8601().substring(0,10) + F(".txt");
   // Check if the file already exists
-  bool oldFile = SD.exists(_fileName.c_str());
+  bool oldFile = SD.exists(LoggerBase::_fileName.c_str());
 
   // Open the file in write mode
-  File logFile = SD.open(_fileName, FILE_WRITE);
+  File logFile = SD.open(LoggerBase::_fileName, FILE_WRITE);
 
   // Add header information if the file did not already exist
   if (!oldFile)
@@ -313,7 +372,7 @@ void Logger::setupLogFile(void)
   logFile.close();
 }
 
-String Logger::generateSensorDataCSV(void)
+String LoggerBase::generateSensorDataCSV(void)
 {
     String csvString = String(currentTime) + F(", ");
 
@@ -331,10 +390,10 @@ String Logger::generateSensorDataCSV(void)
 
 // Writes a string to a text file on the SD Card
 // By default writes a comma-separated line
-void Logger::logData(String rec /* = generateSensorDataCSV()*/)
+void LoggerBase::logData(String rec)
 {
   // Re-open the file
-  File logFile = SD.open(_fileName, FILE_WRITE);
+  File logFile = SD.open(LoggerBase::_fileName, FILE_WRITE);
 
   // Write the CSV data
   logFile.println(rec);
@@ -347,13 +406,29 @@ void Logger::logData(String rec /* = generateSensorDataCSV()*/)
 // ============================================================================
 //  Convience functions to call several of the above functions
 // ============================================================================
-void Logger::Setup(int interruptPin /*= -1*/, uint8_t periodicity /*= EveryMinute*/)
+void LoggerBase::setup(int interruptPin /*= -1*/, uint8_t periodicity /*= EveryMinute*/)
 {
-    // Set up all the sensors
+
+    // Start the Real Time Clock
+    rtc.begin();
+    delay(100);
+
+    // Print a start-up note to the first serial port
+    Serial.print(F("Current RTC time is: "));
+    Serial.println(getDateTime_ISO8601());
+    Serial.print(F("There are "));
+    Serial.print(String(_sensorCount));
+    Serial.println(F(" variables being recorded."));
+
+
+    Serial.println(F("Setting up sensors."));
     setupSensors();
 
     // Set up the log file
     setupLogFile();
+    Serial.println(F("Setting up the file on the SD Card"));
+    Serial.print(F("Data being saved as "));
+    Serial.println(LoggerBase::_fileName);
 
     // Figure out how often the timer function should check the clock based on
     // the alarm/interrupt periodicity of the real-time clock.
@@ -382,17 +457,11 @@ void Logger::Setup(int interruptPin /*= -1*/, uint8_t periodicity /*= EveryMinut
         setupSleep(interruptPin, periodicity);
     }
 
-    // Print a start-up note to the first serial port
-    Serial.print(F("Current RTC time is: "));
-    Serial.println(getDateTime_ISO8601());
-    Serial.print(F("There are "));
-    Serial.print(String(_sensorCount));
-    Serial.println(F(" variables being recorded."));
-    Serial.print(F("Data being saved to SD Card as "));
-    Serial.println(_fileName);
+    Serial.println(F("Setup finished!"));
+    Serial.println(F("------------------------------------------\n"));
 }
 
-void Logger::Log(int loggingIntervalMinutes)
+void LoggerBase::log(int loggingIntervalMinutes, int ledPin/* = -1*/)
 {
     // Update the timer
     timer.update();
@@ -401,7 +470,9 @@ void Logger::Log(int loggingIntervalMinutes)
     if (currentepochtime % loggingIntervalMinutes*60 == 0)
     {
         // Print a line to show new reading
-        Serial.println(F("------------------------------------------\n"));  // for debugging
+        Serial.println(F("------------------------------------------"));  // for debugging
+        // Turn on the LED to show we're taking a reading
+        digitalWrite(ledPin, HIGH);
 
         // Update the values from all attached sensors
         updateAllSensors();
@@ -409,9 +480,13 @@ void Logger::Log(int loggingIntervalMinutes)
         //Save the data record to the log file
         logData(generateSensorDataCSV());
         Serial.println(generateSensorDataCSV());  // for debugging
+
+        // Turn off the LED
+        digitalWrite(ledPin, LOW);
+        // Print a line to show reading ended
+        Serial.println(F("------------------------------------------\n"));  // for debugging
     }
 
-    delay(200);
     //Sleep
     if(sleep){systemSleep();}
 }

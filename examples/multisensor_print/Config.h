@@ -74,20 +74,18 @@ const char *LoggerID = "Mayfly_160073";
 const char *FILE_NAME = "MF160073";
 
 // Register your site and get these tokens from data.envirodiy.org
-const char *REGISTRATION_TOKEN = "5a3e8d07-8821-4240-91c9-26c610966b2c";
-const char *SAMPLING_FEATURE = "39bf098f-d11d-4ea6-9be3-6a073969b019";
+const char *REGISTRATION_TOKEN = "12345678-abcd-1234-efgh-1234567890ab";
+const char *SAMPLING_FEATURE = "12345678-abcd-1234-efgh-1234567890ab";
 const int TIME_ZONE = -5;
 
 const char *UUIDs[] =
 {
-"fec11d32-0658-4ef0-8a27-bdffa2104e31", "a7329b1b-b002-4fa8-afba-ae83b82ab8e9",
-"fec11d32-0658-4ef0-8a27-bdffa2104e31", "a7329b1b-b002-4fa8-afba-ae83b82ab8e9",
-"fec11d32-0658-4ef0-8a27-bdffa2104e31", "a7329b1b-b002-4fa8-afba-ae83b82ab8e9",
-"fec11d32-0658-4ef0-8a27-bdffa2104e31", "a7329b1b-b002-4fa8-afba-ae83b82ab8e9",
-"fec11d32-0658-4ef0-8a27-bdffa2104e31", "a7329b1b-b002-4fa8-afba-ae83b82ab8e9",
-"fec11d32-0658-4ef0-8a27-bdffa2104e31", "a7329b1b-b002-4fa8-afba-ae83b82ab8e9",
-"fec11d32-0658-4ef0-8a27-bdffa2104e31", "a7329b1b-b002-4fa8-afba-ae83b82ab8e9",
-"fec11d32-0658-4ef0-8a27-bdffa2104e31", "a7329b1b-b002-4fa8-afba-ae83b82ab8e9"
+"12345678-abcd-1234-efgh-1234567890ab", "12345678-abcd-1234-efgh-1234567890ab",
+"fec11d32-0658-4ef0-8a27-bdffa2104e31", "12345678-abcd-1234-efgh-1234567890ab",
+"fec11d32-0658-4ef0-8a27-bdffa2104e31", "12345678-abcd-1234-efgh-1234567890ab",
+"fec11d32-0658-4ef0-8a27-bdffa2104e31", "12345678-abcd-1234-efgh-1234567890ab",
+"fec11d32-0658-4ef0-8a27-bdffa2104e31", "12345678-abcd-1234-efgh-1234567890ab",
+"fec11d32-0658-4ef0-8a27-bdffa2104e31", "12345678-abcd-1234-efgh-1234567890ab"
 };
 
 // -----------------------------------------------

@@ -25,25 +25,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 long currentepochtime = 0;
 char currentTime[26] = "";
 
-// The SD initialization
-SdFat SD;
-String fileName = String(FILE_NAME);  // For the file name
-
 // For the number of sensors
 int sensorCount = 0;
-
-
-// -----------------------------------------------
-// 8. Working functions
-// -----------------------------------------------
-
-// Used only for debugging - can be removed
-int freeRam ()
-{
-  extern int __heap_start, *__brkval;
-  int v;
-  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
-}
 
 // Helper function to get the current date/time from the RTC
 // as a unix timestamp - and apply the correct time zone.
@@ -88,73 +71,6 @@ String getDateTime_ISO8601(void)
   return dateTimeStr;
 }
 
-// This sets up the sensors.. most have no method defined.
-bool setupSensors()
-{
-    bool success = true;
-    for (int i = 0; i < sensorCount; i++)
-    {
-        // Check for and skip the set up of any identical sensors
-        for (int j = i+1; j < sensorCount; j++)
-        {
-            success &= SENSOR_LIST[i]->setup();
-            if (SENSOR_LIST[i]->setup() == false)
-            {
-                Serial.print(F("Failed to set up "));
-                Serial.print(SENSOR_LIST[i]->getSensorName());
-                Serial.print(F(" expected to be installed at "));
-                Serial.println(SENSOR_LIST[i]->getSensorLocation());
-            }
-            if (SENSOR_LIST[i]->getSensorName() == SENSOR_LIST[j]->getSensorName() &&
-                SENSOR_LIST[i]->getSensorLocation() == SENSOR_LIST[j]->getSensorLocation())
-            { i++; }
-            else {break;}
-        }
-    }
-    return success;
-}
-
-// Initializes the SDcard and prints a header to it
-void setupLogFile()
-{
-    // Initialise the SD card
-    if (!SD.begin(SD_SS_PIN))
-    {Serial.println(F("Error: SD card failed to initialise or is missing."));    }
-
-  fileName += String(LoggerID) + F("_") + getDateTime_ISO8601().substring(0,10) + F(".csv");
-  // Check if the file already exists
-  bool oldFile = SD.exists(fileName.c_str());
-
-  // Open the file in write mode
-  File logFile = SD.open(fileName, FILE_WRITE);
-
-  // Add header information if the file did not already exist
-  if (!oldFile)
-  {
-    logFile.println(LoggerID);
-    logFile.print(F("Sampling Feature UUID: "));
-    logFile.println(SAMPLING_FEATURE);
-
-    String dataHeader = F("\"Timestamp\", ");
-    for (int i = 0; i < sensorCount; i++)
-    {
-        dataHeader += "\"" + String(SENSOR_LIST[i]->getSensorName());
-        dataHeader += " " + String(SENSOR_LIST[i]->getVarName());
-        dataHeader += " " + String(SENSOR_LIST[i]->getVarUnit());
-        dataHeader += " (" + String(UUIDs[i]) + ")\"";
-        if (i + 1 != sensorCount)
-        {
-            dataHeader += F(", ");
-        }
-    }
-
-    // Serial.println(dataHeader);
-    logFile.println(dataHeader);
-  }
-
-  //Close the file to save it
-  logFile.close();
-}
 
 // Flashes to Mayfly's LED's
 void greenred4flash()
@@ -168,6 +84,49 @@ void greenred4flash()
     delay(50);
   }
   digitalWrite(RED_LED, LOW);
+}
+
+
+// This sets up the sensors, generally setting pin modes and the like
+bool setupSensors(void)
+{
+    bool success = true;
+    bool sensorSuccess = false;
+    int setupTries = 0;
+    for (int i = 0; i < sensorCount; i++)
+    {
+        // Make 5 attempts before giving up
+        while(setupTries < 5)
+        {
+            sensorSuccess = SENSOR_LIST[i]->setup();
+            // Prints for debugging
+            if(sensorSuccess)
+            {
+                Serial.print(F("--- Successfully set up "));
+                Serial.print(SENSOR_LIST[i]->getSensorName());
+                Serial.println(F(" ---"));
+                break;
+            }
+            else
+            {
+                Serial.print(F("--- Setup for  "));
+                Serial.print(SENSOR_LIST[i]->getSensorName());
+                Serial.println(F(" failed! ---"));
+                setupTries++;
+            }
+        }
+        success &= sensorSuccess;
+
+        // Check for and skip the setup of any identical sensors
+        for (int j = i+1; j < sensorCount; j++)
+        {
+            if (SENSOR_LIST[i]->getSensorName() == SENSOR_LIST[j]->getSensorName() &&
+                SENSOR_LIST[i]->getSensorLocation() == SENSOR_LIST[j]->getSensorLocation())
+            {i++;}
+            else {break;}
+        }
+    }
+    return success;
 }
 
 // This function updates the values for any connected sensors.
@@ -238,18 +197,6 @@ String checkSensorLocations(void)
     return locationString;
 }
 
-// Writes a string to a text file on the SD Card
-void logData(String rec)
-{
-  // Re-open the file
-  File logFile = SD.open(fileName, FILE_WRITE);
-
-  // Write the CSV data
-  logFile.println(rec);
-
-  // Close the file to save it
-  logFile.close();
-}
 
 // -----------------------------------------------
 // Main setup function
@@ -275,8 +222,6 @@ void setup()
     Serial.println(F("WebSDL Device: EnviroDIY Mayfly"));
     Serial.print(F("Now running "));
     Serial.println(SKETCH_NAME);
-    Serial.print(F("Free RAM: "));
-    Serial.println(freeRam());
     Serial.print(F("Current Mayfly RTC time is: "));
     Serial.println(getDateTime_ISO8601());
 
@@ -286,27 +231,8 @@ void setup()
     Serial.print(String(sensorCount));
     Serial.println(F(" variables being recorded"));
 
-    // Set up all the sensors  make 5 attempts before giving up
-    int setupTries = 0;
-    bool success = false;
-    while (setupTries < 5)
-    {
-        if (setupSensors() == true) {
-            success = true;
-            break;
-        }
-        else {setupTries++;}
-    }
-    if (success != true)
-    {
-        Serial.println(F("Set up failed!"));
-        // leave the Red LED on
-        digitalWrite(RED_LED, HIGH);
-    }
-
-    // Set up the log file
-    Serial.println(F("Setting up the file on the SD Card"));
-    setupLogFile();
+    // Set up all the sensors
+    setupSensors();
 
     Serial.println(F("Setup finished!"));
     Serial.println(F("------------------------------------------\n"));
@@ -330,8 +256,6 @@ void loop()
     updateAllSensors();
     // Print the data to the screen
     Serial.println(generateSensorDataCSV());
-    //Save the data record to the log file
-    logData(generateSensorDataCSV());
     // Turn off the LED to show we're done with the reading
     digitalWrite(GREEN_LED, LOW);
     // Cut Power to the sensors;

@@ -17,51 +17,55 @@
 
 
 // Defines the "Logger" Class
-class Logger
+class LoggerBase
 {
 public:
     // The class constructor
-    Logger(int timeZone, int SDCardPin, SensorBase *SENSOR_LIST[],
-           char *loggerID = 0,
-           char *samplingFeature = 0,
-           char *UUIDs[] = 0);
+    void init(int timeZone, int SDCardPin, int sensorCount,
+              SensorBase *SENSOR_LIST[],
+              const char *loggerID = 0,
+              const char *samplingFeature = 0,
+              const char *UUIDs[] = 0);
 
     // Public functions to access the clock in proper format and time zone
     static uint32_t getNow(void);
-    String getDateTime_ISO8601(void);
-    void showTime(uint32_t ts);
+    static String getDateTime_ISO8601(void);
+    static void showTime(uint32_t ts);
 
     // Public functions for interfacing with a list of sensors
-    uint8_t countSensors(void);
-    bool setupSensors(void);
-    bool sensorsSleep(void);
-    bool sensorsWake(void);
+    bool setupSensors(void);  // This sets up all of the sensors in the list
+    String checkSensorLocations(void);  // This checks where each sensor is attached
     bool updateAllSensors(void);
 
-    static void checkTime(uint32_t ts);
-    void setupTimer(uint32_t period);
-    static void wakeISR(void);
-
-    void setupSleep(int interruptPin, uint8_t periodicity = EveryMinute);
-    void systemSleep(void);
-
+    // Public functions for logging data
     void setupLogFile(void);
-    static String generateSensorDataCSV(void);
-    void logData(String rec = generateSensorDataCSV());
+    String generateSensorDataCSV(void);
+    void logData(String rec);
 
-    void Setup(int interruptPin = -1, uint8_t periodicity = EveryMinute);
-    void Log(int loggingIntervalMinutes);
+    // Convience functions to do it all
+    void setup(int interruptPin = -1, uint8_t periodicity = EveryMinute);
+    void log(int loggingIntervalMinutes, int ledPin = -1);
 
 private:
+    // Private functions for the timer and sleep modes
+    static void checkTime(uint32_t ts);
+    static void wakeISR(void);
+    void setupTimer(uint32_t period);
+
+    void setupSleep(int interruptPin, uint8_t periodicity = EveryMinute);
+    bool sensorsSleep(void);
+    bool sensorsWake(void);
+    void systemSleep(void);
+
     static int _timeZone;
     int _SDCardPin;
-    static SensorBase **_sensorList;
-    char *_loggerID;
-    static uint8_t _sensorCount;
-    char *_samplingFeature;
-    char **_UUIDs;
+    SensorBase **_sensorList;
+    uint8_t _sensorCount;
+    const char *_loggerID;
+    const char *_samplingFeature;
+    const char **_UUIDs;
 
-    String _fileName;
+    static String _fileName;
 
     static char currentTime[26];
     static long currentepochtime;

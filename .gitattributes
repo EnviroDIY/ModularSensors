@@ -15,7 +15,7 @@
 # Denote all files that are truly binary and should not be modified.
 *.png binary
 *.jpg binary
-
+*.pdf pinary export-ignore
 
 # used to exclude files from archiving/compression
 
