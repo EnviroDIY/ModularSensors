@@ -79,7 +79,7 @@ String LoggerEnviroDIY::generateSensorDataJSON(void)
     jsonString += F("\"_samplingFeature\": \"");
     jsonString += String(_samplingFeature) + F("\", ");
     jsonString += F("\"timestamp\": \"");
-    jsonString += String(currentTime) + F("\", ");
+    jsonString += String(LoggerBase::currentTime) + F("\", ");
 
     for (int i = 0; i < _sensorCount; i++)
     {
@@ -362,7 +362,7 @@ void LoggerEnviroDIY::log(int loggingIntervalMinutes, int ledPin/* = -1*/)
     timer.update();
 
     // Check of the current time is an even interval of the logging interval
-    if (currentepochtime % loggingIntervalMinutes*60 == 0)
+    if (LoggerBase::currentepochtime % loggingIntervalMinutes*60 == 0)
     {
         // Print a line to show new reading
         Serial.println(F("------------------------------------------"));  // for debugging

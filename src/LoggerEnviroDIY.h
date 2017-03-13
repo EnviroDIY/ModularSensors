@@ -81,7 +81,7 @@ protected:
     static long currentepochtime;
 
 private:
-    static int _timeZone;
+    int _timeZone;
     int _SDCardPin;
     SensorBase **_sensorList;
     uint8_t _sensorCount;
