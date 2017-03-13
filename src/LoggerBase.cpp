@@ -155,7 +155,7 @@ String LoggerBase::checkSensorLocations(void)
 
 bool LoggerBase::sensorsSleep()
 {
-    Serial.println(F("Putting sensors to sleep."));  // For debugging
+    // Serial.println(F("Putting sensors to sleep."));  // For debugging
     bool success = true;
     for (int i = 0; i < _sensorCount; i++)
     {
@@ -167,7 +167,7 @@ bool LoggerBase::sensorsSleep()
 
 bool LoggerBase::sensorsWake()
 {
-    Serial.println(F("Waking sensors."));  // For debugging
+    // Serial.println(F("Waking sensors."));  // For debugging
     bool success = true;
     for (int i = 0; i < _sensorCount; i++)
     {
@@ -346,7 +346,7 @@ void LoggerBase::setupLogFile(void)
   }
 
   LoggerBase::_fileName = String(_loggerID) + F("_");
-  LoggerBase::_fileName += getDateTime_ISO8601().substring(0,10) + F(".txt");
+  LoggerBase::_fileName += getDateTime_ISO8601().substring(0,10) + F(".csv");
   // Check if the file already exists
   bool oldFile = SD.exists(LoggerBase::_fileName.c_str());
 

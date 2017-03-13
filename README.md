@@ -22,6 +22,69 @@ To use a sensor in your sketch, you must include SensorBase.h in your script AND
 
 
 ## Logger Functions
+Our main reason to unify the output from many sensors is to easily log the data to an SD card and to send it to the EnviroDIY data page.  There are two modules available to use with the sensors to log data:  LoggerBase and LoggerEnviroDIY.  These both will set up the Arduino as a logger which goes to deep sleep between readings to conserver power.  LoggerBase has the ability to pool sensors from an array of sensor pointers and to write the data from the sensors to a csv file.  LoggerEnviroDIY depends on LoggerBase and adds the ability to send data to the EnviroDIY data portal.
+
+To set up logging, you must first include the appropriate logging module and create a new logger instance.  This must happen outside of the setup and loop functions:
+
+```cpp
+// Import Logger Module
+#include <LoggerBase.h>
+// Create a new logger instance
+LoggerBase Logger;
+```
+
+--OR--
+
+```cpp
+// Import Logger Module
+#include <LoggerEnviroDIY.h>
+// Create a new logger instance
+LoggerEnviroDIY EnviroDIYLogger;
+```
+
+_Within the setup function_, you must then initialize the logger and then run the logger setup.  For the EnviroDIY logger, you must also set up the communication.  (Please note that these are show with default values.):
+
+```cpp
+// Initialize the logger;
+Logger.init(int timeZone, int SDCardPin, int sensorCount,
+            SensorBase *SENSOR_LIST[],
+            const char *loggerID = 0,
+            const char *samplingFeature = 0,
+            const char *UUIDs[] = 0);
+// Run the logger setup;
+Logger.setup(int interruptPin = -1, uint8_t periodicity = EveryMinute);
+```
+
+--OR--
+
+```cpp
+// Initialize the logger;
+EnviroDIYLogger.init(int timeZone, int SDCardPin, int sensorCount,
+          SensorBase *SENSOR_LIST[],
+          const char *loggerID = 0,
+          const char *samplingFeature = 0,
+          const char *UUIDs[] = 0);
+// Run the logger setup;
+EnviroDIYLogger.setup(int interruptPin = -1, uint8_t periodicity = EveryMinute);
+// Set up the communication with EnviroDIY
+EnviroDIYLogger.setCommunication(xbee beeType = GPRS,
+                      const char *registrationToken = "UNKNOWN",
+                      const char *hostAddress = "data.envirodiy.org",
+                      const char *APIEndpoint = "/api/data-stream/",
+                      int serverTimeout = 15000,
+                      const char *APN = "apn.konekt.io");
+```
+
+_Within the main loop function_, all logging and sending of data is done using the single program line:
+```cpp
+Logger.log(int loggingIntervalMinutes, int ledPin = -1);
+```
+
+--OR--
+
+```cpp
+EnviroDIYLogger.log(int loggingIntervalMinutes, int ledPin = -1);
+```
 
 
 ## Available sensors
@@ -35,7 +98,7 @@ The version of the Mayfly is required as input (ie, "v0.3" or "v0.4" or "v0.5") 
 
 **[MaxBotix MaxSonar](http://www.maxbotix.com/Ultrasonic_Sensors/High_Accuracy_Sensors.htm) - HRXL MaxSonar WR or WRS Series with TTL Outputs**
 
-The power/excite pin and digital data pin are needed as input.  The power pin must provide smoothed digital power.  You must have the [EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwareSerial_PCINT12/) installed to use this sensor.  This modified version is needed so there are no pin change interrupt conflicts with the SDI-12 library or the software pin change interrupt library used to wake the clock.  Because of this, the MaxBotix must be installed on a digital pin that depends on pin change interrupt vector 1 or 2.  On the Mayfly, the empty pins in this range are pins D10, D11, and D18.  (Various solder jumper options will eliminate D18 as a possibility.)
+The power/excite pin and digital data pin are needed as input.  The power pin must provide smoothed digital power.  You must have the [EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwareSerial_PCINT12/) installed to use this sensor.  This modified version is needed so there are no pin change interrupt conflicts with the SDI-12 library or the software pin change interrupt library used to wake the clock.  Because of this, the MaxBotix must be installed on a digital pin that depends on pin change interrupt vector 1 or 2.  On the Mayfly, the empty pins in this range are pins D10, D11, and D18.  (Changing the solder jumper options on the back of the board may eliminate D18 as a possibility.)
 - MaxBotixSonar_Depth(int powerPin, int dataPin)
 
 **[Campbell Scientific OBS-3+](https://www.campbellsci.com/obs-3plus)**
