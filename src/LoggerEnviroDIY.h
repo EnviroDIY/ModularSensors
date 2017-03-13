@@ -17,21 +17,43 @@
 #include "SensorBase.h"
 
 
+// For the "Bee" devices"
+typedef enum xbee
+{
+    GPRS = 0,  // Sodaq GPRSBee - 2G (GPRS) communication
+    WIFI,  // Digi XBee S6B - WiFi communication
+    // RADIO,
+    // THREEG
+} xbee;
+
 // Defines the "Logger" Class
 class LoggerEnviroDIY : public virtual LoggerBase
 {
 public:
+
+    // For the server response
+    enum HTTP_RESPONSE
+    {
+        HTTP_FAILURE = 0,
+        HTTP_SUCCESS,
+        HTTP_TIMEOUT,
+        HTTP_FORBIDDEN,
+        HTTP_SERVER_ERROR,
+        HTTP_REDIRECT,
+        HTTP_OTHER
+    };
+
     // The class constructor
     void init(int timeZone, int SDCardPin, int sensorCount,
               SensorBase *SENSOR_LIST[],
               const char *loggerID = 0,
               const char *samplingFeature = 0,
               const char *UUIDs[] = 0);
-    void setCommunication(const char *registrationToken,
+    void setCommunication(xbee beeType = GPRS,
+                          const char *registrationToken = "UNKNOWN",
                           const char *hostAddress = "data.envirodiy.org",
                           const char *APIEndpoint = "/api/data-stream/",
                           int serverTimeout = 15000,
-                          const char *beeType = "GPRS",
                           const char *APN = "apn.konekt.io");
 
     // Public functions to generate data formats
@@ -54,27 +76,6 @@ public:
     // Convience functions to do it all
     void log(int loggingIntervalMinutes, int ledPin = -1) override;
 
-    // For the server response
-    enum HTTP_RESPONSE
-    {
-        HTTP_FAILURE = 0,
-        HTTP_SUCCESS,
-        HTTP_TIMEOUT,
-        HTTP_FORBIDDEN,
-        HTTP_SERVER_ERROR,
-        HTTP_REDIRECT,
-        HTTP_OTHER
-    };
-
-    // For the "Bee" devices"
-    enum BEE_TYPES
-    {
-        GPRS = 0,  // Sodaq GPRSBee - 2G (GPRS) communication
-        WIFI,  // Digi XBee S6B - WiFi communication
-        RADIO,
-        THREEG
-    };
-
 protected:
     static char currentTime[26];
     static long currentepochtime;
@@ -92,7 +93,7 @@ private:
     const char *_hostAddress;
     const char *_APIEndpoint;
     int _serverTimeout;
-    const char *_beeType;
+    xbee _beeType;
     const char *_APN;
 };
 

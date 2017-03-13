@@ -11,6 +11,7 @@ cache:
 env:
     - PLATFORMIO_CI_SRC=examples/multisensor_print/
     - PLATFORMIO_CI_SRC=examples/simple_logging/
+    - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY/
 
 install:
     - pip install -U platformio

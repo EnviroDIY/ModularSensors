@@ -1,5 +1,5 @@
 /*****************************************************************************
-multisensor_print.ino
+simple_logging.ino
 Written By:  Sara Damiano (sdamiano@stroudcenter.org)
 Development Environment: PlatformIO 3.2.1
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
@@ -15,11 +15,11 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
 // ---------------------------------------------------------------------------
-// 1. Include the base required libraries
+// Include the base required libraries
 // ---------------------------------------------------------------------------
 #include <Arduino.h>
-#include <LoggerBase.h>
 #include <SensorBase.h>
+#include <LoggerBase.h>
 
 #include <DecagonCTD.h>
 #include <Decagon5TM.h>
@@ -29,8 +29,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <MayflyOnboardSensors.h>
 
 // ---------------------------------------------------------------------------
-// 2. Set up the sensor specific information
-//    ie, pin locations, addresses, calibrations and related settings
+// Set up the sensor specific information
+//   ie, pin locations, addresses, calibrations and related settings
 // ---------------------------------------------------------------------------
 // The name of this file
 const char *SKETCH_NAME = "simple_logging.ino";
@@ -44,7 +44,7 @@ const char *LoggerID = "Mayfly_160073";
 int LOGGING_INTERVAL = 1;
 // Your logger's timezone.
 const int TIME_ZONE = -5;
-// Create a new logger instance - don't chagne this line.
+// Create a new logger instance
 LoggerBase Logger;
 
 // Decagon CTD: pin settings
@@ -67,7 +67,6 @@ const char *ES2DI12address = "3";  // The SDI-12 Address of the 5-TM
 // const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
 
 // MaxBotix Sonar: pin settings
-// The power must be continually on for the MaxBotix.
 const int SonarData = 10;     // recieve pin
 // const int SonarTrigger = 11;   // excite (power) pin
 const int SonarTrigger = -1;   // excite (power) pin
@@ -110,8 +109,8 @@ int sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
 
 
 // ---------------------------------------------------------------------------
-// 4. Device registration and sampling feature information
-//    This should be obtained after registration at http://data.envirodiy.org
+// Device registration and sampling feature information
+//   This should be obtained after registration at http://data.envirodiy.org
 // ---------------------------------------------------------------------------
 
 const char *REGISTRATION_TOKEN = "12345678-abcd-1234-efgh-1234567890ab";
@@ -135,28 +134,18 @@ const char *UUIDs[] =
 "12345678-abcd-1234-efgh-1234567890ab"
 };
 
-
 // ---------------------------------------------------------------------------
-// 5. Device Connection Options and WebSDL Endpoints for POST requests
-// ---------------------------------------------------------------------------
-// const char *BEE_TYPE = "GPRS";  // The type of XBee, either "GPRS" or "WIFI"
-// const char *APN = "apn.konekt.io";  // The APN for the GPRSBee
-// const char *HOST_ADDRESS = "data.envirodiy.org";
-// const char *API_ENDPOINT = "/api/data-stream/";
-// int COMMAND_TIMEOUT = 15000;  // How long (in milliseconds) to wait for a server response
-
-
-// ---------------------------------------------------------------------------
-// 6. Board setup info
+// Board setup info
 // ---------------------------------------------------------------------------
 const int SERIAL_BAUD = 9600;  // Serial port BAUD rate
-const int BEE_BAUD = 9600;  // Bee BAUD rate (9600 is default)
-const int BEE_DTR_PIN = 23;  // Bee DTR Pin (Data Terminal Ready - used for sleep)
-const int BEE_CTS_PIN = 19;   // Bee CTS Pin (Clear to Send)
 const int GREEN_LED = 8;  // Pin for the green LED
 const int RED_LED = 9;  // Pin for the red LED
 const int RTC_PIN = A7;  // RTC Interrupt/Alarm pin
 const int SD_SS_PIN = 12;  // SD Card Card Select/Slave Select Pin
+
+// ---------------------------------------------------------------------------
+// Working Functions
+// ---------------------------------------------------------------------------
 
 // Flashes to Mayfly's LED's
 void greenred4flash()
@@ -174,14 +163,12 @@ void greenred4flash()
 
 
 // ---------------------------------------------------------------------------
-// 7. Main setup function
+// Main setup function
 // ---------------------------------------------------------------------------
 void setup()
 {
     // Start the primary serial connection
     Serial.begin(SERIAL_BAUD);
-    // Start the serial connection with the *bee
-    Serial1.begin(BEE_BAUD);
 
     // Set up pins for the LED's
     pinMode(GREEN_LED, OUTPUT);
@@ -189,7 +176,7 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenred4flash();
 
-    // A note on what is happening
+    // Print a start-up note to the first serial port
     Serial.print(F("Now running "));
     Serial.print(SKETCH_NAME);
     Serial.print(F(" on EnviroDIY Mayfly "));
@@ -203,7 +190,7 @@ void setup()
 
 
 // ---------------------------------------------------------------------------
-// 8. Main loop function
+// Main loop function
 // ---------------------------------------------------------------------------
 void loop()
 {

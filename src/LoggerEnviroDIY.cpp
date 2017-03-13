@@ -31,11 +31,11 @@ void LoggerEnviroDIY::init(int timeZone, int SDCardPin, int sensorCount,
 };
 
 
-void LoggerEnviroDIY::setCommunication(const char *registrationToken,
+void LoggerEnviroDIY::setCommunication(xbee beeType/* = "GPRS"*/,
+                                       const char *registrationToken/* = "UNKNOWN"*/,
                                        const char *hostAddress/* = "data.envirodiy.org"*/,
                                        const char *APIEndpoint/* = "/api/data-stream/"*/,
                                        int serverTimeout/* = 15000*/,
-                                       const char *beeType/* = "GPRS"*/,
                                        const char *APN/* = "apn.konekt.io"*/)
 {
     _registrationToken = registrationToken;
@@ -53,7 +53,7 @@ void LoggerEnviroDIY::setCommunication(const char *registrationToken,
 // ============================================================================
 
 
-// Used to flush out the buffer after a post request.
+// Used to empty out the buffer after a post request.
 // Removing this may cause communication issues. If you
 // prefer to not see the std::out, remove the print statement
 void LoggerEnviroDIY::printRemainingChars(int timeDelay/* = 1*/, int timeout/* = 5000*/)
@@ -378,20 +378,22 @@ void LoggerEnviroDIY::log(int loggingIntervalMinutes, int ledPin/* = -1*/)
 
         // Post the data to the WebSDL
         int result;
-        if (strcasecmp(_beeType, "GPRS") == 0)
+        switch (_beeType)
         {
-            result = postDataGPRS();
-        };
-        if (strcasecmp(_beeType, "WIFI") == 0)
-        {
-            result = postDataWiFi();
-        };
+            case GPRS:
+            {
+                result = postDataGPRS();
+            };
+            case WIFI:
+            {
+                result = postDataWiFi();
+            };
+        }
         // Print the response from the WebSDL
         printPostResult(result);
 
         #ifdef DreamHostURL
-            result = postDataDreamHost(void);
-            printPostResult(result);
+            postDataDreamHost(void);
         #endif
 
         // Turn off the LED

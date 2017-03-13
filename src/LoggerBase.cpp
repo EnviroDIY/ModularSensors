@@ -155,7 +155,7 @@ String LoggerBase::checkSensorLocations(void)
 
 bool LoggerBase::sensorsSleep()
 {
-    // Serial.println(F("Putting sensors to sleep."));  // For debugging
+    Serial.println(F("Putting sensors to sleep."));  // For debugging
     bool success = true;
     for (int i = 0; i < _sensorCount; i++)
     {
@@ -167,7 +167,7 @@ bool LoggerBase::sensorsSleep()
 
 bool LoggerBase::sensorsWake()
 {
-    // Serial.println(F("Waking sensors."));  // For debugging
+    Serial.println(F("Waking sensors."));  // For debugging
     bool success = true;
     for (int i = 0; i < _sensorCount; i++)
     {
@@ -240,7 +240,7 @@ void LoggerBase::setupTimer(uint32_t period)
     // "every" function below.
     timer.setNowCallback(getNow);
 
-    // This tells the timer how often (period) it will repeat some function (getNow)
+    // This tells the timer how often (period) it will repeat some function (checkTime)
     // The time units of the first input are the same as those returned by the
     // setNowCallback function above (in this case, seconds).  We are only
     // having the timer call a function to check the time instead of actually
@@ -250,10 +250,7 @@ void LoggerBase::setupTimer(uint32_t period)
 }
 
 // Set up the Interrupt Service Request for waking - in this case, doing nothing
-void LoggerBase::wakeISR(void)
-{
-  //Leave this blank
-}
+void LoggerBase::wakeISR(void){}
 
 
 // ============================================================================
@@ -287,7 +284,7 @@ void LoggerBase::setupSleep(int interruptPin, uint8_t periodicity /*= EveryMinut
 void LoggerBase::systemSleep(void)
 {
     // Serial.println(F("Putting system to sleep."));  // For debugging
-    // This method handles any sensor specific sleep setup
+    // This method handles any sensor specific sleep
     sensorsSleep();
 
     // Wait until the serial ports have finished transmitting
@@ -301,6 +298,16 @@ void LoggerBase::systemSleep(void)
 
     // Disable the processor ADC
     ADCSRA &= ~_BV(ADEN);
+    // stop interrupts to ensure the BOD timed sequence executes as required
+    cli();
+    // turn off the brown-out detector
+    byte mcucr1, mcucr2;
+    mcucr1 = MCUCR | _BV(BODS) | _BV(BODSE);
+    mcucr2 = mcucr1 & ~_BV(BODSE);
+    MCUCR = mcucr1;
+    MCUCR = mcucr2;
+    // ensure interrupts enabled so we can wake up again
+    sei();
 
     // Sleep time
     // Disables interrupts
@@ -318,7 +325,7 @@ void LoggerBase::systemSleep(void)
     sleep_disable();
     // Re-enable the processor ADC
     ADCSRA |= _BV(ADEN);
-    // This method handles any sensor specific wake setup
+    // This method handles any sensor specific wake-up
     sensorsWake();
 }
 
@@ -329,13 +336,13 @@ void LoggerBase::systemSleep(void)
 
 // Sets up the filename
 String LoggerBase::_fileName = "";
-// Initializes the SDcard and prints a header to it
+// Initializes the SD card and prints a header to it
 void LoggerBase::setupLogFile(void)
 {
   // Initialise the SD card
   if (!SD.begin(_SDCardPin))
   {
-    Serial.println(F("Error: SD card failed to initialise or is missing."));
+    Serial.println(F("Error: SD card failed to setupialise or is missing."));
   }
 
   LoggerBase::_fileName = String(_loggerID) + F("_");
@@ -443,11 +450,11 @@ void LoggerBase::setup(int interruptPin /*= -1*/, uint8_t periodicity /*= EveryM
         break;
 
         case EveryMinute:  // If the RTC is sending an alarm every minute
-        period = 15;  // the timer will check the clock every 15 seconds.
+        period = 60;  // the timer will check the clock every minute.
         break;
 
         case EveryHour:  // If the RTC is sending an alarm every hour
-        period = 60*5;  // the timer will check the clock every 5 minutes.
+        period = 60*60;  // the timer will check the clock every hour.
         break;
     }
     // Setup timer events

@@ -68,7 +68,20 @@ float MayflyOnboardTemp::getValue(void)
 // The constructor - needs to reference the super-class constructor
 MayflyOnboardBatt::MayflyOnboardBatt(char const *version)
   : SensorBase(-1, -1, F("EnviroDIYMayfly"), F("batteryVoltage"), F("Volt"), F("Battery"))
-{ _version = version; }
+{
+    _version = version;
+
+    if (strcmp(_version, "v0.3") == 0 or strcmp(_version, "v0.4") == 0)
+    {
+        // Set the pin to read the battery voltage
+        _batteryPin = A6;
+    }
+    if (strcmp(_version, "v0.5") == 0)
+    {
+        // Set the pin to read the battery voltage
+        _batteryPin = A6;
+    }
+}
 
 // The location of the sensor on the Mayfly
 String MayflyOnboardBatt::getSensorLocation(void)
@@ -82,8 +95,6 @@ bool MayflyOnboardBatt::update(void)
 {
     if (strcmp(_version, "v0.3") == 0 or strcmp(_version, "v0.4") == 0)
     {
-        // Set the pin to read the battery voltage
-        int _batteryPin = A6;
         // Get the battery voltage
         float rawBattery = analogRead(_batteryPin);
         MayflyOnboardBatt::sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
@@ -91,8 +102,6 @@ bool MayflyOnboardBatt::update(void)
     }
     if (strcmp(_version, "v0.5") == 0)
     {
-        // Set the pin to read the battery voltage
-        int _batteryPin = A6;
         // Get the battery voltage
         float rawBattery = analogRead(_batteryPin);
         MayflyOnboardBatt::sensorValue_battery = (3.3 / 1023.) * 4.7 * rawBattery;

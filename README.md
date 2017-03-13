@@ -7,8 +7,8 @@ Each sensor is implemented as a subclass of the "SensorBase" class.  Within each
 To use a sensor in your sketch, you must include SensorBase.h in your script AND separately include xxx.h for each sensor you intend to use.  While this may force you to write many more include statements, it makes the library much lighter weight by not requiring you to install the functions for every sensor when only one is needed.
 
 ### These are the functions available for each sensor:
-- **setup(void)** - This "sets up" the sensor - setting up serial ports, etc required for the given sensor.  This is always called when creating a new sensor instance.
-- **getStatus(void)** - This returns the current status of the sensor, if the sensor has some way of giving it to you.  (Most do not).
+- **setup(void)** - This "sets up" the sensor - setting up serial ports, etc required for the given sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program.
+- **getStatus(void)** - This returns the current status of the sensor, if the sensor has some way of giving it to you.  (Most do not.)
 - **sleep(void)** - This puts the sensor to sleep, often by stopping the power.  Returns true.
 - **wake(void)** - This wakes the sensor up and sends it power.  Returns true.
 - **getSensorName(void)** - This gets the name of the sensor and returns it as a string.
@@ -19,6 +19,9 @@ To use a sensor in your sketch, you must include SensorBase.h in your script AND
 - **getVarName(void)** - This returns the variable's name using http://vocabulary.odm2.org/variablename/ as a string
 - **getVarUnit(void)** - This returns the variable's unit using http://vocabulary.odm2.org/units/ as a string
 - **getValue(void)** - This returns the current value of the variable as a float.  You should call the update function before calling getValue.  As a backup, tf the getValue function sees that the update function has not been called within the last 60 seconds, it will re-call it.
+
+
+## Logger Functions
 
 
 ## Available sensors
