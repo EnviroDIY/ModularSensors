@@ -64,7 +64,7 @@ protected:
     void systemSleep(void);
 
 private:
-    int _timeZone;
+    static int _timeZone;
     int _SDCardPin;
     SensorBase **_sensorList;
     uint8_t _sensorCount;
