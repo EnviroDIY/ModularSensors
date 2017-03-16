@@ -340,13 +340,18 @@ String LoggerBase::_fileName = "";
 void LoggerBase::setupLogFile(void)
 {
   // Initialise the SD card
+  Serial.print(F("Connecting to SD Card with card/slave select on pin "));  // for debugging
+  Serial.println(_SDCardPin);  // for debugging
   if (!SD.begin(_SDCardPin))
   {
-    Serial.println(F("Error: SD card failed to setupialise or is missing."));
+    Serial.println(F("Error: SD card failed to initialize or is missing."));
   }
 
   LoggerBase::_fileName = String(_loggerID) + F("_");
   LoggerBase::_fileName += getDateTime_ISO8601().substring(0,10) + F(".csv");
+  Serial.print(F("Data being saved as "));  // for debugging
+  Serial.println(LoggerBase::_fileName);  // for debugging
+
   // Check if the file already exists
   bool oldFile = SD.exists(LoggerBase::_fileName.c_str());
 
@@ -374,7 +379,7 @@ void LoggerBase::setupLogFile(void)
         }
     }
 
-    // Serial.println(dataHeader);
+    // Serial.println(dataHeader);  // for debugging
     logFile.println(dataHeader);
   }
 
@@ -406,6 +411,8 @@ void LoggerBase::logToSD(String rec)
   File logFile = SD.open(LoggerBase::_fileName, FILE_WRITE);
 
   // Write the CSV data
+  Serial.println(F("\n \\/---- Line Saved to SD Card ----\\/ "));  // for debugging
+  Serial.println(generateSensorDataCSV());  // for debugging
   logFile.println(rec);
 
   // Close the file to save it
@@ -436,9 +443,6 @@ void LoggerBase::setup(int interruptPin /*= -1*/, uint8_t periodicity /*= EveryM
 
     // Set up the log file
     setupLogFile();
-    Serial.println(F("Setting up the file on the SD Card"));
-    Serial.print(F("Data being saved as "));
-    Serial.println(LoggerBase::_fileName);
 
     // Figure out how often the timer function should check the clock based on
     // the alarm/interrupt periodicity of the real-time clock.
@@ -489,7 +493,6 @@ void LoggerBase::log(int loggingIntervalMinutes, int ledPin/* = -1*/)
 
         //Save the data record to the log file
         logToSD(generateSensorDataCSV());
-        Serial.println(generateSensorDataCSV());  // for debugging
 
         // Turn off the LED
         digitalWrite(ledPin, LOW);

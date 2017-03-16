@@ -30,25 +30,7 @@ typedef enum xbee
 class LoggerEnviroDIY : public virtual LoggerBase
 {
 public:
-
-    // For the server response
-    enum HTTP_RESPONSE
-    {
-        HTTP_FAILURE = 0,
-        HTTP_SUCCESS,
-        HTTP_TIMEOUT,
-        HTTP_FORBIDDEN,
-        HTTP_SERVER_ERROR,
-        HTTP_REDIRECT,
-        HTTP_OTHER
-    };
-
-    // The class constructor
-    void init(int timeZone, int SDCardPin, int sensorCount,
-              SensorBase *SENSOR_LIST[],
-              const char *loggerID = 0,
-              const char *samplingFeature = 0,
-              const char *UUIDs[] = 0);
+    // Set up communications
     void setCommunication(xbee beeType = GPRS,
                           const char *registrationToken = "UNKNOWN",
                           const char *hostAddress = "data.envirodiy.org",
@@ -60,7 +42,7 @@ public:
     String generateSensorDataJSON(void);
 
     // Public function to send data
-    void printRemainingChars(int timeDelay = 1, int timeout = 5000);
+    void dumpBuffer(Stream & stream, int timeDelay = 1, int timeout = 5000);
     void streamPostRequest(Stream & stream);
     int postDataWiFi(void);
     int postDataGPRS(void);

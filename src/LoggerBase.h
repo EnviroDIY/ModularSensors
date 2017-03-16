@@ -63,7 +63,6 @@ protected:
     bool sensorsWake(void);
     void systemSleep(void);
 
-private:
     static int _timeZone;
     int _SDCardPin;
     SensorBase **_sensorList;
