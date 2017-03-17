@@ -23,7 +23,7 @@ void LoggerDreamHost::setDreamHostURL(const char *URL)
 String LoggerDreamHost::generateSensorDataDreamHost(void)
 {
     String dhString = String(_DreamHostURL);
-    dhString += F("_loggerID=");
+    dhString += F("loggerID=");
     dhString += String(LoggerBase::_loggerID);
     dhString += F("&Loggertime=");
     dhString += String(getNow());
@@ -107,10 +107,12 @@ void LoggerDreamHost::log(void)
                 printPostResult(result);  // for debugging
                 result = postDataDreamHost();
                 printPostResult(result);  // for debugging
+                break;
             };
             case WIFI:
             {
                 Serial.println(F("The DreamHost module cannot be used with WiFi at this time."));  // for debugging
+                break;
             };
         }
 

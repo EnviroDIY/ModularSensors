@@ -19,7 +19,12 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ---------------------------------------------------------------------------
 #include <Arduino.h>
 #include <SensorBase.h>
+
+#ifdef DreamHostURL
+#include <LoggerDreamHost.h>
+#else
 #include <LoggerEnviroDIY.h>
+#endif
 
 #include <DecagonCTD.h>
 #include <Decagon5TM.h>
@@ -45,7 +50,11 @@ int LOGGING_INTERVAL = 1;
 // Your logger's timezone.
 const int TIME_ZONE = -5;
 // Create a new logger instance
+#ifdef DreamHostURL
+LoggerDreamHost EnviroDIYLogger;
+#else
 LoggerEnviroDIY EnviroDIYLogger;
+#endif
 
 // Decagon CTD: pin settings
 // sdi-12 data pin is usually, pin 7 on shield 3.0
@@ -89,21 +98,19 @@ const float OBSHigh_C = 2.0709E-01;  // The "C" value from the high range calibr
 // 3. The array that contains all valid sensors
 // ---------------------------------------------------------------------------
 SensorBase *SENSOR_LIST[] = {
-    new DecagonCTD_Depth(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
-    new DecagonCTD_Temp(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
-    new DecagonCTD_Cond(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
-    new Decagon5TM_Ea(*TMSDI12address, switchedPower, SDI12Data),
-    new Decagon5TM_Temp(*TMSDI12address, switchedPower, SDI12Data),
-    new Decagon5TM_VWC(*TMSDI12address, switchedPower, SDI12Data),
-    new DecagonES2_Cond(*ES2DI12address, switchedPower, SDI12Data),
-    new DecagonES2_Temp(*ES2DI12address, switchedPower, SDI12Data),
-    new MaxBotixSonar_Range(switchedPower, SonarData, SonarTrigger),
-    new CampbellOBS3_Turbidity(switchedPower, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C),
-    new CampbellOBS3_TurbHigh(switchedPower, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C),
     new MayflyOnboardTemp(MFVersion),
     new MayflyOnboardBatt(MFVersion),
-    new MayflyFreeRam()
-    // new YOUR_sensorName_HERE()
+    new MayflyFreeRam(),
+    new DecagonCTD_Cond(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
+    new DecagonCTD_Temp(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
+    new DecagonCTD_Depth(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
+    new Decagon5TM_VWC(*TMSDI12address, switchedPower, SDI12Data),
+    new Decagon5TM_Temp(*TMSDI12address, switchedPower, SDI12Data),
+    new DecagonES2_Cond(*ES2DI12address, switchedPower, SDI12Data),
+    new DecagonES2_Temp(*ES2DI12address, switchedPower, SDI12Data),
+    new CampbellOBS3_Turbidity(switchedPower, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C),
+    new CampbellOBS3_TurbHigh(switchedPower, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C),
+    new MaxBotixSonar_Range(switchedPower, SonarData, SonarTrigger)
 };
 int sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
 
@@ -137,11 +144,9 @@ const char *UUIDs[] =
 // ---------------------------------------------------------------------------
 // Device Connection Options and WebSDL Endpoints for POST requests
 // ---------------------------------------------------------------------------
-xbee BEE_TYPE = GPRS;  // The type of XBee, either GPRS or WIFI
-const char *APN = "apn.konekt.io";  // The APN for the GPRSBee
-const char *HOST_ADDRESS = "data.envirodiy.org";
-const char *API_ENDPOINT = "/api/data-stream/";
-int COMMAND_TIMEOUT = 15000;  // How long (in milliseconds) to wait for a server response
+xbee BEE_TYPE = GPRSv6;  // The type of XBee, either GPRS or WIFI
+HardwareSerial &BeeSerial = Serial1; // The serial port for the xbee - software serial can also be used.
+const char *APN = "apn.konekt.io";  // The APN for the GPRSBee, unnecessary for WiFi
 
 
 // ---------------------------------------------------------------------------
@@ -184,7 +189,7 @@ void setup()
     // Start the primary serial connection
     Serial.begin(SERIAL_BAUD);
     // Start the serial connection with the *bee
-    Serial1.begin(BEE_BAUD);
+    BeeSerial.begin(BEE_BAUD);
 
     // Set up pins for the LED's
     pinMode(GREEN_LED, OUTPUT);
@@ -199,11 +204,17 @@ void setup()
     Serial.println(LoggerID);
 
     // Initialize the logger;
-    EnviroDIYLogger.init(-5, SD_SS_PIN, sensorCount, SENSOR_LIST, LoggerID, SAMPLING_FEATURE, UUIDs);
-    // Run the logger setup;
-    EnviroDIYLogger.setup(RTC_PIN);
+    EnviroDIYLogger.init(TIME_ZONE, SD_SS_PIN, RTC_PIN, sensorCount, SENSOR_LIST,
+                LOGGING_INTERVAL, LoggerID, SAMPLING_FEATURE, UUIDs);
+    EnviroDIYLogger.setAlertPin(GREEN_LED);
     // Set up the communication with EnviroDIY
-    EnviroDIYLogger.setCommunication(WIFI, REGISTRATION_TOKEN);
+    EnviroDIYLogger.setToken(REGISTRATION_TOKEN);
+    EnviroDIYLogger.setupBee(BEE_TYPE, &BeeSerial, BEE_CTS_PIN, BEE_DTR_PIN, APN);
+    #ifdef DreamHostURL
+    EnviroDIYLogger.setDreamHostURL(DreamHostURL);
+    #endif
+    // Begin the logger;
+    EnviroDIYLogger.begin();
 }
 
 
@@ -213,5 +224,5 @@ void setup()
 void loop()
 {
     // Log the data
-    EnviroDIYLogger.log(LOGGING_INTERVAL, GREEN_LED);
+    EnviroDIYLogger.log();
 }

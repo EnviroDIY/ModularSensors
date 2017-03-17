@@ -36,6 +36,7 @@ void LoggerEnviroDIY::setupBee(xbee beeType,
             gprsbee.init(*beeStream, beeCTSPin, beeDTRPin);
             gprsbee.setMinSignalQuality(5);
             // gprsbee.setDiag(Serial);  // for debugging
+            break;
         }
         case GPRSv6:
         {
@@ -44,6 +45,7 @@ void LoggerEnviroDIY::setupBee(xbee beeType,
             gprsbee.setPowerSwitchedOnOff(true);
             gprsbee.setMinSignalQuality(5);
             // gprsbee.setDiag(Serial);  // for debugging
+            break;
         }
         case WIFI:
         {break;}
@@ -201,48 +203,49 @@ void LoggerEnviroDIY::printPostResult(int HTTPcode)
         case 202:
         {
             Serial.println(F("\nData was sent successfully."));
+            break;
         }
-        break;
 
         case 301:
         case 302:
         {
             Serial.println(F("\nRequest was redirected."));
+            break;
         }
-        break;
 
         case 400:
         case 404:
         {
             Serial.println(F("\nFailed to send data."));
+            break;
         }
-        break;
 
         case 403:
         case 405:
         {
             Serial.print(F("\nAccess forbidden.  "));
             Serial.println(F("Check your reguistration token and _UUIDs."));
+            break;
         }
-        break;
 
         case 500:
         case 503:
         {
             Serial.println(F("\nRequest caused an internal server error."));
+            break;
         }
-        break;
 
         case 504:
         {
             Serial.print(F("\nRequest timed out.  "));
             Serial.println(F("No response from server or insufficient signal to send message."));
+            break;
         }
-        break;
 
         default:
         {
             Serial.print(F("\nAn unknown error has occured, and we're pretty confused\n"));
+            break;
         }
     }
 }
@@ -281,10 +284,12 @@ void LoggerEnviroDIY::log(void)
             case GPRSv6:
             {
                 result = postDataGPRS();
+                break;
             };
             case WIFI:
             {
                 result = postDataWiFi();
+                break;
             };
         }
         // Print the response from the WebSDL
