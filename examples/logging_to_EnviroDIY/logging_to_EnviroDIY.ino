@@ -49,12 +49,6 @@ const char *LoggerID = "Mayfly_160073";
 int LOGGING_INTERVAL = 1;
 // Your logger's timezone.
 const int TIME_ZONE = -5;
-// Create a new logger instance
-#ifdef DreamHostURL
-LoggerDreamHost EnviroDIYLogger;
-#else
-LoggerEnviroDIY EnviroDIYLogger;
-#endif
 
 // Decagon CTD: pin settings
 // sdi-12 data pin is usually, pin 7 on shield 3.0
@@ -76,9 +70,8 @@ const char *ES2DI12address = "3";  // The SDI-12 Address of the 5-TM
 // const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
 
 // MaxBotix Sonar: pin settings
-const int SonarData = 10;     // recieve pin
-// const int SonarTrigger = 11;   // excite (power) pin
-const int SonarTrigger = -1;   // excite (power) pin
+const int SonarData = 11;     // recieve pin
+const int SonarTrigger = -1;   // trigger pin - to set of single readings
 // const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
 
 // Campbell OBS 3+: pin settings
@@ -146,6 +139,7 @@ const char *UUIDs[] =
 // ---------------------------------------------------------------------------
 xbee BEE_TYPE = GPRSv6;  // The type of XBee, either GPRS or WIFI
 HardwareSerial &BeeSerial = Serial1; // The serial port for the xbee - software serial can also be used.
+const int BEE_BAUD = 9600;  // Bee BAUD rate (9600 is default)
 const char *APN = "apn.konekt.io";  // The APN for the GPRSBee, unnecessary for WiFi
 
 
@@ -158,7 +152,6 @@ const int RED_LED = 9;  // Pin for the red LED
 const int RTC_PIN = A7;  // RTC Interrupt/Alarm pin
 const int SD_SS_PIN = 12;  // SD Card Card Select/Slave Select Pin
 
-const int BEE_BAUD = 9600;  // Bee BAUD rate (9600 is default)
 const int BEE_DTR_PIN = 23;  // Bee DTR Pin (Data Terminal Ready - used for sleep)
 const int BEE_CTS_PIN = 19;   // Bee CTS Pin (Clear to Send)
 
@@ -179,6 +172,14 @@ void greenred4flash()
   }
   digitalWrite(RED_LED, LOW);
 }
+
+// Create a new logger instance
+#ifdef DreamHostURL
+LoggerDreamHost EnviroDIYLogger;
+#else
+LoggerEnviroDIY EnviroDIYLogger;
+#endif
+
 
 
 // ---------------------------------------------------------------------------

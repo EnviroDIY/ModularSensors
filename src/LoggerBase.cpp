@@ -389,28 +389,23 @@ String LoggerBase::_fileName = "";
 // Initializes the SD card and prints a header to it
 void LoggerBase::setupLogFile(void)
 {
-  // Initialise the SD card
-  Serial.print(F("Connecting to SD Card with card/slave select on pin "));  // for debugging
-  Serial.println(_SDCardPin);  // for debugging
-  if (!SD.begin(_SDCardPin))
-  {
-    Serial.println(F("Error: SD card failed to initialize or is missing."));
-  }
+    // Initialise the SD card
+    Serial.print(F("Connecting to SD Card with card/slave select on pin "));  // for debugging
+    Serial.println(_SDCardPin);  // for debugging
+    if (!SD.begin(_SDCardPin))
+    {
+        Serial.println(F("Error: SD card failed to initialize or is missing."));
+    }
 
-  LoggerBase::_fileName = String(_loggerID) + F("_");
-  LoggerBase::_fileName += getDateTime_ISO8601().substring(0,10) + F(".csv");
-  Serial.print(F("Data being saved as "));  // for debugging
-  Serial.println(LoggerBase::_fileName);  // for debugging
+    LoggerBase::_fileName = String(_loggerID) + F("_");
+    LoggerBase::_fileName += getDateTime_ISO8601().substring(0,10) + F(".csv");
+    Serial.print(F("Data being saved as "));  // for debugging
+    Serial.println(LoggerBase::_fileName);  // for debugging
 
-  // Check if the file already exists
-  bool oldFile = SD.exists(LoggerBase::_fileName.c_str());
+    // Open the file in write mode (and create it if it did not exist)
+    File logFile = SD.open(LoggerBase::_fileName, FILE_WRITE);
 
-  // Open the file in write mode
-  File logFile = SD.open(LoggerBase::_fileName, FILE_WRITE);
-
-  // Add header information if the file did not already exist
-  if (!oldFile)
-  {
+    // Add header information
     logFile.println(_loggerID);
     logFile.print(F("Sampling Feature UUID: "));
     logFile.println(_samplingFeature);
@@ -431,10 +426,9 @@ void LoggerBase::setupLogFile(void)
 
     // Serial.println(dataHeader);  // for debugging
     logFile.println(dataHeader);
-  }
 
-  //Close the file to save it
-  logFile.close();
+    //Close the file to save it
+    logFile.close();
 }
 
 String LoggerBase::generateSensorDataCSV(void)

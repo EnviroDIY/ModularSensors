@@ -41,7 +41,7 @@ const char *MFVersion = "v0.3";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "Mayfly_160073";
 // How frequently (in minutes) to log data
-float LOGGING_INTERVAL = 0.5;
+int LOGGING_INTERVAL = 0;
 // Your logger's timezone.
 const int TIME_ZONE = -5;
 // Create a new logger instance
