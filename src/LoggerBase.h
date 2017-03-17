@@ -21,12 +21,15 @@
 class LoggerBase
 {
 public:
-    // The class constructor
-    void init(int timeZone, int SDCardPin, int sensorCount,
+    // Setup and initialization function
+    void init(int timeZone, int SDCardPin, int interruptPin,
+              int sensorCount,
               SensorBase *SENSOR_LIST[],
+              float loggingIntervalMinutes,
               const char *loggerID = 0,
               const char *samplingFeature = 0,
               const char *UUIDs[] = 0);
+    void setAlertPin(int ledPin);
 
     // Public functions to access the clock in proper format and time zone
     static uint32_t getNow(void);
@@ -44,8 +47,8 @@ public:
     void logToSD(String rec);
 
     // Convience functions to do it all
-    void setup(int interruptPin = -1, uint8_t periodicity = EveryMinute);
-    virtual void log(int loggingIntervalMinutes, int ledPin = -1);
+    virtual void begin(void);
+    virtual void log(void);
 
 protected:
     static char currentTime[26];
@@ -56,20 +59,26 @@ protected:
     // Private functions for the timer and sleep modes
     static void checkTime(uint32_t ts);
     static void wakeISR(void);
-    void setupTimer(uint32_t period);
+    void setupTimer(void);
+    bool checkInterval(void);
 
-    void setupSleep(int interruptPin, uint8_t periodicity = EveryMinute);
+    void setupSleep(void);
     bool sensorsSleep(void);
     bool sensorsWake(void);
     void systemSleep(void);
 
     static int _timeZone;
     int _SDCardPin;
+    int _interruptPin;
     SensorBase **_sensorList;
     uint8_t _sensorCount;
     const char *_loggerID;
     const char *_samplingFeature;
     const char **_UUIDs;
+
+    float _loggingIntervalMinutes;
+    int _interruptRate;
+    int _ledPin;
 
     static String _fileName;
 };

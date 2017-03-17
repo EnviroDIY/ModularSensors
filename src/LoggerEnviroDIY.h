@@ -20,7 +20,8 @@
 // For the "Bee" devices"
 typedef enum xbee
 {
-    GPRS = 0,  // Sodaq GPRSBee - 2G (GPRS) communication
+    GPRSv4 = 0,  // Sodaq GPRSBee v4 - 2G (GPRS) communication
+    GPRSv6,  // Sodaq GPRSBee v6 - 2G (GPRS) communication
     WIFI,  // Digi XBee S6B - WiFi communication
     // RADIO,
     // THREEG
@@ -31,51 +32,30 @@ class LoggerEnviroDIY : public virtual LoggerBase
 {
 public:
     // Set up communications
-    void setCommunication(xbee beeType = GPRS,
-                          const char *registrationToken = "UNKNOWN",
-                          const char *hostAddress = "data.envirodiy.org",
-                          const char *APIEndpoint = "/api/data-stream/",
-                          int serverTimeout = 15000,
-                          const char *APN = "apn.konekt.io");
+    void setToken(const char *registrationToken);
+    void setupBee(xbee beeType,
+                  Stream *beeStream,
+                  int beeCTSPin,
+                  int beeDTRPin,
+                  const char *APN);
 
     // Public functions to generate data formats
     String generateSensorDataJSON(void);
 
     // Public function to send data
-    void dumpBuffer(Stream & stream, int timeDelay = 1, int timeout = 5000);
-    void streamPostRequest(Stream & stream);
+    void dumpBuffer(Stream *stream, int timeDelay = 5, int timeout = 5000);
+    void streamPostRequest(Stream *stream);
     int postDataWiFi(void);
     int postDataGPRS(void);
     void printPostResult(int result);
 
-
-// Only allow these functions if you have a portal URL
-#ifdef DreamHostURL
-    String generateSensorDataDreamHost(void);
-    int postDataDreamHost(void);
-#endif
-
     // Convience functions to do it all
-    void log(int loggingIntervalMinutes, int ledPin = -1) override;
+    virtual void log(void) override;
 
 protected:
-    static char currentTime[26];
-    static long currentepochtime;
-
-private:
-    int _timeZone;
-    int _SDCardPin;
-    SensorBase **_sensorList;
-    uint8_t _sensorCount;
-    const char *_loggerID;
-    const char *_samplingFeature;
-    const char **_UUIDs;
-
     const char *_registrationToken;
-    const char *_hostAddress;
-    const char *_APIEndpoint;
-    int _serverTimeout;
     xbee _beeType;
+    Stream *_beeStream;
     const char *_APN;
 };
 

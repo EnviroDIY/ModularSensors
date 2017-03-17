@@ -27,20 +27,37 @@ bool LoggerBase::sleep = false;
 // Initialization - cannot do this in constructor because it must happen
 // within the setup and if using the constuctor cannot control when
 // it happens
-void LoggerBase::init(int timeZone, int SDCardPin, int sensorCount,
+void LoggerBase::init(int timeZone, int SDCardPin, int interruptPin,
+                      int sensorCount,
                       SensorBase *SENSOR_LIST[],
+                      float loggingIntervalMinutes,
                       const char *loggerID/* = 0*/,
                       const char *samplingFeature/* = 0*/,
                       const char *UUIDs[]/* = 0*/)
 {
     _timeZone = timeZone;
     _SDCardPin = SDCardPin;
-    _sensorList = SENSOR_LIST;
+    _interruptPin = interruptPin;
     _sensorCount = sensorCount;
+    _sensorList = SENSOR_LIST;
+    _loggingIntervalMinutes = loggingIntervalMinutes;
+    _interruptRate = round(_loggingIntervalMinutes*60);  // convert to even seconds
     _loggerID = loggerID;
     _samplingFeature = samplingFeature;
     _UUIDs = UUIDs;
+
+    // Set sleep variable, if an interrupt pin is given
+    if(_interruptPin != -1)
+    {
+        LoggerBase::sleep = true;
+    }
 };
+
+// Sets up a pin for an LED or other way of alerting that data is being logged
+void LoggerBase::setAlertPin(int ledPin)
+{
+    _ledPin = ledPin;
+}
 
 
 // ============================================================================
@@ -88,6 +105,23 @@ String LoggerBase::getDateTime_ISO8601(void)
     }
     dateTimeStr += tzString;
     return dateTimeStr;
+}
+
+// This function checks to see if it is the proper interval to log on.
+bool LoggerBase::checkInterval(void)
+{
+    bool retval;
+    if (currentepochtime % _interruptRate == 0)
+    {
+        // Serial.println(F("Time to log!"));  // for Debugging
+        retval = true;
+    }
+    else
+    {
+        // Serial.println(F("Not time yet, back to sleep"));  // for Debugging
+        retval = false;
+    }
+    return retval;
 }
 
 
@@ -153,7 +187,7 @@ String LoggerBase::checkSensorLocations(void)
     return locationString;
 }
 
-bool LoggerBase::sensorsSleep()
+bool LoggerBase::sensorsSleep(void)
 {
     // Serial.println(F("Putting sensors to sleep."));  // For debugging
     bool success = true;
@@ -165,7 +199,7 @@ bool LoggerBase::sensorsSleep()
     return success;
 }
 
-bool LoggerBase::sensorsWake()
+bool LoggerBase::sensorsWake(void)
 {
     // Serial.println(F("Waking sensors."));  // For debugging
     bool success = true;
@@ -233,45 +267,60 @@ void LoggerBase::checkTime(uint32_t ts)
 }
 
 // Set-up the RTC Timer events
-void LoggerBase::setupTimer(uint32_t period)
+void LoggerBase::setupTimer(void)
 {
     // Instruct the RTCTimer how to get the current time reading (ie, what function to use)
     // The units of the time returned by this function determine the units of the
-    // "every" function below.
+    // period in the "every" function below.
     timer.setNowCallback(getNow);
 
-    // This tells the timer how often (period) it will repeat some function (checkTime)
+    // This tells the timer how often (_interruptRate) it will repeat some function (checkTime)
     // The time units of the first input are the same as those returned by the
     // setNowCallback function above (in this case, seconds).  We are only
     // having the timer call a function to check the time instead of actually
     // taking a reading because we would rather first double check that we're
     // exactly on a current minute before taking the reading.
-    timer.every(period, checkTime);
+    timer.every(_interruptRate, checkTime);
 }
-
-// Set up the Interrupt Service Request for waking - in this case, doing nothing
-void LoggerBase::wakeISR(void){}
 
 
 // ============================================================================
 //  Functions for sleeping the logger
 // ============================================================================
 
+// Set up the Interrupt Service Request for waking - in this case, doing nothing
+void LoggerBase::wakeISR(void){}
+
 // Sets up the sleep mode
-void LoggerBase::setupSleep(int interruptPin, uint8_t periodicity /*= EveryMinute*/)
+void LoggerBase::setupSleep(void)
 {
     // Set the pin attached to the RTC alarm to be in the right mode to listen to
     // an interrupt and attach the "Wake" ISR to it.
-    pinMode(interruptPin, INPUT_PULLUP);
-    PcInt::attachInterrupt(interruptPin, wakeISR);
+    pinMode(_interruptPin, INPUT_PULLUP);
+    PcInt::attachInterrupt(_interruptPin, wakeISR);
+
+    // TODO:  Make this work!!
+    // Figure out how frequently we want the interrupts to go off
+    // based on the logging interval
+    // uint8_t interruptSeconds;
+    // uint8_t interruptMinutes;
+    // uint8_t interruptHours;
+    // int interruptRate = _interruptRate;  // convert to even seconds
+    // interruptSeconds = interruptRate % 60;
+    // interruptRate /= 60;  // now interruptRate is minutes
+    // interruptMinutes = interruptRate % 60;
+    // interruptRate /= 60;  // now interruptRate is hours
+    // interruptHours = interruptRate;
 
     // Put the RTC itself into in alarm mode - that is, allowing it to send interrupts
     // Essentially, we're telling the clock to send a signal over the alarm pin
     // (interrupt pin) at this rate.
-    rtc.enableInterrupts(periodicity);
+    // rtc.enableInterrupts(interruptHours, interruptMinutes, interruptSeconds);
+
+    rtc.enableInterrupts(EveryMinute);
 
     // Set the sleep mode
-    // In the avr/sleep.h file, the call names of these 5 sleep modes are to be found:
+    // In the avr/sleep.h file, the call names of these 5 sleep modes are:
     // SLEEP_MODE_IDLE         -the least power savings
     // SLEEP_MODE_ADC
     // SLEEP_MODE_PWR_SAVE
@@ -289,6 +338,7 @@ void LoggerBase::systemSleep(void)
 
     // Wait until the serial ports have finished transmitting
     // This does not clear their buffers, it just waits until they are finished
+    // TODO:  Make sure can find all serial ports
     Serial.flush();
     Serial1.flush();
 
@@ -423,12 +473,14 @@ void LoggerBase::logToSD(String rec)
 // ============================================================================
 //  Convience functions to call several of the above functions
 // ============================================================================
-void LoggerBase::setup(int interruptPin /*= -1*/, uint8_t periodicity /*= EveryMinute*/)
+void LoggerBase::begin(void)
 {
-
     // Start the Real Time Clock
     rtc.begin();
     delay(100);
+
+    // Set up pins for the LED's
+    pinMode(_ledPin, OUTPUT);
 
     // Print a start-up note to the first serial port
     Serial.print(F("Current RTC time is: "));
@@ -437,69 +489,50 @@ void LoggerBase::setup(int interruptPin /*= -1*/, uint8_t periodicity /*= EveryM
     Serial.print(String(_sensorCount));
     Serial.println(F(" variables being recorded."));
 
-
+    // Set up the sensors
     Serial.println(F("Setting up sensors."));
     setupSensors();
 
     // Set up the log file
     setupLogFile();
 
-    // Figure out how often the timer function should check the clock based on
-    // the alarm/interrupt periodicity of the real-time clock.
-    uint32_t period = 0;
-    switch(periodicity)
-    {
-        case EverySecond:  // If the RTC is sending an alarm every second
-        period = 1;  // the timer will check the clock every second.
-        break;
-
-        case EveryMinute:  // If the RTC is sending an alarm every minute
-        period = 60;  // the timer will check the clock every minute.
-        break;
-
-        case EveryHour:  // If the RTC is sending an alarm every hour
-        period = 60*60;  // the timer will check the clock every hour.
-        break;
-    }
     // Setup timer events
-    setupTimer(period);
+    setupTimer();
 
-    // Setup sleep mode, if an interrupt pin is given
-    if(interruptPin != -1)
-    {
-        LoggerBase::sleep = true;
-        setupSleep(interruptPin, periodicity);
-    }
+    // Setup sleep mode
+    if(sleep){setupSleep();}
 
     Serial.println(F("Setup finished!"));
     Serial.println(F("------------------------------------------\n"));
 }
 
-void LoggerBase::log(int loggingIntervalMinutes, int ledPin/* = -1*/)
+void LoggerBase::log(void)
 {
     // Update the timer
     timer.update();
 
     // Check of the current time is an even interval of the logging interval
-    if (currentepochtime % loggingIntervalMinutes*60 == 0)
+    if (checkInterval())
     {
         // Print a line to show new reading
         Serial.println(F("------------------------------------------"));  // for debugging
         // Turn on the LED to show we're taking a reading
-        digitalWrite(ledPin, HIGH);
+        digitalWrite(_ledPin, HIGH);
 
         // Update the values from all attached sensors
         updateAllSensors();
+        // Immediately put sensors to sleep to save power
+        sensorsSleep();
 
         //Save the data record to the log file
         logToSD(generateSensorDataCSV());
 
         // Turn off the LED
-        digitalWrite(ledPin, LOW);
+        digitalWrite(_ledPin, LOW);
         // Print a line to show reading ended
         Serial.println(F("------------------------------------------\n"));  // for debugging
     }
 
-    //Sleep
+    // Sleep
     if(sleep){systemSleep();}
 }

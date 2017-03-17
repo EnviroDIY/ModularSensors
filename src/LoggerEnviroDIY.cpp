@@ -13,19 +13,41 @@
 
 
 // Communication set up
-void LoggerEnviroDIY::setCommunication(xbee beeType/* = "GPRS"*/,
-                                       const char *registrationToken/* = "UNKNOWN"*/,
-                                       const char *hostAddress/* = "data.envirodiy.org"*/,
-                                       const char *APIEndpoint/* = "/api/data-stream/"*/,
-                                       int serverTimeout/* = 15000*/,
-                                       const char *APN/* = "apn.konekt.io"*/)
+void LoggerEnviroDIY::setToken(const char *registrationToken)
 {
     _registrationToken = registrationToken;
-    _hostAddress = hostAddress;
-    _APIEndpoint = APIEndpoint;
-    _serverTimeout = serverTimeout;
+}
+
+void LoggerEnviroDIY::setupBee(xbee beeType,
+                               Stream *beeStream,
+                               int beeCTSPin,
+                               int beeDTRPin,
+                               const char *APN)
+{
     _beeType = beeType;
+    _beeStream = beeStream;
     _APN = APN;
+
+    switch(beeType)
+    {
+        case GPRSv4:
+        {
+            // Initialize the GPRSBee
+            gprsbee.init(*beeStream, beeCTSPin, beeDTRPin);
+            gprsbee.setMinSignalQuality(5);
+            // gprsbee.setDiag(Serial);  // for debugging
+        }
+        case GPRSv6:
+        {
+            // Initialize the GPRSBee
+            gprsbee.init(*beeStream, beeCTSPin, beeDTRPin);
+            gprsbee.setPowerSwitchedOnOff(true);
+            gprsbee.setMinSignalQuality(5);
+            // gprsbee.setDiag(Serial);  // for debugging
+        }
+        case WIFI:
+        {break;}
+    }
 };
 
 
@@ -38,19 +60,19 @@ void LoggerEnviroDIY::setCommunication(xbee beeType/* = "GPRS"*/,
 // Used to empty out the buffer after a post request.
 // Removing this may cause communication issues. If you
 // prefer to not see the std::out, remove the print statement
-void LoggerEnviroDIY::dumpBuffer(Stream & stream, int timeDelay/* = 1*/, int timeout/* = 5000*/)
+void LoggerEnviroDIY::dumpBuffer(Stream *stream, int timeDelay/* = 5*/, int timeout/* = 5000*/)
 {
-    while (timeout-- > 0 && stream.available() > 0)
+    while (timeout-- > 0 && stream->available() > 0)
     {
-        while (stream.available() > 0)
+        while (stream->available() > 0)
         {
-            // Serial.print(stream.read());
-            stream.read();
+            // Serial.print(stream->read());
+            stream->read();
             delay(timeDelay);
         }
         delay(timeDelay);
     }
-    stream.flush();
+    stream->flush();
 }
 
 
@@ -79,53 +101,51 @@ String LoggerEnviroDIY::generateSensorDataJSON(void)
 
 // This function generates the full POST request that gets sent to data.envirodiy.org
 // This is only needed for transparent Bee's (ie, WiFi)
-void LoggerEnviroDIY::streamPostRequest(Stream & stream)
+void LoggerEnviroDIY::streamPostRequest(Stream *stream)
 {
-    stream.print(F("POST "));
-    stream.print(_APIEndpoint);
-    stream.print(F(" HTTP/1.1\r\nHost: "));
-    stream.print(_hostAddress);
-    stream.print(F("\r\nTOKEN: "));
-    stream.print(_registrationToken);
-    stream.print(F("\r\nCache-Control: no-cache\r\nContent-Length: "));
-    stream.print(generateSensorDataJSON().length());
-    stream.print(F("\r\nContent-Type: application/json\r\n\r\n"));
-    stream.print(generateSensorDataJSON());
-    stream.print(F("\r\n\r\n"));
+    stream->print(F("POST /api/data-stream/ HTTP/1.1"));
+    stream->print(F("\r\nHost: data.envirodiy.org"));
+    stream->print(F("\r\nTOKEN: "));
+    stream->print(_registrationToken);
+    stream->print(F("\r\nCache-Control: no-cache\r\nContent-Length: "));
+    stream->print(generateSensorDataJSON().length());
+    stream->print(F("\r\nContent-Type: application/json\r\n\r\n"));
+    stream->print(generateSensorDataJSON());
+    stream->print(F("\r\n\r\n"));
 }
 
 // This function makes an HTTP connection to the server and POSTs data - for WIFI
 int LoggerEnviroDIY::postDataWiFi(void)
 {
-    dumpBuffer(Serial1);
+    // Send the request to the serial for debugging
+    Serial.println(F("\n \\/---- Post Request to EnviroDIY ----\\/ "));  // for debugging
+    streamPostRequest(&Serial);  // for debugging
+    Serial.flush();  // for debugging
+
+    dumpBuffer(_beeStream);
     int responseCode = 0;
 
     // Send the request to the WiFiBee (it's transparent, just goes as a stream)
-    streamPostRequest(Serial1);
-    Serial1.flush();
-
-    // Send the request to the serial for debugging
-    Serial.println(F("\n \\/---- Post Request to EnviroDIY ----\\/ "));  // for debugging
-    streamPostRequest(Serial);  // for debugging
-    Serial.flush();  // for debugging
+    streamPostRequest(_beeStream);
+    _beeStream->flush();
 
     // Add a brief delay for at least the first 12 characters of the HTTP response
-    int timeout = _serverTimeout;
-    while ((timeout > 0) && Serial1.available() < 12)
+    int timeout = 1500;
+    while ((timeout > 0) && _beeStream->available() < 12)
     {
       delay(1);
       timeout--;
     }
 
     // Process the HTTP response
-    if (timeout > 0 && Serial1.available() >= 12)
+    if (timeout > 0 && _beeStream->available() >= 12)
     {
-        Serial1.readStringUntil(' ');
-        responseCode = Serial1.parseInt();
+        _beeStream->readStringUntil(' ');
+        responseCode = _beeStream->parseInt();
         Serial.println(F(" -- Response Code -- "));  // for debugging
         Serial.println(responseCode);  // for debugging
 
-        dumpBuffer(Serial1);
+        dumpBuffer(_beeStream);
     }
     else responseCode=504;
 
@@ -135,12 +155,10 @@ int LoggerEnviroDIY::postDataWiFi(void)
 // This function makes an HTTP connection to the server and POSTs data - for GPRS
 int LoggerEnviroDIY::postDataGPRS(void)
 {
-    dumpBuffer(Serial1);
+    dumpBuffer(_beeStream);
     int responseCode = 0;
 
-    char url[strlen(_hostAddress) + strlen(_APIEndpoint) + 8] = "http://";
-    strcat(url,  _hostAddress);
-    strcat(url,  _APIEndpoint);
+    char url[43] = "http://data.envirodiy.org/api/data-stream/";
     char header[45] = "TOKEN: ";
     strcat(header, _registrationToken);
 
@@ -182,51 +200,43 @@ void LoggerEnviroDIY::printPostResult(int HTTPcode)
         case 201:
         case 202:
         {
-            Serial.print(F("\nSucessfully sent data to "));
-            Serial.println(_hostAddress);
+            Serial.println(F("\nData was sent successfully."));
         }
         break;
 
         case 301:
         case 302:
         {
-            Serial.print(F("\nRequest to "));
-            Serial.print(_hostAddress);
-            Serial.println(F(" was redirected."));
+            Serial.println(F("\nRequest was redirected."));
         }
         break;
 
         case 400:
         case 404:
         {
-            Serial.print(F("\nFailed to send data to "));
-            Serial.println(_hostAddress);
+            Serial.println(F("\nFailed to send data."));
         }
         break;
 
         case 403:
         case 405:
         {
-            Serial.print(F("\nAccess to "));
-            Serial.print(_hostAddress);
-            Serial.println(F(" forbidden - Check your reguistration token and _UUIDs."));
+            Serial.print(F("\nAccess forbidden.  "));
+            Serial.println(F("Check your reguistration token and _UUIDs."));
         }
         break;
 
         case 500:
         case 503:
         {
-            Serial.print(F("\nRequest to "));
-            Serial.print(_hostAddress);
-            Serial.println(F(" aused an internal server error."));
+            Serial.println(F("\nRequest caused an internal server error."));
         }
         break;
 
         case 504:
         {
-            Serial.print(F("\nRequest to "));
-            Serial.print(_hostAddress);
-            Serial.println(F(" timed out, no response from server or insufficient signal to send message."));
+            Serial.print(F("\nRequest timed out.  "));
+            Serial.println(F("No response from server or insufficient signal to send message."));
         }
         break;
 
@@ -238,78 +248,27 @@ void LoggerEnviroDIY::printPostResult(int HTTPcode)
 }
 
 
-
-#ifdef DreamHostURL
-String LoggerEnviroDIY::generateSensorDataDreamHost(void)
-{
-    String dhString = DreamHostURL;
-    dhString += F("_loggerID=");
-    dhString += String(LoggerBase::_loggerID);
-    dhString += F("&Loggertime=");
-    dhString += String(getNow());
-
-    for (int i = 0; i < LoggerBase::_sensorCount; i++)
-    {
-        dhString += F("&");
-        dhString += String(LoggerBase::_sensorList[i]->getDreamHost());
-        dhString += F("=");
-        dhString += String(LoggerBase::_sensorList[i]->getValue());
-    }
-    return dhString;
-
-}
-
-// Post the data to dream host.  Do IF AND ONLY IF using GPRSBee
-int LoggerEnviroDIY::postDataDreamHost(void)
-{
-    int responseCode = 0;
-    dumpBuffer(Serial1);
-
-    Serial.println(F("\n \\/------ Data to DreamHost ------\\/ "));  // for debugging
-    Serial.println(generateSensorDataDreamHost());  // for debugging
-
-    // Set up buffer to recieve response and fill with \0's
-    char buffer[10];
-    memset(buffer, '\0', sizeof(buffer));
-
-    bool response = (gprsbee.doHTTPGET(_APN, generateSensorDataDreamHost(),
-                                       buffer, sizeof(buffer)));
-
-    // TODO:  Actually read the response
-    if (response)
-    {
-        Serial.println(buffer)
-        responseCode = 201;
-    }
-    else // Otherwise timeout, no response from server
-    {
-        responseCode = 504;
-    }
-
-    return responseCode;
-}
-#endif
-
-
 // ============================================================================
 //  Convience functions to call several of the above functions
 // ============================================================================
 
-void LoggerEnviroDIY::log(int loggingIntervalMinutes, int ledPin/* = -1*/)
+void LoggerEnviroDIY::log(void)
 {
     // Update the timer
     timer.update();
 
     // Check of the current time is an even interval of the logging interval
-    if (LoggerBase::currentepochtime % loggingIntervalMinutes*60 == 0)
+    if (checkInterval())
     {
         // Print a line to show new reading
         Serial.println(F("------------------------------------------"));  // for debugging
         // Turn on the LED to show we're taking a reading
-        digitalWrite(ledPin, HIGH);
+        digitalWrite(LoggerBase::_ledPin, HIGH);
 
         // Update the values from all attached sensors
         updateAllSensors();
+        // Immediately put sensors to sleep to save power
+        sensorsSleep();
 
         //Save the data record to the log file
         logToSD(generateSensorDataCSV());
@@ -318,29 +277,25 @@ void LoggerEnviroDIY::log(int loggingIntervalMinutes, int ledPin/* = -1*/)
         int result;
         switch (_beeType)
         {
-            case GPRS:
+            case GPRSv4:
+            case GPRSv6:
             {
                 result = postDataGPRS();
             };
             case WIFI:
             {
                 result = postDataWiFi();
-                printPostResult(result);  // for debugging
             };
         }
         // Print the response from the WebSDL
-
-        #ifdef DreamHostURL
-            result = postDataDreamHost();
-            printPostResult(result);  // for debugging
-        #endif
+        printPostResult(result);  // for debugging
 
         // Turn off the LED
-        digitalWrite(ledPin, LOW);
+        digitalWrite(LoggerBase::_ledPin, LOW);
         // Print a line to show reading ended
         Serial.println(F("------------------------------------------\n"));  // for debugging
     }
 
     //Sleep
-    if(sleep){systemSleep();}
+    if(LoggerBase::sleep){systemSleep();}
 }

@@ -41,7 +41,7 @@ const char *MFVersion = "v0.3";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "Mayfly_160073";
 // How frequently (in minutes) to log data
-int LOGGING_INTERVAL = 1;
+float LOGGING_INTERVAL = 0.5;
 // Your logger's timezone.
 const int TIME_ZONE = -5;
 // Create a new logger instance
@@ -183,9 +183,11 @@ void setup()
     Serial.println(LoggerID);
 
     // Initialize the logger;
-    Logger.init(-5, SD_SS_PIN, sensorCount, SENSOR_LIST, LoggerID, SAMPLING_FEATURE, UUIDs);
+    Logger.init(TIME_ZONE, SD_SS_PIN, RTC_PIN, sensorCount, SENSOR_LIST,
+                LOGGING_INTERVAL, LoggerID, SAMPLING_FEATURE, UUIDs);
+    Logger.setAlertPin(GREEN_LED);
     // Run the logger setup;
-    Logger.setup(RTC_PIN);
+    Logger.begin();
 }
 
 
@@ -195,5 +197,5 @@ void setup()
 void loop()
 {
     // Log the data
-    Logger.log(LOGGING_INTERVAL, GREEN_LED);
+    Logger.log();
 }
