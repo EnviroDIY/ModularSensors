@@ -7,8 +7,8 @@ Each sensor is implemented as a subclass of the "SensorBase" class.  Within each
 To use a sensor in your sketch, you must include SensorBase.h in your script AND separately include xxx.h for each sensor you intend to use.  While this may force you to write many more include statements, it makes the library much lighter weight by not requiring you to install the functions for every sensor when only one is needed.
 
 ### These are the functions available for each sensor:
-- **setup(void)** - This "sets up" the sensor - setting up serial ports, etc required for the given sensor.  This is always called when creating a new sensor instance.
-- **getStatus(void)** - This returns the current status of the sensor, if the sensor has some way of giving it to you.  (Most do not).
+- **setup(void)** - This "sets up" the sensor - setting up serial ports, etc required for the given sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program.
+- **getStatus(void)** - This returns the current status of the sensor, if the sensor has some way of giving it to you.  (Most do not.)
 - **sleep(void)** - This puts the sensor to sleep, often by stopping the power.  Returns true.
 - **wake(void)** - This wakes the sensor up and sends it power.  Returns true.
 - **getSensorName(void)** - This gets the name of the sensor and returns it as a string.
@@ -19,6 +19,72 @@ To use a sensor in your sketch, you must include SensorBase.h in your script AND
 - **getVarName(void)** - This returns the variable's name using http://vocabulary.odm2.org/variablename/ as a string
 - **getVarUnit(void)** - This returns the variable's unit using http://vocabulary.odm2.org/units/ as a string
 - **getValue(void)** - This returns the current value of the variable as a float.  You should call the update function before calling getValue.  As a backup, tf the getValue function sees that the update function has not been called within the last 60 seconds, it will re-call it.
+
+
+## Logger Functions
+Our main reason to unify the output from many sensors is to easily log the data to an SD card and to send it to the EnviroDIY data page.  There are two modules available to use with the sensors to log data:  LoggerBase and LoggerEnviroDIY.  These both will set up the Arduino as a logger which goes to deep sleep between readings to conserver power.  LoggerBase has the ability to pool sensors from an array of sensor pointers and to write the data from the sensors to a csv file.  LoggerEnviroDIY depends on LoggerBase and adds the ability to send data to the EnviroDIY data portal.  Both logger modules depend on the [Sodaq](https://github.com/SodaqMoja/Sodaq_DS3231) or [EnviroDIY DS-3231](https://github.com/EnviroDIY/Sodaq_DS3231) (for clock control), the [Sodaq RTCTimer library](https://github.com/SodaqMoja/RTCTimer) (for timing functions), the [EnviroDIY modified version of Sodaq's pin change interrupt library](https://github.com/EnviroDIY/PcInt_PCINT0) (for waking the processor from clock alarms), the AVR sleep library (for low power sleeping), and the [SdFat library](https://github.com/greiman/SdFat) for communicating with the SD card.  The LoggerEnviroDIY has the additional dependency of the [EnviroDIY version of Sodaq's GPRSBee library](https://github.com/EnviroDIY/GPRSbee) for GPRS communications.
+
+To set up logging, you must first include the appropriate logging module and create a new logger instance.  This must happen outside of the setup and loop functions:
+
+```cpp
+// Import Logger Module
+#include <LoggerBase.h>
+// Create a new logger instance
+LoggerBase Logger;
+```
+
+--OR--
+
+```cpp
+// Import Logger Module
+#include <LoggerEnviroDIY.h>
+// Create a new logger instance
+LoggerEnviroDIY EnviroDIYLogger;
+```
+
+_Within the setup function_, you must then initialize the logger and then run the logger setup.  For the EnviroDIY logger, you must also set up the communication.  (Please note that these are show with default values.):
+
+```cpp
+// Initialize the logger;
+Logger.init(int timeZone, int SDCardPin, int sensorCount,
+            SensorBase *SENSOR_LIST[],
+            const char *loggerID = 0,
+            const char *samplingFeature = 0,
+            const char *UUIDs[] = 0);
+// Run the logger setup;
+Logger.setup(int interruptPin = -1, uint8_t periodicity = EveryMinute);
+```
+
+--OR--
+
+```cpp
+// Initialize the logger;
+EnviroDIYLogger.init(int timeZone, int SDCardPin, int sensorCount,
+          SensorBase *SENSOR_LIST[],
+          const char *loggerID = 0,
+          const char *samplingFeature = 0,
+          const char *UUIDs[] = 0);
+// Run the logger setup;
+EnviroDIYLogger.setup(int interruptPin = -1, uint8_t periodicity = EveryMinute);
+// Set up the communication with EnviroDIY
+EnviroDIYLogger.setCommunication(xbee beeType = GPRS,
+                      const char *registrationToken = "UNKNOWN",
+                      const char *hostAddress = "data.envirodiy.org",
+                      const char *APIEndpoint = "/api/data-stream/",
+                      int serverTimeout = 15000,
+                      const char *APN = "apn.konekt.io");
+```
+
+_Within the main loop function_, all logging and sending of data is done using the single program line:
+```cpp
+Logger.log(int loggingIntervalMinutes, int ledPin = -1);
+```
+
+--OR--
+
+```cpp
+EnviroDIYLogger.log(int loggingIntervalMinutes, int ledPin = -1);
+```
 
 
 ## Available sensors
@@ -32,7 +98,7 @@ The version of the Mayfly is required as input (ie, "v0.3" or "v0.4" or "v0.5") 
 
 **[MaxBotix MaxSonar](http://www.maxbotix.com/Ultrasonic_Sensors/High_Accuracy_Sensors.htm) - HRXL MaxSonar WR or WRS Series with TTL Outputs**
 
-The power/excite pin and digital data pin are needed as input.  The power pin must provide smoothed digital power.  You must have the [EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwareSerial_PCINT12/) installed to use this sensor.  This modified version is needed so there are no pin change interrupt conflicts with the SDI-12 library or the software pin change interrupt library used to wake the clock.  Because of this, the MaxBotix must be installed on a digital pin that depends on pin change interrupt vector 1 or 2.  On the Mayfly, the empty pins in this range are pins D10, D11, and D18.  (Various solder jumper options will eliminate D18 as a possibility.)
+The power/excite pin and digital data pin are needed as input.  The power pin must provide smoothed digital power.  You must have the [EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwareSerial_PCINT12/) installed to use this sensor.  This modified version is needed so there are no pin change interrupt conflicts with the SDI-12 library or the software pin change interrupt library used to wake the clock.  Because of this, the MaxBotix must be installed on a digital pin that depends on pin change interrupt vector 1 or 2.  On the Mayfly, the empty pins in this range are pins D10, D11, and D18.  (Changing the solder jumper options on the back of the board may eliminate D18 as a possibility.)
 - MaxBotixSonar_Depth(int powerPin, int dataPin)
 
 **[Campbell Scientific OBS-3+](https://www.campbellsci.com/obs-3plus)**

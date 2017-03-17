@@ -19,7 +19,6 @@ SensorBase::SensorBase(int dataPin, int powerPin, String sensorName, String varN
     _varName = varName;
     _varUnit = varUnit;
     _dreamHost = dreamHost;
-    setup();
 }
 
 // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
@@ -39,8 +38,15 @@ bool SensorBase::checkPowerOn(void)
 {
     int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
     if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
-        {return false;}
-    else {return true;}
+    {
+        // Serial.println(F("Power was off."));  // For debugging
+        return false;
+    }
+    else
+    {
+        // Serial.println(F("Power was on."));  // For debugging
+        return true;
+    }
 }
 
 // This is a helper function to turn on sensor power
@@ -97,8 +103,8 @@ bool SensorBase::checkForUpdate(unsigned long sensorLastUpdated)
     {
         Serial.print(F("It has been "));
         Serial.print((millis() - sensorLastUpdated)/1000);
-       // Serial.println(F(" seconds since the sensor value was checked"));  // For debugging
-       // Serial.println(F("Value out of date, updating"));  // For debugging
+        // Serial.println(F(" seconds since the sensor value was checked"));  // For debugging
+        // Serial.println(F("Value out of date, updating"));  // For debugging
         return(update());
     }
     else return(true);
