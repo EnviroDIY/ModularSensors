@@ -2,8 +2,7 @@
  *MayflyOnboardSensors.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
- *Work in progress by Sara Damiano taken from code written
- *by Shannon Hicks and templates from USU.
+ *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the onboard "sensors" on the EnviroDIY Mayfly
  *It is dependent on the EnviroDIY DS3231 library.
@@ -16,11 +15,18 @@
 #include "SensorBase.h"
 
 
-// There is no ""Main" class for the Mayfly, these are really 3 independent classes
+// The "Main" class for the Mayfly
+// Only need a sleep and wake since these DON'T use the default of powering up and down
+class MayflyOnboardSensors : public virtual SensorBase
+{
+public:
+    bool sleep(void) override;
+    bool wake(void) override;
+};
 
 
 // Defines the "Temperature Sensor"
-class MayflyOnboardTemp : public virtual SensorBase
+class MayflyOnboardTemp : public virtual MayflyOnboardSensors
 {
 public:
     MayflyOnboardTemp(char const *version);
@@ -37,7 +43,7 @@ private:
 
 
 // Defines the "Battery Sensor"
-class MayflyOnboardBatt : public virtual SensorBase
+class MayflyOnboardBatt : public virtual MayflyOnboardSensors
 {
 public:
     MayflyOnboardBatt(char const *version);
@@ -56,7 +62,7 @@ private:
 
 
 // Defines the "Free Ram" This is not a sensor at all but a board diagnostidc
-class MayflyFreeRam : public virtual SensorBase
+class MayflyFreeRam : public virtual MayflyOnboardSensors
 {
 public:
     MayflyFreeRam(void);

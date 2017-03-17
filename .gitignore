@@ -57,5 +57,4 @@ Temporary Items
 lib/readme.txt
 
 # Other
-examples/sonar_test
-examples/SDI12_test
+logger_test/

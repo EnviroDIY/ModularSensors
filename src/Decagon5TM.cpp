@@ -2,8 +2,7 @@
  *Decagon5TM.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
- *Work in progress by Sara Damiano taken from code written
- *by Shannon Hicks and templates from USU.
+ *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the Decagon Devices 5TM Soil Moisture probe
  *It is dependent on the EnviroDIY SDI-12 library and the DecagonSDI12 super class.
@@ -38,7 +37,7 @@ bool Decagon5TM::update(void)
 
 
 Decagon5TM_Ea::Decagon5TM_Ea(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, F("Decagon5TM"), F("waterPotential"), F("kilopascal"), F("soilEa")),
+ : SensorBase(dataPin, powerPin, F("Decagon5TM"), F("waterPotential"), F("kilopascal"), F("SoilEa")),
    DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
    Decagon5TM(SDI12address, powerPin, dataPin, numReadings)
 {}
@@ -53,7 +52,7 @@ float Decagon5TM_Ea::getValue(void)
 
 
 Decagon5TM_Temp::Decagon5TM_Temp(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, F("Decagon5TM"), F("temperature"), F("degreeCelsius"), F("soiltemp")),
+ : SensorBase(dataPin, powerPin, F("Decagon5TM"), F("temperature"), F("degreeCelsius"), F("SoilTemp")),
    DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
    Decagon5TM(SDI12address, powerPin, dataPin, numReadings)
 {}
@@ -67,7 +66,7 @@ float Decagon5TM_Temp::getValue(void)
 
 
 Decagon5TM_VWC::Decagon5TM_VWC(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, F("Decagon5TM"), F("volumetricWaterContent"), F("percent"), F("soilVWC")),
+ : SensorBase(dataPin, powerPin, F("Decagon5TM"), F("volumetricWaterContent"), F("percent"), F("SoilVWC")),
    DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
    Decagon5TM(SDI12address, powerPin, dataPin, numReadings)
 {}

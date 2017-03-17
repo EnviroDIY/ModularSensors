@@ -2,8 +2,7 @@
  *SensorBase.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
- *Work in progress by Sara Damiano taken from code written
- *by Shannon Hicks and templates from USU.
+ *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the sensor base class.
 */
@@ -20,7 +19,6 @@ SensorBase::SensorBase(int dataPin, int powerPin, String sensorName, String varN
     _varName = varName;
     _varUnit = varUnit;
     _dreamHost = dreamHost;
-    setup();
 }
 
 // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
@@ -40,8 +38,15 @@ bool SensorBase::checkPowerOn(void)
 {
     int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
     if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
-        {return false;}
-    else {return true;}
+    {
+        // Serial.println(F("Power was off."));  // For debugging
+        return false;
+    }
+    else
+    {
+        // Serial.println(F("Power was on."));  // For debugging
+        return true;
+    }
 }
 
 // This is a helper function to turn on sensor power
@@ -49,7 +54,7 @@ void SensorBase::powerUp(void)
 {
     // Serial.println(F("Powering on Sensor"));  // For debugging
     digitalWrite(_powerPin, HIGH);
-    delay(1000);
+    delay(500);
 }
 
 // This is a helper function to turn off sensor power
@@ -75,7 +80,7 @@ SENSOR_STATUS SensorBase::setup(void)
 SENSOR_STATUS SensorBase::getStatus(void){return SENSOR_READY;}
 
 // The function to put a sensor to sleep
-// By default, powers up and returns true
+// By default, powers down and returns true
 bool SensorBase::sleep(void)
 {
     powerDown();
@@ -83,7 +88,7 @@ bool SensorBase::sleep(void)
 }
 
 // The function to wake up a sensor
-// By default, powers down and returns true
+// By default, powers up and returns true
 bool SensorBase::wake(void)
 {
     if(!checkPowerOn()){powerUp();}
@@ -98,8 +103,8 @@ bool SensorBase::checkForUpdate(unsigned long sensorLastUpdated)
     {
         Serial.print(F("It has been "));
         Serial.print((millis() - sensorLastUpdated)/1000);
-       // Serial.println(F(" seconds since the sensor value was checked"));  // For debugging
-       // Serial.println(F("Value out of date, updating"));  // For debugging
+        // Serial.println(F(" seconds since the sensor value was checked"));  // For debugging
+        // Serial.println(F("Value out of date, updating"));  // For debugging
         return(update());
     }
     else return(true);

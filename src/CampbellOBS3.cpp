@@ -2,8 +2,7 @@
  *CampbellOBS3.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
- *Work in progress by Sara Damiano taken from code written
- *by Shannon Hicks and templates from USU.
+ *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the Campbell Scientific OBS-3+
  *This is dependent on the Adafruit ADS1015 library.
@@ -20,7 +19,6 @@ CampbellOBS3::CampbellOBS3(int powerPin, int dataPin, float A, float B, float C)
     _A = A;
     _B = B;
     _C = C;
-    setup();
 }
 
 // The sensor installation location on the Mayfly
@@ -45,13 +43,14 @@ bool CampbellOBS3::update(){
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
 
-    int16_t adc0; // tells which channels are to be read
+    int16_t adcChannel; // tells which channels are to be read
 
-    adc0 = ads.readADC_SingleEnded(_dataPin);
+    adcChannel = ads.readADC_SingleEnded(_dataPin);
 
     // now convert bits into millivolts
-    // SRGD:  Where does this come from???
-    float voltage = (adc0 * 3.3) / 17585.0;
+    // 3.3 is the voltage applied to the sensor (and its returun range)
+    // The 17585 is the default bit gain of the ADS1115
+    float voltage = (adcChannel * 3.3) / 17585.0;
 
     // calibration information below if only for instrument SN# S9743
     // TODO:  set this up so calibration can be input at top for each instrument
