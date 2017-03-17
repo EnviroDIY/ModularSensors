@@ -23,7 +23,7 @@ void LoggerDreamHost::setDreamHostURL(const char *URL)
 String LoggerDreamHost::generateSensorDataDreamHost(void)
 {
     String dhString = String(_DreamHostURL);
-    dhString += F("LoggerID=");
+    dhString += F("?LoggerID=");
     dhString += String(LoggerBase::_loggerID);
     dhString += F("&Loggertime=");
     dhString += String(getNow());
