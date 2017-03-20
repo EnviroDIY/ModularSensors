@@ -37,7 +37,7 @@ bool Decagon5TM::update(void)
 
 
 Decagon5TM_Ea::Decagon5TM_Ea(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, F("Decagon5TM"), F("waterPotential"), F("kilopascal"), F("SoilEa")),
+ : SensorBase(dataPin, powerPin, F("Decagon5TM"), F("permittivity"), F("Farad per Meter"), F("SoilEa")),
    DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
    Decagon5TM(SDI12address, powerPin, dataPin, numReadings)
 {}
