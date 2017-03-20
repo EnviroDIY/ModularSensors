@@ -46,44 +46,54 @@ _Within the setup function_, you must then initialize the logger and then run th
 
 ```cpp
 // Initialize the logger;
-Logger.init(int timeZone, int SDCardPin, int sensorCount,
+Logger.init(int timeZone, int SDCardPin, int interruptPin,
+            int sensorCount,
             SensorBase *SENSOR_LIST[],
+            float loggingIntervalMinutes,
             const char *loggerID = 0,
             const char *samplingFeature = 0,
             const char *UUIDs[] = 0);
-// Run the logger setup;
-Logger.setup(int interruptPin = -1, uint8_t periodicity = EveryMinute);
+// OPTIONAL - specify a pin to give an alert when a measurement is taken
+// This should generally be a pin with an LED
+setAlertPin(int ledPin);
+// Begin the logger;
+Logger.begin();
 ```
 
 --OR--
 
 ```cpp
 // Initialize the logger;
-EnviroDIYLogger.init(int timeZone, int SDCardPin, int sensorCount,
-          SensorBase *SENSOR_LIST[],
-          const char *loggerID = 0,
-          const char *samplingFeature = 0,
-          const char *UUIDs[] = 0);
-// Run the logger setup;
-EnviroDIYLogger.setup(int interruptPin = -1, uint8_t periodicity = EveryMinute);
+EnviroDIYLogger.init(int timeZone, int SDCardPin, int interruptPin,
+                     int sensorCount,
+                     SensorBase *SENSOR_LIST[],
+                     float loggingIntervalMinutes,
+                     const char *loggerID = 0,
+                     const char *samplingFeature = 0,
+                     const char *UUIDs[] = 0);
+// OPTIONAL - specify a pin to give an alert when a measurement is taken
+// This should generally be a pin with an LED
+setAlertPin(int ledPin);
 // Set up the communication with EnviroDIY
-EnviroDIYLogger.setCommunication(xbee beeType = GPRS,
-                      const char *registrationToken = "UNKNOWN",
-                      const char *hostAddress = "data.envirodiy.org",
-                      const char *APIEndpoint = "/api/data-stream/",
-                      int serverTimeout = 15000,
-                      const char *APN = "apn.konekt.io");
+EnviroDIYLogger.setToken(const char *registrationToken);
+EnviroDIYLogger.setupBee(xbee beeType,
+                         Stream *beeStream,
+                         int beeCTSPin,
+                         int beeDTRPin,
+                         const char *APN);
+// Run the logger setup;
+EnviroDIYLogger.begin();
 ```
 
 _Within the main loop function_, all logging and sending of data is done using the single program line:
 ```cpp
-Logger.log(int loggingIntervalMinutes, int ledPin = -1);
+Logger.log();
 ```
 
 --OR--
 
 ```cpp
-EnviroDIYLogger.log(int loggingIntervalMinutes, int ledPin = -1);
+EnviroDIYLogger.log();
 ```
 
 
