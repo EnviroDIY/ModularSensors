@@ -79,15 +79,19 @@ private:
 class SensorArray
 {
 public:
-    SensorArray(int sensorCount, SensorBase *SENSOR_LIST[]);
+    virtual void init(int sensorCount, SensorBase *SENSOR_LIST[]);
+
+    // Functions to return information about the list
+    int getSensorCount(void);
 
     // Public functions for interfacing with a list of sensors
     bool setupSensors(void);  // This sets up all of the sensors in the list
     bool sensorsSleep(void);  // This puts sensors to sleep (ie, cuts power)
     bool sensorsWake(void);  // This wakes sensors (ie, gives power)
     bool updateAllSensors(void);  // This updates all sensor values
-    void printSensorData(Stream *stream);  // This prints the sensor info
-private:
+    void printSensorData(Stream *stream = &Serial);  // This prints the sensor info
+    virtual String generateSensorDataCSV(void);  // This generates a comma separated list of values
+protected:
     uint8_t _sensorCount;
     SensorBase **_sensorList;
 };

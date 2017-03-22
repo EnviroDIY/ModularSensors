@@ -117,11 +117,15 @@ bool SensorBase::checkForUpdate(unsigned long sensorLastUpdated)
 
 
 // Constructor
-SensorArray::SensorArray(int sensorCount, SensorBase *SENSOR_LIST[])
+void SensorArray::init(int sensorCount, SensorBase *SENSOR_LIST[])
 {
     _sensorCount = sensorCount;
     _sensorList = SENSOR_LIST;
 };
+
+// This just returns the number of sensors
+int SensorArray::getSensorCount(void)
+{return _sensorCount;}
 
 
 // This sets up the sensors, generally setting pin modes and the like
@@ -224,7 +228,7 @@ bool SensorArray::updateAllSensors(void)
 }
 
 // This function prints out the results for any connected sensors to a stream
-void SensorArray::printSensorData(Stream *stream)
+void SensorArray::printSensorData(Stream *stream /* = &Serial*/)
 {
     for (int i = 0; i < _sensorCount; i++)
     {
@@ -241,4 +245,21 @@ void SensorArray::printSensorData(Stream *stream)
         stream->print(_sensorList[i]->getVarUnit());
         stream->println();
     }
+}
+
+// This function generates a comma separated list of sensor values
+String SensorArray::generateSensorDataCSV(void)
+{
+    String csvString = F("");
+
+    for (uint8_t i = 0; i < _sensorCount; i++)
+    {
+        csvString += String(_sensorList[i]->getValue());
+        if (i + 1 != _sensorCount)
+        {
+            csvString += F(", ");
+        }
+    }
+
+    return csvString;
 }

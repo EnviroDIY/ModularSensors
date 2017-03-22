@@ -18,7 +18,7 @@
 
 
 // Defines the "Logger" Class
-class LoggerBase
+class LoggerBase : public virtual SensorArray
 {
 public:
     // Setup and initialization function
@@ -35,13 +35,6 @@ public:
     static uint32_t getNow(void);
     static String getDateTime_ISO8601(void);
     static void showTime(uint32_t ts);
-
-    // Public functions for interfacing with a list of sensors
-    bool setupSensors(void);  // This sets up all of the sensors in the list
-    bool sensorsSleep(void);  // This puts sensors to sleep (ie, cuts power)
-    bool sensorsWake(void);  // This wakes sensors (ie, gives power)
-    bool updateAllSensors(void);  // This updates all sensor values
-    void printSensorData(Stream *stream);  // This prints the sensor info
 
     // Public functions for logging data
     void setupLogFile(void);
@@ -70,8 +63,6 @@ protected:
     static int _timeZone;
     int _SDCardPin;
     int _interruptPin;
-    SensorBase **_sensorList;
-    uint8_t _sensorCount;
     const char *_loggerID;
     const char *_samplingFeature;
     const char **_UUIDs;
