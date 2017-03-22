@@ -38,8 +38,10 @@ public:
 
     // Public functions for interfacing with a list of sensors
     bool setupSensors(void);  // This sets up all of the sensors in the list
-    String checkSensorLocations(void);  // This checks where each sensor is attached
-    bool updateAllSensors(void);
+    bool sensorsSleep(void);  // This puts sensors to sleep (ie, cuts power)
+    bool sensorsWake(void);  // This wakes sensors (ie, gives power)
+    bool updateAllSensors(void);  // This updates all sensor values
+    void printSensorData(Stream *stream);  // This prints the sensor info
 
     // Public functions for logging data
     void setupLogFile(void);
@@ -63,8 +65,6 @@ protected:
     bool checkInterval(void);
 
     void setupSleep(void);
-    bool sensorsSleep(void);
-    bool sensorsWake(void);
     void systemSleep(void);
 
     static int _timeZone;

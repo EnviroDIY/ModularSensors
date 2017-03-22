@@ -109,3 +109,136 @@ bool SensorBase::checkForUpdate(unsigned long sensorLastUpdated)
     }
     else return(true);
 }
+
+
+// ============================================================================
+//  The class and functions for interfacing with an array of sensors.
+// ============================================================================
+
+
+// Constructor
+SensorArray::SensorArray(int sensorCount, SensorBase *SENSOR_LIST[])
+{
+    _sensorCount = sensorCount;
+    _sensorList = SENSOR_LIST;
+};
+
+
+// This sets up the sensors, generally setting pin modes and the like
+bool SensorArray::setupSensors(void)
+{
+    bool success = true;
+    bool sensorSuccess = false;
+    int setupTries = 0;
+    for (int i = 0; i < _sensorCount; i++)
+    {
+        // Make 5 attempts before giving up
+        while(setupTries < 5)
+        {
+            sensorSuccess = _sensorList[i]->setup();
+            // Prints for debugging
+            if(sensorSuccess)
+            {
+                Serial.print(F("--- Successfully set up "));
+                Serial.print(_sensorList[i]->getSensorName());
+                Serial.println(F(" ---"));
+                break;
+            }
+            else
+            {
+                Serial.print(F("--- Setup for  "));
+                Serial.print(_sensorList[i]->getSensorName());
+                Serial.println(F(" failed! ---"));
+                setupTries++;
+            }
+        }
+        success &= sensorSuccess;
+
+        // Check for and skip the setup of any identical sensors
+        for (int j = i+1; j < _sensorCount; j++)
+        {
+            if (_sensorList[i]->getSensorName() == _sensorList[j]->getSensorName() &&
+                _sensorList[i]->getSensorLocation() == _sensorList[j]->getSensorLocation())
+            {i++;}
+            else {break;}
+        }
+    }
+    return success;
+}
+
+bool SensorArray::sensorsSleep(void)
+{
+    // Serial.println(F("Putting sensors to sleep."));  // For debugging
+    bool success = true;
+    for (int i = 0; i < _sensorCount; i++)
+    {
+        success &= _sensorList[i]->sleep();
+    }
+
+    return success;
+}
+
+bool SensorArray::sensorsWake(void)
+{
+    // Serial.println(F("Waking sensors."));  // For debugging
+    bool success = true;
+    for (int i = 0; i < _sensorCount; i++)
+    {
+        success &= _sensorList[i]->wake();
+    }
+
+    return success;
+}
+
+// This function updates the values for any connected sensors.
+bool SensorArray::updateAllSensors(void)
+{
+    bool success = true;
+    for (uint8_t i = 0; i < _sensorCount; i++)
+    {
+        success &= _sensorList[i]->update();
+        // Prints for debugging
+        // Serial.print(F("--- Updated "));  // For debugging
+        // Serial.print(_sensorList[i]->getSensorName());  // For debugging
+        // Serial.print(F(" for "));  // For debugging
+        // Serial.print(_sensorList[i]->getVarName());  // For debugging
+
+        // Check for and skip the updates of any identical sensors
+        for (int j = i+1; j < _sensorCount; j++)
+        {
+            if (_sensorList[i]->getSensorName() == _sensorList[j]->getSensorName() &&
+                _sensorList[i]->getSensorLocation() == _sensorList[j]->getSensorLocation())
+            {
+                // Prints for debugging
+                // Serial.print(F(" and "));  // For debugging
+                // Serial.print(_sensorList[i+1]->getVarName());  // For debugging
+                i++;
+            }
+            else {break;}
+        }
+        // Serial.println(F(" ---"));  // For Debugging
+        // delay(250);  // A short delay before next sensor - is this necessary??
+    }
+
+    return success;
+}
+
+// This function prints out the results for any connected sensors to a stream
+void SensorArray::printSensorData(Stream *stream)
+{
+    for (int i = 0; i < _sensorCount; i++)
+    {
+        stream->print(_sensorList[i]->getSensorName());
+        stream->print(F(" attached at "));
+        stream->print(_sensorList[i]->getSensorLocation());
+        stream->print(F(" has status "));
+        stream->print(_sensorList[i]->getStatus());
+        stream->print(F(" and reports "));
+        stream->print(_sensorList[i]->getVarName());
+        stream->print(F(" is "));
+        stream->print(_sensorList[i]->getValue());
+        stream->print(F(" "));
+        stream->print(_sensorList[i]->getVarUnit());
+        stream->println();
+    }
+}

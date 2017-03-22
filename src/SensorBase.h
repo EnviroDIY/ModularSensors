@@ -10,23 +10,22 @@
 #ifndef SensorBase_h
 #define SensorBase_h
 
-
 #include <Arduino.h>
 #include <pins_arduino.h>
 
-enum SENSOR_STATUS
+typedef enum SENSOR_STATUS
 {
     SENSOR_ERROR,
     SENSOR_READY,
     SENSOR_WAITING,
     SENSOR_UNKNOWN
-};
-
+} SENSOR_STATUS;
 
 // Defines the "SensorBase" Class
 class SensorBase
 {
 public:
+
     SensorBase(int dataPin = -1, int powerPin = -1,
                String sensorName = "Unknown", String varName = "Unknown",
                String varUnit = "Unknown", String dreamHost = "Unknown");
@@ -73,6 +72,24 @@ private:
     String _varName;
     String _varUnit;
     String _dreamHost;
+};
+
+
+// Defines another class for interfacing with a list of pointers to sensor instances
+class SensorArray
+{
+public:
+    SensorArray(int sensorCount, SensorBase *SENSOR_LIST[]);
+
+    // Public functions for interfacing with a list of sensors
+    bool setupSensors(void);  // This sets up all of the sensors in the list
+    bool sensorsSleep(void);  // This puts sensors to sleep (ie, cuts power)
+    bool sensorsWake(void);  // This wakes sensors (ie, gives power)
+    bool updateAllSensors(void);  // This updates all sensor values
+    void printSensorData(Stream *stream);  // This prints the sensor info
+private:
+    uint8_t _sensorCount;
+    SensorBase **_sensorList;
 };
 
 #endif

@@ -171,22 +171,6 @@ bool LoggerBase::setupSensors(void)
     return success;
 }
 
-String LoggerBase::checkSensorLocations(void)
-{
-    String locationString = String(currentTime) + F(", ");
-
-    for (int i = 0; i < _sensorCount; i++)
-    {
-        locationString += String(_sensorList[i]->getSensorLocation());
-        if (i + 1 != _sensorCount)
-        {
-            locationString += F(", ");
-        }
-    }
-
-    return locationString;
-}
-
 bool LoggerBase::sensorsSleep(void)
 {
     // Serial.println(F("Putting sensors to sleep."));  // For debugging
@@ -247,6 +231,27 @@ bool LoggerBase::updateAllSensors(void)
     return success;
 }
 
+// This function prints out the results for any connected sensors to a stream
+void LoggerBase::printSensorData(Stream *stream)
+{
+    stream->print(F("Updated all sensors at "));
+    stream->println(currentTime);
+    for (int i = 0; i < _sensorCount; i++)
+    {
+        stream->print(_sensorList[i]->getSensorName());
+        stream->print(F(" attached at "));
+        stream->print(_sensorList[i]->getSensorLocation());
+        stream->print(F(" has status "));
+        stream->print(_sensorList[i]->getStatus());
+        stream->print(F(" and reports "));
+        stream->print(_sensorList[i]->getVarName());
+        stream->print(F(" is "));
+        stream->print(_sensorList[i]->getValue());
+        stream->print(F(" "));
+        stream->print(_sensorList[i]->getVarUnit());
+        stream->println();
+    }
+}
 
 
 // ============================================================================
