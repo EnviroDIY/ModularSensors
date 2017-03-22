@@ -24,21 +24,21 @@ To use a sensor in your sketch, you must include SensorBase.h in your script AND
 
 ## <a name="Basic"></a>Basic Senor and Variable Functions
 
-### Functions Svailable for Each Sensor:
-- **setup(void)** - This "sets up" the sensor - setting up serial ports, etc required for the given sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program.
-- **getStatus(void)** - This returns the current status of the sensor, if the sensor has some way of giving it to you.  (Most do not.)
-- **sleep(void)** - This puts the sensor to sleep, often by stopping the power.  Returns true.
-- **wake(void)** - This wakes the sensor up and sends it power.  Returns true.
-- **getSensorName(void)** - This gets the name of the sensor and returns it as a string.
-- **getSensorLocation(void)** - This returns the data pin or other sensor installation information as a string.  This is the location where the sensor is connected to the data logger, NOT the position of the sensor in the environment.
-- **update(void)** - This updates the sensor values and returns true when finished.  For digital sensors with a single infomation return, this only needs to be called once for each sensor, even if there are multiple variable subclasses for the sensor.
+### Functions Available for Each Sensor
+- **setup()** - This "sets up" the sensor - setting up serial ports, etc required for the given sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program.
+- **getStatus()** - This returns the current status of the sensor, if the sensor has some way of giving it to you.  (Most do not.)
+- **sleep()** - This puts the sensor to sleep, often by stopping the power.  Returns true.
+- **wake()** - This wakes the sensor up and sends it power.  Returns true.
+- **getSensorName()** - This gets the name of the sensor and returns it as a string.
+- **getSensorLocation()** - This returns the data pin or other sensor installation information as a string.  This is the location where the sensor is connected to the data logger, NOT the position of the sensor in the environment.
+- **update()** - This updates the sensor values and returns true when finished.  For digital sensors with a single infomation return, this only needs to be called once for each sensor, even if there are multiple variable subclasses for the sensor.
 
-### These are the functions for each variable returned by a sensor
-- **getVarName(void)** - This returns the variable's name using http://vocabulary.odm2.org/variablename/ as a string
-- **getVarUnit(void)** - This returns the variable's unit using http://vocabulary.odm2.org/units/ as a string
-- **getValue(void)** - This returns the current value of the variable as a float.  You should call the update function before calling getValue.  As a backup, if the getValue function sees that the update function has not been called within the last 60 seconds, it will re-call it.
+### Functions for Each Variable Returned by a Sensor
+- **getVarName()** - This returns the variable's name using http://vocabulary.odm2.org/variablename/ as a string
+- **getVarUnit()** - This returns the variable's unit using http://vocabulary.odm2.org/units/ as a string
+- **getValue()** - This returns the current value of the variable as a float.  You should call the update function before calling getValue.  As a backup, if the getValue function sees that the update function has not been called within the last 60 seconds, it will re-call it.
 
-### <a name="individuals"></a>Examples Using Tndividual Sensor and Variable Functions
+### <a name="individuals"></a>Examples Using Individual Sensor and Variable Functions
 To access and get values from a sensor, you must create an instance of the variable subclass you are interested in.  Each variable has different parameters that you must specify when creating the variable instance.  You must create a new instance for each _variable_, not just each sensor.  When using multple variables from the same sensor, you can save time by only calling the setup() and update() functions on a single variable and then calling the getValue() function on all of the variables.  A very simple program which creates instances of the variables and get data from all the parameters measured by a Decagon CTD you might be something like:
 
 ```cpp
@@ -65,14 +65,14 @@ loop()
 ## <a name="Grouped"></a>Grouped Sensor Functions
 Having a unified set of functions to access many sensors allows us to quickly poll through a list of sensors to get all results quickly.  Within sensor base, there is a class "SensorArray" that adds functions to use on an array of pointers to sensor objects.
 
-### These are the functions available for a SensorArray object:
+### Functions Available for a SensorArray Object:
 
-- setupSensors(void) - This sets up all of the sensors in the list by running each sensor object's setup() function.  If a sensor doesn't respond to its setup command, the command is called 5 times in attempt to make a connection.  To save time, if two variables from the same sensor are in sequence in the pointer array, the setup function will only be called for the first variable in the sequence.  If all sensors are set up sucessfully, returns true.
-- sensorsSleep(void) - This puts all sensors to sleep (ie, cuts power).  Returns true.
-- sensorsWake(void) - This wakes all sensors (ie, gives power).  Returns true.
-- updateAllSensors(void) - This updates all sensor values.  To save time, if two variables from the same sensor are in sequence in the pointer array, the update function will only be called for the first variable in the sequence.  Returns true.
-- printSensorData(Stream *stream) - This prints curent sensor values along with metadata to a stream.  By default, it will print to the first Serial port.
-- generateSensorDataCSV(void) - This returns an Arduino String containing comma separated list of sensor values.
+- **setupSensors()** - This sets up all of the sensors in the list by running each sensor object's setup() function.  If a sensor doesn't respond to its setup command, the command is called 5 times in attempt to make a connection.  To save time, if two variables from the same sensor are in sequence in the pointer array, the setup function will only be called for the first variable in the sequence.  If all sensors are set up sucessfully, returns true.
+- **sensorsSleep()** - This puts all sensors to sleep (ie, cuts power).  Returns true.
+- **sensorsWake()** - This wakes all sensors (ie, gives power).  Returns true.
+- **updateAllSensors()** - This updates all sensor values.  To save time, if two variables from the same sensor are in sequence in the pointer array, the update function will only be called for the first variable in the sequence.  Returns true.
+- **printSensorData(Stream *stream)** - This prints curent sensor values along with metadata to a stream.  By default, it will print to the first Serial port.
+- **generateSensorDataCSV()** - This returns an Arduino String containing comma separated list of sensor values.  This string does _NOT_ contain a timestamp of any kind.
 
 ### <a name="ArrayExamples"></a>SensorArray Examples:
 
@@ -110,6 +110,39 @@ sensors.printSensorData();
 
 ## <a name="Logger"></a>Logger Functions
 Our main reason to unify the output from many sensors is to easily log the data to an SD card and to send it to the EnviroDIY data page.  There are two modules available to use with the sensors to log data:  LoggerBase and LoggerEnviroDIY.  Both of these are sub-classes of SensorArray and contain all of the functions available to a SenorArray as described above.  These both will add the abilities to communicate with a DS3231 real time clock and set up the Arduino as a logger which goes to deep sleep between readings to conserver power.  LoggerBase only adds the functionality to write the data from the sensors to a csv file on a connected SD card.  LoggerEnviroDIY adds the ability to send data to the EnviroDIY data portal.  Both logger modules depend on the [Sodaq](https://github.com/SodaqMoja/Sodaq_DS3231) or [EnviroDIY DS-3231](https://github.com/EnviroDIY/Sodaq_DS3231) (for clock control), the [Sodaq RTCTimer library](https://github.com/SodaqMoja/RTCTimer) (for timing functions), the [EnviroDIY modified version of Sodaq's pin change interrupt library](https://github.com/EnviroDIY/PcInt_PCINT0) (for waking the processor from clock alarms), the AVR sleep library (for low power sleeping), and the [SdFat library](https://github.com/greiman/SdFat) for communicating with the SD card.  The LoggerEnviroDIY has the additional dependency of the [EnviroDIY version of Sodaq's GPRSBee library](https://github.com/EnviroDIY/GPRSbee) for GPRS communications.
+
+### Functions Available for a LoggerBase Object:
+Setup and initialization functions:
+- **init(int timeZone, int SDCardPin, int interruptPin, int sensorCount, SensorBase *SENSOR_LIST[], float loggingIntervalMinutes, const char *loggerID = 0, const char *samplingFeature = 0, const char *UUIDs[] = 0)** - Initializes the logger object.  Must happen within the setup function.
+- **setAlertPin(int ledPin)** - Sets a pin to put out an alert that a measurement is being logged.  This should be a pin with a LED on it.
+
+Functions to access the clock in proper format and time zone:
+- **getNow()** - Returns the current unix time stamp in the current time zone.
+- **getDateTime_ISO8601()** - Returns the current date/time as an ISO8601 formatted Arduino String.
+
+
+Functions for the timer and sleep modes:
+- **setupTimer()** - Sets up the timer for repeated logging events.  This should be called in the setup function.
+- **checkInterval()** - This returns true if the current time is an even iterval of the logging interval, otherwise false.
+- **setupSleep()** - Sets up the sleep mode and interrupts to wake it back up.  This should be called in the setup function.
+- **systemSleep()** - Puts the system into deep sleep mode.  This should be called at the very end of the loop function.
+
+Functions for logging data:
+- **setupLogFile()** - This creates a file on the SD card and writes a header to it.
+- **generateSensorDataCSV()** - This returns an Arduino String containing the time and a comma separated list of sensor values.
+- **logToSD(String rec)** - Writes a line the the SD card.
+
+Convience functions to do it all:
+- **begin()** - Starts the logger.  Must be in the setup function.
+- **log()** - Logs data, must be the entire content of the loop function.
+
+### Additional Functions Available for a LoggerEnviroDIY Object:
+- **setToken(const char *registrationToken)** - Sets the retistration token to access the EnviroDIY streaming data loader API.
+- **setupBee(xbee beeType, Stream *beeStream, int beeCTSPin, int beeDTRPin, const char *APN)** - Sets up the internet communcation, with either GPRSv4, GPRSv6, or WIFI
+- **generateSensorDataJSON()** - Generates a properly formatted JSON string to go to the EnviroDIY streaming data loader API.
+- **postDataWiFi()** - Creates proper headers and sends data to the EnviroDIY data portal via WiFi.  You must have set up a WIFI bee for this to work.
+- **postDataGPRS()** - Creates proper headers and sends data to the EnviroDIY data portal via GPRS.  You must have set up a GPRS bee for this to work.
+- **printPostResult(int result)** - Interprets HTML response code.
 
 ### <a name="LoggerExamples"></a>Logger Examples:
 

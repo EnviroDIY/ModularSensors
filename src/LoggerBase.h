@@ -36,6 +36,12 @@ public:
     static String getDateTime_ISO8601(void);
     static void showTime(uint32_t ts);
 
+    // Public functions for the timer and sleep modes
+    void setupTimer(void);
+    bool checkInterval(void);
+    void setupSleep(void);
+    void systemSleep(void);
+
     // Public functions for logging data
     void setupLogFile(void);
     String generateSensorDataCSV(void);
@@ -54,11 +60,6 @@ protected:
     // Private functions for the timer and sleep modes
     static void checkTime(uint32_t ts);
     static void wakeISR(void);
-    void setupTimer(void);
-    bool checkInterval(void);
-
-    void setupSleep(void);
-    void systemSleep(void);
 
     static int _timeZone;
     int _SDCardPin;
