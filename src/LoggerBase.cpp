@@ -24,9 +24,8 @@ long LoggerBase::currentepochtime = 0;
 int LoggerBase::_timeZone = 0;
 bool LoggerBase::sleep = false;
 
-// Initialization - cannot do this in constructor because it must happen
-// within the setup and if using the constuctor cannot control when
-// it happens
+// Initialization - cannot do this in constructor arduino has issues creating
+// instances of classes with non-empty constructors
 void LoggerBase::init(int timeZone, int SDCardPin, int interruptPin,
                       int sensorCount,
                       SensorBase *SENSOR_LIST[],
@@ -122,129 +121,6 @@ bool LoggerBase::checkInterval(void)
         retval = false;
     }
     return retval;
-}
-
-
-// ============================================================================
-//  Functions for interfacing with sensors.
-// ============================================================================
-
-// This sets up the sensors, generally setting pin modes and the like
-bool LoggerBase::setupSensors(void)
-{
-    bool success = true;
-    bool sensorSuccess = false;
-    int setupTries = 0;
-    for (int i = 0; i < _sensorCount; i++)
-    {
-        // Make 5 attempts before giving up
-        while(setupTries < 5)
-        {
-            sensorSuccess = _sensorList[i]->setup();
-            // Prints for debugging
-            if(sensorSuccess)
-            {
-                Serial.print(F("--- Successfully set up "));
-                Serial.print(_sensorList[i]->getSensorName());
-                Serial.println(F(" ---"));
-                break;
-            }
-            else
-            {
-                Serial.print(F("--- Setup for  "));
-                Serial.print(_sensorList[i]->getSensorName());
-                Serial.println(F(" failed! ---"));
-                setupTries++;
-            }
-        }
-        success &= sensorSuccess;
-
-        // Check for and skip the setup of any identical sensors
-        for (int j = i+1; j < _sensorCount; j++)
-        {
-            if (_sensorList[i]->getSensorName() == _sensorList[j]->getSensorName() &&
-                _sensorList[i]->getSensorLocation() == _sensorList[j]->getSensorLocation())
-            {i++;}
-            else {break;}
-        }
-    }
-    return success;
-}
-
-String LoggerBase::checkSensorLocations(void)
-{
-    String locationString = String(currentTime) + F(", ");
-
-    for (int i = 0; i < _sensorCount; i++)
-    {
-        locationString += String(_sensorList[i]->getSensorLocation());
-        if (i + 1 != _sensorCount)
-        {
-            locationString += F(", ");
-        }
-    }
-
-    return locationString;
-}
-
-bool LoggerBase::sensorsSleep(void)
-{
-    // Serial.println(F("Putting sensors to sleep."));  // For debugging
-    bool success = true;
-    for (int i = 0; i < _sensorCount; i++)
-    {
-        success &= _sensorList[i]->sleep();
-    }
-
-    return success;
-}
-
-bool LoggerBase::sensorsWake(void)
-{
-    // Serial.println(F("Waking sensors."));  // For debugging
-    bool success = true;
-    for (int i = 0; i < _sensorCount; i++)
-    {
-        success &= _sensorList[i]->wake();
-    }
-
-    return success;
-}
-
-// This function updates the values for any connected sensors.
-bool LoggerBase::updateAllSensors(void)
-{
-    // Get the clock time when we begin updating sensors
-    getDateTime_ISO8601().toCharArray(currentTime, 26) ;
-
-    bool success = true;
-    for (uint8_t i = 0; i < _sensorCount; i++)
-    {
-        success &= _sensorList[i]->update();
-        // Prints for debugging
-        // Serial.print(F("--- Updated "));  // For debugging
-        // Serial.print(_sensorList[i]->getSensorName());  // For debugging
-        // Serial.print(F(" for "));  // For debugging
-        // Serial.print(_sensorList[i]->getVarName());  // For debugging
-
-        // Check for and skip the updates of any identical sensors
-        for (int j = i+1; j < _sensorCount; j++)
-        {
-            if (_sensorList[i]->getSensorName() == _sensorList[j]->getSensorName() &&
-                _sensorList[i]->getSensorLocation() == _sensorList[j]->getSensorLocation())
-            {
-                // Prints for debugging
-                // Serial.print(F(" and "));  // For debugging
-                // Serial.print(_sensorList[i+1]->getVarName());  // For debugging
-                i++;
-            }
-            else {break;}
-        }
-        // Serial.println(F(" ---"));  // For Debugging
-        // delay(250);  // A short delay before next sensor - is this necessary??
-    }
-
-    return success;
 }
 
 
@@ -512,6 +388,9 @@ void LoggerBase::log(void)
         Serial.println(F("------------------------------------------"));  // for debugging
         // Turn on the LED to show we're taking a reading
         digitalWrite(_ledPin, HIGH);
+
+        // Get the clock time when we begin updating sensors
+        getDateTime_ISO8601().toCharArray(currentTime, 26) ;
 
         // Update the values from all attached sensors
         updateAllSensors();

@@ -111,7 +111,6 @@ const int RED_LED = 9;  // Pin for the red LED
 
 // Variables for the timer function
 long currentepochtime = 0;
-char currentTime[26] = "";
 
 
 // ---------------------------------------------------------------------------
@@ -175,102 +174,8 @@ String getDateTime_ISO8601(void)
   return dateTimeStr;
 }
 
-// This sets up the sensors, generally setting pin modes and the like
-bool setupSensors(void)
-{
-    bool success = true;
-    bool sensorSuccess = false;
-    int setupTries = 0;
-    for (int i = 0; i < sensorCount; i++)
-    {
-        // Make 5 attempts before giving up
-        while(setupTries < 5)
-        {
-            sensorSuccess = SENSOR_LIST[i]->setup();
-            // Prints for debugging
-            if(sensorSuccess)
-            {
-                Serial.print(F("--- Successfully set up "));
-                Serial.print(SENSOR_LIST[i]->getSensorName());
-                Serial.println(F(" ---"));
-                break;
-            }
-            else
-            {
-                Serial.print(F("--- Setup for  "));
-                Serial.print(SENSOR_LIST[i]->getSensorName());
-                Serial.println(F(" failed! ---"));
-                setupTries++;
-            }
-        }
-        success &= sensorSuccess;
-
-        // Check for and skip the setup of any identical sensors
-        for (int j = i+1; j < sensorCount; j++)
-        {
-            if (SENSOR_LIST[i]->getSensorName() == SENSOR_LIST[j]->getSensorName() &&
-                SENSOR_LIST[i]->getSensorLocation() == SENSOR_LIST[j]->getSensorLocation())
-            {i++;}
-            else {break;}
-        }
-    }
-    return success;
-}
-
-// This function updates the values for any connected sensors.
-bool updateAllSensors()
-{
-    // Get the clock time when we begin updating sensors
-    getDateTime_ISO8601().toCharArray(currentTime, 26) ;
-
-    bool success = true;
-    for (int i = 0; i < sensorCount; i++)
-    {
-        success &= SENSOR_LIST[i]->update();
-        // Prints for debugging
-        Serial.print(F("--- Updated "));
-        Serial.print(SENSOR_LIST[i]->getSensorName());
-        Serial.print(F(" for "));
-        Serial.print(SENSOR_LIST[i]->getVarName());
-
-        // Check for and skip the updates of any identical sensors
-        for (int j = i+1; j < sensorCount; j++)
-        {
-            if (SENSOR_LIST[i]->getSensorName() == SENSOR_LIST[j]->getSensorName() &&
-                SENSOR_LIST[i]->getSensorLocation() == SENSOR_LIST[j]->getSensorLocation())
-            {
-                // Prints for debugging
-                Serial.print(F(" and "));
-                Serial.print(SENSOR_LIST[i+1]->getVarName());
-                i++;
-            }
-            else {break;}
-        }
-        Serial.println(F(" ---"));  // For Debugging
-        // delay(250);  // A short delay before next sensor - is this needed??;
-    }
-
-    return success;
-}
-
-void printSensorData(void)
-{
-    Serial.print(F("Updated all sensors at "));
-    Serial.println(currentTime);
-    for (int i = 0; i < sensorCount; i++)
-    {
-        Serial.print(SENSOR_LIST[i]->getSensorName());
-        Serial.print(F(" attached at "));
-        Serial.print(SENSOR_LIST[i]->getSensorLocation());
-        Serial.print(F(" reports "));
-        Serial.print(SENSOR_LIST[i]->getVarName());
-        Serial.print(F(" is "));
-        Serial.print(SENSOR_LIST[i]->getValue());
-        Serial.print(F(" "));
-        Serial.print(SENSOR_LIST[i]->getVarUnit());
-        Serial.println();
-    }
-}
+// Create a new logger instance
+SensorArray sensors;
 
 
 // ---------------------------------------------------------------------------
@@ -303,8 +208,11 @@ void setup()
     Serial.print(String(sensorCount));
     Serial.println(F(" variables being recorded"));
 
+    // Initialize the sensor array;
+    sensors.init(sensorCount, SENSOR_LIST);
+
     // Set up all the sensors
-    setupSensors();
+    sensors.setupSensors();
 
     Serial.println(F("Setup finished!"));
     Serial.println(F("------------------------------------------\n"));
@@ -325,9 +233,11 @@ void loop()
     // Turn on the LED to show we're taking a reading
     digitalWrite(GREEN_LED, HIGH);
     // Get the sensor value(s), store as string
-    updateAllSensors();
+    sensors.updateAllSensors();
     // Print the data to the screen
-    printSensorData();
+    Serial.print(F("Updated all sensors at "));
+    Serial.println(getDateTime_ISO8601());
+    sensors.printSensorData(&Serial);
     // Turn off the LED to show we're done with the reading
     digitalWrite(GREEN_LED, LOW);
     // Cut Power to the sensors;

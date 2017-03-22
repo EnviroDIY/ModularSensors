@@ -68,8 +68,8 @@ void LoggerEnviroDIY::dumpBuffer(Stream *stream, int timeDelay/* = 5*/, int time
     {
         while (stream->available() > 0)
         {
-            // Serial.print(stream->read());
-            stream->read();
+            Serial.print(stream->readString());
+            // stream->read();
             delay(timeDelay);
         }
         delay(timeDelay);
@@ -101,6 +101,7 @@ String LoggerEnviroDIY::generateSensorDataJSON(void)
     return jsonString;
 }
 
+
 // This function generates the full POST request that gets sent to data.envirodiy.org
 // This is only needed for transparent Bee's (ie, WiFi)
 void LoggerEnviroDIY::streamPostRequest(Stream *stream)
@@ -129,7 +130,7 @@ int LoggerEnviroDIY::postDataWiFi(void)
 
     // Send the request to the WiFiBee (it's transparent, just goes as a stream)
     streamPostRequest(_beeStream);
-    _beeStream->flush();
+    _beeStream->flush();  // wait for sending to finish
 
     // Add a brief delay for at least the first 12 characters of the HTTP response
     int timeout = 1500;
@@ -224,7 +225,7 @@ void LoggerEnviroDIY::printPostResult(int HTTPcode)
         case 405:
         {
             Serial.print(F("\nAccess forbidden.  "));
-            Serial.println(F("Check your reguistration token and _UUIDs."));
+            Serial.println(F("Check your reguistration token and UUIDs."));
             break;
         }
 
