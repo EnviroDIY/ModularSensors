@@ -232,7 +232,7 @@ void loop()
     delay(1000);
     // Turn on the LED to show we're taking a reading
     digitalWrite(GREEN_LED, HIGH);
-    // Get the sensor value(s), store as string
+    // Update the sensor value(s)
     sensors.updateAllSensors();
     // Print the data to the screen
     Serial.print(F("Updated all sensors at "));
