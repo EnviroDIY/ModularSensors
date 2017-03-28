@@ -43,8 +43,6 @@ public:
     String generateSensorDataJSON(void);
 
     // Public function to send data
-    void dumpBuffer(Stream *stream, int timeDelay = 5, int timeout = 5000);
-    void streamPostRequest(Stream *stream);
     int postDataWiFi(void);
     int postDataGPRS(void);
     void printPostResult(int result);
@@ -53,6 +51,10 @@ public:
     virtual void log(void) override;
 
 protected:
+    // Communication functions
+    void dumpBuffer(Stream *stream, int timeDelay = 5, int timeout = 5000);
+    void streamPostRequest(Stream *stream);
+
     const char *_registrationToken;
     xbee _beeType;
     Stream *_beeStream;

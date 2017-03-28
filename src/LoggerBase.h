@@ -18,7 +18,7 @@
 
 
 // Defines the "Logger" Class
-class LoggerBase
+class LoggerBase : public virtual SensorArray
 {
 public:
     // Setup and initialization function
@@ -36,10 +36,11 @@ public:
     static String getDateTime_ISO8601(void);
     static void showTime(uint32_t ts);
 
-    // Public functions for interfacing with a list of sensors
-    bool setupSensors(void);  // This sets up all of the sensors in the list
-    String checkSensorLocations(void);  // This checks where each sensor is attached
-    bool updateAllSensors(void);
+    // Public functions for the timer and sleep modes
+    void setupTimer(void);
+    bool checkInterval(void);
+    void setupSleep(void);
+    void systemSleep(void);
 
     // Public functions for logging data
     void setupLogFile(void);
@@ -59,19 +60,10 @@ protected:
     // Private functions for the timer and sleep modes
     static void checkTime(uint32_t ts);
     static void wakeISR(void);
-    void setupTimer(void);
-    bool checkInterval(void);
-
-    void setupSleep(void);
-    bool sensorsSleep(void);
-    bool sensorsWake(void);
-    void systemSleep(void);
 
     static int _timeZone;
     int _SDCardPin;
     int _interruptPin;
-    SensorBase **_sensorList;
-    uint8_t _sensorCount;
     const char *_loggerID;
     const char *_samplingFeature;
     const char **_UUIDs;
