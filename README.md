@@ -71,7 +71,7 @@ Having a unified set of functions to access many sensors allows us to quickly po
 - **sensorsSleep()** - This puts all sensors to sleep (ie, cuts power).  Returns true.
 - **sensorsWake()** - This wakes all sensors (ie, gives power).  Returns true.
 - **updateAllSensors()** - This updates all sensor values.  To save time, if two variables from the same sensor are in sequence in the pointer array, the update function will only be called for the first variable in the sequence.  Returns true.
-- **printSensorData(Stream *stream)** - This prints curent sensor values along with metadata to a stream.  By default, it will print to the first Serial port.
+- **printSensorData(Stream stream)** - This prints curent sensor values along with metadata to a stream.  By default, it will print to the first Serial port.  Note that the input is a pointer to a stream instance.
 - **generateSensorDataCSV()** - This returns an Arduino String containing comma separated list of sensor values.  This string does _NOT_ contain a timestamp of any kind.
 
 ### <a name="ArrayExamples"></a>SensorArray Examples:
@@ -113,7 +113,7 @@ Our main reason to unify the output from many sensors is to easily log the data 
 
 ### Functions Available for a LoggerBase Object:
 Setup and initialization functions:
-- **init(int timeZone, int SDCardPin, int interruptPin, int sensorCount, SensorBase *SENSOR_LIST[], float loggingIntervalMinutes, const char *loggerID = 0, const char *samplingFeature = 0, const char *UUIDs[] = 0)** - Initializes the logger object.  Must happen within the setup function.
+- **init(int timeZone, int SDCardPin, int interruptPin, int sensorCount, SensorBase SENSOR_LIST[], float loggingIntervalMinutes, const char loggerID = 0, const char samplingFeature = 0, const char UUIDs[] = 0)** - Initializes the logger object.  Must happen within the setup function.  Note that the SENSOR_LIST[], loggerID, samplingFeature, and UUIDs[] are all pointers.
 - **setAlertPin(int ledPin)** - Sets a pin to put out an alert that a measurement is being logged.  This should be a pin with a LED on it.
 
 Functions to access the clock in proper format and time zone:
@@ -137,8 +137,8 @@ Convience functions to do it all:
 - **log()** - Logs data, must be the entire content of the loop function.
 
 ### Additional Functions Available for a LoggerEnviroDIY Object:
-- **setToken(const char *registrationToken)** - Sets the retistration token to access the EnviroDIY streaming data loader API.
-- **setupBee(xbee beeType, Stream *beeStream, int beeCTSPin, int beeDTRPin, const char *APN)** - Sets up the internet communcation, with either GPRSv4, GPRSv6, or WIFI
+- **setToken(const char registrationToken)** - Sets the retistration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
+- **setupBee(xbee beeType, Stream beeStream, int beeCTSPin, int beeDTRPin, const char APN)** - Sets up the internet communcation, with either GPRSv4, GPRSv6, or WIFI.  Note that the beeStream and APN should be pointers.
 - **generateSensorDataJSON()** - Generates a properly formatted JSON string to go to the EnviroDIY streaming data loader API.
 - **postDataWiFi()** - Creates proper headers and sends data to the EnviroDIY data portal via WiFi.  You must have set up a WIFI bee for this to work.
 - **postDataGPRS()** - Creates proper headers and sends data to the EnviroDIY data portal via GPRS.  You must have set up a GPRS bee for this to work.
