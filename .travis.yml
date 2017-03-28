@@ -20,7 +20,7 @@ install:
     - pio upgrade
     - pio update
     - pio lib -g install EnviroDIYLibs=https://github.com/EnviroDIY/Libraries.git
-    - rm -rf ../../../../../home/travis/.platformio/lib/EnviroDIYLibs/EnviroDIY_ModularSensors
     - pio lib -g uninstall EnviroDIY_ModularSensors
+    - pio lib -g update
 script:
-- platformio ci --lib="." --project-option="lib_extra_dirs=../../../../../home/travis/.platformio/lib/EnviroDIYLibs" --project-option="lib_ldf_mode = deep+" --board=mayfly
+- platformio ci --lib="." --project-option="lib_ldf_mode = deep+" --board=mayfly

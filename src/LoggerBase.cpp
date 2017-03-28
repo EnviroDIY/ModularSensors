@@ -76,7 +76,8 @@ uint32_t LoggerBase::getNow(void)
 String LoggerBase::getDateTime_ISO8601(void)
 {
     String dateTimeStr;
-    //Create a DateTime object from the current time
+    // Create a DateTime object from the current time - need this extra layer of
+    // function to get the time zone correction as done in getNow()
     DateTime dt(rtc.makeDateTime(getNow()));
     //Convert it to a String
     dt.addToString(dateTimeStr);
@@ -175,24 +176,12 @@ void LoggerBase::setupSleep(void)
     pinMode(_interruptPin, INPUT_PULLUP);
     PcInt::attachInterrupt(_interruptPin, wakeISR);
 
-    // TODO:  Make this work!!
-    // Figure out how frequently we want the interrupts to go off
-    // based on the logging interval
-    // uint8_t interruptSeconds;
-    // uint8_t interruptMinutes;
-    // uint8_t interruptHours;
-    // int interruptRate = _interruptRate;  // convert to even seconds
-    // interruptSeconds = interruptRate % 60;
-    // interruptRate /= 60;  // now interruptRate is minutes
-    // interruptMinutes = interruptRate % 60;
-    // interruptRate /= 60;  // now interruptRate is hours
-    // interruptHours = interruptRate;
-
-    // Put the RTC itself into in alarm mode - that is, allowing it to send interrupts
-    // Essentially, we're telling the clock to send a signal over the alarm pin
-    // (interrupt pin) at this rate.
-    // rtc.enableInterrupts(interruptHours, interruptMinutes, interruptSeconds);
-
+    // Unfortunately, because of the way the alarm on the DS3231 is set up, it
+    // cannot interrupt on any frequencies other than every second, minute,
+    // hour, day, or date.  We could set it to alarm hourly every 5 minutes past
+    // the hour, but not every 5 minutes.  This is why we set the alarm for
+    // every minute and still need the timer function.  This is a hardware
+    // limitation of the DS3231; it is not due to the libraries or software.
     rtc.enableInterrupts(EveryMinute);
 
     // Set the sleep mode
