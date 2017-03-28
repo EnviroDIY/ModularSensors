@@ -42,9 +42,9 @@ To use a sensor in your sketch, you must include SensorBase.h in your script AND
 To access and get values from a sensor, you must create an instance of the variable subclass you are interested in.  Each variable has different parameters that you must specify when creating the variable instance.  You must create a new instance for each _variable_, not just each sensor.  When using multple variables from the same sensor, you can save time by only calling the setup() and update() functions on a single variable and then calling the getValue() function on all of the variables.  A very simple program which creates instances of the variables and get data from all the parameters measured by a Decagon CTD you might be something like:
 
 ```cpp
-cond DecagonCTD_Cond(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
-temp DecagonCTD_Temp(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
-depth DecagonCTD_Depth(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
+cond DecagonCTD_Cond(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
+temp DecagonCTD_Temp(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
+depth DecagonCTD_Depth(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
 
 setup()
 {
