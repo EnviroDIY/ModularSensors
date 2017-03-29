@@ -68,8 +68,8 @@ void LoggerEnviroDIY::dumpBuffer(Stream *stream, int timeDelay/* = 5*/, int time
     {
         while (stream->available() > 0)
         {
-            Serial.print(stream->readString());
-            // stream->read();
+            // Serial.print(stream->readString());
+            stream->read();
             delay(timeDelay);
         }
         delay(timeDelay);
@@ -84,7 +84,7 @@ String LoggerEnviroDIY::generateSensorDataJSON(void)
     jsonString += F("\"sampling_feature\": \"");
     jsonString += String(LoggerBase::_samplingFeature) + F("\", ");
     jsonString += F("\"timestamp\": \"");
-    jsonString += String(LoggerBase::currentTime) + F("\", ");
+    jsonString += String(LoggerBase::logTime) + F("\", ");
 
     for (int i = 0; i < LoggerBase::_sensorCount; i++)
     {
@@ -268,6 +268,9 @@ void LoggerEnviroDIY::log(void)
         Serial.println(F("------------------------------------------"));  // for debugging
         // Turn on the LED to show we're taking a reading
         digitalWrite(LoggerBase::_ledPin, HIGH);
+
+        // Get the clock time when we begin updating sensors
+        getDateTime_ISO8601().toCharArray(LoggerBase::logTime, 26) ;
 
         // Update the values from all attached sensors
         updateAllSensors();
