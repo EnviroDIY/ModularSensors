@@ -12,7 +12,7 @@
 #include <Adafruit_ADS1015.h>
 #include "CampbellOBS3.h"
 
-// The constructor - need the power pin, and the two data pins
+// The constructor - need the power pin, the data pin, and the calibration info
 CampbellOBS3::CampbellOBS3(int powerPin, int dataPin, float A, float B, float C)
   : SensorBase(dataPin, powerPin)
 {

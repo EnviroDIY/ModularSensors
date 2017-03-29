@@ -73,16 +73,16 @@ const int SonarTrigger = -1;   // excite (power) pin
 // const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
 
 // Campbell OBS 3+: pin settings
-//   Campbell OBS 3+ Low Range calibration
+// Campbell OBS 3+ Low Range calibration in Volts
 const int OBSLowPin = 0;  // The low voltage analog pin
-const float OBSLow_A = -2.4763E-07;  // The "A" value (X^2) from the low range calibration
-const float OBSLow_B = 1.0569E-01;  // The "B" value (X) from the low range calibration
-const float OBSLow_C = -2.9928E-01;  // The "C" value from the low range calibration
-//   Campbell OBS 3+ High Range calibration
+const float OBSLow_A = 4.0749E+00;  // The "A" value (X^2) from the low range calibration
+const float OBSLow_B = 9.1011E+01;  // The "B" value (X) from the low range calibration
+const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibration
+// Campbell OBS 3+ High Range calibration in Volts
 const int OBSHighPin = 1;  // The high voltage analog pin
-const float OBSHigh_A = 3.5310E-05;  // The "A" value (X^2) from the high range calibration
-const float OBSHigh_B = 4.0111E-01;  // The "B" value (X) from the high range calibration
-const float OBSHigh_C = 2.0709E-01;  // The "C" value from the high range calibration
+const float OBSHigh_A = 5.2996E+01;  // The "A" value (X^2) from the high range calibration
+const float OBSHigh_B = 3.7828E+02;  // The "B" value (X) from the high range calibration
+const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calibration
 // const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
 
 // ---------------------------------------------------------------------------
