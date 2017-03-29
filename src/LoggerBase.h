@@ -52,7 +52,7 @@ public:
     virtual void log(void);
 
 protected:
-    static char currentTime[26];
+    static char logTime[26];
     static long currentepochtime;
     RTCTimer timer;
     static bool sleep;

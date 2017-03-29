@@ -26,7 +26,7 @@ String LoggerDreamHost::generateSensorDataDreamHost(void)
     dhString += F("?LoggerID=");
     dhString += String(LoggerBase::_loggerID);
     dhString += F("&Loggertime=");
-    dhString += String(getNow());
+    dhString += String(LoggerBase::currentepochtime);
 
     for (int i = 0; i < LoggerBase::_sensorCount; i++)
     {
@@ -87,6 +87,13 @@ void LoggerDreamHost::log(void)
         // Turn on the LED to show we're taking a reading
         digitalWrite(LoggerBase::_ledPin, HIGH);
 
+        // Get the clock time when we begin updating sensors
+        getDateTime_ISO8601().toCharArray(LoggerBase::logTime, 26) ;
+        Serial.print("getDateTime_ISO8601() = ");  // for debugging
+        Serial.println(getDateTime_ISO8601());  // for debugging
+        Serial.print("LoggerBase::logTime = ");  // for debugging
+        Serial.println(LoggerBase::logTime);  // for debugging
+
         // Update the values from all attached sensors
         updateAllSensors();
         // Immediately put sensors to sleep to save power
@@ -111,6 +118,9 @@ void LoggerDreamHost::log(void)
             };
             case WIFI:
             {
+                result = postDataWiFi();
+                // Print the response from the WebSDL
+                printPostResult(result);  // for debugging
                 Serial.println(F("The DreamHost module cannot be used with WiFi at this time."));  // for debugging
                 break;
             };

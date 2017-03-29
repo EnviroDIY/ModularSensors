@@ -19,7 +19,7 @@ SdFat SD;
 RTCTimer timer;
 
 // Set up the static variables for the current time and timer functions
-char LoggerBase::currentTime[26] = "";
+char LoggerBase::logTime[26] = "";
 long LoggerBase::currentepochtime = 0;
 int LoggerBase::_timeZone = 0;
 bool LoggerBase::sleep = false;
@@ -69,6 +69,7 @@ uint32_t LoggerBase::getNow(void)
 {
   currentepochtime = rtc.now().getEpoch();
   currentepochtime += _timeZone*3600;
+  LoggerBase::currentepochtime = currentepochtime;
   return currentepochtime;
 }
 
@@ -298,7 +299,7 @@ void LoggerBase::setupLogFile(void)
 
 String LoggerBase::generateSensorDataCSV(void)
 {
-    String csvString = String(currentTime) + F(", ");
+    String csvString = String(LoggerBase::logTime) + F(", ");
 
     for (uint8_t i = 0; i < _sensorCount; i++)
     {
@@ -379,7 +380,7 @@ void LoggerBase::log(void)
         digitalWrite(_ledPin, HIGH);
 
         // Get the clock time when we begin updating sensors
-        getDateTime_ISO8601().toCharArray(currentTime, 26) ;
+        getDateTime_ISO8601().toCharArray(LoggerBase::logTime, 26) ;
 
         // Update the values from all attached sensors
         updateAllSensors();
