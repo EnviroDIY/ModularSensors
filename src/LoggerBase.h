@@ -73,6 +73,7 @@ protected:
     int _ledPin;
 
     static String _fileName;
+    // static char _fileName[];
 };
 
 

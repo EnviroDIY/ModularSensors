@@ -68,8 +68,8 @@ void LoggerEnviroDIY::dumpBuffer(Stream *stream, int timeDelay/* = 5*/, int time
     {
         while (stream->available() > 0)
         {
-            Serial.print(stream->readString());
-            // stream->read();
+            // Serial.print(stream->readString());
+            stream->read();
             delay(timeDelay);
         }
         delay(timeDelay);

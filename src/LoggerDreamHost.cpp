@@ -89,10 +89,6 @@ void LoggerDreamHost::log(void)
 
         // Get the clock time when we begin updating sensors
         getDateTime_ISO8601().toCharArray(LoggerBase::logTime, 26) ;
-        Serial.print("getDateTime_ISO8601() = ");  // for debugging
-        Serial.println(getDateTime_ISO8601());  // for debugging
-        Serial.print("LoggerBase::logTime = ");  // for debugging
-        Serial.println(LoggerBase::logTime);  // for debugging
 
         // Update the values from all attached sensors
         updateAllSensors();

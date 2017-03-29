@@ -12,8 +12,9 @@
 #include <SdFat.h>  // To communicate with the SD card
 #include "LoggerBase.h"
 
-// Initialize the SD card
-SdFat SD;
+// Initialize the SD card and file
+SdFat sd;
+SdFile logFile;
 
 // Initialize the timer functions for the RTC
 RTCTimer timer;
@@ -258,20 +259,30 @@ void LoggerBase::setupLogFile(void)
     // Initialise the SD card
     Serial.print(F("Connecting to SD Card with card/slave select on pin "));  // for debugging
     Serial.println(_SDCardPin);  // for debugging
-    if (!SD.begin(_SDCardPin))
+    if (!sd.begin(_SDCardPin, SPI_FULL_SPEED))
     {
         Serial.println(F("Error: SD card failed to initialize or is missing."));
     }
 
-    LoggerBase::_fileName = String(_loggerID) + F("_");
-    LoggerBase::_fileName += getDateTime_ISO8601().substring(0,10) + F(".csv");
+    // Generate the file name from logger ID and date
+    String fileName = String(_loggerID) + F("_");
+    fileName += getDateTime_ISO8601().substring(0,10) + F(".csv");
+    // Save the filename to a character array
+    LoggerBase::_fileName = fileName;
+
+    int fileNameLength = LoggerBase::_fileName.length() + 1;
+    char charFileName[fileNameLength];
+    LoggerBase::_fileName.toCharArray(charFileName, fileNameLength);
+
     Serial.print(F("Data being saved as "));  // for debugging
     Serial.println(LoggerBase::_fileName);  // for debugging
 
     // Open the file in write mode (and create it if it did not exist)
-    File logFile = SD.open(LoggerBase::_fileName, FILE_WRITE);
+    logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END);
+    // TODO: set creation date time
 
     // Add header information
+    logFile.print(F("Data Logger: "));
     logFile.println(_loggerID);
     logFile.print(F("Sampling Feature UUID: "));
     logFile.println(_samplingFeature);
@@ -317,16 +328,32 @@ String LoggerBase::generateSensorDataCSV(void)
 // By default writes a comma-separated line
 void LoggerBase::logToSD(String rec)
 {
-  // Re-open the file
-  File logFile = SD.open(LoggerBase::_fileName, FILE_WRITE);
+    // Check that the file exists, just in case someone yanked the SD card
+    int fileNameLength = LoggerBase::_fileName.length() + 1;
+    char charFileName[fileNameLength];
+    LoggerBase::_fileName.toCharArray(charFileName, fileNameLength);
 
-  // Write the CSV data
-  Serial.println(F("\n \\/---- Line Saved to SD Card ----\\/ "));  // for debugging
-  Serial.println(generateSensorDataCSV());  // for debugging
-  logFile.println(rec);
+    // Make sure the SD card is still initialized
+    if (!sd.begin(_SDCardPin, SPI_FULL_SPEED))
+    {
+        Serial.println(F("Error: SD card failed to initialize or is missing."));
+    }
 
-  // Close the file to save it
-  logFile.close();
+    // Open the file in write mode
+    if (!logFile.open(charFileName, O_WRITE | O_AT_END))
+    {
+      Serial.println(F("SD Card File Lost!  Starting new file."));  // for debugging
+      setupLogFile();
+    }
+
+    // Write the CSV data
+    logFile.println(rec);
+    // Echo the lind to the serial port
+    Serial.println(F("\n \\/---- Line Saved to SD Card ----\\/ "));  // for debugging
+    Serial.println(rec);  // for debugging
+
+    // Close the file to save it
+    logFile.close();
 }
 
 
