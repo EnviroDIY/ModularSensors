@@ -365,16 +365,7 @@ void LoggerBase::setupLogFile(void)
 String LoggerBase::generateSensorDataCSV(void)
 {
     String csvString = String(LoggerBase::markedISO8601Time) + F(", ");
-
-    for (uint8_t i = 0; i < _sensorCount; i++)
-    {
-        csvString += String(_sensorList[i]->getValue());
-        if (i + 1 != _sensorCount)
-        {
-            csvString += F(", ");
-        }
-    }
-
+    csvString += SensorArray::generateSensorDataCSV();
     return csvString;
 }
 

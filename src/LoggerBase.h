@@ -51,23 +51,39 @@ public:
     // called before updating the sensors, not after.
     void markTime(void);
 
+    // ===================================================================== //
     // Public functions for the timer and sleep modes
+    // ===================================================================== //
     void setupTimer(void);
     void setupSleep(void);
     void systemSleep(void);
 
+    // ===================================================================== //
     // Public functions for logging data
+    // ===================================================================== //
+    // This sets a file name, if you want to decide on it in advance
     void setFileName(char *fileName);
+    // This generates a file name from the logger id and the current date
     void setFileName(void);
+    // This outputs the current filename.  Must be run after setFileName.
     String getFileName(void);
+    // This initializes a file on the SD card and writes a header to it
     void setupLogFile(void);
+    // This generates a comma separated list of volues of sensor data - including the time
     String generateSensorDataCSV(void);
+    // This writes a record to the SD card
     void logToSD(String rec);
 
+    // ===================================================================== //
     // Convience functions to do it all
+    // ===================================================================== //
     virtual void begin(void);
     virtual void log(void);
 
+
+// ===================================================================== //
+// Things that are private and protected below here
+// ===================================================================== //
 protected:
     static long markedEpochTime;
     static DateTime markedDateTime;
