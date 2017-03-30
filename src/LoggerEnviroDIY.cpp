@@ -84,7 +84,7 @@ String LoggerEnviroDIY::generateSensorDataJSON(void)
     jsonString += F("\"sampling_feature\": \"");
     jsonString += String(LoggerBase::_samplingFeature) + F("\", ");
     jsonString += F("\"timestamp\": \"");
-    jsonString += String(LoggerBase::logTime) + F("\", ");
+    jsonString += String(LoggerBase::markedISO8601Time) + F("\", ");
 
     for (int i = 0; i < LoggerBase::_sensorCount; i++)
     {
@@ -269,9 +269,8 @@ void LoggerEnviroDIY::log(void)
         // Turn on the LED to show we're taking a reading
         digitalWrite(LoggerBase::_ledPin, HIGH);
 
-        // Get the clock time when we begin updating sensors
-        getDateTime_ISO8601().toCharArray(LoggerBase::logTime, 26) ;
-
+        // Update the static time variables with the current time
+        markTime();
         // Update the values from all attached sensors
         updateAllSensors();
         // Immediately put sensors to sleep to save power

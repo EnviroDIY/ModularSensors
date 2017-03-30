@@ -137,7 +137,7 @@ const char *UUIDs[] =
 // ---------------------------------------------------------------------------
 // Device Connection Options and WebSDL Endpoints for POST requests
 // ---------------------------------------------------------------------------
-xbee BEE_TYPE = WIFI;  // The type of XBee, either GPRS or WIFI
+xbee BEE_TYPE = WIFI;  // The type of XBee, either GPRSv4, GPRSv6, or WIFI
 HardwareSerial &BeeSerial = Serial1; // The serial port for the xbee - software serial can also be used.
 const int BEE_BAUD = 9600;  // Bee BAUD rate (9600 is default)
 const char *APN = "apn.konekt.io";  // The APN for the GPRSBee, unnecessary for WiFi

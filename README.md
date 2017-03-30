@@ -118,7 +118,7 @@ Setup and initialization functions:
 
 Functions to access the clock in proper format and time zone:
 - **getNow()** - Returns the current unix time stamp in the current time zone.
-- **getDateTime_ISO8601()** - Returns the current date/time as an ISO8601 formatted Arduino String.
+- **formatDateTime_ISO8601()** - Returns the current date/time as an ISO8601 formatted Arduino String.
 
 
 Functions for the timer and sleep modes:
