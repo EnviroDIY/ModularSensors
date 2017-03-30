@@ -26,7 +26,7 @@ String LoggerDreamHost::generateSensorDataDreamHost(void)
     dhString += F("?LoggerID=");
     dhString += String(LoggerBase::_loggerID);
     dhString += F("&Loggertime=");
-    dhString += String(LoggerBase::markedEpochTime);
+    dhString += String(LoggerBase::markedEpochTime - 946684800);  // Coorect time from epoch to y2k
 
     for (int i = 0; i < LoggerBase::_sensorCount; i++)
     {

@@ -14,7 +14,6 @@
 
 // Initialize the SD card and file
 SdFat sd;
-SdFile logFile;
 
 // Initialize the timer functions for the RTC
 RTCTimer timer;
@@ -312,8 +311,29 @@ void LoggerBase::setupLogFile(void)
     LoggerBase::_fileName.toCharArray(charFileName, fileNameLength);
 
     // Open the file in write mode (and create it if it did not exist)
+    SdFile logFile;
     logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END);
-    // TODO: set creation date time
+    // Set creation date time
+    logFile.timestamp(T_CREATE, LoggerBase::markedDateTime.year(),
+                                LoggerBase::markedDateTime.month(),
+                                LoggerBase::markedDateTime.date(),
+                                LoggerBase::markedDateTime.hour(),
+                                LoggerBase::markedDateTime.minute(),
+                                LoggerBase::markedDateTime.second());
+    // Set write/modification date time
+    logFile.timestamp(T_WRITE, LoggerBase::markedDateTime.year(),
+                                LoggerBase::markedDateTime.month(),
+                                LoggerBase::markedDateTime.date(),
+                                LoggerBase::markedDateTime.hour(),
+                                LoggerBase::markedDateTime.minute(),
+                                LoggerBase::markedDateTime.second());
+    // Set access  date time
+    logFile.timestamp(T_ACCESS, LoggerBase::markedDateTime.year(),
+                                LoggerBase::markedDateTime.month(),
+                                LoggerBase::markedDateTime.date(),
+                                LoggerBase::markedDateTime.hour(),
+                                LoggerBase::markedDateTime.minute(),
+                                LoggerBase::markedDateTime.second());
 
     // Add header information
     logFile.print(F("Data Logger: "));
@@ -358,7 +378,6 @@ String LoggerBase::generateSensorDataCSV(void)
 }
 
 // Writes a string to a text file on the SD Card
-// By default writes a comma-separated line
 void LoggerBase::logToSD(String rec)
 {
     // Make sure the SD card is still initialized
@@ -373,6 +392,7 @@ void LoggerBase::logToSD(String rec)
     LoggerBase::_fileName.toCharArray(charFileName, fileNameLength);
 
     // Check that the file exists, just in case someone yanked the SD card
+    SdFile logFile;
     if (!logFile.open(charFileName, O_WRITE | O_AT_END))
     {
         Serial.println(F("SD Card File Lost!  Starting new file."));  // for debugging
@@ -385,6 +405,21 @@ void LoggerBase::logToSD(String rec)
     // Echo the lind to the serial port
     Serial.println(F("\n \\/---- Line Saved to SD Card ----\\/ "));  // for debugging
     Serial.println(rec);  // for debugging
+
+    // Set write/modification date time
+    logFile.timestamp(T_WRITE, LoggerBase::markedDateTime.year(),
+        LoggerBase::markedDateTime.month(),
+        LoggerBase::markedDateTime.date(),
+        LoggerBase::markedDateTime.hour(),
+        LoggerBase::markedDateTime.minute(),
+        LoggerBase::markedDateTime.second());
+    // Set access  date time
+    logFile.timestamp(T_ACCESS, LoggerBase::markedDateTime.year(),
+        LoggerBase::markedDateTime.month(),
+        LoggerBase::markedDateTime.date(),
+        LoggerBase::markedDateTime.hour(),
+        LoggerBase::markedDateTime.minute(),
+        LoggerBase::markedDateTime.second());
 
     // Close the file to save it
     logFile.close();
