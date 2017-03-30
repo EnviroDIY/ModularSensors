@@ -265,7 +265,7 @@ void LoggerBase::systemSleep(void)
 //  Functions for logging data to an SD card
 // ============================================================================
 
-// Sets up the filename and saves it to the static char array
+// Sets up the filename and saves it to the static String
 String LoggerBase::_fileName = "";
 void LoggerBase::setFileName(char *fileName)
 {
