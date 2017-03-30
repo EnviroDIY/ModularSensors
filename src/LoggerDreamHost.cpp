@@ -77,7 +77,7 @@ int LoggerDreamHost::postDataDreamHost(void)
 void LoggerDreamHost::log(void)
 {
     // Update the timer
-    timer.update();
+    // timer.update();
 
     // Check of the current time is an even interval of the logging interval
     if (checkInterval())
@@ -87,6 +87,8 @@ void LoggerDreamHost::log(void)
         // Turn on the LED to show we're taking a reading
         digitalWrite(LoggerBase::_ledPin, HIGH);
 
+        // Update the static time variables with the current time
+        markTime();
         // Update the values from all attached sensors
         updateAllSensors();
         // Immediately put sensors to sleep to save power

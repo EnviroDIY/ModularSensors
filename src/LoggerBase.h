@@ -47,8 +47,8 @@ public:
     // for updating the sensors - even though the routines to update the sensors
     // and to output the data may take several seconds.
     // It is not currently possible to output the instantaneous time an individual
-    // sensor was updated, just the time that the polling of all sensors was
-    // started
+    // sensor was updated, just a single marked time.  By custom, this should be
+    // called before updating the sensors, not after.
     void markTime(void);
 
     // Public functions for the timer and sleep modes
@@ -59,6 +59,7 @@ public:
     // Public functions for logging data
     void setFileName(char *fileName);
     void setFileName(void);
+    String getFileName(void);
     void setupLogFile(void);
     String generateSensorDataCSV(void);
     void logToSD(String rec);
@@ -86,8 +87,8 @@ protected:
     int _interruptRate;
     int _ledPin;
 
-    // static String _fileName;
-    static char *_fileName;
+    static String _fileName;
+    // static char *_fileName;
 private:
     // Private functions for the timer and sleep modes
     static void checkTime(uint32_t ts);

@@ -132,11 +132,11 @@ bool LoggerBase::checkInterval(void)
 }
 
 
-// Declare the static variables for the current time
+// Declare the static variables to mark the time
 long LoggerBase::markedEpochTime = 0;
 DateTime LoggerBase::markedDateTime = 0;
 char LoggerBase::markedISO8601Time[26] = "";
-// This function sets all of the static variables for the logging time
+// This function sets all of the static variables to mark the time
 void LoggerBase::markTime(void)
 {
   LoggerBase::markedEpochTime = getNow();
@@ -267,11 +267,10 @@ void LoggerBase::systemSleep(void)
 // ============================================================================
 
 // Sets up the filename and saves it to the static char array
-char *LoggerBase::_fileName;
-
+String LoggerBase::_fileName = "";
 void LoggerBase::setFileName(char *fileName)
 {
-    // Save the filename to the static char array
+    // Save the filename to the static String
     LoggerBase::_fileName = fileName;
 
     // Print out the file name for debugging
@@ -283,12 +282,17 @@ void LoggerBase::setFileName(void)
 {
     _autoFileName = true;
     // Generate the file name from logger ID and date
-    char fileName[strlen(_loggerID) + 16];
+    char fileName[strlen(_loggerID) + 16] = {};
     strcat(fileName,  _loggerID);
     strcat(fileName, "_");
-    strncpy(fileName, LoggerBase::markedISO8601Time, 10);
+    strncat(fileName, LoggerBase::markedISO8601Time, 10);
     strcat(fileName, ".csv");
     setFileName(fileName);
+}
+
+String LoggerBase::getFileName(void)
+{
+    return LoggerBase::_fileName;
 }
 
 // Initializes the SD card and prints a header to it
@@ -302,13 +306,13 @@ void LoggerBase::setupLogFile(void)
         Serial.println(F("Error: SD card failed to initialize or is missing."));
     }
 
-    // int fileNameLength = LoggerBase::_fileName.length() + 1;
-    // char charFileName[fileNameLength];
-    // LoggerBase::_fileName.toCharArray(charFileName, fileNameLength);
+    // Convert the string filename to a character file name for SdFat
+    int fileNameLength = LoggerBase::_fileName.length() + 1;
+    char charFileName[fileNameLength];
+    LoggerBase::_fileName.toCharArray(charFileName, fileNameLength);
 
     // Open the file in write mode (and create it if it did not exist)
-    // logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END);
-    logFile.open(LoggerBase::_fileName, O_CREAT | O_WRITE | O_AT_END);
+    logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END);
     // TODO: set creation date time
 
     // Add header information
@@ -316,7 +320,6 @@ void LoggerBase::setupLogFile(void)
     logFile.println(_loggerID);
     logFile.print(F("Sampling Feature UUID: "));
     logFile.println(_samplingFeature);
-
 
     String dataHeader = F("\"Timestamp\", ");
     for (uint8_t i = 0; i < _sensorCount; i++)
@@ -364,8 +367,13 @@ void LoggerBase::logToSD(String rec)
         Serial.println(F("Error: SD card failed to initialize or is missing."));
     }
 
+    // Convert the string filename to a character file name for SdFat
+    int fileNameLength = LoggerBase::_fileName.length() + 1;
+    char charFileName[fileNameLength];
+    LoggerBase::_fileName.toCharArray(charFileName, fileNameLength);
+
     // Check that the file exists, just in case someone yanked the SD card
-    if (!logFile.open(LoggerBase::_fileName, O_WRITE | O_AT_END))
+    if (!logFile.open(charFileName, O_WRITE | O_AT_END))
     {
         Serial.println(F("SD Card File Lost!  Starting new file."));  // for debugging
         if(_autoFileName){setFileName();}
