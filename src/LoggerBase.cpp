@@ -265,7 +265,7 @@ void LoggerBase::systemSleep(void)
 //  Functions for logging data to an SD card
 // ============================================================================
 
-// Sets up the filename and saves it to the static String
+// Sets the filename and saves it to the static String
 String LoggerBase::_fileName = "";
 void LoggerBase::setFileName(char *fileName)
 {
@@ -277,6 +277,7 @@ void LoggerBase::setFileName(char *fileName)
     Serial.println(LoggerBase::_fileName);  // for debugging
 }
 
+// Generates a file name if one doesn't exist
 void LoggerBase::setFileName(void)
 {
     _autoFileName = true;
