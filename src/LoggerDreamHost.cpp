@@ -26,7 +26,7 @@ String LoggerDreamHost::generateSensorDataDreamHost(void)
     dhString += F("?LoggerID=");
     dhString += String(LoggerBase::_loggerID);
     dhString += F("&Loggertime=");
-    dhString += String(LoggerBase::currentepochtime);
+    dhString += String(LoggerBase::markedEpochTime);
 
     for (int i = 0; i < LoggerBase::_sensorCount; i++)
     {
@@ -86,9 +86,6 @@ void LoggerDreamHost::log(void)
         Serial.println(F("------------------------------------------"));  // for debugging
         // Turn on the LED to show we're taking a reading
         digitalWrite(LoggerBase::_ledPin, HIGH);
-
-        // Get the clock time when we begin updating sensors
-        getDateTime_ISO8601().toCharArray(LoggerBase::logTime, 26) ;
 
         // Update the values from all attached sensors
         updateAllSensors();
