@@ -30,6 +30,9 @@ public:
               const char *loggerID = 0);
     void setAlertPin(int ledPin);
 
+    // The timer
+    RTCTimer loggerTimer;
+
     // ===================================================================== //
     // Public functions to access the clock in proper format and time zone
     // ===================================================================== //
@@ -62,6 +65,7 @@ public:
     // ===================================================================== //
     // This sets a file name, if you want to decide on it in advance
     void setFileName(char *fileName);
+    void setFileName(String fileName);
     // This generates a file name from the logger id and the current date
     void setFileName(void);
     // This returns the current filename.  Must be run after setFileName.
@@ -88,9 +92,6 @@ protected:
     // The SD card and file
     SdFat sd;
     SdFile logFile;
-
-    // The timer
-    RTCTimer timer;
 
     static long markedEpochTime;
     static DateTime markedDateTime;

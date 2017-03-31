@@ -155,7 +155,7 @@ void LoggerBase::setupTimer(void)
     // Instruct the RTCTimer how to get the current time reading (ie, what function to use)
     // The units of the time returned by this function determine the units of the
     // period in the "every" function below.
-    timer.setNowCallback(getNow);
+    loggerTimer.setNowCallback(getNow);
 
     // This tells the timer how often (_interruptRate) it will repeat some function (checkTime)
     // The time units of the first input are the same as those returned by the
@@ -163,7 +163,7 @@ void LoggerBase::setupTimer(void)
     // having the timer call a function to check the time instead of actually
     // taking a reading because we would rather first double check that we're
     // exactly on a current minute before taking the reading.
-    timer.every(_interruptRate, checkTime);
+    loggerTimer.every(_interruptRate, checkTime);
 }
 
 
@@ -267,16 +267,26 @@ void LoggerBase::setFileName(char *fileName)
     Serial.println(LoggerBase::_fileName);  // for debugging
 }
 
+// Same as above, with a string
+void LoggerBase::setFileName(String fileName)
+{
+    // Convert the string filename to a character file name
+    int fileNameLength = fileName.length() + 1;
+    char charFileName[fileNameLength];
+    fileName.toCharArray(charFileName, fileNameLength);
+    setFileName(charFileName);
+}
+
 // Generates a file name if one doesn't exist
 void LoggerBase::setFileName(void)
 {
     _autoFileName = true;
     // Generate the file name from logger ID and date
-    char fileName[strlen(_loggerID) + 16] = {};
-    strcat(fileName,  _loggerID);
-    strcat(fileName, "_");
-    strncat(fileName, LoggerBase::markedISO8601Time, 10);
-    strcat(fileName, ".csv");
+    String fileName = "";
+    fileName +=  _loggerID;
+    fileName +=  F("_");
+    fileName +=  formatDateTime_ISO8601(rtc.now()).substring(0, 10);
+    fileName +=  F(".csv");
     setFileName(fileName);
 }
 
@@ -445,7 +455,7 @@ void LoggerBase::log(void)
     // Update the timer
     // This runs the timer's "now" function [in our case getNow()] and then
     // checks all of the registered timer events to see if they should run
-    timer.update();
+    loggerTimer.update();
 
     // Check of the current time is an even interval of the logging interval
     if (checkInterval())

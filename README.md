@@ -130,8 +130,8 @@ Functions for the timer and sleep modes:
 - **systemSleep()** - Puts the system into deep sleep mode.  This should be called at the very end of the loop function.
 
 Functions for logging data:
-- **setFileName(char *fileName)** - This sets a specifid file name for data to be saved as, if you want to decide on it in advance.
-- **setFileName()** - This automatically generates a file name from the logger id and the current date.  You must call one of the two setFileName functions before calling setupLogFile or logtoSD.
+- **setFileName(fileName)** - This sets a specifid file name for data to be saved as, if you want to decide on it in advance.  Note that you must include the file extention (ie., '.txt') in the file name.
+- **setFileName()** - This automatically generates a csv file name from the logger id and the current date.  You must call one of the two setFileName functions before calling setupLogFile or logtoSD.
 - **getFileName()** - This returns the current filename as an Arduino String.  Must be run after setFileName.
 - **setupLogFile()** - This creates a file on the SD card and writes a header to it.  It also sets the "file created" time stamp.
 - **generateSensorDataCSV()** - This returns an Arduino String containing the time and a comma separated list of sensor values.
@@ -142,7 +142,7 @@ Convience functions to do it all:
 - **log()** - Logs data, must be the entire content of the loop function.
 
 ### Additional Functions Available for a LoggerEnviroDIY Object:
-- These three functions set up the required registration token, sampling feature uuid, and time series uuids for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.
+- These three functions set up the required registration token, sampling feature uuid, and time series uuids for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.
     - **setToken(const char registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
     - **setSamplingFeature(const char samplingFeature)** - Sets the GUID of the sampling feature.  Note that the input is a pointer to the samplingFeature.
     - **setUUIDs(const char UUIDs[])** - Sets the time series UUIDs.  Note that the input is an array of pointers.  The order of the UUIDs in this array **must match exactly** with the order of the coordinating variable in the SENSOR_LIST.
