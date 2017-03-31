@@ -26,9 +26,9 @@ class SensorBase
 {
 public:
 
-    SensorBase(int dataPin = -1, int powerPin = -1,
-               String sensorName = "Unknown", String varName = "Unknown",
-               String varUnit = "Unknown", String dreamHost = "Unknown");
+    SensorBase(int dataPin, int powerPin, int decimalResolution,
+               String sensorName, String varName,
+               String varUnit, String dreamHost);
 
     // These functions are dependent on the constructor and return the constructor values
     // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
@@ -41,6 +41,8 @@ public:
     String getVarUnit(void);
     // This returns the dreamhost PHP tag - for old SWRC dreamhost system
     String getDreamHost(void);
+    // This returns the current value of the variable as a string with the correct number of significant figures
+    String getValueString(void);
 
     // These next functions have defaults.
     // This sets up the sensor, if necessary.  Defaults to ready.
@@ -68,6 +70,7 @@ protected:
     int _powerPin;
     SENSOR_STATUS sensorStatus;
 private:
+    int _decimalResolution;
     String _sensorName;
     String _varName;
     String _varUnit;
