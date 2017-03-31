@@ -16,17 +16,6 @@
 #include "LoggerBase.h"
 #include "SensorBase.h"
 
-
-// For the "Bee" devices"
-typedef enum xbee
-{
-    GPRSv4 = 0,  // Sodaq GPRSBee v4 - 2G (GPRS) communication
-    GPRSv6,  // Sodaq GPRSBee v6 - 2G (GPRS) communication
-    WIFI,  // Digi XBee S6B - WiFi communication
-    // RADIO,
-    // THREEG
-} xbee;
-
 // Defines the "Logger" Class
 class LoggerEnviroDIY : public virtual LoggerBase
 {
@@ -35,10 +24,11 @@ public:
     void setToken(const char *registrationToken);
     void setSamplingFeature(const char *samplingFeature);
     void setUUIDs(const char *UUIDs[]);
-    void setupBee(xbee beeType,
-                  Stream *beeStream,
-                  int beeCTSPin,
-                  int beeDTRPin,
+    void setupModem(modem modemType,
+                  Stream *modemStream,
+                  int vcc33Pin,
+                  int status_CTS_pin,
+                  int onoff_DTR_pin,
                   const char *APN);
 
     // This adds extra data to the datafile header
@@ -61,8 +51,8 @@ protected:
     void streamPostRequest(Stream *stream);
 
     // Communication information
-    xbee _beeType;
-    Stream *_beeStream;
+    xbee _modemType;
+    Stream *_modemStream;
     const char *_APN;
 private:
     // Tokens and UUID's for EnviroDIY

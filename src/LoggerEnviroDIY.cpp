@@ -28,22 +28,22 @@ void LoggerEnviroDIY::setUUIDs(const char *UUIDs[])
     _UUIDs = UUIDs;
 }
 
-void LoggerEnviroDIY::setupBee(xbee beeType,
-                               Stream *beeStream,
-                               int beeCTSPin,
-                               int beeDTRPin,
+void LoggerEnviroDIY::setupModem(modem modemType,
+                               Stream *modemStream,
+                               int status_CTS_pin,
+                               int onoff_DTR_pin,
                                const char *APN)
 {
-    _beeType = beeType;
-    _beeStream = beeStream;
+    _modemType = modemType;
+    _modemStream = modemStream;
     _APN = APN;
 
-    switch(beeType)
+    switch(modemType)
     {
         case GPRSv4:
         {
             // Initialize the GPRSBee
-            gprsbee.init(*beeStream, beeCTSPin, beeDTRPin);
+            gprsbee.init(*modemStream, status_CTS_pin, onoff_DTR_pin);
             gprsbee.setMinSignalQuality(5);
             // gprsbee.setDiag(Serial);  // for debugging
             break;
@@ -51,7 +51,7 @@ void LoggerEnviroDIY::setupBee(xbee beeType,
         case GPRSv6:
         {
             // Initialize the GPRSBee
-            gprsbee.init(*beeStream, beeCTSPin, beeDTRPin);
+            gprsbee.init(*modemStream, status_CTS_pin, onoff_DTR_pin);
             gprsbee.setPowerSwitchedOnOff(true);
             gprsbee.setMinSignalQuality(5);
             // gprsbee.setDiag(Serial);  // for debugging
@@ -170,30 +170,30 @@ int LoggerEnviroDIY::postDataWiFi(void)
     streamPostRequest(&Serial);  // for debugging
     Serial.flush();  // for debugging
 
-    dumpBuffer(_beeStream);
+    dumpBuffer(_modemStream);
     int responseCode = 0;
 
     // Send the request to the WiFiBee (it's transparent, just goes as a stream)
-    streamPostRequest(_beeStream);
-    _beeStream->flush();  // wait for sending to finish
+    streamPostRequest(_modemStream);
+    _modemStream->flush();  // wait for sending to finish
 
     // Add a brief delay for at least the first 12 characters of the HTTP response
     int timeout = 1500;
-    while ((timeout > 0) && _beeStream->available() < 12)
+    while ((timeout > 0) && _modemStream->available() < 12)
     {
       delay(1);
       timeout--;
     }
 
     // Process the HTTP response
-    if (timeout > 0 && _beeStream->available() >= 12)
+    if (timeout > 0 && _modemStream->available() >= 12)
     {
-        _beeStream->readStringUntil(' ');
-        responseCode = _beeStream->parseInt();
+        _modemStream->readStringUntil(' ');
+        responseCode = _modemStream->parseInt();
         Serial.println(F(" -- Response Code -- "));  // for debugging
         Serial.println(responseCode);  // for debugging
 
-        dumpBuffer(_beeStream);
+        dumpBuffer(_modemStream);
     }
     else responseCode=504;
 
@@ -203,7 +203,7 @@ int LoggerEnviroDIY::postDataWiFi(void)
 // This function makes an HTTP connection to the server and POSTs data - for GPRS
 int LoggerEnviroDIY::postDataGPRS(void)
 {
-    dumpBuffer(_beeStream);
+    dumpBuffer(_modemStream);
     int responseCode = 0;
 
     char url[43] = "http://data.envirodiy.org/api/data-stream/";
@@ -326,7 +326,7 @@ void LoggerEnviroDIY::log(void)
 
         // Post the data to the WebSDL
         int result;
-        switch (_beeType)
+        switch (_modemType)
         {
             case GPRSv4:
             case GPRSv6:

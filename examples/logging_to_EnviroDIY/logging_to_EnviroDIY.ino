@@ -213,7 +213,7 @@ void setup()
     EnviroDIYLogger.setToken(REGISTRATION_TOKEN);
     EnviroDIYLogger.setSamplingFeature(SAMPLING_FEATURE);
     EnviroDIYLogger.setUUIDs(UUIDs);
-    EnviroDIYLogger.setupBee(BEE_TYPE, &BeeSerial, BEE_CTS_PIN, BEE_DTR_PIN, APN);
+    EnviroDIYLogger.setupModem(BEE_TYPE, &BeeSerial, BEE_CTS_PIN, BEE_DTR_PIN, APN);
     #ifdef DreamHostURL
     EnviroDIYLogger.setDreamHostURL(DreamHostURL);
     #endif

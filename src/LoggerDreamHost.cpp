@@ -43,7 +43,7 @@ String LoggerDreamHost::generateSensorDataDreamHost(void)
 int LoggerDreamHost::postDataDreamHost(void)
 {
     int responseCode = 0;
-    dumpBuffer(LoggerEnviroDIY::_beeStream);
+    dumpBuffer(LoggerEnviroDIY::_modemStream);
 
     Serial.println(F("\n \\/------ Data to DreamHost ------\\/ "));  // for debugging
     Serial.println(generateSensorDataDreamHost());  // for debugging
@@ -99,7 +99,7 @@ void LoggerDreamHost::log(void)
 
         // Post the data to the WebSDL
         int result;
-        switch (LoggerEnviroDIY::_beeType)
+        switch (LoggerEnviroDIY::_modemType)
         {
             case GPRSv4:
             case GPRSv6:
