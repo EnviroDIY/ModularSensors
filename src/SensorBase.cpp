@@ -36,7 +36,14 @@ String SensorBase::getDreamHost(void){return _dreamHost;}
 // This returns the current value of the variable as a string with the correct number of significant figures
 String SensorBase::getValueString(void)
 {
-    return String(getValue(), _decimalResolution);
+    // Need this because otherwise get extra spaces in strings from int
+    if (_decimalResolution == 0)
+    {
+        int val = int(getValue());
+        return String(val);
+    }
+    else
+    {return String(getValue(), _decimalResolution);}
 }
 
 
@@ -108,8 +115,8 @@ bool SensorBase::checkForUpdate(unsigned long sensorLastUpdated)
 {
     if ((millis() > 60000 and millis() > sensorLastUpdated + 60000) or sensorLastUpdated == 0)
     {
-        Serial.print(F("It has been "));
-        Serial.print((millis() - sensorLastUpdated)/1000);
+        // Serial.print(F("It has been "));
+        // Serial.print((millis() - sensorLastUpdated)/1000);
         // Serial.println(F(" seconds since the sensor value was checked"));  // For debugging
         // Serial.println(F("Value out of date, updating"));  // For debugging
         return(update());
