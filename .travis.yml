@@ -28,5 +28,6 @@ install:
     - pio lib -g install https://github.com/EnviroDIY/Arduino-SDI-12.git#mayfly
     - pio lib -g install https://github.com/EnviroDIY/GPRSbee.git
     - pio lib -g update
+    - git rm library.json
 script:
 - platformio ci --lib="." --project-option="lib_ldf_mode = deep+" --board=mayfly
