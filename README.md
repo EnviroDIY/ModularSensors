@@ -37,6 +37,7 @@ To use a sensor in your sketch, you must include SensorBase.h in your script AND
 - **getVarName()** - This returns the variable's name using http://vocabulary.odm2.org/variablename/ as a string
 - **getVarUnit()** - This returns the variable's unit using http://vocabulary.odm2.org/units/ as a string
 - **getValue()** - This returns the current value of the variable as a float.  You should call the update function before calling getValue.  As a backup, if the getValue function sees that the update function has not been called within the last 60 seconds, it will re-call it.
+- **getValueString()** - This is identical to getValue, except that it returns a string with the proper precision available from the sensor.
 
 ### <a name="individuals"></a>Examples Using Individual Sensor and Variable Functions
 To access and get values from a sensor, you must create an instance of the variable subclass you are interested in.  Each variable has different parameters that you must specify when creating the variable instance.  You must create a new instance for each _variable_, not just each sensor.  When using multple variables from the same sensor, you can save time by only calling the setup() and update() functions on a single variable and then calling the getValue() function on all of the variables.  A very simple program which creates instances of the variables and get data from all the parameters measured by a Decagon CTD you might be something like:
@@ -269,7 +270,7 @@ Calling the update function for any one of the three variables will update all t
 - Decagon5TM_Temp(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
 - Decagon5TM_VWC(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
 
-#### <a name="CTD"></a>[Decagon Devices CTD-10](https://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/ctd-10-sensor-electrical-conductivity-temperature-depth/) Electrical Conductivity, Temperature, and Depth Sensor
+#### <a name="CTD"></a>[Decagon Devices CTD-5 or  CTD-10](https://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/ctd-10-sensor-electrical-conductivity-temperature-depth/) Electrical Conductivity, Temperature, and Depth Sensor
 
 The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  You must have the [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/mf_archive) that has been modified to only use PCInt3 installed to use this sensor.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the clock.  Because of this, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
 

@@ -31,9 +31,9 @@ String LoggerDreamHost::generateSensorDataDreamHost(void)
     for (int i = 0; i < LoggerBase::_sensorCount; i++)
     {
         dhString += F("&");
-        dhString += String(LoggerBase::_sensorList[i]->getDreamHost());
+        dhString += LoggerBase::_sensorList[i]->getDreamHost();
         dhString += F("=");
-        dhString += String(LoggerBase::_sensorList[i]->getValue());
+        dhString += LoggerBase::_sensorList[i]->getValueString();
     }
     return dhString;
 
