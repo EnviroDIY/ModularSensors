@@ -91,19 +91,20 @@ const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calib
 // 3. The array that contains all valid sensors
 // ---------------------------------------------------------------------------
 SensorBase *SENSOR_LIST[] = {
-    new MayflyOnboardTemp(MFVersion),
-    new MayflyOnboardBatt(MFVersion),
-    new MayflyFreeRam(),
     new DecagonCTD_Cond(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
     new DecagonCTD_Temp(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
     new DecagonCTD_Depth(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
+    new Decagon5TM_Ea(*TMSDI12address, switchedPower, SDI12Data),
     new Decagon5TM_VWC(*TMSDI12address, switchedPower, SDI12Data),
     new Decagon5TM_Temp(*TMSDI12address, switchedPower, SDI12Data),
     new DecagonES2_Cond(*ES2DI12address, switchedPower, SDI12Data),
     new DecagonES2_Temp(*ES2DI12address, switchedPower, SDI12Data),
     new CampbellOBS3_Turbidity(switchedPower, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C),
     new CampbellOBS3_TurbHigh(switchedPower, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C),
-    new MaxBotixSonar_Range(switchedPower, SonarData, SonarTrigger)
+    new MaxBotixSonar_Range(switchedPower, SonarData, SonarTrigger),
+        new MayflyOnboardTemp(MFVersion),
+        new MayflyOnboardBatt(MFVersion),
+        new MayflyFreeRam()
 };
 int sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
 
@@ -206,10 +207,12 @@ void setup()
 
     // Initialize the logger;
     EnviroDIYLogger.init(TIME_ZONE, SD_SS_PIN, RTC_PIN, sensorCount, SENSOR_LIST,
-                LOGGING_INTERVAL, LoggerID, SAMPLING_FEATURE, UUIDs);
+                LOGGING_INTERVAL, LoggerID);
     EnviroDIYLogger.setAlertPin(GREEN_LED);
     // Set up the communication with EnviroDIY
     EnviroDIYLogger.setToken(REGISTRATION_TOKEN);
+    EnviroDIYLogger.setSamplingFeature(SAMPLING_FEATURE);
+    EnviroDIYLogger.setUUIDs(UUIDs);
     EnviroDIYLogger.setupBee(BEE_TYPE, &BeeSerial, BEE_CTS_PIN, BEE_DTR_PIN, APN);
     #ifdef DreamHostURL
     EnviroDIYLogger.setDreamHostURL(DreamHostURL);

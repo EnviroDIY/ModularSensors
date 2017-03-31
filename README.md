@@ -113,7 +113,7 @@ Our main reason to unify the output from many sensors is to easily log the data 
 
 ### Functions Available for a LoggerBase Object:
 Setup and initialization functions:
-- **init(int timeZone, int SDCardPin, int interruptPin, int sensorCount, SensorBase SENSOR_LIST[], float loggingIntervalMinutes, const char loggerID = 0, const char samplingFeature = 0, const char UUIDs[] = 0)** - Initializes the logger object.  Must happen within the setup function.  Note that the SENSOR_LIST[], loggerID, samplingFeature, and UUIDs[] are all pointers.
+- **init(int timeZone, int SDCardPin, int interruptPin, int sensorCount, SensorBase SENSOR_LIST[], float loggingIntervalMinutes, const char loggerID = 0)** - Initializes the logger object.  Must happen within the setup function.  Note that the SENSOR_LIST[], loggerID are all pointers.
 - **setAlertPin(int ledPin)** - Sets a pin to put out an alert that a measurement is being logged.  This should be a pin with a LED on it.
 
 Functions to access the clock in proper format and time zone:
@@ -130,8 +130,8 @@ Functions for the timer and sleep modes:
 - **systemSleep()** - Puts the system into deep sleep mode.  This should be called at the very end of the loop function.
 
 Functions for logging data:
-- **setFileName(char *fileName)** - This sets a specifid file name for data to be saved as, if you want to decide on it in advance.
-- **setFileName()** - This automatically generates a file name from the logger id and the current date.  You must call one of the two setFileName functions before calling setupLogFile or logtoSD.
+- **setFileName(fileName)** - This sets a specifid file name for data to be saved as, if you want to decide on it in advance.  Note that you must include the file extention (ie., '.txt') in the file name.
+- **setFileName()** - This automatically generates a csv file name from the logger id and the current date.  You must call one of the two setFileName functions before calling setupLogFile or logtoSD.
 - **getFileName()** - This returns the current filename as an Arduino String.  Must be run after setFileName.
 - **setupLogFile()** - This creates a file on the SD card and writes a header to it.  It also sets the "file created" time stamp.
 - **generateSensorDataCSV()** - This returns an Arduino String containing the time and a comma separated list of sensor values.
@@ -142,7 +142,10 @@ Convience functions to do it all:
 - **log()** - Logs data, must be the entire content of the loop function.
 
 ### Additional Functions Available for a LoggerEnviroDIY Object:
-- **setToken(const char registrationToken)** - Sets the retistration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
+- These three functions set up the required registration token, sampling feature uuid, and time series uuids for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.
+    - **setToken(const char registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
+    - **setSamplingFeature(const char samplingFeature)** - Sets the GUID of the sampling feature.  Note that the input is a pointer to the samplingFeature.
+    - **setUUIDs(const char UUIDs[])** - Sets the time series UUIDs.  Note that the input is an array of pointers.  The order of the UUIDs in this array **must match exactly** with the order of the coordinating variable in the SENSOR_LIST.
 - **setupBee(xbee beeType, Stream beeStream, int beeCTSPin, int beeDTRPin, const char APN)** - Sets up the internet communcation, with either GPRSv4, GPRSv6, or WIFI.  Note that the beeStream and APN should be pointers.
 - **generateSensorDataJSON()** - Generates a properly formatted JSON string to go to the EnviroDIY streaming data loader API.
 - **postDataWiFi()** - Creates proper headers and sends data to the EnviroDIY data portal via WiFi.  You must use the external XCTU program to set up your WiFi bee before attaching it to your board.  You must call the setupBee function before calling this function.  Returns an HTML response code.
@@ -177,9 +180,7 @@ Logger.init(int timeZone, int SDCardPin, int interruptPin,
             int sensorCount,
             SensorBase *SENSOR_LIST[],
             float loggingIntervalMinutes,
-            const char *loggerID = 0,
-            const char *samplingFeature = 0,
-            const char *UUIDs[] = 0);
+            const char *loggerID = 0);
 // OPTIONAL - specify a pin to give an alert when a measurement is taken
 // This should generally be a pin with an LED
 setAlertPin(int ledPin);
@@ -195,14 +196,14 @@ EnviroDIYLogger.init(int timeZone, int SDCardPin, int interruptPin,
                      int sensorCount,
                      SensorBase *SENSOR_LIST[],
                      float loggingIntervalMinutes,
-                     const char *loggerID = 0,
-                     const char *samplingFeature = 0,
-                     const char *UUIDs[] = 0);
+                     const char *loggerID = 0);
 // OPTIONAL - specify a pin to give an alert when a measurement is taken
 // This should generally be a pin with an LED
 setAlertPin(int ledPin);
 // Set up the communication with EnviroDIY
 EnviroDIYLogger.setToken(const char *registrationToken);
+EnviroDIYLogger.setSamplingFeature(const char *samplingFeature);
+EnviroDIYLogger.setUUIDs(const char *UUIDs[]);
 EnviroDIYLogger.setupBee(xbee beeType,
                          Stream *beeStream,
                          int beeCTSPin,
@@ -229,7 +230,7 @@ void loop()
 }
 ```
 If you would like to do other things within the loop function, you should access the component logging functions individually instead of using the short-cut functions.  In this case, here are some guidelines for writing a loop function:
-- Always begin by calling timer.update().  This tells the timer to check the current time and then checks all of the registered timer events to see if they should run.
+- Always begin by calling loggertimer.update().  This tells the timer to check the current time and then checks all of the registered timer events to see if they should run.
 - If you want to log on an even interval, use "if (checkInterval()" to verify the interval time.
 - Call the markTime() function before printing/sending/saving any data that you want associate with a timestamp.
 - Update all the sensors in your SensorArray together with updateAllSensors().

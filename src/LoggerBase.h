@@ -14,6 +14,7 @@
 #include <Arduino.h>
 #include <Sodaq_DS3231.h>  // To communicate with the clock
 #include <RTCTimer.h>  // To handle timing on a schedule
+#include <SdFat.h>  // To communicate with the SD card
 #include "SensorBase.h"
 
 
@@ -26,10 +27,11 @@ public:
               int sensorCount,
               SensorBase *SENSOR_LIST[],
               float loggingIntervalMinutes,
-              const char *loggerID = 0,
-              const char *samplingFeature = 0,
-              const char *UUIDs[] = 0);
+              const char *loggerID = 0);
     void setAlertPin(int ledPin);
+
+    // The timer
+    RTCTimer loggerTimer;
 
     // ===================================================================== //
     // Public functions to access the clock in proper format and time zone
@@ -63,12 +65,13 @@ public:
     // ===================================================================== //
     // This sets a file name, if you want to decide on it in advance
     void setFileName(char *fileName);
+    void setFileName(String fileName);
     // This generates a file name from the logger id and the current date
     void setFileName(void);
     // This returns the current filename.  Must be run after setFileName.
     String getFileName(void);
     // This initializes a file on the SD card and writes a header to it
-    void setupLogFile(void);
+    virtual void setupLogFile(void);
     // This generates a comma separated list of volues of sensor data - including the time
     String generateSensorDataCSV(void);
     // This writes a record to the SD card
@@ -85,19 +88,21 @@ public:
 // Things that are private and protected below here
 // ===================================================================== //
 protected:
+
+    // The SD card and file
+    SdFat sd;
+    SdFile logFile;
+
     static long markedEpochTime;
     static DateTime markedDateTime;
     static char markedISO8601Time[26];
 
-    RTCTimer timer;
     static bool sleep;
 
     static int _timeZone;
     int _SDCardPin;
     int _interruptPin;
     const char *_loggerID;
-    const char *_samplingFeature;
-    const char **_UUIDs;
 
     float _loggingIntervalMinutes;
     int _interruptRate;

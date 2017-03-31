@@ -52,9 +52,7 @@ bool CampbellOBS3::update(){
     // The 17585 is the default bit gain of the ADS1115
     float voltage = (adcChannel * 3.3) / 17585.0;
 
-    // calibration information below if only for instrument SN# S9743
-    // TODO:  set this up so calibration can be input at top for each instrument
-    sensorValue =  (4.6641 * square (voltage)) + (92.512 * voltage) - 0.38548;
+    sensorValue =  (_A * square (voltage)) + (_B * voltage) - _C;
 
     CampbellOBS3::sensorValue = sensorValue;
     CampbellOBS3::sensorLastUpdated = millis();

@@ -77,7 +77,7 @@ int LoggerDreamHost::postDataDreamHost(void)
 void LoggerDreamHost::log(void)
 {
     // Update the timer
-    // timer.update();
+    // loggerTimer.update();
 
     // Check of the current time is an even interval of the logging interval
     if (checkInterval())
