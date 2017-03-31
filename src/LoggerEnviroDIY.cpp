@@ -78,13 +78,14 @@ void LoggerEnviroDIY::setupLogFile(void)
     logFile.open(charFileName, O_WRITE | O_AT_END);
 
     // Add additional UUID information
-    logFile.print(F("Sampling Feature UUID: "));
-    logFile.println(_samplingFeature);
-
-    String dataHeader = F("");
+    String dataHeader = F("\"Sampling Feature: ");
+    dataHeader += _samplingFeature;
+    dataHeader += F("\"");
     for (uint8_t i = 0; i < _sensorCount; i++)
     {
-        dataHeader += "\"" + String(_UUIDs[i]) + "\"";
+        dataHeader += F("\"");
+        dataHeader += String(_UUIDs[i]);
+        dataHeader += F("\"");
         if (i + 1 != _sensorCount)
         {
             dataHeader += F(", ");

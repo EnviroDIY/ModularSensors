@@ -342,9 +342,13 @@ void LoggerBase::setupLogFile(void)
     String dataHeader = F("\"Timestamp\", ");
     for (uint8_t i = 0; i < _sensorCount; i++)
     {
-        dataHeader += "\"" + String(_sensorList[i]->getSensorName());
-        dataHeader += " - " + String(_sensorList[i]->getVarName());
-        dataHeader += " (" + String(_sensorList[i]->getVarUnit()) + ")\"";
+        dataHeader += F("\"");
+        dataHeader += String(_sensorList[i]->getSensorName());
+        dataHeader += F(" - ");
+        dataHeader += String(_sensorList[i]->getVarName());
+        dataHeader += F(" (");
+        dataHeader += String(_sensorList[i]->getVarUnit());
+        dataHeader += F(")\"");
         if (i + 1 != _sensorCount)
         {
             dataHeader += F(", ");
