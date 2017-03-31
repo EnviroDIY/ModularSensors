@@ -6,6 +6,20 @@
  *
  *This file is for the Campbell Scientific OBS-3+
  *This is dependent on the Adafruit ADS1015 library.
+ *
+ * Ranges: (depends on sediment size, particle shape, and reflectivity)
+ *  Turbidity (low/high): 250/1000 NTU; 500/2000 NTU; 1000/4000 NTU
+ *  Mud: 5000 to 10,000 mg L–1
+ *  Sand: 50,000 to 100,000 mg L–1
+ * Accuracy: (whichever is larger)
+ *  Turbidity: 2% of reading or 0.5 NTU
+ *  Mud: 2% of reading or 1 mg L–1
+ *  Sand: 4% of reading or 10 mg L–1
+ * Resolution:
+ *  16-bit ADC
+ *      Turbidity: 0.004/0.01 NTU; 0.008/0.03 NTU; 0.01/0.06 NTU
+ *  12-bit ADC
+ *      Turbidity: 0.06/0.2 NTU; 0.1/0.5 NTU; 0.2/1.0 NTU
 */
 
 #include <Arduino.h>
@@ -74,7 +88,7 @@ float CampbellOBS3::getValue(void)
 
 
 CampbellOBS3_Turbidity::CampbellOBS3_Turbidity(int powerPin, int dataPin, float A, float B, float C)
-  : SensorBase(dataPin, powerPin, F("CampbellOBS3+"), F("turbidity"), F("nephelometricTurbidityUnit"), F("TurbLow")),
+  : SensorBase(dataPin, powerPin, 3, F("CampbellOBS3+"), F("turbidity"), F("nephelometricTurbidityUnit"), F("TurbLow")),
     CampbellOBS3(powerPin, dataPin, A, B, C)
 {}
 
@@ -82,6 +96,6 @@ CampbellOBS3_Turbidity::CampbellOBS3_Turbidity(int powerPin, int dataPin, float 
 
 
 CampbellOBS3_TurbHigh::CampbellOBS3_TurbHigh(int powerPin, int dataPin, float A, float B, float C)
-  : SensorBase(dataPin, powerPin, F("CampbellOBS3+"), F("turbidity"), F("nephelometricTurbidityUnit"), F("TurbHigh")),
+  : SensorBase(dataPin, powerPin, 2, F("CampbellOBS3+"), F("turbidity"), F("nephelometricTurbidityUnit"), F("TurbHigh")),
     CampbellOBS3(powerPin, dataPin, A, B, C)
 {}
