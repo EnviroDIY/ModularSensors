@@ -37,9 +37,9 @@ public:
     // This gets the current epoch time and corrects it for the specified time zone
     static uint32_t getNow(void);
     // This converts a date-time object into a ISO8601 formatted string
-    static String formatDateTime_ISO8601(DateTime dt, int timeZone);
+    static String formatDateTime_ISO8601(DateTime dt);
     // This converts an epoch time into a ISO8601 formatted string
-    static String formatDateTime_ISO8601(uint32_t epochTime, int timeZone);
+    static String formatDateTime_ISO8601(uint32_t epochTime);
     // This checks to see if the current time is an even interval of the logging rate
     bool checkInterval(void);
     // This sets static variables for the date/time - this is needed so that all
@@ -65,7 +65,7 @@ public:
     void setFileName(char *fileName);
     // This generates a file name from the logger id and the current date
     void setFileName(void);
-    // This outputs the current filename.  Must be run after setFileName.
+    // This returns the current filename.  Must be run after setFileName.
     String getFileName(void);
     // This initializes a file on the SD card and writes a header to it
     void setupLogFile(void);

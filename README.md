@@ -117,20 +117,25 @@ Setup and initialization functions:
 - **setAlertPin(int ledPin)** - Sets a pin to put out an alert that a measurement is being logged.  This should be a pin with a LED on it.
 
 Functions to access the clock in proper format and time zone:
-- **getNow()** - Returns the current unix time stamp in the current time zone.
-- **formatDateTime_ISO8601()** - Returns the current date/time as an ISO8601 formatted Arduino String.
+- **getNow()** - This gets the current epoch time (unix timestamp - number of seconds since Jan 1, 1970) and corrects it for the specified logger time zone.
+- **formatDateTime_ISO8601(DateTime dt)** - Formats a DateTime object into an ISO8601 formatted Arduino String.
+- **formatDateTime_ISO8601(uint32_t unixTime)** - Formats a unix timestamp into an ISO8601 formatted Arduino String.
+- **checkInterval()** - This returns true if the current time is an even iterval of the logging interval, otherwise false.  This uses getNow() to get the curernt time.
+- **markTime()** - This sets static variables for the date/time - this is needed so that all data outputs (SD, EnviroDIY, serial printing, etc) print the same time for updating the sensors - even though the routines to update the sensors and to output the data may take several seconds.  It is not currently possible to output the instantaneous time an individual sensor was updated, just a single marked time.  By custom, this should be called before updating the sensors, not after.  If you do not call this function before saving or sending data, there will be no timestamps associated with your data.
 
 
 Functions for the timer and sleep modes:
 - **setupTimer()** - Sets up the timer for repeated logging events.  This should be called in the setup function.
-- **checkInterval()** - This returns true if the current time is an even iterval of the logging interval, otherwise false.
 - **setupSleep()** - Sets up the sleep mode and interrupts to wake it back up.  This should be called in the setup function.
 - **systemSleep()** - Puts the system into deep sleep mode.  This should be called at the very end of the loop function.
 
 Functions for logging data:
-- **setupLogFile()** - This creates a file on the SD card and writes a header to it.
+- **setFileName(char *fileName)** - This sets a specifid file name for data to be saved as, if you want to decide on it in advance.
+- **setFileName()** - This automatically generates a file name from the logger id and the current date.  You must call one of the two setFileName functions before calling setupLogFile or logtoSD.
+- **getFileName()** - This returns the current filename as an Arduino String.  Must be run after setFileName.
+- **setupLogFile()** - This creates a file on the SD card and writes a header to it.  It also sets the "file created" time stamp.
 - **generateSensorDataCSV()** - This returns an Arduino String containing the time and a comma separated list of sensor values.
-- **logToSD(String rec)** - Writes a line the the SD card.
+- **logToSD(String rec)** - This writes a line the the SD card and sets the "file modified" timestamp.
 
 Convience functions to do it all:
 - **begin()** - Starts the logger.  Must be in the setup function.
@@ -140,9 +145,9 @@ Convience functions to do it all:
 - **setToken(const char registrationToken)** - Sets the retistration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
 - **setupBee(xbee beeType, Stream beeStream, int beeCTSPin, int beeDTRPin, const char APN)** - Sets up the internet communcation, with either GPRSv4, GPRSv6, or WIFI.  Note that the beeStream and APN should be pointers.
 - **generateSensorDataJSON()** - Generates a properly formatted JSON string to go to the EnviroDIY streaming data loader API.
-- **postDataWiFi()** - Creates proper headers and sends data to the EnviroDIY data portal via WiFi.  You must have set up a WIFI bee for this to work.
-- **postDataGPRS()** - Creates proper headers and sends data to the EnviroDIY data portal via GPRS.  You must have set up a GPRS bee for this to work.
-- **printPostResult(int result)** - Interprets HTML response code.
+- **postDataWiFi()** - Creates proper headers and sends data to the EnviroDIY data portal via WiFi.  You must use the external XCTU program to set up your WiFi bee before attaching it to your board.  You must call the setupBee function before calling this function.  Returns an HTML response code.
+- **postDataGPRS()** - Creates proper headers and sends data to the EnviroDIY data portal via GPRS.  You must call the setupBee function before calling this function.  Returns an HTML response code.
+- **printPostResult(int result)** - Interprets the HTML response code and prints it as text.
 
 ### <a name="LoggerExamples"></a>Logger Examples:
 
@@ -207,7 +212,7 @@ EnviroDIYLogger.setupBee(xbee beeType,
 EnviroDIYLogger.begin();
 ```
 
-_Within the main loop function_, all logging and sending of data can be done using a single program line.  Because the built-in log functions already handle sleeping and waking the board processor, there cannot be nothing else within the loop function.  If you would like to do other things within the loop function, you should access the component logging functions individually instead of using these short-cut functions.
+_Within the main loop function_, all logging and sending of data can be done using a single program line.  Because the built-in log functions already handle sleeping and waking the board processor, **there cannot be nothing else within the loop function.**
 ```cpp
 void loop()
 {
@@ -223,7 +228,14 @@ void loop()
     EnviroDIYLogger.log();
 }
 ```
-
+If you would like to do other things within the loop function, you should access the component logging functions individually instead of using the short-cut functions.  In this case, here are some guidelines for writing a loop function:
+- Always begin by calling timer.update().  This tells the timer to check the current time and then checks all of the registered timer events to see if they should run.
+- If you want to log on an even interval, use "if (checkInterval()" to verify the interval time.
+- Call the markTime() function before printing/sending/saving any data that you want associate with a timestamp.
+- Update all the sensors in your SensorArray together with updateAllSensors().
+- Immediately after running updateAllSensors(), put sensors to sleep to save power with sensorsSleep().
+- After updating the sensors, then call any functions you want to send/print/save data.
+- Finish by putting the logger back to sleep, if desired, with systemSleep().
 
 ## Available sensors
 

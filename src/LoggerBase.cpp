@@ -73,31 +73,31 @@ uint32_t LoggerBase::getNow(void)
 
 
 // This function converts a DateTime object into an ISO 8601 formated string
-String LoggerBase::formatDateTime_ISO8601(DateTime dt, int timeZone)
+String LoggerBase::formatDateTime_ISO8601(DateTime dt)
 {
     // Set up an inital string
     String dateTimeStr;
     // Convert the DateTime object to a String
     dt.addToString(dateTimeStr);
     dateTimeStr.replace(F(" "), F("T"));
-    String tzString = String(timeZone);
-    if (-24 <= timeZone && timeZone <= -10)
+    String tzString = String(_timeZone);
+    if (-24 <= _timeZone && _timeZone <= -10)
     {
         tzString += F(":00");
     }
-    else if (-10 < timeZone && timeZone < 0)
+    else if (-10 < _timeZone && _timeZone < 0)
     {
         tzString = tzString.substring(0,1) + F("0") + tzString.substring(1,2) + F(":00");
     }
-    else if (timeZone == 0)
+    else if (_timeZone == 0)
     {
         tzString = F("Z");
     }
-    else if (0 < timeZone && timeZone < 10)
+    else if (0 < _timeZone && _timeZone < 10)
     {
         tzString = "+0" + tzString + F(":00");
     }
-    else if (10 <= timeZone && timeZone <= 24)
+    else if (10 <= _timeZone && _timeZone <= 24)
     {
         tzString = "+" + tzString + F(":00");
     }
@@ -106,11 +106,11 @@ String LoggerBase::formatDateTime_ISO8601(DateTime dt, int timeZone)
 }
 
 // This function converts an epochTime (unix time) into an ISO 8601 formated string
-String LoggerBase::formatDateTime_ISO8601(uint32_t epochTime, int timeZone)
+String LoggerBase::formatDateTime_ISO8601(uint32_t epochTime)
 {
     // Create a DateTime object from the epochTime
     DateTime dt(rtc.makeDateTime(epochTime));
-    return formatDateTime_ISO8601(dt, timeZone);
+    return formatDateTime_ISO8601(dt);
 }
 
 // This checks to see if the current time is an even interval of the logging rate
@@ -140,7 +140,7 @@ void LoggerBase::markTime(void)
 {
   LoggerBase::markedEpochTime = getNow();
   LoggerBase::markedDateTime = rtc.makeDateTime(LoggerBase::markedEpochTime);
-  formatDateTime_ISO8601(LoggerBase::markedDateTime, _timeZone).toCharArray(LoggerBase::markedISO8601Time, 26);
+  formatDateTime_ISO8601(LoggerBase::markedDateTime).toCharArray(LoggerBase::markedISO8601Time, 26);
 }
 
 
