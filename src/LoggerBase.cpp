@@ -9,14 +9,8 @@
 
 #include <Sodaq_PcInt_PCINT0.h>  // To handle pin change interrupts for the clock
 #include <avr/sleep.h>  // To handle the processor sleep modes
-#include <SdFat.h>  // To communicate with the SD card
 #include "LoggerBase.h"
 
-// Initialize the SD card and file
-SdFat sd;
-
-// Initialize the timer functions for the RTC
-RTCTimer timer;
 
 // Set up the static variables for the initilizer
 bool LoggerBase::sleep = false;  // Set in the init function
@@ -28,9 +22,7 @@ void LoggerBase::init(int timeZone, int SDCardPin, int interruptPin,
                       int sensorCount,
                       SensorBase *SENSOR_LIST[],
                       float loggingIntervalMinutes,
-                      const char *loggerID/* = 0*/,
-                      const char *samplingFeature/* = 0*/,
-                      const char *UUIDs[]/* = 0*/)
+                      const char *loggerID/* = 0*/)
 {
     _timeZone = timeZone;
     _SDCardPin = SDCardPin;
@@ -40,8 +32,6 @@ void LoggerBase::init(int timeZone, int SDCardPin, int interruptPin,
     _loggingIntervalMinutes = loggingIntervalMinutes;
     _interruptRate = round(_loggingIntervalMinutes*60);  // convert to even seconds
     _loggerID = loggerID;
-    _samplingFeature = samplingFeature;
-    _UUIDs = UUIDs;
     _autoFileName = false;
 
     // Set sleep variable, if an interrupt pin is given
@@ -312,43 +302,39 @@ void LoggerBase::setupLogFile(void)
     LoggerBase::_fileName.toCharArray(charFileName, fileNameLength);
 
     // Open the file in write mode (and create it if it did not exist)
-    SdFile logFile;
     logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END);
     // Set creation date time
-    logFile.timestamp(T_CREATE, LoggerBase::markedDateTime.year(),
-                                LoggerBase::markedDateTime.month(),
-                                LoggerBase::markedDateTime.date(),
-                                LoggerBase::markedDateTime.hour(),
-                                LoggerBase::markedDateTime.minute(),
-                                LoggerBase::markedDateTime.second());
+    logFile.timestamp(T_CREATE, rtc.now().year(),
+                                rtc.now().month(),
+                                rtc.now().date(),
+                                rtc.now().hour(),
+                                rtc.now().minute(),
+                                rtc.now().second());
     // Set write/modification date time
-    logFile.timestamp(T_WRITE, LoggerBase::markedDateTime.year(),
-                                LoggerBase::markedDateTime.month(),
-                                LoggerBase::markedDateTime.date(),
-                                LoggerBase::markedDateTime.hour(),
-                                LoggerBase::markedDateTime.minute(),
-                                LoggerBase::markedDateTime.second());
+    logFile.timestamp(T_WRITE, rtc.now().year(),
+                               rtc.now().month(),
+                               rtc.now().date(),
+                               rtc.now().hour(),
+                               rtc.now().minute(),
+                               rtc.now().second());
     // Set access  date time
-    logFile.timestamp(T_ACCESS, LoggerBase::markedDateTime.year(),
-                                LoggerBase::markedDateTime.month(),
-                                LoggerBase::markedDateTime.date(),
-                                LoggerBase::markedDateTime.hour(),
-                                LoggerBase::markedDateTime.minute(),
-                                LoggerBase::markedDateTime.second());
+    logFile.timestamp(T_ACCESS, rtc.now().year(),
+                                rtc.now().month(),
+                                rtc.now().date(),
+                                rtc.now().hour(),
+                                rtc.now().minute(),
+                                rtc.now().second());
 
     // Add header information
     logFile.print(F("Data Logger: "));
     logFile.println(_loggerID);
-    logFile.print(F("Sampling Feature UUID: "));
-    logFile.println(_samplingFeature);
 
     String dataHeader = F("\"Timestamp\", ");
     for (uint8_t i = 0; i < _sensorCount; i++)
     {
         dataHeader += "\"" + String(_sensorList[i]->getSensorName());
-        dataHeader += " " + String(_sensorList[i]->getVarName());
-        dataHeader += " " + String(_sensorList[i]->getVarUnit());
-        dataHeader += " (" + String(_UUIDs[i]) + ")\"";
+        dataHeader += " - " + String(_sensorList[i]->getVarName());
+        dataHeader += " (" + String(_sensorList[i]->getVarUnit()) + ")\"";
         if (i + 1 != _sensorCount)
         {
             dataHeader += F(", ");
@@ -384,7 +370,6 @@ void LoggerBase::logToSD(String rec)
     LoggerBase::_fileName.toCharArray(charFileName, fileNameLength);
 
     // Check that the file exists, just in case someone yanked the SD card
-    SdFile logFile;
     if (!logFile.open(charFileName, O_WRITE | O_AT_END))
     {
         Serial.println(F("SD Card File Lost!  Starting new file."));  // for debugging
@@ -399,19 +384,19 @@ void LoggerBase::logToSD(String rec)
     Serial.println(rec);  // for debugging
 
     // Set write/modification date time
-    logFile.timestamp(T_WRITE, LoggerBase::markedDateTime.year(),
-        LoggerBase::markedDateTime.month(),
-        LoggerBase::markedDateTime.date(),
-        LoggerBase::markedDateTime.hour(),
-        LoggerBase::markedDateTime.minute(),
-        LoggerBase::markedDateTime.second());
+    logFile.timestamp(T_WRITE, rtc.now().year(),
+                               rtc.now().month(),
+                               rtc.now().date(),
+                               rtc.now().hour(),
+                               rtc.now().minute(),
+                               rtc.now().second());
     // Set access  date time
-    logFile.timestamp(T_ACCESS, LoggerBase::markedDateTime.year(),
-        LoggerBase::markedDateTime.month(),
-        LoggerBase::markedDateTime.date(),
-        LoggerBase::markedDateTime.hour(),
-        LoggerBase::markedDateTime.minute(),
-        LoggerBase::markedDateTime.second());
+    logFile.timestamp(T_ACCESS, rtc.now().year(),
+                                rtc.now().month(),
+                                rtc.now().date(),
+                                rtc.now().hour(),
+                                rtc.now().minute(),
+                                rtc.now().second());
 
     // Close the file to save it
     logFile.close();
@@ -430,12 +415,9 @@ void LoggerBase::begin(void)
     // Set up pins for the LED's
     pinMode(_ledPin, OUTPUT);
 
-    // Update the static time variables with the current time
-    markTime();
-
     // Print a start-up note to the first serial port
     Serial.print(F("Current RTC time is: "));
-    Serial.println(LoggerBase::markedISO8601Time);
+    Serial.println(formatDateTime_ISO8601(rtc.now()));
     Serial.print(F("There are "));
     Serial.print(String(_sensorCount));
     Serial.println(F(" variables being recorded."));

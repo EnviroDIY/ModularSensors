@@ -18,6 +18,16 @@ void LoggerEnviroDIY::setToken(const char *registrationToken)
     _registrationToken = registrationToken;
 }
 
+void LoggerEnviroDIY::setSamplingFeature(const char *samplingFeature)
+{
+    _samplingFeature = samplingFeature;
+}
+
+void LoggerEnviroDIY::setUUIDs(const char *UUIDs[])
+{
+    _UUIDs = UUIDs;
+}
+
 void LoggerEnviroDIY::setupBee(xbee beeType,
                                Stream *beeStream,
                                int beeCTSPin,
@@ -53,6 +63,40 @@ void LoggerEnviroDIY::setupBee(xbee beeType,
 };
 
 
+// Adds the extra UUIDs to the header of the log file
+void LoggerEnviroDIY::setupLogFile(void)
+{
+    // Set up the log file and add the major headers
+    LoggerBase::setupLogFile();
+
+    // Convert the string filename to a character file name for SdFat
+    int fileNameLength = LoggerBase::_fileName.length() + 1;
+    char charFileName[fileNameLength];
+    LoggerBase::_fileName.toCharArray(charFileName, fileNameLength);
+
+    // Re-open the file in write mode
+    logFile.open(charFileName, O_WRITE | O_AT_END);
+
+    // Add additional UUID information
+    logFile.print(F("Sampling Feature UUID: "));
+    logFile.println(_samplingFeature);
+
+    String dataHeader = F("");
+    for (uint8_t i = 0; i < _sensorCount; i++)
+    {
+        dataHeader += "\"" + String(_UUIDs[i]) + "\"";
+        if (i + 1 != _sensorCount)
+        {
+            dataHeader += F(", ");
+        }
+    }
+
+    // Serial.println(dataHeader);  // for debugging
+    logFile.println(dataHeader);
+
+    //Close the file to save it
+    logFile.close();
+}
 
 // ============================================================================
 //  Functions for the EnviroDIY data receivers.
@@ -82,14 +126,14 @@ String LoggerEnviroDIY::generateSensorDataJSON(void)
 {
     String jsonString = F("{");
     jsonString += F("\"sampling_feature\": \"");
-    jsonString += String(LoggerBase::_samplingFeature) + F("\", ");
+    jsonString += String(_samplingFeature) + F("\", ");
     jsonString += F("\"timestamp\": \"");
     jsonString += String(LoggerBase::markedISO8601Time) + F("\", ");
 
     for (int i = 0; i < LoggerBase::_sensorCount; i++)
     {
         jsonString += F("\"");
-        jsonString += String(LoggerBase::_UUIDs[i]) + F("\": ");
+        jsonString += String(_UUIDs[i]) + F("\": ");
         jsonString += String(LoggerBase::_sensorList[i]->getValue());
         if (i + 1 != LoggerBase::_sensorCount)
         {

@@ -33,11 +33,16 @@ class LoggerEnviroDIY : public virtual LoggerBase
 public:
     // Set up communications
     void setToken(const char *registrationToken);
+    void setSamplingFeature(const char *samplingFeature);
+    void setUUIDs(const char *UUIDs[]);
     void setupBee(xbee beeType,
                   Stream *beeStream,
                   int beeCTSPin,
                   int beeDTRPin,
                   const char *APN);
+
+    // This adds extra data to the datafile header
+    virtual void setupLogFile(void);
 
     // Public functions to generate data formats
     String generateSensorDataJSON(void);
@@ -55,10 +60,15 @@ protected:
     void dumpBuffer(Stream *stream, int timeDelay = 5, int timeout = 5000);
     void streamPostRequest(Stream *stream);
 
-    const char *_registrationToken;
+    // Communication information
     xbee _beeType;
     Stream *_beeStream;
     const char *_APN;
+private:
+    // Tokens and UUID's for EnviroDIY
+    const char *_registrationToken;
+    const char *_samplingFeature;
+    const char **_UUIDs;
 };
 
 
