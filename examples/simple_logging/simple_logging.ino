@@ -184,7 +184,7 @@ void setup()
 
     // Initialize the logger;
     Logger.init(TIME_ZONE, SD_SS_PIN, RTC_PIN, sensorCount, SENSOR_LIST,
-                LOGGING_INTERVAL, LoggerID, SAMPLING_FEATURE, UUIDs);
+                LOGGING_INTERVAL);
     Logger.setAlertPin(GREEN_LED);
     // Run the logger setup;
     Logger.begin();
