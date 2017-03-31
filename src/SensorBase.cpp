@@ -11,7 +11,7 @@
 #include "SensorBase.h"
 
 // The constructor
-SensorBase::SensorBase(int dataPin, int powerPin, int decimalResolution,
+SensorBase::SensorBase(int dataPin, int powerPin, unsigned int decimalResolution,
                        String sensorName, String varName, String varUnit, String dreamHost)
 {
     _powerPin = powerPin;
@@ -247,7 +247,7 @@ void SensorArray::printSensorData(Stream *stream /* = &Serial*/)
         stream->print(F(" and reports "));
         stream->print(_sensorList[i]->getVarName());
         stream->print(F(" is "));
-        stream->print(_sensorList[i]->getValue());
+        stream->print(_sensorList[i]->getValueString());
         stream->print(F(" "));
         stream->print(_sensorList[i]->getVarUnit());
         stream->println();
@@ -261,7 +261,7 @@ String SensorArray::generateSensorDataCSV(void)
 
     for (uint8_t i = 0; i < _sensorCount; i++)
     {
-        csvString += String(_sensorList[i]->getValue());
+        csvString += _sensorList[i]->getValueString();
         if (i + 1 != _sensorCount)
         {
             csvString += F(", ");

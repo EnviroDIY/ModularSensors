@@ -135,7 +135,7 @@ String LoggerEnviroDIY::generateSensorDataJSON(void)
     {
         jsonString += F("\"");
         jsonString += String(_UUIDs[i]) + F("\": ");
-        jsonString += String(LoggerBase::_sensorList[i]->getValue());
+        jsonString += LoggerBase::_sensorList[i]->getValueString();
         if (i + 1 != LoggerBase::_sensorCount)
         {
             jsonString += F(", ");
