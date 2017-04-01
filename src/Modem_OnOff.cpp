@@ -24,6 +24,7 @@ OnOff::OnOff()
 // Initializes the instance
 void OnOff::init(int vcc33Pin, int onoff_DTR_pin, int status_CTS_pin)
 {
+    Serial.println(F("Initializing modem on/off."));  // For debugging
     if (vcc33Pin >= 0) {
       _vcc33Pin = vcc33Pin;
       // First write the output value, and only then set the output mode.
@@ -91,14 +92,14 @@ void pulsedOnOff::pulse(void)
 void pulsedOnOff::on()
 {
     powerOn();
-    Serial.println(F("Turning modem on."));  // For debugging
+    Serial.println(F("Pulsing modem to on."));  // For debugging
     if (!isOn()) {pulse();}
 }
 
 void pulsedOnOff::off()
 {
     if (isOn()) {pulse();}
-    Serial.println(F("Shutting modem off."));  // For debugging
+    Serial.println(F("Modem pulsed to off."));  // For debugging
     powerOff();
 }
 
@@ -112,7 +113,7 @@ void pulsedOnOff::off()
 void heldOnOff::on()
 {
     powerOn();
-    Serial.println(F("Turning modem on."));  // For debugging
+    Serial.println(F("Setting modem to on."));  // For debugging
     if (_onoff_DTR_pin >= 0) {
         digitalWrite(_onoff_DTR_pin, HIGH);
     }
@@ -126,6 +127,6 @@ void heldOnOff::off()
         // Let's wait a little, but not too long
         delay(50);
     }
-    Serial.println(F("Shutting modem off."));  // For debugging
+    Serial.println(F("Modem set to off."));  // For debugging
     powerOff();
 }

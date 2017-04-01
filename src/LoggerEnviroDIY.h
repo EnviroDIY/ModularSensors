@@ -31,7 +31,7 @@ public:
     void setToken(const char *registrationToken);
     void setSamplingFeature(const char *samplingFeature);
     void setUUIDs(const char *UUIDs[]);
-    void setupModem(modemType mType,
+    void setupModem(modemType modType,
                   Stream *modemStream,
                   int vcc33Pin,
                   int status_CTS_pin,

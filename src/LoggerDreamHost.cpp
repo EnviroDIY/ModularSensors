@@ -45,7 +45,7 @@ void LoggerDreamHost::streamDreamHostRequest(Stream *stream)
 {
     stream->print(F("GET /portalRX_EST_universal.php"));
     stream->print(generateSensorDataDreamHost());
-    stream->print(F("HTTP/1.1"));
+    stream->print(F("  HTTP/1.1"));
     stream->print(F("\r\nHost: swrcsensors.dreamhosters.com"));
     stream->print(F("\r\nConnection: close"));
     stream->print(F("\r\n\r\n"));

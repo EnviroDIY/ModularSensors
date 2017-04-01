@@ -27,27 +27,44 @@ void LoggerEnviroDIY::setUUIDs(const char *UUIDs[])
     _UUIDs = UUIDs;
 }
 
-void LoggerEnviroDIY::setupModem(modemType mType,
+void LoggerEnviroDIY::setupModem(modemType modType,
                                Stream *modemStream,
                                int vcc33Pin,
                                int status_CTS_pin,
                                int onoff_DTR_pin,
                                const char *APN)
 {
-    _modemType = mType;
+    _modemType = modType;
     _modemStream = modemStream;
     _APN = APN;
 
+    Serial.println(F("Setting up modem."));  // For debugging
+
     // Initialize the modem
-    switch(_modemType)
+    switch(modType)
     {
         case GPRSBee4:
         case Fona:
-            {_modemOnOff = new pulsedOnOff(); break;}
+        {
+            Serial.println(F("Modem uses pulsedOnOff."));  // For debugging
+            static pulsedOnOff onOffP;
+            onOffP.init(vcc33Pin, status_CTS_pin, onoff_DTR_pin);
+            _modemOnOff = &onOffP;
+            break;
+        }
         case GPRSBee6:
-            {_modemOnOff = new heldOnOff(); break;}
+        {
+            Serial.println(F("Modem uses heldOnOff."));  // For debugging
+            static heldOnOff onOffH;
+            onOffH.init(vcc33Pin, status_CTS_pin, onoff_DTR_pin);
+            _modemOnOff = &onOffH;
+            break;
+        }
         case WIFIBee:
-            {break;}
+        {
+            Serial.println(F("Modem is always on."));  // For debugging
+            break;
+        }
     }
     switch(_modemType)
     {
@@ -55,15 +72,17 @@ void LoggerEnviroDIY::setupModem(modemType mType,
         case GPRSBee4:
         case Fona:
         {
-            _modemOnOff->init(vcc33Pin, status_CTS_pin, onoff_DTR_pin);
-
-            _modem = new TinyGsm(*modemStream);
-            _client = new TinyGsmClient(*_modem);
-            _modem->init();
+            Serial.println(F("Initializing GSM modem instance"));  // For debugging
+            TinyGsm _modem(*modemStream);
+            TinyGsmClient _client(_modem);
+            _modem.init();
             break;
         }
         case WIFIBee:
-            {break;}
+        {
+            Serial.println(F("Modem does not need to be initialized"));  // For debugging
+            break;
+        }
     }
 };
 
@@ -161,6 +180,7 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
     stream->print(_registrationToken);
     stream->print(F("\r\nCache-Control: no-cache\r\nContent-Length: "));
     stream->print(generateSensorDataJSON().length());
+    stream->print(F("\r\nConnection: close"));
     stream->print(F("\r\nContent-Type: application/json\r\n\r\n"));
     stream->print(generateSensorDataJSON());
     stream->print(F("\r\n\r\n"));
