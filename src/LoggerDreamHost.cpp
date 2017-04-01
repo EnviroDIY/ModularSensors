@@ -39,31 +39,83 @@ String LoggerDreamHost::generateSensorDataDreamHost(void)
 
 }
 
+// This function generates the full GET request that gets sent to DreamHost
+// This is only needed for transparent Bee's (ie, WiFi)
+void LoggerDreamHost::streamDreamHostRequest(Stream *stream)
+{
+    stream->print(F("GET /portalRX_EST_universal.php"));
+    stream->print(generateSensorDataDreamHost());
+    stream->print(F("HTTP/1.1"));
+    stream->print(F("\r\nHost: swrcsensors.dreamhosters.com"));
+    stream->print(F("\r\nConnection: close"));
+    stream->print(F("\r\n\r\n"));
+}
+
 // Post the data to dream host.  Do IF AND ONLY IF using GPRSBee
 int LoggerDreamHost::postDataDreamHost(void)
 {
-    int responseCode = 0;
-    dumpBuffer(LoggerEnviroDIY::_modemStream);
-
-    Serial.println(F("\n \\/------ Data to DreamHost ------\\/ "));  // for debugging
-    Serial.println(generateSensorDataDreamHost());  // for debugging
-
-    // Set up buffer to recieve response and fill with \0's
-    char buffer[10];
-    memset(buffer, '\0', sizeof(buffer));
-
-    bool response = (gprsbee.doHTTPGET(LoggerEnviroDIY::_APN, generateSensorDataDreamHost(),
-                                       buffer, sizeof(buffer)));
-
-    // TODO:  Actually read the response
-    if (response)
+    // Turn on the modem and connect to the network
+    switch(_modemType)
     {
-        Serial.println(buffer);
-        responseCode = 201;
+        case GPRSBee6:
+        case GPRSBee4:
+        case Fona:
+        {
+            _modemOnOff->on();
+            _modem->waitForNetwork();
+            _modem->gprsConnect(_APN, "", "");
+            _client->connect("data.envirodiy.org", 80);
+            break;
+        }
+        case WIFIBee:
+            {break;}
     }
-    else // Otherwise timeout, no response from server
+
+    // Send the request to the serial for debugging
+    Serial.println(F("\n \\/------ Data to DreamHost ------\\/ "));  // for debugging
+    streamDreamHostRequest(&Serial);  // for debugging
+    Serial.flush();  // for debugging
+
+    // Send the request to the modem stream
+    dumpBuffer(LoggerEnviroDIY::_modemStream);
+    streamEnviroDIYRequest(LoggerEnviroDIY::_modemStream);
+    LoggerEnviroDIY::_modemStream->flush();  // wait for sending to finish
+
+    // Add a brief delay for at least the first 12 characters of the HTTP response
+    int timeout = 1500;
+    while ((timeout > 0) && _modemStream->available() < 12)
     {
-        responseCode = 504;
+      delay(1);
+      timeout--;
+    }
+
+    // Process the HTTP response
+    int responseCode = 0;
+    if (timeout > 0 && _modemStream->available() >= 12)
+    {
+        _modemStream->readStringUntil(' ');
+        responseCode = _modemStream->parseInt();
+        Serial.println(F(" -- Response Code -- "));  // for debugging
+        Serial.println(responseCode);  // for debugging
+
+        dumpBuffer(_modemStream);
+    }
+    else responseCode=504;
+
+    // Disconnect and turn off the modem
+    switch(_modemType)
+    {
+        case GPRSBee6:
+        case GPRSBee4:
+        case Fona:
+        {
+            _client->stop();
+            _modem->gprsDisconnect();
+            _modemOnOff->off();
+            break;
+        }
+        case WIFIBee:
+            {break;}
     }
 
     return responseCode;
@@ -98,28 +150,14 @@ void LoggerDreamHost::log(void)
         logToSD(generateSensorDataCSV());
 
         // Post the data to the WebSDL
-        int result;
-        switch (LoggerEnviroDIY::_modemType)
-        {
-            case GPRSBee4:
-            case GPRSBee6:
-            {
-                result = postDataGPRS();
-                // Print the response from the WebSDL
-                printPostResult(result);  // for debugging
-                result = postDataDreamHost();
-                printPostResult(result);  // for debugging
-                break;
-            };
-            case WIFI:
-            {
-                result = postDataWiFi();
-                // Print the response from the WebSDL
-                printPostResult(result);  // for debugging
-                Serial.println(F("The DreamHost module cannot be used with WiFi at this time."));  // for debugging
-                break;
-            };
-        }
+        int result = postDataEnviroDIY();
+        // Print the response from the WebSDL
+        printPostResult(result);  // for debugging
+
+        // Post the data to the WebSDL
+        int result2 = postDataDreamHost();
+        // Print the response from the WebSDL
+        printPostResult(result2);  // for debugging
 
         // Turn off the LED
         digitalWrite(LoggerBase::_ledPin, LOW);

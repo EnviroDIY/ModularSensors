@@ -153,8 +153,7 @@ String LoggerEnviroDIY::generateSensorDataJSON(void)
 
 
 // This function generates the full POST request that gets sent to data.envirodiy.org
-// This is only needed for transparent Bee's (ie, WiFi)
-void LoggerEnviroDIY::streamPostRequest(Stream *stream)
+void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
 {
     stream->print(F("POST /api/data-stream/ HTTP/1.1"));
     stream->print(F("\r\nHost: data.envirodiy.org"));
@@ -170,14 +169,7 @@ void LoggerEnviroDIY::streamPostRequest(Stream *stream)
 // This function makes an HTTP connection to the server and POSTs data - for WIFI
 int LoggerEnviroDIY::postDataEnviroDIY(void)
 {
-    // Send the request to the serial for debugging
-    Serial.println(F("\n \\/---- Post Request to EnviroDIY ----\\/ "));  // for debugging
-    streamPostRequest(&Serial);  // for debugging
-    Serial.flush();  // for debugging
-
-    dumpBuffer(_modemStream);
-    int responseCode = 0;
-
+    // Turn on the modem and connect to the network
     switch(_modemType)
     {
         case GPRSBee6:
@@ -194,8 +186,14 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
             {break;}
     }
 
+    // Send the request to the serial for debugging
+    Serial.println(F("\n \\/---- Post Request to EnviroDIY ----\\/ "));  // for debugging
+    streamEnviroDIYRequest(&Serial);  // for debugging
+    Serial.flush();  // for debugging
+
     // Send the request to the modem stream
-    streamPostRequest(_modemStream);
+    dumpBuffer(_modemStream);
+    streamEnviroDIYRequest(_modemStream);
     _modemStream->flush();  // wait for sending to finish
 
     // Add a brief delay for at least the first 12 characters of the HTTP response
@@ -206,6 +204,20 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
       timeout--;
     }
 
+    // Process the HTTP response
+    int responseCode = 0;
+    if (timeout > 0 && _modemStream->available() >= 12)
+    {
+        _modemStream->readStringUntil(' ');
+        responseCode = _modemStream->parseInt();
+        Serial.println(F(" -- Response Code -- "));  // for debugging
+        Serial.println(responseCode);  // for debugging
+
+        dumpBuffer(_modemStream);
+    }
+    else responseCode=504;
+
+    // Disconnect and turn off the modem
     switch(_modemType)
     {
         case GPRSBee6:
@@ -220,18 +232,6 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
         case WIFIBee:
             {break;}
     }
-
-    // Process the HTTP response
-    if (timeout > 0 && _modemStream->available() >= 12)
-    {
-        _modemStream->readStringUntil(' ');
-        responseCode = _modemStream->parseInt();
-        Serial.println(F(" -- Response Code -- "));  // for debugging
-        Serial.println(responseCode);  // for debugging
-
-        dumpBuffer(_modemStream);
-    }
-    else responseCode=504;
 
     return responseCode;
 }

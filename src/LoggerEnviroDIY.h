@@ -54,7 +54,7 @@ public:
 protected:
     // Communication functions
     void dumpBuffer(Stream *stream, int timeDelay = 5, int timeout = 5000);
-    void streamPostRequest(Stream *stream);
+    void streamEnviroDIYRequest(Stream *stream);
 
     // Communication information
     modemType _modemType;

@@ -29,6 +29,7 @@ public:
 
 private:
     const char *_DreamHostURL;
+    void streamDreamHostRequest(Stream *stream);
 };
 
 #endif
