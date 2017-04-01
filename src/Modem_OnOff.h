@@ -42,9 +42,9 @@ class OnOff
 public:
     OnOff();
     virtual void init(int vcc33Pin, int onoff_DTR_pin, int status_CTS_pin);
-    virtual bool isOn();
-    virtual void on() = 0;
-    virtual void off() = 0;
+    virtual bool isOn(void);
+    virtual void on(void){}
+    virtual void off(void){}
 protected:
     int8_t _vcc33Pin;
     int8_t _onoff_DTR_pin;
@@ -58,8 +58,8 @@ protected:
 class pulsedOnOff : public OnOff
 {
 public:
-    void on(void);
-    void off(void);
+    void on(void) override;
+    void off(void) override;
 private:
     void pulse(void);
 };
@@ -68,8 +68,8 @@ private:
 class heldOnOff : public OnOff
 {
 public:
-    void on(void);
-    void off(void);
+    void on(void) override;
+    void off(void) override;
 };
 
 

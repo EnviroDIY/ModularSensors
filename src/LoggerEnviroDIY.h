@@ -59,7 +59,7 @@ protected:
     // Communication information
     modemType _modemType;
     Stream *_modemStream;
-    OnOff *_modemOnOff;
+    OnOff _modemOnOff;
     TinyGsm *_modem;
     TinyGsmClient *_client;
     const char *_APN;
