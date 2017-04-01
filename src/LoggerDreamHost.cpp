@@ -101,8 +101,8 @@ void LoggerDreamHost::log(void)
         int result;
         switch (LoggerEnviroDIY::_modemType)
         {
-            case GPRSv4:
-            case GPRSv6:
+            case GPRSBee4:
+            case GPRSBee6:
             {
                 result = postDataGPRS();
                 // Print the response from the WebSDL

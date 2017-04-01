@@ -10,23 +10,20 @@
 
 #include "Modem_OnOff.h"
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////    GPRSbeeOnOff       /////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+/* ===========================================================================
+* Functions for the main OnOff class
+* ========================================================================= */
 
-GPRSbeeOnOff::GPRSbeeOnOff()
+OnOff::OnOff()
 {
     _vcc33Pin = -1;
     _onoff_DTR_pin = -1;
     _status_CTS_pin = -1;
-    _version = V06;
 }
 
 // Initializes the instance
-void GPRSbeeOnOff::init(int vcc33Pin, int onoff_DTR_pin, int status_CTS_pin, GPRSVersion version /* = V06*/)
+void OnOff::init(int vcc33Pin, int onoff_DTR_pin, int status_CTS_pin)
 {
-    _version = version;
-
     if (vcc33Pin >= 0) {
       _vcc33Pin = vcc33Pin;
       // First write the output value, and only then set the output mode.
@@ -45,74 +42,7 @@ void GPRSbeeOnOff::init(int vcc33Pin, int onoff_DTR_pin, int status_CTS_pin, GPR
     }
 }
 
-void GPRSbeeOnOff::on()
-{
-    // First VCC 3.3 HIGH
-    if (_vcc33Pin >= 0) {
-        digitalWrite(_vcc33Pin, HIGH);
-    }
-
-    switch (_version) {
-        case V06:
-        case V05:
-        {
-            // Wait a little
-            // TODO Figure out if this is really needed
-            delay(2);
-            if (_onoff_DTR_pin >= 0) {
-                digitalWrite(_onoff_DTR_pin, HIGH);
-            }
-        }
-        case V04:
-        {
-            if (!isOn()) {
-            #if 1
-              // To be on the safe side, make sure we start from LOW
-              // TODO Decide if this is useful.
-              digitalWrite(_onoff_DTR_pin, LOW);
-              delay(200);
-            #endif
-              digitalWrite(_onoff_DTR_pin, HIGH);
-              delay(2500);
-              digitalWrite(_onoff_DTR_pin, LOW);
-            }
-        }
-    }
-}
-
-void GPRSbeeOnOff::off()
-{
-    if (_vcc33Pin >= 0) {
-        digitalWrite(_vcc33Pin, LOW);
-    }
-
-    switch (_version) {
-        case V06:
-        case V05:
-        {
-            // The GPRSbee is switched off immediately
-            if (_onoff_DTR_pin >= 0) {
-                digitalWrite(_onoff_DTR_pin, LOW);
-            // Should be instant
-            // Let's wait a little, but not too long
-            delay(50);
-        }
-        }
-        case V04:
-        {
-            if (isOn()) {
-                digitalWrite(_onoff_DTR_pin, LOW);
-                delay(200);
-                digitalWrite(_onoff_DTR_pin, HIGH);
-                delay(2500);
-                digitalWrite(_onoff_DTR_pin, LOW);
-                // Not bothering to wait and do a graceful shutdown.
-            }
-        }
-    }
-}
-
-bool GPRSbeeOnOff::isOn()
+bool OnOff::isOn(void)
 {
     if (_status_CTS_pin >= 0) {
         bool status = digitalRead(_status_CTS_pin);
@@ -120,4 +50,82 @@ bool GPRSbeeOnOff::isOn()
     }
     // No status pin. Let's assume it is on.
     return true;
+}
+
+void OnOff::powerOn(void)
+{
+    if (_vcc33Pin >= 0) {
+        digitalWrite(_vcc33Pin, HIGH);
+        Serial.println(F("Sending power to modem."));  // For debugging
+    }
+}
+
+void OnOff::powerOff(void)
+{
+    if (_vcc33Pin >= 0) {
+        digitalWrite(_vcc33Pin, LOW);
+        Serial.println(F("Cutting modem power."));  // For debugging
+    }
+}
+
+
+/* ===========================================================================
+* Functions for pulsed method.
+* This turns the modem on and off by turning the onoff/DTR/Key pin on for two
+* seconds and then back off.
+* This is used by the Sodaq GPRSBee v0.4 and the Adafruit Fona.
+* ========================================================================= */
+
+void pulsedOnOff::pulse(void)
+{
+    if (_onoff_DTR_pin >= 0)
+    {
+        digitalWrite(_onoff_DTR_pin, LOW);
+        delay(200);
+        digitalWrite(_onoff_DTR_pin, HIGH);
+        delay(2500);
+        digitalWrite(_onoff_DTR_pin, LOW);
+    }
+}
+
+void pulsedOnOff::on()
+{
+    powerOn();
+    Serial.println(F("Turning modem on."));  // For debugging
+    if (!isOn()) {pulse();}
+}
+
+void pulsedOnOff::off()
+{
+    if (isOn()) {pulse();}
+    Serial.println(F("Shutting modem off."));  // For debugging
+    powerOff();
+}
+
+/* ===========================================================================
+* Functions for held method.
+* This turns the modem on by setting the onoff/DTR/Key pin high and off by
+* setting it low.
+* This is used by the Sodaq GPRSBee v0.6.
+* ========================================================================= */
+
+void heldOnOff::on()
+{
+    powerOn();
+    Serial.println(F("Turning modem on."));  // For debugging
+    if (_onoff_DTR_pin >= 0) {
+        digitalWrite(_onoff_DTR_pin, HIGH);
+    }
+}
+
+void heldOnOff::off()
+{
+    if (_onoff_DTR_pin >= 0) {
+        digitalWrite(_onoff_DTR_pin, LOW);
+        // Should be instant
+        // Let's wait a little, but not too long
+        delay(50);
+    }
+    Serial.println(F("Shutting modem off."));  // For debugging
+    powerOff();
 }

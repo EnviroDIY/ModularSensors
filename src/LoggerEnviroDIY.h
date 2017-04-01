@@ -11,10 +11,17 @@
 #ifndef LoggerEnviroDIY_h
 #define LoggerEnviroDIY_h
 
+// Select your modem:
+#define TINY_GSM_MODEM_SIM800
+//#define TINY_GSM_MODEM_SIM900
+//#define TINY_GSM_MODEM_A6
+//#define TINY_GSM_MODEM_M590
 
 #include <Arduino.h>
-#include "LoggerBase.h"
+#include <TinyGsmClient.h>
 #include "SensorBase.h"
+#include "LoggerBase.h"
+#include "Modem_OnOff.h"
 
 // Defines the "Logger" Class
 class LoggerEnviroDIY : public virtual LoggerBase
@@ -24,7 +31,7 @@ public:
     void setToken(const char *registrationToken);
     void setSamplingFeature(const char *samplingFeature);
     void setUUIDs(const char *UUIDs[]);
-    void setupModem(modem modemType,
+    void setupModem(modemType mType,
                   Stream *modemStream,
                   int vcc33Pin,
                   int status_CTS_pin,
@@ -38,8 +45,7 @@ public:
     String generateSensorDataJSON(void);
 
     // Public function to send data
-    int postDataWiFi(void);
-    int postDataGPRS(void);
+    int postDataEnviroDIY(void);
     void printPostResult(int result);
 
     // Convience functions to do it all
@@ -51,8 +57,11 @@ protected:
     void streamPostRequest(Stream *stream);
 
     // Communication information
-    xbee _modemType;
+    modemType _modemType;
     Stream *_modemStream;
+    OnOff *_modemOnOff;
+    TinyGsm *_modem;
+    TinyGsmClient *_client;
     const char *_APN;
 private:
     // Tokens and UUID's for EnviroDIY

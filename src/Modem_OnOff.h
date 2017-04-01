@@ -12,16 +12,16 @@
 
 #include <Arduino.h>
 
-// For the "Bee" devices"
-typedef enum modems
+// For the various communication devices"
+typedef enum modemType
 {
-    GPRSBeev4 = 0,  // Sodaq GPRSBee v4 - 2G (GPRS) communication
-    GPRSBeev6,  // Sodaq GPRSBee v6 - 2G (GPRS) communication
+    GPRSBee4 = 0,  // Sodaq GPRSBee v4 - 2G (GPRS) communication
+    GPRSBee6,  // Sodaq GPRSBee v6 - 2G (GPRS) communication
     WIFIBee,  // Digi XBee S6B - WiFi communication
     Fona,  // Adafruit Fona - for our purposes, it operates like a GPRSBee v4
     // RADIO,
     // THREEG
-} modems;
+} modemType;
 
 // The versions of GPRSBees available
   typedef enum GPRSVersion {
@@ -40,28 +40,36 @@ typedef enum modems
 class OnOff
 {
 public:
-    virtual ~OnOff() {}
+    OnOff();
+    virtual void init(int vcc33Pin, int onoff_DTR_pin, int status_CTS_pin);
+    virtual bool isOn();
     virtual void on() = 0;
     virtual void off() = 0;
-    virtual bool isOn() = 0;
-};
-
-// A specialized class to switch on/off the GPRSbee module
-// The VCC3.3 pin is switched by the Autonomo BEE_VCC pin
-// The DTR pin is the actual ON/OFF pin, it is A13 on Autonomo, D20 on Tatu
-class GPRSbeeOnOff : public OnOff
-{
-public:
-    GPRSbeeOnOff();
-    void init(int vcc33Pin, int onoff_DTR_pin, int status_CTS_pin, GPRSVersion version = V06);
-    void on();
-    void off();
-    bool isOn();
-private:
+protected:
     int8_t _vcc33Pin;
     int8_t _onoff_DTR_pin;
     int8_t _status_CTS_pin;
-    GPRSVersion _version;
+
+    void powerOn(void);
+    void powerOff(void);
+};
+
+// Turns the modem on and off by pulsing the onoff/DTR/Key pin on for 2 seconds
+class pulsedOnOff : public OnOff
+{
+public:
+    void on(void);
+    void off(void);
+private:
+    void pulse(void);
+};
+
+// Turns the modem on by setting the onoff/DTR/Key high and off by setting it low
+class heldOnOff : public OnOff
+{
+public:
+    void on(void);
+    void off(void);
 };
 
 

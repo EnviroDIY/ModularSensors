@@ -138,7 +138,7 @@ const char *UUIDs[] =
 // ---------------------------------------------------------------------------
 // Device Connection Options and WebSDL Endpoints for POST requests
 // ---------------------------------------------------------------------------
-xbee BEE_TYPE = WIFI;  // The type of XBee, either GPRSv4, GPRSv6, or WIFI
+modemType MODEM_TYPE = WIFIBee;  // The type of XBee, either GPRSBee4, GPRSBee6, or WIFIBee
 HardwareSerial &BeeSerial = Serial1; // The serial port for the xbee - software serial can also be used.
 const int BEE_BAUD = 9600;  // Bee BAUD rate (9600 is default)
 const char *APN = "apn.konekt.io";  // The APN for the GPRSBee, unnecessary for WiFi
@@ -155,6 +155,7 @@ const int SD_SS_PIN = 12;  // SD Card Card Select/Slave Select Pin
 
 const int BEE_DTR_PIN = 23;  // Bee DTR Pin (Data Terminal Ready - used for sleep)
 const int BEE_CTS_PIN = 19;   // Bee CTS Pin (Clear to Send)
+const int BEE_VCC_PIN = -1;
 
 // ---------------------------------------------------------------------------
 // Working Functions
@@ -213,7 +214,7 @@ void setup()
     EnviroDIYLogger.setToken(REGISTRATION_TOKEN);
     EnviroDIYLogger.setSamplingFeature(SAMPLING_FEATURE);
     EnviroDIYLogger.setUUIDs(UUIDs);
-    EnviroDIYLogger.setupModem(BEE_TYPE, &BeeSerial, BEE_CTS_PIN, BEE_DTR_PIN, APN);
+    EnviroDIYLogger.setupModem(MODEM_TYPE, &BeeSerial, BEE_VCC_PIN, BEE_CTS_PIN, BEE_DTR_PIN, APN);
     #ifdef DreamHostURL
     EnviroDIYLogger.setDreamHostURL(DreamHostURL);
     #endif

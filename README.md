@@ -147,7 +147,7 @@ Convience functions to do it all:
     - **setToken(const char registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
     - **setSamplingFeature(const char samplingFeature)** - Sets the GUID of the sampling feature.  Note that the input is a pointer to the samplingFeature.
     - **setUUIDs(const char UUIDs[])** - Sets the time series UUIDs.  Note that the input is an array of pointers.  The order of the UUIDs in this array **must match exactly** with the order of the coordinating variable in the SENSOR_LIST.
-- **setupModem(modem modemType, Stream modemStream, int status_CTS_pin, int onoff_DTR_pin, const char APN)** - Sets up the internet communcation, with either GPRSv4, GPRSv6, or WIFI.  Note that the modemStream and APN should be pointers.
+- **setupModem(modem modemType, Stream modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin, const char APN)** - Sets up the internet communcation, with either GPRSBee4, GPRSBee6, Fona, or WIFIBee.  Note that the modemStream and APN should be pointers.
 - **generateSensorDataJSON()** - Generates a properly formatted JSON string to go to the EnviroDIY streaming data loader API.
 - **postDataWiFi()** - Creates proper headers and sends data to the EnviroDIY data portal via WiFi.  You must use the external XCTU program to set up your WiFi bee before attaching it to your board.  You must call the setupModem function before calling this function.  Returns an HTML response code.
 - **postDataGPRS()** - Creates proper headers and sends data to the EnviroDIY data portal via GPRS.  You must call the setupModem function before calling this function.  Returns an HTML response code.
@@ -207,6 +207,7 @@ EnviroDIYLogger.setSamplingFeature(const char *samplingFeature);
 EnviroDIYLogger.setUUIDs(const char *UUIDs[]);
 EnviroDIYLogger.setupModem(modem modemType,
                          Stream *modemStream,
+                         int vcc33Pin,
                          int status_CTS_pin,
                          int onoff_DTR_pin,
                          const char *APN);

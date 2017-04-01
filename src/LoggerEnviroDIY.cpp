@@ -8,7 +8,6 @@
  * http://data.enviroDIY.org
 */
 
-#include <GPRSbee.h>
 #include "LoggerEnviroDIY.h"
 
 
@@ -28,37 +27,43 @@ void LoggerEnviroDIY::setUUIDs(const char *UUIDs[])
     _UUIDs = UUIDs;
 }
 
-void LoggerEnviroDIY::setupModem(modem modemType,
+void LoggerEnviroDIY::setupModem(modemType mType,
                                Stream *modemStream,
+                               int vcc33Pin,
                                int status_CTS_pin,
                                int onoff_DTR_pin,
                                const char *APN)
 {
-    _modemType = modemType;
+    _modemType = mType;
     _modemStream = modemStream;
     _APN = APN;
 
-    switch(modemType)
+    // Initialize the modem
+    switch(_modemType)
     {
-        case GPRSv4:
+        case GPRSBee4:
+        case Fona:
+            {_modemOnOff = new pulsedOnOff(); break;}
+        case GPRSBee6:
+            {_modemOnOff = new heldOnOff(); break;}
+        case WIFIBee:
+            {break;}
+    }
+    switch(_modemType)
+    {
+        case GPRSBee6:
+        case GPRSBee4:
+        case Fona:
         {
-            // Initialize the GPRSBee
-            gprsbee.init(*modemStream, status_CTS_pin, onoff_DTR_pin);
-            gprsbee.setMinSignalQuality(5);
-            // gprsbee.setDiag(Serial);  // for debugging
+            _modemOnOff->init(vcc33Pin, status_CTS_pin, onoff_DTR_pin);
+
+            _modem = new TinyGsm(*modemStream);
+            _client = new TinyGsmClient(*_modem);
+            _modem->init();
             break;
         }
-        case GPRSv6:
-        {
-            // Initialize the GPRSBee
-            gprsbee.init(*modemStream, status_CTS_pin, onoff_DTR_pin);
-            gprsbee.setPowerSwitchedOnOff(true);
-            gprsbee.setMinSignalQuality(5);
-            // gprsbee.setDiag(Serial);  // for debugging
-            break;
-        }
-        case WIFI:
-        {break;}
+        case WIFIBee:
+            {break;}
     }
 };
 
@@ -163,7 +168,7 @@ void LoggerEnviroDIY::streamPostRequest(Stream *stream)
 }
 
 // This function makes an HTTP connection to the server and POSTs data - for WIFI
-int LoggerEnviroDIY::postDataWiFi(void)
+int LoggerEnviroDIY::postDataEnviroDIY(void)
 {
     // Send the request to the serial for debugging
     Serial.println(F("\n \\/---- Post Request to EnviroDIY ----\\/ "));  // for debugging
@@ -173,7 +178,23 @@ int LoggerEnviroDIY::postDataWiFi(void)
     dumpBuffer(_modemStream);
     int responseCode = 0;
 
-    // Send the request to the WiFiBee (it's transparent, just goes as a stream)
+    switch(_modemType)
+    {
+        case GPRSBee6:
+        case GPRSBee4:
+        case Fona:
+        {
+            _modemOnOff->on();
+            _modem->waitForNetwork();
+            _modem->gprsConnect(_APN, "", "");
+            _client->connect("data.envirodiy.org", 80);
+            break;
+        }
+        case WIFIBee:
+            {break;}
+    }
+
+    // Send the request to the modem stream
     streamPostRequest(_modemStream);
     _modemStream->flush();  // wait for sending to finish
 
@@ -183,6 +204,21 @@ int LoggerEnviroDIY::postDataWiFi(void)
     {
       delay(1);
       timeout--;
+    }
+
+    switch(_modemType)
+    {
+        case GPRSBee6:
+        case GPRSBee4:
+        case Fona:
+        {
+            _client->stop();
+            _modem->gprsDisconnect();
+            _modemOnOff->off();
+            break;
+        }
+        case WIFIBee:
+            {break;}
     }
 
     // Process the HTTP response
@@ -200,44 +236,6 @@ int LoggerEnviroDIY::postDataWiFi(void)
     return responseCode;
 }
 
-// This function makes an HTTP connection to the server and POSTs data - for GPRS
-int LoggerEnviroDIY::postDataGPRS(void)
-{
-    dumpBuffer(_modemStream);
-    int responseCode = 0;
-
-    char url[43] = "http://data.envirodiy.org/api/data-stream/";
-    char header[45] = "TOKEN: ";
-    strcat(header, _registrationToken);
-
-    Serial.println(F("\n \\/---- Post Request to EnviroDIY ----\\/ "));  // for debugging
-    Serial.println(url);  // for debugging
-    Serial.println(header);  // for debugging
-    Serial.println(F("Content-Type: application/json"));  // for debugging
-    Serial.println(generateSensorDataJSON());  // for debugging
-
-    // Add the needed HTTP Headers
-    gprsbee.addHTTPHeaders(header);
-    gprsbee.addContentType(F("application/json"));
-
-    // Actually make the post request
-    bool response = (gprsbee.doHTTPPOST(_APN, url,
-                             generateSensorDataJSON().c_str(),
-                             strlen(generateSensorDataJSON().c_str())));
-
-
-    // TODO:  Actually read the response
-    if (response)
-    {
-        responseCode = 201;
-    }
-    else // Otherwise timeout, no response from server
-    {
-        responseCode = 504;
-    }
-
-    return responseCode;
-}
 
 // Used only for debugging - can be removed
 void LoggerEnviroDIY::printPostResult(int HTTPcode)
@@ -325,21 +323,8 @@ void LoggerEnviroDIY::log(void)
         logToSD(generateSensorDataCSV());
 
         // Post the data to the WebSDL
-        int result;
-        switch (_modemType)
-        {
-            case GPRSv4:
-            case GPRSv6:
-            {
-                result = postDataGPRS();
-                break;
-            };
-            case WIFI:
-            {
-                result = postDataWiFi();
-                break;
-            };
-        }
+        int result = postDataEnviroDIY();
+
         // Print the response from the WebSDL
         printPostResult(result);  // for debugging
 
