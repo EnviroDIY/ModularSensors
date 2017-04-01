@@ -47,17 +47,17 @@ void LoggerEnviroDIY::setupModem(modemType modType,
         case Fona:
         {
             Serial.println(F("Modem uses pulsedOnOff."));  // For debugging
-            pulsedOnOff pulsed;
-            _modemOnOff = pulsed;
-            _modemOnOff.init(vcc33Pin, status_CTS_pin, onoff_DTR_pin);
+            static pulsedOnOff pulsed;
+            _modemOnOff = &pulsed;
+            pulsed.init(vcc33Pin, status_CTS_pin, onoff_DTR_pin);
             break;
         }
         case GPRSBee6:
         {
             Serial.println(F("Modem uses heldOnOff."));  // For debugging
-            heldOnOff pulsed;
-            _modemOnOff = pulsed;
-            _modemOnOff.init(vcc33Pin, status_CTS_pin, onoff_DTR_pin);
+            static heldOnOff held;
+            _modemOnOff = &held;
+            held.init(vcc33Pin, status_CTS_pin, onoff_DTR_pin);
             break;
         }
         case WIFIBee:
@@ -197,30 +197,11 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
         case Fona:
         {
             Serial.println(F("Attempting to turn on modem."));  // For debugging
-            _modemOnOff.on();
-            Serial.println(F("Attempting to connect."));  // For debugging
-            _modem->waitForNetwork();
-            _modem->gprsConnect(_APN, "", "");
-            _client->connect("data.envirodiy.org", 80);
-            break;
-        }
-        case WIFIBee:
-            {break;}
-    }
-
-    // Turn on the modem and connect to the network
-    switch(_modemType)
-    {
-        case GPRSBee6:
-        case GPRSBee4:
-        case Fona:
-        {
-            Serial.println(F("Attempting to turn on modem."));  // For debugging
-            _modemOnOff.on();
-            Serial.println(F("Attempting to connect."));  // For debugging
-            _modem->waitForNetwork();
-            _modem->gprsConnect(_APN, "", "");
-            _client->connect("data.envirodiy.org", 80);
+            _modemOnOff->on();
+            // Serial.println(F("Attempting to connect."));  // For debugging
+            // _modem->waitForNetwork();
+            // _modem->gprsConnect(_APN, "", "");
+            // _client->connect("data.envirodiy.org", 80);
             break;
         }
         case WIFIBee:
@@ -265,9 +246,9 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
         case GPRSBee4:
         case Fona:
         {
-            _client->stop();
-            _modem->gprsDisconnect();
-            _modemOnOff.off();
+            // _client->stop();
+            // _modem->gprsDisconnect();
+            _modemOnOff->off();
             break;
         }
         case WIFIBee:

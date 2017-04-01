@@ -61,10 +61,10 @@ int LoggerDreamHost::postDataDreamHost(void)
         case GPRSBee4:
         case Fona:
         {
-            _modemOnOff.on();
-            _modem->waitForNetwork();
-            _modem->gprsConnect(_APN, "", "");
-            _client->connect("data.envirodiy.org", 80);
+            _modemOnOff->on();
+            // _modem->waitForNetwork();
+            // _modem->gprsConnect(_APN, "", "");
+            // _client->connect("data.envirodiy.org", 80);
             break;
         }
         case WIFIBee:
@@ -109,9 +109,9 @@ int LoggerDreamHost::postDataDreamHost(void)
         case GPRSBee4:
         case Fona:
         {
-            _client->stop();
-            _modem->gprsDisconnect();
-            _modemOnOff.off();
+            // _client->stop();
+            // _modem->gprsDisconnect();
+            _modemOnOff->off();
             break;
         }
         case WIFIBee:
