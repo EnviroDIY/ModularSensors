@@ -43,8 +43,8 @@ public:
     OnOff();
     virtual void init(int vcc33Pin, int onoff_DTR_pin, int status_CTS_pin);
     virtual bool isOn(void);
-    virtual void on(void){}
-    virtual void off(void){}
+    virtual void on(void) = 0;
+    virtual void off(void) = 0;
 protected:
     int8_t _vcc33Pin;
     int8_t _onoff_DTR_pin;

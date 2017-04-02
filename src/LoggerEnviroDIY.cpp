@@ -49,7 +49,7 @@ void LoggerEnviroDIY::setupModem(modemType modType,
             Serial.println(F("Modem uses pulsedOnOff."));  // For debugging
             static pulsedOnOff pulsed;
             _modemOnOff = &pulsed;
-            pulsed.init(vcc33Pin, status_CTS_pin, onoff_DTR_pin);
+            pulsed.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
             break;
         }
         case GPRSBee6:
@@ -57,7 +57,7 @@ void LoggerEnviroDIY::setupModem(modemType modType,
             Serial.println(F("Modem uses heldOnOff."));  // For debugging
             static heldOnOff held;
             _modemOnOff = &held;
-            held.init(vcc33Pin, status_CTS_pin, onoff_DTR_pin);
+            held.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
             break;
         }
         case WIFIBee:

@@ -24,7 +24,7 @@ OnOff::OnOff()
 // Initializes the instance
 void OnOff::init(int vcc33Pin, int onoff_DTR_pin, int status_CTS_pin)
 {
-    Serial.println(F("Initializing modem on/off."));  // For debugging
+    // Serial.println(F("Initializing modem on/off."));  // For debugging
     if (vcc33Pin >= 0) {
       _vcc33Pin = vcc33Pin;
       // First write the output value, and only then set the output mode.
@@ -47,6 +47,8 @@ bool OnOff::isOn(void)
 {
     if (_status_CTS_pin >= 0) {
         bool status = digitalRead(_status_CTS_pin);
+        // Serial.print(F("Is modem on? "));  // For debugging
+        // Serial.println(status);  // For debugging
         return status;
     }
     // No status pin. Let's assume it is on.
@@ -57,7 +59,7 @@ void OnOff::powerOn(void)
 {
     if (_vcc33Pin >= 0) {
         digitalWrite(_vcc33Pin, HIGH);
-        Serial.println(F("Sending power to modem."));  // For debugging
+        // Serial.println(F("Sending power to modem."));  // For debugging
     }
 }
 
@@ -65,7 +67,7 @@ void OnOff::powerOff(void)
 {
     if (_vcc33Pin >= 0) {
         digitalWrite(_vcc33Pin, LOW);
-        Serial.println(F("Cutting modem power."));  // For debugging
+        // Serial.println(F("Cutting modem power."));  // For debugging
     }
 }
 
@@ -92,14 +94,17 @@ void pulsedOnOff::pulse(void)
 void pulsedOnOff::on()
 {
     powerOn();
-    Serial.println(F("Pulsing modem to on."));  // For debugging
+    // Serial.print(F("Pulsing modem to on with pin "));  // For debugging
+    Serial.println(_onoff_DTR_pin);  // For debugging
     if (!isOn()) {pulse();}
+    while (!isOn()){delay(1);}  // Wait until is actually on
 }
 
 void pulsedOnOff::off()
 {
     if (isOn()) {pulse();}
-    Serial.println(F("Modem pulsed to off."));  // For debugging
+    while (isOn()){delay(1);}  // Wait until is off
+    // Serial.println(F("Modem pulsed to off."));  // For debugging
     powerOff();
 }
 
@@ -113,20 +118,20 @@ void pulsedOnOff::off()
 void heldOnOff::on()
 {
     powerOn();
-    Serial.println(F("Setting modem to on."));  // For debugging
+    // Serial.print(F("Setting modem to on with pin "));  // For debugging
+    // Serial.println(_onoff_DTR_pin);  // For debugging
     if (_onoff_DTR_pin >= 0) {
         digitalWrite(_onoff_DTR_pin, HIGH);
     }
+    while (!isOn()){delay(1);}  // Wait until is actually on
 }
 
 void heldOnOff::off()
 {
     if (_onoff_DTR_pin >= 0) {
         digitalWrite(_onoff_DTR_pin, LOW);
-        // Should be instant
-        // Let's wait a little, but not too long
-        delay(50);
     }
-    Serial.println(F("Modem set to off."));  // For debugging
+    while (isOn()){delay(1);}  // Wait until is off
+    // Serial.println(F("Modem set to off."));  // For debugging
     powerOff();
 }
