@@ -73,9 +73,13 @@ void LoggerEnviroDIY::setupModem(modemType modType,
         case Fona:
         {
             Serial.println(F("Initializing GSM modem instance"));  // For debugging
-            TinyGsm _modem(*modemStream);
-            TinyGsmClient _client(_modem);
-            _modem.init();
+            static TinyGsm modem(*modemStream);
+            _modem = &modem;
+            static TinyGsmClient client(modem);
+            _client = &client;
+            _modemOnOff->on();
+            _modem->init();
+            _modemOnOff->off();
             break;
         }
         case WIFIBee:
@@ -198,10 +202,10 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
         {
             Serial.println(F("Attempting to turn on modem."));  // For debugging
             _modemOnOff->on();
-            // Serial.println(F("Attempting to connect."));  // For debugging
-            // _modem->waitForNetwork();
-            // _modem->gprsConnect(_APN, "", "");
-            // _client->connect("data.envirodiy.org", 80);
+            Serial.println(F("Attempting to connect."));  // For debugging
+            _modem->waitForNetwork();
+            _modem->gprsConnect(_APN, "", "");
+            _client->connect("data.envirodiy.org", 80);
             break;
         }
         case WIFIBee:
@@ -246,8 +250,8 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
         case GPRSBee4:
         case Fona:
         {
-            // _client->stop();
-            // _modem->gprsDisconnect();
+            _client->stop();
+            _modem->gprsDisconnect();
             _modemOnOff->off();
             break;
         }
