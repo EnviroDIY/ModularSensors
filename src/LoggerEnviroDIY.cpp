@@ -35,7 +35,6 @@ void LoggerEnviroDIY::setupModem(modemType modType,
                                const char *APN)
 {
     _modemType = modType;
-    _modemStream = modemStream;
     _APN = APN;
 
     Serial.println(F("Setting up modem."));  // For debugging
@@ -46,7 +45,6 @@ void LoggerEnviroDIY::setupModem(modemType modType,
         case GPRSBee4:
         case Fona:
         {
-            Serial.println(F("Modem uses pulsedOnOff."));  // For debugging
             static pulsedOnOff pulsed;
             _modemOnOff = &pulsed;
             pulsed.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
@@ -54,7 +52,6 @@ void LoggerEnviroDIY::setupModem(modemType modType,
         }
         case GPRSBee6:
         {
-            Serial.println(F("Modem uses heldOnOff."));  // For debugging
             static heldOnOff held;
             _modemOnOff = &held;
             held.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
@@ -62,7 +59,9 @@ void LoggerEnviroDIY::setupModem(modemType modType,
         }
         case WIFIBee:
         {
-            Serial.println(F("Modem is always on."));  // For debugging
+            _modemStream = modemStream;
+            static heldOnOff held;
+            _modemOnOff = &held;
             break;
         }
     }
@@ -80,11 +79,12 @@ void LoggerEnviroDIY::setupModem(modemType modType,
             _modemOnOff->on();
             _modem->init();
             _modemOnOff->off();
+            _modemStream = _client;
             break;
         }
         case WIFIBee:
         {
-            Serial.println(F("Modem does not need to be initialized"));  // For debugging
+            _modemStream = modemStream;
             break;
         }
     }
@@ -151,118 +151,6 @@ void LoggerEnviroDIY::dumpBuffer(Stream *stream, int timeDelay/* = 5*/, int time
 }
 
 
-String LoggerEnviroDIY::generateSensorDataJSON(void)
-{
-    String jsonString = F("{");
-    jsonString += F("\"sampling_feature\": \"");
-    jsonString += String(_samplingFeature) + F("\", ");
-    jsonString += F("\"timestamp\": \"");
-    jsonString += String(LoggerBase::markedISO8601Time) + F("\", ");
-
-    for (int i = 0; i < LoggerBase::_sensorCount; i++)
-    {
-        jsonString += F("\"");
-        jsonString += String(_UUIDs[i]) + F("\": ");
-        jsonString += LoggerBase::_sensorList[i]->getValueString();
-        if (i + 1 != LoggerBase::_sensorCount)
-        {
-            jsonString += F(", ");
-        }
-    }
-
-    jsonString += F(" }");
-    return jsonString;
-}
-
-
-// This function generates the full POST request that gets sent to data.envirodiy.org
-void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
-{
-    stream->print(F("POST /api/data-stream/ HTTP/1.1"));
-    stream->print(F("\r\nHost: data.envirodiy.org"));
-    stream->print(F("\r\nTOKEN: "));
-    stream->print(_registrationToken);
-    stream->print(F("\r\nCache-Control: no-cache\r\nContent-Length: "));
-    stream->print(generateSensorDataJSON().length());
-    stream->print(F("\r\nConnection: close"));
-    stream->print(F("\r\nContent-Type: application/json\r\n\r\n"));
-    stream->print(generateSensorDataJSON());
-    stream->print(F("\r\n\r\n"));
-}
-
-// This function makes an HTTP connection to the server and POSTs data - for WIFI
-int LoggerEnviroDIY::postDataEnviroDIY(void)
-{
-    // Turn on the modem and connect to the network
-    switch(_modemType)
-    {
-        case GPRSBee6:
-        case GPRSBee4:
-        case Fona:
-        {
-            Serial.println(F("Attempting to turn on modem."));  // For debugging
-            _modemOnOff->on();
-            Serial.println(F("Attempting to connect."));  // For debugging
-            _modem->waitForNetwork();
-            _modem->gprsConnect(_APN, "", "");
-            _client->connect("data.envirodiy.org", 80);
-            break;
-        }
-        case WIFIBee:
-            {break;}
-    }
-
-    // Send the request to the serial for debugging
-    Serial.println(F("\n \\/---- Post Request to EnviroDIY ----\\/ "));  // for debugging
-    streamEnviroDIYRequest(&Serial);  // for debugging
-    Serial.flush();  // for debugging
-
-    // Send the request to the modem stream
-    dumpBuffer(_modemStream);
-    streamEnviroDIYRequest(_modemStream);
-    _modemStream->flush();  // wait for sending to finish
-
-    // Add a brief delay for at least the first 12 characters of the HTTP response
-    int timeout = 1500;
-    while ((timeout > 0) && _modemStream->available() < 12)
-    {
-      delay(1);
-      timeout--;
-    }
-
-    // Process the HTTP response
-    int responseCode = 0;
-    if (timeout > 0 && _modemStream->available() >= 12)
-    {
-        _modemStream->readStringUntil(' ');
-        responseCode = _modemStream->parseInt();
-        Serial.println(F(" -- Response Code -- "));  // for debugging
-        Serial.println(responseCode);  // for debugging
-
-        dumpBuffer(_modemStream);
-    }
-    else responseCode=504;
-
-    // Disconnect and turn off the modem
-    switch(_modemType)
-    {
-        case GPRSBee6:
-        case GPRSBee4:
-        case Fona:
-        {
-            _client->stop();
-            _modem->gprsDisconnect();
-            _modemOnOff->off();
-            break;
-        }
-        case WIFIBee:
-            {break;}
-    }
-
-    return responseCode;
-}
-
-
 // Used only for debugging - can be removed
 void LoggerEnviroDIY::printPostResult(int HTTPcode)
 {
@@ -318,6 +206,120 @@ void LoggerEnviroDIY::printPostResult(int HTTPcode)
             break;
         }
     }
+}
+
+
+String LoggerEnviroDIY::generateSensorDataJSON(void)
+{
+    String jsonString = F("{");
+    jsonString += F("\"sampling_feature\": \"");
+    jsonString += String(_samplingFeature) + F("\", ");
+    jsonString += F("\"timestamp\": \"");
+    jsonString += String(LoggerBase::markedISO8601Time) + F("\", ");
+
+    for (int i = 0; i < LoggerBase::_sensorCount; i++)
+    {
+        jsonString += F("\"");
+        jsonString += String(_UUIDs[i]) + F("\": ");
+        jsonString += LoggerBase::_sensorList[i]->getValueString();
+        if (i + 1 != LoggerBase::_sensorCount)
+        {
+            jsonString += F(", ");
+        }
+    }
+
+    jsonString += F(" }");
+    return jsonString;
+}
+
+
+// This function generates the full POST request that gets sent to data.envirodiy.org
+void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
+{
+    stream->print(String(F("POST /api/data-stream/ HTTP/1.1")));
+    stream->print(String(F("\r\nHost: data.envirodiy.org")));
+    stream->print(String(F("\r\nTOKEN: ")) + String(_registrationToken));
+    // stream->print(String(F("\r\nCache-Control: no-cache")));
+    stream->print(String(F("\r\nContent-Length: ")) + String(generateSensorDataJSON().length()));
+    // stream->print(String(F("\r\nConnection: close")));
+    stream->print(String(F("\r\nContent-Type: application/json\r\n\r\n")));
+    stream->print(String(generateSensorDataJSON()));
+    stream->print(String(F("\r\n\r\n")));
+}
+
+// This function makes an HTTP connection to the server and POSTs data - for WIFI
+int LoggerEnviroDIY::postDataEnviroDIY(void)
+{
+    // Turn on the modem and connect to the network
+    switch(_modemType)
+    {
+        case GPRSBee6:
+        case GPRSBee4:
+        case Fona:
+        {
+            // Serial.println(F("Attempting to turn on modem."));  // For debugging
+            _modemOnOff->on();
+            Serial.println(F("Waiting for network..."));  // For debugging
+            if (!_modem->waitForNetwork()) {
+                Serial.println("... Connection failed");  // For debugging
+            } else {
+                _modem->gprsConnect(_APN, "", "");
+                _client->connect("data.envirodiy.org", 80);
+            }
+            break;
+        }
+        case WIFIBee:
+            {break;}
+    }
+
+    // Send the request to the serial for debugging
+    Serial.println(F("\n \\/---- Post Request to EnviroDIY ----\\/ "));  // for debugging
+    streamEnviroDIYRequest(&Serial);  // for debugging
+    Serial.flush();  // for debugging
+
+    // Send the request to the modem stream
+    dumpBuffer(_modemStream);
+    streamEnviroDIYRequest(_modemStream);
+    _modemStream->flush();  // wait for sending to finish
+
+    // Add a brief delay for at least the first 12 characters of the HTTP response
+    int timeout = 1500;
+    while ((timeout > 0) && _modemStream->available() < 12)
+    {
+      delay(1);
+      timeout--;
+    }
+
+    // Process the HTTP response
+    int responseCode = 0;
+    if (timeout > 0 && _modemStream->available() >= 12)
+    {
+        _modemStream->readStringUntil(' ');
+        responseCode = _modemStream->parseInt();
+        Serial.println(F(" -- Response Code -- "));  // for debugging
+        Serial.println(responseCode);  // for debugging
+
+        dumpBuffer(_modemStream);
+    }
+    else responseCode=504;
+
+    // Disconnect and turn off the modem
+    switch(_modemType)
+    {
+        case GPRSBee6:
+        case GPRSBee4:
+        case Fona:
+        {
+            _client->stop();
+            _modem->gprsDisconnect();
+            _modemOnOff->off();
+            break;
+        }
+        case WIFIBee:
+            {break;}
+    }
+
+    return responseCode;
 }
 
 

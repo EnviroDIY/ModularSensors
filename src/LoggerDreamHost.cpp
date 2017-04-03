@@ -8,7 +8,6 @@
  * http://data.enviroDIY.org
 */
 
-#include <GPRSbee.h>
 #include "LoggerDreamHost.h"
 
 
@@ -43,12 +42,12 @@ String LoggerDreamHost::generateSensorDataDreamHost(void)
 // This is only needed for transparent Bee's (ie, WiFi)
 void LoggerDreamHost::streamDreamHostRequest(Stream *stream)
 {
-    stream->print(F("GET /portalRX_EST_universal.php"));
+    stream->print(String("GET /portalRX_EST_universal.php"));
     stream->print(generateSensorDataDreamHost());
-    stream->print(F("  HTTP/1.1"));
-    stream->print(F("\r\nHost: swrcsensors.dreamhosters.com"));
-    stream->print(F("\r\nConnection: close"));
-    stream->print(F("\r\n\r\n"));
+    stream->print(String("  HTTP/1.1"));
+    stream->print(String("\r\nHost: swrcsensors.dreamhosters.com"));
+    stream->print(String("\r\nConnection: close"));
+    stream->print(String("\r\n\r\n"));
 }
 
 // Post the data to dream host.  Do IF AND ONLY IF using GPRSBee
@@ -62,9 +61,9 @@ int LoggerDreamHost::postDataDreamHost(void)
         case Fona:
         {
             _modemOnOff->on();
-            // _modem->waitForNetwork();
-            // _modem->gprsConnect(_APN, "", "");
-            // _client->connect("data.envirodiy.org", 80);
+            _modem->waitForNetwork();
+            _modem->gprsConnect(_APN, "", "");
+            _client->connect("data.envirodiy.org", 80);
             break;
         }
         case WIFIBee:
@@ -93,12 +92,11 @@ int LoggerDreamHost::postDataDreamHost(void)
     int responseCode = 0;
     if (timeout > 0 && _modemStream->available() >= 12)
     {
-        _modemStream->readStringUntil(' ');
+        Serial.println("****" + _modemStream->readStringUntil(' ') + "****");
         responseCode = _modemStream->parseInt();
+        dumpBuffer(_modemStream);
         Serial.println(F(" -- Response Code -- "));  // for debugging
         Serial.println(responseCode);  // for debugging
-
-        dumpBuffer(_modemStream);
     }
     else responseCode=504;
 
@@ -109,8 +107,8 @@ int LoggerDreamHost::postDataDreamHost(void)
         case GPRSBee4:
         case Fona:
         {
-            // _client->stop();
-            // _modem->gprsDisconnect();
+            _client->stop();
+            _modem->gprsDisconnect();
             _modemOnOff->off();
             break;
         }
