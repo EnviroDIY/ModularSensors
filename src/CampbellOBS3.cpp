@@ -43,33 +43,47 @@ String CampbellOBS3::getSensorLocation(void)
 }
 
 // The static variables that need to be updated
-float CampbellOBS3::sensorValue = 0;
-unsigned long CampbellOBS3::sensorLastUpdated;
+// float CampbellOBS3::sensorValue = 0;
+// unsigned long CampbellOBS3::sensorLastUpdated;
 
 // Uses Auxillary ADD to convert data
 bool CampbellOBS3::update(){
 
     // Start the Auxillary ADD
     Adafruit_ADS1115 ads;     /* Use this for the 16-bit version */
-    delay(500);
+    ads.begin();
 
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
 
-    int16_t adcChannel; // tells which channels are to be read
+    // Variables to store the results in
+    int16_t adcResult = 0;
+    float voltage = 0;
+    float calibResult = 0;
 
-    adcChannel = ads.readADC_SingleEnded(_dataPin);
+    adcResult = ads.readADC_SingleEnded(_dataPin);  // Getting the reading
+
+    // Serial.print("ads.readADC_SingleEnded(");  // For debugging
+    // Serial.print(_dataPin);  // For debugging
+    // Serial.print("): ");  // For debugging
+    // Serial.println(ads.readADC_SingleEnded(_dataPin));  // For debugging
 
     // now convert bits into millivolts
     // 3.3 is the voltage applied to the sensor (and its returun range)
     // The 17585 is the default bit gain of the ADS1115
-    float voltage = (adcChannel * 3.3) / 17585.0;
+    voltage = (adcResult * 3.3) / 17585.0;
+    // Serial.print("Voltage: ");  // For debugging
+    // Serial.println(String(voltage, 6));  // For debugging
 
-    sensorValue =  (_A * square (voltage)) + (_B * voltage) - _C;
+    calibResult = (_A * square (voltage)) + (_B * voltage) - _C;
+    // Serial.print("calibResult: ");  // For debugging
+    // Serial.println(calibResult);  // For debugging
 
-    CampbellOBS3::sensorValue = sensorValue;
-    CampbellOBS3::sensorLastUpdated = millis();
+    sensorValue = calibResult;
+    // Serial.print("CampbellOBS3::sensorValue: ");  // For debugging
+    // Serial.println(CampbellOBS3::sensorValue);  // For debugging
+    sensorLastUpdated = millis();
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
@@ -80,8 +94,8 @@ bool CampbellOBS3::update(){
 
 float CampbellOBS3::getValue(void)
 {
-    checkForUpdate(CampbellOBS3::sensorLastUpdated);
-    return CampbellOBS3::sensorValue;
+    checkForUpdate(sensorLastUpdated);
+    return sensorValue;
 }
 
 
