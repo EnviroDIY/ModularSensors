@@ -113,11 +113,11 @@ bool SensorBase::wake(void)
 // This function checks if a sensor needs to be updated or not
 bool SensorBase::checkForUpdate(unsigned long sensorLastUpdated)
 {
+    // Serial.print(F("It has been "));  // For debugging
+    // Serial.print((millis() - sensorLastUpdated)/1000);  // For debugging
+    // Serial.println(F(" seconds since the sensor value was checked"));  // For debugging
     if ((millis() > 60000 and millis() > sensorLastUpdated + 60000) or sensorLastUpdated == 0)
     {
-        // Serial.print(F("It has been "));
-        // Serial.print((millis() - sensorLastUpdated)/1000);
-        // Serial.println(F(" seconds since the sensor value was checked"));  // For debugging
         // Serial.println(F("Value out of date, updating"));  // For debugging
         return(update());
     }
