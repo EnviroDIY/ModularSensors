@@ -13,19 +13,13 @@
 
 // Communication set up
 void LoggerEnviroDIY::setToken(const char *registrationToken)
-{
-    _registrationToken = registrationToken;
-}
+{ _registrationToken = registrationToken; }
 
 void LoggerEnviroDIY::setSamplingFeature(const char *samplingFeature)
-{
-    _samplingFeature = samplingFeature;
-}
+{ _samplingFeature = samplingFeature; }
 
 void LoggerEnviroDIY::setUUIDs(const char *UUIDs[])
-{
-    _UUIDs = UUIDs;
-}
+{ _UUIDs = UUIDs; }
 
 void LoggerEnviroDIY::setupModem(modemType modType,
                                Stream *modemStream,
