@@ -97,7 +97,7 @@ protected:
     static DateTime markedDateTime;
     static char markedISO8601Time[26];
 
-    static bool sleep;
+    bool sleep;
 
     static int _timeZone;
     int _SDCardPin;
@@ -109,7 +109,7 @@ protected:
     int _ledPin;
 
     static String _fileName;
-    // static char *_fileName;
+    static uint32_t _setupTime;
 private:
     // Private functions for the timer and sleep modes
     static void checkTime(uint32_t ts);

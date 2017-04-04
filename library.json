@@ -31,15 +31,38 @@
     },
     "frameworks": "atmelavr",
     "dependencies":
-    {
-        "Wire": "1.0.0",
-        "Sodaq_DS3231": "https://github.com/EnviroDIY/Sodaq_DS3231.git#1.3.0",
-        "RTCTimer": "1.0.0",
-        "PcInt_PCINT0": "https://github.com/EnviroDIY/PcInt_PCINT0.git",
-        "SdFat": 322,
-        "SoftwareSerial_PCINT12": "https://github.com/EnviroDIY/SoftwareSerial_PCINT12.git",
-        "Adafruit ADS1X15": "1.0.0",
-        "Arduino-SDI-12_PCINT3": "https://github.com/EnviroDIY/Arduino-SDI-12.git#mayfly",
-        "GPRSbee": "https://github.com/EnviroDIY/GPRSbee.git#v1.2_hacked"
-    }
+    [
+        {
+            "name": "Wire"
+        },
+        {
+            "name": "Sodaq_DS3231",
+            "version": "https://github.com/EnviroDIY/Sodaq_DS3231.git"
+        },
+        {
+            "name": "RTCTimer"
+        },
+        {
+            "name": "PcInt_PCINT0",
+            "version": "https://github.com/EnviroDIY/PcInt_PCINT0.git"
+        },
+        {
+            "name": "SdFat"
+        },
+        {
+            "name": "SoftwareSerial_PCINT12",
+            "version": "https://github.com/EnviroDIY/SoftwareSerial_PCINT12.git"
+        },
+        {
+            "name": "ADS1X15"
+        },
+        {
+            "name": "Arduino-SDI-12_PCINT3",
+            "version": "https://github.com/EnviroDIY/Arduino-SDI-12.git#mayfly"
+        },
+        {
+            "name": "GPRSbee",
+            "version": "https://github.com/EnviroDIY/GPRSbee.git#v1.2_hacked"
+        }
+    ]
 }

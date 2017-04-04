@@ -13,8 +13,8 @@
 
 
 // Set up the static variables for the initilizer
-bool LoggerBase::sleep = false;  // Set in the init function
 int LoggerBase::_timeZone = 0;  // Set in the init function
+uint32_t LoggerBase::_setupTime = 0;
 
 // Initialization - cannot do this in constructor arduino has issues creating
 // instances of classes with non-empty constructors
@@ -24,7 +24,7 @@ void LoggerBase::init(int timeZone, int SDCardPin, int interruptPin,
                       float loggingIntervalMinutes,
                       const char *loggerID/* = 0*/)
 {
-    _timeZone = timeZone;
+    LoggerBase::_timeZone = timeZone;
     _SDCardPin = SDCardPin;
     _interruptPin = interruptPin;
     _sensorCount = sensorCount;
@@ -33,6 +33,7 @@ void LoggerBase::init(int timeZone, int SDCardPin, int interruptPin,
     _interruptRate = round(_loggingIntervalMinutes*60);  // convert to even seconds
     _loggerID = loggerID;
     _autoFileName = false;
+    LoggerBase::_setupTime = getNow();
 
     // Set sleep variable, if an interrupt pin is given
     if(_interruptPin != -1)
@@ -104,10 +105,11 @@ String LoggerBase::formatDateTime_ISO8601(uint32_t epochTime)
 }
 
 // This checks to see if the current time is an even interval of the logging rate
+// or we're in the first 15 minutes of logging
 bool LoggerBase::checkInterval(void)
 {
     bool retval;
-    if (getNow() % _interruptRate == 0)
+    if ((getNow() % _interruptRate == 0 ) || (getNow() - LoggerBase::_setupTime < 900000 && getNow() % 60 == 0))
     {
         // Serial.println(F("Time to log!"));  // for Debugging
         retval = true;
@@ -285,7 +287,7 @@ void LoggerBase::setFileName(void)
     String fileName = "";
     fileName +=  _loggerID;
     fileName +=  F("_");
-    fileName +=  formatDateTime_ISO8601(rtc.now()).substring(0, 10);
+    fileName +=  formatDateTime_ISO8601(getNow()).substring(0, 10);
     fileName +=  F(".csv");
     setFileName(fileName);
 }
@@ -314,26 +316,26 @@ void LoggerBase::setupLogFile(void)
     // Open the file in write mode (and create it if it did not exist)
     logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END);
     // Set creation date time
-    logFile.timestamp(T_CREATE, rtc.now().year(),
-                                rtc.now().month(),
-                                rtc.now().date(),
-                                rtc.now().hour(),
-                                rtc.now().minute(),
-                                rtc.now().second());
+    logFile.timestamp(T_CREATE, rtc.makeDateTime(getNow()).year(),
+                                rtc.makeDateTime(getNow()).month(),
+                                rtc.makeDateTime(getNow()).date(),
+                                rtc.makeDateTime(getNow()).hour(),
+                                rtc.makeDateTime(getNow()).minute(),
+                                rtc.makeDateTime(getNow()).second());
     // Set write/modification date time
-    logFile.timestamp(T_WRITE, rtc.now().year(),
-                               rtc.now().month(),
-                               rtc.now().date(),
-                               rtc.now().hour(),
-                               rtc.now().minute(),
-                               rtc.now().second());
+    logFile.timestamp(T_WRITE, rtc.makeDateTime(getNow()).year(),
+                               rtc.makeDateTime(getNow()).month(),
+                               rtc.makeDateTime(getNow()).date(),
+                               rtc.makeDateTime(getNow()).hour(),
+                               rtc.makeDateTime(getNow()).minute(),
+                               rtc.makeDateTime(getNow()).second());
     // Set access  date time
-    logFile.timestamp(T_ACCESS, rtc.now().year(),
-                                rtc.now().month(),
-                                rtc.now().date(),
-                                rtc.now().hour(),
-                                rtc.now().minute(),
-                                rtc.now().second());
+    logFile.timestamp(T_ACCESS, rtc.makeDateTime(getNow()).year(),
+                                rtc.makeDateTime(getNow()).month(),
+                                rtc.makeDateTime(getNow()).date(),
+                                rtc.makeDateTime(getNow()).hour(),
+                                rtc.makeDateTime(getNow()).minute(),
+                                rtc.makeDateTime(getNow()).second());
 
     // Add header information
     logFile.print(F("Data Logger: "));
@@ -402,19 +404,19 @@ void LoggerBase::logToSD(String rec)
     Serial.println(rec);  // for debugging
 
     // Set write/modification date time
-    logFile.timestamp(T_WRITE, rtc.now().year(),
-                               rtc.now().month(),
-                               rtc.now().date(),
-                               rtc.now().hour(),
-                               rtc.now().minute(),
-                               rtc.now().second());
+    logFile.timestamp(T_WRITE, rtc.makeDateTime(getNow()).year(),
+                               rtc.makeDateTime(getNow()).month(),
+                               rtc.makeDateTime(getNow()).date(),
+                               rtc.makeDateTime(getNow()).hour(),
+                               rtc.makeDateTime(getNow()).minute(),
+                               rtc.makeDateTime(getNow()).second());
     // Set access  date time
-    logFile.timestamp(T_ACCESS, rtc.now().year(),
-                                rtc.now().month(),
-                                rtc.now().date(),
-                                rtc.now().hour(),
-                                rtc.now().minute(),
-                                rtc.now().second());
+    logFile.timestamp(T_ACCESS, rtc.makeDateTime(getNow()).year(),
+                                rtc.makeDateTime(getNow()).month(),
+                                rtc.makeDateTime(getNow()).date(),
+                                rtc.makeDateTime(getNow()).hour(),
+                                rtc.makeDateTime(getNow()).minute(),
+                                rtc.makeDateTime(getNow()).second());
 
     // Close the file to save it
     logFile.close();
@@ -435,7 +437,7 @@ void LoggerBase::begin(void)
 
     // Print a start-up note to the first serial port
     Serial.print(F("Current RTC time is: "));
-    Serial.println(formatDateTime_ISO8601(rtc.now()));
+    Serial.println(formatDateTime_ISO8601(getNow()));
     Serial.print(F("There are "));
     Serial.print(String(_sensorCount));
     Serial.println(F(" variables being recorded."));
