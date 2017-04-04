@@ -37,8 +37,6 @@ SENSOR_STATUS MaxBotixSonar_Range::setup(void)
     return SENSOR_READY;
 }
 
-// The static variables that need to be updated
-unsigned long MaxBotixSonar_Range::sensorLastUpdated;
 
 // Uses TLL Communication to get data from MaxBotix
 bool MaxBotixSonar_Range::update(){
@@ -118,13 +116,13 @@ bool MaxBotixSonar_Range::update(){
     if(!wasOn){powerDown();}
 
     // Return true when finished
-    MaxBotixSonar_Range::sensorLastUpdated = millis();
+    sensorLastUpdated = millis();
     return true;
 }
 
 
 float MaxBotixSonar_Range::getValue(void)
 {
-    checkForUpdate(MaxBotixSonar_Range::sensorLastUpdated);
+    checkForUpdate(sensorLastUpdated);
     return sensorValue_depth;
 }

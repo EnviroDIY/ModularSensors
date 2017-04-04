@@ -37,8 +37,8 @@ public:
 private:
     const char *_version;
     String sensorLocation;
-    static float sensorValue_temp;
-    static unsigned long sensorLastUpdated;
+    float sensorValue_temp;
+    unsigned long sensorLastUpdated;
 };
 
 
@@ -56,8 +56,8 @@ private:
     const char *_version;
     int _batteryPin;
     String sensorLocation;
-    static float sensorValue_battery;
-    static unsigned long sensorLastUpdated;
+    float sensorValue_battery;
+    unsigned long sensorLastUpdated;
 };
 
 
@@ -74,8 +74,8 @@ public:
 private:
     const char *_version;
     String sensorLocation;
-    static float sensorValue_freeRam;
-    static unsigned long sensorLastUpdated;
+    float sensorValue_freeRam;
+    unsigned long sensorLastUpdated;
 };
 
 #endif
