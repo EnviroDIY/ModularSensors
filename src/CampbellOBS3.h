@@ -30,8 +30,8 @@ protected:
     float _A;
     float _B;
     float _C;
-    static float sensorValue;
-    static unsigned long sensorLastUpdated;
+    /*static*/ float sensorValue;
+    /*static*/ unsigned long sensorLastUpdated;
 };
 
 
