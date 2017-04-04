@@ -339,7 +339,9 @@ void LoggerBase::setupLogFile(void)
     logFile.print(F("Data Logger: "));
     logFile.println(_loggerID);
 
-    String dataHeader = F("\"Timestamp\", ");
+    String dataHeader = F("\"Date and Time in UTC");
+    dataHeader += _timeZone;
+    dataHeader += F("\", ");
     for (uint8_t i = 0; i < _sensorCount; i++)
     {
         dataHeader += F("\"");
@@ -364,7 +366,9 @@ void LoggerBase::setupLogFile(void)
 
 String LoggerBase::generateSensorDataCSV(void)
 {
-    String csvString = String(LoggerBase::markedISO8601Time) + F(", ");
+    String csvString = "";
+    LoggerBase::markedDateTime.addToString(csvString);
+    csvString += F(", ");
     csvString += SensorArray::generateSensorDataCSV();
     return csvString;
 }
