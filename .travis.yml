@@ -19,7 +19,7 @@ install:
     - pip install -U platformio
     - pio upgrade
     - pio update
-    - pio lib -g install EnviroDIYLibs=https://github.com/EnviroDIY/Libraries.git
+    - pio lib -g install https://github.com/EnviroDIY/Libraries.git#platformio
     - pio lib -g uninstall EnviroDIY_ModularSensors
     - pio lib -g update
 script:
