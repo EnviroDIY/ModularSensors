@@ -37,7 +37,7 @@ bool CampbellOBS3::update(){
 
     // Start the Auxillary ADD
     Adafruit_ADS1115 ads;     /* Use this for the 16-bit version */
-    delay(500);
+    ads.begin();
 
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
