@@ -20,8 +20,9 @@ typedef enum modemType
 {
     GPRSBee4 = 0,  // Sodaq GPRSBee v4 - 2G (GPRS) communication
     GPRSBee6,  // Sodaq GPRSBee v6 - 2G (GPRS) communication
-    WIFIBee,  // Digi XBee S6B - WiFi communication
     Fona,  // Adafruit Fona - for our purposes, it operates like a GPRSBee v4
+    WiFiBee,  // Digi XBee S6B - WiFi communication
+    Other,  // Digi XBee S6B - WiFi communication
     // RADIO,
     // THREEG
 } modemType;

@@ -140,23 +140,34 @@ Functions for logging data:
 - **setFileName()** - This automatically generates a csv file name from the logger id and the current date.  You must call one of the two setFileName functions before calling setupLogFile or logtoSD.
 - **getFileName()** - This returns the current filename as an Arduino String.  Must be run after setFileName.
 - **setupLogFile()** - This creates a file on the SD card and writes a header to it.  It also sets the "file created" time stamp.
-- **generateSensorDataCSV()** - This returns an Arduino String containing the time and a comma separated list of sensor values.
 - **logToSD(String rec)** - This writes a line the the SD card and sets the "file modified" timestamp.
+- **generateFileHeader()** - This returns and Aruduino String with a comma separated list of headers for the csv.
+- **generateSensorDataCSV()** - This returns an Arduino String containing the time and a comma separated list of sensor values.
 
 Convience functions to do it all:
 - **begin()** - Starts the logger.  Must be in the setup function.
 - **log()** - Logs data, must be the entire content of the loop function.
 
 ### Additional Functions Available for a LoggerEnviroDIY Object:
+Sending data to EnviroDIY depends on having some sort of modem or internet connection.  In our case, we're using "ModemSupport" bit of this library, which is essentially a wrapper for [TinyGSM](https://github.com/vshymanskyy/TinyGSM/), to interface with the modem.  To make this work, you must add one of these lines _to the very top of your sketch_:
+```cpp
+// Select your modem chip, comment out all of the others (comment all of them for a transparent WiFiBee):
+#define TINY_GSM_MODEM_SIM800  // Select for Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
+// #define TINY_GSM_MODEM_SIM900
+// #define TINY_GSM_MODEM_A6
+// #define TINY_GSM_MODEM_A7
+// #define TINY_GSM_MODEM_M590
+// #define TINY_GSM_MODEM_ESP8266
+```
+Any of the above modems types/chips should work, though only a SIM800 has been tested to date.
 - These three functions set up the required registration token, sampling feature uuid, and time series uuids for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.
     - **setToken(const char registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
     - **setSamplingFeature(const char samplingFeature)** - Sets the GUID of the sampling feature.  Note that the input is a pointer to the samplingFeature.
     - **setUUIDs(const char UUIDs[])** - Sets the time series UUIDs.  Note that the input is an array of pointers.  The order of the UUIDs in this array **must match exactly** with the order of the coordinating variable in the SENSOR_LIST.
-- **setupModem(modem modemType, Stream modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin, const char APN)** - Sets up the internet communcation, with either GPRSBee4, GPRSBee6, Fona, or WIFIBee.  Note that the modemStream and APN should be pointers.
+- **setupModem(modem modemType, Stream modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin, const char APN)** - Sets up the internet communcation, with either GPRSBee4, GPRSBee6, Fona, WiFiBee, or Other.  Note that the modemStream and APN should be pointers.  
 - **generateSensorDataJSON()** - Generates a properly formatted JSON string to go to the EnviroDIY streaming data loader API.
-- **postDataWiFi()** - Creates proper headers and sends data to the EnviroDIY data portal via WiFi.  You must use the external XCTU program to set up your WiFi bee before attaching it to your board.  You must call the setupModem function before calling this function.  Returns an HTML response code.
+- **postDataEnviroDIY()** - Creates proper headers and sends data to the EnviroDIY data portal.  You must use the external XCTU program to set up your WiFi bee before attaching it to your board.  You must call the setupModem function before calling this function.  Returns an HTML response code.
 - **postDataGPRS()** - Creates proper headers and sends data to the EnviroDIY data portal via GPRS.  You must call the setupModem function before calling this function.  Returns an HTML response code.
-- **printHTTPResult(int result)** - Interprets the HTML response code and prints it as text.
 
 ### <a name="LoggerExamples"></a>Logger Examples:
 
@@ -181,8 +192,11 @@ LoggerEnviroDIY EnviroDIYLogger;
 _Within the setup function_, you must then initialize the logger and then run the logger setup.  For the EnviroDIY logger, you must also set up the communication.  (Please note that these are show with default values.):
 
 ```cpp
+// Set the time zone and offset from the RTC
+Logger.setTimeZone(int timeZone);
+Logger.setTZOffset(int offset);
 // Initialize the logger;
-Logger.init(int timeZone, int SDCardPin, int interruptPin,
+Logger.init(int SDCardPin, int interruptPin,
             int sensorCount,
             SensorBase *SENSOR_LIST[],
             float loggingIntervalMinutes,
@@ -197,8 +211,11 @@ Logger.begin();
 --OR--
 
 ```cpp
+// Set the time zone and offset from the RTC
+EnviroDIYLogger.setTimeZone(int timeZone);
+EnviroDIYLogger.setTZOffset(int offset);
 // Initialize the logger;
-EnviroDIYLogger.init(int timeZone, int SDCardPin, int interruptPin,
+EnviroDIYLogger.init(int SDCardPin, int interruptPin,
                      int sensorCount,
                      SensorBase *SENSOR_LIST[],
                      float loggingIntervalMinutes,

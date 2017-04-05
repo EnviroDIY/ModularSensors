@@ -21,7 +21,7 @@ void LoggerEnviroDIY::setSamplingFeature(const char *samplingFeature)
 void LoggerEnviroDIY::setUUIDs(const char *UUIDs[])
 { _UUIDs = UUIDs; }
 
-
+loggerModem LoggerEnviroDIY::modem;
 void LoggerEnviroDIY::setupModem(modemType modType,
                                  Stream *modemStream,
                                 int vcc33Pin,
@@ -178,7 +178,7 @@ void LoggerEnviroDIY::log(void)
         if (modem.connectNetwork())
         {
             // Post the data to the WebSDL
-            int result = postDataEnviroDIY();    
+            int result = postDataEnviroDIY();
             // Print the response from the WebSDL
             modem.printHTTPResult(result);  // for debugging
 

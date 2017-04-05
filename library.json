@@ -16,7 +16,7 @@
             "url": "https://envirodiy.org/"
         }
     ],
-    "version": "1.0.0-alpha",
+    "version": "1.1.0-alpha",
     "repository":
     {
         "type": "git",
@@ -62,8 +62,8 @@
             "version": "https://github.com/EnviroDIY/Arduino-SDI-12.git#mayfly"
         },
         {
-            "name": "GPRSbee",
-            "version": "https://github.com/EnviroDIY/GPRSbee.git#v1.2_hacked"
+            "name": "TinyGSM",
+            "version": "https://github.com/vshymanskyy/TinyGSM.git"
         }
     ]
 }

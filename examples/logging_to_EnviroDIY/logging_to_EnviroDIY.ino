@@ -20,6 +20,14 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <Arduino.h>
 #include <SensorBase.h>
 
+// Select your modem chip, comment out all of the others (comment all of them for a transparent WiFiBee):
+#define TINY_GSM_MODEM_SIM800  // Select for Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
+// #define TINY_GSM_MODEM_SIM900
+// #define TINY_GSM_MODEM_A6
+// #define TINY_GSM_MODEM_A7
+// #define TINY_GSM_MODEM_M590
+// #define TINY_GSM_MODEM_ESP8266
+
 #ifdef DreamHostURL
 #include <LoggerDreamHost.h>
 #else
@@ -139,9 +147,9 @@ const char *UUIDs[] =
 // ---------------------------------------------------------------------------
 // Device Connection Options and WebSDL Endpoints for POST requests
 // ---------------------------------------------------------------------------
-modemType MODEM_TYPE = WIFIBee;  // The type of XBee, either GPRSBee4, GPRSBee6, or WIFIBee
-HardwareSerial &BeeSerial = Serial1; // The serial port for the xbee - software serial can also be used.
-const int BEE_BAUD = 9600;  // Bee BAUD rate (9600 is default)
+modemType MODEM_TYPE = WiFiBee;  // The type of XBee, either GPRSBee4, GPRSBee6, or WiFiBee
+HardwareSerial &ModemSerial = Serial1; // The serial port for the xbee - software serial can also be used.
+const int ModemBaud = 9600;  // Bee BAUD rate (9600 is default)
 const char *APN = "apn.konekt.io";  // The APN for the GPRSBee, unnecessary for WiFi
 
 
@@ -193,7 +201,7 @@ void setup()
     // Start the primary serial connection
     Serial.begin(SERIAL_BAUD);
     // Start the serial connection with the *bee
-    BeeSerial.begin(BEE_BAUD);
+    ModemSerial.begin(ModemBaud);
 
     // Set up pins for the LED's
     pinMode(GREEN_LED, OUTPUT);
@@ -219,7 +227,7 @@ void setup()
     EnviroDIYLogger.setToken(REGISTRATION_TOKEN);
     EnviroDIYLogger.setSamplingFeature(SAMPLING_FEATURE);
     EnviroDIYLogger.setUUIDs(UUIDs);
-    EnviroDIYLogger.setupModem(MODEM_TYPE, &BeeSerial, BEE_VCC_PIN, BEE_CTS_PIN, BEE_DTR_PIN, APN);
+    EnviroDIYLogger.setupModem(MODEM_TYPE, &ModemSerial, BEE_VCC_PIN, BEE_CTS_PIN, BEE_DTR_PIN, APN);
     #ifdef DreamHostURL
     EnviroDIYLogger.setDreamHostURL(DreamHostURL);
     #endif
