@@ -108,7 +108,12 @@ String LoggerBase::formatDateTime_ISO8601(uint32_t epochTime)
 bool LoggerBase::checkInterval(void)
 {
     bool retval;
-    if ((getNow() % _interruptRate == 0 ) || (LoggerBase::_numReadings < 15 && getNow() % 60 == 0))
+    // Serial.println(getNow());  // for Debugging
+    // Serial.println(getNow() % _interruptRate);  // for Debugging
+    // Serial.println(LoggerBase::_numReadings);  // for Debugging
+    // Serial.println( getNow() % 60);  // for Debugging
+    if ((getNow() % _interruptRate == 0 ) or
+        (LoggerBase::_numReadings < 15 and getNow() % 60 == 0))
     {
         // Serial.println(F("Time to log!"));  // for Debugging
         retval = true;
