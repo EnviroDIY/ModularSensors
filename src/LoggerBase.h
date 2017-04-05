@@ -109,7 +109,7 @@ protected:
     int _ledPin;
 
     static String _fileName;
-    static uint32_t _setupTime;
+    static uint8_t _numReadings;
 private:
     // Private functions for the timer and sleep modes
     static void checkTime(uint32_t ts);

@@ -14,7 +14,7 @@
 
 // Set up the static variables for the initilizer
 int LoggerBase::_timeZone = 0;  // Set in the init function
-uint32_t LoggerBase::_setupTime = 0;
+uint8_t LoggerBase::_numReadings = 0;
 
 // Initialization - cannot do this in constructor arduino has issues creating
 // instances of classes with non-empty constructors
@@ -33,7 +33,6 @@ void LoggerBase::init(int timeZone, int SDCardPin, int interruptPin,
     _interruptRate = round(_loggingIntervalMinutes*60);  // convert to even seconds
     _loggerID = loggerID;
     _autoFileName = false;
-    LoggerBase::_setupTime = getNow();
 
     // Set sleep variable, if an interrupt pin is given
     if(_interruptPin != -1)
@@ -109,7 +108,7 @@ String LoggerBase::formatDateTime_ISO8601(uint32_t epochTime)
 bool LoggerBase::checkInterval(void)
 {
     bool retval;
-    if ((getNow() % _interruptRate == 0 ) || (getNow() - LoggerBase::_setupTime < 900000 && getNow() % 60 == 0))
+    if ((getNow() % _interruptRate == 0 ) || (getNow() - LoggerBase::_numReadings < 15 && getNow() % 60 == 0))
     {
         // Serial.println(F("Time to log!"));  // for Debugging
         retval = true;
@@ -420,6 +419,7 @@ void LoggerBase::logToSD(String rec)
 
     // Close the file to save it
     logFile.close();
+    LoggerBase::_numReadings ++;
 }
 
 

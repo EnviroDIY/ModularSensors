@@ -70,8 +70,9 @@ const char *ES2DI12address = "3";  // The SDI-12 Address of the 5-TM
 // const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
 
 // MaxBotix Sonar: pin settings
-const int SonarData = 11;     // recieve pin
-const int SonarTrigger = -1;   // trigger pin - to set of single readings
+const int SonarData = 10;     // data  pin
+// const int SonarPower = 11;   // excite (power) pin
+const int SonarTrigger = -1;   // Trigger pin
 // const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
 
 // Campbell OBS 3+: pin settings
