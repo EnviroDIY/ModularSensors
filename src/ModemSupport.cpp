@@ -14,7 +14,7 @@
 * Functions for the main OnOff class
 * ========================================================================= */
 
-OnOff::OnOff()
+ModemOnOff::ModemOnOff()
 {
     _vcc33Pin = -1;
     _onoff_DTR_pin = -1;
@@ -22,7 +22,7 @@ OnOff::OnOff()
 }
 
 // Initializes the instance
-void OnOff::init(int vcc33Pin, int onoff_DTR_pin, int status_CTS_pin)
+void ModemOnOff::init(int vcc33Pin, int onoff_DTR_pin, int status_CTS_pin)
 {
     // Serial.println(F("Initializing modem on/off."));  // For debugging
     if (vcc33Pin >= 0) {
@@ -43,7 +43,7 @@ void OnOff::init(int vcc33Pin, int onoff_DTR_pin, int status_CTS_pin)
     }
 }
 
-bool OnOff::isOn(void)
+bool ModemOnOff::isOn(void)
 {
     if (_status_CTS_pin >= 0) {
         bool status = digitalRead(_status_CTS_pin);
@@ -55,7 +55,7 @@ bool OnOff::isOn(void)
     return true;
 }
 
-void OnOff::powerOn(void)
+void ModemOnOff::powerOn(void)
 {
     if (_vcc33Pin >= 0) {
         digitalWrite(_vcc33Pin, HIGH);
@@ -63,7 +63,7 @@ void OnOff::powerOn(void)
     }
 }
 
-void OnOff::powerOff(void)
+void ModemOnOff::powerOff(void)
 {
     if (_vcc33Pin >= 0) {
         digitalWrite(_vcc33Pin, LOW);
@@ -134,4 +134,133 @@ void heldOnOff::off()
     while (isOn()){delay(1);}  // Wait until is off
     // Serial.println(F("Modem set to off."));  // For debugging
     powerOff();
+}
+
+
+
+/* ===========================================================================
+* Functions for the modems
+* This is basically a wrapper for TinyGsm
+* ========================================================================= */
+void loggerModem::setupModem(modemType modType,
+                               Stream *modemStream,
+                               int vcc33Pin,
+                               int status_CTS_pin,
+                               int onoff_DTR_pin,
+                               const char *APN)
+{
+    _modemType = modType;
+    _APN = APN;
+
+    Serial.println(F("Setting up modem."));  // For debugging
+
+    // Initialize the modem
+    switch(modType)
+    {
+        case GPRSBee4:
+        case Fona:
+        {
+            static pulsedOnOff pulsed;
+            _modemOnOff = &pulsed;
+            pulsed.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
+            break;
+        }
+        case GPRSBee6:
+        {
+            static heldOnOff held;
+            _modemOnOff = &held;
+            held.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
+            break;
+        }
+        case WIFIBee:
+        {
+            _modemStream = modemStream;
+            static heldOnOff held;
+            _modemOnOff = &held;
+            break;
+        }
+    }
+
+    switch(_modemType)
+    {
+        case GPRSBee6:
+        case GPRSBee4:
+        case Fona:
+        {
+            Serial.println(F("Initializing GSM modem instance"));  // For debugging
+            static TinyGsm modem(*modemStream);
+            _modem = &modem;
+            static TinyGsmClient client(modem);
+            _client = &client;
+            _modemOnOff->on();
+            _modem->init();
+            _modemOnOff->off();
+            _modemStream = _client;
+            break;
+        }
+        case WIFIBee:
+        {
+            _modemStream = modemStream;
+            break;
+        }
+    }
+}
+
+
+void loggerModem::connectNetwork(void)
+{
+    // Turn on the modem and connect to the network
+    switch(_modemType)
+    {
+        case GPRSBee6:
+        case GPRSBee4:
+        case Fona:
+        {
+            // Serial.println(F("Attempting to turn on modem."));  // For debugging
+            _modemOnOff->on();
+            Serial.println(F("Waiting for network..."));  // For debugging
+            if (!_modem->waitForNetwork()) {
+                Serial.println("... Connection failed");  // For debugging
+            } else {
+                _modem->gprsConnect(_APN, "", "");
+            }
+            break;
+        }
+        case WIFIBee:
+            {break;}
+    }
+}
+
+
+void loggerModem::disconnectNetwork(void)
+// Disconnect and turn off the modem
+{
+    switch(_modemType)
+    {
+        case GPRSBee6:
+        case GPRSBee4:
+        case Fona:
+        {
+            _modem->gprsDisconnect();
+            _modemOnOff->off();
+            break;
+        }
+        case WIFIBee:
+            {break;}
+    }
+}
+
+int loggerModem::connect(const char *host, uint16_t port)
+{
+    return _client->connect(host, port);
+}
+
+int loggerModem::connect(IPAddress ip, uint16_t port)
+{
+    return _client->connect(ip, port);
+}
+
+void loggerModem::stop(void)
+{
+    _client->stop();
 }

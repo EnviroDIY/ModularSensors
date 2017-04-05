@@ -150,12 +150,12 @@ void LoggerDreamHost::log(void)
         // Post the data to the WebSDL
         int result = postDataEnviroDIY();
         // Print the response from the WebSDL
-        printPostResult(result);  // for debugging
+        printHTTPResult(result);  // for debugging
 
         // Post the data to the WebSDL
         int result2 = postDataDreamHost();
         // Print the response from the WebSDL
-        printPostResult(result2);  // for debugging
+        printHTTPResult(result2);  // for debugging
 
         // Turn off the LED
         digitalWrite(LoggerBase::_ledPin, LOW);

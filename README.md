@@ -156,7 +156,7 @@ Convience functions to do it all:
 - **generateSensorDataJSON()** - Generates a properly formatted JSON string to go to the EnviroDIY streaming data loader API.
 - **postDataWiFi()** - Creates proper headers and sends data to the EnviroDIY data portal via WiFi.  You must use the external XCTU program to set up your WiFi bee before attaching it to your board.  You must call the setupModem function before calling this function.  Returns an HTML response code.
 - **postDataGPRS()** - Creates proper headers and sends data to the EnviroDIY data portal via GPRS.  You must call the setupModem function before calling this function.  Returns an HTML response code.
-- **printPostResult(int result)** - Interprets the HTML response code and prints it as text.
+- **printHTTPResult(int result)** - Interprets the HTML response code and prints it as text.
 
 ### <a name="LoggerExamples"></a>Logger Examples:
 

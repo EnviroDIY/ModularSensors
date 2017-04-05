@@ -21,68 +21,18 @@ void LoggerEnviroDIY::setSamplingFeature(const char *samplingFeature)
 void LoggerEnviroDIY::setUUIDs(const char *UUIDs[])
 { _UUIDs = UUIDs; }
 
+
 void LoggerEnviroDIY::setupModem(modemType modType,
-                               Stream *modemStream,
-                               int vcc33Pin,
-                               int status_CTS_pin,
-                               int onoff_DTR_pin,
-                               const char *APN)
+                                 Stream *modemStream,
+                                int vcc33Pin,
+                                int status_CTS_pin,
+                                int onoff_DTR_pin,
+                                const char *APN)
 {
-    _modemType = modType;
-    _APN = APN;
-
-    Serial.println(F("Setting up modem."));  // For debugging
-
-    // Initialize the modem
-    switch(modType)
-    {
-        case GPRSBee4:
-        case Fona:
-        {
-            static pulsedOnOff pulsed;
-            _modemOnOff = &pulsed;
-            pulsed.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
-            break;
-        }
-        case GPRSBee6:
-        {
-            static heldOnOff held;
-            _modemOnOff = &held;
-            held.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
-            break;
-        }
-        case WIFIBee:
-        {
-            _modemStream = modemStream;
-            static heldOnOff held;
-            _modemOnOff = &held;
-            break;
-        }
-    }
-    switch(_modemType)
-    {
-        case GPRSBee6:
-        case GPRSBee4:
-        case Fona:
-        {
-            Serial.println(F("Initializing GSM modem instance"));  // For debugging
-            static TinyGsm modem(*modemStream);
-            _modem = &modem;
-            static TinyGsmClient client(modem);
-            _client = &client;
-            _modemOnOff->on();
-            _modem->init();
-            _modemOnOff->off();
-            _modemStream = _client;
-            break;
-        }
-        case WIFIBee:
-        {
-            _modemStream = modemStream;
-            break;
-        }
-    }
-};
+    modem.setupModem(modType, modemStream,
+                     vcc33Pin, status_CTS_pin, onoff_DTR_pin,
+                     APN);
+}
 
 
 // Adds the extra UUIDs to the header of the log file
@@ -146,7 +96,7 @@ void LoggerEnviroDIY::dumpBuffer(Stream *stream, int timeDelay/* = 5*/, int time
 
 
 // Used only for debugging - can be removed
-void LoggerEnviroDIY::printPostResult(int HTTPcode)
+void LoggerEnviroDIY::printHTTPResult(int HTTPcode)
 {
     switch (HTTPcode)
     {
@@ -244,27 +194,7 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
 // This function makes an HTTP connection to the server and POSTs data - for WIFI
 int LoggerEnviroDIY::postDataEnviroDIY(void)
 {
-    // Turn on the modem and connect to the network
-    switch(_modemType)
-    {
-        case GPRSBee6:
-        case GPRSBee4:
-        case Fona:
-        {
-            // Serial.println(F("Attempting to turn on modem."));  // For debugging
-            _modemOnOff->on();
-            Serial.println(F("Waiting for network..."));  // For debugging
-            if (!_modem->waitForNetwork()) {
-                Serial.println("... Connection failed");  // For debugging
-            } else {
-                _modem->gprsConnect(_APN, "", "");
-                _client->connect("data.envirodiy.org", 80);
-            }
-            break;
-        }
-        case WIFIBee:
-            {break;}
-    }
+    modem.connect("data.envirodiy.org", 80);
 
     // Send the request to the serial for debugging
     Serial.println(F("\n \\/---- Post Request to EnviroDIY ----\\/ "));  // for debugging
@@ -272,46 +202,32 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
     Serial.flush();  // for debugging
 
     // Send the request to the modem stream
-    dumpBuffer(_modemStream);
-    streamEnviroDIYRequest(_modemStream);
-    _modemStream->flush();  // wait for sending to finish
+    dumpBuffer(modem._modemStream);
+    streamEnviroDIYRequest(modem._modemStream);
+    modem._modemStream->flush();  // wait for sending to finish
 
     // Add a brief delay for at least the first 12 characters of the HTTP response
     int timeout = 1500;
-    while ((timeout > 0) && _modemStream->available() < 12)
+    while ((timeout > 0) && modem._modemStream->available() < 12)
     {
       delay(1);
       timeout--;
     }
 
+    modem.stop();
+
     // Process the HTTP response
     int responseCode = 0;
-    if (timeout > 0 && _modemStream->available() >= 12)
+    if (timeout > 0 && modem._modemStream->available() >= 12)
     {
-        _modemStream->readStringUntil(' ');
-        responseCode = _modemStream->parseInt();
+        modem._modemStream->readStringUntil(' ');
+        responseCode = modem._modemStream->parseInt();
         Serial.println(F(" -- Response Code -- "));  // for debugging
         Serial.println(responseCode);  // for debugging
 
-        dumpBuffer(_modemStream);
+        dumpBuffer(modem._modemStream);
     }
     else responseCode=504;
-
-    // Disconnect and turn off the modem
-    switch(_modemType)
-    {
-        case GPRSBee6:
-        case GPRSBee4:
-        case Fona:
-        {
-            _client->stop();
-            _modem->gprsDisconnect();
-            _modemOnOff->off();
-            break;
-        }
-        case WIFIBee:
-            {break;}
-    }
 
     return responseCode;
 }
@@ -348,7 +264,7 @@ void LoggerEnviroDIY::log(void)
         int result = postDataEnviroDIY();
 
         // Print the response from the WebSDL
-        printPostResult(result);  // for debugging
+        printHTTPResult(result);  // for debugging
 
         // Turn off the LED
         digitalWrite(LoggerBase::_ledPin, LOW);

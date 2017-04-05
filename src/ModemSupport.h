@@ -4,22 +4,16 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for turning modems on and off to save power
+ *This file is for turning modems on and off to save power.  It is more-or-less
+ *a wrapper for tinyGSM library:  https://github.com/vshymanskyy/TinyGSM
 */
 
 #ifndef modem_onoff_h
 #define modem_onoff_h
 
 #include <Arduino.h>
-
+#define TINY_GSM_MODEM_SIM800  // for debugging - should go in main sketch
 #include <TinyGsmClient.h>
-// Select your modem:
-#define TINY_GSM_MODEM_SIM800
-//#define TINY_GSM_MODEM_SIM900
-//#define TINY_GSM_MODEM_A6
-//#define TINY_GSM_MODEM_A7
-//#define TINY_GSM_MODEM_M590
-//#define TINY_GSM_MODEM_ESP8266
 
 // For the various communication devices"
 typedef enum modemType
@@ -40,16 +34,15 @@ typedef enum modemType
 } GPRSVersion;
 
 
-/*!  TAKEN FROM SODAQ'S MODEM LIBRARIES
- * \brief This class is used to switch on or off a (SODAQ) Bee device.
- *
- * It's a pure virtual class, so you'll have to implement a specialized
- * class.
- */
-class OnOff
+/* ===========================================================================
+* Classes fot turning modems on and off
+* TAKEN FROM SODAQ'S MODEM LIBRARIES
+* ========================================================================= */
+
+class ModemOnOff
 {
 public:
-    OnOff();
+    ModemOnOff();
     virtual void init(int vcc33Pin, int onoff_DTR_pin, int status_CTS_pin);
     virtual bool isOn(void);
     virtual void on(void) = 0;
@@ -64,7 +57,7 @@ protected:
 };
 
 // Turns the modem on and off by pulsing the onoff/DTR/Key pin on for 2 seconds
-class pulsedOnOff : public OnOff
+class pulsedOnOff : public ModemOnOff
 {
 public:
     void on(void) override;
@@ -74,13 +67,40 @@ private:
 };
 
 // Turns the modem on by setting the onoff/DTR/Key high and off by setting it low
-class heldOnOff : public OnOff
+class heldOnOff : public ModemOnOff
 {
 public:
     void on(void) override;
     void off(void) override;
 };
 
+
+/* ===========================================================================
+* The modem class
+* ========================================================================= */
+
+class loggerModem
+{
+public:
+    void setupModem(modemType modType,
+                    Stream *modemStream,
+                    int vcc33Pin,
+                    int status_CTS_pin,
+                    int onoff_DTR_pin,
+                    const char *APN);
+    void connectNetwork(void);
+    void disconnectNetwork(void);
+    int connect(const char *host, uint16_t port);
+    int connect(IPAddress ip, uint16_t port);
+    void stop(void);
+    Stream *_modemStream;
+private:
+    ModemOnOff *_modemOnOff;
+    TinyGsm *_modem;
+    TinyGsmClient *_client;
+    modemType _modemType;
+    const char *_APN;
+};
 
 
 

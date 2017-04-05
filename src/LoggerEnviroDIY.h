@@ -39,7 +39,7 @@ public:
 
     // Public function to send data
     int postDataEnviroDIY(void);
-    void printPostResult(int result);
+    void printHTTPResult(int result);
 
     // Convience functions to do it all
     virtual void log(void) override;
@@ -48,14 +48,8 @@ protected:
     // Communication functions
     void dumpBuffer(Stream *stream, int timeDelay = 5, int timeout = 5000);
     void streamEnviroDIYRequest(Stream *stream);
+    loggerModem modem;
 
-    // Communication information
-    modemType _modemType;
-    Stream *_modemStream;
-    OnOff *_modemOnOff;
-    TinyGsm *_modem;
-    TinyGsmClient *_client;
-    const char *_APN;
 private:
     // Tokens and UUID's for EnviroDIY
     const char *_registrationToken;
