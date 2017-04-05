@@ -19,14 +19,9 @@ install:
     - pip install -U platformio
     - pio upgrade
     - pio update
-    - pio lib -g install https://github.com/EnviroDIY/Sodaq_DS3231.git
-    - pio lib -g install https://github.com/SodaqMoja/RTCTimer
-    - pio lib -g install https://github.com/EnviroDIY/PcInt_PCINT0.git
-    - pio lib -g install https://github.com/EnviroDIY/SdFat.git
-    - pio lib -g install https://github.com/EnviroDIY/SoftwareSerial_PCINT12.git
-    - pio lib -g install https://github.com/Adafruit/Adafruit_ADS1X15.git
-    - pio lib -g install https://github.com/EnviroDIY/Arduino-SDI-12.git#mayfly
-    - pio lib -g install https://github.com/EnviroDIY/GPRSbee.git
+    - pio lib -g install https://github.com/EnviroDIY/Libraries.git#platformio
+    - pio lib -g uninstall EnviroDIY_ModularSensors
+    - pio lib -g install 322
     - pio lib -g update
     - git rm library.json
 script:

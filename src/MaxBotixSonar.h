@@ -28,7 +28,7 @@ public:
     float getValue(void) override;
 protected:
     float sensorValue_depth;
-    static unsigned long sensorLastUpdated;
+    unsigned long sensorLastUpdated;
 private:
     int _triggerPin;
     int result;

@@ -23,11 +23,19 @@ class LoggerBase : public virtual SensorArray
 {
 public:
     // Setup and initialization function
-    void init(int timeZone, int SDCardPin, int interruptPin,
+    void init(int SDCardPin, int interruptPin,
               int sensorCount,
               SensorBase *SENSOR_LIST[],
               float loggingIntervalMinutes,
               const char *loggerID = 0);
+    // Sets the static timezone - this must be set
+    static void setTimeZone(int timeZone);
+    // This set the offset between the built-in clock and the time zone where
+    // the data is being recorded.  If your RTC is set in UTC and your logging
+    // timezone is EST, this should be -5.  If your RTC is set in EST and your
+    // timezone is EST this does not need to be called.
+    static void setTZOffset(int offset);
+    // Sets up a pin for an LED or other way of alerting that data is being logged
     void setAlertPin(int ledPin);
 
     // The timer
@@ -92,24 +100,27 @@ protected:
     // The SD card and file
     SdFat sd;
     SdFile logFile;
+    String _fileName;
 
-    static long markedEpochTime;
-    static DateTime markedDateTime;
-    static char markedISO8601Time[26];
-
-    static bool sleep;
-
+    // Static variables - identical for EVERY logger
+    static uint8_t _numReadings;
     static int _timeZone;
+    static int _offset;
+
+    // Initialization variables
     int _SDCardPin;
     int _interruptPin;
     const char *_loggerID;
-
     float _loggingIntervalMinutes;
     int _interruptRate;
+    bool _sleep;
     int _ledPin;
 
-    static String _fileName;
-    // static char *_fileName;
+    // Time stamps - want to set them at a single time and carry them forward
+    long markedEpochTime;
+    DateTime markedDateTime;
+    char markedISO8601Time[26];
+
 private:
     // Private functions for the timer and sleep modes
     static void checkTime(uint32_t ts);
