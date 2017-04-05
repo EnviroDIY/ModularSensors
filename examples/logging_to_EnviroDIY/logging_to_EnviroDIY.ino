@@ -206,8 +206,12 @@ void setup()
     Serial.print(F(" on EnviroDIY Mayfly "));
     Serial.println(LoggerID);
 
+    // Set the timezone and offsets
+    EnviroDIYLogger.setTimeZone(TIME_ZONE);
+    EnviroDIYLogger.setTZOffset(0);
+
     // Initialize the logger;
-    EnviroDIYLogger.init(TIME_ZONE, SD_SS_PIN, RTC_PIN, sensorCount, SENSOR_LIST,
+    EnviroDIYLogger.init(SD_SS_PIN, RTC_PIN, sensorCount, SENSOR_LIST,
                 LOGGING_INTERVAL, LoggerID);
     EnviroDIYLogger.setAlertPin(GREEN_LED);
     // Set up the communication with EnviroDIY

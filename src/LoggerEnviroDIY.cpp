@@ -314,7 +314,7 @@ void LoggerEnviroDIY::log(void)
         // Turn on the LED to show we're taking a reading
         digitalWrite(LoggerBase::_ledPin, HIGH);
 
-        // Update the static time variables with the current time
+        // Update the time variables with the current time
         markTime();
         // Update the values from all attached sensors
         updateAllSensors();
@@ -350,5 +350,5 @@ void LoggerEnviroDIY::log(void)
     }
 
     //Sleep
-    if(LoggerBase::sleep){systemSleep();}
+    if(_sleep){systemSleep();}
 }
