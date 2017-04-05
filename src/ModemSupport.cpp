@@ -347,28 +347,33 @@ void loggerModem::printHTTPResult(int HTTPcode)
         case 201:
         case 202:
         {
-            Serial.println(F("\nData was sent successfully."));
+            Serial.println(F("Data was sent successfully."));
             break;
         }
 
         case 301:
         case 302:
         {
-            Serial.println(F("\nRequest was redirected."));
+            Serial.println(F("Request was redirected."));
             break;
         }
 
         case 400:
+        {
+            Serial.println(F("Bad request."));
+            break;
+        }
+
         case 404:
         {
-            Serial.println(F("\nFailed to send data."));
+            Serial.println(F("Requested resource not found."));
             break;
         }
 
         case 403:
         case 405:
         {
-            Serial.print(F("\nAccess forbidden.  "));
+            Serial.print(F("Access forbidden.  "));
             Serial.println(F("Check your reguistration token and UUIDs."));
             break;
         }
@@ -376,13 +381,13 @@ void loggerModem::printHTTPResult(int HTTPcode)
         case 500:
         case 503:
         {
-            Serial.println(F("\nRequest caused an internal server error."));
+            Serial.println(F("Request caused an internal server error."));
             break;
         }
 
         case 504:
         {
-            Serial.print(F("\nRequest timed out.  "));
+            Serial.print(F("Request timed out.  "));
             Serial.println(F("No response from server or insufficient signal to send message."));
             break;
         }

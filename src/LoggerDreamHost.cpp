@@ -14,14 +14,14 @@
 // ============================================================================
 //  Functions for the SWRC Sensors DreamHost data receivers.
 // ============================================================================
-void LoggerDreamHost::setDreamHostURL(const char *URL)
+void LoggerDreamHost::setDreamHostPortalRX(const char *URL)
 {
-    _DreamHostURL = URL;
+    _DreamHostPortalRX = URL;
 }
 
 String LoggerDreamHost::generateSensorDataDreamHost(void)
 {
-    String dhString = String(_DreamHostURL);
+    String dhString = String(_DreamHostPortalRX);
     dhString += F("?LoggerID=");
     dhString += String(LoggerBase::_loggerID);
     dhString += F("&Loggertime=");
@@ -77,7 +77,8 @@ int LoggerDreamHost::postDataDreamHost(void)
     int responseCode = 0;
     if (timeout > 0 && modem._modemStream->available() >= 12)
     {
-        Serial.println("****" + modem._modemStream->readStringUntil(' ') + "****");
+        Serial.println("****" + modem._modemStream->readStringUntil(' ') + "****");  // for debugging
+        // modem._modemStream->readStringUntil(' ');
         responseCode = modem._modemStream->parseInt();
         modem.dumpBuffer();
         Serial.println(F(" -- Response Code -- "));  // for debugging

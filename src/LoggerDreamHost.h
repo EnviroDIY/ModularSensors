@@ -20,7 +20,7 @@ class LoggerDreamHost : public virtual LoggerEnviroDIY
 {
 public:
     // Functions for private SWRC server
-    void setDreamHostURL(const char *URL);
+    void setDreamHostPortalRX(const char *URL);
     String generateSensorDataDreamHost(void);
     int postDataDreamHost(void);
 
@@ -28,7 +28,7 @@ public:
     void log(void) override;
 
 private:
-    const char *_DreamHostURL;
+    const char *_DreamHostPortalRX;
     void streamDreamHostRequest(Stream *stream);
 };
 

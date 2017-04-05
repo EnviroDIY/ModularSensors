@@ -28,7 +28,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // #define TINY_GSM_MODEM_M590
 // #define TINY_GSM_MODEM_ESP8266
 
-#ifdef DreamHostURL
+#ifdef DreamHostPortalRX
 #include <LoggerDreamHost.h>
 #else
 #include <LoggerEnviroDIY.h>
@@ -147,10 +147,10 @@ const char *UUIDs[] =
 // ---------------------------------------------------------------------------
 // Device Connection Options and WebSDL Endpoints for POST requests
 // ---------------------------------------------------------------------------
-modemType MODEM_TYPE = WiFiBee;  // The type of XBee, either GPRSBee4, GPRSBee6, or WiFiBee
-HardwareSerial &ModemSerial = Serial1; // The serial port for the xbee - software serial can also be used.
+modemType MODEM_TYPE = GPRSBee6;  // The type of modem, either GPRSBee4, GPRSBee6, Fona, WiFiBee, or other
+HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
 const int ModemBaud = 9600;  // Bee BAUD rate (9600 is default)
-const char *APN = "apn.konekt.io";  // The APN for the GPRSBee, unnecessary for WiFi
+const char *APN = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
 
 
 // ---------------------------------------------------------------------------
@@ -185,7 +185,7 @@ void greenred4flash()
 }
 
 // Create a new logger instance
-#ifdef DreamHostURL
+#ifdef DreamHostPortalRX
 LoggerDreamHost EnviroDIYLogger;
 #else
 LoggerEnviroDIY EnviroDIYLogger;
@@ -228,8 +228,8 @@ void setup()
     EnviroDIYLogger.setSamplingFeature(SAMPLING_FEATURE);
     EnviroDIYLogger.setUUIDs(UUIDs);
     EnviroDIYLogger.setupModem(MODEM_TYPE, &ModemSerial, BEE_VCC_PIN, BEE_CTS_PIN, BEE_DTR_PIN, APN);
-    #ifdef DreamHostURL
-    EnviroDIYLogger.setDreamHostURL(DreamHostURL);
+    #ifdef DreamHostPortalRX
+    EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
     #endif
     // Begin the logger;
     EnviroDIYLogger.begin();
