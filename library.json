@@ -16,6 +16,7 @@
             "url": "https://envirodiy.org/"
         }
     ],
+    "version": "1.0.0-alpha",
     "repository":
     {
         "type": "git",
