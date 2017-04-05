@@ -11,10 +11,12 @@
 #include "SensorBase.h"
 
 // The constructor
-SensorBase::SensorBase(int dataPin, int powerPin, String sensorName, String varName, String varUnit, String dreamHost)
+SensorBase::SensorBase(int dataPin, int powerPin, unsigned int decimalResolution,
+                       String sensorName, String varName, String varUnit, String dreamHost)
 {
     _powerPin = powerPin;
     _dataPin = dataPin;
+    _decimalResolution = decimalResolution;
     _sensorName = sensorName;
     _varName = varName;
     _varUnit = varUnit;
@@ -22,15 +24,27 @@ SensorBase::SensorBase(int dataPin, int powerPin, String sensorName, String varN
 }
 
 // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
-String SensorBase::getSensorLocation(void){return String(_dataPin);};
+String SensorBase::getSensorLocation(void){return String(_dataPin);}
 // This returns the name of the sensor.
-String SensorBase::getSensorName(void){return _sensorName;};
+String SensorBase::getSensorName(void){return _sensorName;}
 // This returns the variable's name using http://vocabulary.odm2.org/variablename/
-String SensorBase::getVarName(void){return _varName;};
+String SensorBase::getVarName(void){return _varName;}
 // This returns the variable's unit using http://vocabulary.odm2.org/units/
-String SensorBase::getVarUnit(void){return _varUnit;};
+String SensorBase::getVarUnit(void){return _varUnit;}
 // This returns the dreamhost PHP tag - for old SWRC dreamhost system
-String SensorBase::getDreamHost(void){return _dreamHost;};
+String SensorBase::getDreamHost(void){return _dreamHost;}
+// This returns the current value of the variable as a string with the correct number of significant figures
+String SensorBase::getValueString(void)
+{
+    // Need this because otherwise get extra spaces in strings from int
+    if (_decimalResolution == 0)
+    {
+        int val = int(getValue());
+        return String(val);
+    }
+    else
+    {return String(getValue(), _decimalResolution);}
+}
 
 
 // This is a helper function to check if the power needs to be turned on
@@ -240,7 +254,7 @@ void SensorArray::printSensorData(Stream *stream /* = &Serial*/)
         stream->print(F(" and reports "));
         stream->print(_sensorList[i]->getVarName());
         stream->print(F(" is "));
-        stream->print(_sensorList[i]->getValue());
+        stream->print(_sensorList[i]->getValueString());
         stream->print(F(" "));
         stream->print(_sensorList[i]->getVarUnit());
         stream->println();
@@ -254,7 +268,7 @@ String SensorArray::generateSensorDataCSV(void)
 
     for (uint8_t i = 0; i < _sensorCount; i++)
     {
-        csvString += String(_sensorList[i]->getValue());
+        csvString += _sensorList[i]->getValueString();
         if (i + 1 != _sensorCount)
         {
             csvString += F(", ");

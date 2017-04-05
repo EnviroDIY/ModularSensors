@@ -10,6 +10,16 @@
  *Documentation fo the SDI-12 Protocol commands and responses
  *for the Decagon 5TM can be found at:
  * http://manuals.decagon.com/Integration%20Guides/ES-2%20Integrators%20Guide.pdf
+ *
+ * For Specific Conductance:
+ *  Resolution is 0.001 mS/cm = 1 µS/cm
+ *  Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
+ *  Range is 0 – 120 mS/cm (bulk)
+ *
+ * For Temperature:
+ *  Resolution is 0.1°C
+ *  Accuracy is ±1°C
+ *  Range is -40°C to +50°C
 */
 
 #include "DecagonES2.h"
@@ -37,7 +47,7 @@ bool DecagonES2::update(void)
 
 
 DecagonES2_Cond::DecagonES2_Cond(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, F("DecagonES2"), F("specificConductance"), F("microsiemenPerCentimeter"), F("ES2Cond")),
+ : SensorBase(dataPin, powerPin, 0, F("DecagonES2"), F("specificConductance"), F("microsiemenPerCentimeter"), F("ES2Cond")),
    DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
    DecagonES2(SDI12address, powerPin, dataPin, numReadings)
 {}
@@ -51,8 +61,9 @@ float DecagonES2_Cond::getValue(void)
 
 
 
+
 DecagonES2_Temp::DecagonES2_Temp(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, F("DecagonES2"), F("temperature"), F("degreeCelsius"), F("ES2temp")),
+ : SensorBase(dataPin, powerPin, 1, F("DecagonES2"), F("temperature"), F("degreeCelsius"), F("ES2temp")),
    DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
    DecagonES2(SDI12address, powerPin, dataPin, numReadings)
 {}

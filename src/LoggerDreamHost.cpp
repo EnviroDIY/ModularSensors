@@ -26,14 +26,14 @@ String LoggerDreamHost::generateSensorDataDreamHost(void)
     dhString += F("?LoggerID=");
     dhString += String(LoggerBase::_loggerID);
     dhString += F("&Loggertime=");
-    dhString += String(LoggerBase::currentepochtime);
+    dhString += String(LoggerBase::markedEpochTime - 946684800);  // Coorect time from epoch to y2k
 
     for (int i = 0; i < LoggerBase::_sensorCount; i++)
     {
         dhString += F("&");
-        dhString += String(LoggerBase::_sensorList[i]->getDreamHost());
+        dhString += LoggerBase::_sensorList[i]->getDreamHost();
         dhString += F("=");
-        dhString += String(LoggerBase::_sensorList[i]->getValue());
+        dhString += LoggerBase::_sensorList[i]->getValueString();
     }
     return dhString;
 
@@ -77,7 +77,7 @@ int LoggerDreamHost::postDataDreamHost(void)
 void LoggerDreamHost::log(void)
 {
     // Update the timer
-    timer.update();
+    // loggerTimer.update();
 
     // Check of the current time is an even interval of the logging interval
     if (checkInterval())
@@ -87,9 +87,8 @@ void LoggerDreamHost::log(void)
         // Turn on the LED to show we're taking a reading
         digitalWrite(LoggerBase::_ledPin, HIGH);
 
-        // Get the clock time when we begin updating sensors
-        getDateTime_ISO8601().toCharArray(LoggerBase::logTime, 26) ;
-
+        // Update the time variables with the current time
+        markTime();
         // Update the values from all attached sensors
         updateAllSensors();
         // Immediately put sensors to sleep to save power
@@ -129,5 +128,5 @@ void LoggerDreamHost::log(void)
     }
 
     //Sleep
-    if(LoggerBase::sleep){systemSleep();}
+    if(_sleep){systemSleep();}
 }

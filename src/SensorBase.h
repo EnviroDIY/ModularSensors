@@ -26,7 +26,7 @@ class SensorBase
 {
 public:
 
-    SensorBase(int dataPin = -1, int powerPin = -1,
+    SensorBase(int dataPin = -1, int powerPin = -1, unsigned int decimalResolution = 0,
                String sensorName = "Unknown", String varName = "Unknown",
                String varUnit = "Unknown", String dreamHost = "Unknown");
 
@@ -41,6 +41,8 @@ public:
     String getVarUnit(void);
     // This returns the dreamhost PHP tag - for old SWRC dreamhost system
     String getDreamHost(void);
+    // This returns the current value of the variable as a string with the correct number of significant figures
+    String getValueString(void);
 
     // These next functions have defaults.
     // This sets up the sensor, if necessary.  Defaults to ready.
@@ -68,6 +70,7 @@ protected:
     int _powerPin;
     SENSOR_STATUS sensorStatus;
 private:
+    unsigned int _decimalResolution;
     String _sensorName;
     String _varName;
     String _varUnit;

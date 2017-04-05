@@ -46,7 +46,7 @@ const char *MFVersion = "v0.3";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "Mayfly_160073";
 // How frequently (in minutes) to log data
-int LOGGING_INTERVAL = 1;
+int LOGGING_INTERVAL = 5;
 // Your logger's timezone.
 const int TIME_ZONE = -5;
 
@@ -70,40 +70,42 @@ const char *ES2DI12address = "3";  // The SDI-12 Address of the 5-TM
 // const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
 
 // MaxBotix Sonar: pin settings
-const int SonarData = 11;     // recieve pin
-const int SonarTrigger = -1;   // trigger pin - to set of single readings
+const int SonarData = 10;     // data  pin
+// const int SonarPower = 11;   // excite (power) pin
+const int SonarTrigger = -1;   // Trigger pin
 // const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
 
 // Campbell OBS 3+: pin settings
-//   Campbell OBS 3+ Low Range calibration
+// Campbell OBS 3+ Low Range calibration in Volts
 const int OBSLowPin = 0;  // The low voltage analog pin
-const float OBSLow_A = -2.4763E-07;  // The "A" value (X^2) from the low range calibration
-const float OBSLow_B = 1.0569E-01;  // The "B" value (X) from the low range calibration
-const float OBSLow_C = -2.9928E-01;  // The "C" value from the low range calibration
-//   Campbell OBS 3+ High Range calibration
+const float OBSLow_A = 4.0749E+00;  // The "A" value (X^2) from the low range calibration
+const float OBSLow_B = 9.1011E+01;  // The "B" value (X) from the low range calibration
+const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibration
+// Campbell OBS 3+ High Range calibration in Volts
 const int OBSHighPin = 1;  // The high voltage analog pin
-const float OBSHigh_A = 3.5310E-05;  // The "A" value (X^2) from the high range calibration
-const float OBSHigh_B = 4.0111E-01;  // The "B" value (X) from the high range calibration
-const float OBSHigh_C = 2.0709E-01;  // The "C" value from the high range calibration
+const float OBSHigh_A = 5.2996E+01;  // The "A" value (X^2) from the high range calibration
+const float OBSHigh_B = 3.7828E+02;  // The "B" value (X) from the high range calibration
+const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calibration
 // const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
 
 // ---------------------------------------------------------------------------
 // 3. The array that contains all valid sensors
 // ---------------------------------------------------------------------------
 SensorBase *SENSOR_LIST[] = {
-    new MayflyOnboardTemp(MFVersion),
-    new MayflyOnboardBatt(MFVersion),
-    new MayflyFreeRam(),
     new DecagonCTD_Cond(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
     new DecagonCTD_Temp(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
     new DecagonCTD_Depth(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
+    new Decagon5TM_Ea(*TMSDI12address, switchedPower, SDI12Data),
     new Decagon5TM_VWC(*TMSDI12address, switchedPower, SDI12Data),
     new Decagon5TM_Temp(*TMSDI12address, switchedPower, SDI12Data),
     new DecagonES2_Cond(*ES2DI12address, switchedPower, SDI12Data),
     new DecagonES2_Temp(*ES2DI12address, switchedPower, SDI12Data),
     new CampbellOBS3_Turbidity(switchedPower, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C),
     new CampbellOBS3_TurbHigh(switchedPower, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C),
-    new MaxBotixSonar_Range(switchedPower, SonarData, SonarTrigger)
+    new MaxBotixSonar_Range(switchedPower, SonarData, SonarTrigger),
+        new MayflyOnboardTemp(MFVersion),
+        new MayflyOnboardBatt(MFVersion),
+        new MayflyFreeRam()
 };
 int sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
 
@@ -137,7 +139,7 @@ const char *UUIDs[] =
 // ---------------------------------------------------------------------------
 // Device Connection Options and WebSDL Endpoints for POST requests
 // ---------------------------------------------------------------------------
-xbee BEE_TYPE = WIFI;  // The type of XBee, either GPRS or WIFI
+xbee BEE_TYPE = WIFI;  // The type of XBee, either GPRSv4, GPRSv6, or WIFI
 HardwareSerial &BeeSerial = Serial1; // The serial port for the xbee - software serial can also be used.
 const int BEE_BAUD = 9600;  // Bee BAUD rate (9600 is default)
 const char *APN = "apn.konekt.io";  // The APN for the GPRSBee, unnecessary for WiFi
@@ -204,12 +206,18 @@ void setup()
     Serial.print(F(" on EnviroDIY Mayfly "));
     Serial.println(LoggerID);
 
+    // Set the timezone and offsets
+    EnviroDIYLogger.setTimeZone(TIME_ZONE);
+    EnviroDIYLogger.setTZOffset(0);
+
     // Initialize the logger;
-    EnviroDIYLogger.init(TIME_ZONE, SD_SS_PIN, RTC_PIN, sensorCount, SENSOR_LIST,
-                LOGGING_INTERVAL, LoggerID, SAMPLING_FEATURE, UUIDs);
+    EnviroDIYLogger.init(SD_SS_PIN, RTC_PIN, sensorCount, SENSOR_LIST,
+                LOGGING_INTERVAL, LoggerID);
     EnviroDIYLogger.setAlertPin(GREEN_LED);
     // Set up the communication with EnviroDIY
     EnviroDIYLogger.setToken(REGISTRATION_TOKEN);
+    EnviroDIYLogger.setSamplingFeature(SAMPLING_FEATURE);
+    EnviroDIYLogger.setUUIDs(UUIDs);
     EnviroDIYLogger.setupBee(BEE_TYPE, &BeeSerial, BEE_CTS_PIN, BEE_DTR_PIN, APN);
     #ifdef DreamHostURL
     EnviroDIYLogger.setDreamHostURL(DreamHostURL);

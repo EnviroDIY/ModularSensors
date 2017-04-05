@@ -1,0 +1,69 @@
+{
+    "name": "EnviroDIY_ModularSensors",
+    "description":  "A library that allows acces to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
+    "keywords": "sensors, logger, low power, sleeping, EnviroDIY",
+    "authors":
+    [
+        {
+            "name": "Sara Damiano",
+            "email": "sdamiano@stroudcenter.org",
+            "url": "https://envirodiy.org/",
+            "maintainer": true
+        },
+        {
+            "name": "Shannon Hicks",
+            "email": "shicks@stroudcenter.org",
+            "url": "https://envirodiy.org/"
+        }
+    ],
+    "version": "1.0.0-alpha",
+    "repository":
+    {
+        "type": "git",
+        "url": "https://github.com/EnviroDIY/ModularSensors.git"
+    },
+    "export":
+    {
+        "exclude":
+        [
+            "doc/*",
+            "sensor_tests/*"
+        ]
+    },
+    "frameworks": "atmelavr",
+    "dependencies":
+    [
+        {
+            "name": "Wire"
+        },
+        {
+            "name": "Sodaq_DS3231",
+            "version": "https://github.com/EnviroDIY/Sodaq_DS3231.git"
+        },
+        {
+            "name": "RTCTimer"
+        },
+        {
+            "name": "PcInt_PCINT0",
+            "version": "https://github.com/EnviroDIY/PcInt_PCINT0.git"
+        },
+        {
+            "name": "SdFat"
+        },
+        {
+            "name": "SoftwareSerial_PCINT12",
+            "version": "https://github.com/EnviroDIY/SoftwareSerial_PCINT12.git"
+        },
+        {
+            "name": "ADS1X15"
+        },
+        {
+            "name": "Arduino-SDI-12_PCINT3",
+            "version": "https://github.com/EnviroDIY/Arduino-SDI-12.git#mayfly"
+        },
+        {
+            "name": "GPRSbee",
+            "version": "https://github.com/EnviroDIY/GPRSbee.git#v1.2_hacked"
+        }
+    ]
+}

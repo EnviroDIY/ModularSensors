@@ -10,6 +10,16 @@
  *Documentation fo the SDI-12 Protocol commands and responses
  *for the Decagon 5TM can be found at:
  * http://manuals.decagon.com/Integration%20Guides/5TM%20Integrators%20Guide.pdf
+ *
+ * For Ea and VWC:
+ *     Resolution is 0.0008 m3/m3 (0.08% VWC) from 0 – 50% VWC
+ *     Accuracy for Generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typ
+ *     Accuracy for Medium Specific Calibration: ± 0.02 m3/m3 (± 2% VWC)
+ *     Range is 0 – 1 m3/m3 (0 – 100% VWC)
+ * For temp:
+ *     Resolution is 0.1°C
+ *     Accuracy is ± 1°C
+ *     Range is - 40°C to + 50°C
 */
 
 #include "Decagon5TM.h"
@@ -37,7 +47,7 @@ bool Decagon5TM::update(void)
 
 
 Decagon5TM_Ea::Decagon5TM_Ea(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, F("Decagon5TM"), F("permittivity"), F("Farad per Meter"), F("SoilEa")),
+ : SensorBase(dataPin, powerPin, 4, F("Decagon5TM"), F("permittivity"), F("Farad per Meter"), F("SoilEa")),
    DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
    Decagon5TM(SDI12address, powerPin, dataPin, numReadings)
 {}
@@ -52,7 +62,7 @@ float Decagon5TM_Ea::getValue(void)
 
 
 Decagon5TM_Temp::Decagon5TM_Temp(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, F("Decagon5TM"), F("temperature"), F("degreeCelsius"), F("SoilTemp")),
+ : SensorBase(dataPin, powerPin, 1, F("Decagon5TM"), F("temperature"), F("degreeCelsius"), F("SoilTemp")),
    DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
    Decagon5TM(SDI12address, powerPin, dataPin, numReadings)
 {}
@@ -66,7 +76,7 @@ float Decagon5TM_Temp::getValue(void)
 
 
 Decagon5TM_VWC::Decagon5TM_VWC(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, F("Decagon5TM"), F("volumetricWaterContent"), F("percent"), F("SoilVWC")),
+ : SensorBase(dataPin, powerPin, 2, F("Decagon5TM"), F("volumetricWaterContent"), F("percent"), F("SoilVWC")),
    DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
    Decagon5TM(SDI12address, powerPin, dataPin, numReadings)
 {}
