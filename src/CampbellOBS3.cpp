@@ -42,9 +42,6 @@ String CampbellOBS3::getSensorLocation(void)
     return sensorLocation;
 }
 
-// The static variables that need to be updated
-// float CampbellOBS3::sensorValue = 0;
-// unsigned long CampbellOBS3::sensorLastUpdated;
 
 // Uses Auxillary ADD to convert data
 bool CampbellOBS3::update(){
@@ -61,12 +58,13 @@ bool CampbellOBS3::update(){
     int16_t adcResult = 0;
     float voltage = 0;
     float calibResult = 0;
+    sensorValue = 0;
 
     adcResult = ads.readADC_SingleEnded(_dataPin);  // Getting the reading
 
-    // Serial.print("ads.readADC_SingleEnded(");  // For debugging
+    // Serial.print(F("ads.readADC_SingleEnded("));  // For debugging
     // Serial.print(_dataPin);  // For debugging
-    // Serial.print("): ");  // For debugging
+    // Serial.print(F("): "));  // For debugging
     // Serial.println(ads.readADC_SingleEnded(_dataPin));  // For debugging
 
     // now convert bits into millivolts
@@ -77,12 +75,16 @@ bool CampbellOBS3::update(){
     // Serial.println(String(voltage, 6));  // For debugging
 
     calibResult = (_A * square (voltage)) + (_B * voltage) - _C;
-    // Serial.print("calibResult: ");  // For debugging
+    // Serial.print(F("Calibration Curve: "));  // For debugging
+    // Serial.print(_A);  // For debugging
+    // Serial.print(F("x^2 + "));  // For debugging
+    // Serial.print(_B);  // For debugging
+    // Serial.print(F("x + "));  // For debugging
+    // Serial.println(_C);  // For debugging
+    // Serial.print(F("calibResult: "));  // For debugging
     // Serial.println(calibResult);  // For debugging
 
     sensorValue = calibResult;
-    // Serial.print("CampbellOBS3::sensorValue: ");  // For debugging
-    // Serial.println(CampbellOBS3::sensorValue);  // For debugging
     sensorLastUpdated = millis();
 
     // Turn the power back off it it had been turned on

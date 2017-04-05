@@ -46,7 +46,7 @@ const char *MFVersion = "v0.3";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "Mayfly_160073";
 // How frequently (in minutes) to log data
-int LOGGING_INTERVAL = 1;
+int LOGGING_INTERVAL = 5;
 // Your logger's timezone.
 const int TIME_ZONE = -5;
 
@@ -70,8 +70,9 @@ const char *ES2DI12address = "3";  // The SDI-12 Address of the 5-TM
 // const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
 
 // MaxBotix Sonar: pin settings
-const int SonarData = 11;     // recieve pin
-const int SonarTrigger = -1;   // trigger pin - to set of single readings
+const int SonarData = 10;     // data  pin
+// const int SonarPower = 11;   // excite (power) pin
+const int SonarTrigger = -1;   // Trigger pin
 // const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
 
 // Campbell OBS 3+: pin settings
@@ -205,8 +206,12 @@ void setup()
     Serial.print(F(" on EnviroDIY Mayfly "));
     Serial.println(LoggerID);
 
+    // Set the timezone and offsets
+    EnviroDIYLogger.setTimeZone(TIME_ZONE);
+    EnviroDIYLogger.setTZOffset(0);
+
     // Initialize the logger;
-    EnviroDIYLogger.init(TIME_ZONE, SD_SS_PIN, RTC_PIN, sensorCount, SENSOR_LIST,
+    EnviroDIYLogger.init(SD_SS_PIN, RTC_PIN, sensorCount, SENSOR_LIST,
                 LOGGING_INTERVAL, LoggerID);
     EnviroDIYLogger.setAlertPin(GREEN_LED);
     // Set up the communication with EnviroDIY

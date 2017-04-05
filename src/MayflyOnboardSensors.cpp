@@ -25,15 +25,6 @@ bool MayflyOnboardSensors::wake(void)
 }
 
 
-// The static variables that need to be updated
-float MayflyOnboardTemp::sensorValue_temp = 0;
-float MayflyOnboardBatt::sensorValue_battery = 0;
-float MayflyFreeRam::sensorValue_freeRam = 0;
-unsigned long MayflyOnboardTemp::sensorLastUpdated = 0;
-unsigned long MayflyOnboardBatt::sensorLastUpdated = 0;
-unsigned long MayflyFreeRam::sensorLastUpdated = 0;
-
-
 // Resolution is 0.25°C
 // Accuracy is ±3°C
 MayflyOnboardTemp::MayflyOnboardTemp(char const *version)
@@ -52,8 +43,8 @@ bool MayflyOnboardTemp::update(void)
     // Get the temperature from the Mayfly's real time clock
     rtc.convertTemperature();  //convert current temperature into registers
     float tempVal = rtc.getTemperature();
-    MayflyOnboardTemp::sensorValue_temp = tempVal;
-    MayflyOnboardTemp::sensorLastUpdated = millis();
+    sensorValue_temp = tempVal;
+    sensorLastUpdated = millis();
 
     // Return true when finished
     return true;
@@ -61,8 +52,8 @@ bool MayflyOnboardTemp::update(void)
 
 float MayflyOnboardTemp::getValue(void)
 {
-    checkForUpdate(MayflyOnboardTemp::sensorLastUpdated);
-    return MayflyOnboardTemp::sensorValue_temp;
+    checkForUpdate(sensorLastUpdated);
+    return sensorValue_temp;
 }
 
 
@@ -99,15 +90,15 @@ bool MayflyOnboardBatt::update(void)
     {
         // Get the battery voltage
         float rawBattery = analogRead(_batteryPin);
-        MayflyOnboardBatt::sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
-        MayflyOnboardBatt::sensorLastUpdated = millis();
+        sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
+        sensorLastUpdated = millis();
     }
     if (strcmp(_version, "v0.5") == 0)
     {
         // Get the battery voltage
         float rawBattery = analogRead(_batteryPin);
-        MayflyOnboardBatt::sensorValue_battery = (3.3 / 1023.) * 4.7 * rawBattery;
-        MayflyOnboardBatt::sensorLastUpdated = millis();
+        sensorValue_battery = (3.3 / 1023.) * 4.7 * rawBattery;
+        sensorLastUpdated = millis();
     }
 
     // Return true when finished
@@ -116,8 +107,8 @@ bool MayflyOnboardBatt::update(void)
 
 float MayflyOnboardBatt::getValue(void)
 {
-    checkForUpdate(MayflyOnboardBatt::sensorLastUpdated);
-    return MayflyOnboardBatt::sensorValue_battery;
+    checkForUpdate(sensorLastUpdated);
+    return sensorValue_battery;
 }
 
 
@@ -142,8 +133,8 @@ bool MayflyFreeRam::update(void)
     // Used only for debugging - can be removed
       extern int __heap_start, *__brkval;
       int v;
-      MayflyFreeRam::sensorValue_freeRam = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
-      MayflyFreeRam::sensorLastUpdated = millis();
+      sensorValue_freeRam = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+      sensorLastUpdated = millis();
 
     // Return true when finished
     return true;
@@ -151,6 +142,6 @@ bool MayflyFreeRam::update(void)
 
 float MayflyFreeRam::getValue(void)
 {
-    checkForUpdate(MayflyFreeRam::sensorLastUpdated);
-    return MayflyFreeRam::sensorValue_freeRam;
+    checkForUpdate(sensorLastUpdated);
+    return sensorValue_freeRam;
 }

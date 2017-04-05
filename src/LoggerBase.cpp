@@ -12,19 +12,17 @@
 #include "LoggerBase.h"
 
 
-// Set up the static variables for the initilizer
-bool LoggerBase::sleep = false;  // Set in the init function
-int LoggerBase::_timeZone = 0;  // Set in the init function
+// Set up the static variables
+uint8_t LoggerBase::_numReadings = 0;
 
 // Initialization - cannot do this in constructor arduino has issues creating
 // instances of classes with non-empty constructors
-void LoggerBase::init(int timeZone, int SDCardPin, int interruptPin,
+void LoggerBase::init(int SDCardPin, int interruptPin,
                       int sensorCount,
                       SensorBase *SENSOR_LIST[],
                       float loggingIntervalMinutes,
                       const char *loggerID/* = 0*/)
 {
-    _timeZone = timeZone;
     _SDCardPin = SDCardPin;
     _interruptPin = interruptPin;
     _sensorCount = sensorCount;
@@ -37,15 +35,22 @@ void LoggerBase::init(int timeZone, int SDCardPin, int interruptPin,
     // Set sleep variable, if an interrupt pin is given
     if(_interruptPin != -1)
     {
-        LoggerBase::sleep = true;
+        _sleep = true;
     }
 };
 
-// Sets up a pin for an LED or other way of alerting that data is being logged
-void LoggerBase::setAlertPin(int ledPin)
-{
-    _ledPin = ledPin;
+
+// Sets the static timezone
+int LoggerBase::_timeZone = 0;
+void LoggerBase::setTimeZone(int timeZone){ LoggerBase::_timeZone = timeZone; }
+// Sets the static time adjustment
+int LoggerBase::_offset = 0;
+void LoggerBase::setTZOffset(int offset){
+    LoggerBase::_offset = offset;
 }
+
+// Sets up a pin for an LED or other way of alerting that data is being logged
+void LoggerBase::setAlertPin(int ledPin){ _ledPin = ledPin; }
 
 
 // ============================================================================
@@ -57,7 +62,7 @@ void LoggerBase::setAlertPin(int ledPin)
 uint32_t LoggerBase::getNow(void)
 {
   uint32_t currentEpochTime = rtc.now().getEpoch();
-  currentEpochTime += _timeZone*3600;
+  currentEpochTime += _offset*3600;
   return currentEpochTime;
 }
 
@@ -104,11 +109,19 @@ String LoggerBase::formatDateTime_ISO8601(uint32_t epochTime)
 }
 
 // This checks to see if the current time is an even interval of the logging rate
+// or we're in the first 15 minutes of logging
 bool LoggerBase::checkInterval(void)
 {
     bool retval;
-    if (getNow() % _interruptRate == 0)
+    // Serial.println(getNow());  // for Debugging
+    // Serial.println(getNow() % _interruptRate);  // for Debugging
+    // Serial.println(LoggerBase::_numReadings);  // for Debugging
+    // Serial.println( getNow() % 60);  // for Debugging
+    if ((getNow() % _interruptRate == 0 ) or
+        (LoggerBase::_numReadings < 15 and getNow() % 60 == 0))
     {
+        // Update the number of readings taken
+        LoggerBase::_numReadings ++;
         // Serial.println(F("Time to log!"));  // for Debugging
         retval = true;
     }
@@ -121,16 +134,12 @@ bool LoggerBase::checkInterval(void)
 }
 
 
-// Declare the static variables to mark the time
-long LoggerBase::markedEpochTime = 0;
-DateTime LoggerBase::markedDateTime = 0;
-char LoggerBase::markedISO8601Time[26] = "";
-// This function sets all of the static variables to mark the time
+// Set all the time variables
 void LoggerBase::markTime(void)
 {
-  LoggerBase::markedEpochTime = getNow();
-  LoggerBase::markedDateTime = rtc.makeDateTime(LoggerBase::markedEpochTime);
-  formatDateTime_ISO8601(LoggerBase::markedDateTime).toCharArray(LoggerBase::markedISO8601Time, 26);
+  markedEpochTime = getNow();
+  markedDateTime = rtc.makeDateTime(markedEpochTime);
+  formatDateTime_ISO8601(markedDateTime).toCharArray(markedISO8601Time, 26);
 }
 
 
@@ -145,9 +154,7 @@ void LoggerBase::markTime(void)
 // This structure is required by the timer library.
 // See http://support.sodaq.com/sodaq-one/adding-a-timer-to-schedule-readings/
 void LoggerBase::checkTime(uint32_t ts)
-{
-  // Serial.println(LoggerBase::markedISO8601Time); // For debugging
-}
+{}
 
 // Set-up the RTC Timer events
 void LoggerBase::setupTimer(void)
@@ -255,12 +262,10 @@ void LoggerBase::systemSleep(void)
 //  Functions for logging data to an SD card
 // ============================================================================
 
-// Sets the filename and saves it to the static String
-String LoggerBase::_fileName = "";
 void LoggerBase::setFileName(char *fileName)
 {
     // Save the filename to the static String
-    LoggerBase::_fileName = fileName;
+    _fileName = fileName;
 
     // Print out the file name for debugging
     Serial.print(F("Data will be saved as "));  // for debugging
@@ -285,7 +290,7 @@ void LoggerBase::setFileName(void)
     String fileName = "";
     fileName +=  _loggerID;
     fileName +=  F("_");
-    fileName +=  formatDateTime_ISO8601(rtc.now()).substring(0, 10);
+    fileName +=  formatDateTime_ISO8601(getNow()).substring(0, 10);
     fileName +=  F(".csv");
     setFileName(fileName);
 }
@@ -314,32 +319,34 @@ void LoggerBase::setupLogFile(void)
     // Open the file in write mode (and create it if it did not exist)
     logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END);
     // Set creation date time
-    logFile.timestamp(T_CREATE, rtc.now().year(),
-                                rtc.now().month(),
-                                rtc.now().date(),
-                                rtc.now().hour(),
-                                rtc.now().minute(),
-                                rtc.now().second());
+    logFile.timestamp(T_CREATE, rtc.makeDateTime(getNow()).year(),
+                                rtc.makeDateTime(getNow()).month(),
+                                rtc.makeDateTime(getNow()).date(),
+                                rtc.makeDateTime(getNow()).hour(),
+                                rtc.makeDateTime(getNow()).minute(),
+                                rtc.makeDateTime(getNow()).second());
     // Set write/modification date time
-    logFile.timestamp(T_WRITE, rtc.now().year(),
-                               rtc.now().month(),
-                               rtc.now().date(),
-                               rtc.now().hour(),
-                               rtc.now().minute(),
-                               rtc.now().second());
+    logFile.timestamp(T_WRITE, rtc.makeDateTime(getNow()).year(),
+                               rtc.makeDateTime(getNow()).month(),
+                               rtc.makeDateTime(getNow()).date(),
+                               rtc.makeDateTime(getNow()).hour(),
+                               rtc.makeDateTime(getNow()).minute(),
+                               rtc.makeDateTime(getNow()).second());
     // Set access  date time
-    logFile.timestamp(T_ACCESS, rtc.now().year(),
-                                rtc.now().month(),
-                                rtc.now().date(),
-                                rtc.now().hour(),
-                                rtc.now().minute(),
-                                rtc.now().second());
+    logFile.timestamp(T_ACCESS, rtc.makeDateTime(getNow()).year(),
+                                rtc.makeDateTime(getNow()).month(),
+                                rtc.makeDateTime(getNow()).date(),
+                                rtc.makeDateTime(getNow()).hour(),
+                                rtc.makeDateTime(getNow()).minute(),
+                                rtc.makeDateTime(getNow()).second());
 
     // Add header information
     logFile.print(F("Data Logger: "));
     logFile.println(_loggerID);
 
-    String dataHeader = F("\"Timestamp\", ");
+    String dataHeader = F("\"Date and Time in UTC");
+    dataHeader += _timeZone;
+    dataHeader += F("\", ");
     for (uint8_t i = 0; i < _sensorCount; i++)
     {
         dataHeader += F("\"");
@@ -364,7 +371,9 @@ void LoggerBase::setupLogFile(void)
 
 String LoggerBase::generateSensorDataCSV(void)
 {
-    String csvString = String(LoggerBase::markedISO8601Time) + F(", ");
+    String csvString = "";
+    LoggerBase::markedDateTime.addToString(csvString);
+    csvString += F(", ");
     csvString += SensorArray::generateSensorDataCSV();
     return csvString;
 }
@@ -398,19 +407,19 @@ void LoggerBase::logToSD(String rec)
     Serial.println(rec);  // for debugging
 
     // Set write/modification date time
-    logFile.timestamp(T_WRITE, rtc.now().year(),
-                               rtc.now().month(),
-                               rtc.now().date(),
-                               rtc.now().hour(),
-                               rtc.now().minute(),
-                               rtc.now().second());
+    logFile.timestamp(T_WRITE, rtc.makeDateTime(getNow()).year(),
+                               rtc.makeDateTime(getNow()).month(),
+                               rtc.makeDateTime(getNow()).date(),
+                               rtc.makeDateTime(getNow()).hour(),
+                               rtc.makeDateTime(getNow()).minute(),
+                               rtc.makeDateTime(getNow()).second());
     // Set access  date time
-    logFile.timestamp(T_ACCESS, rtc.now().year(),
-                                rtc.now().month(),
-                                rtc.now().date(),
-                                rtc.now().hour(),
-                                rtc.now().minute(),
-                                rtc.now().second());
+    logFile.timestamp(T_ACCESS, rtc.makeDateTime(getNow()).year(),
+                                rtc.makeDateTime(getNow()).month(),
+                                rtc.makeDateTime(getNow()).date(),
+                                rtc.makeDateTime(getNow()).hour(),
+                                rtc.makeDateTime(getNow()).minute(),
+                                rtc.makeDateTime(getNow()).second());
 
     // Close the file to save it
     logFile.close();
@@ -431,7 +440,7 @@ void LoggerBase::begin(void)
 
     // Print a start-up note to the first serial port
     Serial.print(F("Current RTC time is: "));
-    Serial.println(formatDateTime_ISO8601(rtc.now()));
+    Serial.println(formatDateTime_ISO8601(getNow()));
     Serial.print(F("There are "));
     Serial.print(String(_sensorCount));
     Serial.println(F(" variables being recorded."));
@@ -448,7 +457,7 @@ void LoggerBase::begin(void)
     setupTimer();
 
     // Setup sleep mode
-    if(sleep){setupSleep();}
+    if(_sleep){setupSleep();}
 
     Serial.println(F("Setup finished!"));
     Serial.println(F("------------------------------------------\n"));
@@ -469,7 +478,7 @@ void LoggerBase::log(void)
         // Turn on the LED to show we're taking a reading
         digitalWrite(_ledPin, HIGH);
 
-        // Update the static time variables with the current time
+        // Update the time variables with the current time
         markTime();
         // Update the values from all attached sensors
         updateAllSensors();
@@ -486,5 +495,5 @@ void LoggerBase::log(void)
     }
 
     // Sleep
-    if(sleep){systemSleep();}
+    if(_sleep){systemSleep();}
 }

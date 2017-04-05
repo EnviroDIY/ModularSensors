@@ -21,6 +21,7 @@ install:
     - pio update
     - pio lib -g install https://github.com/EnviroDIY/Libraries.git#platformio
     - pio lib -g uninstall EnviroDIY_ModularSensors
+    - pio lib -g install 322
     - pio lib -g update
     - git rm library.json
 script:
