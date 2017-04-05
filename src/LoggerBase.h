@@ -78,10 +78,12 @@ public:
     void setFileName(void);
     // This returns the current filename.  Must be run after setFileName.
     String getFileName(void);
-    // This initializes a file on the SD card and writes a header to it
-    virtual void setupLogFile(void);
+    // This creates a header for the logger file
+    virtual String generateFileHeader(void);
     // This generates a comma separated list of volues of sensor data - including the time
     String generateSensorDataCSV(void);
+    // This initializes a file on the SD card and writes a header to it
+    void setupLogFile(void);
     // This writes a record to the SD card
     void logToSD(String rec);
 

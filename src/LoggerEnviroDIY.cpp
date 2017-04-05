@@ -36,21 +36,14 @@ void LoggerEnviroDIY::setupModem(modemType modType,
 
 
 // Adds the extra UUIDs to the header of the log file
-void LoggerEnviroDIY::setupLogFile(void)
+String LoggerEnviroDIY::generateFileHeader(void)
 {
-    // Set up the log file and add the major headers
-    LoggerBase::setupLogFile();
-
-    // Convert the string filename to a character file name for SdFat
-    int fileNameLength = LoggerBase::_fileName.length() + 1;
-    char charFileName[fileNameLength];
-    LoggerBase::_fileName.toCharArray(charFileName, fileNameLength);
-
-    // Re-open the file in write mode
-    logFile.open(charFileName, O_WRITE | O_AT_END);
+    String dataHeader = "";
+    dataHeader += LoggerBase::generateFileHeader();
+    dataHeader += F("\r\n");
 
     // Add additional UUID information
-    String dataHeader = F("\"Sampling Feature: ");
+    dataHeader += F("\"Sampling Feature: ");
     dataHeader += _samplingFeature;
     dataHeader += F("\"");
     for (uint8_t i = 0; i < _sensorCount; i++)
@@ -63,96 +56,14 @@ void LoggerEnviroDIY::setupLogFile(void)
             dataHeader += F(", ");
         }
     }
-
-    // Serial.println(dataHeader);  // for debugging
-    logFile.println(dataHeader);
-
-    //Close the file to save it
-    logFile.close();
+    return dataHeader;
 }
+
+
 
 // ============================================================================
-//  Functions for the EnviroDIY data receivers.
+//  Functions for the EnviroDIY data formatting and sending
 // ============================================================================
-
-
-// Used to empty out the buffer after a post request.
-// Removing this may cause communication issues. If you
-// prefer to not see the std::out, remove the print statement
-void LoggerEnviroDIY::dumpBuffer(Stream *stream, int timeDelay/* = 5*/, int timeout/* = 5000*/)
-{
-    while (timeout-- > 0 && stream->available() > 0)
-    {
-        while (stream->available() > 0)
-        {
-            // Serial.print(stream->readString());
-            stream->read();
-            delay(timeDelay);
-        }
-        delay(timeDelay);
-    }
-    stream->flush();
-}
-
-
-// Used only for debugging - can be removed
-void LoggerEnviroDIY::printHTTPResult(int HTTPcode)
-{
-    switch (HTTPcode)
-    {
-        case 200:
-        case 201:
-        case 202:
-        {
-            Serial.println(F("\nData was sent successfully."));
-            break;
-        }
-
-        case 301:
-        case 302:
-        {
-            Serial.println(F("\nRequest was redirected."));
-            break;
-        }
-
-        case 400:
-        case 404:
-        {
-            Serial.println(F("\nFailed to send data."));
-            break;
-        }
-
-        case 403:
-        case 405:
-        {
-            Serial.print(F("\nAccess forbidden.  "));
-            Serial.println(F("Check your reguistration token and UUIDs."));
-            break;
-        }
-
-        case 500:
-        case 503:
-        {
-            Serial.println(F("\nRequest caused an internal server error."));
-            break;
-        }
-
-        case 504:
-        {
-            Serial.print(F("\nRequest timed out.  "));
-            Serial.println(F("No response from server or insufficient signal to send message."));
-            break;
-        }
-
-        default:
-        {
-            Serial.print(F("\nAn unknown error has occured, and we're pretty confused\n"));
-            break;
-        }
-    }
-}
-
-
 String LoggerEnviroDIY::generateSensorDataJSON(void)
 {
     String jsonString = F("{");
@@ -191,6 +102,7 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
     stream->print(String(F("\r\n\r\n")));
 }
 
+
 // This function makes an HTTP connection to the server and POSTs data - for WIFI
 int LoggerEnviroDIY::postDataEnviroDIY(void)
 {
@@ -202,7 +114,7 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
     Serial.flush();  // for debugging
 
     // Send the request to the modem stream
-    dumpBuffer(modem._modemStream);
+    modem.dumpBuffer();
     streamEnviroDIYRequest(modem._modemStream);
     modem._modemStream->flush();  // wait for sending to finish
 
@@ -214,8 +126,6 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
       timeout--;
     }
 
-    modem.stop();
-
     // Process the HTTP response
     int responseCode = 0;
     if (timeout > 0 && modem._modemStream->available() >= 12)
@@ -225,9 +135,11 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
         Serial.println(F(" -- Response Code -- "));  // for debugging
         Serial.println(responseCode);  // for debugging
 
-        dumpBuffer(modem._modemStream);
+        modem.dumpBuffer();
     }
     else responseCode=504;
+
+    modem.stop();
 
     return responseCode;
 }
@@ -240,7 +152,9 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
 void LoggerEnviroDIY::log(void)
 {
     // Update the timer
-    loggerTimer.update();
+    // This runs the timer's "now" function [in our case getNow()] and then
+    // checks all of the registered timer events to see if they should run
+    // loggerTimer.update();
 
     // Check of the current time is an even interval of the logging interval
     if (checkInterval())
@@ -260,11 +174,17 @@ void LoggerEnviroDIY::log(void)
         //Save the data record to the log file
         logToSD(generateSensorDataCSV());
 
-        // Post the data to the WebSDL
-        int result = postDataEnviroDIY();
+        // Connect to the network
+        if (modem.connectNetwork())
+        {
+            // Post the data to the WebSDL
+            int result = postDataEnviroDIY();    
+            // Print the response from the WebSDL
+            modem.printHTTPResult(result);  // for debugging
 
-        // Print the response from the WebSDL
-        printHTTPResult(result);  // for debugging
+            // Disconnect from the network
+            modem.disconnectNetwork();
+        }
 
         // Turn off the LED
         digitalWrite(LoggerBase::_ledPin, LOW);

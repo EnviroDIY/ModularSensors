@@ -207,9 +207,9 @@ void loggerModem::setupModem(modemType modType,
 }
 
 
-void loggerModem::connectNetwork(void)
-{
     // Turn on the modem and connect to the network
+bool loggerModem::connectNetwork(void)
+{
     switch(_modemType)
     {
         case GPRSBee6:
@@ -219,21 +219,26 @@ void loggerModem::connectNetwork(void)
             // Serial.println(F("Attempting to turn on modem."));  // For debugging
             _modemOnOff->on();
             Serial.println(F("Waiting for network..."));  // For debugging
-            if (!_modem->waitForNetwork()) {
+            if (!_modem->waitForNetwork()){
                 Serial.println("... Connection failed");  // For debugging
+                return false;
             } else {
                 _modem->gprsConnect(_APN, "", "");
+                return true;
             }
             break;
         }
         case WIFIBee:
-            {break;}
+        {
+            return true;
+            break;
+        }
     }
 }
 
 
-void loggerModem::disconnectNetwork(void)
 // Disconnect and turn off the modem
+void loggerModem::disconnectNetwork(void)
 {
     switch(_modemType)
     {
@@ -252,15 +257,126 @@ void loggerModem::disconnectNetwork(void)
 
 int loggerModem::connect(const char *host, uint16_t port)
 {
-    return _client->connect(host, port);
+    switch(_modemType)
+    {
+        case GPRSBee6:
+        case GPRSBee4:
+        case Fona:
+        {
+            return _client->connect(host, port);
+            break;
+        }
+        case WIFIBee:
+            {break;}
+    }
 }
 
 int loggerModem::connect(IPAddress ip, uint16_t port)
 {
-    return _client->connect(ip, port);
+    switch(_modemType)
+    {
+        case GPRSBee6:
+        case GPRSBee4:
+        case Fona:
+        {
+            return _client->connect(ip, port);
+            break;
+        }
+        case WIFIBee:
+            {break;}
+    }
 }
 
 void loggerModem::stop(void)
 {
-    _client->stop();
+    switch(_modemType)
+    {
+        case GPRSBee6:
+        case GPRSBee4:
+        case Fona:
+        {
+            _client->stop();
+            break;
+        }
+        case WIFIBee:
+            {break;}
+    }
+}
+
+
+
+// Used to empty out the buffer after a post request.
+// Removing this may cause communication issues. If you
+// prefer to not see the std::out, remove the print statement
+void loggerModem::dumpBuffer(Stream *stream, int timeDelay/* = 5*/, int timeout/* = 5000*/)
+{
+    while (timeout-- > 0 && stream->available() > 0)
+    {
+        while (stream->available() > 0)
+        {
+            // Serial.print(stream->readString());
+            stream->read();
+            delay(timeDelay);
+        }
+        delay(timeDelay);
+    }
+    stream->flush();
+}
+
+
+// Used only for debugging - can be removed
+void loggerModem::printHTTPResult(int HTTPcode)
+{
+    switch (HTTPcode)
+    {
+        case 200:
+        case 201:
+        case 202:
+        {
+            Serial.println(F("\nData was sent successfully."));
+            break;
+        }
+
+        case 301:
+        case 302:
+        {
+            Serial.println(F("\nRequest was redirected."));
+            break;
+        }
+
+        case 400:
+        case 404:
+        {
+            Serial.println(F("\nFailed to send data."));
+            break;
+        }
+
+        case 403:
+        case 405:
+        {
+            Serial.print(F("\nAccess forbidden.  "));
+            Serial.println(F("Check your reguistration token and UUIDs."));
+            break;
+        }
+
+        case 500:
+        case 503:
+        {
+            Serial.println(F("\nRequest caused an internal server error."));
+            break;
+        }
+
+        case 504:
+        {
+            Serial.print(F("\nRequest timed out.  "));
+            Serial.println(F("No response from server or insufficient signal to send message."));
+            break;
+        }
+
+        default:
+        {
+            Serial.print(F("\nAn unknown error has occured, and we're pretty confused\n"));
+            break;
+        }
+    }
 }

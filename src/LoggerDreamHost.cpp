@@ -53,22 +53,7 @@ void LoggerDreamHost::streamDreamHostRequest(Stream *stream)
 // Post the data to dream host.  Do IF AND ONLY IF using GPRSBee
 int LoggerDreamHost::postDataDreamHost(void)
 {
-    // Turn on the modem and connect to the network
-    switch(_modemType)
-    {
-        case GPRSBee6:
-        case GPRSBee4:
-        case Fona:
-        {
-            _modemOnOff->on();
-            _modem->waitForNetwork();
-            _modem->gprsConnect(_APN, "", "");
-            _client->connect("data.envirodiy.org", 80);
-            break;
-        }
-        case WIFIBee:
-            {break;}
-    }
+    modem.connect("swrcsensors.dreamhosters.com", 80);
 
     // Send the request to the serial for debugging
     Serial.println(F("\n \\/------ Data to DreamHost ------\\/ "));  // for debugging
@@ -76,13 +61,13 @@ int LoggerDreamHost::postDataDreamHost(void)
     Serial.flush();  // for debugging
 
     // Send the request to the modem stream
-    dumpBuffer(LoggerEnviroDIY::_modemStream);
-    streamEnviroDIYRequest(LoggerEnviroDIY::_modemStream);
-    LoggerEnviroDIY::_modemStream->flush();  // wait for sending to finish
+    modem.dumpBuffer();
+    streamEnviroDIYRequest(modem._modemStream);
+    modem._modemStream->flush();  // wait for sending to finish
 
     // Add a brief delay for at least the first 12 characters of the HTTP response
     int timeout = 1500;
-    while ((timeout > 0) && _modemStream->available() < 12)
+    while ((timeout > 0) && modem._modemStream->available() < 12)
     {
       delay(1);
       timeout--;
@@ -90,31 +75,17 @@ int LoggerDreamHost::postDataDreamHost(void)
 
     // Process the HTTP response
     int responseCode = 0;
-    if (timeout > 0 && _modemStream->available() >= 12)
+    if (timeout > 0 && modem._modemStream->available() >= 12)
     {
-        Serial.println("****" + _modemStream->readStringUntil(' ') + "****");
-        responseCode = _modemStream->parseInt();
-        dumpBuffer(_modemStream);
+        Serial.println("****" + modem._modemStream->readStringUntil(' ') + "****");
+        responseCode = modem._modemStream->parseInt();
+        modem.dumpBuffer();
         Serial.println(F(" -- Response Code -- "));  // for debugging
         Serial.println(responseCode);  // for debugging
     }
     else responseCode=504;
 
-    // Disconnect and turn off the modem
-    switch(_modemType)
-    {
-        case GPRSBee6:
-        case GPRSBee4:
-        case Fona:
-        {
-            _client->stop();
-            _modem->gprsDisconnect();
-            _modemOnOff->off();
-            break;
-        }
-        case WIFIBee:
-            {break;}
-    }
+    modem.stop();
 
     return responseCode;
 }
@@ -127,6 +98,8 @@ int LoggerDreamHost::postDataDreamHost(void)
 void LoggerDreamHost::log(void)
 {
     // Update the timer
+    // This runs the timer's "now" function [in our case getNow()] and then
+    // checks all of the registered timer events to see if they should run
     // loggerTimer.update();
 
     // Check of the current time is an even interval of the logging interval
@@ -147,15 +120,22 @@ void LoggerDreamHost::log(void)
         //Save the data record to the log file
         logToSD(generateSensorDataCSV());
 
-        // Post the data to the WebSDL
-        int result = postDataEnviroDIY();
-        // Print the response from the WebSDL
-        printHTTPResult(result);  // for debugging
+        // Connect to the network
+        if (modem.connectNetwork())
+        {
+            // Post the data to the WebSDL
+            int result = postDataEnviroDIY();
+            // Print the response from the WebSDL
+            modem.printHTTPResult(result);  // for debugging
 
-        // Post the data to the WebSDL
-        int result2 = postDataDreamHost();
-        // Print the response from the WebSDL
-        printHTTPResult(result2);  // for debugging
+            // Post the data to the WebSDL
+            int result2 = postDataDreamHost();
+            // Print the response from the WebSDL
+            modem.printHTTPResult(result2);  // for debugging
+
+            // Disconnect from the network
+            modem.disconnectNetwork();
+        }
 
         // Turn off the LED
         digitalWrite(LoggerBase::_ledPin, LOW);

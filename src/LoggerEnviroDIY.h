@@ -32,23 +32,21 @@ public:
                   const char *APN);
 
     // This adds extra data to the datafile header
-    virtual void setupLogFile(void);
+    String generateFileHeader(void) override;
 
     // Public functions to generate data formats
     String generateSensorDataJSON(void);
 
     // Public function to send data
     int postDataEnviroDIY(void);
-    void printHTTPResult(int result);
 
     // Convience functions to do it all
     virtual void log(void) override;
 
 protected:
     // Communication functions
-    void dumpBuffer(Stream *stream, int timeDelay = 5, int timeout = 5000);
     void streamEnviroDIYRequest(Stream *stream);
-    loggerModem modem;
+    static loggerModem modem;
 
 private:
     // Tokens and UUID's for EnviroDIY
