@@ -1,5 +1,5 @@
 /*
- *Modem_OnOff.h
+ *ModemSupport.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -11,6 +11,15 @@
 #define modem_onoff_h
 
 #include <Arduino.h>
+
+#include <TinyGsmClient.h>
+// Select your modem:
+#define TINY_GSM_MODEM_SIM800
+//#define TINY_GSM_MODEM_SIM900
+//#define TINY_GSM_MODEM_A6
+//#define TINY_GSM_MODEM_A7
+//#define TINY_GSM_MODEM_M590
+//#define TINY_GSM_MODEM_ESP8266
 
 // For the various communication devices"
 typedef enum modemType
