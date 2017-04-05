@@ -374,7 +374,7 @@ void loggerModem::printHTTPResult(int HTTPcode)
         case 405:
         {
             Serial.print(F("Access forbidden.  "));
-            Serial.println(F("Check your reguistration token and UUIDs."));
+            Serial.println(F("Check your registration token and UUIDs."));
             break;
         }
 

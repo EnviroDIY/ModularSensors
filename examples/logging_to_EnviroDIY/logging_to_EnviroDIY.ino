@@ -100,20 +100,20 @@ const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calib
 // 3. The array that contains all valid sensors
 // ---------------------------------------------------------------------------
 SensorBase *SENSOR_LIST[] = {
-    new DecagonCTD_Cond(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
-    new DecagonCTD_Temp(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
-    new DecagonCTD_Depth(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
-    new Decagon5TM_Ea(*TMSDI12address, switchedPower, SDI12Data),
-    new Decagon5TM_VWC(*TMSDI12address, switchedPower, SDI12Data),
-    new Decagon5TM_Temp(*TMSDI12address, switchedPower, SDI12Data),
-    new DecagonES2_Cond(*ES2DI12address, switchedPower, SDI12Data),
-    new DecagonES2_Temp(*ES2DI12address, switchedPower, SDI12Data),
-    new CampbellOBS3_Turbidity(switchedPower, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C),
-    new CampbellOBS3_TurbHigh(switchedPower, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C),
-    new MaxBotixSonar_Range(switchedPower, SonarData, SonarTrigger),
-        new MayflyOnboardTemp(MFVersion),
-        new MayflyOnboardBatt(MFVersion),
-        new MayflyFreeRam()
+    // new DecagonCTD_Cond(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
+    // new DecagonCTD_Temp(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
+    // new DecagonCTD_Depth(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
+    // new Decagon5TM_Ea(*TMSDI12address, switchedPower, SDI12Data),
+    // new Decagon5TM_VWC(*TMSDI12address, switchedPower, SDI12Data),
+    // new Decagon5TM_Temp(*TMSDI12address, switchedPower, SDI12Data),
+    // new DecagonES2_Cond(*ES2DI12address, switchedPower, SDI12Data),
+    // new DecagonES2_Temp(*ES2DI12address, switchedPower, SDI12Data),
+    // new CampbellOBS3_Turbidity(switchedPower, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C),
+    // new CampbellOBS3_TurbHigh(switchedPower, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C),
+    // new MaxBotixSonar_Range(switchedPower, SonarData, SonarTrigger),
+    new MayflyOnboardTemp(MFVersion),
+    new MayflyOnboardBatt(MFVersion),
+    new MayflyFreeRam()
 };
 int sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
 
@@ -147,7 +147,7 @@ const char *UUIDs[] =
 // ---------------------------------------------------------------------------
 // Device Connection Options and WebSDL Endpoints for POST requests
 // ---------------------------------------------------------------------------
-modemType MODEM_TYPE = GPRSBee6;  // The type of modem, either GPRSBee4, GPRSBee6, Fona, WiFiBee, or other
+modemType MODEM_TYPE = WiFiBee;  // The type of modem, either GPRSBee4, GPRSBee6, Fona, WiFiBee, or other
 HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
 const int ModemBaud = 9600;  // Bee BAUD rate (9600 is default)
 const char *APN = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
@@ -217,7 +217,7 @@ void setup()
 
     // Set the timezone and offsets
     EnviroDIYLogger.setTimeZone(TIME_ZONE);
-    EnviroDIYLogger.setTZOffset(0);
+    EnviroDIYLogger.setTZOffset(TIME_ZONE);
 
     // Initialize the logger;
     EnviroDIYLogger.init(SD_SS_PIN, RTC_PIN, sensorCount, SENSOR_LIST,
