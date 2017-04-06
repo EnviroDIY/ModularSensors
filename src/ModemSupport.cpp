@@ -226,7 +226,7 @@ bool loggerModem::connectNetwork(void)
         {
             // Serial.println(F("Attempting to turn on modem."));  // For debugging
             _modemOnOff->on();
-            Serial.println(F("Waiting for network..."));  // For debugging
+            Serial.println(F("\nWaiting for network..."));  // For debugging
             if (!_modem->waitForNetwork()){
                 Serial.println("... Connection failed");  // For debugging
             } else {

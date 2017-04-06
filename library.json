@@ -63,7 +63,7 @@
         },
         {
             "name": "TinyGSM",
-            "version": "https://github.com/vshymanskyy/TinyGSM.git"
+            "version": "https://github.com/EnviroDIY/TinyGSM.git"
         }
     ]
 }
