@@ -95,7 +95,7 @@ public:
     int connect(IPAddress ip, uint16_t port);
     void stop(void);
     void dumpBuffer(Stream *stream = _modemStream, int timeDelay = 5, int timeout = 5000);
-    static void printHTTPResult(int HTTPcode);
+    // static void printHTTPResult(int HTTPcode);
     static Stream *_modemStream;
 private:
     ModemOnOff *_modemOnOff;

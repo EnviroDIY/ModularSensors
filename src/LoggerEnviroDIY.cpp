@@ -94,10 +94,10 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
     stream->print(String(F("POST /api/data-stream/ HTTP/1.1")));
     stream->print(String(F("\r\nHost: data.envirodiy.org")));
     stream->print(String(F("\r\nTOKEN: ")) + String(_registrationToken));
-    // stream->print(String(F("\r\nCache-Control: no-cache")));
-    stream->print(String(F("\r\nContent-Length: ")) + String(generateSensorDataJSON().length()));
-    // stream->print(String(F("\r\nConnection: close")));
     stream->print(String(F("\r\nContent-Type: application/json\r\n\r\n")));
+    stream->print(String(F("\r\nContent-Length: ")) + String(generateSensorDataJSON().length()));
+    // stream->print(String(F("\r\nCache-Control: no-cache")));
+    // stream->print(String(F("\r\nConnection: close")));
     stream->print(String(generateSensorDataJSON()));
     stream->print(String(F("\r\n\r\n")));
 }
@@ -130,9 +130,10 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
     int responseCode = 0;
     if (timeout > 0 && modem._modemStream->available() >= 12)
     {
-        Serial.println("****" + modem._modemStream->readStringUntil(' ') + "****");  // for debugging
-        // modem._modemStream->readStringUntil(' ');
-        responseCode = modem._modemStream->parseInt();
+        // Serial.println("****" + modem._modemStream->readStringUntil(' ') + "****");  // for debugging
+        // Serial.println("****" + modem._modemStream->readStringUntil(' ') + "****");  // for debugging
+        modem._modemStream->readStringUntil(' ');
+        responseCode = modem._modemStream->readStringUntil(' ').toInt();
         Serial.println(F(" -- Response Code -- "));  // for debugging
         Serial.println(responseCode);  // for debugging
 
@@ -179,9 +180,11 @@ void LoggerEnviroDIY::log(void)
         if (modem.connectNetwork())
         {
             // Post the data to the WebSDL
-            int result = postDataEnviroDIY();
+            postDataEnviroDIY();
+
             // Print the response from the WebSDL
-            modem.printHTTPResult(result);  // for debugging
+            // int result = postDataEnviroDIY();
+            // modem.printHTTPResult(result);  // for debugging
 
             // Disconnect from the network
             modem.disconnectNetwork();

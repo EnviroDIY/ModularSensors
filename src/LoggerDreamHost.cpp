@@ -42,18 +42,17 @@ String LoggerDreamHost::generateSensorDataDreamHost(void)
 // This is only needed for transparent Bee's (ie, WiFi)
 void LoggerDreamHost::streamDreamHostRequest(Stream *stream)
 {
-    stream->print(String("GET /portalRX_EST_universal.php"));
+    stream->print(String(F("GET ")));
     stream->print(generateSensorDataDreamHost());
-    stream->print(String("  HTTP/1.1"));
-    stream->print(String("\r\nHost: swrcsensors.dreamhosters.com"));
-    stream->print(String("\r\nConnection: close"));
-    stream->print(String("\r\n\r\n"));
+    stream->print(String(F("  HTTP/1.1")));
+    stream->print(String(F("\r\nHost: swrcsensors.dreamhosters.com")));
+    stream->print(String(F("\r\n\r\n")));
 }
 
 // Post the data to dream host.  Do IF AND ONLY IF using GPRSBee
 int LoggerDreamHost::postDataDreamHost(void)
 {
-    modem.connect("swrcsensors.dreamhosters.com", 80);
+    LoggerEnviroDIY::modem.connect("swrcsensors.dreamhosters.com", 80);
 
     // Send the request to the serial for debugging
     Serial.println(F("\n \\/------ Data to DreamHost ------\\/ "));  // for debugging
@@ -61,13 +60,13 @@ int LoggerDreamHost::postDataDreamHost(void)
     Serial.flush();  // for debugging
 
     // Send the request to the modem stream
-    modem.dumpBuffer();
-    streamEnviroDIYRequest(modem._modemStream);
-    modem._modemStream->flush();  // wait for sending to finish
+    LoggerEnviroDIY::modem.dumpBuffer();
+    streamDreamHostRequest(LoggerEnviroDIY::modem._modemStream);
+    LoggerEnviroDIY::modem._modemStream->flush();  // wait for sending to finish
 
     // Add a brief delay for at least the first 12 characters of the HTTP response
     int timeout = 1500;
-    while ((timeout > 0) && modem._modemStream->available() < 12)
+    while ((timeout > 0) && LoggerEnviroDIY::modem._modemStream->available() < 12)
     {
       delay(1);
       timeout--;
@@ -75,18 +74,19 @@ int LoggerDreamHost::postDataDreamHost(void)
 
     // Process the HTTP response
     int responseCode = 0;
-    if (timeout > 0 && modem._modemStream->available() >= 12)
+    if (timeout > 0 && LoggerEnviroDIY::modem._modemStream->available() >= 12)
     {
-        Serial.println("****" + modem._modemStream->readStringUntil(' ') + "****");  // for debugging
-        // modem._modemStream->readStringUntil(' ');
-        responseCode = modem._modemStream->parseInt();
-        modem.dumpBuffer();
+        // Serial.println("****" + LoggerEnviroDIY::modem._modemStream->readStringUntil(' ') + "****");  // for debugging
+        // Serial.println("****" + modem._modemStream->readStringUntil(' ') + "****");  // for debugging
+        modem._modemStream->readStringUntil(' ');
+        responseCode = modem._modemStream->readStringUntil(' ').toInt();
+        LoggerEnviroDIY::modem.dumpBuffer();
         Serial.println(F(" -- Response Code -- "));  // for debugging
         Serial.println(responseCode);  // for debugging
     }
     else responseCode=504;
 
-    modem.stop();
+    LoggerEnviroDIY::modem.stop();
 
     return responseCode;
 }
@@ -122,20 +122,23 @@ void LoggerDreamHost::log(void)
         logToSD(generateSensorDataCSV());
 
         // Connect to the network
-        if (modem.connectNetwork())
+        if (LoggerEnviroDIY::modem.connectNetwork())
         {
             // Post the data to the WebSDL
-            int result = postDataEnviroDIY();
-            // Print the response from the WebSDL
-            modem.printHTTPResult(result);  // for debugging
+            postDataEnviroDIY();
 
-            // Post the data to the WebSDL
-            int result2 = postDataDreamHost();
             // Print the response from the WebSDL
-            modem.printHTTPResult(result2);  // for debugging
+            // int result = postDataEnviroDIY();
+            // LoggerEnviroDIY::modem.printHTTPResult(result);  // for debugging
+
+            // Post the data to DreamHost
+            postDataDreamHost();
+            // Print the response from DreamHost
+            // int result2 = postDataDreamHost();
+            // LoggerEnviroDIY::modem.printHTTPResult(result2);  // for debugging
 
             // Disconnect from the network
-            modem.disconnectNetwork();
+            LoggerEnviroDIY::modem.disconnectNetwork();
         }
 
         // Turn off the LED

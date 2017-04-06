@@ -14,11 +14,6 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
-// ---------------------------------------------------------------------------
-// Include the base required libraries
-// ---------------------------------------------------------------------------
-#include <Arduino.h>
-#include <SensorBase.h>
 
 // Select your modem chip, comment out all of the others (comment all of them for a transparent WiFiBee):
 #define TINY_GSM_MODEM_SIM800  // Select for Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
@@ -27,6 +22,12 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // #define TINY_GSM_MODEM_A7
 // #define TINY_GSM_MODEM_M590
 // #define TINY_GSM_MODEM_ESP8266
+
+// ---------------------------------------------------------------------------
+// Include the base required libraries
+// ---------------------------------------------------------------------------
+#include <Arduino.h>
+#include <SensorBase.h>
 
 #ifdef DreamHostPortalRX
 #include <LoggerDreamHost.h>
