@@ -254,7 +254,6 @@ void loop()
 }
 ```
 If you would like to do other things within the loop function, you should access the component logging functions individually instead of using the short-cut functions.  In this case, here are some guidelines for writing a loop function:
-- Always begin by calling loggertimer.update().  This tells the timer to check the current time and then checks all of the registered timer events to see if they should run.
 - If you want to log on an even interval, use "if (checkInterval()" to verify the interval time.
 - Call the markTime() function before printing/sending/saving any data that you want associate with a timestamp.
 - Update all the sensors in your SensorArray together with updateAllSensors().
