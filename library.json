@@ -58,6 +58,12 @@
             "name": "ADS1X15"
         },
         {
+            "name": "DallasTemperature"
+        },
+        {
+            "name": "OneWire"
+        },
+        {
             "name": "Arduino-SDI-12_PCINT3",
             "version": "https://github.com/EnviroDIY/Arduino-SDI-12.git#mayfly"
         },
