@@ -47,7 +47,7 @@ bool MaximDS18_Temp::update(){
 
     // Serial.println(result);  // For debugging
     sensorValue_temp = result;
-    // Serial.println(sensorValue_depth);  // For debugging
+    // Serial.println(sensorValue_temp);  // For debugging
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
