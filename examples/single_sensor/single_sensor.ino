@@ -19,19 +19,18 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ---------------------------------------------------------------------------
 #include <Arduino.h>
 #include <SensorBase.h>
-#include <MaxBotixSonar.h>
+#include <MaximDS18B20.h>
 
 // ---------------------------------------------------------------------------
 // Set up the sensor object
 // ---------------------------------------------------------------------------
 
-// MaxBotix Sonar: pin settings
-const int SonarPower = 22;   // excite (power) pin
-const int SonarData = 10;     // data  pin
-const int SonarTrigger = -1;   // Trigger pin
+// DS18B20: pin settings
+const int Power = 22;   // power pin
+const int Data = 10;     // data  pin
 
 // Create a new instance of the sonar_range object;
-MaxBotixSonar_Range sonar(SonarPower, SonarData, SonarTrigger);
+MaximDS18B20_Temp temp(Power, Data);
 
 // ---------------------------------------------------------------------------
 // Board setup info
@@ -69,10 +68,10 @@ void setup()
     greenred4flash();
 
     // Print a start-up note to the first serial port
-    Serial.println(F("Single Sensor Example - Sonar Ranging"));
+    Serial.println(F("Single Sensor Example - DS18B20"));
 
     // Set up the sensor
-    sonar.setup();
+    temp.setup();
 
 }
 
@@ -83,20 +82,20 @@ void setup()
 void loop()
 {
     // Power the sensor
-    digitalWrite(SonarPower, HIGH);
+    digitalWrite(Power, HIGH);
 
     // Turn on the LED to show we're taking a reading
     digitalWrite(GREEN_LED, HIGH);
 
     // Update the sensor value
-    sonar.update();
+    temp.update();
 
     // Print the sonar result
-    Serial.print("Dat recieved from sonar: ");
-    Serial.println(sonar.getValueString());
+    Serial.print("Data recieved from sonar: ");
+    Serial.println(temp.getValueString());
 
     // Turn of sensor power
-    digitalWrite(SonarPower, LOW);
+    digitalWrite(Power, LOW);
 
     // Turn off the LED to show we're done with the reading
     digitalWrite(GREEN_LED, LOW);
