@@ -1,5 +1,5 @@
  /*
- * MaximDS18B20.cpp
+ * MaximDS18.cpp
  * This file is part of the EnviroDIY modular sensors library for Arduino
  *
  * Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -15,17 +15,17 @@
  */
 
 #include <Arduino.h>
-#include "MaximDS18B20.h"
+#include "MaximDS18.h"
 
 
 // The constructor - need the power pin and the data pin
-MaximDS18B20_Temp::MaximDS18B20_Temp(DeviceAddress OneWireAddress, int powerPin, int dataPin)
-  : SensorBase(dataPin, powerPin, 4, F("MaximDS18B20"), F("temperature"), F("degreeCelsius"), F("DS18Temp"))
+MaximDS18_Temp::MaximDS18_Temp(DeviceAddress OneWireAddress, int powerPin, int dataPin)
+  : SensorBase(dataPin, powerPin, 4, F("MaximDS18"), F("temperature"), F("degreeCelsius"), F("DS18Temp"))
 { _OneWireAddress = OneWireAddress; }
 
 
 // Uses TLL Communication to get data from MaxBotix
-bool MaximDS18B20_Temp::update(){
+bool MaximDS18_Temp::update(){
 
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
@@ -58,7 +58,7 @@ bool MaximDS18B20_Temp::update(){
 }
 
 
-float MaximDS18B20_Temp::getValue(void)
+float MaximDS18_Temp::getValue(void)
 {
     checkForUpdate(sensorLastUpdated);
     return sensorValue_temp;

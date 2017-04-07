@@ -19,7 +19,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ---------------------------------------------------------------------------
 #include <Arduino.h>
 #include <SensorBase.h>
-#include <MaximDS18B20.h>
+#include <MaximDS18.h>
 
 // ---------------------------------------------------------------------------
 // Set up the sensor object
@@ -31,7 +31,7 @@ const int DS18B20Data = 10;     // data  pin
 const int DS18B20Power = 22;   // power pin
 
 // Create a new instance of the sonar_range object;
-MaximDS18B20_Temp temp(DS18B20Address, DS18B20Power, DS18B20Data);
+MaximDS18_Temp temp(DS18B20Address, DS18B20Power, DS18B20Data);
 
 // ---------------------------------------------------------------------------
 // Board setup info

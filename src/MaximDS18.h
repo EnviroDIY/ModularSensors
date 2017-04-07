@@ -1,5 +1,5 @@
 /*
- * MaximDS18B20.h
+ * MaximDS18.h
  * This file is part of the EnviroDIY modular sensors library for Arduino
  *
  * Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -18,10 +18,10 @@
 #include "SensorBase.h"
 
 // The main class for the MaxBotix Sonar.  No sub-classes are needed
-class MaximDS18B20_Temp : public virtual SensorBase
+class MaximDS18_Temp : public virtual SensorBase
 {
 public:
-    MaximDS18B20_Temp(DeviceAddress OneWireAddress, int powerPin, int dataPin);
+    MaximDS18_Temp(DeviceAddress OneWireAddress, int powerPin, int dataPin);
 
     bool update(void) override;
 
