@@ -26,11 +26,12 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ---------------------------------------------------------------------------
 
 // DS18B20: pin settings
-const int Power = 22;   // power pin
-const int Data = 10;     // data  pin
+DeviceAddress DS18B20Address = {0x28, 0x1D, 0x39, 0x31, 0x2, 0x0, 0x0, 0xF0 };
+const int DS18B20Data = 10;     // data  pin
+const int DS18B20Power = 22;   // power pin
 
 // Create a new instance of the sonar_range object;
-MaximDS18B20_Temp temp(Power, Data);
+MaximDS18B20_Temp temp(DS18B20Address, DS18B20Power, DS18B20Data);
 
 // ---------------------------------------------------------------------------
 // Board setup info
@@ -82,7 +83,7 @@ void setup()
 void loop()
 {
     // Power the sensor
-    digitalWrite(Power, HIGH);
+    digitalWrite(DS18B20Power, HIGH);
 
     // Turn on the LED to show we're taking a reading
     digitalWrite(GREEN_LED, HIGH);
@@ -95,7 +96,7 @@ void loop()
     Serial.println(temp.getValueString());
 
     // Turn of sensor power
-    digitalWrite(Power, LOW);
+    digitalWrite(DS18B20Power, LOW);
 
     // Turn off the LED to show we're done with the reading
     digitalWrite(GREEN_LED, LOW);

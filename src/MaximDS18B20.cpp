@@ -19,9 +19,9 @@
 
 
 // The constructor - need the power pin and the data pin
-MaximDS18B20_Temp::MaximDS18B20_Temp(int powerPin, int dataPin)
+MaximDS18B20_Temp::MaximDS18B20_Temp(DeviceAddress OneWireAddress, int powerPin, int dataPin)
   : SensorBase(dataPin, powerPin, 4, F("MaximDS18B20"), F("temperature"), F("degreeCelsius"), F("DS18Temp"))
-{}
+{ _OneWireAddress = OneWireAddress; }
 
 
 // Uses TLL Communication to get data from MaxBotix
@@ -43,7 +43,7 @@ bool MaximDS18B20_Temp::update(){
     // Send the command to get temperatures
     sensors.requestTemperatures();
 
-    result = sensors.getTempCByIndex(0);
+    result = sensors.getTempC(_OneWireAddress);
 
     // Serial.println(result);  // For debugging
     sensorValue_temp = result;

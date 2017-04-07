@@ -21,7 +21,7 @@
 class MaximDS18B20_Temp : public virtual SensorBase
 {
 public:
-    MaximDS18B20_Temp(int powerPin, int dataPin);
+    MaximDS18B20_Temp(DeviceAddress OneWireAddress, int powerPin, int dataPin);
 
     bool update(void) override;
 
@@ -30,6 +30,7 @@ protected:
     float sensorValue_temp;
     unsigned long sensorLastUpdated;
 private:
+    uint8_t* _OneWireAddress;
     int result;
     bool stringComplete;
     int rangeAttempts;
