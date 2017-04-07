@@ -46,7 +46,7 @@ public:
     ModemOnOff();
     virtual void init(int vcc33Pin, int onoff_DTR_pin, int status_CTS_pin);
     virtual bool isOn(void);
-    virtual void on(void) = 0;
+    virtual bool on(void) = 0;
     virtual void off(void) = 0;
 protected:
     int8_t _vcc33Pin;
@@ -61,7 +61,7 @@ protected:
 class pulsedOnOff : public ModemOnOff
 {
 public:
-    void on(void) override;
+    bool on(void) override;
     void off(void) override;
 private:
     void pulse(void);
@@ -71,7 +71,7 @@ private:
 class heldOnOff : public ModemOnOff
 {
 public:
-    void on(void) override;
+    bool on(void) override;
     void off(void) override;
 };
 

@@ -91,20 +91,39 @@ void pulsedOnOff::pulse(void)
     }
 }
 
-void pulsedOnOff::on()
+bool pulsedOnOff::on()
 {
     powerOn();
     // Serial.print(F("Pulsing modem to on with pin "));  // For debugging
     // Serial.println(_onoff_DTR_pin);  // For debugging
     if (!isOn()) {pulse();}
-    while (!isOn()){delay(1);}  // Wait until is actually on
+    // Wait until is actually on
+    for (unsigned long start = millis(); millis() - start < 10000; )
+    {
+        if (isOn())
+        {
+            // Serial.println(F("Modem now on."));  // For debugging
+            return true;
+        }
+      delay(5);
+    }
+    // Serial.println(F("Failed to turn modem on."));  // For debugging
+    return false;
 }
 
 void pulsedOnOff::off()
 {
     if (isOn()) {pulse();}
-    while (isOn()){delay(1);}  // Wait until is off
-    // Serial.println(F("Modem pulsed to off."));  // For debugging
+    // Wait until is off
+    for (unsigned long start = millis(); millis() - start < 10000; )
+    {
+        if (!isOn())
+        {
+            Serial.println(F("Modem now off."));  // For debugging
+            break;
+        }
+        delay(5);
+    }
     powerOff();
 }
 
@@ -115,15 +134,26 @@ void pulsedOnOff::off()
 * This is used by the Sodaq GPRSBee v0.6.
 * ========================================================================= */
 
-void heldOnOff::on()
+bool heldOnOff::on()
 {
     powerOn();
-    // Serial.print(F("Setting modem to on with pin "));  // For debugging
-    // Serial.println(_onoff_DTR_pin);  // For debugging
+    Serial.print(F("Setting modem to on with pin "));  // For debugging
+    Serial.println(_onoff_DTR_pin);  // For debugging
     if (_onoff_DTR_pin >= 0) {
         digitalWrite(_onoff_DTR_pin, HIGH);
     }
-    while (!isOn()){delay(1);}  // Wait until is actually on
+    // Wait until is actually on
+    for (unsigned long start = millis(); millis() - start < 10000; )
+    {
+        if (isOn())
+        {
+            Serial.println(F("Modem now on."));  // For debugging
+            return true;
+        }
+        delay(5);
+    }
+    Serial.println(F("Failed to turn modem on."));  // For debugging
+    return false;
 }
 
 void heldOnOff::off()
@@ -131,8 +161,16 @@ void heldOnOff::off()
     if (_onoff_DTR_pin >= 0) {
         digitalWrite(_onoff_DTR_pin, LOW);
     }
-    while (isOn()){delay(1);}  // Wait until is off
-    // Serial.println(F("Modem set to off."));  // For debugging
+    // Wait until is off
+    for (unsigned long start = millis(); millis() - start < 10000; )
+    {
+        if (!isOn())
+        {
+            Serial.println(F("Modem now off."));  // For debugging
+            break;
+        }
+        delay(5);
+    }
     powerOff();
 }
 
@@ -161,26 +199,18 @@ void loggerModem::setupModem(modemType modType,
         case GPRSBee4:
         case Fona:
         {
-            // Serial.println(F("Setting up GPRSBee4 or Fona"));  // For debugging
+            Serial.println(F("Setting up GPRSBee4 or Fona"));  // For debugging
             static pulsedOnOff pulsed;
             _modemOnOff = &pulsed;
             pulsed.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
             break;
         }
-        case GPRSBee6:
+        default:
         {
-            // Serial.println(F("Setting up GPRSBee6."));  // For debugging
+            Serial.println(F("Setting up modem."));  // For debugging
             static heldOnOff held;
             _modemOnOff = &held;
             held.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
-            break;
-        }
-        default:
-        {
-            // Serial.println(F("Setting up modem."));  // For debugging
-            _modemStream = modemStream;
-            static heldOnOff held;
-            _modemOnOff = &held;
             break;
         }
     }
@@ -189,7 +219,8 @@ void loggerModem::setupModem(modemType modType,
     {
         case WiFiBee:
         {
-            _modemStream = modemStream;
+            // *_modemStream = *modemStream;
+            _modemStream = &Serial1;
             break;
         }
         default:
@@ -211,7 +242,7 @@ void loggerModem::setupModem(modemType modType,
 }
 
 
-    // Turn on the modem and connect to the network
+// Turn on the modem and connect to the network
 bool loggerModem::connectNetwork(void)
 {
     bool retVal = false;
@@ -219,12 +250,12 @@ bool loggerModem::connectNetwork(void)
     {
         case WiFiBee:
         {
+            _modemOnOff->on();
             retVal = true;
             break;
         }
         default:
         {
-            // Serial.println(F("Attempting to turn on modem."));  // For debugging
             _modemOnOff->on();
             Serial.println(F("\nWaiting for network..."));  // For debugging
             if (!_modem->waitForNetwork()){
@@ -246,7 +277,10 @@ void loggerModem::disconnectNetwork(void)
     switch(_modemType)
     {
         case WiFiBee:
-            {break;}
+        {
+            _modemOnOff->off();
+            break;
+        }
         default:
         {
             _modem->gprsDisconnect();
@@ -262,7 +296,10 @@ int loggerModem::connect(const char *host, uint16_t port)
     switch(_modemType)
     {
         case WiFiBee:
-            {break;}
+        {
+            Serial.println(F("Must have IP address to connect WiFiBee"));
+            break;
+        }
         default:
         {
             retVal = _client->connect(host, port);
@@ -278,7 +315,9 @@ int loggerModem::connect(IPAddress ip, uint16_t port)
     switch(_modemType)
     {
         case WiFiBee:
-            {break;}
+        {
+            break;
+        }
         default:
         {
             retVal = _client->connect(ip, port);
@@ -293,7 +332,9 @@ void loggerModem::stop(void)
     switch(_modemType)
     {
         case WiFiBee:
-            {break;}
+        {
+            break;
+        }
         default:
         {
             _client->stop();
@@ -301,7 +342,6 @@ void loggerModem::stop(void)
         }
     }
 }
-
 
 
 // Used to empty out the buffer after a post request.
@@ -313,8 +353,8 @@ void loggerModem::dumpBuffer(Stream *stream, int timeDelay/* = 5*/, int timeout/
     {
         while (stream->available() > 0)
         {
-            // Serial.print(stream->readString());
-            stream->read();
+            Serial.print(stream->readString());
+            // stream->read();
             delay(timeDelay);
         }
         delay(timeDelay);
