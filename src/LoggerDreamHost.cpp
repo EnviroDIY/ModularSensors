@@ -76,10 +76,10 @@ int LoggerDreamHost::postDataDreamHost(void)
     int responseCode = 0;
     if (timeout > 0 && LoggerEnviroDIY::modem._modemStream->available() >= 12)
     {
-        Serial.println("****" + LoggerEnviroDIY::modem._modemStream->readStringUntil(' ') + "****");  // for debugging
-        Serial.println("****" + modem._modemStream->readStringUntil(' ') + "****");  // for debugging
-        // modem._modemStream->readStringUntil(' ');
-        // responseCode = modem._modemStream->readStringUntil(' ').toInt();
+        // Serial.println("****" + LoggerEnviroDIY::modem._modemStream->readStringUntil(' ') + "****");  // for debugging
+        // Serial.println("****" + modem._modemStream->readStringUntil(' ') + "****");  // for debugging
+        modem._modemStream->readStringUntil(' ');
+        responseCode = modem._modemStream->readStringUntil(' ').toInt();
         LoggerEnviroDIY::modem.dumpBuffer();
     }
     else responseCode=504;

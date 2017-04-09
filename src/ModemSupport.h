@@ -12,7 +12,10 @@
 #define modem_onoff_h
 
 #include <Arduino.h>
+
 #define TINY_GSM_MODEM_SIM800  // for debugging - should go in main sketch
+#define TINY_GSM_YIELD() { delay(3); }
+#define TINY_GSM_DEBUG Serial
 #include <TinyGsmClient.h>
 
 // For the various communication devices"

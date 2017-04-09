@@ -119,7 +119,7 @@ void pulsedOnOff::off()
     {
         if (!isOn())
         {
-            Serial.println(F("Modem now off."));  // For debugging
+            // Serial.println(F("Modem now off."));  // For debugging
             break;
         }
         delay(5);
@@ -137,8 +137,8 @@ void pulsedOnOff::off()
 bool heldOnOff::on()
 {
     powerOn();
-    Serial.print(F("Setting modem to on with pin "));  // For debugging
-    Serial.println(_onoff_DTR_pin);  // For debugging
+    // Serial.print(F("Setting modem to on with pin "));  // For debugging
+    // Serial.println(_onoff_DTR_pin);  // For debugging
     if (_onoff_DTR_pin >= 0) {
         digitalWrite(_onoff_DTR_pin, HIGH);
     }
@@ -147,12 +147,12 @@ bool heldOnOff::on()
     {
         if (isOn())
         {
-            Serial.println(F("Modem now on."));  // For debugging
+            // Serial.println(F("Modem now on."));  // For debugging
             return true;
         }
         delay(5);
     }
-    Serial.println(F("Failed to turn modem on."));  // For debugging
+    // Serial.println(F("Failed to turn modem on."));  // For debugging
     return false;
 }
 
@@ -166,7 +166,7 @@ void heldOnOff::off()
     {
         if (!isOn())
         {
-            Serial.println(F("Modem now off."));  // For debugging
+            // Serial.println(F("Modem now off."));  // For debugging
             break;
         }
         delay(5);
@@ -199,7 +199,7 @@ void loggerModem::setupModem(modemType modType,
         case GPRSBee4:
         case Fona:
         {
-            Serial.println(F("Setting up GPRSBee4 or Fona"));  // For debugging
+            // Serial.println(F("Setting up GPRSBee4 or Fona"));  // For debugging
             static pulsedOnOff pulsed;
             _modemOnOff = &pulsed;
             pulsed.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
@@ -207,7 +207,7 @@ void loggerModem::setupModem(modemType modType,
         }
         default:
         {
-            Serial.println(F("Setting up modem."));  // For debugging
+            // Serial.println(F("Setting up modem."));  // For debugging
             static heldOnOff held;
             _modemOnOff = &held;
             held.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
@@ -219,9 +219,36 @@ void loggerModem::setupModem(modemType modType,
     {
         case WiFiBee:
         {
-            // *_modemStream = *modemStream;
-            _modemStream = &Serial1;
-            break;
+          static TinyGsm modem(*modemStream);
+          _modem = &modem;
+          static TinyGsmClient client(modem);
+          _client = &client;
+          _modemOnOff->on();
+          _modem->begin();
+          _modem->factoryDefault();
+          delay(1000);  // cannot send anything for 1 second before entering command mode
+          _client->print(String(F("+++")));  // enter command mode
+          _modem->waitResponse(1100);
+          _modem->sendAT(GF("SM 1"));  // set sleep mode to pin sleep
+          _modem->waitResponse();
+          _modem->sendAT(GF("SO 200"));  // set sleep option to disconnected deep sleep
+          // 0x200 = b1000000000 -> Sleep Options Bit field.
+          // Bit 6 - Stay associated with AP during sleep.
+          // Bit 9 - Disassociate from AP for Deep Sleep.
+          // All other bits ignored.
+          _modem->waitResponse();
+          _modem->sendAT(GF("PD 5DBF"));  // set the CTS and DTR pins to pull DOWN
+          // 0x5DBF = b101110110111111 -> Sleep Options Bit field.
+          _modem->waitResponse();
+          _modem->sendAT(GF("WR"));  // Write changes to flash
+          _modem->waitResponse();
+          _modem->sendAT(GF("AC"));  // Apply changes
+          _modem->waitResponse();
+          _modem->sendAT(GF("CN"));  // Exit command mode
+          _modem->waitResponse();
+          _modemOnOff->off();
+          _modemStream = _client;
+          break;
         }
         default:
         {
@@ -297,7 +324,7 @@ int loggerModem::connect(const char *host, uint16_t port)
     {
         case WiFiBee:
         {
-            Serial.println(F("Must have IP address to connect WiFiBee"));
+            // Serial.println(F("Must have IP address to connect WiFiBee"));
             break;
         }
         default:
@@ -353,8 +380,8 @@ void loggerModem::dumpBuffer(Stream *stream, int timeDelay/* = 5*/, int timeout/
     {
         while (stream->available() > 0)
         {
-            Serial.print(stream->readString());
-            // stream->read();
+            // Serial.print(stream->readString());
+            stream->read();
             delay(timeDelay);
         }
         delay(timeDelay);

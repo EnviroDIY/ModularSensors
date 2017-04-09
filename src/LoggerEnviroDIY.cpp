@@ -118,12 +118,6 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
     streamEnviroDIYRequest(modem._modemStream);
     modem._modemStream->flush();  // wait for sending to finish
 
-
-    streamEnviroDIYRequest(&Serial1);
-    Serial1.flush();  // wait for sending to finish
-    delay(100);
-    while (Serial1.available()) Serial.print(Serial1.readString());
-
     // Add a brief delay for at least the first 12 characters of the HTTP response
     int timeout = 1500;
     while ((timeout > 0) && modem._modemStream->available() < 12)
@@ -136,10 +130,10 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
     int responseCode = 0;
     if (timeout > 0 && modem._modemStream->available() >= 12)
     {
-        Serial.println("****" + modem._modemStream->readStringUntil(' ') + "****");  // for debugging
-        Serial.println("****" + modem._modemStream->readStringUntil(' ') + "****");  // for debugging
-        // modem._modemStream->readStringUntil(' ');
-        // responseCode = modem._modemStream->readStringUntil(' ').toInt();
+        // Serial.println("****" + modem._modemStream->readStringUntil(' ') + "****");  // for debugging
+        // Serial.println("****" + modem._modemStream->readStringUntil(' ') + "****");  // for debugging
+        modem._modemStream->readStringUntil(' ');
+        responseCode = modem._modemStream->readStringUntil(' ').toInt();
         modem.dumpBuffer();
     }
     else responseCode=504;
