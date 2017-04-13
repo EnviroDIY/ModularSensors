@@ -189,13 +189,25 @@ bool heldOnOff::off()
 * This is used by the XBee's
 * ========================================================================= */
 
+bool reverseOnOff::isOn(void)
+{
+    if (_status_CTS_pin >= 0) {
+        bool status = digitalRead(_status_CTS_pin);
+        // Serial.print(F("Is modem on? "));  // For debugging
+        // Serial.println(status);  // For debugging
+        return !status;
+    }
+    // No status pin. Let's assume it is on.
+    return true;
+}
+
 bool reverseOnOff::on()
 {
     powerOn();
     Serial.print(F("Setting modem to on with pin "));  // For debugging
     Serial.println(_onoff_DTR_pin);  // For debugging
     if (_onoff_DTR_pin >= 0) {
-        digitalWrite(_onoff_DTR_pin, HIGH);
+        digitalWrite(_onoff_DTR_pin, LOW);
     }
     // Wait until is actually on
     for (unsigned long start = millis(); millis() - start < 10000; )
@@ -215,7 +227,7 @@ bool reverseOnOff::off()
 {
     if (!isOn()) Serial.println(F("Modem was not ever on."));  // For debugging
     if (_onoff_DTR_pin >= 0) {
-        digitalWrite(_onoff_DTR_pin, LOW);
+        digitalWrite(_onoff_DTR_pin, HIGH);
     }
     // Wait until is off
     for (unsigned long start = millis(); millis() - start < 10000; )
@@ -293,6 +305,13 @@ void loggerModem::init(Stream *modemStream,
             held.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
             break;
         }
+        case reverse:
+        {
+            static reverseOnOff reverse;
+            modemOnOff = &reverse;
+            reverse.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
+            break;
+        }
         default:
         {
             static heldOnOff held;
@@ -303,51 +322,6 @@ void loggerModem::init(Stream *modemStream,
     }
 
     // Initialize the modem
-
-      // modemOnOff->on();
-      // delay(1000);  // cannot send anything for 1 second before entering command mode
-      // Serial1.print(String(F("+++")));  // enter command mode
-      // Serial.print(String(F("+++")));  // enter command mode
-      // delay(1100);  // cannot send anything for 1 second after entering command mode
-      // Serial.println(Serial1.readString());
-      // Serial1.print(String(F("AT RE")));  // set back to factory defaults
-      // Serial.print(String(F("AT RE")));  // set back to factory defaults
-      // Serial.println(Serial1.readString());
-      // Serial1.print(String(F("AT AP 0")));  // Put in transparent mode
-      // Serial.print(String(F("AT AP 0")));  // Put in transparent mode
-      // Serial.println(Serial1.readString());
-      // Serial1.print(String(F("AT IP 1")));  // Put in TCP mode
-      // Serial.print(String(F("AT IP 1")));  // Put in TCP mode
-      // Serial.println(Serial1.readString());
-      // Serial1.print(String(F("AT SM 1")));  // set sleep mode to pin sleep
-      // Serial.print(String(F("AT SM 1")));  // set sleep mode to pin sleep
-      // Serial.println(Serial1.readString());
-      // Serial1.print(String(F("AT SO 200")));  // set sleep option to disconnected deep sleep
-      // Serial.print(String(F("AT SO 200")));  // set sleep option to disconnected deep sleep
-      // // 0x200 = b1000000000 -> Sleep Options Bit field.
-      // // Bit 6 - Stay associated with AP during sleep.
-      // // Bit 9 - Disassociate from AP for Deep Sleep.
-      // // All other bits ignored.
-      // Serial.println(Serial1.readString());
-      // Serial1.print(String(F("AT PD 5DBF")));  // set the CTS and DTR pins to pull DOWN
-      // Serial.print(String(F("AT PD 5DBF")));  // set the CTS and DTR pins to pull DOWN
-      // // 0x5DBF = b101110110111111 -> Pin pulll up/pull down options bit field
-      // Serial.println(Serial1.readString());
-      // Serial1.print(String(F("AT GT FA")));  // shorten the guard time to 250ms
-      // Serial.print(String(F("AT GT FA")));  // shorten the guard time to 250ms
-      // // 0xFA = 250
-      // Serial.println(Serial1.readString());
-      // Serial1.print(String(F("AT WR")));  // Write changes to flash
-      // Serial.print(String(F("AT WR")));  // Write changes to flash
-      // Serial.println(Serial1.readString());
-      // Serial1.print(String(F("AT AC")));  // Apply changes
-      // Serial.print(String(F("AT AC")));  // Apply changes
-      // Serial.println(Serial1.readString());
-      // Serial1.print(String(F("AT CN")));  // Exit command mode
-      // Serial.print(String(F("AT CN")));  // Exit command mode
-      // Serial.println(Serial1.readString());
-      // modemOnOff->off();
-
     Serial.println(F("Initializing GSM modem instance"));  // For debugging
     static TinyGsm modem(*modemStream);
     _modem = &modem;

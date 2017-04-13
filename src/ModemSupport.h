@@ -85,6 +85,7 @@ public:
 class reverseOnOff : public ModemOnOff
 {
 public:
+    bool isOn(void) override;
     bool on(void) override;
     bool off(void) override;
 };
