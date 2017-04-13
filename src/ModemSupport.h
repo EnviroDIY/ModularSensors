@@ -13,22 +13,17 @@
 
 #include <Arduino.h>
 
-#if defined(MODEM_SIM800)
-  #define TINY_GSM_MODEM_SIM800
-#elif defined(MODEM_A6)
-  #define TINY_GSM_MODEM_A6
-#elif defined(MODEM_M590)
-  #define TINY_GSM_MODEM_M590
-#elif defined(MODEM_ESP8266)
-  #define TINY_GSM_MODEM_ESP8266
-#elif defined(MODEM_XBEE)
-  #define TINY_GSM_MODEM_XBEE
-#endif
-
  // for debugging - should go in main sketch
 #define TINY_GSM_DEBUG Serial
 #define TINY_GSM_YIELD() { delay(3);}
-#define TINY_GSM_MODEM_XBEE
+
+// Select your modem chip, comment out all of the others
+// #define TINY_GSM_MODEM_SIM800  // Select for Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
+// #define TINY_GSM_MODEM_A6  // Select for A6 or A7 chips
+// #define TINY_GSM_MODEM_M590
+// #define TINY_GSM_MODEM_ESP8266
+#define TINY_GSM_MODEM_XBEE  // Select for Digi brand XBee's, including WiFi or LTE-M1
+
 #include <TinyGsmClient.h>
 
 // For the various communication devices"

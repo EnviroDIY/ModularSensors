@@ -121,12 +121,11 @@ int sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
 // ---------------------------------------------------------------------------
 // Device registration and sampling feature information
 //   This should be obtained after registration at http://data.envirodiy.org
+//   You can copy the entire code snippet directly into this block below.
 // ---------------------------------------------------------------------------
-
-const char *REGISTRATION_TOKEN = "12345678-abcd-1234-efgh-1234567890ab";
-const char *SAMPLING_FEATURE = "12345678-abcd-1234-efgh-1234567890ab";
-
-const char *UUIDs[] =
+const char *REGISTRATION_TOKEN = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
+const char *SAMPLING_FEATURE = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
+const char *UUIDs[] =                                                      // UUID array for device sensors
 {
 "12345678-abcd-1234-efgh-1234567890ab",
 "12345678-abcd-1234-efgh-1234567890ab",

@@ -21,6 +21,7 @@ void LoggerEnviroDIY::setSamplingFeature(const char *samplingFeature)
 void LoggerEnviroDIY::setUUIDs(const char *UUIDs[])
 { _UUIDs = UUIDs; }
 
+
 loggerModem LoggerEnviroDIY::modem;
 
 

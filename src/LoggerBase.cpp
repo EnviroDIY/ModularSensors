@@ -118,7 +118,7 @@ bool LoggerBase::checkInterval(void)
     // Serial.println(LoggerBase::_numReadings);  // for Debugging
     // Serial.println( getNow() % 60);  // for Debugging
     if ((getNow() % _interruptRate == 0 ) or
-        (LoggerBase::_numReadings < 15 and getNow() % 60 == 0))
+        (LoggerBase::_numReadings < 10 and getNow() % 120 == 0))
     {
         // Update the number of readings taken
         LoggerBase::_numReadings ++;

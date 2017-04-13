@@ -24,6 +24,7 @@ public:
     void setToken(const char *registrationToken);
     void setSamplingFeature(const char *samplingFeature);
     void setUUIDs(const char *UUIDs[]);
+
     static loggerModem modem;
 
     // This adds extra data to the datafile header
@@ -47,6 +48,5 @@ private:
     const char *_samplingFeature;
     const char **_UUIDs;
 };
-
 
 #endif

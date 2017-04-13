@@ -94,39 +94,39 @@ void pulsedOnOff::pulse(void)
 bool pulsedOnOff::on()
 {
     powerOn();
-    Serial.print(F("Pulsing modem to on with pin "));  // For debugging
-    Serial.println(_onoff_DTR_pin);  // For debugging
+    // Serial.print(F("Pulsing modem to on with pin "));  // For debugging
+    // Serial.println(_onoff_DTR_pin);  // For debugging
     if (!isOn()) {pulse();}
     // Wait until is actually on
     for (unsigned long start = millis(); millis() - start < 10000; )
     {
         if (isOn())
         {
-            Serial.println(F("Modem now on."));  // For debugging
+            // Serial.println(F("Modem now on."));  // For debugging
             return true;
         }
       delay(5);
     }
-    Serial.println(F("Failed to turn modem on."));  // For debugging
+    // Serial.println(F("Failed to turn modem on."));  // For debugging
     return false;
 }
 
 bool pulsedOnOff::off()
 {
     if (isOn()) {pulse();}
-    else Serial.println(F("Modem was not ever on."));  // For debugging
+    // else Serial.println(F("Modem was not ever on."));  // For debugging
     // Wait until is off
     for (unsigned long start = millis(); millis() - start < 10000; )
     {
         if (!isOn())
         {
-            Serial.println(F("Modem now off."));  // For debugging
+            // Serial.println(F("Modem now off."));  // For debugging
             powerOff();
             return true;
         }
         delay(5);
     }
-    Serial.println(F("Failed to turn modem off."));  // For debugging
+    // Serial.println(F("Failed to turn modem off."));  // For debugging
     powerOff();
     return false;
 }
@@ -141,8 +141,8 @@ bool pulsedOnOff::off()
 bool heldOnOff::on()
 {
     powerOn();
-    Serial.print(F("Setting modem to on with pin "));  // For debugging
-    Serial.println(_onoff_DTR_pin);  // For debugging
+    // Serial.print(F("Setting modem to on with pin "));  // For debugging
+    // Serial.println(_onoff_DTR_pin);  // For debugging
     if (_onoff_DTR_pin >= 0) {
         digitalWrite(_onoff_DTR_pin, HIGH);
     }
@@ -151,18 +151,18 @@ bool heldOnOff::on()
     {
         if (isOn())
         {
-            Serial.println(F("Modem now on."));  // For debugging
+            // Serial.println(F("Modem now on."));  // For debugging
             return true;
         }
         delay(5);
     }
-    Serial.println(F("Failed to turn modem on."));  // For debugging
+    // Serial.println(F("Failed to turn modem on."));  // For debugging
     return false;
 }
 
 bool heldOnOff::off()
 {
-    if (!isOn()) Serial.println(F("Modem was not ever on."));  // For debugging
+    // if (!isOn()) Serial.println(F("Modem was not ever on."));  // For debugging
     if (_onoff_DTR_pin >= 0) {
         digitalWrite(_onoff_DTR_pin, LOW);
     }
@@ -171,13 +171,13 @@ bool heldOnOff::off()
     {
         if (!isOn())
         {
-            Serial.println(F("Modem now off."));  // For debugging
+            // Serial.println(F("Modem now off."));  // For debugging
             powerOff();
             return true;
         }
         delay(5);
     }
-    Serial.println(F("Failed to turn modem off."));  // For debugging
+    // Serial.println(F("Failed to turn modem off."));  // For debugging
     powerOff();
     return false;
 }
@@ -204,8 +204,8 @@ bool reverseOnOff::isOn(void)
 bool reverseOnOff::on()
 {
     powerOn();
-    Serial.print(F("Setting modem to on with pin "));  // For debugging
-    Serial.println(_onoff_DTR_pin);  // For debugging
+    // Serial.print(F("Setting modem to on with pin "));  // For debugging
+    // Serial.println(_onoff_DTR_pin);  // For debugging
     if (_onoff_DTR_pin >= 0) {
         digitalWrite(_onoff_DTR_pin, LOW);
     }
@@ -214,18 +214,18 @@ bool reverseOnOff::on()
     {
         if (isOn())
         {
-            Serial.println(F("Modem now on."));  // For debugging
+            // Serial.println(F("Modem now on."));  // For debugging
             return true;
         }
         delay(5);
     }
-    Serial.println(F("Failed to turn modem on."));  // For debugging
+    // Serial.println(F("Failed to turn modem on."));  // For debugging
     return false;
 }
 
 bool reverseOnOff::off()
 {
-    if (!isOn()) Serial.println(F("Modem was not ever on."));  // For debugging
+    // if (!isOn()) Serial.println(F("Modem was not ever on."));  // For debugging
     if (_onoff_DTR_pin >= 0) {
         digitalWrite(_onoff_DTR_pin, HIGH);
     }
@@ -234,13 +234,13 @@ bool reverseOnOff::off()
     {
         if (!isOn())
         {
-            Serial.println(F("Modem now off."));  // For debugging
+            // Serial.println(F("Modem now off."));  // For debugging
             powerOff();
             return true;
         }
         delay(5);
     }
-    Serial.println(F("Failed to turn modem off."));  // For debugging
+    // Serial.println(F("Failed to turn modem off."));  // For debugging
     powerOff();
     return false;
 }
@@ -322,7 +322,7 @@ void loggerModem::init(Stream *modemStream,
     }
 
     // Initialize the modem
-    Serial.println(F("Initializing GSM modem instance"));  // For debugging
+    // Serial.println(F("Initializing GSM modem instance"));  // For debugging
     static TinyGsm modem(*modemStream);
     _modem = &modem;
     static TinyGsmClient client(modem);
@@ -330,9 +330,7 @@ void loggerModem::init(Stream *modemStream,
     modemOnOff->on();
     _modem->begin();
     _client->stop();  // Close any open sockets, just in case
-    #if defined(TINY_GSM_MODEM_XBEE)
-      _modem->setupPinSleep();
-    #endif
+    _modem->setupPinSleep();
     modemOnOff->off();
     _modemStream = _client;
 }
@@ -346,9 +344,12 @@ bool loggerModem::connectNetwork(void)
     {
         if(!modemOnOff->isOn())modemOnOff->on();
         Serial.println(F("\nConnecting to network..."));  // For debugging
-        _modem->networkConnect(_ssid, _pwd);
         if (!_modem->waitForNetwork(120000L)){
-            Serial.println("... Connection failed");  // For debugging
+            Serial.println("... Connection failed.  Resending credentials...");  // For debugging
+            _modem->networkConnect(_ssid, _pwd);
+            if (!_modem->waitForNetwork(120000L)){
+                Serial.println("... Connection failed");  // For debugging
+            }
         } else {
             retVal = true;
         }
