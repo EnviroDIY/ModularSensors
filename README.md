@@ -149,25 +149,26 @@ Convience functions to do it all:
 - **log()** - Logs data, must be the entire content of the loop function.
 
 ### Additional Functions Available for a LoggerEnviroDIY Object:
-Sending data to EnviroDIY depends on having some sort of modem or internet connection.  In our case, we're using "ModemSupport" bit of this library, which is essentially a wrapper for [TinyGSM](https://github.com/vshymanskyy/TinyGSM/), to interface with the modem.  To make this work, you must add one of these lines _to the very top of your sketch_:
+Sending data to EnviroDIY depends on having some sort of modem or internet connection.  In our case, we're using "ModemSupport" bit of this library, which is essentially a wrapper for [TinyGSM](https://github.com/EnviroDIY/TinyGSM), to interface with the modem.  To make this work, you must add one of these lines _to the very top of your sketch_:
 ```cpp
-// Select your modem chip, comment out all of the others (comment all of them for a transparent WiFiBee):
-#define TINY_GSM_MODEM_SIM800  // Select for Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
-// #define TINY_GSM_MODEM_SIM900
-// #define TINY_GSM_MODEM_A6
-// #define TINY_GSM_MODEM_A7
-// #define TINY_GSM_MODEM_M590
-// #define TINY_GSM_MODEM_ESP8266
+// Select your modem chip, comment out all of the others
+// #define MODEM_SIM800  // Select for Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
+// #define MODEM_A6  // Select for A6 or A7 chips
+// #define MODEM_M590
+// #define MODEM_ESP8266
+#define MODEM_XBEE  // Select for Digi brand XBee's, including WiFi or LTE-M1
 ```
-Any of the above modems types/chips should work, though only a SIM800 has been tested to date.
-- These three functions set up the required registration token, sampling feature uuid, and time series uuids for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.
+Any of the above modems types/chips should work, though only a SIM800 and WiFiBee have been tested to date.  If you would prefer to use a library of your own for controlling your modem, just omit the define statemnts.  In this case, the GSM library and modem support modules will not even be imported.
+- These three functions set up the required registration token, sampling feature uuid, and time series uuids for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.  You must call these functions to be able to get proper JSON data for EnviroDIY, even without the modem support.
     - **setToken(const char registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
     - **setSamplingFeature(const char samplingFeature)** - Sets the GUID of the sampling feature.  Note that the input is a pointer to the samplingFeature.
     - **setUUIDs(const char UUIDs[])** - Sets the time series UUIDs.  Note that the input is an array of pointers.  The order of the UUIDs in this array **must match exactly** with the order of the coordinating variable in the SENSOR_LIST.
-- **setupModem(modem modemType, Stream modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin, const char APN)** - Sets up the internet communcation, with either GPRSBee4, GPRSBee6, Fona, WiFiBee, or Other.  Note that the modemStream and APN should be pointers.  
+- After registering the tokens, set up your modem using one of these two commands, depending on whether you are using cellular or WiFi communication
+    - **modem.setupModem(Stream modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin, DTRSleepType sleepType, const char APN)** - Sets up the internet communcation with a cellular modem.  Note that the modemStream and APN should be pointers.  
+    - **modem.setupModem(Stream modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin, DTRSleepType sleepType, const char ssid, const char pwd)** - Sets up the internet communcation with a WiFi modem.  Note that the modemStream, ssid, and password should be pointers.
+    - The _DTRSleepType_ controls how the modem is put to sleep between readings.  Use "held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.  Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.  Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.  Use "always_on" if you do not want the library to control the modem power and sleep.
 - **generateSensorDataJSON()** - Generates a properly formatted JSON string to go to the EnviroDIY streaming data loader API.
-- **postDataEnviroDIY()** - Creates proper headers and sends data to the EnviroDIY data portal.  You must use the external XCTU program to set up your WiFi bee before attaching it to your board.  You must call the setupModem function before calling this function.  Returns an HTML response code.
-- **postDataGPRS()** - Creates proper headers and sends data to the EnviroDIY data portal via GPRS.  You must call the setupModem function before calling this function.  Returns an HTML response code.
+- **postDataEnviroDIY()** - Creates proper headers and sends data to the EnviroDIY data portal.  Depends on the modem support module.  Returns an HTML response code.
 
 ### <a name="LoggerExamples"></a>Logger Examples:
 
@@ -227,11 +228,11 @@ setAlertPin(int ledPin);
 EnviroDIYLogger.setToken(const char *registrationToken);
 EnviroDIYLogger.setSamplingFeature(const char *samplingFeature);
 EnviroDIYLogger.setUUIDs(const char *UUIDs[]);
-EnviroDIYLogger.setupModem(modem modemType,
-                         Stream *modemStream,
+EnviroDIYLogger.setupModem(Stream *modemStream,
                          int vcc33Pin,
                          int status_CTS_pin,
                          int onoff_DTR_pin,
+                         DTRSleepType sleepType,
                          const char *APN);
 // Run the logger setup;
 EnviroDIYLogger.begin();

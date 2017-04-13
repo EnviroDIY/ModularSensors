@@ -15,13 +15,12 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
 
-// Select your modem chip, comment out all of the others (comment all of them for a transparent WiFiBee):
-#define TINY_GSM_MODEM_SIM800  // Select for Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
-// #define TINY_GSM_MODEM_SIM900
-// #define TINY_GSM_MODEM_A6
-// #define TINY_GSM_MODEM_A7
-// #define TINY_GSM_MODEM_M590
-// #define TINY_GSM_MODEM_ESP8266
+// Select your modem chip, comment out all of the others
+// #define MODEM_SIM800  // Select for Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
+// #define MODEM_A6  // Select for A6 or A7 chips
+// #define MODEM_M590
+// #define MODEM_ESP8266
+#define MODEM_XBEE  // Select for Digi brand XBee's, including WiFi or LTE-M1
 
 // ---------------------------------------------------------------------------
 // Include the base required libraries
@@ -145,13 +144,20 @@ const char *UUIDs[] =
 "12345678-abcd-1234-efgh-1234567890ab"
 };
 
+
 // ---------------------------------------------------------------------------
 // Device Connection Options and WebSDL Endpoints for POST requests
 // ---------------------------------------------------------------------------
-modemType MODEM_TYPE = WiFiBee;  // The type of modem, either GPRSBee4, GPRSBee6, Fona, WiFiBee, or other
+DTRSleepType ModemSleepMode = held;  // How the modem is put to sleep
+// Use "held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
+// Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
+// Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
+// Use "always_on" if you do not want the library to control the modem power and sleep.
 HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
-const int ModemBaud = 9600;  // Bee BAUD rate (9600 is default)
+const int ModemBaud = 9600;  // Modem BAUD rate (9600 is default), can use higher for SIM800 (19200 works)
 const char *APN = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
+const char *SSID = "XXXXXXX";  // The WiFi access point, unnecessary for gprs
+const char *PWD = "XXXXXXX";  // The password for connecting to WiFi, unnecessary for gprs
 
 
 // ---------------------------------------------------------------------------
@@ -228,7 +234,8 @@ void setup()
     EnviroDIYLogger.setToken(REGISTRATION_TOKEN);
     EnviroDIYLogger.setSamplingFeature(SAMPLING_FEATURE);
     EnviroDIYLogger.setUUIDs(UUIDs);
-    EnviroDIYLogger.setupModem(MODEM_TYPE, &ModemSerial, BEE_VCC_PIN, BEE_CTS_PIN, BEE_DTR_PIN, APN);
+    EnviroDIYLogger.modem.setupModem(&ModemSerial, BEE_VCC_PIN, BEE_CTS_PIN, BEE_DTR_PIN, ModemSleepMode, APN);
+    // EnviroDIYLogger.modem.setupModem(&ModemSerial, BEE_VCC_PIN, BEE_CTS_PIN, BEE_DTR_PIN, ModemSleepMode, SSID, PWD);
     #ifdef DreamHostPortalRX
     EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
     #endif
