@@ -329,6 +329,9 @@ void loggerModem::init(Stream *modemStream,
     _client = &client;
     modemOnOff->on();
     _modem->begin();
+    #if defined(TINY_GSM_MODEM_XBEE)
+      _modem->setupPinSleep();
+    #endif
     modemOnOff->off();
     _modemStream = _client;
 }
