@@ -112,6 +112,9 @@ void LoggerDreamHost::log(void)
         // Turn on the LED to show we're taking a reading
         digitalWrite(LoggerBase::_ledPin, HIGH);
 
+        // Turn on the modem to let it start searching for the network
+        LoggerEnviroDIY::modem.modemOnOff->on();
+
         // Update the time variables with the current time
         markTime();
         // Update the values from all attached sensors
@@ -137,10 +140,12 @@ void LoggerDreamHost::log(void)
             // Print the response from DreamHost
             // int result2 = postDataDreamHost();
             // LoggerEnviroDIY::modem.printHTTPResult(result2);  // for debugging
-
-            // Disconnect from the network
-            LoggerEnviroDIY::modem.disconnectNetwork();
         }
+        // Disconnect from the network
+        LoggerEnviroDIY::modem.disconnectNetwork();
+
+        // Turn on the modem off
+        LoggerEnviroDIY::modem.modemOnOff->off();
 
         // Turn off the LED
         digitalWrite(LoggerBase::_ledPin, LOW);

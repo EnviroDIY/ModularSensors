@@ -24,12 +24,6 @@ public:
     void setToken(const char *registrationToken);
     void setSamplingFeature(const char *samplingFeature);
     void setUUIDs(const char *UUIDs[]);
-    void setupModem(modemType modType,
-                  Stream *modemStream,
-                  int vcc33Pin,
-                  int status_CTS_pin,
-                  int onoff_DTR_pin,
-                  const char *APN);
     static loggerModem modem;
 
     // This adds extra data to the datafile header

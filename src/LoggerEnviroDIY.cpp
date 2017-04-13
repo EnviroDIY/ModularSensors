@@ -22,17 +22,6 @@ void LoggerEnviroDIY::setUUIDs(const char *UUIDs[])
 { _UUIDs = UUIDs; }
 
 loggerModem LoggerEnviroDIY::modem;
-void LoggerEnviroDIY::setupModem(modemType modType,
-                                 Stream *modemStream,
-                                int vcc33Pin,
-                                int status_CTS_pin,
-                                int onoff_DTR_pin,
-                                const char *APN)
-{
-    modem.setupModem(modType, modemStream,
-                     vcc33Pin, status_CTS_pin, onoff_DTR_pin,
-                     APN);
-}
 
 
 // Adds the extra UUIDs to the header of the log file
@@ -166,6 +155,9 @@ void LoggerEnviroDIY::log(void)
         // Turn on the LED to show we're taking a reading
         digitalWrite(LoggerBase::_ledPin, HIGH);
 
+        // Turn on the modem to let it start searching for the network
+        LoggerEnviroDIY::modem.modemOnOff->on();
+
         // Update the time variables with the current time
         markTime();
         // Update the values from all attached sensors
@@ -185,10 +177,12 @@ void LoggerEnviroDIY::log(void)
             // Print the response from the WebSDL
             // int result = postDataEnviroDIY();
             // modem.printHTTPResult(result);  // for debugging
-
-            // Disconnect from the network
-            modem.disconnectNetwork();
         }
+        // Disconnect from the network
+        modem.disconnectNetwork();
+
+        // Turn on the modem off
+        LoggerEnviroDIY::modem.modemOnOff->off();
 
         // Turn off the LED
         digitalWrite(LoggerBase::_ledPin, LOW);

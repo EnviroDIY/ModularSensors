@@ -11,7 +11,7 @@
 #include "ModemSupport.h"
 
 /* ===========================================================================
-* Functions for the main OnOff class
+* Functions for the OnOff class
 * ========================================================================= */
 
 ModemOnOff::ModemOnOff()
@@ -94,37 +94,41 @@ void pulsedOnOff::pulse(void)
 bool pulsedOnOff::on()
 {
     powerOn();
-    // Serial.print(F("Pulsing modem to on with pin "));  // For debugging
-    // Serial.println(_onoff_DTR_pin);  // For debugging
+    Serial.print(F("Pulsing modem to on with pin "));  // For debugging
+    Serial.println(_onoff_DTR_pin);  // For debugging
     if (!isOn()) {pulse();}
     // Wait until is actually on
     for (unsigned long start = millis(); millis() - start < 10000; )
     {
         if (isOn())
         {
-            // Serial.println(F("Modem now on."));  // For debugging
+            Serial.println(F("Modem now on."));  // For debugging
             return true;
         }
       delay(5);
     }
-    // Serial.println(F("Failed to turn modem on."));  // For debugging
+    Serial.println(F("Failed to turn modem on."));  // For debugging
     return false;
 }
 
-void pulsedOnOff::off()
+bool pulsedOnOff::off()
 {
     if (isOn()) {pulse();}
+    else Serial.println(F("Modem was not ever on."));  // For debugging
     // Wait until is off
     for (unsigned long start = millis(); millis() - start < 10000; )
     {
         if (!isOn())
         {
-            // Serial.println(F("Modem now off."));  // For debugging
-            break;
+            Serial.println(F("Modem now off."));  // For debugging
+            powerOff();
+            return true;
         }
         delay(5);
     }
+    Serial.println(F("Failed to turn modem off."));  // For debugging
     powerOff();
+    return false;
 }
 
 /* ===========================================================================
@@ -137,8 +141,8 @@ void pulsedOnOff::off()
 bool heldOnOff::on()
 {
     powerOn();
-    // Serial.print(F("Setting modem to on with pin "));  // For debugging
-    // Serial.println(_onoff_DTR_pin);  // For debugging
+    Serial.print(F("Setting modem to on with pin "));  // For debugging
+    Serial.println(_onoff_DTR_pin);  // For debugging
     if (_onoff_DTR_pin >= 0) {
         digitalWrite(_onoff_DTR_pin, HIGH);
     }
@@ -147,17 +151,18 @@ bool heldOnOff::on()
     {
         if (isOn())
         {
-            // Serial.println(F("Modem now on."));  // For debugging
+            Serial.println(F("Modem now on."));  // For debugging
             return true;
         }
         delay(5);
     }
-    // Serial.println(F("Failed to turn modem on."));  // For debugging
+    Serial.println(F("Failed to turn modem on."));  // For debugging
     return false;
 }
 
-void heldOnOff::off()
+bool heldOnOff::off()
 {
+    if (!isOn()) Serial.println(F("Modem was not ever on."));  // For debugging
     if (_onoff_DTR_pin >= 0) {
         digitalWrite(_onoff_DTR_pin, LOW);
     }
@@ -166,13 +171,68 @@ void heldOnOff::off()
     {
         if (!isOn())
         {
-            // Serial.println(F("Modem now off."));  // For debugging
-            break;
+            Serial.println(F("Modem now off."));  // For debugging
+            powerOff();
+            return true;
         }
         delay(5);
     }
+    Serial.println(F("Failed to turn modem off."));  // For debugging
     powerOff();
+    return false;
 }
+
+/* ===========================================================================
+* Functions for reverse method.
+* This turns the modem on by setting the onoff/DTR/Key pin LOW and off by
+* setting it HIGH.
+* This is used by the XBee's
+* ========================================================================= */
+
+bool reverseOnOff::on()
+{
+    powerOn();
+    Serial.print(F("Setting modem to on with pin "));  // For debugging
+    Serial.println(_onoff_DTR_pin);  // For debugging
+    if (_onoff_DTR_pin >= 0) {
+        digitalWrite(_onoff_DTR_pin, HIGH);
+    }
+    // Wait until is actually on
+    for (unsigned long start = millis(); millis() - start < 10000; )
+    {
+        if (isOn())
+        {
+            Serial.println(F("Modem now on."));  // For debugging
+            return true;
+        }
+        delay(5);
+    }
+    Serial.println(F("Failed to turn modem on."));  // For debugging
+    return false;
+}
+
+bool reverseOnOff::off()
+{
+    if (!isOn()) Serial.println(F("Modem was not ever on."));  // For debugging
+    if (_onoff_DTR_pin >= 0) {
+        digitalWrite(_onoff_DTR_pin, LOW);
+    }
+    // Wait until is off
+    for (unsigned long start = millis(); millis() - start < 10000; )
+    {
+        if (!isOn())
+        {
+            Serial.println(F("Modem now off."));  // For debugging
+            powerOff();
+            return true;
+        }
+        delay(5);
+    }
+    Serial.println(F("Failed to turn modem off."));  // For debugging
+    powerOff();
+    return false;
+}
+
 
 
 
@@ -182,90 +242,121 @@ void heldOnOff::off()
 * ========================================================================= */
 Stream *loggerModem::_modemStream;
 
-void loggerModem::setupModem(modemType modType,
-                               Stream *modemStream,
-                               int vcc33Pin,
-                               int status_CTS_pin,
-                               int onoff_DTR_pin,
-                               const char *APN)
+void loggerModem::setupModem(Stream *modemStream,
+                             int vcc33Pin,
+                             int status_CTS_pin,
+                             int onoff_DTR_pin,
+                             DTRSleepType sleepType,
+                             const char *APN)
 {
-    _modemType = modType;
     _APN = APN;
+    _ssid = "";
+    _pwd = "";
+    init(modemStream, vcc33Pin, status_CTS_pin, onoff_DTR_pin, sleepType);
+}
+
+void loggerModem::setupModem(Stream *modemStream,
+                             int vcc33Pin,
+                             int status_CTS_pin,
+                             int onoff_DTR_pin,
+                             DTRSleepType sleepType,
+                             const char *ssid,
+                             const char *pwd)
+{
+    _APN = "";
+    _ssid = ssid;
+    _pwd = pwd;
+    init(modemStream, vcc33Pin, status_CTS_pin, onoff_DTR_pin, sleepType);
+}
 
 
-    // Initialize the modem
-    switch(_modemType)
+void loggerModem::init(Stream *modemStream,
+                       int vcc33Pin,
+                       int status_CTS_pin,
+                       int onoff_DTR_pin,
+                       DTRSleepType sleepType)
+{
+    // Set up the method for putting the modem to sleep
+    switch(sleepType)
     {
-        case GPRSBee4:
-        case Fona:
+        case pulsed:
         {
-            // Serial.println(F("Setting up GPRSBee4 or Fona"));  // For debugging
             static pulsedOnOff pulsed;
-            _modemOnOff = &pulsed;
+            modemOnOff = &pulsed;
             pulsed.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
             break;
         }
+        case held:
+        {
+            static heldOnOff held;
+            modemOnOff = &held;
+            held.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
+            break;
+        }
         default:
         {
-            // Serial.println(F("Setting up modem."));  // For debugging
             static heldOnOff held;
-            _modemOnOff = &held;
-            held.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
+            modemOnOff = &held;
+            held.init(-1, -1, -1);
             break;
         }
     }
 
-    switch(_modemType)
-    {
-        case WiFiBee:
-        {
-          static TinyGsm modem(*modemStream);
-          _modem = &modem;
-          static TinyGsmClient client(modem);
-          _client = &client;
-          _modemOnOff->on();
-          _modem->begin();
-          _modem->factoryDefault();
-          delay(1000);  // cannot send anything for 1 second before entering command mode
-          _client->print(String(F("+++")));  // enter command mode
-          _modem->waitResponse(1100);
-          _modem->sendAT(GF("SM 1"));  // set sleep mode to pin sleep
-          _modem->waitResponse();
-          _modem->sendAT(GF("SO 200"));  // set sleep option to disconnected deep sleep
-          // 0x200 = b1000000000 -> Sleep Options Bit field.
-          // Bit 6 - Stay associated with AP during sleep.
-          // Bit 9 - Disassociate from AP for Deep Sleep.
-          // All other bits ignored.
-          _modem->waitResponse();
-          _modem->sendAT(GF("PD 5DBF"));  // set the CTS and DTR pins to pull DOWN
-          // 0x5DBF = b101110110111111 -> Sleep Options Bit field.
-          _modem->waitResponse();
-          _modem->sendAT(GF("WR"));  // Write changes to flash
-          _modem->waitResponse();
-          _modem->sendAT(GF("AC"));  // Apply changes
-          _modem->waitResponse();
-          _modem->sendAT(GF("CN"));  // Exit command mode
-          _modem->waitResponse();
-          _modemOnOff->off();
-          _modemStream = _client;
-          break;
-        }
-        default:
-        {
-            // Serial.println(F("Initializing GSM modem instance"));  // For debugging
-            static TinyGsm modem(*modemStream);
-            _modem = &modem;
-            static TinyGsmClient client(modem);
-            _client = &client;
-            _modemOnOff->on();
-            _modem->begin();
-            // _modem->restart();
-            // _modem->factoryDefault();
-            _modemOnOff->off();
-            _modemStream = _client;
-            break;
-        }
-    }
+    // Initialize the modem
+
+      // modemOnOff->on();
+      // delay(1000);  // cannot send anything for 1 second before entering command mode
+      // Serial1.print(String(F("+++")));  // enter command mode
+      // Serial.print(String(F("+++")));  // enter command mode
+      // delay(1100);  // cannot send anything for 1 second after entering command mode
+      // Serial.println(Serial1.readString());
+      // Serial1.print(String(F("AT RE")));  // set back to factory defaults
+      // Serial.print(String(F("AT RE")));  // set back to factory defaults
+      // Serial.println(Serial1.readString());
+      // Serial1.print(String(F("AT AP 0")));  // Put in transparent mode
+      // Serial.print(String(F("AT AP 0")));  // Put in transparent mode
+      // Serial.println(Serial1.readString());
+      // Serial1.print(String(F("AT IP 1")));  // Put in TCP mode
+      // Serial.print(String(F("AT IP 1")));  // Put in TCP mode
+      // Serial.println(Serial1.readString());
+      // Serial1.print(String(F("AT SM 1")));  // set sleep mode to pin sleep
+      // Serial.print(String(F("AT SM 1")));  // set sleep mode to pin sleep
+      // Serial.println(Serial1.readString());
+      // Serial1.print(String(F("AT SO 200")));  // set sleep option to disconnected deep sleep
+      // Serial.print(String(F("AT SO 200")));  // set sleep option to disconnected deep sleep
+      // // 0x200 = b1000000000 -> Sleep Options Bit field.
+      // // Bit 6 - Stay associated with AP during sleep.
+      // // Bit 9 - Disassociate from AP for Deep Sleep.
+      // // All other bits ignored.
+      // Serial.println(Serial1.readString());
+      // Serial1.print(String(F("AT PD 5DBF")));  // set the CTS and DTR pins to pull DOWN
+      // Serial.print(String(F("AT PD 5DBF")));  // set the CTS and DTR pins to pull DOWN
+      // // 0x5DBF = b101110110111111 -> Pin pulll up/pull down options bit field
+      // Serial.println(Serial1.readString());
+      // Serial1.print(String(F("AT GT FA")));  // shorten the guard time to 250ms
+      // Serial.print(String(F("AT GT FA")));  // shorten the guard time to 250ms
+      // // 0xFA = 250
+      // Serial.println(Serial1.readString());
+      // Serial1.print(String(F("AT WR")));  // Write changes to flash
+      // Serial.print(String(F("AT WR")));  // Write changes to flash
+      // Serial.println(Serial1.readString());
+      // Serial1.print(String(F("AT AC")));  // Apply changes
+      // Serial.print(String(F("AT AC")));  // Apply changes
+      // Serial.println(Serial1.readString());
+      // Serial1.print(String(F("AT CN")));  // Exit command mode
+      // Serial.print(String(F("AT CN")));  // Exit command mode
+      // Serial.println(Serial1.readString());
+      // modemOnOff->off();
+
+    Serial.println(F("Initializing GSM modem instance"));  // For debugging
+    static TinyGsm modem(*modemStream);
+    _modem = &modem;
+    static TinyGsmClient client(modem);
+    _client = &client;
+    modemOnOff->on();
+    _modem->begin();
+    modemOnOff->off();
+    _modemStream = _client;
 }
 
 
@@ -273,25 +364,26 @@ void loggerModem::setupModem(modemType modType,
 bool loggerModem::connectNetwork(void)
 {
     bool retVal = false;
-    switch(_modemType)
+    if (_ssid)
     {
-        case WiFiBee:
-        {
-            _modemOnOff->on();
+        if(!modemOnOff->isOn())modemOnOff->on();
+        Serial.println(F("\nConnecting to network..."));  // For debugging
+        _modem->networkConnect(_ssid, _pwd);
+        if (!_modem->waitForNetwork(120000L)){
+            Serial.println("... Connection failed");  // For debugging
+        } else {
             retVal = true;
-            break;
         }
-        default:
-        {
-            _modemOnOff->on();
-            Serial.println(F("\nWaiting for network..."));  // For debugging
-            if (!_modem->waitForNetwork()){
-                Serial.println("... Connection failed");  // For debugging
-            } else {
-                _modem->gprsConnect(_APN, "", "");
-                retVal = true;
-            }
-            break;
+    }
+    else
+    {
+        if(!modemOnOff->isOn())modemOnOff->on();
+        Serial.println(F("\nWaiting for network..."));  // For debugging
+        if (!_modem->waitForNetwork(120000L)){
+            Serial.println("... Connection failed");  // For debugging
+        } else {
+            _modem->gprsConnect(_APN, "", "");
+            retVal = true;
         }
     }
     return retVal;
@@ -301,73 +393,17 @@ bool loggerModem::connectNetwork(void)
 // Disconnect and turn off the modem
 void loggerModem::disconnectNetwork(void)
 {
-    switch(_modemType)
-    {
-        case WiFiBee:
-        {
-            _modemOnOff->off();
-            break;
-        }
-        default:
-        {
-            _modem->gprsDisconnect();
-            _modemOnOff->off();
-            break;
-        }
-    }
+    _modem->gprsDisconnect();
 }
 
 int loggerModem::connect(const char *host, uint16_t port)
 {
-    int retVal = 0;
-    switch(_modemType)
-    {
-        case WiFiBee:
-        {
-            // Serial.println(F("Must have IP address to connect WiFiBee"));
-            break;
-        }
-        default:
-        {
-            retVal = _client->connect(host, port);
-            break;
-        }
-    }
-    return retVal;
-}
-
-int loggerModem::connect(IPAddress ip, uint16_t port)
-{
-    int retVal = 0;
-    switch(_modemType)
-    {
-        case WiFiBee:
-        {
-            break;
-        }
-        default:
-        {
-            retVal = _client->connect(ip, port);
-            break;
-        }
-    }
-    return retVal;
+    return  _client->connect(host, port);
 }
 
 void loggerModem::stop(void)
 {
-    switch(_modemType)
-    {
-        case WiFiBee:
-        {
-            break;
-        }
-        default:
-        {
-            _client->stop();
-            break;
-        }
-    }
+    return _client->stop();
 }
 
 
