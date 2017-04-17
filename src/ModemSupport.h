@@ -16,19 +16,21 @@
 #define TINY_GSM_DEBUG Serial
 #define TINY_GSM_YIELD() { delay(3);}
 
-#if MODEM_CHIP == SIM800 || MODEM_CHIP == SIM900
-  #include "TinyGsmClientSIM800.h"
-#elif MODEM_CHIP == A6 || MODEM_CHIP == A7
-  #include "TinyGsmClientA6.h"
-#elif MODEM_CHIP == M590
-  #include "TinyGsmClientM590.h"
-#elif MODEM_CHIP == ESP8266
-  #include "TinyGsmClientESP8266.h"
-#elif MODEM_CHIP == XBEE
-  #include "TinyGsmClientXBee.h"
-#else
-  #error "Please define GSM modem model"
+#if defined(MODEM_CHIP_SIM800)
+  #define GSM_INCLUDE <TinyGsmClientSIM800.h>
+#elif defined(MODEM_CHIP_A6)
+  #define GSM_INCLUDE <TinyGsmClientA6.h>
+#elif defined(MODEM_CHIP_M590)
+  #define GSM_INCLUDE <TinyGsmClientM590.h>
+#elif defined(MODEM_CHIP_ESP8266)
+  #define GSM_INCLUDE <TinyGsmClientESP8266.h>
+#elif defined(MODEM_CHIP_XBEE)
+  #define GSM_INCLUDE <TinyGsmClientXBee.h>
+// #else
+//   #error "Please define GSM modem model"
 #endif
+
+#include GSM_INCLUDE
 
 // For the various communication devices"
 typedef enum DTRSleepType
