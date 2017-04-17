@@ -13,18 +13,22 @@
 
 #include <Arduino.h>
 
- // for debugging - should go in main sketch
 #define TINY_GSM_DEBUG Serial
 #define TINY_GSM_YIELD() { delay(3);}
 
-// Select your modem chip, comment out all of the others
-// #define TINY_GSM_MODEM_SIM800  // Select for Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
-// #define TINY_GSM_MODEM_A6  // Select for A6 or A7 chips
-// #define TINY_GSM_MODEM_M590
-// #define TINY_GSM_MODEM_ESP8266
-#define TINY_GSM_MODEM_XBEE  // Select for Digi brand XBee's, including WiFi or LTE-M1
-
-#include <TinyGsmClient.h>
+#if MODEM_CHIP == SIM800 || MODEM_CHIP == SIM900
+  #include "TinyGsmClientSIM800.h"
+#elif MODEM_CHIP == A6 || MODEM_CHIP == A7
+  #include "TinyGsmClientA6.h"
+#elif MODEM_CHIP == M590
+  #include "TinyGsmClientM590.h"
+#elif MODEM_CHIP == ESP8266
+  #include "TinyGsmClientESP8266.h"
+#elif MODEM_CHIP == XBEE
+  #include "TinyGsmClientXBee.h"
+#else
+  #error "Please define GSM modem model"
+#endif
 
 // For the various communication devices"
 typedef enum DTRSleepType
