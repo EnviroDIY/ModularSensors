@@ -22,6 +22,7 @@ public:
     // Functions for private SWRC server
     void setDreamHostPortalRX(const char *URL);
     String generateSensorDataDreamHost(void);
+
     int postDataDreamHost(void);
 
     // Convience functions to do it all

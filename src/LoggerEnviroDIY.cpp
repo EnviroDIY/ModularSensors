@@ -22,9 +22,6 @@ void LoggerEnviroDIY::setUUIDs(const char *UUIDs[])
 { _UUIDs = UUIDs; }
 
 
-loggerModem LoggerEnviroDIY::modem;
-
-
 // Adds the extra UUIDs to the header of the log file
 String LoggerEnviroDIY::generateFileHeader(void)
 {
@@ -92,6 +89,8 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
     stream->print(String(F("\r\n\r\n")));
 }
 
+// Set up the modem instance
+loggerModem LoggerEnviroDIY::modem;
 
 // This function makes an HTTP connection to the server and POSTs data - for WIFI
 int LoggerEnviroDIY::postDataEnviroDIY(void)

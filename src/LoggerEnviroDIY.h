@@ -25,13 +25,14 @@ public:
     void setSamplingFeature(const char *samplingFeature);
     void setUUIDs(const char *UUIDs[]);
 
-    static loggerModem modem;
-
     // This adds extra data to the datafile header
     String generateFileHeader(void) override;
 
     // Public functions to generate data formats
     String generateSensorDataJSON(void);
+
+    // Create the modem instance
+    static loggerModem modem;
 
     // Public function to send data
     int postDataEnviroDIY(void);

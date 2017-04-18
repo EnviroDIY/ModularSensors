@@ -49,10 +49,10 @@ void LoggerDreamHost::streamDreamHostRequest(Stream *stream)
     stream->print(String(F("\r\n\r\n")));
 }
 
-// Post the data to dream host.  Do IF AND ONLY IF using GPRSBee
+// Post the data to dream host.
 int LoggerDreamHost::postDataDreamHost(void)
 {
-    LoggerEnviroDIY::modem.connect("swrcsensors.dreamhosters.com", 80);
+    modem.connect("swrcsensors.dreamhosters.com", 80);
 
     // Send the request to the serial for debugging
     Serial.println(F("\n \\/------ Data to DreamHost ------\\/ "));  // for debugging
@@ -60,13 +60,13 @@ int LoggerDreamHost::postDataDreamHost(void)
     Serial.flush();  // for debugging
 
     // Send the request to the modem stream
-    LoggerEnviroDIY::modem.dumpBuffer();
-    streamDreamHostRequest(LoggerEnviroDIY::modem._modemStream);
-    LoggerEnviroDIY::modem._modemStream->flush();  // wait for sending to finish
+    modem.dumpBuffer();
+    streamDreamHostRequest(modem._modemStream);
+    modem._modemStream->flush();  // wait for sending to finish
 
     // Add a brief delay for at least the first 12 characters of the HTTP response
     int timeout = 1500;
-    while ((timeout > 0) && LoggerEnviroDIY::modem._modemStream->available() < 12)
+    while ((timeout > 0) && modem._modemStream->available() < 12)
     {
       delay(1);
       timeout--;
@@ -74,20 +74,20 @@ int LoggerDreamHost::postDataDreamHost(void)
 
     // Process the HTTP response
     int responseCode = 0;
-    if (timeout > 0 && LoggerEnviroDIY::modem._modemStream->available() >= 12)
+    if (timeout > 0 && modem._modemStream->available() >= 12)
     {
-        // Serial.println("****" + LoggerEnviroDIY::modem._modemStream->readStringUntil(' ') + "****");  // for debugging
+        // Serial.println("****" + modem._modemStream->readStringUntil(' ') + "****");  // for debugging
         // Serial.println("****" + modem._modemStream->readStringUntil(' ') + "****");  // for debugging
         modem._modemStream->readStringUntil(' ');
         responseCode = modem._modemStream->readStringUntil(' ').toInt();
-        LoggerEnviroDIY::modem.dumpBuffer();
+        modem.dumpBuffer();
     }
     else responseCode=504;
 
     Serial.println(F(" -- Response Code -- "));  // for debugging
     Serial.println(responseCode);  // for debugging
 
-    LoggerEnviroDIY::modem.stop();
+    modem.stop();
 
     return responseCode;
 }
@@ -113,7 +113,7 @@ void LoggerDreamHost::log(void)
         digitalWrite(LoggerBase::_ledPin, HIGH);
 
         // Turn on the modem to let it start searching for the network
-        LoggerEnviroDIY::modem.modemOnOff->on();
+        modem.modemOnOff->on();
 
         // Update the time variables with the current time
         markTime();
@@ -126,26 +126,26 @@ void LoggerDreamHost::log(void)
         logToSD(generateSensorDataCSV());
 
         // Connect to the network
-        if (LoggerEnviroDIY::modem.connectNetwork())
+        if (modem.connectNetwork())
         {
             // Post the data to the WebSDL
             postDataEnviroDIY();
 
             // Print the response from the WebSDL
             // int result = postDataEnviroDIY();
-            // LoggerEnviroDIY::modem.printHTTPResult(result);  // for debugging
+            // modem.printHTTPResult(result);  // for debugging
 
             // Post the data to DreamHost
             postDataDreamHost();
             // Print the response from DreamHost
             // int result2 = postDataDreamHost();
-            // LoggerEnviroDIY::modem.printHTTPResult(result2);  // for debugging
+            // modem.printHTTPResult(result2);  // for debugging
         }
         // Disconnect from the network
-        LoggerEnviroDIY::modem.disconnectNetwork();
+        modem.disconnectNetwork();
 
         // Turn on the modem off
-        LoggerEnviroDIY::modem.modemOnOff->off();
+        modem.modemOnOff->off();
 
         // Turn off the LED
         digitalWrite(LoggerBase::_ledPin, LOW);

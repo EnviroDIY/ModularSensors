@@ -10,6 +10,7 @@
 
 #include "ModemSupport.h"
 
+
 /* ===========================================================================
 * Functions for the OnOff class
 * ========================================================================= */
@@ -321,6 +322,7 @@ void loggerModem::init(Stream *modemStream,
         }
     }
 
+#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
     // Initialize the modem
     // Serial.println(F("Initializing GSM modem instance"));  // For debugging
     static TinyGsm modem(*modemStream);
@@ -335,6 +337,9 @@ void loggerModem::init(Stream *modemStream,
     #endif
     modemOnOff->off();
     _modemStream = _client;
+#else
+  _modemStream = modemStream;
+#endif
 }
 
 
@@ -342,6 +347,7 @@ void loggerModem::init(Stream *modemStream,
 bool loggerModem::connectNetwork(void)
 {
     bool retVal = false;
+#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
     if (_ssid)
     {
         if(!modemOnOff->isOn())modemOnOff->on();
@@ -367,6 +373,7 @@ bool loggerModem::connectNetwork(void)
             retVal = true;
         }
     }
+#endif
     return retVal;
 }
 
@@ -374,17 +381,25 @@ bool loggerModem::connectNetwork(void)
 // Disconnect and turn off the modem
 void loggerModem::disconnectNetwork(void)
 {
+#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
     _modem->gprsDisconnect();
+#endif
 }
 
 int loggerModem::connect(const char *host, uint16_t port)
 {
+#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
     return  _client->connect(host, port);
+#else
+    return 0;
+#endif
 }
 
 void loggerModem::stop(void)
 {
+#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
     return _client->stop();
+#endif
 }
 
 

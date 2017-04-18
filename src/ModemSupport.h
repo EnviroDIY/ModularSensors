@@ -12,25 +12,40 @@
 #define modem_onoff_h
 
 #include <Arduino.h>
+// #define TINY_GSM_DEBUG Serial
+// #define TINY_GSM_YIELD() { delay(3);}
+// #include <TinyGsmClient.h>
 
-#define TINY_GSM_DEBUG Serial
-#define TINY_GSM_YIELD() { delay(3);}
-
-#if defined(MODEM_CHIP_SIM800)
-  #define GSM_INCLUDE <TinyGsmClientSIM800.h>
-#elif defined(MODEM_CHIP_A6)
-  #define GSM_INCLUDE <TinyGsmClientA6.h>
-#elif defined(MODEM_CHIP_M590)
-  #define GSM_INCLUDE <TinyGsmClientM590.h>
-#elif defined(MODEM_CHIP_ESP8266)
-  #define GSM_INCLUDE <TinyGsmClientESP8266.h>
-#elif defined(MODEM_CHIP_XBEE)
-  #define GSM_INCLUDE <TinyGsmClientXBee.h>
-// #else
-//   #error "Please define GSM modem model"
+#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
+  #define USE_TINY_GSM
+  #define TINY_GSM_DEBUG Serial
+  #define TINY_GSM_YIELD() { delay(3);}
+  #include <TinyGsmClient.h>
 #endif
 
-#include GSM_INCLUDE
+
+
+// #if defined(MODEM_CHIP_SIM800)
+//   #define GSM_INCLUDE <TinyGsmClientSIM800.h>
+//   #define USE_MODEM 1
+// #elif defined(MODEM_CHIP_A6)
+//   #define GSM_INCLUDE <TinyGsmClientA6.h>
+//   #define USE_MODEM 1
+// #elif defined(MODEM_CHIP_M590)
+//   #define GSM_INCLUDE <TinyGsmClientM590.h>
+//   #define USE_MODEM 1
+// #elif defined(MODEM_CHIP_ESP8266)
+//   #define GSM_INCLUDE <TinyGsmClientESP8266.h>
+//   #define USE_MODEM 1
+// #elif defined(MODEM_CHIP_XBEE)
+//   #define GSM_INCLUDE <TinyGsmClientXBee.h>
+//   #define USE_MODEM 1
+// #else
+//   #define GSM_INCLUDE "LoggerBase.h"  // Just to have something so it won't crash
+// #endif
+// #include GSM_INCLUDE
+//
+// #if defined(USE_MODEM)
 
 // For the various communication devices"
 typedef enum DTRSleepType
@@ -127,10 +142,11 @@ private:
     const char *_ssid;
     const char *_pwd;
 
+#if defined(USE_TINY_GSM)
     TinyGsm *_modem;
     TinyGsmClient *_client;
+#endif
 };
-
 
 
 #endif /* modem_onoff_h */
