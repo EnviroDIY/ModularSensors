@@ -16,11 +16,11 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 
 // Select your modem chip, comment out all of the others
-// #define MODEM_SIM800  // Select for Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
-// #define MODEM_A6  // Select for A6 or A7 chips
-// #define MODEM_M590
-// #define MODEM_ESP8266
-#define MODEM_XBEE  // Select for Digi brand XBee's, including WiFi or LTE-M1
+#define TINY_GSM_MODEM_SIM800  // Select for anything using a SIM800, SIM900, or varient thereof: Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
+// #define TINY_GSM_MODEM_A6  // Select for A6 or A7 chips
+// #define TINY_GSM_MODEM_M590
+// #define TINY_GSM_MODEM_ESP8266
+// #define TINY_GSM_MODEM_XBEE  // Select for Digi brand XBee's, including WiFi or LTE-M1
 
 // ---------------------------------------------------------------------------
 // Include the base required libraries
