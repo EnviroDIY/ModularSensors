@@ -341,9 +341,12 @@ public:
     bool connectNetwork(void)
     {
         bool retVal = false;
-    #if defined(USE_TINY_GSM)
+
+        #if defined(TINY_GSM_MODEM_XBEE)
         if (_ssid)
         {
+        #endif
+            #if defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
             if(!modemOnOff->isOn())modemOnOff->on();
             Serial.println(F("\nConnecting to WiFi network..."));  // For debugging
             if (!_modem->waitForNetwork(120000L)){
@@ -355,9 +358,13 @@ public:
             } else {
                 retVal = true;
             }
+            #endif
+        #if defined(TINY_GSM_MODEM_XBEE)
         }
         else
         {
+        #endif
+        #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_XBEE)
             if(!modemOnOff->isOn())modemOnOff->on();
             Serial.println(F("\nWaiting for cellular network..."));  // For debugging
             if (!_modem->waitForNetwork(120000L)){
@@ -366,14 +373,17 @@ public:
                 _modem->gprsConnect(_APN, "", "");
                 retVal = true;
             }
+        #endif
+        #if defined(TINY_GSM_MODEM_XBEE)
         }
-    #endif
+        #endif
+
         return retVal;
     }
 
     void disconnectNetwork(void)
     {
-    #if defined(USE_TINY_GSM)
+    #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_XBEE)
         _modem->gprsDisconnect();
     #endif
     }
