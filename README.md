@@ -152,13 +152,13 @@ Convience functions to do it all:
 Sending data to EnviroDIY depends on having some sort of modem or internet connection.  In our case, we're using "ModemSupport" bit of this library, which is essentially a wrapper for [TinyGSM](https://github.com/EnviroDIY/TinyGSM), to interface with the modem.  To make this work, you must add one of these lines _to the very top of your sketch_:
 ```cpp
 // Select your modem chip, comment out all of the others
-// #define MODEM_SIM800  // Select for Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
-// #define MODEM_A6  // Select for A6 or A7 chips
-// #define MODEM_M590
-// #define MODEM_ESP8266
-#define MODEM_XBEE  // Select for Digi brand XBee's, including WiFi or LTE-M1
+// #define TINY_GSM_MODEM_SIM800  // Select for anything using a SIM800, SIM900, or varient thereof: Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
+// #define TINY_GSM_MODEM_A6  // Select for A6 or A7 chips
+// #define TINY_GSM_MODEM_M590
+// #define TINY_GSM_MODEM_ESP8266
+#define TINY_GSM_MODEM_XBEE  // Select for Digi brand XBee's, including WiFi or LTE-M1
 ```
-Any of the above modems types/chips should work, though only a SIM800 and WiFiBee have been tested to date.  If you would prefer to use a library of your own for controlling your modem, just omit the define statemnts.  In this case, the GSM library and modem support modules will not even be imported.
+Any of the above modems types/chips should work, though only a SIM800 and WiFiBee have been tested to date.  If you would prefer to use a library of your own for controlling your modem, just omit the define statemnts.  In this case, the GSM library and modem support modules will be imported and you will lose the postDataEnviroDIY() and log() functions.
 - These three functions set up the required registration token, sampling feature uuid, and time series uuids for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.  You must call these functions to be able to get proper JSON data for EnviroDIY, even without the modem support.
     - **setToken(const char registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
     - **setSamplingFeature(const char samplingFeature)** - Sets the GUID of the sampling feature.  Note that the input is a pointer to the samplingFeature.
@@ -228,12 +228,12 @@ setAlertPin(int ledPin);
 EnviroDIYLogger.setToken(const char *registrationToken);
 EnviroDIYLogger.setSamplingFeature(const char *samplingFeature);
 EnviroDIYLogger.setUUIDs(const char *UUIDs[]);
-EnviroDIYLogger.setupModem(Stream *modemStream,
-                         int vcc33Pin,
-                         int status_CTS_pin,
-                         int onoff_DTR_pin,
-                         DTRSleepType sleepType,
-                         const char *APN);
+EnviroDIYLogger.modem.setupModem(Stream *modemStream,
+                                 int vcc33Pin,
+                                 int status_CTS_pin,
+                                 int onoff_DTR_pin,
+                                 DTRSleepType sleepType,
+                                 const char *APN);
 // Run the logger setup;
 EnviroDIYLogger.begin();
 ```
