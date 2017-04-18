@@ -107,33 +107,6 @@ SensorBase *SENSOR_LIST[] = {
 };
 int sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
 
-
-// ---------------------------------------------------------------------------
-// Device registration and sampling feature information
-//   This should be obtained after registration at http://data.envirodiy.org
-// ---------------------------------------------------------------------------
-
-const char *REGISTRATION_TOKEN = "12345678-abcd-1234-efgh-1234567890ab";
-const char *SAMPLING_FEATURE = "12345678-abcd-1234-efgh-1234567890ab";
-
-const char *UUIDs[] =
-{
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab"
-};
-
 // ---------------------------------------------------------------------------
 // Board setup info
 // ---------------------------------------------------------------------------

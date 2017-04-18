@@ -118,7 +118,7 @@ bool LoggerBase::checkInterval(void)
     // Serial.println(LoggerBase::_numReadings);  // for Debugging
     // Serial.println( getNow() % 60);  // for Debugging
     if ((getNow() % _interruptRate == 0 ) or
-        (LoggerBase::_numReadings < 15 and getNow() % 60 == 0))
+        (LoggerBase::_numReadings < 10 and getNow() % 120 == 0))
     {
         // Update the number of readings taken
         LoggerBase::_numReadings ++;
@@ -153,8 +153,8 @@ void LoggerBase::markTime(void)
 // This sets up the function to be called by the timer with no return of its own.
 // This structure is required by the timer library.
 // See http://support.sodaq.com/sodaq-one/adding-a-timer-to-schedule-readings/
-void LoggerBase::checkTime(uint32_t ts)
-{}
+// void LoggerBase::checkTime(uint32_t ts)
+// {}
 
 // Set-up the RTC Timer events
 void LoggerBase::setupTimer(void)
@@ -170,7 +170,7 @@ void LoggerBase::setupTimer(void)
     // having the timer call a function to check the time instead of actually
     // taking a reading because we would rather first double check that we're
     // exactly on a current minute before taking the reading.
-    loggerTimer.every(_interruptRate, checkTime);
+    // loggerTimer.every(_interruptRate, checkTime);
 }
 
 
@@ -300,6 +300,41 @@ String LoggerBase::getFileName(void)
     return LoggerBase::_fileName;
 }
 
+String LoggerBase::generateFileHeader(void)
+{
+    String dataHeader = F("Data Logger: ");
+    dataHeader += String(_loggerID);
+    dataHeader += F("\r\n");
+
+    dataHeader += F("\"Date and Time in UTC");
+    dataHeader += _timeZone;
+    dataHeader += F("\", ");
+    for (uint8_t i = 0; i < _sensorCount; i++)
+    {
+        dataHeader += F("\"");
+        dataHeader += String(_sensorList[i]->getSensorName());
+        dataHeader += F(" - ");
+        dataHeader += String(_sensorList[i]->getVarName());
+        dataHeader += F(" (");
+        dataHeader += String(_sensorList[i]->getVarUnit());
+        dataHeader += F(")\"");
+        if (i + 1 != _sensorCount)
+        {
+            dataHeader += F(", ");
+        }
+    }
+    return dataHeader;
+}
+
+String LoggerBase::generateSensorDataCSV(void)
+{
+    String csvString = "";
+    LoggerBase::markedDateTime.addToString(csvString);
+    csvString += F(", ");
+    csvString += SensorArray::generateSensorDataCSV();
+    return csvString;
+}
+
 // Initializes the SD card and prints a header to it
 void LoggerBase::setupLogFile(void)
 {
@@ -341,41 +376,11 @@ void LoggerBase::setupLogFile(void)
                                 rtc.makeDateTime(getNow()).second());
 
     // Add header information
-    logFile.print(F("Data Logger: "));
-    logFile.println(_loggerID);
-
-    String dataHeader = F("\"Date and Time in UTC");
-    dataHeader += _timeZone;
-    dataHeader += F("\", ");
-    for (uint8_t i = 0; i < _sensorCount; i++)
-    {
-        dataHeader += F("\"");
-        dataHeader += String(_sensorList[i]->getSensorName());
-        dataHeader += F(" - ");
-        dataHeader += String(_sensorList[i]->getVarName());
-        dataHeader += F(" (");
-        dataHeader += String(_sensorList[i]->getVarUnit());
-        dataHeader += F(")\"");
-        if (i + 1 != _sensorCount)
-        {
-            dataHeader += F(", ");
-        }
-    }
-
-    // Serial.println(dataHeader);  // for debugging
-    logFile.println(dataHeader);
+    logFile.println(generateFileHeader());
+    // Serial.println(generateFileHeader());  // for debugging
 
     //Close the file to save it
     logFile.close();
-}
-
-String LoggerBase::generateSensorDataCSV(void)
-{
-    String csvString = "";
-    LoggerBase::markedDateTime.addToString(csvString);
-    csvString += F(", ");
-    csvString += SensorArray::generateSensorDataCSV();
-    return csvString;
 }
 
 // Writes a string to a text file on the SD Card
@@ -468,7 +473,7 @@ void LoggerBase::log(void)
     // Update the timer
     // This runs the timer's "now" function [in our case getNow()] and then
     // checks all of the registered timer events to see if they should run
-    loggerTimer.update();
+    // loggerTimer.update();
 
     // Check of the current time is an even interval of the logging interval
     if (checkInterval())
