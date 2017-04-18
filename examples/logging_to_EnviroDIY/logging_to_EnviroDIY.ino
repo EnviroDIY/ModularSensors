@@ -100,17 +100,17 @@ const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calib
 // 3. The array that contains all valid sensors
 // ---------------------------------------------------------------------------
 SensorBase *SENSOR_LIST[] = {
-    // new DecagonCTD_Cond(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
-    // new DecagonCTD_Temp(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
-    // new DecagonCTD_Depth(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
-    // new Decagon5TM_Ea(*TMSDI12address, switchedPower, SDI12Data),
-    // new Decagon5TM_VWC(*TMSDI12address, switchedPower, SDI12Data),
-    // new Decagon5TM_Temp(*TMSDI12address, switchedPower, SDI12Data),
-    // new DecagonES2_Cond(*ES2DI12address, switchedPower, SDI12Data),
-    // new DecagonES2_Temp(*ES2DI12address, switchedPower, SDI12Data),
-    // new CampbellOBS3_Turbidity(switchedPower, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C),
-    // new CampbellOBS3_TurbHigh(switchedPower, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C),
-    // new MaxBotixSonar_Range(switchedPower, SonarData, SonarTrigger),
+    new DecagonCTD_Cond(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
+    new DecagonCTD_Temp(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
+    new DecagonCTD_Depth(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
+    new Decagon5TM_Ea(*TMSDI12address, switchedPower, SDI12Data),
+    new Decagon5TM_VWC(*TMSDI12address, switchedPower, SDI12Data),
+    new Decagon5TM_Temp(*TMSDI12address, switchedPower, SDI12Data),
+    new DecagonES2_Cond(*ES2DI12address, switchedPower, SDI12Data),
+    new DecagonES2_Temp(*ES2DI12address, switchedPower, SDI12Data),
+    new CampbellOBS3_Turbidity(switchedPower, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C),
+    new CampbellOBS3_TurbHigh(switchedPower, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C),
+    new MaxBotixSonar_Range(switchedPower, SonarData, SonarTrigger),
     new MayflyOnboardTemp(MFVersion),
     new MayflyOnboardBatt(MFVersion),
     new MayflyFreeRam()
@@ -233,10 +233,15 @@ void setup()
     EnviroDIYLogger.setToken(REGISTRATION_TOKEN);
     EnviroDIYLogger.setSamplingFeature(SAMPLING_FEATURE);
     EnviroDIYLogger.setUUIDs(UUIDs);
-    EnviroDIYLogger.modem.setupModem(&ModemSerial, BEE_VCC_PIN, BEE_CTS_PIN, BEE_DTR_PIN, ModemSleepMode, APN);
-    // EnviroDIYLogger.modem.setupModem(&ModemSerial, BEE_VCC_PIN, BEE_CTS_PIN, BEE_DTR_PIN, ModemSleepMode, SSID, PWD);
+
+    #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
+        EnviroDIYLogger.modem.setupModem(&ModemSerial, BEE_VCC_PIN, BEE_CTS_PIN, BEE_DTR_PIN, ModemSleepMode, SSID, PWD);
+    #else
+        EnviroDIYLogger.modem.setupModem(&ModemSerial, BEE_VCC_PIN, BEE_CTS_PIN, BEE_DTR_PIN, ModemSleepMode, APN);
+    #endif
+
     #ifdef DreamHostPortalRX
-    EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
+        EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
     #endif
     // Begin the logger;
     EnviroDIYLogger.begin();
