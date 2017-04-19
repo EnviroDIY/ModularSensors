@@ -194,8 +194,9 @@ public:
     bool on(void) override
     {
         powerOn();
-        // Serial.print(F("Setting modem to on with pin "));  // For debugging
-        // Serial.println(_onoff_DTR_pin);  // For debugging
+        // Serial.print(F("Turning modem on by setting pin "));  // For debugging
+        // Serial.print(_onoff_DTR_pin);  // For debugging
+        // Serial.println(F(" high"));  // For debugging
         if (_onoff_DTR_pin >= 0) {
             digitalWrite(_onoff_DTR_pin, HIGH);
         }
@@ -263,8 +264,9 @@ public:
     bool on(void) override
     {
         powerOn();
-        // Serial.print(F("Setting modem to on with pin "));  // For debugging
-        // Serial.println(_onoff_DTR_pin);  // For debugging
+        // Serial.print(F("Turning modem on on by setting pin "));  // For debugging
+        // Serial.print(_onoff_DTR_pin);  // For debugging
+        // Serial.println(F(" low"));  // For debugging
         if (_onoff_DTR_pin >= 0) {
             digitalWrite(_onoff_DTR_pin, LOW);
         }
@@ -349,10 +351,10 @@ public:
             #if defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
             if(!modemOnOff->isOn())modemOnOff->on();
             Serial.println(F("\nConnecting to WiFi network..."));  // For debugging
-            if (!_modem->waitForNetwork(120000L)){
+            if (!_modem->waitForNetwork(45000L)){
                 Serial.println("... Connection failed.  Resending credentials...");  // For debugging
                 _modem->networkConnect(_ssid, _pwd);
-                if (!_modem->waitForNetwork(120000L)){
+                if (!_modem->waitForNetwork(45000L)){
                     Serial.println("... Connection failed");  // For debugging
                 }
             } else {
@@ -367,7 +369,7 @@ public:
         #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_XBEE)
             if(!modemOnOff->isOn())modemOnOff->on();
             Serial.println(F("\nWaiting for cellular network..."));  // For debugging
-            if (!_modem->waitForNetwork(120000L)){
+            if (!_modem->waitForNetwork(45000L)){
                 Serial.println("... Connection failed");  // For debugging
             } else {
                 _modem->gprsConnect(_APN, "", "");
