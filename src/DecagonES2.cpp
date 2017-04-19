@@ -47,7 +47,7 @@ bool DecagonES2::update(void)
 
 
 DecagonES2_Cond::DecagonES2_Cond(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, 0, F("DecagonES2"), F("specificConductance"), F("microsiemenPerCentimeter"), F("ES2Cond")),
+ : SensorBase(dataPin, powerPin, F("DecagonES2"), F("specificConductance"), F("microsiemenPerCentimeter"), 0, F("ES2Cond")),
    DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
    DecagonES2(SDI12address, powerPin, dataPin, numReadings)
 {}
@@ -63,7 +63,7 @@ float DecagonES2_Cond::getValue(void)
 
 
 DecagonES2_Temp::DecagonES2_Temp(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, 1, F("DecagonES2"), F("temperature"), F("degreeCelsius"), F("ES2temp")),
+ : SensorBase(dataPin, powerPin, F("DecagonES2"), F("temperature"), F("degreeCelsius"), 1, F("ES2temp")),
    DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
    DecagonES2(SDI12address, powerPin, dataPin, numReadings)
 {}

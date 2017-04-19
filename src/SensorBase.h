@@ -26,9 +26,9 @@ class SensorBase
 {
 public:
 
-    SensorBase(int dataPin = -1, int powerPin = -1, unsigned int decimalResolution = 0,
-               String sensorName = "Unknown", String varName = "Unknown",
-               String varUnit = "Unknown", String dreamHost = "Unknown");
+    SensorBase(int dataPin = -1, int powerPin = -1, String sensorName = "Unknown",
+               String varName = "Unknown", String varUnit = "Unknown",
+               unsigned int decimalResolution = 0, String dreamHost = "Unknown");
 
     // These functions are dependent on the constructor and return the constructor values
     // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)

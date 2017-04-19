@@ -55,7 +55,7 @@ bool DecagonCTD::update()
 
 
 DecagonCTD_Depth::DecagonCTD_Depth(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, 0, F("DecagonCTD"), F("waterDepth"), F("millimeter"), F("CTDdepth")),
+ : SensorBase(dataPin, powerPin, F("DecagonCTD"), F("waterDepth"), F("millimeter"), 0, F("CTDdepth")),
    DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
    DecagonCTD(SDI12address, powerPin, dataPin, numReadings)
 {}
@@ -71,7 +71,7 @@ float DecagonCTD_Depth::getValue(void)
 
 
 DecagonCTD_Temp::DecagonCTD_Temp(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, 1, F("DecagonCTD"), F("temperature"), F("degreeCelsius"), F("CTDtemp")),
+ : SensorBase(dataPin, powerPin, F("DecagonCTD"), F("temperature"), F("degreeCelsius"), 1, F("CTDtemp")),
    DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
    DecagonCTD(SDI12address, powerPin, dataPin, numReadings)
 {}
@@ -86,7 +86,7 @@ float DecagonCTD_Temp::getValue(void)
 
 
 DecagonCTD_Cond::DecagonCTD_Cond(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, 0, F("DecagonCTD"), F("specificConductance"), F("microsiemenPerCentimeter"), F("CTDcond")),
+ : SensorBase(dataPin, powerPin, F("DecagonCTD"), F("specificConductance"), F("microsiemenPerCentimeter"), 0, F("CTDcond")),
    DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
    DecagonCTD(SDI12address, powerPin, dataPin, numReadings)
 {}

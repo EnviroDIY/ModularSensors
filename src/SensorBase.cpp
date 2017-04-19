@@ -11,15 +11,15 @@
 #include "SensorBase.h"
 
 // The constructor
-SensorBase::SensorBase(int dataPin, int powerPin, unsigned int decimalResolution,
-                       String sensorName, String varName, String varUnit, String dreamHost)
+SensorBase::SensorBase(int dataPin, int powerPin, String sensorName,
+           String varName, String varUnit, unsigned int decimalResolution, String dreamHost)
 {
     _powerPin = powerPin;
     _dataPin = dataPin;
-    _decimalResolution = decimalResolution;
     _sensorName = sensorName;
     _varName = varName;
     _varUnit = varUnit;
+    _decimalResolution = decimalResolution;
     _dreamHost = dreamHost;
 }
 
