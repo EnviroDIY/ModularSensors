@@ -27,7 +27,7 @@
 // The constructor - need the SDI-12 address, the power pin, the data pin, and the number of readings
 DecagonES2::DecagonES2(char SDI12address, int powerPin, int dataPin, int numReadings)
  : SensorBase(dataPin, powerPin),
-   DecagonSDI12(SDI12address, powerPin, dataPin, numReadings)
+   DecagonSDI12(2, SDI12address, powerPin, dataPin, numReadings)
 {}
 
 // The static variables that need to be updated
@@ -48,7 +48,7 @@ bool DecagonES2::update(void)
 
 DecagonES2_Cond::DecagonES2_Cond(char SDI12address, int powerPin, int dataPin, int numReadings)
  : SensorBase(dataPin, powerPin, F("DecagonES2"), F("specificConductance"), F("microsiemenPerCentimeter"), 0, F("ES2Cond")),
-   DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
+   DecagonSDI12(2, SDI12address, powerPin, dataPin, numReadings),
    DecagonES2(SDI12address, powerPin, dataPin, numReadings)
 {}
 
@@ -64,7 +64,7 @@ float DecagonES2_Cond::getValue(void)
 
 DecagonES2_Temp::DecagonES2_Temp(char SDI12address, int powerPin, int dataPin, int numReadings)
  : SensorBase(dataPin, powerPin, F("DecagonES2"), F("temperature"), F("degreeCelsius"), 1, F("ES2temp")),
-   DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
+   DecagonSDI12(2, SDI12address, powerPin, dataPin, numReadings),
    DecagonES2(SDI12address, powerPin, dataPin, numReadings)
 {}
 

@@ -11,12 +11,13 @@
 
 #include "DecagonSDI12.h"
 
-// The constructor - need the SDI-12 address, the power pin, and the data pin
-DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin, int numReadings)
+// The constructor - need the number of measurements the sensor will return, SDI-12 address, the power pin, and the data pin
+DecagonSDI12::DecagonSDI12(int numMeasurements, char SDI12address, int powerPin, int dataPin, int numReadings)
     : SensorBase(dataPin, powerPin)
 {
     _SDI12address = SDI12address;
     _numReadings = numReadings;
+    _numMeasurements = numMeasurements;
 }
 
 // A helper functeion to run the "sensor info" SDI12 command
@@ -96,9 +97,6 @@ String DecagonSDI12::getSensorLocation(void)
     return sensorLocation;
 }
 
-int DecagonSDI12::numMeasurements = 0;
-float DecagonSDI12::sensorValues[9] = {0};  // Know that all Decagon SDI12 sensors will return 9 or fewer measurements
-
 // Uses SDI-12 to communicate with a Decagon Devices 5TM
 bool DecagonSDI12::update()
 {
@@ -110,9 +108,12 @@ bool DecagonSDI12::update()
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
 
+    // start with empty array
+    float sensorValues[_numMeasurements] = {0};
+
     // Clear values before starting loop
     for (int i = 0; i <9; i++)
-    { DecagonSDI12::sensorValues[i] =  0; }
+    { sensorValues[i] =  0; }
 
     // averages x readings in this one loop
     for (int j = 0; j < _numReadings; j++)
@@ -148,9 +149,15 @@ bool DecagonSDI12::update()
         // Serial.println(F(" seconds for measurement"));  // For debugging
 
         // Set up the number of results to expect
-        DecagonSDI12::numMeasurements =  sdiResponse.substring(4,5).toInt();
-        // Serial.print(DecagonSDI12::numMeasurements);  // For debugging
+        int numMeasurements =  sdiResponse.substring(4,5).toInt();
+        // Serial.print(numMeasurements);  // For debugging
         // Serial.println(F(" results expected"));  // For debugging
+        // if (numMeasurements != _numMeasurements)
+        // {
+        //     Serial.print(F("This differs from the sensor's standard design of "));  // For debugging
+        //     Serial.print(_numMeasurements);  // For debugging
+        //     Serial.println(F(" measurements!!"));  // For debugging
+        // }
 
         unsigned long timerStart = millis();
         while((millis() - timerStart) < (1000 * wait))
@@ -175,10 +182,10 @@ bool DecagonSDI12::update()
 
         // Serial.println(F("Receiving data"));  // For debugging
         mySDI12.read();  // ignore the repeated SDI12 address
-        for (int i = 0; i < DecagonSDI12::numMeasurements; i++)
+        for (int i = 0; i < _numMeasurements; i++)
         {
             float result = mySDI12.parseFloat();
-            DecagonSDI12::sensorValues[i] += result;
+            sensorValues[i] += result;
             // Serial.print(F("Result #"));  // For debugging
             // Serial.print(i);  // For debugging
             // Serial.print(F(": "));  // For debugging
@@ -189,10 +196,12 @@ bool DecagonSDI12::update()
     }
 
     // Average over the number of readings
-    // Serial.println(F("Averaging over readings"));  // For debugging
-    for (int i = 0; i < DecagonSDI12::numMeasurements; i++)
+    // Serial.print(F("Averaging over "));  // For debugging
+    // Serial.print(_numReadings);  // For debugging
+    // Serial.println(F(" readings")); // For debugging
+    for (int i = 0; i < _numMeasurements; i++)
     {
-        DecagonSDI12::sensorValues[i] /=  _numReadings;
+        sensorValues[i] /=  _numReadings;
         // Serial.print(F("Result #"));  // For debugging
         // Serial.print(i);  // For debugging
         // Serial.print(F(": "));  // For debugging
