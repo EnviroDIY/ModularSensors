@@ -28,21 +28,21 @@
 DecagonES2::DecagonES2(char SDI12address, int powerPin, int dataPin, int numReadings)
  : SensorBase(dataPin, powerPin),
    DecagonSDI12(2, SDI12address, powerPin, dataPin, numReadings)
-{}
+{
+    // Create the subclasses for the parameters
+    Cond = new DecagonES2_Cond(SDI12address, powerPin, dataPin, numReadings);
+    Temp = new DecagonES2_Temp(SDI12address, powerPin, dataPin, numReadings);
+}
 
-// The static variables that need to be updated
-float DecagonES2::sensorValue_cond = 0;
-float DecagonES2::sensorValue_temp = 0;
-unsigned long DecagonES2::sensorLastUpdated = 0;
-String DecagonES2::sensorAddress = "";  // Hack to make sure has the same address
 bool DecagonES2::update(void)
 {
     DecagonSDI12::update();
-    DecagonES2::sensorValue_cond = DecagonSDI12::sensorValues[0];
-    DecagonES2::sensorValue_temp = DecagonSDI12::sensorValues[1];
+    sensorValue_cond = DecagonSDI12::sensorValues[0];
+    sensorValue_temp = DecagonSDI12::sensorValues[1];
     // Make note of the last time updated
-    DecagonES2::sensorLastUpdated = millis();
-    DecagonES2::sensorAddress = getSensorLocation();  // Hack to make sure has the same address
+    sensorLastUpdated = millis();
+    Cond->updateValue(sensorLastUpdated, sensorValue_cond);
+    Temp->updateValue(sensorLastUpdated, sensorValue_temp);
     return true;
 }
 
@@ -55,9 +55,14 @@ DecagonES2_Cond::DecagonES2_Cond(char SDI12address, int powerPin, int dataPin, i
    DecagonES2(SDI12address, powerPin, dataPin, numReadings)
 {}
 
+void DecagonES2_Cond::updateValue(unsigned long updateTime, float value)
+{
+    sensorLastUpdated = updateTime;
+    sensorValue_cond = value;
+}
+
 float DecagonES2_Cond::getValue(void)
 {
-    if (getSensorLocation() != DecagonES2::sensorAddress) DecagonES2::sensorLastUpdated = 0;
     checkForUpdate(DecagonES2::sensorLastUpdated);
     return DecagonES2::sensorValue_cond;
 }
@@ -72,9 +77,14 @@ DecagonES2_Temp::DecagonES2_Temp(char SDI12address, int powerPin, int dataPin, i
    DecagonES2(SDI12address, powerPin, dataPin, numReadings)
 {}
 
+void DecagonES2_Temp::updateValue(unsigned long updateTime, float value)
+{
+    sensorLastUpdated = updateTime;
+    sensorValue_temp = value;
+}
+
 float DecagonES2_Temp::getValue(void)
 {
-    if (getSensorLocation() != DecagonES2::sensorAddress) DecagonES2::sensorLastUpdated = 0;
-    checkForUpdate(DecagonES2::sensorLastUpdated);
-    return DecagonES2::sensorValue_temp;
+    checkForUpdate(sensorLastUpdated);
+    return sensorValue_temp;
 }

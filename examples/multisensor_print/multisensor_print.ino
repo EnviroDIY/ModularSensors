@@ -61,6 +61,9 @@ const char *ES2SDI12address2 = "2";  // The SDI-12 Address of the ES2
 const char *ES2SDI12address3 = "1";  // The SDI-12 Address of the ES2
 // const int SDI12Data = 7;  // The pin the 5TM is attached to
 // const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
+DecagonES2* ES2_1 = new DecagonES2(*ES2SDI12address, switchedPower, SDI12Data);
+DecagonES2* ES2_2 = new DecagonES2(*ES2SDI12address, switchedPower, SDI12Data);
+DecagonES2* ES2_3 = new DecagonES2(*ES2SDI12address, switchedPower, SDI12Data);
 
 // MaxBotix Sonar: pin settings
 const int SonarData = 10;     // data  pin
@@ -91,12 +94,12 @@ SensorBase *SENSOR_LIST[] = {
     // new Decagon5TM_Ea(*TMSDI12address, switchedPower, SDI12Data),
     // new Decagon5TM_Temp(*TMSDI12address, switchedPower, SDI12Data),
     // new Decagon5TM_VWC(*TMSDI12address, switchedPower, SDI12Data),
-    new DecagonES2_Cond(*ES2SDI12address, switchedPower, SDI12Data),
-    new DecagonES2_Temp(*ES2SDI12address, switchedPower, SDI12Data),
-    new DecagonES2_Cond(*ES2SDI12address2, switchedPower, SDI12Data),
-    new DecagonES2_Temp(*ES2SDI12address2, switchedPower, SDI12Data),
-    new DecagonES2_Cond(*ES2SDI12address3, switchedPower, SDI12Data),
-    new DecagonES2_Temp(*ES2SDI12address3, switchedPower, SDI12Data),
+    ES2_1->Cond,
+    ES2_1->Temp,
+    ES2_2->Cond,
+    ES2_2->Temp,
+    ES2_3->Cond,
+    ES2_3->Temp,
     // new MaxBotixSonar_Range(switchedPower, SonarData, SonarTrigger),
     // new CampbellOBS3_Turbidity(switchedPower, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C),
     // new CampbellOBS3_TurbHigh(switchedPower, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C),

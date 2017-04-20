@@ -31,6 +31,10 @@
 #define ES2_COND_RESOLUTION 0
 #define ES2_TEMP_RESOLUTION 1
 
+// Forward declare classes
+class DecagonES2_Cond;
+class DecagonES2_Temp;
+
 // The main class for the Decagon ES-2
 class DecagonES2 : public virtual DecagonSDI12
 {
@@ -38,13 +42,19 @@ public:
     DecagonES2(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
 
     bool update(void) override;
+    float getValue(void) override {return 0;}  // To prevent from being virtual
+    DecagonES2 *Cond;
+    DecagonES2 *Temp;
 
-    virtual float getValue(void) = 0;
 protected:
-    static String sensorAddress;
-    static unsigned long sensorLastUpdated;
-    static float sensorValue_cond;
-    static float sensorValue_temp;
+    unsigned long sensorLastUpdated;
+    float sensorValue_cond;
+    float sensorValue_temp;
+
+    virtual void updateValue(unsigned long updateTime, float value){};
+
+private:
+    void notifyParameters(void);
 };
 
 
@@ -54,7 +64,12 @@ class DecagonES2_Cond : public virtual DecagonES2
 public:
     DecagonES2_Cond(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
 
+    void registerSensor(const DecagonES2*);
+
     float getValue(void) override;
+
+private:
+    void updateValue(unsigned long updateTime, float value) override;
 };
 
 
@@ -65,6 +80,9 @@ public:
     DecagonES2_Temp(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
 
     float getValue(void) override;
+
+private:
+    void updateValue(unsigned long updateTime, float value) override;
 };
 
 #endif
