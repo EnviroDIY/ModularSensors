@@ -28,12 +28,14 @@
 DecagonES2::DecagonES2(char SDI12address, int powerPin, int dataPin, int numReadings)
  : SensorBase(dataPin, powerPin),
    DecagonSDI12(2, SDI12address, powerPin, dataPin, numReadings)
-{}
+{
+}
 
 // The static variables that need to be updated
 float DecagonES2::sensorValue_cond = 0;
 float DecagonES2::sensorValue_temp = 0;
 unsigned long DecagonES2::sensorLastUpdated = 0;
+String DecagonES2::sensorAddress = "";  // Hack to make sure has the same address
 bool DecagonES2::update(void)
 {
     DecagonSDI12::update();
@@ -41,6 +43,7 @@ bool DecagonES2::update(void)
     DecagonES2::sensorValue_temp = DecagonSDI12::sensorValues[1];
     // Make note of the last time updated
     DecagonES2::sensorLastUpdated = millis();
+    DecagonES2::sensorAddress = getSensorLocation();  // Hack to make sure has the same address
     return true;
 }
 
@@ -54,6 +57,7 @@ DecagonES2_Cond::DecagonES2_Cond(char SDI12address, int powerPin, int dataPin, i
 
 float DecagonES2_Cond::getValue(void)
 {
+    if (getSensorLocation() != DecagonES2::sensorAddress) DecagonES2::sensorLastUpdated = 0;
     checkForUpdate(DecagonES2::sensorLastUpdated);
     return DecagonES2::sensorValue_cond;
 }
@@ -70,6 +74,7 @@ DecagonES2_Temp::DecagonES2_Temp(char SDI12address, int powerPin, int dataPin, i
 
 float DecagonES2_Temp::getValue(void)
 {
+    if (getSensorLocation() != DecagonES2::sensorAddress) DecagonES2::sensorLastUpdated = 0;
     checkForUpdate(DecagonES2::sensorLastUpdated);
     return DecagonES2::sensorValue_temp;
 }

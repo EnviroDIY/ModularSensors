@@ -109,10 +109,10 @@ bool DecagonSDI12::update()
     if(!wasOn){powerUp();}
 
     // start with empty array
-    float sensorValues[_numMeasurements] = {0};
+    sensorValues[_numMeasurements] = {0};
 
     // Clear values before starting loop
-    for (int i = 0; i <9; i++)
+    for (int i = 0; i < _numMeasurements; i++)
     { sensorValues[i] =  0; }
 
     // averages x readings in this one loop
@@ -125,7 +125,8 @@ bool DecagonSDI12::update()
         myCommand += "M!"; // SDI-12 measurement myCommand format  [address]['M'][!]
         mySDI12.sendCommand(myCommand);
         // Serial.println(myCommand);  // For debugging
-        delay(30);
+        mySDI12.flush();
+        delay(10);  // It just needs this little delay
 
         // wait for acknowlegement with format [address][ttt (3 char, seconds)][number of measurments available, 0-9]
         sdiResponse = "";
@@ -135,11 +136,10 @@ bool DecagonSDI12::update()
             if ((c != '\n') && (c != '\r'))
             {
                 sdiResponse += c;
-                delay(5);
+                delay(3);
             }
         }
         // if (sdiResponse.length() > 1) Serial.println(sdiResponse);  // For debugging
-        mySDI12.flush();
 
         // find out how long we have to wait (in seconds).
         unsigned int wait = 0;
@@ -149,7 +149,7 @@ bool DecagonSDI12::update()
         // Serial.println(F(" seconds for measurement"));  // For debugging
 
         // Set up the number of results to expect
-        int numMeasurements =  sdiResponse.substring(4,5).toInt();
+        // int numMeasurements = sdiResponse.substring(4,5).toInt();
         // Serial.print(numMeasurements);  // For debugging
         // Serial.println(F(" results expected"));  // For debugging
         // if (numMeasurements != _numMeasurements)
@@ -165,12 +165,9 @@ bool DecagonSDI12::update()
             if(mySDI12.available())  // sensor can interrupt us to let us know it is done early
             {
                 // Serial.println("Wait interrupted!");  // For debugging
-                mySDI12.flush();
                 break;
             }
         }
-        delay(30);
-        mySDI12.flush();
 
         // Serial.println(F("Requesting data"));  // For debugging
         myCommand = "";
@@ -178,7 +175,8 @@ bool DecagonSDI12::update()
         myCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
         mySDI12.sendCommand(myCommand);
         // Serial.println(myCommand);  // For debugging
-        delay(30);
+        mySDI12.flush();
+        delay(10);  // It just needs this little delay
 
         // Serial.println(F("Receiving data"));  // For debugging
         mySDI12.read();  // ignore the repeated SDI12 address
@@ -191,8 +189,6 @@ bool DecagonSDI12::update()
             // Serial.print(F(": "));  // For debugging
             // Serial.println(result);  // For debugging
         }
-        // Wait for and discard anything else
-        mySDI12.flush();
     }
 
     // Average over the number of readings

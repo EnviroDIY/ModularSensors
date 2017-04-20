@@ -27,6 +27,7 @@ public:
 
     virtual float getValue(void) = 0;
 protected:
+    static String sensorAddress;
     static unsigned long sensorLastUpdated;
     static float sensorValue_cond;
     static float sensorValue_temp;
