@@ -10,12 +10,31 @@
  *Documentation fo the SDI-12 Protocol commands and responses
  *for the Decagon CTD-10 can be found at:
  * http://manuals.decagon.com/Integration%20Guides/CTD%20Integrators%20Guide.pdf
+ *
+ * For Depth:
+ *  Resolution is 2 mm
+ *  Accuracy is ±0.05% of full scale
+ *  Range is 0 to 5 m or 0 to 10 m, depending on model
+ * For Temperature:
+ *  Resolution is 0.1°C
+ *  Accuracy is ±1°C
+ *  Range is -11°C to +49°C
+ * For Specific Conductance:
+ *  Resolution is 0.001 mS/cm = 1 µS/cm
+ *  Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
+ *  Range is 0 – 120 mS/cm (bulk)
 */
+
 
 #ifndef DecagonCTD_h
 #define DecagonCTD_h
 
 #include "DecagonSDI12.h"
+
+#define CTD_NUM_MEASUREMENTS 3
+#define CTD_COND_RESOLUTION 0
+#define CTD_TEMP_RESOLUTION 1
+#define CTD_DEPTH_RESOLUTION 0
 
 // The main class for the Decagon CTD
 class DecagonCTD : public virtual DecagonSDI12

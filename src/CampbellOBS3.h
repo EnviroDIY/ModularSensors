@@ -6,6 +6,20 @@
  *
  *This file is for the Campbell Scientific OBS-3+
  *This is dependent on the Adafruit ADS1015 library.
+ *
+ * Ranges: (depends on sediment size, particle shape, and reflectivity)
+ *  Turbidity (low/high): 250/1000 NTU; 500/2000 NTU; 1000/4000 NTU
+ *  Mud: 5000 to 10,000 mg L–1
+ *  Sand: 50,000 to 100,000 mg L–1
+ * Accuracy: (whichever is larger)
+ *  Turbidity: 2% of reading or 0.5 NTU
+ *  Mud: 2% of reading or 1 mg L–1
+ *  Sand: 4% of reading or 10 mg L–1
+ * Resolution:
+ *  16-bit ADC
+ *      Turbidity: 0.004/0.01 NTU; 0.008/0.03 NTU; 0.01/0.06 NTU
+ *  12-bit ADC
+ *      Turbidity: 0.06/0.2 NTU; 0.1/0.5 NTU; 0.2/1.0 NTU
 */
 
 #ifndef CampbellOBS3_h
@@ -13,6 +27,9 @@
 
 #include <Arduino.h>
 #include "SensorBase.h"
+
+#define OBS3_RESOLUTION 3
+#define OBS3_HR_RESOLUTION 2
 
 // The main class for the Campbell OBS3
 class CampbellOBS3 : public virtual SensorBase

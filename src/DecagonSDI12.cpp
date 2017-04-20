@@ -126,7 +126,7 @@ bool DecagonSDI12::update()
         mySDI12.sendCommand(myCommand);
         // Serial.println(myCommand);  // For debugging
         mySDI12.flush();
-        delay(10);  // It just needs this little delay
+        delay(30);  // It just needs this little delay
 
         // wait for acknowlegement with format [address][ttt (3 char, seconds)][number of measurments available, 0-9]
         sdiResponse = "";
@@ -136,7 +136,7 @@ bool DecagonSDI12::update()
             if ((c != '\n') && (c != '\r'))
             {
                 sdiResponse += c;
-                delay(3);
+                delay(5);
             }
         }
         // if (sdiResponse.length() > 1) Serial.println(sdiResponse);  // For debugging
@@ -176,7 +176,7 @@ bool DecagonSDI12::update()
         mySDI12.sendCommand(myCommand);
         // Serial.println(myCommand);  // For debugging
         mySDI12.flush();
-        delay(10);  // It just needs this little delay
+        delay(30);  // It just needs this little delay
 
         // Serial.println(F("Receiving data"));  // For debugging
         mySDI12.read();  // ignore the repeated SDI12 address
