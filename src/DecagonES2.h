@@ -43,8 +43,8 @@ public:
 
     bool update(void) override;
     float getValue(void) override {return 0;}  // To prevent from being virtual
-    DecagonES2 *Cond;
-    DecagonES2 *Temp;
+    DecagonES2_Cond *Cond;
+    DecagonES2_Temp *Temp;
 
 protected:
     unsigned long sensorLastUpdated;
@@ -61,10 +61,9 @@ private:
 // Defines the "Ea/Matric Potential Sensor"
 class DecagonES2_Cond : public virtual DecagonES2
 {
+friend class DecagonES2;
 public:
     DecagonES2_Cond(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
-
-    void registerSensor(const DecagonES2*);
 
     float getValue(void) override;
 
@@ -76,6 +75,7 @@ private:
 // Defines the "Temperature Sensor"
 class DecagonES2_Temp : public virtual DecagonES2
 {
+friend class DecagonES2;
 public:
     DecagonES2_Temp(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
 
