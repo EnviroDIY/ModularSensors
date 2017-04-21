@@ -18,10 +18,21 @@
 #include "MaximDS18.h"
 
 
-// The constructor - need the power pin and the data pin
+// The constructor - if the hex address is known - also need the power pin and the data pin
 MaximDS18_Temp::MaximDS18_Temp(DeviceAddress OneWireAddress, int powerPin, int dataPin)
-  : SensorBase(dataPin, powerPin, 4, F("MaximDS18"), F("temperature"), F("degreeCelsius"), F("DS18Temp"))
-{ _OneWireAddress = OneWireAddress; }
+  : SensorBase(dataPin, powerPin, F("MaximDS18"), F("temperature"), F("degreeCelsius"), DS18_TEMP_RESOLUTION, F("DS18Temp"))
+{
+    _OneWireAddress = OneWireAddress;
+    _addressKnown = true;
+}
+// The constructor - if the hex address is NOT known - only need the power pin and the data pin
+// Can only use this if there is only a single sensor on the pin
+MaximDS18_Temp::MaximDS18_Temp(int powerPin, int dataPin)
+  : SensorBase(dataPin, powerPin, F("MaximDS18"), F("temperature"), F("degreeCelsius"), DS18_TEMP_RESOLUTION, F("DS18Temp"))
+{
+    _OneWireAddress = {0};
+    _addressKnown = false;
+}
 
 
 // Uses TLL Communication to get data from MaxBotix
@@ -39,6 +50,15 @@ bool MaximDS18_Temp::update(){
 
     // Start up the sensor library
     sensors.begin();
+
+    // Find the address if it's not known
+    if (!_addressKnown){
+        oneWire.reset_search();  // Reset the search index
+        if (!oneWire.search(_OneWireAddress)) {
+            Serial.println("Unable to find address for insideThermometer");
+        }
+        else _addressKnown = true;  // Now we know the address
+    }
 
     // Send the command to get temperatures
     sensors.requestTemperatures();

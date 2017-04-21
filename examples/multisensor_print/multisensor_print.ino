@@ -27,6 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <DecagonES2.h>
 #include <CampbellOBS3.h>
 #include <MaxBotixSonar.h>
+#include <AOSongAM2315.h>
 #include <MayflyOnboardSensors.h>
 
 // ---------------------------------------------------------------------------
@@ -62,9 +63,8 @@ const char *ES2SDI12address = "3";  // The SDI-12 Address of the 5-TM
 
 // MaxBotix Sonar: pin settings
 const int SonarData = 10;     // data  pin
-// const int SonarPower = 11;   // excite (power) pin
+// const int SonarPower = 22;   // excite (power) pin
 const int SonarTrigger = -1;   // Trigger pin
-// const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
 
 // Campbell OBS 3+: pin settings
 // Campbell OBS 3+ Low Range calibration in Volts
@@ -94,6 +94,8 @@ SensorBase *SENSOR_LIST[] = {
     new MaxBotixSonar_Range(switchedPower, SonarData, SonarTrigger),
     new CampbellOBS3_Turbidity(switchedPower, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C),
     new CampbellOBS3_TurbHigh(switchedPower, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C),
+    new AOSongAM2315_Temp(22),
+    new AOSongAM2315_Humidity(22),
     new MayflyOnboardTemp(MFVersion),
     new MayflyOnboardBatt(MFVersion),
     new MayflyFreeRam()
