@@ -10,12 +10,27 @@
  *Documentation fo the SDI-12 Protocol commands and responses
  *for the Decagon 5TM can be found at:
  * http://manuals.decagon.com/Integration%20Guides/5TM%20Integrators%20Guide.pdf
+ *
+ * For Ea and VWC:
+ *     Resolution is 0.0008 m3/m3 (0.08% VWC) from 0 – 50% VWC
+ *     Accuracy for Generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typ
+ *     Accuracy for Medium Specific Calibration: ± 0.02 m3/m3 (± 2% VWC)
+ *     Range is 0 – 1 m3/m3 (0 – 100% VWC)
+ * For temp:
+ *     Resolution is 0.1°C
+ *     Accuracy is ± 1°C
+ *     Range is - 40°C to + 50°C
 */
 
 #ifndef Decagon5TM_h
 #define Decagon5TM_h
 
 #include "DecagonSDI12.h"
+
+#define TM_NUM_MEASUREMENTS 2
+#define TM_EA_RESOLUTION 4
+#define TM_TEMP_RESOLUTION 1
+#define TM_VWC_RESOLUTION 2
 
 // The main class for the Decagon 5TM
 class Decagon5TM : public virtual DecagonSDI12

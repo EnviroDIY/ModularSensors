@@ -10,12 +10,26 @@
  *Documentation fo the SDI-12 Protocol commands and responses
  *for the Decagon 5TM can be found at:
  * http://manuals.decagon.com/Integration%20Guides/ES-2%20Integrators%20Guide.pdf
+ *
+ * For Specific Conductance:
+ *  Resolution is 0.001 mS/cm = 1 µS/cm
+ *  Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
+ *  Range is 0 – 120 mS/cm (bulk)
+ *
+ * For Temperature:
+ *  Resolution is 0.1°C
+ *  Accuracy is ±1°C
+ *  Range is -40°C to +50°C
 */
 
 #ifndef DecagonES2_h
 #define DecagonES2_h
 
 #include "DecagonSDI12.h"
+
+#define ES2_NUM_MEASUREMENTS 2
+#define ES2_COND_RESOLUTION 0
+#define ES2_TEMP_RESOLUTION 1
 
 // The main class for the Decagon ES-2
 class DecagonES2 : public virtual DecagonSDI12
