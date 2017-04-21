@@ -120,11 +120,11 @@ bool DecagonSDI12::update()
         mySDI12.sendCommand(myCommand);
         mySDI12.flush();  // Wait for sending to finish
         delay(30);  // It just needs this little delay
-        Serial.print(F("Taking reading #"));  // For debugging
-        Serial.print(j);  // For debugging
-        Serial.print(F(" ("));  // For debugging
-        Serial.print(myCommand);  // For debugging
-        Serial.println(F(")"));  // For debugging
+        // Serial.print(F("Taking reading #"));  // For debugging
+        // Serial.print(j);  // For debugging
+        // Serial.print(F(" ("));  // For debugging
+        // Serial.print(myCommand);  // For debugging
+        // Serial.println(F(")"));  // For debugging
 
         // wait for acknowlegement with format [address][ttt (3 char, seconds)][number of measurments available, 0-9]
         sdiResponse = "";
@@ -173,9 +173,9 @@ bool DecagonSDI12::update()
         mySDI12.sendCommand(myCommand);
         mySDI12.flush();  // Wait for sending to finish
         delay(30);  // It just needs this little delay
-        Serial.print(F("Requesting data ("));  // For debugging
-        Serial.print(myCommand);  // For debugging
-        Serial.println(F(")"));  // For debugging
+        // Serial.print(F("Requesting data ("));  // For debugging
+        // Serial.print(myCommand);  // For debugging
+        // Serial.println(F(")"));  // For debugging
 
         // Serial.println(F("Receiving data"));  // For debugging
         mySDI12.read();  // ignore the repeated SDI12 address
@@ -183,24 +183,24 @@ bool DecagonSDI12::update()
         {
             float result = mySDI12.parseFloat();
             sensorValues[i] += result;
-            Serial.print(F("Result #"));  // For debugging
-            Serial.print(i);  // For debugging
-            Serial.print(F(": "));  // For debugging
-            Serial.println(result);  // For debugging
+            // Serial.print(F("Result #"));  // For debugging
+            // Serial.print(i);  // For debugging
+            // Serial.print(F(": "));  // For debugging
+            // Serial.println(result);  // For debugging
         }
     }
 
     // Average over the number of readings
-    Serial.print(F("Averaging over "));  // For debugging
-    Serial.print(_numReadings);  // For debugging
-    Serial.println(F(" readings"));  // For debugging
+    // Serial.print(F("Averaging over "));  // For debugging
+    // Serial.print(_numReadings);  // For debugging
+    // Serial.println(F(" readings"));  // For debugging
     for (int i = 0; i < _numMeasurements; i++)
     {
         sensorValues[i] /=  _numReadings;
-        Serial.print(F("Result #"));  // For debugging
-        Serial.print(i);  // For debugging
-        Serial.print(F(": "));  // For debugging
-        Serial.println(sensorValues[i]);  // For debugging
+        // Serial.print(F("Result #"));  // For debugging
+        // Serial.print(i);  // For debugging
+        // Serial.print(F(": "));  // For debugging
+        // Serial.println(sensorValues[i]);  // For debugging
     }
 
     // Turn the power back off it it had been turned on

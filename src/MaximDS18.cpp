@@ -55,9 +55,24 @@ bool MaximDS18_Temp::update(){
     if (!_addressKnown){
         oneWire.reset_search();  // Reset the search index
         if (!oneWire.search(_OneWireAddress)) {
-            Serial.println("Unable to find address for insideThermometer");
+            Serial.println(F("Unable to find address for insideThermometer"));  // For debugging
         }
-        else _addressKnown = true;  // Now we know the address
+        else {
+            Serial.print(F("Sensor found at {"));  // For debugging
+            Serial.print(_OneWireAddress[0]);  // For debugging
+            Serial.print(_OneWireAddress[1]);  // For debugging
+            Serial.print(F(","));  // For debugging
+            Serial.print(_OneWireAddress[2]);  // For debugging
+            Serial.print(_OneWireAddress[3]);  // For debugging
+            Serial.print(F(","));  // For debugging
+            Serial.print(_OneWireAddress[4]);  // For debugging
+            Serial.print(_OneWireAddress[5]);  // For debugging
+            Serial.print(F(","));  // For debugging
+            Serial.print(_OneWireAddress[6]);  // For debugging
+            Serial.print(_OneWireAddress[7]);  // For debugging
+            Serial.println(F("}"));  // For debugging
+            _addressKnown = true;  // Now we know the address
+        }
     }
 
     // Send the command to get temperatures

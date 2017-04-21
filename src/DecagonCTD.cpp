@@ -43,13 +43,6 @@ unsigned long DecagonCTD::sensorLastUpdated = 0;
 bool DecagonCTD::update()
 {
     DecagonSDI12::update();
-    for (int i = 0; i < 3; i++)
-    {
-        Serial.print(F("Sub Result #"));  // For debugging
-        Serial.print(i);  // For debugging
-        Serial.print(F(": "));  // For debugging
-        Serial.println(sensorValues[i]);  // For debugging
-    }
     DecagonCTD::sensorValue_depth = sensorValues[0];
     DecagonCTD::sensorValue_temp = sensorValues[1];
     DecagonCTD::sensorValue_cond = sensorValues[2];

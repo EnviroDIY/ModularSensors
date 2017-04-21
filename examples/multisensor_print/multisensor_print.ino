@@ -27,6 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <DecagonES2.h>
 #include <CampbellOBS3.h>
 #include <MaxBotixSonar.h>
+#include <MaximDS18.h>
 #include <AOSongAM2315.h>
 #include <MayflyOnboardSensors.h>
 
@@ -79,6 +80,10 @@ const float OBSHigh_B = 3.7828E+02;  // The "B" value (X) from the high range ca
 const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calibration
 // const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
 
+// MaximDS18: pin settings
+const int DS18data = 5;     // data  pin
+// const int DS18Power = 22;   // excite (power) pin
+
 // ---------------------------------------------------------------------------
 // 3. The array that contains all valid sensors
 // ---------------------------------------------------------------------------
@@ -94,8 +99,9 @@ SensorBase *SENSOR_LIST[] = {
     new MaxBotixSonar_Range(switchedPower, SonarData, SonarTrigger),
     new CampbellOBS3_Turbidity(switchedPower, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C),
     new CampbellOBS3_TurbHigh(switchedPower, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C),
-    new AOSongAM2315_Temp(22),
-    new AOSongAM2315_Humidity(22),
+    new MaximDS18_Temp(switchedPower, DS18data),
+    new AOSongAM2315_Temp(switchedPower),
+    new AOSongAM2315_Humidity(switchedPower),
     new MayflyOnboardTemp(MFVersion),
     new MayflyOnboardBatt(MFVersion),
     new MayflyFreeRam()
