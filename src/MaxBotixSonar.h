@@ -6,14 +6,16 @@
  *
  *This file is for the MaxBotix Sonar Library
  *It is dependent on Software Serial.
-*/
+ *
+ * The output from the HRXL-MaxSonar-WRL sonar is the range in mm.
+ */
 
 #ifndef MaxBotixSonar_h
 #define MaxBotixSonar_h
 
-#include <Arduino.h>
-#include <SoftwareSerial_PCINT12.h>
 #include "SensorBase.h"
+
+#define HRXL_RESOLUTION 0
 
 // The main class for the MaxBotix Sonar.  No sub-classes are needed
 class MaxBotixSonar_Range : public virtual SensorBase

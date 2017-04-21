@@ -14,13 +14,21 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
+
+// Select your modem chip, comment out all of the others
+#define TINY_GSM_MODEM_SIM800  // Select for anything using a SIM800, SIM900, or varient thereof: Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
+// #define TINY_GSM_MODEM_A6  // Select for A6 or A7 chips
+// #define TINY_GSM_MODEM_M590
+// #define TINY_GSM_MODEM_ESP8266
+// #define TINY_GSM_MODEM_XBEE  // Select for Digi brand XBee's, including WiFi or LTE-M1
+
 // ---------------------------------------------------------------------------
 // Include the base required libraries
 // ---------------------------------------------------------------------------
 #include <Arduino.h>
 #include <SensorBase.h>
 
-#ifdef DreamHostURL
+#ifdef DreamHostPortalRX
 #include <LoggerDreamHost.h>
 #else
 #include <LoggerEnviroDIY.h>
@@ -65,7 +73,7 @@ const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
 
 // Decagon ES2: pin settings
 // sdi-12 data pin is usually, pin 7 on shield 3.0
-const char *ES2DI12address = "3";  // The SDI-12 Address of the 5-TM
+const char *ES2SDI12address = "3";  // The SDI-12 Address of the 5-TM
 // const int SDI12Data = 7;  // The pin the 5TM is attached to
 // const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
 
@@ -98,14 +106,14 @@ SensorBase *SENSOR_LIST[] = {
     new Decagon5TM_Ea(*TMSDI12address, switchedPower, SDI12Data),
     new Decagon5TM_VWC(*TMSDI12address, switchedPower, SDI12Data),
     new Decagon5TM_Temp(*TMSDI12address, switchedPower, SDI12Data),
-    new DecagonES2_Cond(*ES2DI12address, switchedPower, SDI12Data),
-    new DecagonES2_Temp(*ES2DI12address, switchedPower, SDI12Data),
+    new DecagonES2_Cond(*ES2SDI12address, switchedPower, SDI12Data),
+    new DecagonES2_Temp(*ES2SDI12address, switchedPower, SDI12Data),
     new CampbellOBS3_Turbidity(switchedPower, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C),
     new CampbellOBS3_TurbHigh(switchedPower, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C),
     new MaxBotixSonar_Range(switchedPower, SonarData, SonarTrigger),
-        new MayflyOnboardTemp(MFVersion),
-        new MayflyOnboardBatt(MFVersion),
-        new MayflyFreeRam()
+    new MayflyOnboardTemp(MFVersion),
+    new MayflyOnboardBatt(MFVersion),
+    new MayflyFreeRam()
 };
 int sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
 
@@ -113,12 +121,11 @@ int sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
 // ---------------------------------------------------------------------------
 // Device registration and sampling feature information
 //   This should be obtained after registration at http://data.envirodiy.org
+//   You can copy the entire code snippet directly into this block below.
 // ---------------------------------------------------------------------------
-
-const char *REGISTRATION_TOKEN = "12345678-abcd-1234-efgh-1234567890ab";
-const char *SAMPLING_FEATURE = "12345678-abcd-1234-efgh-1234567890ab";
-
-const char *UUIDs[] =
+const char *REGISTRATION_TOKEN = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
+const char *SAMPLING_FEATURE = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
+const char *UUIDs[] =                                                      // UUID array for device sensors
 {
 "12345678-abcd-1234-efgh-1234567890ab",
 "12345678-abcd-1234-efgh-1234567890ab",
@@ -136,13 +143,20 @@ const char *UUIDs[] =
 "12345678-abcd-1234-efgh-1234567890ab"
 };
 
+
 // ---------------------------------------------------------------------------
 // Device Connection Options and WebSDL Endpoints for POST requests
 // ---------------------------------------------------------------------------
-xbee BEE_TYPE = WIFI;  // The type of XBee, either GPRSv4, GPRSv6, or WIFI
-HardwareSerial &BeeSerial = Serial1; // The serial port for the xbee - software serial can also be used.
-const int BEE_BAUD = 9600;  // Bee BAUD rate (9600 is default)
-const char *APN = "apn.konekt.io";  // The APN for the GPRSBee, unnecessary for WiFi
+DTRSleepType ModemSleepMode = held;  // How the modem is put to sleep
+// Use "held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
+// Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
+// Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
+// Use "always_on" if you do not want the library to control the modem power and sleep.
+HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
+const int ModemBaud = 9600;  // Modem BAUD rate (9600 is default), can use higher for SIM800 (19200 works)
+const char *APN = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
+const char *SSID = "XXXXXXX";  // The WiFi access point, unnecessary for gprs
+const char *PWD = "XXXXXXX";  // The password for connecting to WiFi, unnecessary for gprs
 
 
 // ---------------------------------------------------------------------------
@@ -156,6 +170,7 @@ const int SD_SS_PIN = 12;  // SD Card Card Select/Slave Select Pin
 
 const int BEE_DTR_PIN = 23;  // Bee DTR Pin (Data Terminal Ready - used for sleep)
 const int BEE_CTS_PIN = 19;   // Bee CTS Pin (Clear to Send)
+const int BEE_VCC_PIN = -1;
 
 // ---------------------------------------------------------------------------
 // Working Functions
@@ -176,7 +191,7 @@ void greenred4flash()
 }
 
 // Create a new logger instance
-#ifdef DreamHostURL
+#ifdef DreamHostPortalRX
 LoggerDreamHost EnviroDIYLogger;
 #else
 LoggerEnviroDIY EnviroDIYLogger;
@@ -192,7 +207,7 @@ void setup()
     // Start the primary serial connection
     Serial.begin(SERIAL_BAUD);
     // Start the serial connection with the *bee
-    BeeSerial.begin(BEE_BAUD);
+    ModemSerial.begin(ModemBaud);
 
     // Set up pins for the LED's
     pinMode(GREEN_LED, OUTPUT);
@@ -208,7 +223,7 @@ void setup()
 
     // Set the timezone and offsets
     EnviroDIYLogger.setTimeZone(TIME_ZONE);
-    EnviroDIYLogger.setTZOffset(0);
+    EnviroDIYLogger.setTZOffset(TIME_ZONE);
 
     // Initialize the logger;
     EnviroDIYLogger.init(SD_SS_PIN, RTC_PIN, sensorCount, SENSOR_LIST,
@@ -218,9 +233,15 @@ void setup()
     EnviroDIYLogger.setToken(REGISTRATION_TOKEN);
     EnviroDIYLogger.setSamplingFeature(SAMPLING_FEATURE);
     EnviroDIYLogger.setUUIDs(UUIDs);
-    EnviroDIYLogger.setupBee(BEE_TYPE, &BeeSerial, BEE_CTS_PIN, BEE_DTR_PIN, APN);
-    #ifdef DreamHostURL
-    EnviroDIYLogger.setDreamHostURL(DreamHostURL);
+
+    #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
+        EnviroDIYLogger.modem.setupModem(&ModemSerial, BEE_VCC_PIN, BEE_CTS_PIN, BEE_DTR_PIN, ModemSleepMode, SSID, PWD);
+    #else
+        EnviroDIYLogger.modem.setupModem(&ModemSerial, BEE_VCC_PIN, BEE_CTS_PIN, BEE_DTR_PIN, ModemSleepMode, APN);
+    #endif
+
+    #ifdef DreamHostPortalRX
+        EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
     #endif
     // Begin the logger;
     EnviroDIYLogger.begin();

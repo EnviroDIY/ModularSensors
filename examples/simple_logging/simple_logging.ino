@@ -62,7 +62,7 @@ const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
 
 // Decagon ES2: pin settings
 // sdi-12 data pin is usually, pin 7 on shield 3.0
-const char *ES2DI12address = "3";  // The SDI-12 Address of the 5-TM
+const char *ES2SDI12address = "3";  // The SDI-12 Address of the 5-TM
 // const int SDI12Data = 7;  // The pin the 5TM is attached to
 // const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
 
@@ -95,8 +95,8 @@ SensorBase *SENSOR_LIST[] = {
     new Decagon5TM_Ea(*TMSDI12address, switchedPower, SDI12Data),
     new Decagon5TM_Temp(*TMSDI12address, switchedPower, SDI12Data),
     new Decagon5TM_VWC(*TMSDI12address, switchedPower, SDI12Data),
-    new DecagonES2_Cond(*ES2DI12address, switchedPower, SDI12Data),
-    new DecagonES2_Temp(*ES2DI12address, switchedPower, SDI12Data),
+    new DecagonES2_Cond(*ES2SDI12address, switchedPower, SDI12Data),
+    new DecagonES2_Temp(*ES2SDI12address, switchedPower, SDI12Data),
     new MaxBotixSonar_Range(switchedPower, SonarData, SonarTrigger),
     new CampbellOBS3_Turbidity(switchedPower, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C),
     new CampbellOBS3_TurbHigh(switchedPower, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C),
@@ -106,33 +106,6 @@ SensorBase *SENSOR_LIST[] = {
     // new YOUR_sensorName_HERE()
 };
 int sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
-
-
-// ---------------------------------------------------------------------------
-// Device registration and sampling feature information
-//   This should be obtained after registration at http://data.envirodiy.org
-// ---------------------------------------------------------------------------
-
-const char *REGISTRATION_TOKEN = "12345678-abcd-1234-efgh-1234567890ab";
-const char *SAMPLING_FEATURE = "12345678-abcd-1234-efgh-1234567890ab";
-
-const char *UUIDs[] =
-{
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab"
-};
 
 // ---------------------------------------------------------------------------
 // Board setup info

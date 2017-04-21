@@ -13,13 +13,13 @@
  * The output from the sonar is the range in mm.
  */
 
-#include <Arduino.h>
+#include <SoftwareSerial_PCINT12.h>
 #include "MaxBotixSonar.h"
 
 
 // The constructor - need the power pin, the excite pin, and the data pin
 MaxBotixSonar_Range::MaxBotixSonar_Range(int powerPin, int dataPin, int triggerPin /* = -1*/)
-  : SensorBase(dataPin, powerPin, 0, F("MaxBotixMaxSonar"), F("distance"), F("millimeter"), F("SonarRange"))
+  : SensorBase(dataPin, powerPin,F("MaxBotixMaxSonar"), F("distance"), F("millimeter"), HRXL_RESOLUTION, F("SonarRange"))
 {_triggerPin = triggerPin;}
 
 // The function to set up connection to a sensor.

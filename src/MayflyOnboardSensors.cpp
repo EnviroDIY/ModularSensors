@@ -28,7 +28,7 @@ bool MayflyOnboardSensors::wake(void)
 // Resolution is 0.25°C
 // Accuracy is ±3°C
 MayflyOnboardTemp::MayflyOnboardTemp(char const *version)
-  : SensorBase(-1, -1, 2, F("EnviroDIYMayflyRTC"), F("temperatureDatalogger"), F("degreeCelsius"), F("BoardTemp"))
+  : SensorBase(-1, -1, F("EnviroDIYMayflyRTC"), F("temperatureDatalogger"), F("degreeCelsius"), 2, F("BoardTemp"))
 { _version = version; }
 // The location of the sensor on the Mayfly
 String MayflyOnboardTemp::getSensorLocation(void)
@@ -60,7 +60,7 @@ float MayflyOnboardTemp::getValue(void)
 // The constructor - needs to reference the super-class constructor//
 // Range of 0-5V with 10bit ADC - resolution of 0.005
 MayflyOnboardBatt::MayflyOnboardBatt(char const *version)
-  : SensorBase(-1, -1, 3, F("EnviroDIYMayflyBatt"), F("batteryVoltage"), F("Volt"), F("Battery"))
+  : SensorBase(-1, -1, F("EnviroDIYMayflyBatt"), F("batteryVoltage"), F("Volt"), 3, F("Battery"))
 {
     _version = version;
 
@@ -117,7 +117,7 @@ float MayflyOnboardBatt::getValue(void)
 // The constructor - needs to reference the super-class constructor
 // Interger value
 MayflyFreeRam::MayflyFreeRam(void)
-  : SensorBase(-1, -1, 0, F("EnviroDIYMayflyHeap"), F("Free SRAM"), F("Bit"), F("FreeRam"))
+  : SensorBase(-1, -1, F("EnviroDIYMayflyHeap"), F("Free SRAM"), F("Bit"), 0, F("FreeRam"))
 {}
 
 // The location of the sensor on the Mayfly

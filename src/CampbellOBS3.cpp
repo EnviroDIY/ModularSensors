@@ -104,7 +104,7 @@ float CampbellOBS3::getValue(void)
 
 
 CampbellOBS3_Turbidity::CampbellOBS3_Turbidity(int powerPin, int dataPin, float A, float B, float C)
-  : SensorBase(dataPin, powerPin, 3, F("CampbellOBS3+"), F("turbidity"), F("nephelometricTurbidityUnit"), F("TurbLow")),
+  : SensorBase(dataPin, powerPin, F("CampbellOBS3+"), F("turbidity"), F("nephelometricTurbidityUnit"), OBS3_RESOLUTION, F("TurbLow")),
     CampbellOBS3(powerPin, dataPin, A, B, C)
 {}
 
@@ -112,6 +112,6 @@ CampbellOBS3_Turbidity::CampbellOBS3_Turbidity(int powerPin, int dataPin, float 
 
 
 CampbellOBS3_TurbHigh::CampbellOBS3_TurbHigh(int powerPin, int dataPin, float A, float B, float C)
-  : SensorBase(dataPin, powerPin, 2, F("CampbellOBS3+"), F("turbidity"), F("nephelometricTurbidityUnit"), F("TurbHigh")),
+  : SensorBase(dataPin, powerPin, F("CampbellOBS3+"), F("turbidity"), F("nephelometricTurbidityUnit"), OBS3_HR_RESOLUTION, F("TurbHigh")),
     CampbellOBS3(powerPin, dataPin, A, B, C)
 {}

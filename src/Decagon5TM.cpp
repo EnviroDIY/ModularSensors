@@ -27,7 +27,7 @@
 // The constructor - need the SDI-12 address, the power pin, the data pin, and the number of readings
 Decagon5TM::Decagon5TM(char SDI12address, int powerPin, int dataPin, int numReadings)
  : SensorBase(dataPin, powerPin),
-   DecagonSDI12(SDI12address, powerPin, dataPin, numReadings)
+   DecagonSDI12(TM_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
 {}
 
 // The static variables that need to be updated
@@ -37,8 +37,8 @@ unsigned long Decagon5TM::sensorLastUpdated = 0;
 bool Decagon5TM::update(void)
 {
     DecagonSDI12::update();
-    Decagon5TM::sensorValue_ea = DecagonSDI12::sensorValues[0];
-    Decagon5TM::sensorValue_temp = DecagonSDI12::sensorValues[1];
+    Decagon5TM::sensorValue_ea = sensorValues[0];
+    Decagon5TM::sensorValue_temp = sensorValues[1];
     // Make note of the last time updated
     Decagon5TM::sensorLastUpdated = millis();
     return true;
@@ -47,8 +47,8 @@ bool Decagon5TM::update(void)
 
 
 Decagon5TM_Ea::Decagon5TM_Ea(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, 4, F("Decagon5TM"), F("permittivity"), F("Farad per Meter"), F("SoilEa")),
-   DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
+ : SensorBase(dataPin, powerPin, F("Decagon5TM"), F("permittivity"), F("Farad per Meter"), TM_EA_RESOLUTION, F("SoilEa")),
+   DecagonSDI12(TM_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings),
    Decagon5TM(SDI12address, powerPin, dataPin, numReadings)
 {}
 
@@ -62,8 +62,8 @@ float Decagon5TM_Ea::getValue(void)
 
 
 Decagon5TM_Temp::Decagon5TM_Temp(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, 1, F("Decagon5TM"), F("temperature"), F("degreeCelsius"), F("SoilTemp")),
-   DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
+ : SensorBase(dataPin, powerPin, F("Decagon5TM"), F("temperature"), F("degreeCelsius"), TM_TEMP_RESOLUTION, F("SoilTemp")),
+   DecagonSDI12(TM_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings),
    Decagon5TM(SDI12address, powerPin, dataPin, numReadings)
 {}
 
@@ -76,8 +76,8 @@ float Decagon5TM_Temp::getValue(void)
 
 
 Decagon5TM_VWC::Decagon5TM_VWC(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, 2, F("Decagon5TM"), F("volumetricWaterContent"), F("percent"), F("SoilVWC")),
-   DecagonSDI12(SDI12address, powerPin, dataPin, numReadings),
+ : SensorBase(dataPin, powerPin, F("Decagon5TM"), F("volumetricWaterContent"), F("percent"), TM_VWC_RESOLUTION, F("SoilVWC")),
+   DecagonSDI12(TM_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings),
    Decagon5TM(SDI12address, powerPin, dataPin, numReadings)
 {}
 
