@@ -91,8 +91,8 @@ void DecagonES2_Cond::updateValue(unsigned long updateTime, float value)
 
 float DecagonES2_Cond::getValue(void)
 {
-    checkForUpdate(DecagonES2::sensorLastUpdated);
-    return DecagonES2::sensorValue_cond;
+    checkForUpdate(sensorLastUpdated);
+    return sensorValue_cond;
 }
 
 
