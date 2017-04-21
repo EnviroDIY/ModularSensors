@@ -243,14 +243,14 @@ void loop()
     digitalWrite(GREEN_LED, HIGH);
     // Update the sensor value(s)
     sensors.updateAllSensors();
+    // Immediately cut Power to the sensors;
+    digitalWrite(switchedPower, LOW);
     // Print the data to the screen
     Serial.print(F("Updated all sensors at "));
     Serial.println(getDateTime_ISO8601());
     sensors.printSensorData(&Serial);
     // Turn off the LED to show we're done with the reading
     digitalWrite(GREEN_LED, LOW);
-    // Cut Power to the sensors;
-    digitalWrite(switchedPower, LOW);
     // Print a to close it off
     Serial.println(F("------------------------------------------\n"));
 

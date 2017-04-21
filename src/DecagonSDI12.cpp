@@ -19,6 +19,21 @@ DecagonSDI12::DecagonSDI12(int numMeasurements, char SDI12address, int powerPin,
     _numReadings = numReadings;
     _numMeasurements = numMeasurements;
 }
+DecagonSDI12::DecagonSDI12(int numMeasurements, char *SDI12address, int powerPin, int dataPin, int numReadings)
+    : SensorBase(dataPin, powerPin)
+{
+    _SDI12address = *SDI12address;
+    _numReadings = numReadings;
+    _numMeasurements = numMeasurements;
+}
+DecagonSDI12::DecagonSDI12(int numMeasurements, int SDI12address, int powerPin, int dataPin, int numReadings)
+    : SensorBase(dataPin, powerPin)
+{
+    _SDI12address = SDI12address;
+    _numReadings = numReadings;
+    _numMeasurements = numMeasurements;
+}
+
 
 // A helper functeion to run the "sensor info" SDI12 command
 void DecagonSDI12::getSensorInfo(void)

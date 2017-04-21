@@ -40,6 +40,8 @@ class DecagonES2 : public virtual DecagonSDI12
 {
 public:
     DecagonES2(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
+    DecagonES2(char *SDI12address, int powerPin, int dataPin, int numReadings = 1);
+    DecagonES2(int SDI12address, int powerPin, int dataPin, int numReadings = 1);
 
     bool update(void) override;
     float getValue(void) override {return 0;}  // To prevent from being virtual
@@ -64,6 +66,8 @@ class DecagonES2_Cond : public virtual DecagonES2
 friend class DecagonES2;
 public:
     DecagonES2_Cond(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
+    DecagonES2_Cond(char *SDI12address, int powerPin, int dataPin, int numReadings = 1);
+    DecagonES2_Cond(int SDI12address, int powerPin, int dataPin, int numReadings = 1);
 
     float getValue(void) override;
 
@@ -78,6 +82,8 @@ class DecagonES2_Temp : public virtual DecagonES2
 friend class DecagonES2;
 public:
     DecagonES2_Temp(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
+    DecagonES2_Temp(char *SDI12address, int powerPin, int dataPin, int numReadings = 1);
+    DecagonES2_Temp(int SDI12address, int powerPin, int dataPin, int numReadings = 1);
 
     float getValue(void) override;
 

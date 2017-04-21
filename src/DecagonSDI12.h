@@ -28,6 +28,8 @@ class DecagonSDI12 : public virtual SensorBase
 {
 public:
     DecagonSDI12(int numMeasurements, char SDI12address, int powerPin, int dataPin, int numReadings = 1);
+    DecagonSDI12(int numMeasurements, char *SDI12address, int powerPin, int dataPin, int numReadings = 1);
+    DecagonSDI12(int numMeasurements, int SDI12address, int powerPin, int dataPin, int numReadings = 1);
     // String getSensorName(void) override;
     String getSensorVendor(void);
     String getSensorModel(void);
