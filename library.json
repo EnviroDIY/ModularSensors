@@ -58,6 +58,12 @@
             "name": "ADS1X15"
         },
         {
+            "name": "Adafruit AM2315"
+        },
+        {
+            "name": "Adafruit BMP280 Library"
+        },
+        {
             "name": "DallasTemperature"
         },
         {

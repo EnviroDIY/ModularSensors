@@ -22,7 +22,7 @@
 #ifndef AOSongAM2315_h
 #define AOSongAM2315_h
 
-#include "DecagonSDI12.h"
+#include "SensorBase.h"
 
 #define AM2315_NUM_MEASUREMENTS 2
 #define AM2315_HUMIDITY_RESOLUTION 1

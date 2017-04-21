@@ -63,7 +63,7 @@ float AOSongAM2315_Humidity::getValue(void)
 
 
 AOSongAM2315_Temp::AOSongAM2315_Temp(int powerPin)
- : SensorBase(-1, powerPin, F("AOSongAM2315"), F("temperature"), F("degreeCelsius"), AM2315_TEMP_RESOLUTION, F("AM2315temp")),
+ : SensorBase(-1, powerPin, F("AOSongAM2315"), F("temperature"), F("degreeCelsius"), AM2315_TEMP_RESOLUTION, F("AM2315YTemp")),
    AOSongAM2315(powerPin)
 {}
 
