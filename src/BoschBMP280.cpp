@@ -30,14 +30,6 @@ BoschBMP280::BoschBMP280(int powerPin)
 
 String BoschBMP280::getSensorLocation(void){return F("I2C_0x77");}
 
-bool BoschBMP280::update(void)
-{
-    Adafruit_BoschBMP280 bmp280;  // create a sensor object
-    bmp280.begin();  // Start the wire library
-    sensorLastUpdated = millis();
-    return true;
-}
-
 
 
 
@@ -48,8 +40,11 @@ BoschBMP280_Pressure::BoschBMP280_Pressure(int powerPin)
 
 bool BoschBMP280_Pressure::update(void)
 {
-    BoschBMP280::update();
-    sensorValue_pressure = readPressure();
+    Adafruit_BMP280 bmp280;  // create a sensor object
+    bmp280.begin();  // Start the BMP280
+    sensorValue_pressure = bmp280.readPressure();  // read pressure
+    sensorLastUpdated = millis();  // Update the time
+    return true;
 }
 
 float BoschBMP280_Pressure::getValue(void)
@@ -69,8 +64,11 @@ BoschBMP280_Temp::BoschBMP280_Temp(int powerPin)
 
 bool BoschBMP280_Temp::update(void)
 {
-    BoschBMP280::update();
-    sensorValue_temp = readTemperature();
+    Adafruit_BMP280 bmp280;  // create a sensor object
+    bmp280.begin();  // Start the BMP280
+    sensorValue_temp = bmp280.readTemperature();  // Read temperature
+    sensorLastUpdated = millis();  // Update the time
+    return true;
 }
 
 float BoschBMP280_Temp::getValue(void)
@@ -90,8 +88,11 @@ BoschBMP280_Altitude::BoschBMP280_Altitude(int powerPin)
 
 bool BoschBMP280_Altitude::update(void)
 {
-    BoschBMP280::update();
-    sensorValue_altitude = readAltitude();
+    Adafruit_BMP280 bmp280;  // create a sensor object
+    bmp280.begin();  // Start the BMP280
+    sensorValue_altitude = bmp280.readAltitude();  // Read the altitude
+    sensorLastUpdated = millis();  // Update the time
+    return true;
 }
 
 float BoschBMP280_Altitude::getValue(void)

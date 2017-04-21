@@ -37,9 +37,6 @@ public:
     BoschBMP280(int powerPin);
 
     String getSensorLocation(void) override;
-    SENSOR_STATUS setup(void) override;
-
-    bool update(void) override;
 };
 
 
@@ -50,6 +47,7 @@ public:
     BoschBMP280_Pressure(int powerPin);
 
     bool update(void) override;
+
 
     float getValue(void) override;
 

@@ -29,6 +29,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <MaxBotixSonar.h>
 #include <MaximDS18.h>
 #include <AOSongAM2315.h>
+#include <BoschBMP280.h>
 #include <MayflyOnboardSensors.h>
 
 // ---------------------------------------------------------------------------
@@ -103,6 +104,9 @@ SensorBase *SENSOR_LIST[] = {
     new MaximDS18_Temp(DS18Address, switchedPower, DS18data),
     new AOSongAM2315_Temp(switchedPower),
     new AOSongAM2315_Humidity(switchedPower),
+    new BoschBMP280_Temp(switchedPower),
+    new BoschBMP280_Pressure(switchedPower),
+    new BoschBMP280_Altitude(switchedPower),
     new MayflyOnboardTemp(MFVersion),
     new MayflyOnboardBatt(MFVersion),
     new MayflyFreeRam()
