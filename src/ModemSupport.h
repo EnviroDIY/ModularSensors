@@ -351,7 +351,7 @@ public:
             #if defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
             if(!modemOnOff->isOn())modemOnOff->on();
             Serial.println(F("\nConnecting to WiFi network..."));  // For debugging
-            if (!_modem->waitForNetwork(45000L)){
+            if (!_modem->waitForNetwork(15000L)){
                 Serial.println("... Connection failed.  Resending credentials...");  // For debugging
                 _modem->networkConnect(_ssid, _pwd);
                 if (!_modem->waitForNetwork(45000L)){
@@ -373,7 +373,7 @@ public:
         #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_XBEE)
             if(!modemOnOff->isOn())modemOnOff->on();
             Serial.println(F("\nWaiting for cellular network..."));  // For debugging
-            if (!_modem->waitForNetwork(45000L)){
+            if (!_modem->waitForNetwork(60000L)){
                 Serial.println("... Connection failed.");  // For debugging
             } else {
                 _modem->gprsConnect(_APN, "", "");
