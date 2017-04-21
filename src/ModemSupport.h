@@ -356,8 +356,12 @@ public:
                 _modem->networkConnect(_ssid, _pwd);
                 if (!_modem->waitForNetwork(45000L)){
                     Serial.println("... Connection failed");  // For debugging
+                } else {
+                    retVal = true;
+                    Serial.println("... Success!");  // For debugging
                 }
             } else {
+                Serial.println("... Success!");  // For debugging
                 retVal = true;
             }
             #endif
@@ -370,9 +374,10 @@ public:
             if(!modemOnOff->isOn())modemOnOff->on();
             Serial.println(F("\nWaiting for cellular network..."));  // For debugging
             if (!_modem->waitForNetwork(45000L)){
-                Serial.println("... Connection failed");  // For debugging
+                Serial.println("... Connection failed.");  // For debugging
             } else {
                 _modem->gprsConnect(_APN, "", "");
+                Serial.println("... Success!");  // For debugging
                 retVal = true;
             }
         #endif

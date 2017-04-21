@@ -37,8 +37,8 @@ unsigned long DecagonES2::sensorLastUpdated = 0;
 bool DecagonES2::update(void)
 {
     DecagonSDI12::update();
-    DecagonES2::sensorValue_cond = DecagonSDI12::sensorValues[0];
-    DecagonES2::sensorValue_temp = DecagonSDI12::sensorValues[1];
+    DecagonES2::sensorValue_cond = sensorValues[0];
+    DecagonES2::sensorValue_temp = sensorValues[1];
     // Make note of the last time updated
     DecagonES2::sensorLastUpdated = millis();
     return true;
