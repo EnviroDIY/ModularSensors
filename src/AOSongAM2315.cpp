@@ -27,6 +27,8 @@ AOSongAM2315::AOSongAM2315(int powerPin)
  : SensorBase(-1, powerPin)
 {}
 
+String AOSongAM2315::getSensorLocation(void){return F("I2C_0xB8");}
+
 // The static variables that need to be updated
 float AOSongAM2315::sensorValue_humidity = 0;
 float AOSongAM2315::sensorValue_temp = 0;

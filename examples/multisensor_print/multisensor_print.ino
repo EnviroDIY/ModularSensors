@@ -81,6 +81,7 @@ const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calib
 // const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
 
 // MaximDS18: pin settings
+DeviceAddress DS18Address{0x28, 0xFF, 0xB6, 0x6E, 0x84, 0x16, 0x05, 0x9B};
 const int DS18data = 5;     // data  pin
 // const int DS18Power = 22;   // excite (power) pin
 
@@ -99,7 +100,7 @@ SensorBase *SENSOR_LIST[] = {
     new MaxBotixSonar_Range(switchedPower, SonarData, SonarTrigger),
     new CampbellOBS3_Turbidity(switchedPower, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C),
     new CampbellOBS3_TurbHigh(switchedPower, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C),
-    new MaximDS18_Temp(switchedPower, DS18data),
+    new MaximDS18_Temp(DS18Address, switchedPower, DS18data),
     new AOSongAM2315_Temp(switchedPower),
     new AOSongAM2315_Humidity(switchedPower),
     new MayflyOnboardTemp(MFVersion),

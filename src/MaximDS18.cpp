@@ -54,23 +54,24 @@ bool MaximDS18_Temp::update(){
     // Find the address if it's not known
     if (!_addressKnown){
         oneWire.reset_search();  // Reset the search index
-        if (!oneWire.search(_OneWireAddress)) {
-            Serial.println(F("Unable to find address for insideThermometer"));  // For debugging
+        uint8_t address[8];
+        if (!oneWire.search(address)) {
+            Serial.print(F("Unable to find address for DS18 on pin "));  // For debugging
+            Serial.println(_dataPin);  // For debugging
         }
         else {
-            Serial.print(F("Sensor found at {"));  // For debugging
-            Serial.print(_OneWireAddress[0]);  // For debugging
-            Serial.print(_OneWireAddress[1]);  // For debugging
-            Serial.print(F(","));  // For debugging
-            Serial.print(_OneWireAddress[2]);  // For debugging
-            Serial.print(_OneWireAddress[3]);  // For debugging
-            Serial.print(F(","));  // For debugging
-            Serial.print(_OneWireAddress[4]);  // For debugging
-            Serial.print(_OneWireAddress[5]);  // For debugging
-            Serial.print(F(","));  // For debugging
-            Serial.print(_OneWireAddress[6]);  // For debugging
-            Serial.print(_OneWireAddress[7]);  // For debugging
+            Serial.print(F("Sensor found on pin "));  // For debugging
+            Serial.print(_dataPin);  // For debugging
+            Serial.print(F(" with address {"));  // For debugging
+            for (uint8_t i = 0; i < 8; i++)  // For debugging
+            {  // For debugging
+                Serial.print("0x");  // For debugging
+                if (address[i] < 0x10) Serial.print("0");  // For debugging
+                Serial.print(address[i], HEX);  // For debugging
+                if (i < 7) Serial.print(", ");  // For debugging
+            }  // For debugging
             Serial.println(F("}"));  // For debugging
+            for (int i = 0; i < 8; i++) _OneWireAddress[i] = address[i];
             _addressKnown = true;  // Now we know the address
         }
     }

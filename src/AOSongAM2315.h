@@ -34,6 +34,8 @@ class AOSongAM2315 : public virtual SensorBase
 public:
     AOSongAM2315(int powerPin);
 
+    String getSensorLocation(void) override;
+
     bool update(void) override;
 
     virtual float getValue(void) = 0;
