@@ -151,7 +151,7 @@ bool DecagonSDI12::update()
         // Serial.println(F(" seconds for measurement"));  // For debugging
 
         // Set up the number of results to expect
-        int numMeasurements =  sdiResponse.substring(4,5).toInt();
+        // int numMeasurements =  sdiResponse.substring(4,5).toInt();
         // Serial.print(numMeasurements);  // For debugging
         // Serial.println(F(" results expected"));  // For debugging
         // if (numMeasurements != _numMeasurements)
