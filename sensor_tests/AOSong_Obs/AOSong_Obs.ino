@@ -1,19 +1,8 @@
 #include <Arduino.h>
-#include <SensorBase.h>
-#include <DecagonES2.h>
+#include <AOSongAM2315.h>
 
-// Decagon ES2: pin settings
-// sdi-12 data pin is usually, pin 7 on shield 3.0
-const char *ES2SDI12address1 = "1";  // The SDI-12 Address of the ES2
-const char *ES2SDI12address2 = "2";  // The SDI-12 Address of the ES2
-const char *ES2SDI12address3 = "3";  // The SDI-12 Address of the ES2
-const int ES2Data = 7;  // The pin the ES2 is attached to
-const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
 
-DecagonES2 ES2_1(1, switchedPower, ES2Data);
-// DecagonES2 ES2_2(2, switchedPower, ES2Data);
-// DecagonES2 ES2_3(3, switchedPower, ES2Data);
-
+AOSongAM2315 am2315;
 
 const int GREEN_LED = 8;  // Pin for the green LED
 const int RED_LED = 9;  // Pin for the red LED
@@ -30,6 +19,12 @@ void greenred4flash()
     delay(50);
   }
 }
+
+Variable *variables[] = {
+    am2315.Humid,
+    am2315.Temp
+};
+int sensorCount = sizeof(variables) / sizeof(variables[0]);
 
 
 // -----------------------------------------------
@@ -48,6 +43,7 @@ void setup()
 
     // Print a start-up note to the first serial port
     Serial.println(F("WebSDL Device: EnviroDIY Mayfly"));
+    delay(1000);
 }
 
 // -----------------------------------------------
@@ -59,27 +55,34 @@ void loop()
     Serial.println(F("------------------------------------------"));
     // Turn on the LED
     digitalWrite(GREEN_LED, HIGH);
-    // Power the sensors;
-    digitalWrite(switchedPower, HIGH);
 
-    Serial.print("ES2_1.Cond->getValue() ");
-    Serial.println(ES2_1.Cond->getValue());
-    delay(random(5000));
-    Serial.print("ES2_1.Temp->getValue() ");
-    Serial.println(ES2_1.Temp->getValue());
-    // delay(random(5000));
-    // Serial.print("ES2_2.Cond->getValue() ");
-    // Serial.println(ES2_2.Cond->getValue());
-    // Serial.print("ES2_3.Cond->getValue() ");
-    // Serial.println(ES2_3.Cond->getValue());
+    bool success = true;
+    for (uint8_t i = 0; i < sensorCount; i++)
+    {
+        Serial.println(F("Updating"));
+        // success &= variables[i]->update();
 
-    // Cut Power to the sensors;
-    digitalWrite(switchedPower, LOW);
+        // // Check for and skip the updates of any identical sensors
+        // for (int j = i+1; j < sensorCount; j++)
+        // {
+        //     if (variables[i]->getSensorName() == variables[j]->getSensorName() &&
+        //         variables[i]->getSensorLocation() == variables[j]->getSensorLocation())
+        //     {i++;}
+        //     else {break;}
+        // }
+    }
+
+    // for (int i = 0; i < sensorCount; i++)
+    // {
+    //     Serial.print(variables[i]->getValue());
+    //     Serial.println();
+    // }
+
     // Turn off the LED
     digitalWrite(GREEN_LED, LOW);
     // Print a to close it off
     Serial.println(F("------------------------------------------\n"));
 
     // Wait for the next reading
-    delay(random(10000));
+    delay(random(15000));
 }
