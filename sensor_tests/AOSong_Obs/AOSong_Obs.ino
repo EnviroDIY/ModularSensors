@@ -17,12 +17,13 @@ void greenred4flash()
     digitalWrite(GREEN_LED, LOW);
     digitalWrite(RED_LED, HIGH);
     delay(50);
+    digitalWrite(RED_LED, LOW);
   }
 }
 
 Variable *variables[] = {
-    am2315.Humid,
-    am2315.Temp
+    new AOSongAM2315_Humidity(&am2315),
+    new AOSongAM2315_Temp(&am2315)
 };
 int sensorCount = sizeof(variables) / sizeof(variables[0]);
 
@@ -43,6 +44,12 @@ void setup()
 
     // Print a start-up note to the first serial port
     Serial.println(F("WebSDL Device: EnviroDIY Mayfly"));
+
+    for (uint8_t i = 0; i < sensorCount; i++)
+    {
+        variables[i]->setup();
+    }
+
     delay(1000);
 }
 
@@ -60,23 +67,23 @@ void loop()
     for (uint8_t i = 0; i < sensorCount; i++)
     {
         Serial.println(F("Updating"));
-        // success &= variables[i]->update();
+        success &= variables[i]->parentSensor->update();
 
-        // // Check for and skip the updates of any identical sensors
-        // for (int j = i+1; j < sensorCount; j++)
-        // {
-        //     if (variables[i]->getSensorName() == variables[j]->getSensorName() &&
-        //         variables[i]->getSensorLocation() == variables[j]->getSensorLocation())
-        //     {i++;}
-        //     else {break;}
-        // }
+        // Check for and skip the updates of any identical sensors
+        for (int j = i+1; j < sensorCount; j++)
+        {
+            if (variables[i]->parentSensor->getSensorName() == variables[j]->parentSensor->getSensorName() &&
+                variables[i]->parentSensor->getSensorLocation() == variables[j]->parentSensor->getSensorLocation())
+            {i++;}
+            else {break;}
+        }
     }
-
-    // for (int i = 0; i < sensorCount; i++)
-    // {
-    //     Serial.print(variables[i]->getValue());
-    //     Serial.println();
-    // }
+    // am2315.update();
+    for (int i = 0; i < sensorCount; i++)
+    {
+        Serial.print(variables[i]->getValue());
+        Serial.println();
+    }
 
     // Turn off the LED
     digitalWrite(GREEN_LED, LOW);

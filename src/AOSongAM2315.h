@@ -24,9 +24,22 @@
 
 #include "SensorBase.h"
 
+
 #define AM2315_NUM_MEASUREMENTS 2
 #define AM2315_HUMIDITY_RESOLUTION 1
 #define AM2315_TEMP_RESOLUTION 1
+
+
+typedef enum AM2315Vars
+{
+  humidity = 0,
+  temp
+} AM2315Vars;
+
+
+#define MAX_NUMBER_VARIABLES 5
+
+class Variable;  // Forward declaration
 
 class Sensor
 {
@@ -34,24 +47,26 @@ public:
     virtual bool update(void) = 0;
     virtual String getSensorName(void) = 0;
     virtual String getSensorLocation(void) = 0;
+    virtual void registerVariable(int varNum, Variable* var) = 0;
+    float sensorValues[MAX_NUMBER_VARIABLES];
+
 protected:
     unsigned long sensorLastUpdated;
+    Variable *variables[MAX_NUMBER_VARIABLES];
 };
 
 class Variable
 {
 public:
-    virtual bool update(void) = 0;
-    virtual String getSensorName(void) = 0;
-    virtual String getSensorLocation(void) = 0;
-    virtual float getValue(void) = 0;
+    void attachSensor(int varNum, Sensor *parentSense);
+    virtual void onSensorUpdate(Sensor *parentSense) = 0;
+    virtual void setup(void);
+    float getValue(void);
+    Sensor *parentSensor;
 protected:
     float sensorValue;
 };
 
-// Forward declare variables
-class AOSongAM2315_Humidity;
-class AOSongAM2315_Temp;
 
 // The main class for the AOSong AM2315
 class AOSongAM2315 : public virtual Sensor
@@ -62,32 +77,29 @@ public:
     String getSensorLocation(void) override;
     String getSensorName(void) override;
 
-    bool update(void) override;
+    void registerVariable(int varNum, Variable* var) override;
 
-    AOSongAM2315_Humidity *Humid;
-    AOSongAM2315_Temp *Temp;
+    bool update(void) override;
 };
 
 
 // Defines the "Humidity Sensor"
-class AOSongAM2315_Humidity : public virtual AOSongAM2315, public virtual Variable
+class AOSongAM2315_Humidity : public virtual Variable
 {
-friend class AOSongAM2315;
 public:
-    AOSongAM2315_Humidity(void);
-
-    float getValue(void) override;
+    AOSongAM2315_Humidity(Sensor *parentSense);
+    void setup(void) override;
+    void onSensorUpdate(Sensor *parentSense) override;
 };
 
 
 // Defines the "Temperature Sensor"
-class AOSongAM2315_Temp : public virtual AOSongAM2315, public virtual Variable
+class AOSongAM2315_Temp : public virtual Variable
 {
-friend class AOSongAM2315;
 public:
-    AOSongAM2315_Temp(void);
-
-    float getValue(void) override;
+    AOSongAM2315_Temp(Sensor *parentSense);
+    void setup(void) override;
+    void onSensorUpdate(Sensor *parentSense) override;
 };
 
 #endif
