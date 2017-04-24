@@ -32,7 +32,7 @@
 #define OBS3_HR_RESOLUTION 2
 
 // The main class for the Campbell OBS3
-class CampbellOBS3 : public virtual SensorBase
+class CampbellOBS3 : public virtual Sensor
 {
 public:
     CampbellOBS3(int powerPin, int dataPin,

@@ -28,7 +28,7 @@
 
 // The constructor - need the power pin, the data pin, and the calibration info
 CampbellOBS3::CampbellOBS3(int powerPin, int dataPin, float A, float B, float C)
-  : SensorBase(dataPin, powerPin)
+  : Sensor(dataPin, powerPin)
 {
     _A = A;
     _B = B;
@@ -104,7 +104,7 @@ float CampbellOBS3::getValue(void)
 
 
 CampbellOBS3_Turbidity::CampbellOBS3_Turbidity(int powerPin, int dataPin, float A, float B, float C)
-  : SensorBase(dataPin, powerPin, F("CampbellOBS3+"), F("turbidity"), F("nephelometricTurbidityUnit"), OBS3_RESOLUTION, F("TurbLow")),
+  : Sensor(dataPin, powerPin, F("CampbellOBS3+"), F("turbidity"), F("nephelometricTurbidityUnit"), OBS3_RESOLUTION, F("TurbLow")),
     CampbellOBS3(powerPin, dataPin, A, B, C)
 {}
 
@@ -112,6 +112,6 @@ CampbellOBS3_Turbidity::CampbellOBS3_Turbidity(int powerPin, int dataPin, float 
 
 
 CampbellOBS3_TurbHigh::CampbellOBS3_TurbHigh(int powerPin, int dataPin, float A, float B, float C)
-  : SensorBase(dataPin, powerPin, F("CampbellOBS3+"), F("turbidity"), F("nephelometricTurbidityUnit"), OBS3_HR_RESOLUTION, F("TurbHigh")),
+  : Sensor(dataPin, powerPin, F("CampbellOBS3+"), F("turbidity"), F("nephelometricTurbidityUnit"), OBS3_HR_RESOLUTION, F("TurbHigh")),
     CampbellOBS3(powerPin, dataPin, A, B, C)
 {}

@@ -26,7 +26,7 @@
 
 // The constructor - need the SDI-12 address, the power pin, the data pin, and the number of readings
 DecagonES2::DecagonES2(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin),
+ : Sensor(dataPin, powerPin),
    DecagonSDI12(2, SDI12address, powerPin, dataPin, numReadings)
 {
     // Create the subclasses for the parameters
@@ -35,7 +35,7 @@ DecagonES2::DecagonES2(char SDI12address, int powerPin, int dataPin, int numRead
 }
 
 DecagonES2::DecagonES2(char *SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin),
+ : Sensor(dataPin, powerPin),
    DecagonSDI12(2, SDI12address, powerPin, dataPin, numReadings)
 {
     // Create the subclasses for the parameters
@@ -44,7 +44,7 @@ DecagonES2::DecagonES2(char *SDI12address, int powerPin, int dataPin, int numRea
 }
 
 DecagonES2::DecagonES2(int SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin),
+ : Sensor(dataPin, powerPin),
    DecagonSDI12(2, SDI12address, powerPin, dataPin, numReadings)
 {
     // Create the subclasses for the parameters
@@ -68,17 +68,17 @@ bool DecagonES2::update(void)
 
 
 DecagonES2_Cond::DecagonES2_Cond(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, F("DecagonES2"), F("specificConductance"), F("microsiemenPerCentimeter"), ES2_COND_RESOLUTION, F("ES2Cond")),
+ : Sensor(dataPin, powerPin, F("DecagonES2"), F("specificConductance"), F("microsiemenPerCentimeter"), ES2_COND_RESOLUTION, F("ES2Cond")),
    DecagonSDI12(ES2_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings),
    DecagonES2(SDI12address, powerPin, dataPin, numReadings)
 {}
 DecagonES2_Cond::DecagonES2_Cond(char *SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, F("DecagonES2"), F("specificConductance"), F("microsiemenPerCentimeter"), ES2_COND_RESOLUTION, F("ES2Cond")),
+ : Sensor(dataPin, powerPin, F("DecagonES2"), F("specificConductance"), F("microsiemenPerCentimeter"), ES2_COND_RESOLUTION, F("ES2Cond")),
    DecagonSDI12(ES2_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings),
    DecagonES2(SDI12address, powerPin, dataPin, numReadings)
 {}
 DecagonES2_Cond::DecagonES2_Cond(int SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, F("DecagonES2"), F("specificConductance"), F("microsiemenPerCentimeter"), ES2_COND_RESOLUTION, F("ES2Cond")),
+ : Sensor(dataPin, powerPin, F("DecagonES2"), F("specificConductance"), F("microsiemenPerCentimeter"), ES2_COND_RESOLUTION, F("ES2Cond")),
    DecagonSDI12(ES2_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings),
    DecagonES2(SDI12address, powerPin, dataPin, numReadings)
 {}
@@ -100,17 +100,17 @@ float DecagonES2_Cond::getValue(void)
 
 
 DecagonES2_Temp::DecagonES2_Temp(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, F("DecagonES2"), F("temperature"), F("degreeCelsius"), ES2_TEMP_RESOLUTION, F("ES2temp")),
+ : Sensor(dataPin, powerPin, F("DecagonES2"), F("temperature"), F("degreeCelsius"), ES2_TEMP_RESOLUTION, F("ES2temp")),
    DecagonSDI12(ES2_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings),
    DecagonES2(SDI12address, powerPin, dataPin, numReadings)
 {}
 DecagonES2_Temp::DecagonES2_Temp(char *SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, F("DecagonES2"), F("temperature"), F("degreeCelsius"), ES2_TEMP_RESOLUTION, F("ES2temp")),
+ : Sensor(dataPin, powerPin, F("DecagonES2"), F("temperature"), F("degreeCelsius"), ES2_TEMP_RESOLUTION, F("ES2temp")),
    DecagonSDI12(ES2_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings),
    DecagonES2(SDI12address, powerPin, dataPin, numReadings)
 {}
 DecagonES2_Temp::DecagonES2_Temp(int SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, F("DecagonES2"), F("temperature"), F("degreeCelsius"), ES2_TEMP_RESOLUTION, F("ES2temp")),
+ : Sensor(dataPin, powerPin, F("DecagonES2"), F("temperature"), F("degreeCelsius"), ES2_TEMP_RESOLUTION, F("ES2temp")),
    DecagonSDI12(ES2_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings),
    DecagonES2(SDI12address, powerPin, dataPin, numReadings)
 {}

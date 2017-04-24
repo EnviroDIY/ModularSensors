@@ -23,6 +23,7 @@
 #define AOSongAM2315_h
 
 #include "SensorBase.h"
+#include <Adafruit_AM2315.h>
 
 
 #define AM2315_NUM_MEASUREMENTS 2
@@ -30,56 +31,35 @@
 #define AM2315_TEMP_RESOLUTION 1
 
 
-typedef enum AM2315Vars
-{
-  humidity = 0,
-  temp
-} AM2315Vars;
-
-
-#define MAX_NUMBER_VARIABLES 5
-
-class Variable;  // Forward declaration
-
-class Sensor
-{
-public:
-    virtual bool update(void) = 0;
-    virtual String getSensorName(void) = 0;
-    virtual String getSensorLocation(void) = 0;
-    virtual void registerVariable(int varNum, Variable* var) = 0;
-    float sensorValues[MAX_NUMBER_VARIABLES];
-
-protected:
-    unsigned long sensorLastUpdated;
-    Variable *variables[MAX_NUMBER_VARIABLES];
-};
-
-class Variable
-{
-public:
-    void attachSensor(int varNum, Sensor *parentSense);
-    virtual void onSensorUpdate(Sensor *parentSense) = 0;
-    virtual void setup(void);
-    float getValue(void);
-    Sensor *parentSensor;
-protected:
-    float sensorValue;
-};
-
-
 // The main class for the AOSong AM2315
 class AOSongAM2315 : public virtual Sensor
 {
 public:
-    AOSongAM2315(void);
+    // The constructor - because this is I2C, only need the power pin
+    AOSongAM2315(int powerPin) : Sensor(-1, powerPin){}
 
-    String getSensorLocation(void) override;
-    String getSensorName(void) override;
+    String getSensorLocation(void) override {return F("I2C_0xB8");}
 
-    void registerVariable(int varNum, Variable* var) override;
+    bool update(void) override
+    {
+        Adafruit_AM2315 am2315;  // create a sensor object
+        Wire.begin();  // Start the wire library
 
-    bool update(void) override;
+        float temp_val, humid_val;
+        bool ret_val = am2315.readTemperatureAndHumidity(temp_val, humid_val);
+        sensorValues[temp] = temp_val;
+        sensorValues[humidity] = humid_val;
+
+        Serial.print(F("Temp is: "));  // for debugging
+        Serial.print(sensorValues[temp]);  // for debugging
+        Serial.print(F("°C and humidity is: "));  // for debugging
+        Serial.print(sensorValues[humidity]);  // for debugging
+        Serial.println(F("%"));  // for debugging
+
+        notifyVariables();
+
+        return ret_val;
+    }
 };
 
 
@@ -87,9 +67,10 @@ public:
 class AOSongAM2315_Humidity : public virtual Variable
 {
 public:
-    AOSongAM2315_Humidity(Sensor *parentSense);
-    void setup(void) override;
-    void onSensorUpdate(Sensor *parentSense) override;
+    AOSongAM2315_Humidity(Sensor *parentSense) :
+      Variable(parentSense, humidity, F("relativeHumidity"), F("percent"),
+               AM2315_HUMIDITY_RESOLUTION, F("AM2315Humidity"))
+    {}
 };
 
 
@@ -97,9 +78,10 @@ public:
 class AOSongAM2315_Temp : public virtual Variable
 {
 public:
-    AOSongAM2315_Temp(Sensor *parentSense);
-    void setup(void) override;
-    void onSensorUpdate(Sensor *parentSense) override;
+    AOSongAM2315_Temp(Sensor *parentSense) :
+      Variable(parentSense, temp, F("temperature"), F("degreeCelsius"),
+               AM2315_TEMP_RESOLUTION, F("AM2315YTemp"))
+    {}
 };
 
 #endif

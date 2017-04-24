@@ -2,7 +2,7 @@
 
 A "library" of sensors to give all sensors a common interface of functions.  This library was written primarily for the [EnviroDIY Mayfly](https://envirodiy.org/mayfly/) but should be applicable to other Arduino based boards as well.  To use the full functionality of this library, you do need an AVR board with a "large" amount of RAM (in Arduino terms).  The processor on an Arduino UNO or similar board is unlikely to be able to handle all of the logger functionality, though it will be able to access individual sensors.  An Arduino Mega, Sodaq Mbili, or other similar boards should be able to use the full library.  To date, however, the EnviroyDIY Mayfly is the only board that has been tested.
 
-Each sensor is implemented as a subclass of the "SensorBase" class.  Within each sensor, there are subclasses for each variable that the sensor can return.  The sensors can return variables as floats or as a string with the proper number of significant figures for the instrument resolution.
+Each sensor is implemented as a subclass of the "Sensor" class.  Within each sensor, there are subclasses for each variable that the sensor can return.  The sensors can return variables as floats or as a string with the proper number of significant figures for the instrument resolution.
 
 To use a sensor in your sketch, you must include SensorBase.h in your script AND separately include xxx.h for each sensor you intend to use.  While this may force you to write many more include statements, it makes the library lighter weight by not requiring you to install the functions and dependencies for every sensor when only one is needed.
 
@@ -10,7 +10,7 @@ To use a sensor in your sketch, you must include SensorBase.h in your script AND
 - [Basic Senor and Variable Functions](#Basic)
     - [Individual Sensors Code Examples](#individuals)
 - [Grouped Sensor Functions](#Grouped)
-    - [SensorArray Code Examples](#ArrayExamples)
+    - [VariableArray Code Examples](#ArrayExamples)
 - [Logger Functions](#Logger)
     - [Logger Code Examples](#LoggerExamples)
 - Available Sensors
@@ -64,9 +64,9 @@ loop()
 
 
 ## <a name="Grouped"></a>Grouped Sensor Functions
-Having a unified set of functions to access many sensors allows us to quickly poll through a list of sensors to get all results quickly.  Within sensor base, there is a class "SensorArray" that adds functions to use on an array of pointers to sensor objects.
+Having a unified set of functions to access many sensors allows us to quickly poll through a list of sensors to get all results quickly.  Within sensor base, there is a class "VariableArray" that adds functions to use on an array of pointers to sensor objects.
 
-### Functions Available for a SensorArray Object:
+### Functions Available for a VariableArray Object:
 
 - **setupSensors()** - This sets up all of the sensors in the list by running each sensor object's setup() function.  If a sensor doesn't respond to its setup command, the command is called 5 times in attempt to make a connection.  To save time, if two variables from the same sensor are in sequence in the pointer array, the setup function will only be called for the first variable in the sequence.  If all sensors are set up sucessfully, returns true.
 - **sensorsSleep()** - This puts all sensors to sleep (ie, cuts power).  Returns true.
@@ -75,26 +75,26 @@ Having a unified set of functions to access many sensors allows us to quickly po
 - **printSensorData(Stream stream)** - This prints curent sensor values along with metadata to a stream.  By default, it will print to the first Serial port.  Note that the input is a pointer to a stream instance.
 - **generateSensorDataCSV()** - This returns an Arduino String containing comma separated list of sensor values.  This string does _NOT_ contain a timestamp of any kind.
 
-### <a name="ArrayExamples"></a>SensorArray Examples:
+### <a name="ArrayExamples"></a>VariableArray Examples:
 
-To use the SensorArray module, you must first create the array of pointers.  This must be done outside of the setup() or loop() functions.  Remember that you must create a new instance for each _variable_, not just each sensor.  You should order your list so all the variables from a single sensor come one after the other.  All functions will be called on the sensors in the order they appear in the list.
+To use the VariableArray module, you must first create the array of pointers.  This must be done outside of the setup() or loop() functions.  Remember that you must create a new instance for each _variable_, not just each sensor.  You should order your list so all the variables from a single sensor come one after the other.  All functions will be called on the sensors in the order they appear in the list.
 
 ```cpp
-SensorBase *SENSOR_LIST[] = {
+Variable *variableList[] = {
     new Sensor1_Variable1(param1, param2, ..., paramX),
     new Sensor1_Variable2(param1, param2, ..., paramX),
     new Sensor2_Variable1(param1, param2, ..., paramX),
     ...
     new SensorX_VariableX(param1, param2, ..., paramX)
 };
-int sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
+int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 ```
 
-Once you have created the array of pointers, you can initialize the SensorArray module and setup all of the sensors at once in the setup function:
+Once you have created the array of pointers, you can initialize the VariableArray module and setup all of the sensors at once in the setup function:
 
 ```cpp
 // Initialize the sensor array;
-sensors.init(sensorCount, SENSOR_LIST);
+sensors.init(variableCount, variableList);
 // Set up all the sensors
 sensors.setupSensors();
 ```
@@ -110,7 +110,7 @@ sensors.printSensorData();
 
 
 ## <a name="Logger"></a>Logger Functions
-Our main reason to unify the output from many sensors is to easily log the data to an SD card and to send it to the EnviroDIY data page.  There are two modules available to use with the sensors to log data:  LoggerBase and LoggerEnviroDIY.  Both of these are sub-classes of SensorArray and contain all of the functions available to a SenorArray as described above.  These both will add the abilities to communicate with a DS3231 real time clock and set up the Arduino as a logger which goes to deep sleep between readings to conserver power.  LoggerBase only adds the functionality to write the data from the sensors to a csv file on a connected SD card.  LoggerEnviroDIY adds the ability to send data to the EnviroDIY data portal.  Both logger modules depend on the [Sodaq](https://github.com/SodaqMoja/Sodaq_DS3231) or [EnviroDIY DS-3231](https://github.com/EnviroDIY/Sodaq_DS3231) (for clock control), the [Sodaq RTCTimer library](https://github.com/SodaqMoja/RTCTimer) (for timing functions), the [EnviroDIY modified version of Sodaq's pin change interrupt library](https://github.com/EnviroDIY/PcInt_PCINT0) (for waking the processor from clock alarms), the AVR sleep library (for low power sleeping), and the [SdFat library](https://github.com/greiman/SdFat) for communicating with the SD card.  The LoggerEnviroDIY has the additional dependency of the [EnviroDIY version of the TinyGSM library](https://github.com/EnviroDIY/TinyGSM) for internet connectivity.
+Our main reason to unify the output from many sensors is to easily log the data to an SD card and to send it to the EnviroDIY data page.  There are two modules available to use with the sensors to log data:  LoggerBase and LoggerEnviroDIY.  Both of these are sub-classes of VariableArray and contain all of the functions available to a SenorArray as described above.  These both will add the abilities to communicate with a DS3231 real time clock and set up the Arduino as a logger which goes to deep sleep between readings to conserver power.  LoggerBase only adds the functionality to write the data from the sensors to a csv file on a connected SD card.  LoggerEnviroDIY adds the ability to send data to the EnviroDIY data portal.  Both logger modules depend on the [Sodaq](https://github.com/SodaqMoja/Sodaq_DS3231) or [EnviroDIY DS-3231](https://github.com/EnviroDIY/Sodaq_DS3231) (for clock control), the [Sodaq RTCTimer library](https://github.com/SodaqMoja/RTCTimer) (for timing functions), the [EnviroDIY modified version of Sodaq's pin change interrupt library](https://github.com/EnviroDIY/PcInt_PCINT0) (for waking the processor from clock alarms), the AVR sleep library (for low power sleeping), and the [SdFat library](https://github.com/greiman/SdFat) for communicating with the SD card.  The LoggerEnviroDIY has the additional dependency of the [EnviroDIY version of the TinyGSM library](https://github.com/EnviroDIY/TinyGSM) for internet connectivity.
 
 ### Functions Available for a LoggerBase Object:
 Timezone functions:
@@ -119,7 +119,7 @@ Timezone functions:
 A note about timezones:  It is possible to create multiple logger objects in your code if you want to log different sensors at different intervals, but every logger object will always have the same timezone and timezone offset.  If you attempt to call these functions more than once for different loggers, whatever value was called last will apply to every logger.
 
 Setup and initialization functions:
-- **init(int SDCardPin, int interruptPin, int sensorCount, SensorBase SENSOR_LIST[], float loggingIntervalMinutes, const char loggerID = 0)** - Initializes the logger object.  Must happen within the setup function.  Note that the SENSOR_LIST[], loggerID are all pointers.
+- **init(int SDCardPin, int interruptPin, int variableCount, Sensor variableList[], float loggingIntervalMinutes, const char loggerID = 0)** - Initializes the logger object.  Must happen within the setup function.  Note that the variableList[], loggerID are all pointers.
 - **setAlertPin(int ledPin)** - Optionally sets a pin to put out an alert that a measurement is being logged.  This should be a pin with a LED on it.
 
 Functions to access the clock in proper format and time zone:
@@ -162,7 +162,7 @@ Any of the above modems types/chips should work, though only a SIM800 and WiFiBe
 - These three functions set up the required registration token, sampling feature uuid, and time series uuids for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.  You must call these functions to be able to get proper JSON data for EnviroDIY, even without the modem support.
     - **setToken(const char registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
     - **setSamplingFeature(const char samplingFeature)** - Sets the GUID of the sampling feature.  Note that the input is a pointer to the samplingFeature.
-    - **setUUIDs(const char UUIDs[])** - Sets the time series UUIDs.  Note that the input is an array of pointers.  The order of the UUIDs in this array **must match exactly** with the order of the coordinating variable in the SENSOR_LIST.
+    - **setUUIDs(const char UUIDs[])** - Sets the time series UUIDs.  Note that the input is an array of pointers.  The order of the UUIDs in this array **must match exactly** with the order of the coordinating variable in the variableList.
 - After registering the tokens, set up your modem using one of these two commands, depending on whether you are using cellular or WiFi communication
     - **modem.setupModem(Stream modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin, DTRSleepType sleepType, const char APN)** - Sets up the internet communcation with a cellular modem.  Note that the modemStream and APN should be pointers.  
     - **modem.setupModem(Stream modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin, DTRSleepType sleepType, const char ssid, const char pwd)** - Sets up the internet communcation with a WiFi modem.  Note that the modemStream, ssid, and password should be pointers.
@@ -198,8 +198,8 @@ Logger.setTimeZone(int timeZone);
 Logger.setTZOffset(int offset);
 // Initialize the logger;
 Logger.init(int SDCardPin, int interruptPin,
-            int sensorCount,
-            SensorBase *SENSOR_LIST[],
+            int variableCount,
+            Variable *variableList[],
             float loggingIntervalMinutes,
             const char *loggerID = 0);
 // OPTIONAL - specify a pin to give an alert when a measurement is taken
@@ -217,8 +217,8 @@ EnviroDIYLogger.setTimeZone(int timeZone);
 EnviroDIYLogger.setTZOffset(int offset);
 // Initialize the logger;
 EnviroDIYLogger.init(int SDCardPin, int interruptPin,
-                     int sensorCount,
-                     SensorBase *SENSOR_LIST[],
+                     int variableCount,
+                     Variable *variableList[],
                      float loggingIntervalMinutes,
                      const char *loggerID = 0);
 // OPTIONAL - specify a pin to give an alert when a measurement is taken
@@ -257,7 +257,7 @@ void loop()
 If you would like to do other things within the loop function, you should access the component logging functions individually instead of using the short-cut functions.  In this case, here are some guidelines for writing a loop function:
 - If you want to log on an even interval, use "if (checkInterval()" to verify the interval time.
 - Call the markTime() function before printing/sending/saving any data that you want associate with a timestamp.
-- Update all the sensors in your SensorArray together with updateAllSensors().
+- Update all the sensors in your VariableArray together with updateAllSensors().
 - Immediately after running updateAllSensors(), put sensors to sleep to save power with sensorsSleep().
 - After updating the sensors, then call any functions you want to send/print/save data.
 - Finish by putting the logger back to sleep, if desired, with systemSleep().

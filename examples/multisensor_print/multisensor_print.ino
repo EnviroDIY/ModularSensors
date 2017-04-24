@@ -87,7 +87,7 @@ const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calib
 // ---------------------------------------------------------------------------
 // 3. The array that contains all valid sensors
 // ---------------------------------------------------------------------------
-SensorBase *SENSOR_LIST[] = {
+Variable *variableList[] = {
     // new DecagonCTD_Depth(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
     // new DecagonCTD_Temp(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
     // new DecagonCTD_Cond(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
@@ -108,7 +108,7 @@ SensorBase *SENSOR_LIST[] = {
     // new MayflyFreeRam()
     // new YOUR_sensorName_HERE()
 };
-int sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
+int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 
 // ---------------------------------------------------------------------------
@@ -184,7 +184,7 @@ String getDateTime_ISO8601(void)
 }
 
 // Create a new sensor array instance
-SensorArray sensors;
+VariableArray sensors;
 
 
 // ---------------------------------------------------------------------------
@@ -214,11 +214,11 @@ void setup()
 
     // Count the number of sensors
     Serial.print(F("There are "));
-    Serial.print(String(sensorCount));
+    Serial.print(String(variableCount));
     Serial.println(F(" variables being recorded"));
 
     // Initialize the sensor array;
-    sensors.init(sensorCount, SENSOR_LIST);
+    sensors.init(variableCount, variableList);
 
     // Set up all the sensors
     sensors.setupSensors();

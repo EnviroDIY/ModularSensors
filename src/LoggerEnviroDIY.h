@@ -41,12 +41,12 @@ public:
         dataHeader += F("\"Sampling Feature: ");
         dataHeader += _samplingFeature;
         dataHeader += F("\"");
-        for (uint8_t i = 0; i < _sensorCount; i++)
+        for (uint8_t i = 0; i < _variableCount; i++)
         {
             dataHeader += F("\"");
             dataHeader += String(_UUIDs[i]);
             dataHeader += F("\"");
-            if (i + 1 != _sensorCount)
+            if (i + 1 != _variableCount)
             {
                 dataHeader += F(", ");
             }
@@ -63,12 +63,12 @@ public:
         jsonString += F("\"timestamp\": \"");
         jsonString += String(LoggerBase::markedISO8601Time) + F("\", ");
 
-        for (int i = 0; i < LoggerBase::_sensorCount; i++)
+        for (int i = 0; i < LoggerBase::_variableCount; i++)
         {
             jsonString += F("\"");
             jsonString += String(_UUIDs[i]) + F("\": ");
-            jsonString += LoggerBase::_sensorList[i]->getValueString();
-            if (i + 1 != LoggerBase::_sensorCount)
+            jsonString += LoggerBase::_variableList[i]->getValueString();
+            if (i + 1 != LoggerBase::_variableCount)
             {
                 jsonString += F(", ");
             }

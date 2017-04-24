@@ -18,15 +18,15 @@ uint8_t LoggerBase::_numReadings = 0;
 // Initialization - cannot do this in constructor arduino has issues creating
 // instances of classes with non-empty constructors
 void LoggerBase::init(int SDCardPin, int interruptPin,
-                      int sensorCount,
-                      SensorBase *SENSOR_LIST[],
+                      int variableCount,
+                      Variable *variableList[],
                       float loggingIntervalMinutes,
                       const char *loggerID/* = 0*/)
 {
     _SDCardPin = SDCardPin;
     _interruptPin = interruptPin;
-    _sensorCount = sensorCount;
-    _sensorList = SENSOR_LIST;
+    _variableCount = variableCount;
+    _variableList = variableList;
     _loggingIntervalMinutes = loggingIntervalMinutes;
     _interruptRate = round(_loggingIntervalMinutes*60);  // convert to even seconds
     _loggerID = loggerID;
@@ -309,16 +309,16 @@ String LoggerBase::generateFileHeader(void)
     dataHeader += F("\"Date and Time in UTC");
     dataHeader += _timeZone;
     dataHeader += F("\", ");
-    for (uint8_t i = 0; i < _sensorCount; i++)
+    for (uint8_t i = 0; i < _variableCount; i++)
     {
         dataHeader += F("\"");
-        dataHeader += String(_sensorList[i]->getSensorName());
+        dataHeader += String(_variableList[i]->getSensorName());
         dataHeader += F(" - ");
-        dataHeader += String(_sensorList[i]->getVarName());
+        dataHeader += String(_variableList[i]->getVarName());
         dataHeader += F(" (");
-        dataHeader += String(_sensorList[i]->getVarUnit());
+        dataHeader += String(_variableList[i]->getVarUnit());
         dataHeader += F(")\"");
-        if (i + 1 != _sensorCount)
+        if (i + 1 != _variableCount)
         {
             dataHeader += F(", ");
         }
@@ -331,7 +331,7 @@ String LoggerBase::generateSensorDataCSV(void)
     String csvString = "";
     LoggerBase::markedDateTime.addToString(csvString);
     csvString += F(", ");
-    csvString += SensorArray::generateSensorDataCSV();
+    csvString += VariableArray::generateSensorDataCSV();
     return csvString;
 }
 
@@ -447,7 +447,7 @@ void LoggerBase::begin(void)
     Serial.print(F("Current RTC time is: "));
     Serial.println(formatDateTime_ISO8601(getNow()));
     Serial.print(F("There are "));
-    Serial.print(String(_sensorCount));
+    Serial.print(String(_variableCount));
     Serial.println(F(" variables being recorded."));
 
     // Set up the sensors

@@ -36,12 +36,12 @@ public:
         dhString += F("&Loggertime=");
         dhString += String(LoggerBase::markedEpochTime - 946684800);  // Coorect time from epoch to y2k
 
-        for (int i = 0; i < LoggerBase::_sensorCount; i++)
+        for (int i = 0; i < LoggerBase::_variableCount; i++)
         {
             dhString += F("&");
-            dhString += LoggerBase::_sensorList[i]->getDreamHost();
+            dhString += LoggerBase::_variableList[i]->getDreamHost();
             dhString += F("=");
-            dhString += LoggerBase::_sensorList[i]->getValueString();
+            dhString += LoggerBase::_variableList[i]->getValueString();
         }
         return dhString;
     }

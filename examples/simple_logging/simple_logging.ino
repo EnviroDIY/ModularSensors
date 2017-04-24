@@ -88,7 +88,7 @@ const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calib
 // ---------------------------------------------------------------------------
 // 3. The array that contains all valid sensors
 // ---------------------------------------------------------------------------
-SensorBase *SENSOR_LIST[] = {
+Variable *variableList[] = {
     new DecagonCTD_Depth(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
     new DecagonCTD_Temp(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
     new DecagonCTD_Cond(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
@@ -105,7 +105,7 @@ SensorBase *SENSOR_LIST[] = {
     new MayflyFreeRam()
     // new YOUR_sensorName_HERE()
 };
-int sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
+int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // ---------------------------------------------------------------------------
 // Board setup info
@@ -160,7 +160,7 @@ void setup()
     Logger.setTZOffset(0);
 
     // Initialize the logger;
-    Logger.init(SD_SS_PIN, RTC_PIN, sensorCount, SENSOR_LIST,
+    Logger.init(SD_SS_PIN, RTC_PIN, variableCount, variableList,
                 LOGGING_INTERVAL);
     Logger.setAlertPin(GREEN_LED);
     // Run the logger setup;

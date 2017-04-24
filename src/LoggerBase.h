@@ -19,13 +19,13 @@
 
 
 // Defines the "Logger" Class
-class LoggerBase : public virtual SensorArray
+class LoggerBase : public virtual VariableArray
 {
 public:
     // Setup and initialization function
     void init(int SDCardPin, int interruptPin,
-              int sensorCount,
-              SensorBase *SENSOR_LIST[],
+              int variableCount,
+              Variable *variableList[],
               float loggingIntervalMinutes,
               const char *loggerID = 0);
     // Sets the static timezone - this must be set

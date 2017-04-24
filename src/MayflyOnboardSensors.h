@@ -17,7 +17,7 @@
 
 // The "Main" class for the Mayfly
 // Only need a sleep and wake since these DON'T use the default of powering up and down
-class MayflyOnboardSensors : public virtual SensorBase
+class MayflyOnboardSensors : public virtual Sensor
 {
 public:
     bool sleep(void) override;

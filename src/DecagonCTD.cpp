@@ -30,7 +30,7 @@
 
 // The constructor - need the SDI-12 address, the power pin, the data pin, and the number of readings
 DecagonCTD::DecagonCTD(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin),
+ : Sensor(dataPin, powerPin),
    DecagonSDI12(CTD_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
 {}
 
@@ -55,7 +55,7 @@ bool DecagonCTD::update()
 
 
 DecagonCTD_Depth::DecagonCTD_Depth(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, F("DecagonCTD"), F("waterDepth"), F("millimeter"), CTD_DEPTH_RESOLUTION, F("CTDdepth")),
+ : Sensor(dataPin, powerPin, F("DecagonCTD"), F("waterDepth"), F("millimeter"), CTD_DEPTH_RESOLUTION, F("CTDdepth")),
    DecagonSDI12(CTD_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings),
    DecagonCTD(SDI12address, powerPin, dataPin, numReadings)
 {}
@@ -71,7 +71,7 @@ float DecagonCTD_Depth::getValue(void)
 
 
 DecagonCTD_Temp::DecagonCTD_Temp(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, F("DecagonCTD"), F("temperature"), F("degreeCelsius"), CTD_TEMP_RESOLUTION, F("CTDtemp")),
+ : Sensor(dataPin, powerPin, F("DecagonCTD"), F("temperature"), F("degreeCelsius"), CTD_TEMP_RESOLUTION, F("CTDtemp")),
    DecagonSDI12(CTD_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings),
    DecagonCTD(SDI12address, powerPin, dataPin, numReadings)
 {}
@@ -86,7 +86,7 @@ float DecagonCTD_Temp::getValue(void)
 
 
 DecagonCTD_Cond::DecagonCTD_Cond(char SDI12address, int powerPin, int dataPin, int numReadings)
- : SensorBase(dataPin, powerPin, F("DecagonCTD"), F("specificConductance"), F("microsiemenPerCentimeter"), CTD_COND_RESOLUTION, F("CTDcond")),
+ : Sensor(dataPin, powerPin, F("DecagonCTD"), F("specificConductance"), F("microsiemenPerCentimeter"), CTD_COND_RESOLUTION, F("CTDcond")),
    DecagonSDI12(CTD_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings),
    DecagonCTD(SDI12address, powerPin, dataPin, numReadings)
 {}

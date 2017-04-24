@@ -18,7 +18,7 @@
 #define HRXL_RESOLUTION 0
 
 // The main class for the MaxBotix Sonar.  No sub-classes are needed
-class MaxBotixSonar_Range : public virtual SensorBase
+class MaxBotixSonar_Range : public virtual Sensor
 {
 public:
     MaxBotixSonar_Range(int powerPin, int dataPin, int triggerPin = -1);

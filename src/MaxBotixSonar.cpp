@@ -19,7 +19,7 @@
 
 // The constructor - need the power pin, the excite pin, and the data pin
 MaxBotixSonar_Range::MaxBotixSonar_Range(int powerPin, int dataPin, int triggerPin /* = -1*/)
-  : SensorBase(dataPin, powerPin,F("MaxBotixMaxSonar"), F("distance"), F("millimeter"), HRXL_RESOLUTION, F("SonarRange"))
+  : Sensor(dataPin, powerPin,F("MaxBotixMaxSonar"), F("distance"), F("millimeter"), HRXL_RESOLUTION, F("SonarRange"))
 {_triggerPin = triggerPin;}
 
 // The function to set up connection to a sensor.

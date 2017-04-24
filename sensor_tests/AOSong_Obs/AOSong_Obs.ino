@@ -25,7 +25,7 @@ Variable *variables[] = {
     new AOSongAM2315_Humidity(&am2315),
     new AOSongAM2315_Temp(&am2315)
 };
-int sensorCount = sizeof(variables) / sizeof(variables[0]);
+int variableCount = sizeof(variables) / sizeof(variables[0]);
 
 
 // -----------------------------------------------
@@ -45,7 +45,7 @@ void setup()
     // Print a start-up note to the first serial port
     Serial.println(F("WebSDL Device: EnviroDIY Mayfly"));
 
-    for (uint8_t i = 0; i < sensorCount; i++)
+    for (uint8_t i = 0; i < variableCount; i++)
     {
         variables[i]->setup();
     }
@@ -64,13 +64,13 @@ void loop()
     digitalWrite(GREEN_LED, HIGH);
 
     bool success = true;
-    for (uint8_t i = 0; i < sensorCount; i++)
+    for (uint8_t i = 0; i < variableCount; i++)
     {
         Serial.println(F("Updating"));
         success &= variables[i]->parentSensor->update();
 
         // Check for and skip the updates of any identical sensors
-        for (int j = i+1; j < sensorCount; j++)
+        for (int j = i+1; j < variableCount; j++)
         {
             if (variables[i]->parentSensor->getSensorName() == variables[j]->parentSensor->getSensorName() &&
                 variables[i]->parentSensor->getSensorLocation() == variables[j]->parentSensor->getSensorLocation())
@@ -79,7 +79,7 @@ void loop()
         }
     }
     // am2315.update();
-    for (int i = 0; i < sensorCount; i++)
+    for (int i = 0; i < variableCount; i++)
     {
         Serial.print(variables[i]->getValue());
         Serial.println();

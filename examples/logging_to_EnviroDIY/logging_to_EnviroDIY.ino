@@ -99,7 +99,7 @@ const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calib
 // ---------------------------------------------------------------------------
 // 3. The array that contains all valid sensors
 // ---------------------------------------------------------------------------
-SensorBase *SENSOR_LIST[] = {
+Variable *variableList[] = {
     new DecagonCTD_Cond(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
     new DecagonCTD_Temp(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
     new DecagonCTD_Depth(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
@@ -115,7 +115,7 @@ SensorBase *SENSOR_LIST[] = {
     new MayflyOnboardBatt(MFVersion),
     new MayflyFreeRam()
 };
-int sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
+int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 
 // ---------------------------------------------------------------------------
@@ -226,7 +226,7 @@ void setup()
     EnviroDIYLogger.setTZOffset(TIME_ZONE);
 
     // Initialize the logger;
-    EnviroDIYLogger.init(SD_SS_PIN, RTC_PIN, sensorCount, SENSOR_LIST,
+    EnviroDIYLogger.init(SD_SS_PIN, RTC_PIN, variableCount, variableList,
                 LOGGING_INTERVAL, LoggerID);
     EnviroDIYLogger.setAlertPin(GREEN_LED);
     // Set up the communication with EnviroDIY
