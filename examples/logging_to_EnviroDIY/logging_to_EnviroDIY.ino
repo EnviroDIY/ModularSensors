@@ -116,7 +116,7 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data);
 //    Maxbotix HRXL
 // ==========================================================================
 #include <MaxBotixSonar.h>
-const int SonarData = 10;     // data  pin
+const int SonarData = 11;     // data  pin
 const int SonarTrigger = -1;   // Trigger pin
 const int SonarPower = 22;   // excite (power) pin
 MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger) ;

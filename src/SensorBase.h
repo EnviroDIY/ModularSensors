@@ -13,6 +13,9 @@
 #include <Arduino.h>
 #include <pins_arduino.h>
 
+// The largest number of variables from a single sensor
+#define MAX_NUMBER_VARS 5
+
 typedef enum SENSOR_STATUS
 {
     SENSOR_ERROR,
@@ -54,7 +57,7 @@ public:
     // These tie the variables to their parent sensor
     virtual void registerVariable(int varNum, Variable* var);
     virtual void notifyVariables(void);
-    float sensorValues[];
+    float sensorValues[MAX_NUMBER_VARS];
 
     // This just makes sure things are up-to-date
     bool checkForUpdate(unsigned long sensorLastUpdated);
@@ -69,7 +72,7 @@ protected:
     int _powerPin;
     int _numReturnedVars;
     SENSOR_STATUS sensorStatus;
-    Variable *variables[];
+    Variable *variables[MAX_NUMBER_VARS];
 
 private:
     String _sensorName;
@@ -138,7 +141,7 @@ public:
 protected:
     uint8_t _variableCount;
     Variable **_variableList;
-    bool isUniqueSensor[];
+    bool isUniqueSensor[30];
 };
 
 #endif

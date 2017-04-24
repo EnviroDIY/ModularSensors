@@ -27,7 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 // MaxBotix Sonar: pin settings
 const int SonarPower = 22;   // excite (power) pin
-const int SonarData = 10;     // data  pin
+const int SonarData = 11;     // data  pin
 const int SonarTrigger = -1;   // Trigger pin
 
 // Create a new instance of the sonar sensor;
@@ -75,7 +75,7 @@ void setup()
 
     // Set up the sensor
     sonar.setup();
-
+    sonar_range.setup();
 }
 
 
@@ -94,7 +94,7 @@ void loop()
     sonar.update();
 
     // Print the sonar result
-    Serial.print("Data recieved from sonar: ");
+    Serial.print("Current sonar range: ");
     Serial.println(sonar_range.getValueString());
 
     // Turn of sensor power

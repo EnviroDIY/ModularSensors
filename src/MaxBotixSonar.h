@@ -25,7 +25,7 @@ class MaxBotixSonar : public virtual Sensor
 {
 public:
     MaxBotixSonar(int powerPin, int dataPin, int triggerPin = -1)
-    : Sensor(dataPin, powerPin, F("MaxBotixMaxSonar"), HRXL_NUM_MEASUREMENTS)
+    : Sensor(powerPin, dataPin, F("MaxBotixMaxSonar"), HRXL_NUM_MEASUREMENTS)
     {_triggerPin = triggerPin;}
 
     SENSOR_STATUS setup(void) override
@@ -38,6 +38,14 @@ public:
             pinMode(_triggerPin, OUTPUT);
             digitalWrite(_triggerPin, LOW);
         }
+
+        // Serial.print(F("Set up "));  // for debugging
+        // Serial.print(getSensorName());  // for debugging
+        // Serial.print(F(" attached at "));  // for debugging
+        // Serial.print(getSensorLocation());  // for debugging
+        // Serial.print(F(" which can return up to "));  // for debugging
+        // Serial.print(_numReturnedVars);  // for debugging
+        // Serial.println(F(" variable[s]."));  // for debugging
         return SENSOR_READY;
     }
 
@@ -49,7 +57,7 @@ public:
         else{delay(160);}  // See note below
 
         // Clear values before starting loop
-        clearValues();
+        // clearValues();
 
         // NOTE: After the power is turned on to the MaxBotix, it sends several lines
         // of header to the serial pin, beginning at ~65ms and finising at ~160ms.
@@ -103,7 +111,7 @@ public:
             // it's 4999.  The sonar might also send readings of 300 or 500 (the
             //  blanking distance) if there are too many acoustic echos.
             // If the result becomes garbled or the sonar is disconnected, the parseInt function returns 0.
-            if (result == 0 || result == 300 || result == 500 || result == 4999 || result == 9999)
+            if (result <= 300 || result == 500 || result == 4999 || result == 9999)
             {
                 // Serial.print(F("Bad or Suspicious Result, Retry Attempt #"));  // For debugging
                 // Serial.println(rangeAttempts);  // For debugging

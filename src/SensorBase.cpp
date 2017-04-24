@@ -22,9 +22,10 @@ Sensor::Sensor(int powerPin, int dataPin, String sensorName, int numReturnedVars
     _dataPin = dataPin;
     _sensorName = sensorName;
     _numReturnedVars = numReturnedVars;
+
     // Clear arrays
-    variables[_numReturnedVars] = {0};
-    sensorValues[_numReturnedVars] = {0};
+    variables[MAX_NUMBER_VARS] = {0};
+    sensorValues[MAX_NUMBER_VARS] = {0};
 }
 
 // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
@@ -73,6 +74,15 @@ SENSOR_STATUS Sensor::setup(void)
     pinMode(_powerPin, OUTPUT);
     pinMode(_dataPin, INPUT);
     digitalWrite(_powerPin, LOW);
+
+    Serial.print(F("Set up "));  // for debugging
+    Serial.print(getSensorName());  // for debugging
+    Serial.print(F(" attached at "));  // for debugging
+    Serial.print(getSensorLocation());  // for debugging
+    Serial.print(F(" which can return up to "));  // for debugging
+    Serial.print(_numReturnedVars);  // for debugging
+    Serial.println(F(" variable[s]."));  // for debugging
+
     return SENSOR_READY;
 }
 
@@ -106,16 +116,15 @@ void Sensor::registerVariable(int varNum, Variable* var)
 
 void Sensor::notifyVariables(void)
 {
+    Serial.println(F("Notifiying registered variables."));
     // Make note of the last time updated
     sensorLastUpdated = millis();
 
     // Notify variables of update
-    for (uint8_t i = 0; i < _numReturnedVars; i++){
-        if (variables[i] != nullptr) {
-            Serial.print(F("Sending value update to "));  // for debugging
-            Serial.println(variables[i]->getVarName());  // for debugging
-            variables[i]->onSensorUpdate(this);
-        }
+    for (int i = 0; i < _numReturnedVars; i++){
+        Serial.print(F("Sending value update to "));  // for debugging
+        Serial.println(variables[i]->getVarName());  // for debugging
+        variables[i]->onSensorUpdate(this);
     }
 }
 
@@ -160,9 +169,10 @@ Variable::Variable(Sensor *parentSense, int varNum, String varName, String varUn
     _dreamHost = dreamHost;
 }
 
-void Variable::attachSensor(int varNum, Sensor *parentSensor) {
-    Serial.println(F("Attempting to register to parent"));
-    parentSensor->registerVariable(varNum, this);
+void Variable::attachSensor(int varNum, Sensor *parentSense) {
+    Serial.print(F("Attempting to register to "));  // for debugging
+    Serial.println(parentSense->getSensorName());  // for debugging
+    parentSense->registerVariable(varNum, this);
 }
 
 bool Variable::setup(void)
@@ -175,8 +185,8 @@ bool Variable::setup(void)
 void Variable::onSensorUpdate(Sensor *parentSense)
 {
     sensorValue = parentSense->sensorValues[_varNum];
-    Serial.print(F("Recieved humidity update of "));
-    Serial.println(sensorValue);
+    Serial.print(F("Received value update of "));  // for debugging
+    Serial.println(sensorValue);  // for debugging
 }
 
 // This returns the variable's name using http://vocabulary.odm2.org/variablename/
@@ -217,9 +227,10 @@ String Variable::getValueString(void)
 // Constructor
 void VariableArray::init(int variableCount, Variable *variableList[])
 {
+    Serial.println(F("Initializing varible array"));  // for debugging
     _variableCount = variableCount;
     _variableList = variableList;
-    isUniqueSensor[_variableCount] = {false};
+    isUniqueSensor[_variableCount] = {0};
     findUniqueSensors();
 };
 
@@ -241,12 +252,18 @@ int VariableArray::getSensorCount(void)
 
 void VariableArray::findUniqueSensors(void)
 {
-    isUniqueSensor[_variableCount] = {false};
+    Serial.println(F("Looking for unique sensors."));  // for debugging
+    isUniqueSensor[_variableCount] = {0};
+    Serial.println(F("Beginning check..."));  // for debugging
     // Check for unique sensors
     for (int i = 0; i < _variableCount; i++)
     {
         String sensName = _variableList[i]->parentSensor->getSensorName();
-        String sensLoc = _variableList[i+1]->parentSensor->getSensorName();
+        String sensLoc = _variableList[i]->parentSensor->getSensorLocation();
+        Serial.println(F("Checking for multiple variables from "));
+        Serial.print(sensName);
+        Serial.print(F(" attached at "));
+        Serial.println(sensLoc);
         bool unique = true;
         for (uint8_t j = 0; j < _variableCount; j++)
         {
@@ -256,6 +273,13 @@ void VariableArray::findUniqueSensors(void)
             {unique += false;}
         }
         isUniqueSensor[i] = unique;
+        // Prints for debugging
+        if (unique){
+            Serial.println(F("Sensor is unique!"));
+        }
+        else{
+            Serial.println(F("This is a repeat."));
+        }
     }
 }
 

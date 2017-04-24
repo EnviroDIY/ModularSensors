@@ -40,7 +40,7 @@ class CampbellOBS3 : public virtual Sensor
 public:
     // The constructor - need the power pin, the data pin, and the calibration info
     CampbellOBS3(int powerPin, int dataPin, float A, float B, float C)
-      : Sensor(dataPin, powerPin, F("CampbellOBS3+"), OBS3_NUM_VARIABLES)
+      : Sensor(powerPin, dataPin, F("CampbellOBS3+"), OBS3_NUM_VARIABLES)
     {
         _A = A;
         _B = B;
