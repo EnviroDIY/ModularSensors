@@ -40,25 +40,9 @@ class EnviroDIYMayfly : public virtual Sensor
 {
 public:
     // Need to know the Mayfly version because the battery resistor depends on it
-    EnviroDIYMayfly(char *version) : Sensor(-1, -1, F("EnviroDIYMayfly"), MAYFLY_NUM_MEASUREMENTS)
+    EnviroDIYMayfly(const char *version) : Sensor(-1, -1, F("EnviroDIYMayfly"), MAYFLY_NUM_MEASUREMENTS)
     {
         _version = version;
-
-        if (strcmp(_version, "v0.3") == 0 or strcmp(_version, "v0.4") == 0)
-        {
-          // Set the pin to read the battery voltage
-          _batteryPin = A6;
-        }
-        if (strcmp(_version, "v0.5") == 0)
-        {
-          // Set the pin to read the battery voltage
-          _batteryPin = A6;
-        }
-    }
-    // Overload constructor
-    EnviroDIYMayfly(char version) : Sensor(-1, -1, F("EnviroDIYMayfly"))
-    {
-        _version = &version;
 
         if (strcmp(_version, "v0.3") == 0 or strcmp(_version, "v0.4") == 0)
         {
@@ -121,10 +105,10 @@ private:
 };
 
 
-class MayflyOnboardTemp : public virtual Variable
+class EnviroDIYMayfly_Temp : public virtual Variable
 {
 public:
-    MayflyOnboardTemp(Sensor *parentSense)
+    EnviroDIYMayfly_Temp(Sensor *parentSense)
       : Variable(parentSense, MAYFLY_TEMP_VAR_NUM,
                  F("temperatureDatalogger"), F("degreeCelsius"),
                  DS3231_TEMP_RESOLUTION, F("BoardTemp"))
@@ -132,10 +116,10 @@ public:
 };
 
 
-class MayflyOnboardBatt : public virtual Variable
+class EnviroDIYMayfly_Batt : public virtual Variable
 {
 public:
-    MayflyOnboardBatt(Sensor *parentSense)
+    EnviroDIYMayfly_Batt(Sensor *parentSense)
       : Variable(parentSense, MAYFLY_BATTERY_VAR_NUM,
                  F("batteryVoltage"), F("Volt"),
                  MAYFLY_BATTERY_RESOLUTION, F("Battery"))
@@ -144,10 +128,10 @@ public:
 
 
 // Defines the "Free Ram" This is not a sensor at all but a board diagnostic
-class MayflyFreeRam : public virtual Variable
+class EnviroDIYMayfly_FreeRam : public virtual Variable
 {
 public:
-    MayflyFreeRam(Sensor *parentSense)
+    EnviroDIYMayfly_FreeRam(Sensor *parentSense)
       : Variable(parentSense, MAYFLY_RAM_VAR_NUM,
                  F("Free SRAM"), F("Bit"),
                  MAYFLY_RAM_RESOLUTION, F("FreeRam"))

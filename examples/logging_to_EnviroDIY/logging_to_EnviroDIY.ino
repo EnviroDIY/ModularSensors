@@ -16,30 +16,22 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 
 // Select your modem chip, comment out all of the others
-#define TINY_GSM_MODEM_SIM800  // Select for anything using a SIM800, SIM900, or varient thereof: Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
+// #define TINY_GSM_MODEM_SIM800  // Select for anything using a SIM800, SIM900, or varient thereof: Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
 // #define TINY_GSM_MODEM_A6  // Select for A6 or A7 chips
 // #define TINY_GSM_MODEM_M590
 // #define TINY_GSM_MODEM_ESP8266
-// #define TINY_GSM_MODEM_XBEE  // Select for Digi brand XBee's, including WiFi or LTE-M1
+#define TINY_GSM_MODEM_XBEE  // Select for Digi brand XBee's, including WiFi or LTE-M1
 
 // ---------------------------------------------------------------------------
 // Include the base required libraries
 // ---------------------------------------------------------------------------
 #include <Arduino.h>
 #include <SensorBase.h>
-
 #ifdef DreamHostPortalRX
 #include <LoggerDreamHost.h>
 #else
 #include <LoggerEnviroDIY.h>
 #endif
-
-#include <DecagonCTD.h>
-#include <Decagon5TM.h>
-#include <DecagonES2.h>
-#include <CampbellOBS3.h>
-#include <MaxBotixSonar.h>
-#include <MayflyOnboardSensors.h>
 
 // ---------------------------------------------------------------------------
 // Set up the sensor specific information
@@ -48,72 +40,116 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // The name of this file
 const char *SKETCH_NAME = "logging_to_EnviroDIY.ino";
 
-// Mayfly version number
-const char *MFVersion = "v0.3";
-
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "Mayfly_160073";
 // How frequently (in minutes) to log data
 int LOGGING_INTERVAL = 5;
 // Your logger's timezone.
 const int TIME_ZONE = -5;
+// Create a new logger instance
+#ifdef DreamHostPortalRX
+LoggerDreamHost EnviroDIYLogger;
+#else
+LoggerEnviroDIY EnviroDIYLogger;
+#endif
 
-// Decagon CTD: pin settings
-// sdi-12 data pin is usually, pin 7 on shield 3.0
-const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
-const int numberReadings = 10;  // The number of readings to average
-const int SDI12Data = 7;  // The pin the CTD is attached to
-const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
+// ==========================================================================
+//    AOSong AM2315
+// ==========================================================================
+#include <AOSongAM2315.h>
+// Campbell OBS 3+ Low Range calibration in Volts
+const int I2CPower = 22;  // switched sensor power is pin 22 on Mayfly
+AOSongAM2315 am2315(I2CPower);
 
-// Decagon 5TM: pin settings
-// sdi-12 data pin is usually, pin 7 on shield 3.0
-const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
-// const int SDI12Data = 7;  // The pin the 5TM is attached to
-// const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
 
-// Decagon ES2: pin settings
-// sdi-12 data pin is usually, pin 7 on shield 3.0
-const char *ES2SDI12address = "3";  // The SDI-12 Address of the 5-TM
-// const int SDI12Data = 7;  // The pin the 5TM is attached to
-// const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
-
-// MaxBotix Sonar: pin settings
-const int SonarData = 10;     // data  pin
-// const int SonarPower = 11;   // excite (power) pin
-const int SonarTrigger = -1;   // Trigger pin
-// const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
-
-// Campbell OBS 3+: pin settings
+// ==========================================================================
+//    CAMPBELL OBS 3 / OBS 3+
+// ==========================================================================
+#include <CampbellOBS3.h>
 // Campbell OBS 3+ Low Range calibration in Volts
 const int OBSLowPin = 0;  // The low voltage analog pin
 const float OBSLow_A = 4.0749E+00;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = 9.1011E+01;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibration
+const int OBS3Power = 22;  // switched sensor power is pin 22 on Mayfly
+CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C);
 // Campbell OBS 3+ High Range calibration in Volts
 const int OBSHighPin = 1;  // The high voltage analog pin
 const float OBSHigh_A = 5.2996E+01;  // The "A" value (X^2) from the high range calibration
 const float OBSHigh_B = 3.7828E+02;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calibration
-// const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
+CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
+
+
+// ==========================================================================
+//    Decagon 5TM
+// ==========================================================================
+#include <Decagon5TM.h>
+const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
+const int SDI12Data = 7;  // The pin the 5TM is attached to
+const int SDI12Power = 22;  // switched sensor power is pin 22 on Mayfly
+Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
+
+
+// ==========================================================================
+//    Decagon CTD
+// ==========================================================================
+#include <DecagonCTD.h>
+const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
+const int numberReadings = 10;  // The number of readings to average
+// const int SDI12Data = 7;  // The pin the CTD is attached to
+// const int SDI12Power = 22;  // switched sensor power is pin 22 on Mayfly
+DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
+
+
+// ==========================================================================
+//    Decagon ES2
+// ==========================================================================
+#include <DecagonES2.h>
+const char *ES2SDI12address = "3";  // The SDI-12 Address of the ES2
+// const int SDI12Data = 7;  // The pin the 5TM is attached to
+// const int SDI12Power = 22;  // switched sensor power is pin 22 on Mayfly
+DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data);
+
+
+// ==========================================================================
+//    Maxbotix HRXL
+// ==========================================================================
+#include <MaxBotixSonar.h>
+const int SonarData = 10;     // data  pin
+const int SonarTrigger = -1;   // Trigger pin
+const int SonarPower = 22;   // excite (power) pin
+MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger) ;
+
+
+// ==========================================================================
+//    EnviroDIY Mayfly
+// ==========================================================================
+#include <MayflyOnboardSensors.h>
+const char *MFVersion = "v0.3";
+EnviroDIYMayfly mayfly(MFVersion) ;
 
 // ---------------------------------------------------------------------------
-// 3. The array that contains all valid sensors
+// The array that contains all valid variables
 // ---------------------------------------------------------------------------
 Variable *variableList[] = {
-    new DecagonCTD_Cond(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
-    new DecagonCTD_Temp(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
-    new DecagonCTD_Depth(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
-    new Decagon5TM_Ea(*TMSDI12address, switchedPower, SDI12Data),
-    new Decagon5TM_VWC(*TMSDI12address, switchedPower, SDI12Data),
-    new Decagon5TM_Temp(*TMSDI12address, switchedPower, SDI12Data),
-    new DecagonES2_Cond(*ES2SDI12address, switchedPower, SDI12Data),
-    new DecagonES2_Temp(*ES2SDI12address, switchedPower, SDI12Data),
-    new CampbellOBS3_Turbidity(switchedPower, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C),
-    new CampbellOBS3_TurbHigh(switchedPower, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C),
-    new MaxBotixSonar_Range(switchedPower, SonarData, SonarTrigger),
-    new MayflyOnboardTemp(MFVersion),
-    new MayflyOnboardBatt(MFVersion),
-    new MayflyFreeRam()
+    new AOSongAM2315_Humidity(&am2315),
+    new AOSongAM2315_Temp(&am2315),
+    new CampbellOBS3_Turbidity(&osb3low),
+    new CampbellOBS3_TurbHigh(&osb3high),
+    new Decagon5TM_Ea(&fivetm),
+    new Decagon5TM_Temp(&fivetm),
+    new Decagon5TM_VWC(&fivetm),
+    new DecagonCTD_Depth(&ctd),
+    new DecagonCTD_Temp(&ctd),
+    new DecagonCTD_Cond(&ctd),
+    new DecagonES2_Cond(&es2),
+    new DecagonES2_Temp(&es2),
+    new MaxBotixSonar_Range(&sonar),
+    new EnviroDIYMayfly_Temp(&mayfly),
+    new EnviroDIYMayfly_Batt(&mayfly),
+    new EnviroDIYMayfly_FreeRam(&mayfly)
+    // new YOUR_variableName_HERE(&)
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
@@ -127,6 +163,8 @@ const char *REGISTRATION_TOKEN = "12345678-abcd-1234-efgh-1234567890ab";   // De
 const char *SAMPLING_FEATURE = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 const char *UUIDs[] =                                                      // UUID array for device sensors
 {
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
 "12345678-abcd-1234-efgh-1234567890ab",
 "12345678-abcd-1234-efgh-1234567890ab",
 "12345678-abcd-1234-efgh-1234567890ab",
@@ -190,14 +228,6 @@ void greenred4flash()
   digitalWrite(RED_LED, LOW);
 }
 
-// Create a new logger instance
-#ifdef DreamHostPortalRX
-LoggerDreamHost EnviroDIYLogger;
-#else
-LoggerEnviroDIY EnviroDIYLogger;
-#endif
-
-
 
 // ---------------------------------------------------------------------------
 // Main setup function
@@ -218,18 +248,22 @@ void setup()
     // Print a start-up note to the first serial port
     Serial.print(F("Now running "));
     Serial.print(SKETCH_NAME);
-    Serial.print(F(" on EnviroDIY Mayfly "));
+    Serial.print(F(" on Logger "));
     Serial.println(LoggerID);
+    Serial.print(F("There are "));
+    Serial.print(String(variableCount));
+    Serial.println(F(" variables being recorded"));
 
     // Set the timezone and offsets
     EnviroDIYLogger.setTimeZone(TIME_ZONE);
-    EnviroDIYLogger.setTZOffset(TIME_ZONE);
+    EnviroDIYLogger.setTZOffset(0);
 
     // Initialize the logger;
     EnviroDIYLogger.init(SD_SS_PIN, RTC_PIN, variableCount, variableList,
                 LOGGING_INTERVAL, LoggerID);
     EnviroDIYLogger.setAlertPin(GREEN_LED);
-    // Set up the communication with EnviroDIY
+
+    // Set up the connection with EnviroDIY
     EnviroDIYLogger.setToken(REGISTRATION_TOKEN);
     EnviroDIYLogger.setSamplingFeature(SAMPLING_FEATURE);
     EnviroDIYLogger.setUUIDs(UUIDs);
