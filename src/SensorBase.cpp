@@ -16,14 +16,15 @@
 // ============================================================================
 
 // The constructor
-Sensor::Sensor(int dataPin, int powerPin, String sensorName)
+Sensor::Sensor(int powerPin, int dataPin, String sensorName, int numReturnedVars)
 {
     _powerPin = powerPin;
     _dataPin = dataPin;
     _sensorName = sensorName;
+    _numReturnedVars = numReturnedVars;
     // Clear arrays
-    variables[MAX_NUMBER_VARIABLES] = {0};
-    sensorValues[MAX_NUMBER_VARIABLES] = {0};
+    variables[_numReturnedVars] = {0};
+    sensorValues[_numReturnedVars] = {0};
 }
 
 // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
@@ -109,7 +110,7 @@ void Sensor::notifyVariables(void)
     sensorLastUpdated = millis();
 
     // Notify variables of update
-    for (uint8_t i = 0; i < MAX_NUMBER_VARIABLES; i++){
+    for (uint8_t i = 0; i < _numReturnedVars; i++){
         if (variables[i] != nullptr) {
             Serial.print(F("Sending value update to "));  // for debugging
             Serial.println(variables[i]->getVarName());  // for debugging

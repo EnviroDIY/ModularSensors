@@ -13,9 +13,6 @@
 #include <Arduino.h>
 #include <pins_arduino.h>
 
-// Define the largest number of variables from a single sensor
-#define MAX_NUMBER_VARIABLES 5
-
 typedef enum SENSOR_STATUS
 {
     SENSOR_ERROR,
@@ -32,7 +29,7 @@ class Sensor
 {
 public:
 
-    Sensor(int dataPin = -1, int powerPin = -1, String sensorName = "Unknown");
+    Sensor(int powerPin = -1, int dataPin = -1, String sensorName = "Unknown", int numReturnedVars = 1);
 
     // These functions are dependent on the constructor and return the constructor values
     // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
@@ -57,7 +54,7 @@ public:
     // These tie the variables to their parent sensor
     virtual void registerVariable(int varNum, Variable* var);
     virtual void notifyVariables(void);
-    float sensorValues[MAX_NUMBER_VARIABLES];
+    float sensorValues[];
 
     // This just makes sure things are up-to-date
     bool checkForUpdate(unsigned long sensorLastUpdated);
@@ -69,8 +66,9 @@ protected:
     void powerDown(void);
     int _dataPin;
     int _powerPin;
+    int _numReturnedVars;
     SENSOR_STATUS sensorStatus;
-    Variable *variables[MAX_NUMBER_VARIABLES];
+    Variable *variables[];
 
 private:
     String _sensorName;

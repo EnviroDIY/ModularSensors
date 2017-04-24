@@ -108,7 +108,7 @@ String DecagonSDI12::getSensorSerialNumber(void)
 // The sensor installation location on the Mayfly
 String DecagonSDI12::getSensorLocation(void)
 {
-    sensorLocation = String(_SDI12address) + "_" + String(_dataPin);
+    String sensorLocation = String(_SDI12address) + "_" + String(_dataPin);
     return sensorLocation;
 }
 

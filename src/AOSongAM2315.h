@@ -28,7 +28,9 @@
 
 #define AM2315_NUM_MEASUREMENTS 2
 #define AM2315_HUMIDITY_RESOLUTION 1
+#define AM2315_HUMIDITY_VAR_NUM 0
 #define AM2315_TEMP_RESOLUTION 1
+#define AM2315_TEMP_VAR_NUM 1
 
 
 // The main class for the AOSong AM2315
@@ -45,18 +47,25 @@ public:
         Adafruit_AM2315 am2315;  // create a sensor object
         Wire.begin();  // Start the wire library
 
+        // Check if the power is on, turn it on if not
+        bool wasOn = checkPowerOn();
+        if(!wasOn){powerUp();}
+
         float temp_val, humid_val;
         bool ret_val = am2315.readTemperatureAndHumidity(temp_val, humid_val);
-        sensorValues[temp] = temp_val;
-        sensorValues[humidity] = humid_val;
+        sensorValues[AM2315_TEMP_VAR_NUM] = temp_val;
+        sensorValues[AM2315_HUMIDITY_VAR_NUM] = humid_val;
 
         Serial.print(F("Temp is: "));  // for debugging
-        Serial.print(sensorValues[temp]);  // for debugging
+        Serial.print(sensorValues[AM2315_TEMP_VAR_NUM]);  // for debugging
         Serial.print(F("°C and humidity is: "));  // for debugging
-        Serial.print(sensorValues[humidity]);  // for debugging
+        Serial.print(sensorValues[AM2315_HUMIDITY_VAR_NUM]);  // for debugging
         Serial.println(F("%"));  // for debugging
 
         notifyVariables();
+
+        // Turn the power back off it it had been turned on
+        if(!wasOn){powerDown();}
 
         return ret_val;
     }
@@ -68,7 +77,8 @@ class AOSongAM2315_Humidity : public virtual Variable
 {
 public:
     AOSongAM2315_Humidity(Sensor *parentSense) :
-      Variable(parentSense, humidity, F("relativeHumidity"), F("percent"),
+      Variable(parentSense, AM2315_HUMIDITY_VAR_NUM,
+               F("relativeHumidity"), F("percent"),
                AM2315_HUMIDITY_RESOLUTION, F("AM2315Humidity"))
     {}
 };
@@ -79,7 +89,8 @@ class AOSongAM2315_Temp : public virtual Variable
 {
 public:
     AOSongAM2315_Temp(Sensor *parentSense) :
-      Variable(parentSense, temp, F("temperature"), F("degreeCelsius"),
+      Variable(parentSense, AM2315_TEMP_VAR_NUM,
+               F("temperature"), F("degreeCelsius"),
                AM2315_TEMP_RESOLUTION, F("AM2315YTemp"))
     {}
 };

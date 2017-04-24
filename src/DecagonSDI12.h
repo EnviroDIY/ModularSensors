@@ -38,13 +38,8 @@ public:
     String getSensorLocation(void) override;
 
     virtual bool update(void);
-
-    virtual float getValue(void) = 0;
 protected:
     void getSensorInfo(void);
-    SENSOR_STATUS sensorStatus;
-    String sensorLocation;
-    float sensorValues[];
 private:
     String _sensorName;
     String _sensorVendor;
