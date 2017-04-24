@@ -140,11 +140,11 @@ bool Sensor::checkForUpdate(unsigned long sensorLastUpdated)
 // ============================================================================
 
 // The constructor
-Variable::Variable(Sensor *parentSense, varEnum var, String varName, String varUnit,
+Variable::Variable(Sensor *parentSense, int varNum, String varName, String varUnit,
                    unsigned int decimalResolution, String dreamHost)
 {
     parentSensor = parentSense;
-    _varNum = var;
+    _varNum = varNum;
     _varName = varName;
     _varUnit = varUnit;
     _decimalResolution = decimalResolution;
@@ -210,6 +210,8 @@ void VariableArray::init(int variableCount, Variable *variableList[])
 {
     _variableCount = variableCount;
     _variableList = variableList;
+    isUniqueSensor[_variableCount] = {false};
+    findUniqueSensors();
 };
 
 // This just returns the number of variables
@@ -223,13 +225,30 @@ int VariableArray::getSensorCount(void)
     // Check for unique sensors
     for (int i = 0; i < _variableCount; i++)
     {
-        if (_variableList[i]->parentSensor->getSensorName() == _variableList[i+1]->parentSensor->getSensorName() &&
-            _variableList[i]->parentSensor->getSensorLocation() == _variableList[i+1]->parentSensor->getSensorLocation())
-        {numSensors++;}
+        if (isUniqueSensor[i]) numSensors++;
     }
     return numSensors;
 }
 
+void VariableArray::findUniqueSensors(void)
+{
+    isUniqueSensor[_variableCount] = {false};
+    // Check for unique sensors
+    for (int i = 0; i < _variableCount; i++)
+    {
+        String sensName = _variableList[i]->parentSensor->getSensorName();
+        String sensLoc = _variableList[i+1]->parentSensor->getSensorName();
+        bool unique = true;
+        for (uint8_t j = 0; j < _variableCount; j++)
+        {
+            if (i == j) {}  // Don't check against itself
+            else if (sensName == _variableList[j]->parentSensor->getSensorName() &&
+                sensLoc == _variableList[j]->parentSensor->getSensorLocation())
+            {unique += false;}
+        }
+        isUniqueSensor[i] = unique;
+    }
+}
 
 // This sets up the sensors, generally setting pin modes and the like
 bool VariableArray::setupSensors(void)
@@ -239,11 +258,10 @@ bool VariableArray::setupSensors(void)
     int setupTries = 0;
     for (int i = 0; i < _variableCount; i++)
     {
-        // Make 5 attempts before giving up
+        // Make 5 attempts to contact the sensor before giving up
         while(setupTries < 5)
         {
-            sensorSuccess = _variableList[i]->setup();  // set up the sensor
-            sensorSuccess = _variableList[i]->parentSensor->setup();  // set up the variable
+            if (isUniqueSensor[i]) sensorSuccess = _variableList[i]->setup();
 
             // Prints for debugging
             if(sensorSuccess)
@@ -261,19 +279,10 @@ bool VariableArray::setupSensors(void)
                 setupTries++;
             }
         }
-        success &= sensorSuccess;
 
-        // Check for and skip the setup of any identical sensors
-        for (int j = i+1; j < _variableCount; j++)
-        {
-            if (_variableList[i]->parentSensor->getSensorName() == _variableList[j]->parentSensor->getSensorName() &&
-                _variableList[i]->parentSensor->getSensorLocation() == _variableList[j]->parentSensor->getSensorLocation())
-            {
-                _variableList[i]->setup();
-                i++;
-            }
-            else {break;}
-        }
+        // set up the variable
+        sensorSuccess &= _variableList[i]->parentSensor->setup();
+        success &= sensorSuccess;
     }
     return success;
 }
@@ -284,9 +293,8 @@ bool VariableArray::sensorsSleep(void)
     bool success = true;
     for (int i = 0; i < _variableCount; i++)
     {
-        success &= _variableList[i]->parentSensor->sleep();
+        if (isUniqueSensor[i]) success &= _variableList[i]->parentSensor->sleep();
     }
-
     return success;
 }
 
@@ -296,9 +304,8 @@ bool VariableArray::sensorsWake(void)
     bool success = true;
     for (int i = 0; i < _variableCount; i++)
     {
-        success &= _variableList[i]->parentSensor->wake();
+        if (isUniqueSensor[i]) success &= _variableList[i]->parentSensor->wake();
     }
-
     return success;
 }
 
@@ -308,30 +315,15 @@ bool VariableArray::updateAllSensors(void)
     bool success = true;
     for (uint8_t i = 0; i < _variableCount; i++)
     {
-        success &= _variableList[i]->parentSensor->update();
-        // Prints for debugging
-        // Serial.print(F("--- Updated "));  // For debugging
-        // Serial.print(_variableList[i]->getSensorName());  // For debugging
-        // Serial.print(F(" for "));  // For debugging
-        // Serial.print(_variableList[i]->getVarName());  // For debugging
-
-        // Check for and skip the updates of any identical sensors
-        for (int j = i+1; j < _variableCount; j++)
+        if (isUniqueSensor[i])
         {
-            if (_variableList[i]->parentSensor->getSensorName() == _variableList[j]->parentSensor->getSensorName() &&
-                _variableList[i]->parentSensor->getSensorLocation() == _variableList[j]->parentSensor->getSensorLocation())
-            {
-                // Prints for debugging
-                // Serial.print(F(" and "));  // For debugging
-                // Serial.print(_variableList[i+1]->getVarName());  // For debugging
-                i++;
-            }
-            else {break;}
+            success &= _variableList[i]->parentSensor->update();
+            // Prints for debugging
+            // Serial.print(F("--- Updated "));  // For debugging
+            // Serial.print(_variableList[i]->getSensorName());  // For debugging
+            // Serial.println(F(" ---"));  // For Debugging
         }
-        // Serial.println(F(" ---"));  // For Debugging
-        // delay(250);  // A short delay before next sensor - is this necessary??
     }
-
     return success;
 }
 

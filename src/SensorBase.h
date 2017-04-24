@@ -24,17 +24,6 @@ typedef enum SENSOR_STATUS
     SENSOR_UNKNOWN
 } SENSOR_STATUS;
 
-typedef enum varEnum
-{
-  humidity = 0,
-  temp,
-  cond,
-  ea,
-  vwc,
-  depth,
-  range
-} varEnum;
-
 
 class Variable;  // Forward declaration
 
@@ -91,7 +80,7 @@ private:
 class Variable
 {
 public:
-    Variable(Sensor *parentSense, varEnum var, String varName = "Unknown", String varUnit = "Unknown",
+    Variable(Sensor *parentSense, int varNum, String varName = "Unknown", String varUnit = "Unknown",
              unsigned int decimalResolution = 0, String dreamHost = "Unknown");
 
     // These functions tie the variable and sensor together
@@ -120,7 +109,7 @@ protected:
     float sensorValue;
 
 private:
-    varEnum _varNum;
+    int _varNum;
     String _varName;
     String _varUnit;
     unsigned int _decimalResolution;
@@ -136,6 +125,7 @@ public:
 
     // Functions to return information about the list
     int getVariableCount(void);
+    void findUniqueSensors(void);
     int getSensorCount(void);
 
     // Public functions for interfacing with a list of sensors
@@ -149,6 +139,7 @@ public:
 protected:
     uint8_t _variableCount;
     Variable **_variableList;
+    bool isUniqueSensor[];
 };
 
 #endif
