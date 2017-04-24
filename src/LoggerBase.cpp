@@ -312,7 +312,7 @@ String LoggerBase::generateFileHeader(void)
     for (uint8_t i = 0; i < _variableCount; i++)
     {
         dataHeader += F("\"");
-        dataHeader += String(_variableList[i]->getSensorName());
+        dataHeader += String(_variableList[i]->parentSensor->getSensorName());
         dataHeader += F(" - ");
         dataHeader += String(_variableList[i]->getVarName());
         dataHeader += F(" (");

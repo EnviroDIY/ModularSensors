@@ -26,8 +26,8 @@
 #define CampbellOBS3_h
 
 #include <Arduino.h>
-#include "SensorBase.h"
 #include <Adafruit_ADS1015.h>
+#include "SensorBase.h"
 
 #define OBS3_NUM_VARIABLES 1  // low and high range are treated as completely independent
 #define OBS3_TURB_VAR_NUM 0
@@ -40,7 +40,7 @@ class CampbellOBS3 : public virtual Sensor
 public:
     // The constructor - need the power pin, the data pin, and the calibration info
     CampbellOBS3(int powerPin, int dataPin, float A, float B, float C)
-      : Sensor(dataPin, powerPin, F("CampbellOBS3+"))
+      : Sensor(dataPin, powerPin, F("CampbellOBS3+"), OBS3_NUM_VARIABLES)
     {
         _A = A;
         _B = B;
@@ -63,6 +63,9 @@ public:
         // Check if the power is on, turn it on if not
         bool wasOn = checkPowerOn();
         if(!wasOn){powerUp();}
+
+        // Clear values before starting loop
+        clearValues();
 
         // Variables to store the results in
         int16_t adcResult = 0;
@@ -95,14 +98,16 @@ public:
 
         sensorValues[0] = calibResult;
 
-        notifyVariables();
-
         // Turn the power back off it it had been turned on
         if(!wasOn){powerDown();}
+
+        // Update the registered variables with the new values
+        notifyVariables();
 
         // Return true when finished
         return true;
     }
+
 protected:
     float _A;
     float _B;

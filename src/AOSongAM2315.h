@@ -25,10 +25,11 @@
 #include "SensorBase.h"
 #include <Adafruit_AM2315.h>
 
-
 #define AM2315_NUM_MEASUREMENTS 2
+
 #define AM2315_HUMIDITY_RESOLUTION 1
 #define AM2315_HUMIDITY_VAR_NUM 0
+
 #define AM2315_TEMP_RESOLUTION 1
 #define AM2315_TEMP_VAR_NUM 1
 
@@ -38,7 +39,9 @@ class AOSongAM2315 : public virtual Sensor
 {
 public:
     // The constructor - because this is I2C, only need the power pin
-    AOSongAM2315(int powerPin) : Sensor(-1, powerPin){}
+    AOSongAM2315(int powerPin)
+    : Sensor(-1, powerPin, F("AOSongAM2315"), AM2315_NUM_MEASUREMENTS)
+    {}
 
     String getSensorLocation(void) override {return F("I2C_0xB8");}
 
@@ -51,21 +54,25 @@ public:
         bool wasOn = checkPowerOn();
         if(!wasOn){powerUp();}
 
+        // Clear values before starting loop
+        clearValues();
+
         float temp_val, humid_val;
         bool ret_val = am2315.readTemperatureAndHumidity(temp_val, humid_val);
         sensorValues[AM2315_TEMP_VAR_NUM] = temp_val;
         sensorValues[AM2315_HUMIDITY_VAR_NUM] = humid_val;
 
-        Serial.print(F("Temp is: "));  // for debugging
-        Serial.print(sensorValues[AM2315_TEMP_VAR_NUM]);  // for debugging
-        Serial.print(F("°C and humidity is: "));  // for debugging
-        Serial.print(sensorValues[AM2315_HUMIDITY_VAR_NUM]);  // for debugging
-        Serial.println(F("%"));  // for debugging
-
-        notifyVariables();
+        // Serial.print(F("Temp is: "));  // for debugging
+        // Serial.print(sensorValues[AM2315_TEMP_VAR_NUM]);  // for debugging
+        // Serial.print(F("°C and humidity is: "));  // for debugging
+        // Serial.print(sensorValues[AM2315_HUMIDITY_VAR_NUM]);  // for debugging
+        // Serial.println(F("%"));  // for debugging
 
         // Turn the power back off it it had been turned on
         if(!wasOn){powerDown();}
+
+        // Update the registered variables with the new values
+        notifyVariables();
 
         return ret_val;
     }

@@ -64,6 +64,7 @@ protected:
     bool checkPowerOn(void);
     void powerUp(void);
     void powerDown(void);
+    void clearValues();
     int _dataPin;
     int _powerPin;
     int _numReturnedVars;

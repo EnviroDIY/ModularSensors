@@ -32,54 +32,69 @@
 #include "DecagonSDI12.h"
 
 #define CTD_NUM_MEASUREMENTS 3
+
 #define CTD_COND_RESOLUTION 0
+#define CTD_COND_VAR_NUM 0
+
 #define CTD_TEMP_RESOLUTION 1
+#define CTD_TEMP_VAR_NUM 1
+
 #define CTD_DEPTH_RESOLUTION 0
+#define CTD_DEPTH_VAR_NUM 2
 
 // The main class for the Decagon CTD
 class DecagonCTD : public virtual DecagonSDI12
 {
 public:
-    DecagonCTD(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
-
-    bool update(void) override;
-
-    virtual float getValue(void) = 0;
-protected:
-    static unsigned long sensorLastUpdated;
-    static float sensorValue_depth;
-    static float sensorValue_temp;
-    static float sensorValue_cond;
+    // Constructors with overloads
+    DecagonCTD(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
+     : Sensor(dataPin, powerPin, F("DecagonCTD"), CTD_NUM_MEASUREMENTS),
+       DecagonSDI12(CTD_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+    {}
+    DecagonCTD(char *SDI12address, int powerPin, int dataPin, int numReadings = 1)
+     : Sensor(dataPin, powerPin, F("DecagonCTD"), CTD_NUM_MEASUREMENTS),
+     DecagonSDI12(CTD_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+    {}
+    DecagonCTD(int SDI12address, int powerPin, int dataPin, int numReadings = 1)
+     : Sensor(dataPin, powerPin, F("DecagonCTD"), CTD_NUM_MEASUREMENTS),
+       DecagonSDI12(CTD_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+    {}
 };
 
 
 // Defines the "Depth Sensor"
-class DecagonCTD_Depth : public virtual DecagonCTD
+class DecagonCTD_Depth : public virtual Variable
 {
 public:
-    DecagonCTD_Depth(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
-
-    float getValue(void) override;
+    DecagonCTD_Depth(Sensor *parentSense)
+     : Variable(parentSense, CTD_DEPTH_VAR_NUM,
+                F("waterDepth"), F("millimeter"),
+                CTD_DEPTH_RESOLUTION, F("CTDdepth"))
+    {}
 };
 
 
 // Defines the "Temperature Sensor"
-class DecagonCTD_Temp : public virtual DecagonCTD
+class DecagonCTD_Temp : public virtual Variable
 {
 public:
-    DecagonCTD_Temp(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
-
-    float getValue(void) override;
+    DecagonCTD_Temp(Sensor *parentSense)
+     : Variable(parentSense, CTD_TEMP_VAR_NUM,
+                F("temperature"), F("degreeCelsius"),
+                CTD_TEMP_RESOLUTION, F("CTDtemp"))
+    {}
 };
 
 
 // Defines the "Conductivity Sensor"
-class DecagonCTD_Cond : public virtual DecagonCTD
+class DecagonCTD_Cond : public virtual Variable
 {
 public:
-    DecagonCTD_Cond(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
-
-    float getValue(void) override;
+    DecagonCTD_Cond(Sensor *parentSense)
+     : Variable(parentSense, CTD_COND_VAR_NUM,
+                F("specificConductance"), F("microsiemenPerCentimeter"),
+                CTD_COND_RESOLUTION, F("CTDcond"))
+    {}
 };
 
 #endif

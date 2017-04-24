@@ -46,7 +46,6 @@ private:
     String _sensorModel;
     String _sensorVersion;
     String _sensorSerialNumber;
-    int _numMeasurements;
     char _SDI12address;
     int _numReadings;
     String myCommand;

@@ -28,8 +28,12 @@
 #include "DecagonSDI12.h"
 
 #define ES2_NUM_MEASUREMENTS 2
+
 #define ES2_COND_RESOLUTION 0
+#define ES2_COND_VAR_NUM 0
+
 #define ES2_TEMP_RESOLUTION 1
+#define ES2_TEMP_VAR_NUM 0
 
 // Forward declare classes
 class DecagonES2_Cond;
@@ -39,56 +43,42 @@ class DecagonES2_Temp;
 class DecagonES2 : public virtual DecagonSDI12
 {
 public:
-    DecagonES2(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
-    DecagonES2(char *SDI12address, int powerPin, int dataPin, int numReadings = 1);
-    DecagonES2(int SDI12address, int powerPin, int dataPin, int numReadings = 1);
-
-    bool update(void) override;
-    float getValue(void) override {return 0;}  // To prevent from being virtual
-    DecagonES2_Cond *Cond;
-    DecagonES2_Temp *Temp;
-
-protected:
-    unsigned long sensorLastUpdated;
-    float sensorValue_cond;
-    float sensorValue_temp;
-
-    virtual void updateValue(unsigned long updateTime, float value){};
-
-private:
-    void notifyParameters(void);
+    // Constructors with overloads
+    DecagonES2(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
+     : Sensor(dataPin, powerPin, F("DecagonES2"), ES2_NUM_MEASUREMENTS),
+       DecagonSDI12(ES2_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+    {}
+    DecagonES2(char *SDI12address, int powerPin, int dataPin, int numReadings = 1)
+     : Sensor(dataPin, powerPin, F("DecagonES2"), ES2_NUM_MEASUREMENTS),
+     DecagonSDI12(ES2_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+    {}
+    DecagonES2(int SDI12address, int powerPin, int dataPin, int numReadings = 1)
+     : Sensor(dataPin, powerPin, F("DecagonES2"), ES2_NUM_MEASUREMENTS),
+       DecagonSDI12(ES2_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+    {}
 };
 
 
 // Defines the "Ea/Matric Potential Sensor"
-class DecagonES2_Cond : public virtual DecagonES2
+class DecagonES2_Cond : public virtual Variable
 {
-friend class DecagonES2;
 public:
-    DecagonES2_Cond(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
-    DecagonES2_Cond(char *SDI12address, int powerPin, int dataPin, int numReadings = 1);
-    DecagonES2_Cond(int SDI12address, int powerPin, int dataPin, int numReadings = 1);
-
-    float getValue(void) override;
-
-private:
-    void updateValue(unsigned long updateTime, float value) override;
+    DecagonES2_Cond(Sensor *parentSense)
+     : Variable(parentSense, ES2_COND_VAR_NUM,
+                F("specificConductance"), F("microsiemenPerCentimeter"),
+                ES2_COND_RESOLUTION, F("ES2Cond"))
+    {}
 };
 
-
 // Defines the "Temperature Sensor"
-class DecagonES2_Temp : public virtual DecagonES2
+class DecagonES2_Temp : public virtual Variable
 {
-friend class DecagonES2;
 public:
-    DecagonES2_Temp(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
-    DecagonES2_Temp(char *SDI12address, int powerPin, int dataPin, int numReadings = 1);
-    DecagonES2_Temp(int SDI12address, int powerPin, int dataPin, int numReadings = 1);
-
-    float getValue(void) override;
-
-private:
-    void updateValue(unsigned long updateTime, float value) override;
+    DecagonES2_Temp(Sensor *parentSense)
+     : Variable(parentSense, ES2_TEMP_VAR_NUM,
+                F("temperature"), F("degreeCelsius"),
+                ES2_TEMP_RESOLUTION, F("ES2temp"))
+    {}
 };
 
 #endif

@@ -19,8 +19,8 @@
 #define MayflyOnboardSensors_h
 
 #include <Arduino.h>
-#include "SensorBase.h"
 #include <Sodaq_DS3231.h>
+#include "SensorBase.h"
 
 #define MAYFLY_NUM_MEASUREMENTS 3
 
@@ -40,7 +40,7 @@ class EnviroDIYMayfly : public virtual Sensor
 {
 public:
     // Need to know the Mayfly version because the battery resistor depends on it
-    EnviroDIYMayfly(char *version) : Sensor(-1, -1, F("EnviroDIYMayfly"))
+    EnviroDIYMayfly(char *version) : Sensor(-1, -1, F("EnviroDIYMayfly"), MAYFLY_NUM_MEASUREMENTS)
     {
         _version = version;
 
@@ -55,7 +55,6 @@ public:
           _batteryPin = A6;
         }
     }
-
     // Overload constructor
     EnviroDIYMayfly(char version) : Sensor(-1, -1, F("EnviroDIYMayfly"))
     {
@@ -79,6 +78,9 @@ public:
 
     bool update(void) override
     {
+        // Clear values before starting loop
+        clearValues();
+
         // Get the temperature from the Mayfly's real time clock
         rtc.convertTemperature();  //convert current temperature into registers
         float tempVal = rtc.getTemperature();
@@ -106,6 +108,7 @@ public:
         float sensorValue_freeRam = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
         sensorValues[MAYFLY_RAM_VAR_NUM] = sensorValue_freeRam;
 
+        // Update the registered variables with the new values
         notifyVariables();
 
         // Return true when finished

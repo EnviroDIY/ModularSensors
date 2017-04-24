@@ -25,7 +25,7 @@ class MaxBotixSonar : public virtual Sensor
 {
 public:
     MaxBotixSonar(int powerPin, int dataPin, int triggerPin = -1)
-    : Sensor(dataPin, powerPin,F("MaxBotixMaxSonar"))
+    : Sensor(dataPin, powerPin, F("MaxBotixMaxSonar"), HRXL_NUM_MEASUREMENTS)
     {_triggerPin = triggerPin;}
 
     SENSOR_STATUS setup(void) override
@@ -41,13 +41,15 @@ public:
         return SENSOR_READY;
     }
 
-    // Uses TLL Communication to get data from MaxBotix
-    bool update(void) override{
-
+    bool update(void) override
+    {
         // Check if the power is on, turn it on if not
         bool wasOn = checkPowerOn();
         if(!wasOn){powerUp();}  // powerUp function includes a 500ms delay
         else{delay(160);}  // See note below
+
+        // Clear values before starting loop
+        clearValues();
 
         // NOTE: After the power is turned on to the MaxBotix, it sends several lines
         // of header to the serial pin, beginning at ~65ms and finising at ~160ms.
@@ -119,11 +121,13 @@ public:
         // Turn the power back off it it had been turned on
         if(!wasOn){powerDown();}
 
+        // Update the registered variables with the new values
         notifyVariables();
 
         // Return true when finished
         return true;
     }
+
 private:
     int _triggerPin;
 };
