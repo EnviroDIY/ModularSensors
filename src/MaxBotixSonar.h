@@ -28,26 +28,26 @@ public:
     : Sensor(powerPin, dataPin, F("MaxBotixMaxSonar"), HRXL_NUM_MEASUREMENTS)
     {_triggerPin = triggerPin;}
 
-    SENSOR_STATUS setup(void) override
-    {
-        pinMode(_powerPin, OUTPUT);
-        pinMode(_dataPin, INPUT);
-        digitalWrite(_powerPin, LOW);
-        if(_triggerPin != -1)
-        {
-            pinMode(_triggerPin, OUTPUT);
-            digitalWrite(_triggerPin, LOW);
-        }
-
-        // Serial.print(F("Set up "));  // for debugging
-        // Serial.print(getSensorName());  // for debugging
-        // Serial.print(F(" attached at "));  // for debugging
-        // Serial.print(getSensorLocation());  // for debugging
-        // Serial.print(F(" which can return up to "));  // for debugging
-        // Serial.print(_numReturnedVars);  // for debugging
-        // Serial.println(F(" variable[s]."));  // for debugging
-        return SENSOR_READY;
-    }
+    // SENSOR_STATUS setup(void) override
+    // {
+    //     pinMode(_powerPin, OUTPUT);
+    //     pinMode(_dataPin, INPUT);
+    //     digitalWrite(_powerPin, LOW);
+    //     if(_triggerPin != -1)
+    //     {
+    //         pinMode(_triggerPin, OUTPUT);
+    //         digitalWrite(_triggerPin, LOW);
+    //     }
+    //
+    //     Serial.print(F("Set up "));  // for debugging
+    //     Serial.print(getSensorName());  // for debugging
+    //     Serial.print(F(" attached at "));  // for debugging
+    //     Serial.print(getSensorLocation());  // for debugging
+    //     Serial.print(F(" which can return up to "));  // for debugging
+    //     Serial.print(_numReturnedVars);  // for debugging
+    //     Serial.println(F(" variable[s]."));  // for debugging
+    //     return SENSOR_READY;
+    // }
 
     bool update(void) override
     {

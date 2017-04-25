@@ -38,7 +38,7 @@ public:
     // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
     virtual String getSensorLocation(void);
     // This gets the name of the sensor.
-    virtual String getSensorName(void);
+    String getSensorName(void);
 
     // These next functions have defaults.
     // This sets up the sensor, if necessary.  Defaults to ready.
@@ -70,12 +70,10 @@ protected:
     void clearValues();
     int _dataPin;
     int _powerPin;
+    String _sensorName;
     int _numReturnedVars;
     SENSOR_STATUS sensorStatus;
     Variable *variables[MAX_NUMBER_VARS];
-
-private:
-    String _sensorName;
 };
 
 
@@ -127,7 +125,6 @@ public:
 
     // Functions to return information about the list
     int getVariableCount(void);
-    void findUniqueSensors(void);
     int getSensorCount(void);
 
     // Public functions for interfacing with a list of sensors
@@ -139,9 +136,9 @@ public:
     virtual String generateSensorDataCSV(void);  // This generates a comma separated list of values
 
 protected:
+    bool isLastVarFromSensor(int arrayIndex);
     uint8_t _variableCount;
     Variable **_variableList;
-    bool isUniqueSensor[30];
 };
 
 #endif

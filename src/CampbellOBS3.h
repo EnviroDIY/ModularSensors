@@ -49,7 +49,8 @@ public:
 
     String getSensorLocation(void) override
     {
-        String sensorLocation = "ads" + String(_dataPin);
+        String sensorLocation = F("ADS1115_Pin");
+        sensorLocation += String(_dataPin);
         return sensorLocation;
     }
 

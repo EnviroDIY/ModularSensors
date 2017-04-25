@@ -82,10 +82,6 @@ void DecagonSDI12::getSensorInfo(void)
 }
 
 // The sensor name
-// String DecagonSDI12::getSensorName(void)
-// {return _sensorName;}
-
-// The sensor name
 String DecagonSDI12::getSensorVendor(void)
 {return _sensorVendor;}
 
@@ -105,7 +101,8 @@ String DecagonSDI12::getSensorSerialNumber(void)
 // The sensor installation location on the Mayfly
 String DecagonSDI12::getSensorLocation(void)
 {
-    String sensorLocation = String(_SDI12address) + "_" + String(_dataPin);
+    String sensorLocation = F("SDI12-");
+    sensorLocation += String(_SDI12address) + F("_Pin") + String(_dataPin);
     return sensorLocation;
 }
 

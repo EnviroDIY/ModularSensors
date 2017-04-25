@@ -30,7 +30,7 @@ public:
     DecagonSDI12(int numMeasurements, char SDI12address, int powerPin, int dataPin, int numReadings = 1);
     DecagonSDI12(int numMeasurements, char *SDI12address, int powerPin, int dataPin, int numReadings = 1);
     DecagonSDI12(int numMeasurements, int SDI12address, int powerPin, int dataPin, int numReadings = 1);
-    // String getSensorName(void) override;
+
     String getSensorVendor(void);
     String getSensorModel(void);
     String getSensorVersion(void);
@@ -41,7 +41,6 @@ public:
 protected:
     void getSensorInfo(void);
 private:
-    String _sensorName;
     String _sensorVendor;
     String _sensorModel;
     String _sensorVersion;
