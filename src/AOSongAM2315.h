@@ -23,6 +23,7 @@
 #define AOSongAM2315_h
 
 #include "SensorBase.h"
+#include "VariableBase.h"
 
 #define AM2315_NUM_MEASUREMENTS 2
 

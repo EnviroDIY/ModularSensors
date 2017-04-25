@@ -30,6 +30,7 @@
 #define DecagonCTD_h
 
 #include "DecagonSDI12.h"
+#include "VariableBase.h"
 
 #define CTD_NUM_MEASUREMENTS 3
 

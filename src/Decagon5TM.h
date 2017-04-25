@@ -26,8 +26,9 @@
 #define Decagon5TM_h
 
 #include "DecagonSDI12.h"
+#include "VariableBase.h"
 
-#define TM_NUM_MEASUREMENTS 2
+#define TM_NUM_MEASUREMENTS 3
 
 #define TM_EA_RESOLUTION 4
 #define TM_EA_VAR_NUM 0
@@ -68,7 +69,7 @@ public:
                                 - 5.3e-2 ;
         sensorValues[TM_VWC_VAR_NUM] = sensorValue_VWC;
 
-        // Update the registered variables with the new values
+        // Re-update the variables with the new VWC value
         notifyVariables();
 
         return true;

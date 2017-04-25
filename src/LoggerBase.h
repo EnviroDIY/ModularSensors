@@ -15,7 +15,7 @@
 #include <Sodaq_DS3231.h>  // To communicate with the clock
 #include <RTCTimer.h>  // To handle timing on a schedule
 #include <SdFat.h>  // To communicate with the SD card
-#include "SensorBase.h"
+#include "VariableArray.h"
 
 
 // Defines the "Logger" Class

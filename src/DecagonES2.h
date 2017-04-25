@@ -26,6 +26,7 @@
 #define DecagonES2_h
 
 #include "DecagonSDI12.h"
+#include "VariableBase.h"
 
 #define ES2_NUM_MEASUREMENTS 2
 

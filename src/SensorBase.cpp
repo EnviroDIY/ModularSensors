@@ -127,7 +127,8 @@ void Sensor::notifyVariables(void)
     // Notify variables of update
     for (int i = 0; i < _numReturnedVars; i++){
         Serial.print(F("Sending value update to "));  // for debugging
-        Serial.println(variables[i]->getVarName());  // for debugging
+        Serial.print(variables[i]->getVarName());  // for debugging
+        Serial.print(F("...   "));  // for debugging
         variables[i]->onSensorUpdate(this);
     }
 }
@@ -151,6 +152,7 @@ bool Sensor::checkForUpdate(unsigned long sensorLastUpdated)
 // This function just empties the value array
 void Sensor::clearValues(void)
 {
+    Serial.println(F("Clearing sensor value array."));
     for (int i = 0; i < _numReturnedVars; i++)
     { sensorValues[i] =  0; }
 }

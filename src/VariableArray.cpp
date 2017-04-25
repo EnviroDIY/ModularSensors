@@ -24,8 +24,7 @@ void VariableArray::init(int variableCount, Variable *variableList[])
 };
 
 // This just returns the number of variables
-int VariableArray::getVariableCount(void)
-{return _variableCount;}
+int VariableArray::getVariableCount(void){return _variableCount;}
 
 // This counts and returns the number of sensors
 int VariableArray::getSensorCount(void)

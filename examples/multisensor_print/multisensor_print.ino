@@ -19,7 +19,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ---------------------------------------------------------------------------
 #include <Arduino.h>
 #include <Sodaq_DS3231.h>    // Controls the DS3231 Real Time Clock (RTC) built into the EnviroDIY Mayfly.
-#include <SensorBase.h>
+#include <VariableArray.h>
 
 // ---------------------------------------------------------------------------
 // Set up the sensor specific information

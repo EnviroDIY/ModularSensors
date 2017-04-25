@@ -14,6 +14,7 @@
 #define MaxBotixSonar_h
 
 #include "SensorBase.h"
+#include "VariableBase.h"
 
 #define HRXL_NUM_MEASUREMENTS 1
 #define HRXL_RESOLUTION 0

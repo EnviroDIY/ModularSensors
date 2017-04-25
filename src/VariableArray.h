@@ -10,10 +10,8 @@
 #ifndef VariableArray_h
 #define VariableArray_h
 
-#include <Arduino.h>
-
-class Sensor;  // Forward declaration
-class Variable;  // Forward declaration
+#include "SensorBase.h"
+#include "VariableBase.h"
 
 // Defines another class for interfacing with a list of pointers to sensor instances
 class VariableArray

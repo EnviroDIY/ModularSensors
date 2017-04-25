@@ -18,8 +18,8 @@
 #ifndef MayflyOnboardSensors_h
 #define MayflyOnboardSensors_h
 
-#include <Arduino.h>
 #include "SensorBase.h"
+#include "VariableBase.h"
 
 #define MAYFLY_NUM_MEASUREMENTS 3
 
