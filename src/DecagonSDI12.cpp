@@ -50,7 +50,7 @@ void DecagonSDI12::getSensorInfo(void)
     if(!wasOn){powerUp();}
 
     // Serial.println(F("Getting sensor info"));  // For debugging
-    myCommand = "";
+    String myCommand = "";
     myCommand += (char) _SDI12address;
     myCommand += "I!"; // sends 'info' command [address][I][!]
     mySDI12.sendCommand(myCommand);
@@ -59,7 +59,7 @@ void DecagonSDI12::getSensorInfo(void)
 
     // wait for acknowlegement with format:
     // [address][SDI12 support (2 char)][vendor (8 char)][model (6 char)][version (3 char)][serial number (<14 char)]
-    sdiResponse = "";
+    String sdiResponse = "";
     while (mySDI12.available())  // build response string
     {
         char c = mySDI12.read();
@@ -117,7 +117,8 @@ bool DecagonSDI12::update()
 {
     SDI12 mySDI12(_dataPin);
     mySDI12.begin();
-    delay(500); // allow things to settle
+    mySDI12.setTimeout(15);  // SDI-12 protocol says sensors must respond within 15 milliseconds
+    // delay(500); // allow things to settle
 
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
@@ -131,7 +132,7 @@ bool DecagonSDI12::update()
     {
         // Serial.print(F("Taking reading #"));  // For debugging
         // Serial.println(j);  // For debugging
-        myCommand = "";
+        String myCommand = "";
         myCommand += _SDI12address;
         myCommand += "M!"; // SDI-12 measurement myCommand format  [address]['M'][!]
         mySDI12.sendCommand(myCommand);
@@ -140,17 +141,8 @@ bool DecagonSDI12::update()
         delay(30);  // It just needs this little delay
 
         // wait for acknowlegement with format [address][ttt (3 char, seconds)][number of measurments available, 0-9]
-        sdiResponse = "";
-        while (mySDI12.available())  // build response string
-        {
-            char c = mySDI12.read();
-            if ((c != '\n') && (c != '\r'))
-            {
-                sdiResponse += c;
-                delay(5);
-            }
-        }
-        // if (sdiResponse.length() > 1) Serial.println(sdiResponse);  // For debugging
+        String sdiResponse = mySDI12.readString();
+        // Serial.println(sdiResponse);  // For debugging
 
         // find out how long we have to wait (in seconds).
         unsigned int wait = 0;
@@ -176,6 +168,8 @@ bool DecagonSDI12::update()
             if(mySDI12.available())  // sensor can interrupt us to let us know it is done early
             {
                 // Serial.println("Wait interrupted!");  // For debugging
+                mySDI12.readString();  // Read the service request (the address again)
+                delay(5);  // Necessary for reasons unbeknownst to me (else it just fails sometimes..)
                 break;
             }
         }

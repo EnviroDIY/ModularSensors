@@ -141,16 +141,16 @@ bool VariableArray::updateAllSensors(void)
         if (isLastVarFromSensor(i))
         {
             // Prints for debugging
-            Serial.print(F("--- Going to update "));  // For debugging
-            Serial.print(_variableList[i]->parentSensor->getSensorName());  // For debugging
-            Serial.println(F(" ---"));  // For Debugging
+            // Serial.print(F("--- Going to update "));  // For debugging
+            // Serial.print(_variableList[i]->parentSensor->getSensorName());  // For debugging
+            // Serial.println(F(" ---"));  // For Debugging
 
             update_success = _variableList[i]->parentSensor->update();
 
             // Prints for debugging
-            Serial.print(F("--- Updated "));  // For debugging
-            Serial.print(_variableList[i]->parentSensor->getSensorName());  // For debugging
-            Serial.println(F(" ---"));  // For Debugging
+            // Serial.print(F("--- Updated "));  // For debugging
+            // Serial.print(_variableList[i]->parentSensor->getSensorName());  // For debugging
+            // Serial.println(F(" ---"));  // For Debugging
         }
     }
     success &= update_success;
@@ -166,7 +166,7 @@ void VariableArray::printSensorData(Stream *stream /* = &Serial*/)
         stream->print(F(" attached at "));
         stream->print(_variableList[i]->parentSensor->getSensorLocation());
         stream->print(F(" has status "));
-        stream->print(_variableList[i]->parentSensor->getStatus());
+        stream->print(Sensor::printStatus(_variableList[i]->parentSensor->getStatus()));
         stream->print(F(" and reports "));
         stream->print(_variableList[i]->getVarName());
         stream->print(F(" is "));

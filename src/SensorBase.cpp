@@ -94,6 +94,19 @@ SENSOR_STATUS Sensor::setup(void)
 // By default, simply returns ready
 SENSOR_STATUS Sensor::getStatus(void){return SENSOR_READY;}
 
+String Sensor::printStatus(SENSOR_STATUS stat)
+{
+    String status;
+    switch(stat)
+    {
+        case SENSOR_ERROR: status = F("Errored"); break;
+        case SENSOR_READY: status = F("Ready"); break;
+        case SENSOR_WAITING: status = F("Waiting"); break;
+        case SENSOR_UNKNOWN: status = F("Unknown"); break;
+    }
+    return status;
+}
+
 // The function to put a sensor to sleep
 // By default, powers down and returns true
 bool Sensor::sleep(void)
@@ -120,15 +133,15 @@ void Sensor::registerVariable(int varNum, Variable* var)
 
 void Sensor::notifyVariables(void)
 {
-    Serial.println(F("Notifiying registered variables."));
+    // Serial.println(F("Notifiying registered variables."));
     // Make note of the last time updated
     sensorLastUpdated = millis();
 
     // Notify variables of update
     for (int i = 0; i < _numReturnedVars; i++){
-        Serial.print(F("Sending value update to "));  // for debugging
-        Serial.print(variables[i]->getVarName());  // for debugging
-        Serial.print(F("...   "));  // for debugging
+        // Serial.print(F("Sending value update to "));  // for debugging
+        // Serial.print(variables[i]->getVarName());  // for debugging
+        // Serial.print(F("...   "));  // for debugging
         variables[i]->onSensorUpdate(this);
     }
 }

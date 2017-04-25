@@ -53,8 +53,6 @@ private:
     String _sensorSerialNumber;
     char _SDI12address;
     int _numReadings;
-    String myCommand;
-    String sdiResponse;
 };
 
 #endif

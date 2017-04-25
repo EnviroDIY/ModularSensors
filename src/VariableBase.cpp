@@ -44,8 +44,8 @@ bool Variable::setup(void)
 void Variable::onSensorUpdate(Sensor *parentSense)
 {
     sensorValue = parentSense->sensorValues[_varNum];
-    Serial.print(F("... received "));  // for debugging
-    Serial.println(sensorValue);  // for debugging
+    // Serial.print(F("... received "));  // for debugging
+    // Serial.println(sensorValue);  // for debugging
 }
 
 // This returns the variable's name using http://vocabulary.odm2.org/variablename/

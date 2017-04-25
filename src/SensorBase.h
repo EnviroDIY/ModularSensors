@@ -45,6 +45,8 @@ public:
     virtual SENSOR_STATUS setup(void);
     // This returns the current status of the sensor.  Defaults to ready.
     virtual SENSOR_STATUS getStatus(void);
+    // This returns a string for the sensor status
+    static String printStatus(SENSOR_STATUS stat);
     // This puts the sensor to sleep, if necessary.  Defaults to True.
     virtual bool sleep(void);
     // This wakes the sensor up, if necessary.  Defaults to True.
