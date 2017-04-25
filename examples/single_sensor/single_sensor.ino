@@ -19,6 +19,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ---------------------------------------------------------------------------
 #include <Arduino.h>
 #include <SensorBase.h>
+#include <VariableBase.h>
 #include <MaxBotixSonar.h>
 
 // ---------------------------------------------------------------------------

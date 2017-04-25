@@ -1,0 +1,79 @@
+/*
+ *VariableBase.cpp
+ *This file is part of the EnviroDIY modular sensors library for Arduino
+ *
+ *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
+ *
+ *This file is for the variable base class.
+*/
+
+#include "VariableBase.h"
+#include "SensorBase.h"
+
+// ============================================================================
+//  The class and functions for interfacing with a specific variable.
+// ============================================================================
+
+// The constructor
+Variable::Variable(Sensor *parentSense, int varNum, String varName, String varUnit,
+                   unsigned int decimalResolution, String dreamHost)
+{
+    parentSensor = parentSense;
+    _varNum = varNum;
+    _varName = varName;
+    _varUnit = varUnit;
+    _decimalResolution = decimalResolution;
+    _dreamHost = dreamHost;
+}
+
+void Variable::attachSensor(int varNum, Sensor *parentSense) {
+    Serial.print(F("Attempting to register to "));  // for debugging
+    Serial.print(parentSense->getSensorName());  // for debugging
+    Serial.print(F(" attached at "));  // for debugging
+    Serial.print(parentSense->getSensorLocation());  // for debugging
+    Serial.print(F("...   "));  // for debugging
+    parentSense->registerVariable(varNum, this);
+}
+
+bool Variable::setup(void)
+{
+    attachSensor(_varNum, parentSensor);
+    return true;
+}
+
+void Variable::onSensorUpdate(Sensor *parentSense)
+{
+    sensorValue = parentSense->sensorValues[_varNum];
+    Serial.print(F("... received "));  // for debugging
+    Serial.println(sensorValue);  // for debugging
+}
+
+// This returns the variable's name using http://vocabulary.odm2.org/variablename/
+String Variable::getVarName(void){return _varName;}
+
+// This returns the variable's unit using http://vocabulary.odm2.org/units/
+String Variable::getVarUnit(void){return _varUnit;}
+
+// This returns the dreamhost PHP tag - for old SWRC dreamhost system
+String Variable::getDreamHost(void){return _dreamHost;}
+
+// This returns the current value of the variable as a float
+float Variable::getValue(void)
+{
+    parentSensor->checkForUpdate(parentSensor->sensorLastUpdated);
+    return sensorValue;
+}
+
+// This returns the current value of the variable as a string
+// with the correct number of significant figures
+String Variable::getValueString(void)
+{
+    // Need this because otherwise get extra spaces in strings from int
+    if (_decimalResolution == 0)
+    {
+        int val = int(getValue());
+        return String(val);
+    }
+    else
+    {return String(getValue(), _decimalResolution);}
+}

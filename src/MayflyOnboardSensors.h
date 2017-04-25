@@ -18,9 +18,8 @@
 #ifndef MayflyOnboardSensors_h
 #define MayflyOnboardSensors_h
 
-#include <Arduino.h>
-#include <Sodaq_DS3231.h>
 #include "SensorBase.h"
+#include "VariableBase.h"
 
 #define MAYFLY_NUM_MEASUREMENTS 3
 
@@ -36,68 +35,17 @@
 
 // The "Main" class for the Mayfly
 // Only need a sleep and wake since these DON'T use the default of powering up and down
-class EnviroDIYMayfly : public virtual Sensor
+class EnviroDIYMayfly : public  Sensor
 {
 public:
     // Need to know the Mayfly version because the battery resistor depends on it
-    EnviroDIYMayfly(const char *version) : Sensor(-1, -1, F("EnviroDIYMayfly"), MAYFLY_NUM_MEASUREMENTS)
-    {
-        _version = version;
+    EnviroDIYMayfly(const char *version);
 
-        if (strcmp(_version, "v0.3") == 0 or strcmp(_version, "v0.4") == 0)
-        {
-          // Set the pin to read the battery voltage
-          _batteryPin = A6;
-        }
-        if (strcmp(_version, "v0.5") == 0)
-        {
-          // Set the pin to read the battery voltage
-          _batteryPin = A6;
-        }
-    }
+    String getSensorLocation(void) override;
+    bool sleep(void) override;
+    bool wake(void) override;
 
-    String getSensorLocation(void) override {return F("EnviroDIYMayfly");}
-    bool sleep(void) override {return true;}
-    bool wake(void) override {return true;}
-
-    bool update(void) override
-    {
-        // Clear values before starting loop
-        clearValues();
-
-        // Get the temperature from the Mayfly's real time clock
-        rtc.convertTemperature();  //convert current temperature into registers
-        float tempVal = rtc.getTemperature();
-        sensorValues[MAYFLY_TEMP_VAR_NUM] = tempVal;
-
-        float rawBattery;
-        float sensorValue_battery;
-        if (strcmp(_version, "v0.3") == 0 or strcmp(_version, "v0.4") == 0)
-        {
-            // Get the battery voltage
-            rawBattery = analogRead(_batteryPin);
-            sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
-        }
-        if (strcmp(_version, "v0.5") == 0)
-        {
-            // Get the battery voltage
-            rawBattery = analogRead(_batteryPin);
-            sensorValue_battery = (3.3 / 1023.) * 4.7 * rawBattery;
-        }
-        sensorValues[MAYFLY_BATTERY_VAR_NUM] = sensorValue_battery;
-
-        // Used only for debugging - can be removed
-        extern int __heap_start, *__brkval;
-        int v;
-        float sensorValue_freeRam = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
-        sensorValues[MAYFLY_RAM_VAR_NUM] = sensorValue_freeRam;
-
-        // Update the registered variables with the new values
-        notifyVariables();
-
-        // Return true when finished
-        return true;
-    }
+    bool update(void) override;
 
 private:
     const char *_version;
@@ -105,7 +53,7 @@ private:
 };
 
 
-class EnviroDIYMayfly_Temp : public virtual Variable
+class EnviroDIYMayfly_Temp : public  Variable
 {
 public:
     EnviroDIYMayfly_Temp(Sensor *parentSense)
@@ -116,7 +64,7 @@ public:
 };
 
 
-class EnviroDIYMayfly_Batt : public virtual Variable
+class EnviroDIYMayfly_Batt : public  Variable
 {
 public:
     EnviroDIYMayfly_Batt(Sensor *parentSense)
@@ -128,7 +76,7 @@ public:
 
 
 // Defines the "Free Ram" This is not a sensor at all but a board diagnostic
-class EnviroDIYMayfly_FreeRam : public virtual Variable
+class EnviroDIYMayfly_FreeRam : public  Variable
 {
 public:
     EnviroDIYMayfly_FreeRam(Sensor *parentSense)

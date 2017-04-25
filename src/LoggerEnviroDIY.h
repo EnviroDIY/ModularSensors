@@ -17,7 +17,7 @@
 #include "ModemSupport.h"
 
 // Defines the "Logger" Class
-class LoggerEnviroDIY : public virtual LoggerBase
+class LoggerEnviroDIY : public  LoggerBase
 {
 public:
     // Set up communications

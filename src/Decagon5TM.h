@@ -16,7 +16,8 @@
  *     Accuracy for Generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typ
  *     Accuracy for Medium Specific Calibration: ± 0.02 m3/m3 (± 2% VWC)
  *     Range is 0 – 1 m3/m3 (0 – 100% VWC)
- * For temp:
+ *
+ * For Temperature:
  *     Resolution is 0.1°C
  *     Accuracy is ± 1°C
  *     Range is - 40°C to + 50°C
@@ -26,8 +27,9 @@
 #define Decagon5TM_h
 
 #include "DecagonSDI12.h"
+#include "VariableBase.h"
 
-#define TM_NUM_MEASUREMENTS 2
+#define TM_NUM_MEASUREMENTS 3
 
 #define TM_EA_RESOLUTION 4
 #define TM_EA_VAR_NUM 0
@@ -39,21 +41,21 @@
 #define TM_VWC_VAR_NUM 2
 
 // The main class for the Decagon 5TM
-class Decagon5TM : public virtual DecagonSDI12
+class Decagon5TM : public  DecagonSDI12
 {
 public:
     // Constructors with overloads
     Decagon5TM(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : Sensor(powerPin, dataPin, F("Decagon5TM"), TM_NUM_MEASUREMENTS),
-       DecagonSDI12(TM_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
+                    F("Decagon5TM"), TM_NUM_MEASUREMENTS)
     {}
     Decagon5TM(char *SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : Sensor(powerPin, dataPin, F("Decagon5TM"), TM_NUM_MEASUREMENTS),
-     DecagonSDI12(TM_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
+                    F("Decagon5TM"), TM_NUM_MEASUREMENTS)
     {}
     Decagon5TM(int SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : Sensor(powerPin, dataPin, F("Decagon5TM"), TM_NUM_MEASUREMENTS),
-       DecagonSDI12(TM_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
+                    F("Decagon5TM"), TM_NUM_MEASUREMENTS)
     {}
 
     bool update(void) override
@@ -68,7 +70,7 @@ public:
                                 - 5.3e-2 ;
         sensorValues[TM_VWC_VAR_NUM] = sensorValue_VWC;
 
-        // Update the registered variables with the new values
+        // Re-update the variables with the new VWC value
         notifyVariables();
 
         return true;
@@ -77,31 +79,37 @@ public:
 
 
 // Defines the "Ea/Matric Potential Sensor"
-class Decagon5TM_Ea : public virtual Variable
+class Decagon5TM_Ea : public  Variable
 {
 public:
     Decagon5TM_Ea(Sensor *parentSense)
-     : Variable(parentSense, TM_EA_VAR_NUM, F("permittivity"), F("Farad per Meter"), TM_EA_RESOLUTION, F("SoilEa"))
+     : Variable(parentSense, TM_EA_VAR_NUM,
+                F("permittivity"), F("Farad per Meter"),
+                TM_EA_RESOLUTION, F("SoilEa"))
     {}
 };
 
 
 // Defines the "Temperature Sensor"
-class Decagon5TM_Temp : public virtual Variable
+class Decagon5TM_Temp : public  Variable
 {
 public:
     Decagon5TM_Temp(Sensor *parentSense)
-     : Variable(parentSense, TM_TEMP_VAR_NUM, F("temperature"), F("degreeCelsius"), TM_TEMP_RESOLUTION, F("SoilTemp"))
+     : Variable(parentSense, TM_TEMP_VAR_NUM,
+                F("temperature"), F("degreeCelsius"),
+                TM_TEMP_RESOLUTION, F("SoilTemp"))
     {}
 };
 
 
 // Defines the "Volumetric Water Content Sensor"
-class Decagon5TM_VWC : public virtual Variable
+class Decagon5TM_VWC : public  Variable
 {
 public:
     Decagon5TM_VWC(Sensor *parentSense)
-     : Variable(parentSense, TM_VWC_VAR_NUM, F("volumetricWaterContent"), F("percent"), TM_VWC_RESOLUTION, F("SoilVWC"))
+     : Variable(parentSense, TM_VWC_VAR_NUM,
+                F("volumetricWaterContent"), F("percent"),
+                TM_VWC_RESOLUTION, F("SoilVWC"))
     {}
 };
 

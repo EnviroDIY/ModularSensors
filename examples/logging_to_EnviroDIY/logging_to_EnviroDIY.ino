@@ -26,7 +26,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // Include the base required libraries
 // ---------------------------------------------------------------------------
 #include <Arduino.h>
-#include <SensorBase.h>
 #ifdef DreamHostPortalRX
 #include <LoggerDreamHost.h>
 #else

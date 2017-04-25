@@ -8,7 +8,7 @@
  *It is dependent on the EnviroDIY SDI-12 library and the DecagonSDI12 super class.
  *
  *Documentation fo the SDI-12 Protocol commands and responses
- *for the Decagon 5TM can be found at:
+ *for the Decagon ES-2 can be found at:
  * http://manuals.decagon.com/Integration%20Guides/ES-2%20Integrators%20Guide.pdf
  *
  * For Specific Conductance:
@@ -26,6 +26,7 @@
 #define DecagonES2_h
 
 #include "DecagonSDI12.h"
+#include "VariableBase.h"
 
 #define ES2_NUM_MEASUREMENTS 2
 
@@ -33,34 +34,30 @@
 #define ES2_COND_VAR_NUM 0
 
 #define ES2_TEMP_RESOLUTION 1
-#define ES2_TEMP_VAR_NUM 0
-
-// Forward declare classes
-class DecagonES2_Cond;
-class DecagonES2_Temp;
+#define ES2_TEMP_VAR_NUM 1
 
 // The main class for the Decagon ES-2
-class DecagonES2 : public virtual DecagonSDI12
+class DecagonES2 : public  DecagonSDI12
 {
 public:
     // Constructors with overloads
     DecagonES2(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : Sensor(powerPin, dataPin, F("DecagonES2"), ES2_NUM_MEASUREMENTS),
-       DecagonSDI12(ES2_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
+                    F("DecagonES2"), ES2_NUM_MEASUREMENTS)
     {}
     DecagonES2(char *SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : Sensor(powerPin, dataPin, F("DecagonES2"), ES2_NUM_MEASUREMENTS),
-     DecagonSDI12(ES2_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
+                    F("DecagonES2"), ES2_NUM_MEASUREMENTS)
     {}
     DecagonES2(int SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : Sensor(powerPin, dataPin, F("DecagonES2"), ES2_NUM_MEASUREMENTS),
-       DecagonSDI12(ES2_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
+                    F("DecagonES2"), ES2_NUM_MEASUREMENTS)
     {}
 };
 
 
-// Defines the "Ea/Matric Potential Sensor"
-class DecagonES2_Cond : public virtual Variable
+// Defines the "Conductivity Sensor"
+class DecagonES2_Cond : public  Variable
 {
 public:
     DecagonES2_Cond(Sensor *parentSense)
@@ -71,7 +68,7 @@ public:
 };
 
 // Defines the "Temperature Sensor"
-class DecagonES2_Temp : public virtual Variable
+class DecagonES2_Temp : public  Variable
 {
 public:
     DecagonES2_Temp(Sensor *parentSense)

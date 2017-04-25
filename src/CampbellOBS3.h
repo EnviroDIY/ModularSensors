@@ -28,6 +28,7 @@
 #include <Arduino.h>
 #include <Adafruit_ADS1015.h>
 #include "SensorBase.h"
+#include "VariableBase.h"
 
 #define OBS3_NUM_VARIABLES 1  // low and high range are treated as completely independent
 #define OBS3_TURB_VAR_NUM 0
@@ -35,79 +36,15 @@
 #define OBS3_HR_RESOLUTION 2
 
 // The main class for the Campbell OBS3
-class CampbellOBS3 : public virtual Sensor
+class CampbellOBS3 : public  Sensor
 {
 public:
     // The constructor - need the power pin, the data pin, and the calibration info
-    CampbellOBS3(int powerPin, int dataPin, float A, float B, float C)
-      : Sensor(powerPin, dataPin, F("CampbellOBS3+"), OBS3_NUM_VARIABLES)
-    {
-        _A = A;
-        _B = B;
-        _C = C;
-    }
+    CampbellOBS3(int powerPin, int dataPin, float A, float B, float C);
 
-    String getSensorLocation(void) override
-    {
-        String sensorLocation = F("ADS1115_Pin");
-        sensorLocation += String(_dataPin);
-        return sensorLocation;
-    }
+    String getSensorLocation(void) override;
 
-    bool update(void) override
-    {
-
-        // Start the Auxillary ADD
-        Adafruit_ADS1115 ads;     /* Use this for the 16-bit version */
-        ads.begin();
-
-        // Check if the power is on, turn it on if not
-        bool wasOn = checkPowerOn();
-        if(!wasOn){powerUp();}
-
-        // Clear values before starting loop
-        clearValues();
-
-        // Variables to store the results in
-        int16_t adcResult = 0;
-        float voltage = 0;
-        float calibResult = 0;
-
-        adcResult = ads.readADC_SingleEnded(_dataPin);  // Getting the reading
-
-        // Serial.print(F("ads.readADC_SingleEnded("));  // For debugging
-        // Serial.print(_dataPin);  // For debugging
-        // Serial.print(F("): "));  // For debugging
-        // Serial.println(ads.readADC_SingleEnded(_dataPin));  // For debugging
-
-        // now convert bits into millivolts
-        // 3.3 is the voltage applied to the sensor (and its returun range)
-        // The 17585 is the default bit gain of the ADS1115
-        voltage = (adcResult * 3.3) / 17585.0;
-        // Serial.print("Voltage: ");  // For debugging
-        // Serial.println(String(voltage, 6));  // For debugging
-
-        calibResult = (_A * square (voltage)) + (_B * voltage) - _C;
-        // Serial.print(F("Calibration Curve: "));  // For debugging
-        // Serial.print(_A);  // For debugging
-        // Serial.print(F("x^2 + "));  // For debugging
-        // Serial.print(_B);  // For debugging
-        // Serial.print(F("x + "));  // For debugging
-        // Serial.println(_C);  // For debugging
-        // Serial.print(F("calibResult: "));  // For debugging
-        // Serial.println(calibResult);  // For debugging
-
-        sensorValues[0] = calibResult;
-
-        // Turn the power back off it it had been turned on
-        if(!wasOn){powerDown();}
-
-        // Update the registered variables with the new values
-        notifyVariables();
-
-        // Return true when finished
-        return true;
-    }
+    bool update(void) override;
 
 protected:
     float _A;
@@ -116,10 +53,10 @@ protected:
 };
 
 
-// Subclasses are ONLY needed because of the different dreamhost column tags
+// Two different vars are ONLY needed because of the different dreamhost column tags
 // All that is needed for these are the constructors
 // Defines the "Low Turbidity Sensor"
-class CampbellOBS3_Turbidity : public virtual Variable
+class CampbellOBS3_Turbidity : public  Variable
 {
 public:
     CampbellOBS3_Turbidity(Sensor *parentSense)
@@ -131,7 +68,7 @@ public:
 
 
 // Defines the "High Turbidity Sensor"
-class CampbellOBS3_TurbHigh : public virtual Variable
+class CampbellOBS3_TurbHigh : public  Variable
 {
 public:
     CampbellOBS3_TurbHigh(Sensor *parentSense)
