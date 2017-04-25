@@ -60,7 +60,7 @@ bool MaxBotixSonar::update(void)
     // RoHS 1.8b090  0713
     // TempI
 
-    // define serial port for recieving data
+    // define serial port for receiving data
     SoftwareSerial sonarSerial(_dataPin, -1);
     sonarSerial.begin(9600);
     // Even the slowest sensors should respond at a rate of 6Hz (166ms).

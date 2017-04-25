@@ -44,7 +44,7 @@ bool Variable::setup(void)
 void Variable::onSensorUpdate(Sensor *parentSense)
 {
     sensorValue = parentSense->sensorValues[_varNum];
-    Serial.print(F("... received value of "));  // for debugging
+    Serial.print(F("... received "));  // for debugging
     Serial.println(sensorValue);  // for debugging
 }
 

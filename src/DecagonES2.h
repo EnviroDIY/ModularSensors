@@ -8,7 +8,7 @@
  *It is dependent on the EnviroDIY SDI-12 library and the DecagonSDI12 super class.
  *
  *Documentation fo the SDI-12 Protocol commands and responses
- *for the Decagon 5TM can be found at:
+ *for the Decagon ES-2 can be found at:
  * http://manuals.decagon.com/Integration%20Guides/ES-2%20Integrators%20Guide.pdf
  *
  * For Specific Conductance:
@@ -36,10 +36,6 @@
 #define ES2_TEMP_RESOLUTION 1
 #define ES2_TEMP_VAR_NUM 0
 
-// Forward declare classes
-class DecagonES2_Cond;
-class DecagonES2_Temp;
-
 // The main class for the Decagon ES-2
 class DecagonES2 : public  DecagonSDI12
 {
@@ -60,7 +56,7 @@ public:
 };
 
 
-// Defines the "Ea/Matric Potential Sensor"
+// Defines the "Conductivity Sensor"
 class DecagonES2_Cond : public  Variable
 {
 public:

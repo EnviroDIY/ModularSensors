@@ -16,7 +16,8 @@
  *     Accuracy for Generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typ
  *     Accuracy for Medium Specific Calibration: ± 0.02 m3/m3 (± 2% VWC)
  *     Range is 0 – 1 m3/m3 (0 – 100% VWC)
- * For temp:
+ *
+ * For Temperature:
  *     Resolution is 0.1°C
  *     Accuracy is ± 1°C
  *     Range is - 40°C to + 50°C
@@ -82,7 +83,9 @@ class Decagon5TM_Ea : public  Variable
 {
 public:
     Decagon5TM_Ea(Sensor *parentSense)
-     : Variable(parentSense, TM_EA_VAR_NUM, F("permittivity"), F("Farad per Meter"), TM_EA_RESOLUTION, F("SoilEa"))
+     : Variable(parentSense, TM_EA_VAR_NUM,
+                F("permittivity"), F("Farad per Meter"),
+                TM_EA_RESOLUTION, F("SoilEa"))
     {}
 };
 
@@ -92,7 +95,9 @@ class Decagon5TM_Temp : public  Variable
 {
 public:
     Decagon5TM_Temp(Sensor *parentSense)
-     : Variable(parentSense, TM_TEMP_VAR_NUM, F("temperature"), F("degreeCelsius"), TM_TEMP_RESOLUTION, F("SoilTemp"))
+     : Variable(parentSense, TM_TEMP_VAR_NUM,
+                F("temperature"), F("degreeCelsius"),
+                TM_TEMP_RESOLUTION, F("SoilTemp"))
     {}
 };
 
@@ -102,7 +107,9 @@ class Decagon5TM_VWC : public  Variable
 {
 public:
     Decagon5TM_VWC(Sensor *parentSense)
-     : Variable(parentSense, TM_VWC_VAR_NUM, F("volumetricWaterContent"), F("percent"), TM_VWC_RESOLUTION, F("SoilVWC"))
+     : Variable(parentSense, TM_VWC_VAR_NUM,
+                F("volumetricWaterContent"), F("percent"),
+                TM_VWC_RESOLUTION, F("SoilVWC"))
     {}
 };
 

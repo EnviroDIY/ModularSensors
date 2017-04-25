@@ -11,18 +11,20 @@
  *for the Decagon CTD-10 can be found at:
  * http://manuals.decagon.com/Integration%20Guides/CTD%20Integrators%20Guide.pdf
  *
- * For Depth:
- *  Resolution is 2 mm
- *  Accuracy is ±0.05% of full scale
- *  Range is 0 to 5 m or 0 to 10 m, depending on model
- * For Temperature:
- *  Resolution is 0.1°C
- *  Accuracy is ±1°C
- *  Range is -11°C to +49°C
  * For Specific Conductance:
  *  Resolution is 0.001 mS/cm = 1 µS/cm
  *  Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
  *  Range is 0 – 120 mS/cm (bulk)
+ *
+ * For Temperature:
+ *  Resolution is 0.1°C
+ *  Accuracy is ±1°C
+ *  Range is -11°C to +49°C
+ *
+ * For Depth:
+ *  Resolution is 2 mm
+ *  Accuracy is ±0.05% of full scale
+ *  Range is 0 to 5 m or 0 to 10 m, depending on model
 */
 
 
@@ -63,14 +65,14 @@ public:
 };
 
 
-// Defines the "Depth Sensor"
-class DecagonCTD_Depth : public  Variable
+// Defines the "Conductivity Sensor"
+class DecagonCTD_Cond : public  Variable
 {
 public:
-    DecagonCTD_Depth(Sensor *parentSense)
-     : Variable(parentSense, CTD_DEPTH_VAR_NUM,
-                F("waterDepth"), F("millimeter"),
-                CTD_DEPTH_RESOLUTION, F("CTDdepth"))
+    DecagonCTD_Cond(Sensor *parentSense)
+     : Variable(parentSense, CTD_COND_VAR_NUM,
+                F("specificConductance"), F("microsiemenPerCentimeter"),
+                CTD_COND_RESOLUTION, F("CTDcond"))
     {}
 };
 
@@ -87,14 +89,14 @@ public:
 };
 
 
-// Defines the "Conductivity Sensor"
-class DecagonCTD_Cond : public  Variable
+// Defines the "Depth Sensor"
+class DecagonCTD_Depth : public  Variable
 {
 public:
-    DecagonCTD_Cond(Sensor *parentSense)
-     : Variable(parentSense, CTD_COND_VAR_NUM,
-                F("specificConductance"), F("microsiemenPerCentimeter"),
-                CTD_COND_RESOLUTION, F("CTDcond"))
+    DecagonCTD_Depth(Sensor *parentSense)
+     : Variable(parentSense, CTD_DEPTH_VAR_NUM,
+                F("waterDepth"), F("millimeter"),
+                CTD_DEPTH_RESOLUTION, F("CTDdepth"))
     {}
 };
 
