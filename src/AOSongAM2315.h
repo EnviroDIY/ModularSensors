@@ -38,11 +38,9 @@ class AOSongAM2315 : public virtual Sensor
 {
 public:
     // The constructor - because this is I2C, only need the power pin
-    AOSongAM2315(int powerPin)
-    : Sensor(-1, powerPin, F("AOSongAM2315"), AM2315_NUM_MEASUREMENTS)
-    {}
+    AOSongAM2315(int powerPin);
 
-    String getSensorLocation(void) override {return F("I2C_0xB8");}
+    String getSensorLocation(void) override;
 
     bool update(void) override;
 };

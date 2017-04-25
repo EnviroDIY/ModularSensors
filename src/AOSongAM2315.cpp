@@ -21,6 +21,13 @@
 #include "AOSongAM2315.h"
 #include <Adafruit_AM2315.h>
 
+// The constructor - because this is I2C, only need the power pin
+AOSongAM2315::AOSongAM2315(int powerPin)
+: Sensor(-1, powerPin, F("AOSongAM2315"), AM2315_NUM_MEASUREMENTS)
+{}
+
+String AOSongAM2315::getSensorLocation(void){return F("I2C_0xB8");}
+
 bool AOSongAM2315::update(void)
 {
     Adafruit_AM2315 am2315;  // create a sensor object

@@ -39,18 +39,12 @@ class CampbellOBS3 : public virtual Sensor
 {
 public:
     // The constructor - need the power pin, the data pin, and the calibration info
-    CampbellOBS3(int powerPin, int dataPin, float A, float B, float C)
-      : Sensor(powerPin, dataPin, F("CampbellOBS3+"), OBS3_NUM_VARIABLES)
-    {
-        _A = A;
-        _B = B;
-        _C = C;
-    }
+    CampbellOBS3(int powerPin, int dataPin, float A, float B, float C);
 
     String getSensorLocation(void) override;
 
     bool update(void) override;
-    
+
 protected:
     float _A;
     float _B;
@@ -58,7 +52,7 @@ protected:
 };
 
 
-// Subclasses are ONLY needed because of the different dreamhost column tags
+// Two different vars are ONLY needed because of the different dreamhost column tags
 // All that is needed for these are the constructors
 // Defines the "Low Turbidity Sensor"
 class CampbellOBS3_Turbidity : public virtual Variable

@@ -25,6 +25,16 @@
 #include "CampbellOBS3.h"
 #include <Adafruit_ADS1015.h>
 
+// The constructor - need the power pin, the data pin, and the calibration info
+CampbellOBS3::CampbellOBS3(int powerPin, int dataPin, float A, float B, float C)
+  : Sensor(powerPin, dataPin, F("CampbellOBS3+"), OBS3_NUM_VARIABLES)
+{
+    _A = A;
+    _B = B;
+    _C = C;
+}
+
+
 String CampbellOBS3::getSensorLocation(void)
 {
     String sensorLocation = F("ADS1115_Pin");
