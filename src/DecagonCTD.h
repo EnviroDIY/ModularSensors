@@ -37,13 +37,13 @@
 #define CTD_NUM_MEASUREMENTS 3
 
 #define CTD_COND_RESOLUTION 0
-#define CTD_COND_VAR_NUM 0
+#define CTD_COND_VAR_NUM 2
 
 #define CTD_TEMP_RESOLUTION 1
 #define CTD_TEMP_VAR_NUM 1
 
 #define CTD_DEPTH_RESOLUTION 0
-#define CTD_DEPTH_VAR_NUM 2
+#define CTD_DEPTH_VAR_NUM 0
 
 // The main class for the Decagon CTD
 class DecagonCTD : public  DecagonSDI12

@@ -14,7 +14,7 @@
 #include <pins_arduino.h>
 
 // The largest number of variables from a single sensor
-#define MAX_NUMBER_VARS 5
+#define MAX_NUMBER_VARS 3
 
 typedef enum SENSOR_STATUS
 {

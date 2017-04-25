@@ -152,7 +152,7 @@ bool Sensor::checkForUpdate(unsigned long sensorLastUpdated)
 // This function just empties the value array
 void Sensor::clearValues(void)
 {
-    Serial.println(F("Clearing sensor value array."));
+    // Serial.println(F("Clearing sensor value array."));
     for (int i = 0; i < _numReturnedVars; i++)
     { sensorValues[i] =  0; }
 }

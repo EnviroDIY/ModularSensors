@@ -34,7 +34,7 @@
 #define ES2_COND_VAR_NUM 0
 
 #define ES2_TEMP_RESOLUTION 1
-#define ES2_TEMP_VAR_NUM 0
+#define ES2_TEMP_VAR_NUM 1
 
 // The main class for the Decagon ES-2
 class DecagonES2 : public  DecagonSDI12

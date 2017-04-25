@@ -54,22 +54,22 @@ bool VariableArray::isLastVarFromSensor(int arrayIndex)
         }
     }
     // Prints for debugging
-    if (unique){
-        Serial.print(_variableList[arrayIndex]->getVarName());
-        Serial.print(F(" from "));
-        Serial.print(sensName);
-        Serial.print(F(" at "));
-        Serial.print(sensLoc);
-        Serial.println(F(" will be used for sensor references."));
-    }
-    else{
-        Serial.print(_variableList[arrayIndex]->getVarName());
-        Serial.print(F(" from "));
-        Serial.print(sensName);
-        Serial.print(F(" at "));
-        Serial.print(sensLoc);
-        Serial.println(F(" will be ignored."));
-    }
+    // if (unique){
+    //     Serial.print(_variableList[arrayIndex]->getVarName());
+    //     Serial.print(F(" from "));
+    //     Serial.print(sensName);
+    //     Serial.print(F(" at "));
+    //     Serial.print(sensLoc);
+    //     Serial.println(F(" will be used for sensor references."));
+    // }
+    // else{
+    //     Serial.print(_variableList[arrayIndex]->getVarName());
+    //     Serial.print(F(" from "));
+    //     Serial.print(sensName);
+    //     Serial.print(F(" at "));
+    //     Serial.print(sensLoc);
+    //     Serial.println(F(" will be ignored."));
+    // }
     return unique;
 }
 
@@ -144,9 +144,9 @@ bool VariableArray::updateAllSensors(void)
             Serial.print(F("--- Going to update "));  // For debugging
             Serial.print(_variableList[i]->parentSensor->getSensorName());  // For debugging
             Serial.println(F(" ---"));  // For Debugging
-            delay(250);
+
             update_success = _variableList[i]->parentSensor->update();
-            delay(250);
+
             // Prints for debugging
             Serial.print(F("--- Updated "));  // For debugging
             Serial.print(_variableList[i]->parentSensor->getSensorName());  // For debugging
