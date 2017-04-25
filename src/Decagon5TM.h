@@ -44,16 +44,16 @@ class Decagon5TM : public  DecagonSDI12
 public:
     // Constructors with overloads
     Decagon5TM(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : Sensor(powerPin, dataPin, F("Decagon5TM"), TM_NUM_MEASUREMENTS),
-       DecagonSDI12(TM_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
+                    F("Decagon5TM"), TM_NUM_MEASUREMENTS)
     {}
     Decagon5TM(char *SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : Sensor(powerPin, dataPin, F("Decagon5TM"), TM_NUM_MEASUREMENTS),
-     DecagonSDI12(TM_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
+                    F("Decagon5TM"), TM_NUM_MEASUREMENTS)
     {}
     Decagon5TM(int SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : Sensor(powerPin, dataPin, F("Decagon5TM"), TM_NUM_MEASUREMENTS),
-       DecagonSDI12(TM_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
+                    F("Decagon5TM"), TM_NUM_MEASUREMENTS)
     {}
 
     bool update(void) override

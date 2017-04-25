@@ -12,20 +12,26 @@
 #include "DecagonSDI12.h"
 
 // The constructor - need the number of measurements the sensor will return, SDI-12 address, the power pin, and the data pin
-DecagonSDI12::DecagonSDI12(int numMeasurements, char SDI12address, int powerPin, int dataPin, int numReadings)
-    : Sensor(powerPin, dataPin, F("SDI-12 Device"), numMeasurements)
+DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin,
+                           int numReadings,
+                           String sensName, int numMeasurements)
+    : Sensor(powerPin, dataPin, sensName, numMeasurements)
 {
     _SDI12address = SDI12address;
     _numReadings = numReadings;
 }
-DecagonSDI12::DecagonSDI12(int numMeasurements, char *SDI12address, int powerPin, int dataPin, int numReadings)
-    : Sensor(powerPin, dataPin, F("SDI-12 Device"), numMeasurements)
+DecagonSDI12::DecagonSDI12(char *SDI12address, int powerPin, int dataPin,
+                           int numReadings,
+                           String sensName, int numMeasurements)
+    : Sensor(powerPin, dataPin, sensName, numMeasurements)
 {
     _SDI12address = *SDI12address;
     _numReadings = numReadings;
 }
-DecagonSDI12::DecagonSDI12(int numMeasurements, int SDI12address, int powerPin, int dataPin, int numReadings)
-    : Sensor(powerPin, dataPin, F("SDI-12 Device"), numMeasurements)
+DecagonSDI12::DecagonSDI12(int SDI12address, int powerPin, int dataPin,
+                           int numReadings,
+                           String sensName, int numMeasurements)
+    : Sensor(powerPin, dataPin, sensName, numMeasurements)
 {
     _SDI12address = SDI12address;
     _numReadings = numReadings;

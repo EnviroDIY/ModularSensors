@@ -48,16 +48,16 @@ class DecagonCTD : public  DecagonSDI12
 public:
     // Constructors with overloads
     DecagonCTD(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : Sensor(powerPin, dataPin, F("DecagonCTD"), CTD_NUM_MEASUREMENTS),
-       DecagonSDI12(CTD_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
+                    F("DecagonCTD"), CTD_NUM_MEASUREMENTS)
     {}
     DecagonCTD(char *SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : Sensor(powerPin, dataPin, F("DecagonCTD"), CTD_NUM_MEASUREMENTS),
-     DecagonSDI12(CTD_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
+                    F("DecagonCTD"), CTD_NUM_MEASUREMENTS)
     {}
     DecagonCTD(int SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : Sensor(powerPin, dataPin, F("DecagonCTD"), CTD_NUM_MEASUREMENTS),
-       DecagonSDI12(CTD_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
+                    F("DecagonCTD"), CTD_NUM_MEASUREMENTS)
     {}
 };
 

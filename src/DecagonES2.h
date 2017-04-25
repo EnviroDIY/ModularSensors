@@ -45,16 +45,16 @@ class DecagonES2 : public  DecagonSDI12
 public:
     // Constructors with overloads
     DecagonES2(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : Sensor(powerPin, dataPin, F("DecagonES2"), ES2_NUM_MEASUREMENTS),
-       DecagonSDI12(ES2_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
+                    F("DecagonES2"), ES2_NUM_MEASUREMENTS)
     {}
     DecagonES2(char *SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : Sensor(powerPin, dataPin, F("DecagonES2"), ES2_NUM_MEASUREMENTS),
-     DecagonSDI12(ES2_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
+                    F("DecagonES2"), ES2_NUM_MEASUREMENTS)
     {}
     DecagonES2(int SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : Sensor(powerPin, dataPin, F("DecagonES2"), ES2_NUM_MEASUREMENTS),
-       DecagonSDI12(ES2_NUM_MEASUREMENTS, SDI12address, powerPin, dataPin, numReadings)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
+                    F("DecagonES2"), ES2_NUM_MEASUREMENTS)
     {}
 };
 
