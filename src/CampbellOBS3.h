@@ -47,68 +47,10 @@ public:
         _C = C;
     }
 
-    String getSensorLocation(void) override
-    {
-        String sensorLocation = F("ADS1115_Pin");
-        sensorLocation += String(_dataPin);
-        return sensorLocation;
-    }
+    String getSensorLocation(void) override;
 
-    bool update(void) override
-    {
-
-        // Start the Auxillary ADD
-        Adafruit_ADS1115 ads;     /* Use this for the 16-bit version */
-        ads.begin();
-
-        // Check if the power is on, turn it on if not
-        bool wasOn = checkPowerOn();
-        if(!wasOn){powerUp();}
-
-        // Clear values before starting loop
-        clearValues();
-
-        // Variables to store the results in
-        int16_t adcResult = 0;
-        float voltage = 0;
-        float calibResult = 0;
-
-        adcResult = ads.readADC_SingleEnded(_dataPin);  // Getting the reading
-
-        // Serial.print(F("ads.readADC_SingleEnded("));  // For debugging
-        // Serial.print(_dataPin);  // For debugging
-        // Serial.print(F("): "));  // For debugging
-        // Serial.println(ads.readADC_SingleEnded(_dataPin));  // For debugging
-
-        // now convert bits into millivolts
-        // 3.3 is the voltage applied to the sensor (and its returun range)
-        // The 17585 is the default bit gain of the ADS1115
-        voltage = (adcResult * 3.3) / 17585.0;
-        // Serial.print("Voltage: ");  // For debugging
-        // Serial.println(String(voltage, 6));  // For debugging
-
-        calibResult = (_A * square (voltage)) + (_B * voltage) - _C;
-        // Serial.print(F("Calibration Curve: "));  // For debugging
-        // Serial.print(_A);  // For debugging
-        // Serial.print(F("x^2 + "));  // For debugging
-        // Serial.print(_B);  // For debugging
-        // Serial.print(F("x + "));  // For debugging
-        // Serial.println(_C);  // For debugging
-        // Serial.print(F("calibResult: "));  // For debugging
-        // Serial.println(calibResult);  // For debugging
-
-        sensorValues[0] = calibResult;
-
-        // Turn the power back off it it had been turned on
-        if(!wasOn){powerDown();}
-
-        // Update the registered variables with the new values
-        notifyVariables();
-
-        // Return true when finished
-        return true;
-    }
-
+    bool update(void) override;
+    
 protected:
     float _A;
     float _B;

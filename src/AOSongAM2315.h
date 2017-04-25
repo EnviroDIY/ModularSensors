@@ -23,7 +23,6 @@
 #define AOSongAM2315_h
 
 #include "SensorBase.h"
-#include <Adafruit_AM2315.h>
 
 #define AM2315_NUM_MEASUREMENTS 2
 
@@ -45,37 +44,7 @@ public:
 
     String getSensorLocation(void) override {return F("I2C_0xB8");}
 
-    bool update(void) override
-    {
-        Adafruit_AM2315 am2315;  // create a sensor object
-        Wire.begin();  // Start the wire library
-
-        // Check if the power is on, turn it on if not
-        bool wasOn = checkPowerOn();
-        if(!wasOn){powerUp();}
-
-        // Clear values before starting loop
-        clearValues();
-
-        float temp_val, humid_val;
-        bool ret_val = am2315.readTemperatureAndHumidity(temp_val, humid_val);
-        sensorValues[AM2315_TEMP_VAR_NUM] = temp_val;
-        sensorValues[AM2315_HUMIDITY_VAR_NUM] = humid_val;
-
-        // Serial.print(F("Temp is: "));  // for debugging
-        // Serial.print(sensorValues[AM2315_TEMP_VAR_NUM]);  // for debugging
-        // Serial.print(F("°C and humidity is: "));  // for debugging
-        // Serial.print(sensorValues[AM2315_HUMIDITY_VAR_NUM]);  // for debugging
-        // Serial.println(F("%"));  // for debugging
-
-        // Turn the power back off it it had been turned on
-        if(!wasOn){powerDown();}
-
-        // Update the registered variables with the new values
-        notifyVariables();
-
-        return ret_val;
-    }
+    bool update(void) override;
 };
 
 
