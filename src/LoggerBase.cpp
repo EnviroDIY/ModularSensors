@@ -269,7 +269,7 @@ void LoggerBase::setFileName(char *fileName)
 
     // Print out the file name for debugging
     Serial.print(F("Data will be saved as "));  // for debugging
-    Serial.println(LoggerBase::_fileName);  // for debugging
+    Serial.println(_fileName);  // for debugging
 }
 
 // Same as above, with a string
@@ -288,8 +288,11 @@ void LoggerBase::setFileName(void)
     _autoFileName = true;
     // Generate the file name from logger ID and date
     String fileName = "";
-    fileName +=  _loggerID;
-    fileName +=  F("_");
+    if (_loggerID)
+    {
+        fileName +=  String(_loggerID);
+        fileName +=  F("_");
+    }
     fileName +=  formatDateTime_ISO8601(getNow()).substring(0, 10);
     fileName +=  F(".csv");
     setFileName(fileName);
@@ -297,7 +300,7 @@ void LoggerBase::setFileName(void)
 
 String LoggerBase::getFileName(void)
 {
-    return LoggerBase::_fileName;
+    return _fileName;
 }
 
 String LoggerBase::generateFileHeader(void)
@@ -339,17 +342,20 @@ String LoggerBase::generateSensorDataCSV(void)
 void LoggerBase::setupLogFile(void)
 {
     // Initialise the SD card
-    Serial.print(F("Connecting to SD Card with card/slave select on pin "));  // for debugging
-    Serial.println(_SDCardPin);  // for debugging
     if (!sd.begin(_SDCardPin, SPI_FULL_SPEED))
     {
         Serial.println(F("Error: SD card failed to initialize or is missing."));
     }
+    else
+    {
+        Serial.print(F("Successfully connected to SD Card with card/slave select on pin "));  // for debugging
+        Serial.println(_SDCardPin);  // for debugging
+    }
 
     // Convert the string filename to a character file name for SdFat
-    int fileNameLength = LoggerBase::_fileName.length() + 1;
+    int fileNameLength = _fileName.length() + 1;
     char charFileName[fileNameLength];
-    LoggerBase::_fileName.toCharArray(charFileName, fileNameLength);
+    _fileName.toCharArray(charFileName, fileNameLength);
 
     // Open the file in write mode (and create it if it did not exist)
     logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END);
@@ -374,10 +380,11 @@ void LoggerBase::setupLogFile(void)
                                 rtc.makeDateTime(getNow()).hour(),
                                 rtc.makeDateTime(getNow()).minute(),
                                 rtc.makeDateTime(getNow()).second());
+    Serial.println(F("File created!"));  // for debugging
 
     // Add header information
     logFile.println(generateFileHeader());
-    // Serial.println(generateFileHeader());  // for debugging
+    Serial.println(generateFileHeader());  // for debugging
 
     //Close the file to save it
     logFile.close();
@@ -393,9 +400,9 @@ void LoggerBase::logToSD(String rec)
     }
 
     // Convert the string filename to a character file name for SdFat
-    int fileNameLength = LoggerBase::_fileName.length() + 1;
+    int fileNameLength = _fileName.length() + 1;
     char charFileName[fileNameLength];
-    LoggerBase::_fileName.toCharArray(charFileName, fileNameLength);
+    _fileName.toCharArray(charFileName, fileNameLength);
 
     // Check that the file exists, just in case someone yanked the SD card
     if (!logFile.open(charFileName, O_WRITE | O_AT_END))

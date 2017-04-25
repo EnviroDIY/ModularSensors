@@ -195,7 +195,7 @@ void setup()
 
     // Initialize the logger;
     Logger.init(SD_SS_PIN, RTC_PIN, variableCount, variableList,
-                LOGGING_INTERVAL);
+                LOGGING_INTERVAL, LoggerID);
     Logger.setAlertPin(GREEN_LED);
     // Begin the logger;
     Logger.begin();

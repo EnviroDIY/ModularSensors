@@ -79,13 +79,13 @@ SENSOR_STATUS Sensor::setup(void)
     pinMode(_dataPin, INPUT);
     digitalWrite(_powerPin, LOW);
 
-    Serial.print(F("Set up "));  // for debugging
-    Serial.print(getSensorName());  // for debugging
-    Serial.print(F(" attached at "));  // for debugging
-    Serial.print(getSensorLocation());  // for debugging
-    Serial.print(F(" which can return up to "));  // for debugging
-    Serial.print(_numReturnedVars);  // for debugging
-    Serial.println(F(" variable[s]."));  // for debugging
+    // Serial.print(F("Set up "));  // for debugging
+    // Serial.print(getSensorName());  // for debugging
+    // Serial.print(F(" attached at "));  // for debugging
+    // Serial.print(getSensorLocation());  // for debugging
+    // Serial.print(F(" which can return up to "));  // for debugging
+    // Serial.print(_numReturnedVars);  // for debugging
+    // Serial.println(F(" variable[s]."));  // for debugging
 
     return SENSOR_READY;
 }
@@ -126,9 +126,9 @@ bool Sensor::wake(void)
 void Sensor::registerVariable(int varNum, Variable* var)
 {
     variables[varNum] = var;
-    Serial.print(F("... Registration for "));  // for debugging
-    Serial.print(var->getVarName());  // for debugging
-    Serial.println(F(" accepted."));  // for debugging
+    // Serial.print(F("... Registration for "));  // for debugging
+    // Serial.print(var->getVarName());  // for debugging
+    // Serial.println(F(" accepted."));  // for debugging
 }
 
 void Sensor::notifyVariables(void)

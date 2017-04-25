@@ -27,11 +27,11 @@ Variable::Variable(Sensor *parentSense, int varNum, String varName, String varUn
 }
 
 void Variable::attachSensor(int varNum, Sensor *parentSense) {
-    Serial.print(F("Attempting to register to "));  // for debugging
-    Serial.print(parentSense->getSensorName());  // for debugging
-    Serial.print(F(" attached at "));  // for debugging
-    Serial.print(parentSense->getSensorLocation());  // for debugging
-    Serial.print(F("...   "));  // for debugging
+    // Serial.print(F("Attempting to register to "));  // for debugging
+    // Serial.print(parentSense->getSensorName());  // for debugging
+    // Serial.print(F(" attached at "));  // for debugging
+    // Serial.print(parentSense->getSensorLocation());  // for debugging
+    // Serial.print(F("...   "));  // for debugging
     parentSense->registerVariable(varNum, this);
 }
 
