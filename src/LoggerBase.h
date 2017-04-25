@@ -19,7 +19,7 @@
 
 
 // Defines the "Logger" Class
-class LoggerBase : public virtual VariableArray
+class LoggerBase : public  VariableArray
 {
 public:
     // Setup and initialization function

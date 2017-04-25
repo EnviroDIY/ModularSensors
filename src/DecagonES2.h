@@ -40,7 +40,7 @@ class DecagonES2_Cond;
 class DecagonES2_Temp;
 
 // The main class for the Decagon ES-2
-class DecagonES2 : public virtual DecagonSDI12
+class DecagonES2 : public  DecagonSDI12
 {
 public:
     // Constructors with overloads
@@ -60,7 +60,7 @@ public:
 
 
 // Defines the "Ea/Matric Potential Sensor"
-class DecagonES2_Cond : public virtual Variable
+class DecagonES2_Cond : public  Variable
 {
 public:
     DecagonES2_Cond(Sensor *parentSense)
@@ -71,7 +71,7 @@ public:
 };
 
 // Defines the "Temperature Sensor"
-class DecagonES2_Temp : public virtual Variable
+class DecagonES2_Temp : public  Variable
 {
 public:
     DecagonES2_Temp(Sensor *parentSense)
