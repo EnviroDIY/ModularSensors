@@ -19,7 +19,7 @@
 // ============================================================================
 //  Functions for the SWRC Sensors DreamHost data receivers.
 // ============================================================================
-class LoggerDreamHost : public  LoggerEnviroDIY
+class LoggerDreamHost : public LoggerEnviroDIY
 {
 public:
     // Functions for private SWRC server

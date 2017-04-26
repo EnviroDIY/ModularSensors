@@ -19,7 +19,7 @@
 
 
 // Defines the "Logger" Class
-class LoggerBase : public  VariableArray
+class LoggerBase : public VariableArray
 {
 public:
     // Setup and initialization function
@@ -81,7 +81,7 @@ public:
     // This creates a header for the logger file
     virtual String generateFileHeader(void);
     // This generates a comma separated list of volues of sensor data - including the time
-    String generateSensorDataCSV(void);
+    String generateSensorDataCSV(void) override;
     // This initializes a file on the SD card and writes a header to it
     void setupLogFile(void);
     // This writes a record to the SD card
@@ -129,6 +129,7 @@ private:
     static void wakeISR(void);
 
     bool _autoFileName;
+    bool _isFileNameSet;
 };
 
 

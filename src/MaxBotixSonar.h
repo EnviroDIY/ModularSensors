@@ -21,7 +21,7 @@
 #define HRXL_VAR_NUM 0
 
 // The main class for the MaxBotix Sonar.  No sub-classes are needed
-class MaxBotixSonar : public  Sensor
+class MaxBotixSonar : public Sensor
 {
 public:
     MaxBotixSonar(int powerPin, int dataPin, int triggerPin = -1);
@@ -36,7 +36,7 @@ private:
 
 
 // The main class for the MaxBotix Sonar.  No sub-classes are needed
-class MaxBotixSonar_Range : public  Variable
+class MaxBotixSonar_Range : public Variable
 {
 public:
     MaxBotixSonar_Range(Sensor *parentSense) :

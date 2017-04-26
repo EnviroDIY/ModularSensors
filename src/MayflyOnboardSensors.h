@@ -35,7 +35,7 @@
 
 // The "Main" class for the Mayfly
 // Only need a sleep and wake since these DON'T use the default of powering up and down
-class EnviroDIYMayfly : public  Sensor
+class EnviroDIYMayfly : public Sensor
 {
 public:
     // Need to know the Mayfly version because the battery resistor depends on it
@@ -53,7 +53,7 @@ private:
 };
 
 
-class EnviroDIYMayfly_Temp : public  Variable
+class EnviroDIYMayfly_Temp : public Variable
 {
 public:
     EnviroDIYMayfly_Temp(Sensor *parentSense)
@@ -64,7 +64,7 @@ public:
 };
 
 
-class EnviroDIYMayfly_Batt : public  Variable
+class EnviroDIYMayfly_Batt : public Variable
 {
 public:
     EnviroDIYMayfly_Batt(Sensor *parentSense)
@@ -76,7 +76,7 @@ public:
 
 
 // Defines the "Free Ram" This is not a sensor at all but a board diagnostic
-class EnviroDIYMayfly_FreeRam : public  Variable
+class EnviroDIYMayfly_FreeRam : public Variable
 {
 public:
     EnviroDIYMayfly_FreeRam(Sensor *parentSense)

@@ -41,7 +41,7 @@
 #define TM_VWC_VAR_NUM 2
 
 // The main class for the Decagon 5TM
-class Decagon5TM : public  DecagonSDI12
+class Decagon5TM : public DecagonSDI12
 {
 public:
     // Constructors with overloads
@@ -79,7 +79,7 @@ public:
 
 
 // Defines the "Ea/Matric Potential Sensor"
-class Decagon5TM_Ea : public  Variable
+class Decagon5TM_Ea : public Variable
 {
 public:
     Decagon5TM_Ea(Sensor *parentSense)
@@ -91,7 +91,7 @@ public:
 
 
 // Defines the "Temperature Sensor"
-class Decagon5TM_Temp : public  Variable
+class Decagon5TM_Temp : public Variable
 {
 public:
     Decagon5TM_Temp(Sensor *parentSense)
@@ -103,7 +103,7 @@ public:
 
 
 // Defines the "Volumetric Water Content Sensor"
-class Decagon5TM_VWC : public  Variable
+class Decagon5TM_VWC : public Variable
 {
 public:
     Decagon5TM_VWC(Sensor *parentSense)

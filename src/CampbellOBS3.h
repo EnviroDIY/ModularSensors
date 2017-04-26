@@ -36,7 +36,7 @@
 #define OBS3_HR_RESOLUTION 2
 
 // The main class for the Campbell OBS3
-class CampbellOBS3 : public  Sensor
+class CampbellOBS3 : public Sensor
 {
 public:
     // The constructor - need the power pin, the data pin, and the calibration info
@@ -56,7 +56,7 @@ protected:
 // Two different vars are ONLY needed because of the different dreamhost column tags
 // All that is needed for these are the constructors
 // Defines the "Low Turbidity Sensor"
-class CampbellOBS3_Turbidity : public  Variable
+class CampbellOBS3_Turbidity : public Variable
 {
 public:
     CampbellOBS3_Turbidity(Sensor *parentSense)
@@ -68,7 +68,7 @@ public:
 
 
 // Defines the "High Turbidity Sensor"
-class CampbellOBS3_TurbHigh : public  Variable
+class CampbellOBS3_TurbHigh : public Variable
 {
 public:
     CampbellOBS3_TurbHigh(Sensor *parentSense)

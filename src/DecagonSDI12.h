@@ -24,7 +24,7 @@
 #include "SensorBase.h"
 
 // The main class for the Decagon CTD
-class DecagonSDI12 : public  Sensor
+class DecagonSDI12 : public Sensor
 {
 public:
     DecagonSDI12(char SDI12address, int powerPin, int dataPin,

@@ -46,7 +46,7 @@
 #define CTD_DEPTH_VAR_NUM 0
 
 // The main class for the Decagon CTD
-class DecagonCTD : public  DecagonSDI12
+class DecagonCTD : public DecagonSDI12
 {
 public:
     // Constructors with overloads
@@ -66,7 +66,7 @@ public:
 
 
 // Defines the "Conductivity Sensor"
-class DecagonCTD_Cond : public  Variable
+class DecagonCTD_Cond : public Variable
 {
 public:
     DecagonCTD_Cond(Sensor *parentSense)
@@ -78,7 +78,7 @@ public:
 
 
 // Defines the "Temperature Sensor"
-class DecagonCTD_Temp : public  Variable
+class DecagonCTD_Temp : public Variable
 {
 public:
     DecagonCTD_Temp(Sensor *parentSense)
@@ -90,7 +90,7 @@ public:
 
 
 // Defines the "Depth Sensor"
-class DecagonCTD_Depth : public  Variable
+class DecagonCTD_Depth : public Variable
 {
 public:
     DecagonCTD_Depth(Sensor *parentSense)

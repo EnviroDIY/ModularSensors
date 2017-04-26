@@ -28,13 +28,14 @@ SENSOR_STATUS MaxBotixSonar::setup(void)
         digitalWrite(_triggerPin, LOW);
     }
 
-    Serial.print(F("Set up "));  // for debugging
-    Serial.print(getSensorName());  // for debugging
-    Serial.print(F(" attached at "));  // for debugging
-    Serial.print(getSensorLocation());  // for debugging
-    Serial.print(F(" which can return up to "));  // for debugging
-    Serial.print(_numReturnedVars);  // for debugging
-    Serial.println(F(" variable[s]."));  // for debugging
+    // Serial.print(F("Set up "));  // for debugging
+    // Serial.print(getSensorName());  // for debugging
+    // Serial.print(F(" attached at "));  // for debugging
+    // Serial.print(getSensorLocation());  // for debugging
+    // Serial.print(F(" which can return up to "));  // for debugging
+    // Serial.print(_numReturnedVars);  // for debugging
+    // Serial.println(F(" variable[s]."));  // for debugging
+    
     return SENSOR_READY;
 }
 

@@ -185,13 +185,10 @@ void setup()
     Serial.print(SKETCH_NAME);
     Serial.print(F(" on Logger "));
     Serial.println(LoggerID);
-    Serial.print(F("There are "));
-    Serial.print(String(variableCount));
-    Serial.println(F(" variables being recorded"));
 
     // Set the timezone and offsets
     Logger.setTimeZone(TIME_ZONE);
-    Logger.setTZOffset(0);
+    Logger.setTZOffset(TIME_ZONE);  // Because RTC is in UTC
 
     // Initialize the logger;
     Logger.init(SD_SS_PIN, RTC_PIN, variableCount, variableList,

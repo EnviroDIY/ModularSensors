@@ -35,7 +35,7 @@
 
 
 // The main class for the AOSong AM2315
-class AOSongAM2315 : public  Sensor
+class AOSongAM2315 : public Sensor
 {
 public:
     // The constructor - because this is I2C, only need the power pin
@@ -48,7 +48,7 @@ public:
 
 
 // Defines the "Humidity Sensor"
-class AOSongAM2315_Humidity : public  Variable
+class AOSongAM2315_Humidity : public Variable
 {
 public:
     AOSongAM2315_Humidity(Sensor *parentSense) :
@@ -60,7 +60,7 @@ public:
 
 
 // Defines the "Temperature Sensor"
-class AOSongAM2315_Temp : public  Variable
+class AOSongAM2315_Temp : public Variable
 {
 public:
     AOSongAM2315_Temp(Sensor *parentSense) :

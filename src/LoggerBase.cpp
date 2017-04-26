@@ -31,6 +31,7 @@ void LoggerBase::init(int SDCardPin, int interruptPin,
     _interruptRate = round(_loggingIntervalMinutes*60);  // convert to even seconds
     _loggerID = loggerID;
     _autoFileName = false;
+    _isFileNameSet = false;
 
     // Set sleep variable, if an interrupt pin is given
     if(_interruptPin != -1)
@@ -42,11 +43,31 @@ void LoggerBase::init(int SDCardPin, int interruptPin,
 
 // Sets the static timezone
 int LoggerBase::_timeZone = 0;
-void LoggerBase::setTimeZone(int timeZone){ LoggerBase::_timeZone = timeZone; }
+void LoggerBase::setTimeZone(int timeZone)
+{
+    LoggerBase::_timeZone = timeZone;
+    // Some helpful prints for debugging
+    Serial.print(F("Logger timezone is "));
+    if (LoggerBase::_timeZone == 0) Serial.println(F("UTC"));
+    else if (LoggerBase::_timeZone > 0) Serial.print(F("UTC+"));
+    else Serial.print(F("UTC"));
+    if (LoggerBase::_timeZone != 0) Serial.println(LoggerBase::_timeZone);
+
+}
 // Sets the static time adjustment
 int LoggerBase::_offset = 0;
-void LoggerBase::setTZOffset(int offset){
+void LoggerBase::setTZOffset(int offset)
+{
     LoggerBase::_offset = offset;
+    // Some helpful prints for debugging
+    Serial.print(F("RTC timezone is "));
+    if ((LoggerBase::_timeZone - LoggerBase::_offset) == 0)
+        Serial.println(F("UTC"));
+    else if ((LoggerBase::_timeZone - LoggerBase::_offset) > 0)
+        Serial.print(F("UTC+"));
+    else Serial.print(F("UTC"));
+    if ((LoggerBase::_timeZone - LoggerBase::_offset) != 0)
+        Serial.println(LoggerBase::_timeZone - LoggerBase::_offset);
 }
 
 // Sets up a pin for an LED or other way of alerting that data is being logged
@@ -266,10 +287,12 @@ void LoggerBase::setFileName(char *fileName)
 {
     // Save the filename to the static String
     _fileName = fileName;
+    _isFileNameSet = true;
 
     // Print out the file name for debugging
     Serial.print(F("Data will be saved as "));  // for debugging
-    Serial.println(_fileName);  // for debugging
+    Serial.print(_fileName);  // for debugging
+    Serial.print(F("..."));  // for debugging
 }
 
 // Same as above, with a string
@@ -298,34 +321,32 @@ void LoggerBase::setFileName(void)
     setFileName(fileName);
 }
 
-String LoggerBase::getFileName(void)
-{
-    return _fileName;
-}
+String LoggerBase::getFileName(void){return _fileName;}
 
 String LoggerBase::generateFileHeader(void)
 {
+    Serial.println(F("Generating header"));
     String dataHeader = F("Data Logger: ");
-    dataHeader += String(_loggerID);
-    dataHeader += F("\r\n");
-
-    dataHeader += F("\"Date and Time in UTC");
-    dataHeader += _timeZone;
-    dataHeader += F("\", ");
-    for (uint8_t i = 0; i < _variableCount; i++)
-    {
-        dataHeader += F("\"");
-        dataHeader += String(_variableList[i]->parentSensor->getSensorName());
-        dataHeader += F(" - ");
-        dataHeader += String(_variableList[i]->getVarName());
-        dataHeader += F(" (");
-        dataHeader += String(_variableList[i]->getVarUnit());
-        dataHeader += F(")\"");
-        if (i + 1 != _variableCount)
-        {
-            dataHeader += F(", ");
-        }
-    }
+    // dataHeader += String(_loggerID);
+    // dataHeader += F("\r\n");
+    //
+    // dataHeader += F("\"Date and Time in UTC");
+    // dataHeader += _timeZone;
+    // dataHeader += F("\", ");
+    // for (uint8_t i = 0; i < _variableCount; i++)
+    // {
+    //     dataHeader += F("\"");
+    //     dataHeader += _variableList[i]->parentSensor->getSensorName();
+    //     dataHeader += F(" - ");
+    //     dataHeader += _variableList[i]->getVarName();
+    //     dataHeader += F(" (");
+    //     dataHeader += _variableList[i]->getVarUnit();
+    //     dataHeader += F(")\"");
+    //     if (i + 1 != _variableCount)
+    //     {
+    //         dataHeader += F(", ");
+    //     }
+    // }
     return dataHeader;
 }
 
@@ -351,6 +372,10 @@ void LoggerBase::setupLogFile(void)
         Serial.print(F("Successfully connected to SD Card with card/slave select on pin "));  // for debugging
         Serial.println(_SDCardPin);  // for debugging
     }
+
+    if(!_isFileNameSet){setFileName();}
+    else if(_autoFileName){setFileName();}
+    else setFileName(_fileName);  // This just for a nice print-out
 
     // Convert the string filename to a character file name for SdFat
     int fileNameLength = _fileName.length() + 1;
@@ -380,10 +405,12 @@ void LoggerBase::setupLogFile(void)
                                 rtc.makeDateTime(getNow()).hour(),
                                 rtc.makeDateTime(getNow()).minute(),
                                 rtc.makeDateTime(getNow()).second());
-    Serial.println(F("File created!"));  // for debugging
+    Serial.println(F("   ... File created!"));  // for debugging
 
     // Add header information
-    logFile.println(generateFileHeader());
+    Serial.println(F("Going to generate header"));  // for debugging
+    delay(500);
+    // logFile.println(generateFileHeader());
     Serial.println(generateFileHeader());  // for debugging
 
     //Close the file to save it
@@ -408,7 +435,6 @@ void LoggerBase::logToSD(String rec)
     if (!logFile.open(charFileName, O_WRITE | O_AT_END))
     {
         Serial.println(F("SD Card File Lost!  Starting new file."));  // for debugging
-        if(_autoFileName){setFileName();}
         setupLogFile();
     }
 
@@ -458,11 +484,9 @@ void LoggerBase::begin(void)
     Serial.println(F(" variables being recorded."));
 
     // Set up the sensors
-    Serial.println(F("Setting up sensors."));
     setupSensors();
 
     // Set up the log file
-    setFileName();
     setupLogFile();
 
     // Setup timer events

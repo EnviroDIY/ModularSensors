@@ -80,6 +80,8 @@ bool VariableArray::setupSensors(void)
     bool sensorSuccess = false;
     int setupTries = 0;
 
+    Serial.print(F("Beginning setup for sensors and variables..."));
+
     // First setup the sensors
     for (int i = 0; i < _variableCount; i++)
     {
@@ -91,11 +93,17 @@ bool VariableArray::setupSensors(void)
             // this should be OK because setup is only run in the setup, not
             // repeatedly. It is not possible to check for repeated sensors in
             // the variable list until after the sensors have all been
-            // registered and then all of the variables attached.
+            // setup and then all of the variables attached.
             sensorSuccess = _variableList[i]->parentSensor->setup();
 
             if(sensorSuccess) break;
             else setupTries++;
+        }
+        if (!sensorSuccess)
+        {
+            Serial.print(F("   ... Set up of "));
+            Serial.print(_variableList[i]->getDreamHost());
+            Serial.println(F(" failed!"));
         }
         success &= sensorSuccess;
     }
@@ -104,7 +112,11 @@ bool VariableArray::setupSensors(void)
     for (int i = 0; i < _variableCount; i++){
         success &= _variableList[i]->setup();
     }
+
+    if (success)
+        Serial.println(F("   ... Success!"));
     return success;
+
 }
 
 bool VariableArray::sensorsSleep(void)
