@@ -15,10 +15,13 @@
 //  The class and functions for interfacing with an array of variables.
 // ============================================================================
 
-// Constructor
+// Initialization - cannot do this in constructor arduino has issues creating
+// instances of classes with non-empty constructors
 void VariableArray::init(int variableCount, Variable *variableList[])
 {
-    Serial.println(F("Initializing varible array"));  // for debugging
+    Serial.print(F("Initializing varible array with "));  // for debugging
+    Serial.print(variableCount);  // for debugging
+    Serial.println(F(" variables..."));  // for debugging
     _variableCount = variableCount;
     _variableList = variableList;
 };

@@ -32,6 +32,8 @@ public:
               float loggingIntervalMinutes,
               const char *loggerID = 0)
     {
+        Serial.println(F("Initializing logger..."));
+        
         _SDCardPin = SDCardPin;
         _interruptPin = interruptPin;
         _variableCount = variableCount;
