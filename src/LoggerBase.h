@@ -32,8 +32,10 @@ public:
               float loggingIntervalMinutes,
               const char *loggerID = 0)
     {
-        Serial.println(F("Initializing logger..."));
-        
+        Serial.print(F("Initializing varible array with "));  // for debugging
+        Serial.print(variableCount);  // for debugging
+        Serial.println(F(" variables..."));  // for debugging
+
         _SDCardPin = SDCardPin;
         _interruptPin = interruptPin;
         _variableCount = variableCount;
@@ -344,28 +346,27 @@ public:
     virtual String generateFileHeader(void)
     {
         Serial.println(F("Generating header"));
-        delay(500);
         String dataHeader = F("Data Logger: ");
-        // dataHeader += String(_loggerID);
-        // dataHeader += F("\r\n");
-        //
-        // dataHeader += F("\"Date and Time in UTC");
-        // dataHeader += _timeZone;
-        // dataHeader += F("\", ");
-        // for (uint8_t i = 0; i < _variableCount; i++)
-        // {
-        //     dataHeader += F("\"");
-        //     dataHeader += _variableList[i]->parentSensor->getSensorName();
-        //     dataHeader += F(" - ");
-        //     dataHeader += _variableList[i]->getVarName();
-        //     dataHeader += F(" (");
-        //     dataHeader += _variableList[i]->getVarUnit();
-        //     dataHeader += F(")\"");
-        //     if (i + 1 != _variableCount)
-        //     {
-        //         dataHeader += F(", ");
-        //     }
-        // }
+        dataHeader += String(_loggerID);
+        dataHeader += F("\r\n");
+
+        dataHeader += F("\"Date and Time in UTC");
+        dataHeader += _timeZone;
+        dataHeader += F("\", ");
+        for (uint8_t i = 0; i < _variableCount; i++)
+        {
+            dataHeader += F("\"");
+            dataHeader += _variableList[i]->parentSensor->getSensorName();
+            dataHeader += F(" - ");
+            dataHeader += _variableList[i]->getVarName();
+            dataHeader += F(" (");
+            dataHeader += _variableList[i]->getVarUnit();
+            dataHeader += F(")\"");
+            if (i + 1 != _variableCount)
+            {
+                dataHeader += F(", ");
+            }
+        }
         return dataHeader;
     }
 
@@ -499,9 +500,6 @@ public:
         // Print a start-up note to the first serial port
         Serial.print(F("Current RTC time is: "));
         Serial.println(formatDateTime_ISO8601(getNow()));
-        Serial.print(F("There are "));
-        Serial.print(String(_variableCount));
-        Serial.println(F(" variables being recorded."));
 
         // Set up the sensors
         setupSensors();
