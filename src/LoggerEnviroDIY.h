@@ -30,29 +30,29 @@ public:
     void setUUIDs(const char *UUIDs[])
     { _UUIDs = UUIDs; }
 
-    // This adds extra data to the datafile header
-    String generateFileHeader(void) override
-    {
-        String dataHeader = "";
-        dataHeader += LoggerBase::generateFileHeader();
-        dataHeader += F("\r\n");
-
-        // Add additional UUID information
-        dataHeader += F("\"Sampling Feature: ");
-        dataHeader += _samplingFeature;
-        dataHeader += F("\"");
-        for (uint8_t i = 0; i < _variableCount; i++)
-        {
-            dataHeader += F("\"");
-            dataHeader += String(_UUIDs[i]);
-            dataHeader += F("\"");
-            if (i + 1 != _variableCount)
-            {
-                dataHeader += F(", ");
-            }
-        }
-        return dataHeader;
-    }
+    // // This adds extra data to the datafile header
+    // String generateFileHeader(void) override
+    // {
+    //     String dataHeader = "";
+    //     dataHeader += LoggerBase::generateFileHeader();
+    //     dataHeader += F("\r\n");
+    //
+    //     // Add additional UUID information
+    //     dataHeader += F("\"Sampling Feature: ");
+    //     dataHeader += _samplingFeature;
+    //     dataHeader += F("\"");
+    //     for (uint8_t i = 0; i < _variableCount; i++)
+    //     {
+    //         dataHeader += F("\"");
+    //         dataHeader += String(_UUIDs[i]);
+    //         dataHeader += F("\"");
+    //         if (i + 1 != _variableCount)
+    //         {
+    //             dataHeader += F(", ");
+    //         }
+    //     }
+    //     return dataHeader;
+    // }
 
     // This generates a properly formatted JSON for EnviroDIY
     String generateSensorDataJSON(void)

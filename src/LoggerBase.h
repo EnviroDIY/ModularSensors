@@ -137,31 +137,6 @@ public:
         return formatDateTime_ISO8601(dt);
     }
 
-    // This checks to see if the current time is an even interval of the logging rate
-    // or we're in the first 15 minutes of logging
-    bool checkInterval(void)
-    {
-        bool retval;
-        // Serial.println(getNow());  // for Debugging
-        // Serial.println(getNow() % _interruptRate);  // for Debugging
-        // Serial.println(LoggerBase::_numReadings);  // for Debugging
-        // Serial.println( getNow() % 60);  // for Debugging
-        if ((getNow() % _interruptRate == 0 ) or
-            (LoggerBase::_numReadings < 10 and getNow() % 120 == 0))
-        {
-            // Update the number of readings taken
-            LoggerBase::_numReadings ++;
-            // Serial.println(F("Time to log!"));  // for Debugging
-            retval = true;
-        }
-        else
-        {
-            // Serial.println(F("Not time yet, back to sleep"));  // for Debugging
-            retval = false;
-        }
-        return retval;
-    }
-
     // This sets static variables for the date/time - this is needed so that all
     // data outputs (SD, EnviroDIY, serial printing, etc) print the same time
     // for updating the sensors - even though the routines to update the sensors
@@ -174,6 +149,33 @@ public:
       markedEpochTime = getNow();
       markedDateTime = rtc.makeDateTime(markedEpochTime);
       formatDateTime_ISO8601(markedDateTime).toCharArray(markedISO8601Time, 26);
+    }
+
+    // This checks to see if the current time is an even interval of the logging rate
+    // or we're in the first 15 minutes of logging
+    bool checkInterval(void)
+    {
+        bool retval;
+        // Serial.println(getNow());  // for Debugging
+        // Serial.println(getNow() % _interruptRate);  // for Debugging
+        // Serial.println(_numReadings);  // for Debugging
+        // Serial.println(getNow() % 120);  // for Debugging
+        if ((getNow() % _interruptRate == 0 ) or
+            (_numReadings < 10 and getNow() % 120 == 0))
+        {
+            // Update the time variables with the current time
+            markTime();
+            // Update the number of readings taken
+            _numReadings ++;
+            // Serial.println(F("Time to log!"));  // for Debugging
+            retval = true;
+        }
+        else
+        {
+            // Serial.println(F("Not time yet, back to sleep"));  // for Debugging
+            retval = false;
+        }
+        return retval;
     }
 
 
@@ -215,7 +217,7 @@ public:
 
     // Set up the Interrupt Service Request for waking
     // In this case, we're doing nothing
-    // This must be a static function!
+    // This must be a static function (which means it can only call other static funcions.)
     static void wakeISR(void){}
 
     // Sets up the sleep mode
@@ -245,12 +247,9 @@ public:
     }
 
     // Puts the system to sleep to conserve battery life.
+    // This DOES NOT sleep or wake the sensors!!
     void systemSleep(void)
     {
-        // Serial.println(F("Putting system to sleep."));  // For debugging
-        // This method handles any sensor specific sleep
-        sensorsSleep();
-
         // Wait until the serial ports have finished transmitting
         // This does not clear their buffers, it just waits until they are finished
         // TODO:  Make sure can find all serial ports
@@ -286,12 +285,11 @@ public:
         sleep_cpu();
 
         // Serial.println(F("Waking up!"));  // For debugging
+        // Serial.println(getNow());  // for Debugging
         // Clear the SE (sleep enable) bit.
         sleep_disable();
         // Re-enable the processor ADC
         ADCSRA |= _BV(ADEN);
-        // This method handles any sensor specific wake-up
-        sensorsWake();
     }
 
     // ===================================================================== //
@@ -344,6 +342,7 @@ public:
     virtual String generateFileHeader(void)
     {
         Serial.println(F("Generating header"));
+        delay(500);
         String dataHeader = F("Data Logger: ");
         // dataHeader += String(_loggerID);
         // dataHeader += F("\r\n");
@@ -429,7 +428,7 @@ public:
         // Add header information
         Serial.println(F("Going to generate header"));  // for debugging
         delay(500);
-        // logFile.println(generateFileHeader());
+        logFile.println(generateFileHeader());
         Serial.println(generateFileHeader());  // for debugging
 
         //Close the file to save it
@@ -514,7 +513,7 @@ public:
         // Setup sleep mode
         if(_sleep){setupSleep();}
 
-        Serial.println(F("Setup finished!"));
+        Serial.println(F("Logger setup finished!"));
         Serial.println(F("------------------------------------------\n"));
     }
 
@@ -534,8 +533,10 @@ public:
             // Turn on the LED to show we're taking a reading
             digitalWrite(_ledPin, HIGH);
 
-            // Update the time variables with the current time
-            markTime();
+            // Wake up all of the sensors
+            // I'm not doing as part of sleep b/c it may take up to a second or
+            // two for them all to wake which throws off the checkInterval()
+            sensorsWake();
             // Update the values from all attached sensors
             updateAllSensors();
             // Immediately put sensors to sleep to save power
