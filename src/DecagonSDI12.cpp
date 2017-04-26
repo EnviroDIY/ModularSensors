@@ -33,7 +33,7 @@ DecagonSDI12::DecagonSDI12(int SDI12address, int powerPin, int dataPin,
                            String sensName, int numMeasurements)
     : Sensor(powerPin, dataPin, sensName, numMeasurements)
 {
-    _SDI12address = SDI12address;
+    _SDI12address = SDI12address + '0';
     _numReadings = numReadings;
 }
 
