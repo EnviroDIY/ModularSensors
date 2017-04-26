@@ -17,7 +17,7 @@
 #include "ModemSupport.h"
 
 // Defines the "Logger" Class
-class LoggerEnviroDIY : public virtual LoggerBase
+class LoggerEnviroDIY : public LoggerBase
 {
 public:
     // Set up communications
@@ -31,7 +31,7 @@ public:
     { _UUIDs = UUIDs; }
 
     // // This adds extra data to the datafile header
-    String generateFileHeader(void) override
+    String generateFileHeader(void)
     {
         String dataHeader = "";
         dataHeader += LoggerBase::generateFileHeader();

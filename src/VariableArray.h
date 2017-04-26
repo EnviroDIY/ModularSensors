@@ -164,7 +164,7 @@ public:
     }
 
     // This generates a comma separated list of sensor values WITHOUT TIME STAMP
-    virtual String generateSensorDataCSV(void)
+    String generateSensorDataCSV(void)
     {
         String csvString = F("");
 

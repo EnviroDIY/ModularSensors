@@ -343,7 +343,7 @@ public:
     String getFileName(void){return _fileName;}
 
     // This creates a header for the logger file
-    virtual String generateFileHeader(void)
+    String generateFileHeader(void)
     {
         Serial.println(F("Generating header"));
         String dataHeader = F("Data Logger: ");
@@ -371,7 +371,7 @@ public:
     }
 
     // This generates a comma separated list of volues of sensor data - including the time
-    String generateSensorDataCSV(void) override
+    String generateSensorDataCSV(void)
     {
         String csvString = "";
         LoggerBase::markedDateTime.addToString(csvString);
