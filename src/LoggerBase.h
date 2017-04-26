@@ -345,7 +345,6 @@ public:
     // This creates a header for the logger file
     String generateFileHeader(void)
     {
-        Serial.println(F("Generating header"));
         String dataHeader = F("Data Logger: ");
         dataHeader += String(_loggerID);
         dataHeader += F("\r\n");
@@ -429,10 +428,8 @@ public:
         Serial.println(F("   ... File created!"));  // for debugging
 
         // Add header information
-        Serial.println(F("Going to generate header"));  // for debugging
-        delay(500);
         logFile.println(generateFileHeader());
-        Serial.println(generateFileHeader());  // for debugging
+        // Serial.println(generateFileHeader());  // for debugging
 
         //Close the file to save it
         logFile.close();

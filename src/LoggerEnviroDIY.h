@@ -141,19 +141,21 @@ public:
             // Print a line to show new reading
             Serial.println(F("------------------------------------------"));  // for debugging
             // Turn on the LED to show we're taking a reading
-            digitalWrite(LoggerBase::_ledPin, HIGH);
+            digitalWrite(_ledPin, HIGH);
 
             // Turn on the modem to let it start searching for the network
             LoggerEnviroDIY::modem.modemOnOff->on();
 
-            // Update the time variables with the current time
-            markTime();
+            // Wake up all of the sensors
+            // I'm not doing as part of sleep b/c it may take up to a second or
+            // two for them all to wake which throws off the checkInterval()
+            sensorsWake();
             // Update the values from all attached sensors
             updateAllSensors();
             // Immediately put sensors to sleep to save power
             sensorsSleep();
 
-            //Save the data record to the log file
+            // Create a csv data record and save it to the log file
             logToSD(generateSensorDataCSV());
 
             // Connect to the network
@@ -170,15 +172,15 @@ public:
             modem.disconnectNetwork();
 
             // Turn on the modem off
-            LoggerEnviroDIY::modem.modemOnOff->off();
+            modem.modemOnOff->off();
 
             // Turn off the LED
-            digitalWrite(LoggerBase::_ledPin, LOW);
+            digitalWrite(_ledPin, LOW);
             // Print a line to show reading ended
             Serial.println(F("------------------------------------------\n"));  // for debugging
         }
 
-        //Sleep
+        // Sleep
         if(_sleep){systemSleep();}
     }
 

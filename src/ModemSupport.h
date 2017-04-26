@@ -13,9 +13,12 @@
 
 #include <Arduino.h>
 
-#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
+#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
+    defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
+    defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || \
+    defined(TINY_GSM_MODEM_XBEE)
   #define USE_TINY_GSM
-  // #define TINY_GSM_DEBUG Serial
+  #define TINY_GSM_DEBUG Serial
   #define TINY_GSM_YIELD() { delay(3);}
   #include <TinyGsmClient.h>
 #endif
@@ -347,11 +350,9 @@ public:
         #if defined(TINY_GSM_MODEM_XBEE)
         if (_ssid)
         {
-        #endif
-            #if defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
             if(!modemOnOff->isOn())modemOnOff->on();
             Serial.println(F("\nConnecting to WiFi network..."));  // For debugging
-            if (!_modem->waitForNetwork(45000L)){
+            if (!_modem->waitForNetwork(15000L)){
                 Serial.println("... Connection failed.  Resending credentials...");  // For debugging
                 _modem->networkConnect(_ssid, _pwd);
                 if (!_modem->waitForNetwork(45000L)){
@@ -360,13 +361,21 @@ public:
             } else {
                 retVal = true;
             }
-            #endif
-        #if defined(TINY_GSM_MODEM_XBEE)
         }
         else
         {
         #endif
-        #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_XBEE)
+        #if defined(TINY_GSM_MODEM_ESP8266)
+        if(!modemOnOff->isOn())modemOnOff->on();
+        Serial.println(F("\nConnecting to WiFi network..."));  // For debugging
+            if(!_modem->networkConnect(_ssid, _pwd)){
+                Serial.println("... Connection failed");  // For debugging
+            }
+            // The ESP8266 doesn't have a way of saying if it's connected or not
+        #endif
+        #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
+            defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
+            defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_XBEE)
             if(!modemOnOff->isOn())modemOnOff->on();
             Serial.println(F("\nWaiting for cellular network..."));  // For debugging
             if (!_modem->waitForNetwork(45000L)){
@@ -385,7 +394,9 @@ public:
 
     void disconnectNetwork(void)
     {
-    #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_XBEE)
+    #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
+        defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
+        defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_XBEE)
         _modem->gprsDisconnect();
     #endif
     }

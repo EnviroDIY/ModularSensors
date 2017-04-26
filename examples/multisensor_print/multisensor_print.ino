@@ -264,6 +264,8 @@ void loop()
     Serial.print(F("Updated all sensors at "));
     Serial.println(getDateTime_ISO8601());
     sensors.printSensorData(&Serial);
+    Serial.print(F("In CSV Format:  "));
+    Serial.println(sensors.generateSensorDataCSV());
     // Turn off the LED to show we're done with the reading
     digitalWrite(GREEN_LED, LOW);
     // Print a to close it off
