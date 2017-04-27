@@ -7,8 +7,8 @@
  *This file is for the Decagon Devices ES-2 Electrical Conductivity Sensor
  *It is dependent on the EnviroDIY SDI-12 library and the DecagonSDI12 super class.
  *
- *Documentation for the SDI-12 Protocol commands and responses
- *for the Decagon 5TM can be found at:
+ *Documentation fo the SDI-12 Protocol commands and responses
+ *for the Decagon ES-2 can be found at:
  * http://manuals.decagon.com/Integration%20Guides/ES-2%20Integrators%20Guide.pdf
  *
  * For Specific Conductance:
@@ -26,44 +26,56 @@
 #define DecagonES2_h
 
 #include "DecagonSDI12.h"
+#include "VariableBase.h"
 
 #define ES2_NUM_MEASUREMENTS 2
+
 #define ES2_COND_RESOLUTION 0
+#define ES2_COND_VAR_NUM 0
+
 #define ES2_TEMP_RESOLUTION 1
+#define ES2_TEMP_VAR_NUM 1
 
 // The main class for the Decagon ES-2
-class DecagonES2 : public virtual DecagonSDI12
+class DecagonES2 : public DecagonSDI12
 {
 public:
-    DecagonES2(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
-
-    bool update(void) override;
-
-    virtual float getValue(void) = 0;
-protected:
-    static unsigned long sensorLastUpdated;
-    static float sensorValue_cond;
-    static float sensorValue_temp;
+    // Constructors with overloads
+    DecagonES2(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
+                    F("DecagonES2"), ES2_NUM_MEASUREMENTS)
+    {}
+    DecagonES2(char *SDI12address, int powerPin, int dataPin, int numReadings = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
+                    F("DecagonES2"), ES2_NUM_MEASUREMENTS)
+    {}
+    DecagonES2(int SDI12address, int powerPin, int dataPin, int numReadings = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
+                    F("DecagonES2"), ES2_NUM_MEASUREMENTS)
+    {}
 };
 
 
 // Defines the "Conductivity Sensor"
-class DecagonES2_Cond : public virtual DecagonES2
+class DecagonES2_Cond : public Variable
 {
 public:
-    DecagonES2_Cond(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
-
-    float getValue(void) override;
+    DecagonES2_Cond(Sensor *parentSense)
+     : Variable(parentSense, ES2_COND_VAR_NUM,
+                F("specificConductance"), F("microsiemenPerCentimeter"),
+                ES2_COND_RESOLUTION, F("ES2Cond"))
+    {}
 };
 
-
 // Defines the "Temperature Sensor"
-class DecagonES2_Temp : public virtual DecagonES2
+class DecagonES2_Temp : public Variable
 {
 public:
-    DecagonES2_Temp(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
-
-    float getValue(void) override;
+    DecagonES2_Temp(Sensor *parentSense)
+     : Variable(parentSense, ES2_TEMP_VAR_NUM,
+                F("temperature"), F("degreeCelsius"),
+                ES2_TEMP_RESOLUTION, F("ES2temp"))
+    {}
 };
 
 #endif

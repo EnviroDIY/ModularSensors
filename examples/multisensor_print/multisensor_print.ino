@@ -19,18 +19,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ---------------------------------------------------------------------------
 #include <Arduino.h>
 #include <Sodaq_DS3231.h>    // Controls the DS3231 Real Time Clock (RTC) built into the EnviroDIY Mayfly.
-
-#include <SensorBase.h>
-
-#include <DecagonCTD.h>
-#include <Decagon5TM.h>
-#include <DecagonES2.h>
-#include <CampbellOBS3.h>
-#include <MaxBotixSonar.h>
-#include <MaximDS18.h>
-#include <AOSongAM2315.h>
-#include <BoschBME280.h>
-#include <MayflyOnboardSensors.h>
+#include <VariableArray.h>
 
 // ---------------------------------------------------------------------------
 // Set up the sensor specific information
@@ -39,81 +28,110 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // The name of this file
 const char *SKETCH_NAME = "modular_sensors.ino";
 
-// Mayfly version number
-const char *MFVersion = "v0.3";
-
 // Your logger's timezone.
 const int TIME_ZONE = -5;
-// Decagon CTD: pin settings
-// sdi-12 data pin is usually, pin 7 on shield 3.0
-const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
-const int numberReadings = 10;  // The number of readings to average
-const int SDI12Data = 7;  // The pin the CTD is attached to
-const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
+// Create a new sensor array instance
+VariableArray sensors;
 
-// Decagon 5TM: pin settings
-// sdi-12 data pin is usually, pin 7 on shield 3.0
-const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
-// const int SDI12Data = 7;  // The pin the 5TM is attached to
-// const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
+// ==========================================================================
+//    AOSong AM2315
+// ==========================================================================
+#include <AOSongAM2315.h>
+// Campbell OBS 3+ Low Range calibration in Volts
+const int I2CPower = 22;  // switched sensor power is pin 22 on Mayfly
+AOSongAM2315 am2315(I2CPower);
 
-// Decagon ES2: pin settings
-// sdi-12 data pin is usually, pin 7 on shield 3.0
-const char *ES2SDI12address = "3";  // The SDI-12 Address of the 5-TM
-// const int SDI12Data = 7;  // The pin the 5TM is attached to
-// const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
 
-// MaxBotix Sonar: pin settings
-const int SonarData = 10;     // data  pin
-// const int SonarPower = 22;   // excite (power) pin
-const int SonarTrigger = -1;   // Trigger pin
-
-// Campbell OBS 3+: pin settings
+// ==========================================================================
+//    CAMPBELL OBS 3 / OBS 3+
+// ==========================================================================
+#include <CampbellOBS3.h>
 // Campbell OBS 3+ Low Range calibration in Volts
 const int OBSLowPin = 0;  // The low voltage analog pin
 const float OBSLow_A = 4.0749E+00;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = 9.1011E+01;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibration
+const int OBS3Power = 22;  // switched sensor power is pin 22 on Mayfly
+CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C);
 // Campbell OBS 3+ High Range calibration in Volts
 const int OBSHighPin = 1;  // The high voltage analog pin
 const float OBSHigh_A = 5.2996E+01;  // The "A" value (X^2) from the high range calibration
 const float OBSHigh_B = 3.7828E+02;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calibration
-// const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
+CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
 
-// MaximDS18: pin settings
-DeviceAddress DS18Address{0x28, 0xFF, 0xB6, 0x6E, 0x84, 0x16, 0x05, 0x9B};
-const int DS18data = 5;     // data  pin
-// const int DS18Power = 22;   // excite (power) pin
+
+// ==========================================================================
+//    Decagon 5TM
+// ==========================================================================
+#include <Decagon5TM.h>
+const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
+const int SDI12Data = 7;  // The pin the 5TM is attached to
+const int SDI12Power = 22;  // switched sensor power is pin 22 on Mayfly
+Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
+
+
+// ==========================================================================
+//    Decagon CTD
+// ==========================================================================
+#include <DecagonCTD.h>
+const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
+const int numberReadings = 10;  // The number of readings to average
+// const int SDI12Data = 7;  // The pin the CTD is attached to
+// const int SDI12Power = 22;  // switched sensor power is pin 22 on Mayfly
+DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
+
+
+// ==========================================================================
+//    Decagon ES2
+// ==========================================================================
+#include <DecagonES2.h>
+const char *ES2SDI12address = "3";  // The SDI-12 Address of the ES2
+// const int SDI12Data = 7;  // The pin the 5TM is attached to
+// const int SDI12Power = 22;  // switched sensor power is pin 22 on Mayfly
+DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data);
+
+
+// ==========================================================================
+//    Maxbotix HRXL
+// ==========================================================================
+#include <MaxBotixSonar.h>
+const int SonarData = 11;     // data  pin
+const int SonarTrigger = -1;   // Trigger pin
+const int SonarPower = 22;   // excite (power) pin
+MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger) ;
+
+
+// ==========================================================================
+//    EnviroDIY Mayfly
+// ==========================================================================
+#include <MayflyOnboardSensors.h>
+const char *MFVersion = "v0.3";
+EnviroDIYMayfly mayfly(MFVersion) ;
 
 // ---------------------------------------------------------------------------
-// 3. The array that contains all valid sensors
+// The array that contains all valid variables
 // ---------------------------------------------------------------------------
-SensorBase *SENSOR_LIST[] = {
-    new DecagonCTD_Depth(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
-    new DecagonCTD_Temp(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
-    new DecagonCTD_Cond(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
-    new Decagon5TM_Ea(*TMSDI12address, switchedPower, SDI12Data),
-    new Decagon5TM_Temp(*TMSDI12address, switchedPower, SDI12Data),
-    new Decagon5TM_VWC(*TMSDI12address, switchedPower, SDI12Data),
-    new DecagonES2_Cond(*ES2SDI12address, switchedPower, SDI12Data),
-    new DecagonES2_Temp(*ES2SDI12address, switchedPower, SDI12Data),
-    new MaxBotixSonar_Range(switchedPower, SonarData, SonarTrigger),
-    new CampbellOBS3_Turbidity(switchedPower, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C),
-    new CampbellOBS3_TurbHigh(switchedPower, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C),
-    new MaximDS18_Temp(DS18Address, switchedPower, DS18data),
-    new AOSongAM2315_Temp(switchedPower),
-    new AOSongAM2315_Humidity(switchedPower),
-    new BoschBME280_Temp(switchedPower),
-    new BoschBME280_Humidity(switchedPower),
-    new BoschBME280_Pressure(switchedPower),
-    new BoschBME280_Altitude(switchedPower),
-    new MayflyOnboardTemp(MFVersion),
-    new MayflyOnboardBatt(MFVersion),
-    new MayflyFreeRam()
-    // new YOUR_sensorName_HERE()
+Variable *variableList[] = {
+    new AOSongAM2315_Humidity(&am2315),
+    new AOSongAM2315_Temp(&am2315),
+    new CampbellOBS3_Turbidity(&osb3low),
+    new CampbellOBS3_TurbHigh(&osb3high),
+    new Decagon5TM_Ea(&fivetm),
+    new Decagon5TM_Temp(&fivetm),
+    new Decagon5TM_VWC(&fivetm),
+    new DecagonCTD_Cond(&ctd),
+    new DecagonCTD_Temp(&ctd),
+    new DecagonCTD_Depth(&ctd),
+    new DecagonES2_Cond(&es2),
+    new DecagonES2_Temp(&es2),
+    new MaxBotixSonar_Range(&sonar),
+    new EnviroDIYMayfly_Temp(&mayfly),
+    new EnviroDIYMayfly_Batt(&mayfly),
+    new EnviroDIYMayfly_FreeRam(&mayfly)
+    // new YOUR_variableName_HERE(&)
 };
-int sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
+int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 
 // ---------------------------------------------------------------------------
@@ -122,9 +140,6 @@ int sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
 const int SERIAL_BAUD = 9600;  // Serial port BAUD rate
 const int GREEN_LED = 8;  // Pin for the green LED
 const int RED_LED = 9;  // Pin for the red LED
-
-// Variables for the timer function
-long currentepochtime = 0;
 
 
 // ---------------------------------------------------------------------------
@@ -147,6 +162,7 @@ void greenred4flash()
 
 // Helper function to get the current date/time from the RTC
 // as a unix timestamp - and apply the correct time zone.
+long currentepochtime = 0;
 uint32_t getNow()
 {
   currentepochtime = rtc.now().getEpoch();
@@ -188,9 +204,6 @@ String getDateTime_ISO8601(void)
   return dateTimeStr;
 }
 
-// Create a new sensor array instance
-SensorArray sensors;
-
 
 // ---------------------------------------------------------------------------
 // Main setup function
@@ -211,19 +224,16 @@ void setup()
     greenred4flash();
 
     // Print a start-up note to the first serial port
-    Serial.println(F("WebSDL Device: EnviroDIY Mayfly"));
     Serial.print(F("Now running "));
     Serial.println(SKETCH_NAME);
     Serial.print(F("Current Mayfly RTC time is: "));
     Serial.println(getDateTime_ISO8601());
-
-    // Count the number of sensors
     Serial.print(F("There are "));
-    Serial.print(String(sensorCount));
+    Serial.print(String(variableCount));
     Serial.println(F(" variables being recorded"));
 
     // Initialize the sensor array;
-    sensors.init(sensorCount, SENSOR_LIST);
+    sensors.init(variableCount, variableList);
 
     // Set up all the sensors
     sensors.setupSensors();
@@ -241,21 +251,23 @@ void loop()
     // Print a line to show new reading
     Serial.println(F("------------------------------------------"));
     // Power the sensors;
-    digitalWrite(switchedPower, HIGH);
+    digitalWrite(22, HIGH);
     // One second warm-up time
     delay(1000);
     // Turn on the LED to show we're taking a reading
     digitalWrite(GREEN_LED, HIGH);
     // Update the sensor value(s)
     sensors.updateAllSensors();
+    // Immediately cut Power to the sensors;
+    digitalWrite(22, LOW);
     // Print the data to the screen
     Serial.print(F("Updated all sensors at "));
     Serial.println(getDateTime_ISO8601());
     sensors.printSensorData(&Serial);
+    Serial.print(F("In CSV Format:  "));
+    Serial.println(sensors.generateSensorDataCSV());
     // Turn off the LED to show we're done with the reading
     digitalWrite(GREEN_LED, LOW);
-    // Cut Power to the sensors;
-    digitalWrite(switchedPower, LOW);
     // Print a to close it off
     Serial.println(F("------------------------------------------\n"));
 

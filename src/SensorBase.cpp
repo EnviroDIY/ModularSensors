@@ -7,48 +7,40 @@
  *This file is for the sensor base class.
 */
 
-#include <Arduino.h>
 #include "SensorBase.h"
+#include "VariableBase.h"
+
+// ============================================================================
+//  The class and functions for interfacing with a sensor
+// ============================================================================
 
 // The constructor
-SensorBase::SensorBase(int dataPin, int powerPin, String sensorName,
-           String varName, String varUnit, unsigned int decimalResolution, String dreamHost)
+Sensor::Sensor(int powerPin, int dataPin, String sensorName, int numReturnedVars)
 {
     _powerPin = powerPin;
     _dataPin = dataPin;
     _sensorName = sensorName;
-    _varName = varName;
-    _varUnit = varUnit;
-    _decimalResolution = decimalResolution;
-    _dreamHost = dreamHost;
+    _numReturnedVars = numReturnedVars;
+
+    // Clear arrays
+    variables[MAX_NUMBER_VARS] = {0};
+    sensorValues[MAX_NUMBER_VARS] = {0};
 }
 
 // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
-String SensorBase::getSensorLocation(void){return String(_dataPin);}
-// This returns the name of the sensor.
-String SensorBase::getSensorName(void){return _sensorName;}
-// This returns the variable's name using http://vocabulary.odm2.org/variablename/
-String SensorBase::getVarName(void){return _varName;}
-// This returns the variable's unit using http://vocabulary.odm2.org/units/
-String SensorBase::getVarUnit(void){return _varUnit;}
-// This returns the dreamhost PHP tag - for old SWRC dreamhost system
-String SensorBase::getDreamHost(void){return _dreamHost;}
-// This returns the current value of the variable as a string with the correct number of significant figures
-String SensorBase::getValueString(void)
+String Sensor::getSensorLocation(void)
 {
-    // Need this because otherwise get extra spaces in strings from int
-    if (_decimalResolution == 0)
-    {
-        int val = int(getValue());
-        return String(val);
-    }
-    else
-    {return String(getValue(), _decimalResolution);}
+    String senseLoc = F("Pin");
+    senseLoc +=String(_dataPin);
+    return senseLoc;
 }
+
+// This returns the name of the sensor.
+String Sensor::getSensorName(void){return _sensorName;}
 
 
 // This is a helper function to check if the power needs to be turned on
-bool SensorBase::checkPowerOn(void)
+bool Sensor::checkPowerOn(void)
 {
     int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
     if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
@@ -64,7 +56,7 @@ bool SensorBase::checkPowerOn(void)
 }
 
 // This is a helper function to turn on sensor power
-void SensorBase::powerUp(void)
+void Sensor::powerUp(void)
 {
     // Serial.println(F("Powering on Sensor"));  // For debugging
     digitalWrite(_powerPin, HIGH);
@@ -72,7 +64,7 @@ void SensorBase::powerUp(void)
 }
 
 // This is a helper function to turn off sensor power
-void SensorBase::powerDown(void)
+void Sensor::powerDown(void)
 {
     // Serial.println(F("Turning off Power"));  // For debugging
     digitalWrite(_powerPin, LOW);
@@ -81,21 +73,43 @@ void SensorBase::powerDown(void)
 
 // The function to set up connection to a sensor.
 // By default, sets pin modes and returns ready
-SENSOR_STATUS SensorBase::setup(void)
+SENSOR_STATUS Sensor::setup(void)
 {
     pinMode(_powerPin, OUTPUT);
     pinMode(_dataPin, INPUT);
     digitalWrite(_powerPin, LOW);
+
+    // Serial.print(F("Set up "));  // for debugging
+    // Serial.print(getSensorName());  // for debugging
+    // Serial.print(F(" attached at "));  // for debugging
+    // Serial.print(getSensorLocation());  // for debugging
+    // Serial.print(F(" which can return up to "));  // for debugging
+    // Serial.print(_numReturnedVars);  // for debugging
+    // Serial.println(F(" variable[s]."));  // for debugging
+
     return SENSOR_READY;
 }
 
 // The function to return the status of a sensor
 // By default, simply returns ready
-SENSOR_STATUS SensorBase::getStatus(void){return SENSOR_READY;}
+SENSOR_STATUS Sensor::getStatus(void){return SENSOR_READY;}
+
+String Sensor::printStatus(SENSOR_STATUS stat)
+{
+    String status;
+    switch(stat)
+    {
+        case SENSOR_ERROR: status = F("Errored"); break;
+        case SENSOR_READY: status = F("Ready"); break;
+        case SENSOR_WAITING: status = F("Waiting"); break;
+        case SENSOR_UNKNOWN: status = F("Unknown"); break;
+    }
+    return status;
+}
 
 // The function to put a sensor to sleep
 // By default, powers down and returns true
-bool SensorBase::sleep(void)
+bool Sensor::sleep(void)
 {
     powerDown();
     return true;
@@ -103,15 +117,38 @@ bool SensorBase::sleep(void)
 
 // The function to wake up a sensor
 // By default, powers up and returns true
-bool SensorBase::wake(void)
+bool Sensor::wake(void)
 {
     if(!checkPowerOn()){powerUp();}
     return true;
 }
 
+void Sensor::registerVariable(int varNum, Variable* var)
+{
+    variables[varNum] = var;
+    // Serial.print(F("... Registration for "));  // for debugging
+    // Serial.print(var->getVarName());  // for debugging
+    // Serial.println(F(" accepted."));  // for debugging
+}
+
+void Sensor::notifyVariables(void)
+{
+    // Serial.println(F("Notifiying registered variables."));
+    // Make note of the last time updated
+    sensorLastUpdated = millis();
+
+    // Notify variables of update
+    for (int i = 0; i < _numReturnedVars; i++){
+        // Serial.print(F("Sending value update to "));  // for debugging
+        // Serial.print(variables[i]->getVarName());  // for debugging
+        // Serial.print(F("...   "));  // for debugging
+        variables[i]->onSensorUpdate(this);
+    }
+}
+
 
 // This function checks if a sensor needs to be updated or not
-bool SensorBase::checkForUpdate(unsigned long sensorLastUpdated)
+bool Sensor::checkForUpdate(unsigned long sensorLastUpdated)
 {
     // Serial.print(F("It has been "));  // For debugging
     // Serial.print((millis() - sensorLastUpdated)/1000);  // For debugging
@@ -125,155 +162,10 @@ bool SensorBase::checkForUpdate(unsigned long sensorLastUpdated)
 }
 
 
-// ============================================================================
-//  The class and functions for interfacing with an array of sensors.
-// ============================================================================
-
-
-// Constructor
-void SensorArray::init(int sensorCount, SensorBase *SENSOR_LIST[])
+// This function just empties the value array
+void Sensor::clearValues(void)
 {
-    _sensorCount = sensorCount;
-    _sensorList = SENSOR_LIST;
-};
-
-// This just returns the number of sensors
-int SensorArray::getSensorCount(void)
-{return _sensorCount;}
-
-
-// This sets up the sensors, generally setting pin modes and the like
-bool SensorArray::setupSensors(void)
-{
-    bool success = true;
-    bool sensorSuccess = false;
-    int setupTries = 0;
-    for (int i = 0; i < _sensorCount; i++)
-    {
-        // Make 5 attempts before giving up
-        while(setupTries < 5)
-        {
-            sensorSuccess = _sensorList[i]->setup();
-            // Prints for debugging
-            if(sensorSuccess)
-            {
-                Serial.print(F("--- Successfully set up "));
-                Serial.print(_sensorList[i]->getSensorName());
-                Serial.println(F(" ---"));
-                break;
-            }
-            else
-            {
-                Serial.print(F("--- Setup for  "));
-                Serial.print(_sensorList[i]->getSensorName());
-                Serial.println(F(" failed! ---"));
-                setupTries++;
-            }
-        }
-        success &= sensorSuccess;
-
-        // Check for and skip the setup of any identical sensors
-        for (int j = i+1; j < _sensorCount; j++)
-        {
-            if (_sensorList[i]->getSensorName() == _sensorList[j]->getSensorName() &&
-                _sensorList[i]->getSensorLocation() == _sensorList[j]->getSensorLocation())
-            {i++;}
-            else {break;}
-        }
-    }
-    return success;
-}
-
-bool SensorArray::sensorsSleep(void)
-{
-    // Serial.println(F("Putting sensors to sleep."));  // For debugging
-    bool success = true;
-    for (int i = 0; i < _sensorCount; i++)
-    {
-        success &= _sensorList[i]->sleep();
-    }
-
-    return success;
-}
-
-bool SensorArray::sensorsWake(void)
-{
-    // Serial.println(F("Waking sensors."));  // For debugging
-    bool success = true;
-    for (int i = 0; i < _sensorCount; i++)
-    {
-        success &= _sensorList[i]->wake();
-    }
-
-    return success;
-}
-
-// This function updates the values for any connected sensors.
-bool SensorArray::updateAllSensors(void)
-{
-    bool success = true;
-    for (uint8_t i = 0; i < _sensorCount; i++)
-    {
-        success &= _sensorList[i]->update();
-        // Prints for debugging
-        // Serial.print(F("--- Updated "));  // For debugging
-        // Serial.print(_sensorList[i]->getSensorName());  // For debugging
-        // Serial.print(F(" for "));  // For debugging
-        // Serial.print(_sensorList[i]->getVarName());  // For debugging
-
-        // Check for and skip the updates of any identical sensors
-        for (int j = i+1; j < _sensorCount; j++)
-        {
-            if (_sensorList[i]->getSensorName() == _sensorList[j]->getSensorName() &&
-                _sensorList[i]->getSensorLocation() == _sensorList[j]->getSensorLocation())
-            {
-                // Prints for debugging
-                // Serial.print(F(" and "));  // For debugging
-                // Serial.print(_sensorList[i+1]->getVarName());  // For debugging
-                i++;
-            }
-            else {break;}
-        }
-        // Serial.println(F(" ---"));  // For Debugging
-        // delay(250);  // A short delay before next sensor - is this necessary??
-    }
-
-    return success;
-}
-
-// This function prints out the results for any connected sensors to a stream
-void SensorArray::printSensorData(Stream *stream /* = &Serial*/)
-{
-    for (int i = 0; i < _sensorCount; i++)
-    {
-        stream->print(_sensorList[i]->getSensorName());
-        stream->print(F(" attached at "));
-        stream->print(_sensorList[i]->getSensorLocation());
-        stream->print(F(" has status "));
-        stream->print(_sensorList[i]->getStatus());
-        stream->print(F(" and reports "));
-        stream->print(_sensorList[i]->getVarName());
-        stream->print(F(" is "));
-        stream->print(_sensorList[i]->getValueString());
-        stream->print(F(" "));
-        stream->print(_sensorList[i]->getVarUnit());
-        stream->println();
-    }
-}
-
-// This function generates a comma separated list of sensor values
-String SensorArray::generateSensorDataCSV(void)
-{
-    String csvString = F("");
-
-    for (uint8_t i = 0; i < _sensorCount; i++)
-    {
-        csvString += _sensorList[i]->getValueString();
-        if (i + 1 != _sensorCount)
-        {
-            csvString += F(", ");
-        }
-    }
-
-    return csvString;
+    // Serial.println(F("Clearing sensor value array."));
+    for (int i = 0; i < _numReturnedVars; i++)
+    { sensorValues[i] =  0; }
 }

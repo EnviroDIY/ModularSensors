@@ -17,7 +17,7 @@
 #include "ModemSupport.h"
 
 // Defines the "Logger" Class
-class LoggerEnviroDIY : public virtual LoggerBase
+class LoggerEnviroDIY : public Logger
 {
 public:
     // Set up communications
@@ -30,23 +30,23 @@ public:
     void setUUIDs(const char *UUIDs[])
     { _UUIDs = UUIDs; }
 
-    // This adds extra data to the datafile header
-    String generateFileHeader(void) override
+    // // This adds extra data to the datafile header
+    String generateFileHeader(void)
     {
         String dataHeader = "";
-        dataHeader += LoggerBase::generateFileHeader();
+        dataHeader += Logger::generateFileHeader();
         dataHeader += F("\r\n");
 
         // Add additional UUID information
         dataHeader += F("\"Sampling Feature: ");
         dataHeader += _samplingFeature;
         dataHeader += F("\"");
-        for (uint8_t i = 0; i < _sensorCount; i++)
+        for (uint8_t i = 0; i < _variableCount; i++)
         {
             dataHeader += F("\"");
             dataHeader += String(_UUIDs[i]);
             dataHeader += F("\"");
-            if (i + 1 != _sensorCount)
+            if (i + 1 != _variableCount)
             {
                 dataHeader += F(", ");
             }
@@ -61,14 +61,14 @@ public:
         jsonString += F("\"sampling_feature\": \"");
         jsonString += String(_samplingFeature) + F("\", ");
         jsonString += F("\"timestamp\": \"");
-        jsonString += String(LoggerBase::markedISO8601Time) + F("\", ");
+        jsonString += String(Logger::markedISO8601Time) + F("\", ");
 
-        for (int i = 0; i < LoggerBase::_sensorCount; i++)
+        for (int i = 0; i < Logger::_variableCount; i++)
         {
             jsonString += F("\"");
             jsonString += String(_UUIDs[i]) + F("\": ");
-            jsonString += LoggerBase::_sensorList[i]->getValueString();
-            if (i + 1 != LoggerBase::_sensorCount)
+            jsonString += Logger::_variableList[i]->getValueString();
+            if (i + 1 != Logger::_variableCount)
             {
                 jsonString += F(", ");
             }
@@ -79,7 +79,10 @@ public:
     }
 
 
-#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
+#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
+    defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
+    defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) ||\
+    defined(TINY_GSM_MODEM_XBEE)
 
     // Create the modem instance
     loggerModem modem;
@@ -130,30 +133,27 @@ public:
     // Convience functions to do it all
     virtual void log(void) override
     {
-        // Update the timer
-        // This runs the timer's "now" function [in our case getNow()] and then
-        // checks all of the registered timer events to see if they should run
-        // loggerTimer.update();
-
         // Check of the current time is an even interval of the logging interval
         if (checkInterval())
         {
             // Print a line to show new reading
             Serial.println(F("------------------------------------------"));  // for debugging
             // Turn on the LED to show we're taking a reading
-            digitalWrite(LoggerBase::_ledPin, HIGH);
+            digitalWrite(_ledPin, HIGH);
 
             // Turn on the modem to let it start searching for the network
             LoggerEnviroDIY::modem.modemOnOff->on();
 
-            // Update the time variables with the current time
-            markTime();
+            // Wake up all of the sensors
+            // I'm not doing as part of sleep b/c it may take up to a second or
+            // two for them all to wake which throws off the checkInterval()
+            sensorsWake();
             // Update the values from all attached sensors
             updateAllSensors();
             // Immediately put sensors to sleep to save power
             sensorsSleep();
 
-            //Save the data record to the log file
+            // Create a csv data record and save it to the log file
             logToSD(generateSensorDataCSV());
 
             // Connect to the network
@@ -170,15 +170,15 @@ public:
             modem.disconnectNetwork();
 
             // Turn on the modem off
-            LoggerEnviroDIY::modem.modemOnOff->off();
+            modem.modemOnOff->off();
 
             // Turn off the LED
-            digitalWrite(LoggerBase::_ledPin, LOW);
+            digitalWrite(_ledPin, LOW);
             // Print a line to show reading ended
             Serial.println(F("------------------------------------------\n"));  // for debugging
         }
 
-        //Sleep
+        // Sleep
         if(_sleep){systemSleep();}
     }
 

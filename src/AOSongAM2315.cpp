@@ -18,57 +18,44 @@
  *  Accuracy is ±0.1°C
  *  Range is -40°C to +125°C
 */
-
 #include "AOSongAM2315.h"
 #include <Adafruit_AM2315.h>
 
 // The constructor - because this is I2C, only need the power pin
 AOSongAM2315::AOSongAM2315(int powerPin)
- : SensorBase(-1, powerPin)
+: Sensor(-1, powerPin, F("AOSongAM2315"), AM2315_NUM_MEASUREMENTS)
 {}
 
 String AOSongAM2315::getSensorLocation(void){return F("I2C_0xB8");}
 
-// The static variables that need to be updated
-float AOSongAM2315::sensorValue_humidity = 0;
-float AOSongAM2315::sensorValue_temp = 0;
-unsigned long AOSongAM2315::sensorLastUpdated = 0;
 bool AOSongAM2315::update(void)
 {
     Adafruit_AM2315 am2315;  // create a sensor object
     Wire.begin();  // Start the wire library
 
-    bool ret_val = am2315.readTemperatureAndHumidity(AOSongAM2315::sensorValue_temp, AOSongAM2315::sensorValue_humidity);
-    // Make note of the last time updated
-    AOSongAM2315::sensorLastUpdated = millis();
+    // Check if the power is on, turn it on if not
+    bool wasOn = checkPowerOn();
+    if(!wasOn){powerUp();}
+
+    // Clear values before starting loop
+    clearValues();
+
+    float temp_val, humid_val;
+    bool ret_val = am2315.readTemperatureAndHumidity(temp_val, humid_val);
+    sensorValues[AM2315_TEMP_VAR_NUM] = temp_val;
+    sensorValues[AM2315_HUMIDITY_VAR_NUM] = humid_val;
+
+    // Serial.print(F("Temp is: "));  // for debugging
+    // Serial.print(sensorValues[AM2315_TEMP_VAR_NUM]);  // for debugging
+    // Serial.print(F("°C and humidity is: "));  // for debugging
+    // Serial.print(sensorValues[AM2315_HUMIDITY_VAR_NUM]);  // for debugging
+    // Serial.println(F("%"));  // for debugging
+
+    // Turn the power back off it it had been turned on
+    if(!wasOn){powerDown();}
+
+    // Update the registered variables with the new values
+    notifyVariables();
+
     return ret_val;
-}
-
-
-
-
-AOSongAM2315_Humidity::AOSongAM2315_Humidity(int powerPin)
- : SensorBase(-1, powerPin, F("AOSongAM2315"), F("relativeHumidity"), F("percent"), AM2315_HUMIDITY_RESOLUTION, F("AM2315Humidity")),
-   AOSongAM2315(powerPin)
-{}
-
-float AOSongAM2315_Humidity::getValue(void)
-{
-    checkForUpdate(AOSongAM2315::sensorLastUpdated);
-    return AOSongAM2315::sensorValue_humidity;
-}
-
-
-
-
-
-AOSongAM2315_Temp::AOSongAM2315_Temp(int powerPin)
- : SensorBase(-1, powerPin, F("AOSongAM2315"), F("temperature"), F("degreeCelsius"), AM2315_TEMP_RESOLUTION, F("AM2315YTemp")),
-   AOSongAM2315(powerPin)
-{}
-
-float AOSongAM2315_Temp::getValue(void)
-{
-    checkForUpdate(AOSongAM2315::sensorLastUpdated);
-    return AOSongAM2315::sensorValue_temp;
 }

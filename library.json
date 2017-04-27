@@ -16,7 +16,7 @@
             "url": "https://envirodiy.org/"
         }
     ],
-    "version": "1.3.0-alpha",
+    "version": "2.0.1-alpha",
     "repository":
     {
         "type": "git",
@@ -39,9 +39,6 @@
         {
             "name": "Sodaq_DS3231",
             "version": "https://github.com/EnviroDIY/Sodaq_DS3231.git"
-        },
-        {
-            "name": "RTCTimer"
         },
         {
             "name": "PcInt_PCINT0",

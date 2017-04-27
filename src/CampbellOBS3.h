@@ -26,49 +26,56 @@
 #define CampbellOBS3_h
 
 #include <Arduino.h>
+#include <Adafruit_ADS1015.h>
 #include "SensorBase.h"
+#include "VariableBase.h"
 
+#define OBS3_NUM_VARIABLES 1  // low and high range are treated as completely independent
+#define OBS3_TURB_VAR_NUM 0
 #define OBS3_RESOLUTION 3
 #define OBS3_HR_RESOLUTION 2
 
 // The main class for the Campbell OBS3
-class CampbellOBS3 : public virtual SensorBase
+class CampbellOBS3 : public Sensor
 {
 public:
-    CampbellOBS3(int powerPin, int dataPin,
-                 float A, float B, float C);
+    // The constructor - need the power pin, the data pin, and the calibration info
+    CampbellOBS3(int powerPin, int dataPin, float A, float B, float C);
+
     String getSensorLocation(void) override;
 
     bool update(void) override;
 
-    float getValue(void) override;
 protected:
-    String sensorLocation;
     float _A;
     float _B;
     float _C;
-    float sensorValue;
-    unsigned long sensorLastUpdated;
 };
 
 
-// Subclasses are ONLY needed because of the different dreamhost column tags
+// Two different vars are ONLY needed because of the different dreamhost column tags
 // All that is needed for these are the constructors
 // Defines the "Low Turbidity Sensor"
-class CampbellOBS3_Turbidity : public virtual CampbellOBS3
+class CampbellOBS3_Turbidity : public Variable
 {
 public:
-    CampbellOBS3_Turbidity(int powerPin, int dataPin,
-                         float A, float B, float C);
+    CampbellOBS3_Turbidity(Sensor *parentSense)
+      : Variable(parentSense, OBS3_TURB_VAR_NUM,
+                 F("turbidity"), F("nephelometricTurbidityUnit"),
+                 OBS3_RESOLUTION, F("TurbLow"))
+    {}
 };
 
 
 // Defines the "High Turbidity Sensor"
-class CampbellOBS3_TurbHigh : public virtual CampbellOBS3
+class CampbellOBS3_TurbHigh : public Variable
 {
 public:
-    CampbellOBS3_TurbHigh(int powerPin, int dataPin,
-                          float A, float B, float C);
+    CampbellOBS3_TurbHigh(Sensor *parentSense)
+      : Variable(parentSense, OBS3_TURB_VAR_NUM,
+                 F("turbidity"), F("nephelometricTurbidityUnit"),
+                 OBS3_HR_RESOLUTION, F("TurbHigh"))
+    {}
 };
 
 #endif

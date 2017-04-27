@@ -23,46 +23,51 @@
 #define AOSongAM2315_h
 
 #include "SensorBase.h"
+#include "VariableBase.h"
 
 #define AM2315_NUM_MEASUREMENTS 2
+
 #define AM2315_HUMIDITY_RESOLUTION 1
+#define AM2315_HUMIDITY_VAR_NUM 0
+
 #define AM2315_TEMP_RESOLUTION 1
+#define AM2315_TEMP_VAR_NUM 1
+
 
 // The main class for the AOSong AM2315
-class AOSongAM2315 : public virtual SensorBase
+class AOSongAM2315 : public Sensor
 {
 public:
+    // The constructor - because this is I2C, only need the power pin
     AOSongAM2315(int powerPin);
 
     String getSensorLocation(void) override;
 
     bool update(void) override;
-
-    virtual float getValue(void) = 0;
-protected:
-    static unsigned long sensorLastUpdated;
-    static float sensorValue_humidity;
-    static float sensorValue_temp;
 };
 
 
 // Defines the "Humidity Sensor"
-class AOSongAM2315_Humidity : public virtual AOSongAM2315
+class AOSongAM2315_Humidity : public Variable
 {
 public:
-    AOSongAM2315_Humidity(int powerPin);
-
-    float getValue(void) override;
+    AOSongAM2315_Humidity(Sensor *parentSense) :
+      Variable(parentSense, AM2315_HUMIDITY_VAR_NUM,
+               F("relativeHumidity"), F("percent"),
+               AM2315_HUMIDITY_RESOLUTION, F("AM2315Humidity"))
+    {}
 };
 
 
 // Defines the "Temperature Sensor"
-class AOSongAM2315_Temp : public virtual AOSongAM2315
+class AOSongAM2315_Temp : public Variable
 {
 public:
-    AOSongAM2315_Temp(int powerPin);
-
-    float getValue(void) override;
+    AOSongAM2315_Temp(Sensor *parentSense) :
+      Variable(parentSense, AM2315_TEMP_VAR_NUM,
+               F("temperature"), F("degreeCelsius"),
+               AM2315_TEMP_RESOLUTION, F("AM2315YTemp"))
+    {}
 };
 
 #endif

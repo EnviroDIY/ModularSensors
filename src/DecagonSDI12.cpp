@@ -12,13 +12,31 @@
 #include "DecagonSDI12.h"
 
 // The constructor - need the number of measurements the sensor will return, SDI-12 address, the power pin, and the data pin
-DecagonSDI12::DecagonSDI12(int numMeasurements, char SDI12address, int powerPin, int dataPin, int numReadings)
-    : SensorBase(dataPin, powerPin)
+DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin,
+                           int numReadings,
+                           String sensName, int numMeasurements)
+    : Sensor(powerPin, dataPin, sensName, numMeasurements)
 {
     _SDI12address = SDI12address;
     _numReadings = numReadings;
-    _numMeasurements = numMeasurements;
 }
+DecagonSDI12::DecagonSDI12(char *SDI12address, int powerPin, int dataPin,
+                           int numReadings,
+                           String sensName, int numMeasurements)
+    : Sensor(powerPin, dataPin, sensName, numMeasurements)
+{
+    _SDI12address = *SDI12address;
+    _numReadings = numReadings;
+}
+DecagonSDI12::DecagonSDI12(int SDI12address, int powerPin, int dataPin,
+                           int numReadings,
+                           String sensName, int numMeasurements)
+    : Sensor(powerPin, dataPin, sensName, numMeasurements)
+{
+    _SDI12address = SDI12address + '0';
+    _numReadings = numReadings;
+}
+
 
 // A helper functeion to run the "sensor info" SDI12 command
 void DecagonSDI12::getSensorInfo(void)
@@ -32,7 +50,7 @@ void DecagonSDI12::getSensorInfo(void)
     if(!wasOn){powerUp();}
 
     // Serial.println(F("Getting sensor info"));  // For debugging
-    myCommand = "";
+    String myCommand = "";
     myCommand += (char) _SDI12address;
     myCommand += "I!"; // sends 'info' command [address][I][!]
     mySDI12.sendCommand(myCommand);
@@ -41,7 +59,7 @@ void DecagonSDI12::getSensorInfo(void)
 
     // wait for acknowlegement with format:
     // [address][SDI12 support (2 char)][vendor (8 char)][model (6 char)][version (3 char)][serial number (<14 char)]
-    sdiResponse = "";
+    String sdiResponse = "";
     while (mySDI12.available())  // build response string
     {
         char c = mySDI12.read();
@@ -70,10 +88,6 @@ void DecagonSDI12::getSensorInfo(void)
 }
 
 // The sensor name
-// String DecagonSDI12::getSensorName(void)
-// {return _sensorName;}
-
-// The sensor name
 String DecagonSDI12::getSensorVendor(void)
 {return _sensorVendor;}
 
@@ -93,7 +107,8 @@ String DecagonSDI12::getSensorSerialNumber(void)
 // The sensor installation location on the Mayfly
 String DecagonSDI12::getSensorLocation(void)
 {
-    sensorLocation = "SDI12-" + String(_SDI12address) + "_Pin" + String(_dataPin);
+    String sensorLocation = F("SDI12-");
+    sensorLocation += String(_SDI12address) + F("_Pin") + String(_dataPin);
     return sensorLocation;
 }
 
@@ -102,42 +117,32 @@ bool DecagonSDI12::update()
 {
     SDI12 mySDI12(_dataPin);
     mySDI12.begin();
-    delay(500); // allow things to settle
+    mySDI12.setTimeout(15);  // SDI-12 protocol says sensors must respond within 15 milliseconds
+    // delay(500); // allow things to settle
 
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
 
-    // start with empty array
-    sensorValues[_numMeasurements] = {0};
+    // Clear values before starting loop
+    clearValues();
 
     // averages x readings in this one loop
     for (int j = 0; j < _numReadings; j++)
     {
-        myCommand = "";
+        // Serial.print(F("Taking reading #"));  // For debugging
+        // Serial.println(j);  // For debugging
+        String myCommand = "";
         myCommand += _SDI12address;
         myCommand += "M!"; // SDI-12 measurement myCommand format  [address]['M'][!]
         mySDI12.sendCommand(myCommand);
-        mySDI12.flush();  // Wait for sending to finish
+        // Serial.println(myCommand);  // For debugging
+        mySDI12.flush();
         delay(30);  // It just needs this little delay
-        // Serial.print(F("Taking reading #"));  // For debugging
-        // Serial.print(j);  // For debugging
-        // Serial.print(F(" ("));  // For debugging
-        // Serial.print(myCommand);  // For debugging
-        // Serial.println(F(")"));  // For debugging
 
         // wait for acknowlegement with format [address][ttt (3 char, seconds)][number of measurments available, 0-9]
-        sdiResponse = "";
-        while (mySDI12.available())  // build response string
-        {
-            char c = mySDI12.read();
-            if ((c != '\n') && (c != '\r'))
-            {
-                sdiResponse += c;
-                delay(5);
-            }
-        }
-        // if (sdiResponse.length() > 1) Serial.println(sdiResponse);  // For debugging
+        String sdiResponse = mySDI12.readString();
+        // Serial.println(sdiResponse);  // For debugging
 
         // find out how long we have to wait (in seconds).
         unsigned int wait = 0;
@@ -146,14 +151,14 @@ bool DecagonSDI12::update()
         // Serial.print(wait);  // For debugging
         // Serial.println(F(" seconds for measurement"));  // For debugging
 
-        // Set up the number of results to expect - For verifying that is as expected
-        // int numMeasurements =  sdiResponse.substring(4,5).toInt();
+        // Set up the number of results to expect
+        // int numMeasurements = sdiResponse.substring(4,5).toInt();
         // Serial.print(numMeasurements);  // For debugging
         // Serial.println(F(" results expected"));  // For debugging
-        // if (numMeasurements != _numMeasurements)
+        // if (numMeasurements != _numReturnedVars)
         // {
         //     Serial.print(F("This differs from the sensor's standard design of "));  // For debugging
-        //     Serial.print(_numMeasurements);  // For debugging
+        //     Serial.print(_numReturnedVars);  // For debugging
         //     Serial.println(F(" measurements!!"));  // For debugging
         // }
 
@@ -163,6 +168,8 @@ bool DecagonSDI12::update()
             if(mySDI12.available())  // sensor can interrupt us to let us know it is done early
             {
                 // Serial.println("Wait interrupted!");  // For debugging
+                mySDI12.readString();  // Read the service request (the address again)
+                delay(5);  // Necessary for reasons unbeknownst to me (else it just fails sometimes..)
                 break;
             }
         }
@@ -171,15 +178,13 @@ bool DecagonSDI12::update()
         myCommand += _SDI12address;
         myCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
         mySDI12.sendCommand(myCommand);
-        mySDI12.flush();  // Wait for sending to finish
+        // Serial.println(myCommand);  // For debugging
+        mySDI12.flush();
         delay(30);  // It just needs this little delay
-        // Serial.print(F("Requesting data ("));  // For debugging
-        // Serial.print(myCommand);  // For debugging
-        // Serial.println(F(")"));  // For debugging
 
         // Serial.println(F("Receiving data"));  // For debugging
         mySDI12.read();  // ignore the repeated SDI12 address
-        for (int i = 0; i < _numMeasurements; i++)
+        for (int i = 0; i < _numReturnedVars; i++)
         {
             float result = mySDI12.parseFloat();
             sensorValues[i] += result;
@@ -193,8 +198,8 @@ bool DecagonSDI12::update()
     // Average over the number of readings
     // Serial.print(F("Averaging over "));  // For debugging
     // Serial.print(_numReadings);  // For debugging
-    // Serial.println(F(" readings"));  // For debugging
-    for (int i = 0; i < _numMeasurements; i++)
+    // Serial.println(F(" readings")); // For debugging
+    for (int i = 0; i < _numReturnedVars; i++)
     {
         sensorValues[i] /=  _numReadings;
         // Serial.print(F("Result #"));  // For debugging
@@ -205,6 +210,9 @@ bool DecagonSDI12::update()
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
+
+    // Update the registered variables with the new values
+    notifyVariables();
 
     // Return true when finished
     return true;
