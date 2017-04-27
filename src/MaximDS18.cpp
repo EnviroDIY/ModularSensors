@@ -19,7 +19,8 @@
 
 // The constructor - if the hex address is known - also need the power pin and the data pin
 MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin)
-  : Sensor(powerPin, dataPin,F("MaximDS18"), DS18_NUM_MEASUREMENTS)
+  : Sensor(powerPin, dataPin, F("MaximDS18"), DS18_NUM_MEASUREMENTS),
+    oneWire(dataPin), tempSensors(&oneWire)
 {
     _OneWireAddress = OneWireAddress;
     _addressKnown = true;
@@ -27,10 +28,111 @@ MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin)
 // The constructor - if the hex address is NOT known - only need the power pin and the data pin
 // Can only use this if there is only a single sensor on the pin
 MaximDS18::MaximDS18(int powerPin, int dataPin)
-  : Sensor(powerPin, dataPin, F("MaximDS18"), DS18_NUM_MEASUREMENTS)
+  : Sensor(powerPin, dataPin, F("MaximDS18"), DS18_NUM_MEASUREMENTS),
+    oneWire(dataPin), tempSensors(&oneWire)
 {
     _OneWireAddress = {0};
     _addressKnown = false;
+}
+
+// Turns the address into a printable string
+String MaximDS18::getAddressString(DeviceAddress OneWireAddress)
+{
+    String addrStr = F("Pin");
+    addrStr += (_dataPin);
+    addrStr += (F("{"));
+    for (uint8_t i = 0; i < 8; i++)
+    {
+        addrStr += ("0x");
+        if (OneWireAddress[i] < 0x10) addrStr += ("0");
+        addrStr += String(OneWireAddress[i], HEX);
+        if (i < 7) addrStr += (",");
+    }
+    addrStr += (F("}"));
+
+    return addrStr;
+}
+
+// The function to set up connection to a sensor.
+// By default, sets pin modes and returns ready
+SENSOR_STATUS MaximDS18::getStatus(void)
+{
+    // Make sure the address is valid
+    if (!tempSensors.validAddress(_OneWireAddress))
+    {
+        Serial.print(F("This sensor address is not valid: "));  // For debugging
+        Serial.println(getAddressString(_OneWireAddress));  // For debugging
+        return SENSOR_ERROR;
+    }
+
+    // Make sure the sensor is connected
+    if (!tempSensors.isConnected(_OneWireAddress))
+    {
+        Serial.print(F("This sensor is not currently connected: "));  // For debugging
+        Serial.println(getAddressString(_OneWireAddress));  // For debugging
+        return SENSOR_ERROR;
+    }
+
+    // Set resolution to 12 bit
+    if (!tempSensors.setResolution(_OneWireAddress, 12))
+    {
+        Serial.print(F("Unable to set the resolution of this sensor: "));  // For debugging
+        Serial.println(getAddressString(_OneWireAddress));  // For debugging
+        return SENSOR_ERROR;
+    }
+
+    return SENSOR_READY;
+}
+
+// The function to set up connection to a sensor.
+// By default, sets pin modes and returns ready
+SENSOR_STATUS MaximDS18::setup(void)
+{
+    pinMode(_powerPin, OUTPUT);
+    pinMode(_dataPin, INPUT);
+    digitalWrite(_powerPin, LOW);
+
+    // Start up the maxim sensor library
+    Serial.println(F("Starting the Maxim sensors"));
+    tempSensors.begin();
+
+    // Find the address if it's not known
+    if (!_addressKnown)
+    {
+        Serial.println(F("Probe address is not known!"));  // For debugging
+
+        uint8_t address[8];
+        if (!oneWire.search(address))
+        {
+            Serial.print(F("Unable to find address for DS18 on pin "));  // For debugging
+            Serial.println(_dataPin);  // For debugging
+        }
+        else
+        {
+            Serial.print(F("Sensor found at "));  // For debugging
+            Serial.println(getAddressString(address));  // For debugging
+
+            for (int i = 0; i < 8; i++) _OneWireAddress[i] = address[i];
+            _addressKnown = true;  // Now we know the address
+        }
+    }
+
+    // Serial.print(F("Set up "));  // for debugging
+    // Serial.print(getSensorName());  // for debugging
+    // Serial.print(F(" attached at "));  // for debugging
+    // Serial.print(getSensorLocation());  // for debugging
+    // Serial.print(F(" which can return up to "));  // for debugging
+    // Serial.print(_numReturnedVars);  // for debugging
+    // Serial.println(F(" variable[s]."));  // for debugging
+
+    return getStatus();
+}
+
+
+// This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
+String MaximDS18::getSensorLocation(void)
+{
+    return getAddressString(_OneWireAddress);
 }
 
 
@@ -44,52 +146,25 @@ bool MaximDS18::update()
     // Clear values before starting loop
     clearValues();
 
-    // Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
-    OneWire oneWire(_dataPin);
-
-    // Pass our oneWire reference to Dallas Temperature.
-    DallasTemperature sensors(&oneWire);
-
-    // Start up the sensor library
-    sensors.begin();
-
-    // Find the address if it's not known
-    if (!_addressKnown){
-        oneWire.reset_search();  // Reset the search index
-        uint8_t address[8];
-        if (!oneWire.search(address)) {
-            Serial.print(F("Unable to find address for DS18 on pin "));  // For debugging
-            Serial.println(_dataPin);  // For debugging
-        }
-        else {
-            Serial.print(F("Sensor found on pin "));  // For debugging
-            Serial.print(_dataPin);  // For debugging
-            Serial.print(F(" with address {"));  // For debugging
-            for (uint8_t i = 0; i < 8; i++)  // For debugging
-            {  // For debugging
-                Serial.print("0x");  // For debugging
-                if (address[i] < 0x10) Serial.print("0");  // For debugging
-                Serial.print(address[i], HEX);  // For debugging
-                if (i < 7) Serial.print(", ");  // For debugging
-            }  // For debugging
-            Serial.println(F("}"));  // For debugging
-            for (int i = 0; i < 8; i++) _OneWireAddress[i] = address[i];
-            _addressKnown = true;  // Now we know the address
-        }
-    }
-
     // Send the command to get temperatures
-    sensors.requestTemperatures();
+    Serial.println(F("Asking sensor to take a measurement"));  // For debugging
+    tempSensors.requestTemperaturesByAddress(_OneWireAddress);
 
-    float result = sensors.getTempC(_OneWireAddress);
 
+    Serial.println(F("Requesting temperature result"));  // For debugging
+    float result = tempSensors.getTempC(_OneWireAddress);
+
+    Serial.print(F("Sending value of "));
+    Serial.print(result);
+    Serial.println(F(" °C to the sensorValues array"));
     sensorValues[DS18_TEMP_VAR_NUM] = result;
-    // Serial.println(sensorValues[DS18_TEMP_VAR_NUM]);  // For debugging
+    Serial.println(sensorValues[DS18_TEMP_VAR_NUM]);  // For debugging
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
 
     // Update the registered variables with the new values
+    Serial.println(F("Notifying registered variables."));
     notifyVariables();
 
     // Return true when finished

@@ -65,7 +65,7 @@ protected:
 };
 
 
-// Defines the "Temperature Sensor"
+// Defines the Temperature Variable
 class BoschBME280_Temp : public Variable
 {
 public:
@@ -77,7 +77,7 @@ public:
 };
 
 
-// Defines the "Humidity Sensor"
+// Defines the Humidity Variable
 class BoschBME280_Humidity : public Variable
 {
 public:
@@ -89,7 +89,7 @@ public:
 };
 
 
-// Defines the "Pressure Sensor"
+// Defines the Pressure Variable
 class BoschBME280_Pressure : public Variable
 {
 public:
@@ -101,7 +101,7 @@ public:
 };
 
 
-// Defines the "Altitude Sensor"
+// Defines the Altitude Variable
 class BoschBME280_Altitude : public Variable
 {
 public:

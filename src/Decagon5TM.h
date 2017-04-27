@@ -90,7 +90,7 @@ public:
 };
 
 
-// Defines the "Temperature Sensor"
+// Defines the Temperature Variable
 class Decagon5TM_Temp : public Variable
 {
 public:

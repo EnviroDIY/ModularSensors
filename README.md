@@ -22,6 +22,7 @@ To use a sensor and variable in your sketch, you must separately include xxx.h f
     - [Decagon Devices ES-2](#ES2)
     - [Maxim DS18 Temperature Probes](#DS18)
     - [AOSong AM2315](#AM2315)
+    - [Bosch BME280](#BME280)
 
 
 ## <a name="Basic"></a>Basic Senor and Variable Functions
@@ -422,7 +423,7 @@ MaximDS18_Temp(&ds18);
 
 #### <a name="AM2315"></a>[AOSong AM2315](www.aosong.com/asp_bin/Products/en/AM2315.pdf) Encased I2C Temperature/Humidity Sensor
 
-Because this is an I2C sensor, the only input needed is the power pin.  You must have the [Adafruit AM2315 library](https://github.com/adafruit/Adafruit_AM2315) installed to use this sensor.
+Because this is an I2C sensor, the only input needed is the power pin.  You must have the [Adafruit AM2315 library](https://github.com/adafruit/Adafruit_AM2315) installed to use this sensor.  Because this sensor can have only one I2C address, it is only possible to connect one of these sensors to your system.
 
 The main constuctor for the sensor object is:
 
@@ -436,4 +437,24 @@ The two available variables are:
 ```cpp
 AOSongAM2315_Humidity(&am2315);
 AOSongAM2315_Temp(&am2315);
+```
+
+#### <a name="BME280"></a>[Bosch BME280](https://www.bosch-sensortec.com/bst/products/all_products/bme280) Integrated Environmental Sensor
+
+Although this sensor has the option of either I2C or SPI communication, this library only supports I2C.  The only input needed is the power pin; the I2C sensor address is assumed to be 0x76, though it can be changed to 0x77 in the constructor if necessary.  You must have the [Adafruit BME280 library](https://github.com/adafruit/Adafruit_BME280_Library) and the [Adafruit Unified Sensor Driver](https://github.com/adafruit/Adafruit_Sensor) installed to use this sensor.  To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses.  No more than two can be attached.  This module is likely to also work with the [Bosch BMP280 Barometric Pressure Sensor](https://www.bosch-sensortec.com/bst/products/all_products/bmp280), though it has not been tested on it.
+
+The main constuctor for the sensor object is:
+
+```cpp
+#include <BoschBME280.h>
+BoschBME280 bme280(I2CPower);
+```
+
+The four available variables are:
+
+```cpp
+BoschBME280_Temp(&bme280);
+BoschBME280_Humidity(&bme280);
+BoschBME280_Pressure(&bme280);
+BoschBME280_Altitude(&bme280);
 ```

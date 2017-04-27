@@ -65,7 +65,7 @@ public:
 };
 
 
-// Defines the "Conductivity Sensor"
+// Defines the Conductivity Variable
 class DecagonCTD_Cond : public Variable
 {
 public:
@@ -77,7 +77,7 @@ public:
 };
 
 
-// Defines the "Temperature Sensor"
+// Defines the Temperature Variable
 class DecagonCTD_Temp : public Variable
 {
 public:
@@ -89,7 +89,7 @@ public:
 };
 
 
-// Defines the "Depth Sensor"
+// Defines the Depth Variable
 class DecagonCTD_Depth : public Variable
 {
 public:

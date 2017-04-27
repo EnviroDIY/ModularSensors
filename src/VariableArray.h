@@ -69,13 +69,13 @@ public:
                 sensorSuccess = _variableList[i]->parentSensor->setup();
 
                 if(sensorSuccess) break;
-                else setupTries++;
-            }
-            if (!sensorSuccess)
-            {
-                Serial.print(F("   ... Set up of "));
-                Serial.print(_variableList[i]->getDreamHost());
-                Serial.println(F(" failed!"));
+                else
+                {
+                    setupTries++;
+                    Serial.print(F("   ... Set up of "));
+                    Serial.print(_variableList[i]->getDreamHost());
+                    Serial.println(F(" failed!"));
+                }
             }
             success &= sensorSuccess;
         }

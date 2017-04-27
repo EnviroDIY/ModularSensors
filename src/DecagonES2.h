@@ -56,7 +56,7 @@ public:
 };
 
 
-// Defines the "Conductivity Sensor"
+// Defines the Conductivity Variable
 class DecagonES2_Cond : public Variable
 {
 public:
@@ -67,7 +67,7 @@ public:
     {}
 };
 
-// Defines the "Temperature Sensor"
+// Defines the Temperature Variable
 class DecagonES2_Temp : public Variable
 {
 public:

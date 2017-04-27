@@ -47,7 +47,7 @@ public:
 };
 
 
-// Defines the "Humidity Sensor"
+// Defines the Humidity Variable
 class AOSongAM2315_Humidity : public Variable
 {
 public:
@@ -59,7 +59,7 @@ public:
 };
 
 
-// Defines the "Temperature Sensor"
+// Defines the Temperature Variable
 class AOSongAM2315_Temp : public Variable
 {
 public:

@@ -33,15 +33,25 @@ public:
     MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin);
     MaximDS18(int powerPin, int dataPin);
 
+    SENSOR_STATUS setup(void) override;
+    String getSensorLocation(void) override;
+    SENSOR_STATUS getStatus(void) override;
+
     bool update(void) override;
 
 private:
     uint8_t* _OneWireAddress;
     bool _addressKnown;
+    // Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
+    OneWire oneWire;
+    // Pass our oneWire reference to Dallas Temperature.
+    DallasTemperature tempSensors;
+    // Turns the address into a printable string
+    String getAddressString(DeviceAddress OneWireAddress);
 };
 
 
-// The class for the Range Variable
+// The class for the Temperature Variable
 class MaximDS18_Temp : public Variable
 {
 public:

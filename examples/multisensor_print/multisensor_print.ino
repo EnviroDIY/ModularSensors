@@ -37,9 +37,16 @@ VariableArray sensors;
 //    AOSong AM2315
 // ==========================================================================
 #include <AOSongAM2315.h>
-// Campbell OBS 3+ Low Range calibration in Volts
 const int I2CPower = 22;  // switched sensor power is pin 22 on Mayfly
 AOSongAM2315 am2315(I2CPower);
+
+// ==========================================================================
+//    Bosch BME280
+// ==========================================================================
+#include <BoschBME280.h>
+uint8_t BMEi2c_addr = 0x76;  // The BME280 can be addressed either as 0x76 or 0x77
+// const int I2CPower = 22;  // switched sensor power is pin 22 on Mayfly
+BoschBME280 bme280(I2CPower, BMEi2c_addr);
 
 
 // ==========================================================================
@@ -103,6 +110,20 @@ MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger) ;
 
 
 // ==========================================================================
+//    Maxim DS18 Temperature
+// ==========================================================================
+#include <MaximDS18.h>
+// OneWire Address [array of 8 hex characters]
+// DeviceAddress OneWireAddress = {0x28, 0xFF, 0xB6, 0x6E, 0x84, 0x16, 0x05, 0x9B};
+DeviceAddress OneWireAddress = {0x28, 0xFF, 0x3B, 0x07, 0x82, 0x16, 0x13, 0xB3};
+const int OneWireBus1 = 5;   // Data pin
+const int OneWireBus2 = 27;   // Data pin
+const int OneWirePower = 22;   // Power pin
+MaximDS18 ds18_1(OneWireAddress, OneWirePower, OneWireBus1);
+MaximDS18 ds18_2(OneWirePower, OneWireBus2);
+
+
+// ==========================================================================
 //    EnviroDIY Mayfly
 // ==========================================================================
 #include <MayflyOnboardSensors.h>
@@ -113,21 +134,27 @@ EnviroDIYMayfly mayfly(MFVersion) ;
 // The array that contains all valid variables
 // ---------------------------------------------------------------------------
 Variable *variableList[] = {
-    new AOSongAM2315_Humidity(&am2315),
-    new AOSongAM2315_Temp(&am2315),
-    new CampbellOBS3_Turbidity(&osb3low),
-    new CampbellOBS3_TurbHigh(&osb3high),
-    new Decagon5TM_Ea(&fivetm),
-    new Decagon5TM_Temp(&fivetm),
-    new Decagon5TM_VWC(&fivetm),
-    new DecagonCTD_Cond(&ctd),
-    new DecagonCTD_Temp(&ctd),
-    new DecagonCTD_Depth(&ctd),
-    new DecagonES2_Cond(&es2),
-    new DecagonES2_Temp(&es2),
-    new MaxBotixSonar_Range(&sonar),
-    new EnviroDIYMayfly_Temp(&mayfly),
-    new EnviroDIYMayfly_Batt(&mayfly),
+    // new AOSongAM2315_Humidity(&am2315),
+    // new AOSongAM2315_Temp(&am2315),
+    // new BoschBME280_Temp(&bme280),
+    // new BoschBME280_Humidity(&bme280),
+    // new BoschBME280_Pressure(&bme280),
+    // new BoschBME280_Altitude(&bme280),
+    // new CampbellOBS3_Turbidity(&osb3low),
+    // new CampbellOBS3_TurbHigh(&osb3high),
+    // new Decagon5TM_Ea(&fivetm),
+    // new Decagon5TM_Temp(&fivetm),
+    // new Decagon5TM_VWC(&fivetm),
+    // new DecagonCTD_Cond(&ctd),
+    // new DecagonCTD_Temp(&ctd),
+    // new DecagonCTD_Depth(&ctd),
+    // new DecagonES2_Cond(&es2),
+    // new DecagonES2_Temp(&es2),
+    // new MaxBotixSonar_Range(&sonar),
+    new MaximDS18_Temp(&ds18_1),
+    // new MaximDS18_Temp(&ds18_2),
+    // new EnviroDIYMayfly_Temp(&mayfly),
+    // new EnviroDIYMayfly_Batt(&mayfly),
     new EnviroDIYMayfly_FreeRam(&mayfly)
     // new YOUR_variableName_HERE(&)
 };
