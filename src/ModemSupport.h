@@ -18,7 +18,7 @@
     defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || \
     defined(TINY_GSM_MODEM_XBEE)
   #define USE_TINY_GSM
-  // #define TINY_GSM_DEBUG Serial
+  #define TINY_GSM_DEBUG Serial
   #define TINY_GSM_YIELD() { delay(3);}
   #include <TinyGsmClient.h>
 #endif

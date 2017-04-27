@@ -1,10 +1,10 @@
 # ModularSensors
 
-A "library" of sensors to give all sensors a common interface of functions.  This library was written primarily for the [EnviroDIY Mayfly](https://envirodiy.org/mayfly/) but should be applicable to other Arduino based boards as well.  To use the full functionality of this library, you do need an AVR board with a "large" amount of RAM (in Arduino terms).  The processor on an Arduino UNO or similar board is unlikely to be able to handle all of the logger functionality, though it will be able to access individual sensors.  An Arduino Mega, Sodaq Mbili, or other similar boards should be able to use the full library.  To date, however, the EnviroyDIY Mayfly is the only board that has been tested.
+A "library" of sensors to give all sensors and variables a common interface of functions and returns and to make it very easy to iterate through and log data from many sensors and variables.  This library was written primarily for the [EnviroDIY Mayfly](https://envirodiy.org/mayfly/) but should be applicable to other Arduino based boards as well.  To use the full functionality of this library, you do need an AVR board with a "large" amount of RAM (in Arduino terms).  The processor on an Arduino UNO or similar board is unlikely to be able to handle all of the logger functionality, though it will be able to access individual sensors.  An Arduino Mega, Sodaq Mbili, or other similar boards should be able to use the full library.  To date, however, the EnviroyDIY Mayfly is the only board that has been tested.
 
-Each sensor is implemented as a subclass of the "Sensor" class.  Within each sensor, there are subclasses for each variable that the sensor can return.  The sensors can return variables as floats or as a string with the proper number of significant figures for the instrument resolution.
+Each sensor is implemented as a subclass of the "Sensor" class contained in "SensorBase.h".  Each variable is separately implemented as a subclass of the "Variable" class contained in "VariableBase.h".  The variables are tied to the sensor using an "[Observer](https://en.wikipedia.org/wiki/Observer_pattern)" software pattern.
 
-To use a sensor in your sketch, you must include SensorBase.h in your script AND separately include xxx.h for each sensor you intend to use.  While this may force you to write many more include statements, it makes the library lighter weight by not requiring you to install the functions and dependencies for every sensor when only one is needed.
+To use a sensor and variable in your sketch, you must separately include xxx.h for each sensor you intend to use.  While this may force you to write many more include statements, it makes the library lighter weight by not requiring you to install the functions and dependencies for every sensor when only one is needed.
 
 #### Contents:
 - [Basic Senor and Variable Functions](#Basic)
@@ -25,69 +25,93 @@ To use a sensor in your sketch, you must include SensorBase.h in your script AND
 ## <a name="Basic"></a>Basic Senor and Variable Functions
 
 ### Functions Available for Each Sensor
-- **setup()** - This "sets up" the sensor - setting up serial ports, etc required for the given sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program.
-- **getStatus()** - This returns the current status of the sensor, if the sensor has some way of giving it to you.  (Most do not.)
-- **sleep()** - This puts the sensor to sleep, often by stopping the power.  Returns true.
-- **wake()** - This wakes the sensor up and sends it power.  Returns true.
+- **Constructor** - Each sensor has a unique constructor, the exact format of which is dependent on the indidual sensor.
 - **getSensorName()** - This gets the name of the sensor and returns it as a string.
 - **getSensorLocation()** - This returns the data pin or other sensor installation information as a string.  This is the location where the sensor is connected to the data logger, NOT the position of the sensor in the environment.
+- **setup()** - This "sets up" the sensor - setting up serial ports, etc required for the given sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program _before_ calling the variable setup.
+- **getStatus()** - This returns the current status of the sensor as an interger, if the sensor has some way of giving it to you (most do not.)
+- **printStatus()** - This returns the current status of the sensor as a readable String.
+- **sleep()** - This puts the sensor to sleep, often by stopping the power.  Returns true.
+- **wake()** - This wakes the sensor up and sends it power.  Returns true.
 - **update()** - This updates the sensor values and returns true when finished.  For digital sensors with a single infomation return, this only needs to be called once for each sensor, even if there are multiple variable subclasses for the sensor.
 
-### Functions for Each Variable Returned by a Sensor
-- **getVarName()** - This returns the variable's name using http://vocabulary.odm2.org/variablename/ as a string
-- **getVarUnit()** - This returns the variable's unit using http://vocabulary.odm2.org/units/ as a string
+### Functions for Each Variable
+- **Constructor** - Every variable requires a pointer to its parent sensor as part of the constructor.
+- **getVarName()** - This returns the variable's name using http://vocabulary.odm2.org/variablename/ as a string.
+- **getVarUnit()** - This returns the variable's unit using http://vocabulary.odm2.org/units/ as a string.
+- **setup()** - This "sets up" the variable - attaching it to its parent sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program _after_ calling the sensor setup.
 - **getValue()** - This returns the current value of the variable as a float.  You should call the update function before calling getValue.  As a backup, if the getValue function sees that the update function has not been called within the last 60 seconds, it will re-call it.
 - **getValueString()** - This is identical to getValue, except that it returns a string with the proper precision available from the sensor.
 
 ### <a name="individuals"></a>Examples Using Individual Sensor and Variable Functions
-To access and get values from a sensor, you must create an instance of the variable subclass you are interested in.  Each variable has different parameters that you must specify when creating the variable instance.  You must create a new instance for each _variable_, not just each sensor.  When using multple variables from the same sensor, you can save time by only calling the setup() and update() functions on a single variable and then calling the getValue() function on all of the variables.  A very simple program which creates instances of the variables and get data from all the parameters measured by a Decagon CTD you might be something like:
+To access and get values from a sensor, you must create an instance of the sensor class you are interested in using its constuctor.  Each variable has different parameters that you must specify; these are described below within the section for each sensor.  You must then create a new instance for each _variable_, and reference a pointer to the parent sensor in the constructor.  Many variables can (and should) call the same parent sensor.  The variables are specific to the individual sensor because each sensor collects data and returns data in a unique way.  The constructors are all best called outside of the "setup()" or "loop()" functions.  The setup functions are then called (sensor, then variables) in the main "setup()" function and the update() and getValues() are called in the loop().  A very simple program to get data from a Decagon CTD might be something like:
 
 ```cpp
-cond DecagonCTD_Cond(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
-temp DecagonCTD_Temp(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
-depth DecagonCTD_Depth(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
+#include <DecagonCTD.h>
+const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
+const int numberReadings = 10;  // The number of readings to average
+const int SDI12Data = 7;  // The pin the CTD is attached to
+const int SDI12Power = 22;  // The sensor power pin (use -1 if not applicable)
+DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
+DecagonCTD_Cond cond(&ctd);  // The ampersand (&) *must* be included
+DecagonCTD_Temp temp(&ctd);
+DecagonCTD_Depth depth(&ctd);
 
 setup()
 {
+    // Start the primary serial connection
+    Serial.begin(SERIAL_BAUD);
+
+    // Set up the sensor and variables
+    ctd.setup();
     cond.setup();
+    temp.setup();
+    depth.setup();
 }
 
 loop()
 {
-    cond.update();
+    ctd.update();
+    Serial.print("Current conductivity: ");
     Serial.println(cond.getValue());
+    Serial.print("Current temperature: ");
     Serial.println(temp.getValue());
+    Serial.print("Current water depth: ");
     Serial.println(depth.getValue());
-    delay(60000);
+    delay(15000);
 }
 ```
 
+The "[single_sensor](https://github.com/EnviroDIY/ModularSensors/tree/DS18B20/examples/single_sensor)" example in the examples folder shows the same functionality for a MaxBotix Ultrasonic Range Finder.
 
 ## <a name="Grouped"></a>Grouped Sensor Functions
-Having a unified set of functions to access many sensors allows us to quickly poll through a list of sensors to get all results quickly.  Within sensor base, there is a class "VariableArray" that adds functions to use on an array of pointers to sensor objects.
+Having a unified set of functions to access many sensors allows us to quickly poll through a list of sensors to get all results quickly.  To this end, "VariableArray.h" adds the a class "VariableArray" that with the functions to use on an array of pointers to variable objects.
 
 ### Functions Available for a VariableArray Object:
-
-- **setupSensors()** - This sets up all of the sensors in the list by running each sensor object's setup() function.  If a sensor doesn't respond to its setup command, the command is called 5 times in attempt to make a connection.  To save time, if two variables from the same sensor are in sequence in the pointer array, the setup function will only be called for the first variable in the sequence.  If all sensors are set up sucessfully, returns true.
-- **sensorsSleep()** - This puts all sensors to sleep (ie, cuts power).  Returns true.
-- **sensorsWake()** - This wakes all sensors (ie, gives power).  Returns true.
-- **updateAllSensors()** - This updates all sensor values.  To save time, if two variables from the same sensor are in sequence in the pointer array, the update function will only be called for the first variable in the sequence.  Returns true.
-- **printSensorData(Stream stream)** - This prints curent sensor values along with metadata to a stream.  By default, it will print to the first Serial port.  Note that the input is a pointer to a stream instance.
+- **init(int variableCount, Variable variableList[])** - This initializes the variable array.  This must be called in the setup() function.  Note that the objects in the variable list must be pointers, not the variable objects themselves.
+- **getVariableCount()** - Simply returns the number of variables.
+- **getSensorCount()** - Teturns the number of independent sensors.  This will often be different from the number of variables because many sensors can return multiple variables.
+- **setupSensors()** - This sets up all of the variables in the array and their respective sensors by running all of their setup() functions.  If a sensor doesn't respond to its setup command, the command is called 5 times in attempt to make a connection.  If all sensors are set up sucessfully, returns true.
+- **sensorsSleep()** - This puts all sensors to sleep (ie, cuts power), skipping repeated sensors.  Returns true.
+- **sensorsWake()** - This wakes all sensors (ie, gives power), skipping repeated sensors.  Returns true.
+- **updateAllSensors()** - This updates all sensor values, skipping repeated sensors.  Returns true.  Does NOT return any values.
+- **printSensorData(Stream stream)** - This prints curent sensor values along with metadata to a stream (either hardware or software serial).  By default, it will print to the first Serial port.  Note that the input is a pointer to a stream instance so to use a hardware serial instance you must use the ampersand before the serial name (ie, &Serial1).
 - **generateSensorDataCSV()** - This returns an Arduino String containing comma separated list of sensor values.  This string does _NOT_ contain a timestamp of any kind.
 
 ### <a name="ArrayExamples"></a>VariableArray Examples:
 
-To use the VariableArray module, you must first create the array of pointers.  This must be done outside of the setup() or loop() functions.  Remember that you must create a new instance for each _variable_, not just each sensor.  You should order your list so all the variables from a single sensor come one after the other.  All functions will be called on the sensors in the order they appear in the list.
+To use the VariableArray module, you must first create the array of pointers.  This must be done outside of the setup() or loop() functions.  Remember that you must create a new instance for each _variable_, and each sensor.  All functions will be called on the variables in the order they appear in the list.  The functions for sensors will be called in the order that the last variable listed for that sensor appears
 
 ```cpp
 Variable *variableList[] = {
-    new Sensor1_Variable1(param1, param2, ..., paramX),
-    new Sensor1_Variable2(param1, param2, ..., paramX),
-    new Sensor2_Variable1(param1, param2, ..., paramX),
+    new Sensor1_Variable1(&parentSensor1),
+    new Sensor1_Variable2(&parentSensor1),
+    new Sensor2_Variable1(&parentSensor2),
     ...
-    new SensorX_VariableX(param1, param2, ..., paramX)
+    new SensorX_VariableX(&parentSensorx)
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
+VariableArray sensors;
 ```
 
 Once you have created the array of pointers, you can initialize the VariableArray module and setup all of the sensors at once in the setup function:

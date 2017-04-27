@@ -74,7 +74,7 @@ void setup()
     // Print a start-up note to the first serial port
     Serial.println(F("Single Sensor Example - Sonar Ranging"));
 
-    // Set up the sensor
+    // Set up the sensor and variables
     sonar.setup();
     sonar_range.setup();
 }
