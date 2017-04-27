@@ -16,7 +16,7 @@
             "url": "https://envirodiy.org/"
         }
     ],
-    "version": "1.2.0-alpha",
+    "version": "2.0.0-alpha",
     "repository":
     {
         "type": "git",
@@ -56,6 +56,21 @@
         },
         {
             "name": "ADS1X15"
+        },
+        {
+            "name": "Adafruit AM2315"
+        },
+        {
+            "name": "Adafruit BME280 Library"
+        },
+        {
+            "name": "Adafruit Unified Sensor"
+        },
+        {
+            "name": "DallasTemperature"
+        },
+        {
+            "name": "OneWire"
         },
         {
             "name": "Arduino-SDI-12_PCINT3",

@@ -20,6 +20,7 @@ To use a sensor and variable in your sketch, you must separately include xxx.h f
     - [Decagon Devices 5TM](#5TM)
     - [Decagon Devices CTD-10](#CTD)
     - [Decagon Devices ES-2](#ES2)
+    - [AOSong AM2315](#AM2315)
 
 
 ## <a name="Basic"></a>Basic Senor and Variable Functions
@@ -183,14 +184,18 @@ Sending data to EnviroDIY depends on having some sort of modem or internet conne
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand XBee's, including WiFi or LTE-M1
 ```
 Any of the above modems types/chips should work, though only a SIM800 and WiFiBee have been tested to date.  If you would prefer to use a library of your own for controlling your modem, just omit the define statemnts.  In this case, the GSM library and modem support modules will not be imported and you will lose the postDataEnviroDIY() and log() functions.
-- These three functions set up the required registration token, sampling feature uuid, and time series uuids for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.  You must call these functions to be able to get proper JSON data for EnviroDIY, even without the modem support.
-    - **setToken(const char registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
-    - **setSamplingFeature(const char samplingFeature)** - Sets the GUID of the sampling feature.  Note that the input is a pointer to the samplingFeature.
-    - **setUUIDs(const char UUIDs[])** - Sets the time series UUIDs.  Note that the input is an array of pointers.  The order of the UUIDs in this array **must match exactly** with the order of the coordinating variable in the variableList.
-- After registering the tokens, set up your modem using one of these two commands, depending on whether you are using cellular or WiFi communication
-    - **modem.setupModem(Stream modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin, DTRSleepType sleepType, const char APN)** - Sets up the internet communcation with a cellular modem.  Note that the modemStream and APN should be pointers.  Use -1 for any pins that are not connected.
-    - **modem.setupModem(Stream modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin, DTRSleepType sleepType, const char ssid, const char pwd)** - Sets up the internet communcation with a WiFi modem.  Note that the modemStream, ssid, and password should be pointers.  Use -1 for any pins that are not connected.
-    - The _DTRSleepType_ controls how the modem is put to sleep between readings.  Use "held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.  Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.  Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.  Use "always_on" if you do not want the library to control the modem power and sleep.
+
+These three functions set up the required registration token, sampling feature uuid, and time series uuids for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.  You must call these functions to be able to get proper JSON data for EnviroDIY, even without the modem support.
+- **setToken(const char registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
+- **setSamplingFeature(const char samplingFeature)** - Sets the GUID of the sampling feature.  Note that the input is a pointer to the samplingFeature.
+- **setUUIDs(const char UUIDs[])** - Sets the time series UUIDs.  Note that the input is an array of pointers.  The order of the UUIDs in this array **must match exactly** with the order of the coordinating variable in the variableList.
+
+After registering the tokens, set up your modem using one of these two commands, depending on whether you are using cellular or WiFi communication:
+- **modem.setupModem(Stream modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin, DTRSleepType sleepType, const char APN)** - Sets up the internet communcation with a cellular modem.  Note that the modemStream and APN should be pointers.  Use -1 for any pins that are not connected.
+- **modem.setupModem(Stream modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin, DTRSleepType sleepType, const char ssid, const char pwd)** - Sets up the internet communcation with a WiFi modem.  Note that the modemStream, ssid, and password should be pointers.  Use -1 for any pins that are not connected.
+- The _DTRSleepType_ controls how the modem is put to sleep between readings.  Use "held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.  Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.  Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.  Use "always_on" if you do not want the library to control the modem power and sleep.
+
+Within the loop, these two functions will then format and send out data:
 - **generateSensorDataJSON()** - Generates a properly formatted JSON string to go to the EnviroDIY streaming data loader API.
 - **postDataEnviroDIY()** - Creates proper headers and sends data to the EnviroDIY data portal.  Depends on the modem support module.  Returns an HTML response code.
 
@@ -273,52 +278,136 @@ If you would like to do other things within the loop function, you should access
 - After updating the sensors, then call any functions you want to send/print/save data.
 - Finish by putting the logger back to sleep, if desired, with systemSleep().
 
+
 ## Available sensors
 
 #### <a name="MayflyOnboard"></a>Mayfly Onboard Sensors
 
-The version of the Mayfly is required as input (ie, "v0.3" or "v0.4" or "v0.5")  You must have the [Sodaq](https://github.com/SodaqMoja/Sodaq_DS3231) or [EnviroDIY DS-3231](https://github.com/EnviroDIY/Sodaq_DS3231) library installed to use this sensor.  Because the sensors operate independently, you must call the update function for each one before calling getValue.
-- MayflyOnboardTemp(char const *version)
-- MayflyOnboardBatt(char const *version)
-- MayflyFreeRam()
+The version of the Mayfly is required as input (ie, "v0.3" or "v0.4" or "v0.5")  You must have the [Sodaq](https://github.com/SodaqMoja/Sodaq_DS3231) or [EnviroDIY DS-3231](https://github.com/EnviroDIY/Sodaq_DS3231) library installed to use this sensor.
+
+The main constuctor for the sensor object is:
+
+```cpp
+#include <MayflyOnboardSensors.h>
+EnviroDIYMayfly mayfly(MFVersion);
+```
+
+The three available variables are:
+
+```cpp
+EnviroDIYMayfly_Temp(&mayfly);
+EnviroDIYMayfly_Batt(&mayfly);
+EnviroDIYMayfly_FreeRam(&mayfly);
+```
 
 #### <a name="MaxBotix"></a>[MaxBotix MaxSonar](http://www.maxbotix.com/Ultrasonic_Sensors/High_Accuracy_Sensors.htm) - HRXL MaxSonar WR or WRS Series with TTL Outputs
 
-The power/excite pin and digital data pin are needed as input.  The power pin must provide smoothed digital power.  You must have the [EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwareSerial_PCINT12/) installed to use this sensor.  This modified version is needed so there are no pin change interrupt conflicts with the SDI-12 library or the software pin change interrupt library used to wake the clock.  Because of this, the MaxBotix must be installed on a digital pin that depends on pin change interrupt vector 1 or 2.  On the Mayfly, the empty pins in this range are pins D10, D11, and D18.  (Changing the solder jumper options on the back of the board may eliminate D18 as a possibility.)
-- MaxBotixSonar_Depth(int powerPin, int dataPin)
+The power/excite pin, digital data pin, and trigger are needed as input.  (Use -1 for the trigger if you do not have it connected.)  You must have the [EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwareSerial_PCINT12/) installed to use this sensor.  This modified version is needed so there are no pin change interrupt conflicts with the SDI-12 library or the software pin change interrupt library used to wake the clock.  Because of this, the MaxBotix must be installed on a digital pin that depends on pin change interrupt vector 1 or 2.  On the Mayfly, the empty pins in this range are pins D10, D11, and D18.  (Changing the solder jumper options on the back of the board may eliminate D18 as a possibility.)
+
+The main constuctor for the sensor object is:
+
+```cpp
+#include <MaxBotixSonar.h>
+MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger) ;
+```
+
+The single available variable is:
+
+```cpp
+MaxBotixSonar_Range(&sonar);
+```
 
 #### <a name="OBS3"></a>[Campbell Scientific OBS-3+](https://www.campbellsci.com/obs-3plus)
 
-The power pin, analog data pin, and calibration values _in Volts_ for Ax^2 + Bx + C are required as inputs and the sensor must be attached to a TI ADS1115 ADD converter (such as on the first four analog pins of the Mayfly).  You must have the [Adafruit ADS1015 library](https://github.com/Adafruit/Adafruit_ADS1X15/) installed to use this sensor.
+The power pin, analog data pin, and calibration values _in Volts_ for Ax^2 + Bx + C are required as inputs and the sensor must be attached to a TI ADS1115 ADD converter (such as on the first four analog pins of the Mayfly).  You must have the [Adafruit ADS1X15 library](https://github.com/Adafruit/Adafruit_ADS1X15/) installed to use this sensor.
 
 Note that to access both the high and low range returns, two instances must be created, one at the low range return pin and one at the high pin.
-- CampbellOBS3_Turbidity(int powerPin, int dataPin, float A, float B, float C)
+
+The main constuctor for the sensor object is (called once each for high and low range):
+
+```cpp
+#include <CampbellOBS3.h>
+CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C);
+CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
+```
+
+The single available variable is (called once each for high and low range):
+
+```cpp
+CampbellOBS3_Turbidity(&osb3low);
+CampbellOBS3_Turbidity(&osb3high);
+```
 
 #### <a name="5TM"></a>[Decagon Devices 5TM](https://www.decagon.com/en/soils/volumetric-water-content-sensors/5tm-vwc-temp/) Soil Moisture and Temperature Sensor
 
-The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  You must have the [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/mf_archive) that has been modified to only use PCInt3 installed to use this sensor.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the clock.  Because of this, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
+The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  You must have the [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/mayfly) that has been modified to only use PCInt3 installed to use this sensor.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the clock.  Because of this, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
 
-Calling the update function for any one of the three variables will update all three.
+The main constuctor for the sensor object is:
 
-- Decagon5TM_Ea(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
-- Decagon5TM_Temp(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
-- Decagon5TM_VWC(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
+```cpp
+#include <Decagon5TM.h>
+Decagon5TM fivetm(TMSDI12address, SDI12Power, SDI12Data, numberReadings);
+```
+
+The three available variables are:
+
+```cpp
+Decagon5TM_Ea(&fivetm);
+Decagon5TM_Temp(&fivetm)
+Decagon5TM_VWC(&fivetm);
+```
 
 #### <a name="CTD"></a>[Decagon Devices CTD-5 or  CTD-10](https://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/ctd-10-sensor-electrical-conductivity-temperature-depth/) Electrical Conductivity, Temperature, and Depth Sensor
 
-The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  You must have the [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/mf_archive) that has been modified to only use PCInt3 installed to use this sensor.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the clock.  Because of this, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
+The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  You must have the [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/mayfly) that has been modified to only use PCInt3 installed to use this sensor.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the clock.  Because of this, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
 
-Calling the update function for any one of the three variables will update all three.
+The main constuctor for the sensor object is:
 
-- DecagonCTD_Cond(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
-- DecagonCTD_Temp(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
-- DecagonCTD_Depth(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
+```cpp
+#include <DecagonCTD.h>
+DecagonCTD ctd(CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
+```
+
+The three available variables are:
+
+```cpp
+DecagonCTD_Cond(&ctd);
+DecagonCTD_Temp(&ctd);
+DecagonCTD_Depth(&ctd);
+```
 
 #### <a name="ES2"></a>[Decagon Devices ES-2](http://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/es-2-electrical-conductivity-temperature/) Electrical Conductivity Sensor
 
-The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  You must have the [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/mf_archive) that has been modified to only use PCInt3 installed to use this sensor.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the clock.  Because of this, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
+The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  You must have the [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/mayfly) that has been modified to only use PCInt3 installed to use this sensor.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the clock.  Because of this, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
 
-Calling the update function for either one of the variables will both.
+The main constuctor for the sensor object is:
 
-- DecagonES2_Cond(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
-- DecagonES2_Temp(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
+```cpp
+#include <DecagonES2.h>
+DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, numberReadings);
+```
+
+The two available variables are:
+
+```cpp
+DecagonES2_Cond(&es2);
+DecagonES2_Temp(&es2);
+```
+
+#### <a name="AM2315"></a>[AOSong AM2315](www.aosong.com/asp_bin/Products/en/AM2315.pdf) Encased I2C Temperature/Humidity Sensor
+
+Because this is an I2C sensor, the only input needed is the power pin.  You must have the [Adafruit AM2315 library](https://github.com/adafruit/Adafruit_AM2315) installed to use this sensor.
+
+The main constuctor for the sensor object is:
+
+```cpp
+#include <AOSongAM2315.h>
+AOSongAM2315 am2315(I2CPower);
+```
+
+The two available variables are:
+
+```cpp
+AOSongAM2315_Humidity(&am2315);
+AOSongAM2315_Temp(&am2315);
+```
