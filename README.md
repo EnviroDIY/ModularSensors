@@ -157,7 +157,7 @@ Functions to access the clock in proper format and time zone:
 - **markTime()** - This sets variables for the date/time - this is needed so that all data outputs (SD, EnviroDIY, serial printing, etc) print the same time for updating the sensors - even though the routines to update the sensors and to output the data may take several seconds.  It is not currently possible to output the instantaneous time an individual sensor was updated, just a single marked time.  By custom, this should be called before updating the sensors, not after.  If you do not call this function before saving or sending data, there will be no timestamps associated with your data.  This is called every time the checkInterval() function is run.
 
 
-Functions for the timer and sleep modes:
+Functions for the sleep modes:
 - **setupSleep()** - Sets up the sleep mode and interrupts to wake it back up.  This should be called in the setup function.
 - **systemSleep()** - Puts the system into deep sleep mode.  This should be called at the very end of the loop function.  Please keep in mind that this does NOT call the wake and sleep functions of the sensors themselves; you must call those separately.  (This separation is for timing reasons.)
 
@@ -308,7 +308,7 @@ The main constuctor for the sensor object is:
 
 ```cpp
 #include <MaxBotixSonar.h>
-MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger) ;
+MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger);
 ```
 
 The single available variable is:
@@ -353,7 +353,7 @@ The three available variables are:
 
 ```cpp
 Decagon5TM_Ea(&fivetm);
-Decagon5TM_Temp(&fivetm)
+Decagon5TM_Temp(&fivetm);
 Decagon5TM_VWC(&fivetm);
 ```
 
