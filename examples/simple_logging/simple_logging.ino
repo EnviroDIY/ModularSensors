@@ -187,15 +187,15 @@ void setup()
     Serial.println(LoggerID);
 
     // Set the timezone and offsets
-    Logger.setTimeZone(TIME_ZONE);
-    Logger.setTZOffset(TIME_ZONE);  // Because RTC is in UTC
+    logger.setTimeZone(TIME_ZONE);
+    logger.setTZOffset(TIME_ZONE);  // Because RTC is in UTC
 
     // Initialize the logger;
-    Logger.init(SD_SS_PIN, RTC_PIN, variableCount, variableList,
+    logger.init(SD_SS_PIN, RTC_PIN, variableCount, variableList,
                 LOGGING_INTERVAL, LoggerID);
-    Logger.setAlertPin(GREEN_LED);
+    logger.setAlertPin(GREEN_LED);
     // Begin the logger;
-    Logger.begin();
+    logger.begin();
 }
 
 
@@ -205,5 +205,5 @@ void setup()
 void loop()
 {
     // Log the data
-    Logger.log();
+    logger.log();
 }

@@ -135,7 +135,7 @@ sensors.printSensorData();
 
 
 ## <a name="Logger"></a>Logger Functions
-Our main reason to unify the output from many sensors is to easily log the data to an SD card and to send it to the any other live streaming data receiver, like the [EnviroDIY data portal](http://data.envirodiy.org/).  There are several modules available to use with the sensors to log data and stream data:  LoggerBase.h, LoggerEnviroDIY.h, and ModemSupport.h.  The classes Logger (in LoggerBase.h) is a sub-class of VariableArray and LoggerEnviroDIY (in LoggerEnviroDIY.h) is in-turn a sub-class Logger.   They contain all of the functions available to a VariableArray as described above.  The Logger class adds the abilities to communicate with a DS3231 real time clock, to put the board into deep sleep between readings to conserver power, and to write the data from the sensors to a csv file on a connected SD card.  The LoggerEnviroDIY class uses ModemSupport.h to add the ability to properly format and send data to the [EnviroDIY data portal](http://data.envirodiy.org/).
+Our main reason to unify the output from many sensors is to easily log the data to an SD card and to send it to the any other live streaming data receiver, like the [EnviroDIY data portal](http://data.envirodiy.org/).  There are several modules available to use with the sensors to log data and stream data:  LoggerBase.h, LoggerEnviroDIY.h, and ModemSupport.h.  The classes Logger (in LoggerBase.h) is a sub-class of VariableArray and LoggerEnviroDIY (in LoggerEnviroDIY.h) is in-turn a sub-class logger.   They contain all of the functions available to a VariableArray as described above.  The Logger class adds the abilities to communicate with a DS3231 real time clock, to put the board into deep sleep between readings to conserver power, and to write the data from the sensors to a csv file on a connected SD card.  The LoggerEnviroDIY class uses ModemSupport.h to add the ability to properly format and send data to the [EnviroDIY data portal](http://data.envirodiy.org/).
 
 Both logger modules depend on the [Sodaq](https://github.com/SodaqMoja/Sodaq_DS3231) or [EnviroDIY DS-3231](https://github.com/EnviroDIY/Sodaq_DS3231) (for clock control), the [EnviroDIY modified version of Sodaq's pin change interrupt library](https://github.com/EnviroDIY/PcInt_PCINT0) (for waking the processor from clock alarms), the AVR sleep library (for low power sleeping), and the [SdFat library](https://github.com/greiman/SdFat) for communicating with the SD card.  The LoggerEnviroDIY has the additional dependency of the [EnviroDIY version of the TinyGSM library](https://github.com/EnviroDIY/TinyGSM) for internet connectivity.  The ModemSupport module is essentially a wrapper for TinyGSM which adds quick functions for turning modem on and off.
 
@@ -223,15 +223,15 @@ _Within the setup function_, you must then initialize the logger and then run th
 
 ```cpp
 // Set the time zone and offset from the RTC
-Logger.setTimeZone(timeZone);
-Logger.setTZOffset(offset);
+logger.setTimeZone(timeZone);
+logger.setTZOffset(offset);
 // Initialize the logger;
-Logger.init(SDCardPin, interruptPin, variableCount, variableList[], loggingIntervalMinutes, loggerID);
+logger.init(SDCardPin, interruptPin, variableCount, variableList[], loggingIntervalMinutes, loggerID);
 // OPTIONAL - specify a pin to give an alert when a measurement is taken
 // This should generally be a pin with an LED
 setAlertPin(int ledPin);
 // Begin the logger;
-Logger.begin();
+logger.begin();
 ```
 
 --OR--
@@ -258,7 +258,7 @@ _Within the main loop function_, all logging and sending of data can be done usi
 ```cpp
 void loop()
 {
-    Logger.log();
+    logger.log();
 }
 ```
 
