@@ -2,14 +2,14 @@
 #include <Arduino.h>
 #include <SoftwareSerial_PCINT12.h>
 
-// Change to the proper excite (power) and recieve pin for MaxBotix Sonar.
-int _dataPin = 10;
+// Change to the proper excite (power) and receive pin for MaxBotix Sonar.
+int _dataPin = 11;
 int _powerPin = 22;    // sensor power is pin 22 on Mayfly
 int _triggerPin = -1;    // sensor power is pin 22 on Mayfly
-bool useTrigger = true;
+bool useTrigger = false;
 const int MAX_INPUT = 30;
 
-// define serial port for recieving data
+// define serial port for receiving data
 // output from maxSonar is inverted requiring true to be set.
 SoftwareSerial sonarSerial(_dataPin, -1);
 
@@ -198,7 +198,7 @@ void loop()
     Serial.println(F("-------------------"));  // For debugging
 
     digitalWrite(_powerPin, HIGH);
-    delay(2000);  // Published start-up time is 160ms;
+    delay(500);  // Published start-up time is 160ms;
 
     readMaxbotixHeader();
     readMaxbotixData();

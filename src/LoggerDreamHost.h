@@ -19,7 +19,7 @@
 // ============================================================================
 //  Functions for the SWRC Sensors DreamHost data receivers.
 // ============================================================================
-class LoggerDreamHost : public virtual LoggerEnviroDIY
+class LoggerDreamHost : public LoggerEnviroDIY
 {
 public:
     // Functions for private SWRC server
@@ -32,16 +32,16 @@ public:
     {
         String dhString = String(_DreamHostPortalRX);
         dhString += F("?LoggerID=");
-        dhString += String(LoggerBase::_loggerID);
+        dhString += String(Logger::_loggerID);
         dhString += F("&Loggertime=");
-        dhString += String(LoggerBase::markedEpochTime - 946684800);  // Coorect time from epoch to y2k
+        dhString += String(Logger::markedEpochTime - 946684800);  // Coorect time from epoch to y2k
 
-        for (int i = 0; i < LoggerBase::_sensorCount; i++)
+        for (int i = 0; i < Logger::_variableCount; i++)
         {
             dhString += F("&");
-            dhString += LoggerBase::_sensorList[i]->getDreamHost();
+            dhString += Logger::_variableList[i]->getDreamHost();
             dhString += F("=");
-            dhString += LoggerBase::_sensorList[i]->getValueString();
+            dhString += Logger::_variableList[i]->getValueString();
         }
         return dhString;
     }
@@ -92,7 +92,7 @@ public:
     }
 
     // Convience functions to do it all
-    void log(void) override
+    virtual void log(void) override
     {
         // Update the timer
         // This runs the timer's "now" function [in our case getNow()] and then
@@ -105,19 +105,21 @@ public:
             // Print a line to show new reading
             Serial.println(F("------------------------------------------"));  // for debugging
             // Turn on the LED to show we're taking a reading
-            digitalWrite(LoggerBase::_ledPin, HIGH);
+            digitalWrite(_ledPin, HIGH);
 
             // Turn on the modem to let it start searching for the network
-            modem.modemOnOff->on();
+            LoggerEnviroDIY::modem.modemOnOff->on();
 
-            // Update the time variables with the current time
-            markTime();
+            // Wake up all of the sensors
+            // I'm not doing as part of sleep b/c it may take up to a second or
+            // two for them all to wake which throws off the checkInterval()
+            sensorsWake();
             // Update the values from all attached sensors
             updateAllSensors();
             // Immediately put sensors to sleep to save power
             sensorsSleep();
 
-            //Save the data record to the log file
+            // Create a csv data record and save it to the log file
             logToSD(generateSensorDataCSV());
 
             // Connect to the network
@@ -143,12 +145,12 @@ public:
             modem.modemOnOff->off();
 
             // Turn off the LED
-            digitalWrite(LoggerBase::_ledPin, LOW);
+            digitalWrite(_ledPin, LOW);
             // Print a line to show reading ended
             Serial.println(F("------------------------------------------\n"));  // for debugging
         }
 
-        //Sleep
+        // Sleep
         if(_sleep){systemSleep();}
     }
 

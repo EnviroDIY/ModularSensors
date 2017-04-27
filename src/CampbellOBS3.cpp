@@ -22,29 +22,28 @@
  *      Turbidity: 0.06/0.2 NTU; 0.1/0.5 NTU; 0.2/1.0 NTU
 */
 
-#include <Arduino.h>
-#include <Adafruit_ADS1015.h>
 #include "CampbellOBS3.h"
+#include <Adafruit_ADS1015.h>
 
 // The constructor - need the power pin, the data pin, and the calibration info
 CampbellOBS3::CampbellOBS3(int powerPin, int dataPin, float A, float B, float C)
-  : SensorBase(dataPin, powerPin)
+  : Sensor(powerPin, dataPin, F("CampbellOBS3+"), OBS3_NUM_VARIABLES)
 {
     _A = A;
     _B = B;
     _C = C;
 }
 
-// The sensor installation location on the Mayfly
+
 String CampbellOBS3::getSensorLocation(void)
 {
-    sensorLocation = "ads" + String(_dataPin);
+    String sensorLocation = F("ADS1115_Pin");
+    sensorLocation += String(_dataPin);
     return sensorLocation;
 }
 
-
-// Uses Auxillary ADD to convert data
-bool CampbellOBS3::update(){
+bool CampbellOBS3::update(void)
+{
 
     // Start the Auxillary ADD
     Adafruit_ADS1115 ads;     /* Use this for the 16-bit version */
@@ -54,11 +53,13 @@ bool CampbellOBS3::update(){
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
 
+    // Clear values before starting loop
+    clearValues();
+
     // Variables to store the results in
     int16_t adcResult = 0;
     float voltage = 0;
     float calibResult = 0;
-    sensorValue = 0;
 
     adcResult = ads.readADC_SingleEnded(_dataPin);  // Getting the reading
 
@@ -84,34 +85,14 @@ bool CampbellOBS3::update(){
     // Serial.print(F("calibResult: "));  // For debugging
     // Serial.println(calibResult);  // For debugging
 
-    sensorValue = calibResult;
-    sensorLastUpdated = millis();
+    sensorValues[0] = calibResult;
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
 
+    // Update the registered variables with the new values
+    notifyVariables();
+
     // Return true when finished
     return true;
 }
-
-float CampbellOBS3::getValue(void)
-{
-    checkForUpdate(sensorLastUpdated);
-    return sensorValue;
-}
-
-
-
-
-CampbellOBS3_Turbidity::CampbellOBS3_Turbidity(int powerPin, int dataPin, float A, float B, float C)
-  : SensorBase(dataPin, powerPin, F("CampbellOBS3+"), F("turbidity"), F("nephelometricTurbidityUnit"), OBS3_RESOLUTION, F("TurbLow")),
-    CampbellOBS3(powerPin, dataPin, A, B, C)
-{}
-
-
-
-
-CampbellOBS3_TurbHigh::CampbellOBS3_TurbHigh(int powerPin, int dataPin, float A, float B, float C)
-  : SensorBase(dataPin, powerPin, F("CampbellOBS3+"), F("turbidity"), F("nephelometricTurbidityUnit"), OBS3_HR_RESOLUTION, F("TurbHigh")),
-    CampbellOBS3(powerPin, dataPin, A, B, C)
-{}

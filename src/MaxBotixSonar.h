@@ -14,28 +14,36 @@
 #define MaxBotixSonar_h
 
 #include "SensorBase.h"
+#include "VariableBase.h"
 
+#define HRXL_NUM_MEASUREMENTS 1
 #define HRXL_RESOLUTION 0
+#define HRXL_VAR_NUM 0
 
 // The main class for the MaxBotix Sonar.  No sub-classes are needed
-class MaxBotixSonar_Range : public virtual SensorBase
+class MaxBotixSonar : public Sensor
 {
 public:
-    MaxBotixSonar_Range(int powerPin, int dataPin, int triggerPin = -1);
+    MaxBotixSonar(int powerPin, int dataPin, int triggerPin = -1);
 
     SENSOR_STATUS setup(void) override;
 
     bool update(void) override;
 
-    float getValue(void) override;
-protected:
-    float sensorValue_depth;
-    unsigned long sensorLastUpdated;
 private:
     int _triggerPin;
-    int result;
-    bool stringComplete;
-    int rangeAttempts;
+};
+
+
+// The main class for the MaxBotix Sonar.  No sub-classes are needed
+class MaxBotixSonar_Range : public Variable
+{
+public:
+    MaxBotixSonar_Range(Sensor *parentSense) :
+      Variable(parentSense, HRXL_VAR_NUM,
+               F("distance"), F("millimeter"),
+               HRXL_RESOLUTION, F("SonarRange"))
+    {}
 };
 
 #endif
