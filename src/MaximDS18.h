@@ -17,33 +17,39 @@
 #ifndef MaximDS18_h
 #define MaximDS18_h
 
-#include <Arduino.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include "SensorBase.h"
+#include "VariableBase.h"
 
 #define DS18_NUM_MEASUREMENTS 1
+#define DS18_TEMP_VAR_NUM 0
 #define DS18_TEMP_RESOLUTION 4
 
-// The main class for the MaxBotix Sonar.  No sub-classes are needed
-class MaximDS18_Temp : public virtual SensorBase
+// The main class for the DS18
+class MaximDS18 : public Sensor
 {
 public:
-    MaximDS18_Temp(DeviceAddress OneWireAddress, int powerPin, int dataPin);
-    MaximDS18_Temp(int powerPin, int dataPin);
+    MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin);
+    MaximDS18(int powerPin, int dataPin);
 
     bool update(void) override;
 
-    float getValue(void) override;
-protected:
-    float sensorValue_temp;
-    unsigned long sensorLastUpdated;
 private:
     uint8_t* _OneWireAddress;
     bool _addressKnown;
-    int result;
-    bool stringComplete;
-    int rangeAttempts;
+};
+
+
+// The class for the Range Variable
+class MaximDS18_Temp : public Variable
+{
+public:
+    MaximDS18_Temp(Sensor *parentSense) :
+      Variable(parentSense, DS18_TEMP_VAR_NUM,
+               F("temperature"), F("degreeCelsius"),
+               DS18_TEMP_RESOLUTION, F("DS18Temp"))
+    {}
 };
 
 #endif

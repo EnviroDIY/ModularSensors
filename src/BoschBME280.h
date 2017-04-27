@@ -30,17 +30,26 @@
 #define BoschBME280_h
 
 #include "SensorBase.h"
+#include "VariableBase.h"
 #include <Adafruit_BME280.h>
 
 #define BoschBME280_NUM_MEASUREMENTS 4
+
 #define BoschBME280_TEMP_RESOLUTION 2
+#define BoschBME280_TEMP_VAR_NUM 0
+
 #define BoschBME280_HUMIDITY_RESOLUTION 3
+#define BoschBME280_HUMIDITY_VAR_NUM 1
+
 #define BoschBME280_PRESSURE_RESOLUTION 2
+#define BoschBME280_PRESSURE_VAR_NUM 2
+
 #define BoschBME280_ALTITUDE_RESOLUTION 0
+#define BoschBME280_ALTITUDE_VAR_NUM 2
 #define SEALEVELPRESSURE_HPA (1013.25)
 
-// The main class for the AOSong BoschBME280
-class BoschBME280 : public virtual SensorBase
+// The main class for the Bosch BME280
+class BoschBME280 : public Sensor
 {
 public:
     BoschBME280(int powerPin, uint8_t i2c_addr = 0x76);
@@ -48,70 +57,59 @@ public:
     SENSOR_STATUS setup(void) override;
     SENSOR_STATUS getStatus(void) override;
     String getSensorLocation(void) override;
+
+    bool update(void) override;
 protected:
     Adafruit_BME280 bme280;
-    unsigned long sensorLastUpdated;
     uint8_t _i2c_addr;
 };
 
 
 // Defines the "Temperature Sensor"
-class BoschBME280_Temp : public virtual BoschBME280
+class BoschBME280_Temp : public Variable
 {
 public:
-    BoschBME280_Temp(int powerPin, uint8_t i2c_addr = 0x76);
-
-    bool update(void) override;
-
-    float getValue(void) override;
-
-private:
-    float sensorValue_temp;
+    BoschBME280_Temp(Sensor *parentSense) :
+      Variable(parentSense, BoschBME280_TEMP_VAR_NUM,
+               F("temperature"), F("degreeCelsius"),
+               BoschBME280_TEMP_RESOLUTION, F("BoschBME280Temp"))
+    {}
 };
 
 
 // Defines the "Humidity Sensor"
-class BoschBME280_Humidity : public virtual BoschBME280
+class BoschBME280_Humidity : public Variable
 {
 public:
-    BoschBME280_Humidity(int powerPin, uint8_t i2c_addr = 0x76);
-
-    bool update(void) override;
-
-    float getValue(void) override;
-
-private:
-    float sensorValue_humidity;
+    BoschBME280_Humidity(Sensor *parentSense) :
+      Variable(parentSense, BoschBME280_HUMIDITY_VAR_NUM,
+               F("relativeHumidity"), F("percent"),
+               BoschBME280_HUMIDITY_RESOLUTION, F("BoschBME280Humidity"))
+    {}
 };
 
 
 // Defines the "Pressure Sensor"
-class BoschBME280_Pressure : public virtual BoschBME280
+class BoschBME280_Pressure : public Variable
 {
 public:
-    BoschBME280_Pressure(int powerPin, uint8_t i2c_addr = 0x76);
-
-    bool update(void) override;
-
-    float getValue(void) override;
-
-private:
-    float sensorValue_pressure;
+    BoschBME280_Pressure(Sensor *parentSense) :
+      Variable(parentSense, BoschBME280_PRESSURE_VAR_NUM,
+               F("barometricPressure"), F("pascal"),
+               BoschBME280_PRESSURE_RESOLUTION, F("BoschBME280Pressure"))
+    {}
 };
 
 
 // Defines the "Altitude Sensor"
-class BoschBME280_Altitude : public virtual BoschBME280
+class BoschBME280_Altitude : public Variable
 {
 public:
-    BoschBME280_Altitude(int powerPin, uint8_t i2c_addr = 0x76);
-
-    bool update(void) override;
-
-    float getValue(void) override;
-
-private:
-    float sensorValue_altitude;
+    BoschBME280_Altitude(Sensor *parentSense) :
+      Variable(parentSense, BoschBME280_ALTITUDE_VAR_NUM,
+               F("heightAboveSeaFloor"), F("meter"),
+               BoschBME280_ALTITUDE_RESOLUTION, F("BoschBME280Altitude"))
+    {}
 };
 
 

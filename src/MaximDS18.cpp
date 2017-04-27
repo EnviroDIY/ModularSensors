@@ -14,21 +14,20 @@
  * The default resolution at power-up is 12-bit.
  */
 
-#include <Arduino.h>
 #include "MaximDS18.h"
 
 
 // The constructor - if the hex address is known - also need the power pin and the data pin
-MaximDS18_Temp::MaximDS18_Temp(DeviceAddress OneWireAddress, int powerPin, int dataPin)
-  : SensorBase(dataPin, powerPin, F("MaximDS18"), F("temperature"), F("degreeCelsius"), DS18_TEMP_RESOLUTION, F("DS18Temp"))
+MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin)
+  : Sensor(powerPin, dataPin,F("MaximDS18"), DS18_NUM_MEASUREMENTS)
 {
     _OneWireAddress = OneWireAddress;
     _addressKnown = true;
 }
 // The constructor - if the hex address is NOT known - only need the power pin and the data pin
 // Can only use this if there is only a single sensor on the pin
-MaximDS18_Temp::MaximDS18_Temp(int powerPin, int dataPin)
-  : SensorBase(dataPin, powerPin, F("MaximDS18"), F("temperature"), F("degreeCelsius"), DS18_TEMP_RESOLUTION, F("DS18Temp"))
+MaximDS18::MaximDS18(int powerPin, int dataPin)
+  : Sensor(powerPin, dataPin, F("MaximDS18"), DS18_NUM_MEASUREMENTS)
 {
     _OneWireAddress = {0};
     _addressKnown = false;
@@ -36,11 +35,14 @@ MaximDS18_Temp::MaximDS18_Temp(int powerPin, int dataPin)
 
 
 // Uses TLL Communication to get data from MaxBotix
-bool MaximDS18_Temp::update(){
-
+bool MaximDS18::update()
+{
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}  // powerUp function includes a 500ms delay
+
+    // Clear values before starting loop
+    clearValues();
 
     // Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
     OneWire oneWire(_dataPin);
@@ -79,23 +81,17 @@ bool MaximDS18_Temp::update(){
     // Send the command to get temperatures
     sensors.requestTemperatures();
 
-    result = sensors.getTempC(_OneWireAddress);
+    float result = sensors.getTempC(_OneWireAddress);
 
-    // Serial.println(result);  // For debugging
-    sensorValue_temp = result;
-    // Serial.println(sensorValue_temp);  // For debugging
+    sensorValues[DS18_TEMP_VAR_NUM] = result;
+    // Serial.println(sensorValues[DS18_TEMP_VAR_NUM]);  // For debugging
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
 
+    // Update the registered variables with the new values
+    notifyVariables();
+
     // Return true when finished
-    sensorLastUpdated = millis();
     return true;
-}
-
-
-float MaximDS18_Temp::getValue(void)
-{
-    checkForUpdate(sensorLastUpdated);
-    return sensorValue_temp;
 }

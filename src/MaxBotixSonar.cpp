@@ -35,7 +35,7 @@ SENSOR_STATUS MaxBotixSonar::setup(void)
     // Serial.print(F(" which can return up to "));  // for debugging
     // Serial.print(_numReturnedVars);  // for debugging
     // Serial.println(F(" variable[s]."));  // for debugging
-    
+
     return SENSOR_READY;
 }
 
@@ -47,7 +47,7 @@ bool MaxBotixSonar::update(void)
     else{delay(160);}  // See note below
 
     // Clear values before starting loop
-    // clearValues();
+    clearValues();
 
     // NOTE: After the power is turned on to the MaxBotix, it sends several lines
     // of header to the serial pin, beginning at ~65ms and finising at ~160ms.

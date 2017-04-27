@@ -30,7 +30,7 @@
 
 // The constructor - because this is I2C, only need the power pin
 BoschBME280::BoschBME280(int powerPin, uint8_t i2c_addr)
- : SensorBase(-1, powerPin)
+ : Sensor(-1, powerPin)
 {
     _i2c_addr  = i2c_addr;
 }
@@ -58,86 +58,39 @@ SENSOR_STATUS BoschBME280::getStatus(void)
     else return SENSOR_READY;
 }
 
-
-
-BoschBME280_Temp::BoschBME280_Temp(int powerPin, uint8_t i2c_addr)
- : SensorBase(-1, powerPin, F("BoschBME280"), F("temperature"), F("degreeCelsius"), BoschBME280_TEMP_RESOLUTION, F("BoschBME280Temp")),
-   BoschBME280(powerPin, i2c_addr)
-{}
-
-bool BoschBME280_Temp::update(void)
+bool BoschBME280::update(void)
 {
-    sensorValue_temp = bme280.readTemperature();  // Read temperature
-    sensorLastUpdated = millis();  // Update the time
+    // Check if the power is on, turn it on if not
+    bool wasOn = checkPowerOn();
+    if(!wasOn){powerUp();}  // powerUp function includes a 500ms delay
+
+    // Clear values before starting loop
+    clearValues();
+
+    // Read temperature
+    sensorValues[BoschBME280_TEMP_VAR_NUM] = bme280.readTemperature();
+    // Read temperature
+    sensorValues[BoschBME280_HUMIDITY_VAR_NUM] = bme280.readHumidity();
+    // read pressure
+    sensorValues[BoschBME280_PRESSURE_VAR_NUM] = bme280.readPressure();
+    // Read the altitude
+    sensorValues[BoschBME280_ALTITUDE_VAR_NUM] = bme280.readAltitude(SEALEVELPRESSURE_HPA);
+
+    Serial.print(F("Temperature: "));  // For debugging
+    Serial.print(sensorValues[BoschBME280_TEMP_VAR_NUM]);  // For debugging
+    Serial.print(F(" Humidity: "));  // For debugging
+    Serial.print(sensorValues[BoschBME280_HUMIDITY_VAR_NUM]);  // For debugging
+    Serial.print(F(" Barometric Pressure: "));  // For debugging
+    Serial.print(sensorValues[BoschBME280_PRESSURE_VAR_NUM]);  // For debugging
+    Serial.print(F(" Calculated Altitude: "));  // For debugging
+    Serial.println(sensorValues[BoschBME280_ALTITUDE_VAR_NUM]);  // For debugging
+
+    // Turn the power back off it it had been turned on
+    if(!wasOn){powerDown();}
+
+    // Update the registered variables with the new values
+    notifyVariables();
+
+    // Return true when finished
     return true;
-}
-
-float BoschBME280_Temp::getValue(void)
-{
-    checkForUpdate(sensorLastUpdated);
-    return sensorValue_temp;
-}
-
-
-
-
-BoschBME280_Humidity::BoschBME280_Humidity(int powerPin, uint8_t i2c_addr)
- : SensorBase(-1, powerPin, F("BoschBME280"), F("relativeHumidity"), F("percent"), BoschBME280_HUMIDITY_RESOLUTION, F("BoschBME280Humidity")),
-   BoschBME280(powerPin, i2c_addr)
-{}
-
-bool BoschBME280_Humidity::update(void)
-{
-    sensorValue_humidity = bme280.readHumidity();  // Read temperature
-    sensorLastUpdated = millis();  // Update the time
-    return true;
-}
-
-float BoschBME280_Humidity::getValue(void)
-{
-    checkForUpdate(sensorLastUpdated);
-    return sensorValue_humidity;
-}
-
-
-
-
-BoschBME280_Pressure::BoschBME280_Pressure(int powerPin, uint8_t i2c_addr)
- : SensorBase(-1, powerPin, F("BoschBME280"), F("barometricPressure"), F("pascal"), BoschBME280_PRESSURE_RESOLUTION, F("BoschBME280Pressure")),
-   BoschBME280(powerPin, i2c_addr)
-{}
-
-bool BoschBME280_Pressure::update(void)
-{
-    sensorValue_pressure = bme280.readPressure();  // read pressure
-    sensorLastUpdated = millis();  // Update the time
-    return true;
-}
-
-float BoschBME280_Pressure::getValue(void)
-{
-    checkForUpdate(sensorLastUpdated);
-    return sensorValue_pressure;
-}
-
-
-
-
-
-BoschBME280_Altitude::BoschBME280_Altitude(int powerPin, uint8_t i2c_addr)
- : SensorBase(-1, powerPin, F("BoschBME280"), F("heightAboveSeaFloor"), F("meter"), BoschBME280_ALTITUDE_RESOLUTION, F("BoschBME280Altitude")),
-   BoschBME280(powerPin, i2c_addr)
-{}
-
-bool BoschBME280_Altitude::update(void)
-{
-    sensorValue_altitude = bme280.readAltitude(SEALEVELPRESSURE_HPA);  // Read the altitude
-    sensorLastUpdated = millis();  // Update the time
-    return true;
-}
-
-float BoschBME280_Altitude::getValue(void)
-{
-    checkForUpdate(sensorLastUpdated);
-    return sensorValue_altitude;
 }
