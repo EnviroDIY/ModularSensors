@@ -94,11 +94,6 @@ public:
     // Convience functions to do it all
     virtual void log(void) override
     {
-        // Update the timer
-        // This runs the timer's "now" function [in our case getNow()] and then
-        // checks all of the registered timer events to see if they should run
-        // loggerTimer.update();
-
         // Check of the current time is an even interval of the logging interval
         if (checkInterval())
         {

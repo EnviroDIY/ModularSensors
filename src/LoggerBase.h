@@ -13,7 +13,6 @@
 
 #include <Arduino.h>
 #include <Sodaq_DS3231.h>  // To communicate with the clock
-#include <RTCTimer.h>  // To handle timing on a schedule
 #include <SdFat.h>  // To communicate with the SD card
 #include <Sodaq_PcInt_PCINT0.h>  // To handle pin change interrupts for the clock
 #include <avr/sleep.h>  // To handle the processor sleep modes
@@ -180,38 +179,6 @@ public:
             retval = false;
         }
         return retval;
-    }
-
-
-    // ============================================================================
-    // Public Functions for the timer - to do repeated events without using a delay function
-    // We want to use the timer instead of the delay because if using the delay
-    // nothing else can happen during the delay, whereas with a timer other processes
-    // can continue while the timer counts down.
-    // ============================================================================
-
-    // The timer itself
-    RTCTimer loggerTimer;
-
-    // This sets up the function to be called by the timer with no return of its own.
-    // This structure is required by the timer library.
-    // See http://support.sodaq.com/sodaq-one/adding-a-timer-to-schedule-readings/
-    // static void checkTime(uint32_t ts){}
-
-    void setupTimer(void)
-    {
-        // Instruct the RTCTimer how to get the current time reading (ie, what function to use)
-        // The units of the time returned by this function determine the units of the
-        // period in the "every" function below.
-        loggerTimer.setNowCallback(getNow);
-
-        // This tells the timer how often (_interruptRate) it will repeat some function (checkTime)
-        // The time units of the first input are the same as those returned by the
-        // setNowCallback function above (in this case, seconds).  We are only
-        // having the timer call a function to check the time instead of actually
-        // taking a reading because we would rather first double check that we're
-        // exactly on a current minute before taking the reading.
-        // loggerTimer.every(_interruptRate, checkTime);
     }
 
 
@@ -504,9 +471,6 @@ public:
         // Set up the log file
         setupLogFile();
 
-        // Setup timer events
-        setupTimer();
-
         // Setup sleep mode
         if(_sleep){setupSleep();}
 
@@ -517,11 +481,6 @@ public:
     // This is a one-and-done to log data
     virtual void log(void)
     {
-        // Update the timer
-        // This runs the timer's "now" function [in our case getNow()] and then
-        // checks all of the registered timer events to see if they should run
-        // loggerTimer.update();
-
         // Check of the current time is an even interval of the logging interval
         if (checkInterval())
         {
