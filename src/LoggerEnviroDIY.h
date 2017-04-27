@@ -17,7 +17,7 @@
 #include "ModemSupport.h"
 
 // Defines the "Logger" Class
-class LoggerEnviroDIY : public LoggerBase
+class LoggerEnviroDIY : public Logger
 {
 public:
     // Set up communications
@@ -34,7 +34,7 @@ public:
     String generateFileHeader(void)
     {
         String dataHeader = "";
-        dataHeader += LoggerBase::generateFileHeader();
+        dataHeader += Logger::generateFileHeader();
         dataHeader += F("\r\n");
 
         // Add additional UUID information
@@ -61,14 +61,14 @@ public:
         jsonString += F("\"sampling_feature\": \"");
         jsonString += String(_samplingFeature) + F("\", ");
         jsonString += F("\"timestamp\": \"");
-        jsonString += String(LoggerBase::markedISO8601Time) + F("\", ");
+        jsonString += String(Logger::markedISO8601Time) + F("\", ");
 
-        for (int i = 0; i < LoggerBase::_variableCount; i++)
+        for (int i = 0; i < Logger::_variableCount; i++)
         {
             jsonString += F("\"");
             jsonString += String(_UUIDs[i]) + F("\": ");
-            jsonString += LoggerBase::_variableList[i]->getValueString();
-            if (i + 1 != LoggerBase::_variableCount)
+            jsonString += Logger::_variableList[i]->getValueString();
+            if (i + 1 != Logger::_variableCount)
             {
                 jsonString += F(", ");
             }

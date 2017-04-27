@@ -21,7 +21,7 @@
 
 
 // Defines the "Logger" Class
-class LoggerBase : public VariableArray
+class Logger : public VariableArray
 {
 public:
     // Initialization - cannot do this in constructor arduino has issues creating
@@ -57,13 +57,13 @@ public:
     // Sets the static timezone - this must be set
     static void setTimeZone(int timeZone)
     {
-        LoggerBase::_timeZone = timeZone;
+        Logger::_timeZone = timeZone;
         // Some helpful prints for debugging
         Serial.print(F("Logger timezone is "));
-        if (LoggerBase::_timeZone == 0) Serial.println(F("UTC"));
-        else if (LoggerBase::_timeZone > 0) Serial.print(F("UTC+"));
+        if (Logger::_timeZone == 0) Serial.println(F("UTC"));
+        else if (Logger::_timeZone > 0) Serial.print(F("UTC+"));
         else Serial.print(F("UTC"));
-        if (LoggerBase::_timeZone != 0) Serial.println(LoggerBase::_timeZone);
+        if (Logger::_timeZone != 0) Serial.println(Logger::_timeZone);
 
     }
 
@@ -73,16 +73,16 @@ public:
     // timezone is EST this does not need to be called.
     static void setTZOffset(int offset)
     {
-        LoggerBase::_offset = offset;
+        Logger::_offset = offset;
         // Some helpful prints for debugging
         Serial.print(F("RTC timezone is "));
-        if ((LoggerBase::_timeZone - LoggerBase::_offset) == 0)
+        if ((Logger::_timeZone - Logger::_offset) == 0)
             Serial.println(F("UTC"));
-        else if ((LoggerBase::_timeZone - LoggerBase::_offset) > 0)
+        else if ((Logger::_timeZone - Logger::_offset) > 0)
             Serial.print(F("UTC+"));
         else Serial.print(F("UTC"));
-        if ((LoggerBase::_timeZone - LoggerBase::_offset) != 0)
-            Serial.println(LoggerBase::_timeZone - LoggerBase::_offset);
+        if ((Logger::_timeZone - Logger::_offset) != 0)
+            Serial.println(Logger::_timeZone - Logger::_offset);
     }
 
     // Sets up a pin for an LED or other way of alerting that data is being logged
@@ -373,7 +373,7 @@ public:
     String generateSensorDataCSV(void)
     {
         String csvString = "";
-        LoggerBase::markedDateTime.addToString(csvString);
+        Logger::markedDateTime.addToString(csvString);
         csvString += F(", ");
         csvString += VariableArray::generateSensorDataCSV();
         return csvString;
@@ -587,8 +587,8 @@ protected:
 };
 
 // Initialize the static timezone
-int LoggerBase::_timeZone = 0;
+int Logger::_timeZone = 0;
 // Initialize the static time adjustment
-int LoggerBase::_offset = 0;
+int Logger::_offset = 0;
 
 #endif

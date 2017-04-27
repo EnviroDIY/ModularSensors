@@ -34,7 +34,7 @@ int LOGGING_INTERVAL = 1;
 // Your logger's timezone.
 const int TIME_ZONE = -5;
 // Create a new logger instance
-LoggerBase Logger;
+Logger logger;
 
 // ==========================================================================
 //    AOSong AM2315

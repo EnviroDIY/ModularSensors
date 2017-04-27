@@ -32,16 +32,16 @@ public:
     {
         String dhString = String(_DreamHostPortalRX);
         dhString += F("?LoggerID=");
-        dhString += String(LoggerBase::_loggerID);
+        dhString += String(Logger::_loggerID);
         dhString += F("&Loggertime=");
-        dhString += String(LoggerBase::markedEpochTime - 946684800);  // Coorect time from epoch to y2k
+        dhString += String(Logger::markedEpochTime - 946684800);  // Coorect time from epoch to y2k
 
-        for (int i = 0; i < LoggerBase::_variableCount; i++)
+        for (int i = 0; i < Logger::_variableCount; i++)
         {
             dhString += F("&");
-            dhString += LoggerBase::_variableList[i]->getDreamHost();
+            dhString += Logger::_variableList[i]->getDreamHost();
             dhString += F("=");
-            dhString += LoggerBase::_variableList[i]->getValueString();
+            dhString += Logger::_variableList[i]->getValueString();
         }
         return dhString;
     }

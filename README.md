@@ -134,12 +134,14 @@ sensors.printSensorData();
 
 
 ## <a name="Logger"></a>Logger Functions
-Our main reason to unify the output from many sensors is to easily log the data to an SD card and to send it to the EnviroDIY data page.  There are two modules available to use with the sensors to log data:  LoggerBase and LoggerEnviroDIY.  Both of these are sub-classes of VariableArray and contain all of the functions available to a SenorArray as described above.  These both will add the abilities to communicate with a DS3231 real time clock and set up the Arduino as a logger which goes to deep sleep between readings to conserver power.  LoggerBase only adds the functionality to write the data from the sensors to a csv file on a connected SD card.  LoggerEnviroDIY adds the ability to send data to the EnviroDIY data portal.  Both logger modules depend on the [Sodaq](https://github.com/SodaqMoja/Sodaq_DS3231) or [EnviroDIY DS-3231](https://github.com/EnviroDIY/Sodaq_DS3231) (for clock control), the [Sodaq RTCTimer library](https://github.com/SodaqMoja/RTCTimer) (for timing functions), the [EnviroDIY modified version of Sodaq's pin change interrupt library](https://github.com/EnviroDIY/PcInt_PCINT0) (for waking the processor from clock alarms), the AVR sleep library (for low power sleeping), and the [SdFat library](https://github.com/greiman/SdFat) for communicating with the SD card.  The LoggerEnviroDIY has the additional dependency of the [EnviroDIY version of the TinyGSM library](https://github.com/EnviroDIY/TinyGSM) for internet connectivity.
+Our main reason to unify the output from many sensors is to easily log the data to an SD card and to send it to the any other live streaming data receiver, like the [EnviroDIY data portal](http://data.envirodiy.org/).  There are several modules available to use with the sensors to log data and stream data:  LoggerBase.h, LoggerEnviroDIY.h, and ModemSupport.h.  The classes Logger (in LoggerBase.h) is a sub-class of VariableArray and LoggerEnviroDIY (in LoggerEnviroDIY.h) is in-turn a sub-class Logger.   They contain all of the functions available to a VariableArray as described above.  The Logger class adds the abilities to communicate with a DS3231 real time clock, to put the board into deep sleep between readings to conserver power, and to write the data from the sensors to a csv file on a connected SD card.  The LoggerEnviroDIY class uses ModemSupport.h to add the ability to properly format and send data to the [EnviroDIY data portal](http://data.envirodiy.org/).
 
-### Functions Available for a LoggerBase Object:
+Both logger modules depend on the [Sodaq](https://github.com/SodaqMoja/Sodaq_DS3231) or [EnviroDIY DS-3231](https://github.com/EnviroDIY/Sodaq_DS3231) (for clock control), the [EnviroDIY modified version of Sodaq's pin change interrupt library](https://github.com/EnviroDIY/PcInt_PCINT0) (for waking the processor from clock alarms), the AVR sleep library (for low power sleeping), and the [SdFat library](https://github.com/greiman/SdFat) for communicating with the SD card.  The LoggerEnviroDIY has the additional dependency of the [EnviroDIY version of the TinyGSM library](https://github.com/EnviroDIY/TinyGSM) for internet connectivity.  The ModemSupport module is essentially a wrapper for TinyGSM which adds quick functions for turning modem on and off.
+
+### Functions Available for a Logger Object:
 Timezone functions:
-- **setTimeZone(int timeZone)** - Sets the timezone that you wish data to be logged in (in +/- hours from UTC).  This must always be set!
-- **setTZOffset(int offset)** - This set the offset between the built-in clock and the timezone for the data.  If your RTC is set in UTC and your logging timezone is EST, this should be -5.  If your RTC is set in EST and your timezone are both EST this does not need to be called.
+- **setTimeZone(int timeZone)** - Sets the timezone that you wish data to be logged in (in +/- hours from UTC).  _This must always be set!_
+- **setTZOffset(int offset)** - This sets the offset between the built-in clock and the timezone the data should be logged in.  If your RTC is set in UTC and your logging timezone is EST, this should be -5.  If your RTC is set in EST and your timezone are both EST this does not need to be called.
 A note about timezones:  It is possible to create multiple logger objects in your code if you want to log different sensors at different intervals, but every logger object will always have the same timezone and timezone offset.  If you attempt to call these functions more than once for different loggers, whatever value was called last will apply to every logger.
 
 Setup and initialization functions:
@@ -151,22 +153,20 @@ Functions to access the clock in proper format and time zone:
 - **formatDateTime_ISO8601(DateTime dt)** - Formats a DateTime object into an ISO8601 formatted Arduino String.
 - **formatDateTime_ISO8601(uint32_t unixTime)** - Formats a unix timestamp into an ISO8601 formatted Arduino String.
 - **checkInterval()** - This returns true if the current time is an even iterval of the logging interval, otherwise false.  This uses getNow() to get the curernt time.
-- **markTime()** - This sets variables for the date/time - this is needed so that all data outputs (SD, EnviroDIY, serial printing, etc) print the same time for updating the sensors - even though the routines to update the sensors and to output the data may take several seconds.  It is not currently possible to output the instantaneous time an individual sensor was updated, just a single marked time.  By custom, this should be called before updating the sensors, not after.  If you do not call this function before saving or sending data, there will be no timestamps associated with your data.
+- **markTime()** - This sets variables for the date/time - this is needed so that all data outputs (SD, EnviroDIY, serial printing, etc) print the same time for updating the sensors - even though the routines to update the sensors and to output the data may take several seconds.  It is not currently possible to output the instantaneous time an individual sensor was updated, just a single marked time.  By custom, this should be called before updating the sensors, not after.  If you do not call this function before saving or sending data, there will be no timestamps associated with your data.  This is called every time the checkInterval() function is run.
 
 
 Functions for the timer and sleep modes:
-- **setupTimer()** - Sets up the timer for repeated logging events.  This should be called in the setup function.
 - **setupSleep()** - Sets up the sleep mode and interrupts to wake it back up.  This should be called in the setup function.
-- **systemSleep()** - Puts the system into deep sleep mode.  This should be called at the very end of the loop function.
+- **systemSleep()** - Puts the system into deep sleep mode.  This should be called at the very end of the loop function.  Please keep in mind that this does NOT call the wake and sleep functions of the sensors themselves; you must call those separately.  (This separation is for timing reasons.)
 
 Functions for logging data:
-- **setFileName(fileName)** - This sets a specifid file name for data to be saved as, if you want to decide on it in advance.  Note that you must include the file extention (ie., '.txt') in the file name.
-- **setFileName()** - This automatically generates a csv file name from the logger id and the current date.  You must call one of the two setFileName functions before calling setupLogFile or logtoSD.
-- **getFileName()** - This returns the current filename as an Arduino String.  Must be run after setFileName.
+- **setFileName(fileName)** - This sets a specifid file name for data to be saved as, if you want to decide on it in advance.  Note that you must include the file extention (ie., '.txt') in the file name.  If you do not call the setFileName function with a specific name, a csv file name will automatically be generated from the logger id and the current date.
+- **getFileName()** - This returns the current filename as an Arduino String.
 - **setupLogFile()** - This creates a file on the SD card and writes a header to it.  It also sets the "file created" time stamp.
-- **logToSD(String rec)** - This writes a line the the SD card and sets the "file modified" timestamp.
-- **generateFileHeader()** - This returns and Aruduino String with a comma separated list of headers for the csv.
-- **generateSensorDataCSV()** - This returns an Arduino String containing the time and a comma separated list of sensor values.
+- **logToSD(String rec)** - This writes a data line containing "rec" the the SD card and sets the "file modified" timestamp.  
+- **generateFileHeader()** - This returns and Aruduino String with a comma separated list of headers for the csv.  The headers will be ordered based on the order variables are listed in the array fed to the init function.
+- **generateSensorDataCSV()** - This returns an Arduino String containing the time and a comma separated list of sensor values.  The data will be ordered based on the order variables are listed in the array fed to the init function.
 
 Convience functions to do it all:
 - **begin()** - Starts the logger.  Must be in the setup function.
@@ -179,17 +179,17 @@ Sending data to EnviroDIY depends on having some sort of modem or internet conne
 // #define TINY_GSM_MODEM_SIM800  // Select for anything using a SIM800, SIM900, or varient thereof: Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
 // #define TINY_GSM_MODEM_A6  // Select for A6 or A7 chips
 // #define TINY_GSM_MODEM_M590
-// #define TINY_GSM_MODEM_ESP8266
+// #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand XBee's, including WiFi or LTE-M1
 ```
-Any of the above modems types/chips should work, though only a SIM800 and WiFiBee have been tested to date.  If you would prefer to use a library of your own for controlling your modem, just omit the define statemnts.  In this case, the GSM library and modem support modules will be imported and you will lose the postDataEnviroDIY() and log() functions.
+Any of the above modems types/chips should work, though only a SIM800 and WiFiBee have been tested to date.  If you would prefer to use a library of your own for controlling your modem, just omit the define statemnts.  In this case, the GSM library and modem support modules will not be imported and you will lose the postDataEnviroDIY() and log() functions.
 - These three functions set up the required registration token, sampling feature uuid, and time series uuids for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.  You must call these functions to be able to get proper JSON data for EnviroDIY, even without the modem support.
     - **setToken(const char registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
     - **setSamplingFeature(const char samplingFeature)** - Sets the GUID of the sampling feature.  Note that the input is a pointer to the samplingFeature.
     - **setUUIDs(const char UUIDs[])** - Sets the time series UUIDs.  Note that the input is an array of pointers.  The order of the UUIDs in this array **must match exactly** with the order of the coordinating variable in the variableList.
 - After registering the tokens, set up your modem using one of these two commands, depending on whether you are using cellular or WiFi communication
-    - **modem.setupModem(Stream modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin, DTRSleepType sleepType, const char APN)** - Sets up the internet communcation with a cellular modem.  Note that the modemStream and APN should be pointers.  
-    - **modem.setupModem(Stream modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin, DTRSleepType sleepType, const char ssid, const char pwd)** - Sets up the internet communcation with a WiFi modem.  Note that the modemStream, ssid, and password should be pointers.
+    - **modem.setupModem(Stream modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin, DTRSleepType sleepType, const char APN)** - Sets up the internet communcation with a cellular modem.  Note that the modemStream and APN should be pointers.  Use -1 for any pins that are not connected.
+    - **modem.setupModem(Stream modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin, DTRSleepType sleepType, const char ssid, const char pwd)** - Sets up the internet communcation with a WiFi modem.  Note that the modemStream, ssid, and password should be pointers.  Use -1 for any pins that are not connected.
     - The _DTRSleepType_ controls how the modem is put to sleep between readings.  Use "held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.  Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.  Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.  Use "always_on" if you do not want the library to control the modem power and sleep.
 - **generateSensorDataJSON()** - Generates a properly formatted JSON string to go to the EnviroDIY streaming data loader API.
 - **postDataEnviroDIY()** - Creates proper headers and sends data to the EnviroDIY data portal.  Depends on the modem support module.  Returns an HTML response code.
@@ -202,7 +202,7 @@ To set up logging, you must first include the appropriate logging module and cre
 // Import Logger Module
 #include <LoggerBase.h>
 // Create a new logger instance
-LoggerBase Logger;
+Logger logger;
 ```
 
 --OR--
@@ -218,14 +218,10 @@ _Within the setup function_, you must then initialize the logger and then run th
 
 ```cpp
 // Set the time zone and offset from the RTC
-Logger.setTimeZone(int timeZone);
-Logger.setTZOffset(int offset);
+Logger.setTimeZone(timeZone);
+Logger.setTZOffset(offset);
 // Initialize the logger;
-Logger.init(int SDCardPin, int interruptPin,
-            int variableCount,
-            Variable *variableList[],
-            float loggingIntervalMinutes,
-            const char *loggerID = 0);
+Logger.init(SDCardPin, interruptPin, variableCount, variableList[], loggingIntervalMinutes, loggerID);
 // OPTIONAL - specify a pin to give an alert when a measurement is taken
 // This should generally be a pin with an LED
 setAlertPin(int ledPin);
@@ -237,27 +233,18 @@ Logger.begin();
 
 ```cpp
 // Set the time zone and offset from the RTC
-EnviroDIYLogger.setTimeZone(int timeZone);
-EnviroDIYLogger.setTZOffset(int offset);
+EnviroDIYLogger.setTimeZone(timeZone);
+EnviroDIYLogger.setTZOffset(offset);
 // Initialize the logger;
-EnviroDIYLogger.init(int SDCardPin, int interruptPin,
-                     int variableCount,
-                     Variable *variableList[],
-                     float loggingIntervalMinutes,
-                     const char *loggerID = 0);
+EnviroDIYLogger.init(SDCardPin, interruptPin, variableCount, variableList[], loggingIntervalMinutes, loggerID);
 // OPTIONAL - specify a pin to give an alert when a measurement is taken
 // This should generally be a pin with an LED
-setAlertPin(int ledPin);
+setAlertPin(ledPin);
 // Set up the communication with EnviroDIY
-EnviroDIYLogger.setToken(const char *registrationToken);
-EnviroDIYLogger.setSamplingFeature(const char *samplingFeature);
-EnviroDIYLogger.setUUIDs(const char *UUIDs[]);
-EnviroDIYLogger.modem.setupModem(Stream *modemStream,
-                                 int vcc33Pin,
-                                 int status_CTS_pin,
-                                 int onoff_DTR_pin,
-                                 DTRSleepType sleepType,
-                                 const char *APN);
+EnviroDIYLogger.setToken(registrationToken);
+EnviroDIYLogger.setSamplingFeature(samplingFeature);
+EnviroDIYLogger.setUUIDs(UUIDs[]);
+EnviroDIYLogger.modem.setupModem(modemStream, vcc33Pin, status_CTS_pin, onoff_DTR_pin, sleepType, APN);
 // Run the logger setup;
 EnviroDIYLogger.begin();
 ```

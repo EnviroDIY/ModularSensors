@@ -19,7 +19,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // #define TINY_GSM_MODEM_SIM800  // Select for anything using a SIM800, SIM900, or varient thereof: Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
 // #define TINY_GSM_MODEM_A6  // Select for A6 or A7 chips
 // #define TINY_GSM_MODEM_M590
-// #define TINY_GSM_MODEM_ESP8266
+// #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand XBee's, including WiFi or LTE-M1
 
 // ---------------------------------------------------------------------------
