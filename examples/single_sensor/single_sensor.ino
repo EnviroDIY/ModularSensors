@@ -72,7 +72,7 @@ void setup()
     greenred4flash();
 
     // Print a start-up note to the first serial port
-    Serial.println(F("Single Sensor Example - DS18B20"));
+    Serial.println(F("Single Sensor Example - Sonar Ranging"));
 
     // Set up the sensor and variables
     sonar.setup();
@@ -86,20 +86,20 @@ void setup()
 void loop()
 {
     // Power the sensor
-    digitalWrite(DS18B20Power, HIGH);
+    digitalWrite(SonarPower, HIGH);
 
     // Turn on the LED to show we're taking a reading
     digitalWrite(GREEN_LED, HIGH);
 
     // Update the sensor value
-    temp.update();
+    sonar.update();
 
     // Print the sonar result
     Serial.print("Current sonar range: ");
     Serial.println(sonar_range.getValueString());
 
     // Turn of sensor power
-    digitalWrite(DS18B20Power, LOW);
+    digitalWrite(SonarPower, LOW);
 
     // Turn off the LED to show we're done with the reading
     digitalWrite(GREEN_LED, LOW);
