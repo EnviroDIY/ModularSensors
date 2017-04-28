@@ -47,9 +47,9 @@ private:
     DeviceAddress _OneWireAddress;
     bool _addressKnown;
     // Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
-    OneWire oneWire;
+    // OneWire oneWire;
     // Pass our oneWire reference to Dallas Temperature.
-    DallasTemperature tempSensors;
+    // DallasTemperature tempSensors;
     // Turns the address into a printable string
     String getAddressString(DeviceAddress OneWireAddress);
 };

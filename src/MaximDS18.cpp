@@ -19,8 +19,8 @@
 
 // The constructor - if the hex address is known - also need the power pin and the data pin
 MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin)
-  : Sensor(powerPin, dataPin, F("MaximDS18"), DS18_NUM_MEASUREMENTS),
-    oneWire(dataPin), tempSensors(&oneWire)
+  : Sensor(powerPin, dataPin, F("MaximDS18"), DS18_NUM_MEASUREMENTS)
+    // oneWire(dataPin), tempSensors(&oneWire)
 {
     for (int i = 0; i < 8; i++) _OneWireAddress[i] = OneWireAddress[i];
     // _OneWireAddress = OneWireAddress;
@@ -29,8 +29,8 @@ MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin)
 // The constructor - if the hex address is NOT known - only need the power pin and the data pin
 // Can only use this if there is only a single sensor on the pin
 MaximDS18::MaximDS18(int powerPin, int dataPin)
-  : Sensor(powerPin, dataPin, F("MaximDS18"), DS18_NUM_MEASUREMENTS),
-    oneWire(dataPin), tempSensors(&oneWire)
+  : Sensor(powerPin, dataPin, F("MaximDS18"), DS18_NUM_MEASUREMENTS)
+    // oneWire(dataPin), tempSensors(&oneWire)
 {
     _addressKnown = false;
 }
@@ -65,6 +65,10 @@ SENSOR_STATUS MaximDS18::getStatus(void)
     // Check if the power is on, turn it on if not (Need power to get status)
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}  // powerUp function includes a 500ms delay
+
+    OneWire oneWire(_dataPin);
+    DallasTemperature tempSensors(&oneWire);
+    tempSensors.begin();
 
     // Make sure the address is valid
     if (!tempSensors.validAddress(_OneWireAddress))
@@ -109,6 +113,8 @@ SENSOR_STATUS MaximDS18::setup(void)
     if(!wasOn){powerUp();}  // powerUp function includes a 500ms delay
 
     // Start up the maxim sensor library
+    OneWire oneWire(_dataPin);
+    DallasTemperature tempSensors(&oneWire);
     tempSensors.begin();
 
     // Find the address if it's not known
@@ -148,6 +154,10 @@ bool MaximDS18::update()
 
     // Clear values before starting loop
     clearValues();
+
+    OneWire oneWire(_dataPin);
+    DallasTemperature tempSensors(&oneWire);
+    tempSensors.begin();
 
     bool goodTemp = false;
     int rangeAttempts = 0;
