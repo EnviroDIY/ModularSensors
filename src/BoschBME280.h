@@ -56,7 +56,7 @@
 class BoschBME280 : public Sensor
 {
 public:
-    BoschBME280(int powerPin, uint8_t i2c_addr = 0x76);
+    BoschBME280(int powerPin, uint8_t i2cAddressHex = 0x76);
 
     SENSOR_STATUS setup(void) override;
     SENSOR_STATUS getStatus(void) override;
@@ -64,8 +64,8 @@ public:
 
     bool update(void) override;
 protected:
-    Adafruit_BME280 bme280;
-    uint8_t _i2c_addr;
+    Adafruit_BME280 bme_internal;
+    uint8_t _i2cAddressHex;
 };
 
 

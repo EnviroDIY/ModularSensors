@@ -12,7 +12,7 @@
 
 #include <Arduino.h>
 
-#define VARIABLES_DBG Serial
+// #define VARIABLES_DBG Serial
 
 #ifdef VARIABLES_DBG
 namespace {

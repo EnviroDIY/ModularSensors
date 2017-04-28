@@ -66,7 +66,7 @@ void setup() {
     }
 
     Serial.println("-- Default Test --");
-    delayTime = 1000;
+    delayTime = 5000;
 
     Serial.println();
 
@@ -76,6 +76,10 @@ void setup() {
 
 void loop() {
     digitalWrite(22, HIGH);
+    delay(10); // let the sensor settle in after power-up
+    bme.begin(0x76);  // Restart needed after power-up
+    delay(100); // And now let the sensor boot up (time cannot be decreased)
     printValues();
+    digitalWrite(22, LOW);
     delay(delayTime);
 }

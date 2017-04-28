@@ -1,5 +1,5 @@
 /*
- *BoschBME280.cpp
+ *Boschbme_internal.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -29,16 +29,16 @@
 #include "BoschBME280.h"
 
 // The constructor - because this is I2C, only need the power pin
-BoschBME280::BoschBME280(int powerPin, uint8_t i2c_addr)
+BoschBME280::BoschBME280(int powerPin, uint8_t i2cAddressHex)
  : Sensor(powerPin, -1, F("BoschBME280"), BoschBME280_NUM_MEASUREMENTS)
 {
-    _i2c_addr  = i2c_addr;
+    _i2cAddressHex  = i2cAddressHex;
 }
 
 String BoschBME280::getSensorLocation(void)
 {
-    String address = F("I2C_");
-    address += String(_i2c_addr, HEX);
+    String address = F("I2C_0x");
+    address += String(_i2cAddressHex, HEX);
     return address;
 }
 
@@ -49,7 +49,9 @@ SENSOR_STATUS BoschBME280::getStatus(void)
     if(!wasOn){powerUp();}  // powerUp function includes a 500ms delay
 
     // Run begin fxn because it returns true or false for success in contact
-    bool status = bme280.begin(_i2c_addr);
+    delay(10); // let the sensor settle in after power-up
+    bool status = bme_internal.begin(_i2cAddressHex);
+    delay(100); // And now let the sensor boot up (time cannot be decreased)
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
@@ -77,14 +79,20 @@ bool BoschBME280::update(void)
     // Clear values before starting loop
     clearValues();
 
-    // Read temperature
-    sensorValues[BoschBME280_TEMP_VAR_NUM] = bme280.readTemperature();
-    // Read temperature
-    sensorValues[BoschBME280_HUMIDITY_VAR_NUM] = bme280.readHumidity();
-    // read pressure
-    sensorValues[BoschBME280_PRESSURE_VAR_NUM] = bme280.readPressure();
-    // Read the altitude
-    sensorValues[BoschBME280_ALTITUDE_VAR_NUM] = bme280.readAltitude(SEALEVELPRESSURE_HPA);
+    delay(10); // let the sensor settle in after power-up
+    bme_internal.begin(0x76);  // Restart needed after power-up
+    delay(100); // And now let the sensor boot up (time cannot be decreased)
+
+    // Read values
+    float temp = bme_internal.readTemperature();
+    float press = bme_internal.readPressure();
+    float alt = bme_internal.readAltitude(SEALEVELPRESSURE_HPA);
+    float humid = bme_internal.readHumidity();
+
+    sensorValues[BoschBME280_TEMP_VAR_NUM] = temp;
+    sensorValues[BoschBME280_HUMIDITY_VAR_NUM] = humid;
+    sensorValues[BoschBME280_PRESSURE_VAR_NUM] = press;
+    sensorValues[BoschBME280_ALTITUDE_VAR_NUM] = alt;
 
     DBGM(F("Temperature: "), sensorValues[BoschBME280_TEMP_VAR_NUM]);
     DBGM(F(" Humidity: "), sensorValues[BoschBME280_HUMIDITY_VAR_NUM]);

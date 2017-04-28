@@ -41,6 +41,7 @@ VariableArray sensors;
 const int I2CPower = 22;  // switched sensor power is pin 22 on Mayfly
 AOSongAM2315 am2315(I2CPower);
 
+
 // ==========================================================================
 //    Bosch BME280
 // ==========================================================================
@@ -139,28 +140,28 @@ EnviroDIYMayfly mayfly(MFVersion) ;
 // The array that contains all valid variables
 // ---------------------------------------------------------------------------
 Variable *variableList[] = {
-    // new AOSongAM2315_Humidity(&am2315),
-    // new AOSongAM2315_Temp(&am2315),
+    new AOSongAM2315_Humidity(&am2315),
+    new AOSongAM2315_Temp(&am2315),
     new BoschBME280_Temp(&bme280),
     new BoschBME280_Humidity(&bme280),
     new BoschBME280_Pressure(&bme280),
     new BoschBME280_Altitude(&bme280),
-    // new CampbellOBS3_Turbidity(&osb3low),
-    // new CampbellOBS3_TurbHigh(&osb3high),
-    // new Decagon5TM_Ea(&fivetm),
-    // new Decagon5TM_Temp(&fivetm),
-    // new Decagon5TM_VWC(&fivetm),
-    // new DecagonCTD_Cond(&ctd),
-    // new DecagonCTD_Temp(&ctd),
-    // new DecagonCTD_Depth(&ctd),
-    // new DecagonES2_Cond(&es2),
-    // new DecagonES2_Temp(&es2),
-    // new MaxBotixSonar_Range(&sonar),
-    // new MaximDS18_Temp(&ds18_1),
-    // new MaximDS18_Temp(&ds18_2),
-    // new MaximDS18_Temp(&ds18_3),
-    // new EnviroDIYMayfly_Temp(&mayfly),
-    // new EnviroDIYMayfly_Batt(&mayfly),
+    new CampbellOBS3_Turbidity(&osb3low),
+    new CampbellOBS3_TurbHigh(&osb3high),
+    new Decagon5TM_Ea(&fivetm),
+    new Decagon5TM_Temp(&fivetm),
+    new Decagon5TM_VWC(&fivetm),
+    new DecagonCTD_Cond(&ctd),
+    new DecagonCTD_Temp(&ctd),
+    new DecagonCTD_Depth(&ctd),
+    new DecagonES2_Cond(&es2),
+    new DecagonES2_Temp(&es2),
+    new MaxBotixSonar_Range(&sonar),
+    new MaximDS18_Temp(&ds18_1),
+    new MaximDS18_Temp(&ds18_2),
+    new MaximDS18_Temp(&ds18_3),
+    new EnviroDIYMayfly_Temp(&mayfly),
+    new EnviroDIYMayfly_Batt(&mayfly),
     new EnviroDIYMayfly_FreeRam(&mayfly)
     // new YOUR_variableName_HERE(&)
 };
