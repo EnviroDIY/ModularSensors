@@ -25,6 +25,9 @@
 #include "SensorBase.h"
 #include "VariableBase.h"
 
+// #define MODULES_DBG Serial
+#include "ModSensorDebugger.h"
+
 #define AM2315_NUM_MEASUREMENTS 2
 
 #define AM2315_HUMIDITY_RESOLUTION 1

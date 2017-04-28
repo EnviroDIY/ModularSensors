@@ -62,28 +62,18 @@ bool CampbellOBS3::update(void)
     float calibResult = 0;
 
     adcResult = ads.readADC_SingleEnded(_dataPin);  // Getting the reading
-
-    // Serial.print(F("ads.readADC_SingleEnded("));  // For debugging
-    // Serial.print(_dataPin);  // For debugging
-    // Serial.print(F("): "));  // For debugging
-    // Serial.println(ads.readADC_SingleEnded(_dataPin));  // For debugging
+    DBGM(F("ads.readADC_SingleEnded("), _dataPin, F("): "), ads.readADC_SingleEnded(_dataPin), F("\n"));
 
     // now convert bits into millivolts
     // 3.3 is the voltage applied to the sensor (and its returun range)
     // The 17585 is the default bit gain of the ADS1115
     voltage = (adcResult * 3.3) / 17585.0;
-    // Serial.print("Voltage: ");  // For debugging
-    // Serial.println(String(voltage, 6));  // For debugging
+    DBGM("Voltage: ", String(voltage, 6), F("\n"));
 
     calibResult = (_A * square (voltage)) + (_B * voltage) - _C;
-    // Serial.print(F("Calibration Curve: "));  // For debugging
-    // Serial.print(_A);  // For debugging
-    // Serial.print(F("x^2 + "));  // For debugging
-    // Serial.print(_B);  // For debugging
-    // Serial.print(F("x + "));  // For debugging
-    // Serial.println(_C);  // For debugging
-    // Serial.print(F("calibResult: "));  // For debugging
-    // Serial.println(calibResult);  // For debugging
+    DBGM(F("Calibration Curve: "));
+    DBGM(_A, F("x^2 + "), _B, F("x + "), _C, F("\n"));
+    DBGM(F("calibResult: "), calibResult, F("\n"));
 
     sensorValues[0] = calibResult;
 

@@ -17,6 +17,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ---------------------------------------------------------------------------
 // Include the base required libraries
 // ---------------------------------------------------------------------------
+#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
 #include <Arduino.h>
 #include <Sodaq_DS3231.h>    // Controls the DS3231 Real Time Clock (RTC) built into the EnviroDIY Mayfly.
 #include <VariableArray.h>
@@ -136,27 +137,27 @@ EnviroDIYMayfly mayfly(MFVersion) ;
 // The array that contains all valid variables
 // ---------------------------------------------------------------------------
 Variable *variableList[] = {
-    // new AOSongAM2315_Humidity(&am2315),
-    // new AOSongAM2315_Temp(&am2315),
-    // new BoschBME280_Temp(&bme280),
-    // new BoschBME280_Humidity(&bme280),
-    // new BoschBME280_Pressure(&bme280),
-    // new BoschBME280_Altitude(&bme280),
-    // new CampbellOBS3_Turbidity(&osb3low),
-    // new CampbellOBS3_TurbHigh(&osb3high),
-    // new Decagon5TM_Ea(&fivetm),
-    // new Decagon5TM_Temp(&fivetm),
-    // new Decagon5TM_VWC(&fivetm),
-    // new DecagonCTD_Cond(&ctd),
-    // new DecagonCTD_Temp(&ctd),
-    // new DecagonCTD_Depth(&ctd),
-    // new DecagonES2_Cond(&es2),
-    // new DecagonES2_Temp(&es2),
-    // new MaxBotixSonar_Range(&sonar),
-    // new MaximDS18_Temp(&ds18_1),
+    new AOSongAM2315_Humidity(&am2315),
+    new AOSongAM2315_Temp(&am2315),
+    new BoschBME280_Temp(&bme280),
+    new BoschBME280_Humidity(&bme280),
+    new BoschBME280_Pressure(&bme280),
+    new BoschBME280_Altitude(&bme280),
+    new CampbellOBS3_Turbidity(&osb3low),
+    new CampbellOBS3_TurbHigh(&osb3high),
+    new Decagon5TM_Ea(&fivetm),
+    new Decagon5TM_Temp(&fivetm),
+    new Decagon5TM_VWC(&fivetm),
+    new DecagonCTD_Cond(&ctd),
+    new DecagonCTD_Temp(&ctd),
+    new DecagonCTD_Depth(&ctd),
+    new DecagonES2_Cond(&es2),
+    new DecagonES2_Temp(&es2),
+    new MaxBotixSonar_Range(&sonar),
+    new MaximDS18_Temp(&ds18_1),
     // new MaximDS18_Temp(&ds18_2),
-    // new EnviroDIYMayfly_Temp(&mayfly),
-    // new EnviroDIYMayfly_Batt(&mayfly),
+    new EnviroDIYMayfly_Temp(&mayfly),
+    new EnviroDIYMayfly_Batt(&mayfly),
     new EnviroDIYMayfly_FreeRam(&mayfly)
     // new YOUR_variableName_HERE(&)
 };

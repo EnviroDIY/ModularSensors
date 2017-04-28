@@ -45,13 +45,13 @@ bool EnviroDIYMayfly::update(void)
     clearValues();
 
     // Get the temperature from the Mayfly's real time clock
-    // Serial.println(F("Getting DS3231 Temperature"));  // for debugging
+    DBGM(F("Getting DS3231 Temperature\n"));
     rtc.convertTemperature();  //convert current temperature into registers
     float tempVal = rtc.getTemperature();
     sensorValues[MAYFLY_TEMP_VAR_NUM] = tempVal;
 
     // Get the battery voltage from the Mayfly's real time clock
-    // Serial.println(F("Getting battery voltage"));  // for debugging
+    DBGM(F("Getting battery voltage\n"));
     float rawBattery;
     float sensorValue_battery;
     if (strcmp(_version, "v0.3") == 0 or strcmp(_version, "v0.4") == 0)
@@ -69,7 +69,7 @@ bool EnviroDIYMayfly::update(void)
     sensorValues[MAYFLY_BATTERY_VAR_NUM] = sensorValue_battery;
 
     // Used only for debugging - can be removed
-    // Serial.println(F("Getting Free RAM"));  // for debugging
+    DBGM(F("Getting Free RAM\n"));
     extern int __heap_start, *__brkval;
     int v;
     float sensorValue_freeRam = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);

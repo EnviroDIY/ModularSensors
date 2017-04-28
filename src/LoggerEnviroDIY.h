@@ -12,7 +12,6 @@
 #define LoggerEnviroDIY_h
 
 #include <Arduino.h>
-#include "SensorBase.h"
 #include "LoggerBase.h"
 #include "ModemSupport.h"
 
@@ -93,7 +92,7 @@ public:
         modem.connect("data.envirodiy.org", 80);
 
         // Send the request to the serial for debugging
-        Serial.println(F("\n \\/---- Post Request to EnviroDIY ----\\/ "));  // for debugging
+        PRINTOUT(F("\n \\/---- Post Request to EnviroDIY ----\\/ \n"));
         streamEnviroDIYRequest(&Serial);  // for debugging
         Serial.flush();  // for debugging
 
@@ -114,16 +113,16 @@ public:
         int responseCode = 0;
         if (timeout > 0 && modem._modemStream->available() >= 12)
         {
-            // Serial.println("****" + modem._modemStream->readStringUntil(' ') + "****");  // for debugging
-            // Serial.println("****" + modem._modemStream->readStringUntil(' ') + "****");  // for debugging
+            DBGVA("****" + modem._modemStream->readStringUntil(' ') + "****", F("\n"));
+            DBGVA("****" + modem._modemStream->readStringUntil(' ') + "****", F("\n"));
             modem._modemStream->readStringUntil(' ');
             responseCode = modem._modemStream->readStringUntil(' ').toInt();
             modem.dumpBuffer(modem._modemStream);
         }
         else responseCode=504;
 
-        Serial.println(F(" -- Response Code -- "));  // for debugging
-        Serial.println(responseCode);  // for debugging
+        PRINTOUT(F(" -- Response Code -- \n"));
+        PRINTOUT(responseCode, F("\n"));
 
         modem.stop();
 
@@ -137,7 +136,7 @@ public:
         if (checkInterval())
         {
             // Print a line to show new reading
-            Serial.println(F("------------------------------------------"));  // for debugging
+            PRINTOUT(F("------------------------------------------\n"));
             // Turn on the LED to show we're taking a reading
             digitalWrite(_ledPin, HIGH);
 
@@ -175,7 +174,7 @@ public:
             // Turn off the LED
             digitalWrite(_ledPin, LOW);
             // Print a line to show reading ended
-            Serial.println(F("------------------------------------------\n"));  // for debugging
+            PRINTOUT(F("------------------------------------------\n\n"));
         }
 
         // Sleep

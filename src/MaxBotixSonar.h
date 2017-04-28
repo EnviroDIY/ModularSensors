@@ -16,6 +16,9 @@
 #include "SensorBase.h"
 #include "VariableBase.h"
 
+// #define MODULES_DBG Serial
+#include "ModSensorDebugger.h"
+
 #define HRXL_NUM_MEASUREMENTS 1
 #define HRXL_RESOLUTION 0
 #define HRXL_VAR_NUM 0

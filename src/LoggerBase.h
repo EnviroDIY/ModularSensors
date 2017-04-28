@@ -10,14 +10,12 @@
 #ifndef LoggerBase_h
 #define LoggerBase_h
 
-
 #include <Arduino.h>
 #include <Sodaq_DS3231.h>  // To communicate with the clock
 #include <SdFat.h>  // To communicate with the SD card
 #include <Sodaq_PcInt_PCINT0.h>  // To handle pin change interrupts for the clock
 #include <avr/sleep.h>  // To handle the processor sleep modes
 #include "VariableArray.h"
-
 
 // Defines the "Logger" Class
 class Logger : public VariableArray
@@ -31,9 +29,7 @@ public:
               float loggingIntervalMinutes,
               const char *loggerID = 0)
     {
-        Serial.print(F("Initializing varible array with "));  // for debugging
-        Serial.print(variableCount);  // for debugging
-        Serial.println(F(" variables..."));  // for debugging
+        PRINTOUT(F("Initializing varible array with "), variableCount, F(" variables...\n"));
 
         _SDCardPin = SDCardPin;
         _interruptPin = interruptPin;
@@ -58,11 +54,11 @@ public:
     {
         Logger::_timeZone = timeZone;
         // Some helpful prints for debugging
-        Serial.print(F("Logger timezone is "));
-        if (Logger::_timeZone == 0) Serial.println(F("UTC"));
-        else if (Logger::_timeZone > 0) Serial.print(F("UTC+"));
-        else Serial.print(F("UTC"));
-        if (Logger::_timeZone != 0) Serial.println(Logger::_timeZone);
+        PRINTOUT(F("Logger timezone is "));
+        if (Logger::_timeZone == 0) PRINTOUT(F("UTC\n"));
+        else if (Logger::_timeZone > 0) PRINTOUT(F("UTC+"));
+        else PRINTOUT(F("UTC"));
+        if (Logger::_timeZone != 0) PRINTOUT(Logger::_timeZone, F("\n"));
 
     }
 
@@ -74,14 +70,14 @@ public:
     {
         Logger::_offset = offset;
         // Some helpful prints for debugging
-        Serial.print(F("RTC timezone is "));
+        PRINTOUT(F("RTC timezone is "));
         if ((Logger::_timeZone - Logger::_offset) == 0)
-            Serial.println(F("UTC"));
+            PRINTOUT(F("UTC\n"));
         else if ((Logger::_timeZone - Logger::_offset) > 0)
-            Serial.print(F("UTC+"));
-        else Serial.print(F("UTC"));
+            PRINTOUT(F("UTC+"));
+        else PRINTOUT(F("UTC"));
         if ((Logger::_timeZone - Logger::_offset) != 0)
-            Serial.println(Logger::_timeZone - Logger::_offset);
+            PRINTOUT(Logger::_timeZone - Logger::_offset, F("\n"));
     }
 
     // Sets up a pin for an LED or other way of alerting that data is being logged
@@ -159,10 +155,10 @@ public:
     bool checkInterval(void)
     {
         bool retval;
-        // Serial.println(getNow());  // for Debugging
-        // Serial.println(getNow() % _interruptRate);  // for Debugging
-        // Serial.println(_numReadings);  // for Debugging
-        // Serial.println(getNow() % 120);  // for Debugging
+        DBGVA(getNow(), F("\n"));
+        DBGVA(getNow() % _interruptRate, F("\n"));
+        DBGVA(_numReadings, F("\n"));
+        DBGVA(getNow() % 120, F("\n"));
         if ((getNow() % _interruptRate == 0 ) or
             (_numReadings < 10 and getNow() % 120 == 0))
         {
@@ -170,12 +166,12 @@ public:
             markTime();
             // Update the number of readings taken
             _numReadings ++;
-            // Serial.println(F("Time to log!"));  // for Debugging
+            DBGVA(F("Time to log!\n"));
             retval = true;
         }
         else
         {
-            // Serial.println(F("Not time yet, back to sleep"));  // for Debugging
+            DBGVA(F("Not time yet, back to sleep\n"));
             retval = false;
         }
         return retval;
@@ -255,8 +251,8 @@ public:
         // This must happen after the SE bit is set.
         sleep_cpu();
 
-        // Serial.println(F("Waking up!"));  // For debugging
-        // Serial.println(getNow());  // for Debugging
+        DBGVA(F("Waking up!\n"));
+        DBGVA(getNow(), F("\n"));
         // Clear the SE (sleep enable) bit.
         sleep_disable();
         // Re-enable the processor ADC
@@ -274,9 +270,7 @@ public:
         _isFileNameSet = true;
 
         // Print out the file name for debugging
-        Serial.print(F("Data will be saved as "));  // for debugging
-        Serial.print(_fileName);  // for debugging
-        Serial.print(F("..."));  // for debugging
+        PRINTOUT(F("Data will be saved as "), _fileName, F("..."));
     }
     // Same as above, with a string (overload function)
     void setFileName(String fileName)
@@ -352,12 +346,12 @@ public:
         // Initialise the SD card
         if (!sd.begin(_SDCardPin, SPI_FULL_SPEED))
         {
-            Serial.println(F("Error: SD card failed to initialize or is missing."));
+            PRINTOUT(F("Error: SD card failed to initialize or is missing.\n"));
         }
         else
         {
-            Serial.print(F("Successfully connected to SD Card with card/slave select on pin "));  // for debugging
-            Serial.println(_SDCardPin);  // for debugging
+            PRINTOUT(F("Successfully connected to SD Card with card/slave select on pin "));
+            PRINTOUT(_SDCardPin, F("\n"));
         }
 
         if(!_isFileNameSet){setFileName();}
@@ -392,11 +386,11 @@ public:
                                     rtc.makeDateTime(getNow()).hour(),
                                     rtc.makeDateTime(getNow()).minute(),
                                     rtc.makeDateTime(getNow()).second());
-        Serial.println(F("   ... File created!"));  // for debugging
+        PRINTOUT(F("   ... File created!\n"));
 
         // Add header information
         logFile.println(generateFileHeader());
-        // Serial.println(generateFileHeader());  // for debugging
+        DBGVA(generateFileHeader(), F("\n"));
 
         //Close the file to save it
         logFile.close();
@@ -408,7 +402,7 @@ public:
         // Make sure the SD card is still initialized
         if (!sd.begin(_SDCardPin, SPI_FULL_SPEED))
         {
-            Serial.println(F("Error: SD card failed to initialize or is missing."));
+            PRINTOUT(F("Error: SD card failed to initialize or is missing.\n"));
         }
 
         // Convert the string filename to a character file name for SdFat
@@ -419,15 +413,15 @@ public:
         // Check that the file exists, just in case someone yanked the SD card
         if (!logFile.open(charFileName, O_WRITE | O_AT_END))
         {
-            Serial.println(F("SD Card File Lost!  Starting new file."));  // for debugging
+            PRINTOUT(F("SD Card File Lost!  Starting new file.\n"));
             setupLogFile();
         }
 
         // Write the CSV data
         logFile.println(rec);
         // Echo the lind to the serial port
-        Serial.println(F("\n \\/---- Line Saved to SD Card ----\\/ "));  // for debugging
-        Serial.println(rec);  // for debugging
+        PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/ \n"));
+        PRINTOUT(rec, F("\n"));
 
         // Set write/modification date time
         logFile.timestamp(T_WRITE, rtc.makeDateTime(getNow()).year(),
@@ -462,8 +456,8 @@ public:
         pinMode(_ledPin, OUTPUT);
 
         // Print a start-up note to the first serial port
-        Serial.print(F("Current RTC time is: "));
-        Serial.println(formatDateTime_ISO8601(getNow()));
+        PRINTOUT(F("Current RTC time is: "));
+        PRINTOUT(formatDateTime_ISO8601(getNow()), F("\n"));
 
         // Set up the sensors
         setupSensors();
@@ -474,8 +468,8 @@ public:
         // Setup sleep mode
         if(_sleep){setupSleep();}
 
-        Serial.println(F("Logger setup finished!"));
-        Serial.println(F("------------------------------------------\n"));
+        PRINTOUT(F("Logger setup finished!\n"));
+        PRINTOUT(F("------------------------------------------\n\n"));
     }
 
     // This is a one-and-done to log data
@@ -485,7 +479,7 @@ public:
         if (checkInterval())
         {
             // Print a line to show new reading
-            Serial.println(F("------------------------------------------"));  // for debugging
+            PRINTOUT(F("------------------------------------------\n"));
             // Turn on the LED to show we're taking a reading
             digitalWrite(_ledPin, HIGH);
 
@@ -504,7 +498,7 @@ public:
             // Turn off the LED
             digitalWrite(_ledPin, LOW);
             // Print a line to show reading ended
-            Serial.println(F("------------------------------------------\n"));  // for debugging
+            PRINTOUT(F("------------------------------------------\n\n"));
         }
 
         // Sleep

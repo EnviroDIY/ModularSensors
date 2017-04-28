@@ -27,11 +27,11 @@ Variable::Variable(Sensor *parentSense, int varNum, String varName, String varUn
 }
 
 void Variable::attachSensor(int varNum, Sensor *parentSense) {
-    Serial.print(F("Attempting to register to "));  // for debugging
-    Serial.print(parentSense->getSensorName());  // for debugging
-    Serial.print(F(" attached at "));  // for debugging
-    Serial.print(parentSense->getSensorLocation());  // for debugging
-    Serial.print(F("...   "));  // for debugging
+    DBGV(F("Attempting to register to "));
+    DBGV(parentSense->getSensorName());
+    DBGV(F(" attached at "));
+    DBGV(parentSense->getSensorLocation());
+    DBGV(F("...   "));
     parentSense->registerVariable(varNum, this);
 }
 
@@ -44,8 +44,8 @@ bool Variable::setup(void)
 void Variable::onSensorUpdate(Sensor *parentSense)
 {
     sensorValue = parentSense->sensorValues[_varNum];
-    Serial.print(F("... received "));  // for debugging
-    Serial.println(sensorValue);  // for debugging
+    DBGV(F("... received "));
+    DBGV(sensorValue, F("\n"));
 }
 
 // This returns the variable's name using http://vocabulary.odm2.org/variablename/

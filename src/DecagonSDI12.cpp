@@ -49,12 +49,12 @@ void DecagonSDI12::getSensorInfo(void)
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
 
-    // Serial.println(F("Getting sensor info"));  // For debugging
+    DBGM(F("Getting sensor info\n"));
     String myCommand = "";
     myCommand += (char) _SDI12address;
     myCommand += "I!"; // sends 'info' command [address][I][!]
     mySDI12.sendCommand(myCommand);
-    // Serial.println(myCommand);  // For debugging
+    DBGM(myCommand, F("\n"));
     delay(30);
 
     // wait for acknowlegement with format:
@@ -69,7 +69,7 @@ void DecagonSDI12::getSensorInfo(void)
             delay(5);
         }
     }
-    // if (sdiResponse.length() > 1) Serial.println(sdiResponse);  // For debugging
+    if (sdiResponse.length() > 1) DBGM(sdiResponse, F("\n"));
     _sensorName = sdiResponse.substring(3,17);
     _sensorName.trim();
     _sensorVendor = sdiResponse.substring(3,11);
@@ -130,44 +130,39 @@ bool DecagonSDI12::update()
     // averages x readings in this one loop
     for (int j = 0; j < _numReadings; j++)
     {
-        // Serial.print(F("Taking reading #"));  // For debugging
-        // Serial.println(j);  // For debugging
+        DBGM(F("Taking reading #"), j, F("\n"));
         String myCommand = "";
         myCommand += _SDI12address;
         myCommand += "M!"; // SDI-12 measurement myCommand format  [address]['M'][!]
         mySDI12.sendCommand(myCommand);
-        // Serial.println(myCommand);  // For debugging
+        DBGM(myCommand, F("\n"));
         mySDI12.flush();
         delay(30);  // It just needs this little delay
 
         // wait for acknowlegement with format [address][ttt (3 char, seconds)][number of measurments available, 0-9]
         String sdiResponse = mySDI12.readString();
-        // Serial.println(sdiResponse);  // For debugging
+        DBGM(sdiResponse, F("\n"));
 
         // find out how long we have to wait (in seconds).
         unsigned int wait = 0;
         wait = sdiResponse.substring(1,4).toInt();
-        // Serial.print(F("Waiting "));  // For debugging
-        // Serial.print(wait);  // For debugging
-        // Serial.println(F(" seconds for measurement"));  // For debugging
+        DBGM(F("Waiting "), wait, F(" seconds for measurement\n"));
 
         // Set up the number of results to expect
-        // int numMeasurements = sdiResponse.substring(4,5).toInt();
-        // Serial.print(numMeasurements);  // For debugging
-        // Serial.println(F(" results expected"));  // For debugging
-        // if (numMeasurements != _numReturnedVars)
-        // {
-        //     Serial.print(F("This differs from the sensor's standard design of "));  // For debugging
-        //     Serial.print(_numReturnedVars);  // For debugging
-        //     Serial.println(F(" measurements!!"));  // For debugging
-        // }
+        int numMeasurements = sdiResponse.substring(4,5).toInt();
+        DBGM(numMeasurements, F(" results expected\n"));
+        if (numMeasurements != _numReturnedVars)
+        {
+            DBGM(F("This differs from the sensor's standard design of "));
+            DBGM(_numReturnedVars, F(" measurements!!\n"));
+        }
 
         unsigned long timerStart = millis();
         while((millis() - timerStart) < (1000 * wait))
         {
             if(mySDI12.available())  // sensor can interrupt us to let us know it is done early
             {
-                // Serial.println("Wait interrupted!");  // For debugging
+                DBGM("Wait interrupted!", F("\n"));
                 mySDI12.readString();  // Read the service request (the address again)
                 delay(5);  // Necessary for reasons unbeknownst to me (else it just fails sometimes..)
                 break;
@@ -178,34 +173,26 @@ bool DecagonSDI12::update()
         myCommand += _SDI12address;
         myCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
         mySDI12.sendCommand(myCommand);
-        // Serial.println(myCommand);  // For debugging
+        DBGM(myCommand, F("\n"));
         mySDI12.flush();
         delay(30);  // It just needs this little delay
 
-        // Serial.println(F("Receiving data"));  // For debugging
+        DBGM(F("Receiving data\n"));
         mySDI12.read();  // ignore the repeated SDI12 address
         for (int i = 0; i < _numReturnedVars; i++)
         {
             float result = mySDI12.parseFloat();
             sensorValues[i] += result;
-            // Serial.print(F("Result #"));  // For debugging
-            // Serial.print(i);  // For debugging
-            // Serial.print(F(": "));  // For debugging
-            // Serial.println(result);  // For debugging
+            DBGM(F("Result #"), i, F(": "), result, F("\n"));
         }
     }
 
     // Average over the number of readings
-    // Serial.print(F("Averaging over "));  // For debugging
-    // Serial.print(_numReadings);  // For debugging
-    // Serial.println(F(" readings")); // For debugging
+    DBGM(F("Averaging over "), _numReadings, F(" readings\n"));
     for (int i = 0; i < _numReturnedVars; i++)
     {
         sensorValues[i] /=  _numReadings;
-        // Serial.print(F("Result #"));  // For debugging
-        // Serial.print(i);  // For debugging
-        // Serial.print(F(": "));  // For debugging
-        // Serial.println(sensorValues[i]);  // For debugging
+        DBGM(F("Result #"), i, F(": "), sensorValues[i], F("\n"));
     }
 
     // Turn the power back off it it had been turned on

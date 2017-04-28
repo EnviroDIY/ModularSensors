@@ -17,10 +17,14 @@
 #ifndef MaximDS18_h
 #define MaximDS18_h
 
-#include <OneWire.h>
-#include <DallasTemperature.h>
 #include "SensorBase.h"
 #include "VariableBase.h"
+
+#define MODULES_DBG Serial
+#include "ModSensorDebugger.h"
+
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
 #define DS18_NUM_MEASUREMENTS 1
 #define DS18_TEMP_VAR_NUM 0

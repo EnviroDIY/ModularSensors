@@ -25,10 +25,13 @@
 #ifndef CampbellOBS3_h
 #define CampbellOBS3_h
 
-#include <Arduino.h>
-#include <Adafruit_ADS1015.h>
 #include "SensorBase.h"
 #include "VariableBase.h"
+
+// #define MODULES_DBG Serial
+#include "ModSensorDebugger.h"
+
+#include <Adafruit_ADS1015.h>
 
 #define OBS3_NUM_VARIABLES 1  // low and high range are treated as completely independent
 #define OBS3_TURB_VAR_NUM 0

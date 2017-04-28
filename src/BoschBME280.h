@@ -31,6 +31,10 @@
 
 #include "SensorBase.h"
 #include "VariableBase.h"
+
+#define MODULES_DBG Serial
+#include "ModSensorDebugger.h"
+
 #include <Adafruit_BME280.h>
 
 #define BoschBME280_NUM_MEASUREMENTS 4

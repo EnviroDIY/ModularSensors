@@ -64,24 +64,24 @@ SENSOR_STATUS MaximDS18::getStatus(void)
     // Make sure the address is valid
     if (!tempSensors.validAddress(_OneWireAddress))
     {
-        Serial.print(F("This sensor address is not valid: "));  // For debugging
-        Serial.println(getAddressString(_OneWireAddress));  // For debugging
+        DBGM(F("This sensor address is not valid: "));
+        DBGM(getAddressString(_OneWireAddress), F("\n"));
         return SENSOR_ERROR;
     }
 
     // Make sure the sensor is connected
     if (!tempSensors.isConnected(_OneWireAddress))
     {
-        Serial.print(F("This sensor is not currently connected: "));  // For debugging
-        Serial.println(getAddressString(_OneWireAddress));  // For debugging
+        DBGM(F("This sensor is not currently connected: "));
+        DBGM(getAddressString(_OneWireAddress), F("\n"));
         return SENSOR_ERROR;
     }
 
     // Set resolution to 12 bit
     if (!tempSensors.setResolution(_OneWireAddress, 12))
     {
-        Serial.print(F("Unable to set the resolution of this sensor: "));  // For debugging
-        Serial.println(getAddressString(_OneWireAddress));  // For debugging
+        DBGM(F("Unable to set the resolution of this sensor: "));
+        DBGM(getAddressString(_OneWireAddress), F("\n"));
         return SENSOR_ERROR;
     }
 
@@ -109,18 +109,16 @@ SENSOR_STATUS MaximDS18::setup(void)
     // Find the address if it's not known
     if (!_addressKnown)
     {
-        Serial.println(F("Probe address is not known!"));  // For debugging
+        DBGM(F("Probe address is not known!\n"));
 
         uint8_t address[8];
         if (!oneWire.search(address))
         {
-            Serial.print(F("Unable to find address for DS18 on pin "));  // For debugging
-            Serial.println(_dataPin);  // For debugging
+            DBGM(F("Unable to find address for DS18 on pin "), _dataPin, F("\n"));
         }
         else
         {
-            Serial.print(F("Sensor found at "));  // For debugging
-            Serial.println(getAddressString(address));  // For debugging
+            DBGM(F("Sensor found at "), getAddressString(address), F("\n"));
 
             for (int i = 0; i < 8; i++) _OneWireAddress[i] = address[i];
             _addressKnown = true;  // Now we know the address
@@ -130,13 +128,8 @@ SENSOR_STATUS MaximDS18::setup(void)
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
 
-    // Serial.print(F("Set up "));  // for debugging
-    // Serial.print(getSensorName());  // for debugging
-    // Serial.print(F(" attached at "));  // for debugging
-    // Serial.print(getSensorLocation());  // for debugging
-    // Serial.print(F(" which can return up to "));  // for debugging
-    // Serial.print(_numReturnedVars);  // for debugging
-    // Serial.println(F(" variable[s]."));  // for debugging
+    DBGM(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
+    DBGM(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
 
     return getStatus();
 }
@@ -163,14 +156,14 @@ bool MaximDS18::update()
     int rangeAttempts = 0;
     float result = 85;  // This is a "bad" result returned from a DS18 sensor
 
-    Serial.println(F("Beginning detection for Temperature"));  // For debugging
+    DBGM(F("Beginning detection for Temperature\n"));
     while (goodTemp == false && rangeAttempts < 50)
     {
         // Send the command to get temperatures
-        Serial.println(F("Asking sensor to take a measurement"));  // For debugging
+        DBGM(F("Asking sensor to take a measurement\n"));
         tempSensors.requestTemperaturesByAddress(_OneWireAddress);
 
-        Serial.println(F("Requesting temperature result"));  // For debugging
+        DBGM(F("Requesting temperature result\n"));
         result = tempSensors.getTempC(_OneWireAddress);
         rangeAttempts++;
 
@@ -178,27 +171,24 @@ bool MaximDS18::update()
         // If the sensor is not properly connected, it returns -127
         if (result == 85 || result == -127)
         {
-            Serial.print(F("Bad or Suspicious Result, Retry Attempt #"));  // For debugging
-            Serial.println(rangeAttempts);  // For debugging
+            DBGM(F("Bad or Suspicious Result, Retry Attempt #"), rangeAttempts, F("\n"));
         }
         else
         {
-            Serial.println(F("Good result found"));  // For debugging
+            DBGM(F("Good result found\n"));
             goodTemp = true;  // Set completion of read to true
         }
     }
 
-    Serial.print(F("Sending value of "));
-    Serial.print(result);
-    Serial.println(F(" °C to the sensorValues array"));
+    DBGM(F("Sending value of "), result, F(" °C to the sensorValues array\n"));
     sensorValues[DS18_TEMP_VAR_NUM] = result;
-    Serial.println(sensorValues[DS18_TEMP_VAR_NUM]);  // For debugging
+    DBGM(sensorValues[DS18_TEMP_VAR_NUM], F("\n"));
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
 
     // Update the registered variables with the new values
-    Serial.println(F("Notifying registered variables."));
+    DBGM(F("Notifying registered variables.\n"));
     notifyVariables();
 
     // Return true when finished

@@ -76,14 +76,10 @@ bool BoschBME280::update(void)
     // Read the altitude
     sensorValues[BoschBME280_ALTITUDE_VAR_NUM] = bme280.readAltitude(SEALEVELPRESSURE_HPA);
 
-    Serial.print(F("Temperature: "));  // For debugging
-    Serial.print(sensorValues[BoschBME280_TEMP_VAR_NUM]);  // For debugging
-    Serial.print(F(" Humidity: "));  // For debugging
-    Serial.print(sensorValues[BoschBME280_HUMIDITY_VAR_NUM]);  // For debugging
-    Serial.print(F(" Barometric Pressure: "));  // For debugging
-    Serial.print(sensorValues[BoschBME280_PRESSURE_VAR_NUM]);  // For debugging
-    Serial.print(F(" Calculated Altitude: "));  // For debugging
-    Serial.println(sensorValues[BoschBME280_ALTITUDE_VAR_NUM]);  // For debugging
+    DBGM(F("Temperature: "), sensorValues[BoschBME280_TEMP_VAR_NUM]);
+    DBGM(F(" Humidity: "), sensorValues[BoschBME280_HUMIDITY_VAR_NUM]);
+    DBGM(F(" Barometric Pressure: "), sensorValues[BoschBME280_PRESSURE_VAR_NUM]);
+    DBGM(F(" Calculated Altitude: "), sensorValues[BoschBME280_ALTITUDE_VAR_NUM], F("\n"));
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
