@@ -21,7 +21,7 @@ SENSOR_STATUS MaxBotixSonar::setup(void)
 {
     pinMode(_powerPin, OUTPUT);
     pinMode(_dataPin, INPUT);
-    digitalWrite(_powerPin, LOW);
+
     if(_triggerPin != -1)
     {
         pinMode(_triggerPin, OUTPUT);

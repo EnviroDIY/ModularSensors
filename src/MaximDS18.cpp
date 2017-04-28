@@ -106,7 +106,6 @@ SENSOR_STATUS MaximDS18::setup(void)
 {
     pinMode(_powerPin, OUTPUT);
     pinMode(_dataPin, INPUT);
-    digitalWrite(_powerPin, LOW);
 
     // Check if the power is on, turn it on if not  (Need power to get address)
     bool wasOn = checkPowerOn();
@@ -135,13 +134,15 @@ SENSOR_STATUS MaximDS18::setup(void)
         }
     }
 
-    // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
-
     DBGM(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
     DBGM(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
 
-    return getStatus();
+    SENSOR_STATUS stat = getStatus();
+
+    // Turn the power back off it it had been turned on
+    if(!wasOn){powerDown();}
+    
+    return stat;
 }
 
 

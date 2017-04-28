@@ -93,6 +93,9 @@ public:
         // First setup the sensors
         for (int i = 0; i < _variableCount; i++)
         {
+            // Wake everyone up for set up
+            success &= _variableList[i]->parentSensor->wake();
+
             // Make 5 attempts to contact the sensor before giving up
             while(setupTries < 5)
             {
@@ -114,6 +117,9 @@ public:
                 }
             }
             success &= sensorSuccess;
+            
+            // Put everyone back to sleep
+            success &= _variableList[i]->parentSensor->sleep();
         }
 
         // Now attach all of the variables to their parents

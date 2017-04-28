@@ -49,7 +49,7 @@
 #define BoschBME280_PRESSURE_VAR_NUM 2
 
 #define BoschBME280_ALTITUDE_RESOLUTION 0
-#define BoschBME280_ALTITUDE_VAR_NUM 2
+#define BoschBME280_ALTITUDE_VAR_NUM 3
 #define SEALEVELPRESSURE_HPA (1013.25)
 
 // The main class for the Bosch BME280

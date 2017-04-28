@@ -30,7 +30,7 @@
 
 // The constructor - because this is I2C, only need the power pin
 BoschBME280::BoschBME280(int powerPin, uint8_t i2c_addr)
- : Sensor(-1, powerPin, F("BoschBME280"), BoschBME280_NUM_MEASUREMENTS)
+ : Sensor(powerPin, -1, F("BoschBME280"), BoschBME280_NUM_MEASUREMENTS)
 {
     _i2c_addr  = i2c_addr;
 }
@@ -42,20 +42,30 @@ String BoschBME280::getSensorLocation(void)
     return address;
 }
 
-SENSOR_STATUS BoschBME280::setup(void)
+SENSOR_STATUS BoschBME280::getStatus(void)
 {
-    pinMode(_powerPin, OUTPUT);
-    digitalWrite(_powerPin, LOW);
-    bool status = bme280.begin(_i2c_addr);  // Start the BME280
+    // Check if the power is on, turn it on if not (Need power to get status)
+    bool wasOn = checkPowerOn();
+    if(!wasOn){powerUp();}  // powerUp function includes a 500ms delay
+
+    // Run begin fxn because it returns true or false for success in contact
+    bool status = bme280.begin(_i2c_addr);
+
+    // Turn the power back off it it had been turned on
+    if(!wasOn){powerDown();}
+
     if (!status) return SENSOR_ERROR;
     else return SENSOR_READY;
 }
 
-SENSOR_STATUS BoschBME280::getStatus(void)
+SENSOR_STATUS BoschBME280::setup(void)
 {
-    bool status = bme280.begin(_i2c_addr);  // Start the BME280
-    if (!status) return SENSOR_ERROR;
-    else return SENSOR_READY;
+    pinMode(_powerPin, OUTPUT);
+
+    DBGM(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
+    DBGM(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
+
+    return getStatus();
 }
 
 bool BoschBME280::update(void)

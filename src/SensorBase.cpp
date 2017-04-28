@@ -80,7 +80,6 @@ SENSOR_STATUS Sensor::setup(void)
 {
     pinMode(_powerPin, OUTPUT);
     pinMode(_dataPin, INPUT);
-    digitalWrite(_powerPin, LOW);
 
     DBGS(F("Set up "));
     DBGS(getSensorName());
