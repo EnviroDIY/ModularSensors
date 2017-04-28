@@ -22,7 +22,8 @@ MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin)
   : Sensor(powerPin, dataPin, F("MaximDS18"), DS18_NUM_MEASUREMENTS),
     oneWire(dataPin), tempSensors(&oneWire)
 {
-    _OneWireAddress = OneWireAddress;
+    for (int i = 0; i < 8; i++) _OneWireAddress[i] = OneWireAddress[i];
+    // _OneWireAddress = OneWireAddress;
     _addressKnown = true;
 }
 // The constructor - if the hex address is NOT known - only need the power pin and the data pin
@@ -31,12 +32,11 @@ MaximDS18::MaximDS18(int powerPin, int dataPin)
   : Sensor(powerPin, dataPin, F("MaximDS18"), DS18_NUM_MEASUREMENTS),
     oneWire(dataPin), tempSensors(&oneWire)
 {
-    _OneWireAddress = {0};
     _addressKnown = false;
 }
 
 // Turns the address into a printable string
-String MaximDS18::getAddressString(DeviceAddress OneWireAddress)
+String MaximDS18::getAddressString(DeviceAddress owAddr)
 {
     String addrStr = F("Pin");
     addrStr += (_dataPin);
@@ -44,8 +44,8 @@ String MaximDS18::getAddressString(DeviceAddress OneWireAddress)
     for (uint8_t i = 0; i < 8; i++)
     {
         addrStr += ("0x");
-        if (OneWireAddress[i] < 0x10) addrStr += ("0");
-        addrStr += String(OneWireAddress[i], HEX);
+        if (owAddr[i] < 0x10) addrStr += ("0");
+        addrStr += String(owAddr[i], HEX);
         if (i < 7) addrStr += (",");
     }
     addrStr += (F("}"));
@@ -53,8 +53,13 @@ String MaximDS18::getAddressString(DeviceAddress OneWireAddress)
     return addrStr;
 }
 
+// This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
+String MaximDS18::getSensorLocation(void)
+{
+    return getAddressString(_OneWireAddress);
+}
+
 // The function to set up connection to a sensor.
-// By default, sets pin modes and returns ready
 SENSOR_STATUS MaximDS18::getStatus(void)
 {
     // Check if the power is on, turn it on if not (Need power to get status)
@@ -111,17 +116,16 @@ SENSOR_STATUS MaximDS18::setup(void)
     {
         DBGM(F("Probe address is not known!\n"));
 
-        uint8_t address[8];
-        if (!oneWire.search(address))
+        DeviceAddress address;
+        if (oneWire.search(address))
         {
-            DBGM(F("Unable to find address for DS18 on pin "), _dataPin, F("\n"));
+            DBGM(F("Sensor found at "), getAddressString(address), F("\n"));
+            for (int i = 0; i < 8; i++) _OneWireAddress[i] = address[i];
+            _addressKnown = true;  // Now we know the address
         }
         else
         {
-            DBGM(F("Sensor found at "), getAddressString(address), F("\n"));
-
-            for (int i = 0; i < 8; i++) _OneWireAddress[i] = address[i];
-            _addressKnown = true;  // Now we know the address
+            DBGM(F("Unable to find address for DS18 on pin "), _dataPin, F("\n"));
         }
     }
 
@@ -132,13 +136,6 @@ SENSOR_STATUS MaximDS18::setup(void)
     DBGM(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
 
     return getStatus();
-}
-
-
-// This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
-String MaximDS18::getSensorLocation(void)
-{
-    return getAddressString(_OneWireAddress);
 }
 
 
@@ -165,6 +162,7 @@ bool MaximDS18::update()
 
         DBGM(F("Requesting temperature result\n"));
         result = tempSensors.getTempC(_OneWireAddress);
+        DBGM(F("Received "), result, F("°C\n"));
         rangeAttempts++;
 
         // If a DS18 cannot get a goot measurement, it returns 85
@@ -182,13 +180,11 @@ bool MaximDS18::update()
 
     DBGM(F("Sending value of "), result, F(" °C to the sensorValues array\n"));
     sensorValues[DS18_TEMP_VAR_NUM] = result;
-    DBGM(sensorValues[DS18_TEMP_VAR_NUM], F("\n"));
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
 
     // Update the registered variables with the new values
-    DBGM(F("Notifying registered variables.\n"));
     notifyVariables();
 
     // Return true when finished

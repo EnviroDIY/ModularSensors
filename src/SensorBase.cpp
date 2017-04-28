@@ -136,7 +136,7 @@ void Sensor::registerVariable(int varNum, Variable* var)
 
 void Sensor::notifyVariables(void)
 {
-    DBGS(F("Notifiying registered variables.\n"));
+    DBGS(F("Notifying registered variables.\n"));
     // Make note of the last time updated
     sensorLastUpdated = millis();
 
@@ -152,7 +152,7 @@ void Sensor::notifyVariables(void)
             DBGS(F("...   "));
             variables[i]->onSensorUpdate(this);
         }
-        else DBGS(F("Null pointer\n"));
+        // else DBGS(F("Null pointer\n"));
     }
 }
 

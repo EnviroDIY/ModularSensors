@@ -29,7 +29,7 @@ public:
               float loggingIntervalMinutes,
               const char *loggerID = 0)
     {
-        PRINTOUT(F("Initializing varible array with "), variableCount, F(" variables...\n"));
+        PRINTOUT(F("Initializing variable array with "), variableCount, F(" variables...\n"));
 
         _SDCardPin = SDCardPin;
         _interruptPin = interruptPin;

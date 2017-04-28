@@ -115,15 +115,17 @@ MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger) ;
 // ==========================================================================
 #include <MaximDS18.h>
 // OneWire Address [array of 8 hex characters]
-// DeviceAddress OneWireAddress = {0x28, 0xFF, 0xB6, 0x6E, 0x84, 0x16, 0x05, 0x9B};
-// DeviceAddress OneWireAddress = {0x28, 0xFF, 0xBD, 0xBA, 0x81, 0x16, 0x03, 0x0C};
-// DeviceAddress OneWireAddress = {0x28, 0xFF, 0x57, 0x90, 0x82, 0x16, 0x04, 0x67};
-// DeviceAddress OneWireAddress = {0x28, 0xFF, 0x3B, 0x07, 0x82, 0x16, 0x13, 0xB3};
-DeviceAddress OneWireAddress = {0x28, 0xFF, 0x74, 0x2B, 0x82, 0x16, 0x03, 0x57};
+DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA, 0x81, 0x16, 0x03, 0x0C};
+DeviceAddress OneWireAddress2 = {0x28, 0xFF, 0x57, 0x90, 0x82, 0x16, 0x04, 0x67};
+DeviceAddress OneWireAddress3 = {0x28, 0xFF, 0x74, 0x2B, 0x82, 0x16, 0x03, 0x57};
+// DeviceAddress OneWireAddress4 = {0x28, 0xFF, 0xB6, 0x6E, 0x84, 0x16, 0x05, 0x9B};
+// DeviceAddress OneWireAddress5 = {0x28, 0xFF, 0x3B, 0x07, 0x82, 0x16, 0x13, 0xB3};
 const int OneWireBus = 5;   // Data pin
 const int OneWirePower = 22;   // Power pin
-MaximDS18 ds18_1(OneWireAddress, OneWirePower, OneWireBus);
-// MaximDS18 ds18_2(OneWirePower, OneWireBus);
+MaximDS18 ds18_1(OneWireAddress1, OneWirePower, OneWireBus);
+MaximDS18 ds18_2(OneWireAddress2, OneWirePower, OneWireBus);
+MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
+// MaximDS18 ds18_u(OneWirePower, OneWireBus);
 
 
 // ==========================================================================
@@ -137,27 +139,28 @@ EnviroDIYMayfly mayfly(MFVersion) ;
 // The array that contains all valid variables
 // ---------------------------------------------------------------------------
 Variable *variableList[] = {
-    new AOSongAM2315_Humidity(&am2315),
-    new AOSongAM2315_Temp(&am2315),
-    new BoschBME280_Temp(&bme280),
-    new BoschBME280_Humidity(&bme280),
-    new BoschBME280_Pressure(&bme280),
-    new BoschBME280_Altitude(&bme280),
-    new CampbellOBS3_Turbidity(&osb3low),
-    new CampbellOBS3_TurbHigh(&osb3high),
-    new Decagon5TM_Ea(&fivetm),
-    new Decagon5TM_Temp(&fivetm),
-    new Decagon5TM_VWC(&fivetm),
-    new DecagonCTD_Cond(&ctd),
-    new DecagonCTD_Temp(&ctd),
-    new DecagonCTD_Depth(&ctd),
-    new DecagonES2_Cond(&es2),
-    new DecagonES2_Temp(&es2),
-    new MaxBotixSonar_Range(&sonar),
+    // new AOSongAM2315_Humidity(&am2315),
+    // new AOSongAM2315_Temp(&am2315),
+    // new BoschBME280_Temp(&bme280),
+    // new BoschBME280_Humidity(&bme280),
+    // new BoschBME280_Pressure(&bme280),
+    // new BoschBME280_Altitude(&bme280),
+    // new CampbellOBS3_Turbidity(&osb3low),
+    // new CampbellOBS3_TurbHigh(&osb3high),
+    // new Decagon5TM_Ea(&fivetm),
+    // new Decagon5TM_Temp(&fivetm),
+    // new Decagon5TM_VWC(&fivetm),
+    // new DecagonCTD_Cond(&ctd),
+    // new DecagonCTD_Temp(&ctd),
+    // new DecagonCTD_Depth(&ctd),
+    // new DecagonES2_Cond(&es2),
+    // new DecagonES2_Temp(&es2),
+    // new MaxBotixSonar_Range(&sonar),
     new MaximDS18_Temp(&ds18_1),
-    // new MaximDS18_Temp(&ds18_2),
-    new EnviroDIYMayfly_Temp(&mayfly),
-    new EnviroDIYMayfly_Batt(&mayfly),
+    new MaximDS18_Temp(&ds18_2),
+    new MaximDS18_Temp(&ds18_3),
+    // new EnviroDIYMayfly_Temp(&mayfly),
+    // new EnviroDIYMayfly_Batt(&mayfly),
     new EnviroDIYMayfly_FreeRam(&mayfly)
     // new YOUR_variableName_HERE(&)
 };
@@ -260,7 +263,7 @@ void setup()
     Serial.println(getDateTime_ISO8601());
     Serial.print(F("There are "));
     Serial.print(String(variableCount));
-    Serial.println(F(" variables being recorded"));
+    Serial.println(F(" variables to be recorded."));
 
     // Initialize the sensor array;
     sensors.init(variableCount, variableList);

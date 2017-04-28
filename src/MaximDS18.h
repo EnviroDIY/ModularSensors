@@ -20,7 +20,7 @@
 #include "SensorBase.h"
 #include "VariableBase.h"
 
-#define MODULES_DBG Serial
+// #define MODULES_DBG Serial
 #include "ModSensorDebugger.h"
 
 #include <OneWire.h>
@@ -44,7 +44,7 @@ public:
     bool update(void) override;
 
 private:
-    uint8_t* _OneWireAddress;
+    DeviceAddress _OneWireAddress;
     bool _addressKnown;
     // Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
     OneWire oneWire;

@@ -30,7 +30,7 @@
 
 // The constructor - because this is I2C, only need the power pin
 BoschBME280::BoschBME280(int powerPin, uint8_t i2c_addr)
- : Sensor(-1, powerPin)
+ : Sensor(-1, powerPin, F("BoschBME280"), BoschBME280_NUM_MEASUREMENTS)
 {
     _i2c_addr  = i2c_addr;
 }
