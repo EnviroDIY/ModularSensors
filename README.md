@@ -185,7 +185,7 @@ Sending data to EnviroDIY depends on having some sort of modem or internet conne
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand XBee's, including WiFi or LTE-M1
 ```
-Any of the above modems types/chips should work, though only a SIM800 and WiFiBee have been tested to date.  If you would prefer to use a library of your own for controlling your modem, just omit the define statemnts.  In this case, the GSM library and modem support modules will not be imported and you will lose the postDataEnviroDIY() and log() functions.
+Any of the above modems types/chips should work, though only a SIM800 Sodaq GPRSBee, ESP8266, and Digi WiFiBee have been tested to date.  If you would prefer to use a library of your own for controlling your modem, just omit the define statemnts.  In this case, the GSM library and modem support modules will not be imported and you will lose access to the postDataEnviroDIY() and log() functions.
 
 These three functions set up the required registration token, sampling feature uuid, and time series uuids for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.  You must call these functions to be able to get proper JSON data for EnviroDIY, even without the modem support.
 - **setToken(const char registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.

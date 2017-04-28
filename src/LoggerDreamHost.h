@@ -46,7 +46,10 @@ public:
         return dhString;
     }
 
-#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
+#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
+    defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
+    defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || \
+    defined(TINY_GSM_MODEM_XBEE)
 
     // Post the data to dream host.
     int postDataDreamHost(void)
