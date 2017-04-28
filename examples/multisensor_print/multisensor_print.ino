@@ -115,12 +115,14 @@ MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger) ;
 #include <MaximDS18.h>
 // OneWire Address [array of 8 hex characters]
 // DeviceAddress OneWireAddress = {0x28, 0xFF, 0xB6, 0x6E, 0x84, 0x16, 0x05, 0x9B};
-DeviceAddress OneWireAddress = {0x28, 0xFF, 0x3B, 0x07, 0x82, 0x16, 0x13, 0xB3};
-const int OneWireBus1 = 5;   // Data pin
-const int OneWireBus2 = 27;   // Data pin
+// DeviceAddress OneWireAddress = {0x28, 0xFF, 0xBD, 0xBA, 0x81, 0x16, 0x03, 0x0C};
+// DeviceAddress OneWireAddress = {0x28, 0xFF, 0x57, 0x90, 0x82, 0x16, 0x04, 0x67};
+// DeviceAddress OneWireAddress = {0x28, 0xFF, 0x3B, 0x07, 0x82, 0x16, 0x13, 0xB3};
+DeviceAddress OneWireAddress = {0x28, 0xFF, 0x74, 0x2B, 0x82, 0x16, 0x03, 0x57};
+const int OneWireBus = 5;   // Data pin
 const int OneWirePower = 22;   // Power pin
-MaximDS18 ds18_1(OneWireAddress, OneWirePower, OneWireBus1);
-MaximDS18 ds18_2(OneWirePower, OneWireBus2);
+MaximDS18 ds18_1(OneWireAddress, OneWirePower, OneWireBus);
+// MaximDS18 ds18_2(OneWirePower, OneWireBus);
 
 
 // ==========================================================================
@@ -151,7 +153,7 @@ Variable *variableList[] = {
     // new DecagonES2_Cond(&es2),
     // new DecagonES2_Temp(&es2),
     // new MaxBotixSonar_Range(&sonar),
-    new MaximDS18_Temp(&ds18_1),
+    // new MaximDS18_Temp(&ds18_1),
     // new MaximDS18_Temp(&ds18_2),
     // new EnviroDIYMayfly_Temp(&mayfly),
     // new EnviroDIYMayfly_Batt(&mayfly),

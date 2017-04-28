@@ -23,8 +23,11 @@ Sensor::Sensor(int powerPin, int dataPin, String sensorName, int numReturnedVars
     _numReturnedVars = numReturnedVars;
 
     // Clear arrays
-    variables[MAX_NUMBER_VARS] = {0};
-    sensorValues[MAX_NUMBER_VARS] = {0};
+    for (uint8_t i = 0; i < MAX_NUMBER_VARS; i++)
+    {
+        variables[i] = NULL;
+        sensorValues[i] = 0;
+    }
 }
 
 // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
@@ -126,9 +129,9 @@ bool Sensor::wake(void)
 void Sensor::registerVariable(int varNum, Variable* var)
 {
     variables[varNum] = var;
-    // Serial.print(F("... Registration for "));  // for debugging
-    // Serial.print(var->getVarName());  // for debugging
-    // Serial.println(F(" accepted."));  // for debugging
+    Serial.print(F("... Registration for "));  // for debugging
+    Serial.print(var->getVarName());  // for debugging
+    Serial.println(F(" accepted."));  // for debugging
 }
 
 void Sensor::notifyVariables(void)
@@ -138,11 +141,18 @@ void Sensor::notifyVariables(void)
     sensorLastUpdated = millis();
 
     // Notify variables of update
-    for (int i = 0; i < _numReturnedVars; i++){
-        // Serial.print(F("Sending value update to "));  // for debugging
-        // Serial.print(variables[i]->getVarName());  // for debugging
-        // Serial.print(F("...   "));  // for debugging
-        variables[i]->onSensorUpdate(this);
+    for (int i = 0; i < _numReturnedVars; i++)
+    {
+        if (variables[i] != NULL)  // Bad things happen if try to update nullptr
+        {
+            Serial.print(F("Sending value update to variable "));  // for debugging
+            Serial.print(i);  // for debugging
+            Serial.print(F(" which is "));  // for debugging
+            Serial.print(variables[i]->getVarName());  // for debugging
+            Serial.print(F("...   "));  // for debugging
+            variables[i]->onSensorUpdate(this);
+        }
+        else Serial.println(F("Null pointer"));  // for debugging
     }
 }
 

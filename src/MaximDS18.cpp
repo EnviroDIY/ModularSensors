@@ -57,6 +57,10 @@ String MaximDS18::getAddressString(DeviceAddress OneWireAddress)
 // By default, sets pin modes and returns ready
 SENSOR_STATUS MaximDS18::getStatus(void)
 {
+    // Check if the power is on, turn it on if not (Need power to get status)
+    bool wasOn = checkPowerOn();
+    if(!wasOn){powerUp();}  // powerUp function includes a 500ms delay
+
     // Make sure the address is valid
     if (!tempSensors.validAddress(_OneWireAddress))
     {
@@ -81,6 +85,9 @@ SENSOR_STATUS MaximDS18::getStatus(void)
         return SENSOR_ERROR;
     }
 
+    // Turn the power back off it it had been turned on
+    if(!wasOn){powerDown();}
+
     return SENSOR_READY;
 }
 
@@ -92,8 +99,11 @@ SENSOR_STATUS MaximDS18::setup(void)
     pinMode(_dataPin, INPUT);
     digitalWrite(_powerPin, LOW);
 
+    // Check if the power is on, turn it on if not  (Need power to get address)
+    bool wasOn = checkPowerOn();
+    if(!wasOn){powerUp();}  // powerUp function includes a 500ms delay
+
     // Start up the maxim sensor library
-    Serial.println(F("Starting the Maxim sensors"));
     tempSensors.begin();
 
     // Find the address if it's not known
@@ -116,6 +126,9 @@ SENSOR_STATUS MaximDS18::setup(void)
             _addressKnown = true;  // Now we know the address
         }
     }
+
+    // Turn the power back off it it had been turned on
+    if(!wasOn){powerDown();}
 
     // Serial.print(F("Set up "));  // for debugging
     // Serial.print(getSensorName());  // for debugging
@@ -146,13 +159,34 @@ bool MaximDS18::update()
     // Clear values before starting loop
     clearValues();
 
-    // Send the command to get temperatures
-    Serial.println(F("Asking sensor to take a measurement"));  // For debugging
-    tempSensors.requestTemperaturesByAddress(_OneWireAddress);
+    bool goodTemp = false;
+    int rangeAttempts = 0;
+    float result = 85;  // This is a "bad" result returned from a DS18 sensor
 
+    Serial.println(F("Beginning detection for Temperature"));  // For debugging
+    while (goodTemp == false && rangeAttempts < 50)
+    {
+        // Send the command to get temperatures
+        Serial.println(F("Asking sensor to take a measurement"));  // For debugging
+        tempSensors.requestTemperaturesByAddress(_OneWireAddress);
 
-    Serial.println(F("Requesting temperature result"));  // For debugging
-    float result = tempSensors.getTempC(_OneWireAddress);
+        Serial.println(F("Requesting temperature result"));  // For debugging
+        result = tempSensors.getTempC(_OneWireAddress);
+        rangeAttempts++;
+
+        // If a DS18 cannot get a goot measurement, it returns 85
+        // If the sensor is not properly connected, it returns -127
+        if (result == 85 || result == -127)
+        {
+            Serial.print(F("Bad or Suspicious Result, Retry Attempt #"));  // For debugging
+            Serial.println(rangeAttempts);  // For debugging
+        }
+        else
+        {
+            Serial.println(F("Good result found"));  // For debugging
+            goodTemp = true;  // Set completion of read to true
+        }
+    }
 
     Serial.print(F("Sending value of "));
     Serial.print(result);
