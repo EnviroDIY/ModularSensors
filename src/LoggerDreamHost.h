@@ -46,7 +46,10 @@ public:
         return dhString;
     }
 
-#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
+#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
+    defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
+    defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || \
+    defined(TINY_GSM_MODEM_XBEE)
 
     // Post the data to dream host.
     int postDataDreamHost(void)
@@ -54,7 +57,7 @@ public:
         modem.connect("swrcsensors.dreamhosters.com", 80);
 
         // Send the request to the serial for debugging
-        Serial.println(F("\n \\/------ Data to DreamHost ------\\/ "));  // for debugging
+        PRINTOUT(F("\n \\/------ Data to DreamHost ------\\/ \n"));
         streamDreamHostRequest(&Serial);  // for debugging
         Serial.flush();  // for debugging
 
@@ -75,16 +78,16 @@ public:
         int responseCode = 0;
         if (timeout > 0 && modem._modemStream->available() >= 12)
         {
-            // Serial.println("****" + modem._modemStream->readStringUntil(' ') + "****");  // for debugging
-            // Serial.println("****" + modem._modemStream->readStringUntil(' ') + "****");  // for debugging
+            DBGVA("****" + modem._modemStream->readStringUntil(' ') + "****", F("\n"));
+            DBGVA("****" + modem._modemStream->readStringUntil(' ') + "****", F("\n"));
             modem._modemStream->readStringUntil(' ');
             responseCode = modem._modemStream->readStringUntil(' ').toInt();
             modem.dumpBuffer(modem._modemStream);
         }
         else responseCode=504;
 
-        Serial.println(F(" -- Response Code -- "));  // for debugging
-        Serial.println(responseCode);  // for debugging
+        PRINTOUT(F(" -- Response Code -- \n"));
+        PRINTOUT(responseCode, F("\n"));
 
         modem.stop();
 
@@ -98,7 +101,7 @@ public:
         if (checkInterval())
         {
             // Print a line to show new reading
-            Serial.println(F("------------------------------------------"));  // for debugging
+            PRINTOUT(F("------------------------------------------\n"));
             // Turn on the LED to show we're taking a reading
             digitalWrite(_ledPin, HIGH);
 
@@ -142,7 +145,7 @@ public:
             // Turn off the LED
             digitalWrite(_ledPin, LOW);
             // Print a line to show reading ended
-            Serial.println(F("------------------------------------------\n"));  // for debugging
+            PRINTOUT(F("------------------------------------------\n\n"));
         }
 
         // Sleep

@@ -23,8 +23,11 @@ Sensor::Sensor(int powerPin, int dataPin, String sensorName, int numReturnedVars
     _numReturnedVars = numReturnedVars;
 
     // Clear arrays
-    variables[MAX_NUMBER_VARS] = {0};
-    sensorValues[MAX_NUMBER_VARS] = {0};
+    for (uint8_t i = 0; i < MAX_NUMBER_VARS; i++)
+    {
+        variables[i] = NULL;
+        sensorValues[i] = 0;
+    }
 }
 
 // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
@@ -45,12 +48,12 @@ bool Sensor::checkPowerOn(void)
     int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
     if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
     {
-        // Serial.println(F("Power was off."));  // For debugging
+        // DBGS(F("Power was off.\n"));
         return false;
     }
     else
     {
-        // Serial.println(F("Power was on."));  // For debugging
+        // DBGS(F("Power was on.\n"));
         return true;
     }
 }
@@ -58,7 +61,7 @@ bool Sensor::checkPowerOn(void)
 // This is a helper function to turn on sensor power
 void Sensor::powerUp(void)
 {
-    // Serial.println(F("Powering on Sensor"));  // For debugging
+    // DBGS(F("Powering on Sensor\n"));
     digitalWrite(_powerPin, HIGH);
     delay(500);
 }
@@ -66,7 +69,7 @@ void Sensor::powerUp(void)
 // This is a helper function to turn off sensor power
 void Sensor::powerDown(void)
 {
-    // Serial.println(F("Turning off Power"));  // For debugging
+    // DBGS(F("Turning off Power\n"));
     digitalWrite(_powerPin, LOW);
 }
 
@@ -77,15 +80,14 @@ SENSOR_STATUS Sensor::setup(void)
 {
     pinMode(_powerPin, OUTPUT);
     pinMode(_dataPin, INPUT);
-    digitalWrite(_powerPin, LOW);
 
-    // Serial.print(F("Set up "));  // for debugging
-    // Serial.print(getSensorName());  // for debugging
-    // Serial.print(F(" attached at "));  // for debugging
-    // Serial.print(getSensorLocation());  // for debugging
-    // Serial.print(F(" which can return up to "));  // for debugging
-    // Serial.print(_numReturnedVars);  // for debugging
-    // Serial.println(F(" variable[s]."));  // for debugging
+    DBGS(F("Set up "));
+    DBGS(getSensorName());
+    DBGS(F(" attached at "));
+    DBGS(getSensorLocation());
+    DBGS(F(" which can return up to "));
+    DBGS(_numReturnedVars);
+    DBGS(F(" variable[s].\n"));
 
     return SENSOR_READY;
 }
@@ -126,23 +128,30 @@ bool Sensor::wake(void)
 void Sensor::registerVariable(int varNum, Variable* var)
 {
     variables[varNum] = var;
-    // Serial.print(F("... Registration for "));  // for debugging
-    // Serial.print(var->getVarName());  // for debugging
-    // Serial.println(F(" accepted."));  // for debugging
+    DBGS(F("... Registration for "));
+    DBGS(var->getVarName());
+    DBGS(F(" accepted.\n"));
 }
 
 void Sensor::notifyVariables(void)
 {
-    // Serial.println(F("Notifiying registered variables."));
+    DBGS(F("Notifying registered variables.\n"));
     // Make note of the last time updated
     sensorLastUpdated = millis();
 
     // Notify variables of update
-    for (int i = 0; i < _numReturnedVars; i++){
-        // Serial.print(F("Sending value update to "));  // for debugging
-        // Serial.print(variables[i]->getVarName());  // for debugging
-        // Serial.print(F("...   "));  // for debugging
-        variables[i]->onSensorUpdate(this);
+    for (int i = 0; i < _numReturnedVars; i++)
+    {
+        if (variables[i] != NULL)  // Bad things happen if try to update nullptr
+        {
+            DBGS(F("Sending value update to variable "));
+            DBGS(i);
+            DBGS(F(" which is "));
+            DBGS(variables[i]->getVarName());
+            DBGS(F("...   "));
+            variables[i]->onSensorUpdate(this);
+        }
+        // else DBGS(F("Null pointer\n"));
     }
 }
 
@@ -150,12 +159,11 @@ void Sensor::notifyVariables(void)
 // This function checks if a sensor needs to be updated or not
 bool Sensor::checkForUpdate(unsigned long sensorLastUpdated)
 {
-    // Serial.print(F("It has been "));  // For debugging
-    // Serial.print((millis() - sensorLastUpdated)/1000);  // For debugging
-    // Serial.println(F(" seconds since the sensor value was checked"));  // For debugging
+    // DBGS(F("It has been "), (millis() - sensorLastUpdated)/1000);
+    // DBGS(F(" seconds since the sensor value was checked\n"));
     if ((millis() > 60000 and millis() > sensorLastUpdated + 60000) or sensorLastUpdated == 0)
     {
-        // Serial.println(F("Value out of date, updating"));  // For debugging
+        // DBGS(F("Value out of date, updating\n"));
         return(update());
     }
     else return(true);
@@ -165,7 +173,7 @@ bool Sensor::checkForUpdate(unsigned long sensorLastUpdated)
 // This function just empties the value array
 void Sensor::clearValues(void)
 {
-    // Serial.println(F("Clearing sensor value array."));
+    DBGS(F("Clearing sensor value array.\n"));
     for (int i = 0; i < _numReturnedVars; i++)
     { sensorValues[i] =  0; }
 }

@@ -20,7 +20,9 @@ To use a sensor and variable in your sketch, you must separately include xxx.h f
     - [Decagon Devices 5TM](#5TM)
     - [Decagon Devices CTD-10](#CTD)
     - [Decagon Devices ES-2](#ES2)
+    - [Maxim DS18 Temperature Probes](#DS18)
     - [AOSong AM2315](#AM2315)
+    - [Bosch BME280](#BME280)
 
 
 ## <a name="Basic"></a>Basic Senor and Variable Functions
@@ -183,7 +185,7 @@ Sending data to EnviroDIY depends on having some sort of modem or internet conne
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand XBee's, including WiFi or LTE-M1
 ```
-Any of the above modems types/chips should work, though only a SIM800 and WiFiBee have been tested to date.  If you would prefer to use a library of your own for controlling your modem, just omit the define statemnts.  In this case, the GSM library and modem support modules will not be imported and you will lose the postDataEnviroDIY() and log() functions.
+Any of the above modems types/chips should work, though only a SIM800 Sodaq GPRSBee, ESP8266, and Digi WiFiBee have been tested to date.  If you would prefer to use a library of your own for controlling your modem, just omit the define statemnts.  In this case, the GSM library and modem support modules will not be imported and you will lose access to the postDataEnviroDIY() and log() functions.
 
 These three functions set up the required registration token, sampling feature uuid, and time series uuids for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.  You must call these functions to be able to get proper JSON data for EnviroDIY, even without the modem support.
 - **setToken(const char registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
@@ -340,7 +342,7 @@ CampbellOBS3_Turbidity(&osb3high);
 
 #### <a name="5TM"></a>[Decagon Devices 5TM](https://www.decagon.com/en/soils/volumetric-water-content-sensors/5tm-vwc-temp/) Soil Moisture and Temperature Sensor
 
-The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  You must have the [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/mayfly) that has been modified to only use PCInt3 installed to use this sensor.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the clock.  Because of this, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
+The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.  You must have the [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/mayfly) that has been modified to only use PCInt3 installed to use this sensor.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the clock.  Because of this, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
 
 The main constuctor for the sensor object is:
 
@@ -359,7 +361,7 @@ Decagon5TM_VWC(&fivetm);
 
 #### <a name="CTD"></a>[Decagon Devices CTD-5 or  CTD-10](https://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/ctd-10-sensor-electrical-conductivity-temperature-depth/) Electrical Conductivity, Temperature, and Depth Sensor
 
-The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  You must have the [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/mayfly) that has been modified to only use PCInt3 installed to use this sensor.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the clock.  Because of this, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
+The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.  You must have the [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/mayfly) that has been modified to only use PCInt3 installed to use this sensor.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the clock.  Because of this, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
 
 The main constuctor for the sensor object is:
 
@@ -378,7 +380,7 @@ DecagonCTD_Depth(&ctd);
 
 #### <a name="ES2"></a>[Decagon Devices ES-2](http://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/es-2-electrical-conductivity-temperature/) Electrical Conductivity Sensor
 
-The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  You must have the [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/mayfly) that has been modified to only use PCInt3 installed to use this sensor.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the clock.  Because of this, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
+The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.  You must have the [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/mayfly) that has been modified to only use PCInt3 installed to use this sensor.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the clock.  Because of this, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
 
 The main constuctor for the sensor object is:
 
@@ -394,9 +396,34 @@ DecagonES2_Cond(&es2);
 DecagonES2_Temp(&es2);
 ```
 
+
+#### <a name="DS18"></a>[Maxim DS18 Temperature Probes](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html)
+
+The same library should work with a [DS18B20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html), [DS18S20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html), [DS1822](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1822.html), and the no-longer-sold [DS1820](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1820.html) sensor.  The OneWire hex address of the sensor, the power pin, and the data pin, are required as inputs.  The hex address is an array of 8 hex values, for example:  {0x28, 0x1D, 0x39, 0x31, 0x2, 0x0, 0x0, 0xF0 }.  To get the address of your sensor, plug a single sensor into your device and run the [oneWireSearch](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/oneWireSearch/oneWireSearch.ino) example or the [Single](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/Single/Single.pde) example provided within the Dallas Temperature library.  THe sensor address is programmed at the factory and cannot be changed.  You must have the [DallasTemperature](https://github.com/milesburton/Arduino-Temperature-Control-Library) and the [OneWire](https://github.com/PaulStoffregen/OneWire) libraries installed to use this sensor.
+
+The main constuctor for the sensor object is:
+
+```cpp
+#include <MaximDS18.h>
+MaximDS18 ds18(OneWireAddress, powerPin, dataPin);
+```
+
+_If you only have one sensor attached on your OneWire Bus_, you can use this constructor to sae yourself the trouble of finding the address:
+
+```cpp
+#include <MaximDS18.h>
+MaximDS18 ds18(powerPin, dataPin);
+```
+
+The single available variable is:
+
+```cpp
+MaximDS18_Temp(&ds18);
+```
+
 #### <a name="AM2315"></a>[AOSong AM2315](www.aosong.com/asp_bin/Products/en/AM2315.pdf) Encased I2C Temperature/Humidity Sensor
 
-Because this is an I2C sensor, the only input needed is the power pin.  You must have the [Adafruit AM2315 library](https://github.com/adafruit/Adafruit_AM2315) installed to use this sensor.
+Because this is an I2C sensor, the only input needed is the power pin.  You must have the [Adafruit AM2315 library](https://github.com/adafruit/Adafruit_AM2315) installed to use this sensor.  Because this sensor can have only one I2C address, it is only possible to connect one of these sensors to your system.
 
 The main constuctor for the sensor object is:
 
@@ -410,4 +437,24 @@ The two available variables are:
 ```cpp
 AOSongAM2315_Humidity(&am2315);
 AOSongAM2315_Temp(&am2315);
+```
+
+#### <a name="BME280"></a>[Bosch BME280](https://www.bosch-sensortec.com/bst/products/all_products/bme280) Integrated Environmental Sensor
+
+Although this sensor has the option of either I2C or SPI communication, this library only supports I2C.  The only input needed is the power pin; the I2C sensor address is assumed to be 0x76, though it can be changed to 0x77 in the constructor if necessary.  You must have the [Adafruit BME280 library](https://github.com/adafruit/Adafruit_BME280_Library) and the [Adafruit Unified Sensor Driver](https://github.com/adafruit/Adafruit_Sensor) installed to use this sensor.  To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses.  No more than two can be attached.  This module is likely to also work with the [Bosch BMP280 Barometric Pressure Sensor](https://www.bosch-sensortec.com/bst/products/all_products/bmp280), though it has not been tested on it.
+
+The main constuctor for the sensor object is:
+
+```cpp
+#include <BoschBME280.h>
+BoschBME280 bme280(I2CPower);
+```
+
+The four available variables are:
+
+```cpp
+BoschBME280_Temp(&bme280);
+BoschBME280_Humidity(&bme280);
+BoschBME280_Pressure(&bme280);
+BoschBME280_Altitude(&bme280);
 ```

@@ -21,21 +21,16 @@ SENSOR_STATUS MaxBotixSonar::setup(void)
 {
     pinMode(_powerPin, OUTPUT);
     pinMode(_dataPin, INPUT);
-    digitalWrite(_powerPin, LOW);
+
     if(_triggerPin != -1)
     {
         pinMode(_triggerPin, OUTPUT);
         digitalWrite(_triggerPin, LOW);
     }
 
-    // Serial.print(F("Set up "));  // for debugging
-    // Serial.print(getSensorName());  // for debugging
-    // Serial.print(F(" attached at "));  // for debugging
-    // Serial.print(getSensorLocation());  // for debugging
-    // Serial.print(F(" which can return up to "));  // for debugging
-    // Serial.print(_numReturnedVars);  // for debugging
-    // Serial.println(F(" variable[s]."));  // for debugging
-    
+    DBGM(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
+    DBGM(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
+
     return SENSOR_READY;
 }
 
@@ -47,7 +42,7 @@ bool MaxBotixSonar::update(void)
     else{delay(160);}  // See note below
 
     // Clear values before starting loop
-    // clearValues();
+    clearValues();
 
     // NOTE: After the power is turned on to the MaxBotix, it sends several lines
     // of header to the serial pin, beginning at ~65ms and finising at ~160ms.
@@ -69,22 +64,22 @@ bool MaxBotixSonar::update(void)
 
     // Note:  if the power is on for >160ms before SoftwareSerial starts
     // the header lines will already have been sent and lost
-    // Serial.println(F("Parsing Header Lines"));  // For debugging
-    // for(int i=0; i < 6; i++)  // For debugging
+    // DBGM(F("Parsing Header Lines\n"));
+    // for(int i=0; i < 6; i++);
     // {  // For debugging
-    //     Serial.println(sonarSerial.readStringUntil('\r'));  // For debugging
+    //     DBGM(sonarSerial.readStringUntil('\r'), F("\n"));
     // }  // For debugging
 
     bool stringComplete = false;
     int rangeAttempts = 0;
     int result = 0;
 
-    // Serial.println(F("Beginning detection for Sonar"));  // For debugging
+    DBGM(F("Beginning detection for Sonar\n"));
     while (stringComplete == false && rangeAttempts < 50)
     {
         if(_triggerPin != -1)
         {
-            // Serial.println(F("Triggering Sonar"));  // For debugging
+            DBGM(F("Triggering Sonar\n"));
             digitalWrite(_triggerPin, HIGH);
             delay(1);
             digitalWrite(_triggerPin, LOW);
@@ -93,7 +88,7 @@ bool MaxBotixSonar::update(void)
 
         result = sonarSerial.parseInt();
         sonarSerial.read();  // To throw away the carriage return
-        // Serial.println(result);  // For debugging
+        DBGM(result, F("\n"));
         rangeAttempts++;
 
         // If it cannot obtain a result , the sonar is supposed to send a value
@@ -103,18 +98,17 @@ bool MaxBotixSonar::update(void)
         // If the result becomes garbled or the sonar is disconnected, the parseInt function returns 0.
         if (result <= 300 || result == 500 || result == 4999 || result == 9999)
         {
-            // Serial.print(F("Bad or Suspicious Result, Retry Attempt #"));  // For debugging
-            // Serial.println(rangeAttempts);  // For debugging
+            DBGM(F("Bad or Suspicious Result, Retry Attempt #"), rangeAttempts, F("\n"));
         }
         else
         {
-            // Serial.println(F("Good result found"));  // For debugging
+            DBGM(F("Good result found\n"));
             stringComplete = true;  // Set completion of read to true
         }
     }
 
     sensorValues[HRXL_VAR_NUM] = result;
-    // Serial.println(sensorValues[HRXL_VAR_NUM]);  // For debugging
+    DBGM(sensorValues[HRXL_VAR_NUM], F("\n"));
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}

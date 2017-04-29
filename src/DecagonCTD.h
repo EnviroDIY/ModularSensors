@@ -7,7 +7,7 @@
  *This file is for the Decagon Devices CTD-10
  *It is dependent on the EnviroDIY SDI-12 library and the DecagonSDI12 super class.
  *
- *Documentation fo the SDI-12 Protocol commands and responses
+ *Documentation for the SDI-12 Protocol commands and responses
  *for the Decagon CTD-10 can be found at:
  * http://manuals.decagon.com/Integration%20Guides/CTD%20Integrators%20Guide.pdf
  *
@@ -65,7 +65,7 @@ public:
 };
 
 
-// Defines the "Conductivity Sensor"
+// Defines the Conductivity Variable
 class DecagonCTD_Cond : public Variable
 {
 public:
@@ -77,7 +77,7 @@ public:
 };
 
 
-// Defines the "Temperature Sensor"
+// Defines the Temperature Variable
 class DecagonCTD_Temp : public Variable
 {
 public:
@@ -89,7 +89,7 @@ public:
 };
 
 
-// Defines the "Depth Sensor"
+// Defines the Depth Variable
 class DecagonCTD_Depth : public Variable
 {
 public:

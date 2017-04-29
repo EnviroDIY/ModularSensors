@@ -10,8 +10,46 @@
 #ifndef VariableArray_h
 #define VariableArray_h
 
+
+#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
+// #define VAR_ARRAY_DBG Serial
+
 #include "SensorBase.h"
 #include "VariableBase.h"
+
+#ifdef MODULAR_SENSORS_OUTPUT
+namespace {
+ template<typename T>
+ static void PRINTOUT(T last) {
+   MODULAR_SENSORS_OUTPUT.print(last);
+ }
+
+ template<typename T, typename... Args>
+ static void PRINTOUT(T head, Args... tail) {
+   MODULAR_SENSORS_OUTPUT.print(head);
+   PRINTOUT(tail...);
+ }
+}
+#else
+ #define PRINTOUT(...)
+#endif
+
+#ifdef VAR_ARRAY_DBG
+namespace {
+ template<typename T>
+ static void DBGVA(T last) {
+   VAR_ARRAY_DBG.print(last);
+ }
+
+ template<typename T, typename... Args>
+ static void DBGVA(T head, Args... tail) {
+   VAR_ARRAY_DBG.print(head);
+   DBGVA(tail...);
+ }
+}
+#else
+ #define DBGVA(...)
+#endif
 
 // Defines another class for interfacing with a list of pointers to sensor instances
 class VariableArray
@@ -21,9 +59,7 @@ public:
     // instances of classes with non-empty constructors
     virtual void init(int variableCount, Variable *variableList[])
     {
-        Serial.print(F("Initializing varible array with "));  // for debugging
-        Serial.print(variableCount);  // for debugging
-        Serial.println(F(" variables..."));  // for debugging
+        PRINTOUT(F("Initializing variable array with "), variableCount, F(" variables...\n"));
         _variableCount = variableCount;
         _variableList = variableList;
     }
@@ -52,11 +88,14 @@ public:
         bool sensorSuccess = false;
         int setupTries = 0;
 
-        Serial.print(F("Beginning setup for sensors and variables..."));
+        PRINTOUT(F("Beginning setup for sensors and variables..."));
 
         // First setup the sensors
         for (int i = 0; i < _variableCount; i++)
         {
+            // Wake everyone up for set up
+            success &= _variableList[i]->parentSensor->wake();
+
             // Make 5 attempts to contact the sensor before giving up
             while(setupTries < 5)
             {
@@ -69,15 +108,18 @@ public:
                 sensorSuccess = _variableList[i]->parentSensor->setup();
 
                 if(sensorSuccess) break;
-                else setupTries++;
-            }
-            if (!sensorSuccess)
-            {
-                Serial.print(F("   ... Set up of "));
-                Serial.print(_variableList[i]->getDreamHost());
-                Serial.println(F(" failed!"));
+                else
+                {
+                    setupTries++;
+                    PRINTOUT(F("   ... Set up of "));
+                    PRINTOUT(_variableList[i]->getDreamHost());
+                    PRINTOUT(F(" failed!\n"));
+                }
             }
             success &= sensorSuccess;
+            
+            // Put everyone back to sleep
+            success &= _variableList[i]->parentSensor->sleep();
         }
 
         // Now attach all of the variables to their parents
@@ -86,7 +128,7 @@ public:
         }
 
         if (success)
-            Serial.println(F("   ... Success!"));
+            PRINTOUT(F("   ... Success!\n"));
         return success;
 
     }
@@ -94,7 +136,7 @@ public:
     // This puts sensors to sleep (ie, cuts power)
     bool sensorsSleep(void)
     {
-        // Serial.println(F("Putting sensors to sleep."));  // For debugging
+        DBGVA(F("Putting sensors to sleep.\n"));
         bool success = true;
         for (int i = 0; i < _variableCount; i++)
         {
@@ -107,7 +149,7 @@ public:
     // This wakes sensors (ie, gives power)
     bool sensorsWake(void)
     {
-        // Serial.println(F("Waking sensors."));  // For debugging
+        DBGVA(F("Waking sensors.\n"));
         bool success = true;
         for (int i = 0; i < _variableCount; i++)
         {
@@ -127,16 +169,16 @@ public:
             if (isLastVarFromSensor(i))
             {
                 // Prints for debugging
-                // Serial.print(F("--- Going to update "));  // For debugging
-                // Serial.print(_variableList[i]->parentSensor->getSensorName());  // For debugging
-                // Serial.println(F(" ---"));  // For Debugging
+                DBGVA(F("--- Going to update "));
+                DBGVA(_variableList[i]->parentSensor->getSensorName());
+                DBGVA(F(" ---\n"));
 
                 update_success = _variableList[i]->parentSensor->update();
 
                 // Prints for debugging
-                // Serial.print(F("--- Updated "));  // For debugging
-                // Serial.print(_variableList[i]->parentSensor->getSensorName());  // For debugging
-                // Serial.println(F(" ---"));  // For Debugging
+                DBGVA(F("--- Updated "));
+                DBGVA(_variableList[i]->parentSensor->getSensorName());
+                DBGVA(F(" ---\n"));
             }
         }
         success &= update_success;
@@ -198,22 +240,22 @@ protected:
             }
         }
         // Prints for debugging
-        // if (unique){
-        //     Serial.print(_variableList[arrayIndex]->getVarName());
-        //     Serial.print(F(" from "));
-        //     Serial.print(sensName);
-        //     Serial.print(F(" at "));
-        //     Serial.print(sensLoc);
-        //     Serial.println(F(" will be used for sensor references."));
-        // }
-        // else{
-        //     Serial.print(_variableList[arrayIndex]->getVarName());
-        //     Serial.print(F(" from "));
-        //     Serial.print(sensName);
-        //     Serial.print(F(" at "));
-        //     Serial.print(sensLoc);
-        //     Serial.println(F(" will be ignored."));
-        // }
+        if (unique){
+            DBGVA(_variableList[arrayIndex]->getVarName());
+            DBGVA(F(" from "));
+            DBGVA(sensName);
+            DBGVA(F(" at "));
+            DBGVA(sensLoc);
+            DBGVA(F(" will be used for sensor references.\n"));
+        }
+        else{
+            DBGVA(_variableList[arrayIndex]->getVarName());
+            DBGVA(F(" from "));
+            DBGVA(sensName);
+            DBGVA(F(" at "));
+            DBGVA(sensLoc);
+            DBGVA(F(" will be ignored.\n"));
+        }
         return unique;
     }
 

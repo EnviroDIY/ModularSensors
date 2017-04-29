@@ -21,6 +21,8 @@
   // #define TINY_GSM_DEBUG Serial
   #define TINY_GSM_YIELD() { delay(3);}
   #include <TinyGsmClient.h>
+#else
+  #define DBG(...)
 #endif
 
 // For the various communication devices"
@@ -57,7 +59,7 @@ public:
     // Initializes the instance
     virtual void init(int vcc33Pin, int onoff_DTR_pin, int status_CTS_pin)
     {
-        // Serial.println(F("Initializing modem on/off."));  // For debugging
+        DBG(F("Initializing modem on/off.\n"));
         if (vcc33Pin >= 0) {
           _vcc33Pin = vcc33Pin;
           // First write the output value, and only then set the output mode.
@@ -80,8 +82,8 @@ public:
     {
         if (_status_CTS_pin >= 0) {
             bool status = digitalRead(_status_CTS_pin);
-            // Serial.print(F("Is modem on? "));  // For debugging
-            // Serial.println(status);  // For debugging
+            DBG(F("Is modem on? "));
+            DBG(status, F("\n"));
             return status;
         }
         // No status pin. Let's assume it is on.
@@ -101,7 +103,7 @@ protected:
     {
         if (_vcc33Pin >= 0) {
             digitalWrite(_vcc33Pin, HIGH);
-            // Serial.println(F("Sending power to modem."));  // For debugging
+            DBG(F("Sending power to modem.\n"));
         }
     }
 
@@ -109,7 +111,7 @@ protected:
     {
         if (_vcc33Pin >= 0) {
             digitalWrite(_vcc33Pin, LOW);
-            // Serial.println(F("Cutting modem power."));  // For debugging
+            DBG(F("Cutting modem power.\n"));
         }
     }
 
@@ -131,39 +133,39 @@ public:
     bool on(void) override
     {
         powerOn();
-        // Serial.print(F("Pulsing modem to on with pin "));  // For debugging
-        // Serial.println(_onoff_DTR_pin);  // For debugging
+        DBG(F("Pulsing modem to on with pin "));
+        DBG(_onoff_DTR_pin, F("\n"));
         if (!isOn()) {pulse();}
         // Wait until is actually on
         for (unsigned long start = millis(); millis() - start < 10000; )
         {
             if (isOn())
             {
-                // Serial.println(F("Modem now on."));  // For debugging
+                DBG(F("Modem now on.\n"));
                 return true;
             }
           delay(5);
         }
-        // Serial.println(F("Failed to turn modem on."));  // For debugging
+        DBG(F("Failed to turn modem on.\n"));
         return false;
     }
 
     bool off(void) override
     {
         if (isOn()) {pulse();}
-        // else Serial.println(F("Modem was not ever on."));  // For debugging
+        // else DBG(F("Modem was not ever on.\n"));
         // Wait until is off
         for (unsigned long start = millis(); millis() - start < 10000; )
         {
             if (!isOn())
             {
-                // Serial.println(F("Modem now off."));  // For debugging
+                DBG(F("Modem now off.\n"));
                 powerOff();
                 return true;
             }
             delay(5);
         }
-        // Serial.println(F("Failed to turn modem off."));  // For debugging
+        DBG(F("Failed to turn modem off.\n"));
         powerOff();
         return false;
     }
@@ -197,9 +199,9 @@ public:
     bool on(void) override
     {
         powerOn();
-        // Serial.print(F("Turning modem on by setting pin "));  // For debugging
-        // Serial.print(_onoff_DTR_pin);  // For debugging
-        // Serial.println(F(" high"));  // For debugging
+        DBG(F("Turning modem on by setting pin "));
+        DBG(_onoff_DTR_pin);
+        DBG(F(" high\n"));
         if (_onoff_DTR_pin >= 0) {
             digitalWrite(_onoff_DTR_pin, HIGH);
         }
@@ -208,18 +210,18 @@ public:
         {
             if (isOn())
             {
-                // Serial.println(F("Modem now on."));  // For debugging
+                DBG(F("Modem now on.\n"));
                 return true;
             }
             delay(5);
         }
-        // Serial.println(F("Failed to turn modem on."));  // For debugging
+        DBG(F("Failed to turn modem on.\n"));
         return false;
     }
 
     bool off(void) override
     {
-        // if (!isOn()) Serial.println(F("Modem was not ever on."));  // For debugging
+        // if (!isOn()) DBG(F("Modem was not ever on.\n"));
         if (_onoff_DTR_pin >= 0) {
             digitalWrite(_onoff_DTR_pin, LOW);
         }
@@ -228,13 +230,13 @@ public:
         {
             if (!isOn())
             {
-                // Serial.println(F("Modem now off."));  // For debugging
+                DBG(F("Modem now off.\n"));
                 powerOff();
                 return true;
             }
             delay(5);
         }
-        // Serial.println(F("Failed to turn modem off."));  // For debugging
+        DBG(F("Failed to turn modem off.\n"));
         powerOff();
         return false;
     }
@@ -256,8 +258,8 @@ public:
     {
         if (_status_CTS_pin >= 0) {
             bool status = digitalRead(_status_CTS_pin);
-            // Serial.print(F("Is modem on? "));  // For debugging
-            // Serial.println(status);  // For debugging
+            DBG(F("Is modem on? "));
+            DBG(status, F("\n"));
             return !status;
         }
         // No status pin. Let's assume it is on.
@@ -267,9 +269,9 @@ public:
     bool on(void) override
     {
         powerOn();
-        // Serial.print(F("Turning modem on on by setting pin "));  // For debugging
-        // Serial.print(_onoff_DTR_pin);  // For debugging
-        // Serial.println(F(" low"));  // For debugging
+        DBG(F("Turning modem on on by setting pin "));
+        DBG(_onoff_DTR_pin);
+        DBG(F(" low\n"));
         if (_onoff_DTR_pin >= 0) {
             digitalWrite(_onoff_DTR_pin, LOW);
         }
@@ -278,18 +280,18 @@ public:
         {
             if (isOn())
             {
-                // Serial.println(F("Modem now on."));  // For debugging
+                DBG(F("Modem now on.\n"));
                 return true;
             }
             delay(5);
         }
-        // Serial.println(F("Failed to turn modem on."));  // For debugging
+        DBG(F("Failed to turn modem on.\n"));
         return false;
     }
 
     bool off(void) override
     {
-        // if (!isOn()) Serial.println(F("Modem was not ever on."));  // For debugging
+        // if (!isOn()) DBG(F("Modem was not ever on.\n"));
         if (_onoff_DTR_pin >= 0) {
             digitalWrite(_onoff_DTR_pin, HIGH);
         }
@@ -298,13 +300,13 @@ public:
         {
             if (!isOn())
             {
-                // Serial.println(F("Modem now off."));  // For debugging
+                DBG(F("Modem now off.\n"));
                 powerOff();
                 return true;
             }
             delay(5);
         }
-        // Serial.println(F("Failed to turn modem off."));  // For debugging
+        DBG(F("Failed to turn modem off.\n"));
         powerOff();
         return false;
     }
@@ -351,18 +353,18 @@ public:
         if (_ssid)
         {
             if(!modemOnOff->isOn())modemOnOff->on();
-            Serial.println(F("\nConnecting to WiFi network..."));  // For debugging
+            DBG(F("\nConnecting to WiFi network...\n"));
             if (!_modem->waitForNetwork(15000L)){
-                Serial.println("... Connection failed.  Resending credentials...");  // For debugging
+                DBG("... Connection failed.  Resending credentials...", F("\n"));
                 _modem->networkConnect(_ssid, _pwd);
                 if (!_modem->waitForNetwork(45000L)){
-                    Serial.println("... Connection failed");  // For debugging
+                    DBG("... Connection failed", F("\n"));
                 } else {
                     retVal = true;
-                    Serial.println("... Success!");  // For debugging
+                    DBG("... Success!", F("\n"));
                 }
             } else {
-                Serial.println("... Success!");  // For debugging
+                DBG("... Success!", F("\n"));
                 retVal = true;
             }
         }
@@ -371,9 +373,9 @@ public:
         #endif
         #if defined(TINY_GSM_MODEM_ESP8266)
         if(!modemOnOff->isOn())modemOnOff->on();
-        Serial.println(F("\nConnecting to WiFi network..."));  // For debugging
+        DBG(F("\nConnecting to WiFi network...\n"));
             if(!_modem->networkConnect(_ssid, _pwd)){
-                Serial.println("... Connection failed");  // For debugging
+                DBG("... Connection failed", F("\n"));
             }
             // The ESP8266 doesn't have a way of saying if it's connected or not
         #endif
@@ -381,12 +383,12 @@ public:
             defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
             defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_XBEE)
             if(!modemOnOff->isOn())modemOnOff->on();
-            Serial.println(F("\nWaiting for cellular network..."));  // For debugging
+            DBG(F("\nWaiting for cellular network...\n"));
             if (!_modem->waitForNetwork(60000L)){
-                Serial.println("... Connection failed.");  // For debugging
+                DBG("... Connection failed.", F("\n"));
             } else {
                 _modem->gprsConnect(_APN, "", "");
-                Serial.println("... Success!");  // For debugging
+                DBG("... Success!", F("\n"));
                 retVal = true;
             }
         #endif
@@ -431,7 +433,7 @@ public:
         {
             while (stream->available() > 0)
             {
-                // Serial.print(stream->readString());
+                DBG(stream->readString());
                 stream->read();
                 delay(timeDelay);
             }
@@ -482,7 +484,7 @@ private:
 
         #if defined(USE_TINY_GSM)
             // Initialize the modem
-            // Serial.println(F("Initializing GSM modem instance"));  // For debugging
+            DBG(F("Initializing GSM modem instance\n"));
             static TinyGsm modem(*modemStream);
             _modem = &modem;
             static TinyGsmClient client(modem);

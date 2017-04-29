@@ -21,6 +21,9 @@
 #include "SensorBase.h"
 #include "VariableBase.h"
 
+// #define MODULES_DBG Serial
+#include "ModSensorDebugger.h"
+
 #define MAYFLY_NUM_MEASUREMENTS 3
 
 #define DS3231_TEMP_RESOLUTION 2

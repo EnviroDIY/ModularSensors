@@ -7,7 +7,7 @@
  *This file is for the Decagon Devices 5TM Soil Moisture probe
  *It is dependent on the EnviroDIY SDI-12 library and the DecagonSDI12 super class.
  *
- *Documentation fo the SDI-12 Protocol commands and responses
+ *Documentation for the SDI-12 Protocol commands and responses
  *for the Decagon 5TM can be found at:
  * http://manuals.decagon.com/Integration%20Guides/5TM%20Integrators%20Guide.pdf
  *
@@ -90,7 +90,7 @@ public:
 };
 
 
-// Defines the "Temperature Sensor"
+// Defines the Temperature Variable
 class Decagon5TM_Temp : public Variable
 {
 public:

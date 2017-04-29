@@ -16,11 +16,14 @@
 #include "SensorBase.h"
 #include "VariableBase.h"
 
+// #define MODULES_DBG Serial
+#include "ModSensorDebugger.h"
+
 #define HRXL_NUM_MEASUREMENTS 1
 #define HRXL_RESOLUTION 0
 #define HRXL_VAR_NUM 0
 
-// The main class for the MaxBotix Sonar.  No sub-classes are needed
+// The main class for the MaxBotix Sonar
 class MaxBotixSonar : public Sensor
 {
 public:
@@ -35,7 +38,7 @@ private:
 };
 
 
-// The main class for the MaxBotix Sonar.  No sub-classes are needed
+// The class for the Range Variable
 class MaxBotixSonar_Range : public Variable
 {
 public:

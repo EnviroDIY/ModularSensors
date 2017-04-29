@@ -21,6 +21,10 @@
 
 #include <Arduino.h>
 #include <SDI12_PCINT3.h>
+
+// #define MODULES_DBG Serial
+#include "ModSensorDebugger.h"
+
 #include "SensorBase.h"
 
 // The main class for the Decagon CTD
