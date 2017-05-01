@@ -21,13 +21,22 @@ class LoggerEnviroDIY : public Logger
 public:
     // Set up communications
     void setToken(const char *registrationToken)
-    { _registrationToken = registrationToken; }
+    {
+        _registrationToken = registrationToken;
+        DBGVA(F("Registration token set!\n"));
+    }
 
     void setSamplingFeature(const char *samplingFeature)
-    { _samplingFeature = samplingFeature; }
+    {
+        _samplingFeature = samplingFeature;
+        DBGVA(F("Sampling feature token set!\n"));
+    }
 
     void setUUIDs(const char *UUIDs[])
-    { _UUIDs = UUIDs; }
+    {
+        _UUIDs = UUIDs;
+        DBGVA(F("UUID array set!\n"));
+    }
 
     // // This adds extra data to the datafile header
     String generateFileHeader(void)

@@ -47,6 +47,8 @@ public:
         {
             _sleep = true;
         }
+
+        PRINTOUT(F("   ... Success!"));
     };
 
     // Sets the static timezone - this must be set
@@ -81,7 +83,11 @@ public:
     }
 
     // Sets up a pin for an LED or other way of alerting that data is being logged
-    void setAlertPin(int ledPin){ _ledPin = ledPin; }
+    void setAlertPin(int ledPin)
+    {
+        _ledPin = ledPin;
+        DBGVA(F("Pin "), _ledPin, F(" set for alerts\n"));
+    }
 
 
     // ===================================================================== //

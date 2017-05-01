@@ -3,10 +3,10 @@
 StreamDebugger StreamDbg(Serial1, Serial);
 
 void setup(){
-  Serial.begin(9600);
+  Serial.begin(115200);
   delay(50);
 
-  Serial1.begin(9600);
+  Serial1.begin(115200);
   delay(10);
 
   StreamDbg.print("Hello");

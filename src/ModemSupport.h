@@ -484,7 +484,7 @@ private:
 
         #if defined(USE_TINY_GSM)
             // Initialize the modem
-            DBG(F("Initializing GSM modem instance\n"));
+            DBG(F("Initializing GSM modem instance..."));
             static TinyGsm modem(*modemStream);
             _modem = &modem;
             static TinyGsmClient client(modem);
@@ -497,6 +497,7 @@ private:
             #endif
             modemOnOff->off();
             _modemStream = _client;
+            DBG(F("   ... Complete!"));
         #else
             _modemStream = modemStream;
         #endif
