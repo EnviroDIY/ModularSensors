@@ -42,7 +42,7 @@
             "version": "https://github.com/EnviroDIY/Sodaq_DS3231.git"
         },
         {
-            "name": "PcInt_PCINT0",
+            "name": "Sodaq_PcInt_PCINT0",
             "version": "https://github.com/EnviroDIY/PcInt_PCINT0.git"
         },
         {
