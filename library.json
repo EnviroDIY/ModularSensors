@@ -2,6 +2,8 @@
     "name": "EnviroDIY_ModularSensors",
     "description":  "A library that allows acces to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
     "keywords": "sensors, logger, low power, sleeping, EnviroDIY",
+    "platforms": "atmelavr",
+    "frameworks": "arduino",
     "authors":
     [
         {
@@ -30,7 +32,6 @@
             "sensor_tests/*"
         ]
     },
-    "frameworks": "atmelavr",
     "dependencies":
     [
         {
