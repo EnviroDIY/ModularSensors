@@ -347,53 +347,54 @@ public:
         if (!sd.begin(_SDCardPin, SPI_FULL_SPEED))
         {
             PRINTOUT(F("Error: SD card failed to initialize or is missing.\n"));
+            PRINTOUT(F("Data will not be saved!.\n"));
         }
-        else
+        else  // skip everything else if there's no SD card, otherwise it might hang
         {
             PRINTOUT(F("Successfully connected to SD Card with card/slave select on pin "));
             PRINTOUT(_SDCardPin, F("\n"));
+
+            if(!_isFileNameSet){setFileName();}
+            else if(_autoFileName){setFileName();}
+            else setFileName(_fileName);  // This just for a nice print-out
+
+            // Convert the string filename to a character file name for SdFat
+            int fileNameLength = _fileName.length() + 1;
+            char charFileName[fileNameLength];
+            _fileName.toCharArray(charFileName, fileNameLength);
+
+            // Open the file in write mode (and create it if it did not exist)
+            logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END);
+            // Set creation date time
+            logFile.timestamp(T_CREATE, rtc.makeDateTime(getNow()).year(),
+                                        rtc.makeDateTime(getNow()).month(),
+                                        rtc.makeDateTime(getNow()).date(),
+                                        rtc.makeDateTime(getNow()).hour(),
+                                        rtc.makeDateTime(getNow()).minute(),
+                                        rtc.makeDateTime(getNow()).second());
+            // Set write/modification date time
+            logFile.timestamp(T_WRITE, rtc.makeDateTime(getNow()).year(),
+                                       rtc.makeDateTime(getNow()).month(),
+                                       rtc.makeDateTime(getNow()).date(),
+                                       rtc.makeDateTime(getNow()).hour(),
+                                       rtc.makeDateTime(getNow()).minute(),
+                                       rtc.makeDateTime(getNow()).second());
+            // Set access  date time
+            logFile.timestamp(T_ACCESS, rtc.makeDateTime(getNow()).year(),
+                                        rtc.makeDateTime(getNow()).month(),
+                                        rtc.makeDateTime(getNow()).date(),
+                                        rtc.makeDateTime(getNow()).hour(),
+                                        rtc.makeDateTime(getNow()).minute(),
+                                        rtc.makeDateTime(getNow()).second());
+            PRINTOUT(F("   ... File created!\n"));
+
+            // Add header information
+            logFile.println(generateFileHeader());
+            DBGVA(generateFileHeader(), F("\n"));
+
+            //Close the file to save it
+            logFile.close();
         }
-
-        if(!_isFileNameSet){setFileName();}
-        else if(_autoFileName){setFileName();}
-        else setFileName(_fileName);  // This just for a nice print-out
-
-        // Convert the string filename to a character file name for SdFat
-        int fileNameLength = _fileName.length() + 1;
-        char charFileName[fileNameLength];
-        _fileName.toCharArray(charFileName, fileNameLength);
-
-        // Open the file in write mode (and create it if it did not exist)
-        logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END);
-        // Set creation date time
-        logFile.timestamp(T_CREATE, rtc.makeDateTime(getNow()).year(),
-                                    rtc.makeDateTime(getNow()).month(),
-                                    rtc.makeDateTime(getNow()).date(),
-                                    rtc.makeDateTime(getNow()).hour(),
-                                    rtc.makeDateTime(getNow()).minute(),
-                                    rtc.makeDateTime(getNow()).second());
-        // Set write/modification date time
-        logFile.timestamp(T_WRITE, rtc.makeDateTime(getNow()).year(),
-                                   rtc.makeDateTime(getNow()).month(),
-                                   rtc.makeDateTime(getNow()).date(),
-                                   rtc.makeDateTime(getNow()).hour(),
-                                   rtc.makeDateTime(getNow()).minute(),
-                                   rtc.makeDateTime(getNow()).second());
-        // Set access  date time
-        logFile.timestamp(T_ACCESS, rtc.makeDateTime(getNow()).year(),
-                                    rtc.makeDateTime(getNow()).month(),
-                                    rtc.makeDateTime(getNow()).date(),
-                                    rtc.makeDateTime(getNow()).hour(),
-                                    rtc.makeDateTime(getNow()).minute(),
-                                    rtc.makeDateTime(getNow()).second());
-        PRINTOUT(F("   ... File created!\n"));
-
-        // Add header information
-        logFile.println(generateFileHeader());
-        DBGVA(generateFileHeader(), F("\n"));
-
-        //Close the file to save it
-        logFile.close();
     }
 
     // This writes a record to the SD card
@@ -403,43 +404,46 @@ public:
         if (!sd.begin(_SDCardPin, SPI_FULL_SPEED))
         {
             PRINTOUT(F("Error: SD card failed to initialize or is missing.\n"));
+            PRINTOUT(F("Data will not be saved!.\n"));
         }
-
-        // Convert the string filename to a character file name for SdFat
-        int fileNameLength = _fileName.length() + 1;
-        char charFileName[fileNameLength];
-        _fileName.toCharArray(charFileName, fileNameLength);
-
-        // Check that the file exists, just in case someone yanked the SD card
-        if (!logFile.open(charFileName, O_WRITE | O_AT_END))
+        else  // skip everything else if there's no SD card, otherwise it might hang
         {
-            PRINTOUT(F("SD Card File Lost!  Starting new file.\n"));
-            setupLogFile();
+            // Convert the string filename to a character file name for SdFat
+            int fileNameLength = _fileName.length() + 1;
+            char charFileName[fileNameLength];
+            _fileName.toCharArray(charFileName, fileNameLength);
+
+            // Check that the file exists, just in case someone yanked the SD card
+            if (!logFile.open(charFileName, O_WRITE | O_AT_END))
+            {
+                PRINTOUT(F("SD Card File Lost!  Starting new file.\n"));
+                setupLogFile();
+            }
+
+            // Write the CSV data
+            logFile.println(rec);
+            // Echo the lind to the serial port
+            PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/ \n"));
+            PRINTOUT(rec, F("\n"));
+
+            // Set write/modification date time
+            logFile.timestamp(T_WRITE, rtc.makeDateTime(getNow()).year(),
+                                       rtc.makeDateTime(getNow()).month(),
+                                       rtc.makeDateTime(getNow()).date(),
+                                       rtc.makeDateTime(getNow()).hour(),
+                                       rtc.makeDateTime(getNow()).minute(),
+                                       rtc.makeDateTime(getNow()).second());
+            // Set access  date time
+            logFile.timestamp(T_ACCESS, rtc.makeDateTime(getNow()).year(),
+                                        rtc.makeDateTime(getNow()).month(),
+                                        rtc.makeDateTime(getNow()).date(),
+                                        rtc.makeDateTime(getNow()).hour(),
+                                        rtc.makeDateTime(getNow()).minute(),
+                                        rtc.makeDateTime(getNow()).second());
+
+            // Close the file to save it
+            logFile.close();
         }
-
-        // Write the CSV data
-        logFile.println(rec);
-        // Echo the lind to the serial port
-        PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/ \n"));
-        PRINTOUT(rec, F("\n"));
-
-        // Set write/modification date time
-        logFile.timestamp(T_WRITE, rtc.makeDateTime(getNow()).year(),
-                                   rtc.makeDateTime(getNow()).month(),
-                                   rtc.makeDateTime(getNow()).date(),
-                                   rtc.makeDateTime(getNow()).hour(),
-                                   rtc.makeDateTime(getNow()).minute(),
-                                   rtc.makeDateTime(getNow()).second());
-        // Set access  date time
-        logFile.timestamp(T_ACCESS, rtc.makeDateTime(getNow()).year(),
-                                    rtc.makeDateTime(getNow()).month(),
-                                    rtc.makeDateTime(getNow()).date(),
-                                    rtc.makeDateTime(getNow()).hour(),
-                                    rtc.makeDateTime(getNow()).minute(),
-                                    rtc.makeDateTime(getNow()).second());
-
-        // Close the file to save it
-        logFile.close();
     }
 
     // ===================================================================== //
