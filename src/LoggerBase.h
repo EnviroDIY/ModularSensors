@@ -29,7 +29,7 @@ public:
               float loggingIntervalMinutes,
               const char *loggerID = 0)
     {
-        PRINTOUT(F("Initializing variable array with "), variableCount, F(" variables...\n"));
+        PRINTOUT(F("Initializing variable array with "), variableCount, F(" variables..."));
 
         _SDCardPin = SDCardPin;
         _interruptPin = interruptPin;
@@ -48,7 +48,7 @@ public:
             _sleep = true;
         }
 
-        PRINTOUT(F("   ... Success!"));
+        PRINTOUT(F("   ... Success!\n"));
     };
 
     // Sets the static timezone - this must be set
@@ -161,10 +161,10 @@ public:
     bool checkInterval(void)
     {
         bool retval;
-        DBGVA(getNow(), F("\n"));
-        DBGVA(getNow() % _interruptRate, F("\n"));
-        DBGVA(_numReadings, F("\n"));
-        DBGVA(getNow() % 120, F("\n"));
+        DBGVA(F("Current Time: "), getNow(), F("\n"));
+        DBGVA(F("Mod of Logging Interval: "), getNow() % _interruptRate, F("\n"));
+        DBGVA(F("Number of Readings so far: "), _numReadings, F("\n"));
+        DBGVA(F("Mod of 120: "), getNow() % 120, F("\n"));
         if ((getNow() % _interruptRate == 0 ) or
             (_numReadings < 10 and getNow() % 120 == 0))
         {
@@ -257,8 +257,7 @@ public:
         // This must happen after the SE bit is set.
         sleep_cpu();
 
-        DBGVA(F("Waking up!\n"));
-        DBGVA(getNow(), F("\n"));
+        DBGVA(F("The clock interrupt woke me up!\n"));
         // Clear the SE (sleep enable) bit.
         sleep_disable();
         // Re-enable the processor ADC

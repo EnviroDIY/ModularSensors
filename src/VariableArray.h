@@ -59,7 +59,7 @@ public:
     // instances of classes with non-empty constructors
     virtual void init(int variableCount, Variable *variableList[])
     {
-        PRINTOUT(F("Initializing variable array with "), variableCount, F(" variables...\n"));
+        PRINTOUT(F("Initializing variable array with "), variableCount, F(" variables..."));
         _variableCount = variableCount;
         _variableList = variableList;
     }
@@ -117,7 +117,7 @@ public:
                 }
             }
             success &= sensorSuccess;
-            
+
             // Put everyone back to sleep
             success &= _variableList[i]->parentSensor->sleep();
         }

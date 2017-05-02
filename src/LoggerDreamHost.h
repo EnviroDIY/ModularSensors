@@ -66,21 +66,18 @@ public:
         streamDreamHostRequest(modem._modemStream);
         modem._modemStream->flush();  // wait for sending to finish
 
-        // Add a brief delay for at least the first 12 characters of the HTTP response
-        int timeout = 1500;
-        while ((timeout > 0) && modem._modemStream->available() < 12)
+        // Wait for at least the first 12 characters to make it across
+        unsigned long timeout = 1500;
+        for (unsigned long start = millis(); millis() - start < timeout; )
         {
-          delay(1);
-          timeout--;
+            if (modem._modemStream->available() >= 12) break;
         }
 
         // Process the HTTP response
         int responseCode = 0;
-        if (timeout > 0 && modem._modemStream->available() >= 12)
+        if (modem._modemStream->available() >= 12)
         {
-            DBGVA("****" + modem._modemStream->readStringUntil(' ') + "****", F("\n"));
-            DBGVA("****" + modem._modemStream->readStringUntil(' ') + "****", F("\n"));
-            modem._modemStream->readStringUntil(' ');
+            modem._modemStream->readStringUntil(' ');  // Throw away the "HTTP/1.1"
             responseCode = modem._modemStream->readStringUntil(' ').toInt();
             modem.dumpBuffer(modem._modemStream);
         }

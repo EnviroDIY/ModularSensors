@@ -7,9 +7,9 @@ void setup(){
   delay(50);
 
   Serial1.begin(115200);
-  delay(10);
+  delay(50);
 
-  StreamDbg.print("Hello");
+  StreamDbg.print("AT");
 
 }
 

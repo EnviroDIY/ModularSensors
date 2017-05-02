@@ -19,7 +19,9 @@
     defined(TINY_GSM_MODEM_XBEE)
   #define USE_TINY_GSM
   // #define TINY_GSM_DEBUG Serial
-  #define TINY_GSM_YIELD() { delay(3);}
+  #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900)
+    #define TINY_GSM_YIELD() { delay(3);}
+  #endif
   #include <TinyGsmClient.h>
 #else
   #define DBG(...)
@@ -59,7 +61,7 @@ public:
     // Initializes the instance
     virtual void init(int vcc33Pin, int onoff_DTR_pin, int status_CTS_pin)
     {
-        DBG(F("Initializing modem on/off.\n"));
+        DBG(F("Initializing modem on/off..."));
         if (vcc33Pin >= 0) {
           _vcc33Pin = vcc33Pin;
           // First write the output value, and only then set the output mode.
@@ -76,14 +78,14 @@ public:
             _status_CTS_pin = status_CTS_pin;
             pinMode(_status_CTS_pin, INPUT);
         }
+        DBG(F("   ... Success!\n"));
     }
 
     virtual bool isOn(void)
     {
         if (_status_CTS_pin >= 0) {
             bool status = digitalRead(_status_CTS_pin);
-            DBG(F("Is modem on? "));
-            DBG(status, F("\n"));
+            // DBG(F("Is modem on? "), status, F("\n"));
             return status;
         }
         // No status pin. Let's assume it is on.
@@ -199,46 +201,50 @@ public:
     bool on(void) override
     {
         powerOn();
-        DBG(F("Turning modem on by setting pin "));
-        DBG(_onoff_DTR_pin);
-        DBG(F(" high\n"));
-        if (_onoff_DTR_pin >= 0) {
-            digitalWrite(_onoff_DTR_pin, HIGH);
-        }
-        // Wait until is actually on
-        for (unsigned long start = millis(); millis() - start < 10000; )
+        if (_onoff_DTR_pin <= 0) {return true;}
+        else
         {
-            if (isOn())
+            DBG(F("Turning modem on by setting pin "));
+            DBG(_onoff_DTR_pin);
+            DBG(F(" high\n"));
+            digitalWrite(_onoff_DTR_pin, HIGH);
+            // Wait until is actually on
+            for (unsigned long start = millis(); millis() - start < 10000; )
             {
-                DBG(F("Modem now on.\n"));
-                return true;
+                if (isOn())
+                {
+                    DBG(F("Modem now on.\n"));
+                    return true;
+                }
+                delay(5);
             }
-            delay(5);
+            DBG(F("Failed to turn modem on.\n"));
+            return false;
         }
-        DBG(F("Failed to turn modem on.\n"));
-        return false;
     }
 
     bool off(void) override
     {
-        // if (!isOn()) DBG(F("Modem was not ever on.\n"));
-        if (_onoff_DTR_pin >= 0) {
-            digitalWrite(_onoff_DTR_pin, LOW);
-        }
-        // Wait until is off
-        for (unsigned long start = millis(); millis() - start < 10000; )
+        if (_onoff_DTR_pin <= 0) {return true;}
+        else
         {
-            if (!isOn())
+            if (!isOn()) DBG(F("Modem was not ever on.\n"));
+            digitalWrite(_onoff_DTR_pin, LOW);
+            // Wait until is off
+            for (unsigned long start = millis(); millis() - start < 10000; )
             {
-                DBG(F("Modem now off.\n"));
-                powerOff();
-                return true;
+                if (!isOn())
+                {
+                    DBG(F("Modem now off.\n"));
+                    powerOff();
+                    return true;
+                }
+                delay(5);
             }
-            delay(5);
+            DBG(F("Failed to turn modem off.\n"));
+            powerOff();
+            return false;
         }
-        DBG(F("Failed to turn modem off.\n"));
-        powerOff();
-        return false;
     }
 };
 
@@ -258,8 +264,7 @@ public:
     {
         if (_status_CTS_pin >= 0) {
             bool status = digitalRead(_status_CTS_pin);
-            DBG(F("Is modem on? "));
-            DBG(status, F("\n"));
+            // DBG(F("Is modem on? "), status, F("\n"));
             return !status;
         }
         // No status pin. Let's assume it is on.
@@ -349,7 +354,7 @@ public:
     {
         bool retVal = false;
 
-        #if defined(TINY_GSM_MODEM_XBEE)
+        #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
         if (_ssid)
         {
             if(!modemOnOff->isOn())modemOnOff->on();
@@ -371,14 +376,6 @@ public:
         else
         {
         #endif
-        #if defined(TINY_GSM_MODEM_ESP8266)
-        if(!modemOnOff->isOn())modemOnOff->on();
-        DBG(F("\nConnecting to WiFi network...\n"));
-            if(!_modem->networkConnect(_ssid, _pwd)){
-                DBG("... Connection failed", F("\n"));
-            }
-            // The ESP8266 doesn't have a way of saying if it's connected or not
-        #endif
         #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
             defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
             defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_XBEE)
@@ -392,7 +389,7 @@ public:
                 retVal = true;
             }
         #endif
-        #if defined(TINY_GSM_MODEM_XBEE)
+        #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
         }
         #endif
 
@@ -429,16 +426,14 @@ public:
     // prefer to not see the std::out, remove the print statement
     void dumpBuffer(Stream *stream, int timeDelay = 5, int timeout = 5000)
     {
-        while (timeout-- > 0 && stream->available() > 0)
+        while (stream->available() > 0)
         {
-            while (stream->available() > 0)
-            {
-                DBG(stream->readString());
-                stream->read();
-                delay(timeDelay);
-            }
+            char c[2] = {0};
+            stream->readBytes(c, 1);  // readBytes includes a timeout
+            if(c[0]) DBG(c[0]);
             delay(timeDelay);
         }
+        DBG(F("\n"));
         stream->flush();
     }
 
@@ -485,6 +480,7 @@ private:
         #if defined(USE_TINY_GSM)
             // Initialize the modem
             DBG(F("Initializing GSM modem instance..."));
+            modemStream->setTimeout(200);
             static TinyGsm modem(*modemStream);
             _modem = &modem;
             static TinyGsmClient client(modem);
@@ -497,7 +493,7 @@ private:
             #endif
             modemOnOff->off();
             _modemStream = _client;
-            DBG(F("   ... Complete!"));
+            DBG(F("   ... Complete!\n"));
         #else
             _modemStream = modemStream;
         #endif
