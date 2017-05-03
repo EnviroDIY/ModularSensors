@@ -62,6 +62,16 @@ AOSongAM2315 am2315(I2CPower);
 
 
 // ==========================================================================
+//    AOSong DHT 11/21 (AM2301)/22 (AM2302)
+// ==========================================================================
+#include <AOSongDHT.h>
+const int DHTPower = 22;  // switched sensor power is pin 22 on Mayfly
+const int DHTPin = 6;
+DHTtype dhtType = DHT11;
+AOSongDHT dht(DHTPower, DHTPin, dhtType);
+
+
+// ==========================================================================
 //    Bosch BME280
 // ==========================================================================
 #include <BoschBME280.h>
@@ -161,6 +171,9 @@ EnviroDIYMayfly mayfly(MFVersion) ;
 Variable *variableList[] = {
     new AOSongAM2315_Humidity(&am2315),
     new AOSongAM2315_Temp(&am2315),
+    new AOSongDHT_Humidity(&dht),
+    new AOSongDHT_Temp(&dht),
+    new AOSongDHT_HI(&dht),
     new BoschBME280_Temp(&bme280),
     new BoschBME280_Humidity(&bme280),
     new BoschBME280_Pressure(&bme280),
@@ -224,7 +237,7 @@ DTRSleepType ModemSleepMode = held;  // How the modem is put to sleep
 // Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
 // Use "always_on" if you do not want the library to control the modem power and sleep.
 HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
-const int ModemBaud = 9600;  // Modem BAUD rate (9600 is default), can use higher for SIM800 (19200 works)
+const long ModemBaud = 9600;  // Modem BAUD rate (9600 is default), can use higher for SIM800 (19200 works)
 const char *APN = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
 const char *SSID = "XXXXXXX";  // The WiFi access point, unnecessary for gprs
 const char *PWD = "XXXXXXX";  // The password for connecting to WiFi, unnecessary for gprs
@@ -233,7 +246,7 @@ const char *PWD = "XXXXXXX";  // The password for connecting to WiFi, unnecessar
 // ---------------------------------------------------------------------------
 // Board setup info
 // ---------------------------------------------------------------------------
-const int SERIAL_BAUD = 9600;  // Serial port BAUD rate
+const long SERIAL_BAUD = 9600;  // Serial port BAUD rate
 const int GREEN_LED = 8;  // Pin for the green LED
 const int RED_LED = 9;  // Pin for the red LED
 const int RTC_PIN = A7;  // RTC Interrupt/Alarm pin

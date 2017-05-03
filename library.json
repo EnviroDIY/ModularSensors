@@ -18,7 +18,7 @@
             "url": "https://envirodiy.org/"
         }
     ],
-    "version": "2.0.1-alpha",
+    "version": "2.1.1-alpha",
     "repository":
     {
         "type": "git",
@@ -56,13 +56,16 @@
             "name": "ADS1X15"
         },
         {
+            "name": "Adafruit Unified Sensor"
+        },
+        {
+            "name": "DHT sensor library"
+        },
+        {
             "name": "Adafruit AM2315"
         },
         {
             "name": "Adafruit BME280 Library"
-        },
-        {
-            "name": "Adafruit Unified Sensor"
         },
         {
             "name": "DallasTemperature"

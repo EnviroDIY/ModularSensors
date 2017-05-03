@@ -24,6 +24,7 @@ To use a sensor and variable in your sketch, you must separately include xxx.h f
     - [Maxim DS18 Temperature Probes](#DS18)
     - [AOSong AM2315](#AM2315)
     - [Bosch BME280](#BME280)
+    - [AOSong DHT 11/21 (AM2301)/22 (AM2302)](#DHT)
 
 
 ## <a name="deps"></a>Library Dependencies
@@ -425,7 +426,7 @@ The main constuctor for the sensor object is:
 MaximDS18 ds18(OneWireAddress, powerPin, dataPin);
 ```
 
-_If you only have one sensor attached on your OneWire Bus_, you can use this constructor to sae yourself the trouble of finding the address:
+_If you only have one sensor attached on your OneWire Bus_, you can use this constructor to save yourself the trouble of finding the address:
 
 ```cpp
 #include <MaximDS18.h>
@@ -474,4 +475,23 @@ BoschBME280_Temp(&bme280);
 BoschBME280_Humidity(&bme280);
 BoschBME280_Pressure(&bme280);
 BoschBME280_Altitude(&bme280);
+```
+
+#### <a name="DHT"></a>[AOSong DHT 11/21 (AM2301)/22 (AM2302)](http://www.aosong.com/en/products/index.asp) Digital-Output Relative Humidity & Temperature Sensor
+
+The data pin, power pin, and sensor type are needed as inputs.
+
+The main constuctor for the sensor object is:
+
+```cpp
+#include <AOSongDHT.h>
+AOSongDHT dht(DHTPower, DHTPin, dhtType);;
+```
+
+The three available variables are:
+
+```cpp
+AOSongDHT_Humidity(&dht);
+AOSongDHT_Temp(&dht);
+AOSongDHT_HI(&dht);  // Heat Index
 ```

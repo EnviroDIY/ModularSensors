@@ -46,6 +46,16 @@ AOSongAM2315 am2315(I2CPower);
 
 
 // ==========================================================================
+//    AOSong DHT 11/21 (AM2301)/22 (AM2302)
+// ==========================================================================
+#include <AOSongDHT.h>
+const int DHTPower = 22;  // switched sensor power is pin 22 on Mayfly
+const int DHTPin = 6;
+DHTtype dhtType = DHT11;
+AOSongDHT dht(DHTPower, DHTPin, dhtType);
+
+
+// ==========================================================================
 //    Bosch BME280
 // ==========================================================================
 #include <BoschBME280.h>
@@ -145,6 +155,9 @@ EnviroDIYMayfly mayfly(MFVersion) ;
 Variable *variableList[] = {
     new AOSongAM2315_Humidity(&am2315),
     new AOSongAM2315_Temp(&am2315),
+    new AOSongDHT_Humidity(&dht),
+    new AOSongDHT_Temp(&dht),
+    new AOSongDHT_HI(&dht),
     new BoschBME280_Temp(&bme280),
     new BoschBME280_Humidity(&bme280),
     new BoschBME280_Pressure(&bme280),
@@ -174,7 +187,7 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // ---------------------------------------------------------------------------
 // Board setup info
 // ---------------------------------------------------------------------------
-const int SERIAL_BAUD = 9600;  // Serial port BAUD rate
+const long SERIAL_BAUD = 9600;  // Serial port BAUD rate
 const int GREEN_LED = 8;  // Pin for the green LED
 const int RED_LED = 9;  // Pin for the red LED
 const int RTC_PIN = A7;  // RTC Interrupt/Alarm pin
