@@ -316,9 +316,7 @@ public:
         dataHeader += F("\","); \
         for (uint8_t i = 0; i < _variableCount; i++) \
         { \
-            dataHeader += F("\""); \
             dataHeader += function; \
-            dataHeader += F("\""); \
             if (i + 1 != _variableCount) \
             { \
                 dataHeader += F(", "); \
@@ -327,7 +325,7 @@ public:
         dataHeader += F("\r\n");
 
     // This creates a header for the logger file
-    String generateFileHeader(void)
+    virtual String generateFileHeader(void)
     {
         // Very first column of the header is the logger ID
         String logIDRowHeader = F("Data Logger: ");
