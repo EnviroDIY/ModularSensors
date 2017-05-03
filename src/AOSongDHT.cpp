@@ -51,7 +51,7 @@ String AOSongDHT::getSensorName(void)
     {
         case 11: return "AOSongDHT11";
         case 21: return "AOSongDHT21";
-        case 22: return "AOSongDHT22";
+        default: return "AOSongDHT22";
      }
 }
 
@@ -68,33 +68,45 @@ bool AOSongDHT::update(void)
     // Sensor readings may also be up to 2 seconds 'old' (it's a very slow sensor)
 
     float humid_val, temp_val, hi_val = 0;
-    // First read the humidity
-    humid_val = dht_internal.readHumidity();
-    // Read temperature as Celsius (the default)
-    temp_val = dht_internal.readTemperature();
-    // Check if any reads failed
-    // If they are NaN (not a number) then something went wrong
-    if (isnan(humid_val) || isnan(temp_val))
+    for (uint8_t i = 0; i < 5; i++)
     {
-        DBGM(F("Failed to read from DHT sensor!\n"));
+        // First read the humidity
+        humid_val = dht_internal.readHumidity();
+        // Read temperature as Celsius (the default)
+        temp_val = dht_internal.readTemperature();
+        // Check if any reads failed
+        // If they are NaN (not a number) then something went wrong
+        if (!isnan(humid_val) && !isnan(temp_val))
+        {
+            // Compute heat index in Celsius (isFahreheit = false)
+            hi_val = dht_internal.computeHeatIndex(temp_val, humid_val, false);
+            DBGM(F("Temp is: "), temp_val, F("°C"));
+            DBGM(F(" Humidity is: "), humid_val, F("%"));
+            DBGM(F(" Calculated Heat Index is: "), hi_val, F("°C\n"));
+            break;
+        }
+        else
+        {
+            if (i < 4) {
+                DBGM(F("Failed to read from DHT sensor, Retrying...\n"));
+                delay(100);
+            }
+            else {
+                DBGM(F("Failed to read from DHT sensor!\n"));
+                if (isnan(humid_val)) humid_val = 0;
+                if (isnan(temp_val)) temp_val = 0;
+            }
+        }
     }
-    else
-    {
-        DBGM(F("Temp is: "), temp_val, F("°C"));
-        DBGM(F(" Humidity is: "), humid_val, F("%"));
 
-        // Compute heat index in Celsius (isFahreheit = false)
-        hi_val = dht_internal.computeHeatIndex(temp_val, humid_val, false);
+    // Store the results in the sensorValues array
+    sensorValues[DHT_TEMP_VAR_NUM] = temp_val;
+    sensorValues[DHT_HUMIDITY_VAR_NUM] = humid_val;
+    sensorValues[DHT_HI_VAR_NUM] = hi_val;
 
-        // Store the results in the sensorValues array
-        sensorValues[DHT_TEMP_VAR_NUM] = temp_val;
-        sensorValues[DHT_HUMIDITY_VAR_NUM] = humid_val;
-        sensorValues[DHT_HI_VAR_NUM] = hi_val;
-
-        DBGM(F("Temp is: "), sensorValues[DHT_TEMP_VAR_NUM], F("°C"));
-        DBGM(F(" Humidity is: "), sensorValues[DHT_HUMIDITY_VAR_NUM], F("%"));
-        DBGM(F(" Calculated Heat Index is: "), sensorValues[DHT_HI_VAR_NUM], F("°C\n"));
-    }
+    // DBGM(F("Temp is: "), sensorValues[DHT_TEMP_VAR_NUM], F("°C"));
+    // DBGM(F(" Humidity is: "), sensorValues[DHT_HUMIDITY_VAR_NUM], F("%"));
+    // DBGM(F(" Calculated Heat Index is: "), sensorValues[DHT_HI_VAR_NUM], F("°C\n"));
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
