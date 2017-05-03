@@ -22,19 +22,41 @@
 */
 
 #include "AOSongDHT.h"
-#include <DHT.h>
 
 // The constructor - because this is I2C, only need the power pin
 AOSongDHT::AOSongDHT(int powerPin, int dataPin, DHTtype type)
-: Sensor(dataPin, powerPin, F("AOSongDHT"), DHT_NUM_MEASUREMENTS)
+: Sensor(powerPin, dataPin, F("AOSongDHT"), DHT_NUM_MEASUREMENTS),
+  dht_internal(dataPin, type)
 {
-    _DHTtype = type;
+    _dhtType = type;
+}
+
+SENSOR_STATUS AOSongDHT::setup(void)
+{
+    pinMode(_powerPin, OUTPUT);
+    pinMode(_dataPin, INPUT);
+
+    // Start up the sensor
+    dht_internal.begin();
+
+    DBGM(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
+    DBGM(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
+
+    return SENSOR_READY;
+}
+
+String AOSongDHT::getSensorName(void)
+{
+    switch (_dhtType)
+    {
+        case 11: return "AOSongDHT11";
+        case 21: return "AOSongAM2301";
+        case 22: return "AOSongAM2302";
+     }
 }
 
 bool AOSongDHT::update(void)
 {
-    DHT dht(_dataPin, _DHTtype);  // create a sensor object
-
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
@@ -42,23 +64,29 @@ bool AOSongDHT::update(void)
     // Clear values before starting loop
     clearValues();
 
-    // Start up the sensor
-    dht.begin();
-
     // Reading temperature or humidity takes about 250 milliseconds!
-    // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
-    float temp_val, humid_val, hi_val;
-    temp_val = dht.readTemperature(false, true);  // Get in °C, force reading if necessary
-    humid_val = dht.readHumidity(true);  // Force reading if necessary
+    // Sensor readings may also be up to 2 seconds 'old' (it's a very slow sensor)
 
-    // check if returns are valid, if they are NaN (not a number) then something went wrong
-    if (isnan(temp_val) || isnan(humid_val))
+    float humid_val, temp_val, hi_val = 0;
+    // First read the humidity
+    humid_val = dht_internal.readHumidity();
+    // Read temperature as Celsius (the default)
+    temp_val = dht_internal.readTemperature();
+    // Check if any reads failed
+    // If they are NaN (not a number) then something went wrong
+    if (isnan(humid_val) || isnan(temp_val))
     {
-            DBGM(F("Failed to read from DHT!\n"));
+        DBGM(F("Failed to read from DHT sensor!\n"));
     }
     else
     {
-        hi_val = dht.computeHeatIndex(temp_val, humid_val, false);  // Get in °C
+        DBGM(F("Temp is: "), temp_val, F("°C"));
+        DBGM(F(" Humidity is: "), humid_val, F("%"));
+
+        // Compute heat index in Celsius (isFahreheit = false)
+        hi_val = dht_internal.computeHeatIndex(temp_val, humid_val, false);
+
+        // Store the results in the sensorValues array
         sensorValues[DHT_TEMP_VAR_NUM] = temp_val;
         sensorValues[DHT_HUMIDITY_VAR_NUM] = humid_val;
         sensorValues[DHT_HI_VAR_NUM] = hi_val;

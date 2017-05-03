@@ -27,7 +27,15 @@
 #include "SensorBase.h"
 #include "VariableBase.h"
 
-#define MODULES_DBG Serial
+#include <DHT.h>
+// Undefine these macros so I can use a typedef instead
+#undef DHT11
+#undef DHT21
+#undef AM2301
+#undef DHT22
+#undef AM2302
+
+// #define MODULES_DBG Serial
 #include "ModSensorDebugger.h"
 
 #define DHT_NUM_MEASUREMENTS 3
@@ -58,10 +66,14 @@ public:
     // The constructor - need the power pin, the data pin, and the sensor type
     AOSongDHT(int powerPin, int dataPin, DHTtype type);
 
+    SENSOR_STATUS setup(void) override;
+    String getSensorName(void) override;
+
     bool update(void) override;
 
 private:
-    DHTtype _DHTtype;
+    DHT dht_internal;
+    DHTtype _dhtType;
 };
 
 
@@ -94,9 +106,9 @@ class AOSongDHT_HI : public Variable
 {
 public:
     AOSongDHT_HI(Sensor *parentSense) :
-      Variable(parentSense, DHT_TEMP_VAR_NUM,
+      Variable(parentSense, DHT_HI_VAR_NUM,
                F("heatIndex"), F("degreeCelsius"),
-               DHT_TEMP_RESOLUTION, F("DHTHI"))
+               DHT_HI_RESOLUTION, F("DHTHI"))
     {}
 };
 

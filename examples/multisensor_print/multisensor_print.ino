@@ -131,7 +131,7 @@ DeviceAddress OneWireAddress2 = {0x28, 0xFF, 0x57, 0x90, 0x82, 0x16, 0x04, 0x67}
 DeviceAddress OneWireAddress3 = {0x28, 0xFF, 0x74, 0x2B, 0x82, 0x16, 0x03, 0x57};
 // DeviceAddress OneWireAddress4 = {0x28, 0xFF, 0xB6, 0x6E, 0x84, 0x16, 0x05, 0x9B};
 // DeviceAddress OneWireAddress5 = {0x28, 0xFF, 0x3B, 0x07, 0x82, 0x16, 0x13, 0xB3};
-const int OneWireBus = 5;   // Data pin
+const int OneWireBus = 4;   // Data pin
 const int OneWirePower = 22;   // Power pin
 MaximDS18 ds18_1(OneWireAddress1, OneWirePower, OneWireBus);
 MaximDS18 ds18_2(OneWireAddress2, OneWirePower, OneWireBus);
@@ -159,11 +159,11 @@ Variable *variableList[] = {
     new BoschBME280_Humidity(&bme280),
     new BoschBME280_Pressure(&bme280),
     new BoschBME280_Altitude(&bme280),
-    // new CampbellOBS3_Turbidity(&osb3low),
-    // new CampbellOBS3_TurbHigh(&osb3high),
-    // new Decagon5TM_Ea(&fivetm),
-    // new Decagon5TM_Temp(&fivetm),
-    // new Decagon5TM_VWC(&fivetm),
+    new CampbellOBS3_Turbidity(&osb3low),
+    new CampbellOBS3_TurbHigh(&osb3high),
+    new Decagon5TM_Ea(&fivetm),
+    new Decagon5TM_Temp(&fivetm),
+    new Decagon5TM_VWC(&fivetm),
     new DecagonCTD_Cond(&ctd),
     new DecagonCTD_Temp(&ctd),
     new DecagonCTD_Depth(&ctd),

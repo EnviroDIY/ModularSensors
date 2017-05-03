@@ -57,7 +57,7 @@ public:
     // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
     virtual String getSensorLocation(void);
     // This gets the name of the sensor.
-    String getSensorName(void);
+    virtual String getSensorName(void);
 
     // These next functions have defaults.
     // This sets up the sensor, if necessary.  Defaults to ready.
