@@ -44,13 +44,12 @@ public:
         String dataHeader = "";
 
         // Add additional UUID information
-        String  SFHeaderString = F("\"Sampling Feature: ");
+        String  SFHeaderString = F("Sampling Feature: ");
         SFHeaderString += _samplingFeature;
-        dataHeader += makeHeaderRowMacro(SFHeaderString, _variableList[i]->getVarUnit());
+        makeHeaderRowMacro(SFHeaderString, String(_UUIDs[i]))
 
         // Put the basic header below
         dataHeader += Logger::generateFileHeader();
-        dataHeader += F("\r\n");
 
         return dataHeader;
     }

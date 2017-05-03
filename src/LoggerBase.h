@@ -309,6 +309,7 @@ public:
     String getFileName(void){return _fileName;}
 
     // This is a PRE-PROCESSOR MACRO to speed up generating header rows
+    // Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
     #define makeHeaderRowMacro(firstCol, function) \
         dataHeader += F("\""); \
         dataHeader += firstCol; \
@@ -328,21 +329,23 @@ public:
     // This creates a header for the logger file
     String generateFileHeader(void)
     {
-        // Very first line of the header is the logger ID
-        String dataHeader = F("Data Logger: ");
-        dataHeader += String(_loggerID);
-        dataHeader += F("\r\n");
+        // Very first column of the header is the logger ID
+        String logIDRowHeader = F("Data Logger: ");
+        logIDRowHeader += String(_loggerID);
 
+        // Create the header rows
+        String dataHeader = "";
         // Next line will be the parent sensor names
-        dataHeader += makeHeaderRowMacro("", _variableList[i]->parentSensor->getSensorName());
+        makeHeaderRowMacro(logIDRowHeader, _variableList[i]->parentSensor->getSensorName())
         // Next comes the ODM2 variable name
-        dataHeader += makeHeaderRowMacro("", _variableList[i]->getVarName());
+        makeHeaderRowMacro(logIDRowHeader, _variableList[i]->getVarName())
         // Next comes the ODM2 unit name
-        dataHeader += makeHeaderRowMacro("", _variableList[i]->getVarUnit());
+        makeHeaderRowMacro(logIDRowHeader, _variableList[i]->getVarUnit())
+
         // We'll finish up the the SWRC variable abbreviation
-        String dtRowHeader = F("\"Date and Time in UTC");
+        String dtRowHeader = F("Date and Time in UTC");
         dtRowHeader += _timeZone;
-        dataHeader += makeHeaderRowMacro(dtRowHeader, _variableList[i]->getVarUnit());
+        makeHeaderRowMacro(dtRowHeader, _variableList[i]->getDreamHost())
 
         // Return everything
         return dataHeader;
@@ -407,7 +410,7 @@ public:
             PRINTOUT(F("   ... File created!\n"));
 
             // Add header information
-            logFile.println(generateFileHeader());
+            logFile.print(generateFileHeader());
             DBGVA(generateFileHeader(), F("\n"));
 
             //Close the file to save it
@@ -440,7 +443,7 @@ public:
 
             // Write the CSV data
             logFile.println(rec);
-            // Echo the lind to the serial port
+            // Echo the line to the serial port
             PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/ \n"));
             PRINTOUT(rec, F("\n"));
 

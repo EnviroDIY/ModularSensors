@@ -51,7 +51,7 @@ AOSongAM2315 am2315(I2CPower);
 #include <AOSongDHT.h>
 const int DHTPower = 22;  // switched sensor power is pin 22 on Mayfly
 const int DHTPin = 6;
-DHTtype dhtType = DHT22;  // Select DHT type, either DHT11, DHT21, or DHT22
+DHTtype dhtType = DHT11;    // Select DHT type, either DHT11, DHT21, or DHT22
 AOSongDHT dht(DHTPower, DHTPin, dhtType);
 
 
@@ -187,7 +187,7 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // ---------------------------------------------------------------------------
 // Board setup info
 // ---------------------------------------------------------------------------
-const long SERIAL_BAUD = 9600;  // Serial port BAUD rate
+const long SERIAL_BAUD = 115200;  // Serial port BAUD rate
 const int GREEN_LED = 8;  // Pin for the green LED
 const int RED_LED = 9;  // Pin for the red LED
 const int RTC_PIN = A7;  // RTC Interrupt/Alarm pin

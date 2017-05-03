@@ -48,7 +48,7 @@ AOSongAM2315 am2315(I2CPower);
 #include <AOSongDHT.h>
 const int DHTPower = 22;  // switched sensor power is pin 22 on Mayfly
 const int DHTPin = 6;
-DHTtype dhtType = DHT22;  // Select DHT type, either DHT11, DHT21, or DHT22
+DHTtype dhtType = DHT11;    // Select DHT type, either DHT11, DHT21, or DHT22
 AOSongDHT dht(DHTPower, DHTPin, dhtType);
 
 

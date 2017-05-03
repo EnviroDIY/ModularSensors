@@ -43,7 +43,7 @@ const char *SKETCH_NAME = "logging_to_EnviroDIY.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "Mayfly_160073";
 // How frequently (in minutes) to log data
-int LOGGING_INTERVAL = 5;
+int LOGGING_INTERVAL = 1;
 // Your logger's timezone.
 const int TIME_ZONE = -5;
 // Create a new logger instance
@@ -67,7 +67,7 @@ AOSongAM2315 am2315(I2CPower);
 #include <AOSongDHT.h>
 const int DHTPower = 22;  // switched sensor power is pin 22 on Mayfly
 const int DHTPin = 6;
-DHTtype dhtType = DHT22;  // Select DHT type, either DHT11, DHT21, or DHT22
+DHTtype dhtType = DHT11;    // Select DHT type, either DHT11, DHT21, or DHT22
 AOSongDHT dht(DHTPower, DHTPin, dhtType);
 
 
@@ -246,7 +246,7 @@ const char *PWD = "XXXXXXX";  // The password for connecting to WiFi, unnecessar
 // ---------------------------------------------------------------------------
 // Board setup info
 // ---------------------------------------------------------------------------
-const long SERIAL_BAUD = 9600;  // Serial port BAUD rate
+const long SERIAL_BAUD = 115200;  // Serial port BAUD rate
 const int GREEN_LED = 8;  // Pin for the green LED
 const int RED_LED = 9;  // Pin for the red LED
 const int RTC_PIN = A7;  // RTC Interrupt/Alarm pin
