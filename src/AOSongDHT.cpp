@@ -50,8 +50,8 @@ String AOSongDHT::getSensorName(void)
     switch (_dhtType)
     {
         case 11: return "AOSongDHT11";
-        case 21: return "AOSongAM2301";
-        case 22: return "AOSongAM2302";
+        case 21: return "AOSongDHT21";
+        case 22: return "AOSongDHT22";
      }
 }
 

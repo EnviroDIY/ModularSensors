@@ -24,7 +24,7 @@ To use a sensor and variable in your sketch, you must separately include xxx.h f
     - [Maxim DS18 Temperature Probes](#DS18)
     - [AOSong AM2315](#AM2315)
     - [Bosch BME280](#BME280)
-    - [AOSong DHT 11/21 (AM2301)/22 (AM2302)](#DHT)
+    - [AOSong DHT](#DHT)
 
 
 ## <a name="deps"></a>Library Dependencies
@@ -477,9 +477,9 @@ BoschBME280_Pressure(&bme280);
 BoschBME280_Altitude(&bme280);
 ```
 
-#### <a name="DHT"></a>[AOSong DHT 11/21 (AM2301)/22 (AM2302)](http://www.aosong.com/en/products/index.asp) Digital-Output Relative Humidity & Temperature Sensor
+#### <a name="DHT"></a>[AOSong DHT](http://www.aosong.com/en/products/index.asp) Digital-Output Relative Humidity & Temperature Sensor
 
-The data pin, power pin, and sensor type are needed as inputs.
+This library will work with an AOSong DHT11, DHT21, AM2301, DHT22, or AM2302.  Please keep in mind that these sensors should not be updated more frequently than once ever 2 seconds.  The data pin, power pin, and sensor type are needed as inputs.
 
 The main constuctor for the sensor object is:
 
