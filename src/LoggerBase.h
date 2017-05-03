@@ -308,30 +308,43 @@ public:
     // This returns the current filename.  Must be run after setFileName.
     String getFileName(void){return _fileName;}
 
+    // This is a PRE-PROCESSOR MACRO to speed up generating header rows
+    #define makeHeaderRowMacro(firstCol, function) \
+        dataHeader += F("\""); \
+        dataHeader += firstCol; \
+        dataHeader += F("\","); \
+        for (uint8_t i = 0; i < _variableCount; i++) \
+        { \
+            dataHeader += F("\""); \
+            dataHeader += function; \
+            dataHeader += F("\""); \
+            if (i + 1 != _variableCount) \
+            { \
+                dataHeader += F(", "); \
+            } \
+        } \
+        dataHeader += F("\r\n");
+
     // This creates a header for the logger file
     String generateFileHeader(void)
     {
+        // Very first line of the header is the logger ID
         String dataHeader = F("Data Logger: ");
         dataHeader += String(_loggerID);
         dataHeader += F("\r\n");
 
-        dataHeader += F("\"Date and Time in UTC");
-        dataHeader += _timeZone;
-        dataHeader += F("\", ");
-        for (uint8_t i = 0; i < _variableCount; i++)
-        {
-            dataHeader += F("\"");
-            dataHeader += _variableList[i]->parentSensor->getSensorName();
-            dataHeader += F(" - ");
-            dataHeader += _variableList[i]->getVarName();
-            dataHeader += F(" (");
-            dataHeader += _variableList[i]->getVarUnit();
-            dataHeader += F(")\"");
-            if (i + 1 != _variableCount)
-            {
-                dataHeader += F(", ");
-            }
-        }
+        // Next line will be the parent sensor names
+        dataHeader += makeHeaderRowMacro("", _variableList[i]->parentSensor->getSensorName());
+        // Next comes the ODM2 variable name
+        dataHeader += makeHeaderRowMacro("", _variableList[i]->getVarName());
+        // Next comes the ODM2 unit name
+        dataHeader += makeHeaderRowMacro("", _variableList[i]->getVarUnit());
+        // We'll finish up the the SWRC variable abbreviation
+        String dtRowHeader = F("\"Date and Time in UTC");
+        dtRowHeader += _timeZone;
+        dataHeader += makeHeaderRowMacro(dtRowHeader, _variableList[i]->getVarUnit());
+
+        // Return everything
         return dataHeader;
     }
 
