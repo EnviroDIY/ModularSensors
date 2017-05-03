@@ -59,7 +59,7 @@ public:
     // instances of classes with non-empty constructors
     virtual void init(int variableCount, Variable *variableList[])
     {
-        PRINTOUT(F("Initializing variable array with "), variableCount, F(" variables..."));
+        PRINTOUT(F("Initializing variable array with "), variableCount, F(" variables...\n"));
         _variableCount = variableCount;
         _variableList = variableList;
     }

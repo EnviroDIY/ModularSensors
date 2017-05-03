@@ -69,7 +69,7 @@ public:
     AOSongAM2315_Temp(Sensor *parentSense) :
       Variable(parentSense, AM2315_TEMP_VAR_NUM,
                F("temperature"), F("degreeCelsius"),
-               AM2315_TEMP_RESOLUTION, F("AM2315YTemp"))
+               AM2315_TEMP_RESOLUTION, F("AM2315Temp"))
     {}
 };
 
