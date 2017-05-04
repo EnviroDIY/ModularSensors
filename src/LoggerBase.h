@@ -319,7 +319,7 @@ public:
             dataHeader += function; \
             if (i + 1 != _variableCount) \
             { \
-                dataHeader += F(", "); \
+                dataHeader += F(","); \
             } \
         } \
         dataHeader += F("\r\n");
@@ -354,7 +354,7 @@ public:
     {
         String csvString = "";
         Logger::markedDateTime.addToString(csvString);
-        csvString += F(", ");
+        csvString += F(",");
         csvString += VariableArray::generateSensorDataCSV();
         return csvString;
     }
