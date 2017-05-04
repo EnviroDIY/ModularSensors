@@ -16,7 +16,8 @@
 
 // The constructor
 Variable::Variable(Sensor *parentSense, int varNum, String varName, String varUnit,
-                   unsigned int decimalResolution, String dreamHost)
+                   unsigned int decimalResolution, String dreamHost,
+                   String customVarCode)
 {
     parentSensor = parentSense;
     _varNum = varNum;
@@ -24,6 +25,7 @@ Variable::Variable(Sensor *parentSense, int varNum, String varName, String varUn
     _varUnit = varUnit;
     _decimalResolution = decimalResolution;
     _dreamHost = dreamHost;
+    _customCode = customVarCode;
 }
 
 void Variable::attachSensor(int varNum, Sensor *parentSense) {
@@ -56,6 +58,13 @@ String Variable::getVarUnit(void){return _varUnit;}
 
 // This returns the dreamhost PHP tag - for old SWRC dreamhost system
 String Variable::getDreamHost(void){return _dreamHost;}
+
+// This returns a customized code for the variable, if one is given
+String Variable::getVarCode(void)
+{
+    if (_customCode != "") return _customCode;
+    else return _dreamHost;
+}
 
 // This returns the current value of the variable as a float
 float Variable::getValue(void)

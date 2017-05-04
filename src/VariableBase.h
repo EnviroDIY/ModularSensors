@@ -36,8 +36,9 @@ class Sensor;  // Forward declaration
 class Variable
 {
 public:
-    Variable(Sensor *parentSense, int varNum, String varName = "Unknown", String varUnit = "Unknown",
-             unsigned int decimalResolution = 0, String dreamHost = "Unknown");
+    Variable(Sensor *parentSense,int varNum, String varName = "Unknown", String varUnit = "Unknown",
+             unsigned int decimalResolution = 0, String dreamHost = "Unknown",
+             String customVarCode = "");
 
     // These functions tie the variable and sensor together
     void attachSensor(int varNum, Sensor *parentSense);
@@ -52,6 +53,8 @@ public:
     String getVarUnit(void);
     // This returns the dreamhost PHP tag - for old SWRC dreamhost system
     String getDreamHost(void);
+    // This returns a customized code for the variable, if one is given
+    String getVarCode(void);
 
     // This returns the current value of the variable as a float
     float getValue(void);
@@ -70,6 +73,7 @@ private:
     String _varUnit;
     unsigned int _decimalResolution;
     String _dreamHost;
+    String _customCode;
 };
 
 #endif
