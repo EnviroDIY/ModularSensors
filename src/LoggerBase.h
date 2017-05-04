@@ -316,7 +316,9 @@ public:
         dataHeader += F("\","); \
         for (uint8_t i = 0; i < _variableCount; i++) \
         { \
+            dataHeader += F("\""); \
             dataHeader += function; \
+            dataHeader += F("\""); \
             if (i + 1 != _variableCount) \
             { \
                 dataHeader += F(","); \

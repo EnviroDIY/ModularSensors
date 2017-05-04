@@ -247,11 +247,15 @@ const char *UUIDs[] =                                                      // UU
 // ---------------------------------------------------------------------------
 // Device Connection Options and WebSDL Endpoints for POST requests
 // ---------------------------------------------------------------------------
+const int modemDTRPin = 23;  // Modem DTR Pin (Data Terminal Ready - used for sleep) (-1 if unconnected)
+const int modemCTSPin = 19;   // Modem CTS Pin (Clear to Send) (-1 if unconnected)
+const int modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (else -1)
+
 DTRSleepType ModemSleepMode = held;  // How the modem is put to sleep
 // Use "held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
 // Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
 // Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
-// Use "always_on" if you do not want the library to control the modem power and sleep.
+// Use "always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
 HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
 const long ModemBaud = 9600;  // Modem BAUD rate (9600 is default), can use higher for SIM800 (19200 works)
 const char *APN = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
@@ -268,9 +272,6 @@ const int RED_LED = 9;  // Pin for the red LED
 const int RTC_PIN = A7;  // RTC Interrupt/Alarm pin
 const int SD_SS_PIN = 12;  // SD Card Card Select/Slave Select Pin
 
-const int BEE_DTR_PIN = 23;  // Bee DTR Pin (Data Terminal Ready - used for sleep)
-const int BEE_CTS_PIN = 19;   // Bee CTS Pin (Clear to Send)
-const int BEE_VCC_PIN = -1;
 
 // ---------------------------------------------------------------------------
 // Working Functions
@@ -328,9 +329,9 @@ void setup()
     EnviroDIYLogger.setUUIDs(UUIDs);
 
     #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
-        EnviroDIYLogger.modem.setupModem(&ModemSerial, BEE_VCC_PIN, BEE_CTS_PIN, BEE_DTR_PIN, ModemSleepMode, SSID, PWD);
+        EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, SSID, PWD);
     #else
-        EnviroDIYLogger.modem.setupModem(&ModemSerial, BEE_VCC_PIN, BEE_CTS_PIN, BEE_DTR_PIN, ModemSleepMode, APN);
+        EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, APN);
     #endif
 
     #ifdef DreamHostPortalRX
