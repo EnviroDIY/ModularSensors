@@ -61,24 +61,11 @@ protected:
 class CampbellOBS3_Turbidity : public Variable
 {
 public:
-    CampbellOBS3_Turbidity(Sensor *parentSense, String customVarCode)
+    CampbellOBS3_Turbidity(Sensor *parentSense, String customVarCode = "")
       : Variable(parentSense, OBS3_TURB_VAR_NUM,
                  F("turbidity"), F("nephelometricTurbidityUnit"),
-                 OBS3_RESOLUTION, F("TurbLow"),
-                 customVarCode)
-    {}
-};
-
-
-// Defines the "High Turbidity Sensor"
-class CampbellOBS3_TurbHigh : public Variable
-{
-public:
-    CampbellOBS3_TurbHigh(Sensor *parentSense, String customVarCode)
-      : Variable(parentSense, OBS3_TURB_VAR_NUM,
-                 F("turbidity"), F("nephelometricTurbidityUnit"),
-                 OBS3_HR_RESOLUTION, F("TurbHigh"),
-                 customVarCode)
+                 OBS3_RESOLUTION,
+                 F("Turbidity"), customVarCode)
     {}
 };
 

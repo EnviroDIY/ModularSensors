@@ -112,7 +112,7 @@ public:
                 {
                     setupTries++;
                     PRINTOUT(F("   ... Set up of "));
-                    PRINTOUT(_variableList[i]->getDreamHost());
+                    PRINTOUT(_variableList[i]->getVarCode());
                     PRINTOUT(F(" failed!\n"));
                 }
             }

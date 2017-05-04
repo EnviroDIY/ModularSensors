@@ -83,11 +83,11 @@ public:
 class Decagon5TM_Ea : public Variable
 {
 public:
-    Decagon5TM_Ea(Sensor *parentSense, String customVarCode)
+    Decagon5TM_Ea(Sensor *parentSense, String customVarCode = "")
      : Variable(parentSense, TM_EA_VAR_NUM,
                 F("permittivity"), F("Farad per Meter"),
-                TM_EA_RESOLUTION, F("SoilEa"),
-                customVarCode)
+                TM_EA_RESOLUTION,
+                F("SoilEa"), customVarCode)
     {}
 };
 
@@ -96,11 +96,11 @@ public:
 class Decagon5TM_Temp : public Variable
 {
 public:
-    Decagon5TM_Temp(Sensor *parentSense, String customVarCode)
+    Decagon5TM_Temp(Sensor *parentSense, String customVarCode = "")
      : Variable(parentSense, TM_TEMP_VAR_NUM,
                 F("temperature"), F("degreeCelsius"),
-                TM_TEMP_RESOLUTION, F("SoilTemp"),
-                customVarCode)
+                TM_TEMP_RESOLUTION,
+                F("SoilTemp"), customVarCode)
     {}
 };
 
@@ -109,11 +109,11 @@ public:
 class Decagon5TM_VWC : public Variable
 {
 public:
-    Decagon5TM_VWC(Sensor *parentSense, String customVarCode)
+    Decagon5TM_VWC(Sensor *parentSense, String customVarCode = "")
      : Variable(parentSense, TM_VWC_VAR_NUM,
                 F("volumetricWaterContent"), F("percent"),
-                TM_VWC_RESOLUTION, F("SoilVWC"),
-                customVarCode)
+                TM_VWC_RESOLUTION,
+                F("SoilVWC"), customVarCode)
     {}
 };
 

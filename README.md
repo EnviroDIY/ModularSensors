@@ -60,9 +60,9 @@ In order to support multiple functions and sensors, there are quite a lot of dep
 
 ### Functions for Each Variable
 - **Constructor** - Every variable requires a pointer to its parent sensor as part of the constructor.
-- **getVarName()** - This returns the variable's name using http://vocabulary.odm2.org/variablename/ as a string.
-- **getVarUnit()** - This returns the variable's unit using http://vocabulary.odm2.org/units/ as a string.
-- **getVarCode()** - This returns a customized code for the variable, if one is given.
+- **getVarName()** - This returns the variable's name using http://vocabulary.odm2.org/variablename/ as a String.
+- **getVarUnit()** - This returns the variable's unit using http://vocabulary.odm2.org/units/ as a String.
+- **getVarCode()** - This returns a String with a customized code for the variable, if one is given, and a default if not
 - **setup()** - This "sets up" the variable - attaching it to its parent sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program _after_ calling the sensor setup.
 - **getValue()** - This returns the current value of the variable as a float.  You should call the update function before calling getValue.  As a backup, if the getValue function sees that the update function has not been called within the last 60 seconds, it will re-call it.
 - **getValueString()** - This is identical to getValue, except that it returns a string with the proper precision available from the sensor.

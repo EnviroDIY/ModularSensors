@@ -42,11 +42,11 @@ private:
 class MaxBotixSonar_Range : public Variable
 {
 public:
-    MaxBotixSonar_Range(Sensor *parentSense, String customVarCode) :
+    MaxBotixSonar_Range(Sensor *parentSense, String customVarCode = "") :
       Variable(parentSense, HRXL_VAR_NUM,
                F("distance"), F("millimeter"),
-               HRXL_RESOLUTION, F("SonarRange"),
-               customVarCode)
+               HRXL_RESOLUTION,
+               F("SonarRange"), customVarCode)
     {}
 };
 

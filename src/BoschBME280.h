@@ -73,11 +73,11 @@ protected:
 class BoschBME280_Temp : public Variable
 {
 public:
-    BoschBME280_Temp(Sensor *parentSense, String customVarCode) :
+    BoschBME280_Temp(Sensor *parentSense, String customVarCode = "") :
       Variable(parentSense, BoschBME280_TEMP_VAR_NUM,
                F("temperature"), F("degreeCelsius"),
-               BoschBME280_TEMP_RESOLUTION, F("BoschBME280Temp"),
-               customVarCode)
+               BoschBME280_TEMP_RESOLUTION,
+               F("BoschBME280Temp"), customVarCode)
     {}
 };
 
@@ -86,11 +86,11 @@ public:
 class BoschBME280_Humidity : public Variable
 {
 public:
-    BoschBME280_Humidity(Sensor *parentSense, String customVarCode) :
+    BoschBME280_Humidity(Sensor *parentSense, String customVarCode = "") :
       Variable(parentSense, BoschBME280_HUMIDITY_VAR_NUM,
                F("relativeHumidity"), F("percent"),
-               BoschBME280_HUMIDITY_RESOLUTION, F("BoschBME280Humidity"),
-               customVarCode)
+               BoschBME280_HUMIDITY_RESOLUTION,
+               F("BoschBME280Humidity"), customVarCode)
     {}
 };
 
@@ -99,11 +99,11 @@ public:
 class BoschBME280_Pressure : public Variable
 {
 public:
-    BoschBME280_Pressure(Sensor *parentSense, String customVarCode) :
+    BoschBME280_Pressure(Sensor *parentSense, String customVarCode = "") :
       Variable(parentSense, BoschBME280_PRESSURE_VAR_NUM,
                F("barometricPressure"), F("pascal"),
-               BoschBME280_PRESSURE_RESOLUTION, F("BoschBME280Pressure"),
-               customVarCode)
+               BoschBME280_PRESSURE_RESOLUTION,
+               F("BoschBME280Pressure"), customVarCode)
     {}
 };
 
@@ -112,11 +112,11 @@ public:
 class BoschBME280_Altitude : public Variable
 {
 public:
-    BoschBME280_Altitude(Sensor *parentSense, String customVarCode) :
+    BoschBME280_Altitude(Sensor *parentSense, String customVarCode = "") :
       Variable(parentSense, BoschBME280_ALTITUDE_VAR_NUM,
                F("heightAboveSeaFloor"), F("meter"),
-               BoschBME280_ALTITUDE_RESOLUTION, F("BoschBME280Altitude"),
-               customVarCode)
+               BoschBME280_ALTITUDE_RESOLUTION,
+               F("BoschBME280Altitude"), customVarCode)
     {}
 };
 

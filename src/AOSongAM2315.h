@@ -54,11 +54,11 @@ public:
 class AOSongAM2315_Humidity : public Variable
 {
 public:
-    AOSongAM2315_Humidity(Sensor *parentSense, String customVarCode) :
+    AOSongAM2315_Humidity(Sensor *parentSense, String customVarCode = "") :
       Variable(parentSense, AM2315_HUMIDITY_VAR_NUM,
                F("relativeHumidity"), F("percent"),
-               AM2315_HUMIDITY_RESOLUTION, F("AM2315Humidity"),
-               customVarCode)
+               AM2315_HUMIDITY_RESOLUTION,
+               F("AM2315Humidity"), customVarCode)
     {}
 };
 
@@ -67,11 +67,11 @@ public:
 class AOSongAM2315_Temp : public Variable
 {
 public:
-    AOSongAM2315_Temp(Sensor *parentSense, String customVarCode) :
+    AOSongAM2315_Temp(Sensor *parentSense, String customVarCode = "") :
       Variable(parentSense, AM2315_TEMP_VAR_NUM,
                F("temperature"), F("degreeCelsius"),
-               AM2315_TEMP_RESOLUTION, F("AM2315Temp"),
-               customVarCode)
+               AM2315_TEMP_RESOLUTION,
+               F("AM2315Temp"), customVarCode)
     {}
 };
 

@@ -39,7 +39,7 @@ public:
         for (int i = 0; i < Logger::_variableCount; i++)
         {
             dhString += F("&");
-            dhString += Logger::_variableList[i]->getDreamHost();
+            dhString += Logger::_variableList[i]->getVarCode();
             dhString += F("=");
             dhString += Logger::_variableList[i]->getValueString();
         }

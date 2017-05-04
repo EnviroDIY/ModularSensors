@@ -81,11 +81,11 @@ private:
 class AOSongDHT_Humidity : public Variable
 {
 public:
-    AOSongDHT_Humidity(Sensor *parentSense, String customVarCode) :
+    AOSongDHT_Humidity(Sensor *parentSense, String customVarCode = "") :
       Variable(parentSense, DHT_HUMIDITY_VAR_NUM,
                F("relativeHumidity"), F("percent"),
-               DHT_HUMIDITY_RESOLUTION, F("DHTHumidity"),
-               customVarCode)
+               DHT_HUMIDITY_RESOLUTION,
+               F("DHTHumidity"), customVarCode)
     {}
 };
 
@@ -94,11 +94,11 @@ public:
 class AOSongDHT_Temp : public Variable
 {
 public:
-    AOSongDHT_Temp(Sensor *parentSense, String customVarCode) :
+    AOSongDHT_Temp(Sensor *parentSense, String customVarCode = "") :
       Variable(parentSense, DHT_TEMP_VAR_NUM,
                F("temperature"), F("degreeCelsius"),
-               DHT_TEMP_RESOLUTION, F("DHTTemp"),
-               customVarCode)
+               DHT_TEMP_RESOLUTION,
+               F("DHTTemp"), customVarCode)
     {}
 };
 
@@ -107,11 +107,11 @@ public:
 class AOSongDHT_HI : public Variable
 {
 public:
-    AOSongDHT_HI(Sensor *parentSense, String customVarCode) :
+    AOSongDHT_HI(Sensor *parentSense, String customVarCode = "") :
       Variable(parentSense, DHT_HI_VAR_NUM,
                F("heatIndex"), F("degreeCelsius"),
-               DHT_HI_RESOLUTION, F("DHTHI"),
-               customVarCode)
+               DHT_HI_RESOLUTION,
+               F("DHTHI"), customVarCode)
     {}
 };
 
