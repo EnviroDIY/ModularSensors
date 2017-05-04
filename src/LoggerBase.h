@@ -340,10 +340,10 @@ public:
         // Next comes the ODM2 unit name
         makeHeaderRowMacro(logIDRowHeader, _variableList[i]->getVarUnit())
 
-        // We'll finish up the the SWRC variable abbreviation
+        // We'll finish up the the custom variable codes
         String dtRowHeader = F("Date and Time in UTC");
         dtRowHeader += _timeZone;
-        makeHeaderRowMacro(dtRowHeader, _variableList[i]->getDreamHost())
+        makeHeaderRowMacro(dtRowHeader, _variableList[i]->getVarCode())
 
         // Return everything
         return dataHeader;

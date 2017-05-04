@@ -60,8 +60,9 @@ In order to support multiple functions and sensors, there are quite a lot of dep
 
 ### Functions for Each Variable
 - **Constructor** - Every variable requires a pointer to its parent sensor as part of the constructor.
-- **getVarName()** - This returns the variable's name using http://vocabulary.odm2.org/variablename/ as a string.
-- **getVarUnit()** - This returns the variable's unit using http://vocabulary.odm2.org/units/ as a string.
+- **getVarName()** - This returns the variable's name using http://vocabulary.odm2.org/variablename/ as a String.
+- **getVarUnit()** - This returns the variable's unit using http://vocabulary.odm2.org/units/ as a String.
+- **getVarCode()** - This returns a String with a customized code for the variable, if one is given, and a default if not
 - **setup()** - This "sets up" the variable - attaching it to its parent sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program _after_ calling the sensor setup.
 - **getValue()** - This returns the current value of the variable as a float.  You should call the update function before calling getValue.  As a backup, if the getValue function sees that the update function has not been called within the last 60 seconds, it will re-call it.
 - **getValueString()** - This is identical to getValue, except that it returns a string with the proper precision available from the sensor.
@@ -123,15 +124,15 @@ Having a unified set of functions to access many sensors allows us to quickly po
 
 ### <a name="ArrayExamples"></a>VariableArray Examples:
 
-To use the VariableArray module, you must first create the array of pointers.  This must be done outside of the setup() or loop() functions.  Remember that you must create a new instance for each _variable_, and each sensor.  All functions will be called on the variables in the order they appear in the list.  The functions for sensors will be called in the order that the last variable listed for that sensor appears
+To use the VariableArray module, you must first create the array of pointers.  This must be done outside of the setup() or loop() functions.  Remember that you must create a new instance for each _variable_, and each sensor.  All functions will be called on the variables in the order they appear in the list.  The functions for sensors will be called in the order that the last variable listed for that sensor appears.  The customVarCode is _always_ optional.
 
 ```cpp
 Variable *variableList[] = {
-    new Sensor1_Variable1(&parentSensor1),
-    new Sensor1_Variable2(&parentSensor1),
-    new Sensor2_Variable1(&parentSensor2),
+    new Sensor1_Variable1(&parentSensor1, "customVarCode1"),
+    new Sensor1_Variable2(&parentSensor1, "customVarCode2"),
+    new Sensor2_Variable1(&parentSensor2, "customVarCode3"),
     ...
-    new SensorX_VariableX(&parentSensorx)
+    new SensorX_VariableX(&parentSensorx, "customVarCode4")
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 VariableArray sensors;
@@ -312,12 +313,12 @@ The main constuctor for the sensor object is:
 EnviroDIYMayfly mayfly(MFVersion);
 ```
 
-The three available variables are:
+The three available variables are:  (The customVarCode is always optional!)
 
 ```cpp
-EnviroDIYMayfly_Temp(&mayfly);
-EnviroDIYMayfly_Batt(&mayfly);
-EnviroDIYMayfly_FreeRam(&mayfly);
+EnviroDIYMayfly_Temp(&mayfly, "customVarCode");
+EnviroDIYMayfly_Batt(&mayfly, "customVarCode");
+EnviroDIYMayfly_FreeRam(&mayfly, "customVarCode");
 ```
 
 #### <a name="MaxBotix"></a>[MaxBotix MaxSonar](http://www.maxbotix.com/Ultrasonic_Sensors/High_Accuracy_Sensors.htm) - HRXL MaxSonar WR or WRS Series with TTL Outputs
@@ -331,10 +332,10 @@ The main constuctor for the sensor object is:
 MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger);
 ```
 
-The single available variable is:
+The single available variable is:  (The customVarCode is always optional!)
 
 ```cpp
-MaxBotixSonar_Range(&sonar);
+MaxBotixSonar_Range(&sonar, "customVarCode");
 ```
 
 #### <a name="OBS3"></a>[Campbell Scientific OBS-3+](https://www.campbellsci.com/obs-3plus)
@@ -351,11 +352,11 @@ CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C);
 CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
 ```
 
-The single available variable is (called once each for high and low range):
+The single available variable is (called once each for high and low range):  (The customVarCode is optional, but very strongly recommended!)
 
 ```cpp
-CampbellOBS3_Turbidity(&osb3low);
-CampbellOBS3_Turbidity(&osb3high);
+CampbellOBS3_Turbidity(&osb3low, "customLowVarCode");
+CampbellOBS3_Turbidity(&osb3high, "customHighVarCode");
 ```
 
 #### <a name="5TM"></a>[Decagon Devices 5TM](https://www.decagon.com/en/soils/volumetric-water-content-sensors/5tm-vwc-temp/) Soil Moisture and Temperature Sensor
@@ -369,12 +370,12 @@ The main constuctor for the sensor object is:
 Decagon5TM fivetm(TMSDI12address, SDI12Power, SDI12Data, numberReadings);
 ```
 
-The three available variables are:
+The three available variables are:  (The customVarCode is always optional!)
 
 ```cpp
-Decagon5TM_Ea(&fivetm);
-Decagon5TM_Temp(&fivetm);
-Decagon5TM_VWC(&fivetm);
+Decagon5TM_Ea(&fivetm, "customVarCode");
+Decagon5TM_Temp(&fivetm, "customVarCode");
+Decagon5TM_VWC(&fivetm, "customVarCode");
 ```
 
 #### <a name="CTD"></a>[Decagon Devices CTD-5 or  CTD-10](https://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/ctd-10-sensor-electrical-conductivity-temperature-depth/) Electrical Conductivity, Temperature, and Depth Sensor
@@ -388,12 +389,12 @@ The main constuctor for the sensor object is:
 DecagonCTD ctd(CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 ```
 
-The three available variables are:
+The three available variables are:  (The customVarCode is always optional!)
 
 ```cpp
-DecagonCTD_Cond(&ctd);
-DecagonCTD_Temp(&ctd);
-DecagonCTD_Depth(&ctd);
+DecagonCTD_Cond(&ctd, "customVarCode");
+DecagonCTD_Temp(&ctd, "customVarCode");
+DecagonCTD_Depth(&ctd, "customVarCode");
 ```
 
 #### <a name="ES2"></a>[Decagon Devices ES-2](http://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/es-2-electrical-conductivity-temperature/) Electrical Conductivity Sensor
@@ -407,11 +408,11 @@ The main constuctor for the sensor object is:
 DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, numberReadings);
 ```
 
-The two available variables are:
+The two available variables are:  (The customVarCode is always optional!)
 
 ```cpp
-DecagonES2_Cond(&es2);
-DecagonES2_Temp(&es2);
+DecagonES2_Cond(&es2, "customVarCode");
+DecagonES2_Temp(&es2, "customVarCode");
 ```
 
 
@@ -433,10 +434,10 @@ _If you only have one sensor attached on your OneWire Bus_, you can use this con
 MaximDS18 ds18(powerPin, dataPin);
 ```
 
-The single available variable is:
+The single available variable is:  (The customVarCode is always optional!)
 
 ```cpp
-MaximDS18_Temp(&ds18);
+MaximDS18_Temp(&ds18, "customVarCode");
 ```
 
 #### <a name="AM2315"></a>[AOSong AM2315](www.aosong.com/asp_bin/Products/en/AM2315.pdf) Encased I2C Temperature/Humidity Sensor
@@ -450,11 +451,11 @@ The main constuctor for the sensor object is:
 AOSongAM2315 am2315(I2CPower);
 ```
 
-The two available variables are:
+The two available variables are:  (The customVarCode is always optional!)
 
 ```cpp
-AOSongAM2315_Humidity(&am2315);
-AOSongAM2315_Temp(&am2315);
+AOSongAM2315_Humidity(&am2315, "customVarCode");
+AOSongAM2315_Temp(&am2315, "customVarCode");
 ```
 
 #### <a name="BME280"></a>[Bosch BME280](https://www.bosch-sensortec.com/bst/products/all_products/bme280) Integrated Environmental Sensor
@@ -468,13 +469,13 @@ The main constuctor for the sensor object is:
 BoschBME280 bme280(I2CPower);
 ```
 
-The four available variables are:
+The four available variables are:  (The customVarCode is always optional!)
 
 ```cpp
-BoschBME280_Temp(&bme280);
-BoschBME280_Humidity(&bme280);
-BoschBME280_Pressure(&bme280);
-BoschBME280_Altitude(&bme280);
+BoschBME280_Temp(&bme280, "customVarCode");
+BoschBME280_Humidity(&bme280, "customVarCode");
+BoschBME280_Pressure(&bme280, "customVarCode");
+BoschBME280_Altitude(&bme280, "customVarCode");
 ```
 
 #### <a name="DHT"></a>[AOSong DHT](http://www.aosong.com/en/products/index.asp) Digital-Output Relative Humidity & Temperature Sensor
@@ -488,10 +489,10 @@ The main constuctor for the sensor object is:
 AOSongDHT dht(DHTPower, DHTPin, dhtType);;
 ```
 
-The three available variables are:
+The three available variables are:  (The customVarCode is always optional!)
 
 ```cpp
-AOSongDHT_Humidity(&dht);
-AOSongDHT_Temp(&dht);
-AOSongDHT_HI(&dht);  // Heat Index
+AOSongDHT_Humidity(&dht, "customVarCode");
+AOSongDHT_Temp(&dht, "customVarCode");
+AOSongDHT_HI(&dht, "customVarCode");  // Heat Index
 ```

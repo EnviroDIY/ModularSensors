@@ -59,10 +59,11 @@ private:
 class EnviroDIYMayfly_Temp : public Variable
 {
 public:
-    EnviroDIYMayfly_Temp(Sensor *parentSense)
+    EnviroDIYMayfly_Temp(Sensor *parentSense, String customVarCode = "")
       : Variable(parentSense, MAYFLY_TEMP_VAR_NUM,
                  F("temperatureDatalogger"), F("degreeCelsius"),
-                 DS3231_TEMP_RESOLUTION, F("BoardTemp"))
+                 DS3231_TEMP_RESOLUTION,
+                 F("BoardTemp"), customVarCode)
     {}
 };
 
@@ -70,10 +71,11 @@ public:
 class EnviroDIYMayfly_Batt : public Variable
 {
 public:
-    EnviroDIYMayfly_Batt(Sensor *parentSense)
+    EnviroDIYMayfly_Batt(Sensor *parentSense, String customVarCode = "")
       : Variable(parentSense, MAYFLY_BATTERY_VAR_NUM,
                  F("batteryVoltage"), F("Volt"),
-                 MAYFLY_BATTERY_RESOLUTION, F("Battery"))
+                 MAYFLY_BATTERY_RESOLUTION,
+                 F("Battery"), customVarCode)
     {}
 };
 
@@ -82,10 +84,11 @@ public:
 class EnviroDIYMayfly_FreeRam : public Variable
 {
 public:
-    EnviroDIYMayfly_FreeRam(Sensor *parentSense)
+    EnviroDIYMayfly_FreeRam(Sensor *parentSense, String customVarCode = "")
       : Variable(parentSense, MAYFLY_RAM_VAR_NUM,
                  F("Free SRAM"), F("Bit"),
-                 MAYFLY_RAM_RESOLUTION, F("FreeRam"))
+                 MAYFLY_RAM_RESOLUTION,
+                 F("FreeRam"), customVarCode)
     {}
 };
 
