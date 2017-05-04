@@ -128,11 +128,11 @@ To use the VariableArray module, you must first create the array of pointers.  T
 
 ```cpp
 Variable *variableList[] = {
-    new Sensor1_Variable1(&parentSensor1, customVarCode1),
-    new Sensor1_Variable2(&parentSensor1, customVarCode2),
-    new Sensor2_Variable1(&parentSensor2, customVarCode3),
+    new Sensor1_Variable1(&parentSensor1, "customVarCode1"),
+    new Sensor1_Variable2(&parentSensor1, "customVarCode2"),
+    new Sensor2_Variable1(&parentSensor2, "customVarCode3"),
     ...
-    new SensorX_VariableX(&parentSensorx, customVarCode4)
+    new SensorX_VariableX(&parentSensorx, "customVarCode4")
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 VariableArray sensors;
@@ -316,9 +316,9 @@ EnviroDIYMayfly mayfly(MFVersion);
 The three available variables are:  (The customVarCode is always optional!)
 
 ```cpp
-EnviroDIYMayfly_Temp(&mayfly, customVarCode);
-EnviroDIYMayfly_Batt(&mayfly, customVarCode);
-EnviroDIYMayfly_FreeRam(&mayfly, customVarCode);
+EnviroDIYMayfly_Temp(&mayfly, "customVarCode");
+EnviroDIYMayfly_Batt(&mayfly, "customVarCode");
+EnviroDIYMayfly_FreeRam(&mayfly, "customVarCode");
 ```
 
 #### <a name="MaxBotix"></a>[MaxBotix MaxSonar](http://www.maxbotix.com/Ultrasonic_Sensors/High_Accuracy_Sensors.htm) - HRXL MaxSonar WR or WRS Series with TTL Outputs
@@ -335,7 +335,7 @@ MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger);
 The single available variable is:  (The customVarCode is always optional!)
 
 ```cpp
-MaxBotixSonar_Range(&sonar, customVarCode);
+MaxBotixSonar_Range(&sonar, "customVarCode");
 ```
 
 #### <a name="OBS3"></a>[Campbell Scientific OBS-3+](https://www.campbellsci.com/obs-3plus)
@@ -352,11 +352,11 @@ CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C);
 CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
 ```
 
-The single available variable is (called once each for high and low range):  (The customVarCode is always optional!)
+The single available variable is (called once each for high and low range):  (The customVarCode is optional, but very strongly recommended!)
 
 ```cpp
-CampbellOBS3_Turbidity(&osb3low, customVarCode);
-CampbellOBS3_Turbidity(&osb3high, customVarCode);
+CampbellOBS3_Turbidity(&osb3low, "customLowVarCode");
+CampbellOBS3_Turbidity(&osb3high, "customHighVarCode");
 ```
 
 #### <a name="5TM"></a>[Decagon Devices 5TM](https://www.decagon.com/en/soils/volumetric-water-content-sensors/5tm-vwc-temp/) Soil Moisture and Temperature Sensor
@@ -373,9 +373,9 @@ Decagon5TM fivetm(TMSDI12address, SDI12Power, SDI12Data, numberReadings);
 The three available variables are:  (The customVarCode is always optional!)
 
 ```cpp
-Decagon5TM_Ea(&fivetm, customVarCode);
-Decagon5TM_Temp(&fivetm, customVarCode);
-Decagon5TM_VWC(&fivetm, customVarCode);
+Decagon5TM_Ea(&fivetm, "customVarCode");
+Decagon5TM_Temp(&fivetm, "customVarCode");
+Decagon5TM_VWC(&fivetm, "customVarCode");
 ```
 
 #### <a name="CTD"></a>[Decagon Devices CTD-5 or  CTD-10](https://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/ctd-10-sensor-electrical-conductivity-temperature-depth/) Electrical Conductivity, Temperature, and Depth Sensor
@@ -392,9 +392,9 @@ DecagonCTD ctd(CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 The three available variables are:  (The customVarCode is always optional!)
 
 ```cpp
-DecagonCTD_Cond(&ctd, customVarCode);
-DecagonCTD_Temp(&ctd, customVarCode);
-DecagonCTD_Depth(&ctd, customVarCode);
+DecagonCTD_Cond(&ctd, "customVarCode");
+DecagonCTD_Temp(&ctd, "customVarCode");
+DecagonCTD_Depth(&ctd, "customVarCode");
 ```
 
 #### <a name="ES2"></a>[Decagon Devices ES-2](http://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/es-2-electrical-conductivity-temperature/) Electrical Conductivity Sensor
@@ -411,8 +411,8 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, numberReadings);
 The two available variables are:  (The customVarCode is always optional!)
 
 ```cpp
-DecagonES2_Cond(&es2, customVarCode);
-DecagonES2_Temp(&es2, customVarCode);
+DecagonES2_Cond(&es2, "customVarCode");
+DecagonES2_Temp(&es2, "customVarCode");
 ```
 
 
@@ -437,7 +437,7 @@ MaximDS18 ds18(powerPin, dataPin);
 The single available variable is:  (The customVarCode is always optional!)
 
 ```cpp
-MaximDS18_Temp(&ds18, customVarCode);
+MaximDS18_Temp(&ds18, "customVarCode");
 ```
 
 #### <a name="AM2315"></a>[AOSong AM2315](www.aosong.com/asp_bin/Products/en/AM2315.pdf) Encased I2C Temperature/Humidity Sensor
@@ -454,8 +454,8 @@ AOSongAM2315 am2315(I2CPower);
 The two available variables are:  (The customVarCode is always optional!)
 
 ```cpp
-AOSongAM2315_Humidity(&am2315, customVarCode);
-AOSongAM2315_Temp(&am2315, customVarCode);
+AOSongAM2315_Humidity(&am2315, "customVarCode");
+AOSongAM2315_Temp(&am2315, "customVarCode");
 ```
 
 #### <a name="BME280"></a>[Bosch BME280](https://www.bosch-sensortec.com/bst/products/all_products/bme280) Integrated Environmental Sensor
@@ -472,10 +472,10 @@ BoschBME280 bme280(I2CPower);
 The four available variables are:  (The customVarCode is always optional!)
 
 ```cpp
-BoschBME280_Temp(&bme280, customVarCode);
-BoschBME280_Humidity(&bme280, customVarCode);
-BoschBME280_Pressure(&bme280, customVarCode);
-BoschBME280_Altitude(&bme280, customVarCode);
+BoschBME280_Temp(&bme280, "customVarCode");
+BoschBME280_Humidity(&bme280, "customVarCode");
+BoschBME280_Pressure(&bme280, "customVarCode");
+BoschBME280_Altitude(&bme280, "customVarCode");
 ```
 
 #### <a name="DHT"></a>[AOSong DHT](http://www.aosong.com/en/products/index.asp) Digital-Output Relative Humidity & Temperature Sensor
@@ -492,7 +492,7 @@ AOSongDHT dht(DHTPower, DHTPin, dhtType);;
 The three available variables are:  (The customVarCode is always optional!)
 
 ```cpp
-AOSongDHT_Humidity(&dht, customVarCode);
-AOSongDHT_Temp(&dht, customVarCode);
-AOSongDHT_HI(&dht, customVarCode);  // Heat Index
+AOSongDHT_Humidity(&dht, "customVarCode");
+AOSongDHT_Temp(&dht, "customVarCode");
+AOSongDHT_HI(&dht, "customVarCode");  // Heat Index
 ```
