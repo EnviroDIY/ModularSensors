@@ -68,6 +68,7 @@ public:
                                 - (5.5e-4*(ea*ea))
                                 + (2.92e-2 * ea)
                                 - 5.3e-2 ;
+        sensorValue_VWC *= 100;  // Convert to actual percent
         sensorValues[TM_VWC_VAR_NUM] = sensorValue_VWC;
 
         // Re-update the variables with the new VWC value
@@ -78,7 +79,7 @@ public:
 };
 
 
-// Defines the "Ea/Matric Potential Sensor"
+// Defines the Ea/Matric Potential Variable
 class Decagon5TM_Ea : public Variable
 {
 public:
@@ -102,7 +103,7 @@ public:
 };
 
 
-// Defines the "Volumetric Water Content Sensor"
+// Defines the Volumetric Water Content Variable
 class Decagon5TM_VWC : public Variable
 {
 public:
