@@ -1,4 +1,4 @@
- /*
+/*
  *MaxBotixSonar.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
@@ -7,44 +7,42 @@
  *This file is for the MaxBotix Sonar Library
  *It is dependent on Software Serial.
  *
- * Information on the MaxBotix Sonar communication protocol can be found here:
- * http://www.MaxBotix.com/documents/HRXL-MaxSonar-WR_Datasheet.pdf
- *
- * The output from the sonar is the range in mm.
+ * The output from the HRXL-MaxSonar-WRL sonar is the range in mm.
  */
 
-#include <Arduino.h>
 #include "MaxBotixSonar.h"
+#include <SoftwareSerial_PCINT12.h>
 
-
-// The constructor - need the power pin, the excite pin, and the data pin
-MaxBotixSonar_Range::MaxBotixSonar_Range(int powerPin, int dataPin, int triggerPin /* = -1*/)
-  : SensorBase(dataPin, powerPin, 0, F("MaxBotixMaxSonar"), F("distance"), F("millimeter"), F("SonarRange"))
+MaxBotixSonar::MaxBotixSonar(int powerPin, int dataPin, int triggerPin)
+: Sensor(powerPin, dataPin, F("MaxBotixMaxSonar"), HRXL_NUM_MEASUREMENTS)
 {_triggerPin = triggerPin;}
 
-// The function to set up connection to a sensor.
-// Need to override to get the trigger pin set
-SENSOR_STATUS MaxBotixSonar_Range::setup(void)
+SENSOR_STATUS MaxBotixSonar::setup(void)
 {
     pinMode(_powerPin, OUTPUT);
     pinMode(_dataPin, INPUT);
-    digitalWrite(_powerPin, LOW);
+
     if(_triggerPin != -1)
     {
         pinMode(_triggerPin, OUTPUT);
         digitalWrite(_triggerPin, LOW);
     }
+
+    DBGM(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
+    DBGM(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
+
     return SENSOR_READY;
 }
 
-
-// Uses TLL Communication to get data from MaxBotix
-bool MaxBotixSonar_Range::update(){
-
+bool MaxBotixSonar::update(void)
+{
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}  // powerUp function includes a 500ms delay
     else{delay(160);}  // See note below
+
+    // Clear values before starting loop
+    clearValues();
 
     // NOTE: After the power is turned on to the MaxBotix, it sends several lines
     // of header to the serial pin, beginning at ~65ms and finising at ~160ms.
@@ -58,7 +56,7 @@ bool MaxBotixSonar_Range::update(){
     // RoHS 1.8b090  0713
     // TempI
 
-    // define serial port for recieving data
+    // define serial port for receiving data
     SoftwareSerial sonarSerial(_dataPin, -1);
     sonarSerial.begin(9600);
     // Even the slowest sensors should respond at a rate of 6Hz (166ms).
@@ -66,21 +64,22 @@ bool MaxBotixSonar_Range::update(){
 
     // Note:  if the power is on for >160ms before SoftwareSerial starts
     // the header lines will already have been sent and lost
-    // Serial.println(F("Parsing Header Lines"));  // For debugging
-    // for(int i=0; i < 6; i++)  // For debugging
+    // DBGM(F("Parsing Header Lines\n"));
+    // for(int i=0; i < 6; i++);
     // {  // For debugging
-    //     Serial.println(sonarSerial.readStringUntil('\r'));  // For debugging
+    //     DBGM(sonarSerial.readStringUntil('\r'), F("\n"));
     // }  // For debugging
 
-    stringComplete = false;
-    rangeAttempts = 0;
+    bool stringComplete = false;
+    int rangeAttempts = 0;
+    int result = 0;
 
-    // Serial.println(F("Beginning detection for Sonar"));  // For debugging
+    DBGM(F("Beginning detection for Sonar\n"));
     while (stringComplete == false && rangeAttempts < 50)
     {
         if(_triggerPin != -1)
         {
-            // Serial.println(F("Triggering Sonar"));  // For debugging
+            DBGM(F("Triggering Sonar\n"));
             digitalWrite(_triggerPin, HIGH);
             delay(1);
             digitalWrite(_triggerPin, LOW);
@@ -89,7 +88,7 @@ bool MaxBotixSonar_Range::update(){
 
         result = sonarSerial.parseInt();
         sonarSerial.read();  // To throw away the carriage return
-        // Serial.println(result);  // For debugging
+        DBGM(result, F("\n"));
         rangeAttempts++;
 
         // If it cannot obtain a result , the sonar is supposed to send a value
@@ -97,32 +96,26 @@ bool MaxBotixSonar_Range::update(){
         // it's 4999.  The sonar might also send readings of 300 or 500 (the
         //  blanking distance) if there are too many acoustic echos.
         // If the result becomes garbled or the sonar is disconnected, the parseInt function returns 0.
-        if (result == 0 || result == 300 || result == 500 || result == 4999 || result == 9999)
+        if (result <= 300 || result == 500 || result == 4999 || result == 9999)
         {
-            // Serial.print(F("Bad or Suspicious Result, Retry Attempt #"));  // For debugging
-            // Serial.println(rangeAttempts);  // For debugging
+            DBGM(F("Bad or Suspicious Result, Retry Attempt #"), rangeAttempts, F("\n"));
         }
         else
         {
-            // Serial.println(F("Good result found"));  // For debugging
+            DBGM(F("Good result found\n"));
             stringComplete = true;  // Set completion of read to true
         }
     }
 
-    sensorValue_depth = result;
-    // Serial.println(sensorValue_depth);  // For debugging
+    sensorValues[HRXL_VAR_NUM] = result;
+    DBGM(sensorValues[HRXL_VAR_NUM], F("\n"));
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
 
+    // Update the registered variables with the new values
+    notifyVariables();
+
     // Return true when finished
-    sensorLastUpdated = millis();
     return true;
-}
-
-
-float MaxBotixSonar_Range::getValue(void)
-{
-    checkForUpdate(sensorLastUpdated);
-    return sensorValue_depth;
 }

@@ -2,6 +2,8 @@
     "name": "EnviroDIY_ModularSensors",
     "description":  "A library that allows acces to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
     "keywords": "sensors, logger, low power, sleeping, EnviroDIY",
+    "platforms": "atmelavr",
+    "frameworks": "arduino",
     "authors":
     [
         {
@@ -16,7 +18,7 @@
             "url": "https://envirodiy.org/"
         }
     ],
-    "version": "1.0.0-alpha",
+    "version": "2.1.2-alpha",
     "repository":
     {
         "type": "git",
@@ -30,7 +32,6 @@
             "sensor_tests/*"
         ]
     },
-    "frameworks": "atmelavr",
     "dependencies":
     [
         {
@@ -41,10 +42,7 @@
             "version": "https://github.com/EnviroDIY/Sodaq_DS3231.git"
         },
         {
-            "name": "RTCTimer"
-        },
-        {
-            "name": "PcInt_PCINT0",
+            "name": "Sodaq_PcInt_PCINT0",
             "version": "https://github.com/EnviroDIY/PcInt_PCINT0.git"
         },
         {
@@ -58,12 +56,30 @@
             "name": "ADS1X15"
         },
         {
+            "name": "Adafruit Unified Sensor"
+        },
+        {
+            "name": "DHT sensor library"
+        },
+        {
+            "name": "Adafruit AM2315"
+        },
+        {
+            "name": "Adafruit BME280 Library"
+        },
+        {
+            "name": "DallasTemperature"
+        },
+        {
+            "name": "OneWire"
+        },
+        {
             "name": "Arduino-SDI-12_PCINT3",
             "version": "https://github.com/EnviroDIY/Arduino-SDI-12.git#mayfly"
         },
         {
-            "name": "GPRSbee",
-            "version": "https://github.com/EnviroDIY/GPRSbee.git#v1.2_hacked"
+            "name": "TinyGSM",
+            "version": "https://github.com/EnviroDIY/TinyGSM.git"
         }
     ]
 }
