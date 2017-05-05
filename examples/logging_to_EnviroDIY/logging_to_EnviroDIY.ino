@@ -266,7 +266,7 @@ const char *PWD = "XXXXXXX";  // The password for connecting to WiFi, unnecessar
 // ---------------------------------------------------------------------------
 // Board setup info
 // ---------------------------------------------------------------------------
-const long SERIAL_BAUD = 115200;  // Serial port BAUD rate
+const long SERIAL_BAUD = 57600;  // Serial port BAUD rate
 const int GREEN_LED = 8;  // Pin for the green LED
 const int RED_LED = 9;  // Pin for the red LED
 const int RTC_PIN = A7;  // RTC Interrupt/Alarm pin

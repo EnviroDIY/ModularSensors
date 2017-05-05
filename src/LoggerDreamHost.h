@@ -62,24 +62,24 @@ public:
         Serial.flush();  // for debugging
 
         // Send the request to the modem stream
-        modem.dumpBuffer(modem._modemStream);
-        streamDreamHostRequest(modem._modemStream);
-        modem._modemStream->flush();  // wait for sending to finish
+        modem.dumpBuffer(modem.stream);
+        streamDreamHostRequest(modem.stream);
+        modem.stream->flush();  // wait for sending to finish
 
         // Wait for at least the first 12 characters to make it across
         unsigned long timeout = 1500;
         for (unsigned long start = millis(); millis() - start < timeout; )
         {
-            if (modem._modemStream->available() >= 12) break;
+            if (modem.stream->available() >= 12) break;
         }
 
         // Process the HTTP response
         int responseCode = 0;
-        if (modem._modemStream->available() >= 12)
+        if (modem.stream->available() >= 12)
         {
-            modem._modemStream->readStringUntil(' ');  // Throw away the "HTTP/1.1"
-            responseCode = modem._modemStream->readStringUntil(' ').toInt();
-            modem.dumpBuffer(modem._modemStream);
+            modem.stream->readStringUntil(' ');  // Throw away the "HTTP/1.1"
+            responseCode = modem.stream->readStringUntil(' ').toInt();
+            modem.dumpBuffer(modem.stream);
         }
         else responseCode=504;
 
@@ -123,15 +123,11 @@ public:
                 // Post the data to the WebSDL
                 postDataEnviroDIY();
 
-                // Print the response from the WebSDL
-                // int result = postDataEnviroDIY();
-                // modem.printHTTPResult(result);  // for debugging
-
                 // Post the data to DreamHost
                 postDataDreamHost();
-                // Print the response from DreamHost
-                // int result2 = postDataDreamHost();
-                // modem.printHTTPResult(result2);  // for debugging
+
+                // Get the unix timestamp from Sodaq's website
+                modem.getSodaqTime();
             }
             // Disconnect from the network
             modem.disconnectNetwork();

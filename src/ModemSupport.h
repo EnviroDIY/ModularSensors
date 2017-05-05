@@ -18,10 +18,9 @@
     defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || \
     defined(TINY_GSM_MODEM_XBEE)
   #define USE_TINY_GSM
-  // #define TINY_GSM_DEBUG Serial
-  #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900)
-    #define TINY_GSM_YIELD() { delay(3);}
-  #endif
+  #define TINY_GSM_DEBUG Serial
+  // #define TINY_GSM_YIELD() { delay(3);}
+  #define TINY_GSM_YIELD() { delay(5);}
   #include <TinyGsmClient.h>
 #else
   #define DBG(...)
@@ -296,7 +295,7 @@ public:
 
     bool off(void) override
     {
-        // if (!isOn()) DBG(F("Modem was not ever on.\n"));
+        if (!isOn()) DBG(F("Modem was not ever on.\n"));
         if (_onoff_DTR_pin >= 0) {
             digitalWrite(_onoff_DTR_pin, HIGH);
         }
@@ -437,7 +436,38 @@ public:
         stream->flush();
     }
 
-    Stream *_modemStream;
+    // Get the time from http://time.sodaq.net/
+    // Using this site because it is a convienent source of a Unix time stamp
+    uint32_t getSodaqTime(void)
+    {
+        // Make UDP connection to "time.nist.gov" at default UDP port (123)
+        connect("time.sodaq.net", 80);
+
+        // Send the GET request
+        stream->print(String(F("GET http://time.sodaq.net/ HTTP/1.1")));
+        stream->print(String(F("\r\nHost: time.sodaq.net")));
+        stream->print(String(F("\r\n\r\n")));
+
+        // Get the timestamp out of the result
+        DBG(stream->readStringUntil('\n'));
+        DBG(stream->readStringUntil('\n'));
+        DBG(stream->readStringUntil('\n'));
+        DBG(stream->readStringUntil('\n'));
+        DBG(stream->readStringUntil('\n'));
+        DBG(stream->readStringUntil('\n'));
+        DBG(stream->readStringUntil('\n'));
+        DBG(stream->readStringUntil('\n'));
+        DBG(stream->readStringUntil('\n'));
+
+        // Close connection
+        stop();
+
+        // Return the timestamp
+        // return unixTimeStamp;
+        return 0;
+    }
+
+    Stream *stream;
     ModemOnOff *modemOnOff;
 
 private:
@@ -480,7 +510,7 @@ private:
         #if defined(USE_TINY_GSM)
             // Initialize the modem
             DBG(F("Initializing GSM modem instance..."));
-            modemStream->setTimeout(200);
+            // modemStream->setTimeout(200);
             static TinyGsm modem(*modemStream);
             _modem = &modem;
             static TinyGsmClient client(modem);
@@ -492,10 +522,10 @@ private:
                 _modem->setupPinSleep();
             #endif
             modemOnOff->off();
-            _modemStream = _client;
+            stream = _client;
             DBG(F("   ... Complete!\n"));
         #else
-            _modemStream = modemStream;
+            stream = modemStream;
         #endif
     }
 
