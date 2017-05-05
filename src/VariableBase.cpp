@@ -15,15 +15,18 @@
 // ============================================================================
 
 // The constructor
-Variable::Variable(Sensor *parentSense, int varNum, String varName, String varUnit,
-                   unsigned int decimalResolution, String dreamHost)
+Variable::Variable(Sensor *parentSense, int varNum,
+                   String varName, String varUnit,
+                   unsigned int decimalResolution,
+                   String defaultVarCode, String customVarCode)
 {
     parentSensor = parentSense;
     _varNum = varNum;
     _varName = varName;
     _varUnit = varUnit;
     _decimalResolution = decimalResolution;
-    _dreamHost = dreamHost;
+    _defaultVarCode = defaultVarCode;
+    _customCode = customVarCode;
 }
 
 void Variable::attachSensor(int varNum, Sensor *parentSense) {
@@ -54,8 +57,12 @@ String Variable::getVarName(void){return _varName;}
 // This returns the variable's unit using http://vocabulary.odm2.org/units/
 String Variable::getVarUnit(void){return _varUnit;}
 
-// This returns the dreamhost PHP tag - for old SWRC dreamhost system
-String Variable::getDreamHost(void){return _dreamHost;}
+// This returns a customized code for the variable, if one is given, and a default if not
+String Variable::getVarCode(void)
+{
+    if (_customCode != "") return _customCode;
+    else return _defaultVarCode;
+}
 
 // This returns the current value of the variable as a float
 float Variable::getValue(void)

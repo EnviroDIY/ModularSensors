@@ -42,23 +42,15 @@ public:
     String generateFileHeader(void)
     {
         String dataHeader = "";
-        dataHeader += Logger::generateFileHeader();
-        dataHeader += F("\r\n");
 
         // Add additional UUID information
-        dataHeader += F("\"Sampling Feature: ");
-        dataHeader += _samplingFeature;
-        dataHeader += F("\"");
-        for (uint8_t i = 0; i < _variableCount; i++)
-        {
-            dataHeader += F("\"");
-            dataHeader += String(_UUIDs[i]);
-            dataHeader += F("\"");
-            if (i + 1 != _variableCount)
-            {
-                dataHeader += F(", ");
-            }
-        }
+        String  SFHeaderString = F("Sampling Feature: ");
+        SFHeaderString += _samplingFeature;
+        makeHeaderRowMacro(SFHeaderString, String(_UUIDs[i]))
+
+        // Put the basic header below
+        dataHeader += Logger::generateFileHeader();
+
         return dataHeader;
     }
 

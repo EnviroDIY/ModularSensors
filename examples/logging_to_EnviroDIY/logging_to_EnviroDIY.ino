@@ -43,7 +43,7 @@ const char *SKETCH_NAME = "logging_to_EnviroDIY.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "Mayfly_160073";
 // How frequently (in minutes) to log data
-int LOGGING_INTERVAL = 5;
+int LOGGING_INTERVAL = 1;
 // Your logger's timezone.
 const int TIME_ZONE = -5;
 // Create a new logger instance
@@ -67,7 +67,7 @@ AOSongAM2315 am2315(I2CPower);
 #include <AOSongDHT.h>
 const int DHTPower = 22;  // switched sensor power is pin 22 on Mayfly
 const int DHTPin = 6;
-DHTtype dhtType = DHT22;  // Select DHT type, either DHT11, DHT21, or DHT22
+DHTtype dhtType = DHT11;    // Select DHT type, either DHT11, DHT21, or DHT22
 AOSongDHT dht(DHTPower, DHTPin, dhtType);
 
 
@@ -114,7 +114,7 @@ Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
 // ==========================================================================
 #include <DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
-const int numberReadings = 10;  // The number of readings to average
+const int numberReadings = 6;  // The number of readings to average
 // const int SDI12Data = 7;  // The pin the CTD is attached to
 // const int SDI12Power = 22;  // switched sensor power is pin 22 on Mayfly
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
@@ -178,8 +178,8 @@ Variable *variableList[] = {
     new BoschBME280_Humidity(&bme280),
     new BoschBME280_Pressure(&bme280),
     new BoschBME280_Altitude(&bme280),
-    new CampbellOBS3_Turbidity(&osb3low),
-    new CampbellOBS3_TurbHigh(&osb3high),
+    new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
     new Decagon5TM_Ea(&fivetm),
     new Decagon5TM_Temp(&fivetm),
     new Decagon5TM_VWC(&fivetm),
@@ -224,6 +224,22 @@ const char *UUIDs[] =                                                      // UU
 "12345678-abcd-1234-efgh-1234567890ab",
 "12345678-abcd-1234-efgh-1234567890ab",
 "12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
 "12345678-abcd-1234-efgh-1234567890ab"
 };
 
@@ -231,11 +247,15 @@ const char *UUIDs[] =                                                      // UU
 // ---------------------------------------------------------------------------
 // Device Connection Options and WebSDL Endpoints for POST requests
 // ---------------------------------------------------------------------------
+const int modemDTRPin = 23;  // Modem DTR Pin (Data Terminal Ready - used for sleep) (-1 if unconnected)
+const int modemCTSPin = 19;   // Modem CTS Pin (Clear to Send) (-1 if unconnected)
+const int modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (else -1)
+
 DTRSleepType ModemSleepMode = held;  // How the modem is put to sleep
 // Use "held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
 // Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
 // Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
-// Use "always_on" if you do not want the library to control the modem power and sleep.
+// Use "always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
 HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
 const long ModemBaud = 9600;  // Modem BAUD rate (9600 is default), can use higher for SIM800 (19200 works)
 const char *APN = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
@@ -246,15 +266,12 @@ const char *PWD = "XXXXXXX";  // The password for connecting to WiFi, unnecessar
 // ---------------------------------------------------------------------------
 // Board setup info
 // ---------------------------------------------------------------------------
-const long SERIAL_BAUD = 9600;  // Serial port BAUD rate
+const long SERIAL_BAUD = 115200;  // Serial port BAUD rate
 const int GREEN_LED = 8;  // Pin for the green LED
 const int RED_LED = 9;  // Pin for the red LED
 const int RTC_PIN = A7;  // RTC Interrupt/Alarm pin
-const int SD_SS_PIN = 12;  // SD Card Card Select/Slave Select Pin
+const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
 
-const int BEE_DTR_PIN = 23;  // Bee DTR Pin (Data Terminal Ready - used for sleep)
-const int BEE_CTS_PIN = 19;   // Bee CTS Pin (Clear to Send)
-const int BEE_VCC_PIN = -1;
 
 // ---------------------------------------------------------------------------
 // Working Functions
@@ -312,9 +329,9 @@ void setup()
     EnviroDIYLogger.setUUIDs(UUIDs);
 
     #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
-        EnviroDIYLogger.modem.setupModem(&ModemSerial, BEE_VCC_PIN, BEE_CTS_PIN, BEE_DTR_PIN, ModemSleepMode, SSID, PWD);
+        EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, SSID, PWD);
     #else
-        EnviroDIYLogger.modem.setupModem(&ModemSerial, BEE_VCC_PIN, BEE_CTS_PIN, BEE_DTR_PIN, ModemSleepMode, APN);
+        EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, APN);
     #endif
 
     #ifdef DreamHostPortalRX

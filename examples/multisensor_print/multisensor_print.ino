@@ -48,7 +48,7 @@ AOSongAM2315 am2315(I2CPower);
 #include <AOSongDHT.h>
 const int DHTPower = 22;  // switched sensor power is pin 22 on Mayfly
 const int DHTPin = 6;
-DHTtype dhtType = DHT22;  // Select DHT type, either DHT11, DHT21, or DHT22
+DHTtype dhtType = DHT11;    // Select DHT type, either DHT11, DHT21, or DHT22
 AOSongDHT dht(DHTPower, DHTPin, dhtType);
 
 
@@ -95,7 +95,7 @@ Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
 // ==========================================================================
 #include <DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
-const int numberReadings = 10;  // The number of readings to average
+const int numberReadings = 6;  // The number of readings to average
 // const int SDI12Data = 7;  // The pin the CTD is attached to
 // const int SDI12Power = 22;  // switched sensor power is pin 22 on Mayfly
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
@@ -159,8 +159,8 @@ Variable *variableList[] = {
     new BoschBME280_Humidity(&bme280),
     new BoschBME280_Pressure(&bme280),
     new BoschBME280_Altitude(&bme280),
-    new CampbellOBS3_Turbidity(&osb3low),
-    new CampbellOBS3_TurbHigh(&osb3high),
+    new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
     new Decagon5TM_Ea(&fivetm),
     new Decagon5TM_Temp(&fivetm),
     new Decagon5TM_VWC(&fivetm),

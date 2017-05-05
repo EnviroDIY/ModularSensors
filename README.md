@@ -60,8 +60,9 @@ In order to support multiple functions and sensors, there are quite a lot of dep
 
 ### Functions for Each Variable
 - **Constructor** - Every variable requires a pointer to its parent sensor as part of the constructor.
-- **getVarName()** - This returns the variable's name using http://vocabulary.odm2.org/variablename/ as a string.
-- **getVarUnit()** - This returns the variable's unit using http://vocabulary.odm2.org/units/ as a string.
+- **getVarName()** - This returns the variable's name using http://vocabulary.odm2.org/variablename/ as a String.
+- **getVarUnit()** - This returns the variable's unit using http://vocabulary.odm2.org/units/ as a String.
+- **getVarCode()** - This returns a String with a customized code for the variable, if one is given, and a default if not
 - **setup()** - This "sets up" the variable - attaching it to its parent sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program _after_ calling the sensor setup.
 - **getValue()** - This returns the current value of the variable as a float.  You should call the update function before calling getValue.  As a backup, if the getValue function sees that the update function has not been called within the last 60 seconds, it will re-call it.
 - **getValueString()** - This is identical to getValue, except that it returns a string with the proper precision available from the sensor.
@@ -123,15 +124,15 @@ Having a unified set of functions to access many sensors allows us to quickly po
 
 ### <a name="ArrayExamples"></a>VariableArray Examples:
 
-To use the VariableArray module, you must first create the array of pointers.  This must be done outside of the setup() or loop() functions.  Remember that you must create a new instance for each _variable_, and each sensor.  All functions will be called on the variables in the order they appear in the list.  The functions for sensors will be called in the order that the last variable listed for that sensor appears
+To use the VariableArray module, you must first create the array of pointers.  This must be done outside of the setup() or loop() functions.  Remember that you must create a new instance for each _variable_, and each sensor.  All functions will be called on the variables in the order they appear in the list.  The functions for sensors will be called in the order that the last variable listed for that sensor appears.  The customVarCode is _always_ optional.
 
 ```cpp
 Variable *variableList[] = {
-    new Sensor1_Variable1(&parentSensor1),
-    new Sensor1_Variable2(&parentSensor1),
-    new Sensor2_Variable1(&parentSensor2),
+    new Sensor1_Variable1(&parentSensor1, "customVarCode1"),
+    new Sensor1_Variable2(&parentSensor1, "customVarCode2"),
+    new Sensor2_Variable1(&parentSensor2, "customVarCode3"),
     ...
-    new SensorX_VariableX(&parentSensorx)
+    new SensorX_VariableX(&parentSensorx, "customVarCode4")
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 VariableArray sensors;
@@ -166,7 +167,7 @@ Timezone functions:
 A note about timezones:  It is possible to create multiple logger objects in your code if you want to log different sensors at different intervals, but every logger object will always have the same timezone and timezone offset.  If you attempt to call these functions more than once for different loggers, whatever value was called last will apply to every logger.
 
 Setup and initialization functions:
-- **init(int SDCardPin, int interruptPin, int variableCount, Sensor variableList[], float loggingIntervalMinutes, const char loggerID = 0)** - Initializes the logger object.  Must happen within the setup function.  Note that the variableList[], loggerID are all pointers.
+- **init(int SDCardPin, int interruptPin, int variableCount, Sensor variableList[], float loggingIntervalMinutes, const char loggerID = 0)** - Initializes the logger object.  Must happen within the setup function.  Note that the variableList[], loggerID are all pointers.  The SDCardPin is the pin of the chip select/slave select for the SPI connection to the SD card.
 - **setAlertPin(int ledPin)** - Optionally sets a pin to put out an alert that a measurement is being logged.  This should be a pin with a LED on it.
 
 Functions to access the clock in proper format and time zone:
@@ -303,7 +304,7 @@ If you would like to do other things within the loop function, you should access
 
 #### <a name="MayflyOnboard"></a>Mayfly Onboard Sensors
 
-The version of the Mayfly is required as input (ie, "v0.3" or "v0.4" or "v0.5").
+The version of the Mayfly is required as input (ie, "v0.3" or "v0.4" or "v0.5").  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.
 
 The main constuctor for the sensor object is:
 
@@ -315,14 +316,14 @@ EnviroDIYMayfly mayfly(MFVersion);
 The three available variables are:
 
 ```cpp
-EnviroDIYMayfly_Temp(&mayfly);
-EnviroDIYMayfly_Batt(&mayfly);
-EnviroDIYMayfly_FreeRam(&mayfly);
+EnviroDIYMayfly_Temp(&mayfly, "customVarCode");
+EnviroDIYMayfly_Batt(&mayfly, "customVarCode");
+EnviroDIYMayfly_FreeRam(&mayfly, "customVarCode");
 ```
 
 #### <a name="MaxBotix"></a>[MaxBotix MaxSonar](http://www.maxbotix.com/Ultrasonic_Sensors/High_Accuracy_Sensors.htm) - HRXL MaxSonar WR or WRS Series with TTL Outputs
 
-The power/excite pin, digital data pin, and trigger are needed as input.  (Use -1 for the trigger if you do not have it connected.)  Because this library uses the [EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwareSerial_PCINT12/), the MaxBotix must be installed on a digital pin that depends on pin change interrupt vector 1 or 2.  On the Mayfly, the empty pins in this range are pins D10, D11, and D18.  (Changing the solder jumper options on the back of the board may eliminate D18 as a possibility.)
+The power/excite pin, digital data pin, and trigger are needed as input.  (Use -1 for the trigger if you do not have it connected.)  Because this library uses the [EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwareSerial_PCINT12/), the MaxBotix must be installed on a digital pin that depends on pin change interrupt vector 1 or 2.  On the Mayfly, the empty pins in this range are pins D10, D11, and D18.  (Changing the solder jumper options on the back of the board may eliminate D18 as a possibility.)  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.
 
 The main constuctor for the sensor object is:
 
@@ -334,12 +335,12 @@ MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger);
 The single available variable is:
 
 ```cpp
-MaxBotixSonar_Range(&sonar);
+MaxBotixSonar_Range(&sonar, "customVarCode");
 ```
 
 #### <a name="OBS3"></a>[Campbell Scientific OBS-3+](https://www.campbellsci.com/obs-3plus)
 
-The power pin, analog data pin, and calibration values _in Volts_ for Ax^2 + Bx + C are required as inputs and the sensor must be attached to a TI ADS1115 ADD converter (such as on the first four analog pins of the Mayfly).
+The power pin, analog data pin, and calibration values _in Volts_ for Ax^2 + Bx + C are required as inputs and the sensor must be attached to a TI ADS1115 ADD converter (such as on the first four analog pins of the Mayfly).  A custom variable code can be entered as a second argument in the variable constructors, and it is very strongly recommended that you use this otherwise it will be very difficult to determine which return is high and which is low range on the sensor.
 
 Note that to access both the high and low range returns, two instances must be created, one at the low range return pin and one at the high pin.
 
@@ -354,13 +355,13 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
 The single available variable is (called once each for high and low range):
 
 ```cpp
-CampbellOBS3_Turbidity(&osb3low);
-CampbellOBS3_Turbidity(&osb3high);
+CampbellOBS3_Turbidity(&osb3low, "customLowVarCode");
+CampbellOBS3_Turbidity(&osb3high, "customHighVarCode");
 ```
 
 #### <a name="5TM"></a>[Decagon Devices 5TM](https://www.decagon.com/en/soils/volumetric-water-content-sensors/5tm-vwc-temp/) Soil Moisture and Temperature Sensor
 
-The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.  Because this library uses a modified version of the basic SDI-12 library, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
+The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.  Because this library uses a modified version of the basic SDI-12 library, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
 
 The main constuctor for the sensor object is:
 
@@ -372,14 +373,14 @@ Decagon5TM fivetm(TMSDI12address, SDI12Power, SDI12Data, numberReadings);
 The three available variables are:
 
 ```cpp
-Decagon5TM_Ea(&fivetm);
-Decagon5TM_Temp(&fivetm);
-Decagon5TM_VWC(&fivetm);
+Decagon5TM_Ea(&fivetm, "customVarCode");
+Decagon5TM_Temp(&fivetm, "customVarCode");
+Decagon5TM_VWC(&fivetm, "customVarCode");
 ```
 
 #### <a name="CTD"></a>[Decagon Devices CTD-5 or  CTD-10](https://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/ctd-10-sensor-electrical-conductivity-temperature-depth/) Electrical Conductivity, Temperature, and Depth Sensor
 
-The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.  Because this library uses a modified version of the basic SDI-12 library, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
+The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  For this particular sensor, taking ~6 readings seems to be ideal for reducing noise.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.  Because this library uses a modified version of the basic SDI-12 library, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
 
 The main constuctor for the sensor object is:
 
@@ -391,14 +392,14 @@ DecagonCTD ctd(CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 The three available variables are:
 
 ```cpp
-DecagonCTD_Cond(&ctd);
-DecagonCTD_Temp(&ctd);
-DecagonCTD_Depth(&ctd);
+DecagonCTD_Cond(&ctd, "customVarCode");
+DecagonCTD_Temp(&ctd, "customVarCode");
+DecagonCTD_Depth(&ctd, "customVarCode");
 ```
 
 #### <a name="ES2"></a>[Decagon Devices ES-2](http://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/es-2-electrical-conductivity-temperature/) Electrical Conductivity Sensor
 
-The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.  Because this library uses a modified version of the basic SDI-12 library, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
+The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.  Because this library uses a modified version of the basic SDI-12 library, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
 
 The main constuctor for the sensor object is:
 
@@ -410,14 +411,14 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, numberReadings);
 The two available variables are:
 
 ```cpp
-DecagonES2_Cond(&es2);
-DecagonES2_Temp(&es2);
+DecagonES2_Cond(&es2, "customVarCode");
+DecagonES2_Temp(&es2, "customVarCode");
 ```
 
 
 #### <a name="DS18"></a>[Maxim DS18 Temperature Probes](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html)
 
-The same library should work with a [DS18B20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html), [DS18S20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html), [DS1822](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1822.html), and the no-longer-sold [DS1820](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1820.html) sensor.  The OneWire hex address of the sensor, the power pin, and the data pin, are required as inputs.  The hex address is an array of 8 hex values, for example:  {0x28, 0x1D, 0x39, 0x31, 0x2, 0x0, 0x0, 0xF0 }.  To get the address of your sensor, plug a single sensor into your device and run the [oneWireSearch](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/oneWireSearch/oneWireSearch.ino) example or the [Single](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/Single/Single.pde) example provided within the Dallas Temperature library.  THe sensor address is programmed at the factory and cannot be changed.
+The same library should work with a [DS18B20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html), [DS18S20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html), [DS1822](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1822.html), and the no-longer-sold [DS1820](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1820.html) sensor.  The OneWire hex address of the sensor, the power pin, and the data pin, are required as inputs.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  The hex address is an array of 8 hex values, for example:  {0x28, 0x1D, 0x39, 0x31, 0x2, 0x0, 0x0, 0xF0 }.  To get the address of your sensor, plug a single sensor into your device and run the [oneWireSearch](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/oneWireSearch/oneWireSearch.ino) example or the [Single](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/Single/Single.pde) example provided within the Dallas Temperature library.  The sensor address is programmed at the factory and cannot be changed.
 
 The main constuctor for the sensor object is:
 
@@ -426,7 +427,7 @@ The main constuctor for the sensor object is:
 MaximDS18 ds18(OneWireAddress, powerPin, dataPin);
 ```
 
-_If you only have one sensor attached on your OneWire Bus_, you can use this constructor to save yourself the trouble of finding the address:
+_If and only you have exactly one sensor attached on your OneWire pin or bus_, you can use this constructor to save yourself the trouble of finding the address:
 
 ```cpp
 #include <MaximDS18.h>
@@ -436,12 +437,12 @@ MaximDS18 ds18(powerPin, dataPin);
 The single available variable is:
 
 ```cpp
-MaximDS18_Temp(&ds18);
+MaximDS18_Temp(&ds18, "customVarCode");
 ```
 
 #### <a name="AM2315"></a>[AOSong AM2315](www.aosong.com/asp_bin/Products/en/AM2315.pdf) Encased I2C Temperature/Humidity Sensor
 
-Because this is an I2C sensor, the only input needed is the power pin.  Because this sensor can have only one I2C address, it is only possible to connect one of these sensors to your system.
+Because this is an I2C sensor, the only input needed is the power pin.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  Because this sensor can have only one I2C address, it is only possible to connect one of these sensors to your system.
 
 The main constuctor for the sensor object is:
 
@@ -453,33 +454,33 @@ AOSongAM2315 am2315(I2CPower);
 The two available variables are:
 
 ```cpp
-AOSongAM2315_Humidity(&am2315);
-AOSongAM2315_Temp(&am2315);
+AOSongAM2315_Humidity(&am2315, "customVarCode");
+AOSongAM2315_Temp(&am2315, "customVarCode");
 ```
 
 #### <a name="BME280"></a>[Bosch BME280](https://www.bosch-sensortec.com/bst/products/all_products/bme280) Integrated Environmental Sensor
 
-Although this sensor has the option of either I2C or SPI communication, this library only supports I2C.  The only input needed is the power pin; the I2C sensor address is assumed to be 0x76, though it can be changed to 0x77 in the constructor if necessary.  To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses.  No more than two can be attached.  This module is likely to also work with the [Bosch BMP280 Barometric Pressure Sensor](https://www.bosch-sensortec.com/bst/products/all_products/bmp280), though it has not been tested on it.
+Although this sensor has the option of either I2C or SPI communication, this library only supports I2C.  The only input needed is the power pin; the I2C sensor address is assumed to be 0x76, though it can be changed to 0x77 in the constructor if necessary.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses.  No more than two can be attached.  This module is likely to also work with the [Bosch BMP280 Barometric Pressure Sensor](https://www.bosch-sensortec.com/bst/products/all_products/bmp280), though it has not been tested on it.
 
 The main constuctor for the sensor object is:
 
 ```cpp
 #include <BoschBME280.h>
-BoschBME280 bme280(I2CPower);
+BoschBME280 bme280(I2CPower, i2cAddressHex);
 ```
 
 The four available variables are:
 
 ```cpp
-BoschBME280_Temp(&bme280);
-BoschBME280_Humidity(&bme280);
-BoschBME280_Pressure(&bme280);
-BoschBME280_Altitude(&bme280);
+BoschBME280_Temp(&bme280, "customVarCode");
+BoschBME280_Humidity(&bme280, "customVarCode");
+BoschBME280_Pressure(&bme280, "customVarCode");
+BoschBME280_Altitude(&bme280, "customVarCode");
 ```
 
 #### <a name="DHT"></a>[AOSong DHT](http://www.aosong.com/en/products/index.asp) Digital-Output Relative Humidity & Temperature Sensor
 
-This library will work with an AOSong DHT11, DHT21, AM2301, DHT22, or AM2302.  Please keep in mind that these sensors should not be updated more frequently than once ever 2 seconds.  The data pin, power pin, and sensor type are needed as inputs.
+This library will work with an AOSong DHT11, DHT21, AM2301, DHT22, or AM2302.  Please keep in mind that these sensors should not be updated more frequently than once ever 2 seconds.  The data pin, power pin, and sensor type are needed as inputs.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.
 
 The main constuctor for the sensor object is:
 
@@ -491,7 +492,7 @@ AOSongDHT dht(DHTPower, DHTPin, dhtType);;
 The three available variables are:
 
 ```cpp
-AOSongDHT_Humidity(&dht);
-AOSongDHT_Temp(&dht);
-AOSongDHT_HI(&dht);  // Heat Index
+AOSongDHT_Humidity(&dht, "customVarCode");
+AOSongDHT_Temp(&dht, "customVarCode");
+AOSongDHT_HI(&dht, "customVarCode");  // Heat Index
 ```

@@ -308,30 +308,46 @@ public:
     // This returns the current filename.  Must be run after setFileName.
     String getFileName(void){return _fileName;}
 
-    // This creates a header for the logger file
-    String generateFileHeader(void)
-    {
-        String dataHeader = F("Data Logger: ");
-        dataHeader += String(_loggerID);
+    // This is a PRE-PROCESSOR MACRO to speed up generating header rows
+    // Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
+    #define makeHeaderRowMacro(firstCol, function) \
+        dataHeader += F("\""); \
+        dataHeader += firstCol; \
+        dataHeader += F("\","); \
+        for (uint8_t i = 0; i < _variableCount; i++) \
+        { \
+            dataHeader += F("\""); \
+            dataHeader += function; \
+            dataHeader += F("\""); \
+            if (i + 1 != _variableCount) \
+            { \
+                dataHeader += F(","); \
+            } \
+        } \
         dataHeader += F("\r\n");
 
-        dataHeader += F("\"Date and Time in UTC");
-        dataHeader += _timeZone;
-        dataHeader += F("\", ");
-        for (uint8_t i = 0; i < _variableCount; i++)
-        {
-            dataHeader += F("\"");
-            dataHeader += _variableList[i]->parentSensor->getSensorName();
-            dataHeader += F(" - ");
-            dataHeader += _variableList[i]->getVarName();
-            dataHeader += F(" (");
-            dataHeader += _variableList[i]->getVarUnit();
-            dataHeader += F(")\"");
-            if (i + 1 != _variableCount)
-            {
-                dataHeader += F(", ");
-            }
-        }
+    // This creates a header for the logger file
+    virtual String generateFileHeader(void)
+    {
+        // Very first column of the header is the logger ID
+        String logIDRowHeader = F("Data Logger: ");
+        logIDRowHeader += String(_loggerID);
+
+        // Create the header rows
+        String dataHeader = "";
+        // Next line will be the parent sensor names
+        makeHeaderRowMacro(logIDRowHeader, _variableList[i]->parentSensor->getSensorName())
+        // Next comes the ODM2 variable name
+        makeHeaderRowMacro(logIDRowHeader, _variableList[i]->getVarName())
+        // Next comes the ODM2 unit name
+        makeHeaderRowMacro(logIDRowHeader, _variableList[i]->getVarUnit())
+
+        // We'll finish up the the custom variable codes
+        String dtRowHeader = F("Date and Time in UTC");
+        dtRowHeader += _timeZone;
+        makeHeaderRowMacro(dtRowHeader, _variableList[i]->getVarCode())
+
+        // Return everything
         return dataHeader;
     }
 
@@ -340,7 +356,7 @@ public:
     {
         String csvString = "";
         Logger::markedDateTime.addToString(csvString);
-        csvString += F(", ");
+        csvString += F(",");
         csvString += VariableArray::generateSensorDataCSV();
         return csvString;
     }
@@ -394,7 +410,7 @@ public:
             PRINTOUT(F("   ... File created!\n"));
 
             // Add header information
-            logFile.println(generateFileHeader());
+            logFile.print(generateFileHeader());
             DBGVA(generateFileHeader(), F("\n"));
 
             //Close the file to save it
@@ -427,7 +443,7 @@ public:
 
             // Write the CSV data
             logFile.println(rec);
-            // Echo the lind to the serial port
+            // Echo the line to the serial port
             PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/ \n"));
             PRINTOUT(rec, F("\n"));
 
