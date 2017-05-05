@@ -14,24 +14,24 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
+
+// Select your modem chip, comment out all of the others
+// #define TINY_GSM_MODEM_SIM800  // Select for anything using a SIM800, SIM900, or varient thereof: Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
+// #define TINY_GSM_MODEM_A6  // Select for A6 or A7 chips
+// #define TINY_GSM_MODEM_M590
+// #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
+#define TINY_GSM_MODEM_XBEE  // Select for Digi brand XBee's, including WiFi or LTE-M1
+
 // ---------------------------------------------------------------------------
 // Include the base required libraries
 // ---------------------------------------------------------------------------
+#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
 #include <Arduino.h>
-#include <SensorBase.h>
-
-#ifdef DreamHostURL
+#ifdef DreamHostPortalRX
 #include <LoggerDreamHost.h>
 #else
 #include <LoggerEnviroDIY.h>
 #endif
-
-#include <DecagonCTD.h>
-#include <Decagon5TM.h>
-#include <DecagonES2.h>
-#include <CampbellOBS3.h>
-#include <MaxBotixSonar.h>
-#include <MayflyOnboardSensors.h>
 
 // ---------------------------------------------------------------------------
 // Set up the sensor specific information
@@ -40,86 +40,193 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // The name of this file
 const char *SKETCH_NAME = "logging_to_EnviroDIY.ino";
 
-// Mayfly version number
-const char *MFVersion = "v0.3";
-
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "Mayfly_160073";
 // How frequently (in minutes) to log data
-int LOGGING_INTERVAL = 5;
+int LOGGING_INTERVAL = 1;
 // Your logger's timezone.
 const int TIME_ZONE = -5;
+// Create a new logger instance
+#ifdef DreamHostPortalRX
+LoggerDreamHost EnviroDIYLogger;
+#else
+LoggerEnviroDIY EnviroDIYLogger;
+#endif
 
-// Decagon CTD: pin settings
-// sdi-12 data pin is usually, pin 7 on shield 3.0
-const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
-const int numberReadings = 10;  // The number of readings to average
-const int SDI12Data = 7;  // The pin the CTD is attached to
-const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
+// ==========================================================================
+//    AOSong AM2315
+// ==========================================================================
+#include <AOSongAM2315.h>
+const int I2CPower = 22;  // switched sensor power is pin 22 on Mayfly
+AOSongAM2315 am2315(I2CPower);
 
-// Decagon 5TM: pin settings
-// sdi-12 data pin is usually, pin 7 on shield 3.0
-const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
-// const int SDI12Data = 7;  // The pin the 5TM is attached to
-// const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
 
-// Decagon ES2: pin settings
-// sdi-12 data pin is usually, pin 7 on shield 3.0
-const char *ES2DI12address = "3";  // The SDI-12 Address of the 5-TM
-// const int SDI12Data = 7;  // The pin the 5TM is attached to
-// const int switchedPower = 22;  // sensor power is pin 22 on Mayfly
+// ==========================================================================
+//    AOSong DHT 11/21 (AM2301)/22 (AM2302)
+// ==========================================================================
+#include <AOSongDHT.h>
+const int DHTPower = 22;  // switched sensor power is pin 22 on Mayfly
+const int DHTPin = 6;
+DHTtype dhtType = DHT11;    // Select DHT type, either DHT11, DHT21, or DHT22
+AOSongDHT dht(DHTPower, DHTPin, dhtType);
 
-// MaxBotix Sonar: pin settings
-const int SonarData = 10;     // data  pin
-// const int SonarPower = 11;   // excite (power) pin
-const int SonarTrigger = -1;   // Trigger pin
-// const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
 
-// Campbell OBS 3+: pin settings
+// ==========================================================================
+//    Bosch BME280
+// ==========================================================================
+#include <BoschBME280.h>
+uint8_t BMEi2c_addr = 0x76;  // The BME280 can be addressed either as 0x76 or 0x77
+// const int I2CPower = 22;  // switched sensor power is pin 22 on Mayfly
+BoschBME280 bme280(I2CPower, BMEi2c_addr);
+
+
+// ==========================================================================
+//    CAMPBELL OBS 3 / OBS 3+
+// ==========================================================================
+#include <CampbellOBS3.h>
 // Campbell OBS 3+ Low Range calibration in Volts
 const int OBSLowPin = 0;  // The low voltage analog pin
 const float OBSLow_A = 4.0749E+00;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = 9.1011E+01;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibration
+const int OBS3Power = 22;  // switched sensor power is pin 22 on Mayfly
+CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C);
 // Campbell OBS 3+ High Range calibration in Volts
 const int OBSHighPin = 1;  // The high voltage analog pin
 const float OBSHigh_A = 5.2996E+01;  // The "A" value (X^2) from the high range calibration
 const float OBSHigh_B = 3.7828E+02;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calibration
-// const int switchedPower = 22;    // sensor power is pin 22 on Mayfly
+CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
+
+
+// ==========================================================================
+//    Decagon 5TM
+// ==========================================================================
+#include <Decagon5TM.h>
+const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
+const int SDI12Data = 7;  // The pin the 5TM is attached to
+const int SDI12Power = 22;  // switched sensor power is pin 22 on Mayfly
+Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
+
+
+// ==========================================================================
+//    Decagon CTD
+// ==========================================================================
+#include <DecagonCTD.h>
+const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
+const int numberReadings = 6;  // The number of readings to average
+// const int SDI12Data = 7;  // The pin the CTD is attached to
+// const int SDI12Power = 22;  // switched sensor power is pin 22 on Mayfly
+DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
+
+
+// ==========================================================================
+//    Decagon ES2
+// ==========================================================================
+#include <DecagonES2.h>
+const char *ES2SDI12address = "3";  // The SDI-12 Address of the ES2
+// const int SDI12Data = 7;  // The pin the 5TM is attached to
+// const int SDI12Power = 22;  // switched sensor power is pin 22 on Mayfly
+DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data);
+
+
+// ==========================================================================
+//    Maxbotix HRXL
+// ==========================================================================
+#include <MaxBotixSonar.h>
+const int SonarData = 11;     // data  pin
+const int SonarTrigger = -1;   // Trigger pin
+const int SonarPower = 22;   // excite (power) pin
+MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger) ;
+
+
+// ==========================================================================
+//    Maxim DS18 Temperature
+// ==========================================================================
+#include <MaximDS18.h>
+// OneWire Address [array of 8 hex characters]
+DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA, 0x81, 0x16, 0x03, 0x0C};
+DeviceAddress OneWireAddress2 = {0x28, 0xFF, 0x57, 0x90, 0x82, 0x16, 0x04, 0x67};
+DeviceAddress OneWireAddress3 = {0x28, 0xFF, 0x74, 0x2B, 0x82, 0x16, 0x03, 0x57};
+// DeviceAddress OneWireAddress4 = {0x28, 0xFF, 0xB6, 0x6E, 0x84, 0x16, 0x05, 0x9B};
+// DeviceAddress OneWireAddress5 = {0x28, 0xFF, 0x3B, 0x07, 0x82, 0x16, 0x13, 0xB3};
+const int OneWireBus = 4;   // Data pin
+const int OneWirePower = 22;   // Power pin
+MaximDS18 ds18_1(OneWireAddress1, OneWirePower, OneWireBus);
+MaximDS18 ds18_2(OneWireAddress2, OneWirePower, OneWireBus);
+MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
+// MaximDS18 ds18_u(OneWirePower, OneWireBus);
+
+
+// ==========================================================================
+//    EnviroDIY Mayfly
+// ==========================================================================
+#include <MayflyOnboardSensors.h>
+const char *MFVersion = "v0.3";
+EnviroDIYMayfly mayfly(MFVersion) ;
 
 // ---------------------------------------------------------------------------
-// 3. The array that contains all valid sensors
+// The array that contains all valid variables
 // ---------------------------------------------------------------------------
-SensorBase *SENSOR_LIST[] = {
-    new DecagonCTD_Cond(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
-    new DecagonCTD_Temp(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
-    new DecagonCTD_Depth(*CTDSDI12address, switchedPower, SDI12Data, numberReadings),
-    new Decagon5TM_Ea(*TMSDI12address, switchedPower, SDI12Data),
-    new Decagon5TM_VWC(*TMSDI12address, switchedPower, SDI12Data),
-    new Decagon5TM_Temp(*TMSDI12address, switchedPower, SDI12Data),
-    new DecagonES2_Cond(*ES2DI12address, switchedPower, SDI12Data),
-    new DecagonES2_Temp(*ES2DI12address, switchedPower, SDI12Data),
-    new CampbellOBS3_Turbidity(switchedPower, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C),
-    new CampbellOBS3_TurbHigh(switchedPower, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C),
-    new MaxBotixSonar_Range(switchedPower, SonarData, SonarTrigger),
-        new MayflyOnboardTemp(MFVersion),
-        new MayflyOnboardBatt(MFVersion),
-        new MayflyFreeRam()
+Variable *variableList[] = {
+    new AOSongAM2315_Humidity(&am2315),
+    new AOSongAM2315_Temp(&am2315),
+    new AOSongDHT_Humidity(&dht),
+    new AOSongDHT_Temp(&dht),
+    new AOSongDHT_HI(&dht),
+    new BoschBME280_Temp(&bme280),
+    new BoschBME280_Humidity(&bme280),
+    new BoschBME280_Pressure(&bme280),
+    new BoschBME280_Altitude(&bme280),
+    new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
+    new Decagon5TM_Ea(&fivetm),
+    new Decagon5TM_Temp(&fivetm),
+    new Decagon5TM_VWC(&fivetm),
+    new DecagonCTD_Cond(&ctd),
+    new DecagonCTD_Temp(&ctd),
+    new DecagonCTD_Depth(&ctd),
+    new DecagonES2_Cond(&es2),
+    new DecagonES2_Temp(&es2),
+    new MaxBotixSonar_Range(&sonar),
+    new MaximDS18_Temp(&ds18_1),
+    new MaximDS18_Temp(&ds18_2),
+    new MaximDS18_Temp(&ds18_3),
+    new EnviroDIYMayfly_Temp(&mayfly),
+    new EnviroDIYMayfly_Batt(&mayfly),
+    new EnviroDIYMayfly_FreeRam(&mayfly)
+    // new YOUR_variableName_HERE(&)
 };
-int sensorCount = sizeof(SENSOR_LIST) / sizeof(SENSOR_LIST[0]);
+int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 
 // ---------------------------------------------------------------------------
 // Device registration and sampling feature information
 //   This should be obtained after registration at http://data.envirodiy.org
+//   You can copy the entire code snippet directly into this block below.
 // ---------------------------------------------------------------------------
-
-const char *REGISTRATION_TOKEN = "12345678-abcd-1234-efgh-1234567890ab";
-const char *SAMPLING_FEATURE = "12345678-abcd-1234-efgh-1234567890ab";
-
-const char *UUIDs[] =
+const char *REGISTRATION_TOKEN = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
+const char *SAMPLING_FEATURE = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
+const char *UUIDs[] =                                                      // UUID array for device sensors
 {
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
+"12345678-abcd-1234-efgh-1234567890ab",
 "12345678-abcd-1234-efgh-1234567890ab",
 "12345678-abcd-1234-efgh-1234567890ab",
 "12345678-abcd-1234-efgh-1234567890ab",
@@ -136,26 +243,35 @@ const char *UUIDs[] =
 "12345678-abcd-1234-efgh-1234567890ab"
 };
 
+
 // ---------------------------------------------------------------------------
 // Device Connection Options and WebSDL Endpoints for POST requests
 // ---------------------------------------------------------------------------
-xbee BEE_TYPE = WIFI;  // The type of XBee, either GPRSv4, GPRSv6, or WIFI
-HardwareSerial &BeeSerial = Serial1; // The serial port for the xbee - software serial can also be used.
-const int BEE_BAUD = 9600;  // Bee BAUD rate (9600 is default)
-const char *APN = "apn.konekt.io";  // The APN for the GPRSBee, unnecessary for WiFi
+const int modemDTRPin = 23;  // Modem DTR Pin (Data Terminal Ready - used for sleep) (-1 if unconnected)
+const int modemCTSPin = 19;   // Modem CTS Pin (Clear to Send) (-1 if unconnected)
+const int modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (else -1)
+
+DTRSleepType ModemSleepMode = held;  // How the modem is put to sleep
+// Use "held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
+// Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
+// Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
+// Use "always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
+HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
+const long ModemBaud = 9600;  // Modem BAUD rate (9600 is default), can use higher for SIM800 (19200 works)
+const char *APN = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
+const char *SSID = "XXXXXXX";  // The WiFi access point, unnecessary for gprs
+const char *PWD = "XXXXXXX";  // The password for connecting to WiFi, unnecessary for gprs
 
 
 // ---------------------------------------------------------------------------
 // Board setup info
 // ---------------------------------------------------------------------------
-const int SERIAL_BAUD = 9600;  // Serial port BAUD rate
+const long SERIAL_BAUD = 115200;  // Serial port BAUD rate
 const int GREEN_LED = 8;  // Pin for the green LED
 const int RED_LED = 9;  // Pin for the red LED
 const int RTC_PIN = A7;  // RTC Interrupt/Alarm pin
-const int SD_SS_PIN = 12;  // SD Card Card Select/Slave Select Pin
+const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
 
-const int BEE_DTR_PIN = 23;  // Bee DTR Pin (Data Terminal Ready - used for sleep)
-const int BEE_CTS_PIN = 19;   // Bee CTS Pin (Clear to Send)
 
 // ---------------------------------------------------------------------------
 // Working Functions
@@ -175,14 +291,6 @@ void greenred4flash()
   digitalWrite(RED_LED, LOW);
 }
 
-// Create a new logger instance
-#ifdef DreamHostURL
-LoggerDreamHost EnviroDIYLogger;
-#else
-LoggerEnviroDIY EnviroDIYLogger;
-#endif
-
-
 
 // ---------------------------------------------------------------------------
 // Main setup function
@@ -192,7 +300,7 @@ void setup()
     // Start the primary serial connection
     Serial.begin(SERIAL_BAUD);
     // Start the serial connection with the *bee
-    BeeSerial.begin(BEE_BAUD);
+    ModemSerial.begin(ModemBaud);
 
     // Set up pins for the LED's
     pinMode(GREEN_LED, OUTPUT);
@@ -203,7 +311,7 @@ void setup()
     // Print a start-up note to the first serial port
     Serial.print(F("Now running "));
     Serial.print(SKETCH_NAME);
-    Serial.print(F(" on EnviroDIY Mayfly "));
+    Serial.print(F(" on Logger "));
     Serial.println(LoggerID);
 
     // Set the timezone and offsets
@@ -211,16 +319,23 @@ void setup()
     EnviroDIYLogger.setTZOffset(0);
 
     // Initialize the logger;
-    EnviroDIYLogger.init(SD_SS_PIN, RTC_PIN, sensorCount, SENSOR_LIST,
+    EnviroDIYLogger.init(SD_SS_PIN, RTC_PIN, variableCount, variableList,
                 LOGGING_INTERVAL, LoggerID);
     EnviroDIYLogger.setAlertPin(GREEN_LED);
-    // Set up the communication with EnviroDIY
+
+    // Set up the connection with EnviroDIY
     EnviroDIYLogger.setToken(REGISTRATION_TOKEN);
     EnviroDIYLogger.setSamplingFeature(SAMPLING_FEATURE);
     EnviroDIYLogger.setUUIDs(UUIDs);
-    EnviroDIYLogger.setupBee(BEE_TYPE, &BeeSerial, BEE_CTS_PIN, BEE_DTR_PIN, APN);
-    #ifdef DreamHostURL
-    EnviroDIYLogger.setDreamHostURL(DreamHostURL);
+
+    #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
+        EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, SSID, PWD);
+    #else
+        EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, APN);
+    #endif
+
+    #ifdef DreamHostPortalRX
+        EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
     #endif
     // Begin the logger;
     EnviroDIYLogger.begin();

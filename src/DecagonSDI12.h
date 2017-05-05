@@ -21,14 +21,26 @@
 
 #include <Arduino.h>
 #include <SDI12_PCINT3.h>
+
+// #define MODULES_DBG Serial
+#include "ModSensorDebugger.h"
+
 #include "SensorBase.h"
 
 // The main class for the Decagon CTD
-class DecagonSDI12 : public virtual SensorBase
+class DecagonSDI12 : public Sensor
 {
 public:
-    DecagonSDI12(char SDI12address, int powerPin, int dataPin, int numReadings = 1);
-    // String getSensorName(void) override;
+    DecagonSDI12(char SDI12address, int powerPin, int dataPin,
+                 int numReadings = 1,
+                 String sensName = "SDI12-Sensor", int numMeasurements = 1);
+    DecagonSDI12(char *SDI12address, int powerPin, int dataPin,
+                 int numReadings = 1,
+                 String sensName = "SDI12-Sensor", int numMeasurements = 1);
+    DecagonSDI12(int SDI12address, int powerPin, int dataPin,
+                 int numReadings = 1,
+                 String sensName = "SDI12-Sensor", int numMeasurements = 1);
+
     String getSensorVendor(void);
     String getSensorModel(void);
     String getSensorVersion(void);
@@ -36,24 +48,15 @@ public:
     String getSensorLocation(void) override;
 
     virtual bool update(void);
-
-    virtual float getValue(void) = 0;
 protected:
     void getSensorInfo(void);
-    SENSOR_STATUS sensorStatus;
-    String sensorLocation;
-    static int numMeasurements;
-    static float sensorValues[];
 private:
-    String _sensorName;
     String _sensorVendor;
     String _sensorModel;
     String _sensorVersion;
     String _sensorSerialNumber;
     char _SDI12address;
     int _numReadings;
-    String myCommand;
-    String sdiResponse;
 };
 
 #endif

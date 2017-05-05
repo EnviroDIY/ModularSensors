@@ -9,6 +9,7 @@ cache:
         - "~/.platformio"
 
 env:
+    - PLATFORMIO_CI_SRC=examples/single_sensor/
     - PLATFORMIO_CI_SRC=examples/multisensor_print/
     - PLATFORMIO_CI_SRC=examples/simple_logging/
     - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY/
@@ -21,8 +22,7 @@ install:
     - pio update
     - pio lib -g install https://github.com/EnviroDIY/Libraries.git#platformio
     - pio lib -g uninstall EnviroDIY_ModularSensors
-    - pio lib -g install 322
     - pio lib -g update
     - git rm library.json
 script:
-- platformio ci --lib="." --project-option="lib_ldf_mode = deep+" --board=mayfly
+- platformio ci --lib="." --project-option="lib_ldf_mode = deep" --board=mayfly

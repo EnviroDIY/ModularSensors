@@ -19,6 +19,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ---------------------------------------------------------------------------
 #include <Arduino.h>
 #include <SensorBase.h>
+#include <VariableBase.h>
 #include <MaxBotixSonar.h>
 
 // ---------------------------------------------------------------------------
@@ -27,16 +28,18 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 // MaxBotix Sonar: pin settings
 const int SonarPower = 22;   // excite (power) pin
-const int SonarData = 10;     // data  pin
+const int SonarData = 11;     // data  pin
 const int SonarTrigger = -1;   // Trigger pin
 
-// Create a new instance of the sonar_range object;
-MaxBotixSonar_Range sonar(SonarPower, SonarData, SonarTrigger);
+// Create a new instance of the sonar sensor;
+MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger);
+// Create a new instance of the range variable;
+MaxBotixSonar_Range sonar_range(&sonar);
 
 // ---------------------------------------------------------------------------
 // Board setup info
 // ---------------------------------------------------------------------------
-const int SERIAL_BAUD = 9600;  // Serial port BAUD rate
+const long SERIAL_BAUD = 115200;  // Serial port BAUD rate
 const int GREEN_LED = 8;  // Pin for the green LED
 const int RED_LED = 9;  // Pin for the red LED
 
@@ -71,9 +74,9 @@ void setup()
     // Print a start-up note to the first serial port
     Serial.println(F("Single Sensor Example - Sonar Ranging"));
 
-    // Set up the sensor
+    // Set up the sensor and variables
     sonar.setup();
-
+    sonar_range.setup();
 }
 
 
@@ -92,8 +95,8 @@ void loop()
     sonar.update();
 
     // Print the sonar result
-    Serial.print("Dat recieved from sonar: ");
-    Serial.println(sonar.getValueString());
+    Serial.print("Current sonar range: ");
+    Serial.println(sonar_range.getValueString());
 
     // Turn of sensor power
     digitalWrite(SonarPower, LOW);
