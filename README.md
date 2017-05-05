@@ -167,7 +167,7 @@ Timezone functions:
 A note about timezones:  It is possible to create multiple logger objects in your code if you want to log different sensors at different intervals, but every logger object will always have the same timezone and timezone offset.  If you attempt to call these functions more than once for different loggers, whatever value was called last will apply to every logger.
 
 Setup and initialization functions:
-- **init(int SDCardPin, int interruptPin, int variableCount, Sensor variableList[], float loggingIntervalMinutes, const char loggerID = 0)** - Initializes the logger object.  Must happen within the setup function.  Note that the variableList[], loggerID are all pointers.
+- **init(int SDCardPin, int interruptPin, int variableCount, Sensor variableList[], float loggingIntervalMinutes, const char loggerID = 0)** - Initializes the logger object.  Must happen within the setup function.  Note that the variableList[], loggerID are all pointers.  The SDCardPin is the pin of the chip select/slave select for the SPI connection to the SD card.
 - **setAlertPin(int ledPin)** - Optionally sets a pin to put out an alert that a measurement is being logged.  This should be a pin with a LED on it.
 
 Functions to access the clock in proper format and time zone:
@@ -380,7 +380,7 @@ Decagon5TM_VWC(&fivetm, "customVarCode");
 
 #### <a name="CTD"></a>[Decagon Devices CTD-5 or  CTD-10](https://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/ctd-10-sensor-electrical-conductivity-temperature-depth/) Electrical Conductivity, Temperature, and Depth Sensor
 
-The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.  Because this library uses a modified version of the basic SDI-12 library, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
+The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  For this particular sensor, taking ~6 readings seems to be ideal for reducing noise.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.  Because this library uses a modified version of the basic SDI-12 library, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
 
 The main constuctor for the sensor object is:
 
@@ -418,7 +418,7 @@ DecagonES2_Temp(&es2, "customVarCode");
 
 #### <a name="DS18"></a>[Maxim DS18 Temperature Probes](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html)
 
-The same library should work with a [DS18B20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html), [DS18S20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html), [DS1822](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1822.html), and the no-longer-sold [DS1820](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1820.html) sensor.  The OneWire hex address of the sensor, the power pin, and the data pin, are required as inputs.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  The hex address is an array of 8 hex values, for example:  {0x28, 0x1D, 0x39, 0x31, 0x2, 0x0, 0x0, 0xF0 }.  To get the address of your sensor, plug a single sensor into your device and run the [oneWireSearch](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/oneWireSearch/oneWireSearch.ino) example or the [Single](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/Single/Single.pde) example provided within the Dallas Temperature library.  THe sensor address is programmed at the factory and cannot be changed.
+The same library should work with a [DS18B20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html), [DS18S20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html), [DS1822](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1822.html), and the no-longer-sold [DS1820](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1820.html) sensor.  The OneWire hex address of the sensor, the power pin, and the data pin, are required as inputs.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  The hex address is an array of 8 hex values, for example:  {0x28, 0x1D, 0x39, 0x31, 0x2, 0x0, 0x0, 0xF0 }.  To get the address of your sensor, plug a single sensor into your device and run the [oneWireSearch](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/oneWireSearch/oneWireSearch.ino) example or the [Single](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/Single/Single.pde) example provided within the Dallas Temperature library.  The sensor address is programmed at the factory and cannot be changed.
 
 The main constuctor for the sensor object is:
 
@@ -427,7 +427,7 @@ The main constuctor for the sensor object is:
 MaximDS18 ds18(OneWireAddress, powerPin, dataPin);
 ```
 
-_If you only have one sensor attached on your OneWire Bus_, you can use this constructor to save yourself the trouble of finding the address:
+_If and only you have exactly one sensor attached on your OneWire pin or bus_, you can use this constructor to save yourself the trouble of finding the address:
 
 ```cpp
 #include <MaximDS18.h>
