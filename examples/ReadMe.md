@@ -29,3 +29,6 @@ This calls the same group of sensors as in multisensor_print.ino but now records
 
 ### logging_to_EnviroDIY.ino
 This calls the same group of sensors as in multisensor_print.ino and simple_logging.ino and sends the data to the EnviroDIY data portal in addition to logging it to an SD card.
+
+### DWRC_CitSci.ino
+This is a simplified version of logging_to_EnviroDIY.ino using just the sensors and equipment standard to the DWRI Citizen Science grant.

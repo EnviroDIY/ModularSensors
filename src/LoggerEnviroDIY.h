@@ -78,11 +78,22 @@ public:
         return jsonString;
     }
 
+    // Communication functions
+    void streamEnviroDIYRequest(Stream *stream)
+    {
+        stream->print(String(F("POST /api/data-stream/ HTTP/1.1")));
+        stream->print(String(F("\r\nHost: data.envirodiy.org")));
+        stream->print(String(F("\r\nTOKEN: ")) + String(_registrationToken));
+        // stream->print(String(F("\r\nCache-Control: no-cache")));
+        // stream->print(String(F("\r\nConnection: close")));
+        stream->print(String(F("\r\nContent-Length: ")) + String(generateSensorDataJSON().length()));
+        stream->print(String(F("\r\nContent-Type: application/json\r\n\r\n")));
+        stream->print(String(generateSensorDataJSON()));
+        stream->print(String(F("\r\n\r\n")));
+    }
 
-#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
-    defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
-    defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || \
-    defined(TINY_GSM_MODEM_XBEE)
+
+#if defined(USE_TINY_GSM)
 
     // Create the modem instance
     loggerModem modem;
@@ -158,6 +169,12 @@ public:
             {
                 // Post the data to the WebSDL
                 postDataEnviroDIY();
+
+                // Sync the clock every 24 readings
+                if (_numReadings % 24 == 0)
+                {
+                    modem.syncDS3231();
+                }
             }
             // Disconnect from the network
             modem.disconnectNetwork();
@@ -179,20 +196,6 @@ public:
 
 
 private:
-    // Communication functions
-    void streamEnviroDIYRequest(Stream *stream)
-    {
-        stream->print(String(F("POST /api/data-stream/ HTTP/1.1")));
-        stream->print(String(F("\r\nHost: data.envirodiy.org")));
-        stream->print(String(F("\r\nTOKEN: ")) + String(_registrationToken));
-        // stream->print(String(F("\r\nCache-Control: no-cache")));
-        // stream->print(String(F("\r\nConnection: close")));
-        stream->print(String(F("\r\nContent-Length: ")) + String(generateSensorDataJSON().length()));
-        stream->print(String(F("\r\nContent-Type: application/json\r\n\r\n")));
-        stream->print(String(generateSensorDataJSON()));
-        stream->print(String(F("\r\n\r\n")));
-    }
-
     // Tokens and UUID's for EnviroDIY
     const char *_registrationToken;
     const char *_samplingFeature;

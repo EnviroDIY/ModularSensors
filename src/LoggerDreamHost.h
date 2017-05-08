@@ -46,10 +46,16 @@ public:
         return dhString;
     }
 
-#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
-    defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
-    defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || \
-    defined(TINY_GSM_MODEM_XBEE)
+    void streamDreamHostRequest(Stream *stream)
+    {
+        stream->print(String(F("GET ")));
+        stream->print(generateSensorDataDreamHost());
+        stream->print(String(F("  HTTP/1.1")));
+        stream->print(String(F("\r\nHost: swrcsensors.dreamhosters.com")));
+        stream->print(String(F("\r\n\r\n")));
+    }
+
+#if defined(USE_TINY_GSM)
 
     // Post the data to dream host.
     int postDataDreamHost(void)
@@ -121,13 +127,16 @@ public:
             if (modem.connectNetwork())
             {
                 // Post the data to the WebSDL
-                // postDataEnviroDIY();
+                postDataEnviroDIY();
 
                 // Post the data to DreamHost
-                // postDataDreamHost();
+                postDataDreamHost();
 
-                // Get the unix timestamp from Sodaq's website
-                modem.getUnixTime();
+                // Sync the clock every 24 readings
+                if (_numReadings % 24 == 0)
+                {
+                    modem.syncDS3231();
+                }
             }
             // Disconnect from the network
             modem.disconnectNetwork();
@@ -149,15 +158,6 @@ public:
 
 private:
     const char *_DreamHostPortalRX;
-
-    void streamDreamHostRequest(Stream *stream)
-    {
-        stream->print(String(F("GET ")));
-        stream->print(generateSensorDataDreamHost());
-        stream->print(String(F("  HTTP/1.1")));
-        stream->print(String(F("\r\nHost: swrcsensors.dreamhosters.com")));
-        stream->print(String(F("\r\n\r\n")));
-    }
 };
 
 #endif
