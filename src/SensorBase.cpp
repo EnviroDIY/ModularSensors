@@ -63,7 +63,7 @@ void Sensor::powerUp(void)
 {
     // DBGS(F("Powering on Sensor\n"));
     digitalWrite(_powerPin, HIGH);
-    delay(500);
+    delay(1000);
 }
 
 // This is a helper function to turn off sensor power
