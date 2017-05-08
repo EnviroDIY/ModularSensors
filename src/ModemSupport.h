@@ -19,8 +19,7 @@
     defined(TINY_GSM_MODEM_XBEE)
   #define USE_TINY_GSM
   #define TINY_GSM_DEBUG Serial
-  // #define TINY_GSM_YIELD() { delay(3);}
-  #define TINY_GSM_YIELD() { delay(5);}
+  #define TINY_GSM_YIELD() { delay(3);}
   #include <TinyGsmClient.h>
 #else
   #define DBG(...)
@@ -425,46 +424,60 @@ public:
     // prefer to not see the std::out, remove the print statement
     void dumpBuffer(Stream *stream, int timeDelay = 5, int timeout = 5000)
     {
-        while (stream->available() > 0)
+        delay(timeDelay);
+        while (timeout-- > 0 && stream->available() > 0)
         {
-            char c[2] = {0};
-            stream->readBytes(c, 1);  // readBytes includes a timeout
-            if(c[0]) DBG(c[0]);
+            #if defined(TINY_GSM_DEBUG)
+            DBG((char)stream->read());
+            #else
+            stream->read();
+            #endif
             delay(timeDelay);
         }
         DBG(F("\n"));
-        stream->flush();
     }
 
-    // Get the time from http://time.sodaq.net/
-    // Using this site because it is a convienent source of a Unix time stamp
-    uint32_t getSodaqTime(void)
+    // Get the time from NIST via TIME protocol (rfc868)
+    // This would be much more efficient if done over UDP, but I'm doing it
+    // over TCP because I don't have a UDP library for all the modems.
+    uint32_t getUnixTime(void)
     {
-        // Make UDP connection to "time.nist.gov" at default UDP port (123)
-        connect("time.sodaq.net", 80);
 
-        // Send the GET request
-        stream->print(String(F("GET http://time.sodaq.net/ HTTP/1.1")));
-        stream->print(String(F("\r\nHost: time.sodaq.net")));
-        stream->print(String(F("\r\n\r\n")));
+        // Make TCP connection
+        #if defined(TINY_GSM_MODEM_XBEE)
+        connect("time-c.nist.gov", 37);  // XBee cannot resolve time.nist.gov
+        #else
+        connect("time.nist.gov", 37);
+        #endif
 
-        // Get the timestamp out of the result
-        DBG(stream->readStringUntil('\n'));
-        DBG(stream->readStringUntil('\n'));
-        DBG(stream->readStringUntil('\n'));
-        DBG(stream->readStringUntil('\n'));
-        DBG(stream->readStringUntil('\n'));
-        DBG(stream->readStringUntil('\n'));
-        DBG(stream->readStringUntil('\n'));
-        DBG(stream->readStringUntil('\n'));
-        DBG(stream->readStringUntil('\n'));
+        // XBee needs to send something before the connection is actually made
+        #if defined(TINY_GSM_MODEM_XBEE)
+        stream->write("Hi!");
+        delay(40);  // Need this delay! Timing tested, cannot be shortened!
+        #endif
 
-        // Close connection
-        stop();
+        // Response is returned as 32-bit number as soon as connection is made
+        // Connection is then immediately closed, so there is no need to close it
+        uint32_t secFrom1900 = 0;
+        byte response[4] = {0};
+        for (uint8_t i = 0; i < 4; i++)
+        {
+            response[i] = stream->read();
+            secFrom1900 += 0x000000FF & response[i];
+            DBG("\n*****",String(secFrom1900, BIN),"*****");
+            if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;}
+        }
+        dumpBuffer(stream);
+        DBG("\n*****",secFrom1900,"*****");
 
         // Return the timestamp
-        // return unixTimeStamp;
-        return 0;
+        uint32_t unixTimeStamp = secFrom1900 - 2208988800;
+        DBG("\n^^^^^",unixTimeStamp,"^^^^^");
+        if (unixTimeStamp < (1483228800 + 2208988800) || // Jan 1, 2017
+            unixTimeStamp > (1893456000 + 2208988800)) { // Jan 1, 2030
+                return 0;
+        }
+        return unixTimeStamp;
     }
 
     Stream *stream;

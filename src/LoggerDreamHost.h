@@ -121,13 +121,13 @@ public:
             if (modem.connectNetwork())
             {
                 // Post the data to the WebSDL
-                postDataEnviroDIY();
+                // postDataEnviroDIY();
 
                 // Post the data to DreamHost
-                postDataDreamHost();
+                // postDataDreamHost();
 
                 // Get the unix timestamp from Sodaq's website
-                modem.getSodaqTime();
+                modem.getUnixTime();
             }
             // Disconnect from the network
             modem.disconnectNetwork();
