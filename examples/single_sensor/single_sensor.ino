@@ -85,11 +85,11 @@ void setup()
 // ---------------------------------------------------------------------------
 void loop()
 {
-    // Power the sensor
-    digitalWrite(SonarPower, HIGH);
-
     // Turn on the LED to show we're taking a reading
     digitalWrite(GREEN_LED, HIGH);
+
+    // Wake up the sensor (also gives power)
+    sonar.wake();
 
     // Update the sensor value
     sonar.update();
@@ -98,8 +98,8 @@ void loop()
     Serial.print("Current sonar range: ");
     Serial.println(sonar_range.getValueString());
 
-    // Turn of sensor power
-    digitalWrite(SonarPower, LOW);
+    // Put the sensor back to sleep (also cuts power)
+    sonar.sleep();
 
     // Turn off the LED to show we're done with the reading
     digitalWrite(GREEN_LED, LOW);
