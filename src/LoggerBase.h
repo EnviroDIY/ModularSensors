@@ -153,12 +153,12 @@ public:
     // called before updating the sensors, not after.
     void markTime(void)
     {
-      markedEpochTime = getNow();
-      markedDateTime = rtc.makeDateTime(markedEpochTime);
-      formatDateTime_ISO8601(markedDateTime).toCharArray(markedISO8601Time, 26);
+      Logger::markedEpochTime = getNow();
+      Logger::markedDateTime = rtc.makeDateTime(Logger::markedEpochTime);
+      formatDateTime_ISO8601(Logger::markedDateTime).toCharArray(Logger::markedISO8601Time, 26);
     }
 
-    // This checks to see if the current time is an even interval of the logging rate
+    // This checks to see if the CURRENT time is an even interval of the logging rate
     // or we're in the first 15 minutes of logging
     bool checkInterval(void)
     {
@@ -172,6 +172,32 @@ public:
         {
             // Update the time variables with the current time
             markTime();
+            // Update the number of readings taken
+            _numReadings ++;
+            DBGVA(F("Time to log!\n"));
+            retval = true;
+        }
+        else
+        {
+            DBGVA(F("Not time yet, back to sleep\n"));
+            retval = false;
+        }
+        return retval;
+    }
+
+    // This checks to see if the MARKED time is an even interval of the logging rate
+    // or we're in the first 15 minutes of logging
+    bool checkMarkedInterval(void)
+    {
+        bool retval;
+        DBGVA(F("Marked Time: "), Logger::markedEpochTime, F("\n"));
+        DBGVA(F("Mod of Logging Interval: "), Logger::markedEpochTime % _interruptRate, F("\n"));
+        DBGVA(F("Number of Readings so far: "), _numReadings, F("\n"));
+        DBGVA(F("Mod of 120: "), Logger::markedEpochTime % 120, F("\n"));
+        if (Logger::markedEpochTime != 0 &&
+            ((Logger::markedEpochTime % _interruptRate == 0 ) or
+            (_numReadings < 10 and getNow() % 120 == 0)))
+        {
             // Update the number of readings taken
             _numReadings ++;
             DBGVA(F("Time to log!\n"));
@@ -229,7 +255,7 @@ public:
         // This does not clear their buffers, it just waits until they are finished
         // TODO:  Make sure can find all serial ports
         Serial.flush();
-        Serial1.flush();
+        // Serial1.flush();
 
         // This clears the interrrupt flag in status register of the clock
         // The next timed interrupt will not be sent until this is cleared
@@ -561,14 +587,18 @@ protected:
     int _ledPin;
 
     // Time stamps - want to set them at a single time and carry them forward
-    long markedEpochTime;
-    DateTime markedDateTime;
-    char markedISO8601Time[26];
+    static long markedEpochTime;
+    static DateTime markedDateTime;
+    static char markedISO8601Time[26];
 };
 
 // Initialize the static timezone
 int Logger::_timeZone = 0;
 // Initialize the static time adjustment
 int Logger::_offset = 0;
+// Initialize the static timestamps
+long Logger::markedEpochTime;
+DateTime Logger::markedDateTime;
+char Logger::markedISO8601Time[26];
 
 #endif

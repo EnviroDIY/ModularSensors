@@ -193,8 +193,9 @@ Functions to access the clock in proper format and time zone:
 - **getNow()** - This gets the current epoch time (unix timestamp - number of seconds since Jan 1, 1970) and corrects it for the specified logger time zone offset.
 - **formatDateTime_ISO8601(DateTime dt)** - Formats a DateTime object into an ISO8601 formatted Arduino String.
 - **formatDateTime_ISO8601(uint32_t unixTime)** - Formats a unix timestamp into an ISO8601 formatted Arduino String.
-- **checkInterval()** - This returns true if the current time is an even iterval of the logging interval, otherwise false.  This uses getNow() to get the curernt time.
+- **checkInterval()** - This returns true if the _current_ time is an even iterval of the logging interval, otherwise false.  This uses getNow() to get the curernt time.
 - **markTime()** - This sets variables for the date/time - this is needed so that all data outputs (SD, EnviroDIY, serial printing, etc) print the same time for updating the sensors - even though the routines to update the sensors and to output the data may take several seconds.  It is not currently possible to output the instantaneous time an individual sensor was updated, just a single marked time.  By custom, this should be called before updating the sensors, not after.  If you do not call this function before saving or sending data, there will be no timestamps associated with your data.  This is called for you every time the checkInterval() function is run.
+- **checkMarkedInterval()** - This returns true if the _marked_ time is an even iterval of the logging interval, otherwise false.  This uses the static time value set by markTime() to get the time.  It does not check the real-time-clock directly.
 
 
 Functions for the sleep modes:
@@ -242,7 +243,7 @@ Once the modem has been set up, these functions are available:
 - **stop()** - Breaks the TCP connection.
 - **dumpBuffer(Stream *stream, int timeDelay = 5, int timeout = 5000)** - Empties out the recieve buffer.  Note since Arduino ~v1.0 that the flush() function does NOT empty the buffer.
 - **getNISTTime()** - Returns the current unix timestamp from NIST via the TIME protocol  (rfc868).
-- **syncDS3231()** - This synchronizes the DS3231 real time clock with the NIST provided timestamp. 
+- **syncDS3231()** - This synchronizes the DS3231 real time clock with the NIST provided timestamp.
 
 
 ### <a name="DIYlogger"></a>Additional Functions Available for a LoggerEnviroDIY Object:

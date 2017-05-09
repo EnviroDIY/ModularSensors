@@ -7,8 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This sketch is an example of printing data from multiple sensors using
-the modular sensor library.
+This sketch is an example of logging data to an SD card
 
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
@@ -234,8 +233,8 @@ void setup()
     Serial.println(LoggerID);
 
     // Set the timezone and offsets
-    logger.setTimeZone(TIME_ZONE);
-    logger.setTZOffset(TIME_ZONE);  // Because RTC is in UTC
+    Logger::setTimeZone(TIME_ZONE);
+    Logger::setTZOffset(TIME_ZONE);  // Because RTC is in UTC
 
     // Initialize the logger;
     logger.init(SD_SS_PIN, RTC_PIN, variableCount, variableList,
