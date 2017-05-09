@@ -78,11 +78,22 @@ public:
         return jsonString;
     }
 
+    // Communication functions
+    void streamEnviroDIYRequest(Stream *stream)
+    {
+        stream->print(String(F("POST /api/data-stream/ HTTP/1.1")));
+        stream->print(String(F("\r\nHost: data.envirodiy.org")));
+        stream->print(String(F("\r\nTOKEN: ")) + String(_registrationToken));
+        // stream->print(String(F("\r\nCache-Control: no-cache")));
+        // stream->print(String(F("\r\nConnection: close")));
+        stream->print(String(F("\r\nContent-Length: ")) + String(generateSensorDataJSON().length()));
+        stream->print(String(F("\r\nContent-Type: application/json\r\n\r\n")));
+        stream->print(String(generateSensorDataJSON()));
+        stream->print(String(F("\r\n\r\n")));
+    }
 
-#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
-    defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
-    defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || \
-    defined(TINY_GSM_MODEM_XBEE)
+
+#if defined(USE_TINY_GSM)
 
     // Create the modem instance
     loggerModem modem;
@@ -98,24 +109,24 @@ public:
         Serial.flush();  // for debugging
 
         // Send the request to the modem stream
-        modem.dumpBuffer(modem._modemStream);
-        streamEnviroDIYRequest(modem._modemStream);
-        modem._modemStream->flush();  // wait for sending to finish
+        modem.dumpBuffer(modem.stream);
+        streamEnviroDIYRequest(modem.stream);
+        modem.stream->flush();  // wait for sending to finish
 
         // Wait for at least the first 12 characters to make it across
         unsigned long timeout = 1500;
         for (unsigned long start = millis(); millis() - start < timeout; )
         {
-            if (modem._modemStream->available() >= 12) break;
+            if (modem.stream->available() >= 12) break;
         }
 
         // Process the HTTP response
         int responseCode = 0;
-        if (modem._modemStream->available() >= 12)
+        if (modem.stream->available() >= 12)
         {
-            modem._modemStream->readStringUntil(' ');  // Throw away the "HTTP/1.1"
-            responseCode = modem._modemStream->readStringUntil(' ').toInt();
-            modem.dumpBuffer(modem._modemStream);
+            modem.stream->readStringUntil(' ');  // Throw away the "HTTP/1.1"
+            responseCode = modem.stream->readStringUntil(' ').toInt();
+            modem.dumpBuffer(modem.stream);
         }
         else responseCode=504;
 
@@ -159,9 +170,11 @@ public:
                 // Post the data to the WebSDL
                 postDataEnviroDIY();
 
-                // Print the response from the WebSDL
-                // int result = postDataEnviroDIY();
-                // modem.printHTTPResult(result);  // for debugging
+                // Sync the clock every 24 readings
+                if (_numReadings % 24 == 0)
+                {
+                    modem.syncDS3231();
+                }
             }
             // Disconnect from the network
             modem.disconnectNetwork();
@@ -183,20 +196,6 @@ public:
 
 
 private:
-    // Communication functions
-    void streamEnviroDIYRequest(Stream *stream)
-    {
-        stream->print(String(F("POST /api/data-stream/ HTTP/1.1")));
-        stream->print(String(F("\r\nHost: data.envirodiy.org")));
-        stream->print(String(F("\r\nTOKEN: ")) + String(_registrationToken));
-        // stream->print(String(F("\r\nCache-Control: no-cache")));
-        // stream->print(String(F("\r\nConnection: close")));
-        stream->print(String(F("\r\nContent-Length: ")) + String(generateSensorDataJSON().length()));
-        stream->print(String(F("\r\nContent-Type: application/json\r\n\r\n")));
-        stream->print(String(generateSensorDataJSON()));
-        stream->print(String(F("\r\n\r\n")));
-    }
-
     // Tokens and UUID's for EnviroDIY
     const char *_registrationToken;
     const char *_samplingFeature;

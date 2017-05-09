@@ -38,7 +38,7 @@ bool MaxBotixSonar::update(void)
 {
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}  // powerUp function includes a 500ms delay
+    if(!wasOn){powerUp();}  // powerUp function includes a 1s delay
     else{delay(160);}  // See note below
 
     // Clear values before starting loop

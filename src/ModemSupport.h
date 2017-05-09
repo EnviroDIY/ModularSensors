@@ -12,6 +12,7 @@
 #define modem_onoff_h
 
 #include <Arduino.h>
+#include "LoggerBase.h"
 
 #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
     defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
@@ -19,9 +20,7 @@
     defined(TINY_GSM_MODEM_XBEE)
   #define USE_TINY_GSM
   // #define TINY_GSM_DEBUG Serial
-  #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900)
-    #define TINY_GSM_YIELD() { delay(3);}
-  #endif
+  #define TINY_GSM_YIELD() { delay(3);}
   #include <TinyGsmClient.h>
 #else
   #define DBG(...)
@@ -296,7 +295,7 @@ public:
 
     bool off(void) override
     {
-        // if (!isOn()) DBG(F("Modem was not ever on.\n"));
+        if (!isOn()) DBG(F("Modem was not ever on.\n"));
         if (_onoff_DTR_pin >= 0) {
             digitalWrite(_onoff_DTR_pin, HIGH);
         }
@@ -426,18 +425,96 @@ public:
     // prefer to not see the std::out, remove the print statement
     void dumpBuffer(Stream *stream, int timeDelay = 5, int timeout = 5000)
     {
-        while (stream->available() > 0)
+        delay(timeDelay);
+        while (timeout-- > 0 && stream->available() > 0)
         {
-            char c[2] = {0};
-            stream->readBytes(c, 1);  // readBytes includes a timeout
-            if(c[0]) DBG(c[0]);
+            #if defined(TINY_GSM_DEBUG)
+            DBG((char)stream->read());
+            #else
+            stream->read();
+            #endif
             delay(timeDelay);
         }
         DBG(F("\n"));
-        stream->flush();
     }
 
-    Stream *_modemStream;
+    // Get the time from NIST via TIME protocol (rfc868)
+    // This would be much more efficient if done over UDP, but I'm doing it
+    // over TCP because I don't have a UDP library for all the modems.
+    uint32_t getNISTTime(void)
+    {
+
+        // Make TCP connection
+        #if defined(TINY_GSM_MODEM_XBEE)
+        connect("time-c.nist.gov", 37);  // XBee cannot resolve time.nist.gov
+        #else
+        connect("time.nist.gov", 37);
+        #endif
+
+        // XBee needs to send something before the connection is actually made
+        #if defined(TINY_GSM_MODEM_XBEE)
+        stream->write("Hi!");
+        delay(75);  // Need this delay!  Can get away with 50, but 100 is safer.
+        #endif
+
+        // Response is returned as 32-bit number as soon as connection is made
+        // Connection is then immediately closed, so there is no need to close it
+        uint32_t secFrom1900 = 0;
+        byte response[4] = {0};
+        for (uint8_t i = 0; i < 4; i++)
+        {
+            response[i] = stream->read();
+            secFrom1900 += 0x000000FF & response[i];
+            // DBG("\n*****",String(secFrom1900, BIN),"*****");
+            if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;}
+        }
+        dumpBuffer(stream);
+        // DBG("\n*****",secFrom1900,"*****");
+
+        // Return the timestamp
+        uint32_t unixTimeStamp = secFrom1900 - 2208988800;
+        DBG(F("Timesamp returned by NIST (UTC): "), unixTimeStamp, F("\n"));
+        // If before Jan 1, 2017 or after Jan 1, 2030, most likely an error
+        if (unixTimeStamp < 1483228800 || unixTimeStamp > 1893456000) return 0;
+        else return unixTimeStamp;
+    }
+
+    bool syncDS3231(void)
+    {
+        uint32_t start_millis = millis();
+
+        // Get the time stamp from NIST and adjust it to the correct time zone
+        // for the logger.
+        uint32_t nist = getNISTTime();
+        uint32_t nist_logTZ = nist + Logger::getTimeZone()*3600;
+        uint32_t nist_rtcTZ = nist_logTZ - Logger::getTZOffset()*3600;
+        DBG(F("        Correct Time for Logger: "), nist_logTZ, F(" -> "), \
+            Logger::formatDateTime_ISO8601(nist_logTZ), F("\n"));
+
+        // See how long it took to get the time from NIST
+        int sync_time = (millis() - start_millis)/1000;
+
+        // Check the current RTC time
+        uint32_t cur_logTZ = Logger::getNow();
+        DBG(F("           Time Returned by RTC: "), cur_logTZ, F(" -> "), \
+            Logger::formatDateTime_ISO8601(cur_logTZ), F("\n"));
+        // DBG(F("Offset: "), abs(nist_logTZ - cur_logTZ), F("\n"));
+
+        // If the RTC and NIST disagree by more than 5 seconds, set the clock
+        if ((abs(nist_logTZ - cur_logTZ) > 5) && (nist != 0))
+        {
+            rtc.setEpoch(nist_rtcTZ + sync_time/2);
+            PRINTOUT(F("Clock synced to NIST!\n"));
+            return true;
+        }
+        else
+        {
+            PRINTOUT(F("Clock already within 5 seconds of NIST.\n"));
+            return false;
+        }
+    }
+
+    Stream *stream;
     ModemOnOff *modemOnOff;
 
 private:
@@ -480,7 +557,7 @@ private:
         #if defined(USE_TINY_GSM)
             // Initialize the modem
             DBG(F("Initializing GSM modem instance..."));
-            modemStream->setTimeout(200);
+            // modemStream->setTimeout(200);
             static TinyGsm modem(*modemStream);
             _modem = &modem;
             static TinyGsmClient client(modem);
@@ -492,10 +569,10 @@ private:
                 _modem->setupPinSleep();
             #endif
             modemOnOff->off();
-            _modemStream = _client;
+            stream = _client;
             DBG(F("   ... Complete!\n"));
         #else
-            _modemStream = modemStream;
+            stream = modemStream;
         #endif
     }
 

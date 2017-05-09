@@ -29,3 +29,9 @@ This calls the same group of sensors as in multisensor_print.ino but now records
 
 ### logging_to_EnviroDIY.ino
 This calls the same group of sensors as in multisensor_print.ino and simple_logging.ino and sends the data to the EnviroDIY data portal in addition to logging it to an SD card.
+
+### DWRI_CitSci.ino
+This is a simplified version of logging_to_EnviroDIY.ino using just the sensors and equipment standard to the DWRI Citizen Science grant.
+
+### double_logger.ino
+This is a more complicated example using two different logger instances to log data at two different intervals, in this case, an AM3215 logging every minute, while checking the battery voltage only everu 5 minutes.  This showcases both how to use two different logging instances and how to use some of the functions to set up your own logging loop rather than using the log() function.

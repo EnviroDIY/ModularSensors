@@ -46,10 +46,16 @@ public:
         return dhString;
     }
 
-#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
-    defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
-    defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || \
-    defined(TINY_GSM_MODEM_XBEE)
+    void streamDreamHostRequest(Stream *stream)
+    {
+        stream->print(String(F("GET ")));
+        stream->print(generateSensorDataDreamHost());
+        stream->print(String(F("  HTTP/1.1")));
+        stream->print(String(F("\r\nHost: swrcsensors.dreamhosters.com")));
+        stream->print(String(F("\r\n\r\n")));
+    }
+
+#if defined(USE_TINY_GSM)
 
     // Post the data to dream host.
     int postDataDreamHost(void)
@@ -62,24 +68,24 @@ public:
         Serial.flush();  // for debugging
 
         // Send the request to the modem stream
-        modem.dumpBuffer(modem._modemStream);
-        streamDreamHostRequest(modem._modemStream);
-        modem._modemStream->flush();  // wait for sending to finish
+        modem.dumpBuffer(modem.stream);
+        streamDreamHostRequest(modem.stream);
+        modem.stream->flush();  // wait for sending to finish
 
         // Wait for at least the first 12 characters to make it across
         unsigned long timeout = 1500;
         for (unsigned long start = millis(); millis() - start < timeout; )
         {
-            if (modem._modemStream->available() >= 12) break;
+            if (modem.stream->available() >= 12) break;
         }
 
         // Process the HTTP response
         int responseCode = 0;
-        if (modem._modemStream->available() >= 12)
+        if (modem.stream->available() >= 12)
         {
-            modem._modemStream->readStringUntil(' ');  // Throw away the "HTTP/1.1"
-            responseCode = modem._modemStream->readStringUntil(' ').toInt();
-            modem.dumpBuffer(modem._modemStream);
+            modem.stream->readStringUntil(' ');  // Throw away the "HTTP/1.1"
+            responseCode = modem.stream->readStringUntil(' ').toInt();
+            modem.dumpBuffer(modem.stream);
         }
         else responseCode=504;
 
@@ -123,15 +129,14 @@ public:
                 // Post the data to the WebSDL
                 postDataEnviroDIY();
 
-                // Print the response from the WebSDL
-                // int result = postDataEnviroDIY();
-                // modem.printHTTPResult(result);  // for debugging
-
                 // Post the data to DreamHost
                 postDataDreamHost();
-                // Print the response from DreamHost
-                // int result2 = postDataDreamHost();
-                // modem.printHTTPResult(result2);  // for debugging
+
+                // Sync the clock every 24 readings
+                // if (_numReadings % 24 == 0)
+                // {
+                //     modem.syncDS3231();
+                // }
             }
             // Disconnect from the network
             modem.disconnectNetwork();
@@ -153,15 +158,6 @@ public:
 
 private:
     const char *_DreamHostPortalRX;
-
-    void streamDreamHostRequest(Stream *stream)
-    {
-        stream->print(String(F("GET ")));
-        stream->print(generateSensorDataDreamHost());
-        stream->print(String(F("  HTTP/1.1")));
-        stream->print(String(F("\r\nHost: swrcsensors.dreamhosters.com")));
-        stream->print(String(F("\r\n\r\n")));
-    }
 };
 
 #endif

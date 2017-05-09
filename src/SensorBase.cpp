@@ -48,12 +48,12 @@ bool Sensor::checkPowerOn(void)
     int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
     if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
     {
-        // DBGS(F("Power was off.\n"));
+        DBGS(F("Power was off.\n"));
         return false;
     }
     else
     {
-        // DBGS(F("Power was on.\n"));
+        DBGS(F("Power was on.\n"));
         return true;
     }
 }
@@ -61,15 +61,15 @@ bool Sensor::checkPowerOn(void)
 // This is a helper function to turn on sensor power
 void Sensor::powerUp(void)
 {
-    // DBGS(F("Powering on Sensor\n"));
+    DBGS(F("Powering on Sensor with pin "), _powerPin, F("\n"));
     digitalWrite(_powerPin, HIGH);
-    delay(500);
+    delay(750);
 }
 
 // This is a helper function to turn off sensor power
 void Sensor::powerDown(void)
 {
-    // DBGS(F("Turning off Power\n"));
+    DBGS(F("Turning off Power\n"));
     digitalWrite(_powerPin, LOW);
 }
 
