@@ -194,7 +194,7 @@ Functions to access the clock in proper format and time zone:
 - **formatDateTime_ISO8601(DateTime dt)** - Formats a DateTime object into an ISO8601 formatted Arduino String.
 - **formatDateTime_ISO8601(uint32_t unixTime)** - Formats a unix timestamp into an ISO8601 formatted Arduino String.
 - **checkInterval()** - This returns true if the _current_ time is an even iterval of the logging interval, otherwise false.  This uses getNow() to get the curernt time.
-- **markTime()** - This sets variables for the date/time - this is needed so that all data outputs (SD, EnviroDIY, serial printing, etc) print the same time for updating the sensors - even though the routines to update the sensors and to output the data may take several seconds.  It is not currently possible to output the instantaneous time an individual sensor was updated, just a single marked time.  By custom, this should be called before updating the sensors, not after.  If you do not call this function before saving or sending data, there will be no timestamps associated with your data.  This is called for you every time the checkInterval() function is run.
+- **markTime()** - This sets static variables for the date/time - this is needed so that all data outputs (SD, EnviroDIY, serial printing, etc) print the same time for updating the sensors - even though the routines to update the sensors and to output the data may take several seconds.  It is not currently possible to output the instantaneous time an individual sensor was updated, just a single marked time.  By custom, this should be called before updating the sensors, not after.  If you do not call this function before saving or sending data, there will be no timestamps associated with your data.  This is called for you every time the checkInterval() function is run.
 - **checkMarkedInterval()** - This returns true if the _marked_ time is an even iterval of the logging interval, otherwise false.  This uses the static time value set by markTime() to get the time.  It does not check the real-time-clock directly.
 
 
@@ -241,16 +241,16 @@ Once the modem has been set up, these functions are available:
 - **disconnectNetwork()** - Disconnects from the network, if applicable.
 - **connect(const char host, uint16_t port)** - Makes a TCP connection to a host url and port.  (If you don't know the port, use "80".)  Returns 1 if successful.
 - **stop()** - Breaks the TCP connection.
-- **dumpBuffer(Stream *stream, int timeDelay = 5, int timeout = 5000)** - Empties out the recieve buffer.  Note since Arduino ~v1.0 that the flush() function does NOT empty the buffer.
-- **getNISTTime()** - Returns the current unix timestamp from NIST via the TIME protocol  (rfc868).
+- **dumpBuffer(Stream stream, int timeDelay = 5, int timeout = 5000)** - Empties out the recieve buffer.  The flush() function does NOT empty the buffer, it only waits for sending to complete.
+- **getNISTTime()** - Returns the current unix timestamp from NIST via the TIME protocol (rfc868).
 - **syncDS3231()** - This synchronizes the DS3231 real time clock with the NIST provided timestamp.
 
 
 ### <a name="DIYlogger"></a>Additional Functions Available for a LoggerEnviroDIY Object:
-These three functions set up the required registration token, sampling feature uuid, and time series uuids for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.  You must call these functions to be able to get proper JSON data for EnviroDIY, even without the modem support.
+These three functions set up the required registration token, sampling feature UUID, and time series UUIDs for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.  You must call these functions to be able to get proper JSON data for EnviroDIY, even without the modem support.
 - **setToken(const char registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
 - **setSamplingFeature(const char samplingFeature)** - Sets the GUID of the sampling feature.  Note that the input is a pointer to the samplingFeature.
-- **setUUIDs(const char UUIDs[])** - Sets the time series UUIDs.  Note that the input is an array of pointers.  The order of the UUIDs in this array **must match exactly** with the order of the coordinating variable in the variableList.
+- **setUUIDs(const char UUIDs)** - Sets the time series UUIDs.  Note that the input is an array of pointers.  The order of the UUIDs in this array **must match exactly** with the order of the coordinating variable in the variableList.
 
 Because sending data to EnviroDIY depends on having some sort of modem or internet connection, there is a modem object created within the LoggerEnviroDIY Object.  To set up that modem object, you still need to call the functions listed in the ModemSupport section, but you need to add an extra "modem." before the function name to call the internal modem object.  You do not need to separately create the object.
 
@@ -308,6 +308,8 @@ setAlertPin(ledPin);
 EnviroDIYLogger.setToken(registrationToken);
 EnviroDIYLogger.setSamplingFeature(samplingFeature);
 EnviroDIYLogger.setUUIDs(UUIDs[]);
+
+// Set up the internal modem instance
 EnviroDIYLogger.modem.setupModem(modemStream, vcc33Pin, status_CTS_pin, onoff_DTR_pin, sleepType, APN);
 
 // Connect to the network
@@ -340,12 +342,15 @@ void loop()
 }
 ```
 If you would like to do other things within the loop function, you should access the component logging functions individually instead of using the short-cut functions.  In this case, here are some guidelines for writing a loop function:
-- If you want to log on an even interval, use "if (checkInterval()" to verify the interval time.
-- Call the markTime() function before printing/sending/saving any data that you want associate with a timestamp.
-- Update all the sensors in your VariableArray together with updateAllSensors().
-- Immediately after running updateAllSensors(), put sensors to sleep to save power with sensorsSleep().
+- If you want to log on an even interval, use ```if (checkInterval())``` or ```if (checkMarkedInterval())``` to verify that the current or marked time is an even interval of the logging interval..
+- Call the ```markTime()``` function before printing/sending/saving any data that you want associate with a timestamp.
+- Wake up all your sensors with ```sensorsWake()```.
+- Update all the sensors in your VariableArray together with ```updateAllSensors()```.
+- Immediately after running ```updateAllSensors()```, put sensors to sleep to save power with ```sensorsSleep()```.
 - After updating the sensors, then call any functions you want to send/print/save data.
-- Finish by putting the logger back to sleep, if desired, with systemSleep().
+- Finish by putting the logger back to sleep, if desired, with ```systemSleep()```.
+
+The double_logger example program demonstrates using a custom loop function in order to log two different groups of sensors at different logging intervals.
 
 
 ## Available sensors

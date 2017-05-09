@@ -269,6 +269,8 @@ void loop()
     // Once a day, at midnight, sync the clock
     if (Logger::markedEpochTime % 86400 == 0)
     {
+        // Turn on the modem
+        modem.modemOnOff->on();
         // Connect to the network
         if (modem.connectNetwork())
         {
@@ -277,6 +279,8 @@ void loop()
         }
         // Disconnect from the network
         modem.disconnectNetwork();
+        // Turn off the modem
+        modem.modemOnOff->off();
     }
 
     // Call the processor sleep

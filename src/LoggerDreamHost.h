@@ -133,10 +133,10 @@ public:
                 postDataDreamHost();
 
                 // Sync the clock every 24 readings
-                if (_numReadings % 24 == 0)
-                {
-                    modem.syncDS3231();
-                }
+                // if (_numReadings % 24 == 0)
+                // {
+                //     modem.syncDS3231();
+                // }
             }
             // Disconnect from the network
             modem.disconnectNetwork();
