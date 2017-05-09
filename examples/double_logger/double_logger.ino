@@ -39,6 +39,7 @@ const char *SKETCH_NAME = "logger_test.ino";
 
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "SL099";
+const char *FileName = "doubleLoggerFile.csv";
 // Your logger's timezone.
 const int TIME_ZONE = -5;
 // Create TWO new logger instances
@@ -176,10 +177,6 @@ void setup()
     rtc.begin();
     delay(100);
 
-    // Set up pins for the LED's
-    pinMode(GREEN_LED, OUTPUT);
-    pinMode(RED_LED, OUTPUT);
-
     // Print a start-up note to the first serial port
     Serial.print(F("Current RTC time is: "));
     Serial.println(Logger::formatDateTime_ISO8601(Logger::getNow()));
@@ -192,8 +189,8 @@ void setup()
     // If we wanted to auto-generate the file name, that could also be done by
     // not calling this function.  If both "loggers" have the same logger id,
     // they will end up with the same filename
-    logger1min.setFileName("doubleLoggerFile.csv");
-    logger5min.setFileName("doubleLoggerFile.csv");
+    logger1min.setFileName(FileName);
+    logger5min.setFileName(FileName);
 
     // Setup the logger file
     // Because both loggers are saving to the same file, only
@@ -226,7 +223,7 @@ void loop()
     if (logger1min.checkInterval())
     {
         // Print a line to show new reading
-        Serial.println(F("---------------------111---------------------"));
+        Serial.println(F("--------------------->111<---------------------"));
         // Turn on the LED to show we're taking a reading
         digitalWrite(GREEN_LED, HIGH);
 
@@ -243,16 +240,16 @@ void loop()
         // Turn off the LED
         digitalWrite(GREEN_LED, LOW);
         // Print a line to show reading ended
-        Serial.println(F("---------------------111---------------------\n"));
+        Serial.println(F("---------------------<111>---------------------\n"));
     }
     // Check if the already marked time is an even interval of the logging interval
     // For logger[s] other than the first one, use the checkMarkedInterval() function.
     if (logger5min.checkMarkedInterval())
     {
         // Print a line to show new reading
-        Serial.println(F("---------------------555---------------------"));
+        Serial.println(F("--------------------->555<---------------------"));
         // Turn on the LED to show we're taking a reading
-        digitalWrite(GREEN_LED, HIGH);
+        digitalWrite(RED_LED, HIGH);
 
         // Wake up all of the sensors
         logger5min.sensorsWake();
@@ -265,9 +262,21 @@ void loop()
         logger5min.logToSD(logger5min.generateSensorDataCSV());
 
         // Turn off the LED
-        digitalWrite(GREEN_LED, LOW);
+        digitalWrite(RED_LED, LOW);
         // Print a line to show reading ended
-        Serial.println(F("---------------------555---------------------\n"));
+        Serial.println(F("--------------------<555>---------------------\n"));
+    }
+    // Once a day, at midnight, sync the clock
+    if (Logger::markedEpochTime % 86400 == 0)
+    {
+        // Connect to the network
+        if (modem.connectNetwork())
+        {
+            // Synchronize the RTC
+            modem.syncDS3231();
+        }
+        // Disconnect from the network
+        modem.disconnectNetwork();
     }
 
     // Call the processor sleep

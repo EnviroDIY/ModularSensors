@@ -501,13 +501,17 @@ public:
         // DBG(F("Offset: "), abs(nist_logTZ - cur_logTZ), F("\n"));
 
         // If the RTC and NIST disagree by more than 5 seconds, set the clock
-        if ((abs(nist_rtcTZ - cur_logTZ) > 5) && (nist != 0))
+        if ((abs(nist_logTZ - cur_logTZ) > 5) && (nist != 0))
         {
             rtc.setEpoch(nist_rtcTZ + sync_time/2);
-            PRINTOUT(F("Clock synced!\n"));
+            PRINTOUT(F("Clock synced to NIST!\n"));
             return true;
         }
-        else return false;
+        else
+        {
+            PRINTOUT(F("Clock already within 5 seconds of NIST.\n"));
+            return false;
+        }
     }
 
     Stream *stream;

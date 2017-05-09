@@ -196,7 +196,7 @@ public:
         DBGVA(F("Mod of 120: "), Logger::markedEpochTime % 120, F("\n"));
         if (Logger::markedEpochTime != 0 &&
             ((Logger::markedEpochTime % _interruptRate == 0 ) or
-            (_numReadings < 10 and getNow() % 120 == 0)))
+            (_numReadings < 10 and Logger::markedEpochTime % 120 == 0)))
         {
             // Update the number of readings taken
             _numReadings ++;
@@ -304,6 +304,7 @@ public:
 
         // Print out the file name for debugging
         PRINTOUT(F("Data will be saved as "), _fileName, F("..."));
+        if (!_autoFileName) PRINTOUT(F("\n"));
     }
     // Same as above, with a string (overload function)
     void setFileName(String fileName)
@@ -558,6 +559,10 @@ public:
         if(_sleep){systemSleep();}
     }
 
+    // Publie variables
+    // Time stamps - want to set them at a single time and carry them forward
+    static long markedEpochTime;
+
 
 
 // ===================================================================== //
@@ -574,6 +579,10 @@ protected:
     static int _timeZone;
     static int _offset;
 
+    // Time stamps - want to set them at a single time and carry them forward
+    static DateTime markedDateTime;
+    static char markedISO8601Time[26];
+
     // Initialization variables
     int _SDCardPin;
     int _interruptPin;
@@ -585,11 +594,6 @@ protected:
     uint8_t _numReadings;
     bool _sleep;
     int _ledPin;
-
-    // Time stamps - want to set them at a single time and carry them forward
-    static long markedEpochTime;
-    static DateTime markedDateTime;
-    static char markedISO8601Time[26];
 };
 
 // Initialize the static timezone
