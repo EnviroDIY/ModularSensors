@@ -63,6 +63,7 @@ public:
         if (Logger::_timeZone != 0) PRINTOUT(Logger::_timeZone, F("\n"));
 
     }
+    static int getTimeZone(void) { return Logger::_timeZone; }
 
     // This set the offset between the built-in clock and the time zone where
     // the data is being recorded.  If your RTC is set in UTC and your logging
@@ -81,6 +82,7 @@ public:
         if ((Logger::_timeZone - Logger::_offset) != 0)
             PRINTOUT(Logger::_timeZone - Logger::_offset, F("\n"));
     }
+    static int getTZOffset(void) { return Logger::_offset; }
 
     // Sets up a pin for an LED or other way of alerting that data is being logged
     void setAlertPin(int ledPin)
