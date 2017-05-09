@@ -98,7 +98,7 @@ Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
 // ==========================================================================
 #include <DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
-const int numberReadings = 10;  // The number of readings to average
+const int numberReadings = 6;  // The number of readings to average
 // const int SDI12Data = 7;  // The pin the CTD is attached to
 // const int SDI12Power = 22;  // switched sensor power is pin 22 on Mayfly
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
@@ -191,7 +191,7 @@ const long SERIAL_BAUD = 57600;  // Serial port BAUD rate
 const int GREEN_LED = 8;  // Pin for the green LED
 const int RED_LED = 9;  // Pin for the red LED
 const int RTC_PIN = A7;  // RTC Interrupt/Alarm pin
-const int SD_SS_PIN = 12;  // SD Card Card Select/Slave Select Pin
+const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
 
 
 // ---------------------------------------------------------------------------

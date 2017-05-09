@@ -1,5 +1,5 @@
 /*****************************************************************************
-single_sensor.ino
+multisensor_print.ino
 Written By:  Sara Damiano (sdamiano@stroudcenter.org)
 Development Environment: PlatformIO 3.2.1
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
@@ -7,8 +7,8 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This sketch is an example of getting data from a single sensor, in this case, a
-MaxBotix Ultrasonic Range Finder
+This sketch is an example of printing data from multiple sensors using
+the modular sensor library.
 
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
@@ -17,24 +17,42 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ---------------------------------------------------------------------------
 // Include the base required libraries
 // ---------------------------------------------------------------------------
+#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
 #include <Arduino.h>
-#include <SensorBase.h>
-#include <VariableBase.h>
-#include <MaxBotixSonar.h>
+#include <Sodaq_DS3231.h>    // Controls the DS3231 Real Time Clock (RTC) built into the EnviroDIY Mayfly.
+#include <VariableArray.h>
 
 // ---------------------------------------------------------------------------
-// Set up the sensor object
+// Set up the sensor specific information
+//   ie, pin locations, addresses, calibrations and related settings
 // ---------------------------------------------------------------------------
+// The name of this file
+const char *SKETCH_NAME = "mayfly_turbidity_test2.ino";
 
-// MaxBotix Sonar: pin settings
-const int SonarPower = 22;   // excite (power) pin
-const int SonarData = 11;     // data  pin
-const int SonarTrigger = -1;   // Trigger pin
+// Your logger's timezone.
+const int TIME_ZONE = -5;
+// Create a new sensor array instance
+VariableArray sensors;
 
-// Create a new instance of the sonar sensor;
-MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger);
-// Create a new instance of the range variable;
-MaxBotixSonar_Range sonar_range(&sonar);
+// ==========================================================================
+//    CAMPBELL OBS 3 / OBS 3+
+// ==========================================================================
+#include <CampbellOBS3.h>
+// Campbell OBS 3+ Low Range calibration in Volts
+const int OBSLowPin = 0;  // The low voltage analog pin
+const float OBSLow_A = 2.7323;  // The "A" value (X^2) from the low range calibration
+const float OBSLow_B = 93.43;  // The "B" value (X) from the low range calibration
+const float OBSLow_C = -0.11966;  // The "C" value from the low range calibration
+const int OBS3Power = 22;  // switched sensor power is pin 22 on Mayfly
+CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C);
+CampbellOBS3_Turbidity turblow(&osb3low, "TurbLow");
+// Campbell OBS 3+ High Range calibration in Volts
+const int OBSHighPin = 1;  // The high voltage analog pin
+const float OBSHigh_A = 20.042;  // The "A" value (X^2) from the high range calibration
+const float OBSHigh_B = 389.08;  // The "B" value (X) from the high range calibration
+const float OBSHigh_C = -1.2897;  // The "C" value from the high range calibration
+CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
+CampbellOBS3_Turbidity turbhigh(&osb3high, "TurbHigh");
 
 // ---------------------------------------------------------------------------
 // Board setup info
@@ -57,6 +75,7 @@ void greenred4flash()
   digitalWrite(RED_LED, LOW);
 }
 
+
 // ---------------------------------------------------------------------------
 // Main setup function
 // ---------------------------------------------------------------------------
@@ -71,12 +90,11 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenred4flash();
 
-    // Print a start-up note to the first serial port
-    Serial.println(F("Single Sensor Example - Sonar Ranging"));
-
     // Set up the sensor and variables
-    sonar.setup();
-    sonar_range.setup();
+    osb3low.setup();
+    osb3high.setup();
+    turblow.setup();
+    turbhigh.setup();
 }
 
 
@@ -85,25 +103,31 @@ void setup()
 // ---------------------------------------------------------------------------
 void loop()
 {
+    Serial.println("---------------------------------");
+
+    // Power the sensor
+    osb3low.wake();
+    osb3high.wake();
+
     // Turn on the LED to show we're taking a reading
     digitalWrite(GREEN_LED, HIGH);
 
-    // Wake up the sensor (also gives power)
-    sonar.wake();
-
     // Update the sensor value
-    sonar.update();
+    osb3low.update();
+    osb3high.update();
 
-    // Print the sonar result
-    Serial.print("Current sonar range: ");
-    Serial.println(sonar_range.getValueString());
-
-    // Put the sensor back to sleep (also cuts power)
-    sonar.sleep();
+    // Turn of sensor power
+    osb3low.sleep();
+    osb3high.sleep();
 
     // Turn off the LED to show we're done with the reading
     digitalWrite(GREEN_LED, LOW);
 
+    if (turbhigh.getValue() < 255){
+        Serial.print("Diff: ");
+        Serial.println(turbhigh.getValue() - turblow.getValue());
+    }
+
     // Wait for the next reading
-    delay(5000);
+    delay(1000);
 }
