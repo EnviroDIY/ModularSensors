@@ -23,7 +23,7 @@
 
 // The constructor - because this is I2C, only need the power pin
 AOSongAM2315::AOSongAM2315(int powerPin)
-: Sensor(-1, powerPin, F("AOSongAM2315"), AM2315_NUM_MEASUREMENTS)
+: Sensor(powerPin, -1, F("AOSongAM2315"), AM2315_NUM_MEASUREMENTS)
 {}
 
 String AOSongAM2315::getSensorLocation(void){return F("I2C_0xB8");}

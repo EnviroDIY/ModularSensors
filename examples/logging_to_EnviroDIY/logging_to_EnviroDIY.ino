@@ -7,8 +7,8 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This sketch is an example of printing data from multiple sensors using
-the modular sensor library.
+This sketch is an example of logging data to an SD card and sending the data to
+the EnviroDIY data portal.
 
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
@@ -315,9 +315,9 @@ void setup()
     Serial.println(LoggerID);
 
     // Set the timezone and offsets
-    EnviroDIYLogger.setTimeZone(TIME_ZONE);  // Logging in the given time zone
+    Logger::setTimeZone(TIME_ZONE);  // Logging in the given time zone
     // EnviroDIYLogger.setTZOffset(0);  // Also set the clock in that time zone
-    EnviroDIYLogger.setTZOffset(TIME_ZONE);  // Set the clock in UTC
+    Logger::setTZOffset(TIME_ZONE);  // Set the clock in UTC
 
     // Initialize the logger;
     EnviroDIYLogger.init(SD_SS_PIN, RTC_PIN, variableCount, variableList,
