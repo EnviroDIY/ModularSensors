@@ -139,6 +139,48 @@ public:
     }
 
     // Convience functions to do it all
+    // This calls all of the setup functions - must be run AFTER init
+    virtual void begin(void) override
+    {
+        // Print a start-up note to the first serial port
+        PRINTOUT(F("Beginning logger "), _loggerID, F("\n"));
+
+        // Start the Real Time Clock
+        rtc.begin();
+        delay(100);
+
+        // Set up pins for the LED's
+        pinMode(_ledPin, OUTPUT);
+
+        // Set up the sensors
+        setupSensors();
+
+        // Set up the log file
+        setupLogFile();
+
+        // Sync the clock with NIST
+        PRINTOUT(F("Current RTC time is: "));
+        PRINTOUT(formatDateTime_ISO8601(getNow()), F("\n"));
+        // Turn on the modem
+        modem.on();
+        // Connect to the network
+        if (modem.connectNetwork())
+        {
+            // Synchronize the RTC
+            modem.syncDS3231();
+            // Disconnect from the network
+            modem.disconnectNetwork();
+        }
+        // Turn off the modem
+        modem.off();
+
+        // Setup sleep mode
+        if(_sleep){setupSleep();}
+
+        PRINTOUT(F("Logger setup finished!\n"));
+        PRINTOUT(F("------------------------------------------\n\n"));
+    }
+
     virtual void log(void) override
     {
         // Check of the current time is an even interval of the logging interval
@@ -150,7 +192,7 @@ public:
             digitalWrite(_ledPin, HIGH);
 
             // Turn on the modem to let it start searching for the network
-            LoggerEnviroDIY::modem.modemOnOff->on();
+            LoggerEnviroDIY::modem.on();
 
             // Wake up all of the sensors
             // I'm not doing as part of sleep b/c it may take up to a second or
@@ -181,7 +223,7 @@ public:
             }
 
             // Turn on the modem off
-            modem.modemOnOff->off();
+            modem.off();
 
             // Turn off the LED
             digitalWrite(_ledPin, LOW);

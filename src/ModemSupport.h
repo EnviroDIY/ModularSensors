@@ -153,7 +153,12 @@ public:
 
     bool off(void) override
     {
-        if (isOn()) {pulse();}
+        if (isOn())
+        {
+            DBG(F("Pulsing modem off with pin "));
+            DBG(_onoff_DTR_pin, F("\n"));
+            pulse();
+        }
         else DBG(F("Modem was not ever on.\n"));
         // Wait until is off
         for (unsigned long start = millis(); millis() - start < 5000; )
@@ -349,6 +354,26 @@ public:
     init(modemStream, vcc33Pin, status_CTS_pin, onoff_DTR_pin, sleepType);
     }
 
+    bool on(void)
+    {
+        // Check if the modem is on; turn it on if not
+        if(!modemOnOff->isOn()) return modemOnOff->on();
+        else return true;
+    }
+
+    bool off(void)
+    {
+        bool retVal = true;
+         // Wait for any sending to complete
+        stream->flush();
+        // Check if the modem is on; turn it off if so
+        if(modemOnOff->isOn()) retVal = modemOnOff->off();
+        else retVal =  true;
+        // Empty anything out of the receive buffer
+        dumpBuffer(stream);
+        return retVal;
+    }
+
     bool connectNetwork(void)
     {
         bool retVal = false;
@@ -358,6 +383,8 @@ public:
         // Check again if the modem is on.  If it still isn't on, give up
         if(!modemOnOff->isOn()) return false;
 
+        // WiFi modules don't naturally "disconnect" from the network, so first
+        // check the connection before resending credentials
         #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
         if (_ssid)
         {

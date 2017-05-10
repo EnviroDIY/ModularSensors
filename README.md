@@ -237,6 +237,8 @@ After defining your modem, set it up using one of these two commands, depending 
 - The DTRSleepType controls _how_ the modem is put to sleep between readings.  Use "held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.  Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.  Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.  Use "always_on" if you do not want the library to control the modem power and sleep.
 
 Once the modem has been set up, these functions are available:
+- **on()** - Turns the modem on.  Returns true if connection is successful.
+- **off()** - Turns the modem off and empties the send and receive buffer.  Returns true if connection is successful.
 - **connectNetwork()** - Connects to the internet via WiFi or cellular network.  Returns true if connection is successful.
 - **disconnectNetwork()** - Disconnects from the network, if applicable.
 - **connect(const char host, uint16_t port)** - Makes a TCP connection to a host url and port.  (If you don't know the port, use "80".)  Returns 1 if successful.

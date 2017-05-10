@@ -502,6 +502,9 @@ public:
     // This calls all of the setup functions - must be run AFTER init
     virtual void begin(void)
     {
+        // Print a start-up note to the first serial port
+        PRINTOUT(F("Beginning logger "), _loggerID, F("\n"));
+
         // Start the Real Time Clock
         rtc.begin();
         delay(100);
@@ -509,15 +512,15 @@ public:
         // Set up pins for the LED's
         pinMode(_ledPin, OUTPUT);
 
-        // Print a start-up note to the first serial port
-        PRINTOUT(F("Current RTC time is: "));
-        PRINTOUT(formatDateTime_ISO8601(getNow()), F("\n"));
-
         // Set up the sensors
         setupSensors();
 
         // Set up the log file
         setupLogFile();
+
+        // Print the current time
+        PRINTOUT(F("Current RTC time is: "));
+        PRINTOUT(formatDateTime_ISO8601(getNow()), F("\n"));
 
         // Setup sleep mode
         if(_sleep){setupSleep();}

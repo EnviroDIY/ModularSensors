@@ -197,22 +197,10 @@ void setup()
 
     EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, APN);
 
-    // Turn on the modem
-    EnviroDIYLogger.modem.modemOnOff->on();
-    // Connect to the network
-    if (EnviroDIYLogger.modem.connectNetwork())
-    {
-        // Synchronize the RTC
-        EnviroDIYLogger.modem.syncDS3231();
-        // Disconnect from the network
-        EnviroDIYLogger.modem.disconnectNetwork();
-    }
-    // Turn off the modem
-    EnviroDIYLogger.modem.modemOnOff->off();
-
     #ifdef DreamHostPortalRX
         EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
     #endif
+    
     // Begin the logger;
     EnviroDIYLogger.begin();
 }

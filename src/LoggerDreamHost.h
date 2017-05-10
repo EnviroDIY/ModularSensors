@@ -109,7 +109,7 @@ public:
             digitalWrite(_ledPin, HIGH);
 
             // Turn on the modem to let it start searching for the network
-            LoggerEnviroDIY::modem.modemOnOff->on();
+            LoggerEnviroDIY::modem.on();
 
             // Wake up all of the sensors
             // I'm not doing as part of sleep b/c it may take up to a second or
@@ -143,7 +143,7 @@ public:
             }
 
             // Turn on the modem off
-            modem.modemOnOff->off();
+            modem.off();
 
             // Turn off the LED
             digitalWrite(_ledPin, LOW);

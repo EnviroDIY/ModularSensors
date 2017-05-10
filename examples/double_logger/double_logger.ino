@@ -144,6 +144,10 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenred4flash();
 
+    // Start the Real Time Clock
+    rtc.begin();
+    delay(100);
+
     // Print a start-up note to the first serial port
     Serial.print(F("Now running "));
     Serial.print(SKETCH_NAME);
@@ -164,27 +168,6 @@ void setup()
 
     modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, SSID, PWD);
 
-    // Turn on the modem
-    modem.modemOnOff->on();
-    // Connect to the network
-    if (modem.connectNetwork())
-    {
-        // Synchronize the RTC
-        modem.syncDS3231();
-        // Disconnect from the network
-        modem.disconnectNetwork();
-    }
-    // Turn off the modem
-    modem.modemOnOff->off();
-
-    // Start the Real Time Clock
-    rtc.begin();
-    delay(100);
-
-    // Print a start-up note to the first serial port
-    Serial.print(F("Current RTC time is: "));
-    Serial.println(Logger::formatDateTime_ISO8601(Logger::getNow()));
-
     // Set up the sensors on both loggers
     logger1min.setupSensors();
     logger5min.setupSensors();
@@ -202,6 +185,23 @@ void setup()
     logger1min.setupLogFile();
     // Create a header for the second logger and write it to the SD card
     logger5min.logToSD(logger5min.generateFileHeader());
+
+    // Print out the current time
+    Serial.print(F("Current RTC time is: "));
+    Serial.println(Logger::formatDateTime_ISO8601(Logger::getNow()));
+
+    // Turn on the modem
+    modem.on();
+    // Connect to the network
+    if (modem.connectNetwork())
+    {
+        // Synchronize the RTC
+        modem.syncDS3231();
+        // Disconnect from the network
+        modem.disconnectNetwork();
+    }
+    // Turn off the modem
+    modem.off();
 
     // Set up the processor sleep mode
     // Because there's only one processor, we only need to do this once
@@ -274,7 +274,7 @@ void loop()
     if (Logger::markedEpochTime % 86400 == 0)
     {
         // Turn on the modem
-        modem.modemOnOff->on();
+        modem.on();
         // Connect to the network
         if (modem.connectNetwork())
         {
@@ -284,7 +284,7 @@ void loop()
             modem.disconnectNetwork();
         }
         // Turn off the modem
-        modem.modemOnOff->off();
+        modem.off();
     }
 
     // Call the processor sleep
