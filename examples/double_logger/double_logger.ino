@@ -164,6 +164,8 @@ void setup()
 
     modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, SSID, PWD);
 
+    // Turn on the modem
+    modem.modemOnOff->on();
     // Connect to the network
     if (modem.connectNetwork())
     {
@@ -172,6 +174,8 @@ void setup()
         // Disconnect from the network
         modem.disconnectNetwork();
     }
+    // Turn off the modem
+    modem.modemOnOff->off();
 
     // Start the Real Time Clock
     rtc.begin();
@@ -276,9 +280,9 @@ void loop()
         {
             // Synchronize the RTC
             modem.syncDS3231();
+            // Disconnect from the network
+            modem.disconnectNetwork();
         }
-        // Disconnect from the network
-        modem.disconnectNetwork();
         // Turn off the modem
         modem.modemOnOff->off();
     }

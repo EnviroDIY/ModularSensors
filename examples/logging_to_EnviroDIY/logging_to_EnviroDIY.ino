@@ -335,6 +335,8 @@ void setup()
         EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, APN);
     #endif
 
+    // Turn on the modem
+    EnviroDIYLogger.modem.modemOnOff->on();
     // Connect to the network
     if (EnviroDIYLogger.modem.connectNetwork())
     {
@@ -343,6 +345,8 @@ void setup()
         // Disconnect from the network
         EnviroDIYLogger.modem.disconnectNetwork();
     }
+    // Turn off the modem
+    EnviroDIYLogger.modem.modemOnOff->off();
 
     #ifdef DreamHostPortalRX
         EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
