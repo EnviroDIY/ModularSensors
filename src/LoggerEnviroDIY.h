@@ -175,9 +175,10 @@ public:
                 {
                     modem.syncDS3231();
                 }
+
+                // Disconnect from the network
+                modem.disconnectNetwork();
             }
-            // Disconnect from the network
-            modem.disconnectNetwork();
 
             // Turn on the modem off
             modem.modemOnOff->off();

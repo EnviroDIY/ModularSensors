@@ -215,7 +215,7 @@ public:
             csvString += _variableList[i]->getValueString();
             if (i + 1 != _variableCount)
             {
-                csvString += F(", ");
+                csvString += F(",");
             }
         }
 

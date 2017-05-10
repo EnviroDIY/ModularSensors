@@ -138,7 +138,7 @@ public:
         DBG(_onoff_DTR_pin, F("\n"));
         if (!isOn()) {pulse();}
         // Wait until is actually on
-        for (unsigned long start = millis(); millis() - start < 10000; )
+        for (unsigned long start = millis(); millis() - start < 5000; )
         {
             if (isOn())
             {
@@ -154,9 +154,9 @@ public:
     bool off(void) override
     {
         if (isOn()) {pulse();}
-        // else DBG(F("Modem was not ever on.\n"));
+        else DBG(F("Modem was not ever on.\n"));
         // Wait until is off
-        for (unsigned long start = millis(); millis() - start < 10000; )
+        for (unsigned long start = millis(); millis() - start < 5000; )
         {
             if (!isOn())
             {
@@ -208,7 +208,7 @@ public:
             DBG(F(" high\n"));
             digitalWrite(_onoff_DTR_pin, HIGH);
             // Wait until is actually on
-            for (unsigned long start = millis(); millis() - start < 10000; )
+            for (unsigned long start = millis(); millis() - start < 5000; )
             {
                 if (isOn())
                 {
@@ -230,7 +230,7 @@ public:
             if (!isOn()) DBG(F("Modem was not ever on.\n"));
             digitalWrite(_onoff_DTR_pin, LOW);
             // Wait until is off
-            for (unsigned long start = millis(); millis() - start < 10000; )
+            for (unsigned long start = millis(); millis() - start < 5000; )
             {
                 if (!isOn())
                 {
@@ -280,7 +280,7 @@ public:
             digitalWrite(_onoff_DTR_pin, LOW);
         }
         // Wait until is actually on
-        for (unsigned long start = millis(); millis() - start < 10000; )
+        for (unsigned long start = millis(); millis() - start < 5000; )
         {
             if (isOn())
             {
@@ -300,7 +300,7 @@ public:
             digitalWrite(_onoff_DTR_pin, HIGH);
         }
         // Wait until is off
-        for (unsigned long start = millis(); millis() - start < 10000; )
+        for (unsigned long start = millis(); millis() - start < 5000; )
         {
             if (!isOn())
             {
@@ -353,12 +353,16 @@ public:
     {
         bool retVal = false;
 
+        // Check if the modem is on; turn it on if not
+        if(!modemOnOff->isOn()) modemOnOff->on();
+        // Check again if the modem is on.  If it still isn't on, give up
+        if(!modemOnOff->isOn()) return false;
+
         #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
         if (_ssid)
         {
-            if(!modemOnOff->isOn())modemOnOff->on();
             DBG(F("\nConnecting to WiFi network...\n"));
-            if (!_modem->waitForNetwork(15000L)){
+            if (!_modem->waitForNetwork(10000L)){
                 DBG("... Connection failed.  Resending credentials...", F("\n"));
                 _modem->networkConnect(_ssid, _pwd);
                 if (!_modem->waitForNetwork(45000L)){
@@ -378,9 +382,8 @@ public:
         #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
             defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
             defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_XBEE)
-            if(!modemOnOff->isOn())modemOnOff->on();
             DBG(F("\nWaiting for cellular network...\n"));
-            if (!_modem->waitForNetwork(60000L)){
+            if (!_modem->waitForNetwork(55000L)){
                 DBG("... Connection failed.", F("\n"));
             } else {
                 _modem->gprsConnect(_APN, "", "");
@@ -555,35 +558,41 @@ private:
         }
 
         #if defined(USE_TINY_GSM)
+
             // Initialize the modem
             DBG(F("Initializing GSM modem instance..."));
-            // modemStream->setTimeout(200);
             static TinyGsm modem(*modemStream);
             _modem = &modem;
             static TinyGsmClient client(modem);
             _client = &client;
-            modemOnOff->on();
-            _modem->begin();
-            // _client->stop();  // Close any open sockets, just in case
-            #if defined(TINY_GSM_MODEM_XBEE)
-                _modem->setupPinSleep();
-            #endif
-            modemOnOff->off();
+
+            // Check if the modem is on; turn it on if not
+            if(!modemOnOff->isOn()) modemOnOff->on();
+            // Check again if the modem is on.  Only "begin" if it responded.
+            if(modemOnOff->isOn())
+            {
+                _modem->begin();
+                #if defined(TINY_GSM_MODEM_XBEE)
+                    _modem->setupPinSleep();
+                #endif
+                modemOnOff->off();
+            }
             stream = _client;
             DBG(F("   ... Complete!\n"));
+
         #else
             stream = modemStream;
         #endif
     }
 
-    const char *_APN;
-    const char *_ssid;
-    const char *_pwd;
-
 #if defined(USE_TINY_GSM)
     TinyGsm *_modem;
     TinyGsmClient *_client;
 #endif
+
+    const char *_APN;
+    const char *_ssid;
+    const char *_pwd;
 };
 
 #endif /* modem_onoff_h */

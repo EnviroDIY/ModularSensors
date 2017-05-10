@@ -340,9 +340,9 @@ void setup()
     {
         // Synchronize the RTC
         EnviroDIYLogger.modem.syncDS3231();
+        // Disconnect from the network
+        EnviroDIYLogger.modem.disconnectNetwork();
     }
-    // Disconnect from the network
-    EnviroDIYLogger.modem.disconnectNetwork();
 
     #ifdef DreamHostPortalRX
         EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);

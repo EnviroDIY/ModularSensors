@@ -95,8 +95,8 @@ DTRSleepType ModemSleepMode = reverse;  // How the modem is put to sleep
 HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
 
 const long ModemBaud = 9600;  // Default for XBee is 9600
-const char *SSID = "Stroud-Mobile";  // The WiFi access point
-const char *PWD = "phone970";  // The password for connecting to WiFi
+const char *SSID = "XXXXXXX";  // The WiFi access point
+const char *PWD = "XXXXXXX";  // The password for connecting to WiFi
 
 
 // ---------------------------------------------------------------------------
@@ -169,9 +169,9 @@ void setup()
     {
         // Synchronize the RTC
         modem.syncDS3231();
+        // Disconnect from the network
+        modem.disconnectNetwork();
     }
-    // Disconnect from the network
-    modem.disconnectNetwork();
 
     // Start the Real Time Clock
     rtc.begin();

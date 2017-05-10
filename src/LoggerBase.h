@@ -14,7 +14,6 @@
 #include <Sodaq_DS3231.h>  // To communicate with the clock
 #include <SdFat.h>  // To communicate with the SD card
 #include <Sodaq_PcInt_PCINT0.h>  // To handle pin change interrupts for the clock
-#include <avr/sleep.h>  // To handle the processor sleep modes
 #include "VariableArray.h"
 
 // Defines the "Logger" Class
@@ -215,6 +214,7 @@ public:
     // ============================================================================
     //  Public Functions for sleeping the logger
     // ============================================================================
+    #include <avr/sleep.h>  // To handle the processor sleep modes
 
     // Set up the Interrupt Service Request for waking
     // In this case, we're doing nothing
