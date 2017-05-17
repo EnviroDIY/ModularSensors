@@ -378,7 +378,7 @@ EnviroDIYMayfly_FreeRam(&mayfly, "customVarCode");
 
 #### <a name="MaxBotix"></a>[MaxBotix MaxSonar](http://www.maxbotix.com/Ultrasonic_Sensors/High_Accuracy_Sensors.htm) - HRXL MaxSonar WR or WRS Series with TTL Outputs
 
-The power/excite pin, digital data pin, and trigger are needed as input.  (Use -1 for the trigger if you do not have it connected.)  Because this library uses the [EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwareSerial_PCINT12/), the MaxBotix must be installed on a digital pin that depends on pin change interrupt vector 1 or 2.  On the Mayfly, the empty pins in this range are pins D10, D11, and D18.  (Changing the solder jumper options on the back of the board may eliminate D18 as a possibility.)  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.
+The power/excite pin, digital data pin, and trigger are needed as input.  (Use -1 for the trigger if you do not have it connected.)  The data pin must be a pin that supports pin-change interrupts.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.
 
 The main constuctor for the sensor object is:
 
@@ -416,7 +416,7 @@ CampbellOBS3_Turbidity(&osb3high, "customHighVarCode");
 
 #### <a name="5TM"></a>[Decagon Devices 5TM](https://www.decagon.com/en/soils/volumetric-water-content-sensors/5tm-vwc-temp/) Soil Moisture and Temperature Sensor
 
-The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.  Because this library uses a modified version of the basic SDI-12 library, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
+The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  The data pin must be a pin that supports pin-change interrupts.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
 
 The main constuctor for the sensor object is:
 
@@ -435,7 +435,7 @@ Decagon5TM_VWC(&fivetm, "customVarCode");
 
 #### <a name="CTD"></a>[Decagon Devices CTD-5 or  CTD-10](https://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/ctd-10-sensor-electrical-conductivity-temperature-depth/) Electrical Conductivity, Temperature, and Depth Sensor
 
-The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  For this particular sensor, taking ~6 readings seems to be ideal for reducing noise.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.  Because this library uses a modified version of the basic SDI-12 library, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
+The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  The data pin must be a pin that supports pin-change interrupts.  For this particular sensor, taking ~6 readings seems to be ideal for reducing noise.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
 
 The main constuctor for the sensor object is:
 
@@ -454,7 +454,7 @@ DecagonCTD_Depth(&ctd, "customVarCode");
 
 #### <a name="ES2"></a>[Decagon Devices ES-2](http://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/es-2-electrical-conductivity-temperature/) Electrical Conductivity Sensor
 
-The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.  Because this library uses a modified version of the basic SDI-12 library, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
+The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  The data pin must be a pin that supports pin-change interrupts.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
 
 The main constuctor for the sensor object is:
 

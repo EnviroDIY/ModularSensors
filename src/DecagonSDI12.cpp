@@ -11,6 +11,10 @@
 
 #include "DecagonSDI12.h"
 
+#define LIBCALL_ENABLEINTERRUPT
+#include <EnableInterrupt.h>  // To handle external and pin change interrupts
+#include <SDI12_ExtInts.h>
+
 // The constructor - need the number of measurements the sensor will return, SDI-12 address, the power pin, and the data pin
 DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin,
                            int numReadings,
@@ -38,8 +42,33 @@ DecagonSDI12::DecagonSDI12(int SDI12address, int powerPin, int dataPin,
 }
 
 
-// A helper functeion to run the "sensor info" SDI12 command
-void DecagonSDI12::getSensorInfo(void)
+SENSOR_STATUS DecagonSDI12::setup(void)
+{
+    pinMode(_powerPin, OUTPUT);
+    pinMode(_dataPin, INPUT_PULLUP);
+    enableInterrupt(DATAPIN, SDI12::handleInterrupt, CHANGE);
+
+    bool isSet = getSensorInfo();
+
+    DBGM(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
+    DBGM(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
+
+    if (isSet) return SENSOR_READY;
+    else return SENSOR_ERROR;
+}
+
+
+SENSOR_STATUS DecagonSDI12::getStatus(void)
+{
+    bool status = getSensorInfo();
+
+    if (status) return SENSOR_READY;
+    else return SENSOR_ERROR;
+}
+
+
+// A helper function to run the "sensor info" SDI12 command
+bool DecagonSDI12::getSensorInfo(void)
 {
     SDI12 mySDI12(_dataPin);
     mySDI12.begin();
@@ -69,18 +98,23 @@ void DecagonSDI12::getSensorInfo(void)
             delay(5);
         }
     }
-    if (sdiResponse.length() > 1) DBGM(sdiResponse, F("\n"));
-    _sensorName = sdiResponse.substring(3,17);
-    _sensorName.trim();
-    _sensorVendor = sdiResponse.substring(3,11);
-    _sensorVendor.trim();
-    _sensorModel = sdiResponse.substring(11,17);
-    _sensorModel.trim();
-    _sensorVersion = sdiResponse.substring(17,20);
-    _sensorVersion.trim();
-    _sensorSerialNumber = sdiResponse.substring(20,17);
-    _sensorSerialNumber.trim();
-    mySDI12.flush();
+    bool noResponse = true;
+    if (sdiResponse.length() > 1)
+    {
+      DBGM(sdiResponse, F("\n"));
+      noResponse = false;
+      _sensorName = sdiResponse.substring(3,17);
+      _sensorName.trim();
+      _sensorVendor = sdiResponse.substring(3,11);
+      _sensorVendor.trim();
+      _sensorModel = sdiResponse.substring(11,17);
+      _sensorModel.trim();
+      _sensorVersion = sdiResponse.substring(17,20);
+      _sensorVersion.trim();
+      _sensorSerialNumber = sdiResponse.substring(20,17);
+      _sensorSerialNumber.trim();
+      mySDI12.clearBuffer();
+    }
 
     // Kill the SDI-12 Object
     mySDI12.forceHold();
@@ -89,6 +123,7 @@ void DecagonSDI12::getSensorInfo(void)
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
 
+    return noResponse;
 }
 
 // The sensor name

@@ -13,8 +13,10 @@
 #include <Arduino.h>
 #include <Sodaq_DS3231.h>  // To communicate with the clock
 #include <SdFat.h>  // To communicate with the SD card
-#include <Sodaq_PcInt_PCINT0.h>  // To handle pin change interrupts for the clock
 #include "VariableArray.h"
+
+#define LIBCALL_ENABLEINTERRUPT
+#include <EnableInterrupt.h>  // To handle external and pin change interrupts
 
 // Defines the "Logger" Class
 class Logger : public VariableArray

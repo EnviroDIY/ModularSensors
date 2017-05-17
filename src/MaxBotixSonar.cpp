@@ -11,7 +11,10 @@
  */
 
 #include "MaxBotixSonar.h"
-#include <SoftwareSerial_PCINT12.h>
+
+#define LIBCALL_ENABLEINTERRUPT
+#include <EnableInterrupt.h>  // To handle external and pin change interrupts
+#include <SoftwareSerial_ExtInts.h>
 
 MaxBotixSonar::MaxBotixSonar(int powerPin, int dataPin, int triggerPin)
 : Sensor(powerPin, dataPin, F("MaxBotixMaxSonar"), HRXL_NUM_MEASUREMENTS)
@@ -20,7 +23,8 @@ MaxBotixSonar::MaxBotixSonar(int powerPin, int dataPin, int triggerPin)
 SENSOR_STATUS MaxBotixSonar::setup(void)
 {
     pinMode(_powerPin, OUTPUT);
-    pinMode(_dataPin, INPUT);
+    pinMode(_dataPin, INPUT_PULLUP);
+    enableInterrupt(_dataPin, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
 
     if(_triggerPin != -1)
     {

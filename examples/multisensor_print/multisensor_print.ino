@@ -18,7 +18,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // Include the base required libraries
 // ---------------------------------------------------------------------------
 #define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
-#include <Arduino.h>
+#include <Arduino.h>  // The base Arduino library
+#include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <Sodaq_DS3231.h>    // Controls the DS3231 Real Time Clock (RTC) built into the EnviroDIY Mayfly.
 #include <VariableArray.h>
 

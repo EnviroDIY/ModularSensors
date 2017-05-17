@@ -17,7 +17,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ---------------------------------------------------------------------------
 // Include the base required libraries
 // ---------------------------------------------------------------------------
-#include <Arduino.h>
+#include <Arduino.h>  // The base Arduino library
+#include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <SensorBase.h>
 #include <VariableBase.h>
 #include <MaxBotixSonar.h>

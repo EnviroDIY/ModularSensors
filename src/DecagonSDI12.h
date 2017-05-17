@@ -20,7 +20,6 @@
 #define DecagonSDI12_h
 
 #include <Arduino.h>
-#include <SDI12_PCINT3.h>
 
 // #define MODULES_DBG Serial
 #include "ModSensorDebugger.h"
@@ -47,9 +46,14 @@ public:
     String getSensorSerialNumber(void);
     String getSensorLocation(void) override;
 
+    virtual SENSOR_STATUS setup(void) override;
+    virtual SENSOR_STATUS getStatus(void) override;
+
     virtual bool update(void);
+
 protected:
-    void getSensorInfo(void);
+    bool getSensorInfo(void);
+
 private:
     String _sensorVendor;
     String _sensorModel;
