@@ -28,11 +28,11 @@ To use a sensor and variable in your sketch, you must separately include xxx.h f
     - [AOSong AM2315](#AM2315)
     - [Bosch BME280](#BME280)
     - [AOSong DHT](#DHT)
-
+- [Processor Compatibility](#compatibility)
 
 ## <a name="deps"></a>Library Dependencies
 
-In order to support multiple functions and sensors, there are quite a lot of dependencies for this library.  Even if you do not use all of the modules, you must have all of the dependencies installed for the library itself to properly compile.
+In order to support multiple functions and sensors, there are quite a lot of dependencies for this library.  _Even if you do not use all of the modules, you must have all of the dependencies installed for the library itself to properly compile._
 
 - [Sodaq](https://github.com/SodaqMoja/Sodaq_DS3231) or [EnviroDIY DS-3231](https://github.com/EnviroDIY/Sodaq_DS3231) - For real time clock control
 - [EnviroDIY modified version of Sodaq's pin change interrupt library](https://github.com/EnviroDIY/PcInt_PCINT0) - For waking the processor from clock alarms.  The modified version is needed so there are no pin change interrupt conflicts with the SDI-12 library or the SoftwareSerial library.
@@ -473,7 +473,7 @@ DecagonES2_Temp(&es2, "customVarCode");
 
 #### <a name="DS18"></a>[Maxim DS18 Temperature Probes](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html)
 
-The same library should work with a [DS18B20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html), [DS18S20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html), [DS1822](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1822.html), and the no-longer-sold [DS1820](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1820.html) sensor.  The OneWire hex address of the sensor, the power pin, and the data pin, are required as inputs.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  The hex address is an array of 8 hex values, for example:  {0x28, 0x1D, 0x39, 0x31, 0x2, 0x0, 0x0, 0xF0 }.  To get the address of your sensor, plug a single sensor into your device and run the [oneWireSearch](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/oneWireSearch/oneWireSearch.ino) example or the [Single](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/Single/Single.pde) example provided within the Dallas Temperature library.  The sensor address is programmed at the factory and cannot be changed.
+The same library should work with a [DS18B20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html), [DS18S20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html), [DS1822](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1822.html), [MAX31820](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/MAX31820.html), and the no-longer-sold [DS1820](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1820.html) sensor.  The OneWire hex address of the sensor, the power pin, and the data pin, are required as inputs.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  The hex address is an array of 8 hex values, for example:  {0x28, 0x1D, 0x39, 0x31, 0x2, 0x0, 0x0, 0xF0 }.  To get the address of your sensor, plug a single sensor into your device and run the [oneWireSearch](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/oneWireSearch/oneWireSearch.ino) example or the [Single](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/Single/Single.pde) example provided within the Dallas Temperature library.  The sensor address is programmed at the factory and cannot be changed.
 
 The main constuctor for the sensor object is:
 
@@ -482,7 +482,7 @@ The main constuctor for the sensor object is:
 MaximDS18 ds18(OneWireAddress, powerPin, dataPin);
 ```
 
-_If and only you have exactly one sensor attached on your OneWire pin or bus_, you can use this constructor to save yourself the trouble of finding the address:
+_If and only if you have exactly one sensor attached on your OneWire pin or bus_, you can use this constructor to save yourself the trouble of finding the address:
 
 ```cpp
 #include <MaximDS18.h>

@@ -82,6 +82,10 @@ void DecagonSDI12::getSensorInfo(void)
     _sensorSerialNumber.trim();
     mySDI12.flush();
 
+    // Kill the SDI-12 Object
+    mySDI12.forceHold();
+    mySDI12.end();
+
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
 
@@ -194,6 +198,10 @@ bool DecagonSDI12::update()
         sensorValues[i] /=  _numReadings;
         DBGM(F("Result #"), i, F(": "), sensorValues[i], F("\n"));
     }
+
+    // Kill the SDI-12 Object
+    mySDI12.forceHold();
+    mySDI12.end();
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}

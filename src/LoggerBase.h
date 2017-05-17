@@ -217,7 +217,7 @@ public:
     #include <avr/sleep.h>  // To handle the processor sleep modes
 
     // Set up the Interrupt Service Request for waking
-    // In this case, we're doing nothing
+    // In this case, we're doing nothing, we just want the processor to wake
     // This must be a static function (which means it can only call other static funcions.)
     static void wakeISR(void){}
 
@@ -261,26 +261,20 @@ public:
         // The next timed interrupt will not be sent until this is cleared
         rtc.clearINTStatus();
 
+        // Temporarily disables interrupts, so no mistakes are made when writing
+        // to the processor registers
+        noInterrupts();
         // Disable the processor ADC
         ADCSRA &= ~_BV(ADEN);
-        // stop interrupts to ensure the BOD timed sequence executes as required
-        cli();
-        // turn off the brown-out detector
-        byte mcucr1, mcucr2;
-        mcucr1 = MCUCR | _BV(BODS) | _BV(BODSE);
-        mcucr2 = mcucr1 & ~_BV(BODSE);
-        MCUCR = mcucr1;
-        MCUCR = mcucr2;
-        // ensure interrupts enabled so we can wake up again
-        sei();
-
-        // Sleep time
-        // Disables interrupts
-        noInterrupts();
-        // Prepare the processor for by setting the SE (sleep enable) bit.
+        // turn off the brown-out detector, if possible
+        #if defined(BODS) && defined(BODSE)
+            sleep_bod_disable();
+        #endif
+        // Set the sleep enable bit.
         sleep_enable();
-        // Re-enables interrupts
+        // Re-enables interrupts so we can wake up again
         interrupts();
+
         // Actually put the processor into sleep mode.
         // This must happen after the SE bit is set.
         sleep_cpu();
