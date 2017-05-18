@@ -198,9 +198,7 @@ void setup()
 
     EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, APN);
 
-    #ifdef DreamHostPortalRX
-        EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
-    #endif
+    EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
 
     // Begin the logger;
     EnviroDIYLogger.begin();

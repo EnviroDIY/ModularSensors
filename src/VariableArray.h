@@ -85,20 +85,20 @@ public:
     bool setupSensors(void)
     {
         bool success = true;
-        bool sensorSuccess = false;
-        int setupTries = 0;
 
         PRINTOUT(F("Beginning setup for sensors and variables..."));
 
-        // First setup the sensors
+        // First wake up all of the sensors
+        for (int i = 0; i < _variableCount; i++)
+            _variableList[i]->parentSensor->wake();
+
+        // Now run all the set-up functions
         for (int i = 0; i < _variableCount; i++)
         {
-            // Wake everyone up for set up
-            success &= _variableList[i]->parentSensor->wake();
-            delay(10);
-
             // Make 5 attempts to contact the sensor before giving up
-            while(setupTries < 5)
+            bool sensorSuccess = false;
+            int setupTries = 0;
+            while(setupTries < 5 and !sensorSuccess)
             {
                 // Setting up the sensors for all variables whether they are repeats
                 // or not.  This means setting up some sensors multiple times, but
@@ -106,24 +106,23 @@ public:
                 // repeatedly. It is not possible to check for repeated sensors in
                 // the variable list until after the sensors have all been
                 // setup and then all of the variables attached.
-                sensorSuccess = _variableList[i]->parentSensor->setup();
                 delay(10);
+                sensorSuccess = _variableList[i]->parentSensor->setup();
+                setupTries++;
 
-                if(sensorSuccess) break;
-                else
+                if (!sensorSuccess)
                 {
-                    setupTries++;
                     PRINTOUT(F("   ... Set up of "));
                     PRINTOUT(_variableList[i]->getVarCode());
                     PRINTOUT(F(" failed!\n"));
                 }
             }
             success &= sensorSuccess;
-
-            // Put everyone back to sleep
-            success &= _variableList[i]->parentSensor->sleep();
-            delay(10);
         }
+
+        // Put all the sensors back to sleep
+        for (int i = 0; i < _variableCount; i++)
+            _variableList[i]->parentSensor->sleep();
 
         // Now attach all of the variables to their parents
         for (int i = 0; i < _variableCount; i++){
@@ -133,7 +132,6 @@ public:
         if (success)
             PRINTOUT(F("   ... Success!\n"));
         return success;
-
     }
 
     // This puts sensors to sleep (ie, cuts power)
@@ -196,9 +194,10 @@ public:
             stream->print(_variableList[i]->parentSensor->getSensorName());
             stream->print(F(" attached at "));
             stream->print(_variableList[i]->parentSensor->getSensorLocation());
-            stream->print(F(" has status "));
-            stream->print(Sensor::printStatus(_variableList[i]->parentSensor->getStatus()));
-            stream->print(F(" and reports "));
+            // stream->print(F(" has status "));
+            // stream->print(Sensor::printStatus(_variableList[i]->parentSensor->getStatus()));
+            // stream->print(F(" and reports "));
+            stream->print(F(" reports "));
             stream->print(_variableList[i]->getVarName());
             stream->print(F(" is "));
             stream->print(_variableList[i]->getValueString());

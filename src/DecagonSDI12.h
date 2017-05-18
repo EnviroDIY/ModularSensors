@@ -21,7 +21,7 @@
 
 #include <Arduino.h>
 
-// #define MODULES_DBG Serial
+#define MODULES_DBG Serial
 #include "ModSensorDebugger.h"
 
 #include "SensorBase.h"
