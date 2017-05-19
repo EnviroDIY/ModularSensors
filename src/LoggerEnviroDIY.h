@@ -11,7 +11,6 @@
 #ifndef LoggerEnviroDIY_h
 #define LoggerEnviroDIY_h
 
-#include <Arduino.h>
 #include "LoggerBase.h"
 #include "ModemSupport.h"
 
@@ -38,7 +37,7 @@ public:
         DBGVA(F("UUID array set!\n"));
     }
 
-    // // This adds extra data to the datafile header
+    // This adds extra data to the datafile header
     String generateFileHeader(void)
     {
         String dataHeader = "";
@@ -138,7 +137,9 @@ public:
         return responseCode;
     }
 
-    // Convience functions to do it all
+    // ===================================================================== //
+    // Convience functions to call several of the above functions
+    // ===================================================================== //
     // This calls all of the setup functions - must be run AFTER init
     virtual void begin(void) override
     {

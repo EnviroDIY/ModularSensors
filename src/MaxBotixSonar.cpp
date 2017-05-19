@@ -24,7 +24,6 @@ SENSOR_STATUS MaxBotixSonar::setup(void)
 {
     pinMode(_powerPin, OUTPUT);
     pinMode(_dataPin, INPUT_PULLUP);
-    enableInterrupt(_dataPin, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
 
     if(_triggerPin != -1)
     {
@@ -65,6 +64,7 @@ bool MaxBotixSonar::update(void)
     sonarSerial.begin(9600);
     // Even the slowest sensors should respond at a rate of 6Hz (166ms).
     sonarSerial.setTimeout(180);
+    enableInterrupt(_dataPin, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
 
     // Note:  if the power is on for >160ms before SoftwareSerial starts
     // the header lines will already have been sent and lost
@@ -113,6 +113,10 @@ bool MaxBotixSonar::update(void)
 
     sensorValues[HRXL_VAR_NUM] = result;
     DBGM(sensorValues[HRXL_VAR_NUM], F("\n"));
+
+    // Stop listening and turn of interrupts so the interrupt routine doesn't throw anything else off
+    disableInterrupt(_dataPin);
+    sonarSerial.end();
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}

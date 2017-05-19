@@ -12,7 +12,7 @@
 
 
 #define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
-#define VAR_ARRAY_DBG Serial
+// #define VAR_ARRAY_DBG Serial
 
 #include "SensorBase.h"
 #include "VariableBase.h"
