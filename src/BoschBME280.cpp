@@ -46,7 +46,7 @@ SENSOR_STATUS BoschBME280::getStatus(void)
 {
     // Check if the power is on, turn it on if not (Need power to get status)
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}  // powerUp function includes a 500ms delay
+    if(!wasOn){powerUp();}
 
     // Run begin fxn because it returns true or false for success in contact
     delay(10); // let the sensor settle in after power-up
@@ -74,7 +74,7 @@ bool BoschBME280::update(void)
 {
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}  // powerUp function includes a 500ms delay
+    if(!wasOn){powerUp();}
 
     // Clear values before starting loop
     clearValues();

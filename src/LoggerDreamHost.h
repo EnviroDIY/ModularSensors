@@ -11,8 +11,6 @@
 #ifndef LoggerDreamHost_h
 #define LoggerDreamHost_h
 
-
-#include <Arduino.h>
 #include "LoggerEnviroDIY.h"
 
 
@@ -26,6 +24,7 @@ public:
     void setDreamHostPortalRX(const char *URL)
     {
         _DreamHostPortalRX = URL;
+        DBGVA(F("Dreamhost portal URL set!\n"));
     }
 
     String generateSensorDataDreamHost(void)
@@ -97,7 +96,9 @@ public:
         return responseCode;
     }
 
-    // Convience functions to do it all
+    // ===================================================================== //
+    // Convience functions to call several of the above functions
+    // ===================================================================== //
     virtual void log(void) override
     {
         // Check of the current time is an even interval of the logging interval
@@ -156,6 +157,7 @@ public:
     }
 
 #endif
+
 
 private:
     const char *_DreamHostPortalRX;

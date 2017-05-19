@@ -64,7 +64,7 @@ SENSOR_STATUS MaximDS18::getStatus(void)
 {
     // Check if the power is on, turn it on if not (Need power to get status)
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}  // powerUp function includes a 500ms delay
+    if(!wasOn){powerUp();}
 
     OneWire oneWire(_dataPin);
     DallasTemperature tempSensors(&oneWire);
@@ -109,7 +109,7 @@ SENSOR_STATUS MaximDS18::setup(void)
 
     // Check if the power is on, turn it on if not  (Need power to get address)
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}  // powerUp function includes a 500ms delay
+    if(!wasOn){powerUp();}
 
     // Start up the maxim sensor library
     OneWire oneWire(_dataPin);
@@ -151,7 +151,7 @@ bool MaximDS18::update()
 {
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}  // powerUp function includes a 500ms delay
+    if(!wasOn){powerUp();}
 
     // Clear values before starting loop
     clearValues();
