@@ -17,25 +17,25 @@
 
 // The constructor - need the number of measurements the sensor will return, SDI-12 address, the power pin, and the data pin
 DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin,
-                           int numReadings,
-                           String sensName, int numMeasurements)
-    : Sensor(powerPin, dataPin, sensName, numMeasurements)
+                           int numReadings, String sensName,
+                           int numMeasurements, int WarmUpTime_ms)
+    : Sensor(powerPin, dataPin, sensName, numMeasurements, WarmUpTime_ms)
 {
     _SDI12address = SDI12address;
     _numReadings = numReadings;
 }
 DecagonSDI12::DecagonSDI12(char *SDI12address, int powerPin, int dataPin,
-                           int numReadings,
-                           String sensName, int numMeasurements)
-    : Sensor(powerPin, dataPin, sensName, numMeasurements)
+                           int numReadings, String sensName,
+                           int numMeasurements, int WarmUpTime_ms)
+    : Sensor(powerPin, dataPin, sensName, numMeasurements, WarmUpTime_ms)
 {
     _SDI12address = *SDI12address;
     _numReadings = numReadings;
 }
 DecagonSDI12::DecagonSDI12(int SDI12address, int powerPin, int dataPin,
-                           int numReadings,
-                           String sensName, int numMeasurements)
-    : Sensor(powerPin, dataPin, sensName, numMeasurements)
+                           int numReadings, String sensName,
+                           int numMeasurements, int WarmUpTime_ms)
+    : Sensor(powerPin, dataPin, sensName, numMeasurements, WarmUpTime_ms)
 {
     _SDI12address = SDI12address + '0';
     _numReadings = numReadings;
@@ -64,6 +64,8 @@ SENSOR_STATUS DecagonSDI12::getStatus(void)
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
+    // Wait until the sensor is warmed up
+    waitForWarmUp();
 
     SDI12 mySDI12(_dataPin);
     mySDI12.begin();
@@ -104,6 +106,8 @@ bool DecagonSDI12::getSensorInfo(void)
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
+    // Wait until the sensor is warmed up
+    waitForWarmUp();
 
     // Check that the sensor is there and responding
     if (getStatus() == SENSOR_ERROR) return false;
@@ -185,6 +189,8 @@ bool DecagonSDI12::update()
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
+    // Wait until the sensor is warmed up
+    waitForWarmUp();
 
     // Clear values before starting loop
     clearValues();

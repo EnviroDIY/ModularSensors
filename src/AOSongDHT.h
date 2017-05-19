@@ -19,6 +19,8 @@
  *  Resolution is 0.1°C
  *  Accuracy is ±0.5°C
  *  Range is -40°C to +80°C
+ *
+ * Warm up/sampling time: 1.7sec
 */
 
 #ifndef AOSongDHT_h
@@ -39,6 +41,7 @@
 #include "ModSensorDebugger.h"
 
 #define DHT_NUM_MEASUREMENTS 3
+#define DHT_WARM_UP 1700
 
 #define DHT_HUMIDITY_RESOLUTION 1
 #define DHT_HUMIDITY_VAR_NUM 0

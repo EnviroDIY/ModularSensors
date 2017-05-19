@@ -25,6 +25,8 @@
  *  Resolution is 2 mm
  *  Accuracy is ±0.05% of full scale
  *  Range is 0 to 5 m or 0 to 10 m, depending on model
+ *
+ * Maximum warm-up time in SDI-12 mode: 500ms
 */
 
 
@@ -35,6 +37,7 @@
 #include "VariableBase.h"
 
 #define CTD_NUM_MEASUREMENTS 3
+#define CTD_WARM_UP 500
 
 #define CTD_COND_RESOLUTION 0
 #define CTD_COND_VAR_NUM 2
@@ -52,15 +55,15 @@ public:
     // Constructors with overloads
     DecagonCTD(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
      : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
-                    F("DecagonCTD"), CTD_NUM_MEASUREMENTS)
+                    F("DecagonCTD"), CTD_NUM_MEASUREMENTS, CTD_WARM_UP)
     {}
     DecagonCTD(char *SDI12address, int powerPin, int dataPin, int numReadings = 1)
      : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
-                    F("DecagonCTD"), CTD_NUM_MEASUREMENTS)
+                    F("DecagonCTD"), CTD_NUM_MEASUREMENTS, CTD_WARM_UP)
     {}
     DecagonCTD(int SDI12address, int powerPin, int dataPin, int numReadings = 1)
      : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
-                    F("DecagonCTD"), CTD_NUM_MEASUREMENTS)
+                    F("DecagonCTD"), CTD_NUM_MEASUREMENTS, CTD_WARM_UP)
     {}
 };
 

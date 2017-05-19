@@ -8,6 +8,8 @@
  *It is dependent on Software Serial.
  *
  * The output from the HRXL-MaxSonar-WRL sonar is the range in mm.
+ *
+ * Warm up time to completion of header:  160ms
  */
 
  #define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
@@ -17,7 +19,7 @@
 #include "MaxBotixSonar.h"
 
 MaxBotixSonar::MaxBotixSonar(int powerPin, int dataPin, int triggerPin)
-: Sensor(powerPin, dataPin, F("MaxBotixMaxSonar"), HRXL_NUM_MEASUREMENTS)
+: Sensor(powerPin, dataPin, F("MaxBotixMaxSonar"), HRXL_NUM_MEASUREMENTS, HRXL_WARM_UP)
 {_triggerPin = triggerPin;}
 
 SENSOR_STATUS MaxBotixSonar::setup(void)
@@ -42,7 +44,8 @@ bool MaxBotixSonar::update(void)
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
-    else{delay(160);}  // See note below
+    // Wait until the sensor is warmed up
+    waitForWarmUp();
 
     // Clear values before starting loop
     clearValues();

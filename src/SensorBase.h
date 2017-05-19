@@ -13,7 +13,7 @@
 #include <Arduino.h>
 #include <pins_arduino.h>
 
-// #define SENSORS_DBG Serial
+#define SENSORS_DBG Serial
 
 #ifdef SENSORS_DBG
 namespace {
@@ -51,7 +51,7 @@ class Sensor
 {
 public:
 
-    Sensor(int powerPin = -1, int dataPin = -1, String sensorName = "Unknown", int numReturnedVars = 1);
+    Sensor(int powerPin = -1, int dataPin = -1, String sensorName = "Unknown", int numReturnedVars = 1, int WarmUpTime_ms = 0);
 
     // These functions are dependent on the constructor and return the constructor values
     // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
@@ -88,11 +88,14 @@ protected:
     bool checkPowerOn(void);
     void powerUp(void);
     void powerDown(void);
+    void waitForWarmUp(void);
     void clearValues();
     int _dataPin;
     int _powerPin;
     String _sensorName;
     int _numReturnedVars;
+    uint32_t _WarmUpTime_ms;
+    uint32_t _millisPowerOn;
     SENSOR_STATUS sensorStatus;
     Variable *variables[MAX_NUMBER_VARS];
 };

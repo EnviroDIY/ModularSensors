@@ -20,6 +20,8 @@
  *      Turbidity: 0.004/0.01 NTU; 0.008/0.03 NTU; 0.01/0.06 NTU
  *  12-bit ADC
  *      Turbidity: 0.06/0.2 NTU; 0.1/0.5 NTU; 0.2/1.0 NTU
+ *
+ * Minimum warm-up time: 2s
 */
 
 #ifndef CampbellOBS3_h
@@ -33,6 +35,7 @@
 
 
 #define OBS3_NUM_VARIABLES 1  // low and high range are treated as completely independent
+#define OBS3_WARM_UP 2000
 #define OBS3_TURB_VAR_NUM 0
 #define OBS3_RESOLUTION 3
 #define OBS3_HR_RESOLUTION 2

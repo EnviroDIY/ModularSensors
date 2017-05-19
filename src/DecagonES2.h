@@ -20,6 +20,8 @@
  *  Resolution is 0.1°C
  *  Accuracy is ±1°C
  *  Range is -40°C to +50°C
+ *
+ * Maximum warm-up time in SDI-12 mode: 250ms
 */
 
 #ifndef DecagonES2_h
@@ -29,6 +31,7 @@
 #include "VariableBase.h"
 
 #define ES2_NUM_MEASUREMENTS 2
+#define ES2_WARM_UP 250
 
 #define ES2_COND_RESOLUTION 0
 #define ES2_COND_VAR_NUM 0
@@ -43,15 +46,15 @@ public:
     // Constructors with overloads
     DecagonES2(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
      : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
-                    F("DecagonES2"), ES2_NUM_MEASUREMENTS)
+                    F("DecagonES2"), ES2_NUM_MEASUREMENTS, ES2_WARM_UP)
     {}
     DecagonES2(char *SDI12address, int powerPin, int dataPin, int numReadings = 1)
      : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
-                    F("DecagonES2"), ES2_NUM_MEASUREMENTS)
+                    F("DecagonES2"), ES2_NUM_MEASUREMENTS, ES2_WARM_UP)
     {}
     DecagonES2(int SDI12address, int powerPin, int dataPin, int numReadings = 1)
      : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
-                    F("DecagonES2"), ES2_NUM_MEASUREMENTS)
+                    F("DecagonES2"), ES2_NUM_MEASUREMENTS, ES2_WARM_UP)
     {}
 };
 

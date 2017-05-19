@@ -24,13 +24,15 @@
  * For Humidity:
  *  Resolution is 0.008 % RH (16 bit)
  *  Accuracy is ± 3 % RH
+ *
+ * Slowest response time (humidity): 1sec
 */
 
 #include "BoschBME280.h"
 
 // The constructor - because this is I2C, only need the power pin
 BoschBME280::BoschBME280(int powerPin, uint8_t i2cAddressHex)
- : Sensor(powerPin, -1, F("BoschBME280"), BoschBME280_NUM_MEASUREMENTS)
+ : Sensor(powerPin, -1, F("BoschBME280"), BoschBME280_NUM_MEASUREMENTS, BoschBME280_WARM_UP)
 {
     _i2cAddressHex  = i2cAddressHex;
 }
@@ -47,6 +49,8 @@ SENSOR_STATUS BoschBME280::getStatus(void)
     // Check if the power is on, turn it on if not (Need power to get status)
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
+    // Wait until the sensor is warmed up
+    waitForWarmUp();
 
     // Run begin fxn because it returns true or false for success in contact
     delay(10); // let the sensor settle in after power-up
@@ -75,6 +79,8 @@ bool BoschBME280::update(void)
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
+    // Wait until the sensor is warmed up
+    waitForWarmUp();
 
     // Clear values before starting loop
     clearValues();

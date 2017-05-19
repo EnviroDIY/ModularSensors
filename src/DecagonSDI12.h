@@ -31,14 +31,14 @@ class DecagonSDI12 : public Sensor
 {
 public:
     DecagonSDI12(char SDI12address, int powerPin, int dataPin,
-                 int numReadings = 1,
-                 String sensName = "SDI12-Sensor", int numMeasurements = 1);
+                 int numReadings = 1, String sensName = "SDI12-Sensor",
+                 int numMeasurements = 1, int WarmUpTime_ms = 0);
     DecagonSDI12(char *SDI12address, int powerPin, int dataPin,
-                 int numReadings = 1,
-                 String sensName = "SDI12-Sensor", int numMeasurements = 1);
+                 int numReadings = 1, String sensName = "SDI12-Sensor",
+                 int numMeasurements = 1, int WarmUpTime_ms = 0);
     DecagonSDI12(int SDI12address, int powerPin, int dataPin,
-                 int numReadings = 1,
-                 String sensName = "SDI12-Sensor", int numMeasurements = 1);
+                 int numReadings = 1, String sensName = "SDI12-Sensor",
+                 int numMeasurements = 1, int WarmUpTime_ms = 0);
 
     String getSensorVendor(void);
     String getSensorModel(void);
