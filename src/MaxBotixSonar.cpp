@@ -10,11 +10,11 @@
  * The output from the HRXL-MaxSonar-WRL sonar is the range in mm.
  */
 
-#include "MaxBotixSonar.h"
+ #define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
+ #include <EnableInterrupt.h>  // To handle external and pin change interrupts
+ #include <SoftwareSerial_ExtInts.h>
 
-#define LIBCALL_ENABLEINTERRUPT
-#include <EnableInterrupt.h>  // To handle external and pin change interrupts
-#include <SoftwareSerial_ExtInts.h>
+#include "MaxBotixSonar.h"
 
 MaxBotixSonar::MaxBotixSonar(int powerPin, int dataPin, int triggerPin)
 : Sensor(powerPin, dataPin, F("MaxBotixMaxSonar"), HRXL_NUM_MEASUREMENTS)
@@ -42,7 +42,7 @@ bool MaxBotixSonar::update(void)
 {
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}  // powerUp function includes a 1s delay
+    if(!wasOn){powerUp();}
     else{delay(160);}  // See note below
 
     // Clear values before starting loop

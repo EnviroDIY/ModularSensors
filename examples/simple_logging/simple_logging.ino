@@ -162,8 +162,6 @@ Variable *variableList[] = {
     new BoschBME280_Humidity(&bme280),
     new BoschBME280_Pressure(&bme280),
     new BoschBME280_Altitude(&bme280),
-    new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
     new Decagon5TM_Ea(&fivetm),
     new Decagon5TM_Temp(&fivetm),
     new Decagon5TM_VWC(&fivetm),
@@ -176,6 +174,8 @@ Variable *variableList[] = {
     new MaximDS18_Temp(&ds18_1),
     new MaximDS18_Temp(&ds18_2),
     new MaximDS18_Temp(&ds18_3),
+    new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
     new EnviroDIYMayfly_Temp(&mayfly),
     new EnviroDIYMayfly_Batt(&mayfly),
     new EnviroDIYMayfly_FreeRam(&mayfly)

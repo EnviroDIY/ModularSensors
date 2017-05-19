@@ -10,13 +10,13 @@
 #ifndef LoggerBase_h
 #define LoggerBase_h
 
+#define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
+#include <EnableInterrupt.h>  // To handle external and pin change interrupts
+
 #include <Arduino.h>
 #include <Sodaq_DS3231.h>  // To communicate with the clock
 #include <SdFat.h>  // To communicate with the SD card
 #include "VariableArray.h"
-
-#define LIBCALL_ENABLEINTERRUPT
-#include <EnableInterrupt.h>  // To handle external and pin change interrupts
 
 // Defines the "Logger" Class
 class Logger : public VariableArray
@@ -229,7 +229,7 @@ public:
         // Set the pin attached to the RTC alarm to be in the right mode to listen to
         // an interrupt and attach the "Wake" ISR to it.
         pinMode(_interruptPin, INPUT_PULLUP);
-        PcInt::attachInterrupt(_interruptPin, wakeISR);
+        attachInterrupt(_interruptPin, wakeISR, CHANGE);
 
         // Unfortunately, because of the way the alarm on the DS3231 is set up, it
         // cannot interrupt on any frequencies other than every second, minute,

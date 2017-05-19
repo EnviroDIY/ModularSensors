@@ -42,15 +42,15 @@
             "version": "https://github.com/EnviroDIY/Sodaq_DS3231.git"
         },
         {
-            "name": "Sodaq_PcInt_PCINT0",
-            "version": "https://github.com/EnviroDIY/PcInt_PCINT0.git"
+            "name": "EnableInterrupt",
+            "version": "https://github.com/EnviroDIY/EnableInterrupt.git"
         },
         {
             "name": "SdFat"
         },
         {
             "name": "SoftwareSerial_PCINT12",
-            "version": "https://github.com/EnviroDIY/SoftwareSerial_PCINT12.git"
+            "version": "https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git"
         },
         {
             "name": "ADS1X15"
@@ -75,7 +75,7 @@
         },
         {
             "name": "Arduino-SDI-12_PCINT3",
-            "version": "https://github.com/EnviroDIY/Arduino-SDI-12.git#mayfly"
+            "version": "https://github.com/EnviroDIY/Arduino-SDI-12.git#ExtInts"
         },
         {
             "name": "TinyGSM",

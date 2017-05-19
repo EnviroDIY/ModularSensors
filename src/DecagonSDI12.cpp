@@ -9,11 +9,11 @@
  *It is dependent on the EnviroDIY SDI-12 library.
 */
 
-#include "DecagonSDI12.h"
-
-#define LIBCALL_ENABLEINTERRUPT
+#define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
 #include <EnableInterrupt.h>  // To handle external and pin change interrupts
 #include <SDI12_ExtInts.h>
+
+#include "DecagonSDI12.h"
 
 // The constructor - need the number of measurements the sensor will return, SDI-12 address, the power pin, and the data pin
 DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin,

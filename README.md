@@ -35,13 +35,13 @@ To use a sensor and variable in your sketch, you must separately include xxx.h f
 In order to support multiple functions and sensors, there are quite a lot of dependencies for this library.  _Even if you do not use all of the modules, you must have all of the dependencies installed for the library itself to properly compile._
 
 - [Sodaq](https://github.com/SodaqMoja/Sodaq_DS3231) or [EnviroDIY DS-3231](https://github.com/EnviroDIY/Sodaq_DS3231) - For real time clock control
-- [EnviroDIY modified version of Sodaq's pin change interrupt library](https://github.com/EnviroDIY/PcInt_PCINT0) - For waking the processor from clock alarms.  The modified version is needed so there are no pin change interrupt conflicts with the SDI-12 library or the SoftwareSerial library.
-- AVR sleep library - This is for low power sleeping (This library is built in to the Arduino IDE.)
+- [EnableInterrupt](https://github.com/EnviroDIY/EnableInterrupt) - Administrates and handles pin change interrupts, allowing the logger to sleep and save battery.  This also controls the interrupts for the versions of SoftwareSerial and SDI-12 linked below that have been stripped of interrupt control.  Because we use this library, _you must always add the line ```#include <EnableInterrupt.h>``` to the top of your sketch._
+- AVR sleep library - This is for low power sleeping for AVR processors. (This library is built in to the Arduino IDE.)
 - [SdFat library](https://github.com/greiman/SdFat) - This enables communication with the SD card.
 - [EnviroDIY version of the TinyGSM library](https://github.com/EnviroDIY/TinyGSM) - This provides internet (TCP/IP) connectivity.  
-- [EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwareSerial_PCINT12/) - This modified version is needed so there are no pin change interrupt conflicts with the SDI-12 library or the software pin change interrupt library.
+- [EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts) - This modified version is needed so there are no pin change interrupt conflicts with the SDI-12 library or the software pin change interrupt library.
 - [Adafruit ADS1X15 library](https://github.com/Adafruit/Adafruit_ADS1X15/) - For high-resolution analog to digital conversion.
-- [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/mayfly) - For control of SDI-12 based sensors.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the processor.
+- [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/ExtInts) - For control of SDI-12 based sensors.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the processor.
 - [OneWire](https://github.com/PaulStoffregen/OneWire) - This enables communication with Maxim/Dallas OneWire devices.
 - [DallasTemperature](https://github.com/milesburton/Arduino-Temperature-Control-Library) - for communication with the DS18 line of Maxim/Dallas OneWire temperature probes.
 - [Adafruit Unified Sensor Driver](https://github.com/adafruit/Adafruit_Sensor)  

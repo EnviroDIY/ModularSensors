@@ -86,14 +86,14 @@ EnviroDIYMayfly mayfly(MFVersion) ;
 // The array that contains all valid variables
 // ---------------------------------------------------------------------------
 Variable *variableList[] = {
-    new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
     new DecagonCTD_Cond(&ctd),
     new DecagonCTD_Temp(&ctd),
     new DecagonCTD_Depth(&ctd),
     new EnviroDIYMayfly_Temp(&mayfly),
-    new EnviroDIYMayfly_Batt(&mayfly)
-    // new YOUR_variableName_HERE(&)
+    new EnviroDIYMayfly_Batt(&mayfly),
+    new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "TurbHigh")
+// new YOUR_variableName_HERE(&)
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
@@ -107,13 +107,13 @@ const char *REGISTRATION_TOKEN = "f117ea89-83d7-4d29-b0b9-d785e5cdc687";   // De
 const char *SAMPLING_FEATURE = "80f6daff-df8a-4782-9fcc-be43ea37ee0d";     // Sampling feature UUID
 const char *UUIDs[] =                                                      // UUID array for device sensors
 {
-"12345678-abcd-1234-efgh-1234567890ab",   // Turbidity (Campbell_OBS-3+_Turb)
-"12345678-abcd-1234-efgh-1234567890ab",   // Turbidity (Campbell_OBS-3+_Turb)
 "12345678-abcd-1234-efgh-1234567890ab",   // Electrical conductivity (Decagon_CTD-10_EC)
 "12345678-abcd-1234-efgh-1234567890ab",   // Temperature (Decagon_CTD-10_Temp)
 "12345678-abcd-1234-efgh-1234567890ab",   // Water depth (Decagon_CTD-10_Depth)
 "12345678-abcd-1234-efgh-1234567890ab",   // Temperature (EnviroDIY_Mayfly_Temp)
-"12345678-abcd-1234-efgh-1234567890ab"    // Battery voltage (EnviroDIY_Mayfly_Volt)
+"12345678-abcd-1234-efgh-1234567890ab",   // Battery voltage (EnviroDIY_Mayfly_Volt)
+"12345678-abcd-1234-efgh-1234567890ab",   // Turbidity (Campbell_OBS-3+_Turb)
+"12345678-abcd-1234-efgh-1234567890ab"    // Turbidity (Campbell_OBS-3+_Turb)
 };
 
 
