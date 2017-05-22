@@ -12,6 +12,9 @@
 
 #define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
 #include <EnableInterrupt.h>  // To handle external and pin change interrupts
+#if defined(ARDUINO_ARCH_SAMD)
+  #include <RTCZero.h>
+#endif
 #include <Sodaq_DS3231.h>  // To communicate with the clock
 #include <SdFat.h>  // To communicate with the SD card
 
@@ -96,12 +99,22 @@ public:
     // Public functions to access the clock in proper format and time zone
     // ===================================================================== //
     // This gets the current epoch time (unix time) and corrects it for the specified time zone
+    #if defined(ARDUINO_ARCH_SAMD)
+    static RTCZero rtc;
+    static uint32_t getNow(void)
+    {
+      uint32_t currentEpochTime = rtc.getEpoch();
+      currentEpochTime += _offset*3600;
+      return currentEpochTime;
+    }
+    #else
     static uint32_t getNow(void)
     {
       uint32_t currentEpochTime = rtc.now().getEpoch();
       currentEpochTime += _offset*3600;
       return currentEpochTime;
     }
+    #endif
 
     // This converts a date-time object into a ISO8601 formatted string
     static String formatDateTime_ISO8601(DateTime dt)
@@ -140,7 +153,7 @@ public:
     static String formatDateTime_ISO8601(uint32_t epochTime)
     {
         // Create a DateTime object from the epochTime
-        DateTime dt(rtc.makeDateTime(epochTime));
+        DateTime dt(epochTime);
         return formatDateTime_ISO8601(dt);
     }
 
@@ -154,7 +167,7 @@ public:
     void markTime(void)
     {
       markedEpochTime = getNow();
-      markedDateTime = rtc.makeDateTime(markedEpochTime);
+      markedDateTime = DateTime(markedEpochTime);
       formatDateTime_ISO8601(markedDateTime).toCharArray(markedISO8601Time, 26);
     }
 
@@ -215,12 +228,41 @@ public:
     // ============================================================================
     //  Public Functions for sleeping the logger
     // ============================================================================
-    #include <avr/sleep.h>  // To handle the processor sleep modes
 
     // Set up the Interrupt Service Request for waking
     // In this case, we're doing nothing, we just want the processor to wake
     // This must be a static function (which means it can only call other static funcions.)
     static void wakeISR(void){}
+
+    #if defined ARDUINO_ARCH_SAMD
+
+    // Sets up the sleep mode
+    void setupSleep(void)
+    {
+        // Alarms on the RTC built into the SAMD21 appear to be identical to those
+        // in the DS3231.  See more notes below.
+        rtc.enableAlarm(rtc.MATCH_SS);  // every minute
+        rtc.attachInterrupt(wakeISR);
+    }
+
+    // Puts the system to sleep to conserve battery life.
+    // This DOES NOT sleep or wake the sensors!!
+    void systemSleep(void)
+    {
+        // Wait until the serial ports have finished transmitting
+        // This does not clear their buffers, it just waits until they are finished
+        // TODO:  Make sure can find all serial ports
+        Serial.flush();
+        // Serial1.flush();
+
+        // Put the processor into sleep mode.
+        rtc.standbyMode();
+
+        DBGVA(F("The clock interrupt woke me up!\n"));
+    }
+
+    #elif defined __AVR__
+    #include <avr/sleep.h>  // To handle the processor sleep modes
 
     // Sets up the sleep mode
     void setupSleep(void)
@@ -286,6 +328,7 @@ public:
         // Re-enable the processor ADC
         ADCSRA |= _BV(ADEN);
     }
+    #endif
 
     // ===================================================================== //
     // Public functions for logging data to an SD card
@@ -411,26 +454,26 @@ public:
             // Open the file in write mode (and create it if it did not exist)
             logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END);
             // Set creation date time
-            logFile.timestamp(T_CREATE, rtc.makeDateTime(getNow()).year(),
-                                        rtc.makeDateTime(getNow()).month(),
-                                        rtc.makeDateTime(getNow()).date(),
-                                        rtc.makeDateTime(getNow()).hour(),
-                                        rtc.makeDateTime(getNow()).minute(),
-                                        rtc.makeDateTime(getNow()).second());
+            logFile.timestamp(T_CREATE, DateTime(getNow()).year(),
+                                        DateTime(getNow()).month(),
+                                        DateTime(getNow()).date(),
+                                        DateTime(getNow()).hour(),
+                                        DateTime(getNow()).minute(),
+                                        DateTime(getNow()).second());
             // Set write/modification date time
-            logFile.timestamp(T_WRITE, rtc.makeDateTime(getNow()).year(),
-                                       rtc.makeDateTime(getNow()).month(),
-                                       rtc.makeDateTime(getNow()).date(),
-                                       rtc.makeDateTime(getNow()).hour(),
-                                       rtc.makeDateTime(getNow()).minute(),
-                                       rtc.makeDateTime(getNow()).second());
+            logFile.timestamp(T_WRITE, DateTime(getNow()).year(),
+                                       DateTime(getNow()).month(),
+                                       DateTime(getNow()).date(),
+                                       DateTime(getNow()).hour(),
+                                       DateTime(getNow()).minute(),
+                                       DateTime(getNow()).second());
             // Set access  date time
-            logFile.timestamp(T_ACCESS, rtc.makeDateTime(getNow()).year(),
-                                        rtc.makeDateTime(getNow()).month(),
-                                        rtc.makeDateTime(getNow()).date(),
-                                        rtc.makeDateTime(getNow()).hour(),
-                                        rtc.makeDateTime(getNow()).minute(),
-                                        rtc.makeDateTime(getNow()).second());
+            logFile.timestamp(T_ACCESS, DateTime(getNow()).year(),
+                                        DateTime(getNow()).month(),
+                                        DateTime(getNow()).date(),
+                                        DateTime(getNow()).hour(),
+                                        DateTime(getNow()).minute(),
+                                        DateTime(getNow()).second());
             PRINTOUT(F("   ... File created!\n"));
 
             // Add header information
@@ -472,19 +515,19 @@ public:
             PRINTOUT(rec, F("\n"));
 
             // Set write/modification date time
-            logFile.timestamp(T_WRITE, rtc.makeDateTime(getNow()).year(),
-                                       rtc.makeDateTime(getNow()).month(),
-                                       rtc.makeDateTime(getNow()).date(),
-                                       rtc.makeDateTime(getNow()).hour(),
-                                       rtc.makeDateTime(getNow()).minute(),
-                                       rtc.makeDateTime(getNow()).second());
+            logFile.timestamp(T_WRITE, DateTime(getNow()).year(),
+                                       DateTime(getNow()).month(),
+                                       DateTime(getNow()).date(),
+                                       DateTime(getNow()).hour(),
+                                       DateTime(getNow()).minute(),
+                                       DateTime(getNow()).second());
             // Set access  date time
-            logFile.timestamp(T_ACCESS, rtc.makeDateTime(getNow()).year(),
-                                        rtc.makeDateTime(getNow()).month(),
-                                        rtc.makeDateTime(getNow()).date(),
-                                        rtc.makeDateTime(getNow()).hour(),
-                                        rtc.makeDateTime(getNow()).minute(),
-                                        rtc.makeDateTime(getNow()).second());
+            logFile.timestamp(T_ACCESS, DateTime(getNow()).year(),
+                                        DateTime(getNow()).month(),
+                                        DateTime(getNow()).date(),
+                                        DateTime(getNow()).hour(),
+                                        DateTime(getNow()).minute(),
+                                        DateTime(getNow()).second());
 
             // Close the file to save it
             logFile.close();
