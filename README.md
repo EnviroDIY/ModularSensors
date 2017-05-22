@@ -12,6 +12,7 @@ To use a sensor and variable in your sketch, you must separately include xxx.h f
     - [Individual Sensors Code Examples](#individuals)
 - [Grouped Sensor Functions](#Grouped)
     - [VariableArray Code Examples](#ArrayExamples)
+    - [Tips for Ordering Sensors in Arrays](#ArrayTips)
 - Logger Functions
     - [Basic Logger Functions](#Logger)
     - [Modem and Internet Functions](#Modem)
@@ -174,6 +175,9 @@ myVars.updateAllSensors();
 // Print the data to the screen
 myVars.printSensorData();
 ```
+
+### <a name="ArrayTips"></a>Tips for Ordering Sensors in Arrays:
+If you are running sensors remotely on batteries and/or solar power, saving power and minimizing sensor-on time is a high priority.  To reduce the amount of time needed for sensor warm-up, it is best to look for readings first from the sensors that warm up the fastest and then to move on to the slower-booting sensors, allowing them to warm up while the faster sensors take readings.  This means that you should list those faster sensors first in your variable array and the slower sensors last.  Within the multisensor_print and other examples, the sensors are ordered this way, so can copy that order when creating your own logger program.
 
 
 ## <a name="Logger"></a>Basic Logger Functions

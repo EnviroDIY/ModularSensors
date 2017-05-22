@@ -13,6 +13,8 @@
  *
  *For battery voltage:
  *  Range of 0-5V with 10bit ADC - resolution of 0.005
+ *
+ * If the processor is awake, it's ready to take a reading.
 */
 
 #ifndef MayflyOnboardSensors_h
@@ -25,6 +27,7 @@
 #include "ModSensorDebugger.h"
 
 #define MAYFLY_NUM_MEASUREMENTS 3
+#define MAYFLY_WARM_UP 0
 
 #define DS3231_TEMP_RESOLUTION 2
 #define MAYFLY_TEMP_VAR_NUM 0

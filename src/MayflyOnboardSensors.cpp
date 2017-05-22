@@ -19,7 +19,7 @@
 #include "MayflyOnboardSensors.h"
 
 // Need to know the Mayfly version because the battery resistor depends on it
-EnviroDIYMayfly::EnviroDIYMayfly(const char *version) : Sensor(-1, -1, F("EnviroDIYMayfly"), MAYFLY_NUM_MEASUREMENTS)
+EnviroDIYMayfly::EnviroDIYMayfly(const char *version) : Sensor(-1, -1, F("EnviroDIYMayfly"), MAYFLY_NUM_MEASUREMENTS, MAYFLY_WARM_UP)
 {
     _version = version;
 
