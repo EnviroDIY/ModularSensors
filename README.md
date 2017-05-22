@@ -555,3 +555,28 @@ AOSongDHT_Humidity(&dht, "customVarCode");
 AOSongDHT_Temp(&dht, "customVarCode");
 AOSongDHT_HI(&dht, "customVarCode");  // Heat Index
 ```
+
+
+## <a name="compatibility"></a>Processor/Board Compatibility
+
+AtMega1284p ([EnviroDIY Mayfly](https://envirodiy.org/mayfly/), Sodaq Mbili, Mighty 1284) - The Mayfly *is* the test board for this library.  Everything is designed to work with this processor.
+
+AtMega328p (Arduino Uno, Seeeduino Stalker, etc) - All functions are supported, but processor doesn't have sufficient power to use all of the functionality of the library.
+
+AtMega32u4 (Arduino Leonardo/Micro, Adafruit Flora/Feather, etc) - All functions are supported, but processor doesn't have sufficient power to use all of the functionality of the library.
+
+AtMega2560 (Arduino Mega) - Should be fully functional, but untested.
+
+AtMega644p - Should be fully functional, but untested.
+
+AtSAM3x8e (Arduino Due) - Completely untested, but may work.
+
+AtSAM21D (Arduino Zero, Adafruit Feather M0, Sodaq Autonomo) - Not yet fully supported, but support is planned.
+
+ESP8266/ESP32 - Supported only as a communications module with the default AT command firmware.  Not supported as an independent controller
+
+ATtiny - Unsupported
+
+Teensy 2.x/3.x - Unsupported
+
+STM32F2 - Unsupported
