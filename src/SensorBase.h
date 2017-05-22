@@ -13,7 +13,7 @@
 #include <Arduino.h>
 #include <pins_arduino.h>
 
-#define SENSORS_DBG Serial
+// #define SENSORS_DBG Serial
 
 #ifdef SENSORS_DBG
 namespace {

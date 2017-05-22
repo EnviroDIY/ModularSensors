@@ -50,13 +50,13 @@ bool Sensor::checkPowerOn(void)
     int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
     if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
     {
-        DBGS(F("Power was off.\n"));
+        // DBGS(F("Power was off.\n"));
         if (_millisPowerOn != 0) _millisPowerOn = 0;
         return false;
     }
     else
     {
-        DBGS(F("Power was on.\n"));
+        // DBGS(F("Power was on.\n"));
         if (_millisPowerOn == 0) _millisPowerOn = millis();
         return true;
     }
