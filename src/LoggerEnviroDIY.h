@@ -125,14 +125,23 @@ public:
             // Print out the sensor data
             printSensorData(stream);
             stream->println(F("    -----------------------"));
+
+            #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
+                defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
+                defined(TINY_GSM_MODEM_M590)
             // Print out the modem connection strength
+            int signalQual = modem._modem->getSignalQuality();
             stream->print(F("Current modem signal is "));
-            stream->print(modem.sensorValues[CSQ_VAR_NUM]);
+            stream->print(signalQual);
             stream->print(F(" ("));
-            stream->print(modem.sensorValues[PERCENT_STAT_VAR_NUM]);
+            stream->print(modem.getPctFromCSQ(signalQual));
             stream->println(F("%)"));
+            #endif
             delay(5000);
         }
+
+        // Turn off the modem
+        modem.off();
     }
 
     // Public function to send data

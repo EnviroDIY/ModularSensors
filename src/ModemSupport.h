@@ -623,6 +623,11 @@ public:
     virtual bool wake(void) override {return true;}
     bool update(void) override { return true; }
 
+#if defined(USE_TINY_GSM)
+    TinyGsm *_modem;
+    TinyGsmClient *_client;
+#endif
+
 
 private:
     void init(Stream *modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin,
@@ -688,11 +693,6 @@ private:
             stream = modemStream;
         #endif
     }
-
-#if defined(USE_TINY_GSM)
-    TinyGsm *_modem;
-    TinyGsmClient *_client;
-#endif
 
     const char *_APN;
     const char *_ssid;
