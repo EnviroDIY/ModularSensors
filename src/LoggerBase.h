@@ -505,10 +505,16 @@ public:
         // Print out the sensor data to the specified stream output
         for (uint8_t i = 0; i < 25; i++)
         {
+            // Wake up all of the sensors
+            sensorsWake();
+            // Update the values from all attached sensors
             updateAllSensors();
+            // Immediately put sensors to sleep to save power
+            sensorsSleep();
+            // Print the sensor data
             printSensorData(stream);
             stream->println(F("------------------------------------------"));
-            delay(500);
+            delay(200);
         }
 
         PRINTOUT(F("Exiting debug mode\n"));
@@ -526,13 +532,13 @@ public:
         for (uint8_t i = 0; i < 5; i++)
         {
             digitalWrite(_ledPin, HIGH);
-            delay(200);
+            delay(150);
             digitalWrite(_ledPin, LOW);
-            delay(200);
+            delay(150);
         }
 
         // Look for up to 2 seconds for a button press
-        PRINTOUT(F("Push buggon to enter debug mode.\n"));
+        PRINTOUT(F("Push button to enter debug mode.\n"));
         for (unsigned long start = millis(); millis() - start < 2000; )
         {
             if (digitalRead(buttonPin) == HIGH) debugMode(stream);

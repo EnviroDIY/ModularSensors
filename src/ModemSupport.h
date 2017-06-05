@@ -550,6 +550,18 @@ public:
 
     // More functions for using the modem as a "sensor"
 
+    // Helper to get signal percent from CSQ
+    static int getPctFroCSQ(int csq)
+    {
+        int CSQs[33] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 99};
+        int PCTs[33] = {0, 3, 6, 10, 13, 16, 19, 23, 26, 29, 32, 36, 39, 42, 45, 48, 52, 55, 58, 61, 65, 68, 71, 74, 78, 81, 84, 87, 90, 94, 97, 100, 0};
+        for (int i = 0; i < 33; i++)
+        {
+            if (CSQs[i] == csq) return PCTs[i];
+        }
+        return 0;
+    }
+
     // Constructors
     #define MODEM_NUM_MEASUREMENTS 4
     #if defined(TINY_GSM_MODEM_SIM800)
@@ -602,7 +614,7 @@ public:
             defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
             defined(TINY_GSM_MODEM_M590)
             signalQual = _modem->getSignalQuality();
-            signalPercent = (signalQual * 827 + 127) >> 8;
+            signalPercent = getPctFroCSQ(signalQual);
             simStat = _modem->getSimStatus();
             regStat = _modem->getRegistrationStatus();
         #endif
