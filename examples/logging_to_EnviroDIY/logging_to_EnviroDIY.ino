@@ -195,6 +195,10 @@ Variable *variableList[] = {
     new AOSongAM2315_Temp(&am2315),
     new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
+    new Modem_CSQ(&EnviroDIYLogger.modem),
+    new Modem_SignalPercent(&EnviroDIYLogger.modem),
+    new Modem_SIMStatus(&EnviroDIYLogger.modem),
+    new Modem_RegStatus(&EnviroDIYLogger.modem)
     // new YOUR_variableName_HERE(&)
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);

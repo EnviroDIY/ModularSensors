@@ -8,8 +8,8 @@
  *a wrapper for tinyGSM library:  https://github.com/vshymanskyy/TinyGSM
 */
 
-#ifndef modem_onoff_h
-#define modem_onoff_h
+#ifndef ModemSupport_h
+#define ModemSupport_h
 
 #include <Arduino.h>
 #include "LoggerBase.h"
@@ -40,7 +40,6 @@ typedef enum DTRSleepType
 * Classes for turning modems on and off
 * IDEA FOR THIS TAKEN FROM SODAQ'S MODEM LIBRARIES
 * ========================================================================= */
-
 
 /* ===========================================================================
 * Functions for the OnOff class
@@ -327,9 +326,10 @@ public:
 * This is basically a wrapper for TinyGsm
 * ========================================================================= */
 
-class loggerModem
+class loggerModem : public Sensor
 {
 public:
+
     void setupModem(Stream *modemStream,
                     int vcc33Pin,
                     int status_CTS_pin,
@@ -547,6 +547,79 @@ public:
     Stream *stream;
     ModemOnOff *modemOnOff;
 
+
+    // More functions for using the modem as a "sensor"
+
+    // Constructors
+    #define MODEM_NUM_MEASUREMENTS 4
+    #if defined(TINY_GSM_MODEM_SIM800)
+    loggerModem() : Sensor(-1, -1, F("SIM800"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+    #if defined(TINY_GSM_MODEM_SIM900)
+    loggerModem() : Sensor(-1, -1, F("SIM900"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+    #if defined(TINY_GSM_MODEM_A6)
+    loggerModem() : Sensor(-1, -1, F("SIMA6"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+    #if defined(TINY_GSM_MODEM_A7)
+    loggerModem() : Sensor(-1, -1, F("SIMA7"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+    #if defined(TINY_GSM_MODEM_M590)
+    loggerModem() : Sensor(-1, -1, F("SIMM590"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+    #if defined(TINY_GSM_MODEM_ESP8266)
+    loggerModem() : Sensor(-1, -1, F("ESP8266"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+    #if defined(TINY_GSM_MODEM_XBEE)
+    loggerModem() : Sensor(-1, -1, F("XBee"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+
+    #define CSQ_VAR_NUM 0
+    #define PERCENT_STAT_VAR_NUM 1
+    #define SIM_STAT_VAR_NUM 2
+    #define REG_STAT_VAR_NUM 3
+
+    String getSensorLocation(void) override
+    { return F("Modem Serial Port"); }
+    // Actually doing NOTHING on the setup, must set-up separately!!
+    virtual SENSOR_STATUS setup(void) override {return SENSOR_READY;}
+    // Sleep is just a re-call of off()
+    virtual bool sleep(void) override {return off();}
+    // Wake is just a re-call of on()
+    virtual bool wake(void) override {return on();}
+    bool update(void) override
+    {
+        // Clear values before starting loop
+        clearValues();
+
+        // Variables to store the results in
+        int signalQual = 0;
+        int signalPercent = 0;
+        int simStat = 0;
+        int regStat = 0;
+
+        #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
+            defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
+            defined(TINY_GSM_MODEM_M590)
+            signalQual = _modem->getSignalQuality();
+            signalPercent = (signalQual * 827 + 127) >> 8;
+            simStat = _modem->getSimStatus();
+            regStat = _modem->getRegistrationStatus();
+        #endif
+
+        sensorValues[CSQ_VAR_NUM] = signalQual;
+        sensorValues[PERCENT_STAT_VAR_NUM] = signalPercent;
+        sensorValues[SIM_STAT_VAR_NUM] = simStat;
+        sensorValues[REG_STAT_VAR_NUM] = regStat;
+
+        // Update the registered variables with the new values
+        notifyVariables();
+
+        // Return true when finished
+        return true;
+    }
+
+
 private:
     void init(Stream *modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin,
               DTRSleepType sleepType)
@@ -622,4 +695,58 @@ private:
     const char *_pwd;
 };
 
-#endif /* modem_onoff_h */
+
+
+// Classes for the modem variables
+// Defines the Signal CSQ
+class Modem_CSQ : public Variable
+{
+public:
+    Modem_CSQ(Sensor *parentSense, String customVarCode = "")
+     : Variable(parentSense, CSQ_VAR_NUM,
+                F("CSQ"), F("decibel"),
+                0,
+                F("CSQ"), customVarCode)
+    {}
+};
+
+
+// Defines the Signal Percentage
+class Modem_SignalPercent : public Variable
+{
+public:
+    Modem_SignalPercent(Sensor *parentSense, String customVarCode = "")
+     : Variable(parentSense, PERCENT_STAT_VAR_NUM,
+                F("signalPercent"), F("percent"),
+                0,
+                F("signalPercent"), customVarCode)
+    {}
+};
+
+
+// Defines the SIM Status
+class Modem_SIMStatus : public Variable
+{
+public:
+    Modem_SIMStatus(Sensor *parentSense, String customVarCode = "")
+     : Variable(parentSense, SIM_STAT_VAR_NUM,
+                F("simStatus"), F("code"),
+                0,
+                F("SIMStatus"), customVarCode)
+    {}
+};
+
+
+// Defines the Registration Status
+class Modem_RegStatus : public Variable
+{
+public:
+    Modem_RegStatus(Sensor *parentSense, String customVarCode = "")
+     : Variable(parentSense, REG_STAT_VAR_NUM,
+                F("registrationStatus"), F("code"),
+                0,
+                F("REGstatus"), customVarCode)
+    {}
+};
+
+#endif /* ModemSupport_h */
