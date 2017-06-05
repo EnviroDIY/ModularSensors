@@ -256,6 +256,15 @@ Once the modem has been set up, these functions are available:
 - **getNISTTime()** - Returns the current unix timestamp from NIST via the TIME protocol (rfc868).
 - **syncDS3231()** - This synchronizes the DS3231 real time clock with the NIST provided timestamp.
 
+The cellular modems themselves (SIM800, SIM900, A6, A7, and M590) can also be used as sensors which have the following variables:
+```cpp
+Modem_CSQ(&modem, "customVarCode");
+Modem_SignalPercent(&modem, "customVarCode");
+Modem_SIMStatus(&modem, "customVarCode");
+Modem_RegStatus(&modem, "customVarCode");
+```
+The modem does not behave as all the other sensors do, though.  The normal '''setup()''', '''wake()''', '''sleep()''', and '''update()''' functions for other sensors do not do anything with the modem.  Setup must be done with the '''setupModem(...)''' function; the modem will only go on and off with the '''on()''' and '''off()''' functions; and the '''update()''' functionality happens within the '''connectNetwork()''' function.
+
 
 ### <a name="DIYlogger"></a>Additional Functions Available for a LoggerEnviroDIY Object:
 These three functions set up the required registration token, sampling feature UUID, and time series UUIDs for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.  You must call these functions to be able to get proper JSON data for EnviroDIY, even without the modem support.

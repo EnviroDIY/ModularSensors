@@ -145,15 +145,15 @@ const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
 // ---------------------------------------------------------------------------
 
 // Flashes to Mayfly's LED's
-void greenred4flash()
+void greenredflash(int numFlash = 4)
 {
-  for (int i = 1; i <= 4; i++) {
+  for (int i = 0; i < numFlash; i++) {
     digitalWrite(GREEN_LED, HIGH);
     digitalWrite(RED_LED, LOW);
-    delay(50);
+    delay(75);
     digitalWrite(GREEN_LED, LOW);
     digitalWrite(RED_LED, HIGH);
-    delay(50);
+    delay(75);
   }
   digitalWrite(RED_LED, LOW);
 }
@@ -173,7 +173,7 @@ void setup()
     pinMode(GREEN_LED, OUTPUT);
     pinMode(RED_LED, OUTPUT);
     // Blink the LEDs to show the board is on and starting up
-    greenred4flash();
+    greenredflash();
 
     // Print a start-up note to the first serial port
     Serial.print(F("Now running "));

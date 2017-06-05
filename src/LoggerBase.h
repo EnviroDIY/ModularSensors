@@ -502,26 +502,24 @@ public:
         PRINTOUT(F("------------------------------------------\n"));
         PRINTOUT(F("Entering debug mode\n"));
 
-        // Print out the sensor data to the specified stream output
+        // Update the sensors and print out data 25 times
         for (uint8_t i = 0; i < 25; i++)
         {
+            stream->println(F("------------------------------------------"));
             // Wake up all of the sensors
-            PRINTOUT(F("Waking sensors\n"));
             sensorsWake();
             // Update the values from all attached sensors
-            PRINTOUT(F("Updating sensor values\n"));
             updateAllSensors();
             // Immediately put sensors to sleep to save power
-            PRINTOUT(F("Putting sensors to sleep\n"));
             sensorsSleep();
-            // Print the sensor data
+            // Print out the current logger time
+            stream->print(F("Current logger time is "));
+            stream->println(formatDateTime_ISO8601(getNow()));
+            stream->println(F("    -----------------------"));
+            // Print out the sensor data
             printSensorData(stream);
-            stream->println(F("------------------------------------------"));
-            delay(2000);
+            delay(5000);
         }
-
-        PRINTOUT(F("Exiting debug mode\n"));
-        PRINTOUT(F("------------------------------------------\n\n"));
     }
 
     // This checks to see if you want to enter debug mode
@@ -540,13 +538,14 @@ public:
             delay(150);
         }
 
-        // Look for up to 2 seconds for a button press
+        // Look for up to 5 seconds for a button press
         PRINTOUT(F("Push button NOW to enter debug mode.\n"));
-        for (unsigned long start = millis(); millis() - start < 2000; )
+        for (unsigned long start = millis(); millis() - start < 5000; )
         {
             if (digitalRead(buttonPin) == HIGH) debugMode(stream);
         }
-        PRINTOUT(F("Skipping debug mode.\n"));
+        PRINTOUT(F("------------------------------------------\n\n"));
+        PRINTOUT(F("End of debug mode.\n"));
     }
 
     // ===================================================================== //
