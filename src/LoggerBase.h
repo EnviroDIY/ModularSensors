@@ -541,11 +541,12 @@ public:
         }
 
         // Look for up to 2 seconds for a button press
-        PRINTOUT(F("Push button to enter debug mode.\n"));
+        PRINTOUT(F("Push button NOW to enter debug mode.\n"));
         for (unsigned long start = millis(); millis() - start < 2000; )
         {
             if (digitalRead(buttonPin) == HIGH) debugMode(stream);
         }
+        PRINTOUT(F("Skipping debug mode.\n"));
     }
 
     // ===================================================================== //
