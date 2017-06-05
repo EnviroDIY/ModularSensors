@@ -506,15 +506,18 @@ public:
         for (uint8_t i = 0; i < 25; i++)
         {
             // Wake up all of the sensors
+            PRINTOUT(F("Waking sensors\n"));
             sensorsWake();
             // Update the values from all attached sensors
+            PRINTOUT(F("Updating sensor values\n"));
             updateAllSensors();
             // Immediately put sensors to sleep to save power
+            PRINTOUT(F("Putting sensors to sleep\n"));
             sensorsSleep();
             // Print the sensor data
             printSensorData(stream);
             stream->println(F("------------------------------------------"));
-            delay(200);
+            delay(2000);
         }
 
         PRINTOUT(F("Exiting debug mode\n"));
