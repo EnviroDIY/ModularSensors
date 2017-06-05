@@ -505,7 +505,9 @@ public:
         // Print out the sensor data to the specified stream output
         for (uint8_t i = 0; i < 25; i++)
         {
+            updateAllSensors();
             printSensorData(stream);
+            stream->println(F("------------------------------------------"));
             delay(500);
         }
 
@@ -530,6 +532,7 @@ public:
         }
 
         // Look for up to 2 seconds for a button press
+        PRINTOUT(F("Push buggon to enter debug mode.\n"));
         for (unsigned long start = millis(); millis() - start < 2000; )
         {
             if (digitalRead(buttonPin) == HIGH) debugMode(stream);
