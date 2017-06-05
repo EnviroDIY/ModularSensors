@@ -12,20 +12,37 @@
  * Warm up time to completion of header:  160ms
  */
 
- #define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
- #include <EnableInterrupt.h>  // To handle external and pin change interrupts
- #include <SoftwareSerial_ExtInts.h>
-
 #include "MaxBotixSonar.h"
 
 MaxBotixSonar::MaxBotixSonar(int powerPin, int dataPin, int triggerPin)
 : Sensor(powerPin, dataPin, F("MaxBotixMaxSonar"), HRXL_NUM_MEASUREMENTS, HRXL_WARM_UP)
-{_triggerPin = triggerPin;}
+{
+    _triggerPin = triggerPin;
+    sonarSerial = new SoftwareSerial_ExtInts(_dataPin, -1);
+    enableInterrupt(_dataPin, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+    initializeStream = true;
+}
+
+MaxBotixSonar::MaxBotixSonar(int powerPin, HardwareSerial *dataStream, int triggerPin)
+: Sensor(powerPin, -1, F("MaxBotixMaxSonar"), HRXL_NUM_MEASUREMENTS, HRXL_WARM_UP)
+{
+    _triggerPin = triggerPin;
+    sonarSerial = dataStream;
+    initializeStream = true;
+}
+
+MaxBotixSonar::MaxBotixSonar(int powerPin, Stream *dataStream, int triggerPin)
+: Sensor(powerPin, -1, F("MaxBotixMaxSonar"), HRXL_NUM_MEASUREMENTS, HRXL_WARM_UP)
+{
+    _triggerPin = triggerPin;
+    sonarSerial = dataStream;
+    initializeStream = false;
+}
 
 SENSOR_STATUS MaxBotixSonar::setup(void)
 {
     pinMode(_powerPin, OUTPUT);
-    pinMode(_dataPin, INPUT_PULLUP);
+    if(_dataPin != -1) pinMode(_dataPin, INPUT_PULLUP);
 
     if(_triggerPin != -1)
     {
@@ -63,18 +80,16 @@ bool MaxBotixSonar::update(void)
     // TempI
 
     // define serial port for receiving data
-    SoftwareSerial_ExtInts sonarSerial(_dataPin, -1);
-    sonarSerial.begin(9600);
+    sonarSerial->begin(9600);
     // Even the slowest sensors should respond at a rate of 6Hz (166ms).
-    sonarSerial.setTimeout(180);
-    enableInterrupt(_dataPin, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+    sonarSerial->setTimeout(180);
 
     // Note:  if the power is on for >160ms before SoftwareSerial starts
     // the header lines will already have been sent and lost
     // DBGM(F("Parsing Header Lines\n"));
     // for(int i=0; i < 6; i++);
     // {  // For debugging
-    //     DBGM(sonarSerial.readStringUntil('\r'), F("\n"));
+    //     DBGM(sonarSerial->readStringUntil('\r'), F("\n"));
     // }  // For debugging
 
     bool stringComplete = false;
@@ -93,8 +108,8 @@ bool MaxBotixSonar::update(void)
             delay(160);  // Published return time is 158ms
         }
 
-        result = sonarSerial.parseInt();
-        sonarSerial.read();  // To throw away the carriage return
+        result = sonarSerial->parseInt();
+        sonarSerial->read();  // To throw away the carriage return
         DBGM(result, F("\n"));
         rangeAttempts++;
 
@@ -117,9 +132,8 @@ bool MaxBotixSonar::update(void)
     sensorValues[HRXL_VAR_NUM] = result;
     DBGM(sensorValues[HRXL_VAR_NUM], F("\n"));
 
-    // Stop listening and turn of interrupts so the interrupt routine doesn't throw anything else off
-    disableInterrupt(_dataPin);
-    sonarSerial.end();
+    // Stop listening
+    sonarSerial->end();
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}

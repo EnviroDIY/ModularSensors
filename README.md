@@ -579,4 +579,4 @@ ATtiny - Unsupported
 
 Teensy 2.x/3.x - Unsupported
 
-STM32F2 - Unsupported
+STM32 - Unsupported
