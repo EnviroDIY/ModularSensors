@@ -491,6 +491,51 @@ public:
         }
     }
 
+
+    // ===================================================================== //
+    // Public functions for a "debugging" mode
+    // ===================================================================== //
+
+    // This defines what to do in the debug mode
+    virtual void debugMode(Stream *stream = &Serial)
+    {
+        PRINTOUT(F("------------------------------------------\n"));
+        PRINTOUT(F("Entering debug mode\n"));
+
+        // Print out the sensor data to the specified stream output
+        for (uint8_t i = 0; i < 25; i++)
+        {
+            printSensorData(stream);
+            delay(500);
+        }
+
+        PRINTOUT(F("Exiting debug mode\n"));
+        PRINTOUT(F("------------------------------------------\n\n"));
+    }
+
+    // This checks to see if you want to enter debug mode
+    // This should be run as the very last step within the setup function
+    virtual void checkForDebugMode(int buttonPin, Stream *stream = &Serial)
+    {
+        // Set the pin attached to some button to enter debug mode
+        pinMode(buttonPin, INPUT);
+
+        // Flash the LED to let user know it is now possible to enter debug mode
+        for (uint8_t i = 0; i < 5; i++)
+        {
+            digitalWrite(_ledPin, HIGH);
+            delay(200);
+            digitalWrite(_ledPin, LOW);
+            delay(200);
+        }
+
+        // Look for up to 2 seconds for a button press
+        for (unsigned long start = millis(); millis() - start < 2000; )
+        {
+            if (digitalRead(buttonPin) == HIGH) debugMode(stream);
+        }
+    }
+
     // ===================================================================== //
     // Convience functions to call several of the above functions
     // ===================================================================== //

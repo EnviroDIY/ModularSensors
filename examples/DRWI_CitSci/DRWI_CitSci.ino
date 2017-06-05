@@ -86,14 +86,13 @@ EnviroDIYMayfly mayfly(MFVersion) ;
 // The array that contains all valid variables
 // ---------------------------------------------------------------------------
 Variable *variableList[] = {
+    new EnviroDIYMayfly_Batt(&mayfly),
+    new EnviroDIYMayfly_Temp(&mayfly),
     new DecagonCTD_Cond(&ctd),
     new DecagonCTD_Temp(&ctd),
     new DecagonCTD_Depth(&ctd),
-    new EnviroDIYMayfly_Temp(&mayfly),
-    new EnviroDIYMayfly_Batt(&mayfly),
     new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "TurbHigh")
-// new YOUR_variableName_HERE(&)
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
@@ -103,15 +102,15 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 //   This should be obtained after registration at http://data.envirodiy.org
 //   You can copy the entire code snippet directly into this block below.
 // ---------------------------------------------------------------------------
-const char *REGISTRATION_TOKEN = "f117ea89-83d7-4d29-b0b9-d785e5cdc687";   // Device registration token
-const char *SAMPLING_FEATURE = "80f6daff-df8a-4782-9fcc-be43ea37ee0d";     // Sampling feature UUID
+const char *REGISTRATION_TOKEN = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
+const char *SAMPLING_FEATURE = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 const char *UUIDs[] =                                                      // UUID array for device sensors
 {
+"12345678-abcd-1234-efgh-1234567890ab",   // Battery voltage (EnviroDIY_Mayfly_Volt)
+"12345678-abcd-1234-efgh-1234567890ab",   // Temperature (EnviroDIY_Mayfly_Temp)
 "12345678-abcd-1234-efgh-1234567890ab",   // Electrical conductivity (Decagon_CTD-10_EC)
 "12345678-abcd-1234-efgh-1234567890ab",   // Temperature (Decagon_CTD-10_Temp)
 "12345678-abcd-1234-efgh-1234567890ab",   // Water depth (Decagon_CTD-10_Depth)
-"12345678-abcd-1234-efgh-1234567890ab",   // Temperature (EnviroDIY_Mayfly_Temp)
-"12345678-abcd-1234-efgh-1234567890ab",   // Battery voltage (EnviroDIY_Mayfly_Volt)
 "12345678-abcd-1234-efgh-1234567890ab",   // Turbidity (Campbell_OBS-3+_Turb)
 "12345678-abcd-1234-efgh-1234567890ab"    // Turbidity (Campbell_OBS-3+_Turb)
 };
@@ -136,6 +135,7 @@ const char *APN = "apn.konekt.io";  // The APN for the gprs connection, unnecess
 const long SERIAL_BAUD = 57600;  // Serial port baud rate
 const int GREEN_LED = 8;  // Pin for the green LED
 const int RED_LED = 9;  // Pin for the red LED
+const int BUTTON_PIN = 21;  // Pin for the button
 const int RTC_PIN = A7;  // RTC Interrupt/Alarm pin
 const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
 
@@ -200,8 +200,11 @@ void setup()
 
     EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
 
-    // Begin the logger;
+    // Begin the logger
     EnviroDIYLogger.begin();
+
+    // Check for debugging mode
+    EnviroDIYLogger.checkForDebugMode(BUTTON_PIN, &Serial);
 }
 
 
