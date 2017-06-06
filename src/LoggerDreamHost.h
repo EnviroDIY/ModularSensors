@@ -99,6 +99,7 @@ public:
     // ===================================================================== //
     // Convience functions to call several of the above functions
     // ===================================================================== //
+    // This is a one-and-done to log data
     virtual void log(void) override
     {
         // Check of the current time is an even interval of the logging interval
@@ -121,9 +122,6 @@ public:
             // Immediately put sensors to sleep to save power
             sensorsSleep();
 
-            // Create a csv data record and save it to the log file
-            logToSD(generateSensorDataCSV());
-
             // Connect to the network
             if (modem.connectNetwork())
             {
@@ -133,8 +131,8 @@ public:
                 // Post the data to DreamHost
                 postDataDreamHost();
 
-                // Sync the clock every 24 readings
-                // if (_numReadings % 24 == 0)
+                // Sync the clock every 288 readings (1/day at 5 min intervals)
+                // if (_numReadings % 288 == 0)
                 // {
                 //     modem.syncDS3231();
                 // }
@@ -145,6 +143,9 @@ public:
 
             // Turn on the modem off
             modem.off();
+
+            // Create a csv data record and save it to the log file
+            logToSD(generateSensorDataCSV());
 
             // Turn off the LED
             digitalWrite(_ledPin, LOW);

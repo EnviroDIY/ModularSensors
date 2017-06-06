@@ -491,6 +491,63 @@ public:
         }
     }
 
+
+    // ===================================================================== //
+    // Public functions for a "debugging" mode
+    // ===================================================================== //
+
+    // This defines what to do in the debug mode
+    virtual void debugMode(Stream *stream = &Serial)
+    {
+        PRINTOUT(F("------------------------------------------\n"));
+        PRINTOUT(F("Entering debug mode\n"));
+
+        // Update the sensors and print out data 25 times
+        for (uint8_t i = 0; i < 25; i++)
+        {
+            stream->println(F("------------------------------------------"));
+            // Wake up all of the sensors
+            sensorsWake();
+            // Update the values from all attached sensors
+            updateAllSensors();
+            // Immediately put sensors to sleep to save power
+            sensorsSleep();
+            // Print out the current logger time
+            stream->print(F("Current logger time is "));
+            stream->println(formatDateTime_ISO8601(getNow()));
+            stream->println(F("    -----------------------"));
+            // Print out the sensor data
+            printSensorData(stream);
+            delay(5000);
+        }
+    }
+
+    // This checks to see if you want to enter debug mode
+    // This should be run as the very last step within the setup function
+    virtual void checkForDebugMode(int buttonPin, Stream *stream = &Serial)
+    {
+        // Set the pin attached to some button to enter debug mode
+        pinMode(buttonPin, INPUT);
+
+        // Flash the LED to let user know it is now possible to enter debug mode
+        for (uint8_t i = 0; i < 5; i++)
+        {
+            digitalWrite(_ledPin, HIGH);
+            delay(150);
+            digitalWrite(_ledPin, LOW);
+            delay(150);
+        }
+
+        // Look for up to 5 seconds for a button press
+        PRINTOUT(F("Push button NOW to enter debug mode.\n"));
+        for (unsigned long start = millis(); millis() - start < 5000; )
+        {
+            if (digitalRead(buttonPin) == HIGH) debugMode(stream);
+        }
+        PRINTOUT(F("------------------------------------------\n\n"));
+        PRINTOUT(F("End of debug mode.\n"));
+    }
+
     // ===================================================================== //
     // Convience functions to call several of the above functions
     // ===================================================================== //

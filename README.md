@@ -214,6 +214,11 @@ Functions for logging data:
 - **generateFileHeader()** - This returns and Aruduino String with a comma separated list of headers for the csv.  The headers will be ordered based on the order variables are listed in the array fed to the init function.
 - **generateSensorDataCSV()** - This returns an Arduino String containing the time and a comma separated list of sensor values.  The data will be ordered based on the order variables are listed in the array fed to the init function.
 
+Functions for debugging sensors:
+- **checkForDebugMode(int buttonPin, Stream *stream = &Serial)** - This stops everything and waits for up to two seconds for a button to be pressed to enter allow the user to enter "debug" mode.  I suggest running this as the very last step of the setup function.
+- **debugMode(Stream *stream = &Serial)** - This is a "debugging" mode for the sensors.  It prints out all of the sensor details every 5 seconds for 25 records worth of data.
+
+
 Convience functions to do it all:
 - **begin()** - Starts the logger.  Must be in the setup function.
 - **log()** - Logs data, must be the entire content of the loop function.
@@ -250,6 +255,15 @@ Once the modem has been set up, these functions are available:
 - **dumpBuffer(Stream stream, int timeDelay = 5, int timeout = 5000)** - Empties out the recieve buffer.  The flush() function does NOT empty the buffer, it only waits for sending to complete.
 - **getNISTTime()** - Returns the current unix timestamp from NIST via the TIME protocol (rfc868).
 - **syncDS3231()** - This synchronizes the DS3231 real time clock with the NIST provided timestamp.
+
+The cellular modems themselves (SIM800, SIM900, A6, A7, and M590) can also be used as sensors which have the following variables:
+```cpp
+Modem_CSQ(&modem, "customVarCode");
+Modem_SignalPercent(&modem, "customVarCode");
+Modem_SIMStatus(&modem, "customVarCode");
+Modem_RegStatus(&modem, "customVarCode");
+```
+The modem does not behave as all the other sensors do, though.  The normal '''setup()''', '''wake()''', '''sleep()''', and '''update()''' functions for other sensors do not do anything with the modem.  Setup must be done with the '''setupModem(...)''' function; the modem will only go on and off with the '''on()''' and '''off()''' functions; and the '''update()''' functionality happens within the '''connectNetwork()''' function.
 
 
 ### <a name="DIYlogger"></a>Additional Functions Available for a LoggerEnviroDIY Object:

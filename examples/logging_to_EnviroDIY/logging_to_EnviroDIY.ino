@@ -14,7 +14,6 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
-
 // Select your modem chip, comment out all of the others
 // #define TINY_GSM_MODEM_SIM800  // Select for anything using a SIM800, SIM900, or variant thereof: Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
 // #define TINY_GSM_MODEM_A6  // Select for A6 or A7 chips
@@ -170,32 +169,36 @@ EnviroDIYMayfly mayfly(MFVersion) ;
 // The array that contains all valid variables
 // ---------------------------------------------------------------------------
 Variable *variableList[] = {
-    new AOSongAM2315_Humidity(&am2315),
-    new AOSongAM2315_Temp(&am2315),
-    new AOSongDHT_Humidity(&dht),
-    new AOSongDHT_Temp(&dht),
-    new AOSongDHT_HI(&dht),
+    new EnviroDIYMayfly_Batt(&mayfly),
+    new EnviroDIYMayfly_FreeRam(&mayfly),
+    new EnviroDIYMayfly_Temp(&mayfly),
+    new MaxBotixSonar_Range(&sonar),
+    new Decagon5TM_Ea(&fivetm),
+    new Decagon5TM_Temp(&fivetm),
+    new Decagon5TM_VWC(&fivetm),
+    new DecagonES2_Cond(&es2),
+    new DecagonES2_Temp(&es2),
+    new DecagonCTD_Cond(&ctd),
+    new DecagonCTD_Temp(&ctd),
+    new DecagonCTD_Depth(&ctd),
+    new MaximDS18_Temp(&ds18_1),
+    new MaximDS18_Temp(&ds18_2),
+    new MaximDS18_Temp(&ds18_3),
     new BoschBME280_Temp(&bme280),
     new BoschBME280_Humidity(&bme280),
     new BoschBME280_Pressure(&bme280),
     new BoschBME280_Altitude(&bme280),
-    new Decagon5TM_Ea(&fivetm),
-    new Decagon5TM_Temp(&fivetm),
-    new Decagon5TM_VWC(&fivetm),
-    new DecagonCTD_Cond(&ctd),
-    new DecagonCTD_Temp(&ctd),
-    new DecagonCTD_Depth(&ctd),
-    new DecagonES2_Cond(&es2),
-    new DecagonES2_Temp(&es2),
-    new MaxBotixSonar_Range(&sonar),
-    new MaximDS18_Temp(&ds18_1),
-    new MaximDS18_Temp(&ds18_2),
-    new MaximDS18_Temp(&ds18_3),
+    new AOSongDHT_Humidity(&dht),
+    new AOSongDHT_Temp(&dht),
+    new AOSongDHT_HI(&dht),
+    new AOSongAM2315_Humidity(&am2315),
+    new AOSongAM2315_Temp(&am2315),
     new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
-    new EnviroDIYMayfly_Temp(&mayfly),
-    new EnviroDIYMayfly_Batt(&mayfly),
-    new EnviroDIYMayfly_FreeRam(&mayfly)
+    new Modem_CSQ(&EnviroDIYLogger.modem),
+    new Modem_SignalPercent(&EnviroDIYLogger.modem),
+    new Modem_SIMStatus(&EnviroDIYLogger.modem),
+    new Modem_RegStatus(&EnviroDIYLogger.modem)
     // new YOUR_variableName_HERE(&)
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
@@ -270,6 +273,7 @@ const char *PWD = "XXXXXXX";  // The password for connecting to WiFi, unnecessar
 const long SERIAL_BAUD = 57600;  // Serial port baud rate
 const int GREEN_LED = 8;  // Pin for the green LED
 const int RED_LED = 9;  // Pin for the red LED
+const int BUTTON_PIN = 21;  // Pin for the button
 const int RTC_PIN = A7;  // RTC Interrupt/Alarm pin
 const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
 
@@ -279,15 +283,15 @@ const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
 // ---------------------------------------------------------------------------
 
 // Flashes to Mayfly's LED's
-void greenred4flash()
+void greenredflash(int numFlash = 4)
 {
-  for (int i = 1; i <= 4; i++) {
+  for (int i = 0; i < numFlash; i++) {
     digitalWrite(GREEN_LED, HIGH);
     digitalWrite(RED_LED, LOW);
-    delay(50);
+    delay(75);
     digitalWrite(GREEN_LED, LOW);
     digitalWrite(RED_LED, HIGH);
-    delay(50);
+    delay(75);
   }
   digitalWrite(RED_LED, LOW);
 }
@@ -307,7 +311,7 @@ void setup()
     pinMode(GREEN_LED, OUTPUT);
     pinMode(RED_LED, OUTPUT);
     // Blink the LEDs to show the board is on and starting up
-    greenred4flash();
+    greenredflash();
 
     // Print a start-up note to the first serial port
     Serial.print(F("Now running "));
@@ -340,8 +344,11 @@ void setup()
         EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
     #endif
 
-    // Begin the logger;
+    // Begin the logger
     EnviroDIYLogger.begin();
+
+    // Check for debugging mode
+    EnviroDIYLogger.checkForDebugMode(BUTTON_PIN, &Serial);
 }
 
 

@@ -8,8 +8,8 @@
  *a wrapper for tinyGSM library:  https://github.com/vshymanskyy/TinyGSM
 */
 
-#ifndef modem_onoff_h
-#define modem_onoff_h
+#ifndef ModemSupport_h
+#define ModemSupport_h
 
 #include <Arduino.h>
 #include "LoggerBase.h"
@@ -40,7 +40,6 @@ typedef enum DTRSleepType
 * Classes for turning modems on and off
 * IDEA FOR THIS TAKEN FROM SODAQ'S MODEM LIBRARIES
 * ========================================================================= */
-
 
 /* ===========================================================================
 * Functions for the OnOff class
@@ -327,9 +326,10 @@ public:
 * This is basically a wrapper for TinyGsm
 * ========================================================================= */
 
-class loggerModem
+class loggerModem : public Sensor
 {
 public:
+
     void setupModem(Stream *modemStream,
                     int vcc33Pin,
                     int status_CTS_pin,
@@ -374,6 +374,24 @@ public:
         return retVal;
     }
 
+    // Helper to get signal percent from CSQ
+    static int getPctFromCSQ(int csq)
+    {
+        int CSQs[33] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 99};
+        int PCTs[33] = {0, 3, 6, 10, 13, 16, 19, 23, 26, 29, 32, 36, 39, 42, 45, 48, 52, 55, 58, 61, 65, 68, 71, 74, 78, 81, 84, 87, 90, 94, 97, 100, 0};
+        for (int i = 0; i < 33; i++)
+        {
+            if (CSQs[i] == csq) return PCTs[i];
+        }
+        return 0;
+    }
+
+    #define MODEM_NUM_MEASUREMENTS 4
+    #define CSQ_VAR_NUM 0
+    #define PERCENT_STAT_VAR_NUM 1
+    #define SIM_STAT_VAR_NUM 2
+    #define REG_STAT_VAR_NUM 3
+
     bool connectNetwork(void)
     {
         bool retVal = false;
@@ -417,6 +435,29 @@ public:
                 DBG("... Success!", F("\n"));
                 retVal = true;
             }
+
+            // Now we are essentially running the "update" function to update
+            // the variables assigned to the modem "sensor".  We are doing this
+            // here because we want the values to be assigned with the actual
+            // connection used when the data is sent out.
+
+            // Clear values before starting loop
+            clearValues();
+
+            // Variables to store the results in
+            int simStat = _modem->getSimStatus();
+            int signalQual = _modem->getSignalQuality();
+            int signalPercent = getPctFromCSQ(signalQual);
+            int regStat = _modem->getRegistrationStatus();
+
+            sensorValues[CSQ_VAR_NUM] = signalQual;
+            sensorValues[PERCENT_STAT_VAR_NUM] = signalPercent;
+            sensorValues[SIM_STAT_VAR_NUM] = simStat;
+            sensorValues[REG_STAT_VAR_NUM] = regStat;
+
+            // Update the registered variables with the new values
+            notifyVariables();
+
         #endif
         #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
         }
@@ -547,6 +588,47 @@ public:
     Stream *stream;
     ModemOnOff *modemOnOff;
 
+
+    // More functions for using the modem as a "sensor"
+
+    // Constructors
+    #if defined(TINY_GSM_MODEM_SIM800)
+    loggerModem() : Sensor(-1, -1, F("SIM800"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+    #if defined(TINY_GSM_MODEM_SIM900)
+    loggerModem() : Sensor(-1, -1, F("SIM900"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+    #if defined(TINY_GSM_MODEM_A6)
+    loggerModem() : Sensor(-1, -1, F("SIMA6"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+    #if defined(TINY_GSM_MODEM_A7)
+    loggerModem() : Sensor(-1, -1, F("SIMA7"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+    #if defined(TINY_GSM_MODEM_M590)
+    loggerModem() : Sensor(-1, -1, F("SIM590"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+    #if defined(TINY_GSM_MODEM_ESP8266)
+    loggerModem() : Sensor(-1, -1, F("ESP8266"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+    #if defined(TINY_GSM_MODEM_XBEE)
+    loggerModem() : Sensor(-1, -1, F("XBee"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+
+    String getSensorLocation(void) override { return F("Modem Serial Port"); }
+    // Actually doing NOTHING on any of the rest of the functions.  The modem
+    // must be set-up and turned on and off separately!!  The update then
+    // happens when connecting to the newtwork
+    virtual SENSOR_STATUS setup(void) override {return SENSOR_READY;}
+    virtual bool sleep(void) override {return true;}
+    virtual bool wake(void) override {return true;}
+    bool update(void) override { return true; }
+
+#if defined(USE_TINY_GSM)
+    TinyGsm *_modem;
+    TinyGsmClient *_client;
+#endif
+
+
 private:
     void init(Stream *modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin,
               DTRSleepType sleepType)
@@ -612,14 +694,63 @@ private:
         #endif
     }
 
-#if defined(USE_TINY_GSM)
-    TinyGsm *_modem;
-    TinyGsmClient *_client;
-#endif
-
     const char *_APN;
     const char *_ssid;
     const char *_pwd;
 };
 
-#endif /* modem_onoff_h */
+
+
+// Classes for the modem variables
+// Defines the Signal CSQ
+class Modem_CSQ : public Variable
+{
+public:
+    Modem_CSQ(Sensor *parentSense, String customVarCode = "")
+     : Variable(parentSense, CSQ_VAR_NUM,
+                F("CSQ"), F("decibel"),
+                0,
+                F("CSQ"), customVarCode)
+    {}
+};
+
+
+// Defines the Signal Percentage
+class Modem_SignalPercent : public Variable
+{
+public:
+    Modem_SignalPercent(Sensor *parentSense, String customVarCode = "")
+     : Variable(parentSense, PERCENT_STAT_VAR_NUM,
+                F("signalPercent"), F("percent"),
+                0,
+                F("signalPercent"), customVarCode)
+    {}
+};
+
+
+// Defines the SIM Status
+class Modem_SIMStatus : public Variable
+{
+public:
+    Modem_SIMStatus(Sensor *parentSense, String customVarCode = "")
+     : Variable(parentSense, SIM_STAT_VAR_NUM,
+                F("simStatus"), F("code"),
+                0,
+                F("SIMStatus"), customVarCode)
+    {}
+};
+
+
+// Defines the Registration Status
+class Modem_RegStatus : public Variable
+{
+public:
+    Modem_RegStatus(Sensor *parentSense, String customVarCode = "")
+     : Variable(parentSense, REG_STAT_VAR_NUM,
+                F("registrationStatus"), F("code"),
+                0,
+                F("REGstatus"), customVarCode)
+    {}
+};
+
+#endif /* ModemSupport_h */
