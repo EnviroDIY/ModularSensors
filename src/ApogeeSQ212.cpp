@@ -74,7 +74,7 @@ bool ApogeeSQ212::update(void)
     calibResult = 1 * voltage * 1000 ;  // in units of μmol m-2 s-1 (microeinsteinPerSquareMeterPerSecond)
     DBGM(F("calibResult: "), calibResult, F("\n"));
 
-    sensorValues[0] = calibResult;
+    sensorValues[SQ212_PAR_VAR_NUM] = calibResult;
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}

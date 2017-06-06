@@ -35,8 +35,8 @@
 
 #define SQ212_NUM_VARIABLES 1  // low and high range are treated as completely independent
 #define SQ212_WARM_UP 2     // Time in ms
-#define SQ212_TURB_VAR_NUM 0
-#define SQ212_RESOLUTION 3
+#define SQ212_PAR_VAR_NUM 0
+#define SQ212_PAR_RESOLUTION 3
 
 // The main class for the Apogee SQ-212 sensor
 class ApogeeSQ212 : public Sensor
@@ -59,9 +59,9 @@ class ApogeeSQ212_PAR : public Variable
 {
 public:
     ApogeeSQ212_PAR(Sensor *parentSense, String customVarCode = "")
-      : Variable(parentSense, SQ212_TURB_VAR_NUM,
+      : Variable(parentSense, SQ212_PAR_VAR_NUM,
                  F("radiationIncomingPAR"), F("microeinsteinPerSquareMeterPerSecond"),
-                 SQ212_RESOLUTION,
+                 SQ212_PAR_RESOLUTION,
                  F("PhotosyntheticallyActiveRadiation"), customVarCode)
     {}
 };
