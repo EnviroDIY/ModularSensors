@@ -4,11 +4,11 @@ A "library" of sensors to give all sensors and variables a common interface of f
 
 Each sensor is implemented as a subclass of the "Sensor" class contained in "SensorBase.h".  Each variable is separately implemented as a subclass of the "Variable" class contained in "VariableBase.h".  The variables are tied to the sensor using an "[Observer](https://en.wikipedia.org/wiki/Observer_pattern)" software pattern.
 
-To use a sensor and variable in your sketch, you must separately include xxx.h for each sensor you intend to use.  While this may force you to write many more include statements, it makes the decreases the library RAM usage on your Arduino board.  Regardless of how many sensors you intend to use, however, you must install all of the dependent libraries on your _computer_ for the IDE to be able to compile the library.
+To use a sensor and variable in your sketch, you must separately include xxx.h for each sensor you intend to use.  While this may force you to write many more include statements, it decreases the library RAM usage on your Arduino board.  Regardless of how many sensors you intend to use, however, you must install all of the dependent libraries on your _computer_ for the IDE to be able to compile the library.
 
 #### Contents:
 - [Library Dependencies](#deps)
-- [Basic Senor and Variable Functions](#Basic)
+- [Basic Sensor and Variable Functions](#Basic)
     - [Individual Sensors Code Examples](#individuals)
 - [Grouped Sensor Functions](#Grouped)
     - [VariableArray Code Examples](#ArrayExamples)
@@ -52,7 +52,7 @@ In order to support multiple functions and sensors, there are quite a lot of dep
 ## <a name="Basic"></a>Basic Senor and Variable Functions
 
 ### Functions Available for Each Sensor
-- **Constructor** - Each sensor has a unique constructor, the exact format of which is dependent on the indidual sensor.
+- **Constructor** - Each sensor has a unique constructor, the exact format of which is dependent on the individual sensor.
 - **getSensorName()** - This gets the name of the sensor and returns it as a string.
 - **getSensorLocation()** - This returns the data pin or other sensor installation information as a string.  This is the location where the sensor is connected to the data logger, NOT the position of the sensor in the environment.
 - **setup()** - This "sets up" the sensor - setting up serial ports, etc required for the given sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program _before_ calling the variable setup.
