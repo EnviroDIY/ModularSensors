@@ -507,10 +507,13 @@ public:
         {
             stream->println(F("------------------------------------------"));
             // Wake up all of the sensors
+            stream->print(F("Waking sensors..."));
             sensorsWake();
             // Update the values from all attached sensors
+            stream->print(F("  Updating sensor values..."));
             updateAllSensors();
             // Immediately put sensors to sleep to save power
+            stream->println(F("  Putting sensors back to sleep..."));
             sensorsSleep();
             // Print out the current logger time
             stream->print(F("Current logger time is "));
@@ -530,12 +533,12 @@ public:
         pinMode(buttonPin, INPUT);
 
         // Flash the LED to let user know it is now possible to enter debug mode
-        for (uint8_t i = 0; i < 5; i++)
+        for (uint8_t i = 0; i < 15; i++)
         {
             digitalWrite(_ledPin, HIGH);
-            delay(150);
+            delay(50);
             digitalWrite(_ledPin, LOW);
-            delay(150);
+            delay(50);
         }
 
         // Look for up to 5 seconds for a button press

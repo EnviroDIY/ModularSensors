@@ -501,6 +501,7 @@ public:
         {
             #if defined(TINY_GSM_DEBUG)
             DBG((char)stream->read());
+            // DBG(stream->read());
             #else
             stream->read();
             #endif
@@ -525,8 +526,11 @@ public:
         // XBee needs to send something before the connection is actually made
         #if defined(TINY_GSM_MODEM_XBEE)
         stream->write("Hi!");
-        delay(75);  // Need this delay!  Can get away with 50, but 100 is safer.
         #endif
+
+        // Wait up to 5 seconds for a response
+        long start = millis();
+        while (stream->available() < 4 && millis() - start < 5000){}
 
         // Response is returned as 32-bit number as soon as connection is made
         // Connection is then immediately closed, so there is no need to close it
@@ -535,6 +539,7 @@ public:
         for (uint8_t i = 0; i < 4; i++)
         {
             response[i] = stream->read();
+            // DBG("\n",response[i]);
             secFrom1900 += 0x000000FF & response[i];
             // DBG("\n*****",String(secFrom1900, BIN),"*****");
             if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;}
@@ -546,7 +551,8 @@ public:
         uint32_t unixTimeStamp = secFrom1900 - 2208988800;
         DBG(F("Timesamp returned by NIST (UTC): "), unixTimeStamp, F("\n"));
         // If before Jan 1, 2017 or after Jan 1, 2030, most likely an error
-        if (unixTimeStamp < 1483228800 || unixTimeStamp > 1893456000) return 0;
+        if (unixTimeStamp < 1483228800) return 0;
+        else if (unixTimeStamp > 1893456000) return 0;
         else return unixTimeStamp;
     }
 
@@ -557,6 +563,14 @@ public:
         // Get the time stamp from NIST and adjust it to the correct time zone
         // for the logger.
         uint32_t nist = getNISTTime();
+
+        // If the timestamp returns zero, just exit
+        if  (nist == 0)
+        {
+            PRINTOUT(F("Bad timestamp returned, skipping sync.\n"));
+            return false;
+        }
+
         uint32_t nist_logTZ = nist + Logger::getTimeZone()*3600;
         uint32_t nist_rtcTZ = nist_logTZ - Logger::getTZOffset()*3600;
         DBG(F("        Correct Time for Logger: "), nist_logTZ, F(" -> "), \
@@ -569,7 +583,7 @@ public:
         uint32_t cur_logTZ = Logger::getNow();
         DBG(F("           Time Returned by RTC: "), cur_logTZ, F(" -> "), \
             Logger::formatDateTime_ISO8601(cur_logTZ), F("\n"));
-        // DBG(F("Offset: "), abs(nist_logTZ - cur_logTZ), F("\n"));
+        DBG(F("Offset: "), abs(nist_logTZ - cur_logTZ), F("\n"));
 
         // If the RTC and NIST disagree by more than 5 seconds, set the clock
         if ((abs(nist_logTZ - cur_logTZ) > 5) && (nist != 0))

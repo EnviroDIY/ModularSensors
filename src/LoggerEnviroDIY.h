@@ -113,10 +113,13 @@ public:
         {
             stream->println(F("------------------------------------------"));
             // Wake up all of the sensors
+            stream->print(F("Waking sensors..."));
             sensorsWake();
             // Update the values from all attached sensors
+            stream->print(F("  Updating sensor values..."));
             updateAllSensors();
             // Immediately put sensors to sleep to save power
+            stream->println(F("  Putting sensors back to sleep..."));
             sensorsSleep();
             // Print out the current logger time
             stream->print(F("Current logger time is "));
