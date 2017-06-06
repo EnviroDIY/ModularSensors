@@ -1,6 +1,6 @@
 /*****************************************************************************
 Apogee_SQ212_AnalogTest.ino
-Written By:  Anthony Aufdenkampe
+Written By:  Anthony Aufdenkampe <aaufdenkampe@limno.com>
 Adapted from mayfly_turbidity_test1.ino by Sara Damiano (sdamiano@stroudcenter.org)
 Development Environment: PlatformIO 3.4
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
