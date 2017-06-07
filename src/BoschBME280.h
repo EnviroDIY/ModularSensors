@@ -24,6 +24,8 @@
  * For Humidity:
  *  Resolution is 0.008 % RH (16 bit)
  *  Accuracy is ± 3 % RH
+ *
+ * Slowest response time (humidity): 1sec
 */
 
 #ifndef BoschBME280_h
@@ -38,6 +40,7 @@
 #include <Adafruit_BME280.h>
 
 #define BoschBME280_NUM_MEASUREMENTS 4
+#define BoschBME280_WARM_UP 1000
 
 #define BoschBME280_TEMP_RESOLUTION 2
 #define BoschBME280_TEMP_VAR_NUM 0

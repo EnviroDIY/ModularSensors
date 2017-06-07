@@ -15,12 +15,14 @@
 // ============================================================================
 
 // The constructor
-Sensor::Sensor(int powerPin, int dataPin, String sensorName, int numReturnedVars)
+Sensor::Sensor(int powerPin, int dataPin, String sensorName, int numReturnedVars, int WarmUpTime_ms)
 {
     _powerPin = powerPin;
     _dataPin = dataPin;
     _sensorName = sensorName;
     _numReturnedVars = numReturnedVars;
+    _WarmUpTime_ms = WarmUpTime_ms;
+    _millisPowerOn = 0;
 
     // Clear arrays
     for (uint8_t i = 0; i < MAX_NUMBER_VARS; i++)
@@ -48,12 +50,14 @@ bool Sensor::checkPowerOn(void)
     int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
     if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
     {
-        DBGS(F("Power was off.\n"));
+        // DBGS(F("Power was off.\n"));
+        if (_millisPowerOn != 0) _millisPowerOn = 0;
         return false;
     }
     else
     {
-        DBGS(F("Power was on.\n"));
+        // DBGS(F("Power was on.\n"));
+        if (_millisPowerOn == 0) _millisPowerOn = millis();
         return true;
     }
 }
@@ -61,16 +65,40 @@ bool Sensor::checkPowerOn(void)
 // This is a helper function to turn on sensor power
 void Sensor::powerUp(void)
 {
-    DBGS(F("Powering on Sensor with pin "), _powerPin, F("\n"));
+    // DBGS(F("Powering on Sensor with pin "), _powerPin, F("\n"));
     digitalWrite(_powerPin, HIGH);
-    delay(750);
+    _millisPowerOn = millis();
 }
 
 // This is a helper function to turn off sensor power
 void Sensor::powerDown(void)
 {
-    DBGS(F("Turning off Power\n"));
+    // DBGS(F("Turning off Power\n"));
     digitalWrite(_powerPin, LOW);
+    _millisPowerOn = 0;
+}
+
+// This is a helper function to wait that enough time has passed for the sensor
+// to warm up before taking readings
+void Sensor::waitForWarmUp(void)
+{
+    if (_WarmUpTime_ms != 0)
+    {
+        if (millis() > _millisPowerOn + _WarmUpTime_ms)  // already read
+        {
+            DBGS(F("Sensor already warmed up!\n"));
+        }
+        else if (millis() > _millisPowerOn)  // just in case millis() has rolled over
+        {
+            DBGS(F("Waiting "), (millis() + _WarmUpTime_ms - _millisPowerOn), F("ms for sensor warm-up\n"));
+            while((millis() - _millisPowerOn) < _WarmUpTime_ms){}
+        }
+        else  // if we get really unlucky and are measuring as millis() rolls over
+        {
+            DBGS(F("Waiting 2000ms for sensor warm-up\n"));
+            while(millis() < 2000){}
+        }
+    }
 }
 
 

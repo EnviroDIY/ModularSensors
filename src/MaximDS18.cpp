@@ -12,6 +12,9 @@
  * 9, 10, 11, or 12 bits, corresponding to increments of
  * 0.5°C, 0.25°C, 0.125°C, and 0.0625°C, respectively.
  * The default resolution at power-up is 12-bit.
+ *
+ * Time to take reading at 12-bit: 750ms (likely ready to begin conversion
+ * much before that, but I can't find a number.)
  */
 
 #include "MaximDS18.h"
@@ -19,7 +22,7 @@
 
 // The constructor - if the hex address is known - also need the power pin and the data pin
 MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin)
-  : Sensor(powerPin, dataPin, F("MaximDS18"), DS18_NUM_MEASUREMENTS)
+  : Sensor(powerPin, dataPin, F("MaximDS18"), DS18_NUM_MEASUREMENTS, DS18_WARM_UP)
     // oneWire(dataPin), tempSensors(&oneWire)
 {
     for (int i = 0; i < 8; i++) _OneWireAddress[i] = OneWireAddress[i];
@@ -29,7 +32,7 @@ MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin)
 // The constructor - if the hex address is NOT known - only need the power pin and the data pin
 // Can only use this if there is only a single sensor on the pin
 MaximDS18::MaximDS18(int powerPin, int dataPin)
-  : Sensor(powerPin, dataPin, F("MaximDS18"), DS18_NUM_MEASUREMENTS)
+  : Sensor(powerPin, dataPin, F("MaximDS18"), DS18_NUM_MEASUREMENTS, DS18_WARM_UP)
     // oneWire(dataPin), tempSensors(&oneWire)
 {
     _addressKnown = false;
@@ -64,7 +67,9 @@ SENSOR_STATUS MaximDS18::getStatus(void)
 {
     // Check if the power is on, turn it on if not (Need power to get status)
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}  // powerUp function includes a 500ms delay
+    if(!wasOn){powerUp();}
+    // Wait until the sensor is warmed up
+    waitForWarmUp();
 
     OneWire oneWire(_dataPin);
     DallasTemperature tempSensors(&oneWire);
@@ -109,7 +114,9 @@ SENSOR_STATUS MaximDS18::setup(void)
 
     // Check if the power is on, turn it on if not  (Need power to get address)
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}  // powerUp function includes a 500ms delay
+    if(!wasOn){powerUp();}
+    // Wait until the sensor is warmed up
+    waitForWarmUp();
 
     // Start up the maxim sensor library
     OneWire oneWire(_dataPin);
@@ -141,17 +148,19 @@ SENSOR_STATUS MaximDS18::setup(void)
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
-    
+
     return stat;
 }
 
 
-// Uses TLL Communication to get data from MaxBotix
+// Uses OneWire/Dallas Temp and the specified sensor address to get data from DS18
 bool MaximDS18::update()
 {
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}  // powerUp function includes a 500ms delay
+    if(!wasOn){powerUp();}
+    // Wait until the sensor is warmed up
+    waitForWarmUp();
 
     // Clear values before starting loop
     clearValues();

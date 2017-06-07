@@ -4,14 +4,15 @@ A "library" of sensors to give all sensors and variables a common interface of f
 
 Each sensor is implemented as a subclass of the "Sensor" class contained in "SensorBase.h".  Each variable is separately implemented as a subclass of the "Variable" class contained in "VariableBase.h".  The variables are tied to the sensor using an "[Observer](https://en.wikipedia.org/wiki/Observer_pattern)" software pattern.
 
-To use a sensor and variable in your sketch, you must separately include xxx.h for each sensor you intend to use.  While this may force you to write many more include statements, it makes the decreases the library RAM usage on your Arduino board.  Regardless of how many sensors you intend to use, however, you must install all of the dependent libraries on your _computer_ for the IDE to be able to compile the library.
+To use a sensor and variable in your sketch, you must separately include xxx.h for each sensor you intend to use.  While this may force you to write many more include statements, it decreases the library RAM usage on your Arduino board.  Regardless of how many sensors you intend to use, however, you must install all of the dependent libraries on your _computer_ for the IDE to be able to compile the library.
 
 #### Contents:
 - [Library Dependencies](#deps)
-- [Basic Senor and Variable Functions](#Basic)
+- [Basic Sensor and Variable Functions](#Basic)
     - [Individual Sensors Code Examples](#individuals)
 - [Grouped Sensor Functions](#Grouped)
     - [VariableArray Code Examples](#ArrayExamples)
+    - [Tips for Ordering Sensors in Arrays](#ArrayTips)
 - Logger Functions
     - [Basic Logger Functions](#Logger)
     - [Modem and Internet Functions](#Modem)
@@ -28,20 +29,20 @@ To use a sensor and variable in your sketch, you must separately include xxx.h f
     - [AOSong AM2315](#AM2315)
     - [Bosch BME280](#BME280)
     - [AOSong DHT](#DHT)
-
+- [Processor Compatibility](#compatibility)
 
 ## <a name="deps"></a>Library Dependencies
 
-In order to support multiple functions and sensors, there are quite a lot of dependencies for this library.  Even if you do not use all of the modules, you must have all of the dependencies installed for the library itself to properly compile.
+In order to support multiple functions and sensors, there are quite a lot of dependencies for this library.  _Even if you do not use all of the modules, you must have all of the dependencies installed for the library itself to properly compile._
 
 - [Sodaq](https://github.com/SodaqMoja/Sodaq_DS3231) or [EnviroDIY DS-3231](https://github.com/EnviroDIY/Sodaq_DS3231) - For real time clock control
-- [EnviroDIY modified version of Sodaq's pin change interrupt library](https://github.com/EnviroDIY/PcInt_PCINT0) - For waking the processor from clock alarms.  The modified version is needed so there are no pin change interrupt conflicts with the SDI-12 library or the SoftwareSerial library.
-- AVR sleep library - This is for low power sleeping (This library is built in to the Arduino IDE.)
+- [EnableInterrupt](https://github.com/EnviroDIY/EnableInterrupt) - Administrates and handles pin change interrupts, allowing the logger to sleep and save battery.  This also controls the interrupts for the versions of SoftwareSerial and SDI-12 linked below that have been stripped of interrupt control.  Because we use this library, _you must always add the line ```#include <EnableInterrupt.h>``` to the top of your sketch._
+- AVR sleep library - This is for low power sleeping for AVR processors. (This library is built in to the Arduino IDE.)
 - [SdFat library](https://github.com/greiman/SdFat) - This enables communication with the SD card.
 - [EnviroDIY version of the TinyGSM library](https://github.com/EnviroDIY/TinyGSM) - This provides internet (TCP/IP) connectivity.  
-- [EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwareSerial_PCINT12/) - This modified version is needed so there are no pin change interrupt conflicts with the SDI-12 library or the software pin change interrupt library.
+- [EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts) - This modified version is needed so there are no pin change interrupt conflicts with the SDI-12 library or the software pin change interrupt library.
 - [Adafruit ADS1X15 library](https://github.com/Adafruit/Adafruit_ADS1X15/) - For high-resolution analog to digital conversion.
-- [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/mayfly) - For control of SDI-12 based sensors.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the processor.
+- [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/ExtInts) - For control of SDI-12 based sensors.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the processor.
 - [OneWire](https://github.com/PaulStoffregen/OneWire) - This enables communication with Maxim/Dallas OneWire devices.
 - [DallasTemperature](https://github.com/milesburton/Arduino-Temperature-Control-Library) - for communication with the DS18 line of Maxim/Dallas OneWire temperature probes.
 - [Adafruit Unified Sensor Driver](https://github.com/adafruit/Adafruit_Sensor)  
@@ -51,7 +52,7 @@ In order to support multiple functions and sensors, there are quite a lot of dep
 ## <a name="Basic"></a>Basic Senor and Variable Functions
 
 ### Functions Available for Each Sensor
-- **Constructor** - Each sensor has a unique constructor, the exact format of which is dependent on the indidual sensor.
+- **Constructor** - Each sensor has a unique constructor, the exact format of which is dependent on the individual sensor.
 - **getSensorName()** - This gets the name of the sensor and returns it as a string.
 - **getSensorLocation()** - This returns the data pin or other sensor installation information as a string.  This is the location where the sensor is connected to the data logger, NOT the position of the sensor in the environment.
 - **setup()** - This "sets up" the sensor - setting up serial ports, etc required for the given sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program _before_ calling the variable setup.
@@ -175,6 +176,9 @@ myVars.updateAllSensors();
 myVars.printSensorData();
 ```
 
+### <a name="ArrayTips"></a>Tips for Ordering Sensors in Arrays:
+If you are running sensors remotely on batteries and/or solar power, saving power and minimizing sensor-on time is a high priority.  To reduce the amount of time needed for sensor warm-up, it is best to look for readings first from the sensors that warm up the fastest and then to move on to the slower-booting sensors, allowing them to warm up while the faster sensors take readings.  This means that you should list those faster sensors first in your variable array and the slower sensors last.  Within the multisensor_print and other examples, the sensors are ordered this way, so can copy that order when creating your own logger program.
+
 
 ## <a name="Logger"></a>Basic Logger Functions
 Our main reason to unify the output from many sensors and variables is to easily log the data to an SD card and to send it to any other live streaming data receiver, like the [EnviroDIY data portal](http://data.envirodiy.org/).  There are several modules available to use with the sensors to log data and stream data:  LoggerBase.h, LoggerEnviroDIY.h, and ModemSupport.h.  The classes Logger (in LoggerBase.h) is a sub-class of VariableArray and LoggerEnviroDIY (in LoggerEnviroDIY.h) is in-turn a sub-class of Logger.   They contain all of the functions available to a VariableArray as described above.  The Logger class adds the abilities to communicate with a DS3231 real time clock, to put the board into deep sleep between readings to conserver power, and to write the data from the sensors to a csv file on a connected SD card.  The ModemSupport module is essentially a wrapper for [TinyGSM](https://github.com/EnviroDIY/TinyGSM) which adds quick functions for turning modem on and off to save power and to synchronize the real-time clock with the [NIST Internet time service](https://www.nist.gov/pml/time-and-frequency-division/services/internet-time-service-its).  The LoggerEnviroDIY class uses ModemSupport.h to add the ability to properly format and send data to the [EnviroDIY data portal](http://data.envirodiy.org/).
@@ -209,6 +213,11 @@ Functions for logging data:
 - **logToSD(String rec)** - This writes a data line containing "rec" the the SD card and sets the "file modified" timestamp.  
 - **generateFileHeader()** - This returns and Aruduino String with a comma separated list of headers for the csv.  The headers will be ordered based on the order variables are listed in the array fed to the init function.
 - **generateSensorDataCSV()** - This returns an Arduino String containing the time and a comma separated list of sensor values.  The data will be ordered based on the order variables are listed in the array fed to the init function.
+
+Functions for debugging sensors:
+- **checkForDebugMode(int buttonPin, Stream *stream = &Serial)** - This stops everything and waits for up to two seconds for a button to be pressed to enter allow the user to enter "debug" mode.  I suggest running this as the very last step of the setup function.
+- **debugMode(Stream *stream = &Serial)** - This is a "debugging" mode for the sensors.  It prints out all of the sensor details every 5 seconds for 25 records worth of data.
+
 
 Convience functions to do it all:
 - **begin()** - Starts the logger.  Must be in the setup function.
@@ -246,6 +255,13 @@ Once the modem has been set up, these functions are available:
 - **dumpBuffer(Stream stream, int timeDelay = 5, int timeout = 5000)** - Empties out the recieve buffer.  The flush() function does NOT empty the buffer, it only waits for sending to complete.
 - **getNISTTime()** - Returns the current unix timestamp from NIST via the TIME protocol (rfc868).
 - **syncDS3231()** - This synchronizes the DS3231 real time clock with the NIST provided timestamp.
+
+The cellular modems themselves (SIM800, SIM900, A6, A7, and M590) can also be used as "sensors" which have the following variables:
+```cpp
+Modem_RSSI(&modem, "customVarCode");
+Modem_SignalPercent(&modem, "customVarCode");
+```
+The modem does not behave as all the other sensors do, though.  The normal '''setup()''', '''wake()''', '''sleep()''', and '''update()''' functions for other sensors do not do anything with the modem.  Setup must be done with the '''setupModem(...)''' function; the modem will only go on and off with the '''on()''' and '''off()''' functions; and the '''update()''' functionality happens within the '''connectNetwork()''' function.
 
 
 ### <a name="DIYlogger"></a>Additional Functions Available for a LoggerEnviroDIY Object:
@@ -378,7 +394,7 @@ EnviroDIYMayfly_FreeRam(&mayfly, "customVarCode");
 
 #### <a name="MaxBotix"></a>[MaxBotix MaxSonar](http://www.maxbotix.com/Ultrasonic_Sensors/High_Accuracy_Sensors.htm) - HRXL MaxSonar WR or WRS Series with TTL Outputs
 
-The power/excite pin, digital data pin, and trigger are needed as input.  (Use -1 for the trigger if you do not have it connected.)  Because this library uses the [EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwareSerial_PCINT12/), the MaxBotix must be installed on a digital pin that depends on pin change interrupt vector 1 or 2.  On the Mayfly, the empty pins in this range are pins D10, D11, and D18.  (Changing the solder jumper options on the back of the board may eliminate D18 as a possibility.)  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.
+The power/excite pin, digital data pin, and trigger are needed as input.  (Use -1 for the trigger if you do not have it connected.)  The data pin must be a pin that supports pin-change interrupts.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.
 
 The main constuctor for the sensor object is:
 
@@ -416,7 +432,7 @@ CampbellOBS3_Turbidity(&osb3high, "customHighVarCode");
 
 #### <a name="5TM"></a>[Decagon Devices 5TM](https://www.decagon.com/en/soils/volumetric-water-content-sensors/5tm-vwc-temp/) Soil Moisture and Temperature Sensor
 
-The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.  Because this library uses a modified version of the basic SDI-12 library, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
+The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  The data pin must be a pin that supports pin-change interrupts.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
 
 The main constuctor for the sensor object is:
 
@@ -435,7 +451,7 @@ Decagon5TM_VWC(&fivetm, "customVarCode");
 
 #### <a name="CTD"></a>[Decagon Devices CTD-5 or  CTD-10](https://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/ctd-10-sensor-electrical-conductivity-temperature-depth/) Electrical Conductivity, Temperature, and Depth Sensor
 
-The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  For this particular sensor, taking ~6 readings seems to be ideal for reducing noise.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.  Because this library uses a modified version of the basic SDI-12 library, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
+The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  The data pin must be a pin that supports pin-change interrupts.  For this particular sensor, taking ~6 readings seems to be ideal for reducing noise.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
 
 The main constuctor for the sensor object is:
 
@@ -454,7 +470,7 @@ DecagonCTD_Depth(&ctd, "customVarCode");
 
 #### <a name="ES2"></a>[Decagon Devices ES-2](http://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/es-2-electrical-conductivity-temperature/) Electrical Conductivity Sensor
 
-The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.  Because this library uses a modified version of the basic SDI-12 library, the 5TM (and all SDI-12 based sensors) must be installed on on of the digital pins that depends on pin change interrupt vector 3.  On the Mayfly, the empty pins in this range are pins D4, D5, D6, and D7.
+The SDI-12 address of the sensor, the power pin, the data pin, and a number of distinct readings to average are required as inputs.  The data pin must be a pin that supports pin-change interrupts.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
 
 The main constuctor for the sensor object is:
 
@@ -473,7 +489,7 @@ DecagonES2_Temp(&es2, "customVarCode");
 
 #### <a name="DS18"></a>[Maxim DS18 Temperature Probes](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html)
 
-The same library should work with a [DS18B20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html), [DS18S20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html), [DS1822](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1822.html), and the no-longer-sold [DS1820](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1820.html) sensor.  The OneWire hex address of the sensor, the power pin, and the data pin, are required as inputs.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  The hex address is an array of 8 hex values, for example:  {0x28, 0x1D, 0x39, 0x31, 0x2, 0x0, 0x0, 0xF0 }.  To get the address of your sensor, plug a single sensor into your device and run the [oneWireSearch](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/oneWireSearch/oneWireSearch.ino) example or the [Single](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/Single/Single.pde) example provided within the Dallas Temperature library.  The sensor address is programmed at the factory and cannot be changed.
+The same library should work with a [DS18B20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html), [DS18S20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html), [DS1822](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1822.html), [MAX31820](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/MAX31820.html), and the no-longer-sold [DS1820](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1820.html) sensor.  The OneWire hex address of the sensor, the power pin, and the data pin, are required as inputs.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.  The hex address is an array of 8 hex values, for example:  {0x28, 0x1D, 0x39, 0x31, 0x2, 0x0, 0x0, 0xF0 }.  To get the address of your sensor, plug a single sensor into your device and run the [oneWireSearch](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/oneWireSearch/oneWireSearch.ino) example or the [Single](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/Single/Single.pde) example provided within the Dallas Temperature library.  The sensor address is programmed at the factory and cannot be changed.
 
 The main constuctor for the sensor object is:
 
@@ -482,7 +498,7 @@ The main constuctor for the sensor object is:
 MaximDS18 ds18(OneWireAddress, powerPin, dataPin);
 ```
 
-_If and only you have exactly one sensor attached on your OneWire pin or bus_, you can use this constructor to save yourself the trouble of finding the address:
+_If and only if you have exactly one sensor attached on your OneWire pin or bus_, you can use this constructor to save yourself the trouble of finding the address:
 
 ```cpp
 #include <MaximDS18.h>
@@ -537,7 +553,7 @@ BoschBME280_Altitude(&bme280, "customVarCode");
 
 This library will work with an AOSong DHT11, DHT21, AM2301, DHT22, or AM2302.  Please keep in mind that these sensors should not be updated more frequently than once ever 2 seconds.  The data pin, power pin, and sensor type are needed as inputs.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.
 
-The main constuctor for the sensor object is:
+The main constructor for the sensor object is:
 
 ```cpp
 #include <AOSongDHT.h>
@@ -551,3 +567,44 @@ AOSongDHT_Humidity(&dht, "customVarCode");
 AOSongDHT_Temp(&dht, "customVarCode");
 AOSongDHT_HI(&dht, "customVarCode");  // Heat Index
 ```
+
+#### <a name="SQ212"></a>[Apogee SQ-212 Quantum Light Sensor ](https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/) Photosynthetically Active Radiation (PAR)
+This library will work with the Apogee SQ-212 and SQ-212 analog quantum light sensors, and could be readily adapted to work with similar sensors (e.g. SQ-215 or SQ225) with by simply changing the calibration factors.
+
+
+The main constructor for the sensor object is:
+
+```cpp
+#include <ApogeeSQ212.h>
+ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
+```
+
+The one available variable is:
+
+```cpp
+ApogeeSQ212_PAR(&SQ212, "customVarCode");  // Photosynthetically Active Radiation (PAR), in units of μmol m-2 s-1, or microeinsteinPerSquareMeterPerSecond
+```
+
+## <a name="compatibility"></a>Processor/Board Compatibility
+
+AtMega1284p ([EnviroDIY Mayfly](https://envirodiy.org/mayfly/), Sodaq Mbili, Mighty 1284) - The Mayfly *is* the test board for this library.  Everything is designed to work with this processor.
+
+AtMega328p (Arduino Uno, Seeeduino Stalker, etc) - All functions are supported, but processor doesn't have sufficient power to use all of the functionality of the library.
+
+AtMega32u4 (Arduino Leonardo/Micro, Adafruit Flora/Feather, etc) - All functions are supported, but processor doesn't have sufficient power to use all of the functionality of the library.
+
+AtMega2560 (Arduino Mega) - Should be fully functional, but untested.
+
+AtMega644p - Should be fully functional, but untested.
+
+AtSAM3x8e (Arduino Due) - Completely untested, but may work.
+
+AtSAM21D (Arduino Zero, Adafruit Feather M0, Sodaq Autonomo) - Not yet fully supported, but support is planned.
+
+ESP8266/ESP32 - Supported only as a communications module with the default AT command firmware.  Not supported as an independent controller
+
+ATtiny - Unsupported
+
+Teensy 2.x/3.x - Unsupported
+
+STM32F2 - Unsupported

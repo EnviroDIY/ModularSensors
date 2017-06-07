@@ -8,19 +8,24 @@
  *It is dependent on Software Serial.
  *
  * The output from the HRXL-MaxSonar-WRL sonar is the range in mm.
+ *
+ * Warm up time to completion of header:  160ms
  */
 
+ #define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
+ #include <EnableInterrupt.h>  // To handle external and pin change interrupts
+ #include <SoftwareSerial_ExtInts.h>
+
 #include "MaxBotixSonar.h"
-#include <SoftwareSerial_PCINT12.h>
 
 MaxBotixSonar::MaxBotixSonar(int powerPin, int dataPin, int triggerPin)
-: Sensor(powerPin, dataPin, F("MaxBotixMaxSonar"), HRXL_NUM_MEASUREMENTS)
+: Sensor(powerPin, dataPin, F("MaxBotixMaxSonar"), HRXL_NUM_MEASUREMENTS, HRXL_WARM_UP)
 {_triggerPin = triggerPin;}
 
 SENSOR_STATUS MaxBotixSonar::setup(void)
 {
     pinMode(_powerPin, OUTPUT);
-    pinMode(_dataPin, INPUT);
+    pinMode(_dataPin, INPUT_PULLUP);
 
     if(_triggerPin != -1)
     {
@@ -38,8 +43,9 @@ bool MaxBotixSonar::update(void)
 {
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}  // powerUp function includes a 1s delay
-    else{delay(160);}  // See note below
+    if(!wasOn){powerUp();}
+    // Wait until the sensor is warmed up
+    waitForWarmUp();
 
     // Clear values before starting loop
     clearValues();
@@ -57,10 +63,11 @@ bool MaxBotixSonar::update(void)
     // TempI
 
     // define serial port for receiving data
-    SoftwareSerial sonarSerial(_dataPin, -1);
+    SoftwareSerial_ExtInts sonarSerial(_dataPin, -1);
     sonarSerial.begin(9600);
     // Even the slowest sensors should respond at a rate of 6Hz (166ms).
     sonarSerial.setTimeout(180);
+    enableInterrupt(_dataPin, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
 
     // Note:  if the power is on for >160ms before SoftwareSerial starts
     // the header lines will already have been sent and lost
@@ -109,6 +116,10 @@ bool MaxBotixSonar::update(void)
 
     sensorValues[HRXL_VAR_NUM] = result;
     DBGM(sensorValues[HRXL_VAR_NUM], F("\n"));
+
+    // Stop listening and turn of interrupts so the interrupt routine doesn't throw anything else off
+    disableInterrupt(_dataPin);
+    sonarSerial.end();
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}

@@ -19,13 +19,15 @@
  *  Resolution is 0.1°C
  *  Accuracy is ±0.5°C
  *  Range is -40°C to +80°C
+ *
+ * Warm up/sampling time: 1.7sec
 */
 
 #include "AOSongDHT.h"
 
 // The constructor - because this is I2C, only need the power pin
 AOSongDHT::AOSongDHT(int powerPin, int dataPin, DHTtype type)
-: Sensor(powerPin, dataPin, F("AOSongDHT"), DHT_NUM_MEASUREMENTS),
+: Sensor(powerPin, dataPin, F("AOSongDHT"), DHT_NUM_MEASUREMENTS, DHT_WARM_UP),
   dht_internal(dataPin, type)
 {
     _dhtType = type;
@@ -60,6 +62,8 @@ bool AOSongDHT::update(void)
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
+    // Wait until the sensor is warmed up
+    waitForWarmUp();
 
     // Clear values before starting loop
     clearValues();

@@ -8,6 +8,8 @@
  *It is dependent on Software Serial.
  *
  * The output from the HRXL-MaxSonar-WRL sonar is the range in mm.
+ *
+ * Warm up time to completion of header:  160ms
  */
 
 #ifndef MaxBotixSonar_h
@@ -20,6 +22,7 @@
 #include "ModSensorDebugger.h"
 
 #define HRXL_NUM_MEASUREMENTS 1
+#define HRXL_WARM_UP 160
 #define HRXL_RESOLUTION 0
 #define HRXL_VAR_NUM 0
 

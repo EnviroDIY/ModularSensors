@@ -17,20 +17,23 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ---------------------------------------------------------------------------
 // Include the base required libraries
 // ---------------------------------------------------------------------------
-#include <Arduino.h>
+#include <Arduino.h>  // The base Arduino library
+#include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <SensorBase.h>
 #include <VariableBase.h>
-#include <MaxBotixSonar.h>
 
 // ---------------------------------------------------------------------------
 // Set up the sensor object
 // ---------------------------------------------------------------------------
 
+// ==========================================================================
+//    Maxbotix HRXL
+// ==========================================================================
+#include <MaxBotixSonar.h>
 // MaxBotix Sonar: pin settings
 const int SonarPower = 22;   // excite (power) pin
 const int SonarData = 11;     // data  pin
 const int SonarTrigger = -1;   // Trigger pin
-
 // Create a new instance of the sonar sensor;
 MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger);
 // Create a new instance of the range variable;

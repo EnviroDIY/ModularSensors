@@ -10,10 +10,11 @@
 #ifndef LoggerBase_h
 #define LoggerBase_h
 
-#include <Arduino.h>
+#define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
+#include <EnableInterrupt.h>  // To handle external and pin change interrupts
 #include <Sodaq_DS3231.h>  // To communicate with the clock
 #include <SdFat.h>  // To communicate with the SD card
-#include <Sodaq_PcInt_PCINT0.h>  // To handle pin change interrupts for the clock
+
 #include "VariableArray.h"
 
 // Defines the "Logger" Class
@@ -53,13 +54,13 @@ public:
     // Sets the static timezone - this must be set
     static void setTimeZone(int timeZone)
     {
-        Logger::_timeZone = timeZone;
+        _timeZone = timeZone;
         // Some helpful prints for debugging
         PRINTOUT(F("Logger timezone is "));
-        if (Logger::_timeZone == 0) PRINTOUT(F("UTC\n"));
-        else if (Logger::_timeZone > 0) PRINTOUT(F("UTC+"));
+        if (_timeZone == 0) PRINTOUT(F("UTC\n"));
+        else if (_timeZone > 0) PRINTOUT(F("UTC+"));
         else PRINTOUT(F("UTC"));
-        if (Logger::_timeZone != 0) PRINTOUT(Logger::_timeZone, F("\n"));
+        if (_timeZone != 0) PRINTOUT(_timeZone, F("\n"));
 
     }
     static int getTimeZone(void) { return Logger::_timeZone; }
@@ -70,16 +71,16 @@ public:
     // timezone is EST this does not need to be called.
     static void setTZOffset(int offset)
     {
-        Logger::_offset = offset;
+        _offset = offset;
         // Some helpful prints for debugging
         PRINTOUT(F("RTC timezone is "));
-        if ((Logger::_timeZone - Logger::_offset) == 0)
+        if ((_timeZone - _offset) == 0)
             PRINTOUT(F("UTC\n"));
-        else if ((Logger::_timeZone - Logger::_offset) > 0)
+        else if ((_timeZone - _offset) > 0)
             PRINTOUT(F("UTC+"));
         else PRINTOUT(F("UTC"));
-        if ((Logger::_timeZone - Logger::_offset) != 0)
-            PRINTOUT(Logger::_timeZone - Logger::_offset, F("\n"));
+        if ((_timeZone - _offset) != 0)
+            PRINTOUT(_timeZone - _offset, F("\n"));
     }
     static int getTZOffset(void) { return Logger::_offset; }
 
@@ -152,9 +153,9 @@ public:
     // called before updating the sensors, not after.
     void markTime(void)
     {
-      Logger::markedEpochTime = getNow();
-      Logger::markedDateTime = rtc.makeDateTime(Logger::markedEpochTime);
-      formatDateTime_ISO8601(Logger::markedDateTime).toCharArray(Logger::markedISO8601Time, 26);
+      markedEpochTime = getNow();
+      markedDateTime = rtc.makeDateTime(markedEpochTime);
+      formatDateTime_ISO8601(markedDateTime).toCharArray(markedISO8601Time, 26);
     }
 
     // This checks to see if the CURRENT time is an even interval of the logging rate
@@ -189,13 +190,13 @@ public:
     bool checkMarkedInterval(void)
     {
         bool retval;
-        DBGVA(F("Marked Time: "), Logger::markedEpochTime, F("\n"));
-        DBGVA(F("Mod of Logging Interval: "), Logger::markedEpochTime % _interruptRate, F("\n"));
+        DBGVA(F("Marked Time: "), markedEpochTime, F("\n"));
+        DBGVA(F("Mod of Logging Interval: "), markedEpochTime % _interruptRate, F("\n"));
         DBGVA(F("Number of Readings so far: "), _numReadings, F("\n"));
-        DBGVA(F("Mod of 120: "), Logger::markedEpochTime % 120, F("\n"));
-        if (Logger::markedEpochTime != 0 &&
-            ((Logger::markedEpochTime % _interruptRate == 0 ) or
-            (_numReadings < 10 and Logger::markedEpochTime % 120 == 0)))
+        DBGVA(F("Mod of 120: "), markedEpochTime % 120, F("\n"));
+        if (markedEpochTime != 0 &&
+            ((markedEpochTime % _interruptRate == 0 ) or
+            (_numReadings < 10 and markedEpochTime % 120 == 0)))
         {
             // Update the number of readings taken
             _numReadings ++;
@@ -217,7 +218,7 @@ public:
     #include <avr/sleep.h>  // To handle the processor sleep modes
 
     // Set up the Interrupt Service Request for waking
-    // In this case, we're doing nothing
+    // In this case, we're doing nothing, we just want the processor to wake
     // This must be a static function (which means it can only call other static funcions.)
     static void wakeISR(void){}
 
@@ -227,7 +228,7 @@ public:
         // Set the pin attached to the RTC alarm to be in the right mode to listen to
         // an interrupt and attach the "Wake" ISR to it.
         pinMode(_interruptPin, INPUT_PULLUP);
-        PcInt::attachInterrupt(_interruptPin, wakeISR);
+        enableInterrupt(_interruptPin, wakeISR, CHANGE);
 
         // Unfortunately, because of the way the alarm on the DS3231 is set up, it
         // cannot interrupt on any frequencies other than every second, minute,
@@ -261,26 +262,20 @@ public:
         // The next timed interrupt will not be sent until this is cleared
         rtc.clearINTStatus();
 
+        // Temporarily disables interrupts, so no mistakes are made when writing
+        // to the processor registers
+        noInterrupts();
         // Disable the processor ADC
         ADCSRA &= ~_BV(ADEN);
-        // stop interrupts to ensure the BOD timed sequence executes as required
-        cli();
-        // turn off the brown-out detector
-        byte mcucr1, mcucr2;
-        mcucr1 = MCUCR | _BV(BODS) | _BV(BODSE);
-        mcucr2 = mcucr1 & ~_BV(BODSE);
-        MCUCR = mcucr1;
-        MCUCR = mcucr2;
-        // ensure interrupts enabled so we can wake up again
-        sei();
-
-        // Sleep time
-        // Disables interrupts
-        noInterrupts();
-        // Prepare the processor for by setting the SE (sleep enable) bit.
+        // turn off the brown-out detector, if possible
+        #if defined(BODS) && defined(BODSE)
+            sleep_bod_disable();
+        #endif
+        // Set the sleep enable bit.
         sleep_enable();
-        // Re-enables interrupts
+        // Re-enables interrupts so we can wake up again
         interrupts();
+
         // Actually put the processor into sleep mode.
         // This must happen after the SE bit is set.
         sleep_cpu();
@@ -384,7 +379,7 @@ public:
     String generateSensorDataCSV(void)
     {
         String csvString = "";
-        Logger::markedDateTime.addToString(csvString);
+        markedDateTime.addToString(csvString);
         csvString += F(",");
         csvString += VariableArray::generateSensorDataCSV();
         return csvString;
@@ -496,6 +491,66 @@ public:
         }
     }
 
+
+    // ===================================================================== //
+    // Public functions for a "debugging" mode
+    // ===================================================================== //
+
+    // This defines what to do in the debug mode
+    virtual void debugMode(Stream *stream = &Serial)
+    {
+        PRINTOUT(F("------------------------------------------\n"));
+        PRINTOUT(F("Entering debug mode\n"));
+
+        // Update the sensors and print out data 25 times
+        for (uint8_t i = 0; i < 25; i++)
+        {
+            stream->println(F("------------------------------------------"));
+            // Wake up all of the sensors
+            stream->print(F("Waking sensors..."));
+            sensorsWake();
+            // Update the values from all attached sensors
+            stream->print(F("  Updating sensor values..."));
+            updateAllSensors();
+            // Immediately put sensors to sleep to save power
+            stream->println(F("  Putting sensors back to sleep..."));
+            sensorsSleep();
+            // Print out the current logger time
+            stream->print(F("Current logger time is "));
+            stream->println(formatDateTime_ISO8601(getNow()));
+            stream->println(F("    -----------------------"));
+            // Print out the sensor data
+            printSensorData(stream);
+            delay(10000);
+        }
+    }
+
+    // This checks to see if you want to enter debug mode
+    // This should be run as the very last step within the setup function
+    virtual void checkForDebugMode(int buttonPin, Stream *stream = &Serial)
+    {
+        // Set the pin attached to some button to enter debug mode
+        pinMode(buttonPin, INPUT);
+
+        // Flash the LED to let user know it is now possible to enter debug mode
+        for (uint8_t i = 0; i < 15; i++)
+        {
+            digitalWrite(_ledPin, HIGH);
+            delay(50);
+            digitalWrite(_ledPin, LOW);
+            delay(50);
+        }
+
+        // Look for up to 5 seconds for a button press
+        PRINTOUT(F("Push button NOW to enter debug mode.\n"));
+        for (unsigned long start = millis(); millis() - start < 5000; )
+        {
+            if (digitalRead(buttonPin) == HIGH) debugMode(stream);
+        }
+        PRINTOUT(F("------------------------------------------\n\n"));
+        PRINTOUT(F("End of debug mode.\n"));
+    }
+
     // ===================================================================== //
     // Convience functions to call several of the above functions
     // ===================================================================== //
@@ -604,8 +659,8 @@ int Logger::_timeZone = 0;
 // Initialize the static time adjustment
 int Logger::_offset = 0;
 // Initialize the static timestamps
-long Logger::markedEpochTime;
-DateTime Logger::markedDateTime;
+long Logger::markedEpochTime = 0;
+DateTime Logger::markedDateTime = 0;
 char Logger::markedISO8601Time[26];
 
 #endif

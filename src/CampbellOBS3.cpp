@@ -20,6 +20,8 @@
  *      Turbidity: 0.004/0.01 NTU; 0.008/0.03 NTU; 0.01/0.06 NTU
  *  12-bit ADC
  *      Turbidity: 0.06/0.2 NTU; 0.1/0.5 NTU; 0.2/1.0 NTU
+ *
+ * Minimum warm-up time: 2s
 */
 
 #include "CampbellOBS3.h"
@@ -27,7 +29,7 @@
 
 // The constructor - need the power pin, the data pin, and the calibration info
 CampbellOBS3::CampbellOBS3(int powerPin, int dataPin, float A, float B, float C)
-  : Sensor(powerPin, dataPin, F("CampbellOBS3+"), OBS3_NUM_VARIABLES)
+  : Sensor(powerPin, dataPin, F("CampbellOBS3+"), OBS3_NUM_VARIABLES, OBS3_WARM_UP)
 {
     _A = A;
     _B = B;
@@ -52,6 +54,8 @@ bool CampbellOBS3::update(void)
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
+    // Wait until the sensor is warmed up
+    waitForWarmUp();
 
     // Clear values before starting loop
     clearValues();
@@ -61,6 +65,7 @@ bool CampbellOBS3::update(void)
     float voltage = 0;
     float calibResult = 0;
 
+    // Read Analog to Digital Converter (ADC)
     adcResult = ads.readADC_SingleEnded(_dataPin);  // Getting the reading
     DBGM(F("ads.readADC_SingleEnded("), _dataPin, F("): "), ads.readADC_SingleEnded(_dataPin), F("\t\t"));
 
@@ -75,7 +80,7 @@ bool CampbellOBS3::update(void)
     DBGM(_A, F("x^2 + "), _B, F("x + "), _C, F("\n"));
     DBGM(F("calibResult: "), calibResult, F("\n"));
 
-    sensorValues[0] = calibResult;
+    sensorValues[OBS3_TURB_VAR_NUM] = calibResult;
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}

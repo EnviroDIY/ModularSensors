@@ -17,6 +17,8 @@
  *  Resolution is 0.1°C (16 bit)
  *  Accuracy is ±0.1°C
  *  Range is -40°C to +125°C
+ *
+ * Warm up/sampling time: 2sec
 */
 
 #ifndef AOSongAM2315_h
@@ -29,6 +31,7 @@
 #include "ModSensorDebugger.h"
 
 #define AM2315_NUM_MEASUREMENTS 2
+#define AM2315_WARM_UP 2000
 
 #define AM2315_HUMIDITY_RESOLUTION 1
 #define AM2315_HUMIDITY_VAR_NUM 0

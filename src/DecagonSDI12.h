@@ -20,7 +20,6 @@
 #define DecagonSDI12_h
 
 #include <Arduino.h>
-#include <SDI12_PCINT3.h>
 
 // #define MODULES_DBG Serial
 #include "ModSensorDebugger.h"
@@ -32,14 +31,14 @@ class DecagonSDI12 : public Sensor
 {
 public:
     DecagonSDI12(char SDI12address, int powerPin, int dataPin,
-                 int numReadings = 1,
-                 String sensName = "SDI12-Sensor", int numMeasurements = 1);
+                 int numReadings = 1, String sensName = "SDI12-Sensor",
+                 int numMeasurements = 1, int WarmUpTime_ms = 0);
     DecagonSDI12(char *SDI12address, int powerPin, int dataPin,
-                 int numReadings = 1,
-                 String sensName = "SDI12-Sensor", int numMeasurements = 1);
+                 int numReadings = 1, String sensName = "SDI12-Sensor",
+                 int numMeasurements = 1, int WarmUpTime_ms = 0);
     DecagonSDI12(int SDI12address, int powerPin, int dataPin,
-                 int numReadings = 1,
-                 String sensName = "SDI12-Sensor", int numMeasurements = 1);
+                 int numReadings = 1, String sensName = "SDI12-Sensor",
+                 int numMeasurements = 1, int WarmUpTime_ms = 0);
 
     String getSensorVendor(void);
     String getSensorModel(void);
@@ -47,9 +46,14 @@ public:
     String getSensorSerialNumber(void);
     String getSensorLocation(void) override;
 
+    virtual SENSOR_STATUS setup(void) override;
+    virtual SENSOR_STATUS getStatus(void) override;
+
     virtual bool update(void);
+
 protected:
-    void getSensorInfo(void);
+    bool getSensorInfo(void);
+
 private:
     String _sensorVendor;
     String _sensorModel;
