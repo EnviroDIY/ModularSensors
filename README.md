@@ -553,7 +553,7 @@ BoschBME280_Altitude(&bme280, "customVarCode");
 
 This library will work with an AOSong DHT11, DHT21, AM2301, DHT22, or AM2302.  Please keep in mind that these sensors should not be updated more frequently than once ever 2 seconds.  The data pin, power pin, and sensor type are needed as inputs.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.
 
-The main constuctor for the sensor object is:
+The main constructor for the sensor object is:
 
 ```cpp
 #include <AOSongDHT.h>
@@ -568,6 +568,22 @@ AOSongDHT_Temp(&dht, "customVarCode");
 AOSongDHT_HI(&dht, "customVarCode");  // Heat Index
 ```
 
+#### <a name="SQ212"></a>[Apogee SQ-212 Quantum Light Sensor ](https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/) Photosynthetically Active Radiation (PAR)
+This library will work with the Apogee SQ-212 and SQ-212 analog quantum light sensors, and could be readily adapted to work with similar sensors (e.g. SQ-215 or SQ225) with by simply changing the calibration factors.
+
+
+The main constructor for the sensor object is:
+
+```cpp
+#include <ApogeeSQ212.h>
+ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
+```
+
+The one available variable is:
+
+```cpp
+ApogeeSQ212_PAR(&SQ212, "customVarCode");  // Photosynthetically Active Radiation (PAR), in units of μmol m-2 s-1, or microeinsteinPerSquareMeterPerSecond
+```
 
 ## <a name="compatibility"></a>Processor/Board Compatibility
 

@@ -1,6 +1,7 @@
 /*****************************************************************************
-single_sensor.ino
-Written By:  Sara Damiano (sdamiano@stroudcenter.org)
+single_sensor_SQ212.ino
+Written By:  Anthony Aufdenkampe <aaufdenkampe@limno.com>
+Adapted from single_sensor_SQ212.ino by Sara Damiano (sdamiano@stroudcenter.org)
 Development Environment: PlatformIO 3.2.1
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
 Software License: BSD-3.
@@ -8,7 +9,7 @@ Software License: BSD-3.
   and the EnviroDIY Development Team
 
 This sketch is an example of getting data from a single sensor, in this case, a
-MaxBotix Ultrasonic Range Finder
+Apogee SQ-212 Quantum Light sensor
 
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
@@ -27,17 +28,16 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ---------------------------------------------------------------------------
 
 // ==========================================================================
-//    Maxbotix HRXL
+//    Apogee SQ-212 Quantum Light sensor
 // ==========================================================================
-#include <MaxBotixSonar.h>
+#include <ApogeeSQ212.h>
 // MaxBotix Sonar: pin settings
-const int SonarPower = 22;   // excite (power) pin
-const int SonarData = 11;     // data  pin
-const int SonarTrigger = -1;   // Trigger pin
+const int SQ212Power = 22;   // excite (power) pin
+const int SQ212Data = 0;     // data  pin
 // Create a new instance of the sonar sensor;
-MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger);
+ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
 // Create a new instance of the range variable;
-MaxBotixSonar_Range sonar_range(&sonar);
+ApogeeSQ212_PAR SQ212_PAR(&SQ212);
 
 // ---------------------------------------------------------------------------
 // Board setup info
@@ -75,11 +75,11 @@ void setup()
     greenred4flash();
 
     // Print a start-up note to the first serial port
-    Serial.println(F("Single Sensor Example - Sonar Ranging"));
+    Serial.println(F("Single Sensor Example - Apogee SQ-212 PAR"));
 
     // Set up the sensor and variables
-    sonar.setup();
-    sonar_range.setup();
+    SQ212.setup();
+    SQ212_PAR.setup();
 }
 
 
@@ -92,17 +92,17 @@ void loop()
     digitalWrite(GREEN_LED, HIGH);
 
     // Wake up the sensor (also gives power)
-    sonar.wake();
+    SQ212.wake();
 
     // Update the sensor value
-    sonar.update();
+    SQ212.update();
 
     // Print the sonar result
-    Serial.print("Current sonar range: ");
-    Serial.println(sonar_range.getValueString());
+    Serial.print("Current PAR: ");
+    Serial.println(SQ212_PAR.getValueString());
 
     // Put the sensor back to sleep (also cuts power)
-    sonar.sleep();
+    SQ212.sleep();
 
     // Turn off the LED to show we're done with the reading
     digitalWrite(GREEN_LED, LOW);
