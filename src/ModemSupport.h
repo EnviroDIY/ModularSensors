@@ -19,7 +19,7 @@
     defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || \
     defined(TINY_GSM_MODEM_XBEE)
   #define USE_TINY_GSM
-  // #define TINY_GSM_DEBUG Serial
+  #define TINY_GSM_DEBUG Serial
   #define TINY_GSM_YIELD() { delay(3);}
   #include <TinyGsmClient.h>
 #else
@@ -377,7 +377,7 @@ public:
     // Helper to get signal percent from CSQ
     static int getPctFromCSQ(int csq)
     {
-        int CSQs[33] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 99};
+        int CSQs[33] = {0, 1, 2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 99};
         int PCTs[33] = {0, 3, 6, 10, 13, 16, 19, 23, 26, 29, 32, 36, 39, 42, 45, 48, 52, 55, 58, 61, 65, 68, 71, 74, 78, 81, 84, 87, 90, 94, 97, 100, 0};
         for (int i = 0; i < 33; i++)
         {
@@ -386,11 +386,29 @@ public:
         return 0;
     }
 
-    #define MODEM_NUM_MEASUREMENTS 4
+    // Helper to get approximate RSSI from CSQ (assuming no noise)
+    static int getRSSIFromCSQ(int csq)
+    {
+        int CSQs[33]  = {  0,   1,   2,   3,   4,   5,   6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 99};
+        int RSSIs[33] = {113, 111, 109, 107, 105, 103, 101, 99, 97, 95, 93, 91, 89, 87, 85, 83, 81, 79, 77, 75, 73, 71, 69, 67, 65, 63, 61, 59, 57, 55, 53, 51, 0};
+        for (int i = 0; i < 33; i++)
+        {
+            if (CSQs[i] == csq) return RSSIs[i];
+        }
+        return 0;
+    }
+
+    // Helper to get signal percent from CSQ
+    static int getPctFromRSSI(int rssi)
+    {
+        int pct = 1.6163*rssi + 182.61;
+        if (rssi == 0) pct = 0;
+        return pct;
+    }
+
+    #define MODEM_NUM_MEASUREMENTS 2
     #define CSQ_VAR_NUM 0
     #define PERCENT_STAT_VAR_NUM 1
-    #define SIM_STAT_VAR_NUM 2
-    #define REG_STAT_VAR_NUM 3
 
     bool connectNetwork(void)
     {
@@ -401,8 +419,9 @@ public:
         // Check again if the modem is on.  If it still isn't on, give up
         if(!modemOnOff->isOn()) return false;
 
-        // WiFi modules don't naturally "disconnect" from the network, so first
-        // check the connection before resending credentials
+        // WiFi modules immediately re-connect to the last access point so we
+        // can save just a tiny bit of time (and thus power) by not resending
+        // the credentials every time.
         #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
         if (_ssid)
         {
@@ -436,32 +455,43 @@ public:
                 retVal = true;
             }
 
-            // Now we are essentially running the "update" function to update
-            // the variables assigned to the modem "sensor".  We are doing this
-            // here because we want the values to be assigned with the actual
-            // connection used when the data is sent out.
-
-            // Clear values before starting loop
-            clearValues();
-
-            // Variables to store the results in
-            int simStat = _modem->getSimStatus();
-            int signalQual = _modem->getSignalQuality();
-            int signalPercent = getPctFromCSQ(signalQual);
-            int regStat = _modem->getRegistrationStatus();
-
-            sensorValues[CSQ_VAR_NUM] = signalQual;
-            sensorValues[PERCENT_STAT_VAR_NUM] = signalPercent;
-            sensorValues[SIM_STAT_VAR_NUM] = simStat;
-            sensorValues[REG_STAT_VAR_NUM] = regStat;
-
-            // Update the registered variables with the new values
-            notifyVariables();
-
         #endif
         #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
         }
         #endif
+
+        // #if defined(USE_TINY_GSM)
+        // // Now we are essentially running the "update" function to update
+        // // the variables assigned to the modem "sensor".  We are doing this
+        // // here because we want the values to be assigned with the actual
+        // // connection used when the data is sent out.
+        //
+        // // Clear values before starting loop
+        // clearValues();
+        //
+        // // Get signal quality
+        // int signalQual = _modem->getSignalQuality();
+        //
+        // // Convert signal quality to RSSI, if necessary
+        // #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
+        // int rssi = signalQual;
+        // #else
+        // int rssi = getRSSIFromCSQ(signalQual);
+        // #endif
+        //
+        // // Convert signal quality to a percent
+        // #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
+        // int signalPercent = getPctFromRSSI(signalQual);
+        // #else
+        // int signalPercent = getPctFromCSQ(signalQual);
+        // #endif
+        //
+        // sensorValues[CSQ_VAR_NUM] = rssi;
+        // sensorValues[PERCENT_STAT_VAR_NUM] = signalPercent;
+        //
+        // // Update the registered variables with the new values
+        // notifyVariables();
+        // #endif
 
         return retVal;
     }
@@ -526,6 +556,7 @@ public:
         // XBee needs to send something before the connection is actually made
         #if defined(TINY_GSM_MODEM_XBEE)
         stream->write("Hi!");
+        delay(75); // Need this delay!  Can get away with 50, but 100 is safer.
         #endif
 
         // Wait up to 5 seconds for a response
@@ -601,7 +632,6 @@ public:
 
     Stream *stream;
     ModemOnOff *modemOnOff;
-
 
     // More functions for using the modem as a "sensor"
 
@@ -716,15 +746,15 @@ private:
 
 
 // Classes for the modem variables
-// Defines the Signal CSQ
-class Modem_CSQ : public Variable
+// Defines the received signal strength indication
+class Modem_RSSI : public Variable
 {
 public:
-    Modem_CSQ(Sensor *parentSense, String customVarCode = "")
+    Modem_RSSI(Sensor *parentSense, String customVarCode = "")
      : Variable(parentSense, CSQ_VAR_NUM,
-                F("CSQ"), F("decibel"),
+                F("RSSI"), F("decibel"),
                 0,
-                F("CSQ"), customVarCode)
+                F("RSSI"), customVarCode)
     {}
 };
 
@@ -738,32 +768,6 @@ public:
                 F("signalPercent"), F("percent"),
                 0,
                 F("signalPercent"), customVarCode)
-    {}
-};
-
-
-// Defines the SIM Status
-class Modem_SIMStatus : public Variable
-{
-public:
-    Modem_SIMStatus(Sensor *parentSense, String customVarCode = "")
-     : Variable(parentSense, SIM_STAT_VAR_NUM,
-                F("simStatus"), F("code"),
-                0,
-                F("SIMStatus"), customVarCode)
-    {}
-};
-
-
-// Defines the Registration Status
-class Modem_RegStatus : public Variable
-{
-public:
-    Modem_RegStatus(Sensor *parentSense, String customVarCode = "")
-     : Variable(parentSense, REG_STAT_VAR_NUM,
-                F("registrationStatus"), F("code"),
-                0,
-                F("REGstatus"), customVarCode)
     {}
 };
 

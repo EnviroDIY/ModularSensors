@@ -129,15 +129,17 @@ public:
             printSensorData(stream);
             stream->println(F("    -----------------------"));
 
-            #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
-                defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
-                defined(TINY_GSM_MODEM_M590)
+            #if defined(USE_TINY_GSM)
             // Print out the modem connection strength
             int signalQual = modem._modem->getSignalQuality();
             stream->print(F("Current modem signal is "));
             stream->print(signalQual);
             stream->print(F(" ("));
+            #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
+            stream->print(modem.getPctFromRSSI(signalQual));
+            #else
             stream->print(modem.getPctFromCSQ(signalQual));
+            #endif
             stream->println(F("%)"));
             #endif
             delay(5000);
@@ -212,12 +214,15 @@ public:
         // Sync the clock with NIST
         PRINTOUT(F("Current RTC time is: "));
         PRINTOUT(formatDateTime_ISO8601(getNow()), F("\n"));
+
         // Turn on the modem
         modem.on();
         // Connect to the network
         if (modem.connectNetwork())
         {
             // Synchronize the RTC
+            DBG(F("Attempting to synchronize RTC"));
+            delay(5000);
             modem.syncDS3231();
             // Disconnect from the network
             modem.disconnectNetwork();
