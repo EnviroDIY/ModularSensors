@@ -56,6 +56,15 @@ AOSongDHT dht(DHTPower, DHTPin, dhtType);
 
 
 // ==========================================================================
+//    Apogee SQ-212
+// ==========================================================================
+#include <ApogeeSQ212.h>
+const int SQ212Power = 22;  // switched sensor power is pin 22 on Mayfly
+const int SQ212Data = 2;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
+ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
+
+
+// ==========================================================================
 //    Bosch BME280
 // ==========================================================================
 #include <BoschBME280.h>
@@ -69,14 +78,14 @@ BoschBME280 bme280(I2CPower, BMEi2c_addr);
 // ==========================================================================
 #include <CampbellOBS3.h>
 // Campbell OBS 3+ Low Range calibration in Volts
-const int OBSLowPin = 0;  // The low voltage analog pin
+const int OBSLowPin = 0;  // The low voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const float OBSLow_A = 4.0749E+00;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = 9.1011E+01;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibration
 const int OBS3Power = 22;  // switched sensor power is pin 22 on Mayfly
 CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C);
 // Campbell OBS 3+ High Range calibration in Volts
-const int OBSHighPin = 1;  // The high voltage analog pin
+const int OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const float OBSHigh_A = 5.2996E+01;  // The "A" value (X^2) from the high range calibration
 const float OBSHigh_B = 3.7828E+02;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calibration
@@ -146,7 +155,7 @@ MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
 //    EnviroDIY Mayfly
 // ==========================================================================
 #include <MayflyOnboardSensors.h>
-const char *MFVersion = "v0.3";
+const char *MFVersion = "v0.5";
 EnviroDIYMayfly mayfly(MFVersion) ;
 
 // ---------------------------------------------------------------------------
@@ -156,6 +165,7 @@ Variable *variableList[] = {
     new EnviroDIYMayfly_Batt(&mayfly),
     new EnviroDIYMayfly_FreeRam(&mayfly),
     new EnviroDIYMayfly_Temp(&mayfly),
+    new ApogeeSQ212_PAR(&SQ212),
     new MaxBotixSonar_Range(&sonar),
     new Decagon5TM_Ea(&fivetm),
     new Decagon5TM_Temp(&fivetm),
@@ -200,15 +210,15 @@ const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
 // ---------------------------------------------------------------------------
 
 // Flashes to Mayfly's LED's
-void greenred4flash()
+void greenredflash(int numFlash = 4)
 {
-  for (int i = 1; i <= 4; i++) {
+  for (int i = 0; i < numFlash; i++) {
     digitalWrite(GREEN_LED, HIGH);
     digitalWrite(RED_LED, LOW);
-    delay(50);
+    delay(75);
     digitalWrite(GREEN_LED, LOW);
     digitalWrite(RED_LED, HIGH);
-    delay(50);
+    delay(75);
   }
   digitalWrite(RED_LED, LOW);
 }
@@ -226,7 +236,7 @@ void setup()
     pinMode(GREEN_LED, OUTPUT);
     pinMode(RED_LED, OUTPUT);
     // Blink the LEDs to show the board is on and starting up
-    greenred4flash();
+    greenredflash();
 
     // Print a start-up note to the first serial port
     Serial.print(F("Now running "));

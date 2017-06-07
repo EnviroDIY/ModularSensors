@@ -50,14 +50,14 @@ LoggerDreamHost EnviroDIYLogger;
 // ==========================================================================
 #include <CampbellOBS3.h>
 // Campbell OBS 3+ Low Range calibration in Volts
-const int OBSLowPin = 0;  // The low voltage analog pin
+const int OBSLowPin = 0;  // The low voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const float OBSLow_A = 4.0749E+00;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = 9.1011E+01;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibration
 const int OBS3Power = 22;  // switched sensor power is pin 22 on Mayfly
 CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C);
 // Campbell OBS 3+ High Range calibration in Volts
-const int OBSHighPin = 1;  // The high voltage analog pin
+const int OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const float OBSHigh_A = 5.2996E+01;  // The "A" value (X^2) from the high range calibration
 const float OBSHigh_B = 3.7828E+02;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calibration
