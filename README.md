@@ -256,12 +256,10 @@ Once the modem has been set up, these functions are available:
 - **getNISTTime()** - Returns the current unix timestamp from NIST via the TIME protocol (rfc868).
 - **syncDS3231()** - This synchronizes the DS3231 real time clock with the NIST provided timestamp.
 
-The cellular modems themselves (SIM800, SIM900, A6, A7, and M590) can also be used as sensors which have the following variables:
+The cellular modems themselves (SIM800, SIM900, A6, A7, and M590) can also be used as "sensors" which have the following variables:
 ```cpp
-Modem_CSQ(&modem, "customVarCode");
+Modem_RSSI(&modem, "customVarCode");
 Modem_SignalPercent(&modem, "customVarCode");
-Modem_SIMStatus(&modem, "customVarCode");
-Modem_RegStatus(&modem, "customVarCode");
 ```
 The modem does not behave as all the other sensors do, though.  The normal '''setup()''', '''wake()''', '''sleep()''', and '''update()''' functions for other sensors do not do anything with the modem.  Setup must be done with the '''setupModem(...)''' function; the modem will only go on and off with the '''on()''' and '''off()''' functions; and the '''update()''' functionality happens within the '''connectNetwork()''' function.
 
