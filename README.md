@@ -570,7 +570,7 @@ ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
 The one available variable is:
 
 ```cpp
-ApogeeSQ212_PAR SQ212_PAR(&SQ212);  // Photosynthetically Active Radiation (PAR), in units of μmol m-2 s-1, or microeinsteinPerSquareMeterPerSecond
+ApogeeSQ212_PAR(&SQ212, "customVarCode");  // Photosynthetically Active Radiation (PAR), in units of μmol m-2 s-1, or microeinsteinPerSquareMeterPerSecond
 ```
 
 ## <a name="compatibility"></a>Processor/Board Compatibility

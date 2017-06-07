@@ -33,16 +33,16 @@
 #include "ModSensorDebugger.h"
 
 
-#define SQ212_NUM_VARIABLES 1  // low and high range are treated as completely independent
+#define SQ212_NUM_VARIABLES 1
 #define SQ212_WARM_UP 2     // Time in ms
 #define SQ212_PAR_VAR_NUM 0
-#define SQ212_PAR_RESOLUTION 3
+#define SQ212_PAR_RESOLUTION 2
 
 // The main class for the Apogee SQ-212 sensor
 class ApogeeSQ212 : public Sensor
 {
 public:
-    // The constructor - need the power pin, the data pin, and the calibration info
+    // The constructor - need the power pin and the data pin
     ApogeeSQ212(int powerPin, int dataPin);
 
     String getSensorLocation(void) override;
@@ -62,7 +62,7 @@ public:
       : Variable(parentSense, SQ212_PAR_VAR_NUM,
                  F("radiationIncomingPAR"), F("microeinsteinPerSquareMeterPerSecond"),
                  SQ212_PAR_RESOLUTION,
-                 F("PhotosyntheticallyActiveRadiation"), customVarCode)
+                 F("photosyntheticallyActiveRadiation"), customVarCode)
     {}
 };
 

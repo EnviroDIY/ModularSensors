@@ -26,7 +26,7 @@
 #include "ApogeeSQ212.h"
 #include <Adafruit_ADS1015.h>
 
-// The constructor - need the power pin, the data pin, and the calibration info
+// The constructor - need the power pin and the data pin
 ApogeeSQ212::ApogeeSQ212(int powerPin, int dataPin)
   : Sensor(powerPin, dataPin, F("ApogeeSQ212"), SQ212_NUM_VARIABLES, SQ212_WARM_UP)
 {}
@@ -66,11 +66,14 @@ bool ApogeeSQ212::update(void)
 
     // Convert bits into volts
     voltage = adcResult * 0.1875/1000;  // in units of V. See Adafruit_ADS1X15 library for AD conversion factors.
-            // Alternately = adc0 * 3.3V / 17600.0 register bits,
-            // where 3.3V is the voltage of the Mayfly board and 17600 = 3.3V / 0.1875 mV/bit
+    // Alternately could use:
+    // voltage = (adcResult * 3.3) / 17585.0;
+    // where 3.3V is the voltage of the Mayfly board and
+    // 17585 is the number of register bits for the ADS1115 at standard (2/3) gain
+    // 17585 ~ 17600 = 3.3V / 0.1875 mV/bit (17585 vs 17600 based on actually tests)
 
     DBGM("Voltage: ", String(voltage, 6), F("\t\t"));
-    //Apogee SQ-212 Calibration Factor = 1.0 μmol m-2 s-1 per mV;
+    // Apogee SQ-212 Calibration Factor = 1.0 μmol m-2 s-1 per mV;
     calibResult = 1 * voltage * 1000 ;  // in units of μmol m-2 s-1 (microeinsteinPerSquareMeterPerSecond)
     DBGM(F("calibResult: "), calibResult, F("\n"));
 
