@@ -521,7 +521,7 @@ public:
             stream->println(F("    -----------------------"));
             // Print out the sensor data
             printSensorData(stream);
-            delay(5000);
+            delay(10000);
         }
     }
 

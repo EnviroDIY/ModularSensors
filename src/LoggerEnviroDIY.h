@@ -215,13 +215,13 @@ public:
         PRINTOUT(F("Current RTC time is: "));
         PRINTOUT(formatDateTime_ISO8601(getNow()), F("\n"));
 
+        // Synchronize the RTC
+        PRINTOUT(F("Attempting to synchronize RTC with NIST\n"));
         // Turn on the modem
         modem.on();
         // Connect to the network
         if (modem.connectNetwork())
         {
-            // Synchronize the RTC
-            DBG(F("Attempting to synchronize RTC"));
             delay(5000);
             modem.syncDS3231();
             // Disconnect from the network

@@ -19,7 +19,7 @@
     defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || \
     defined(TINY_GSM_MODEM_XBEE)
   #define USE_TINY_GSM
-  #define TINY_GSM_DEBUG Serial
+  // #define TINY_GSM_DEBUG Serial
   #define TINY_GSM_YIELD() { delay(3);}
   #include <TinyGsmClient.h>
 #else
@@ -403,6 +403,7 @@ public:
     {
         int pct = 1.6163*rssi + 182.61;
         if (rssi == 0) pct = 0;
+        if (rssi == (255-93)) pct = 0;  // This is a no-data-yet value from XBee
         return pct;
     }
 
@@ -460,38 +461,38 @@ public:
         }
         #endif
 
-        // #if defined(USE_TINY_GSM)
-        // // Now we are essentially running the "update" function to update
-        // // the variables assigned to the modem "sensor".  We are doing this
-        // // here because we want the values to be assigned with the actual
-        // // connection used when the data is sent out.
-        //
-        // // Clear values before starting loop
-        // clearValues();
-        //
-        // // Get signal quality
-        // int signalQual = _modem->getSignalQuality();
-        //
-        // // Convert signal quality to RSSI, if necessary
-        // #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
-        // int rssi = signalQual;
-        // #else
-        // int rssi = getRSSIFromCSQ(signalQual);
-        // #endif
-        //
-        // // Convert signal quality to a percent
-        // #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
-        // int signalPercent = getPctFromRSSI(signalQual);
-        // #else
-        // int signalPercent = getPctFromCSQ(signalQual);
-        // #endif
-        //
-        // sensorValues[CSQ_VAR_NUM] = rssi;
-        // sensorValues[PERCENT_STAT_VAR_NUM] = signalPercent;
-        //
-        // // Update the registered variables with the new values
-        // notifyVariables();
-        // #endif
+        #if defined(USE_TINY_GSM)
+        // Now we are essentially running the "update" function to update
+        // the variables assigned to the modem "sensor".  We are doing this
+        // here because we want the values to be assigned with the actual
+        // connection used when the data is sent out.
+
+        // Clear values before starting loop
+        clearValues();
+
+        // Get signal quality
+        int signalQual = _modem->getSignalQuality();
+
+        // Convert signal quality to RSSI, if necessary
+        #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
+        int rssi = signalQual;
+        #else
+        int rssi = getRSSIFromCSQ(signalQual);
+        #endif
+
+        // Convert signal quality to a percent
+        #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
+        int signalPercent = getPctFromRSSI(signalQual);
+        #else
+        int signalPercent = getPctFromCSQ(signalQual);
+        #endif
+
+        sensorValues[CSQ_VAR_NUM] = rssi;
+        sensorValues[PERCENT_STAT_VAR_NUM] = signalPercent;
+
+        // Update the registered variables with the new values
+        notifyVariables();
+        #endif
 
         return retVal;
     }
@@ -752,7 +753,7 @@ class Modem_RSSI : public Variable
 public:
     Modem_RSSI(Sensor *parentSense, String customVarCode = "")
      : Variable(parentSense, CSQ_VAR_NUM,
-                F("RSSI"), F("decibel"),
+                F("RSSI"), F("decibelMiliWatt"),
                 0,
                 F("RSSI"), customVarCode)
     {}
