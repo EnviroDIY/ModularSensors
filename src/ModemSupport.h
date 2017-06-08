@@ -4,15 +4,16 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for turning modems on and off to save power.  It is more-or-less
- *a wrapper for tinyGSM library:  https://github.com/vshymanskyy/TinyGSM
+ *This file wraps the tinyGSM library:  https://github.com/vshymanskyy/TinyGSM
+ *and adds in the power functions to turn the modem on and off.
 */
 
-#ifndef modem_onoff_h
-#define modem_onoff_h
+#ifndef ModemSupport_h
+#define ModemSupport_h
 
 #include <Arduino.h>
 #include "LoggerBase.h"
+#include "ModemOnOff.h"
 
 #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
     defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
@@ -35,301 +36,15 @@ typedef enum DTRSleepType
   always_on
 } DTRSleepType;
 
-
-/* ===========================================================================
-* Classes for turning modems on and off
-* IDEA FOR THIS TAKEN FROM SODAQ'S MODEM LIBRARIES
-* ========================================================================= */
-
-
-/* ===========================================================================
-* Functions for the OnOff class
-* ========================================================================= */
-
-class ModemOnOff
-{
-public:
-    // Constructor
-    ModemOnOff()
-    {
-        _vcc33Pin = -1;
-        _onoff_DTR_pin = -1;
-        _status_CTS_pin = -1;
-    }
-
-    // Initializes the instance
-    virtual void init(int vcc33Pin, int onoff_DTR_pin, int status_CTS_pin)
-    {
-        DBG(F("Initializing modem on/off..."));
-        if (vcc33Pin >= 0) {
-          _vcc33Pin = vcc33Pin;
-          // First write the output value, and only then set the output mode.
-          digitalWrite(_vcc33Pin, LOW);
-          pinMode(_vcc33Pin, OUTPUT);
-        }
-        if (onoff_DTR_pin >= 0) {
-            _onoff_DTR_pin = onoff_DTR_pin;
-            // First write the output value, and only then set the output mode.
-            digitalWrite(_onoff_DTR_pin, LOW);
-            pinMode(_onoff_DTR_pin, OUTPUT);
-        }
-        if (status_CTS_pin >= 0) {
-            _status_CTS_pin = status_CTS_pin;
-            pinMode(_status_CTS_pin, INPUT);
-        }
-        DBG(F("   ... Success!\n"));
-    }
-
-    virtual bool isOn(void)
-    {
-        if (_status_CTS_pin >= 0) {
-            bool status = digitalRead(_status_CTS_pin);
-            // DBG(F("Is modem on? "), status, F("\n"));
-            return status;
-        }
-        // No status pin. Let's assume it is on.
-        return true;
-    }
-
-    virtual bool on(void) = 0;
-
-    virtual bool off(void) = 0;
-
-protected:
-    int8_t _vcc33Pin;
-    int8_t _onoff_DTR_pin;
-    int8_t _status_CTS_pin;
-
-    void powerOn(void)
-    {
-        if (_vcc33Pin >= 0) {
-            digitalWrite(_vcc33Pin, HIGH);
-            DBG(F("Sending power to modem.\n"));
-        }
-    }
-
-    void powerOff(void)
-    {
-        if (_vcc33Pin >= 0) {
-            digitalWrite(_vcc33Pin, LOW);
-            DBG(F("Cutting modem power.\n"));
-        }
-    }
-
-};
-
-
-
-/* ===========================================================================
-* Functions for pulsed method.
-* This turns the modem on and off by turning the onoff/DTR/Key pin on for two
-* seconds and then back off.
-* This is used by the Sodaq GPRSBee v0.4 and the Adafruit Fona.
-* ========================================================================= */
-
-// Turns the modem on and off by pulsing the onoff/DTR/Key pin on for 2 seconds
-class pulsedOnOff : public ModemOnOff
-{
-public:
-    bool on(void) override
-    {
-        powerOn();
-        DBG(F("Pulsing modem to on with pin "));
-        DBG(_onoff_DTR_pin, F("\n"));
-        if (!isOn()) {pulse();}
-        // Wait until is actually on
-        for (unsigned long start = millis(); millis() - start < 5000; )
-        {
-            if (isOn())
-            {
-                DBG(F("Modem now on.\n"));
-                return true;
-            }
-          delay(5);
-        }
-        DBG(F("Failed to turn modem on.\n"));
-        return false;
-    }
-
-    bool off(void) override
-    {
-        if (isOn())
-        {
-            DBG(F("Pulsing modem off with pin "));
-            DBG(_onoff_DTR_pin, F("\n"));
-            pulse();
-        }
-        else DBG(F("Modem was not ever on.\n"));
-        // Wait until is off
-        for (unsigned long start = millis(); millis() - start < 5000; )
-        {
-            if (!isOn())
-            {
-                DBG(F("Modem now off.\n"));
-                powerOff();
-                return true;
-            }
-            delay(5);
-        }
-        DBG(F("Failed to turn modem off.\n"));
-        powerOff();
-        return false;
-    }
-
-private:
-    void pulse(void)
-    {
-        if (_onoff_DTR_pin >= 0)
-        {
-            digitalWrite(_onoff_DTR_pin, LOW);
-            delay(200);
-            digitalWrite(_onoff_DTR_pin, HIGH);
-            delay(2500);
-            digitalWrite(_onoff_DTR_pin, LOW);
-        }
-    }
-};
-
-
-/* ===========================================================================
-* Functions for held method.
-* This turns the modem on by setting the onoff/DTR/Key pin high and off by
-* setting it low.
-* This is used by the Sodaq GPRSBee v0.6.
-* ========================================================================= */
-
-// Turns the modem on by setting the onoff/DTR/Key high and off by setting it low
-class heldOnOff : public ModemOnOff
-{
-public:
-    bool on(void) override
-    {
-        powerOn();
-        if (_onoff_DTR_pin <= 0) {return true;}
-        else
-        {
-            DBG(F("Turning modem on by setting pin "));
-            DBG(_onoff_DTR_pin);
-            DBG(F(" high\n"));
-            digitalWrite(_onoff_DTR_pin, HIGH);
-            // Wait until is actually on
-            for (unsigned long start = millis(); millis() - start < 5000; )
-            {
-                if (isOn())
-                {
-                    DBG(F("Modem now on.\n"));
-                    return true;
-                }
-                delay(5);
-            }
-            DBG(F("Failed to turn modem on.\n"));
-            return false;
-        }
-    }
-
-    bool off(void) override
-    {
-        if (_onoff_DTR_pin <= 0) {return true;}
-        else
-        {
-            if (!isOn()) DBG(F("Modem was not ever on.\n"));
-            digitalWrite(_onoff_DTR_pin, LOW);
-            // Wait until is off
-            for (unsigned long start = millis(); millis() - start < 5000; )
-            {
-                if (!isOn())
-                {
-                    DBG(F("Modem now off.\n"));
-                    powerOff();
-                    return true;
-                }
-                delay(5);
-            }
-            DBG(F("Failed to turn modem off.\n"));
-            powerOff();
-            return false;
-        }
-    }
-};
-
-
-/* ===========================================================================
-* Functions for reverse method.
-* This turns the modem on by setting the onoff/DTR/Key pin LOW and off by
-* setting it HIGH.
-* This is used by the XBee's
-* ========================================================================= */
-
-// Turns the modem on by setting the onoff/DTR/Key LOW and off by setting it HIGH
-class reverseOnOff : public ModemOnOff
-{
-public:
-    bool isOn(void) override
-    {
-        if (_status_CTS_pin >= 0) {
-            bool status = digitalRead(_status_CTS_pin);
-            // DBG(F("Is modem on? "), status, F("\n"));
-            return !status;
-        }
-        // No status pin. Let's assume it is on.
-        return true;
-    }
-
-    bool on(void) override
-    {
-        powerOn();
-        DBG(F("Turning modem on on by setting pin "));
-        DBG(_onoff_DTR_pin);
-        DBG(F(" low\n"));
-        if (_onoff_DTR_pin >= 0) {
-            digitalWrite(_onoff_DTR_pin, LOW);
-        }
-        // Wait until is actually on
-        for (unsigned long start = millis(); millis() - start < 5000; )
-        {
-            if (isOn())
-            {
-                DBG(F("Modem now on.\n"));
-                return true;
-            }
-            delay(5);
-        }
-        DBG(F("Failed to turn modem on.\n"));
-        return false;
-    }
-
-    bool off(void) override
-    {
-        if (!isOn()) DBG(F("Modem was not ever on.\n"));
-        if (_onoff_DTR_pin >= 0) {
-            digitalWrite(_onoff_DTR_pin, HIGH);
-        }
-        // Wait until is off
-        for (unsigned long start = millis(); millis() - start < 5000; )
-        {
-            if (!isOn())
-            {
-                DBG(F("Modem now off.\n"));
-                powerOff();
-                return true;
-            }
-            delay(5);
-        }
-        DBG(F("Failed to turn modem off.\n"));
-        powerOff();
-        return false;
-    }
-};
-
-
 /* ===========================================================================
 * Functions for the modem class
 * This is basically a wrapper for TinyGsm
 * ========================================================================= */
 
-class loggerModem
+class loggerModem : public Sensor
 {
 public:
+
     void setupModem(Stream *modemStream,
                     int vcc33Pin,
                     int status_CTS_pin,
@@ -374,6 +89,43 @@ public:
         return retVal;
     }
 
+    // Helper to get signal percent from CSQ
+    static int getPctFromCSQ(int csq)
+    {
+        int CSQs[33] = {0, 1, 2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 99};
+        int PCTs[33] = {0, 3, 6, 10, 13, 16, 19, 23, 26, 29, 32, 36, 39, 42, 45, 48, 52, 55, 58, 61, 65, 68, 71, 74, 78, 81, 84, 87, 90, 94, 97, 100, 0};
+        for (int i = 0; i < 33; i++)
+        {
+            if (CSQs[i] == csq) return PCTs[i];
+        }
+        return 0;
+    }
+
+    // Helper to get approximate RSSI from CSQ (assuming no noise)
+    static int getRSSIFromCSQ(int csq)
+    {
+        int CSQs[33]  = {  0,   1,   2,   3,   4,   5,   6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 99};
+        int RSSIs[33] = {113, 111, 109, 107, 105, 103, 101, 99, 97, 95, 93, 91, 89, 87, 85, 83, 81, 79, 77, 75, 73, 71, 69, 67, 65, 63, 61, 59, 57, 55, 53, 51, 0};
+        for (int i = 0; i < 33; i++)
+        {
+            if (CSQs[i] == csq) return RSSIs[i];
+        }
+        return 0;
+    }
+
+    // Helper to get signal percent from CSQ
+    static int getPctFromRSSI(int rssi)
+    {
+        int pct = 1.6163*rssi + 182.61;
+        if (rssi == 0) pct = 0;
+        if (rssi == (255-93)) pct = 0;  // This is a no-data-yet value from XBee
+        return pct;
+    }
+
+    #define MODEM_NUM_MEASUREMENTS 2
+    #define CSQ_VAR_NUM 0
+    #define PERCENT_STAT_VAR_NUM 1
+
     bool connectNetwork(void)
     {
         bool retVal = false;
@@ -383,8 +135,9 @@ public:
         // Check again if the modem is on.  If it still isn't on, give up
         if(!modemOnOff->isOn()) return false;
 
-        // WiFi modules don't naturally "disconnect" from the network, so first
-        // check the connection before resending credentials
+        // WiFi modules immediately re-connect to the last access point so we
+        // can save just a tiny bit of time (and thus power) by not resending
+        // the credentials every time.
         #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
         if (_ssid)
         {
@@ -417,9 +170,43 @@ public:
                 DBG("... Success!", F("\n"));
                 retVal = true;
             }
+
         #endif
         #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
         }
+        #endif
+
+        #if defined(USE_TINY_GSM)
+        // Now we are essentially running the "update" function to update
+        // the variables assigned to the modem "sensor".  We are doing this
+        // here because we want the values to be assigned with the actual
+        // connection used when the data is sent out.
+
+        // Clear values before starting loop
+        clearValues();
+
+        // Get signal quality
+        int signalQual = _modem->getSignalQuality();
+
+        // Convert signal quality to RSSI, if necessary
+        #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
+        int rssi = signalQual;
+        #else
+        int rssi = getRSSIFromCSQ(signalQual);
+        #endif
+
+        // Convert signal quality to a percent
+        #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
+        int signalPercent = getPctFromRSSI(signalQual);
+        #else
+        int signalPercent = getPctFromCSQ(signalQual);
+        #endif
+
+        sensorValues[CSQ_VAR_NUM] = rssi;
+        sensorValues[PERCENT_STAT_VAR_NUM] = signalPercent;
+
+        // Update the registered variables with the new values
+        notifyVariables();
         #endif
 
         return retVal;
@@ -460,6 +247,7 @@ public:
         {
             #if defined(TINY_GSM_DEBUG)
             DBG((char)stream->read());
+            // DBG(stream->read());
             #else
             stream->read();
             #endif
@@ -484,8 +272,12 @@ public:
         // XBee needs to send something before the connection is actually made
         #if defined(TINY_GSM_MODEM_XBEE)
         stream->write("Hi!");
-        delay(75);  // Need this delay!  Can get away with 50, but 100 is safer.
+        delay(75); // Need this delay!  Can get away with 50, but 100 is safer.
         #endif
+
+        // Wait up to 5 seconds for a response
+        long start = millis();
+        while (stream->available() < 4 && millis() - start < 5000){}
 
         // Response is returned as 32-bit number as soon as connection is made
         // Connection is then immediately closed, so there is no need to close it
@@ -494,6 +286,7 @@ public:
         for (uint8_t i = 0; i < 4; i++)
         {
             response[i] = stream->read();
+            // DBG("\n",response[i]);
             secFrom1900 += 0x000000FF & response[i];
             // DBG("\n*****",String(secFrom1900, BIN),"*****");
             if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;}
@@ -505,7 +298,8 @@ public:
         uint32_t unixTimeStamp = secFrom1900 - 2208988800;
         DBG(F("Timesamp returned by NIST (UTC): "), unixTimeStamp, F("\n"));
         // If before Jan 1, 2017 or after Jan 1, 2030, most likely an error
-        if (unixTimeStamp < 1483228800 || unixTimeStamp > 1893456000) return 0;
+        if (unixTimeStamp < 1483228800) return 0;
+        else if (unixTimeStamp > 1893456000) return 0;
         else return unixTimeStamp;
     }
 
@@ -516,6 +310,14 @@ public:
         // Get the time stamp from NIST and adjust it to the correct time zone
         // for the logger.
         uint32_t nist = getNISTTime();
+
+        // If the timestamp returns zero, just exit
+        if  (nist == 0)
+        {
+            PRINTOUT(F("Bad timestamp returned, skipping sync.\n"));
+            return false;
+        }
+
         uint32_t nist_logTZ = nist + Logger::getTimeZone()*3600;
         uint32_t nist_rtcTZ = nist_logTZ - Logger::getTZOffset()*3600;
         DBG(F("        Correct Time for Logger: "), nist_logTZ, F(" -> "), \
@@ -528,7 +330,7 @@ public:
         uint32_t cur_logTZ = Logger::getNow();
         DBG(F("           Time Returned by RTC: "), cur_logTZ, F(" -> "), \
             Logger::formatDateTime_ISO8601(cur_logTZ), F("\n"));
-        // DBG(F("Offset: "), abs(nist_logTZ - cur_logTZ), F("\n"));
+        DBG(F("Offset: "), abs(nist_logTZ - cur_logTZ), F("\n"));
 
         // If the RTC and NIST disagree by more than 5 seconds, set the clock
         if ((abs(nist_logTZ - cur_logTZ) > 5) && (nist != 0))
@@ -546,6 +348,46 @@ public:
 
     Stream *stream;
     ModemOnOff *modemOnOff;
+
+    // More functions for using the modem as a "sensor"
+
+    // Constructors
+    #if defined(TINY_GSM_MODEM_SIM800)
+    loggerModem() : Sensor(-1, -1, F("SIM800"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+    #if defined(TINY_GSM_MODEM_SIM900)
+    loggerModem() : Sensor(-1, -1, F("SIM900"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+    #if defined(TINY_GSM_MODEM_A6)
+    loggerModem() : Sensor(-1, -1, F("SIMA6"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+    #if defined(TINY_GSM_MODEM_A7)
+    loggerModem() : Sensor(-1, -1, F("SIMA7"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+    #if defined(TINY_GSM_MODEM_M590)
+    loggerModem() : Sensor(-1, -1, F("SIM590"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+    #if defined(TINY_GSM_MODEM_ESP8266)
+    loggerModem() : Sensor(-1, -1, F("ESP8266"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+    #if defined(TINY_GSM_MODEM_XBEE)
+    loggerModem() : Sensor(-1, -1, F("XBee"), MODEM_NUM_MEASUREMENTS, 0) {}
+    #endif
+
+    String getSensorLocation(void) override { return F("Modem Serial Port"); }
+    // Actually doing NOTHING on any of the rest of the functions.  The modem
+    // must be set-up and turned on and off separately!!  The update then
+    // happens when connecting to the newtwork
+    virtual SENSOR_STATUS setup(void) override {return SENSOR_READY;}
+    virtual bool sleep(void) override {return true;}
+    virtual bool wake(void) override {return true;}
+    bool update(void) override { return true; }
+
+#if defined(USE_TINY_GSM)
+    TinyGsm *_modem;
+    TinyGsmClient *_client;
+#endif
+
 
 private:
     void init(Stream *modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin,
@@ -612,14 +454,37 @@ private:
         #endif
     }
 
-#if defined(USE_TINY_GSM)
-    TinyGsm *_modem;
-    TinyGsmClient *_client;
-#endif
-
     const char *_APN;
     const char *_ssid;
     const char *_pwd;
 };
 
-#endif /* modem_onoff_h */
+
+
+// Classes for the modem variables
+// Defines the received signal strength indication
+class Modem_RSSI : public Variable
+{
+public:
+    Modem_RSSI(Sensor *parentSense, String customVarCode = "")
+     : Variable(parentSense, CSQ_VAR_NUM,
+                F("RSSI"), F("decibelMiliWatt"),
+                0,
+                F("RSSI"), customVarCode)
+    {}
+};
+
+
+// Defines the Signal Percentage
+class Modem_SignalPercent : public Variable
+{
+public:
+    Modem_SignalPercent(Sensor *parentSense, String customVarCode = "")
+     : Variable(parentSense, PERCENT_STAT_VAR_NUM,
+                F("signalPercent"), F("percent"),
+                0,
+                F("signalPercent"), customVarCode)
+    {}
+};
+
+#endif /* ModemSupport_h */

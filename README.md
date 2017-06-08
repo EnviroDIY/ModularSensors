@@ -4,11 +4,11 @@ A "library" of sensors to give all sensors and variables a common interface of f
 
 Each sensor is implemented as a subclass of the "Sensor" class contained in "SensorBase.h".  Each variable is separately implemented as a subclass of the "Variable" class contained in "VariableBase.h".  The variables are tied to the sensor using an "[Observer](https://en.wikipedia.org/wiki/Observer_pattern)" software pattern.
 
-To use a sensor and variable in your sketch, you must separately include xxx.h for each sensor you intend to use.  While this may force you to write many more include statements, it makes the decreases the library RAM usage on your Arduino board.  Regardless of how many sensors you intend to use, however, you must install all of the dependent libraries on your _computer_ for the IDE to be able to compile the library.
+To use a sensor and variable in your sketch, you must separately include xxx.h for each sensor you intend to use.  While this may force you to write many more include statements, it decreases the library RAM usage on your Arduino board.  Regardless of how many sensors you intend to use, however, you must install all of the dependent libraries on your _computer_ for the IDE to be able to compile the library.
 
 #### Contents:
 - [Library Dependencies](#deps)
-- [Basic Senor and Variable Functions](#Basic)
+- [Basic Sensor and Variable Functions](#Basic)
     - [Individual Sensors Code Examples](#individuals)
 - [Grouped Sensor Functions](#Grouped)
     - [VariableArray Code Examples](#ArrayExamples)
@@ -52,7 +52,7 @@ In order to support multiple functions and sensors, there are quite a lot of dep
 ## <a name="Basic"></a>Basic Senor and Variable Functions
 
 ### Functions Available for Each Sensor
-- **Constructor** - Each sensor has a unique constructor, the exact format of which is dependent on the indidual sensor.
+- **Constructor** - Each sensor has a unique constructor, the exact format of which is dependent on the individual sensor.
 - **getSensorName()** - This gets the name of the sensor and returns it as a string.
 - **getSensorLocation()** - This returns the data pin or other sensor installation information as a string.  This is the location where the sensor is connected to the data logger, NOT the position of the sensor in the environment.
 - **setup()** - This "sets up" the sensor - setting up serial ports, etc required for the given sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program _before_ calling the variable setup.
@@ -214,6 +214,11 @@ Functions for logging data:
 - **generateFileHeader()** - This returns and Aruduino String with a comma separated list of headers for the csv.  The headers will be ordered based on the order variables are listed in the array fed to the init function.
 - **generateSensorDataCSV()** - This returns an Arduino String containing the time and a comma separated list of sensor values.  The data will be ordered based on the order variables are listed in the array fed to the init function.
 
+Functions for debugging sensors:
+- **checkForDebugMode(int buttonPin, Stream *stream = &Serial)** - This stops everything and waits for up to two seconds for a button to be pressed to enter allow the user to enter "debug" mode.  I suggest running this as the very last step of the setup function.
+- **debugMode(Stream *stream = &Serial)** - This is a "debugging" mode for the sensors.  It prints out all of the sensor details every 5 seconds for 25 records worth of data.
+
+
 Convience functions to do it all:
 - **begin()** - Starts the logger.  Must be in the setup function.
 - **log()** - Logs data, must be the entire content of the loop function.
@@ -250,6 +255,13 @@ Once the modem has been set up, these functions are available:
 - **dumpBuffer(Stream stream, int timeDelay = 5, int timeout = 5000)** - Empties out the recieve buffer.  The flush() function does NOT empty the buffer, it only waits for sending to complete.
 - **getNISTTime()** - Returns the current unix timestamp from NIST via the TIME protocol (rfc868).
 - **syncDS3231()** - This synchronizes the DS3231 real time clock with the NIST provided timestamp.
+
+The cellular modems themselves (SIM800, SIM900, A6, A7, and M590) can also be used as "sensors" which have the following variables:
+```cpp
+Modem_RSSI(&modem, "customVarCode");
+Modem_SignalPercent(&modem, "customVarCode");
+```
+The modem does not behave as all the other sensors do, though.  The normal '''setup()''', '''wake()''', '''sleep()''', and '''update()''' functions for other sensors do not do anything with the modem.  Setup must be done with the '''setupModem(...)''' function; the modem will only go on and off with the '''on()''' and '''off()''' functions; and the '''update()''' functionality happens within the '''connectNetwork()''' function.
 
 
 ### <a name="DIYlogger"></a>Additional Functions Available for a LoggerEnviroDIY Object:
@@ -541,7 +553,7 @@ BoschBME280_Altitude(&bme280, "customVarCode");
 
 This library will work with an AOSong DHT11, DHT21, AM2301, DHT22, or AM2302.  Please keep in mind that these sensors should not be updated more frequently than once ever 2 seconds.  The data pin, power pin, and sensor type are needed as inputs.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.
 
-The main constuctor for the sensor object is:
+The main constructor for the sensor object is:
 
 ```cpp
 #include <AOSongDHT.h>
@@ -556,6 +568,22 @@ AOSongDHT_Temp(&dht, "customVarCode");
 AOSongDHT_HI(&dht, "customVarCode");  // Heat Index
 ```
 
+#### <a name="SQ212"></a>[Apogee SQ-212 Quantum Light Sensor ](https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/) Photosynthetically Active Radiation (PAR)
+This library will work with the Apogee SQ-212 and SQ-212 analog quantum light sensors, and could be readily adapted to work with similar sensors (e.g. SQ-215 or SQ225) with by simply changing the calibration factors.
+
+
+The main constructor for the sensor object is:
+
+```cpp
+#include <ApogeeSQ212.h>
+ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
+```
+
+The one available variable is:
+
+```cpp
+ApogeeSQ212_PAR(&SQ212, "customVarCode");  // Photosynthetically Active Radiation (PAR), in units of μmol m-2 s-1, or microeinsteinPerSquareMeterPerSecond
+```
 
 ## <a name="compatibility"></a>Processor/Board Compatibility
 

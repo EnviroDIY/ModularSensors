@@ -153,7 +153,7 @@ SENSOR_STATUS MaximDS18::setup(void)
 }
 
 
-// Uses TLL Communication to get data from MaxBotix
+// Uses OneWire/Dallas Temp and the specified sensor address to get data from DS18
 bool MaximDS18::update()
 {
     // Check if the power is on, turn it on if not

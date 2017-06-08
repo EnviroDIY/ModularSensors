@@ -14,7 +14,9 @@
 #include "LoggerBase.h"
 #include "ModemSupport.h"
 
-// Defines the "Logger" Class
+// ============================================================================
+//  Functions for the EnviroDIY data portal receivers.
+// ============================================================================
 class LoggerEnviroDIY : public Logger
 {
 public:
@@ -97,6 +99,56 @@ public:
     // Create the modem instance
     loggerModem modem;
 
+    // This defines what to do in the debug mode
+    virtual void debugMode(Stream *stream = &Serial)
+    {
+        PRINTOUT(F("------------------------------------------\n"));
+        PRINTOUT(F("Entering debug mode\n"));
+
+        // Turn on the modem to let it start searching for the network
+        modem.on();
+
+        // Update the sensors and print out data 25 times
+        for (uint8_t i = 0; i < 25; i++)
+        {
+            stream->println(F("------------------------------------------"));
+            // Wake up all of the sensors
+            stream->print(F("Waking sensors..."));
+            sensorsWake();
+            // Update the values from all attached sensors
+            stream->print(F("  Updating sensor values..."));
+            updateAllSensors();
+            // Immediately put sensors to sleep to save power
+            stream->println(F("  Putting sensors back to sleep..."));
+            sensorsSleep();
+            // Print out the current logger time
+            stream->print(F("Current logger time is "));
+            stream->println(formatDateTime_ISO8601(getNow()));
+            stream->println(F("    -----------------------"));
+            // Print out the sensor data
+            printSensorData(stream);
+            stream->println(F("    -----------------------"));
+
+            #if defined(USE_TINY_GSM)
+            // Print out the modem connection strength
+            int signalQual = modem._modem->getSignalQuality();
+            stream->print(F("Current modem signal is "));
+            stream->print(signalQual);
+            stream->print(F(" ("));
+            #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
+            stream->print(modem.getPctFromRSSI(signalQual));
+            #else
+            stream->print(modem.getPctFromCSQ(signalQual));
+            #endif
+            stream->println(F("%)"));
+            #endif
+            delay(5000);
+        }
+
+        // Turn off the modem
+        modem.off();
+    }
+
     // Public function to send data
     int postDataEnviroDIY(void)
     {
@@ -162,12 +214,15 @@ public:
         // Sync the clock with NIST
         PRINTOUT(F("Current RTC time is: "));
         PRINTOUT(formatDateTime_ISO8601(getNow()), F("\n"));
+
+        // Synchronize the RTC
+        PRINTOUT(F("Attempting to synchronize RTC with NIST\n"));
         // Turn on the modem
         modem.on();
         // Connect to the network
         if (modem.connectNetwork())
         {
-            // Synchronize the RTC
+            delay(5000);
             modem.syncDS3231();
             // Disconnect from the network
             modem.disconnectNetwork();
@@ -182,6 +237,7 @@ public:
         PRINTOUT(F("------------------------------------------\n\n"));
     }
 
+    // This is a one-and-done to log data
     virtual void log(void) override
     {
         // Check of the current time is an even interval of the logging interval
@@ -193,7 +249,7 @@ public:
             digitalWrite(_ledPin, HIGH);
 
             // Turn on the modem to let it start searching for the network
-            LoggerEnviroDIY::modem.on();
+            modem.on();
 
             // Wake up all of the sensors
             // I'm not doing as part of sleep b/c it may take up to a second or
@@ -204,17 +260,14 @@ public:
             // Immediately put sensors to sleep to save power
             sensorsSleep();
 
-            // Create a csv data record and save it to the log file
-            logToSD(generateSensorDataCSV());
-
             // Connect to the network
             if (modem.connectNetwork())
             {
                 // Post the data to the WebSDL
                 postDataEnviroDIY();
 
-                // Sync the clock every 24 readings
-                if (_numReadings % 24 == 0)
+                // Sync the clock every 288 readings (1/day at 5 min intervals)
+                if (_numReadings % 288 == 0)
                 {
                     modem.syncDS3231();
                 }
@@ -225,6 +278,9 @@ public:
 
             // Turn on the modem off
             modem.off();
+
+            // Create a csv data record and save it to the log file
+            logToSD(generateSensorDataCSV());
 
             // Turn off the LED
             digitalWrite(_ledPin, LOW);

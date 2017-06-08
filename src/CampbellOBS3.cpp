@@ -65,6 +65,7 @@ bool CampbellOBS3::update(void)
     float voltage = 0;
     float calibResult = 0;
 
+    // Read Analog to Digital Converter (ADC)
     adcResult = ads.readADC_SingleEnded(_dataPin);  // Getting the reading
     DBGM(F("ads.readADC_SingleEnded("), _dataPin, F("): "), ads.readADC_SingleEnded(_dataPin), F("\t\t"));
 
@@ -79,7 +80,7 @@ bool CampbellOBS3::update(void)
     DBGM(_A, F("x^2 + "), _B, F("x + "), _C, F("\n"));
     DBGM(F("calibResult: "), calibResult, F("\n"));
 
-    sensorValues[0] = calibResult;
+    sensorValues[OBS3_TURB_VAR_NUM] = calibResult;
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
