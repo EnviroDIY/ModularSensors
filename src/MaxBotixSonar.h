@@ -15,10 +15,6 @@
 #ifndef MaxBotixSonar_h
 #define MaxBotixSonar_h
 
-#define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
-#include <EnableInterrupt.h>  // To handle external and pin change interrupts
-#include <SoftwareSerial_ExtInts.h>
-
 #include "SensorBase.h"
 #include "VariableBase.h"
 
@@ -36,10 +32,6 @@ class MaxBotixSonar : public Sensor
 public:
     MaxBotixSonar(int powerPin, Stream* stream, int triggerPin = -1);
     MaxBotixSonar(int powerPin, Stream& stream, int triggerPin = -1);
-
-    void beginStream(SoftwareSerial_ExtInts *dataStream);
-    void beginStream(HardwareSerial *dataStream);
-    void beginStream(Stream *dataStream);
 
     SENSOR_STATUS setup(void) override;
 

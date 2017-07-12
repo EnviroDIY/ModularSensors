@@ -27,22 +27,6 @@ MaxBotixSonar::MaxBotixSonar(int powerPin, Stream& stream, int triggerPin)
     _stream = &stream;
 }
 
-MaxBotixSonar::MaxBotixSonar(int powerPin, HardwareSerial *dataStream, int triggerPin)
-: Sensor(powerPin, -1, F("MaxBotixMaxSonar"), HRXL_NUM_MEASUREMENTS, HRXL_WARM_UP)
-{
-    _triggerPin = triggerPin;
-    sonarSerial = dataStream;
-    initializeStream = true;
-}
-
-MaxBotixSonar::MaxBotixSonar(int powerPin, Stream *dataStream, int triggerPin)
-: Sensor(powerPin, -1, F("MaxBotixMaxSonar"), HRXL_NUM_MEASUREMENTS, HRXL_WARM_UP)
-{
-    _triggerPin = triggerPin;
-    sonarSerial = dataStream;
-    initializeStream = false;
-}
-
 SENSOR_STATUS MaxBotixSonar::setup(void)
 {
     pinMode(_powerPin, OUTPUT);
