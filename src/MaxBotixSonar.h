@@ -34,9 +34,8 @@
 class MaxBotixSonar : public Sensor
 {
 public:
-    MaxBotixSonar(int powerPin, int dataPin, int triggerPin = -1);
-    MaxBotixSonar(int powerPin, HardwareSerial *dataStream, int triggerPin = -1);
-    MaxBotixSonar(int powerPin, Stream *dataStream, int triggerPin = -1);
+    MaxBotixSonar(int powerPin, Stream* stream, int triggerPin = -1);
+    MaxBotixSonar(int powerPin, Stream& stream, int triggerPin = -1);
 
     void beginStream(SoftwareSerial_ExtInts *dataStream);
     void beginStream(HardwareSerial *dataStream);
@@ -48,8 +47,7 @@ public:
 
 private:
     int _triggerPin;
-    Stream *sonarSerial;
-    bool initializeStream;
+    Stream* _stream;
 };
 
 

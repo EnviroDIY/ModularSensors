@@ -29,6 +29,7 @@ To use a sensor and variable in your sketch, you must separately include xxx.h f
     - [AOSong AM2315](#AM2315)
     - [Bosch BME280](#BME280)
     - [AOSong DHT](#DHT)
+- [Notes on Arduino Streams and Software Serial](#SoftwareSerial)
 - [Processor Compatibility](#compatibility)
 
 ## <a name="deps"></a>Library Dependencies
@@ -39,8 +40,7 @@ In order to support multiple functions and sensors, there are quite a lot of dep
 - [EnableInterrupt](https://github.com/EnviroDIY/EnableInterrupt) - Administrates and handles pin change interrupts, allowing the logger to sleep and save battery.  This also controls the interrupts for the versions of SoftwareSerial and SDI-12 linked below that have been stripped of interrupt control.  Because we use this library, _you must always add the line ```#include <EnableInterrupt.h>``` to the top of your sketch._
 - AVR sleep library - This is for low power sleeping for AVR processors. (This library is built in to the Arduino IDE.)
 - [SdFat library](https://github.com/greiman/SdFat) - This enables communication with the SD card.
-- [EnviroDIY version of the TinyGSM library](https://github.com/EnviroDIY/TinyGSM) - This provides internet (TCP/IP) connectivity.  
-- [EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts) - This modified version is needed so there are no pin change interrupt conflicts with the SDI-12 library or the software pin change interrupt library.
+- [EnviroDIY version of the TinyGSM library](https://github.com/EnviroDIY/TinyGSM) - This provides internet (TCP/IP) connectivity.
 - [Adafruit ADS1X15 library](https://github.com/Adafruit/Adafruit_ADS1X15/) - For high-resolution analog to digital conversion.
 - [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/ExtInts) - For control of SDI-12 based sensors.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the processor.
 - [OneWire](https://github.com/PaulStoffregen/OneWire) - This enables communication with Maxim/Dallas OneWire devices.
@@ -217,7 +217,7 @@ Functions for logging data:
 Functions for debugging sensors:
 - **checkForDebugMode(int buttonPin, Stream *stream = &Serial)** - This stops everything and waits for up to two seconds for a button to be pressed to enter allow the user to enter "debug" mode.  I suggest running this as the very last step of the setup function.
 - **debugMode(Stream *stream = &Serial)** - This is a "debugging" mode for the sensors.  It prints out all of the sensor details every 5 seconds for 25 records worth of data.
-
+- Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
 
 Convience functions to do it all:
 - **begin()** - Starts the logger.  Must be in the setup function.
@@ -244,6 +244,7 @@ After defining your modem, set it up using one of these two commands, depending 
 - The status_CTS_pin is the pin that indicates whether the modem is turned on and it is clear to send data.  If you use -1, the modem is assumed to always be ready.
 - The onoff_DTR_pin is the _pin_ used to put the modem to sleep or to wake it up.
 - The DTRSleepType controls _how_ the modem is put to sleep between readings.  Use "held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.  Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.  Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.  Use "always_on" if you do not want the library to control the modem power and sleep.
+- Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
 
 Once the modem has been set up, these functions are available:
 - **on()** - Turns the modem on.  Returns true if connection is successful.
@@ -394,19 +395,24 @@ EnviroDIYMayfly_FreeRam(&mayfly, "customVarCode");
 
 #### <a name="MaxBotix"></a>[MaxBotix MaxSonar](http://www.maxbotix.com/Ultrasonic_Sensors/High_Accuracy_Sensors.htm) - HRXL MaxSonar WR or WRS Series with TTL Outputs
 
-The power/excite pin, digital data pin, and trigger are needed as input.  (Use -1 for the trigger if you do not have it connected.)  The data pin must be a pin that supports pin-change interrupts.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.
+The power/excite pin, a stream instance for received data, and trigger pin are needed as input.  (Use -1 for the trigger pin if you do not have it connected.)  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.
 
 The main constuctor for the sensor object is:
-
 ```cpp
 #include <MaxBotixSonar.h>
-MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger);
+MaxBotixSonar sonar(SonarPower, sonarStream, SonarTrigger);
 ```
 
 The single available variable is:
 
 ```cpp
 MaxBotixSonar_Range(&sonar, "customVarCode");
+```
+
+In addition to the constructors for the sensor and variable, you must remember to "begin" your stream instance within the main setup function.  The baud rate must be set to 9600 for all MaxBotix sensors.
+
+```cpp
+sonarStream.begin(9600);
 ```
 
 #### <a name="OBS3"></a>[Campbell Scientific OBS-3+](https://www.campbellsci.com/obs-3plus)
@@ -585,6 +591,37 @@ The one available variable is:
 ApogeeSQ212_PAR(&SQ212, "customVarCode");  // Photosynthetically Active Radiation (PAR), in units of μmol m-2 s-1, or microeinsteinPerSquareMeterPerSecond
 ```
 
+## <a name="SoftwareSerial"></a>Notes on Arduino Streams and Software Serial
+
+In this library, the Arduino communicates with the computer for debugging, the modem for sending data, and some sensors (like the (#MaxBotix)) via instances of Arduino "[streams](https://www.arduino.cc/en/Reference/Stream)."  The streams can either be an instance of [serial](https://www.arduino.cc/en/Reference/Serial) (aka hardware serial), [AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial), [the EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts), or any other stream type you desire.  The very commonly used build-in version of the software serial library for AVR processors uses interrupts that conflict with several other sub-libraries or this library and _cannot be used_!  I repeat:  _You cannot use the built in version of SoftwareSerial!_  You simply cannot.  It will not work.  Period.  This is not a bug that will be fixed.
+
+For stream communication, hardware serial should always be your first choice, if your processor has enough hardware serial ports.  Hardware serial ports are the most stable and have the best performance of any of the other streams.  If the [proper pins](https://www.pjrc.com/teensy/td_libs_AltSoftSerial.html) are available, [AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial) by Paul Stoffregen is also superior to SoftwareSerial, especially at slow baud rates.  Neither hardware serial nor AltSoftSerial require any modifications.  Because of the limited number of serial ports available on most boards, I suggest giving first priority (ie the first (or only) hardware serial port, "Serial") to your debugging stream going to your PC (if you intend to debug), second priority to the stream for the modem, and third priority to any sensors that require a stream for communication.
+
+To use a hardware serial stream, you do not need to include any libraries:
+```cpp
+HardwareSerial stream = Serial2;
+```
+
+To use AltSoftSerial:
+```cpp
+#include <AltSoftSerial.h>  // include the AltSoftSerial library
+AltSoftSerial stream;  // Create an instance of AltSoftSerial
+```
+
+To use the EnviroDIY modified version of SoftwareSerial:
+```cpp
+#include <SoftwareSerial_ExtInts.h>  // include the SoftwareSerial library
+SoftwareSerial_ExtInts stream(tx_pin, rx_pin);
+//  Allow enableInterrrupt to control the interrupbs for software serial
+enableInterrupt(stream, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+```
+
+In addition to the creating the stream instances, you must always remember to "begin" your stream instance within the main setup function.
+
+```cpp
+stream.begin(BAUD_RATE);
+```
+
 ## <a name="compatibility"></a>Processor/Board Compatibility
 
 AtMega1284p ([EnviroDIY Mayfly](https://envirodiy.org/mayfly/), Sodaq Mbili, Mighty 1284) - The Mayfly *is* the test board for this library.  Everything is designed to work with this processor.
@@ -597,11 +634,11 @@ AtMega2560 (Arduino Mega) - Should be fully functional, but untested.
 
 AtMega644p - Should be fully functional, but untested.
 
-AtSAM3x8e (Arduino Due) - Completely untested, but may work.
+AtSAM3x8e (Arduino Due) - Completely untested, but will probably work once support for the AtSAM21D is worked out.
 
 AtSAM21D (Arduino Zero, Adafruit Feather M0, Sodaq Autonomo) - Not yet fully supported, but support is planned.
 
-ESP8266/ESP32 - Supported only as a communications module with the default AT command firmware.  Not supported as an independent controller
+ESP8266/ESP32 - Supported only as a communications module with the default AT command firmware, not supported as an independent controller
 
 ATtiny - Unsupported
 

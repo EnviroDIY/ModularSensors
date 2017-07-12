@@ -30,12 +30,36 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Maxbotix HRXL
 // ==========================================================================
 #include <MaxBotixSonar.h>
-// MaxBotix Sonar: pin settings
-const int SonarPower = 22;   // excite (power) pin
+
+// Define a serial port for receiving data - in this case, using software serial
+// Because the standard software serial library uses interrupts that conflict
+// with several other libraries used within this program, we must use a
+// version of software serial that has been stripped of interrupts and define
+// the interrrupts for it using the enableInterrup library.
+
+// If enough hardware serial ports are available on your processor, you should
+// use one of those instead.  If the proper pins are avaialbe, AltSoftSerial
+// by Paul Stoffregen is also superior to SoftwareSerial for this sensor.
+// Neither hardware serial nor AltSoftSerial require any modifications to
+// deal with interrupt conflicts.
+
 const int SonarData = 11;     // data  pin
 const int SonarTrigger = -1;   // Trigger pin
+const int SonarPower = 22;   // excite (power) pin
+
+#if defined __AVR__
+#include <SoftwareSerial_ExtInts.h>  // for the stream communication
+SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
+enableInterrupt(_dataPin, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+
 // Create a new instance of the sonar sensor;
-MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger);
+MaxBotixSonar sonar(SonarPower, sonarSerial, SonarTrigger) ;
+
+#else
+// Create a new instance of the sonar sensor;
+MaxBotixSonar sonar(SonarPower, Serial2, SonarTrigger) ;
+#endif
+
 // Create a new instance of the range variable;
 MaxBotixSonar_Range sonar_range(&sonar);
 
@@ -67,6 +91,8 @@ void setup()
 {
     // Start the primary serial connection
     Serial.begin(SERIAL_BAUD);
+    // Start the stream for the sonar
+    sonarSerial.begin(9600);
 
     // Set up pins for the LED's
     pinMode(GREEN_LED, OUTPUT);
