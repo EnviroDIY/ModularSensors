@@ -39,8 +39,7 @@ In order to support multiple functions and sensors, there are quite a lot of dep
 - [EnableInterrupt](https://github.com/EnviroDIY/EnableInterrupt) - Administrates and handles pin change interrupts, allowing the logger to sleep and save battery.  This also controls the interrupts for the versions of SoftwareSerial and SDI-12 linked below that have been stripped of interrupt control.  Because we use this library, _you must always add the line ```#include <EnableInterrupt.h>``` to the top of your sketch._
 - AVR sleep library - This is for low power sleeping for AVR processors. (This library is built in to the Arduino IDE.)
 - [SdFat library](https://github.com/greiman/SdFat) - This enables communication with the SD card.
-- [EnviroDIY version of the TinyGSM library](https://github.com/EnviroDIY/TinyGSM) - This provides internet (TCP/IP) connectivity.  
-- [EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts) - This modified version is needed so there are no pin change interrupt conflicts with the SDI-12 library or the software pin change interrupt library.
+- [EnviroDIY version of the TinyGSM library](https://github.com/EnviroDIY/TinyGSM) - This provides internet (TCP/IP) connectivity.
 - [Adafruit ADS1X15 library](https://github.com/Adafruit/Adafruit_ADS1X15/) - For high-resolution analog to digital conversion.
 - [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/ExtInts) - For control of SDI-12 based sensors.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the processor.
 - [OneWire](https://github.com/PaulStoffregen/OneWire) - This enables communication with Maxim/Dallas OneWire devices.
@@ -394,19 +393,45 @@ EnviroDIYMayfly_FreeRam(&mayfly, "customVarCode");
 
 #### <a name="MaxBotix"></a>[MaxBotix MaxSonar](http://www.maxbotix.com/Ultrasonic_Sensors/High_Accuracy_Sensors.htm) - HRXL MaxSonar WR or WRS Series with TTL Outputs
 
-The power/excite pin, digital data pin, and trigger are needed as input.  (Use -1 for the trigger if you do not have it connected.)  The data pin must be a pin that supports pin-change interrupts.  A custom variable code can _optionally_ be entered as a second argument in the variable constructors.
+The power/excite pin, a stream instance for received data, and trigger pin are needed as input.  (Use -1 for the trigger pin if you do not have it connected.)  The stream for receiving data can either be an instance of hardware serial [AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial), [the EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts), or any other stream type you desire.  The build-in version of the software serial library uses interrupts that conflict with several other sub-libraries or this library and _cannot be used_!  Hardware serial should alwasy be your first choice, if your processor has enough hardware serial ports.  If the [proper pins](https://www.pjrc.com/teensy/td_libs_AltSoftSerial.html) are available, [AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial) by Paul Stoffregen is also superior to SoftwareSerial for this sensor because of the slow communication rate.  Neither hardware serial nor AltSoftSerial require any modifications.
 
-The main constuctor for the sensor object is:
+A custom variable code can _optionally_ be entered as a second argument in the variable constructors.
 
+The main constuctor for the sensor object with hardware serial would be:
 ```cpp
 #include <MaxBotixSonar.h>
-MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger);
+HardwareSerial sonarStream = Serial2;
+MaxBotixSonar sonar(SonarPower, sonarStream, SonarTrigger);
+```
+
+The main constuctor for the sensor object with AltSoftSerial would be:
+```cpp
+#include <MaxBotixSonar.h>
+#include <AltSoftSerial.h>  // include the AltSoftSerial library
+AltSoftSerial sonarStream;  // Create an instance of AltSoftSerial
+MaxBotixSonar sonar(SonarPower, sonarStream, SonarTrigger);
+```
+
+The main constuctor for the sensor object with the EnviroDIY modified version of SoftwareSerial would be:
+```cpp
+#include <MaxBotixSonar.h>
+#include <SoftwareSerial_ExtInts.h>  // include the SoftwareSerial library
+SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
+//  Allow enableInterrrupt to control the interrupbs for software serial
+enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+MaxBotixSonar sonar(SonarPower, sonarStream, SonarTrigger);
 ```
 
 The single available variable is:
 
 ```cpp
 MaxBotixSonar_Range(&sonar, "customVarCode");
+```
+
+In addition to the constructors for the sensor and variable, you *MUST* "begin" your stream instance within the main setup function.  The baud rate must be set to 9600 for all MaxBotix sensors.
+
+```cpp
+sonarStream.begin(9600);
 ```
 
 #### <a name="OBS3"></a>[Campbell Scientific OBS-3+](https://www.campbellsci.com/obs-3plus)
