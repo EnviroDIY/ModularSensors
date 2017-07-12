@@ -612,14 +612,17 @@ To use the EnviroDIY modified version of SoftwareSerial:
 ```cpp
 #include <SoftwareSerial_ExtInts.h>  // include the SoftwareSerial library
 SoftwareSerial_ExtInts stream(tx_pin, rx_pin);
-//  Allow enableInterrrupt to control the interrupbs for software serial
-enableInterrupt(stream, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
 ```
 
-In addition to the creating the stream instances, you must always remember to "begin" your stream instance within the main setup function.
-
+After creating the stream instances, you must always remember to "begin" your stream instance within the main setup function.
 ```cpp
 stream.begin(BAUD_RATE);
+```
+
+Additionally, for the EnviroDIY modified version of SoftwareSerial, you must enable the interrupts in your setup function:
+```cpp
+//  Allow enableInterrrupt to control the interrupbs for software serial
+enableInterrupt(stream, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
 ```
 
 ## <a name="compatibility"></a>Processor/Board Compatibility
