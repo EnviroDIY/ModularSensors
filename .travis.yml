@@ -27,4 +27,4 @@ install:
     - pio lib -g update
     - git rm library.json
 script:
-- platformio ci --lib="." --project-option="lib_ldf_mode = deep" --board=mayfly --board=adafruit_feather_m0_usb
+- platformio ci --lib="." --project-option="lib_ldf_mode = deep" --board=mayfly --board=adafruit_feather_m0
