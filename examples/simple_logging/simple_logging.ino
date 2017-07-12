@@ -147,12 +147,11 @@ const int SonarPower = 22;   // excite (power) pin
 #if defined __AVR__
 #include <SoftwareSerial_ExtInts.h>  // for the stream communication
 SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
-enableInterrupt(_dataPin, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
-
 MaxBotixSonar sonar(SonarPower, sonarSerial, SonarTrigger) ;
 
 #else
-MaxBotixSonar sonar(SonarPower, Serial2, SonarTrigger) ;
+HardwareSerial sonarSerial = Serial2;
+MaxBotixSonar sonar(SonarPower, sonarSerial, SonarTrigger) ;
 #endif
 
 
@@ -256,6 +255,10 @@ void setup()
     Serial.begin(SERIAL_BAUD);
     // Start the stream for the sonar
     sonarSerial.begin(9600);
+    // Allow interrupts for software serial
+    #if defined SoftwareSerial_ExtInts_h
+    enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+    #endif
 
     // Set up pins for the LED's
     pinMode(GREEN_LED, OUTPUT);

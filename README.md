@@ -215,8 +215,8 @@ Functions for logging data:
 - **generateSensorDataCSV()** - This returns an Arduino String containing the time and a comma separated list of sensor values.  The data will be ordered based on the order variables are listed in the array fed to the init function.
 
 Functions for debugging sensors:
-- **checkForDebugMode(int buttonPin, Stream *stream = &Serial)** - This stops everything and waits for up to two seconds for a button to be pressed to enter allow the user to enter "debug" mode.  I suggest running this as the very last step of the setup function.
-- **debugMode(Stream *stream = &Serial)** - This is a "debugging" mode for the sensors.  It prints out all of the sensor details every 5 seconds for 25 records worth of data.
+- **checkForDebugMode(int buttonPin, Stream \*stream = &Serial)** - This stops everything and waits for up to two seconds for a button to be pressed to enter allow the user to enter "debug" mode.  I suggest running this as the very last step of the setup function.
+- **debugMode(Stream \*stream = &Serial)** - This is a "debugging" mode for the sensors.  It prints out all of the sensor details every 5 seconds for 25 records worth of data.
 - Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
 
 Convience functions to do it all:
@@ -392,6 +392,7 @@ EnviroDIYMayfly_Temp(&mayfly, "customVarCode");
 EnviroDIYMayfly_Batt(&mayfly, "customVarCode");
 EnviroDIYMayfly_FreeRam(&mayfly, "customVarCode");
 ```
+_____
 
 #### <a name="MaxBotix"></a>[MaxBotix MaxSonar](http://www.maxbotix.com/Ultrasonic_Sensors/High_Accuracy_Sensors.htm) - HRXL MaxSonar WR or WRS Series with TTL Outputs
 
@@ -414,6 +415,7 @@ In addition to the constructors for the sensor and variable, you must remember t
 ```cpp
 sonarStream.begin(9600);
 ```
+_____
 
 #### <a name="OBS3"></a>[Campbell Scientific OBS-3+](https://www.campbellsci.com/obs-3plus)
 
@@ -435,6 +437,7 @@ The single available variable is (called once each for high and low range):
 CampbellOBS3_Turbidity(&osb3low, "customLowVarCode");
 CampbellOBS3_Turbidity(&osb3high, "customHighVarCode");
 ```
+_____
 
 #### <a name="5TM"></a>[Decagon Devices 5TM](https://www.decagon.com/en/soils/volumetric-water-content-sensors/5tm-vwc-temp/) Soil Moisture and Temperature Sensor
 
@@ -454,6 +457,7 @@ Decagon5TM_Ea(&fivetm, "customVarCode");
 Decagon5TM_Temp(&fivetm, "customVarCode");
 Decagon5TM_VWC(&fivetm, "customVarCode");
 ```
+_____
 
 #### <a name="CTD"></a>[Decagon Devices CTD-5 or  CTD-10](https://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/ctd-10-sensor-electrical-conductivity-temperature-depth/) Electrical Conductivity, Temperature, and Depth Sensor
 
@@ -473,6 +477,7 @@ DecagonCTD_Cond(&ctd, "customVarCode");
 DecagonCTD_Temp(&ctd, "customVarCode");
 DecagonCTD_Depth(&ctd, "customVarCode");
 ```
+_____
 
 #### <a name="ES2"></a>[Decagon Devices ES-2](http://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/es-2-electrical-conductivity-temperature/) Electrical Conductivity Sensor
 
@@ -482,7 +487,7 @@ The main constuctor for the sensor object is:
 
 ```cpp
 #include <DecagonES2.h>
-DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, numberReadings);
+DecagonES2 es2(ES2SDI12address, SDI12Power, SDI12Data, numberReadings);
 ```
 
 The two available variables are:
@@ -491,7 +496,7 @@ The two available variables are:
 DecagonES2_Cond(&es2, "customVarCode");
 DecagonES2_Temp(&es2, "customVarCode");
 ```
-
+_____
 
 #### <a name="DS18"></a>[Maxim DS18 Temperature Probes](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html)
 
@@ -516,6 +521,7 @@ The single available variable is:
 ```cpp
 MaximDS18_Temp(&ds18, "customVarCode");
 ```
+_____
 
 #### <a name="AM2315"></a>[AOSong AM2315](www.aosong.com/asp_bin/Products/en/AM2315.pdf) Encased I2C Temperature/Humidity Sensor
 
@@ -534,6 +540,7 @@ The two available variables are:
 AOSongAM2315_Humidity(&am2315, "customVarCode");
 AOSongAM2315_Temp(&am2315, "customVarCode");
 ```
+_____
 
 #### <a name="BME280"></a>[Bosch BME280](https://www.bosch-sensortec.com/bst/products/all_products/bme280) Integrated Environmental Sensor
 
@@ -554,6 +561,7 @@ BoschBME280_Humidity(&bme280, "customVarCode");
 BoschBME280_Pressure(&bme280, "customVarCode");
 BoschBME280_Altitude(&bme280, "customVarCode");
 ```
+_____
 
 #### <a name="DHT"></a>[AOSong DHT](http://www.aosong.com/en/products/index.asp) Digital-Output Relative Humidity & Temperature Sensor
 
@@ -573,6 +581,7 @@ AOSongDHT_Humidity(&dht, "customVarCode");
 AOSongDHT_Temp(&dht, "customVarCode");
 AOSongDHT_HI(&dht, "customVarCode");  // Heat Index
 ```
+_____
 
 #### <a name="SQ212"></a>[Apogee SQ-212 Quantum Light Sensor ](https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/) Photosynthetically Active Radiation (PAR)
 This library will work with the Apogee SQ-212 and SQ-212 analog quantum light sensors, and could be readily adapted to work with similar sensors (e.g. SQ-215 or SQ225) with by simply changing the calibration factors.
@@ -590,6 +599,7 @@ The one available variable is:
 ```cpp
 ApogeeSQ212_PAR(&SQ212, "customVarCode");  // Photosynthetically Active Radiation (PAR), in units of μmol m-2 s-1, or microeinsteinPerSquareMeterPerSecond
 ```
+_____
 
 ## <a name="SoftwareSerial"></a>Notes on Arduino Streams and Software Serial
 
@@ -612,14 +622,17 @@ To use the EnviroDIY modified version of SoftwareSerial:
 ```cpp
 #include <SoftwareSerial_ExtInts.h>  // include the SoftwareSerial library
 SoftwareSerial_ExtInts stream(tx_pin, rx_pin);
-//  Allow enableInterrrupt to control the interrupbs for software serial
-enableInterrupt(stream, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
 ```
 
-In addition to the creating the stream instances, you must always remember to "begin" your stream instance within the main setup function.
-
+After creating the stream instances, you must always remember to "begin" your stream within the main setup function.
 ```cpp
 stream.begin(BAUD_RATE);
+```
+
+Additionally, for the EnviroDIY modified version of SoftwareSerial, you must enable the interrupts in your setup function:
+```cpp
+//  Allow enableInterrrupt to control the interrupbs for software serial
+enableInterrupt(stream, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
 ```
 
 ## <a name="compatibility"></a>Processor/Board Compatibility
