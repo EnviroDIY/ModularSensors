@@ -166,7 +166,7 @@ SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, on
 MaxBotixSonar sonar(SonarPower, sonarSerial, SonarTrigger) ;
 
 #else
-HardwareSerial sonarSerial = Serial2;
+HardwareSerial &sonarSerial = Serial;
 MaxBotixSonar sonar(SonarPower, sonarSerial, SonarTrigger) ;
 #endif
 
