@@ -24,7 +24,16 @@ install:
     - pio update
     - pio lib -g install https://github.com/EnviroDIY/Libraries.git#platformio
     - pio lib -g uninstall EnviroDIY_ModularSensors
+    - pio lib -g uninstall RTCZero
+    - pio lib -g uninstall SoftwareSerial_ExtInts
     - pio lib -g update
     - git rm library.json
 script:
-- platformio ci --lib="." --project-option="lib_ldf_mode = deep" --board=mayfly --board=adafruit_feather_m0 --board=feather32u4 --board=megaatmega2560
+# Build AVR Boards
+- pio lib install SoftwareSerial_ExtInts
+- platformio ci --lib="." --project-option="lib_ldf_mode = deep" --board=mayfly --board=feather32u4 --board=megaatmega2560
+# Build SAMD Boards
+- pio lib uninstall SoftwareSerial_ExtInts
+- pio lib install RTCZero
+- platformio ci --lib="." --project-option="lib_ldf_mode = deep" --board=adafruit_feather_m0 --board=sodaq_autonomo
+- pio lib uninstall RTCZero

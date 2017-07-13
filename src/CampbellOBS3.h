@@ -52,9 +52,7 @@ public:
     bool update(void) override;
 
 protected:
-    float _A;
-    float _B;
-    float _C;
+    float _A, _B, _C;
 };
 
 

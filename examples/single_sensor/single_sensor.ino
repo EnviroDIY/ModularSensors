@@ -56,7 +56,7 @@ MaxBotixSonar sonar(SonarPower, sonarSerial, SonarTrigger) ;
 
 #else
 // Create a new instance of the sonar sensor;
-HardwareSerial &sonarSerial = Serial;
+HardwareSerial &sonarSerial = Serial1;
 MaxBotixSonar sonar(SonarPower, sonarSerial, SonarTrigger) ;
 #endif
 
