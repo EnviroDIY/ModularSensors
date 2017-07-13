@@ -25,7 +25,7 @@
 
 #include "AOSongDHT.h"
 
-// The constructor - because this is I2C, only need the power pin
+// The constructor - need the power pin, data pin, and type of DHT
 AOSongDHT::AOSongDHT(int powerPin, int dataPin, DHTtype type)
 : Sensor(powerPin, dataPin, F("AOSongDHT"), DHT_NUM_MEASUREMENTS, DHT_WARM_UP),
   dht_internal(dataPin, type)
