@@ -203,7 +203,7 @@ public:
         delay(100);
 
         // Set up pins for the LED's
-        pinMode(_ledPin, OUTPUT);
+        if (_ledPin > 0) pinMode(_ledPin, OUTPUT);
 
         // Set up the sensors
         setupSensors();

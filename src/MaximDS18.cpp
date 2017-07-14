@@ -110,7 +110,7 @@ SENSOR_STATUS MaximDS18::getStatus(void)
 SENSOR_STATUS MaximDS18::setup(void)
 {
     if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
-    pinMode(_dataPin, INPUT);
+    pinMode(_dataPin, INPUT_PULLUP);
 
     // Check if the power is on, turn it on if not  (Need power to get address)
     bool wasOn = checkPowerOn();

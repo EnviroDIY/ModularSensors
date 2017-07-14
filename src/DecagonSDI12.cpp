@@ -45,7 +45,7 @@ DecagonSDI12::DecagonSDI12(int SDI12address, int powerPin, int dataPin,
 SENSOR_STATUS DecagonSDI12::setup(void)
 {
     if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
-    pinMode(_dataPin, INPUT_PULLUP);
+    pinMode(_dataPin, INPUT_PULLUP_PULLUP);
 
     bool isSet = getSensorInfo();
 

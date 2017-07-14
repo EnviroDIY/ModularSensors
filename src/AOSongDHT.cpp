@@ -36,7 +36,7 @@ AOSongDHT::AOSongDHT(int powerPin, int dataPin, DHTtype type)
 SENSOR_STATUS AOSongDHT::setup(void)
 {
     if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
-    pinMode(_dataPin, INPUT);
+    pinMode(_dataPin, INPUT_PULLUP);
 
     // Start up the sensor
     dht_internal.begin();

@@ -123,7 +123,7 @@ void Sensor::waitForWarmUp(void)
 SENSOR_STATUS Sensor::setup(void)
 {
     if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
-    pinMode(_dataPin, INPUT);
+    if (_dataPin > 0) pinMode(_dataPin, INPUT_PULLUP);
 
     DBGS(F("Set up "));
     DBGS(getSensorName());

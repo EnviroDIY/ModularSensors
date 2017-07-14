@@ -89,10 +89,12 @@ public:
         PRINTOUT(F("Beginning setup for sensors and variables..."));
 
         // First wake up all of the sensors
+        DBGVA(F("Waking sensors for setup.\n"));
         for (int i = 0; i < _variableCount; i++)
             _variableList[i]->parentSensor->wake();
 
         // Now run all the set-up functions
+        DBGVA(F("Running setup functions.\n"));
         for (int i = 0; i < _variableCount; i++)
         {
             // Make 5 attempts to contact the sensor before giving up
@@ -121,6 +123,7 @@ public:
         }
 
         // Put all the sensors back to sleep
+        DBGVA(F("Putting sensors to sleep after setup.\n"));
         for (int i = 0; i < _variableCount; i++)
             _variableList[i]->parentSensor->sleep();
 

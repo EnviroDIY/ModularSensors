@@ -573,7 +573,7 @@ public:
     virtual void checkForDebugMode(int buttonPin, Stream *stream = &Serial)
     {
         // Set the pin attached to some button to enter debug mode
-        pinMode(buttonPin, INPUT);
+        if (buttonPin > 0) pinMode(buttonPin, INPUT_PULLUP);
 
         // Flash the LED to let user know it is now possible to enter debug mode
         for (uint8_t i = 0; i < 15; i++)
@@ -608,7 +608,7 @@ public:
         delay(100);
 
         // Set up pins for the LED's
-        pinMode(_ledPin, OUTPUT);
+        if (_ledPin > 0) pinMode(_ledPin, OUTPUT);
 
         // Set up the sensors
         setupSensors();
