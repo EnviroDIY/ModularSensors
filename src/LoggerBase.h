@@ -706,4 +706,8 @@ long Logger::markedEpochTime = 0;
 DateTime Logger::markedDateTime = 0;
 char Logger::markedISO8601Time[26];
 
+#if defined(ARDUINO_ARCH_SAMD)
+RTCZero Logger::rtc;
+#endif
+
 #endif
