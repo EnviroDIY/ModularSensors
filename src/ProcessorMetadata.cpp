@@ -36,6 +36,14 @@
 #elif defined(ARDUINO_AVR_SODAQ_MOJA)
     #define BOARD "SODAQ Moja"
 
+// Adafruit boards
+#elif defined(ARDUINO_AVR_FEATHER32U4)
+    #define BOARD "Feather 32u4"
+#elif defined(ARDUINO_SAMD_FEATHER_M0)
+    #define BOARD "Feather M0"
+#elif defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
+    #define BOARD "Feather M0 Express"
+
 // Arduino boards
 #elif defined(ARDUINO_AVR_ADK)
     #define BOARD "Mega Adk"
@@ -81,14 +89,6 @@
     #define BOARD "Yun"
 #elif defined(ARDUINO_SAMD_ZERO)
     #define BOARD "Zero"
-
-// Adafruit boards
-#elif defined(ARDUINO_AVR_FEATHER32U4)
-    #define BOARD "Feather 32u4"
-#elif defined(ARDUINO_SAMD_FEATHER_M0)
-    #define BOARD "Feather M0"
-#elif defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
-    #define BOARD "Feather M0 Express"
 
 #else
    #define BOARD "Unknown"
