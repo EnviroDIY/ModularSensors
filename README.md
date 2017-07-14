@@ -620,11 +620,11 @@ _____
 
 As the I2C [Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html) real time clock (RTC) is absolutely required for time-keeping on all AVR boards, this library also makes use of it for its on-board temperature sensor.  The DS3231 requires a 3.3V power supply.
 
-There are no arguements for the constructor, as the RTC requires constant power and is connected via I2C:
+There are no arguements for the constructor, as the RTC requires constant power and is connected via I2C, but due to a bug, you do have to input a "1" in the input:
 
 ```cpp
 #include <OnboardSensors.h>
-MaximDS3231 ds3231();
+MaximDS3231 ds3231(1);
 ```
 
 The only available variables is:  (customVarCode is optional)
@@ -636,21 +636,20 @@ _____
 
 #### <a name="Onboard"></a>Processor Metadata Treated as Sensors
 
-The version of the Mayfly is required as input (ie, "v0.3" or "v0.4" or "v0.5").  Any DS3231 connected via I2C can also be treated as an "onboard sensor" on any other non-Mayfly board.  The DS3231 requires a 3.3V power supply.
+The processor can return the amount of RAM it has available and, for some boards, the battery voltage (EnviroDIY Mayfly, Sodaq Mbili, Ndogo, Autonomo, and One, Adafruit Feathers).  The version of the board is required as input (ie, for a EnviroDIY Mayfly: "v0.3" or "v0.4" or "v0.5").  Use a blank value (ie, "") for un-versioned boards.
 
 The main constuctor for the sensor object is:
 
 ```cpp
 #include <OnboardSensors.h>
-EnviroDIYMayfly mayfly(MFVersion);
+ProcessorMetadata mayfly(MFVersion);
 ```
 
-The three available variables are:  (customVarCode is optional)
+The two available variables are:  (customVarCode is optional)
 
 ```cpp
-EnviroDIYMayfly_Temp(&mayfly, "customVarCode");
-EnviroDIYMayfly_Batt(&mayfly, "customVarCode");
-EnviroDIYMayfly_FreeRam(&mayfly, "customVarCode");
+ProcessorMetadata_Batt(&mayfly, "customVarCode");
+ProcessorMetadata_FreeRam(&mayfly, "customVarCode");
 ```
 _____
 

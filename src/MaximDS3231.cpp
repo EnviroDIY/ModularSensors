@@ -4,24 +4,19 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for the onboard "sensors" on the EnviroDIY Mayfly
+ *This file is for required DS3231 real time clock.
  *It is dependent on the EnviroDIY DS3231 library.
  *
  *For temperature from the DS3231:
  *  Resolution is 0.25°C
  *  Accuracy is ±3°C
  *
- *For battery voltage:
- *  Range of 0-5V with 10bit ADC - resolution of 0.005
+ * The clock is always ready to take a reading.
 */
 
 #include <Sodaq_DS3231.h>
 #include "MaximDS3231.h"
 
-// Need to know the Mayfly version because the battery resistor depends on it
-MaximDS3231::MaximDS3231(void)
-: Sensor(-1, -1, F("MaximDS3231"), DS3231_NUM_MEASUREMENTS, DS3231_WARM_UP)
-{}
 
 String MaximDS3231::getSensorLocation(void) {return F("MaximDS3231");}
 bool MaximDS3231::sleep(void) {return true;}

@@ -193,22 +193,22 @@ MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
 //    Maxim DS3231 RTC
 // ==========================================================================
 #include <MaximDS3231.h>
-MaximDS3231 ds3231();
+MaximDS3231 ds3231(1);
 
 
 // ==========================================================================
 //    EnviroDIY Mayfly
 // ==========================================================================
-#include <MayflyOnboardSensors.h>
+#include <ProcessorMetadata.h>
 const char *MFVersion = "v0.5";
-EnviroDIYMayfly mayfly(MFVersion) ;
+ProcessorMetadata mayfly(MFVersion) ;
 
 // ---------------------------------------------------------------------------
 // The array that contains all valid variables
 // ---------------------------------------------------------------------------
 Variable *variableList[] = {
-    new EnviroDIYMayfly_Batt(&mayfly),
-    new EnviroDIYMayfly_FreeRam(&mayfly),
+    new ProcessorMetadata_Batt(&mayfly),
+    new ProcessorMetadata_FreeRam(&mayfly),
     new MaximDS3231_Temp(&ds3231),
     new ApogeeSQ212_PAR(&SQ212),
     new MaxBotixSonar_Range(&sonar),

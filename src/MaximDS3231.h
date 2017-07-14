@@ -4,7 +4,7 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for the onboard "sensors" on the EnviroDIY Mayfly
+ *This file is for required DS3231 real time clock.
  *It is dependent on the EnviroDIY DS3231 library.
  *
  *For temperature from the DS3231:
@@ -29,13 +29,16 @@
 #define DS3231_TEMP_VAR_NUM 0
 
 
-// The "Main" class for the Mayfly
+// The "Main" class for the DS3231
 // Only need a sleep and wake since these DON'T use the default of powering up and down
 class MaximDS3231 : public Sensor
 {
 public:
-    // Need to know the Mayfly version because the battery resistor depends on it
-    MaximDS3231(void);
+    // No inputs for constructor
+    // TODO:  Figure out why this doesn't work with "void"
+    MaximDS3231(int unnecessary_var = 1)
+    : Sensor(-1, -1, F("MaximDS3231"), DS3231_NUM_MEASUREMENTS, DS3231_WARM_UP)
+    {}
 
     String getSensorLocation(void) override;
     bool sleep(void) override;

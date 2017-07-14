@@ -61,15 +61,15 @@ AOSongAM2315 am2315(I2CPower);
 //    Maxim DS3231 RTC
 // ==========================================================================
 #include <MaximDS3231.h>
-MaximDS3231 ds3231();
+MaximDS3231 ds3231(1);
 
 
 // ==========================================================================
 //    EnviroDIY Mayfly
 // ==========================================================================
-#include <MayflyOnboardSensors.h>
+#include <ProcessorMetadata.h>
 const char *MFVersion = "v0.3";
-EnviroDIYMayfly mayfly(MFVersion) ;
+ProcessorMetadata mayfly(MFVersion) ;
 
 // ---------------------------------------------------------------------------
 // The two array that contains the variables for the different intervals
@@ -82,8 +82,8 @@ Variable *variableList_at1min[] = {
 int variableCount1min = sizeof(variableList_at1min) / sizeof(variableList_at1min[0]);
 Variable *variableList_at5min[] = {
     new MaximDS3231_Temp(&ds3231),
-    new EnviroDIYMayfly_Batt(&mayfly),
-    new EnviroDIYMayfly_FreeRam(&mayfly)
+    new ProcessorMetadata_Batt(&mayfly),
+    new ProcessorMetadata_FreeRam(&mayfly)
     // new YOUR_variableName_HERE(&)
 };
 int variableCount5min = sizeof(variableList_at5min) / sizeof(variableList_at5min[0]);
