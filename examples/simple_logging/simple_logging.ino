@@ -174,6 +174,13 @@ MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
 
 
 // ==========================================================================
+//    Maxim DS3231 RTC
+// ==========================================================================
+#include <MaximDS3231.h>
+MaximDS3231 ds3231();
+
+
+// ==========================================================================
 //    EnviroDIY Mayfly
 // ==========================================================================
 #include <MayflyOnboardSensors.h>
@@ -186,7 +193,7 @@ EnviroDIYMayfly mayfly(MFVersion) ;
 Variable *variableList[] = {
     new EnviroDIYMayfly_Batt(&mayfly),
     new EnviroDIYMayfly_FreeRam(&mayfly),
-    new EnviroDIYMayfly_Temp(&mayfly),
+    new MaximDS3231_Temp(&ds3231),
     new ApogeeSQ212_PAR(&SQ212),
     new MaxBotixSonar_Range(&sonar),
     new Decagon5TM_Ea(&fivetm),
@@ -232,15 +239,15 @@ const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
 // ---------------------------------------------------------------------------
 
 // Flashes to Mayfly's LED's
-void greenredflash(int numFlash = 4)
+void greenredflash(int numFlash = 4, int rate = 75)
 {
   for (int i = 0; i < numFlash; i++) {
     digitalWrite(GREEN_LED, HIGH);
     digitalWrite(RED_LED, LOW);
-    delay(75);
+    delay(rate);
     digitalWrite(GREEN_LED, LOW);
     digitalWrite(RED_LED, HIGH);
-    delay(75);
+    delay(rate);
   }
   digitalWrite(RED_LED, LOW);
 }

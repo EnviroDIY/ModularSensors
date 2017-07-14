@@ -7,7 +7,8 @@ Each sensor is implemented as a subclass of the "Sensor" class contained in "Sen
 To use a sensor and variable in your sketch, you must separately include xxx.h for each sensor you intend to use.  While this may force you to write many more include statements, it decreases the library RAM usage on your Arduino board.  Regardless of how many sensors you intend to use, however, you must install all of the dependent libraries on your _computer_ for the IDE to be able to compile the library.
 
 #### Contents:
-- [Library Dependencies](#deps)
+- [Physical Dependencies](#pdeps)
+- [Library Dependencies](#ldeps)
 - [Basic Sensor and Variable Functions](#Basic)
     - [Individual Sensors Code Examples](#individuals)
 - [Grouped Sensor Functions](#Grouped)
@@ -19,7 +20,6 @@ To use a sensor and variable in your sketch, you must separately include xxx.h f
     - [EnviroDIY Logger Functions](#DIYlogger)
     - [Logger Code Examples](#LoggerExamples)
 - Available Sensors
-    - [EnviroDIY Mayfly Onboard Sensors](#MayflyOnboard)
     - [MaxBotix MaxSonar](#MaxBotix)
     - [Campbell Scientific OBS-3+](#OBS3)
     - [Decagon Devices 5TM](#5TM)
@@ -29,12 +29,29 @@ To use a sensor and variable in your sketch, you must separately include xxx.h f
     - [AOSong AM2315](#AM2315)
     - [Bosch BME280](#BME280)
     - [AOSong DHT](#DHT)
+    - [Maxim DS3231 Real Time Clock](#DS3231)
+    - [Processor Metadata Treated as Sensors](#Onboard)
 - [Notes on Arduino Streams and Software Serial](#SoftwareSerial)
 - [Processor/Board Compatibility](#compatibility)
 
-## <a name="deps"></a>Library Dependencies
+## <a name="pdeps"></a>Physical Dependencies
 
-In order to support multiple functions and sensors, there are quite a lot of dependencies for this library.  _Even if you do not use all of the modules, you must have all of the dependencies installed for the library itself to properly compile._
+This library is designed for remote sensing applications, that is, to log data from many physical sensors and to put the processor and all peripherals to sleep to conserver power between readings.  The most banal functions of the library require only an AVR or SAMD processor, but making real use of this library requires:
+
+- A sufficiently powerful AVR or SAMD processor mounted on some sort of curcuit board.  (See [Processor/Board Compatibility](#compatibility) for more details on specific processors and boards.)
+    - For all AVR processors, you must also have a [Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html) high precision I2C real-time clock connected to your processor.
+    - For SAMD boards, this library makes use of their on-board (though less accurate) real-time clock.
+- A SD card reader attached to the processor via SPI.
+- A modem-type unit to communicate remote data (See [Modem and Internet Functions](#Modem) for supported models.)
+- A battery to power the system
+- A solar charging curcuit
+- Environmental sensors
+- Protected water-proof enclosures and mountings for all of the above
+- An OTG cable to connect serial output from the board to a cell phone (Not required, but very helpful for debugging.)
+
+## <a name="ldeps"></a>Library Dependencies
+
+In order to support multiple functions and sensors, there are quite a lot of sub-libraries that this library is dependent on.  _Even if you do not use all of the modules, you must have all of the dependencies installed for the library itself to properly compile._
 
 - [EnableInterrupt](https://github.com/EnviroDIY/EnableInterrupt) - Administrates and handles pin change interrupts, allowing the logger to sleep and save battery.  This also controls the interrupts for the versions of SoftwareSerial and SDI-12 linked below that have been stripped of interrupt control.  Because we use this library, _you must always add the line ```#include <EnableInterrupt.h>``` to the top of your sketch._
 - AVR sleep library - This is for low power sleeping for AVR processors. (This library is built in to the Arduino IDE.)
@@ -380,26 +397,6 @@ There are a number of sensors supported by this library.  Depending on the senso
 Essentially all of the sensors can have their power supplies turned off between readings, but not all boards are able to switch output power on and off.  When the sensor constructor asks for the Arduino pin controlling power on/off, use -1 for any board which is not capable of switching the output power on and off.
 _____
 
-#### <a name="MayflyOnboard"></a>Mayfly Onboard Sensors
-
-The version of the Mayfly is required as input (ie, "v0.3" or "v0.4" or "v0.5").  Any DS3231 connected via I2C can also be treated as an "onboard sensor" on any other non-Mayfly board.  The DS3231 requires a 3.3V power supply.
-
-The main constuctor for the sensor object is:
-
-```cpp
-#include <MayflyOnboardSensors.h>
-EnviroDIYMayfly mayfly(MFVersion);
-```
-
-The three available variables are:  (customVarCode is optional)
-
-```cpp
-EnviroDIYMayfly_Temp(&mayfly, "customVarCode");
-EnviroDIYMayfly_Batt(&mayfly, "customVarCode");
-EnviroDIYMayfly_FreeRam(&mayfly, "customVarCode");
-```
-_____
-
 #### <a name="MaxBotix"></a>[MaxBotix MaxSonar](http://www.maxbotix.com/Ultrasonic_Sensors/High_Accuracy_Sensors.htm) - HRXL MaxSonar WR or WRS Series with TTL Outputs
 
 The MaxBotix sensors communicate with the board using TTL from pin 5 on the sensor.  They require a 2.7V-5.5V power supply to pin 6 on the sensor (which can be turned off between measurements) and the level of the TLL returned by the sensor will match the power level it is supplied with.  Pin 7 of the sensor must be connected to ground and pin 4 can optionally be used to trigger the sensor.
@@ -616,6 +613,44 @@ The one available variable is:  (customVarCode is optional)
 
 ```cpp
 ApogeeSQ212_PAR(&SQ212, "customVarCode");  // Photosynthetically Active Radiation (PAR), in units of μmol m-2 s-1, or microeinsteinPerSquareMeterPerSecond
+```
+_____
+
+#### <a name="DS3231"></a>Maxim DS3231 Real Time Clock]
+
+As the I2C [Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html) real time clock (RTC) is absolutely required for time-keeping on all AVR boards, this library also makes use of it for its on-board temperature sensor.  The DS3231 requires a 3.3V power supply.
+
+There are no arguements for the constructor, as the RTC requires constant power and is connected via I2C:
+
+```cpp
+#include <OnboardSensors.h>
+MaximDS3231 ds3231();
+```
+
+The only available variables is:  (customVarCode is optional)
+
+```cpp
+MaximDS3231_Temp(&ds3231, "customVarCode");
+```
+_____
+
+#### <a name="Onboard"></a>Processor Metadata Treated as Sensors
+
+The version of the Mayfly is required as input (ie, "v0.3" or "v0.4" or "v0.5").  Any DS3231 connected via I2C can also be treated as an "onboard sensor" on any other non-Mayfly board.  The DS3231 requires a 3.3V power supply.
+
+The main constuctor for the sensor object is:
+
+```cpp
+#include <OnboardSensors.h>
+EnviroDIYMayfly mayfly(MFVersion);
+```
+
+The three available variables are:  (customVarCode is optional)
+
+```cpp
+EnviroDIYMayfly_Temp(&mayfly, "customVarCode");
+EnviroDIYMayfly_Batt(&mayfly, "customVarCode");
+EnviroDIYMayfly_FreeRam(&mayfly, "customVarCode");
 ```
 _____
 
