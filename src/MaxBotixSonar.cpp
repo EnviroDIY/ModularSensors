@@ -32,7 +32,7 @@ String MaxBotixSonar::getSensorLocation(void){return F("sonarStream");}
 
 SENSOR_STATUS MaxBotixSonar::setup(void)
 {
-    pinMode(_powerPin, OUTPUT);
+    if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
 
     if(_triggerPin != -1)
     {

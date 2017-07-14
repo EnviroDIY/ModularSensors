@@ -66,7 +66,7 @@ SENSOR_STATUS BoschBME280::getStatus(void)
 
 SENSOR_STATUS BoschBME280::setup(void)
 {
-    pinMode(_powerPin, OUTPUT);
+    if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
 
     DBGM(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
     DBGM(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));

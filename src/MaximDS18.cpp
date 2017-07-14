@@ -109,7 +109,7 @@ SENSOR_STATUS MaximDS18::getStatus(void)
 // By default, sets pin modes and returns ready
 SENSOR_STATUS MaximDS18::setup(void)
 {
-    pinMode(_powerPin, OUTPUT);
+    if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
     pinMode(_dataPin, INPUT);
 
     // Check if the power is on, turn it on if not  (Need power to get address)
