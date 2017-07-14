@@ -18,7 +18,7 @@
 #include "MaximDS3231.h"
 
 
-String MaximDS3231::getSensorLocation(void) {return F("MaximDS3231");}
+String MaximDS3231::getSensorLocation(void) {return F("I2C_0x68");}
 bool MaximDS3231::sleep(void) {return true;}
 bool MaximDS3231::wake(void) {return true;}
 

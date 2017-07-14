@@ -27,6 +27,9 @@ MaxBotixSonar::MaxBotixSonar(int powerPin, Stream& stream, int triggerPin)
     _stream = &stream;
 }
 
+// unfortunately, we really cannot know where the stream is attached.
+String MaxBotixSonar::getSensorLocation(void){return F("sonarStream");}
+
 SENSOR_STATUS MaxBotixSonar::setup(void)
 {
     pinMode(_powerPin, OUTPUT);

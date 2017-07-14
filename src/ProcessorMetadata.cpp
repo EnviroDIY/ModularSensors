@@ -15,25 +15,25 @@
 #include "ProcessorMetadata.h"
 
 // EnviroDIY boards
-#if defined(AVR_ENVIRODIY_MAYFLY)
+#if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
     #define BOARD "EnviroDIY Mayfly"
 
 // Sodaq boards
-#elif defined(SODAQ_EXPLORER)
+#elif defined(ARDUINO_SODAQ_EXPLORER)
     #define BOARD "SODAQ ExpLoRer"
-#elif defined(SODAQ_AUTONOMO)
+#elif defined(ARDUINO_SODAQ_AUTONOMO)
     #define BOARD "SODAQ Autonomo"
-#elif defined(SODAQ_ONE_BETA)
+#elif defined(ARDUINO_SODAQ_ONE_BETA)
     #define BOARD "SODAQ ONE Beta"
-#elif defined(SODAQ_ONE)
+#elif defined(ARDUINO_SODAQ_ONE)
     #define BOARD "SODAQ ONE"
-#elif defined(AVR_SODAQ_MBILI)
+#elif defined(ARDUINO_AVR_SODAQ_MBILI)
     #define BOARD "SODAQ Mbili"
-#elif defined(AVR_SODAQ_NDOGO)
+#elif defined(ARDUINO_AVR_SODAQ_NDOGO)
     #define BOARD "SODAQ Ndogo"
-#elif defined(AVR_SODAQ_TATU)
+#elif defined(ARDUINO_AVR_SODAQ_TATU)
     #define BOARD "SODAQ Tatu"
-#elif defined(AVR_SODAQ_MOJA)
+#elif defined(ARDUINO_AVR_SODAQ_MOJA)
     #define BOARD "SODAQ Moja"
 
 // Arduino boards
@@ -83,11 +83,11 @@
     #define BOARD "Zero"
 
 // Adafruit boards
-#elif defined(AVR_ADAFRUIT32U4)
+#elif defined(ARDUINO_AVR_FEATHER32U4)
     #define BOARD "Feather 32u4"
-#elif defined(SAMD_FEATHER_M0)
+#elif defined(ARDUINO_SAMD_FEATHER_M0)
     #define BOARD "Feather M0"
-#elif defined(SAMD_FEATHER_M0_EXPRESS)
+#elif defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
     #define BOARD "Feather M0 Express"
 
 #else
@@ -99,13 +99,13 @@ ProcessorMetadata::ProcessorMetadata(const char *version) : Sensor(-1, -1, BOARD
 {
     _version = version;
 
-    #if defined(AVR_ENVIRODIY_MAYFLY) || defined(AVR_SODAQ_MBILI)
+    #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) || defined(ARDUINO_AVR_SODAQ_MBILI)
         _batteryPin = A6;
-    #elif defined(AVR_ADAFRUIT32U4) || defined(SAMD_FEATHER_M0) || defined(SAMD_FEATHER_M0_EXPRESS)
+    #elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
         _batteryPin = 9;
-    #elif defined(SODAQ_ONE) || defined(SODAQ_ONE_BETA) || defined(AVR_SODAQ_NDOGO)
+    #elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA) || defined(ARDUINO_AVR_SODAQ_NDOGO)
         _batteryPin = 10;
-    #elif defined(SODAQ_AUTONOMO)
+    #elif defined(ARDUINO_SODAQ_AUTONOMO)
         if (strcmp(_version, "v0.1") == 0) _batteryPin = 48;
         else _batteryPin = 61;
     #else
@@ -136,7 +136,7 @@ bool ProcessorMetadata::update(void)
 
     float sensorValue_battery;
 
-    #if defined(AVR_ENVIRODIY_MAYFLY)
+    #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
         if (strcmp(_version, "v0.3") == 0 or strcmp(_version, "v0.4") == 0)
         {
             // Get the battery voltage
@@ -150,14 +150,14 @@ bool ProcessorMetadata::update(void)
             sensorValue_battery = (3.3 / 1023.) * 4.7 * rawBattery;
         }
 
-    #elif defined(AVR_ADAFRUIT32U4) || defined(SAMD_FEATHER_M0) || defined(SAMD_FEATHER_M0_EXPRESS)
+    #elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
         float measuredvbat = analogRead(_batteryPin);
         measuredvbat *= 2;    // we divided by 2, so multiply back
         measuredvbat *= 3.3;  // Multiply by 3.3V, our reference voltage
         measuredvbat /= 1024; // convert to voltage
         sensorValue_battery = measuredvbat;
 
-    #elif defined(SODAQ_ONE) || defined(SODAQ_ONE_BETA)
+    #elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA)
         if (strcmp(_version, "v0.1") == 0)
         {
             // Get the battery voltage
@@ -171,7 +171,7 @@ bool ProcessorMetadata::update(void)
             sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
         }
 
-    #elif defined(AVR_SODAQ_NDOGO) || defined(SODAQ_AUTONOMO) || defined(AVR_SODAQ_MBILI)
+    #elif defined(ARDUINO_AVR_SODAQ_NDOGO) || defined(ARDUINO_SODAQ_AUTONOMO) || defined(ARDUINO_AVR_SODAQ_MBILI)
         // Get the battery voltage
         float rawBattery = analogRead(_batteryPin);
         sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;

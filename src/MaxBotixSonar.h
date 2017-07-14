@@ -33,6 +33,8 @@ public:
     MaxBotixSonar(int powerPin, Stream* stream, int triggerPin = -1);
     MaxBotixSonar(int powerPin, Stream& stream, int triggerPin = -1);
 
+    String getSensorLocation(void) override;
+
     SENSOR_STATUS setup(void) override;
 
     bool update(void) override;

@@ -31,9 +31,9 @@ install:
 script:
 # Build AVR Boards
 - pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
-- platformio ci --lib="." --project-option="lib_ldf_mode = deep" --board=mayfly --board=feather32u4 --board=megaatmega2560
+- platformio ci --lib="." --project-option="lib_ldf_mode = deep" --board=mayfly --board=sodaq_mbili --board=sodaq_ndogo --board=feather32u4 --board=megaatmega2560
 # Build SAMD Boards
 - pio lib -g uninstall SoftwareSerial_ExtInts
 - pio lib -g install RTCZero
-- platformio ci --lib="." --project-option="lib_ldf_mode = deep" --board=adafruit_feather_m0 --board=sodaq_autonomo
+- platformio ci --lib="." --project-option="lib_ldf_mode = deep" --board=adafruit_feather_m0 --board=sodaq_autonomo --board=sodaq_one
 - pio lib -g uninstall RTCZero
