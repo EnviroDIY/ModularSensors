@@ -33,6 +33,7 @@
 // #define MODULES_DBG Serial
 #include "ModSensorDebugger.h"
 
+#define ADS1015_ADDRESS (0x48) // 1001 000 (ADDR = GND)
 
 #define OBS3_NUM_VARIABLES 1  // low and high range are treated as completely independent
 #define OBS3_WARM_UP 2000
@@ -45,7 +46,7 @@ class CampbellOBS3 : public Sensor
 {
 public:
     // The constructor - need the power pin, the data pin, and the calibration info
-    CampbellOBS3(int powerPin, int dataPin, float A, float B, float C);
+    CampbellOBS3(int powerPin, int dataPin, float A, float B, float C, uint8_t i2cAddress = ADS1015_ADDRESS);
 
     String getSensorLocation(void) override;
 
@@ -53,6 +54,7 @@ public:
 
 protected:
     float _Avalue, _Bvalue, _Cvalue;
+    uint8_t _i2cAddress;
 };
 
 

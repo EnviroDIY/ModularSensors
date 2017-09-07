@@ -28,12 +28,13 @@
 #include <Adafruit_ADS1015.h>
 
 // The constructor - need the power pin, the data pin, and the calibration info
-CampbellOBS3::CampbellOBS3(int powerPin, int dataPin, float A, float B, float C)
+CampbellOBS3::CampbellOBS3(int powerPin, int dataPin, float A, float B, float C, uint8_t i2cAddress)
   : Sensor(powerPin, dataPin, F("CampbellOBS3+"), OBS3_NUM_VARIABLES, OBS3_WARM_UP)
 {
     _Avalue = A;
     _Bvalue = B;
     _Cvalue = C;
+    _i2cAddress = i2cAddress;
 }
 
 
@@ -48,7 +49,7 @@ bool CampbellOBS3::update(void)
 {
 
     // Start the Auxillary ADD
-    Adafruit_ADS1115 ads;     /* Use this for the 16-bit version */
+    Adafruit_ADS1115 ads(_i2cAddress);     /* Use this for the 16-bit version */
     ads.begin();
 
     // Check if the power is on, turn it on if not

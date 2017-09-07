@@ -426,18 +426,18 @@ _____
 
 #### <a name="OBS3"></a>[Campbell Scientific OBS-3+](https://www.campbellsci.com/obs-3plus)
 
-The OBS-3 sends out a simple analog signal between 0 and 2.5V.  To convert that to a high resolution digital signal, the sensor must be attached to a TI ADS1115 ADD converter (such as on the first four analog pins of the Mayfly).  The TI ADS1115 ADD communicates with the board via I2C and should have its address set as 0x48.  To use a different I2C address for the ADS1115, add the line `#define ADS1X15_ADDRESS (0x##)` to your sketch below the line `#include <CampbellOBS3.h>`.  The OBS-3 requires a 5-15V power supply, which can be turned off between measurements.  (It may actually run on power as low as 3.3V.)  The power supply is connected to the red wire, low range output comes from the blue wire, high range output comes from the white wire, and the black, greeen, and silver/unshielded wires should all be connected to ground.  The TI ADS1115 requires a 2-5.5V power supply.
+The OBS-3 sends out a simple analog signal between 0 and 2.5V.  To convert that to a high resolution digital signal, the sensor must be attached to a TI ADS1115 ADD converter (such as on the first four analog pins of the Mayfly).  The TI ADS1115 ADD communicates with the board via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tieing the address pin to ground.  More than one of these ADD's can be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input volage of 2.0-5.5V.  The OBS-3 itself requires a 5-15V power supply, which can be turned off between measurements.  (It will actually run on power as low as 3.3V.)  The power supply is connected to the red wire, low range output comes from the blue wire, high range output comes from the white wire, and the black, greeen, and silver/unshielded wires should all be connected to ground.
 
 The Arduino pin controlling power on/off, analog data pin _on the TI ADS1115_, and calibration values _in Volts_ for Ax^2 + Bx + C are required for the sensor constructor.  A custom variable code can be entered as a second argument in the variable constructors, and it is very strongly recommended that you use this otherwise it will be very difficult to determine which return is high and which is low range on the sensor.
 
 Note that to access both the high and low range returns, two instances must be created, one at the low range return pin and one at the high pin.
 
-The main constuctor for the sensor object is (called once each for high and low range):
+The main constuctor for the sensor object is (called once each for high and low range):  The ADS1x15_i2cAddress is optional and only needs to be entered if using an ADS1x15 with an address other than 0x48.
 
 ```cpp
 #include <CampbellOBS3.h>
-CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C);
-CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
+CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, ADS1x15_i2cAddress);
+CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADS1x15_i2cAddress);
 ```
 
 The single available variable is (called once each for high and low range):
@@ -582,8 +582,7 @@ _____
 
 #### <a name="DHT"></a>[AOSong DHT](http://www.aosong.com/en/products/index.asp) Digital-Output Relative Humidity & Temperature Sensor
 
-This module will work with an AOSong DHT11, DHT21, AM2301, DHT22, or AM2302.  These sensors uses a non-standard 1-wire digital
-signalling protocol.  They can be connected to any digital pin.  Please keep in mind that these sensors should not be updated more frequently than once ever 2 seconds.  These sensors should be attached to a 3.3-6V power source and the power supply to the sensor can be stopped between measurements.
+This module will work with an AOSong DHT11, DHT21, AM2301, DHT22, or AM2302.  These sensors uses a non-standard single wire digital signalling protocol.  They can be connected to any digital pin.  Please keep in mind that, per manufacturer instructions, these sensors should not be polled more frequently than once every 2 seconds.  These sensors should be attached to a 3.3-6V power source and the power supply to the sensor can be stopped between measurements.
 
 The Arduino pin controlling power on/off, the Arduino pin receiving data, and the sensor type are required for the sensor constructor:
 
@@ -659,34 +658,34 @@ _____
 
 In this library, the Arduino communicates with the computer for debugging, the modem for sending data, and some sensors (like the [MaxBotix MaxSonar](#MaxBotix)) via instances of Arduino TTL "[streams](https://www.arduino.cc/en/Reference/Stream)."  The streams can either be an instance of [serial](https://www.arduino.cc/en/Reference/Serial) (aka hardware serial), [AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial), [the EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts), or any other stream type you desire.  The very commonly used build-in version of the software serial library for AVR processors uses interrupts that conflict with several other sub-libraries or this library and _cannot be used_!  I repeat:  _You cannot use the built in version of SoftwareSerial!_  You simply cannot.  It will not work.  Period.  This is not a bug that will be fixed.
 
-For stream communication, hardware serial should always be your first choice, if your processor has enough hardware serial ports.  Hardware serial ports are the most stable and have the best performance of any of the other streams.  If the [proper pins](https://www.pjrc.com/teensy/td_libs_AltSoftSerial.html) are available, [AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial) by Paul Stoffregen is also superior to SoftwareSerial, especially at slow baud rates.  Neither hardware serial nor AltSoftSerial require any modifications.  Because of the limited number of serial ports available on most boards, I suggest giving first priority (ie the first (or only) hardware serial port, "Serial") to your debugging stream going to your PC (if you intend to debug), second priority to the stream for the modem, and third priority to any sensors that require a stream for communication.  See the section on [Processor Compatibility](#compatibility) for more specific notes on what serial ports are available on the various supported processors.
+For stream communication, hardware serial should always be your first choice, if your processor has enough hardware serial ports.  Hardware serial ports are the most stable and have the best performance of any of the other streams.  Hardware seial ports are also the only option if you need to communicate with any device that uses even or odd parity, more than one stop bit, or does not use 8 data bits.  (That is, hardware serial ports are the only way to communicate with a device that doesn't use the 8N1 configuration.)  If the [proper pins](https://www.pjrc.com/teensy/td_libs_AltSoftSerial.html) are available, [AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial) by Paul Stoffregen is also superior to SoftwareSerial, especially at slow baud rates.  Neither hardware serial nor AltSoftSerial require any modifications.  Because of the limited number of serial ports available on most boards, I suggest giving first priority (ie the first (or only) hardware serial port, "Serial") to your debugging stream going to your PC (if you intend to debug), second priority to the stream for the modem, and third priority to any sensors that require a stream for communication.  See the section on [Processor Compatibility](#compatibility) for more specific notes on what serial ports are available on the various supported processors.
 
-To use a hardware serial stream, you do not need to include any libraries:
+To use a hardware serial stream, you do not need to include any libraries or write any extra lines.  You can simply write in "Serial#" where ever you need a stream.  If you would like to give your hardware serial port an easy-to-remeber alias, you can use code like this:
 ```cpp
-HardwareSerial* stream = &Serial;
+HardwareSerial* streamName = &Serial;
 ```
 
 To use AltSoftSerial:
 ```cpp
 #include <AltSoftSerial.h>  // include the AltSoftSerial library
-AltSoftSerial stream;  // Create an instance of AltSoftSerial
+AltSoftSerial streamName;  // Create an instance of AltSoftSerial
 ```
 
 To use the EnviroDIY modified version of SoftwareSerial:
 ```cpp
 #include <SoftwareSerial_ExtInts.h>  // include the SoftwareSerial library
-SoftwareSerial_ExtInts stream(tx_pin, rx_pin);
+SoftwareSerial_ExtInts streamName(tx_pin, rx_pin);
 ```
 
 After creating the stream instances, you must always remember to "begin" your stream within the main setup function.
 ```cpp
-stream.begin(BAUD_RATE);
+streamName.begin(BAUD_RATE);
 ```
 
 Additionally, for the EnviroDIY modified version of SoftwareSerial, you must enable the interrupts in your setup function:
 ```cpp
 //  Allow enableInterrrupt to control the interrupts for software serial
-enableInterrupt(stream, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+enableInterrupt(streamName, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
 ```
 
 Here are some helpful links for more information about the number of serial ports available on some of the different Arduino-style boards:
@@ -700,21 +699,9 @@ AtMega1284p ([EnviroDIY Mayfly](https://envirodiy.org/mayfly/), Sodaq Mbili, Mig
 - There is a single I2C (Wire) interface on pins 17 (SDA) and 16 (SCL).
 - This processor has two built-in hardware serial ports, Serial and Serial1
     - On most boards, Serial is connected to the FDTI chip for USB communication with the computer.  On both the Mayfly and the Mbili Serial1 is wired to the "Bee" sockets for communication with the modem.
-- To use AltSoftSerial with a Mayfly or Mbili you must add these lines to the top of your sketch:
-```cpp
-#define ALTSS_USE_TIMER1
-#define INPUT_CAPTURE_PIN		6 // receive
-#define OUTPUT_COMPARE_A_PIN		5 // transmit
-#define OUTPUT_COMPARE_B_PIN	4 // unusable PWM
-```
-    - Unfortunately, the Rx and Tx pins are on different Grove plugs on both the Mayfly and the Mbili making AltSoftSerial rather inconvienent to use.  It can still be used with sensors like the MaxBotix that only require a recieve pin (and not send), but if you do this you must keep in mind that you cannot use pins 4 and 5 at all.
-- To use AltSoftSerial with a Mighty 1284 or other AtMega1284p you must add these lines to the top of your sketch:
-```cpp
-#define ALTSS_USE_TIMER1
-#define INPUT_CAPTURE_PIN		14 // receive
-#define OUTPUT_COMPARE_A_PIN		13 // transmit
-#define OUTPUT_COMPARE_B_PIN	12 // unusable PWM
-```
+- AltSoftSerial can be used on pins 5 (Tx) and 6 (Rx) on the Mayfly or Mbili.  Pin 4 cannot be used while using AltSoftSerial on the Mayfly or Mbili.
+    - Unfortunately, the Rx and Tx pins are on different Grove plugs on both the Mayfly and the Mbili making AltSoftSerial rather inconvienent to use.  It can still be used with sensors like the MaxBotix that only require a recieve pin (and not send), but if you do this you still must keep in mind that you cannot use pins 4 and 5 at all.
+- AltSoftSerial can be used on pins 13 (Tx) and 14 (Rx) on the Mighty 1284 and other 1284p boards.  Pin 12 cannot be used while using AltSoftSerial on the Mighty 1284.
 - Any digital pin can be used with SoftwareSerial_ExtInts or SDI-12.
 ___
 
@@ -768,7 +755,7 @@ ___
 
 Unsupported Processors:
 - ESP8266/ESP32 - Supported only as a communications module (modem) with the default AT command firmware, not supported as an independent controller
-- AtSAM3X (Arduino Due)
+- AtSAM3X (Arduino Due) - Unsupported at this time due to clock issues.
     - There is one SPI port on pins 74 (MISO), 76 (MOSI), and 75 (SCK).  Pins 4, 10 and pin 52 can be used for CS/SS.
     - There are I2C (Wire) interfaces on pins 20 (SDA) and 21 (SCL) and 70 (SDA1) and 71 (SCL1).
     - This processor has one hardware serial port, USBSerial, which can _only_ be used for USB communication with a computer
