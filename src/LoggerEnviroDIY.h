@@ -188,7 +188,7 @@ public:
             char responseCode_char[4];
             for (int i = 0; i < 3; i++)
             {
-                responseCode_char[i] = response_buffer[i+9]
+                responseCode_char[i] = response_buffer[i+9];
             }
             responseCode = atoi(responseCode_char);
             modem.dumpBuffer(modem.stream);
