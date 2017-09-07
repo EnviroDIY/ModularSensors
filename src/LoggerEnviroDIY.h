@@ -154,7 +154,7 @@ public:
     {
         // Create a buffer for the response
         char response_buffer[12] = "";
-        bool did_respond = false;
+        int did_respond = 0;
 
         // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
         if(modem.connect("data.envirodiy.org", 80))
@@ -173,7 +173,7 @@ public:
             // We're only reading as far as the http code, anything beyond that
             // we don't care about so we're not reading to save on total
             // data used for transmission.
-            did_respond = modem.stream->read(response_buffer, 12)
+            did_respond = modem.stream->readBytes(response_buffer, 12);
 
             // Close the TCP/IP connection as soon as the first 12 characters are read
             // We don't need anything else and stoping here should save data use.
@@ -183,7 +183,7 @@ public:
 
         // Process the HTTP response
         int responseCode = 0;
-        if (did_respond)
+        if (did_respond > 0)
         {
             char responseCode_char[4];
             for (int i = 0; i < 3; i++)
