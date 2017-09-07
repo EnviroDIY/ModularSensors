@@ -46,7 +46,7 @@ void ModemOnOff::init(int vcc33Pin, int onoff_DTR_pin, int status_CTS_pin)
     }
     if (status_CTS_pin >= 0) {
         _status_CTS_pin = status_CTS_pin;
-        pinMode(_status_CTS_pin, INPUT);
+        pinMode(_status_CTS_pin, INPUT_PULLUP);
     }
     DBGM(F("   ... Success!\n"));
 }

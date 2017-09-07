@@ -56,12 +56,20 @@ loggerModem modem;
 const int I2CPower = 22;  // switched sensor power is pin 22 on Mayfly
 AOSongAM2315 am2315(I2CPower);
 
+
+// ==========================================================================
+//    Maxim DS3231 RTC
+// ==========================================================================
+#include <MaximDS3231.h>
+MaximDS3231 ds3231(1);
+
+
 // ==========================================================================
 //    EnviroDIY Mayfly
 // ==========================================================================
-#include <MayflyOnboardSensors.h>
+#include <ProcessorMetadata.h>
 const char *MFVersion = "v0.3";
-EnviroDIYMayfly mayfly(MFVersion) ;
+ProcessorMetadata mayfly(MFVersion) ;
 
 // ---------------------------------------------------------------------------
 // The two array that contains the variables for the different intervals
@@ -73,9 +81,9 @@ Variable *variableList_at1min[] = {
 };
 int variableCount1min = sizeof(variableList_at1min) / sizeof(variableList_at1min[0]);
 Variable *variableList_at5min[] = {
-    new EnviroDIYMayfly_Temp(&mayfly),
-    new EnviroDIYMayfly_Batt(&mayfly),
-    new EnviroDIYMayfly_FreeRam(&mayfly)
+    new MaximDS3231_Temp(&ds3231),
+    new ProcessorMetadata_Batt(&mayfly),
+    new ProcessorMetadata_FreeRam(&mayfly)
     // new YOUR_variableName_HERE(&)
 };
 int variableCount5min = sizeof(variableList_at5min) / sizeof(variableList_at5min[0]);
@@ -115,15 +123,15 @@ const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
 // ---------------------------------------------------------------------------
 
 // Flashes to Mayfly's LED's
-void greenred4flash()
+void greenredflash(int numFlash = 4, int rate = 75)
 {
-  for (int i = 1; i <= 4; i++) {
+  for (int i = 0; i < numFlash; i++) {
     digitalWrite(GREEN_LED, HIGH);
     digitalWrite(RED_LED, LOW);
-    delay(50);
+    delay(rate);
     digitalWrite(GREEN_LED, LOW);
     digitalWrite(RED_LED, HIGH);
-    delay(50);
+    delay(rate);
   }
   digitalWrite(RED_LED, LOW);
 }
@@ -143,7 +151,7 @@ void setup()
     pinMode(GREEN_LED, OUTPUT);
     pinMode(RED_LED, OUTPUT);
     // Blink the LEDs to show the board is on and starting up
-    greenred4flash();
+    greenredflash();
 
     // Start the Real Time Clock
     rtc.begin();

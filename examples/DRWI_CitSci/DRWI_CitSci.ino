@@ -76,18 +76,25 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 
 
 // ==========================================================================
+//    Maxim DS3231 RTC
+// ==========================================================================
+#include <MaximDS3231.h>
+MaximDS3231 ds3231(1);
+
+
+// ==========================================================================
 //    EnviroDIY Mayfly
 // ==========================================================================
-#include <MayflyOnboardSensors.h>
+#include <ProcessorMetadata.h>
 const char *MFVersion = "v0.5";
-EnviroDIYMayfly mayfly(MFVersion) ;
+ProcessorMetadata mayfly(MFVersion) ;
 
 // ---------------------------------------------------------------------------
 // The array that contains all valid variables
 // ---------------------------------------------------------------------------
 Variable *variableList[] = {
-    new EnviroDIYMayfly_Batt(&mayfly),
-    new EnviroDIYMayfly_Temp(&mayfly),
+    new ProcessorMetadata_Batt(&mayfly),
+    new MaximDS3231_Temp(&ds3231),
     new DecagonCTD_Cond(&ctd),
     new DecagonCTD_Temp(&ctd),
     new DecagonCTD_Depth(&ctd),
@@ -145,15 +152,15 @@ const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
 // ---------------------------------------------------------------------------
 
 // Flashes to Mayfly's LED's
-void greenredflash(int numFlash = 4)
+void greenredflash(int numFlash = 4, int rate = 75)
 {
   for (int i = 0; i < numFlash; i++) {
     digitalWrite(GREEN_LED, HIGH);
     digitalWrite(RED_LED, LOW);
-    delay(75);
+    delay(rate);
     digitalWrite(GREEN_LED, LOW);
     digitalWrite(RED_LED, HIGH);
-    delay(75);
+    delay(rate);
   }
   digitalWrite(RED_LED, LOW);
 }

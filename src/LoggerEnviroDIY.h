@@ -152,39 +152,51 @@ public:
     // Public function to send data
     int postDataEnviroDIY(void)
     {
-        modem.connect("data.envirodiy.org", 80);
+        // Create a buffer for the response
+        char response_buffer[12] = "";
+        int did_respond = 0;
 
-        // Send the request to the serial for debugging
-        PRINTOUT(F("\n \\/---- Post Request to EnviroDIY ----\\/ \n"));
-        streamEnviroDIYRequest(&Serial);  // for debugging
-        Serial.flush();  // for debugging
-
-        // Send the request to the modem stream
-        modem.dumpBuffer(modem.stream);
-        streamEnviroDIYRequest(modem.stream);
-        modem.stream->flush();  // wait for sending to finish
-
-        // Wait for at least the first 12 characters to make it across
-        unsigned long timeout = 1500;
-        for (unsigned long start = millis(); millis() - start < timeout; )
+        // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
+        if(modem.connect("data.envirodiy.org", 80))
         {
-            if (modem.stream->available() >= 12) break;
+            // Send the request to the serial for debugging
+            PRINTOUT(F("\n \\/---- Post Request to EnviroDIY ----\\/ \n"));
+            streamEnviroDIYRequest(&Serial);  // for debugging
+            Serial.flush();  // for debugging
+
+            // Send the request to the modem stream
+            modem.dumpBuffer(modem.stream);
+            streamEnviroDIYRequest(modem.stream);
+            modem.stream->flush();  // wait for sending to finish
+
+            // Read only the first 12 characters of the response
+            // We're only reading as far as the http code, anything beyond that
+            // we don't care about so we're not reading to save on total
+            // data used for transmission.
+            did_respond = modem.stream->readBytes(response_buffer, 12);
+
+            // Close the TCP/IP connection as soon as the first 12 characters are read
+            // We don't need anything else and stoping here should save data use.
+            modem.stop();
         }
+        else PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data Portal -- \n"));
 
         // Process the HTTP response
         int responseCode = 0;
-        if (modem.stream->available() >= 12)
+        if (did_respond > 0)
         {
-            modem.stream->readStringUntil(' ');  // Throw away the "HTTP/1.1"
-            responseCode = modem.stream->readStringUntil(' ').toInt();
+            char responseCode_char[4];
+            for (int i = 0; i < 3; i++)
+            {
+                responseCode_char[i] = response_buffer[i+9];
+            }
+            responseCode = atoi(responseCode_char);
             modem.dumpBuffer(modem.stream);
         }
         else responseCode=504;
 
         PRINTOUT(F(" -- Response Code -- \n"));
         PRINTOUT(responseCode, F("\n"));
-
-        modem.stop();
 
         return responseCode;
     }
@@ -203,7 +215,7 @@ public:
         delay(100);
 
         // Set up pins for the LED's
-        pinMode(_ledPin, OUTPUT);
+        if (_ledPin > 0) pinMode(_ledPin, OUTPUT);
 
         // Set up the sensors
         setupSensors();

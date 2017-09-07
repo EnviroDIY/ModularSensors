@@ -143,10 +143,32 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data);
 //    Maxbotix HRXL
 // ==========================================================================
 #include <MaxBotixSonar.h>
+
+// Define a serial port for receiving data - in this case, using software serial
+// Because the standard software serial library uses interrupts that conflict
+// with several other libraries used within this program, we must use a
+// version of software serial that has been stripped of interrupts and define
+// the interrrupts for it using the enableInterrup library.
+
+// If enough hardware serial ports are available on your processor, you should
+// use one of those instead.  If the proper pins are avaialbe, AltSoftSerial
+// by Paul Stoffregen is also superior to SoftwareSerial for this sensor.
+// Neither hardware serial nor AltSoftSerial require any modifications to
+// deal with interrupt conflicts.
+
 const int SonarData = 11;     // data  pin
 const int SonarTrigger = -1;   // Trigger pin
 const int SonarPower = 22;   // excite (power) pin
-MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger) ;
+
+#if defined __AVR__
+#include <SoftwareSerial_ExtInts.h>  // for the stream communication
+SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
+MaxBotixSonar sonar(SonarPower, sonarSerial, SonarTrigger) ;
+
+#else
+HardwareSerial &sonarSerial = Serial1;
+MaxBotixSonar sonar(SonarPower, sonarSerial, SonarTrigger) ;
+#endif
 
 
 // ==========================================================================
@@ -168,19 +190,26 @@ MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
 
 
 // ==========================================================================
+//    Maxim DS3231 RTC
+// ==========================================================================
+#include <MaximDS3231.h>
+MaximDS3231 ds3231(1);
+
+
+// ==========================================================================
 //    EnviroDIY Mayfly
 // ==========================================================================
-#include <MayflyOnboardSensors.h>
+#include <ProcessorMetadata.h>
 const char *MFVersion = "v0.5";
-EnviroDIYMayfly mayfly(MFVersion) ;
+ProcessorMetadata mayfly(MFVersion) ;
 
 // ---------------------------------------------------------------------------
 // The array that contains all valid variables
 // ---------------------------------------------------------------------------
 Variable *variableList[] = {
-    new EnviroDIYMayfly_Batt(&mayfly),
-    new EnviroDIYMayfly_FreeRam(&mayfly),
-    new EnviroDIYMayfly_Temp(&mayfly),
+    new ProcessorMetadata_Batt(&mayfly),
+    new ProcessorMetadata_FreeRam(&mayfly),
+    new MaximDS3231_Temp(&ds3231),
     new ApogeeSQ212_PAR(&SQ212),
     new MaxBotixSonar_Range(&sonar),
     new Decagon5TM_Ea(&fivetm),
@@ -292,15 +321,15 @@ const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
 // ---------------------------------------------------------------------------
 
 // Flashes to Mayfly's LED's
-void greenredflash(int numFlash = 4)
+void greenredflash(int numFlash = 4, int rate = 75)
 {
   for (int i = 0; i < numFlash; i++) {
     digitalWrite(GREEN_LED, HIGH);
     digitalWrite(RED_LED, LOW);
-    delay(75);
+    delay(rate);
     digitalWrite(GREEN_LED, LOW);
     digitalWrite(RED_LED, HIGH);
-    delay(75);
+    delay(rate);
   }
   digitalWrite(RED_LED, LOW);
 }
@@ -315,6 +344,12 @@ void setup()
     Serial.begin(SERIAL_BAUD);
     // Start the serial connection with the *bee
     ModemSerial.begin(ModemBaud);
+    // Start the stream for the sonar
+    sonarSerial.begin(9600);
+    // Allow interrupts for software serial
+    #if defined SoftwareSerial_ExtInts_h
+    enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+    #endif
 
     // Set up pins for the LED's
     pinMode(GREEN_LED, OUTPUT);

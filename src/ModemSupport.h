@@ -52,8 +52,18 @@ public:
                     DTRSleepType sleepType,
                     const char *APN)
     {
-    _APN = APN;
-    init(modemStream, vcc33Pin, status_CTS_pin, onoff_DTR_pin, sleepType);
+        _APN = APN;
+        init(modemStream, vcc33Pin, status_CTS_pin, onoff_DTR_pin, sleepType);
+    }
+    void setupModem(Stream &modemStream,
+                    int vcc33Pin,
+                    int status_CTS_pin,
+                    int onoff_DTR_pin,
+                    DTRSleepType sleepType,
+                    const char *APN)
+    {
+        _APN = APN;
+        init(&modemStream, vcc33Pin, status_CTS_pin, onoff_DTR_pin, sleepType);
     }
 
     void setupModem(Stream *modemStream,
@@ -64,9 +74,21 @@ public:
                     const char *ssid,
                     const char *pwd)
     {
-    _ssid = ssid;
-    _pwd = pwd;
-    init(modemStream, vcc33Pin, status_CTS_pin, onoff_DTR_pin, sleepType);
+        _ssid = ssid;
+        _pwd = pwd;
+        init(modemStream, vcc33Pin, status_CTS_pin, onoff_DTR_pin, sleepType);
+    }
+    void setupModem(Stream &modemStream,
+                    int vcc33Pin,
+                    int status_CTS_pin,
+                    int onoff_DTR_pin,
+                    DTRSleepType sleepType,
+                    const char *ssid,
+                    const char *pwd)
+    {
+        _ssid = ssid;
+        _pwd = pwd;
+        init(&modemStream, vcc33Pin, status_CTS_pin, onoff_DTR_pin, sleepType);
     }
 
     bool on(void)

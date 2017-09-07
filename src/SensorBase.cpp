@@ -47,16 +47,26 @@ String Sensor::getSensorName(void){return _sensorName;}
 // This is a helper function to check if the power needs to be turned on
 bool Sensor::checkPowerOn(void)
 {
-    int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
-    if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
+    DBGS(F("Checking power status.\n"));
+    if (_powerPin > 0)
     {
-        // DBGS(F("Power was off.\n"));
-        if (_millisPowerOn != 0) _millisPowerOn = 0;
-        return false;
+        int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
+        if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
+        {
+            // DBGS(F("Power was off.\n"));
+            if (_millisPowerOn != 0) _millisPowerOn = 0;
+            return false;
+        }
+        else
+        {
+            // DBGS(F("Power was on.\n"));
+            if (_millisPowerOn == 0) _millisPowerOn = millis();
+            return true;
+        }
     }
     else
     {
-        // DBGS(F("Power was on.\n"));
+        DBGS(F("Power was on.\n"));
         if (_millisPowerOn == 0) _millisPowerOn = millis();
         return true;
     }
@@ -65,17 +75,23 @@ bool Sensor::checkPowerOn(void)
 // This is a helper function to turn on sensor power
 void Sensor::powerUp(void)
 {
-    // DBGS(F("Powering on Sensor with pin "), _powerPin, F("\n"));
-    digitalWrite(_powerPin, HIGH);
-    _millisPowerOn = millis();
+    if (_powerPin > 0)
+    {
+        // DBGS(F("Powering on Sensor with pin "), _powerPin, F("\n"));
+        digitalWrite(_powerPin, HIGH);
+        _millisPowerOn = millis();
+    }
 }
 
 // This is a helper function to turn off sensor power
 void Sensor::powerDown(void)
 {
-    // DBGS(F("Turning off Power\n"));
-    digitalWrite(_powerPin, LOW);
-    _millisPowerOn = 0;
+    if (_powerPin > 0)
+    {
+        // DBGS(F("Turning off Power\n"));
+        digitalWrite(_powerPin, LOW);
+        _millisPowerOn = 0;
+    }
 }
 
 // This is a helper function to wait that enough time has passed for the sensor
@@ -106,8 +122,8 @@ void Sensor::waitForWarmUp(void)
 // By default, sets pin modes and returns ready
 SENSOR_STATUS Sensor::setup(void)
 {
-    pinMode(_powerPin, OUTPUT);
-    pinMode(_dataPin, INPUT);
+    if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
+    if (_dataPin > 0) pinMode(_dataPin, INPUT_PULLUP);
 
     DBGS(F("Set up "));
     DBGS(getSensorName());
