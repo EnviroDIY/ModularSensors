@@ -60,7 +60,7 @@ public:
     int postDataDreamHost(void)
     {
         // Create a buffer for the response
-        char[12] response_buffer = "";
+        char response_buffer[12] = "";
         bool did_respond = false;
 
         // Open a TCP/IP connection to DreamHost
@@ -93,7 +93,7 @@ public:
         int responseCode = 0;
         if (did_respond)
         {
-            char[4] responseCode_char;
+            char responseCode_char[4];
             for (int i = 0; i < 3; i++)
             {
                 responseCode_char[i] = response_buffer[i+9]
