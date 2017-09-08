@@ -227,7 +227,7 @@ const int y510NumberReadings = 10;  // The manufacturer strongly recommends taki
 // AltSoftSerial modbusSerial;
 YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePin, y510NumberReadings);
 #else
-HardwareSerial &modbusSerial = Serial1;
+// HardwareSerial &modbusSerial = Serial1;
 YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePin, y510NumberReadings);
 #endif
 
@@ -250,7 +250,7 @@ const int y514NumberReadings = 10;  // The manufacturer strongly recommends taki
 // AltSoftSerial modbusSerial;
 YosemitechY514 y514(y514modbusAddress, modbusPower, modbusSerial, max485EnablePin, y514NumberReadings);
 #else
-HardwareSerial &modbusSerial = Serial1;
+// HardwareSerial &modbusSerial = Serial1;
 YosemitechY514 y514(y514modbusAddress, modbusPower, modbusSerial, max485EnablePin, y514NumberReadings);
 #endif
 
@@ -273,7 +273,7 @@ const int y520NumberReadings = 10;  // The manufacturer strongly recommends taki
 // AltSoftSerial modbusSerial;
 YosemitechY520 y520(y520modbusAddress, modbusPower, modbusSerial, max485EnablePin, y520NumberReadings);
 #else
-HardwareSerial &modbusSerial = Serial1;
+// HardwareSerial &modbusSerial = Serial1;
 YosemitechY520 y520(y520modbusAddress, modbusPower, modbusSerial, max485EnablePin, y520NumberReadings);
 #endif
 
@@ -296,7 +296,7 @@ const int y532NumberReadings = 1;  // The manufacturer actually doesn't mention 
 // AltSoftSerial modbusSerial;
 YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePin, y532NumberReadings);
 #else
-HardwareSerial &modbusSerial = Serial1;
+// HardwareSerial &modbusSerial = Serial1;
 YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePin, y532NumberReadings);
 #endif
 
