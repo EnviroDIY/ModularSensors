@@ -32,6 +32,7 @@
 // #define MODULES_DBG Serial
 #include "ModSensorDebugger.h"
 
+#define ADS1015_ADDRESS (0x48) // 1001 000 (ADDR = GND)
 
 #define SQ212_NUM_VARIABLES 1
 #define SQ212_WARM_UP 2     // Time in ms
@@ -43,13 +44,14 @@ class ApogeeSQ212 : public Sensor
 {
 public:
     // The constructor - need the power pin and the data pin
-    ApogeeSQ212(int powerPin, int dataPin);
+    ApogeeSQ212(int powerPin, int dataPin, uint8_t i2cAddress = ADS1015_ADDRESS);
 
     String getSensorLocation(void) override;
 
     bool update(void) override;
 
 protected:
+    uint8_t _i2cAddress;
 
 };
 

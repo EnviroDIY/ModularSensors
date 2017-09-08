@@ -29,6 +29,7 @@ To use a sensor and variable in your sketch, you must separately include xxx.h f
     - [AOSong AM2315](#AM2315)
     - [Bosch BME280](#BME280)
     - [AOSong DHT](#DHT)
+    - [Yosemitech Brand Envirnmental Sensors](#Yosemitech)
     - [Maxim DS3231 Real Time Clock](#DS3231)
     - [Processor Metadata Treated as Sensors](#Onboard)
 - [Notes on Arduino Streams and Software Serial](#SoftwareSerial)
@@ -403,7 +404,7 @@ The MaxBotix sensors communicate with the board using TTL from pin 5 on the sens
 
 If you are using the [MaxBotix HR-MaxTemp](https://www.maxbotix.com/Ultrasonic_Sensors/MB7955.htm) MB7955 temperature compensator on your MaxBotix (wqhich greatly improves data quality), the red wire from the MaxTemp should be attached to pin 1 on the MaxSonar.  The white and shield wires from the MaxTemp should both be attached to Pin 7 or the MaxSonar (which is also attached to the Arduino ground).  The MaxTemp communicates directly with the MaxSonar and there is no need to make any changes on the Aruduino itself for the MaxTemp.
 
-The Arduino pin controlling power on/off, a stream instance for received data, and the Arduino pin controlling the trigger are required for the sensor constructor.  (Use -1 for the trigger pin if you do not have it connected.)  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
+The Arduino pin controlling power on/off, a stream instance for received data (ie, ```Serial```), and the Arduino pin controlling the trigger are required for the sensor constructor.  (Use -1 for the trigger pin if you do not have it connected.)  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
 
 The main constuctor for the sensor object is:
 ```cpp
@@ -414,7 +415,7 @@ MaxBotixSonar sonar(SonarPower, sonarStream, SonarTrigger);
 The single available variable is:  (customVarCode is optional)
 
 ```cpp
-MaxBotixSonar_Range(&sonar, "customVarCode");
+MaxBotixSonar_Range(&sonar, "customVarCode");  // Ultrasonic range in mm
 ```
 
 In addition to the constructors for the sensor and variable, you must remember to "begin" your stream instance within the main setup function.  The baud rate must be set to 9600 for all MaxBotix sensors.
@@ -428,11 +429,11 @@ _____
 
 The OBS-3 sends out a simple analog signal between 0 and 2.5V.  To convert that to a high resolution digital signal, the sensor must be attached to a TI ADS1115 ADD converter (such as on the first four analog pins of the Mayfly).  The TI ADS1115 ADD communicates with the board via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tieing the address pin to ground.  More than one of these ADD's can be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input volage of 2.0-5.5V.  The OBS-3 itself requires a 5-15V power supply, which can be turned off between measurements.  (It will actually run on power as low as 3.3V.)  The power supply is connected to the red wire, low range output comes from the blue wire, high range output comes from the white wire, and the black, greeen, and silver/unshielded wires should all be connected to ground.
 
-The Arduino pin controlling power on/off, analog data pin _on the TI ADS1115_, and calibration values _in Volts_ for Ax^2 + Bx + C are required for the sensor constructor.  A custom variable code can be entered as a second argument in the variable constructors, and it is very strongly recommended that you use this otherwise it will be very difficult to determine which return is high and which is low range on the sensor.
+The Arduino pin controlling power on/off, analog data pin _on the TI ADS1115_, and calibration values _in Volts_ for Ax^2 + Bx + C are required for the sensor constructor.  A custom variable code can be entered as a second argument in the variable constructors, and it is very strongly recommended that you use this otherwise it will be very difficult to determine which return is high and which is low range on the sensor.  If your ADD converter is not at the standard address of 0x48, you can enter its acutal address as the third argument.
 
 Note that to access both the high and low range returns, two instances must be created, one at the low range return pin and one at the high pin.
 
-The main constuctor for the sensor object is (called once each for high and low range):  The ADS1x15_i2cAddress is optional and only needs to be entered if using an ADS1x15 with an address other than 0x48.
+The main constuctor for the sensor object is (called once each for high and low range):
 
 ```cpp
 #include <CampbellOBS3.h>
@@ -443,7 +444,7 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, AD
 The single available variable is (called once each for high and low range):
 
 ```cpp
-CampbellOBS3_Turbidity(&osb3low, "customLowVarCode");
+CampbellOBS3_Turbidity(&osb3low, "customLowVarCode");  // Turbidity in NTU
 CampbellOBS3_Turbidity(&osb3high, "customHighVarCode");
 ```
 _____
@@ -464,9 +465,9 @@ Decagon5TM fivetm(TMSDI12address, SDI12Power, SDI12Data, numberReadings);
 The three available variables are:  (customVarCode is optional)
 
 ```cpp
-Decagon5TM_Ea(&fivetm, "customVarCode");
-Decagon5TM_Temp(&fivetm, "customVarCode");
-Decagon5TM_VWC(&fivetm, "customVarCode");
+Decagon5TM_Ea(&fivetm, "customVarCode");  // Ea/Matric Potential Variable in farads per meter
+Decagon5TM_Temp(&fivetm, "customVarCode");  // Temperature in °C
+Decagon5TM_VWC(&fivetm, "customVarCode");  // Volumetric water content as percent, calculated from Ea via TOPP equation
 ```
 _____
 
@@ -486,9 +487,9 @@ DecagonCTD ctd(CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 The three available variables are:  (customVarCode is optional)
 
 ```cpp
-DecagonCTD_Cond(&ctd, "customVarCode");
-DecagonCTD_Temp(&ctd, "customVarCode");
-DecagonCTD_Depth(&ctd, "customVarCode");
+DecagonCTD_Cond(&ctd, "customVarCode");  // Conductivity in µS/cm
+DecagonCTD_Temp(&ctd, "customVarCode");  // Temperature in °C
+DecagonCTD_Depth(&ctd, "customVarCode");  // Water depth in mm
 ```
 _____
 
@@ -508,8 +509,8 @@ DecagonES2 es2(ES2SDI12address, SDI12Power, SDI12Data, numberReadings);
 The two available variables are:  (customVarCode is optional)
 
 ```cpp
-DecagonES2_Cond(&es2, "customVarCode");
-DecagonES2_Temp(&es2, "customVarCode");
+DecagonES2_Cond(&es2, "customVarCode");  // Conductivity in µS/cm
+DecagonES2_Temp(&es2, "customVarCode");  // Temperature in °C
 ```
 _____
 
@@ -536,7 +537,7 @@ MaximDS18 ds18(powerPin, dataPin);
 The single available variable is:  (customVarCode is optional)
 
 ```cpp
-MaximDS18_Temp(&ds18, "customVarCode");
+MaximDS18_Temp(&ds18, "customVarCode");  // Temperature in °C
 ```
 _____
 
@@ -554,8 +555,8 @@ AOSongAM2315 am2315(I2CPower);
 The two available variables are:  (customVarCode is optional)
 
 ```cpp
-AOSongAM2315_Humidity(&am2315, "customVarCode");
-AOSongAM2315_Temp(&am2315, "customVarCode");
+AOSongAM2315_Humidity(&am2315, "customVarCode");  // Percent relative humidity
+AOSongAM2315_Temp(&am2315, "customVarCode");  // Temperature in °C
 ```
 _____
 
@@ -573,10 +574,10 @@ BoschBME280 bme280(I2CPower, i2cAddressHex);
 The four available variables are:  (customVarCode is optional)
 
 ```cpp
-BoschBME280_Temp(&bme280, "customVarCode");
-BoschBME280_Humidity(&bme280, "customVarCode");
-BoschBME280_Pressure(&bme280, "customVarCode");
-BoschBME280_Altitude(&bme280, "customVarCode");
+BoschBME280_Temp(&bme280, "customVarCode");  // Temperature in °C
+BoschBME280_Humidity(&bme280, "customVarCode");  // Percent relative humidity
+BoschBME280_Pressure(&bme280, "customVarCode");  // Barometric pressure in pascals
+BoschBME280_Altitude(&bme280, "customVarCode");  // Altitude in meters, calculated from barometric pressure
 ```
 _____
 
@@ -594,8 +595,8 @@ AOSongDHT dht(DHTPower, DHTPin, dhtType);;
 The three available variables are:  (customVarCode is optional)
 
 ```cpp
-AOSongDHT_Humidity(&dht, "customVarCode");
-AOSongDHT_Temp(&dht, "customVarCode");
+AOSongDHT_Humidity(&dht, "customVarCode");  // Percent relative humidity
+AOSongDHT_Temp(&dht, "customVarCode");  // Temperature in °C
 AOSongDHT_HI(&dht, "customVarCode");  // Heat Index
 ```
 _____
@@ -603,17 +604,78 @@ _____
 #### <a name="SQ212"></a>[Apogee SQ-212 Quantum Light Sensor ](https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/) Photosynthetically Active Radiation (PAR)
 This library will work with the Apogee SQ-212 and SQ-212 analog quantum light sensors, and could be readily adapted to work with similar sensors (e.g. SQ-215 or SQ225) with by simply changing the calibration factors.  These sensors send out a simple analog signal.  To convert that to a high resolution digigal signal, the sensor must be attached to a TI ADS1115 ADD converter (such as on the first four analog pins of the Mayfly).  The TI ADS1115 ADD communicates with the board via I2C and should have its address set as 0x48.  To use a different I2C address for the ADS1115, add the line `#define ADS1X15_ADDRESS (0x##)` to your sketch below the line `#include <ApogeeSQ212.h>`.  The PAR sensors should be attached to a 5-24V power source and the power supply to the sensor can be stopped between measurements.  The TI ADS1115 requires a 2-5.5V power supply.
 
-The Arduino pin controlling power on/off and the analog data pin _on the TI ADS1115_ are required for the sensor constructor:
+The Arduino pin controlling power on/off and the analog data pin _on the TI ADS1115_ are required for the sensor constructor.    If your ADD converter is not at the standard address of 0x48, you can enter its acutal address as the third argument.
 
 ```cpp
 #include <ApogeeSQ212.h>
-ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
+ApogeeSQ212 SQ212(SQ212Power, SQ212Data, ADS1x15_i2cAddress);
 ```
 
 The one available variable is:  (customVarCode is optional)
 
 ```cpp
 ApogeeSQ212_PAR(&SQ212, "customVarCode");  // Photosynthetically Active Radiation (PAR), in units of μmol m-2 s-1, or microeinsteinPerSquareMeterPerSecond
+```
+_____
+
+#### <a name="Yosemitech"></a>[Yosemitech Brand Environmental Sensors ](http://www.yosemitech.com/en/)
+This library currently supports the following Yosemitech sensors:
+- [Y502-A or Y504-A Optical Dissolved Oxygen Sensors](http://www.yosemitech.com/en/product-10.html)
+- [Y5820-A 4-Electrode Conductivity Sensor](http://www.yosemitech.com/en/product-18.html)
+- [Y510-B](http://www.yosemitech.com/en/product-17.html) or [Y511-A](http://www.yosemitech.com/en/product-16.html) Optical Turbidity Sensors (Y511 has a wiper, Y510 does not)
+- [Y514-A Chlorophyll Sensor with Wiper](http://www.yosemitech.com/en/product-14.html)
+- Y532-A Digital pH Sensor
+All of these sensors require a 5-12V power supply and the power supply can be stopped between measurements. They communicate via [Modbus RTU](https://en.wikipedia.org/wiki/Modbus) over [RS-485](https://en.wikipedia.org/wiki/RS-485).  To interface with them, you will need an RS485-to-TLL adapter.  The white wire of the Yosemitech sensor will connect to the "B" pin of the adapter and the green whire will connect to "A".  The red wire from the sensor should connect to the 5-12V power supply and the black to ground.  The Vcc pin on the adapter should be connected to another power supply (voltage depends on the specific adapter) and the ground to the same ground.  The red wire from the sensor _does not_ connect to the Vcc of the adapter.  The R/RO/RXD pin from the adapter connects to the TXD on the Arduino board and the D/DI/TXD pin from the adapter connects to the RXD.  If applicable, tie the RE and DE (recieve/data enable) pins together and connect them to another pin on your board.  There are a number of RS485-to-TLL adapters available.  When shopping for one, be mindful of the logic level of the TLL output by the adapter.  The MAX485, one of the most popular adapters, has a 5V logic level in the TLL signal.  This will _fry_ any board like the Mayfly that can only use on 3.3V logic.  You would need a voltage shifter in between the Mayfly and the MAX485 to make it work.
+
+The sensor modbus address, the pin controlling sensor power, a stream instance for data (ie, ```Serial```), the Arduino pin controlling the recieve and data enable on your RS485-to-TLL adapter, and the number of readings to average are required for the sensor constructor.  (Use -1 for the enable pin if your adapter does not have one.)  For all of these sensors, Yosemitech strongly recommends averaging 10 readings for each measurement.  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
+
+The various sensor and variable constructors are:
+
+```cpp
+// Dissolved Oxygen Sensor
+#include <YosemitechY504.h>  // Use this for both the Y502-A and Y504-A
+YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePin, y504NumberReadings);
+// Variables
+YosemitechY504_DOpct(&y504, "customVarCode")  // DO percent saturation
+YosemitechY504_Temp(&y504, "customVarCode")  // Temperature in °C
+YosemitechY504_DOmgL(&y504, "customVarCode")  // DO concentration, calculated from percent saturation
+```
+
+```cpp
+// Turbidity Sensor
+#include <YosemitechY510.h>  // Use this for both the Y510-B and Y511-A
+YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePin, y510NumberReadings);
+// Variables
+YosemitechY510_Turbidity(&y510, "customVarCode")  // Turbidity in NTU
+YosemitechY510_Temp(&y510, "customVarCode")  // Temperature in °C
+```
+
+```cpp
+// Chlorophyll Sensor
+#include <YosemitechY514.h>
+YosemitechY514 y514(y514modbusAddress, modbusPower, modbusSerial, max485EnablePin, y514NumberReadings);
+// Variables
+YosemitechY514_Chlorophyll(&y514, "customVarCode")  // Chlorophyll concentration in µg/L
+YosemitechY514_Temp(&y514, "customVarCode")  // Temperature in °C
+```
+
+```cpp
+// Conductivity Sensor
+#include <YosemitechY520.h>
+YosemitechY520 y520(y520modbusAddress, modbusPower, modbusSerial, max485EnablePin, y520NumberReadings);
+// Variables
+YosemitechY520_Cond(&y520, "customVarCode")  // Conductivity in µS/cm
+YosemitechY520_Temp(&y520, "customVarCode")  // Temperature in °C
+```
+
+```cpp
+// pH Sensor
+#include <YosemitechY532.h>
+YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePin, y532NumberReadings);
+// Variables
+YosemitechY532_pH(&y532, "customVarCode")  // pH
+YosemitechY532_Temp(&y532, "customVarCode")  // Temperature in °C
+YosemitechY532_Voltage(&y532, "customVarCode")  // Electrode electrical potential
 ```
 _____
 
@@ -631,7 +693,7 @@ MaximDS3231 ds3231(1);
 The only available variables is:  (customVarCode is optional)
 
 ```cpp
-MaximDS3231_Temp(&ds3231, "customVarCode");
+MaximDS3231_Temp(&ds3231, "customVarCode");  // Temperature in °C
 ```
 _____
 
@@ -649,8 +711,8 @@ ProcessorMetadata mayfly(MFVersion);
 The two available variables are:  (customVarCode is optional)
 
 ```cpp
-ProcessorMetadata_Batt(&mayfly, "customVarCode");
-ProcessorMetadata_FreeRam(&mayfly, "customVarCode");
+ProcessorMetadata_Batt(&mayfly, "customVarCode");  // Current battery voltage in volts
+ProcessorMetadata_FreeRam(&mayfly, "customVarCode");  // Amount of free RAM in bits
 ```
 _____
 
