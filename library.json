@@ -18,7 +18,7 @@
             "url": "https://envirodiy.org/"
         }
     ],
-    "version": "0.3.0-beta",
+    "version": "0.4.0-beta",
     "repository":
     {
         "type": "git",
@@ -49,10 +49,6 @@
             "name": "SdFat"
         },
         {
-            "name": "SoftwareSerial_ExtInts",
-            "version": "https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git"
-        },
-        {
             "name": "ADS1X15"
         },
         {
@@ -80,6 +76,14 @@
         {
             "name": "TinyGSM",
             "version": "https://github.com/EnviroDIY/TinyGSM.git"
+        }
+        {
+            "name": "SensorModbusMaster",
+            "version": "https://github.com/EnviroDIY/SensorModbusMaster.git"
+        },
+        {
+            "name": "YosemitechModbus",
+            "version": "https://github.com/EnviroDIY/YosemitechModbus.git"
         }
     ]
 }

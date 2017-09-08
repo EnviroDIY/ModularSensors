@@ -100,7 +100,7 @@ void Sensor::waitForWarmUp(void)
 {
     if (_WarmUpTime_ms != 0)
     {
-        if (millis() > _millisPowerOn + _WarmUpTime_ms)  // already read
+        if (millis() > _millisPowerOn + _WarmUpTime_ms)  // already ready
         {
             DBGS(F("Sensor already warmed up!\n"));
         }

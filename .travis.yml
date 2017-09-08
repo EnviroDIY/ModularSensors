@@ -19,21 +19,36 @@ before_install:
 - git config --global user.email "sdamiano@stroudcenter.org"
 - git config --global user.name "SRGDamia1"
 install:
+    - git rm library.json
     - pip install -U platformio
     - pio upgrade
     - pio update
-    - pio lib -g install https://github.com/EnviroDIY/Libraries.git#platformio
-    - pio lib -g uninstall EnviroDIY_ModularSensors
-    - pio lib -g uninstall RTCZero
-    - pio lib -g uninstall SoftwareSerial_ExtInts
+    - pio lib -g install 1  # OneWire
+    - pio lib -g install 19  # Adafruit DHT sensor library
+    - pio lib -g install 31  # Adafruit Unified Sensor
+    - pio lib -g install 54  # Dallas Temperature
+    - pio lib -g install 166  # Adafruit BME280 Library
+    - pio lib -g install 322  # SdFat
+    - pio lib -g install 344  # ADS1X15
+    - pio lib -g install 773  # Adafruit AM2315
+    - pio lib -g install 873  # RTCZero
+    - pio lib -g install 1824  # SensorModbusMaster
+    - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git  # Need the git until Paul S. has a new release
+    - pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
+    - pio lib -g install https://github.com/EnviroDIY/Sodaq_DS3231.git
+    - pio lib -g install https://github.com/EnviroDIY/EnableInterrupt.git
+    - pio lib -g install https://github.com/EnviroDIY/Arduino-SDI-12.git#ExtInts
+    - pio lib -g install https://github.com/EnviroDIY/TinyGSM.git
+    - pio lib -g install https://github.com/EnviroDIY/YosemitechModbus.git
     - pio lib -g update
-    - git rm library.json
 script:
 # Build AVR Boards
-- pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
-- platformio ci --lib="." --project-option="lib_ldf_mode = deep" --board=mayfly --board=sodaq_mbili --board=sodaq_ndogo --board=feather32u4 --board=megaatmega2560
+# - pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
+# - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git
+- platformio ci --lib="." --project-option="lib_ignore = RTCZero" --project-option="lib_ldf_mode = deep" --board=mayfly --board=sodaq_mbili --board=sodaq_ndogo --board=feather32u4 --board=megaatmega2560
+# - pio lib -g uninstall SoftwareSerial_ExtInts
+# - pio lib -g uninstall AltSoftSerial
 # Build SAMD Boards
-- pio lib -g uninstall SoftwareSerial_ExtInts
-- pio lib -g install RTCZero
-- platformio ci --lib="." --project-option="lib_ldf_mode = deep" --board=adafruit_feather_m0 --board=sodaq_autonomo --board=sodaq_one
-- pio lib -g uninstall RTCZero
+# - pio lib -g install RTCZero
+- platformio ci --lib="." --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial"  --project-option="lib_ldf_mode = deep" --board=adafruit_feather_m0 --board=sodaq_autonomo --board=sodaq_one
+# - pio lib -g uninstall RTCZero

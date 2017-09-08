@@ -27,9 +27,11 @@
 #include <Adafruit_ADS1015.h>
 
 // The constructor - need the power pin and the data pin
-ApogeeSQ212::ApogeeSQ212(int powerPin, int dataPin)
+ApogeeSQ212::ApogeeSQ212(int powerPin, int dataPin, uint8_t i2cAddress)
   : Sensor(powerPin, dataPin, F("ApogeeSQ212"), SQ212_NUM_VARIABLES, SQ212_WARM_UP)
-{}
+{
+    _i2cAddress = i2cAddress;
+}
 
 
 String ApogeeSQ212::getSensorLocation(void)
@@ -43,7 +45,7 @@ bool ApogeeSQ212::update(void)
 {
 
     // Start the Auxillary ADD
-    Adafruit_ADS1115 ads;     /* Use this for the 16-bit version */
+    Adafruit_ADS1115 ads(_i2cAddress);     /* Use this for the 16-bit version */
     ads.begin();
 
     // Check if the power is on, turn it on if not

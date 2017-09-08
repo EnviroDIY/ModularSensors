@@ -46,7 +46,7 @@ LoggerDreamHost EnviroDIYLogger;
 
 
 // ==========================================================================
-//    CAMPBELL OBS 3 / OBS 3+
+//    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
 #include <CampbellOBS3.h>
 // Campbell OBS 3+ Low Range calibration in Volts
@@ -65,7 +65,7 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
 
 
 // ==========================================================================
-//    Decagon CTD
+//    Decagon CTD Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
 #include <DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
@@ -76,14 +76,14 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 
 
 // ==========================================================================
-//    Maxim DS3231 RTC
+//    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
 #include <MaximDS3231.h>
 MaximDS3231 ds3231(1);
 
 
 // ==========================================================================
-//    EnviroDIY Mayfly
+//    EnviroDIY Mayfly Arduino-Based Board and Processor
 // ==========================================================================
 #include <ProcessorMetadata.h>
 const char *MFVersion = "v0.5";
@@ -99,7 +99,9 @@ Variable *variableList[] = {
     new DecagonCTD_Temp(&ctd),
     new DecagonCTD_Depth(&ctd),
     new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "TurbHigh")
+    new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
+    new Modem_RSSI(&EnviroDIYLogger.modem),
+    new Modem_SignalPercent(&EnviroDIYLogger.modem),
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
