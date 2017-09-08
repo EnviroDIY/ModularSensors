@@ -36,7 +36,7 @@ const int TIME_ZONE = -5;
 VariableArray sensors;
 
 // ==========================================================================
-//    AOSong AM2315
+//    AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
 #include <AOSongAM2315.h>
 const int I2CPower = 22;  // switched sensor power is pin 22 on Mayfly
@@ -44,7 +44,7 @@ AOSongAM2315 am2315(I2CPower);
 
 
 // ==========================================================================
-//    AOSong DHT 11/21 (AM2301)/22 (AM2302)
+//    AOSong DHT 11/21 (AM2301)/22 (AM2302) Digital Humidity and Temperature
 // ==========================================================================
 #include <AOSongDHT.h>
 const int DHTPower = 22;  // switched sensor power is pin 22 on Mayfly
@@ -54,7 +54,7 @@ AOSongDHT dht(DHTPower, DHTPin, dhtType);
 
 
 // ==========================================================================
-//    Apogee SQ-212
+//    Apogee SQ-212 Photosynthetically Active Radiation (PAR) Sensor
 // ==========================================================================
 #include <ApogeeSQ212.h>
 const int SQ212Power = 22;  // switched sensor power is pin 22 on Mayfly
@@ -63,7 +63,7 @@ ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
 
 
 // ==========================================================================
-//    Bosch BME280
+//    Bosch BME280 Environmental Sensor (Temperature, Humidity, Pressure)
 // ==========================================================================
 #include <BoschBME280.h>
 uint8_t BMEi2c_addr = 0x76;  // The BME280 can be addressed either as 0x76 or 0x77
@@ -72,7 +72,7 @@ BoschBME280 bme280(I2CPower, BMEi2c_addr);
 
 
 // ==========================================================================
-//    CAMPBELL OBS 3 / OBS 3+
+//    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
 #include <CampbellOBS3.h>
 // Campbell OBS 3+ Low Range calibration in Volts
@@ -91,7 +91,7 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
 
 
 // ==========================================================================
-//    Decagon 5TM
+//    Decagon 5TM Soil Moisture Sensor
 // ==========================================================================
 #include <Decagon5TM.h>
 const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
@@ -101,7 +101,7 @@ Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
 
 
 // ==========================================================================
-//    Decagon CTD
+//    Decagon CTD Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
 #include <DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
@@ -112,7 +112,7 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 
 
 // ==========================================================================
-//    Decagon ES2
+//    Decagon ES2 Conductivity and Temperature Sensor
 // ==========================================================================
 #include <DecagonES2.h>
 const char *ES2SDI12address = "3";  // The SDI-12 Address of the ES2
@@ -122,7 +122,7 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data);
 
 
 // ==========================================================================
-//    Maxbotix HRXL
+//    Maxbotix HRXL Ultrasonic Range Finder
 // ==========================================================================
 #include <MaxBotixSonar.h>
 
@@ -154,7 +154,7 @@ MaxBotixSonar sonar(SonarPower, sonarSerial, SonarTrigger) ;
 
 
 // ==========================================================================
-//    Maxim DS18 Temperature
+//    Maxim DS18 One Wire Temperature Sensor
 // ==========================================================================
 #include <MaximDS18.h>
 // OneWire Address [array of 8 hex characters]
@@ -172,18 +172,133 @@ MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
 
 
 // ==========================================================================
-//    Maxim DS3231 RTC
+//    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
 #include <MaximDS3231.h>
 MaximDS3231 ds3231(1);
 
 
 // ==========================================================================
-//    EnviroDIY Mayfly
+//    EnviroDIY Mayfly Arduino-Based Board and Processor
 // ==========================================================================
 #include <ProcessorMetadata.h>
 const char *MFVersion = "v0.5";
 ProcessorMetadata mayfly(MFVersion) ;
+
+
+// ==========================================================================
+//    Yosemitech Y504 Dissolved Oxygen Sensor
+// ==========================================================================
+#include <YosemitechY504.h>
+byte y504modbusAddress = 0x04;  // The modbus address of the Y504
+const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
+const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+const int y504NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+
+#if defined __AVR__
+// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+// const int modbusRx = 10;
+// const int modbusTx = 11;
+// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
+#include <AltSoftSerial.h>
+AltSoftSerial modbusSerial;
+YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePin, y504NumberReadings);
+#else
+HardwareSerial &modbusSerial = Serial1;
+YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePin, y504NumberReadings);
+#endif
+
+
+// ==========================================================================
+//    Yosemitech Y510 or Y511 Turbidity Sensor
+// ==========================================================================
+#include <YosemitechY510.h>
+byte y510modbusAddress = 0x0B;  // The modbus address of the Y510 or Y511
+// const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+const int y510NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+
+#if defined __AVR__
+// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+// const int modbusRx = 10;
+// const int modbusTx = 11;
+// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
+// #include <AltSoftSerial.h>
+// AltSoftSerial modbusSerial;
+YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePin, y510NumberReadings);
+#else
+HardwareSerial &modbusSerial = Serial1;
+YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePin, y510NumberReadings);
+#endif
+
+
+// ==========================================================================
+//    Yosemitech Y514 Chlorophyll Sensor
+// ==========================================================================
+#include <YosemitechY514.h>
+byte y514modbusAddress = 0x14;  // The modbus address of the Y514
+// const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+const int y514NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+
+#if defined __AVR__
+// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+// const int modbusRx = 10;
+// const int modbusTx = 11;
+// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
+// #include <AltSoftSerial.h>
+// AltSoftSerial modbusSerial;
+YosemitechY514 y514(y514modbusAddress, modbusPower, modbusSerial, max485EnablePin, y514NumberReadings);
+#else
+HardwareSerial &modbusSerial = Serial1;
+YosemitechY514 y514(y514modbusAddress, modbusPower, modbusSerial, max485EnablePin, y514NumberReadings);
+#endif
+
+
+// ==========================================================================
+//    Yosemitech Y520 Conductivity Sensor
+// ==========================================================================
+#include <YosemitechY520.h>
+byte y520modbusAddress = 0x20;  // The modbus address of the Y520
+// const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+const int y520NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+
+#if defined __AVR__
+// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+// const int modbusRx = 10;
+// const int modbusTx = 11;
+// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
+// #include <AltSoftSerial.h>
+// AltSoftSerial modbusSerial;
+YosemitechY520 y520(y520modbusAddress, modbusPower, modbusSerial, max485EnablePin, y520NumberReadings);
+#else
+HardwareSerial &modbusSerial = Serial1;
+YosemitechY520 y520(y520modbusAddress, modbusPower, modbusSerial, max485EnablePin, y520NumberReadings);
+#endif
+
+
+// ==========================================================================
+//    Yosemitech Y532 pH
+// ==========================================================================
+#include <YosemitechY532.h>
+byte y532modbusAddress = 0x32;  // The modbus address of the Y532
+// const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+const int y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
+
+#if defined __AVR__
+// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+// const int modbusRx = 10;
+// const int modbusTx = 11;
+// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
+// #include <AltSoftSerial.h>
+// AltSoftSerial modbusSerial;
+YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePin, y532NumberReadings);
+#else
+HardwareSerial &modbusSerial = Serial1;
+YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePin, y532NumberReadings);
+#endif
 
 // ---------------------------------------------------------------------------
 // The array that contains all valid variables
@@ -216,6 +331,18 @@ Variable *variableList[] = {
     new AOSongAM2315_Temp(&am2315),
     new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
+    new YosemitechY504_DOpct(&y504),
+    new YosemitechY504_Temp(&y504),
+    new YosemitechY504_DOmgL(&y504),
+    new YosemitechY510_Turbidity(&y510),
+    new YosemitechY510_Temp(&y510),
+    new YosemitechY514_Chlorophyll(&y514),
+    new YosemitechY514_Temp(&y514),
+    new YosemitechY520_Cond(&y520),
+    new YosemitechY520_Temp(&y520),
+    new YosemitechY532_pH(&y532),
+    new YosemitechY532_Temp(&y532),
+    new YosemitechY532_Voltage(&y532),
     // new YOUR_variableName_HERE(&)
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
@@ -301,6 +428,8 @@ void setup()
     Serial.begin(SERIAL_BAUD);
     // Start the stream for the sonar
     sonarSerial.begin(9600);
+    // Start the stream for the modbus sensors
+    modbusSerial.begin(9600);
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
     enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
