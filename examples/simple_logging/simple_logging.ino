@@ -29,7 +29,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 const char *SKETCH_NAME = "simple_logging.ino";
 
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "Mayfly_160073";
+const char *LoggerID = "Mayfly_Yosemitech";
 // How frequently (in minutes) to log data
 int LOGGING_INTERVAL = 1;
 // Your logger's timezone.
@@ -38,7 +38,7 @@ const int TIME_ZONE = -5;
 Logger logger;
 
 // ==========================================================================
-//    AOSong AM2315
+//    AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
 #include <AOSongAM2315.h>
 const int I2CPower = 22;  // switched sensor power is pin 22 on Mayfly
@@ -46,7 +46,7 @@ AOSongAM2315 am2315(I2CPower);
 
 
 // ==========================================================================
-//    AOSong DHT 11/21 (AM2301)/22 (AM2302)
+//    AOSong DHT 11/21 (AM2301)/22 (AM2302) Digital Humidity and Temperature
 // ==========================================================================
 #include <AOSongDHT.h>
 const int DHTPower = 22;  // switched sensor power is pin 22 on Mayfly
@@ -56,7 +56,7 @@ AOSongDHT dht(DHTPower, DHTPin, dhtType);
 
 
 // ==========================================================================
-//    Apogee SQ-212
+//    Apogee SQ-212 Photosynthetically Active Radiation (PAR) Sensor
 // ==========================================================================
 #include <ApogeeSQ212.h>
 const int SQ212Power = 22;  // switched sensor power is pin 22 on Mayfly
@@ -65,7 +65,7 @@ ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
 
 
 // ==========================================================================
-//    Bosch BME280
+//    Bosch BME280 Environmental Sensor (Temperature, Humidity, Pressure)
 // ==========================================================================
 #include <BoschBME280.h>
 uint8_t BMEi2c_addr = 0x76;  // The BME280 can be addressed either as 0x76 or 0x77
@@ -74,7 +74,7 @@ BoschBME280 bme280(I2CPower, BMEi2c_addr);
 
 
 // ==========================================================================
-//    CAMPBELL OBS 3 / OBS 3+
+//    CAMPBELL OBS 3 / OBS 3+ Turbidity Sensor
 // ==========================================================================
 #include <CampbellOBS3.h>
 // Campbell OBS 3+ Low Range calibration in Volts
@@ -93,7 +93,7 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
 
 
 // ==========================================================================
-//    Decagon 5TM
+//    Decagon 5TM Soil Moisture Sensor
 // ==========================================================================
 #include <Decagon5TM.h>
 const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
@@ -103,7 +103,7 @@ Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
 
 
 // ==========================================================================
-//    Decagon CTD
+//    Decagon CTD Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
 #include <DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
@@ -114,7 +114,7 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 
 
 // ==========================================================================
-//    Decagon ES2
+//    Decagon ES2 Conductivity and Temperature Sensor
 // ==========================================================================
 #include <DecagonES2.h>
 const char *ES2SDI12address = "3";  // The SDI-12 Address of the ES2
@@ -124,7 +124,7 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data);
 
 
 // ==========================================================================
-//    Maxbotix HRXL
+//    Maxbotix HRXL Ultrasonic Range Finder
 // ==========================================================================
 #include <MaxBotixSonar.h>
 
@@ -156,7 +156,7 @@ MaxBotixSonar sonar(SonarPower, sonarSerial, SonarTrigger) ;
 
 
 // ==========================================================================
-//    Maxim DS18 Temperature
+//    Maxim DS18 One Wire Temperature Sensor
 // ==========================================================================
 #include <MaximDS18.h>
 // OneWire Address [array of 8 hex characters]
@@ -174,18 +174,40 @@ MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
 
 
 // ==========================================================================
-//    Maxim DS3231 RTC
+//    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
 #include <MaximDS3231.h>
 MaximDS3231 ds3231(1);
 
 
 // ==========================================================================
-//    EnviroDIY Mayfly
+//    EnviroDIY Mayfly Arduino-Based Board and Processor
 // ==========================================================================
 #include <ProcessorMetadata.h>
 const char *MFVersion = "v0.5";
 ProcessorMetadata mayfly(MFVersion) ;
+
+
+// ==========================================================================
+//    Yosemitech Y504 Dissolved Oxygen Sensor
+// ==========================================================================
+#include <YosemitechY504.h>
+byte modbusAddress = 0x04;  // The SDI-12 Address of the ES2
+const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
+const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+
+#if defined __AVR__
+// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+// const int modbusRx = 10;
+// const int modbusTx = 11;
+// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
+#include <AltSoftSerial.h>
+AltSoftSerial modbusSerial;
+YosemitechY504 y405(modbusAddress, modbusPower, modbusSerial, max485EnablePin, 10);
+#else
+HardwareSerial &modbusSerial = Serial1;
+YosemitechY504 y405(modbusAddress, modbusPower, modbusSerial, max485EnablePin, 10);
+#endif
 
 // ---------------------------------------------------------------------------
 // The array that contains all valid variables
@@ -194,30 +216,33 @@ Variable *variableList[] = {
     new ProcessorMetadata_Batt(&mayfly),
     new ProcessorMetadata_FreeRam(&mayfly),
     new MaximDS3231_Temp(&ds3231),
-    new ApogeeSQ212_PAR(&SQ212),
-    new MaxBotixSonar_Range(&sonar),
-    new Decagon5TM_Ea(&fivetm),
-    new Decagon5TM_Temp(&fivetm),
-    new Decagon5TM_VWC(&fivetm),
-    new DecagonES2_Cond(&es2),
-    new DecagonES2_Temp(&es2),
-    new DecagonCTD_Cond(&ctd),
-    new DecagonCTD_Temp(&ctd),
-    new DecagonCTD_Depth(&ctd),
-    new MaximDS18_Temp(&ds18_1),
-    new MaximDS18_Temp(&ds18_2),
-    new MaximDS18_Temp(&ds18_3),
-    new BoschBME280_Temp(&bme280),
-    new BoschBME280_Humidity(&bme280),
-    new BoschBME280_Pressure(&bme280),
-    new BoschBME280_Altitude(&bme280),
-    new AOSongDHT_Humidity(&dht),
-    new AOSongDHT_Temp(&dht),
-    new AOSongDHT_HI(&dht),
-    new AOSongAM2315_Humidity(&am2315),
-    new AOSongAM2315_Temp(&am2315),
-    new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
+    // new ApogeeSQ212_PAR(&SQ212),
+    // new MaxBotixSonar_Range(&sonar),
+    // new Decagon5TM_Ea(&fivetm),
+    // new Decagon5TM_Temp(&fivetm),
+    // new Decagon5TM_VWC(&fivetm),
+    // new DecagonES2_Cond(&es2),
+    // new DecagonES2_Temp(&es2),
+    // new DecagonCTD_Cond(&ctd),
+    // new DecagonCTD_Temp(&ctd),
+    // new DecagonCTD_Depth(&ctd),
+    // new MaximDS18_Temp(&ds18_1),
+    // new MaximDS18_Temp(&ds18_2),
+    // new MaximDS18_Temp(&ds18_3),
+    // new BoschBME280_Temp(&bme280),
+    // new BoschBME280_Humidity(&bme280),
+    // new BoschBME280_Pressure(&bme280),
+    // new BoschBME280_Altitude(&bme280),
+    // new AOSongDHT_Humidity(&dht),
+    // new AOSongDHT_Temp(&dht),
+    // new AOSongDHT_HI(&dht),
+    // new AOSongAM2315_Humidity(&am2315),
+    // new AOSongAM2315_Temp(&am2315),
+    // new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
+    // new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
+    new YosemitechY504_DOpct(&y405),
+    new YosemitechY504_Temp(&y405),
+    new YosemitechY504_DOmgL(&y405),
     // new YOUR_variableName_HERE(&)
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
@@ -261,10 +286,13 @@ void setup()
     // Start the primary serial connection
     Serial.begin(SERIAL_BAUD);
     // Start the stream for the sonar
-    sonarSerial.begin(9600);
+    // sonarSerial.begin(9600);
+    // Start the stream for the modbus sensors
+    modbusSerial.begin(9600);
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
-    enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+    // enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+    enableInterrupt(modbusRx, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
     #endif
 
     // Set up pins for the LED's

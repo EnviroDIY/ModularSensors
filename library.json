@@ -81,5 +81,13 @@
             "name": "TinyGSM",
             "version": "https://github.com/EnviroDIY/TinyGSM.git"
         }
+        {
+            "name": "SensorModbusMaster",
+            "version": "https://github.com/EnviroDIY/SensorModbusMaster.git"
+        },
+        {
+            "name": "YosemitechModbus",
+            "version": "https://github.com/EnviroDIY/YosemitechModbus.git"
+        }
     ]
 }
