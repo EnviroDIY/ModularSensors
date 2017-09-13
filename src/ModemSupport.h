@@ -349,7 +349,7 @@ public:
         int sync_time = (millis() - start_millis)/1000;
 
         // Check the current RTC time
-        uint32_t cur_logTZ = Logger::getNow();
+        uint32_t cur_logTZ = Logger::getNowEpoch();
         DBG(F("           Time Returned by RTC: "), cur_logTZ, F(" -> "), \
             Logger::formatDateTime_ISO8601(cur_logTZ), F("\n"));
         DBG(F("Offset: "), abs(nist_logTZ - cur_logTZ), F("\n"));
