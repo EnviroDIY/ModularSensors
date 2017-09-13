@@ -18,7 +18,7 @@
             "url": "https://envirodiy.org/"
         }
     ],
-    "version": "0.4.0-beta",
+    "version": "0.4.1-beta",
     "repository":
     {
         "type": "git",
@@ -78,8 +78,7 @@
             "version": "https://github.com/EnviroDIY/TinyGSM.git"
         }
         {
-            "name": "SensorModbusMaster",
-            "version": "https://github.com/EnviroDIY/SensorModbusMaster.git"
+            "name": "SensorModbusMaster"
         },
         {
             "name": "YosemitechModbus",

@@ -71,6 +71,7 @@ SENSOR_STATUS YosemitechParent::setup(void)
 String YosemitechParent::getSensorLocation(void)
 {
     String sensorLocation = F("modbus_0x");
+    if (_modbusAddress< 16) sensorLocation += "0";
     sensorLocation += String(_modbusAddress, HEX);
     return sensorLocation;
 }

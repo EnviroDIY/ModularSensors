@@ -123,7 +123,7 @@ public:
             sensorsSleep();
             // Print out the current logger time
             stream->print(F("Current logger time is "));
-            stream->println(formatDateTime_ISO8601(getNow()));
+            stream->println(formatDateTime_ISO8601(getNowEpoch()));
             stream->println(F("    -----------------------"));
             // Print out the sensor data
             printSensorData(stream);
@@ -225,7 +225,7 @@ public:
 
         // Sync the clock with NIST
         PRINTOUT(F("Current RTC time is: "));
-        PRINTOUT(formatDateTime_ISO8601(getNow()), F("\n"));
+        PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
 
         // Synchronize the RTC
         PRINTOUT(F("Attempting to synchronize RTC with NIST\n"));
