@@ -197,7 +197,7 @@ void setup()
 
     // Print out the current time
     Serial.print(F("Current RTC time is: "));
-    Serial.println(Logger::formatDateTime_ISO8601(Logger::getNow()));
+    Serial.println(Logger::formatDateTime_ISO8601(Logger::getNowEpoch()));
 
     // Turn on the modem
     modem.on();

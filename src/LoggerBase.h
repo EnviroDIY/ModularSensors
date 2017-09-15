@@ -15,7 +15,10 @@
 #if defined(ARDUINO_ARCH_SAMD)
   #include <RTCZero.h>
 #endif
-#include <Sodaq_DS3231.h>  // To communicate with the clock
+#include <Sodaq_DS3231.h>  // To communicate with the clock, also implements a needed date/time class
+#define EPOCH_TIME_OFF 946684800  // This is 2000-jan-01 00:00:00 in epoch time
+// Need this b/c the date/time class in Sodaq_DS3231 treats a 32-bit long timestamp
+// as time from 2000-jan-01 00:00:00 instead of the standard epoch of 19970-jan-01 00:00:00
 #include <SdFat.h>  // To communicate with the SD card
 
 #include "VariableArray.h"
@@ -98,23 +101,30 @@ public:
     // ===================================================================== //
     // Public functions to access the clock in proper format and time zone
     // ===================================================================== //
-    // This gets the current epoch time (unix time) and corrects it for the specified time zone
+    // This gets the current epoch time (unix time, ie, the number of seconds
+    // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
     #if defined(ARDUINO_ARCH_SAMD)
     static RTCZero rtc;
-    static uint32_t getNow(void)
+    static uint32_t getNowEpoch(void)
     {
       uint32_t currentEpochTime = rtc.getEpoch();
       currentEpochTime += _offset*3600;
       return currentEpochTime;
     }
     #else
-    static uint32_t getNow(void)
+    static uint32_t getNowEpoch(void)
     {
       uint32_t currentEpochTime = rtc.now().getEpoch();
       currentEpochTime += _offset*3600;
       return currentEpochTime;
     }
     #endif
+
+    static DateTime dtFromEpoch(uint32_t epochTime)
+    {
+        DateTime dt(epochTime - EPOCH_TIME_OFF);
+        return dt;
+    }
 
     // This converts a date-time object into a ISO8601 formatted string
     static String formatDateTime_ISO8601(DateTime dt)
@@ -153,7 +163,7 @@ public:
     static String formatDateTime_ISO8601(uint32_t epochTime)
     {
         // Create a DateTime object from the epochTime
-        DateTime dt(epochTime);
+        DateTime dt = dtFromEpoch(epochTime);
         return formatDateTime_ISO8601(dt);
     }
 
@@ -166,8 +176,8 @@ public:
     // called before updating the sensors, not after.
     void markTime(void)
     {
-      markedEpochTime = getNow();
-      markedDateTime = DateTime(markedEpochTime);
+      markedEpochTime = getNowEpoch();
+      markedDateTime = dtFromEpoch(markedEpochTime);
       formatDateTime_ISO8601(markedDateTime).toCharArray(markedISO8601Time, 26);
     }
 
@@ -176,15 +186,23 @@ public:
     bool checkInterval(void)
     {
         bool retval;
-        DBGVA(F("Current Time: "), getNow(), F("\n"));
-        DBGVA(F("Mod of Logging Interval: "), getNow() % _interruptRate, F("\n"));
+        DBGVA(F("Current Unix Timestamp: "), getNowEpoch(), F("\n"));
+        DBGVA(F("Mod of Logging Interval: "), getNowEpoch() % _interruptRate, F("\n"));
         DBGVA(F("Number of Readings so far: "), _numReadings, F("\n"));
-        DBGVA(F("Mod of 120: "), getNow() % 120, F("\n"));
-        if ((getNow() % _interruptRate == 0 ) or
-            (_numReadings < 10 and getNow() % 120 == 0))
+        DBGVA(F("Mod of 120: "), getNowEpoch() % 120, F("\n"));
+        if ((getNowEpoch() % _interruptRate == 0 ) or
+            (_numReadings < 10 and getNowEpoch() % 120 == 0))
         {
             // Update the time variables with the current time
             markTime();
+            DBGVA(F("Time marked at (unix): "), markedEpochTime, F("\n"));
+            DBGVA(F("    year: "), markedDateTime.year(), F("\n"));
+            DBGVA(F("    month: "), markedDateTime.month(), F("\n"));
+            DBGVA(F("    date: "), markedDateTime.date(), F("\n"));
+            DBGVA(F("    hour: "), markedDateTime.hour(), F("\n"));
+            DBGVA(F("    minute: "), markedDateTime.minute(), F("\n"));
+            DBGVA(F("    second: "), markedDateTime.second(), F("\n"));
+            DBGVA(F("Time marked at [char]: "), markedISO8601Time, F("\n"));
             // Update the number of readings taken
             _numReadings ++;
             DBGVA(F("Time to log!\n"));
@@ -367,7 +385,7 @@ public:
             fileName +=  String(_loggerID);
             fileName +=  F("_");
         }
-        fileName +=  formatDateTime_ISO8601(getNow()).substring(0, 10);
+        fileName +=  formatDateTime_ISO8601(getNowEpoch()).substring(0, 10);
         fileName +=  F(".csv");
         setFileName(fileName);
     }
@@ -454,26 +472,26 @@ public:
             // Open the file in write mode (and create it if it did not exist)
             logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END);
             // Set creation date time
-            logFile.timestamp(T_CREATE, DateTime(getNow()).year(),
-                                        DateTime(getNow()).month(),
-                                        DateTime(getNow()).date(),
-                                        DateTime(getNow()).hour(),
-                                        DateTime(getNow()).minute(),
-                                        DateTime(getNow()).second());
+            logFile.timestamp(T_CREATE, dtFromEpoch(getNowEpoch()).year(),
+                                        dtFromEpoch(getNowEpoch()).month(),
+                                        dtFromEpoch(getNowEpoch()).date(),
+                                        dtFromEpoch(getNowEpoch()).hour(),
+                                        dtFromEpoch(getNowEpoch()).minute(),
+                                        dtFromEpoch(getNowEpoch()).second());
             // Set write/modification date time
-            logFile.timestamp(T_WRITE, DateTime(getNow()).year(),
-                                       DateTime(getNow()).month(),
-                                       DateTime(getNow()).date(),
-                                       DateTime(getNow()).hour(),
-                                       DateTime(getNow()).minute(),
-                                       DateTime(getNow()).second());
+            logFile.timestamp(T_WRITE, dtFromEpoch(getNowEpoch()).year(),
+                                       dtFromEpoch(getNowEpoch()).month(),
+                                       dtFromEpoch(getNowEpoch()).date(),
+                                       dtFromEpoch(getNowEpoch()).hour(),
+                                       dtFromEpoch(getNowEpoch()).minute(),
+                                       dtFromEpoch(getNowEpoch()).second());
             // Set access  date time
-            logFile.timestamp(T_ACCESS, DateTime(getNow()).year(),
-                                        DateTime(getNow()).month(),
-                                        DateTime(getNow()).date(),
-                                        DateTime(getNow()).hour(),
-                                        DateTime(getNow()).minute(),
-                                        DateTime(getNow()).second());
+            logFile.timestamp(T_ACCESS, dtFromEpoch(getNowEpoch()).year(),
+                                        dtFromEpoch(getNowEpoch()).month(),
+                                        dtFromEpoch(getNowEpoch()).date(),
+                                        dtFromEpoch(getNowEpoch()).hour(),
+                                        dtFromEpoch(getNowEpoch()).minute(),
+                                        dtFromEpoch(getNowEpoch()).second());
             PRINTOUT(F("   ... File created!\n"));
 
             // Add header information
@@ -515,19 +533,19 @@ public:
             PRINTOUT(rec, F("\n"));
 
             // Set write/modification date time
-            logFile.timestamp(T_WRITE, DateTime(getNow()).year(),
-                                       DateTime(getNow()).month(),
-                                       DateTime(getNow()).date(),
-                                       DateTime(getNow()).hour(),
-                                       DateTime(getNow()).minute(),
-                                       DateTime(getNow()).second());
+            logFile.timestamp(T_WRITE, dtFromEpoch(getNowEpoch()).year(),
+                                       dtFromEpoch(getNowEpoch()).month(),
+                                       dtFromEpoch(getNowEpoch()).date(),
+                                       dtFromEpoch(getNowEpoch()).hour(),
+                                       dtFromEpoch(getNowEpoch()).minute(),
+                                       dtFromEpoch(getNowEpoch()).second());
             // Set access  date time
-            logFile.timestamp(T_ACCESS, DateTime(getNow()).year(),
-                                        DateTime(getNow()).month(),
-                                        DateTime(getNow()).date(),
-                                        DateTime(getNow()).hour(),
-                                        DateTime(getNow()).minute(),
-                                        DateTime(getNow()).second());
+            logFile.timestamp(T_ACCESS, dtFromEpoch(getNowEpoch()).year(),
+                                        dtFromEpoch(getNowEpoch()).month(),
+                                        dtFromEpoch(getNowEpoch()).date(),
+                                        dtFromEpoch(getNowEpoch()).hour(),
+                                        dtFromEpoch(getNowEpoch()).minute(),
+                                        dtFromEpoch(getNowEpoch()).second());
 
             // Close the file to save it
             logFile.close();
@@ -560,7 +578,7 @@ public:
             sensorsSleep();
             // Print out the current logger time
             stream->print(F("Current logger time is "));
-            stream->println(formatDateTime_ISO8601(getNow()));
+            stream->println(formatDateTime_ISO8601(getNowEpoch()));
             stream->println(F("    -----------------------"));
             // Print out the sensor data
             printSensorData(stream);
@@ -618,7 +636,7 @@ public:
 
         // Print the current time
         PRINTOUT(F("Current RTC time is: "));
-        PRINTOUT(formatDateTime_ISO8601(getNow()), F("\n"));
+        PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
 
         // Setup sleep mode
         if(_sleep){setupSleep();}

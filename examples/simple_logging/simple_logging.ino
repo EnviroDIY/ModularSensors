@@ -17,6 +17,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // Include the base required libraries
 // ---------------------------------------------------------------------------
 #define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
+// #define VAR_ARRAY_DBG Serial  // For in-depth debugging of variable array and logger fxns
+
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <LoggerBase.h>
@@ -387,10 +389,12 @@ void setup()
 {
     // Start the primary serial connection
     Serial.begin(SERIAL_BAUD);
-    // Start the stream for the sonar
-    sonarSerial.begin(9600);
+
     // Start the stream for the modbus sensors
     modbusSerial.begin(9600);
+
+    // Start the stream for the sonar
+    sonarSerial.begin(9600);
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
     enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
