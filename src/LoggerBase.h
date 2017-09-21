@@ -485,7 +485,7 @@ public:
                                        dtFromEpoch(getNowEpoch()).hour(),
                                        dtFromEpoch(getNowEpoch()).minute(),
                                        dtFromEpoch(getNowEpoch()).second());
-            // Set access  date time
+            // Set access date time
             logFile.timestamp(T_ACCESS, dtFromEpoch(getNowEpoch()).year(),
                                         dtFromEpoch(getNowEpoch()).month(),
                                         dtFromEpoch(getNowEpoch()).date(),
@@ -539,7 +539,7 @@ public:
                                        dtFromEpoch(getNowEpoch()).hour(),
                                        dtFromEpoch(getNowEpoch()).minute(),
                                        dtFromEpoch(getNowEpoch()).second());
-            // Set access  date time
+            // Set access date time
             logFile.timestamp(T_ACCESS, dtFromEpoch(getNowEpoch()).year(),
                                         dtFromEpoch(getNowEpoch()).month(),
                                         dtFromEpoch(getNowEpoch()).date(),

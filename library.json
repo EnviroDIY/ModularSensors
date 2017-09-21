@@ -43,7 +43,7 @@
         },
         {
             "name": "EnableInterrupt",
-            "version": "https://github.com/EnviroDIY/EnableInterrupt.git"
+            "version": "https://github.com/GreyGnome/EnableInterrupt.git"
         },
         {
             "name": "SdFat"

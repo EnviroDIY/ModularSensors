@@ -35,10 +35,10 @@ install:
     - pio lib -g install 773  # Adafruit AM2315
     - pio lib -g install 873  # RTCZero
     - pio lib -g install 1824  # SensorModbusMaster
-    - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git  # Need the git until Paul S. has a new release
+    - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git  # #73, but need the git until Paul S. has a new release
     - pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
     - pio lib -g install https://github.com/EnviroDIY/Sodaq_DS3231.git
-    - pio lib -g install https://github.com/EnviroDIY/EnableInterrupt.git
+    - pio lib -g install https://github.com/GreyGnome/EnableInterrupt.git  # #311, but need the git until new release
     - pio lib -g install https://github.com/EnviroDIY/Arduino-SDI-12.git#ExtInts
     - pio lib -g install https://github.com/EnviroDIY/TinyGSM.git
     - pio lib -g install https://github.com/EnviroDIY/YosemitechModbus.git
