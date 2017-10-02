@@ -160,7 +160,7 @@ public:
         // WiFi modules immediately re-connect to the last access point so we
         // can save just a tiny bit of time (and thus power) by not resending
         // the credentials every time.
-        #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
+        #if defined(TINY_GSM_MODEM_HAS_WIFI)
         if (_ssid)
         {
             DBG(F("\nConnecting to WiFi network...\n"));
@@ -181,9 +181,7 @@ public:
         else
         {
         #endif
-        #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
-            defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
-            defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_XBEE)
+        #if defined(TINY_GSM_MODEM_HAS_GPRS)
             DBG(F("\nWaiting for cellular network...\n"));
             if (!_modem->waitForNetwork(55000L)){
                 DBG("... Connection failed.", F("\n"));
@@ -194,7 +192,7 @@ public:
             }
 
         #endif
-        #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
+        #if defined(TINY_GSM_MODEM_HAS_WIFI)
         }
         #endif
 
@@ -236,9 +234,7 @@ public:
 
     void disconnectNetwork(void)
     {
-    #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
-        defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
-        defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_XBEE)
+    #if defined(TINY_GSM_MODEM_HAS_GPRS)
         _modem->gprsDisconnect();
     #endif
     }
@@ -372,29 +368,32 @@ public:
     ModemOnOff *modemOnOff;
 
     // More functions for using the modem as a "sensor"
+    #if defined(TINY_GSM_MODEM_SIM800)
+        #define MODEM_NAME "SIMCom SIM800"
+    #elif defined(TINY_GSM_MODEM_SIM808)
+        #define MODEM_NAME "SIMCom SIM808"
+    #elif defined(TINY_GSM_MODEM_SIM868)
+        #define MODEM_NAME "SIMCom SIM868"
+    #elif defined(TINY_GSM_MODEM_SIM900)
+        #define MODEM_NAME "SIMCom SIM900"
+    #elif defined(TINY_GSM_MODEM_A6)
+        #define MODEM_NAME "AI-Thinker A6"
+    #elif defined(TINY_GSM_MODEM_A7)
+        #define MODEM_NAME "AI-Thinker A7"
+    #elif defined(TINY_GSM_MODEM_M590)
+        #define MODEM_NAME "Neoway SIM590"
+    #elif defined(TINY_GSM_MODEM_M590)
+        #define MODEM_NAME "U-blox SARA U201"
+    #elif defined(TINY_GSM_MODEM_ESP8266)
+        #define MODEM_NAME "ESP8266"
+    #elif defined(TINY_GSM_MODEM_XBEE)
+        #define MODEM_NAME "Digi XBee"
+    #else
+        #define MODEM_NAME "Unknown"
+    #endif
 
     // Constructors
-    #if defined(TINY_GSM_MODEM_SIM800)
-    loggerModem() : Sensor(-1, -1, F("SIM800"), MODEM_NUM_MEASUREMENTS, 0) {}
-    #endif
-    #if defined(TINY_GSM_MODEM_SIM900)
-    loggerModem() : Sensor(-1, -1, F("SIM900"), MODEM_NUM_MEASUREMENTS, 0) {}
-    #endif
-    #if defined(TINY_GSM_MODEM_A6)
-    loggerModem() : Sensor(-1, -1, F("SIMA6"), MODEM_NUM_MEASUREMENTS, 0) {}
-    #endif
-    #if defined(TINY_GSM_MODEM_A7)
-    loggerModem() : Sensor(-1, -1, F("SIMA7"), MODEM_NUM_MEASUREMENTS, 0) {}
-    #endif
-    #if defined(TINY_GSM_MODEM_M590)
-    loggerModem() : Sensor(-1, -1, F("SIM590"), MODEM_NUM_MEASUREMENTS, 0) {}
-    #endif
-    #if defined(TINY_GSM_MODEM_ESP8266)
-    loggerModem() : Sensor(-1, -1, F("ESP8266"), MODEM_NUM_MEASUREMENTS, 0) {}
-    #endif
-    #if defined(TINY_GSM_MODEM_XBEE)
-    loggerModem() : Sensor(-1, -1, F("XBee"), MODEM_NUM_MEASUREMENTS, 0) {}
-    #endif
+    loggerModem() : Sensor(-1, -1, F(MODEM_NAME), MODEM_NUM_MEASUREMENTS, 0) {}
 
     String getSensorLocation(void) override { return F("Modem Serial Port"); }
     // Actually doing NOTHING on any of the rest of the functions.  The modem

@@ -52,7 +52,7 @@ This library is designed for remote sensing applications, that is, to log data f
 
 ## <a name="ldeps"></a>Library Dependencies
 
-In order to support multiple functions and sensors, there are quite a lot of sub-libraries that this library is dependent on.  _Even if you do not use all of the modules, you must have all of the dependencies installed for the library itself to properly compile._
+In order to support multiple functions and sensors, there are quite a lot of sub-libraries that this library is dependent on.  _Even if you do not use the modules, you must have all of the dependencies installed for the library itself to properly compile._
 
 - [EnableInterrupt](https://github.com/GreyGnome/EnableInterrupt) - Administrates and handles pin change interrupts, allowing the logger to sleep and save battery.  This also controls the interrupts for the versions of SoftwareSerial and SDI-12 linked below that have been stripped of interrupt control.  Because we use this library, _you must always add the line ```#include <EnableInterrupt.h>``` to the top of your sketch._
 - AVR sleep library - This is for low power sleeping for AVR processors. (This library is built in to the Arduino IDE.)
@@ -155,7 +155,7 @@ Following the example from above, with a Decagon CTD, you would create an array 
 // Create a new VariableArray object
 VariableArray myVars;
 // Create the array of variables named "variableList" using the pre-created variable objects
-Variable *variableList[] = {*cond, *temp, *depth};
+Variable \*variableList[] = {\*cond, \*temp, \*depth};
 // Optionally, count the number of variables in the array (in this case, it's 3)
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 ```
@@ -166,7 +166,7 @@ The asterix must be put in front of the variable name to indicate that it is a p
 // Create a new VariableArray object
 VariableArray myVars;
 // Create new variable objects in an array named "variableList" using the "new" keyword
-Variable *variableList[] = {
+Variable \*variableList[] = {
     new Sensor1_Variable1(&parentSensor1, "customVarCode1"),
     new Sensor1_Variable2(&parentSensor1, "customVarCode2"),
     new Sensor2_Variable1(&parentSensor2, "customVarCode3"),
@@ -602,7 +602,7 @@ AOSongDHT_HI(&dht, "customVarCode");  // Heat Index
 _____
 
 #### <a name="SQ212"></a>[Apogee SQ-212 Quantum Light Sensor ](https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/) Photosynthetically Active Radiation (PAR)
-This library will work with the Apogee SQ-212 and SQ-212 analog quantum light sensors, and could be readily adapted to work with similar sensors (e.g. SQ-215 or SQ225) with by simply changing the calibration factors.  These sensors send out a simple analog signal.  To convert that to a high resolution digigal signal, the sensor must be attached to a TI ADS1115 ADD converter (such as on the first four analog pins of the Mayfly).  The TI ADS1115 ADD communicates with the board via I2C and should have its address set as 0x48.  To use a different I2C address for the ADS1115, add the line `#define ADS1X15_ADDRESS (0x##)` to your sketch below the line `#include <ApogeeSQ212.h>`.  The PAR sensors should be attached to a 5-24V power source and the power supply to the sensor can be stopped between measurements.  The TI ADS1115 requires a 2-5.5V power supply.
+This library will work with the Apogee SQ-212 and SQ-212 analog quantum light sensors, and could be readily adapted to work with similar sensors (e.g. SQ-215 or SQ225) with by simply changing the calibration factors.  These sensors send out a simple analog signal.  To convert that to a high resolution digigal signal, the sensor must be attached to a TI ADS1115 ADD converter (such as on the first four analog pins of the Mayfly).    The TI ADS1115 ADD communicates with the board via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tieing the address pin to ground.  More than one of these ADD's can be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input volage of 2.0-5.5V.  The PAR sensors should be attached to a 5-24V power source and the power supply to the sensor can be stopped between measurements.
 
 The Arduino pin controlling power on/off and the analog data pin _on the TI ADS1115_ are required for the sensor constructor.    If your ADD converter is not at the standard address of 0x48, you can enter its acutal address as the third argument.
 

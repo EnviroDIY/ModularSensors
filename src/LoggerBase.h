@@ -104,20 +104,20 @@ public:
     // This gets the current epoch time (unix time, ie, the number of seconds
     // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
     #if defined(ARDUINO_ARCH_SAMD)
-    static RTCZero rtc;
-    static uint32_t getNowEpoch(void)
-    {
-      uint32_t currentEpochTime = rtc.getEpoch();
-      currentEpochTime += _offset*3600;
-      return currentEpochTime;
-    }
+        static RTCZero rtc;
+        static uint32_t getNowEpoch(void)
+        {
+          uint32_t currentEpochTime = rtc.getEpoch();
+          currentEpochTime += _offset*3600;
+          return currentEpochTime;
+        }
     #else
-    static uint32_t getNowEpoch(void)
-    {
-      uint32_t currentEpochTime = rtc.now().getEpoch();
-      currentEpochTime += _offset*3600;
-      return currentEpochTime;
-    }
+        static uint32_t getNowEpoch(void)
+        {
+          uint32_t currentEpochTime = rtc.now().getEpoch();
+          currentEpochTime += _offset*3600;
+          return currentEpochTime;
+        }
     #endif
 
     static DateTime dtFromEpoch(uint32_t epochTime)
