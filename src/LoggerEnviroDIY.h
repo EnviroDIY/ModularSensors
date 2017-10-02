@@ -217,6 +217,10 @@ public:
         rtc.begin();
         delay(100);
 
+        #if defined ARDUINO_ARCH_SAMD
+            zero_sleep_rtc.begin();
+        #endif
+
         // Sync the clock with NIST
         PRINTOUT(F("Current RTC time is: "));
         PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));

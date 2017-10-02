@@ -12,15 +12,23 @@
 
 #define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
 #include <EnableInterrupt.h>  // To handle external and pin change interrupts
+
+// Bring in the libraries to handle the processor sleep/standby modes
+// The SAMD library can also the built-in clock on those modules
 #if defined(ARDUINO_ARCH_SAMD)
   #include <RTCZero.h>
+#elif defined __AVR__
+  #include <avr/sleep.h>
 #endif
-#include <Sodaq_DS3231.h>  // To communicate with the clock, also implements a needed date/time class
+
+// Bring in the library to commuinicate with an external high-precision real time clock
+// This also implements a needed date/time class
+#include <Sodaq_DS3231.h>
 #define EPOCH_TIME_OFF 946684800  // This is 2000-jan-01 00:00:00 in epoch time
 // Need this b/c the date/time class in Sodaq_DS3231 treats a 32-bit long timestamp
 // as time from 2000-jan-01 00:00:00 instead of the standard epoch of 19970-jan-01 00:00:00
-#include <SdFat.h>  // To communicate with the SD card
 
+#include <SdFat.h>  // To communicate with the SD card
 #include "VariableArray.h"
 
 // Defines the "Logger" Class
@@ -104,17 +112,16 @@ public:
     // This gets the current epoch time (unix time, ie, the number of seconds
     // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
     #if defined(ARDUINO_ARCH_SAMD)
-        static RTCZero rtc;
         static uint32_t getNowEpoch(void)
         {
-          uint32_t currentEpochTime = rtc.getEpoch();
+          uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
           currentEpochTime += _offset*3600;
           return currentEpochTime;
         }
     #else
         static uint32_t getNowEpoch(void)
         {
-          uint32_t currentEpochTime = rtc.now().getEpoch();
+          uint32_t currentEpochTime = zero_sleep_rtc.now().getEpoch();
           currentEpochTime += _offset*3600;
           return currentEpochTime;
         }
@@ -250,17 +257,19 @@ public:
     // Set up the Interrupt Service Request for waking
     // In this case, we're doing nothing, we just want the processor to wake
     // This must be a static function (which means it can only call other static funcions.)
-    static void wakeISR(void){}
+    static void wakeISR(void){DBGVA(F("The clock interrupt woke me up!\n"));}
 
     #if defined ARDUINO_ARCH_SAMD
+
+    static RTCZero zero_sleep_rtc;  // create the rtc object
 
     // Sets up the sleep mode
     void setupSleep(void)
     {
         // Alarms on the RTC built into the SAMD21 appear to be identical to those
         // in the DS3231.  See more notes below.
-        rtc.enableAlarm(rtc.MATCH_SS);  // every minute
-        rtc.attachInterrupt(wakeISR);
+        zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);  // every minute
+        zero_sleep_rtc.attachInterrupt(wakeISR);
     }
 
     // Puts the system to sleep to conserve battery life.
@@ -274,13 +283,10 @@ public:
         // Serial1.flush();
 
         // Put the processor into sleep mode.
-        rtc.standbyMode();
-
-        DBGVA(F("The clock interrupt woke me up!\n"));
+        zero_sleep_rtc.standbyMode();
     }
 
     #elif defined __AVR__
-    #include <avr/sleep.h>  // To handle the processor sleep modes
 
     // Sets up the sleep mode
     void setupSleep(void)
@@ -340,7 +346,7 @@ public:
         // This must happen after the SE bit is set.
         sleep_cpu();
 
-        DBGVA(F("The clock interrupt woke me up!\n"));
+        // This portion happens on the wake up..
         // Clear the SE (sleep enable) bit.
         sleep_disable();
         // Re-enable the processor ADC
@@ -625,6 +631,10 @@ public:
         rtc.begin();
         delay(100);
 
+        #if defined ARDUINO_ARCH_SAMD
+            zero_sleep_rtc.begin();
+        #endif
+
         // Set up pins for the LED's
         if (_ledPin > 0) pinMode(_ledPin, OUTPUT);
 
@@ -725,7 +735,7 @@ DateTime Logger::markedDateTime = 0;
 char Logger::markedISO8601Time[26];
 
 #if defined(ARDUINO_ARCH_SAMD)
-RTCZero Logger::rtc;
+RTCZero Logger::zero_sleep_rtc;
 #endif
 
 #endif
