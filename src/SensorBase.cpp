@@ -53,13 +53,13 @@ bool Sensor::checkPowerOn(void)
         int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
         if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
         {
-            // DBGS(F("Power was off.\n"));
+            DBGS(F("Power was off.\n"));
             if (_millisPowerOn != 0) _millisPowerOn = 0;
             return false;
         }
         else
         {
-            // DBGS(F("Power was on.\n"));
+            DBGS(F("Power was on.\n"));
             if (_millisPowerOn == 0) _millisPowerOn = millis();
             return true;
         }
@@ -77,7 +77,7 @@ void Sensor::powerUp(void)
 {
     if (_powerPin > 0)
     {
-        // DBGS(F("Powering on Sensor with pin "), _powerPin, F("\n"));
+        DBGS(F("Powering on Sensor with pin "), _powerPin, F("\n"));
         digitalWrite(_powerPin, HIGH);
         _millisPowerOn = millis();
     }
@@ -88,7 +88,7 @@ void Sensor::powerDown(void)
 {
     if (_powerPin > 0)
     {
-        // DBGS(F("Turning off Power\n"));
+        DBGS(F("Turning off Power\n"));
         digitalWrite(_powerPin, LOW);
         _millisPowerOn = 0;
     }
@@ -195,7 +195,7 @@ void Sensor::notifyVariables(void)
             DBGS(F("...   "));
             variables[i]->onSensorUpdate(this);
         }
-        // else DBGS(F("Null pointer\n"));
+        else DBGS(F("Null pointer\n"));
     }
 }
 
@@ -203,11 +203,11 @@ void Sensor::notifyVariables(void)
 // This function checks if a sensor needs to be updated or not
 bool Sensor::checkForUpdate(unsigned long sensorLastUpdated)
 {
-    // DBGS(F("It has been "), (millis() - sensorLastUpdated)/1000);
-    // DBGS(F(" seconds since the sensor value was checked\n"));
+    DBGS(F("It has been "), (millis() - sensorLastUpdated)/1000);
+    DBGS(F(" seconds since the sensor value was checked\n"));
     if ((millis() > 60000 and millis() > sensorLastUpdated + 60000) or sensorLastUpdated == 0)
     {
-        // DBGS(F("Value out of date, updating\n"));
+        DBGS(F("Value out of date, updating\n"));
         return(update());
     }
     else return(true);

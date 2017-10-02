@@ -210,18 +210,12 @@ public:
         // Print a start-up note to the first serial port
         PRINTOUT(F("Beginning logger "), _loggerID, F("\n"));
 
-        // Start the Real Time Clock
-        rtc.begin();
-        delay(100);
-
         // Set up pins for the LED's
         if (_ledPin > 0) pinMode(_ledPin, OUTPUT);
 
-        // Set up the sensors
-        setupSensors();
-
-        // Set up the log file
-        setupLogFile();
+        // Start the Real Time Clock
+        rtc.begin();
+        delay(100);
 
         // Sync the clock with NIST
         PRINTOUT(F("Current RTC time is: "));
@@ -241,6 +235,12 @@ public:
         }
         // Turn off the modem
         modem.off();
+
+        // Set up the sensors
+        setupSensors();
+
+        // Set up the log file
+        setupLogFile();
 
         // Setup sleep mode
         if(_sleep){setupSleep();}
