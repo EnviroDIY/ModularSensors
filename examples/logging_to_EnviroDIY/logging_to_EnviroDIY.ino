@@ -210,7 +210,7 @@ ProcessorMetadata mayfly(MFVersion) ;
 #include <YosemitechY504.h>
 byte y504modbusAddress = 0x04;  // The modbus address of the Y504
 const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
-const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
 const int y504NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
 
 #if defined __AVR__
@@ -233,7 +233,7 @@ YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePi
 #include <YosemitechY510.h>
 byte y510modbusAddress = 0x0B;  // The modbus address of the Y510 or Y511
 // const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
-// const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
 const int y510NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
 
 #if defined __AVR__
@@ -256,7 +256,7 @@ YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePi
 #include <YosemitechY514.h>
 byte y514modbusAddress = 0x14;  // The modbus address of the Y514
 // const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
-// const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
 const int y514NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
 
 #if defined __AVR__
@@ -279,7 +279,7 @@ YosemitechY514 y514(y514modbusAddress, modbusPower, modbusSerial, max485EnablePi
 #include <YosemitechY520.h>
 byte y520modbusAddress = 0x20;  // The modbus address of the Y520
 // const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
-// const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
 const int y520NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
 
 #if defined __AVR__
@@ -302,7 +302,7 @@ YosemitechY520 y520(y520modbusAddress, modbusPower, modbusSerial, max485EnablePi
 #include <YosemitechY532.h>
 byte y532modbusAddress = 0x32;  // The modbus address of the Y532
 // const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
-// const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
 const int y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
 
 #if defined __AVR__

@@ -121,7 +121,7 @@ public:
     #else
         static uint32_t getNowEpoch(void)
         {
-          uint32_t currentEpochTime = zero_sleep_rtc.now().getEpoch();
+          uint32_t currentEpochTime = rtc.now().getEpoch();
           currentEpochTime += _offset*3600;
           return currentEpochTime;
         }
@@ -280,10 +280,16 @@ public:
         // This does not clear their buffers, it just waits until they are finished
         // TODO:  Make sure can find all serial ports
         Serial.flush();
-        // Serial1.flush();
+
+        // Detach the USB so that it can reconnect again
+        // USB connection will end at sleep because it's a separate mode in the processor
+        USBDevice.detach();
 
         // Put the processor into sleep mode.
         zero_sleep_rtc.standbyMode();
+
+        // Reattach the USB after waking
+        USBDevice.attach(); 
     }
 
     #elif defined __AVR__
