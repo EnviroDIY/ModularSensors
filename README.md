@@ -262,7 +262,11 @@ After defining your modem, set it up using one of these two commands, depending 
 - The vcc33Pin is the pin that controls whether or not the modem itself is powered.  Use -1 if your modem is always recieving power from your logger board or if you want to control modem power independently.
 - The status_CTS_pin is the pin that indicates whether the modem is turned on and it is clear to send data.  If you use -1, the modem is assumed to always be ready.
 - The onoff_DTR_pin is the _pin_ used to put the modem to sleep or to wake it up.
-- The DTRSleepType controls _how_ the modem is put to sleep between readings.  Use "held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.  Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.  Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.  Use "always_on" if you do not want the library to control the modem power and sleep.
+- The DTRSleepType controls _how_ the modem is put to sleep between readings.
+    - Use "held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
+    - Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
+    - Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
+    - Use "always_on" if you do not want the library to control the modem power and sleep.
 - Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
 
 Once the modem has been set up, these functions are available:
@@ -780,6 +784,7 @@ AtSAMD21 (Arduino Zero, Adafruit Feather M0, Sodaq Autonomo) - Not yet fully sup
 - AltSoftSerial is not directly supported on the AtSAMD21, but with some effort, the timers could be configured to make it work.
 - SoftwareSerial_ExtInts is not supported at all on the AtSAMD21.
 - Any digital pin can be used with SDI-12.
+- Because the USB controller is built into the processor, you may lose serial output views when the processor sleeps.
 ___
 
 AtMega2560 (Arduino Mega) - Should be fully functional, but untested.
@@ -813,6 +818,7 @@ AtMega32u4 (Arduino Leonardo/Micro, Adafruit Flora/Feather, etc) - All functions
 - There is one additional hardware serial port, Serial1, which can communicate with any serial device.
 - AltSoftSerial can be used on pins 5 (Tx) and 13 (Rx).
 - Only pins 8, 9, 10, 11, 14, 15, and 16 can be used with SoftwareSerial_ExtInts or SDI-12.  (And pins 14, 15, and 16 will be eliminated if you are using any SPI devices (like an SD card).)
+- Because the USB controller is built into the processor, you may lose serial output views when the processor sleeps.
 ___
 
 Unsupported Processors:

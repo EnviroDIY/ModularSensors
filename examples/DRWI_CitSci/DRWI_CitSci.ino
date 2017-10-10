@@ -128,12 +128,12 @@ const char *UUIDs[] =                                                      // UU
 // ---------------------------------------------------------------------------
 // Device Connection Options and WebSDL Endpoints for POST requests
 // ---------------------------------------------------------------------------
+HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
 const int modemDTRPin = 23;  // Modem DTR Pin (Data Terminal Ready - used for sleep) (-1 if unconnected)
 const int modemCTSPin = 19;   // Modem CTS Pin (Clear to Send) (-1 if unconnected)
 const int modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (else -1)
 
 DTRSleepType ModemSleepMode = held;  // How the modem is put to sleep
-HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
 const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble making it fast (19200 works)
 const char *APN = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
 
