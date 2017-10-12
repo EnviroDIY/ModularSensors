@@ -66,22 +66,22 @@ MaxBotixSonar_Range sonar_range(&sonar);
 // ---------------------------------------------------------------------------
 // Board setup info
 // ---------------------------------------------------------------------------
-const long SERIAL_BAUD = 57600;  // Serial port baud rate
-const int GREEN_LED = 8;  // Pin for the green LED
-const int RED_LED = 9;  // Pin for the red LED
+const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const int greenLED = 8;  // Pin for the green LED
+const int redLED = 9;  // Pin for the red LED
 
 // Flashes to Mayfly's LED's
 void greenredflash(int numFlash = 4)
 {
   for (int i = 0; i < numFlash; i++) {
-    digitalWrite(GREEN_LED, HIGH);
-    digitalWrite(RED_LED, LOW);
+    digitalWrite(greenLED, HIGH);
+    digitalWrite(redLED, LOW);
     delay(75);
-    digitalWrite(GREEN_LED, LOW);
-    digitalWrite(RED_LED, HIGH);
+    digitalWrite(greenLED, LOW);
+    digitalWrite(redLED, HIGH);
     delay(75);
   }
-  digitalWrite(RED_LED, LOW);
+  digitalWrite(redLED, LOW);
 }
 
 // ---------------------------------------------------------------------------
@@ -90,7 +90,7 @@ void greenredflash(int numFlash = 4)
 void setup()
 {
     // Start the primary serial connection
-    Serial.begin(SERIAL_BAUD);
+    Serial.begin(serialBaud);
     // Start the stream for the sonar
     sonarSerial.begin(9600);
     // Allow interrupts for software serial
@@ -99,8 +99,8 @@ void setup()
     #endif
 
     // Set up pins for the LED's
-    pinMode(GREEN_LED, OUTPUT);
-    pinMode(RED_LED, OUTPUT);
+    pinMode(greenLED, OUTPUT);
+    pinMode(redLED, OUTPUT);
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
@@ -119,7 +119,7 @@ void setup()
 void loop()
 {
     // Turn on the LED to show we're taking a reading
-    digitalWrite(GREEN_LED, HIGH);
+    digitalWrite(greenLED, HIGH);
 
     // Wake up the sensor (also gives power)
     sonar.wake();
@@ -135,7 +135,7 @@ void loop()
     sonar.sleep();
 
     // Turn off the LED to show we're done with the reading
-    digitalWrite(GREEN_LED, LOW);
+    digitalWrite(greenLED, LOW);
 
     // Wait for the next reading
     delay(5000);

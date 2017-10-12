@@ -28,14 +28,14 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //   ie, pin locations, addresses, calibrations and related settings
 // ---------------------------------------------------------------------------
 // The name of this file
-const char *SKETCH_NAME = "simple_logging.ino";
+const char *sketchName = "simple_logging.ino";
 
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "Mayfly_Yosemitech";
 // How frequently (in minutes) to log data
-int LOGGING_INTERVAL = 1;
+int loggingInterval = 1;
 // Your logger's timezone.
-const int TIME_ZONE = -5;
+const int timeZone = -5;
 // Create a new logger instance
 Logger logger;
 
@@ -355,12 +355,12 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // ---------------------------------------------------------------------------
 // Board setup info
 // ---------------------------------------------------------------------------
-const long SERIAL_BAUD = 57600;  // Serial port baud rate
-const int GREEN_LED = 8;  // Pin for the green LED
-const int RED_LED = 9;  // Pin for the red LED
-const int BUTTON_PIN = 21;  // Pin for the button
-const int RTC_PIN = A7;  // RTC Interrupt/Alarm pin
-const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
+const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const int greenLED = 8;  // Pin for the green LED
+const int redLED = 9;  // Pin for the red LED
+const int buttonPin = 21;  // Pin for the button
+const int wakePin = A7;  // RTC Interrupt/Alarm pin
+const int sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin
 
 
 // ---------------------------------------------------------------------------
@@ -371,14 +371,14 @@ const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
 void greenredflash(int numFlash = 4, int rate = 75)
 {
   for (int i = 0; i < numFlash; i++) {
-    digitalWrite(GREEN_LED, HIGH);
-    digitalWrite(RED_LED, LOW);
+    digitalWrite(greenLED, HIGH);
+    digitalWrite(redLED, LOW);
     delay(rate);
-    digitalWrite(GREEN_LED, LOW);
-    digitalWrite(RED_LED, HIGH);
+    digitalWrite(greenLED, LOW);
+    digitalWrite(redLED, HIGH);
     delay(rate);
   }
-  digitalWrite(RED_LED, LOW);
+  digitalWrite(redLED, LOW);
 }
 
 
@@ -388,7 +388,7 @@ void greenredflash(int numFlash = 4, int rate = 75)
 void setup()
 {
     // Start the primary serial connection
-    Serial.begin(SERIAL_BAUD);
+    Serial.begin(serialBaud);
 
     // Start the stream for the modbus sensors
     modbusSerial.begin(9600);
@@ -401,31 +401,31 @@ void setup()
     #endif
 
     // Set up pins for the LED's
-    pinMode(GREEN_LED, OUTPUT);
-    pinMode(RED_LED, OUTPUT);
+    pinMode(greenLED, OUTPUT);
+    pinMode(redLED, OUTPUT);
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
     // Print a start-up note to the first serial port
     Serial.print(F("Now running "));
-    Serial.print(SKETCH_NAME);
+    Serial.print(sketchName);
     Serial.print(F(" on Logger "));
     Serial.println(LoggerID);
 
     // Set the timezone and offsets
-    Logger::setTimeZone(TIME_ZONE);
-    Logger::setTZOffset(TIME_ZONE);  // Because RTC is in UTC
+    Logger::setTimeZone(timeZone);
+    Logger::setTZOffset(timeZone);  // Because RTC is in UTC
 
     // Initialize the logger;
-    logger.init(SD_SS_PIN, RTC_PIN, variableCount, variableList,
-                LOGGING_INTERVAL, LoggerID);
-    logger.setAlertPin(GREEN_LED);
+    logger.init(sdCardPin, wakePin, variableCount, variableList,
+                loggingInterval, LoggerID);
+    logger.setAlertPin(greenLED);
 
     // Begin the logger;
     logger.begin();
 
     // Check for debugging mode
-    logger.checkForDebugMode(BUTTON_PIN, &Serial);
+    logger.checkForDebugMode(buttonPin, &Serial);
 }
 
 

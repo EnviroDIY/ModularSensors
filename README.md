@@ -209,7 +209,7 @@ Timezone functions:
 A note about timezones:  It is possible to create multiple logger objects in your code if you want to log different sensors at different intervals, _but every logger object will always have the same timezone and timezone offset_.  If you attempt to call these functions more than once for different loggers, whatever value was called last will apply to every logger.
 
 Setup and initialization functions:
-- **init(int SDCardPin, int interruptPin, int variableCount, Sensor variableList[], float loggingIntervalMinutes, const char loggerID = 0)** - Initializes the logger object.  Must happen within the setup function.  Note that the variableList[], loggerID are all pointers.  The SDCardPin is the pin of the chip select/slave select for the SPI connection to the SD card.
+- **init(int SDCardPin, int mcuWakePin, int variableCount, Sensor variableList[], float loggingIntervalMinutes, const char loggerID = 0)** - Initializes the logger object.  Must happen within the setup function.  Note that the variableList[], loggerID are all pointers.  The SDCardPin is the pin of the chip select/slave select for the SPI connection to the SD card.
 - **setAlertPin(int ledPin)** - Optionally sets a pin to put out an alert that a measurement is being logged.  This is intended to be a pin with a LED on it so you can see the light come on when a measurement is being taken.
 
 Functions to access the clock in proper format and time zone:
@@ -278,7 +278,7 @@ Once the modem has been set up, these functions are available:
 - **stop()** - Breaks the TCP connection.
 - **dumpBuffer(Stream stream, int timeDelay = 5, int timeout = 5000)** - Empties out the recieve buffer.  The flush() function does NOT empty the buffer, it only waits for sending to complete.
 - **getNISTTime()** - Returns the current unix timestamp from NIST via the TIME protocol (rfc868).
-- **syncDS3231()** - This synchronizes the DS3231 real time clock with the NIST provided timestamp.
+- **syncRTClock()** - This synchronizes the DS3231 real time clock with the NIST provided timestamp.
 
 The cellular modems themselves (SIM800, SIM900, A6, A7, and M590) can also be used as "sensors" which have the following variables:
 ```cpp
@@ -327,7 +327,7 @@ _Within the setup function_, you must then initialize the logger and then run th
 logger.setTimeZone(timeZone);
 logger.setTZOffset(offset);
 // Initialize the logger;
-logger.init(SDCardPin, interruptPin, variableCount, variableList, loggingIntervalMinutes, loggerID);
+logger.init(SDCardPin, mcuWakePin, variableCount, variableList, loggingIntervalMinutes, loggerID);
 // OPTIONAL - specify a pin to give an alert when a measurement is taken
 // This should generally be a pin with an LED
 setAlertPin(int ledPin);
@@ -342,7 +342,7 @@ logger.begin();
 EnviroDIYLogger.setTimeZone(timeZone);
 EnviroDIYLogger.setTZOffset(offset);
 // Initialize the logger;
-EnviroDIYLogger.init(SDCardPin, interruptPin, variableCount, variableList, loggingIntervalMinutes, loggerID);
+EnviroDIYLogger.init(SDCardPin, mcuWakePin, variableCount, variableList, loggingIntervalMinutes, loggerID);
 // OPTIONAL - specify a pin to give an alert when a measurement is taken
 // This should generally be a pin with an LED
 setAlertPin(ledPin);
@@ -358,7 +358,7 @@ EnviroDIYLogger.modem.setupModem(modemStream, vcc33Pin, status_CTS_pin, onoff_DT
 if (EnviroDIYLogger.modem.connectNetwork())
 {
     // Synchronize the RTC
-    EnviroDIYLogger.modem.syncDS3231();
+    EnviroDIYLogger.modem.syncRTClock();
 }
 // Disconnect from the network
 EnviroDIYLogger.modem.disconnectNetwork();

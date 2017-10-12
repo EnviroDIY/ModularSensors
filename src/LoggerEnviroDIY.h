@@ -233,7 +233,7 @@ public:
         if (modem.connectNetwork())
         {
             delay(5000);
-            modem.syncDS3231();
+            modem.syncRTClock();
             // Disconnect from the network
             modem.disconnectNetwork();
         }
@@ -285,7 +285,7 @@ public:
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
                 if (_numReadings % 288 == 0)
                 {
-                    modem.syncDS3231();
+                    modem.syncRTClock();
                 }
 
                 // Disconnect from the network

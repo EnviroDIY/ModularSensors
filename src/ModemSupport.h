@@ -321,7 +321,7 @@ public:
         else return unixTimeStamp;
     }
 
-    bool syncDS3231(void)
+    bool syncRTClock(void)
     {
         uint32_t start_millis = millis();
 
@@ -353,7 +353,7 @@ public:
         // If the RTC and NIST disagree by more than 5 seconds, set the clock
         if ((abs(nist_logTZ - cur_logTZ) > 5) && (nist != 0))
         {
-            rtc.setEpoch(nist_rtcTZ + sync_time/2);
+            Logger::setNowEpoch(nist_rtcTZ + sync_time/2);
             PRINTOUT(F("Clock synced to NIST!\n"));
             return true;
         }

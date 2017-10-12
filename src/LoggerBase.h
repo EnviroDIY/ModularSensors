@@ -37,7 +37,7 @@ class Logger : public VariableArray
 public:
     // Initialization - cannot do this in constructor arduino has issues creating
     // instances of classes with non-empty constructors
-    void init(int SDCardPin, int interruptPin,
+    void init(int SDCardPin, int mcuWakePin,
               int variableCount,
               Variable *variableList[],
               float loggingIntervalMinutes,
@@ -46,7 +46,7 @@ public:
         PRINTOUT(F("Initializing variable array with "), variableCount, F(" variables..."));
 
         _SDCardPin = SDCardPin;
-        _interruptPin = interruptPin;
+        _mcuWakePin = mcuWakePin;
         _variableCount = variableCount;
         _variableList = variableList;
         _loggingIntervalMinutes = loggingIntervalMinutes;
@@ -57,7 +57,7 @@ public:
         _numReadings = 0;
 
         // Set sleep variable, if an interrupt pin is given
-        if(_interruptPin != -1)
+        if(_mcuWakePin != -1)
         {
             _sleep = true;
         }
@@ -118,6 +118,7 @@ public:
           currentEpochTime += _offset*3600;
           return currentEpochTime;
         }
+        static void setNowEpoch(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
     #else
         static uint32_t getNowEpoch(void)
         {
@@ -125,6 +126,7 @@ public:
           currentEpochTime += _offset*3600;
           return currentEpochTime;
         }
+        static void setNowEpoch(uint32_t ts){rtc.setEpoch(ts);}
     #endif
 
     static DateTime dtFromEpoch(uint32_t epochTime)
@@ -299,8 +301,8 @@ public:
     {
         // Set the pin attached to the RTC alarm to be in the right mode to listen to
         // an interrupt and attach the "Wake" ISR to it.
-        pinMode(_interruptPin, INPUT_PULLUP);
-        enableInterrupt(_interruptPin, wakeISR, CHANGE);
+        pinMode(_mcuWakePin, INPUT_PULLUP);
+        enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
 
         // Unfortunately, because of the way the alarm on the DS3231 is set up, it
         // cannot interrupt on any frequencies other than every second, minute,
@@ -720,7 +722,7 @@ protected:
 
     // Initialization variables
     int _SDCardPin;
-    int _interruptPin;
+    int _mcuWakePin;
     float _loggingIntervalMinutes;
     int _interruptRate;
     const char *_loggerID;

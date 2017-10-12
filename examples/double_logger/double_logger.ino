@@ -36,13 +36,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //   ie, pin locations, addresses, calibrations and related settings
 // ---------------------------------------------------------------------------
 // The name of this file
-const char *SKETCH_NAME = "logger_test.ino";
+const char *sketchName = "logger_test.ino";
 
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "SL099";
 const char *FileName = "doubleLoggerFile.csv";
 // Your logger's timezone.
-const int TIME_ZONE = -5;
+const int timeZone = -5;
 // Create TWO new logger instances
 Logger logger1min;
 Logger logger5min;
@@ -104,18 +104,18 @@ DTRSleepType ModemSleepMode = reverse;  // How the modem is put to sleep
 // Use "always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
 
 const long ModemBaud = 9600;  // Default for XBee is 9600
-const char *SSID = "XXXXXXX";  // The WiFi access point
-const char *PWD = "XXXXXXX";  // The password for connecting to WiFi
+const char *wifiId = "XXXXXXX";  // The WiFi access point
+const char *wifiPwd = "XXXXXXX";  // The password for connecting to WiFi
 
 
 // ---------------------------------------------------------------------------
 // Board setup info
 // ---------------------------------------------------------------------------
-const long SERIAL_BAUD = 57600;  // Serial port baud rate
-const int GREEN_LED = 8;  // Pin for the green LED
-const int RED_LED = 9;  // Pin for the red LED
-const int RTC_PIN = A7;  // RTC Interrupt/Alarm pin
-const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
+const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const int greenLED = 8;  // Pin for the green LED
+const int redLED = 9;  // Pin for the red LED
+const int wakePin = A7;  // RTC Interrupt/Alarm pin
+const int sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin
 
 
 // ---------------------------------------------------------------------------
@@ -126,14 +126,14 @@ const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
 void greenredflash(int numFlash = 4, int rate = 75)
 {
   for (int i = 0; i < numFlash; i++) {
-    digitalWrite(GREEN_LED, HIGH);
-    digitalWrite(RED_LED, LOW);
+    digitalWrite(greenLED, HIGH);
+    digitalWrite(redLED, LOW);
     delay(rate);
-    digitalWrite(GREEN_LED, LOW);
-    digitalWrite(RED_LED, HIGH);
+    digitalWrite(greenLED, LOW);
+    digitalWrite(redLED, HIGH);
     delay(rate);
   }
-  digitalWrite(RED_LED, LOW);
+  digitalWrite(redLED, LOW);
 }
 
 
@@ -143,13 +143,13 @@ void greenredflash(int numFlash = 4, int rate = 75)
 void setup()
 {
     // Start the primary serial connection
-    Serial.begin(SERIAL_BAUD);
+    Serial.begin(serialBaud);
     // Start the serial connection with the *bee
     ModemSerial.begin(ModemBaud);
 
     // Set up pins for the LED's
-    pinMode(GREEN_LED, OUTPUT);
-    pinMode(RED_LED, OUTPUT);
+    pinMode(greenLED, OUTPUT);
+    pinMode(redLED, OUTPUT);
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
@@ -159,23 +159,23 @@ void setup()
 
     // Print a start-up note to the first serial port
     Serial.print(F("Now running "));
-    Serial.print(SKETCH_NAME);
+    Serial.print(sketchName);
     Serial.print(F(" on Logger "));
     Serial.println(LoggerID);
 
     // Set the timezone and offsets
-    Logger::setTimeZone(TIME_ZONE);  // Logging in the given time zone
-    Logger::setTZOffset(TIME_ZONE);  // Set the clock in UTC
+    Logger::setTimeZone(timeZone);  // Logging in the given time zone
+    Logger::setTZOffset(timeZone);  // Set the clock in UTC
 
     // Initialize the two logger instances;
-    logger1min.init(SD_SS_PIN, RTC_PIN, variableCount1min, variableList_at1min,
+    logger1min.init(sdCardPin, wakePin, variableCount1min, variableList_at1min,
                 1, LoggerID);
-    logger5min.init(SD_SS_PIN, RTC_PIN, variableCount5min, variableList_at5min,
+    logger5min.init(sdCardPin, wakePin, variableCount5min, variableList_at5min,
                 5, LoggerID);
     // There is no reason to call the setAlertPin() function, because we have to
     // write the loop on our own.
 
-    modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, SSID, PWD);
+    modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, wifiId, wifiPwd);
 
     // Set up the sensors on both loggers
     logger1min.setupSensors();
@@ -205,7 +205,7 @@ void setup()
     if (modem.connectNetwork())
     {
         // Synchronize the RTC
-        modem.syncDS3231();
+        modem.syncRTClock();
         // Disconnect from the network
         modem.disconnectNetwork();
     }
@@ -238,7 +238,7 @@ void loop()
         // Print a line to show new reading
         Serial.println(F("--------------------->111<---------------------"));
         // Turn on the LED to show we're taking a reading
-        digitalWrite(GREEN_LED, HIGH);
+        digitalWrite(greenLED, HIGH);
 
         // Wake up all of the sensors
         logger1min.sensorsWake();
@@ -251,7 +251,7 @@ void loop()
         logger1min.logToSD(logger1min.generateSensorDataCSV());
 
         // Turn off the LED
-        digitalWrite(GREEN_LED, LOW);
+        digitalWrite(greenLED, LOW);
         // Print a line to show reading ended
         Serial.println(F("---------------------<111>---------------------\n"));
     }
@@ -262,7 +262,7 @@ void loop()
         // Print a line to show new reading
         Serial.println(F("--------------------->555<---------------------"));
         // Turn on the LED to show we're taking a reading
-        digitalWrite(RED_LED, HIGH);
+        digitalWrite(redLED, HIGH);
 
         // Wake up all of the sensors
         logger5min.sensorsWake();
@@ -275,7 +275,7 @@ void loop()
         logger5min.logToSD(logger5min.generateSensorDataCSV());
 
         // Turn off the LED
-        digitalWrite(RED_LED, LOW);
+        digitalWrite(redLED, LOW);
         // Print a line to show reading ended
         Serial.println(F("--------------------<555>---------------------\n"));
     }
@@ -288,7 +288,7 @@ void loop()
         if (modem.connectNetwork())
         {
             // Synchronize the RTC
-            modem.syncDS3231();
+            modem.syncRTClock();
             // Disconnect from the network
             modem.disconnectNetwork();
         }
