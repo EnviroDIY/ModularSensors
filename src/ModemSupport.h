@@ -164,18 +164,18 @@ public:
         #if defined(TINY_GSM_MODEM_HAS_WIFI)
         if (_ssid)
         {
-            DBG(F("\nConnecting to WiFi network...\n"));
+            DBG(F("\nConnecting to WiFi network..."));
             if (!_modem->waitForNetwork(10000L)){
-                DBG("... Connection failed.  Resending credentials...", F("\n"));
+                DBG("... Connection failed.  Resending credentials...");
                 _modem->networkConnect(_ssid, _pwd);
                 if (!_modem->waitForNetwork(45000L)){
-                    DBG("... Connection failed", F("\n"));
+                    DBG("... Connection failed");
                 } else {
                     retVal = true;
-                    DBG("... Success!", F("\n"));
+                    DBG("... Success!");
                 }
             } else {
-                DBG("... Success!", F("\n"));
+                DBG("... Success!");
                 retVal = true;
             }
         }
@@ -183,12 +183,12 @@ public:
         {
         #endif
         #if defined(TINY_GSM_MODEM_HAS_GPRS)
-            DBG(F("\nWaiting for cellular network...\n"));
+            DBG(F("\nWaiting for cellular network..."));
             if (!_modem->waitForNetwork(55000L)){
-                DBG("... Connection failed.", F("\n"));
+                DBG("... Connection failed.");
             } else {
                 _modem->gprsConnect(_APN, "", "");
-                DBG("... Success!", F("\n"));
+                DBG("... Success!");
                 retVal = true;
             }
 
@@ -257,22 +257,20 @@ public:
     }
 
     // Used to empty out the buffer after a post request.
-    // Removing this may cause communication issues. If you
-    // prefer to not see the std::out, remove the print statement
+    // Removing this may cause communication issues.
     void dumpBuffer(Stream *stream, int timeDelay = 5, int timeout = 5000)
     {
         delay(timeDelay);
         while (timeout-- > 0 && stream->available() > 0)
         {
             #if defined(TINY_GSM_DEBUG)
-            DBG((char)stream->read());
+            DBG(stream->readStringUntil('\n'));
             // DBG(stream->read());
             #else
             stream->read();
             #endif
             delay(timeDelay);
         }
-        DBG(F("\n"));
     }
 
     // Get the time from NIST via TIME protocol (rfc868)
@@ -315,7 +313,7 @@ public:
 
         // Return the timestamp
         uint32_t unixTimeStamp = secFrom1900 - 2208988800;
-        DBG(F("Timesamp returned by NIST (UTC): "), unixTimeStamp, F("\n"));
+        DBG(F("Timesamp returned by NIST (UTC): "), unixTimeStamp);
         // If before Jan 1, 2017 or after Jan 1, 2030, most likely an error
         if (unixTimeStamp < 1483228800) return 0;
         else if (unixTimeStamp > 1893456000) return 0;
@@ -340,7 +338,7 @@ public:
         uint32_t nist_logTZ = nist + Logger::getTimeZone()*3600;
         uint32_t nist_rtcTZ = nist_logTZ - Logger::getTZOffset()*3600;
         DBG(F("        Correct Time for Logger: "), nist_logTZ, F(" -> "), \
-            Logger::formatDateTime_ISO8601(nist_logTZ), F("\n"));
+            Logger::formatDateTime_ISO8601(nist_logTZ));
 
         // See how long it took to get the time from NIST
         int sync_time = (millis() - start_millis)/1000;
@@ -348,8 +346,8 @@ public:
         // Check the current RTC time
         uint32_t cur_logTZ = Logger::getNowEpoch();
         DBG(F("           Time Returned by RTC: "), cur_logTZ, F(" -> "), \
-            Logger::formatDateTime_ISO8601(cur_logTZ), F("\n"));
-        DBG(F("Offset: "), abs(nist_logTZ - cur_logTZ), F("\n"));
+            Logger::formatDateTime_ISO8601(cur_logTZ));
+        DBG(F("Offset: "), abs(nist_logTZ - cur_logTZ));
 
         // If the RTC and NIST disagree by more than 5 seconds, set the clock
         if ((abs(nist_logTZ - cur_logTZ) > 5) && (nist != 0))
@@ -469,7 +467,7 @@ private:
                 modemOnOff->off();
             }
             stream = _client;
-            DBG(F("   ... Complete!\n"));
+            DBG(F("   ... Complete!"));
 
         #else
             stream = modemStream;
