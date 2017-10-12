@@ -15,10 +15,11 @@
 #include "LoggerBase.h"
 #include "ModemOnOff.h"
 
-#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
+#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM808) || \
+    defined(TINY_GSM_MODEM_SIM868) || defined(TINY_GSM_MODEM_SIM900) || \
     defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
-    defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || \
-    defined(TINY_GSM_MODEM_XBEE)
+    defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_U201) || \
+    defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
   #define USE_TINY_GSM
   // #define TINY_GSM_DEBUG Serial
   #define TINY_GSM_YIELD() { delay(3);}
@@ -382,7 +383,7 @@ public:
         #define MODEM_NAME "AI-Thinker A7"
     #elif defined(TINY_GSM_MODEM_M590)
         #define MODEM_NAME "Neoway SIM590"
-    #elif defined(TINY_GSM_MODEM_M590)
+    #elif defined(TINY_GSM_MODEM_U201)
         #define MODEM_NAME "U-blox SARA U201"
     #elif defined(TINY_GSM_MODEM_ESP8266)
         #define MODEM_NAME "ESP8266"
