@@ -283,15 +283,18 @@ public:
         // TODO:  Make sure can find all serial ports
         Serial.flush();
 
-        // Detach the USB so that it can reconnect again
+        // This clears the interrrupt flag in status register of the clock
+        // The next timed interrupt will not be sent until this is cleared
+        // rtc.clearINTStatus();
+
         // USB connection will end at sleep because it's a separate mode in the processor
-        USBDevice.detach();
+        USBDevice.detach();  // Disable USB
 
         // Put the processor into sleep mode.
         zero_sleep_rtc.standbyMode();
 
         // Reattach the USB after waking
-        USBDevice.attach(); 
+        USBDevice.attach();
     }
 
     #elif defined __AVR__
@@ -596,7 +599,8 @@ public:
             stream->println(F("    -----------------------"));
             // Print out the sensor data
             printSensorData(stream);
-            delay(10000);
+            stream->println(F("    -----------------------"));
+            delay(5000);
         }
     }
 
@@ -635,6 +639,9 @@ public:
         // Print a start-up note to the first serial port
         PRINTOUT(F("Beginning logger "), _loggerID, F("\n"));
 
+        // Set up pins for the LED's
+        if (_ledPin > 0) pinMode(_ledPin, OUTPUT);
+
         // Start the Real Time Clock
         rtc.begin();
         delay(100);
@@ -643,18 +650,15 @@ public:
             zero_sleep_rtc.begin();
         #endif
 
-        // Set up pins for the LED's
-        if (_ledPin > 0) pinMode(_ledPin, OUTPUT);
+        // Print out the current time
+        PRINTOUT(F("Current RTC time is: "));
+        PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
 
         // Set up the sensors
         setupSensors();
 
         // Set up the log file
         setupLogFile();
-
-        // Print the current time
-        PRINTOUT(F("Current RTC time is: "));
-        PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
 
         // Setup sleep mode
         if(_sleep){setupSleep();}

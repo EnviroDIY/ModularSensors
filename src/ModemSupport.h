@@ -165,10 +165,10 @@ public:
         if (_ssid)
         {
             DBG(F("\nConnecting to WiFi network..."));
-            if (!_modem->waitForNetwork(10000L)){
+            if (!_modem->waitForNetwork(2000L)){
                 DBG("... Connection failed.  Resending credentials...");
                 _modem->networkConnect(_ssid, _pwd);
-                if (!_modem->waitForNetwork(45000L)){
+                if (!_modem->waitForNetwork(30000L)){
                     DBG("... Connection failed");
                 } else {
                     retVal = true;
@@ -184,7 +184,7 @@ public:
         #endif
         #if defined(TINY_GSM_MODEM_HAS_GPRS)
             DBG(F("\nWaiting for cellular network..."));
-            if (!_modem->waitForNetwork(55000L)){
+            if (!_modem->waitForNetwork(45000L)){
                 DBG("... Connection failed.");
             } else {
                 _modem->gprsConnect(_APN, "", "");
@@ -242,8 +242,12 @@ public:
 
     int connect(const char *host, uint16_t port)
     {
+    DBG("Connecting to ", host, "...");
     #if defined(USE_TINY_GSM)
-        return  _client->connect(host, port);
+        int ret_val = _client->connect(host, port);
+        if (ret_val) DBG("... Success!");
+        else DBG("... Connection failed.");
+        return ret_val;
     #else
         return 0;
     #endif
@@ -251,8 +255,9 @@ public:
 
     void stop(void)
     {
+    DBG(F("Disconnecting from TCP/IP..."));
     #if defined(USE_TINY_GSM)
-        return _client->stop();
+        _client->stop();
     #endif
     }
 
@@ -264,10 +269,10 @@ public:
         while (timeout-- > 0 && stream->available() > 0)
         {
             #if defined(TINY_GSM_DEBUG)
-            DBG(stream->readStringUntil('\n'));
-            // DBG(stream->read());
+                // DBG(stream->readStringUntil('\n'));
+                stream->read();
             #else
-            stream->read();
+                stream->read();
             #endif
             delay(timeDelay);
         }

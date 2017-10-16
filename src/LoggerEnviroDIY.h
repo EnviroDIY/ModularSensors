@@ -90,7 +90,6 @@ public:
         stream->print(String(F("\r\nContent-Length: ")) + String(generateSensorDataJSON().length()));
         stream->print(String(F("\r\nContent-Type: application/json\r\n\r\n")));
         stream->print(String(generateSensorDataJSON()));
-        stream->print(String(F("\r\n\r\n")));
     }
 
 
@@ -160,14 +159,23 @@ public:
         if(modem.connect("data.envirodiy.org", 80))
         {
             // Send the request to the serial for debugging
-            PRINTOUT(F("\n \\/---- Post Request to EnviroDIY ----\\/ \n"));
-            streamEnviroDIYRequest(&Serial);  // for debugging
-            Serial.flush();  // for debugging
+            #if defined(MODULAR_SENSORS_OUTPUT)
+                PRINTOUT(F("\n \\/---- Post Request to EnviroDIY ----\\/ \n"));
+                streamEnviroDIYRequest(&MODULAR_SENSORS_OUTPUT);  // for debugging
+                PRINTOUT(F("\r\n\r\n"));
+                MODULAR_SENSORS_OUTPUT.flush();  // for debugging
+            #endif
 
             // Send the request to the modem stream
             modem.dumpBuffer(modem.stream);
             streamEnviroDIYRequest(modem.stream);
             modem.stream->flush();  // wait for sending to finish
+
+            uint32_t start_timer;
+            if (millis() < 4294957296) start_timer = millis();  // In case of roll-over
+            else start_timer = 0;
+            while ((millis() - start_timer) < 10000L && modem.stream->available() < 12)
+            {delay(10);}
 
             // Read only the first 12 characters of the response
             // We're only reading as far as the http code, anything beyond that
@@ -191,7 +199,7 @@ public:
                 responseCode_char[i] = response_buffer[i+9];
             }
             responseCode = atoi(responseCode_char);
-            modem.dumpBuffer(modem.stream);
+            // modem.dumpBuffer(modem.stream);
         }
         else responseCode=504;
 
@@ -214,18 +222,20 @@ public:
         if (_ledPin > 0) pinMode(_ledPin, OUTPUT);
 
         // Start the Real Time Clock
-        rtc.begin();
-        delay(100);
+        #if defined(USE_DS3231)
+            rtc.begin();
+            delay(100);
+        #endif
 
         #if defined ARDUINO_ARCH_SAMD
             zero_sleep_rtc.begin();
         #endif
 
-        // Sync the clock with NIST
+        // Print out the current time
         PRINTOUT(F("Current RTC time is: "));
         PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
 
-        // Synchronize the RTC
+        // Synchronize the RTC with NIST
         PRINTOUT(F("Attempting to synchronize RTC with NIST\n"));
         // Turn on the modem
         modem.on();
