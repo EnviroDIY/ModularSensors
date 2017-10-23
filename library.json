@@ -75,7 +75,7 @@
         {
             "name": "TinyGSM",
             "version": "https://github.com/EnviroDIY/TinyGSM.git"
-        }
+        },
         {
             "name": "SensorModbusMaster"
         },
