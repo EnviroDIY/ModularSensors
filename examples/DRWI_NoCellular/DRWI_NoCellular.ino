@@ -27,7 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //   ie, pin locations, addresses, calibrations and related settings
 // ---------------------------------------------------------------------------
 // The name of this file
-const char *SKETCH_NAME = "simple_logging.ino";
+const char *SKETCH_NAME = "DRWI_NoCellular.ino";
 
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "XXXX";
