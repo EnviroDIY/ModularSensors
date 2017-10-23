@@ -42,15 +42,10 @@
             "version": "https://github.com/EnviroDIY/Sodaq_DS3231.git"
         },
         {
-            "name": "EnableInterrupt",
-            "version": "https://github.com/EnviroDIY/EnableInterrupt.git"
+            "name": "EnableInterrupt"
         },
         {
             "name": "SdFat"
-        },
-        {
-            "name": "SoftwareSerial_ExtInts",
-            "version": "https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git"
         },
         {
             "name": "ADS1X15"
@@ -80,6 +75,13 @@
         {
             "name": "TinyGSM",
             "version": "https://github.com/EnviroDIY/TinyGSM.git"
+        }
+        {
+            "name": "SensorModbusMaster"
+        },
+        {
+            "name": "YosemitechModbus",
+            "version": "https://github.com/EnviroDIY/YosemitechModbus.git"
         }
     ]
 }
