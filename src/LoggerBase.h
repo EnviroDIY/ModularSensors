@@ -270,8 +270,10 @@ public:
     {
         // Alarms on the RTC built into the SAMD21 appear to be identical to those
         // in the DS3231.  See more notes below.
-        zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);  // every minute
-        zero_sleep_rtc.attachInterrupt(wakeISR);
+        // We're setting the alarm seconds to zero and then seting it to go off
+        // whenever the seconds match the zero - that is every minute on the minute
+        zero_sleep_rtc.setAlarmSeconds(0);
+        zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);
     }
 
     // Puts the system to sleep to conserve battery life.
@@ -281,7 +283,12 @@ public:
         // Wait until the serial ports have finished transmitting
         // This does not clear their buffers, it just waits until they are finished
         // TODO:  Make sure can find all serial ports
-        Serial.flush();
+        #if defined(MODULAR_SENSORS_OUTPUT)
+            MODULAR_SENSORS_OUTPUT.flush();  // for debugging
+        #endif
+        #if defined(VAR_ARRAY_DBG)
+            VAR_ARRAY_DBG.flush();  // for debugging
+        #endif
 
         // This clears the interrrupt flag in status register of the clock
         // The next timed interrupt will not be sent until this is cleared
@@ -332,8 +339,12 @@ public:
         // Wait until the serial ports have finished transmitting
         // This does not clear their buffers, it just waits until they are finished
         // TODO:  Make sure can find all serial ports
-        Serial.flush();
-        // Serial1.flush();
+        #if defined(MODULAR_SENSORS_OUTPUT)
+            MODULAR_SENSORS_OUTPUT.flush();  // for debugging
+        #endif
+        #if defined(VAR_ARRAY_DBG)
+            VAR_ARRAY_DBG.flush();  // for debugging
+        #endif
 
         // This clears the interrrupt flag in status register of the clock
         // The next timed interrupt will not be sent until this is cleared
