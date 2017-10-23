@@ -196,23 +196,27 @@ myVars.printSensorData();
 ```
 
 ### <a name="ArrayTips"></a>Tips for Ordering Sensors in Arrays:
-If you are running sensors remotely on batteries and/or solar power, saving power and minimizing sensor-on time is a high priority.  To reduce the amount of time needed for sensor warm-up, it is best to look for readings first from the sensors that warm up the fastest and then to move on to the slower-booting sensors, allowing them to warm up while the faster sensors take readings.  This means that you should list those faster sensors first in your variable array and the slower sensors last.  Within the multisensor_print and other examples, the sensors are ordered this way, so can copy that order when creating your own logger program.
+If you are running sensors remotely on batteries and/or solar power, saving power and minimizing sensor-on time is a high priority.  To reduce the amount of time needed for sensor warm-up, it is best to look for readings first from the sensors that warm up the fastest and then to move on to the slower-booting sensors, allowing them to warm up while the faster sensors take readings.  This means that you should list those faster sensors first in your variable array and the slower sensors last.  Within the multisensor_print and other examples, the sensors are ordered this way, so you can copy that order when creating your own logger program.
 
 
 ## <a name="Logger"></a>Basic Logger Functions
 Our main reason to unify the output from many sensors and variables is to easily log the data to an SD card and to send it to any other live streaming data receiver, like the [EnviroDIY data portal](http://data.envirodiy.org/).  There are several modules available to use with the sensors to log data and stream data:  LoggerBase.h, LoggerEnviroDIY.h, and ModemSupport.h.  The classes Logger (in LoggerBase.h) is a sub-class of VariableArray and LoggerEnviroDIY (in LoggerEnviroDIY.h) is in-turn a sub-class of Logger.   They contain all of the functions available to a VariableArray as described above.  The Logger class adds the abilities to communicate with a DS3231 real time clock, to put the board into deep sleep between readings to conserver power, and to write the data from the sensors to a csv file on a connected SD card.  The ModemSupport module is essentially a wrapper for [TinyGSM](https://github.com/EnviroDIY/TinyGSM) which adds quick functions for turning modem on and off to save power and to synchronize the real-time clock with the [NIST Internet time service](https://www.nist.gov/pml/time-and-frequency-division/services/internet-time-service-its).  The LoggerEnviroDIY class uses ModemSupport.h to add the ability to properly format and send data to the [EnviroDIY data portal](http://data.envirodiy.org/).
 
 ### Functions Available for a Logger Object:
-Timezone functions:
+
+#### Timezone functions:
+
 - **setTimeZone(int timeZone)** - Sets the timezone that you wish data to be logged in (in +/- hours from UTC).  _This must always be set!_
 - **setTZOffset(int offset)** - This sets the offset between the built-in clock and the timezone the data should be logged in.  If your clock is set in UTC, then the TZOffset should be the same as the TimeZone.  For example, if you would like your clock to be set in UTC but your data should be output in Eastern Standard Time, both setTimeZone and setTZOffset should be called with -5.  On the other hand, if your clock is already set EST, you do not need to call the setTZOffset function (or can call it with 0).
 A note about timezones:  It is possible to create multiple logger objects in your code if you want to log different sensors at different intervals, _but every logger object will always have the same timezone and timezone offset_.  If you attempt to call these functions more than once for different loggers, whatever value was called last will apply to every logger.
 
-Setup and initialization functions:
+#### Setup and initialization functions:
+
 - **init(int SDCardPin, int mcuWakePin, int variableCount, Sensor variableList[], float loggingIntervalMinutes, const char loggerID = 0)** - Initializes the logger object.  Must happen within the setup function.  Note that the variableList[], loggerID are all pointers.  The SDCardPin is the pin of the chip select/slave select for the SPI connection to the SD card.
 - **setAlertPin(int ledPin)** - Optionally sets a pin to put out an alert that a measurement is being logged.  This is intended to be a pin with a LED on it so you can see the light come on when a measurement is being taken.
 
-Functions to access the clock in proper format and time zone:
+#### Functions to access the clock in proper format and time zone:
+
 - **getNow()** - This gets the current epoch time (unix timestamp - number of seconds since Jan 1, 1970) and corrects it for the specified logger time zone offset.
 - **formatDateTime_ISO8601(DateTime dt)** - Formats a DateTime object into an ISO8601 formatted Arduino String.
 - **formatDateTime_ISO8601(uint32_t unixTime)** - Formats a unix timestamp into an ISO8601 formatted Arduino String.
@@ -221,11 +225,13 @@ Functions to access the clock in proper format and time zone:
 - **checkMarkedInterval()** - This returns true if the _marked_ time is an even iterval of the logging interval, otherwise false.  This uses the static time value set by markTime() to get the time.  It does not check the real-time-clock directly.
 
 
-Functions for the sleep modes:
+#### Functions for the sleep modes:
+
 - **setupSleep()** - Sets up the processor sleep mode and the interrupts to wake the processor back up.  This should be called in the setup function.
 - **systemSleep()** - Puts the system into deep sleep mode.  This should be called at the very end of the loop function.  Please keep in mind that this does NOT call the wake and sleep functions of the sensors themselves; you must call those separately.  (This separation is for timing reasons.)
 
-Functions for logging data:
+#### Functions for logging data:
+
 - **setFileName(fileName)** - This sets a specified file name for data to be saved as, if you want to decide on it in advance.  Note that you must include the file extention (ie., '.txt') in the file name.  If you do not call the setFileName function with a specific name, a csv file name will automatically be generated from the logger id and the current date.
 - **getFileName()** - This returns the current filename as an Arduino String.
 - **setupLogFile()** - This creates a file on the SD card and writes a header to it.  It also sets the "file created" time stamp.
@@ -233,17 +239,20 @@ Functions for logging data:
 - **generateFileHeader()** - This returns and Aruduino String with a comma separated list of headers for the csv.  The headers will be ordered based on the order variables are listed in the array fed to the init function.
 - **generateSensorDataCSV()** - This returns an Arduino String containing the time and a comma separated list of sensor values.  The data will be ordered based on the order variables are listed in the array fed to the init function.
 
-Functions for debugging sensors:
+#### Functions for debugging sensors:
+
 - **checkForDebugMode(int buttonPin, Stream \*stream = &Serial)** - This stops everything and waits for up to two seconds for a button to be pressed to enter allow the user to enter "debug" mode.  I suggest running this as the very last step of the setup function.
 - **debugMode(Stream \*stream = &Serial)** - This is a "debugging" mode for the sensors.  It prints out all of the sensor details every 5 seconds for 25 records worth of data.
 - Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
 
-Convience functions to do it all:
+####  Convience functions to do it all:
+
 - **begin()** - Starts the logger.  Must be in the setup function.
 - **log()** - Logs data, must be the entire content of the loop function.
 
 ### <a name="Modem"></a>Functions within ModemSupport/TinyGSM:
 The "ModemSupport" bit of this library is essentially a wrapper for [TinyGSM](https://github.com/EnviroDIY/TinyGSM), to interface with the modem.  To make this work, you must add one of these lines _to the very top of your sketch_:
+
 ```cpp
 // Select your modem chip, comment out all of the others
 // #define TINY_GSM_MODEM_SIM800  // Select for anything using a SIM800, SIM900, or varient thereof: Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
@@ -257,6 +266,7 @@ loggerModem modem;
 Any of the above modems types/chips should work, though only a SIM800 Sodaq GPRSBee, ESP8266, and Digi WiFiBee have been tested to date.  If you would prefer to use a library of your own for controlling your modem, omit the define statements.  In this case, you will lose access to the postDataEnviroDIY() and log() functions within the LoggerEnviroDIY object.
 
 After defining your modem, set it up using one of these two commands, depending on whether you are using cellular or WiFi communication:
+
 - **setupModem(Stream modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin, DTRSleepType sleepType, const char APN)** - Sets up the internet communcation with a cellular modem.  Note that the modemStream and APN should be pointers.  Use -1 for any pins that are not connected.
 - **setupModem(Stream modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin, DTRSleepType sleepType, const char ssid, const char pwd)** - Sets up the internet communcation with a WiFi modem.  Note that the modemStream, ssid, and password should be pointers.  Use -1 for any pins that are not connected.
 - The vcc33Pin is the pin that controls whether or not the modem itself is powered.  Use -1 if your modem is always recieving power from your logger board or if you want to control modem power independently.
@@ -270,6 +280,7 @@ After defining your modem, set it up using one of these two commands, depending 
 - Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
 
 Once the modem has been set up, these functions are available:
+
 - **on()** - Turns the modem on.  Returns true if connection is successful.
 - **off()** - Turns the modem off and empties the send and receive buffer.  Returns true if connection is successful.
 - **connectNetwork()** - Connects to the internet via WiFi or cellular network.  Returns true if connection is successful.
@@ -281,6 +292,7 @@ Once the modem has been set up, these functions are available:
 - **syncRTClock()** - This synchronizes the DS3231 real time clock with the NIST provided timestamp.
 
 The cellular modems themselves (SIM800, SIM900, A6, A7, and M590) can also be used as "sensors" which have the following variables:
+
 ```cpp
 Modem_RSSI(&modem, "customVarCode");
 Modem_SignalPercent(&modem, "customVarCode");
@@ -290,6 +302,7 @@ The modem does not behave as all the other sensors do, though.  The normal '''se
 
 ### <a name="DIYlogger"></a>Additional Functions Available for a LoggerEnviroDIY Object:
 These three functions set up the required registration token, sampling feature UUID, and time series UUIDs for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.  You must call these functions to be able to get proper JSON data for EnviroDIY, even without the modem support.
+
 - **setToken(const char registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
 - **setSamplingFeature(const char samplingFeature)** - Sets the GUID of the sampling feature.  Note that the input is a pointer to the samplingFeature.
 - **setUUIDs(const char UUIDs)** - Sets the time series UUIDs.  Note that the input is an array of pointers.  The order of the UUIDs in this array **must match exactly** with the order of the coordinating variable in the variableList.
@@ -297,6 +310,7 @@ These three functions set up the required registration token, sampling feature U
 Because sending data to EnviroDIY depends on having some sort of modem or internet connection, there is a modem object created within the LoggerEnviroDIY Object.  To set up that modem object, you still need to call the functions listed in the ModemSupport section, but you need to add an extra "modem." before the function name to call the internal modem object.  You do not need to separately create the object.
 
 Within the loop, these two functions will then format and send out data:
+
 - **generateSensorDataJSON()** - Generates a properly formatted JSON string to go to the EnviroDIY streaming data loader API.
 - **postDataEnviroDIY()** - Creates proper headers and sends data to the EnviroDIY data portal.  Depends on the modem support module.  Returns an HTML response code.
 
@@ -368,6 +382,7 @@ EnviroDIYLogger.begin();
 ```
 
 _Within the main loop function_, all logging and sending of data can be done using a single program line.  Because the built-in log functions already handle sleeping and waking the board processor, **there cannot be nothing else within the loop function.**
+
 ```cpp
 void loop()
 {
@@ -384,6 +399,7 @@ void loop()
 }
 ```
 If you would like to do other things within the loop function, you should access the component logging functions individually instead of using the short-cut functions.  In this case, here are some guidelines for writing a loop function:
+
 - If you want to log on an even interval, use ```if (checkInterval())``` or ```if (checkMarkedInterval())``` to verify that the current or marked time is an even interval of the logging interval..
 - Call the ```markTime()``` function before printing/sending/saving any data that you want associate with a timestamp.
 - Wake up all your sensors with ```sensorsWake()```.
@@ -402,7 +418,7 @@ There are a number of sensors supported by this library.  Depending on the senso
 Essentially all of the sensors can have their power supplies turned off between readings, but not all boards are able to switch output power on and off.  When the sensor constructor asks for the Arduino pin controlling power on/off, use -1 for any board which is not capable of switching the output power on and off.
 _____
 
-#### <a name="MaxBotix"></a>[MaxBotix MaxSonar](http://www.maxbotix.com/Ultrasonic_Sensors/High_Accuracy_Sensors.htm) - HRXL MaxSonar WR or WRS Series with TTL Outputs
+### <a name="MaxBotix"></a>[MaxBotix MaxSonar](http://www.maxbotix.com/Ultrasonic_Sensors/High_Accuracy_Sensors.htm) - HRXL MaxSonar WR or WRS Series with TTL Outputs
 
 The MaxBotix sensors communicate with the board using TTL from pin 5 on the sensor.  They require a 2.7V-5.5V power supply to pin 6 on the sensor (which can be turned off between measurements) and the level of the TLL returned by the MaxSonar will match the power level it is supplied with.  Pin 7 of the MaxSonar must be connected to ground and pin 4 can optionally be used to trigger the MaxSonar.
 
@@ -411,6 +427,7 @@ If you are using the [MaxBotix HR-MaxTemp](https://www.maxbotix.com/Ultrasonic_S
 The Arduino pin controlling power on/off, a stream instance for received data (ie, ```Serial```), and the Arduino pin controlling the trigger are required for the sensor constructor.  (Use -1 for the trigger pin if you do not have it connected.)  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
 
 The main constuctor for the sensor object is:
+
 ```cpp
 #include <MaxBotixSonar.h>
 MaxBotixSonar sonar(SonarPower, sonarStream, SonarTrigger);
@@ -429,7 +446,7 @@ sonarStream.begin(9600);
 ```
 _____
 
-#### <a name="OBS3"></a>[Campbell Scientific OBS-3+](https://www.campbellsci.com/obs-3plus)
+### <a name="OBS3"></a>[Campbell Scientific OBS-3+](https://www.campbellsci.com/obs-3plus)
 
 The OBS-3 sends out a simple analog signal between 0 and 2.5V.  To convert that to a high resolution digital signal, the sensor must be attached to a TI ADS1115 ADD converter (such as on the first four analog pins of the Mayfly).  The TI ADS1115 ADD communicates with the board via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tieing the address pin to ground.  More than one of these ADD's can be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input volage of 2.0-5.5V.  The OBS-3 itself requires a 5-15V power supply, which can be turned off between measurements.  (It will actually run on power as low as 3.3V.)  The power supply is connected to the red wire, low range output comes from the blue wire, high range output comes from the white wire, and the black, greeen, and silver/unshielded wires should all be connected to ground.
 
@@ -453,7 +470,7 @@ CampbellOBS3_Turbidity(&osb3high, "customHighVarCode");
 ```
 _____
 
-#### <a name="5TM"></a>[Decagon Devices 5TM](https://www.decagon.com/en/soils/volumetric-water-content-sensors/5tm-vwc-temp/) Soil Moisture and Temperature Sensor
+### <a name="5TM"></a>[Decagon Devices 5TM](https://www.decagon.com/en/soils/volumetric-water-content-sensors/5tm-vwc-temp/) Soil Moisture and Temperature Sensor
 
 Decagon sensors communicate with the board using the [SDI-12 protocol](http://www.sdi-12.org/) (and the [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).  They require a 3.5-12V power supply, which can be turned off between measurements.  While contrary to the manual, they will run with power as low as 3.3V.  On the 5TM with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve.  On the bare-wire version, the power is connected to the _white_ cable, data to _red_, and ground to the unshielded cable.
 
@@ -475,7 +492,7 @@ Decagon5TM_VWC(&fivetm, "customVarCode");  // Volumetric water content as percen
 ```
 _____
 
-#### <a name="CTD"></a>[Decagon Devices CTD-5 or  CTD-10](https://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/ctd-10-sensor-electrical-conductivity-temperature-depth/) Electrical Conductivity, Temperature, and Depth Sensor
+### <a name="CTD"></a>[Decagon Devices CTD-5 or  CTD-10](https://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/ctd-10-sensor-electrical-conductivity-temperature-depth/) Electrical Conductivity, Temperature, and Depth Sensor
 
 Decagon sensors communicate with the board using the [SDI-12 protocol](http://www.sdi-12.org/) (and the [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).  They require a 3.5-12V power supply, which can be turned off between measurements.  While contrary to the manual, they will run with power as low as 3.3V.  On the CTD with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve.  On the bare-wire version, the power is connected to the _white_ cable, data to _red_, and ground to both the black and unshielded cable.
 
@@ -497,7 +514,7 @@ DecagonCTD_Depth(&ctd, "customVarCode");  // Water depth in mm
 ```
 _____
 
-#### <a name="ES2"></a>[Decagon Devices ES-2](http://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/es-2-electrical-conductivity-temperature/) Electrical Conductivity Sensor
+### <a name="ES2"></a>[Decagon Devices ES-2](http://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/es-2-electrical-conductivity-temperature/) Electrical Conductivity Sensor
 
 Decagon sensors communicate with the board using the [SDI-12 protocol](http://www.sdi-12.org/) (and the [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).  They require a 3.5-12V power supply, which can be turned off between measurements.  While contrary to the manual, they will run with power as low as 3.3V.  On the ES-2 with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve.  On the bare-wire version, the power is connected to the _white_ cable, data to _red_, and ground to the unshielded cable.
 
@@ -518,7 +535,7 @@ DecagonES2_Temp(&es2, "customVarCode");  // Temperature in °C
 ```
 _____
 
-#### <a name="DS18"></a>[Maxim DS18 Temperature Probes](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html)
+### <a name="DS18"></a>[Maxim DS18 Temperature Probes](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html)
 
 The Maxim temperature probes communicate using the OneWire library, which can be used on any digital pin on any of the supported boards.  The same module should work with a [DS18B20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html), [DS18S20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html), [DS1822](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1822.html), [MAX31820](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/MAX31820.html), and the no-longer-sold [DS1820](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1820.html) sensor.  These sensors can be attached to a 3.0-5.5V power source or they can take "parasitic power" from the data line.  When using the more typical setup with power, ground, and data lines, a 4.7k resistor must be attached as a pullup between the data and power lines.
 
@@ -545,7 +562,7 @@ MaximDS18_Temp(&ds18, "customVarCode");  // Temperature in °C
 ```
 _____
 
-#### <a name="AM2315"></a>[AOSong AM2315](www.aosong.com/asp_bin/Products/en/AM2315.pdf) Encased I2C Temperature/Humidity Sensor
+### <a name="AM2315"></a>[AOSong AM2315](www.aosong.com/asp_bin/Products/en/AM2315.pdf) Encased I2C Temperature/Humidity Sensor
 
 The AOSong AM2315 communicates with the board via I2C.  Because this sensor can have only one I2C address, it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 3.3-5.5V power source and the power supply to the sensor can be stopped between measurements.
 
@@ -564,7 +581,7 @@ AOSongAM2315_Temp(&am2315, "customVarCode");  // Temperature in °C
 ```
 _____
 
-#### <a name="BME280"></a>[Bosch BME280](https://www.bosch-sensortec.com/bst/products/all_products/bme280) Integrated Environmental Sensor
+### <a name="BME280"></a>[Bosch BME280](https://www.bosch-sensortec.com/bst/products/all_products/bme280) Integrated Environmental Sensor
 
 Although this sensor has the option of either I2C or SPI communication, this library only supports I2C.  The I2C sensor address is assumed to be 0x76, though it can be changed to 0x77 in the constructor if necessary.  The sensor address is determined by how the sensor is soldered onto its breakout board.  To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses.  No more than two can be attached.  This module is likely to also work with the [Bosch BMP280 Barometric Pressure Sensor](https://www.bosch-sensortec.com/bst/products/all_products/bmp280), though it has not been tested on it.  These sensors should be attached to a 1.7-3.6V power source and the power supply to the sensor can be stopped between measurements.
 
@@ -585,7 +602,7 @@ BoschBME280_Altitude(&bme280, "customVarCode");  // Altitude in meters, calculat
 ```
 _____
 
-#### <a name="DHT"></a>[AOSong DHT](http://www.aosong.com/en/products/index.asp) Digital-Output Relative Humidity & Temperature Sensor
+### <a name="DHT"></a>[AOSong DHT](http://www.aosong.com/en/products/index.asp) Digital-Output Relative Humidity & Temperature Sensor
 
 This module will work with an AOSong DHT11, DHT21, AM2301, DHT22, or AM2302.  These sensors uses a non-standard single wire digital signalling protocol.  They can be connected to any digital pin.  Please keep in mind that, per manufacturer instructions, these sensors should not be polled more frequently than once every 2 seconds.  These sensors should be attached to a 3.3-6V power source and the power supply to the sensor can be stopped between measurements.
 
@@ -605,7 +622,7 @@ AOSongDHT_HI(&dht, "customVarCode");  // Heat Index
 ```
 _____
 
-#### <a name="SQ212"></a>[Apogee SQ-212 Quantum Light Sensor ](https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/) Photosynthetically Active Radiation (PAR)
+### <a name="SQ212"></a>[Apogee SQ-212 Quantum Light Sensor ](https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/) Photosynthetically Active Radiation (PAR)
 This library will work with the Apogee SQ-212 and SQ-212 analog quantum light sensors, and could be readily adapted to work with similar sensors (e.g. SQ-215 or SQ225) with by simply changing the calibration factors.  These sensors send out a simple analog signal.  To convert that to a high resolution digigal signal, the sensor must be attached to a TI ADS1115 ADD converter (such as on the first four analog pins of the Mayfly).    The TI ADS1115 ADD communicates with the board via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tieing the address pin to ground.  More than one of these ADD's can be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input volage of 2.0-5.5V.  The PAR sensors should be attached to a 5-24V power source and the power supply to the sensor can be stopped between measurements.
 
 The Arduino pin controlling power on/off and the analog data pin _on the TI ADS1115_ are required for the sensor constructor.    If your ADD converter is not at the standard address of 0x48, you can enter its acutal address as the third argument.
@@ -622,13 +639,16 @@ ApogeeSQ212_PAR(&SQ212, "customVarCode");  // Photosynthetically Active Radiatio
 ```
 _____
 
-#### <a name="Yosemitech"></a>[Yosemitech Brand Environmental Sensors ](http://www.yosemitech.com/en/)
+### <a name="Yosemitech"></a>[Yosemitech Brand Environmental Sensors ](http://www.yosemitech.com/en/)
+
 This library currently supports the following Yosemitech sensors:
+
 - [Y502-A or Y504-A Optical Dissolved Oxygen Sensors](http://www.yosemitech.com/en/product-10.html)
 - [Y5820-A 4-Electrode Conductivity Sensor](http://www.yosemitech.com/en/product-18.html)
 - [Y510-B](http://www.yosemitech.com/en/product-17.html) or [Y511-A](http://www.yosemitech.com/en/product-16.html) Optical Turbidity Sensors (Y511 has a wiper, Y510 does not)
 - [Y514-A Chlorophyll Sensor with Wiper](http://www.yosemitech.com/en/product-14.html)
 - Y532-A Digital pH Sensor
+
 All of these sensors require a 5-12V power supply and the power supply can be stopped between measurements. They communicate via [Modbus RTU](https://en.wikipedia.org/wiki/Modbus) over [RS-485](https://en.wikipedia.org/wiki/RS-485).  To interface with them, you will need an RS485-to-TLL adapter.  The white wire of the Yosemitech sensor will connect to the "B" pin of the adapter and the green whire will connect to "A".  The red wire from the sensor should connect to the 5-12V power supply and the black to ground.  The Vcc pin on the adapter should be connected to another power supply (voltage depends on the specific adapter) and the ground to the same ground.  The red wire from the sensor _does not_ connect to the Vcc of the adapter.  The R/RO/RXD pin from the adapter connects to the TXD on the Arduino board and the D/DI/TXD pin from the adapter connects to the RXD.  If applicable, tie the RE and DE (recieve/data enable) pins together and connect them to another pin on your board.  There are a number of RS485-to-TLL adapters available.  When shopping for one, be mindful of the logic level of the TLL output by the adapter.  The MAX485, one of the most popular adapters, has a 5V logic level in the TLL signal.  This will _fry_ any board like the Mayfly that can only use on 3.3V logic.  You would need a voltage shifter in between the Mayfly and the MAX485 to make it work.
 
 The sensor modbus address, the pin controlling sensor power, a stream instance for data (ie, ```Serial```), the Arduino pin controlling the recieve and data enable on your RS485-to-TLL adapter, and the number of readings to average are required for the sensor constructor.  (Use -1 for the enable pin if your adapter does not have one.)  For all of these sensors exceph pH, Yosemitech strongly recommends averaging 10 readings for each measurement.  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.  AltSoftSerial and HardwareSerial work fine.
@@ -683,7 +703,7 @@ YosemitechY532_Voltage(&y532, "customVarCode")  // Electrode electrical potentia
 ```
 _____
 
-#### <a name="DS3231"></a>Maxim DS3231 Real Time Clock]
+### <a name="DS3231"></a>Maxim DS3231 Real Time Clock
 
 As the I2C [Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html) real time clock (RTC) is absolutely required for time-keeping on all AVR boards, this library also makes use of it for its on-board temperature sensor.  The DS3231 requires a 3.3V power supply.
 
@@ -701,7 +721,7 @@ MaximDS3231_Temp(&ds3231, "customVarCode");  // Temperature in °C
 ```
 _____
 
-#### <a name="Onboard"></a>Processor Metadata Treated as Sensors
+### <a name="Onboard"></a> Processor On-Board Sensors and MetaData
 
 The processor can return the amount of RAM it has available and, for some boards, the battery voltage (EnviroDIY Mayfly, Sodaq Mbili, Ndogo, Autonomo, and One, Adafruit Feathers).  The version of the board is required as input (ie, for a EnviroDIY Mayfly: "v0.3" or "v0.4" or "v0.5").  Use a blank value (ie, "") for un-versioned boards.
 
@@ -722,45 +742,55 @@ _____
 
 ## <a name="SoftwareSerial"></a>Notes on Arduino Streams and Software Serial
 
-In this library, the Arduino communicates with the computer for debugging, the modem for sending data, and some sensors (like the [MaxBotix MaxSonar](#MaxBotix)) via instances of Arduino TTL "[streams](https://www.arduino.cc/en/Reference/Stream)."  The streams can either be an instance of [serial](https://www.arduino.cc/en/Reference/Serial) (aka hardware serial), [AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial), [the EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts), or any other stream type you desire.  The very commonly used build-in version of the software serial library for AVR processors uses interrupts that conflict with several other sub-libraries or this library and _cannot be used_!  I repeat:  _You cannot use the built in version of SoftwareSerial!_  You simply cannot.  It will not work.  Period.  This is not a bug that will be fixed.
+In this library, the Arduino communicates with the computer for debugging, the modem for sending data, and some sensors (like the [MaxBotix MaxSonar](#MaxBotix)) via instances of Arduino TTL "[streams](https://www.arduino.cc/en/Reference/Stream)."  The streams can either be an instance of [serial](https://www.arduino.cc/en/Reference/Serial) (aka hardware serial), [AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial), [the EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts), or any other stream type you desire.  The very commonly used build-in version of the software serial library for AVR processors uses interrupts that conflict with several other sub-libraries or this library and _cannot be used_!  I repeat:  **_You cannot use the built-in version of SoftwareSerial!_**  You simply cannot.  It will not work.  Period.  This is not a bug that will be fixed.
 
-For stream communication, hardware serial should always be your first choice, if your processor has enough hardware serial ports.  Hardware serial ports are the most stable and have the best performance of any of the other streams.  Hardware seial ports are also the only option if you need to communicate with any device that uses even or odd parity, more than one stop bit, or does not use 8 data bits.  (That is, hardware serial ports are the only way to communicate with a device that doesn't use the 8N1 configuration.)  If the [proper pins](https://www.pjrc.com/teensy/td_libs_AltSoftSerial.html) are available, [AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial) by Paul Stoffregen is also superior to SoftwareSerial, especially at slow baud rates.  Neither hardware serial nor AltSoftSerial require any modifications.  Because of the limited number of serial ports available on most boards, I suggest giving first priority (ie the first (or only) hardware serial port, "Serial") to your debugging stream going to your PC (if you intend to debug), second priority to the stream for the modem, and third priority to any sensors that require a stream for communication.  See the section on [Processor Compatibility](#compatibility) for more specific notes on what serial ports are available on the various supported processors.
+For stream communication, **hardware serial** should always be your first choice, if your processor has enough hardware serial ports.  Hardware serial ports are the most stable and have the best performance of any of the other streams.  Hardware seial ports are also the only option if you need to communicate with any device that uses even or odd parity, more than one stop bit, or does not use 8 data bits.  (That is, hardware serial ports are the only way to communicate with a device that doesn't use the 8N1 configuration.)
+
+If the [proper pins](https://www.pjrc.com/teensy/td_libs_AltSoftSerial.html) are available, **[AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial)** by Paul Stoffregen is also superior to SoftwareSerial, especially at slow baud rates.  Neither hardware serial nor AltSoftSerial require any modifications.  Because of the limited number of serial ports available on most boards, I suggest giving first priority (i.e. the first (or only) hardware serial port, "Serial") to your debugging stream going to your PC (if you intend to debug), second priority to the stream for the modem, and third priority to any sensors that require a stream for communication.  See the section on [Processor Compatibility](#compatibility) for more specific notes on what serial ports are available on the various supported processors.
 
 To use a hardware serial stream, you do not need to include any libraries or write any extra lines.  You can simply write in "Serial#" where ever you need a stream.  If you would like to give your hardware serial port an easy-to-remeber alias, you can use code like this:
+
 ```cpp
 HardwareSerial* streamName = &Serial;
 ```
 
 To use AltSoftSerial:
+
 ```cpp
 #include <AltSoftSerial.h>  // include the AltSoftSerial library
 AltSoftSerial streamName;  // Create an instance of AltSoftSerial
 ```
 
 To use the EnviroDIY modified version of SoftwareSerial:
+
 ```cpp
 #include <SoftwareSerial_ExtInts.h>  // include the SoftwareSerial library
 SoftwareSerial_ExtInts streamName(tx_pin, rx_pin);
 ```
 
 After creating the stream instances, you must always remember to "begin" your stream within the main setup function.
+
 ```cpp
 streamName.begin(BAUD_RATE);
 ```
 
 Additionally, for the EnviroDIY modified version of SoftwareSerial, you must enable the interrupts in your setup function:
+
 ```cpp
 //  Allow enableInterrrupt to control the interrupts for software serial
 enableInterrupt(streamName, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
 ```
 
 Here are some helpful links for more information about the number of serial ports available on some of the different Arduino-style boards:
-- For Arduino brand boards:  https://www.arduino.cc/en/Reference/Serial
-- For AtSAMD21 boards:  https://learn.adafruit.com/using-atsamd21-sercom-to-add-more-spi-i2c-serial-ports/overview
+
+- For Arduino brand boards:  [https://www.arduino.cc/en/Reference/Serial](https://www.arduino.cc/en/Reference/Serial)
+- For AtSAMD21 boards:  [https://learn.adafruit.com/using-atsamd21-sercom-to-add-more-spi-i2c-serial-ports/overview](https://learn.adafruit.com/using-atsamd21-sercom-to-add-more-spi-i2c-serial-ports/overview)
 
 ## <a name="compatibility"></a>Processor/Board Compatibility
 
-AtMega1284p ([EnviroDIY Mayfly](https://envirodiy.org/mayfly/), Sodaq Mbili, Mighty 1284) - The Mayfly _is_ the test board for this library.  _Everything_ is designed to work with this processor.
+#### AtMega1284p ([EnviroDIY Mayfly](https://envirodiy.org/mayfly/), Sodaq Mbili, Mighty 1284)
+The Mayfly _is_ the test board for this library.  _Everything_ is designed to work with this processor.
+
 - There is a single SPI port on pins 14 (MISO), 15 (SCK), and 13 (MOSI) on a Mayfly/Mbili or pins 6 (MISO), 7 (SCK), and 5 (MOSI) on a Mighty 1284 or other AtMega1284p.  Chip select/slave select is pin 12 on a Mayfly and card detect can be set to pin 18 with solder jumper 10.  CS/SS and CD pins may vary for other boards.
 - There is a single I2C (Wire) interface on pins 17 (SDA) and 16 (SCL).
 - This processor has two built-in hardware serial ports, Serial and Serial1
@@ -771,7 +801,9 @@ AtMega1284p ([EnviroDIY Mayfly](https://envirodiy.org/mayfly/), Sodaq Mbili, Mig
 - Any digital pin can be used with SoftwareSerial_ExtInts or SDI-12.
 ___
 
-AtSAMD21 (Arduino Zero, Adafruit Feather M0, Sodaq Autonomo) - Not yet fully supported, but support is planned.
+#### AtSAMD21 (Arduino Zero, Adafruit Feather M0, Sodaq Autonomo)
+Not yet fully supported, but support is planned.
+
 - This processor has an internal real time clock (RTC) and does not require a DS3231 to be installed.  The built-in RTC is not as accurate as the DS3231, however, and should be synchronized more frequently to keep the time correct.
 - This processor has one hardware serial port, USBSerial, which can _only_ be used for USB communication with a computer
 - Most variants have 2 other hardware serial ports (Serial on pins 30 (TX) and 31 (RX) and Serial1 on pins 0 (TX) and 1 (RX)) configured by default.
@@ -787,7 +819,9 @@ AtSAMD21 (Arduino Zero, Adafruit Feather M0, Sodaq Autonomo) - Not yet fully sup
 - Because the USB controller is built into the processor, you may lose serial output views when the processor sleeps.
 ___
 
-AtMega2560 (Arduino Mega) - Should be fully functional, but untested.
+#### AtMega2560 (Arduino Mega)
+Should be fully functional, but untested.
+
 - There is a single SPI port on pins 50 (MISO), 52 (SCK), and 51 (MOSI).  Chip select/slave select is on pin 53.
 - There is a single I2C (Wire) interface on pins 20 (SDA) and 21 (SCL).
 - This processor has 4 built-in hardware serial ports Serial, which is connected to the FTDI chip for USB communication with the computer, Serial1 on pins 19 (RX) and 18 (TX), Serial2 on pins 17 (RX) and 16 (TX), and Serial3 on pins 15 (RX) and 14 (TX).
@@ -795,7 +829,9 @@ AtMega2560 (Arduino Mega) - Should be fully functional, but untested.
 - Pins 10, 11, 12, 13, 14, 15, 50, 51, 52, 53, A8 (62), A9 (63), A10 (64), A11 (65), A12 (66), A13 (67), A14 (68), and A15 (69) can be used with SoftwareSerial_ExtInts or SDI-12.
 ___
 
-AtMega644p (Sanguino) - Should be fully functional, but untested.
+#### AtMega644p (Sanguino)
+Should be fully functional, but untested.
+
 - This processor has two built-in hardware serial ports, Serial and Serial1.  On most boards, Serial is connected to the FDTI chip for USB communication with the computer.
 - There is a single I2C (Wire) interface on pins 17 (SDA) and 16 (SCL).
 - There is a single SPI port on pins 6 (MISO), 7 (SCK), and 5 (MOSI).  Chip select/slave select and card detect pins vary by board.
@@ -803,7 +839,9 @@ AtMega644p (Sanguino) - Should be fully functional, but untested.
 - Any digital pin can be used with SoftwareSerial_ExtInts or SDI-12.
 ___
 
-AtMega328p (Arduino Uno, Duemilanove, LilyPad, Mini, Seeeduino Stalker, etc) - All functions are supported, but processor doesn't have sufficient power to use all of the functionality of the library.  You will only be able to use a small number of sensors at one time and may not be able to log data.
+#### AtMega328p (Arduino Uno, Duemilanove, LilyPad, Mini, Seeeduino Stalker, etc)
+All functions are supported, but processor doesn't have sufficient power to use all of the functionality of the library.  You will only be able to use a small number of sensors at one time and may not be able to log data.
+
 - There is a singe SPI ports on pins 12 (MISO), 13 (SCK), and 11 (MOSI).  Chip select/slave select is pin 10 on an Uno.  SS/CS and CD pins may vary for other boards.
 - There is a single I2C (Wire) interface on pins A4 (SDA) and A5 (SCL).
 - This processor only has a single hardware serial port, Serial, which is connected to the FTDI chip for USB communication with the computer.
@@ -811,7 +849,9 @@ AtMega328p (Arduino Uno, Duemilanove, LilyPad, Mini, Seeeduino Stalker, etc) - A
 - Any digital pin can be used with SoftwareSerial_ExtInts or SDI-12.
 ___
 
-AtMega32u4 (Arduino Leonardo/Micro, Adafruit Flora/Feather, etc) - All functions are supported, but processor doesn't have sufficient power to use all of the functionality of the library.  You will only be able to use a small number of sensors at one time and may not be able to log data.
+#### AtMega32u4 (Arduino Leonardo/Micro, Adafruit Flora/Feather, etc)
+All functions are supported, but processor doesn't have sufficient power to use all of the functionality of the library.  You will only be able to use a small number of sensors at one time and may not be able to log data.
+
 - There is a single SPI port on pins 14 (MISO), 15 (SCK), and 16 (MOSI).  Chip select/slave select and card detect pins vary by board.
 - There is a single I2C (Wire) interface on pins 2 (SDA) and 3 (SCL).
 - This processor has one hardware serial port, Serial, which can _only_ be used for USB communication with a computer
@@ -821,9 +861,10 @@ AtMega32u4 (Arduino Leonardo/Micro, Adafruit Flora/Feather, etc) - All functions
 - Because the USB controller is built into the processor, you may lose serial output views when the processor sleeps.
 ___
 
-Unsupported Processors:
-- ESP8266/ESP32 - Supported only as a communications module (modem) with the default AT command firmware, not supported as an independent controller
-- AtSAM3X (Arduino Due) - Unsupported at this time due to clock issues.
+#### Unsupported Processors:
+
+- **ESP8266/ESP32** - Supported only as a communications module (modem) with the default AT command firmware, not supported as an independent controller
+- **AtSAM3X (Arduino Due)** - Unsupported at this time due to clock issues.
     - There is one SPI port on pins 74 (MISO), 76 (MOSI), and 75 (SCK).  Pins 4, 10 and pin 52 can be used for CS/SS.
     - There are I2C (Wire) interfaces on pins 20 (SDA) and 21 (SCL) and 70 (SDA1) and 71 (SCL1).
     - This processor has one hardware serial port, USBSerial, which can _only_ be used for USB communication with a computer
@@ -831,7 +872,7 @@ Unsupported Processors:
     - AltSoftSerial is not directly supported on the AtSAM3X.
     - SoftwareSerial_ExtInts is not supported on the AtSAM3X.
     - Any digital pin can be used with SDI-12.
-- ATtiny - Unsupported
-- Teensy 2.x/3.x - Unsupported
-- STM32 - Unsupported
+- **ATtiny** - Unsupported
+- **Teensy 2.x/3.x** - Unsupported
+- **STM32** - Unsupported
 - Anything else not listed above as being supported.
