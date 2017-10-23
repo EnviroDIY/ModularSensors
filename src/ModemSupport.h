@@ -21,10 +21,11 @@
     defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_U201) || \
     defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
   #define USE_TINY_GSM
-  // #define TINY_GSM_DEBUG Serial
+  #define TINY_GSM_DEBUG Serial
   #define TINY_GSM_YIELD() { delay(3);}
   #include <TinyGsmClient.h>
 #else
+  #include <NullModem.h>  // purely to help me debug compilation issues
   #define DBG(...)
 #endif
 
@@ -197,7 +198,7 @@ public:
         }
         #endif
 
-        #if defined(USE_TINY_GSM)
+        // #if defined(USE_TINY_GSM)
         // Now we are essentially running the "update" function to update
         // the variables assigned to the modem "sensor".  We are doing this
         // here because we want the values to be assigned with the actual
@@ -228,37 +229,38 @@ public:
 
         // Update the registered variables with the new values
         notifyVariables();
-        #endif
+        // #endif
 
         return retVal;
     }
 
     void disconnectNetwork(void)
     {
-    #if defined(TINY_GSM_MODEM_HAS_GPRS)
+    // #if defined(TINY_GSM_MODEM_HAS_GPRS)
+        DBG(F("Disconnecting from network"));
         _modem->gprsDisconnect();
-    #endif
+    // #endif
     }
 
     int connect(const char *host, uint16_t port)
     {
     DBG("Connecting to ", host, "...");
-    #if defined(USE_TINY_GSM)
+    // #if defined(USE_TINY_GSM)
         int ret_val = _client->connect(host, port);
         if (ret_val) DBG("... Success!");
         else DBG("... Connection failed.");
         return ret_val;
-    #else
-        return 0;
-    #endif
+    // #else
+    //     return 0;
+    // #endif
     }
 
     void stop(void)
     {
     DBG(F("Disconnecting from TCP/IP..."));
-    #if defined(USE_TINY_GSM)
+    // #if defined(USE_TINY_GSM)
         _client->stop();
-    #endif
+    // #endif
     }
 
     // Used to empty out the buffer after a post request.
@@ -402,16 +404,16 @@ public:
     String getSensorLocation(void) override { return F("Modem Serial Port"); }
     // Actually doing NOTHING on any of the rest of the functions.  The modem
     // must be set-up and turned on and off separately!!  The update then
-    // happens when connecting to the newtwork
+    // happens when connecting to the network
     virtual SENSOR_STATUS setup(void) override {return SENSOR_READY;}
     virtual bool sleep(void) override {return true;}
     virtual bool wake(void) override {return true;}
     bool update(void) override { return true; }
 
-#if defined(USE_TINY_GSM)
+// #if defined(USE_TINY_GSM)
     TinyGsm *_modem;
     TinyGsmClient *_client;
-#endif
+// #endif
 
 
 private:
@@ -451,7 +453,7 @@ private:
             }
         }
 
-        #if defined(USE_TINY_GSM)
+        // #if defined(USE_TINY_GSM)
 
             // Initialize the modem
             DBG(F("Initializing GSM modem instance..."));
@@ -474,9 +476,9 @@ private:
             stream = _client;
             DBG(F("   ... Complete!"));
 
-        #else
-            stream = modemStream;
-        #endif
+        // #else
+            // stream = modemStream;
+        // #endif
     }
 
     const char *_APN;

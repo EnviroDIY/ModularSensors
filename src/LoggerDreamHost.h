@@ -54,8 +54,6 @@ public:
         stream->print(String(F("\r\n\r\n")));
     }
 
-#if defined(USE_TINY_GSM)
-
     // Post the data to dream host.
     int postDataDreamHost(void)
     {
@@ -176,8 +174,6 @@ public:
         // Sleep
         if(_sleep){systemSleep();}
     }
-
-#endif
 
 
 private:

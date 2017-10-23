@@ -10,6 +10,8 @@
 #ifndef LoggerBase_h
 #define LoggerBase_h
 
+#include "VariableArray.h"
+
 #define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
 #include <EnableInterrupt.h>  // To handle external and pin change interrupts
 
@@ -29,7 +31,6 @@
 // as time from 2000-jan-01 00:00:00 instead of the standard epoch of 19970-jan-01 00:00:00
 
 #include <SdFat.h>  // To communicate with the SD card
-#include "VariableArray.h"
 
 // Defines the "Logger" Class
 class Logger : public VariableArray
@@ -585,11 +586,20 @@ public:
     // Public functions for a "debugging" mode
     // ===================================================================== //
 
+    // Create the modem instance
+        #include "ModemSupport.h"
+        loggerModem modem;
+
     // This defines what to do in the debug mode
     virtual void debugMode(Stream *stream = &Serial)
     {
         PRINTOUT(F("------------------------------------------\n"));
         PRINTOUT(F("Entering debug mode\n"));
+
+        // Turn on the modem to let it start searching for the network
+        #if defined(USE_TINY_GSM)
+            modem.on();
+        #endif
 
         // Update the sensors and print out data 25 times
         for (uint8_t i = 0; i < 25; i++)
@@ -611,8 +621,27 @@ public:
             // Print out the sensor data
             printSensorData(stream);
             stream->println(F("    -----------------------"));
+
+            #if defined(USE_TINY_GSM)
+                // Print out the modem connection strength
+                int signalQual = modem._modem->getSignalQuality();
+                stream->print(F("Current modem signal is "));
+                stream->print(signalQual);
+                stream->print(F(" ("));
+                #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
+                    stream->print(modem.getPctFromRSSI(signalQual));
+                #else
+                    stream->print(modem.getPctFromCSQ(signalQual));
+                #endif
+                stream->println(F("%)"));
+            #endif
             delay(5000);
         }
+
+        #if defined(USE_TINY_GSM)
+            // Turn off the modem
+            modem.off();
+        #endif
     }
 
     // This checks to see if you want to enter debug mode
@@ -654,8 +683,10 @@ public:
         if (_ledPin > 0) pinMode(_ledPin, OUTPUT);
 
         // Start the Real Time Clock
-        rtc.begin();
-        delay(100);
+        #if defined(USE_DS3231)
+            rtc.begin();
+            delay(100);
+        #endif
 
         #if defined ARDUINO_ARCH_SAMD
             zero_sleep_rtc.begin();
@@ -664,6 +695,23 @@ public:
         // Print out the current time
         PRINTOUT(F("Current RTC time is: "));
         PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
+
+        #if defined(USE_TINY_GSM)
+            // Synchronize the RTC with NIST
+            PRINTOUT(F("Attempting to synchronize RTC with NIST\n"));
+            // Turn on the modem
+            modem.on();
+            // Connect to the network
+            if (modem.connectNetwork())
+            {
+                delay(5000);
+                modem.syncRTClock();
+                // Disconnect from the network
+                modem.disconnectNetwork();
+            }
+            // Turn off the modem
+            modem.off();
+        #endif
 
         // Set up the sensors
         setupSensors();
@@ -758,7 +806,7 @@ DateTime Logger::markedDateTime = 0;
 char Logger::markedISO8601Time[26];
 
 #if defined(ARDUINO_ARCH_SAMD)
-RTCZero Logger::zero_sleep_rtc;
+    RTCZero Logger::zero_sleep_rtc;
 #endif
 
 #endif
