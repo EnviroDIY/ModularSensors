@@ -64,8 +64,8 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
 #include <DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const int numberReadings = 6;  // The number of readings to average
-// const int SDI12Data = 7;  // The pin the CTD is attached to
-// const int SDI12Power = 22;  // switched sensor power is pin 22 on Mayfly
+const int SDI12Data = 7;  // The pin the CTD is attached to
+const int SDI12Power = 22;  // switched sensor power is pin 22 on Mayfly
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 
 
