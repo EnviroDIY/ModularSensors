@@ -24,9 +24,10 @@ public:
     void setDreamHostPortalRX(const char *URL)
     {
         _DreamHostPortalRX = URL;
-        DBGVA(F("Dreamhost portal URL set!\n"));
+        DBGLOG(F("Dreamhost portal URL set!\n"));
     }
 
+    // This creates all of the URL parameters
     String generateSensorDataDreamHost(void)
     {
         String dhString = String(_DreamHostPortalRX);
@@ -45,6 +46,7 @@ public:
         return dhString;
     }
 
+    // Communication functions
     void streamDreamHostRequest(Stream *stream)
     {
         stream->print(String(F("GET ")));
@@ -117,6 +119,7 @@ public:
     // ===================================================================== //
     // Convience functions to call several of the above functions
     // ===================================================================== //
+
     // This is a one-and-done to log data
     virtual void log(void) override
     {
@@ -152,7 +155,7 @@ public:
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
                 if (_numReadings % 288 == 0)
                 {
-                    modem.syncRTClock();
+                    syncRTClock();
                 }
 
                 // Disconnect from the network

@@ -46,8 +46,6 @@ const int timeZone = -5;
 // Create TWO new logger instances
 Logger logger1min;
 Logger logger5min;
-// Create a single modem instance
-loggerModem modem;
 
 // ==========================================================================
 //    AOSong AM2315
@@ -205,7 +203,7 @@ void setup()
     if (modem.connectNetwork())
     {
         // Synchronize the RTC
-        modem.syncRTClock();
+        logger1min.syncRTClock();
         // Disconnect from the network
         modem.disconnectNetwork();
     }
@@ -288,7 +286,7 @@ void loop()
         if (modem.connectNetwork())
         {
             // Synchronize the RTC
-            modem.syncRTClock();
+            logger1min.syncRTClock();
             // Disconnect from the network
             modem.disconnectNetwork();
         }

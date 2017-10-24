@@ -23,19 +23,19 @@ public:
     void setToken(const char *registrationToken)
     {
         _registrationToken = registrationToken;
-        DBGVA(F("Registration token set!\n"));
+        DBGLOG(F("Registration token set!\n"));
     }
 
     void setSamplingFeature(const char *samplingFeature)
     {
         _samplingFeature = samplingFeature;
-        DBGVA(F("Sampling feature token set!\n"));
+        DBGLOG(F("Sampling feature token set!\n"));
     }
 
     void setUUIDs(const char *UUIDs[])
     {
         _UUIDs = UUIDs;
-        DBGVA(F("UUID array set!\n"));
+        DBGLOG(F("UUID array set!\n"));
     }
 
     // This adds extra data to the datafile header
@@ -189,7 +189,7 @@ public:
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
                 if (_numReadings % 288 == 0)
                 {
-                    modem.syncRTClock();
+                    syncRTClock();
                 }
 
                 // Disconnect from the network

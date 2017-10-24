@@ -12,7 +12,6 @@
 #define ModemSupport_h
 
 #include <Arduino.h>
-#include "LoggerBase.h"
 #include "ModemOnOff.h"
 
 #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM808) || \
@@ -236,10 +235,10 @@ public:
 
     void disconnectNetwork(void)
     {
-    // #if defined(TINY_GSM_MODEM_HAS_GPRS)
+    #if defined(TINY_GSM_MODEM_HAS_GPRS)
         DBG(F("Disconnecting from network"));
         _modem->gprsDisconnect();
-    // #endif
+    #endif
     }
 
     int connect(const char *host, uint16_t port)
@@ -270,12 +269,7 @@ public:
         delay(timeDelay);
         while (timeout-- > 0 && stream->available() > 0)
         {
-            #if defined(TINY_GSM_DEBUG)
-                // DBG(stream->readStringUntil('\n'));
-                stream->read();
-            #else
-                stream->read();
-            #endif
+            stream->read();
             delay(timeDelay);
         }
     }
@@ -325,49 +319,6 @@ public:
         if (unixTimeStamp < 1483228800) return 0;
         else if (unixTimeStamp > 1893456000) return 0;
         else return unixTimeStamp;
-    }
-
-    bool syncRTClock(void)
-    {
-        uint32_t start_millis = millis();
-
-        // Get the time stamp from NIST and adjust it to the correct time zone
-        // for the logger.
-        uint32_t nist = getNISTTime();
-
-        // If the timestamp returns zero, just exit
-        if  (nist == 0)
-        {
-            PRINTOUT(F("Bad timestamp returned, skipping sync.\n"));
-            return false;
-        }
-
-        uint32_t nist_logTZ = nist + Logger::getTimeZone()*3600;
-        uint32_t nist_rtcTZ = nist_logTZ - Logger::getTZOffset()*3600;
-        DBG(F("        Correct Time for Logger: "), nist_logTZ, F(" -> "), \
-            Logger::formatDateTime_ISO8601(nist_logTZ));
-
-        // See how long it took to get the time from NIST
-        int sync_time = (millis() - start_millis)/1000;
-
-        // Check the current RTC time
-        uint32_t cur_logTZ = Logger::getNowEpoch();
-        DBG(F("           Time Returned by RTC: "), cur_logTZ, F(" -> "), \
-            Logger::formatDateTime_ISO8601(cur_logTZ));
-        DBG(F("Offset: "), abs(nist_logTZ - cur_logTZ));
-
-        // If the RTC and NIST disagree by more than 5 seconds, set the clock
-        if ((abs(nist_logTZ - cur_logTZ) > 5) && (nist != 0))
-        {
-            Logger::setNowEpoch(nist_rtcTZ + sync_time/2);
-            PRINTOUT(F("Clock synced to NIST!\n"));
-            return true;
-        }
-        else
-        {
-            PRINTOUT(F("Clock already within 5 seconds of NIST.\n"));
-            return false;
-        }
     }
 
     Stream *stream;

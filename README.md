@@ -372,7 +372,7 @@ EnviroDIYLogger.modem.setupModem(modemStream, vcc33Pin, status_CTS_pin, onoff_DT
 if (EnviroDIYLogger.modem.connectNetwork())
 {
     // Synchronize the RTC
-    EnviroDIYLogger.modem.syncRTClock();
+    EnviroDIYLogger.syncRTClock();
 }
 // Disconnect from the network
 EnviroDIYLogger.modem.disconnectNetwork();

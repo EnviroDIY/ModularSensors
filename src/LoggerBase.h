@@ -12,6 +12,9 @@
 
 #include "VariableArray.h"
 
+// #define MODULAR_SENSORS_OUTPUT Serial
+// #define LOGGER_DBG Serial
+
 #define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
 #include <EnableInterrupt.h>  // To handle external and pin change interrupts
 
@@ -31,6 +34,26 @@
 // as time from 2000-jan-01 00:00:00 instead of the standard epoch of 19970-jan-01 00:00:00
 
 #include <SdFat.h>  // To communicate with the SD card
+
+#include "ModemSupport.h"  // To communicate with the internet
+
+// Debugging helpers
+#ifdef LOGGER_DBG
+namespace {
+ template<typename T>
+ static void DBGLOG(T last) {
+   LOGGER_DBG.print(last);
+ }
+
+ template<typename T, typename... Args>
+ static void DBGLOG(T head, Args... tail) {
+   LOGGER_DBG.print(head);
+   DBGLOG(tail...);
+ }
+}
+#else
+ #define DBGLOG(...)
+#endif
 
 // Defines the "Logger" Class
 class Logger : public VariableArray
@@ -103,7 +126,7 @@ public:
     void setAlertPin(int ledPin)
     {
         _ledPin = ledPin;
-        DBGVA(F("Pin "), _ledPin, F(" set for alerts\n"));
+        DBGLOG(F("Pin "), _ledPin, F(" set for alerts\n"));
     }
 
 
@@ -177,6 +200,50 @@ public:
         return formatDateTime_ISO8601(dt);
     }
 
+    // This syncronizes the real time clock to NIST
+    bool syncRTClock(void)
+    {
+        uint32_t start_millis = millis();
+
+        // Get the time stamp from NIST and adjust it to the correct time zone
+        // for the logger.
+        uint32_t nist = modem.getNISTTime();
+
+        // If the timestamp returns zero, just exit
+        if  (nist == 0)
+        {
+            PRINTOUT(F("Bad timestamp returned, skipping sync.\n"));
+            return false;
+        }
+
+        uint32_t nist_logTZ = nist + getTimeZone()*3600;
+        uint32_t nist_rtcTZ = nist_logTZ - getTZOffset()*3600;
+        DBGLOG(F("        Correct Time for Logger: "), nist_logTZ, F(" -> "), \
+            formatDateTime_ISO8601(nist_logTZ));
+
+        // See how long it took to get the time from NIST
+        int sync_time = (millis() - start_millis)/1000;
+
+        // Check the current RTC time
+        uint32_t cur_logTZ = getNowEpoch();
+        DBGLOG(F("           Time Returned by RTC: "), cur_logTZ, F(" -> "), \
+            formatDateTime_ISO8601(cur_logTZ));
+        DBGLOG(F("Offset: "), abs(nist_logTZ - cur_logTZ));
+
+        // If the RTC and NIST disagree by more than 5 seconds, set the clock
+        if ((abs(nist_logTZ - cur_logTZ) > 5) && (nist != 0))
+        {
+            setNowEpoch(nist_rtcTZ + sync_time/2);
+            PRINTOUT(F("Clock synced to NIST!\n"));
+            return true;
+        }
+        else
+        {
+            PRINTOUT(F("Clock already within 5 seconds of NIST.\n"));
+            return false;
+        }
+    }
+
     // This sets static variables for the date/time - this is needed so that all
     // data outputs (SD, EnviroDIY, serial printing, etc) print the same time
     // for updating the sensors - even though the routines to update the sensors
@@ -196,31 +263,32 @@ public:
     bool checkInterval(void)
     {
         bool retval;
-        DBGVA(F("Current Unix Timestamp: "), getNowEpoch(), F("\n"));
-        DBGVA(F("Mod of Logging Interval: "), getNowEpoch() % _interruptRate, F("\n"));
-        DBGVA(F("Number of Readings so far: "), _numReadings, F("\n"));
-        DBGVA(F("Mod of 120: "), getNowEpoch() % 120, F("\n"));
+        DBGLOG(F("Current Unix Timestamp: "), getNowEpoch(), F("\n"));
+        DBGLOG(F("Mod of Logging Interval: "), getNowEpoch() % _interruptRate, F("\n"));
+        DBGLOG(F("Number of Readings so far: "), _numReadings, F("\n"));
+        DBGLOG(F("Mod of 120: "), getNowEpoch() % 120, F("\n"));
         if ((getNowEpoch() % _interruptRate == 0 ) or
             (_numReadings < 10 and getNowEpoch() % 120 == 0))
         {
             // Update the time variables with the current time
             markTime();
-            DBGVA(F("Time marked at (unix): "), markedEpochTime, F("\n"));
-            DBGVA(F("    year: "), markedDateTime.year(), F("\n"));
-            DBGVA(F("    month: "), markedDateTime.month(), F("\n"));
-            DBGVA(F("    date: "), markedDateTime.date(), F("\n"));
-            DBGVA(F("    hour: "), markedDateTime.hour(), F("\n"));
-            DBGVA(F("    minute: "), markedDateTime.minute(), F("\n"));
-            DBGVA(F("    second: "), markedDateTime.second(), F("\n"));
-            DBGVA(F("Time marked at [char]: "), markedISO8601Time, F("\n"));
+            DBGLOG(F("Time marked at (unix): "), markedEpochTime, F("\n"));
+            DBGLOG(F("    year: "), markedDateTime.year(), F("\n"));
+            DBGLOG(F("    month: "), markedDateTime.month(), F("\n"));
+            DBGLOG(F("    date: "), markedDateTime.date(), F("\n"));
+            DBGLOG(F("    hour: "), markedDateTime.hour(), F("\n"));
+            DBGLOG(F("    minute: "), markedDateTime.minute(), F("\n"));
+            DBGLOG(F("    second: "), markedDateTime.second(), F("\n"));
+            DBGLOG(F("Time marked at [char]: "), markedISO8601Time, F("\n"));
             // Update the number of readings taken
             _numReadings ++;
-            DBGVA(F("Time to log!\n"));
+            DBGLOG(F("Time to log!\n"));
             retval = true;
         }
         else
         {
-            DBGVA(F("Not time yet, back to sleep\n"));
+            DBGLOG(F("Not time yet, back to sleep\n"));
+            delay(3000);
             retval = false;
         }
         return retval;
@@ -231,22 +299,22 @@ public:
     bool checkMarkedInterval(void)
     {
         bool retval;
-        DBGVA(F("Marked Time: "), markedEpochTime, F("\n"));
-        DBGVA(F("Mod of Logging Interval: "), markedEpochTime % _interruptRate, F("\n"));
-        DBGVA(F("Number of Readings so far: "), _numReadings, F("\n"));
-        DBGVA(F("Mod of 120: "), markedEpochTime % 120, F("\n"));
+        DBGLOG(F("Marked Time: "), markedEpochTime, F("\n"));
+        DBGLOG(F("Mod of Logging Interval: "), markedEpochTime % _interruptRate, F("\n"));
+        DBGLOG(F("Number of Readings so far: "), _numReadings, F("\n"));
+        DBGLOG(F("Mod of 120: "), markedEpochTime % 120, F("\n"));
         if (markedEpochTime != 0 &&
             ((markedEpochTime % _interruptRate == 0 ) or
             (_numReadings < 10 and markedEpochTime % 120 == 0)))
         {
             // Update the number of readings taken
             _numReadings ++;
-            DBGVA(F("Time to log!\n"));
+            DBGLOG(F("Time to log!\n"));
             retval = true;
         }
         else
         {
-            DBGVA(F("Not time yet, back to sleep\n"));
+            DBGLOG(F("Not time yet, back to sleep\n"));
             retval = false;
         }
         return retval;
@@ -260,7 +328,7 @@ public:
     // Set up the Interrupt Service Request for waking
     // In this case, we're doing nothing, we just want the processor to wake
     // This must be a static function (which means it can only call other static funcions.)
-    static void wakeISR(void){DBGVA(F("The clock interrupt woke me up!\n"));}
+    static void wakeISR(void){DBGLOG(F("The clock interrupt woke me up!\n"));}
 
     #if defined ARDUINO_ARCH_SAMD
 
@@ -287,8 +355,8 @@ public:
         #if defined(MODULAR_SENSORS_OUTPUT)
             MODULAR_SENSORS_OUTPUT.flush();  // for debugging
         #endif
-        #if defined(VAR_ARRAY_DBG)
-            VAR_ARRAY_DBG.flush();  // for debugging
+        #if defined(LOGGER_DBG)
+            LOGGER_DBG.flush();  // for debugging
         #endif
 
         // This clears the interrrupt flag in status register of the clock
@@ -343,8 +411,8 @@ public:
         #if defined(MODULAR_SENSORS_OUTPUT)
             MODULAR_SENSORS_OUTPUT.flush();  // for debugging
         #endif
-        #if defined(VAR_ARRAY_DBG)
-            VAR_ARRAY_DBG.flush();  // for debugging
+        #if defined(LOGGER_DBG)
+            LOGGER_DBG.flush();  // for debugging
         #endif
 
         // This clears the interrrupt flag in status register of the clock
@@ -525,7 +593,7 @@ public:
 
             // Add header information
             logFile.print(generateFileHeader());
-            DBGVA(generateFileHeader(), F("\n"));
+            DBGLOG(generateFileHeader(), F("\n"));
 
             //Close the file to save it
             logFile.close();
@@ -585,10 +653,6 @@ public:
     // ===================================================================== //
     // Public functions for a "debugging" mode
     // ===================================================================== //
-
-    // Create the modem instance
-        #include "ModemSupport.h"
-        loggerModem modem;
 
     // This defines what to do in the debug mode
     virtual void debugMode(Stream *stream = &Serial)
@@ -705,7 +769,7 @@ public:
             if (modem.connectNetwork())
             {
                 delay(5000);
-                modem.syncRTClock();
+                syncRTClock();
                 // Disconnect from the network
                 modem.disconnectNetwork();
             }
@@ -762,6 +826,8 @@ public:
     // Publie variables
     // Time stamps - want to set them at a single time and carry them forward
     static long markedEpochTime;
+    // Create a modem instance
+    loggerModem modem;
 
 
 
