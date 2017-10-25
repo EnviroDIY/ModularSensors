@@ -656,7 +656,7 @@ public:
     // ===================================================================== //
 
     // This defines what to do in the debug mode
-    virtual void debugMode(Stream *stream = &Serial)
+    virtual void debugMode()
     {
         PRINTOUT(F("------------------------------------------\n"));
         PRINTOUT(F("Entering debug mode\n"));
@@ -672,36 +672,38 @@ public:
         // Update the sensors and print out data 25 times
         for (uint8_t i = 0; i < 25; i++)
         {
-            stream->println(F("------------------------------------------"));
+            PRINTOUT(F("------------------------------------------"));
             // Wake up all of the sensors
-            stream->print(F("Waking sensors..."));
+            PRINTOUT(F("Waking sensors..."));
             sensorsWake();
             // Update the values from all attached sensors
-            stream->print(F("  Updating sensor values..."));
+            PRINTOUT(F("  Updating sensor values..."));
             updateAllSensors();
             // Immediately put sensors to sleep to save power
-            stream->println(F("  Putting sensors back to sleep..."));
+            PRINTOUT(F("  Putting sensors back to sleep..."));
             sensorsSleep();
             // Print out the current logger time
-            stream->print(F("Current logger time is "));
-            stream->println(formatDateTime_ISO8601(getNowEpoch()));
-            stream->println(F("    -----------------------"));
+            PRINTOUT(F("Current logger time is "));
+            PRINTOUT(formatDateTime_ISO8601(getNowEpoch()));
+            PRINTOUT(F("    -----------------------"));
             // Print out the sensor data
-            printSensorData(stream);
-            stream->println(F("    -----------------------"));
+            #if defined(MODULAR_SENSORS_OUTPUT)
+                printSensorData(MODULAR_SENSORS_OUTPUT);
+            #endif
+            PRINTOUT(F("    -----------------------"));
 
             #if defined(USE_TINY_GSM)
                 // Print out the modem connection strength
                 int signalQual = modem._modem->getSignalQuality();
-                stream->print(F("Current modem signal is "));
-                stream->print(signalQual);
-                stream->print(F(" ("));
+                PRINTOUT(F("Current modem signal is "));
+                PRINTOUT(signalQual);
+                PRINTOUT(F(" ("));
                 #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
-                    stream->print(modem.getPctFromRSSI(signalQual));
+                    PRINTOUT(modem.getPctFromRSSI(signalQual));
                 #else
-                    stream->print(modem.getPctFromCSQ(signalQual));
+                    PRINTOUT(modem.getPctFromCSQ(signalQual));
                 #endif
-                stream->println(F("%)"));
+                PRINTOUT(F("%)"));
             #endif
             delay(5000);
         }
@@ -716,7 +718,7 @@ public:
 
     // This checks to see if you want to enter debug mode
     // This should be run as the very last step within the setup function
-    virtual void checkForDebugMode(int buttonPin, Stream *stream = &Serial)
+    virtual void checkForDebugMode(int buttonPin)
     {
         // Set the pin attached to some button to enter debug mode
         if (buttonPin > 0) pinMode(buttonPin, INPUT_PULLUP);
@@ -734,7 +736,7 @@ public:
         PRINTOUT(F("Push button NOW to enter debug mode.\n"));
         for (unsigned long start = millis(); millis() - start < 5000; )
         {
-            if (digitalRead(buttonPin) == HIGH) debugMode(stream);
+            if (digitalRead(buttonPin) == HIGH) debugMode();
         }
         PRINTOUT(F("------------------------------------------\n\n"));
         PRINTOUT(F("End of debug mode.\n"));
