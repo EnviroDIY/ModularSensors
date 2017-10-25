@@ -16,6 +16,8 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
+#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
+
 #define DreamHostPortalRX "TALK TO STROUD FOR THIS VALUE"
 
 // Select your modem chip, comment out all of the others
@@ -24,7 +26,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ---------------------------------------------------------------------------
 // Include the base required libraries
 // ---------------------------------------------------------------------------
-#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <LoggerDreamHost.h>
@@ -176,7 +177,7 @@ void setup()
 {
     // Start the primary serial connection
     Serial.begin(serialBaud);
-    
+
     // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);
 

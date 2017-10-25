@@ -14,10 +14,11 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
+#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
+
 // ---------------------------------------------------------------------------
 // Include the base required libraries
 // ---------------------------------------------------------------------------
-#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <LoggerBase.h>

@@ -15,6 +15,8 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
+#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
+
 // Select your modem chip, comment out all of the others
 // #define TINY_GSM_MODEM_SIM800  // Select for anything using a SIM800, SIM900, or variant thereof: Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
 // #define TINY_GSM_MODEM_A6  // Select for A6 or A7 chips
@@ -25,7 +27,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ---------------------------------------------------------------------------
 // Include the base required libraries
 // ---------------------------------------------------------------------------
-#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <LoggerBase.h>
