@@ -426,10 +426,12 @@ void setup()
 {
     // Start the primary serial connection
     Serial.begin(serialBaud);
-    // Start the stream for the sonar
-    sonarSerial.begin(9600);
-    // Start the stream for the modbus sensors
+
+    // Start the AltSoftSerial stream for the modbus sensors
     modbusSerial.begin(9600);
+
+    // Start the SoftwareSerial stream for the sonar
+    sonarSerial.begin(9600);
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
     enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);

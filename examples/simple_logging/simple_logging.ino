@@ -17,8 +17,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // Include the base required libraries
 // ---------------------------------------------------------------------------
 #define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
-// #define VAR_ARRAY_DBG Serial  // For in-depth debugging of variable array and logger fxns
-
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <LoggerBase.h>
@@ -31,9 +29,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 const char *sketchName = "simple_logging.ino";
 
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "Mayfly_Yosemitech";
+const char *LoggerID = "XXXX";
 // How frequently (in minutes) to log data
-int loggingInterval = 1;
+int loggingInterval = 5;
 // Your logger's timezone.
 const int timeZone = -5;
 // Create a new logger instance
@@ -390,10 +388,10 @@ void setup()
     // Start the primary serial connection
     Serial.begin(serialBaud);
 
-    // Start the stream for the modbus sensors
+    // Start the AltSoftSerial stream for the modbus sensors
     modbusSerial.begin(9600);
 
-    // Start the stream for the sonar
+    // Start the SoftwareSerial stream for the sonar
     sonarSerial.begin(9600);
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
@@ -413,19 +411,21 @@ void setup()
     Serial.println(LoggerID);
 
     // Set the timezone and offsets
+    // Logging in the given time zone
     Logger::setTimeZone(timeZone);
-    Logger::setTZOffset(timeZone);  // Because RTC is in UTC
+    // Offset is the same as the time zone because the RTC is in UTC
+    Logger::setTZOffset(timeZone);
 
     // Initialize the logger;
     logger.init(sdCardPin, wakePin, variableCount, variableList,
                 loggingInterval, LoggerID);
     logger.setAlertPin(greenLED);
 
-    // Begin the logger;
+    // Begin the logger
     logger.begin();
 
     // Check for debugging mode
-    logger.checkForDebugMode(buttonPin, &Serial);
+    logger.checkForDebugMode(buttonPin);
 }
 
 

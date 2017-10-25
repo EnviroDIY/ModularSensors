@@ -27,20 +27,20 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //   ie, pin locations, addresses, calibrations and related settings
 // ---------------------------------------------------------------------------
 // The name of this file
-const char *SKETCH_NAME = "DRWI_NoCellular.ino";
+const char *sketchName = "DRWI_NoCellular.ino";
 
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "XXXX";
 // How frequently (in minutes) to log data
-int LOGGING_INTERVAL = 5;
+int loggingInterval = 5;
 // Your logger's timezone.
-const int TIME_ZONE = -5;
+const int timeZone = -5;
 // Create a new logger instance
 Logger logger;
 
 
 // ==========================================================================
-//    CAMPBELL OBS 3 / OBS 3+
+//    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
 #include <CampbellOBS3.h>
 // Campbell OBS 3+ Low Range calibration in Volts
@@ -59,7 +59,7 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
 
 
 // ==========================================================================
-//    Decagon CTD
+//    Decagon CTD Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
 #include <DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
@@ -69,26 +69,31 @@ const int SDI12Power = 22;  // switched sensor power is pin 22 on Mayfly
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 
 
+// ==========================================================================
+//    Maxim DS3231 RTC (Real Time Clock)
+// ==========================================================================
+#include <MaximDS3231.h>
+MaximDS3231 ds3231(1);
+
 
 // ==========================================================================
-//    EnviroDIY Mayfly
+//    EnviroDIY Mayfly Arduino-Based Board and Processor
 // ==========================================================================
-#include <MayflyOnboardSensors.h>
+#include <ProcessorMetadata.h>
 const char *MFVersion = "v0.5";
-EnviroDIYMayfly mayfly(MFVersion) ;
+ProcessorMetadata mayfly(MFVersion) ;
 
 // ---------------------------------------------------------------------------
 // The array that contains all valid variables
 // ---------------------------------------------------------------------------
 Variable *variableList[] = {
-    new EnviroDIYMayfly_Batt(&mayfly),
-    new EnviroDIYMayfly_Temp(&mayfly),
+    new ProcessorMetadata_Batt(&mayfly),
+    new MaximDS3231_Temp(&ds3231),
     new DecagonCTD_Cond(&ctd),
     new DecagonCTD_Temp(&ctd),
     new DecagonCTD_Depth(&ctd),
     new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
-    // new YOUR_variableName_HERE(&)
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
@@ -96,12 +101,12 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // ---------------------------------------------------------------------------
 // Board setup info
 // ---------------------------------------------------------------------------
-const long SERIAL_BAUD = 57600;  // Serial port baud rate
-const int GREEN_LED = 8;  // Pin for the green LED
-const int RED_LED = 9;  // Pin for the red LED
-const int BUTTON_PIN = 21;  // Pin for the button
-const int RTC_PIN = A7;  // RTC Interrupt/Alarm pin
-const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
+const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const int greenLED = 8;  // Pin for the green LED
+const int redLED = 9;  // Pin for the red LED
+const int buttonPin = 21;  // Pin for the button
+const int wakePin = A7;  // RTC Interrupt/Alarm pin
+const int sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin
 
 
 // ---------------------------------------------------------------------------
@@ -109,17 +114,17 @@ const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
 // ---------------------------------------------------------------------------
 
 // Flashes to Mayfly's LED's
-void greenredflash(int numFlash = 4)
+void greenredflash(int numFlash = 4, int rate = 75)
 {
   for (int i = 0; i < numFlash; i++) {
-    digitalWrite(GREEN_LED, HIGH);
-    digitalWrite(RED_LED, LOW);
-    delay(75);
-    digitalWrite(GREEN_LED, LOW);
-    digitalWrite(RED_LED, HIGH);
-    delay(75);
+    digitalWrite(greenLED, HIGH);
+    digitalWrite(redLED, LOW);
+    delay(rate);
+    digitalWrite(greenLED, LOW);
+    digitalWrite(redLED, HIGH);
+    delay(rate);
   }
-  digitalWrite(RED_LED, LOW);
+  digitalWrite(redLED, LOW);
 }
 
 
@@ -129,34 +134,36 @@ void greenredflash(int numFlash = 4)
 void setup()
 {
     // Start the primary serial connection
-    Serial.begin(SERIAL_BAUD);
+    Serial.begin(serialBaud);
 
     // Set up pins for the LED's
-    pinMode(GREEN_LED, OUTPUT);
-    pinMode(RED_LED, OUTPUT);
+    pinMode(greenLED, OUTPUT);
+    pinMode(redLED, OUTPUT);
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
     // Print a start-up note to the first serial port
     Serial.print(F("Now running "));
-    Serial.print(SKETCH_NAME);
+    Serial.print(sketchName);
     Serial.print(F(" on Logger "));
     Serial.println(LoggerID);
 
     // Set the timezone and offsets
-    Logger::setTimeZone(TIME_ZONE);
-    Logger::setTZOffset(TIME_ZONE);  // Because RTC is in UTC
+    // Logging in the given time zone
+    Logger::setTimeZone(timeZone);
+    // Offset is the same as the time zone because the RTC is in UTC
+    Logger::setTZOffset(timeZone);
 
     // Initialize the logger;
-    logger.init(SD_SS_PIN, RTC_PIN, variableCount, variableList,
-                LOGGING_INTERVAL, LoggerID);
-    logger.setAlertPin(GREEN_LED);
+    logger.init(sdCardPin, wakePin, variableCount, variableList,
+                loggingInterval, LoggerID);
+    logger.setAlertPin(greenLED);
 
-    // Begin the logger;
+    // Begin the logger
     logger.begin();
 
     // Check for debugging mode
-    logger.checkForDebugMode(BUTTON_PIN, &Serial);
+    logger.checkForDebugMode(buttonPin);
 }
 
 

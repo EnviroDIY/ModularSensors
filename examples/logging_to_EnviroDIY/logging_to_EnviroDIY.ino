@@ -41,7 +41,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 const char *sketchName = "logging_to_EnviroDIY.ino";
 
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "Mayfly_160073";
+const char *LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
 int loggingInterval = 1;
 // Your logger's timezone.
@@ -469,9 +469,14 @@ void setup()
 {
     // Start the primary serial connection
     Serial.begin(serialBaud);
-    // Start the serial connection with the *bee
+    
+    // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);
-    // Start the stream for the sonar
+
+    // Start the AltSoftSerial stream for the modbus sensors
+    modbusSerial.begin(9600);
+
+    // Start the SoftwareSerial stream for the sonar
     sonarSerial.begin(9600);
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
@@ -491,26 +496,29 @@ void setup()
     Serial.println(LoggerID);
 
     // Set the timezone and offsets
-    Logger::setTimeZone(timeZone);  // Logging in the given time zone
-    // EnviroDIYLogger.setTZOffset(0);  // Also set the clock in that time zone
-    Logger::setTZOffset(timeZone);  // Set the clock in UTC
+    // Logging in the given time zone
+    Logger::setTimeZone(timeZone);
+    // Offset is the same as the time zone because the RTC is in UTC
+    Logger::setTZOffset(timeZone);
 
     // Initialize the logger;
     EnviroDIYLogger.init(sdCardPin, wakePin, variableCount, variableList,
                 loggingInterval, LoggerID);
     EnviroDIYLogger.setAlertPin(greenLED);
 
-    // Set up the connection with EnviroDIY
-    EnviroDIYLogger.setToken(registrationToken);
-    EnviroDIYLogger.setSamplingFeature(samplingFeature);
-    EnviroDIYLogger.setUUIDs(UUIDs);
-
+    // Set up the modem
     #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
         EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, wifiId, wifiPwd);
     #else
         EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, apn);
     #endif
 
+    // Set up the connection with EnviroDIY
+    EnviroDIYLogger.setToken(registrationToken);
+    EnviroDIYLogger.setSamplingFeature(samplingFeature);
+    EnviroDIYLogger.setUUIDs(UUIDs);
+
+    // Set up the connection with DreamHost
     #ifdef DreamHostPortalRX
         EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
     #endif
@@ -519,7 +527,7 @@ void setup()
     EnviroDIYLogger.begin();
 
     // Check for debugging mode
-    EnviroDIYLogger.checkForDebugMode(buttonPin, &Serial);
+    EnviroDIYLogger.checkForDebugMode(buttonPin);
 }
 
 

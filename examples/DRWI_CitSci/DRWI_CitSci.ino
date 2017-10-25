@@ -15,6 +15,7 @@ Watershed Initiative
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
+
 #define DreamHostPortalRX "TALK TO STROUD FOR THIS VALUE"
 
 // Select your modem chip, comment out all of the others
@@ -36,7 +37,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 const char *sketchName = "DWRI_CitSci.ino";
 
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "SL099";
+const char *LoggerID = "XXXX";
 // How frequently (in minutes) to log data
 int loggingInterval = 5;
 // Your logger's timezone.
@@ -175,7 +176,8 @@ void setup()
 {
     // Start the primary serial connection
     Serial.begin(serialBaud);
-    // Start the serial connection with the *bee
+    
+    // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);
 
     // Set up pins for the LED's
@@ -191,29 +193,32 @@ void setup()
     Serial.println(LoggerID);
 
     // Set the timezone and offsets
-    Logger::setTimeZone(timeZone);  // Logging in the given time zone
-    // EnviroDIYLogger.setTZOffset(0);  // Also set the clock in that time zone
-    Logger::setTZOffset(timeZone);  // Set the clock in UTC
+    // Logging in the given time zone
+    Logger::setTimeZone(timeZone);
+    // Offset is the same as the time zone because the RTC is in UTC
+    Logger::setTZOffset(timeZone);
 
     // Initialize the logger;
     EnviroDIYLogger.init(sdCardPin, wakePin, variableCount, variableList,
                 loggingInterval, LoggerID);
     EnviroDIYLogger.setAlertPin(greenLED);
 
+    // Set up the modem
+    EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, apn);
+
     // Set up the connection with EnviroDIY
     EnviroDIYLogger.setToken(registrationToken);
     EnviroDIYLogger.setSamplingFeature(samplingFeature);
     EnviroDIYLogger.setUUIDs(UUIDs);
 
-    EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, apn);
-
+    // Set up the connection with DreamHost
     EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
 
     // Begin the logger
     EnviroDIYLogger.begin();
 
     // Check for debugging mode
-    EnviroDIYLogger.checkForDebugMode(buttonPin, &Serial);
+    EnviroDIYLogger.checkForDebugMode(buttonPin);
 }
 
 
