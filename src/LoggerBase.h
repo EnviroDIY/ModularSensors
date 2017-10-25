@@ -219,7 +219,7 @@ public:
         uint32_t nist_logTZ = nist + getTimeZone()*3600;
         uint32_t nist_rtcTZ = nist_logTZ - getTZOffset()*3600;
         DBGLOG(F("        Correct Time for Logger: "), nist_logTZ, F(" -> "), \
-            formatDateTime_ISO8601(nist_logTZ), F('\n'));
+            formatDateTime_ISO8601(nist_logTZ), F("\n"));
 
         // See how long it took to get the time from NIST
         int sync_time = (millis() - start_millis)/1000;
@@ -227,8 +227,8 @@ public:
         // Check the current RTC time
         uint32_t cur_logTZ = getNowEpoch();
         DBGLOG(F("           Time Returned by RTC: "), cur_logTZ, F(" -> "), \
-            formatDateTime_ISO8601(cur_logTZ), F('\n'));
-        DBGLOG(F("Offset: "), abs(nist_logTZ - cur_logTZ), F('\n'));
+            formatDateTime_ISO8601(cur_logTZ), F("\n"));
+        DBGLOG(F("Offset: "), abs(nist_logTZ - cur_logTZ), F("\n"));
 
         // If the RTC and NIST disagree by more than 5 seconds, set the clock
         if ((abs(nist_logTZ - cur_logTZ) > 5) && (nist != 0))
@@ -672,25 +672,25 @@ public:
         // Update the sensors and print out data 25 times
         for (uint8_t i = 0; i < 25; i++)
         {
-            PRINTOUT(F("------------------------------------------"));
+            PRINTOUT(F("------------------------------------------\n"));
             // Wake up all of the sensors
-            PRINTOUT(F("Waking sensors..."));
+            PRINTOUT(F("Waking sensors...\n"));
             sensorsWake();
             // Update the values from all attached sensors
-            PRINTOUT(F("  Updating sensor values..."));
+            PRINTOUT(F("  Updating sensor values...\n"));
             updateAllSensors();
             // Immediately put sensors to sleep to save power
-            PRINTOUT(F("  Putting sensors back to sleep..."));
+            PRINTOUT(F("  Putting sensors back to sleep...\n"));
             sensorsSleep();
             // Print out the current logger time
             PRINTOUT(F("Current logger time is "));
-            PRINTOUT(formatDateTime_ISO8601(getNowEpoch()));
-            PRINTOUT(F("    -----------------------"));
+            PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
+            PRINTOUT(F("    -----------------------\n"));
             // Print out the sensor data
             #if defined(MODULAR_SENSORS_OUTPUT)
-                printSensorData(MODULAR_SENSORS_OUTPUT);
+                printSensorData(&MODULAR_SENSORS_OUTPUT);
             #endif
-            PRINTOUT(F("    -----------------------"));
+            PRINTOUT(F("    -----------------------\n"));
 
             #if defined(USE_TINY_GSM)
                 // Print out the modem connection strength
@@ -703,7 +703,7 @@ public:
                 #else
                     PRINTOUT(modem.getPctFromCSQ(signalQual));
                 #endif
-                PRINTOUT(F("%)"));
+                PRINTOUT(F("%)\n"));
             #endif
             delay(5000);
         }
