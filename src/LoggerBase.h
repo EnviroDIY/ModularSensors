@@ -663,7 +663,10 @@ public:
 
         // Turn on the modem to let it start searching for the network
         #if defined(USE_TINY_GSM)
+            // Turn on the modem
             modem.on();
+            // Connect to the network to make sure we have signal
+            modem.connectNetwork();
         #endif
 
         // Update the sensors and print out data 25 times
@@ -704,6 +707,8 @@ public:
         }
 
         #if defined(USE_TINY_GSM)
+            // Disconnect from the network
+            modem.disconnectNetwork();
             // Turn off the modem
             modem.off();
         #endif

@@ -13,6 +13,8 @@
 
 #include <Arduino.h>
 #include "ModemOnOff.h"
+#include "SensorBase.h"
+#include "VariableBase.h"
 
 #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM808) || \
     defined(TINY_GSM_MODEM_SIM868) || defined(TINY_GSM_MODEM_SIM900) || \
@@ -20,7 +22,7 @@
     defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_U201) || \
     defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
   #define USE_TINY_GSM
-  #define TINY_GSM_DEBUG Serial
+  // #define TINY_GSM_DEBUG Serial
   #define TINY_GSM_YIELD() { delay(3);}
   #include <TinyGsmClient.h>
 #else
@@ -158,6 +160,9 @@ public:
         // Check again if the modem is on.  If it still isn't on, give up
         if(!modemOnOff->isOn()) return false;
 
+        // Check that the modem is responding to AT commands.  If not, give up.
+        if (!_modem->testAT(5000L)) return false;
+
         // WiFi modules immediately re-connect to the last access point so we
         // can save just a tiny bit of time (and thus power) by not resending
         // the credentials every time.
@@ -211,16 +216,16 @@ public:
 
         // Convert signal quality to RSSI, if necessary
         #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
-        int rssi = signalQual;
+            int rssi = signalQual;
         #else
-        int rssi = getRSSIFromCSQ(signalQual);
+            int rssi = getRSSIFromCSQ(signalQual);
         #endif
 
         // Convert signal quality to a percent
         #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
-        int signalPercent = getPctFromRSSI(signalQual);
+            int signalPercent = getPctFromRSSI(signalQual);
         #else
-        int signalPercent = getPctFromCSQ(signalQual);
+            int signalPercent = getPctFromCSQ(signalQual);
         #endif
 
         sensorValues[CSQ_VAR_NUM] = rssi;
@@ -235,9 +240,11 @@ public:
 
     void disconnectNetwork(void)
     {
-    #if defined(TINY_GSM_MODEM_HAS_GPRS)
         DBG(F("Disconnecting from network"));
+    #if defined(TINY_GSM_MODEM_HAS_GPRS)
         _modem->gprsDisconnect();
+    #elif defined(TINY_GSM_MODEM_HAS_WIFI)
+        _modem->networkDisconnect();
     #endif
     }
 
