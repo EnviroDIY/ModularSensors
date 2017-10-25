@@ -219,7 +219,7 @@ public:
         uint32_t nist_logTZ = nist + getTimeZone()*3600;
         uint32_t nist_rtcTZ = nist_logTZ - getTZOffset()*3600;
         DBGLOG(F("        Correct Time for Logger: "), nist_logTZ, F(" -> "), \
-            formatDateTime_ISO8601(nist_logTZ));
+            formatDateTime_ISO8601(nist_logTZ), F('\n'));
 
         // See how long it took to get the time from NIST
         int sync_time = (millis() - start_millis)/1000;
@@ -227,8 +227,8 @@ public:
         // Check the current RTC time
         uint32_t cur_logTZ = getNowEpoch();
         DBGLOG(F("           Time Returned by RTC: "), cur_logTZ, F(" -> "), \
-            formatDateTime_ISO8601(cur_logTZ));
-        DBGLOG(F("Offset: "), abs(nist_logTZ - cur_logTZ));
+            formatDateTime_ISO8601(cur_logTZ), F('\n'));
+        DBGLOG(F("Offset: "), abs(nist_logTZ - cur_logTZ), F('\n'));
 
         // If the RTC and NIST disagree by more than 5 seconds, set the clock
         if ((abs(nist_logTZ - cur_logTZ) > 5) && (nist != 0))
@@ -263,11 +263,12 @@ public:
     bool checkInterval(void)
     {
         bool retval;
-        DBGLOG(F("Current Unix Timestamp: "), getNowEpoch(), F("\n"));
-        DBGLOG(F("Mod of Logging Interval: "), getNowEpoch() % _interruptRate, F("\n"));
+        uint32_t checkTime = getNowEpoch();
+        DBGLOG(F("Current Unix Timestamp: "), checkTime, F("\n"));
+        DBGLOG(F("Mod of Logging Interval: "), checkTime % _interruptRate, F("\n"));
         DBGLOG(F("Number of Readings so far: "), _numReadings, F("\n"));
-        DBGLOG(F("Mod of 120: "), getNowEpoch() % 120, F("\n"));
-        if ((getNowEpoch() % _interruptRate == 0 ) or
+        DBGLOG(F("Mod of 120: "), checkTime % 120, F("\n"));
+        if ((checkTime % _interruptRate == 0 ) or
             (_numReadings < 10 and getNowEpoch() % 120 == 0))
         {
             // Update the time variables with the current time
@@ -288,7 +289,6 @@ public:
         else
         {
             DBGLOG(F("Not time yet, back to sleep\n"));
-            delay(3000);
             retval = false;
         }
         return retval;
@@ -339,9 +339,10 @@ public:
     {
         // Alarms on the RTC built into the SAMD21 appear to be identical to those
         // in the DS3231.  See more notes below.
-        // We're setting the alarm seconds to zero and then seting it to go off
-        // whenever the seconds match the zero - that is every minute on the minute
-        zero_sleep_rtc.setAlarmSeconds(0);
+        // We're setting the alarm seconds to 59 and then seting it to go off
+        // whenever the seconds match the 59.  I'm using 59 instead of 00
+        // because there seems to be a bit of a wake-up delay
+        zero_sleep_rtc.setAlarmSeconds(59);
         zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);
     }
 

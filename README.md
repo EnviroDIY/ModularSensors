@@ -816,7 +816,7 @@ Not yet fully supported, but support is planned.
 - AltSoftSerial is not directly supported on the AtSAMD21, but with some effort, the timers could be configured to make it work.
 - SoftwareSerial_ExtInts is not supported at all on the AtSAMD21.
 - Any digital pin can be used with SDI-12.
-- Because the USB controller is built into the processor, you may lose serial output views when the processor sleeps.
+- Because the USB controller is built into the processor, your USB serial connection will close as soon as the processor goes to sleep.  If you need to debug, I recommend using a serial port monitor like Tera Term which will automatically renew its connection with the serial port when it connects and disconnects.  Otherwise, you will have to rely on lights on your alert pin or your modem to verify the processor is waking/sleeping properly.
 ___
 
 #### AtMega2560 (Arduino Mega)
@@ -858,13 +858,13 @@ All functions are supported, but processor doesn't have sufficient power to use 
 - There is one additional hardware serial port, Serial1, which can communicate with any serial device.
 - AltSoftSerial can be used on pins 5 (Tx) and 13 (Rx).
 - Only pins 8, 9, 10, 11, 14, 15, and 16 can be used with SoftwareSerial_ExtInts or SDI-12.  (And pins 14, 15, and 16 will be eliminated if you are using any SPI devices (like an SD card).)
-- Because the USB controller is built into the processor, you may lose serial output views when the processor sleeps.
+- Because the USB controller is built into the processor, your USB serial connection will close as soon as the processor goes to sleep.  If you need to debug, I recommend using a serial port monitor like Tera Term which will automatically renew its connection with the serial port when it connects and disconnects.  Otherwise, you will have to rely on lights on your alert pin or your modem to verify the processor is waking/sleeping properly.
 ___
 
 #### Unsupported Processors:
 
-- **ESP8266/ESP32** - Supported only as a communications module (modem) with the default AT command firmware, not supported as an independent controller
-- **AtSAM3X (Arduino Due)** - Unsupported at this time due to clock issues.
+- **ESP8266/ESP32** - Supported _only_ as a communications module (modem) with the default AT command firmware, not supported as an independent controller
+- **AtSAM3X (Arduino Due)** - Unsupported at this time due to clock and sleep issues.
     - There is one SPI port on pins 74 (MISO), 76 (MOSI), and 75 (SCK).  Pins 4, 10 and pin 52 can be used for CS/SS.
     - There are I2C (Wire) interfaces on pins 20 (SDA) and 21 (SCL) and 70 (SDA1) and 71 (SCL1).
     - This processor has one hardware serial port, USBSerial, which can _only_ be used for USB communication with a computer
