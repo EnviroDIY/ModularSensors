@@ -174,7 +174,8 @@ void setup()
     // There is no reason to call the setAlertPin() function, because we have to
     // write the loop on our own.
 
-    modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, wifiId, wifiPwd);
+    // Set up the logger1min.modem.  This only needs to be done for one of the loggers
+    logger1min.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, wifiId, wifiPwd);
 
     // Set up the sensors on both loggers
     logger1min.setupSensors();
@@ -199,17 +200,17 @@ void setup()
     Serial.println(Logger::formatDateTime_ISO8601(Logger::getNowEpoch()));
 
     // Turn on the modem
-    modem.on();
+    logger1min.modem.on();
     // Connect to the network
-    if (modem.connectNetwork())
+    if (logger1min.modem.connectNetwork())
     {
         // Synchronize the RTC
         logger1min.syncRTClock();
         // Disconnect from the network
-        modem.disconnectNetwork();
+        logger1min.modem.disconnectNetwork();
     }
     // Turn off the modem
-    modem.off();
+    logger1min.modem.off();
 
     // Set up the processor sleep mode
     // Because there's only one processor, we only need to do this once
@@ -282,17 +283,17 @@ void loop()
     if (Logger::markedEpochTime % 86400 == 0)
     {
         // Turn on the modem
-        modem.on();
+        logger1min.modem.on();
         // Connect to the network
-        if (modem.connectNetwork())
+        if (logger1min.modem.connectNetwork())
         {
             // Synchronize the RTC
             logger1min.syncRTClock();
             // Disconnect from the network
-            modem.disconnectNetwork();
+            logger1min.modem.disconnectNetwork();
         }
         // Turn off the modem
-        modem.off();
+        logger1min.modem.off();
     }
 
     // Call the processor sleep
