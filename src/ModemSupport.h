@@ -158,10 +158,18 @@ public:
         // Check if the modem is on; turn it on if not
         if(!modemOnOff->isOn()) modemOnOff->on();
         // Check again if the modem is on.  If it still isn't on, give up
-        if(!modemOnOff->isOn()) return false;
+        if(!modemOnOff->isOn())
+        {
+            DBG(F("\nModem failed to turn on!"));
+            return false;
+        }
 
         // Check that the modem is responding to AT commands.  If not, give up.
-        if (!_modem->testAT(5000L)) return false;
+        if (!_modem->testAT(5000L))
+        {
+            DBG(F("\nModem does not respond to AT commands!"));
+            return false;
+        }
 
         // WiFi modules immediately re-connect to the last access point so we
         // can save just a tiny bit of time (and thus power) by not resending
@@ -430,6 +438,7 @@ private:
                 #endif
                 modemOnOff->off();
             }
+            else DBG(F("\nModem failed to turn on!"));
             stream = _client;
             DBG(F("   ... Complete!"));
 
