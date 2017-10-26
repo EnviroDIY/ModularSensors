@@ -14,6 +14,8 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
+#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
+
 // Select your modem chip, comment out all of the others
 // #define TINY_GSM_MODEM_SIM800  // Select for anything using a SIM800, SIM900, or variant thereof: Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
 // #define TINY_GSM_MODEM_A6  // Select for A6 or A7 chips
@@ -24,7 +26,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ---------------------------------------------------------------------------
 // Include the base required libraries
 // ---------------------------------------------------------------------------
-#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #ifdef DreamHostPortalRX
@@ -38,14 +39,14 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //   ie, pin locations, addresses, calibrations and related settings
 // ---------------------------------------------------------------------------
 // The name of this file
-const char *SKETCH_NAME = "logging_to_EnviroDIY.ino";
+const char *sketchName = "logging_to_EnviroDIY.ino";
 
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "Mayfly_160073";
+const char *LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
-int LOGGING_INTERVAL = 1;
+int loggingInterval = 1;
 // Your logger's timezone.
-const int TIME_ZONE = -5;
+const int timeZone = -5;
 // Create a new logger instance
 #ifdef DreamHostPortalRX
 LoggerDreamHost EnviroDIYLogger;
@@ -210,7 +211,7 @@ ProcessorMetadata mayfly(MFVersion) ;
 #include <YosemitechY504.h>
 byte y504modbusAddress = 0x04;  // The modbus address of the Y504
 const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
-const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
 const int y504NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
 
 #if defined __AVR__
@@ -233,7 +234,7 @@ YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePi
 #include <YosemitechY510.h>
 byte y510modbusAddress = 0x0B;  // The modbus address of the Y510 or Y511
 // const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
-// const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
 const int y510NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
 
 #if defined __AVR__
@@ -256,7 +257,7 @@ YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePi
 #include <YosemitechY514.h>
 byte y514modbusAddress = 0x14;  // The modbus address of the Y514
 // const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
-// const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
 const int y514NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
 
 #if defined __AVR__
@@ -279,7 +280,7 @@ YosemitechY514 y514(y514modbusAddress, modbusPower, modbusSerial, max485EnablePi
 #include <YosemitechY520.h>
 byte y520modbusAddress = 0x20;  // The modbus address of the Y520
 // const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
-// const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
 const int y520NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
 
 #if defined __AVR__
@@ -302,7 +303,7 @@ YosemitechY520 y520(y520modbusAddress, modbusPower, modbusSerial, max485EnablePi
 #include <YosemitechY532.h>
 byte y532modbusAddress = 0x32;  // The modbus address of the Y532
 // const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
-// const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
 const int y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
 
 #if defined __AVR__
@@ -373,8 +374,8 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 //   This should be obtained after registration at http://data.envirodiy.org
 //   You can copy the entire code snippet directly into this block below.
 // ---------------------------------------------------------------------------
-const char *REGISTRATION_TOKEN = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
-const char *SAMPLING_FEATURE = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
+const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
+const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 const char *UUIDs[] =                                                      // UUID array for device sensors
 {
 "12345678-abcd-1234-efgh-1234567890ab",
@@ -416,6 +417,7 @@ const char *UUIDs[] =                                                      // UU
 // ---------------------------------------------------------------------------
 // Device Connection Options and WebSDL Endpoints for POST requests
 // ---------------------------------------------------------------------------
+HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
 const int modemDTRPin = 23;  // Modem DTR Pin (Data Terminal Ready - used for sleep) (-1 if unconnected)
 const int modemCTSPin = 19;   // Modem CTS Pin (Clear to Send) (-1 if unconnected)
 const int modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (else -1)
@@ -425,22 +427,21 @@ DTRSleepType ModemSleepMode = held;  // How the modem is put to sleep
 // Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
 // Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
 // Use "always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
-HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
 const long ModemBaud = 9600;  // Modem BAUD rate (9600 is default), can use higher for SIM800 (19200 works)
-const char *APN = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
-const char *SSID = "XXXXXXX";  // The WiFi access point, unnecessary for gprs
-const char *PWD = "XXXXXXX";  // The password for connecting to WiFi, unnecessary for gprs
+const char *apn = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
+const char *wifiId = "XXXXXXX";  // The WiFi access point, unnecessary for gprs
+const char *wifiPwd = "XXXXXXX";  // The password for connecting to WiFi, unnecessary for gprs
 
 
 // ---------------------------------------------------------------------------
 // Board setup info
 // ---------------------------------------------------------------------------
-const long SERIAL_BAUD = 57600;  // Serial port baud rate
-const int GREEN_LED = 8;  // Pin for the green LED
-const int RED_LED = 9;  // Pin for the red LED
-const int BUTTON_PIN = 21;  // Pin for the button
-const int RTC_PIN = A7;  // RTC Interrupt/Alarm pin
-const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
+const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const int greenLED = 8;  // Pin for the green LED
+const int redLED = 9;  // Pin for the red LED
+const int buttonPin = 21;  // Pin for the button
+const int wakePin = A7;  // RTC Interrupt/Alarm pin
+const int sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin
 
 
 // ---------------------------------------------------------------------------
@@ -451,14 +452,14 @@ const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
 void greenredflash(int numFlash = 4, int rate = 75)
 {
   for (int i = 0; i < numFlash; i++) {
-    digitalWrite(GREEN_LED, HIGH);
-    digitalWrite(RED_LED, LOW);
+    digitalWrite(greenLED, HIGH);
+    digitalWrite(redLED, LOW);
     delay(rate);
-    digitalWrite(GREEN_LED, LOW);
-    digitalWrite(RED_LED, HIGH);
+    digitalWrite(greenLED, LOW);
+    digitalWrite(redLED, HIGH);
     delay(rate);
   }
-  digitalWrite(RED_LED, LOW);
+  digitalWrite(redLED, LOW);
 }
 
 
@@ -468,10 +469,15 @@ void greenredflash(int numFlash = 4, int rate = 75)
 void setup()
 {
     // Start the primary serial connection
-    Serial.begin(SERIAL_BAUD);
-    // Start the serial connection with the *bee
+    Serial.begin(serialBaud);
+
+    // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);
-    // Start the stream for the sonar
+
+    // Start the AltSoftSerial stream for the modbus sensors
+    modbusSerial.begin(9600);
+
+    // Start the SoftwareSerial stream for the sonar
     sonarSerial.begin(9600);
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
@@ -479,38 +485,41 @@ void setup()
     #endif
 
     // Set up pins for the LED's
-    pinMode(GREEN_LED, OUTPUT);
-    pinMode(RED_LED, OUTPUT);
+    pinMode(greenLED, OUTPUT);
+    pinMode(redLED, OUTPUT);
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
     // Print a start-up note to the first serial port
     Serial.print(F("Now running "));
-    Serial.print(SKETCH_NAME);
+    Serial.print(sketchName);
     Serial.print(F(" on Logger "));
     Serial.println(LoggerID);
 
     // Set the timezone and offsets
-    Logger::setTimeZone(TIME_ZONE);  // Logging in the given time zone
-    // EnviroDIYLogger.setTZOffset(0);  // Also set the clock in that time zone
-    Logger::setTZOffset(TIME_ZONE);  // Set the clock in UTC
+    // Logging in the given time zone
+    Logger::setTimeZone(timeZone);
+    // Offset is the same as the time zone because the RTC is in UTC
+    Logger::setTZOffset(timeZone);
 
     // Initialize the logger;
-    EnviroDIYLogger.init(SD_SS_PIN, RTC_PIN, variableCount, variableList,
-                LOGGING_INTERVAL, LoggerID);
-    EnviroDIYLogger.setAlertPin(GREEN_LED);
+    EnviroDIYLogger.init(sdCardPin, wakePin, variableCount, variableList,
+                loggingInterval, LoggerID);
+    EnviroDIYLogger.setAlertPin(greenLED);
 
-    // Set up the connection with EnviroDIY
-    EnviroDIYLogger.setToken(REGISTRATION_TOKEN);
-    EnviroDIYLogger.setSamplingFeature(SAMPLING_FEATURE);
-    EnviroDIYLogger.setUUIDs(UUIDs);
-
+    // Set up the modem
     #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
-        EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, SSID, PWD);
+        EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, wifiId, wifiPwd);
     #else
-        EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, APN);
+        EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, apn);
     #endif
 
+    // Set up the connection with EnviroDIY
+    EnviroDIYLogger.setToken(registrationToken);
+    EnviroDIYLogger.setSamplingFeature(samplingFeature);
+    EnviroDIYLogger.setUUIDs(UUIDs);
+
+    // Set up the connection with DreamHost
     #ifdef DreamHostPortalRX
         EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
     #endif
@@ -519,7 +528,7 @@ void setup()
     EnviroDIYLogger.begin();
 
     // Check for debugging mode
-    EnviroDIYLogger.checkForDebugMode(BUTTON_PIN, &Serial);
+    EnviroDIYLogger.checkForDebugMode(buttonPin);
 }
 
 

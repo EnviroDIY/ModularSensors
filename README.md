@@ -212,7 +212,7 @@ A note about timezones:  It is possible to create multiple logger objects in you
 
 #### Setup and initialization functions:
 
-- **init(int SDCardPin, int interruptPin, int variableCount, Sensor variableList[], float loggingIntervalMinutes, const char loggerID = 0)** - Initializes the logger object.  Must happen within the setup function.  Note that the variableList[], loggerID are all pointers.  The SDCardPin is the pin of the chip select/slave select for the SPI connection to the SD card.
+- **init(int SDCardPin, int mcuWakePin, int variableCount, Sensor variableList[], float loggingIntervalMinutes, const char loggerID = 0)** - Initializes the logger object.  Must happen within the setup function.  Note that the variableList[], loggerID are all pointers.  The SDCardPin is the pin of the chip select/slave select for the SPI connection to the SD card.
 - **setAlertPin(int ledPin)** - Optionally sets a pin to put out an alert that a measurement is being logged.  This is intended to be a pin with a LED on it so you can see the light come on when a measurement is being taken.
 
 #### Functions to access the clock in proper format and time zone:
@@ -272,7 +272,11 @@ After defining your modem, set it up using one of these two commands, depending 
 - The vcc33Pin is the pin that controls whether or not the modem itself is powered.  Use -1 if your modem is always recieving power from your logger board or if you want to control modem power independently.
 - The status_CTS_pin is the pin that indicates whether the modem is turned on and it is clear to send data.  If you use -1, the modem is assumed to always be ready.
 - The onoff_DTR_pin is the _pin_ used to put the modem to sleep or to wake it up.
-- The DTRSleepType controls _how_ the modem is put to sleep between readings.  Use "held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.  Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.  Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.  Use "always_on" if you do not want the library to control the modem power and sleep.
+- The DTRSleepType controls _how_ the modem is put to sleep between readings.
+    - Use "held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
+    - Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
+    - Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
+    - Use "always_on" if you do not want the library to control the modem power and sleep.
 - Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
 
 Once the modem has been set up, these functions are available:
@@ -285,7 +289,7 @@ Once the modem has been set up, these functions are available:
 - **stop()** - Breaks the TCP connection.
 - **dumpBuffer(Stream stream, int timeDelay = 5, int timeout = 5000)** - Empties out the recieve buffer.  The flush() function does NOT empty the buffer, it only waits for sending to complete.
 - **getNISTTime()** - Returns the current unix timestamp from NIST via the TIME protocol (rfc868).
-- **syncDS3231()** - This synchronizes the DS3231 real time clock with the NIST provided timestamp.
+- **syncRTClock()** - This synchronizes the DS3231 real time clock with the NIST provided timestamp.
 
 The cellular modems themselves (SIM800, SIM900, A6, A7, and M590) can also be used as "sensors" which have the following variables:
 
@@ -337,7 +341,7 @@ _Within the setup function_, you must then initialize the logger and then run th
 logger.setTimeZone(timeZone);
 logger.setTZOffset(offset);
 // Initialize the logger;
-logger.init(SDCardPin, interruptPin, variableCount, variableList, loggingIntervalMinutes, loggerID);
+logger.init(SDCardPin, mcuWakePin, variableCount, variableList, loggingIntervalMinutes, loggerID);
 // OPTIONAL - specify a pin to give an alert when a measurement is taken
 // This should generally be a pin with an LED
 setAlertPin(int ledPin);
@@ -352,7 +356,7 @@ logger.begin();
 EnviroDIYLogger.setTimeZone(timeZone);
 EnviroDIYLogger.setTZOffset(offset);
 // Initialize the logger;
-EnviroDIYLogger.init(SDCardPin, interruptPin, variableCount, variableList, loggingIntervalMinutes, loggerID);
+EnviroDIYLogger.init(SDCardPin, mcuWakePin, variableCount, variableList, loggingIntervalMinutes, loggerID);
 // OPTIONAL - specify a pin to give an alert when a measurement is taken
 // This should generally be a pin with an LED
 setAlertPin(ledPin);
@@ -368,7 +372,7 @@ EnviroDIYLogger.modem.setupModem(modemStream, vcc33Pin, status_CTS_pin, onoff_DT
 if (EnviroDIYLogger.modem.connectNetwork())
 {
     // Synchronize the RTC
-    EnviroDIYLogger.modem.syncDS3231();
+    EnviroDIYLogger.syncRTClock();
 }
 // Disconnect from the network
 EnviroDIYLogger.modem.disconnectNetwork();
@@ -812,6 +816,7 @@ Not yet fully supported, but support is planned.
 - AltSoftSerial is not directly supported on the AtSAMD21, but with some effort, the timers could be configured to make it work.
 - SoftwareSerial_ExtInts is not supported at all on the AtSAMD21.
 - Any digital pin can be used with SDI-12.
+- Because the USB controller is built into the processor, your USB serial connection will close as soon as the processor goes to sleep.  If you need to debug, I recommend using a serial port monitor like Tera Term which will automatically renew its connection with the serial port when it connects and disconnects.  Otherwise, you will have to rely on lights on your alert pin or your modem to verify the processor is waking/sleeping properly.
 ___
 
 #### AtMega2560 (Arduino Mega)
@@ -853,12 +858,13 @@ All functions are supported, but processor doesn't have sufficient power to use 
 - There is one additional hardware serial port, Serial1, which can communicate with any serial device.
 - AltSoftSerial can be used on pins 5 (Tx) and 13 (Rx).
 - Only pins 8, 9, 10, 11, 14, 15, and 16 can be used with SoftwareSerial_ExtInts or SDI-12.  (And pins 14, 15, and 16 will be eliminated if you are using any SPI devices (like an SD card).)
+- Because the USB controller is built into the processor, your USB serial connection will close as soon as the processor goes to sleep.  If you need to debug, I recommend using a serial port monitor like Tera Term which will automatically renew its connection with the serial port when it connects and disconnects.  Otherwise, you will have to rely on lights on your alert pin or your modem to verify the processor is waking/sleeping properly.
 ___
 
 #### Unsupported Processors:
 
-- **ESP8266/ESP32** - Supported only as a communications module (modem) with the default AT command firmware, not supported as an independent controller
-- **AtSAM3X (Arduino Due)** - Unsupported at this time due to clock issues.
+- **ESP8266/ESP32** - Supported _only_ as a communications module (modem) with the default AT command firmware, not supported as an independent controller
+- **AtSAM3X (Arduino Due)** - Unsupported at this time due to clock and sleep issues.
     - There is one SPI port on pins 74 (MISO), 76 (MOSI), and 75 (SCK).  Pins 4, 10 and pin 52 can be used for CS/SS.
     - There are I2C (Wire) interfaces on pins 20 (SDA) and 21 (SCL) and 70 (SDA1) and 71 (SCL1).
     - This processor has one hardware serial port, USBSerial, which can _only_ be used for USB communication with a computer

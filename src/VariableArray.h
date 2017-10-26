@@ -10,8 +10,7 @@
 #ifndef VariableArray_h
 #define VariableArray_h
 
-
-#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
+// #define MODULAR_SENSORS_OUTPUT Serial
 // #define VAR_ARRAY_DBG Serial
 
 #include "SensorBase.h"

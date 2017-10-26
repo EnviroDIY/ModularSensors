@@ -12,7 +12,6 @@
 #define LoggerEnviroDIY_h
 
 #include "LoggerBase.h"
-#include "ModemSupport.h"
 
 // ============================================================================
 //  Functions for the EnviroDIY data portal receivers.
@@ -24,19 +23,19 @@ public:
     void setToken(const char *registrationToken)
     {
         _registrationToken = registrationToken;
-        DBGVA(F("Registration token set!\n"));
+        DBGLOG(F("Registration token set!\n"));
     }
 
     void setSamplingFeature(const char *samplingFeature)
     {
         _samplingFeature = samplingFeature;
-        DBGVA(F("Sampling feature token set!\n"));
+        DBGLOG(F("Sampling feature token set!\n"));
     }
 
     void setUUIDs(const char *UUIDs[])
     {
         _UUIDs = UUIDs;
-        DBGVA(F("UUID array set!\n"));
+        DBGLOG(F("UUID array set!\n"));
     }
 
     // This adds extra data to the datafile header
@@ -90,64 +89,8 @@ public:
         stream->print(String(F("\r\nContent-Length: ")) + String(generateSensorDataJSON().length()));
         stream->print(String(F("\r\nContent-Type: application/json\r\n\r\n")));
         stream->print(String(generateSensorDataJSON()));
-        stream->print(String(F("\r\n\r\n")));
     }
 
-
-#if defined(USE_TINY_GSM)
-
-    // Create the modem instance
-    loggerModem modem;
-
-    // This defines what to do in the debug mode
-    virtual void debugMode(Stream *stream = &Serial)
-    {
-        PRINTOUT(F("------------------------------------------\n"));
-        PRINTOUT(F("Entering debug mode\n"));
-
-        // Turn on the modem to let it start searching for the network
-        modem.on();
-
-        // Update the sensors and print out data 25 times
-        for (uint8_t i = 0; i < 25; i++)
-        {
-            stream->println(F("------------------------------------------"));
-            // Wake up all of the sensors
-            stream->print(F("Waking sensors..."));
-            sensorsWake();
-            // Update the values from all attached sensors
-            stream->print(F("  Updating sensor values..."));
-            updateAllSensors();
-            // Immediately put sensors to sleep to save power
-            stream->println(F("  Putting sensors back to sleep..."));
-            sensorsSleep();
-            // Print out the current logger time
-            stream->print(F("Current logger time is "));
-            stream->println(formatDateTime_ISO8601(getNowEpoch()));
-            stream->println(F("    -----------------------"));
-            // Print out the sensor data
-            printSensorData(stream);
-            stream->println(F("    -----------------------"));
-
-            #if defined(USE_TINY_GSM)
-            // Print out the modem connection strength
-            int signalQual = modem._modem->getSignalQuality();
-            stream->print(F("Current modem signal is "));
-            stream->print(signalQual);
-            stream->print(F(" ("));
-            #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
-            stream->print(modem.getPctFromRSSI(signalQual));
-            #else
-            stream->print(modem.getPctFromCSQ(signalQual));
-            #endif
-            stream->println(F("%)"));
-            #endif
-            delay(5000);
-        }
-
-        // Turn off the modem
-        modem.off();
-    }
 
     // Public function to send data
     int postDataEnviroDIY(void)
@@ -160,14 +103,23 @@ public:
         if(modem.connect("data.envirodiy.org", 80))
         {
             // Send the request to the serial for debugging
-            PRINTOUT(F("\n \\/---- Post Request to EnviroDIY ----\\/ \n"));
-            streamEnviroDIYRequest(&Serial);  // for debugging
-            Serial.flush();  // for debugging
+            #if defined(MODULAR_SENSORS_OUTPUT)
+                PRINTOUT(F("\n \\/---- Post Request to EnviroDIY ----\\/ \n"));
+                streamEnviroDIYRequest(&MODULAR_SENSORS_OUTPUT);  // for debugging
+                PRINTOUT(F("\r\n\r\n"));
+                MODULAR_SENSORS_OUTPUT.flush();  // for debugging
+            #endif
 
             // Send the request to the modem stream
             modem.dumpBuffer(modem.stream);
             streamEnviroDIYRequest(modem.stream);
             modem.stream->flush();  // wait for sending to finish
+
+            uint32_t start_timer;
+            if (millis() < 4294957296) start_timer = millis();  // In case of roll-over
+            else start_timer = 0;
+            while ((millis() - start_timer) < 10000L && modem.stream->available() < 12)
+            {delay(10);}
 
             // Read only the first 12 characters of the response
             // We're only reading as far as the http code, anything beyond that
@@ -191,7 +143,7 @@ public:
                 responseCode_char[i] = response_buffer[i+9];
             }
             responseCode = atoi(responseCode_char);
-            modem.dumpBuffer(modem.stream);
+            // modem.dumpBuffer(modem.stream);
         }
         else responseCode=504;
 
@@ -204,50 +156,6 @@ public:
     // ===================================================================== //
     // Convience functions to call several of the above functions
     // ===================================================================== //
-    // This calls all of the setup functions - must be run AFTER init
-    virtual void begin(void) override
-    {
-        // Print a start-up note to the first serial port
-        PRINTOUT(F("Beginning logger "), _loggerID, F("\n"));
-
-        // Set up pins for the LED's
-        if (_ledPin > 0) pinMode(_ledPin, OUTPUT);
-
-        // Start the Real Time Clock
-        rtc.begin();
-        delay(100);
-
-        // Sync the clock with NIST
-        PRINTOUT(F("Current RTC time is: "));
-        PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
-
-        // Synchronize the RTC
-        PRINTOUT(F("Attempting to synchronize RTC with NIST\n"));
-        // Turn on the modem
-        modem.on();
-        // Connect to the network
-        if (modem.connectNetwork())
-        {
-            delay(5000);
-            modem.syncDS3231();
-            // Disconnect from the network
-            modem.disconnectNetwork();
-        }
-        // Turn off the modem
-        modem.off();
-
-        // Set up the sensors
-        setupSensors();
-
-        // Set up the log file
-        setupLogFile();
-
-        // Setup sleep mode
-        if(_sleep){setupSleep();}
-
-        PRINTOUT(F("Logger setup finished!\n"));
-        PRINTOUT(F("------------------------------------------\n\n"));
-    }
 
     // This is a one-and-done to log data
     virtual void log(void) override
@@ -281,7 +189,7 @@ public:
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
                 if (_numReadings % 288 == 0)
                 {
-                    modem.syncDS3231();
+                    syncRTClock();
                 }
 
                 // Disconnect from the network
@@ -303,8 +211,6 @@ public:
         // Sleep
         if(_sleep){systemSleep();}
     }
-
-#endif
 
 
 private:

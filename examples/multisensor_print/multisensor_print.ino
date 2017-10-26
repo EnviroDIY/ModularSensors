@@ -14,10 +14,11 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
+#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
+
 // ---------------------------------------------------------------------------
 // Include the base required libraries
 // ---------------------------------------------------------------------------
-#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <Sodaq_DS3231.h>    // Controls the DS3231 Real Time Clock (RTC) built into the EnviroDIY Mayfly.
@@ -28,10 +29,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //   ie, pin locations, addresses, calibrations and related settings
 // ---------------------------------------------------------------------------
 // The name of this file
-const char *SKETCH_NAME = "modular_sensors.ino";
+const char *sketchName = "modular_sensors.ino";
 
 // Your logger's timezone.
-const int TIME_ZONE = -5;
+const int timeZone = -5;
 // Create a new sensor array instance
 VariableArray sensors;
 
@@ -192,7 +193,7 @@ ProcessorMetadata mayfly(MFVersion) ;
 #include <YosemitechY504.h>
 byte y504modbusAddress = 0x04;  // The modbus address of the Y504
 const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
-const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
 const int y504NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
 
 #if defined __AVR__
@@ -215,7 +216,7 @@ YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePi
 #include <YosemitechY510.h>
 byte y510modbusAddress = 0x0B;  // The modbus address of the Y510 or Y511
 // const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
-// const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
 const int y510NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
 
 #if defined __AVR__
@@ -238,7 +239,7 @@ YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePi
 #include <YosemitechY514.h>
 byte y514modbusAddress = 0x14;  // The modbus address of the Y514
 // const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
-// const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
 const int y514NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
 
 #if defined __AVR__
@@ -261,7 +262,7 @@ YosemitechY514 y514(y514modbusAddress, modbusPower, modbusSerial, max485EnablePi
 #include <YosemitechY520.h>
 byte y520modbusAddress = 0x20;  // The modbus address of the Y520
 // const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
-// const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
 const int y520NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
 
 #if defined __AVR__
@@ -284,7 +285,7 @@ YosemitechY520 y520(y520modbusAddress, modbusPower, modbusSerial, max485EnablePi
 #include <YosemitechY532.h>
 byte y532modbusAddress = 0x32;  // The modbus address of the Y532
 // const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
-// const int max485EnablePin = -1;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
 const int y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
 
 #if defined __AVR__
@@ -351,9 +352,9 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // ---------------------------------------------------------------------------
 // Board setup info
 // ---------------------------------------------------------------------------
-const long SERIAL_BAUD = 57600;  // Serial port baud rate
-const int GREEN_LED = 8;  // Pin for the green LED
-const int RED_LED = 9;  // Pin for the red LED
+const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const int greenLED = 8;  // Pin for the green LED
+const int redLED = 9;  // Pin for the red LED
 
 
 // ---------------------------------------------------------------------------
@@ -364,14 +365,14 @@ const int RED_LED = 9;  // Pin for the red LED
 void greenredflash(int numFlash = 4, int rate = 75)
 {
   for (int i = 0; i < numFlash; i++) {
-    digitalWrite(GREEN_LED, HIGH);
-    digitalWrite(RED_LED, LOW);
+    digitalWrite(greenLED, HIGH);
+    digitalWrite(redLED, LOW);
     delay(rate);
-    digitalWrite(GREEN_LED, LOW);
-    digitalWrite(RED_LED, HIGH);
+    digitalWrite(greenLED, LOW);
+    digitalWrite(redLED, HIGH);
     delay(rate);
   }
-  digitalWrite(RED_LED, LOW);
+  digitalWrite(redLED, LOW);
 }
 
 // Helper function to get the current date/time from the RTC
@@ -380,7 +381,7 @@ long currentepochtime = 0;
 uint32_t getNow()
 {
   currentepochtime = rtc.now().getEpoch();
-  currentepochtime += TIME_ZONE*3600;
+  currentepochtime += timeZone*3600;
   return currentepochtime;
 }
 
@@ -393,24 +394,24 @@ String getDateTime_ISO8601(void)
   //Convert it to a String
   dt.addToString(dateTimeStr);
   dateTimeStr.replace(F(" "), F("T"));
-  String tzString = String(TIME_ZONE);
-  if (-24 <= TIME_ZONE && TIME_ZONE <= -10)
+  String tzString = String(timeZone);
+  if (-24 <= timeZone && timeZone <= -10)
   {
       tzString += F(":00");
   }
-  else if (-10 < TIME_ZONE && TIME_ZONE < 0)
+  else if (-10 < timeZone && timeZone < 0)
   {
       tzString = tzString.substring(0,1) + F("0") + tzString.substring(1,2) + F(":00");
   }
-  else if (TIME_ZONE == 0)
+  else if (timeZone == 0)
   {
       tzString = F("Z");
   }
-  else if (0 < TIME_ZONE && TIME_ZONE < 10)
+  else if (0 < timeZone && timeZone < 10)
   {
       tzString = "+0" + tzString + F(":00");
   }
-  else if (10 <= TIME_ZONE && TIME_ZONE <= 24)
+  else if (10 <= timeZone && timeZone <= 24)
   {
       tzString = "+" + tzString + F(":00");
   }
@@ -425,11 +426,13 @@ String getDateTime_ISO8601(void)
 void setup()
 {
     // Start the primary serial connection
-    Serial.begin(SERIAL_BAUD);
-    // Start the stream for the sonar
-    sonarSerial.begin(9600);
-    // Start the stream for the modbus sensors
+    Serial.begin(serialBaud);
+
+    // Start the AltSoftSerial stream for the modbus sensors
     modbusSerial.begin(9600);
+
+    // Start the SoftwareSerial stream for the sonar
+    sonarSerial.begin(9600);
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
     enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
@@ -440,14 +443,14 @@ void setup()
     delay(100);
 
     // Set up pins for the LED's
-    pinMode(GREEN_LED, OUTPUT);
-    pinMode(RED_LED, OUTPUT);
+    pinMode(greenLED, OUTPUT);
+    pinMode(redLED, OUTPUT);
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
     // Print a start-up note to the first serial port
     Serial.print(F("Now running "));
-    Serial.println(SKETCH_NAME);
+    Serial.println(sketchName);
     Serial.print(F("Current Mayfly RTC time is: "));
     Serial.println(getDateTime_ISO8601());
     Serial.print(F("There are "));
@@ -477,7 +480,7 @@ void loop()
     // One second warm-up time
     delay(1000);
     // Turn on the LED to show we're taking a reading
-    digitalWrite(GREEN_LED, HIGH);
+    digitalWrite(greenLED, HIGH);
     // Update the sensor value(s)
     sensors.updateAllSensors();
     // Immediately cut Power to the sensors;
@@ -489,7 +492,7 @@ void loop()
     Serial.print(F("In CSV Format:  "));
     Serial.println(sensors.generateSensorDataCSV());
     // Turn off the LED to show we're done with the reading
-    digitalWrite(GREEN_LED, LOW);
+    digitalWrite(greenLED, LOW);
     // Print a to close it off
     Serial.println(F("------------------------------------------\n"));
 

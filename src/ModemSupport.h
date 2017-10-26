@@ -12,18 +12,21 @@
 #define ModemSupport_h
 
 #include <Arduino.h>
-#include "LoggerBase.h"
 #include "ModemOnOff.h"
+#include "SensorBase.h"
+#include "VariableBase.h"
 
-#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM900) || \
+#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM808) || \
+    defined(TINY_GSM_MODEM_SIM868) || defined(TINY_GSM_MODEM_SIM900) || \
     defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
-    defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_ESP8266) || \
-    defined(TINY_GSM_MODEM_XBEE)
+    defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_U201) || \
+    defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
   #define USE_TINY_GSM
   // #define TINY_GSM_DEBUG Serial
   #define TINY_GSM_YIELD() { delay(3);}
   #include <TinyGsmClient.h>
 #else
+  #include <NullModem.h>  // purely to help me debug compilation issues
   #define DBG(...)
 #endif
 
@@ -157,24 +160,27 @@ public:
         // Check again if the modem is on.  If it still isn't on, give up
         if(!modemOnOff->isOn()) return false;
 
+        // Check that the modem is responding to AT commands.  If not, give up.
+        if (!_modem->testAT(5000L)) return false;
+
         // WiFi modules immediately re-connect to the last access point so we
         // can save just a tiny bit of time (and thus power) by not resending
         // the credentials every time.
         #if defined(TINY_GSM_MODEM_HAS_WIFI)
         if (_ssid)
         {
-            DBG(F("\nConnecting to WiFi network...\n"));
-            if (!_modem->waitForNetwork(10000L)){
-                DBG("... Connection failed.  Resending credentials...", F("\n"));
+            DBG(F("\nConnecting to WiFi network..."));
+            if (!_modem->waitForNetwork(2000L)){
+                DBG("... Connection failed.  Resending credentials...");
                 _modem->networkConnect(_ssid, _pwd);
-                if (!_modem->waitForNetwork(45000L)){
-                    DBG("... Connection failed", F("\n"));
+                if (!_modem->waitForNetwork(30000L)){
+                    DBG("... Connection failed");
                 } else {
                     retVal = true;
-                    DBG("... Success!", F("\n"));
+                    DBG("... Success!");
                 }
             } else {
-                DBG("... Success!", F("\n"));
+                DBG("... Success!");
                 retVal = true;
             }
         }
@@ -182,12 +188,12 @@ public:
         {
         #endif
         #if defined(TINY_GSM_MODEM_HAS_GPRS)
-            DBG(F("\nWaiting for cellular network...\n"));
-            if (!_modem->waitForNetwork(55000L)){
-                DBG("... Connection failed.", F("\n"));
+            DBG(F("\nWaiting for cellular network..."));
+            if (!_modem->waitForNetwork(45000L)){
+                DBG("... Connection failed.");
             } else {
                 _modem->gprsConnect(_APN, "", "");
-                DBG("... Success!", F("\n"));
+                DBG("... Success!");
                 retVal = true;
             }
 
@@ -196,7 +202,7 @@ public:
         }
         #endif
 
-        #if defined(USE_TINY_GSM)
+        // #if defined(USE_TINY_GSM)
         // Now we are essentially running the "update" function to update
         // the variables assigned to the modem "sensor".  We are doing this
         // here because we want the values to be assigned with the actual
@@ -210,16 +216,16 @@ public:
 
         // Convert signal quality to RSSI, if necessary
         #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
-        int rssi = signalQual;
+            int rssi = signalQual;
         #else
-        int rssi = getRSSIFromCSQ(signalQual);
+            int rssi = getRSSIFromCSQ(signalQual);
         #endif
 
         // Convert signal quality to a percent
         #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
-        int signalPercent = getPctFromRSSI(signalQual);
+            int signalPercent = getPctFromRSSI(signalQual);
         #else
-        int signalPercent = getPctFromCSQ(signalQual);
+            int signalPercent = getPctFromCSQ(signalQual);
         #endif
 
         sensorValues[CSQ_VAR_NUM] = rssi;
@@ -227,51 +233,52 @@ public:
 
         // Update the registered variables with the new values
         notifyVariables();
-        #endif
+        // #endif
 
         return retVal;
     }
 
     void disconnectNetwork(void)
     {
+        DBG(F("Disconnecting from network"));
     #if defined(TINY_GSM_MODEM_HAS_GPRS)
         _modem->gprsDisconnect();
+    #elif defined(TINY_GSM_MODEM_HAS_WIFI)
+        _modem->networkDisconnect();
     #endif
     }
 
     int connect(const char *host, uint16_t port)
     {
-    #if defined(USE_TINY_GSM)
-        return  _client->connect(host, port);
-    #else
-        return 0;
-    #endif
+    DBG("Connecting to ", host, "...");
+    // #if defined(USE_TINY_GSM)
+        int ret_val = _client->connect(host, port);
+        if (ret_val) DBG("... Success!");
+        else DBG("... Connection failed.");
+        return ret_val;
+    // #else
+    //     return 0;
+    // #endif
     }
 
     void stop(void)
     {
-    #if defined(USE_TINY_GSM)
-        return _client->stop();
-    #endif
+    DBG(F("Disconnecting from TCP/IP..."));
+    // #if defined(USE_TINY_GSM)
+        _client->stop();
+    // #endif
     }
 
     // Used to empty out the buffer after a post request.
-    // Removing this may cause communication issues. If you
-    // prefer to not see the std::out, remove the print statement
+    // Removing this may cause communication issues.
     void dumpBuffer(Stream *stream, int timeDelay = 5, int timeout = 5000)
     {
         delay(timeDelay);
         while (timeout-- > 0 && stream->available() > 0)
         {
-            #if defined(TINY_GSM_DEBUG)
-            DBG((char)stream->read());
-            // DBG(stream->read());
-            #else
             stream->read();
-            #endif
             delay(timeDelay);
         }
-        DBG(F("\n"));
     }
 
     // Get the time from NIST via TIME protocol (rfc868)
@@ -314,54 +321,11 @@ public:
 
         // Return the timestamp
         uint32_t unixTimeStamp = secFrom1900 - 2208988800;
-        DBG(F("Timesamp returned by NIST (UTC): "), unixTimeStamp, F("\n"));
+        DBG(F("Timesamp returned by NIST (UTC): "), unixTimeStamp);
         // If before Jan 1, 2017 or after Jan 1, 2030, most likely an error
         if (unixTimeStamp < 1483228800) return 0;
         else if (unixTimeStamp > 1893456000) return 0;
         else return unixTimeStamp;
-    }
-
-    bool syncDS3231(void)
-    {
-        uint32_t start_millis = millis();
-
-        // Get the time stamp from NIST and adjust it to the correct time zone
-        // for the logger.
-        uint32_t nist = getNISTTime();
-
-        // If the timestamp returns zero, just exit
-        if  (nist == 0)
-        {
-            PRINTOUT(F("Bad timestamp returned, skipping sync.\n"));
-            return false;
-        }
-
-        uint32_t nist_logTZ = nist + Logger::getTimeZone()*3600;
-        uint32_t nist_rtcTZ = nist_logTZ - Logger::getTZOffset()*3600;
-        DBG(F("        Correct Time for Logger: "), nist_logTZ, F(" -> "), \
-            Logger::formatDateTime_ISO8601(nist_logTZ), F("\n"));
-
-        // See how long it took to get the time from NIST
-        int sync_time = (millis() - start_millis)/1000;
-
-        // Check the current RTC time
-        uint32_t cur_logTZ = Logger::getNowEpoch();
-        DBG(F("           Time Returned by RTC: "), cur_logTZ, F(" -> "), \
-            Logger::formatDateTime_ISO8601(cur_logTZ), F("\n"));
-        DBG(F("Offset: "), abs(nist_logTZ - cur_logTZ), F("\n"));
-
-        // If the RTC and NIST disagree by more than 5 seconds, set the clock
-        if ((abs(nist_logTZ - cur_logTZ) > 5) && (nist != 0))
-        {
-            rtc.setEpoch(nist_rtcTZ + sync_time/2);
-            PRINTOUT(F("Clock synced to NIST!\n"));
-            return true;
-        }
-        else
-        {
-            PRINTOUT(F("Clock already within 5 seconds of NIST.\n"));
-            return false;
-        }
     }
 
     Stream *stream;
@@ -382,7 +346,7 @@ public:
         #define MODEM_NAME "AI-Thinker A7"
     #elif defined(TINY_GSM_MODEM_M590)
         #define MODEM_NAME "Neoway SIM590"
-    #elif defined(TINY_GSM_MODEM_M590)
+    #elif defined(TINY_GSM_MODEM_U201)
         #define MODEM_NAME "U-blox SARA U201"
     #elif defined(TINY_GSM_MODEM_ESP8266)
         #define MODEM_NAME "ESP8266"
@@ -398,16 +362,16 @@ public:
     String getSensorLocation(void) override { return F("Modem Serial Port"); }
     // Actually doing NOTHING on any of the rest of the functions.  The modem
     // must be set-up and turned on and off separately!!  The update then
-    // happens when connecting to the newtwork
+    // happens when connecting to the network
     virtual SENSOR_STATUS setup(void) override {return SENSOR_READY;}
     virtual bool sleep(void) override {return true;}
     virtual bool wake(void) override {return true;}
     bool update(void) override { return true; }
 
-#if defined(USE_TINY_GSM)
+// #if defined(USE_TINY_GSM)
     TinyGsm *_modem;
     TinyGsmClient *_client;
-#endif
+// #endif
 
 
 private:
@@ -447,7 +411,7 @@ private:
             }
         }
 
-        #if defined(USE_TINY_GSM)
+        // #if defined(USE_TINY_GSM)
 
             // Initialize the modem
             DBG(F("Initializing GSM modem instance..."));
@@ -468,11 +432,11 @@ private:
                 modemOnOff->off();
             }
             stream = _client;
-            DBG(F("   ... Complete!\n"));
+            DBG(F("   ... Complete!"));
 
-        #else
-            stream = modemStream;
-        #endif
+        // #else
+            // stream = modemStream;
+        // #endif
     }
 
     const char *_APN;

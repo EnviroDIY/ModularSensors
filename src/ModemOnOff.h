@@ -10,9 +10,10 @@
 #ifndef ModemOnOff_h
 #define ModemOnOff_h
 
+#include <Arduino.h>
+
 // #define MODULES_DBG Serial
 #include "ModSensorDebugger.h"
-#include <Arduino.h>
 
 
 /* ===========================================================================

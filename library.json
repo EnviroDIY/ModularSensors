@@ -35,39 +35,59 @@
     "dependencies":
     [
         {
-            "name": "Wire"
-        },
-        {
             "name": "Sodaq_DS3231",
-            "version": "https://github.com/EnviroDIY/Sodaq_DS3231.git"
+            "version": "https://github.com/EnviroDIY/Sodaq_DS3231"
         },
         {
+            "library id": "311",
             "name": "EnableInterrupt",
-            "version": "https://github.com/GreyGnome/EnableInterrupt.git"
+            "note": "GreyGnome's EnableInterrupt",
+            "url": "https://github.com/GreyGnome/EnableInterrupt"
         },
         {
-            "name": "SdFat"
+            "library id": "322",
+            "name": "SdFat",
+            "url": "https://github.com/greiman/SdFat"
         },
         {
-            "name": "ADS1X15"
+            "library id": "342",
+            "name": "ADS1X15",
+            "note": "TI ADS1X15 ADC Library by Adafruit",
+            "url": "http://github.com/Adafruit/Adafruit_ADS1X15"
         },
         {
-            "name": "Adafruit Unified Sensor"
+            "library id": "31",
+            "name": "Adafruit Unified Sensor",
+            "note": "Adafruit Unified Sensor Library",
+            "url": "https://github.com/adafruit/Adafruit_Sensor"
         },
         {
-            "name": "DHT sensor library"
+            "library id": "19",
+            "name": "DHT sensor library",
+            "note": "AOSong DHT Sensor Library by Adafruit",
+            "url": "http://github.com/adafruit/DHT-sensor-library"
         },
         {
-            "name": "Adafruit AM2315"
+            "library id": "773",
+            "name": "Adafruit AM2315",
+            "note": "AOSong AM2315 I2C Temp/Humidity Sensor Library by Adafruit",
+            "url": "https://github.com/adafruit/Adafruit_AM2315"
         },
         {
-            "name": "Adafruit BME280 Library"
+            "library id": "166",
+            "name": "Adafruit BME280 Library",
+            "note": "Bosch BME280 Temp/Humidity/Pressure Sensor Library by Adafruit",
+            "url": "https://github.com/adafruit/Adafruit_BME280_Library"
         },
         {
-            "name": "DallasTemperature"
+            "library id": "1",
+            "name": "OneWire",
+            "url": "https://github.com/PaulStoffregen/OneWire.git"
         },
         {
-            "name": "OneWire"
+            "library id": "54",
+            "name": "DallasTemperature",
+            "url": "https://github.com/milesburton/Arduino-Temperature-Control-Library.git"
         },
         {
             "name": "Arduino-SDI-12_ExtInts",
@@ -76,13 +96,20 @@
         {
             "name": "TinyGSM",
             "version": "https://github.com/EnviroDIY/TinyGSM.git"
-        }
+        },
         {
-            "name": "SensorModbusMaster"
+            "library id": "1824",
+            "name": "SensorModbusMaster",
+            "url": "https://github.com/EnviroDIY/SensorModbusMaster.git"
         },
         {
             "name": "YosemitechModbus",
             "version": "https://github.com/EnviroDIY/YosemitechModbus.git"
         }
+        {
+            "library id": "873",
+            "name": "RTCZero",
+            "url": "https://github.com/arduino-libraries/RTCZero.git"
+        },
     ]
 }

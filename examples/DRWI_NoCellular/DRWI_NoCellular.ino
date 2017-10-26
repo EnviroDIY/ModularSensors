@@ -1,5 +1,5 @@
 /*****************************************************************************
-DWRI_CitSci.ino
+DRWI_NoCellular.ino
 Written By:  Sara Damiano (sdamiano@stroudcenter.org)
 Development Environment: PlatformIO 3.2.1
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
@@ -7,10 +7,8 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This sketch is an example of logging data to an SD card and sending the data to
-both the EnviroDIY data portal and Stroud's custom data portal as should be
-used by groups involved with The William Penn Foundation's Delaware River
-Watershed Initiative
+This sketch is an example of logging data from a Decagon CTD-10 and a Campbell
+OBS 3+ to an SD card.
 
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
@@ -18,24 +16,19 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 #define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
 
-#define DreamHostPortalRX "TALK TO STROUD FOR THIS VALUE"
-
-// Select your modem chip, comment out all of the others
-#define TINY_GSM_MODEM_SIM800
-
 // ---------------------------------------------------------------------------
 // Include the base required libraries
 // ---------------------------------------------------------------------------
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerDreamHost.h>
+#include <LoggerBase.h>
 
 // ---------------------------------------------------------------------------
 // Set up the sensor specific information
 //   ie, pin locations, addresses, calibrations and related settings
 // ---------------------------------------------------------------------------
 // The name of this file
-const char *sketchName = "DWRI_CitSci.ino";
+const char *sketchName = "DRWI_NoCellular.ino";
 
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "XXXX";
@@ -44,7 +37,7 @@ int loggingInterval = 5;
 // Your logger's timezone.
 const int timeZone = -5;
 // Create a new logger instance
-LoggerDreamHost EnviroDIYLogger;
+Logger logger;
 
 
 // ==========================================================================
@@ -102,42 +95,8 @@ Variable *variableList[] = {
     new DecagonCTD_Depth(&ctd),
     new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
-    new Modem_RSSI(&EnviroDIYLogger.modem),
-    new Modem_SignalPercent(&EnviroDIYLogger.modem),
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
-
-
-// ---------------------------------------------------------------------------
-// Device registration and sampling feature information
-//   This should be obtained after registration at http://data.envirodiy.org
-//   You can copy the entire code snippet directly into this block below.
-// ---------------------------------------------------------------------------
-const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
-const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
-const char *UUIDs[] =                                                      // UUID array for device sensors
-{
-"12345678-abcd-1234-efgh-1234567890ab",   // Battery voltage (EnviroDIY_Mayfly_Volt)
-"12345678-abcd-1234-efgh-1234567890ab",   // Temperature (EnviroDIY_Mayfly_Temp)
-"12345678-abcd-1234-efgh-1234567890ab",   // Electrical conductivity (Decagon_CTD-10_EC)
-"12345678-abcd-1234-efgh-1234567890ab",   // Temperature (Decagon_CTD-10_Temp)
-"12345678-abcd-1234-efgh-1234567890ab",   // Water depth (Decagon_CTD-10_Depth)
-"12345678-abcd-1234-efgh-1234567890ab",   // Turbidity (Campbell_OBS-3+_Turb)
-"12345678-abcd-1234-efgh-1234567890ab"    // Turbidity (Campbell_OBS-3+_Turb)
-};
-
-
-// ---------------------------------------------------------------------------
-// Device Connection Options and WebSDL Endpoints for POST requests
-// ---------------------------------------------------------------------------
-HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
-const int modemDTRPin = 23;  // Modem DTR Pin (Data Terminal Ready - used for sleep) (-1 if unconnected)
-const int modemCTSPin = 19;   // Modem CTS Pin (Clear to Send) (-1 if unconnected)
-const int modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (else -1)
-
-DTRSleepType ModemSleepMode = held;  // How the modem is put to sleep
-const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble making it fast (19200 works)
-const char *apn = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
 
 
 // ---------------------------------------------------------------------------
@@ -178,9 +137,6 @@ void setup()
     // Start the primary serial connection
     Serial.begin(serialBaud);
 
-    // Start the serial connection with the modem
-    ModemSerial.begin(ModemBaud);
-
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
     pinMode(redLED, OUTPUT);
@@ -200,26 +156,15 @@ void setup()
     Logger::setTZOffset(timeZone);
 
     // Initialize the logger;
-    EnviroDIYLogger.init(sdCardPin, wakePin, variableCount, variableList,
+    logger.init(sdCardPin, wakePin, variableCount, variableList,
                 loggingInterval, LoggerID);
-    EnviroDIYLogger.setAlertPin(greenLED);
-
-    // Set up the modem
-    EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, apn);
-
-    // Set up the connection with EnviroDIY
-    EnviroDIYLogger.setToken(registrationToken);
-    EnviroDIYLogger.setSamplingFeature(samplingFeature);
-    EnviroDIYLogger.setUUIDs(UUIDs);
-
-    // Set up the connection with DreamHost
-    EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
+    logger.setAlertPin(greenLED);
 
     // Begin the logger
-    EnviroDIYLogger.begin();
+    logger.begin();
 
     // Check for debugging mode
-    EnviroDIYLogger.checkForDebugMode(buttonPin);
+    logger.checkForDebugMode(buttonPin);
 }
 
 
@@ -229,5 +174,5 @@ void setup()
 void loop()
 {
     // Log the data
-    EnviroDIYLogger.log();
+    logger.log();
 }
