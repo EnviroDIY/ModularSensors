@@ -255,15 +255,16 @@ The "ModemSupport" bit of this library is essentially a wrapper for [TinyGSM](ht
 
 ```cpp
 // Select your modem chip, comment out all of the others
-// #define TINY_GSM_MODEM_SIM800  // Select for anything using a SIM800, SIM900, or varient thereof: Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
-// #define TINY_GSM_MODEM_A6  // Select for A6 or A7 chips
-// #define TINY_GSM_MODEM_M590
+// #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or varient thereof
+// #define TINY_GSM_MODEM_A6  // Select for a AI-Thinker A6 or A7 chip
+// #define TINY_GSM_MODEM_M590  // Select for a Neoway M590
+// #define TINY_GSM_MODEM_U201  // Select for a U-blox U201
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
-#define TINY_GSM_MODEM_XBEE  // Select for Digi brand XBee's, including WiFi or LTE-M1
+#define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
 // Create the modem object
 loggerModem modem;
 ```
-Any of the above modems types/chips should work, though only a SIM800 Sodaq GPRSBee, ESP8266, and Digi WiFiBee have been tested to date.  If you would prefer to use a library of your own for controlling your modem, omit the define statements.  In this case, you will lose access to the postDataEnviroDIY() and log() functions within the LoggerEnviroDIY object.
+See [TinyGSM's documentation](https://github.com/vshymanskyy/TinyGSM/blob/master/README.md) for a full list of all of the chip variants and modules that are supported.  If you would prefer to use a library of your own for controlling your modem, omit the define statements.  In this case, you will lose access to the postDataEnviroDIY() and log() functions within the LoggerEnviroDIY object.
 
 After defining your modem, set it up using one of these two commands, depending on whether you are using cellular or WiFi communication:
 
@@ -289,7 +290,7 @@ Once the modem has been set up, these functions are available:
 - **stop()** - Breaks the TCP connection.
 - **dumpBuffer(Stream stream, int timeDelay = 5, int timeout = 5000)** - Empties out the recieve buffer.  The flush() function does NOT empty the buffer, it only waits for sending to complete.
 - **getNISTTime()** - Returns the current unix timestamp from NIST via the TIME protocol (rfc868).
-- **syncRTClock()** - This synchronizes the DS3231 real time clock with the NIST provided timestamp.
+- **syncRTClock()** - This calls getNISTTime() and then synchronizes the DS3231 real time clock with the NIST provided timestamp.
 
 The cellular modems themselves (SIM800, SIM900, A6, A7, and M590) can also be used as "sensors" which have the following variables:
 

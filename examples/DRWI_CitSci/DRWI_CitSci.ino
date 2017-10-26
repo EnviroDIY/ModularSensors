@@ -20,7 +20,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 #define DreamHostPortalRX "TALK TO STROUD FOR THIS VALUE"
 
-// Select your modem chip, comment out all of the others
+// Select your modem chip
 #define TINY_GSM_MODEM_SIM800
 
 // ---------------------------------------------------------------------------

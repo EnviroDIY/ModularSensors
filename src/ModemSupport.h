@@ -316,7 +316,6 @@ public:
             // DBG("\n*****",String(secFrom1900, BIN),"*****");
             if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;}
         }
-        dumpBuffer(stream);
         // DBG("\n*****",secFrom1900,"*****");
 
         // Return the timestamp
