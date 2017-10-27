@@ -44,7 +44,7 @@ DecagonSDI12::DecagonSDI12(int SDI12address, int powerPin, int dataPin,
 
 SENSOR_STATUS DecagonSDI12::setup(void)
 {
-    pinMode(_powerPin, OUTPUT);
+    if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
     pinMode(_dataPin, INPUT_PULLUP);
 
     bool isSet = getSensorInfo();
@@ -158,19 +158,19 @@ bool DecagonSDI12::getSensorInfo(void)
     else return false;
 }
 
-// The sensor name
+// The sensor vendor
 String DecagonSDI12::getSensorVendor(void)
 {return _sensorVendor;}
 
-// The sensor name
+// The sensor model
 String DecagonSDI12::getSensorModel(void)
 {return _sensorModel;}
 
-// The sensor name
+// The sensor version
 String DecagonSDI12::getSensorVersion(void)
 {return _sensorVersion;}
 
-// The sensor name
+// The sensor serial number
 String DecagonSDI12::getSensorSerialNumber(void)
 {return _sensorSerialNumber;}
 

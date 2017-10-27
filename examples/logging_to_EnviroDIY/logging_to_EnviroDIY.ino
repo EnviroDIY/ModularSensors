@@ -14,17 +14,19 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
+#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
+
 // Select your modem chip, comment out all of the others
-// #define TINY_GSM_MODEM_SIM800  // Select for anything using a SIM800, SIM900, or variant thereof: Sodaq GPRSBees, Microduino GPRS chips, Adafruit Fona, etc
-// #define TINY_GSM_MODEM_A6  // Select for A6 or A7 chips
-// #define TINY_GSM_MODEM_M590
+// #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or varient thereof
+// #define TINY_GSM_MODEM_A6  // Select for a AI-Thinker A6 or A7 chip
+// #define TINY_GSM_MODEM_M590  // Select for a Neoway M590
+// #define TINY_GSM_MODEM_U201  // Select for a U-blox U201
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
-#define TINY_GSM_MODEM_XBEE  // Select for Digi brand XBee's, including WiFi or LTE-M1
+#define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
 
 // ---------------------------------------------------------------------------
 // Include the base required libraries
 // ---------------------------------------------------------------------------
-#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #ifdef DreamHostPortalRX
@@ -38,14 +40,14 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //   ie, pin locations, addresses, calibrations and related settings
 // ---------------------------------------------------------------------------
 // The name of this file
-const char *SKETCH_NAME = "logging_to_EnviroDIY.ino";
+const char *sketchName = "logging_to_EnviroDIY.ino";
 
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "Mayfly_160073";
+const char *LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
-int LOGGING_INTERVAL = 1;
+int loggingInterval = 1;
 // Your logger's timezone.
-const int TIME_ZONE = -5;
+const int timeZone = -5;
 // Create a new logger instance
 #ifdef DreamHostPortalRX
 LoggerDreamHost EnviroDIYLogger;
@@ -54,7 +56,7 @@ LoggerEnviroDIY EnviroDIYLogger;
 #endif
 
 // ==========================================================================
-//    AOSong AM2315
+//    AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
 #include <AOSongAM2315.h>
 const int I2CPower = 22;  // switched sensor power is pin 22 on Mayfly
@@ -62,7 +64,7 @@ AOSongAM2315 am2315(I2CPower);
 
 
 // ==========================================================================
-//    AOSong DHT 11/21 (AM2301)/22 (AM2302)
+//    AOSong DHT 11/21 (AM2301)/22 (AM2302) Digital Humidity and Temperature
 // ==========================================================================
 #include <AOSongDHT.h>
 const int DHTPower = 22;  // switched sensor power is pin 22 on Mayfly
@@ -72,7 +74,7 @@ AOSongDHT dht(DHTPower, DHTPin, dhtType);
 
 
 // ==========================================================================
-//    Apogee SQ-212
+//    Apogee SQ-212 Photosynthetically Active Radiation (PAR) Sensor
 // ==========================================================================
 #include <ApogeeSQ212.h>
 const int SQ212Power = 22;  // switched sensor power is pin 22 on Mayfly
@@ -81,7 +83,7 @@ ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
 
 
 // ==========================================================================
-//    Bosch BME280
+//    Bosch BME280 Environmental Sensor (Temperature, Humidity, Pressure)
 // ==========================================================================
 #include <BoschBME280.h>
 uint8_t BMEi2c_addr = 0x76;  // The BME280 can be addressed either as 0x76 or 0x77
@@ -90,7 +92,7 @@ BoschBME280 bme280(I2CPower, BMEi2c_addr);
 
 
 // ==========================================================================
-//    CAMPBELL OBS 3 / OBS 3+
+//    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
 #include <CampbellOBS3.h>
 // Campbell OBS 3+ Low Range calibration in Volts
@@ -109,7 +111,7 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
 
 
 // ==========================================================================
-//    Decagon 5TM
+//    Decagon 5TM Soil Moisture Sensor
 // ==========================================================================
 #include <Decagon5TM.h>
 const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
@@ -119,7 +121,7 @@ Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
 
 
 // ==========================================================================
-//    Decagon CTD
+//    Decagon CTD Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
 #include <DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
@@ -130,7 +132,7 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 
 
 // ==========================================================================
-//    Decagon ES2
+//    Decagon ES2 Conductivity and Temperature Sensor
 // ==========================================================================
 #include <DecagonES2.h>
 const char *ES2SDI12address = "3";  // The SDI-12 Address of the ES2
@@ -140,17 +142,39 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data);
 
 
 // ==========================================================================
-//    Maxbotix HRXL
+//    Maxbotix HRXL Ultrasonic Range Finder
 // ==========================================================================
 #include <MaxBotixSonar.h>
+
+// Define a serial port for receiving data - in this case, using software serial
+// Because the standard software serial library uses interrupts that conflict
+// with several other libraries used within this program, we must use a
+// version of software serial that has been stripped of interrupts and define
+// the interrrupts for it using the enableInterrup library.
+
+// If enough hardware serial ports are available on your processor, you should
+// use one of those instead.  If the proper pins are avaialbe, AltSoftSerial
+// by Paul Stoffregen is also superior to SoftwareSerial for this sensor.
+// Neither hardware serial nor AltSoftSerial require any modifications to
+// deal with interrupt conflicts.
+
 const int SonarData = 11;     // data  pin
 const int SonarTrigger = -1;   // Trigger pin
 const int SonarPower = 22;   // excite (power) pin
-MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger) ;
+
+#if defined __AVR__
+#include <SoftwareSerial_ExtInts.h>  // for the stream communication
+SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
+MaxBotixSonar sonar(SonarPower, sonarSerial, SonarTrigger) ;
+
+#else
+HardwareSerial &sonarSerial = Serial1;
+MaxBotixSonar sonar(SonarPower, sonarSerial, SonarTrigger) ;
+#endif
 
 
 // ==========================================================================
-//    Maxim DS18 Temperature
+//    Maxim DS18 One Wire Temperature Sensor
 // ==========================================================================
 #include <MaximDS18.h>
 // OneWire Address [array of 8 hex characters]
@@ -168,19 +192,141 @@ MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
 
 
 // ==========================================================================
-//    EnviroDIY Mayfly
+//    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
-#include <MayflyOnboardSensors.h>
+#include <MaximDS3231.h>
+MaximDS3231 ds3231(1);
+
+
+// ==========================================================================
+//    EnviroDIY Mayfly Arduino-Based Board and Processor
+// ==========================================================================
+#include <ProcessorMetadata.h>
 const char *MFVersion = "v0.5";
-EnviroDIYMayfly mayfly(MFVersion) ;
+ProcessorMetadata mayfly(MFVersion) ;
+
+
+// ==========================================================================
+//    Yosemitech Y504 Dissolved Oxygen Sensor
+// ==========================================================================
+#include <YosemitechY504.h>
+byte y504modbusAddress = 0x04;  // The modbus address of the Y504
+const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
+const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
+const int y504NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+
+#if defined __AVR__
+// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+// const int modbusRx = 10;
+// const int modbusTx = 11;
+// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
+#include <AltSoftSerial.h>
+AltSoftSerial modbusSerial;
+YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePin, y504NumberReadings);
+#else
+HardwareSerial &modbusSerial = Serial1;
+YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePin, y504NumberReadings);
+#endif
+
+
+// ==========================================================================
+//    Yosemitech Y510 or Y511 Turbidity Sensor
+// ==========================================================================
+#include <YosemitechY510.h>
+byte y510modbusAddress = 0x0B;  // The modbus address of the Y510 or Y511
+// const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
+const int y510NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+
+#if defined __AVR__
+// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+// const int modbusRx = 10;
+// const int modbusTx = 11;
+// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
+// #include <AltSoftSerial.h>
+// AltSoftSerial modbusSerial;
+YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePin, y510NumberReadings);
+#else
+// HardwareSerial &modbusSerial = Serial1;
+YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePin, y510NumberReadings);
+#endif
+
+
+// ==========================================================================
+//    Yosemitech Y514 Chlorophyll Sensor
+// ==========================================================================
+#include <YosemitechY514.h>
+byte y514modbusAddress = 0x14;  // The modbus address of the Y514
+// const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
+const int y514NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+
+#if defined __AVR__
+// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+// const int modbusRx = 10;
+// const int modbusTx = 11;
+// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
+// #include <AltSoftSerial.h>
+// AltSoftSerial modbusSerial;
+YosemitechY514 y514(y514modbusAddress, modbusPower, modbusSerial, max485EnablePin, y514NumberReadings);
+#else
+// HardwareSerial &modbusSerial = Serial1;
+YosemitechY514 y514(y514modbusAddress, modbusPower, modbusSerial, max485EnablePin, y514NumberReadings);
+#endif
+
+
+// ==========================================================================
+//    Yosemitech Y520 Conductivity Sensor
+// ==========================================================================
+#include <YosemitechY520.h>
+byte y520modbusAddress = 0x20;  // The modbus address of the Y520
+// const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
+const int y520NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+
+#if defined __AVR__
+// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+// const int modbusRx = 10;
+// const int modbusTx = 11;
+// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
+// #include <AltSoftSerial.h>
+// AltSoftSerial modbusSerial;
+YosemitechY520 y520(y520modbusAddress, modbusPower, modbusSerial, max485EnablePin, y520NumberReadings);
+#else
+// HardwareSerial &modbusSerial = Serial1;
+YosemitechY520 y520(y520modbusAddress, modbusPower, modbusSerial, max485EnablePin, y520NumberReadings);
+#endif
+
+
+// ==========================================================================
+//    Yosemitech Y532 pH
+// ==========================================================================
+#include <YosemitechY532.h>
+byte y532modbusAddress = 0x32;  // The modbus address of the Y532
+// const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
+const int y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
+
+#if defined __AVR__
+// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+// const int modbusRx = 10;
+// const int modbusTx = 11;
+// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
+// #include <AltSoftSerial.h>
+// AltSoftSerial modbusSerial;
+YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePin, y532NumberReadings);
+#else
+// HardwareSerial &modbusSerial = Serial1;
+YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePin, y532NumberReadings);
+#endif
 
 // ---------------------------------------------------------------------------
 // The array that contains all valid variables
 // ---------------------------------------------------------------------------
 Variable *variableList[] = {
-    new EnviroDIYMayfly_Batt(&mayfly),
-    new EnviroDIYMayfly_FreeRam(&mayfly),
-    new EnviroDIYMayfly_Temp(&mayfly),
+    new ProcessorMetadata_Batt(&mayfly),
+    new ProcessorMetadata_FreeRam(&mayfly),
+    new MaximDS3231_Temp(&ds3231),
     new ApogeeSQ212_PAR(&SQ212),
     new MaxBotixSonar_Range(&sonar),
     new Decagon5TM_Ea(&fivetm),
@@ -205,6 +351,18 @@ Variable *variableList[] = {
     new AOSongAM2315_Temp(&am2315),
     new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
+    new YosemitechY504_DOpct(&y504),
+    new YosemitechY504_Temp(&y504),
+    new YosemitechY504_DOmgL(&y504),
+    new YosemitechY510_Turbidity(&y510),
+    new YosemitechY510_Temp(&y510),
+    new YosemitechY514_Chlorophyll(&y514),
+    new YosemitechY514_Temp(&y514),
+    new YosemitechY520_Cond(&y520),
+    new YosemitechY520_Temp(&y520),
+    new YosemitechY532_pH(&y532),
+    new YosemitechY532_Temp(&y532),
+    new YosemitechY532_Voltage(&y532),
     new Modem_RSSI(&EnviroDIYLogger.modem),
     new Modem_SignalPercent(&EnviroDIYLogger.modem),
     // new YOUR_variableName_HERE(&)
@@ -217,8 +375,8 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 //   This should be obtained after registration at http://data.envirodiy.org
 //   You can copy the entire code snippet directly into this block below.
 // ---------------------------------------------------------------------------
-const char *REGISTRATION_TOKEN = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
-const char *SAMPLING_FEATURE = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
+const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
+const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 const char *UUIDs[] =                                                      // UUID array for device sensors
 {
 "12345678-abcd-1234-efgh-1234567890ab",
@@ -260,6 +418,7 @@ const char *UUIDs[] =                                                      // UU
 // ---------------------------------------------------------------------------
 // Device Connection Options and WebSDL Endpoints for POST requests
 // ---------------------------------------------------------------------------
+HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
 const int modemDTRPin = 23;  // Modem DTR Pin (Data Terminal Ready - used for sleep) (-1 if unconnected)
 const int modemCTSPin = 19;   // Modem CTS Pin (Clear to Send) (-1 if unconnected)
 const int modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (else -1)
@@ -269,22 +428,21 @@ DTRSleepType ModemSleepMode = held;  // How the modem is put to sleep
 // Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
 // Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
 // Use "always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
-HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
 const long ModemBaud = 9600;  // Modem BAUD rate (9600 is default), can use higher for SIM800 (19200 works)
-const char *APN = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
-const char *SSID = "XXXXXXX";  // The WiFi access point, unnecessary for gprs
-const char *PWD = "XXXXXXX";  // The password for connecting to WiFi, unnecessary for gprs
+const char *apn = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
+const char *wifiId = "XXXXXXX";  // The WiFi access point, unnecessary for gprs
+const char *wifiPwd = "XXXXXXX";  // The password for connecting to WiFi, unnecessary for gprs
 
 
 // ---------------------------------------------------------------------------
 // Board setup info
 // ---------------------------------------------------------------------------
-const long SERIAL_BAUD = 57600;  // Serial port baud rate
-const int GREEN_LED = 8;  // Pin for the green LED
-const int RED_LED = 9;  // Pin for the red LED
-const int BUTTON_PIN = 21;  // Pin for the button
-const int RTC_PIN = A7;  // RTC Interrupt/Alarm pin
-const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
+const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const int greenLED = 8;  // Pin for the green LED
+const int redLED = 9;  // Pin for the red LED
+const int buttonPin = 21;  // Pin for the button
+const int wakePin = A7;  // RTC Interrupt/Alarm pin
+const int sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin
 
 
 // ---------------------------------------------------------------------------
@@ -292,17 +450,17 @@ const int SD_SS_PIN = 12;  // SD Card Chip Select/Slave Select Pin
 // ---------------------------------------------------------------------------
 
 // Flashes to Mayfly's LED's
-void greenredflash(int numFlash = 4)
+void greenredflash(int numFlash = 4, int rate = 75)
 {
   for (int i = 0; i < numFlash; i++) {
-    digitalWrite(GREEN_LED, HIGH);
-    digitalWrite(RED_LED, LOW);
-    delay(75);
-    digitalWrite(GREEN_LED, LOW);
-    digitalWrite(RED_LED, HIGH);
-    delay(75);
+    digitalWrite(greenLED, HIGH);
+    digitalWrite(redLED, LOW);
+    delay(rate);
+    digitalWrite(greenLED, LOW);
+    digitalWrite(redLED, HIGH);
+    delay(rate);
   }
-  digitalWrite(RED_LED, LOW);
+  digitalWrite(redLED, LOW);
 }
 
 
@@ -312,43 +470,57 @@ void greenredflash(int numFlash = 4)
 void setup()
 {
     // Start the primary serial connection
-    Serial.begin(SERIAL_BAUD);
-    // Start the serial connection with the *bee
+    Serial.begin(serialBaud);
+
+    // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);
 
+    // Start the AltSoftSerial stream for the modbus sensors
+    modbusSerial.begin(9600);
+
+    // Start the SoftwareSerial stream for the sonar
+    sonarSerial.begin(9600);
+    // Allow interrupts for software serial
+    #if defined SoftwareSerial_ExtInts_h
+    enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+    #endif
+
     // Set up pins for the LED's
-    pinMode(GREEN_LED, OUTPUT);
-    pinMode(RED_LED, OUTPUT);
+    pinMode(greenLED, OUTPUT);
+    pinMode(redLED, OUTPUT);
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
     // Print a start-up note to the first serial port
     Serial.print(F("Now running "));
-    Serial.print(SKETCH_NAME);
+    Serial.print(sketchName);
     Serial.print(F(" on Logger "));
     Serial.println(LoggerID);
 
     // Set the timezone and offsets
-    Logger::setTimeZone(TIME_ZONE);  // Logging in the given time zone
-    // EnviroDIYLogger.setTZOffset(0);  // Also set the clock in that time zone
-    Logger::setTZOffset(TIME_ZONE);  // Set the clock in UTC
+    // Logging in the given time zone
+    Logger::setTimeZone(timeZone);
+    // Offset is the same as the time zone because the RTC is in UTC
+    Logger::setTZOffset(timeZone);
 
     // Initialize the logger;
-    EnviroDIYLogger.init(SD_SS_PIN, RTC_PIN, variableCount, variableList,
-                LOGGING_INTERVAL, LoggerID);
-    EnviroDIYLogger.setAlertPin(GREEN_LED);
+    EnviroDIYLogger.init(sdCardPin, wakePin, variableCount, variableList,
+                loggingInterval, LoggerID);
+    EnviroDIYLogger.setAlertPin(greenLED);
 
-    // Set up the connection with EnviroDIY
-    EnviroDIYLogger.setToken(REGISTRATION_TOKEN);
-    EnviroDIYLogger.setSamplingFeature(SAMPLING_FEATURE);
-    EnviroDIYLogger.setUUIDs(UUIDs);
-
+    // Set up the modem
     #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
-        EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, SSID, PWD);
+        EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, wifiId, wifiPwd);
     #else
-        EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, APN);
+        EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, apn);
     #endif
 
+    // Set up the connection with EnviroDIY
+    EnviroDIYLogger.setToken(registrationToken);
+    EnviroDIYLogger.setSamplingFeature(samplingFeature);
+    EnviroDIYLogger.setUUIDs(UUIDs);
+
+    // Set up the connection with DreamHost
     #ifdef DreamHostPortalRX
         EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
     #endif
@@ -357,7 +529,7 @@ void setup()
     EnviroDIYLogger.begin();
 
     // Check for debugging mode
-    EnviroDIYLogger.checkForDebugMode(BUTTON_PIN, &Serial);
+    EnviroDIYLogger.checkForDebugMode(buttonPin);
 }
 
 

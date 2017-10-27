@@ -24,9 +24,10 @@ public:
     void setDreamHostPortalRX(const char *URL)
     {
         _DreamHostPortalRX = URL;
-        DBGVA(F("Dreamhost portal URL set!\n"));
+        DBGLOG(F("Dreamhost portal URL set!\n"));
     }
 
+    // This creates all of the URL parameters
     String generateSensorDataDreamHost(void)
     {
         String dhString = String(_DreamHostPortalRX);
@@ -45,6 +46,7 @@ public:
         return dhString;
     }
 
+    // Communication functions
     void streamDreamHostRequest(Stream *stream)
     {
         stream->print(String(F("GET ")));
@@ -54,44 +56,62 @@ public:
         stream->print(String(F("\r\n\r\n")));
     }
 
-#if defined(USE_TINY_GSM)
-
     // Post the data to dream host.
     int postDataDreamHost(void)
     {
-        modem.connect("swrcsensors.dreamhosters.com", 80);
+        // Create a buffer for the response
+        char response_buffer[12] = "";
+        int did_respond = 0;
 
-        // Send the request to the serial for debugging
-        PRINTOUT(F("\n \\/------ Data to DreamHost ------\\/ \n"));
-        streamDreamHostRequest(&Serial);  // for debugging
-        Serial.flush();  // for debugging
-
-        // Send the request to the modem stream
-        modem.dumpBuffer(modem.stream);
-        streamDreamHostRequest(modem.stream);
-        modem.stream->flush();  // wait for sending to finish
-
-        // Wait for at least the first 12 characters to make it across
-        unsigned long timeout = 1500;
-        for (unsigned long start = millis(); millis() - start < timeout; )
+        // Open a TCP/IP connection to DreamHost
+        if(modem.connect("swrcsensors.dreamhosters.com", 80))
         {
-            if (modem.stream->available() >= 12) break;
+            // Send the request to the serial for debugging
+            #if defined(MODULAR_SENSORS_OUTPUT)
+                PRINTOUT(F("\n \\/------ Data to DreamHost ------\\/ \n"));
+                streamDreamHostRequest(&MODULAR_SENSORS_OUTPUT);  // for debugging
+                MODULAR_SENSORS_OUTPUT.flush();  // for debugging
+            #endif
+
+            // Send the request to the modem stream
+            modem.dumpBuffer(modem._client);
+            streamDreamHostRequest(modem._client);
+            modem._client->flush();  // wait for sending to finish
+
+            uint32_t start_timer;
+            if (millis() < 4294957296) start_timer = millis();  // In case of roll-over
+            else start_timer = 0;
+            while ((millis() - start_timer) < 10000L && modem._client->available() < 12)
+            {delay(10);}
+
+            // Read only the first 12 characters of the response
+            // We're only reading as far as the http code, anything beyond that
+            // we don't care about so we're not reading to save on total
+            // data used for transmission.
+            did_respond = modem._client->readBytes(response_buffer, 12);
+
+            // Close the TCP/IP connection as soon as the first 12 characters are read
+            // We don't need anything else and stoping here should save data use.
+            modem.stop();
         }
+        else PRINTOUT(F("\n -- Unable to Establish Connection to DreamHost -- \n"));
 
         // Process the HTTP response
         int responseCode = 0;
-        if (modem.stream->available() >= 12)
+        if (did_respond > 0)
         {
-            modem.stream->readStringUntil(' ');  // Throw away the "HTTP/1.1"
-            responseCode = modem.stream->readStringUntil(' ').toInt();
-            modem.dumpBuffer(modem.stream);
+            char responseCode_char[4];
+            for (int i = 0; i < 3; i++)
+            {
+                responseCode_char[i] = response_buffer[i+9];
+            }
+            responseCode = atoi(responseCode_char);
+            // modem.dumpBuffer(modem._client);
         }
         else responseCode=504;
 
         PRINTOUT(F(" -- Response Code -- \n"));
         PRINTOUT(responseCode, F("\n"));
-
-        modem.stop();
 
         return responseCode;
     }
@@ -99,6 +119,7 @@ public:
     // ===================================================================== //
     // Convience functions to call several of the above functions
     // ===================================================================== //
+
     // This is a one-and-done to log data
     virtual void log(void) override
     {
@@ -111,7 +132,7 @@ public:
             digitalWrite(_ledPin, HIGH);
 
             // Turn on the modem to let it start searching for the network
-            LoggerEnviroDIY::modem.on();
+            modem.wake();
 
             // Wake up all of the sensors
             // I'm not doing as part of sleep b/c it may take up to a second or
@@ -132,16 +153,16 @@ public:
                 postDataDreamHost();
 
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
-                // if (_numReadings % 288 == 0)
-                // {
-                //     modem.syncDS3231();
-                // }
+                if (_numReadings % 288 == 0)
+                {
+                    syncRTClock();
+                }
 
                 // Disconnect from the network
                 modem.disconnectNetwork();
             }
 
-            // Turn on the modem off
+            // Turn the modem off
             modem.off();
 
             // Create a csv data record and save it to the log file
@@ -156,8 +177,6 @@ public:
         // Sleep
         if(_sleep){systemSleep();}
     }
-
-#endif
 
 
 private:

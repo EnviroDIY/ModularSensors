@@ -10,12 +10,50 @@
 #ifndef LoggerBase_h
 #define LoggerBase_h
 
+#include "VariableArray.h"
+
+// #define MODULAR_SENSORS_OUTPUT Serial
+// #define LOGGER_DBG Serial
+
 #define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
 #include <EnableInterrupt.h>  // To handle external and pin change interrupts
-#include <Sodaq_DS3231.h>  // To communicate with the clock
+
+// Bring in the libraries to handle the processor sleep/standby modes
+// The SAMD library can also the built-in clock on those modules
+#if defined(ARDUINO_ARCH_SAMD)
+  #include <RTCZero.h>
+#elif defined __AVR__
+  #include <avr/sleep.h>
+#endif
+
+// Bring in the library to commuinicate with an external high-precision real time clock
+// This also implements a needed date/time class
+#include <Sodaq_DS3231.h>
+#define EPOCH_TIME_OFF 946684800  // This is 2000-jan-01 00:00:00 in epoch time
+// Need this b/c the date/time class in Sodaq_DS3231 treats a 32-bit long timestamp
+// as time from 2000-jan-01 00:00:00 instead of the standard epoch of 19970-jan-01 00:00:00
+
 #include <SdFat.h>  // To communicate with the SD card
 
-#include "VariableArray.h"
+#include "ModemSupport.h"  // To communicate with the internet
+
+// Debugging helpers
+#ifdef LOGGER_DBG
+namespace {
+ template<typename T>
+ static void DBGLOG(T last) {
+   LOGGER_DBG.print(last);
+ }
+
+ template<typename T, typename... Args>
+ static void DBGLOG(T head, Args... tail) {
+   LOGGER_DBG.print(head);
+   DBGLOG(tail...);
+ }
+}
+#else
+ #define DBGLOG(...)
+#endif
 
 // Defines the "Logger" Class
 class Logger : public VariableArray
@@ -23,7 +61,7 @@ class Logger : public VariableArray
 public:
     // Initialization - cannot do this in constructor arduino has issues creating
     // instances of classes with non-empty constructors
-    void init(int SDCardPin, int interruptPin,
+    void init(int SDCardPin, int mcuWakePin,
               int variableCount,
               Variable *variableList[],
               float loggingIntervalMinutes,
@@ -32,7 +70,7 @@ public:
         PRINTOUT(F("Initializing variable array with "), variableCount, F(" variables..."));
 
         _SDCardPin = SDCardPin;
-        _interruptPin = interruptPin;
+        _mcuWakePin = mcuWakePin;
         _variableCount = variableCount;
         _variableList = variableList;
         _loggingIntervalMinutes = loggingIntervalMinutes;
@@ -43,7 +81,7 @@ public:
         _numReadings = 0;
 
         // Set sleep variable, if an interrupt pin is given
-        if(_interruptPin != -1)
+        if(_mcuWakePin != -1)
         {
             _sleep = true;
         }
@@ -88,19 +126,37 @@ public:
     void setAlertPin(int ledPin)
     {
         _ledPin = ledPin;
-        DBGVA(F("Pin "), _ledPin, F(" set for alerts\n"));
+        DBGLOG(F("Pin "), _ledPin, F(" set for alerts\n"));
     }
 
 
     // ===================================================================== //
     // Public functions to access the clock in proper format and time zone
     // ===================================================================== //
-    // This gets the current epoch time (unix time) and corrects it for the specified time zone
-    static uint32_t getNow(void)
+    // This gets the current epoch time (unix time, ie, the number of seconds
+    // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
+    #if defined(ARDUINO_ARCH_SAMD)
+        static uint32_t getNowEpoch(void)
+        {
+          uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
+          currentEpochTime += _offset*3600;
+          return currentEpochTime;
+        }
+        static void setNowEpoch(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
+    #else
+        static uint32_t getNowEpoch(void)
+        {
+          uint32_t currentEpochTime = rtc.now().getEpoch();
+          currentEpochTime += _offset*3600;
+          return currentEpochTime;
+        }
+        static void setNowEpoch(uint32_t ts){rtc.setEpoch(ts);}
+    #endif
+
+    static DateTime dtFromEpoch(uint32_t epochTime)
     {
-      uint32_t currentEpochTime = rtc.now().getEpoch();
-      currentEpochTime += _offset*3600;
-      return currentEpochTime;
+        DateTime dt(epochTime - EPOCH_TIME_OFF);
+        return dt;
     }
 
     // This converts a date-time object into a ISO8601 formatted string
@@ -140,8 +196,52 @@ public:
     static String formatDateTime_ISO8601(uint32_t epochTime)
     {
         // Create a DateTime object from the epochTime
-        DateTime dt(rtc.makeDateTime(epochTime));
+        DateTime dt = dtFromEpoch(epochTime);
         return formatDateTime_ISO8601(dt);
+    }
+
+    // This syncronizes the real time clock to NIST
+    bool syncRTClock(void)
+    {
+        uint32_t start_millis = millis();
+
+        // Get the time stamp from NIST and adjust it to the correct time zone
+        // for the logger.
+        uint32_t nist = modem.getNISTTime();
+
+        // If the timestamp returns zero, just exit
+        if  (nist == 0)
+        {
+            PRINTOUT(F("Bad timestamp returned, skipping sync.\n"));
+            return false;
+        }
+
+        uint32_t nist_logTZ = nist + getTimeZone()*3600;
+        uint32_t nist_rtcTZ = nist_logTZ - getTZOffset()*3600;
+        DBGLOG(F("        Correct Time for Logger: "), nist_logTZ, F(" -> "), \
+            formatDateTime_ISO8601(nist_logTZ), F("\n"));
+
+        // See how long it took to get the time from NIST
+        int sync_time = (millis() - start_millis)/1000;
+
+        // Check the current RTC time
+        uint32_t cur_logTZ = getNowEpoch();
+        DBGLOG(F("           Time Returned by RTC: "), cur_logTZ, F(" -> "), \
+            formatDateTime_ISO8601(cur_logTZ), F("\n"));
+        DBGLOG(F("Offset: "), abs(nist_logTZ - cur_logTZ), F("\n"));
+
+        // If the RTC and NIST disagree by more than 5 seconds, set the clock
+        if ((abs(nist_logTZ - cur_logTZ) > 5) && (nist != 0))
+        {
+            setNowEpoch(nist_rtcTZ + sync_time/2);
+            PRINTOUT(F("Clock synced to NIST!\n"));
+            return true;
+        }
+        else
+        {
+            PRINTOUT(F("Clock already within 5 seconds of NIST.\n"));
+            return false;
+        }
     }
 
     // This sets static variables for the date/time - this is needed so that all
@@ -153,8 +253,8 @@ public:
     // called before updating the sensors, not after.
     void markTime(void)
     {
-      markedEpochTime = getNow();
-      markedDateTime = rtc.makeDateTime(markedEpochTime);
+      markedEpochTime = getNowEpoch();
+      markedDateTime = dtFromEpoch(markedEpochTime);
       formatDateTime_ISO8601(markedDateTime).toCharArray(markedISO8601Time, 26);
     }
 
@@ -163,23 +263,32 @@ public:
     bool checkInterval(void)
     {
         bool retval;
-        DBGVA(F("Current Time: "), getNow(), F("\n"));
-        DBGVA(F("Mod of Logging Interval: "), getNow() % _interruptRate, F("\n"));
-        DBGVA(F("Number of Readings so far: "), _numReadings, F("\n"));
-        DBGVA(F("Mod of 120: "), getNow() % 120, F("\n"));
-        if ((getNow() % _interruptRate == 0 ) or
-            (_numReadings < 10 and getNow() % 120 == 0))
+        uint32_t checkTime = getNowEpoch();
+        DBGLOG(F("Current Unix Timestamp: "), checkTime, F("\n"));
+        DBGLOG(F("Mod of Logging Interval: "), checkTime % _interruptRate, F("\n"));
+        DBGLOG(F("Number of Readings so far: "), _numReadings, F("\n"));
+        DBGLOG(F("Mod of 120: "), checkTime % 120, F("\n"));
+        if ((checkTime % _interruptRate == 0 ) or
+            (_numReadings < 10 and getNowEpoch() % 120 == 0))
         {
             // Update the time variables with the current time
             markTime();
+            DBGLOG(F("Time marked at (unix): "), markedEpochTime, F("\n"));
+            DBGLOG(F("    year: "), markedDateTime.year(), F("\n"));
+            DBGLOG(F("    month: "), markedDateTime.month(), F("\n"));
+            DBGLOG(F("    date: "), markedDateTime.date(), F("\n"));
+            DBGLOG(F("    hour: "), markedDateTime.hour(), F("\n"));
+            DBGLOG(F("    minute: "), markedDateTime.minute(), F("\n"));
+            DBGLOG(F("    second: "), markedDateTime.second(), F("\n"));
+            DBGLOG(F("Time marked at [char]: "), markedISO8601Time, F("\n"));
             // Update the number of readings taken
             _numReadings ++;
-            DBGVA(F("Time to log!\n"));
+            DBGLOG(F("Time to log!\n"));
             retval = true;
         }
         else
         {
-            DBGVA(F("Not time yet, back to sleep\n"));
+            DBGLOG(F("Not time yet, back to sleep\n"));
             retval = false;
         }
         return retval;
@@ -190,22 +299,22 @@ public:
     bool checkMarkedInterval(void)
     {
         bool retval;
-        DBGVA(F("Marked Time: "), markedEpochTime, F("\n"));
-        DBGVA(F("Mod of Logging Interval: "), markedEpochTime % _interruptRate, F("\n"));
-        DBGVA(F("Number of Readings so far: "), _numReadings, F("\n"));
-        DBGVA(F("Mod of 120: "), markedEpochTime % 120, F("\n"));
+        DBGLOG(F("Marked Time: "), markedEpochTime, F("\n"));
+        DBGLOG(F("Mod of Logging Interval: "), markedEpochTime % _interruptRate, F("\n"));
+        DBGLOG(F("Number of Readings so far: "), _numReadings, F("\n"));
+        DBGLOG(F("Mod of 120: "), markedEpochTime % 120, F("\n"));
         if (markedEpochTime != 0 &&
             ((markedEpochTime % _interruptRate == 0 ) or
             (_numReadings < 10 and markedEpochTime % 120 == 0)))
         {
             // Update the number of readings taken
             _numReadings ++;
-            DBGVA(F("Time to log!\n"));
+            DBGLOG(F("Time to log!\n"));
             retval = true;
         }
         else
         {
-            DBGVA(F("Not time yet, back to sleep\n"));
+            DBGLOG(F("Not time yet, back to sleep\n"));
             retval = false;
         }
         return retval;
@@ -215,20 +324,65 @@ public:
     // ============================================================================
     //  Public Functions for sleeping the logger
     // ============================================================================
-    #include <avr/sleep.h>  // To handle the processor sleep modes
 
     // Set up the Interrupt Service Request for waking
     // In this case, we're doing nothing, we just want the processor to wake
     // This must be a static function (which means it can only call other static funcions.)
-    static void wakeISR(void){}
+    static void wakeISR(void){DBGLOG(F("The clock interrupt woke me up!\n"));}
+
+    #if defined ARDUINO_ARCH_SAMD
+
+    static RTCZero zero_sleep_rtc;  // create the rtc object
+
+    // Sets up the sleep mode
+    void setupSleep(void)
+    {
+        // Alarms on the RTC built into the SAMD21 appear to be identical to those
+        // in the DS3231.  See more notes below.
+        // We're setting the alarm seconds to 59 and then seting it to go off
+        // whenever the seconds match the 59.  I'm using 59 instead of 00
+        // because there seems to be a bit of a wake-up delay
+        zero_sleep_rtc.setAlarmSeconds(59);
+        zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);
+    }
+
+    // Puts the system to sleep to conserve battery life.
+    // This DOES NOT sleep or wake the sensors!!
+    void systemSleep(void)
+    {
+        // Wait until the serial ports have finished transmitting
+        // This does not clear their buffers, it just waits until they are finished
+        // TODO:  Make sure can find all serial ports
+        #if defined(MODULAR_SENSORS_OUTPUT)
+            MODULAR_SENSORS_OUTPUT.flush();  // for debugging
+        #endif
+        #if defined(LOGGER_DBG)
+            LOGGER_DBG.flush();  // for debugging
+        #endif
+
+        // This clears the interrrupt flag in status register of the clock
+        // The next timed interrupt will not be sent until this is cleared
+        // rtc.clearINTStatus();
+
+        // USB connection will end at sleep because it's a separate mode in the processor
+        USBDevice.detach();  // Disable USB
+
+        // Put the processor into sleep mode.
+        zero_sleep_rtc.standbyMode();
+
+        // Reattach the USB after waking
+        USBDevice.attach();
+    }
+
+    #elif defined __AVR__
 
     // Sets up the sleep mode
     void setupSleep(void)
     {
         // Set the pin attached to the RTC alarm to be in the right mode to listen to
         // an interrupt and attach the "Wake" ISR to it.
-        pinMode(_interruptPin, INPUT_PULLUP);
-        enableInterrupt(_interruptPin, wakeISR, CHANGE);
+        pinMode(_mcuWakePin, INPUT_PULLUP);
+        enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
 
         // Unfortunately, because of the way the alarm on the DS3231 is set up, it
         // cannot interrupt on any frequencies other than every second, minute,
@@ -255,8 +409,12 @@ public:
         // Wait until the serial ports have finished transmitting
         // This does not clear their buffers, it just waits until they are finished
         // TODO:  Make sure can find all serial ports
-        Serial.flush();
-        // Serial1.flush();
+        #if defined(MODULAR_SENSORS_OUTPUT)
+            MODULAR_SENSORS_OUTPUT.flush();  // for debugging
+        #endif
+        #if defined(LOGGER_DBG)
+            LOGGER_DBG.flush();  // for debugging
+        #endif
 
         // This clears the interrrupt flag in status register of the clock
         // The next timed interrupt will not be sent until this is cleared
@@ -280,12 +438,13 @@ public:
         // This must happen after the SE bit is set.
         sleep_cpu();
 
-        DBGVA(F("The clock interrupt woke me up!\n"));
+        // This portion happens on the wake up..
         // Clear the SE (sleep enable) bit.
         sleep_disable();
         // Re-enable the processor ADC
         ADCSRA |= _BV(ADEN);
     }
+    #endif
 
     // ===================================================================== //
     // Public functions for logging data to an SD card
@@ -324,7 +483,7 @@ public:
             fileName +=  String(_loggerID);
             fileName +=  F("_");
         }
-        fileName +=  formatDateTime_ISO8601(getNow()).substring(0, 10);
+        fileName +=  formatDateTime_ISO8601(getNowEpoch()).substring(0, 10);
         fileName +=  F(".csv");
         setFileName(fileName);
     }
@@ -411,31 +570,31 @@ public:
             // Open the file in write mode (and create it if it did not exist)
             logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END);
             // Set creation date time
-            logFile.timestamp(T_CREATE, rtc.makeDateTime(getNow()).year(),
-                                        rtc.makeDateTime(getNow()).month(),
-                                        rtc.makeDateTime(getNow()).date(),
-                                        rtc.makeDateTime(getNow()).hour(),
-                                        rtc.makeDateTime(getNow()).minute(),
-                                        rtc.makeDateTime(getNow()).second());
+            logFile.timestamp(T_CREATE, dtFromEpoch(getNowEpoch()).year(),
+                                        dtFromEpoch(getNowEpoch()).month(),
+                                        dtFromEpoch(getNowEpoch()).date(),
+                                        dtFromEpoch(getNowEpoch()).hour(),
+                                        dtFromEpoch(getNowEpoch()).minute(),
+                                        dtFromEpoch(getNowEpoch()).second());
             // Set write/modification date time
-            logFile.timestamp(T_WRITE, rtc.makeDateTime(getNow()).year(),
-                                       rtc.makeDateTime(getNow()).month(),
-                                       rtc.makeDateTime(getNow()).date(),
-                                       rtc.makeDateTime(getNow()).hour(),
-                                       rtc.makeDateTime(getNow()).minute(),
-                                       rtc.makeDateTime(getNow()).second());
-            // Set access  date time
-            logFile.timestamp(T_ACCESS, rtc.makeDateTime(getNow()).year(),
-                                        rtc.makeDateTime(getNow()).month(),
-                                        rtc.makeDateTime(getNow()).date(),
-                                        rtc.makeDateTime(getNow()).hour(),
-                                        rtc.makeDateTime(getNow()).minute(),
-                                        rtc.makeDateTime(getNow()).second());
+            logFile.timestamp(T_WRITE, dtFromEpoch(getNowEpoch()).year(),
+                                       dtFromEpoch(getNowEpoch()).month(),
+                                       dtFromEpoch(getNowEpoch()).date(),
+                                       dtFromEpoch(getNowEpoch()).hour(),
+                                       dtFromEpoch(getNowEpoch()).minute(),
+                                       dtFromEpoch(getNowEpoch()).second());
+            // Set access date time
+            logFile.timestamp(T_ACCESS, dtFromEpoch(getNowEpoch()).year(),
+                                        dtFromEpoch(getNowEpoch()).month(),
+                                        dtFromEpoch(getNowEpoch()).date(),
+                                        dtFromEpoch(getNowEpoch()).hour(),
+                                        dtFromEpoch(getNowEpoch()).minute(),
+                                        dtFromEpoch(getNowEpoch()).second());
             PRINTOUT(F("   ... File created!\n"));
 
             // Add header information
             logFile.print(generateFileHeader());
-            DBGVA(generateFileHeader(), F("\n"));
+            DBGLOG(generateFileHeader(), F("\n"));
 
             //Close the file to save it
             logFile.close();
@@ -472,19 +631,19 @@ public:
             PRINTOUT(rec, F("\n"));
 
             // Set write/modification date time
-            logFile.timestamp(T_WRITE, rtc.makeDateTime(getNow()).year(),
-                                       rtc.makeDateTime(getNow()).month(),
-                                       rtc.makeDateTime(getNow()).date(),
-                                       rtc.makeDateTime(getNow()).hour(),
-                                       rtc.makeDateTime(getNow()).minute(),
-                                       rtc.makeDateTime(getNow()).second());
-            // Set access  date time
-            logFile.timestamp(T_ACCESS, rtc.makeDateTime(getNow()).year(),
-                                        rtc.makeDateTime(getNow()).month(),
-                                        rtc.makeDateTime(getNow()).date(),
-                                        rtc.makeDateTime(getNow()).hour(),
-                                        rtc.makeDateTime(getNow()).minute(),
-                                        rtc.makeDateTime(getNow()).second());
+            logFile.timestamp(T_WRITE, dtFromEpoch(getNowEpoch()).year(),
+                                       dtFromEpoch(getNowEpoch()).month(),
+                                       dtFromEpoch(getNowEpoch()).date(),
+                                       dtFromEpoch(getNowEpoch()).hour(),
+                                       dtFromEpoch(getNowEpoch()).minute(),
+                                       dtFromEpoch(getNowEpoch()).second());
+            // Set access date time
+            logFile.timestamp(T_ACCESS, dtFromEpoch(getNowEpoch()).year(),
+                                        dtFromEpoch(getNowEpoch()).month(),
+                                        dtFromEpoch(getNowEpoch()).date(),
+                                        dtFromEpoch(getNowEpoch()).hour(),
+                                        dtFromEpoch(getNowEpoch()).minute(),
+                                        dtFromEpoch(getNowEpoch()).second());
 
             // Close the file to save it
             logFile.close();
@@ -497,40 +656,65 @@ public:
     // ===================================================================== //
 
     // This defines what to do in the debug mode
-    virtual void debugMode(Stream *stream = &Serial)
+    virtual void debugMode()
     {
         PRINTOUT(F("------------------------------------------\n"));
         PRINTOUT(F("Entering debug mode\n"));
 
+        // Turn on the modem to let it start searching for the network
+        #if defined(USE_TINY_GSM)
+            // Turn on the modem
+            modem.wake();
+            // Connect to the network to make sure we have signal
+            modem.connectNetwork();
+        #endif
+
         // Update the sensors and print out data 25 times
         for (uint8_t i = 0; i < 25; i++)
         {
-            stream->println(F("------------------------------------------"));
+            PRINTOUT(F("------------------------------------------\n"));
             // Wake up all of the sensors
-            stream->print(F("Waking sensors..."));
+            // PRINTOUT(F("Waking sensors...\n"));
             sensorsWake();
             // Update the values from all attached sensors
-            stream->print(F("  Updating sensor values..."));
+            // PRINTOUT(F("  Updating sensor values...\n"));
             updateAllSensors();
             // Immediately put sensors to sleep to save power
-            stream->println(F("  Putting sensors back to sleep..."));
+            // PRINTOUT(F("  Putting sensors back to sleep...\n"));
             sensorsSleep();
             // Print out the current logger time
-            stream->print(F("Current logger time is "));
-            stream->println(formatDateTime_ISO8601(getNow()));
-            stream->println(F("    -----------------------"));
+            PRINTOUT(F("Current logger time is "));
+            PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
+            PRINTOUT(F("    -----------------------\n"));
             // Print out the sensor data
-            printSensorData(stream);
-            delay(10000);
+            #if defined(MODULAR_SENSORS_OUTPUT)
+                printSensorData(&MODULAR_SENSORS_OUTPUT);
+            #endif
+            PRINTOUT(F("    -----------------------\n"));
+
+            // Specially highlight the modem signal quality in the debug mode
+            #if defined(USE_TINY_GSM)
+                PRINTOUT(F("Current modem signal is "));
+                PRINTOUT(modem.getSignalPercent());
+                PRINTOUT(F("%\n"));
+            #endif
+            delay(5000);
         }
+
+        #if defined(USE_TINY_GSM)
+            // Disconnect from the network
+            modem.disconnectNetwork();
+            // Turn off the modem
+            modem.off();
+        #endif
     }
 
     // This checks to see if you want to enter debug mode
     // This should be run as the very last step within the setup function
-    virtual void checkForDebugMode(int buttonPin, Stream *stream = &Serial)
+    virtual void checkForDebugMode(int buttonPin)
     {
         // Set the pin attached to some button to enter debug mode
-        pinMode(buttonPin, INPUT);
+        if (buttonPin > 0) pinMode(buttonPin, INPUT_PULLUP);
 
         // Flash the LED to let user know it is now possible to enter debug mode
         for (uint8_t i = 0; i < 15; i++)
@@ -545,7 +729,7 @@ public:
         PRINTOUT(F("Push button NOW to enter debug mode.\n"));
         for (unsigned long start = millis(); millis() - start < 5000; )
         {
-            if (digitalRead(buttonPin) == HIGH) debugMode(stream);
+            if (digitalRead(buttonPin) == HIGH) debugMode();
         }
         PRINTOUT(F("------------------------------------------\n\n"));
         PRINTOUT(F("End of debug mode.\n"));
@@ -560,22 +744,45 @@ public:
         // Print a start-up note to the first serial port
         PRINTOUT(F("Beginning logger "), _loggerID, F("\n"));
 
-        // Start the Real Time Clock
-        rtc.begin();
-        delay(100);
-
         // Set up pins for the LED's
-        pinMode(_ledPin, OUTPUT);
+        if (_ledPin > 0) pinMode(_ledPin, OUTPUT);
+
+        // Start the Real Time Clock
+        #if defined(USE_DS3231)
+            rtc.begin();
+            delay(100);
+        #endif
+
+        #if defined ARDUINO_ARCH_SAMD
+            zero_sleep_rtc.begin();
+        #endif
+
+        // Print out the current time
+        PRINTOUT(F("Current RTC time is: "));
+        PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
+
+        #if defined(USE_TINY_GSM)
+            // Synchronize the RTC with NIST
+            PRINTOUT(F("Attempting to synchronize RTC with NIST\n"));
+            // Turn on the modem
+            modem.wake();
+            // Connect to the network
+            if (modem.connectNetwork())
+            {
+                delay(5000);
+                syncRTClock();
+                // Disconnect from the network
+                modem.disconnectNetwork();
+            }
+            // Turn off the modem
+            modem.off();
+        #endif
 
         // Set up the sensors
         setupSensors();
 
         // Set up the log file
         setupLogFile();
-
-        // Print the current time
-        PRINTOUT(F("Current RTC time is: "));
-        PRINTOUT(formatDateTime_ISO8601(getNow()), F("\n"));
 
         // Setup sleep mode
         if(_sleep){setupSleep();}
@@ -617,9 +824,11 @@ public:
         if(_sleep){systemSleep();}
     }
 
-    // Publie variables
+    // Public variables
     // Time stamps - want to set them at a single time and carry them forward
     static long markedEpochTime;
+    // Create a modem instance
+    loggerModem modem;
 
 
 
@@ -643,7 +852,7 @@ protected:
 
     // Initialization variables
     int _SDCardPin;
-    int _interruptPin;
+    int _mcuWakePin;
     float _loggingIntervalMinutes;
     int _interruptRate;
     const char *_loggerID;
@@ -662,5 +871,9 @@ int Logger::_offset = 0;
 long Logger::markedEpochTime = 0;
 DateTime Logger::markedDateTime = 0;
 char Logger::markedISO8601Time[26];
+
+#if defined(ARDUINO_ARCH_SAMD)
+    RTCZero Logger::zero_sleep_rtc;
+#endif
 
 #endif

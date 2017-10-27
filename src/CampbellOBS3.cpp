@@ -28,12 +28,13 @@
 #include <Adafruit_ADS1015.h>
 
 // The constructor - need the power pin, the data pin, and the calibration info
-CampbellOBS3::CampbellOBS3(int powerPin, int dataPin, float A, float B, float C)
+CampbellOBS3::CampbellOBS3(int powerPin, int dataPin, float A, float B, float C, uint8_t i2cAddress)
   : Sensor(powerPin, dataPin, F("CampbellOBS3+"), OBS3_NUM_VARIABLES, OBS3_WARM_UP)
 {
-    _A = A;
-    _B = B;
-    _C = C;
+    _Avalue = A;
+    _Bvalue = B;
+    _Cvalue = C;
+    _i2cAddress = i2cAddress;
 }
 
 
@@ -48,7 +49,7 @@ bool CampbellOBS3::update(void)
 {
 
     // Start the Auxillary ADD
-    Adafruit_ADS1115 ads;     /* Use this for the 16-bit version */
+    Adafruit_ADS1115 ads(_i2cAddress);     /* Use this for the 16-bit version */
     ads.begin();
 
     // Check if the power is on, turn it on if not
@@ -70,14 +71,14 @@ bool CampbellOBS3::update(void)
     DBGM(F("ads.readADC_SingleEnded("), _dataPin, F("): "), ads.readADC_SingleEnded(_dataPin), F("\t\t"));
 
     // now convert bits into millivolts
-    // 3.3 is the voltage applied to the sensor (and its returun range)
+    // 3.3 is the voltage applied to the sensor (and its return range)
     // The 17585 is the default bit gain of the ADS1115
     voltage = (adcResult * 3.3) / 17585.0;
     DBGM("Voltage: ", String(voltage, 6), F("\t\t"));
 
-    calibResult = (_A * square (voltage)) + (_B * voltage) + _C;
+    calibResult = (_Avalue * sq(voltage)) + (_Bvalue * voltage) + _Cvalue;
     DBGM(F("Calibration Curve: "));
-    DBGM(_A, F("x^2 + "), _B, F("x + "), _C, F("\n"));
+    DBGM(_Avalue, F("x^2 + "), _Bvalue, F("x + "), _Cvalue, F("\n"));
     DBGM(F("calibResult: "), calibResult, F("\n"));
 
     sensorValues[OBS3_TURB_VAR_NUM] = calibResult;

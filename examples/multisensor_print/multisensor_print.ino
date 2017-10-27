@@ -14,10 +14,11 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
+#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
+
 // ---------------------------------------------------------------------------
 // Include the base required libraries
 // ---------------------------------------------------------------------------
-#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <Sodaq_DS3231.h>    // Controls the DS3231 Real Time Clock (RTC) built into the EnviroDIY Mayfly.
@@ -28,15 +29,15 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //   ie, pin locations, addresses, calibrations and related settings
 // ---------------------------------------------------------------------------
 // The name of this file
-const char *SKETCH_NAME = "modular_sensors.ino";
+const char *sketchName = "modular_sensors.ino";
 
 // Your logger's timezone.
-const int TIME_ZONE = -5;
+const int timeZone = -5;
 // Create a new sensor array instance
 VariableArray sensors;
 
 // ==========================================================================
-//    AOSong AM2315
+//    AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
 #include <AOSongAM2315.h>
 const int I2CPower = 22;  // switched sensor power is pin 22 on Mayfly
@@ -44,7 +45,7 @@ AOSongAM2315 am2315(I2CPower);
 
 
 // ==========================================================================
-//    AOSong DHT 11/21 (AM2301)/22 (AM2302)
+//    AOSong DHT 11/21 (AM2301)/22 (AM2302) Digital Humidity and Temperature
 // ==========================================================================
 #include <AOSongDHT.h>
 const int DHTPower = 22;  // switched sensor power is pin 22 on Mayfly
@@ -54,7 +55,7 @@ AOSongDHT dht(DHTPower, DHTPin, dhtType);
 
 
 // ==========================================================================
-//    Apogee SQ-212
+//    Apogee SQ-212 Photosynthetically Active Radiation (PAR) Sensor
 // ==========================================================================
 #include <ApogeeSQ212.h>
 const int SQ212Power = 22;  // switched sensor power is pin 22 on Mayfly
@@ -63,7 +64,7 @@ ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
 
 
 // ==========================================================================
-//    Bosch BME280
+//    Bosch BME280 Environmental Sensor (Temperature, Humidity, Pressure)
 // ==========================================================================
 #include <BoschBME280.h>
 uint8_t BMEi2c_addr = 0x76;  // The BME280 can be addressed either as 0x76 or 0x77
@@ -72,7 +73,7 @@ BoschBME280 bme280(I2CPower, BMEi2c_addr);
 
 
 // ==========================================================================
-//    CAMPBELL OBS 3 / OBS 3+
+//    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
 #include <CampbellOBS3.h>
 // Campbell OBS 3+ Low Range calibration in Volts
@@ -91,7 +92,7 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
 
 
 // ==========================================================================
-//    Decagon 5TM
+//    Decagon 5TM Soil Moisture Sensor
 // ==========================================================================
 #include <Decagon5TM.h>
 const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
@@ -101,7 +102,7 @@ Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
 
 
 // ==========================================================================
-//    Decagon CTD
+//    Decagon CTD Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
 #include <DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
@@ -112,7 +113,7 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 
 
 // ==========================================================================
-//    Decagon ES2
+//    Decagon ES2 Conductivity and Temperature Sensor
 // ==========================================================================
 #include <DecagonES2.h>
 const char *ES2SDI12address = "3";  // The SDI-12 Address of the ES2
@@ -122,17 +123,39 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data);
 
 
 // ==========================================================================
-//    Maxbotix HRXL
+//    Maxbotix HRXL Ultrasonic Range Finder
 // ==========================================================================
 #include <MaxBotixSonar.h>
+
+// Define a serial port for receiving data - in this case, using software serial
+// Because the standard software serial library uses interrupts that conflict
+// with several other libraries used within this program, we must use a
+// version of software serial that has been stripped of interrupts and define
+// the interrrupts for it using the enableInterrup library.
+
+// If enough hardware serial ports are available on your processor, you should
+// use one of those instead.  If the proper pins are avaialbe, AltSoftSerial
+// by Paul Stoffregen is also superior to SoftwareSerial for this sensor.
+// Neither hardware serial nor AltSoftSerial require any modifications to
+// deal with interrupt conflicts.
+
 const int SonarData = 11;     // data  pin
 const int SonarTrigger = -1;   // Trigger pin
 const int SonarPower = 22;   // excite (power) pin
-MaxBotixSonar sonar(SonarPower, SonarData, SonarTrigger) ;
+
+#if defined __AVR__
+#include <SoftwareSerial_ExtInts.h>  // for the stream communication
+SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
+MaxBotixSonar sonar(SonarPower, sonarSerial, SonarTrigger) ;
+
+#else
+HardwareSerial &sonarSerial = Serial1;
+MaxBotixSonar sonar(SonarPower, sonarSerial, SonarTrigger) ;
+#endif
 
 
 // ==========================================================================
-//    Maxim DS18 Temperature
+//    Maxim DS18 One Wire Temperature Sensor
 // ==========================================================================
 #include <MaximDS18.h>
 // OneWire Address [array of 8 hex characters]
@@ -150,19 +173,141 @@ MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
 
 
 // ==========================================================================
-//    EnviroDIY Mayfly
+//    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
-#include <MayflyOnboardSensors.h>
+#include <MaximDS3231.h>
+MaximDS3231 ds3231(1);
+
+
+// ==========================================================================
+//    EnviroDIY Mayfly Arduino-Based Board and Processor
+// ==========================================================================
+#include <ProcessorMetadata.h>
 const char *MFVersion = "v0.5";
-EnviroDIYMayfly mayfly(MFVersion) ;
+ProcessorMetadata mayfly(MFVersion) ;
+
+
+// ==========================================================================
+//    Yosemitech Y504 Dissolved Oxygen Sensor
+// ==========================================================================
+#include <YosemitechY504.h>
+byte y504modbusAddress = 0x04;  // The modbus address of the Y504
+const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
+const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
+const int y504NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+
+#if defined __AVR__
+// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+// const int modbusRx = 10;
+// const int modbusTx = 11;
+// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
+#include <AltSoftSerial.h>
+AltSoftSerial modbusSerial;
+YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePin, y504NumberReadings);
+#else
+HardwareSerial &modbusSerial = Serial1;
+YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePin, y504NumberReadings);
+#endif
+
+
+// ==========================================================================
+//    Yosemitech Y510 or Y511 Turbidity Sensor
+// ==========================================================================
+#include <YosemitechY510.h>
+byte y510modbusAddress = 0x0B;  // The modbus address of the Y510 or Y511
+// const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
+const int y510NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+
+#if defined __AVR__
+// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+// const int modbusRx = 10;
+// const int modbusTx = 11;
+// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
+// #include <AltSoftSerial.h>
+// AltSoftSerial modbusSerial;
+YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePin, y510NumberReadings);
+#else
+// HardwareSerial &modbusSerial = Serial1;
+YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePin, y510NumberReadings);
+#endif
+
+
+// ==========================================================================
+//    Yosemitech Y514 Chlorophyll Sensor
+// ==========================================================================
+#include <YosemitechY514.h>
+byte y514modbusAddress = 0x14;  // The modbus address of the Y514
+// const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
+const int y514NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+
+#if defined __AVR__
+// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+// const int modbusRx = 10;
+// const int modbusTx = 11;
+// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
+// #include <AltSoftSerial.h>
+// AltSoftSerial modbusSerial;
+YosemitechY514 y514(y514modbusAddress, modbusPower, modbusSerial, max485EnablePin, y514NumberReadings);
+#else
+// HardwareSerial &modbusSerial = Serial1;
+YosemitechY514 y514(y514modbusAddress, modbusPower, modbusSerial, max485EnablePin, y514NumberReadings);
+#endif
+
+
+// ==========================================================================
+//    Yosemitech Y520 Conductivity Sensor
+// ==========================================================================
+#include <YosemitechY520.h>
+byte y520modbusAddress = 0x20;  // The modbus address of the Y520
+// const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
+const int y520NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+
+#if defined __AVR__
+// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+// const int modbusRx = 10;
+// const int modbusTx = 11;
+// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
+// #include <AltSoftSerial.h>
+// AltSoftSerial modbusSerial;
+YosemitechY520 y520(y520modbusAddress, modbusPower, modbusSerial, max485EnablePin, y520NumberReadings);
+#else
+// HardwareSerial &modbusSerial = Serial1;
+YosemitechY520 y520(y520modbusAddress, modbusPower, modbusSerial, max485EnablePin, y520NumberReadings);
+#endif
+
+
+// ==========================================================================
+//    Yosemitech Y532 pH
+// ==========================================================================
+#include <YosemitechY532.h>
+byte y532modbusAddress = 0x32;  // The modbus address of the Y532
+// const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
+// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
+const int y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
+
+#if defined __AVR__
+// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+// const int modbusRx = 10;
+// const int modbusTx = 11;
+// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
+// #include <AltSoftSerial.h>
+// AltSoftSerial modbusSerial;
+YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePin, y532NumberReadings);
+#else
+// HardwareSerial &modbusSerial = Serial1;
+YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePin, y532NumberReadings);
+#endif
 
 // ---------------------------------------------------------------------------
 // The array that contains all valid variables
 // ---------------------------------------------------------------------------
 Variable *variableList[] = {
-    new EnviroDIYMayfly_Batt(&mayfly),
-    new EnviroDIYMayfly_FreeRam(&mayfly),
-    new EnviroDIYMayfly_Temp(&mayfly),
+    new ProcessorMetadata_Batt(&mayfly),
+    new ProcessorMetadata_FreeRam(&mayfly),
+    new MaximDS3231_Temp(&ds3231),
     new ApogeeSQ212_PAR(&SQ212),
     new MaxBotixSonar_Range(&sonar),
     new Decagon5TM_Ea(&fivetm),
@@ -187,6 +332,18 @@ Variable *variableList[] = {
     new AOSongAM2315_Temp(&am2315),
     new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
+    new YosemitechY504_DOpct(&y504),
+    new YosemitechY504_Temp(&y504),
+    new YosemitechY504_DOmgL(&y504),
+    new YosemitechY510_Turbidity(&y510),
+    new YosemitechY510_Temp(&y510),
+    new YosemitechY514_Chlorophyll(&y514),
+    new YosemitechY514_Temp(&y514),
+    new YosemitechY520_Cond(&y520),
+    new YosemitechY520_Temp(&y520),
+    new YosemitechY532_pH(&y532),
+    new YosemitechY532_Temp(&y532),
+    new YosemitechY532_Voltage(&y532),
     // new YOUR_variableName_HERE(&)
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
@@ -195,9 +352,9 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // ---------------------------------------------------------------------------
 // Board setup info
 // ---------------------------------------------------------------------------
-const long SERIAL_BAUD = 57600;  // Serial port baud rate
-const int GREEN_LED = 8;  // Pin for the green LED
-const int RED_LED = 9;  // Pin for the red LED
+const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const int greenLED = 8;  // Pin for the green LED
+const int redLED = 9;  // Pin for the red LED
 
 
 // ---------------------------------------------------------------------------
@@ -205,17 +362,17 @@ const int RED_LED = 9;  // Pin for the red LED
 // ---------------------------------------------------------------------------
 
 // Flashes to Mayfly's LED's
-void greenredflash(int numFlash = 4)
+void greenredflash(int numFlash = 4, int rate = 75)
 {
   for (int i = 0; i < numFlash; i++) {
-    digitalWrite(GREEN_LED, HIGH);
-    digitalWrite(RED_LED, LOW);
-    delay(75);
-    digitalWrite(GREEN_LED, LOW);
-    digitalWrite(RED_LED, HIGH);
-    delay(75);
+    digitalWrite(greenLED, HIGH);
+    digitalWrite(redLED, LOW);
+    delay(rate);
+    digitalWrite(greenLED, LOW);
+    digitalWrite(redLED, HIGH);
+    delay(rate);
   }
-  digitalWrite(RED_LED, LOW);
+  digitalWrite(redLED, LOW);
 }
 
 // Helper function to get the current date/time from the RTC
@@ -224,7 +381,7 @@ long currentepochtime = 0;
 uint32_t getNow()
 {
   currentepochtime = rtc.now().getEpoch();
-  currentepochtime += TIME_ZONE*3600;
+  currentepochtime += timeZone*3600;
   return currentepochtime;
 }
 
@@ -237,24 +394,24 @@ String getDateTime_ISO8601(void)
   //Convert it to a String
   dt.addToString(dateTimeStr);
   dateTimeStr.replace(F(" "), F("T"));
-  String tzString = String(TIME_ZONE);
-  if (-24 <= TIME_ZONE && TIME_ZONE <= -10)
+  String tzString = String(timeZone);
+  if (-24 <= timeZone && timeZone <= -10)
   {
       tzString += F(":00");
   }
-  else if (-10 < TIME_ZONE && TIME_ZONE < 0)
+  else if (-10 < timeZone && timeZone < 0)
   {
       tzString = tzString.substring(0,1) + F("0") + tzString.substring(1,2) + F(":00");
   }
-  else if (TIME_ZONE == 0)
+  else if (timeZone == 0)
   {
       tzString = F("Z");
   }
-  else if (0 < TIME_ZONE && TIME_ZONE < 10)
+  else if (0 < timeZone && timeZone < 10)
   {
       tzString = "+0" + tzString + F(":00");
   }
-  else if (10 <= TIME_ZONE && TIME_ZONE <= 24)
+  else if (10 <= timeZone && timeZone <= 24)
   {
       tzString = "+" + tzString + F(":00");
   }
@@ -269,21 +426,31 @@ String getDateTime_ISO8601(void)
 void setup()
 {
     // Start the primary serial connection
-    Serial.begin(SERIAL_BAUD);
+    Serial.begin(serialBaud);
+
+    // Start the AltSoftSerial stream for the modbus sensors
+    modbusSerial.begin(9600);
+
+    // Start the SoftwareSerial stream for the sonar
+    sonarSerial.begin(9600);
+    // Allow interrupts for software serial
+    #if defined SoftwareSerial_ExtInts_h
+    enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+    #endif
 
     // Start the Real Time Clock
     rtc.begin();
     delay(100);
 
     // Set up pins for the LED's
-    pinMode(GREEN_LED, OUTPUT);
-    pinMode(RED_LED, OUTPUT);
+    pinMode(greenLED, OUTPUT);
+    pinMode(redLED, OUTPUT);
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
     // Print a start-up note to the first serial port
     Serial.print(F("Now running "));
-    Serial.println(SKETCH_NAME);
+    Serial.println(sketchName);
     Serial.print(F("Current Mayfly RTC time is: "));
     Serial.println(getDateTime_ISO8601());
     Serial.print(F("There are "));
@@ -313,7 +480,7 @@ void loop()
     // One second warm-up time
     delay(1000);
     // Turn on the LED to show we're taking a reading
-    digitalWrite(GREEN_LED, HIGH);
+    digitalWrite(greenLED, HIGH);
     // Update the sensor value(s)
     sensors.updateAllSensors();
     // Immediately cut Power to the sensors;
@@ -325,7 +492,7 @@ void loop()
     Serial.print(F("In CSV Format:  "));
     Serial.println(sensors.generateSensorDataCSV());
     // Turn off the LED to show we're done with the reading
-    digitalWrite(GREEN_LED, LOW);
+    digitalWrite(greenLED, LOW);
     // Print a to close it off
     Serial.println(F("------------------------------------------\n"));
 

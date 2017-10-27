@@ -30,7 +30,10 @@
 class MaxBotixSonar : public Sensor
 {
 public:
-    MaxBotixSonar(int powerPin, int dataPin, int triggerPin = -1);
+    MaxBotixSonar(int powerPin, Stream* stream, int triggerPin = -1);
+    MaxBotixSonar(int powerPin, Stream& stream, int triggerPin = -1);
+
+    String getSensorLocation(void) override;
 
     SENSOR_STATUS setup(void) override;
 
@@ -38,6 +41,7 @@ public:
 
 private:
     int _triggerPin;
+    Stream* _stream;
 };
 
 

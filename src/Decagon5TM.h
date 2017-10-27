@@ -88,7 +88,7 @@ class Decagon5TM_Ea : public Variable
 public:
     Decagon5TM_Ea(Sensor *parentSense, String customVarCode = "")
      : Variable(parentSense, TM_EA_VAR_NUM,
-                F("permittivity"), F("Farad per Meter"),
+                F("permittivity"), F("faradPerMeter"),
                 TM_EA_RESOLUTION,
                 F("SoilEa"), customVarCode)
     {}
