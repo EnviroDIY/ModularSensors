@@ -111,21 +111,21 @@ public:
             #endif
 
             // Send the request to the modem stream
-            modem.dumpBuffer(modem.stream);
-            streamEnviroDIYRequest(modem.stream);
-            modem.stream->flush();  // wait for sending to finish
+            modem.dumpBuffer(modem._client);
+            streamEnviroDIYRequest(modem._client);
+            modem._client->flush();  // wait for sending to finish
 
             uint32_t start_timer;
             if (millis() < 4294957296) start_timer = millis();  // In case of roll-over
             else start_timer = 0;
-            while ((millis() - start_timer) < 10000L && modem.stream->available() < 12)
+            while ((millis() - start_timer) < 10000L && modem._client->available() < 12)
             {delay(10);}
 
             // Read only the first 12 characters of the response
             // We're only reading as far as the http code, anything beyond that
             // we don't care about so we're not reading to save on total
             // data used for transmission.
-            did_respond = modem.stream->readBytes(response_buffer, 12);
+            did_respond = modem._client->readBytes(response_buffer, 12);
 
             // Close the TCP/IP connection as soon as the first 12 characters are read
             // We don't need anything else and stoping here should save data use.
@@ -143,7 +143,7 @@ public:
                 responseCode_char[i] = response_buffer[i+9];
             }
             responseCode = atoi(responseCode_char);
-            // modem.dumpBuffer(modem.stream);
+            // modem.dumpBuffer(modem._client);
         }
         else responseCode=504;
 
@@ -169,7 +169,7 @@ public:
             digitalWrite(_ledPin, HIGH);
 
             // Turn on the modem to let it start searching for the network
-            modem.on();
+            modem.wake();
 
             // Wake up all of the sensors
             // I'm not doing as part of sleep b/c it may take up to a second or
@@ -196,7 +196,7 @@ public:
                 modem.disconnectNetwork();
             }
 
-            // Turn on the modem off
+            // Turn the modem off
             modem.off();
 
             // Create a csv data record and save it to the log file

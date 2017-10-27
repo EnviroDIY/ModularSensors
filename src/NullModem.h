@@ -49,6 +49,7 @@ public:
   bool init() { return false; }
   bool testAT(unsigned long timeout = 10000L) { return false; }
   int getSignalQuality() { return 0; }
+  bool isNetworkConnected() { return false; }
   bool waitForNetwork(unsigned long timeout = 60000L) { return false; }
   bool networkConnect(const char* ssid, const char* pwd) { return false; }
   bool networkDisconnect() { return false; }

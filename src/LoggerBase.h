@@ -664,7 +664,7 @@ public:
         // Turn on the modem to let it start searching for the network
         #if defined(USE_TINY_GSM)
             // Turn on the modem
-            modem.on();
+            modem.wake();
             // Connect to the network to make sure we have signal
             modem.connectNetwork();
         #endif
@@ -674,13 +674,13 @@ public:
         {
             PRINTOUT(F("------------------------------------------\n"));
             // Wake up all of the sensors
-            PRINTOUT(F("Waking sensors...\n"));
+            // PRINTOUT(F("Waking sensors...\n"));
             sensorsWake();
             // Update the values from all attached sensors
-            PRINTOUT(F("  Updating sensor values...\n"));
+            // PRINTOUT(F("  Updating sensor values...\n"));
             updateAllSensors();
             // Immediately put sensors to sleep to save power
-            PRINTOUT(F("  Putting sensors back to sleep...\n"));
+            // PRINTOUT(F("  Putting sensors back to sleep...\n"));
             sensorsSleep();
             // Print out the current logger time
             PRINTOUT(F("Current logger time is "));
@@ -692,18 +692,11 @@ public:
             #endif
             PRINTOUT(F("    -----------------------\n"));
 
+            // Specially highlight the modem signal quality in the debug mode
             #if defined(USE_TINY_GSM)
-                // Print out the modem connection strength
-                int signalQual = modem._modem->getSignalQuality();
                 PRINTOUT(F("Current modem signal is "));
-                PRINTOUT(signalQual);
-                PRINTOUT(F(" ("));
-                #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
-                    PRINTOUT(modem.getPctFromRSSI(signalQual));
-                #else
-                    PRINTOUT(modem.getPctFromCSQ(signalQual));
-                #endif
-                PRINTOUT(F("%)\n"));
+                PRINTOUT(modem.getSignalPercent());
+                PRINTOUT(F("%\n"));
             #endif
             delay(5000);
         }
@@ -772,7 +765,7 @@ public:
             // Synchronize the RTC with NIST
             PRINTOUT(F("Attempting to synchronize RTC with NIST\n"));
             // Turn on the modem
-            modem.on();
+            modem.wake();
             // Connect to the network
             if (modem.connectNetwork())
             {
@@ -831,7 +824,7 @@ public:
         if(_sleep){systemSleep();}
     }
 
-    // Publie variables
+    // Public variables
     // Time stamps - want to set them at a single time and carry them forward
     static long markedEpochTime;
     // Create a modem instance

@@ -201,7 +201,7 @@ void setup()
     Serial.println(Logger::formatDateTime_ISO8601(Logger::getNowEpoch()));
 
     // Turn on the modem
-    logger1min.modem.on();
+    logger1min.modem.wake();
     // Connect to the network
     if (logger1min.modem.connectNetwork())
     {
@@ -284,7 +284,7 @@ void loop()
     if (Logger::markedEpochTime % 86400 == 0)
     {
         // Turn on the modem
-        logger1min.modem.on();
+        logger1min.modem.wake();
         // Connect to the network
         if (logger1min.modem.connectNetwork())
         {
