@@ -792,6 +792,7 @@ Here are some helpful links for more information about the number of serial port
 #### AtMega1284p ([EnviroDIY Mayfly](https://envirodiy.org/mayfly/), Sodaq Mbili, Mighty 1284)
 The Mayfly _is_ the test board for this library.  _Everything_ is designed to work with this processor.
 
+- An external DS3231 or DS3232 RTC is required.
 - There is a single SPI port on pins 14 (MISO), 15 (SCK), and 13 (MOSI) on a Mayfly/Mbili or pins 6 (MISO), 7 (SCK), and 5 (MOSI) on a Mighty 1284 or other AtMega1284p.  Chip select/slave select is pin 12 on a Mayfly and card detect can be set to pin 18 with solder jumper 10.  CS/SS and CD pins may vary for other boards.
 - There is a single I2C (Wire) interface on pins 17 (SDA) and 16 (SCL).
 - This processor has two built-in hardware serial ports, Serial and Serial1
@@ -803,9 +804,9 @@ The Mayfly _is_ the test board for this library.  _Everything_ is designed to wo
 ___
 
 #### AtSAMD21 (Arduino Zero, Adafruit Feather M0, Sodaq Autonomo)
-Not yet fully supported, but support is planned.
+Fully supported
 
-- This processor has an internal real time clock (RTC) and does not require a DS3231 to be installed.  The built-in RTC is not as accurate as the DS3231, however, and should be synchronized more frequently to keep the time correct.
+- This processor has an internal real time clock (RTC) and does not require a DS3231 to be installed.  The built-in RTC is not as accurate as the DS3231, however, and should be synchronized more frequently to keep the time correct.  The processor clock will also reset if the system battery dies because unlike most external RTC's, there is no coin battery backing up the clock.  At this time, the AtSAMD21 is only supported using the internal clock, but support with a more accurate external RTC is planned.
 - This processor has one hardware serial port, USBSerial, which can _only_ be used for USB communication with a computer
 - Most variants have 2 other hardware serial ports (Serial on pins 30 (TX) and 31 (RX) and Serial1 on pins 0 (TX) and 1 (RX)) configured by default.
     - On an Arduino Zero Serial goes to the debug port.
@@ -823,6 +824,7 @@ ___
 #### AtMega2560 (Arduino Mega)
 Should be fully functional, but untested.
 
+- An external DS3231 or DS3232 RTC is required.
 - There is a single SPI port on pins 50 (MISO), 52 (SCK), and 51 (MOSI).  Chip select/slave select is on pin 53.
 - There is a single I2C (Wire) interface on pins 20 (SDA) and 21 (SCL).
 - This processor has 4 built-in hardware serial ports Serial, which is connected to the FTDI chip for USB communication with the computer, Serial1 on pins 19 (RX) and 18 (TX), Serial2 on pins 17 (RX) and 16 (TX), and Serial3 on pins 15 (RX) and 14 (TX).
@@ -833,6 +835,7 @@ ___
 #### AtMega644p (Sanguino)
 Should be fully functional, but untested.
 
+- An external DS3231 or DS3232 RTC is required.
 - This processor has two built-in hardware serial ports, Serial and Serial1.  On most boards, Serial is connected to the FDTI chip for USB communication with the computer.
 - There is a single I2C (Wire) interface on pins 17 (SDA) and 16 (SCL).
 - There is a single SPI port on pins 6 (MISO), 7 (SCK), and 5 (MOSI).  Chip select/slave select and card detect pins vary by board.
@@ -843,6 +846,7 @@ ___
 #### AtMega328p (Arduino Uno, Duemilanove, LilyPad, Mini, Seeeduino Stalker, etc)
 All functions are supported, but processor doesn't have sufficient power to use all of the functionality of the library.  You will only be able to use a small number of sensors at one time and may not be able to log data.
 
+- An external DS3231 or DS3232 RTC is required.
 - There is a singe SPI ports on pins 12 (MISO), 13 (SCK), and 11 (MOSI).  Chip select/slave select is pin 10 on an Uno.  SS/CS and CD pins may vary for other boards.
 - There is a single I2C (Wire) interface on pins A4 (SDA) and A5 (SCL).
 - This processor only has a single hardware serial port, Serial, which is connected to the FTDI chip for USB communication with the computer.
@@ -853,6 +857,7 @@ ___
 #### AtMega32u4 (Arduino Leonardo/Micro, Adafruit Flora/Feather, etc)
 All functions are supported, but processor doesn't have sufficient power to use all of the functionality of the library.  You will only be able to use a small number of sensors at one time and may not be able to log data.
 
+- An external DS3231 or DS3232 RTC is required.
 - There is a single SPI port on pins 14 (MISO), 15 (SCK), and 16 (MOSI).  Chip select/slave select and card detect pins vary by board.
 - There is a single I2C (Wire) interface on pins 2 (SDA) and 3 (SCL).
 - This processor has one hardware serial port, Serial, which can _only_ be used for USB communication with a computer
