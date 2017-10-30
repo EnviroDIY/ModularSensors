@@ -131,8 +131,8 @@ const char *UUIDs[] =                                                      // UU
 // Device Connection Options and WebSDL Endpoints for POST requests
 // ---------------------------------------------------------------------------
 HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
-const int modemDTRPin = 23;  // Modem DTR Pin (Data Terminal Ready - used for sleep) (-1 if unconnected)
-const int modemCTSPin = 19;   // Modem CTS Pin (Clear to Send) (-1 if unconnected)
+const int modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
+const int modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
 const int modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (else -1)
 
 DTRSleepType ModemSleepMode = held;  // How the modem is put to sleep
@@ -205,7 +205,7 @@ void setup()
     EnviroDIYLogger.setAlertPin(greenLED);
 
     // Set up the modem
-    EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, apn);
+    EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
 
     // Set up the connection with EnviroDIY
     EnviroDIYLogger.setToken(registrationToken);

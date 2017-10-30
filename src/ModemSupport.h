@@ -154,48 +154,48 @@ public:
 public:
     void setupModem(Stream *modemStream,
                     int vcc33Pin,
-                    int status_CTS_pin,
-                    int onoff_DTR_pin,
+                    int modemStatusPin,
+                    int modemSleepRqPin,
                     DTRSleepType sleepType,
                     const char *APN)
     {
         _APN = APN;
-        init(modemStream, vcc33Pin, status_CTS_pin, onoff_DTR_pin, sleepType);
+        init(modemStream, vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
     void setupModem(Stream &modemStream,
                     int vcc33Pin,
-                    int status_CTS_pin,
-                    int onoff_DTR_pin,
+                    int modemStatusPin,
+                    int modemSleepRqPin,
                     DTRSleepType sleepType,
                     const char *APN)
     {
         _APN = APN;
-        init(&modemStream, vcc33Pin, status_CTS_pin, onoff_DTR_pin, sleepType);
+        init(&modemStream, vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
 
     void setupModem(Stream *modemStream,
                     int vcc33Pin,
-                    int status_CTS_pin,
-                    int onoff_DTR_pin,
+                    int modemStatusPin,
+                    int modemSleepRqPin,
                     DTRSleepType sleepType,
                     const char *ssid,
                     const char *pwd)
     {
         _ssid = ssid;
         _pwd = pwd;
-        init(modemStream, vcc33Pin, status_CTS_pin, onoff_DTR_pin, sleepType);
+        init(modemStream, vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
     void setupModem(Stream &modemStream,
                     int vcc33Pin,
-                    int status_CTS_pin,
-                    int onoff_DTR_pin,
+                    int modemStatusPin,
+                    int modemSleepRqPin,
                     DTRSleepType sleepType,
                     const char *ssid,
                     const char *pwd)
     {
         _ssid = ssid;
         _pwd = pwd;
-        init(&modemStream, vcc33Pin, status_CTS_pin, onoff_DTR_pin, sleepType);
+        init(&modemStream, vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
 
     int getSignalRSSI(void)
@@ -405,7 +405,7 @@ private:
     const char *_pwd;
 
 private:
-    void init(Stream *modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin,
+    void init(Stream *modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin,
               DTRSleepType sleepType)
     {
         // Set up the method for putting the modem to sleep
@@ -416,44 +416,44 @@ private:
             {
                 DBG(F("Setting"), F(MODEM_NAME),
                     F("power on pin"), vcc33Pin,
-                    F("status on pin"), status_CTS_pin,
-                    F("and on/off via 2.5 second pulse on pin"), onoff_DTR_pin, '.');
+                    F("status on pin"), modemStatusPin,
+                    F("and on/off via 2.5 second pulse on pin"), modemSleepRqPin, '.');
                 static pulsedOnOff pulsed;
                 modemOnOff = &pulsed;
-                pulsed.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
+                pulsed.init(vcc33Pin, modemSleepRqPin, modemStatusPin);
                 break;
             }
             case held:
             {
                 DBG(F("Setting"), F(MODEM_NAME),
                     F("power on pin"), vcc33Pin,
-                    F("status on pin"), status_CTS_pin,
-                    F("and on/off by holding pin"), onoff_DTR_pin, F("high."));
+                    F("status on pin"), modemStatusPin,
+                    F("and on/off by holding pin"), modemSleepRqPin, F("high."));
                 static heldOnOff held;
                 modemOnOff = &held;
-                held.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
+                held.init(vcc33Pin, modemSleepRqPin, modemStatusPin);
                 break;
             }
             case reverse:
             {
                 DBG(F("Setting"), F(MODEM_NAME),
                     F("power on pin"), vcc33Pin,
-                    F("status on pin"), status_CTS_pin,
-                    F("and on/off by holding pin"), onoff_DTR_pin, F("low."));
+                    F("status on pin"), modemStatusPin,
+                    F("and on/off by holding pin"), modemSleepRqPin, F("low."));
                 static reverseOnOff reverse;
                 modemOnOff = &reverse;
-                reverse.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
+                reverse.init(vcc33Pin, modemSleepRqPin, modemStatusPin);
                 break;
             }
             default:
             {
                 DBG(F("Setting"), F(MODEM_NAME),
                     F("power on pin"), vcc33Pin,
-                    F("status on pin"), status_CTS_pin,
+                    F("status on pin"), modemStatusPin,
                     F("and no on/off pin."));
                 static heldOnOff held;
                 modemOnOff = &held;
-                held.init(vcc33Pin, -1, status_CTS_pin);
+                held.init(vcc33Pin, -1, modemStatusPin);
                 break;
             }
         }

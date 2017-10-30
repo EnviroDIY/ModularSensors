@@ -32,7 +32,7 @@ public:
     ModemOnOff();
 
     // Initializes the instance
-    virtual void init(int vcc33Pin, int onoff_DTR_pin, int status_CTS_pin);
+    virtual void init(int vcc33Pin, int modemSleepRqPin, int modemStatusPin);
 
     virtual bool isOn(void);
     virtual bool on(void) = 0;
@@ -40,8 +40,8 @@ public:
 
 protected:
     int8_t _vcc33Pin;
-    int8_t _onoff_DTR_pin;
-    int8_t _status_CTS_pin;
+    int8_t _modemSleepRqPin;
+    int8_t _modemStatusPin;
 
     void powerOn(void);
     void powerOff(void);
