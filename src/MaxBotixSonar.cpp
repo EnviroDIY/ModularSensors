@@ -72,10 +72,10 @@ bool MaxBotixSonar::update(void)
     // TempI
 
     DBGM(F("Parsing Header Lines\n"));
-    for(int i=0; i < 6; i++);
+    for(int i = 0; i < 6; i++)
     {
         String headerLine = _stream->readStringUntil('\r');
-        DBGM(headerLine, F("\n"));
+        DBGM(i, F(" - "), headerLine, F("\n"));
     }
 
     bool stringComplete = false;
