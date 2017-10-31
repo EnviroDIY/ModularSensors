@@ -556,7 +556,7 @@ public:
         if (!sd.begin(_SDCardPin, SPI_FULL_SPEED))
         {
             PRINTOUT(F("Error: SD card failed to initialize or is missing.\n"));
-            PRINTOUT(F("Data will not be saved!.\n"));
+            PRINTOUT(F("Data will not be saved!\n"));
         }
         else  // skip everything else if there's no SD card, otherwise it might hang
         {
