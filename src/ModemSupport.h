@@ -26,10 +26,13 @@
   #define TINY_GSM_YIELD() { delay(3);}
   #define TINY_GSM_RX_BUFFER 14  // So we never get much data
   #include <TinyGsmClient.h>
-#else
-  #include <NullModem.h>  // purely to help me debug compilation issues
-  #define DBG(...)
+// #else
+//   #include <NullModem.h>  // purely to help me debug compilation issues
+//   #define USE_TINY_GSM
+//   #define DBG(...)
 #endif
+
+#if defined(USE_TINY_GSM)
 
 // Give the modems names
 #if defined(TINY_GSM_MODEM_SIM800)
@@ -115,8 +118,6 @@ public:
 
     bool update(void) override
     {
-        // #if defined(USE_TINY_GSM)
-
         // Clear values before starting loop
         clearValues();
 
@@ -134,7 +135,7 @@ public:
             IPAddress ip(129, 6, 15, 30);
             connect(ip, 37);  // XBee is faster with an ip address
             _client->print(F("Hi!"));  // Need to send something before connection is made
-            delay(75); // Need this delay!  Can get away with 50, but 100 is safer.
+            delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
         #endif
 
         // Get signal quality
@@ -253,7 +254,7 @@ public:
         #if defined(TINY_GSM_MODEM_HAS_WIFI)
         if (_ssid)
         {
-            DBG(F("\nConnecting to WiFi network..."));
+            DBG(F("Connecting to WiFi network..."));
             if (!_modem->waitForNetwork(2000L)){
                 DBG("... Connection failed.  Resending credentials...");
                 _modem->networkConnect(_ssid, _pwd);
@@ -302,34 +303,24 @@ public:
     int connect(const char *host, uint16_t port)
     {
         DBG("Connecting to", host, "...");
-    // #if defined(USE_TINY_GSM)
         int ret_val = _client->connect(host, port);
         if (ret_val) DBG("... Success!");
         else DBG("... Connection failed.");
         return ret_val;
-    // #else
-    //     return 0;
-    // #endif
     }
 
     int connect(IPAddress ip, uint16_t port)
     {
         DBG("Connecting to", ip, "...");
-    // #if defined(USE_TINY_GSM)
         int ret_val = _client->connect(ip, port);
         if (ret_val) DBG("... Success!");
         else DBG("... Connection failed.");
         return ret_val;
-    // #else
-    //     return 0;
-    // #endif
     }
 
     void stop(void)
     {
-    // #if defined(USE_TINY_GSM)
         _client->stop();
-    // #endif
         DBG(F("Closed TCP/IP."));
     }
 
@@ -362,7 +353,7 @@ public:
         // XBee needs to send something before the connection is actually made
         #if defined(TINY_GSM_MODEM_XBEE)
         _client->print(F("Hi!"));
-        delay(75); // Need this delay!  Can get away with 50, but 100 is safer.
+        delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
         #endif
 
         // Wait up to 5 seconds for a response
@@ -395,10 +386,8 @@ public:
 public:
     ModemOnOff *modemOnOff;
 
-// #if defined(USE_TINY_GSM)
     TinyGsm *_modem;
     TinyGsmClient *_client;
-// #endif
 
 private:
     const char *_APN;
@@ -459,32 +448,26 @@ private:
             }
         }
 
-        // #if defined(USE_TINY_GSM)
+        // Initialize the modem
+        DBG(F("Initializing"), F(MODEM_NAME));
+        static TinyGsm modem(*modemStream);
+        _modem = &modem;
+        static TinyGsmClient client(modem);
+        _client = &client;
 
-            // Initialize the modem
-            DBG(F("Initializing"), F(MODEM_NAME));
-            static TinyGsm modem(*modemStream);
-            _modem = &modem;
-            static TinyGsmClient client(modem);
-            _client = &client;
-
-            // Check if the modem is on; turn it on if not
-            if(!modemOnOff->isOn()) modemOnOff->on();
-            // Check again if the modem is on.  Only "begin" if it responded.
-            if(modemOnOff->isOn())
-            {
-                _modem->begin();
-                #if defined(TINY_GSM_MODEM_XBEE)
-                    _modem->setupPinSleep();
-                #endif
-                modemOnOff->off();
-            }
-            else DBG(F("\nModem failed to turn on!"));
-            DBG(F("   ... Complete!"));
-
-        // #else
-            // stream = modemStream;
-        // #endif
+        // Check if the modem is on; turn it on if not
+        if(!modemOnOff->isOn()) modemOnOff->on();
+        // Check again if the modem is on.  Only "begin" if it responded.
+        if(modemOnOff->isOn())
+        {
+            _modem->begin();
+            #if defined(TINY_GSM_MODEM_XBEE)
+                _modem->setupPinSleep();
+            #endif
+            modemOnOff->off();
+        }
+        else DBG(F("\nModem failed to turn on!"));
+        DBG(F("   ... Complete!"));
     }
 
     // Helper to get approximate RSSI from CSQ (assuming no noise)
@@ -549,5 +532,7 @@ public:
                 F("signalPercent"), customVarCode)
     {}
 };
+
+#endif /* USE_TINY_GSM */
 
 #endif /* ModemSupport_h */

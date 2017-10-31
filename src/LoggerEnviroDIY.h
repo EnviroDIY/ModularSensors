@@ -91,7 +91,7 @@ public:
         stream->print(String(generateSensorDataJSON()));
     }
 
-
+#if defined(USE_TINY_GSM)
     // Public function to send data
     int postDataEnviroDIY(void)
     {
@@ -111,7 +111,6 @@ public:
             #endif
 
             // Send the request to the modem stream
-            _modem.dumpBuffer(_modem._client);
             streamEnviroDIYRequest(_modem._client);
             _modem._client->flush();  // wait for sending to finish
 
@@ -143,7 +142,6 @@ public:
                 responseCode_char[i] = response_buffer[i+9];
             }
             responseCode = atoi(responseCode_char);
-            // _modem.dumpBuffer(_modem._client);
         }
         else responseCode=504;
 
@@ -189,7 +187,7 @@ public:
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
                 if (_numReadings % 288 == 0)
                 {
-                    syncRTClock();
+                    syncRTClock(_modem.getNISTTime());
                 }
 
                 // Disconnect from the network
@@ -211,7 +209,7 @@ public:
         // Sleep
         if(_sleep){systemSleep();}
     }
-
+#endif /* USE_TINY_GSM */
 
 private:
     // Tokens and UUID's for EnviroDIY

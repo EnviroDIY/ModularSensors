@@ -129,12 +129,14 @@ public:
         DBGLOG(F("Pin "), _ledPin, F(" set for alerts\n"));
     }
 
+#if defined(USE_TINY_GSM)
     // Adds a loggerModem objct to the logger
     // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
     void attachModem(loggerModem &modem)
     {
         _modem = modem;
     }
+#endif /* USE_TINY_GSM */
 
 
     // ===================================================================== //
@@ -207,14 +209,10 @@ public:
         return formatDateTime_ISO8601(dt);
     }
 
-    // This syncronizes the real time clock to NIST
-    bool syncRTClock(void)
+    // This syncronizes the real time clock
+    bool syncRTClock(uint32_t nist)
     {
         uint32_t start_millis = millis();
-
-        // Get the time stamp from NIST and adjust it to the correct time zone
-        // for the logger.
-        uint32_t nist = _modem.getNISTTime();
 
         // If the timestamp returns zero, just exit
         if  (nist == 0)
@@ -674,7 +672,7 @@ public:
             _modem.wake();
             // Connect to the network to make sure we have signal
             _modem.connectNetwork();
-        #endif
+        #endif  // USE_TINY_GSM
 
         // Update the sensors and print out data 25 times
         for (uint8_t i = 0; i < 25; i++)
@@ -704,7 +702,7 @@ public:
                 PRINTOUT(F("Current modem signal is "));
                 PRINTOUT(_modem.getSignalPercent());
                 PRINTOUT(F("%\n"));
-            #endif
+            #endif  // USE_TINY_GSM
             delay(5000);
         }
 
@@ -713,7 +711,7 @@ public:
             _modem.disconnectNetwork();
             // Turn off the modem
             _modem.off();
-        #endif
+        #endif  // USE_TINY_GSM
     }
 
     // This checks to see if you want to enter debug mode
@@ -777,13 +775,13 @@ public:
             if (_modem.connectNetwork())
             {
                 delay(5000);
-                syncRTClock();
+                syncRTClock(_modem.getNISTTime());
                 // Disconnect from the network
                 _modem.disconnectNetwork();
             }
             // Turn off the modem
             _modem.off();
-        #endif
+        #endif  // USE_TINY_GSM
 
         // Set up the sensors
         setupSensors();
@@ -867,8 +865,11 @@ protected:
     bool _sleep;
     int _ledPin;
 
+
+#if defined(USE_TINY_GSM)
     // The internal modem instance
     loggerModem _modem;
+#endif  // USE_TINY_GSM
 };
 
 // Initialize the static timezone

@@ -251,7 +251,7 @@ A note about timezones:  It is possible to create multiple logger objects in you
 - **log()** - Logs data, must be the entire content of the loop function.
 
 ### <a name="Modem"></a>Functions within ModemSupport/TinyGSM:
-The "ModemSupport" bit of this library is essentially a wrapper for [TinyGSM](https://github.com/EnviroDIY/TinyGSM), to interface with the modem.  To make this work, you must add one of these lines _to the very top of your sketch_:
+The "ModemSupport" bit of this library is essentially a wrapper for [TinyGSM](https://github.com/EnviroDIY/TinyGSM), to interface with the modem.  To make this work, _you must add one of these lines to the very top of your sketch_:
 
 ```cpp
 // Select your modem chip, comment out all of the others
@@ -274,9 +274,9 @@ After defining your modem, set it up using one of these two commands, depending 
 - The modemStatusPin is the pin that indicates whether the modem is turned on and it is clear to send data.  If you use -1, the modem is assumed to always be ready.
 - The modemSleepRqPin is the _pin_ used to put the modem to sleep or to wake it up.
 - The ModemSleepType controls _how_ the modem is put to sleep between readings.
-    - Use "held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
-    - Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
-    - Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
+    - Use "held" if the SleepRq pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
+    - Use "pulsed" if the SleepRq pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
+    - Use "reverse" if the SleepRq pin is held LOW to keep the modem awake, as with all XBees.
     - Use "always_on" if you do not want the library to control the modem power and sleep.
 - Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
 
@@ -289,8 +289,8 @@ Once the modem has been set up, these functions are available:
 - **connect(const char host, uint16_t port)** - Makes a TCP connection to a host url and port.  (If you don't know the port, use "80".)  Returns 1 if successful.
 - **stop()** - Breaks the TCP connection.
 - **dumpBuffer(Stream stream, int timeDelay = 5, int timeout = 5000)** - Empties out the recieve buffer.  The flush() function does NOT empty the buffer, it only waits for sending to complete.
-- **getNISTTime()** - Returns the current unix timestamp from NIST via the TIME protocol (rfc868).
-- **syncRTClock()** - This calls getNISTTime() and then synchronizes the DS3231 real time clock with the NIST provided timestamp.
+- **getNISTTime()** - Returns the current unix timestamp (_in UTC_) from NIST via the TIME protocol (rfc868).
+- **syncRTClock(uint32_t timestamp)** - This synchronizes the real time clock with the provided timestamp.
 
 The cellular modems themselves (SIM800, SIM900, A6, A7, and M590) can also be used as "sensors" which have the following variables:
 
@@ -298,7 +298,7 @@ The cellular modems themselves (SIM800, SIM900, A6, A7, and M590) can also be us
 Modem_RSSI(&modem, "customVarCode");
 Modem_SignalPercent(&modem, "customVarCode");
 ```
-The modem does not behave as all the other sensors do, though.  The normal '''setup()''', '''wake()''', '''sleep()''', and '''update()''' functions for other sensors do not do anything with the modem.  Setup must be done with the '''setupModem(...)''' function; the modem will only go on and off with the '''on()''' and '''off()''' functions; and the '''update()''' functionality happens within the '''connectNetwork()''' function.
+The modem does not behave quite the same as all the other sensors do, though.  Setup must be done with the '''setupModem(...)''' function; the normal '''setup()''' function does not do anything.  The '''sleep()''' function also does not work, the modem will only go off with the  '''off()''' functions.
 
 
 ### <a name="DIYlogger"></a>Additional Functions Available for a LoggerEnviroDIY Object:
@@ -366,17 +366,20 @@ EnviroDIYLogger.setToken(registrationToken);
 EnviroDIYLogger.setSamplingFeature(samplingFeature);
 EnviroDIYLogger.setUUIDs(UUIDs[]);
 
-// Set up the internal modem instance
-EnviroDIYLogger.modem.setupModem(modemStream, vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType, APN);
+// Set up the logger modem
+modem.setupModem(modemStream, vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType, APN);
+
+// Attach the modem to the logger
+EnviroDIYLogger.attachModem(modem);
 
 // Connect to the network
-if (EnviroDIYLogger.modem.connectNetwork())
+if (modem.connectNetwork())
 {
     // Synchronize the RTC
     EnviroDIYLogger.syncRTClock();
 }
 // Disconnect from the network
-EnviroDIYLogger.modem.disconnectNetwork();
+modem.disconnectNetwork();
 
 // Begin the logger;
 EnviroDIYLogger.begin();

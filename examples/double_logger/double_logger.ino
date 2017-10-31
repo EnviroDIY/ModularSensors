@@ -219,7 +219,7 @@ void setup()
     if (modem.connectNetwork())
     {
         // Synchronize the RTC
-        logger1min.syncRTClock();
+        logger1min.syncRTClock(modem.getNISTTime());
         // Disconnect from the network
         modem.disconnectNetwork();
     }
@@ -302,7 +302,7 @@ void loop()
         if (modem.connectNetwork())
         {
             // Synchronize the RTC
-            logger1min.syncRTClock();
+            logger1min.syncRTClock(modem.getNISTTime());
             // Disconnect from the network
             modem.disconnectNetwork();
         }
