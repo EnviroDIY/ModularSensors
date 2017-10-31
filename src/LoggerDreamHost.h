@@ -64,7 +64,7 @@ public:
         int did_respond = 0;
 
         // Open a TCP/IP connection to DreamHost
-        if(modem.connect("swrcsensors.dreamhosters.com", 80))
+        if(_modem.connect("swrcsensors.dreamhosters.com", 80))
         {
             // Send the request to the serial for debugging
             #if defined(MODULAR_SENSORS_OUTPUT)
@@ -74,25 +74,25 @@ public:
             #endif
 
             // Send the request to the modem stream
-            modem.dumpBuffer(modem._client);
-            streamDreamHostRequest(modem._client);
-            modem._client->flush();  // wait for sending to finish
+            _modem.dumpBuffer(_modem._client);
+            streamDreamHostRequest(_modem._client);
+            _modem._client->flush();  // wait for sending to finish
 
             uint32_t start_timer;
             if (millis() < 4294957296) start_timer = millis();  // In case of roll-over
             else start_timer = 0;
-            while ((millis() - start_timer) < 10000L && modem._client->available() < 12)
+            while ((millis() - start_timer) < 10000L && _modem._client->available() < 12)
             {delay(10);}
 
             // Read only the first 12 characters of the response
             // We're only reading as far as the http code, anything beyond that
             // we don't care about so we're not reading to save on total
             // data used for transmission.
-            did_respond = modem._client->readBytes(response_buffer, 12);
+            did_respond = _modem._client->readBytes(response_buffer, 12);
 
             // Close the TCP/IP connection as soon as the first 12 characters are read
             // We don't need anything else and stoping here should save data use.
-            modem.stop();
+            _modem.stop();
         }
         else PRINTOUT(F("\n -- Unable to Establish Connection to DreamHost -- \n"));
 
@@ -106,7 +106,7 @@ public:
                 responseCode_char[i] = response_buffer[i+9];
             }
             responseCode = atoi(responseCode_char);
-            // modem.dumpBuffer(modem._client);
+            // _modem.dumpBuffer(_modem._client);
         }
         else responseCode=504;
 
@@ -132,7 +132,7 @@ public:
             digitalWrite(_ledPin, HIGH);
 
             // Turn on the modem to let it start searching for the network
-            modem.wake();
+            _modem.wake();
 
             // Wake up all of the sensors
             // I'm not doing as part of sleep b/c it may take up to a second or
@@ -144,7 +144,7 @@ public:
             sensorsSleep();
 
             // Connect to the network
-            if (modem.connectNetwork())
+            if (_modem.connectNetwork())
             {
                 // Post the data to the WebSDL
                 postDataEnviroDIY();
@@ -159,11 +159,11 @@ public:
                 }
 
                 // Disconnect from the network
-                modem.disconnectNetwork();
+                _modem.disconnectNetwork();
             }
 
             // Turn the modem off
-            modem.off();
+            _modem.off();
 
             // Create a csv data record and save it to the log file
             logToSD(generateSensorDataCSV());

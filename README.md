@@ -268,12 +268,12 @@ See [TinyGSM's documentation](https://github.com/vshymanskyy/TinyGSM/blob/master
 
 After defining your modem, set it up using one of these two commands, depending on whether you are using cellular or WiFi communication:
 
-- **setupModem(Stream modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin, DTRSleepType sleepType, const char APN)** - Sets up the internet communcation with a cellular modem.  Note that the modemStream and APN should be pointers.  Use -1 for any pins that are not connected.
-- **setupModem(Stream modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin, DTRSleepType sleepType, const char ssid, const char pwd)** - Sets up the internet communcation with a WiFi modem.  Note that the modemStream, ssid, and password should be pointers.  Use -1 for any pins that are not connected.
+- **setupModem(Stream modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin, ModemSleepType sleepType, const char APN)** - Sets up the internet communcation with a cellular modem.  Note that the modemStream and APN should be pointers.  Use -1 for any pins that are not connected.
+- **setupModem(Stream modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin, ModemSleepType sleepType, const char ssid, const char pwd)** - Sets up the internet communcation with a WiFi modem.  Note that the modemStream, ssid, and password should be pointers.  Use -1 for any pins that are not connected.
 - The vcc33Pin is the pin that controls whether or not the modem itself is powered.  Use -1 if your modem is always recieving power from your logger board or if you want to control modem power independently.
 - The modemStatusPin is the pin that indicates whether the modem is turned on and it is clear to send data.  If you use -1, the modem is assumed to always be ready.
 - The modemSleepRqPin is the _pin_ used to put the modem to sleep or to wake it up.
-- The DTRSleepType controls _how_ the modem is put to sleep between readings.
+- The ModemSleepType controls _how_ the modem is put to sleep between readings.
     - Use "held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
     - Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
     - Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
@@ -341,7 +341,7 @@ _Within the setup function_, you must then initialize the logger and then run th
 // Set the time zone and offset from the RTC
 logger.setTimeZone(timeZone);
 logger.setTZOffset(offset);
-// Initialize the logger;
+// Initialize the logger
 logger.init(SDCardPin, mcuWakePin, variableCount, variableList, loggingIntervalMinutes, loggerID);
 // OPTIONAL - specify a pin to give an alert when a measurement is taken
 // This should generally be a pin with an LED
@@ -356,7 +356,7 @@ logger.begin();
 // Set the time zone and offset from the RTC
 EnviroDIYLogger.setTimeZone(timeZone);
 EnviroDIYLogger.setTZOffset(offset);
-// Initialize the logger;
+// Initialize the logger
 EnviroDIYLogger.init(SDCardPin, mcuWakePin, variableCount, variableList, loggingIntervalMinutes, loggerID);
 // OPTIONAL - specify a pin to give an alert when a measurement is taken
 // This should generally be a pin with an LED

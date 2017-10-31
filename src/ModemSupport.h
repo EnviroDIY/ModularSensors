@@ -24,6 +24,7 @@
   #define USE_TINY_GSM
   // #define TINY_GSM_DEBUG Serial
   #define TINY_GSM_YIELD() { delay(3);}
+  #define TINY_GSM_RX_BUFFER 14  // So we never get much data
   #include <TinyGsmClient.h>
 #else
   #include <NullModem.h>  // purely to help me debug compilation issues
@@ -61,13 +62,13 @@
 #define PERCENT_STAT_VAR_NUM 1
 
 // For the various communication devices"
-typedef enum DTRSleepType
+typedef enum ModemSleepType
 {
   held = 0,  // Turns the modem on by setting the onoff/DTR/Key high and off by setting it low
   pulsed,  // Turns the modem on and off by pulsing the onoff/DTR/Key pin on for 2 seconds
   reverse,  // Turns the modem on by setting the onoff/DTR/Key LOW and off by setting it HIGH
   always_on
-} DTRSleepType;
+} ModemSleepType;
 
 /* ===========================================================================
 * Functions for the modem class
@@ -156,7 +157,7 @@ public:
                     int vcc33Pin,
                     int modemStatusPin,
                     int modemSleepRqPin,
-                    DTRSleepType sleepType,
+                    ModemSleepType sleepType,
                     const char *APN)
     {
         _APN = APN;
@@ -166,7 +167,7 @@ public:
                     int vcc33Pin,
                     int modemStatusPin,
                     int modemSleepRqPin,
-                    DTRSleepType sleepType,
+                    ModemSleepType sleepType,
                     const char *APN)
     {
         _APN = APN;
@@ -177,7 +178,7 @@ public:
                     int vcc33Pin,
                     int modemStatusPin,
                     int modemSleepRqPin,
-                    DTRSleepType sleepType,
+                    ModemSleepType sleepType,
                     const char *ssid,
                     const char *pwd)
     {
@@ -189,7 +190,7 @@ public:
                     int vcc33Pin,
                     int modemStatusPin,
                     int modemSleepRqPin,
-                    DTRSleepType sleepType,
+                    ModemSleepType sleepType,
                     const char *ssid,
                     const char *pwd)
     {
@@ -290,12 +291,12 @@ public:
 
     void disconnectNetwork(void)
     {
-        DBG(F("Disconnecting from network"));
     #if defined(TINY_GSM_MODEM_HAS_GPRS)
         _modem->gprsDisconnect();
     #elif defined(TINY_GSM_MODEM_HAS_WIFI)
         _modem->networkDisconnect();
     #endif
+        DBG(F("Disconnected from network."));
     }
 
     int connect(const char *host, uint16_t port)
@@ -326,10 +327,10 @@ public:
 
     void stop(void)
     {
-        DBG(F("Disconnecting from TCP/IP..."));
     // #if defined(USE_TINY_GSM)
         _client->stop();
     // #endif
+        DBG(F("Closed TCP/IP."));
     }
 
     // Used to empty out the buffer after a post request.
@@ -406,7 +407,7 @@ private:
 
 private:
     void init(Stream *modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin,
-              DTRSleepType sleepType)
+              ModemSleepType sleepType)
     {
         // Set up the method for putting the modem to sleep
 

@@ -129,6 +129,13 @@ public:
         DBGLOG(F("Pin "), _ledPin, F(" set for alerts\n"));
     }
 
+    // Adds a loggerModem objct to the logger
+    // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
+    void attachModem(loggerModem &modem)
+    {
+        _modem = modem;
+    }
+
 
     // ===================================================================== //
     // Public functions to access the clock in proper format and time zone
@@ -207,7 +214,7 @@ public:
 
         // Get the time stamp from NIST and adjust it to the correct time zone
         // for the logger.
-        uint32_t nist = modem.getNISTTime();
+        uint32_t nist = _modem.getNISTTime();
 
         // If the timestamp returns zero, just exit
         if  (nist == 0)
@@ -664,9 +671,9 @@ public:
         // Turn on the modem to let it start searching for the network
         #if defined(USE_TINY_GSM)
             // Turn on the modem
-            modem.wake();
+            _modem.wake();
             // Connect to the network to make sure we have signal
-            modem.connectNetwork();
+            _modem.connectNetwork();
         #endif
 
         // Update the sensors and print out data 25 times
@@ -695,7 +702,7 @@ public:
             // Specially highlight the modem signal quality in the debug mode
             #if defined(USE_TINY_GSM)
                 PRINTOUT(F("Current modem signal is "));
-                PRINTOUT(modem.getSignalPercent());
+                PRINTOUT(_modem.getSignalPercent());
                 PRINTOUT(F("%\n"));
             #endif
             delay(5000);
@@ -703,9 +710,9 @@ public:
 
         #if defined(USE_TINY_GSM)
             // Disconnect from the network
-            modem.disconnectNetwork();
+            _modem.disconnectNetwork();
             // Turn off the modem
-            modem.off();
+            _modem.off();
         #endif
     }
 
@@ -765,17 +772,17 @@ public:
             // Synchronize the RTC with NIST
             PRINTOUT(F("Attempting to synchronize RTC with NIST\n"));
             // Turn on the modem
-            modem.wake();
+            _modem.wake();
             // Connect to the network
-            if (modem.connectNetwork())
+            if (_modem.connectNetwork())
             {
                 delay(5000);
                 syncRTClock();
                 // Disconnect from the network
-                modem.disconnectNetwork();
+                _modem.disconnectNetwork();
             }
             // Turn off the modem
-            modem.off();
+            _modem.off();
         #endif
 
         // Set up the sensors
@@ -827,8 +834,6 @@ public:
     // Public variables
     // Time stamps - want to set them at a single time and carry them forward
     static long markedEpochTime;
-    // Create a modem instance
-    loggerModem modem;
 
 
 
@@ -861,6 +866,9 @@ protected:
     uint8_t _numReadings;
     bool _sleep;
     int _ledPin;
+
+    // The internal modem instance
+    loggerModem _modem;
 };
 
 // Initialize the static timezone

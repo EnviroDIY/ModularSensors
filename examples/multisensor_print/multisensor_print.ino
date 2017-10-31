@@ -14,20 +14,21 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
+// Some define statements
 #define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
 
-// ---------------------------------------------------------------------------
-// Include the base required libraries
-// ---------------------------------------------------------------------------
+// ==========================================================================
+//    Include the base required libraries
+// ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <Sodaq_DS3231.h>    // Controls the DS3231 Real Time Clock (RTC) built into the EnviroDIY Mayfly.
 #include <VariableArray.h>
 
-// ---------------------------------------------------------------------------
-// Set up the sensor specific information
-//   ie, pin locations, addresses, calibrations and related settings
-// ---------------------------------------------------------------------------
+
+// ==========================================================================
+//    Basic Logger Settings
+// ==========================================================================
 // The name of this file
 const char *sketchName = "modular_sensors.ino";
 
@@ -35,6 +36,26 @@ const char *sketchName = "modular_sensors.ino";
 const int timeZone = -5;
 // Create a new sensor array instance
 VariableArray sensors;
+
+// ==========================================================================
+//    Primary Arduino-Based Board and Processor
+// ==========================================================================
+#include <ProcessorMetadata.h>
+
+const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const int greenLED = 8;  // Pin for the green LED (else -1)
+const int redLED = 9;  // Pin for the red LED (else -1)
+
+const char *MFVersion = "v0.5";
+ProcessorMetadata mayfly(MFVersion) ;
+
+
+// ==========================================================================
+//    Maxim DS3231 RTC (Real Time Clock)
+// ==========================================================================
+#include <MaximDS3231.h>
+MaximDS3231 ds3231(1);
+
 
 // ==========================================================================
 //    AOSong AM2315 Digital Humidity and Temperature Sensor
@@ -173,21 +194,6 @@ MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
 
 
 // ==========================================================================
-//    Maxim DS3231 RTC (Real Time Clock)
-// ==========================================================================
-#include <MaximDS3231.h>
-MaximDS3231 ds3231(1);
-
-
-// ==========================================================================
-//    EnviroDIY Mayfly Arduino-Based Board and Processor
-// ==========================================================================
-#include <ProcessorMetadata.h>
-const char *MFVersion = "v0.5";
-ProcessorMetadata mayfly(MFVersion) ;
-
-
-// ==========================================================================
 //    Yosemitech Y504 Dissolved Oxygen Sensor
 // ==========================================================================
 #include <YosemitechY504.h>
@@ -301,9 +307,9 @@ YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePi
 YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePin, y532NumberReadings);
 #endif
 
-// ---------------------------------------------------------------------------
-// The array that contains all valid variables
-// ---------------------------------------------------------------------------
+// ==========================================================================
+//    The array that contains all variables to print out
+// ==========================================================================
 Variable *variableList[] = {
     new ProcessorMetadata_Batt(&mayfly),
     new ProcessorMetadata_FreeRam(&mayfly),
@@ -349,19 +355,11 @@ Variable *variableList[] = {
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 
-// ---------------------------------------------------------------------------
-// Board setup info
-// ---------------------------------------------------------------------------
-const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
-const int greenLED = 8;  // Pin for the green LED
-const int redLED = 9;  // Pin for the red LED
+// ==========================================================================
+//    Working Functions
+// ==========================================================================
 
-
-// ---------------------------------------------------------------------------
-// Working Functions
-// ---------------------------------------------------------------------------
-
-// Flashes to Mayfly's LED's
+// Flashes the LED's on the primary board
 void greenredflash(int numFlash = 4, int rate = 75)
 {
   for (int i = 0; i < numFlash; i++) {
@@ -420,9 +418,9 @@ String getDateTime_ISO8601(void)
 }
 
 
-// ---------------------------------------------------------------------------
+// ==========================================================================
 // Main setup function
-// ---------------------------------------------------------------------------
+// ==========================================================================
 void setup()
 {
     // Start the primary serial connection
@@ -468,9 +466,9 @@ void setup()
 }
 
 
-// ---------------------------------------------------------------------------
+// ==========================================================================
 // Main loop function
-// ---------------------------------------------------------------------------
+// ==========================================================================
 void loop()
 {
     // Print a line to show new reading

@@ -14,19 +14,20 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
+// Some define statements
 #define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
 
-// ---------------------------------------------------------------------------
-// Include the base required libraries
-// ---------------------------------------------------------------------------
+// ==========================================================================
+//    Include the base required libraries
+// ==========================================================================
+
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <LoggerBase.h>
 
-// ---------------------------------------------------------------------------
-// Set up the sensor specific information
-//   ie, pin locations, addresses, calibrations and related settings
-// ---------------------------------------------------------------------------
+// ==========================================================================
+//    Basic Logger Settings
+// ==========================================================================
 // The name of this file
 const char *sketchName = "DRWI_NoCellular.ino";
 
@@ -38,6 +39,31 @@ int loggingInterval = 5;
 const int timeZone = -5;
 // Create a new logger instance
 Logger logger;
+
+
+// ==========================================================================
+//    Primary Arduino-Based Board and Processor
+// ==========================================================================
+#include <ProcessorMetadata.h>
+
+const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const int greenLED = 8;  // Pin for the green LED (else -1)
+const int redLED = 9;  // Pin for the red LED (else -1)
+const int buttonPin = 21;  // Pin for a button to use to enter debugging mode (else -1)
+const int wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
+// Set the wake pin to -1 if you do not want the main processor to sleep.
+// In a SAMD system where you are using the built-in rtc, set wakePin to 1
+const int sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
+
+const char *MFVersion = "v0.5";
+ProcessorMetadata mayfly(MFVersion) ;
+
+
+// ==========================================================================
+//    Maxim DS3231 RTC (Real Time Clock)
+// ==========================================================================
+#include <MaximDS3231.h>
+MaximDS3231 ds3231(1);
 
 
 // ==========================================================================
@@ -71,22 +97,8 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 
 
 // ==========================================================================
-//    Maxim DS3231 RTC (Real Time Clock)
+//    The array that contains all variables to be logged
 // ==========================================================================
-#include <MaximDS3231.h>
-MaximDS3231 ds3231(1);
-
-
-// ==========================================================================
-//    EnviroDIY Mayfly Arduino-Based Board and Processor
-// ==========================================================================
-#include <ProcessorMetadata.h>
-const char *MFVersion = "v0.5";
-ProcessorMetadata mayfly(MFVersion) ;
-
-// ---------------------------------------------------------------------------
-// The array that contains all valid variables
-// ---------------------------------------------------------------------------
 Variable *variableList[] = {
     new ProcessorMetadata_Batt(&mayfly),
     new MaximDS3231_Temp(&ds3231),
@@ -99,22 +111,11 @@ Variable *variableList[] = {
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 
-// ---------------------------------------------------------------------------
-// Board setup info
-// ---------------------------------------------------------------------------
-const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
-const int greenLED = 8;  // Pin for the green LED
-const int redLED = 9;  // Pin for the red LED
-const int buttonPin = 21;  // Pin for the button
-const int wakePin = A7;  // RTC Interrupt/Alarm pin
-const int sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin
+// ==========================================================================
+//    Working Functions
+// ==========================================================================
 
-
-// ---------------------------------------------------------------------------
-// Working Functions
-// ---------------------------------------------------------------------------
-
-// Flashes to Mayfly's LED's
+// Flashes the LED's on the primary board
 void greenredflash(int numFlash = 4, int rate = 75)
 {
   for (int i = 0; i < numFlash; i++) {
@@ -129,9 +130,9 @@ void greenredflash(int numFlash = 4, int rate = 75)
 }
 
 
-// ---------------------------------------------------------------------------
+// ==========================================================================
 // Main setup function
-// ---------------------------------------------------------------------------
+// ==========================================================================
 void setup()
 {
     // Start the primary serial connection
@@ -155,7 +156,7 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
-    // Initialize the logger;
+    // Initialize the logger
     logger.init(sdCardPin, wakePin, variableCount, variableList,
                 loggingInterval, LoggerID);
     logger.setAlertPin(greenLED);
@@ -168,9 +169,9 @@ void setup()
 }
 
 
-// ---------------------------------------------------------------------------
+// ==========================================================================
 // Main loop function
-// ---------------------------------------------------------------------------
+// ==========================================================================
 void loop()
 {
     // Log the data
