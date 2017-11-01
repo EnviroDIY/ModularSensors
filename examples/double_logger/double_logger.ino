@@ -57,9 +57,9 @@ Logger logger5min;
 #include <ProcessorStats.h>
 
 const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
-const int greenLED = 8;  // Pin for the green LED (else -1)
-const int redLED = 9;  // Pin for the red LED (else -1)
-const int buttonPin = 21;  // Pin for a button to use to enter debugging mode (else -1)
+const int greenLED = 8;  // Pin for the green LED (-1 if unconnected)
+const int redLED = 9;  // Pin for the red LED (-1 if unconnected)
+const int buttonPin = 21;  // Pin for a button to use to enter debugging mode (-1 if unconnected)
 const int wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
@@ -75,7 +75,7 @@ ProcessorStats mayfly(MFVersion) ;
 HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
 const int modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
 const int modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
-const int modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (else -1)
+const int modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 
 ModemSleepType ModemSleepMode = reverse;  // How the modem is put to sleep
 // Use "held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
@@ -102,7 +102,7 @@ MaximDS3231 ds3231(1);
 //    AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
 #include <AOSongAM2315.h>
-const int I2CPower = 22;  // switched sensor power is pin 22 on Mayfly
+const int I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 AOSongAM2315 am2315(I2CPower);
 
 
