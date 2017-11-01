@@ -106,8 +106,6 @@ public:
         // Check if the modem is on; turn it off if so
         if(modemOnOff->isOn()) retVal = modemOnOff->off();
         else retVal =  true;
-        // Empty anything out of the receive buffer
-        dumpBuffer(_client);
         return retVal;
     }
 
@@ -324,18 +322,6 @@ public:
     {
         _client->stop();
         MS_DBG(F("Closed TCP/IP."));
-    }
-
-    // Used to empty out the buffer after a post request.
-    // Removing this may cause communication issues.
-    void dumpBuffer(Stream *stream, int timeDelay = 5, int timeout = 5000)
-    {
-        delay(timeDelay);
-        while (timeout-- > 0 && stream->available() > 0)
-        {
-            stream->read();
-            delay(timeDelay);
-        }
     }
 
     // Get the time from NIST via TIME protocol (rfc868)
