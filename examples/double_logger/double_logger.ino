@@ -16,7 +16,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
 // Some define statements
-#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
+#define STANDARD_SERIAL_OUTPUT Serial  // Without this there will be no output
 
 // Select your modem chip, comment out all of the others
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or varient thereof
@@ -32,7 +32,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <LoggerBase.h>
-#include <ModemSupport.h>
+#include <LoggerModem.h>
 
 
 // ==========================================================================

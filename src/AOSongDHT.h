@@ -37,7 +37,7 @@
 #undef DHT22
 #undef AM2302
 
-// #define MODULES_DBG Serial
+// #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
 #define DHT_NUM_MEASUREMENTS 3

@@ -11,6 +11,9 @@
 #ifndef LoggerEnviroDIY_h
 #define LoggerEnviroDIY_h
 
+// #define DEBUGGING_SERIAL_OUTPUT Serial
+#include "ModSensorDebugger.h"
+
 #include "LoggerBase.h"
 
 // ============================================================================
@@ -23,19 +26,19 @@ public:
     void setToken(const char *registrationToken)
     {
         _registrationToken = registrationToken;
-        DBGLOG(F("Registration token set!\n"));
+        MS_DBG(F("Registration token set!\n"));
     }
 
     void setSamplingFeature(const char *samplingFeature)
     {
         _samplingFeature = samplingFeature;
-        DBGLOG(F("Sampling feature token set!\n"));
+        MS_DBG(F("Sampling feature token set!\n"));
     }
 
     void setUUIDs(const char *UUIDs[])
     {
         _UUIDs = UUIDs;
-        DBGLOG(F("UUID array set!\n"));
+        MS_DBG(F("UUID array set!\n"));
     }
 
     // This adds extra data to the datafile header
@@ -103,11 +106,11 @@ public:
         if(_modem.connect("data.envirodiy.org", 80))
         {
             // Send the request to the serial for debugging
-            #if defined(MODULAR_SENSORS_OUTPUT)
+            #if defined(STANDARD_SERIAL_OUTPUT)
                 PRINTOUT(F("\n \\/---- Post Request to EnviroDIY ----\\/ \n"));
-                streamEnviroDIYRequest(&MODULAR_SENSORS_OUTPUT);  // for debugging
+                streamEnviroDIYRequest(&STANDARD_SERIAL_OUTPUT);  // for debugging
                 PRINTOUT(F("\r\n\r\n"));
-                MODULAR_SENSORS_OUTPUT.flush();  // for debugging
+                STANDARD_SERIAL_OUTPUT.flush();  // for debugging
             #endif
 
             // Send the request to the modem stream

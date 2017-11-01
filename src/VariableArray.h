@@ -10,45 +10,11 @@
 #ifndef VariableArray_h
 #define VariableArray_h
 
-// #define MODULAR_SENSORS_OUTPUT Serial
-// #define VAR_ARRAY_DBG Serial
+// #define DEBUGGING_SERIAL_OUTPUT Serial
+#include "ModSensorDebugger.h"
 
 #include "SensorBase.h"
 #include "VariableBase.h"
-
-#ifdef MODULAR_SENSORS_OUTPUT
-namespace {
- template<typename T>
- static void PRINTOUT(T last) {
-   MODULAR_SENSORS_OUTPUT.print(last);
- }
-
- template<typename T, typename... Args>
- static void PRINTOUT(T head, Args... tail) {
-   MODULAR_SENSORS_OUTPUT.print(head);
-   PRINTOUT(tail...);
- }
-}
-#else
- #define PRINTOUT(...)
-#endif
-
-#ifdef VAR_ARRAY_DBG
-namespace {
- template<typename T>
- static void DBGVA(T last) {
-   VAR_ARRAY_DBG.print(last);
- }
-
- template<typename T, typename... Args>
- static void DBGVA(T head, Args... tail) {
-   VAR_ARRAY_DBG.print(head);
-   DBGVA(tail...);
- }
-}
-#else
- #define DBGVA(...)
-#endif
 
 // Defines another class for interfacing with a list of pointers to sensor instances
 class VariableArray
@@ -88,12 +54,12 @@ public:
         PRINTOUT(F("Beginning setup for sensors and variables..."));
 
         // First wake up all of the sensors
-        DBGVA(F("Waking sensors for setup.\n"));
+        MS_DBG(F("Waking sensors for setup.\n"));
         for (int i = 0; i < _variableCount; i++)
             _variableList[i]->parentSensor->wake();
 
         // Now run all the set-up functions
-        DBGVA(F("Running setup functions.\n"));
+        MS_DBG(F("Running setup functions.\n"));
         for (int i = 0; i < _variableCount; i++)
         {
             // Make 5 attempts to contact the sensor before giving up
@@ -122,7 +88,7 @@ public:
         }
 
         // Put all the sensors back to sleep
-        DBGVA(F("Putting sensors to sleep after setup.\n"));
+        MS_DBG(F("Putting sensors to sleep after setup.\n"));
         for (int i = 0; i < _variableCount; i++)
             _variableList[i]->parentSensor->sleep();
 
@@ -139,7 +105,7 @@ public:
     // This puts sensors to sleep (ie, cuts power)
     bool sensorsSleep(void)
     {
-        DBGVA(F("Putting sensors to sleep.\n"));
+        MS_DBG(F("Putting sensors to sleep.\n"));
         bool success = true;
         for (int i = 0; i < _variableCount; i++)
         {
@@ -152,7 +118,7 @@ public:
     // This wakes sensors (ie, gives power)
     bool sensorsWake(void)
     {
-        DBGVA(F("Waking sensors.\n"));
+        MS_DBG(F("Waking sensors.\n"));
         bool success = true;
         for (int i = 0; i < _variableCount; i++)
         {
@@ -172,16 +138,16 @@ public:
             if (isLastVarFromSensor(i))
             {
                 // Prints for debugging
-                DBGVA(F("--- Going to update "));
-                DBGVA(_variableList[i]->parentSensor->getSensorName());
-                DBGVA(F(" ---\n"));
+                MS_DBG(F("--- Going to update "));
+                MS_DBG(_variableList[i]->parentSensor->getSensorName());
+                MS_DBG(F(" ---\n"));
 
                 update_success = _variableList[i]->parentSensor->update();
 
                 // Prints for debugging
-                DBGVA(F("--- Updated "));
-                DBGVA(_variableList[i]->parentSensor->getSensorName());
-                DBGVA(F(" ---\n"));
+                MS_DBG(F("--- Updated "));
+                MS_DBG(_variableList[i]->parentSensor->getSensorName());
+                MS_DBG(F(" ---\n"));
             }
         }
         success &= update_success;
@@ -245,20 +211,20 @@ protected:
         }
         // Prints for debugging
         if (unique){
-            DBGVA(_variableList[arrayIndex]->getVarName());
-            DBGVA(F(" from "));
-            DBGVA(sensName);
-            DBGVA(F(" at "));
-            DBGVA(sensLoc);
-            DBGVA(F(" will be used for sensor references.\n"));
+            MS_DBG(_variableList[arrayIndex]->getVarName());
+            MS_DBG(F(" from "));
+            MS_DBG(sensName);
+            MS_DBG(F(" at "));
+            MS_DBG(sensLoc);
+            MS_DBG(F(" will be used for sensor references.\n"));
         }
         else{
-            DBGVA(_variableList[arrayIndex]->getVarName());
-            DBGVA(F(" from "));
-            DBGVA(sensName);
-            DBGVA(F(" at "));
-            DBGVA(sensLoc);
-            DBGVA(F(" will be ignored.\n"));
+            MS_DBG(_variableList[arrayIndex]->getVarName());
+            MS_DBG(F(" from "));
+            MS_DBG(sensName);
+            MS_DBG(F(" at "));
+            MS_DBG(sensLoc);
+            MS_DBG(F(" will be ignored.\n"));
         }
         return unique;
     }

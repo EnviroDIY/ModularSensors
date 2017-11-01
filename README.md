@@ -43,12 +43,12 @@ This library is designed for remote sensing applications, that is, to log data f
     - For all AVR processors, you must also have a [Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html) high precision I2C real-time clock with the SQE/INT pin connected to a pin on your processor which supports either external or pin-change interrupts.
     - For SAMD boards, this library makes use of their on-board (though less accurate) real-time clock.
 - A SD card reader attached to the processor via SPI.
-- A modem-type unit to communicate remote data (See [Modem and Internet Functions](#Modem) for supported models.)
+- Environmental sensors
 - A battery to power the system
 - A solar charging curcuit
-- Environmental sensors
+- A modem-type unit to communicate remote data (Optional for logging data, but required for sending data directly to the internet.  See [Modem and Internet Functions](#Modem) for supported models.)
 - Protected water-proof enclosures and mountings for all of the above
-- An OTG cable to connect serial output from the board to a cell phone (Not required, but very helpful for debugging.)
+- An OTG cable to connect serial output from the board to a cell phone (Optional, but very helpful for debugging.)
 
 ## <a name="ldeps"></a>Library Dependencies
 
@@ -200,7 +200,7 @@ If you are running sensors remotely on batteries and/or solar power, saving powe
 
 
 ## <a name="Logger"></a>Basic Logger Functions
-Our main reason to unify the output from many sensors and variables is to easily log the data to an SD card and to send it to any other live streaming data receiver, like the [EnviroDIY data portal](http://data.envirodiy.org/).  There are several modules available to use with the sensors to log data and stream data:  LoggerBase.h, LoggerEnviroDIY.h, and ModemSupport.h.  The classes Logger (in LoggerBase.h) is a sub-class of VariableArray and LoggerEnviroDIY (in LoggerEnviroDIY.h) is in-turn a sub-class of Logger.   They contain all of the functions available to a VariableArray as described above.  The Logger class adds the abilities to communicate with a DS3231 real time clock, to put the board into deep sleep between readings to conserver power, and to write the data from the sensors to a csv file on a connected SD card.  The ModemSupport module is essentially a wrapper for [TinyGSM](https://github.com/EnviroDIY/TinyGSM) which adds quick functions for turning modem on and off to save power and to synchronize the real-time clock with the [NIST Internet time service](https://www.nist.gov/pml/time-and-frequency-division/services/internet-time-service-its).  The LoggerEnviroDIY class uses ModemSupport.h to add the ability to properly format and send data to the [EnviroDIY data portal](http://data.envirodiy.org/).
+Our main reason to unify the output from many sensors and variables is to easily log the data to an SD card and to send it to any other live streaming data receiver, like the [EnviroDIY data portal](http://data.envirodiy.org/).  There are several modules available to use with the sensors to log data and stream data:  LoggerBase.h, LoggerEnviroDIY.h, and LoggerModem.h.  The classes Logger (in LoggerBase.h) is a sub-class of VariableArray and LoggerEnviroDIY (in LoggerEnviroDIY.h) is in-turn a sub-class of Logger.   They contain all of the functions available to a VariableArray as described above.  The Logger class adds the abilities to communicate with a DS3231 real time clock, to put the board into deep sleep between readings to conserver power, and to write the data from the sensors to a csv file on a connected SD card.  The LoggerModem module is essentially a wrapper for [TinyGSM](https://github.com/EnviroDIY/TinyGSM) which adds quick functions for turning modem on and off to save power and to synchronize the real-time clock with the [NIST Internet time service](https://www.nist.gov/pml/time-and-frequency-division/services/internet-time-service-its).  The LoggerEnviroDIY class uses LoggerModem.h to add the ability to properly format and send data to the [EnviroDIY data portal](http://data.envirodiy.org/).
 
 ### Functions Available for a Logger Object:
 
@@ -217,6 +217,7 @@ A note about timezones:  It is possible to create multiple logger objects in you
 
 #### Functions to access the clock in proper format and time zone:
 
+- **syncRTClock(uint32_t timestamp)** - This synchronizes the real time clock with the provided timestamp, which should be a unix timestamp _in UTC_.
 - **getNow()** - This gets the current epoch time (unix timestamp - number of seconds since Jan 1, 1970) and corrects it for the specified logger time zone offset.
 - **formatDateTime_ISO8601(DateTime dt)** - Formats a DateTime object into an ISO8601 formatted Arduino String.
 - **formatDateTime_ISO8601(uint32_t unixTime)** - Formats a unix timestamp into an ISO8601 formatted Arduino String.
@@ -241,17 +242,18 @@ A note about timezones:  It is possible to create multiple logger objects in you
 
 #### Functions for debugging sensors:
 
-- **checkForDebugMode(int buttonPin, Stream \*stream = &Serial)** - This stops everything and waits for up to two seconds for a button to be pressed to enter allow the user to enter "debug" mode.  I suggest running this as the very last step of the setup function.
-- **debugMode(Stream \*stream = &Serial)** - This is a "debugging" mode for the sensors.  It prints out all of the sensor details every 5 seconds for 25 records worth of data.
-- Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
+To view any information about what your logger is doing you must add the statement ```#define STANDARD_SERIAL_OUTPUT xxxxx``` to the top of your sketch, where xxxxx is the name of a serial output (ie, Serial or USBSerial).  This statement should be above any include statements in your sketch.   
+
+- **checkForDebugMode(int buttonPin)** - This stops everything and waits for up to two seconds for a button to be pressed to enter allow the user to enter "debug" mode.  I suggest running this as the very last step of the setup function.
+- **debugMode()** - This is a "debugging" mode for the sensors.  It prints out all of the sensor details every 5 seconds for 25 records worth of data.  The printouts go to whichever serial port is given in the ```#define STANDARD_SERIAL_OUTPUT``` statement.
 
 ####  Convience functions to do it all:
 
 - **begin()** - Starts the logger.  Must be in the setup function.
 - **log()** - Logs data, must be the entire content of the loop function.
 
-### <a name="Modem"></a>Functions within ModemSupport/TinyGSM:
-The "ModemSupport" bit of this library is essentially a wrapper for [TinyGSM](https://github.com/EnviroDIY/TinyGSM), to interface with the modem.  To make this work, _you must add one of these lines to the very top of your sketch_:
+### <a name="Modem"></a>Functions within LoggerModem/TinyGSM:
+The "LoggerModem" bit of this library is essentially a wrapper for [TinyGSM](https://github.com/EnviroDIY/TinyGSM), to interface with the modem.  To make this work, _you must add one of these lines to the very top of your sketch_:
 
 ```cpp
 // Select your modem chip, comment out all of the others
@@ -290,7 +292,6 @@ Once the modem has been set up, these functions are available:
 - **stop()** - Breaks the TCP connection.
 - **dumpBuffer(Stream stream, int timeDelay = 5, int timeout = 5000)** - Empties out the recieve buffer.  The flush() function does NOT empty the buffer, it only waits for sending to complete.
 - **getNISTTime()** - Returns the current unix timestamp (_in UTC_) from NIST via the TIME protocol (rfc868).
-- **syncRTClock(uint32_t timestamp)** - This synchronizes the real time clock with the provided timestamp.
 
 The cellular modems themselves (SIM800, SIM900, A6, A7, and M590) can also be used as "sensors" which have the following variables:
 
@@ -308,7 +309,7 @@ These three functions set up the required registration token, sampling feature U
 - **setSamplingFeature(const char samplingFeature)** - Sets the GUID of the sampling feature.  Note that the input is a pointer to the samplingFeature.
 - **setUUIDs(const char UUIDs)** - Sets the time series UUIDs.  Note that the input is an array of pointers.  The order of the UUIDs in this array **must match exactly** with the order of the coordinating variable in the variableList.
 
-Because sending data to EnviroDIY depends on having some sort of modem or internet connection, there is a modem object created within the LoggerEnviroDIY Object.  To set up that modem object, you still need to call the functions listed in the ModemSupport section, but you need to add an extra "modem." before the function name to call the internal modem object.  You do not need to separately create the object.
+Because sending data to EnviroDIY depends on having some sort of modem or internet connection, there is a modem object created within the LoggerEnviroDIY Object.  To set up that modem object, you still need to call the functions listed in the LoggerModem section, but you need to add an extra "modem." before the function name to call the internal modem object.  You do not need to separately create the object.
 
 Within the loop, these two functions will then format and send out data:
 

@@ -40,8 +40,8 @@ SENSOR_STATUS MaxBotixSonar::setup(void)
         digitalWrite(_triggerPin, LOW);
     }
 
-    DBGM(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
-    DBGM(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
+    MS_DBG(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
+    MS_DBG(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
 
     return SENSOR_READY;
 }
@@ -71,23 +71,23 @@ bool MaxBotixSonar::update(void)
     // RoHS 1.8b090  0713
     // TempI
 
-    DBGM(F("Parsing Header Lines\n"));
+    MS_DBG(F("Parsing Header Lines\n"));
     for(int i = 0; i < 6; i++)
     {
         String headerLine = _stream->readStringUntil('\r');
-        DBGM(i, F(" - "), headerLine, F("\n"));
+        MS_DBG(i, F(" - "), headerLine, F("\n"));
     }
 
     bool stringComplete = false;
     int rangeAttempts = 0;
     int result = 0;
 
-    DBGM(F("Beginning detection for Sonar\n"));
+    MS_DBG(F("Beginning detection for Sonar\n"));
     while (stringComplete == false && rangeAttempts < 50)
     {
         if(_triggerPin != -1)
         {
-            DBGM(F("Triggering Sonar\n"));
+            MS_DBG(F("Triggering Sonar\n"));
             digitalWrite(_triggerPin, HIGH);
             delay(1);
             digitalWrite(_triggerPin, LOW);
@@ -96,7 +96,7 @@ bool MaxBotixSonar::update(void)
 
         result = _stream->parseInt();
         _stream->read();  // To throw away the carriage return
-        DBGM(result, F("\n"));
+        MS_DBG(result, F("\n"));
         rangeAttempts++;
 
         // If it cannot obtain a result , the sonar is supposed to send a value
@@ -106,17 +106,17 @@ bool MaxBotixSonar::update(void)
         // If the result becomes garbled or the sonar is disconnected, the parseInt function returns 0.
         if (result <= 300 || result == 500 || result == 4999 || result == 9999)
         {
-            DBGM(F("Bad or Suspicious Result, Retry Attempt #"), rangeAttempts, F("\n"));
+            MS_DBG(F("Bad or Suspicious Result, Retry Attempt #"), rangeAttempts, F("\n"));
         }
         else
         {
-            DBGM(F("Good result found\n"));
+            MS_DBG(F("Good result found\n"));
             stringComplete = true;  // Set completion of read to true
         }
     }
 
     sensorValues[HRXL_VAR_NUM] = result;
-    DBGM(sensorValues[HRXL_VAR_NUM], F("\n"));
+    MS_DBG(sensorValues[HRXL_VAR_NUM], F("\n"));
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}

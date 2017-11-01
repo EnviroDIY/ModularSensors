@@ -51,8 +51,8 @@ SENSOR_STATUS DecagonSDI12::setup(void)
 
     if (isSet)
     {
-        DBGM(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
-        DBGM(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
+        MS_DBG(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
+        MS_DBG(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
         return SENSOR_READY;
     }
     else return SENSOR_ERROR;
@@ -72,19 +72,19 @@ SENSOR_STATUS DecagonSDI12::getStatus(void)
     mySDI12.setTimeout(15);  // SDI-12 protocol says sensors must respond within 15 milliseconds
     enableInterrupt(_dataPin, SDI12::handleInterrupt, CHANGE);
 
-    DBGM(F("Asking for sensor acknowlegement\n"));
+    MS_DBG(F("Asking for sensor acknowlegement\n"));
     String myCommand = "";
     myCommand += (char) _SDI12address;
     myCommand += "!"; // sends 'acknowledge active' command [address][!]
     mySDI12.sendCommand(myCommand);
-    DBGM(F(">>"), myCommand, F("\n"));
+    MS_DBG(F(">>"), myCommand, F("\n"));
     delay(30);
 
     // wait for acknowlegement with format:
     // [address]<CR><LF>
     String sdiResponse = mySDI12.readStringUntil('\n');
     sdiResponse.trim();
-    DBGM(F("<<"), sdiResponse, F("\n"));
+    MS_DBG(F("<<"), sdiResponse, F("\n"));
 
     // Kill the SDI-12 Object
     disableInterrupt(_dataPin);
@@ -118,19 +118,19 @@ bool DecagonSDI12::getSensorInfo(void)
     mySDI12.setTimeout(15);  // SDI-12 protocol says sensors must respond within 15 milliseconds
     enableInterrupt(_dataPin, SDI12::handleInterrupt, CHANGE);
 
-    DBGM(F("Getting sensor info\n"));
+    MS_DBG(F("Getting sensor info\n"));
     String myCommand = "";
     myCommand += (char) _SDI12address;
     myCommand += "I!"; // sends 'info' command [address][I][!]
     mySDI12.sendCommand(myCommand);
-    DBGM(F(">>"), myCommand, F("\n"));
+    MS_DBG(F(">>"), myCommand, F("\n"));
     delay(30);
 
     // wait for acknowlegement with format:
     // [address][SDI12 version supported (2 char)][vendor (8 char)][model (6 char)][version (3 char)][serial number (<14 char)]<CR><LF>
     String sdiResponse = mySDI12.readStringUntil('\n');
     sdiResponse.trim();
-    DBGM(F("<<"), sdiResponse, F("\n"));
+    MS_DBG(F("<<"), sdiResponse, F("\n"));
 
     // Kill the SDI-12 Object
     disableInterrupt(_dataPin);
@@ -207,12 +207,12 @@ bool DecagonSDI12::update()
     // averages x readings in this one loop
     for (int j = 0; j < _numReadings; j++)
     {
-        DBGM(F("Taking reading #"), j, F("\n"));
+        MS_DBG(F("Taking reading #"), j, F("\n"));
         String myCommand = "";
         myCommand += _SDI12address;
         myCommand += "M!"; // SDI-12 measurement myCommand format  [address]['M'][!]
         mySDI12.sendCommand(myCommand);
-        DBGM(F(">>"), myCommand, F("\n"));
+        MS_DBG(F(">>"), myCommand, F("\n"));
         delay(30);  // It just needs this little delay
 
         // wait for acknowlegement with format
@@ -220,20 +220,20 @@ bool DecagonSDI12::update()
         String sdiResponse = mySDI12.readStringUntil('\n');
         sdiResponse.trim();
         mySDI12.clearBuffer();
-        DBGM(F("<<"), sdiResponse, F("\n"));
+        MS_DBG(F("<<"), sdiResponse, F("\n"));
 
         // find out how long we have to wait (in seconds).
         unsigned int wait = 0;
         wait = sdiResponse.substring(1,4).toInt();
-        DBGM(F("Waiting "), wait, F(" seconds for measurement\n"));
+        MS_DBG(F("Waiting "), wait, F(" seconds for measurement\n"));
 
         // Set up the number of results to expect
         int numMeasurements = sdiResponse.substring(4,5).toInt();
-        DBGM(numMeasurements, F(" results expected\n"));
+        MS_DBG(numMeasurements, F(" results expected\n"));
         if (numMeasurements != _numReturnedVars)
         {
-            DBGM(F("This differs from the sensor's standard design of "));
-            DBGM(_numReturnedVars, F(" measurements!!\n"));
+            MS_DBG(F("This differs from the sensor's standard design of "));
+            MS_DBG(_numReturnedVars, F(" measurements!!\n"));
         }
 
         unsigned long timerStart = millis();
@@ -241,8 +241,8 @@ bool DecagonSDI12::update()
         {
             if(mySDI12.available())  // sensor can interrupt us to let us know it is done early
             {
-                DBGM(F("<<"), mySDI12.readString());  // Read the service request (the address again)
-                DBGM("Wait interrupted!", F("\n"));
+                MS_DBG(F("<<"), mySDI12.readString());  // Read the service request (the address again)
+                MS_DBG("Wait interrupted!", F("\n"));
                 mySDI12.clearBuffer();
                 delay(5);  // Necessary for reasons unbeknownst to me (else it just fails sometimes..)
                 break;
@@ -253,26 +253,26 @@ bool DecagonSDI12::update()
         myCommand += _SDI12address;
         myCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
         mySDI12.sendCommand(myCommand);
-        DBGM(F(">>"), myCommand, F("\n"));
+        MS_DBG(F(">>"), myCommand, F("\n"));
         delay(30);  // It just needs this little delay
 
-        DBGM(F("Receiving data\n"));
+        MS_DBG(F("Receiving data\n"));
         mySDI12.read();  // ignore the repeated SDI12 address
         for (int i = 0; i < _numReturnedVars; i++)
         {
             float result = mySDI12.parseFloat();
             sensorValues[i] += result;
-            DBGM(F("Result #"), i, F(": "), result, F("\n"));
+            MS_DBG(F("Result #"), i, F(": "), result, F("\n"));
         }
         mySDI12.clearBuffer();
     }
 
     // Average over the number of readings
-    DBGM(F("Averaging over "), _numReadings, F(" readings\n"));
+    MS_DBG(F("Averaging over "), _numReadings, F(" readings\n"));
     for (int i = 0; i < _numReturnedVars; i++)
     {
         sensorValues[i] /=  _numReadings;
-        DBGM(F("Result #"), i, F(": "), sensorValues[i], F("\n"));
+        MS_DBG(F("Result #"), i, F(": "), sensorValues[i], F("\n"));
     }
 
     // Kill the SDI-12 Object

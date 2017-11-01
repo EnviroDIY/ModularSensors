@@ -31,7 +31,7 @@ ModemOnOff::ModemOnOff()
 // Initializes the instance
 void ModemOnOff::init(int vcc33Pin, int modemSleepRqPin, int modemStatusPin)
 {
-    DBGM(F("Initializing modem on/off..."));
+    MS_DBG(F("Initializing modem on/off..."));
     if (vcc33Pin >= 0) {
       _vcc33Pin = vcc33Pin;
       // First write the output value, and only then set the output mode.
@@ -48,14 +48,14 @@ void ModemOnOff::init(int vcc33Pin, int modemSleepRqPin, int modemStatusPin)
         _modemStatusPin = modemStatusPin;
         pinMode(_modemStatusPin, INPUT_PULLUP);
     }
-    DBGM(F("   ... Success!\n"));
+    MS_DBG(F("   ... Success!\n"));
 }
 
 bool ModemOnOff::isOn(void)
 {
     if (_modemStatusPin >= 0) {
         bool status = digitalRead(_modemStatusPin);
-        // DBGM(F("Is modem on? "), status, F("\n"));
+        // MS_DBG(F("Is modem on? "), status, F("\n"));
         return status;
     }
     // No status pin. Let's assume it is on.
@@ -66,7 +66,7 @@ void ModemOnOff::powerOn(void)
 {
     if (_vcc33Pin >= 0) {
         digitalWrite(_vcc33Pin, HIGH);
-        DBGM(F("Sending power to modem.\n"));
+        MS_DBG(F("Sending power to modem.\n"));
     }
 }
 
@@ -74,7 +74,7 @@ void ModemOnOff::powerOff(void)
 {
     if (_vcc33Pin >= 0) {
         digitalWrite(_vcc33Pin, LOW);
-        DBGM(F("Cutting modem power.\n"));
+        MS_DBG(F("Cutting modem power.\n"));
     }
 }
 
@@ -91,20 +91,20 @@ void ModemOnOff::powerOff(void)
     bool pulsedOnOff::on(void)
     {
         powerOn();
-        DBGM(F("Pulsing modem to on with pin "));
-        DBGM(_modemSleepRqPin, F("\n"));
+        MS_DBG(F("Pulsing modem to on with pin "));
+        MS_DBG(_modemSleepRqPin, F("\n"));
         if (!isOn()) {pulse();}
         // Wait until is actually on
         for (unsigned long start = millis(); millis() - start < 5000; )
         {
             if (isOn())
             {
-                DBGM(F("Modem now on.\n"));
+                MS_DBG(F("Modem now on.\n"));
                 return true;
             }
           delay(5);
         }
-        DBGM(F("Failed to turn modem on.\n"));
+        MS_DBG(F("Failed to turn modem on.\n"));
         return false;
     }
 
@@ -112,23 +112,23 @@ bool pulsedOnOff::off(void)
 {
     if (isOn())
     {
-        DBGM(F("Pulsing modem off with pin "));
-        DBGM(_modemSleepRqPin, F("\n"));
+        MS_DBG(F("Pulsing modem off with pin "));
+        MS_DBG(_modemSleepRqPin, F("\n"));
         pulse();
     }
-    else DBGM(F("Modem was not ever on.\n"));
+    else MS_DBG(F("Modem was not ever on.\n"));
     // Wait until is off
     for (unsigned long start = millis(); millis() - start < 5000; )
     {
         if (!isOn())
         {
-            DBGM(F("Modem now off.\n"));
+            MS_DBG(F("Modem now off.\n"));
             powerOff();
             return true;
         }
         delay(5);
     }
-    DBGM(F("Failed to turn modem off.\n"));
+    MS_DBG(F("Failed to turn modem off.\n"));
     powerOff();
     return false;
 }
@@ -160,21 +160,21 @@ bool heldOnOff::on(void)
     if (_modemSleepRqPin <= 0) {return true;}
     else
     {
-        DBGM(F("Turning modem on by setting pin "));
-        DBGM(_modemSleepRqPin);
-        DBGM(F(" high\n"));
+        MS_DBG(F("Turning modem on by setting pin "));
+        MS_DBG(_modemSleepRqPin);
+        MS_DBG(F(" high\n"));
         digitalWrite(_modemSleepRqPin, HIGH);
         // Wait until is actually on
         for (unsigned long start = millis(); millis() - start < 5000; )
         {
             if (isOn())
             {
-                DBGM(F("Modem now on.\n"));
+                MS_DBG(F("Modem now on.\n"));
                 return true;
             }
             delay(5);
         }
-        DBGM(F("Failed to turn modem on.\n"));
+        MS_DBG(F("Failed to turn modem on.\n"));
         return false;
     }
 }
@@ -184,20 +184,20 @@ bool heldOnOff::off(void)
     if (_modemSleepRqPin <= 0) {return true;}
     else
     {
-        if (!isOn()) DBGM(F("Modem was not ever on.\n"));
+        if (!isOn()) MS_DBG(F("Modem was not ever on.\n"));
         digitalWrite(_modemSleepRqPin, LOW);
         // Wait until is off
         for (unsigned long start = millis(); millis() - start < 5000; )
         {
             if (!isOn())
             {
-                DBGM(F("Modem now off.\n"));
+                MS_DBG(F("Modem now off.\n"));
                 powerOff();
                 return true;
             }
             delay(5);
         }
-        DBGM(F("Failed to turn modem off.\n"));
+        MS_DBG(F("Failed to turn modem off.\n"));
         powerOff();
         return false;
     }
@@ -216,7 +216,7 @@ bool reverseOnOff::isOn(void)
 {
     if (_modemStatusPin >= 0) {
         bool status = digitalRead(_modemStatusPin);
-        // DBGM(F("Is modem on? "), status, F("\n"));
+        // MS_DBG(F("Is modem on? "), status, F("\n"));
         return !status;
     }
     // No status pin. Let's assume it is on.
@@ -226,9 +226,9 @@ bool reverseOnOff::isOn(void)
 bool reverseOnOff::on(void)
 {
     powerOn();
-    DBGM(F("Turning modem on on by setting pin "));
-    DBGM(_modemSleepRqPin);
-    DBGM(F(" low\n"));
+    MS_DBG(F("Turning modem on on by setting pin "));
+    MS_DBG(_modemSleepRqPin);
+    MS_DBG(F(" low\n"));
     if (_modemSleepRqPin >= 0) {
         digitalWrite(_modemSleepRqPin, LOW);
     }
@@ -237,18 +237,18 @@ bool reverseOnOff::on(void)
     {
         if (isOn())
         {
-            DBGM(F("Modem now on.\n"));
+            MS_DBG(F("Modem now on.\n"));
             return true;
         }
         delay(5);
     }
-    DBGM(F("Failed to turn modem on.\n"));
+    MS_DBG(F("Failed to turn modem on.\n"));
     return false;
 }
 
 bool reverseOnOff::off(void)
 {
-    if (!isOn()) DBGM(F("Modem was not ever on.\n"));
+    if (!isOn()) MS_DBG(F("Modem was not ever on.\n"));
     if (_modemSleepRqPin >= 0) {
         digitalWrite(_modemSleepRqPin, HIGH);
     }
@@ -257,13 +257,13 @@ bool reverseOnOff::off(void)
     {
         if (!isOn())
         {
-            DBGM(F("Modem now off.\n"));
+            MS_DBG(F("Modem now off.\n"));
             powerOff();
             return true;
         }
         delay(5);
     }
-    DBGM(F("Failed to turn modem off.\n"));
+    MS_DBG(F("Failed to turn modem off.\n"));
     powerOff();
     return false;
 }

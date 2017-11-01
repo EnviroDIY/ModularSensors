@@ -132,7 +132,7 @@ bool ProcessorStats::update(void)
     clearValues();
 
     // Get the battery voltage
-    DBGM(F("Getting battery voltage\n"));
+    MS_DBG(F("Getting battery voltage\n"));
 
     float sensorValue_battery;
 
@@ -184,7 +184,7 @@ bool ProcessorStats::update(void)
     sensorValues[PROCESSOR_BATTERY_VAR_NUM] = sensorValue_battery;
 
     // Used only for debugging - can be removed
-    DBGM(F("Getting Free RAM\n"));
+    MS_DBG(F("Getting Free RAM\n"));
 
     #if defined __AVR__
     extern int __heap_start, *__brkval;

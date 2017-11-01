@@ -20,7 +20,7 @@
 #include "SensorBase.h"
 #include "VariableBase.h"
 
-// #define MODULES_DBG Serial
+// #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
 #define DS3231_NUM_MEASUREMENTS 1

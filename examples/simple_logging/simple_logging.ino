@@ -14,7 +14,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
 // Some define statements
-#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
+#define STANDARD_SERIAL_OUTPUT Serial  // Without this there will be no output
 
 // ==========================================================================
 //    Include the base required libraries

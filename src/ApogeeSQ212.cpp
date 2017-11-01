@@ -64,7 +64,7 @@ bool ApogeeSQ212::update(void)
 
     // Read Analog to Digital Converter (ADC)
     adcResult = ads.readADC_SingleEnded(_dataPin);  // Getting the reading
-    DBGM(F("ads.readADC_SingleEnded("), _dataPin, F("): "), ads.readADC_SingleEnded(_dataPin), F("\t\t"));
+    MS_DBG(F("ads.readADC_SingleEnded("), _dataPin, F("): "), ads.readADC_SingleEnded(_dataPin), F("\t\t"));
 
     // Convert bits into volts
     voltage = adcResult * 0.1875/1000;  // in units of V. See Adafruit_ADS1X15 library for AD conversion factors.
@@ -74,10 +74,10 @@ bool ApogeeSQ212::update(void)
     // 17585 is the number of register bits for the ADS1115 at standard (2/3) gain
     // 17585 ~ 17600 = 3.3V / 0.1875 mV/bit (17585 vs 17600 based on actually tests)
 
-    DBGM("Voltage: ", String(voltage, 6), F("\t\t"));
+    MS_DBG("Voltage: ", String(voltage, 6), F("\t\t"));
     // Apogee SQ-212 Calibration Factor = 1.0 μmol m-2 s-1 per mV;
     calibResult = 1 * voltage * 1000 ;  // in units of μmol m-2 s-1 (microeinsteinPerSquareMeterPerSecond)
-    DBGM(F("calibResult: "), calibResult, F("\n"));
+    MS_DBG(F("calibResult: "), calibResult, F("\n"));
 
     sensorValues[SQ212_PAR_VAR_NUM] = calibResult;
 

@@ -28,7 +28,7 @@ bool MaximDS3231::update(void)
     clearValues();
 
     // Get the temperature from the Mayfly's real time clock
-    DBGM(F("Getting DS3231 Temperature\n"));
+    MS_DBG(F("Getting DS3231 Temperature\n"));
     rtc.convertTemperature();  //convert current temperature into registers
     float tempVal = rtc.getTemperature();
     sensorValues[DS3231_TEMP_VAR_NUM] = tempVal;

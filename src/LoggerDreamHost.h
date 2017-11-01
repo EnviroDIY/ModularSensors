@@ -11,6 +11,9 @@
 #ifndef LoggerDreamHost_h
 #define LoggerDreamHost_h
 
+// #define DEBUGGING_SERIAL_OUTPUT Serial
+#include "ModSensorDebugger.h"
+
 #include "LoggerEnviroDIY.h"
 
 
@@ -24,7 +27,7 @@ public:
     void setDreamHostPortalRX(const char *URL)
     {
         _DreamHostPortalRX = URL;
-        DBGLOG(F("Dreamhost portal URL set!\n"));
+        MS_DBG(F("Dreamhost portal URL set!\n"));
     }
 
     // This creates all of the URL parameters
@@ -68,10 +71,10 @@ public:
         if(_modem.connect("swrcsensors.dreamhosters.com", 80))
         {
             // Send the request to the serial for debugging
-            #if defined(MODULAR_SENSORS_OUTPUT)
+            #if defined(STANDARD_SERIAL_OUTPUT)
                 PRINTOUT(F("\n \\/------ Data to DreamHost ------\\/ \n"));
-                streamDreamHostRequest(&MODULAR_SENSORS_OUTPUT);  // for debugging
-                MODULAR_SENSORS_OUTPUT.flush();  // for debugging
+                streamDreamHostRequest(&STANDARD_SERIAL_OUTPUT);  // for debugging
+                STANDARD_SERIAL_OUTPUT.flush();  // for debugging
             #endif
 
             // Send the request to the modem stream

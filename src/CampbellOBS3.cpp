@@ -68,18 +68,18 @@ bool CampbellOBS3::update(void)
 
     // Read Analog to Digital Converter (ADC)
     adcResult = ads.readADC_SingleEnded(_dataPin);  // Getting the reading
-    DBGM(F("ads.readADC_SingleEnded("), _dataPin, F("): "), ads.readADC_SingleEnded(_dataPin), F("\t\t"));
+    MS_DBG(F("ads.readADC_SingleEnded("), _dataPin, F("): "), ads.readADC_SingleEnded(_dataPin), F("\t\t"));
 
     // now convert bits into millivolts
     // 3.3 is the voltage applied to the sensor (and its return range)
     // The 17585 is the default bit gain of the ADS1115
     voltage = (adcResult * 3.3) / 17585.0;
-    DBGM("Voltage: ", String(voltage, 6), F("\t\t"));
+    MS_DBG("Voltage: ", String(voltage, 6), F("\t\t"));
 
     calibResult = (_Avalue * sq(voltage)) + (_Bvalue * voltage) + _Cvalue;
-    DBGM(F("Calibration Curve: "));
-    DBGM(_Avalue, F("x^2 + "), _Bvalue, F("x + "), _Cvalue, F("\n"));
-    DBGM(F("calibResult: "), calibResult, F("\n"));
+    MS_DBG(F("Calibration Curve: "));
+    MS_DBG(_Avalue, F("x^2 + "), _Bvalue, F("x + "), _Cvalue, F("\n"));
+    MS_DBG(F("calibResult: "), calibResult, F("\n"));
 
     sensorValues[OBS3_TURB_VAR_NUM] = calibResult;
 

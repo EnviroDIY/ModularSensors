@@ -12,8 +12,8 @@
 
 #include "VariableArray.h"
 
-// #define MODULAR_SENSORS_OUTPUT Serial
-// #define LOGGER_DBG Serial
+// #define DEBUGGING_SERIAL_OUTPUT Serial
+#include "ModSensorDebugger.h"
 
 #define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
 #include <EnableInterrupt.h>  // To handle external and pin change interrupts
@@ -35,25 +35,7 @@
 
 #include <SdFat.h>  // To communicate with the SD card
 
-#include "ModemSupport.h"  // To communicate with the internet
-
-// Debugging helpers
-#ifdef LOGGER_DBG
-namespace {
- template<typename T>
- static void DBGLOG(T last) {
-   LOGGER_DBG.print(last);
- }
-
- template<typename T, typename... Args>
- static void DBGLOG(T head, Args... tail) {
-   LOGGER_DBG.print(head);
-   DBGLOG(tail...);
- }
-}
-#else
- #define DBGLOG(...)
-#endif
+#include "LoggerModem.h"  // To communicate with the internet
 
 // Defines the "Logger" Class
 class Logger : public VariableArray
@@ -126,7 +108,7 @@ public:
     void setAlertPin(int ledPin)
     {
         _ledPin = ledPin;
-        DBGLOG(F("Pin "), _ledPin, F(" set for alerts\n"));
+        MS_DBG(F("Pin "), _ledPin, F(" set for alerts\n"));
     }
 
 #if defined(USE_TINY_GSM)
@@ -223,7 +205,7 @@ public:
 
         uint32_t nist_logTZ = nist + getTimeZone()*3600;
         uint32_t nist_rtcTZ = nist_logTZ - getTZOffset()*3600;
-        DBGLOG(F("        Correct Time for Logger: "), nist_logTZ, F(" -> "), \
+        MS_DBG(F("        Correct Time for Logger: "), nist_logTZ, F(" -> "), \
             formatDateTime_ISO8601(nist_logTZ), F("\n"));
 
         // See how long it took to get the time from NIST
@@ -231,9 +213,9 @@ public:
 
         // Check the current RTC time
         uint32_t cur_logTZ = getNowEpoch();
-        DBGLOG(F("           Time Returned by RTC: "), cur_logTZ, F(" -> "), \
+        MS_DBG(F("           Time Returned by RTC: "), cur_logTZ, F(" -> "), \
             formatDateTime_ISO8601(cur_logTZ), F("\n"));
-        DBGLOG(F("Offset: "), abs(nist_logTZ - cur_logTZ), F("\n"));
+        MS_DBG(F("Offset: "), abs(nist_logTZ - cur_logTZ), F("\n"));
 
         // If the RTC and NIST disagree by more than 5 seconds, set the clock
         if ((abs(nist_logTZ - cur_logTZ) > 5) && (nist != 0))
@@ -269,31 +251,31 @@ public:
     {
         bool retval;
         uint32_t checkTime = getNowEpoch();
-        DBGLOG(F("Current Unix Timestamp: "), checkTime, F("\n"));
-        DBGLOG(F("Mod of Logging Interval: "), checkTime % _interruptRate, F("\n"));
-        DBGLOG(F("Number of Readings so far: "), _numReadings, F("\n"));
-        DBGLOG(F("Mod of 120: "), checkTime % 120, F("\n"));
+        MS_DBG(F("Current Unix Timestamp: "), checkTime, F("\n"));
+        MS_DBG(F("Mod of Logging Interval: "), checkTime % _interruptRate, F("\n"));
+        MS_DBG(F("Number of Readings so far: "), _numReadings, F("\n"));
+        MS_DBG(F("Mod of 120: "), checkTime % 120, F("\n"));
         if ((checkTime % _interruptRate == 0 ) or
             (_numReadings < 10 and getNowEpoch() % 120 == 0))
         {
             // Update the time variables with the current time
             markTime();
-            DBGLOG(F("Time marked at (unix): "), markedEpochTime, F("\n"));
-            DBGLOG(F("    year: "), markedDateTime.year(), F("\n"));
-            DBGLOG(F("    month: "), markedDateTime.month(), F("\n"));
-            DBGLOG(F("    date: "), markedDateTime.date(), F("\n"));
-            DBGLOG(F("    hour: "), markedDateTime.hour(), F("\n"));
-            DBGLOG(F("    minute: "), markedDateTime.minute(), F("\n"));
-            DBGLOG(F("    second: "), markedDateTime.second(), F("\n"));
-            DBGLOG(F("Time marked at [char]: "), markedISO8601Time, F("\n"));
+            MS_DBG(F("Time marked at (unix): "), markedEpochTime, F("\n"));
+            MS_DBG(F("    year: "), markedDateTime.year(), F("\n"));
+            MS_DBG(F("    month: "), markedDateTime.month(), F("\n"));
+            MS_DBG(F("    date: "), markedDateTime.date(), F("\n"));
+            MS_DBG(F("    hour: "), markedDateTime.hour(), F("\n"));
+            MS_DBG(F("    minute: "), markedDateTime.minute(), F("\n"));
+            MS_DBG(F("    second: "), markedDateTime.second(), F("\n"));
+            MS_DBG(F("Time marked at [char]: "), markedISO8601Time, F("\n"));
             // Update the number of readings taken
             _numReadings ++;
-            DBGLOG(F("Time to log!\n"));
+            MS_DBG(F("Time to log!\n"));
             retval = true;
         }
         else
         {
-            DBGLOG(F("Not time yet, back to sleep\n"));
+            MS_DBG(F("Not time yet, back to sleep\n"));
             retval = false;
         }
         return retval;
@@ -304,22 +286,22 @@ public:
     bool checkMarkedInterval(void)
     {
         bool retval;
-        DBGLOG(F("Marked Time: "), markedEpochTime, F("\n"));
-        DBGLOG(F("Mod of Logging Interval: "), markedEpochTime % _interruptRate, F("\n"));
-        DBGLOG(F("Number of Readings so far: "), _numReadings, F("\n"));
-        DBGLOG(F("Mod of 120: "), markedEpochTime % 120, F("\n"));
+        MS_DBG(F("Marked Time: "), markedEpochTime, F("\n"));
+        MS_DBG(F("Mod of Logging Interval: "), markedEpochTime % _interruptRate, F("\n"));
+        MS_DBG(F("Number of Readings so far: "), _numReadings, F("\n"));
+        MS_DBG(F("Mod of 120: "), markedEpochTime % 120, F("\n"));
         if (markedEpochTime != 0 &&
             ((markedEpochTime % _interruptRate == 0 ) or
             (_numReadings < 10 and markedEpochTime % 120 == 0)))
         {
             // Update the number of readings taken
             _numReadings ++;
-            DBGLOG(F("Time to log!\n"));
+            MS_DBG(F("Time to log!\n"));
             retval = true;
         }
         else
         {
-            DBGLOG(F("Not time yet, back to sleep\n"));
+            MS_DBG(F("Not time yet, back to sleep\n"));
             retval = false;
         }
         return retval;
@@ -333,7 +315,7 @@ public:
     // Set up the Interrupt Service Request for waking
     // In this case, we're doing nothing, we just want the processor to wake
     // This must be a static function (which means it can only call other static funcions.)
-    static void wakeISR(void){DBGLOG(F("The clock interrupt woke me up!\n"));}
+    static void wakeISR(void){MS_DBG(F("The clock interrupt woke me up!\n"));}
 
     #if defined ARDUINO_ARCH_SAMD
 
@@ -358,11 +340,11 @@ public:
         // Wait until the serial ports have finished transmitting
         // This does not clear their buffers, it just waits until they are finished
         // TODO:  Make sure can find all serial ports
-        #if defined(MODULAR_SENSORS_OUTPUT)
-            MODULAR_SENSORS_OUTPUT.flush();  // for debugging
+        #if defined(STANDARD_SERIAL_OUTPUT)
+            STANDARD_SERIAL_OUTPUT.flush();  // for debugging
         #endif
-        #if defined(LOGGER_DBG)
-            LOGGER_DBG.flush();  // for debugging
+        #if defined(DEBUGGING_SERIAL_OUTPUT)
+            DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
         #endif
 
         // This clears the interrrupt flag in status register of the clock
@@ -414,11 +396,11 @@ public:
         // Wait until the serial ports have finished transmitting
         // This does not clear their buffers, it just waits until they are finished
         // TODO:  Make sure can find all serial ports
-        #if defined(MODULAR_SENSORS_OUTPUT)
-            MODULAR_SENSORS_OUTPUT.flush();  // for debugging
+        #if defined(STANDARD_SERIAL_OUTPUT)
+            STANDARD_SERIAL_OUTPUT.flush();  // for debugging
         #endif
-        #if defined(LOGGER_DBG)
-            LOGGER_DBG.flush();  // for debugging
+        #if defined(DEBUGGING_SERIAL_OUTPUT)
+            DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
         #endif
 
         // This clears the interrrupt flag in status register of the clock
@@ -599,7 +581,7 @@ public:
 
             // Add header information
             logFile.print(generateFileHeader());
-            DBGLOG(generateFileHeader(), F("\n"));
+            MS_DBG(generateFileHeader(), F("\n"));
 
             //Close the file to save it
             logFile.close();
@@ -692,8 +674,8 @@ public:
             PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
             PRINTOUT(F("    -----------------------\n"));
             // Print out the sensor data
-            #if defined(MODULAR_SENSORS_OUTPUT)
-                printSensorData(&MODULAR_SENSORS_OUTPUT);
+            #if defined(STANDARD_SERIAL_OUTPUT)
+                printSensorData(&STANDARD_SERIAL_OUTPUT);
             #endif
             PRINTOUT(F("    -----------------------\n"));
 
