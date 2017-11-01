@@ -103,7 +103,7 @@ public:
         int did_respond = 0;
 
         // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
-        if(_modem.connect("data.envirodiy.org", 80))
+        if(_modem.openTCP("data.envirodiy.org", 80))
         {
             // Send the request to the serial for debugging
             #if defined(STANDARD_SERIAL_OUTPUT)
@@ -131,7 +131,7 @@ public:
 
             // Close the TCP/IP connection as soon as the first 12 characters are read
             // We don't need anything else and stoping here should save data use.
-            _modem.stop();
+            _modem.closeTCP();
         }
         else PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data Portal -- \n"));
 
@@ -182,7 +182,7 @@ public:
             sensorsSleep();
 
             // Connect to the network
-            if (_modem.connectNetwork())
+            if (_modem.connectInternet())
             {
                 // Post the data to the WebSDL
                 postDataEnviroDIY();
@@ -194,7 +194,7 @@ public:
                 }
 
                 // Disconnect from the network
-                _modem.disconnectNetwork();
+                _modem.disconnectInternet();
             }
 
             // Turn the modem off

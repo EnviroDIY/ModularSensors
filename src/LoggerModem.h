@@ -124,7 +124,7 @@ public:
         bool retVal = true;
 
         // Connect to the network before asking for quality
-        if (!_modem->isNetworkConnected()) retVal &= connectNetwork();
+        if (!_modem->isNetworkConnected()) retVal &= connectInternet();
         if (retVal == false) return false;
 
 
@@ -133,7 +133,7 @@ public:
         // close on its own so I don't need a separate stop.
         #if defined(TINY_GSM_MODEM_XBEE)
             IPAddress ip(129, 6, 15, 30);
-            connect(ip, 37);  // XBee is faster with an ip address
+            openTCP(ip, 37);  // XBee is faster with an ip address
             _client->print(F("Hi!"));  // Need to send something before connection is made
             delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
         #endif
@@ -228,7 +228,7 @@ public:
         return percent;
     }
 
-    bool connectNetwork(void)
+    bool connectInternet(void)
     {
         bool retVal = false;
 
@@ -290,7 +290,7 @@ public:
         return retVal;
     }
 
-    void disconnectNetwork(void)
+    void disconnectInternet(void)
     {
     #if defined(TINY_GSM_MODEM_HAS_GPRS)
         _modem->gprsDisconnect();
@@ -300,7 +300,7 @@ public:
         MS_DBG(F("Disconnected from network."));
     }
 
-    int connect(const char *host, uint16_t port)
+    int openTCP(const char *host, uint16_t port)
     {
         MS_DBG("Connecting to", host, "...");
         int ret_val = _client->connect(host, port);
@@ -309,7 +309,7 @@ public:
         return ret_val;
     }
 
-    int connect(IPAddress ip, uint16_t port)
+    int openTCP(IPAddress ip, uint16_t port)
     {
         MS_DBG("Connecting to", ip, "...");
         int ret_val = _client->connect(ip, port);
@@ -318,9 +318,9 @@ public:
         return ret_val;
     }
 
-    void stop(void)
+    void closeTCP(void)
     {
-        _client->stop();
+        _client->closeTCP();
         MS_DBG(F("Closed TCP/IP."));
     }
 
@@ -333,9 +333,9 @@ public:
         // Make TCP connection
         #if defined(TINY_GSM_MODEM_XBEE)
             IPAddress ip(129, 6, 15, 30);
-            connect(ip, 37);  // XBee is faster with an ip address
+            openTCP(ip, 37);  // XBee is faster with an ip address
         #else
-        connect("time.nist.gov", 37);
+        openTCP("time.nist.gov", 37);
         #endif
 
         // XBee needs to send something before the connection is actually made

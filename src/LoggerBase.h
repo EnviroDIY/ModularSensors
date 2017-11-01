@@ -653,7 +653,7 @@ public:
             // Turn on the modem
             _modem.wake();
             // Connect to the network to make sure we have signal
-            _modem.connectNetwork();
+            _modem.connectInternet();
         #endif  // USE_TINY_GSM
 
         // Update the sensors and print out data 25 times
@@ -690,7 +690,7 @@ public:
 
         #if defined(USE_TINY_GSM)
             // Disconnect from the network
-            _modem.disconnectNetwork();
+            _modem.disconnectInternet();
             // Turn off the modem
             _modem.off();
         #endif  // USE_TINY_GSM
@@ -754,12 +754,12 @@ public:
             // Turn on the modem
             _modem.wake();
             // Connect to the network
-            if (_modem.connectNetwork())
+            if (_modem.connectInternet())
             {
                 delay(5000);
                 syncRTClock(_modem.getNISTTime());
                 // Disconnect from the network
-                _modem.disconnectNetwork();
+                _modem.disconnectInternet();
             }
             // Turn off the modem
             _modem.off();

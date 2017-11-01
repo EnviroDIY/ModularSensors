@@ -83,8 +83,8 @@ In order to support multiple functions and sensors, there are quite a lot of sub
 
 ### Functions for Each Variable
 - **Constructor** - Every variable requires a pointer to its parent sensor as part of the constructor.
-- **getVarName()** - This returns the variable's name using http://vocabulary.odm2.org/variablename/ as a String.
-- **getVarUnit()** - This returns the variable's unit using http://vocabulary.odm2.org/units/ as a String.
+- **getVarName()** - This returns the variable's name ,using http://vocabulary.odm2.org/variablename/, as a String.
+- **getVarUnit()** - This returns the variable's unit, using http://vocabulary.odm2.org/units/, as a String.
 - **getVarCode()** - This returns a String with a customized code for the variable, if one is given, and a default if not
 - **setup()** - This "sets up" the variable - attaching it to its parent sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program _after_ calling the sensor setup.
 - **getValue()** - This returns the current value of the variable as a float.  You should call the update function before calling getValue.  As a backup, if the getValue function sees that the update function has not been called within the last 60 seconds, it will re-call it.
@@ -200,20 +200,21 @@ If you are running sensors remotely on batteries and/or solar power, saving powe
 
 
 ## <a name="Logger"></a>Basic Logger Functions
-Our main reason to unify the output from many sensors and variables is to easily log the data to an SD card and to send it to any other live streaming data receiver, like the [EnviroDIY data portal](http://data.envirodiy.org/).  There are several modules available to use with the sensors to log data and stream data:  LoggerBase.h, LoggerEnviroDIY.h, and LoggerModem.h.  The classes Logger (in LoggerBase.h) is a sub-class of VariableArray and LoggerEnviroDIY (in LoggerEnviroDIY.h) is in-turn a sub-class of Logger.   They contain all of the functions available to a VariableArray as described above.  The Logger class adds the abilities to communicate with a DS3231 real time clock, to put the board into deep sleep between readings to conserver power, and to write the data from the sensors to a csv file on a connected SD card.  The LoggerModem module is essentially a wrapper for [TinyGSM](https://github.com/EnviroDIY/TinyGSM) which adds quick functions for turning modem on and off to save power and to synchronize the real-time clock with the [NIST Internet time service](https://www.nist.gov/pml/time-and-frequency-division/services/internet-time-service-its).  The LoggerEnviroDIY class uses LoggerModem.h to add the ability to properly format and send data to the [EnviroDIY data portal](http://data.envirodiy.org/).
+Our main reason to unify the output from many sensors and variables is to easily log the data to an SD card and to send it to a live streaming data receiver, like the [EnviroDIY data portal](http://data.envirodiy.org/).  There are several modules available to use with the sensors to log data and stream data:  LoggerBase.h, LoggerEnviroDIY.h, and LoggerModem.h.  The classes Logger (in LoggerBase.h) is a sub-class of VariableArray and LoggerEnviroDIY (in LoggerEnviroDIY.h) is in-turn a sub-class of Logger.   They contain all of the functions available to a VariableArray as described above.  The Logger class adds the abilities to communicate with a real time clock, to put the board into deep sleep between readings to conserver power, and to write the data from the sensors to a csv file on a connected SD card.  The LoggerModem module is essentially a wrapper for [TinyGSM](https://github.com/EnviroDIY/TinyGSM) which adds quick functions for turning modem on and off to save power and to synchronize the real-time clock with the [NIST Internet time service](https://www.nist.gov/pml/time-and-frequency-division/services/internet-time-service-its).  The LoggerEnviroDIY class uses LoggerModem.h to add the ability to properly format and send data to the [EnviroDIY data portal](http://data.envirodiy.org/).
 
 ### Functions Available for a Logger Object:
+
+#### Setup and initialization functions:
+
+- **init(int SDCardPin, int mcuWakePin, int variableCount, Variable \*variableList[], float loggingIntervalMinutes, const char \*loggerID = 0)** - Initializes the logger object.  Must happen within the setup function.  Note that the variableList[], and loggerID are pointers.  The SDCardPin is the pin of the chip select/slave select for the SPI connection to the SD card.
+- **setAlertPin(int ledPin)** - Optionally sets a pin to put out an alert that a measurement is being logged.  This is intended to be a pin with a LED on it so you can see the light come on when a measurement is being taken.
+- **attachModem(loggerModem &modem)** - Attaches a loggerModem to the logger, which the logger then can use to send data to the internet.  See [Modem and Internet Functions](#Modem) for more information on how the modem must be set up before it is attached to the logger.
 
 #### Timezone functions:
 
 - **setTimeZone(int timeZone)** - Sets the timezone that you wish data to be logged in (in +/- hours from UTC).  _This must always be set!_
 - **setTZOffset(int offset)** - This sets the offset between the built-in clock and the timezone the data should be logged in.  If your clock is set in UTC, then the TZOffset should be the same as the TimeZone.  For example, if you would like your clock to be set in UTC but your data should be output in Eastern Standard Time, both setTimeZone and setTZOffset should be called with -5.  On the other hand, if your clock is already set EST, you do not need to call the setTZOffset function (or can call it with 0).
 A note about timezones:  It is possible to create multiple logger objects in your code if you want to log different sensors at different intervals, _but every logger object will always have the same timezone and timezone offset_.  If you attempt to call these functions more than once for different loggers, whatever value was called last will apply to every logger.
-
-#### Setup and initialization functions:
-
-- **init(int SDCardPin, int mcuWakePin, int variableCount, Sensor variableList[], float loggingIntervalMinutes, const char loggerID = 0)** - Initializes the logger object.  Must happen within the setup function.  Note that the variableList[], loggerID are all pointers.  The SDCardPin is the pin of the chip select/slave select for the SPI connection to the SD card.
-- **setAlertPin(int ledPin)** - Optionally sets a pin to put out an alert that a measurement is being logged.  This is intended to be a pin with a LED on it so you can see the light come on when a measurement is being taken.
 
 #### Functions to access the clock in proper format and time zone:
 
@@ -240,74 +241,85 @@ A note about timezones:  It is possible to create multiple logger objects in you
 - **generateFileHeader()** - This returns and Aruduino String with a comma separated list of headers for the csv.  The headers will be ordered based on the order variables are listed in the array fed to the init function.
 - **generateSensorDataCSV()** - This returns an Arduino String containing the time and a comma separated list of sensor values.  The data will be ordered based on the order variables are listed in the array fed to the init function.
 
-#### Functions for debugging sensors:
+#### Functions for debugging:
 
-To view any information about what your logger is doing you must add the statement ```#define STANDARD_SERIAL_OUTPUT xxxxx``` to the top of your sketch, where xxxxx is the name of a serial output (ie, Serial or USBSerial).  This statement should be above any include statements in your sketch.   
+To view any information about what your logger is doing you must add the statement ```#define STANDARD_SERIAL_OUTPUT xxxxx``` to the top of your sketch, where xxxxx is the name of a serial output (ie, Serial or USBSerial).  This statement should be above any include statements in your sketch.
+
+To see more intense debugging for any individual component of the library (a sensor, the variable arrays, the modem, etc), open the source file header (\*.h), for that component.  Find the line ```// #define DEBUGGING_SERIAL_OUTPUT xxxxx```, where xxxxx is the name of a serial output (ie, Serial or USBSerial).  Remove the two comment slashes from that line.  Then recompile and upload your code.  This will (sometimes dramatically) increase the number of statements going out to the debugging serial port.
 
 - **checkForDebugMode(int buttonPin)** - This stops everything and waits for up to two seconds for a button to be pressed to enter allow the user to enter "debug" mode.  I suggest running this as the very last step of the setup function.
 - **debugMode()** - This is a "debugging" mode for the sensors.  It prints out all of the sensor details every 5 seconds for 25 records worth of data.  The printouts go to whichever serial port is given in the ```#define STANDARD_SERIAL_OUTPUT``` statement.
 
 ####  Convience functions to do it all:
 
-- **begin()** - Starts the logger.  Must be in the setup function.
+- **begin()** - Starts all the sensors, the variable array, and the logger.  Must be in the setup function.
 - **log()** - Logs data, must be the entire content of the loop function.
 
-### <a name="Modem"></a>Functions within LoggerModem/TinyGSM:
-The "LoggerModem" bit of this library is essentially a wrapper for [TinyGSM](https://github.com/EnviroDIY/TinyGSM), to interface with the modem.  To make this work, _you must add one of these lines to the very top of your sketch_:
+### <a name="Modem"></a>Functions for a LoggerModem:
+
+A loggerModem serves two functions:  First, it communicates with the internet via WiFi or cellular service and sends data to remote services.  Second, it acts as a sensor which can return the strength of the WiFi or cellular connection.  A loggerModem object is a combination of a [TinyGsm](https://github.com/EnviroDIY/TinyGSM) (modem instance), a TinyGsmClient, and a ModemOnOff to control modem power.
+
+Before creating a loggerModem instance, _you must add one of these lines to the top of your sketch_, before any include statements:
+
+- ```#define TINY_GSM_MODEM_SIM800``` - for a SIMCom SIM800, SIM900, or varient thereof (including [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
+- ```#define TINY_GSM_MODEM_SIM808``` - for a SIMCom SIM808 (essentially a SIMCom SIM800 with GPS support)
+- ```#define TINY_GSM_MODEM_A6``` - for an AI-Thinker A6 or A7
+- ```#define TINY_GSM_MODEM_M590``` - for a Neoway M590
+- ```#define TINY_GSM_MODEM_U201``` - for a U-blox U201 (or a Digi 3G XBee running in bypass mode)
+- ```#define TINY_GSM_MODEM_ESP8266``` - for an ESP8266 using the _default AT command firmware_
+- ```#define TINY_GSM_MODEM_XBEE``` - for Digi brand WiFi or Cellular XBee's running in normal (transparent) mode
+
+Then you must create the modem object:
 
 ```cpp
-// Select your modem chip, comment out all of the others
-// #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or varient thereof
-// #define TINY_GSM_MODEM_A6  // Select for a AI-Thinker A6 or A7 chip
-// #define TINY_GSM_MODEM_M590  // Select for a Neoway M590
-// #define TINY_GSM_MODEM_U201  // Select for a U-blox U201
-// #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
-#define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
 // Create the modem object
 loggerModem modem;
 ```
-See [TinyGSM's documentation](https://github.com/vshymanskyy/TinyGSM/blob/master/README.md) for a full list of all of the chip variants and modules that are supported.  If you would prefer to use a library of your own for controlling your modem, omit the define statements.  In this case, you will lose access to the postDataEnviroDIY() and log() functions within the LoggerEnviroDIY object.
+
+See [TinyGSM's documentation](https://github.com/vshymanskyy/TinyGSM/blob/master/README.md) for a full list of all of the chip variants and modules that are supported.
 
 After defining your modem, set it up using one of these two commands, depending on whether you are using cellular or WiFi communication:
 
-- **setupModem(Stream modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin, ModemSleepType sleepType, const char APN)** - Sets up the internet communcation with a cellular modem.  Note that the modemStream and APN should be pointers.  Use -1 for any pins that are not connected.
-- **setupModem(Stream modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin, ModemSleepType sleepType, const char ssid, const char pwd)** - Sets up the internet communcation with a WiFi modem.  Note that the modemStream, ssid, and password should be pointers.  Use -1 for any pins that are not connected.
-- The vcc33Pin is the pin that controls whether or not the modem itself is powered.  Use -1 if your modem is always recieving power from your logger board or if you want to control modem power independently.
-- The modemStatusPin is the pin that indicates whether the modem is turned on and it is clear to send data.  If you use -1, the modem is assumed to always be ready.
-- The modemSleepRqPin is the _pin_ used to put the modem to sleep or to wake it up.
-- The ModemSleepType controls _how_ the modem is put to sleep between readings.
-    - Use "held" if the SleepRq pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
-    - Use "pulsed" if the SleepRq pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
-    - Use "reverse" if the SleepRq pin is held LOW to keep the modem awake, as with all XBees.
-    - Use "always_on" if you do not want the library to control the modem power and sleep.
+- **setupModem(Stream modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin, ModemSleepType sleepType, const char \*APN)** - Sets up the internet communcation with a cellular modem.  Note that the modemStream and APN should be pointers.  Use -1 for any pins that are not connected.
+- **setupModem(Stream modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin, ModemSleepType sleepType, const char \*ssid, const char \*pwd)** - Sets up the internet communcation with a WiFi modem.  Note that the modemStream, ssid, and password should be pointers.  Use -1 for any pins that are not connected.
+- The **vcc33Pin** is the pin that controls whether or not the modem itself is powered.  Use -1 if your modem is always recieving power from your logger board or if you want to control modem power independently.
+- The **modemStatusPin** is the pin that indicates whether the modem is turned on and it is clear to send data.  If you use -1, the modem is assumed to always be ready.
+- The **modemSleepRqPin** is the _pin_ used to put the modem to sleep or to wake it up.
+- The **ModemSleepType** controls _how the modemSleepRqPin is used_ to put the modem to sleep between readings.
+    - Use _"held"_ if the SleepRq pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
+    - Use _"pulsed"_ if the SleepRq pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
+    - Use _"reverse"_ if the SleepRq pin is held LOW to keep the modem awake, as with all XBees.
+    - Use *"always_on"* if you do not want the library to control the modem power and sleep.
 - Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
 
 Once the modem has been set up, these functions are available:
 
-- **on()** - Turns the modem on.  Returns true if connection is successful.
+- **wake()** - Turns the modem on.  Returns true if connection is successful.
+- **connectInternet()** - Connects to the internet via WiFi or cellular network.  Returns true if connection is successful.
+- **openTCP(const char host, uint16_t port)** - Makes a TCP connection to a host url and port.  (The most common port for public url's is "80"; if you don't know the port, try this first.)  Returns 1 if successful.
+- **openTCP(IPAddress ip, uint16_t port)** - Makes a TCP connection to a host ip address and port.  Returns 1 if successful.
+- **closeTCP()** - Breaks the TCP connection.
+- **disconnectInternet()** - Disconnects from the network, if applicable.
 - **off()** - Turns the modem off and empties the send and receive buffer.  Returns true if connection is successful.
-- **connectNetwork()** - Connects to the internet via WiFi or cellular network.  Returns true if connection is successful.
-- **disconnectNetwork()** - Disconnects from the network, if applicable.
-- **connect(const char host, uint16_t port)** - Makes a TCP connection to a host url and port.  (If you don't know the port, use "80".)  Returns 1 if successful.
-- **stop()** - Breaks the TCP connection.
-- **dumpBuffer(Stream stream, int timeDelay = 5, int timeout = 5000)** - Empties out the recieve buffer.  The flush() function does NOT empty the buffer, it only waits for sending to complete.
 - **getNISTTime()** - Returns the current unix timestamp (_in UTC_) from NIST via the TIME protocol (rfc868).
+- **update()** - Updates the signal strength values.  Returns true if successful.
 
-The cellular modems themselves (SIM800, SIM900, A6, A7, and M590) can also be used as "sensors" which have the following variables:
+As mentioned above, the cellular modems themselves are also sensors with the following variables:
 
 ```cpp
-Modem_RSSI(&modem, "customVarCode");
+Modem_RSSI(&modem, "customVarCode");  // Received Signal Strength Indication, in dB
 Modem_SignalPercent(&modem, "customVarCode");
 ```
+
 The modem does not behave quite the same as all the other sensors do, though.  Setup must be done with the '''setupModem(...)''' function; the normal '''setup()''' function does not do anything.  The '''sleep()''' function also does not work, the modem will only go off with the  '''off()''' functions.
 
 
 ### <a name="DIYlogger"></a>Additional Functions Available for a LoggerEnviroDIY Object:
 These three functions set up the required registration token, sampling feature UUID, and time series UUIDs for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.  You must call these functions to be able to get proper JSON data for EnviroDIY, even without the modem support.
 
-- **setToken(const char registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
-- **setSamplingFeature(const char samplingFeature)** - Sets the GUID of the sampling feature.  Note that the input is a pointer to the samplingFeature.
-- **setUUIDs(const char UUIDs)** - Sets the time series UUIDs.  Note that the input is an array of pointers.  The order of the UUIDs in this array **must match exactly** with the order of the coordinating variable in the variableList.
+- **setToken(const char \*registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
+- **setSamplingFeature(const char \*samplingFeature)** - Sets the GUID of the sampling feature.  Note that the input is a pointer to the samplingFeature.
+- **setUUIDs(const char \*UUIDs)** - Sets the time series UUIDs.  Note that the input is an array of pointers.  The order of the UUIDs in this array **must match exactly** with the order of the coordinating variable in the variableList.
 
 Because sending data to EnviroDIY depends on having some sort of modem or internet connection, there is a modem object created within the LoggerEnviroDIY Object.  To set up that modem object, you still need to call the functions listed in the LoggerModem section, but you need to add an extra "modem." before the function name to call the internal modem object.  You do not need to separately create the object.
 
@@ -374,13 +386,13 @@ modem.setupModem(modemStream, vcc33Pin, modemStatusPin, modemSleepRqPin, sleepTy
 EnviroDIYLogger.attachModem(modem);
 
 // Connect to the network
-if (modem.connectNetwork())
+if (modem.connectInternet())
 {
     // Synchronize the RTC
     EnviroDIYLogger.syncRTClock();
 }
 // Disconnect from the network
-modem.disconnectNetwork();
+modem.disconnectInternet();
 
 // Begin the logger;
 EnviroDIYLogger.begin();
@@ -882,7 +894,7 @@ ___
     - AltSoftSerial is not directly supported on the AtSAM3X.
     - SoftwareSerial_ExtInts is not supported on the AtSAM3X.
     - Any digital pin can be used with SDI-12.
-- **ATtiny** - Unsupported
+- **ATtiny** - Unsupported.  This chip has too little power and far too few pins and communication ports to use this library.
 - **Teensy 2.x/3.x** - Unsupported
 - **STM32** - Unsupported
 - Anything else not listed above as being supported.

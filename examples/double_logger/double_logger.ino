@@ -216,12 +216,12 @@ void setup()
     // Turn on the modem
     modem.wake();
     // Connect to the network
-    if (modem.connectNetwork())
+    if (modem.connectInternet())
     {
         // Synchronize the RTC
         logger1min.syncRTClock(modem.getNISTTime());
         // Disconnect from the network
-        modem.disconnectNetwork();
+        modem.disconnectInternet();
     }
     // Turn off the modem
     modem.off();
@@ -299,12 +299,12 @@ void loop()
         // Turn on the modem
         modem.wake();
         // Connect to the network
-        if (modem.connectNetwork())
+        if (modem.connectInternet())
         {
             // Synchronize the RTC
             logger1min.syncRTClock(modem.getNISTTime());
             // Disconnect from the network
-            modem.disconnectNetwork();
+            modem.disconnectInternet();
         }
         // Turn off the modem
         modem.off();
