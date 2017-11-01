@@ -27,6 +27,7 @@ public:
         PRINTOUT(F("Initializing variable array with "), variableCount, F(" variables...\n"));
         _variableCount = variableCount;
         _variableList = variableList;
+        PRINTOUT(F("   ... Success!\n"));
     }
 
     // Functions to return information about the list

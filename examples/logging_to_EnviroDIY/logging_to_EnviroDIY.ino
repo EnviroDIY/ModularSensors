@@ -473,7 +473,7 @@ void setup()
     // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);
 
-    // Start the AltSoftSerial stream for the modbus sensors
+    // Start the stream for the modbus sensors
     modbusSerial.begin(9600);
 
     // Start the SoftwareSerial stream for the sonar

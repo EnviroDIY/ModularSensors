@@ -49,7 +49,9 @@ public:
               float loggingIntervalMinutes,
               const char *loggerID = 0)
     {
-        PRINTOUT(F("Initializing variable array with "), variableCount, F(" variables..."));
+        PRINTOUT(F("Initializing logger"), loggerID, F(" to record "),
+                 variableCount, F(" variables at "),
+                 loggingIntervalMinutes, F(" minute intervals ... "));
 
         _SDCardPin = SDCardPin;
         _mcuWakePin = mcuWakePin;
@@ -728,9 +730,6 @@ public:
     // This calls all of the setup functions - must be run AFTER init
     virtual void begin(void)
     {
-        // Print a start-up note to the first serial port
-        PRINTOUT(F("Beginning logger "), _loggerID, F("\n"));
-
         // Set up pins for the LED's
         if (_ledPin > 0) pinMode(_ledPin, OUTPUT);
 
