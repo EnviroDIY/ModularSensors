@@ -320,7 +320,7 @@ public:
 
     void closeTCP(void)
     {
-        _client->closeTCP();
+        _client->stop();
         MS_DBG(F("Closed TCP/IP."));
     }
 
