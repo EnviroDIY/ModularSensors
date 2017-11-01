@@ -40,14 +40,14 @@ VariableArray sensors;
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
-#include <ProcessorMetadata.h>
+#include <ProcessorStats.h>
 
 const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
 const int greenLED = 8;  // Pin for the green LED (else -1)
 const int redLED = 9;  // Pin for the red LED (else -1)
 
 const char *MFVersion = "v0.5";
-ProcessorMetadata mayfly(MFVersion) ;
+ProcessorStats mayfly(MFVersion) ;
 
 
 // ==========================================================================
@@ -311,8 +311,8 @@ YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePi
 //    The array that contains all variables to print out
 // ==========================================================================
 Variable *variableList[] = {
-    new ProcessorMetadata_Batt(&mayfly),
-    new ProcessorMetadata_FreeRam(&mayfly),
+    new ProcessorStats_Batt(&mayfly),
+    new ProcessorStats_FreeRam(&mayfly),
     new MaximDS3231_Temp(&ds3231),
     new ApogeeSQ212_PAR(&SQ212),
     new MaxBotixSonar_Range(&sonar),

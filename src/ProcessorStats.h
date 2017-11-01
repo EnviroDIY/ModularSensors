@@ -1,5 +1,5 @@
 /*
- *ProcessorMetadata.h
+ *ProcessorStats.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -12,8 +12,8 @@
  * If the processor is awake, it's ready to take a reading.
 */
 
-#ifndef ProcessorMetadata_h
-#define ProcessorMetadata_h
+#ifndef ProcessorStats_h
+#define ProcessorStats_h
 
 #include "SensorBase.h"
 #include "VariableBase.h"
@@ -33,11 +33,11 @@
 
 // The "Main" class for the Processor
 // Only need a sleep and wake since these DON'T use the default of powering up and down
-class ProcessorMetadata : public Sensor
+class ProcessorStats : public Sensor
 {
 public:
     // Need to know the Mayfly version because the battery resistor depends on it
-    ProcessorMetadata(const char *version);
+    ProcessorStats(const char *version);
 
     String getSensorLocation(void) override;
     bool sleep(void) override;
@@ -52,10 +52,10 @@ private:
 
 
 // For the battery supplying power to the processor
-class ProcessorMetadata_Batt : public Variable
+class ProcessorStats_Batt : public Variable
 {
 public:
-    ProcessorMetadata_Batt(Sensor *parentSense, String customVarCode = "")
+    ProcessorStats_Batt(Sensor *parentSense, String customVarCode = "")
       : Variable(parentSense, PROCESSOR_BATTERY_VAR_NUM,
                  F("batteryVoltage"), F("Volt"),
                  PROCESSOR_BATTERY_RESOLUTION,
@@ -65,10 +65,10 @@ public:
 
 
 // Defines the "Free Ram" This is a board diagnostic
-class ProcessorMetadata_FreeRam : public Variable
+class ProcessorStats_FreeRam : public Variable
 {
 public:
-    ProcessorMetadata_FreeRam(Sensor *parentSense, String customVarCode = "")
+    ProcessorStats_FreeRam(Sensor *parentSense, String customVarCode = "")
       : Variable(parentSense, PROCESSOR_RAM_VAR_NUM,
                  F("Free SRAM"), F("Bit"),
                  PROCESSOR_RAM_RESOLUTION,

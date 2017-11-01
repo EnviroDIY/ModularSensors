@@ -1,5 +1,5 @@
 /*
- *ProcessorMetadata.h
+ *ProcessorStats.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -12,7 +12,7 @@
  * If the processor is awake, it's ready to take a reading.
 */
 
-#include "ProcessorMetadata.h"
+#include "ProcessorStats.h"
 
 // EnviroDIY boards
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
@@ -95,7 +95,7 @@
 #endif
 
 // Need to know the Mayfly version because the battery resistor depends on it
-ProcessorMetadata::ProcessorMetadata(const char *version) : Sensor(-1, -1, BOARD, PROCESSOR_NUM_MEASUREMENTS, PROCESSOR_WARM_UP)
+ProcessorStats::ProcessorStats(const char *version) : Sensor(-1, -1, BOARD, PROCESSOR_NUM_MEASUREMENTS, PROCESSOR_WARM_UP)
 {
     _version = version;
 
@@ -113,9 +113,9 @@ ProcessorMetadata::ProcessorMetadata(const char *version) : Sensor(-1, -1, BOARD
     #endif
 }
 
-String ProcessorMetadata::getSensorLocation(void) {return BOARD;}
-bool ProcessorMetadata::sleep(void) {return true;}
-bool ProcessorMetadata::wake(void) {return true;}
+String ProcessorStats::getSensorLocation(void) {return BOARD;}
+bool ProcessorStats::sleep(void) {return true;}
+bool ProcessorStats::wake(void) {return true;}
 
 #if defined(ARDUINO_ARCH_SAMD)
     extern "C" char *sbrk(int i);
@@ -126,7 +126,7 @@ bool ProcessorMetadata::wake(void) {return true;}
     }
 #endif
 
-bool ProcessorMetadata::update(void)
+bool ProcessorStats::update(void)
 {
     // Clear values before starting loop
     clearValues();

@@ -733,14 +733,14 @@ The main constuctor for the sensor object is:
 
 ```cpp
 #include <OnboardSensors.h>
-ProcessorMetadata mayfly(MFVersion);
+ProcessorStats mayfly(MFVersion);
 ```
 
 The two available variables are:  (customVarCode is optional)
 
 ```cpp
-ProcessorMetadata_Batt(&mayfly, "customVarCode");  // Current battery voltage in volts
-ProcessorMetadata_FreeRam(&mayfly, "customVarCode");  // Amount of free RAM in bits
+ProcessorStats_Batt(&mayfly, "customVarCode");  // Current battery voltage in volts
+ProcessorStats_FreeRam(&mayfly, "customVarCode");  // Amount of free RAM in bits
 ```
 _____
 

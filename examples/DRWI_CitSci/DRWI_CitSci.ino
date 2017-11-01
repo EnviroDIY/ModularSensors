@@ -51,7 +51,7 @@ LoggerDreamHost EnviroDIYLogger;
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
-#include <ProcessorMetadata.h>
+#include <ProcessorStats.h>
 
 const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
 const int greenLED = 8;  // Pin for the green LED (else -1)
@@ -63,7 +63,7 @@ const int wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
 const int sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
 
 const char *MFVersion = "v0.5";
-ProcessorMetadata mayfly(MFVersion) ;
+ProcessorStats mayfly(MFVersion) ;
 
 
 // ==========================================================================
@@ -126,7 +126,7 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 //    The array that contains all variables to be logged
 // ==========================================================================
 Variable *variableList[] = {
-    new ProcessorMetadata_Batt(&mayfly),
+    new ProcessorStats_Batt(&mayfly),
     new MaximDS3231_Temp(&ds3231),
     new DecagonCTD_Cond(&ctd),
     new DecagonCTD_Temp(&ctd),
