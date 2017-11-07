@@ -49,7 +49,7 @@ public:
               float loggingIntervalMinutes,
               const char *loggerID = 0)
     {
-        PRINTOUT(F("Initializing logger"), loggerID, F(" to record "),
+        PRINTOUT(F("Initializing logger "), loggerID, F(" to record "),
                  variableCount, F(" variables at "),
                  loggingIntervalMinutes, F(" minute intervals ... "));
 
@@ -201,7 +201,7 @@ public:
         // If the timestamp returns zero, just exit
         if  (nist == 0)
         {
-            PRINTOUT(F("Bad timestamp returned, skipping sync.\n"));
+            PRINTOUT(F("Bad timestamp, skipping sync.\n"));
             return false;
         }
 
@@ -223,12 +223,12 @@ public:
         if ((abs(nist_logTZ - cur_logTZ) > 5) && (nist != 0))
         {
             setNowEpoch(nist_rtcTZ + sync_time/2);
-            PRINTOUT(F("Clock synced to NIST!\n"));
+            PRINTOUT(F("Clock synced!\n"));
             return true;
         }
         else
         {
-            PRINTOUT(F("Clock already within 5 seconds of NIST.\n"));
+            PRINTOUT(F("Clock already within 5 seconds of time.\n"));
             return false;
         }
     }
