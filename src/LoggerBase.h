@@ -10,10 +10,13 @@
 #ifndef LoggerBase_h
 #define LoggerBase_h
 
-#include "VariableArray.h"
-
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define STANDARD_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
+
+#include "LoggerModem.h"  // To communicate with the internet
+
+#include "VariableArray.h"
 
 #define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
 #include <EnableInterrupt.h>  // To handle external and pin change interrupts
@@ -34,8 +37,6 @@
 // as time from 2000-jan-01 00:00:00 instead of the standard epoch of 1970-jan-01 00:00:00
 
 #include <SdFat.h>  // To communicate with the SD card
-
-#include "LoggerModem.h"  // To communicate with the internet
 
 // Defines the "Logger" Class
 class Logger : public VariableArray
@@ -207,7 +208,7 @@ public:
 
         uint32_t nist_logTZ = nist + getTimeZone()*3600;
         uint32_t nist_rtcTZ = nist_logTZ - getTZOffset()*3600;
-        MS_DBG(F("        Correct Time for Logger: "), nist_logTZ, F(" -> "), \
+        MS_DBG(F("         Correct Time for Logger: "), nist_logTZ, F(" -> "), \
             formatDateTime_ISO8601(nist_logTZ), F("\n"));
 
         // See how long it took to get the time from NIST
@@ -215,7 +216,7 @@ public:
 
         // Check the current RTC time
         uint32_t cur_logTZ = getNowEpoch();
-        MS_DBG(F("           Time Returned by RTC: "), cur_logTZ, F(" -> "), \
+        MS_DBG(F("            Time Returned by RTC: "), cur_logTZ, F(" -> "), \
             formatDateTime_ISO8601(cur_logTZ), F("\n"));
         MS_DBG(F("Offset: "), abs(nist_logTZ - cur_logTZ), F("\n"));
 

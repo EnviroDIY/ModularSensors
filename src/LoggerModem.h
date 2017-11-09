@@ -369,7 +369,7 @@ public:
 
         // Return the timestamp
         uint32_t unixTimeStamp = secFrom1900 - 2208988800;
-        MS_DBG(F("Timesamp returned by NIST (UTC): "), unixTimeStamp, F('\n'));
+        MS_DBG(F("Timestamp returned by NIST (UTC): "), unixTimeStamp, '\n');
         // If before Jan 1, 2017 or after Jan 1, 2030, most likely an error
         if (unixTimeStamp < 1483228800) return 0;
         else if (unixTimeStamp > 1893456000) return 0;
