@@ -77,14 +77,9 @@ public:
                 delay(10);
                 sensorSuccess = _variableList[i]->parentSensor->setup();
                 setupTries++;
-
-                if (!sensorSuccess)
-                {
-                    PRINTOUT(F("   ... Set up of "));
-                    PRINTOUT(_variableList[i]->getVarCode());
-                    PRINTOUT(F(" failed!\n"));
-                }
             }
+            if (!sensorSuccess) MS_DBG(F("   ... Set up of "), _variableList[i]->getVarCode(), F(" failed!\n"));
+            else MS_DBG(F("   ... Set up of "), _variableList[i]->getVarCode(), F(" succeeded.\n"));
             success &= sensorSuccess;
         }
 

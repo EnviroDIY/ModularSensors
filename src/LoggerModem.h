@@ -11,10 +11,11 @@
 #ifndef LoggerModem_h
 #define LoggerModem_h
 
+#include <Arduino.h>
+
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
-#include <Arduino.h>
 #include "ModemOnOff.h"
 #include "SensorBase.h"
 #include "VariableBase.h"
@@ -26,7 +27,7 @@
     defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
   #define USE_TINY_GSM
   // #define TINY_GSM_DEBUG Serial
-  #define TINY_GSM_YIELD() { delay(3);}
+  #define TINY_GSM_YIELD() { delay(1);}
   #define TINY_GSM_RX_BUFFER 14  // So we never get much data
   #include <TinyGsmClient.h>
 // #else
@@ -248,21 +249,35 @@ public:
             return false;
         }
 
+        // WiFi modules immediately re-connect to the last access point so we
+        // can save just a tiny bit of time (and thus power) by not resending
+        // the credentials every time.
         #if defined(TINY_GSM_MODEM_HAS_WIFI)
         if (_ssid)
         {
             MS_DBG(F("Connecting to WiFi network..."));
-            _modem->networkConnect(_ssid, _pwd);
-            if (!_modem->waitForNetwork(30000L)){
-                MS_DBG("   ...Connection failed\n");
+            if (!_modem->waitForNetwork(5000L)){
+                MS_DBG("   ... Connection failed.  Resending credentials...");
+                _modem->networkConnect(_ssid, _pwd);
+                if (!_modem->waitForNetwork(30000L)){
+                    MS_DBG("   ... Connection failed\n");
+                } else {
+                    retVal = true;
+                    MS_DBG("   ... Success!\n");
+                }
             } else {
-                retVal = true;
-                MS_DBG("   ...Success!\n");
+                #if defined(TINY_GSM_MODEM_ESP8266)
+                    // make sure mux is right
+                    _modem->sendAT(GF("+CIPMUX=1"));
+                    _modem->waitResponse();
+                #endif  //  TINY_GSM_MODEM_ESP8266
+                MS_DBG("   ... Success!\n");
+                 retVal = true;
             }
         }
         else
         {
-        #endif
+        #endif  // TINY_GSM_MODEM_HAS_WIFI
         #if defined(TINY_GSM_MODEM_HAS_GPRS)
             MS_DBG(F("\nWaiting for cellular network..."));
             if (!_modem->waitForNetwork(45000L)){
@@ -272,11 +287,10 @@ public:
                 MS_DBG("   ...Success!\n");
                 retVal = true;
             }
-
-        #endif
+        #endif  // TINY_GSM_MODEM_HAS_GPRS
         #if defined(TINY_GSM_MODEM_HAS_WIFI)
         }
-        #endif
+        #endif  // TINY_GSM_MODEM_HAS_WIFI
 
         return retVal;
     }
@@ -285,10 +299,11 @@ public:
     {
     #if defined(TINY_GSM_MODEM_HAS_GPRS)
         _modem->gprsDisconnect();
+        MS_DBG(F("Disconnected from cellular network.\n"));
     #elif defined(TINY_GSM_MODEM_HAS_WIFI)
-        _modem->networkDisconnect();
+        // _modem->networkDisconnect();  // Eh.. why bother?
+        // MS_DBG(F("Disconnected from WiFi network.\n"));
     #endif
-        MS_DBG(F("Disconnected from network.\n"));
     }
 
     int openTCP(const char *host, uint16_t port)

@@ -50,7 +50,7 @@ YosemitechParent::YosemitechParent(byte modbusAddress, int powerPin,
 SENSOR_STATUS YosemitechParent::setup(void)
 {
     if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
-    pinMode(_dataPin, INPUT_PULLUP);
+    if (_enablePin > 0) pinMode(_enablePin, OUTPUT);
 
     #if defined(DEBUGGING_SERIAL_OUTPUT)
         sensor.setDebugStream(&DEBUGGING_SERIAL_OUTPUT);

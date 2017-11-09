@@ -31,7 +31,7 @@
 #include <Sodaq_DS3231.h>
 #define EPOCH_TIME_OFF 946684800  // This is 2000-jan-01 00:00:00 in epoch time
 // Need this b/c the date/time class in Sodaq_DS3231 treats a 32-bit long timestamp
-// as time from 2000-jan-01 00:00:00 instead of the standard epoch of 19970-jan-01 00:00:00
+// as time from 2000-jan-01 00:00:00 instead of the standard epoch of 1970-jan-01 00:00:00
 
 #include <SdFat.h>  // To communicate with the SD card
 
@@ -755,7 +755,6 @@ public:
             // Connect to the network
             if (_modem.connectInternet())
             {
-                delay(5000);
                 syncRTClock(_modem.getNISTTime());
                 // Disconnect from the network
                 _modem.disconnectInternet();
