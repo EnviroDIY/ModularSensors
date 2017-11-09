@@ -156,7 +156,7 @@ public:
         for (int i = 0; i < _variableCount; i++)
         {
             stream->print(_variableList[i]->parentSensor->getSensorName());
-            stream->print(F(" attached at "));
+            stream->print(F(" at "));
             stream->print(_variableList[i]->parentSensor->getSensorLocation());
             // stream->print(F(" has status "));
             // stream->print(Sensor::printStatus(_variableList[i]->parentSensor->getStatus()));

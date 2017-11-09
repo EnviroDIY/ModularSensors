@@ -151,7 +151,6 @@ public:
         // the update has been run!
 
         return retVal;
-        // #endif
     }
 
 public:
