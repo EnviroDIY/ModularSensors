@@ -14,20 +14,21 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
-#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
+// Some define statements
+#define STANDARD_SERIAL_OUTPUT Serial  // Without this there will be no output
 
-// ---------------------------------------------------------------------------
-// Include the base required libraries
-// ---------------------------------------------------------------------------
+// ==========================================================================
+//    Include the base required libraries
+// ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <Sodaq_DS3231.h>    // Controls the DS3231 Real Time Clock (RTC) built into the EnviroDIY Mayfly.
 #include <VariableArray.h>
 
-// ---------------------------------------------------------------------------
-// Set up the sensor specific information
-//   ie, pin locations, addresses, calibrations and related settings
-// ---------------------------------------------------------------------------
+
+// ==========================================================================
+//    Basic Logger Settings
+// ==========================================================================
 // The name of this file
 const char *sketchName = "modular_sensors.ino";
 
@@ -37,10 +38,30 @@ const int timeZone = -5;
 VariableArray sensors;
 
 // ==========================================================================
+//    Primary Arduino-Based Board and Processor
+// ==========================================================================
+#include <ProcessorStats.h>
+
+const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const int greenLED = 8;  // Pin for the green LED (-1 if unconnected)
+const int redLED = 9;  // Pin for the red LED (-1 if unconnected)
+
+const char *MFVersion = "v0.5";
+ProcessorStats mayfly(MFVersion) ;
+
+
+// ==========================================================================
+//    Maxim DS3231 RTC (Real Time Clock)
+// ==========================================================================
+#include <MaximDS3231.h>
+MaximDS3231 ds3231(1);
+
+
+// ==========================================================================
 //    AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
 #include <AOSongAM2315.h>
-const int I2CPower = 22;  // switched sensor power is pin 22 on Mayfly
+const int I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 AOSongAM2315 am2315(I2CPower);
 
 
@@ -48,9 +69,9 @@ AOSongAM2315 am2315(I2CPower);
 //    AOSong DHT 11/21 (AM2301)/22 (AM2302) Digital Humidity and Temperature
 // ==========================================================================
 #include <AOSongDHT.h>
-const int DHTPower = 22;  // switched sensor power is pin 22 on Mayfly
-const int DHTPin = 6;
-DHTtype dhtType = DHT11;    // Select DHT type, either DHT11, DHT21, or DHT22
+const int DHTPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int DHTPin = 10;  // DHT data pin
+DHTtype dhtType = DHT11;  // DHT type, either DHT11, DHT21, or DHT22
 AOSongDHT dht(DHTPower, DHTPin, dhtType);
 
 
@@ -58,7 +79,7 @@ AOSongDHT dht(DHTPower, DHTPin, dhtType);
 //    Apogee SQ-212 Photosynthetically Active Radiation (PAR) Sensor
 // ==========================================================================
 #include <ApogeeSQ212.h>
-const int SQ212Power = 22;  // switched sensor power is pin 22 on Mayfly
+const int SQ212Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 const int SQ212Data = 2;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
 ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
 
@@ -68,7 +89,7 @@ ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
 // ==========================================================================
 #include <BoschBME280.h>
 uint8_t BMEi2c_addr = 0x76;  // The BME280 can be addressed either as 0x76 or 0x77
-// const int I2CPower = 22;  // switched sensor power is pin 22 on Mayfly
+// const int I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 BoschBME280 bme280(I2CPower, BMEi2c_addr);
 
 
@@ -81,7 +102,7 @@ const int OBSLowPin = 0;  // The low voltage analog pin ON THE ADS1115 (NOT the 
 const float OBSLow_A = 4.0749E+00;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = 9.1011E+01;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibration
-const int OBS3Power = 22;  // switched sensor power is pin 22 on Mayfly
+const int OBS3Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C);
 // Campbell OBS 3+ High Range calibration in Volts
 const int OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
@@ -97,7 +118,7 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
 #include <Decagon5TM.h>
 const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
 const int SDI12Data = 7;  // The pin the 5TM is attached to
-const int SDI12Power = 22;  // switched sensor power is pin 22 on Mayfly
+const int SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
 
 
@@ -108,7 +129,7 @@ Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const int numberReadings = 6;  // The number of readings to average
 // const int SDI12Data = 7;  // The pin the CTD is attached to
-// const int SDI12Power = 22;  // switched sensor power is pin 22 on Mayfly
+// const int SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 
 
@@ -118,7 +139,7 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 #include <DecagonES2.h>
 const char *ES2SDI12address = "3";  // The SDI-12 Address of the ES2
 // const int SDI12Data = 7;  // The pin the 5TM is attached to
-// const int SDI12Power = 22;  // switched sensor power is pin 22 on Mayfly
+// const int SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data);
 
 
@@ -139,19 +160,17 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data);
 // Neither hardware serial nor AltSoftSerial require any modifications to
 // deal with interrupt conflicts.
 
-const int SonarData = 11;     // data  pin
-const int SonarTrigger = -1;   // Trigger pin
-const int SonarPower = 22;   // excite (power) pin
+const int SonarTrigger = -1;  // Trigger pin (-1 if unconnected)
+const int SonarPower = 22;  // Excite (power) pin (-1 if unconnected)
 
 #if defined __AVR__
 #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+const int SonarData = 11;     // data receive pin
 SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
-MaxBotixSonar sonar(SonarPower, sonarSerial, SonarTrigger) ;
-
 #else
 HardwareSerial &sonarSerial = Serial1;
-MaxBotixSonar sonar(SonarPower, sonarSerial, SonarTrigger) ;
 #endif
+MaxBotixSonar sonar(SonarPower, sonarSerial, SonarTrigger) ;
 
 
 // ==========================================================================
@@ -164,8 +183,8 @@ DeviceAddress OneWireAddress2 = {0x28, 0xFF, 0x57, 0x90, 0x82, 0x16, 0x04, 0x67}
 DeviceAddress OneWireAddress3 = {0x28, 0xFF, 0x74, 0x2B, 0x82, 0x16, 0x03, 0x57};
 // DeviceAddress OneWireAddress4 = {0x28, 0xFF, 0xB6, 0x6E, 0x84, 0x16, 0x05, 0x9B};
 // DeviceAddress OneWireAddress5 = {0x28, 0xFF, 0x3B, 0x07, 0x82, 0x16, 0x13, 0xB3};
-const int OneWireBus = 4;   // Data pin
-const int OneWirePower = 22;   // Power pin
+const int OneWireBus = 4;  // Pin attached to the OneWire Bus (-1 if unconnected)
+const int OneWirePower = 22;  // Pin to switch power on and off (-1 if unconnected)
 MaximDS18 ds18_1(OneWireAddress1, OneWirePower, OneWireBus);
 MaximDS18 ds18_2(OneWireAddress2, OneWirePower, OneWireBus);
 MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
@@ -173,41 +192,21 @@ MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
 
 
 // ==========================================================================
-//    Maxim DS3231 RTC (Real Time Clock)
-// ==========================================================================
-#include <MaximDS3231.h>
-MaximDS3231 ds3231(1);
-
-
-// ==========================================================================
-//    EnviroDIY Mayfly Arduino-Based Board and Processor
-// ==========================================================================
-#include <ProcessorMetadata.h>
-const char *MFVersion = "v0.5";
-ProcessorMetadata mayfly(MFVersion) ;
-
-
-// ==========================================================================
 //    Yosemitech Y504 Dissolved Oxygen Sensor
 // ==========================================================================
 #include <YosemitechY504.h>
 byte y504modbusAddress = 0x04;  // The modbus address of the Y504
-const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
-const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
+const int modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const int y504NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
 
 #if defined __AVR__
-// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
-// const int modbusRx = 10;
-// const int modbusTx = 11;
-// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
 #include <AltSoftSerial.h>
 AltSoftSerial modbusSerial;
-YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePin, y504NumberReadings);
 #else
 HardwareSerial &modbusSerial = Serial1;
-YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePin, y504NumberReadings);
 #endif
+YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePin, y504NumberReadings);
 
 
 // ==========================================================================
@@ -215,22 +214,17 @@ YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePi
 // ==========================================================================
 #include <YosemitechY510.h>
 byte y510modbusAddress = 0x0B;  // The modbus address of the Y510 or Y511
-// const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
-// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
+// const int modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// const int max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const int y510NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
 
-#if defined __AVR__
-// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
-// const int modbusRx = 10;
-// const int modbusTx = 11;
-// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
+// #if defined __AVR__
 // #include <AltSoftSerial.h>
 // AltSoftSerial modbusSerial;
-YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePin, y510NumberReadings);
-#else
+// #else
 // HardwareSerial &modbusSerial = Serial1;
+// #endif
 YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePin, y510NumberReadings);
-#endif
 
 
 // ==========================================================================
@@ -238,22 +232,17 @@ YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePi
 // ==========================================================================
 #include <YosemitechY514.h>
 byte y514modbusAddress = 0x14;  // The modbus address of the Y514
-// const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
-// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
+// const int modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// const int max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const int y514NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
 
-#if defined __AVR__
-// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
-// const int modbusRx = 10;
-// const int modbusTx = 11;
-// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
+// #if defined __AVR__
 // #include <AltSoftSerial.h>
 // AltSoftSerial modbusSerial;
-YosemitechY514 y514(y514modbusAddress, modbusPower, modbusSerial, max485EnablePin, y514NumberReadings);
-#else
+// #else
 // HardwareSerial &modbusSerial = Serial1;
+// #endif
 YosemitechY514 y514(y514modbusAddress, modbusPower, modbusSerial, max485EnablePin, y514NumberReadings);
-#endif
 
 
 // ==========================================================================
@@ -261,22 +250,17 @@ YosemitechY514 y514(y514modbusAddress, modbusPower, modbusSerial, max485EnablePi
 // ==========================================================================
 #include <YosemitechY520.h>
 byte y520modbusAddress = 0x20;  // The modbus address of the Y520
-// const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
-// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
+// const int modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// const int max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const int y520NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
 
-#if defined __AVR__
-// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
-// const int modbusRx = 10;
-// const int modbusTx = 11;
-// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
+// #if defined __AVR__
 // #include <AltSoftSerial.h>
 // AltSoftSerial modbusSerial;
-YosemitechY520 y520(y520modbusAddress, modbusPower, modbusSerial, max485EnablePin, y520NumberReadings);
-#else
+// #else
 // HardwareSerial &modbusSerial = Serial1;
+// #endif
 YosemitechY520 y520(y520modbusAddress, modbusPower, modbusSerial, max485EnablePin, y520NumberReadings);
-#endif
 
 
 // ==========================================================================
@@ -284,29 +268,24 @@ YosemitechY520 y520(y520modbusAddress, modbusPower, modbusSerial, max485EnablePi
 // ==========================================================================
 #include <YosemitechY532.h>
 byte y532modbusAddress = 0x32;  // The modbus address of the Y532
-// const int modbusPower = 22;  // switched sensor power is pin 22 on Mayfly
-// const int max485EnablePin = -1;  // the pin connected to the RE/DE on the 485 chip (-1 if N/A)
+// const int modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// const int max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const int y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
 
-#if defined __AVR__
-// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
-// const int modbusRx = 10;
-// const int modbusTx = 11;
-// SoftwareSerial_ExtInts modbusSerial(modbusRx, modbusTx);
+// #if defined __AVR__
 // #include <AltSoftSerial.h>
 // AltSoftSerial modbusSerial;
-YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePin, y532NumberReadings);
-#else
+// #else
 // HardwareSerial &modbusSerial = Serial1;
+// #endif
 YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePin, y532NumberReadings);
-#endif
 
-// ---------------------------------------------------------------------------
-// The array that contains all valid variables
-// ---------------------------------------------------------------------------
+// ==========================================================================
+//    The array that contains all variables to print out
+// ==========================================================================
 Variable *variableList[] = {
-    new ProcessorMetadata_Batt(&mayfly),
-    new ProcessorMetadata_FreeRam(&mayfly),
+    new ProcessorStats_Batt(&mayfly),
+    new ProcessorStats_FreeRam(&mayfly),
     new MaximDS3231_Temp(&ds3231),
     new ApogeeSQ212_PAR(&SQ212),
     new MaxBotixSonar_Range(&sonar),
@@ -349,19 +328,11 @@ Variable *variableList[] = {
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 
-// ---------------------------------------------------------------------------
-// Board setup info
-// ---------------------------------------------------------------------------
-const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
-const int greenLED = 8;  // Pin for the green LED
-const int redLED = 9;  // Pin for the red LED
+// ==========================================================================
+//    Working Functions
+// ==========================================================================
 
-
-// ---------------------------------------------------------------------------
-// Working Functions
-// ---------------------------------------------------------------------------
-
-// Flashes to Mayfly's LED's
+// Flashes the LED's on the primary board
 void greenredflash(int numFlash = 4, int rate = 75)
 {
   for (int i = 0; i < numFlash; i++) {
@@ -420,15 +391,15 @@ String getDateTime_ISO8601(void)
 }
 
 
-// ---------------------------------------------------------------------------
+// ==========================================================================
 // Main setup function
-// ---------------------------------------------------------------------------
+// ==========================================================================
 void setup()
 {
     // Start the primary serial connection
     Serial.begin(serialBaud);
 
-    // Start the AltSoftSerial stream for the modbus sensors
+    // Start the stream for the modbus sensors
     modbusSerial.begin(9600);
 
     // Start the SoftwareSerial stream for the sonar
@@ -468,9 +439,9 @@ void setup()
 }
 
 
-// ---------------------------------------------------------------------------
+// ==========================================================================
 // Main loop function
-// ---------------------------------------------------------------------------
+// ==========================================================================
 void loop()
 {
     // Print a line to show new reading

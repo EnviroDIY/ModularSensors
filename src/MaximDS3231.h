@@ -17,11 +17,13 @@
 #ifndef MaximDS3231_h
 #define MaximDS3231_h
 
+#include <Arduino.h>
+
+// #define DEBUGGING_SERIAL_OUTPUT Serial
+#include "ModSensorDebugger.h"
+
 #include "SensorBase.h"
 #include "VariableBase.h"
-
-// #define MODULES_DBG Serial
-#include "ModSensorDebugger.h"
 
 #define DS3231_NUM_MEASUREMENTS 1
 #define DS3231_WARM_UP 0
@@ -41,6 +43,7 @@ public:
     {}
 
     String getSensorLocation(void) override;
+    SENSOR_STATUS setup(void) override;
     bool sleep(void) override;
     bool wake(void) override;
 

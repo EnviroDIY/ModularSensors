@@ -68,8 +68,8 @@ SENSOR_STATUS BoschBME280::setup(void)
 {
     if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
 
-    DBGM(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
-    DBGM(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
+    MS_DBG(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
+    MS_DBG(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
 
     return getStatus();
 }
@@ -100,10 +100,10 @@ bool BoschBME280::update(void)
     sensorValues[BoschBME280_PRESSURE_VAR_NUM] = press;
     sensorValues[BoschBME280_ALTITUDE_VAR_NUM] = alt;
 
-    DBGM(F("Temperature: "), sensorValues[BoschBME280_TEMP_VAR_NUM]);
-    DBGM(F(" Humidity: "), sensorValues[BoschBME280_HUMIDITY_VAR_NUM]);
-    DBGM(F(" Barometric Pressure: "), sensorValues[BoschBME280_PRESSURE_VAR_NUM]);
-    DBGM(F(" Calculated Altitude: "), sensorValues[BoschBME280_ALTITUDE_VAR_NUM], F("\n"));
+    MS_DBG(F("Temperature: "), sensorValues[BoschBME280_TEMP_VAR_NUM]);
+    MS_DBG(F(" Humidity: "), sensorValues[BoschBME280_HUMIDITY_VAR_NUM]);
+    MS_DBG(F(" Barometric Pressure: "), sensorValues[BoschBME280_PRESSURE_VAR_NUM]);
+    MS_DBG(F(" Calculated Altitude: "), sensorValues[BoschBME280_ALTITUDE_VAR_NUM], F("\n"));
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}

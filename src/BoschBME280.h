@@ -34,7 +34,7 @@
 #include "SensorBase.h"
 #include "VariableBase.h"
 
-// #define MODULES_DBG Serial
+// #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
 #include <Adafruit_BME280.h>

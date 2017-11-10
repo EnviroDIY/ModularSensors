@@ -30,11 +30,11 @@ Variable::Variable(Sensor *parentSense, int varNum,
 }
 
 void Variable::attachSensor(int varNum, Sensor *parentSense) {
-    DBGV(F("Attempting to register to "));
-    DBGV(parentSense->getSensorName());
-    DBGV(F(" attached at "));
-    DBGV(parentSense->getSensorLocation());
-    DBGV(F("...   "));
+    MS_DBG(F("Attempting to register to "));
+    MS_DBG(parentSense->getSensorName());
+    MS_DBG(F(" attached at "));
+    MS_DBG(parentSense->getSensorLocation());
+    MS_DBG(F("...   "));
     parentSense->registerVariable(varNum, this);
 }
 
@@ -47,8 +47,8 @@ bool Variable::setup(void)
 void Variable::onSensorUpdate(Sensor *parentSense)
 {
     sensorValue = parentSense->sensorValues[_varNum];
-    DBGV(F("... received "));
-    DBGV(sensorValue, F("\n"));
+    MS_DBG(F("... received "));
+    MS_DBG(sensorValue, F("\n"));
 }
 
 // This returns the variable's name using http://vocabulary.odm2.org/variablename/

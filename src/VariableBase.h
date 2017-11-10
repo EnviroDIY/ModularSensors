@@ -12,24 +12,8 @@
 
 #include <Arduino.h>
 
-// #define VARIABLES_DBG Serial
-
-#ifdef VARIABLES_DBG
-namespace {
- template<typename T>
- static void DBGV(T last) {
-   VARIABLES_DBG.print(last);
- }
-
- template<typename T, typename... Args>
- static void DBGV(T head, Args... tail) {
-   VARIABLES_DBG.print(head);
-   DBGV(tail...);
- }
-}
-#else
- #define DBGV(...)
-#endif
+// #define DEBUGGING_SERIAL_OUTPUT Serial
+#include "ModSensorDebugger.h"
 
 class Sensor;  // Forward declaration
 

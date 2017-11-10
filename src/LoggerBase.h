@@ -10,10 +10,13 @@
 #ifndef LoggerBase_h
 #define LoggerBase_h
 
-#include "VariableArray.h"
+// #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define STANDARD_SERIAL_OUTPUT Serial
+#include "ModSensorDebugger.h"
 
-// #define MODULAR_SENSORS_OUTPUT Serial
-// #define LOGGER_DBG Serial
+#include "LoggerModem.h"  // To communicate with the internet
+
+#include "VariableArray.h"
 
 #define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
 #include <EnableInterrupt.h>  // To handle external and pin change interrupts
@@ -31,29 +34,9 @@
 #include <Sodaq_DS3231.h>
 #define EPOCH_TIME_OFF 946684800  // This is 2000-jan-01 00:00:00 in epoch time
 // Need this b/c the date/time class in Sodaq_DS3231 treats a 32-bit long timestamp
-// as time from 2000-jan-01 00:00:00 instead of the standard epoch of 19970-jan-01 00:00:00
+// as time from 2000-jan-01 00:00:00 instead of the standard epoch of 1970-jan-01 00:00:00
 
 #include <SdFat.h>  // To communicate with the SD card
-
-#include "ModemSupport.h"  // To communicate with the internet
-
-// Debugging helpers
-#ifdef LOGGER_DBG
-namespace {
- template<typename T>
- static void DBGLOG(T last) {
-   LOGGER_DBG.print(last);
- }
-
- template<typename T, typename... Args>
- static void DBGLOG(T head, Args... tail) {
-   LOGGER_DBG.print(head);
-   DBGLOG(tail...);
- }
-}
-#else
- #define DBGLOG(...)
-#endif
 
 // Defines the "Logger" Class
 class Logger : public VariableArray
@@ -67,7 +50,9 @@ public:
               float loggingIntervalMinutes,
               const char *loggerID = 0)
     {
-        PRINTOUT(F("Initializing variable array with "), variableCount, F(" variables..."));
+        PRINTOUT(F("Initializing logger "), loggerID, F(" to record "),
+                 variableCount, F(" variables at "),
+                 loggingIntervalMinutes, F(" minute intervals ... "));
 
         _SDCardPin = SDCardPin;
         _mcuWakePin = mcuWakePin;
@@ -126,8 +111,17 @@ public:
     void setAlertPin(int ledPin)
     {
         _ledPin = ledPin;
-        DBGLOG(F("Pin "), _ledPin, F(" set for alerts\n"));
+        MS_DBG(F("Pin "), _ledPin, F(" set for alerts\n"));
     }
+
+#if defined(USE_TINY_GSM)
+    // Adds a loggerModem objct to the logger
+    // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
+    void attachModem(loggerModem &modem)
+    {
+        _modem = modem;
+    }
+#endif /* USE_TINY_GSM */
 
 
     // ===================================================================== //
@@ -200,25 +194,21 @@ public:
         return formatDateTime_ISO8601(dt);
     }
 
-    // This syncronizes the real time clock to NIST
-    bool syncRTClock(void)
+    // This syncronizes the real time clock
+    bool syncRTClock(uint32_t nist)
     {
         uint32_t start_millis = millis();
-
-        // Get the time stamp from NIST and adjust it to the correct time zone
-        // for the logger.
-        uint32_t nist = modem.getNISTTime();
 
         // If the timestamp returns zero, just exit
         if  (nist == 0)
         {
-            PRINTOUT(F("Bad timestamp returned, skipping sync.\n"));
+            PRINTOUT(F("Bad timestamp, skipping sync.\n"));
             return false;
         }
 
         uint32_t nist_logTZ = nist + getTimeZone()*3600;
         uint32_t nist_rtcTZ = nist_logTZ - getTZOffset()*3600;
-        DBGLOG(F("        Correct Time for Logger: "), nist_logTZ, F(" -> "), \
+        MS_DBG(F("         Correct Time for Logger: "), nist_logTZ, F(" -> "), \
             formatDateTime_ISO8601(nist_logTZ), F("\n"));
 
         // See how long it took to get the time from NIST
@@ -226,20 +216,20 @@ public:
 
         // Check the current RTC time
         uint32_t cur_logTZ = getNowEpoch();
-        DBGLOG(F("           Time Returned by RTC: "), cur_logTZ, F(" -> "), \
+        MS_DBG(F("            Time Returned by RTC: "), cur_logTZ, F(" -> "), \
             formatDateTime_ISO8601(cur_logTZ), F("\n"));
-        DBGLOG(F("Offset: "), abs(nist_logTZ - cur_logTZ), F("\n"));
+        MS_DBG(F("Offset: "), abs(nist_logTZ - cur_logTZ), F("\n"));
 
         // If the RTC and NIST disagree by more than 5 seconds, set the clock
         if ((abs(nist_logTZ - cur_logTZ) > 5) && (nist != 0))
         {
             setNowEpoch(nist_rtcTZ + sync_time/2);
-            PRINTOUT(F("Clock synced to NIST!\n"));
+            PRINTOUT(F("Clock synced!\n"));
             return true;
         }
         else
         {
-            PRINTOUT(F("Clock already within 5 seconds of NIST.\n"));
+            PRINTOUT(F("Clock already within 5 seconds of time.\n"));
             return false;
         }
     }
@@ -264,31 +254,31 @@ public:
     {
         bool retval;
         uint32_t checkTime = getNowEpoch();
-        DBGLOG(F("Current Unix Timestamp: "), checkTime, F("\n"));
-        DBGLOG(F("Mod of Logging Interval: "), checkTime % _interruptRate, F("\n"));
-        DBGLOG(F("Number of Readings so far: "), _numReadings, F("\n"));
-        DBGLOG(F("Mod of 120: "), checkTime % 120, F("\n"));
+        MS_DBG(F("Current Unix Timestamp: "), checkTime, F("\n"));
+        MS_DBG(F("Mod of Logging Interval: "), checkTime % _interruptRate, F("\n"));
+        MS_DBG(F("Number of Readings so far: "), _numReadings, F("\n"));
+        MS_DBG(F("Mod of 120: "), checkTime % 120, F("\n"));
         if ((checkTime % _interruptRate == 0 ) or
             (_numReadings < 10 and getNowEpoch() % 120 == 0))
         {
             // Update the time variables with the current time
             markTime();
-            DBGLOG(F("Time marked at (unix): "), markedEpochTime, F("\n"));
-            DBGLOG(F("    year: "), markedDateTime.year(), F("\n"));
-            DBGLOG(F("    month: "), markedDateTime.month(), F("\n"));
-            DBGLOG(F("    date: "), markedDateTime.date(), F("\n"));
-            DBGLOG(F("    hour: "), markedDateTime.hour(), F("\n"));
-            DBGLOG(F("    minute: "), markedDateTime.minute(), F("\n"));
-            DBGLOG(F("    second: "), markedDateTime.second(), F("\n"));
-            DBGLOG(F("Time marked at [char]: "), markedISO8601Time, F("\n"));
+            MS_DBG(F("Time marked at (unix): "), markedEpochTime, F("\n"));
+            MS_DBG(F("    year: "), markedDateTime.year(), F("\n"));
+            MS_DBG(F("    month: "), markedDateTime.month(), F("\n"));
+            MS_DBG(F("    date: "), markedDateTime.date(), F("\n"));
+            MS_DBG(F("    hour: "), markedDateTime.hour(), F("\n"));
+            MS_DBG(F("    minute: "), markedDateTime.minute(), F("\n"));
+            MS_DBG(F("    second: "), markedDateTime.second(), F("\n"));
+            MS_DBG(F("Time marked at [char]: "), markedISO8601Time, F("\n"));
             // Update the number of readings taken
             _numReadings ++;
-            DBGLOG(F("Time to log!\n"));
+            MS_DBG(F("Time to log!\n"));
             retval = true;
         }
         else
         {
-            DBGLOG(F("Not time yet, back to sleep\n"));
+            MS_DBG(F("Not time yet, back to sleep\n"));
             retval = false;
         }
         return retval;
@@ -299,22 +289,22 @@ public:
     bool checkMarkedInterval(void)
     {
         bool retval;
-        DBGLOG(F("Marked Time: "), markedEpochTime, F("\n"));
-        DBGLOG(F("Mod of Logging Interval: "), markedEpochTime % _interruptRate, F("\n"));
-        DBGLOG(F("Number of Readings so far: "), _numReadings, F("\n"));
-        DBGLOG(F("Mod of 120: "), markedEpochTime % 120, F("\n"));
+        MS_DBG(F("Marked Time: "), markedEpochTime, F("\n"));
+        MS_DBG(F("Mod of Logging Interval: "), markedEpochTime % _interruptRate, F("\n"));
+        MS_DBG(F("Number of Readings so far: "), _numReadings, F("\n"));
+        MS_DBG(F("Mod of 120: "), markedEpochTime % 120, F("\n"));
         if (markedEpochTime != 0 &&
             ((markedEpochTime % _interruptRate == 0 ) or
             (_numReadings < 10 and markedEpochTime % 120 == 0)))
         {
             // Update the number of readings taken
             _numReadings ++;
-            DBGLOG(F("Time to log!\n"));
+            MS_DBG(F("Time to log!\n"));
             retval = true;
         }
         else
         {
-            DBGLOG(F("Not time yet, back to sleep\n"));
+            MS_DBG(F("Not time yet, back to sleep\n"));
             retval = false;
         }
         return retval;
@@ -328,7 +318,7 @@ public:
     // Set up the Interrupt Service Request for waking
     // In this case, we're doing nothing, we just want the processor to wake
     // This must be a static function (which means it can only call other static funcions.)
-    static void wakeISR(void){DBGLOG(F("The clock interrupt woke me up!\n"));}
+    static void wakeISR(void){MS_DBG(F("The clock interrupt woke me up!\n"));}
 
     #if defined ARDUINO_ARCH_SAMD
 
@@ -353,11 +343,11 @@ public:
         // Wait until the serial ports have finished transmitting
         // This does not clear their buffers, it just waits until they are finished
         // TODO:  Make sure can find all serial ports
-        #if defined(MODULAR_SENSORS_OUTPUT)
-            MODULAR_SENSORS_OUTPUT.flush();  // for debugging
+        #if defined(STANDARD_SERIAL_OUTPUT)
+            STANDARD_SERIAL_OUTPUT.flush();  // for debugging
         #endif
-        #if defined(LOGGER_DBG)
-            LOGGER_DBG.flush();  // for debugging
+        #if defined(DEBUGGING_SERIAL_OUTPUT)
+            DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
         #endif
 
         // This clears the interrrupt flag in status register of the clock
@@ -409,11 +399,11 @@ public:
         // Wait until the serial ports have finished transmitting
         // This does not clear their buffers, it just waits until they are finished
         // TODO:  Make sure can find all serial ports
-        #if defined(MODULAR_SENSORS_OUTPUT)
-            MODULAR_SENSORS_OUTPUT.flush();  // for debugging
+        #if defined(STANDARD_SERIAL_OUTPUT)
+            STANDARD_SERIAL_OUTPUT.flush();  // for debugging
         #endif
-        #if defined(LOGGER_DBG)
-            LOGGER_DBG.flush();  // for debugging
+        #if defined(DEBUGGING_SERIAL_OUTPUT)
+            DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
         #endif
 
         // This clears the interrrupt flag in status register of the clock
@@ -551,7 +541,7 @@ public:
         if (!sd.begin(_SDCardPin, SPI_FULL_SPEED))
         {
             PRINTOUT(F("Error: SD card failed to initialize or is missing.\n"));
-            PRINTOUT(F("Data will not be saved!.\n"));
+            PRINTOUT(F("Data will not be saved!\n"));
         }
         else  // skip everything else if there's no SD card, otherwise it might hang
         {
@@ -594,7 +584,7 @@ public:
 
             // Add header information
             logFile.print(generateFileHeader());
-            DBGLOG(generateFileHeader(), F("\n"));
+            MS_DBG(generateFileHeader(), F("\n"));
 
             //Close the file to save it
             logFile.close();
@@ -664,10 +654,10 @@ public:
         // Turn on the modem to let it start searching for the network
         #if defined(USE_TINY_GSM)
             // Turn on the modem
-            modem.wake();
+            _modem.wake();
             // Connect to the network to make sure we have signal
-            modem.connectNetwork();
-        #endif
+            _modem.connectInternet();
+        #endif  // USE_TINY_GSM
 
         // Update the sensors and print out data 25 times
         for (uint8_t i = 0; i < 25; i++)
@@ -687,26 +677,26 @@ public:
             PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
             PRINTOUT(F("    -----------------------\n"));
             // Print out the sensor data
-            #if defined(MODULAR_SENSORS_OUTPUT)
-                printSensorData(&MODULAR_SENSORS_OUTPUT);
+            #if defined(STANDARD_SERIAL_OUTPUT)
+                printSensorData(&STANDARD_SERIAL_OUTPUT);
             #endif
             PRINTOUT(F("    -----------------------\n"));
 
             // Specially highlight the modem signal quality in the debug mode
             #if defined(USE_TINY_GSM)
                 PRINTOUT(F("Current modem signal is "));
-                PRINTOUT(modem.getSignalPercent());
+                PRINTOUT(_modem.getSignalPercent());
                 PRINTOUT(F("%\n"));
-            #endif
+            #endif  // USE_TINY_GSM
             delay(5000);
         }
 
         #if defined(USE_TINY_GSM)
             // Disconnect from the network
-            modem.disconnectNetwork();
+            _modem.disconnectInternet();
             // Turn off the modem
-            modem.off();
-        #endif
+            _modem.off();
+        #endif  // USE_TINY_GSM
     }
 
     // This checks to see if you want to enter debug mode
@@ -741,9 +731,6 @@ public:
     // This calls all of the setup functions - must be run AFTER init
     virtual void begin(void)
     {
-        // Print a start-up note to the first serial port
-        PRINTOUT(F("Beginning logger "), _loggerID, F("\n"));
-
         // Set up pins for the LED's
         if (_ledPin > 0) pinMode(_ledPin, OUTPUT);
 
@@ -765,18 +752,17 @@ public:
             // Synchronize the RTC with NIST
             PRINTOUT(F("Attempting to synchronize RTC with NIST\n"));
             // Turn on the modem
-            modem.wake();
+            _modem.wake();
             // Connect to the network
-            if (modem.connectNetwork())
+            if (_modem.connectInternet())
             {
-                delay(5000);
-                syncRTClock();
+                syncRTClock(_modem.getNISTTime());
                 // Disconnect from the network
-                modem.disconnectNetwork();
+                _modem.disconnectInternet();
             }
             // Turn off the modem
-            modem.off();
-        #endif
+            _modem.off();
+        #endif  // USE_TINY_GSM
 
         // Set up the sensors
         setupSensors();
@@ -827,8 +813,6 @@ public:
     // Public variables
     // Time stamps - want to set them at a single time and carry them forward
     static long markedEpochTime;
-    // Create a modem instance
-    loggerModem modem;
 
 
 
@@ -861,6 +845,12 @@ protected:
     uint8_t _numReadings;
     bool _sleep;
     int _ledPin;
+
+
+#if defined(USE_TINY_GSM)
+    // The internal modem instance
+    loggerModem _modem;
+#endif  // USE_TINY_GSM
 };
 
 // Initialize the static timezone

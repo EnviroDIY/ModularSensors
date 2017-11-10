@@ -50,17 +50,17 @@ YosemitechParent::YosemitechParent(byte modbusAddress, int powerPin,
 SENSOR_STATUS YosemitechParent::setup(void)
 {
     if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
-    pinMode(_dataPin, INPUT_PULLUP);
+    if (_enablePin > 0) pinMode(_enablePin, OUTPUT);
 
-    #if defined(MODULES_DBG)
-        sensor.setDebugStream(&MODULES_DBG);
+    #if defined(DEBUGGING_SERIAL_OUTPUT)
+        sensor.setDebugStream(&DEBUGGING_SERIAL_OUTPUT);
     #endif
 
     bool isSet = sensor.begin(_model, _modbusAddress, _stream, _enablePin);
 
     if (isSet)
     {
-        DBGM(F("Set up Yosemitech sensor at "), getSensorLocation(), F("\n"));
+        MS_DBG(F("Set up Yosemitech sensor at "), getSensorLocation(), F("\n"));
         return SENSOR_READY;
     }
     else return SENSOR_ERROR;
@@ -99,7 +99,7 @@ bool YosemitechParent::update()
 
     if (success)
     {
-        DBGM(F("Measurements started.\n"));
+        MS_DBG(F("Measurements started.\n"));
 
         // Wait until the sensor is ready to give readings
         delay(_StabilizationTime_ms);
@@ -107,7 +107,7 @@ bool YosemitechParent::update()
         // averages x readings in this one loop
         for (int j = 0; j < _numReadings; j++)
         {
-            DBGM(F("Taking reading #"), j, F("\n"));
+            MS_DBG(F("Taking reading #"), j, F("\n"));
 
             // Initialize float variables
             float parmValue, tempValue, thirdValue;
@@ -116,30 +116,30 @@ bool YosemitechParent::update()
             // Put values into the array
             // All sensors but pH and DO will have -9999 as the third value
             sensorValues[0] += parmValue;
-            DBGM(F("Parm: "), parmValue, F("\n"));
+            MS_DBG(F("Parm: "), parmValue, F("\n"));
             sensorValues[1] += tempValue;
-            DBGM(F("Temp: "), tempValue, F("\n"));
+            MS_DBG(F("Temp: "), tempValue, F("\n"));
             sensorValues[2] += thirdValue;
-            DBGM(F("Third: "), thirdValue, F("\n"));
+            MS_DBG(F("Third: "), thirdValue, F("\n"));
 
             if (j < _numReadings - 1)
             {
-                DBGM(F("Waiting until sensor is ready for the next reading.\n"));
+                MS_DBG(F("Waiting until sensor is ready for the next reading.\n"));
                 delay(_remeasurementTime_ms);
             }
         }
 
         // Average over the number of readings
-        DBGM(F("Averaging over "), _numReadings, F(" readings\n"));
+        MS_DBG(F("Averaging over "), _numReadings, F(" readings\n"));
         for (int i = 0; i < _numReturnedVars; i++)
         {
             sensorValues[i] /=  _numReadings;
-            DBGM(F("Result #"), i, F(": "), sensorValues[i], F("\n"));
+            MS_DBG(F("Result #"), i, F(": "), sensorValues[i], F("\n"));
         }
     }
 
 
-    else DBGM(F("Failed to start measuring!\n"));
+    else MS_DBG(F("Failed to start measuring!\n"));
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
 

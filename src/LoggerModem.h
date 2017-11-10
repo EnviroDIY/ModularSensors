@@ -1,5 +1,5 @@
 /*
- *ModemSupport.h
+ *LoggerModem.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -8,10 +8,14 @@
  *and adds in the power functions to turn the modem on and off.
 */
 
-#ifndef ModemSupport_h
-#define ModemSupport_h
+#ifndef LoggerModem_h
+#define LoggerModem_h
 
 #include <Arduino.h>
+
+// #define DEBUGGING_SERIAL_OUTPUT Serial
+#include "ModSensorDebugger.h"
+
 #include "ModemOnOff.h"
 #include "SensorBase.h"
 #include "VariableBase.h"
@@ -23,12 +27,15 @@
     defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
   #define USE_TINY_GSM
   // #define TINY_GSM_DEBUG Serial
-  #define TINY_GSM_YIELD() { delay(3);}
+  #define TINY_GSM_YIELD() { delay(1);}
+  #define TINY_GSM_RX_BUFFER 14  // So we never get much data
   #include <TinyGsmClient.h>
-#else
-  #include <NullModem.h>  // purely to help me debug compilation issues
-  #define DBG(...)
+// #else
+//   #include <NullModem.h>  // purely to help me debug compilation issues
+//   #define USE_TINY_GSM
 #endif
+
+#if defined(USE_TINY_GSM)
 
 // Give the modems names
 #if defined(TINY_GSM_MODEM_SIM800)
@@ -61,13 +68,13 @@
 #define PERCENT_STAT_VAR_NUM 1
 
 // For the various communication devices"
-typedef enum DTRSleepType
+typedef enum ModemSleepType
 {
   held = 0,  // Turns the modem on by setting the onoff/DTR/Key high and off by setting it low
   pulsed,  // Turns the modem on and off by pulsing the onoff/DTR/Key pin on for 2 seconds
   reverse,  // Turns the modem on by setting the onoff/DTR/Key LOW and off by setting it HIGH
   always_on
-} DTRSleepType;
+} ModemSleepType;
 
 /* ===========================================================================
 * Functions for the modem class
@@ -100,8 +107,6 @@ public:
         // Check if the modem is on; turn it off if so
         if(modemOnOff->isOn()) retVal = modemOnOff->off();
         else retVal =  true;
-        // Empty anything out of the receive buffer
-        dumpBuffer(_client);
         return retVal;
     }
 
@@ -114,15 +119,13 @@ public:
 
     bool update(void) override
     {
-        // #if defined(USE_TINY_GSM)
-
         // Clear values before starting loop
         clearValues();
 
         bool retVal = true;
 
         // Connect to the network before asking for quality
-        if (!_modem->isNetworkConnected()) retVal &= connectNetwork();
+        if (!_modem->isNetworkConnected()) retVal &= connectInternet();
         if (retVal == false) return false;
 
 
@@ -131,9 +134,9 @@ public:
         // close on its own so I don't need a separate stop.
         #if defined(TINY_GSM_MODEM_XBEE)
             IPAddress ip(129, 6, 15, 30);
-            connect(ip, 37);  // XBee is faster with an ip address
+            openTCP(ip, 37);  // XBee is faster with an ip address
             _client->print(F("Hi!"));  // Need to send something before connection is made
-            delay(75); // Need this delay!  Can get away with 50, but 100 is safer.
+            delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
         #endif
 
         // Get signal quality
@@ -148,54 +151,53 @@ public:
         // the update has been run!
 
         return retVal;
-        // #endif
     }
 
 public:
     void setupModem(Stream *modemStream,
                     int vcc33Pin,
-                    int status_CTS_pin,
-                    int onoff_DTR_pin,
-                    DTRSleepType sleepType,
+                    int modemStatusPin,
+                    int modemSleepRqPin,
+                    ModemSleepType sleepType,
                     const char *APN)
     {
         _APN = APN;
-        init(modemStream, vcc33Pin, status_CTS_pin, onoff_DTR_pin, sleepType);
+        init(modemStream, vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
     void setupModem(Stream &modemStream,
                     int vcc33Pin,
-                    int status_CTS_pin,
-                    int onoff_DTR_pin,
-                    DTRSleepType sleepType,
+                    int modemStatusPin,
+                    int modemSleepRqPin,
+                    ModemSleepType sleepType,
                     const char *APN)
     {
         _APN = APN;
-        init(&modemStream, vcc33Pin, status_CTS_pin, onoff_DTR_pin, sleepType);
+        init(&modemStream, vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
 
     void setupModem(Stream *modemStream,
                     int vcc33Pin,
-                    int status_CTS_pin,
-                    int onoff_DTR_pin,
-                    DTRSleepType sleepType,
+                    int modemStatusPin,
+                    int modemSleepRqPin,
+                    ModemSleepType sleepType,
                     const char *ssid,
                     const char *pwd)
     {
         _ssid = ssid;
         _pwd = pwd;
-        init(modemStream, vcc33Pin, status_CTS_pin, onoff_DTR_pin, sleepType);
+        init(modemStream, vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
     void setupModem(Stream &modemStream,
                     int vcc33Pin,
-                    int status_CTS_pin,
-                    int onoff_DTR_pin,
-                    DTRSleepType sleepType,
+                    int modemStatusPin,
+                    int modemSleepRqPin,
+                    ModemSleepType sleepType,
                     const char *ssid,
                     const char *pwd)
     {
         _ssid = ssid;
         _pwd = pwd;
-        init(&modemStream, vcc33Pin, status_CTS_pin, onoff_DTR_pin, sleepType);
+        init(&modemStream, vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
 
     int getSignalRSSI(void)
@@ -226,7 +228,7 @@ public:
         return percent;
     }
 
-    bool connectNetwork(void)
+    bool connectInternet(void)
     {
         bool retVal = false;
 
@@ -235,14 +237,14 @@ public:
         // Check again if the modem is on.  If it still isn't on, give up
         if(!modemOnOff->isOn())
         {
-            DBG(F("\nModem failed to turn on!"));
+            MS_DBG(F("\nModem failed to turn on!\n"));
             return false;
         }
 
         // Check that the modem is responding to AT commands.  If not, give up.
         if (!_modem->testAT(5000L))
         {
-            DBG(F("\nModem does not respond to AT commands!"));
+            MS_DBG(F("\nModem does not respond to AT commands!\n"));
             return false;
         }
 
@@ -252,96 +254,79 @@ public:
         #if defined(TINY_GSM_MODEM_HAS_WIFI)
         if (_ssid)
         {
-            DBG(F("\nConnecting to WiFi network..."));
-            if (!_modem->waitForNetwork(2000L)){
-                DBG("... Connection failed.  Resending credentials...");
+            MS_DBG(F("Connecting to WiFi network..."));
+            if (!_modem->waitForNetwork(5000L)){
+                MS_DBG("   ... Connection failed.  Resending credentials...");
                 _modem->networkConnect(_ssid, _pwd);
                 if (!_modem->waitForNetwork(30000L)){
-                    DBG("... Connection failed");
+                    MS_DBG("   ... Connection failed\n");
                 } else {
                     retVal = true;
-                    DBG("... Success!");
+                    MS_DBG("   ... Success!\n");
                 }
             } else {
-                DBG("... Success!");
-                retVal = true;
+                #if defined(TINY_GSM_MODEM_ESP8266)
+                    // make sure mux is right
+                    _modem->sendAT(GF("+CIPMUX=1"));
+                    _modem->waitResponse();
+                #endif  //  TINY_GSM_MODEM_ESP8266
+                MS_DBG("   ... Success!\n");
+                 retVal = true;
             }
         }
         else
         {
-        #endif
+        #endif  // TINY_GSM_MODEM_HAS_WIFI
         #if defined(TINY_GSM_MODEM_HAS_GPRS)
-            DBG(F("\nWaiting for cellular network..."));
+            MS_DBG(F("\nWaiting for cellular network..."));
             if (!_modem->waitForNetwork(45000L)){
-                DBG("... Connection failed.");
+                MS_DBG("   ...Connection failed.");
             } else {
                 _modem->gprsConnect(_APN, "", "");
-                DBG("... Success!");
+                MS_DBG("   ...Success!\n");
                 retVal = true;
             }
-
-        #endif
+        #endif  // TINY_GSM_MODEM_HAS_GPRS
         #if defined(TINY_GSM_MODEM_HAS_WIFI)
         }
-        #endif
+        #endif  // TINY_GSM_MODEM_HAS_WIFI
 
         return retVal;
     }
 
-    void disconnectNetwork(void)
+    void disconnectInternet(void)
     {
-        DBG(F("Disconnecting from network"));
     #if defined(TINY_GSM_MODEM_HAS_GPRS)
         _modem->gprsDisconnect();
+        MS_DBG(F("Disconnected from cellular network.\n"));
     #elif defined(TINY_GSM_MODEM_HAS_WIFI)
-        _modem->networkDisconnect();
+        // _modem->networkDisconnect();  // Eh.. why bother?
+        // MS_DBG(F("Disconnected from WiFi network.\n"));
     #endif
     }
 
-    int connect(const char *host, uint16_t port)
+    int openTCP(const char *host, uint16_t port)
     {
-        DBG("Connecting to", host, "...");
-    // #if defined(USE_TINY_GSM)
+        MS_DBG("Connecting to ", host, "...");
         int ret_val = _client->connect(host, port);
-        if (ret_val) DBG("... Success!");
-        else DBG("... Connection failed.");
+        if (ret_val) MS_DBG("   ...Success!\n");
+        else MS_DBG("   ...Connection failed.\n");
         return ret_val;
-    // #else
-    //     return 0;
-    // #endif
     }
 
-    int connect(IPAddress ip, uint16_t port)
+    int openTCP(IPAddress ip, uint16_t port)
     {
-        DBG("Connecting to", ip, "...");
-    // #if defined(USE_TINY_GSM)
+        MS_DBG("Connecting to ", ip, "...");
         int ret_val = _client->connect(ip, port);
-        if (ret_val) DBG("... Success!");
-        else DBG("... Connection failed.");
+        if (ret_val) MS_DBG("   ...Success!\n");
+        else MS_DBG("   ...Connection failed.\n");
         return ret_val;
-    // #else
-    //     return 0;
-    // #endif
     }
 
-    void stop(void)
+    void closeTCP(void)
     {
-        DBG(F("Disconnecting from TCP/IP..."));
-    // #if defined(USE_TINY_GSM)
         _client->stop();
-    // #endif
-    }
-
-    // Used to empty out the buffer after a post request.
-    // Removing this may cause communication issues.
-    void dumpBuffer(Stream *stream, int timeDelay = 5, int timeout = 5000)
-    {
-        delay(timeDelay);
-        while (timeout-- > 0 && stream->available() > 0)
-        {
-            stream->read();
-            delay(timeDelay);
-        }
+        MS_DBG(F("Closed TCP/IP.\n"));
     }
 
     // Get the time from NIST via TIME protocol (rfc868)
@@ -353,15 +338,15 @@ public:
         // Make TCP connection
         #if defined(TINY_GSM_MODEM_XBEE)
             IPAddress ip(129, 6, 15, 30);
-            connect(ip, 37);  // XBee is faster with an ip address
+            openTCP(ip, 37);  // XBee is faster with an ip address
         #else
-        connect("time.nist.gov", 37);
+        openTCP("time.nist.gov", 37);
         #endif
 
         // XBee needs to send something before the connection is actually made
         #if defined(TINY_GSM_MODEM_XBEE)
         _client->print(F("Hi!"));
-        delay(75); // Need this delay!  Can get away with 50, but 100 is safer.
+        delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
         #endif
 
         // Wait up to 5 seconds for a response
@@ -375,16 +360,16 @@ public:
         for (uint8_t i = 0; i < 4; i++)
         {
             response[i] = _client->read();
-            // DBG("\n",response[i]);
+            // MS_DBG("\n",response[i]);
             secFrom1900 += 0x000000FF & response[i];
-            // DBG("\n*****",String(secFrom1900, BIN),"*****");
+            // MS_DBG("\n*****",String(secFrom1900, BIN),"*****");
             if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;}
         }
-        // DBG("\n*****",secFrom1900,"*****");
+        // MS_DBG("\n*****",secFrom1900,"*****");
 
         // Return the timestamp
         uint32_t unixTimeStamp = secFrom1900 - 2208988800;
-        DBG(F("Timesamp returned by NIST (UTC): "), unixTimeStamp);
+        MS_DBG(F("Timestamp returned by NIST (UTC): "), unixTimeStamp, '\n');
         // If before Jan 1, 2017 or after Jan 1, 2030, most likely an error
         if (unixTimeStamp < 1483228800) return 0;
         else if (unixTimeStamp > 1893456000) return 0;
@@ -394,10 +379,8 @@ public:
 public:
     ModemOnOff *modemOnOff;
 
-// #if defined(USE_TINY_GSM)
     TinyGsm *_modem;
     TinyGsmClient *_client;
-// #endif
 
 private:
     const char *_APN;
@@ -405,8 +388,8 @@ private:
     const char *_pwd;
 
 private:
-    void init(Stream *modemStream, int vcc33Pin, int status_CTS_pin, int onoff_DTR_pin,
-              DTRSleepType sleepType)
+    void init(Stream *modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin,
+              ModemSleepType sleepType)
     {
         // Set up the method for putting the modem to sleep
 
@@ -414,76 +397,70 @@ private:
         {
             case pulsed:
             {
-                DBG(F("Setting"), F(MODEM_NAME),
-                    F("power on pin"), vcc33Pin,
-                    F("status on pin"), status_CTS_pin,
-                    F("and on/off via 2.5 second pulse on pin"), onoff_DTR_pin, '.');
+                MS_DBG(F("Setting "), F(MODEM_NAME),
+                    F(" power on pin "), vcc33Pin,
+                    F(" status on pin "), modemStatusPin,
+                    F(" and on/off via 2.5 second pulse on pin "), modemSleepRqPin, F(".\n"));
                 static pulsedOnOff pulsed;
                 modemOnOff = &pulsed;
-                pulsed.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
+                pulsed.init(vcc33Pin, modemSleepRqPin, modemStatusPin);
                 break;
             }
             case held:
             {
-                DBG(F("Setting"), F(MODEM_NAME),
-                    F("power on pin"), vcc33Pin,
-                    F("status on pin"), status_CTS_pin,
-                    F("and on/off by holding pin"), onoff_DTR_pin, F("high."));
+                MS_DBG(F("Setting "), F(MODEM_NAME),
+                    F(" power on pin "), vcc33Pin,
+                    F(" status on pin "), modemStatusPin,
+                    F(" and on/off by holding pin "), modemSleepRqPin, F("high.\n"));
                 static heldOnOff held;
                 modemOnOff = &held;
-                held.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
+                held.init(vcc33Pin, modemSleepRqPin, modemStatusPin);
                 break;
             }
             case reverse:
             {
-                DBG(F("Setting"), F(MODEM_NAME),
-                    F("power on pin"), vcc33Pin,
-                    F("status on pin"), status_CTS_pin,
-                    F("and on/off by holding pin"), onoff_DTR_pin, F("low."));
+                MS_DBG(F("Setting "), F(MODEM_NAME),
+                    F(" power on pin "), vcc33Pin,
+                    F(" status on pin "), modemStatusPin,
+                    F(" and on/off by holding pin "), modemSleepRqPin, F("low.\n"));
                 static reverseOnOff reverse;
                 modemOnOff = &reverse;
-                reverse.init(vcc33Pin, onoff_DTR_pin, status_CTS_pin);
+                reverse.init(vcc33Pin, modemSleepRqPin, modemStatusPin);
                 break;
             }
             default:
             {
-                DBG(F("Setting"), F(MODEM_NAME),
-                    F("power on pin"), vcc33Pin,
-                    F("status on pin"), status_CTS_pin,
-                    F("and no on/off pin."));
+                MS_DBG(F("Setting "), F(MODEM_NAME),
+                    F(" power on pin "), vcc33Pin,
+                    F(" status on pin "), modemStatusPin,
+                    F(" and no on/off pin.\n"));
                 static heldOnOff held;
                 modemOnOff = &held;
-                held.init(vcc33Pin, -1, status_CTS_pin);
+                held.init(vcc33Pin, -1, modemStatusPin);
                 break;
             }
         }
 
-        // #if defined(USE_TINY_GSM)
+        // Initialize the modem
+        MS_DBG(F("Initializing "), F(MODEM_NAME), F("..."));
+        static TinyGsm modem(*modemStream);
+        _modem = &modem;
+        static TinyGsmClient client(modem);
+        _client = &client;
 
-            // Initialize the modem
-            DBG(F("Initializing"), F(MODEM_NAME));
-            static TinyGsm modem(*modemStream);
-            _modem = &modem;
-            static TinyGsmClient client(modem);
-            _client = &client;
-
-            // Check if the modem is on; turn it on if not
-            if(!modemOnOff->isOn()) modemOnOff->on();
-            // Check again if the modem is on.  Only "begin" if it responded.
-            if(modemOnOff->isOn())
-            {
-                _modem->begin();
-                #if defined(TINY_GSM_MODEM_XBEE)
-                    _modem->setupPinSleep();
-                #endif
-                modemOnOff->off();
-            }
-            else DBG(F("\nModem failed to turn on!"));
-            DBG(F("   ... Complete!"));
-
-        // #else
-            // stream = modemStream;
-        // #endif
+        // Check if the modem is on; turn it on if not
+        if(!modemOnOff->isOn()) modemOnOff->on();
+        // Check again if the modem is on.  Only "begin" if it responded.
+        if(modemOnOff->isOn())
+        {
+            _modem->begin();
+            #if defined(TINY_GSM_MODEM_XBEE)
+                _modem->setupPinSleep();
+            #endif
+            modemOnOff->off();
+        }
+        else MS_DBG(F("   ... Modem failed to turn on!\n"));
+        MS_DBG(F("   ... Complete!\n"));
     }
 
     // Helper to get approximate RSSI from CSQ (assuming no noise)
@@ -549,4 +526,6 @@ public:
     {}
 };
 
-#endif /* ModemSupport_h */
+#endif /* USE_TINY_GSM */
+
+#endif /* LoggerModem_h */

@@ -78,24 +78,24 @@ SENSOR_STATUS MaximDS18::getStatus(void)
     // Make sure the address is valid
     if (!tempSensors.validAddress(_OneWireAddress))
     {
-        DBGM(F("This sensor address is not valid: "));
-        DBGM(getAddressString(_OneWireAddress), F("\n"));
+        MS_DBG(F("This sensor address is not valid: "));
+        MS_DBG(getAddressString(_OneWireAddress), F("\n"));
         return SENSOR_ERROR;
     }
 
     // Make sure the sensor is connected
     if (!tempSensors.isConnected(_OneWireAddress))
     {
-        DBGM(F("This sensor is not currently connected: "));
-        DBGM(getAddressString(_OneWireAddress), F("\n"));
+        MS_DBG(F("This sensor is not currently connected: "));
+        MS_DBG(getAddressString(_OneWireAddress), F("\n"));
         return SENSOR_ERROR;
     }
 
     // Set resolution to 12 bit
     if (!tempSensors.setResolution(_OneWireAddress, 12))
     {
-        DBGM(F("Unable to set the resolution of this sensor: "));
-        DBGM(getAddressString(_OneWireAddress), F("\n"));
+        MS_DBG(F("Unable to set the resolution of this sensor: "));
+        MS_DBG(getAddressString(_OneWireAddress), F("\n"));
         return SENSOR_ERROR;
     }
 
@@ -126,23 +126,23 @@ SENSOR_STATUS MaximDS18::setup(void)
     // Find the address if it's not known
     if (!_addressKnown)
     {
-        DBGM(F("Probe address is not known!\n"));
+        MS_DBG(F("Probe address is not known!\n"));
 
         DeviceAddress address;
         if (oneWire.search(address))
         {
-            DBGM(F("Sensor found at "), getAddressString(address), F("\n"));
+            MS_DBG(F("Sensor found at "), getAddressString(address), F("\n"));
             for (int i = 0; i < 8; i++) _OneWireAddress[i] = address[i];
             _addressKnown = true;  // Now we know the address
         }
         else
         {
-            DBGM(F("Unable to find address for DS18 on pin "), _dataPin, F("\n"));
+            MS_DBG(F("Unable to find address for DS18 on pin "), _dataPin, F("\n"));
         }
     }
 
-    DBGM(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
-    DBGM(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
+    MS_DBG(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
+    MS_DBG(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
 
     SENSOR_STATUS stat = getStatus();
 
@@ -173,32 +173,32 @@ bool MaximDS18::update()
     int rangeAttempts = 0;
     float result = 85;  // This is a "bad" result returned from a DS18 sensor
 
-    DBGM(F("Beginning detection for Temperature\n"));
+    MS_DBG(F("Beginning detection for Temperature\n"));
     while (goodTemp == false && rangeAttempts < 50)
     {
         // Send the command to get temperatures
-        DBGM(F("Asking sensor to take a measurement\n"));
+        MS_DBG(F("Asking sensor to take a measurement\n"));
         tempSensors.requestTemperaturesByAddress(_OneWireAddress);
 
-        DBGM(F("Requesting temperature result\n"));
+        MS_DBG(F("Requesting temperature result\n"));
         result = tempSensors.getTempC(_OneWireAddress);
-        DBGM(F("Received "), result, F("°C\n"));
+        MS_DBG(F("Received "), result, F("°C\n"));
         rangeAttempts++;
 
         // If a DS18 cannot get a goot measurement, it returns 85
         // If the sensor is not properly connected, it returns -127
         if (result == 85 || result == -127)
         {
-            DBGM(F("Bad or Suspicious Result, Retry Attempt #"), rangeAttempts, F("\n"));
+            MS_DBG(F("Bad or Suspicious Result, Retry Attempt #"), rangeAttempts, F("\n"));
         }
         else
         {
-            DBGM(F("Good result found\n"));
+            MS_DBG(F("Good result found\n"));
             goodTemp = true;  // Set completion of read to true
         }
     }
 
-    DBGM(F("Sending value of "), result, F(" °C to the sensorValues array\n"));
+    MS_DBG(F("Sending value of "), result, F(" °C to the sensorValues array\n"));
     sensorValues[DS18_TEMP_VAR_NUM] = result;
 
     // Turn the power back off it it had been turned on

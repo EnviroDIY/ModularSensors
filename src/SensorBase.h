@@ -13,24 +13,8 @@
 #include <Arduino.h>
 #include <pins_arduino.h>
 
-// #define SENSORS_DBG Serial
-
-#ifdef SENSORS_DBG
-namespace {
- template<typename T>
- static void DBGS(T last) {
-   SENSORS_DBG.print(last);
- }
-
- template<typename T, typename... Args>
- static void DBGS(T head, Args... tail) {
-   SENSORS_DBG.print(head);
-   DBGS(tail...);
- }
-}
-#else
- #define DBGS(...)
-#endif
+// #define DEBUGGING_SERIAL_OUTPUT Serial
+#include "ModSensorDebugger.h"
 
 // The largest number of variables from a single sensor
 #define MAX_NUMBER_VARS 4
