@@ -894,7 +894,7 @@ ___
     - AltSoftSerial is not directly supported on the AtSAM3X.
     - SoftwareSerial_ExtInts is not supported on the AtSAM3X.
     - Any digital pin can be used with SDI-12.
-- **ATtiny** - Unsupported.  This chip has too little power and far too few pins and communication ports to use this library.
+- **ATtiny** - Unsupported.  This chip has too little processing power and far too few pins and communication ports to use this library.
 - **Teensy 2.x/3.x** - Unsupported
 - **STM32** - Unsupported
 - Anything else not listed above as being supported.
