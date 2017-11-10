@@ -10,6 +10,8 @@
 #ifndef VariableArray_h
 #define VariableArray_h
 
+#include <Arduino.h>
+
 // #define STANDARD_SERIAL_OUTPUT Serial
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
