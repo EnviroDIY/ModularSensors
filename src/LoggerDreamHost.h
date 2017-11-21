@@ -137,8 +137,6 @@ public:
             _modem.wake();
 
             // Wake up all of the sensors
-            // I'm not doing as part of sleep b/c it may take up to a second or
-            // two for them all to wake which throws off the checkInterval()
             sensorsWake();
             // Update the values from all attached sensors
             updateAllSensors();

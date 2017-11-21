@@ -259,7 +259,7 @@ public:
         MS_DBG(F("Number of Readings so far: "), _numReadings, F("\n"));
         MS_DBG(F("Mod of 120: "), checkTime % 120, F("\n"));
         if ((checkTime % _interruptRate == 0 ) or
-            (_numReadings < 10 and getNowEpoch() % 120 == 0))
+            (_numReadings < 10 and checkTime % 120 == 0))
         {
             // Update the time variables with the current time
             markTime();
@@ -664,13 +664,13 @@ public:
         {
             PRINTOUT(F("------------------------------------------\n"));
             // Wake up all of the sensors
-            // PRINTOUT(F("Waking sensors...\n"));
+            MS_DBG(F("Waking sensors...\n"));
             sensorsWake();
             // Update the values from all attached sensors
-            // PRINTOUT(F("  Updating sensor values...\n"));
+            MS_DBG(F("  Updating sensor values...\n"));
             updateAllSensors();
             // Immediately put sensors to sleep to save power
-            // PRINTOUT(F("  Putting sensors back to sleep...\n"));
+            MS_DBG(F("  Putting sensors back to sleep...\n"));
             sensorsSleep();
             // Print out the current logger time
             PRINTOUT(F("Current logger time is "));
@@ -789,8 +789,6 @@ public:
             digitalWrite(_ledPin, HIGH);
 
             // Wake up all of the sensors
-            // I'm not doing as part of sleep b/c it may take up to a second or
-            // two for them all to wake which throws off the checkInterval()
             sensorsWake();
             // Update the values from all attached sensors
             updateAllSensors();
