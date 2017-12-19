@@ -105,11 +105,11 @@
         {
             "name": "YosemitechModbus",
             "version": "https://github.com/EnviroDIY/YosemitechModbus.git"
-        }
+        },
         {
             "library id": "873",
             "name": "RTCZero",
             "url": "https://github.com/arduino-libraries/RTCZero.git"
-        },
+        }
     ]
 }
