@@ -10,6 +10,7 @@
  *For temperature from the DS3231:
  *  Resolution is 0.25°C
  *  Accuracy is ±3°C
+ *  Range is 0°C to +70°C
  *
  * The clock is always ready to take a reading.
 */

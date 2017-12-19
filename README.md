@@ -62,11 +62,14 @@ In order to support multiple functions and sensors, there are quite a lot of sub
 - [EnviroDIY version of the TinyGSM library](https://github.com/EnviroDIY/TinyGSM) - This provides internet (TCP/IP) connectivity.
 - [Adafruit ADS1X15 library](https://github.com/Adafruit/Adafruit_ADS1X15/) - For high-resolution analog to digital conversion.
 - [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/ExtInts) - For control of SDI-12 based sensors.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the processor.
+- [SensorModbusMaster](https://github.com/EnviroDIY/SensorModbusMaster) - for easy communication with Modbus devices.
 - [OneWire](https://github.com/PaulStoffregen/OneWire) - This enables communication with Maxim/Dallas OneWire devices.
 - [DallasTemperature](https://github.com/milesburton/Arduino-Temperature-Control-Library) - for communication with the DS18 line of Maxim/Dallas OneWire temperature probes.
 - [Adafruit Unified Sensor Driver](https://github.com/adafruit/Adafruit_Sensor)  
 - [Adafruit AM2315 library](https://github.com/adafruit/Adafruit_AM2315) - for the AOSong AM2315 temperature and humidity sensor.
+- [Adafruit DHT library](https://github.com/adafruit/DHT-sensor-library) - for other AOSong temperature and humidity sensors.
 - [Adafruit BME280 library](https://github.com/adafruit/Adafruit_BME280_Library) - for the Bosch BME280 environmental sensor.
+- [YosemitechModbus](https://github.com/EnviroDIY/YosemitechModbus) - for all Yosemitech environmental sensor.
 
 ## <a name="Basic"></a>Basic Senor and Variable Functions
 
@@ -437,7 +440,7 @@ _____
 
 ### <a name="MaxBotix"></a>[MaxBotix MaxSonar](http://www.maxbotix.com/Ultrasonic_Sensors/High_Accuracy_Sensors.htm) - HRXL MaxSonar WR or WRS Series with TTL Outputs
 
-The MaxBotix sensors communicate with the board using TTL from pin 5 on the sensor.  They require a 2.7V-5.5V power supply to pin 6 on the sensor (which can be turned off between measurements) and the level of the TLL returned by the MaxSonar will match the power level it is supplied with.  Pin 7 of the MaxSonar must be connected to ground and pin 4 can optionally be used to trigger the MaxSonar.
+The IP67 rated HRXL-MaxSonar-WR ultrasonic rangefinders offer 1mm resolution, 2.7-5.5VDC operation, a narrow beam pattern, high power output, noise rejection, automatic calibration, and temperature compensation.  Depending on the precise model, the rangerfinders have ranges between 300 and 9999mm and read rates of 6-7.5Hz.  The MaxBotix sensors communicate with the board using TTL from pin 5 on the sensor.  They require a 2.7V-5.5V power supply to pin 6 on the sensor (which can be turned off between measurements) and the level of the TLL returned by the MaxSonar will match the power level it is supplied with.  Pin 7 of the MaxSonar must be connected to ground and pin 4 can optionally be used to trigger the MaxSonar.
 
 If you are using the [MaxBotix HR-MaxTemp](https://www.maxbotix.com/Ultrasonic_Sensors/MB7955.htm) MB7955 temperature compensator on your MaxBotix (wqhich greatly improves data quality), the red wire from the MaxTemp should be attached to pin 1 on the MaxSonar.  The white and shield wires from the MaxTemp should both be attached to Pin 7 or the MaxSonar (which is also attached to the Arduino ground).  The MaxTemp communicates directly with the MaxSonar and there is no need to make any changes on the Aruduino itself for the MaxTemp.
 
@@ -454,6 +457,9 @@ The single available variable is:  (customVarCode is optional)
 
 ```cpp
 MaxBotixSonar_Range(&sonar, "customVarCode");  // Ultrasonic range in mm
+//  Resolution is 1mm
+//  Accuracy is ± 1%
+//  Range is 300mm 5000mm or 500mm to 9999mm, depending on  model
 ```
 
 In addition to the constructors for the sensor and variable, you must remember to "begin" your stream instance within the main setup function.  The baud rate must be set to 9600 for all MaxBotix sensors.
@@ -482,8 +488,21 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, AD
 The single available variable is (called once each for high and low range):
 
 ```cpp
-CampbellOBS3_Turbidity(&osb3low, "customLowVarCode");  // Turbidity in NTU
-CampbellOBS3_Turbidity(&osb3high, "customHighVarCode");
+CampbellOBS3_Turbidity(&osb3low, "customLowVarCode");  // Low Range Turbidity in NTU
+CampbellOBS3_Turbidity(&osb3high, "customHighVarCode");  // High Range Turbidity in NTU
+//  Ranges: (depends on sediment size, particle shape, and reflectivity)
+//      Turbidity (low/high): 250/1000 NTU; 500/2000 NTU; 1000/4000 NTU
+//      Mud: 5000 to 10,000 mg L–1
+//      Sand: 50,000 to 100,000 mg L–1
+//  Accuracy: (whichever is larger)
+//      Turbidity: 2% of reading or 0.5 NTU
+//      Mud: 2% of reading or 1 mg L–1
+//      Sand: 4% of reading or 10 mg L–1
+// Resolution:
+//    16-bit ADC
+//        Turbidity: 0.004/0.01 NTU; 0.008/0.03 NTU; 0.01/0.06 NTU
+//    12-bit ADC
+//        Turbidity: 0.06/0.2 NTU; 0.1/0.5 NTU; 0.2/1.0 NTU
 ```
 _____
 
@@ -504,8 +523,15 @@ The three available variables are:  (customVarCode is optional)
 
 ```cpp
 Decagon5TM_Ea(&fivetm, "customVarCode");  // Ea/Matric Potential Variable in farads per meter
-Decagon5TM_Temp(&fivetm, "customVarCode");  // Temperature in °C
 Decagon5TM_VWC(&fivetm, "customVarCode");  // Volumetric water content as percent, calculated from Ea via TOPP equation
+//  Resolution is 0.0008 m3/m3 (0.08% VWC) from 0 – 50% VW
+//  Accuracy for Generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typ
+//  Accuracy for Medium Specific Calibration: ± 0.02 m3/m3 (± 2% VWC)
+//  Range is 0 – 1 m3/m3 (0 – 100% VWC)
+Decagon5TM_Temp(&fivetm, "customVarCode");  // Temperature in °C
+//  Resolution is 0.1°C
+//  Accuracy is ± 1°C
+//  Range is - 40°C to + 50°C
 ```
 _____
 
@@ -526,8 +552,17 @@ The three available variables are:  (customVarCode is optional)
 
 ```cpp
 DecagonCTD_Cond(&ctd, "customVarCode");  // Conductivity in µS/cm
+//  Resolution is 0.001 mS/cm = 1 µS/cm
+//  Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
+//  Range is 0 – 120 mS/cm (bulk)
 DecagonCTD_Temp(&ctd, "customVarCode");  // Temperature in °C
+//  Resolution is 0.1°C
+//  Accuracy is ±1°C
+//  Range is -11°C to +49°C
 DecagonCTD_Depth(&ctd, "customVarCode");  // Water depth in mm
+//  Resolution is 2 mm
+//  Accuracy is ±0.05% of full scale
+//  Range is 0 to 5 m or 0 to 10 m, depending on model
 ```
 _____
 
@@ -548,7 +583,13 @@ The two available variables are:  (customVarCode is optional)
 
 ```cpp
 DecagonES2_Cond(&es2, "customVarCode");  // Conductivity in µS/cm
+//  Resolution is 0.001 mS/cm = 1 µS/cm
+//  Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
+//  Range is 0 – 120 mS/cm (bulk)
 DecagonES2_Temp(&es2, "customVarCode");  // Temperature in °C
+//  Resolution is 0.1°C
+//  Accuracy is ±1°C
+//  Range is -40°C to +50°C
 ```
 _____
 
@@ -576,12 +617,15 @@ The single available variable is:  (customVarCode is optional)
 
 ```cpp
 MaximDS18_Temp(&ds18, "customVarCode");  // Temperature in °C
+// Resolution is between 0.0625°C (12 bit) and 0.5°C (9-bit)
+// Accuracy is ±0.5°C from -10°C to +85°C for DS18S20 and DS18B20, ±2°C for DS1822 and MAX31820
+// Range is -55°C to +125°C (-67°F to +257°F)
 ```
 _____
 
 ### <a name="AM2315"></a>[AOSong AM2315](www.aosong.com/asp_bin/Products/en/AM2315.pdf) Encased I2C Temperature/Humidity Sensor
 
-The AOSong AM2315 communicates with the board via I2C.  Because this sensor can have only one I2C address, it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 3.3-5.5V power source and the power supply to the sensor can be stopped between measurements.
+The AOSong AM2315 and [CM2311](http://www.aosong.com/en/products/details.asp?id=193) communicate with the board via I2C.  Because this sensor can have only one I2C address, it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 3.3-5.5V power source and the power supply to the sensor can be stopped between measurements.
 
 The only input needed for the sensor constructor is the Arduino pin controlling power on/off:
 
@@ -594,7 +638,13 @@ The two available variables are:  (customVarCode is optional)
 
 ```cpp
 AOSongAM2315_Humidity(&am2315, "customVarCode");  // Percent relative humidity
+//  Resolution is 0.1 % RH (16 bit)
+//  Accuracy is ± 2 % RH
+//  Range is 0 - 100 % RH
 AOSongAM2315_Temp(&am2315, "customVarCode");  // Temperature in °C
+// Resolution is 0.1°C (16 bit)
+// Accuracy is ±0.1°C
+// Range is -40°C to +125°C
 ```
 _____
 
@@ -613,15 +663,27 @@ The four available variables are:  (customVarCode is optional)
 
 ```cpp
 BoschBME280_Temp(&bme280, "customVarCode");  // Temperature in °C
+//  Resolution is 0.01°C
+//  Accuracy is ±0.5°C
+//  Range is -40°C to +85°C
 BoschBME280_Humidity(&bme280, "customVarCode");  // Percent relative humidity
+//  Resolution is 0.008 % RH (16 bit)
+//  Accuracy is ± 3 % RH
+//  Range is 0-100 % RH
 BoschBME280_Pressure(&bme280, "customVarCode");  // Barometric pressure in pascals
+//  Resolution is 0.18Pa
+//  Absolute Accuracy is ±1hPa
+//  Relative Accuracy is ±0.12hPa
+//  Range is 300 to 1100 hPa
 BoschBME280_Altitude(&bme280, "customVarCode");  // Altitude in meters, calculated from barometric pressure
+//  Resolution is 1m
+//  Accuracy depends on geographic location
 ```
 _____
 
 ### <a name="DHT"></a>[AOSong DHT](http://www.aosong.com/en/products/index.asp) Digital-Output Relative Humidity & Temperature Sensor
 
-This module will work with an AOSong DHT11, DHT21, AM2301, DHT22, or AM2302.  These sensors uses a non-standard single wire digital signalling protocol.  They can be connected to any digital pin.  Please keep in mind that, per manufacturer instructions, these sensors should not be polled more frequently than once every 2 seconds.  These sensors should be attached to a 3.3-6V power source and the power supply to the sensor can be stopped between measurements.
+This module will work with an AOSong [DHT11/CHT11](http://www.aosong.com/en/products/details.asp?id=109), DHT21/AM2301, and [DHT22/AM2302/CM2302](http://www.aosong.com/en/products/details.asp?id=117).  These sensors uses a non-standard single wire digital signalling protocol.  They can be connected to any digital pin.  Please keep in mind that, per manufacturer instructions, these sensors should not be polled more frequently than once every 2 seconds.  These sensors should be attached to a 3.3-6V power source and the power supply to the sensor can be stopped between measurements.
 
 The Arduino pin controlling power on/off, the Arduino pin receiving data, and the sensor type are required for the sensor constructor:
 
@@ -634,8 +696,17 @@ The three available variables are:  (customVarCode is optional)
 
 ```cpp
 AOSongDHT_Humidity(&dht, "customVarCode");  // Percent relative humidity
+//  Resolution is 0.1 % RH for DHT22 and 1 % RH for DHT11
+//  Accuracy is ± 2 % RH for DHT22 and ± 5 % RH for DHT11
+//  Range is 0 to 100 % RH
 AOSongDHT_Temp(&dht, "customVarCode");  // Temperature in °C
-AOSongDHT_HI(&dht, "customVarCode");  // Heat Index
+//  Resolution is 0.1°C
+//  Accuracy is ±0.5°C for DHT22 and ± ±2°C for DHT11
+//  Range is -40°C to +80°C
+AOSongDHT_HI(&dht, "customVarCode");  // Calculated Heat Index
+//  Resolution is 0.1°C
+//  Accuracy is ±0.5°C for DHT22 and ± ±2°C for DHT11
+//  Range is -40°C to +80°C
 ```
 _____
 
@@ -653,6 +724,9 @@ The one available variable is:  (customVarCode is optional)
 
 ```cpp
 ApogeeSQ212_PAR(&SQ212, "customVarCode");  // Photosynthetically Active Radiation (PAR), in units of μmol m-2 s-1, or microeinsteinPerSquareMeterPerSecond
+//  Resolution is 0.04 µmol m-2 s-1 (16 bit ADC)
+//  Accuracy is ± 0.5%
+//  Range is 0 to 2500 µmol m-2 s-1
 ```
 _____
 
@@ -678,8 +752,17 @@ The various sensor and variable constructors are:
 YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePin, y504NumberReadings);
 // Variables
 YosemitechY504_DOpct(&y504, "customVarCode")  // DO percent saturation
+//  Resolution is 0.00000005 %
+//  Accuracy is 1%
+//  Range is 0-200% Saturation
 YosemitechY504_Temp(&y504, "customVarCode")  // Temperature in °C
-YosemitechY504_DOmgL(&y504, "customVarCode")  // DO concentration, calculated from percent saturation
+//  Resolution is 0.00000001 °C
+//  Accuracy is ± 0.2°C
+//  Range is 0°C to + 50°C
+YosemitechY504_DOmgL(&y504, "customVarCode")  // DO concentration in mg/L, calculated from percent saturation
+//  Resolution is 0.000000005 mg/L
+//  Accuracy is 1%
+//  Range is 0-20mg/L
 ```
 
 ```cpp
@@ -688,7 +771,13 @@ YosemitechY504_DOmgL(&y504, "customVarCode")  // DO concentration, calculated fr
 YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePin, y510NumberReadings);
 // Variables
 YosemitechY510_Turbidity(&y510, "customVarCode")  // Turbidity in NTU
+//  Resolution is 0.0000002 NTU
+//  Accuracy is ± 5 % or 0.3 NTU
+//  Range is 0.1 to 1000 NTU
 YosemitechY510_Temp(&y510, "customVarCode")  // Temperature in °C
+//  Resolution is 0.00000001 °C
+//  Accuracy is ± 0.2°C
+//  Range is 0°C to + 50°C
 ```
 
 ```cpp
@@ -697,7 +786,13 @@ YosemitechY510_Temp(&y510, "customVarCode")  // Temperature in °C
 YosemitechY514 y514(y514modbusAddress, modbusPower, modbusSerial, max485EnablePin, y514NumberReadings);
 // Variables
 YosemitechY514_Chlorophyll(&y514, "customVarCode")  // Chlorophyll concentration in µg/L
+//  Resolution is 0.00000009 µg/L
+//  Accuracy is ± 1 %
+//  Range is 0 to 400 µg/L or 0 to 100 RFU
 YosemitechY514_Temp(&y514, "customVarCode")  // Temperature in °C
+//  Resolution is 0.00000001 °C
+//  Accuracy is ± 0.2°C
+//  Range is 0°C to + 50°C
 ```
 
 ```cpp
@@ -706,7 +801,13 @@ YosemitechY514_Temp(&y514, "customVarCode")  // Temperature in °C
 YosemitechY520 y520(y520modbusAddress, modbusPower, modbusSerial, max485EnablePin, y520NumberReadings);
 // Variables
 YosemitechY520_Cond(&y520, "customVarCode")  // Conductivity in µS/cm
+//  Resolution is 0.00000005 µS/cm
+//  Accuracy is ± 1 %
+//  Range is 1 to 200 µS/cm
 YosemitechY520_Temp(&y520, "customVarCode")  // Temperature in °C
+//  Resolution is 0.00000001 °C
+//  Accuracy is ± 0.2°C
+//  Range is 0°C to + 50°C
 ```
 
 ```cpp
@@ -715,7 +816,13 @@ YosemitechY520_Temp(&y520, "customVarCode")  // Temperature in °C
 YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePin, y532NumberReadings);
 // Variables
 YosemitechY532_pH(&y532, "customVarCode")  // pH
+//  Resolution is 0.000000002 pH
+//  Accuracy is ± 0.1 pH
+//  Range is 2 to 12 pH
 YosemitechY532_Temp(&y532, "customVarCode")  // Temperature in °C
+//  Resolution is 0.00000001 °C
+//  Accuracy is ± 0.2°C
+//  Range is 0°C to + 50°C
 YosemitechY532_Voltage(&y532, "customVarCode")  // Electrode electrical potential
 ```
 _____
@@ -735,6 +842,9 @@ The only available variables is:  (customVarCode is optional)
 
 ```cpp
 MaximDS3231_Temp(&ds3231, "customVarCode");  // Temperature in °C
+//  Resolution is 0.25°C
+//  Accuracy is ±3°C
+//  Range is 0°C to +70°C
 ```
 _____
 
@@ -753,7 +863,12 @@ The two available variables are:  (customVarCode is optional)
 
 ```cpp
 ProcessorStats_Batt(&mayfly, "customVarCode");  // Current battery voltage in volts
+//  Resolution is 0.005V (10 bit ADC)
+//  Range is 0 to 5 V
 ProcessorStats_FreeRam(&mayfly, "customVarCode");  // Amount of free RAM in bits
+//  Resolution is 1 bit
+//  Accuracy is 1 bit
+//  Range is 0 to full RAM available on processor
 ```
 _____
 
