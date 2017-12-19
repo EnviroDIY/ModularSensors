@@ -119,7 +119,7 @@ public:
     // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
     void attachModem(loggerModem &modem)
     {
-        _modem = modem;
+        _logModem = modem;
     }
 #endif /* USE_TINY_GSM */
 
@@ -654,9 +654,9 @@ public:
         // Turn on the modem to let it start searching for the network
         #if defined(USE_TINY_GSM)
             // Turn on the modem
-            _modem.wake();
+            _logModem.wake();
             // Connect to the network to make sure we have signal
-            _modem.connectInternet();
+            _logModem.connectInternet();
         #endif  // USE_TINY_GSM
 
         // Update the sensors and print out data 25 times
@@ -685,7 +685,7 @@ public:
             // Specially highlight the modem signal quality in the debug mode
             #if defined(USE_TINY_GSM)
                 PRINTOUT(F("Current modem signal is "));
-                PRINTOUT(_modem.getSignalPercent());
+                PRINTOUT(_logModem.getSignalPercent());
                 PRINTOUT(F("%\n"));
             #endif  // USE_TINY_GSM
             delay(5000);
@@ -693,9 +693,9 @@ public:
 
         #if defined(USE_TINY_GSM)
             // Disconnect from the network
-            _modem.disconnectInternet();
+            _logModem.disconnectInternet();
             // Turn off the modem
-            _modem.off();
+            _logModem.off();
         #endif  // USE_TINY_GSM
     }
 
@@ -752,16 +752,16 @@ public:
             // Synchronize the RTC with NIST
             PRINTOUT(F("Attempting to synchronize RTC with NIST\n"));
             // Turn on the modem
-            _modem.wake();
+            _logModem.wake();
             // Connect to the network
-            if (_modem.connectInternet())
+            if (_logModem.connectInternet())
             {
-                syncRTClock(_modem.getNISTTime());
+                syncRTClock(_logModem.getNISTTime());
                 // Disconnect from the network
-                _modem.disconnectInternet();
+                _logModem.disconnectInternet();
             }
             // Turn off the modem
-            _modem.off();
+            _logModem.off();
         #endif  // USE_TINY_GSM
 
         // Set up the sensors
@@ -789,10 +789,13 @@ public:
             digitalWrite(_ledPin, HIGH);
 
             // Wake up all of the sensors
+            MS_DBG(F("Waking sensors...\n"));
             sensorsWake();
             // Update the values from all attached sensors
+            MS_DBG(F("  Updating sensor values...\n"));
             updateAllSensors();
             // Immediately put sensors to sleep to save power
+            MS_DBG(F("  Putting sensors back to sleep...\n"));
             sensorsSleep();
 
             // Create a csv data record and save it to the log file
@@ -844,10 +847,10 @@ protected:
     bool _sleep;
     int _ledPin;
 
-
+public:
 #if defined(USE_TINY_GSM)
     // The internal modem instance
-    loggerModem _modem;
+    loggerModem _logModem;
 #endif  // USE_TINY_GSM
 };
 
