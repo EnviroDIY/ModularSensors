@@ -15,11 +15,13 @@
 #ifndef MaxBotixSonar_h
 #define MaxBotixSonar_h
 
-#include "SensorBase.h"
-#include "VariableBase.h"
+#include <Arduino.h>
 
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
+
+#include "SensorBase.h"
+#include "VariableBase.h"
 
 #define HRXL_NUM_MEASUREMENTS 1
 #define HRXL_WARM_UP 160

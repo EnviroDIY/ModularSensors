@@ -68,7 +68,7 @@ public:
         int did_respond = 0;
 
         // Open a TCP/IP connection to DreamHost
-        if(_modem.openTCP("swrcsensors.dreamhosters.com", 80))
+        if(_logModem.openTCP("swrcsensors.dreamhosters.com", 80))
         {
             // Send the request to the serial for debugging
             #if defined(STANDARD_SERIAL_OUTPUT)
@@ -78,24 +78,24 @@ public:
             #endif
 
             // Send the request to the modem stream
-            streamDreamHostRequest(_modem._client);
-            _modem._client->flush();  // wait for sending to finish
+            streamDreamHostRequest(_logModem._client);
+            _logModem._client->flush();  // wait for sending to finish
 
             uint32_t start_timer;
             if (millis() < 4294957296) start_timer = millis();  // In case of roll-over
             else start_timer = 0;
-            while ((millis() - start_timer) < 10000L && _modem._client->available() < 12)
+            while ((millis() - start_timer) < 10000L && _logModem._client->available() < 12)
             {delay(10);}
 
             // Read only the first 12 characters of the response
             // We're only reading as far as the http code, anything beyond that
             // we don't care about so we're not reading to save on total
             // data used for transmission.
-            did_respond = _modem._client->readBytes(response_buffer, 12);
+            did_respond = _logModem._client->readBytes(response_buffer, 12);
 
             // Close the TCP/IP connection as soon as the first 12 characters are read
             // We don't need anything else and stoping here should save data use.
-            _modem.closeTCP();
+            _logModem.closeTCP();
         }
         else PRINTOUT(F("\n -- Unable to Establish Connection to DreamHost -- \n"));
 
@@ -134,19 +134,20 @@ public:
             digitalWrite(_ledPin, HIGH);
 
             // Turn on the modem to let it start searching for the network
-            _modem.wake();
+            _logModem.wake();
 
             // Wake up all of the sensors
-            // I'm not doing as part of sleep b/c it may take up to a second or
-            // two for them all to wake which throws off the checkInterval()
+            MS_DBG(F("Waking sensors...\n"));
             sensorsWake();
             // Update the values from all attached sensors
+            MS_DBG(F("  Updating sensor values...\n"));
             updateAllSensors();
             // Immediately put sensors to sleep to save power
+            MS_DBG(F("  Putting sensors back to sleep...\n"));
             sensorsSleep();
 
             // Connect to the network
-            if (_modem.connectInternet())
+            if (_logModem.connectInternet())
             {
                 // Post the data to the WebSDL
                 postDataEnviroDIY();
@@ -157,15 +158,15 @@ public:
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
                 if (_numReadings % 288 == 0)
                 {
-                    syncRTClock(_modem.getNISTTime());
+                    syncRTClock(_logModem.getNISTTime());
                 }
 
                 // Disconnect from the network
-                _modem.disconnectInternet();
+                _logModem.disconnectInternet();
             }
 
             // Turn the modem off
-            _modem.off();
+            _logModem.off();
 
             // Create a csv data record and save it to the log file
             logToSD(generateSensorDataCSV());

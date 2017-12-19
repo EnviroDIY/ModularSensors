@@ -13,10 +13,10 @@
     // instances of classes with non-empty constructors
     void VariableArray::init(int variableCount, Variable *variableList[])
     {
-        PRINTOUT(F("Initializing variable array with "), variableCount, F(" variables...\n"));
+        MS_DBG(F("Initializing variable array with "), variableCount, F(" variables...\n"));
         _variableCount = variableCount;
         _variableList = variableList;
-        PRINTOUT(F("   ... Success!\n"));
+        MS_DBG(F("   ... Success!\n"));
     }
 
     // Functions to return information about the list
@@ -39,7 +39,7 @@
     {
         bool success = true;
 
-        PRINTOUT(F("Beginning setup for sensors and variables..."));
+        MS_DBG(F("Beginning setup for sensors and variables..."));
 
         // First wake up all of the sensors
         MS_DBG(F("Waking sensors for setup.\n"));
@@ -81,7 +81,7 @@
         }
 
         if (success)
-            PRINTOUT(F("   ... Success!\n"));
+            MS_DBG(F("   ... Success!\n"));
         return success;
     }
 
@@ -191,21 +191,21 @@
             }
         }
         // Prints for debugging
-        if (unique){
-            MS_DBG(_variableList[arrayIndex]->getVarName());
-            MS_DBG(F(" from "));
-            MS_DBG(sensName);
-            MS_DBG(F(" at "));
-            MS_DBG(sensLoc);
-            MS_DBG(F(" will be used for sensor references.\n"));
-        }
-        else{
-            MS_DBG(_variableList[arrayIndex]->getVarName());
-            MS_DBG(F(" from "));
-            MS_DBG(sensName);
-            MS_DBG(F(" at "));
-            MS_DBG(sensLoc);
-            MS_DBG(F(" will be ignored.\n"));
-        }
+        // if (unique){
+        //     MS_DBG(_variableList[arrayIndex]->getVarName());
+        //     MS_DBG(F(" from "));
+        //     MS_DBG(sensName);
+        //     MS_DBG(F(" at "));
+        //     MS_DBG(sensLoc);
+        //     MS_DBG(F(" will be used for sensor references.\n"));
+        // }
+        // else{
+        //     MS_DBG(_variableList[arrayIndex]->getVarName());
+        //     MS_DBG(F(" from "));
+        //     MS_DBG(sensName);
+        //     MS_DBG(F(" at "));
+        //     MS_DBG(sensLoc);
+        //     MS_DBG(F(" will be ignored.\n"));
+        // }
         return unique;
     }
