@@ -29,7 +29,8 @@ To use a sensor and variable in your sketch, you must separately include xxx.h f
     - [AOSong AM2315](#AM2315)
     - [Bosch BME280](#BME280)
     - [AOSong DHT](#DHT)
-    - [Yosemitech Brand Envirnmental Sensors](#Yosemitech)
+    - [Apogee SQ-212 Quantum Light Sensor](#apogee-sq-212-quantum-light-sensor--photosynthetically-active-radiation-par)
+    - [Yosemitech Brand Environmental Sensors](#Yosemitech)
     - [Maxim DS3231 Real Time Clock](#DS3231)
     - [Processor Metadata Treated as Sensors](#Onboard)
 - [Notes on Arduino Streams and Software Serial](#SoftwareSerial)
@@ -141,7 +142,7 @@ Having a unified set of functions to access many sensors allows us to quickly po
 - **init(int variableCount, Variable variableList[])** - This initializes the variable array.  This must be called in the setup() function.  Note that the objects in the variable list must be pointers, not the variable objects themselves.
 - **getVariableCount()** - Simply returns the number of variables.
 - **getSensorCount()** - Returns the number of independent sensors.  This will often be different from the number of variables because many sensors can return multiple variables.
-- **setupSensors()** - This sets up all of the variables in the array and their respective sensors by running all of their setup() functions.  If a sensor doesn't respond to its setup command, the command is called 5 times in attempt to make a connection.  If all sensors are set up sucessfully, returns true.
+- **setupSensors()** - This sets up all of the variables in the array and their respective sensors by running all of their setup() functions.  If a sensor doesn't respond to its setup command, the command is called 5 times in attempt to make a connection.  If all sensors are set up successfully, returns true.
 - **sensorsSleep()** - This puts all sensors to sleep (ie, cuts power), skipping repeated sensors.  Returns true.
 - **sensorsWake()** - This wakes all sensors (ie, gives power), skipping repeated sensors.  Returns true.
 - **updateAllSensors()** - This updates all sensor values, skipping repeated sensors.  Returns true.  Does NOT return any values.
