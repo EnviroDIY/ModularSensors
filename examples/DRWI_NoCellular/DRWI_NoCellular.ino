@@ -14,19 +14,20 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
-#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
+// Some define statements
+#define STANDARD_SERIAL_OUTPUT Serial  // Without this there will be no output
 
-// ---------------------------------------------------------------------------
-// Include the base required libraries
-// ---------------------------------------------------------------------------
+// ==========================================================================
+//    Include the base required libraries
+// ==========================================================================
+
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <LoggerBase.h>
 
-// ---------------------------------------------------------------------------
-// Set up the sensor specific information
-//   ie, pin locations, addresses, calibrations and related settings
-// ---------------------------------------------------------------------------
+// ==========================================================================
+//    Basic Logger Settings
+// ==========================================================================
 // The name of this file
 const char *sketchName = "DRWI_NoCellular.ino";
 
@@ -41,6 +42,31 @@ Logger logger;
 
 
 // ==========================================================================
+//    Primary Arduino-Based Board and Processor
+// ==========================================================================
+#include <ProcessorStats.h>
+
+const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const int greenLED = 8;  // Pin for the green LED (-1 if unconnected)
+const int redLED = 9;  // Pin for the red LED (-1 if unconnected)
+const int buttonPin = 21;  // Pin for a button to use to enter debugging mode (-1 if unconnected)
+const int wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
+// Set the wake pin to -1 if you do not want the main processor to sleep.
+// In a SAMD system where you are using the built-in rtc, set wakePin to 1
+const int sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
+
+const char *MFVersion = "v0.5";
+ProcessorStats mayfly(MFVersion) ;
+
+
+// ==========================================================================
+//    Maxim DS3231 RTC (Real Time Clock)
+// ==========================================================================
+#include <MaximDS3231.h>
+MaximDS3231 ds3231(1);
+
+
+// ==========================================================================
 //    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
 #include <CampbellOBS3.h>
@@ -49,7 +75,7 @@ const int OBSLowPin = 0;  // The low voltage analog pin ON THE ADS1115 (NOT the 
 const float OBSLow_A = 4.0749E+00;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = 9.1011E+01;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibration
-const int OBS3Power = 22;  // switched sensor power is pin 22 on Mayfly
+const int OBS3Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C);
 // Campbell OBS 3+ High Range calibration in Volts
 const int OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
@@ -66,29 +92,15 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const int numberReadings = 6;  // The number of readings to average
 const int SDI12Data = 7;  // The pin the CTD is attached to
-const int SDI12Power = 22;  // switched sensor power is pin 22 on Mayfly
+const int SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 
 
 // ==========================================================================
-//    Maxim DS3231 RTC (Real Time Clock)
+//    The array that contains all variables to be logged
 // ==========================================================================
-#include <MaximDS3231.h>
-MaximDS3231 ds3231(1);
-
-
-// ==========================================================================
-//    EnviroDIY Mayfly Arduino-Based Board and Processor
-// ==========================================================================
-#include <ProcessorMetadata.h>
-const char *MFVersion = "v0.5";
-ProcessorMetadata mayfly(MFVersion) ;
-
-// ---------------------------------------------------------------------------
-// The array that contains all valid variables
-// ---------------------------------------------------------------------------
 Variable *variableList[] = {
-    new ProcessorMetadata_Batt(&mayfly),
+    new ProcessorStats_Batt(&mayfly),
     new MaximDS3231_Temp(&ds3231),
     new DecagonCTD_Cond(&ctd),
     new DecagonCTD_Temp(&ctd),
@@ -99,22 +111,11 @@ Variable *variableList[] = {
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 
-// ---------------------------------------------------------------------------
-// Board setup info
-// ---------------------------------------------------------------------------
-const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
-const int greenLED = 8;  // Pin for the green LED
-const int redLED = 9;  // Pin for the red LED
-const int buttonPin = 21;  // Pin for the button
-const int wakePin = A7;  // RTC Interrupt/Alarm pin
-const int sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin
+// ==========================================================================
+//    Working Functions
+// ==========================================================================
 
-
-// ---------------------------------------------------------------------------
-// Working Functions
-// ---------------------------------------------------------------------------
-
-// Flashes to Mayfly's LED's
+// Flashes the LED's on the primary board
 void greenredflash(int numFlash = 4, int rate = 75)
 {
   for (int i = 0; i < numFlash; i++) {
@@ -129,9 +130,9 @@ void greenredflash(int numFlash = 4, int rate = 75)
 }
 
 
-// ---------------------------------------------------------------------------
+// ==========================================================================
 // Main setup function
-// ---------------------------------------------------------------------------
+// ==========================================================================
 void setup()
 {
     // Start the primary serial connection
@@ -155,7 +156,7 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
-    // Initialize the logger;
+    // Initialize the logger
     logger.init(sdCardPin, wakePin, variableCount, variableList,
                 loggingInterval, LoggerID);
     logger.setAlertPin(greenLED);
@@ -168,9 +169,9 @@ void setup()
 }
 
 
-// ---------------------------------------------------------------------------
+// ==========================================================================
 // Main loop function
-// ---------------------------------------------------------------------------
+// ==========================================================================
 void loop()
 {
     // Log the data

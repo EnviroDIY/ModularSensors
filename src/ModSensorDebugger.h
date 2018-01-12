@@ -10,21 +10,40 @@
  #ifndef ModSensorDebugger_h
  #define ModSensorDebugger_h
 
-#ifdef MODULES_DBG
-namespace {
- template<typename T>
- static void DBGM(T last) {
-   MODULES_DBG.print(last);
- }
+#ifdef STANDARD_SERIAL_OUTPUT
+    namespace {
+        template<typename T>
+        static void PRINTOUT(T last) {
+            STANDARD_SERIAL_OUTPUT.print(last);
+        }
 
- template<typename T, typename... Args>
- static void DBGM(T head, Args... tail) {
-   MODULES_DBG.print(head);
-   DBGM(tail...);
- }
-}
+        template<typename T, typename... Args>
+        static void PRINTOUT(T head, Args... tail) {
+            STANDARD_SERIAL_OUTPUT.print(head);
+            PRINTOUT(tail...);
+        }
+    }
 #else
- #define DBGM(...)
-#endif
+    #define PRINTOUT(...)
+#endif  // STANDARD_SERIAL_OUTPUT
 
-#endif
+
+#ifdef DEBUGGING_SERIAL_OUTPUT
+    namespace {
+        template<typename T>
+        static void MS_DBG(T last) {
+            DEBUGGING_SERIAL_OUTPUT.print(last);
+        }
+
+        template<typename T, typename... Args>
+        static void MS_DBG(T head, Args... tail) {
+            DEBUGGING_SERIAL_OUTPUT.print(head);
+            MS_DBG(tail...);
+        }
+    }
+#else
+    #define MS_DBG(...)
+#endif  // DEBUGGING_SERIAL_OUTPUT
+
+
+#endif  // ModSensorDebugger_h

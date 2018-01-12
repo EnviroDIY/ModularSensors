@@ -47,26 +47,26 @@ String Sensor::getSensorName(void){return _sensorName;}
 // This is a helper function to check if the power needs to be turned on
 bool Sensor::checkPowerOn(void)
 {
-    DBGS(F("Checking power status.\n"));
+    MS_DBG(F("Checking power status.\n"));
     if (_powerPin > 0)
     {
         int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
         if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
         {
-            DBGS(F("Power was off.\n"));
+            MS_DBG(F("Power was off.\n"));
             if (_millisPowerOn != 0) _millisPowerOn = 0;
             return false;
         }
         else
         {
-            DBGS(F("Power was on.\n"));
+            MS_DBG(F("Power was on.\n"));
             if (_millisPowerOn == 0) _millisPowerOn = millis();
             return true;
         }
     }
     else
     {
-        DBGS(F("Power was on.\n"));
+        MS_DBG(F("Power was on.\n"));
         if (_millisPowerOn == 0) _millisPowerOn = millis();
         return true;
     }
@@ -77,7 +77,7 @@ void Sensor::powerUp(void)
 {
     if (_powerPin > 0)
     {
-        DBGS(F("Powering on Sensor with pin "), _powerPin, F("\n"));
+        MS_DBG(F("Powering on Sensor with pin "), _powerPin, F("\n"));
         digitalWrite(_powerPin, HIGH);
         _millisPowerOn = millis();
     }
@@ -88,7 +88,7 @@ void Sensor::powerDown(void)
 {
     if (_powerPin > 0)
     {
-        DBGS(F("Turning off Power\n"));
+        MS_DBG(F("Turning off Power\n"));
         digitalWrite(_powerPin, LOW);
         _millisPowerOn = 0;
     }
@@ -102,16 +102,16 @@ void Sensor::waitForWarmUp(void)
     {
         if (millis() > _millisPowerOn + _WarmUpTime_ms)  // already ready
         {
-            DBGS(F("Sensor already warmed up!\n"));
+            MS_DBG(F("Sensor already warmed up!\n"));
         }
         else if (millis() > _millisPowerOn)  // just in case millis() has rolled over
         {
-            DBGS(F("Waiting "), (millis() + _WarmUpTime_ms - _millisPowerOn), F("ms for sensor warm-up\n"));
+            MS_DBG(F("Waiting "), (millis() + _WarmUpTime_ms - _millisPowerOn), F("ms for sensor warm-up\n"));
             while((millis() - _millisPowerOn) < _WarmUpTime_ms){}
         }
         else  // if we get really unlucky and are measuring as millis() rolls over
         {
-            DBGS(F("Waiting 2000ms for sensor warm-up\n"));
+            MS_DBG(F("Waiting 2000ms for sensor warm-up\n"));
             while(millis() < 2000){}
         }
     }
@@ -125,13 +125,13 @@ SENSOR_STATUS Sensor::setup(void)
     if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
     if (_dataPin > 0) pinMode(_dataPin, INPUT_PULLUP);
 
-    DBGS(F("Set up "));
-    DBGS(getSensorName());
-    DBGS(F(" attached at "));
-    DBGS(getSensorLocation());
-    DBGS(F(" which can return up to "));
-    DBGS(_numReturnedVars);
-    DBGS(F(" variable[s].\n"));
+    MS_DBG(F("Set up "));
+    MS_DBG(getSensorName());
+    MS_DBG(F(" attached at "));
+    MS_DBG(getSensorLocation());
+    MS_DBG(F(" which can return up to "));
+    MS_DBG(_numReturnedVars);
+    MS_DBG(F(" variable[s].\n"));
 
     return SENSOR_READY;
 }
@@ -172,14 +172,14 @@ bool Sensor::wake(void)
 void Sensor::registerVariable(int varNum, Variable* var)
 {
     variables[varNum] = var;
-    DBGS(F("... Registration for "));
-    DBGS(var->getVarName());
-    DBGS(F(" accepted.\n"));
+    MS_DBG(F("... Registration for "));
+    MS_DBG(var->getVarName());
+    MS_DBG(F(" accepted.\n"));
 }
 
 void Sensor::notifyVariables(void)
 {
-    DBGS(F("Notifying registered variables.\n"));
+    MS_DBG(F("Notifying registered variables.\n"));
     // Make note of the last time updated
     sensorLastUpdated = millis();
 
@@ -188,14 +188,14 @@ void Sensor::notifyVariables(void)
     {
         if (variables[i] != NULL)  // Bad things happen if try to update nullptr
         {
-            DBGS(F("Sending value update to variable "));
-            DBGS(i);
-            DBGS(F(" which is "));
-            DBGS(variables[i]->getVarName());
-            DBGS(F("...   "));
+            MS_DBG(F("Sending value update to variable "));
+            MS_DBG(i);
+            MS_DBG(F(" which is "));
+            MS_DBG(variables[i]->getVarName());
+            MS_DBG(F("...   "));
             variables[i]->onSensorUpdate(this);
         }
-        else DBGS(F("Null pointer\n"));
+        else MS_DBG(F("Null pointer\n"));
     }
 }
 
@@ -203,11 +203,11 @@ void Sensor::notifyVariables(void)
 // This function checks if a sensor needs to be updated or not
 bool Sensor::checkForUpdate(unsigned long sensorLastUpdated)
 {
-    DBGS(F("It has been "), (millis() - sensorLastUpdated)/1000);
-    DBGS(F(" seconds since the sensor value was checked\n"));
+    MS_DBG(F("It has been "), (millis() - sensorLastUpdated)/1000);
+    MS_DBG(F(" seconds since the sensor value was checked\n"));
     if ((millis() > 60000 and millis() > sensorLastUpdated + 60000) or sensorLastUpdated == 0)
     {
-        DBGS(F("Value out of date, updating\n"));
+        MS_DBG(F("Value out of date, updating\n"));
         return(update());
     }
     else return(true);
@@ -217,7 +217,7 @@ bool Sensor::checkForUpdate(unsigned long sensorLastUpdated)
 // This function just empties the value array
 void Sensor::clearValues(void)
 {
-    DBGS(F("Clearing sensor value array.\n"));
+    MS_DBG(F("Clearing sensor value array.\n"));
     for (int i = 0; i < _numReturnedVars; i++)
     { sensorValues[i] =  0; }
 }

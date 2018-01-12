@@ -8,6 +8,8 @@
  *It is dependent on Software Serial.
  *
  * The output from the HRXL-MaxSonar-WRL sonar is the range in mm.
+ *     Accuracy is ± 1%
+ *     Range is 300-5000mm or 500 to 9999mm, depending on model
  *
  * Warm up time to completion of header:  160ms
  */
@@ -15,11 +17,13 @@
 #ifndef MaxBotixSonar_h
 #define MaxBotixSonar_h
 
+#include <Arduino.h>
+
+// #define DEBUGGING_SERIAL_OUTPUT Serial
+#include "ModSensorDebugger.h"
+
 #include "SensorBase.h"
 #include "VariableBase.h"
-
-// #define MODULES_DBG Serial
-#include "ModSensorDebugger.h"
 
 #define HRXL_NUM_MEASUREMENTS 1
 #define HRXL_WARM_UP 160

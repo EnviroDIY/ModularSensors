@@ -13,7 +13,13 @@
  PAR is often expressed as photosynthetic photon flux density (PPFD):
  photon flux in units of micromoles per square meter per second (μmol m-2 s-1,
  equal to microEinsteins per square meter per second) summed from 400 to 700 nm.
-
+ *
+ * Ranges is 0 to 2500 µmol m-2 s-1
+ * Accuracy is ± 0.5%
+ * Resolution:
+ *  16-bit ADC: 0.04 µmol m-2 s-1
+ *  12-bit ADC: 2.44 µmol m-2 s-1
+ *
  * Technical specifications for the Apogee SQ-212 can be found at:
  * https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/
  *
@@ -29,7 +35,7 @@
 #include "SensorBase.h"
 #include "VariableBase.h"
 
-// #define MODULES_DBG Serial
+// #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
 #define ADS1015_ADDRESS (0x48) // 1001 000 (ADDR = GND)

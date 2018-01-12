@@ -22,15 +22,33 @@ String MaximDS3231::getSensorLocation(void) {return F("I2C_0x68");}
 bool MaximDS3231::sleep(void) {return true;}
 bool MaximDS3231::wake(void) {return true;}
 
+SENSOR_STATUS MaximDS3231::setup(void)
+{
+    if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
+    rtc.begin();
+
+    MS_DBG(F("Set up "));
+    MS_DBG(getSensorName());
+    MS_DBG(F(" attached at "));
+    MS_DBG(getSensorLocation());
+    MS_DBG(F(" which can return up to "));
+    MS_DBG(_numReturnedVars);
+    MS_DBG(F(" variable[s].\n"));
+
+    return SENSOR_READY;
+}
+
 bool MaximDS3231::update(void)
 {
     // Clear values before starting loop
     clearValues();
 
     // Get the temperature from the Mayfly's real time clock
-    DBGM(F("Getting DS3231 Temperature\n"));
-    rtc.convertTemperature();  //convert current temperature into registers
-    float tempVal = rtc.getTemperature();
+    MS_DBG(F("Forcing new temperature reading\n"));
+    rtc.convertTemperature();  // force a temperature sampling and conversion
+    MS_DBG(F("Getting value\n"));
+    float tempVal = rtc.getTemperature();  // get the temperature value
+    MS_DBG(F("Current temp is "), tempVal, '\n');
     sensorValues[DS3231_TEMP_VAR_NUM] = tempVal;
 
     // Update the registered variables with the new values

@@ -1,7 +1,7 @@
 {
     "name": "EnviroDIY_ModularSensors",
     "description":  "A library that allows acces to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
-    "keywords": "sensors, logger, low power, sleeping, EnviroDIY",
+    "keywords": "sensor, modular, sensors, logger, low power, sleeping, EnviroDIY",
     "platforms": "atmelavr",
     "frameworks": "arduino",
     "authors":
@@ -18,7 +18,7 @@
             "url": "https://envirodiy.org/"
         }
     ],
-    "version": "0.5.1-beta",
+    "version": "0.5.2-beta",
     "repository":
     {
         "type": "git",
@@ -35,81 +35,155 @@
     "dependencies":
     [
         {
-            "name": "Sodaq_DS3231",
-            "version": "https://github.com/EnviroDIY/Sodaq_DS3231"
+            "name": "EnviroDIY_DS3231",
+            "library id": "2079",
+            "url": "https://github.com/EnviroDIY/Sodaq_DS3231.git",
+            "note": "An Arduino library for the DS3231 RTC (Real Time Clock), based off of the Sodaq_DS3231 library.",
+            "authors": [
+                "Kees Bakker",
+                "Sara Damiano"
+            ]
         },
         {
-            "library id": "311",
             "name": "EnableInterrupt",
-            "note": "GreyGnome's EnableInterrupt",
-            "url": "https://github.com/GreyGnome/EnableInterrupt"
+            "library id": "311",
+            "url": "https://github.com/GreyGnome/EnableInterrupt.git",
+            "note": "GreyGnome's EnableInterrupt - Assign an interrupt to any supported pin on all Arduinos",
+            "authors": [
+                "Mike 'GreyGnome' Schwager"
+            ]
         },
         {
-            "library id": "322",
             "name": "SdFat",
-            "url": "https://github.com/greiman/SdFat"
+            "library id": "322",
+            "url": "https://github.com/greiman/SdFat.git",
+            "note": "SdFat - FAT16/FAT32 file system for SD cards.",
+            "authors": [
+                "Bill Greiman"
+            ]
         },
         {
+            "name": "Adafruit ADS1X15",
             "library id": "342",
-            "name": "ADS1X15",
+            "url": "http://github.com/Adafruit/Adafruit_ADS1X15.git",
             "note": "TI ADS1X15 ADC Library by Adafruit",
-            "url": "http://github.com/Adafruit/Adafruit_ADS1X15"
+            "authors": [
+                "Adafruit"
+            ]
         },
         {
-            "library id": "31",
             "name": "Adafruit Unified Sensor",
+            "library id": "31",
+            "url": "https://github.com/adafruit/Adafruit_Sensor.git",
             "note": "Adafruit Unified Sensor Library",
-            "url": "https://github.com/adafruit/Adafruit_Sensor"
+            "authors": [
+                "Adafruit"
+            ]
         },
         {
-            "library id": "19",
             "name": "DHT sensor library",
+            "library id": "19",
+            "url": "http://github.com/adafruit/DHT-sensor-library.git",
             "note": "AOSong DHT Sensor Library by Adafruit",
-            "url": "http://github.com/adafruit/DHT-sensor-library"
+            "authors": [
+                "Adafruit"
+            ]
         },
         {
-            "library id": "773",
             "name": "Adafruit AM2315",
+            "library id": "773",
+            "url": "https://github.com/adafruit/Adafruit_AM2315.git",
             "note": "AOSong AM2315 I2C Temp/Humidity Sensor Library by Adafruit",
-            "url": "https://github.com/adafruit/Adafruit_AM2315"
+            "authors": [
+                "Adafruit"
+            ]
         },
         {
-            "library id": "166",
             "name": "Adafruit BME280 Library",
+            "library id": "166",
+            "url": "https://github.com/adafruit/Adafruit_BME280_Library.git",
             "note": "Bosch BME280 Temp/Humidity/Pressure Sensor Library by Adafruit",
-            "url": "https://github.com/adafruit/Adafruit_BME280_Library"
+            "authors": [
+                "Adafruit"
+            ]
         },
         {
-            "library id": "1",
             "name": "OneWire",
-            "url": "https://github.com/PaulStoffregen/OneWire.git"
+            "library id": "1",
+            "url": "https://github.com/PaulStoffregen/OneWire.git",
+            "note": "OneWire - Control 1-Wire protocol (DS18S20, DS18B20, DS2408 and etc)",
+            "authors": [
+                "Paul Stoffregen",
+                "Tom Pollard",
+                "Derek Yerger",
+                "Jim Studt",
+                "Jason Dangel",
+                "Robin James",
+                "Ken Butcher",
+                "Guillermo Lovato",
+                "Scott Roberts",
+                "Bertrik Sikken",
+                "Mark Tillotson",
+                "Glenn Trewitt",
+                "Josh Larios"
+            ]
         },
         {
-            "library id": "54",
             "name": "DallasTemperature",
-            "url": "https://github.com/milesburton/Arduino-Temperature-Control-Library.git"
+            "library id": "54",
+            "url": "https://github.com/milesburton/Arduino-Temperature-Control-Library.git",
+            "note": "DallasTemperature - Arduino Library for Dallas Temperature ICs (DS18B20, DS18S20, DS1822, DS1820)",
+            "authors": [
+                "Guil Barros",
+                "Miles Burton",
+                "Rob Tillart",
+                "Tim Nuewsome"
+            ]
         },
         {
-            "name": "Arduino-SDI-12_ExtInts",
-            "version": "https://github.com/EnviroDIY/Arduino-SDI-12.git#ExtInts"
+            "name": "EnviroDIY_SDI12_ExtInts",
+            "version": "https://github.com/EnviroDIY/Arduino-SDI-12.git#ExtInts",
+            "note": "EnviroDIY SDI-12 Library, dependent on external library for interrupts",
+            "authors": [
+                "Kevin M. Smith",
+                "Sara Damiano",
+                "Shannon Hicks"
+            ]
         },
         {
             "name": "TinyGSM",
-            "version": "https://github.com/EnviroDIY/TinyGSM.git"
+            "version": "https://github.com/EnviroDIY/TinyGSM.git",
+            "note": "A small Arduino library for GPRS modules.",
+            "authors": [
+                "Volodymyr Shymanskyy"
+            ]
         },
         {
-            "library id": "1824",
             "name": "SensorModbusMaster",
-            "url": "https://github.com/EnviroDIY/SensorModbusMaster.git"
+            "library id": "1824",
+            "url": "https://github.com/EnviroDIY/SensorModbusMaster.git",
+            "note": "EnviroDIY SensorModbusMaster - Arduino library for communicating via modbus with the Arduino acting as master.",
+            "authors": [
+                "Sara Damiano"
+            ]
         },
         {
             "name": "YosemitechModbus",
-            "version": "https://github.com/EnviroDIY/YosemitechModbus.git"
+            "library id": "2078",
+            "url": "https://github.com/EnviroDIY/YosemitechModbus.git",
+            "note": "Arduino library for communication with Yosemitech sensors via Modbus.",
+            "authors": [
+                "Sara Damiano"
+            ]
         },
         {
-            "library id": "873",
             "name": "RTCZero",
-            "url": "https://github.com/arduino-libraries/RTCZero.git"
+            "library id": "873",
+            "url": "https://github.com/arduino-libraries/RTCZero.git",
+            "note": "Functions for using the processor real time clock in SAMD21 processors",
+            "authors": [
+                "Arduino"
+            ]
         }
     ]
 }

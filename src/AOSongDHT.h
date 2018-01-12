@@ -11,13 +11,13 @@
  *http://www.aosong.com/en/products/details.asp?id=117
  *
  * For Relative Humidity:
- *  Resolution is 0.1 % RH
- *  Accuracy is ± 2 % RH
+ *  Resolution is 0.1 % RH for DHT22 and 1 % RH for DHT11
+ *  Accuracy is ± 2 % RH for DHT22 and ± 5 % RH for DHT11
  *  Range is 0 to 100 % RH
  *
  * For Temperature:
  *  Resolution is 0.1°C
- *  Accuracy is ±0.5°C
+ *  Accuracy is ±0.5°C for DHT22 and ± ±2°C for DHT11
  *  Range is -40°C to +80°C
  *
  * Warm up/sampling time: 1.7sec
@@ -37,7 +37,7 @@
 #undef DHT22
 #undef AM2302
 
-// #define MODULES_DBG Serial
+// #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
 #define DHT_NUM_MEASUREMENTS 3

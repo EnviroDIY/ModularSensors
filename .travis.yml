@@ -50,4 +50,4 @@ script:
 - platformio ci --lib="." --project-option="lib_ignore = RTCZero" --project-option="lib_ldf_mode = deep" --board=mayfly --board=sodaq_mbili --board=sodaq_ndogo --board=feather32u4 --board=megaatmega2560
 
 # Build SAMD Boards
-- platformio ci --lib="." --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial"  --project-option="lib_ldf_mode = deep" --board=adafruit_feather_m0 --board=sodaq_autonomo --board=sodaq_one
+- platformio ci --lib="." --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial"  --project-option="lib_ldf_mode = deep" --board=adafruit_feather_m0 --board=sodaq_autonomo

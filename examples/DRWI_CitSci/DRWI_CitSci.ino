@@ -16,24 +16,25 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
-#define MODULAR_SENSORS_OUTPUT Serial  // Without this there will be no output
+// Some define statements
+#define STANDARD_SERIAL_OUTPUT Serial  // Without this there will be no output
 
 #define DreamHostPortalRX "TALK TO STROUD FOR THIS VALUE"
 
 // Select your modem chip
 #define TINY_GSM_MODEM_SIM800
 
-// ---------------------------------------------------------------------------
-// Include the base required libraries
-// ---------------------------------------------------------------------------
+// ==========================================================================
+//    Include the base required libraries
+// ==========================================================================
+
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <LoggerDreamHost.h>
 
-// ---------------------------------------------------------------------------
-// Set up the sensor specific information
-//   ie, pin locations, addresses, calibrations and related settings
-// ---------------------------------------------------------------------------
+// ==========================================================================
+//    Basic Logger Settings
+// ==========================================================================
 // The name of this file
 const char *sketchName = "DWRI_CitSci.ino";
 
@@ -48,6 +49,50 @@ LoggerDreamHost EnviroDIYLogger;
 
 
 // ==========================================================================
+//    Primary Arduino-Based Board and Processor
+// ==========================================================================
+#include <ProcessorStats.h>
+
+const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const int greenLED = 8;  // Pin for the green LED (-1 if unconnected)
+const int redLED = 9;  // Pin for the red LED (-1 if unconnected)
+const int buttonPin = 21;  // Pin for a button to use to enter debugging mode (-1 if unconnected)
+const int wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
+// Set the wake pin to -1 if you do not want the main processor to sleep.
+// In a SAMD system where you are using the built-in rtc, set wakePin to 1
+const int sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
+
+const char *MFVersion = "v0.5";
+ProcessorStats mayfly(MFVersion) ;
+
+
+// ==========================================================================
+//    Modem/Internet connection options
+// ==========================================================================
+HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
+const int modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
+const int modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
+const int modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+
+ModemSleepType ModemSleepMode = held;  // How the modem is put to sleep
+
+const long ModemBaud = 9600;  // Modem baud rate
+
+const char *apn = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
+
+// Create the loggerModem instance
+// A "loggerModem" is a combination of a TinyGSM Modem, a TinyGSM Client, and an on/off method
+loggerModem modem;
+
+
+// ==========================================================================
+//    Maxim DS3231 RTC (Real Time Clock)
+// ==========================================================================
+#include <MaximDS3231.h>
+MaximDS3231 ds3231(1);
+
+
+// ==========================================================================
 //    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
 #include <CampbellOBS3.h>
@@ -56,7 +101,7 @@ const int OBSLowPin = 0;  // The low voltage analog pin ON THE ADS1115 (NOT the 
 const float OBSLow_A = 4.0749E+00;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = 9.1011E+01;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibration
-const int OBS3Power = 22;  // switched sensor power is pin 22 on Mayfly
+const int OBS3Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C);
 // Campbell OBS 3+ High Range calibration in Volts
 const int OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
@@ -73,46 +118,32 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const int numberReadings = 6;  // The number of readings to average
 const int SDI12Data = 7;  // The pin the CTD is attached to
-const int SDI12Power = 22;  // switched sensor power is pin 22 on Mayfly
+const int SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 
 
 // ==========================================================================
-//    Maxim DS3231 RTC (Real Time Clock)
+//    The array that contains all variables to be logged
 // ==========================================================================
-#include <MaximDS3231.h>
-MaximDS3231 ds3231(1);
-
-
-// ==========================================================================
-//    EnviroDIY Mayfly Arduino-Based Board and Processor
-// ==========================================================================
-#include <ProcessorMetadata.h>
-const char *MFVersion = "v0.5";
-ProcessorMetadata mayfly(MFVersion) ;
-
-// ---------------------------------------------------------------------------
-// The array that contains all valid variables
-// ---------------------------------------------------------------------------
 Variable *variableList[] = {
-    new ProcessorMetadata_Batt(&mayfly),
+    new ProcessorStats_Batt(&mayfly),
     new MaximDS3231_Temp(&ds3231),
     new DecagonCTD_Cond(&ctd),
     new DecagonCTD_Temp(&ctd),
     new DecagonCTD_Depth(&ctd),
     new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
-    new Modem_RSSI(&EnviroDIYLogger.modem),
-    new Modem_SignalPercent(&EnviroDIYLogger.modem),
+    new Modem_RSSI(&modem),
+    new Modem_SignalPercent(&modem),
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 
-// ---------------------------------------------------------------------------
+// ==========================================================================
 // Device registration and sampling feature information
 //   This should be obtained after registration at http://data.envirodiy.org
 //   You can copy the entire code snippet directly into this block below.
-// ---------------------------------------------------------------------------
+// ==========================================================================
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 const char *UUIDs[] =                                                      // UUID array for device sensors
@@ -127,35 +158,11 @@ const char *UUIDs[] =                                                      // UU
 };
 
 
-// ---------------------------------------------------------------------------
-// Device Connection Options and WebSDL Endpoints for POST requests
-// ---------------------------------------------------------------------------
-HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
-const int modemDTRPin = 23;  // Modem DTR Pin (Data Terminal Ready - used for sleep) (-1 if unconnected)
-const int modemCTSPin = 19;   // Modem CTS Pin (Clear to Send) (-1 if unconnected)
-const int modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (else -1)
+// ==========================================================================
+//    Working Functions
+// ==========================================================================
 
-DTRSleepType ModemSleepMode = held;  // How the modem is put to sleep
-const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble making it fast (19200 works)
-const char *apn = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
-
-
-// ---------------------------------------------------------------------------
-// Board setup info
-// ---------------------------------------------------------------------------
-const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
-const int greenLED = 8;  // Pin for the green LED
-const int redLED = 9;  // Pin for the red LED
-const int buttonPin = 21;  // Pin for the button
-const int wakePin = A7;  // RTC Interrupt/Alarm pin
-const int sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin
-
-
-// ---------------------------------------------------------------------------
-// Working Functions
-// ---------------------------------------------------------------------------
-
-// Flashes to Mayfly's LED's
+// Flashes the LED's on the primary board
 void greenredflash(int numFlash = 4, int rate = 75)
 {
   for (int i = 0; i < numFlash; i++) {
@@ -170,9 +177,9 @@ void greenredflash(int numFlash = 4, int rate = 75)
 }
 
 
-// ---------------------------------------------------------------------------
+// ==========================================================================
 // Main setup function
-// ---------------------------------------------------------------------------
+// ==========================================================================
 void setup()
 {
     // Start the primary serial connection
@@ -199,13 +206,16 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
-    // Initialize the logger;
+    // Initialize the logger
     EnviroDIYLogger.init(sdCardPin, wakePin, variableCount, variableList,
                 loggingInterval, LoggerID);
     EnviroDIYLogger.setAlertPin(greenLED);
 
-    // Set up the modem
-    EnviroDIYLogger.modem.setupModem(&ModemSerial, modemVCCPin, modemCTSPin, modemDTRPin, ModemSleepMode, apn);
+    // Initialize the logger modem
+    modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
+
+    // Attach the modem to the logger
+    EnviroDIYLogger.attachModem(modem);
 
     // Set up the connection with EnviroDIY
     EnviroDIYLogger.setToken(registrationToken);
@@ -223,9 +233,9 @@ void setup()
 }
 
 
-// ---------------------------------------------------------------------------
+// ==========================================================================
 // Main loop function
-// ---------------------------------------------------------------------------
+// ==========================================================================
 void loop()
 {
     // Log the data

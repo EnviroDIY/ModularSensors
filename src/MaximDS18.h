@@ -4,14 +4,18 @@
  *
  * Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- * This file is for the Maxim DS18B20 Temperature sensor.
+ * This file is for the Maxim DS18B20, DS18S20, MAX31820, DS1822, and DS1820 Temperature sensors.
  * It is dependent on Dallas Temperature library, which itself is dependent on
  * the OneWire library.
  *
- * The resolution of the temperature sensor is user-configurable to
- * 9, 10, 11, or 12 bits, corresponding to increments of
+ * The resolution of the DS18B20, DS1822, and MAX31820 temperature sensors are
+ * user-configurable to 9, 10, 11, or 12 bits, corresponding to increments of
  * 0.5°C, 0.25°C, 0.125°C, and 0.0625°C, respectively.
  * The default resolution at power-up is 12-bit.
+ * The resolution of the DS18S20 is set at 9-bit
+ *
+ * Accuracy is ± 0.5°C from -10°C to +85°C for DS18S20 and DS18B20
+ *             ± 2°C for DS1822 and MAX31820
  *
  * Time to take reading at 12-bit: 750ms (likely ready to begin conversion
  * much before that, but I can't find a number.)
@@ -23,7 +27,7 @@
 #include "SensorBase.h"
 #include "VariableBase.h"
 
-// #define MODULES_DBG Serial
+// #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
 #include <OneWire.h>

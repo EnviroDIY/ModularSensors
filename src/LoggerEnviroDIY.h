@@ -11,6 +11,9 @@
 #ifndef LoggerEnviroDIY_h
 #define LoggerEnviroDIY_h
 
+// #define DEBUGGING_SERIAL_OUTPUT Serial
+#include "ModSensorDebugger.h"
+
 #include "LoggerBase.h"
 
 // ============================================================================
@@ -23,19 +26,19 @@ public:
     void setToken(const char *registrationToken)
     {
         _registrationToken = registrationToken;
-        DBGLOG(F("Registration token set!\n"));
+        MS_DBG(F("Registration token set!\n"));
     }
 
     void setSamplingFeature(const char *samplingFeature)
     {
         _samplingFeature = samplingFeature;
-        DBGLOG(F("Sampling feature token set!\n"));
+        MS_DBG(F("Sampling feature token set!\n"));
     }
 
     void setUUIDs(const char *UUIDs[])
     {
         _UUIDs = UUIDs;
-        DBGLOG(F("UUID array set!\n"));
+        MS_DBG(F("UUID array set!\n"));
     }
 
     // This adds extra data to the datafile header
@@ -91,7 +94,7 @@ public:
         stream->print(String(generateSensorDataJSON()));
     }
 
-
+#if defined(USE_TINY_GSM)
     // Public function to send data
     int postDataEnviroDIY(void)
     {
@@ -100,36 +103,35 @@ public:
         int did_respond = 0;
 
         // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
-        if(modem.connect("data.envirodiy.org", 80))
+        if(_logModem.openTCP("data.envirodiy.org", 80))
         {
             // Send the request to the serial for debugging
-            #if defined(MODULAR_SENSORS_OUTPUT)
+            #if defined(STANDARD_SERIAL_OUTPUT)
                 PRINTOUT(F("\n \\/---- Post Request to EnviroDIY ----\\/ \n"));
-                streamEnviroDIYRequest(&MODULAR_SENSORS_OUTPUT);  // for debugging
+                streamEnviroDIYRequest(&STANDARD_SERIAL_OUTPUT);  // for debugging
                 PRINTOUT(F("\r\n\r\n"));
-                MODULAR_SENSORS_OUTPUT.flush();  // for debugging
+                STANDARD_SERIAL_OUTPUT.flush();  // for debugging
             #endif
 
             // Send the request to the modem stream
-            modem.dumpBuffer(modem._client);
-            streamEnviroDIYRequest(modem._client);
-            modem._client->flush();  // wait for sending to finish
+            streamEnviroDIYRequest(_logModem._client);
+            _logModem._client->flush();  // wait for sending to finish
 
             uint32_t start_timer;
             if (millis() < 4294957296) start_timer = millis();  // In case of roll-over
             else start_timer = 0;
-            while ((millis() - start_timer) < 10000L && modem._client->available() < 12)
+            while ((millis() - start_timer) < 10000L && _logModem._client->available() < 12)
             {delay(10);}
 
             // Read only the first 12 characters of the response
             // We're only reading as far as the http code, anything beyond that
             // we don't care about so we're not reading to save on total
             // data used for transmission.
-            did_respond = modem._client->readBytes(response_buffer, 12);
+            did_respond = _logModem._client->readBytes(response_buffer, 12);
 
             // Close the TCP/IP connection as soon as the first 12 characters are read
             // We don't need anything else and stoping here should save data use.
-            modem.stop();
+            _logModem.closeTCP();
         }
         else PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data Portal -- \n"));
 
@@ -143,7 +145,6 @@ public:
                 responseCode_char[i] = response_buffer[i+9];
             }
             responseCode = atoi(responseCode_char);
-            // modem.dumpBuffer(modem._client);
         }
         else responseCode=504;
 
@@ -169,19 +170,20 @@ public:
             digitalWrite(_ledPin, HIGH);
 
             // Turn on the modem to let it start searching for the network
-            modem.wake();
+            _logModem.wake();
 
             // Wake up all of the sensors
-            // I'm not doing as part of sleep b/c it may take up to a second or
-            // two for them all to wake which throws off the checkInterval()
+            MS_DBG(F("Waking sensors...\n"));
             sensorsWake();
             // Update the values from all attached sensors
+            MS_DBG(F("  Updating sensor values...\n"));
             updateAllSensors();
             // Immediately put sensors to sleep to save power
+            MS_DBG(F("  Putting sensors back to sleep...\n"));
             sensorsSleep();
 
             // Connect to the network
-            if (modem.connectNetwork())
+            if (_logModem.connectInternet())
             {
                 // Post the data to the WebSDL
                 postDataEnviroDIY();
@@ -189,15 +191,15 @@ public:
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
                 if (_numReadings % 288 == 0)
                 {
-                    syncRTClock();
+                    syncRTClock(_logModem.getNISTTime());
                 }
 
                 // Disconnect from the network
-                modem.disconnectNetwork();
+                _logModem.disconnectInternet();
             }
 
             // Turn the modem off
-            modem.off();
+            _logModem.off();
 
             // Create a csv data record and save it to the log file
             logToSD(generateSensorDataCSV());
@@ -211,7 +213,7 @@ public:
         // Sleep
         if(_sleep){systemSleep();}
     }
-
+#endif /* USE_TINY_GSM */
 
 private:
     // Tokens and UUID's for EnviroDIY

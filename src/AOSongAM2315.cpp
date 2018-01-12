@@ -49,8 +49,8 @@ bool AOSongAM2315::update(void)
     sensorValues[AM2315_TEMP_VAR_NUM] = temp_val;
     sensorValues[AM2315_HUMIDITY_VAR_NUM] = humid_val;
 
-    DBGM(F("Temp is: "), sensorValues[AM2315_TEMP_VAR_NUM], F("°C"));
-    DBGM(F(" and humidity is: "), sensorValues[AM2315_HUMIDITY_VAR_NUM], F("%\n"));
+    MS_DBG(F("Temp is: "), sensorValues[AM2315_TEMP_VAR_NUM], F("°C"));
+    MS_DBG(F(" and humidity is: "), sensorValues[AM2315_HUMIDITY_VAR_NUM], F("%\n"));
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
