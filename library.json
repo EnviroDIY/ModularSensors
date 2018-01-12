@@ -1,5 +1,6 @@
 {
     "name": "EnviroDIY_ModularSensors",
+    "version": "0.5.3-beta",
     "description":  "A library that allows acces to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
     "keywords": "sensor, modular, sensors, logger, low power, sleeping, EnviroDIY",
     "platforms": "atmelavr",
@@ -18,7 +19,6 @@
             "url": "https://envirodiy.org/"
         }
     ],
-    "version": "0.5.2-beta",
     "repository":
     {
         "type": "git",
@@ -141,7 +141,7 @@
             ]
         },
         {
-            "name": "EnviroDIY_SDI12_ExtInts",
+            "name": "Arduino-SDI-12_ExtInts",
             "version": "https://github.com/EnviroDIY/Arduino-SDI-12.git#ExtInts",
             "note": "EnviroDIY SDI-12 Library, dependent on external library for interrupts",
             "authors": [
@@ -162,7 +162,7 @@
             "name": "SensorModbusMaster",
             "library id": "1824",
             "url": "https://github.com/EnviroDIY/SensorModbusMaster.git",
-            "note": "EnviroDIY SensorModbusMaster - Arduino library for communicating via modbus with the Arduino acting as master.",
+            "note": "EnviroDIY SensorModbusMaster - Arduino library for communicating via modbus with the Arduino acting as the modbus master.",
             "authors": [
                 "Sara Damiano"
             ]
