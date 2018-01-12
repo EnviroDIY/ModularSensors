@@ -1,9 +1,9 @@
 {
     "name": "EnviroDIY_ModularSensors",
-    "version": "0.5.3-beta",
+    "version": "0.5.4-beta",
     "description":  "A library that allows acces to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
     "keywords": "sensor, modular, sensors, logger, low power, sleeping, EnviroDIY",
-    "platforms": "atmelavr",
+    "platforms": "atmelavr, atmelsam",
     "frameworks": "arduino",
     "authors":
     [
@@ -42,7 +42,9 @@
             "authors": [
                 "Kees Bakker",
                 "Sara Damiano"
-            ]
+            ],
+            "frameworks": "arduino",
+            "platforms": "atmelavr, atmelsam"
         },
         {
             "name": "EnableInterrupt",
@@ -51,7 +53,9 @@
             "note": "GreyGnome's EnableInterrupt - Assign an interrupt to any supported pin on all Arduinos",
             "authors": [
                 "Mike 'GreyGnome' Schwager"
-            ]
+            ],
+            "frameworks": "arduino",
+            "platforms": "atmelavr, atmelsam"
         },
         {
             "name": "SdFat",
@@ -60,7 +64,9 @@
             "note": "SdFat - FAT16/FAT32 file system for SD cards.",
             "authors": [
                 "Bill Greiman"
-            ]
+            ],
+            "frameworks": "arduino",
+            "platforms": "atmelavr, atmelsam"
         },
         {
             "name": "Adafruit ADS1X15",
@@ -69,7 +75,9 @@
             "note": "TI ADS1X15 ADC Library by Adafruit",
             "authors": [
                 "Adafruit"
-            ]
+            ],
+            "frameworks": "arduino",
+            "platforms": "atmelavr, atmelsam"
         },
         {
             "name": "Adafruit Unified Sensor",
@@ -78,7 +86,9 @@
             "note": "Adafruit Unified Sensor Library",
             "authors": [
                 "Adafruit"
-            ]
+            ],
+            "frameworks": "arduino",
+            "platforms": "atmelavr, atmelsam"
         },
         {
             "name": "DHT sensor library",
@@ -87,7 +97,9 @@
             "note": "AOSong DHT Sensor Library by Adafruit",
             "authors": [
                 "Adafruit"
-            ]
+            ],
+            "frameworks": "arduino",
+            "platforms": "atmelavr, atmelsam"
         },
         {
             "name": "Adafruit AM2315",
@@ -96,7 +108,9 @@
             "note": "AOSong AM2315 I2C Temp/Humidity Sensor Library by Adafruit",
             "authors": [
                 "Adafruit"
-            ]
+            ],
+            "frameworks": "arduino",
+            "platforms": "atmelavr, atmelsam"
         },
         {
             "name": "Adafruit BME280 Library",
@@ -105,7 +119,9 @@
             "note": "Bosch BME280 Temp/Humidity/Pressure Sensor Library by Adafruit",
             "authors": [
                 "Adafruit"
-            ]
+            ],
+            "frameworks": "arduino",
+            "platforms": "atmelavr, atmelsam"
         },
         {
             "name": "OneWire",
@@ -126,7 +142,9 @@
                 "Mark Tillotson",
                 "Glenn Trewitt",
                 "Josh Larios"
-            ]
+            ],
+            "frameworks": "arduino",
+            "platforms": "atmelavr, atmelsam"
         },
         {
             "name": "DallasTemperature",
@@ -138,7 +156,9 @@
                 "Miles Burton",
                 "Rob Tillart",
                 "Tim Nuewsome"
-            ]
+            ],
+            "frameworks": "arduino",
+            "platforms": "atmelavr, atmelsam"
         },
         {
             "name": "Arduino-SDI-12_ExtInts",
@@ -148,7 +168,9 @@
                 "Kevin M. Smith",
                 "Sara Damiano",
                 "Shannon Hicks"
-            ]
+            ],
+            "frameworks": "arduino",
+            "platforms": "atmelavr, atmelsam"
         },
         {
             "name": "TinyGSM",
@@ -156,7 +178,9 @@
             "note": "A small Arduino library for GPRS modules.",
             "authors": [
                 "Volodymyr Shymanskyy"
-            ]
+            ],
+            "frameworks": "arduino",
+            "platforms": "atmelavr, atmelsam"
         },
         {
             "name": "SensorModbusMaster",
@@ -165,7 +189,9 @@
             "note": "EnviroDIY SensorModbusMaster - Arduino library for communicating via modbus with the Arduino acting as the modbus master.",
             "authors": [
                 "Sara Damiano"
-            ]
+            ],
+            "frameworks": "arduino",
+            "platforms": "atmelavr, atmelsam"
         },
         {
             "name": "YosemitechModbus",
@@ -174,7 +200,9 @@
             "note": "Arduino library for communication with Yosemitech sensors via Modbus.",
             "authors": [
                 "Sara Damiano"
-            ]
+            ],
+            "frameworks": "arduino",
+            "platforms": "atmelavr, atmelsam"
         },
         {
             "name": "RTCZero",
@@ -183,7 +211,9 @@
             "note": "Functions for using the processor real time clock in SAMD21 processors",
             "authors": [
                 "Arduino"
-            ]
+            ],
+            "frameworks": "arduino",
+            "platforms": "atmelsam"
         }
     ]
 }
