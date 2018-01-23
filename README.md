@@ -736,7 +736,7 @@ _____
 This library currently supports the following Yosemitech sensors:
 
 - [Y502-A or Y504-A Optical Dissolved Oxygen Sensors](http://www.yosemitech.com/en/product-10.html)
-- [Y5820-A 4-Electrode Conductivity Sensor](http://www.yosemitech.com/en/product-18.html)
+- [Y520-A 4-Electrode Conductivity Sensor](http://www.yosemitech.com/en/product-18.html)
 - [Y510-B](http://www.yosemitech.com/en/product-17.html) or [Y511-A](http://www.yosemitech.com/en/product-16.html) Optical Turbidity Sensors (Y511 has a wiper, Y510 does not)
 - [Y514-A Chlorophyll Sensor with Wiper](http://www.yosemitech.com/en/product-14.html)
 - Y532-A Digital pH Sensor
