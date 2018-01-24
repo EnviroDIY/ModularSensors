@@ -66,11 +66,12 @@ protected:
 class ApogeeSQ212_PAR : public Variable
 {
 public:
-    ApogeeSQ212_PAR(Sensor *parentSense, String customVarCode = "")
+    ApogeeSQ212_PAR(Sensor *parentSense,
+                    String UUID = "", String customVarCode = "")
       : Variable(parentSense, SQ212_PAR_VAR_NUM,
                  F("radiationIncomingPAR"), F("microeinsteinPerSquareMeterPerSecond"),
                  SQ212_PAR_RESOLUTION,
-                 F("photosyntheticallyActiveRadiation"), customVarCode)
+                 F("photosyntheticallyActiveRadiation"), UUID, customVarCode)
     {}
 };
 

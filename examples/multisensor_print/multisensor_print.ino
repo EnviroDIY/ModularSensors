@@ -37,6 +37,7 @@ const int timeZone = -5;
 // Create a new sensor array instance
 VariableArray sensors;
 
+
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
@@ -46,6 +47,7 @@ const long serialBaud = 57600;  // Baud rate for the primary serial port for deb
 const int greenLED = 8;  // Pin for the green LED (-1 if unconnected)
 const int redLED = 9;  // Pin for the red LED (-1 if unconnected)
 
+// Create the processor "sensor"
 const char *MFVersion = "v0.5";
 ProcessorStats mayfly(MFVersion) ;
 
@@ -309,8 +311,8 @@ Variable *variableList[] = {
     new AOSongDHT_HI(&dht),
     new AOSongAM2315_Humidity(&am2315),
     new AOSongAM2315_Temp(&am2315),
-    new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
+    new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
     new YosemitechY504_DOpct(&y504),
     new YosemitechY504_Temp(&y504),
     new YosemitechY504_DOmgL(&y504),

@@ -100,15 +100,23 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 //    The array that contains all variables to be logged
 // ==========================================================================
 Variable *variableList[] = {
-    new ProcessorStats_Batt(&mayfly),
-    new MaximDS3231_Temp(&ds3231),
-    new DecagonCTD_Cond(&ctd),
-    new DecagonCTD_Temp(&ctd),
-    new DecagonCTD_Depth(&ctd),
-    new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
+    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
+
+
+// ==========================================================================
+// Device registration and sampling feature information
+//   This should be obtained after registration at http://data.envirodiy.org
+// ==========================================================================
+const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
+const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 
 
 // ==========================================================================

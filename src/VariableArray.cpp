@@ -72,8 +72,9 @@
 
         // Put all the sensors back to sleep
         MS_DBG(F("Putting sensors to sleep after setup.\n"));
-        for (int i = 0; i < _variableCount; i++)
+        for (int i = 0; i < _variableCount; i++){
             _variableList[i]->parentSensor->sleep();
+        }
 
         // Now attach all of the variables to their parents
         for (int i = 0; i < _variableCount; i++){

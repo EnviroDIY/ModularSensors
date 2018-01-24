@@ -68,11 +68,12 @@ public:
 class YosemitechY514_Chlorophyll : public Variable
 {
 public:
-    YosemitechY514_Chlorophyll(Sensor *parentSense, String customVarCode = "")
+    YosemitechY514_Chlorophyll(Sensor *parentSense,
+                               String UUID = "", String customVarCode = "")
      : Variable(parentSense, Y514_CHLORO_VAR_NUM,
                 F("chlorophyllFluorescence"), F("microgramPerLiter"),
                 Y514_CHLORO_RESOLUTION,
-                F("Y514Chloro"), customVarCode)
+                F("Y514Chloro"), UUID, customVarCode)
     {}
 };
 
@@ -81,11 +82,12 @@ public:
 class YosemitechY514_Temp : public Variable
 {
 public:
-    YosemitechY514_Temp(Sensor *parentSense, String customVarCode = "")
+    YosemitechY514_Temp(Sensor *parentSense,
+                        String UUID = "", String customVarCode = "")
      : Variable(parentSense, Y514_TEMP_VAR_NUM,
                 F("temperature"), F("degreeCelsius"),
                 Y514_TEMP_RESOLUTION,
-                F("Y514temp"), customVarCode)
+                F("Y514temp"), UUID, customVarCode)
     {}
 };
 #endif

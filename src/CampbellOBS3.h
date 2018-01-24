@@ -64,11 +64,12 @@ protected:
 class CampbellOBS3_Turbidity : public Variable
 {
 public:
-    CampbellOBS3_Turbidity(Sensor *parentSense, String customVarCode = "")
+    CampbellOBS3_Turbidity(Sensor *parentSense,
+                           String UUID = "", String customVarCode = "")
       : Variable(parentSense, OBS3_TURB_VAR_NUM,
                  F("turbidity"), F("nephelometricTurbidityUnit"),
                  OBS3_RESOLUTION,
-                 F("Turbidity"), customVarCode)
+                 F("Turbidity"), UUID, customVarCode)
     {}
 };
 

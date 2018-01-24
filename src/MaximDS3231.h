@@ -55,11 +55,12 @@ public:
 class MaximDS3231_Temp : public Variable
 {
 public:
-    MaximDS3231_Temp(Sensor *parentSense, String customVarCode = "")
+    MaximDS3231_Temp(Sensor *parentSense,
+                     String UUID = "", String customVarCode = "")
       : Variable(parentSense, DS3231_TEMP_VAR_NUM,
                  F("temperatureRTC"), F("degreeCelsius"),
                  DS3231_TEMP_RESOLUTION,
-                 F("BoardTemp"), customVarCode)
+                 F("BoardTemp"), UUID, customVarCode)
     {}
 };
 

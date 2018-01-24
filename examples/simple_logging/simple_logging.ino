@@ -54,6 +54,7 @@ const int wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
 
+// Create the processor "sensor"
 const char *MFVersion = "v0.5";
 ProcessorStats mayfly(MFVersion) ;
 
@@ -317,8 +318,8 @@ Variable *variableList[] = {
     new AOSongDHT_HI(&dht),
     new AOSongAM2315_Humidity(&am2315),
     new AOSongAM2315_Temp(&am2315),
-    new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
+    new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
     new YosemitechY504_DOpct(&y504),
     new YosemitechY504_Temp(&y504),
     new YosemitechY504_DOmgL(&y504),
