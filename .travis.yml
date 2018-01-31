@@ -26,23 +26,23 @@ install:
     - pip install -U platformio
     - pio upgrade
     - pio update
-    - pio lib -g install 1  # OneWire
-    - pio lib -g install 19  # Adafruit DHT sensor library
-    - pio lib -g install 31  # Adafruit Unified Sensor
-    - pio lib -g install 54  # Dallas Temperature
-    - pio lib -g install 166  # Adafruit BME280 Library
+    - pio lib -g install 2079  # DS3231
     - pio lib -g install 311  # EnableInterrupt
     - pio lib -g install 322  # SdFat
-    - pio lib -g install 344  # ADS1X15
+    - pio lib -g install 342  # Adafruit ADS1X15
+    - pio lib -g install 31  # Adafruit Unified Sensor
+    - pio lib -g install 19  # Adafruit DHT sensor library
     - pio lib -g install 773  # Adafruit AM2315
-    - pio lib -g install 873  # RTCZero
-    - pio lib -g install 1824  # SensorModbusMaster
-    - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git  # #73, but need the git until Paul S. has a new release
-    - pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
-    - pio lib -g install https://github.com/EnviroDIY/Sodaq_DS3231.git
+    - pio lib -g install 166  # Adafruit BME280 Library
+    - pio lib -g install 1  # OneWire
+    - pio lib -g install 54  # Dallas Temperature
     - pio lib -g install https://github.com/EnviroDIY/Arduino-SDI-12.git#ExtInts
     - pio lib -g install https://github.com/EnviroDIY/TinyGSM.git
-    - pio lib -g install https://github.com/EnviroDIY/YosemitechModbus.git
+    - pio lib -g install 1824  # SensorModbusMaster
+    - pio lib -g install 2078  # YosemitechModbus
+    - pio lib -g install 873  # RTCZero
+    - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git  # #73, but need the git until Paul S. has a new release
+    - pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
     - pio lib -g update
 
 script:
