@@ -63,7 +63,7 @@ public:
         _loggerID = loggerID;
         _autoFileName = false;
         _isFileNameSet = false;
-        _numReadings = 0;
+        _numTimepointsLogged = 0;
 
         // Set sleep variable, if an interrupt pin is given
         if(_mcuWakePin != -1)
@@ -256,10 +256,10 @@ public:
         uint32_t checkTime = getNowEpoch();
         MS_DBG(F("Current Unix Timestamp: "), checkTime, F("\n"));
         MS_DBG(F("Mod of Logging Interval: "), checkTime % _interruptRate, F("\n"));
-        MS_DBG(F("Number of Readings so far: "), _numReadings, F("\n"));
+        MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged, F("\n"));
         MS_DBG(F("Mod of 120: "), checkTime % 120, F("\n"));
         if ((checkTime % _interruptRate == 0 ) or
-            (_numReadings < 10 and checkTime % 120 == 0))
+            (_numTimepointsLogged < 10 and checkTime % 120 == 0))
         {
             // Update the time variables with the current time
             markTime();
@@ -272,7 +272,7 @@ public:
             MS_DBG(F("    second: "), markedDateTime.second(), F("\n"));
             MS_DBG(F("Time marked at [char]: "), markedISO8601Time, F("\n"));
             // Update the number of readings taken
-            _numReadings ++;
+            _numTimepointsLogged ++;
             MS_DBG(F("Time to log!\n"));
             retval = true;
         }
@@ -291,14 +291,14 @@ public:
         bool retval;
         MS_DBG(F("Marked Time: "), markedEpochTime, F("\n"));
         MS_DBG(F("Mod of Logging Interval: "), markedEpochTime % _interruptRate, F("\n"));
-        MS_DBG(F("Number of Readings so far: "), _numReadings, F("\n"));
+        MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged, F("\n"));
         MS_DBG(F("Mod of 120: "), markedEpochTime % 120, F("\n"));
         if (markedEpochTime != 0 &&
             ((markedEpochTime % _interruptRate == 0 ) or
-            (_numReadings < 10 and markedEpochTime % 120 == 0)))
+            (_numTimepointsLogged < 10 and markedEpochTime % 120 == 0)))
         {
             // Update the number of readings taken
-            _numReadings ++;
+            _numTimepointsLogged ++;
             MS_DBG(F("Time to log!\n"));
             retval = true;
         }
@@ -845,7 +845,7 @@ protected:
     const char *_loggerID;
     bool _autoFileName;
     bool _isFileNameSet;
-    uint8_t _numReadings;
+    uint8_t _numTimepointsLogged;
     bool _sleep;
     int _ledPin;
 
