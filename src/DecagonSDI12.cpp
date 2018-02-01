@@ -206,76 +206,63 @@ bool DecagonSDI12::update()
     mySDI12.setTimeout(15);  // SDI-12 protocol says sensors must respond within 15 milliseconds
     enableInterrupt(_dataPin, SDI12::handleInterrupt, CHANGE);
 
-    // averages x readings in this one loop
-    for (int j = 0; j < _readingsToAverage; j++)
+    String myCommand = "";
+    myCommand += _SDI12address;
+    myCommand += "M!"; // SDI-12 measurement myCommand format  [address]['M'][!]
+    mySDI12.sendCommand(myCommand);
+    MS_DBG(F(">>"), myCommand, F("\n"));
+    delay(30);  // It just needs this little delay
+
+    // wait for acknowlegement with format
+    // [address][ttt (3 char, seconds)][number of measurments available, 0-9]<CR><LF>
+    String sdiResponse = mySDI12.readStringUntil('\n');
+    sdiResponse.trim();
+    mySDI12.clearBuffer();
+    MS_DBG(F("<<"), sdiResponse, F("\n"));
+
+    // find out how long we have to wait (in seconds).
+    unsigned int wait = 0;
+    wait = sdiResponse.substring(1,4).toInt();
+    MS_DBG(F("Waiting "), wait, F(" seconds for measurement\n"));
+
+    // Set up the number of results to expect
+    int numVariables = sdiResponse.substring(4,5).toInt();
+    MS_DBG(numVariables, F(" results expected\n"));
+    if (numVariables != _numReturnedVars)
     {
-        MS_DBG(F("Taking reading #"), j, F("\n"));
-        String myCommand = "";
-        myCommand += _SDI12address;
-        myCommand += "M!"; // SDI-12 measurement myCommand format  [address]['M'][!]
-        mySDI12.sendCommand(myCommand);
-        MS_DBG(F(">>"), myCommand, F("\n"));
-        delay(30);  // It just needs this little delay
-
-        // wait for acknowlegement with format
-        // [address][ttt (3 char, seconds)][number of measurments available, 0-9]<CR><LF>
-        String sdiResponse = mySDI12.readStringUntil('\n');
-        sdiResponse.trim();
-        mySDI12.clearBuffer();
-        MS_DBG(F("<<"), sdiResponse, F("\n"));
-
-        // find out how long we have to wait (in seconds).
-        unsigned int wait = 0;
-        wait = sdiResponse.substring(1,4).toInt();
-        MS_DBG(F("Waiting "), wait, F(" seconds for measurement\n"));
-
-        // Set up the number of results to expect
-        int numVariables = sdiResponse.substring(4,5).toInt();
-        MS_DBG(numVariables, F(" results expected\n"));
-        if (numVariables != _numReturnedVars)
-        {
-            MS_DBG(F("This differs from the sensor's standard design of "));
-            MS_DBG(_numReturnedVars, F(" measurements!!\n"));
-        }
-
-        uint32_t timerStart = millis();
-        while((millis() - timerStart) < (1000 * wait))
-        {
-            if(mySDI12.available())  // sensor can interrupt us to let us know it is done early
-            {
-                MS_DBG(F("<<"), mySDI12.readString());  // Read the service request (the address again)
-                MS_DBG("Wait interrupted!", F("\n"));
-                mySDI12.clearBuffer();
-                delay(5);  // Necessary for reasons unbeknownst to me (else it just fails sometimes..)
-                break;
-            }
-        }
-
-        myCommand = "";
-        myCommand += _SDI12address;
-        myCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
-        mySDI12.sendCommand(myCommand);
-        MS_DBG(F(">>"), myCommand, F("\n"));
-        delay(30);  // It just needs this little delay
-
-        MS_DBG(F("Receiving data\n"));
-        mySDI12.read();  // ignore the repeated SDI12 address
-        for (int i = 0; i < _numReturnedVars; i++)
-        {
-            float result = mySDI12.parseFloat();
-            sensorValues[i] += result;
-            MS_DBG(F("Result #"), i, F(": "), result, F("\n"));
-        }
-        mySDI12.clearBuffer();
+        MS_DBG(F("This differs from the sensor's standard design of "));
+        MS_DBG(_numReturnedVars, F(" measurements!!\n"));
     }
 
-    // Average over the number of readings
-    MS_DBG(F("Averaging over "), _readingsToAverage, F(" readings\n"));
+    uint32_t timerStart = millis();
+    while((millis() - timerStart) < (1000 * wait))
+    {
+        if(mySDI12.available())  // sensor can interrupt us to let us know it is done early
+        {
+            MS_DBG(F("<<"), mySDI12.readString());  // Read the service request (the address again)
+            MS_DBG("Wait interrupted!", F("\n"));
+            mySDI12.clearBuffer();
+            delay(5);  // Necessary for reasons unbeknownst to me (else it just fails sometimes..)
+            break;
+        }
+    }
+
+    myCommand = "";
+    myCommand += _SDI12address;
+    myCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
+    mySDI12.sendCommand(myCommand);
+    MS_DBG(F(">>"), myCommand, F("\n"));
+    delay(30);  // It just needs this little delay
+
+    MS_DBG(F("Receiving data\n"));
+    mySDI12.read();  // ignore the repeated SDI12 address
     for (int i = 0; i < _numReturnedVars; i++)
     {
-        sensorValues[i] /=  _readingsToAverage;
-        MS_DBG(F("Result #"), i, F(": "), sensorValues[i], F("\n"));
+        float result = mySDI12.parseFloat();
+        sensorValues[i] += result;
+        MS_DBG(F("Result #"), i, F(": "), result, F("\n"));
     }
+    mySDI12.clearBuffer();
 
     // Kill the SDI-12 Object
     disableInterrupt(_dataPin);
