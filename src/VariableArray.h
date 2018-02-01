@@ -54,10 +54,13 @@ public:
     String generateSensorDataCSV(void);
 
 protected:
-    bool isLastVarFromSensor(int arrayIndex);
-
     uint8_t _variableCount;
     Variable **_variableList;
+    bool _uniqueSensorMask[];
+
+private:
+    bool isLastVarFromSensor(int arrayIndex);
+    void createUniqueSensorMask(void);
 };
 
 #endif

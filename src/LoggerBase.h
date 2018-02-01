@@ -50,14 +50,14 @@ public:
               float loggingIntervalMinutes,
               const char *loggerID = 0)
     {
-        PRINTOUT(F("Initializing logger "), loggerID, F(" to record "),
-                 variableCount, F(" variables at "),
+        // initialize the variable array
+        VariableArray::init(variableCount, variableList);
+
+        PRINTOUT(F("Initializing logger "), loggerID, F(" to record at "),
                  loggingIntervalMinutes, F(" minute intervals ... "));
 
         _SDCardPin = SDCardPin;
         _mcuWakePin = mcuWakePin;
-        _variableCount = variableCount;
-        _variableList = variableList;
         _loggingIntervalMinutes = loggingIntervalMinutes;
         _interruptRate = round(_loggingIntervalMinutes*60);  // convert to even seconds
         _loggerID = loggerID;

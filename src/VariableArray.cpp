@@ -16,6 +16,11 @@
         MS_DBG(F("Initializing variable array with "), variableCount, F(" variables...\n"));
         _variableCount = variableCount;
         _variableList = variableList;
+
+        // Create a masking array with the unique sensors
+        _uniqueSensorMask[_variableCount] = {true,};
+        createUniqueSensorMask();
+
         MS_DBG(F("   ... Success!\n"));
     }
 
@@ -28,7 +33,7 @@
         // Check for unique sensors
         for (int i = 0; i < _variableCount; i++)
         {
-            if (isLastVarFromSensor(i)) numSensors++;
+            if (_uniqueSensorMask[i]) numSensors++;
         }
         return numSensors;
     }
@@ -45,8 +50,11 @@
         MS_DBG(F("Powering up sensors for setup.\n"));
         for (int i = 0; i < _variableCount; i++)
         {
-            MS_DBG(F("   ... powering "), _variableList[i]->getVarCode(), F("\n"));
-            _variableList[i]->parentSensor->powerUp();
+            if (!_uniqueSensorMask[i]) i++  // Skip non-unique sensors
+            {
+                MS_DBG(F("   ... powering "), _variableList[i]->getVarCode(), F("\n"));
+                _variableList[i]->parentSensor->powerUp();
+            }
         }
 
         // Now run all the set-up functions
@@ -56,22 +64,20 @@
             // Make 5 attempts to contact the sensor before giving up
             bool sensorSuccess = false;
             int setupTries = 0;
-            while(setupTries < 5 and !sensorSuccess)
-            {
-                // Setting up the sensors for all variables whether they are repeats
-                // or not.  This means setting up some sensors multiple times, but
-                // this should be OK because setup is only run in the setup, not
-                // repeatedly. It is not possible to check for repeated sensors in
-                // the variable list until after the sensors have all been
-                // setup and then all of the variables attached.
-                delay(10);
-                sensorSuccess = _variableList[i]->parentSensor->setup();
-                setupTries++;
-            }
-            if (!sensorSuccess) MS_DBG(F("   ... Set up of "), _variableList[i]->getVarCode(), F(" failed!\n"));
-            else MS_DBG(F("   ... Set up of "), _variableList[i]->getVarCode(), F(" succeeded.\n"));
-            success &= sensorSuccess;
+                if (!_uniqueSensorMask[i]) i++  // Skip non-unique sensors
+                {
+                    while(setupTries < 5 and !sensorSuccess)
+                    {
+                        delay(10);
+                        sensorSuccess = _variableList[i]->parentSensor->setup();
+                        setupTries++;
+                    }
+                    if (!sensorSuccess) MS_DBG(F("   ... Set up of "), _variableList[i]->getVarCode(), F(" failed!\n"));
+                    else MS_DBG(F("   ... Set up of "), _variableList[i]->getVarCode(), F(" succeeded.\n"));
+                    success &= sensorSuccess;
+                }
         }
+
 
         // Put all the sensors back to sleep
         MS_DBG(F("Putting sensors to sleep after setup.\n"));
@@ -99,10 +105,18 @@
         bool success = true;
         for (int i = 0; i < _variableCount; i++)
         {
-            if (isLastVarFromSensor(i))
+            if (!_uniqueSensorMask[i]) i++  // Skip non-unique sensors
             {
                 MS_DBG(F("   ... putting "), _variableList[i]->getVarCode(), F(" to sleep.\n"));
                 success &= _variableList[i]->parentSensor->sleep();
+            }
+        }
+        for (int i = 0; i < _variableCount; i++)
+        {
+            if (!_uniqueSensorMask[i]) i++  // Skip non-unique sensors
+            {
+                MS_DBG(F("   ... powering down "), _variableList[i]->getVarCode(), F("\n"));
+                _variableList[i]->parentSensor->powerDown();
             }
         }
         return success;
@@ -115,7 +129,7 @@
         bool success = true;
         for (int i = 0; i < _variableCount; i++)
         {
-            if (isLastVarFromSensor(i))
+            if (!_uniqueSensorMask[i]) i++  // Skip non-unique sensors
             {
                 MS_DBG(F("   ... Powering up "), _variableList[i]->getVarCode(), F("\n"));
                 _variableList[i]->parentSensor->powerUp();
@@ -123,7 +137,7 @@
         }
         for (int i = 0; i < _variableCount; i++)
         {
-            if (isLastVarFromSensor(i))
+            if (!_uniqueSensorMask[i]) i++  // Skip non-unique sensors
             {
                 MS_DBG(F("   ... Waking "), _variableList[i]->getVarCode(), F("\n"));
                 success &= _variableList[i]->parentSensor->wake();
@@ -139,7 +153,7 @@
         bool update_success = true;
         for (uint8_t i = 0; i < _variableCount; i++)
         {
-            if (isLastVarFromSensor(i))
+            if (!_uniqueSensorMask[i]) i++  // Skip non-unique sensors
             {
                 // Prints for debugging
                 MS_DBG(F("--- Going to update "));
@@ -214,19 +228,22 @@
         // Prints for debugging
         // if (unique){
         //     MS_DBG(_variableList[arrayIndex]->getVarName());
-        //     MS_DBG(F(" from "));
-        //     MS_DBG(sensName);
-        //     MS_DBG(F(" at "));
-        //     MS_DBG(sensLoc);
+        //     MS_DBG(F(" from "), sensName, F(" at "), sensLoc);
         //     MS_DBG(F(" will be used for sensor references.\n"));
         // }
         // else{
         //     MS_DBG(_variableList[arrayIndex]->getVarName());
-        //     MS_DBG(F(" from "));
-        //     MS_DBG(sensName);
-        //     MS_DBG(F(" at "));
-        //     MS_DBG(sensLoc);
+        //     MS_DBG(F(" from "), sensName, F(" at "), sensLoc);
         //     MS_DBG(F(" will be ignored.\n"));
         // }
         return unique;
+    }
+
+    void VariableArray::createUniqueSensorMask(void)
+    {
+        // Check for unique sensors
+        for (int i = 0; i < _variableCount; i++)
+        {
+            _uniqueSensorMask[i] = isLastVarFromSensor(i);
+        }
     }
