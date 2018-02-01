@@ -100,8 +100,7 @@ public:
     void powerUp(void) override
     {
         // Check if the modem is on; turn it on if not
-        if(!modemOnOff->isOn()) return modemOnOff->on();
-        else return true;
+        if(!modemOnOff->isOn()) modemOnOff->on();
     }
 
     virtual bool wake(void) override
