@@ -28,16 +28,14 @@
 class YosemitechParent : public Sensor
 {
 public:
-    YosemitechParent(byte modbusAddress, int powerPin,
-                     Stream* stream, int enablePin = -1, int numReadings = 1,
-                     String sensName = "Yosemitech-Sensor", int numMeasurements = 2,
-                     yosemitechModel model = UNKNOWN, int WarmUpTime_ms = 1500,
-                     int StabilizationTime_ms = 20000, int remeasurementTime_ms = 2000);
-    YosemitechParent(byte modbusAddress, int powerPin,
-                     Stream& stream, int enablePin = -1, int numReadings = 1,
-                     String sensName = "Yosemitech-Sensor", int numMeasurements = 2,
-                     yosemitechModel model = UNKNOWN, int WarmUpTime_ms = 1500,
-                     int StabilizationTime_ms = 20000, int remeasurementTime_ms = 2000);
+    YosemitechParent(byte modbusAddress, Stream* stream,
+                     int powerPin, int enablePin = -1, int readingsToAverage = 1,
+                     yosemitechModel model = UNKNOWN, String sensName = "Yosemitech-Sensor", int numVariables = 2,
+                     int warmUpTime_ms = 1500, int stabilizationTime_ms = 20000, int remeasurementTime_ms = 2000);
+    YosemitechParent(byte modbusAddress, Stream& stream,
+                     int powerPin, int enablePin = -1, int readingsToAverage = 1,
+                     yosemitechModel model = UNKNOWN, String sensName = "Yosemitech-Sensor", int numVariables = 2,
+                     int warmUpTime_ms = 1500, int stabilizationTime_ms = 20000, int remeasurementTime_ms = 2000);
 
     String getSensorLocation(void) override;
 
@@ -48,7 +46,6 @@ public:
     virtual bool update(void);
 
 private:
-    void waitForStability(void);
     yosemitechModel _model;
     byte _modbusAddress;
     Stream* _stream;

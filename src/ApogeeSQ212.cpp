@@ -19,7 +19,8 @@
  *
  * Power supply: 5-24 V DC with a nominal current draw of 300 μA
 
- * Response time: <1ms
+ * Response time: < 1ms
+ * Resample time: max of ADC (860/sec)
 */
 
 
@@ -27,8 +28,10 @@
 #include <Adafruit_ADS1015.h>
 
 // The constructor - need the power pin and the data pin
-ApogeeSQ212::ApogeeSQ212(int powerPin, int dataPin, uint8_t i2cAddress)
-  : Sensor(powerPin, dataPin, F("ApogeeSQ212"), SQ212_NUM_VARIABLES, SQ212_WARM_UP)
+ApogeeSQ212::ApogeeSQ212(int powerPin, int dataPin, uint8_t i2cAddress, int readingsToAverage)
+    : Sensor(F("ApogeeSQ212"), SQ212_NUM_VARIABLES,
+             SQ212_WARM_UP, SQ212_STABILITY, SQ212_RESAMPLE,
+             powerPin, dataPin, readingsToAverage)
 {
     _i2cAddress = i2cAddress;
 }
@@ -51,7 +54,7 @@ bool ApogeeSQ212::update(void)
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up
+    // Wait until the sensor is warmed up; assume stability at warm-up
     waitForWarmUp();
 
     // Clear values before starting loop

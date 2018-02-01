@@ -30,8 +30,10 @@
 #include "DecagonSDI12.h"
 #include "VariableBase.h"
 
-#define ES2_NUM_MEASUREMENTS 2
+#define ES2_NUM_VARIABLES 2
 #define ES2_WARM_UP 250
+#define ES2_STABILITY 250
+#define ES2_RESAMPLE 250
 
 #define ES2_COND_RESOLUTION 0
 #define ES2_COND_VAR_NUM 0
@@ -44,17 +46,20 @@ class DecagonES2 : public DecagonSDI12
 {
 public:
     // Constructors with overloads
-    DecagonES2(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
-                    F("DecagonES2"), ES2_NUM_MEASUREMENTS, ES2_WARM_UP)
+    DecagonES2(char SDI12address, int powerPin, int dataPin, int readingsToAverage = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, readingsToAverage,
+                    F("DecagonES2"), ES2_NUM_VARIABLES,
+                    ES2_WARM_UP, ES2_STABILITY, ES2_RESAMPLE)
     {}
-    DecagonES2(char *SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
-                    F("DecagonES2"), ES2_NUM_MEASUREMENTS, ES2_WARM_UP)
+    DecagonES2(char *SDI12address, int powerPin, int dataPin, int readingsToAverage = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, readingsToAverage,
+                    F("DecagonES2"), ES2_NUM_VARIABLES,
+                    ES2_WARM_UP, ES2_STABILITY, ES2_RESAMPLE)
     {}
-    DecagonES2(int SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
-                    F("DecagonES2"), ES2_NUM_MEASUREMENTS, ES2_WARM_UP)
+    DecagonES2(int SDI12address, int powerPin, int dataPin, int readingsToAverage = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, readingsToAverage,
+                    F("DecagonES2"), ES2_NUM_VARIABLES,
+                    ES2_WARM_UP, ES2_STABILITY, ES2_RESAMPLE)
     {}
 };
 

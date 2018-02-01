@@ -31,8 +31,10 @@
 #include "DecagonSDI12.h"
 #include "VariableBase.h"
 
-#define TM_NUM_MEASUREMENTS 3
+#define TM_NUM_VARIABLES 3
 #define TM_WARM_UP 200
+#define TM_STABILITY 200
+#define TM_RESAMPLE 200
 
 #define TM_EA_RESOLUTION 4
 #define TM_EA_VAR_NUM 0
@@ -48,17 +50,20 @@ class Decagon5TM : public DecagonSDI12
 {
 public:
     // Constructors with overloads
-    Decagon5TM(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
-                    F("Decagon5TM"), TM_NUM_MEASUREMENTS, TM_WARM_UP)
+    Decagon5TM(char SDI12address, int powerPin, int dataPin, int readingsToAverage = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, readingsToAverage,
+                    F("Decagon5TM"), TM_NUM_VARIABLES,
+                    TM_WARM_UP, TM_STABILITY, TM_RESAMPLE)
     {}
-    Decagon5TM(char *SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
-                    F("Decagon5TM"), TM_NUM_MEASUREMENTS, TM_WARM_UP)
+    Decagon5TM(char *SDI12address, int powerPin, int dataPin, int readingsToAverage = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, readingsToAverage,
+                    F("Decagon5TM"), TM_NUM_VARIABLES,
+                    TM_WARM_UP, TM_STABILITY, TM_RESAMPLE)
     {}
-    Decagon5TM(int SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
-                    F("Decagon5TM"), TM_NUM_MEASUREMENTS, TM_WARM_UP)
+    Decagon5TM(int SDI12address, int powerPin, int dataPin, int readingsToAverage = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, readingsToAverage,
+                    F("Decagon5TM"), TM_NUM_VARIABLES,
+                    TM_WARM_UP, TM_STABILITY, TM_RESAMPLE)
     {}
 
     bool update(void) override

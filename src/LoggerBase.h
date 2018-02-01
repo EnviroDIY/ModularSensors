@@ -719,7 +719,7 @@ public:
 
         // Look for up to 5 seconds for a button press
         PRINTOUT(F("Push button NOW to enter debug mode.\n"));
-        for (unsigned long start = millis(); millis() - start < 5000; )
+        for (uint32_t start = millis(); millis() - start < 5000; )
         {
             if (digitalRead(buttonPin) == HIGH) debugMode();
         }

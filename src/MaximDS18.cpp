@@ -21,8 +21,10 @@
 
 
 // The constructor - if the hex address is known - also need the power pin and the data pin
-MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin)
-  : Sensor(powerPin, dataPin, F("MaximDS18"), DS18_NUM_MEASUREMENTS, DS18_WARM_UP)
+MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin, int readingsToAverage)
+  : Sensor(F("MaximDS18"), DS18_NUM_VARIABLES,
+           DS18_WARM_UP, DS18_STABILITY, DS18_RESAMPLE,
+           powerPin, dataPin, readingsToAverage)
     // oneWire(dataPin), tempSensors(&oneWire)
 {
     for (int i = 0; i < 8; i++) _OneWireAddress[i] = OneWireAddress[i];
@@ -31,8 +33,10 @@ MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin)
 }
 // The constructor - if the hex address is NOT known - only need the power pin and the data pin
 // Can only use this if there is only a single sensor on the pin
-MaximDS18::MaximDS18(int powerPin, int dataPin)
-  : Sensor(powerPin, dataPin, F("MaximDS18"), DS18_NUM_MEASUREMENTS, DS18_WARM_UP)
+MaximDS18::MaximDS18(int powerPin, int dataPin, int readingsToAverage)
+  : Sensor(F("MaximDS18"), DS18_NUM_VARIABLES,
+           DS18_WARM_UP, DS18_STABILITY, DS18_RESAMPLE,
+           powerPin, dataPin, readingsToAverage)
     // oneWire(dataPin), tempSensors(&oneWire)
 {
     _addressKnown = false;
@@ -159,7 +163,7 @@ bool MaximDS18::update()
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up
+    // Wait until the sensor is warmed up; assumed to be stable at warm-up
     waitForWarmUp();
 
     // Clear values before starting loop
@@ -185,7 +189,7 @@ bool MaximDS18::update()
         MS_DBG(F("Received "), result, F("°C\n"));
         rangeAttempts++;
 
-        // If a DS18 cannot get a goot measurement, it returns 85
+        // If a DS18 cannot get a good measurement, it returns 85
         // If the sensor is not properly connected, it returns -127
         if (result == 85 || result == -127)
         {

@@ -15,29 +15,32 @@
 #include "DecagonSDI12.h"
 
 // The constructor - need the number of measurements the sensor will return, SDI-12 address, the power pin, and the data pin
-DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin,
-                           int numReadings, String sensName,
-                           int numMeasurements, int WarmUpTime_ms)
-    : Sensor(powerPin, dataPin, sensName, numMeasurements, WarmUpTime_ms)
+DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin, int readingsToAverage,
+                           String sensorName, int numReturnedVars,
+                           uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
+    : Sensor(sensorName, numReturnedVars,
+             warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
+             powerPin, dataPin, readingsToAverage)
 {
     _SDI12address = SDI12address;
-    _numReadings = numReadings;
 }
-DecagonSDI12::DecagonSDI12(char *SDI12address, int powerPin, int dataPin,
-                           int numReadings, String sensName,
-                           int numMeasurements, int WarmUpTime_ms)
-    : Sensor(powerPin, dataPin, sensName, numMeasurements, WarmUpTime_ms)
+DecagonSDI12::DecagonSDI12(char *SDI12address, int powerPin, int dataPin, int readingsToAverage,
+                           String sensorName, int numReturnedVars,
+                           uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
+    : Sensor(sensorName, numReturnedVars,
+             warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
+             powerPin, dataPin, readingsToAverage)
 {
     _SDI12address = *SDI12address;
-    _numReadings = numReadings;
 }
-DecagonSDI12::DecagonSDI12(int SDI12address, int powerPin, int dataPin,
-                           int numReadings, String sensName,
-                           int numMeasurements, int WarmUpTime_ms)
-    : Sensor(powerPin, dataPin, sensName, numMeasurements, WarmUpTime_ms)
+DecagonSDI12::DecagonSDI12(int SDI12address, int powerPin, int dataPin, int readingsToAverage,
+                           String sensorName, int numReturnedVars,
+                           uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
+    : Sensor(sensorName, numReturnedVars,
+             warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
+             powerPin, dataPin, readingsToAverage)
 {
     _SDI12address = SDI12address + '0';
-    _numReadings = numReadings;
 }
 
 
@@ -188,7 +191,7 @@ bool DecagonSDI12::update()
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up
+    // Wait until the sensor is warmed up; assume stable at warm-up
     waitForWarmUp();
 
     // Clear values before starting loop
@@ -204,7 +207,7 @@ bool DecagonSDI12::update()
     enableInterrupt(_dataPin, SDI12::handleInterrupt, CHANGE);
 
     // averages x readings in this one loop
-    for (int j = 0; j < _numReadings; j++)
+    for (int j = 0; j < _readingsToAverage; j++)
     {
         MS_DBG(F("Taking reading #"), j, F("\n"));
         String myCommand = "";
@@ -227,15 +230,15 @@ bool DecagonSDI12::update()
         MS_DBG(F("Waiting "), wait, F(" seconds for measurement\n"));
 
         // Set up the number of results to expect
-        int numMeasurements = sdiResponse.substring(4,5).toInt();
-        MS_DBG(numMeasurements, F(" results expected\n"));
-        if (numMeasurements != _numReturnedVars)
+        int numVariables = sdiResponse.substring(4,5).toInt();
+        MS_DBG(numVariables, F(" results expected\n"));
+        if (numVariables != _numReturnedVars)
         {
             MS_DBG(F("This differs from the sensor's standard design of "));
             MS_DBG(_numReturnedVars, F(" measurements!!\n"));
         }
 
-        unsigned long timerStart = millis();
+        uint32_t timerStart = millis();
         while((millis() - timerStart) < (1000 * wait))
         {
             if(mySDI12.available())  // sensor can interrupt us to let us know it is done early
@@ -267,10 +270,10 @@ bool DecagonSDI12::update()
     }
 
     // Average over the number of readings
-    MS_DBG(F("Averaging over "), _numReadings, F(" readings\n"));
+    MS_DBG(F("Averaging over "), _readingsToAverage, F(" readings\n"));
     for (int i = 0; i < _numReturnedVars; i++)
     {
-        sensorValues[i] /=  _numReadings;
+        sensorValues[i] /=  _readingsToAverage;
         MS_DBG(F("Result #"), i, F(": "), sensorValues[i], F("\n"));
     }
 

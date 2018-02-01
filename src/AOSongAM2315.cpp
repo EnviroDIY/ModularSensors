@@ -18,14 +18,16 @@
  *  Accuracy is ±0.1°C
  *  Range is -40°C to +125°C
  *
- * Warm up/sampling time: 2sec
+ * Warm up/stability/re-sampling time: 2sec
 */
 #include "AOSongAM2315.h"
 #include <Adafruit_AM2315.h>
 
 // The constructor - because this is I2C, only need the power pin
-AOSongAM2315::AOSongAM2315(int powerPin)
-: Sensor(powerPin, -1, F("AOSongAM2315"), AM2315_NUM_MEASUREMENTS, AM2315_WARM_UP)
+AOSongAM2315::AOSongAM2315(int powerPin, int readingsToAverage)
+    : Sensor(F("AOSongAM2315"), AM2315_NUM_VARIABLES,
+             AM2315_WARM_UP, AM2315_STABILITY, AM2315_RESAMPLE,
+             powerPin, -1, readingsToAverage)
 {}
 
 String AOSongAM2315::getSensorLocation(void){return F("I2C_0xB8");}
@@ -38,7 +40,7 @@ bool AOSongAM2315::update(void)
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up
+    // Wait until the sensor is warmed up (assume it's stable at warm-up)
     waitForWarmUp();
 
     // Clear values before starting loop

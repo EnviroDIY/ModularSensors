@@ -16,36 +16,31 @@
 #include "YosemitechParent.h"
 
 // The constructor - need the sensor type, modbus address, power pin, stream for data, and number of readings to average
-YosemitechParent::YosemitechParent(byte modbusAddress, int powerPin,
-                                   Stream* stream, int enablePin, int numReadings,
-                                   String sensName, int numMeasurements,
-                                   yosemitechModel model, int WarmUpTime_ms,
-                                   int StabilizationTime_ms, int remeasurementTime_ms)
-    : Sensor(powerPin, -1, sensName, numMeasurements, WarmUpTime_ms)
+YosemitechParent::YosemitechParent(byte modbusAddress, Stream* stream,
+                                   int powerPin, int enablePin, int readingsToAverage,
+                                   yosemitechModel model, String sensName, int numVariables,
+                                   int warmUpTime_ms, int stabilizationTime_ms, int remeasurementTime_ms)
+    : Sensor(sensName, numVariables,
+             warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
+             powerPin, -1, readingsToAverage)
 {
     _model = model;
     _modbusAddress = modbusAddress;
     _stream = stream;
     _RS485EnablePin = enablePin;
-    _numReadings = numReadings;
-    _StabilizationTime_ms = StabilizationTime_ms;
 }
-YosemitechParent::YosemitechParent(byte modbusAddress, int powerPin,
-                                   Stream& stream, int enablePin, int numReadings,
-                                   String sensName, int numMeasurements,
-                                   yosemitechModel model, int WarmUpTime_ms,
-                                   int StabilizationTime_ms, int remeasurementTime_ms)
-    : Sensor(powerPin, -1, sensName, numMeasurements, WarmUpTime_ms)
+YosemitechParent::YosemitechParent(byte modbusAddress, Stream& stream,
+                                   int powerPin, int enablePin, int readingsToAverage,
+                                   yosemitechModel model, String sensName, int numVariables,
+                                   int warmUpTime_ms, int stabilizationTime_ms, int remeasurementTime_ms)
+    : Sensor(sensName, numVariables,
+             warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
+             powerPin, -1, readingsToAverage)
 {
     _model = model;
     _modbusAddress = modbusAddress;
     _stream = &stream;
     _RS485EnablePin = enablePin;
-    _numReadings = numReadings;
-    _StabilizationTime_ms = StabilizationTime_ms;
-    _remeasurementTime_ms = remeasurementTime_ms;
-    _isTakingMeasurements = false;
-    _millisMeasurementStarted = 0;
 }
 
 
@@ -131,29 +126,6 @@ bool YosemitechParent::sleep(void)
     powerDown();
 
     return success;
-}
-
-// This is a helper function to wait that enough time has passed for the sensor
-// to stabilize before taking readings
-void YosemitechParent::waitForStability(void)
-{
-    if (_StabilizationTime_ms != 0)
-    {
-        if (millis() > _millisMeasurementStarted + _StabilizationTime_ms)  // already ready
-        {
-            MS_DBG(F("Sensor should be stable!\n"));
-        }
-        else if (millis() > _millisMeasurementStarted)  // just in case millis() has rolled over
-        {
-            MS_DBG(F("Waiting "), (_StabilizationTime_ms - (millis() - _millisMeasurementStarted)), F("ms for sensor to stabilize\n"));
-            while((millis() - _millisMeasurementStarted) < _StabilizationTime_ms){}
-        }
-        else  // if we get really unlucky and are measuring as millis() rolls over
-        {
-            MS_DBG(F("Waiting 20s for sensor stability\n"));
-            while(millis() < 20000){}
-        }
-    }
 }
 
 // Uses the YosemitechModbus library to communicate with the sensor

@@ -31,8 +31,10 @@
 #include "BoschBME280.h"
 
 // The constructor - because this is I2C, only need the power pin
-BoschBME280::BoschBME280(int powerPin, uint8_t i2cAddressHex)
- : Sensor(powerPin, -1, F("BoschBME280"), BoschBME280_NUM_MEASUREMENTS, BoschBME280_WARM_UP)
+BoschBME280::BoschBME280(int powerPin, uint8_t i2cAddressHex, int readingsToAverage)
+     : Sensor(F("BoschBME280"), BME280_NUM_VARIABLES,
+              BME280_WARM_UP, BME280_STABILITY, BME280_RESAMPLE,
+              powerPin, -1, readingsToAverage)
 {
     _i2cAddressHex  = i2cAddressHex;
 }
@@ -95,15 +97,15 @@ bool BoschBME280::update(void)
     float alt = bme_internal.readAltitude(SEALEVELPRESSURE_HPA);
     float humid = bme_internal.readHumidity();
 
-    sensorValues[BoschBME280_TEMP_VAR_NUM] = temp;
-    sensorValues[BoschBME280_HUMIDITY_VAR_NUM] = humid;
-    sensorValues[BoschBME280_PRESSURE_VAR_NUM] = press;
-    sensorValues[BoschBME280_ALTITUDE_VAR_NUM] = alt;
+    sensorValues[BME280_TEMP_VAR_NUM] = temp;
+    sensorValues[BME280_HUMIDITY_VAR_NUM] = humid;
+    sensorValues[BME280_PRESSURE_VAR_NUM] = press;
+    sensorValues[BME280_ALTITUDE_VAR_NUM] = alt;
 
-    MS_DBG(F("Temperature: "), sensorValues[BoschBME280_TEMP_VAR_NUM]);
-    MS_DBG(F(" Humidity: "), sensorValues[BoschBME280_HUMIDITY_VAR_NUM]);
-    MS_DBG(F(" Barometric Pressure: "), sensorValues[BoschBME280_PRESSURE_VAR_NUM]);
-    MS_DBG(F(" Calculated Altitude: "), sensorValues[BoschBME280_ALTITUDE_VAR_NUM], F("\n"));
+    MS_DBG(F("Temperature: "), sensorValues[BME280_TEMP_VAR_NUM]);
+    MS_DBG(F(" Humidity: "), sensorValues[BME280_HUMIDITY_VAR_NUM]);
+    MS_DBG(F(" Barometric Pressure: "), sensorValues[BME280_PRESSURE_VAR_NUM]);
+    MS_DBG(F(" Calculated Altitude: "), sensorValues[BME280_ALTITUDE_VAR_NUM], F("\n"));
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}

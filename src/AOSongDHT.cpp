@@ -26,9 +26,11 @@
 #include "AOSongDHT.h"
 
 // The constructor - need the power pin, data pin, and type of DHT
-AOSongDHT::AOSongDHT(int powerPin, int dataPin, DHTtype type)
-: Sensor(powerPin, dataPin, F("AOSongDHT"), DHT_NUM_MEASUREMENTS, DHT_WARM_UP),
-  dht_internal(dataPin, type)
+AOSongDHT::AOSongDHT(int powerPin, int dataPin, DHTtype type, int readingsToAverage)
+    : Sensor(F("AOSongDHT"), DHT_NUM_VARIABLES,
+             DHT_WARM_UP, DHT_STABILITY, DHT_RESAMPLE,
+             powerPin, dataPin, readingsToAverage),
+    dht_internal(dataPin, type)
 {
     _dhtType = type;
 }
@@ -62,7 +64,7 @@ bool AOSongDHT::update(void)
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up
+    // Wait until the sensor is warmed up; assume stability at warm-up
     waitForWarmUp();
 
     // Clear values before starting loop

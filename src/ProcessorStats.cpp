@@ -95,7 +95,7 @@
 #endif
 
 // Need to know the Mayfly version because the battery resistor depends on it
-ProcessorStats::ProcessorStats(const char *version) : Sensor(-1, -1, BOARD, PROCESSOR_NUM_MEASUREMENTS, PROCESSOR_WARM_UP)
+ProcessorStats::ProcessorStats(const char *version) : Sensor(-1, -1, BOARD, PROCESSOR_NUM_VARIABLES, PROCESSOR_WARM_UP)
 {
     _version = version;
 

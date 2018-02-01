@@ -35,7 +35,9 @@ class Sensor
 {
 public:
 
-    Sensor(int powerPin = -1, int dataPin = -1, String sensorName = "Unknown", int numReturnedVars = 1, int WarmUpTime_ms = 0);
+    Sensor(String sensorName = "Unknown", int numReturnedVars = 1,
+           uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t remeasurementTime_ms = 0,
+           int powerPin = -1, int dataPin = -1, int readingsToAverage = 1);
 
     // These functions are dependent on the constructor and return the constructor values
     // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
@@ -70,14 +72,18 @@ public:
     float sensorValues[MAX_NUMBER_VARS];
 
     // This just makes sure things are up-to-date
-    bool checkForUpdate(unsigned long sensorLastUpdated);
-    unsigned long sensorLastUpdated;
+    bool checkForUpdate(uint32_t sensorLastUpdated);
+    uint32_t sensorLastUpdated;
 
 protected:
     // A helper to check if the power is already on
     bool checkPowerOn(void);
     // A helper to ensure that the sensor has had power long enough to communicate
     void waitForWarmUp(void);
+    // A helper to ensure that the sensor is giving stable readings
+    void waitForStability(void);
+    // A helper to ensure that the sensor is ready to give a new value
+    void waitForNextMeasurement(void);
     // Clears the values array
     void clearValues();
 
@@ -85,16 +91,16 @@ protected:
     int _powerPin;
     String _sensorName;
     int _numReturnedVars;
-    int _numReadings;
+    int _readingsToAverage;
 
-    uint32_t _WarmUpTime_ms;
+    uint32_t _warmUpTime_ms;
     uint32_t _millisPowerOn;
 
-    int _remeasurementTime_ms;
-    
     bool _isTakingMeasurements;
     uint32_t _millisMeasurementStarted;
-    uint32_t _StabilizationTime_ms;
+    uint32_t _stabilizationTime_ms;
+
+    uint32_t _remeasurementTime_ms;
 
     SENSOR_STATUS sensorStatus;
     Variable *variables[MAX_NUMBER_VARS];

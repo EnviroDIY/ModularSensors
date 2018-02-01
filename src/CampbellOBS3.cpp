@@ -22,14 +22,19 @@
  *      Turbidity: 0.06/0.2 NTU; 0.1/0.5 NTU; 0.2/1.0 NTU
  *
  * Minimum warm-up time: 2s
+ * Assumed stable at warm up
+ * Can return readings as fast as the ADC will return them (860/sec)
 */
 
 #include "CampbellOBS3.h"
 #include <Adafruit_ADS1015.h>
 
 // The constructor - need the power pin, the data pin, and the calibration info
-CampbellOBS3::CampbellOBS3(int powerPin, int dataPin, float A, float B, float C, uint8_t i2cAddress)
-  : Sensor(powerPin, dataPin, F("CampbellOBS3+"), OBS3_NUM_VARIABLES, OBS3_WARM_UP)
+CampbellOBS3::CampbellOBS3(int powerPin, int dataPin, float A, float B, float C,
+                           uint8_t i2cAddress, int readingsToAverage)
+  : Sensor(F("CampbellOBS3"), OBS3_NUM_VARIABLES,
+           OBS3_WARM_UP, OBS3_STABILITY, OBS3_RESAMPLE,
+           powerPin, dataPin, readingsToAverage)
 {
     _Avalue = A;
     _Bvalue = B;
@@ -55,7 +60,7 @@ bool CampbellOBS3::update(void)
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up
+    // Wait until the sensor is warmed up, assume it's stable at warm-up
     waitForWarmUp();
 
     // Clear values before starting loop

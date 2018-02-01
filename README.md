@@ -103,10 +103,10 @@ To access and get values from a sensor, you must create an instance of the senso
 ```cpp
 #include <DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
-const int numberReadings = 10;  // The number of readings to average
+const int readingsToAverage = 10;  // The number of readings to average
 const int SDI12Data = 7;  // The pin the CTD is attached to
 const int SDI12Power = 22;  // The sensor power pin (use -1 if not applicable)
-DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
+DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, readingsToAverage);
 DecagonCTD_Cond cond(&ctd);  // The ampersand (&) *must* be included
 DecagonCTD_Temp temp(&ctd);
 DecagonCTD_Depth depth(&ctd);
@@ -451,11 +451,11 @@ If you are using the [MaxBotix HR-MaxTemp](https://www.maxbotix.com/Ultrasonic_S
 
 The Arduino pin controlling power on/off, a stream instance for received data (ie, ```Serial```), and the Arduino pin controlling the trigger are required for the sensor constructor.  (Use -1 for the trigger pin if you do not have it connected.)  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
 
-The main constructor for the sensor object is:
+The main constructor for the sensor object is:  (The trigger pin and number of readings to average are optional.)
 
 ```cpp
 #include <MaxBotixSonar.h>
-MaxBotixSonar sonar(SonarPower, sonarStream, SonarTrigger);
+MaxBotixSonar sonar(sonarStream, SonarPower, SonarTrigger, readingsToAverage);
 ```
 
 The single available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -486,8 +486,8 @@ The main constructor for the sensor object is (called once each for high and low
 
 ```cpp
 #include <CampbellOBS3.h>
-CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, ADS1x15_i2cAddress);
-CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADS1x15_i2cAddress);
+CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, ADS1x15_i2cAddress, readingsToAverage);
+CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADS1x15_i2cAddress, readingsToAverage);
 ```
 
 The single available variable is (called once each for high and low range):
@@ -521,7 +521,7 @@ The main constructor for the sensor object is:
 
 ```cpp
 #include <Decagon5TM.h>
-Decagon5TM fivetm(TMSDI12address, SDI12Power, SDI12Data, numberReadings);
+Decagon5TM fivetm(TMSDI12address, SDI12Power, SDI12Data, readingsToAverage);
 ```
 
 The three available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -550,7 +550,7 @@ The main constructor for the sensor object is:
 
 ```cpp
 #include <DecagonCTD.h>
-DecagonCTD ctd(CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
+DecagonCTD ctd(CTDSDI12address, SDI12Power, SDI12Data, readingsToAverage);
 ```
 
 The three available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -581,7 +581,7 @@ The main constructor for the sensor object is:
 
 ```cpp
 #include <DecagonES2.h>
-DecagonES2 es2(ES2SDI12address, SDI12Power, SDI12Data, numberReadings);
+DecagonES2 es2(ES2SDI12address, SDI12Power, SDI12Data, readingsToAverage);
 ```
 
 The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -608,14 +608,14 @@ The main constructor for the sensor object is:
 
 ```cpp
 #include <MaximDS18.h>
-MaximDS18 ds18(OneWireAddress, powerPin, dataPin);
+MaximDS18 ds18(OneWireAddress, powerPin, dataPin, readingsToAverage);
 ```
 
 _If and only if you have exactly one sensor attached on your OneWire pin or bus_, you can use this constructor to save yourself the trouble of finding the address:
 
 ```cpp
 #include <MaximDS18.h>
-MaximDS18 ds18(powerPin, dataPin);
+MaximDS18 ds18(powerPin, dataPin, readingsToAverage);
 ```
 
 The single available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -632,11 +632,11 @@ _____
 
 The AOSong AM2315 and [CM2311](http://www.aosong.com/en/products/details.asp?id=193) communicate with the board via I2C.  Because this sensor can have only one I2C address, it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 3.3-5.5V power source and the power supply to the sensor can be stopped between measurements.
 
-The only input needed for the sensor constructor is the Arduino pin controlling power on/off:
+The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average (defaults to 1):
 
 ```cpp
 #include <AOSongAM2315.h>
-AOSongAM2315 am2315(I2CPower);
+AOSongAM2315 am2315(I2CPower, readingsToAverage);
 ```
 
 The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -657,11 +657,11 @@ _____
 
 Although this sensor has the option of either I2C or SPI communication, this library only supports I2C.  The I2C sensor address is assumed to be 0x76, though it can be changed to 0x77 in the constructor if necessary.  The sensor address is determined by how the sensor is soldered onto its breakout board.  To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses.  No more than two can be attached.  This module is likely to also work with the [Bosch BMP280 Barometric Pressure Sensor](https://www.bosch-sensortec.com/bst/products/all_products/bmp280), though it has not been tested on it.  These sensors should be attached to a 1.7-3.6V power source and the power supply to the sensor can be stopped between measurements.
 
-The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex is optional:
+The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex is optional as is the number of readings to average:
 
 ```cpp
 #include <BoschBME280.h>
-BoschBME280 bme280(I2CPower, i2cAddressHex);
+BoschBME280 bme280(I2CPower, i2cAddressHex, readingsToAverage);
 ```
 
 The four available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -690,11 +690,11 @@ _____
 
 This module will work with an AOSong [DHT11/CHT11](http://www.aosong.com/en/products/details.asp?id=109), DHT21/AM2301, and [DHT22/AM2302/CM2302](http://www.aosong.com/en/products/details.asp?id=117).  These sensors uses a non-standard single wire digital signaling protocol.  They can be connected to any digital pin.  Please keep in mind that, per manufacturer instructions, these sensors should not be polled more frequently than once every 2 seconds.  These sensors should be attached to a 3.3-6V power source and the power supply to the sensor can be stopped between measurements.
 
-The Arduino pin controlling power on/off, the Arduino pin receiving data, and the sensor type are required for the sensor constructor:
+The Arduino pin controlling power on/off, the Arduino pin receiving data, and the sensor type are required for the sensor constructor.  The number of readings to average is optional (defaults to 1):
 
 ```cpp
 #include <AOSongDHT.h>
-AOSongDHT dht(DHTPower, DHTPin, dhtType);;
+AOSongDHT dht(DHTPower, DHTPin, dhtType, readingsToAverage);
 ```
 
 The three available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -722,7 +722,7 @@ The Arduino pin controlling power on/off and the analog data pin _on the TI ADS1
 
 ```cpp
 #include <ApogeeSQ212.h>
-ApogeeSQ212 SQ212(SQ212Power, SQ212Data, ADS1x15_i2cAddress);
+ApogeeSQ212 SQ212(SQ212Power, SQ212Data, ADS1x15_i2cAddress, readingsToAverage);
 ```
 
 The one available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -754,7 +754,7 @@ The various sensor and variable constructors are:  (UUID and customVarCode are o
 ```cpp
 // Dissolved Oxygen Sensor
 #include <YosemitechY504.h>  // Use this for both the Y502-A and Y504-A
-YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePin, y504NumberReadings);
+YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePin, readingsToAverage);
 // Variables
 YosemitechY504_DOpct(&y504, "UUID", "customVarCode")  // DO percent saturation
 //  Resolution is 0.00000005 %
@@ -771,9 +771,9 @@ YosemitechY504_DOmgL(&y504, "UUID", "customVarCode")  // DO concentration in mg/
 ```
 
 ```cpp
-// Turbidity Sensor
-#include <YosemitechY510.h>  // Use this for both the Y510-B and Y511-A
-YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePin, y510NumberReadings);
+// Turbidity Sensor without wiper
+#include <YosemitechY510.h>  // Use this for both the Y510-B
+YosemitechY510 y510(y510modbusAddress, modbusSerial, modbusPower, max485EnablePin, readingsToAverage);
 // Variables
 YosemitechY510_Turbidity(&y510, "UUID", "customVarCode")  // Turbidity in NTU
 //  Resolution is 0.0000002 NTU
@@ -786,9 +786,24 @@ YosemitechY510_Temp(&y510, "UUID", "customVarCode")  // Temperature in °C
 ```
 
 ```cpp
+// Turbidity Sensor with wiper
+#include <YosemitechY511.h>  // Use this for both the Y511-A
+YosemitechY511 y511(y511modbusAddress, modbusSerial, modbusPower, max485EnablePin, readingsToAverage);
+// Variables
+YosemitechY511_Turbidity(&y511, "UUID", "customVarCode")  // Turbidity in NTU
+//  Resolution is 0.0000002 NTU
+//  Accuracy is ± 5 % or 0.3 NTU
+//  Range is 0.1 to 1000 NTU
+YosemitechY511_Temp(&y511, "UUID", "customVarCode")  // Temperature in °C
+//  Resolution is 0.00000001 °C
+//  Accuracy is ± 0.2°C
+//  Range is 0°C to + 50°C
+```
+
+```cpp
 // Chlorophyll Sensor
 #include <YosemitechY514.h>
-YosemitechY514 y514(y514modbusAddress, modbusPower, modbusSerial, max485EnablePin, y514NumberReadings);
+YosemitechY514 y514(y514modbusAddress, modbusSerial, modbusPower, max485EnablePin, readingsToAverage);
 // Variables
 YosemitechY514_Chlorophyll(&y514, "UUID", "customVarCode")  // Chlorophyll concentration in µg/L
 //  Resolution is 0.00000009 µg/L
@@ -803,7 +818,7 @@ YosemitechY514_Temp(&y514, "UUID", "customVarCode")  // Temperature in °C
 ```cpp
 // Conductivity Sensor
 #include <YosemitechY520.h>
-YosemitechY520 y520(y520modbusAddress, modbusPower, modbusSerial, max485EnablePin, y520NumberReadings);
+YosemitechY520 y520(y520modbusAddress, modbusSerial, modbusPower, max485EnablePin, readingsToAverage);
 // Variables
 YosemitechY520_Cond(&y520, "UUID", "customVarCode")  // Conductivity in µS/cm
 //  Resolution is 0.00000005 µS/cm
@@ -818,7 +833,7 @@ YosemitechY520_Temp(&y520, "UUID", "customVarCode")  // Temperature in °C
 ```cpp
 // pH Sensor
 #include <YosemitechY532.h>
-YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePin, y532NumberReadings);
+YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, readingsToAverage);
 // Variables
 YosemitechY532_pH(&y532, "UUID", "customVarCode")  // pH
 //  Resolution is 0.000000002 pH
@@ -836,11 +851,11 @@ _____
 
 As the I2C [Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html) real time clock (RTC) is absolutely required for time-keeping on all AVR boards, this library also makes use of it for its on-board temperature sensor.  The DS3231 requires a 3.3V power supply.
 
-There are no arguments for the constructor, as the RTC requires constant power and is connected via I2C, but due to a bug, you do have to input a "1" in the input:
+There only argument for the constructor is the number of readings to average, as the RTC requires constant power and is connected via I2C:
 
 ```cpp
 #include <OnboardSensors.h>
-MaximDS3231 ds3231(1);
+MaximDS3231 ds3231(readingsToAverage);
 ```
 
 The only available variables is:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -861,7 +876,7 @@ The main constructor for the sensor object is:
 
 ```cpp
 #include <OnboardSensors.h>
-ProcessorStats mayfly(MFVersion);
+ProcessorStats mayfly(MFVersion, readingsToAverage);
 ```
 
 The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)

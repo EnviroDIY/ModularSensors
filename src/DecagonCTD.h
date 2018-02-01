@@ -36,8 +36,10 @@
 #include "DecagonSDI12.h"
 #include "VariableBase.h"
 
-#define CTD_NUM_MEASUREMENTS 3
+#define CTD_NUM_VARIABLES 3
 #define CTD_WARM_UP 500
+#define CTD_STABILITY 500
+#define CTD_RESAMPLE 500
 
 #define CTD_COND_RESOLUTION 0
 #define CTD_COND_VAR_NUM 2
@@ -53,17 +55,20 @@ class DecagonCTD : public DecagonSDI12
 {
 public:
     // Constructors with overloads
-    DecagonCTD(char SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
-                    F("DecagonCTD"), CTD_NUM_MEASUREMENTS, CTD_WARM_UP)
+    DecagonCTD(char SDI12address, int powerPin, int dataPin, int readingsToAverage = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, readingsToAverage,
+                    F("DecagonCTD"), CTD_NUM_VARIABLES,
+                    CTD_WARM_UP, CTD_STABILITY, CTD_RESAMPLE)
     {}
-    DecagonCTD(char *SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
-                    F("DecagonCTD"), CTD_NUM_MEASUREMENTS, CTD_WARM_UP)
+    DecagonCTD(char *SDI12address, int powerPin, int dataPin, int readingsToAverage = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, readingsToAverage,
+                    F("DecagonCTD"), CTD_NUM_VARIABLES,
+                    CTD_WARM_UP, CTD_STABILITY, CTD_RESAMPLE)
     {}
-    DecagonCTD(int SDI12address, int powerPin, int dataPin, int numReadings = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, numReadings,
-                    F("DecagonCTD"), CTD_NUM_MEASUREMENTS, CTD_WARM_UP)
+    DecagonCTD(int SDI12address, int powerPin, int dataPin, int readingsToAverage = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, readingsToAverage,
+                    F("DecagonCTD"), CTD_NUM_VARIABLES,
+                    CTD_WARM_UP, CTD_STABILITY, CTD_RESAMPLE)
     {}
 };
 

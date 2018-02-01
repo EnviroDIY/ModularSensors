@@ -62,8 +62,10 @@
     #define MODEM_NAME "NO MODEM SELECTED"
 #endif
 
-#define MODEM_NUM_MEASUREMENTS 2
+#define MODEM_NUM_VARIABLES 2
 #define MODEM_WARM_UP 0
+#define MODEM_STABILITY 0
+#define MODEM_RESAMPLE 0
 #define CSQ_VAR_NUM 0
 #define PERCENT_STAT_VAR_NUM 1
 
@@ -86,7 +88,9 @@ class loggerModem : public Sensor
 
 public:
     // Constructors
-    loggerModem() : Sensor(-1, -1, F(MODEM_NAME), MODEM_NUM_MEASUREMENTS, MODEM_WARM_UP) {}
+    loggerModem()
+        : Sensor(F(MODEM_NAME), MODEM_NUM_VARIABLES, MODEM_WARM_UP, 0, 0, -1, -1, 1)
+    {}
 
     String getSensorLocation(void) override { return F("Modem Serial Port"); }
 

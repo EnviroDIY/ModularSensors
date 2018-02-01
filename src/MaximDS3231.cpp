@@ -11,7 +11,9 @@
  *  Resolution is 0.25°C
  *  Accuracy is ±3°C
  *
- * The clock is always ready to take a reading.
+ * The clock should have a separate power supply and never be turned off.
+ * We assume it's always warmed up.
+ * The temperature conversion typical takes 125 ms, with a max time of 200 ms.
 */
 
 #include <Sodaq_DS3231.h>

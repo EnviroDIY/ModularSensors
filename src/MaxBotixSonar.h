@@ -24,8 +24,10 @@
 #include "SensorBase.h"
 #include "VariableBase.h"
 
-#define HRXL_NUM_MEASUREMENTS 1
+#define HRXL_NUM_VARIABLES 1
 #define HRXL_WARM_UP 160
+#define HRXL_STABILITY 160
+#define HRXL_RESAMPLE 166
 #define HRXL_RESOLUTION 0
 #define HRXL_VAR_NUM 0
 
@@ -33,8 +35,8 @@
 class MaxBotixSonar : public Sensor
 {
 public:
-    MaxBotixSonar(int powerPin, Stream* stream, int triggerPin = -1);
-    MaxBotixSonar(int powerPin, Stream& stream, int triggerPin = -1);
+    MaxBotixSonar(Stream* stream, int powerPin, int triggerPin = -1, int readingsToAverage = 1);
+    MaxBotixSonar(Stream& stream, int powerPin, int triggerPin = -1, int readingsToAverage = 1);
 
     String getSensorLocation(void) override;
 

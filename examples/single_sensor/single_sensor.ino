@@ -63,7 +63,7 @@ HardwareSerial &sonarSerial = Serial1;
 #endif
 
 // Create a new instance of the sonar sensor;
-MaxBotixSonar sonar(SonarPower, sonarSerial, SonarTrigger) ;
+MaxBotixSonar sonar(sonarSerial, SonarPower, SonarTrigger) ;
 
 // Create a new instance of the range variable;
 MaxBotixSonar_Range sonar_range(&sonar);

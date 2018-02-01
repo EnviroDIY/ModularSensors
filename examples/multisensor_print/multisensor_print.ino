@@ -172,7 +172,7 @@ SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, on
 #else
 HardwareSerial &sonarSerial = Serial1;
 #endif
-MaxBotixSonar sonar(SonarPower, sonarSerial, SonarTrigger) ;
+MaxBotixSonar sonar(sonarSerial, SonarPower, SonarTrigger) ;
 
 
 // ==========================================================================
@@ -208,7 +208,7 @@ AltSoftSerial modbusSerial;
 #else
 HardwareSerial &modbusSerial = Serial1;
 #endif
-YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePin, y504NumberReadings);
+YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePin, y504NumberReadings);
 
 
 // ==========================================================================
@@ -226,7 +226,7 @@ const int y510NumberReadings = 10;  // The manufacturer strongly recommends taki
 // #else
 // HardwareSerial &modbusSerial = Serial1;
 // #endif
-YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePin, y510NumberReadings);
+YosemitechY510 y510(y510modbusAddress, modbusSerial, modbusPower, max485EnablePin, y510NumberReadings);
 
 
 // ==========================================================================
@@ -244,7 +244,7 @@ const int y511NumberReadings = 10;  // The manufacturer strongly recommends taki
 // #else
 // HardwareSerial &modbusSerial = Serial1;
 // #endif
-YosemitechY511 y511(y511modbusAddress, modbusPower, modbusSerial, max485EnablePin, y511NumberReadings);
+YosemitechY511 y511(y511modbusAddress, modbusSerial, modbusPower, max485EnablePin, y511NumberReadings);
 
 
 // ==========================================================================
@@ -262,7 +262,7 @@ const int y514NumberReadings = 10;  // The manufacturer strongly recommends taki
 // #else
 // HardwareSerial &modbusSerial = Serial1;
 // #endif
-YosemitechY514 y514(y514modbusAddress, modbusPower, modbusSerial, max485EnablePin, y514NumberReadings);
+YosemitechY514 y514(y514modbusAddress, modbusSerial, modbusPower, max485EnablePin, y514NumberReadings);
 
 
 // ==========================================================================
@@ -280,7 +280,7 @@ const int y520NumberReadings = 10;  // The manufacturer strongly recommends taki
 // #else
 // HardwareSerial &modbusSerial = Serial1;
 // #endif
-YosemitechY520 y520(y520modbusAddress, modbusPower, modbusSerial, max485EnablePin, y520NumberReadings);
+YosemitechY520 y520(y520modbusAddress, modbusSerial, modbusPower, max485EnablePin, y520NumberReadings);
 
 
 // ==========================================================================
@@ -298,7 +298,7 @@ const int y532NumberReadings = 1;  // The manufacturer actually doesn't mention 
 // #else
 // HardwareSerial &modbusSerial = Serial1;
 // #endif
-YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePin, y532NumberReadings);
+YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, y532NumberReadings);
 
 // ==========================================================================
 //    The array that contains all variables to be logged

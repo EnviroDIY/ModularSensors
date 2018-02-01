@@ -13,14 +13,18 @@
 
 #include "MaxBotixSonar.h"
 
-MaxBotixSonar::MaxBotixSonar(int powerPin, Stream* stream, int triggerPin)
-: Sensor(powerPin, -1, F("MaxBotixMaxSonar"), HRXL_NUM_MEASUREMENTS, HRXL_WARM_UP)
+MaxBotixSonar::MaxBotixSonar(Stream* stream, int powerPin, int triggerPin, int readingsToAverage)
+    : Sensor(F("MaxBotixMaxSonar"), HRXL_NUM_VARIABLES,
+             HRXL_WARM_UP, HRXL_STABILITY, HRXL_RESAMPLE,
+             powerPin, -1, readingsToAverage)
 {
     _triggerPin = triggerPin;
     _stream = stream;
 }
-MaxBotixSonar::MaxBotixSonar(int powerPin, Stream& stream, int triggerPin)
-: Sensor(powerPin, -1, F("MaxBotixMaxSonar"), HRXL_NUM_MEASUREMENTS, HRXL_WARM_UP)
+MaxBotixSonar::MaxBotixSonar(Stream& stream, int powerPin, int triggerPin, int readingsToAverage)
+    : Sensor(F("MaxBotixMaxSonar"), HRXL_NUM_VARIABLES,
+             HRXL_WARM_UP, HRXL_STABILITY, HRXL_RESAMPLE,
+             powerPin, -1, readingsToAverage)
 {
     _triggerPin = triggerPin;
     _stream = &stream;
@@ -50,7 +54,7 @@ bool MaxBotixSonar::update(void)
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up
+    // Wait until the sensor is warmed up; assume stability at warm-up
     waitForWarmUp();
 
     // Set the stream timeout;
@@ -61,7 +65,10 @@ bool MaxBotixSonar::update(void)
     clearValues();
 
     // NOTE: After the power is turned on to the MaxBotix, it sends several lines
-    // of header to the serial pin, beginning at ~65ms and finising at ~160ms.
+    // of header to the serial port, beginning at ~65ms and finising at ~160ms.
+    // Although we are waiting for them to complete in the "waitForWarmUp"
+    // function, the values will still be in the serial buffer and need
+    // to be read to be cleared out
     // For an HRXL without temperature compensation, the headers are:
     // HRXL-MaxSonar-WRL
     // PN:MB7386

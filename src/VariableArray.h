@@ -39,7 +39,7 @@ public:
     bool setupSensors(void);
 
     // This gives power to each sensor
-    bool sensorsPowerUp(void);
+    void sensorsPowerUp(void);
 
     // This wakes sensors (may be identical to PowerUp)
     bool sensorsWake(void);
@@ -48,7 +48,7 @@ public:
     bool sensorsSleep(void);
 
     // This cuts sensor power
-    bool sensorsPowerDown(void);
+    void sensorsPowerDown(void);
 
     // This function updates the values for any connected sensors.
     bool updateAllSensors(void);

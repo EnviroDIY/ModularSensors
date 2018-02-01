@@ -33,8 +33,10 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-#define DS18_NUM_MEASUREMENTS 1
+#define DS18_NUM_VARIABLES 1
 #define DS18_WARM_UP 750
+#define DS18_STABILITY 750
+#define DS18_RESAMPLE 750
 #define DS18_TEMP_VAR_NUM 0
 #define DS18_TEMP_RESOLUTION 4
 
@@ -42,8 +44,8 @@
 class MaximDS18 : public Sensor
 {
 public:
-    MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin);
-    MaximDS18(int powerPin, int dataPin);
+    MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin, int readingsToAverage = 1);
+    MaximDS18(int powerPin, int dataPin, int readingsToAverage = 1);
 
     SENSOR_STATUS setup(void) override;
     String getSensorLocation(void) override;
