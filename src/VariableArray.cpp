@@ -41,10 +41,10 @@
 
         MS_DBG(F("Beginning setup for sensors and variables..."));
 
-        // First wake up all of the sensors
-        MS_DBG(F("Waking sensors for setup.\n"));
+        // First power all of the sensors
+        MS_DBG(F("Powering up sensors for setup.\n"));
         for (int i = 0; i < _variableCount; i++)
-            _variableList[i]->parentSensor->wake();
+            _variableList[i]->parentSensor->powerUp();
 
         // Now run all the set-up functions
         MS_DBG(F("Running setup functions.\n"));
