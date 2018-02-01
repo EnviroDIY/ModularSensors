@@ -212,10 +212,10 @@ YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePi
 
 
 // ==========================================================================
-//    Yosemitech Y510 or Y511 Turbidity Sensor
+//    Yosemitech Y510 Turbidity Sensor
 // ==========================================================================
 #include <YosemitechY510.h>
-byte y510modbusAddress = 0x0B;  // The modbus address of the Y510 or Y511
+byte y510modbusAddress = 0x0B;  // The modbus address of the Y510
 // const int modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // const int max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const int y510NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
@@ -227,6 +227,24 @@ const int y510NumberReadings = 10;  // The manufacturer strongly recommends taki
 // HardwareSerial &modbusSerial = Serial1;
 // #endif
 YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePin, y510NumberReadings);
+
+
+// ==========================================================================
+//    Yosemitech Y511 Turbidity Sensor with Wiper
+// ==========================================================================
+#include <YosemitechY511.h>
+byte y511modbusAddress = 0x1A;  // The modbus address of the Y511
+// const int modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// const int max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+const int y511NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+
+// #if defined __AVR__
+// #include <AltSoftSerial.h>
+// AltSoftSerial modbusSerial;
+// #else
+// HardwareSerial &modbusSerial = Serial1;
+// #endif
+YosemitechY511 y511(y511modbusAddress, modbusPower, modbusSerial, max485EnablePin, y511NumberReadings);
 
 
 // ==========================================================================
@@ -283,7 +301,7 @@ const int y532NumberReadings = 1;  // The manufacturer actually doesn't mention 
 YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePin, y532NumberReadings);
 
 // ==========================================================================
-//    The array that contains all variables to print out
+//    The array that contains all variables to be logged
 // ==========================================================================
 Variable *variableList[] = {
     new ProcessorStats_Batt(&mayfly),
@@ -313,18 +331,20 @@ Variable *variableList[] = {
     new AOSongAM2315_Temp(&am2315),
     new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
-    new YosemitechY504_DOpct(&y504),
-    new YosemitechY504_Temp(&y504),
-    new YosemitechY504_DOmgL(&y504),
-    new YosemitechY510_Turbidity(&y510),
-    new YosemitechY510_Temp(&y510),
-    new YosemitechY514_Chlorophyll(&y514),
-    new YosemitechY514_Temp(&y514),
-    new YosemitechY520_Cond(&y520),
-    new YosemitechY520_Temp(&y520),
     new YosemitechY532_pH(&y532),
     new YosemitechY532_Temp(&y532),
     new YosemitechY532_Voltage(&y532),
+    new YosemitechY504_DOpct(&y504),
+    new YosemitechY504_Temp(&y504),
+    new YosemitechY504_DOmgL(&y504),
+    new YosemitechY520_Cond(&y520),
+    new YosemitechY520_Temp(&y520),
+    new YosemitechY510_Turbidity(&y510),
+    new YosemitechY510_Temp(&y510),
+    new YosemitechY511_Turbidity(&y511),
+    new YosemitechY511_Temp(&y511),
+    new YosemitechY514_Chlorophyll(&y514),
+    new YosemitechY514_Temp(&y514),
     // new YOUR_variableName_HERE(&)
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
