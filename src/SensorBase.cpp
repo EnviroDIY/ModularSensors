@@ -83,6 +83,22 @@ void Sensor::powerUp(void)
     }
 }
 
+// The function to wake up a sensor
+// By default, powers up and returns true
+bool Sensor::wake(void)
+{
+    if(!checkPowerOn()){powerUp();}
+    return true;
+}
+
+// The function to put a sensor to sleep
+// By default, powers down and returns true
+bool Sensor::sleep(void)
+{
+    powerDown();
+    return true;
+}
+
 // This is a helper function to turn off sensor power
 void Sensor::powerDown(void)
 {
@@ -151,22 +167,6 @@ String Sensor::printStatus(SENSOR_STATUS stat)
         case SENSOR_UNKNOWN: status = F("Unknown"); break;
     }
     return status;
-}
-
-// The function to put a sensor to sleep
-// By default, powers down and returns true
-bool Sensor::sleep(void)
-{
-    powerDown();
-    return true;
-}
-
-// The function to wake up a sensor
-// By default, powers up and returns true
-bool Sensor::wake(void)
-{
-    if(!checkPowerOn()){powerUp();}
-    return true;
 }
 
 void Sensor::registerVariable(int varNum, Variable* var)

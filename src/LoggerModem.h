@@ -93,7 +93,21 @@ public:
     // The modem must be setup separately!
     virtual SENSOR_STATUS setup(void) override {return SENSOR_READY;}
 
-    // Do NOT put the modem to sleep with the regular sleep function.
+    void powerUp(void) override
+    {
+        // Check if the modem is on; turn it on if not
+        if(!modemOnOff->isOn()) return modemOnOff->on();
+        else return true;
+    }
+
+    virtual bool wake(void) override
+    {
+        // Check if the modem is on; turn it on if not
+        if(!modemOnOff->isOn()) return modemOnOff->on();
+        else return true;
+    }
+
+    // Do NOT power down the modem with the regular sleep function.
     // This is because when it is run in an array with other sensors, we will
     // generally want the modem to remain on after all the other sensors have
     // gone to sleep so the modem can send out data
@@ -110,12 +124,7 @@ public:
         return retVal;
     }
 
-    virtual bool wake(void) override
-    {
-        // Check if the modem is on; turn it on if not
-        if(!modemOnOff->isOn()) return modemOnOff->on();
-        else return true;
-    }
+    void powerDown(void) override {off();}
 
     bool update(void) override
     {

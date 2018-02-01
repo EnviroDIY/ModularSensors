@@ -38,11 +38,17 @@ public:
     // This sets up all of the sensors in the list
     bool setupSensors(void);
 
-    // This puts sensors to sleep (ie, cuts power)
+    // This gives power to each sensor
+    bool sensorsPowerUp(void);
+
+    // This wakes sensors (may be identical to PowerUp)
+    bool sensorsWake(void);
+
+    // This puts sensors to sleep (may be identical to PowerDown)
     bool sensorsSleep(void);
 
-    // This wakes sensors (ie, gives power)
-    bool sensorsWake(void);
+    // This cuts sensor power
+    bool sensorsPowerDown(void);
 
     // This function updates the values for any connected sensors.
     bool updateAllSensors(void);

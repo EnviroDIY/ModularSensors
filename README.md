@@ -81,9 +81,11 @@ In order to support multiple functions and sensors, there are quite a lot of sub
 - **setup()** - This "sets up" the sensor - setting up serial ports, etc required for the given sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program _before_ calling the variable setup.
 - **getStatus()** - This returns the current status of the sensor as an interger, if the sensor has some way of giving it to you (most do not.)
 - **printStatus()** - This returns the current status of the sensor as a readable String.
-- **sleep()** - This puts the sensor to sleep, often by stopping the power.  Returns true.
-- **wake()** - This wakes the sensor up and sends it power.  Returns true.
-- **update()** - This updates the sensor values and returns true when finished.  For digital sensors with a single infomation return, this only needs to be called once for each sensor, even if there are multiple variable subclasses for the sensor.
+- **powerUp()** - This sends power to the sensor.  No return.
+- **wake()** - This wakes the sensor up, usually by sending it power, but sometimes by sending a specific wake or start measuring command.  Returns true.
+- **sleep()** - This puts the sensor to sleep, often by stopping the power, but sometimes by sending a specific sleep or stop measuring command.  Returns true.
+- **powerDown()** - This cuts the sensor power.  No return.
+- **update()** - This updates the sensor values and returns true when finished.  For digital sensors with a single information return, this only needs to be called once for each sensor, even if there are multiple variable subclasses for the sensor.
 
 ### Functions for Each Variable
 - **Constructor** - Every variable requires a pointer to its parent sensor as part of the constructor.  Every variable also has two optional string entries, for a universally unique identifier (UUID/GUID) and a custom variable code.  _The UUID must always be listed first!_  In cases where you would like a custom variable code, but do not have a UUID, you **must** enter '""' as your UUID.
@@ -144,8 +146,10 @@ Having a unified set of functions to access many sensors allows us to quickly po
 - **getVariableCount()** - Simply returns the number of variables.
 - **getSensorCount()** - Returns the number of independent sensors.  This will often be different from the number of variables because many sensors can return multiple variables.
 - **setupSensors()** - This sets up all of the variables in the array and their respective sensors by running all of their setup() functions.  If a sensor doesn't respond to its setup command, the command is called 5 times in attempt to make a connection.  If all sensors are set up successfully, returns true.
-- **sensorsSleep()** - This puts all sensors to sleep (ie, cuts power), skipping repeated sensors.  Returns true.
-- **sensorsWake()** - This wakes all sensors (ie, gives power), skipping repeated sensors.  Returns true.
+- **sensorsPowerUp()** - This gives power to all sensors, skipping repeated sensors.  No return.
+- **sensorsWake()** - This wakes all sensors, skipping repeated sensors.  Returns true.
+- **sensorsSleep()** - This puts all sensors to sleep, skipping repeated sensors.  Returns true.
+- **sensorsPowerDown()** - This cuts power to all sensors, skipping repeated sensors.  No return.
 - **updateAllSensors()** - This updates all sensor values, skipping repeated sensors.  Returns true.  Does NOT return any values.
 - **printSensorData(Stream stream)** - This prints current sensor values along with meta-data to a stream (either hardware or software serial).  By default, it will print to the first Serial port.  Note that the input is a pointer to a stream instance so to use a hardware serial instance you must use an ampersand before the serial name (ie, &Serial1).
 - **generateSensorDataCSV()** - This returns an Arduino String containing comma separated list of sensor values.  This string does _NOT_ contain a time stamp of any kind.

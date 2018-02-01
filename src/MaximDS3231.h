@@ -44,11 +44,14 @@ public:
     {}
 
     String getSensorLocation(void) override;
+
+    // Do nothing for any of the power up/down or wake/sleep functions
+    void powerUp(void) override {}
+    bool wake(void) override {return true;}
+    bool sleep(void) override {return true;}
+    void powerDown(void) override {}
+
     SENSOR_STATUS setup(void) override;
-    void powerUp(void) override;
-    bool wake(void) override;
-    bool sleep(void) override;
-    void powerDown(void) override;
 
     bool update(void) override;
 };
