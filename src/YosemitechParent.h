@@ -42,18 +42,22 @@ public:
     String getSensorLocation(void) override;
 
     virtual SENSOR_STATUS setup(void) override;
+    virtual bool wake(void) override;
 
     virtual bool update(void);
 
 private:
+    void waitForStability(void);
     yosemitechModel _model;
     byte _modbusAddress;
     Stream* _stream;
     int _enablePin;
     int _numReadings;
     yosemitech sensor;
-    int _StabilizationTime_ms;
     int _remeasurementTime_ms;
+    bool _isTakingMeasurements;
+    uint32_t _millisMeasurementStarted;
+    uint32_t _StabilizationTime_ms;
 };
 
 #endif
