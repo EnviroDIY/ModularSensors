@@ -1,5 +1,5 @@
 /*
- *YosemitechY510.h
+ *YosemitechY511.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -26,65 +26,65 @@
  * Time between "StartMeasurement" command and stable reading - 22sec
 */
 
-#ifndef YosemitechY510_h
-#define YosemitechY510_h
+#ifndef YosemitechY511_h
+#define YosemitechY511_h
 
 #include "YosemitechParent.h"
 #include "VariableBase.h"
 
-#define Y510_NUM_MEASUREMENTS 2
-#define Y510_WARM_UP 500
-#define Y510_STABILIZATION 22000
-#define Y510_REMEASUREMENT 1700
+#define Y511_NUM_MEASUREMENTS 2
+#define Y511_WARM_UP 500
+#define Y511_STABILIZATION 22000
+#define Y511_REMEASUREMENT 1700
 
-#define Y510_TURB_RESOLUTION 2
-#define Y510_TURB_VAR_NUM 0
+#define Y511_TURB_RESOLUTION 2
+#define Y511_TURB_VAR_NUM 0
 
-#define Y510_TEMP_RESOLUTION 2
-#define Y510_TEMP_VAR_NUM 1
+#define Y511_TEMP_RESOLUTION 2
+#define Y511_TEMP_VAR_NUM 1
 
-// The main class for the Decagon Y510
-class YosemitechY510 : public YosemitechParent
+// The main class for the Decagon Y511
+class YosemitechY511 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY510(byte modbusAddress, int powerPin, Stream* stream,
+    YosemitechY511(byte modbusAddress, int powerPin, Stream* stream,
                    int enablePin = -1, int numReadings = 1)
      : YosemitechParent(modbusAddress, powerPin, stream, enablePin, numReadings,
-                        F("YosemitechY510"), Y510_NUM_MEASUREMENTS,
-                        Y510, Y510_WARM_UP, Y510_STABILIZATION, Y510_REMEASUREMENT)
+                        F("YosemitechY511"), Y511_NUM_MEASUREMENTS,
+                        Y511, Y511_WARM_UP, Y511_STABILIZATION, Y511_REMEASUREMENT)
     {}
-    YosemitechY510(byte modbusAddress, int powerPin, Stream& stream,
+    YosemitechY511(byte modbusAddress, int powerPin, Stream& stream,
                    int enablePin = -1, int numReadings = 1)
      : YosemitechParent(modbusAddress, powerPin, stream, enablePin, numReadings,
-                        F("YosemitechY510"), Y510_NUM_MEASUREMENTS,
-                        Y510, Y510_WARM_UP, Y510_STABILIZATION, Y510_REMEASUREMENT)
+                        F("YosemitechY511"), Y511_NUM_MEASUREMENTS,
+                        Y511, Y511_WARM_UP, Y511_STABILIZATION, Y511_REMEASUREMENT)
     {}
 };
 
 
 // Defines the Turbidity
-class YosemitechY510_Turbidity : public Variable
+class YosemitechY511_Turbidity : public Variable
 {
 public:
-    YosemitechY510_Turbidity(Sensor *parentSense, String UUID = "", String customVarCode = "")
-     : Variable(parentSense, Y510_TURB_VAR_NUM,
+    YosemitechY511_Turbidity(Sensor *parentSense, String UUID = "", String customVarCode = "")
+     : Variable(parentSense, Y511_TURB_VAR_NUM,
                 F("turbidity"), F("nephelometricTurbidityUnit"),
-                Y510_TURB_RESOLUTION,
-                F("Y510Turbidity"), UUID, customVarCode)
+                Y511_TURB_RESOLUTION,
+                F("Y511Turbidity"), UUID, customVarCode)
     {}
 };
 
 
 // Defines the Temperature Variable
-class YosemitechY510_Temp : public Variable
+class YosemitechY511_Temp : public Variable
 {
 public:
-    YosemitechY510_Temp(Sensor *parentSense, String UUID = "", String customVarCode = "")
-     : Variable(parentSense, Y510_TEMP_VAR_NUM,
+    YosemitechY511_Temp(Sensor *parentSense, String UUID = "", String customVarCode = "")
+     : Variable(parentSense, Y511_TEMP_VAR_NUM,
                 F("temperature"), F("degreeCelsius"),
-                Y510_TEMP_RESOLUTION,
-                F("Y510temp"), UUID, customVarCode)
+                Y511_TEMP_RESOLUTION,
+                F("Y511temp"), UUID, customVarCode)
     {}
 };
 
