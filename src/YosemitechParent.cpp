@@ -91,7 +91,7 @@ bool YosemitechParent::wake(void)
     // Send the command to begin taking readings, trying up to 5 times
     bool success = false;
     int ntries = 0;
-    while (!success && ntries < 5)
+    while (!success && ntries < 10)
     {
         success = sensor.startMeasurement();
         ntries++;
