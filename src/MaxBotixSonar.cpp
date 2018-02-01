@@ -5,7 +5,6 @@
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the MaxBotix Sonar Library
- *It is dependent on Software Serial.
  *
  * The output from the HRXL-MaxSonar-WRL sonar is the range in mm.
  *

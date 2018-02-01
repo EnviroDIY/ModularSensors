@@ -4,8 +4,7 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for the EnviroDIY logging functions - ie, sending JSON data to
- * http://data.enviroDIY.org
+ *This file is for the EnviroDIY logging functions - ie, sending get requests to DreamHost
 */
 
 #ifndef LoggerDreamHost_h

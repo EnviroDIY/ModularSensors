@@ -4,8 +4,8 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for the Decagon Devices 5TM Soil Moisture probe
- *It is dependent on the EnviroDIY SDI-12 library and the YosemitechParent super class.
+ *This file is for the Yosemitech Y510 Turbidity Sensor
+ *It is dependent on the YosemitechParent super class.
  *
  *Documentation for the Modbus Protocol commands and responses can be found
  *within the documentation in the YosemitechModbus library at:
