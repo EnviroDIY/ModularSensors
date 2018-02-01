@@ -26,7 +26,7 @@ YosemitechParent::YosemitechParent(byte modbusAddress, int powerPin,
     _model = model;
     _modbusAddress = modbusAddress;
     _stream = stream;
-    _enablePin = enablePin;
+    _RS485EnablePin = enablePin;
     _numReadings = numReadings;
     _StabilizationTime_ms = StabilizationTime_ms;
 }
@@ -40,7 +40,7 @@ YosemitechParent::YosemitechParent(byte modbusAddress, int powerPin,
     _model = model;
     _modbusAddress = modbusAddress;
     _stream = &stream;
-    _enablePin = enablePin;
+    _RS485EnablePin = enablePin;
     _numReadings = numReadings;
     _StabilizationTime_ms = StabilizationTime_ms;
     _remeasurementTime_ms = remeasurementTime_ms;
@@ -62,13 +62,13 @@ String YosemitechParent::getSensorLocation(void)
 SENSOR_STATUS YosemitechParent::setup(void)
 {
     if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
-    if (_enablePin > 0) pinMode(_enablePin, OUTPUT);
+    if (_RS485EnablePin > 0) pinMode(_RS485EnablePin, OUTPUT);
 
     #if defined(DEBUGGING_SERIAL_OUTPUT)
         sensor.setDebugStream(&DEBUGGING_SERIAL_OUTPUT);
     #endif
 
-    bool isSet = sensor.begin(_model, _modbusAddress, _stream, _enablePin);
+    bool isSet = sensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
 
     if (isSet)
     {
@@ -172,38 +172,18 @@ bool YosemitechParent::update()
         // Wait until the sensor is ready to give readings
         waitForStability();
 
-        // averages x readings in this one loop
-        for (int j = 0; j < _numReadings; j++)
-        {
-            MS_DBG(F("Taking reading #"), j, F("\n"));
-
-            // Initialize float variables
-            float parmValue, tempValue, thirdValue;
-            // Get Values
-            sensor.getValues(parmValue, tempValue, thirdValue);
-            // Put values into the array
-            // All sensors but pH and DO will have -9999 as the third value
-            sensorValues[0] += parmValue;
-            MS_DBG(F("Parm: "), parmValue, F("\n"));
-            sensorValues[1] += tempValue;
-            MS_DBG(F("Temp: "), tempValue, F("\n"));
-            sensorValues[2] += thirdValue;
-            MS_DBG(F("Third: "), thirdValue, F("\n"));
-
-            if (j < _numReadings - 1)
-            {
-                MS_DBG(F("Waiting "),  _remeasurementTime_ms, F("ms until sensor is ready for the next reading.\n"));
-                delay(_remeasurementTime_ms);
-            }
-        }
-
-        // Average over the number of readings
-        MS_DBG(F("Averaging over "), _numReadings, F(" readings\n"));
-        for (int i = 0; i < _numReturnedVars; i++)
-        {
-            sensorValues[i] /=  _numReadings;
-            MS_DBG(F("Result #"), i, F(": "), sensorValues[i], F("\n"));
-        }
+        // Initialize float variables
+        float parmValue, tempValue, thirdValue;
+        // Get Values
+        sensor.getValues(parmValue, tempValue, thirdValue);
+        // Put values into the array
+        // All sensors but pH and DO will have -9999 as the third value
+        sensorValues[0] += parmValue;
+        MS_DBG(F("Parm: "), parmValue, F("\n"));
+        sensorValues[1] += tempValue;
+        MS_DBG(F("Temp: "), tempValue, F("\n"));
+        sensorValues[2] += thirdValue;
+        MS_DBG(F("Third: "), thirdValue, F("\n"));
     }
 
     else MS_DBG(F("Failed to start measuring!\n"));

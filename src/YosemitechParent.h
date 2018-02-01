@@ -52,13 +52,8 @@ private:
     yosemitechModel _model;
     byte _modbusAddress;
     Stream* _stream;
-    int _enablePin;
-    int _numReadings;
+    int _RS485EnablePin;
     yosemitech sensor;
-    int _remeasurementTime_ms;
-    bool _isTakingMeasurements;
-    uint32_t _millisMeasurementStarted;
-    uint32_t _StabilizationTime_ms;
 };
 
 #endif

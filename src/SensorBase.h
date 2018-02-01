@@ -80,12 +80,22 @@ protected:
     void waitForWarmUp(void);
     // Clears the values array
     void clearValues();
+
     int _dataPin;
     int _powerPin;
     String _sensorName;
     int _numReturnedVars;
+    int _numReadings;
+
     uint32_t _WarmUpTime_ms;
     uint32_t _millisPowerOn;
+
+    int _remeasurementTime_ms;
+    
+    bool _isTakingMeasurements;
+    uint32_t _millisMeasurementStarted;
+    uint32_t _StabilizationTime_ms;
+
     SENSOR_STATUS sensorStatus;
     Variable *variables[MAX_NUMBER_VARS];
 };

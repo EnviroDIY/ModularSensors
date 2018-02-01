@@ -103,6 +103,7 @@
     bool VariableArray::sensorsWake(void)
     {
         MS_DBG(F("Waking sensors...\n"));
+        bool success = true;
         for (int i = 0; i < _variableCount; i++)
         {
             if (_uniqueSensorMask[i]) // Skip non-unique sensors
