@@ -107,6 +107,32 @@ bool YosemitechParent::wake(void)
 }
 
 
+// The function to put the sensor to sleep
+// Different from the standard in that it stops measurements
+bool YosemitechParent::sleep(void)
+{
+    if(!checkPowerOn()){return true;}
+
+    // Send the command to begin taking readings, trying up to 5 times
+    bool success = false;
+    int ntries = 0;
+    while (!success && ntries < 2)
+    {
+        success = sensor.stopMeasurement();
+        ntries++;
+    }
+    _isTakingMeasurements = !success;
+    if(!_isTakingMeasurements)
+    {
+        _millisMeasurementStarted = 0;
+        MS_DBG(F("Measurements stopped.\n"));
+    }
+
+    powerDown();
+
+    return success;
+}
+
 // This is a helper function to wait that enough time has passed for the sensor
 // to stabilize before taking readings
 void YosemitechParent::waitForStability(void)

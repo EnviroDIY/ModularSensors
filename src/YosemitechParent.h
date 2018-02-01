@@ -43,6 +43,7 @@ public:
 
     virtual SENSOR_STATUS setup(void) override;
     virtual bool wake(void) override;
+    virtual bool sleep(void) override;
 
     virtual bool update(void);
 
