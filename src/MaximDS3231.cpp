@@ -19,8 +19,10 @@
 
 
 String MaximDS3231::getSensorLocation(void) {return F("I2C_0x68");}
-bool MaximDS3231::sleep(void) {return true;}
+void MaximDS3231::powerUp(void) {return true;}
 bool MaximDS3231::wake(void) {return true;}
+bool MaximDS3231::sleep(void) {return true;}
+void MaximDS3231::powerDown(void) {return true;}
 
 SENSOR_STATUS MaximDS3231::setup(void)
 {

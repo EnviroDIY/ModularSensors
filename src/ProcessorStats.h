@@ -40,8 +40,10 @@ public:
     ProcessorStats(const char *version);
 
     String getSensorLocation(void) override;
-    bool sleep(void) override;
+    void powerUp(void) override;
     bool wake(void) override;
+    bool sleep(void) override;
+    void powerDown(void) override;
 
     bool update(void) override;
 
