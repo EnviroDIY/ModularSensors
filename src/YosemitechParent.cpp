@@ -119,13 +119,13 @@ void YosemitechParent::waitForStability(void)
         }
         else if (millis() > _millisMeasurementStarted)  // just in case millis() has rolled over
         {
-            MS_DBG(F("Waiting "), (millis() + _StabilizationTime_ms - _millisMeasurementStarted), F("ms for sensor to stabilize\n"));
+            MS_DBG(F("Waiting "), (_StabilizationTime_ms - (millis() - _millisMeasurementStarted)), F("ms for sensor to stabilize\n"));
             while((millis() - _millisMeasurementStarted) < _StabilizationTime_ms){}
         }
         else  // if we get really unlucky and are measuring as millis() rolls over
         {
-            MS_DBG(F("Waiting 10s for sensor warm-up\n"));
-            while(millis() < 10000){}
+            MS_DBG(F("Waiting 20s for sensor stability\n"));
+            while(millis() < 20000){}
         }
     }
 }
@@ -144,7 +144,7 @@ bool YosemitechParent::update()
     if (_isTakingMeasurements)
     {
         // Wait until the sensor is ready to give readings
-        delay(_StabilizationTime_ms);
+        waitForStability();
 
         // averages x readings in this one loop
         for (int j = 0; j < _numReadings; j++)
@@ -166,7 +166,7 @@ bool YosemitechParent::update()
 
             if (j < _numReadings - 1)
             {
-                MS_DBG(F("Waiting until sensor is ready for the next reading.\n"));
+                MS_DBG(F("Waiting "),  _remeasurementTime_ms, F("ms until sensor is ready for the next reading.\n"));
                 delay(_remeasurementTime_ms);
             }
         }
