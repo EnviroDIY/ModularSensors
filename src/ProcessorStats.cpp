@@ -114,10 +114,10 @@ ProcessorStats::ProcessorStats(const char *version) : Sensor(-1, -1, BOARD, PROC
 }
 
 String ProcessorStats::getSensorLocation(void) {return BOARD;}
-void ProcessorStats::powerUp(void) {return true;}
+void ProcessorStats::powerUp(void) {}
 bool ProcessorStats::wake(void) {return true;}
 bool ProcessorStats::sleep(void) {return true;}
-void ProcessorStats::powerDown(void) {return true;}
+void ProcessorStats::powerDown(void) {}
 
 #if defined(ARDUINO_ARCH_SAMD)
     extern "C" char *sbrk(int i);
