@@ -49,7 +49,8 @@ public:
     bool sleep(void) override {return true;}
     void powerDown(void) override {}
 
-    bool update(void) override;
+    bool startSingleMeasurement(void) override;
+    bool getSingleMeasurementResult(void) override;
 
 private:
     const char *_version;

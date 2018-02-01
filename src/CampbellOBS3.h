@@ -55,7 +55,8 @@ public:
 
     String getSensorLocation(void) override;
 
-    bool update(void) override;
+    bool startSingleMeasurement(void) override;
+    bool getSingleMeasurementResult(void) override;
 
 protected:
     float _Avalue, _Bvalue, _Cvalue;

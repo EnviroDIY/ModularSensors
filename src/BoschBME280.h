@@ -67,7 +67,8 @@ public:
     SENSOR_STATUS getStatus(void) override;
     String getSensorLocation(void) override;
 
-    bool update(void) override;
+    bool startSingleMeasurement(void) override;
+    bool getSingleMeasurementResult(void) override;
 protected:
     Adafruit_BME280 bme_internal;
     uint8_t _i2cAddressHex;

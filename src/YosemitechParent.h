@@ -43,7 +43,8 @@ public:
     virtual bool wake(void) override;
     virtual bool sleep(void) override;
 
-    virtual bool update(void);
+    virtual bool startSingleMeasurement(void);
+    virtual bool getSingleMeasurementResult(void);
 
 private:
     yosemitechModel _model;

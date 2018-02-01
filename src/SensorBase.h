@@ -63,8 +63,16 @@ public:
     virtual void powerDown(void);
 
     // These next functions must be implemented for ever sensor
+    // This tells the sensor to start a single measurement
+    virtual bool startSingleMeasurement(void) = 0;
+    // This gets the results from a single measurement
+    virtual bool getSingleMeasurementResult(void) = 0;
+
     // This updates the sensor's values
-    virtual bool update(void) = 0;
+    // This includes clears the values array, starts and averages as many
+    // measurement readings as requested, and then notifies the registerd
+    // variables of the new resutls.
+    virtual bool update(void);
 
     // These tie the variables to their parent sensor
     virtual void registerVariable(int varNum, Variable* var);

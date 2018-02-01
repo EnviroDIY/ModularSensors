@@ -51,7 +51,8 @@ public:
     String getSensorLocation(void) override;
     SENSOR_STATUS getStatus(void) override;
 
-    bool update(void) override;
+    bool startSingleMeasurement(void) override;
+    bool getSingleMeasurementResult(void) override;
 
 private:
     DeviceAddress _OneWireAddress;

@@ -58,7 +58,8 @@ public:
 
     String getSensorLocation(void) override;
 
-    bool update(void) override;
+    bool startSingleMeasurement(void) override;
+    bool getSingleMeasurementResult(void) override;
 
 protected:
     uint8_t _i2cAddress;

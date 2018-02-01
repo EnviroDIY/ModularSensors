@@ -42,7 +42,8 @@ public:
 
     SENSOR_STATUS setup(void) override;
 
-    bool update(void) override;
+    bool startSingleMeasurement(void) override;
+    bool getSingleMeasurementResult(void) override;
 
 private:
     int _triggerPin;

@@ -50,7 +50,8 @@ public:
     virtual SENSOR_STATUS setup(void) override;
     virtual SENSOR_STATUS getStatus(void) override;
 
-    virtual bool update(void);
+    virtual bool startSingleMeasurement(void);
+    virtual bool getSingleMeasurementResult(void);
 
 protected:
     bool getSensorInfo(void);
