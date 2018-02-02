@@ -130,9 +130,9 @@ public:
     void powerDown(void) override {off();}
 
     bool startSingleMeasurement(void) override
-    {}
+    {return true;}
     bool addSingleMeasurementResult(void) override
-    {}
+    {return true;}
 
     bool update(void) override
     {

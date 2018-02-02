@@ -84,21 +84,23 @@ bool YosemitechParent::wake(void)
     waitForWarmUp();
 
     // Send the command to begin taking readings, trying up to 5 times
-    bool success = false;
     int ntries = 0;
-    while (!success && ntries < 10)
+    while (!_isTakingMeasurements && ntries < 5)
     {
-        success = sensor.startMeasurement();
+        _isTakingMeasurements = sensor.startMeasurement();
         ntries++;
     }
-    _isTakingMeasurements = success;
     if(_isTakingMeasurements)
     {
         _millisMeasurementStarted = millis();
         MS_DBG(F("Measurements started.\n"));
     }
 
-    return success;
+    // Manually activate the brush
+    // Needed for newer sensors that do not immediate activate on getting power
+    sensor.activateBrush();
+
+    return _isTakingMeasurements;
 }
 
 
@@ -123,17 +125,16 @@ bool YosemitechParent::sleep(void)
         MS_DBG(F("Measurements stopped.\n"));
     }
 
-    powerDown();
-
     return success;
 }
 
 
-// nothing needs to happen to start an individual measurement
+// Want to just check that the sensor is active
 bool YosemitechParent::startSingleMeasurement(void)
 {
     _lastMeasurementRequested = millis();
-    return true;
+    if (!_isTakingMeasurements) return wake();
+    else return true;
 }
 
 
@@ -156,10 +157,10 @@ bool YosemitechParent::addSingleMeasurementResult(void)
         sensorValues[1] += tempValue;
         MS_DBG(F("Temp: "), tempValue, F("\n"));
         sensorValues[2] += thirdValue;
-        MS_DBG(F("Third: "), thirdValue, F("\n"));
+        if (thirdValue !=-9999) MS_DBG(F("Third: "), thirdValue, F("\n"));
     }
 
-    else MS_DBG(F("Failed to start measuring!\n"));
+    else MS_DBG(F("Sensor is not currently measuring!\n"));
 
     // Return true when finished
     return _isTakingMeasurements;

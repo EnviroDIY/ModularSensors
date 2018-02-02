@@ -34,7 +34,7 @@
 #include "VariableBase.h"
 
 #define Y514_NUM_VARIABLES 2
-#define Y514_WARM_UP 1200
+#define Y514_WARM_UP 1300
 #define Y514_STABILITY 8000
 #define Y514_RESAMPLE 2000
 

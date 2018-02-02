@@ -79,7 +79,7 @@ bool Sensor::checkPowerOn(void)
     }
     else
     {
-        MS_DBG(F("Power was on.\n"));
+        MS_DBG(F("Power is not controlled for this sensor.  Assumed to be on.\n"));
         if (_millisPowerOn == 0) _millisPowerOn = millis();
         return true;
     }
@@ -107,10 +107,10 @@ bool Sensor::wake(void)
 }
 
 // The function to put a sensor to sleep
-// By default, powers down and returns true
+// Does NOT power down the sensor!
 bool Sensor::sleep(void)
 {
-    powerDown();
+    // powerDown();
     _isTakingMeasurements = false;
     _millisMeasurementStarted = 0;
     return true;
@@ -133,7 +133,7 @@ void Sensor::waitForWarmUp(void)
 {
     if (_warmUpTime_ms != 0)
     {
-        if (millis() > _millisPowerOn + _warmUpTime_ms)  // already ready
+        if (millis() > (_millisPowerOn + _warmUpTime_ms))  // already ready
         {
             MS_DBG(F("Sensor already warmed up!\n"));
         }
@@ -181,11 +181,11 @@ void Sensor::waitForNextMeasurement(void)
     {
         if (millis() > _lastMeasurementRequested + _remeasurementTime_ms)  // already ready
         {
-            MS_DBG(F("Sensor should be stable!\n"));
+            MS_DBG(F("Measurement should be complete!\n"));
         }
         else if (millis() > _lastMeasurementRequested)  // just in case millis() has rolled over
         {
-            MS_DBG(F("Waiting "), (_remeasurementTime_ms - (millis() - _lastMeasurementRequested)), F("ms for sensor to stabilize\n"));
+            MS_DBG(F("Waiting "), (_remeasurementTime_ms - (millis() - _lastMeasurementRequested)), F("ms for measurement to complete\n"));
             while((millis() - _lastMeasurementRequested) < _remeasurementTime_ms){}
         }
         else  // if we get really unlucky and are measuring as millis() rolls over
@@ -268,7 +268,7 @@ bool Sensor::checkForUpdate(uint32_t sensorLastUpdated)
 {
     MS_DBG(F("It has been "), (millis() - sensorLastUpdated)/1000);
     MS_DBG(F(" seconds since the sensor value was checked\n"));
-    if ((millis() > 60000 and millis() > sensorLastUpdated + 60000) or sensorLastUpdated == 0)
+    if ((millis() > 120000 and millis() > sensorLastUpdated + 120000) or sensorLastUpdated == 0)
     {
         MS_DBG(F("Value out of date, updating\n"));
         return(update());
@@ -306,7 +306,7 @@ bool Sensor::update(void)
         ret_val += addSingleMeasurementResult();
     }
 
-    MS_DBG(F("Averaging over "), _numReadings, F(" readings\n"));
+    MS_DBG(F("Averaging over "), _readingsToAverage, F(" readings\n"));
     for (int i = 0; i < _numReturnedVars; i++)
     {
         sensorValues[i] /=  _readingsToAverage;

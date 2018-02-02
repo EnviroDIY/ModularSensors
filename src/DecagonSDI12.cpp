@@ -209,6 +209,7 @@ bool DecagonSDI12::startSingleMeasurement(void)
     //     MS_DBG(_numReturnedVars, F(" measurements!!\n"));
     // }
 
+    return true;
 }
 
 

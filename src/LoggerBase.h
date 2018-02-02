@@ -10,6 +10,8 @@
 #ifndef LoggerBase_h
 #define LoggerBase_h
 
+#include <Arduino.h>
+
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 // #define STANDARD_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"

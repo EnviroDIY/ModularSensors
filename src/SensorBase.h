@@ -57,7 +57,8 @@ public:
     virtual void powerUp(void);
     // This wakes the sensor up, if necessary.  Defaults is to power up.
     virtual bool wake(void);
-    // This puts the sensor to sleep, if necessary.  Default is to power down.
+    // This puts the sensor to sleep, if necessary.
+    // Does NOT power down the sensor!
     virtual bool sleep(void);
     // This turns off the sensor power, if applicable
     virtual void powerDown(void);
