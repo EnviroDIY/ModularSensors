@@ -4,8 +4,8 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for the Decagon Devices 5TM Soil Moisture probe
- *It is dependent on the EnviroDIY SDI-12 library and the YosemitechParent super class.
+ *This file is for the Yosemitech Y520 4-pole Conductivity sensor
+ *It is dependent on the YosemitechParent super class.
  *
  *Documentation for the Modbus Protocol commands and responses can be found
  *within the documentation in the YosemitechModbus library at:
@@ -22,8 +22,8 @@
  *     Accuracy is ± 0.2°C
  *     Range is 0°C to + 50°C
  *
- * Time before sensor responds after power - 275-300ms (use 350 for safety)
- * Time between "StartMeasurement" command and stable reading - 8sec
+ * Time before sensor responds after power - 1200 ms
+ * Time between "StartMeasurement" command and stable reading - 10sec
 */
 
 #ifndef YosemitechY520_h
@@ -67,11 +67,11 @@ public:
 class YosemitechY520_Cond : public Variable
 {
 public:
-    YosemitechY520_Cond(Sensor *parentSense, String customVarCode = "")
+    YosemitechY520_Cond(Sensor *parentSense, String UUID = "", String customVarCode = "")
      : Variable(parentSense, Y520_COND_VAR_NUM,
                 F("specificConductance"), F("microsiemenPerCentimeter"),
                 Y520_COND_RESOLUTION,
-                F("Y520Cond"), customVarCode)
+                F("Y520Cond"), UUID, customVarCode)
     {}
 };
 
@@ -80,11 +80,11 @@ public:
 class YosemitechY520_Temp : public Variable
 {
 public:
-    YosemitechY520_Temp(Sensor *parentSense, String customVarCode = "")
+    YosemitechY520_Temp(Sensor *parentSense, String UUID = "", String customVarCode = "")
      : Variable(parentSense, Y520_TEMP_VAR_NUM,
                 F("temperature"), F("degreeCelsius"),
                 Y520_TEMP_RESOLUTION,
-                F("Y520temp"), customVarCode)
+                F("Y520temp"), UUID, customVarCode)
     {}
 };
 

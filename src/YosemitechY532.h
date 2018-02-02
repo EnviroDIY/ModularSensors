@@ -4,8 +4,8 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for the Decagon Devices 5TM Soil Moisture probe
- *It is dependent on the EnviroDIY SDI-12 library and the YosemitechParent super class.
+ *This file is for the Yosemitech Y532 pH sensor
+ *It is dependent on the YosemitechParent super class.
  *
  *Documentation for the Modbus Protocol commands and responses can be found
  *within the documentation in the YosemitechModbus library at:
@@ -22,8 +22,8 @@
  *     Accuracy is ± 0.2°C
  *     Range is 0°C to + 50°C
  *
- * Time before sensor responds after power - 275-300ms (use 350 for safety)
- * Time between "StartMeasurement" command and stable reading - 8sec
+ * Time before sensor responds after power - 500ms
+ * Time between "StartMeasurement" command and stable reading - 4.5sec
 */
 
 #ifndef YosemitechY532_h
@@ -70,11 +70,12 @@ public:
 class YosemitechY532_pH : public Variable
 {
 public:
-    YosemitechY532_pH(Sensor *parentSense, String customVarCode = "")
+    YosemitechY532_pH(Sensor *parentSense,
+                      String UUID = "", String customVarCode = "")
      : Variable(parentSense, Y532_PH_VAR_NUM,
                 F("pH"), F("pH"),
                 Y532_PH_RESOLUTION,
-                F("Y532pH"), customVarCode)
+                F("Y532pH"), UUID, customVarCode)
     {}
 };
 
@@ -83,11 +84,12 @@ public:
 class YosemitechY532_Temp : public Variable
 {
 public:
-    YosemitechY532_Temp(Sensor *parentSense, String customVarCode = "")
+    YosemitechY532_Temp(Sensor *parentSense,
+                        String UUID = "", String customVarCode = "")
      : Variable(parentSense, Y532_TEMP_VAR_NUM,
                 F("temperature"), F("degreeCelsius"),
                 Y532_TEMP_RESOLUTION,
-                F("Y532temp"), customVarCode)
+                F("Y532temp"), UUID, customVarCode)
     {}
 };
 
@@ -96,11 +98,12 @@ public:
 class YosemitechY532_Voltage : public Variable
 {
 public:
-    YosemitechY532_Voltage(Sensor *parentSense, String customVarCode = "")
+    YosemitechY532_Voltage(Sensor *parentSense,
+                           String UUID = "", String customVarCode = "")
      : Variable(parentSense, Y532_VOLT_VAR_NUM,
                 F("voltage"), F("millivolt"),
                 Y532_VOLT_RESOLUTION,
-                F("Y532Voltage"), customVarCode)
+                F("Y532Voltage"), UUID, customVarCode)
     {}
 };
 

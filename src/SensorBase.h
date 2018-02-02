@@ -50,10 +50,15 @@ public:
     virtual SENSOR_STATUS getStatus(void);
     // This returns a string for the sensor status
     static String printStatus(SENSOR_STATUS stat);
-    // This puts the sensor to sleep, if necessary.  Defaults to True.
-    virtual bool sleep(void);
+
+    // This turns on the sensor power, if applicable
+    virtual void powerUp(void);
     // This wakes the sensor up, if necessary.  Defaults to True.
     virtual bool wake(void);
+    // This puts the sensor to sleep, if necessary.  Defaults to True.
+    virtual bool sleep(void);
+    // This turns off the sensor power, if applicable
+    virtual void powerDown(void);
 
     // These next functions must be implemented for ever sensor
     // This updates the sensor's values
@@ -69,10 +74,11 @@ public:
     unsigned long sensorLastUpdated;
 
 protected:
+    // A helper to check if the power is already on
     bool checkPowerOn(void);
-    void powerUp(void);
-    void powerDown(void);
+    // A helper to ensure that the sensor has had power long enough to communicate
     void waitForWarmUp(void);
+    // Clears the values array
     void clearValues();
     int _dataPin;
     int _powerPin;

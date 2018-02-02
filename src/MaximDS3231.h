@@ -45,8 +45,10 @@ public:
 
     String getSensorLocation(void) override;
     SENSOR_STATUS setup(void) override;
-    bool sleep(void) override;
+    void powerUp(void) override;
     bool wake(void) override;
+    bool sleep(void) override;
+    void powerDown(void) override;
 
     bool update(void) override;
 };
@@ -55,11 +57,12 @@ public:
 class MaximDS3231_Temp : public Variable
 {
 public:
-    MaximDS3231_Temp(Sensor *parentSense, String customVarCode = "")
+    MaximDS3231_Temp(Sensor *parentSense,
+                     String UUID = "", String customVarCode = "")
       : Variable(parentSense, DS3231_TEMP_VAR_NUM,
                  F("temperatureRTC"), F("degreeCelsius"),
                  DS3231_TEMP_RESOLUTION,
-                 F("BoardTemp"), customVarCode)
+                 F("BoardTemp"), UUID, customVarCode)
     {}
 };
 

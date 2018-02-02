@@ -40,8 +40,10 @@ public:
     ProcessorStats(const char *version);
 
     String getSensorLocation(void) override;
-    bool sleep(void) override;
+    void powerUp(void) override;
     bool wake(void) override;
+    bool sleep(void) override;
+    void powerDown(void) override;
 
     bool update(void) override;
 
@@ -55,11 +57,12 @@ private:
 class ProcessorStats_Batt : public Variable
 {
 public:
-    ProcessorStats_Batt(Sensor *parentSense, String customVarCode = "")
+    ProcessorStats_Batt(Sensor *parentSense,
+                        String UUID = "", String customVarCode = "")
       : Variable(parentSense, PROCESSOR_BATTERY_VAR_NUM,
                  F("batteryVoltage"), F("Volt"),
                  PROCESSOR_BATTERY_RESOLUTION,
-                 F("Battery"), customVarCode)
+                 F("Battery"), UUID, customVarCode)
     {}
 };
 
@@ -68,11 +71,12 @@ public:
 class ProcessorStats_FreeRam : public Variable
 {
 public:
-    ProcessorStats_FreeRam(Sensor *parentSense, String customVarCode = "")
+    ProcessorStats_FreeRam(Sensor *parentSense,
+                           String UUID = "", String customVarCode = "")
       : Variable(parentSense, PROCESSOR_RAM_VAR_NUM,
                  F("Free SRAM"), F("Bit"),
                  PROCESSOR_RAM_RESOLUTION,
-                 F("FreeRam"), customVarCode)
+                 F("FreeRam"), UUID, customVarCode)
     {}
 };
 

@@ -23,7 +23,8 @@ public:
     Variable(Sensor *parentSense, int varNum,
              String varName = "Unknown", String varUnit = "Unknown",
              unsigned int decimalResolution = 0,
-             String defaultVarCode = "Unknown", String customVarCode = "");
+             String defaultVarCode = "Unknown",
+             String UUID = "", String customVarCode = "");
 
     // These functions tie the variable and sensor together
     void attachSensor(int varNum, Sensor *parentSense);
@@ -38,6 +39,8 @@ public:
     String getVarUnit(void);
     // This returns a customized code for the variable, if one is given, and a default if not
     String getVarCode(void);
+    // This returns the variable UUID, if one has been assigned
+    String getVarUUID(void);
 
     // This returns the current value of the variable as a float
     float getValue(void);
@@ -57,6 +60,7 @@ private:
     unsigned int _decimalResolution;
     String _defaultVarCode;
     String _customCode;
+    String _UUID;
 };
 
 #endif

@@ -77,7 +77,7 @@ In order to support multiple functions and sensors, there are quite a lot of sub
 ### Functions Available for Each Sensor
 - **Constructor** - Each sensor has a unique constructor, the exact format of which is dependent on the individual sensor.
 - **getSensorName()** - This gets the name of the sensor and returns it as a string.
-- **getSensorLocation()** - This returns the Arduino pin sending and recieving data or other sensor installation information as a string.  This is the location where the sensor is connected to the data logger, NOT the position of the sensor in the environment.
+- **getSensorLocation()** - This returns the Arduino pin sending and receiving data or other sensor installation information as a string.  This is the location where the sensor is connected to the data logger, NOT the position of the sensor in the environment.
 - **setup()** - This "sets up" the sensor - setting up serial ports, etc required for the given sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program _before_ calling the variable setup.
 - **getStatus()** - This returns the current status of the sensor as an interger, if the sensor has some way of giving it to you (most do not.)
 - **printStatus()** - This returns the current status of the sensor as a readable String.
@@ -86,16 +86,17 @@ In order to support multiple functions and sensors, there are quite a lot of sub
 - **update()** - This updates the sensor values and returns true when finished.  For digital sensors with a single infomation return, this only needs to be called once for each sensor, even if there are multiple variable subclasses for the sensor.
 
 ### Functions for Each Variable
-- **Constructor** - Every variable requires a pointer to its parent sensor as part of the constructor.
+- **Constructor** - Every variable requires a pointer to its parent sensor as part of the constructor.  Every variable also has two optional string entries, for a universally unique identifier (UUID/GUID) and a custom variable code.  _The UUID must always be listed first!_  In cases where you would like a custom variable code, but do not have a UUID, you **must** enter '""' as your UUID.
 - **getVarName()** - This returns the variable's name ,using http://vocabulary.odm2.org/variablename/, as a String.
 - **getVarUnit()** - This returns the variable's unit, using http://vocabulary.odm2.org/units/, as a String.
 - **getVarCode()** - This returns a String with a customized code for the variable, if one is given, and a default if not
+- **getVarUUID()** - This returns the universally unique identifier of a variables, if one is assigned, as a String
 - **setup()** - This "sets up" the variable - attaching it to its parent sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program _after_ calling the sensor setup.
 - **getValue()** - This returns the current value of the variable as a float.  You should call the update function before calling getValue.  As a backup, if the getValue function sees that the update function has not been called within the last 60 seconds, it will re-call it.
 - **getValueString()** - This is identical to getValue, except that it returns a string with the proper precision available from the sensor.
 
 ### <a name="individuals"></a>Examples Using Individual Sensor and Variable Functions
-To access and get values from a sensor, you must create an instance of the sensor class you are interested in using its constuctor.  Each variable has different parameters that you must specify; these are described below within the section for each sensor.  You must then create a new instance for each _variable_, and reference a pointer to the parent sensor in the constructor.  Many variables can (and should) call the same parent sensor.  The variables are specific to the individual sensor because each sensor collects data and returns data in a unique way.  The constructors are all best called outside of the "setup()" or "loop()" functions.  The setup functions are then called (sensor, then variables) in the main "setup()" function and the update() and getValues() are called in the loop().  A very simple program to get data from a Decagon CTD might be something like:
+To access and get values from a sensor, you must create an instance of the sensor class you are interested in using its constructor.  Each variable has different parameters that you must specify; these are described below within the section for each sensor.  You must then create a new instance for each _variable_, and reference a pointer to the parent sensor in the constructor.  Many variables can (and should) call the same parent sensor.  The variables are specific to the individual sensor because each sensor collects data and returns data in a unique way.  The constructors are all best called outside of the "setup()" or "loop()" functions.  The setup functions are then called (sensor, then variables) in the main "setup()" function and the update() and getValues() are called in the loop().  A very simple program to get data from a Decagon CTD might be something like:
 
 ```cpp
 #include <DecagonCTD.h>
@@ -146,8 +147,8 @@ Having a unified set of functions to access many sensors allows us to quickly po
 - **sensorsSleep()** - This puts all sensors to sleep (ie, cuts power), skipping repeated sensors.  Returns true.
 - **sensorsWake()** - This wakes all sensors (ie, gives power), skipping repeated sensors.  Returns true.
 - **updateAllSensors()** - This updates all sensor values, skipping repeated sensors.  Returns true.  Does NOT return any values.
-- **printSensorData(Stream stream)** - This prints current sensor values along with metadata to a stream (either hardware or software serial).  By default, it will print to the first Serial port.  Note that the input is a pointer to a stream instance so to use a hardware serial instance you must use an ampersand before the serial name (ie, &Serial1).
-- **generateSensorDataCSV()** - This returns an Arduino String containing comma separated list of sensor values.  This string does _NOT_ contain a timestamp of any kind.
+- **printSensorData(Stream stream)** - This prints current sensor values along with meta-data to a stream (either hardware or software serial).  By default, it will print to the first Serial port.  Note that the input is a pointer to a stream instance so to use a hardware serial instance you must use an ampersand before the serial name (ie, &Serial1).
+- **generateSensorDataCSV()** - This returns an Arduino String containing comma separated list of sensor values.  This string does _NOT_ contain a time stamp of any kind.
 
 ### <a name="ArrayExamples"></a>VariableArray Examples:
 
@@ -164,18 +165,18 @@ Variable \*variableList[] = {\*cond, \*temp, \*depth};
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 ```
 
-The asterix must be put in front of the variable name to indicate that it is a pointer to your variable object.  With many variables, it is easier to create the object and the pointer to it all at once in the variable array.  This can be done using the "new" keyword like so:
+The asterisk must be put in front of the variable name to indicate that it is a pointer to your variable object.  With many variables, it is easier to create the object and the pointer to it all at once in the variable array.  This can be done using the "new" keyword like so:
 
 ```cpp
 // Create a new VariableArray object
 VariableArray myVars;
 // Create new variable objects in an array named "variableList" using the "new" keyword
 Variable \*variableList[] = {
-    new Sensor1_Variable1(&parentSensor1, "customVarCode1"),
-    new Sensor1_Variable2(&parentSensor1, "customVarCode2"),
-    new Sensor2_Variable1(&parentSensor2, "customVarCode3"),
+    new Sensor1_Variable1(&parentSensor1, "UUID", "customVarCode1"),
+    new Sensor1_Variable2(&parentSensor1, "UUID", "customVarCode2"),
+    new Sensor2_Variable1(&parentSensor2, "UUID", "customVarCode3"),
     ...
-    new SensorX_VariableX(&parentSensorx, "customVarCode4")
+    new SensorX_VariableX(&parentSensorx, "UUID", "customVarCode4")
 };
 // Optionally, count the number of variables in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
@@ -285,8 +286,8 @@ See [TinyGSM's documentation](https://github.com/vshymanskyy/TinyGSM/blob/master
 After defining your modem, set it up using one of these two commands, depending on whether you are using cellular or WiFi communication:
 
 - **setupModem(Stream modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin, ModemSleepType sleepType, const char \*APN)** - Sets up the internet communcation with a cellular modem.  Note that the modemStream and APN should be pointers.  Use -1 for any pins that are not connected.
-- **setupModem(Stream modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin, ModemSleepType sleepType, const char \*ssid, const char \*pwd)** - Sets up the internet communcation with a WiFi modem.  Note that the modemStream, ssid, and password should be pointers.  Use -1 for any pins that are not connected.
-- The **vcc33Pin** is the pin that controls whether or not the modem itself is powered.  Use -1 if your modem is always recieving power from your logger board or if you want to control modem power independently.
+- **setupModem(Stream modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin, ModemSleepType sleepType, const char \*ssid, const char \*pwd)** - Sets up the internet communication with a WiFi modem.  Note that the modemStream, ssid, and password should be pointers.  Use -1 for any pins that are not connected.
+- The **vcc33Pin** is the pin that controls whether or not the modem itself is powered.  Use -1 if your modem is always receiving power from your logger board or if you want to control modem power independently.
 - The **modemStatusPin** is the pin that indicates whether the modem is turned on and it is clear to send data.  If you use -1, the modem is assumed to always be ready.
 - The **modemSleepRqPin** is the _pin_ used to put the modem to sleep or to wake it up.
 - The **ModemSleepType** controls _how the modemSleepRqPin is used_ to put the modem to sleep between readings.
@@ -300,19 +301,19 @@ Once the modem has been set up, these functions are available:
 
 - **wake()** - Turns the modem on.  Returns true if connection is successful.
 - **connectInternet()** - Connects to the internet via WiFi or cellular network.  Returns true if connection is successful.
-- **openTCP(const char host, uint16_t port)** - Makes a TCP connection to a host url and port.  (The most common port for public url's is "80"; if you don't know the port, try this first.)  Returns 1 if successful.
+- **openTCP(const char host, uint16_t port)** - Makes a TCP connection to a host URL and port.  (The most common port for public URLs is "80"; if you don't know the port, try this first.)  Returns 1 if successful.
 - **openTCP(IPAddress ip, uint16_t port)** - Makes a TCP connection to a host ip address and port.  Returns 1 if successful.
 - **closeTCP()** - Breaks the TCP connection.
 - **disconnectInternet()** - Disconnects from the network, if applicable.
 - **off()** - Turns the modem off and empties the send and receive buffer.  Returns true if connection is successful.
-- **getNISTTime()** - Returns the current unix timestamp (_in UTC_) from NIST via the TIME protocol (rfc868).
+- **getNISTTime()** - Returns the current Unix time stamp (_in UTC_) from NIST via the TIME protocol (rfc868).
 - **update()** - Updates the signal strength values.  Returns true if successful.
 
 As mentioned above, the cellular modems themselves are also sensors with the following variables:
 
 ```cpp
-Modem_RSSI(&modem, "customVarCode");  // Received Signal Strength Indication, in dB
-Modem_SignalPercent(&modem, "customVarCode");
+Modem_RSSI(&modem, "UUID", "customVarCode");  // Received Signal Strength Indication, in dB
+Modem_SignalPercent(&modem, "UUID", "customVarCode");
 ```
 
 The modem does not behave quite the same as all the other sensors do, though.  Setup must be done with the '''setupModem(...)''' function; the normal '''setup()''' function does not do anything.  The '''sleep()''' function also does not work, the modem will only go off with the  '''off()''' functions.
@@ -322,8 +323,7 @@ The modem does not behave quite the same as all the other sensors do, though.  S
 These three functions set up the required registration token, sampling feature UUID, and time series UUIDs for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.  You must call these functions to be able to get proper JSON data for EnviroDIY, even without the modem support.
 
 - **setToken(const char \*registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
-- **setSamplingFeature(const char \*samplingFeature)** - Sets the GUID of the sampling feature.  Note that the input is a pointer to the samplingFeature.
-- **setUUIDs(const char \*UUIDs)** - Sets the time series UUIDs.  Note that the input is an array of pointers.  The order of the UUIDs in this array **must match exactly** with the order of the coordinating variable in the variableList.
+- **setSamplingFeatureUUID(const char \*samplingFeatureUUID)** - Sets the universally unique identifier (UUID or GUID) of the sampling feature.  Note that the input is a pointer to the samplingFeatureUUID.
 
 Because sending data to EnviroDIY depends on having some sort of modem or internet connection, there is a modem object created within the LoggerEnviroDIY Object.  To set up that modem object, you still need to call the functions listed in the LoggerModem section, but you need to add an extra "modem." before the function name to call the internal modem object.  You do not need to separately create the object.
 
@@ -434,30 +434,30 @@ The double_logger example program demonstrates using a custom loop function in o
 
 ## Available sensors
 
-There are a number of sensors supported by this library.  Depending on the sensor, it may communicate with the Arduino board using as a serial peripheral interface (SPI), inter-integrated curcuit (I2C, also called "Wire"), or some type of universal synchronous/asynchronous receiver/transmitter (USART, almost always simply called "serial") (USART or serial includes transistor-transistor logic (TLL), RS232 (adapter needed), and RS485 (adapter needed) communication).  See the section on [Processor Compatibility](#compatibility) for more specific notes on which pins are available for each type of communication on the various supported processors.
+There are a number of sensors supported by this library.  Depending on the sensor, it may communicate with the Arduino board using as a serial peripheral interface (SPI), inter-integrated curcuit (I2C, also called "Wire"), or some type of universal synchronous/asynchronous receiver/transmitter (USART, almost always simply called "serial") (USART or serial includes transistor-transistor logic (TTL), RS232 (adapter needed), and RS485 (adapter needed) communication).  See the section on [Processor Compatibility](#compatibility) for more specific notes on which pins are available for each type of communication on the various supported processors.
 
 Essentially all of the sensors can have their power supplies turned off between readings, but not all boards are able to switch output power on and off.  When the sensor constructor asks for the Arduino pin controlling power on/off, use -1 for any board which is not capable of switching the output power on and off.
 _____
 
 ### <a name="MaxBotix"></a>[MaxBotix MaxSonar](http://www.maxbotix.com/Ultrasonic_Sensors/High_Accuracy_Sensors.htm) - HRXL MaxSonar WR or WRS Series with TTL Outputs
 
-The IP67 rated HRXL-MaxSonar-WR ultrasonic rangefinders offer 1mm resolution, 2.7-5.5VDC operation, a narrow beam pattern, high power output, noise rejection, automatic calibration, and temperature compensation.  Depending on the precise model, the rangerfinders have ranges between 300 and 9999mm and read rates of 6-7.5Hz.  The MaxBotix sensors communicate with the board using TTL from pin 5 on the sensor.  They require a 2.7V-5.5V power supply to pin 6 on the sensor (which can be turned off between measurements) and the level of the TLL returned by the MaxSonar will match the power level it is supplied with.  Pin 7 of the MaxSonar must be connected to ground and pin 4 can optionally be used to trigger the MaxSonar.
+The IP67 rated HRXL-MaxSonar-WR ultrasonic rangefinders offer 1mm resolution, 2.7-5.5VDC operation, a narrow beam pattern, high power output, noise rejection, automatic calibration, and temperature compensation.  Depending on the precise model, the range finders have ranges between 300 and 9999mm and read rates of 6-7.5Hz.  The MaxBotix sensors communicate with the board using TTL from pin 5 on the sensor.  They require a 2.7V-5.5V power supply to pin 6 on the sensor (which can be turned off between measurements) and the level of the TTL returned by the MaxSonar will match the power level it is supplied with.  Pin 7 of the MaxSonar must be connected to ground and pin 4 can optionally be used to trigger the MaxSonar.
 
 If you are using the [MaxBotix HR-MaxTemp](https://www.maxbotix.com/Ultrasonic_Sensors/MB7955.htm) MB7955 temperature compensator on your MaxBotix (wqhich greatly improves data quality), the red wire from the MaxTemp should be attached to pin 1 on the MaxSonar.  The white and shield wires from the MaxTemp should both be attached to Pin 7 or the MaxSonar (which is also attached to the Arduino ground).  The MaxTemp communicates directly with the MaxSonar and there is no need to make any changes on the Aruduino itself for the MaxTemp.
 
 The Arduino pin controlling power on/off, a stream instance for received data (ie, ```Serial```), and the Arduino pin controlling the trigger are required for the sensor constructor.  (Use -1 for the trigger pin if you do not have it connected.)  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
 
-The main constuctor for the sensor object is:
+The main constructor for the sensor object is:
 
 ```cpp
 #include <MaxBotixSonar.h>
 MaxBotixSonar sonar(SonarPower, sonarStream, SonarTrigger);
 ```
 
-The single available variable is:  (customVarCode is optional)
+The single available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-MaxBotixSonar_Range(&sonar, "customVarCode");  // Ultrasonic range in mm
+MaxBotixSonar_Range(&sonar, "UUID", "customVarCode");  // Ultrasonic range in mm
 //  Resolution is 1mm
 //  Accuracy is ± 1%
 //  Range is 300mm 5000mm or 500mm to 9999mm, depending on  model
@@ -472,13 +472,13 @@ _____
 
 ### <a name="OBS3"></a>[Campbell Scientific OBS-3+](https://www.campbellsci.com/obs-3plus)
 
-The OBS-3 sends out a simple analog signal between 0 and 2.5V.  To convert that to a high resolution digital signal, the sensor must be attached to a TI ADS1115 ADD converter (such as on the first four analog pins of the Mayfly).  The TI ADS1115 ADD communicates with the board via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tieing the address pin to ground.  More than one of these ADD's can be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input volage of 2.0-5.5V.  The OBS-3 itself requires a 5-15V power supply, which can be turned off between measurements.  (It will actually run on power as low as 3.3V.)  The power supply is connected to the red wire, low range output comes from the blue wire, high range output comes from the white wire, and the black, greeen, and silver/unshielded wires should all be connected to ground.
+The OBS-3 sends out a simple analog signal between 0 and 2.5V.  To convert that to a high resolution digital signal, the sensor must be attached to a TI ADS1115 ADD converter (such as on the first four analog pins of the Mayfly).  The TI ADS1115 ADD communicates with the board via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tying the address pin to ground.  More than one of these ADD's can be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input voltage of 2.0-5.5V.  The OBS-3 itself requires a 5-15V power supply, which can be turned off between measurements.  (It will actually run on power as low as 3.3V.)  The power supply is connected to the red wire, low range output comes from the blue wire, high range output comes from the white wire, and the black, green, and silver/unshielded wires should all be connected to ground.
 
-The Arduino pin controlling power on/off, analog data pin _on the TI ADS1115_, and calibration values _in Volts_ for Ax^2 + Bx + C are required for the sensor constructor.  A custom variable code can be entered as a second argument in the variable constructors, and it is very strongly recommended that you use this otherwise it will be very difficult to determine which return is high and which is low range on the sensor.  If your ADD converter is not at the standard address of 0x48, you can enter its acutal address as the third argument.
+The Arduino pin controlling power on/off, analog data pin _on the TI ADS1115_, and calibration values _in Volts_ for Ax^2 + Bx + C are required for the sensor constructor.  A custom variable code can be entered as a second argument in the variable constructors, and it is very strongly recommended that you use this otherwise it will be very difficult to determine which return is high and which is low range on the sensor.  If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the third argument.
 
 Note that to access both the high and low range returns, two instances must be created, one at the low range return pin and one at the high pin.
 
-The main constuctor for the sensor object is (called once each for high and low range):
+The main constructor for the sensor object is (called once each for high and low range):
 
 ```cpp
 #include <CampbellOBS3.h>
@@ -489,8 +489,8 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, AD
 The single available variable is (called once each for high and low range):
 
 ```cpp
-CampbellOBS3_Turbidity(&osb3low, "customLowVarCode");  // Low Range Turbidity in NTU
-CampbellOBS3_Turbidity(&osb3high, "customHighVarCode");  // High Range Turbidity in NTU
+CampbellOBS3_Turbidity(&osb3low, "UUID", "customLowVarCode");  // Low Range Turbidity in NTU
+CampbellOBS3_Turbidity(&osb3high, "UUID", "customHighVarCode");  // High Range Turbidity in NTU
 //  Ranges: (depends on sediment size, particle shape, and reflectivity)
 //      Turbidity (low/high): 250/1000 NTU; 500/2000 NTU; 1000/4000 NTU
 //      Mud: 5000 to 10,000 mg L–1
@@ -511,25 +511,25 @@ _____
 
 Decagon sensors communicate with the board using the [SDI-12 protocol](http://www.sdi-12.org/) (and the [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).  They require a 3.5-12V power supply, which can be turned off between measurements.  While contrary to the manual, they will run with power as low as 3.3V.  On the 5TM with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve.  On the bare-wire version, the power is connected to the _white_ cable, data to _red_, and ground to the unshielded cable.
 
-The SDI-12 address of the sensor, the Arduino pin controlling power on/off, the Arduino pin sending and recieving data, and a number of distinct readings to average are required for the sensor constructor.  The data pin must be a pin that supports pin-change interrupts.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
+The SDI-12 address of the sensor, the Arduino pin controlling power on/off, the Arduino pin sending and receiving data, and a number of distinct readings to average are required for the sensor constructor.  The data pin must be a pin that supports pin-change interrupts.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
 
-The main constuctor for the sensor object is:
+The main constructor for the sensor object is:
 
 ```cpp
 #include <Decagon5TM.h>
 Decagon5TM fivetm(TMSDI12address, SDI12Power, SDI12Data, numberReadings);
 ```
 
-The three available variables are:  (customVarCode is optional)
+The three available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-Decagon5TM_Ea(&fivetm, "customVarCode");  // Ea/Matric Potential Variable in farads per meter
-Decagon5TM_VWC(&fivetm, "customVarCode");  // Volumetric water content as percent, calculated from Ea via TOPP equation
+Decagon5TM_Ea(&fivetm, "UUID", "customVarCode");  // Ea/Matric Potential Variable in farads per meter
+Decagon5TM_VWC(&fivetm, "UUID", "customVarCode");  // Volumetric water content as percent, calculated from Ea via TOPP equation
 //  Resolution is 0.0008 m3/m3 (0.08% VWC) from 0 – 50% VW
-//  Accuracy for Generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typ
+//  Accuracy for Generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typical
 //  Accuracy for Medium Specific Calibration: ± 0.02 m3/m3 (± 2% VWC)
 //  Range is 0 – 1 m3/m3 (0 – 100% VWC)
-Decagon5TM_Temp(&fivetm, "customVarCode");  // Temperature in °C
+Decagon5TM_Temp(&fivetm, "UUID", "customVarCode");  // Temperature in °C
 //  Resolution is 0.1°C
 //  Accuracy is ± 1°C
 //  Range is - 40°C to + 50°C
@@ -540,27 +540,27 @@ _____
 
 Decagon sensors communicate with the board using the [SDI-12 protocol](http://www.sdi-12.org/) (and the [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).  They require a 3.5-12V power supply, which can be turned off between measurements.  While contrary to the manual, they will run with power as low as 3.3V.  On the CTD with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve.  On the bare-wire version, the power is connected to the _white_ cable, data to _red_, and ground to both the black and unshielded cable.
 
-The SDI-12 address of the sensor, the Arduino pin controlling power on/off, the Arduino pin sending and recieving data, and a number of distinct readings to average are required for the sensor constructor.  The data pin must be a pin that supports pin-change interrupts.  For this particular sensor, taking ~6 readings seems to be ideal for reducing noise.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
+The SDI-12 address of the sensor, the Arduino pin controlling power on/off, the Arduino pin sending and receiving data, and a number of distinct readings to average are required for the sensor constructor.  The data pin must be a pin that supports pin-change interrupts.  For this particular sensor, taking ~6 readings seems to be ideal for reducing noise.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
 
-The main constuctor for the sensor object is:
+The main constructor for the sensor object is:
 
 ```cpp
 #include <DecagonCTD.h>
 DecagonCTD ctd(CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 ```
 
-The three available variables are:  (customVarCode is optional)
+The three available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-DecagonCTD_Cond(&ctd, "customVarCode");  // Conductivity in µS/cm
+DecagonCTD_Cond(&ctd, "UUID", "customVarCode");  // Conductivity in µS/cm
 //  Resolution is 0.001 mS/cm = 1 µS/cm
 //  Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
 //  Range is 0 – 120 mS/cm (bulk)
-DecagonCTD_Temp(&ctd, "customVarCode");  // Temperature in °C
+DecagonCTD_Temp(&ctd, "UUID", "customVarCode");  // Temperature in °C
 //  Resolution is 0.1°C
 //  Accuracy is ±1°C
 //  Range is -11°C to +49°C
-DecagonCTD_Depth(&ctd, "customVarCode");  // Water depth in mm
+DecagonCTD_Depth(&ctd, "UUID", "customVarCode");  // Water depth in mm
 //  Resolution is 2 mm
 //  Accuracy is ±0.05% of full scale
 //  Range is 0 to 5 m or 0 to 10 m, depending on model
@@ -571,23 +571,23 @@ _____
 
 Decagon sensors communicate with the board using the [SDI-12 protocol](http://www.sdi-12.org/) (and the [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).  They require a 3.5-12V power supply, which can be turned off between measurements.  While contrary to the manual, they will run with power as low as 3.3V.  On the ES-2 with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve.  On the bare-wire version, the power is connected to the _white_ cable, data to _red_, and ground to the unshielded cable.
 
-The SDI-12 address of the sensor, the Arduino pin controlling power on/off, the Arduino pin sending and recieving data, and a number of distinct readings to average are required for the sensor constructor.  The data pin must be a pin that supports pin-change interrupts.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
+The SDI-12 address of the sensor, the Arduino pin controlling power on/off, the Arduino pin sending and receiving data, and a number of distinct readings to average are required for the sensor constructor.  The data pin must be a pin that supports pin-change interrupts.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
 
-The main constuctor for the sensor object is:
+The main constructor for the sensor object is:
 
 ```cpp
 #include <DecagonES2.h>
 DecagonES2 es2(ES2SDI12address, SDI12Power, SDI12Data, numberReadings);
 ```
 
-The two available variables are:  (customVarCode is optional)
+The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-DecagonES2_Cond(&es2, "customVarCode");  // Conductivity in µS/cm
+DecagonES2_Cond(&es2, "UUID", "customVarCode");  // Conductivity in µS/cm
 //  Resolution is 0.001 mS/cm = 1 µS/cm
 //  Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
 //  Range is 0 – 120 mS/cm (bulk)
-DecagonES2_Temp(&es2, "customVarCode");  // Temperature in °C
+DecagonES2_Temp(&es2, "UUID", "customVarCode");  // Temperature in °C
 //  Resolution is 0.1°C
 //  Accuracy is ±1°C
 //  Range is -40°C to +50°C
@@ -596,11 +596,11 @@ _____
 
 ### <a name="DS18"></a>[Maxim DS18 Temperature Probes](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html)
 
-The Maxim temperature probes communicate using the OneWire library, which can be used on any digital pin on any of the supported boards.  The same module should work with a [DS18B20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html), [DS18S20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html), [DS1822](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1822.html), [MAX31820](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/MAX31820.html), and the no-longer-sold [DS1820](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1820.html) sensor.  These sensors can be attached to a 3.0-5.5V power source or they can take "parasitic power" from the data line.  When using the more typical setup with power, ground, and data lines, a 4.7k resistor must be attached as a pullup between the data and power lines.
+The Maxim temperature probes communicate using the OneWire library, which can be used on any digital pin on any of the supported boards.  The same module should work with a [DS18B20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18B20.html), [DS18S20](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html), [DS1822](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1822.html), [MAX31820](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/MAX31820.html), and the no-longer-sold [DS1820](https://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS1820.html) sensor.  These sensors can be attached to a 3.0-5.5V power source or they can take "parasitic power" from the data line.  When using the more typical setup with power, ground, and data lines, a 4.7k resistor must be attached as a pull-up between the data and power lines.
 
-The OneWire hex address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and recieving data are required for the sensor constructor.  The hex address is an array of 8 hex values, for example:  {0x28, 0x1D, 0x39, 0x31, 0x2, 0x0, 0x0, 0xF0 }.  To get the address of your sensor, plug a single sensor into your device and run the [oneWireSearch](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/oneWireSearch/oneWireSearch.ino) example or the [Single](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/Single/Single.pde) example provided within the Dallas Temperature library.  The sensor address is programmed at the factory and cannot be changed.
+The OneWire hex address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.  The hex address is an array of 8 hex values, for example:  {0x28, 0x1D, 0x39, 0x31, 0x2, 0x0, 0x0, 0xF0 }.  To get the address of your sensor, plug a single sensor into your device and run the [oneWireSearch](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/oneWireSearch/oneWireSearch.ino) example or the [Single](https://github.com/milesburton/Arduino-Temperature-Control-Library/blob/master/examples/Single/Single.pde) example provided within the Dallas Temperature library.  The sensor address is programmed at the factory and cannot be changed.
 
-The main constuctor for the sensor object is:
+The main constructor for the sensor object is:
 
 ```cpp
 #include <MaximDS18.h>
@@ -614,10 +614,10 @@ _If and only if you have exactly one sensor attached on your OneWire pin or bus_
 MaximDS18 ds18(powerPin, dataPin);
 ```
 
-The single available variable is:  (customVarCode is optional)
+The single available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-MaximDS18_Temp(&ds18, "customVarCode");  // Temperature in °C
+MaximDS18_Temp(&ds18, "UUID", "customVarCode");  // Temperature in °C
 // Resolution is between 0.0625°C (12 bit) and 0.5°C (9-bit)
 // Accuracy is ±0.5°C from -10°C to +85°C for DS18S20 and DS18B20, ±2°C for DS1822 and MAX31820
 // Range is -55°C to +125°C (-67°F to +257°F)
@@ -635,14 +635,14 @@ The only input needed for the sensor constructor is the Arduino pin controlling 
 AOSongAM2315 am2315(I2CPower);
 ```
 
-The two available variables are:  (customVarCode is optional)
+The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-AOSongAM2315_Humidity(&am2315, "customVarCode");  // Percent relative humidity
+AOSongAM2315_Humidity(&am2315, "UUID", "customVarCode");  // Percent relative humidity
 //  Resolution is 0.1 % RH (16 bit)
 //  Accuracy is ± 2 % RH
 //  Range is 0 - 100 % RH
-AOSongAM2315_Temp(&am2315, "customVarCode");  // Temperature in °C
+AOSongAM2315_Temp(&am2315, "UUID", "customVarCode");  // Temperature in °C
 // Resolution is 0.1°C (16 bit)
 // Accuracy is ±0.1°C
 // Range is -40°C to +125°C
@@ -660,23 +660,23 @@ The only input needed is the Arduino pin controlling power on/off; the i2cAddres
 BoschBME280 bme280(I2CPower, i2cAddressHex);
 ```
 
-The four available variables are:  (customVarCode is optional)
+The four available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-BoschBME280_Temp(&bme280, "customVarCode");  // Temperature in °C
+BoschBME280_Temp(&bme280, "UUID", "customVarCode");  // Temperature in °C
 //  Resolution is 0.01°C
 //  Accuracy is ±0.5°C
 //  Range is -40°C to +85°C
-BoschBME280_Humidity(&bme280, "customVarCode");  // Percent relative humidity
+BoschBME280_Humidity(&bme280, "UUID", "customVarCode");  // Percent relative humidity
 //  Resolution is 0.008 % RH (16 bit)
 //  Accuracy is ± 3 % RH
 //  Range is 0-100 % RH
-BoschBME280_Pressure(&bme280, "customVarCode");  // Barometric pressure in pascals
+BoschBME280_Pressure(&bme280, "UUID", "customVarCode");  // Barometric pressure in pascals
 //  Resolution is 0.18Pa
 //  Absolute Accuracy is ±1hPa
 //  Relative Accuracy is ±0.12hPa
 //  Range is 300 to 1100 hPa
-BoschBME280_Altitude(&bme280, "customVarCode");  // Altitude in meters, calculated from barometric pressure
+BoschBME280_Altitude(&bme280, "UUID", "customVarCode");  // Altitude in meters, calculated from barometric pressure
 //  Resolution is 1m
 //  Accuracy depends on geographic location
 ```
@@ -684,7 +684,7 @@ _____
 
 ### <a name="DHT"></a>[AOSong DHT](http://www.aosong.com/en/products/index.asp) Digital-Output Relative Humidity & Temperature Sensor
 
-This module will work with an AOSong [DHT11/CHT11](http://www.aosong.com/en/products/details.asp?id=109), DHT21/AM2301, and [DHT22/AM2302/CM2302](http://www.aosong.com/en/products/details.asp?id=117).  These sensors uses a non-standard single wire digital signalling protocol.  They can be connected to any digital pin.  Please keep in mind that, per manufacturer instructions, these sensors should not be polled more frequently than once every 2 seconds.  These sensors should be attached to a 3.3-6V power source and the power supply to the sensor can be stopped between measurements.
+This module will work with an AOSong [DHT11/CHT11](http://www.aosong.com/en/products/details.asp?id=109), DHT21/AM2301, and [DHT22/AM2302/CM2302](http://www.aosong.com/en/products/details.asp?id=117).  These sensors uses a non-standard single wire digital signaling protocol.  They can be connected to any digital pin.  Please keep in mind that, per manufacturer instructions, these sensors should not be polled more frequently than once every 2 seconds.  These sensors should be attached to a 3.3-6V power source and the power supply to the sensor can be stopped between measurements.
 
 The Arduino pin controlling power on/off, the Arduino pin receiving data, and the sensor type are required for the sensor constructor:
 
@@ -693,18 +693,18 @@ The Arduino pin controlling power on/off, the Arduino pin receiving data, and th
 AOSongDHT dht(DHTPower, DHTPin, dhtType);;
 ```
 
-The three available variables are:  (customVarCode is optional)
+The three available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-AOSongDHT_Humidity(&dht, "customVarCode");  // Percent relative humidity
+AOSongDHT_Humidity(&dht, "UUID", "customVarCode");  // Percent relative humidity
 //  Resolution is 0.1 % RH for DHT22 and 1 % RH for DHT11
 //  Accuracy is ± 2 % RH for DHT22 and ± 5 % RH for DHT11
 //  Range is 0 to 100 % RH
-AOSongDHT_Temp(&dht, "customVarCode");  // Temperature in °C
+AOSongDHT_Temp(&dht, "UUID", "customVarCode");  // Temperature in °C
 //  Resolution is 0.1°C
 //  Accuracy is ±0.5°C for DHT22 and ± ±2°C for DHT11
 //  Range is -40°C to +80°C
-AOSongDHT_HI(&dht, "customVarCode");  // Calculated Heat Index
+AOSongDHT_HI(&dht, "UUID", "customVarCode");  // Calculated Heat Index
 //  Resolution is 0.1°C
 //  Accuracy is ±0.5°C for DHT22 and ± ±2°C for DHT11
 //  Range is -40°C to +80°C
@@ -712,19 +712,19 @@ AOSongDHT_HI(&dht, "customVarCode");  // Calculated Heat Index
 _____
 
 ### <a name="SQ212"></a>[Apogee SQ-212 Quantum Light Sensor ](https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/) Photosynthetically Active Radiation (PAR)
-This library will work with the Apogee SQ-212 and SQ-212 analog quantum light sensors, and could be readily adapted to work with similar sensors (e.g. SQ-215 or SQ225) with by simply changing the calibration factors.  These sensors send out a simple analog signal.  To convert that to a high resolution digigal signal, the sensor must be attached to a TI ADS1115 ADD converter (such as on the first four analog pins of the Mayfly).    The TI ADS1115 ADD communicates with the board via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tieing the address pin to ground.  More than one of these ADD's can be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input volage of 2.0-5.5V.  The PAR sensors should be attached to a 5-24V power source and the power supply to the sensor can be stopped between measurements.
+This library will work with the Apogee SQ-212 and SQ-212 analog quantum light sensors, and could be readily adapted to work with similar sensors (e.g. SQ-215 or SQ225) with by simply changing the calibration factors.  These sensors send out a simple analog signal.  To convert that to a high resolution digigal signal, the sensor must be attached to a TI ADS1115 ADD converter (such as on the first four analog pins of the Mayfly).    The TI ADS1115 ADD communicates with the board via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tying the address pin to ground.  More than one of these ADD's can be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input voltage of 2.0-5.5V.  The PAR sensors should be attached to a 5-24V power source and the power supply to the sensor can be stopped between measurements.
 
-The Arduino pin controlling power on/off and the analog data pin _on the TI ADS1115_ are required for the sensor constructor.    If your ADD converter is not at the standard address of 0x48, you can enter its acutal address as the third argument.
+The Arduino pin controlling power on/off and the analog data pin _on the TI ADS1115_ are required for the sensor constructor.    If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the third argument.
 
 ```cpp
 #include <ApogeeSQ212.h>
 ApogeeSQ212 SQ212(SQ212Power, SQ212Data, ADS1x15_i2cAddress);
 ```
 
-The one available variable is:  (customVarCode is optional)
+The one available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-ApogeeSQ212_PAR(&SQ212, "customVarCode");  // Photosynthetically Active Radiation (PAR), in units of μmol m-2 s-1, or microeinsteinPerSquareMeterPerSecond
+ApogeeSQ212_PAR(&SQ212, "UUID", "customVarCode");  // Photosynthetically Active Radiation (PAR), in units of μmol m-2 s-1, or microeinsteins per square meter per second
 //  Resolution is 0.04 µmol m-2 s-1 (16 bit ADC)
 //  Accuracy is ± 0.5%
 //  Range is 0 to 2500 µmol m-2 s-1
@@ -741,26 +741,26 @@ This library currently supports the following Yosemitech sensors:
 - [Y514-A Chlorophyll Sensor with Wiper](http://www.yosemitech.com/en/product-14.html)
 - Y532-A Digital pH Sensor
 
-All of these sensors require a 5-12V power supply and the power supply can be stopped between measurements. They communicate via [Modbus RTU](https://en.wikipedia.org/wiki/Modbus) over [RS-485](https://en.wikipedia.org/wiki/RS-485).  To interface with them, you will need an RS485-to-TLL adapter.  The white wire of the Yosemitech sensor will connect to the "B" pin of the adapter and the green whire will connect to "A".  The red wire from the sensor should connect to the 5-12V power supply and the black to ground.  The Vcc pin on the adapter should be connected to another power supply (voltage depends on the specific adapter) and the ground to the same ground.  The red wire from the sensor _does not_ connect to the Vcc of the adapter.  The R/RO/RXD pin from the adapter connects to the TXD on the Arduino board and the D/DI/TXD pin from the adapter connects to the RXD.  If applicable, tie the RE and DE (recieve/data enable) pins together and connect them to another pin on your board.  There are a number of RS485-to-TLL adapters available.  When shopping for one, be mindful of the logic level of the TLL output by the adapter.  The MAX485, one of the most popular adapters, has a 5V logic level in the TLL signal.  This will _fry_ any board like the Mayfly that can only use on 3.3V logic.  You would need a voltage shifter in between the Mayfly and the MAX485 to make it work.
+All of these sensors require a 5-12V power supply and the power supply can be stopped between measurements. Older sensors may require higher voltage power supplies.  They communicate via [Modbus RTU](https://en.wikipedia.org/wiki/Modbus) over [RS-485](https://en.wikipedia.org/wiki/RS-485).  To interface with them, you will need an RS485-to-TTL adapter.  The white wire of the Yosemitech sensor will connect to the "B" pin of the adapter and the green wire will connect to "A".  The red wire from the sensor should connect to the 5-12V power supply and the black to ground.  The Vcc pin on the adapter should be connected to another power supply (voltage depends on the specific adapter) and the ground to the same ground.  The red wire from the sensor _does not_ connect to the Vcc of the adapter.  The R/RO/RXD pin from the adapter connects to the TXD on the Arduino board and the D/DI/TXD pin from the adapter connects to the RXD.  If applicable, tie the RE and DE (receive/data enable) pins together and connect them to another pin on your board.  There are a number of RS485-to-TTL adapters available.  When shopping for one, be mindful of the logic level of the TTL output by the adapter.  The MAX485, one of the most popular adapters, has a 5V logic level in the TTL signal.  This will _fry_ any board like the Mayfly that can only use on 3.3V logic.  You would need a voltage shifter in between the Mayfly and the MAX485 to make it work.
 
-The sensor modbus address, the pin controlling sensor power, a stream instance for data (ie, ```Serial```), the Arduino pin controlling the recieve and data enable on your RS485-to-TLL adapter, and the number of readings to average are required for the sensor constructor.  (Use -1 for the enable pin if your adapter does not have one.)  For all of these sensors exceph pH, Yosemitech strongly recommends averaging 10 readings for each measurement.  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.  AltSoftSerial and HardwareSerial work fine.
+The sensor modbus address, the pin controlling sensor power, a stream instance for data (ie, ```Serial```), the Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter, and the number of readings to average are required for the sensor constructor.  (Use -1 for the enable pin if your adapter does not have one.)  For all of these sensors except pH, Yosemitech strongly recommends averaging 10 readings for each measurement.  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.  AltSoftSerial and HardwareSerial work fine.
 
-The various sensor and variable constructors are:
+The various sensor and variable constructors are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
 // Dissolved Oxygen Sensor
 #include <YosemitechY504.h>  // Use this for both the Y502-A and Y504-A
 YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePin, y504NumberReadings);
 // Variables
-YosemitechY504_DOpct(&y504, "customVarCode")  // DO percent saturation
+YosemitechY504_DOpct(&y504, "UUID", "customVarCode")  // DO percent saturation
 //  Resolution is 0.00000005 %
 //  Accuracy is 1%
 //  Range is 0-200% Saturation
-YosemitechY504_Temp(&y504, "customVarCode")  // Temperature in °C
+YosemitechY504_Temp(&y504, "UUID", "customVarCode")  // Temperature in °C
 //  Resolution is 0.00000001 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
-YosemitechY504_DOmgL(&y504, "customVarCode")  // DO concentration in mg/L, calculated from percent saturation
+YosemitechY504_DOmgL(&y504, "UUID", "customVarCode")  // DO concentration in mg/L, calculated from percent saturation
 //  Resolution is 0.000000005 mg/L
 //  Accuracy is 1%
 //  Range is 0-20mg/L
@@ -771,11 +771,11 @@ YosemitechY504_DOmgL(&y504, "customVarCode")  // DO concentration in mg/L, calcu
 #include <YosemitechY510.h>  // Use this for both the Y510-B and Y511-A
 YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePin, y510NumberReadings);
 // Variables
-YosemitechY510_Turbidity(&y510, "customVarCode")  // Turbidity in NTU
+YosemitechY510_Turbidity(&y510, "UUID", "customVarCode")  // Turbidity in NTU
 //  Resolution is 0.0000002 NTU
 //  Accuracy is ± 5 % or 0.3 NTU
 //  Range is 0.1 to 1000 NTU
-YosemitechY510_Temp(&y510, "customVarCode")  // Temperature in °C
+YosemitechY510_Temp(&y510, "UUID", "customVarCode")  // Temperature in °C
 //  Resolution is 0.00000001 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
@@ -786,11 +786,11 @@ YosemitechY510_Temp(&y510, "customVarCode")  // Temperature in °C
 #include <YosemitechY514.h>
 YosemitechY514 y514(y514modbusAddress, modbusPower, modbusSerial, max485EnablePin, y514NumberReadings);
 // Variables
-YosemitechY514_Chlorophyll(&y514, "customVarCode")  // Chlorophyll concentration in µg/L
+YosemitechY514_Chlorophyll(&y514, "UUID", "customVarCode")  // Chlorophyll concentration in µg/L
 //  Resolution is 0.00000009 µg/L
 //  Accuracy is ± 1 %
 //  Range is 0 to 400 µg/L or 0 to 100 RFU
-YosemitechY514_Temp(&y514, "customVarCode")  // Temperature in °C
+YosemitechY514_Temp(&y514, "UUID", "customVarCode")  // Temperature in °C
 //  Resolution is 0.00000001 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
@@ -801,11 +801,11 @@ YosemitechY514_Temp(&y514, "customVarCode")  // Temperature in °C
 #include <YosemitechY520.h>
 YosemitechY520 y520(y520modbusAddress, modbusPower, modbusSerial, max485EnablePin, y520NumberReadings);
 // Variables
-YosemitechY520_Cond(&y520, "customVarCode")  // Conductivity in µS/cm
+YosemitechY520_Cond(&y520, "UUID", "customVarCode")  // Conductivity in µS/cm
 //  Resolution is 0.00000005 µS/cm
 //  Accuracy is ± 1 %
 //  Range is 1 to 200 µS/cm
-YosemitechY520_Temp(&y520, "customVarCode")  // Temperature in °C
+YosemitechY520_Temp(&y520, "UUID", "customVarCode")  // Temperature in °C
 //  Resolution is 0.00000001 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
@@ -816,15 +816,15 @@ YosemitechY520_Temp(&y520, "customVarCode")  // Temperature in °C
 #include <YosemitechY532.h>
 YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePin, y532NumberReadings);
 // Variables
-YosemitechY532_pH(&y532, "customVarCode")  // pH
+YosemitechY532_pH(&y532, "UUID", "customVarCode")  // pH
 //  Resolution is 0.000000002 pH
 //  Accuracy is ± 0.1 pH
 //  Range is 2 to 12 pH
-YosemitechY532_Temp(&y532, "customVarCode")  // Temperature in °C
+YosemitechY532_Temp(&y532, "UUID", "customVarCode")  // Temperature in °C
 //  Resolution is 0.00000001 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
-YosemitechY532_Voltage(&y532, "customVarCode")  // Electrode electrical potential
+YosemitechY532_Voltage(&y532, "UUID", "customVarCode")  // Electrode electrical potential
 ```
 _____
 
@@ -832,17 +832,17 @@ _____
 
 As the I2C [Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html) real time clock (RTC) is absolutely required for time-keeping on all AVR boards, this library also makes use of it for its on-board temperature sensor.  The DS3231 requires a 3.3V power supply.
 
-There are no arguements for the constructor, as the RTC requires constant power and is connected via I2C, but due to a bug, you do have to input a "1" in the input:
+There are no arguments for the constructor, as the RTC requires constant power and is connected via I2C, but due to a bug, you do have to input a "1" in the input:
 
 ```cpp
 #include <OnboardSensors.h>
 MaximDS3231 ds3231(1);
 ```
 
-The only available variables is:  (customVarCode is optional)
+The only available variables is:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-MaximDS3231_Temp(&ds3231, "customVarCode");  // Temperature in °C
+MaximDS3231_Temp(&ds3231, "UUID", "customVarCode");  // Temperature in °C
 //  Resolution is 0.25°C
 //  Accuracy is ±3°C
 //  Range is 0°C to +70°C
@@ -853,20 +853,20 @@ _____
 
 The processor can return the amount of RAM it has available and, for some boards, the battery voltage (EnviroDIY Mayfly, Sodaq Mbili, Ndogo, Autonomo, and One, Adafruit Feathers).  The version of the board is required as input (ie, for a EnviroDIY Mayfly: "v0.3" or "v0.4" or "v0.5").  Use a blank value (ie, "") for un-versioned boards.
 
-The main constuctor for the sensor object is:
+The main constructor for the sensor object is:
 
 ```cpp
 #include <OnboardSensors.h>
 ProcessorStats mayfly(MFVersion);
 ```
 
-The two available variables are:  (customVarCode is optional)
+The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-ProcessorStats_Batt(&mayfly, "customVarCode");  // Current battery voltage in volts
+ProcessorStats_Batt(&mayfly, "UUID", "customVarCode");  // Current battery voltage in volts
 //  Resolution is 0.005V (10 bit ADC)
 //  Range is 0 to 5 V
-ProcessorStats_FreeRam(&mayfly, "customVarCode");  // Amount of free RAM in bits
+ProcessorStats_FreeRam(&mayfly, "UUID", "customVarCode");  // Amount of free RAM in bits
 //  Resolution is 1 bit
 //  Accuracy is 1 bit
 //  Range is 0 to full RAM available on processor
@@ -877,11 +877,11 @@ _____
 
 In this library, the Arduino communicates with the computer for debugging, the modem for sending data, and some sensors (like the [MaxBotix MaxSonar](#MaxBotix)) via instances of Arduino TTL "[streams](https://www.arduino.cc/en/Reference/Stream)."  The streams can either be an instance of [serial](https://www.arduino.cc/en/Reference/Serial) (aka hardware serial), [AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial), [the EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts), or any other stream type you desire.  The very commonly used build-in version of the software serial library for AVR processors uses interrupts that conflict with several other sub-libraries or this library and _cannot be used_!  I repeat:  **_You cannot use the built-in version of SoftwareSerial!_**  You simply cannot.  It will not work.  Period.  This is not a bug that will be fixed.
 
-For stream communication, **hardware serial** should always be your first choice, if your processor has enough hardware serial ports.  Hardware serial ports are the most stable and have the best performance of any of the other streams.  Hardware seial ports are also the only option if you need to communicate with any device that uses even or odd parity, more than one stop bit, or does not use 8 data bits.  (That is, hardware serial ports are the only way to communicate with a device that doesn't use the 8N1 configuration.)
+For stream communication, **hardware serial** should always be your first choice, if your processor has enough hardware serial ports.  Hardware serial ports are the most stable and have the best performance of any of the other streams.  Hardware serial ports are also the only option if you need to communicate with any device that uses even or odd parity, more than one stop bit, or does not use 8 data bits.  (That is, hardware serial ports are the only way to communicate with a device that doesn't use the 8N1 configuration.)
 
 If the [proper pins](https://www.pjrc.com/teensy/td_libs_AltSoftSerial.html) are available, **[AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial)** by Paul Stoffregen is also superior to SoftwareSerial, especially at slow baud rates.  Neither hardware serial nor AltSoftSerial require any modifications.  Because of the limited number of serial ports available on most boards, I suggest giving first priority (i.e. the first (or only) hardware serial port, "Serial") to your debugging stream going to your PC (if you intend to debug), second priority to the stream for the modem, and third priority to any sensors that require a stream for communication.  See the section on [Processor Compatibility](#compatibility) for more specific notes on what serial ports are available on the various supported processors.
 
-To use a hardware serial stream, you do not need to include any libraries or write any extra lines.  You can simply write in "Serial#" where ever you need a stream.  If you would like to give your hardware serial port an easy-to-remeber alias, you can use code like this:
+To use a hardware serial stream, you do not need to include any libraries or write any extra lines.  You can simply write in "Serial#" where ever you need a stream.  If you would like to give your hardware serial port an easy-to-remember alias, you can use code like this:
 
 ```cpp
 HardwareSerial* streamName = &Serial;
@@ -936,7 +936,7 @@ The Mayfly _is_ the test board for this library.  _Everything_ is designed to wo
 ___
 
 #### AtSAMD21 (Arduino Zero, Adafruit Feather M0, Sodaq Autonomo)
-Fully supported
+_ALMOST_ Fully supported  (Still has bugs)
 
 - This processor has an internal real time clock (RTC) and does not require a DS3231 to be installed.  The built-in RTC is not as accurate as the DS3231, however, and should be synchronized more frequently to keep the time correct.  The processor clock will also reset if the system battery dies because unlike most external RTC's, there is no coin battery backing up the clock.  At this time, the AtSAMD21 is only supported using the internal clock, but support with a more accurate external RTC is planned.
 - This processor has one hardware serial port, USBSerial, which can _only_ be used for USB communication with a computer

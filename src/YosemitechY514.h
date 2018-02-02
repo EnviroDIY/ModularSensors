@@ -4,8 +4,8 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for the Decagon Devices 5TM Soil Moisture probe
- *It is dependent on the EnviroDIY SDI-12 library and the YosemitechParent super class.
+ *This file is for the Yosemitech Y514 Chlorophyll Sensor with Wiper
+ *It is dependent on the YosemitechParent super class.
  *
  *Documentation for the Modbus Protocol commands and responses can be found
  *within the documentation in the YosemitechModbus library at:
@@ -23,7 +23,7 @@
  *     Accuracy is ± 0.2°C
  *     Range is 0°C to + 50°C
  *
- * Time before sensor responds after power - 275-300ms (use 350 for safety)
+ * Time before sensor responds after power - 1.2 seconds
  * Time between "StartMeasurement" command and stable reading - 8sec
 */
 
@@ -68,11 +68,12 @@ public:
 class YosemitechY514_Chlorophyll : public Variable
 {
 public:
-    YosemitechY514_Chlorophyll(Sensor *parentSense, String customVarCode = "")
+    YosemitechY514_Chlorophyll(Sensor *parentSense,
+                               String UUID = "", String customVarCode = "")
      : Variable(parentSense, Y514_CHLORO_VAR_NUM,
                 F("chlorophyllFluorescence"), F("microgramPerLiter"),
                 Y514_CHLORO_RESOLUTION,
-                F("Y514Chloro"), customVarCode)
+                F("Y514Chloro"), UUID, customVarCode)
     {}
 };
 
@@ -81,11 +82,12 @@ public:
 class YosemitechY514_Temp : public Variable
 {
 public:
-    YosemitechY514_Temp(Sensor *parentSense, String customVarCode = "")
+    YosemitechY514_Temp(Sensor *parentSense,
+                        String UUID = "", String customVarCode = "")
      : Variable(parentSense, Y514_TEMP_VAR_NUM,
                 F("temperature"), F("degreeCelsius"),
                 Y514_TEMP_RESOLUTION,
-                F("Y514temp"), customVarCode)
+                F("Y514temp"), UUID, customVarCode)
     {}
 };
 #endif

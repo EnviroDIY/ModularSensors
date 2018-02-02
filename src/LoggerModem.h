@@ -505,11 +505,11 @@ private:
 class Modem_RSSI : public Variable
 {
 public:
-    Modem_RSSI(Sensor *parentSense, String customVarCode = "")
+    Modem_RSSI(Sensor *parentSense, String UUID = "", String customVarCode = "")
      : Variable(parentSense, CSQ_VAR_NUM,
                 F("RSSI"), F("decibelMiliWatt"),
                 0,
-                F("RSSI"), customVarCode)
+                F("RSSI"), UUID, customVarCode)
     {}
 };
 
@@ -518,11 +518,11 @@ public:
 class Modem_SignalPercent : public Variable
 {
 public:
-    Modem_SignalPercent(Sensor *parentSense, String customVarCode = "")
+    Modem_SignalPercent(Sensor *parentSense, String UUID = "", String customVarCode = "")
      : Variable(parentSense, PERCENT_STAT_VAR_NUM,
                 F("signalPercent"), F("percent"),
                 0,
-                F("signalPercent"), customVarCode)
+                F("signalPercent"), UUID, customVarCode)
     {}
 };
 

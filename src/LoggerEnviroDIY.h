@@ -29,16 +29,10 @@ public:
         MS_DBG(F("Registration token set!\n"));
     }
 
-    void setSamplingFeature(const char *samplingFeature)
+    void setSamplingFeatureUUID(const char *samplingFeature)
     {
         _samplingFeature = samplingFeature;
-        MS_DBG(F("Sampling feature token set!\n"));
-    }
-
-    void setUUIDs(const char *UUIDs[])
-    {
-        _UUIDs = UUIDs;
-        MS_DBG(F("UUID array set!\n"));
+        MS_DBG(F("Sampling feature UUID set!\n"));
     }
 
     // This adds extra data to the datafile header
@@ -49,7 +43,7 @@ public:
         // Add additional UUID information
         String  SFHeaderString = F("Sampling Feature: ");
         SFHeaderString += _samplingFeature;
-        makeHeaderRowMacro(SFHeaderString, String(_UUIDs[i]))
+        makeHeaderRowMacro(SFHeaderString, _variableList[i]->getVarUUID())
 
         // Put the basic header below
         dataHeader += Logger::generateFileHeader();
@@ -69,7 +63,7 @@ public:
         for (int i = 0; i < Logger::_variableCount; i++)
         {
             jsonString += F("\"");
-            jsonString += String(_UUIDs[i]) + F("\": ");
+            jsonString += Logger::_variableList[i]->getVarUUID() + F("\": ");
             jsonString += Logger::_variableList[i]->getValueString();
             if (i + 1 != Logger::_variableCount)
             {
@@ -219,7 +213,6 @@ private:
     // Tokens and UUID's for EnviroDIY
     const char *_registrationToken;
     const char *_samplingFeature;
-    const char **_UUIDs;
 };
 
 #endif

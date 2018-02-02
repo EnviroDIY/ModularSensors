@@ -27,7 +27,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
-
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <LoggerDreamHost.h>
@@ -62,6 +61,7 @@ const int wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
 
+// Create the processor "sensor"
 const char *MFVersion = "v0.5";
 ProcessorStats mayfly(MFVersion) ;
 
@@ -126,15 +126,15 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 //    The array that contains all variables to be logged
 // ==========================================================================
 Variable *variableList[] = {
-    new ProcessorStats_Batt(&mayfly),
-    new MaximDS3231_Temp(&ds3231),
-    new DecagonCTD_Cond(&ctd),
-    new DecagonCTD_Temp(&ctd),
-    new DecagonCTD_Depth(&ctd),
-    new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
-    new Modem_RSSI(&modem),
-    new Modem_SignalPercent(&modem),
+    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
+    new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
@@ -142,20 +142,9 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // ==========================================================================
 // Device registration and sampling feature information
 //   This should be obtained after registration at http://data.envirodiy.org
-//   You can copy the entire code snippet directly into this block below.
 // ==========================================================================
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
-const char *UUIDs[] =                                                      // UUID array for device sensors
-{
-"12345678-abcd-1234-efgh-1234567890ab",   // Battery voltage (EnviroDIY_Mayfly_Volt)
-"12345678-abcd-1234-efgh-1234567890ab",   // Temperature (EnviroDIY_Mayfly_Temp)
-"12345678-abcd-1234-efgh-1234567890ab",   // Electrical conductivity (Decagon_CTD-10_EC)
-"12345678-abcd-1234-efgh-1234567890ab",   // Temperature (Decagon_CTD-10_Temp)
-"12345678-abcd-1234-efgh-1234567890ab",   // Water depth (Decagon_CTD-10_Depth)
-"12345678-abcd-1234-efgh-1234567890ab",   // Turbidity (Campbell_OBS-3+_Turb)
-"12345678-abcd-1234-efgh-1234567890ab"    // Turbidity (Campbell_OBS-3+_Turb)
-};
 
 
 // ==========================================================================
@@ -219,8 +208,7 @@ void setup()
 
     // Set up the connection with EnviroDIY
     EnviroDIYLogger.setToken(registrationToken);
-    EnviroDIYLogger.setSamplingFeature(samplingFeature);
-    EnviroDIYLogger.setUUIDs(UUIDs);
+    EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Set up the connection with DreamHost
     EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);

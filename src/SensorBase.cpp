@@ -106,7 +106,7 @@ void Sensor::waitForWarmUp(void)
         }
         else if (millis() > _millisPowerOn)  // just in case millis() has rolled over
         {
-            MS_DBG(F("Waiting "), (millis() + _WarmUpTime_ms - _millisPowerOn), F("ms for sensor warm-up\n"));
+            MS_DBG(F("Waiting "), (_WarmUpTime_ms - (millis() - _millisPowerOn)), F("ms for sensor warm-up\n"));
             while((millis() - _millisPowerOn) < _WarmUpTime_ms){}
         }
         else  // if we get really unlucky and are measuring as millis() rolls over

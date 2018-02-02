@@ -4,8 +4,8 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for the Decagon Devices 5TM Soil Moisture probe
- *It is dependent on the EnviroDIY SDI-12 library and the YosemitechParent super class.
+ *This file is for the Yosemitech Y504 Optical Dissolved Oxyben sensor
+ *It is dependent on the YosemitechParent super class.
  *
  *Documentation for the Modbus Protocol commands and responses can be found
  *within the documentation in the YosemitechModbus library at:
@@ -70,11 +70,12 @@ public:
 class YosemitechY504_DOpct : public Variable
 {
 public:
-    YosemitechY504_DOpct(Sensor *parentSense, String customVarCode = "")
+    YosemitechY504_DOpct(Sensor *parentSense,
+                         String UUID = "", String customVarCode = "")
      : Variable(parentSense, Y504_DOPCT_VAR_NUM,
                 F("oxygenDissolvedPercentOfSaturation"), F("percent"),
                 Y504_DOPCT_RESOLUTION,
-                F("Y504DOpct"), customVarCode)
+                F("Y504DOpct"), UUID, customVarCode)
     {}
 };
 
@@ -83,11 +84,12 @@ public:
 class YosemitechY504_Temp : public Variable
 {
 public:
-    YosemitechY504_Temp(Sensor *parentSense, String customVarCode = "")
+    YosemitechY504_Temp(Sensor *parentSense,
+                        String UUID = "", String customVarCode = "")
      : Variable(parentSense, Y504_TEMP_VAR_NUM,
                 F("temperature"), F("degreeCelsius"),
                 Y504_TEMP_RESOLUTION,
-                F("Y504temp"), customVarCode)
+                F("Y504temp"), UUID, customVarCode)
     {}
 };
 
@@ -96,11 +98,12 @@ public:
 class YosemitechY504_DOmgL : public Variable
 {
 public:
-    YosemitechY504_DOmgL(Sensor *parentSense, String customVarCode = "")
+    YosemitechY504_DOmgL(Sensor *parentSense,
+                         String UUID = "", String customVarCode = "")
      : Variable(parentSense, Y504_DOMGL_VAR_NUM,
                 F("oxygenDissolved"), F("milligramPerLiter"),
                 Y504_DOMGL_RESOLUTION,
-                F("Y504DOmgL"), customVarCode)
+                F("Y504DOmgL"), UUID, customVarCode)
     {}
 };
 

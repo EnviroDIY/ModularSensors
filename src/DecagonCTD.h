@@ -72,11 +72,11 @@ public:
 class DecagonCTD_Cond : public Variable
 {
 public:
-    DecagonCTD_Cond(Sensor *parentSense, String customVarCode = "")
+    DecagonCTD_Cond(Sensor *parentSense, String UUID = "", String customVarCode = "")
      : Variable(parentSense, CTD_COND_VAR_NUM,
                 F("specificConductance"), F("microsiemenPerCentimeter"),
                 CTD_COND_RESOLUTION,
-                F("CTDcond"), customVarCode)
+                F("CTDcond"), UUID, customVarCode)
     {}
 };
 
@@ -85,11 +85,11 @@ public:
 class DecagonCTD_Temp : public Variable
 {
 public:
-    DecagonCTD_Temp(Sensor *parentSense, String customVarCode = "")
+    DecagonCTD_Temp(Sensor *parentSense, String UUID = "", String customVarCode = "")
      : Variable(parentSense, CTD_TEMP_VAR_NUM,
                 F("temperature"), F("degreeCelsius"),
                 CTD_TEMP_RESOLUTION,
-                F("CTDtemp"), customVarCode)
+                F("CTDtemp"), UUID, customVarCode)
     {}
 };
 
@@ -98,11 +98,11 @@ public:
 class DecagonCTD_Depth : public Variable
 {
 public:
-    DecagonCTD_Depth(Sensor *parentSense, String customVarCode = "")
+    DecagonCTD_Depth(Sensor *parentSense, String UUID = "", String customVarCode = "")
      : Variable(parentSense, CTD_DEPTH_VAR_NUM,
                 F("waterDepth"), F("millimeter"),
                 CTD_DEPTH_RESOLUTION,
-                F("CTDdepth"), customVarCode)
+                F("CTDdepth"), UUID, customVarCode)
     {}
 };
 

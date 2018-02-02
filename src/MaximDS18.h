@@ -67,11 +67,12 @@ private:
 class MaximDS18_Temp : public Variable
 {
 public:
-    MaximDS18_Temp(Sensor *parentSense, String customVarCode = "") :
-      Variable(parentSense, DS18_TEMP_VAR_NUM,
+    MaximDS18_Temp(Sensor *parentSense,
+                   String UUID = "", String customVarCode = "")
+      : Variable(parentSense, DS18_TEMP_VAR_NUM,
                F("temperature"), F("degreeCelsius"),
                DS18_TEMP_RESOLUTION,
-               F("DS18Temp"), customVarCode)
+               F("DS18Temp"), UUID, customVarCode)
     {}
 };
 

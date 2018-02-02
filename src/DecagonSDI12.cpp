@@ -3,9 +3,8 @@
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
-
  *
- *This file is for the Decagon Devices 5TM Soil Moisture probe
+ *This file is for all Decagon Devices that communicate with SDI-12
  *It is dependent on the EnviroDIY SDI-12 library.
 */
 

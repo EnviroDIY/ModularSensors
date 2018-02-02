@@ -18,7 +18,8 @@
 Variable::Variable(Sensor *parentSense, int varNum,
                    String varName, String varUnit,
                    unsigned int decimalResolution,
-                   String defaultVarCode, String customVarCode)
+                   String defaultVarCode,
+                   String UUID, String customVarCode)
 {
     parentSensor = parentSense;
     _varNum = varNum;
@@ -27,6 +28,7 @@ Variable::Variable(Sensor *parentSense, int varNum,
     _decimalResolution = decimalResolution;
     _defaultVarCode = defaultVarCode;
     _customCode = customVarCode;
+    _UUID = UUID;
 }
 
 void Variable::attachSensor(int varNum, Sensor *parentSense) {
@@ -50,6 +52,8 @@ void Variable::onSensorUpdate(Sensor *parentSense)
     MS_DBG(F("... received "));
     MS_DBG(sensorValue, F("\n"));
 }
+
+String Variable::getVarUUID(void) {return _UUID;}
 
 // This returns the variable's name using http://vocabulary.odm2.org/variablename/
 String Variable::getVarName(void){return _varName;}

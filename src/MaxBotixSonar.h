@@ -5,7 +5,6 @@
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the MaxBotix Sonar Library
- *It is dependent on Software Serial.
  *
  * The output from the HRXL-MaxSonar-WRL sonar is the range in mm.
  *     Accuracy is ± 1%
@@ -53,11 +52,12 @@ private:
 class MaxBotixSonar_Range : public Variable
 {
 public:
-    MaxBotixSonar_Range(Sensor *parentSense, String customVarCode = "") :
-      Variable(parentSense, HRXL_VAR_NUM,
+    MaxBotixSonar_Range(Sensor *parentSense,
+                        String UUID = "", String customVarCode = "")
+      : Variable(parentSense, HRXL_VAR_NUM,
                F("distance"), F("millimeter"),
                HRXL_RESOLUTION,
-               F("SonarRange"), customVarCode)
+               F("SonarRange"), UUID, customVarCode)
     {}
 };
 

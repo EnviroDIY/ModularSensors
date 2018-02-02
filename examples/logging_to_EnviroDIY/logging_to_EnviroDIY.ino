@@ -63,6 +63,7 @@ const int wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
 
+// Create the processor "sensor"
 const char *MFVersion = "v0.5";
 ProcessorStats mayfly(MFVersion) ;
 
@@ -251,10 +252,10 @@ YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePi
 
 
 // ==========================================================================
-//    Yosemitech Y510 or Y511 Turbidity Sensor
+//    Yosemitech Y510 Turbidity Sensor
 // ==========================================================================
 #include <YosemitechY510.h>
-byte y510modbusAddress = 0x0B;  // The modbus address of the Y510 or Y511
+byte y510modbusAddress = 0x0B;  // The modbus address of the Y510
 // const int modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // const int max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const int y510NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
@@ -266,6 +267,24 @@ const int y510NumberReadings = 10;  // The manufacturer strongly recommends taki
 // HardwareSerial &modbusSerial = Serial1;
 // #endif
 YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePin, y510NumberReadings);
+
+
+// ==========================================================================
+//    Yosemitech Y511 Turbidity Sensor with Wiper
+// ==========================================================================
+#include <YosemitechY511.h>
+byte y511modbusAddress = 0x1A;  // The modbus address of the Y511
+// const int modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// const int max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+const int y511NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+
+// #if defined __AVR__
+// #include <AltSoftSerial.h>
+// AltSoftSerial modbusSerial;
+// #else
+// HardwareSerial &modbusSerial = Serial1;
+// #endif
+YosemitechY511 y511(y511modbusAddress, modbusPower, modbusSerial, max485EnablePin, y511NumberReadings);
 
 
 // ==========================================================================
@@ -325,47 +344,49 @@ YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePi
 //    The array that contains all variables to be logged
 // ==========================================================================
 Variable *variableList[] = {
-    new ProcessorStats_Batt(&mayfly),
-    new ProcessorStats_FreeRam(&mayfly),
-    new MaximDS3231_Temp(&ds3231),
-    new ApogeeSQ212_PAR(&SQ212),
-    new MaxBotixSonar_Range(&sonar),
-    new Decagon5TM_Ea(&fivetm),
-    new Decagon5TM_Temp(&fivetm),
-    new Decagon5TM_VWC(&fivetm),
-    new DecagonES2_Cond(&es2),
-    new DecagonES2_Temp(&es2),
-    new DecagonCTD_Cond(&ctd),
-    new DecagonCTD_Temp(&ctd),
-    new DecagonCTD_Depth(&ctd),
-    new MaximDS18_Temp(&ds18_1),
-    new MaximDS18_Temp(&ds18_2),
-    new MaximDS18_Temp(&ds18_3),
-    new BoschBME280_Temp(&bme280),
-    new BoschBME280_Humidity(&bme280),
-    new BoschBME280_Pressure(&bme280),
-    new BoschBME280_Altitude(&bme280),
-    new AOSongDHT_Humidity(&dht),
-    new AOSongDHT_Temp(&dht),
-    new AOSongDHT_HI(&dht),
-    new AOSongAM2315_Humidity(&am2315),
-    new AOSongAM2315_Temp(&am2315),
-    new CampbellOBS3_Turbidity(&osb3low, "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "TurbHigh"),
-    new YosemitechY504_DOpct(&y504),
-    new YosemitechY504_Temp(&y504),
-    new YosemitechY504_DOmgL(&y504),
-    new YosemitechY510_Turbidity(&y510),
-    new YosemitechY510_Temp(&y510),
-    new YosemitechY514_Chlorophyll(&y514),
-    new YosemitechY514_Temp(&y514),
-    new YosemitechY520_Cond(&y520),
-    new YosemitechY520_Temp(&y520),
-    new YosemitechY532_pH(&y532),
-    new YosemitechY532_Temp(&y532),
-    new YosemitechY532_Voltage(&y532),
-    new Modem_RSSI(&modem),
-    new Modem_SignalPercent(&modem),
+    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaxBotixSonar_Range(&sonar, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Decagon5TM_Ea(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonES2_Cond(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonES2_Temp(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaximDS18_Temp(&ds18_1, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaximDS18_Temp(&ds18_2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaximDS18_Temp(&ds18_3, "12345678-abcd-1234-efgh-1234567890ab"),
+    new BoschBME280_Temp(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
+    new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
+    new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
+    new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AOSongDHT_Temp(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AOSongDHT_HI(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
+    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
+    new YosemitechY532_pH(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY532_Voltage(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY510_Temp(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     // new YOUR_variableName_HERE(&)
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
@@ -374,46 +395,9 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // ==========================================================================
 // Device registration and sampling feature information
 //   This should be obtained after registration at http://data.envirodiy.org
-//   You can copy the entire code snippet directly into this block below.
 // ==========================================================================
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
-const char *UUIDs[] =                                                      // UUID array for device sensors
-{
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab",
-"12345678-abcd-1234-efgh-1234567890ab"
-};
 
 
 // ==========================================================================
@@ -479,7 +463,7 @@ void setup()
                 loggingInterval, LoggerID);
     EnviroDIYLogger.setAlertPin(greenLED);
 
-    // Initialize the logger modem
+    // Setup the logger modem
     #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
         modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
     #else
@@ -491,8 +475,7 @@ void setup()
 
     // Set up the connection with EnviroDIY
     EnviroDIYLogger.setToken(registrationToken);
-    EnviroDIYLogger.setSamplingFeature(samplingFeature);
-    EnviroDIYLogger.setUUIDs(UUIDs);
+    EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Set up the connection with DreamHost
     #ifdef DreamHostPortalRX
