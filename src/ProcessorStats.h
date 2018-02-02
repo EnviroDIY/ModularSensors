@@ -50,7 +50,7 @@ public:
     void powerDown(void) override {}
 
     bool startSingleMeasurement(void) override;
-    bool getSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult(void) override;
 
 private:
     const char *_version;

@@ -26,7 +26,7 @@
 
 #define HRXL_NUM_VARIABLES 1
 #define HRXL_WARM_UP 160
-#define HRXL_STABILITY 160
+#define HRXL_STABILITY 0
 #define HRXL_RESAMPLE 166
 #define HRXL_RESOLUTION 0
 #define HRXL_VAR_NUM 0
@@ -41,9 +41,10 @@ public:
     String getSensorLocation(void) override;
 
     SENSOR_STATUS setup(void) override;
+    bool wake(void) override;
 
     bool startSingleMeasurement(void) override;
-    bool getSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult(void) override;
 
 private:
     int _triggerPin;

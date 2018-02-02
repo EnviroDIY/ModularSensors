@@ -18,7 +18,8 @@
  *  Accuracy is ±0.1°C
  *  Range is -40°C to +125°C
  *
- * Warm up/stability/re-sampling time: 2sec
+ * Warm up/stability: unknown
+ * Measurement time: 2sec
 */
 
 #ifndef AOSongAM2315_h
@@ -31,8 +32,8 @@
 #include "ModSensorDebugger.h"
 
 #define AM2315_NUM_VARIABLES 2
-#define AM2315_WARM_UP 2000
-#define AM2315_STABILITY 2000
+#define AM2315_WARM_UP 500
+#define AM2315_STABILITY 500
 #define AM2315_RESAMPLE 2000
 
 #define AM2315_HUMIDITY_RESOLUTION 1
@@ -51,8 +52,10 @@ public:
 
     String getSensorLocation(void) override;
 
+    SENSOR_STATUS setup(void);
+
     bool startSingleMeasurement(void) override;
-    bool getSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult(void) override;
 };
 
 

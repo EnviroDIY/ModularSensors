@@ -22,7 +22,8 @@
  *     Accuracy is ± 1°C
  *     Range is - 40°C to + 50°C
  *
- * Maximum warm-up time in SDI-12 mode: 200ms
+ * Maximum warm-up time in SDI-12 mode: 200ms, assume stability at warm-up
+ * Maximum measurement duration: 200ms
 */
 
 #ifndef Decagon5TM_h
@@ -33,7 +34,7 @@
 
 #define TM_NUM_VARIABLES 3
 #define TM_WARM_UP 200
-#define TM_STABILITY 200
+#define TM_STABILITY 0
 #define TM_RESAMPLE 200
 
 #define TM_EA_RESOLUTION 4

@@ -66,7 +66,7 @@ public:
     // This tells the sensor to start a single measurement
     virtual bool startSingleMeasurement(void) = 0;
     // This gets the results from a single measurement
-    virtual bool getSingleMeasurementResult(void) = 0;
+    virtual bool addSingleMeasurementResult(void) = 0;
 
     // This updates the sensor's values
     // This includes clears the values array, starts and averages as many
@@ -80,8 +80,8 @@ public:
     float sensorValues[MAX_NUMBER_VARS];
 
     // This just makes sure things are up-to-date
-    bool checkForUpdate(uint32_t sensorLastUpdated);
-    uint32_t sensorLastUpdated;
+    bool checkForUpdate(uint32_t _sensorLastUpdated);
+    uint32_t _sensorLastUpdated;
 
 protected:
     // A helper to check if the power is already on
@@ -104,11 +104,12 @@ protected:
     uint32_t _warmUpTime_ms;
     uint32_t _millisPowerOn;
 
+    uint32_t _stabilizationTime_ms;
     bool _isTakingMeasurements;
     uint32_t _millisMeasurementStarted;
-    uint32_t _stabilizationTime_ms;
 
     uint32_t _remeasurementTime_ms;
+    uint32_t _lastMeasurementRequested;
 
     SENSOR_STATUS sensorStatus;
     Variable *variables[MAX_NUMBER_VARS];

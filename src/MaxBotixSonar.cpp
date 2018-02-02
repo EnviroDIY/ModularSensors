@@ -13,6 +13,7 @@
 
 #include "MaxBotixSonar.h"
 
+
 MaxBotixSonar::MaxBotixSonar(Stream* stream, int powerPin, int triggerPin, int readingsToAverage)
     : Sensor(F("MaxBotixMaxSonar"), HRXL_NUM_VARIABLES,
              HRXL_WARM_UP, HRXL_STABILITY, HRXL_RESAMPLE,
@@ -30,39 +31,30 @@ MaxBotixSonar::MaxBotixSonar(Stream& stream, int powerPin, int triggerPin, int r
     _stream = &stream;
 }
 
+
 // unfortunately, we really cannot know where the stream is attached.
 String MaxBotixSonar::getSensorLocation(void){return F("sonarStream");}
 
+
 SENSOR_STATUS MaxBotixSonar::setup(void)
 {
-    if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
-
+    // Set the stream timeout;
+    // Even the slowest sensors should respond at a rate of 6Hz (166ms).
+    _stream->setTimeout(180);
+    // Set up the trigger, if applicable
     if(_triggerPin != -1)
     {
         pinMode(_triggerPin, OUTPUT);
         digitalWrite(_triggerPin, LOW);
     }
-
-    MS_DBG(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
-    MS_DBG(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
-
-    return SENSOR_READY;
+    return Sensor::setup();
 }
 
-bool MaxBotixSonar::update(void)
+
+// Parsing and tossing the header lines in the wake-up
+bool MaxBotixSonar::wake(void)
 {
-    // Check if the power is on, turn it on if not
-    bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up; assume stability at warm-up
-    waitForWarmUp();
-
-    // Set the stream timeout;
-    // Even the slowest sensors should respond at a rate of 6Hz (166ms).
-    _stream->setTimeout(180);
-
-    // Clear values before starting loop
-    clearValues();
+    bool isAwake = Sensor::wake();
 
     // NOTE: After the power is turned on to the MaxBotix, it sends several lines
     // of header to the serial port, beginning at ~65ms and finising at ~160ms.
@@ -83,7 +75,20 @@ bool MaxBotixSonar::update(void)
         String headerLine = _stream->readStringUntil('\r');
         MS_DBG(i, F(" - "), headerLine, F("\n"));
     }
+    return isAwake;
+}
 
+
+// nothing needs to happen to start an individual measurement
+bool MaxBotixSonar::startSingleMeasurement(void)
+{
+    _lastMeasurementRequested = millis();
+    return true;
+}
+
+
+bool MaxBotixSonar::addSingleMeasurementResult(void)
+{
     bool stringComplete = false;
     int rangeAttempts = 0;
     int result = 0;
@@ -121,14 +126,8 @@ bool MaxBotixSonar::update(void)
         }
     }
 
-    sensorValues[HRXL_VAR_NUM] = result;
-    MS_DBG(sensorValues[HRXL_VAR_NUM], F("\n"));
-
-    // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
-
-    // Update the registered variables with the new values
-    notifyVariables();
+    sensorValues[HRXL_VAR_NUM] += result;
+    MS_DBG(F("Sonar Range: "), result, F("\n"));
 
     // Return true when finished
     return true;

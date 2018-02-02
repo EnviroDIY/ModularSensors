@@ -10,9 +10,9 @@
 
 #define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
 #include <EnableInterrupt.h>  // To handle external and pin change interrupts
-#include <SDI12_ExtInts.h>
 
 #include "DecagonSDI12.h"
+
 
 // The constructor - need the number of measurements the sensor will return, SDI-12 address, the power pin, and the data pin
 DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin, int readingsToAverage,
@@ -20,7 +20,8 @@ DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin, int rea
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
-             powerPin, dataPin, readingsToAverage)
+             powerPin, dataPin, readingsToAverage),
+    _SDI12Internal(dataPin)
 {
     _SDI12address = SDI12address;
 }
@@ -29,7 +30,8 @@ DecagonSDI12::DecagonSDI12(char *SDI12address, int powerPin, int dataPin, int re
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
-             powerPin, dataPin, readingsToAverage)
+             powerPin, dataPin, readingsToAverage),
+    _SDI12Internal(dataPin)
 {
     _SDI12address = *SDI12address;
 }
@@ -38,7 +40,8 @@ DecagonSDI12::DecagonSDI12(int SDI12address, int powerPin, int dataPin, int read
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
-             powerPin, dataPin, readingsToAverage)
+             powerPin, dataPin, readingsToAverage),
+    _SDI12Internal(dataPin)
 {
     _SDI12address = SDI12address + '0';
 }
@@ -46,56 +49,46 @@ DecagonSDI12::DecagonSDI12(int SDI12address, int powerPin, int dataPin, int read
 
 SENSOR_STATUS DecagonSDI12::setup(void)
 {
-    if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
-    pinMode(_dataPin, INPUT_PULLUP);
+    Sensor::setup();
 
+    // Begin the SDI-12 interface
+    _SDI12Internal.begin();
+
+     // SDI-12 protocol says sensors must respond within 15 milliseconds
+    _SDI12Internal.setTimeout(15);
+
+    // Allow the SDI-12 library access to interrupts
+    enableInterrupt(_dataPin, SDI12::handleInterrupt, CHANGE);
+
+    waitForWarmUp();
     bool isSet = getSensorInfo();
 
-    if (isSet)
-    {
-        MS_DBG(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
-        MS_DBG(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
-        return SENSOR_READY;
-    }
+    if (isSet) return SENSOR_READY;
     else return SENSOR_ERROR;
 }
 
 
 SENSOR_STATUS DecagonSDI12::getStatus(void)
 {
-    // Check if the power is on, turn it on if not
-    bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up
-    waitForWarmUp();
-
-    SDI12 mySDI12(_dataPin);
-    mySDI12.begin();
-    mySDI12.setTimeout(15);  // SDI-12 protocol says sensors must respond within 15 milliseconds
-    enableInterrupt(_dataPin, SDI12::handleInterrupt, CHANGE);
+    // Empty the buffer
+    _SDI12Internal.clearBuffer();
 
     MS_DBG(F("Asking for sensor acknowlegement\n"));
     String myCommand = "";
     myCommand += (char) _SDI12address;
     myCommand += "!"; // sends 'acknowledge active' command [address][!]
-    mySDI12.sendCommand(myCommand);
+    _SDI12Internal.sendCommand(myCommand);
     MS_DBG(F(">>"), myCommand, F("\n"));
     delay(30);
 
     // wait for acknowlegement with format:
     // [address]<CR><LF>
-    String sdiResponse = mySDI12.readStringUntil('\n');
+    String sdiResponse = _SDI12Internal.readStringUntil('\n');
     sdiResponse.trim();
     MS_DBG(F("<<"), sdiResponse, F("\n"));
 
-    // Kill the SDI-12 Object
-    disableInterrupt(_dataPin);
-    mySDI12.clearBuffer();
-    mySDI12.forceHold();
-    mySDI12.end();
-
-    // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
+    // Empty the buffer again
+    _SDI12Internal.clearBuffer();
 
     if (sdiResponse == String(_SDI12address)) return SENSOR_READY;
     else return SENSOR_ERROR;
@@ -114,31 +107,25 @@ bool DecagonSDI12::getSensorInfo(void)
     // Check that the sensor is there and responding
     if (getStatus() == SENSOR_ERROR) return false;
 
-    // Start a new SDI-12 instance
-    SDI12 mySDI12(_dataPin);
-    mySDI12.begin();
-    mySDI12.setTimeout(15);  // SDI-12 protocol says sensors must respond within 15 milliseconds
-    enableInterrupt(_dataPin, SDI12::handleInterrupt, CHANGE);
+    // Empty the buffer
+    _SDI12Internal.clearBuffer();
 
     MS_DBG(F("Getting sensor info\n"));
     String myCommand = "";
     myCommand += (char) _SDI12address;
     myCommand += "I!"; // sends 'info' command [address][I][!]
-    mySDI12.sendCommand(myCommand);
+    _SDI12Internal.sendCommand(myCommand);
     MS_DBG(F(">>"), myCommand, F("\n"));
     delay(30);
 
     // wait for acknowlegement with format:
     // [address][SDI12 version supported (2 char)][vendor (8 char)][model (6 char)][version (3 char)][serial number (<14 char)]<CR><LF>
-    String sdiResponse = mySDI12.readStringUntil('\n');
+    String sdiResponse = _SDI12Internal.readStringUntil('\n');
     sdiResponse.trim();
     MS_DBG(F("<<"), sdiResponse, F("\n"));
 
-    // Kill the SDI-12 Object
-    disableInterrupt(_dataPin);
-    mySDI12.clearBuffer();
-    mySDI12.forceHold();
-    mySDI12.end();
+    // Empty the buffer again
+    _SDI12Internal.clearBuffer();
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
@@ -159,6 +146,7 @@ bool DecagonSDI12::getSensorInfo(void)
     }
     else return false;
 }
+
 
 // The sensor vendor
 String DecagonSDI12::getSensorVendor(void)
@@ -185,96 +173,71 @@ String DecagonSDI12::getSensorLocation(void)
     return sensorLocation;
 }
 
-// Uses SDI-12 to communicate with a Decagon Devices 5TM
-bool DecagonSDI12::update()
+
+// Sending the command to get a concurrent measurement
+bool DecagonSDI12::startSingleMeasurement(void)
 {
-    // Check if the power is on, turn it on if not
-    bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up; assume stable at warm-up
-    waitForWarmUp();
-
-    // Clear values before starting loop
-    clearValues();
-
     // Check that the sensor is there and responding
     if (getStatus() == SENSOR_ERROR) return false;
 
-    // Start a new SDI-12 instance
-    SDI12 mySDI12(_dataPin);
-    mySDI12.begin();
-    mySDI12.setTimeout(15);  // SDI-12 protocol says sensors must respond within 15 milliseconds
-    enableInterrupt(_dataPin, SDI12::handleInterrupt, CHANGE);
+    // Empty the buffer
+    _SDI12Internal.clearBuffer();
 
-    String myCommand = "";
-    myCommand += _SDI12address;
-    myCommand += "M!"; // SDI-12 measurement myCommand format  [address]['M'][!]
-    mySDI12.sendCommand(myCommand);
-    MS_DBG(F(">>"), myCommand, F("\n"));
+    String startCommand = "";
+    startCommand += _SDI12address;
+    startCommand += "C!"; // Start concurrant measurement - format  [address]['C'][!]
+    _SDI12Internal.sendCommand(startCommand);
+    MS_DBG(F(">>"), startCommand, F("\n"));
     delay(30);  // It just needs this little delay
 
     // wait for acknowlegement with format
-    // [address][ttt (3 char, seconds)][number of measurments available, 0-9]<CR><LF>
-    String sdiResponse = mySDI12.readStringUntil('\n');
+    // [address][ttt (3 char, seconds)][number of values to be returned, 0-9]<CR><LF>
+    String sdiResponse = _SDI12Internal.readStringUntil('\n');
     sdiResponse.trim();
-    mySDI12.clearBuffer();
+    _SDI12Internal.clearBuffer();
     MS_DBG(F("<<"), sdiResponse, F("\n"));
 
-    // find out how long we have to wait (in seconds).
-    unsigned int wait = 0;
-    wait = sdiResponse.substring(1,4).toInt();
-    MS_DBG(F("Waiting "), wait, F(" seconds for measurement\n"));
+    // Empty the buffer again
+    _SDI12Internal.clearBuffer();
 
-    // Set up the number of results to expect
-    int numVariables = sdiResponse.substring(4,5).toInt();
-    MS_DBG(numVariables, F(" results expected\n"));
-    if (numVariables != _numReturnedVars)
-    {
-        MS_DBG(F("This differs from the sensor's standard design of "));
-        MS_DBG(_numReturnedVars, F(" measurements!!\n"));
-    }
+    // // Verify the number of results the sensor will send
+    // int numVariables = sdiResponse.substring(4,5).toInt();
+    // if (numVariables != _numReturnedVars)
+    // {
+    //     MS_DBG(numVariables, F(" results expected\n"));
+    //     MS_DBG(F("This differs from the sensor's standard design of "));
+    //     MS_DBG(_numReturnedVars, F(" measurements!!\n"));
+    // }
 
-    uint32_t timerStart = millis();
-    while((millis() - timerStart) < (1000 * wait))
-    {
-        if(mySDI12.available())  // sensor can interrupt us to let us know it is done early
-        {
-            MS_DBG(F("<<"), mySDI12.readString());  // Read the service request (the address again)
-            MS_DBG("Wait interrupted!", F("\n"));
-            mySDI12.clearBuffer();
-            delay(5);  // Necessary for reasons unbeknownst to me (else it just fails sometimes..)
-            break;
-        }
-    }
+}
 
-    myCommand = "";
-    myCommand += _SDI12address;
-    myCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
-    mySDI12.sendCommand(myCommand);
-    MS_DBG(F(">>"), myCommand, F("\n"));
+
+bool DecagonSDI12::addSingleMeasurementResult(void)
+{
+    // Make sure we've waited long enough for a reading to finish
+    waitForNextMeasurement();
+
+    // Empty the buffer
+    _SDI12Internal.clearBuffer();
+
+    String getDataCommand = "";
+    getDataCommand += _SDI12address;
+    getDataCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
+    _SDI12Internal.sendCommand(getDataCommand);
+    MS_DBG(F(">>"), getDataCommand, F("\n"));
     delay(30);  // It just needs this little delay
 
     MS_DBG(F("Receiving data\n"));
-    mySDI12.read();  // ignore the repeated SDI12 address
+    _SDI12Internal.read();  // ignore the repeated SDI12 address
     for (int i = 0; i < _numReturnedVars; i++)
     {
-        float result = mySDI12.parseFloat();
+        float result = _SDI12Internal.parseFloat();
         sensorValues[i] += result;
         MS_DBG(F("Result #"), i, F(": "), result, F("\n"));
     }
-    mySDI12.clearBuffer();
 
-    // Kill the SDI-12 Object
-    disableInterrupt(_dataPin);
-    mySDI12.clearBuffer();
-    mySDI12.forceHold();
-    mySDI12.end();
-
-    // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
-
-    // Update the registered variables with the new values
-    notifyVariables();
+    // Empty the buffer again
+    _SDI12Internal.clearBuffer();
 
     // Return true when finished
     return true;

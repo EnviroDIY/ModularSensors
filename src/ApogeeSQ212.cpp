@@ -27,6 +27,7 @@
 #include "ApogeeSQ212.h"
 #include <Adafruit_ADS1015.h>
 
+
 // The constructor - need the power pin and the data pin
 ApogeeSQ212::ApogeeSQ212(int powerPin, int dataPin, uint8_t i2cAddress, int readingsToAverage)
     : Sensor(F("ApogeeSQ212"), SQ212_NUM_VARIABLES,
@@ -44,21 +45,20 @@ String ApogeeSQ212::getSensorLocation(void)
     return sensorLocation;
 }
 
-bool ApogeeSQ212::update(void)
-{
 
+// nothing needs to happen to start an individual measurement
+bool ApogeeSQ212::startSingleMeasurement(void)
+{
+    _lastMeasurementRequested = millis();
+    return true;
+}
+
+
+bool ApogeeSQ212::addSingleMeasurementResult(void)
+{
     // Start the Auxillary ADD
     Adafruit_ADS1115 ads(_i2cAddress);     /* Use this for the 16-bit version */
     ads.begin();
-
-    // Check if the power is on, turn it on if not
-    bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up; assume stability at warm-up
-    waitForWarmUp();
-
-    // Clear values before starting loop
-    clearValues();
 
     // Variables to store the results in
     int16_t adcResult = 0;
@@ -82,13 +82,7 @@ bool ApogeeSQ212::update(void)
     calibResult = 1 * voltage * 1000 ;  // in units of μmol m-2 s-1 (microeinsteinPerSquareMeterPerSecond)
     MS_DBG(F("calibResult: "), calibResult, F("\n"));
 
-    sensorValues[SQ212_PAR_VAR_NUM] = calibResult;
-
-    // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
-
-    // Update the registered variables with the new values
-    notifyVariables();
+    sensorValues[SQ212_PAR_VAR_NUM] += calibResult;
 
     // Return true when finished
     return true;

@@ -21,7 +21,8 @@
  *  Accuracy is ±1°C
  *  Range is -40°C to +50°C
  *
- * Maximum warm-up time in SDI-12 mode: 250ms
+ * Maximum warm-up time in SDI-12 mode: 250ms, assume stability at warm-up
+ * Maximum measurement duration: 250ms
 */
 
 #ifndef DecagonES2_h
@@ -32,7 +33,7 @@
 
 #define ES2_NUM_VARIABLES 2
 #define ES2_WARM_UP 250
-#define ES2_STABILITY 250
+#define ES2_STABILITY 0
 #define ES2_RESAMPLE 250
 
 #define ES2_COND_RESOLUTION 0

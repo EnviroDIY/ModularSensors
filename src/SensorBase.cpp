@@ -21,13 +21,17 @@ Sensor::Sensor(String sensorName, int numReturnedVars,
 {
     _sensorName = sensorName;
     _numReturnedVars = numReturnedVars;
+    _sensorLastUpdated = 0;
 
     _warmUpTime_ms = warmUpTime_ms;
     _millisPowerOn = 0;
+
     _stabilizationTime_ms = stabilizationTime_ms;
     _isTakingMeasurements = false;
     _millisMeasurementStarted = 0;
+
     _remeasurementTime_ms = remeasurementTime_ms;
+    _lastMeasurementRequested = 0;
 
     _powerPin = powerPin;
     _dataPin = dataPin;
@@ -175,14 +179,14 @@ void Sensor::waitForNextMeasurement(void)
 {
     if (_remeasurementTime_ms != 0)
     {
-        if (millis() > sensorLastUpdated + _remeasurementTime_ms)  // already ready
+        if (millis() > _lastMeasurementRequested + _remeasurementTime_ms)  // already ready
         {
             MS_DBG(F("Sensor should be stable!\n"));
         }
-        else if (millis() > sensorLastUpdated)  // just in case millis() has rolled over
+        else if (millis() > _lastMeasurementRequested)  // just in case millis() has rolled over
         {
-            MS_DBG(F("Waiting "), (_remeasurementTime_ms - (millis() - sensorLastUpdated)), F("ms for sensor to stabilize\n"));
-            while((millis() - sensorLastUpdated) < _remeasurementTime_ms){}
+            MS_DBG(F("Waiting "), (_remeasurementTime_ms - (millis() - _lastMeasurementRequested)), F("ms for sensor to stabilize\n"));
+            while((millis() - _lastMeasurementRequested) < _remeasurementTime_ms){}
         }
         else  // if we get really unlucky and are measuring as millis() rolls over
         {
@@ -240,7 +244,7 @@ void Sensor::notifyVariables(void)
 {
     MS_DBG(F("Notifying registered variables.\n"));
     // Make note of the last time updated
-    sensorLastUpdated = millis();
+    _sensorLastUpdated = millis();
 
     // Notify variables of update
     for (int i = 0; i < _numReturnedVars; i++)
@@ -279,4 +283,41 @@ void Sensor::clearValues(void)
     MS_DBG(F("Clearing sensor value array.\n"));
     for (int i = 0; i < _numReturnedVars; i++)
     { sensorValues[i] =  0; }
+}
+
+
+bool Sensor::update(void)
+{
+    bool ret_val;
+
+    // Check if the power is on, turn it on if not
+    bool wasOn = checkPowerOn();
+    if(!wasOn){ret_val += wake();}
+    // Wait until the sensor is warmed up and stable
+    waitForWarmUp();
+    waitForStability();
+
+    // Clear values before starting loop
+    clearValues();
+
+    for (int j = 0; j < _readingsToAverage; j++)
+    {
+        ret_val += startSingleMeasurement();
+        ret_val += addSingleMeasurementResult();
+    }
+
+    MS_DBG(F("Averaging over "), _numReadings, F(" readings\n"));
+    for (int i = 0; i < _numReturnedVars; i++)
+    {
+        sensorValues[i] /=  _readingsToAverage;
+        MS_DBG(F("Result #"), i, F(": "), sensorValues[i], F("\n"));
+    }
+
+    // Turn the power back off it it had been turned on
+    if(!wasOn){powerDown();}
+
+    // Update the registered variables with the new values
+    notifyVariables();
+
+    return ret_val;
 }

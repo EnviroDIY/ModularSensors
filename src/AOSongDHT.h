@@ -20,7 +20,7 @@
  *  Accuracy is ±0.5°C for DHT22 and ± ±2°C for DHT11
  *  Range is -40°C to +80°C
  *
- * Warm up/stability time: 1.7sec
+ * Warm up time: 1.7sec; assume stable on warm-up
  * Re-sampling time: 2.0sec
 */
 
@@ -43,7 +43,7 @@
 
 #define DHT_NUM_VARIABLES 3
 #define DHT_WARM_UP 1700
-#define DHT_STABILITY 1700
+#define DHT_STABILITY 0
 #define DHT_RESAMPLE 2000
 
 #define DHT_HUMIDITY_RESOLUTION 1
@@ -76,7 +76,7 @@ public:
     String getSensorName(void) override;
 
     bool startSingleMeasurement(void) override;
-    bool getSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult(void) override;
 
 private:
     DHT dht_internal;

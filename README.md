@@ -85,9 +85,9 @@ In order to support multiple functions and sensors, there are quite a lot of sub
 - **wake()** - This wakes the sensor up, usually by sending it power, but sometimes by sending a specific wake or start measuring command.  Returns true if successful.
 - **sleep()** - This puts the sensor to sleep, often by stopping the power, but sometimes by sending a specific sleep or stop measuring command.  Returns true if successful.
 - **powerDown()** - This cuts the sensor power.  No return.
-- **startSingleMeasurement()** - This tells the sensor to start a single measurement.  Returns true if successful.
-- **getSingleMeasurementResult()** - This gets the results from a single measurement that has already been started.  Returns true if successful.
 - **update()** - This updates the sensor values and returns true when finished.  For digital sensors with a single information return, this only needs to be called once for each sensor, even if there are multiple variable subclasses for the sensor.  In general, the update function wakes the sensor, if necessary, tells it to start measurements and get values as many times as requested, averages all the values, notifies the attached variables that new values are available, and then puts the sensor back to sleep if it had been asleep at the start of the update.
+- **startSingleMeasurement()** - This tells the sensor to start a single measurement.  Returns true if successful.  Generally you do NOT want to use this function on its own; use the update function instead.
+- **addSingleMeasurementResult()** - This gets the results from a single measurement that has already been started.  Returns true if successful.  Generally you do NOT want to use this function on its own; use the update function instead.
 
 ### Functions for Each Variable
 - **Constructor** - Every variable requires a pointer to its parent sensor as part of the constructor.  Every variable also has two optional string entries, for a universally unique identifier (UUID/GUID) and a custom variable code.  _The UUID must always be listed first!_  In cases where you would like a custom variable code, but do not have a UUID, you **must** enter '""' as your UUID.

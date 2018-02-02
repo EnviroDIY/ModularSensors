@@ -25,6 +25,7 @@
 
 #include "AOSongDHT.h"
 
+
 // The constructor - need the power pin, data pin, and type of DHT
 AOSongDHT::AOSongDHT(int powerPin, int dataPin, DHTtype type, int readingsToAverage)
     : Sensor(F("AOSongDHT"), DHT_NUM_VARIABLES,
@@ -35,19 +36,13 @@ AOSongDHT::AOSongDHT(int powerPin, int dataPin, DHTtype type, int readingsToAver
     _dhtType = type;
 }
 
+
 SENSOR_STATUS AOSongDHT::setup(void)
 {
-    if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
-    pinMode(_dataPin, INPUT_PULLUP);
-
-    // Start up the sensor
-    dht_internal.begin();
-
-    MS_DBG(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
-    MS_DBG(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
-
-    return SENSOR_READY;
+    dht_internal.begin();  // Start up the sensor
+    return Sensor::setup();
 }
+
 
 String AOSongDHT::getSensorName(void)
 {
@@ -59,22 +54,23 @@ String AOSongDHT::getSensorName(void)
      }
 }
 
-bool AOSongDHT::update(void)
-{
-    // Check if the power is on, turn it on if not
-    bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up; assume stability at warm-up
-    waitForWarmUp();
 
-    // Clear values before starting loop
-    clearValues();
+// nothing needs to happen to start an individual measurement
+bool AOSongDHT::startSingleMeasurement(void)
+{
+    _lastMeasurementRequested = millis();
+    return true;
+}
+
+
+bool AOSongDHT::addSingleMeasurementResult(void)
+{
+    // Make sure we've waited long enough for a new reading to be available
+    waitForNextMeasurement();
 
     // Reading temperature or humidity takes about 250 milliseconds!
-    // Sensor readings may also be up to 2 seconds 'old' (it's a very slow sensor)
-
     float humid_val, temp_val, hi_val = 0;
-    for (uint8_t i = 0; i < 5; i++)
+    for (uint8_t i = 0; i < 5; i++)  // Make 5 attempts to get a decent reading
     {
         // First read the humidity
         humid_val = dht_internal.readHumidity();
@@ -106,19 +102,9 @@ bool AOSongDHT::update(void)
     }
 
     // Store the results in the sensorValues array
-    sensorValues[DHT_TEMP_VAR_NUM] = temp_val;
-    sensorValues[DHT_HUMIDITY_VAR_NUM] = humid_val;
-    sensorValues[DHT_HI_VAR_NUM] = hi_val;
-
-    // MS_DBG(F("Temp is: "), sensorValues[DHT_TEMP_VAR_NUM], F("°C"));
-    // MS_DBG(F(" Humidity is: "), sensorValues[DHT_HUMIDITY_VAR_NUM], F("%"));
-    // MS_DBG(F(" Calculated Heat Index is: "), sensorValues[DHT_HI_VAR_NUM], F("°C\n"));
-
-    // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
-
-    // Update the registered variables with the new values
-    notifyVariables();
+    sensorValues[DHT_TEMP_VAR_NUM] += temp_val;
+    sensorValues[DHT_HUMIDITY_VAR_NUM] += humid_val;
+    sensorValues[DHT_HI_VAR_NUM] += hi_val;
 
     return true;
 }

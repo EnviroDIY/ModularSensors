@@ -13,7 +13,7 @@
  *  Range is 0°C to +70°C
  *
  * The clock should have a separate power supply and never be turned off.
- * We assume it's always warmed up.
+ * We assume it's always warmed up and stable.
  * The temperature conversion typical takes 125 ms, with a max time of 200 ms.
 */
 
@@ -30,8 +30,8 @@
 
 #define DS3231_NUM_VARIABLES 1
 #define DS3231_WARM_UP 0
-#define DS3231_STABILITY 150
-#define DS3231_RESAMPLE 150
+#define DS3231_STABILITY 0
+#define DS3231_RESAMPLE 0  // The function to get a value forces the wait already
 #define DS3231_TEMP_RESOLUTION 2
 #define DS3231_TEMP_VAR_NUM 0
 
@@ -59,7 +59,7 @@ public:
     SENSOR_STATUS setup(void) override;
 
     bool startSingleMeasurement(void) override;
-    bool getSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult(void) override;
 };
 
 

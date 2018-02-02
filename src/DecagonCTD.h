@@ -26,7 +26,8 @@
  *  Accuracy is ±0.05% of full scale
  *  Range is 0 to 5 m or 0 to 10 m, depending on model
  *
- * Maximum warm-up time in SDI-12 mode: 500ms
+ * Maximum warm-up time in SDI-12 mode: 500ms, assume stability at warm-up
+ * Maximum measurement duration: 500ms
 */
 
 
@@ -38,7 +39,7 @@
 
 #define CTD_NUM_VARIABLES 3
 #define CTD_WARM_UP 500
-#define CTD_STABILITY 500
+#define CTD_STABILITY 0
 #define CTD_RESAMPLE 500
 
 #define CTD_COND_RESOLUTION 0

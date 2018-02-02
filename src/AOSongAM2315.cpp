@@ -23,6 +23,7 @@
 #include "AOSongAM2315.h"
 #include <Adafruit_AM2315.h>
 
+
 // The constructor - because this is I2C, only need the power pin
 AOSongAM2315::AOSongAM2315(int powerPin, int readingsToAverage)
     : Sensor(F("AOSongAM2315"), AM2315_NUM_VARIABLES,
@@ -30,35 +31,39 @@ AOSongAM2315::AOSongAM2315(int powerPin, int readingsToAverage)
              powerPin, -1, readingsToAverage)
 {}
 
+
 String AOSongAM2315::getSensorLocation(void){return F("I2C_0xB8");}
 
-bool AOSongAM2315::update(void)
+SENSOR_STATUS AOSongAM2315::setup(void)
 {
-    Adafruit_AM2315 am2315;  // create a sensor object
     Wire.begin();  // Start the wire library
+    return Sensor::setup();
+}
 
-    // Check if the power is on, turn it on if not
-    bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up (assume it's stable at warm-up)
-    waitForWarmUp();
 
-    // Clear values before starting loop
-    clearValues();
+// nothing needs to happen to start an individual measurement
+bool AOSongAM2315::startSingleMeasurement(void)
+{
+    _lastMeasurementRequested = millis();
+    return true;
+}
+
+
+bool AOSongAM2315::addSingleMeasurementResult(void)
+{
+    // Make sure we've waited long enough for a new reading to be available
+    waitForNextMeasurement();
+
+    Adafruit_AM2315 am2315;  // create a sensor object
 
     float temp_val, humid_val;
     bool ret_val = am2315.readTemperatureAndHumidity(temp_val, humid_val);
-    sensorValues[AM2315_TEMP_VAR_NUM] = temp_val;
-    sensorValues[AM2315_HUMIDITY_VAR_NUM] = humid_val;
 
-    MS_DBG(F("Temp is: "), sensorValues[AM2315_TEMP_VAR_NUM], F("°C"));
-    MS_DBG(F(" and humidity is: "), sensorValues[AM2315_HUMIDITY_VAR_NUM], F("%\n"));
+    sensorValues[AM2315_TEMP_VAR_NUM] += temp_val;
+    sensorValues[AM2315_HUMIDITY_VAR_NUM] += humid_val;
 
-    // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
-
-    // Update the registered variables with the new values
-    notifyVariables();
+    MS_DBG(F("Temp is: "), temp_val, F("°C"));
+    MS_DBG(F(" and humidity is: "), humid_val, F("%\n"));
 
     return ret_val;
 }

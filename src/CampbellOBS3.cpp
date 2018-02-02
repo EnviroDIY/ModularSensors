@@ -21,13 +21,13 @@
  *  12-bit ADC
  *      Turbidity: 0.06/0.2 NTU; 0.1/0.5 NTU; 0.2/1.0 NTU
  *
- * Minimum warm-up time: 2s
- * Assumed stable at warm up
+ * Minimum stabilization time: 2s
  * Can return readings as fast as the ADC will return them (860/sec)
 */
 
 #include "CampbellOBS3.h"
 #include <Adafruit_ADS1015.h>
+
 
 // The constructor - need the power pin, the data pin, and the calibration info
 CampbellOBS3::CampbellOBS3(int powerPin, int dataPin, float A, float B, float C,
@@ -50,21 +50,21 @@ String CampbellOBS3::getSensorLocation(void)
     return sensorLocation;
 }
 
-bool CampbellOBS3::update(void)
+
+// nothing needs to happen to start an individual measurement
+bool CampbellOBS3::startSingleMeasurement(void)
+{
+    _lastMeasurementRequested = millis();
+    return true;
+}
+
+
+bool CampbellOBS3::addSingleMeasurementResult(void)
 {
 
     // Start the Auxillary ADD
     Adafruit_ADS1115 ads(_i2cAddress);     /* Use this for the 16-bit version */
     ads.begin();
-
-    // Check if the power is on, turn it on if not
-    bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up, assume it's stable at warm-up
-    waitForWarmUp();
-
-    // Clear values before starting loop
-    clearValues();
 
     // Variables to store the results in
     int16_t adcResult = 0;
@@ -86,13 +86,7 @@ bool CampbellOBS3::update(void)
     MS_DBG(_Avalue, F("x^2 + "), _Bvalue, F("x + "), _Cvalue, F("\n"));
     MS_DBG(F("calibResult: "), calibResult, F("\n"));
 
-    sensorValues[OBS3_TURB_VAR_NUM] = calibResult;
-
-    // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
-
-    // Update the registered variables with the new values
-    notifyVariables();
+    sensorValues[OBS3_TURB_VAR_NUM] += calibResult;
 
     // Return true when finished
     return true;

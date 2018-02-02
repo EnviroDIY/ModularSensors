@@ -25,6 +25,7 @@
 #include "ModSensorDebugger.h"
 
 #include "SensorBase.h"
+#include <SDI12_ExtInts.h>
 
 // The main class for the Decagon CTD
 class DecagonSDI12 : public Sensor
@@ -51,10 +52,11 @@ public:
     virtual SENSOR_STATUS getStatus(void) override;
 
     virtual bool startSingleMeasurement(void);
-    virtual bool getSingleMeasurementResult(void);
+    virtual bool addSingleMeasurementResult(void);
 
 protected:
     bool getSensorInfo(void);
+    SDI12 _SDI12Internal;
 
 private:
     String _sensorVendor;

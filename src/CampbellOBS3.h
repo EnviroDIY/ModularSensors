@@ -21,8 +21,7 @@
  *  12-bit ADC
  *      Turbidity: 0.06/0.2 NTU; 0.1/0.5 NTU; 0.2/1.0 NTU
  *
- * Minimum warm-up time: 2s
- * Assumed stable at warm up
+ * Minimum stabilization time: 2s
  * Can return readings as fast as the ADC will return them (860/sec)
 */
 
@@ -38,7 +37,7 @@
 #define ADS1015_ADDRESS (0x48) // 1001 000 (ADDR = GND)
 
 #define OBS3_NUM_VARIABLES 1  // low and high range are treated as completely independent
-#define OBS3_WARM_UP 2000
+#define OBS3_WARM_UP 2
 #define OBS3_STABILITY 2000
 #define OBS3_RESAMPLE 2
 
@@ -56,7 +55,7 @@ public:
     String getSensorLocation(void) override;
 
     bool startSingleMeasurement(void) override;
-    bool getSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult(void) override;
 
 protected:
     float _Avalue, _Bvalue, _Cvalue;

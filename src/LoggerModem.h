@@ -129,6 +129,11 @@ public:
 
     void powerDown(void) override {off();}
 
+    bool startSingleMeasurement(void) override
+    {}
+    bool addSingleMeasurementResult(void) override
+    {}
+
     bool update(void) override
     {
         // Clear values before starting loop

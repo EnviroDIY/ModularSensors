@@ -128,21 +128,22 @@ bool YosemitechParent::sleep(void)
     return success;
 }
 
-// Uses the YosemitechModbus library to communicate with the sensor
-bool YosemitechParent::update()
-{
-    // Check if the power is on, turn it on if not
-    bool wasOn = checkPowerOn();
-    if(!wasOn){wake();}
-    if(!_isTakingMeasurements){wake();}
 
-    // Clear values before starting loop
-    clearValues();
+// nothing needs to happen to start an individual measurement
+bool YosemitechParent::startSingleMeasurement(void)
+{
+    _lastMeasurementRequested = millis();
+    return true;
+}
+
+
+bool YosemitechParent::addSingleMeasurementResult(void)
+{
 
     if (_isTakingMeasurements)
     {
-        // Wait until the sensor is ready to give readings
-        waitForStability();
+        // Make sure we've waited long enough for a new reading to be available
+        waitForNextMeasurement();
 
         // Initialize float variables
         float parmValue, tempValue, thirdValue;
@@ -159,12 +160,7 @@ bool YosemitechParent::update()
     }
 
     else MS_DBG(F("Failed to start measuring!\n"));
-    // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
-
-    // Update the registered variables with the new values
-    notifyVariables();
 
     // Return true when finished
-    return true;
+    return _isTakingMeasurements;
 }

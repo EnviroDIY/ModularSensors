@@ -25,7 +25,9 @@
  *  Resolution is 0.008 % RH (16 bit)
  *  Accuracy is ± 3 % RH
  *
+ * Sensor takes about 100ms to respond
  * Slowest response time (humidity): 1sec
+ * Assume sensor is immediately stable
 */
 
 #ifndef BoschBME280_h
@@ -40,8 +42,8 @@
 #include <Adafruit_BME280.h>
 
 #define BME280_NUM_VARIABLES 4
-#define BME280_WARM_UP 1000
-#define BME280_STABILITY 1000
+#define BME280_WARM_UP 100
+#define BME280_STABILITY 0
 #define BME280_RESAMPLE 1000
 
 #define BME280_TEMP_RESOLUTION 2
@@ -63,12 +65,13 @@ class BoschBME280 : public Sensor
 public:
     BoschBME280(int powerPin, uint8_t i2cAddressHex = 0x76, int readingsToAverage = 1);
 
+    bool wake(void) override;
     SENSOR_STATUS setup(void) override;
     SENSOR_STATUS getStatus(void) override;
     String getSensorLocation(void) override;
 
     bool startSingleMeasurement(void) override;
-    bool getSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult(void) override;
 protected:
     Adafruit_BME280 bme_internal;
     uint8_t _i2cAddressHex;
