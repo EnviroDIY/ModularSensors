@@ -44,6 +44,18 @@ YosemitechParent::YosemitechParent(byte modbusAddress, int powerPin,
     _numReadings = numReadings;
     _StabilizationTime_ms = StabilizationTime_ms;
     _remeasurementTime_ms = remeasurementTime_ms;
+    _isTakingMeasurements = false;
+    _millisMeasurementStarted = 0;
+}
+
+
+// The sensor installation location on the Mayfly
+String YosemitechParent::getSensorLocation(void)
+{
+    String sensorLocation = F("modbus_0x");
+    if (_modbusAddress< 16) sensorLocation += "0";
+    sensorLocation += String(_modbusAddress, HEX);
+    return sensorLocation;
 }
 
 
@@ -67,13 +79,81 @@ SENSOR_STATUS YosemitechParent::setup(void)
 }
 
 
-// The sensor installation location on the Mayfly
-String YosemitechParent::getSensorLocation(void)
+// The function to wake up a sensor
+// Different from the standard in that it waits for warm up and starts measurements
+bool YosemitechParent::wake(void)
 {
-    String sensorLocation = F("modbus_0x");
-    if (_modbusAddress< 16) sensorLocation += "0";
-    sensorLocation += String(_modbusAddress, HEX);
-    return sensorLocation;
+    if(!checkPowerOn()){powerUp();}
+
+    // Wait until the sensor is warmed up
+    waitForWarmUp();
+
+    // Send the command to begin taking readings, trying up to 5 times
+    bool success = false;
+    int ntries = 0;
+    while (!success && ntries < 10)
+    {
+        success = sensor.startMeasurement();
+        ntries++;
+    }
+    _isTakingMeasurements = success;
+    if(_isTakingMeasurements)
+    {
+        _millisMeasurementStarted = millis();
+        MS_DBG(F("Measurements started.\n"));
+    }
+
+    return success;
+}
+
+
+// The function to put the sensor to sleep
+// Different from the standard in that it stops measurements
+bool YosemitechParent::sleep(void)
+{
+    if(!checkPowerOn()){return true;}
+
+    // Send the command to begin taking readings, trying up to 5 times
+    bool success = false;
+    int ntries = 0;
+    while (!success && ntries < 2)
+    {
+        success = sensor.stopMeasurement();
+        ntries++;
+    }
+    _isTakingMeasurements = !success;
+    if(!_isTakingMeasurements)
+    {
+        _millisMeasurementStarted = 0;
+        MS_DBG(F("Measurements stopped.\n"));
+    }
+
+    powerDown();
+
+    return success;
+}
+
+// This is a helper function to wait that enough time has passed for the sensor
+// to stabilize before taking readings
+void YosemitechParent::waitForStability(void)
+{
+    if (_StabilizationTime_ms != 0)
+    {
+        if (millis() > _millisMeasurementStarted + _StabilizationTime_ms)  // already ready
+        {
+            MS_DBG(F("Sensor should be stable!\n"));
+        }
+        else if (millis() > _millisMeasurementStarted)  // just in case millis() has rolled over
+        {
+            MS_DBG(F("Waiting "), (_StabilizationTime_ms - (millis() - _millisMeasurementStarted)), F("ms for sensor to stabilize\n"));
+            while((millis() - _millisMeasurementStarted) < _StabilizationTime_ms){}
+        }
+        else  // if we get really unlucky and are measuring as millis() rolls over
+        {
+            MS_DBG(F("Waiting 20s for sensor stability\n"));
+            while(millis() < 20000){}
+        }
+    }
 }
 
 // Uses the YosemitechModbus library to communicate with the sensor
@@ -81,28 +161,16 @@ bool YosemitechParent::update()
 {
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up
-    waitForWarmUp();
+    if(!wasOn){wake();}
+    if(!_isTakingMeasurements){wake();}
 
     // Clear values before starting loop
     clearValues();
 
-    // Send the command to begin taking readings, trying up to 5 times
-    bool success = false;
-    int ntries = 0;
-    while (!success && ntries < 5)
+    if (_isTakingMeasurements)
     {
-        success = sensor.startMeasurement();
-        ntries++;
-    }
-
-    if (success)
-    {
-        MS_DBG(F("Measurements started.\n"));
-
         // Wait until the sensor is ready to give readings
-        delay(_StabilizationTime_ms);
+        waitForStability();
 
         // averages x readings in this one loop
         for (int j = 0; j < _numReadings; j++)
@@ -124,7 +192,7 @@ bool YosemitechParent::update()
 
             if (j < _numReadings - 1)
             {
-                MS_DBG(F("Waiting until sensor is ready for the next reading.\n"));
+                MS_DBG(F("Waiting "),  _remeasurementTime_ms, F("ms until sensor is ready for the next reading.\n"));
                 delay(_remeasurementTime_ms);
             }
         }
@@ -137,7 +205,6 @@ bool YosemitechParent::update()
             MS_DBG(F("Result #"), i, F(": "), sensorValues[i], F("\n"));
         }
     }
-
 
     else MS_DBG(F("Failed to start measuring!\n"));
     // Turn the power back off it it had been turned on

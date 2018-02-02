@@ -4,8 +4,8 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for the Decagon Devices 5TM Soil Moisture probe
- *It is dependent on the EnviroDIY SDI-12 library and the YosemitechParent super class.
+ *This file is for the Yosemitech Y532 pH sensor
+ *It is dependent on the YosemitechParent super class.
  *
  *Documentation for the Modbus Protocol commands and responses can be found
  *within the documentation in the YosemitechModbus library at:
@@ -22,8 +22,8 @@
  *     Accuracy is ± 0.2°C
  *     Range is 0°C to + 50°C
  *
- * Time before sensor responds after power - 275-300ms (use 350 for safety)
- * Time between "StartMeasurement" command and stable reading - 8sec
+ * Time before sensor responds after power - 500ms
+ * Time between "StartMeasurement" command and stable reading - 4.5sec
 */
 
 #ifndef YosemitechY532_h

@@ -63,6 +63,7 @@ const int wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
 
+// Create the processor "sensor"
 const char *MFVersion = "v0.5";
 ProcessorStats mayfly(MFVersion) ;
 
@@ -251,10 +252,10 @@ YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePi
 
 
 // ==========================================================================
-//    Yosemitech Y510 or Y511 Turbidity Sensor
+//    Yosemitech Y510 Turbidity Sensor
 // ==========================================================================
 #include <YosemitechY510.h>
-byte y510modbusAddress = 0x0B;  // The modbus address of the Y510 or Y511
+byte y510modbusAddress = 0x0B;  // The modbus address of the Y510
 // const int modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // const int max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const int y510NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
@@ -266,6 +267,24 @@ const int y510NumberReadings = 10;  // The manufacturer strongly recommends taki
 // HardwareSerial &modbusSerial = Serial1;
 // #endif
 YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePin, y510NumberReadings);
+
+
+// ==========================================================================
+//    Yosemitech Y511 Turbidity Sensor with Wiper
+// ==========================================================================
+#include <YosemitechY511.h>
+byte y511modbusAddress = 0x1A;  // The modbus address of the Y511
+// const int modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// const int max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+const int y511NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+
+// #if defined __AVR__
+// #include <AltSoftSerial.h>
+// AltSoftSerial modbusSerial;
+// #else
+// HardwareSerial &modbusSerial = Serial1;
+// #endif
+YosemitechY511 y511(y511modbusAddress, modbusPower, modbusSerial, max485EnablePin, y511NumberReadings);
 
 
 // ==========================================================================
@@ -352,18 +371,20 @@ Variable *variableList[] = {
     new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
     new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
-    new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY510_Temp(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY532_pH(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY532_Voltage(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY510_Temp(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     // new YOUR_variableName_HERE(&)

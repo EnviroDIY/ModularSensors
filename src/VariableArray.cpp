@@ -39,12 +39,15 @@
     {
         bool success = true;
 
-        MS_DBG(F("Beginning setup for sensors and variables..."));
+        MS_DBG(F("Beginning setup for sensors and variables...\n"));
 
-        // First wake up all of the sensors
-        MS_DBG(F("Waking sensors for setup.\n"));
+        // First power all of the sensors
+        MS_DBG(F("Powering up sensors for setup.\n"));
         for (int i = 0; i < _variableCount; i++)
-            _variableList[i]->parentSensor->wake();
+        {
+            MS_DBG(F("   ... powering "), _variableList[i]->getVarCode(), F("\n"));
+            _variableList[i]->parentSensor->powerUp();
+        }
 
         // Now run all the set-up functions
         MS_DBG(F("Running setup functions.\n"));
@@ -72,11 +75,14 @@
 
         // Put all the sensors back to sleep
         MS_DBG(F("Putting sensors to sleep after setup.\n"));
-        for (int i = 0; i < _variableCount; i++){
+        for (int i = 0; i < _variableCount; i++)
+        {
+            MS_DBG(F("   ... putting "), _variableList[i]->getVarCode(), F(" to sleep.\n"));
             _variableList[i]->parentSensor->sleep();
         }
 
         // Now attach all of the variables to their parents
+        MS_DBG(F("Attaching variables to their parent sensors.\n"));
         for (int i = 0; i < _variableCount; i++){
             success &= _variableList[i]->setup();
         }
@@ -94,7 +100,10 @@
         for (int i = 0; i < _variableCount; i++)
         {
             if (isLastVarFromSensor(i))
+            {
+                MS_DBG(F("   ... putting "), _variableList[i]->getVarCode(), F(" to sleep.\n"));
                 success &= _variableList[i]->parentSensor->sleep();
+            }
         }
         return success;
     }
@@ -107,7 +116,18 @@
         for (int i = 0; i < _variableCount; i++)
         {
             if (isLastVarFromSensor(i))
+            {
+                MS_DBG(F("   ... Powering up "), _variableList[i]->getVarCode(), F("\n"));
+                _variableList[i]->parentSensor->powerUp();
+            }
+        }
+        for (int i = 0; i < _variableCount; i++)
+        {
+            if (isLastVarFromSensor(i))
+            {
+                MS_DBG(F("   ... Waking "), _variableList[i]->getVarCode(), F("\n"));
                 success &= _variableList[i]->parentSensor->wake();
+            }
         }
         return success;
     }
