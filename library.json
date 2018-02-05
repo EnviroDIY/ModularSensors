@@ -1,6 +1,6 @@
 {
     "name": "EnviroDIY_ModularSensors",
-    "version": "0.5.4-beta",
+    "version": "0.6.0-beta",
     "description":  "A library that allows acces to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
     "keywords": "sensor, modular, sensors, logger, low power, sleeping, EnviroDIY",
     "platforms": "atmelavr, atmelsam",
@@ -186,6 +186,7 @@
             "name": "SensorModbusMaster",
             "library id": "1824",
             "url": "https://github.com/EnviroDIY/SensorModbusMaster.git",
+            "version": ">=0.6.2",
             "note": "EnviroDIY SensorModbusMaster - Arduino library for communicating via modbus with the Arduino acting as the modbus master.",
             "authors": [
                 "Sara Damiano"
@@ -197,6 +198,7 @@
             "name": "YosemitechModbus",
             "library id": "2078",
             "url": "https://github.com/EnviroDIY/YosemitechModbus.git",
+            "version": ">=0.1.7",
             "note": "Arduino library for communication with Yosemitech sensors via Modbus.",
             "authors": [
                 "Sara Damiano"

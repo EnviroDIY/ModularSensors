@@ -1,10 +1,10 @@
 /*
- *YosemitechY532.h
+ *YosemitechY533.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for the Yosemitech Y532 pH sensor
+ *This file is for the Yosemitech Y533 ORP sensor
  *It is dependent on the YosemitechParent super class.
  *
  *Documentation for the Modbus Protocol commands and responses can be found
@@ -26,84 +26,84 @@
  * Time between "StartMeasurement" command and stable reading - 4.5sec
 */
 
-#ifndef YosemitechY532_h
-#define YosemitechY532_h
+#ifndef YosemitechY533_h
+#define YosemitechY533_h
 
 #include "YosemitechParent.h"
 #include "VariableBase.h"
 
-#define Y532_NUM_VARIABLES 3
-#define Y532_WARM_UP 500
-#define Y532_STABILITY 4500
-#define Y532_RESAMPLE 1800
+#define Y533_NUM_VARIABLES 3
+#define Y533_WARM_UP 500
+#define Y533_STABILITY 4500
+#define Y533_RESAMPLE 1800
 
-#define Y532_PH_RESOLUTION 1
-#define Y532_PH_VAR_NUM 0
+#define Y533_PH_RESOLUTION 1
+#define Y533_PH_VAR_NUM 0
 
-#define Y532_TEMP_RESOLUTION 2
-#define Y532_TEMP_VAR_NUM 1
+#define Y533_TEMP_RESOLUTION 2
+#define Y533_TEMP_VAR_NUM 1
 
-#define Y532_VOLT_RESOLUTION 2
-#define Y532_VOLT_VAR_NUM 2
+#define Y533_VOLT_RESOLUTION 2
+#define Y533_VOLT_VAR_NUM 2
 
-// The main class for the Decagon Y532
-class YosemitechY532 : public YosemitechParent
+// The main class for the Decagon Y533
+class YosemitechY533 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY532(byte modbusAddress, Stream* stream, int powerPin,
+    YosemitechY533(byte modbusAddress, Stream* stream, int powerPin,
                    int enablePin = -1, int readingsToAverage = 1)
      : YosemitechParent(modbusAddress, stream, powerPin, enablePin, readingsToAverage,
-                        Y532, F("YosemitechY532"), Y532_NUM_VARIABLES,
-                        Y532_WARM_UP, Y532_STABILITY, Y532_RESAMPLE)
+                        Y533, F("YosemitechY533"), Y533_NUM_VARIABLES,
+                        Y533_WARM_UP, Y533_STABILITY, Y533_RESAMPLE)
     {}
-    YosemitechY532(byte modbusAddress, Stream& stream, int powerPin,
+    YosemitechY533(byte modbusAddress, Stream& stream, int powerPin,
                    int enablePin = -1, int readingsToAverage = 1)
      : YosemitechParent(modbusAddress, stream, powerPin, enablePin, readingsToAverage,
-                        Y532, F("YosemitechY532"), Y532_NUM_VARIABLES,
-                        Y532_WARM_UP, Y532_STABILITY, Y532_RESAMPLE)
+                        Y533, F("YosemitechY533"), Y533_NUM_VARIABLES,
+                        Y533_WARM_UP, Y533_STABILITY, Y533_RESAMPLE)
     {}
 };
 
 
 // Defines the pH
-class YosemitechY532_pH : public Variable
+class YosemitechY533_pH : public Variable
 {
 public:
-    YosemitechY532_pH(Sensor *parentSense,
+    YosemitechY533_pH(Sensor *parentSense,
                       String UUID = "", String customVarCode = "")
-     : Variable(parentSense, Y532_PH_VAR_NUM,
+     : Variable(parentSense, Y533_PH_VAR_NUM,
                 F("pH"), F("pH"),
-                Y532_PH_RESOLUTION,
-                F("Y532pH"), UUID, customVarCode)
+                Y533_PH_RESOLUTION,
+                F("Y533pH"), UUID, customVarCode)
     {}
 };
 
 
 // Defines the Temperature Variable
-class YosemitechY532_Temp : public Variable
+class YosemitechY533_Temp : public Variable
 {
 public:
-    YosemitechY532_Temp(Sensor *parentSense,
+    YosemitechY533_Temp(Sensor *parentSense,
                         String UUID = "", String customVarCode = "")
-     : Variable(parentSense, Y532_TEMP_VAR_NUM,
+     : Variable(parentSense, Y533_TEMP_VAR_NUM,
                 F("temperature"), F("degreeCelsius"),
-                Y532_TEMP_RESOLUTION,
-                F("Y532temp"), UUID, customVarCode)
+                Y533_TEMP_RESOLUTION,
+                F("Y533temp"), UUID, customVarCode)
     {}
 };
 
 
 // Defines the Electrode Electrical Potential
-class YosemitechY532_Voltage : public Variable
+class YosemitechY533_Voltage : public Variable
 {
 public:
-    YosemitechY532_Voltage(Sensor *parentSense,
+    YosemitechY533_Voltage(Sensor *parentSense,
                            String UUID = "", String customVarCode = "")
-     : Variable(parentSense, Y532_VOLT_VAR_NUM,
+     : Variable(parentSense, Y533_VOLT_VAR_NUM,
                 F("voltage"), F("millivolt"),
-                Y532_VOLT_RESOLUTION,
-                F("Y532Potential"), UUID, customVarCode)
+                Y533_VOLT_RESOLUTION,
+                F("Y533Potential"), UUID, customVarCode)
     {}
 };
 
