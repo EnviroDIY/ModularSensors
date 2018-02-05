@@ -847,6 +847,41 @@ YosemitechY532_Temp(&y532, "UUID", "customVarCode")  // Temperature in °C
 //  Range is 0°C to + 50°C
 YosemitechY532_Voltage(&y532, "UUID", "customVarCode")  // Electrode electrical potential
 ```
+
+```cpp
+// ORP Sensor
+#include <YosemitechY533.h>
+YosemitechY533 y533(y533modbusAddress, modbusSerial, modbusPower, max485EnablePin, readingsToAverage);
+// Variables
+YosemitechY533_pH(&y533, "UUID", "customVarCode")  // pH
+//  Resolution is 0.000000002 pH
+//  Accuracy is ± 0.1 pH
+//  Range is 2 to 12 pH
+YosemitechY533_Temp(&y533, "UUID", "customVarCode")  // Temperature in °C
+//  Resolution is 0.00000001 °C
+//  Accuracy is ± 0.2°C
+//  Range is 0°C to + 50°C
+YosemitechY533_Voltage(&y533, "UUID", "customVarCode")  // Electrode electrical potential
+```
+
+```cpp
+// ORP Sensor
+#include <YosemitechY550.h>
+YosemitechY550 y550(y550modbusAddress, modbusSerial, modbusPower, max485EnablePin, readingsToAverage);
+// Variables
+YosemitechY550_COD(&y550, "UUID", "customVarCode")  // COD in mg/L equiv. KHP
+//  Resolution is 0.01 mg/L COD
+//  Accuracy is ??
+//  Range is 0.75 to 370 mg/L
+YosemitechY550_Temp(&y550, "UUID", "customVarCode")  // Temperature in °C
+//  Resolution is 0.00000001 °C
+//  Accuracy is ± 0.2°C
+//  Range is 5°C to + 45°C
+YosemitechY550_Turbidity(&y550, "UUID", "customVarCode")  // Turbidity in NTU
+//  Resolution is 0.0000002 NTU
+//  Accuracy is ± 5 % or 0.3 NTU
+//  Range is 0.1 to 1000 NTU
+```
 _____
 
 ### <a name="DS3231"></a>Maxim DS3231 Real Time Clock
