@@ -13,8 +13,8 @@
  * 0.5°C, 0.25°C, 0.125°C, and 0.0625°C, respectively.
  * The default resolution at power-up is 12-bit.
  *
- * Time to take reading at 12-bit: 750ms (likely ready to begin conversion
- * much before that, but I can't find a number.)
+ * Time to take reading at 12-bit: 750ms
+ * Reset time is < 480 µs
  */
 
 #include "MaximDS18.h"

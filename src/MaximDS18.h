@@ -18,7 +18,7 @@
  *             ± 2°C for DS1822 and MAX31820
  *
  * Max time to take reading at 12-bit: 750ms
- * Reset time is < 480 µsS
+ * Reset time is < 480 µs
 */
 
 #ifndef MaximDS18_h
