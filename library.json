@@ -32,6 +32,10 @@
             "sensor_tests/*"
         ]
     },
+    "examples":
+    [
+        "examples/*/*.ino"
+    ],
     "dependencies":
     [
         {
