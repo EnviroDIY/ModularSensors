@@ -13,7 +13,7 @@
  *
  * The clock should have a separate power supply and never be turned off.
  * We assume it's always warmed up.
- * The temperature conversion typical takes 125 ms, with a max time of 200 ms.
+ * The temperature conversion typically takes 125 ms, with a max time of 200 ms.
 */
 
 #include <Sodaq_DS3231.h>
@@ -49,7 +49,7 @@ bool MaximDS3231::startSingleMeasurement(void)
     // this function already has a forced wait for the conversion to complete
     // TODO:  Test how long the conversion takes, update DS3231 lib accordingly!
     MS_DBG(F("Forcing new temperature reading\n"));
-    rtc.convertTemperature();
+    rtc.convertTemperature(false);
     _lastMeasurementRequested = millis();
     return true;
 }

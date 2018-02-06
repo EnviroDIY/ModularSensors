@@ -14,7 +14,7 @@
  *
  * The clock should have a separate power supply and never be turned off.
  * We assume it's always warmed up and stable.
- * The temperature conversion typical takes 125 ms, with a max time of 200 ms.
+ * The temperature conversion typically takes 125 ms, with a max time of 200 ms.
 */
 
 #ifndef MaximDS3231_h
@@ -31,7 +31,7 @@
 #define DS3231_NUM_VARIABLES 1
 #define DS3231_WARM_UP 0
 #define DS3231_STABILITY 0
-#define DS3231_RESAMPLE 0  // The function to get a value forces the wait already
+#define DS3231_RESAMPLE 200
 #define DS3231_TEMP_RESOLUTION 2
 #define DS3231_TEMP_VAR_NUM 0
 
