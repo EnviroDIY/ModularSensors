@@ -156,31 +156,9 @@ public:
     bool addSingleMeasurementResult(void) override
     {
         // Get signal quality
-        sensorValues[CSQ_VAR_NUM] = getSignalRSSI();
-        sensorValues[PERCENT_STAT_VAR_NUM] = getSignalPercent();
+        sensorValues[CSQ_VAR_NUM] += getSignalRSSI();
+        sensorValues[PERCENT_STAT_VAR_NUM] += getSignalPercent();
         return true;
-    }
-
-    bool update(void) override
-    {
-        // Clear values before starting loop
-        clearValues();
-
-        bool retVal = true;
-
-        retVal &= startSingleMeasurement();
-
-        // Get signal quality
-        addSingleMeasurementResult();
-
-        // Update the registered variables with the new values
-        notifyVariables();
-
-        // Do NOT disconnect from the network here!
-        // Chances are high the modem should be left on for sending data after
-        // the update has been run!
-
-        return retVal;
     }
 
 public:
