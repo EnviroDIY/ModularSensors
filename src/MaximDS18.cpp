@@ -42,6 +42,7 @@ MaximDS18::MaximDS18(int powerPin, int dataPin, int readingsToAverage)
     _addressKnown = false;
 }
 
+
 // Turns the address into a printable string
 String MaximDS18::getAddressString(DeviceAddress owAddr)
 {
@@ -60,11 +61,13 @@ String MaximDS18::getAddressString(DeviceAddress owAddr)
     return addrStr;
 }
 
+
 // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
 String MaximDS18::getSensorLocation(void)
 {
     return getAddressString(_OneWireAddress);
 }
+
 
 // The function to set up connection to a sensor.
 SENSOR_STATUS MaximDS18::getStatus(void)
@@ -87,6 +90,7 @@ SENSOR_STATUS MaximDS18::getStatus(void)
 
     return SENSOR_READY;
 }
+
 
 // The function to set up connection to a sensor.
 // By default, sets pin modes and returns ready
@@ -131,16 +135,20 @@ SENSOR_STATUS MaximDS18::setup(void)
     return stat;
 }
 
+
 // Sending the device a request to start temp conversion.
 // Because we put ourselves in ASYNC mode in setup, we don't have to wait for finish
 bool MaximDS18::startSingleMeasurement(void)
 {
+    waitForWarmUp();
+    waitForStability();
     // Send the command to get temperatures
     MS_DBG(F("Asking sensor to take a measurement\n"));
     tempSensors.requestTemperaturesByAddress(_OneWireAddress);
     _lastMeasurementRequested = millis();
     return true;
 }
+
 
 bool MaximDS18::addSingleMeasurementResult(void)
 {

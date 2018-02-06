@@ -81,6 +81,9 @@ bool MaxBotixSonar::wake(void)
 
 bool MaxBotixSonar::addSingleMeasurementResult(void)
 {
+    // Make sure we've waited long enough for a new reading to be available
+    waitForNextMeasurement();
+    
     bool stringComplete = false;
     int rangeAttempts = 0;
     int result = 0;

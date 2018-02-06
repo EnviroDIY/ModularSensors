@@ -40,9 +40,16 @@ SENSOR_STATUS MaximDS3231::setup(void)
 }
 
 
-// nothing needs to happen to start an individual measurement
+// Sending the device a request to start temp conversion.
 bool MaximDS3231::startSingleMeasurement(void)
 {
+    waitForWarmUp();
+    waitForStability();
+    // force a temperature sampling and conversion
+    // this function already has a forced wait for the conversion to complete
+    // TODO:  Test how long the conversion takes, update DS3231 lib accordingly!
+    MS_DBG(F("Forcing new temperature reading\n"));
+    rtc.convertTemperature();
     _lastMeasurementRequested = millis();
     return true;
 }
@@ -50,11 +57,12 @@ bool MaximDS3231::startSingleMeasurement(void)
 
 bool MaximDS3231::addSingleMeasurementResult(void)
 {
-    // Get the temperature from the Mayfly's real time clock
-    MS_DBG(F("Forcing new temperature reading\n"));
-    rtc.convertTemperature();  // force a temperature sampling and conversion
+    // Make sure we've waited long enough for a reading to finish
+    waitForNextMeasurement();
+
+    // get the temperature value
     MS_DBG(F("Getting value\n"));
-    float tempVal = rtc.getTemperature();  // get the temperature value
+    float tempVal = rtc.getTemperature();
     MS_DBG(F("Current temp is "), tempVal, '\n');
     sensorValues[DS3231_TEMP_VAR_NUM] += tempVal;
 

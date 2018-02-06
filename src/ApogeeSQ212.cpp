@@ -51,6 +51,9 @@ bool ApogeeSQ212::addSingleMeasurementResult(void)
     // Start the Auxillary ADD
     Adafruit_ADS1115 ads(_i2cAddress);     /* Use this for the 16-bit version */
     ads.begin();
+    
+    // Make sure we've waited long enough for a new reading to be available
+    waitForNextMeasurement();
 
     // Variables to store the results in
     int16_t adcResult = 0;
