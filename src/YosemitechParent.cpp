@@ -56,21 +56,15 @@ String YosemitechParent::getSensorLocation(void)
 
 SENSOR_STATUS YosemitechParent::setup(void)
 {
-    if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
     if (_RS485EnablePin > 0) pinMode(_RS485EnablePin, OUTPUT);
 
     #if defined(DEBUGGING_SERIAL_OUTPUT)
         sensor.setDebugStream(&DEBUGGING_SERIAL_OUTPUT);
     #endif
 
-    bool isSet = sensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
+    sensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
 
-    if (isSet)
-    {
-        MS_DBG(F("Set up Yosemitech sensor at "), getSensorLocation(), F("\n"));
-        return SENSOR_READY;
-    }
-    else return SENSOR_ERROR;
+    return Sensor::setup();
 }
 
 
@@ -85,12 +79,14 @@ bool YosemitechParent::wake(void)
 
     // Send the command to begin taking readings, trying up to 5 times
     int ntries = 0;
-    while (!_isTakingMeasurements && ntries < 5)
+    bool success = false;
+    while (!success && ntries < 5)
     {
-        _isTakingMeasurements = sensor.startMeasurement();
+        MS_DBG(F("Start Measurement: "));
+        success = sensor.startMeasurement();
         ntries++;
     }
-    if(_isTakingMeasurements)
+    if(success)
     {
         _millisMeasurementStarted = millis();
         MS_DBG(F("Measurements started.\n"));
@@ -98,9 +94,10 @@ bool YosemitechParent::wake(void)
 
     // Manually activate the brush
     // Needed for newer sensors that do not immediate activate on getting power
+    MS_DBG(F("Activate Brush: "));
     sensor.activateBrush();
 
-    return _isTakingMeasurements;
+    return success;
 }
 
 
@@ -115,11 +112,11 @@ bool YosemitechParent::sleep(void)
     int ntries = 0;
     while (!success && ntries < 2)
     {
+        MS_DBG(F("Stop Measurement: "));
         success = sensor.stopMeasurement();
         ntries++;
     }
-    _isTakingMeasurements = !success;
-    if(!_isTakingMeasurements)
+    if(success)
     {
         _millisMeasurementStarted = 0;
         MS_DBG(F("Measurements stopped.\n"));
@@ -132,16 +129,18 @@ bool YosemitechParent::sleep(void)
 // Want to just check that the sensor is active
 bool YosemitechParent::startSingleMeasurement(void)
 {
+    bool success = true;
+    if (_millisMeasurementStarted == 0) success = wake();
+    if (_millisMeasurementStarted > 0) waitForStability();
     _lastMeasurementRequested = millis();
-    if (!_isTakingMeasurements) return wake();
-    else return true;
+    return success;
 }
 
 
 bool YosemitechParent::addSingleMeasurementResult(void)
 {
-
-    if (_isTakingMeasurements)
+    bool success = false;
+    if (_millisMeasurementStarted > 0)
     {
         // Make sure we've waited long enough for a new reading to be available
         waitForNextMeasurement();
@@ -149,7 +148,8 @@ bool YosemitechParent::addSingleMeasurementResult(void)
         // Initialize float variables
         float parmValue, tempValue, thirdValue;
         // Get Values
-        sensor.getValues(parmValue, tempValue, thirdValue);
+        MS_DBG(F("Get Values: "));
+        success = sensor.getValues(parmValue, tempValue, thirdValue);
         // Put values into the array
         // All sensors but pH and DO will have -9999 as the third value
         sensorValues[0] += parmValue;
@@ -163,5 +163,5 @@ bool YosemitechParent::addSingleMeasurementResult(void)
     else MS_DBG(F("Sensor is not currently measuring!\n"));
 
     // Return true when finished
-    return _isTakingMeasurements;
+    return success;
 }

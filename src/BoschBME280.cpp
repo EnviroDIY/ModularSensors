@@ -80,7 +80,7 @@ SENSOR_STATUS BoschBME280::setup(void)
 bool BoschBME280::wake(void)
 {
     Sensor::wake();
-    delay(10); // let the sensor settle in after power-up
+    waitForWarmUp();
     bme_internal.begin(0x76);  // Restart needed after power-up
     delay(100); // And now let the sensor boot up (time cannot be decreased)
     return true;
@@ -90,6 +90,7 @@ bool BoschBME280::wake(void)
 // nothing needs to happen to start an individual measurement
 bool BoschBME280::startSingleMeasurement(void)
 {
+    waitForStability();
     _lastMeasurementRequested = millis();
     return true;
 }
@@ -99,7 +100,7 @@ bool BoschBME280::addSingleMeasurementResult(void)
 {
     // Make sure we've waited long enough for a new reading to be available
     waitForNextMeasurement();
-    
+
     // Read values
     float temp = bme_internal.readTemperature();
     float press = bme_internal.readPressure();

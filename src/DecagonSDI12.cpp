@@ -180,6 +180,8 @@ bool DecagonSDI12::startSingleMeasurement(void)
     // Check that the sensor is there and responding
     if (getStatus() == SENSOR_ERROR) return false;
 
+    waitForStability();
+
     // Empty the buffer
     _SDI12Internal.clearBuffer();
 
@@ -236,6 +238,10 @@ bool DecagonSDI12::addSingleMeasurementResult(void)
         sensorValues[i] += result;
         MS_DBG(F("Result #"), i, F(": "), result, F("\n"));
     }
+    // String sdiResponse = _SDI12Internal.readStringUntil('\n');
+    // sdiResponse.trim();
+    // _SDI12Internal.clearBuffer();
+    // MS_DBG(F("<<"), sdiResponse, F("\n"));
 
     // Empty the buffer again
     _SDI12Internal.clearBuffer();

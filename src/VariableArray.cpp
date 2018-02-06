@@ -18,9 +18,7 @@ void VariableArray::init(int variableCount, Variable *variableList[])
     _variableCount = variableCount;
     _variableList = variableList;
 
-    // Create a masking array with the unique sensors
-    _uniqueSensorMask[_variableCount] = {true,};
-    createUniqueSensorMask();
+    _maxSamplestoAverage = countMaxToAverage();
 
     MS_DBG(F("   ... Success!\n"));
 }
@@ -33,7 +31,7 @@ int VariableArray::getSensorCount(void)
     // Check for unique sensors
     for (int i = 0; i < _variableCount; i++)
     {
-        if (_uniqueSensorMask[i]) numSensors++;
+        if (isLastVarFromSensor(i)) numSensors++;
     }
     return numSensors;
 }
@@ -58,7 +56,7 @@ bool VariableArray::setupSensors(void)
         // Make 5 attempts to contact the sensor before giving up
         bool sensorSuccess = false;
         int setupTries = 0;
-        if (_uniqueSensorMask[i]) // Skip non-unique sensors
+        if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {
             while(setupTries < 5 and !sensorSuccess)
             {
@@ -93,7 +91,7 @@ void VariableArray::sensorsPowerUp(void)
     MS_DBG(F("Powering up sensors...\n"));
     for (int i = 0; i < _variableCount; i++)
     {
-        if (_uniqueSensorMask[i]) // Skip non-unique sensors
+        if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {
             MS_DBG(F("   ... Powering up "), _variableList[i]->getVarCode(), F("\n"));
             _variableList[i]->parentSensor->powerUp();
@@ -109,7 +107,7 @@ bool VariableArray::sensorsWake(void)
     bool success = true;
     for (int i = 0; i < _variableCount; i++)
     {
-        if (_uniqueSensorMask[i]) // Skip non-unique sensors
+        if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {
             MS_DBG(F("   ... Waking "), _variableList[i]->getVarCode(), F("\n"));
             success &= _variableList[i]->parentSensor->wake();
@@ -126,7 +124,7 @@ bool VariableArray::sensorsSleep(void)
     bool success = true;
     for (int i = 0; i < _variableCount; i++)
     {
-        if (_uniqueSensorMask[i]) // Skip non-unique sensors
+        if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {
             MS_DBG(F("   ... putting "), _variableList[i]->getVarCode(), F(" to sleep.\n"));
             success &= _variableList[i]->parentSensor->sleep();
@@ -142,7 +140,7 @@ void VariableArray::sensorsPowerDown(void)
     MS_DBG(F("Powering down sensors...\n"));
     for (int i = 0; i < _variableCount; i++)
     {
-        if (_uniqueSensorMask[i]) // Skip non-unique sensors
+        if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {
             MS_DBG(F("   ... powering down "), _variableList[i]->getVarCode(), F("\n"));
             _variableList[i]->parentSensor->powerDown();
@@ -158,25 +156,51 @@ void VariableArray::sensorsPowerDown(void)
 bool VariableArray::updateAllSensors(void)
 {
     bool success = true;
-    bool update_success = true;
+
+    for (uint8_t j = 0; j < _maxSamplestoAverage; j++)
+    {
+        for (uint8_t i = 0; i < _variableCount; i++)
+        {
+            if (isLastVarFromSensor(i) and
+                _variableList[i]->parentSensor->getReadingstoAverage() > j)
+            {
+                // Prints for debugging
+                MS_DBG(F("--- Starting reading "), j+1, F(" on "));
+                MS_DBG(_variableList[i]->parentSensor->getSensorName());
+                MS_DBG(F(" ---\n"));
+
+                success &= _variableList[i]->parentSensor->startSingleMeasurement();
+            }
+        }
+        for (uint8_t i = 0; i < _variableCount; i++)
+        {
+            if (isLastVarFromSensor(i) and
+                _variableList[i]->parentSensor->getReadingstoAverage() > j)
+            {
+                // Prints for debugging
+                MS_DBG(F("--- Collecting result of reading "), j+1, F(" from "));
+                MS_DBG(_variableList[i]->parentSensor->getSensorName());
+                MS_DBG(F(" ---\n"));
+
+                success &= _variableList[i]->parentSensor->addSingleMeasurementResult();
+            }
+        }
+    }
+    // Average readings and notify varibles of the updates
     for (uint8_t i = 0; i < _variableCount; i++)
     {
-        if (_uniqueSensorMask[i]) // Skip non-unique sensors
+        if (isLastVarFromSensor(i))
         {
-            // Prints for debugging
-            MS_DBG(F("--- Going to update "));
+            MS_DBG(F("--- Averaging results from "));
             MS_DBG(_variableList[i]->parentSensor->getSensorName());
+            _variableList[i]->parentSensor->averageReadings();
             MS_DBG(F(" ---\n"));
-
-            update_success = _variableList[i]->parentSensor->update();
-
-            // Prints for debugging
-            MS_DBG(F("--- Updated "));
+            MS_DBG(F("--- Notifying variables from "));
             MS_DBG(_variableList[i]->parentSensor->getSensorName());
+            _variableList[i]->parentSensor->notifyVariables();
             MS_DBG(F(" ---\n"));
         }
     }
-    success &= update_success;
     return success;
 }
 
@@ -236,26 +260,20 @@ bool VariableArray::isLastVarFromSensor(int arrayIndex)
             break;
         }
     }
-    // Prints for debugging
-    // if (unique){
-    //     MS_DBG(_variableList[arrayIndex]->getVarName());
-    //     MS_DBG(F(" from "), sensName, F(" at "), sensLoc);
-    //     MS_DBG(F(" will be used for sensor references.\n"));
-    // }
-    // else{
-    //     MS_DBG(_variableList[arrayIndex]->getVarName());
-    //     MS_DBG(F(" from "), sensName, F(" at "), sensLoc);
-    //     MS_DBG(F(" will be ignored.\n"));
-    // }
     return unique;
 }
 
 
-void VariableArray::createUniqueSensorMask(void)
+uint8_t VariableArray::countMaxToAverage(void)
 {
-    // Check for unique sensors
+    int numReps = 0;
     for (int i = 0; i < _variableCount; i++)
     {
-        _uniqueSensorMask[i] = isLastVarFromSensor(i);
+        if (isLastVarFromSensor(i)) // Skip non-unique sensors
+        {
+            numReps = max(numReps, _variableList[i]->parentSensor->getReadingstoAverage());
+        }
     }
+    MS_DBG(F("Collecting up to "), numReps, F(" measurements to average"));
+    return numReps;
 }

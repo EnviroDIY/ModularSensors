@@ -41,10 +41,10 @@ public:
     // This gives power to each sensor
     void sensorsPowerUp(void);
 
-    // This wakes sensors (may be identical to PowerUp)
+    // This verifies sensors have power and sends a wake command, if necesary
     bool sensorsWake(void);
 
-    // This puts sensors to sleep (may be identical to PowerDown)
+    // This sends sensors a sleep command, but does not power them down
     bool sensorsSleep(void);
 
     // This cuts sensor power
@@ -62,11 +62,11 @@ public:
 protected:
     uint8_t _variableCount;
     Variable **_variableList;
-    bool _uniqueSensorMask[];
+    uint8_t _maxSamplestoAverage;
 
 private:
     bool isLastVarFromSensor(int arrayIndex);
-    void createUniqueSensorMask(void);
+    uint8_t countMaxToAverage(void);
 };
 
 #endif

@@ -110,10 +110,7 @@ public:
         else return true;
     }
 
-    // Do NOT power down the modem with the regular sleep function.
-    // This is because when it is run in an array with other sensors, we will
-    // generally want the modem to remain on after all the other sensors have
-    // gone to sleep so the modem can send out data
+
     virtual bool sleep(void) override { return true; }
 
     virtual bool off(void)
@@ -127,24 +124,19 @@ public:
         return retVal;
     }
 
-    void powerDown(void) override {off();}
+    // Do NOT power down the modem with the regular sleep function.
+    // This is because when it is run in an array with other sensors, we will
+    // generally want the modem to remain on after all the other sensors have
+    // gone to sleep so the modem can send out data
+    void powerDown(void) override {}
 
     bool startSingleMeasurement(void) override
-    {return true;}
-    bool addSingleMeasurementResult(void) override
-    {return true;}
-
-    bool update(void) override
     {
-        // Clear values before starting loop
-        clearValues();
-
         bool retVal = true;
 
         // Connect to the network before asking for quality
         if (!_modem->isNetworkConnected()) retVal &= connectInternet();
         if (retVal == false) return false;
-
 
         // The XBee needs to make a connection before it knows the signal quality
         // Connecting to the daytime server because it works and will immediately
@@ -156,9 +148,30 @@ public:
             delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
         #endif
 
+        _lastMeasurementRequested = millis();
+        return retVal;
+    }
+
+
+    bool addSingleMeasurementResult(void) override
+    {
         // Get signal quality
         sensorValues[CSQ_VAR_NUM] = getSignalRSSI();
         sensorValues[PERCENT_STAT_VAR_NUM] = getSignalPercent();
+        return true;
+    }
+
+    bool update(void) override
+    {
+        // Clear values before starting loop
+        clearValues();
+
+        bool retVal = true;
+
+        retVal &= startSingleMeasurement();
+
+        // Get signal quality
+        addSingleMeasurementResult();
 
         // Update the registered variables with the new values
         notifyVariables();

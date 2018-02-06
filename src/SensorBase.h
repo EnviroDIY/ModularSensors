@@ -40,10 +40,16 @@ public:
            int powerPin = -1, int dataPin = -1, int readingsToAverage = 1);
 
     // These functions are dependent on the constructor and return the constructor values
-    // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
+    // This gets the place the sensor is installed ON THE ARDUINO (ie, pin number)
     virtual String getSensorLocation(void);
     // This gets the name of the sensor.
     virtual String getSensorName(void);
+
+    // These functions get and set the number of readings to average for a sensor
+    // Generally these values should be set in the constructor
+    void setReadingstoAverage(int nReadings);
+    int getReadingstoAverage(void);
+    void averageReadings(void);
 
     // These next functions have defaults.
     // This sets up the sensor, if necessary.  Defaults to ready.
@@ -106,7 +112,6 @@ protected:
     uint32_t _millisPowerOn;
 
     uint32_t _stabilizationTime_ms;
-    bool _isTakingMeasurements;
     uint32_t _millisMeasurementStarted;
 
     uint32_t _remeasurementTime_ms;

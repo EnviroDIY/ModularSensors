@@ -49,6 +49,8 @@ String ApogeeSQ212::getSensorLocation(void)
 // nothing needs to happen to start an individual measurement
 bool ApogeeSQ212::startSingleMeasurement(void)
 {
+    waitForWarmUp();
+    waitForStability();
     _lastMeasurementRequested = millis();
     return true;
 }

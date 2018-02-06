@@ -661,8 +661,10 @@ public:
             _logModem.connectInternet();
         #endif  // USE_TINY_GSM
 
+        // Power up all of the sensors
+        sensorsPowerUp();
+
         // Wake up all of the sensors
-        MS_DBG(F("Waking sensors...\n"));
         sensorsWake();
 
         // Update the sensors and print out data 25 times
@@ -670,7 +672,6 @@ public:
         {
             PRINTOUT(F("------------------------------------------\n"));
             // Update the values from all attached sensors
-            MS_DBG(F("  Updating sensor values...\n"));
             updateAllSensors();
             // Print out the current logger time
             PRINTOUT(F("Current logger time is "));
@@ -692,8 +693,8 @@ public:
         }
 
         // Put sensors to sleep
-        MS_DBG(F("  Putting sensors back to sleep...\n"));
         sensorsSleep();
+        sensorsPowerDown();
 
         #if defined(USE_TINY_GSM)
             // Disconnect from the network

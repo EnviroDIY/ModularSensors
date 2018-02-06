@@ -44,6 +44,8 @@ SENSOR_STATUS AOSongAM2315::setup(void)
 // nothing needs to happen to start an individual measurement
 bool AOSongAM2315::startSingleMeasurement(void)
 {
+    waitForWarmUp();
+    waitForStability();
     _lastMeasurementRequested = millis();
     return true;
 }

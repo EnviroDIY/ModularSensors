@@ -27,7 +27,6 @@ Sensor::Sensor(String sensorName, int numReturnedVars,
     _millisPowerOn = 0;
 
     _stabilizationTime_ms = stabilizationTime_ms;
-    _isTakingMeasurements = false;
     _millisMeasurementStarted = 0;
 
     _remeasurementTime_ms = remeasurementTime_ms;
@@ -55,6 +54,24 @@ String Sensor::getSensorLocation(void)
 
 // This returns the name of the sensor.
 String Sensor::getSensorName(void){return _sensorName;}
+
+
+// These functions get and set the number of readings to average for a sensor
+// Generally these values should be set in the constructor
+void Sensor::setReadingstoAverage(int nReadings)
+{
+    _readingsToAverage = nReadings;
+}
+int Sensor::getReadingstoAverage(void){return _readingsToAverage;}
+void Sensor::averageReadings(void)
+{
+    MS_DBG(F("Averaging over "), _readingsToAverage, F(" readings\n"));
+    for (int i = 0; i < _numReturnedVars; i++)
+    {
+        sensorValues[i] /=  _readingsToAverage;
+        MS_DBG(F("Result #"), i, F(": "), sensorValues[i], F("\n"));
+    }
+}
 
 
 // This is a helper function to check if the power needs to be turned on
@@ -101,7 +118,6 @@ void Sensor::powerUp(void)
 bool Sensor::wake(void)
 {
     if(!checkPowerOn()){powerUp();}
-    _isTakingMeasurements = true;
     _millisMeasurementStarted = millis();
     return true;
 }
@@ -111,7 +127,6 @@ bool Sensor::wake(void)
 bool Sensor::sleep(void)
 {
     // powerDown();
-    _isTakingMeasurements = false;
     _millisMeasurementStarted = 0;
     return true;
 }
@@ -306,12 +321,7 @@ bool Sensor::update(void)
         ret_val += addSingleMeasurementResult();
     }
 
-    MS_DBG(F("Averaging over "), _readingsToAverage, F(" readings\n"));
-    for (int i = 0; i < _numReturnedVars; i++)
-    {
-        sensorValues[i] /=  _readingsToAverage;
-        MS_DBG(F("Result #"), i, F(": "), sensorValues[i], F("\n"));
-    }
+    averageReadings();
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
