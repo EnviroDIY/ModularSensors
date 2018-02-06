@@ -634,7 +634,7 @@ _____
 
 The AOSong AM2315 and [CM2311](http://www.aosong.com/en/products/details.asp?id=193) communicate with the board via I2C.  Because this sensor can have only one I2C address, it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 3.3-5.5V power source and the power supply to the sensor can be stopped between measurements.
 
-The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average (defaults to 1):
+The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average:
 
 ```cpp
 #include <AOSongAM2315.h>
@@ -657,7 +657,7 @@ _____
 
 ### <a name="BME280"></a>[Bosch BME280](https://www.bosch-sensortec.com/bst/products/all_products/bme280) Integrated Environmental Sensor
 
-Although this sensor has the option of either I2C or SPI communication, this library only supports I2C.  The I2C sensor address is assumed to be 0x76, though it can be changed to 0x77 in the constructor if necessary.  The sensor address is determined by how the sensor is soldered onto its breakout board.  To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses.  No more than two can be attached.  This module is likely to also work with the [Bosch BMP280 Barometric Pressure Sensor](https://www.bosch-sensortec.com/bst/products/all_products/bmp280), though it has not been tested on it.  These sensors should be attached to a 1.7-3.6V power source and the power supply to the sensor can be stopped between measurements.
+Although this sensor has the option of either I2C or SPI communication, this library only supports I2C.  _The I2C sensor address is assumed to be 0x76_, though it can be changed to 0x77 in the constructor if necessary.  The sensor address is determined by how the sensor is soldered onto its breakout board.  To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses.  No more than two can be attached.  This module is likely to also work with the [Bosch BMP280 Barometric Pressure Sensor](https://www.bosch-sensortec.com/bst/products/all_products/bmp280), though it has not been tested on it.  These sensors should be attached to a 1.7-3.6V power source and the power supply to the sensor can be stopped between measurements.
 
 The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex is optional as is the number of readings to average:
 
@@ -692,7 +692,7 @@ _____
 
 This module will work with an AOSong [DHT11/CHT11](http://www.aosong.com/en/products/details.asp?id=109), DHT21/AM2301, and [DHT22/AM2302/CM2302](http://www.aosong.com/en/products/details.asp?id=117).  These sensors uses a non-standard single wire digital signaling protocol.  They can be connected to any digital pin.  Please keep in mind that, per manufacturer instructions, these sensors should not be polled more frequently than once every 2 seconds.  These sensors should be attached to a 3.3-6V power source and the power supply to the sensor can be stopped between measurements.
 
-The Arduino pin controlling power on/off, the Arduino pin receiving data, and the sensor type are required for the sensor constructor.  The number of readings to average is optional (defaults to 1):
+The Arduino pin controlling power on/off, the Arduino pin receiving data, and the sensor type are required for the sensor constructor.  The number of readings to average is optional:
 
 ```cpp
 #include <AOSongDHT.h>
@@ -742,14 +742,19 @@ _____
 This library currently supports the following Yosemitech sensors:
 
 - [Y502-A or Y504-A Optical Dissolved Oxygen Sensors](http://www.yosemitech.com/en/product-10.html)
-- [Y5820-A 4-Electrode Conductivity Sensor](http://www.yosemitech.com/en/product-18.html)
-- [Y510-B](http://www.yosemitech.com/en/product-17.html) or [Y511-A](http://www.yosemitech.com/en/product-16.html) Optical Turbidity Sensors (Y511 has a wiper, Y510 does not)
+- [Y520-A 4-Electrode Conductivity Sensor](http://www.yosemitech.com/en/product-18.html)
+- [Y510-B Optical Turbidity Sensor](http://www.yosemitech.com/en/product-17.html)
+- [Y511-A Optical Turbidity Sensor with Wiper](http://www.yosemitech.com/en/product-16.html)
 - [Y514-A Chlorophyll Sensor with Wiper](http://www.yosemitech.com/en/product-14.html)
 - Y532-A Digital pH Sensor
+- Y533 ORP Sensor
+- [Y550-B UV254/COD Sensor with Wiper](http://www.yosemitech.com/en/product-21.html)
 
-All of these sensors require a 5-12V power supply and the power supply can be stopped between measurements. Older sensors may require higher voltage power supplies.  They communicate via [Modbus RTU](https://en.wikipedia.org/wiki/Modbus) over [RS-485](https://en.wikipedia.org/wiki/RS-485).  To interface with them, you will need an RS485-to-TTL adapter.  The white wire of the Yosemitech sensor will connect to the "B" pin of the adapter and the green wire will connect to "A".  The red wire from the sensor should connect to the 5-12V power supply and the black to ground.  The Vcc pin on the adapter should be connected to another power supply (voltage depends on the specific adapter) and the ground to the same ground.  The red wire from the sensor _does not_ connect to the Vcc of the adapter.  The R/RO/RXD pin from the adapter connects to the TXD on the Arduino board and the D/DI/TXD pin from the adapter connects to the RXD.  If applicable, tie the RE and DE (receive/data enable) pins together and connect them to another pin on your board.  There are a number of RS485-to-TTL adapters available.  When shopping for one, be mindful of the logic level of the TTL output by the adapter.  The MAX485, one of the most popular adapters, has a 5V logic level in the TTL signal.  This will _fry_ any board like the Mayfly that can only use on 3.3V logic.  You would need a voltage shifter in between the Mayfly and the MAX485 to make it work.
+All of these sensors require a 5-12V power supply and the power supply can be stopped between measurements.  (Note that any user settings (such as brushing frequency) will be lost if the sensor loses power.)  They communicate via [Modbus RTU](https://en.wikipedia.org/wiki/Modbus) over [RS-485](https://en.wikipedia.org/wiki/RS-485).  To interface with them, you will need an RS485-to-TTL adapter.  The white wire of the Yosemitech sensor will connect to the "B" pin of the adapter and the green wire will connect to "A".  The red wire from the sensor should connect to the 5-12V power supply and the black to ground.  The Vcc pin on the adapter should be connected to another power supply (voltage depends on the specific adapter) and the ground to the same ground.  The red wire from the sensor _does not_ connect to the Vcc of the adapter.  The R/RO/RXD pin from the adapter connects to the TXD on the Arduino board and the D/DI/TXD pin from the adapter connects to the RXD.  If applicable, tie the RE and DE (receive/data enable) pins together and connect them to another pin on your board.  There are a number of RS485-to-TTL adapters available.  When shopping for one, be mindful of the logic level of the TTL output by the adapter.  The MAX485, one of the most popular adapters, has a 5V logic level in the TTL signal.  This will _fry_ any board like the Mayfly that can only use on 3.3V logic.  You would need a voltage shifter in between the Mayfly and the MAX485 to make it work.
 
 The sensor modbus address, the pin controlling sensor power, a stream instance for data (ie, ```Serial```), the Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter, and the number of readings to average are required for the sensor constructor.  (Use -1 for the enable pin if your adapter does not have one.)  For all of these sensors except pH, Yosemitech strongly recommends averaging 10 readings for each measurement.  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.  AltSoftSerial and HardwareSerial work fine.
+
+By default, this library cuts power to the sensors between readings, causing them to lose track of their brushing interval.  The library manually activates the brushes as part of the "wake" command.
 
 The various sensor and variable constructors are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
@@ -865,7 +870,7 @@ YosemitechY533_Voltage(&y533, "UUID", "customVarCode")  // Electrode electrical 
 ```
 
 ```cpp
-// ORP Sensor
+// COD/UV254 Sensor
 #include <YosemitechY550.h>
 YosemitechY550 y550(y550modbusAddress, modbusSerial, modbusPower, max485EnablePin, readingsToAverage);
 // Variables
@@ -888,7 +893,7 @@ _____
 
 As the I2C [Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html) real time clock (RTC) is absolutely required for time-keeping on all AVR boards, this library also makes use of it for its on-board temperature sensor.  The DS3231 requires a 3.3V power supply.
 
-There only argument for the constructor is the number of readings to average, as the RTC requires constant power and is connected via I2C:
+The only argument for the constructor is the number of readings to average, as the RTC requires constant power and is connected via I2C:
 
 ```cpp
 #include <OnboardSensors.h>
