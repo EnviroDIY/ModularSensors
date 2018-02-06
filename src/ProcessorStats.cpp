@@ -131,14 +131,6 @@ String ProcessorStats::getSensorLocation(void) {return BOARD;}
 #endif
 
 
-// nothing needs to happen to start an individual measurement
-bool ProcessorStats::startSingleMeasurement(void)
-{
-    _lastMeasurementRequested = millis();
-    return true;
-}
-
-
 bool ProcessorStats::addSingleMeasurementResult(void)
 {
     // Get the battery voltage

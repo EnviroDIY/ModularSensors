@@ -43,7 +43,6 @@ public:
     SENSOR_STATUS setup(void) override;
     bool wake(void) override;
 
-    bool startSingleMeasurement(void) override;
     bool addSingleMeasurementResult(void) override;
 
 private:

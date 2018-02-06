@@ -34,20 +34,11 @@ AOSongAM2315::AOSongAM2315(int powerPin, int readingsToAverage)
 
 String AOSongAM2315::getSensorLocation(void){return F("I2C_0xB8");}
 
+
 SENSOR_STATUS AOSongAM2315::setup(void)
 {
     Wire.begin();  // Start the wire library
     return Sensor::setup();
-}
-
-
-// nothing needs to happen to start an individual measurement
-bool AOSongAM2315::startSingleMeasurement(void)
-{
-    waitForWarmUp();
-    waitForStability();
-    _lastMeasurementRequested = millis();
-    return true;
 }
 
 

@@ -44,6 +44,7 @@ Sensor::Sensor(String sensorName, int numReturnedVars,
     }
 }
 
+
 // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
 String Sensor::getSensorLocation(void)
 {
@@ -51,6 +52,7 @@ String Sensor::getSensorLocation(void)
     senseLoc +=String(_dataPin);
     return senseLoc;
 }
+
 
 // This returns the name of the sensor.
 String Sensor::getSensorName(void){return _sensorName;}
@@ -102,6 +104,7 @@ bool Sensor::checkPowerOn(void)
     }
 }
 
+
 // This is a helper function to turn on sensor power
 void Sensor::powerUp(void)
 {
@@ -113,14 +116,16 @@ void Sensor::powerUp(void)
     }
 }
 
+
 // The function to wake up a sensor
-// By default, powers up and returns true
+// By default, verifies the power is on and returns true
 bool Sensor::wake(void)
 {
     if(!checkPowerOn()){powerUp();}
     _millisMeasurementStarted = millis();
     return true;
 }
+
 
 // The function to put a sensor to sleep
 // Does NOT power down the sensor!
@@ -130,6 +135,7 @@ bool Sensor::sleep(void)
     _millisMeasurementStarted = 0;
     return true;
 }
+
 
 // This is a helper function to turn off sensor power
 void Sensor::powerDown(void)
@@ -141,6 +147,7 @@ void Sensor::powerDown(void)
         _millisPowerOn = 0;
     }
 }
+
 
 // This is a helper function to wait that enough time has passed for the sensor
 // to warm up before taking readings
@@ -165,6 +172,7 @@ void Sensor::waitForWarmUp(void)
     }
 }
 
+
 // This is a helper function to wait that enough time has passed for the sensor
 // to stabilize before taking readings
 void Sensor::waitForStability(void)
@@ -187,6 +195,7 @@ void Sensor::waitForStability(void)
         }
     }
 }
+
 
 // This is a helper function to wait that enough time has passed for the sensor
 // to give a new value
@@ -230,9 +239,11 @@ SENSOR_STATUS Sensor::setup(void)
     return SENSOR_READY;
 }
 
+
 // The function to return the status of a sensor
 // By default, simply returns ready
 SENSOR_STATUS Sensor::getStatus(void){return SENSOR_READY;}
+
 
 String Sensor::printStatus(SENSOR_STATUS stat)
 {
@@ -247,6 +258,7 @@ String Sensor::printStatus(SENSOR_STATUS stat)
     return status;
 }
 
+
 void Sensor::registerVariable(int varNum, Variable* var)
 {
     variables[varNum] = var;
@@ -254,6 +266,7 @@ void Sensor::registerVariable(int varNum, Variable* var)
     MS_DBG(var->getVarName());
     MS_DBG(F(" accepted.\n"));
 }
+
 
 void Sensor::notifyVariables(void)
 {
@@ -301,6 +314,19 @@ void Sensor::clearValues(void)
 }
 
 
+// This is a place holder for starting a single measurment, for those sensors
+// that need no instructions to start a measurement.
+bool Sensor::startSingleMeasurement(void)
+{
+    waitForWarmUp();
+    waitForStability();
+    _lastMeasurementRequested = millis();
+    return true;
+}
+
+
+// This updates a sensor value by checking it's power, waking it, taking as many
+// readings as requested, then putting the sensor to sleep and powering down.
 bool Sensor::update(void)
 {
     bool ret_val;

@@ -54,7 +54,6 @@ public:
 
     SENSOR_STATUS setup(void);
 
-    bool startSingleMeasurement(void) override;
     bool addSingleMeasurementResult(void) override;
 };
 

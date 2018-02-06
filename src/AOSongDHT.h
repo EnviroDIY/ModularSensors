@@ -75,7 +75,6 @@ public:
     SENSOR_STATUS setup(void) override;
     String getSensorName(void) override;
 
-    bool startSingleMeasurement(void) override;
     bool addSingleMeasurementResult(void) override;
 
 private:

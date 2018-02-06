@@ -87,15 +87,6 @@ bool BoschBME280::wake(void)
 }
 
 
-// nothing needs to happen to start an individual measurement
-bool BoschBME280::startSingleMeasurement(void)
-{
-    waitForStability();
-    _lastMeasurementRequested = millis();
-    return true;
-}
-
-
 bool BoschBME280::addSingleMeasurementResult(void)
 {
     // Make sure we've waited long enough for a new reading to be available

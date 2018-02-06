@@ -69,10 +69,11 @@ public:
     // This turns off the sensor power, if applicable
     virtual void powerDown(void);
 
-    // These next functions must be implemented for ever sensor
-    // This tells the sensor to start a single measurement
-    virtual bool startSingleMeasurement(void) = 0;
-    // This gets the results from a single measurement
+    // This tells the sensor to start a single measurement, if needed
+    virtual bool startSingleMeasurement(void);
+
+    // This next function must be implemented for ever sensor!!
+    // This actually gets the results from a single measurement
     virtual bool addSingleMeasurementResult(void) = 0;
 
     // This updates the sensor's values

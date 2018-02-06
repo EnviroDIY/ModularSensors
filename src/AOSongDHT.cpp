@@ -55,16 +55,6 @@ String AOSongDHT::getSensorName(void)
 }
 
 
-// nothing needs to happen to start an individual measurement
-bool AOSongDHT::startSingleMeasurement(void)
-{
-    waitForWarmUp();
-    waitForStability();
-    _lastMeasurementRequested = millis();
-    return true;
-}
-
-
 bool AOSongDHT::addSingleMeasurementResult(void)
 {
     // Make sure we've waited long enough for a new reading to be available

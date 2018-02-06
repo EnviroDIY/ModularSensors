@@ -51,16 +51,6 @@ String CampbellOBS3::getSensorLocation(void)
 }
 
 
-// nothing needs to happen to start an individual measurement
-bool CampbellOBS3::startSingleMeasurement(void)
-{
-    waitForWarmUp();
-    waitForStability();
-    _lastMeasurementRequested = millis();
-    return true;
-}
-
-
 bool CampbellOBS3::addSingleMeasurementResult(void)
 {
 

@@ -70,7 +70,6 @@ public:
     SENSOR_STATUS getStatus(void) override;
     String getSensorLocation(void) override;
 
-    bool startSingleMeasurement(void) override;
     bool addSingleMeasurementResult(void) override;
 protected:
     Adafruit_BME280 bme_internal;

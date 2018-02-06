@@ -49,7 +49,6 @@ public:
     bool sleep(void) override {return true;}
     void powerDown(void) override {}
 
-    bool startSingleMeasurement(void) override;
     bool addSingleMeasurementResult(void) override;
 
 private:

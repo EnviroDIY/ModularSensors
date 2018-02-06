@@ -79,14 +79,6 @@ bool MaxBotixSonar::wake(void)
 }
 
 
-// nothing needs to happen to start an individual measurement
-bool MaxBotixSonar::startSingleMeasurement(void)
-{
-    _lastMeasurementRequested = millis();
-    return true;
-}
-
-
 bool MaxBotixSonar::addSingleMeasurementResult(void)
 {
     bool stringComplete = false;
