@@ -135,18 +135,18 @@
             "note": "OneWire - Control 1-Wire protocol (DS18S20, DS18B20, DS2408 and etc)",
             "authors": [
                 "Paul Stoffregen",
+                "Jim Studt",
                 "Tom Pollard",
                 "Derek Yerger",
-                "Jim Studt",
-                "Jason Dangel",
+                "Josh Larios",
                 "Robin James",
-                "Ken Butcher",
-                "Guillermo Lovato",
-                "Scott Roberts",
-                "Bertrik Sikken",
-                "Mark Tillotson",
                 "Glenn Trewitt",
-                "Josh Larios"
+                "Jason Dangel",
+                "Guillermo Lovato",
+                "Ken Butcher",
+                "Mark Tillotson",
+                "Bertrik Sikken",
+                "Scott Roberts"
             ],
             "frameworks": "arduino",
             "platforms": "atmelavr, atmelsam"
