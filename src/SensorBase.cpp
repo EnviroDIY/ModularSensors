@@ -17,7 +17,7 @@
 // The constructor
 Sensor::Sensor(String sensorName, int numReturnedVars,
                uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms,
-               int powerPin, int dataPin, int readingsToAverage)
+               int powerPin, int dataPin, int measurementsToAverage)
 {
     _sensorName = sensorName;
     _numReturnedVars = numReturnedVars;
@@ -34,7 +34,7 @@ Sensor::Sensor(String sensorName, int numReturnedVars,
 
     _powerPin = powerPin;
     _dataPin = dataPin;
-    _readingsToAverage = readingsToAverage;
+    _measurementsToAverage = measurementsToAverage;
 
     // Clear arrays
     for (uint8_t i = 0; i < MAX_NUMBER_VARS; i++)
@@ -60,17 +60,17 @@ String Sensor::getSensorName(void){return _sensorName;}
 
 // These functions get and set the number of readings to average for a sensor
 // Generally these values should be set in the constructor
-void Sensor::setReadingstoAverage(int nReadings)
+void Sensor::setNumberMeasurementsToAverage(int nReadings)
 {
-    _readingsToAverage = nReadings;
+    _measurementsToAverage = nReadings;
 }
-int Sensor::getReadingstoAverage(void){return _readingsToAverage;}
-void Sensor::averageReadings(void)
+int Sensor::getNumberMeasurementsToAverage(void){return _measurementsToAverage;}
+void Sensor::averageMeasurements(void)
 {
-    MS_DBG(F("Averaging over "), _readingsToAverage, F(" readings\n"));
+    MS_DBG(F("Averaging over "), _measurementsToAverage, F(" readings\n"));
     for (int i = 0; i < _numReturnedVars; i++)
     {
-        sensorValues[i] /=  _readingsToAverage;
+        sensorValues[i] /=  _measurementsToAverage;
         MS_DBG(F("Result #"), i, F(": "), sensorValues[i], F("\n"));
     }
 }
@@ -199,7 +199,7 @@ void Sensor::waitForStability(void)
 
 // This is a helper function to wait that enough time has passed for the sensor
 // to give a new value
-void Sensor::waitForNextMeasurement(void)
+void Sensor::waitForMeasurementCompletion(void)
 {
     if (_remeasurementTime_ms != 0)
     {
@@ -341,13 +341,13 @@ bool Sensor::update(void)
     // Clear values before starting loop
     clearValues();
 
-    for (int j = 0; j < _readingsToAverage; j++)
+    for (int j = 0; j < _measurementsToAverage; j++)
     {
         ret_val += startSingleMeasurement();
         ret_val += addSingleMeasurementResult();
     }
 
-    averageReadings();
+    averageMeasurements();
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}

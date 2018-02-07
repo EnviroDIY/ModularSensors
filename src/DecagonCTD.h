@@ -38,9 +38,9 @@
 #include "VariableBase.h"
 
 #define CTD_NUM_VARIABLES 3
-#define CTD_WARM_UP 500
-#define CTD_STABILITY 0
-#define CTD_RESAMPLE 500
+#define CTD_WARM_UP_TIME_MS 500
+#define CTD_STABILIZATION_TIME_MS 0
+#define CTD_MEASUREMENT_TIME_MS 500
 
 #define CTD_COND_RESOLUTION 0
 #define CTD_COND_VAR_NUM 2
@@ -56,20 +56,20 @@ class DecagonCTD : public DecagonSDI12
 {
 public:
     // Constructors with overloads
-    DecagonCTD(char SDI12address, int powerPin, int dataPin, int readingsToAverage = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, readingsToAverage,
+    DecagonCTD(char SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("DecagonCTD"), CTD_NUM_VARIABLES,
-                    CTD_WARM_UP, CTD_STABILITY, CTD_RESAMPLE)
+                    CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
     {}
-    DecagonCTD(char *SDI12address, int powerPin, int dataPin, int readingsToAverage = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, readingsToAverage,
+    DecagonCTD(char *SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("DecagonCTD"), CTD_NUM_VARIABLES,
-                    CTD_WARM_UP, CTD_STABILITY, CTD_RESAMPLE)
+                    CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
     {}
-    DecagonCTD(int SDI12address, int powerPin, int dataPin, int readingsToAverage = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, readingsToAverage,
+    DecagonCTD(int SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("DecagonCTD"), CTD_NUM_VARIABLES,
-                    CTD_WARM_UP, CTD_STABILITY, CTD_RESAMPLE)
+                    CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
     {}
 };
 

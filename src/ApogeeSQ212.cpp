@@ -29,10 +29,10 @@
 
 
 // The constructor - need the power pin and the data pin
-ApogeeSQ212::ApogeeSQ212(int powerPin, int dataPin, uint8_t i2cAddress, int readingsToAverage)
+ApogeeSQ212::ApogeeSQ212(int powerPin, int dataPin, uint8_t i2cAddress, int measurementsToAverage)
     : Sensor(F("ApogeeSQ212"), SQ212_NUM_VARIABLES,
-             SQ212_WARM_UP, SQ212_STABILITY, SQ212_RESAMPLE,
-             powerPin, dataPin, readingsToAverage)
+             SQ212_WARM_UP_TIME_MS, SQ212_STABILIZATION_TIME_MS, SQ212_MEASUREMENT_TIME_MS,
+             powerPin, dataPin, measurementsToAverage)
 {
     _i2cAddress = i2cAddress;
 }
@@ -53,7 +53,7 @@ bool ApogeeSQ212::addSingleMeasurementResult(void)
     ads.begin();
     
     // Make sure we've waited long enough for a new reading to be available
-    waitForNextMeasurement();
+    waitForMeasurementCompletion();
 
     // Variables to store the results in
     int16_t adcResult = 0;

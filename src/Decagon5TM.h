@@ -33,9 +33,9 @@
 #include "VariableBase.h"
 
 #define TM_NUM_VARIABLES 3
-#define TM_WARM_UP 200
-#define TM_STABILITY 0
-#define TM_RESAMPLE 200
+#define TM_WARM_UP_TIME_MS 200
+#define TM_STABILIZATION_TIME_MS 0
+#define TM_MEASUREMENT_TIME_MS 200
 
 #define TM_EA_RESOLUTION 4
 #define TM_EA_VAR_NUM 0
@@ -51,20 +51,20 @@ class Decagon5TM : public DecagonSDI12
 {
 public:
     // Constructors with overloads
-    Decagon5TM(char SDI12address, int powerPin, int dataPin, int readingsToAverage = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, readingsToAverage,
+    Decagon5TM(char SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("Decagon5TM"), TM_NUM_VARIABLES,
-                    TM_WARM_UP, TM_STABILITY, TM_RESAMPLE)
+                    TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
     {}
-    Decagon5TM(char *SDI12address, int powerPin, int dataPin, int readingsToAverage = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, readingsToAverage,
+    Decagon5TM(char *SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("Decagon5TM"), TM_NUM_VARIABLES,
-                    TM_WARM_UP, TM_STABILITY, TM_RESAMPLE)
+                    TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
     {}
-    Decagon5TM(int SDI12address, int powerPin, int dataPin, int readingsToAverage = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, readingsToAverage,
+    Decagon5TM(int SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("Decagon5TM"), TM_NUM_VARIABLES,
-                    TM_WARM_UP, TM_STABILITY, TM_RESAMPLE)
+                    TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
     {}
 
     bool update(void) override

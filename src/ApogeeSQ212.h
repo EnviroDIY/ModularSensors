@@ -41,9 +41,9 @@
 #define ADS1015_ADDRESS (0x48) // 1001 000 (ADDR = GND)
 
 #define SQ212_NUM_VARIABLES 1
-#define SQ212_WARM_UP 2
-#define SQ212_STABILITY 2
-#define SQ212_RESAMPLE 2
+#define SQ212_WARM_UP_TIME_MS 2
+#define SQ212_STABILIZATION_TIME_MS 2
+#define SQ212_MEASUREMENT_TIME_MS 2
 
 #define SQ212_PAR_VAR_NUM 0
 #define SQ212_PAR_RESOLUTION 2
@@ -54,7 +54,7 @@ class ApogeeSQ212 : public Sensor
 
 public:
     // The constructor - need the power pin and the data pin
-    ApogeeSQ212(int powerPin, int dataPin, uint8_t i2cAddress = ADS1015_ADDRESS, int readingsToAverage = 1);
+    ApogeeSQ212(int powerPin, int dataPin, uint8_t i2cAddress = ADS1015_ADDRESS, int measurementsToAverage = 1);
 
     String getSensorLocation(void) override;
 

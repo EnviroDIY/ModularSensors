@@ -21,10 +21,10 @@
 
 
 // The constructor - if the hex address is known - also need the power pin and the data pin
-MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin, int readingsToAverage)
+MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin, int measurementsToAverage)
   : Sensor(F("MaximDS18"), DS18_NUM_VARIABLES,
-           DS18_WARM_UP, DS18_STABILITY, DS18_RESAMPLE,
-           powerPin, dataPin, readingsToAverage),
+           DS18_WARM_UP_TIME_MS, DS18_STABILIZATION_TIME_MS, DS18_MEASUREMENT_TIME_MS,
+           powerPin, dataPin, measurementsToAverage),
     oneWire(dataPin), tempSensors(&oneWire)
 {
     for (int i = 0; i < 8; i++) _OneWireAddress[i] = OneWireAddress[i];
@@ -33,10 +33,10 @@ MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin, in
 }
 // The constructor - if the hex address is NOT known - only need the power pin and the data pin
 // Can only use this if there is only a single sensor on the pin
-MaximDS18::MaximDS18(int powerPin, int dataPin, int readingsToAverage)
+MaximDS18::MaximDS18(int powerPin, int dataPin, int measurementsToAverage)
   : Sensor(F("MaximDS18"), DS18_NUM_VARIABLES,
-           DS18_WARM_UP, DS18_STABILITY, DS18_RESAMPLE,
-           powerPin, dataPin, readingsToAverage),
+           DS18_WARM_UP_TIME_MS, DS18_STABILIZATION_TIME_MS, DS18_MEASUREMENT_TIME_MS,
+           powerPin, dataPin, measurementsToAverage),
     oneWire(dataPin), tempSensors(&oneWire)
 {
     _addressKnown = false;
@@ -153,7 +153,7 @@ bool MaximDS18::startSingleMeasurement(void)
 bool MaximDS18::addSingleMeasurementResult(void)
 {
     // Make sure we've waited long enough for a reading to finish
-    waitForNextMeasurement();
+    waitForMeasurementCompletion();
 
     bool goodTemp = true;
     float result = 85;  // This is a "bad" result returned from a DS18 sensor

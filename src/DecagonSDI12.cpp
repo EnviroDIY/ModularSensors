@@ -15,32 +15,32 @@
 
 
 // The constructor - need the number of measurements the sensor will return, SDI-12 address, the power pin, and the data pin
-DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin, int readingsToAverage,
+DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin, int measurementsToAverage,
                            String sensorName, int numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
-             powerPin, dataPin, readingsToAverage),
+             powerPin, dataPin, measurementsToAverage),
     _SDI12Internal(dataPin)
 {
     _SDI12address = SDI12address;
 }
-DecagonSDI12::DecagonSDI12(char *SDI12address, int powerPin, int dataPin, int readingsToAverage,
+DecagonSDI12::DecagonSDI12(char *SDI12address, int powerPin, int dataPin, int measurementsToAverage,
                            String sensorName, int numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
-             powerPin, dataPin, readingsToAverage),
+             powerPin, dataPin, measurementsToAverage),
     _SDI12Internal(dataPin)
 {
     _SDI12address = *SDI12address;
 }
-DecagonSDI12::DecagonSDI12(int SDI12address, int powerPin, int dataPin, int readingsToAverage,
+DecagonSDI12::DecagonSDI12(int SDI12address, int powerPin, int dataPin, int measurementsToAverage,
                            String sensorName, int numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
-             powerPin, dataPin, readingsToAverage),
+             powerPin, dataPin, measurementsToAverage),
     _SDI12Internal(dataPin)
 {
     _SDI12address = SDI12address + '0';
@@ -218,7 +218,7 @@ bool DecagonSDI12::startSingleMeasurement(void)
 bool DecagonSDI12::addSingleMeasurementResult(void)
 {
     // Make sure we've waited long enough for a reading to finish
-    waitForNextMeasurement();
+    waitForMeasurementCompletion();
 
     // Empty the buffer
     _SDI12Internal.clearBuffer();

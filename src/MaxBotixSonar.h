@@ -25,9 +25,9 @@
 #include "VariableBase.h"
 
 #define HRXL_NUM_VARIABLES 1
-#define HRXL_WARM_UP 160
-#define HRXL_STABILITY 0
-#define HRXL_RESAMPLE 166
+#define HRXL_WARM_UP_TIME_MS 160
+#define HRXL_STABILIZATION_TIME_MS 0
+#define HRXL_MEASUREMENT_TIME_MS 166
 #define HRXL_RESOLUTION 0
 #define HRXL_VAR_NUM 0
 
@@ -35,8 +35,8 @@
 class MaxBotixSonar : public Sensor
 {
 public:
-    MaxBotixSonar(Stream* stream, int powerPin, int triggerPin = -1, int readingsToAverage = 1);
-    MaxBotixSonar(Stream& stream, int powerPin, int triggerPin = -1, int readingsToAverage = 1);
+    MaxBotixSonar(Stream* stream, int powerPin, int triggerPin = -1, int measurementsToAverage = 1);
+    MaxBotixSonar(Stream& stream, int powerPin, int triggerPin = -1, int measurementsToAverage = 1);
 
     String getSensorLocation(void) override;
 

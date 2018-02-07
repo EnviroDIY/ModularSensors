@@ -42,9 +42,9 @@
 #include <Adafruit_BME280.h>
 
 #define BME280_NUM_VARIABLES 4
-#define BME280_WARM_UP 100
-#define BME280_STABILITY 0
-#define BME280_RESAMPLE 1000
+#define BME280_WARM_UP_TIME_MS 100
+#define BME280_STABILIZATION_TIME_MS 0
+#define BME280_MEASUREMENT_TIME_MS 1000
 
 #define BME280_TEMP_RESOLUTION 2
 #define BME280_TEMP_VAR_NUM 0
@@ -63,7 +63,7 @@
 class BoschBME280 : public Sensor
 {
 public:
-    BoschBME280(int powerPin, uint8_t i2cAddressHex = 0x76, int readingsToAverage = 1);
+    BoschBME280(int powerPin, uint8_t i2cAddressHex = 0x76, int measurementsToAverage = 1);
 
     bool wake(void) override;
     SENSOR_STATUS setup(void) override;

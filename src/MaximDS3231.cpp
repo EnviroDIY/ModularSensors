@@ -58,7 +58,7 @@ bool MaximDS3231::startSingleMeasurement(void)
 bool MaximDS3231::addSingleMeasurementResult(void)
 {
     // Make sure we've waited long enough for a reading to finish
-    waitForNextMeasurement();
+    waitForMeasurementCompletion();
 
     // get the temperature value
     MS_DBG(F("Getting value\n"));

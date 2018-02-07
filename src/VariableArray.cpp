@@ -162,7 +162,7 @@ bool VariableArray::updateAllSensors(void)
         for (uint8_t i = 0; i < _variableCount; i++)
         {
             if (isLastVarFromSensor(i) and
-                _variableList[i]->parentSensor->getReadingstoAverage() > j)
+                _variableList[i]->parentSensor->getNumberMeasurementsToAverage() > j)
             {
                 // Prints for debugging
                 MS_DBG(F("--- Starting reading "), j+1, F(" on "));
@@ -175,7 +175,7 @@ bool VariableArray::updateAllSensors(void)
         for (uint8_t i = 0; i < _variableCount; i++)
         {
             if (isLastVarFromSensor(i) and
-                _variableList[i]->parentSensor->getReadingstoAverage() > j)
+                _variableList[i]->parentSensor->getNumberMeasurementsToAverage() > j)
             {
                 // Prints for debugging
                 MS_DBG(F("--- Collecting result of reading "), j+1, F(" from "));
@@ -193,7 +193,7 @@ bool VariableArray::updateAllSensors(void)
         {
             MS_DBG(F("--- Averaging results from "));
             MS_DBG(_variableList[i]->parentSensor->getSensorName());
-            _variableList[i]->parentSensor->averageReadings();
+            _variableList[i]->parentSensor->averageMeasurements();
             MS_DBG(F(" ---\n"));
             MS_DBG(F("--- Notifying variables from "));
             MS_DBG(_variableList[i]->parentSensor->getSensorName());
@@ -271,7 +271,7 @@ uint8_t VariableArray::countMaxToAverage(void)
     {
         if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {
-            numReps = max(numReps, _variableList[i]->parentSensor->getReadingstoAverage());
+            numReps = max(numReps, _variableList[i]->parentSensor->getNumberMeasurementsToAverage());
         }
     }
     MS_DBG(F("Collecting up to "), numReps, F(" measurements to average"));

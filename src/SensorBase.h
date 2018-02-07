@@ -37,7 +37,7 @@ public:
 
     Sensor(String sensorName = "Unknown", int numReturnedVars = 1,
            uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t remeasurementTime_ms = 0,
-           int powerPin = -1, int dataPin = -1, int readingsToAverage = 1);
+           int powerPin = -1, int dataPin = -1, int measurementsToAverage = 1);
 
     // These functions are dependent on the constructor and return the constructor values
     // This gets the place the sensor is installed ON THE ARDUINO (ie, pin number)
@@ -47,9 +47,9 @@ public:
 
     // These functions get and set the number of readings to average for a sensor
     // Generally these values should be set in the constructor
-    void setReadingstoAverage(int nReadings);
-    int getReadingstoAverage(void);
-    void averageReadings(void);
+    void setNumberMeasurementsToAverage(int nReadings);
+    int getNumberMeasurementsToAverage(void);
+    void averageMeasurements(void);
 
     // These next functions have defaults.
     // This sets up the sensor, if necessary.  Defaults to ready.
@@ -99,7 +99,7 @@ protected:
     // A helper to ensure that the sensor is giving stable readings
     void waitForStability(void);
     // A helper to ensure that the sensor is ready to give a new value
-    void waitForNextMeasurement(void);
+    void waitForMeasurementCompletion(void);
     // Clears the values array
     void clearValues();
 
@@ -107,7 +107,7 @@ protected:
     int _powerPin;
     String _sensorName;
     int _numReturnedVars;
-    int _readingsToAverage;
+    int _measurementsToAverage;
 
     uint32_t _warmUpTime_ms;
     uint32_t _millisPowerOn;

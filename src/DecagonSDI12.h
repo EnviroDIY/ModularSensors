@@ -32,13 +32,13 @@ class DecagonSDI12 : public Sensor
 {
 public:
 
-    DecagonSDI12(char SDI12address, int powerPin, int dataPin, int readingsToAverage = 1,
+    DecagonSDI12(char SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1,
                  String sensorName = "SDI12-Sensor", int numReturnedVars = 1,
                  uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t remeasurementTime_ms = 0);
-    DecagonSDI12(char *SDI12address, int powerPin, int dataPin, int readingsToAverage = 1,
+    DecagonSDI12(char *SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1,
                  String sensorName = "SDI12-Sensor", int numReturnedVars = 1,
                  uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t remeasurementTime_ms = 0);
-    DecagonSDI12(int SDI12address, int powerPin, int dataPin, int readingsToAverage = 1,
+    DecagonSDI12(int SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1,
                  String sensorName = "SDI12-Sensor", int numReturnedVars = 1,
                  uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t remeasurementTime_ms = 0);
 

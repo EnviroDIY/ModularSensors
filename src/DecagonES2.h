@@ -32,9 +32,9 @@
 #include "VariableBase.h"
 
 #define ES2_NUM_VARIABLES 2
-#define ES2_WARM_UP 250
-#define ES2_STABILITY 0
-#define ES2_RESAMPLE 250
+#define ES2_WARM_UP_TIME_MS 250
+#define ES2_STABILIZATION_TIME_MS 0
+#define ES2_MEASUREMENT_TIME_MS 250
 
 #define ES2_COND_RESOLUTION 0
 #define ES2_COND_VAR_NUM 0
@@ -47,20 +47,20 @@ class DecagonES2 : public DecagonSDI12
 {
 public:
     // Constructors with overloads
-    DecagonES2(char SDI12address, int powerPin, int dataPin, int readingsToAverage = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, readingsToAverage,
+    DecagonES2(char SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("DecagonES2"), ES2_NUM_VARIABLES,
-                    ES2_WARM_UP, ES2_STABILITY, ES2_RESAMPLE)
+                    ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
     {}
-    DecagonES2(char *SDI12address, int powerPin, int dataPin, int readingsToAverage = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, readingsToAverage,
+    DecagonES2(char *SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("DecagonES2"), ES2_NUM_VARIABLES,
-                    ES2_WARM_UP, ES2_STABILITY, ES2_RESAMPLE)
+                    ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
     {}
-    DecagonES2(int SDI12address, int powerPin, int dataPin, int readingsToAverage = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, readingsToAverage,
+    DecagonES2(int SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1)
+     : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("DecagonES2"), ES2_NUM_VARIABLES,
-                    ES2_WARM_UP, ES2_STABILITY, ES2_RESAMPLE)
+                    ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
     {}
 };
 

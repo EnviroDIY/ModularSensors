@@ -32,10 +32,10 @@
 
 
 // The constructor - because this is I2C, only need the power pin
-BoschBME280::BoschBME280(int powerPin, uint8_t i2cAddressHex, int readingsToAverage)
+BoschBME280::BoschBME280(int powerPin, uint8_t i2cAddressHex, int measurementsToAverage)
      : Sensor(F("BoschBME280"), BME280_NUM_VARIABLES,
-              BME280_WARM_UP, BME280_STABILITY, BME280_RESAMPLE,
-              powerPin, -1, readingsToAverage)
+              BME280_WARM_UP_TIME_MS, BME280_STABILIZATION_TIME_MS, BME280_MEASUREMENT_TIME_MS,
+              powerPin, -1, measurementsToAverage)
 {
     _i2cAddressHex  = i2cAddressHex;
 }
@@ -90,7 +90,7 @@ bool BoschBME280::wake(void)
 bool BoschBME280::addSingleMeasurementResult(void)
 {
     // Make sure we've waited long enough for a new reading to be available
-    waitForNextMeasurement();
+    waitForMeasurementCompletion();
 
     // Read values
     float temp = bme_internal.readTemperature();

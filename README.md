@@ -105,10 +105,10 @@ To access and get values from a sensor, you must create an instance of the senso
 ```cpp
 #include <DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
-const int readingsToAverage = 10;  // The number of readings to average
+const int measurementsToAverage = 10;  // The number of readings to average
 const int SDI12Data = 7;  // The pin the CTD is attached to
 const int SDI12Power = 22;  // The sensor power pin (use -1 if not applicable)
-DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, readingsToAverage);
+DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, measurementsToAverage);
 DecagonCTD_Cond cond(&ctd);  // The ampersand (&) *must* be included
 DecagonCTD_Temp temp(&ctd);
 DecagonCTD_Depth depth(&ctd);
@@ -457,7 +457,7 @@ The main constructor for the sensor object is:  (The trigger pin and number of r
 
 ```cpp
 #include <MaxBotixSonar.h>
-MaxBotixSonar sonar(sonarStream, SonarPower, SonarTrigger, readingsToAverage);
+MaxBotixSonar sonar(sonarStream, SonarPower, SonarTrigger, measurementsToAverage);
 ```
 
 The single available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -488,8 +488,8 @@ The main constructor for the sensor object is (called once each for high and low
 
 ```cpp
 #include <CampbellOBS3.h>
-CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, ADS1x15_i2cAddress, readingsToAverage);
-CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADS1x15_i2cAddress, readingsToAverage);
+CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, ADS1x15_i2cAddress, measurementsToAverage);
+CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADS1x15_i2cAddress, measurementsToAverage);
 ```
 
 The single available variable is (called once each for high and low range):
@@ -523,7 +523,7 @@ The main constructor for the sensor object is:
 
 ```cpp
 #include <Decagon5TM.h>
-Decagon5TM fivetm(TMSDI12address, SDI12Power, SDI12Data, readingsToAverage);
+Decagon5TM fivetm(TMSDI12address, SDI12Power, SDI12Data, measurementsToAverage);
 ```
 
 The three available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -552,7 +552,7 @@ The main constructor for the sensor object is:
 
 ```cpp
 #include <DecagonCTD.h>
-DecagonCTD ctd(CTDSDI12address, SDI12Power, SDI12Data, readingsToAverage);
+DecagonCTD ctd(CTDSDI12address, SDI12Power, SDI12Data, measurementsToAverage);
 ```
 
 The three available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -583,7 +583,7 @@ The main constructor for the sensor object is:
 
 ```cpp
 #include <DecagonES2.h>
-DecagonES2 es2(ES2SDI12address, SDI12Power, SDI12Data, readingsToAverage);
+DecagonES2 es2(ES2SDI12address, SDI12Power, SDI12Data, measurementsToAverage);
 ```
 
 The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -610,14 +610,14 @@ The main constructor for the sensor object is:
 
 ```cpp
 #include <MaximDS18.h>
-MaximDS18 ds18(OneWireAddress, powerPin, dataPin, readingsToAverage);
+MaximDS18 ds18(OneWireAddress, powerPin, dataPin, measurementsToAverage);
 ```
 
 _If and only if you have exactly one sensor attached on your OneWire pin or bus_, you can use this constructor to save yourself the trouble of finding the address:
 
 ```cpp
 #include <MaximDS18.h>
-MaximDS18 ds18(powerPin, dataPin, readingsToAverage);
+MaximDS18 ds18(powerPin, dataPin, measurementsToAverage);
 ```
 
 The single available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -638,7 +638,7 @@ The only input needed for the sensor constructor is the Arduino pin controlling 
 
 ```cpp
 #include <AOSongAM2315.h>
-AOSongAM2315 am2315(I2CPower, readingsToAverage);
+AOSongAM2315 am2315(I2CPower, measurementsToAverage);
 ```
 
 The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -663,7 +663,7 @@ The only input needed is the Arduino pin controlling power on/off; the i2cAddres
 
 ```cpp
 #include <BoschBME280.h>
-BoschBME280 bme280(I2CPower, i2cAddressHex, readingsToAverage);
+BoschBME280 bme280(I2CPower, i2cAddressHex, measurementsToAverage);
 ```
 
 The four available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -696,7 +696,7 @@ The Arduino pin controlling power on/off, the Arduino pin receiving data, and th
 
 ```cpp
 #include <AOSongDHT.h>
-AOSongDHT dht(DHTPower, DHTPin, dhtType, readingsToAverage);
+AOSongDHT dht(DHTPower, DHTPin, dhtType, measurementsToAverage);
 ```
 
 The three available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -724,7 +724,7 @@ The Arduino pin controlling power on/off and the analog data pin _on the TI ADS1
 
 ```cpp
 #include <ApogeeSQ212.h>
-ApogeeSQ212 SQ212(SQ212Power, SQ212Data, ADS1x15_i2cAddress, readingsToAverage);
+ApogeeSQ212 SQ212(SQ212Power, SQ212Data, ADS1x15_i2cAddress, measurementsToAverage);
 ```
 
 The one available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -761,7 +761,7 @@ The various sensor and variable constructors are:  (UUID and customVarCode are o
 ```cpp
 // Dissolved Oxygen Sensor
 #include <YosemitechY504.h>  // Use this for both the Y502-A and Y504-A
-YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePin, readingsToAverage);
+YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY504_DOpct(&y504, "UUID", "customVarCode")  // DO percent saturation
 //  Resolution is 0.00000005 %
@@ -780,7 +780,7 @@ YosemitechY504_DOmgL(&y504, "UUID", "customVarCode")  // DO concentration in mg/
 ```cpp
 // Turbidity Sensor without wiper
 #include <YosemitechY510.h>  // Use this for both the Y510-B
-YosemitechY510 y510(y510modbusAddress, modbusSerial, modbusPower, max485EnablePin, readingsToAverage);
+YosemitechY510 y510(y510modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY510_Turbidity(&y510, "UUID", "customVarCode")  // Turbidity in NTU
 //  Resolution is 0.0000002 NTU
@@ -795,7 +795,7 @@ YosemitechY510_Temp(&y510, "UUID", "customVarCode")  // Temperature in °C
 ```cpp
 // Turbidity Sensor with wiper
 #include <YosemitechY511.h>  // Use this for both the Y511-A
-YosemitechY511 y511(y511modbusAddress, modbusSerial, modbusPower, max485EnablePin, readingsToAverage);
+YosemitechY511 y511(y511modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY511_Turbidity(&y511, "UUID", "customVarCode")  // Turbidity in NTU
 //  Resolution is 0.0000002 NTU
@@ -810,7 +810,7 @@ YosemitechY511_Temp(&y511, "UUID", "customVarCode")  // Temperature in °C
 ```cpp
 // Chlorophyll Sensor
 #include <YosemitechY514.h>
-YosemitechY514 y514(y514modbusAddress, modbusSerial, modbusPower, max485EnablePin, readingsToAverage);
+YosemitechY514 y514(y514modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY514_Chlorophyll(&y514, "UUID", "customVarCode")  // Chlorophyll concentration in µg/L
 //  Resolution is 0.00000009 µg/L
@@ -825,7 +825,7 @@ YosemitechY514_Temp(&y514, "UUID", "customVarCode")  // Temperature in °C
 ```cpp
 // Conductivity Sensor
 #include <YosemitechY520.h>
-YosemitechY520 y520(y520modbusAddress, modbusSerial, modbusPower, max485EnablePin, readingsToAverage);
+YosemitechY520 y520(y520modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY520_Cond(&y520, "UUID", "customVarCode")  // Conductivity in µS/cm
 //  Resolution is 0.00000005 µS/cm
@@ -840,7 +840,7 @@ YosemitechY520_Temp(&y520, "UUID", "customVarCode")  // Temperature in °C
 ```cpp
 // pH Sensor
 #include <YosemitechY532.h>
-YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, readingsToAverage);
+YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY532_pH(&y532, "UUID", "customVarCode")  // pH
 //  Resolution is 0.000000002 pH
@@ -856,7 +856,7 @@ YosemitechY532_Voltage(&y532, "UUID", "customVarCode")  // Electrode electrical 
 ```cpp
 // ORP Sensor
 #include <YosemitechY533.h>
-YosemitechY533 y533(y533modbusAddress, modbusSerial, modbusPower, max485EnablePin, readingsToAverage);
+YosemitechY533 y533(y533modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY533_pH(&y533, "UUID", "customVarCode")  // pH
 //  Resolution is 0.000000002 pH
@@ -872,7 +872,7 @@ YosemitechY533_Voltage(&y533, "UUID", "customVarCode")  // Electrode electrical 
 ```cpp
 // COD/UV254 Sensor
 #include <YosemitechY550.h>
-YosemitechY550 y550(y550modbusAddress, modbusSerial, modbusPower, max485EnablePin, readingsToAverage);
+YosemitechY550 y550(y550modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY550_COD(&y550, "UUID", "customVarCode")  // COD in mg/L equiv. KHP
 //  Resolution is 0.01 mg/L COD
@@ -897,7 +897,7 @@ The only argument for the constructor is the number of readings to average, as t
 
 ```cpp
 #include <OnboardSensors.h>
-MaximDS3231 ds3231(readingsToAverage);
+MaximDS3231 ds3231(measurementsToAverage);
 ```
 
 The only available variables is:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -918,7 +918,7 @@ The main constructor for the sensor object is:
 
 ```cpp
 #include <OnboardSensors.h>
-ProcessorStats mayfly(MFVersion, readingsToAverage);
+ProcessorStats mayfly(MFVersion, measurementsToAverage);
 ```
 
 The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)

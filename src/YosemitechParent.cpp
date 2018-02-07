@@ -17,12 +17,12 @@
 
 // The constructor - need the sensor type, modbus address, power pin, stream for data, and number of readings to average
 YosemitechParent::YosemitechParent(byte modbusAddress, Stream* stream,
-                                   int powerPin, int enablePin, int readingsToAverage,
+                                   int powerPin, int enablePin, int measurementsToAverage,
                                    yosemitechModel model, String sensName, int numVariables,
                                    int warmUpTime_ms, int stabilizationTime_ms, int remeasurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
-             powerPin, -1, readingsToAverage)
+             powerPin, -1, measurementsToAverage)
 {
     _model = model;
     _modbusAddress = modbusAddress;
@@ -30,12 +30,12 @@ YosemitechParent::YosemitechParent(byte modbusAddress, Stream* stream,
     _RS485EnablePin = enablePin;
 }
 YosemitechParent::YosemitechParent(byte modbusAddress, Stream& stream,
-                                   int powerPin, int enablePin, int readingsToAverage,
+                                   int powerPin, int enablePin, int measurementsToAverage,
                                    yosemitechModel model, String sensName, int numVariables,
                                    int warmUpTime_ms, int stabilizationTime_ms, int remeasurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
-             powerPin, -1, readingsToAverage)
+             powerPin, -1, measurementsToAverage)
 {
     _model = model;
     _modbusAddress = modbusAddress;
@@ -143,7 +143,7 @@ bool YosemitechParent::addSingleMeasurementResult(void)
     if (_millisMeasurementStarted > 0)
     {
         // Make sure we've waited long enough for a new reading to be available
-        waitForNextMeasurement();
+        waitForMeasurementCompletion();
 
         // Initialize float variables
         float parmValue, tempValue, thirdValue;

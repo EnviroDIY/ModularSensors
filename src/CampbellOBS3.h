@@ -37,9 +37,9 @@
 #define ADS1015_ADDRESS (0x48) // 1001 000 (ADDR = GND)
 
 #define OBS3_NUM_VARIABLES 1  // low and high range are treated as completely independent
-#define OBS3_WARM_UP 2
-#define OBS3_STABILITY 2000
-#define OBS3_RESAMPLE 2
+#define OBS3_WARM_UP_TIME_MS 2
+#define OBS3_STABILIZATION_TIME_MS 2000
+#define OBS3_MEASUREMENT_TIME_MS 2
 
 #define OBS3_TURB_VAR_NUM 0
 #define OBS3_RESOLUTION 3
@@ -50,7 +50,7 @@ class CampbellOBS3 : public Sensor
 {
 public:
     // The constructor - need the power pin, the data pin, and the calibration info
-    CampbellOBS3(int powerPin, int dataPin, float A, float B, float C, uint8_t i2cAddress = ADS1015_ADDRESS, int readingsToAverage = 1);
+    CampbellOBS3(int powerPin, int dataPin, float A, float B, float C, uint8_t i2cAddress = ADS1015_ADDRESS, int measurementsToAverage = 1);
 
     String getSensorLocation(void) override;
 

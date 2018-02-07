@@ -25,10 +25,10 @@
 
 
 // The constructor - because this is I2C, only need the power pin
-AOSongAM2315::AOSongAM2315(int powerPin, int readingsToAverage)
+AOSongAM2315::AOSongAM2315(int powerPin, int measurementsToAverage)
     : Sensor(F("AOSongAM2315"), AM2315_NUM_VARIABLES,
-             AM2315_WARM_UP, AM2315_STABILITY, AM2315_RESAMPLE,
-             powerPin, -1, readingsToAverage)
+             AM2315_WARM_UP_TIME_MS, AM2315_STABILIZATION_TIME_MS, AM2315_MEASUREMENT_TIME_MS,
+             powerPin, -1, measurementsToAverage)
 {}
 
 
@@ -45,7 +45,7 @@ SENSOR_STATUS AOSongAM2315::setup(void)
 bool AOSongAM2315::addSingleMeasurementResult(void)
 {
     // Make sure we've waited long enough for a new reading to be available
-    waitForNextMeasurement();
+    waitForMeasurementCompletion();
 
     Adafruit_AM2315 am2315;  // create a sensor object
 

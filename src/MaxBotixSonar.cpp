@@ -14,18 +14,18 @@
 #include "MaxBotixSonar.h"
 
 
-MaxBotixSonar::MaxBotixSonar(Stream* stream, int powerPin, int triggerPin, int readingsToAverage)
+MaxBotixSonar::MaxBotixSonar(Stream* stream, int powerPin, int triggerPin, int measurementsToAverage)
     : Sensor(F("MaxBotixMaxSonar"), HRXL_NUM_VARIABLES,
-             HRXL_WARM_UP, HRXL_STABILITY, HRXL_RESAMPLE,
-             powerPin, -1, readingsToAverage)
+             HRXL_WARM_UP_TIME_MS, HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS,
+             powerPin, -1, measurementsToAverage)
 {
     _triggerPin = triggerPin;
     _stream = stream;
 }
-MaxBotixSonar::MaxBotixSonar(Stream& stream, int powerPin, int triggerPin, int readingsToAverage)
+MaxBotixSonar::MaxBotixSonar(Stream& stream, int powerPin, int triggerPin, int measurementsToAverage)
     : Sensor(F("MaxBotixMaxSonar"), HRXL_NUM_VARIABLES,
-             HRXL_WARM_UP, HRXL_STABILITY, HRXL_RESAMPLE,
-             powerPin, -1, readingsToAverage)
+             HRXL_WARM_UP_TIME_MS, HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS,
+             powerPin, -1, measurementsToAverage)
 {
     _triggerPin = triggerPin;
     _stream = &stream;
@@ -82,7 +82,7 @@ bool MaxBotixSonar::wake(void)
 bool MaxBotixSonar::addSingleMeasurementResult(void)
 {
     // Make sure we've waited long enough for a new reading to be available
-    waitForNextMeasurement();
+    waitForMeasurementCompletion();
     
     bool stringComplete = false;
     int rangeAttempts = 0;

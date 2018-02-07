@@ -32,9 +32,9 @@
 #include "ModSensorDebugger.h"
 
 #define AM2315_NUM_VARIABLES 2
-#define AM2315_WARM_UP 500
-#define AM2315_STABILITY 500
-#define AM2315_RESAMPLE 2000
+#define AM2315_WARM_UP_TIME_MS 500
+#define AM2315_STABILIZATION_TIME_MS 500
+#define AM2315_MEASUREMENT_TIME_MS 2000
 
 #define AM2315_HUMIDITY_RESOLUTION 1
 #define AM2315_HUMIDITY_VAR_NUM 0
@@ -48,7 +48,7 @@ class AOSongAM2315 : public Sensor
 {
 public:
     // The constructor - because this is I2C, only need the power pin
-    AOSongAM2315(int powerPin, int readingsToAverage = 1);
+    AOSongAM2315(int powerPin, int measurementsToAverage = 1);
 
     String getSensorLocation(void) override;
 

@@ -34,9 +34,9 @@
 #include <DallasTemperature.h>
 
 #define DS18_NUM_VARIABLES 1
-#define DS18_WARM_UP 2
-#define DS18_STABILITY 0
-#define DS18_RESAMPLE 750
+#define DS18_WARM_UP_TIME_MS 2
+#define DS18_STABILIZATION_TIME_MS 0
+#define DS18_MEASUREMENT_TIME_MS 750
 #define DS18_TEMP_VAR_NUM 0
 #define DS18_TEMP_RESOLUTION 4
 
@@ -44,8 +44,8 @@
 class MaximDS18 : public Sensor
 {
 public:
-    MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin, int readingsToAverage = 1);
-    MaximDS18(int powerPin, int dataPin, int readingsToAverage = 1);
+    MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin, int measurementsToAverage = 1);
+    MaximDS18(int powerPin, int dataPin, int measurementsToAverage = 1);
 
     SENSOR_STATUS setup(void) override;
     String getSensorLocation(void) override;

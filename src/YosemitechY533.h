@@ -33,9 +33,9 @@
 #include "VariableBase.h"
 
 #define Y533_NUM_VARIABLES 3
-#define Y533_WARM_UP 500
-#define Y533_STABILITY 4500
-#define Y533_RESAMPLE 1800
+#define Y533_WARM_UP_TIME_MS 500
+#define Y533_STABILIZATION_TIME_MS 4500
+#define Y533_MEASUREMENT_TIME_MS 1800
 
 #define Y533_PH_RESOLUTION 1
 #define Y533_PH_VAR_NUM 0
@@ -52,16 +52,16 @@ class YosemitechY533 : public YosemitechParent
 public:
     // Constructors with overloads
     YosemitechY533(byte modbusAddress, Stream* stream, int powerPin,
-                   int enablePin = -1, int readingsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, readingsToAverage,
+                   int enablePin = -1, int measurementsToAverage = 1)
+     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
                         Y533, F("YosemitechY533"), Y533_NUM_VARIABLES,
-                        Y533_WARM_UP, Y533_STABILITY, Y533_RESAMPLE)
+                        Y533_WARM_UP_TIME_MS, Y533_STABILIZATION_TIME_MS, Y533_MEASUREMENT_TIME_MS)
     {}
     YosemitechY533(byte modbusAddress, Stream& stream, int powerPin,
-                   int enablePin = -1, int readingsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, readingsToAverage,
+                   int enablePin = -1, int measurementsToAverage = 1)
+     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
                         Y533, F("YosemitechY533"), Y533_NUM_VARIABLES,
-                        Y533_WARM_UP, Y533_STABILITY, Y533_RESAMPLE)
+                        Y533_WARM_UP_TIME_MS, Y533_STABILIZATION_TIME_MS, Y533_MEASUREMENT_TIME_MS)
     {}
 };
 

@@ -27,10 +27,10 @@
 
 
 // The constructor - need the power pin, data pin, and type of DHT
-AOSongDHT::AOSongDHT(int powerPin, int dataPin, DHTtype type, int readingsToAverage)
+AOSongDHT::AOSongDHT(int powerPin, int dataPin, DHTtype type, int measurementsToAverage)
     : Sensor(F("AOSongDHT"), DHT_NUM_VARIABLES,
-             DHT_WARM_UP, DHT_STABILITY, DHT_RESAMPLE,
-             powerPin, dataPin, readingsToAverage),
+             DHT_WARM_UP_TIME_MS, DHT_STABILIZATION_TIME_MS, DHT_MEASUREMENT_TIME_MS,
+             powerPin, dataPin, measurementsToAverage),
     dht_internal(dataPin, type)
 {
     _dhtType = type;
@@ -58,7 +58,7 @@ String AOSongDHT::getSensorName(void)
 bool AOSongDHT::addSingleMeasurementResult(void)
 {
     // Make sure we've waited long enough for a new reading to be available
-    waitForNextMeasurement();
+    waitForMeasurementCompletion();
 
     // Reading temperature or humidity takes about 250 milliseconds!
     float humid_val, temp_val, hi_val = 0;

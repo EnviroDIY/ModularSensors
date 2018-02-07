@@ -31,10 +31,10 @@
 
 // The constructor - need the power pin, the data pin, and the calibration info
 CampbellOBS3::CampbellOBS3(int powerPin, int dataPin, float A, float B, float C,
-                           uint8_t i2cAddress, int readingsToAverage)
+                           uint8_t i2cAddress, int measurementsToAverage)
   : Sensor(F("CampbellOBS3"), OBS3_NUM_VARIABLES,
-           OBS3_WARM_UP, OBS3_STABILITY, OBS3_RESAMPLE,
-           powerPin, dataPin, readingsToAverage)
+           OBS3_WARM_UP_TIME_MS, OBS3_STABILIZATION_TIME_MS, OBS3_MEASUREMENT_TIME_MS,
+           powerPin, dataPin, measurementsToAverage)
 {
     _Avalue = A;
     _Bvalue = B;
