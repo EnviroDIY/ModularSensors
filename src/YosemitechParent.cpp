@@ -58,8 +58,8 @@ SENSOR_STATUS YosemitechParent::setup(void)
 {
     if (_RS485EnablePin > 0) pinMode(_RS485EnablePin, OUTPUT);
 
-    #if defined(DEBUGGING_SERIAL_OUTPUT)
-        sensor.setDebugStream(&DEBUGGING_SERIAL_OUTPUT);
+    #if defined(DEEP_DEBUGGING_SERIAL_OUTPUT)
+        sensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
     #endif
 
     sensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);

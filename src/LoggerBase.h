@@ -12,7 +12,7 @@
 
 #include <Arduino.h>
 
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+#define DEBUGGING_SERIAL_OUTPUT Serial
 // #define STANDARD_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
@@ -793,15 +793,21 @@ public:
             // Turn on the LED to show we're taking a reading
             digitalWrite(_ledPin, HIGH);
 
+            // Send power to all of the sensors
+            MS_DBG(F("    Powering sensors...\n"));
+            sensorsPowerUp();
             // Wake up all of the sensors
-            MS_DBG(F("Waking sensors...\n"));
+            MS_DBG(F("    Waking sensors...\n"));
             sensorsWake();
             // Update the values from all attached sensors
             MS_DBG(F("  Updating sensor values...\n"));
             updateAllSensors();
-            // Immediately put sensors to sleep to save power
+            // Put sensors to sleep
             MS_DBG(F("  Putting sensors back to sleep...\n"));
             sensorsSleep();
+            // Cut sensor power
+            MS_DBG(F("  Cutting sensor power...\n"));
+            sensorsPowerDown();
 
             // Create a csv data record and save it to the log file
             logToSD(generateSensorDataCSV());

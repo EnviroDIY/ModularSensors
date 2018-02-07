@@ -17,11 +17,13 @@
 #define YosemitechParent_h
 
 #include <Arduino.h>
-#include <YosemitechModbus.h>
-#include "SensorBase.h"
 
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
+
+#include "SensorBase.h"
+#include <YosemitechModbus.h>
 
 // The main class for the Yosemitech Sensors
 class YosemitechParent : public Sensor

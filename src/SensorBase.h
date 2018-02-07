@@ -13,7 +13,7 @@
 #include <Arduino.h>
 #include <pins_arduino.h>
 
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+#define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
 // The largest number of variables from a single sensor
