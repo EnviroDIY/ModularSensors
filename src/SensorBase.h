@@ -84,6 +84,9 @@ public:
 
     // These tie the variables to their parent sensor
     virtual void registerVariable(int varNum, Variable* var);
+    // Clears the values array
+    void clearValues();
+    // Notifies attached variables of new values
     virtual void notifyVariables(void);
     float sensorValues[MAX_NUMBER_VARS];
 
@@ -100,8 +103,6 @@ protected:
     void waitForStability(void);
     // A helper to ensure that the sensor is ready to give a new value
     void waitForMeasurementCompletion(void);
-    // Clears the values array
-    void clearValues();
 
     int _dataPin;
     int _powerPin;
