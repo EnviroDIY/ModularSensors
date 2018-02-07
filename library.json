@@ -148,8 +148,7 @@
                 "Bertrik Sikken",
                 "Scott Roberts"
             ],
-            "frameworks": "arduino",
-            "platforms": "atmelavr, atmelsam"
+            "frameworks": "arduino"
         },
         {
             "name": "DallasTemperature",
