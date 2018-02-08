@@ -150,6 +150,7 @@ bool YosemitechParent::addSingleMeasurementResult(void)
         // Get Values
         MS_DBG(F("Get Values: "));
         success = sensor.getValues(parmValue, tempValue, thirdValue);
+        if (_model == Y520) parmValue *= 1000;  // For conductivity, convert mS/cm to µS/cm
         // Put values into the array
         // All sensors but pH and DO will have -9999 as the third value
         sensorValues[0] += parmValue;
