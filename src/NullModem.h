@@ -47,10 +47,10 @@ public:
   {}
   bool begin() { return false;}
   bool init() { return false; }
-  bool testAT(unsigned long timeout = 10000L) { return false; }
+  bool testAT(uint32_t timeout = 10000L) { return false; }
   int getSignalQuality() { return 0; }
   bool isNetworkConnected() { return false; }
-  bool waitForNetwork(unsigned long timeout = 60000L) { return false; }
+  bool waitForNetwork(uint32_t timeout = 60000L) { return false; }
   bool networkConnect(const char* ssid, const char* pwd) { return false; }
   bool networkDisconnect() { return false; }
   bool gprsConnect(const char* apn, const char* user = "", const char* pw = ""){ return false; }

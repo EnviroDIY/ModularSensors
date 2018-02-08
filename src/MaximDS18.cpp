@@ -13,17 +13,19 @@
  * 0.5°C, 0.25°C, 0.125°C, and 0.0625°C, respectively.
  * The default resolution at power-up is 12-bit.
  *
- * Time to take reading at 12-bit: 750ms (likely ready to begin conversion
- * much before that, but I can't find a number.)
+ * Time to take reading at 12-bit: 750ms
+ * Reset time is < 480 µs
  */
 
 #include "MaximDS18.h"
 
 
 // The constructor - if the hex address is known - also need the power pin and the data pin
-MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin)
-  : Sensor(powerPin, dataPin, F("MaximDS18"), DS18_NUM_MEASUREMENTS, DS18_WARM_UP)
-    // oneWire(dataPin), tempSensors(&oneWire)
+MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin, int measurementsToAverage)
+  : Sensor(F("MaximDS18"), DS18_NUM_VARIABLES,
+           DS18_WARM_UP_TIME_MS, DS18_STABILIZATION_TIME_MS, DS18_MEASUREMENT_TIME_MS,
+           powerPin, dataPin, measurementsToAverage),
+    oneWire(dataPin), tempSensors(&oneWire)
 {
     for (int i = 0; i < 8; i++) _OneWireAddress[i] = OneWireAddress[i];
     // _OneWireAddress = OneWireAddress;
@@ -31,12 +33,15 @@ MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin)
 }
 // The constructor - if the hex address is NOT known - only need the power pin and the data pin
 // Can only use this if there is only a single sensor on the pin
-MaximDS18::MaximDS18(int powerPin, int dataPin)
-  : Sensor(powerPin, dataPin, F("MaximDS18"), DS18_NUM_MEASUREMENTS, DS18_WARM_UP)
-    // oneWire(dataPin), tempSensors(&oneWire)
+MaximDS18::MaximDS18(int powerPin, int dataPin, int measurementsToAverage)
+  : Sensor(F("MaximDS18"), DS18_NUM_VARIABLES,
+           DS18_WARM_UP_TIME_MS, DS18_STABILIZATION_TIME_MS, DS18_MEASUREMENT_TIME_MS,
+           powerPin, dataPin, measurementsToAverage),
+    oneWire(dataPin), tempSensors(&oneWire)
 {
     _addressKnown = false;
 }
+
 
 // Turns the address into a printable string
 String MaximDS18::getAddressString(DeviceAddress owAddr)
@@ -56,25 +61,17 @@ String MaximDS18::getAddressString(DeviceAddress owAddr)
     return addrStr;
 }
 
+
 // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
 String MaximDS18::getSensorLocation(void)
 {
     return getAddressString(_OneWireAddress);
 }
 
+
 // The function to set up connection to a sensor.
 SENSOR_STATUS MaximDS18::getStatus(void)
 {
-    // Check if the power is on, turn it on if not (Need power to get status)
-    bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up
-    waitForWarmUp();
-
-    OneWire oneWire(_dataPin);
-    DallasTemperature tempSensors(&oneWire);
-    tempSensors.begin();
-
     // Make sure the address is valid
     if (!tempSensors.validAddress(_OneWireAddress))
     {
@@ -91,36 +88,15 @@ SENSOR_STATUS MaximDS18::getStatus(void)
         return SENSOR_ERROR;
     }
 
-    // Set resolution to 12 bit
-    if (!tempSensors.setResolution(_OneWireAddress, 12))
-    {
-        MS_DBG(F("Unable to set the resolution of this sensor: "));
-        MS_DBG(getAddressString(_OneWireAddress), F("\n"));
-        return SENSOR_ERROR;
-    }
-
-    // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
-
     return SENSOR_READY;
 }
+
 
 // The function to set up connection to a sensor.
 // By default, sets pin modes and returns ready
 SENSOR_STATUS MaximDS18::setup(void)
 {
-    if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
-    pinMode(_dataPin, INPUT_PULLUP);
-
-    // Check if the power is on, turn it on if not  (Need power to get address)
-    bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up
-    waitForWarmUp();
-
-    // Start up the maxim sensor library
-    OneWire oneWire(_dataPin);
-    DallasTemperature tempSensors(&oneWire);
+    Sensor::setup();
     tempSensors.begin();
 
     // Find the address if it's not known
@@ -141,72 +117,57 @@ SENSOR_STATUS MaximDS18::setup(void)
         }
     }
 
-    MS_DBG(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
-    MS_DBG(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
-
     SENSOR_STATUS stat = getStatus();
 
-    // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
+    // Set resolution to 12 bit
+    // All variable resolution sensors start up at 12 bit resolution by default
+    if (!tempSensors.setResolution(_OneWireAddress, 12))
+    {
+        MS_DBG(F("Unable to set the resolution of this sensor: "));
+        MS_DBG(getAddressString(_OneWireAddress), F("\n"));
+        return SENSOR_ERROR;
+    }
+
+    // Tell the sensor that we do NOT want to wait for conversions to finish
+    // That is, we're in ASYNC mode and will get values when we're ready
+    tempSensors.setWaitForConversion(false);
 
     return stat;
 }
 
 
-// Uses OneWire/Dallas Temp and the specified sensor address to get data from DS18
-bool MaximDS18::update()
+// Sending the device a request to start temp conversion.
+// Because we put ourselves in ASYNC mode in setup, we don't have to wait for finish
+bool MaximDS18::startSingleMeasurement(void)
 {
-    // Check if the power is on, turn it on if not
-    bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up
     waitForWarmUp();
+    waitForStability();
+    // Send the command to get temperatures
+    MS_DBG(F("Asking sensor to take a measurement\n"));
+    tempSensors.requestTemperaturesByAddress(_OneWireAddress);
+    _lastMeasurementRequested = millis();
+    return true;
+}
 
-    // Clear values before starting loop
-    clearValues();
 
-    OneWire oneWire(_dataPin);
-    DallasTemperature tempSensors(&oneWire);
-    tempSensors.begin();
+bool MaximDS18::addSingleMeasurementResult(void)
+{
+    // Make sure we've waited long enough for a reading to finish
+    waitForMeasurementCompletion();
 
-    bool goodTemp = false;
-    int rangeAttempts = 0;
+    bool goodTemp = true;
     float result = 85;  // This is a "bad" result returned from a DS18 sensor
 
-    MS_DBG(F("Beginning detection for Temperature\n"));
-    while (goodTemp == false && rangeAttempts < 50)
-    {
-        // Send the command to get temperatures
-        MS_DBG(F("Asking sensor to take a measurement\n"));
-        tempSensors.requestTemperaturesByAddress(_OneWireAddress);
+    MS_DBG(F("Requesting temperature result\n"));
+    result = tempSensors.getTempC(_OneWireAddress);
+    MS_DBG(F("Received "), result, F("°C\n"));
 
-        MS_DBG(F("Requesting temperature result\n"));
-        result = tempSensors.getTempC(_OneWireAddress);
-        MS_DBG(F("Received "), result, F("°C\n"));
-        rangeAttempts++;
+    // If a DS18 cannot get a good measurement, it returns 85
+    // If the sensor is not properly connected, it returns -127
+    if (result == 85 || result == -127) goodTemp = false;
 
-        // If a DS18 cannot get a goot measurement, it returns 85
-        // If the sensor is not properly connected, it returns -127
-        if (result == 85 || result == -127)
-        {
-            MS_DBG(F("Bad or Suspicious Result, Retry Attempt #"), rangeAttempts, F("\n"));
-        }
-        else
-        {
-            MS_DBG(F("Good result found\n"));
-            goodTemp = true;  // Set completion of read to true
-        }
-    }
+    MS_DBG(F("Temperature: "), result, F(" °C\n"));
+    sensorValues[DS18_TEMP_VAR_NUM] += result;
 
-    MS_DBG(F("Sending value of "), result, F(" °C to the sensorValues array\n"));
-    sensorValues[DS18_TEMP_VAR_NUM] = result;
-
-    // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
-
-    // Update the registered variables with the new values
-    notifyVariables();
-
-    // Return true when finished
-    return true;
+    return goodTemp;
 }

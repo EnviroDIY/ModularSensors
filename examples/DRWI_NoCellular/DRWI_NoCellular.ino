@@ -173,7 +173,7 @@ void setup()
     logger.begin();
 
     // Check for debugging mode
-    logger.checkForDebugMode(buttonPin);
+    logger.checkForTestingMode(buttonPin);
 }
 
 

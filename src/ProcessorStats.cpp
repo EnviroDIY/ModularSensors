@@ -94,8 +94,12 @@
    #define BOARD "Unknown"
 #endif
 
+
 // Need to know the Mayfly version because the battery resistor depends on it
-ProcessorStats::ProcessorStats(const char *version) : Sensor(-1, -1, BOARD, PROCESSOR_NUM_MEASUREMENTS, PROCESSOR_WARM_UP)
+ProcessorStats::ProcessorStats(const char *version)
+    : Sensor(F(BOARD), PROCESSOR_NUM_VARIABLES,
+             PROCESSOR_WARM_UP_TIME_MS, PROCESSOR_STABILIZATION_TIME_MS, PROCESSOR_MEASUREMENT_TIME_MS,
+             -1, -1, 1)
 {
     _version = version;
 
@@ -113,11 +117,9 @@ ProcessorStats::ProcessorStats(const char *version) : Sensor(-1, -1, BOARD, PROC
     #endif
 }
 
+
 String ProcessorStats::getSensorLocation(void) {return BOARD;}
-void ProcessorStats::powerUp(void) {}
-bool ProcessorStats::wake(void) {return true;}
-bool ProcessorStats::sleep(void) {return true;}
-void ProcessorStats::powerDown(void) {}
+
 
 #if defined(ARDUINO_ARCH_SAMD)
     extern "C" char *sbrk(int i);
@@ -128,11 +130,9 @@ void ProcessorStats::powerDown(void) {}
     }
 #endif
 
-bool ProcessorStats::update(void)
-{
-    // Clear values before starting loop
-    clearValues();
 
+bool ProcessorStats::addSingleMeasurementResult(void)
+{
     // Get the battery voltage
     MS_DBG(F("Getting battery voltage\n"));
 
@@ -183,7 +183,7 @@ bool ProcessorStats::update(void)
 
     #endif
 
-    sensorValues[PROCESSOR_BATTERY_VAR_NUM] = sensorValue_battery;
+    sensorValues[PROCESSOR_BATTERY_VAR_NUM] += sensorValue_battery;
 
     // Used only for debugging - can be removed
     MS_DBG(F("Getting Free RAM\n"));
@@ -200,10 +200,7 @@ bool ProcessorStats::update(void)
     float sensorValue_freeRam = -9999;
     #endif
 
-    sensorValues[PROCESSOR_RAM_VAR_NUM] = sensorValue_freeRam;
-
-    // Update the registered variables with the new values
-    notifyVariables();
+    sensorValues[PROCESSOR_RAM_VAR_NUM] += sensorValue_freeRam;
 
     // Return true when finished
     return true;

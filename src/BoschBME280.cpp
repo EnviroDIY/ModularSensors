@@ -30,12 +30,16 @@
 
 #include "BoschBME280.h"
 
+
 // The constructor - because this is I2C, only need the power pin
-BoschBME280::BoschBME280(int powerPin, uint8_t i2cAddressHex)
- : Sensor(powerPin, -1, F("BoschBME280"), BoschBME280_NUM_MEASUREMENTS, BoschBME280_WARM_UP)
+BoschBME280::BoschBME280(int powerPin, uint8_t i2cAddressHex, int measurementsToAverage)
+     : Sensor(F("BoschBME280"), BME280_NUM_VARIABLES,
+              BME280_WARM_UP_TIME_MS, BME280_STABILIZATION_TIME_MS, BME280_MEASUREMENT_TIME_MS,
+              powerPin, -1, measurementsToAverage)
 {
     _i2cAddressHex  = i2cAddressHex;
 }
+
 
 String BoschBME280::getSensorLocation(void)
 {
@@ -43,6 +47,7 @@ String BoschBME280::getSensorLocation(void)
     address += String(_i2cAddressHex, HEX);
     return address;
 }
+
 
 SENSOR_STATUS BoschBME280::getStatus(void)
 {
@@ -64,30 +69,28 @@ SENSOR_STATUS BoschBME280::getStatus(void)
     else return SENSOR_READY;
 }
 
+
 SENSOR_STATUS BoschBME280::setup(void)
 {
-    if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
-
-    MS_DBG(F("Set up "), getSensorName(), F(" attached at "), getSensorLocation());
-    MS_DBG(F(" which can return up to "), _numReturnedVars, F(" variable[s].\n"));
-
+    Sensor::setup();
     return getStatus();
 }
 
-bool BoschBME280::update(void)
+
+bool BoschBME280::wake(void)
 {
-    // Check if the power is on, turn it on if not
-    bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up
+    Sensor::wake();
     waitForWarmUp();
-
-    // Clear values before starting loop
-    clearValues();
-
-    delay(10); // let the sensor settle in after power-up
     bme_internal.begin(0x76);  // Restart needed after power-up
     delay(100); // And now let the sensor boot up (time cannot be decreased)
+    return true;
+}
+
+
+bool BoschBME280::addSingleMeasurementResult(void)
+{
+    // Make sure we've waited long enough for a new reading to be available
+    waitForMeasurementCompletion();
 
     // Read values
     float temp = bme_internal.readTemperature();
@@ -95,21 +98,15 @@ bool BoschBME280::update(void)
     float alt = bme_internal.readAltitude(SEALEVELPRESSURE_HPA);
     float humid = bme_internal.readHumidity();
 
-    sensorValues[BoschBME280_TEMP_VAR_NUM] = temp;
-    sensorValues[BoschBME280_HUMIDITY_VAR_NUM] = humid;
-    sensorValues[BoschBME280_PRESSURE_VAR_NUM] = press;
-    sensorValues[BoschBME280_ALTITUDE_VAR_NUM] = alt;
+    sensorValues[BME280_TEMP_VAR_NUM] += temp;
+    sensorValues[BME280_HUMIDITY_VAR_NUM] += humid;
+    sensorValues[BME280_PRESSURE_VAR_NUM] += press;
+    sensorValues[BME280_ALTITUDE_VAR_NUM] += alt;
 
-    MS_DBG(F("Temperature: "), sensorValues[BoschBME280_TEMP_VAR_NUM]);
-    MS_DBG(F(" Humidity: "), sensorValues[BoschBME280_HUMIDITY_VAR_NUM]);
-    MS_DBG(F(" Barometric Pressure: "), sensorValues[BoschBME280_PRESSURE_VAR_NUM]);
-    MS_DBG(F(" Calculated Altitude: "), sensorValues[BoschBME280_ALTITUDE_VAR_NUM], F("\n"));
-
-    // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
-
-    // Update the registered variables with the new values
-    notifyVariables();
+    MS_DBG(F("Temperature: "), temp);
+    MS_DBG(F(" Humidity: "), humid);
+    MS_DBG(F(" Barometric Pressure: "), press);
+    MS_DBG(F(" Calculated Altitude: "), alt, F("\n"));
 
     // Return true when finished
     return true;

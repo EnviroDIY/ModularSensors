@@ -18,7 +18,8 @@
  *  Accuracy is ±0.1°C
  *  Range is -40°C to +125°C
  *
- * Warm up/sampling time: 2sec
+ * Warm up/stability: unknown
+ * Measurement time: 2sec
 */
 
 #ifndef AOSongAM2315_h
@@ -30,8 +31,10 @@
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
-#define AM2315_NUM_MEASUREMENTS 2
-#define AM2315_WARM_UP 2000
+#define AM2315_NUM_VARIABLES 2
+#define AM2315_WARM_UP_TIME_MS 500
+#define AM2315_STABILIZATION_TIME_MS 500
+#define AM2315_MEASUREMENT_TIME_MS 2000
 
 #define AM2315_HUMIDITY_RESOLUTION 1
 #define AM2315_HUMIDITY_VAR_NUM 0
@@ -45,11 +48,13 @@ class AOSongAM2315 : public Sensor
 {
 public:
     // The constructor - because this is I2C, only need the power pin
-    AOSongAM2315(int powerPin);
+    AOSongAM2315(int powerPin, int measurementsToAverage = 1);
 
     String getSensorLocation(void) override;
 
-    bool update(void) override;
+    SENSOR_STATUS setup(void);
+
+    bool addSingleMeasurementResult(void) override;
 };
 
 

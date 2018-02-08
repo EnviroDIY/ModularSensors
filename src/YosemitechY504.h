@@ -32,10 +32,10 @@
 #include "YosemitechParent.h"
 #include "VariableBase.h"
 
-#define Y504_NUM_MEASUREMENTS 3
-#define Y504_WARM_UP 375
-#define Y504_STABILIZATION 8000
-#define Y504_REMEASUREMENT 1700
+#define Y504_NUM_VARIABLES 3
+#define Y504_WARM_UP_TIME_MS 375
+#define Y504_STABILIZATION_TIME_MS 8000
+#define Y504_MEASUREMENT_TIME_MS 1700
 
 #define Y504_DOPCT_RESOLUTION 1
 #define Y504_DOPCT_VAR_NUM 0
@@ -51,17 +51,17 @@ class YosemitechY504 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY504(byte modbusAddress, int powerPin, Stream* stream,
-                   int enablePin = -1, int numReadings = 1)
-     : YosemitechParent(modbusAddress, powerPin, stream, enablePin, numReadings,
-                        F("YosemitechY504"), Y504_NUM_MEASUREMENTS,
-                        Y504, Y504_WARM_UP, Y504_STABILIZATION, Y504_REMEASUREMENT)
+    YosemitechY504(byte modbusAddress, Stream* stream, int powerPin,
+                   int enablePin = -1, int measurementsToAverage = 1)
+     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+                        Y504, F("YosemitechY504"), Y504_NUM_VARIABLES,
+                        Y504_WARM_UP_TIME_MS, Y504_STABILIZATION_TIME_MS, Y504_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY504(byte modbusAddress, int powerPin, Stream& stream,
-                   int enablePin = -1, int numReadings = 1)
-     : YosemitechParent(modbusAddress, powerPin, stream, enablePin, numReadings,
-                        F("YosemitechY504"), Y504_NUM_MEASUREMENTS,
-                        Y504, Y504_WARM_UP, Y504_STABILIZATION, Y504_REMEASUREMENT)
+    YosemitechY504(byte modbusAddress, Stream& stream, int powerPin,
+                   int enablePin = -1, int measurementsToAverage = 1)
+     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+                        Y504, F("YosemitechY504"), Y504_NUM_VARIABLES,
+                        Y504_WARM_UP_TIME_MS, Y504_STABILIZATION_TIME_MS, Y504_MEASUREMENT_TIME_MS)
     {}
 };
 

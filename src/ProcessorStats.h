@@ -21,8 +21,10 @@
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
-#define PROCESSOR_NUM_MEASUREMENTS 2
-#define PROCESSOR_WARM_UP 0
+#define PROCESSOR_NUM_VARIABLES 2
+#define PROCESSOR_WARM_UP_TIME_MS 0
+#define PROCESSOR_STABILIZATION_TIME_MS 0
+#define PROCESSOR_MEASUREMENT_TIME_MS 0
 
 #define PROCESSOR_BATTERY_RESOLUTION 3
 #define PROCESSOR_BATTERY_VAR_NUM 0
@@ -40,12 +42,14 @@ public:
     ProcessorStats(const char *version);
 
     String getSensorLocation(void) override;
-    void powerUp(void) override;
-    bool wake(void) override;
-    bool sleep(void) override;
-    void powerDown(void) override;
 
-    bool update(void) override;
+    // Do nothing for any of the power up/down or wake/sleep functions
+    void powerUp(void) override {}
+    bool wake(void) override {return true;}
+    bool sleep(void) override {return true;}
+    void powerDown(void) override {}
+
+    bool addSingleMeasurementResult(void) override;
 
 private:
     const char *_version;

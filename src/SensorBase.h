@@ -13,7 +13,7 @@
 #include <Arduino.h>
 #include <pins_arduino.h>
 
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+#define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
 // The largest number of variables from a single sensor
@@ -35,13 +35,21 @@ class Sensor
 {
 public:
 
-    Sensor(int powerPin = -1, int dataPin = -1, String sensorName = "Unknown", int numReturnedVars = 1, int WarmUpTime_ms = 0);
+    Sensor(String sensorName = "Unknown", int numReturnedVars = 1,
+           uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t remeasurementTime_ms = 0,
+           int powerPin = -1, int dataPin = -1, int measurementsToAverage = 1);
 
     // These functions are dependent on the constructor and return the constructor values
-    // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
+    // This gets the place the sensor is installed ON THE ARDUINO (ie, pin number)
     virtual String getSensorLocation(void);
     // This gets the name of the sensor.
     virtual String getSensorName(void);
+
+    // These functions get and set the number of readings to average for a sensor
+    // Generally these values should be set in the constructor
+    void setNumberMeasurementsToAverage(int nReadings);
+    int getNumberMeasurementsToAverage(void);
+    void averageMeasurements(void);
 
     // These next functions have defaults.
     // This sets up the sensor, if necessary.  Defaults to ready.
@@ -53,39 +61,64 @@ public:
 
     // This turns on the sensor power, if applicable
     virtual void powerUp(void);
-    // This wakes the sensor up, if necessary.  Defaults to True.
+    // This wakes the sensor up, if necessary.  Defaults is to power up.
     virtual bool wake(void);
-    // This puts the sensor to sleep, if necessary.  Defaults to True.
+    // This puts the sensor to sleep, if necessary.
+    // Does NOT power down the sensor!
     virtual bool sleep(void);
     // This turns off the sensor power, if applicable
     virtual void powerDown(void);
 
-    // These next functions must be implemented for ever sensor
+    // This tells the sensor to start a single measurement, if needed
+    virtual bool startSingleMeasurement(void);
+
+    // This next function must be implemented for ever sensor!!
+    // This actually gets the results from a single measurement
+    virtual bool addSingleMeasurementResult(void) = 0;
+
     // This updates the sensor's values
-    virtual bool update(void) = 0;
+    // This includes clears the values array, starts and averages as many
+    // measurement readings as requested, and then notifies the registerd
+    // variables of the new resutls.
+    virtual bool update(void);
 
     // These tie the variables to their parent sensor
     virtual void registerVariable(int varNum, Variable* var);
+    // Clears the values array
+    void clearValues();
+    // Notifies attached variables of new values
     virtual void notifyVariables(void);
     float sensorValues[MAX_NUMBER_VARS];
 
     // This just makes sure things are up-to-date
-    bool checkForUpdate(unsigned long sensorLastUpdated);
-    unsigned long sensorLastUpdated;
+    bool checkForUpdate(uint32_t _sensorLastUpdated);
+    uint32_t _sensorLastUpdated;
 
 protected:
     // A helper to check if the power is already on
     bool checkPowerOn(void);
     // A helper to ensure that the sensor has had power long enough to communicate
     void waitForWarmUp(void);
-    // Clears the values array
-    void clearValues();
+    // A helper to ensure that the sensor is giving stable readings
+    void waitForStability(void);
+    // A helper to ensure that the sensor is ready to give a new value
+    void waitForMeasurementCompletion(void);
+
     int _dataPin;
     int _powerPin;
     String _sensorName;
     int _numReturnedVars;
-    uint32_t _WarmUpTime_ms;
+    int _measurementsToAverage;
+
+    uint32_t _warmUpTime_ms;
     uint32_t _millisPowerOn;
+
+    uint32_t _stabilizationTime_ms;
+    uint32_t _millisMeasurementStarted;
+
+    uint32_t _remeasurementTime_ms;
+    uint32_t _lastMeasurementRequested;
+
     SENSOR_STATUS sensorStatus;
     Variable *variables[MAX_NUMBER_VARS];
 };

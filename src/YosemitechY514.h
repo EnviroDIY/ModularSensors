@@ -33,10 +33,10 @@
 #include "YosemitechParent.h"
 #include "VariableBase.h"
 
-#define Y514_NUM_MEASUREMENTS 2
-#define Y514_WARM_UP 1200
-#define Y514_STABILIZATION 8000
-#define Y514_REMEASUREMENT 2000
+#define Y514_NUM_VARIABLES 2
+#define Y514_WARM_UP_TIME_MS 1300
+#define Y514_STABILIZATION_TIME_MS 8000
+#define Y514_MEASUREMENT_TIME_MS 2000
 
 #define Y514_CHLORO_RESOLUTION 1
 #define Y514_CHLORO_VAR_NUM 0
@@ -49,17 +49,17 @@ class YosemitechY514 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY514(byte modbusAddress, int powerPin, Stream* stream,
-                   int enablePin = -1, int numReadings = 1)
-     : YosemitechParent(modbusAddress, powerPin, stream, enablePin, numReadings,
-                        F("YosemitechY514"), Y514_NUM_MEASUREMENTS,
-                        Y514, Y514_WARM_UP, Y514_STABILIZATION, Y514_REMEASUREMENT)
+    YosemitechY514(byte modbusAddress, Stream* stream, int powerPin,
+                   int enablePin = -1, int measurementsToAverage = 1)
+     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+                        Y514, F("YosemitechY514"), Y514_NUM_VARIABLES,
+                        Y514_WARM_UP_TIME_MS, Y514_STABILIZATION_TIME_MS, Y514_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY514(byte modbusAddress, int powerPin, Stream& stream,
-                   int enablePin = -1, int numReadings = 1)
-     : YosemitechParent(modbusAddress, powerPin, stream, enablePin, numReadings,
-                        F("YosemitechY514"), Y514_NUM_MEASUREMENTS,
-                        Y514, Y514_WARM_UP, Y514_STABILIZATION, Y514_REMEASUREMENT)
+    YosemitechY514(byte modbusAddress, Stream& stream, int powerPin,
+                   int enablePin = -1, int measurementsToAverage = 1)
+     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+                        Y514, ("YosemitechY514"), Y514_NUM_VARIABLES,
+                        Y514_WARM_UP_TIME_MS, Y514_STABILIZATION_TIME_MS, Y514_MEASUREMENT_TIME_MS)
     {}
 };
 

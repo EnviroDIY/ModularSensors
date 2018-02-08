@@ -25,20 +25,22 @@
 #include "ModSensorDebugger.h"
 
 #include "SensorBase.h"
+#include <SDI12_ExtInts.h>
 
 // The main class for the Decagon CTD
 class DecagonSDI12 : public Sensor
 {
 public:
-    DecagonSDI12(char SDI12address, int powerPin, int dataPin,
-                 int numReadings = 1, String sensName = "SDI12-Sensor",
-                 int numMeasurements = 1, int WarmUpTime_ms = 0);
-    DecagonSDI12(char *SDI12address, int powerPin, int dataPin,
-                 int numReadings = 1, String sensName = "SDI12-Sensor",
-                 int numMeasurements = 1, int WarmUpTime_ms = 0);
-    DecagonSDI12(int SDI12address, int powerPin, int dataPin,
-                 int numReadings = 1, String sensName = "SDI12-Sensor",
-                 int numMeasurements = 1, int WarmUpTime_ms = 0);
+
+    DecagonSDI12(char SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1,
+                 String sensorName = "SDI12-Sensor", int numReturnedVars = 1,
+                 uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t remeasurementTime_ms = 0);
+    DecagonSDI12(char *SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1,
+                 String sensorName = "SDI12-Sensor", int numReturnedVars = 1,
+                 uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t remeasurementTime_ms = 0);
+    DecagonSDI12(int SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1,
+                 String sensorName = "SDI12-Sensor", int numReturnedVars = 1,
+                 uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t remeasurementTime_ms = 0);
 
     String getSensorVendor(void);
     String getSensorModel(void);
@@ -49,10 +51,12 @@ public:
     virtual SENSOR_STATUS setup(void) override;
     virtual SENSOR_STATUS getStatus(void) override;
 
-    virtual bool update(void);
+    virtual bool startSingleMeasurement(void);
+    virtual bool addSingleMeasurementResult(void);
 
 protected:
     bool getSensorInfo(void);
+    SDI12 _SDI12Internal;
 
 private:
     String _sensorVendor;
@@ -60,7 +64,6 @@ private:
     String _sensorVersion;
     String _sensorSerialNumber;
     char _SDI12address;
-    int _numReadings;
 };
 
 #endif

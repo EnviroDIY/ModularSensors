@@ -25,7 +25,9 @@
  *  Resolution is 0.008 % RH (16 bit)
  *  Accuracy is ± 3 % RH
  *
+ * Sensor takes about 100ms to respond
  * Slowest response time (humidity): 1sec
+ * Assume sensor is immediately stable
 */
 
 #ifndef BoschBME280_h
@@ -39,33 +41,36 @@
 
 #include <Adafruit_BME280.h>
 
-#define BoschBME280_NUM_MEASUREMENTS 4
-#define BoschBME280_WARM_UP 1000
+#define BME280_NUM_VARIABLES 4
+#define BME280_WARM_UP_TIME_MS 100
+#define BME280_STABILIZATION_TIME_MS 0
+#define BME280_MEASUREMENT_TIME_MS 1000
 
-#define BoschBME280_TEMP_RESOLUTION 2
-#define BoschBME280_TEMP_VAR_NUM 0
+#define BME280_TEMP_RESOLUTION 2
+#define BME280_TEMP_VAR_NUM 0
 
-#define BoschBME280_HUMIDITY_RESOLUTION 3
-#define BoschBME280_HUMIDITY_VAR_NUM 1
+#define BME280_HUMIDITY_RESOLUTION 3
+#define BME280_HUMIDITY_VAR_NUM 1
 
-#define BoschBME280_PRESSURE_RESOLUTION 2
-#define BoschBME280_PRESSURE_VAR_NUM 2
+#define BME280_PRESSURE_RESOLUTION 2
+#define BME280_PRESSURE_VAR_NUM 2
 
-#define BoschBME280_ALTITUDE_RESOLUTION 0
-#define BoschBME280_ALTITUDE_VAR_NUM 3
+#define BME280_ALTITUDE_RESOLUTION 0
+#define BME280_ALTITUDE_VAR_NUM 3
 #define SEALEVELPRESSURE_HPA (1013.25)
 
 // The main class for the Bosch BME280
 class BoschBME280 : public Sensor
 {
 public:
-    BoschBME280(int powerPin, uint8_t i2cAddressHex = 0x76);
+    BoschBME280(int powerPin, uint8_t i2cAddressHex = 0x76, int measurementsToAverage = 1);
 
+    bool wake(void) override;
     SENSOR_STATUS setup(void) override;
     SENSOR_STATUS getStatus(void) override;
     String getSensorLocation(void) override;
 
-    bool update(void) override;
+    bool addSingleMeasurementResult(void) override;
 protected:
     Adafruit_BME280 bme_internal;
     uint8_t _i2cAddressHex;
@@ -78,9 +83,9 @@ class BoschBME280_Temp : public Variable
 public:
     BoschBME280_Temp(Sensor *parentSense,
                      String UUID = "", String customVarCode = "")
-      : Variable(parentSense, BoschBME280_TEMP_VAR_NUM,
+      : Variable(parentSense, BME280_TEMP_VAR_NUM,
                F("temperature"), F("degreeCelsius"),
-               BoschBME280_TEMP_RESOLUTION,
+               BME280_TEMP_RESOLUTION,
                F("BoschBME280Temp"), UUID, customVarCode)
     {}
 };
@@ -92,9 +97,9 @@ class BoschBME280_Humidity : public Variable
 public:
     BoschBME280_Humidity(Sensor *parentSense,
                          String UUID = "", String customVarCode = "")
-      : Variable(parentSense, BoschBME280_HUMIDITY_VAR_NUM,
+      : Variable(parentSense, BME280_HUMIDITY_VAR_NUM,
                F("relativeHumidity"), F("percent"),
-               BoschBME280_HUMIDITY_RESOLUTION,
+               BME280_HUMIDITY_RESOLUTION,
                F("BoschBME280Humidity"), UUID, customVarCode)
     {}
 };
@@ -106,9 +111,9 @@ class BoschBME280_Pressure : public Variable
 public:
     BoschBME280_Pressure(Sensor *parentSense,
                          String UUID = "", String customVarCode = "")
-      : Variable(parentSense, BoschBME280_PRESSURE_VAR_NUM,
+      : Variable(parentSense, BME280_PRESSURE_VAR_NUM,
                F("barometricPressure"), F("pascal"),
-               BoschBME280_PRESSURE_RESOLUTION,
+               BME280_PRESSURE_RESOLUTION,
                F("BoschBME280Pressure"), UUID, customVarCode)
     {}
 };
@@ -119,10 +124,10 @@ class BoschBME280_Altitude : public Variable
 {
 public:
     BoschBME280_Altitude(Sensor *parentSense,
-                         String UUID = "", String customVarCode = "") 
-      : Variable(parentSense, BoschBME280_ALTITUDE_VAR_NUM,
+                         String UUID = "", String customVarCode = "")
+      : Variable(parentSense, BME280_ALTITUDE_VAR_NUM,
                F("heightAboveSeaFloor"), F("meter"),
-               BoschBME280_ALTITUDE_RESOLUTION,
+               BME280_ALTITUDE_RESOLUTION,
                F("BoschBME280Altitude"), UUID, customVarCode)
     {}
 };

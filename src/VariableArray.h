@@ -38,11 +38,17 @@ public:
     // This sets up all of the sensors in the list
     bool setupSensors(void);
 
-    // This puts sensors to sleep (ie, cuts power)
+    // This gives power to each sensor
+    void sensorsPowerUp(void);
+
+    // This verifies sensors have power and sends a wake command, if necesary
+    bool sensorsWake(void);
+
+    // This sends sensors a sleep command, but does not power them down
     bool sensorsSleep(void);
 
-    // This wakes sensors (ie, gives power)
-    bool sensorsWake(void);
+    // This cuts sensor power
+    void sensorsPowerDown(void);
 
     // This function updates the values for any connected sensors.
     bool updateAllSensors(void);
@@ -54,10 +60,13 @@ public:
     String generateSensorDataCSV(void);
 
 protected:
-    bool isLastVarFromSensor(int arrayIndex);
-
     uint8_t _variableCount;
     Variable **_variableList;
+    uint8_t _maxSamplestoAverage;
+
+private:
+    bool isLastVarFromSensor(int arrayIndex);
+    uint8_t countMaxToAverage(void);
 };
 
 #endif

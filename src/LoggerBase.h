@@ -10,7 +10,9 @@
 #ifndef LoggerBase_h
 #define LoggerBase_h
 
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+#include <Arduino.h>
+
+#define DEBUGGING_SERIAL_OUTPUT Serial
 // #define STANDARD_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
@@ -50,20 +52,20 @@ public:
               float loggingIntervalMinutes,
               const char *loggerID = 0)
     {
-        PRINTOUT(F("Initializing logger "), loggerID, F(" to record "),
-                 variableCount, F(" variables at "),
+        // initialize the variable array
+        VariableArray::init(variableCount, variableList);
+
+        PRINTOUT(F("Initializing logger "), loggerID, F(" to record at "),
                  loggingIntervalMinutes, F(" minute intervals ... "));
 
         _SDCardPin = SDCardPin;
         _mcuWakePin = mcuWakePin;
-        _variableCount = variableCount;
-        _variableList = variableList;
         _loggingIntervalMinutes = loggingIntervalMinutes;
         _interruptRate = round(_loggingIntervalMinutes*60);  // convert to even seconds
         _loggerID = loggerID;
         _autoFileName = false;
         _isFileNameSet = false;
-        _numReadings = 0;
+        _numTimepointsLogged = 0;
 
         // Set sleep variable, if an interrupt pin is given
         if(_mcuWakePin != -1)
@@ -256,10 +258,10 @@ public:
         uint32_t checkTime = getNowEpoch();
         MS_DBG(F("Current Unix Timestamp: "), checkTime, F("\n"));
         MS_DBG(F("Mod of Logging Interval: "), checkTime % _interruptRate, F("\n"));
-        MS_DBG(F("Number of Readings so far: "), _numReadings, F("\n"));
+        MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged, F("\n"));
         MS_DBG(F("Mod of 120: "), checkTime % 120, F("\n"));
         if ((checkTime % _interruptRate == 0 ) or
-            (_numReadings < 10 and checkTime % 120 == 0))
+            (_numTimepointsLogged < 10 and checkTime % 120 == 0))
         {
             // Update the time variables with the current time
             markTime();
@@ -272,7 +274,7 @@ public:
             MS_DBG(F("    second: "), markedDateTime.second(), F("\n"));
             MS_DBG(F("Time marked at [char]: "), markedISO8601Time, F("\n"));
             // Update the number of readings taken
-            _numReadings ++;
+            _numTimepointsLogged ++;
             MS_DBG(F("Time to log!\n"));
             retval = true;
         }
@@ -291,14 +293,14 @@ public:
         bool retval;
         MS_DBG(F("Marked Time: "), markedEpochTime, F("\n"));
         MS_DBG(F("Mod of Logging Interval: "), markedEpochTime % _interruptRate, F("\n"));
-        MS_DBG(F("Number of Readings so far: "), _numReadings, F("\n"));
+        MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged, F("\n"));
         MS_DBG(F("Mod of 120: "), markedEpochTime % 120, F("\n"));
         if (markedEpochTime != 0 &&
             ((markedEpochTime % _interruptRate == 0 ) or
-            (_numReadings < 10 and markedEpochTime % 120 == 0)))
+            (_numTimepointsLogged < 10 and markedEpochTime % 120 == 0)))
         {
             // Update the number of readings taken
-            _numReadings ++;
+            _numTimepointsLogged ++;
             MS_DBG(F("Time to log!\n"));
             retval = true;
         }
@@ -446,7 +448,7 @@ public:
         _fileName = fileName;
         _isFileNameSet = true;
 
-        // Print out the file name for debugging
+        // Print out the file name
         PRINTOUT(F("Data will be saved as "), _fileName, F("..."));
         if (!_autoFileName) PRINTOUT(F("\n"));
     }
@@ -642,11 +644,39 @@ public:
 
 
     // ===================================================================== //
-    // Public functions for a "debugging" mode
+    // Public functions for a "sensor testing" mode
     // ===================================================================== //
 
-    // This defines what to do in the debug mode
-    virtual void debugMode()
+
+    // This checks to see if you want to enter the sensor mode
+    // This should be run as the very last step within the setup function
+    virtual void checkForTestingMode(int buttonPin)
+    {
+        // Set the pin attached to some button to enter debug mode
+        if (buttonPin > 0) pinMode(buttonPin, INPUT_PULLUP);
+
+        // Flash the LED to let user know it is now possible to enter debug mode
+        for (uint8_t i = 0; i < 15; i++)
+        {
+            digitalWrite(_ledPin, HIGH);
+            delay(50);
+            digitalWrite(_ledPin, LOW);
+            delay(50);
+        }
+
+        // Look for up to 5 seconds for a button press
+        PRINTOUT(F("Push button NOW to enter testing mode.\n"));
+        for (uint32_t start = millis(); millis() - start < 5000; )
+        {
+            if (digitalRead(buttonPin) == HIGH) testingMode();
+        }
+        PRINTOUT(F("------------------------------------------\n\n"));
+        PRINTOUT(F("End of testing mode.\n"));
+    }
+
+
+    // This defines what to do in the testing mode
+    virtual void testingMode()
     {
         PRINTOUT(F("------------------------------------------\n"));
         PRINTOUT(F("Entering debug mode\n"));
@@ -659,8 +689,10 @@ public:
             _logModem.connectInternet();
         #endif  // USE_TINY_GSM
 
+        // Power up all of the sensors
+        sensorsPowerUp();
+
         // Wake up all of the sensors
-        MS_DBG(F("Waking sensors...\n"));
         sensorsWake();
 
         // Update the sensors and print out data 25 times
@@ -668,7 +700,6 @@ public:
         {
             PRINTOUT(F("------------------------------------------\n"));
             // Update the values from all attached sensors
-            MS_DBG(F("  Updating sensor values...\n"));
             updateAllSensors();
             // Print out the current logger time
             PRINTOUT(F("Current logger time is "));
@@ -690,8 +721,8 @@ public:
         }
 
         // Put sensors to sleep
-        MS_DBG(F("  Putting sensors back to sleep...\n"));
         sensorsSleep();
+        sensorsPowerDown();
 
         #if defined(USE_TINY_GSM)
             // Disconnect from the network
@@ -699,32 +730,6 @@ public:
             // Turn off the modem
             _logModem.off();
         #endif  // USE_TINY_GSM
-    }
-
-    // This checks to see if you want to enter debug mode
-    // This should be run as the very last step within the setup function
-    virtual void checkForDebugMode(int buttonPin)
-    {
-        // Set the pin attached to some button to enter debug mode
-        if (buttonPin > 0) pinMode(buttonPin, INPUT_PULLUP);
-
-        // Flash the LED to let user know it is now possible to enter debug mode
-        for (uint8_t i = 0; i < 15; i++)
-        {
-            digitalWrite(_ledPin, HIGH);
-            delay(50);
-            digitalWrite(_ledPin, LOW);
-            delay(50);
-        }
-
-        // Look for up to 5 seconds for a button press
-        PRINTOUT(F("Push button NOW to enter debug mode.\n"));
-        for (unsigned long start = millis(); millis() - start < 5000; )
-        {
-            if (digitalRead(buttonPin) == HIGH) debugMode();
-        }
-        PRINTOUT(F("------------------------------------------\n\n"));
-        PRINTOUT(F("End of debug mode.\n"));
     }
 
     // ===================================================================== //
@@ -790,15 +795,21 @@ public:
             // Turn on the LED to show we're taking a reading
             digitalWrite(_ledPin, HIGH);
 
+            // Send power to all of the sensors
+            MS_DBG(F("    Powering sensors...\n"));
+            sensorsPowerUp();
             // Wake up all of the sensors
-            MS_DBG(F("Waking sensors...\n"));
+            MS_DBG(F("    Waking sensors...\n"));
             sensorsWake();
             // Update the values from all attached sensors
             MS_DBG(F("  Updating sensor values...\n"));
             updateAllSensors();
-            // Immediately put sensors to sleep to save power
+            // Put sensors to sleep
             MS_DBG(F("  Putting sensors back to sleep...\n"));
             sensorsSleep();
+            // Cut sensor power
+            MS_DBG(F("  Cutting sensor power...\n"));
+            sensorsPowerDown();
 
             // Create a csv data record and save it to the log file
             logToSD(generateSensorDataCSV());
@@ -845,7 +856,7 @@ protected:
     const char *_loggerID;
     bool _autoFileName;
     bool _isFileNameSet;
-    uint8_t _numReadings;
+    uint8_t _numTimepointsLogged;
     bool _sleep;
     int _ledPin;
 

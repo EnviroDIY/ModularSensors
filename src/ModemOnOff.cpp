@@ -95,7 +95,7 @@ void ModemOnOff::powerOff(void)
         MS_DBG(_modemSleepRqPin, F("\n"));
         if (!isOn()) {pulse();}
         // Wait until is actually on
-        for (unsigned long start = millis(); millis() - start < 5000; )
+        for (uint32_t start = millis(); millis() - start < 5000; )
         {
             if (isOn())
             {
@@ -118,7 +118,7 @@ bool pulsedOnOff::off(void)
     }
     else MS_DBG(F("Modem was not ever on.\n"));
     // Wait until is off
-    for (unsigned long start = millis(); millis() - start < 5000; )
+    for (uint32_t start = millis(); millis() - start < 5000; )
     {
         if (!isOn())
         {
@@ -165,7 +165,7 @@ bool heldOnOff::on(void)
         MS_DBG(F(" high\n"));
         digitalWrite(_modemSleepRqPin, HIGH);
         // Wait until is actually on
-        for (unsigned long start = millis(); millis() - start < 5000; )
+        for (uint32_t start = millis(); millis() - start < 5000; )
         {
             if (isOn())
             {
@@ -187,7 +187,7 @@ bool heldOnOff::off(void)
         if (!isOn()) MS_DBG(F("Modem was not ever on.\n"));
         digitalWrite(_modemSleepRqPin, LOW);
         // Wait until is off
-        for (unsigned long start = millis(); millis() - start < 5000; )
+        for (uint32_t start = millis(); millis() - start < 5000; )
         {
             if (!isOn())
             {
@@ -233,7 +233,7 @@ bool reverseOnOff::on(void)
         digitalWrite(_modemSleepRqPin, LOW);
     }
     // Wait until is actually on
-    for (unsigned long start = millis(); millis() - start < 5000; )
+    for (uint32_t start = millis(); millis() - start < 5000; )
     {
         if (isOn())
         {
@@ -253,7 +253,7 @@ bool reverseOnOff::off(void)
         digitalWrite(_modemSleepRqPin, HIGH);
     }
     // Wait until is off
-    for (unsigned long start = millis(); millis() - start < 5000; )
+    for (uint32_t start = millis(); millis() - start < 5000; )
     {
         if (!isOn())
         {

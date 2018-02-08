@@ -155,7 +155,7 @@ public:
                 postDataDreamHost();
 
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
-                if (_numReadings % 288 == 0)
+                if (_numTimepointsLogged % 288 == 0)
                 {
                     syncRTClock(_logModem.getNISTTime());
                 }

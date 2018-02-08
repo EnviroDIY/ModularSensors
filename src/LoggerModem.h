@@ -62,8 +62,10 @@
     #define MODEM_NAME "NO MODEM SELECTED"
 #endif
 
-#define MODEM_NUM_MEASUREMENTS 2
-#define MODEM_WARM_UP 0
+#define MODEM_NUM_VARIABLES 2
+#define MODEM_WARM_UP_TIME_MS 0
+#define MODEM_STABILIZATION_TIME_MS 0
+#define MODEM_MEASUREMENT_TIME_MS 0
 #define CSQ_VAR_NUM 0
 #define PERCENT_STAT_VAR_NUM 1
 
@@ -86,17 +88,29 @@ class loggerModem : public Sensor
 
 public:
     // Constructors
-    loggerModem() : Sensor(-1, -1, F(MODEM_NAME), MODEM_NUM_MEASUREMENTS, MODEM_WARM_UP) {}
+    loggerModem()
+        : Sensor(F(MODEM_NAME), MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1)
+    {}
 
     String getSensorLocation(void) override { return F("Modem Serial Port"); }
 
     // The modem must be setup separately!
     virtual SENSOR_STATUS setup(void) override {return SENSOR_READY;}
 
-    // Do NOT put the modem to sleep with the regular sleep function.
-    // This is because when it is run in an array with other sensors, we will
-    // generally want the modem to remain on after all the other sensors have
-    // gone to sleep so the modem can send out data
+    void powerUp(void) override
+    {
+        // Check if the modem is on; turn it on if not
+        if(!modemOnOff->isOn()) modemOnOff->on();
+    }
+
+    virtual bool wake(void) override
+    {
+        // Check if the modem is on; turn it on if not
+        if(!modemOnOff->isOn()) return modemOnOff->on();
+        else return true;
+    }
+
+
     virtual bool sleep(void) override { return true; }
 
     virtual bool off(void)
@@ -110,24 +124,19 @@ public:
         return retVal;
     }
 
-    virtual bool wake(void) override
-    {
-        // Check if the modem is on; turn it on if not
-        if(!modemOnOff->isOn()) return modemOnOff->on();
-        else return true;
-    }
+    // Do NOT power down the modem with the regular sleep function.
+    // This is because when it is run in an array with other sensors, we will
+    // generally want the modem to remain on after all the other sensors have
+    // gone to sleep so the modem can send out data
+    void powerDown(void) override {}
 
-    bool update(void) override
+    bool startSingleMeasurement(void) override
     {
-        // Clear values before starting loop
-        clearValues();
-
         bool retVal = true;
 
         // Connect to the network before asking for quality
         if (!_modem->isNetworkConnected()) retVal &= connectInternet();
         if (retVal == false) return false;
-
 
         // The XBee needs to make a connection before it knows the signal quality
         // Connecting to the daytime server because it works and will immediately
@@ -139,18 +148,17 @@ public:
             delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
         #endif
 
-        // Get signal quality
-        sensorValues[CSQ_VAR_NUM] = getSignalRSSI();
-        sensorValues[PERCENT_STAT_VAR_NUM] = getSignalPercent();
-
-        // Update the registered variables with the new values
-        notifyVariables();
-
-        // Do NOT disconnect from the network here!
-        // Chances are high the modem should be left on for sending data after
-        // the update has been run!
-
+        _lastMeasurementRequested = millis();
         return retVal;
+    }
+
+
+    bool addSingleMeasurementResult(void) override
+    {
+        // Get signal quality
+        sensorValues[CSQ_VAR_NUM] += getSignalRSSI();
+        sensorValues[PERCENT_STAT_VAR_NUM] += getSignalPercent();
+        return true;
     }
 
 public:

@@ -71,7 +71,7 @@ String Variable::getVarCode(void)
 // This returns the current value of the variable as a float
 float Variable::getValue(void)
 {
-    parentSensor->checkForUpdate(parentSensor->sensorLastUpdated);
+    parentSensor->checkForUpdate(parentSensor->_sensorLastUpdated);
     return sensorValue;
 }
 

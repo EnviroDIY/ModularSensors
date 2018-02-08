@@ -17,27 +17,26 @@
 #define YosemitechParent_h
 
 #include <Arduino.h>
-#include <YosemitechModbus.h>
 
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
 #include "SensorBase.h"
+#include <YosemitechModbus.h>
 
-// The main class for the Decagon CTD
+// The main class for the Yosemitech Sensors
 class YosemitechParent : public Sensor
 {
 public:
-    YosemitechParent(byte modbusAddress, int powerPin,
-                     Stream* stream, int enablePin = -1, int numReadings = 1,
-                     String sensName = "Yosemitech-Sensor", int numMeasurements = 2,
-                     yosemitechModel model = UNKNOWN, int WarmUpTime_ms = 1500,
-                     int StabilizationTime_ms = 20000, int remeasurementTime_ms = 2000);
-    YosemitechParent(byte modbusAddress, int powerPin,
-                     Stream& stream, int enablePin = -1, int numReadings = 1,
-                     String sensName = "Yosemitech-Sensor", int numMeasurements = 2,
-                     yosemitechModel model = UNKNOWN, int WarmUpTime_ms = 1500,
-                     int StabilizationTime_ms = 20000, int remeasurementTime_ms = 2000);
+    YosemitechParent(byte modbusAddress, Stream* stream,
+                     int powerPin, int enablePin = -1, int measurementsToAverage = 1,
+                     yosemitechModel model = UNKNOWN, String sensName = "Yosemitech-Sensor", int numVariables = 2,
+                     int warmUpTime_ms = 1500, int stabilizationTime_ms = 20000, int remeasurementTime_ms = 2000);
+    YosemitechParent(byte modbusAddress, Stream& stream,
+                     int powerPin, int enablePin = -1, int measurementsToAverage = 1,
+                     yosemitechModel model = UNKNOWN, String sensName = "Yosemitech-Sensor", int numVariables = 2,
+                     int warmUpTime_ms = 1500, int stabilizationTime_ms = 20000, int remeasurementTime_ms = 2000);
 
     String getSensorLocation(void) override;
 
@@ -45,20 +44,15 @@ public:
     virtual bool wake(void) override;
     virtual bool sleep(void) override;
 
-    virtual bool update(void);
+    virtual bool startSingleMeasurement(void);
+    virtual bool addSingleMeasurementResult(void);
 
 private:
-    void waitForStability(void);
     yosemitechModel _model;
     byte _modbusAddress;
     Stream* _stream;
-    int _enablePin;
-    int _numReadings;
+    int _RS485EnablePin;
     yosemitech sensor;
-    int _remeasurementTime_ms;
-    bool _isTakingMeasurements;
-    uint32_t _millisMeasurementStarted;
-    uint32_t _StabilizationTime_ms;
 };
 
 #endif

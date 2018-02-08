@@ -20,7 +20,8 @@
  *  Accuracy is ±0.5°C for DHT22 and ± ±2°C for DHT11
  *  Range is -40°C to +80°C
  *
- * Warm up/sampling time: 1.7sec
+ * Warm up time: 1.7sec; assume stable on warm-up
+ * Re-sampling time: 2.0sec
 */
 
 #ifndef AOSongDHT_h
@@ -40,8 +41,10 @@
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
-#define DHT_NUM_MEASUREMENTS 3
-#define DHT_WARM_UP 1700
+#define DHT_NUM_VARIABLES 3
+#define DHT_WARM_UP_TIME_MS 1700
+#define DHT_STABILIZATION_TIME_MS 0
+#define DHT_MEASUREMENT_TIME_MS 2000
 
 #define DHT_HUMIDITY_RESOLUTION 1
 #define DHT_HUMIDITY_VAR_NUM 0
@@ -67,12 +70,12 @@ class AOSongDHT : public Sensor
 {
 public:
     // The constructor - need the power pin, the data pin, and the sensor type
-    AOSongDHT(int powerPin, int dataPin, DHTtype type);
+    AOSongDHT(int powerPin, int dataPin, DHTtype type, int measurementsToAverage = 1);
 
     SENSOR_STATUS setup(void) override;
     String getSensorName(void) override;
 
-    bool update(void) override;
+    bool addSingleMeasurementResult(void) override;
 
 private:
     DHT dht_internal;

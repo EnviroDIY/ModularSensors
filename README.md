@@ -72,7 +72,7 @@ In order to support multiple functions and sensors, there are quite a lot of sub
 - [Adafruit BME280 library](https://github.com/adafruit/Adafruit_BME280_Library) - for the Bosch BME280 environmental sensor.
 - [YosemitechModbus](https://github.com/EnviroDIY/YosemitechModbus) - for all Yosemitech environmental sensor.
 
-## <a name="Basic"></a>Basic Senor and Variable Functions
+## <a name="Basic"></a>Basic Sensor and Variable Functions
 
 ### Functions Available for Each Sensor
 - **Constructor** - Each sensor has a unique constructor, the exact format of which is dependent on the individual sensor.
@@ -81,9 +81,13 @@ In order to support multiple functions and sensors, there are quite a lot of sub
 - **setup()** - This "sets up" the sensor - setting up serial ports, etc required for the given sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program _before_ calling the variable setup.
 - **getStatus()** - This returns the current status of the sensor as an interger, if the sensor has some way of giving it to you (most do not.)
 - **printStatus()** - This returns the current status of the sensor as a readable String.
-- **sleep()** - This puts the sensor to sleep, often by stopping the power.  Returns true.
-- **wake()** - This wakes the sensor up and sends it power.  Returns true.
-- **update()** - This updates the sensor values and returns true when finished.  For digital sensors with a single infomation return, this only needs to be called once for each sensor, even if there are multiple variable subclasses for the sensor.
+- **powerUp()** - This sends power to the sensor.  No return.
+- **wake()** - This wakes the sensor up, usually just verifying that it has power, but sometimes by sending a specific wake or start measuring command.  Returns true if successful.
+- **sleep()** - This puts the sensor to sleep, but does NOT power it down.  Returns true if successful.
+- **powerDown()** - This cuts the sensor power.  No return.
+- **update()** - This updates the sensor values and returns true when finished.  For digital sensors with a single information return, this only needs to be called once for each sensor, even if there are multiple variable subclasses for the sensor.  In general, the update function wakes the sensor, if necessary, tells it to start measurements and get values as many times as requested, averages all the values, notifies the attached variables that new values are available, and then puts the sensor back to sleep if it had been asleep at the start of the update.
+- **startSingleMeasurement()** - This tells the sensor to start a single measurement.  Returns true if successful.  Generally you do NOT want to use this function on its own; use the update function instead.
+- **addSingleMeasurementResult()** - This gets the results from a single measurement that has already been started.  Returns true if successful.  Generally you do NOT want to use this function on its own; use the update function instead.
 
 ### Functions for Each Variable
 - **Constructor** - Every variable requires a pointer to its parent sensor as part of the constructor.  Every variable also has two optional string entries, for a universally unique identifier (UUID/GUID) and a custom variable code.  _The UUID must always be listed first!_  In cases where you would like a custom variable code, but do not have a UUID, you **must** enter '""' as your UUID.
@@ -101,10 +105,10 @@ To access and get values from a sensor, you must create an instance of the senso
 ```cpp
 #include <DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
-const int numberReadings = 10;  // The number of readings to average
+const int measurementsToAverage = 10;  // The number of readings to average
 const int SDI12Data = 7;  // The pin the CTD is attached to
 const int SDI12Power = 22;  // The sensor power pin (use -1 if not applicable)
-DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
+DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, measurementsToAverage);
 DecagonCTD_Cond cond(&ctd);  // The ampersand (&) *must* be included
 DecagonCTD_Temp temp(&ctd);
 DecagonCTD_Depth depth(&ctd);
@@ -144,8 +148,10 @@ Having a unified set of functions to access many sensors allows us to quickly po
 - **getVariableCount()** - Simply returns the number of variables.
 - **getSensorCount()** - Returns the number of independent sensors.  This will often be different from the number of variables because many sensors can return multiple variables.
 - **setupSensors()** - This sets up all of the variables in the array and their respective sensors by running all of their setup() functions.  If a sensor doesn't respond to its setup command, the command is called 5 times in attempt to make a connection.  If all sensors are set up successfully, returns true.
-- **sensorsSleep()** - This puts all sensors to sleep (ie, cuts power), skipping repeated sensors.  Returns true.
-- **sensorsWake()** - This wakes all sensors (ie, gives power), skipping repeated sensors.  Returns true.
+- **sensorsPowerUp()** - This gives power to all sensors, skipping repeated sensors.  No return.
+- **sensorsWake()** - This wakes all sensors, skipping repeated sensors.  Returns true.
+- **sensorsSleep()** - This puts all sensors to sleep, skipping repeated sensors.  Returns true.
+- **sensorsPowerDown()** - This cuts power to all sensors, skipping repeated sensors.  No return.
 - **updateAllSensors()** - This updates all sensor values, skipping repeated sensors.  Returns true.  Does NOT return any values.
 - **printSensorData(Stream stream)** - This prints current sensor values along with meta-data to a stream (either hardware or software serial).  By default, it will print to the first Serial port.  Note that the input is a pointer to a stream instance so to use a hardware serial instance you must use an ampersand before the serial name (ie, &Serial1).
 - **generateSensorDataCSV()** - This returns an Arduino String containing comma separated list of sensor values.  This string does _NOT_ contain a time stamp of any kind.
@@ -212,6 +218,7 @@ Our main reason to unify the output from many sensors and variables is to easily
 #### Setup and initialization functions:
 
 - **init(int SDCardPin, int mcuWakePin, int variableCount, Variable \*variableList[], float loggingIntervalMinutes, const char \*loggerID = 0)** - Initializes the logger object.  Must happen within the setup function.  Note that the variableList[], and loggerID are pointers.  The SDCardPin is the pin of the chip select/slave select for the SPI connection to the SD card.
+  - NOTE regarding *loggingIntervalMinutes*: For the first 20 minutes that a logger has been powered up for a deployment, the logger will take readings at 2 minute intervals for 10 measurements, to assist with confirming that the deployment is successful. Afterwards, the time between measurements will revert to the number of minutes set with *loggingIntervalMinutes*.
 - **setAlertPin(int ledPin)** - Optionally sets a pin to put out an alert that a measurement is being logged.  This is intended to be a pin with a LED on it so you can see the light come on when a measurement is being taken.
 - **attachModem(loggerModem &modem)** - Attaches a loggerModem to the logger, which the logger then can use to send data to the internet.  See [Modem and Internet Functions](#Modem) for more information on how the modem must be set up before it is attached to the logger.
 
@@ -246,14 +253,14 @@ A note about timezones:  It is possible to create multiple logger objects in you
 - **generateFileHeader()** - This returns and Aruduino String with a comma separated list of headers for the csv.  The headers will be ordered based on the order variables are listed in the array fed to the init function.
 - **generateSensorDataCSV()** - This returns an Arduino String containing the time and a comma separated list of sensor values.  The data will be ordered based on the order variables are listed in the array fed to the init function.
 
-#### Functions for debugging:
+#### Functions for testing and debugging:
 
 To view any information about what your logger is doing you must add the statement ```#define STANDARD_SERIAL_OUTPUT xxxxx``` to the top of your sketch, where xxxxx is the name of a serial output (ie, Serial or USBSerial).  This statement should be above any include statements in your sketch.
 
 To see more intense debugging for any individual component of the library (a sensor, the variable arrays, the modem, etc), open the source file header (\*.h), for that component.  Find the line ```// #define DEBUGGING_SERIAL_OUTPUT xxxxx```, where xxxxx is the name of a serial output (ie, Serial or USBSerial).  Remove the two comment slashes from that line.  Then recompile and upload your code.  This will (sometimes dramatically) increase the number of statements going out to the debugging serial port.
 
-- **checkForDebugMode(int buttonPin)** - This stops everything and waits for up to two seconds for a button to be pressed to enter allow the user to enter "debug" mode.  I suggest running this as the very last step of the setup function.
-- **debugMode()** - This is a "debugging" mode for the sensors.  It prints out all of the sensor details every 5 seconds for 25 records worth of data.  The printouts go to whichever serial port is given in the ```#define STANDARD_SERIAL_OUTPUT``` statement.
+- **checkForTestingMode(int buttonPin)** - This stops everything and waits for five seconds for a button to be pressed to enter allow the user to enter "sensor testing" mode.  I suggest running this as the very last step of the setup function.
+- **testingMode()** - This is a "testing" mode for the sensors.  It prints out all of the sensor results for 25 records worth of data with a 5-second delay between readings.  The printouts go to whichever serial port is given in the ```#define STANDARD_SERIAL_OUTPUT``` statement.
 
 ####  Convience functions to do it all:
 
@@ -447,11 +454,11 @@ If you are using the [MaxBotix HR-MaxTemp](https://www.maxbotix.com/Ultrasonic_S
 
 The Arduino pin controlling power on/off, a stream instance for received data (ie, ```Serial```), and the Arduino pin controlling the trigger are required for the sensor constructor.  (Use -1 for the trigger pin if you do not have it connected.)  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
 
-The main constructor for the sensor object is:
+The main constructor for the sensor object is:  (The trigger pin and number of readings to average are optional.)
 
 ```cpp
 #include <MaxBotixSonar.h>
-MaxBotixSonar sonar(SonarPower, sonarStream, SonarTrigger);
+MaxBotixSonar sonar(sonarStream, SonarPower, SonarTrigger, measurementsToAverage);
 ```
 
 The single available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -482,8 +489,8 @@ The main constructor for the sensor object is (called once each for high and low
 
 ```cpp
 #include <CampbellOBS3.h>
-CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, ADS1x15_i2cAddress);
-CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADS1x15_i2cAddress);
+CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, ADS1x15_i2cAddress, measurementsToAverage);
+CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADS1x15_i2cAddress, measurementsToAverage);
 ```
 
 The single available variable is (called once each for high and low range):
@@ -517,7 +524,7 @@ The main constructor for the sensor object is:
 
 ```cpp
 #include <Decagon5TM.h>
-Decagon5TM fivetm(TMSDI12address, SDI12Power, SDI12Data, numberReadings);
+Decagon5TM fivetm(TMSDI12address, SDI12Power, SDI12Data, measurementsToAverage);
 ```
 
 The three available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -546,7 +553,7 @@ The main constructor for the sensor object is:
 
 ```cpp
 #include <DecagonCTD.h>
-DecagonCTD ctd(CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
+DecagonCTD ctd(CTDSDI12address, SDI12Power, SDI12Data, measurementsToAverage);
 ```
 
 The three available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -577,7 +584,7 @@ The main constructor for the sensor object is:
 
 ```cpp
 #include <DecagonES2.h>
-DecagonES2 es2(ES2SDI12address, SDI12Power, SDI12Data, numberReadings);
+DecagonES2 es2(ES2SDI12address, SDI12Power, SDI12Data, measurementsToAverage);
 ```
 
 The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -604,14 +611,14 @@ The main constructor for the sensor object is:
 
 ```cpp
 #include <MaximDS18.h>
-MaximDS18 ds18(OneWireAddress, powerPin, dataPin);
+MaximDS18 ds18(OneWireAddress, powerPin, dataPin, measurementsToAverage);
 ```
 
 _If and only if you have exactly one sensor attached on your OneWire pin or bus_, you can use this constructor to save yourself the trouble of finding the address:
 
 ```cpp
 #include <MaximDS18.h>
-MaximDS18 ds18(powerPin, dataPin);
+MaximDS18 ds18(powerPin, dataPin, measurementsToAverage);
 ```
 
 The single available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -628,11 +635,11 @@ _____
 
 The AOSong AM2315 and [CM2311](http://www.aosong.com/en/products/details.asp?id=193) communicate with the board via I2C.  Because this sensor can have only one I2C address, it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 3.3-5.5V power source and the power supply to the sensor can be stopped between measurements.
 
-The only input needed for the sensor constructor is the Arduino pin controlling power on/off:
+The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average:
 
 ```cpp
 #include <AOSongAM2315.h>
-AOSongAM2315 am2315(I2CPower);
+AOSongAM2315 am2315(I2CPower, measurementsToAverage);
 ```
 
 The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -651,13 +658,13 @@ _____
 
 ### <a name="BME280"></a>[Bosch BME280](https://www.bosch-sensortec.com/bst/products/all_products/bme280) Integrated Environmental Sensor
 
-Although this sensor has the option of either I2C or SPI communication, this library only supports I2C.  The I2C sensor address is assumed to be 0x76, though it can be changed to 0x77 in the constructor if necessary.  The sensor address is determined by how the sensor is soldered onto its breakout board.  To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses.  No more than two can be attached.  This module is likely to also work with the [Bosch BMP280 Barometric Pressure Sensor](https://www.bosch-sensortec.com/bst/products/all_products/bmp280), though it has not been tested on it.  These sensors should be attached to a 1.7-3.6V power source and the power supply to the sensor can be stopped between measurements.
+Although this sensor has the option of either I2C or SPI communication, this library only supports I2C.  _The I2C sensor address is assumed to be 0x76_, though it can be changed to 0x77 in the constructor if necessary.  The sensor address is determined by how the sensor is soldered onto its breakout board.  To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses.  No more than two can be attached.  This module is likely to also work with the [Bosch BMP280 Barometric Pressure Sensor](https://www.bosch-sensortec.com/bst/products/all_products/bmp280), though it has not been tested on it.  These sensors should be attached to a 1.7-3.6V power source and the power supply to the sensor can be stopped between measurements.
 
-The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex is optional:
+The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex is optional as is the number of readings to average:
 
 ```cpp
 #include <BoschBME280.h>
-BoschBME280 bme280(I2CPower, i2cAddressHex);
+BoschBME280 bme280(I2CPower, i2cAddressHex, measurementsToAverage);
 ```
 
 The four available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -686,11 +693,11 @@ _____
 
 This module will work with an AOSong [DHT11/CHT11](http://www.aosong.com/en/products/details.asp?id=109), DHT21/AM2301, and [DHT22/AM2302/CM2302](http://www.aosong.com/en/products/details.asp?id=117).  These sensors uses a non-standard single wire digital signaling protocol.  They can be connected to any digital pin.  Please keep in mind that, per manufacturer instructions, these sensors should not be polled more frequently than once every 2 seconds.  These sensors should be attached to a 3.3-6V power source and the power supply to the sensor can be stopped between measurements.
 
-The Arduino pin controlling power on/off, the Arduino pin receiving data, and the sensor type are required for the sensor constructor:
+The Arduino pin controlling power on/off, the Arduino pin receiving data, and the sensor type are required for the sensor constructor.  The number of readings to average is optional:
 
 ```cpp
 #include <AOSongDHT.h>
-AOSongDHT dht(DHTPower, DHTPin, dhtType);;
+AOSongDHT dht(DHTPower, DHTPin, dhtType, measurementsToAverage);
 ```
 
 The three available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -718,7 +725,7 @@ The Arduino pin controlling power on/off and the analog data pin _on the TI ADS1
 
 ```cpp
 #include <ApogeeSQ212.h>
-ApogeeSQ212 SQ212(SQ212Power, SQ212Data, ADS1x15_i2cAddress);
+ApogeeSQ212 SQ212(SQ212Power, SQ212Data, ADS1x15_i2cAddress, measurementsToAverage);
 ```
 
 The one available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -737,20 +744,25 @@ This library currently supports the following Yosemitech sensors:
 
 - [Y502-A or Y504-A Optical Dissolved Oxygen Sensors](http://www.yosemitech.com/en/product-10.html)
 - [Y520-A 4-Electrode Conductivity Sensor](http://www.yosemitech.com/en/product-18.html)
-- [Y510-B](http://www.yosemitech.com/en/product-17.html) or [Y511-A](http://www.yosemitech.com/en/product-16.html) Optical Turbidity Sensors (Y511 has a wiper, Y510 does not)
+- [Y510-B Optical Turbidity Sensor](http://www.yosemitech.com/en/product-17.html)
+- [Y511-A Optical Turbidity Sensor with Wiper](http://www.yosemitech.com/en/product-16.html)
 - [Y514-A Chlorophyll Sensor with Wiper](http://www.yosemitech.com/en/product-14.html)
 - Y532-A Digital pH Sensor
+- Y533 ORP Sensor
+- [Y550-B UV254/COD Sensor with Wiper](http://www.yosemitech.com/en/product-21.html)
 
-All of these sensors require a 5-12V power supply and the power supply can be stopped between measurements. Older sensors may require higher voltage power supplies.  They communicate via [Modbus RTU](https://en.wikipedia.org/wiki/Modbus) over [RS-485](https://en.wikipedia.org/wiki/RS-485).  To interface with them, you will need an RS485-to-TTL adapter.  The white wire of the Yosemitech sensor will connect to the "B" pin of the adapter and the green wire will connect to "A".  The red wire from the sensor should connect to the 5-12V power supply and the black to ground.  The Vcc pin on the adapter should be connected to another power supply (voltage depends on the specific adapter) and the ground to the same ground.  The red wire from the sensor _does not_ connect to the Vcc of the adapter.  The R/RO/RXD pin from the adapter connects to the TXD on the Arduino board and the D/DI/TXD pin from the adapter connects to the RXD.  If applicable, tie the RE and DE (receive/data enable) pins together and connect them to another pin on your board.  There are a number of RS485-to-TTL adapters available.  When shopping for one, be mindful of the logic level of the TTL output by the adapter.  The MAX485, one of the most popular adapters, has a 5V logic level in the TTL signal.  This will _fry_ any board like the Mayfly that can only use on 3.3V logic.  You would need a voltage shifter in between the Mayfly and the MAX485 to make it work.
+All of these sensors require a 5-12V power supply and the power supply can be stopped between measurements.  (Note that any user settings (such as brushing frequency) will be lost if the sensor loses power.)  They communicate via [Modbus RTU](https://en.wikipedia.org/wiki/Modbus) over [RS-485](https://en.wikipedia.org/wiki/RS-485).  To interface with them, you will need an RS485-to-TTL adapter.  The white wire of the Yosemitech sensor will connect to the "B" pin of the adapter and the green wire will connect to "A".  The red wire from the sensor should connect to the 5-12V power supply and the black to ground.  The Vcc pin on the adapter should be connected to another power supply (voltage depends on the specific adapter) and the ground to the same ground.  The red wire from the sensor _does not_ connect to the Vcc of the adapter.  The R/RO/RXD pin from the adapter connects to the TXD on the Arduino board and the D/DI/TXD pin from the adapter connects to the RXD.  If applicable, tie the RE and DE (receive/data enable) pins together and connect them to another pin on your board.  There are a number of RS485-to-TTL adapters available.  When shopping for one, be mindful of the logic level of the TTL output by the adapter.  The MAX485, one of the most popular adapters, has a 5V logic level in the TTL signal.  This will _fry_ any board like the Mayfly that can only use on 3.3V logic.  You would need a voltage shifter in between the Mayfly and the MAX485 to make it work.
 
 The sensor modbus address, the pin controlling sensor power, a stream instance for data (ie, ```Serial```), the Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter, and the number of readings to average are required for the sensor constructor.  (Use -1 for the enable pin if your adapter does not have one.)  For all of these sensors except pH, Yosemitech strongly recommends averaging 10 readings for each measurement.  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.  AltSoftSerial and HardwareSerial work fine.
+
+By default, this library cuts power to the sensors between readings, causing them to lose track of their brushing interval.  The library manually activates the brushes as part of the "wake" command.
 
 The various sensor and variable constructors are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
 // Dissolved Oxygen Sensor
 #include <YosemitechY504.h>  // Use this for both the Y502-A and Y504-A
-YosemitechY504 y504(y504modbusAddress, modbusPower, modbusSerial, max485EnablePin, y504NumberReadings);
+YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY504_DOpct(&y504, "UUID", "customVarCode")  // DO percent saturation
 //  Resolution is 0.00000005 %
@@ -767,9 +779,9 @@ YosemitechY504_DOmgL(&y504, "UUID", "customVarCode")  // DO concentration in mg/
 ```
 
 ```cpp
-// Turbidity Sensor
-#include <YosemitechY510.h>  // Use this for both the Y510-B and Y511-A
-YosemitechY510 y510(y510modbusAddress, modbusPower, modbusSerial, max485EnablePin, y510NumberReadings);
+// Turbidity Sensor without wiper
+#include <YosemitechY510.h>  // Use this for both the Y510-B
+YosemitechY510 y510(y510modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY510_Turbidity(&y510, "UUID", "customVarCode")  // Turbidity in NTU
 //  Resolution is 0.0000002 NTU
@@ -782,9 +794,24 @@ YosemitechY510_Temp(&y510, "UUID", "customVarCode")  // Temperature in °C
 ```
 
 ```cpp
+// Turbidity Sensor with wiper
+#include <YosemitechY511.h>  // Use this for both the Y511-A
+YosemitechY511 y511(y511modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
+// Variables
+YosemitechY511_Turbidity(&y511, "UUID", "customVarCode")  // Turbidity in NTU
+//  Resolution is 0.0000002 NTU
+//  Accuracy is ± 5 % or 0.3 NTU
+//  Range is 0.1 to 1000 NTU
+YosemitechY511_Temp(&y511, "UUID", "customVarCode")  // Temperature in °C
+//  Resolution is 0.00000001 °C
+//  Accuracy is ± 0.2°C
+//  Range is 0°C to + 50°C
+```
+
+```cpp
 // Chlorophyll Sensor
 #include <YosemitechY514.h>
-YosemitechY514 y514(y514modbusAddress, modbusPower, modbusSerial, max485EnablePin, y514NumberReadings);
+YosemitechY514 y514(y514modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY514_Chlorophyll(&y514, "UUID", "customVarCode")  // Chlorophyll concentration in µg/L
 //  Resolution is 0.00000009 µg/L
@@ -799,7 +826,7 @@ YosemitechY514_Temp(&y514, "UUID", "customVarCode")  // Temperature in °C
 ```cpp
 // Conductivity Sensor
 #include <YosemitechY520.h>
-YosemitechY520 y520(y520modbusAddress, modbusPower, modbusSerial, max485EnablePin, y520NumberReadings);
+YosemitechY520 y520(y520modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY520_Cond(&y520, "UUID", "customVarCode")  // Conductivity in µS/cm
 //  Resolution is 0.00000005 µS/cm
@@ -814,7 +841,7 @@ YosemitechY520_Temp(&y520, "UUID", "customVarCode")  // Temperature in °C
 ```cpp
 // pH Sensor
 #include <YosemitechY532.h>
-YosemitechY532 y532(y532modbusAddress, modbusPower, modbusSerial, max485EnablePin, y532NumberReadings);
+YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY532_pH(&y532, "UUID", "customVarCode")  // pH
 //  Resolution is 0.000000002 pH
@@ -826,17 +853,52 @@ YosemitechY532_Temp(&y532, "UUID", "customVarCode")  // Temperature in °C
 //  Range is 0°C to + 50°C
 YosemitechY532_Voltage(&y532, "UUID", "customVarCode")  // Electrode electrical potential
 ```
+
+```cpp
+// ORP Sensor
+#include <YosemitechY533.h>
+YosemitechY533 y533(y533modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
+// Variables
+YosemitechY533_pH(&y533, "UUID", "customVarCode")  // pH
+//  Resolution is 0.000000002 pH
+//  Accuracy is ± 0.1 pH
+//  Range is 2 to 12 pH
+YosemitechY533_Temp(&y533, "UUID", "customVarCode")  // Temperature in °C
+//  Resolution is 0.00000001 °C
+//  Accuracy is ± 0.2°C
+//  Range is 0°C to + 50°C
+YosemitechY533_Voltage(&y533, "UUID", "customVarCode")  // Electrode electrical potential
+```
+
+```cpp
+// COD/UV254 Sensor
+#include <YosemitechY550.h>
+YosemitechY550 y550(y550modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
+// Variables
+YosemitechY550_COD(&y550, "UUID", "customVarCode")  // COD in mg/L equiv. KHP
+//  Resolution is 0.01 mg/L COD
+//  Accuracy is ??
+//  Range is 0.75 to 370 mg/L
+YosemitechY550_Temp(&y550, "UUID", "customVarCode")  // Temperature in °C
+//  Resolution is 0.00000001 °C
+//  Accuracy is ± 0.2°C
+//  Range is 5°C to + 45°C
+YosemitechY550_Turbidity(&y550, "UUID", "customVarCode")  // Turbidity in NTU
+//  Resolution is 0.0000002 NTU
+//  Accuracy is ± 5 % or 0.3 NTU
+//  Range is 0.1 to 1000 NTU
+```
 _____
 
 ### <a name="DS3231"></a>Maxim DS3231 Real Time Clock
 
 As the I2C [Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html) real time clock (RTC) is absolutely required for time-keeping on all AVR boards, this library also makes use of it for its on-board temperature sensor.  The DS3231 requires a 3.3V power supply.
 
-There are no arguments for the constructor, as the RTC requires constant power and is connected via I2C, but due to a bug, you do have to input a "1" in the input:
+The only argument for the constructor is the number of readings to average, as the RTC requires constant power and is connected via I2C:
 
 ```cpp
 #include <OnboardSensors.h>
-MaximDS3231 ds3231(1);
+MaximDS3231 ds3231(measurementsToAverage);
 ```
 
 The only available variables is:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -857,7 +919,7 @@ The main constructor for the sensor object is:
 
 ```cpp
 #include <OnboardSensors.h>
-ProcessorStats mayfly(MFVersion);
+ProcessorStats mayfly(MFVersion, measurementsToAverage);
 ```
 
 The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)

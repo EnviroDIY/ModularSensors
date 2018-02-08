@@ -12,7 +12,9 @@
  *  Accuracy is ±3°C
  *  Range is 0°C to +70°C
  *
- * The clock is always ready to take a reading.
+ * The clock should have a separate power supply and never be turned off.
+ * We assume it's always warmed up and stable.
+ * The temperature conversion typically takes 125 ms, with a max time of 200 ms.
 */
 
 #ifndef MaximDS3231_h
@@ -26,8 +28,11 @@
 #include "SensorBase.h"
 #include "VariableBase.h"
 
-#define DS3231_NUM_MEASUREMENTS 1
-#define DS3231_WARM_UP 0
+#define DS3231_NUM_VARIABLES 1
+#define DS3231_WARM_UP_TIME_MS 0
+#define DS3231_STABILIZATION_TIME_MS 0
+#define DS3231_MEASUREMENT_TIME_MS 200
+
 #define DS3231_TEMP_RESOLUTION 2
 #define DS3231_TEMP_VAR_NUM 0
 
@@ -37,20 +42,25 @@
 class MaximDS3231 : public Sensor
 {
 public:
-    // No inputs for constructor
-    // TODO:  Figure out why this doesn't work with "void"
-    MaximDS3231(int unnecessary_var = 1)
-    : Sensor(-1, -1, F("MaximDS3231"), DS3231_NUM_MEASUREMENTS, DS3231_WARM_UP)
+    // Only input is the number of readings to average
+    MaximDS3231(int measurementsToAverage = 1)
+    : Sensor(F("MaximDS3231"), DS3231_NUM_VARIABLES,
+             DS3231_WARM_UP_TIME_MS, DS3231_STABILIZATION_TIME_MS, DS3231_MEASUREMENT_TIME_MS,
+             -1, -1, measurementsToAverage)
     {}
 
     String getSensorLocation(void) override;
-    SENSOR_STATUS setup(void) override;
-    void powerUp(void) override;
-    bool wake(void) override;
-    bool sleep(void) override;
-    void powerDown(void) override;
 
-    bool update(void) override;
+    // Do nothing for any of the power up/down or wake/sleep functions
+    void powerUp(void) override {}
+    bool wake(void) override {return true;}
+    bool sleep(void) override {return true;}
+    void powerDown(void) override {}
+
+    SENSOR_STATUS setup(void) override;
+
+    bool startSingleMeasurement(void) override;
+    bool addSingleMeasurementResult(void) override;
 };
 
 
