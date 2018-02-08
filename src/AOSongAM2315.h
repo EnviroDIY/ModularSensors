@@ -25,11 +25,11 @@
 #ifndef AOSongAM2315_h
 #define AOSongAM2315_h
 
-#include "SensorBase.h"
-#include "VariableBase.h"
-
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
+
+#include "SensorBase.h"
+#include "VariableBase.h"
 
 #define AM2315_NUM_VARIABLES 2
 #define AM2315_WARM_UP_TIME_MS 500

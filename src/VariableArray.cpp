@@ -158,9 +158,9 @@ bool VariableArray::updateAllSensors(void)
     bool success = true;
 
     // Clear the initial variable arrays
+    MS_DBG(F("--- Clearing all results before measurements ---\n"));
     for (uint8_t i = 0; i < _variableCount; i++)
     {
-        MS_DBG(F("--- Clearing variable all results before measurements ---"));
         if (isLastVarFromSensor(i))
         {
             _variableList[i]->parentSensor->clearValues();

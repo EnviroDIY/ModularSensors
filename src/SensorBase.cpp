@@ -85,13 +85,15 @@ bool Sensor::checkPowerOn(void)
         int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
         if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
         {
-            MS_DBG(F("Power to "), getSensorName(), F(" was off.\n"));
+            MS_DBG(F("Power to "), getSensorName(), F(" at "),
+                   getSensorLocation(), F(" was off.\n"));
             if (_millisPowerOn != 0) _millisPowerOn = 0;
             return false;
         }
         else
         {
-            MS_DBG(F("Power to "), getSensorName(), F(" was on.\n"));
+            MS_DBG(F("Power to "), getSensorName(), F(" at "),
+                   getSensorLocation(), (" was on.\n"));
             if (_millisPowerOn == 0) _millisPowerOn = millis();
             return true;
         }
@@ -110,7 +112,8 @@ void Sensor::powerUp(void)
 {
     if (_powerPin > 0)
     {
-        MS_DBG(F("Powering "), getSensorName(), F(" with pin "), _powerPin, F("\n"));
+        MS_DBG(F("Powering "), getSensorName(), F(" at "), getSensorLocation(),
+               F(" with pin "), _powerPin, F("\n"));
         digitalWrite(_powerPin, HIGH);
         _millisPowerOn = millis();
     }
@@ -121,7 +124,8 @@ void Sensor::powerUp(void)
 // By default, verifies the power is on and returns true
 bool Sensor::wake(void)
 {
-    MS_DBG(F("Waking "), getSensorName(), F("\n"));
+    MS_DBG(F("Waking "), getSensorName(), F(" at "),
+           getSensorLocation(), F("\n"));
     if(!checkPowerOn()){powerUp();}
     _millisMeasurementStarted = millis();
     return true;
@@ -132,7 +136,8 @@ bool Sensor::wake(void)
 // Does NOT power down the sensor!
 bool Sensor::sleep(void)
 {
-    MS_DBG(F("Putting to "), getSensorName(), F(" to sleep\n"));
+    MS_DBG(F("Putting to "), getSensorName(), F(" at "),
+           getSensorLocation(), F(" to sleep\n"));
     _millisMeasurementStarted = 0;
     return true;
 }
@@ -143,7 +148,8 @@ void Sensor::powerDown(void)
 {
     if (_powerPin > 0)
     {
-        MS_DBG(F("Turning off power to "), getSensorName(), F(" with pin "), _powerPin, F("\n"));
+        MS_DBG(F("Turning off power to "), getSensorName(), F(" at "),
+               getSensorLocation(), F(" with pin "), _powerPin, F("\n"));
         digitalWrite(_powerPin, LOW);
         _millisPowerOn = 0;
     }
@@ -158,17 +164,20 @@ void Sensor::waitForWarmUp(void)
     {
         if (millis() > (_millisPowerOn + _warmUpTime_ms))  // already ready
         {
-            MS_DBG(getSensorName(), F(" already warmed up!\n"));
+            MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
+                   F(" already warmed up!\n"));
         }
         else if (millis() > _millisPowerOn)  // just in case millis() has rolled over
         {
             MS_DBG(F("Waiting "), (_warmUpTime_ms - (millis() - _millisPowerOn)),
-                   F("ms for "), getSensorName(), F(" warm-up\n"));
+                   F("ms for "), getSensorName(), F(" at "),
+                   getSensorLocation(), F(" warm-up\n"));
             while((millis() - _millisPowerOn) < _warmUpTime_ms){}
         }
         else  // if we get really unlucky and are measuring as millis() rolls over
         {
-            MS_DBG(F("Giving a safety of 2000ms for "), getSensorName(), F(" warm-up\n"));
+            MS_DBG(F("Giving a safety of 2000ms for "), getSensorName(),
+                   F(" at "), getSensorLocation(), F(" warm-up\n"));
             while(millis() < 2000){}
         }
     }
@@ -183,17 +192,19 @@ void Sensor::waitForStability(void)
     {
         if (millis() > _millisMeasurementStarted + _stabilizationTime_ms)  // already ready
         {
-            MS_DBG(getSensorName(), F(" should be stable!\n"));
+            MS_DBG(getSensorName(), F(" at "), getSensorLocation(), F(" should be stable!\n"));
         }
         else if (millis() > _millisMeasurementStarted)  // just in case millis() has rolled over
         {
             MS_DBG(F("Waiting "), (_stabilizationTime_ms - (millis() - _millisMeasurementStarted)),
-                   F("ms for "), getSensorName(), F(" to stabilize\n"));
+                   F("ms for "), getSensorName(), F(" at "),
+                   getSensorLocation(), F(" to stabilize\n"));
             while((millis() - _millisMeasurementStarted) < _stabilizationTime_ms){}
         }
         else  // if we get really unlucky and are measuring as millis() rolls over
         {
-            MS_DBG(F("Giving a safety of 20s for "), getSensorName(), F(" stability\n"));
+            MS_DBG(F("Giving a safety of 20s for "), getSensorName(), F(" at "),
+                   getSensorLocation(), F(" stability\n"));
             while(millis() < 20000){}
         }
     }
@@ -208,12 +219,14 @@ void Sensor::waitForMeasurementCompletion(void)
     {
         if (millis() > _lastMeasurementRequested + _remeasurementTime_ms)  // already ready
         {
-            MS_DBG(F("Measurement by "), getSensorName(), F(" should be complete!\n"));
+            MS_DBG(F("Measurement by "), getSensorName(), F(" at "),
+                   getSensorLocation(), F(" should be complete!\n"));
         }
         else if (millis() > _lastMeasurementRequested)  // just in case millis() has rolled over
         {
             MS_DBG(F("Waiting "), (_remeasurementTime_ms - (millis() - _lastMeasurementRequested)),
-                   F("ms for "), getSensorName(), F(" to complete measurement\n"));
+                   F("ms for "), getSensorName(), F(" at "),
+                   getSensorLocation(), F(" to complete measurement\n"));
             while((millis() - _lastMeasurementRequested) < _remeasurementTime_ms){}
         }
         else  // if we get really unlucky and are measuring as millis() rolls over
@@ -234,7 +247,7 @@ SENSOR_STATUS Sensor::setup(void)
     if (_dataPin > 0) pinMode(_dataPin, INPUT_PULLUP);
 
     MS_DBG(F("Set up "));
-    MS_DBG(getSensorName());
+    MS_DBG(getSensorName(), F(" at "), getSensorLocation());
     MS_DBG(F(" attached at "));
     MS_DBG(getSensorLocation());
     MS_DBG(F(" which can return up to "));
@@ -268,7 +281,7 @@ void Sensor::registerVariable(int varNum, Variable* var)
 {
     variables[varNum] = var;
     MS_DBG(F("... Registration from "));
-    MS_DBG(getSensorName());
+    MS_DBG(getSensorName(), F(" at "), getSensorLocation());
     MS_DBG(F(" for "));
     MS_DBG(var->getVarName());
     MS_DBG(F(" accepted.\n"));
@@ -277,7 +290,8 @@ void Sensor::registerVariable(int varNum, Variable* var)
 
 void Sensor::notifyVariables(void)
 {
-    MS_DBG(F("Notifying variables registered to "), getSensorName(), F(".\n"));
+    MS_DBG(F("Notifying variables registered to "), getSensorName(), F(" at "),
+           getSensorLocation(), F(".\n"));
     // Make note of the last time updated
     _sensorLastUpdated = millis();
 
@@ -286,7 +300,9 @@ void Sensor::notifyVariables(void)
     {
         if (variables[i] != NULL)  // Bad things happen if try to update nullptr
         {
-            MS_DBG(F("Sending value update to variable "));
+            MS_DBG(F("Sending value update from "));
+            MS_DBG(getSensorName(), F(" at "), getSensorLocation());
+            MS_DBG(F(" to variable "));
             MS_DBG(i);
             MS_DBG(F(" which is "));
             MS_DBG(variables[i]->getVarName());
@@ -303,9 +319,10 @@ bool Sensor::checkForUpdate(uint32_t sensorLastUpdated)
 {
     MS_DBG(F("It has been "), (millis() - sensorLastUpdated)/1000);
     MS_DBG(F(" seconds since "));
-    MS_DBG(getSensorName());
+    MS_DBG(getSensorName(), F(" at "), getSensorLocation());
     MS_DBG(F(" was updated.\n"));
-    if ((millis() > 120000 and millis() > sensorLastUpdated + 120000) or sensorLastUpdated == 0)
+    if ((millis() > 120000 and millis() > (sensorLastUpdated + 120000))
+        or sensorLastUpdated == 0)
     {
         MS_DBG(F("Value out of date, updating\n"));
         return(update());
@@ -317,7 +334,8 @@ bool Sensor::checkForUpdate(uint32_t sensorLastUpdated)
 // This function just empties the value array
 void Sensor::clearValues(void)
 {
-    MS_DBG(F("Clearing value array for "), getSensorName(), F(".\n"));
+    MS_DBG(F("Clearing value array for "), getSensorName(), F(" at "),
+           getSensorLocation(), F(".\n"));
     for (int i = 0; i < _numReturnedVars; i++)
     { sensorValues[i] =  0; }
 }

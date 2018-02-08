@@ -665,13 +665,13 @@ public:
         }
 
         // Look for up to 5 seconds for a button press
-        PRINTOUT(F("Push button NOW to enter testing mode.\n"));
+        PRINTOUT(F("Push button NOW to enter sensor testing mode.\n"));
         for (uint32_t start = millis(); millis() - start < 5000; )
         {
             if (digitalRead(buttonPin) == HIGH) testingMode();
         }
         PRINTOUT(F("------------------------------------------\n\n"));
-        PRINTOUT(F("End of testing mode.\n"));
+        PRINTOUT(F("End of sensor testing mode.\n"));
     }
 
 
@@ -679,7 +679,7 @@ public:
     virtual void testingMode()
     {
         PRINTOUT(F("------------------------------------------\n"));
-        PRINTOUT(F("Entering debug mode\n"));
+        PRINTOUT(F("Entering sensor testing mode\n"));
 
         // Turn on the modem to let it start searching for the network
         #if defined(USE_TINY_GSM)

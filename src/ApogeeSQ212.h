@@ -32,11 +32,11 @@
 #ifndef ApogeeSQ212_h
 #define ApogeeSQ212_h
 
-#include "SensorBase.h"
-#include "VariableBase.h"
-
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
+
+#include "SensorBase.h"
+#include "VariableBase.h"
 
 #define ADS1015_ADDRESS (0x48) // 1001 000 (ADDR = GND)
 

@@ -82,7 +82,7 @@ bool YosemitechParent::wake(void)
     bool success = false;
     while (!success && ntries < 5)
     {
-        MS_DBG(F("Start Measurement: "));
+        MS_DBG(F("Start Measurement ("), ntries+1, F("): "));
         success = sensor.startMeasurement();
         ntries++;
     }
@@ -91,11 +91,13 @@ bool YosemitechParent::wake(void)
         _millisMeasurementStarted = millis();
         MS_DBG(F("Measurements started.\n"));
     }
+    else MS_DBG(F("Measurements NOT started!\n"));
 
     // Manually activate the brush
     // Needed for newer sensors that do not immediate activate on getting power
     MS_DBG(F("Activate Brush: "));
-    sensor.activateBrush();
+    if (sensor.activateBrush()) MS_DBG(F("Brush activated.\n"));
+    else MS_DBG(F("Brush NOT activated!\n"));
 
     return success;
 }
@@ -106,13 +108,18 @@ bool YosemitechParent::wake(void)
 bool YosemitechParent::sleep(void)
 {
     if(!checkPowerOn()){return true;}
+    if(_millisMeasurementStarted == 0)
+    {
+        MS_DBG(F("Was not measuring!\n"));
+        return true;
+    }
 
     // Send the command to begin taking readings, trying up to 5 times
     bool success = false;
     int ntries = 0;
-    while (!success && ntries < 2)
+    while (!success && ntries < 5)
     {
-        MS_DBG(F("Stop Measurement: "));
+        MS_DBG(F("Stop Measurement ("), ntries+1, F("): "));
         success = sensor.stopMeasurement();
         ntries++;
     }
@@ -121,6 +128,7 @@ bool YosemitechParent::sleep(void)
         _millisMeasurementStarted = 0;
         MS_DBG(F("Measurements stopped.\n"));
     }
+    else MS_DBG(F("Measurements NOT stopped!\n"));
 
     return success;
 }
@@ -148,17 +156,17 @@ bool YosemitechParent::addSingleMeasurementResult(void)
         // Initialize float variables
         float parmValue, tempValue, thirdValue;
         // Get Values
-        MS_DBG(F("Get Values: "));
+        MS_DBG(F("Get Values:\n"));
         success = sensor.getValues(parmValue, tempValue, thirdValue);
         if (_model == Y520) parmValue *= 1000;  // For conductivity, convert mS/cm to µS/cm
         // Put values into the array
         // All sensors but pH and DO will have -9999 as the third value
         sensorValues[0] += parmValue;
-        MS_DBG(F("Parm: "), parmValue, F("\n"));
+        MS_DBG(F("    "), sensor.getParameter(), F(": "), parmValue, F("\n"));
         sensorValues[1] += tempValue;
-        MS_DBG(F("Temp: "), tempValue, F("\n"));
+        MS_DBG(F("    Temp: "), tempValue, F("\n"));
         sensorValues[2] += thirdValue;
-        if (thirdValue !=-9999) MS_DBG(F("Third: "), thirdValue, F("\n"));
+        if (thirdValue !=-9999) MS_DBG(F("    Third: "), thirdValue, F("\n"));
     }
 
     else MS_DBG(F("Sensor is not currently measuring!\n"));
