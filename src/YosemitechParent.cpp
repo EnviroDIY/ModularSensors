@@ -95,9 +95,12 @@ bool YosemitechParent::wake(void)
 
     // Manually activate the brush
     // Needed for newer sensors that do not immediate activate on getting power
-    MS_DBG(F("Activate Brush: "));
-    if (sensor.activateBrush()) MS_DBG(F("Brush activated.\n"));
-    else MS_DBG(F("Brush NOT activated!\n"));
+    if ( _model == Y511 or _model == Y514 or _model == Y550)
+    {
+        MS_DBG(F("Activate Brush: "));
+        if (sensor.activateBrush()) MS_DBG(F("Brush activated.\n"));
+        else MS_DBG(F("Brush NOT activated!\n"));
+    }
 
     return success;
 }
