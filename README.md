@@ -252,14 +252,14 @@ A note about timezones:  It is possible to create multiple logger objects in you
 - **generateFileHeader()** - This returns and Aruduino String with a comma separated list of headers for the csv.  The headers will be ordered based on the order variables are listed in the array fed to the init function.
 - **generateSensorDataCSV()** - This returns an Arduino String containing the time and a comma separated list of sensor values.  The data will be ordered based on the order variables are listed in the array fed to the init function.
 
-#### Functions for debugging:
+#### Functions for testing and debugging:
 
 To view any information about what your logger is doing you must add the statement ```#define STANDARD_SERIAL_OUTPUT xxxxx``` to the top of your sketch, where xxxxx is the name of a serial output (ie, Serial or USBSerial).  This statement should be above any include statements in your sketch.
 
 To see more intense debugging for any individual component of the library (a sensor, the variable arrays, the modem, etc), open the source file header (\*.h), for that component.  Find the line ```// #define DEBUGGING_SERIAL_OUTPUT xxxxx```, where xxxxx is the name of a serial output (ie, Serial or USBSerial).  Remove the two comment slashes from that line.  Then recompile and upload your code.  This will (sometimes dramatically) increase the number of statements going out to the debugging serial port.
 
-- **checkForDebugMode(int buttonPin)** - This stops everything and waits for up to two seconds for a button to be pressed to enter allow the user to enter "debug" mode.  I suggest running this as the very last step of the setup function.
-- **debugMode()** - This is a "debugging" mode for the sensors.  It prints out all of the sensor details every 5 seconds for 25 records worth of data.  The printouts go to whichever serial port is given in the ```#define STANDARD_SERIAL_OUTPUT``` statement.
+- **checkForTestingMode(int buttonPin)** - This stops everything and waits for five seconds for a button to be pressed to enter allow the user to enter "sensor testing" mode.  I suggest running this as the very last step of the setup function.
+- **testingMode()** - This is a "testing" mode for the sensors.  It prints out all of the sensor results for 25 records worth of data with a 5-second delay between readings.  The printouts go to whichever serial port is given in the ```#define STANDARD_SERIAL_OUTPUT``` statement.
 
 ####  Convience functions to do it all:
 

@@ -448,7 +448,7 @@ public:
         _fileName = fileName;
         _isFileNameSet = true;
 
-        // Print out the file name for debugging
+        // Print out the file name
         PRINTOUT(F("Data will be saved as "), _fileName, F("..."));
         if (!_autoFileName) PRINTOUT(F("\n"));
     }
@@ -644,11 +644,39 @@ public:
 
 
     // ===================================================================== //
-    // Public functions for a "debugging" mode
+    // Public functions for a "sensor testing" mode
     // ===================================================================== //
 
-    // This defines what to do in the debug mode
-    virtual void debugMode()
+
+    // This checks to see if you want to enter the sensor mode
+    // This should be run as the very last step within the setup function
+    virtual void checkForTestingMode(int buttonPin)
+    {
+        // Set the pin attached to some button to enter debug mode
+        if (buttonPin > 0) pinMode(buttonPin, INPUT_PULLUP);
+
+        // Flash the LED to let user know it is now possible to enter debug mode
+        for (uint8_t i = 0; i < 15; i++)
+        {
+            digitalWrite(_ledPin, HIGH);
+            delay(50);
+            digitalWrite(_ledPin, LOW);
+            delay(50);
+        }
+
+        // Look for up to 5 seconds for a button press
+        PRINTOUT(F("Push button NOW to enter testing mode.\n"));
+        for (uint32_t start = millis(); millis() - start < 5000; )
+        {
+            if (digitalRead(buttonPin) == HIGH) testingMode();
+        }
+        PRINTOUT(F("------------------------------------------\n\n"));
+        PRINTOUT(F("End of testing mode.\n"));
+    }
+
+
+    // This defines what to do in the testing mode
+    virtual void testingMode()
     {
         PRINTOUT(F("------------------------------------------\n"));
         PRINTOUT(F("Entering debug mode\n"));
@@ -702,32 +730,6 @@ public:
             // Turn off the modem
             _logModem.off();
         #endif  // USE_TINY_GSM
-    }
-
-    // This checks to see if you want to enter debug mode
-    // This should be run as the very last step within the setup function
-    virtual void checkForDebugMode(int buttonPin)
-    {
-        // Set the pin attached to some button to enter debug mode
-        if (buttonPin > 0) pinMode(buttonPin, INPUT_PULLUP);
-
-        // Flash the LED to let user know it is now possible to enter debug mode
-        for (uint8_t i = 0; i < 15; i++)
-        {
-            digitalWrite(_ledPin, HIGH);
-            delay(50);
-            digitalWrite(_ledPin, LOW);
-            delay(50);
-        }
-
-        // Look for up to 5 seconds for a button press
-        PRINTOUT(F("Push button NOW to enter debug mode.\n"));
-        for (uint32_t start = millis(); millis() - start < 5000; )
-        {
-            if (digitalRead(buttonPin) == HIGH) debugMode();
-        }
-        PRINTOUT(F("------------------------------------------\n\n"));
-        PRINTOUT(F("End of debug mode.\n"));
     }
 
     // ===================================================================== //

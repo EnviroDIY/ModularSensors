@@ -217,7 +217,7 @@ void setup()
     EnviroDIYLogger.begin();
 
     // Check for debugging mode
-    EnviroDIYLogger.checkForDebugMode(buttonPin);
+    EnviroDIYLogger.checkForTestingMode(buttonPin);
 }
 
 
