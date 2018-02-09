@@ -15,11 +15,11 @@
 #ifndef ProcessorStats_h
 #define ProcessorStats_h
 
-#include "SensorBase.h"
-#include "VariableBase.h"
-
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
+
+#include "SensorBase.h"
+#include "VariableBase.h"
 
 #define PROCESSOR_NUM_VARIABLES 2
 #define PROCESSOR_WARM_UP_TIME_MS 0

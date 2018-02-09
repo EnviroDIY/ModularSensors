@@ -27,9 +27,6 @@
 #ifndef AOSongDHT_h
 #define AOSongDHT_h
 
-#include "SensorBase.h"
-#include "VariableBase.h"
-
 #include <DHT.h>
 // Undefine these macros so I can use a typedef instead
 #undef DHT11
@@ -40,6 +37,9 @@
 
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
+
+#include "SensorBase.h"
+#include "VariableBase.h"
 
 #define DHT_NUM_VARIABLES 3
 #define DHT_WARM_UP_TIME_MS 1700
