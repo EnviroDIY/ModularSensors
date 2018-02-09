@@ -320,7 +320,7 @@ public:
     // Set up the Interrupt Service Request for waking
     // In this case, we're doing nothing, we just want the processor to wake
     // This must be a static function (which means it can only call other static funcions.)
-    static void wakeISR(void){MS_DBG(F("The clock interrupt woke me up!\n"));}
+    static void wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
 
     #if defined ARDUINO_ARCH_SAMD
 
