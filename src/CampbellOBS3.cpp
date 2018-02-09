@@ -60,8 +60,7 @@ bool CampbellOBS3::addSingleMeasurementResult(void)
 
     // Variables to store the results in
     int16_t adcResult = 0;
-    float voltage = 0;
-    float calibResult = 0;
+    float voltage, calibResult = -9999;
 
     // Read Analog to Digital Converter (ADC)
     adcResult = ads.readADC_SingleEnded(_dataPin);  // Getting the reading
@@ -78,7 +77,7 @@ bool CampbellOBS3::addSingleMeasurementResult(void)
     MS_DBG(_Avalue, F("x^2 + "), _Bvalue, F("x + "), _Cvalue, F("\n"));
     MS_DBG(F("calibResult: "), calibResult, F("\n"));
 
-    sensorValues[OBS3_TURB_VAR_NUM] += calibResult;
+    verifyAndAddMeasurementResult(OBS3_TURB_VAR_NUM, calibResult);
 
     // Return true when finished
     return true;

@@ -156,7 +156,7 @@ bool MaximDS18::addSingleMeasurementResult(void)
     waitForMeasurementCompletion();
 
     bool goodTemp = true;
-    float result = 85;  // This is a "bad" result returned from a DS18 sensor
+    float result = -9999;
 
     MS_DBG(F("Requesting temperature result\n"));
     result = tempSensors.getTempC(_OneWireAddress);
@@ -164,10 +164,14 @@ bool MaximDS18::addSingleMeasurementResult(void)
 
     // If a DS18 cannot get a good measurement, it returns 85
     // If the sensor is not properly connected, it returns -127
-    if (result == 85 || result == -127) goodTemp = false;
+    if (result == 85 || result == -127)
+    {
+        goodTemp = false;
+        result = -9999;
+    }
 
     MS_DBG(F("Temperature: "), result, F(" °C\n"));
-    sensorValues[DS18_TEMP_VAR_NUM] += result;
+    verifyAndAddMeasurementResult(DS18_TEMP_VAR_NUM, result);
 
     return goodTemp;
 }

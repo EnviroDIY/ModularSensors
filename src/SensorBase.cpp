@@ -40,7 +40,8 @@ Sensor::Sensor(String sensorName, int numReturnedVars,
     for (uint8_t i = 0; i < MAX_NUMBER_VARS; i++)
     {
         variables[i] = NULL;
-        sensorValues[i] = 0;
+        sensorValues[i] = -9999;
+        numberGoodMeasurementsMade[i] = 0;
     }
 }
 
@@ -65,15 +66,6 @@ void Sensor::setNumberMeasurementsToAverage(int nReadings)
     _measurementsToAverage = nReadings;
 }
 int Sensor::getNumberMeasurementsToAverage(void){return _measurementsToAverage;}
-void Sensor::averageMeasurements(void)
-{
-    MS_DBG(F("Averaging over "), _measurementsToAverage, F(" readings\n"));
-    for (int i = 0; i < _numReturnedVars; i++)
-    {
-        sensorValues[i] /=  _measurementsToAverage;
-        MS_DBG(F("Result #"), i, F(": "), sensorValues[i], F("\n"));
-    }
-}
 
 
 // This is a helper function to check if the power needs to be turned on
@@ -337,7 +329,10 @@ void Sensor::clearValues(void)
     MS_DBG(F("Clearing value array for "), getSensorName(), F(" at "),
            getSensorLocation(), F(".\n"));
     for (int i = 0; i < _numReturnedVars; i++)
-    { sensorValues[i] =  0; }
+    {
+        sensorValues[i] =  -9999;
+        numberGoodMeasurementsMade[i] = 0;
+    }
 }
 
 
@@ -349,6 +344,45 @@ bool Sensor::startSingleMeasurement(void)
     waitForStability();
     _lastMeasurementRequested = millis();
     return true;
+}
+
+
+// This verifies that a measurement is good before adding it to the values to be averaged
+void Sensor::verifyAndAddMeasurementResult(int resultNumber, float resultValue)
+{
+    // If the new result is good and there was were only bad results, set the
+    // result value as the new result and add 1 to the good result total
+    if (sensorValues[resultNumber] == -9999 and resultValue != -9999)
+    {
+        sensorValues[resultNumber] =  resultValue;
+        numberGoodMeasurementsMade[resultNumber] += 1;
+    }
+    // If the new result is good and there were already good results in place
+    // add the new results to the total and add 1 to the good result total
+    if (sensorValues[resultNumber] != -9999 and resultValue != -9999)
+    {
+        sensorValues[resultNumber] +=  resultValue;
+        numberGoodMeasurementsMade[resultNumber] += 1;
+    }
+    // If the new result is bad and there were only bad results, do nothing
+    if (sensorValues[resultNumber] == -9999 and resultValue == -9999){}
+    // If the new result is bad and there were already good results, do nothing
+    if (sensorValues[resultNumber] == -9999 and resultValue == -9999){}
+}
+void Sensor::verifyAndAddMeasurementResult(int resultNumber, int resultValue)
+{
+    verifyAndAddMeasurementResult(resultNumber, resultValue);
+}
+
+
+void Sensor::averageMeasurements(void)
+{
+    MS_DBG(F("Averaging over "), _measurementsToAverage, F(" readings\n"));
+    for (int i = 0; i < _numReturnedVars; i++)
+    {
+        sensorValues[i] /=  numberGoodMeasurementsMade[i];
+        MS_DBG(F("Result #"), i, F(": "), sensorValues[i], F("\n"));
+    }
 }
 
 

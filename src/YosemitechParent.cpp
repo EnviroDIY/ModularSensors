@@ -157,19 +157,21 @@ bool YosemitechParent::addSingleMeasurementResult(void)
         waitForMeasurementCompletion();
 
         // Initialize float variables
-        float parmValue, tempValue, thirdValue;
+        float parmValue, tempValue, thirdValue = -9999;
         // Get Values
         MS_DBG(F("Get Values:\n"));
         success = sensor.getValues(parmValue, tempValue, thirdValue);
         if (_model == Y520) parmValue *= 1000;  // For conductivity, convert mS/cm to µS/cm
-        // Put values into the array
-        // All sensors but pH and DO will have -9999 as the third value
-        sensorValues[0] += parmValue;
+
         MS_DBG(F("    "), sensor.getParameter(), F(": "), parmValue, F("\n"));
-        sensorValues[1] += tempValue;
         MS_DBG(F("    Temp: "), tempValue, F("\n"));
-        sensorValues[2] += thirdValue;
+        // Not all sensors return a third value
         if (thirdValue !=-9999) MS_DBG(F("    Third: "), thirdValue, F("\n"));
+
+        // Put values into the array
+        verifyAndAddMeasurementResult(0, parmValue);
+        verifyAndAddMeasurementResult(1, tempValue);
+        verifyAndAddMeasurementResult(2, thirdValue);
     }
 
     else MS_DBG(F("Sensor is not currently measuring!\n"));

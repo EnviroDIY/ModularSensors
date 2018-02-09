@@ -51,14 +51,13 @@ bool ApogeeSQ212::addSingleMeasurementResult(void)
     // Start the Auxillary ADD
     Adafruit_ADS1115 ads(_i2cAddress);     /* Use this for the 16-bit version */
     ads.begin();
-    
+
     // Make sure we've waited long enough for a new reading to be available
     waitForMeasurementCompletion();
 
     // Variables to store the results in
     int16_t adcResult = 0;
-    float voltage = 0;
-    float calibResult = 0;
+    float voltage, calibResult = -9999;
 
     // Read Analog to Digital Converter (ADC)
     adcResult = ads.readADC_SingleEnded(_dataPin);  // Getting the reading
@@ -77,7 +76,7 @@ bool ApogeeSQ212::addSingleMeasurementResult(void)
     calibResult = 1 * voltage * 1000 ;  // in units of μmol m-2 s-1 (microeinsteinPerSquareMeterPerSecond)
     MS_DBG(F("calibResult: "), calibResult, F("\n"));
 
-    sensorValues[SQ212_PAR_VAR_NUM] += calibResult;
+    verifyAndAddMeasurementResult(SQ212_PAR_VAR_NUM, calibResult);
 
     // Return true when finished
     return true;

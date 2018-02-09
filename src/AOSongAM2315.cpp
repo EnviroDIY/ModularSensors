@@ -52,11 +52,11 @@ bool AOSongAM2315::addSingleMeasurementResult(void)
     float temp_val, humid_val;
     bool ret_val = am2315.readTemperatureAndHumidity(temp_val, humid_val);
 
-    sensorValues[AM2315_TEMP_VAR_NUM] += temp_val;
-    sensorValues[AM2315_HUMIDITY_VAR_NUM] += humid_val;
-
     MS_DBG(F("Temp is: "), temp_val, F("°C"));
     MS_DBG(F(" and humidity is: "), humid_val, F("%\n"));
+    
+    verifyAndAddMeasurementResult(AM2315_TEMP_VAR_NUM, temp_val);
+    verifyAndAddMeasurementResult(AM2315_HUMIDITY_VAR_NUM, humid_val);
 
     return ret_val;
 }

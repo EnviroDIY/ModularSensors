@@ -49,7 +49,6 @@ public:
     // Generally these values should be set in the constructor
     void setNumberMeasurementsToAverage(int nReadings);
     int getNumberMeasurementsToAverage(void);
-    void averageMeasurements(void);
 
     // These next functions have defaults.
     // This sets up the sensor, if necessary.  Defaults to ready.
@@ -75,6 +74,11 @@ public:
     // This next function must be implemented for ever sensor!!
     // This actually gets the results from a single measurement
     virtual bool addSingleMeasurementResult(void) = 0;
+
+    // This verifies that a measurement is OK before adding it to the array
+    virtual void verifyAndAddMeasurementResult(int resultNumber, float resultValue);
+    virtual void verifyAndAddMeasurementResult(int resultNumber, int resultValue);
+    void averageMeasurements(void);
 
     // This updates the sensor's values
     // This includes clears the values array, starts and averages as many
@@ -104,11 +108,12 @@ protected:
     // A helper to ensure that the sensor is ready to give a new value
     void waitForMeasurementCompletion(void);
 
-    int _dataPin;
-    int _powerPin;
+    uint8_t _dataPin;
+    uint8_t _powerPin;
     String _sensorName;
-    int _numReturnedVars;
-    int _measurementsToAverage;
+    uint8_t _numReturnedVars;
+    uint8_t _measurementsToAverage;
+    uint8_t numberGoodMeasurementsMade[MAX_NUMBER_VARS];
 
     uint32_t _warmUpTime_ms;
     uint32_t _millisPowerOn;

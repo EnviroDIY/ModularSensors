@@ -156,8 +156,8 @@ public:
     bool addSingleMeasurementResult(void) override
     {
         // Get signal quality
-        sensorValues[CSQ_VAR_NUM] += getSignalRSSI();
-        sensorValues[PERCENT_STAT_VAR_NUM] += getSignalPercent();
+        verifyAndAddMeasurementResult(CSQ_VAR_NUM, getSignalRSSI());
+        verifyAndAddMeasurementResult(PERCENT_STAT_VAR_NUM, getSignalPercent());
         return true;
     }
 

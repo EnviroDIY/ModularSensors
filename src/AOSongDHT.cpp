@@ -61,7 +61,7 @@ bool AOSongDHT::addSingleMeasurementResult(void)
     waitForMeasurementCompletion();
 
     // Reading temperature or humidity takes about 250 milliseconds!
-    float humid_val, temp_val, hi_val = 0;
+    float humid_val, temp_val, hi_val = -9999;
     for (uint8_t i = 0; i < 5; i++)  // Make 5 attempts to get a decent reading
     {
         // First read the humidity
@@ -87,16 +87,16 @@ bool AOSongDHT::addSingleMeasurementResult(void)
             }
             else {
                 MS_DBG(F("Failed to read from DHT sensor!\n"));
-                if (isnan(humid_val)) humid_val = 0;
-                if (isnan(temp_val)) temp_val = 0;
+                if (isnan(humid_val)) humid_val = -9999;
+                if (isnan(temp_val)) temp_val = -9999;
             }
         }
     }
 
     // Store the results in the sensorValues array
-    sensorValues[DHT_TEMP_VAR_NUM] += temp_val;
-    sensorValues[DHT_HUMIDITY_VAR_NUM] += humid_val;
-    sensorValues[DHT_HI_VAR_NUM] += hi_val;
+    verifyAndAddMeasurementResult(DHT_TEMP_VAR_NUM, temp_val);
+    verifyAndAddMeasurementResult(DHT_HUMIDITY_VAR_NUM, humid_val);
+    verifyAndAddMeasurementResult(DHT_HI_VAR_NUM, hi_val);
 
     return true;
 }

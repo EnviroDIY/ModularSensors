@@ -83,13 +83,13 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
 {
     // Make sure we've waited long enough for a new reading to be available
     waitForMeasurementCompletion();
-    
-    bool stringComplete = false;
+
+    bool success = false;
     int rangeAttempts = 0;
-    int result = 0;
+    int result = -9999;
 
     MS_DBG(F("Beginning detection for Sonar\n"));
-    while (stringComplete == false && rangeAttempts < 50)
+    while (success == false && rangeAttempts < 50)
     {
         if(_triggerPin != -1)
         {
@@ -102,27 +102,27 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
 
         result = _stream->parseInt();
         _stream->read();  // To throw away the carriage return
-        MS_DBG(result, F("\n"));
+        MS_DBG(F("Sonar Range: "), result, F("\n"));
         rangeAttempts++;
 
         // If it cannot obtain a result , the sonar is supposed to send a value
         // just above it's max range.  For 10m models, this is 9999, for 5m models
         // it's 4999.  The sonar might also send readings of 300 or 500 (the
-        //  blanking distance) if there are too many acoustic echos.
+        // blanking distance) if there are too many acoustic echos.
         // If the result becomes garbled or the sonar is disconnected, the parseInt function returns 0.
-        if (result <= 300 || result == 500 || result == 4999 || result == 9999)
+        if (result <= 300 || result == 500 || result == 4999 || result == 9999 || result == 0)
         {
             MS_DBG(F("Bad or Suspicious Result, Retry Attempt #"), rangeAttempts, F("\n"));
+            result = -9999;
         }
         else
         {
             MS_DBG(F("Good result found\n"));
-            stringComplete = true;  // Set completion of read to true
+            success = true;
         }
     }
 
-    sensorValues[HRXL_VAR_NUM] += result;
-    MS_DBG(F("Sonar Range: "), result, F("\n"));
+    verifyAndAddMeasurementResult(HRXL_VAR_NUM, result);
 
     // Return true when finished
     return true;

@@ -81,7 +81,7 @@ bool BoschBME280::wake(void)
 {
     Sensor::wake();
     waitForWarmUp();
-    bme_internal.begin(0x76);  // Restart needed after power-up
+    bme_internal.begin(_i2cAddressHex);  // Restart needed after power-up
     delay(100); // And now let the sensor boot up (time cannot be decreased)
     return true;
 }
@@ -98,15 +98,15 @@ bool BoschBME280::addSingleMeasurementResult(void)
     float alt = bme_internal.readAltitude(SEALEVELPRESSURE_HPA);
     float humid = bme_internal.readHumidity();
 
-    sensorValues[BME280_TEMP_VAR_NUM] += temp;
-    sensorValues[BME280_HUMIDITY_VAR_NUM] += humid;
-    sensorValues[BME280_PRESSURE_VAR_NUM] += press;
-    sensorValues[BME280_ALTITUDE_VAR_NUM] += alt;
-
     MS_DBG(F("Temperature: "), temp);
     MS_DBG(F(" Humidity: "), humid);
     MS_DBG(F(" Barometric Pressure: "), press);
     MS_DBG(F(" Calculated Altitude: "), alt, F("\n"));
+
+    verifyAndAddMeasurementResult(BME280_TEMP_VAR_NUM, temp);
+    verifyAndAddMeasurementResult(BME280_HUMIDITY_VAR_NUM, humid);
+    verifyAndAddMeasurementResult(BME280_PRESSURE_VAR_NUM, press);
+    verifyAndAddMeasurementResult(BME280_ALTITUDE_VAR_NUM, alt);
 
     // Return true when finished
     return true;

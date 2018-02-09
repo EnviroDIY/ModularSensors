@@ -235,8 +235,10 @@ bool DecagonSDI12::addSingleMeasurementResult(void)
     for (int i = 0; i < _numReturnedVars; i++)
     {
         float result = _SDI12Internal.parseFloat();
-        sensorValues[i] += result;
+        // If the result becomes garbled or the probe is disconnected, the parseFloat function returns 0.
+        if (result == 0) result = -9999;
         MS_DBG(F("Result #"), i, F(": "), result, F("\n"));
+        verifyAndAddMeasurementResult(i, result);
     }
     // String sdiResponse = _SDI12Internal.readStringUntil('\n');
     // sdiResponse.trim();
