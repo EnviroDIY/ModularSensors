@@ -10,6 +10,8 @@
 #ifndef LoggerDreamHost_h
 #define LoggerDreamHost_h
 
+#include <Arduino.h>
+
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 

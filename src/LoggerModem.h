@@ -66,8 +66,12 @@
 #define MODEM_WARM_UP_TIME_MS 0
 #define MODEM_STABILIZATION_TIME_MS 0
 #define MODEM_MEASUREMENT_TIME_MS 0
-#define CSQ_VAR_NUM 0
-#define PERCENT_STAT_VAR_NUM 1
+
+#define RSSI_VAR_NUM 0
+#define RSSI_RESOLUTION 0
+
+#define PERCENT_SIGNAL_VAR_NUM 1
+#define PERCENT_SIGNAL_RESOLUTION 0
 
 // For the various communication devices"
 typedef enum ModemSleepType
@@ -132,6 +136,9 @@ public:
 
     bool startSingleMeasurement(void) override
     {
+        waitForWarmUp();
+        waitForStability();
+
         bool retVal = true;
 
         // Connect to the network before asking for quality
@@ -155,9 +162,29 @@ public:
 
     bool addSingleMeasurementResult(void) override
     {
+        int percent, rssi = -9999;
         // Get signal quality
-        verifyAndAddMeasurementResult(CSQ_VAR_NUM, getSignalRSSI());
-        verifyAndAddMeasurementResult(PERCENT_STAT_VAR_NUM, getSignalPercent());
+        MS_DBG("Getting signal quality:\n");
+        int signalQual = _modem->getSignalQuality();
+
+        // Convert signal quality to RSSI, if necessary
+        #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
+            rssi = signalQual;
+        #else
+            rssi = getRSSIFromCSQ(signalQual);
+        #endif
+        MS_DBG(F("RSSI: "), rssi, F("\n"));
+
+        // Convert signal quality to percent
+        #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
+            percent = getPctFromRSSI(signalQual);
+        #else
+            percent = getPctFromCSQ(signalQual);
+        #endif
+        MS_DBG(F("Percent signal strength: "), percent, F("\n"));
+
+        verifyAndAddMeasurementResult(RSSI_VAR_NUM, rssi);
+        verifyAndAddMeasurementResult(PERCENT_SIGNAL_VAR_NUM, percent);
         return true;
     }
 
@@ -226,7 +253,7 @@ public:
     {
         int signalQual = _modem->getSignalQuality();
 
-        // Convert signal quality to RSSI, if necessary
+        // Convert signal quality to percent
         #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
             int percent = getPctFromRSSI(signalQual);
         #else
@@ -514,9 +541,9 @@ class Modem_RSSI : public Variable
 {
 public:
     Modem_RSSI(Sensor *parentSense, String UUID = "", String customVarCode = "")
-     : Variable(parentSense, CSQ_VAR_NUM,
+     : Variable(parentSense, RSSI_VAR_NUM,
                 F("RSSI"), F("decibelMiliWatt"),
-                0,
+                RSSI_RESOLUTION,
                 F("RSSI"), UUID, customVarCode)
     {}
 };
@@ -527,9 +554,9 @@ class Modem_SignalPercent : public Variable
 {
 public:
     Modem_SignalPercent(Sensor *parentSense, String UUID = "", String customVarCode = "")
-     : Variable(parentSense, PERCENT_STAT_VAR_NUM,
+     : Variable(parentSense, PERCENT_SIGNAL_VAR_NUM,
                 F("signalPercent"), F("percent"),
-                0,
+                PERCENT_SIGNAL_RESOLUTION,
                 F("signalPercent"), UUID, customVarCode)
     {}
 };

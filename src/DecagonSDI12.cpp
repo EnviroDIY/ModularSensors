@@ -49,8 +49,6 @@ DecagonSDI12::DecagonSDI12(int SDI12address, int powerPin, int dataPin, int meas
 
 SENSOR_STATUS DecagonSDI12::setup(void)
 {
-    Sensor::setup();
-
     // Begin the SDI-12 interface
     _SDI12Internal.begin();
 
@@ -63,7 +61,11 @@ SENSOR_STATUS DecagonSDI12::setup(void)
     waitForWarmUp();
     bool isSet = getSensorInfo();
 
-    if (isSet) return SENSOR_READY;
+    if (isSet)
+    {
+        Sensor::setup();
+        return SENSOR_READY;
+    }
     else return SENSOR_ERROR;
 }
 

@@ -239,7 +239,7 @@ SENSOR_STATUS Sensor::setup(void)
     if (_dataPin > 0) pinMode(_dataPin, INPUT_PULLUP);
 
     MS_DBG(F("Set up "));
-    MS_DBG(getSensorName(), F(" at "), getSensorLocation());
+    MS_DBG(getSensorName());
     MS_DBG(F(" attached at "));
     MS_DBG(getSensorLocation());
     MS_DBG(F(" which can return up to "));
@@ -354,24 +354,37 @@ void Sensor::verifyAndAddMeasurementResult(int resultNumber, float resultValue)
     // result value as the new result and add 1 to the good result total
     if (sensorValues[resultNumber] == -9999 and resultValue != -9999)
     {
+        MS_DBG(F("Putting "), resultValue, F(" in result array for variable "),
+               resultNumber, F(" from "), getSensorName(), F(" at "),
+               getSensorLocation(), F(".\n"));
         sensorValues[resultNumber] =  resultValue;
         numberGoodMeasurementsMade[resultNumber] += 1;
     }
     // If the new result is good and there were already good results in place
     // add the new results to the total and add 1 to the good result total
-    if (sensorValues[resultNumber] != -9999 and resultValue != -9999)
+    else if (sensorValues[resultNumber] != -9999 and resultValue != -9999)
     {
+        MS_DBG(F("Adding "), resultValue, F(" to result array for variable "),
+               resultNumber, F(" from "), getSensorName(), F(" at "),
+               getSensorLocation(), F(".\n"));
         sensorValues[resultNumber] +=  resultValue;
         numberGoodMeasurementsMade[resultNumber] += 1;
     }
     // If the new result is bad and there were only bad results, do nothing
-    if (sensorValues[resultNumber] == -9999 and resultValue == -9999){}
+    else if (sensorValues[resultNumber] == -9999 and resultValue == -9999)
+        MS_DBG(F("Ignoring bad result for variable "),
+               resultNumber, F(" from "), getSensorName(), F(" at "),
+               getSensorLocation(), F(".  no good results yet.\n"));
     // If the new result is bad and there were already good results, do nothing
-    if (sensorValues[resultNumber] == -9999 and resultValue == -9999){}
+    else if (sensorValues[resultNumber] != -9999 and resultValue == -9999)
+        MS_DBG(F("Ignoring bad result for variable "),
+               resultNumber, F(" from "), getSensorName(), F(" at "),
+               getSensorLocation(), F(".  Good results already in array.\n"));
 }
 void Sensor::verifyAndAddMeasurementResult(int resultNumber, int resultValue)
 {
-    verifyAndAddMeasurementResult(resultNumber, resultValue);
+    float float_val = resultValue;
+    verifyAndAddMeasurementResult(resultNumber, float_val);
 }
 
 

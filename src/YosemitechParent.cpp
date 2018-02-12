@@ -165,13 +165,17 @@ bool YosemitechParent::addSingleMeasurementResult(void)
 
         MS_DBG(F("    "), sensor.getParameter(), F(": "), parmValue, F("\n"));
         MS_DBG(F("    Temp: "), tempValue, F("\n"));
-        // Not all sensors return a third value
-        if (thirdValue !=-9999) MS_DBG(F("    Third: "), thirdValue, F("\n"));
 
         // Put values into the array
         verifyAndAddMeasurementResult(0, parmValue);
         verifyAndAddMeasurementResult(1, tempValue);
-        verifyAndAddMeasurementResult(2, thirdValue);
+
+        // Not all sensors return a third value
+        if (_numReturnedVars > 2)
+        {
+            MS_DBG(F("    Third: "), thirdValue, F("\n"));
+            verifyAndAddMeasurementResult(2, thirdValue);
+        }
     }
 
     else MS_DBG(F("Sensor is not currently measuring!\n"));
