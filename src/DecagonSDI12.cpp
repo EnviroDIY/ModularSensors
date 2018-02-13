@@ -49,11 +49,13 @@ DecagonSDI12::DecagonSDI12(int SDI12address, int powerPin, int dataPin, int meas
 
 SENSOR_STATUS DecagonSDI12::setup(void)
 {
+    SENSOR_STATUS retVal = Sensor::setup();
+
     // Begin the SDI-12 interface
     _SDI12Internal.begin();
 
      // SDI-12 protocol says sensors must respond within 15 milliseconds
-    _SDI12Internal.setTimeout(15);
+    _SDI12Internal.setTimeout(150);
 
     // Allow the SDI-12 library access to interrupts
     enableInterrupt(_dataPin, SDI12::handleInterrupt, CHANGE);
@@ -61,11 +63,7 @@ SENSOR_STATUS DecagonSDI12::setup(void)
     waitForWarmUp();
     bool isSet = getSensorInfo();
 
-    if (isSet)
-    {
-        Sensor::setup();
-        return SENSOR_READY;
-    }
+    if (isSet and retVal == SENSOR_READY) return SENSOR_READY;
     else return SENSOR_ERROR;
 }
 
@@ -238,7 +236,7 @@ bool DecagonSDI12::addSingleMeasurementResult(void)
     {
         float result = _SDI12Internal.parseFloat();
         // If the result becomes garbled or the probe is disconnected, the parseFloat function returns 0.
-        if (result == 0) result = -9999;
+        if (result == 0 or isnan(result)) result = -9999;
         MS_DBG(F("Result #"), i, F(": "), result, F("\n"));
         verifyAndAddMeasurementResult(i, result);
     }
