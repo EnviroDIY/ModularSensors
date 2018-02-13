@@ -33,21 +33,30 @@ MaxBotixSonar::MaxBotixSonar(Stream& stream, int powerPin, int triggerPin, int m
 
 
 // unfortunately, we really cannot know where the stream is attached.
-String MaxBotixSonar::getSensorLocation(void){return F("sonarStream");}
+String MaxBotixSonar::getSensorLocation(void)
+{
+    // attach the trigger pin to the stream number
+    String loc = "sonarStream" + String(_triggerPin);
+    return loc;
+}
 
 
 SENSOR_STATUS MaxBotixSonar::setup(void)
 {
-    // Set the stream timeout;
-    // Even the slowest sensors should respond at a rate of 6Hz (166ms).
-    _stream->setTimeout(180);
+    SENSOR_STATUS retVal = Sensor::setup();
+
     // Set up the trigger, if applicable
     if(_triggerPin != -1)
     {
         pinMode(_triggerPin, OUTPUT);
         digitalWrite(_triggerPin, LOW);
     }
-    return Sensor::setup();
+
+    // Set the stream timeout;
+    // Even the slowest sensors should respond at a rate of 6Hz (166ms).
+    _stream->setTimeout(180);
+
+    return retVal;
 }
 
 
@@ -95,9 +104,8 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
         {
             MS_DBG(F("Triggering Sonar\n"));
             digitalWrite(_triggerPin, HIGH);
-            delay(1);
+            delayMicroseconds(30);  // Trigger must be held low for >20 µs
             digitalWrite(_triggerPin, LOW);
-            delay(160);  // Published return time is 158ms
         }
 
         result = _stream->parseInt();

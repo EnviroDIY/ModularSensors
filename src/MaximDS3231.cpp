@@ -25,18 +25,9 @@ String MaximDS3231::getSensorLocation(void) {return F("I2C_0x68");}
 
 SENSOR_STATUS MaximDS3231::setup(void)
 {
-    if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
+    SENSOR_STATUS retVal = Sensor::setup();
     rtc.begin();
-
-    MS_DBG(F("Set up "));
-    MS_DBG(getSensorName());
-    MS_DBG(F(" attached at "));
-    MS_DBG(getSensorLocation());
-    MS_DBG(F(" which can return up to "));
-    MS_DBG(_numReturnedVars);
-    MS_DBG(F(" variable[s].\n"));
-
-    return SENSOR_READY;
+    return retVal;
 }
 
 
