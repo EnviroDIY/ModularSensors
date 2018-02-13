@@ -44,7 +44,7 @@ MaximDS18::MaximDS18(int powerPin, int dataPin, int measurementsToAverage)
 
 
 // Turns the address into a printable string
-String MaximDS18::getAddressString(DeviceAddress owAddr)
+String MaximDS18::makeAddressString(DeviceAddress owAddr)
 {
     String addrStr = F("Pin");
     addrStr += (_dataPin);
@@ -65,30 +65,33 @@ String MaximDS18::getAddressString(DeviceAddress owAddr)
 // This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
 String MaximDS18::getSensorLocation(void)
 {
-    return getAddressString(_OneWireAddress);
+    return makeAddressString(_OneWireAddress);
 }
 
 
 // The function to set up connection to a sensor.
 SENSOR_STATUS MaximDS18::getStatus(void)
 {
+    bool success = true;
+
     // Make sure the address is valid
     if (!tempSensors.validAddress(_OneWireAddress))
     {
         MS_DBG(F("This sensor address is not valid: "));
-        MS_DBG(getAddressString(_OneWireAddress), F("\n"));
-        return SENSOR_ERROR;
+        MS_DBG(makeAddressString(_OneWireAddress), F("\n"));
+        success = false;
     }
 
     // Make sure the sensor is connected
     if (!tempSensors.isConnected(_OneWireAddress))
     {
         MS_DBG(F("This sensor is not currently connected: "));
-        MS_DBG(getAddressString(_OneWireAddress), F("\n"));
-        return SENSOR_ERROR;
+        MS_DBG(makeAddressString(_OneWireAddress), F("\n"));
+        success = false;
     }
 
-    return SENSOR_READY;
+    if (success) return SENSOR_READY;
+    else return SENSOR_ERROR;
 }
 
 
@@ -107,7 +110,7 @@ SENSOR_STATUS MaximDS18::setup(void)
         DeviceAddress address;
         if (oneWire.search(address))
         {
-            MS_DBG(F("Sensor found at "), getAddressString(address), F("\n"));
+            MS_DBG(F("Sensor found at "), makeAddressString(address), F("\n"));
             for (int i = 0; i < 8; i++) _OneWireAddress[i] = address[i];
             _addressKnown = true;  // Now we know the address
         }
@@ -124,7 +127,7 @@ SENSOR_STATUS MaximDS18::setup(void)
     if (!tempSensors.setResolution(_OneWireAddress, 12))
     {
         MS_DBG(F("Unable to set the resolution of this sensor: "));
-        MS_DBG(getAddressString(_OneWireAddress), F("\n"));
+        MS_DBG(makeAddressString(_OneWireAddress), F("\n"));
         return SENSOR_ERROR;
     }
 

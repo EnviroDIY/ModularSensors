@@ -24,6 +24,8 @@
 #ifndef MaximDS18_h
 #define MaximDS18_h
 
+#include <Arduino.h>
+
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
@@ -62,7 +64,7 @@ private:
     // Pass our oneWire reference to Dallas Temperature.
     DallasTemperature tempSensors;
     // Turns the address into a printable string
-    String getAddressString(DeviceAddress OneWireAddress);
+    String makeAddressString(DeviceAddress OneWireAddress);
 };
 
 
