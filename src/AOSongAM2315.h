@@ -25,6 +25,8 @@
 #ifndef AOSongAM2315_h
 #define AOSongAM2315_h
 
+#include <Arduino.h>
+
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 

@@ -37,8 +37,9 @@ String AOSongAM2315::getSensorLocation(void){return F("I2C_0xB8");}
 
 SENSOR_STATUS AOSongAM2315::setup(void)
 {
+    SENSOR_STATUS retVal = Sensor::setup();
     Wire.begin();  // Start the wire library
-    return Sensor::setup();
+    return retVal;
 }
 
 
@@ -49,12 +50,16 @@ bool AOSongAM2315::addSingleMeasurementResult(void)
 
     Adafruit_AM2315 am2315;  // create a sensor object
 
-    float temp_val, humid_val;
+    float temp_val = -9999;
+    float humid_val = -9999;
     bool ret_val = am2315.readTemperatureAndHumidity(temp_val, humid_val);
+
+    if (!ret_val or isnan(temp_val)) temp_val = -9999;
+    if (!ret_val or isnan(humid_val)) humid_val = -9999;
 
     MS_DBG(F("Temp is: "), temp_val, F("°C"));
     MS_DBG(F(" and humidity is: "), humid_val, F("%\n"));
-    
+
     verifyAndAddMeasurementResult(AM2315_TEMP_VAR_NUM, temp_val);
     verifyAndAddMeasurementResult(AM2315_HUMIDITY_VAR_NUM, humid_val);
 

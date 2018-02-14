@@ -39,8 +39,9 @@ AOSongDHT::AOSongDHT(int powerPin, int dataPin, DHTtype type, int measurementsTo
 
 SENSOR_STATUS AOSongDHT::setup(void)
 {
+    SENSOR_STATUS retVal = Sensor::setup();
     dht_internal.begin();  // Start up the sensor
-    return Sensor::setup();
+    return retVal;
 }
 
 
@@ -61,7 +62,9 @@ bool AOSongDHT::addSingleMeasurementResult(void)
     waitForMeasurementCompletion();
 
     // Reading temperature or humidity takes about 250 milliseconds!
-    float humid_val, temp_val, hi_val = -9999;
+    float humid_val = -9999;
+    float temp_val = -9999;
+    float hi_val = -9999;
     for (uint8_t i = 0; i < 5; i++)  // Make 5 attempts to get a decent reading
     {
         // First read the humidity
