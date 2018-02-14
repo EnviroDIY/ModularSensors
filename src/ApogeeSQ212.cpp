@@ -72,7 +72,7 @@ bool ApogeeSQ212::addSingleMeasurementResult(void)
     waitForMeasurementCompletion();
 
     // Variables to store the results in
-    int16_t adcVoltage = -9999;
+    float adcVoltage = -9999;
     float calibResult = -9999;
 
     // Read Analog to Digital Converter (ADC)
@@ -80,7 +80,7 @@ bool ApogeeSQ212::addSingleMeasurementResult(void)
     // short, I'm not making any effort to avoid it.
     // In this, we're allowing the library to do the bit-to-volts conversion for us
     adcVoltage = ads.readADC_SingleEnded_V(_dataPin);  // Getting the reading
-    MS_DBG(F("ads.readADC_SingleEnded("), _dataPin, F("): "), adcVoltage, F("\t\t"));
+    MS_DBG(F("ads.readADC_SingleEnded_V("), _dataPin, F("): "), adcVoltage, F("\t\t"));
 
     if (adcVoltage < 3.6 and adcVoltage > -0.3)  // Skip results out of range
     {
