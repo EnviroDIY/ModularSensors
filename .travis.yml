@@ -29,7 +29,7 @@ install:
     - pio lib -g install 2079  # DS3231
     - pio lib -g install 311  # EnableInterrupt
     - pio lib -g install 322  # SdFat
-    - pio lib -g install 342  # Adafruit ADS1X15
+    - pio lib -g install 344  # Adafruit ADS1X15
     - pio lib -g install 31  # Adafruit Unified Sensor
     - pio lib -g install 19  # Adafruit DHT sensor library
     - pio lib -g install 773  # Adafruit AM2315
