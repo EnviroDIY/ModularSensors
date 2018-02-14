@@ -56,6 +56,7 @@ String YosemitechParent::getSensorLocation(void)
 
 SENSOR_STATUS YosemitechParent::setup(void)
 {
+    SENSOR_STATUS retVal = Sensor::setup();
     if (_RS485EnablePin > 0) pinMode(_RS485EnablePin, OUTPUT);
 
     #if defined(DEEP_DEBUGGING_SERIAL_OUTPUT)
@@ -64,7 +65,7 @@ SENSOR_STATUS YosemitechParent::setup(void)
 
     sensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
 
-    return Sensor::setup();
+    return retVal;
 }
 
 
@@ -151,34 +152,43 @@ bool YosemitechParent::startSingleMeasurement(void)
 bool YosemitechParent::addSingleMeasurementResult(void)
 {
     bool success = false;
+
+    // Initialize float variables
+    float parmValue = -9999;
+    float tempValue = -9999;
+    float thirdValue = -9999;
+
     if (_millisMeasurementStarted > 0)
     {
         // Make sure we've waited long enough for a new reading to be available
         waitForMeasurementCompletion();
-
-        // Initialize float variables
-        float parmValue, tempValue, thirdValue = -9999;
         // Get Values
         MS_DBG(F("Get Values:\n"));
         success = sensor.getValues(parmValue, tempValue, thirdValue);
-        if (_model == Y520) parmValue *= 1000;  // For conductivity, convert mS/cm to µS/cm
+
+        // Fix not-a-number values
+        if (!success or isnan(parmValue)) parmValue = -9999;
+        if (!success or isnan(tempValue)) tempValue = -9999;
+        if (!success or isnan(thirdValue)) thirdValue = -9999;
+
+        // For conductivity, convert mS/cm to µS/cm
+        if (_model == Y520 and parmValue != -9999) parmValue *= 1000;
 
         MS_DBG(F("    "), sensor.getParameter(), F(": "), parmValue, F("\n"));
         MS_DBG(F("    Temp: "), tempValue, F("\n"));
-
-        // Put values into the array
-        verifyAndAddMeasurementResult(0, parmValue);
-        verifyAndAddMeasurementResult(1, tempValue);
 
         // Not all sensors return a third value
         if (_numReturnedVars > 2)
         {
             MS_DBG(F("    Third: "), thirdValue, F("\n"));
-            verifyAndAddMeasurementResult(2, thirdValue);
         }
     }
-
     else MS_DBG(F("Sensor is not currently measuring!\n"));
+
+    // Put values into the array
+    verifyAndAddMeasurementResult(0, parmValue);
+    verifyAndAddMeasurementResult(1, tempValue);
+    verifyAndAddMeasurementResult(2, thirdValue);
 
     // Return true when finished
     return success;

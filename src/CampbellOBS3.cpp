@@ -5,7 +5,7 @@
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the Campbell Scientific OBS-3+
- *This is dependent on the Adafruit ADS1015 library.
+ *This is dependent on the soligen2010 fork of the Adafruit ADS1015 library.
  *
  * Ranges: (depends on sediment size, particle shape, and reflectivity)
  *  Turbidity (low/high): 250/1000 NTU; 500/2000 NTU; 1000/4000 NTU
@@ -22,8 +22,9 @@
  *      Turbidity: 0.06/0.2 NTU; 0.1/0.5 NTU; 0.2/1.0 NTU
  *
  * Minimum stabilization time: 2s
- * Can return readings as fast as the ADC will return them (860/sec)
+ * Maximum data rate = 10Hz (100ms/sample)
 */
+
 
 #include "CampbellOBS3.h"
 #include <Adafruit_ADS1015.h>
@@ -53,32 +54,48 @@ String CampbellOBS3::getSensorLocation(void)
 
 bool CampbellOBS3::addSingleMeasurementResult(void)
 {
-
     // Start the Auxillary ADD
     Adafruit_ADS1115 ads(_i2cAddress);     /* Use this for the 16-bit version */
+    // Library default settings:
+    //    - single-shot mode (powers down between conversions
+    //    - 128 samples per second (8ms conversion time)
+    //    - 2/3 gain +/- 6.144V range
+    //      (limited to VDD +0.3V max, so only really up to 3.6V when powered at 3.3V!)
+
+    // Bump the gain up to 1x = +/- 4.096V range.  (Again, really only to 3.6V when powered at 3.3V)
+    // Sensor return range is 0-2.5V, but the next gain option is 2x which only allows up to 2.048V
+    ads.setGain(GAIN_ONE);
+    // Begin ADC
     ads.begin();
 
+    // Make sure we've waited long enough for a new reading to be available
+    waitForMeasurementCompletion();
+
     // Variables to store the results in
-    int16_t adcResult = 0;
-    float voltage, calibResult = -9999;
+    int16_t adcVoltage = -9999;
+    float calibResult = -9999;
+
+    // Print out the calibration curve
+    MS_DBG(F("Input calibration Curve: "));
+    MS_DBG(_Avalue, F("x^2 + "), _Bvalue, F("x + "), _Cvalue, F("\n"));
 
     // Read Analog to Digital Converter (ADC)
-    adcResult = ads.readADC_SingleEnded(_dataPin);  // Getting the reading
-    MS_DBG(F("ads.readADC_SingleEnded("), _dataPin, F("): "), ads.readADC_SingleEnded(_dataPin), F("\t\t"));
+    // Taking this reading includes the 8ms conversion delay.  Since it is so
+    // short, I'm not making any effort to avoid it.
+    // In this, we're allowing the library to do the bit-to-volts conversion for us
+    adcVoltage = ads.readADC_SingleEnded_V(_dataPin);  // Getting the reading
+    MS_DBG(F("ads.readADC_SingleEnded("), _dataPin, F("): "), adcVoltage, F("\t\t"));
 
-    // now convert bits into millivolts
-    // 3.3 is the voltage applied to the sensor (and its return range)
-    // The 17585 is the default bit gain of the ADS1115
-    voltage = (adcResult * 3.3) / 17585.0;
-    MS_DBG("Voltage: ", String(voltage, 6), F("\t\t"));
-
-    calibResult = (_Avalue * sq(voltage)) + (_Bvalue * voltage) + _Cvalue;
-    MS_DBG(F("Calibration Curve: "));
-    MS_DBG(_Avalue, F("x^2 + "), _Bvalue, F("x + "), _Cvalue, F("\n"));
-    MS_DBG(F("calibResult: "), calibResult, F("\n"));
+    if (adcVoltage < 3.6 and adcVoltage > -0.3)  // Skip results out of range
+    {
+        // Apply the unique calibration curve for the given sensor
+        calibResult = (_Avalue * sq(adcVoltage)) + (_Bvalue * adcVoltage) + _Cvalue;
+        MS_DBG(F("calibResult: "), calibResult, F("\n"));
+    }
+    else MS_DBG(F("\n"));
 
     verifyAndAddMeasurementResult(OBS3_TURB_VAR_NUM, calibResult);
 
-    // Return true when finished
-    return true;
+    if (adcVoltage < 3.6 and adcVoltage > -0.3) return true;
+    else return false;
 }

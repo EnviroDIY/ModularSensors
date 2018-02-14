@@ -32,8 +32,8 @@
 #include "SensorBase.h"
 #include "VariableBase.h"
 
-#include <OneWire.h>
 #include <DallasTemperature.h>
+#include <OneWire.h>
 
 #define DS18_NUM_VARIABLES 1
 #define DS18_WARM_UP_TIME_MS 2

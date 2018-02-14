@@ -235,16 +235,16 @@ void Sensor::waitForMeasurementCompletion(void)
 // By default, sets pin modes and returns ready
 SENSOR_STATUS Sensor::setup(void)
 {
-    if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
-    if (_dataPin > 0) pinMode(_dataPin, INPUT_PULLUP);
-
-    MS_DBG(F("Set up "));
+    MS_DBG(F("Setting up "));
     MS_DBG(getSensorName());
     MS_DBG(F(" attached at "));
     MS_DBG(getSensorLocation());
     MS_DBG(F(" which can return up to "));
     MS_DBG(_numReturnedVars);
     MS_DBG(F(" variable[s].\n"));
+
+    if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
+    if (_dataPin > 0) pinMode(_dataPin, INPUT_PULLUP);
 
     return SENSOR_READY;
 }
@@ -299,6 +299,7 @@ void Sensor::notifyVariables(void)
             MS_DBG(F(" which is "));
             MS_DBG(variables[i]->getVarName());
             MS_DBG(F("...   "));
+            MS_DBG(F("\n"));
             variables[i]->onSensorUpdate(this);
         }
         else MS_DBG(F("Null pointer\n"));
@@ -309,10 +310,10 @@ void Sensor::notifyVariables(void)
 // This function checks if a sensor needs to be updated or not
 bool Sensor::checkForUpdate(uint32_t sensorLastUpdated)
 {
-    MS_DBG(F("It has been "), (millis() - sensorLastUpdated)/1000);
-    MS_DBG(F(" seconds since "));
-    MS_DBG(getSensorName(), F(" at "), getSensorLocation());
-    MS_DBG(F(" was updated.\n"));
+    // MS_DBG(F("It has been "), (millis() - sensorLastUpdated)/1000);
+    // MS_DBG(F(" seconds since "));
+    // MS_DBG(getSensorName(), F(" at "), getSensorLocation());
+    // MS_DBG(F(" was updated.\n"));
     if ((millis() > 120000 and millis() > (sensorLastUpdated + 120000))
         or sensorLastUpdated == 0)
     {
@@ -374,12 +375,12 @@ void Sensor::verifyAndAddMeasurementResult(int resultNumber, float resultValue)
     else if (sensorValues[resultNumber] == -9999 and resultValue == -9999)
         MS_DBG(F("Ignoring bad result for variable "),
                resultNumber, F(" from "), getSensorName(), F(" at "),
-               getSensorLocation(), F(".  no good results yet.\n"));
+               getSensorLocation(), F("; no good results yet.\n"));
     // If the new result is bad and there were already good results, do nothing
     else if (sensorValues[resultNumber] != -9999 and resultValue == -9999)
         MS_DBG(F("Ignoring bad result for variable "),
                resultNumber, F(" from "), getSensorName(), F(" at "),
-               getSensorLocation(), F(".  Good results already in array.\n"));
+               getSensorLocation(), F("; good results already in array.\n"));
 }
 void Sensor::verifyAndAddMeasurementResult(int resultNumber, int resultValue)
 {
@@ -390,11 +391,14 @@ void Sensor::verifyAndAddMeasurementResult(int resultNumber, int resultValue)
 
 void Sensor::averageMeasurements(void)
 {
-    MS_DBG(F("Averaging over "), _measurementsToAverage, F(" readings\n"));
+    MS_DBG(F("Averaging results from "), getSensorName(), F(" at "),
+           getSensorLocation(), F(" over "), _measurementsToAverage,
+           F(" reading[s]\n"));
     for (int i = 0; i < _numReturnedVars; i++)
     {
-        sensorValues[i] /=  numberGoodMeasurementsMade[i];
-        MS_DBG(F("Result #"), i, F(": "), sensorValues[i], F("\n"));
+        if (numberGoodMeasurementsMade[i] > 0)
+            sensorValues[i] /=  numberGoodMeasurementsMade[i];
+        MS_DBG(F("    ->Result #"), i, F(": "), sensorValues[i], F("\n"));
     }
 }
 
