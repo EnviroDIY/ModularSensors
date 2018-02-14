@@ -123,6 +123,7 @@ AOSongDHT dht(DHTPower, DHTPin, dhtType);
 #include <ApogeeSQ212.h>
 const int SQ212Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 const int SQ212Data = 2;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const uint8_t SQ212_ADS1115Address = 0x48;
 ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
 
 
@@ -139,19 +140,21 @@ BoschBME280 bme280(I2CPower, BMEi2c_addr);
 //    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
 #include <CampbellOBS3.h>
+const int OBS3Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int OBS3numberReadings = 10;
+const uint8_t OBS3_ADS1115Address = 0x48;
 // Campbell OBS 3+ Low Range calibration in Volts
 const int OBSLowPin = 0;  // The low voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const float OBSLow_A = 4.0749E+00;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = 9.1011E+01;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibration
-const int OBS3Power = 22;  // Pin to switch power on and off (-1 if unconnected)
-CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C);
+CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, OBS3_ADS1115Address, OBS3numberReadings);
 // Campbell OBS 3+ High Range calibration in Volts
 const int OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const float OBSHigh_A = 5.2996E+01;  // The "A" value (X^2) from the high range calibration
 const float OBSHigh_B = 3.7828E+02;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calibration
-CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
+CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OBS3_ADS1115Address, OBS3numberReadings);
 
 
 // ==========================================================================
@@ -169,10 +172,10 @@ Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
 // ==========================================================================
 #include <DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
-const int numberReadings = 6;  // The number of readings to average
+const int CTDnumberReadings = 6;  // The number of readings to average
 // const int SDI12Data = 7;  // The pin the CTD is attached to
 // const int SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
-DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
+DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 
 
 // ==========================================================================
@@ -223,14 +226,16 @@ MaxBotixSonar sonar(sonarSerial, SonarPower, SonarTrigger) ;
 DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA, 0x81, 0x16, 0x03, 0x0C};
 DeviceAddress OneWireAddress2 = {0x28, 0xFF, 0x57, 0x90, 0x82, 0x16, 0x04, 0x67};
 DeviceAddress OneWireAddress3 = {0x28, 0xFF, 0x74, 0x2B, 0x82, 0x16, 0x03, 0x57};
-// DeviceAddress OneWireAddress4 = {0x28, 0xFF, 0xB6, 0x6E, 0x84, 0x16, 0x05, 0x9B};
-// DeviceAddress OneWireAddress5 = {0x28, 0xFF, 0x3B, 0x07, 0x82, 0x16, 0x13, 0xB3};
-const int OneWireBus = 4;  // Pin attached to the OneWire Bus (-1 if unconnected)
+DeviceAddress OneWireAddress4 = {0x28, 0xFF, 0xB6, 0x6E, 0x84, 0x16, 0x05, 0x9B};
+DeviceAddress OneWireAddress5 = {0x28, 0xFF, 0x3B, 0x07, 0x82, 0x16, 0x03, 0xB3};
+const int OneWireBus = A0;  // Pin attached to the OneWire Bus (-1 if unconnected)
 const int OneWirePower = 22;  // Pin to switch power on and off (-1 if unconnected)
 MaximDS18 ds18_1(OneWireAddress1, OneWirePower, OneWireBus);
 MaximDS18 ds18_2(OneWireAddress2, OneWirePower, OneWireBus);
 MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
-// MaximDS18 ds18_u(OneWirePower, OneWireBus);
+MaximDS18 ds18_4(OneWireAddress4, OneWirePower, OneWireBus);
+MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
+// MaximDS18 ds18_5(OneWirePower, OneWireBus);
 
 
 // ==========================================================================
@@ -360,6 +365,8 @@ Variable *variableList[] = {
     new MaximDS18_Temp(&ds18_1, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_2, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_3, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaximDS18_Temp(&ds18_4, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaximDS18_Temp(&ds18_5, "12345678-abcd-1234-efgh-1234567890ab"),
     new BoschBME280_Temp(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
     new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
     new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -371,20 +378,20 @@ Variable *variableList[] = {
     new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
     new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
-    new YosemitechY532_pH(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY532_Voltage(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY532_pH(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY510_Temp(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     // new YOUR_variableName_HERE(&)

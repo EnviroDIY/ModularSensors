@@ -83,6 +83,7 @@ AOSongDHT dht(DHTPower, DHTPin, dhtType);
 #include <ApogeeSQ212.h>
 const int SQ212Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 const int SQ212Data = 2;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const uint8_t SQ212_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
 ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
 
 
@@ -99,19 +100,21 @@ BoschBME280 bme280(I2CPower, BMEi2c_addr);
 //    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
 #include <CampbellOBS3.h>
+const int OBS3Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int OBS3numberReadings = 10;
+const uint8_t OBS3_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
 // Campbell OBS 3+ Low Range calibration in Volts
 const int OBSLowPin = 0;  // The low voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const float OBSLow_A = 4.0749E+00;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = 9.1011E+01;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibration
-const int OBS3Power = 22;  // Pin to switch power on and off (-1 if unconnected)
-CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C);
+CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, OBS3_ADS1115Address, OBS3numberReadings);
 // Campbell OBS 3+ High Range calibration in Volts
 const int OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const float OBSHigh_A = 5.2996E+01;  // The "A" value (X^2) from the high range calibration
 const float OBSHigh_B = 3.7828E+02;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calibration
-CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
+CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OBS3_ADS1115Address, OBS3numberReadings);
 
 
 // ==========================================================================
@@ -129,10 +132,10 @@ Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
 // ==========================================================================
 #include <DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
-const int numberReadings = 6;  // The number of readings to average
+const int CTDnumberReadings = 6;  // The number of readings to average
 // const int SDI12Data = 7;  // The pin the CTD is attached to
 // const int SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
-DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
+DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 
 
 // ==========================================================================
@@ -142,7 +145,8 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
 const char *ES2SDI12address = "3";  // The SDI-12 Address of the ES2
 // const int SDI12Data = 7;  // The pin the 5TM is attached to
 // const int SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
-DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data);
+const int ES2NumberReadings = 3;
+DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
 
 
 // ==========================================================================
@@ -183,14 +187,16 @@ MaxBotixSonar sonar(sonarSerial, SonarPower, SonarTrigger) ;
 DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA, 0x81, 0x16, 0x03, 0x0C};
 DeviceAddress OneWireAddress2 = {0x28, 0xFF, 0x57, 0x90, 0x82, 0x16, 0x04, 0x67};
 DeviceAddress OneWireAddress3 = {0x28, 0xFF, 0x74, 0x2B, 0x82, 0x16, 0x03, 0x57};
-// DeviceAddress OneWireAddress4 = {0x28, 0xFF, 0xB6, 0x6E, 0x84, 0x16, 0x05, 0x9B};
-// DeviceAddress OneWireAddress5 = {0x28, 0xFF, 0x3B, 0x07, 0x82, 0x16, 0x13, 0xB3};
-const int OneWireBus = 4;  // Pin attached to the OneWire Bus (-1 if unconnected)
+DeviceAddress OneWireAddress4 = {0x28, 0xFF, 0xB6, 0x6E, 0x84, 0x16, 0x05, 0x9B};
+DeviceAddress OneWireAddress5 = {0x28, 0xFF, 0x3B, 0x07, 0x82, 0x16, 0x03, 0xB3};
+const int OneWireBus = A0;  // Pin attached to the OneWire Bus (-1 if unconnected)
 const int OneWirePower = 22;  // Pin to switch power on and off (-1 if unconnected)
 MaximDS18 ds18_1(OneWireAddress1, OneWirePower, OneWireBus);
 MaximDS18 ds18_2(OneWireAddress2, OneWirePower, OneWireBus);
 MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
-// MaximDS18 ds18_u(OneWirePower, OneWireBus);
+MaximDS18 ds18_4(OneWireAddress4, OneWirePower, OneWireBus);
+MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
+// MaximDS18 ds18_5(OneWirePower, OneWireBus);
 
 
 // ==========================================================================
