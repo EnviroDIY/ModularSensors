@@ -136,7 +136,7 @@ bool ProcessorStats::addSingleMeasurementResult(void)
     // Get the battery voltage
     MS_DBG(F("Getting battery voltage\n"));
 
-    float sensorValue_battery;
+    float sensorValue_battery = -9999;
 
     #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
         if (strcmp(_version, "v0.3") == 0 or strcmp(_version, "v0.4") == 0)
@@ -145,7 +145,7 @@ bool ProcessorStats::addSingleMeasurementResult(void)
             float rawBattery = analogRead(_batteryPin);
             sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
         }
-        if (strcmp(_version, "v0.5") == 0)
+        if (strcmp(_version, "v0.5") == 0 or strcmp(_version, "v0.5b") == 0)
         {
             // Get the battery voltage
             float rawBattery = analogRead(_batteryPin);
@@ -183,7 +183,7 @@ bool ProcessorStats::addSingleMeasurementResult(void)
 
     #endif
 
-    sensorValues[PROCESSOR_BATTERY_VAR_NUM] += sensorValue_battery;
+    verifyAndAddMeasurementResult(PROCESSOR_BATTERY_VAR_NUM, sensorValue_battery);
 
     // Used only for debugging - can be removed
     MS_DBG(F("Getting Free RAM\n"));
@@ -200,7 +200,7 @@ bool ProcessorStats::addSingleMeasurementResult(void)
     float sensorValue_freeRam = -9999;
     #endif
 
-    sensorValues[PROCESSOR_RAM_VAR_NUM] += sensorValue_freeRam;
+    verifyAndAddMeasurementResult(PROCESSOR_RAM_VAR_NUM, sensorValue_freeRam);
 
     // Return true when finished
     return true;

@@ -27,6 +27,11 @@
 #ifndef AOSongDHT_h
 #define AOSongDHT_h
 
+#include <Arduino.h>
+
+// #define DEBUGGING_SERIAL_OUTPUT Serial
+#include "ModSensorDebugger.h"
+
 #include "SensorBase.h"
 #include "VariableBase.h"
 
@@ -37,9 +42,6 @@
 #undef AM2301
 #undef DHT22
 #undef AM2302
-
-// #define DEBUGGING_SERIAL_OUTPUT Serial
-#include "ModSensorDebugger.h"
 
 #define DHT_NUM_VARIABLES 3
 #define DHT_WARM_UP_TIME_MS 1700
@@ -70,7 +72,7 @@ class AOSongDHT : public Sensor
 {
 public:
     // The constructor - need the power pin, the data pin, and the sensor type
-    AOSongDHT(int powerPin, int dataPin, DHTtype type, int measurementsToAverage = 1);
+    AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type, uint8_t measurementsToAverage = 1);
 
     SENSOR_STATUS setup(void) override;
     String getSensorName(void) override;

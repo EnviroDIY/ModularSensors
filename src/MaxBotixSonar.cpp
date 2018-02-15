@@ -14,7 +14,7 @@
 #include "MaxBotixSonar.h"
 
 
-MaxBotixSonar::MaxBotixSonar(Stream* stream, int powerPin, int triggerPin, int measurementsToAverage)
+MaxBotixSonar::MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin, uint8_t measurementsToAverage)
     : Sensor(F("MaxBotixMaxSonar"), HRXL_NUM_VARIABLES,
              HRXL_WARM_UP_TIME_MS, HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage)
@@ -22,7 +22,7 @@ MaxBotixSonar::MaxBotixSonar(Stream* stream, int powerPin, int triggerPin, int m
     _triggerPin = triggerPin;
     _stream = stream;
 }
-MaxBotixSonar::MaxBotixSonar(Stream& stream, int powerPin, int triggerPin, int measurementsToAverage)
+MaxBotixSonar::MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin, uint8_t measurementsToAverage)
     : Sensor(F("MaxBotixMaxSonar"), HRXL_NUM_VARIABLES,
              HRXL_WARM_UP_TIME_MS, HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage)
@@ -33,21 +33,30 @@ MaxBotixSonar::MaxBotixSonar(Stream& stream, int powerPin, int triggerPin, int m
 
 
 // unfortunately, we really cannot know where the stream is attached.
-String MaxBotixSonar::getSensorLocation(void){return F("sonarStream");}
+String MaxBotixSonar::getSensorLocation(void)
+{
+    // attach the trigger pin to the stream number
+    String loc = "sonarStream" + String(_triggerPin);
+    return loc;
+}
 
 
 SENSOR_STATUS MaxBotixSonar::setup(void)
 {
-    // Set the stream timeout;
-    // Even the slowest sensors should respond at a rate of 6Hz (166ms).
-    _stream->setTimeout(180);
+    SENSOR_STATUS retVal = Sensor::setup();
+
     // Set up the trigger, if applicable
     if(_triggerPin != -1)
     {
         pinMode(_triggerPin, OUTPUT);
         digitalWrite(_triggerPin, LOW);
     }
-    return Sensor::setup();
+
+    // Set the stream timeout;
+    // Even the slowest sensors should respond at a rate of 6Hz (166ms).
+    _stream->setTimeout(180);
+
+    return retVal;
 }
 
 
@@ -83,46 +92,45 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
 {
     // Make sure we've waited long enough for a new reading to be available
     waitForMeasurementCompletion();
-    
-    bool stringComplete = false;
+
+    bool success = false;
     int rangeAttempts = 0;
-    int result = 0;
+    int result = -9999;
 
     MS_DBG(F("Beginning detection for Sonar\n"));
-    while (stringComplete == false && rangeAttempts < 50)
+    while (success == false && rangeAttempts < 50)
     {
         if(_triggerPin != -1)
         {
             MS_DBG(F("Triggering Sonar\n"));
             digitalWrite(_triggerPin, HIGH);
-            delay(1);
+            delayMicroseconds(30);  // Trigger must be held low for >20 µs
             digitalWrite(_triggerPin, LOW);
-            delay(160);  // Published return time is 158ms
         }
 
         result = _stream->parseInt();
         _stream->read();  // To throw away the carriage return
-        MS_DBG(result, F("\n"));
+        MS_DBG(F("Sonar Range: "), result, F("\n"));
         rangeAttempts++;
 
         // If it cannot obtain a result , the sonar is supposed to send a value
         // just above it's max range.  For 10m models, this is 9999, for 5m models
         // it's 4999.  The sonar might also send readings of 300 or 500 (the
-        //  blanking distance) if there are too many acoustic echos.
+        // blanking distance) if there are too many acoustic echos.
         // If the result becomes garbled or the sonar is disconnected, the parseInt function returns 0.
-        if (result <= 300 || result == 500 || result == 4999 || result == 9999)
+        if (result <= 300 || result == 500 || result == 4999 || result == 9999 || result == 0)
         {
             MS_DBG(F("Bad or Suspicious Result, Retry Attempt #"), rangeAttempts, F("\n"));
+            result = -9999;
         }
         else
         {
             MS_DBG(F("Good result found\n"));
-            stringComplete = true;  // Set completion of read to true
+            success = true;
         }
     }
 
-    sensorValues[HRXL_VAR_NUM] += result;
-    MS_DBG(F("Sonar Range: "), result, F("\n"));
+    verifyAndAddMeasurementResult(HRXL_VAR_NUM, result);
 
     // Return true when finished
     return true;

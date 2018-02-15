@@ -9,13 +9,13 @@ cache:
         - "~/.platformio"
 
 env:
-    - PLATFORMIO_CI_SRC=examples/single_sensor/
-    - PLATFORMIO_CI_SRC=examples/multisensor_print/
-    - PLATFORMIO_CI_SRC=examples/simple_logging/
-    - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY/
-    - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/
-    - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/
-    - PLATFORMIO_CI_SRC=examples/double_logger/
+    # - PLATFORMIO_CI_SRC=examples/single_sensor/
+    # - PLATFORMIO_CI_SRC=examples/multisensor_print/
+    # - PLATFORMIO_CI_SRC=examples/simple_logging/
+    # - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY/
+    # - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/
+    # - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/
+    # - PLATFORMIO_CI_SRC=examples/double_logger/
 
 before_install:
 - git config --global user.email "sdamiano@stroudcenter.org"
@@ -29,7 +29,7 @@ install:
     - pio lib -g install 2079  # DS3231
     - pio lib -g install 311  # EnableInterrupt
     - pio lib -g install 322  # SdFat
-    - pio lib -g install 342  # Adafruit ADS1X15
+    - pio lib -g install 344  # soligen2010 fork of Adafruit ADS1X15
     - pio lib -g install 31  # Adafruit Unified Sensor
     - pio lib -g install 19  # Adafruit DHT sensor library
     - pio lib -g install 773  # Adafruit AM2315
@@ -46,8 +46,14 @@ install:
     - pio lib -g update
 
 script:
-# Build AVR Boards
-- platformio ci --lib="." --project-option="lib_ignore = RTCZero" --project-option="lib_ldf_mode = deep" --board=mayfly --board=sodaq_mbili --board=sodaq_ndogo --board=feather32u4 --board=megaatmega2560
+# Build AVR Examples
+- platformio ci --project-conf=examples/single_sensor/platoformio.ini
+- platformio ci --project-conf=examples/multisensor_print/platoformio.ini
+- platformio ci --project-conf=examples/simple_logging/platoformio.ini
+- platformio ci --project-conf=examples/double_logger/platoformio.ini
+- platformio ci --project-conf=examples/logging_to_EnviroDIY/platoformio.ini
+- platformio ci --project-conf=examples/DRWI_CitSci/platoformio.ini
+- platformio ci --project-conf=examples/DRWI_NoCellular/platoformio.ini
 
-# Build SAMD Boards
-- platformio ci --lib="." --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial"  --project-option="lib_ldf_mode = deep" --board=adafruit_feather_m0 --board=sodaq_autonomo
+# Build SAMD Example
+- platformio ci --lib="." --project-conf=examples/logging_to_EnviroDIY_Zero/platoformio.ini

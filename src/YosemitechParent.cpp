@@ -17,7 +17,7 @@
 
 // The constructor - need the sensor type, modbus address, power pin, stream for data, and number of readings to average
 YosemitechParent::YosemitechParent(byte modbusAddress, Stream* stream,
-                                   int powerPin, int enablePin, int measurementsToAverage,
+                                   int8_t powerPin, int8_t enablePin, uint8_t measurementsToAverage,
                                    yosemitechModel model, String sensName, int numVariables,
                                    int warmUpTime_ms, int stabilizationTime_ms, int remeasurementTime_ms)
     : Sensor(sensName, numVariables,
@@ -30,7 +30,7 @@ YosemitechParent::YosemitechParent(byte modbusAddress, Stream* stream,
     _RS485EnablePin = enablePin;
 }
 YosemitechParent::YosemitechParent(byte modbusAddress, Stream& stream,
-                                   int powerPin, int enablePin, int measurementsToAverage,
+                                   int8_t powerPin, int8_t enablePin, uint8_t measurementsToAverage,
                                    yosemitechModel model, String sensName, int numVariables,
                                    int warmUpTime_ms, int stabilizationTime_ms, int remeasurementTime_ms)
     : Sensor(sensName, numVariables,
@@ -56,6 +56,7 @@ String YosemitechParent::getSensorLocation(void)
 
 SENSOR_STATUS YosemitechParent::setup(void)
 {
+    SENSOR_STATUS retVal = Sensor::setup();
     if (_RS485EnablePin > 0) pinMode(_RS485EnablePin, OUTPUT);
 
     #if defined(DEEP_DEBUGGING_SERIAL_OUTPUT)
@@ -64,7 +65,7 @@ SENSOR_STATUS YosemitechParent::setup(void)
 
     sensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
 
-    return Sensor::setup();
+    return retVal;
 }
 
 
@@ -82,7 +83,7 @@ bool YosemitechParent::wake(void)
     bool success = false;
     while (!success && ntries < 5)
     {
-        MS_DBG(F("Start Measurement: "));
+        MS_DBG(F("Start Measurement ("), ntries+1, F("): "));
         success = sensor.startMeasurement();
         ntries++;
     }
@@ -91,11 +92,16 @@ bool YosemitechParent::wake(void)
         _millisMeasurementStarted = millis();
         MS_DBG(F("Measurements started.\n"));
     }
+    else MS_DBG(F("Measurements NOT started!\n"));
 
     // Manually activate the brush
     // Needed for newer sensors that do not immediate activate on getting power
-    MS_DBG(F("Activate Brush: "));
-    sensor.activateBrush();
+    if ( _model == Y511 or _model == Y514 or _model == Y550)
+    {
+        MS_DBG(F("Activate Brush: "));
+        if (sensor.activateBrush()) MS_DBG(F("Brush activated.\n"));
+        else MS_DBG(F("Brush NOT activated!\n"));
+    }
 
     return success;
 }
@@ -106,13 +112,18 @@ bool YosemitechParent::wake(void)
 bool YosemitechParent::sleep(void)
 {
     if(!checkPowerOn()){return true;}
+    if(_millisMeasurementStarted == 0)
+    {
+        MS_DBG(F("Was not measuring!\n"));
+        return true;
+    }
 
     // Send the command to begin taking readings, trying up to 5 times
     bool success = false;
     int ntries = 0;
-    while (!success && ntries < 2)
+    while (!success && ntries < 5)
     {
-        MS_DBG(F("Stop Measurement: "));
+        MS_DBG(F("Stop Measurement ("), ntries+1, F("): "));
         success = sensor.stopMeasurement();
         ntries++;
     }
@@ -121,6 +132,7 @@ bool YosemitechParent::sleep(void)
         _millisMeasurementStarted = 0;
         MS_DBG(F("Measurements stopped.\n"));
     }
+    else MS_DBG(F("Measurements NOT stopped!\n"));
 
     return success;
 }
@@ -140,28 +152,43 @@ bool YosemitechParent::startSingleMeasurement(void)
 bool YosemitechParent::addSingleMeasurementResult(void)
 {
     bool success = false;
+
+    // Initialize float variables
+    float parmValue = -9999;
+    float tempValue = -9999;
+    float thirdValue = -9999;
+
     if (_millisMeasurementStarted > 0)
     {
         // Make sure we've waited long enough for a new reading to be available
         waitForMeasurementCompletion();
-
-        // Initialize float variables
-        float parmValue, tempValue, thirdValue;
         // Get Values
-        MS_DBG(F("Get Values: "));
+        MS_DBG(F("Get Values:\n"));
         success = sensor.getValues(parmValue, tempValue, thirdValue);
-        if (_model == Y520) parmValue *= 1000;  // For conductivity, convert mS/cm to µS/cm
-        // Put values into the array
-        // All sensors but pH and DO will have -9999 as the third value
-        sensorValues[0] += parmValue;
-        MS_DBG(F("Parm: "), parmValue, F("\n"));
-        sensorValues[1] += tempValue;
-        MS_DBG(F("Temp: "), tempValue, F("\n"));
-        sensorValues[2] += thirdValue;
-        if (thirdValue !=-9999) MS_DBG(F("Third: "), thirdValue, F("\n"));
-    }
 
+        // Fix not-a-number values
+        if (!success or isnan(parmValue)) parmValue = -9999;
+        if (!success or isnan(tempValue)) tempValue = -9999;
+        if (!success or isnan(thirdValue)) thirdValue = -9999;
+
+        // For conductivity, convert mS/cm to µS/cm
+        if (_model == Y520 and parmValue != -9999) parmValue *= 1000;
+
+        MS_DBG(F("    "), sensor.getParameter(), F(": "), parmValue, F("\n"));
+        MS_DBG(F("    Temp: "), tempValue, F("\n"));
+
+        // Not all sensors return a third value
+        if (_numReturnedVars > 2)
+        {
+            MS_DBG(F("    Third: "), thirdValue, F("\n"));
+        }
+    }
     else MS_DBG(F("Sensor is not currently measuring!\n"));
+
+    // Put values into the array
+    verifyAndAddMeasurementResult(0, parmValue);
+    verifyAndAddMeasurementResult(1, tempValue);
+    verifyAndAddMeasurementResult(2, thirdValue);
 
     // Return true when finished
     return success;

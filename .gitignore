@@ -59,6 +59,5 @@ platformio.ini
 
 # Other
 logger_test/
-logger_test_m0/
 YosemitechDO/
 LongTermLogger/

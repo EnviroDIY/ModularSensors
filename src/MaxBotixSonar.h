@@ -35,8 +35,8 @@
 class MaxBotixSonar : public Sensor
 {
 public:
-    MaxBotixSonar(Stream* stream, int powerPin, int triggerPin = -1, int measurementsToAverage = 1);
-    MaxBotixSonar(Stream& stream, int powerPin, int triggerPin = -1, int measurementsToAverage = 1);
+    MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin = -1, uint8_t measurementsToAverage = 1);
+    MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin = -1, uint8_t measurementsToAverage = 1);
 
     String getSensorLocation(void) override;
 

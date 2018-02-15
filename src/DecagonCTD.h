@@ -56,17 +56,17 @@ class DecagonCTD : public DecagonSDI12
 {
 public:
     // Constructors with overloads
-    DecagonCTD(char SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1)
+    DecagonCTD(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
      : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("DecagonCTD"), CTD_NUM_VARIABLES,
                     CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
     {}
-    DecagonCTD(char *SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1)
+    DecagonCTD(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
      : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("DecagonCTD"), CTD_NUM_VARIABLES,
                     CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
     {}
-    DecagonCTD(int SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1)
+    DecagonCTD(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
      : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("DecagonCTD"), CTD_NUM_VARIABLES,
                     CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)

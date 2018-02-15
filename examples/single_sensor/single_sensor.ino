@@ -45,7 +45,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 const int SonarData = 11;     // data  pin
 const int SonarTrigger = -1;   // Trigger pin
-const int SonarPower = 22;   // excite (power) pin
+const int8_t SonarPower = 22;   // excite (power) pin
 
 #if defined __AVR__
 #include <SoftwareSerial_ExtInts.h>  // for the stream communication
@@ -72,8 +72,8 @@ MaxBotixSonar_Range sonar_range(&sonar);
 // Board setup info
 // ==========================================================================
 const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
-const int greenLED = 8;  // Pin for the green LED
-const int redLED = 9;  // Pin for the red LED
+const int8_t greenLED = 8;  // Pin for the green LED
+const int8_t redLED = 9;  // Pin for the red LED
 
 // Flashes to Mayfly's LED's
 void greenredflash(int numFlash = 4)
