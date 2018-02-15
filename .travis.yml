@@ -47,13 +47,13 @@ install:
 
 script:
 # Build AVR Examples
-- platformio ci --project-conf=/examples/single_sensor/platoformio.ini
-- platformio ci --project-conf=/examples/multisensor_print/platoformio.ini
-- platformio ci --project-conf=/examples/simple_logging/platoformio.ini
-- platformio ci --project-conf=/examples/double_logger/platoformio.ini
-- platformio ci --project-conf=/examples/logging_to_EnviroDIY/platoformio.ini
-- platformio ci --project-conf=/examples/DRWI_CitSci/platoformio.ini
-- platformio ci --project-conf=/examples/DRWI_NoCellular/platoformio.ini
+- platformio ci --project-conf=examples/single_sensor/platoformio.ini
+- platformio ci --project-conf=examples/multisensor_print/platoformio.ini
+- platformio ci --project-conf=examples/simple_logging/platoformio.ini
+- platformio ci --project-conf=examples/double_logger/platoformio.ini
+- platformio ci --project-conf=examples/logging_to_EnviroDIY/platoformio.ini
+- platformio ci --project-conf=examples/DRWI_CitSci/platoformio.ini
+- platformio ci --project-conf=examples/DRWI_NoCellular/platoformio.ini
 
 # Build SAMD Example
-- platformio ci --lib="." --project-conf=/examples/logging_to_EnviroDIY_Zero/platoformio.ini
+- platformio ci --lib="." --project-conf=examples/logging_to_EnviroDIY_Zero/platoformio.ini
