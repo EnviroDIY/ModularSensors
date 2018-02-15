@@ -96,7 +96,7 @@ public:
         : Sensor(F(MODEM_NAME), MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1)
     {}
 
-    String getSensorLocation(void) override { return F("Modem Serial Port"); }
+    String getSensorLocation(void) override { return F("modemSerial"); }
 
     // The modem must be setup separately!
     virtual SENSOR_STATUS setup(void) override {return SENSOR_READY;}
@@ -131,7 +131,7 @@ public:
     // Do NOT power down the modem with the regular sleep function.
     // This is because when it is run in an array with other sensors, we will
     // generally want the modem to remain on after all the other sensors have
-    // gone to sleep so the modem can send out data
+    // gone to sleep and powered down so the modem can send out data
     void powerDown(void) override {}
 
     bool startSingleMeasurement(void) override
@@ -490,7 +490,7 @@ private:
         {
             _modem->begin();
             #if defined(TINY_GSM_MODEM_XBEE)
-                _modem->setupPinSleep();
+                if (sleepType != always_on) _modem->setupPinSleep();
             #endif
             modemOnOff->off();
         }

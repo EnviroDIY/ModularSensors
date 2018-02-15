@@ -47,7 +47,9 @@ CampbellOBS3::CampbellOBS3(int8_t powerPin, int8_t dataPin,
 
 String CampbellOBS3::getSensorLocation(void)
 {
-    String sensorLocation = F("ADS1115_Pin");
+    String sensorLocation = F("ADS1115_0x");
+    sensorLocation += String(_i2cAddress, HEX);
+     sensorLocation += F("_Pin");
     sensorLocation += String(_dataPin);
     return sensorLocation;
 }

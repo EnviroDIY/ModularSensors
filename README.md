@@ -1006,7 +1006,7 @@ The Mayfly _is_ the test board for this library.  _Everything_ is designed to wo
 ___
 
 #### AtSAMD21 (Arduino Zero, Adafruit Feather M0, Sodaq Autonomo)
-_ALMOST_ Fully supported  (Still has bugs)
+Fully supported
 
 - This processor has an internal real time clock (RTC) and does not require a DS3231 to be installed.  The built-in RTC is not as accurate as the DS3231, however, and should be synchronized more frequently to keep the time correct.  The processor clock will also reset if the system battery dies because unlike most external RTC's, there is no coin battery backing up the clock.  At this time, the AtSAMD21 is only supported using the internal clock, but support with a more accurate external RTC is planned.
 - This processor has one hardware serial port, USBSerial, which can _only_ be used for USB communication with a computer
