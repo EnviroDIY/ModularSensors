@@ -49,5 +49,4 @@ install:
     - pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
     - pio lib -g update
 
-script:
-- platformio ci --lib="." $PLATFORMIO_CI_EXTRA_ARGS
+script: make travis-build
