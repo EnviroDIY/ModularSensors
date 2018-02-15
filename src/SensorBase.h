@@ -35,9 +35,9 @@ class Sensor
 {
 public:
 
-    Sensor(String sensorName = "Unknown", int numReturnedVars = 1,
+    Sensor(String sensorName = "Unknown", uint8_t numReturnedVars = 1,
            uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t remeasurementTime_ms = 0,
-           int powerPin = -1, int dataPin = -1, int measurementsToAverage = 1);
+           int8_t powerPin = -1, int8_t dataPin = -1, uint8_t measurementsToAverage = 1);
 
     // These functions are dependent on the constructor and return the constructor values
     // This gets the place the sensor is installed ON THE ARDUINO (ie, pin number)
@@ -108,8 +108,8 @@ protected:
     // A helper to ensure that the sensor is ready to give a new value
     void waitForMeasurementCompletion(void);
 
-    uint8_t _dataPin;
-    uint8_t _powerPin;
+    int8_t _dataPin;  // SIGNED int, to allow negative numbers for unused pins
+    int8_t _powerPin;  // SIGNED int, to allow negative numbers for unused pins
     String _sensorName;
     uint8_t _numReturnedVars;
     uint8_t _measurementsToAverage;

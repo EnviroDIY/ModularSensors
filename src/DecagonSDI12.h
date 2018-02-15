@@ -32,14 +32,14 @@ class DecagonSDI12 : public Sensor
 {
 public:
 
-    DecagonSDI12(char SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1,
-                 String sensorName = "SDI12-Sensor", int numReturnedVars = 1,
+    DecagonSDI12(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1,
+                 String sensorName = "SDI12-Sensor", uint8_t numReturnedVars = 1,
                  uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t remeasurementTime_ms = 0);
-    DecagonSDI12(char *SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1,
-                 String sensorName = "SDI12-Sensor", int numReturnedVars = 1,
+    DecagonSDI12(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1,
+                 String sensorName = "SDI12-Sensor", uint8_t numReturnedVars = 1,
                  uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t remeasurementTime_ms = 0);
-    DecagonSDI12(int SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1,
-                 String sensorName = "SDI12-Sensor", int numReturnedVars = 1,
+    DecagonSDI12(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1,
+                 String sensorName = "SDI12-Sensor", uint8_t numReturnedVars = 1,
                  uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t remeasurementTime_ms = 0);
 
     String getSensorVendor(void);

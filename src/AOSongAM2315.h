@@ -50,7 +50,7 @@ class AOSongAM2315 : public Sensor
 {
 public:
     // The constructor - because this is I2C, only need the power pin
-    AOSongAM2315(int powerPin, int measurementsToAverage = 1);
+    AOSongAM2315(int8_t powerPin, uint8_t measurementsToAverage = 1);
 
     String getSensorLocation(void) override;
 

@@ -65,7 +65,7 @@
 class BoschBME280 : public Sensor
 {
 public:
-    BoschBME280(int powerPin, uint8_t i2cAddressHex = 0x76, int measurementsToAverage = 1);
+    BoschBME280(int8_t powerPin, uint8_t i2cAddressHex = 0x76, uint8_t measurementsToAverage = 1);
 
     bool wake(void) override;
     SENSOR_STATUS setup(void) override;

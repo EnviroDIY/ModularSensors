@@ -21,7 +21,7 @@
 
 
 // The constructor - if the hex address is known - also need the power pin and the data pin
-MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin, int measurementsToAverage)
+MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
   : Sensor(F("MaximDS18"), DS18_NUM_VARIABLES,
            DS18_WARM_UP_TIME_MS, DS18_STABILIZATION_TIME_MS, DS18_MEASUREMENT_TIME_MS,
            powerPin, dataPin, measurementsToAverage),
@@ -33,7 +33,7 @@ MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin, in
 }
 // The constructor - if the hex address is NOT known - only need the power pin and the data pin
 // Can only use this if there is only a single sensor on the pin
-MaximDS18::MaximDS18(int powerPin, int dataPin, int measurementsToAverage)
+MaximDS18::MaximDS18(int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
   : Sensor(F("MaximDS18"), DS18_NUM_VARIABLES,
            DS18_WARM_UP_TIME_MS, DS18_STABILIZATION_TIME_MS, DS18_MEASUREMENT_TIME_MS,
            powerPin, dataPin, measurementsToAverage),
@@ -146,7 +146,7 @@ bool MaximDS18::startSingleMeasurement(void)
     waitForWarmUp();
     waitForStability();
     // Send the command to get temperatures
-    MS_DBG(F("Asking sensor to take a measurement\n"));
+    MS_DBG(F("Asking DS18 to take a measurement\n"));
     tempSensors.requestTemperaturesByAddress(_OneWireAddress);
     _lastMeasurementRequested = millis();
     return true;

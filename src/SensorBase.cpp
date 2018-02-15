@@ -15,9 +15,9 @@
 // ============================================================================
 
 // The constructor
-Sensor::Sensor(String sensorName, int numReturnedVars,
+Sensor::Sensor(String sensorName, uint8_t numReturnedVars,
                uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms,
-               int powerPin, int dataPin, int measurementsToAverage)
+               int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
 {
     _sensorName = sensorName;
     _numReturnedVars = numReturnedVars;
@@ -407,7 +407,7 @@ void Sensor::averageMeasurements(void)
 // readings as requested, then putting the sensor to sleep and powering down.
 bool Sensor::update(void)
 {
-    bool ret_val;
+    bool ret_val = true;
 
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();

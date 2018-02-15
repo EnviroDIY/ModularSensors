@@ -105,7 +105,7 @@ To access and get values from a sensor, you must create an instance of the senso
 ```cpp
 #include <DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
-const int measurementsToAverage = 10;  // The number of readings to average
+const uint8_t measurementsToAverage = 10;  // The number of readings to average
 const int SDI12Data = 7;  // The pin the CTD is attached to
 const int SDI12Power = 22;  // The sensor power pin (use -1 if not applicable)
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, measurementsToAverage);
@@ -497,8 +497,8 @@ The main constructor for the sensor object is (called once each for high and low
 
 ```cpp
 #include <CampbellOBS3.h>
-CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, ADS1x15_i2cAddress, measurementsToAverage);
-CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADS1x15_i2cAddress, measurementsToAverage);
+CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_x2_coeff_A, OBSLow_x1_coeff_B, OBSLow_x0_coeff_C, ADS1x15_i2cAddress, measurementsToAverage);
+CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_x2_coeff_A, OBSHigh_x1_coeff_B, OBSHigh_x0_coeff_C, ADS1x15_i2cAddress, measurementsToAverage);
 ```
 
 The single available variable is (called once each for high and low range):

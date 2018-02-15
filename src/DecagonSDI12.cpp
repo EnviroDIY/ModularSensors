@@ -15,8 +15,8 @@
 
 
 // The constructor - need the number of measurements the sensor will return, SDI-12 address, the power pin, and the data pin
-DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin, int measurementsToAverage,
-                           String sensorName, int numReturnedVars,
+DecagonSDI12::DecagonSDI12(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
+                           String sensorName, uint8_t numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
@@ -25,8 +25,8 @@ DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin, int mea
 {
     _SDI12address = SDI12address;
 }
-DecagonSDI12::DecagonSDI12(char *SDI12address, int powerPin, int dataPin, int measurementsToAverage,
-                           String sensorName, int numReturnedVars,
+DecagonSDI12::DecagonSDI12(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
+                           String sensorName, uint8_t numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
@@ -35,8 +35,8 @@ DecagonSDI12::DecagonSDI12(char *SDI12address, int powerPin, int dataPin, int me
 {
     _SDI12address = *SDI12address;
 }
-DecagonSDI12::DecagonSDI12(int SDI12address, int powerPin, int dataPin, int measurementsToAverage,
-                           String sensorName, int numReturnedVars,
+DecagonSDI12::DecagonSDI12(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
+                           String sensorName, uint8_t numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,

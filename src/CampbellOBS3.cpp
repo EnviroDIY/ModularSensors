@@ -16,7 +16,7 @@
  *  Mud: 2% of reading or 1 mg L–1
  *  Sand: 4% of reading or 10 mg L–1
  * Resolution:
- *  16-bit ADC
+ *  16-bit ADC - This is what is supported!
  *      Turbidity: 0.004/0.01 NTU; 0.008/0.03 NTU; 0.01/0.06 NTU
  *  12-bit ADC
  *      Turbidity: 0.06/0.2 NTU; 0.1/0.5 NTU; 0.2/1.0 NTU
@@ -31,15 +31,16 @@
 
 
 // The constructor - need the power pin, the data pin, and the calibration info
-CampbellOBS3::CampbellOBS3(int powerPin, int dataPin, float A, float B, float C,
-                           uint8_t i2cAddress, int measurementsToAverage)
+CampbellOBS3::CampbellOBS3(int8_t powerPin, int8_t dataPin,
+                           float x2_coeff_A, float x1_coeff_B, float x0_coeff_C,
+                           uint8_t i2cAddress, uint8_t measurementsToAverage)
   : Sensor(F("CampbellOBS3"), OBS3_NUM_VARIABLES,
            OBS3_WARM_UP_TIME_MS, OBS3_STABILIZATION_TIME_MS, OBS3_MEASUREMENT_TIME_MS,
            powerPin, dataPin, measurementsToAverage)
 {
-    _Avalue = A;
-    _Bvalue = B;
-    _Cvalue = C;
+    _x2_coeff_A = x2_coeff_A;
+    _x1_coeff_B = x1_coeff_B;
+    _x0_coeff_C = x0_coeff_C;
     _i2cAddress = i2cAddress;
 }
 
@@ -77,7 +78,7 @@ bool CampbellOBS3::addSingleMeasurementResult(void)
 
     // Print out the calibration curve
     MS_DBG(F("Input calibration Curve: "));
-    MS_DBG(_Avalue, F("x^2 + "), _Bvalue, F("x + "), _Cvalue, F("\n"));
+    MS_DBG(_x2_coeff_A, F("x^2 + "), _x1_coeff_B, F("x + "), _x0_coeff_C, F("\n"));
 
     // Read Analog to Digital Converter (ADC)
     // Taking this reading includes the 8ms conversion delay.  Since it is so
@@ -89,7 +90,7 @@ bool CampbellOBS3::addSingleMeasurementResult(void)
     if (adcVoltage < 3.6 and adcVoltage > -0.3)  // Skip results out of range
     {
         // Apply the unique calibration curve for the given sensor
-        calibResult = (_Avalue * sq(adcVoltage)) + (_Bvalue * adcVoltage) + _Cvalue;
+        calibResult = (_x2_coeff_A * sq(adcVoltage)) + (_x1_coeff_B * adcVoltage) + _x0_coeff_C;
         MS_DBG(F("calibResult: "), calibResult, F("\n"));
     }
     else MS_DBG(F("\n"));

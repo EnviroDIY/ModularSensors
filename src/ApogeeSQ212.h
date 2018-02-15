@@ -56,7 +56,7 @@ class ApogeeSQ212 : public Sensor
 
 public:
     // The constructor - need the power pin and the data pin
-    ApogeeSQ212(int powerPin, int dataPin, uint8_t i2cAddress = ADS1115_ADDRESS, int measurementsToAverage = 1);
+    ApogeeSQ212(int8_t powerPin, int8_t dataPin, uint8_t i2cAddress = ADS1115_ADDRESS, uint8_t measurementsToAverage = 1);
 
     String getSensorLocation(void) override;
 

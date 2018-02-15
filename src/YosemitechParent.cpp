@@ -17,7 +17,7 @@
 
 // The constructor - need the sensor type, modbus address, power pin, stream for data, and number of readings to average
 YosemitechParent::YosemitechParent(byte modbusAddress, Stream* stream,
-                                   int powerPin, int enablePin, int measurementsToAverage,
+                                   int8_t powerPin, int8_t enablePin, uint8_t measurementsToAverage,
                                    yosemitechModel model, String sensName, int numVariables,
                                    int warmUpTime_ms, int stabilizationTime_ms, int remeasurementTime_ms)
     : Sensor(sensName, numVariables,
@@ -30,7 +30,7 @@ YosemitechParent::YosemitechParent(byte modbusAddress, Stream* stream,
     _RS485EnablePin = enablePin;
 }
 YosemitechParent::YosemitechParent(byte modbusAddress, Stream& stream,
-                                   int powerPin, int enablePin, int measurementsToAverage,
+                                   int8_t powerPin, int8_t enablePin, uint8_t measurementsToAverage,
                                    yosemitechModel model, String sensName, int numVariables,
                                    int warmUpTime_ms, int stabilizationTime_ms, int remeasurementTime_ms)
     : Sensor(sensName, numVariables,

@@ -32,7 +32,7 @@
 
 
 // The constructor - because this is I2C, only need the power pin
-BoschBME280::BoschBME280(int powerPin, uint8_t i2cAddressHex, int measurementsToAverage)
+BoschBME280::BoschBME280(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage)
      : Sensor(F("BoschBME280"), BME280_NUM_VARIABLES,
               BME280_WARM_UP_TIME_MS, BME280_STABILIZATION_TIME_MS, BME280_MEASUREMENT_TIME_MS,
               powerPin, -1, measurementsToAverage)

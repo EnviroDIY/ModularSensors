@@ -16,7 +16,7 @@
  *  Mud: 2% of reading or 1 mg L–1
  *  Sand: 4% of reading or 10 mg L–1
  * Resolution:
- *  16-bit ADC
+ *  16-bit ADC - This is what is supported!
  *      Turbidity: 0.004/0.01 NTU; 0.008/0.03 NTU; 0.01/0.06 NTU
  *  12-bit ADC
  *      Turbidity: 0.06/0.2 NTU; 0.1/0.5 NTU; 0.2/1.0 NTU
@@ -52,14 +52,16 @@ class CampbellOBS3 : public Sensor
 {
 public:
     // The constructor - need the power pin, the data pin, and the calibration info
-    CampbellOBS3(int powerPin, int dataPin, float A, float B, float C, uint8_t i2cAddress = ADS1115_ADDRESS, int measurementsToAverage = 1);
+    CampbellOBS3(int8_t powerPin, int8_t dataPin,
+                 float x2_coeff_A, float x1_coeff_B, float x0_coeff_C,
+                 uint8_t i2cAddress = ADS1115_ADDRESS, uint8_t measurementsToAverage = 1);
 
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
 
 protected:
-    float _Avalue, _Bvalue, _Cvalue;
+    float _x2_coeff_A, _x1_coeff_B, _x0_coeff_C;
     uint8_t _i2cAddress;
 };
 
