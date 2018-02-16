@@ -33,12 +33,14 @@
 #ifndef BoschBME280_h
 #define BoschBME280_h
 
-#include "SensorBase.h"
-#include "VariableBase.h"
+#include <Arduino.h>
 
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
+
+#include "SensorBase.h"
+#include "VariableBase.h"
 #include <Adafruit_BME280.h>
 
 #define BME280_NUM_VARIABLES 4
@@ -63,13 +65,14 @@
 class BoschBME280 : public Sensor
 {
 public:
-    BoschBME280(int powerPin, uint8_t i2cAddressHex = 0x76, int measurementsToAverage = 1);
+    BoschBME280(int8_t powerPin, uint8_t i2cAddressHex = 0x76, uint8_t measurementsToAverage = 1);
 
     bool wake(void) override;
     SENSOR_STATUS setup(void) override;
     SENSOR_STATUS getStatus(void) override;
     String getSensorLocation(void) override;
 
+    // bool startSingleMeasurement(void) override;  // for forced mode
     bool addSingleMeasurementResult(void) override;
 protected:
     Adafruit_BME280 bme_internal;

@@ -10,6 +10,8 @@
 #ifndef LoggerDreamHost_h
 #define LoggerDreamHost_h
 
+#include <Arduino.h>
+
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
@@ -135,15 +137,21 @@ public:
             // Turn on the modem to let it start searching for the network
             _logModem.wake();
 
+            // Send power to all of the sensors
+            MS_DBG(F("    Powering sensors...\n"));
+            sensorsPowerUp();
             // Wake up all of the sensors
-            MS_DBG(F("Waking sensors...\n"));
+            MS_DBG(F("    Waking sensors...\n"));
             sensorsWake();
             // Update the values from all attached sensors
             MS_DBG(F("  Updating sensor values...\n"));
             updateAllSensors();
-            // Immediately put sensors to sleep to save power
+            // Put sensors to sleep
             MS_DBG(F("  Putting sensors back to sleep...\n"));
             sensorsSleep();
+            // Cut sensor power
+            MS_DBG(F("  Cutting sensor power...\n"));
+            sensorsPowerDown();
 
             // Connect to the network
             if (_logModem.connectInternet())

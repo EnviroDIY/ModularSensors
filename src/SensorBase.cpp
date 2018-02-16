@@ -15,9 +15,9 @@
 // ============================================================================
 
 // The constructor
-Sensor::Sensor(String sensorName, int numReturnedVars,
+Sensor::Sensor(String sensorName, uint8_t numReturnedVars,
                uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms,
-               int powerPin, int dataPin, int measurementsToAverage)
+               int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
 {
     _sensorName = sensorName;
     _numReturnedVars = numReturnedVars;
@@ -40,7 +40,8 @@ Sensor::Sensor(String sensorName, int numReturnedVars,
     for (uint8_t i = 0; i < MAX_NUMBER_VARS; i++)
     {
         variables[i] = NULL;
-        sensorValues[i] = 0;
+        sensorValues[i] = -9999;
+        numberGoodMeasurementsMade[i] = 0;
     }
 }
 
@@ -65,15 +66,6 @@ void Sensor::setNumberMeasurementsToAverage(int nReadings)
     _measurementsToAverage = nReadings;
 }
 int Sensor::getNumberMeasurementsToAverage(void){return _measurementsToAverage;}
-void Sensor::averageMeasurements(void)
-{
-    MS_DBG(F("Averaging over "), _measurementsToAverage, F(" readings\n"));
-    for (int i = 0; i < _numReturnedVars; i++)
-    {
-        sensorValues[i] /=  _measurementsToAverage;
-        MS_DBG(F("Result #"), i, F(": "), sensorValues[i], F("\n"));
-    }
-}
 
 
 // This is a helper function to check if the power needs to be turned on
@@ -243,16 +235,16 @@ void Sensor::waitForMeasurementCompletion(void)
 // By default, sets pin modes and returns ready
 SENSOR_STATUS Sensor::setup(void)
 {
-    if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
-    if (_dataPin > 0) pinMode(_dataPin, INPUT_PULLUP);
-
-    MS_DBG(F("Set up "));
-    MS_DBG(getSensorName(), F(" at "), getSensorLocation());
+    MS_DBG(F("Setting up "));
+    MS_DBG(getSensorName());
     MS_DBG(F(" attached at "));
     MS_DBG(getSensorLocation());
     MS_DBG(F(" which can return up to "));
     MS_DBG(_numReturnedVars);
     MS_DBG(F(" variable[s].\n"));
+
+    if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
+    if (_dataPin > 0) pinMode(_dataPin, INPUT_PULLUP);
 
     return SENSOR_READY;
 }
@@ -307,6 +299,7 @@ void Sensor::notifyVariables(void)
             MS_DBG(F(" which is "));
             MS_DBG(variables[i]->getVarName());
             MS_DBG(F("...   "));
+            MS_DBG(F("\n"));
             variables[i]->onSensorUpdate(this);
         }
         else MS_DBG(F("Null pointer\n"));
@@ -317,10 +310,10 @@ void Sensor::notifyVariables(void)
 // This function checks if a sensor needs to be updated or not
 bool Sensor::checkForUpdate(uint32_t sensorLastUpdated)
 {
-    MS_DBG(F("It has been "), (millis() - sensorLastUpdated)/1000);
-    MS_DBG(F(" seconds since "));
-    MS_DBG(getSensorName(), F(" at "), getSensorLocation());
-    MS_DBG(F(" was updated.\n"));
+    // MS_DBG(F("It has been "), (millis() - sensorLastUpdated)/1000);
+    // MS_DBG(F(" seconds since "));
+    // MS_DBG(getSensorName(), F(" at "), getSensorLocation());
+    // MS_DBG(F(" was updated.\n"));
     if ((millis() > 120000 and millis() > (sensorLastUpdated + 120000))
         or sensorLastUpdated == 0)
     {
@@ -337,7 +330,10 @@ void Sensor::clearValues(void)
     MS_DBG(F("Clearing value array for "), getSensorName(), F(" at "),
            getSensorLocation(), F(".\n"));
     for (int i = 0; i < _numReturnedVars; i++)
-    { sensorValues[i] =  0; }
+    {
+        sensorValues[i] =  -9999;
+        numberGoodMeasurementsMade[i] = 0;
+    }
 }
 
 
@@ -352,11 +348,66 @@ bool Sensor::startSingleMeasurement(void)
 }
 
 
+// This verifies that a measurement is good before adding it to the values to be averaged
+void Sensor::verifyAndAddMeasurementResult(int resultNumber, float resultValue)
+{
+    // If the new result is good and there was were only bad results, set the
+    // result value as the new result and add 1 to the good result total
+    if (sensorValues[resultNumber] == -9999 and resultValue != -9999)
+    {
+        MS_DBG(F("Putting "), resultValue, F(" in result array for variable "),
+               resultNumber, F(" from "), getSensorName(), F(" at "),
+               getSensorLocation(), F(".\n"));
+        sensorValues[resultNumber] =  resultValue;
+        numberGoodMeasurementsMade[resultNumber] += 1;
+    }
+    // If the new result is good and there were already good results in place
+    // add the new results to the total and add 1 to the good result total
+    else if (sensorValues[resultNumber] != -9999 and resultValue != -9999)
+    {
+        MS_DBG(F("Adding "), resultValue, F(" to result array for variable "),
+               resultNumber, F(" from "), getSensorName(), F(" at "),
+               getSensorLocation(), F(".\n"));
+        sensorValues[resultNumber] +=  resultValue;
+        numberGoodMeasurementsMade[resultNumber] += 1;
+    }
+    // If the new result is bad and there were only bad results, do nothing
+    else if (sensorValues[resultNumber] == -9999 and resultValue == -9999)
+        MS_DBG(F("Ignoring bad result for variable "),
+               resultNumber, F(" from "), getSensorName(), F(" at "),
+               getSensorLocation(), F("; no good results yet.\n"));
+    // If the new result is bad and there were already good results, do nothing
+    else if (sensorValues[resultNumber] != -9999 and resultValue == -9999)
+        MS_DBG(F("Ignoring bad result for variable "),
+               resultNumber, F(" from "), getSensorName(), F(" at "),
+               getSensorLocation(), F("; good results already in array.\n"));
+}
+void Sensor::verifyAndAddMeasurementResult(int resultNumber, int resultValue)
+{
+    float float_val = resultValue;
+    verifyAndAddMeasurementResult(resultNumber, float_val);
+}
+
+
+void Sensor::averageMeasurements(void)
+{
+    MS_DBG(F("Averaging results from "), getSensorName(), F(" at "),
+           getSensorLocation(), F(" over "), _measurementsToAverage,
+           F(" reading[s]\n"));
+    for (int i = 0; i < _numReturnedVars; i++)
+    {
+        if (numberGoodMeasurementsMade[i] > 0)
+            sensorValues[i] /=  numberGoodMeasurementsMade[i];
+        MS_DBG(F("    ->Result #"), i, F(": "), sensorValues[i], F("\n"));
+    }
+}
+
+
 // This updates a sensor value by checking it's power, waking it, taking as many
 // readings as requested, then putting the sensor to sleep and powering down.
 bool Sensor::update(void)
 {
-    bool ret_val;
+    bool ret_val = true;
 
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();

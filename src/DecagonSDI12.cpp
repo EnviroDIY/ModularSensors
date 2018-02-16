@@ -15,8 +15,8 @@
 
 
 // The constructor - need the number of measurements the sensor will return, SDI-12 address, the power pin, and the data pin
-DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin, int measurementsToAverage,
-                           String sensorName, int numReturnedVars,
+DecagonSDI12::DecagonSDI12(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
+                           String sensorName, uint8_t numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
@@ -25,8 +25,8 @@ DecagonSDI12::DecagonSDI12(char SDI12address, int powerPin, int dataPin, int mea
 {
     _SDI12address = SDI12address;
 }
-DecagonSDI12::DecagonSDI12(char *SDI12address, int powerPin, int dataPin, int measurementsToAverage,
-                           String sensorName, int numReturnedVars,
+DecagonSDI12::DecagonSDI12(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
+                           String sensorName, uint8_t numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
@@ -35,8 +35,8 @@ DecagonSDI12::DecagonSDI12(char *SDI12address, int powerPin, int dataPin, int me
 {
     _SDI12address = *SDI12address;
 }
-DecagonSDI12::DecagonSDI12(int SDI12address, int powerPin, int dataPin, int measurementsToAverage,
-                           String sensorName, int numReturnedVars,
+DecagonSDI12::DecagonSDI12(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
+                           String sensorName, uint8_t numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
@@ -49,13 +49,13 @@ DecagonSDI12::DecagonSDI12(int SDI12address, int powerPin, int dataPin, int meas
 
 SENSOR_STATUS DecagonSDI12::setup(void)
 {
-    Sensor::setup();
+    SENSOR_STATUS retVal = Sensor::setup();
 
     // Begin the SDI-12 interface
     _SDI12Internal.begin();
 
      // SDI-12 protocol says sensors must respond within 15 milliseconds
-    _SDI12Internal.setTimeout(15);
+    _SDI12Internal.setTimeout(150);
 
     // Allow the SDI-12 library access to interrupts
     enableInterrupt(_dataPin, SDI12::handleInterrupt, CHANGE);
@@ -63,7 +63,7 @@ SENSOR_STATUS DecagonSDI12::setup(void)
     waitForWarmUp();
     bool isSet = getSensorInfo();
 
-    if (isSet) return SENSOR_READY;
+    if (isSet and retVal == SENSOR_READY) return SENSOR_READY;
     else return SENSOR_ERROR;
 }
 
@@ -235,8 +235,10 @@ bool DecagonSDI12::addSingleMeasurementResult(void)
     for (int i = 0; i < _numReturnedVars; i++)
     {
         float result = _SDI12Internal.parseFloat();
-        sensorValues[i] += result;
+        // If the result becomes garbled or the probe is disconnected, the parseFloat function returns 0.
+        if (result == 0 or isnan(result)) result = -9999;
         MS_DBG(F("Result #"), i, F(": "), result, F("\n"));
+        verifyAndAddMeasurementResult(i, result);
     }
     // String sdiResponse = _SDI12Internal.readStringUntil('\n');
     // sdiResponse.trim();

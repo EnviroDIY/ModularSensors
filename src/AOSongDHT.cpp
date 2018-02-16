@@ -27,7 +27,7 @@
 
 
 // The constructor - need the power pin, data pin, and type of DHT
-AOSongDHT::AOSongDHT(int powerPin, int dataPin, DHTtype type, int measurementsToAverage)
+AOSongDHT::AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type, uint8_t measurementsToAverage)
     : Sensor(F("AOSongDHT"), DHT_NUM_VARIABLES,
              DHT_WARM_UP_TIME_MS, DHT_STABILIZATION_TIME_MS, DHT_MEASUREMENT_TIME_MS,
              powerPin, dataPin, measurementsToAverage),
@@ -39,8 +39,9 @@ AOSongDHT::AOSongDHT(int powerPin, int dataPin, DHTtype type, int measurementsTo
 
 SENSOR_STATUS AOSongDHT::setup(void)
 {
+    SENSOR_STATUS retVal = Sensor::setup();
     dht_internal.begin();  // Start up the sensor
-    return Sensor::setup();
+    return retVal;
 }
 
 
@@ -61,7 +62,9 @@ bool AOSongDHT::addSingleMeasurementResult(void)
     waitForMeasurementCompletion();
 
     // Reading temperature or humidity takes about 250 milliseconds!
-    float humid_val, temp_val, hi_val = 0;
+    float humid_val = -9999;
+    float temp_val = -9999;
+    float hi_val = -9999;
     for (uint8_t i = 0; i < 5; i++)  // Make 5 attempts to get a decent reading
     {
         // First read the humidity
@@ -87,16 +90,16 @@ bool AOSongDHT::addSingleMeasurementResult(void)
             }
             else {
                 MS_DBG(F("Failed to read from DHT sensor!\n"));
-                if (isnan(humid_val)) humid_val = 0;
-                if (isnan(temp_val)) temp_val = 0;
+                if (isnan(humid_val)) humid_val = -9999;
+                if (isnan(temp_val)) temp_val = -9999;
             }
         }
     }
 
     // Store the results in the sensorValues array
-    sensorValues[DHT_TEMP_VAR_NUM] += temp_val;
-    sensorValues[DHT_HUMIDITY_VAR_NUM] += humid_val;
-    sensorValues[DHT_HI_VAR_NUM] += hi_val;
+    verifyAndAddMeasurementResult(DHT_TEMP_VAR_NUM, temp_val);
+    verifyAndAddMeasurementResult(DHT_HUMIDITY_VAR_NUM, humid_val);
+    verifyAndAddMeasurementResult(DHT_HI_VAR_NUM, hi_val);
 
     return true;
 }

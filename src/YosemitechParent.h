@@ -30,11 +30,11 @@ class YosemitechParent : public Sensor
 {
 public:
     YosemitechParent(byte modbusAddress, Stream* stream,
-                     int powerPin, int enablePin = -1, int measurementsToAverage = 1,
+                     int8_t powerPin, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
                      yosemitechModel model = UNKNOWN, String sensName = "Yosemitech-Sensor", int numVariables = 2,
                      int warmUpTime_ms = 1500, int stabilizationTime_ms = 20000, int remeasurementTime_ms = 2000);
     YosemitechParent(byte modbusAddress, Stream& stream,
-                     int powerPin, int enablePin = -1, int measurementsToAverage = 1,
+                     int8_t powerPin, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
                      yosemitechModel model = UNKNOWN, String sensName = "Yosemitech-Sensor", int numVariables = 2,
                      int warmUpTime_ms = 1500, int stabilizationTime_ms = 20000, int remeasurementTime_ms = 2000);
 

@@ -24,14 +24,16 @@
 #ifndef MaximDS18_h
 #define MaximDS18_h
 
+#include <Arduino.h>
+
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
 #include "SensorBase.h"
 #include "VariableBase.h"
 
-#include <OneWire.h>
 #include <DallasTemperature.h>
+#include <OneWire.h>
 
 #define DS18_NUM_VARIABLES 1
 #define DS18_WARM_UP_TIME_MS 2
@@ -44,8 +46,8 @@
 class MaximDS18 : public Sensor
 {
 public:
-    MaximDS18(DeviceAddress OneWireAddress, int powerPin, int dataPin, int measurementsToAverage = 1);
-    MaximDS18(int powerPin, int dataPin, int measurementsToAverage = 1);
+    MaximDS18(DeviceAddress OneWireAddress, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
+    MaximDS18(int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
 
     SENSOR_STATUS setup(void) override;
     String getSensorLocation(void) override;
@@ -62,7 +64,7 @@ private:
     // Pass our oneWire reference to Dallas Temperature.
     DallasTemperature tempSensors;
     // Turns the address into a printable string
-    String getAddressString(DeviceAddress OneWireAddress);
+    String makeAddressString(DeviceAddress OneWireAddress);
 };
 
 

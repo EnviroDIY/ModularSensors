@@ -46,10 +46,10 @@ class Logger : public VariableArray
 public:
     // Initialization - cannot do this in constructor arduino has issues creating
     // instances of classes with non-empty constructors
-    void init(int SDCardPin, int mcuWakePin,
-              int variableCount,
+    void init(int8_t SDCardPin, int8_t mcuWakePin,
+              uint8_t variableCount,
               Variable *variableList[],
-              float loggingIntervalMinutes,
+              uint8_t loggingIntervalMinutes,
               const char *loggerID = 0)
     {
         // initialize the variable array
@@ -77,7 +77,7 @@ public:
     };
 
     // Sets the static timezone - this must be set
-    static void setTimeZone(int timeZone)
+    static void setTimeZone(int8_t timeZone)
     {
         _timeZone = timeZone;
         // Some helpful prints for debugging
@@ -88,13 +88,13 @@ public:
         if (_timeZone != 0) PRINTOUT(_timeZone, F("\n"));
 
     }
-    static int getTimeZone(void) { return Logger::_timeZone; }
+    static int8_t getTimeZone(void) { return Logger::_timeZone; }
 
     // This set the offset between the built-in clock and the time zone where
     // the data is being recorded.  If your RTC is set in UTC and your logging
     // timezone is EST, this should be -5.  If your RTC is set in EST and your
     // timezone is EST this does not need to be called.
-    static void setTZOffset(int offset)
+    static void setTZOffset(int8_t offset)
     {
         _offset = offset;
         // Some helpful prints for debugging
@@ -107,10 +107,10 @@ public:
         if ((_timeZone - _offset) != 0)
             PRINTOUT(_timeZone - _offset, F("\n"));
     }
-    static int getTZOffset(void) { return Logger::_offset; }
+    static int8_t getTZOffset(void) { return Logger::_offset; }
 
     // Sets up a pin for an LED or other way of alerting that data is being logged
-    void setAlertPin(int ledPin)
+    void setAlertPin(int8_t ledPin)
     {
         _ledPin = ledPin;
         MS_DBG(F("Pin "), _ledPin, F(" set for alerts\n"));
@@ -320,7 +320,7 @@ public:
     // Set up the Interrupt Service Request for waking
     // In this case, we're doing nothing, we just want the processor to wake
     // This must be a static function (which means it can only call other static funcions.)
-    static void wakeISR(void){MS_DBG(F("The clock interrupt woke me up!\n"));}
+    static void wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
 
     #if defined ARDUINO_ARCH_SAMD
 
@@ -456,7 +456,7 @@ public:
     void setFileName(String fileName)
     {
         // Convert the string filename to a character file name
-        int fileNameLength = fileName.length() + 1;
+        uint8_t fileNameLength = fileName.length() + 1;
         char charFileName[fileNameLength];
         fileName.toCharArray(charFileName, fileNameLength);
         setFileName(charFileName);
@@ -555,7 +555,7 @@ public:
             else setFileName(_fileName);  // This just for a nice print-out
 
             // Convert the string filename to a character file name for SdFat
-            int fileNameLength = _fileName.length() + 1;
+            uint8_t fileNameLength = _fileName.length() + 1;
             char charFileName[fileNameLength];
             _fileName.toCharArray(charFileName, fileNameLength);
 
@@ -605,7 +605,7 @@ public:
         else  // skip everything else if there's no SD card, otherwise it might hang
         {
             // Convert the string filename to a character file name for SdFat
-            int fileNameLength = _fileName.length() + 1;
+            uint8_t fileNameLength = _fileName.length() + 1;
             char charFileName[fileNameLength];
             _fileName.toCharArray(charFileName, fileNameLength);
 
@@ -650,7 +650,7 @@ public:
 
     // This checks to see if you want to enter the sensor mode
     // This should be run as the very last step within the setup function
-    virtual void checkForTestingMode(int buttonPin)
+    virtual void checkForTestingMode(int8_t buttonPin)
     {
         // Set the pin attached to some button to enter debug mode
         if (buttonPin > 0) pinMode(buttonPin, INPUT_PULLUP);
@@ -826,7 +826,7 @@ public:
 
     // Public variables
     // Time stamps - want to set them at a single time and carry them forward
-    static long markedEpochTime;
+    static uint32_t markedEpochTime;
 
 
 
@@ -841,24 +841,24 @@ protected:
     String _fileName;
 
     // Static variables - identical for EVERY logger
-    static int _timeZone;
-    static int _offset;
+    static int8_t _timeZone;
+    static int8_t _offset;
 
     // Time stamps - want to set them at a single time and carry them forward
     static DateTime markedDateTime;
     static char markedISO8601Time[26];
 
     // Initialization variables
-    int _SDCardPin;
-    int _mcuWakePin;
+    int8_t _SDCardPin;
+    int8_t _mcuWakePin;
     float _loggingIntervalMinutes;
-    int _interruptRate;
+    uint8_t _interruptRate;
     const char *_loggerID;
     bool _autoFileName;
     bool _isFileNameSet;
     uint8_t _numTimepointsLogged;
     bool _sleep;
-    int _ledPin;
+    int8_t _ledPin;
 
 public:
 #if defined(USE_TINY_GSM)
@@ -868,11 +868,11 @@ public:
 };
 
 // Initialize the static timezone
-int Logger::_timeZone = 0;
+int8_t Logger::_timeZone = 0;
 // Initialize the static time adjustment
-int Logger::_offset = 0;
+int8_t Logger::_offset = 0;
 // Initialize the static timestamps
-long Logger::markedEpochTime = 0;
+uint32_t Logger::markedEpochTime = 0;
 DateTime Logger::markedDateTime = 0;
 char Logger::markedISO8601Time[26];
 

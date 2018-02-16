@@ -1,5 +1,5 @@
 /*
- *Boschbme_internal.cpp
+ *BoschBME280.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -32,7 +32,7 @@
 
 
 // The constructor - because this is I2C, only need the power pin
-BoschBME280::BoschBME280(int powerPin, uint8_t i2cAddressHex, int measurementsToAverage)
+BoschBME280::BoschBME280(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage)
      : Sensor(F("BoschBME280"), BME280_NUM_VARIABLES,
               BME280_WARM_UP_TIME_MS, BME280_STABILIZATION_TIME_MS, BME280_MEASUREMENT_TIME_MS,
               powerPin, -1, measurementsToAverage)
@@ -58,9 +58,7 @@ SENSOR_STATUS BoschBME280::getStatus(void)
     waitForWarmUp();
 
     // Run begin fxn because it returns true or false for success in contact
-    delay(10); // let the sensor settle in after power-up
     bool status = bme_internal.begin(_i2cAddressHex);
-    delay(100); // And now let the sensor boot up (time cannot be decreased)
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
@@ -81,10 +79,41 @@ bool BoschBME280::wake(void)
 {
     Sensor::wake();
     waitForWarmUp();
-    bme_internal.begin(0x76);  // Restart needed after power-up
-    delay(100); // And now let the sensor boot up (time cannot be decreased)
+    // Restart always needed after power-up
+    // As of Adafruit library version 1.0.7, this function includes all of the
+    // various delays to allow the chip to wake up, get calibrations, get
+    // coefficients, and set sampling modes.
+    // Currently this is using the settings that Adafruit considered to be 'default'
+    //  - sensor mode = normal (sensor measures, sleeps for the "standby time" and then automatically remeasures
+    //  - temperature oversampling = 16x
+    //  - pressure oversampling = 16x
+    //  - humidity oversampling = 16x
+    //  - built-in IIR filter = off oversampling = 16x
+    //  - sleep time between measurements = 0.5ms
+    bme_internal.begin(_i2cAddressHex);
+
+    // When the Adafruit library is updated to remove the built-in delay after
+    // forcing a sample, it would be better to operate in forced mode.
+    bme_internal.setSampling(Adafruit_BME280::MODE_NORMAL,  // sensor mode
+    // bme_internal.setSampling(Adafruit_BME280::MODE_FORCED,  // sensor mode
+                             Adafruit_BME280::SAMPLING_X16,  // temperature oversampling
+                             Adafruit_BME280::SAMPLING_X16,  //  pressure oversampling
+                             Adafruit_BME280::SAMPLING_X16,  //  humidity oversampling
+                             Adafruit_BME280::FILTER_OFF, // built-in IIR filter
+                             Adafruit_BME280::STANDBY_MS_1000);  // sleep time between measurements (N/A in forced mode)
+    delay(100);  // Need this delay after changing sampling mode
     return true;
 }
+
+// For operating in forced mode
+// bool BoschBME280::startSingleMeasurement(void)
+// {
+//     // waitForWarmUp();  // already done in wake
+//     waitForStability();
+//     bme_internal.takeForcedMeasurement(false);  // Don't want to wait to finish here
+//     _lastMeasurementRequested = millis();
+//     return true;
+// }
 
 
 bool BoschBME280::addSingleMeasurementResult(void)
@@ -98,15 +127,25 @@ bool BoschBME280::addSingleMeasurementResult(void)
     float alt = bme_internal.readAltitude(SEALEVELPRESSURE_HPA);
     float humid = bme_internal.readHumidity();
 
-    sensorValues[BME280_TEMP_VAR_NUM] += temp;
-    sensorValues[BME280_HUMIDITY_VAR_NUM] += humid;
-    sensorValues[BME280_PRESSURE_VAR_NUM] += press;
-    sensorValues[BME280_ALTITUDE_VAR_NUM] += alt;
+    if (isnan(temp)) temp = -9999;
+    if (isnan(press)) press = -9999;
+    if (isnan(alt)) alt = -9999;
+    if (isnan(humid)) humid = -9999;
+
+    if (temp == -140.85)  // This is the value returned if it's not attached
+    {
+        temp = press = alt = humid = -9999;
+    }
 
     MS_DBG(F("Temperature: "), temp);
     MS_DBG(F(" Humidity: "), humid);
     MS_DBG(F(" Barometric Pressure: "), press);
     MS_DBG(F(" Calculated Altitude: "), alt, F("\n"));
+
+    verifyAndAddMeasurementResult(BME280_TEMP_VAR_NUM, temp);
+    verifyAndAddMeasurementResult(BME280_HUMIDITY_VAR_NUM, humid);
+    verifyAndAddMeasurementResult(BME280_PRESSURE_VAR_NUM, press);
+    verifyAndAddMeasurementResult(BME280_ALTITUDE_VAR_NUM, alt);
 
     // Return true when finished
     return true;
