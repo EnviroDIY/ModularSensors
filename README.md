@@ -528,6 +528,8 @@ Decagon sensors communicate with the board using the [SDI-12 protocol](http://ww
 
 The SDI-12 address of the sensor, the Arduino pin controlling power on/off, the Arduino pin sending and receiving data, and a number of distinct readings to average are required for the sensor constructor.  The data pin must be a pin that supports pin-change interrupts.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
 
+Keep in mind that SDI12 is a slow communication protocol (only 1200baud) and _interrupts are turned off during communication_.  This means that if you have any interrupt driven sensors (like a tipping bucket) attached with an SDI12 sensor, no interrupts (or tips) will be registered during SDI12 communication.
+
 The main constructor for the sensor object is:
 
 ```cpp
@@ -556,6 +558,8 @@ _____
 Decagon sensors communicate with the board using the [SDI-12 protocol](http://www.sdi-12.org/) (and the [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).  They require a 3.5-12V power supply, which can be turned off between measurements.  While contrary to the manual, they will run with power as low as 3.3V.  On the CTD with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve.  On the bare-wire version, the power is connected to the _white_ cable, data to _red_, and ground to both the black and unshielded cable.
 
 The SDI-12 address of the sensor, the Arduino pin controlling power on/off, the Arduino pin sending and receiving data, and a number of distinct readings to average are required for the sensor constructor.  The data pin must be a pin that supports pin-change interrupts.  For this particular sensor, taking ~6 readings seems to be ideal for reducing noise.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
+
+Keep in mind that SDI12 is a slow communication protocol (only 1200baud) and _interrupts are turned off during communication_.  This means that if you have any interrupt driven sensors (like a tipping bucket) attached with an SDI12 sensor, no interrupts (or tips) will be registered during SDI12 communication.
 
 The main constructor for the sensor object is:
 
@@ -587,6 +591,8 @@ _____
 Decagon sensors communicate with the board using the [SDI-12 protocol](http://www.sdi-12.org/) (and the [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).  They require a 3.5-12V power supply, which can be turned off between measurements.  While contrary to the manual, they will run with power as low as 3.3V.  On the ES-2 with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve.  On the bare-wire version, the power is connected to the _white_ cable, data to _red_, and ground to the unshielded cable.
 
 The SDI-12 address of the sensor, the Arduino pin controlling power on/off, the Arduino pin sending and receiving data, and a number of distinct readings to average are required for the sensor constructor.  The data pin must be a pin that supports pin-change interrupts.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
+
+Keep in mind that SDI12 is a slow communication protocol (only 1200baud) and _interrupts are turned off during communication_.  This means that if you have any interrupt driven sensors (like a tipping bucket) attached with an SDI12 sensor, no interrupts (or tips) will be registered during SDI12 communication.
 
 The main constructor for the sensor object is:
 
@@ -699,7 +705,7 @@ _____
 
 ### <a name="DHT"></a>[AOSong DHT](http://www.aosong.com/en/products/index.asp) Digital-Output Relative Humidity & Temperature Sensor
 
-This module will work with an AOSong [DHT11/CHT11](http://www.aosong.com/en/products/details.asp?id=109), DHT21/AM2301, and [DHT22/AM2302/CM2302](http://www.aosong.com/en/products/details.asp?id=117).  These sensors uses a non-standard single wire digital signaling protocol.  They can be connected to any digital pin.  Please keep in mind that, per manufacturer instructions, these sensors should not be polled more frequently than once every 2 seconds.  These sensors should be attached to a 3.3-6V power source and the power supply to the sensor can be stopped between measurements.
+This module will work with an AOSong [DHT11/CHT11](http://www.aosong.com/en/products/details.asp?id=109), DHT21/AM2301, and [DHT22/AM2302/CM2302](http://www.aosong.com/en/products/details.asp?id=117).  These sensors use a single-bus single wire digital signaling protocol.  They can be connected to any digital pin.  Please keep in mind that, per manufacturer instructions, these sensors should not be polled more frequently than once every 2 seconds.  These sensors should be attached to a 3.3-6V power source and the power supply to the sensor can be stopped between measurements.  The communication with these sensors is slow and _interrupts are turned off during communication_.  (See the Adafruit DHT library's DHT.cpp for details.)  Keep this in mind if using this sensor in combination with a rain gauge or other interrupt-driven sensor.  Also note that the temperature sensor built into the AOSong DHT is a Maxim DS18 sensor.
 
 The Arduino pin controlling power on/off, the Arduino pin receiving data, and the sensor type are required for the sensor constructor.  The number of readings to average is optional:
 
