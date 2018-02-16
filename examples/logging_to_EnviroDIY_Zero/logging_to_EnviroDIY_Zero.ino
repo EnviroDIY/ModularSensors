@@ -205,6 +205,9 @@ const int8_t Sonar2Trigger = 19;  // Trigger pin (-1 if unconnected)
 // Set up a 'new' UART for receiving sonar data - in this case, using SERCOM2
 // In this case, the Rx will be on digital pin 5, which is SERCOM2's Rx Pad #3
 // Although the MaxBotix cannot use it, the Tx will be on digital pin 2, which is SERCOM2's Rx Pad #2
+// NOTE:  SERCOM2 is undefinied on a "standard" Arduino Zero and many clones,
+//        but not all!  Please check the variant.cpp file for you individual board!
+//        Sodaq Autonomo's and Sodaq One's do NOT follow the 'standard' SERCOM definitions!
 Uart Serial3(&sercom2, 5, 2, SERCOM_RX_PAD_3, UART_TX_PAD_2);
 // Hand over the interrupts to the sercom port
 void SERCOM2_Handler()
@@ -241,6 +244,9 @@ MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
 // Set up a 'new' UART for modbus communication - in this case, using SERCOM1
 // In this case, the Rx will be on digital pin 11, which is SERCOM1's Rx Pad #0
 // The Tx will be on digital pin 10, which is SERCOM1's Rx Pad #2
+// NOTE:  SERCOM1 is undefinied on a "standard" Arduino Zero and many clones,
+//        but not all!  Please check the variant.cpp file for you individual board!
+//        Sodaq Autonomo's and Sodaq One's do NOT follow the 'standard' SERCOM definitions!
 Uart Serial2(&sercom1, 11, 10, SERCOM_RX_PAD_0, UART_TX_PAD_2);
 // Hand over the interrupts to the sercom port
 void SERCOM1_Handler()
