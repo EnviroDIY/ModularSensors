@@ -13,6 +13,21 @@
 #include <EnableInterrupt.h>  // To handle external and pin change interrupts
 
 
+// Initialize the static timezone
+int8_t Logger::_timeZone = 0;
+// Initialize the static time adjustment
+int8_t Logger::_offset = 0;
+// Initialize the static timestamps
+uint32_t Logger::markedEpochTime = 0;
+DateTime Logger::markedDateTime = 0;
+char Logger::markedISO8601Time[26];
+
+// Initialize the RTC for the SAMD boards
+#if defined(ARDUINO_ARCH_SAMD)
+    RTCZero Logger::zero_sleep_rtc;
+#endif
+
+
 // Initialization - cannot do this in constructor arduino has issues creating
 // instances of classes with non-empty constructors
 void Logger::init(int8_t SDCardPin, int8_t mcuWakePin,
@@ -90,6 +105,29 @@ void Logger::setAlertPin(int8_t ledPin)
 // ===================================================================== //
 // Public functions to access the clock in proper format and time zone
 // ===================================================================== //
+
+// This gets the current epoch time (unix time, ie, the number of seconds
+// from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
+#if defined(ARDUINO_ARCH_SAMD)
+
+    uint32_t Logger::getNowEpoch(void)
+    {
+      uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
+      currentEpochTime += _offset*3600;
+      return currentEpochTime;
+    }
+    void Logger::setNowEpoch(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
+
+#else
+    // Do not need to create the RTC object; it's created on library import
+    uint32_t Logger::getNowEpoch(void)
+    {
+      uint32_t currentEpochTime = rtc.now().getEpoch();
+      currentEpochTime += _offset*3600;
+      return currentEpochTime;
+    }
+    void Logger::setNowEpoch(uint32_t ts){rtc.setEpoch(ts);}
+#endif
 
 // This gets the current epoch time (unix time, ie, the number of seconds
 // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
@@ -193,8 +231,8 @@ bool Logger::syncRTClock(uint32_t nist)
 void Logger::markTime(void)
 {
   Logger::markedEpochTime = getNowEpoch();
-  Logger::markedDateTime = dtFromEpoch(Logger::markedEpochTime);
-  formatDateTime_ISO8601(Logger::markedDateTime).toCharArray(Logger::markedISO8601Time, 26);
+  Logger::markedDateTime = dtFromEpoch(markedEpochTime);
+  formatDateTime_ISO8601(markedDateTime).toCharArray(markedISO8601Time, 26);
 }
 
 

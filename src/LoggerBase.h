@@ -69,25 +69,10 @@ public:
     // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
     #if defined(ARDUINO_ARCH_SAMD)
         static RTCZero zero_sleep_rtc;  // create the rtc object
-
-        static uint32_t getNowEpoch(void)
-        {
-          uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
-          currentEpochTime += _offset*3600;
-          return currentEpochTime;
-        }
-        static void setNowEpoch(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
-
-    #else
-        // Do not need to create the RTC object; it's created on library import
-        static uint32_t getNowEpoch(void)
-        {
-          uint32_t currentEpochTime = rtc.now().getEpoch();
-          currentEpochTime += _offset*3600;
-          return currentEpochTime;
-        }
-        static void setNowEpoch(uint32_t ts){rtc.setEpoch(ts);}
     #endif
+
+    static uint32_t getNowEpoch(void);
+    static void setNowEpoch(uint32_t ts);
 
     static DateTime dtFromEpoch(uint32_t epochTime);
 
@@ -239,19 +224,5 @@ protected:
     bool _sleep;
     int8_t _ledPin;
 };
-
-// Initialize the static timezone
-int8_t Logger::_timeZone = 0;
-// Initialize the static time adjustment
-int8_t Logger::_offset = 0;
-// Initialize the static timestamps
-uint32_t Logger::markedEpochTime = 0;
-DateTime Logger::markedDateTime = 0;
-char Logger::markedISO8601Time[26];
-
-// Initialize the RTC for the SAMD boards
-#if defined(ARDUINO_ARCH_SAMD)
-    RTCZero Logger::zero_sleep_rtc;
-#endif
 
 #endif
