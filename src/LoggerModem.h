@@ -14,6 +14,7 @@
 #include <Arduino.h>
 
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define TINY_GSM_DEBUG Serial
 #include "ModSensorDebugger.h"
 
 #include "ModemOnOff.h"
@@ -25,7 +26,6 @@
     defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
     defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_U201) || \
     defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
-  // #define TINY_GSM_DEBUG Serial
   #define TINY_GSM_YIELD() { delay(1);}
   #define TINY_GSM_RX_BUFFER 14  // So we never get much data
   #include <TinyGsmClient.h>
@@ -424,14 +424,21 @@ private:
     void init(Stream *modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin,
               ModemSleepType sleepType)
     {
-        // Set up the method for putting the modem to sleep
+        #if defined(TINY_GSM_MODEM_XBEE)  // ALL XBee's use reverse!
+            if (sleepType != reverse)
+            {
+                MS_DBG(F("Correcting sleep type for XBee to reverse!"))
+                sleepType = reverse;
+            }
+        #endif
 
+        // Set up the method for putting the modem to sleep
         switch(sleepType)
         {
             case pulsed:
             {
-                MS_DBG(F("Setting "), F(MODEM_NAME),
-                    F(" power on pin "), vcc33Pin,
+                MS_DBG(F("Creating a new on/off method for the "), F(MODEM_NAME),
+                    F(" with power on pin "), vcc33Pin,
                     F(" status on pin "), modemStatusPin,
                     F(" and on/off via 2.5 second pulse on pin "), modemSleepRqPin, F(".\n"));
                 static pulsedOnOff pulsed;
@@ -441,10 +448,10 @@ private:
             }
             case held:
             {
-                MS_DBG(F("Setting "), F(MODEM_NAME),
-                    F(" power on pin "), vcc33Pin,
+                MS_DBG(F("Creating a new on/off method for the "), F(MODEM_NAME),
+                    F(" with power on pin "), vcc33Pin,
                     F(" status on pin "), modemStatusPin,
-                    F(" and on/off by holding pin "), modemSleepRqPin, F("high.\n"));
+                    F(" and on/off by holding pin "), modemSleepRqPin, F(" high.\n"));
                 static heldOnOff held;
                 modemOnOff = &held;
                 held.init(vcc33Pin, modemSleepRqPin, modemStatusPin);
@@ -452,10 +459,10 @@ private:
             }
             case reverse:
             {
-                MS_DBG(F("Setting "), F(MODEM_NAME),
-                    F(" power on pin "), vcc33Pin,
+                MS_DBG(F("Creating a new on/off method for the "), F(MODEM_NAME),
+                    F(" with power on pin "), vcc33Pin,
                     F(" status on pin "), modemStatusPin,
-                    F(" and on/off by holding pin "), modemSleepRqPin, F("low.\n"));
+                    F(" and on/off by holding pin "), modemSleepRqPin, F(" low.\n"));
                 static reverseOnOff reverse;
                 modemOnOff = &reverse;
                 reverse.init(vcc33Pin, modemSleepRqPin, modemStatusPin);
@@ -463,8 +470,8 @@ private:
             }
             default:
             {
-                MS_DBG(F("Setting "), F(MODEM_NAME),
-                    F(" power on pin "), vcc33Pin,
+                MS_DBG(F("Creating a new on/off method for the "), F(MODEM_NAME),
+                    F(" with power on pin "), vcc33Pin,
                     F(" status on pin "), modemStatusPin,
                     F(" and no on/off pin.\n"));
                 static heldOnOff held;
@@ -475,12 +482,14 @@ private:
         }
 
         // Initialize the modem
-        MS_DBG(F("Initializing "), F(MODEM_NAME), F("..."));
+        MS_DBG(F("Creating a new TinyGSM modem and client for the "),
+               F(MODEM_NAME), F("...\n"));
         static TinyGsm modem(*modemStream);
         _modem = &modem;
         static TinyGsmClient client(modem);
         _client = &client;
 
+        MS_DBG(F("Initializing "), F(MODEM_NAME), F("..."));
         // Check if the modem is on; turn it on if not
         if(!modemOnOff->isOn()) modemOnOff->on();
         // Check again if the modem is on.  Only "begin" if it responded.
@@ -491,9 +500,9 @@ private:
                 if (sleepType != always_on) _modem->setupPinSleep();
             #endif
             modemOnOff->off();
+            MS_DBG(F("   ... Complete!\n"));
         }
         else MS_DBG(F("   ... Modem failed to turn on!\n"));
-        MS_DBG(F("   ... Complete!\n"));
     }
 
     // Helper to get approximate RSSI from CSQ (assuming no noise)
