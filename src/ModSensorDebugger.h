@@ -26,6 +26,7 @@
         }
     }
 #else
+    #define STANDARD_SERIAL_OUTPUT Serial
     namespace {
         template<typename T>
         static void PRINTOUT(T last) {
