@@ -457,7 +457,7 @@ void setup()
     #endif
 
     // Attach the modem to the logger
-    EnviroDIYLogger.attachModem(modem);
+    EnviroDIYLogger.attachModem(&modem); 
 
     // Set up the connection with EnviroDIY
     EnviroDIYLogger.setToken(registrationToken);

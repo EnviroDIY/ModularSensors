@@ -220,7 +220,6 @@ Our main reason to unify the output from many sensors and variables is to easily
 - **init(int SDCardPin, int mcuWakePin, int variableCount, Variable \*variableList[], float loggingIntervalMinutes, const char \*loggerID = 0)** - Initializes the logger object.  Must happen within the setup function.  Note that the variableList[], and loggerID are pointers.  The SDCardPin is the pin of the chip select/slave select for the SPI connection to the SD card.
   - NOTE regarding *loggingIntervalMinutes*: For the first 20 minutes that a logger has been powered up for a deployment, the logger will take readings at 2 minute intervals for 10 measurements, to assist with confirming that the deployment is successful. Afterwards, the time between measurements will revert to the number of minutes set with *loggingIntervalMinutes*.
 - **setAlertPin(int ledPin)** - Optionally sets a pin to put out an alert that a measurement is being logged.  This is intended to be a pin with a LED on it so you can see the light come on when a measurement is being taken.
-- **attachModem(loggerModem &modem)** - Attaches a loggerModem to the logger, which the logger then can use to send data to the internet.  See [Modem and Internet Functions](#Modem) for more information on how the modem must be set up before it is attached to the logger.
 
 #### Timezone functions:
 
@@ -306,6 +305,7 @@ After defining your modem, set it up using one of these two commands, depending 
 
 Once the modem has been set up, these functions are available:
 
+- **powerUp()** - Turns the modem on.
 - **wake()** - Turns the modem on.  Returns true if connection is successful.
 - **connectInternet()** - Connects to the internet via WiFi or cellular network.  Returns true if connection is successful.
 - **openTCP(const char host, uint16_t port)** - Makes a TCP connection to a host URL and port.  (The most common port for public URLs is "80"; if you don't know the port, try this first.)  Returns 1 if successful.
@@ -323,12 +323,13 @@ Modem_RSSI(&modem, "UUID", "customVarCode");  // Received Signal Strength Indica
 Modem_SignalPercent(&modem, "UUID", "customVarCode");
 ```
 
-The modem does not behave quite the same as all the other sensors do, though.  Setup must be done with the '''setupModem(...)''' function; the normal '''setup()''' function does not do anything.  The '''sleep()''' function also does not work, the modem will only go off with the  '''off()''' functions.
+The modem does not behave quite the same as all the other sensors do, though.  Setup must be done with the '''setupModem(...)''' function; the normal '''setup()''' function does not do anything.  The '''sleep()''' and '''powerDown()''' functions also do not work, the modem will only go off with the '''off()''' function.
 
 
 ### <a name="DIYlogger"></a>Additional Functions Available for a LoggerEnviroDIY Object:
 These three functions set up the required registration token, sampling feature UUID, and time series UUIDs for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.  You must call these functions to be able to get proper JSON data for EnviroDIY, even without the modem support.
 
+- **attachModem(loggerModem &modem)** - Attaches a loggerModem to the logger, which the logger then can use to send data to the internet.  See [Modem and Internet Functions](#Modem) for more information on how the modem must be set up before it is attached to the logger.  You must include an ampersand to tie in the already created modem!
 - **setToken(const char \*registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
 - **setSamplingFeatureUUID(const char \*samplingFeatureUUID)** - Sets the universally unique identifier (UUID or GUID) of the sampling feature.  Note that the input is a pointer to the samplingFeatureUUID.
 
@@ -394,7 +395,7 @@ EnviroDIYLogger.setUUIDs(UUIDs[]);
 modem.setupModem(modemStream, vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType, APN);
 
 // Attach the modem to the logger
-EnviroDIYLogger.attachModem(modem);
+EnviroDIYLogger.attachModem(&modem);
 
 // Connect to the network
 if (modem.connectInternet())

@@ -284,6 +284,6 @@ uint8_t VariableArray::countMaxToAverage(void)
             numReps = max(numReps, _variableList[i]->parentSensor->getNumberMeasurementsToAverage());
         }
     }
-    MS_DBG(F("Collecting up to "), numReps, F(" measurements to average"));
+    MS_DBG(F("The largest number of measurements to average will be "), numReps, F(".\n"));
     return numReps;
 }
