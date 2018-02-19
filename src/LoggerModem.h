@@ -427,7 +427,7 @@ private:
         #if defined(TINY_GSM_MODEM_XBEE)  // ALL XBee's use reverse!
             if (sleepType != reverse)
             {
-                MS_DBG(F("Correcting sleep type for XBee to reverse!"))
+                MS_DBG(F("Correcting sleep type for XBee to reverse!"));
                 sleepType = reverse;
             }
         #endif
