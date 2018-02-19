@@ -194,7 +194,7 @@ void LoggerEnviroDIY::testingMode()
 
         // Specially highlight the modem signal quality in the debug mode
         PRINTOUT(F("Current modem signal is "));
-        PRINTOUT(_logModem.getSignalPercent());
+        PRINTOUT(_logModem->getSignalPercent());
         PRINTOUT(F("%\n"));
         delay(5000);
     }

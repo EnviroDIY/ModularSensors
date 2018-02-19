@@ -7,8 +7,10 @@
  */
 
 
- #ifndef ModSensorDebugger_h
- #define ModSensorDebugger_h
+#ifndef ModSensorDebugger_h
+#define ModSensorDebugger_h
+
+#include <Arduino.h>
 
 #ifdef STANDARD_SERIAL_OUTPUT
     namespace {
@@ -24,7 +26,18 @@
         }
     }
 #else
-    #define PRINTOUT(...)
+    namespace {
+        template<typename T>
+        static void PRINTOUT(T last) {
+            Serial.print(last);
+        }
+
+        template<typename T, typename... Args>
+        static void PRINTOUT(T head, Args... tail) {
+            Serial.print(head);
+            PRINTOUT(tail...);
+        }
+    }
 #endif  // STANDARD_SERIAL_OUTPUT
 
 
