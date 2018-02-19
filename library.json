@@ -186,11 +186,12 @@
             "platforms": "atmelavr, atmelsam"
         },
         {
-            "name": "TinyGSM",
+            "name": "EnviroDIY_TinyGSM",
             "version": "https://github.com/EnviroDIY/TinyGSM.git",
             "note": "A small Arduino library for GPRS modules.",
             "authors": [
-                "Volodymyr Shymanskyy"
+                "Volodymyr Shymanskyy",
+                "Sara Damiano"
             ],
             "frameworks": "arduino",
             "platforms": "atmelavr, atmelsam"

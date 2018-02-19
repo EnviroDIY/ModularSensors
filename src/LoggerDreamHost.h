@@ -12,8 +12,10 @@
 
 #include <Arduino.h>
 
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+#define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
+
+#include "LoggerModem.h"  // To communicate with the internet
 
 #include "LoggerEnviroDIY.h"
 
@@ -21,8 +23,10 @@
 // ============================================================================
 //  Functions for the SWRC Sensors DreamHost data receivers.
 // ============================================================================
+
 class LoggerDreamHost : public LoggerEnviroDIY
 {
+
 public:
     // Functions for private SWRC server
     void setDreamHostPortalRX(const char *URL)
@@ -30,6 +34,7 @@ public:
         _DreamHostPortalRX = URL;
         MS_DBG(F("Dreamhost portal URL set!\n"));
     }
+
 
     // This creates all of the URL parameters
     String generateSensorDataDreamHost(void)
@@ -50,6 +55,7 @@ public:
         return dhString;
     }
 
+
     // Communication functions
     void streamDreamHostRequest(Stream *stream)
     {
@@ -60,7 +66,7 @@ public:
         stream->print(String(F("\r\n\r\n")));
     }
 
-#if defined(USE_TINY_GSM)
+
     // Post the data to dream host.
     int postDataDreamHost(void)
     {
@@ -69,7 +75,7 @@ public:
         int did_respond = 0;
 
         // Open a TCP/IP connection to DreamHost
-        if(_logModem.openTCP("swrcsensors.dreamhosters.com", 80))
+        if(_logModem->openTCP("swrcsensors.dreamhosters.com", 80))
         {
             // Send the request to the serial for debugging
             #if defined(STANDARD_SERIAL_OUTPUT)
@@ -79,24 +85,24 @@ public:
             #endif
 
             // Send the request to the modem stream
-            streamDreamHostRequest(_logModem._client);
-            _logModem._client->flush();  // wait for sending to finish
+            streamDreamHostRequest(_logModem->_client);
+            _logModem->_client->flush();  // wait for sending to finish
 
             uint32_t start_timer;
             if (millis() < 4294957296) start_timer = millis();  // In case of roll-over
             else start_timer = 0;
-            while ((millis() - start_timer) < 10000L && _logModem._client->available() < 12)
+            while ((millis() - start_timer) < 10000L && _logModem->_client->available() < 12)
             {delay(10);}
 
             // Read only the first 12 characters of the response
             // We're only reading as far as the http code, anything beyond that
             // we don't care about so we're not reading to save on total
             // data used for transmission.
-            did_respond = _logModem._client->readBytes(response_buffer, 12);
+            did_respond = _logModem->_client->readBytes(response_buffer, 12);
 
             // Close the TCP/IP connection as soon as the first 12 characters are read
             // We don't need anything else and stoping here should save data use.
-            _logModem.closeTCP();
+            _logModem->closeTCP();
         }
         else PRINTOUT(F("\n -- Unable to Establish Connection to DreamHost -- \n"));
 
@@ -135,7 +141,7 @@ public:
             digitalWrite(_ledPin, HIGH);
 
             // Turn on the modem to let it start searching for the network
-            _logModem.wake();
+            _logModem->wake();
 
             // Send power to all of the sensors
             MS_DBG(F("    Powering sensors...\n"));
@@ -154,7 +160,7 @@ public:
             sensorsPowerDown();
 
             // Connect to the network
-            if (_logModem.connectInternet())
+            if (_logModem->connectInternet())
             {
                 // Post the data to the WebSDL
                 postDataEnviroDIY();
@@ -165,15 +171,15 @@ public:
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
                 if (_numTimepointsLogged % 288 == 0)
                 {
-                    syncRTClock(_logModem.getNISTTime());
+                    syncRTClock(_logModem->getNISTTime());
                 }
 
                 // Disconnect from the network
-                _logModem.disconnectInternet();
+                _logModem->disconnectInternet();
             }
 
             // Turn the modem off
-            _logModem.off();
+            _logModem->off();
 
             // Create a csv data record and save it to the log file
             logToSD(generateSensorDataCSV());
@@ -187,7 +193,6 @@ public:
         // Sleep
         if(_sleep){systemSleep();}
     }
-#endif /* USE_TINY_GSM */
 
 private:
     const char *_DreamHostPortalRX;

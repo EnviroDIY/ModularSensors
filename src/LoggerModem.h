@@ -25,17 +25,15 @@
     defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
     defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_U201) || \
     defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
-  #define USE_TINY_GSM
   // #define TINY_GSM_DEBUG Serial
   #define TINY_GSM_YIELD() { delay(1);}
   #define TINY_GSM_RX_BUFFER 14  // So we never get much data
   #include <TinyGsmClient.h>
-// #else
-//   #include <NullModem.h>  // purely to help me debug compilation issues
-//   #define USE_TINY_GSM
+#else
+  #include <NullModem.h>  // purely to help me debug compilation issues
 #endif
 
-#if defined(USE_TINY_GSM)
+// #if defined(USE_TINY_GSM)
 
 // Give the modems names
 #if defined(TINY_GSM_MODEM_SIM800)
@@ -314,7 +312,7 @@ public:
         #endif  // TINY_GSM_MODEM_HAS_WIFI
         #if defined(TINY_GSM_MODEM_HAS_GPRS)
             MS_DBG(F("\nWaiting for cellular network..."));
-            if (!_modem->waitForNetwork(45000L)){
+            if (!_modem->waitForNetwork(50000L)){
                 MS_DBG("   ...Connection failed.");
             } else {
                 _modem->gprsConnect(_APN, "", "");
@@ -561,6 +559,6 @@ public:
     {}
 };
 
-#endif /* USE_TINY_GSM */
+// #endif /* USE_TINY_GSM */
 
 #endif /* LoggerModem_h */
