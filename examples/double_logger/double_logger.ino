@@ -188,9 +188,6 @@ void setup()
     // Initialize the logger modem
     modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
 
-    // Attach the modem to one of the loggers
-    logger1min.attachModem(modem);
-
     // Set up the sensors on both loggers
     logger1min.setupSensors();
     logger5min.setupSensors();
