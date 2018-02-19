@@ -111,6 +111,14 @@ int LoggerDreamHost::postDataDreamHost(void)
     return responseCode;
 }
 
+
+// This prevents the logging function from dual-posting to EnviroDIY
+void LoggerDreamHost::disableDualPost(void)
+{
+    _dualPost = false;
+}
+
+
 // ===================================================================== //
 // Convience functions to call several of the above functions
 // ===================================================================== //
@@ -149,8 +157,11 @@ void LoggerDreamHost::log(void)
         // Connect to the network
         if (_logModem->connectInternet())
         {
-            // Post the data to the WebSDL
-            postDataEnviroDIY();
+            if(_dualPost)
+            {
+                // Post the data to the WebSDL
+                postDataEnviroDIY();
+            }
 
             // Post the data to DreamHost
             postDataDreamHost();

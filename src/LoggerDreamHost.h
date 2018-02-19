@@ -12,7 +12,7 @@
 
 #include <Arduino.h>
 
-#define DEBUGGING_SERIAL_OUTPUT Serial
+// #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
 #include "LoggerEnviroDIY.h"
@@ -34,19 +34,23 @@ public:
 
     // Communication functions
     void streamDreamHostRequest(Stream *stream);
-    
+
     // Post the data to dream host.
     int postDataDreamHost(void);
+
+    // This prevents the logging function from dual-posting to EnviroDIY
+    void disableDualPost(void);
 
     // ===================================================================== //
     // Convience functions to call several of the above functions
     // ===================================================================== //
 
     // This is a one-and-done to log data
-    virtual void log(void) override;
+    virtual void log(void);
 
 private:
     const char *_DreamHostPortalRX;
+    bool _dualPost = true;
 };
 
 #endif
