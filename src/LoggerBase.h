@@ -175,7 +175,6 @@ public:
     // This should be run as the very last step within the setup function
     virtual void checkForTestingMode(int8_t buttonPin);
 
-
     // This defines what to do in the testing mode
     virtual void testingMode();
 

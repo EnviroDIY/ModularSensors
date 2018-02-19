@@ -13,7 +13,7 @@
 
 #include <Arduino.h>
 
-#define DEBUGGING_SERIAL_OUTPUT Serial
+// #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
 #include "LoggerModem.h"  // To communicate with the internet
@@ -46,13 +46,20 @@ public:
     // Communication functions
     void streamEnviroDIYRequest(Stream *stream);
 
-
     // Public function to send data
     int postDataEnviroDIY(void);
 
     // ===================================================================== //
     // Convience functions to call several of the above functions
     // ===================================================================== //
+
+    // This defines what to do in the testing mode
+    // This version particularly highlights the modem signal strength!
+    virtual void testingMode() override;
+
+    // This calls all of the setup functions - must be run AFTER init
+    // This version syncs the clock!
+    virtual void begin(void);
 
     // This is a one-and-done to log data
     virtual void log(void) override;

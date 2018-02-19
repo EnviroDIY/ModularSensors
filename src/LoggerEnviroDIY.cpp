@@ -158,6 +158,103 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
 // Convience functions to call several of the above functions
 // ===================================================================== //
 
+// This defines what to do in the testing mode
+void LoggerEnviroDIY::testingMode()
+{
+    PRINTOUT(F("------------------------------------------\n"));
+    PRINTOUT(F("Entering sensor testing mode\n"));
+
+    // Turn on the modem to let it start searching for the network
+    // Turn on the modem
+    _logModem->wake();
+    // Connect to the network to make sure we have signal
+    _logModem->connectInternet();
+
+    // Power up all of the sensors
+    sensorsPowerUp();
+
+    // Wake up all of the sensors
+    sensorsWake();
+
+    // Update the sensors and print out data 25 times
+    for (uint8_t i = 0; i < 25; i++)
+    {
+        PRINTOUT(F("------------------------------------------\n"));
+        // Update the values from all attached sensors
+        updateAllSensors();
+        // Print out the current logger time
+        PRINTOUT(F("Current logger time is "));
+        PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
+        PRINTOUT(F("    -----------------------\n"));
+        // Print out the sensor data
+        #if defined(STANDARD_SERIAL_OUTPUT)
+            printSensorData(&STANDARD_SERIAL_OUTPUT);
+        #endif
+        PRINTOUT(F("    -----------------------\n"));
+
+        // Specially highlight the modem signal quality in the debug mode
+        PRINTOUT(F("Current modem signal is "));
+        PRINTOUT(_logModem.getSignalPercent());
+        PRINTOUT(F("%\n"));
+        delay(5000);
+    }
+
+    // Put sensors to sleep
+    sensorsSleep();
+    sensorsPowerDown();
+
+    // Disconnect from the network
+    _logModem->disconnectInternet();
+    // Turn off the modem
+    _logModem->off();
+}
+
+
+// This calls all of the setup functions - must be run AFTER init
+void LoggerEnviroDIY::begin(void)
+{
+    // Set up pins for the LED's
+    if (_ledPin > 0) pinMode(_ledPin, OUTPUT);
+
+    #if defined ARDUINO_ARCH_SAMD
+        zero_sleep_rtc.begin();
+    #else
+        rtc.begin();
+        delay(100);
+    #endif
+
+    // Print out the current time
+    PRINTOUT(F("Current RTC time is: "));
+    PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
+
+    // Synchronize the RTC with NIST
+    PRINTOUT(F("Attempting to synchronize RTC with NIST\n"));
+    // Turn on the modem
+    _logModem->wake();
+    // Connect to the network
+    if (_logModem->connectInternet())
+    {
+        syncRTClock(_logModem->getNISTTime());
+        // Disconnect from the network
+        _logModem->disconnectInternet();
+    }
+    // Turn off the modem
+    _logModem->off();
+
+    // Set up the sensors
+    setupSensors();
+
+    // Set up the log file
+    setupLogFile();
+
+    // Setup sleep mode
+    if(_sleep){setupSleep();}
+
+    PRINTOUT(F("Logger setup finished!\n"));
+    PRINTOUT(F("------------------------------------------\n\n"));
+}
+
+
 // This is a one-and-done to log data
 void LoggerEnviroDIY::log(void)
 {
