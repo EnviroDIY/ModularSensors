@@ -21,6 +21,10 @@ int8_t Logger::_offset = 0;
 uint32_t Logger::markedEpochTime = 0;
 DateTime Logger::markedDateTime = 0;
 char Logger::markedISO8601Time[26];
+// Initialize the testing/logging flags
+bool Logger::_isLoggingNow = false;
+bool Logger::_isTestingNow = false;
+bool Logger::_startTesting = false;
 
 // Initialize the RTC for the SAMD boards
 #if defined(ARDUINO_ARCH_SAMD)
@@ -98,7 +102,7 @@ void Logger::setTZOffset(int8_t offset)
 void Logger::setAlertPin(int8_t ledPin)
 {
     _ledPin = ledPin;
-    MS_DBG(F("Pin "), _ledPin, F(" set for alerts\n"));
+    MS_DBG(F("Pin "), _ledPin, F(" set as LED alert pin\n"));
 }
 
 
@@ -185,7 +189,7 @@ bool Logger::syncRTClock(uint32_t nist)
 {
     uint32_t start_millis = millis();
 
-    // If the timestamp returns zero, just exit
+    // If the timestamp is zero, just exit
     if  (nist == 0)
     {
         PRINTOUT(F("Bad timestamp, skipping sync.\n"));
@@ -266,7 +270,7 @@ bool Logger::checkInterval(void)
     }
     else
     {
-        MS_DBG(F("Not time yet, back to sleep\n"));
+        MS_DBG(F("Not time yet.\n"));
         retval = false;
     }
     return retval;
@@ -307,7 +311,7 @@ bool Logger::checkMarkedInterval(void)
 // Set up the Interrupt Service Request for waking
 // In this case, we're doing nothing, we just want the processor to wake
 // This must be a static function (which means it can only call other static funcions.)
-// void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
+void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
 
 #if defined ARDUINO_ARCH_SAMD
 
@@ -643,10 +647,26 @@ void Logger::checkForTestingMode(int8_t buttonPin)
     PRINTOUT(F("End of sensor testing mode.\n"));
 }
 
+// A static function if you'd prefer to enter testing based on an interrupt
+void Logger::testingISR()
+{
+    MS_DBG(F("Testing interrupt!\n"));
+    if (!Logger::_isTestingNow && !Logger::_isLoggingNow)
+    {
+        Logger::_startTesting = true;
+        MS_DBG(F("Testing flag has been set.\n"));
+    }
+}
+
 
     // This defines what to do in the testing mode
 void Logger::testingMode()
 {
+    // Flag to notify that we're in testing mode
+    Logger::_isTestingNow = true;
+    // Unset the _startTesting flag
+    Logger::_startTesting = false;
+
     PRINTOUT(F("------------------------------------------\n"));
     PRINTOUT(F("Entering sensor testing mode\n"));
 
@@ -677,6 +697,9 @@ void Logger::testingMode()
     // Put sensors to sleep
     sensorsSleep();
     sensorsPowerDown();
+
+    // Unset testing mode flag
+    Logger::_isTestingNow = false;
 }
 
 
@@ -718,9 +741,13 @@ void Logger::testingMode()
 // This is a one-and-done to log data
 void Logger::log(void)
 {
-    // Check of the current time is an even interval of the logging interval
+    // Assuming we were woken up by the clock, check if the current time is an
+    // even interval of the logging interval
     if (checkInterval())
     {
+        // Flag to notify that we're in already awake and logging a point
+        Logger::_isLoggingNow = true;
+
         // Print a line to show new reading
         PRINTOUT(F("------------------------------------------\n"));
         // Turn on the LED to show we're taking a reading
@@ -741,7 +768,6 @@ void Logger::log(void)
         // Cut sensor power
         MS_DBG(F("  Cutting sensor power...\n"));
         sensorsPowerDown();
-
         // Create a csv data record and save it to the log file
         logToSD(generateSensorDataCSV());
 
@@ -749,7 +775,13 @@ void Logger::log(void)
         digitalWrite(_ledPin, LOW);
         // Print a line to show reading ended
         PRINTOUT(F("------------------------------------------\n\n"));
+
+        // Unset flag
+        Logger::_isLoggingNow = false;
     }
+
+    // Check if it was instead the testing interrupt that woke us up
+    if (Logger::_startTesting) testingMode();
 
     // Sleep
     if(_sleep){systemSleep();}

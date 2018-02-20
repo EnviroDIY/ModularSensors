@@ -12,6 +12,14 @@
 
 #include <Arduino.h>
 
+#ifndef STANDARD_SERIAL_OUTPUT
+    #if defined(ARDUINO_ARCH_SAMD)
+      #define STANDARD_SERIAL_OUTPUT SerialUSB
+    #elif defined __AVR__
+      #define STANDARD_SERIAL_OUTPUT Serial
+    #endif
+#endif  // ifndef STANDARD_SERIAL_OUTPUT
+
 #ifdef STANDARD_SERIAL_OUTPUT
     namespace {
         template<typename T>
@@ -22,20 +30,6 @@
         template<typename T, typename... Args>
         static void PRINTOUT(T head, Args... tail) {
             STANDARD_SERIAL_OUTPUT.print(head);
-            PRINTOUT(tail...);
-        }
-    }
-#else
-    #define STANDARD_SERIAL_OUTPUT Serial
-    namespace {
-        template<typename T>
-        static void PRINTOUT(T last) {
-            Serial.print(last);
-        }
-
-        template<typename T, typename... Args>
-        static void PRINTOUT(T head, Args... tail) {
-            Serial.print(head);
             PRINTOUT(tail...);
         }
     }

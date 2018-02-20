@@ -238,7 +238,7 @@ A note about timezones:  It is possible to create multiple logger objects in you
 - **checkMarkedInterval()** - This returns true if the _marked_ time is an even iterval of the logging interval, otherwise false.  This uses the static time value set by markTime() to get the time.  It does not check the real-time-clock directly.
 
 
-#### Functions for the sleep modes:
+#### Functions for the processor sleep modes:
 
 - **setupSleep()** - Sets up the processor sleep mode and the interrupts to wake the processor back up.  This should be called in the setup function.
 - **systemSleep()** - Puts the system into deep sleep mode.  This should be called at the very end of the loop function.  Please keep in mind that this does NOT call the wake and sleep functions of the sensors themselves; you must call those separately.  (This separation is for timing reasons.)
@@ -252,16 +252,26 @@ A note about timezones:  It is possible to create multiple logger objects in you
 - **generateFileHeader()** - This returns and Aruduino String with a comma separated list of headers for the csv.  The headers will be ordered based on the order variables are listed in the array fed to the init function.
 - **generateSensorDataCSV()** - This returns an Arduino String containing the time and a comma separated list of sensor values.  The data will be ordered based on the order variables are listed in the array fed to the init function.
 
-#### Functions for testing and debugging:
+#### Functions for sensor testing and communication debugging:
 
-To view any information about what your logger is doing you must add the statement ```#define STANDARD_SERIAL_OUTPUT xxxxx``` to the top of your sketch, where xxxxx is the name of a serial output (ie, Serial or USBSerial).  This statement should be above any include statements in your sketch.
+By default, some status and set-up information will be sent to the Serial (for AVR processors) or SerialUSB (for SAMD processors).  To stop all print out or to change the port the print out goes to, open ModSensorDebugger.h and change or remove lines 15-21 that define the STANDARD_SERIAL_OUTPUT.
 
-To see more intense debugging for any individual component of the library (a sensor, the variable arrays, the modem, etc), open the source file header (\*.h), for that component.  Find the line ```// #define DEBUGGING_SERIAL_OUTPUT xxxxx```, where xxxxx is the name of a serial output (ie, Serial or USBSerial).  Remove the two comment slashes from that line.  Then recompile and upload your code.  This will (sometimes dramatically) increase the number of statements going out to the debugging serial port.
+There is also a built-in function for "testing" sensors within sensor arrays - that is, continuously displaying sensor values to test that the sensors are working properly:
+- **testingMode()** - Enters a "testing" mode for the sensors.  It prints out all of the sensor results for 25 records worth of data with a 5-second delay between readings.  The printouts go to whichever serial port is given in the ```#define STANDARD_SERIAL_OUTPUT``` statement.
 
-- **checkForTestingMode(int buttonPin)** - This stops everything and waits for five seconds for a button to be pressed to enter allow the user to enter "sensor testing" mode.  I suggest running this as the very last step of the setup function.
-- **testingMode()** - This is a "testing" mode for the sensors.  It prints out all of the sensor results for 25 records worth of data with a 5-second delay between readings.  The printouts go to whichever serial port is given in the ```#define STANDARD_SERIAL_OUTPUT``` statement.
+Testing mode can be entered directly in a set-up or loop function by calling the ```testingMode()``` function.  There is also a function to hold code to wait for a button press to enter test testing mode.  I suggest only running this as the very last step of the setup function.
+- **checkForTestingMode(int buttonPin)** - This stops everything and waits for five seconds for a button to be pressed to enter allow the user to enter "sensor testing" mode.
 
-####  Convience functions to do it all:
+If you would like to be able to enter the testing mode via a button press at any time while the logger is asleep, you can use the testingISR() function to define an interrupt for entering testing mode.  Please note that the ISR verifies that you are not in the middle of taking/logging a measurement before beginning the testing mode, so you cannot enter testing mode during that time.  Also note that the testing mode will not return any valid results until after the full setup is complete, so don't try to enter testing mode before then.
+```cpp
+pinMode(pinNumber, INPUT_PULLUP);
+enableInterrupt(buttonPin, Logger::testingISR, CHANGE);
+```
+
+
+For more intense debugging for any individual component of the library (sensor communication, modem communication, variable array functions, etc), open the source file header (\*.h), for that component.  Find the line ```// #define DEBUGGING_SERIAL_OUTPUT xxxxx```, where xxxxx is the name of a serial output (ie, Serial or USBSerial).  Remove the two comment slashes from that line.  Then recompile and upload your code.  This will (sometimes dramatically) increase the number of statements going out to the debugging serial port.  A few sensors also the line ```// #define DEEP_DEBUGGING_SERIAL_OUTPUT xxxxx```, uncommenting of which will send even more information to the defined port.
+
+####  Convenience functions to do it all:
 
 - **begin()** - Starts all the sensors, the variable array, and the logger.  Must be in the setup function.
 - **log()** - Logs data, must be the entire content of the loop function.
@@ -327,7 +337,7 @@ The modem does not behave quite the same as all the other sensors do, though.  S
 
 
 ### <a name="DIYlogger"></a>Additional Functions Available for a LoggerEnviroDIY Object:
-These three functions set up the required registration token, sampling feature UUID, and time series UUIDs for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.  You must call these functions to be able to get proper JSON data for EnviroDIY, even without the modem support.
+These functions attach a modem and set up the required registration token and sampling feature UUID for the EnviroDIY web streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  You *must* also add the correct variable UUID's to the constructors for each variable you are using.  All of the UUID and token values can be obtained after registering at http://data.envirodiy.org/.
 
 - **attachModem(loggerModem &modem)** - Attaches a loggerModem to the logger, which the logger then can use to send data to the internet.  See [Modem and Internet Functions](#Modem) for more information on how the modem must be set up before it is attached to the logger.  You must include an ampersand to tie in the already created modem!
 - **setToken(const char \*registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
@@ -988,7 +998,7 @@ Additionally, for the EnviroDIY modified version of SoftwareSerial, you must ena
 
 ```cpp
 //  Allow enableInterrrupt to control the interrupts for software serial
-enableInterrupt(streamName, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+enableInterrupt(rx_pin, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
 ```
 
 Here are some helpful links for more information about the number of serial ports available on some of the different Arduino-style boards:
@@ -1027,7 +1037,8 @@ Fully supported
 - AltSoftSerial is not directly supported on the AtSAMD21, but with some effort, the timers could be configured to make it work.
 - SoftwareSerial_ExtInts is not supported at all on the AtSAMD21.
 - Any digital pin can be used with SDI-12.
-- Because the USB controller is built into the processor, your USB serial connection will close as soon as the processor goes to sleep.  If you need to debug, I recommend using a serial port monitor like Tera Term which will automatically renew its connection with the serial port when it connects and disconnects.  Otherwise, you will have to rely on lights on your alert pin or your modem to verify the processor is waking/sleeping properly.
+- Because the USB controller is built into the processor, your USB serial connection will close as soon as the processor goes to sleep.  If you need to debug, I recommend using a serial port monitor like [Tera Term](https://ttssh2.osdn.jp/index.html.en) which will automatically renew its connection with the serial port when it connects and disconnects.  Otherwise, you will have to rely on lights on your alert pin or your modem to verify the processor is waking/sleeping properly.
+- There is a completely weird bug that causes the code to crash if using input pin 1 on the TI ADS1115 (used for the Campbell OBS3+ and Apogee SQ212).  I have no idea at all why this happens.  Pins 0, 2, and 3 all work fine.  Just don't use pin 1.
 ___
 
 #### AtMega2560 (Arduino Mega)

@@ -55,7 +55,7 @@ bool ModemOnOff::isOn(void)
 {
     if (_modemStatusPin >= 0) {
         bool status = digitalRead(_modemStatusPin);
-        MS_DBG(F("Is modem on? "), status, F("\n"));
+        // MS_DBG(F("Is modem on? "), status, F("\n"));
         return status;
     }
     // No status pin. Let's assume it is on.

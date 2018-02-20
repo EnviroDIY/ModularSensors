@@ -126,7 +126,8 @@ void LoggerDreamHost::disableDualPost(void)
 // This is a one-and-done to log data
 void LoggerDreamHost::log(void)
 {
-    // Check of the current time is an even interval of the logging interval
+    // Assuming we were woken up by the clock, check if the current time is an
+    // even interval of the logging interval
     if (checkInterval())
     {
         // Print a line to show new reading
@@ -187,6 +188,9 @@ void LoggerDreamHost::log(void)
         // Print a line to show reading ended
         PRINTOUT(F("------------------------------------------\n\n"));
     }
+
+    // Check if it was instead the testing interrupt that woke us up
+    if (Logger::_startTesting) testingMode();
 
     // Sleep
     if(_sleep){systemSleep();}

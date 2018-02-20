@@ -13,7 +13,6 @@
 #include <Arduino.h>
 
 // #define DEBUGGING_SERIAL_OUTPUT Serial
-// #define STANDARD_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
 #include "VariableArray.h"
@@ -110,7 +109,7 @@ public:
     // Set up the Interrupt Service Request for waking
     // In this case, we're doing nothing, we just want the processor to wake
     // This must be a static function (which means it can only call other static funcions.)
-    static void wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
+    static void wakeISR(void);
 
     // Sets up the sleep mode
     void setupSleep(void);
@@ -170,10 +169,12 @@ public:
     // Public functions for a "sensor testing" mode
     // ===================================================================== //
 
-
     // This checks to see if you want to enter the sensor mode
     // This should be run as the very last step within the setup function
-    virtual void checkForTestingMode(int8_t buttonPin);
+    void checkForTestingMode(int8_t buttonPin);
+
+    // A function if you'd prefer to enter testing based on an interrupt
+    static void testingISR(void);
 
     // This defines what to do in the testing mode
     virtual void testingMode();
@@ -222,6 +223,10 @@ protected:
     uint8_t _numTimepointsLogged;
     bool _sleep;
     int8_t _ledPin;
+
+    static bool _isLoggingNow;
+    static bool _isTestingNow;
+    static bool _startTesting;
 };
 
 #endif
