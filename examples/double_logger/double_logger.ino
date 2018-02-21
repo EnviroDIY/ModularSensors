@@ -77,11 +77,11 @@ const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-
 const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 
-ModemSleepType ModemSleepMode = reverse;  // How the modem is put to sleep
-// Use "held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
-// Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
-// Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
-// Use "always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
+ModemSleepType ModemSleepMode = modem_sleep_reverse;  // How the modem is put to sleep
+// Use "modem_sleep_held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
+// Use "modem_sleep_pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
+// Use "modem_sleep_reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
+// Use "modem_always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
 
 const long ModemBaud = 9600;  // Modem baud rate
 const char *wifiId = "XXXXXXX";  // The WiFi access point

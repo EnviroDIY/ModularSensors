@@ -10,6 +10,7 @@
 #define NullModem_h
 
 #include <Client.h>
+#include <TinyGsmCommon.h>
 
 class TinyGsmUndefined
 {

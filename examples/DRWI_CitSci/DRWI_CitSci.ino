@@ -74,7 +74,7 @@ const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-
 const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 
-ModemSleepType ModemSleepMode = held;  // How the modem is put to sleep
+ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sleep
 
 const long ModemBaud = 9600;  // Modem baud rate
 

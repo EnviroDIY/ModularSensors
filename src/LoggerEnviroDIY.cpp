@@ -230,6 +230,7 @@ void LoggerEnviroDIY::begin(void)
     // Synchronize the RTC with NIST
     PRINTOUT(F("Attempting to synchronize RTC with NIST\n"));
     // Turn on the modem
+    _logModem->powerUp();
     _logModem->wake();
     // Connect to the network
     if (_logModem->connectInternet())
