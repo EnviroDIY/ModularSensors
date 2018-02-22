@@ -95,7 +95,7 @@ public:
     float sensorValues[MAX_NUMBER_VARS];
 
     // This just makes sure things are up-to-date
-    bool checkForUpdate(uint32_t _sensorLastUpdated);
+    bool checkForUpdate(void);
     uint32_t _sensorLastUpdated;
 
 protected:

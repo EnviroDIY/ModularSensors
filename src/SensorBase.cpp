@@ -308,14 +308,14 @@ void Sensor::notifyVariables(void)
 
 
 // This function checks if a sensor needs to be updated or not
-bool Sensor::checkForUpdate(uint32_t sensorLastUpdated)
+bool Sensor::checkForUpdate(void)
 {
-    // MS_DBG(F("It has been "), (millis() - sensorLastUpdated)/1000);
+    // MS_DBG(F("It has been "), (millis() - _sensorLastUpdated)/1000);
     // MS_DBG(F(" seconds since "));
     // MS_DBG(getSensorName(), F(" at "), getSensorLocation());
     // MS_DBG(F(" was updated.\n"));
-    if ((millis() > 120000 and millis() > (sensorLastUpdated + 120000))
-        or sensorLastUpdated == 0)
+    if ((millis() > 120000L and millis() > (_sensorLastUpdated + 120000L))
+        or _sensorLastUpdated == 0)
     {
         MS_DBG(F("Value out of date, updating\n"));
         return(update());
