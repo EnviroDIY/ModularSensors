@@ -193,6 +193,7 @@ void LoggerEnviroDIY::testingMode()
         PRINTOUT(F("    -----------------------\n"));
 
         // Specially highlight the modem signal quality in the debug mode
+        _logModem->checkForUpdate();
         PRINTOUT(F("Current modem signal is "));
         PRINTOUT(_logModem->getSignalPercent());
         PRINTOUT(F("%\n"));

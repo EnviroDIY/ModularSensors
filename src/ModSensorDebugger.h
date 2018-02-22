@@ -13,8 +13,9 @@
 #include <Arduino.h>
 
 #ifndef STANDARD_SERIAL_OUTPUT
-    #if defined(ARDUINO_ARCH_SAMD)
-      #define STANDARD_SERIAL_OUTPUT SerialUSB
+    #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
+      #define Serial SERIAL_PORT_USBVIRTUAL
+      #define STANDARD_SERIAL_OUTPUT Serial
     #elif defined __AVR__
       #define STANDARD_SERIAL_OUTPUT Serial
     #endif
