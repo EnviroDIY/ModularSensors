@@ -282,7 +282,7 @@ A loggerModem serves two functions:  First, it communicates with the internet vi
 
 Before creating a loggerModem instance, _you must add one of these lines to the top of your sketch_, before any include statements:
 
-- ```#define TINY_GSM_MODEM_SIM800``` - for a SIMCom SIM800, SIM900, or varient thereof (including [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
+- ```#define TINY_GSM_MODEM_SIM800``` - for a SIMCom SIM800, SIM900, or variant thereof (including [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
 - ```#define TINY_GSM_MODEM_SIM808``` - for a SIMCom SIM808 (essentially a SIMCom SIM800 with GPS support)
 - ```#define TINY_GSM_MODEM_A6``` - for an AI-Thinker A6 or A7
 - ```#define TINY_GSM_MODEM_M590``` - for a Neoway M590

@@ -12,8 +12,8 @@
 #define LoggerModem_h
 
 #include <Arduino.h>
-#define MODEM_DEBUGGING_SERIAL_OUTPUT Serial
-#define TINY_GSM_DEBUG Serial
+// #define MODEM_DEBUGGING_SERIAL_OUTPUT Serial
+// #define TINY_GSM_DEBUG Serial
 
 #include "ModemOnOff.h"
 #include "SensorBase.h"
@@ -426,7 +426,7 @@ public:
             for (uint8_t i = 0; i < 4; i++)
             {
                 response[i] = _client->read();
-                MS_MOD_DBG("\n",response[i]);
+                // MS_MOD_DBG("\n",response[i]);
                 secFrom1900 += 0x000000FF & response[i];
                 // MS_MOD_DBG("\n*****",String(secFrom1900, BIN),"*****");
                 if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;}
