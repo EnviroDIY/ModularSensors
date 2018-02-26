@@ -81,9 +81,7 @@
             "note": "Driver for TI's ADS1015: 12-bit Differential or Single-Ended ADC with PGA and Comparator.  This fork removes bugs in the Adafruit original library.",
             "authors": [
                 {
-                    "name": "Adafruit Industries",
-                    "email": "info@adafruit.com",
-                    "url": "https://www.adafruit.com/contact_us"
+                    "name": "Adafruit Industries"
                 },
                 {
                     "name": "soligen2010"
