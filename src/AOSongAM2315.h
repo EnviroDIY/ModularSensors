@@ -25,11 +25,13 @@
 #ifndef AOSongAM2315_h
 #define AOSongAM2315_h
 
-#include "SensorBase.h"
-#include "VariableBase.h"
+#include <Arduino.h>
 
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
+
+#include "SensorBase.h"
+#include "VariableBase.h"
 
 #define AM2315_NUM_VARIABLES 2
 #define AM2315_WARM_UP_TIME_MS 500
@@ -48,7 +50,7 @@ class AOSongAM2315 : public Sensor
 {
 public:
     // The constructor - because this is I2C, only need the power pin
-    AOSongAM2315(int powerPin, int measurementsToAverage = 1);
+    AOSongAM2315(int8_t powerPin, uint8_t measurementsToAverage = 1);
 
     String getSensorLocation(void) override;
 

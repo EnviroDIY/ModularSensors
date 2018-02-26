@@ -51,17 +51,17 @@ class Decagon5TM : public DecagonSDI12
 {
 public:
     // Constructors with overloads
-    Decagon5TM(char SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1)
+    Decagon5TM(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
      : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("Decagon5TM"), TM_NUM_VARIABLES,
                     TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
     {}
-    Decagon5TM(char *SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1)
+    Decagon5TM(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
      : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("Decagon5TM"), TM_NUM_VARIABLES,
                     TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
     {}
-    Decagon5TM(int SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1)
+    Decagon5TM(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
      : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("Decagon5TM"), TM_NUM_VARIABLES,
                     TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)

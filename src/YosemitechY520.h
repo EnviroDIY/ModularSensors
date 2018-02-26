@@ -33,7 +33,7 @@
 #include "VariableBase.h"
 
 #define Y520_NUM_VARIABLES 2
-#define Y520_WARM_UP_TIME_MS 1200
+#define Y520_WARM_UP_TIME_MS 1600
 #define Y520_STABILIZATION_TIME_MS 10000
 #define Y520_MEASUREMENT_TIME_MS 2700
 
@@ -48,14 +48,14 @@ class YosemitechY520 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY520(byte modbusAddress, Stream* stream, int powerPin,
-                   int enablePin = -1, int measurementsToAverage = 1)
+    YosemitechY520(byte modbusAddress, Stream* stream, int8_t powerPin,
+                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
                         Y520, F("YosemitechY520"), Y520_NUM_VARIABLES,
                         Y520_WARM_UP_TIME_MS, Y520_STABILIZATION_TIME_MS, Y520_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY520(byte modbusAddress, Stream& stream, int powerPin,
-                   int enablePin = -1, int measurementsToAverage = 1)
+    YosemitechY520(byte modbusAddress, Stream& stream, int8_t powerPin,
+                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
                         Y520, F("YosemitechY520"), Y520_NUM_VARIABLES,
                         Y520_WARM_UP_TIME_MS, Y520_STABILIZATION_TIME_MS, Y520_MEASUREMENT_TIME_MS)

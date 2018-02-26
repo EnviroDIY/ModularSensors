@@ -7,8 +7,19 @@
  */
 
 
- #ifndef ModSensorDebugger_h
- #define ModSensorDebugger_h
+#ifndef ModSensorDebugger_h
+#define ModSensorDebugger_h
+
+#include <Arduino.h>
+
+#ifndef STANDARD_SERIAL_OUTPUT
+    #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
+      #define Serial SERIAL_PORT_USBVIRTUAL
+      #define STANDARD_SERIAL_OUTPUT Serial
+    #elif defined __AVR__
+      #define STANDARD_SERIAL_OUTPUT Serial
+    #endif
+#endif  // ifndef STANDARD_SERIAL_OUTPUT
 
 #ifdef STANDARD_SERIAL_OUTPUT
     namespace {
@@ -23,8 +34,6 @@
             PRINTOUT(tail...);
         }
     }
-#else
-    #define PRINTOUT(...)
 #endif  // STANDARD_SERIAL_OUTPUT
 
 

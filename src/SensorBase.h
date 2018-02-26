@@ -35,9 +35,9 @@ class Sensor
 {
 public:
 
-    Sensor(String sensorName = "Unknown", int numReturnedVars = 1,
+    Sensor(String sensorName = "Unknown", uint8_t numReturnedVars = 1,
            uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t remeasurementTime_ms = 0,
-           int powerPin = -1, int dataPin = -1, int measurementsToAverage = 1);
+           int8_t powerPin = -1, int8_t dataPin = -1, uint8_t measurementsToAverage = 1);
 
     // These functions are dependent on the constructor and return the constructor values
     // This gets the place the sensor is installed ON THE ARDUINO (ie, pin number)
@@ -49,7 +49,6 @@ public:
     // Generally these values should be set in the constructor
     void setNumberMeasurementsToAverage(int nReadings);
     int getNumberMeasurementsToAverage(void);
-    void averageMeasurements(void);
 
     // These next functions have defaults.
     // This sets up the sensor, if necessary.  Defaults to ready.
@@ -76,6 +75,11 @@ public:
     // This actually gets the results from a single measurement
     virtual bool addSingleMeasurementResult(void) = 0;
 
+    // This verifies that a measurement is OK before adding it to the array
+    virtual void verifyAndAddMeasurementResult(int resultNumber, float resultValue);
+    virtual void verifyAndAddMeasurementResult(int resultNumber, int resultValue);
+    void averageMeasurements(void);
+
     // This updates the sensor's values
     // This includes clears the values array, starts and averages as many
     // measurement readings as requested, and then notifies the registerd
@@ -91,7 +95,7 @@ public:
     float sensorValues[MAX_NUMBER_VARS];
 
     // This just makes sure things are up-to-date
-    bool checkForUpdate(uint32_t _sensorLastUpdated);
+    bool checkForUpdate(void);
     uint32_t _sensorLastUpdated;
 
 protected:
@@ -104,11 +108,12 @@ protected:
     // A helper to ensure that the sensor is ready to give a new value
     void waitForMeasurementCompletion(void);
 
-    int _dataPin;
-    int _powerPin;
+    int8_t _dataPin;  // SIGNED int, to allow negative numbers for unused pins
+    int8_t _powerPin;  // SIGNED int, to allow negative numbers for unused pins
     String _sensorName;
-    int _numReturnedVars;
-    int _measurementsToAverage;
+    uint8_t _numReturnedVars;
+    uint8_t _measurementsToAverage;
+    uint8_t numberGoodMeasurementsMade[MAX_NUMBER_VARS];
 
     uint32_t _warmUpTime_ms;
     uint32_t _millisPowerOn;

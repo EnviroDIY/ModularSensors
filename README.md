@@ -61,7 +61,7 @@ In order to support multiple functions and sensors, there are quite a lot of sub
 - [RTCZero library](https://github.com/arduino-libraries/RTCZero) - This real time clock control and low power sleeping on SAMD processors. (This library may be built in to the Arduino IDE.)
 - [SdFat library](https://github.com/greiman/SdFat) - This enables communication with the SD card.
 - [EnviroDIY version of the TinyGSM library](https://github.com/EnviroDIY/TinyGSM) - This provides internet (TCP/IP) connectivity.
-- [Adafruit ADS1X15 library](https://github.com/Adafruit/Adafruit_ADS1X15/) - For high-resolution analog to digital conversion.
+- [Adafruit ADS1X15 library](https://github.com/soligen2010/Adafruit_ADS1X15/) - For high-resolution analog to digital conversion.  Note that this is soligen2010's fork of the original Adafruit library; it corrects many problems in the Adafruit library such as a bug which gives the same output on all four inputs regardless of their values.  Do NOT use the original Adafruit version!
 - [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/ExtInts) - For control of SDI-12 based sensors.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the processor.
 - [SensorModbusMaster](https://github.com/EnviroDIY/SensorModbusMaster) - for easy communication with Modbus devices.
 - [OneWire](https://github.com/PaulStoffregen/OneWire) - This enables communication with Maxim/Dallas OneWire devices.
@@ -105,7 +105,7 @@ To access and get values from a sensor, you must create an instance of the senso
 ```cpp
 #include <DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
-const int measurementsToAverage = 10;  // The number of readings to average
+const uint8_t measurementsToAverage = 10;  // The number of readings to average
 const int SDI12Data = 7;  // The pin the CTD is attached to
 const int SDI12Power = 22;  // The sensor power pin (use -1 if not applicable)
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, measurementsToAverage);
@@ -220,7 +220,6 @@ Our main reason to unify the output from many sensors and variables is to easily
 - **init(int SDCardPin, int mcuWakePin, int variableCount, Variable \*variableList[], float loggingIntervalMinutes, const char \*loggerID = 0)** - Initializes the logger object.  Must happen within the setup function.  Note that the variableList[], and loggerID are pointers.  The SDCardPin is the pin of the chip select/slave select for the SPI connection to the SD card.
   - NOTE regarding *loggingIntervalMinutes*: For the first 20 minutes that a logger has been powered up for a deployment, the logger will take readings at 2 minute intervals for 10 measurements, to assist with confirming that the deployment is successful. Afterwards, the time between measurements will revert to the number of minutes set with *loggingIntervalMinutes*.
 - **setAlertPin(int ledPin)** - Optionally sets a pin to put out an alert that a measurement is being logged.  This is intended to be a pin with a LED on it so you can see the light come on when a measurement is being taken.
-- **attachModem(loggerModem &modem)** - Attaches a loggerModem to the logger, which the logger then can use to send data to the internet.  See [Modem and Internet Functions](#Modem) for more information on how the modem must be set up before it is attached to the logger.
 
 #### Timezone functions:
 
@@ -239,7 +238,7 @@ A note about timezones:  It is possible to create multiple logger objects in you
 - **checkMarkedInterval()** - This returns true if the _marked_ time is an even iterval of the logging interval, otherwise false.  This uses the static time value set by markTime() to get the time.  It does not check the real-time-clock directly.
 
 
-#### Functions for the sleep modes:
+#### Functions for the processor sleep modes:
 
 - **setupSleep()** - Sets up the processor sleep mode and the interrupts to wake the processor back up.  This should be called in the setup function.
 - **systemSleep()** - Puts the system into deep sleep mode.  This should be called at the very end of the loop function.  Please keep in mind that this does NOT call the wake and sleep functions of the sensors themselves; you must call those separately.  (This separation is for timing reasons.)
@@ -253,16 +252,26 @@ A note about timezones:  It is possible to create multiple logger objects in you
 - **generateFileHeader()** - This returns and Aruduino String with a comma separated list of headers for the csv.  The headers will be ordered based on the order variables are listed in the array fed to the init function.
 - **generateSensorDataCSV()** - This returns an Arduino String containing the time and a comma separated list of sensor values.  The data will be ordered based on the order variables are listed in the array fed to the init function.
 
-#### Functions for testing and debugging:
+#### Functions for sensor testing and communication debugging:
 
-To view any information about what your logger is doing you must add the statement ```#define STANDARD_SERIAL_OUTPUT xxxxx``` to the top of your sketch, where xxxxx is the name of a serial output (ie, Serial or USBSerial).  This statement should be above any include statements in your sketch.
+By default, some status and set-up information will be sent to the Serial (for AVR processors) or SerialUSB (for SAMD processors).  To stop all print out or to change the port the print out goes to, open ModSensorDebugger.h and change or remove lines 15-21 that define the STANDARD_SERIAL_OUTPUT.
 
-To see more intense debugging for any individual component of the library (a sensor, the variable arrays, the modem, etc), open the source file header (\*.h), for that component.  Find the line ```// #define DEBUGGING_SERIAL_OUTPUT xxxxx```, where xxxxx is the name of a serial output (ie, Serial or USBSerial).  Remove the two comment slashes from that line.  Then recompile and upload your code.  This will (sometimes dramatically) increase the number of statements going out to the debugging serial port.
+There is also a built-in function for "testing" sensors within sensor arrays - that is, continuously displaying sensor values to test that the sensors are working properly:
+- **testingMode()** - Enters a "testing" mode for the sensors.  It prints out all of the sensor results for 25 records worth of data with a 5-second delay between readings.  The printouts go to whichever serial port is given in the ```#define STANDARD_SERIAL_OUTPUT``` statement.
 
-- **checkForTestingMode(int buttonPin)** - This stops everything and waits for five seconds for a button to be pressed to enter allow the user to enter "sensor testing" mode.  I suggest running this as the very last step of the setup function.
-- **testingMode()** - This is a "testing" mode for the sensors.  It prints out all of the sensor results for 25 records worth of data with a 5-second delay between readings.  The printouts go to whichever serial port is given in the ```#define STANDARD_SERIAL_OUTPUT``` statement.
+Testing mode can be entered directly in a set-up or loop function by calling the ```testingMode()``` function.  There is also a function to hold code to wait for a button press to enter test testing mode.  I suggest only running this as the very last step of the setup function.
+- **checkForTestingMode(int buttonPin)** - This stops everything and waits for five seconds for a button to be pressed to enter allow the user to enter "sensor testing" mode.
 
-####  Convience functions to do it all:
+If you would like to be able to enter the testing mode via a button press at any time while the logger is asleep, you can use the testingISR() function to define an interrupt for entering testing mode.  Please note that the ISR verifies that you are not in the middle of taking/logging a measurement before beginning the testing mode, so you cannot enter testing mode during that time.  Also note that the testing mode will not return any valid results until after the full setup is complete, so don't try to enter testing mode before then.
+```cpp
+pinMode(pinNumber, INPUT_PULLUP);
+enableInterrupt(buttonPin, Logger::testingISR, CHANGE);
+```
+
+
+For more intense debugging for any individual component of the library (sensor communication, modem communication, variable array functions, etc), open the source file header (\*.h), for that component.  Find the line ```// #define DEBUGGING_SERIAL_OUTPUT xxxxx```, where xxxxx is the name of a serial output (ie, Serial or USBSerial).  Remove the two comment slashes from that line.  Then recompile and upload your code.  This will (sometimes dramatically) increase the number of statements going out to the debugging serial port.  A few sensors also the line ```// #define DEEP_DEBUGGING_SERIAL_OUTPUT xxxxx```, uncommenting of which will send even more information to the defined port.
+
+####  Convenience functions to do it all:
 
 - **begin()** - Starts all the sensors, the variable array, and the logger.  Must be in the setup function.
 - **log()** - Logs data, must be the entire content of the loop function.
@@ -273,7 +282,7 @@ A loggerModem serves two functions:  First, it communicates with the internet vi
 
 Before creating a loggerModem instance, _you must add one of these lines to the top of your sketch_, before any include statements:
 
-- ```#define TINY_GSM_MODEM_SIM800``` - for a SIMCom SIM800, SIM900, or varient thereof (including [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
+- ```#define TINY_GSM_MODEM_SIM800``` - for a SIMCom SIM800, SIM900, or variant thereof (including [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
 - ```#define TINY_GSM_MODEM_SIM808``` - for a SIMCom SIM808 (essentially a SIMCom SIM800 with GPS support)
 - ```#define TINY_GSM_MODEM_A6``` - for an AI-Thinker A6 or A7
 - ```#define TINY_GSM_MODEM_M590``` - for a Neoway M590
@@ -298,14 +307,15 @@ After defining your modem, set it up using one of these two commands, depending 
 - The **modemStatusPin** is the pin that indicates whether the modem is turned on and it is clear to send data.  If you use -1, the modem is assumed to always be ready.
 - The **modemSleepRqPin** is the _pin_ used to put the modem to sleep or to wake it up.
 - The **ModemSleepType** controls _how the modemSleepRqPin is used_ to put the modem to sleep between readings.
-    - Use _"held"_ if the SleepRq pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
-    - Use _"pulsed"_ if the SleepRq pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
-    - Use _"reverse"_ if the SleepRq pin is held LOW to keep the modem awake, as with all XBees.
-    - Use *"always_on"* if you do not want the library to control the modem power and sleep.
+    - Use _"modem_sleep_held"_ if the SleepRq pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
+    - Use _"modem_sleep_pulsed"_ if the SleepRq pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
+    - Use _"modem_sleep_reverse"_ if the SleepRq pin is held LOW to keep the modem awake, as with all XBees.
+    - Use *"modem_always_on"* if you do not want the library to control the modem power and sleep.
 - Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
 
 Once the modem has been set up, these functions are available:
 
+- **powerUp()** - Turns the modem on.
 - **wake()** - Turns the modem on.  Returns true if connection is successful.
 - **connectInternet()** - Connects to the internet via WiFi or cellular network.  Returns true if connection is successful.
 - **openTCP(const char host, uint16_t port)** - Makes a TCP connection to a host URL and port.  (The most common port for public URLs is "80"; if you don't know the port, try this first.)  Returns 1 if successful.
@@ -323,12 +333,13 @@ Modem_RSSI(&modem, "UUID", "customVarCode");  // Received Signal Strength Indica
 Modem_SignalPercent(&modem, "UUID", "customVarCode");
 ```
 
-The modem does not behave quite the same as all the other sensors do, though.  Setup must be done with the '''setupModem(...)''' function; the normal '''setup()''' function does not do anything.  The '''sleep()''' function also does not work, the modem will only go off with the  '''off()''' functions.
+The modem does not behave quite the same as all the other sensors do, though.  Setup must be done with the '''setupModem(...)''' function; the normal '''setup()''' function does not do anything.  The '''sleep()''' and '''powerDown()''' functions also do not work, the modem will only go off with the '''off()''' function.
 
 
 ### <a name="DIYlogger"></a>Additional Functions Available for a LoggerEnviroDIY Object:
-These three functions set up the required registration token, sampling feature UUID, and time series UUIDs for the EnviroDIY streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  All of these values can be obtained after registering at http://data.envirodiy.org/.  You must call these functions to be able to get proper JSON data for EnviroDIY, even without the modem support.
+These functions attach a modem and set up the required registration token and sampling feature UUID for the EnviroDIY web streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  You *must* also add the correct variable UUID's to the constructors for each variable you are using.  All of the UUID and token values can be obtained after registering at http://data.envirodiy.org/.
 
+- **attachModem(loggerModem &modem)** - Attaches a loggerModem to the logger, which the logger then can use to send data to the internet.  See [Modem and Internet Functions](#Modem) for more information on how the modem must be set up before it is attached to the logger.  You must include an ampersand to tie in the already created modem!
 - **setToken(const char \*registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
 - **setSamplingFeatureUUID(const char \*samplingFeatureUUID)** - Sets the universally unique identifier (UUID or GUID) of the sampling feature.  Note that the input is a pointer to the samplingFeatureUUID.
 
@@ -394,7 +405,7 @@ EnviroDIYLogger.setUUIDs(UUIDs[]);
 modem.setupModem(modemStream, vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType, APN);
 
 // Attach the modem to the logger
-EnviroDIYLogger.attachModem(modem);
+EnviroDIYLogger.attachModem(&modem);
 
 // Connect to the network
 if (modem.connectInternet())
@@ -448,11 +459,19 @@ _____
 
 ### <a name="MaxBotix"></a>[MaxBotix MaxSonar](http://www.maxbotix.com/Ultrasonic_Sensors/High_Accuracy_Sensors.htm) - HRXL MaxSonar WR or WRS Series with TTL Outputs
 
-The IP67 rated HRXL-MaxSonar-WR ultrasonic rangefinders offer 1mm resolution, 2.7-5.5VDC operation, a narrow beam pattern, high power output, noise rejection, automatic calibration, and temperature compensation.  Depending on the precise model, the range finders have ranges between 300 and 9999mm and read rates of 6-7.5Hz.  The MaxBotix sensors communicate with the board using TTL from pin 5 on the sensor.  They require a 2.7V-5.5V power supply to pin 6 on the sensor (which can be turned off between measurements) and the level of the TTL returned by the MaxSonar will match the power level it is supplied with.  Pin 7 of the MaxSonar must be connected to ground and pin 4 can optionally be used to trigger the MaxSonar.
+The IP67 rated HRXL-MaxSonar-WR ultrasonic rangefinders offer 1mm resolution, 2.7-5.5VDC operation, a narrow beam pattern, high power output, noise rejection, automatic calibration, and temperature compensation.  Depending on the precise model, the range finders have ranges between 300 and 9999mm and read rates of 6-7.5Hz.  This library supports TTL or RS323 sensor output, though an RS232-to-TTL adapter is needed for the RS232 models.  Analog and pulse-width outputs are not supported.  The MaxBotix sensors require a 2.7V-5.5V power supply to pin 6 on the sensor (which can be turned off between measurements) and the level of the TTL returned by the MaxSonar will match the power level it is supplied with.   The digital TTL or RS232 output is sent out on pin 5 on the sensor.  Pin 7 of the MaxSonar must be connected to power ground and pin 4 can optionally be used to trigger the MaxSonar.
 
-If you are using the [MaxBotix HR-MaxTemp](https://www.maxbotix.com/Ultrasonic_Sensors/MB7955.htm) MB7955 temperature compensator on your MaxBotix (wqhich greatly improves data quality), the red wire from the MaxTemp should be attached to pin 1 on the MaxSonar.  The white and shield wires from the MaxTemp should both be attached to Pin 7 or the MaxSonar (which is also attached to the Arduino ground).  The MaxTemp communicates directly with the MaxSonar and there is no need to make any changes on the Aruduino itself for the MaxTemp.
+If you are using the [MaxBotix HR-MaxTemp](https://www.maxbotix.com/Ultrasonic_Sensors/MB7955.htm) MB7955 temperature compensator on your MaxBotix (w                   hich greatly improves data quality), the red wire from the MaxTemp should be attached to pin 1 on the MaxSonar.  The white and shield wires from the MaxTemp should both be attached to Pin 7 or the MaxSonar (which is also attached to the Arduino ground).  The MaxTemp communicates directly with the MaxSonar and there is no need to make any changes on the Aruduino itself for the MaxTemp.
+
+The MaxBotix sensor have two different modes: free-ranging and triggered.  Unless the trigger pin is externally held low, the sensor will continuously take readings at a rate of 6Hz or greater and immediate report each result over the digital output pin.  (That is, it will be in free-ranging mode.)  When continuously powered and operating in free-range mode, the data output is automatically filtered to help improve accuracy.  If you are turning the power to the sensor off between readings, there is no advantage to using the free-ranging because many readings must be taken before the filter becomes effective.  In this case, you may save some power by setting up a trigger pin and manually trigger individual readings.
 
 The Arduino pin controlling power on/off, a stream instance for received data (ie, ```Serial```), and the Arduino pin controlling the trigger are required for the sensor constructor.  (Use -1 for the trigger pin if you do not have it connected.)  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
+
+This library supports using multiple MaxBotix sensors on the same logger, with a few caveats:  
+ - Any sensor operating in free-ranging mode (powered at the same time as any other sensors with the trigger pins unconnected) must have a dedicated stream instance/serial port.
+ - To have two sensors operating in free-ranging mode, they must each have a dedicated stream instance/serial port *AND* you must specify a unique _negative_ pin number for the trigger pin.  Giving a negative pin number ensures that the Arduino will not attempt to trigger trigger individual readings but will still be able to tell the sensors apart.  (Software-wise, simply specifying the different streams is not enough!)
+ - Two or more sensors may send data to the same stream instance/serial port if both sensors are being triggered and each is triggered by a different trigger pin.
+ - "Daisy chaining" sensors so the pulse-width output of one sensor acts as the trigger for a second sensor is not supported.
 
 The main constructor for the sensor object is:  (The trigger pin and number of readings to average are optional.)
 
@@ -479,9 +498,9 @@ _____
 
 ### <a name="OBS3"></a>[Campbell Scientific OBS-3+](https://www.campbellsci.com/obs-3plus)
 
-The OBS-3 sends out a simple analog signal between 0 and 2.5V.  To convert that to a high resolution digital signal, the sensor must be attached to a TI ADS1115 ADD converter (such as on the first four analog pins of the Mayfly).  The TI ADS1115 ADD communicates with the board via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tying the address pin to ground.  More than one of these ADD's can be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input voltage of 2.0-5.5V.  The OBS-3 itself requires a 5-15V power supply, which can be turned off between measurements.  (It will actually run on power as low as 3.3V.)  The power supply is connected to the red wire, low range output comes from the blue wire, high range output comes from the white wire, and the black, green, and silver/unshielded wires should all be connected to ground.
+The version of the OBS-3+ that this library supports sends out a simple analog signal between 0 and 2.5V.  (The 5V and 4-20mA versions are _not_ supported by this library.)  To convert the analog signal to a high resolution digital signal, the sensor must be attached to a TI ADS1115 16-bit ADD converter (such as on the first four analog pins of the Mayfly).  The TI ADS1115 ADD communicates with the board via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tying the address pin to ground.  More than one of these ADD's can be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input voltage of 2.0-5.5V.  The OBS-3 itself requires a 5-15V power supply, which can be turned off between measurements.  (It will actually run on power as low as 3.3V.)  The power supply is connected to the red wire, low range output comes from the blue wire, high range output comes from the white wire, and the black, green, and silver/unshielded wires should all be connected to ground.
 
-The Arduino pin controlling power on/off, analog data pin _on the TI ADS1115_, and calibration values _in Volts_ for Ax^2 + Bx + C are required for the sensor constructor.  A custom variable code can be entered as a second argument in the variable constructors, and it is very strongly recommended that you use this otherwise it will be very difficult to determine which return is high and which is low range on the sensor.  If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the third argument.
+The Arduino pin controlling power on/off, analog data pin _on the TI ADS1115_, and calibration values _in Volts_ for Ax^2 + Bx + C are required for the sensor constructor.  A custom variable code can be entered as a second argument in the variable constructors, and it is very strongly recommended that you use this otherwise it will be very difficult to determine which return is high and which is low range on the sensor.  If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the third argument.  Do NOT forget that if you want to give a number of measurements to average, that comes _after_ the i2c address in the constructor!
 
 Note that to access both the high and low range returns, two instances must be created, one at the low range return pin and one at the high pin.
 
@@ -489,8 +508,8 @@ The main constructor for the sensor object is (called once each for high and low
 
 ```cpp
 #include <CampbellOBS3.h>
-CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, ADS1x15_i2cAddress, measurementsToAverage);
-CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADS1x15_i2cAddress, measurementsToAverage);
+CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_x2_coeff_A, OBSLow_x1_coeff_B, OBSLow_x0_coeff_C, ADS1x15_i2cAddress, measurementsToAverage);
+CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_x2_coeff_A, OBSHigh_x1_coeff_B, OBSHigh_x0_coeff_C, ADS1x15_i2cAddress, measurementsToAverage);
 ```
 
 The single available variable is (called once each for high and low range):
@@ -520,6 +539,8 @@ Decagon sensors communicate with the board using the [SDI-12 protocol](http://ww
 
 The SDI-12 address of the sensor, the Arduino pin controlling power on/off, the Arduino pin sending and receiving data, and a number of distinct readings to average are required for the sensor constructor.  The data pin must be a pin that supports pin-change interrupts.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
 
+Keep in mind that SDI12 is a slow communication protocol (only 1200baud) and _interrupts are turned off during communication_.  This means that if you have any interrupt driven sensors (like a tipping bucket) attached with an SDI12 sensor, no interrupts (or tips) will be registered during SDI12 communication.
+
 The main constructor for the sensor object is:
 
 ```cpp
@@ -548,6 +569,8 @@ _____
 Decagon sensors communicate with the board using the [SDI-12 protocol](http://www.sdi-12.org/) (and the [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).  They require a 3.5-12V power supply, which can be turned off between measurements.  While contrary to the manual, they will run with power as low as 3.3V.  On the CTD with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve.  On the bare-wire version, the power is connected to the _white_ cable, data to _red_, and ground to both the black and unshielded cable.
 
 The SDI-12 address of the sensor, the Arduino pin controlling power on/off, the Arduino pin sending and receiving data, and a number of distinct readings to average are required for the sensor constructor.  The data pin must be a pin that supports pin-change interrupts.  For this particular sensor, taking ~6 readings seems to be ideal for reducing noise.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
+
+Keep in mind that SDI12 is a slow communication protocol (only 1200baud) and _interrupts are turned off during communication_.  This means that if you have any interrupt driven sensors (like a tipping bucket) attached with an SDI12 sensor, no interrupts (or tips) will be registered during SDI12 communication.
 
 The main constructor for the sensor object is:
 
@@ -579,6 +602,8 @@ _____
 Decagon sensors communicate with the board using the [SDI-12 protocol](http://www.sdi-12.org/) (and the [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).  They require a 3.5-12V power supply, which can be turned off between measurements.  While contrary to the manual, they will run with power as low as 3.3V.  On the ES-2 with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve.  On the bare-wire version, the power is connected to the _white_ cable, data to _red_, and ground to the unshielded cable.
 
 The SDI-12 address of the sensor, the Arduino pin controlling power on/off, the Arduino pin sending and receiving data, and a number of distinct readings to average are required for the sensor constructor.  The data pin must be a pin that supports pin-change interrupts.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
+
+Keep in mind that SDI12 is a slow communication protocol (only 1200baud) and _interrupts are turned off during communication_.  This means that if you have any interrupt driven sensors (like a tipping bucket) attached with an SDI12 sensor, no interrupts (or tips) will be registered during SDI12 communication.
 
 The main constructor for the sensor object is:
 
@@ -691,7 +716,7 @@ _____
 
 ### <a name="DHT"></a>[AOSong DHT](http://www.aosong.com/en/products/index.asp) Digital-Output Relative Humidity & Temperature Sensor
 
-This module will work with an AOSong [DHT11/CHT11](http://www.aosong.com/en/products/details.asp?id=109), DHT21/AM2301, and [DHT22/AM2302/CM2302](http://www.aosong.com/en/products/details.asp?id=117).  These sensors uses a non-standard single wire digital signaling protocol.  They can be connected to any digital pin.  Please keep in mind that, per manufacturer instructions, these sensors should not be polled more frequently than once every 2 seconds.  These sensors should be attached to a 3.3-6V power source and the power supply to the sensor can be stopped between measurements.
+This module will work with an AOSong [DHT11/CHT11](http://www.aosong.com/en/products/details.asp?id=109), DHT21/AM2301, and [DHT22/AM2302/CM2302](http://www.aosong.com/en/products/details.asp?id=117).  These sensors use a single-bus single wire digital signaling protocol.  They can be connected to any digital pin.  Please keep in mind that, per manufacturer instructions, these sensors should not be polled more frequently than once every 2 seconds.  These sensors should be attached to a 3.3-6V power source and the power supply to the sensor can be stopped between measurements.  The communication with these sensors is slow and _interrupts are turned off during communication_.  (See the Adafruit DHT library's DHT.cpp for details.)  Keep this in mind if using this sensor in combination with a rain gauge or other interrupt-driven sensor.  Also note that the temperature sensor built into the AOSong DHT is a Maxim DS18 sensor.
 
 The Arduino pin controlling power on/off, the Arduino pin receiving data, and the sensor type are required for the sensor constructor.  The number of readings to average is optional:
 
@@ -973,7 +998,7 @@ Additionally, for the EnviroDIY modified version of SoftwareSerial, you must ena
 
 ```cpp
 //  Allow enableInterrrupt to control the interrupts for software serial
-enableInterrupt(streamName, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+enableInterrupt(rx_pin, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
 ```
 
 Here are some helpful links for more information about the number of serial ports available on some of the different Arduino-style boards:
@@ -998,7 +1023,7 @@ The Mayfly _is_ the test board for this library.  _Everything_ is designed to wo
 ___
 
 #### AtSAMD21 (Arduino Zero, Adafruit Feather M0, Sodaq Autonomo)
-_ALMOST_ Fully supported  (Still has bugs)
+Fully supported
 
 - This processor has an internal real time clock (RTC) and does not require a DS3231 to be installed.  The built-in RTC is not as accurate as the DS3231, however, and should be synchronized more frequently to keep the time correct.  The processor clock will also reset if the system battery dies because unlike most external RTC's, there is no coin battery backing up the clock.  At this time, the AtSAMD21 is only supported using the internal clock, but support with a more accurate external RTC is planned.
 - This processor has one hardware serial port, USBSerial, which can _only_ be used for USB communication with a computer
@@ -1012,7 +1037,8 @@ _ALMOST_ Fully supported  (Still has bugs)
 - AltSoftSerial is not directly supported on the AtSAMD21, but with some effort, the timers could be configured to make it work.
 - SoftwareSerial_ExtInts is not supported at all on the AtSAMD21.
 - Any digital pin can be used with SDI-12.
-- Because the USB controller is built into the processor, your USB serial connection will close as soon as the processor goes to sleep.  If you need to debug, I recommend using a serial port monitor like Tera Term which will automatically renew its connection with the serial port when it connects and disconnects.  Otherwise, you will have to rely on lights on your alert pin or your modem to verify the processor is waking/sleeping properly.
+- Because the USB controller is built into the processor, your USB serial connection will close as soon as the processor goes to sleep.  If you need to debug, I recommend using a serial port monitor like [Tera Term](https://ttssh2.osdn.jp/index.html.en) which will automatically renew its connection with the serial port when it connects and disconnects.  Otherwise, you will have to rely on lights on your alert pin or your modem to verify the processor is waking/sleeping properly.
+- There is a completely weird bug that causes the code to crash if using input pin 1 on the TI ADS1115 (used for the Campbell OBS3+ and Apogee SQ212).  I have no idea at all why this happens.  Pins 0, 2, and 3 all work fine.  Just don't use pin 1.
 ___
 
 #### AtMega2560 (Arduino Mega)

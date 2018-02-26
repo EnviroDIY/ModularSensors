@@ -158,9 +158,9 @@ bool VariableArray::updateAllSensors(void)
     bool success = true;
 
     // Clear the initial variable arrays
+    MS_DBG(F("--- Clearing all results before measurements ---\n"));
     for (uint8_t i = 0; i < _variableCount; i++)
     {
-        MS_DBG(F("--- Clearing variable all results before measurements ---"));
         if (isLastVarFromSensor(i))
         {
             _variableList[i]->parentSensor->clearValues();
@@ -284,6 +284,6 @@ uint8_t VariableArray::countMaxToAverage(void)
             numReps = max(numReps, _variableList[i]->parentSensor->getNumberMeasurementsToAverage());
         }
     }
-    MS_DBG(F("Collecting up to "), numReps, F(" measurements to average"));
+    MS_DBG(F("The largest number of measurements to average will be "), numReps, F(".\n"));
     return numReps;
 }

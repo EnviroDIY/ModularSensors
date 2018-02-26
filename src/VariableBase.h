@@ -54,7 +54,7 @@ protected:
     float sensorValue;
 
 private:
-    int _varNum;
+    uint8_t _varNum;
     String _varName;
     String _varUnit;
     unsigned int _decimalResolution;

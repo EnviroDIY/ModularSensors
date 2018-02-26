@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-int powerPin = 22;
+int8_t powerPin = 22;
 
 void setup(){
   pinMode(powerPin, OUTPUT);

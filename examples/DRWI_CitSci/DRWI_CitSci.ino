@@ -40,9 +40,9 @@ const char *sketchName = "DWRI_CitSci.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "XXXX";
 // How frequently (in minutes) to log data
-int loggingInterval = 5;
+const uint8_t loggingInterval = 5;
 // Your logger's timezone.
-const int timeZone = -5;
+const int8_t timeZone = -5;
 // Create a new logger instance
 LoggerDreamHost EnviroDIYLogger;
 
@@ -53,13 +53,13 @@ LoggerDreamHost EnviroDIYLogger;
 #include <ProcessorStats.h>
 
 const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
-const int greenLED = 8;  // Pin for the green LED (-1 if unconnected)
-const int redLED = 9;  // Pin for the red LED (-1 if unconnected)
-const int buttonPin = 21;  // Pin for a button to use to enter debugging mode (-1 if unconnected)
-const int wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
+const int8_t greenLED = 8;  // Pin for the green LED (-1 if unconnected)
+const int8_t redLED = 9;  // Pin for the red LED (-1 if unconnected)
+const int8_t buttonPin = 21;  // Pin for a button to use to enter debugging mode (-1 if unconnected)
+const int8_t wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
+const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
 
 // Create the processor "sensor"
 const char *MFVersion = "v0.5";
@@ -70,11 +70,11 @@ ProcessorStats mayfly(MFVersion) ;
 //    Modem/Internet connection options
 // ==========================================================================
 HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
-const int modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
-const int modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
-const int modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
+const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
+const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 
-ModemSleepType ModemSleepMode = held;  // How the modem is put to sleep
+ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sleep
 
 const long ModemBaud = 9600;  // Modem baud rate
 
@@ -96,19 +96,21 @@ MaximDS3231 ds3231(1);
 //    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
 #include <CampbellOBS3.h>
+const int8_t OBS3Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+const uint8_t OBS3numberReadings = 10;
+const uint8_t OBS3_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
 // Campbell OBS 3+ Low Range calibration in Volts
-const int OBSLowPin = 0;  // The low voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const int8_t OBSLowPin = 0;  // The low voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const float OBSLow_A = 4.0749E+00;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = 9.1011E+01;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibration
-const int OBS3Power = 22;  // Pin to switch power on and off (-1 if unconnected)
-CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C);
+CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, OBS3_ADS1115Address, OBS3numberReadings);
 // Campbell OBS 3+ High Range calibration in Volts
-const int OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const int8_t OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const float OBSHigh_A = 5.2996E+01;  // The "A" value (X^2) from the high range calibration
 const float OBSHigh_B = 3.7828E+02;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calibration
-CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
+CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OBS3_ADS1115Address, OBS3numberReadings);
 
 
 // ==========================================================================
@@ -116,10 +118,10 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C);
 // ==========================================================================
 #include <DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
-const int numberReadings = 6;  // The number of readings to average
-const int SDI12Data = 7;  // The pin the CTD is attached to
-const int SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
-DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, numberReadings);
+const uint8_t CTDnumberReadings = 6;  // The number of readings to average
+const int8_t SDI12Data = 7;  // The pin the CTD is attached to
+const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 
 
 // ==========================================================================
@@ -204,7 +206,7 @@ void setup()
     modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
 
     // Attach the modem to the logger
-    EnviroDIYLogger.attachModem(modem);
+    EnviroDIYLogger.attachModem(&modem); 
 
     // Set up the connection with EnviroDIY
     EnviroDIYLogger.setToken(registrationToken);
