@@ -90,7 +90,7 @@
                 }
             ],
             "frameworks": "arduino",
-            "platforms": "atmelavr, atmelsam"
+            "platforms": "*"
         },
         {
             "name": "Adafruit Unified Sensor",
