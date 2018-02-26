@@ -12,8 +12,8 @@
 #define LoggerModem_h
 
 #include <Arduino.h>
-// #define MODEM_DEBUGGING_SERIAL_OUTPUT Serial
-// #define TINY_GSM_DEBUG Serial
+#define MODEM_DEBUGGING_SERIAL_OUTPUT Serial
+#define TINY_GSM_DEBUG Serial
 
 #include "ModemOnOff.h"
 #include "SensorBase.h"
@@ -302,14 +302,15 @@ public:
         // WiFi modules immediately re-connect to the last access point so we
         // can save just a tiny bit of time (and thus power) by not resending
         // the credentials every time.  (True for both ESP8266 and Wifi XBee)
-        if (_ssid and (loggerModemChip == sim_chip_XBeeWifi ||
-                       loggerModemChip == sim_chip_ESP8266))
+        if (_ssid)
         {
             MS_MOD_DBG(F("Connecting to WiFi network..."));
             if (!_modem->isNetworkConnected())
             {
                 MS_MOD_DBG("   Sending credentials...\n");
+                #if defined(TINY_GSM_MODEM_HAS_WIFI)
                 _modem->networkConnect(_ssid, _pwd);
+                #endif
                 if (_modem->waitForNetwork(30000L))
                 {
                     retVal = true;
@@ -317,13 +318,21 @@ public:
                 }
                 else MS_MOD_DBG("   ... Connection failed\n");
             }
+            else
+            {
+                MS_MOD_DBG("   ... Connected with saved WiFi settings!\n");
+                retVal = true;
+            }
+
         }
         else
         {
             MS_MOD_DBG(F("\nWaiting for cellular network...\n"));
             if (_modem->waitForNetwork(50000L))
             {
+                #if defined(TINY_GSM_MODEM_HAS_GPRS)
                 _modem->gprsConnect(_APN, "", "");
+                #endif
                 MS_MOD_DBG("   ...Success!\n");
                 retVal = true;
             }
@@ -337,7 +346,9 @@ public:
         if (loggerModemChip != sim_chip_XBeeWifi &&
             loggerModemChip != sim_chip_ESP8266)
         {
+            #if defined(TINY_GSM_MODEM_HAS_GPRS)
             _modem->gprsDisconnect();
+            #endif
             MS_MOD_DBG(F("Disconnected from cellular network.\n"));
         }
         else{}
@@ -389,43 +400,49 @@ public:
         // NIST clearly specifies here that this is a requirement for all software
         /// that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi
         while (millis() < _lastNISTrequest + 4000) {}
+        bool connectionMade = false;
 
         // Make TCP connection
         MS_MOD_DBG(F("Connecting to NIST daytime Server\n"));
         if (loggerModemChip == sim_chip_XBeeWifi || loggerModemChip == sim_chip_XBeeCell)
         {
             IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
-            openTCP(ip, 37);  // XBee's address lookup falters on time.nist.gov
+            connectionMade = openTCP(ip, 37);  // XBee's address lookup falters on time.nist.gov
             _client->print(F("Hi!"));
-            // delay(150); // Need this delay!  Can get away with 50, but 100 is safer.
+            delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
         }
-        else openTCP("time.nist.gov", 37);
+        else connectionMade = openTCP("time.nist.gov", 37);
 
         // Wait up to 5 seconds for a response
-        long start = millis();
-        while (_client->available() < 4 && millis() - start < 5000){}
-
-        // Response is returned as 32-bit number as soon as connection is made
-        // Connection is then immediately closed, so there is no need to close it
-        uint32_t secFrom1900 = 0;
-        byte response[4] = {0};
-        for (uint8_t i = 0; i < 4; i++)
+        if (connectionMade)
         {
-            response[i] = _client->read();
-            MS_MOD_DBG("\n",response[i]);
-            secFrom1900 += 0x000000FF & response[i];
-            MS_MOD_DBG("\n*****",String(secFrom1900, BIN),"*****");
-            if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;}
-        }
-        MS_MOD_DBG("\n*****",secFrom1900,"*****");
+            long start = millis();
+            while (_client->available() < 4 && millis() - start < 5000){}
 
-        // Return the timestamp
-        uint32_t unixTimeStamp = secFrom1900 - 2208988800;
-        MS_MOD_DBG(F("Timestamp returned by NIST (UTC): "), unixTimeStamp, '\n');
-        // If before Jan 1, 2017 or after Jan 1, 2030, most likely an error
-        if (unixTimeStamp < 1483228800) return 0;
-        else if (unixTimeStamp > 1893456000) return 0;
-        else return unixTimeStamp;
+            // Response is returned as 32-bit number as soon as connection is made
+            // Connection is then immediately closed, so there is no need to close it
+            uint32_t secFrom1900 = 0;
+            byte response[4] = {0};
+            for (uint8_t i = 0; i < 4; i++)
+            {
+                response[i] = _client->read();
+                MS_MOD_DBG("\n",response[i]);
+                secFrom1900 += 0x000000FF & response[i];
+                // MS_MOD_DBG("\n*****",String(secFrom1900, BIN),"*****");
+                if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;}
+            }
+            // MS_MOD_DBG("\n*****",secFrom1900,"*****");
+
+            // Return the timestamp
+            uint32_t unixTimeStamp = secFrom1900 - 2208988800;
+            MS_MOD_DBG(F("Timestamp returned by NIST (UTC): "), unixTimeStamp, '\n');
+            // If before Jan 1, 2017 or after Jan 1, 2030, most likely an error
+            if (unixTimeStamp < 1483228800) return 0;
+            else if (unixTimeStamp > 1893456000) return 0;
+            else return unixTimeStamp;
+        }
+        else MS_MOD_DBG(F("Unable to open TCP to NIST\n"));
+        return 0;
     }
 
 public:
