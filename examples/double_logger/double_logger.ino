@@ -19,7 +19,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define STANDARD_SERIAL_OUTPUT Serial  // Without this there will be no output
 
 // Select your modem chip, comment out all of the others
-// #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or varient thereof
+// #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
 // #define TINY_GSM_MODEM_A6  // Select for a AI-Thinker A6 or A7 chip
 // #define TINY_GSM_MODEM_M590  // Select for a Neoway M590
 // #define TINY_GSM_MODEM_U201  // Select for a U-blox U201
@@ -77,11 +77,11 @@ const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-
 const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 
-ModemSleepType ModemSleepMode = reverse;  // How the modem is put to sleep
-// Use "held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
-// Use "pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
-// Use "reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
-// Use "always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
+ModemSleepType ModemSleepMode = modem_sleep_reverse;  // How the modem is put to sleep
+// Use "modem_sleep_held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
+// Use "modem_sleep_pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
+// Use "modem_sleep_reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
+// Use "modem_always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
 
 const long ModemBaud = 9600;  // Modem baud rate
 const char *wifiId = "XXXXXXX";  // The WiFi access point
@@ -187,9 +187,6 @@ void setup()
 
     // Initialize the logger modem
     modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
-
-    // Attach the modem to one of the loggers
-    logger1min.attachModem(modem);
 
     // Set up the sensors on both loggers
     logger1min.setupSensors();

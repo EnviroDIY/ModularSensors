@@ -1,5 +1,5 @@
 /**
- * @file       TinyGsmClientXBee.h
+ * @file       NullModem.h
  * @author     Volodymyr Shymanskyy
  * @license    LGPL-3.0
  * @copyright  Copyright (c) 2016 Volodymyr Shymanskyy
@@ -10,20 +10,21 @@
 #define NullModem_h
 
 #include <Client.h>
+#include <TinyGsmCommon.h>
 
-class TinyGsm
+class TinyGsmUndefined
 {
 
 public:
 
 class GsmClient : public Client
 {
-  friend class TinyGsm;
+  friend class TinyGsmUndefined;
 
 public:
   GsmClient() {}
-  GsmClient(TinyGsm& modem, uint8_t mux = 0) { init(&modem, mux); }
-  bool init(TinyGsm* modem, uint8_t mux = 0) { return false; }
+  GsmClient(TinyGsmUndefined& modem, uint8_t mux = 0) { init(&modem, mux); }
+  bool init(TinyGsmUndefined* modem, uint8_t mux = 0) { return false; }
 
 public:
   virtual int connect(const char *host, uint16_t port) { return 0; }
@@ -42,7 +43,7 @@ public:
 
 public:
 
-  TinyGsm(Stream& stream)
+  TinyGsmUndefined(Stream& stream)
     : stream(stream)
   {}
   bool begin() { return false;}
@@ -60,6 +61,7 @@ public:
     Stream&       stream;
 };
 
-typedef TinyGsm::GsmClient TinyGsmClient;
+typedef TinyGsmUndefined TinyGsm;
+typedef TinyGsmUndefined::GsmClient TinyGsmClient;
 
 #endif

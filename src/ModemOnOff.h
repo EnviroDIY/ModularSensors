@@ -51,7 +51,7 @@ protected:
 
 
 /* ===========================================================================
-* Functions for pulsed method.
+* Functions for the pulsed on-off method.
 * This turns the modem on and off by turning the onoff/DTR/Key pin on for two
 * seconds and then back off.
 * This is used by the Sodaq GPRSBee v0.4 and the Adafruit Fona.
@@ -71,7 +71,7 @@ private:
 
 
 /* ===========================================================================
-* Functions for held method.
+* Functions for the held on-off method.
 * This turns the modem on by setting the onoff/DTR/Key pin high and off by
 * setting it low.
 * This is used by the Sodaq GPRSBee v0.6.
@@ -87,7 +87,7 @@ public:
 
 
 /* ===========================================================================
-* Functions for reverse method.
+* Functions for the reverse on-off method.
 * This turns the modem on by setting the onoff/DTR/Key pin LOW and off by
 * setting it HIGH.
 * This is used by the XBee's
