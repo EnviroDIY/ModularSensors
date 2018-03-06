@@ -163,7 +163,8 @@ public:
         bool retVal = true;
 
         // Connect to the network before asking for quality
-        if (!_modem->isNetworkConnected()) retVal &= connectInternet();
+        // Only waiting for up to 5 seconds here for the internet!
+        if (!_modem->isNetworkConnected()) retVal &= connectInternet(5000L);
         if (retVal == false) return false;
 
         _lastMeasurementRequested = millis();
@@ -279,7 +280,7 @@ public:
     int getSignalRSSI(void) {return sensorValues[RSSI_VAR_NUM];}
     int getSignalPercent(void) {return sensorValues[PERCENT_SIGNAL_VAR_NUM];}
 
-    bool connectInternet(void)
+    bool connectInternet(uint32_t waitTime_ms = 50000L)
     {
         bool retVal = false;
 
@@ -293,7 +294,7 @@ public:
         }
 
         // Check that the modem is responding to AT commands.  If not, give up.
-        if (!_modem->testAT(5000L))
+        if (!_modem->testAT(1000))
         {
             MS_MOD_DBG(F("\nModem does not respond to AT commands!\n"));
             return false;
@@ -311,7 +312,7 @@ public:
                 #if defined(TINY_GSM_MODEM_HAS_WIFI)
                 _modem->networkConnect(_ssid, _pwd);
                 #endif
-                if (_modem->waitForNetwork(30000L))
+                if (_modem->waitForNetwork(waitTime_ms))
                 {
                     retVal = true;
                     MS_MOD_DBG("   ... Success!\n");
@@ -327,8 +328,9 @@ public:
         }
         else
         {
-            MS_MOD_DBG(F("\nWaiting for cellular network...\n"));
-            if (_modem->waitForNetwork(50000L))
+            MS_MOD_DBG(F("\nWaiting up to "), waitTime_ms/1000,
+                       F("seconds for cellular network...\n"));
+            if (_modem->waitForNetwork(waitTime_ms))
             {
                 #if defined(TINY_GSM_MODEM_HAS_GPRS)
                 _modem->gprsConnect(_APN, "", "");
