@@ -5,7 +5,7 @@
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the Decagon Devices 5TM Soil Moisture probe
- *It is dependent on the EnviroDIY SDI-12 library and the DecagonSDI12 super class.
+ *It is dependent on the EnviroDIY SDI-12 library and the SDI12Sensors super class.
  *
  *Documentation for the SDI-12 Protocol commands and responses
  *for the Decagon 5TM can be found at:
@@ -29,7 +29,7 @@
 #ifndef Decagon5TM_h
 #define Decagon5TM_h
 
-#include "DecagonSDI12.h"
+#include "SDI12Sensors.h"
 #include "VariableBase.h"
 
 #define TM_NUM_VARIABLES 3
@@ -47,22 +47,22 @@
 #define TM_VWC_VAR_NUM 2
 
 // The main class for the Decagon 5TM
-class Decagon5TM : public DecagonSDI12
+class Decagon5TM : public SDI12Sensors
 {
 public:
     // Constructors with overloads
     Decagon5TM(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
+     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("Decagon5TM"), TM_NUM_VARIABLES,
                     TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
     {}
     Decagon5TM(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
+     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("Decagon5TM"), TM_NUM_VARIABLES,
                     TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
     {}
     Decagon5TM(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
+     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("Decagon5TM"), TM_NUM_VARIABLES,
                     TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
     {}

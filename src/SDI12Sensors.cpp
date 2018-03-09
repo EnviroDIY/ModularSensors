@@ -1,5 +1,5 @@
 /*
- *DecagonSDI12.cpp
+ *SDI12Sensors.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -11,11 +11,11 @@
 #define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
 #include <EnableInterrupt.h>  // To handle external and pin change interrupts
 
-#include "DecagonSDI12.h"
+#include "SDI12Sensors.h"
 
 
 // The constructor - need the number of measurements the sensor will return, SDI-12 address, the power pin, and the data pin
-DecagonSDI12::DecagonSDI12(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
+SDI12Sensors::SDI12Sensors(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
                            String sensorName, uint8_t numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
@@ -25,7 +25,7 @@ DecagonSDI12::DecagonSDI12(char SDI12address, int8_t powerPin, int8_t dataPin, u
 {
     _SDI12address = SDI12address;
 }
-DecagonSDI12::DecagonSDI12(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
+SDI12Sensors::SDI12Sensors(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
                            String sensorName, uint8_t numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
@@ -35,7 +35,7 @@ DecagonSDI12::DecagonSDI12(char *SDI12address, int8_t powerPin, int8_t dataPin, 
 {
     _SDI12address = *SDI12address;
 }
-DecagonSDI12::DecagonSDI12(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
+SDI12Sensors::SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
                            String sensorName, uint8_t numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
@@ -47,7 +47,7 @@ DecagonSDI12::DecagonSDI12(int SDI12address, int8_t powerPin, int8_t dataPin, ui
 }
 
 
-SENSOR_STATUS DecagonSDI12::setup(void)
+SENSOR_STATUS SDI12Sensors::setup(void)
 {
     SENSOR_STATUS retVal = Sensor::setup();
 
@@ -55,7 +55,9 @@ SENSOR_STATUS DecagonSDI12::setup(void)
     _SDI12Internal.begin();
 
      // SDI-12 protocol says sensors must respond within 15 milliseconds
-    _SDI12Internal.setTimeout(150);
+    _SDI12Internal.setTimeout(60);
+    // Force the timeout value to be -9999
+    _SDI12Internal.setTimeoutValue(-9999);
 
     // Allow the SDI-12 library access to interrupts
     enableInterrupt(_dataPin, SDI12::handleInterrupt, CHANGE);
@@ -68,7 +70,7 @@ SENSOR_STATUS DecagonSDI12::setup(void)
 }
 
 
-SENSOR_STATUS DecagonSDI12::getStatus(void)
+SENSOR_STATUS SDI12Sensors::getStatus(void)
 {
     // Empty the buffer
     _SDI12Internal.clearBuffer();
@@ -96,7 +98,7 @@ SENSOR_STATUS DecagonSDI12::getStatus(void)
 
 
 // A helper function to run the "sensor info" SDI12 command
-bool DecagonSDI12::getSensorInfo(void)
+bool SDI12Sensors::getSensorInfo(void)
 {
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
@@ -136,12 +138,16 @@ bool DecagonSDI12::getSensorInfo(void)
         // _sensorName.trim();
         _sensorVendor = sdiResponse.substring(3,11);
         _sensorVendor.trim();
+        MS_DBG("Sensor Vendor:", _sensorVendor);
         _sensorModel = sdiResponse.substring(11,17);
         _sensorModel.trim();
+        MS_DBG("\tSensor Model:", _sensorModel);
         _sensorVersion = sdiResponse.substring(17,20);
         _sensorVersion.trim();
+        MS_DBG("\tSensor Version:", _sensorVersion);
         _sensorSerialNumber = sdiResponse.substring(20,17);
         _sensorSerialNumber.trim();
+        MS_DBG("\tSensor Serial Number:", _sensorSerialNumber);
         return true;
     }
     else return false;
@@ -149,24 +155,24 @@ bool DecagonSDI12::getSensorInfo(void)
 
 
 // The sensor vendor
-String DecagonSDI12::getSensorVendor(void)
+String SDI12Sensors::getSensorVendor(void)
 {return _sensorVendor;}
 
 // The sensor model
-String DecagonSDI12::getSensorModel(void)
+String SDI12Sensors::getSensorModel(void)
 {return _sensorModel;}
 
 // The sensor version
-String DecagonSDI12::getSensorVersion(void)
+String SDI12Sensors::getSensorVersion(void)
 {return _sensorVersion;}
 
 // The sensor serial number
-String DecagonSDI12::getSensorSerialNumber(void)
+String SDI12Sensors::getSensorSerialNumber(void)
 {return _sensorSerialNumber;}
 
 
 // The sensor installation location on the Mayfly
-String DecagonSDI12::getSensorLocation(void)
+String SDI12Sensors::getSensorLocation(void)
 {
     String sensorLocation = F("SDI12-");
     sensorLocation += String(_SDI12address) + F("_Pin") + String(_dataPin);
@@ -175,7 +181,7 @@ String DecagonSDI12::getSensorLocation(void)
 
 
 // Sending the command to get a concurrent measurement
-bool DecagonSDI12::startSingleMeasurement(void)
+bool SDI12Sensors::startSingleMeasurement(void)
 {
     // Check that the sensor is there and responding
     if (getStatus() == SENSOR_ERROR) return false;
@@ -215,7 +221,7 @@ bool DecagonSDI12::startSingleMeasurement(void)
 }
 
 
-bool DecagonSDI12::addSingleMeasurementResult(void)
+bool SDI12Sensors::addSingleMeasurementResult(void)
 {
     // Make sure we've waited long enough for a reading to finish
     waitForMeasurementCompletion();
@@ -236,7 +242,7 @@ bool DecagonSDI12::addSingleMeasurementResult(void)
     {
         float result = _SDI12Internal.parseFloat();
         // If the result becomes garbled or the probe is disconnected, the parseFloat function returns 0.
-        if (result == 0 or isnan(result)) result = -9999;
+        if (result == -9999 or isnan(result)) result = -9999;
         MS_DBG(F("Result #"), i, F(": "), result, F("\n"));
         verifyAndAddMeasurementResult(i, result);
     }
