@@ -305,7 +305,8 @@ public:
         // the credentials every time.  (True for both ESP8266 and Wifi XBee)
         if (_ssid)
         {
-            MS_MOD_DBG(F("Connecting to WiFi network..."));
+            MS_MOD_DBG(F("\nWaiting up to "), waitTime_ms/1000,
+                       F(" seconds for WiFi network...\n"));
             if (!_modem->isNetworkConnected())
             {
                 MS_MOD_DBG("   Sending credentials...\n");
@@ -315,7 +316,7 @@ public:
                 if (_modem->waitForNetwork(waitTime_ms))
                 {
                     retVal = true;
-                    MS_MOD_DBG("   ... Success!\n");
+                    MS_MOD_DBG("   ... Connected!\n");
                 }
                 else MS_MOD_DBG("   ... Connection failed\n");
             }
@@ -329,13 +330,13 @@ public:
         else
         {
             MS_MOD_DBG(F("\nWaiting up to "), waitTime_ms/1000,
-                       F("seconds for cellular network...\n"));
+                       F(" seconds for cellular network...\n"));
             if (_modem->waitForNetwork(waitTime_ms))
             {
                 #if defined(TINY_GSM_MODEM_HAS_GPRS)
                 _modem->gprsConnect(_APN, "", "");
                 #endif
-                MS_MOD_DBG("   ...Success!\n");
+                MS_MOD_DBG("   ...Connected!\n");
                 retVal = true;
             }
             else MS_MOD_DBG("   ...Connection failed.\n");
