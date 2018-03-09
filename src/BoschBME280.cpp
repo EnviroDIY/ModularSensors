@@ -102,6 +102,10 @@ bool BoschBME280::wake(void)
                              Adafruit_BME280::FILTER_OFF, // built-in IIR filter
                              Adafruit_BME280::STANDBY_MS_1000);  // sleep time between measurements (N/A in forced mode)
     delay(100);  // Need this delay after changing sampling mode
+
+    // Mark that the sensor is now active
+    _millisSensorActivated = millis();
+    
     return true;
 }
 
@@ -111,7 +115,7 @@ bool BoschBME280::wake(void)
 //     // waitForWarmUp();  // already done in wake
 //     waitForStability();
 //     bme_internal.takeForcedMeasurement(false);  // Don't want to wait to finish here
-//     _lastMeasurementRequested = millis();
+//     _millisMeasurementRequested = millis();
 //     return true;
 // }
 
@@ -146,6 +150,9 @@ bool BoschBME280::addSingleMeasurementResult(void)
     verifyAndAddMeasurementResult(BME280_HUMIDITY_VAR_NUM, humid);
     verifyAndAddMeasurementResult(BME280_PRESSURE_VAR_NUM, press);
     verifyAndAddMeasurementResult(BME280_ALTITUDE_VAR_NUM, alt);
+
+    // Mark that we've already recorded the result of the measurement
+    _millisMeasurementRequested = 0;
 
     // Return true when finished
     return true;

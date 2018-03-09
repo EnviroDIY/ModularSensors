@@ -16,21 +16,39 @@
 
 // The constructor
 Sensor::Sensor(String sensorName, uint8_t numReturnedVars,
-               uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms,
+               uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms,
                int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
 {
     _sensorName = sensorName;
     _numReturnedVars = numReturnedVars;
+
+    // This is the time that a value was last sent ot registered variables
+    // It is set in the notifyVariables() function.
+    // The "checkForUpdate()" function checks if values are older than 2 minutes.
     _sensorLastUpdated = 0;
 
+    // This is the time needed from the when a sensor has power until it's ready to talk
+    // The _millisPowerOn value is set in the powerUp() function.  It is
+    // un-set in the powerDown() function.
+    // The "waitForWarmUp()" function verifies that enough time has passed.
     _warmUpTime_ms = warmUpTime_ms;
     _millisPowerOn = 0;
 
+    // This is the time needed from the when a sensor is activated until the readings are stable
+    // The _millisSensorActivated value is *usually* set in the wake() function,
+    // but may also be set in the startSingleMeasurement() function.  It is
+    // generally un-set in the sleep() function.
+    // The "waitForStability()" function verifies that enough time has passed.
     _stabilizationTime_ms = stabilizationTime_ms;
-    _millisMeasurementStarted = 0;
+    _millisSensorActivated = 0;
 
-    _remeasurementTime_ms = remeasurementTime_ms;
-    _lastMeasurementRequested = 0;
+    // This is the time needed from the when a sensor is told to take a single
+    // reading until that reading should be complete
+    // The _millisMeasurementRequested value is set in the startSingleMeasurement() function.
+    // It *may* be unset in the addSingleMeasurementResult() function.
+    // The "waitForMeasurementCompletion()" function verifies that enough time has passed.
+    _measurementTime_ms = measurementTime_ms;
+    _millisMeasurementRequested = 0;
 
     _powerPin = powerPin;
     _dataPin = dataPin;
@@ -107,6 +125,7 @@ void Sensor::powerUp(void)
         MS_DBG(F("Powering "), getSensorName(), F(" at "), getSensorLocation(),
                F(" with pin "), _powerPin, F("\n"));
         digitalWrite(_powerPin, HIGH);
+        // Mark that the sensor now has power
         _millisPowerOn = millis();
     }
 }
@@ -119,7 +138,8 @@ bool Sensor::wake(void)
     MS_DBG(F("Waking "), getSensorName(), F(" at "),
            getSensorLocation(), F("\n"));
     if(!checkPowerOn()){powerUp();}
-    _millisMeasurementStarted = millis();
+    // Mark that the sensor has been activated
+    _millisSensorActivated = millis();
     return true;
 }
 
@@ -130,7 +150,8 @@ bool Sensor::sleep(void)
 {
     MS_DBG(F("Putting to "), getSensorName(), F(" at "),
            getSensorLocation(), F(" to sleep\n"));
-    _millisMeasurementStarted = 0;
+    // Mark that the sensor is no longer activated
+    _millisSensorActivated = 0;
     return true;
 }
 
@@ -143,6 +164,7 @@ void Sensor::powerDown(void)
         MS_DBG(F("Turning off power to "), getSensorName(), F(" at "),
                getSensorLocation(), F(" with pin "), _powerPin, F("\n"));
         digitalWrite(_powerPin, LOW);
+        // Mark that the sensor no longer has power
         _millisPowerOn = 0;
     }
 }
@@ -156,8 +178,9 @@ void Sensor::waitForWarmUp(void)
     {
         if (millis() > (_millisPowerOn + _warmUpTime_ms))  // already ready
         {
-            MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
-                   F(" already warmed up!\n"));
+            MS_DBG(F("It's been "), (millis() - _millisPowerOn), F("ms, and "),
+                  getSensorName(), F(" at "),    getSensorLocation(),
+                  F(" should be warmed up!\n"));
         }
         else if (millis() > _millisPowerOn)  // just in case millis() has rolled over
         {
@@ -182,16 +205,18 @@ void Sensor::waitForStability(void)
 {
     if (_stabilizationTime_ms != 0)
     {
-        if (millis() > _millisMeasurementStarted + _stabilizationTime_ms)  // already ready
+        if (millis() > _millisSensorActivated + _stabilizationTime_ms)  // already ready
         {
-            MS_DBG(getSensorName(), F(" at "), getSensorLocation(), F(" should be stable!\n"));
+            MS_DBG(F("It's been "), (millis() - _millisSensorActivated), F("ms, and "),
+                   getSensorName(), F(" at "),    getSensorLocation(),
+                   F(" should be stable!\n"));
         }
-        else if (millis() > _millisMeasurementStarted)  // just in case millis() has rolled over
+        else if (millis() > _millisSensorActivated)  // just in case millis() has rolled over
         {
-            MS_DBG(F("Waiting "), (_stabilizationTime_ms - (millis() - _millisMeasurementStarted)),
+            MS_DBG(F("Waiting "), (_stabilizationTime_ms - (millis() - _millisSensorActivated)),
                    F("ms for "), getSensorName(), F(" at "),
                    getSensorLocation(), F(" to stabilize\n"));
-            while((millis() - _millisMeasurementStarted) < _stabilizationTime_ms){}
+            while((millis() - _millisSensorActivated) < _stabilizationTime_ms){}
         }
         else  // if we get really unlucky and are measuring as millis() rolls over
         {
@@ -207,19 +232,20 @@ void Sensor::waitForStability(void)
 // to give a new value
 void Sensor::waitForMeasurementCompletion(void)
 {
-    if (_remeasurementTime_ms != 0)
+    if (_measurementTime_ms != 0)
     {
-        if (millis() > _lastMeasurementRequested + _remeasurementTime_ms)  // already ready
+        if (millis() > _millisMeasurementRequested + _measurementTime_ms)  // already ready
         {
-            MS_DBG(F("Measurement by "), getSensorName(), F(" at "),
-                   getSensorLocation(), F(" should be complete!\n"));
+            MS_DBG(F("It's been "), (millis() - _millisMeasurementRequested),
+                  F("ms, and measurement by "), getSensorName(), F(" at "),
+                  getSensorLocation(), F(" should be complete!\n"));
         }
-        else if (millis() > _lastMeasurementRequested)  // just in case millis() has rolled over
+        else if (millis() > _millisMeasurementRequested)  // just in case millis() has rolled over
         {
-            MS_DBG(F("Waiting "), (_remeasurementTime_ms - (millis() - _lastMeasurementRequested)),
+            MS_DBG(F("Waiting "), (_measurementTime_ms - (millis() - _millisMeasurementRequested)),
                    F("ms for "), getSensorName(), F(" at "),
                    getSensorLocation(), F(" to complete measurement\n"));
-            while((millis() - _lastMeasurementRequested) < _remeasurementTime_ms){}
+            while((millis() - _millisMeasurementRequested) < _measurementTime_ms){}
         }
         else  // if we get really unlucky and are measuring as millis() rolls over
         {
@@ -343,7 +369,7 @@ bool Sensor::startSingleMeasurement(void)
 {
     waitForWarmUp();
     waitForStability();
-    _lastMeasurementRequested = millis();
+    _millisMeasurementRequested = millis();
     return true;
 }
 

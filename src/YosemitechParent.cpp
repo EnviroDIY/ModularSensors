@@ -19,9 +19,9 @@
 YosemitechParent::YosemitechParent(byte modbusAddress, Stream* stream,
                                    int8_t powerPin, int8_t enablePin, uint8_t measurementsToAverage,
                                    yosemitechModel model, String sensName, int numVariables,
-                                   int warmUpTime_ms, int stabilizationTime_ms, int remeasurementTime_ms)
+                                   int warmUpTime_ms, int stabilizationTime_ms, int measurementTime_ms)
     : Sensor(sensName, numVariables,
-             warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
+             warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
              powerPin, -1, measurementsToAverage)
 {
     _model = model;
@@ -32,9 +32,9 @@ YosemitechParent::YosemitechParent(byte modbusAddress, Stream* stream,
 YosemitechParent::YosemitechParent(byte modbusAddress, Stream& stream,
                                    int8_t powerPin, int8_t enablePin, uint8_t measurementsToAverage,
                                    yosemitechModel model, String sensName, int numVariables,
-                                   int warmUpTime_ms, int stabilizationTime_ms, int remeasurementTime_ms)
+                                   int warmUpTime_ms, int stabilizationTime_ms, int measurementTime_ms)
     : Sensor(sensName, numVariables,
-             warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
+             warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
              powerPin, -1, measurementsToAverage)
 {
     _model = model;
@@ -89,10 +89,10 @@ bool YosemitechParent::wake(void)
     }
     if(success)
     {
-        _millisMeasurementStarted = millis();
-        MS_DBG(F("Measurements started.\n"));
+        _millisSensorActivated = millis();
+        MS_DBG(F("Sensor activated and measuring.\n"));
     }
-    else MS_DBG(F("Measurements NOT started!\n"));
+    else MS_DBG(F("Sensor NOT activated!\n"));
 
     // Manually activate the brush
     // Needed for newer sensors that do not immediate activate on getting power
@@ -112,7 +112,7 @@ bool YosemitechParent::wake(void)
 bool YosemitechParent::sleep(void)
 {
     if(!checkPowerOn()){return true;}
-    if(_millisMeasurementStarted == 0)
+    if(_millisSensorActivated == 0)
     {
         MS_DBG(F("Was not measuring!\n"));
         return true;
@@ -129,7 +129,7 @@ bool YosemitechParent::sleep(void)
     }
     if(success)
     {
-        _millisMeasurementStarted = 0;
+        _millisSensorActivated = 0;
         MS_DBG(F("Measurements stopped.\n"));
     }
     else MS_DBG(F("Measurements NOT stopped!\n"));
@@ -142,9 +142,12 @@ bool YosemitechParent::sleep(void)
 bool YosemitechParent::startSingleMeasurement(void)
 {
     bool success = true;
-    if (_millisMeasurementStarted == 0) success = wake();
-    if (_millisMeasurementStarted > 0) waitForStability();
-    _lastMeasurementRequested = millis();
+    if (_millisSensorActivated == 0) success = wake();
+    if (_millisSensorActivated > 0)
+    {
+        waitForStability();
+        _millisMeasurementRequested = millis();
+    }
     return success;
 }
 
@@ -158,7 +161,7 @@ bool YosemitechParent::addSingleMeasurementResult(void)
     float tempValue = -9999;
     float thirdValue = -9999;
 
-    if (_millisMeasurementStarted > 0)
+    if (_millisSensorActivated > 0)
     {
         // Make sure we've waited long enough for a new reading to be available
         waitForMeasurementCompletion();
@@ -182,6 +185,9 @@ bool YosemitechParent::addSingleMeasurementResult(void)
         {
             MS_DBG(F("    Third: "), thirdValue, F("\n"));
         }
+
+        // Unset the measurement requsted time
+        _millisMeasurementRequested = 0;
     }
     else MS_DBG(F("Sensor is not currently measuring!\n"));
 
@@ -189,6 +195,9 @@ bool YosemitechParent::addSingleMeasurementResult(void)
     verifyAndAddMeasurementResult(0, parmValue);
     verifyAndAddMeasurementResult(1, tempValue);
     verifyAndAddMeasurementResult(2, thirdValue);
+
+    // Mark that we've already recorded the result of the measurement
+    _millisMeasurementRequested = 0;
 
     // Return true when finished
     return success;

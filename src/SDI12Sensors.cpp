@@ -17,9 +17,9 @@
 // The constructor - need the number of measurements the sensor will return, SDI-12 address, the power pin, and the data pin
 SDI12Sensors::SDI12Sensors(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
                            String sensorName, uint8_t numReturnedVars,
-                           uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
+                           uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
-             warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
+             warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
              powerPin, dataPin, measurementsToAverage),
     _SDI12Internal(dataPin)
 {
@@ -27,9 +27,9 @@ SDI12Sensors::SDI12Sensors(char SDI12address, int8_t powerPin, int8_t dataPin, u
 }
 SDI12Sensors::SDI12Sensors(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
                            String sensorName, uint8_t numReturnedVars,
-                           uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
+                           uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
-             warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
+             warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
              powerPin, dataPin, measurementsToAverage),
     _SDI12Internal(dataPin)
 {
@@ -37,9 +37,9 @@ SDI12Sensors::SDI12Sensors(char *SDI12address, int8_t powerPin, int8_t dataPin, 
 }
 SDI12Sensors::SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
                            String sensorName, uint8_t numReturnedVars,
-                           uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t remeasurementTime_ms)
+                           uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
-             warmUpTime_ms, stabilizationTime_ms, remeasurementTime_ms,
+             warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
              powerPin, dataPin, measurementsToAverage),
     _SDI12Internal(dataPin)
 {
@@ -62,7 +62,6 @@ SENSOR_STATUS SDI12Sensors::setup(void)
     // Allow the SDI-12 library access to interrupts
     enableInterrupt(_dataPin, SDI12::handleInterrupt, CHANGE);
 
-    waitForWarmUp();
     bool isSet = getSensorInfo();
 
     if (isSet and retVal == SENSOR_READY) return SENSOR_READY;
@@ -72,6 +71,8 @@ SENSOR_STATUS SDI12Sensors::setup(void)
 
 SENSOR_STATUS SDI12Sensors::getStatus(void)
 {
+    waitForWarmUp();
+
     // Empty the buffer
     _SDI12Internal.clearBuffer();
 
@@ -103,10 +104,9 @@ bool SDI12Sensors::getSensorInfo(void)
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up
-    waitForWarmUp();
 
     // Check that the sensor is there and responding
+    // The getStatus() function includes the waitForWarmUp()
     if (getStatus() == SENSOR_ERROR) return false;
 
     // Empty the buffer
@@ -134,20 +134,23 @@ bool SDI12Sensors::getSensorInfo(void)
 
     if (sdiResponse.length() > 1)
     {
-        // _sensorName = sdiResponse.substring(3,17);
-        // _sensorName.trim();
+        String sdi12Address = sdiResponse.substring(0,1);
+        MS_DBG(F("SDI12 Address:"), sdi12Address);
+        float sdi12Version = sdiResponse.substring(1,3).toFloat();
+        sdi12Version /= 10;
+        MS_DBG(F(", SDI12 Version:"), sdi12Version);
         _sensorVendor = sdiResponse.substring(3,11);
         _sensorVendor.trim();
-        MS_DBG("Sensor Vendor:", _sensorVendor);
+        MS_DBG(F(", Sensor Vendor:"), _sensorVendor);
         _sensorModel = sdiResponse.substring(11,17);
         _sensorModel.trim();
-        MS_DBG("\tSensor Model:", _sensorModel);
+        MS_DBG(F(", Sensor Model:"), _sensorModel);
         _sensorVersion = sdiResponse.substring(17,20);
         _sensorVersion.trim();
-        MS_DBG("\tSensor Version:", _sensorVersion);
-        _sensorSerialNumber = sdiResponse.substring(20,17);
+        MS_DBG(F(", Sensor Version:"), _sensorVersion);
+        _sensorSerialNumber = sdiResponse.substring(20);
         _sensorSerialNumber.trim();
-        MS_DBG("\tSensor Serial Number:", _sensorSerialNumber);
+        MS_DBG(F(", Sensor Serial Number:"), _sensorSerialNumber,'\n');
         return true;
     }
     else return false;
@@ -184,9 +187,12 @@ String SDI12Sensors::getSensorLocation(void)
 bool SDI12Sensors::startSingleMeasurement(void)
 {
     // Check that the sensor is there and responding
+    // The getStatus() function includes the waitForWarmUp()
     if (getStatus() == SENSOR_ERROR) return false;
 
-    waitForStability();
+    // Do NOT need to wait for stability for SDI-12 sensors
+    // These sensors should be stable at the first reading they are able to return
+    // waitForStability();
 
     // Empty the buffer
     _SDI12Internal.clearBuffer();
@@ -208,6 +214,13 @@ bool SDI12Sensors::startSingleMeasurement(void)
     // Empty the buffer again
     _SDI12Internal.clearBuffer();
 
+    // Set the times we've activated the sensor and asked for a measurement
+    if (sdiResponse.length() > 0)
+    {
+        _millisSensorActivated = millis();
+        _millisMeasurementRequested = millis();
+    }
+
     // // Verify the number of results the sensor will send
     // int numVariables = sdiResponse.substring(4,5).toInt();
     // if (numVariables != _numReturnedVars)
@@ -223,37 +236,49 @@ bool SDI12Sensors::startSingleMeasurement(void)
 
 bool SDI12Sensors::addSingleMeasurementResult(void)
 {
-    // Make sure we've waited long enough for a reading to finish
-    waitForMeasurementCompletion();
 
-    // Empty the buffer
-    _SDI12Internal.clearBuffer();
-
-    String getDataCommand = "";
-    getDataCommand += _SDI12address;
-    getDataCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
-    _SDI12Internal.sendCommand(getDataCommand);
-    MS_DBG(F(">>"), getDataCommand, F("\n"));
-    delay(30);  // It just needs this little delay
-
-    MS_DBG(F("Receiving data\n"));
-    _SDI12Internal.read();  // ignore the repeated SDI12 address
-    for (int i = 0; i < _numReturnedVars; i++)
+    if (_millisSensorActivated > 0)
     {
-        float result = _SDI12Internal.parseFloat();
-        // If the result becomes garbled or the probe is disconnected, the parseFloat function returns 0.
-        if (result == -9999 or isnan(result)) result = -9999;
-        MS_DBG(F("Result #"), i, F(": "), result, F("\n"));
-        verifyAndAddMeasurementResult(i, result);
+        // Make sure we've waited long enough for a reading to finish
+        waitForMeasurementCompletion();
+
+        // Empty the buffer
+        _SDI12Internal.clearBuffer();
+
+        String getDataCommand = "";
+        getDataCommand += _SDI12address;
+        getDataCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
+        _SDI12Internal.sendCommand(getDataCommand);
+        MS_DBG(F(">>"), getDataCommand, F("\n"));
+        delay(30);  // It just needs this little delay
+
+        MS_DBG(F("Receiving data\n"));
+        _SDI12Internal.read();  // ignore the repeated SDI12 address
+        for (int i = 0; i < _numReturnedVars; i++)
+        {
+            float result = _SDI12Internal.parseFloat();
+            // If the result becomes garbled or the probe is disconnected, the parseFloat function returns 0.
+            if (result == -9999 or isnan(result)) result = -9999;
+            MS_DBG(F("Result #"), i, F(": "), result, F("\n"));
+            verifyAndAddMeasurementResult(i, result);
+        }
+        // String sdiResponse = _SDI12Internal.readStringUntil('\n');
+        // sdiResponse.trim();
+        // _SDI12Internal.clearBuffer();
+        // MS_DBG(F("<<"), sdiResponse, F("\n"));
+
+        // Empty the buffer again
+        _SDI12Internal.clearBuffer();
+
+        // Mark that we've already recorded the result of the measurement
+        _millisMeasurementRequested = 0;
+
+        // Return true when finished
+        return true;
     }
-    // String sdiResponse = _SDI12Internal.readStringUntil('\n');
-    // sdiResponse.trim();
-    // _SDI12Internal.clearBuffer();
-    // MS_DBG(F("<<"), sdiResponse, F("\n"));
-
-    // Empty the buffer again
-    _SDI12Internal.clearBuffer();
-
-    // Return true when finished
-    return true;
+    else
+    {
+        MS_DBG(F("Sensor is not currently measuring!\n"));
+        return false;
+    }
 }

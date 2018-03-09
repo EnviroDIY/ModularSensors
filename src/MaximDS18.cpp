@@ -148,7 +148,7 @@ bool MaximDS18::startSingleMeasurement(void)
     // Send the command to get temperatures
     MS_DBG(F("Asking DS18 to take a measurement\n"));
     tempSensors.requestTemperaturesByAddress(_OneWireAddress);
-    _lastMeasurementRequested = millis();
+    _millisMeasurementRequested = millis();
     return true;
 }
 
@@ -175,6 +175,9 @@ bool MaximDS18::addSingleMeasurementResult(void)
 
     MS_DBG(F("Temperature: "), result, F(" °C\n"));
     verifyAndAddMeasurementResult(DS18_TEMP_VAR_NUM, result);
+
+    // Mark that we've already recorded the result of the measurement
+    _millisMeasurementRequested = 0;
 
     return goodTemp;
 }

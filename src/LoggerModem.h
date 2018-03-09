@@ -138,6 +138,7 @@ public:
     {
         // Check if the modem is on; turn it on if not
         if(!modemOnOff->isOn()) modemOnOff->on();
+        _millisPowerOn = millis();
     }
 
     virtual bool wake(void) override
@@ -167,7 +168,7 @@ public:
         if (!_modem->isNetworkConnected()) retVal &= connectInternet(5000L);
         if (retVal == false) return false;
 
-        _lastMeasurementRequested = millis();
+        _millisMeasurementRequested = millis();
         return retVal;
     }
 
@@ -341,6 +342,7 @@ public:
             }
             else MS_MOD_DBG("   ...Connection failed.\n");
         }
+        _millisSensorActivated = millis();
         return retVal;
     }
 
@@ -357,6 +359,7 @@ public:
         else{}
             // _modem->networkDisconnect();  // Eh.. why bother?
             // MS_MOD_DBG(F("Disconnected from WiFi network.\n"));
+        _millisSensorActivated = 0;
     }
 
     int openTCP(const char *host, uint16_t port)

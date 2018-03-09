@@ -67,6 +67,9 @@ bool Decagon5TM::addSingleMeasurementResult(void)
     verifyAndAddMeasurementResult(TM_TEMP_VAR_NUM, temp);
     verifyAndAddMeasurementResult(TM_VWC_VAR_NUM, VWC);
 
+    // Mark that we've already recorded the result of the measurement
+    _millisMeasurementRequested = 0;
+
     // Return true when finished
     return true;
 }
