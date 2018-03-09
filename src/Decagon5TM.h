@@ -67,24 +67,7 @@ public:
                     TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
     {}
 
-    bool update(void) override
-    {
-        DecagonSDI12::update();
-
-        //the TOPP equation used to calculate VWC
-        float ea = sensorValues[TM_EA_VAR_NUM];
-        float sensorValue_VWC = (4.3e-6*(ea*ea*ea))
-                                - (5.5e-4*(ea*ea))
-                                + (2.92e-2 * ea)
-                                - 5.3e-2 ;
-        sensorValue_VWC *= 100;  // Convert to actual percent
-        sensorValues[TM_VWC_VAR_NUM] = sensorValue_VWC;
-
-        // Re-update the variables with the new VWC value
-        notifyVariables();
-
-        return true;
-    }
+    virtual bool addSingleMeasurementResult(void) override;
 };
 
 
