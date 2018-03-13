@@ -167,8 +167,8 @@ void LoggerEnviroDIY::testingMode()
     // Turn on the modem to let it start searching for the network
     // Turn on the modem
     _logModem->wake();
-    // Connect to the network to make sure we have signal
-    _logModem->connectInternet();
+    // Connect to the network to make sure we have signal (only try for 10sec)
+    _logModem->connectInternet(10000L);
 
     // Power up all of the sensors
     sensorsPowerUp();
