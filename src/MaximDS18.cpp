@@ -99,7 +99,7 @@ SENSOR_STATUS MaximDS18::getStatus(void)
 // By default, sets pin modes and returns ready
 SENSOR_STATUS MaximDS18::setup(void)
 {
-    Sensor::setup();
+    SENSOR_STATUS setup = Sensor::setup();
     tempSensors.begin();
 
     // Find the address if it's not known
@@ -135,7 +135,8 @@ SENSOR_STATUS MaximDS18::setup(void)
     // That is, we're in ASYNC mode and will get values when we're ready
     tempSensors.setWaitForConversion(false);
 
-    return stat;
+    if (setup == SENSOR_READY && stat == SENSOR_READY) return SENSOR_READY;
+    else return SENSOR_ERROR;
 }
 
 

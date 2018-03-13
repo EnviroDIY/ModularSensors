@@ -70,8 +70,10 @@ SENSOR_STATUS BoschBME280::getStatus(void)
 
 SENSOR_STATUS BoschBME280::setup(void)
 {
-    Sensor::setup();
-    return getStatus();
+    SENSOR_STATUS setup = Sensor::setup();
+    SENSOR_STATUS stat = getStatus();
+    if (setup == SENSOR_READY && stat == SENSOR_READY) return SENSOR_READY;
+    else return SENSOR_ERROR;
 }
 
 
@@ -105,7 +107,7 @@ bool BoschBME280::wake(void)
 
     // Mark that the sensor is now active
     _millisSensorActivated = millis();
-    
+
     return true;
 }
 
