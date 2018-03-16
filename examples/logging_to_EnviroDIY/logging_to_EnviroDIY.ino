@@ -470,11 +470,9 @@ void setup()
     EnviroDIYLogger.begin();
 
     // Check for debugging mode
-    pinMode(buttonPin, INPUT_PULLUP);
-    enableInterrupt(buttonPin, Logger::testingISR, CHANGE);
-    Serial.print(F("Push button on pin "));
-    Serial.print(buttonPin);
-    Serial.println(F(" at any time to enter sensor testing mode."));
+
+    // Check for debugging mode
+    EnviroDIYLogger.checkForTestingMode(buttonPin);
 
     // Blink the LEDs really fast to show start-up is done
     greenredflash(6, 25);
