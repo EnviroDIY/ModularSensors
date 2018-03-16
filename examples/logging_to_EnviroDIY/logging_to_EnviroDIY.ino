@@ -308,6 +308,17 @@ const uint8_t y532NumberReadings = 1;  // The manufacturer actually doesn't ment
 YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, y532NumberReadings);
 
 // ==========================================================================
+//    Zebra Tech D-Opto Dissolved Oxygen Sensor
+// ==========================================================================
+#include <ZebraTechDOpto.h>
+const char *DOptoDI12address = "5";  // The SDI-12 Address of the Zebra Tech D-Opto
+// const int8_t SDI12Data = 7;  // The pin the D-Opto is attached to
+// SDI12 SDI12Bus = SDI12(SDI12Data);  // Create an SDI-12 bus
+// const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
+
+
+// ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
 Variable *variableList[] = {
@@ -341,6 +352,9 @@ Variable *variableList[] = {
     new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
     new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
+    new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -456,7 +470,14 @@ void setup()
     EnviroDIYLogger.begin();
 
     // Check for debugging mode
-    EnviroDIYLogger.checkForTestingMode(buttonPin);
+    pinMode(buttonPin, INPUT_PULLUP);
+    enableInterrupt(buttonPin, Logger::testingISR, CHANGE);
+    Serial.print(F("Push button on pin "));
+    Serial.print(buttonPin);
+    Serial.println(F(" at any time to enter sensor testing mode."));
+
+    // Blink the LEDs really fast to show start-up is done
+    greenredflash(6, 25);
 }
 
 
