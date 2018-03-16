@@ -51,18 +51,33 @@ class Decagon5TM : public SDI12Sensors
 {
 public:
     // Constructors with overloads
-    Decagon5TM(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+    Decagon5TM(char SDI12address, SDI12* SDI12stream, int8_t powerPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, SDI12stream, powerPin, measurementsToAverage,
                     F("Decagon5TM"), TM_NUM_VARIABLES,
                     TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
     {}
-    Decagon5TM(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+    Decagon5TM(char* SDI12address, SDI12* SDI12stream, int8_t powerPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, SDI12stream, powerPin, measurementsToAverage,
                     F("Decagon5TM"), TM_NUM_VARIABLES,
                     TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
     {}
-    Decagon5TM(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+    Decagon5TM(int SDI12address, SDI12* SDI12stream, int8_t powerPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, SDI12stream, powerPin, measurementsToAverage,
+                    F("Decagon5TM"), TM_NUM_VARIABLES,
+                    TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
+    {}
+    Decagon5TM(char SDI12address, SDI12& SDI12stream, int8_t powerPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, SDI12stream, powerPin, measurementsToAverage,
+                    F("Decagon5TM"), TM_NUM_VARIABLES,
+                    TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
+    {}
+    Decagon5TM(char* SDI12address, SDI12& SDI12stream, int8_t powerPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, SDI12stream, powerPin, measurementsToAverage,
+                    F("Decagon5TM"), TM_NUM_VARIABLES,
+                    TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
+    {}
+    Decagon5TM(int SDI12address, SDI12& SDI12stream, int8_t powerPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, SDI12stream, powerPin, measurementsToAverage,
                     F("Decagon5TM"), TM_NUM_VARIABLES,
                     TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
     {}

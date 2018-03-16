@@ -58,18 +58,33 @@ class ZebraTechDOpto : public SDI12Sensors
 public:
 
     // Constructors with overloads
-    ZebraTechDOpto(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+    ZebraTechDOpto(char SDI12address, SDI12* SDI12stream, int8_t powerPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, SDI12stream, powerPin, measurementsToAverage,
                     F("ZebraTech D-Opto"), DOPTO_NUM_VARIABLES,
                     DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS)
     {}
-    ZebraTechDOpto(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+    ZebraTechDOpto(char* SDI12address, SDI12* SDI12stream, int8_t powerPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, SDI12stream, powerPin, measurementsToAverage,
                     F("ZebraTech D-Opto"), DOPTO_NUM_VARIABLES,
                     DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS)
     {}
-    ZebraTechDOpto(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+    ZebraTechDOpto(int SDI12address, SDI12* SDI12stream, int8_t powerPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, SDI12stream, powerPin, measurementsToAverage,
+                    F("ZebraTech D-Opto"), DOPTO_NUM_VARIABLES,
+                    DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS)
+    {}
+    ZebraTechDOpto(char SDI12address, SDI12& SDI12stream, int8_t powerPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, SDI12stream, powerPin, measurementsToAverage,
+                    F("ZebraTech D-Opto"), DOPTO_NUM_VARIABLES,
+                    DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS)
+    {}
+    ZebraTechDOpto(char* SDI12address, SDI12& SDI12stream, int8_t powerPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, SDI12stream, powerPin, measurementsToAverage,
+                    F("ZebraTech D-Opto"), DOPTO_NUM_VARIABLES,
+                    DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS)
+    {}
+    ZebraTechDOpto(int SDI12address, SDI12& SDI12stream, int8_t powerPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, SDI12stream, powerPin, measurementsToAverage,
                     F("ZebraTech D-Opto"), DOPTO_NUM_VARIABLES,
                     DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS)
     {}
