@@ -101,5 +101,8 @@ bool AOSongDHT::addSingleMeasurementResult(void)
     verifyAndAddMeasurementResult(DHT_HUMIDITY_VAR_NUM, humid_val);
     verifyAndAddMeasurementResult(DHT_HI_VAR_NUM, hi_val);
 
+    // Mark that we've already recorded the result of the measurement
+    _millisMeasurementRequested = 0;
+
     return true;
 }

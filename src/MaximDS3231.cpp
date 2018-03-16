@@ -41,7 +41,7 @@ bool MaximDS3231::startSingleMeasurement(void)
     // TODO:  Test how long the conversion takes, update DS3231 lib accordingly!
     MS_DBG(F("Forcing new temperature reading\n"));
     rtc.convertTemperature(false);
-    _lastMeasurementRequested = millis();
+    _millisMeasurementRequested = millis();
     return true;
 }
 
@@ -57,6 +57,9 @@ bool MaximDS3231::addSingleMeasurementResult(void)
     MS_DBG(F("Current temp is "), tempVal, '\n');
 
     verifyAndAddMeasurementResult(DS3231_TEMP_VAR_NUM, tempVal);
+
+    // Mark that we've already recorded the result of the measurement
+    _millisMeasurementRequested = 0;
 
     // Return true when finished
     return true;

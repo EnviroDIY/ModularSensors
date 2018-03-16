@@ -13,9 +13,6 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
-// Some define statements
-#define STANDARD_SERIAL_OUTPUT Serial  // Without this there will be no output
-
 // ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
@@ -150,7 +147,7 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 // ==========================================================================
 #include <DecagonES2.h>
 const char *ES2SDI12address = "3";  // The SDI-12 Address of the ES2
-// const int8_t SDI12Data = 7;  // The pin the 5TM is attached to
+// const int8_t SDI12Data = 7;  // The pin the ES2 is attached to
 // const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t ES2NumberReadings = 3;
 DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
@@ -274,6 +271,17 @@ byte y532modbusAddress = 0x32;  // The modbus address of the Y532
 const uint8_t y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
 YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, y532NumberReadings);
 
+
+// ==========================================================================
+//    Zebra Tech D-Opto Dissolved Oxygen Sensor
+// ==========================================================================
+#include <ZebraTechDOpto.h>
+const char *DOptoDI12address = "5";  // The SDI-12 Address of the Zebra Tech D-Opto
+// const int8_t SDI12Data = 7;  // The pin the D-Opto is attached to
+// const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
+
+
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
@@ -308,6 +316,9 @@ Variable *variableList[] = {
     new AOSongAM2315_Temp(&am2315),
     new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
+    new ZebraTechDOpto_Temp(&dopto),
+    new ZebraTechDOpto_DOpct(&dopto),
+    new ZebraTechDOpto_DOmgL(&dopto),
     new YosemitechY532_pH(&y532),
     new YosemitechY532_Temp(&y532),
     new YosemitechY532_Voltage(&y532),

@@ -36,7 +36,7 @@ class Sensor
 public:
 
     Sensor(String sensorName = "Unknown", uint8_t numReturnedVars = 1,
-           uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t remeasurementTime_ms = 0,
+           uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0,
            int8_t powerPin = -1, int8_t dataPin = -1, uint8_t measurementsToAverage = 1);
 
     // These functions are dependent on the constructor and return the constructor values
@@ -94,9 +94,11 @@ public:
     virtual void notifyVariables(void);
     float sensorValues[MAX_NUMBER_VARS];
 
-    // This just makes sure things are up-to-date
-    bool checkForUpdate(void);
+    // This is the time that a value was last sent ot registered variables
+    // It is set in the notifyVariables() function.
+    // The "checkForUpdate()" function checks if values are older than 2 minutes.
     uint32_t _sensorLastUpdated;
+    bool checkForUpdate(void);
 
 protected:
     // A helper to check if the power is already on
@@ -115,14 +117,28 @@ protected:
     uint8_t _measurementsToAverage;
     uint8_t numberGoodMeasurementsMade[MAX_NUMBER_VARS];
 
+    // This is the time needed from the when a sensor has power until it's ready to talk
+    // The _millisPowerOn value is set in the powerUp() function.  It is
+    // un-set in the powerDown() function.
+    // The "waitForWarmUp()" function verifies that enough time has passed.
     uint32_t _warmUpTime_ms;
     uint32_t _millisPowerOn;
 
+    // This is the time needed from the when a sensor is activated until the readings are stable
+    // The _millisSensorActivated value is *usually* set in the wake() function,
+    // but may also be set in the startSingleMeasurement() function.  It is
+    // generally un-set in the sleep() function.
+    // The "waitForStability()" function verifies that enough time has passed.
     uint32_t _stabilizationTime_ms;
-    uint32_t _millisMeasurementStarted;
+    uint32_t _millisSensorActivated;
 
-    uint32_t _remeasurementTime_ms;
-    uint32_t _lastMeasurementRequested;
+    // This is the time needed from the when a sensor is told to take a single
+    // reading until that reading should be complete
+    // The _millisMeasurementRequested value is set in the startSingleMeasurement() function.
+    // It *may* be unset in the addSingleMeasurementResult() function.
+    // The "waitForMeasurementCompletion()" function verifies that enough time has passed.
+    uint32_t _measurementTime_ms;
+    uint32_t _millisMeasurementRequested;
 
     SENSOR_STATUS sensorStatus;
     Variable *variables[MAX_NUMBER_VARS];

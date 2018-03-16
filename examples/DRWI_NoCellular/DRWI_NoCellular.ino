@@ -14,9 +14,6 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
-// Some define statements
-#define STANDARD_SERIAL_OUTPUT Serial  // Without this there will be no output
-
 // ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
@@ -175,7 +172,14 @@ void setup()
     logger.begin();
 
     // Check for debugging mode
-    logger.checkForTestingMode(buttonPin);
+    pinMode(buttonPin, INPUT_PULLUP);
+    enableInterrupt(buttonPin, Logger::testingISR, CHANGE);
+    Serial.print(F("Push button on pin "));
+    Serial.print(buttonPin);
+    Serial.println(F(" at any time to enter sensor testing mode."));
+
+    // Blink the LEDs really fast to show start-up is done
+    greenredflash(6, 25);
 }
 
 

@@ -14,9 +14,6 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
-// Some define statements
-#define STANDARD_SERIAL_OUTPUT Serial  // Without this there will be no output
-
 // Select your modem chip, comment out all of the others
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
 // #define TINY_GSM_MODEM_A6  // Select for a AI-Thinker A6 or A7 chip
@@ -42,7 +39,7 @@ const char *sketchName = "logging_to_EnviroDIY.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 1;
+const uint8_t loggingInterval = 5;
 // Your logger's timezone.
 const int8_t timeZone = -5;
 // Create a new logger instance
@@ -76,12 +73,26 @@ const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-
 const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 
+#if defined(TINY_GSM_MODEM_XBEE)
+ModemSleepType ModemSleepMode = modem_sleep_reverse;  // How the modem is put to sleep
+#elif defined(TINY_GSM_MODEM_ESP8266)
+ModemSleepType ModemSleepMode = modem_always_on;  // How the modem is put to sleep
+#else
 ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sleep
+#endif
 // Use "modem_sleep_held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
 // Use "modem_sleep_pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
 // Use "modem_sleep_reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
 // Use "modem_always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
+#if defined(TINY_GSM_MODEM_ESP8266)
+const long ModemBaud = 9600;  // Default for ESP8266 is 115200, but the Mayfly itself stutters above 57600
+#elif defined(TINY_GSM_MODEM_SIM800)
+const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble making it fast (19200 works)
+#elif defined(TINY_GSM_MODEM_XBEE)
+const long ModemBaud = 9600;  // Default for XBee is 9600, I've sped mine up to 57600
+#else
 const long ModemBaud = 9600;  // Modem baud rate
+#endif
 
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
@@ -183,7 +194,7 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 // ==========================================================================
 #include <DecagonES2.h>
 const char *ES2SDI12address = "3";  // The SDI-12 Address of the ES2
-// const int8_t SDI12Data = 7;  // The pin the 5TM is attached to
+// const int8_t SDI12Data = 7;  // The pin the ES2 is attached to
 // const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t ES2NumberReadings = 3;
 DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
@@ -307,6 +318,17 @@ byte y532modbusAddress = 0x32;  // The modbus address of the Y532
 const uint8_t y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
 YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, y532NumberReadings);
 
+
+// ==========================================================================
+//    Zebra Tech D-Opto Dissolved Oxygen Sensor
+// ==========================================================================
+#include <ZebraTechDOpto.h>
+const char *DOptoDI12address = "5";  // The SDI-12 Address of the Zebra Tech D-Opto
+// const int8_t SDI12Data = 7;  // The pin the D-Opto is attached to
+// const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
+
+
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
@@ -341,6 +363,9 @@ Variable *variableList[] = {
     new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
     new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
+    new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -434,8 +459,11 @@ void setup()
     EnviroDIYLogger.setAlertPin(greenLED);
 
     // Setup the logger modem
-    #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
+    #if defined(TINY_GSM_MODEM_ESP8266)
         modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
+    #elif defined(TINY_GSM_MODEM_XBEE)
+        modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
+        // modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
     #else
         modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
     #endif
@@ -456,7 +484,14 @@ void setup()
     EnviroDIYLogger.begin();
 
     // Check for debugging mode
-    EnviroDIYLogger.checkForTestingMode(buttonPin);
+    pinMode(buttonPin, INPUT_PULLUP);
+    enableInterrupt(buttonPin, Logger::testingISR, CHANGE);
+    Serial.print(F("Push button on pin "));
+    Serial.print(buttonPin);
+    Serial.println(F(" at any time to enter sensor testing mode."));
+
+    // Blink the LEDs really fast to show start-up is done
+    greenredflash(6, 25);
 }
 
 

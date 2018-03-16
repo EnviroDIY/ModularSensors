@@ -94,6 +94,9 @@ bool ApogeeSQ212::addSingleMeasurementResult(void)
 
     verifyAndAddMeasurementResult(SQ212_PAR_VAR_NUM, calibResult);
 
+    // Mark that we've already recorded the result of the measurement
+    _millisMeasurementRequested = 0;
+
     if (adcVoltage < 3.6 and adcVoltage > -0.3) return true;
     else return false;
 }

@@ -63,5 +63,8 @@ bool AOSongAM2315::addSingleMeasurementResult(void)
     verifyAndAddMeasurementResult(AM2315_TEMP_VAR_NUM, temp_val);
     verifyAndAddMeasurementResult(AM2315_HUMIDITY_VAR_NUM, humid_val);
 
+    // Mark that we've already recorded the result of the measurement
+    _millisMeasurementRequested = 0;
+
     return ret_val;
 }

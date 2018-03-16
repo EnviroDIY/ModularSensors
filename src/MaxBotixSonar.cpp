@@ -36,7 +36,7 @@ MaxBotixSonar::MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin,
 String MaxBotixSonar::getSensorLocation(void)
 {
     // attach the trigger pin to the stream number
-    String loc = "sonarStream" + String(_triggerPin);
+    String loc = "sonarStream_trigger" + String(_triggerPin);
     return loc;
 }
 
@@ -63,7 +63,7 @@ SENSOR_STATUS MaxBotixSonar::setup(void)
 // Parsing and tossing the header lines in the wake-up
 bool MaxBotixSonar::wake(void)
 {
-    bool isAwake = Sensor::wake();
+    bool isAwake = Sensor::wake();  // takes care of timing stamps
 
     // NOTE: After the power is turned on to the MaxBotix, it sends several lines
     // of header to the serial port, beginning at ~65ms and finising at ~160ms.
@@ -131,6 +131,9 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
     }
 
     verifyAndAddMeasurementResult(HRXL_VAR_NUM, result);
+
+    // Mark that we've already recorded the result of the measurement
+    _millisMeasurementRequested = 0;
 
     // Return true when finished
     return true;

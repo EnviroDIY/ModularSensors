@@ -16,9 +16,6 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
-// Some define statements
-#define STANDARD_SERIAL_OUTPUT Serial  // Without this there will be no output
-
 #define DreamHostPortalRX "TALK TO STROUD FOR THIS VALUE"
 
 // Select your modem chip
@@ -73,13 +70,9 @@ HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - softwa
 const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
-
 ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sleep
-
 const long ModemBaud = 9600;  // Modem baud rate
-
 const char *apn = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
-
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a TinyGSM Client, and an on/off method
 loggerModem modem;
@@ -202,11 +195,11 @@ void setup()
                 loggingInterval, LoggerID);
     EnviroDIYLogger.setAlertPin(greenLED);
 
-    // Initialize the logger modem
+    // Setup the logger modem
     modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
 
     // Attach the modem to the logger
-    EnviroDIYLogger.attachModem(&modem); 
+    EnviroDIYLogger.attachModem(&modem);
 
     // Set up the connection with EnviroDIY
     EnviroDIYLogger.setToken(registrationToken);
@@ -219,7 +212,14 @@ void setup()
     EnviroDIYLogger.begin();
 
     // Check for debugging mode
-    EnviroDIYLogger.checkForTestingMode(buttonPin);
+    pinMode(buttonPin, INPUT_PULLUP);
+    enableInterrupt(buttonPin, Logger::testingISR, CHANGE);
+    Serial.print(F("Push button on pin "));
+    Serial.print(buttonPin);
+    Serial.println(F(" at any time to enter sensor testing mode."));
+
+    // Blink the LEDs really fast to show start-up is done
+    greenredflash(6, 25);
 }
 
 

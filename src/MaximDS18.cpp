@@ -99,7 +99,7 @@ SENSOR_STATUS MaximDS18::getStatus(void)
 // By default, sets pin modes and returns ready
 SENSOR_STATUS MaximDS18::setup(void)
 {
-    Sensor::setup();
+    SENSOR_STATUS setup = Sensor::setup();
     tempSensors.begin();
 
     // Find the address if it's not known
@@ -135,7 +135,8 @@ SENSOR_STATUS MaximDS18::setup(void)
     // That is, we're in ASYNC mode and will get values when we're ready
     tempSensors.setWaitForConversion(false);
 
-    return stat;
+    if (setup == SENSOR_READY && stat == SENSOR_READY) return SENSOR_READY;
+    else return SENSOR_ERROR;
 }
 
 
@@ -148,7 +149,7 @@ bool MaximDS18::startSingleMeasurement(void)
     // Send the command to get temperatures
     MS_DBG(F("Asking DS18 to take a measurement\n"));
     tempSensors.requestTemperaturesByAddress(_OneWireAddress);
-    _lastMeasurementRequested = millis();
+    _millisMeasurementRequested = millis();
     return true;
 }
 
@@ -175,6 +176,9 @@ bool MaximDS18::addSingleMeasurementResult(void)
 
     MS_DBG(F("Temperature: "), result, F(" °C\n"));
     verifyAndAddMeasurementResult(DS18_TEMP_VAR_NUM, result);
+
+    // Mark that we've already recorded the result of the measurement
+    _millisMeasurementRequested = 0;
 
     return goodTemp;
 }
