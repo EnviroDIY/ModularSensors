@@ -14,11 +14,6 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
-// Some define statements
-#define STANDARD_SERIAL_OUTPUT Serial  // Without this there will be no output
-
-// #define DreamHostPortalRX "http://swrcsensors.dreamhosters.com/portalRX_EST_universal.php"
-
 // Select your modem chip, comment out all of the others
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
 // #define TINY_GSM_MODEM_A6  // Select for a AI-Thinker A6 or A7 chip
@@ -45,7 +40,7 @@ const char *sketchName = "logging_to_EnviroDIY_Zero.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 1;
+const uint8_t loggingInterval = 5;
 // Your logger's timezone.
 const int8_t timeZone = -5;
 // Create a new logger instance
@@ -188,7 +183,7 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 // ==========================================================================
 #include <DecagonES2.h>
 const char *ES2SDI12address = "3";  // The SDI-12 Address of the ES2
-// const int8_t SDI12Data = 17;  // The pin the 5TM is attached to
+// const int8_t SDI12Data = 17;  // The pin the ES2 is attached to
 // const int8_t SDI12Power = -1;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t ES2NumberReadings = 3;
 DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
@@ -321,6 +316,16 @@ byte y532modbusAddress = 0x32;  // The modbus address of the Y532
 const uint8_t y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
 YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, y532NumberReadings);
 
+
+// ==========================================================================
+//    Zebra Tech D-Opto Dissolved Oxygen Sensor
+// ==========================================================================
+#include <ZebraTechDOpto.h>
+const char *DOptoDI12address = "3";  // The SDI-12 Address of the Zebra Tech D-Opto
+// const int8_t SDI12Data = 17;  // The pin the D-Opto is attached to
+// const int8_t SDI12Power = -1;  // Pin to switch power on and off (-1 if unconnected)
+ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
+
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
@@ -331,11 +336,11 @@ Variable *variableList[] = {
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaxBotixSonar_Range(&sonar2, "12345678-abcd-1234-efgh-1234567890ab"),
-    // new Decagon5TM_Ea(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
-    // new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
-    // new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
-    // new DecagonES2_Cond(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
-    // new DecagonES2_Temp(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Decagon5TM_Ea(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonES2_Cond(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonES2_Temp(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -355,20 +360,23 @@ Variable *variableList[] = {
     new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
     new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
-    // new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
-    // new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
-    // new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
-    // new YosemitechY532_Voltage(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
-    // new YosemitechY532_pH(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
-    // new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
-    // new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
-    // new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
-    // new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
-    // new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
-    // new YosemitechY510_Temp(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
-    // new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
-    // new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
-    // new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY532_Voltage(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY532_pH(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY510_Temp(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     // new YOUR_variableName_HERE(&)
@@ -450,14 +458,17 @@ void setup()
     EnviroDIYLogger.setAlertPin(greenLED);
 
     // Setup the logger modem
-    #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
+    #if defined(TINY_GSM_MODEM_ESP8266)
         modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
+    #elif defined(TINY_GSM_MODEM_XBEE)
+        modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
+        // modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
     #else
         modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
     #endif
 
     // Attach the modem to the logger
-    EnviroDIYLogger.attachModem(&modem); 
+    EnviroDIYLogger.attachModem(&modem);
 
     // Set up the connection with EnviroDIY
     EnviroDIYLogger.setToken(registrationToken);
@@ -470,10 +481,6 @@ void setup()
 
     // Begin the logger
     EnviroDIYLogger.begin();
-
-    // Check for sensor testing mode
-    // EnviroDIYLogger.checkForTestingMode(buttonPin);
-    // EnviroDIYLogger.testingMode();
 }
 
 
