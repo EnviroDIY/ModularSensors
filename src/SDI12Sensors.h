@@ -32,15 +32,24 @@ class SDI12Sensors : public Sensor
 {
 public:
 
-    SDI12Sensors(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1,
+    SDI12Sensors(char SDI12address, SDI12* SDI12stream, int8_t powerPin, uint8_t measurementsToAverage = 1,
                  String sensorName = "SDI12-Sensor", uint8_t numReturnedVars = 1,
                  uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0);
-    SDI12Sensors(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1,
+    SDI12Sensors(char* SDI12address, SDI12* SDI12stream, int8_t powerPin, uint8_t measurementsToAverage = 1,
                  String sensorName = "SDI12-Sensor", uint8_t numReturnedVars = 1,
                  uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0);
-    SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1,
+    SDI12Sensors(int SDI12address, SDI12* SDI12stream, int8_t powerPin, uint8_t measurementsToAverage = 1,
                  String sensorName = "SDI12-Sensor", uint8_t numReturnedVars = 1,
                  uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0);
+    SDI12Sensors(char SDI12address, SDI12& SDI12stream, int8_t powerPin, uint8_t measurementsToAverage = 1,
+                String sensorName = "SDI12-Sensor", uint8_t numReturnedVars = 1,
+                uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0);
+    SDI12Sensors(char* SDI12address, SDI12& SDI12stream, int8_t powerPin, uint8_t measurementsToAverage = 1,
+                String sensorName = "SDI12-Sensor", uint8_t numReturnedVars = 1,
+                uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0);
+    SDI12Sensors(int SDI12address, SDI12& SDI12stream, int8_t powerPin, uint8_t measurementsToAverage = 1,
+                String sensorName = "SDI12-Sensor", uint8_t numReturnedVars = 1,
+                uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0);
 
     String getSensorVendor(void);
     String getSensorModel(void);
@@ -56,7 +65,7 @@ public:
 
 protected:
     bool getSensorInfo(void);
-    SDI12 _SDI12Internal;
+    SDI12* _SDI12Internal;
     char _SDI12address;
 
 private:

@@ -31,6 +31,7 @@ To use a sensor and variable in your sketch, you must separately include xxx.h f
     - [AOSong DHT](#DHT)
     - [Apogee SQ-212 Quantum Light Sensor](#apogee-sq-212-quantum-light-sensor--photosynthetically-active-radiation-par)
     - [Yosemitech Brand Environmental Sensors](#Yosemitech)
+    - [Zebra-Tech D-Opto Dissolved Oxygen Sensor](#dOpto)
     - [Maxim DS3231 Real Time Clock](#DS3231)
     - [Processor Metadata Treated as Sensors](#Onboard)
 - [Notes on Arduino Streams and Software Serial](#SoftwareSerial)
@@ -108,7 +109,7 @@ const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const uint8_t measurementsToAverage = 10;  // The number of readings to average
 const int SDI12Data = 7;  // The pin the CTD is attached to
 const int SDI12Power = 22;  // The sensor power pin (use -1 if not applicable)
-DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, measurementsToAverage);
+DecagonCTD ctd(*CTDSDI12address, SDI12Bus, SDI12Power, measurementsToAverage);
 DecagonCTD_Cond cond(&ctd);  // The ampersand (&) *must* be included
 DecagonCTD_Temp temp(&ctd);
 DecagonCTD_Depth depth(&ctd);
@@ -537,15 +538,16 @@ _____
 
 Decagon sensors communicate with the board using the [SDI-12 protocol](http://www.sdi-12.org/) (and the [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).  They require a 3.5-12V power supply, which can be turned off between measurements.  While contrary to the manual, they will run with power as low as 3.3V.  On the 5TM with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve.  On the bare-wire version, the power is connected to the _white_ cable, data to _red_, and ground to the unshielded cable.
 
-The SDI-12 address of the sensor, the Arduino pin controlling power on/off, the Arduino pin sending and receiving data, and a number of distinct readings to average are required for the sensor constructor.  The data pin must be a pin that supports pin-change interrupts.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
+The SDI-12 address of the sensor, an SDI-12 bus instance, and the Arduino pin controlling power on/off are required for the sensor constructor. Optionally, you can include a number of distinct readings to average.  The SDI-12 bus must be created on a pin that supports pin-change interrupts.  Only one SDI-12 bus needs to be created for all sensors on the same pin.  Up to 62 sensors can be attached to that bus/pin, provided that each one has a unique address.  Using the same bus for multiple sensors reduces memory overhead for the SDI-12 buffers, so it should be done if possible.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
 
-Keep in mind that SDI12 is a slow communication protocol (only 1200baud) and _interrupts are turned off during communication_.  This means that if you have any interrupt driven sensors (like a tipping bucket) attached with an SDI12 sensor, no interrupts (or tips) will be registered during SDI12 communication.
+Keep in mind that SDI12 is a slow communication protocol (only 1200 baud) and _ALL interrupts are turned off during communication_.  This means that if you have any interrupt driven sensors (like a tipping bucket) attached with an SDI12 sensor, no interrupts (or tips) will be registered during SDI12 communication.
 
 The main constructor for the sensor object is:
 
 ```cpp
 #include <Decagon5TM.h>
-Decagon5TM fivetm(TMSDI12address, SDI12Power, SDI12Data, measurementsToAverage);
+SDI12 SDI12Bus = SDI12(SDI12Data);  // Create an SDI-12 bus
+Decagon5TM fivetm(*TMSDI12address, SDI12Bus, SDI12Power, measurementsToAverage);
 ```
 
 The three available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -568,15 +570,16 @@ _____
 
 Decagon sensors communicate with the board using the [SDI-12 protocol](http://www.sdi-12.org/) (and the [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).  They require a 3.5-12V power supply, which can be turned off between measurements.  While contrary to the manual, they will run with power as low as 3.3V.  On the CTD with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve.  On the bare-wire version, the power is connected to the _white_ cable, data to _red_, and ground to both the black and unshielded cable.
 
-The SDI-12 address of the sensor, the Arduino pin controlling power on/off, the Arduino pin sending and receiving data, and a number of distinct readings to average are required for the sensor constructor.  The data pin must be a pin that supports pin-change interrupts.  For this particular sensor, taking ~6 readings seems to be ideal for reducing noise.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
+The SDI-12 address of the sensor, an SDI-12 bus instance, and the Arduino pin controlling power on/off are required for the sensor constructor. Optionally, you can include a number of distinct readings to average.For this particular sensor, taking ~6 readings seems to be ideal for reducing noise.  The SDI-12 bus must be created on a pin that supports pin-change interrupts.  Only one SDI-12 bus needs to be created for all sensors on the same pin.  Up to 62 sensors can be attached to that bus/pin, provided that each one has a unique address.  Using the same bus for multiple sensors reduces memory overhead for the SDI-12 buffers, so it should be done if possible.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
 
-Keep in mind that SDI12 is a slow communication protocol (only 1200baud) and _interrupts are turned off during communication_.  This means that if you have any interrupt driven sensors (like a tipping bucket) attached with an SDI12 sensor, no interrupts (or tips) will be registered during SDI12 communication.
+Keep in mind that SDI12 is a slow communication protocol (only 1200 baud) and _ALL interrupts are turned off during communication_.  This means that if you have any interrupt driven sensors (like a tipping bucket) attached with an SDI12 sensor, no interrupts (or tips) will be registered during SDI12 communication.
 
 The main constructor for the sensor object is:
 
 ```cpp
 #include <DecagonCTD.h>
-DecagonCTD ctd(CTDSDI12address, SDI12Power, SDI12Data, measurementsToAverage);
+SDI12 SDI12Bus = SDI12(SDI12Data);  // Create an SDI-12 bus
+DecagonCTD ctd(CTDSDI12address, SDI12Bus, SDI12Power, measurementsToAverage);
 ```
 
 The three available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -601,15 +604,16 @@ _____
 
 Decagon sensors communicate with the board using the [SDI-12 protocol](http://www.sdi-12.org/) (and the [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).  They require a 3.5-12V power supply, which can be turned off between measurements.  While contrary to the manual, they will run with power as low as 3.3V.  On the ES-2 with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve.  On the bare-wire version, the power is connected to the _white_ cable, data to _red_, and ground to the unshielded cable.
 
-The SDI-12 address of the sensor, the Arduino pin controlling power on/off, the Arduino pin sending and receiving data, and a number of distinct readings to average are required for the sensor constructor.  The data pin must be a pin that supports pin-change interrupts.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
+The SDI-12 address of the sensor, an SDI-12 bus instance, and the Arduino pin controlling power on/off are required for the sensor constructor. Optionally, you can include a number of distinct readings to average.  The SDI-12 bus must be created on a pin that supports pin-change interrupts.  Only one SDI-12 bus needs to be created for all sensors on the same pin.  Up to 62 sensors can be attached to that bus/pin, provided that each one has a unique address.  Using the same bus for multiple sensors reduces memory overhead for the SDI-12 buffers, so it should be done if possible.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
 
-Keep in mind that SDI12 is a slow communication protocol (only 1200baud) and _interrupts are turned off during communication_.  This means that if you have any interrupt driven sensors (like a tipping bucket) attached with an SDI12 sensor, no interrupts (or tips) will be registered during SDI12 communication.
+Keep in mind that SDI12 is a slow communication protocol (only 1200 baud) and _ALL interrupts are turned off during communication_.  This means that if you have any interrupt driven sensors (like a tipping bucket) attached with an SDI12 sensor, no interrupts (or tips) will be registered during SDI12 communication.
 
 The main constructor for the sensor object is:
 
 ```cpp
 #include <DecagonES2.h>
-DecagonES2 es2(ES2SDI12address, SDI12Power, SDI12Data, measurementsToAverage);
+SDI12 SDI12Bus = SDI12(SDI12Data);  // Create an SDI-12 bus
+DecagonES2 es2(ES2SDI12address, SDI12Bus, SDI12Power, measurementsToAverage);
 ```
 
 The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -912,6 +916,35 @@ YosemitechY550_Turbidity(&y550, "UUID", "customVarCode")  // Turbidity in NTU
 //  Resolution is 0.0000002 NTU
 //  Accuracy is ± 5 % or 0.3 NTU
 //  Range is 0.1 to 1000 NTU
+```
+_____
+
+### <a name="dOpto"></a>[Zebra-Tech D-Opto](http://www.zebra-tech.co.nz/d-opto-sensor/) Dissolved Oxygen Sensor
+
+The Zebra-Tech D-Opto sensor communicate with the board using the [SDI-12 protocol](http://www.sdi-12.org/) (and the [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).  It require an 8-12V power supply, which can be turned off between measurements.  The connection between the logger and the Arduino board is made by way of a white interface module provided by Zebra-Tech. You will need a voltage booster or a separate power supply to give the D-Opto sufficient voltage to run.  We use [Pololu 9V Step-Up Voltage Regulators](https://www.pololu.com/product/2116).
+
+The SDI-12 address of the sensor, an SDI-12 bus instance, and the Arduino pin controlling power on/off are required for the sensor constructor. Optionally, you can include a number of distinct readings to average.  The SDI-12 bus must be created on a pin that supports pin-change interrupts.  For this particular sensor, taking ~6 readings seems to be ideal for reducing noise.  Only one SDI-12 bus needs to be created for all sensors on the same pin.  Up to 62 sensors can be attached to that bus/pin, provided that each one has a unique address.  Using the same bus for multiple sensors reduces memory overhead for the SDI-12 buffers, so it should be done if possible.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
+
+Keep in mind that SDI12 is a slow communication protocol (only 1200 baud) and _ALL interrupts are turned off during communication_.  This means that if you have any interrupt driven sensors (like a tipping bucket) attached with an SDI12 sensor, no interrupts (or tips) will be registered during SDI12 communication.
+
+The main constructor for the sensor object is:
+
+```cpp
+#include <ZebraTechDOpto.h>
+SDI12 SDI12Bus = SDI12(SDI12Data);  // Create an SDI-12 bus
+ZebraTechDOpto dopto(*DOptoDI12address, SDI12Bus, , measurementsToAverage);
+```
+
+The three available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
+
+```cpp
+ZebraTechDOpto_Temp(&ctd, "UUID", "customVarCode");  // Temperature in °C
+//  Resolution is 0.01°C
+//  Accuracy is ± 0.1°C
+ZebraTechDOpto_DOpct(&ctd, "UUID", "customVarCode");  // Dissolved oxygen percent saturation
+ZebraTechDOpto_DOmgL(&ctd, "UUID", "customVarCode");  // Dissolved oxygen concentration in ppm (mg/L)
+//  Resolution is 0.01% / 0.001 PPM
+//  Accuracy is 1% of reading or 0.02PPM, whichever is greater
 ```
 _____
 
