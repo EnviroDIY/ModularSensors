@@ -191,11 +191,33 @@ void Sensor::waitForWarmUp(void)
         }
         else  // if we get really unlucky and are measuring as millis() rolls over
         {
-            MS_DBG(F("Giving a safety of 2000ms for "), getSensorName(),
-                   F(" at "), getSensorLocation(), F(" warm-up\n"));
-            while(millis() < 2000){}
+            MS_DBG(F("Millis() rolled over during warmup for "), getSensorName(),
+                   F(" at "), getSensorLocation(), '\n');
+            uint32_t millisDone = 4294967295L - _millisPowerOn;
+            MS_DBG(F("Waiting "), ((_warmUpTime_ms - millisDone) - (millis() - _millisPowerOn)),
+                   F("ms for "), getSensorName(), F(" at "),
+                   getSensorLocation(), F(" warm-up\n"));
+            while((millis() - _millisPowerOn) < (_warmUpTime_ms - millisDone)){}
         }
     }
+}
+
+// This just checks to see if enough time has passed for warm-up
+bool Sensor::isWarmedUp(void)
+{
+    if (_warmUpTime_ms != 0)
+    {
+        if (millis() > (_millisPowerOn + _warmUpTime_ms)) return true;
+        else if (millis() > _millisPowerOn)  // just in case millis() has rolled over
+            return false;
+        else  // if we get really unlucky and are measuring as millis() rolls over
+        {
+            uint32_t millisDone = 4294967295L - _millisPowerOn;
+            if (millis() > (millisDone + _warmUpTime_ms)) return true;
+            else return false;
+        }
+    }
+    else return true;
 }
 
 
@@ -220,11 +242,33 @@ void Sensor::waitForStability(void)
         }
         else  // if we get really unlucky and are measuring as millis() rolls over
         {
-            MS_DBG(F("Giving a safety of 20s for "), getSensorName(), F(" at "),
-                   getSensorLocation(), F(" stability\n"));
-            while(millis() < 20000){}
+            MS_DBG(F("Millis() rolled over during stabilization of "), getSensorName(),
+                   F(" at "), getSensorLocation(), '\n');
+            uint32_t millisDone = 4294967295L - _millisSensorActivated;
+            MS_DBG(F("Waiting "), ((_stabilizationTime_ms - millisDone) - (millis() - _millisSensorActivated)),
+                   F("ms for "), getSensorName(), F(" at "),
+                   getSensorLocation(), F(" to stabilize\n"));
+            while((millis() - _millisSensorActivated) < (_stabilizationTime_ms - millisDone)){}
         }
     }
+}
+
+// This just checks to see if enough time has passed for stability
+bool Sensor::isStable(void)
+{
+    if (_stabilizationTime_ms != 0)
+    {
+        if (millis() > (_millisSensorActivated + _stabilizationTime_ms)) return true;
+        else if (millis() > _millisSensorActivated)  // just in case millis() has rolled over
+            return false;
+        else  // if we get really unlucky and are measuring as millis() rolls over
+        {
+            uint32_t millisDone = 4294967295L - _millisSensorActivated;
+            if (millis() > (millisDone + _stabilizationTime_ms)) return true;
+            else return false;
+        }
+    }
+    else return true;
 }
 
 
@@ -249,11 +293,33 @@ void Sensor::waitForMeasurementCompletion(void)
         }
         else  // if we get really unlucky and are measuring as millis() rolls over
         {
-            MS_DBG(F("Giving a safety of 2s for "), getSensorName(),
-                   F(" measurement completion\n"));
-            while(millis() < 2000){}
+            MS_DBG(F("Millis() rolled over during measurement on "), getSensorName(),
+                   F(" at "), getSensorLocation(), '\n');
+            uint32_t millisDone = 4294967295L - _millisMeasurementRequested;
+            MS_DBG(F("Waiting "), ((_measurementTime_ms - millisDone) - (millis() - _millisMeasurementRequested)),
+                   F("ms for "), getSensorName(), F(" at "),
+                   getSensorLocation(), F(" to stabilize\n"));
+            while((millis() - _millisMeasurementRequested) < (_measurementTime_ms - millisDone)){}
         }
     }
+}
+
+// This just checks to see if enough time has passed for measurement completion
+bool Sensor::isMeasurementComplete(void)
+{
+    if (_measurementTime_ms != 0)
+    {
+        if (millis() > (_millisMeasurementRequested + _measurementTime_ms)) return true;
+        else if (millis() > _millisMeasurementRequested)  // just in case millis() has rolled over
+            return false;
+        else  // if we get really unlucky and are measuring as millis() rolls over
+        {
+            uint32_t millisDone = 4294967295L - _millisMeasurementRequested;
+            if (millis() > (millisDone + _measurementTime_ms)) return true;
+            else return false;
+        }
+    }
+    else return true;
 }
 
 

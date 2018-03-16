@@ -104,10 +104,13 @@ protected:
     // A helper to check if the power is already on
     bool checkPowerOn(void);
     // A helper to ensure that the sensor has had power long enough to communicate
+    bool isWarmedUp(void);
     void waitForWarmUp(void);
     // A helper to ensure that the sensor is giving stable readings
+    bool isStable(void);
     void waitForStability(void);
     // A helper to ensure that the sensor is ready to give a new value
+    bool isMeasurementComplete(void);
     void waitForMeasurementCompletion(void);
 
     int8_t _dataPin;  // SIGNED int, to allow negative numbers for unused pins
