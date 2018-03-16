@@ -20,60 +20,66 @@ SDI12Sensors::SDI12Sensors(char SDI12address, SDI12* SDI12stream, int8_t powerPi
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
-             powerPin, -1, measurementsToAverage)
+             powerPin, _SDI12Internal->getDataPin(), measurementsToAverage)
 {
     _SDI12address = SDI12address;
     _SDI12Internal = SDI12stream;
+    _dataPin = _SDI12Internal->getDataPin();  // Redefine data pin
 }
 SDI12Sensors::SDI12Sensors(char* SDI12address, SDI12* SDI12stream, int8_t powerPin, uint8_t measurementsToAverage,
                            String sensorName, uint8_t numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
-             powerPin, -1, measurementsToAverage)
+             powerPin, _SDI12Internal->getDataPin(), measurementsToAverage)
 {
     _SDI12address = *SDI12address;
     _SDI12Internal = SDI12stream;
+    _dataPin = _SDI12Internal->getDataPin();  // Redefine data pin
 }
 SDI12Sensors::SDI12Sensors(int SDI12address, SDI12* SDI12stream, int8_t powerPin, uint8_t measurementsToAverage,
                            String sensorName, uint8_t numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
-             powerPin, -1, measurementsToAverage)
+             powerPin, _SDI12Internal->getDataPin(), measurementsToAverage)
 {
     _SDI12address = SDI12address + '0';
     _SDI12Internal = SDI12stream;
+    _dataPin = _SDI12Internal->getDataPin();  // Redefine data pin
 }
 SDI12Sensors::SDI12Sensors(char SDI12address, SDI12& SDI12stream, int8_t powerPin, uint8_t measurementsToAverage,
                            String sensorName, uint8_t numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
-             powerPin, -1, measurementsToAverage)
+             powerPin, _SDI12Internal->getDataPin(), measurementsToAverage)
 {
     _SDI12address = SDI12address;
     _SDI12Internal = &SDI12stream;
+    _dataPin = _SDI12Internal->getDataPin();  // Redefine data pin
 }
 SDI12Sensors::SDI12Sensors(char* SDI12address, SDI12& SDI12stream, int8_t powerPin, uint8_t measurementsToAverage,
                            String sensorName, uint8_t numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
-             powerPin, -1, measurementsToAverage)
+             powerPin, _SDI12Internal->getDataPin(), measurementsToAverage)
 {
     _SDI12address = *SDI12address;
     _SDI12Internal = &SDI12stream;
+    _dataPin = _SDI12Internal->getDataPin();  // Redefine data pin
 }
 SDI12Sensors::SDI12Sensors(int SDI12address, SDI12& SDI12stream, int8_t powerPin, uint8_t measurementsToAverage,
                            String sensorName, uint8_t numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
-             powerPin, -1, measurementsToAverage)
+             powerPin, _SDI12Internal->getDataPin(), measurementsToAverage)
 {
     _SDI12address = SDI12address + '0';
     _SDI12Internal = &SDI12stream;
+    _dataPin = _SDI12Internal->getDataPin();  // Redefine data pin
 }
 
 
@@ -84,8 +90,8 @@ SENSOR_STATUS SDI12Sensors::setup(void)
     // Begin the SDI-12 interface
     _SDI12Internal->begin();
      // SDI-12 protocol says sensors must respond within 15 milliseconds
-     // We'll quadruple that for safety.
-    _SDI12Internal->setTimeout(60);
+     // We'll multply that by 10 for safety.
+    _SDI12Internal->setTimeout(150);
     // Force the timeout value to be -9999
     _SDI12Internal->setTimeoutValue(-9999);
 
