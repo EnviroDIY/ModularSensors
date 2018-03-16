@@ -60,7 +60,7 @@ bool VariableArray::setupSensors(void)
         {
             while(setupTries < 5 and !sensorSuccess)
             {
-                delay(10);
+                delay(10);  // Add a short space between attempts
                 sensorSuccess = _variableList[i]->parentSensor->setup();
                 setupTries++;
             }

@@ -59,20 +59,33 @@ public:
     static String printStatus(SENSOR_STATUS stat);
 
     // This turns on the sensor power, if applicable
+    // This also sets the _millisPowerOn timestamp.
     virtual void powerUp(void);
-    // This wakes the sensor up, if necessary.  Defaults is to power up.
+    // This wakes the sensor up, if necessary - that is, does whatever it takes to
+    // get a sensor in the proper state to begin a measurement after the power is on.
+    // This also sets the _millisSensorActivated timestamp.
+    // By default, verifies the power is on and returns true
     virtual bool wake(void);
     // This puts the sensor to sleep, if necessary.
+    // This *may* require a waitForWarmUp() before wake commands can be sent.
+    // This also un-sets the _millisSensorActivated timestamp.
     // Does NOT power down the sensor!
     virtual bool sleep(void);
     // This turns off the sensor power, if applicable
+    // This also un-sets the _millisPowerOn timestamp.
     virtual void powerDown(void);
 
     // This tells the sensor to start a single measurement, if needed
+    // This also sets the _millisMeasurementRequested timestamp.
+    // This *may* require a waitForWarmUp() before measurement commands can be sent.
+    // This *may* also require a waitForStability() before returned measurements will be any good.
     virtual bool startSingleMeasurement(void);
 
     // This next function must be implemented for ever sensor!!
     // This actually gets the results from a single measurement
+    // This also un-sets the _millisMeasurementRequested timestamp.
+    // This *may* also require a waitForStability() before returned measurements will be any good.
+    // This will often require a waitForMeasurementCompletion() to ensure a measurement is done.
     virtual bool addSingleMeasurementResult(void) = 0;
 
     // This verifies that a measurement is OK before adding it to the array
