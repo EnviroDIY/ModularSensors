@@ -289,7 +289,6 @@ bool SDI12Sensors::startSingleMeasurement(void)
 
 bool SDI12Sensors::addSingleMeasurementResult(void)
 {
-
     if (_millisSensorActivated > 0)
     {
         // Make sure we've waited long enough for a reading to finish

@@ -30,46 +30,69 @@
 
 bool Decagon5TM::addSingleMeasurementResult(void)
 {
-    // Make sure we've waited long enough for a reading to finish
-    waitForMeasurementCompletion();
+    if (_millisSensorActivated > 0)
+    {
+        // Make sure we've waited long enough for a reading to finish
+        waitForMeasurementCompletion();
 
-    // Empty the buffer
-    _SDI12Internal.clearBuffer();
+        bool gotResult = false;
+        int ntries = 0;
+        float ea, temp, VWC = -9999;
+        while (!gotResult and ntries < 4)
+        {
+            // Make this the currently active SDI-12 Object
+            _SDI12Internal.setActive();
 
-    String getDataCommand = "";
-    getDataCommand += _SDI12address;
-    getDataCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
-    _SDI12Internal.sendCommand(getDataCommand);
-    MS_DBG(F(">>"), getDataCommand, F("\n"));
-    delay(30);  // It just needs this little delay
+            // Empty the buffer
+            _SDI12Internal.clearBuffer();
 
-    MS_DBG(F("Receiving data\n"));
-    _SDI12Internal.read();  // ignore the repeated SDI12 address
-    // First variable returned is the Dialectric E
-    float ea = _SDI12Internal.parseFloat();
-    // Second variable returned is the temperature in °C
-    float temp = _SDI12Internal.parseFloat();
-    // the "third" variable of VWC is actually calculated, not returned by the sensor!
-    float VWC = (4.3e-6*(ea*ea*ea))
-                - (5.5e-4*(ea*ea))
-                + (2.92e-2 * ea)
-                - 5.3e-2 ;
-    VWC *= 100;  // Convert to actual percent
+            MS_DBG(F("   Requesting data from "), getSensorName(), '\n');
+            String getDataCommand = "";
+            getDataCommand += _SDI12address;
+            getDataCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
+            _SDI12Internal.sendCommand(getDataCommand);
+            delay(30);  // It just needs this little delay
+            MS_DBG(F("      >>> "), getDataCommand, F("\n"));
 
-    // Empty the buffer again
-    _SDI12Internal.clearBuffer();
+            MS_DBG(F("   Receiving results from "), getSensorName(), '\n');
+            _SDI12Internal.read();  // ignore the repeated SDI12 address
+            // First variable returned is the Dialectric E
+            ea = _SDI12Internal.parseFloat();
+            // Second variable returned is the temperature in °C
+            temp = _SDI12Internal.parseFloat();
+            // the "third" variable of VWC is actually calculated, not returned by the sensor!
+            VWC = (4.3e-6*(ea*ea*ea))
+                        - (5.5e-4*(ea*ea))
+                        + (2.92e-2 * ea)
+                        - 5.3e-2 ;
+            VWC *= 100;  // Convert to actual percent
 
-    MS_DBG(F("Dialectric E: "), ea);
-    MS_DBG(F(" Temperature: "), temp);
-    MS_DBG(F(" Volumetric Water Content: "), VWC, F("\n"));
+            // Empty the buffer again
+            _SDI12Internal.clearBuffer();
 
-    verifyAndAddMeasurementResult(TM_EA_VAR_NUM, ea);
-    verifyAndAddMeasurementResult(TM_TEMP_VAR_NUM, temp);
-    verifyAndAddMeasurementResult(TM_VWC_VAR_NUM, VWC);
+            // De-activate the SDI-12 Object
+            _SDI12Internal.forceHold();
 
-    // Mark that we've already recorded the result of the measurement
-    _millisMeasurementRequested = 0;
+            ntries++;
+        }
 
-    // Return true when finished
-    return true;
+        MS_DBG(F("Dialectric E: "), ea);
+        MS_DBG(F(" Temperature: "), temp);
+        MS_DBG(F(" Volumetric Water Content: "), VWC, F("\n"));
+
+        verifyAndAddMeasurementResult(TM_EA_VAR_NUM, ea);
+        verifyAndAddMeasurementResult(TM_TEMP_VAR_NUM, temp);
+        verifyAndAddMeasurementResult(TM_VWC_VAR_NUM, VWC);
+
+      // Mark that we've already recorded the result of the measurement
+      _millisMeasurementRequested = 0;
+
+      // Return true when finished
+      return gotResult;
+  }
+  else
+  {
+      MS_DBG(F("   "), getSensorName(), F(" is not currently measuring!\n"));
+      return false;
+  }
 }
