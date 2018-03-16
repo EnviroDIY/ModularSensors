@@ -81,8 +81,11 @@ SENSOR_STATUS SDI12Sensors::setup(void)
 {
     SENSOR_STATUS retVal = Sensor::setup();
 
+    // Begin the SDI-12 interface
+    _SDI12Internal->begin();
      // SDI-12 protocol says sensors must respond within 15 milliseconds
-    _SDI12Internal->setTimeout(150);
+     // We'll quadruple that for safety.
+    _SDI12Internal->setTimeout(60);
     // Force the timeout value to be -9999
     _SDI12Internal->setTimeoutValue(-9999);
 

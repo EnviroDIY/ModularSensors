@@ -94,9 +94,9 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OB
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const uint8_t CTDnumberReadings = 6;  // The number of readings to average
 const int8_t SDI12Data = 7;  // The pin the CTD is attached to
-SDI12 sdi12Bus = SDI12(SDI12Data);  // Create an SDI-12 bus
+SDI12 SDI12Bus = SDI12(SDI12Data);  // Create an SDI-12 bus
 const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
-DecagonCTD ctd(*CTDSDI12address, sdi12Bus, SDI12Power, CTDnumberReadings);
+DecagonCTD ctd(*CTDSDI12address, SDI12Bus, SDI12Power, CTDnumberReadings);
 
 
 // ==========================================================================
@@ -148,9 +148,6 @@ void setup()
 {
     // Start the primary serial connection
     Serial.begin(serialBaud);
-
-    // Start the SDI-12 bus
-    sdi12Bus.begin();
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
