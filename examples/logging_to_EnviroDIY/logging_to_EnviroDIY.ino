@@ -163,8 +163,9 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OB
 #include <Decagon5TM.h>
 const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
 const int8_t SDI12Data = 7;  // The pin the 5TM is attached to
+SDI12 sdi12Bus = SDI12(SDI12Data);  // Create an SDI-12 bus
 const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
-Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
+Decagon5TM fivetm(*TMSDI12address, sdi12Bus, SDI12Power);
 
 
 // ==========================================================================
@@ -174,8 +175,9 @@ Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const uint8_t CTDnumberReadings = 6;  // The number of readings to average
 // const int8_t SDI12Data = 7;  // The pin the CTD is attached to
+// SDI12 sdi12Bus = SDI12(SDI12Data);  // Create an SDI-12 bus
 // const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
-DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
+DecagonCTD ctd(*CTDSDI12address, sdi12Bus, SDI12Power, CTDnumberReadings);
 
 
 // ==========================================================================
@@ -183,10 +185,11 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 // ==========================================================================
 #include <DecagonES2.h>
 const char *ES2SDI12address = "3";  // The SDI-12 Address of the ES2
-// const int8_t SDI12Data = 7;  // The pin the 5TM is attached to
+// const int8_t SDI12Data = 7;  // The pin the ES2 is attached to
+// SDI12 sdi12Bus = SDI12(SDI12Data);  // Create an SDI-12 bus
 // const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t ES2NumberReadings = 3;
-DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
+DecagonES2 es2(*ES2SDI12address, sdi12Bus, SDI12Power, ES2NumberReadings);
 
 
 // ==========================================================================
@@ -307,6 +310,18 @@ byte y532modbusAddress = 0x32;  // The modbus address of the Y532
 const uint8_t y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
 YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, y532NumberReadings);
 
+
+// ==========================================================================
+//    Zebra Tech D-Opto Dissolved Oxygen Sensor
+// ==========================================================================
+#include <ZebraTechDOpto.h>
+const char *DOptoDI12address = "5";  // The SDI-12 Address of the Zebra Tech D-Opto
+// const int8_t SDI12Data = 7;  // The pin the D-Opto is attached to
+// SDI12 sdi12Bus = SDI12(SDI12Data);  // Create an SDI-12 bus
+// const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+ZebraTechDOpto dopto(*DOptoDI12address, sdi12Bus, SDI12Power);
+
+
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
@@ -341,6 +356,9 @@ Variable *variableList[] = {
     new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
     new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
+    new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -409,6 +427,9 @@ void setup()
     #if defined SoftwareSerial_ExtInts_h
     enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
     #endif
+
+    // Start the SDI-12 bus
+    sdi12Bus.begin();
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);

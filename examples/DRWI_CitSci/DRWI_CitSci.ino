@@ -120,8 +120,9 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OB
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const uint8_t CTDnumberReadings = 6;  // The number of readings to average
 const int8_t SDI12Data = 7;  // The pin the CTD is attached to
+SDI12 sdi12Bus = SDI12(SDI12Data);  // Create an SDI-12 bus
 const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
-DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
+DecagonCTD ctd(*CTDSDI12address, sdi12Bus, SDI12Power, CTDnumberReadings);
 
 
 // ==========================================================================
@@ -179,6 +180,9 @@ void setup()
     // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);
 
+    // Start the SDI-12 bus
+    sdi12Bus.begin();
+
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
     pinMode(redLED, OUTPUT);
@@ -202,11 +206,11 @@ void setup()
                 loggingInterval, LoggerID);
     EnviroDIYLogger.setAlertPin(greenLED);
 
-    // Initialize the logger modem
+    // Setup the logger modem
     modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
 
     // Attach the modem to the logger
-    EnviroDIYLogger.attachModem(&modem); 
+    EnviroDIYLogger.attachModem(&modem);
 
     // Set up the connection with EnviroDIY
     EnviroDIYLogger.setToken(registrationToken);
@@ -219,7 +223,14 @@ void setup()
     EnviroDIYLogger.begin();
 
     // Check for debugging mode
-    EnviroDIYLogger.checkForTestingMode(buttonPin);
+    pinMode(buttonPin, INPUT_PULLUP);
+    enableInterrupt(buttonPin, Logger::testingISR, CHANGE);
+    Serial.print(F("Push button on pin "));
+    Serial.print(buttonPin);
+    Serial.println(F(" at any time to enter sensor testing mode."));
+
+    // Blink the LEDs really fast to show start-up is done
+    greenredflash(6, 25);
 }
 
 

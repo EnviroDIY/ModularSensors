@@ -130,8 +130,9 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OB
 #include <Decagon5TM.h>
 const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
 const int8_t SDI12Data = 7;  // The pin the 5TM is attached to
+SDI12 sdi12Bus = SDI12(SDI12Data);  // Create an SDI-12 bus
 const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
-Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
+Decagon5TM fivetm(*TMSDI12address, sdi12Bus, SDI12Power);
 
 
 // ==========================================================================
@@ -141,8 +142,9 @@ Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const uint8_t CTDnumberReadings = 6;  // The number of readings to average
 // const int8_t SDI12Data = 7;  // The pin the CTD is attached to
+// SDI12 sdi12Bus = SDI12(SDI12Data);  // Create an SDI-12 bus
 // const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
-DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
+DecagonCTD ctd(*CTDSDI12address, sdi12Bus, SDI12Power, CTDnumberReadings);
 
 
 // ==========================================================================
@@ -150,10 +152,11 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 // ==========================================================================
 #include <DecagonES2.h>
 const char *ES2SDI12address = "3";  // The SDI-12 Address of the ES2
-// const int8_t SDI12Data = 7;  // The pin the 5TM is attached to
+// const int8_t SDI12Data = 7;  // The pin the ES2 is attached to
+// SDI12 sdi12Bus = SDI12(SDI12Data);  // Create an SDI-12 bus
 // const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t ES2NumberReadings = 3;
-DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
+DecagonES2 es2(*ES2SDI12address, sdi12Bus, SDI12Power, ES2NumberReadings);
 
 
 // ==========================================================================
@@ -274,6 +277,18 @@ byte y532modbusAddress = 0x32;  // The modbus address of the Y532
 const uint8_t y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
 YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, y532NumberReadings);
 
+
+// ==========================================================================
+//    Zebra Tech D-Opto Dissolved Oxygen Sensor
+// ==========================================================================
+#include <ZebraTechDOpto.h>
+const char *DOptoDI12address = "5";  // The SDI-12 Address of the Zebra Tech D-Opto
+// const int8_t SDI12Data = 7;  // The pin the D-Opto is attached to
+// SDI12 sdi12Bus = SDI12(SDI12Data);  // Create an SDI-12 bus
+// const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+ZebraTechDOpto dopto(*DOptoDI12address, sdi12Bus, SDI12Power);
+
+
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
@@ -308,20 +323,23 @@ Variable *variableList[] = {
     new AOSongAM2315_Temp(&am2315),
     new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
-    new YosemitechY532_pH(&y532),
+    new ZebraTechDOpto_Temp(&dopto),
+    new ZebraTechDOpto_DOpct(&dopto),
+    new ZebraTechDOpto_DOmgL(&dopto),
+    new YosemitechY511_Temp(&y511),
+    new YosemitechY511_Turbidity(&y511),
     new YosemitechY532_Temp(&y532),
     new YosemitechY532_Voltage(&y532),
+    new YosemitechY532_pH(&y532),
     new YosemitechY504_DOpct(&y504),
     new YosemitechY504_Temp(&y504),
     new YosemitechY504_DOmgL(&y504),
-    new YosemitechY520_Cond(&y520),
     new YosemitechY520_Temp(&y520),
-    new YosemitechY510_Turbidity(&y510),
+    new YosemitechY520_Cond(&y520),
     new YosemitechY510_Temp(&y510),
-    new YosemitechY511_Turbidity(&y511),
-    new YosemitechY511_Temp(&y511),
-    new YosemitechY514_Chlorophyll(&y514),
+    new YosemitechY510_Turbidity(&y510),
     new YosemitechY514_Temp(&y514),
+    new YosemitechY514_Chlorophyll(&y514)
     // new YOUR_variableName_HERE(&)
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
@@ -363,6 +381,9 @@ void setup()
     #if defined SoftwareSerial_ExtInts_h
     enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
     #endif
+
+    // Start the SDI-12 bus
+    sdi12Bus.begin();
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
