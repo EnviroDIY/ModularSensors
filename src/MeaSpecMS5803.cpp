@@ -123,30 +123,22 @@ bool MeaSpecMS5803::addSingleMeasurementResult(void)
     waitForMeasurementCompletion();
 
     // Read values
-    float temp = MS5803_internal.readTemperature();
-    float press = MS5803_internal.readPressure();
-    float alt = MS5803_internal.readAltitude(SEALEVELPRESSURE_HPA);
-    float humid = MS5803_internal.readHumidity();
+    float temp = MS5803_internal.getTemperature();
+    float press = MS5803_internal.getPressure();
 
     if (isnan(temp)) temp = -9999;
     if (isnan(press)) press = -9999;
-    if (isnan(alt)) alt = -9999;
-    if (isnan(humid)) humid = -9999;
 
     if (temp == -140.85)  // This is the value returned if it's not attached
     {
-        temp = press = alt = humid = -9999;
+        temp = press = -9999;
     }
 
     MS_DBG(F("Temperature: "), temp);
-    MS_DBG(F(" Humidity: "), humid);
-    MS_DBG(F(" Barometric Pressure: "), press);
-    MS_DBG(F(" Calculated Altitude: "), alt, F("\n"));
+    MS_DBG(F("Pressure: "), press);
 
     verifyAndAddMeasurementResult(MS5803_TEMP_VAR_NUM, temp);
-    verifyAndAddMeasurementResult(MS5803_HUMIDITY_VAR_NUM, humid);
     verifyAndAddMeasurementResult(MS5803_PRESSURE_VAR_NUM, press);
-    verifyAndAddMeasurementResult(MS5803_ALTITUDE_VAR_NUM, alt);
 
     // Mark that we've already recorded the result of the measurement
     _millisMeasurementRequested = 0;
