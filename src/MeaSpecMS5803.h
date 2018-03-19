@@ -8,12 +8,14 @@
  *This file is for the Measurement Specialties MS5803-14BA pressure sensor,
   as in SparkFun Pressure Sensor Breakout - MS5803-14BA, which uses the .
  *It is dependent on the SparkFun_MS5803-14BA_Breakout_Arduino_Library
+ *https://github.com/sparkfun/SparkFun_MS5803-14BA_Breakout_Arduino_Library
  *
  *Documentation for the sensor can be found at:
  *https://www.sparkfun.com/products/12909
+ *https://cdn.sparkfun.com/datasheets/Sensors/Weather/ms5803_14ba.pdf
  *
  * For Pressure (sensor designed for water pressure):
- *  Resolution is 1 / 0.6 / 0.4 / 0.3 / 0.2 mbar
+ *  Resolution is 1 / 0.6 / 0.4 / 0.3 / 0.2 mbar (where 1 mbar = 100 pascals)
  *  at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
  *  Accuracy 0 to +40°C is ±20mbar
  *  Accuracy -40°C to +85°C is ±40mbar
@@ -25,7 +27,7 @@
  *  Accuracy is ±0.8°C
  *  Range is -40°C to +85°C
  *
- * Sensor takes about 0.5 / 1.1 / 2.1 / 4.1 / 8.22 to respond
+ * Sensor takes about 0.5 / 1.1 / 2.1 / 4.1 / 8.22 ms to respond
  *  at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
  * Assume sensor is immediately stable
 */
@@ -44,16 +46,15 @@
 #include <SparkFun_MS5803_I2C.h>
 
 #define MS5803_NUM_VARIABLES 2
-#define MS5803_WARM_UP_TIME_MS 100
+#define MS5803_WARM_UP_TIME_MS 10
 #define MS5803_STABILIZATION_TIME_MS 0
-#define MS5803_MEASUREMENT_TIME_MS 1000
+#define MS5803_MEASUREMENT_TIME_MS 10
 
 #define MS5803_TEMP_RESOLUTION 2
 #define MS5803_TEMP_VAR_NUM 0
 
-
-#define MS5803_PRESSURE_RESOLUTION 2
-#define MS5803_PRESSURE_VAR_NUM 2
+#define MS5803_PRESSURE_RESOLUTION 1
+#define MS5803_PRESSURE_VAR_NUM 1
 
 
 // The main class for the Measurement Specialties MS5803
@@ -96,7 +97,7 @@ public:
     MeaSpecMS5803_Pressure(Sensor *parentSense,
                          String UUID = "", String customVarCode = "")
       : Variable(parentSense, MS5803_PRESSURE_VAR_NUM,
-               F("barometricPressure"), F("pascal"),
+               F("barometricPressure"), F("Millibar"),
                MS5803_PRESSURE_RESOLUTION,
                F("MeaSpecMS5803Pressure"), UUID, customVarCode)
     {}
