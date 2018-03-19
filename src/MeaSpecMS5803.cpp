@@ -1,14 +1,16 @@
 /*
- *BoschBME280.cpp
+*MeaSpecMS5803.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
- *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
+ *Initial library developement done by Anthony Aufdenkampe <aaufdenkampe@limno.com>.
+ * with help from Beth Fisher and Evan Host
  *
- *This file is for the Bosch BME280 Digital Pressure and Humidity Sensor
- *It is dependent on the Adafruit BME280 Library
+ *This file is for the Measurement Specialties MS5803-14BA pressure sensor,
+  as in SparkFun Pressure Sensor Breakout - MS5803-14BA, which uses the .
+ *It is dependent on the SparkFun_MS5803-14BA_Breakout_Arduino_Library
  *
  *Documentation for the sensor can be found at:
- *https://www.bosch-sensortec.com/bst/products/all_products/bme280
+ *https://www.sparkfun.com/products/12909
  *
  * For Barometric Pressure:
  *  Resolution is 0.18Pa
@@ -21,27 +23,23 @@
  *  Accuracy is ±0.5°C
  *  Range is -40°C to +85°C
  *
- * For Humidity:
- *  Resolution is 0.008 % RH (16 bit)
- *  Accuracy is ± 3 % RH
- *
  * Slowest response time (humidity): 1sec
 */
 
-#include "BoschBME280.h"
+#include "MeaSpecMS5803.h"
 
 
 // The constructor - because this is I2C, only need the power pin
-BoschBME280::BoschBME280(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage)
-     : Sensor(F("BoschBME280"), BME280_NUM_VARIABLES,
-              BME280_WARM_UP_TIME_MS, BME280_STABILIZATION_TIME_MS, BME280_MEASUREMENT_TIME_MS,
+MeaSpecMS5803::MeaSpecMS5803(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage)
+     : Sensor(F("MeaSpecMS5803"), MS5803_NUM_VARIABLES,
+              MS5803_WARM_UP_TIME_MS, MS5803_STABILIZATION_TIME_MS, MS5803_MEASUREMENT_TIME_MS,
               powerPin, -1, measurementsToAverage)
 {
     _i2cAddressHex  = i2cAddressHex;
 }
 
 
-String BoschBME280::getSensorLocation(void)
+String MeaSpecMS5803::getSensorLocation(void)
 {
     String address = F("I2C_0x");
     address += String(_i2cAddressHex, HEX);
@@ -49,7 +47,7 @@ String BoschBME280::getSensorLocation(void)
 }
 
 
-SENSOR_STATUS BoschBME280::getStatus(void)
+SENSOR_STATUS MeaSpecMS5803::getStatus(void)
 {
     // Check if the power is on, turn it on if not (Need power to get status)
     bool wasOn = checkPowerOn();
@@ -58,7 +56,7 @@ SENSOR_STATUS BoschBME280::getStatus(void)
     waitForWarmUp();
 
     // Run begin fxn because it returns true or false for success in contact
-    bool status = bme_internal.begin(_i2cAddressHex);
+    bool status = MS5803_internal.begin(_i2cAddressHex);
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
@@ -68,7 +66,7 @@ SENSOR_STATUS BoschBME280::getStatus(void)
 }
 
 
-SENSOR_STATUS BoschBME280::setup(void)
+SENSOR_STATUS MeaSpecMS5803::setup(void)
 {
     SENSOR_STATUS setup = Sensor::setup();
     SENSOR_STATUS stat = getStatus();
@@ -77,32 +75,23 @@ SENSOR_STATUS BoschBME280::setup(void)
 }
 
 
-bool BoschBME280::wake(void)
+bool MeaSpecMS5803::wake(void)
 {
     Sensor::wake();
     waitForWarmUp();
     // Restart always needed after power-up
-    // As of Adafruit library version 1.0.7, this function includes all of the
-    // various delays to allow the chip to wake up, get calibrations, get
-    // coefficients, and set sampling modes.
-    // Currently this is using the settings that Adafruit considered to be 'default'
-    //  - sensor mode = normal (sensor measures, sleeps for the "standby time" and then automatically remeasures
-    //  - temperature oversampling = 16x
-    //  - pressure oversampling = 16x
-    //  - humidity oversampling = 16x
-    //  - built-in IIR filter = off oversampling = 16x
-    //  - sleep time between measurements = 0.5ms
-    bme_internal.begin(_i2cAddressHex);
 
-    // When the Adafruit library is updated to remove the built-in delay after
+    MS5803_internal.begin(_i2cAddressHex);
+
+    // When the ???? library is updated to remove the built-in delay after
     // forcing a sample, it would be better to operate in forced mode.
-    bme_internal.setSampling(Adafruit_BME280::MODE_NORMAL,  // sensor mode
-    // bme_internal.setSampling(Adafruit_BME280::MODE_FORCED,  // sensor mode
-                             Adafruit_BME280::SAMPLING_X16,  // temperature oversampling
-                             Adafruit_BME280::SAMPLING_X16,  //  pressure oversampling
-                             Adafruit_BME280::SAMPLING_X16,  //  humidity oversampling
-                             Adafruit_BME280::FILTER_OFF, // built-in IIR filter
-                             Adafruit_BME280::STANDBY_MS_1000);  // sleep time between measurements (N/A in forced mode)
+    MS5803_internal.setSampling(SparkFun_MS5803_I2C::MODE_NORMAL,  // sensor mode
+    // MS5803_internal.setSampling(SparkFun_MS5803_I2C::MODE_FORCED,  // sensor mode
+                             SparkFun_MS5803_I2C::SAMPLING_X16,  // temperature oversampling
+                             SparkFun_MS5803_I2C::SAMPLING_X16,  //  pressure oversampling
+                             SparkFun_MS5803_I2C::SAMPLING_X16,  //  humidity oversampling
+                             SparkFun_MS5803_I2C::FILTER_OFF, // built-in IIR filter
+                             SparkFun_MS5803_I2C::STANDBY_MS_1000);  // sleep time between measurements (N/A in forced mode)
     delay(100);  // Need this delay after changing sampling mode
 
     // Mark that the sensor is now active
@@ -112,26 +101,26 @@ bool BoschBME280::wake(void)
 }
 
 // For operating in forced mode
-// bool BoschBME280::startSingleMeasurement(void)
+// bool MeaSpecMS5803::startSingleMeasurement(void)
 // {
 //     // waitForWarmUp();  // already done in wake
 //     waitForStability();
-//     bme_internal.takeForcedMeasurement(false);  // Don't want to wait to finish here
+//     MS5803_internal.takeForcedMeasurement(false);  // Don't want to wait to finish here
 //     _millisMeasurementRequested = millis();
 //     return true;
 // }
 
 
-bool BoschBME280::addSingleMeasurementResult(void)
+bool MeaSpecMS5803::addSingleMeasurementResult(void)
 {
     // Make sure we've waited long enough for a new reading to be available
     waitForMeasurementCompletion();
 
     // Read values
-    float temp = bme_internal.readTemperature();
-    float press = bme_internal.readPressure();
-    float alt = bme_internal.readAltitude(SEALEVELPRESSURE_HPA);
-    float humid = bme_internal.readHumidity();
+    float temp = MS5803_internal.readTemperature();
+    float press = MS5803_internal.readPressure();
+    float alt = MS5803_internal.readAltitude(SEALEVELPRESSURE_HPA);
+    float humid = MS5803_internal.readHumidity();
 
     if (isnan(temp)) temp = -9999;
     if (isnan(press)) press = -9999;
@@ -148,10 +137,10 @@ bool BoschBME280::addSingleMeasurementResult(void)
     MS_DBG(F(" Barometric Pressure: "), press);
     MS_DBG(F(" Calculated Altitude: "), alt, F("\n"));
 
-    verifyAndAddMeasurementResult(BME280_TEMP_VAR_NUM, temp);
-    verifyAndAddMeasurementResult(BME280_HUMIDITY_VAR_NUM, humid);
-    verifyAndAddMeasurementResult(BME280_PRESSURE_VAR_NUM, press);
-    verifyAndAddMeasurementResult(BME280_ALTITUDE_VAR_NUM, alt);
+    verifyAndAddMeasurementResult(MS5803_TEMP_VAR_NUM, temp);
+    verifyAndAddMeasurementResult(MS5803_HUMIDITY_VAR_NUM, humid);
+    verifyAndAddMeasurementResult(MS5803_PRESSURE_VAR_NUM, press);
+    verifyAndAddMeasurementResult(MS5803_ALTITUDE_VAR_NUM, alt);
 
     // Mark that we've already recorded the result of the measurement
     _millisMeasurementRequested = 0;
