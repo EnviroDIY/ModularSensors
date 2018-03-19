@@ -12,19 +12,21 @@
  *Documentation for the sensor can be found at:
  *https://www.sparkfun.com/products/12909
  *
- * For Barometric Pressure:
- *  Resolution is 0.18Pa
- *  Absolute Accuracy is ±1hPa
- *  Relative Accuracy is ±0.12hPa
- *  Range is 300 to 1100 hPa
+ * For Pressure (sensor designed for water pressure):
+ *  Resolution is 1 / 0.6 / 0.4 / 0.3 / 0.2 mbar
+ *  at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
+ *  Accuracy 0 to +40°C is ±20mbar
+ *  Accuracy -40°C to +85°C is ±40mbar
+ *  Range is 0 to 14 bar
+ *  Long term stability is -20 mbar/yr
  *
  * For Temperature:
- *  Resolution is 0.01°C
- *  Accuracy is ±0.5°C
+ *  Resolution is <0.01°C
+ *  Accuracy is ±0.8°C
  *  Range is -40°C to +85°C
  *
- * Sensor takes about 100ms to respond
- * Slowest response time (humidity): 1sec
+ * Sensor takes about 0.5 / 1.1 / 2.1 / 4.1 / 8.22 to respond
+ *  at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
  * Assume sensor is immediately stable
 */
 
