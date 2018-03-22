@@ -54,16 +54,16 @@ String YosemitechParent::getSensorLocation(void)
 }
 
 
-SENSOR_STATUS YosemitechParent::setup(void)
+bool YosemitechParent::setup(void)
 {
-    SENSOR_STATUS retVal = Sensor::setup();
+    bool retVal = Sensor::setup();
     if (_RS485EnablePin > 0) pinMode(_RS485EnablePin, OUTPUT);
 
     #if defined(DEEP_DEBUGGING_SERIAL_OUTPUT)
         sensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
     #endif
 
-    sensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
+    retVal &= sensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
 
     return retVal;
 }

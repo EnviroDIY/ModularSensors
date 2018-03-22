@@ -19,14 +19,6 @@
 // The largest number of variables from a single sensor
 #define MAX_NUMBER_VARS 4
 
-typedef enum SENSOR_STATUS
-{
-    SENSOR_ERROR,
-    SENSOR_READY,
-    SENSOR_WAITING,
-    SENSOR_UNKNOWN
-} SENSOR_STATUS;
-
 
 class Variable;  // Forward declaration
 
@@ -51,29 +43,38 @@ public:
     int getNumberMeasurementsToAverage(void);
 
     // These next functions have defaults.
-    // This sets up the sensor, if necessary.  Defaults to ready.
-    virtual SENSOR_STATUS setup(void);
-    // This returns the current status of the sensor.  Defaults to ready.
-    virtual SENSOR_STATUS getStatus(void);
-    // This returns a string for the sensor status
-    static String printStatus(SENSOR_STATUS stat);
 
     // This turns on the sensor power, if applicable
     // This also sets the _millisPowerOn timestamp.
     virtual void powerUp(void);
+    // This turns off the sensor power, if applicable
+    // This also un-sets the _millisPowerOn timestamp.
+    virtual void powerDown(void);
     // This wakes the sensor up, if necessary - that is, does whatever it takes to
     // get a sensor in the proper state to begin a measurement after the power is on.
+    // This *may* require a waitForWarmUp() before wake commands can be sent.
     // This also sets the _millisSensorActivated timestamp.
     // By default, verifies the power is on and returns true
     virtual bool wake(void);
     // This puts the sensor to sleep, if necessary.
-    // This *may* require a waitForWarmUp() before wake commands can be sent.
     // This also un-sets the _millisSensorActivated timestamp.
     // Does NOT power down the sensor!
     virtual bool sleep(void);
-    // This turns off the sensor power, if applicable
-    // This also un-sets the _millisPowerOn timestamp.
-    virtual void powerDown(void);
+
+    // This sets up the sensor, if necessary.  Defaults to true.
+    virtual bool setup(void);
+
+    // This returns the 8-bit code for the current status of the sensor.
+    // Bit 0 - 0=Not powered, 1=Powered
+    // Bit 1 - 0=Has been setup, 1=Has NOT been set up
+    // Bit 2 - 0=Is warmed up, 1=Is not warmed up
+    // Bit 3 - 0=Is awake/actively measuring, 1=Not awake/actively measuring
+    // Bit 4 - 0=Readings should be stable, 1=Readings not stable
+    // Bit 5 - 0=Waiting for measurement completion (IFF bit 3 and 4 are set!),
+    //         1=Measurement complete (IFF bit 3 and 4 are set!)
+    // Bit 6 - 0=, 1=
+    // Bit 7 - 0=No known errors, 1=Some sort of error has occured
+    virtual uint8_t getStatus(void);
 
     // This tells the sensor to start a single measurement, if needed
     // This also sets the _millisMeasurementRequested timestamp.
@@ -113,18 +114,8 @@ public:
     uint32_t _sensorLastUpdated;
     bool checkForUpdate(void);
 
+
 protected:
-    // A helper to check if the power is already on
-    bool checkPowerOn(void);
-    // A helper to ensure that the sensor has had power long enough to communicate
-    bool isWarmedUp(void);
-    void waitForWarmUp(void);
-    // A helper to ensure that the sensor is giving stable readings
-    bool isStable(void);
-    void waitForStability(void);
-    // A helper to ensure that the sensor is ready to give a new value
-    bool isMeasurementComplete(void);
-    void waitForMeasurementCompletion(void);
 
     int8_t _dataPin;  // SIGNED int, to allow negative numbers for unused pins
     int8_t _powerPin;  // SIGNED int, to allow negative numbers for unused pins
@@ -136,27 +127,44 @@ protected:
     // This is the time needed from the when a sensor has power until it's ready to talk
     // The _millisPowerOn value is set in the powerUp() function.  It is
     // un-set in the powerDown() function.
-    // The "waitForWarmUp()" function verifies that enough time has passed.
+    // The "isWarmedUp()" function checks whether or not enough time has passed
+    // and "waitForWarmUp()" function delays until the time passes.
+    // "checkPowerOn()" checks if the power pin is currently high
     uint32_t _warmUpTime_ms;
     uint32_t _millisPowerOn;
+    bool isWarmedUp(void);
+    void waitForWarmUp(void);
+    bool checkPowerOn(void);
 
     // This is the time needed from the when a sensor is activated until the readings are stable
     // The _millisSensorActivated value is *usually* set in the wake() function,
     // but may also be set in the startSingleMeasurement() function.  It is
     // generally un-set in the sleep() function.
-    // The "waitForStability()" function verifies that enough time has passed.
+    // The "isStable()" function checks whether or not enough time has passed
+    // and "waitForStability()" function delays until the time passes.
     uint32_t _stabilizationTime_ms;
     uint32_t _millisSensorActivated;
+    bool isStable(void);
+    void waitForStability(void);
 
     // This is the time needed from the when a sensor is told to take a single
     // reading until that reading should be complete
     // The _millisMeasurementRequested value is set in the startSingleMeasurement() function.
     // It *may* be unset in the addSingleMeasurementResult() function.
-    // The "waitForMeasurementCompletion()" function verifies that enough time has passed.
+    // The "isMeasurementComplete()" function checks whether or not enough time has passed
+    // and "waitForMeasurementCompletion()" function delays until the time passes.
     uint32_t _measurementTime_ms;
     uint32_t _millisMeasurementRequested;
+    bool isMeasurementComplete(void);
+    void waitForMeasurementCompletion(void);
 
-    SENSOR_STATUS sensorStatus;
+    // This is an 8-bit code for the sensor status
+    uint8_t _sensorStatus;
+
+    // This is an array for each sensor containing the variable objects tied
+    // to that sensor.  The MAX_NUMBER_VARS cannot be determined on a per-sensor
+    // basis, because of the way memory is used on an Arduino.  It must be
+    // defined once for the whole class.
     Variable *variables[MAX_NUMBER_VARS];
 };
 

@@ -48,7 +48,7 @@ public:
     String getSensorSerialNumber(void);
     String getSensorLocation(void) override;
 
-    virtual SENSOR_STATUS setup(void) override;
+    virtual bool setup(void) override;
     virtual SENSOR_STATUS getStatus(void) override;
 
     virtual bool startSingleMeasurement(void);

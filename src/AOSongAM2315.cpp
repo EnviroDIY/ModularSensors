@@ -35,9 +35,9 @@ AOSongAM2315::AOSongAM2315(int8_t powerPin, uint8_t measurementsToAverage)
 String AOSongAM2315::getSensorLocation(void){return F("I2C_0xB8");}
 
 
-SENSOR_STATUS AOSongAM2315::setup(void)
+bool AOSongAM2315::setup(void)
 {
-    SENSOR_STATUS retVal = Sensor::setup();
+    bool retVal = Sensor::setup();
     Wire.begin();  // Start the wire library
     return retVal;
 }

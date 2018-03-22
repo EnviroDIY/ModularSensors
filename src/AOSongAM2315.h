@@ -54,7 +54,7 @@ public:
 
     String getSensorLocation(void) override;
 
-    SENSOR_STATUS setup(void);
+    bool setup(void);
 
     bool addSingleMeasurementResult(void) override;
 };

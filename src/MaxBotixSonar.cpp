@@ -41,9 +41,9 @@ String MaxBotixSonar::getSensorLocation(void)
 }
 
 
-SENSOR_STATUS MaxBotixSonar::setup(void)
+bool MaxBotixSonar::setup(void)
 {
-    SENSOR_STATUS retVal = Sensor::setup();
+    bool retVal = Sensor::setup();
 
     // Set up the trigger, if applicable
     if(_triggerPin != -1)

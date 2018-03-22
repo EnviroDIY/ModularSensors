@@ -49,31 +49,14 @@ String BoschBME280::getSensorLocation(void)
 }
 
 
-SENSOR_STATUS BoschBME280::getStatus(void)
+bool BoschBME280::setup(void)
 {
-    // Check if the power is on, turn it on if not (Need power to get status)
-    bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up
-    waitForWarmUp();
+    bool retVal = Sensor::setup();
 
     // Run begin fxn because it returns true or false for success in contact
-    bool status = bme_internal.begin(_i2cAddressHex);
+    retVal &= bme_internal.begin(_i2cAddressHex);
 
-    // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
-
-    if (!status) return SENSOR_ERROR;
-    else return SENSOR_READY;
-}
-
-
-SENSOR_STATUS BoschBME280::setup(void)
-{
-    SENSOR_STATUS setup = Sensor::setup();
-    SENSOR_STATUS stat = getStatus();
-    if (setup == SENSOR_READY && stat == SENSOR_READY) return SENSOR_READY;
-    else return SENSOR_ERROR;
+    return retVal;
 }
 
 

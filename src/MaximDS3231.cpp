@@ -23,9 +23,9 @@
 String MaximDS3231::getSensorLocation(void) {return F("I2C_0x68");}
 
 
-SENSOR_STATUS MaximDS3231::setup(void)
+bool MaximDS3231::setup(void)
 {
-    SENSOR_STATUS retVal = Sensor::setup();
+    bool retVal = Sensor::setup();
     rtc.begin();
     return retVal;
 }

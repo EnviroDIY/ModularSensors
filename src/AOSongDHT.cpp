@@ -37,9 +37,9 @@ AOSongDHT::AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type, uint8_t meas
 }
 
 
-SENSOR_STATUS AOSongDHT::setup(void)
+bool AOSongDHT::setup(void)
 {
-    SENSOR_STATUS retVal = Sensor::setup();
+    bool retVal = Sensor::setup();
     dht_internal.begin();  // Start up the sensor
     return retVal;
 }

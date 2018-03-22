@@ -132,7 +132,7 @@ public:
     String getSensorLocation(void) override { return F("modemSerial"); }
 
     // The modem must be setup separately!
-    virtual SENSOR_STATUS setup(void) override {return SENSOR_READY;}
+    virtual bool setup(void) override {return true;}
 
     void powerUp(void) override
     {

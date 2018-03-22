@@ -70,36 +70,10 @@ String MaximDS18::getSensorLocation(void)
 
 
 // The function to set up connection to a sensor.
-SENSOR_STATUS MaximDS18::getStatus(void)
-{
-    bool success = true;
-
-    // Make sure the address is valid
-    if (!tempSensors.validAddress(_OneWireAddress))
-    {
-        MS_DBG(F("This sensor address is not valid: "));
-        MS_DBG(makeAddressString(_OneWireAddress), F("\n"));
-        success = false;
-    }
-
-    // Make sure the sensor is connected
-    if (!tempSensors.isConnected(_OneWireAddress))
-    {
-        MS_DBG(F("This sensor is not currently connected: "));
-        MS_DBG(makeAddressString(_OneWireAddress), F("\n"));
-        success = false;
-    }
-
-    if (success) return SENSOR_READY;
-    else return SENSOR_ERROR;
-}
-
-
-// The function to set up connection to a sensor.
 // By default, sets pin modes and returns ready
-SENSOR_STATUS MaximDS18::setup(void)
+bool MaximDS18::setup(void)
 {
-    SENSOR_STATUS setup = Sensor::setup();
+    bool retVal = Sensor::setup();
     tempSensors.begin();
 
     // Find the address if it's not known
@@ -117,10 +91,31 @@ SENSOR_STATUS MaximDS18::setup(void)
         else
         {
             MS_DBG(F("Unable to find address for DS18 on pin "), _dataPin, F("\n"));
+            // set the status error bit! (bit 7)
+            _sensorStatus |= 0b10000000;
+            return false;
         }
     }
 
-    SENSOR_STATUS stat = getStatus();
+    // Make sure the address is valid
+    if (!tempSensors.validAddress(_OneWireAddress))
+    {
+        MS_DBG(F("This sensor address is not valid: "));
+        MS_DBG(makeAddressString(_OneWireAddress), F("\n"));
+        // set the status error bit! (bit 7)
+        _sensorStatus |= 0b10000000;
+        return false;
+    }
+
+    // Make sure the sensor is connected
+    if (!tempSensors.isConnected(_OneWireAddress))
+    {
+        MS_DBG(F("This sensor is not currently connected: "));
+        MS_DBG(makeAddressString(_OneWireAddress), F("\n"));
+        // set the status error bit! (bit 7)
+        _sensorStatus |= 0b10000000;
+        return false;
+    }
 
     // Set resolution to 12 bit
     // All variable resolution sensors start up at 12 bit resolution by default
@@ -128,15 +123,16 @@ SENSOR_STATUS MaximDS18::setup(void)
     {
         MS_DBG(F("Unable to set the resolution of this sensor: "));
         MS_DBG(makeAddressString(_OneWireAddress), F("\n"));
-        return SENSOR_ERROR;
+        // set the status error bit! (bit 7)
+        _sensorStatus |= 0b10000000;
+        return false;
     }
 
     // Tell the sensor that we do NOT want to wait for conversions to finish
     // That is, we're in ASYNC mode and will get values when we're ready
     tempSensors.setWaitForConversion(false);
 
-    if (setup == SENSOR_READY && stat == SENSOR_READY) return SENSOR_READY;
-    else return SENSOR_ERROR;
+    return retVal;
 }
 
 

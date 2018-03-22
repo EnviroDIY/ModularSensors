@@ -47,9 +47,9 @@ SDI12Sensors::SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin, ui
 }
 
 
-SENSOR_STATUS SDI12Sensors::setup(void)
+bool SDI12Sensors::setup(void)
 {
-    SENSOR_STATUS retVal = Sensor::setup();
+    bool retVal = Sensor::setup();
 
     // Begin the SDI-12 interface
     _SDI12Internal.begin();
@@ -62,10 +62,9 @@ SENSOR_STATUS SDI12Sensors::setup(void)
     // Allow the SDI-12 library access to interrupts
     enableInterrupt(_dataPin, SDI12::handleInterrupt, CHANGE);
 
-    bool isSet = getSensorInfo();
+    retVal &= getSensorInfo();
 
-    if (isSet and retVal == SENSOR_READY) return SENSOR_READY;
-    else return SENSOR_ERROR;
+    return retVal;
 }
 
 

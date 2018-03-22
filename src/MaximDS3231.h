@@ -57,7 +57,7 @@ public:
     bool sleep(void) override {return true;}
     void powerDown(void) override {}
 
-    SENSOR_STATUS setup(void) override;
+    bool setup(void) override;
 
     bool startSingleMeasurement(void) override;
     bool addSingleMeasurementResult(void) override;
