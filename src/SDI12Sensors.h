@@ -49,12 +49,12 @@ public:
     String getSensorLocation(void) override;
 
     virtual bool setup(void) override;
-    virtual SENSOR_STATUS getStatus(void) override;
 
     virtual bool startSingleMeasurement(void);
     virtual bool addSingleMeasurementResult(void);
 
 protected:
+    bool requestSensorAcknowledgement(void);
     bool getSensorInfo(void);
     SDI12 _SDI12Internal;
     char _SDI12address;

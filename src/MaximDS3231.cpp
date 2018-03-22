@@ -25,9 +25,8 @@ String MaximDS3231::getSensorLocation(void) {return F("I2C_0x68");}
 
 bool MaximDS3231::setup(void)
 {
-    bool retVal = Sensor::setup();
     rtc.begin();
-    return retVal;
+    return Sensor::setup();
 }
 
 
@@ -36,12 +35,19 @@ bool MaximDS3231::startSingleMeasurement(void)
 {
     waitForWarmUp();
     waitForStability();
+
     // force a temperature sampling and conversion
     // this function already has a forced wait for the conversion to complete
     // TODO:  Test how long the conversion takes, update DS3231 lib accordingly!
     MS_DBG(F("Forcing new temperature reading\n"));
     rtc.convertTemperature(false);
+
+    // Mark the time that a measurement was requested
     _millisMeasurementRequested = millis();
+    // Verify that the status bit for sensor activation is set (bit 3)
+    _sensorStatus |= 0b00001000;
+    // Verify that the status bit for a single measurement completion is not set (bit 5)
+    _sensorStatus &= 0b11011111;
     return true;
 }
 
@@ -58,7 +64,7 @@ bool MaximDS3231::addSingleMeasurementResult(void)
 
     verifyAndAddMeasurementResult(DS3231_TEMP_VAR_NUM, tempVal);
 
-    // Mark that we've already recorded the result of the measurement
+    // Unset the time stamp for the beginning of this measurements
     _millisMeasurementRequested = 0;
 
     // Return true when finished

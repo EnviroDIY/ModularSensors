@@ -56,7 +56,7 @@ String YosemitechParent::getSensorLocation(void)
 
 bool YosemitechParent::setup(void)
 {
-    bool retVal = Sensor::setup();
+    bool retVal = Sensor::setup();  // sets time stamp and status bits
     if (_RS485EnablePin > 0) pinMode(_RS485EnablePin, OUTPUT);
 
     #if defined(DEEP_DEBUGGING_SERIAL_OUTPUT)
@@ -89,7 +89,10 @@ bool YosemitechParent::wake(void)
     }
     if(success)
     {
+        // Mark the time that the sensor was activated
         _millisSensorActivated = millis();
+        // Set the status bit for sensor activation (bit 3)
+        _sensorStatus |= 0b00001000;
         MS_DBG(F("Sensor activated and measuring.\n"));
     }
     else MS_DBG(F("Sensor NOT activated!\n"));
@@ -129,7 +132,11 @@ bool YosemitechParent::sleep(void)
     }
     if(success)
     {
+        // Unset the activation time
         _millisSensorActivated = 0;
+        // Unset the activated status bit (bit 3), stability (bit 4), and
+        // measurement completion (bit 5)
+        _sensorStatus &= 0b11000111;
         MS_DBG(F("Measurements stopped.\n"));
     }
     else MS_DBG(F("Measurements NOT stopped!\n"));
@@ -146,7 +153,12 @@ bool YosemitechParent::startSingleMeasurement(void)
     if (_millisSensorActivated > 0)
     {
         waitForStability();
+        // Mark the time that a measurement was requested
         _millisMeasurementRequested = millis();
+        // Verify that the status bit for sensor activation is set (bit 3)
+        _sensorStatus |= 0b00001000;
+        // Verify that the status bit for a single measurement completion is not set (bit 5)
+        _sensorStatus &= 0b11011111;
     }
     return success;
 }
@@ -196,7 +208,7 @@ bool YosemitechParent::addSingleMeasurementResult(void)
     verifyAndAddMeasurementResult(1, tempValue);
     verifyAndAddMeasurementResult(2, thirdValue);
 
-    // Mark that we've already recorded the result of the measurement
+    // Unset the time stamp for the beginning of this measurements
     _millisMeasurementRequested = 0;
 
     // Return true when finished

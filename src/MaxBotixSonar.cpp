@@ -43,8 +43,6 @@ String MaxBotixSonar::getSensorLocation(void)
 
 bool MaxBotixSonar::setup(void)
 {
-    bool retVal = Sensor::setup();
-
     // Set up the trigger, if applicable
     if(_triggerPin != -1)
     {
@@ -56,14 +54,14 @@ bool MaxBotixSonar::setup(void)
     // Even the slowest sensors should respond at a rate of 6Hz (166ms).
     _stream->setTimeout(180);
 
-    return retVal;
+    return Sensor::setup();  // this will set timestamp and status bit
 }
 
 
 // Parsing and tossing the header lines in the wake-up
 bool MaxBotixSonar::wake(void)
 {
-    bool isAwake = Sensor::wake();  // takes care of timing stamps
+    bool isAwake = Sensor::wake();  // takes care of timing stamps and status bits
 
     // NOTE: After the power is turned on to the MaxBotix, it sends several lines
     // of header to the serial port, beginning at ~65ms and finising at ~160ms.
@@ -132,7 +130,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
 
     verifyAndAddMeasurementResult(HRXL_VAR_NUM, result);
 
-    // Mark that we've already recorded the result of the measurement
+    // Unset the time stamp for the beginning of this measurements
     _millisMeasurementRequested = 0;
 
     // Return true when finished

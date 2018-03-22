@@ -89,6 +89,19 @@ void Sensor::setNumberMeasurementsToAverage(int nReadings)
 int Sensor::getNumberMeasurementsToAverage(void){return _measurementsToAverage;}
 
 
+// This returns the 8-bit code for the current status of the sensor.
+// Bit 0 - 0=Not powered, 1=Powered
+// Bit 1 - 0=Has been setup, 1=Has NOT been set up
+// Bit 2 - 0=Is warmed up, 1=Is not warmed up
+// Bit 3 - 0=Is awake/actively measuring, 1=Not awake/actively measuring
+// Bit 4 - 0=Readings should be stable, 1=Readings not stable
+// Bit 5 - 0=Waiting for measurement completion (IFF bit 3 and 4 are set!),
+//         1=Measurement complete (IFF bit 3 and 4 are set!)
+// Bit 6 - 0=, 1=
+// Bit 7 - 0=No known errors, 1=Some sort of error has occured
+uint8_t Sensor::getStatus(void){return _sensorStatus;}
+
+
 // This turns on sensor power
 void Sensor::powerUp(void)
 {
@@ -122,6 +135,28 @@ void Sensor::powerDown(void)
 }
 
 
+// The function to set up connection to a sensor.
+// By default, sets pin modes and returns true
+bool Sensor::setup(void)
+{
+    MS_DBG(F("Setting up "));
+    MS_DBG(getSensorName());
+    MS_DBG(F(" attached at "));
+    MS_DBG(getSensorLocation());
+    MS_DBG(F(" which can return up to "));
+    MS_DBG(_numReturnedVars);
+    MS_DBG(F(" variable[s].\n"));
+
+    if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
+    if (_dataPin > 0) pinMode(_dataPin, INPUT_PULLUP);
+
+    // Set the status bit marking that the sensor has been set up (bit 1)
+    _sensorStatus |= 0b00000010;
+
+    return true;
+}
+
+
 // The function to wake up a sensor
 // By default, verifies the power is on and returns true
 bool Sensor::wake(void)
@@ -150,41 +185,6 @@ bool Sensor::sleep(void)
     _sensorStatus &= 0b11000111;
     return true;
 }
-
-
-// The function to set up connection to a sensor.
-// By default, sets pin modes and returns true
-bool Sensor::setup(void)
-{
-    MS_DBG(F("Setting up "));
-    MS_DBG(getSensorName());
-    MS_DBG(F(" attached at "));
-    MS_DBG(getSensorLocation());
-    MS_DBG(F(" which can return up to "));
-    MS_DBG(_numReturnedVars);
-    MS_DBG(F(" variable[s].\n"));
-
-    if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
-    if (_dataPin > 0) pinMode(_dataPin, INPUT_PULLUP);
-
-    // Set the status bit marking that the sensor has been set up (bit 1)
-    _sensorStatus |= 0b00000010;
-
-    return true;
-}
-
-
-// This returns the 8-bit code for the current status of the sensor.
-// Bit 0 - 0=Not powered, 1=Powered
-// Bit 1 - 0=Has been setup, 1=Has NOT been set up
-// Bit 2 - 0=Is warmed up, 1=Is not warmed up
-// Bit 3 - 0=Is awake/actively measuring, 1=Not awake/actively measuring
-// Bit 4 - 0=Readings should be stable, 1=Readings not stable
-// Bit 5 - 0=Waiting for measurement completion (IFF bit 3 and 4 are set!),
-//         1=Measurement complete (IFF bit 3 and 4 are set!)
-// Bit 6 - 0=, 1=
-// Bit 7 - 0=No known errors, 1=Some sort of error has occured
-uint8_t Sensor::getStatus(void){return _sensorStatus;}
 
 
 void Sensor::registerVariable(int varNum, Variable* var)
@@ -265,6 +265,8 @@ bool Sensor::startSingleMeasurement(void)
     _millisMeasurementRequested = millis();
     // Verify that the status bit for sensor activation is set (bit 3)
     _sensorStatus |= 0b00001000;
+    // Verify that the status bit for a single measurement completion is not set (bit 5)
+    _sensorStatus &= 0b11011111;
     return true;
 }
 
@@ -404,7 +406,7 @@ bool Sensor::isWarmedUp(void)
 {
     if (_warmUpTime_ms != 0)
     {
-        if (millis() > (_millisPowerOn + _warmUpTime_ms))  // already warmed up 
+        if (millis() > (_millisPowerOn + _warmUpTime_ms))  // already warmed up
         {
             MS_DBG(F("It's been "), (millis() - _millisPowerOn), F("ms, and "),
                   getSensorName(), F(" at "),    getSensorLocation(),

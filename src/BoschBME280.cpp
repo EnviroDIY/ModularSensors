@@ -51,10 +51,24 @@ String BoschBME280::getSensorLocation(void)
 
 bool BoschBME280::setup(void)
 {
-    bool retVal = Sensor::setup();
+    bool retVal = Sensor::setup();  // this will set timestamp and status bit
 
     // Run begin fxn because it returns true or false for success in contact
-    retVal &= bme_internal.begin(_i2cAddressHex);
+    // Make 5 attempts
+    uint8_t ntries = 0;
+    bool success = false;
+    while (!success and ntries < 5)
+    {
+        success = bme_internal.begin(_i2cAddressHex);
+        ntries++;
+    }
+    if (!success)
+    {
+        // Set the status error bit (bit 7)
+        _sensorStatus |= 0b10000000;
+    }
+    retVal &= success;
+
 
     return retVal;
 }
@@ -62,8 +76,8 @@ bool BoschBME280::setup(void)
 
 bool BoschBME280::wake(void)
 {
-    Sensor::wake();
-    waitForWarmUp();
+    Sensor::wake();  // this will set timestamp and status bit
+    waitForWarmUp();  // sensor must be warmed up before we can send begin command
     // Restart always needed after power-up
     // As of Adafruit library version 1.0.7, this function includes all of the
     // various delays to allow the chip to wake up, get calibrations, get
@@ -87,9 +101,6 @@ bool BoschBME280::wake(void)
                              Adafruit_BME280::FILTER_OFF, // built-in IIR filter
                              Adafruit_BME280::STANDBY_MS_1000);  // sleep time between measurements (N/A in forced mode)
     delay(100);  // Need this delay after changing sampling mode
-
-    // Mark that the sensor is now active
-    _millisSensorActivated = millis();
 
     return true;
 }
@@ -136,7 +147,7 @@ bool BoschBME280::addSingleMeasurementResult(void)
     verifyAndAddMeasurementResult(BME280_PRESSURE_VAR_NUM, press);
     verifyAndAddMeasurementResult(BME280_ALTITUDE_VAR_NUM, alt);
 
-    // Mark that we've already recorded the result of the measurement
+    // Unset the time stamp for the beginning of this measurements
     _millisMeasurementRequested = 0;
 
     // Return true when finished

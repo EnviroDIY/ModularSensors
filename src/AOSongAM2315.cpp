@@ -37,9 +37,8 @@ String AOSongAM2315::getSensorLocation(void){return F("I2C_0xB8");}
 
 bool AOSongAM2315::setup(void)
 {
-    bool retVal = Sensor::setup();
     Wire.begin();  // Start the wire library
-    return retVal;
+    return Sensor::setup();  // this will set timestamp and status bit
 }
 
 
@@ -63,7 +62,7 @@ bool AOSongAM2315::addSingleMeasurementResult(void)
     verifyAndAddMeasurementResult(AM2315_TEMP_VAR_NUM, temp_val);
     verifyAndAddMeasurementResult(AM2315_HUMIDITY_VAR_NUM, humid_val);
 
-    // Mark that we've already recorded the result of the measurement
+    // Unset the time stamp for the beginning of this measurements
     _millisMeasurementRequested = 0;
 
     return ret_val;

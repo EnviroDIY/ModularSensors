@@ -57,9 +57,15 @@ String CampbellOBS3::getSensorLocation(void)
 
 bool CampbellOBS3::addSingleMeasurementResult(void)
 {
-    // Start the Auxillary ADD
+    // We're actually only starting a measurment within the addSingleMeasurementResult
+    // function.  The measurements are very fast (8ms) so we're not going to worry
+    // about the time we're losing.  Doing it this way means that any other sensor
+    // that uses the same ADD will be able to set the gain properly and will not
+    // have that gain setting over-written here.
+
+    // Create an Auxillary ADD object
     Adafruit_ADS1115 ads(_i2cAddress);     /* Use this for the 16-bit version */
-    // Library default settings:
+    // ADS1115 Library default settings:
     //    - single-shot mode (powers down between conversions
     //    - 128 samples per second (8ms conversion time)
     //    - 2/3 gain +/- 6.144V range
@@ -70,6 +76,9 @@ bool CampbellOBS3::addSingleMeasurementResult(void)
     ads.setGain(GAIN_ONE);
     // Begin ADC
     ads.begin();
+    // Mark the time that the measurement started
+    // Again, we're resetting this here because we only just started the ADD!
+    _millisMeasurementRequested = millis();
 
     // Make sure we've waited long enough for a new reading to be available
     waitForMeasurementCompletion();
@@ -99,7 +108,7 @@ bool CampbellOBS3::addSingleMeasurementResult(void)
 
     verifyAndAddMeasurementResult(OBS3_TURB_VAR_NUM, calibResult);
 
-    // Mark that we've already recorded the result of the measurement
+    // Unset the time stamp for the beginning of this measurements
     _millisMeasurementRequested = 0;
 
     if (adcVoltage < 3.6 and adcVoltage > -0.3) return true;

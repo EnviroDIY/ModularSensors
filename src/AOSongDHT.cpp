@@ -39,9 +39,8 @@ AOSongDHT::AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type, uint8_t meas
 
 bool AOSongDHT::setup(void)
 {
-    bool retVal = Sensor::setup();
     dht_internal.begin();  // Start up the sensor
-    return retVal;
+    return Sensor::setup();  // this will set timestamp and status bit
 }
 
 
@@ -101,7 +100,7 @@ bool AOSongDHT::addSingleMeasurementResult(void)
     verifyAndAddMeasurementResult(DHT_HUMIDITY_VAR_NUM, humid_val);
     verifyAndAddMeasurementResult(DHT_HI_VAR_NUM, hi_val);
 
-    // Mark that we've already recorded the result of the measurement
+    // Unset the time stamp for the beginning of this measurements
     _millisMeasurementRequested = 0;
 
     return true;

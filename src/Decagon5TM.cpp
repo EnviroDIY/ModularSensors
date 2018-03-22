@@ -84,7 +84,7 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         verifyAndAddMeasurementResult(TM_TEMP_VAR_NUM, temp);
         verifyAndAddMeasurementResult(TM_VWC_VAR_NUM, VWC);
 
-      // Mark that we've already recorded the result of the measurement
+      // Unset the time stamp for the beginning of this measurements
       _millisMeasurementRequested = 0;
 
       // Return true when finished

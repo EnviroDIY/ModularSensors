@@ -49,7 +49,7 @@ SDI12Sensors::SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin, ui
 
 bool SDI12Sensors::setup(void)
 {
-    bool retVal = Sensor::setup();
+    bool retVal = Sensor::setup();  // this will set timestamp and status bit
 
     // Begin the SDI-12 interface
     _SDI12Internal.begin();
@@ -68,7 +68,7 @@ bool SDI12Sensors::setup(void)
 }
 
 
-SENSOR_STATUS SDI12Sensors::getStatus(void)
+bool SDI12Sensors::requestSensorAcknowledgement(void)
 {
     waitForWarmUp();
 
@@ -82,32 +82,41 @@ SENSOR_STATUS SDI12Sensors::getStatus(void)
     String myCommand = "";
     myCommand += (char) _SDI12address;
     myCommand += "!"; // sends 'acknowledge active' command [address][!]
-    _SDI12Internal.sendCommand(myCommand);
-    MS_DBG(F("      >>> "), myCommand, F("\n"));
-    delay(30);
 
-    // wait for acknowlegement with format:
-    // [address]<CR><LF>
-    String sdiResponse = _SDI12Internal.readStringUntil('\n');
-    sdiResponse.trim();
-    MS_DBG(F("      <<< "), sdiResponse, F("\n"));
-
-    // Empty the buffer again
-    _SDI12Internal.clearBuffer();
-
-    if (sdiResponse == String(_SDI12address))
+    bool didAcknowledge = false;
+    uint8_t ntries = 0;
+    while (!didAcknowledge && ntries < 5)
     {
-        MS_DBG(F("   "), getSensorName(), F(" replied as expected.\n"));
-        return SENSOR_READY;
-    }
-    else
-    {
-        MS_DBG(F("   "), getSensorName(), F(" did not reply!\n"));
-        return SENSOR_ERROR;
+
+        _SDI12Internal.sendCommand(myCommand);
+        MS_DBG(F("      >>> "), myCommand, F("\n"));
+        delay(30);
+
+        // wait for acknowlegement with format:
+        // [address]<CR><LF>
+        String sdiResponse = _SDI12Internal.readStringUntil('\n');
+        sdiResponse.trim();
+        MS_DBG(F("      <<< "), sdiResponse, F("\n"));
+
+        // Empty the buffer again
+        _SDI12Internal.clearBuffer();
+
+        if (sdiResponse == String(_SDI12address))
+        {
+            MS_DBG(F("   "), getSensorName(), F(" replied as expected.\n"));
+            didAcknowledge = true;
+        }
+        else
+        {
+            MS_DBG(F("   "), getSensorName(), F(" did not reply!\n"));
+            didAcknowledge = false;
+        }
     }
 
     // De-activate the SDI-12 Object
     _SDI12Internal.forceHold();
+
+    return didAcknowledge;
 }
 
 
@@ -119,15 +128,12 @@ bool SDI12Sensors::getSensorInfo(void)
     if(!wasOn){powerUp();}
 
     // Check that the sensor is there and responding
-    // The getStatus() function includes the waitForWarmUp()
-    SENSOR_STATUS stat = SENSOR_ERROR;
-    uint8_t ntries = 0;
-    while (stat == SENSOR_ERROR && ntries < 4)
+    // The requestSensorAcknowledgement() function includes the waitForWarmUp()
+    if (!requestSensorAcknowledgement())
     {
-        stat = getStatus();
-        ntries++;
+        if(!wasOn){powerDown();}
+        return false;
     }
-    if (stat == SENSOR_ERROR) return false;
 
     // Make this the currently active SDI-12 Object
     _SDI12Internal.setActive();
@@ -213,15 +219,8 @@ String SDI12Sensors::getSensorLocation(void)
 bool SDI12Sensors::startSingleMeasurement(void)
 {
     // Check that the sensor is there and responding
-    // The getStatus() function includes the waitForWarmUp()
-    SENSOR_STATUS stat = SENSOR_ERROR;
-    uint8_t ntries = 0;
-    while (stat == SENSOR_ERROR && ntries < 4)
-    {
-        stat = getStatus();
-        ntries++;
-    }
-    if (stat == SENSOR_ERROR)
+    // The requestSensorAcknowledgement() function includes the waitForWarmUp()
+    if (!requestSensorAcknowledgement())
     {
         _millisSensorActivated = 0;
         _millisMeasurementRequested = 0;
@@ -272,8 +271,13 @@ bool SDI12Sensors::startSingleMeasurement(void)
     if (sdiResponse.length() > 0)
     {
         MS_DBG(F("   Concurrent measurement started.\n"));
-        _millisSensorActivated = millis();
+        // Mark the time that a measurement was requested
         _millisMeasurementRequested = millis();
+        // Verify that the status bit for sensor activation is set (bit 3)
+        _sensorStatus |= 0b00001000;
+        // Verify that the status bit for a single measurement completion is not set (bit 5)
+        _sensorStatus &= 0b11011111;
+        return true;
     }
     else
     {
@@ -338,7 +342,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
             ntries++;
         }
 
-        // Mark that we've already recorded the result of the measurement
+        // Unset the time stamp for the beginning of this measurements
         _millisMeasurementRequested = 0;
 
         // Return true when finished

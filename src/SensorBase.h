@@ -42,6 +42,18 @@ public:
     void setNumberMeasurementsToAverage(int nReadings);
     int getNumberMeasurementsToAverage(void);
 
+    // This returns the 8-bit code for the current status of the sensor.
+    // Bit 0 - 0=Not powered, 1=Powered
+    // Bit 1 - 0=Has been setup, 1=Has NOT been set up
+    // Bit 2 - 0=Is warmed up, 1=Is not warmed up
+    // Bit 3 - 0=Is awake/actively measuring, 1=Not awake/actively measuring
+    // Bit 4 - 0=Readings should be stable, 1=Readings not stable
+    // Bit 5 - 0=Waiting for a single measurement to complete (IFF bit 3 and 4 are set!),
+    //         1=Measurement complete (IFF bit 3 and 4 are set!)
+    // Bit 6 - 0=, 1=
+    // Bit 7 - 0=No known errors, 1=Some sort of error has occured
+    uint8_t getStatus(void);
+
     // These next functions have defaults.
 
     // This turns on the sensor power, if applicable
@@ -50,6 +62,11 @@ public:
     // This turns off the sensor power, if applicable
     // This also un-sets the _millisPowerOn timestamp.
     virtual void powerDown(void);
+
+    // This sets up the sensor, if necessary.  Defaults to true.
+    // Generally, the sensor must be powered on for setup.
+    virtual bool setup(void);
+
     // This wakes the sensor up, if necessary - that is, does whatever it takes to
     // get a sensor in the proper state to begin a measurement after the power is on.
     // This *may* require a waitForWarmUp() before wake commands can be sent.
@@ -60,21 +77,6 @@ public:
     // This also un-sets the _millisSensorActivated timestamp.
     // Does NOT power down the sensor!
     virtual bool sleep(void);
-
-    // This sets up the sensor, if necessary.  Defaults to true.
-    virtual bool setup(void);
-
-    // This returns the 8-bit code for the current status of the sensor.
-    // Bit 0 - 0=Not powered, 1=Powered
-    // Bit 1 - 0=Has been setup, 1=Has NOT been set up
-    // Bit 2 - 0=Is warmed up, 1=Is not warmed up
-    // Bit 3 - 0=Is awake/actively measuring, 1=Not awake/actively measuring
-    // Bit 4 - 0=Readings should be stable, 1=Readings not stable
-    // Bit 5 - 0=Waiting for measurement completion (IFF bit 3 and 4 are set!),
-    //         1=Measurement complete (IFF bit 3 and 4 are set!)
-    // Bit 6 - 0=, 1=
-    // Bit 7 - 0=No known errors, 1=Some sort of error has occured
-    virtual uint8_t getStatus(void);
 
     // This tells the sensor to start a single measurement, if needed
     // This also sets the _millisMeasurementRequested timestamp.
