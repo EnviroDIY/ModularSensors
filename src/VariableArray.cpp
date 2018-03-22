@@ -19,6 +19,7 @@ void VariableArray::init(int variableCount, Variable *variableList[])
     _variableList = variableList;
 
     _maxSamplestoAverage = countMaxToAverage();
+    _sensorCount = getSensorCount();
 
     MS_DBG(F("   ... Success!\n"));
 }
