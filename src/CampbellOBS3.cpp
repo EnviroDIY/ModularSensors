@@ -108,8 +108,10 @@ bool CampbellOBS3::addSingleMeasurementResult(void)
 
     verifyAndAddMeasurementResult(OBS3_TURB_VAR_NUM, calibResult);
 
-    // Unset the time stamp for the beginning of this measurements
+    // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
+    // Make sure the status bit for measurement completion (bit 5) is no longer set
+    _sensorStatus &= 0b11011111;
 
     if (adcVoltage < 3.6 and adcVoltage > -0.3) return true;
     else return false;

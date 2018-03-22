@@ -100,8 +100,10 @@ bool AOSongDHT::addSingleMeasurementResult(void)
     verifyAndAddMeasurementResult(DHT_HUMIDITY_VAR_NUM, humid_val);
     verifyAndAddMeasurementResult(DHT_HI_VAR_NUM, hi_val);
 
-    // Unset the time stamp for the beginning of this measurements
+    // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
+    // Make sure the status bit for measurement completion (bit 5) is no longer set
+    _sensorStatus &= 0b11011111;
 
     return true;
 }

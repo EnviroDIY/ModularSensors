@@ -198,8 +198,10 @@ bool MaximDS18::addSingleMeasurementResult(void)
     MS_DBG(F("Temperature: "), result, F(" °C\n"));
     verifyAndAddMeasurementResult(DS18_TEMP_VAR_NUM, result);
 
-    // Unset the time stamp for the beginning of this measurements
+    // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
+    // Make sure the status bit for measurement completion (bit 5) is no longer set
+    _sensorStatus &= 0b11011111;
 
     return goodTemp;
 }

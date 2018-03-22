@@ -169,6 +169,10 @@ public:
         if (retVal == false) return false;
 
         _millisMeasurementRequested = millis();
+        // Verify that the status bit for sensor activation is set (bit 3)
+        _sensorStatus |= 0b00001000;
+        // Verify that the status bit for a single measurement completion is not set (bit 5)
+        _sensorStatus &= 0b11011111;
         return retVal;
     }
 
@@ -224,6 +228,11 @@ public:
 
         verifyAndAddMeasurementResult(RSSI_VAR_NUM, rssi);
         verifyAndAddMeasurementResult(PERCENT_SIGNAL_VAR_NUM, percent);
+
+        // Unset the measurement requsted time
+        _millisMeasurementRequested = 0;
+        // Make sure the status bit for measurement completion (bit 5) is no longer set
+        _sensorStatus &= 0b11011111;
         return true;
     }
 

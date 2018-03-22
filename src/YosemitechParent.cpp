@@ -197,9 +197,6 @@ bool YosemitechParent::addSingleMeasurementResult(void)
         {
             MS_DBG(F("    Third: "), thirdValue, F("\n"));
         }
-
-        // Unset the measurement requsted time
-        _millisMeasurementRequested = 0;
     }
     else MS_DBG(F("Sensor is not currently measuring!\n"));
 
@@ -208,8 +205,10 @@ bool YosemitechParent::addSingleMeasurementResult(void)
     verifyAndAddMeasurementResult(1, tempValue);
     verifyAndAddMeasurementResult(2, thirdValue);
 
-    // Unset the time stamp for the beginning of this measurements
+    // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
+    // Make sure the status bit for measurement completion (bit 5) is no longer set
+    _sensorStatus &= 0b11011111;
 
     // Return true when finished
     return success;

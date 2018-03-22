@@ -147,8 +147,10 @@ bool BoschBME280::addSingleMeasurementResult(void)
     verifyAndAddMeasurementResult(BME280_PRESSURE_VAR_NUM, press);
     verifyAndAddMeasurementResult(BME280_ALTITUDE_VAR_NUM, alt);
 
-    // Unset the time stamp for the beginning of this measurements
+    // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
+    // Make sure the status bit for measurement completion (bit 5) is no longer set
+    _sensorStatus &= 0b11011111;
 
     // Return true when finished
     return true;

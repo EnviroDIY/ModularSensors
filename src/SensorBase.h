@@ -53,6 +53,10 @@ public:
     // Bit 6 - 0=, 1=
     // Bit 7 - 0=No known errors, 1=Some sort of error has occured
     uint8_t getStatus(void);
+    // These functions check the current status
+    bool isWarmedUp(void);
+    bool isStable(void);
+    bool isMeasurementComplete(void);
 
     // These next functions have defaults.
 
@@ -134,7 +138,6 @@ protected:
     // "checkPowerOn()" checks if the power pin is currently high
     uint32_t _warmUpTime_ms;
     uint32_t _millisPowerOn;
-    bool isWarmedUp(void);
     void waitForWarmUp(void);
     bool checkPowerOn(void);
 
@@ -146,7 +149,6 @@ protected:
     // and "waitForStability()" function delays until the time passes.
     uint32_t _stabilizationTime_ms;
     uint32_t _millisSensorActivated;
-    bool isStable(void);
     void waitForStability(void);
 
     // This is the time needed from the when a sensor is told to take a single
@@ -157,7 +159,6 @@ protected:
     // and "waitForMeasurementCompletion()" function delays until the time passes.
     uint32_t _measurementTime_ms;
     uint32_t _millisMeasurementRequested;
-    bool isMeasurementComplete(void);
     void waitForMeasurementCompletion(void);
 
     // This is an 8-bit code for the sensor status
