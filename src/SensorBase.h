@@ -44,13 +44,13 @@ public:
 
     // This returns the 8-bit code for the current status of the sensor.
     // Bit 0 - 0=Not powered, 1=Powered
-    // Bit 1 - 0=Has been setup, 1=Has NOT been set up
-    // Bit 2 - 0=Is warmed up, 1=Is not warmed up
-    // Bit 3 - 0=Is awake/actively measuring, 1=Not awake/actively measuring
-    // Bit 4 - 0=Readings should be stable, 1=Readings not stable
-    // Bit 5 - 0=Waiting for a single measurement to complete (IFF bit 3 and 4 are set!),
-    //         1=Measurement complete (IFF bit 3 and 4 are set!)
-    // Bit 6 - 0=, 1=
+    // Bit 1 - 0=Has NOT been set up, 1=Has been setup
+    // Bit 2 - 0=Is NOT warmed up, 1=Is warmed up
+    // Bit 3 - 0=Not awake/actively measuring, 1=Is awake/actively measuring
+    // Bit 4 - 0=Readings not stable, 1=Readings should be stable
+    // bit 5 - 0=Measurement requested, 1=No measurements have been requested
+    // bit 6 - 0=Measurement complete (IFF bit 3 and 4 are set!)
+    //         1=Waiting for measurement completion (IFF bit 3 and 4 are set!),
     // Bit 7 - 0=No known errors, 1=Some sort of error has occured
     uint8_t getStatus(void);
     // These functions check the current status

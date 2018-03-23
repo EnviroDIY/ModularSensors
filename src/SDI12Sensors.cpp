@@ -273,10 +273,10 @@ bool SDI12Sensors::startSingleMeasurement(void)
         MS_DBG(F("   Concurrent measurement started.\n"));
         // Mark the time that a measurement was requested
         _millisMeasurementRequested = millis();
-        // Verify that the status bit for sensor activation is set (bit 3)
-        _sensorStatus |= 0b00001000;
-        // Verify that the status bit for a single measurement completion is not set (bit 5)
-        _sensorStatus &= 0b11011111;
+        // Set the status bits for measurement requested (bit 5)
+        _sensorStatus |= 0b00100000;
+        // Verify that the status bit for a single measurement completion is not set (bit 6)
+        _sensorStatus &= 0b10111111;
         return true;
     }
     else
@@ -344,8 +344,9 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
 
         // Unset the time stamp for the beginning of this measurement
         _millisMeasurementRequested = 0;
-        // Make sure the status bit for measurement completion (bit 5) is no longer set
-        _sensorStatus &= 0b11011111;
+        // Make sure the status bits for measurement request (bit 5) and measurement
+        // completion (bit 6) are no longer set
+        _sensorStatus &= 0b10011111;
 
         // Return true when finished
         return gotResult;

@@ -111,7 +111,12 @@ bool BoschBME280::wake(void)
 //     // waitForWarmUp();  // already done in wake
 //     waitForStability();
 //     bme_internal.takeForcedMeasurement(false);  // Don't want to wait to finish here
+//     // Mark the time that a measurement was requested
 //     _millisMeasurementRequested = millis();
+//     // Set the status bits for measurement requested (bit 5)
+//     _sensorStatus |= 0b00100000;
+//     // Verify that the status bit for a single measurement completion is not set (bit 6)
+//      _sensorStatus &= 0b10111111;
 //     return true;
 // }
 
@@ -149,8 +154,9 @@ bool BoschBME280::addSingleMeasurementResult(void)
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
-    // Make sure the status bit for measurement completion (bit 5) is no longer set
-    _sensorStatus &= 0b11011111;
+    // Make sure the status bits for measurement request (bit 5) and measurement
+    // completion (bit 6) are no longer set
+    _sensorStatus &= 0b10011111;
 
     // Return true when finished
     return true;

@@ -134,9 +134,9 @@ bool YosemitechParent::sleep(void)
     {
         // Unset the activation time
         _millisSensorActivated = 0;
-        // Unset the activated status bit (bit 3), stability (bit 4), and
-        // measurement completion (bit 5)
-        _sensorStatus &= 0b11000111;
+        // Unset the activated status bit (bit 3), stability (bit 4), measurement
+        // request (bit 5), and measurement completion (bit 6)
+        _sensorStatus &= 0b10000111;
         MS_DBG(F("Measurements stopped.\n"));
     }
     else MS_DBG(F("Measurements NOT stopped!\n"));
@@ -155,10 +155,10 @@ bool YosemitechParent::startSingleMeasurement(void)
         waitForStability();
         // Mark the time that a measurement was requested
         _millisMeasurementRequested = millis();
-        // Verify that the status bit for sensor activation is set (bit 3)
-        _sensorStatus |= 0b00001000;
-        // Verify that the status bit for a single measurement completion is not set (bit 5)
-        _sensorStatus &= 0b11011111;
+        // Set the status bits for measurement requested (bit 5)
+        _sensorStatus |= 0b00100000;
+        // Verify that the status bit for a single measurement completion is not set (bit 6)
+        _sensorStatus &= 0b10111111;
     }
     return success;
 }
@@ -207,8 +207,9 @@ bool YosemitechParent::addSingleMeasurementResult(void)
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
-    // Make sure the status bit for measurement completion (bit 5) is no longer set
-    _sensorStatus &= 0b11011111;
+    // Make sure the status bits for measurement request (bit 5) and measurement
+    // completion (bit 6) are no longer set
+    _sensorStatus &= 0b10011111;
 
     // Return true when finished
     return success;
