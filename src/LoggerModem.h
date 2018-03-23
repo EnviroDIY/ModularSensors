@@ -138,14 +138,22 @@ public:
     {
         // Check if the modem is on; turn it on if not
         if(!modemOnOff->isOn()) modemOnOff->on();
+        // Mark the time that the sensor was powered
         _millisPowerOn = millis();
+        // Set the status bit for sensor power (bit 0)
+        _sensorStatus |= 0b00000001;
     }
 
     virtual bool wake(void) override
     {
+        bool retVal = true;
         // Check if the modem is on; turn it on if not
-        if(!modemOnOff->isOn()) return modemOnOff->on();
-        else return true;
+        if(!modemOnOff->isOn()) retVal = modemOnOff->on();
+        // Mark the time that the sensor was activated
+        _millisSensorActivated = millis();
+        // Set the status bit for sensor activation (bit 3)
+        _sensorStatus |= 0b00001000;
+        return retVal;
     }
 
     virtual bool sleep(void) override { return true; }
@@ -563,7 +571,6 @@ private:
         }
         else MS_MOD_DBG(F("   ... Modem failed to turn on!\n"));
 
-
         // Assign a chip type
         #if defined(TINY_GSM_MODEM_SIM800)
             loggerModemChip = sim_chip_SIM800;
@@ -591,6 +598,9 @@ private:
         #endif
 
         // MS_MOD_DBG(F("Modem chip: "), loggerModemChip, '\n');
+
+        // Set the status bit marking that the modem has been set up (bit 1)
+        _sensorStatus |= 0b00000010;
     }
 
     // Helper to get approximate RSSI from CSQ (assuming no noise)
