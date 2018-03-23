@@ -165,6 +165,7 @@ bool Sensor::wake(void)
     MS_DBG(F("Waking "), getSensorName(), F(" at "),
            getSensorLocation(), F("\n"));
     if(!checkPowerOn()){powerUp();}
+    waitForWarmUp();
     // Mark the time that the sensor was activated
     _millisSensorActivated = millis();
     // Set the status bit for sensor activation (bit 3)
@@ -447,7 +448,14 @@ bool Sensor::isWarmedUp(void)
             }
         }
     }
-    else return true;
+    else
+    {
+        MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
+               F(" needs no warm-up time.\n"));
+        // Set the status bit for warm-up completion (bit 2)
+        _sensorStatus |= 0b00000100;
+        return true;
+    }
 }
 
 // This delays until enough time has passed for the sensor to "warm up" - that
@@ -497,7 +505,14 @@ bool Sensor::isStable(void)
             }
         }
     }
-    else return true;
+    else
+    {
+        MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
+              F(" needs no stabilization time.\n"));
+       // Set the status bit for stability completion (bit 4)
+       _sensorStatus |= 0b00010000;
+        return true;
+    }
 }
 
 // This delays until enough time has passed for the sensor to stabilize before
@@ -545,7 +560,14 @@ bool Sensor::isMeasurementComplete(void)
             }
         }
     }
-    else return true;
+    else
+    {
+        MS_DBG(F("Measurement by "), getSensorName(), F(" at "),
+               getSensorLocation(), F(" should be immediately complete!\n"));
+        // Set the status bit for measurement completion (bit 6)
+        _sensorStatus |= 0b01000000;
+        return true;
+    }
 }
 
 // This delays until enough time has passed for the sensor to give a new value
