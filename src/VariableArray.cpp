@@ -28,12 +28,13 @@ void VariableArray::init(int variableCount, Variable *variableList[])
 // This counts and returns the number of sensors
 int VariableArray::getSensorCount(void)
 {
-    int numSensors = 1;
+    int numSensors = 0;
     // Check for unique sensors
     for (int i = 0; i < _variableCount; i++)
     {
         if (isLastVarFromSensor(i)) numSensors++;
     }
+    MS_DBG(F("There are "), numSensors, F(" unique sensors in the group.\n"));
     return numSensors;
 }
 
@@ -52,7 +53,21 @@ bool VariableArray::setupSensors(void)
 
     // Now run all the set-up functions
     MS_DBG(F("Running setup functions.\n"));
+
+    // Check for any sensors that have been set up outside of this (ie, the modem)
     uint8_t nSensorsSetup = 0;
+    for (int i = 0; i < _variableCount; i++)
+    {
+        if (isLastVarFromSensor(i)) // Skip non-unique sensors
+        {
+            if (bitRead(_variableList[i]->parentSensor->getStatus(), 1) == 1)  // already set up
+            {
+                MS_DBG(F("   ... "),_variableList[i]->getVarCode(), F(" was already set up!\n"));
+                nSensorsSetup++;
+            }
+        }
+    }
+
     // We're going to keep looping through all of the sensors and check if each
     // one has been on long enouggh to be warmed up.  Once it has, we'll set it
     // up and increment the counter marking that's been done.
@@ -64,9 +79,10 @@ bool VariableArray::setupSensors(void)
             bool sensorSuccess = false;
             if (isLastVarFromSensor(i)) // Skip non-unique sensors
             {
-                if (_variableList[i]->parentSensor->isWarmedUp())
+                if (_variableList[i]->parentSensor->isWarmedUp() &&  // is warmed up
+                    bitRead(_variableList[i]->parentSensor->getStatus(), 1) == 0)  // and not yet set up
                 {
-                    sensorSuccess = _variableList[i]->parentSensor->setup();
+                    sensorSuccess = _variableList[i]->parentSensor->setup();  // set it up
                     if (!sensorSuccess) MS_DBG(F("   ... Set up of "), _variableList[i]->getVarCode(), F(" failed!\n"));
                     else MS_DBG(F("   ... Set up of "), _variableList[i]->getVarCode(), F(" succeeded.\n"));
                     success &= sensorSuccess;
@@ -194,11 +210,33 @@ bool VariableArray::updateAllSensors(void)
     {
         for (uint8_t i = 0; i < _variableCount; i++)
         {
+            // if (isLastVarFromSensor(i))
+            // {
+            //     Serial.print(i);
+            //     Serial.print(" - ");
+            //     Serial.print(_variableList[i]->parentSensor->getSensorName());
+            //     Serial.print(" - status: 0b");
+            //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 7));
+            //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 6));
+            //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 5));
+            //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 4));
+            //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 3));
+            //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 2));
+            //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 1));
+            //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 0));
+            //     Serial.print(" - finished: ");
+            //     Serial.print(nMeasurementsCompleted[i]);
+            //     Serial.print(" of ");
+            //     Serial.println(_variableList[i]->parentSensor->getNumberMeasurementsToAverage());
+            // }
+
             if (isLastVarFromSensor(i) and _variableList[i]->parentSensor->isStable() and
                 _variableList[i]->parentSensor->getNumberMeasurementsToAverage() > nMeasurementsCompleted[i])
             {
                 // is powered, setup, warmed-up, awake, and stable but not yet taking measurement
-                if((_variableList[i]->parentSensor->getStatus() & 0b00011111) == 0b00011111)
+                if(_variableList[i]->parentSensor->getStatus() == 0b00011111 ||
+                   _variableList[i]->parentSensor->getStatus() == 0b10011111 ||  // accept if error code is flagged
+                      _variableList[i]->parentSensor->getStatus() == 0b10011101)  // accept if set-up failed
                 {
                     // Start a reading
                     MS_DBG(F("--- Starting reading on "));
@@ -207,11 +245,13 @@ bool VariableArray::updateAllSensors(void)
                     success &= _variableList[i]->parentSensor->startSingleMeasurement();
                 }
                 // is powered, setup, warmed-up, awake, stable, and has started and completed a measurement
-                if((_variableList[i]->parentSensor->isMeasurementComplete() and
-                   _variableList[i]->parentSensor->getStatus() & 0b01111111) == 0b01111111)
+                if(_variableList[i]->parentSensor->isMeasurementComplete() and
+                   (_variableList[i]->parentSensor->getStatus() == 0b01111111 ||
+                   _variableList[i]->parentSensor->getStatus() == 0b11111111 ||  // accept if error code is flagged
+                   _variableList[i]->parentSensor->getStatus() == 0b11111101))  // accept if set-up failed
                 {
                     // Get the value
-                    MS_DBG(F("--- Collecting result of reading "), j+1, F(" from "));
+                    MS_DBG(F("--- Collecting result of reading from "));
                     MS_DBG(_variableList[i]->parentSensor->getSensorName());
                     MS_DBG(F(" ---\n"));
                     success &= _variableList[i]->parentSensor->addSingleMeasurementResult();
@@ -220,6 +260,10 @@ bool VariableArray::updateAllSensors(void)
                 // sensor has taken all the measurements it needs
                 if (nMeasurementsCompleted[i] == _variableList[i]->parentSensor->getNumberMeasurementsToAverage())
                 {
+
+                    MS_DBG(F("--- Finished all readings from "));
+                    MS_DBG(_variableList[i]->parentSensor->getSensorName());
+                    MS_DBG(F(" ---\n"));
                     nSensorsCompleted++;
                 }
             }
