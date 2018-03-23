@@ -54,7 +54,7 @@ public:
 
     String getSensorLocation(void) override;
 
-    bool setup(void);
+    bool setup(void) override;
 
     bool addSingleMeasurementResult(void) override;
 };
@@ -69,7 +69,7 @@ public:
       Variable(parentSense, AM2315_HUMIDITY_VAR_NUM,
                F("relativeHumidity"), F("percent"),
                AM2315_HUMIDITY_RESOLUTION,
-               F("AM2315Humidity"), customVarCode, UUID)
+               F("AM2315Humidity"), UUID, customVarCode)
     {}
 };
 
@@ -83,7 +83,7 @@ public:
       Variable(parentSense, AM2315_TEMP_VAR_NUM,
                F("temperature"), F("degreeCelsius"),
                AM2315_TEMP_RESOLUTION,
-               F("AM2315Temp"), customVarCode, UUID)
+               F("AM2315Temp"), UUID, customVarCode)
     {}
 };
 
