@@ -186,14 +186,19 @@ bool VariableArray::updateAllSensors(void)
     }
 
     uint8_t nSensorsCompleted = 0;
-    uint8_t nMeasurementsCompleted[_variableCount] = {0,};
+    uint8_t nMeasurementsCompleted[_variableCount];
+    for (uint8_t i = 0; i < _variableCount; i++)
+        nMeasurementsCompleted[i] = 0;
+
     while (nSensorsCompleted < _sensorCount)
     {
         for (uint8_t i = 0; i < _variableCount; i++)
         {
-            if (isLastVarFromSensor(i) and _variableList[i]->parentSensor->getNumberMeasurementsToAverage() > nMeasurementsCompleted[i])
+            if (isLastVarFromSensor(i) and _variableList[i]->parentSensor->isStable() and
+                _variableList[i]->parentSensor->getNumberMeasurementsToAverage() > nMeasurementsCompleted[i])
             {
-                if((_variableList[i]->parentSensor->getStatus() & 0b00011111) == 0b00011111)  // is powered, setup, warmed-up, awake, and stable
+                // is powered, setup, warmed-up, awake, and stable but not yet taking measurement
+                if((_variableList[i]->parentSensor->getStatus() & 0b00011111) == 0b00011111)
                 {
                     // Start a reading
                     MS_DBG(F("--- Starting reading on "));
@@ -201,7 +206,9 @@ bool VariableArray::updateAllSensors(void)
                     MS_DBG(F(" ---\n"));
                     success &= _variableList[i]->parentSensor->startSingleMeasurement();
                 }
-                if((_variableList[i]->parentSensor->getStatus() & 0b00011111) == 0b00011111)  // is powered, setup, warmed-up, awake, stable, and has completed a measurement
+                // is powered, setup, warmed-up, awake, stable, and has started and completed a measurement
+                if((_variableList[i]->parentSensor->isMeasurementComplete() and
+                   _variableList[i]->parentSensor->getStatus() & 0b01111111) == 0b01111111)
                 {
                     // Get the value
                     MS_DBG(F("--- Collecting result of reading "), j+1, F(" from "));
@@ -210,7 +217,8 @@ bool VariableArray::updateAllSensors(void)
                     success &= _variableList[i]->parentSensor->addSingleMeasurementResult();
                     nMeasurementsCompleted[i] += 1;  // increment the number of measurements that sensor has completed
                 }
-                if (nMeasurementsCompleted[i] == _variableList[i]->parentSensor->getNumberMeasurementsToAverage())  // sensor has taken all the measurements it needs
+                // sensor has taken all the measurements it needs
+                if (nMeasurementsCompleted[i] == _variableList[i]->parentSensor->getNumberMeasurementsToAverage())
                 {
                     nSensorsCompleted++;
                 }
