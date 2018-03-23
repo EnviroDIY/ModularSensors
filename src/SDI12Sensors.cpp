@@ -111,6 +111,8 @@ bool SDI12Sensors::requestSensorAcknowledgement(void)
             MS_DBG(F("   "), getSensorName(), F(" did not reply!\n"));
             didAcknowledge = false;
         }
+
+        ntries++;
     }
 
     // De-activate the SDI-12 Object
