@@ -30,7 +30,7 @@
 
 bool Decagon5TM::addSingleMeasurementResult(void)
 {
-    if (_millisSensorActivated > 0)
+    if (_millisMeasurementRequested > 0)
     {
         // Make sure we've waited long enough for a reading to finish
         waitForMeasurementCompletion();
@@ -38,7 +38,7 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         bool gotResult = false;
         int ntries = 0;
         float ea, temp, VWC = -9999;
-        while (!gotResult and ntries < 4)
+        while (!gotResult and ntries < 3)
         {
             // Make this the currently active SDI-12 Object
             _SDI12Internal.setActive();
@@ -84,18 +84,18 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         verifyAndAddMeasurementResult(TM_TEMP_VAR_NUM, temp);
         verifyAndAddMeasurementResult(TM_VWC_VAR_NUM, VWC);
 
-      // Unset the time stamp for the beginning of this measurement
-      _millisMeasurementRequested = 0;
-      // Make sure the status bits for measurement request (bit 5) and measurement
-      // completion (bit 6) are no longer set
-      _sensorStatus &= 0b10011111;
+        // Unset the time stamp for the beginning of this measurement
+        _millisMeasurementRequested = 0;
+        // Make sure the status bits for measurement request (bit 5) and measurement
+        // completion (bit 6) are no longer set
+        _sensorStatus &= 0b10011111;
 
-      // Return true when finished
-      return gotResult;
-  }
-  else
-  {
-      MS_DBG(F("   "), getSensorName(), F(" is not currently measuring!\n"));
-      return false;
-  }
+        // Return true when finished
+        return gotResult;
+    }
+    else
+    {
+        MS_DBG(F("   "), getSensorName(), F(" is not currently measuring!\n"));
+        return false;
+    }
 }

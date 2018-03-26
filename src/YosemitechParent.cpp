@@ -155,11 +155,13 @@ bool YosemitechParent::startSingleMeasurement(void)
         waitForStability();
         // Mark the time that a measurement was requested
         _millisMeasurementRequested = millis();
-        // Set the status bits for measurement requested (bit 5)
-        _sensorStatus |= 0b00100000;
-        // Verify that the status bit for a single measurement completion is not set (bit 6)
-        _sensorStatus &= 0b10111111;
     }
+
+    // We still want to set the status bit to show that we attempted to start a measurement
+    // Set the status bits for measurement requested (bit 5)
+    _sensorStatus |= 0b00100000;
+    // Verify that the status bit for a single measurement completion is not set (bit 6)
+    _sensorStatus &= 0b10111111;
     return success;
 }
 
@@ -173,7 +175,7 @@ bool YosemitechParent::addSingleMeasurementResult(void)
     float tempValue = -9999;
     float thirdValue = -9999;
 
-    if (_millisSensorActivated > 0)
+    if (_millisMeasurementRequested > 0)
     {
         // Make sure we've waited long enough for a new reading to be available
         waitForMeasurementCompletion();

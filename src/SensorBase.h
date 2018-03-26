@@ -163,6 +163,7 @@ protected:
 
     // This is an 8-bit code for the sensor status
     uint8_t _sensorStatus;
+    void updateStatusBits(void);
 
     // This is an array for each sensor containing the variable objects tied
     // to that sensor.  The MAX_NUMBER_VARS cannot be determined on a per-sensor

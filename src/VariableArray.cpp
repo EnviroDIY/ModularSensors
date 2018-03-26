@@ -62,7 +62,7 @@ bool VariableArray::setupSensors(void)
         {
             if (bitRead(_variableList[i]->parentSensor->getStatus(), 1) == 1)  // already set up
             {
-                MS_DBG(F("   ... "),_variableList[i]->getVarCode(), F(" was already set up!\n"));
+                MS_DBG(F("   ... "), _variableList[i]->parentSensor->getSensorName(), F(" was already set up!\n"));
                 nSensorsSetup++;
             }
         }
@@ -83,8 +83,8 @@ bool VariableArray::setupSensors(void)
                     bitRead(_variableList[i]->parentSensor->getStatus(), 1) == 0)  // and not yet set up
                 {
                     sensorSuccess = _variableList[i]->parentSensor->setup();  // set it up
-                    if (!sensorSuccess) MS_DBG(F("   ... Set up of "), _variableList[i]->getVarCode(), F(" failed!\n"));
-                    else MS_DBG(F("   ... Set up of "), _variableList[i]->getVarCode(), F(" succeeded.\n"));
+                    if (!sensorSuccess) MS_DBG(F("   ... Set up of "), _variableList[i]->parentSensor->getSensorName(), F(" failed!\n"));
+                    else MS_DBG(F("   ... Set up of "), _variableList[i]->parentSensor->getSensorName(), F(" succeeded.\n"));
                     success &= sensorSuccess;
                     nSensorsSetup++;
                 }
@@ -107,7 +107,8 @@ bool VariableArray::setupSensors(void)
 }
 
 
-// This wakes sensors (ie, gives power)
+// This powers up the sensors
+// There's no checking or waiting here, just turning on pins
 void VariableArray::sensorsPowerUp(void)
 {
     MS_DBG(F("Powering up sensors...\n"));
@@ -115,19 +116,35 @@ void VariableArray::sensorsPowerUp(void)
     {
         if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {
-            MS_DBG(F("   ... Powering up "), _variableList[i]->getVarCode(), F("\n"));
+            MS_DBG(F("   ... Powering up "), _variableList[i]->parentSensor->getSensorName(), F("\n"));
             _variableList[i]->parentSensor->powerUp();
         }
     }
 }
 
 
-// This wakes sensors (ie, gives power)
+// This wakes sensors
+// Before a sensor is "awoken" we have to make sure it's had time to warm
 bool VariableArray::sensorsWake(void)
 {
     MS_DBG(F("Waking sensors...\n"));
     bool success = true;
     uint8_t nSensorsAwake = 0;
+
+    // Check for any sensors that are awake outside of being sent a "wake" command
+    for (int i = 0; i < _variableCount; i++)
+    {
+        if (isLastVarFromSensor(i)) // Skip non-unique sensors
+        {
+            if (bitRead(_variableList[i]->parentSensor->getStatus(), 3) == 1)  // NOT yet awake)
+            {
+                MS_DBG(_variableList[i]->parentSensor->getSensorName());
+                MS_DBG(F(" was already awake.\n"));
+                nSensorsAwake++;
+            }
+        }
+    }
+
     // We're going to keep looping through all of the sensors and check if each
     // one has been on long enouggh to be warmed up.  Once it has, we'll wake it
     // up and increment the counter marking that's been done.
@@ -138,10 +155,14 @@ bool VariableArray::sensorsWake(void)
         {
             if (isLastVarFromSensor(i)) // Skip non-unique sensors
             {
-                if (_variableList[i]->parentSensor->isWarmedUp())
+                if (_variableList[i]->parentSensor->isWarmedUp() and
+                    bitRead(_variableList[i]->parentSensor->getStatus(), 3) == 0)  // NOT yet awake)
                 {
-                    MS_DBG(F("   ... Waking "), _variableList[i]->getVarCode(), F("\n"));
-                    success &= _variableList[i]->parentSensor->wake();
+                    MS_DBG(F("   ... Wake up of "), _variableList[i]->parentSensor->getSensorName());
+                    bool sensorSuccess = _variableList[i]->parentSensor->wake();
+                    if (sensorSuccess) MS_DBG(F(" succeeded.\n"));
+                    else MS_DBG(F(" failed!\n"));
+                    success &= sensorSuccess;
                     nSensorsAwake++;
                 }
             }
@@ -151,7 +172,8 @@ bool VariableArray::sensorsWake(void)
 }
 
 
-// This puts sensors to sleep (ie, cuts power)
+// This puts sensors to sleep
+// We're not waiting for anything to be ready, we're just putting it to sleep no matter what.
 bool VariableArray::sensorsSleep(void)
 {
     MS_DBG(F("Putting sensors to sleep...\n"));
@@ -160,15 +182,19 @@ bool VariableArray::sensorsSleep(void)
     {
         if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {
-            MS_DBG(F("   ... putting "), _variableList[i]->getVarCode(), F(" to sleep.\n"));
-            success &= _variableList[i]->parentSensor->sleep();
+            MS_DBG(F("   ... "), _variableList[i]->parentSensor->getSensorName());
+            bool sensorSuccess = _variableList[i]->parentSensor->sleep();
+            if (sensorSuccess) MS_DBG(F("   successfully put to sleep.\n"));
+            else MS_DBG(F("   failed to sleep!\n"));
+            success &= sensorSuccess;
         }
     }
     return success;
 }
 
 
-// This puts sensors to sleep (ie, cuts power)
+// This cuts power to the sensors
+// We're not waiting for anything to be ready, we're just cutting power.
 void VariableArray::sensorsPowerDown(void)
 {
     MS_DBG(F("Powering down sensors...\n"));
@@ -176,7 +202,7 @@ void VariableArray::sensorsPowerDown(void)
     {
         if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {
-            MS_DBG(F("   ... powering down "), _variableList[i]->getVarCode(), F("\n"));
+            MS_DBG(F("   ... powering down "), _variableList[i]->parentSensor->getSensorName(), F("\n"));
             _variableList[i]->parentSensor->powerDown();
         }
     }
@@ -190,6 +216,7 @@ void VariableArray::sensorsPowerDown(void)
 bool VariableArray::updateAllSensors(void)
 {
     bool success = true;
+    bool sensorSuccess = true;
 
     // Clear the initial variable arrays
     MS_DBG(F("--- Clearing all results before measurements ---\n"));
@@ -206,15 +233,34 @@ bool VariableArray::updateAllSensors(void)
     for (uint8_t i = 0; i < _variableCount; i++)
         nMeasurementsCompleted[i] = 0;
 
+    // Check for any sensors that didn't wake up and mark them as "complete" so
+    // they will be skipped in further looping.
+    for (int i = 0; i < _variableCount; i++)
+    {
+        if (isLastVarFromSensor(i)) // Skip non-unique sensors
+        {
+            if (bitRead(_variableList[i]->parentSensor->getStatus(), 3) == 0)  // NOT awake
+            {
+                MS_DBG(_variableList[i]->parentSensor->getSensorName(), F(" isn't awake!\n"));
+                nMeasurementsCompleted[i] = _variableList[i]->parentSensor->getNumberMeasurementsToAverage();
+                nSensorsCompleted++;
+            }
+        }
+    }
+
     while (nSensorsCompleted < _sensorCount)
     {
         for (uint8_t i = 0; i < _variableCount; i++)
         {
-            // if (isLastVarFromSensor(i))
+            // THIS IS PURELY FOR DEBUGGING!
+            // if (isLastVarFromSensor(i) and
+            //     _variableList[i]->parentSensor->getNumberMeasurementsToAverage() > nMeasurementsCompleted[i])
             // {
             //     Serial.print(i);
             //     Serial.print(" - ");
             //     Serial.print(_variableList[i]->parentSensor->getSensorName());
+            //     Serial.print(" - millis: ");
+            //     Serial.print(millis());
             //     Serial.print(" - status: 0b");
             //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 7));
             //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 6));
@@ -224,43 +270,58 @@ bool VariableArray::updateAllSensors(void)
             //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 2));
             //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 1));
             //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 0));
-            //     Serial.print(" - finished: ");
-            //     Serial.print(nMeasurementsCompleted[i]);
-            //     Serial.print(" of ");
-            //     Serial.println(_variableList[i]->parentSensor->getNumberMeasurementsToAverage());
+            //     Serial.println();
             // }
+            // END CHUNK FOR DEBUGGING!
 
+            // Only take actions on sensors that are stable and still have more readings to finish
             if (isLastVarFromSensor(i) and _variableList[i]->parentSensor->isStable() and
                 _variableList[i]->parentSensor->getNumberMeasurementsToAverage() > nMeasurementsCompleted[i])
             {
-                // is powered, setup, warmed-up, awake, and stable but not yet taking measurement
-                if(_variableList[i]->parentSensor->getStatus() == 0b00011111 ||
-                   _variableList[i]->parentSensor->getStatus() == 0b10011111 ||  // accept if error code is flagged
-                      _variableList[i]->parentSensor->getStatus() == 0b10011101)  // accept if set-up failed
+                // if it's not currently measuring, start a measurment
+                if (bitRead(_variableList[i]->parentSensor->getStatus(), 5) == 0)  // NOT currently measuring
                 {
                     // Start a reading
-                    MS_DBG(F("--- Starting reading on "));
-                    MS_DBG(_variableList[i]->parentSensor->getSensorName());
-                    MS_DBG(F(" ---\n"));
-                    success &= _variableList[i]->parentSensor->startSingleMeasurement();
+                    sensorSuccess = _variableList[i]->parentSensor->startSingleMeasurement();
+                    success &= sensorSuccess;
+                    if (sensorSuccess)
+                    {
+                        MS_DBG(F("- Starting reading "), nMeasurementsCompleted[i]-1, F(" on "));
+                        MS_DBG(_variableList[i]->parentSensor->getSensorName());
+                        MS_DBG(F(". -\n"));
+                    }
+                    else
+                    {
+                        MS_DBG(F("- Failed to start reading "), nMeasurementsCompleted[i]-1, F(" on "));
+                        MS_DBG(_variableList[i]->parentSensor->getSensorName());
+                        MS_DBG(F("! -\n"));
+                    }
                 }
-                // is powered, setup, warmed-up, awake, stable, and has started and completed a measurement
-                if(_variableList[i]->parentSensor->isMeasurementComplete() and
-                   (_variableList[i]->parentSensor->getStatus() == 0b01111111 ||
-                   _variableList[i]->parentSensor->getStatus() == 0b11111111 ||  // accept if error code is flagged
-                   _variableList[i]->parentSensor->getStatus() == 0b11111101))  // accept if set-up failed
+
+                // if a measurement is finished, get the result and tick up the number of finished readings
+                if(_variableList[i]->parentSensor->isMeasurementComplete())
                 {
                     // Get the value
-                    MS_DBG(F("--- Collecting result of reading from "));
-                    MS_DBG(_variableList[i]->parentSensor->getSensorName());
-                    MS_DBG(F(" ---\n"));
-                    success &= _variableList[i]->parentSensor->addSingleMeasurementResult();
+                    sensorSuccess = _variableList[i]->parentSensor->addSingleMeasurementResult();
+                    success &= sensorSuccess;
+                    if (sensorSuccess)
+                    {
+                        MS_DBG(F("-- Collected result of reading "), nMeasurementsCompleted[i]+1, F(" from "));
+                        MS_DBG(_variableList[i]->parentSensor->getSensorName());
+                        MS_DBG(F(" --\n"));
+                    }
+                    else
+                    {
+                        MS_DBG(F("-- Could not get result of reading "), nMeasurementsCompleted[i]+1, F(" from "));
+                        MS_DBG(_variableList[i]->parentSensor->getSensorName());
+                        MS_DBG(F("! --\n"));
+                    }
                     nMeasurementsCompleted[i] += 1;  // increment the number of measurements that sensor has completed
                 }
-                // sensor has taken all the measurements it needs
+
+                // once all the readings are done, mark the whole sensor as done
                 if (nMeasurementsCompleted[i] == _variableList[i]->parentSensor->getNumberMeasurementsToAverage())
                 {
-
                     MS_DBG(F("--- Finished all readings from "));
                     MS_DBG(_variableList[i]->parentSensor->getSensorName());
                     MS_DBG(F(" ---\n"));
@@ -271,18 +332,19 @@ bool VariableArray::updateAllSensors(void)
     }
 
     // Average readings and notify varibles of the updates
+    MS_DBG(F("--- Averaging results and notifying variables ---\n"));
     for (uint8_t i = 0; i < _variableCount; i++)
     {
         if (isLastVarFromSensor(i))
         {
-            MS_DBG(F("--- Averaging results from "));
-            MS_DBG(_variableList[i]->parentSensor->getSensorName());
+            // MS_DBG(F("--- Averaging results from "));
+            // MS_DBG(_variableList[i]->parentSensor->getSensorName());
             _variableList[i]->parentSensor->averageMeasurements();
-            MS_DBG(F(" ---\n"));
-            MS_DBG(F("--- Notifying variables from "));
-            MS_DBG(_variableList[i]->parentSensor->getSensorName());
+            // MS_DBG(F(" ---\n"));
+            // MS_DBG(F("--- Notifying variables from "));
+            // MS_DBG(_variableList[i]->parentSensor->getSensorName());
             _variableList[i]->parentSensor->notifyVariables();
-            MS_DBG(F(" ---\n"));
+            // MS_DBG(F(" ---\n"));
         }
     }
     return success;

@@ -572,3 +572,20 @@ bool Sensor::isMeasurementComplete(void)
 
 // This delays until enough time has passed for the sensor to give a new value
 void Sensor::waitForMeasurementCompletion(void){ while (!isMeasurementComplete()){} }
+
+
+void Sensor::updateStatusBits(void)
+{
+    // first check that there is power, just return if not
+    if (!checkPowerOn()) return;
+    // if the sensor isn't warmed-up, quit
+    if (!isWarmedUp()) return;
+    // if the sensor is not awake/active, quit
+    if (!bitRead(_sensorStatus, 3)) return;
+    // if the sensor hasn't stabilized, quit
+    if (!isStable()) return;
+    // if the sensor is not taking a measurement, quit
+    if (!bitRead(_sensorStatus, 5)) return;
+    // Last thing it to check if a measurement is finished
+    isMeasurementComplete();
+}

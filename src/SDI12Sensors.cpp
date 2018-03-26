@@ -220,13 +220,17 @@ String SDI12Sensors::getSensorLocation(void)
 // Sending the command to get a concurrent measurement
 bool SDI12Sensors::startSingleMeasurement(void)
 {
+    bool retVal = false;
+    String startCommand;
+    String sdiResponse;
+
     // Check that the sensor is there and responding
     // The requestSensorAcknowledgement() function includes the waitForWarmUp()
     if (!requestSensorAcknowledgement())
     {
-        _millisSensorActivated = 0;
         _millisMeasurementRequested = 0;
-        return false;
+        retVal = false;
+        goto finish;
     }
 
     // These sensors should be stable at the first reading they are able to return
@@ -240,7 +244,7 @@ bool SDI12Sensors::startSingleMeasurement(void)
     _SDI12Internal.clearBuffer();
 
     MS_DBG(F("   Beginning concurrent measurement on "), getSensorName(), '\n');
-    String startCommand = "";
+    startCommand = "";
     startCommand += _SDI12address;
     startCommand += "C!"; // Start concurrent measurement - format  [address]['C'][!]
     _SDI12Internal.sendCommand(startCommand);
@@ -249,7 +253,7 @@ bool SDI12Sensors::startSingleMeasurement(void)
 
     // wait for acknowlegement with format
     // [address][ttt (3 char, seconds)][number of values to be returned, 0-9]<CR><LF>
-    String sdiResponse = _SDI12Internal.readStringUntil('\n');
+    sdiResponse = _SDI12Internal.readStringUntil('\n');
     sdiResponse.trim();
     _SDI12Internal.clearBuffer();
     MS_DBG(F("      <<< "), sdiResponse, F("\n"));
@@ -275,33 +279,38 @@ bool SDI12Sensors::startSingleMeasurement(void)
         MS_DBG(F("   Concurrent measurement started.\n"));
         // Mark the time that a measurement was requested
         _millisMeasurementRequested = millis();
-        // Set the status bits for measurement requested (bit 5)
-        _sensorStatus |= 0b00100000;
-        // Verify that the status bit for a single measurement completion is not set (bit 6)
-        _sensorStatus &= 0b10111111;
-        return true;
+        retVal = true;
+        goto finish;
     }
     else
     {
         MS_DBG(F("   "), getSensorName(), F(" did not respond to measurement request!\n"));
-        _millisSensorActivated = 0;
         _millisMeasurementRequested = 0;
+        retVal = false;
+        goto finish;
     }
 
-    return true;
+    finish:
+    // We still want to set the status bit to show that we attempted to start a measurement
+    // Set the status bits for measurement requested (bit 5)
+    _sensorStatus |= 0b00100000;
+    // Verify that the status bit for a single measurement completion is not set (bit 6)
+    _sensorStatus &= 0b10111111;
+
+    return retVal;
 }
 
 
 bool SDI12Sensors::addSingleMeasurementResult(void)
 {
-    if (_millisSensorActivated > 0)
+    if (_millisMeasurementRequested > 0)
     {
         // Make sure we've waited long enough for a reading to finish
         waitForMeasurementCompletion();
 
         bool gotResult = false;
         int ntries = 0;
-        while (!gotResult and ntries < 4)
+        while (!gotResult and ntries < 3)
         {
             // Make this the currently active SDI-12 Object
             _SDI12Internal.setActive();
