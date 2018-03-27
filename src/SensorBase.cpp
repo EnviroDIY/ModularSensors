@@ -99,7 +99,11 @@ int Sensor::getNumberMeasurementsToAverage(void){return _measurementsToAverage;}
 // bit 6 - 0=Measurement complete (IFF bit 3 and 4 are set!)
 //         1=Waiting for measurement completion (IFF bit 3 and 4 are set!),
 // Bit 7 - 0=No known errors, 1=Some sort of error has occured
-uint8_t Sensor::getStatus(void){return _sensorStatus;}
+uint8_t Sensor::getStatus(void)
+{
+    updateStatusBits();
+    return _sensorStatus;
+}
 
 
 // This turns on sensor power
@@ -369,7 +373,7 @@ bool Sensor::checkPowerOn(void)
     MS_DBG(F("Checking power status:  "));
     if (_powerPin > 0)
     {
-        MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation())
+        MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation());
         int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
 
         if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
@@ -410,9 +414,9 @@ bool Sensor::isWarmedUp(void)
 {
     uint32_t elapsed_since_power_on = millis() - _millisPowerOn;
 
-    if (!bitRead(_sensorStatus, 0) && elapsed_since_power_on > _warmUpTime_ms)
+    if (bitRead(_sensorStatus, 0) && elapsed_since_power_on > _warmUpTime_ms)
     {
-        MS_DBG(F("It's been "), (now - _millisPowerOn), F("ms, and "),
+        MS_DBG(F("It's been "), (elapsed_since_power_on), F("ms, and "),
               getSensorName(), F(" at "),    getSensorLocation(),
               F(" should be warmed up!\n"));
         // Set the status bit for warm-up completion (bit 2)
@@ -441,7 +445,7 @@ bool Sensor::isStable(void)
 
     if (bitRead(_sensorStatus, 3) && (elapsed_since_wake_up > _stabilizationTime_ms))
     {
-        MS_DBG(F("It's been "), (now - _millisSensorActivated), F("ms, and "),
+        MS_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
                getSensorName(), F(" at "), getSensorLocation(),
                F(" should be stable!\n"));
         // Set the status bit for stability completion (bit 4)
@@ -468,7 +472,7 @@ bool Sensor::isMeasurementComplete(void)
     uint32_t elapsed_since_wake_up = millis() - _millisMeasurementRequested;
     if (bitRead(_sensorStatus, 5) && (elapsed_since_wake_up > _measurementTime_ms))
     {
-        MS_DBG(F("It's been "), (now - _millisMeasurementRequested),
+        MS_DBG(F("It's been "), (elapsed_since_wake_up),
                F("ms, and measurement by "), getSensorName(), F(" at "),
                getSensorLocation(), F(" should be complete!\n"));
         // Set the status bit for measurement completion (bit 6)
