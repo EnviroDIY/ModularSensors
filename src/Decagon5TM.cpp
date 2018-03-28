@@ -32,6 +32,11 @@ bool Decagon5TM::addSingleMeasurementResult(void)
 {
     if (_millisMeasurementRequested > 0)
     {
+        // Make this the currently active SDI-12 Object
+        _SDI12Internal.setActive();
+        // Empty the buffer
+        _SDI12Internal.clearBuffer();
+
         // Make sure we've waited long enough for a reading to finish
         waitForMeasurementCompletion();
 
@@ -40,12 +45,6 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         float ea, temp, VWC = -9999;
         while (!gotResult and ntries < 3)
         {
-            // Make this the currently active SDI-12 Object
-            _SDI12Internal.setActive();
-
-            // Empty the buffer
-            _SDI12Internal.clearBuffer();
-
             MS_DBG(F("   Requesting data from "), getSensorName(), '\n');
             String getDataCommand = "";
             getDataCommand += _SDI12address;
@@ -70,11 +69,11 @@ bool Decagon5TM::addSingleMeasurementResult(void)
             // Empty the buffer again
             _SDI12Internal.clearBuffer();
 
-            // De-activate the SDI-12 Object
-            _SDI12Internal.forceHold();
-
             ntries++;
         }
+
+        // De-activate the SDI-12 Object
+        _SDI12Internal.forceHold();
 
         MS_DBG(F("Dialectric E: "), ea);
         MS_DBG(F(" Temperature: "), temp);
