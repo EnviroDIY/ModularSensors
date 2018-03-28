@@ -74,7 +74,6 @@ bool SDI12Sensors::requestSensorAcknowledgement(void)
 
     // Make this the currently active SDI-12 Object
     _SDI12Internal.setActive();
-
     // Empty the buffer
     _SDI12Internal.clearBuffer();
 
@@ -139,7 +138,6 @@ bool SDI12Sensors::getSensorInfo(void)
 
     // Make this the currently active SDI-12 Object
     _SDI12Internal.setActive();
-
     // Empty the buffer
     _SDI12Internal.clearBuffer();
 
@@ -239,7 +237,6 @@ bool SDI12Sensors::startSingleMeasurement(void)
 
     // Make this the currently active SDI-12 Object
     _SDI12Internal.setActive();
-
     // Empty the buffer
     _SDI12Internal.clearBuffer();
 
@@ -308,16 +305,15 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
         // Make sure we've waited long enough for a reading to finish
         waitForMeasurementCompletion();
 
+        // Make this the currently active SDI-12 Object
+        _SDI12Internal.setActive();
+        // Empty the buffer
+        _SDI12Internal.clearBuffer();
+
         bool gotResult = false;
         int ntries = 0;
         while (!gotResult and ntries < 3)
         {
-            // Make this the currently active SDI-12 Object
-            _SDI12Internal.setActive();
-
-            // Empty the buffer
-            _SDI12Internal.clearBuffer();
-
             MS_DBG(F("   Requesting data from "), getSensorName(), '\n');
             String getDataCommand = "";
             getDataCommand += _SDI12address;
@@ -347,11 +343,11 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
             // Empty the buffer again
             _SDI12Internal.clearBuffer();
 
-            // De-activate the SDI-12 Object
-            _SDI12Internal.forceHold();
-
             ntries++;
         }
+
+        // De-activate the SDI-12 Object
+        _SDI12Internal.forceHold();
 
         // Unset the time stamp for the beginning of this measurement
         _millisMeasurementRequested = 0;
