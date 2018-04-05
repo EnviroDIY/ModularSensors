@@ -281,6 +281,26 @@ const char *DOptoDI12address = "5";  // The SDI-12 Address of the Zebra Tech D-O
 // const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 
+#include <BatteryMonitor.h>
+// const char *DOptoDI12address = "5";  // The SDI-12 Address of the Zebra Tech D-Opto
+// const int8_t SDI12Data = 7;  // The pin the D-Opto is attached to
+// const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t VoltPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t VoltData = 0;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const uint8_t Volt_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
+// ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
+BatteryMonitor bat(VoltPower, VoltData);
+
+#include <TippingBucket.h>
+// const char *DOptoDI12address = "5";  // The SDI-12 Address of the Zebra Tech D-Opto
+// const int8_t SDI12Data = 7;  // The pin the D-Opto is attached to
+// const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t TippingPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// const int8_t VoltData = 0;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
+// const uint8_t Volt_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
+// ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
+TippingBucket tip(TippingPower);
+
 
 // ==========================================================================
 //    The array that contains all variables to be logged
@@ -333,6 +353,8 @@ Variable *variableList[] = {
     new YosemitechY511_Temp(&y511),
     new YosemitechY514_Chlorophyll(&y514),
     new YosemitechY514_Temp(&y514),
+    new BatteryMonitor_Volt(&bat),
+    new TippingBucket_Tips(&tip),
     // new YOUR_variableName_HERE(&)
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
