@@ -6,10 +6,8 @@ Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
 Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
-
 This sketch is an example of getting data from a single sensor, in this case, a
 MaxBotix Ultrasonic Range Finder
-
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
