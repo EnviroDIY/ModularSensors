@@ -280,7 +280,7 @@ bool Sensor::startSingleMeasurement(void)
         _millisMeasurementRequested = millis();
     }
     // Make sure that the time of a measurement request is not set
-    else _millisMeasurementRequested  = 0;
+    else _millisMeasurementRequested = 0;
 
     // We still want to set the status bit to show that we attempted to start a measurement
     // Set the status bits for measurement requested (bit 5)
