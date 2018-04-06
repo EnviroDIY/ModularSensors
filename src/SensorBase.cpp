@@ -342,9 +342,6 @@ bool Sensor::update(void)
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
     if(!wasOn){ret_val += wake();}
-    // Wait until the sensor is warmed up and stable
-    waitForWarmUp();
-    waitForStability();
 
     // Clear values before starting loop
     clearValues();
