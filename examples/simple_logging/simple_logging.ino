@@ -459,10 +459,10 @@ void loop()
     // y510.update();
     // bat.wake();
     // bat.update();
-    // Serial.println("Trip Value = "); //DEBUG!
-    // Serial.println((*variableList[2]).getValue()); //DEBUG!
+    Serial.println("Trip Value = "); //DEBUG!
+    Serial.println((*variableList[2]).getValue()); //DEBUG!
     // Serial.println(Volt.getValue());
-    trig.test((*variableList[3]).getValue());  //Test using battery variable, switch to list[2] to use turbidity
+    // trig.test((*variableList[3]).getValue());  //Test using battery variable, switch to list[2] to use turbidity
     // bat.sleep();
     // y511.sleep();
     // delay(500); //DEBUG!
