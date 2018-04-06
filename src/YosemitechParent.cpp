@@ -156,13 +156,20 @@ bool YosemitechParent::sleep(void)
 bool YosemitechParent::startSingleMeasurement(void)
 {
     bool success = true;
-    if (_millisSensorActivated == 0) success = wake();
-    if (_millisSensorActivated > 0)
+
+    // Check if activated, wake if not
+    if (_millisSensorActivated == 0 || bitRead(_sensorStatus, 3))
+        success = wake();
+
+    // Check again if activated, only wait if it is
+    if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
     {
         waitForStability();
         // Mark the time that a measurement was requested
         _millisMeasurementRequested = millis();
     }
+    // Make sure that the time of a measurement request is not set
+    else _millisMeasurementRequested  = 0;
 
     // We still want to set the status bit to show that we attempted to start a measurement
     // Set the status bits for measurement requested (bit 5)
