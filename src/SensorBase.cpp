@@ -266,15 +266,28 @@ void Sensor::clearValues(void)
 // that need no instructions to start a measurement.
 bool Sensor::startSingleMeasurement(void)
 {
-    waitForWarmUp();
-    waitForStability();
-    // Mark the time that a measurement was requested
-    _millisMeasurementRequested = millis();
+    bool success = true;
+
+    // Check if activated, wake if not
+    if (_millisSensorActivated == 0 || bitRead(_sensorStatus, 3))
+        success = wake();
+
+    // Check again if activated, only wait if it is
+    if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
+    {
+        waitForStability();
+        // Mark the time that a measurement was requested
+        _millisMeasurementRequested = millis();
+    }
+    // Make sure that the time of a measurement request is not set
+    else _millisMeasurementRequested  = 0;
+
+    // We still want to set the status bit to show that we attempted to start a measurement
     // Set the status bits for measurement requested (bit 5)
     _sensorStatus |= 0b00100000;
     // Verify that the status bit for a single measurement completion is not set (bit 6)
     _sensorStatus &= 0b10111111;
-    return true;
+    return success;
 }
 
 
