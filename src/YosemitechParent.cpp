@@ -95,7 +95,14 @@ bool YosemitechParent::wake(void)
         _sensorStatus |= 0b00001000;
         MS_DBG(F("Sensor activated and measuring.\n"));
     }
-    else MS_DBG(F("Sensor NOT activated!\n"));
+    else
+    {
+        // Make sure the activation time is not set
+        _millisSensorActivated = 0;
+        // Make sure the status bit for sensor activation (bit 3) is not set
+        _sensorStatus &= 0b10000111;
+        MS_DBG(F("Sensor NOT activated!\n"));
+    }
 
     // Manually activate the brush
     // Needed for newer sensors that do not immediate activate on getting power
@@ -144,26 +151,6 @@ bool YosemitechParent::sleep(void)
     return success;
 }
 
-
-// Want to just check that the sensor is active
-bool YosemitechParent::startSingleMeasurement(void)
-{
-    bool success = true;
-    if (_millisSensorActivated == 0) success = wake();
-    if (_millisSensorActivated > 0)
-    {
-        waitForStability();
-        // Mark the time that a measurement was requested
-        _millisMeasurementRequested = millis();
-    }
-
-    // We still want to set the status bit to show that we attempted to start a measurement
-    // Set the status bits for measurement requested (bit 5)
-    _sensorStatus |= 0b00100000;
-    // Verify that the status bit for a single measurement completion is not set (bit 6)
-    _sensorStatus &= 0b10111111;
-    return success;
-}
 
 
 bool YosemitechParent::addSingleMeasurementResult(void)
