@@ -95,7 +95,14 @@ bool YosemitechParent::wake(void)
         _sensorStatus |= 0b00001000;
         MS_DBG(F("Sensor activated and measuring.\n"));
     }
-    else MS_DBG(F("Sensor NOT activated!\n"));
+    else
+    {
+        // Make sure the activation time is not set
+        _millisSensorActivated = 0;
+        // Make sure the status bit for sensor activation (bit 3) is not set
+        _sensorStatus &= 0b10000111;
+        MS_DBG(F("Sensor NOT activated!\n"));
+    }
 
     // Manually activate the brush
     // Needed for newer sensors that do not immediate activate on getting power
