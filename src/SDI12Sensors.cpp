@@ -105,6 +105,11 @@ bool SDI12Sensors::requestSensorAcknowledgement(void)
             MS_DBG(F("   "), getSensorName(), F(" replied as expected.\n"));
             didAcknowledge = true;
         }
+        else if (sdiResponse.startsWith(String(_SDI12address)))
+        {
+            MS_DBG(F("   "), getSensorName(), F(" replied, unexpectedly\n"));
+            didAcknowledge = true;
+        }
         else
         {
             MS_DBG(F("   "), getSensorName(), F(" did not reply!\n"));
@@ -231,14 +236,14 @@ bool SDI12Sensors::startSingleMeasurement(void)
         goto finish;
     }
 
-    // These sensors should be stable at the first reading they are able to return
-    // BUT... we'll put this in for safety
-    waitForStability();
-
     // Make this the currently active SDI-12 Object
     _SDI12Internal.setActive();
     // Empty the buffer
     _SDI12Internal.clearBuffer();
+
+    // These sensors should be stable at the first reading they are able to return
+    // BUT... we'll put this in for safety
+    waitForStability();
 
     MS_DBG(F("   Beginning concurrent measurement on "), getSensorName(), '\n');
     startCommand = "";
@@ -288,7 +293,9 @@ bool SDI12Sensors::startSingleMeasurement(void)
     }
 
     finish:
-    // We still want to set the status bit to show that we attempted to start a measurement
+
+    // Even if we failed to start a measurement, we still want to set the status
+    // bit to show that we attempted to start the measurement.
     // Set the status bits for measurement requested (bit 5)
     _sensorStatus |= 0b00100000;
     // Verify that the status bit for a single measurement completion is not set (bit 6)

@@ -138,7 +138,7 @@ void VariableArray::sensorsPowerUp(void)
 }
 
 
-// This wakes sensors
+// This wakes/activates the sensors
 // Before a sensor is "awoken" we have to make sure it's had time to warm up
 bool VariableArray::sensorsWake(void)
 {
@@ -151,7 +151,7 @@ bool VariableArray::sensorsWake(void)
     {
         if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {
-            if (bitRead(_variableList[i]->parentSensor->getStatus(), 3) == 1)  // NOT yet awake)
+            if (bitRead(_variableList[i]->parentSensor->getStatus(), 3) == 1)  // already awake)
             {
                 MS_DBG(_variableList[i]->parentSensor->getSensorName());
                 MS_DBG(F(" at "));
@@ -180,8 +180,11 @@ bool VariableArray::sensorsWake(void)
                     MS_DBG(F(" at "));
                     MS_DBG(_variableList[i]->parentSensor->getSensorLocation());
 
+                    // Make a single attempt to wake the sensor after it is warmed up
                     bool sensorSuccess = _variableList[i]->parentSensor->wake();
                     success &= sensorSuccess;
+                    // We increment up the number of sensors awake/active, even
+                    // if the wake up command failed!
                     nSensorsAwake++;
 
                     if (sensorSuccess) MS_DBG(F(" succeeded.\n"));
@@ -195,7 +198,8 @@ bool VariableArray::sensorsWake(void)
 
 
 // This puts sensors to sleep
-// We're not waiting for anything to be ready, we're just putting it to sleep no matter what.
+// We're not waiting for anything to be ready, we're just sending the command
+// to put it to sleep no matter what its current state is.
 bool VariableArray::sensorsSleep(void)
 {
     MS_DBG(F("Putting sensors to sleep...\n"));
@@ -275,9 +279,12 @@ bool VariableArray::updateAllSensors(void)
                 MS_DBG(_variableList[i]->parentSensor->getSensorName());
                 MS_DBG(F(" at "));
                 MS_DBG(_variableList[i]->parentSensor->getSensorLocation());
-                MS_DBG(F(" isn't awake!  No readings will be taken!\n"));
+                MS_DBG(F(" isn't awake/active!  No readings will be taken!\n"));
 
+                // Set the number of readings already equal to whatever total
+                // number requested to ensure the sensor is skipped in further loops.
                 nMeasurementsCompleted[i] = _variableList[i]->parentSensor->getNumberMeasurementsToAverage();
+                // Bump up the finished count.
                 nSensorsCompleted++;
             }
         }

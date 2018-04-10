@@ -105,47 +105,45 @@ bool BoschBME280::wake(void)
     return true;
 }
 
-// For operating in forced mode
-// bool BoschBME280::startSingleMeasurement(void)
-// {
-//     // waitForWarmUp();  // already done in wake
-//     waitForStability();
-//     bme_internal.takeForcedMeasurement(false);  // Don't want to wait to finish here
-//     // Mark the time that a measurement was requested
-//     _millisMeasurementRequested = millis();
-//     // Set the status bits for measurement requested (bit 5)
-//     _sensorStatus |= 0b00100000;
-//     // Verify that the status bit for a single measurement completion is not set (bit 6)
-//      _sensorStatus &= 0b10111111;
-//     return true;
-// }
-
 
 bool BoschBME280::addSingleMeasurementResult(void)
 {
-    // Make sure we've waited long enough for a new reading to be available
-    waitForMeasurementCompletion();
+    bool success = false;
 
-    // Read values
-    float temp = bme_internal.readTemperature();
-    float press = bme_internal.readPressure();
-    float alt = bme_internal.readAltitude(SEALEVELPRESSURE_HPA);
-    float humid = bme_internal.readHumidity();
+    // Initialize float variables
+    float temp = -9999;
+    float press = -9999;
+    float alt = -9999;
+    float humid = -9999;
 
-    if (isnan(temp)) temp = -9999;
-    if (isnan(press)) press = -9999;
-    if (isnan(alt)) alt = -9999;
-    if (isnan(humid)) humid = -9999;
-
-    if (temp == -140.85)  // This is the value returned if it's not attached
+    if (_millisMeasurementRequested > 0)
     {
-        temp = press = alt = humid = -9999;
-    }
+        // Make sure we've waited long enough for a new reading to be available
+        waitForMeasurementCompletion();
 
-    MS_DBG(F("Temperature: "), temp);
-    MS_DBG(F(" Humidity: "), humid);
-    MS_DBG(F(" Barometric Pressure: "), press);
-    MS_DBG(F(" Calculated Altitude: "), alt, F("\n"));
+        // Read values
+        temp = bme_internal.readTemperature();
+        press = bme_internal.readPressure();
+        alt = bme_internal.readAltitude(SEALEVELPRESSURE_HPA);
+        humid = bme_internal.readHumidity();
+
+        if (isnan(temp)) temp = -9999;
+        if (isnan(press)) press = -9999;
+        if (isnan(alt)) alt = -9999;
+        if (isnan(humid)) humid = -9999;
+
+        if (temp == -140.85)  // This is the value returned if it's not attached
+        {
+            temp = press = alt = humid = -9999;
+        }
+        else success = true;
+
+        MS_DBG(F("Temperature: "), temp);
+        MS_DBG(F(" Humidity: "), humid);
+        MS_DBG(F(" Barometric Pressure: "), press);
+        MS_DBG(F(" Calculated Altitude: "), alt, F("\n"));
+    }
+    else MS_DBG(F("Sensor is not currently measuring!\n"));
 
     verifyAndAddMeasurementResult(BME280_TEMP_VAR_NUM, temp);
     verifyAndAddMeasurementResult(BME280_HUMIDITY_VAR_NUM, humid);
@@ -158,6 +156,6 @@ bool BoschBME280::addSingleMeasurementResult(void)
     // completion (bit 6) are no longer set
     _sensorStatus &= 0b10011111;
 
-    // Return true when finished
-    return true;
+    // Return success value
+    return success;
 }

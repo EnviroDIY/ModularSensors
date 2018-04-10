@@ -166,24 +166,36 @@ public:
 
     bool startSingleMeasurement(void) override
     {
-        waitForWarmUp();
-        waitForStability();
+        bool success = true;
 
-        bool retVal = true;
+        // Check if activated, wake if not
+        if (_millisSensorActivated == 0 || bitRead(_sensorStatus, 3))
+            success = wake();
 
-        // Connect to the network before asking for quality
-        // Only waiting for up to 5 seconds here for the internet!
-        if (!_modem->isNetworkConnected()) retVal &= connectInternet(5000L);
-        if (retVal == false) return false;
+        // Check again if activated, only wait if it is
+        if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
+        {
+            waitForStability();
 
-        // Mark the time that a measurement was requested
-        _millisMeasurementRequested = millis();
+            // Connect to the network before asking for quality
+            // Only waiting for up to 5 seconds here for the internet!
+            if (!_modem->isNetworkConnected()) success &= connectInternet(5000L);
+            if (success == false) return false;
+
+            // Mark the time that a measurement was requested
+            _millisMeasurementRequested = millis();
+        }
+        // Make sure that the time of a measurement request is not set
+        else _millisMeasurementRequested = 0;
+
+        // Even if we failed to start a measurement, we still want to set the status
+        // bit to show that we attempted to start the measurement.
         // Set the status bits for measurement requested (bit 5)
         _sensorStatus |= 0b00100000;
         // Verify that the status bit for a single measurement completion is not set (bit 6)
         _sensorStatus &= 0b10111111;
 
-        return retVal;
+        return success;
     }
 
 

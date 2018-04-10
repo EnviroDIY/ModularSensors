@@ -158,44 +158,62 @@ bool MaximDS18::setup(void)
 // Because we put ourselves in ASYNC mode in setup, we don't have to wait for finish
 bool MaximDS18::startSingleMeasurement(void)
 {
-    waitForWarmUp();
-    waitForStability();
+    bool success = true;
 
-    // Send the command to get temperatures
-    MS_DBG(F("Asking DS18 to take a measurement\n"));
-    bool retVal = tempSensors.requestTemperaturesByAddress(_OneWireAddress);
+    // Check if activated, wake if not
+    if (_millisSensorActivated == 0 || bitRead(_sensorStatus, 3))
+        success = wake();
 
-    // Mark the time that a measurement was requested
-    _millisMeasurementRequested = millis();
+    // Check again if activated, only go on if it is
+    if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
+    {
+        waitForStability();
+
+        // Send the command to get temperatures
+        MS_DBG(F("Asking DS18 to take a measurement\n"));
+        success = tempSensors.requestTemperaturesByAddress(_OneWireAddress);
+
+        // Mark the time that a measurement was requested
+        _millisMeasurementRequested = millis();
+    }
+    // Make sure that the time of a measurement request is not set
+    else _millisMeasurementRequested = 0;
+
+    // Even if we failed to start a measurement, we still want to set the status
+    // bit to show that we attempted to start the measurement.
     // Set the status bits for measurement requested (bit 5)
     _sensorStatus |= 0b00100000;
     // Verify that the status bit for a single measurement completion is not set (bit 6)
     _sensorStatus &= 0b10111111;
-    return retVal;
+    return success;
 }
 
 
 bool MaximDS18::addSingleMeasurementResult(void)
 {
-    // Make sure we've waited long enough for a reading to finish
-    waitForMeasurementCompletion();
+    bool success = false;
 
-    bool goodTemp = true;
+    // Initialize float variables
     float result = -9999;
 
-    MS_DBG(F("Requesting temperature result\n"));
-    result = tempSensors.getTempC(_OneWireAddress);
-    MS_DBG(F("Received "), result, F("°C\n"));
-
-    // If a DS18 cannot get a good measurement, it returns 85
-    // If the sensor is not properly connected, it returns -127
-    if (result == 85 || result == -127)
+    if (_millisMeasurementRequested > 0)
     {
-        goodTemp = false;
-        result = -9999;
-    }
+        // Make sure we've waited long enough for a reading to finish
+        waitForMeasurementCompletion();
 
-    MS_DBG(F("Temperature: "), result, F(" °C\n"));
+        MS_DBG(F("Requesting temperature result\n"));
+        result = tempSensors.getTempC(_OneWireAddress);
+        MS_DBG(F("Received "), result, F("°C\n"));
+
+        // If a DS18 cannot get a good measurement, it returns 85
+        // If the sensor is not properly connected, it returns -127
+        if (result == 85 || result == -127) result = -9999;
+        else success = true;
+        MS_DBG(F("Temperature: "), result, F(" °C\n"));
+    }
+    else MS_DBG(F("Sensor is not currently measuring!\n"));
+
+    // Put value into the array
     verifyAndAddMeasurementResult(DS18_TEMP_VAR_NUM, result);
 
     // Unset the time stamp for the beginning of this measurement
@@ -204,5 +222,5 @@ bool MaximDS18::addSingleMeasurementResult(void)
     // completion (bit 6) are no longer set
     _sensorStatus &= 0b10011111;
 
-    return goodTemp;
+    return success;
 }

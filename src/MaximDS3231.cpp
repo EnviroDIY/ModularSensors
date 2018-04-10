@@ -55,22 +55,36 @@ void MaximDS3231::powerDown(void)
 // Sending the device a request to start temp conversion.
 bool MaximDS3231::startSingleMeasurement(void)
 {
-    waitForWarmUp();
-    waitForStability();
+    bool success = true;
 
-    // force a temperature sampling and conversion
-    // this function already has a forced wait for the conversion to complete
-    // TODO:  Test how long the conversion takes, update DS3231 lib accordingly!
-    MS_DBG(F("Forcing new temperature reading\n"));
-    rtc.convertTemperature(false);
+    // Check if activated, wake if not
+    if (_millisSensorActivated == 0 || bitRead(_sensorStatus, 3))
+        success = wake();
 
-    // Mark the time that a measurement was requested
-    _millisMeasurementRequested = millis();
+    // Check again if activated, only wait if it is
+    if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
+    {
+        waitForStability();
+
+        // force a temperature sampling and conversion
+        // this function already has a forced wait for the conversion to complete
+        // TODO:  Test how long the conversion takes, update DS3231 lib accordingly!
+        MS_DBG(F("Forcing new temperature reading\n"));
+        rtc.convertTemperature(false);
+
+        // Mark the time that a measurement was requested
+        _millisMeasurementRequested = millis();
+    }
+    // Make sure that the time of a measurement request is not set
+    else _millisMeasurementRequested = 0;
+
+    // Even if we failed to start a measurement, we still want to set the status
+    // bit to show that we attempted to start the measurement.
     // Set the status bits for measurement requested (bit 5)
     _sensorStatus |= 0b00100000;
     // Verify that the status bit for a single measurement completion is not set (bit 6)
     _sensorStatus &= 0b10111111;
-    return true;
+    return success;
 }
 
 

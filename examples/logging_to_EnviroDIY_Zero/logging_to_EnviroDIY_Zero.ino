@@ -71,17 +71,38 @@ ProcessorStats feather(featherVersion) ;
 //    Modem/Internet connection options
 // ==========================================================================
 HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
+
+#if defined(TINY_GSM_MODEM_XBEE)
 const int8_t modemSleepRqPin = 14;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
 const int8_t modemStatusPin = 15;   // Modem Status Pin (indicates power status) (-1 if unconnected)
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
-
-
 ModemSleepType ModemSleepMode = modem_sleep_reverse;  // How the modem is put to sleep
+
+#elif defined(TINY_GSM_MODEM_ESP8266)
+const int8_t modemSleepRqPin = 15;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
+const int8_t modemStatusPin = -1;   // Modem Status Pin (indicates power status) (-1 if unconnected)
+const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+ModemSleepType ModemSleepMode = modem_always_on;  // How the modem is put to sleep
+
+#else
+const int8_t modemSleepRqPin = 14;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
+const int8_t modemStatusPin = 15;   // Modem Status Pin (indicates power status) (-1 if unconnected)
+const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sleep
+#endif
 // Use "modem_sleep_held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
 // Use "modem_sleep_pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
 // Use "modem_sleep_reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
 // Use "modem_always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
+#if defined(TINY_GSM_MODEM_ESP8266)
+const long ModemBaud = 9600;  // Default for ESP8266 is 115200, but the Mayfly itself stutters above 57600
+#elif defined(TINY_GSM_MODEM_SIM800)
+const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble making it fast (19200 works)
+#elif defined(TINY_GSM_MODEM_XBEE)
+const long ModemBaud = 9600;  // Default for XBee is 9600, I've sped mine up to 57600
+#else
 const long ModemBaud = 9600;  // Modem baud rate
+#endif
 
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
@@ -330,53 +351,53 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 //    The array that contains all variables to be logged
 // ==========================================================================
 Variable *variableList[] = {
-    new ProcessorStats_Batt(&feather, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_FreeRam(&feather, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaxBotixSonar_Range(&sonar2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AOSongDHT_Temp(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AOSongDHT_HI(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
+    new BoschBME280_Temp(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
+    new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
+    new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
+    new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
+    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
     new Decagon5TM_Ea(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
     new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
     new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonES2_Cond(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonES2_Temp(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonES2_Cond(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonES2_Temp(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaxBotixSonar_Range(&sonar2, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_1, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_2, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_3, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_4, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_5, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Temp(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongDHT_Temp(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongDHT_HI(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
-    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
-    new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY532_Voltage(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY532_pH(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY510_Temp(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY532_Voltage(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY532_pH(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_FreeRam(&feather, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_Batt(&feather, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     // new YOUR_variableName_HERE(&)

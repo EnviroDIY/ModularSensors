@@ -88,45 +88,58 @@ bool MaxBotixSonar::wake(void)
 
 bool MaxBotixSonar::addSingleMeasurementResult(void)
 {
-    // Make sure we've waited long enough for a new reading to be available
-    waitForMeasurementCompletion();
-
+    // Initialize values
     bool success = false;
     int rangeAttempts = 0;
     int result = -9999;
 
-    MS_DBG(F("Beginning detection for Sonar\n"));
-    while (success == false && rangeAttempts < 50)
+    if (_millisMeasurementRequested > 0)
     {
-        if(_triggerPin != -1)
+        MS_DBG(F("Getting readings from sonar\n"));
+        while (success == false && rangeAttempts < 25)
         {
-            MS_DBG(F("Triggering Sonar\n"));
-            digitalWrite(_triggerPin, HIGH);
-            delayMicroseconds(30);  // Trigger must be held low for >20 µs
-            digitalWrite(_triggerPin, LOW);
-        }
+             // If the sonar is running on a trigger, activating the trigger
+             // should in theory happen within the startSingleMeasurement
+             // function.  Because we're really taking up to 25 measurements
+             // for each "single measurement" until a valid value is returned
+             // and the measurement time is <166ms, we'll actually activate
+             // the trigger here.
+            if(_triggerPin != -1)
+            {
+                MS_DBG(F("Triggering Sonar\n"));
+                digitalWrite(_triggerPin, HIGH);
+                delayMicroseconds(30);  // Trigger must be held low for >20 µs
+                digitalWrite(_triggerPin, LOW);
+            }
 
-        result = _stream->parseInt();
-        _stream->read();  // To throw away the carriage return
-        MS_DBG(F("Sonar Range: "), result, F("\n"));
-        rangeAttempts++;
+            // Instead of using the waitForMeasurementCompletion() function, we
+            // immediately ask for a result and let the stream timeout be our
+            // "wait" for the measurement.
+            result = _stream->parseInt();
+            _stream->read();  // To throw away the carriage return
+            MS_DBG(F("Sonar Range: "), result, F("\n"));
+            rangeAttempts++;
 
-        // If it cannot obtain a result , the sonar is supposed to send a value
-        // just above it's max range.  For 10m models, this is 9999, for 5m models
-        // it's 4999.  The sonar might also send readings of 300 or 500 (the
-        // blanking distance) if there are too many acoustic echos.
-        // If the result becomes garbled or the sonar is disconnected, the parseInt function returns 0.
-        if (result <= 300 || result == 500 || result == 4999 || result == 9999 || result == 0)
-        {
-            MS_DBG(F("Bad or Suspicious Result, Retry Attempt #"), rangeAttempts, F("\n"));
-            result = -9999;
-        }
-        else
-        {
-            MS_DBG(F("Good result found\n"));
-            success = true;
+            // If it cannot obtain a result , the sonar is supposed to send a value
+            // just above it's max range.  For 10m models, this is 9999, for 5m models
+            // it's 4999.  The sonar might also send readings of 300 or 500 (the
+            // blanking distance) if there are too many acoustic echos.
+            // If the result becomes garbled or the sonar is disconnected, the
+            // parseInt function returns 0.  Luckily, these sensors are not
+            // capable of reading 0, so we also know the 0 value is bad.
+            if (result <= 300 || result == 500 || result == 4999 || result == 9999 || result == 0)
+            {
+                MS_DBG(F("Bad or Suspicious Result, Retry Attempt #"), rangeAttempts, F("\n"));
+                result = -9999;
+            }
+            else
+            {
+                MS_DBG(F("Good result found\n"));
+                success = true;
+            }
         }
     }
+    else MS_DBG(F("Sensor is not currently measuring!\n"));
 
     verifyAndAddMeasurementResult(HRXL_VAR_NUM, result);
 
@@ -137,5 +150,5 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
     _sensorStatus &= 0b10011111;
 
     // Return true when finished
-    return true;
+    return success;
 }
