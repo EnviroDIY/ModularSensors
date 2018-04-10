@@ -70,12 +70,12 @@ bool SDI12Sensors::setup(void)
 
 bool SDI12Sensors::requestSensorAcknowledgement(void)
 {
-    waitForWarmUp();
-
     // Make this the currently active SDI-12 Object
     _SDI12Internal.setActive();
     // Empty the buffer
     _SDI12Internal.clearBuffer();
+
+    waitForWarmUp();
 
     MS_DBG(F("   Asking for sensor acknowlegement\n"));
     String myCommand = "";
@@ -309,49 +309,40 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
 {
     if (_millisMeasurementRequested > 0)
     {
-        // Make sure we've waited long enough for a reading to finish
-        waitForMeasurementCompletion();
-
         // Make this the currently active SDI-12 Object
         _SDI12Internal.setActive();
         // Empty the buffer
         _SDI12Internal.clearBuffer();
 
-        bool gotResult = false;
-        int ntries = 0;
-        while (!gotResult and ntries < 3)
+        // Make sure we've waited long enough for a reading to finish
+        waitForMeasurementCompletion();
+
+        MS_DBG(F("   Requesting data from "), getSensorName(), '\n');
+        String getDataCommand = "";
+        getDataCommand += _SDI12address;
+        getDataCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
+        _SDI12Internal.sendCommand(getDataCommand);
+        delay(30);  // It just needs this little delay
+        MS_DBG(F("      >>> "), getDataCommand, F("\n"));
+
+        MS_DBG(F("   Receiving results from "), getSensorName(), '\n');
+        _SDI12Internal.read();  // ignore the repeated SDI12 address
+        for (int i = 0; i < _numReturnedVars; i++)
         {
-            MS_DBG(F("   Requesting data from "), getSensorName(), '\n');
-            String getDataCommand = "";
-            getDataCommand += _SDI12address;
-            getDataCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
-            _SDI12Internal.sendCommand(getDataCommand);
-            delay(30);  // It just needs this little delay
-            MS_DBG(F("      >>> "), getDataCommand, F("\n"));
+            float result = _SDI12Internal.parseFloat();
+            // The SDI-12 library should return -9999 on timeout
+            if (result == -9999 or isnan(result)) result = -9999;
+            MS_DBG(F("      <<< Result #"), i, F(": "), result, F("\n"));
+            verifyAndAddMeasurementResult(i, result);
 
-            MS_DBG(F("   Receiving results from "), getSensorName(), '\n');
-            _SDI12Internal.read();  // ignore the repeated SDI12 address
-            for (int i = 0; i < _numReturnedVars; i++)
-            {
-                float result = _SDI12Internal.parseFloat();
-                // The SDI-12 library should return -9999 on timeout
-                if (result == -9999 or isnan(result)) result = -9999;
-                MS_DBG(F("      <<< Result #"), i, F(": "), result, F("\n"));
-                verifyAndAddMeasurementResult(i, result);
-                // assume if the last variable is valid, we got good results
-                if (i == (_numReturnedVars - 1) && result != -9999)
-                    gotResult = true;
-            }
-            // String sdiResponse = _SDI12Internal.readStringUntil('\n');
-            // sdiResponse.trim();
-            // _SDI12Internal.clearBuffer();
-            // MS_DBG(F("      <<< "), sdiResponse, F("\n"));
-
-            // Empty the buffer again
-            _SDI12Internal.clearBuffer();
-
-            ntries++;
         }
+        // String sdiResponse = _SDI12Internal.readStringUntil('\n');
+        // sdiResponse.trim();
+        // _SDI12Internal.clearBuffer();
+        // MS_DBG(F("      <<< "), sdiResponse, F("\n"));
+
+        // Empty the buffer again
+        _SDI12Internal.clearBuffer();
 
         // De-activate the SDI-12 Object
         _SDI12Internal.forceHold();
@@ -363,7 +354,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
         _sensorStatus &= 0b10011111;
 
         // Return true when finished
-        return gotResult;
+        return true;
     }
     else
     {
