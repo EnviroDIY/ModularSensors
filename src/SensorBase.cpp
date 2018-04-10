@@ -382,9 +382,9 @@ bool Sensor::update(void)
 bool Sensor::checkPowerOn(void)
 {
     MS_DBG(F("Checking power status:  "));
+    MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation());
     if (_powerPin > 0)
     {
-        MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation());
         int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
 
         if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)

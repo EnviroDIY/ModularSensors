@@ -434,11 +434,19 @@ public:
     // over TCP because I don't have a UDP library for all the modems.
     uint32_t getNISTTime(void)
     {
+        bool connectionMade = false;
+
+        // bail if not connected to the internet
+        if (!_modem->isNetworkConnected())
+        {
+            MS_MOD_DBG(F("No internet connection, cannot connect to NIST.\n"));
+            return 0;
+        }
+        
         // Must ensure that we do not ping the daylight more than once every 4 seconds
         // NIST clearly specifies here that this is a requirement for all software
         /// that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi
         while (millis() < _lastNISTrequest + 4000) {}
-        bool connectionMade = false;
 
         // Make TCP connection
         MS_MOD_DBG(F("Connecting to NIST daytime Server\n"));
