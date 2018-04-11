@@ -101,7 +101,7 @@ int Sensor::getNumberMeasurementsToAverage(void){return _measurementsToAverage;}
 // Bit 7 - 0=No known errors, 1=Some sort of error has occured
 uint8_t Sensor::getStatus(void)
 {
-    updateStatusBits();
+    // updateStatusBits();
     return _sensorStatus;
 }
 

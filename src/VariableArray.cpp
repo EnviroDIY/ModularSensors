@@ -73,7 +73,7 @@ bool VariableArray::setupSensors(void)
     }
 
     // We're going to keep looping through all of the sensors and check if each
-    // one has been on long enouggh to be warmed up.  Once it has, we'll set it
+    // one has been on long enough to be warmed up.  Once it has, we'll set it
     // up and increment the counter marking that's been done.
     // We keep looping until they've all been done.
     while (nSensorsSetup < _sensorCount)
@@ -274,7 +274,7 @@ bool VariableArray::updateAllSensors(void)
     {
         if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {
-            if (bitRead(_variableList[i]->parentSensor->getStatus(), 3) == 0)  // NOT awake
+            if (bitRead(_variableList[i]->parentSensor->getStatus(), 3) == 0)  // NOT awake/activated
             {
                 MS_DBG(_variableList[i]->parentSensor->getSensorName());
                 MS_DBG(F(" at "));

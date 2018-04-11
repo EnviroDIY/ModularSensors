@@ -148,7 +148,7 @@ public:
     {
         bool retVal = true;
         // Check if the modem is on; turn it on if not
-        if(!modemOnOff->isOn()) retVal = modemOnOff->on();
+        // if(!modemOnOff->isOn()) retVal = modemOnOff->on();
         // Mark the time that the sensor was activated
         _millisSensorActivated = millis();
         // Set the status bit for sensor activation (bit 3)
@@ -169,8 +169,8 @@ public:
         bool success = true;
 
         // Check if activated, wake if not
-        if (_millisSensorActivated == 0 || bitRead(_sensorStatus, 3))
-            success = wake();
+        // if (_millisSensorActivated == 0 || bitRead(_sensorStatus, 3))
+        //     success = wake();
 
         // Check again if activated, only wait if it is
         if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
@@ -179,7 +179,7 @@ public:
 
             // Connect to the network before asking for quality
             // Only waiting for up to 5 seconds here for the internet!
-            if (!_modem->isNetworkConnected()) success &= connectInternet(5000L);
+            if (!(_modem->isNetworkConnected())) success &= connectInternet(5000L);
             if (success == false) return false;
 
             // Mark the time that a measurement was requested
@@ -340,7 +340,7 @@ public:
         {
             MS_MOD_DBG(F("\nWaiting up to "), waitTime_ms/1000,
                        F(" seconds for WiFi network...\n"));
-            if (!_modem->isNetworkConnected())
+            if (!(_modem->isNetworkConnected()))
             {
                 MS_MOD_DBG("   Sending credentials...\n");
                 #if defined(TINY_GSM_MODEM_HAS_WIFI)

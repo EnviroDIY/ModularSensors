@@ -60,6 +60,7 @@ bool SDI12Sensors::setup(void)
     _SDI12Internal.setTimeoutValue(-9999);
 
     // Allow the SDI-12 library access to interrupts
+    MS_DBG(F("Enabling interrupts for SDI12 on pin "), _dataPin, '\n');
     enableInterrupt(_dataPin, SDI12::handleInterrupt, CHANGE);
 
     retVal &= getSensorInfo();
@@ -130,19 +131,19 @@ bool SDI12Sensors::requestSensorAcknowledgement(void)
 bool SDI12Sensors::getSensorInfo(void)
 {
     // Check if the power is on, turn it on if not
-    bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
+    // bool wasOn = checkPowerOn();
+    // if(!wasOn){powerUp();}
 
     // Check that the sensor is there and responding
     // The requestSensorAcknowledgement() function includes the waitForWarmUp()
     if (!requestSensorAcknowledgement())
     {
-        if(!wasOn){powerDown();}
+        // if(!wasOn){powerDown();}
         return false;
     }
 
     // Make this the currently active SDI-12 Object
-    _SDI12Internal.setActive();
+    _SDI12Internal.setActive();  delay(50);
     // Empty the buffer
     _SDI12Internal.clearBuffer();
 
@@ -167,7 +168,7 @@ bool SDI12Sensors::getSensorInfo(void)
     _SDI12Internal.forceHold();
 
     // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
+    // if(!wasOn){powerDown();}
 
     if (sdiResponse.length() > 1)
     {
