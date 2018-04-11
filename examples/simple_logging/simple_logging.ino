@@ -222,8 +222,8 @@ YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePi
 // ==========================================================================
 #include <YosemitechY510.h>
 byte y510modbusAddress = 0x0B;  // The modbus address of the Y510
-const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+// const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y510NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
 YosemitechY510 y510(y510modbusAddress, modbusSerial, modbusPower, max485EnablePin, y510NumberReadings);
 
@@ -233,8 +233,8 @@ YosemitechY510 y510(y510modbusAddress, modbusSerial, modbusPower, max485EnablePi
 // ==========================================================================
 #include <YosemitechY511.h>
 byte y511modbusAddress = 0x05;  // The modbus address of the Y511
-const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+// const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y511NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
 YosemitechY511 y511(y511modbusAddress, modbusSerial, modbusPower, max485EnablePin, y511NumberReadings);
 
@@ -281,16 +281,30 @@ const char *DOptoDI12address = "5";  // The SDI-12 Address of the Zebra Tech D-O
 // const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 
+// ==========================================================================
+//    External Grove Voltage Divider
+// ==========================================================================
 #include <ExternalVoltage.h>
 const int8_t VoltPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t VoltData = 0;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const uint8_t Volt_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
-ExternalVoltage extvolt(VoltPower, VoltData);
+const uint8_t VoltReadsToAvg = 1; //Only read one sample
+const float VoltGain = 10; //Default 1/gain for grove voltage divider is 10x 
+ExternalVoltage extvolt(VoltPower, VoltData, Volt_ADS1115Address, VoltReadsToAvg, VoltGain);
 
+// ==========================================================================
+//    External Tip Counter
+// ==========================================================================
 #include <TippingBucket.h>
 const int8_t TippingPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-TippingBucket tip(TippingPower);
+const uint8_t TippingBucketAddress = 0x08; //Address for external tip counter
+const uint8_t TipsToAverage = 1;  //Only sample a single event
+const uint8_t VolumePerTipEvent = 0.2; //0.2mm of rain per tip event
+TippingBucket tip(TippingPower, TippingBucketAddress, TipsToAverage, VolumePerTipEvent);
 
+// ==========================================================================
+//    External Trigger 
+// ==========================================================================
 #include <Trigger.h>
 const int8_t TriggerPin = 5;  // Pin to switch power on and off (-1 if unconnected)
 const float Threshold = 10;
@@ -322,7 +336,6 @@ Variable *variableList[] = {
     new DecagonCTD_Depth(&ctd),
     new DecagonES2_Cond(&es2),
     new DecagonES2_Temp(&es2),
-    new ExternalVoltage_Volt(&bat),
     new MaxBotixSonar_Range(&sonar1),
     new MaxBotixSonar_Range(&sonar2),
     new MaximDS18_Temp(&ds18_1),
@@ -330,7 +343,6 @@ Variable *variableList[] = {
     new MaximDS18_Temp(&ds18_3),
     new MaximDS18_Temp(&ds18_4),
     new MaximDS18_Temp(&ds18_5),
-    new TippingBucket_Tips(&tip),
     new YosemitechY504_DOpct(&y504),
     new YosemitechY504_Temp(&y504),
     new YosemitechY504_DOmgL(&y504),
