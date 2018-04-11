@@ -161,8 +161,8 @@ bool MaximDS18::startSingleMeasurement(void)
     bool success = true;
 
     // Check if activated, wake if not
-    if (_millisSensorActivated == 0 || bitRead(_sensorStatus, 3))
-        success = wake();
+    // if (_millisSensorActivated == 0 || bitRead(_sensorStatus, 3))
+    //     success = wake();
 
     // Check again if activated, only go on if it is
     if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))

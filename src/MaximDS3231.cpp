@@ -30,22 +30,8 @@ bool MaximDS3231::setup(void)
 }
 
 
-// Do nothing for any of the power up/down or wake/sleep functions
-void MaximDS3231::powerUp(void)
-{
-    // Mark the time that the sensor was powered
-    _millisPowerOn = millis();
-    // Set the status bit for sensor power (bit 0)
-    _sensorStatus |= 0b00000001;
-}
-bool MaximDS3231::wake(void)
-{
-    // Mark the time that the sensor was activated
-    _millisSensorActivated = millis();
-    // Set the status bit for sensor activation (bit 3)
-    _sensorStatus |= 0b00001000;
-    return true;
-}
+// Do nothing for the power down and sleep functions
+// The clock never sleeps or powers down
 bool MaximDS3231::sleep(void)
 {return true;}
 void MaximDS3231::powerDown(void)
@@ -58,8 +44,8 @@ bool MaximDS3231::startSingleMeasurement(void)
     bool success = true;
 
     // Check if activated, wake if not
-    if (_millisSensorActivated == 0 || bitRead(_sensorStatus, 3))
-        success = wake();
+    // if (_millisSensorActivated == 0 || bitRead(_sensorStatus, 3))
+    //     success = wake();
 
     // Check again if activated, only wait if it is
     if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))

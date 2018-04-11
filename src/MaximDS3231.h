@@ -51,9 +51,8 @@ public:
 
     String getSensorLocation(void) override;
 
-    // Do nothing for any of the power up/down or wake/sleep functions
-    void powerUp(void) override;
-    bool wake(void) override;
+    // Do nothing for the power down and sleep functions
+    // The clock never sleeps or powers down
     bool sleep(void) override;
     void powerDown(void) override;
 

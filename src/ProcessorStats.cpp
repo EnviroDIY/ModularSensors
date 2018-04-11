@@ -121,22 +121,8 @@ ProcessorStats::ProcessorStats(const char *version)
 String ProcessorStats::getSensorLocation(void) {return BOARD;}
 
 
-// Do nothing for any of the power up/down or wake/sleep functions
-void ProcessorStats::powerUp(void)
-{
-    // Mark the time that the sensor was powered
-    _millisPowerOn = millis();
-    // Set the status bit for sensor power (bit 0)
-    _sensorStatus |= 0b00000001;
-}
-bool ProcessorStats::wake(void)
-{
-    // Mark the time that the sensor was activated
-    _millisSensorActivated = millis();
-    // Set the status bit for sensor activation (bit 3)
-    _sensorStatus |= 0b00001000;
-    return true;
-}
+// Do nothing for the power down and sleep functions
+// We don't want the processor to go to sleep or power down with the sensors
 bool ProcessorStats::sleep(void)
 {return true;}
 void ProcessorStats::powerDown(void)

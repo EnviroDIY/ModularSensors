@@ -76,8 +76,8 @@ bool BoschBME280::setup(void)
 
 bool BoschBME280::wake(void)
 {
-    Sensor::wake();  // this will set timestamp and status bit
-    waitForWarmUp();  // sensor must be warmed up before we can send begin command
+    Sensor::wake();  // this will set timestamp and status bit; includes wait for warm-up
+
     // Restart always needed after power-up
     // As of Adafruit library version 1.0.7, this function includes all of the
     // various delays to allow the chip to wake up, get calibrations, get

@@ -73,7 +73,7 @@ bool YosemitechParent::setup(void)
 // Different from the standard in that it waits for warm up and starts measurements
 bool YosemitechParent::wake(void)
 {
-    if(!checkPowerOn()){powerUp();}
+    // if(!checkPowerOn()){powerUp();}
 
     // Wait until the sensor is warmed up
     waitForWarmUp();
