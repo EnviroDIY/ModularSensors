@@ -117,6 +117,11 @@ void Sensor::powerUp(void)
         // Mark the time that the sensor was powered
         _millisPowerOn = millis();
     }
+    else
+    {
+        MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation(),
+               F(" is not controlled by this library.\n"));
+    }
     // Set the status bit for sensor power (bit 0)
     _sensorStatus |= 0b00000001;
 }
@@ -132,6 +137,11 @@ void Sensor::powerDown(void)
         digitalWrite(_powerPin, LOW);
         // Unset the power-on time
         _millisPowerOn = 0;
+    }
+    else
+    {
+        MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation(),
+               F(" is not controlled by this library.\n"));
     }
     // Unset the status bits for sensor power (bit 0), warm-up (bit 2),
     // activation (bit 3), stability (bit 4), measurement request (bit 5), and

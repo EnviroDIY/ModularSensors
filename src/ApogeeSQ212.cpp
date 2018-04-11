@@ -105,9 +105,10 @@ bool ApogeeSQ212::addSingleMeasurementResult(void)
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
-    // Make sure the status bits for measurement request (bit 5) and measurement
-    // completion (bit 6) are no longer set
-    _sensorStatus &= 0b10011111;
+    // Unset the status bit for a measurement having been requested (bit 5)
+    _sensorStatus &= 0b11011111;
+    // Set the status bit for measurement completion (bit 6)
+    _sensorStatus |= 0b01000000;
 
     if (adcVoltage < 3.6 and adcVoltage > -0.3) return true;
     else return false;
