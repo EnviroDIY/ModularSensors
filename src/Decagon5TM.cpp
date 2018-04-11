@@ -32,6 +32,7 @@ bool Decagon5TM::addSingleMeasurementResult(void)
 {
     if (_millisMeasurementRequested > 0)
     {
+        MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(), '\n');
         // Make this the currently active SDI-12 Object
         _SDI12Internal.setActive();
         // Empty the buffer
@@ -42,7 +43,6 @@ bool Decagon5TM::addSingleMeasurementResult(void)
 
         // Make sure we've waited long enough for a reading to finish
         // waitForMeasurementCompletion();
-
 
         MS_DBG(F("   Requesting data from "), getSensorName(), '\n');
         String getDataCommand = "";

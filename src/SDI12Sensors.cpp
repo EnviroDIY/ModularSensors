@@ -74,7 +74,7 @@ bool SDI12Sensors::requestSensorAcknowledgement(void)
 {
     // MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(), '\n');
     // // Make this the currently active SDI-12 Object
-    // _SDI12Internal.setActive();  delay(500);
+    // _SDI12Internal.setActive();
     // Empty the buffer
     _SDI12Internal.clearBuffer();
 
@@ -136,17 +136,18 @@ bool SDI12Sensors::getSensorInfo(void)
     // bool wasOn = checkPowerOn();
     // if(!wasOn){powerUp();}
 
+    MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(), '\n');
+    // Make this the currently active SDI-12 Object
+    _SDI12Internal.setActive();
+    // Empty the buffer
+    _SDI12Internal.clearBuffer();
+
     // Check that the sensor is there and responding
     if (!requestSensorAcknowledgement())
     {
         // if(!wasOn){powerDown();}
         return false;
     }
-
-    // Make this the currently active SDI-12 Object
-    _SDI12Internal.setActive();  delay(50);
-    // Empty the buffer
-    _SDI12Internal.clearBuffer();
 
     MS_DBG(F("   Getting sensor info\n"));
     String myCommand = "";
@@ -229,6 +230,13 @@ bool SDI12Sensors::startSingleMeasurement(void)
     String startCommand;
     String sdiResponse;
 
+
+    MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(), '\n');
+    // Make this the currently active SDI-12 Object
+    _SDI12Internal.setActive();
+    // Empty the buffer
+    _SDI12Internal.clearBuffer();
+
     // Check that the sensor is there and responding
     if (!requestSensorAcknowledgement())
     {
@@ -236,11 +244,6 @@ bool SDI12Sensors::startSingleMeasurement(void)
         retVal = false;
         goto finish;
     }
-
-    // Make this the currently active SDI-12 Object
-    _SDI12Internal.setActive();
-    // Empty the buffer
-    _SDI12Internal.clearBuffer();
 
     // These sensors should be stable at the first reading they are able to return
     // BUT... we'll put this in for safety
@@ -310,6 +313,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
 {
     if (_millisMeasurementRequested > 0)
     {
+        MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(), '\n');
         // Make this the currently active SDI-12 Object
         _SDI12Internal.setActive();
         // Empty the buffer
@@ -337,6 +341,8 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
             verifyAndAddMeasurementResult(i, result);
 
         }
+        // uint32_t startTime = millis();
+        // while (_SDI12Internal.available() < 4 && (millis() - startTime) < 5000) {}
         // String sdiResponse = _SDI12Internal.readStringUntil('\n');
         // sdiResponse.trim();
         // _SDI12Internal.clearBuffer();

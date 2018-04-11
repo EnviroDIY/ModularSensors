@@ -366,8 +366,8 @@ bool VariableArray::updateAllSensors(void)
                     success &= sensorSuccess_result;
                     nMeasurementsCompleted[i] += 1;  // increment the number of measurements that sensor has completed
 
-                    if (sensorSuccess_result) MS_DBG(F("--  Success --\n"));
-                    else MS_DBG(F("--  Failed! --\n"));
+                    if (sensorSuccess_result) MS_DBG(F("-- Success --\n"));
+                    else MS_DBG(F("-- Failed! --\n"));
                 }
 
                 // if all the readings are done, mark the whole sensor as done
