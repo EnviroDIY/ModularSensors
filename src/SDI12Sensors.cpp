@@ -54,7 +54,8 @@ bool SDI12Sensors::setup(void)
     // Begin the SDI-12 interface
     _SDI12Internal.begin();
 
-     // SDI-12 protocol says sensors must respond within 15 milliseconds
+    // Library default timeout should be 150ms, which is 10 times that specified
+    // by the SDI-12 protocol for a sensor response.
     _SDI12Internal.setTimeout(150);
     // Force the timeout value to be -9999 (This should be library default.)
     _SDI12Internal.setTimeoutValue(-9999);
@@ -71,8 +72,9 @@ bool SDI12Sensors::setup(void)
 
 bool SDI12Sensors::requestSensorAcknowledgement(void)
 {
-    // Make this the currently active SDI-12 Object
-    _SDI12Internal.setActive();
+    // MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(), '\n');
+    // // Make this the currently active SDI-12 Object
+    // _SDI12Internal.setActive();  delay(500);
     // Empty the buffer
     _SDI12Internal.clearBuffer();
 
@@ -120,8 +122,8 @@ bool SDI12Sensors::requestSensorAcknowledgement(void)
         ntries++;
     }
 
-    // De-activate the SDI-12 Object
-    _SDI12Internal.forceHold();
+    // // De-activate the SDI-12 Object
+    // _SDI12Internal.forceHold();
 
     return didAcknowledge;
 }
@@ -135,7 +137,6 @@ bool SDI12Sensors::getSensorInfo(void)
     // if(!wasOn){powerUp();}
 
     // Check that the sensor is there and responding
-    // The requestSensorAcknowledgement() function includes the waitForWarmUp()
     if (!requestSensorAcknowledgement())
     {
         // if(!wasOn){powerDown();}
@@ -229,7 +230,6 @@ bool SDI12Sensors::startSingleMeasurement(void)
     String sdiResponse;
 
     // Check that the sensor is there and responding
-    // The requestSensorAcknowledgement() function includes the waitForWarmUp()
     if (!requestSensorAcknowledgement())
     {
         _millisMeasurementRequested = 0;
