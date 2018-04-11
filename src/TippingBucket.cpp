@@ -1,45 +1,33 @@
 /*
- *BoschBME280.cpp
+ *TippingBucket.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for the Bosch BME280 Digital Pressure and Humidity Sensor
- *It is dependent on the Adafruit BME280 Library
+ *This file is for an external tip counter, used to measure rainfall via a tipping bucket 
+ *rain gauge 
  *
  *Documentation for the sensor can be found at:
- *https://www.bosch-sensortec.com/bst/products/all_products/bme280
+ *https://github.com/EnviroDIY/TippingBucketRainGauge
  *
- * For Barometric Pressure:
- *  Resolution is 0.18Pa
- *  Absolute Accuracy is ±1hPa
- *  Relative Accuracy is ±0.12hPa
- *  Range is 300 to 1100 hPa
+ * For Rainfall:
+ *  Accuracy and resolution are dependent on the sensor used
+ *  Standard resolution is 0.01" or 0.2mm of rainfall (depending on if sensor is set to english or metric)
  *
- * For Temperature:
- *  Resolution is 0.01°C
- *  Accuracy is ±0.5°C
- *  Range is -40°C to +85°C
- *
- * For Humidity:
- *  Resolution is 0.008 % RH (16 bit)
- *  Accuracy is ± 3 % RH
- *
- * Slowest response time (humidity): 1sec
+ * Assume sensor is immediately stable
 */
-
-//FIX intro!!
 
 #include "TippingBucket.h"
 
 
-// The constructor - because this is I2C, only need the power pin
-TippingBucket::TippingBucket(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage)
-     : Sensor(F("TippingBucket"), BUKCET_NUM_VARIABLES,
+// The constructor - because this is I2C, only need the power pin and rain per event if a non-standard value is used
+TippingBucket::TippingBucket(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage, float rainPerTip)
+     : Sensor(F("TippingBucket"), BUCKET_NUM_VARIABLES,
               BUCKET_WARM_UP_TIME_MS, BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS,
-              powerPin, -1) //What is -1?? 
+              powerPin, -1) 
 {
     _i2cAddressHex  = i2cAddressHex;
+    _rainPerTip = rainPerTip;
 }
 
 
@@ -51,32 +39,10 @@ String TippingBucket::getSensorLocation(void)
 }
 
 
-// bool TippingBucket::getStatus(void)
-// {
-//     // Check if the power is on, turn it on if not (Need power to get status)
-//     bool wasOn = checkPowerOn();
-//     if(!wasOn){powerUp();}
-//     // Wait until the sensor is warmed up
-//     waitForWarmUp();
-
-//     // Run begin fxn because it returns true or false for success in contact
-//     // bool status = bme_internal.begin(_i2cAddressHex);
-//     Wire.beginTransmission(_i2cAddressHex);
-//     bool status = false;
-//     if(Wire.endTransmission() == 0) status = true; //Set status to true if device is found at address specified 
-
-//     // Turn the power back off it it had been turned on
-//     if(!wasOn){powerDown();}
-
-//     if (!status) return false;
-//     else return true;
-// }
-
-
 bool TippingBucket::setup(void)
 {
     Sensor::setup();
-    Wire.begin(); //Right place?? 
+    Wire.begin(); //Initalize wire (I2C) functionality
     return true;
 }
 
@@ -85,42 +51,8 @@ bool TippingBucket::wake(void)
 {
     Sensor::wake();
     waitForWarmUp();
-    // Restart always needed after power-up
-    // As of Adafruit library version 1.0.7, this function includes all of the
-    // various delays to allow the chip to wake up, get calibrations, get
-    // coefficients, and set sampling modes.
-    // Currently this is using the settings that Adafruit considered to be 'default'
-    //  - sensor mode = normal (sensor measures, sleeps for the "standby time" and then automatically remeasures
-    //  - temperature oversampling = 16x
-    //  - pressure oversampling = 16x
-    //  - humidity oversampling = 16x
-    //  - built-in IIR filter = off oversampling = 16x
-    //  - sleep time between measurements = 0.5ms
-    // bme_internal.begin(_i2cAddressHex);
-
-    // // When the Adafruit library is updated to remove the built-in delay after
-    // // forcing a sample, it would be better to operate in forced mode.
-    // bme_internal.setSampling(Adafruit_BME280::MODE_NORMAL,  // sensor mode
-    // // bme_internal.setSampling(Adafruit_BME280::MODE_FORCED,  // sensor mode
-    //                          Adafruit_BME280::SAMPLING_X16,  // temperature oversampling
-    //                          Adafruit_BME280::SAMPLING_X16,  //  pressure oversampling
-    //                          Adafruit_BME280::SAMPLING_X16,  //  humidity oversampling
-    //                          Adafruit_BME280::FILTER_OFF, // built-in IIR filter
-    //                          Adafruit_BME280::STANDBY_MS_1000);  // sleep time between measurements (N/A in forced mode)
-    // delay(100);  // Need this delay after changing sampling mode
-    delay(1); //Wake is not needed strictly, remove??
     return true;
 }
-
-// For operating in forced mode
-// bool BoschBME280::startSingleMeasurement(void)
-// {
-//     // waitForWarmUp();  // already done in wake
-//     waitForStability();
-//     bme_internal.takeForcedMeasurement(false);  // Don't want to wait to finish here
-//     _lastMeasurementRequested = millis();
-//     return true;
-// }
 
 
 bool TippingBucket::addSingleMeasurementResult(void)
@@ -128,26 +60,26 @@ bool TippingBucket::addSingleMeasurementResult(void)
     // Make sure we've waited long enough for a new reading to be available
     waitForMeasurementCompletion();
 
-    // Read values
-    float rain = 0; 
-    uint8_t Byte1 = 0;
-    uint8_t Byte2 = 0;
+    //intialize values
+    float rain = 0; //Number of mm of rain 
+    unsigned int  tips = 0; //Number of tip events
+    uint8_t Byte1 = 0; //Low byte of data
+    uint8_t Byte2 = 0; //High byte of data 
 
-    Wire.requestFrom(_i2cAddressHex, 2);
+    Wire.requestFrom(_i2cAddressHex, 2); //Get data from external tip counter
     Byte1 = Wire.read();
     Byte2 = Wire.read();
 
-    rain = float((Byte2 << 8) | (Byte1)) * 0.01; //Concatonate to 16 bit result, multiply by 0.01 to get inches of rain, moddify to work with number of tips instead??
+    tips = (Byte2 << 8) | (Byte1);  //Concatenate tip values
+    rain = float(tips) * _rainPerTip; //Multiply by tip coefficient (0.2 by default)
 
-    if (rain < 0) rain = -9999; //Make sure this is correct failure condition!! 
+    if (rain < 0) rain = -9999; //If negetive value results, return failue
 
     MS_DBG(F("Rain: "), rain);
-    // MS_DBG(F(" Humidity: "), humid);
-    // MS_DBG(F(" Barometric Pressure: "), press);
-    // MS_DBG(F(" Calculated Altitude: "), alt, F("\n"));
+    MS_DBG(F("Tips: "), tips);
 
     verifyAndAddMeasurementResult(BUCKET_RAIN_VAR_NUM, rain);
-
+    verifyAndAddMeasurementResult(BUCKET_TIPS_VAR_NUM, int(tips));
     // Return true when finished
     return true;
 }

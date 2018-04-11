@@ -1,50 +1,46 @@
 /*
- *ApogeeSQ212.cpp
+ *ExternalVoltage.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
- * Written By:  Anthony Aufdenkampe <aaufdenkampe@limno.com>
- * Adapted from CampbellOBS3.h by Sara Damiano (sdamiano@stroudcenter.org)
+ * Written By:  Bobby Schulz <schu3119@umn.edu>
+ * Adapted from ApogeeSQ212.h by Sara Damiano (sdamiano@stroudcenter.org) and 
 
- * This file is for the Apogee SQ-212 Quantum Light sensor
+ * This file is for the grove voltage divider (but will work with any voltage divider with an output in the range of 0 ~ 3.3v)
  * This is dependent on the soligen2010 fork of the Adafruit ADS1015 library.
  *
- * Apogee SQ-212 Quantum Light sensor measures photosynthetically active radiation (PAR)
- and is typically defined as total radiation across a range of 400 to 700 nm.
- PAR is often expressed as photosynthetic photon flux density (PPFD):
- photon flux in units of micromoles per square meter per second (μmol m-2 s-1,
- equal to microEinsteins per square meter per second) summed from 400 to 700 nm.
+ * The grove voltage divider is a simple voltage divider designed to measure high external voltages on a low voltage
+ * ADC. This module employs a variable gain via two pairs of voltage dividers, and a unity gain amplification to reduce output
+ * impedance of the module
  *
- * Range is 0 to 2500 µmol m-2 s-1
- * Accuracy is ± 0.5%
+ * Range is either 0.3 ~ 12.9v (1/gain = 3x), or 1 ~ 43v (1/gain = 10x) 
+ * Accuracy is < ± 1%
  * Resolution:
- *  16-bit ADC: 0.04 µmol m-2 s-1 - This is what is supported!
- *  12-bit ADC: 2.44 µmol m-2 s-1
+ *  16-bit ADC: < 0.65 mV
  *
- * Technical specifications for the Apogee SQ-212 can be found at:
- * https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/
- *
- * Power supply: 5-24 V DC with a nominal current draw of 300 μA
+ * Technical specifications for the Grove Voltage Divider can be found at:
+ * http://wiki.seeedstudio.com/Grove-Voltage_Divider/
  *
  * Response time: < 1ms
  * Resample time: max of ADC (860/sec)
 */
 
 
-#include "BatteryMonitor.h"
+#include "ExternalVoltage.h"
 #include <Adafruit_ADS1015.h>
 
 
-// The constructor - need the power pin and the data pin
-BatteryMonitor::BatteryMonitor(int8_t powerPin, int8_t dataPin, uint8_t i2cAddress, uint8_t measurementsToAverage)
-    : Sensor(F("BatteryMonitor"), BAT_NUM_VARIABLES,
-             BAT_WARM_UP_TIME_MS, BAT_STABILIZATION_TIME_MS, BAT_MEASUREMENT_TIME_MS,
+// The constructor - need the power pin the data pin, and gain if non standard
+ExternalVoltage::ExternalVoltage(int8_t powerPin, int8_t dataPin, uint8_t i2cAddress, uint8_t measurementsToAverage, float gain)
+    : Sensor(F("ExternalVoltage"), EXT_VOLT_NUM_VARIABLES,
+             EXT_VOLT_WARM_UP_TIME_MS, EXT_VOLT_STABILIZATION_TIME_MS, EXT_VOLT_MEASUREMENT_TIME_MS,
              powerPin, dataPin, measurementsToAverage)
 {
     _i2cAddress = i2cAddress;
+    _gain = gain;
 }
 
 
-String BatteryMonitor::getSensorLocation(void)
+String ExternalVoltage::getSensorLocation(void)
 {
     String sensorLocation = F("ADS1115_0x");
     sensorLocation += String(_i2cAddress, HEX);
@@ -54,7 +50,7 @@ String BatteryMonitor::getSensorLocation(void)
 }
 
 
-bool BatteryMonitor::addSingleMeasurementResult(void)
+bool ExternalVoltage::addSingleMeasurementResult(void)
 {
     // Start the Auxillary ADD
     Adafruit_ADS1115 ads(_i2cAddress);     /* Use this for the 16-bit version */
@@ -88,12 +84,12 @@ bool BatteryMonitor::addSingleMeasurementResult(void)
     {
         //Assume GAIN = 10 (this allows for entire range of mresurment to operate in 3.3v range)
 
-        calibResult = adcVoltage * 10 ;  // output is scaled voltage, with a 10 V/V Gain
+        calibResult = adcVoltage * _gain ;  // output is scaled voltage, with a defualt gain of 10 V/V Gain
         MS_DBG(F("calibResult: "), calibResult, F("\n"));
     }
     else MS_DBG(F("\n"));
 
-    verifyAndAddMeasurementResult(BAT_VOLT_VAR_NUM, calibResult);
+    verifyAndAddMeasurementResult(EXT_VOLT_VAR_NUM, calibResult);
 
     if (adcVoltage < 3.6 and adcVoltage > -0.3) return true;
     else return false;
