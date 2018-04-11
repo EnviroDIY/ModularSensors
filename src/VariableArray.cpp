@@ -151,7 +151,7 @@ bool VariableArray::sensorsWake(void)
     {
         if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {
-            if (bitRead(_variableList[i]->parentSensor->getStatus(), 3) == 1)  // already awake)
+            if (bitRead(_variableList[i]->parentSensor->getStatus(), 3) == 1)  // already awake
             {
                 MS_DBG(_variableList[i]->parentSensor->getSensorName());
                 MS_DBG(F(" at "));

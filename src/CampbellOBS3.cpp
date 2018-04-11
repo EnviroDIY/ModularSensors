@@ -81,7 +81,7 @@ bool CampbellOBS3::addSingleMeasurementResult(void)
     _millisMeasurementRequested = millis();
 
     // Make sure we've waited long enough for a new reading to be available
-    waitForMeasurementCompletion();
+    // waitForMeasurementCompletion();
 
     // Variables to store the results in
     float adcVoltage = -9999;

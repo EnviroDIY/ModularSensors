@@ -179,7 +179,7 @@ bool Sensor::wake(void)
     MS_DBG(F("Waking "), getSensorName(), F(" at "),
            getSensorLocation(), F("\n"));
     // if(!checkPowerOn()){powerUp();}
-    waitForWarmUp();
+    // waitForWarmUp();
     // Mark the time that the sensor was activated
     _millisSensorActivated = millis();
     // Set the status bit for sensor activation (bit 3)
@@ -285,7 +285,7 @@ bool Sensor::startSingleMeasurement(void)
     // Check again if activated, only wait if it is
     if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
     {
-        waitForStability();
+        // waitForStability();
         // Mark the time that a measurement was requested
         _millisMeasurementRequested = millis();
     }
@@ -365,21 +365,43 @@ bool Sensor::update(void)
 
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
-    if(!wasOn){ret_val += wake();}
+    if(!wasOn){powerUp();}
+
+    // Check if it's awake/active, activate it if not
+    bool wasActive = bitRead(getStatus(), 3);
+    if (!wasActive)  // NOT yet awake
+    {
+        // wait for the sensor to have been powered for long enough to respond
+        waitForWarmUp();
+        ret_val += wake();
+    }
+    // bail if the wake failed
+    if (!ret_val) return ret_val;
 
     // Clear values before starting loop
     clearValues();
 
+    // Wait for the sensor to stabilize
+    waitForStability();
+
+    // loop through as many measurements as requested
     for (int j = 0; j < _measurementsToAverage; j++)
     {
+        // start a measurement
         ret_val += startSingleMeasurement();
+        // wait for the measurement to finish
+        waitForMeasurementCompletion();
+        // get the measurement result
         ret_val += addSingleMeasurementResult();
     }
 
     averageMeasurements();
 
+    // Put the sensor back to sleep if it had been activated
+    if(wasActive){sleep();}
+
     // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
+    if(wasOn){powerDown();}
 
     // Update the registered variables with the new values
     notifyVariables();

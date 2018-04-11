@@ -76,7 +76,7 @@ bool SDI12Sensors::requestSensorAcknowledgement(void)
     // Empty the buffer
     _SDI12Internal.clearBuffer();
 
-    waitForWarmUp();
+    // waitForWarmUp();
 
     MS_DBG(F("   Asking for sensor acknowlegement\n"));
     String myCommand = "";
@@ -244,7 +244,7 @@ bool SDI12Sensors::startSingleMeasurement(void)
 
     // These sensors should be stable at the first reading they are able to return
     // BUT... we'll put this in for safety
-    waitForStability();
+    // waitForStability();
 
     MS_DBG(F("   Beginning concurrent measurement on "), getSensorName(), '\n');
     startCommand = "";
@@ -316,7 +316,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
         _SDI12Internal.clearBuffer();
 
         // Make sure we've waited long enough for a reading to finish
-        waitForMeasurementCompletion();
+        // waitForMeasurementCompletion();
 
         MS_DBG(F("   Requesting data from "), getSensorName(), '\n');
         String getDataCommand = "";

@@ -175,7 +175,7 @@ public:
         // Check again if activated, only wait if it is
         if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
         {
-            waitForStability();
+            // waitForStability();
 
             // Connect to the network before asking for quality
             // Only waiting for up to 5 seconds here for the internet!
@@ -257,7 +257,7 @@ public:
         _sensorStatus &= 0b11011111;
         // Set the status bit for measurement completion (bit 6)
         _sensorStatus |= 0b01000000;
-        
+
         return true;
     }
 

@@ -50,7 +50,7 @@ bool MaximDS3231::startSingleMeasurement(void)
     // Check again if activated, only wait if it is
     if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
     {
-        waitForStability();
+        // waitForStability();
 
         // force a temperature sampling and conversion
         // this function already has a forced wait for the conversion to complete
@@ -77,7 +77,7 @@ bool MaximDS3231::startSingleMeasurement(void)
 bool MaximDS3231::addSingleMeasurementResult(void)
 {
     // Make sure we've waited long enough for a reading to finish
-    waitForMeasurementCompletion();
+    // waitForMeasurementCompletion();
 
     // get the temperature value
     MS_DBG(F("Getting value\n"));

@@ -41,7 +41,7 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         float ea, temp, VWC = -9999;
 
         // Make sure we've waited long enough for a reading to finish
-        waitForMeasurementCompletion();
+        // waitForMeasurementCompletion();
 
 
         MS_DBG(F("   Requesting data from "), getSensorName(), '\n');

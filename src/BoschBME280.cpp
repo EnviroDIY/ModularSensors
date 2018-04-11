@@ -119,7 +119,7 @@ bool BoschBME280::addSingleMeasurementResult(void)
     if (_millisMeasurementRequested > 0)
     {
         // Make sure we've waited long enough for a new reading to be available
-        waitForMeasurementCompletion();
+        // waitForMeasurementCompletion();
 
         // Read values
         temp = bme_internal.readTemperature();

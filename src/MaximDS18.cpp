@@ -167,7 +167,7 @@ bool MaximDS18::startSingleMeasurement(void)
     // Check again if activated, only go on if it is
     if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
     {
-        waitForStability();
+        // waitForStability();
 
         // Send the command to get temperatures
         MS_DBG(F("Asking DS18 to take a measurement\n"));
@@ -199,7 +199,7 @@ bool MaximDS18::addSingleMeasurementResult(void)
     if (_millisMeasurementRequested > 0)
     {
         // Make sure we've waited long enough for a reading to finish
-        waitForMeasurementCompletion();
+        // waitForMeasurementCompletion();
 
         MS_DBG(F("Requesting temperature result\n"));
         result = tempSensors.getTempC(_OneWireAddress);

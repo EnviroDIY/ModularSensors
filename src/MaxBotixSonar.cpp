@@ -112,8 +112,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
                 digitalWrite(_triggerPin, LOW);
             }
 
-            // Instead of using the waitForMeasurementCompletion() function, we
-            // immediately ask for a result and let the stream timeout be our
+            // Immediately ask for a result and let the stream timeout be our
             // "wait" for the measurement.
             result = _stream->parseInt();
             _stream->read();  // To throw away the carriage return
