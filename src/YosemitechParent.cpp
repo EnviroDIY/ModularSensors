@@ -76,7 +76,7 @@ bool YosemitechParent::wake(void)
     // if(!checkPowerOn()){powerUp();}
 
     // Wait until the sensor is warmed up
-    waitForWarmUp();
+    // waitForWarmUp();
 
     // Send the command to begin taking readings, trying up to 5 times
     int ntries = 0;
@@ -165,7 +165,7 @@ bool YosemitechParent::addSingleMeasurementResult(void)
     if (_millisMeasurementRequested > 0)
     {
         // Make sure we've waited long enough for a new reading to be available
-        waitForMeasurementCompletion();
+        // waitForMeasurementCompletion();
         // Get Values
         MS_DBG(F("Get Values:\n"));
         success = sensor.getValues(parmValue, tempValue, thirdValue);
@@ -196,9 +196,10 @@ bool YosemitechParent::addSingleMeasurementResult(void)
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
-    // Make sure the status bits for measurement request (bit 5) and measurement
-    // completion (bit 6) are no longer set
-    _sensorStatus &= 0b10011111;
+    // Unset the status bit for a measurement having been requested (bit 5)
+    _sensorStatus &= 0b11011111;
+    // Set the status bit for measurement completion (bit 6)
+    _sensorStatus |= 0b01000000;
 
     // Return true when finished
     return success;

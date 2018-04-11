@@ -56,7 +56,7 @@ bool SDI12Sensors::setup(void)
 
      // SDI-12 protocol says sensors must respond within 15 milliseconds
     _SDI12Internal.setTimeout(150);
-    // Force the timeout value to be -9999
+    // Force the timeout value to be -9999 (This should be library default.)
     _SDI12Internal.setTimeoutValue(-9999);
 
     // Allow the SDI-12 library access to interrupts
