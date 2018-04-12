@@ -20,16 +20,18 @@ To use a sensor and variable in your sketch, you must separately include xxx.h f
     - [EnviroDIY Logger Functions](#DIYlogger)
     - [Logger Code Examples](#LoggerExamples)
 - Available Sensors
+    - [Apogee SQ-212 Quantum Light Sensor, via TI ADS1115](#SQ212)
+    - [AOSong AM2315](#AM2315)
+    - [AOSong DHT](#DHT)
+    - [Bosch BME280](#BME280)
     - [MaxBotix MaxSonar](#MaxBotix)
-    - [Campbell Scientific OBS-3+](#OBS3)
+    - [Campbell Scientific OBS-3+, via TI ADS1115](#OBS3)
     - [Decagon Devices 5TM](#5TM)
     - [Decagon Devices CTD-10](#CTD)
     - [Decagon Devices ES-2](#ES2)
+    - [External Voltage, via TI ADS1115](#ExtVolt)
     - [Maxim DS18 Temperature Probes](#DS18)
-    - [AOSong AM2315](#AM2315)
-    - [Bosch BME280](#BME280)
-    - [AOSong DHT](#DHT)
-    - [Apogee SQ-212 Quantum Light Sensor](#apogee-sq-212-quantum-light-sensor--photosynthetically-active-radiation-par)
+    - [External I2C Tipping Bucket Counter](#ExtTips)
     - [Yosemitech Brand Environmental Sensors](#Yosemitech)
     - [Zebra-Tech D-Opto Dissolved Oxygen Sensor](#dOpto)
     - [Maxim DS3231 Real Time Clock](#DS3231)
@@ -499,7 +501,7 @@ _____
 
 ### <a name="OBS3"></a>[Campbell Scientific OBS-3+](https://www.campbellsci.com/obs-3plus)
 
-The version of the OBS-3+ that this library supports sends out a simple analog signal between 0 and 2.5V.  (The 5V and 4-20mA versions are _not_ supported by this library.)  To convert the analog signal to a high resolution digital signal, the sensor must be attached to a TI ADS1115 16-bit ADD converter (such as on the first four analog pins of the Mayfly).  The TI ADS1115 ADD communicates with the board via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tying the address pin to ground.  More than one of these ADD's can be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input voltage of 2.0-5.5V.  The OBS-3 itself requires a 5-15V power supply, which can be turned off between measurements.  (It will actually run on power as low as 3.3V.)  The power supply is connected to the red wire, low range output comes from the blue wire, high range output comes from the white wire, and the black, green, and silver/unshielded wires should all be connected to ground.
+The version of the OBS-3+ that this library supports sends out a simple analog signal between 0 and 2.5V.  (The 5V and 4-20mA versions are _not_ supported by this library.)  To convert the analog signal to a high resolution digital signal, the sensor must be attached to a TI ADS1115 16-bit ADD converter (such as on the first four analog pins of the Mayfly).  The TI ADS1115 ADD communicates with the board via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tying the address pin to ground.  More than one of these ADD's can be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input voltage of 2.0-5.5V, but this library assumes the ADS is powered with 3.3V.  The OBS-3 itself requires a 5-15V power supply, which can be turned off between measurements.  (It will actually run on power as low as 3.3V.)  The power supply is connected to the red wire, low range output comes from the blue wire, high range output comes from the white wire, and the black, green, and silver/unshielded wires should all be connected to ground.
 
 The Arduino pin controlling power on/off, analog data pin _on the TI ADS1115_, and calibration values _in Volts_ for Ax^2 + Bx + C are required for the sensor constructor.  A custom variable code can be entered as a second argument in the variable constructors, and it is very strongly recommended that you use this otherwise it will be very difficult to determine which return is high and which is low range on the sensor.  If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the third argument.  Do NOT forget that if you want to give a number of measurements to average, that comes _after_ the i2c address in the constructor!
 
@@ -744,10 +746,10 @@ AOSongDHT_HI(&dht, "UUID", "customVarCode");  // Calculated Heat Index
 ```
 _____
 
-### <a name="SQ212"></a>[Apogee SQ-212 Quantum Light Sensor ](https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/) Photosynthetically Active Radiation (PAR)
-This library will work with the Apogee SQ-212 and SQ-212 analog quantum light sensors, and could be readily adapted to work with similar sensors (e.g. SQ-215 or SQ225) with by simply changing the calibration factors.  These sensors send out a simple analog signal.  To convert that to a high resolution digigal signal, the sensor must be attached to a TI ADS1115 ADD converter (such as on the first four analog pins of the Mayfly).    The TI ADS1115 ADD communicates with the board via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tying the address pin to ground.  More than one of these ADD's can be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input voltage of 2.0-5.5V.  The PAR sensors should be attached to a 5-24V power source and the power supply to the sensor can be stopped between measurements.
+### <a name="SQ212"></a>[Apogee SQ-212 Quantum Light Sensor](https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/) Photosynthetically Active Radiation (PAR)
+This library will work with the Apogee SQ-212 and SQ-212 analog quantum light sensors, and could be readily adapted to work with similar sensors (e.g. SQ-215 or SQ225) with by simply changing the calibration factors.  These sensors send out a simple analog signal.  To convert that to a high resolution digigal signal, the sensor must be attached to a TI ADS1115 ADD converter (such as on the first four analog pins of the Mayfly).    The TI ADS1115 ADD communicates with the board via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tying the address pin to ground.  More than one of these ADD's can be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input voltage of 2.0-5.5V, but this library assumes the ADS is powered with 3.3V.  The PAR sensors should be attached to a 5-24V power source and the power supply to the sensor can be stopped between measurements.
 
-The Arduino pin controlling power on/off and the analog data pin _on the TI ADS1115_ are required for the sensor constructor.    If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the third argument.
+The Arduino pin controlling power on/off and the analog data pin _on the TI ADS1115_ are required for the sensor constructor.  If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the third argument.
 
 ```cpp
 #include <ApogeeSQ212.h>
@@ -918,7 +920,7 @@ _____
 
 ### <a name="dOpto"></a>[Zebra-Tech D-Opto](http://www.zebra-tech.co.nz/d-opto-sensor/) Dissolved Oxygen Sensor
 
-The Zebra-Tech D-Opto sensor communicate with the board using the [SDI-12 protocol](http://www.sdi-12.org/) (and the [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).  It require an 8-12V power supply, which can be turned off between measurements.  The connection between the logger and the Arduino board is made by way of a white interface module provided by Zebra-Tech. You will need a voltage booster or a separate power supply to give the D-Opto sufficient voltage to run.  We use [Pololu 9V Step-Up Voltage Regulators](https://www.pololu.com/product/2116).
+The Zebra-Tech D-Opto sensor communicates with the board using the [SDI-12 protocol](http://www.sdi-12.org/) (and the [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).  It require an 8-12V power supply, which can be turned off between measurements.  The connection between the logger and the Arduino board is made by way of a white interface module provided by Zebra-Tech. You will need a voltage booster or a separate power supply to give the D-Opto sufficient voltage to run.  We use [Pololu 9V Step-Up Voltage Regulators](https://www.pololu.com/product/2116).
 
 The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.  Optionally, you can include a number of distinct readings to average.  The data pin must be a pin that supports pin-change interrupts.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
 
@@ -941,6 +943,51 @@ ZebraTechDOpto_DOpct(&ctd, "UUID", "customVarCode");  // Dissolved oxygen percen
 ZebraTechDOpto_DOmgL(&ctd, "UUID", "customVarCode");  // Dissolved oxygen concentration in ppm (mg/L)
 //  Resolution is 0.01% / 0.001 PPM
 //  Accuracy is 1% of reading or 0.02PPM, whichever is greater
+```
+_____
+
+### <a name="ExtVolt"></a>External Voltage on [TI ADS1115](http://www.ti.com/product/ADS1115)
+The TI ADS1115 ADD is a high resolution ADS that communicates with the board via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tying the address pin to ground.  More than one of these ADD's can be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input voltage of 2.0-5.5V, but this library assumes the ADS is powered with 3.3V.  For measuring raw external voltages, this library also allows you to give a gain factor/multiplier to account for use of a voltage divider, such as the [Seeed Grove Voltage Divider](http://wiki.seeedstudio.com/Grove-Voltage_Divider/).
+
+The Arduino pin controlling power on/off and the analog data pin _on the TI ADS1115_ are required for the sensor constructor.  If using a voltage divider to increase the gain, enter the gain multiplier as the third argument.  If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the fourth argument.  The number of measurements to average, if more than one is desired, goes as the fifth argument.
+
+```cpp
+#include <ExternalVoltage.h>
+ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, ADS1x15_i2cAddress, measurementsToAverage);
+```
+
+The one available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
+
+```cpp
+ExternalVoltage_Volt(&extvolt, "UUID", "customVarCode");  // raw voltage in volts
+// Range:
+//   without voltage divider:  0 - 3.6V
+//   1/gain = 3x: 0.3 ~ 12.9v
+//   1/gain = 10x: 1 ~ 43v
+// Accuracy is < ± 1%
+// Resolution: 16-bit ADC:
+//   without voltage divider:  0.05mV
+//   1/gain = 3x: 0.2mV
+//   1/gain = 10x: 0.65 mV
+```
+_____
+
+### <a name="ExtTips"></a>[External I2C Tipping Bucket Counter](https://github.com/EnviroDIY/TippingBucketRainGauge)
+This module is for use with a simple external I2C tipping bucket counter.  This is *NOT* for direct counting of tips using an interrupt on the main processor.  The construction and programming of the tipping bucket counter is documented in the GitHub link above.  It is assumed that the processor of the tip counter takes care of its own power management.
+
+All constructor arguments are optional, but the first argument is for the I2C address of the top counter (if not 0x08) and the second is for the depth of rain (in mm) per tip event (if not 0.2mm).  Most metric tipping buckets are calibrated to have 1 tip per 0.2mm of rain.  Most English tipping buckets are calibrated to have 1 tip per 0.01" of rain, which is 0.254mm.
+
+```cpp
+#include <TippingBucket.h>
+TippingBucket tip(tippingBucketI2CAddress, depthPerTipEvent);
+```
+
+The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
+
+```cpp
+TippingBucket_Tips(&tip, "UUID", "customVarCode");  // raw count of tips
+TippingBucket_Depth(&tip, "UUID", "customVarCode");  // rain depth in mm
+// Range, accuracy, and resolution depend on the actual tipping bucket module
 ```
 _____
 
@@ -1067,7 +1114,7 @@ Fully supported
 - SoftwareSerial_ExtInts is not supported at all on the AtSAMD21.
 - Any digital pin can be used with SDI-12.
 - Because the USB controller is built into the processor, your USB serial connection will close as soon as the processor goes to sleep.  If you need to debug, I recommend using a serial port monitor like [Tera Term](https://ttssh2.osdn.jp/index.html.en) which will automatically renew its connection with the serial port when it connects and disconnects.  Otherwise, you will have to rely on lights on your alert pin or your modem to verify the processor is waking/sleeping properly.
-- There is a completely weird bug that causes the code to crash if using input pin 1 on the TI ADS1115 (used for the Campbell OBS3+ and Apogee SQ212).  I have no idea at all why this happens.  Pins 0, 2, and 3 all work fine.  Just don't use pin 1.
+- There is a completely weird bug that causes the code to crash if using input pin 1 on the TI ADS1115 (used for the Campbell OBS3+, Apogee SQ212, and raw external voltages).  I have no idea at all why this happens.  Pins 0, 2, and 3 all work fine.  Just don't use pin 1.
 ___
 
 #### AtMega2560 (Arduino Mega)

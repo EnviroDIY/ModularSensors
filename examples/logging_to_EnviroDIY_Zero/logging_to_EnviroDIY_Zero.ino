@@ -211,6 +211,18 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
 
 
 // ==========================================================================
+//    External Voltage via TI ADS1115
+// ==========================================================================
+#include <ExternalVoltage.h>
+const int8_t VoltPower = -1;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t VoltData = 0;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const float VoltGain = 10; // Default 1/gain for grove voltage divider is 10x
+const uint8_t Volt_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
+const uint8_t VoltReadsToAvg = 1; // Only read one sample
+ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, Volt_ADS1115Address, VoltReadsToAvg);
+
+
+// ==========================================================================
 //    Maxbotix HRXL Ultrasonic Range Finder
 // ==========================================================================
 #include <MaxBotixSonar.h>
@@ -255,6 +267,15 @@ MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
 MaximDS18 ds18_4(OneWireAddress4, OneWirePower, OneWireBus);
 MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
 // MaximDS18 ds18_5(OneWirePower, OneWireBus);
+
+
+// ==========================================================================
+//    External Tip Counter
+// ==========================================================================
+#include <TippingBucket.h>
+const uint8_t tippingBucketI2CAddress = 0x08;  // I2C Address for external tip counter
+const uint8_t depthPerTipEvent = 0.2;  // rain depth in mm per tip event
+TippingBucket tip(tippingBucketI2CAddress, depthPerTipEvent);
 
 
 // Set up a 'new' UART for modbus communication - in this case, using SERCOM1
@@ -371,6 +392,7 @@ Variable *variableList[] = {
     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonES2_Cond(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonES2_Temp(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaxBotixSonar_Range(&sonar2, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_1, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -378,6 +400,8 @@ Variable *variableList[] = {
     new MaximDS18_Temp(&ds18_3, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_4, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_5, "12345678-abcd-1234-efgh-1234567890ab"),
+    new TippingBucket_Tips(&tip, "12345678-abcd-1234-efgh-1234567890ab"),
+    new TippingBucket_Depth(&tip, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
