@@ -4,8 +4,8 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for an external tip counter, used to measure rainfall via a tipping bucket 
- *rain gauge 
+ *This file is for an external tip counter, used to measure rainfall via a tipping bucket
+ *rain gauge
  *
  *Documentation for the sensor can be found at:
  *https://github.com/EnviroDIY/TippingBucketRainGauge
@@ -35,7 +35,7 @@
 #define BUCKET_STABILIZATION_TIME_MS 0
 #define BUCKET_MEASUREMENT_TIME_MS 0
 
-#define BUCKET_RAIN_RESOLUTION 2  
+#define BUCKET_RAIN_RESOLUTION 2
 #define BUCKET_RAIN_VAR_NUM 0
 
 #define BUCKET_TIPS_RESOLUTION 1
@@ -45,11 +45,10 @@
 class TippingBucket : public Sensor
 {
 public:
-    //The constructor, needs power pin, address of I2C device (0x08 by default), the number of measurments to average (1 by default), 
-    //and the amount of volume of rain per tip event in mm (specified by the tipping bucket used, 0.2mm by default) 
-    TippingBucket(int8_t powerPin, uint8_t i2cAddressHex = 0x08, uint8_t measurementsToAverage = 1, float rainPerTip = 0.2); 
+    // The constructor, needs power pin, address of I2C device (0x08 by default),
+    // and the amount of volume of rain per tip event in mm (specified by the tipping bucket used, 0.2mm by default)
+    TippingBucket(int8_t powerPin, uint8_t i2cAddressHex = 0x08, float rainPerTip = 0.2);
 
-    bool wake(void) override;
     bool setup(void) override;
     String getSensorLocation(void) override;
 
@@ -59,29 +58,29 @@ protected:
     uint8_t _i2cAddressHex;
 };
 
-//Defines the tips varible, shows the number of tips since last read
+// Defines the tip varible, shows the number of tips since last read
 class TippingBucket_Tips : public Variable
 {
 public:
     TippingBucket_Tips(Sensor *parentSense,
                      String UUID = "", String customVarCode = "")
       : Variable(parentSense, BUCKET_TIPS_VAR_NUM,
-               F("rain"), F("tips"),
+               F("precipitation"), F("event"),
                BUCKET_TIPS_RESOLUTION,
-               F("tipping bucket"), UUID, customVarCode)
+               F("tippingBucketTips"), UUID, customVarCode)
     {}
 };
 
-//Defines the volume of rain variable, shows the number of mm since the last read
+// Defines the volume of rain variable, shows the number of mm since the last read
 class TippingBucket_Vol : public Variable
 {
 public:
     TippingBucket_Vol(Sensor *parentSense,
                      String UUID = "", String customVarCode = "")
       : Variable(parentSense, BUCKET_RAIN_VAR_NUM,
-               F("rain"), F("mm"),
+               F("precipitation"), F("millimeter"),
                BUCKET_RAIN_RESOLUTION,
-               F("tipping bucket"), UUID, customVarCode)
+               F("tippingBucketVol"), UUID, customVarCode)
     {}
 };
 

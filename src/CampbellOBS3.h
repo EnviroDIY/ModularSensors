@@ -66,9 +66,7 @@ protected:
 };
 
 
-// Two different vars are ONLY needed because of the different dreamhost column tags
-// All that is needed for these are the constructors
-// Defines the "Low Turbidity Sensor"
+// The single available variable is turbidity
 class CampbellOBS3_Turbidity : public Variable
 {
 public:

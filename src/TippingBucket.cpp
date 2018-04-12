@@ -4,8 +4,8 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for an external tip counter, used to measure rainfall via a tipping bucket 
- *rain gauge 
+ *This file is for an external tip counter, used to measure rainfall via a tipping bucket
+ *rain gauge
  *
  *Documentation for the sensor can be found at:
  *https://github.com/EnviroDIY/TippingBucketRainGauge
@@ -21,10 +21,10 @@
 
 
 // The constructor - because this is I2C, only need the power pin and rain per event if a non-standard value is used
-TippingBucket::TippingBucket(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage, float rainPerTip)
+TippingBucket::TippingBucket(int8_t powerPin, uint8_t i2cAddressHex, float rainPerTip)
      : Sensor(F("TippingBucket"), BUCKET_NUM_VARIABLES,
               BUCKET_WARM_UP_TIME_MS, BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS,
-              powerPin, -1) 
+              powerPin, -1, 1)
 {
     _i2cAddressHex  = i2cAddressHex;
     _rainPerTip = rainPerTip;
@@ -47,33 +47,26 @@ bool TippingBucket::setup(void)
 }
 
 
-bool TippingBucket::wake(void)
-{
-    Sensor::wake();
-    waitForWarmUp();
-    return true;
-}
-
-
 bool TippingBucket::addSingleMeasurementResult(void)
 {
     // Make sure we've waited long enough for a new reading to be available
     waitForMeasurementCompletion();
 
     //intialize values
-    float rain = 0; //Number of mm of rain 
-    unsigned int  tips = 0; //Number of tip events
-    uint8_t Byte1 = 0; //Low byte of data
-    uint8_t Byte2 = 0; //High byte of data 
+    float rain = -9999; // Number of mm of rain
+    int tips = -9999; // Number of tip events
+    uint8_t Byte1 = 0; // Low byte of data
+    uint8_t Byte2 = 0; // High byte of data
 
-    Wire.requestFrom(_i2cAddressHex, 2); //Get data from external tip counter
+    Wire.requestFrom(int(_i2cAddressHex), 2); // Get data from external tip counter
     Byte1 = Wire.read();
     Byte2 = Wire.read();
 
-    tips = (Byte2 << 8) | (Byte1);  //Concatenate tip values
-    rain = float(tips) * _rainPerTip; //Multiply by tip coefficient (0.2 by default)
+    tips = (Byte2 << 8) | (Byte1);  // Concatenate tip values
+    rain = float(tips) * _rainPerTip; // Multiply by tip coefficient (0.2 by default)
 
-    if (rain < 0) rain = -9999; //If negetive value results, return failue
+    if (tips < 0) rain = -9999; // If negetive value results, return failure
+    if (rain < 0) rain = -9999; // If negetive value results, return failure
 
     MS_DBG(F("Rain: "), rain);
     MS_DBG(F("Tips: "), tips);
