@@ -30,7 +30,7 @@ To use a sensor and variable in your sketch, you must separately include xxx.h f
     - [Decagon Devices ES-2](#ES2)
     - [External Voltage, via TI ADS1115](#ExtVolt)
     - [Maxim DS18 Temperature Probes](#DS18)
-    - [External I2C Tipping Bucket Counter](#ExtTips)
+    - [External I2C Rain Tipping Bucket Counter](#ExtTips)
     - [Yosemitech Brand Environmental Sensors](#Yosemitech)
     - [Zebra-Tech D-Opto Dissolved Oxygen Sensor](#dOpto)
     - [Maxim DS3231 Real Time Clock](#DS3231)
@@ -983,21 +983,21 @@ ExternalVoltage_Volt(&extvolt, "UUID", "customVarCode");  // raw voltage in volt
 ```
 _____
 
-### <a name="ExtTips"></a>[External I2C Tipping Bucket Counter](https://github.com/EnviroDIY/TippingBucketRainGauge)
+### <a name="ExtTips"></a>[External I2C Rain Tipping Bucket Counter](https://github.com/EnviroDIY/TippingBucketRainGauge)
 This module is for use with a simple external I2C tipping bucket counter.  This is *NOT* for direct counting of tips using an interrupt on the main processor.  The construction and programming of the tipping bucket counter is documented in the GitHub link above.  It is assumed that the processor of the tip counter takes care of its own power management.
 
-All constructor arguments are optional, but the first argument is for the I2C address of the top counter (if not 0x08) and the second is for the depth of rain (in mm) per tip event (if not 0.2mm).  Most metric tipping buckets are calibrated to have 1 tip per 0.2mm of rain.  Most English tipping buckets are calibrated to have 1 tip per 0.01" of rain, which is 0.254mm.  Note that you cannot input a number of measurements to average because averaging does not make sense with this kind of counted variable.
+All constructor arguments are optional, but the first argument is for the I2C address of the tip counter (if not 0x08) and the second is for the depth of rain (in mm) per tip event (if not 0.2mm).  Most metric tipping buckets are calibrated to have 1 tip per 0.2mm of rain.  Most English tipping buckets are calibrated to have 1 tip per 0.01" of rain, which is 0.254mm.  Note that you cannot input a number of measurements to average because averaging does not make sense with this kind of counted variable.
 
 ```cpp
-#include <TippingBucket.h>
-TippingBucket tip(tippingBucketI2CAddress, depthPerTipEvent);
+#include <RainCounterI2C.h>
+RainCounterI2C tip(RainCounterI2CAddress, depthPerTipEvent);
 ```
 
 The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-TippingBucket_Tips(&tip, "UUID", "customVarCode");  // raw count of tips
-TippingBucket_Depth(&tip, "UUID", "customVarCode");  // rain depth in mm
+RainCounterI2C_Tips(&tip, "UUID", "customVarCode");  // raw count of tips
+RainCounterI2C_Depth(&tip, "UUID", "customVarCode");  // rain depth in mm
 // Range, accuracy, and resolution depend on the actual tipping bucket module
 ```
 _____

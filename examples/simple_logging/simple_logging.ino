@@ -215,12 +215,12 @@ MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
 
 
 // ==========================================================================
-//    External Tip Counter
+//    External I2C Rain Tipping Bucket Counter
 // ==========================================================================
-#include <TippingBucket.h>
-const uint8_t tippingBucketI2CAddress = 0x08;  // I2C Address for external tip counter
+#include <RainCounterI2C.h>
+const uint8_t RainCounterI2CAddress = 0x08;  // I2C Address for external tip counter
 const uint8_t depthPerTipEvent = 0.2;  // rain depth in mm per tip event
-TippingBucket tip(tippingBucketI2CAddress, depthPerTipEvent);
+RainCounterI2C tip(RainCounterI2CAddress, depthPerTipEvent);
 
 
 // Set up a serial port for modbus communication - in this case, using AltSoftSerial
@@ -335,8 +335,8 @@ Variable *variableList[] = {
     new MaximDS18_Temp(&ds18_3),
     new MaximDS18_Temp(&ds18_4),
     new MaximDS18_Temp(&ds18_5),
-    new TippingBucket_Tips(&tip),
-    new TippingBucket_Depth(&tip),
+    new RainCounterI2C_Tips(&tip),
+    new RainCounterI2C_Depth(&tip),
     new YosemitechY504_DOpct(&y504),
     new YosemitechY504_Temp(&y504),
     new YosemitechY504_DOmgL(&y504),

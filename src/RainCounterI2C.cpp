@@ -1,5 +1,5 @@
 /*
- *TippingBucket.h
+ *RainCounterI2C.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -8,7 +8,7 @@
  *rain gauge
  *
  *Documentation for the sensor can be found at:
- *https://github.com/EnviroDIY/TippingBucketRainGauge
+ *https://github.com/EnviroDIY/RainCounterI2CRainGauge
  *
  * For Rainfall:
  *  Accuracy and resolution are dependent on the sensor used
@@ -17,12 +17,12 @@
  * Assume sensor is immediately stable
 */
 
-#include "TippingBucket.h"
+#include "RainCounterI2C.h"
 
 
 // The constructor - because this is I2C, only need the power pin and rain per event if a non-standard value is used
-TippingBucket::TippingBucket(uint8_t i2cAddressHex, float rainPerTip)
-     : Sensor(F("TippingBucket"), BUCKET_NUM_VARIABLES,
+RainCounterI2C::RainCounterI2C(uint8_t i2cAddressHex, float rainPerTip)
+     : Sensor(F("RainCounterI2C"), BUCKET_NUM_VARIABLES,
               BUCKET_WARM_UP_TIME_MS, BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS,
               -1, -1, 1)
 {
@@ -31,7 +31,7 @@ TippingBucket::TippingBucket(uint8_t i2cAddressHex, float rainPerTip)
 }
 
 
-String TippingBucket::getSensorLocation(void)
+String RainCounterI2C::getSensorLocation(void)
 {
     String address = F("I2C_0x");
     address += String(_i2cAddressHex, HEX);
@@ -39,7 +39,7 @@ String TippingBucket::getSensorLocation(void)
 }
 
 
-bool TippingBucket::setup(void)
+bool RainCounterI2C::setup(void)
 {
     Sensor::setup();
     Wire.begin(); //Initalize wire (I2C) functionality
@@ -47,7 +47,7 @@ bool TippingBucket::setup(void)
 }
 
 
-bool TippingBucket::addSingleMeasurementResult(void)
+bool RainCounterI2C::addSingleMeasurementResult(void)
 {
     //intialize values
     float rain = -9999; // Number of mm of rain
