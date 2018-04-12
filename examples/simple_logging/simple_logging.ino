@@ -302,15 +302,6 @@ const uint8_t TipsToAverage = 1;  //Only sample a single event
 const uint8_t VolumePerTipEvent = 0.2; //0.2mm of rain per tip event
 TippingBucket tip(TippingPower, TippingBucketAddress, TipsToAverage, VolumePerTipEvent);
 
-// ==========================================================================
-//    External Trigger 
-// ==========================================================================
-#include <Trigger.h>
-const int8_t TriggerPin = 5;  // Pin to switch power on and off (-1 if unconnected)
-const float Threshold = 10;
-const int8_t NumberOfSamples = 3;
-Trigger trig(Threshold, TriggerPin, NumberOfSamples);
-
 
 // ==========================================================================
 //    The array that contains all variables to be logged
@@ -437,9 +428,6 @@ void setup()
     // Check for debugging mode
     logger.checkForTestingMode(buttonPin);
 
-    // Begin the trigger function
-    trig.begin();
-
 }
 
 
@@ -450,5 +438,4 @@ void loop()
 {
     // Log the data
     logger.log();
-    // trip.test((*variableList[2]).getValue()); //Uncomment to enable tripping an external pin based on external input
 }
