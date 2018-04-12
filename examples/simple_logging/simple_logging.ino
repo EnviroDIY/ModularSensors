@@ -30,7 +30,7 @@ const char *sketchName = "simple_logging.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 1;
+const uint8_t loggingInterval = 5;
 // Your logger's timezone.
 const int8_t timeZone = -5;
 // Create a new logger instance
@@ -154,6 +154,18 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
 
 
 // ==========================================================================
+//    External Voltage via TI ADS1115
+// ==========================================================================
+#include <ExternalVoltage.h>
+const int8_t VoltPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t VoltData = 0;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const float VoltGain = 10; // Default 1/gain for grove voltage divider is 10x
+const uint8_t Volt_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
+const uint8_t VoltReadsToAvg = 1; // Only read one sample
+ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, Volt_ADS1115Address, VoltReadsToAvg);
+
+
+// ==========================================================================
 //    Maxbotix HRXL Ultrasonic Range Finder
 // ==========================================================================
 #include <MaxBotixSonar.h>
@@ -202,6 +214,16 @@ MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
 // MaximDS18 ds18_5(OneWirePower, OneWireBus);
 
 
+// ==========================================================================
+//    External Tip Counter
+// ==========================================================================
+#include <TippingBucket.h>
+const int8_t TippingPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const uint8_t TippingBucketAddress = 0x08; //Address for external tip counter
+const uint8_t VolumePerTipEvent = 0.2; //0.2mm of rain per tip event
+TippingBucket tip(TippingPower, TippingBucketAddress, VolumePerTipEvent);
+
+
 // Set up a serial port for modbus communication - in this case, using AltSoftSerial
 #include <AltSoftSerial.h>
 AltSoftSerial modbusSerial;
@@ -232,7 +254,7 @@ YosemitechY510 y510(y510modbusAddress, modbusSerial, modbusPower, max485EnablePi
 //    Yosemitech Y511 Turbidity Sensor with Wiper
 // ==========================================================================
 #include <YosemitechY511.h>
-byte y511modbusAddress = 0x05;  // The modbus address of the Y511
+byte y511modbusAddress = 0x1A;  // The modbus address of the Y511
 // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y511NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
@@ -281,27 +303,6 @@ const char *DOptoDI12address = "5";  // The SDI-12 Address of the Zebra Tech D-O
 // const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 
-// ==========================================================================
-//    External Grove Voltage Divider
-// ==========================================================================
-#include <ExternalVoltage.h>
-const int8_t VoltPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t VoltData = 0;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
-const uint8_t Volt_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
-const uint8_t VoltReadsToAvg = 1; //Only read one sample
-const float VoltGain = 10; //Default 1/gain for grove voltage divider is 10x 
-ExternalVoltage extvolt(VoltPower, VoltData, Volt_ADS1115Address, VoltReadsToAvg, VoltGain);
-
-// ==========================================================================
-//    External Tip Counter
-// ==========================================================================
-#include <TippingBucket.h>
-const int8_t TippingPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-const uint8_t TippingBucketAddress = 0x08; //Address for external tip counter
-const uint8_t TipsToAverage = 1;  //Only sample a single event
-const uint8_t VolumePerTipEvent = 0.2; //0.2mm of rain per tip event
-TippingBucket tip(TippingPower, TippingBucketAddress, TipsToAverage, VolumePerTipEvent);
-
 
 // ==========================================================================
 //    The array that contains all variables to be logged
@@ -327,6 +328,7 @@ Variable *variableList[] = {
     new DecagonCTD_Depth(&ctd),
     new DecagonES2_Cond(&es2),
     new DecagonES2_Temp(&es2),
+    new ExternalVoltage_Volt(&extvolt),
     new MaxBotixSonar_Range(&sonar1),
     new MaxBotixSonar_Range(&sonar2),
     new MaximDS18_Temp(&ds18_1),
@@ -334,6 +336,8 @@ Variable *variableList[] = {
     new MaximDS18_Temp(&ds18_3),
     new MaximDS18_Temp(&ds18_4),
     new MaximDS18_Temp(&ds18_5),
+    new TippingBucket_Tips(&tip),
+    new TippingBucket_Depth(&tip),
     new YosemitechY504_DOpct(&y504),
     new YosemitechY504_Temp(&y504),
     new YosemitechY504_DOmgL(&y504),
@@ -354,9 +358,6 @@ Variable *variableList[] = {
     new ProcessorStats_FreeRam(&mayfly),
     new ProcessorStats_Batt(&mayfly),
     new MaximDS3231_Temp(&ds3231),
-    new TippingBucket_Tips(&tip),
-    new TippingBucket_Vol(&tip),
-    new ExternalVoltage_Volt(&extvolt),
     // new YOUR_variableName_HERE(&)
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);

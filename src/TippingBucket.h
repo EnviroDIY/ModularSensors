@@ -46,7 +46,7 @@ class TippingBucket : public Sensor
 {
 public:
     // The constructor, needs power pin, address of I2C device (0x08 by default),
-    // and the amount of volume of rain per tip event in mm (specified by the tipping bucket used, 0.2mm by default)
+    // and the amount of depth of rain per tip event in mm (specified by the tipping bucket used, 0.2mm by default)
     TippingBucket(int8_t powerPin, uint8_t i2cAddressHex = 0x08, float rainPerTip = 0.2);
 
     bool setup(void) override;
@@ -71,11 +71,11 @@ public:
     {}
 };
 
-// Defines the volume of rain variable, shows the number of mm since the last read
-class TippingBucket_Vol : public Variable
+// Defines the depth of rain variable, shows the number of mm since the last read
+class TippingBucket_Depth : public Variable
 {
 public:
-    TippingBucket_Vol(Sensor *parentSense,
+    TippingBucket_Depth(Sensor *parentSense,
                      String UUID = "", String customVarCode = "")
       : Variable(parentSense, BUCKET_RAIN_VAR_NUM,
                F("precipitation"), F("millimeter"),
