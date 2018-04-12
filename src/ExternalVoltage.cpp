@@ -12,12 +12,21 @@
  * ADC. This module employs a variable gain via two pairs of voltage dividers, and a unity gain amplification to reduce output
  * impedance of the module
  *
- * Range is either 0.3 ~ 12.9v (1/gain = 3x), or 1 ~ 43v (1/gain = 10x)
+ * Range:
+ *   without voltage divider:  0 - 3.6V
+ *   1/gain = 3x: 0.3 ~ 12.9v
+ *   1/gain = 10x: 1 ~ 43v
  * Accuracy is < ± 1%
- * Resolution: 16-bit ADC: < 0.65 mV
+ * Resolution: 16-bit ADC:
+ *   without voltage divider:  0.05mV
+ *   1/gain = 3x: 0.2mV
+ *   1/gain = 10x: 0.65 mV
  *
  * Technical specifications for the Grove Voltage Divider can be found at:
- * http://wiki.seeedstudio.com/Grove-Voltage_Divider/
+ * http://wiki.seeedstudio.com/Grove-Voltage_Divider
+ *
+ * Technical specifications for the TI ADS1115 can be found at:
+ * http://www.ti.com/product/ADS1115
  *
  * Response time: < 1ms
  * Resample time: max of ADC (860/sec)
@@ -67,7 +76,6 @@ bool ExternalVoltage::addSingleMeasurementResult(void)
     //      (limited to VDD +0.3V max, so only really up to 3.6V when powered at 3.3V!)
 
     // Bump the gain up to 1x = +/- 4.096V range.  (Again, really only to 3.6V when powered at 3.3V)
-    // Sensor return range is 0-2.5V, but the next gain option is 2x which only allows up to 2.048V
     ads.setGain(GAIN_ONE);
     // Begin ADC
     ads.begin();

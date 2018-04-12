@@ -14,12 +14,21 @@
  * gain via two pairs of voltage dividers, and a unity gain amplification to
  * reduce output impedance of the module.
  *
- * Range is either 0.3 ~ 12.9v (1/gain = 3x), or 1 ~ 43v (1/gain = 10x)
+ * Range:
+ *   without voltage divider:  0 - 3.6V
+ *   1/gain = 3x: 0.3 ~ 12.9v
+ *   1/gain = 10x: 1 ~ 43v
  * Accuracy is < ± 1%
- * Resolution: 16-bit ADC: < 0.65 mV
+ * Resolution: 16-bit ADC:
+ *   without voltage divider:  0.05mV
+ *   1/gain = 3x: 0.2mV
+ *   1/gain = 10x: 0.65 mV
  *
  * Technical specifications for the Grove Voltage Divider can be found at:
- * http://wiki.seeedstudio.com/Grove-Voltage_Divider/
+ * http://wiki.seeedstudio.com/Grove-Voltage_Divider
+ *
+ * Technical specifications for the TI ADS1115 can be found at:
+ * http://www.ti.com/product/ADS1115 
  *
  * Response time: < 1ms
  * Resample time: max of ADC (860/sec)
@@ -44,7 +53,7 @@
 #define EXT_VOLT_MEASUREMENT_TIME_MS 1  // Unknown!
 
 #define EXT_VOLT_VAR_NUM 0
-#define EXT_VOLT_RESOLUTION 2
+#define EXT_VOLT_RESOLUTION 5
 
 // The main class for the external votlage monitor
 class ExternalVoltage : public Sensor
@@ -53,8 +62,8 @@ class ExternalVoltage : public Sensor
 public:
     // The constructor - need the power pin and the data pin  ON THE ADC
     // The gain value, I2C address, and number of measurements to average are optional
-    // If nothing is given a 10x gain is used.
-    ExternalVoltage(int8_t powerPin, int8_t dataPin, float gain = 10,
+    // If nothing is given a 1x gain is used.
+    ExternalVoltage(int8_t powerPin, int8_t dataPin, float gain = 1,
                     uint8_t i2cAddress = ADS1115_ADDRESS, uint8_t measurementsToAverage = 1);
 
     String getSensorLocation(void) override;
