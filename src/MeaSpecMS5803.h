@@ -43,7 +43,7 @@
 
 #include "SensorBase.h"
 #include "VariableBase.h"
-#include <SparkFun_MS5803_I2C.h>
+#include "MS5803_Mayfly.h"
 
 #define MS5803_NUM_VARIABLES 2
 #define MS5803_WARM_UP_TIME_MS 10
@@ -71,8 +71,8 @@ public:
     // bool startSingleMeasurement(void) override;  // for forced mode
     bool addSingleMeasurementResult(void) override;
 protected:
-    SparkFun_MS5803_I2C MS5803_internal(_i2cAddressHex);
     uint8_t _i2cAddressHex;
+    MS5803 MS5803_internal;
 };
 
 

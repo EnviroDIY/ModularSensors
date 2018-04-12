@@ -63,7 +63,7 @@ SENSOR_STATUS MeaSpecMS5803::getStatus(void)
 
     // Run begin fxn because it returns true or false for success in contact
     MS5803_internal.reset();
-    bool status = MS5803_internal.begin();
+    bool status = MS5803_internal.begin(_i2cAddressHex, 14);
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
