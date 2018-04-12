@@ -50,7 +50,7 @@ bool TippingBucket::setup(void)
 bool TippingBucket::addSingleMeasurementResult(void)
 {
     // Make sure we've waited long enough for a new reading to be available
-    waitForMeasurementCompletion();
+    // waitForMeasurementCompletion();
 
     //intialize values
     float rain = -9999; // Number of mm of rain
@@ -73,6 +73,14 @@ bool TippingBucket::addSingleMeasurementResult(void)
 
     verifyAndAddMeasurementResult(BUCKET_RAIN_VAR_NUM, rain);
     verifyAndAddMeasurementResult(BUCKET_TIPS_VAR_NUM, int(tips));
+
+    // Unset the time stamp for the beginning of this measurement
+    _millisMeasurementRequested = 0;
+    // Unset the status bit for a measurement having been requested (bit 5)
+    _sensorStatus &= 0b11011111;
+    // Set the status bit for measurement completion (bit 6)
+    _sensorStatus |= 0b01000000;
+
     // Return true when finished
     return true;
 }

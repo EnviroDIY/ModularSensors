@@ -84,7 +84,7 @@ bool ExternalVoltage::addSingleMeasurementResult(void)
     _millisMeasurementRequested = millis();
 
     // Make sure we've waited long enough for a new reading to be available
-    waitForMeasurementCompletion();
+    // waitForMeasurementCompletion();
 
     // Variables to store the results in
     float adcVoltage = -9999;
@@ -106,6 +106,13 @@ bool ExternalVoltage::addSingleMeasurementResult(void)
     else MS_DBG(F("\n"));
 
     verifyAndAddMeasurementResult(EXT_VOLT_VAR_NUM, calibResult);
+
+    // Unset the time stamp for the beginning of this measurement
+    _millisMeasurementRequested = 0;
+    // Unset the status bit for a measurement having been requested (bit 5)
+    _sensorStatus &= 0b11011111;
+    // Set the status bit for measurement completion (bit 6)
+    _sensorStatus |= 0b01000000;
 
     if (adcVoltage < 3.6 and adcVoltage > -0.3) return true;
     else return false;
