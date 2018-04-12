@@ -62,7 +62,7 @@ ProcessorStats mayfly(MFVersion) ;
 #include <MaximDS3231.h>
 MaximDS3231 ds3231(1);
 
-
+/*comment out code
 // ==========================================================================
 //    AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
@@ -200,87 +200,96 @@ MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
 MaximDS18 ds18_4(OneWireAddress4, OneWirePower, OneWireBus);
 MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
 // MaximDS18 ds18_5(OneWirePower, OneWireBus);
-
-
-// Set up a serial port for modbus communication - in this case, using AltSoftSerial
-#include <AltSoftSerial.h>
-AltSoftSerial modbusSerial;
-
+comment in code */
 // ==========================================================================
-//    Yosemitech Y504 Dissolved Oxygen Sensor
+//    MeaSpecMS5803 (Pressure, Temperature)
 // ==========================================================================
-#include <YosemitechY504.h>
-byte y504modbusAddress = 0x04;  // The modbus address of the Y504
-const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const uint8_t y504NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
-YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePin, y504NumberReadings);
+#include <MeaSpecMS5803.h>
+uint8_t MS5803i2c_addr = 0x76;  // The MS5803 can be addressed either as 0x76 or 0x77
+const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr);
 
 
-// ==========================================================================
-//    Yosemitech Y510 Turbidity Sensor
-// ==========================================================================
-#include <YosemitechY510.h>
-byte y510modbusAddress = 0x0B;  // The modbus address of the Y510
+
+// // Set up a serial port for modbus communication - in this case, using AltSoftSerial
+// #include <AltSoftSerial.h>
+// AltSoftSerial modbusSerial;
+//
+// // ==========================================================================
+// //    Yosemitech Y504 Dissolved Oxygen Sensor
+// // ==========================================================================
+// #include <YosemitechY504.h>
+// byte y504modbusAddress = 0x04;  // The modbus address of the Y504
 // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const uint8_t y510NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
-YosemitechY510 y510(y510modbusAddress, modbusSerial, modbusPower, max485EnablePin, y510NumberReadings);
-
-
-// ==========================================================================
-//    Yosemitech Y511 Turbidity Sensor with Wiper
-// ==========================================================================
-#include <YosemitechY511.h>
-byte y511modbusAddress = 0x1A;  // The modbus address of the Y511
-// const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const uint8_t y511NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
-YosemitechY511 y511(y511modbusAddress, modbusSerial, modbusPower, max485EnablePin, y511NumberReadings);
-
-
-// ==========================================================================
-//    Yosemitech Y514 Chlorophyll Sensor
-// ==========================================================================
-#include <YosemitechY514.h>
-byte y514modbusAddress = 0x14;  // The modbus address of the Y514
-// const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const uint8_t y514NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
-YosemitechY514 y514(y514modbusAddress, modbusSerial, modbusPower, max485EnablePin, y514NumberReadings);
-
-
-// ==========================================================================
-//    Yosemitech Y520 Conductivity Sensor
-// ==========================================================================
-#include <YosemitechY520.h>
-byte y520modbusAddress = 0x20;  // The modbus address of the Y520
-// const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const uint8_t y520NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
-YosemitechY520 y520(y520modbusAddress, modbusSerial, modbusPower, max485EnablePin, y520NumberReadings);
-
-
-// ==========================================================================
-//    Yosemitech Y532 pH
-// ==========================================================================
-#include <YosemitechY532.h>
-byte y532modbusAddress = 0x32;  // The modbus address of the Y532
-// const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const uint8_t y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
-YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, y532NumberReadings);
-
-
-// ==========================================================================
-//    Zebra Tech D-Opto Dissolved Oxygen Sensor
-// ==========================================================================
-#include <ZebraTechDOpto.h>
-const char *DOptoDI12address = "5";  // The SDI-12 Address of the Zebra Tech D-Opto
-// const int8_t SDI12Data = 7;  // The pin the D-Opto is attached to
-// const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
-ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
-
+// const uint8_t y504NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+// YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePin, y504NumberReadings);
+//
+//
+// // ==========================================================================
+// //    Yosemitech Y510 Turbidity Sensor
+// // ==========================================================================
+// #include <YosemitechY510.h>
+// byte y510modbusAddress = 0x0B;  // The modbus address of the Y510
+// // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+// const uint8_t y510NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+// YosemitechY510 y510(y510modbusAddress, modbusSerial, modbusPower, max485EnablePin, y510NumberReadings);
+//
+//
+// // ==========================================================================
+// //    Yosemitech Y511 Turbidity Sensor with Wiper
+// // ==========================================================================
+// #include <YosemitechY511.h>
+// byte y511modbusAddress = 0x1A;  // The modbus address of the Y511
+// // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+// const uint8_t y511NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+// YosemitechY511 y511(y511modbusAddress, modbusSerial, modbusPower, max485EnablePin, y511NumberReadings);
+//
+//
+// // ==========================================================================
+// //    Yosemitech Y514 Chlorophyll Sensor
+// // ==========================================================================
+// #include <YosemitechY514.h>
+// byte y514modbusAddress = 0x14;  // The modbus address of the Y514
+// // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+// const uint8_t y514NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+// YosemitechY514 y514(y514modbusAddress, modbusSerial, modbusPower, max485EnablePin, y514NumberReadings);
+//
+//
+// // ==========================================================================
+// //    Yosemitech Y520 Conductivity Sensor
+// // ==========================================================================
+// #include <YosemitechY520.h>
+// byte y520modbusAddress = 0x20;  // The modbus address of the Y520
+// // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+// const uint8_t y520NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+// YosemitechY520 y520(y520modbusAddress, modbusSerial, modbusPower, max485EnablePin, y520NumberReadings);
+//
+//
+// // ==========================================================================
+// //    Yosemitech Y532 pH
+// // ==========================================================================
+// #include <YosemitechY532.h>
+// byte y532modbusAddress = 0x32;  // The modbus address of the Y532
+// // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+// const uint8_t y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
+// YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, y532NumberReadings);
+//
+//
+// // ==========================================================================
+// //    Zebra Tech D-Opto Dissolved Oxygen Sensor
+// // ==========================================================================
+// #include <ZebraTechDOpto.h>
+// const char *DOptoDI12address = "5";  // The SDI-12 Address of the Zebra Tech D-Opto
+// // const int8_t SDI12Data = 7;  // The pin the D-Opto is attached to
+// // const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+// ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
+//
 
 // ==========================================================================
 //    The array that contains all variables to be logged
@@ -289,50 +298,52 @@ Variable *variableList[] = {
     new ProcessorStats_Batt(&mayfly),
     new ProcessorStats_FreeRam(&mayfly),
     new MaximDS3231_Temp(&ds3231),
-    new ApogeeSQ212_PAR(&SQ212),
-    new MaxBotixSonar_Range(&sonar1),
-    new MaxBotixSonar_Range(&sonar2),
-    new Decagon5TM_Ea(&fivetm),
-    new Decagon5TM_Temp(&fivetm),
-    new Decagon5TM_VWC(&fivetm),
-    new DecagonES2_Cond(&es2),
-    new DecagonES2_Temp(&es2),
-    new DecagonCTD_Cond(&ctd),
-    new DecagonCTD_Temp(&ctd),
-    new DecagonCTD_Depth(&ctd),
-    new MaximDS18_Temp(&ds18_1),
-    new MaximDS18_Temp(&ds18_2),
-    new MaximDS18_Temp(&ds18_3),
-    new MaximDS18_Temp(&ds18_4),
-    new MaximDS18_Temp(&ds18_5),
-    new BoschBME280_Temp(&bme280),
-    new BoschBME280_Humidity(&bme280),
-    new BoschBME280_Pressure(&bme280),
-    new BoschBME280_Altitude(&bme280),
-    new AOSongDHT_Humidity(&dht),
-    new AOSongDHT_Temp(&dht),
-    new AOSongDHT_HI(&dht),
-    new AOSongAM2315_Humidity(&am2315),
-    new AOSongAM2315_Temp(&am2315),
-    new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
-    new ZebraTechDOpto_Temp(&dopto),
-    new ZebraTechDOpto_DOpct(&dopto),
-    new ZebraTechDOpto_DOmgL(&dopto),
-    new YosemitechY532_pH(&y532),
-    new YosemitechY532_Temp(&y532),
-    new YosemitechY532_Voltage(&y532),
-    new YosemitechY504_DOpct(&y504),
-    new YosemitechY504_Temp(&y504),
-    new YosemitechY504_DOmgL(&y504),
-    new YosemitechY520_Cond(&y520),
-    new YosemitechY520_Temp(&y520),
-    new YosemitechY510_Turbidity(&y510),
-    new YosemitechY510_Temp(&y510),
-    new YosemitechY511_Turbidity(&y511),
-    new YosemitechY511_Temp(&y511),
-    new YosemitechY514_Chlorophyll(&y514),
-    new YosemitechY514_Temp(&y514),
+    // new ApogeeSQ212_PAR(&SQ212),
+    // new MaxBotixSonar_Range(&sonar1),
+    // new MaxBotixSonar_Range(&sonar2),
+    // new Decagon5TM_Ea(&fivetm),
+    // new Decagon5TM_Temp(&fivetm),
+    // new Decagon5TM_VWC(&fivetm),
+    // new DecagonES2_Cond(&es2),
+    // new DecagonES2_Temp(&es2),
+    // new DecagonCTD_Cond(&ctd),
+    // new DecagonCTD_Temp(&ctd),
+    // new DecagonCTD_Depth(&ctd),
+    // new MaximDS18_Temp(&ds18_1),
+    // new MaximDS18_Temp(&ds18_2),
+    // new MaximDS18_Temp(&ds18_3),
+    // new MaximDS18_Temp(&ds18_4),
+    // new MaximDS18_Temp(&ds18_5),
+    // new BoschBME280_Temp(&bme280),
+    // new BoschBME280_Humidity(&bme280),
+    // new BoschBME280_Pressure(&bme280),
+    // new BoschBME280_Altitude(&bme280),
+    new MeaSpecMS5803_Temp(&ms5803),
+    new MeaSpecMS5803_Pressure(&ms5803),
+    // new AOSongDHT_Humidity(&dht),
+    // new AOSongDHT_Temp(&dht),
+    // new AOSongDHT_HI(&dht),
+    // new AOSongAM2315_Humidity(&am2315),
+    // new AOSongAM2315_Temp(&am2315),
+    // new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
+    // new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
+    // new ZebraTechDOpto_Temp(&dopto),
+    // new ZebraTechDOpto_DOpct(&dopto),
+    // new ZebraTechDOpto_DOmgL(&dopto),
+    // new YosemitechY532_pH(&y532),
+    // new YosemitechY532_Temp(&y532),
+    // new YosemitechY532_Voltage(&y532),
+    // new YosemitechY504_DOpct(&y504),
+    // new YosemitechY504_Temp(&y504),
+    // new YosemitechY504_DOmgL(&y504),
+    // new YosemitechY520_Cond(&y520),
+    // new YosemitechY520_Temp(&y520),
+    // new YosemitechY510_Turbidity(&y510),
+    // new YosemitechY510_Temp(&y510),
+    // new YosemitechY511_Turbidity(&y511),
+    // new YosemitechY511_Temp(&y511),
+    // new YosemitechY514_Chlorophyll(&y514),
+    // new YosemitechY514_Temp(&y514),
     // new YOUR_variableName_HERE(&)
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
@@ -365,15 +376,15 @@ void setup()
     // Start the primary serial connection
     Serial.begin(serialBaud);
 
-    // Start the stream for the modbus sensors
-    modbusSerial.begin(9600);
-
-    // Start the SoftwareSerial stream for the sonar
-    sonarSerial.begin(9600);
-    // Allow interrupts for software serial
-    #if defined SoftwareSerial_ExtInts_h
-    enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
-    #endif
+    // // Start the stream for the modbus sensors (comment out if no modbus )
+    // modbusSerial.begin(9600);
+    //
+    // // Start the SoftwareSerial stream for the sonar (comment out if sonar not connected)
+    // sonarSerial.begin(9600);
+    // // Allow interrupts for software serial
+    // #if defined SoftwareSerial_ExtInts_h
+    // enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+    // #endif
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);

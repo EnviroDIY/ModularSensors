@@ -62,7 +62,8 @@ SENSOR_STATUS MeaSpecMS5803::getStatus(void)
     waitForWarmUp();
 
     // Run begin fxn because it returns true or false for success in contact
-    bool status = MS5803_internal.begin(_i2cAddressHex);
+    MS5803_internal.reset();
+    bool status = MS5803_internal.begin();
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
@@ -87,18 +88,18 @@ bool MeaSpecMS5803::wake(void)
     waitForWarmUp();
     // Restart always needed after power-up
 
-    MS5803_internal.begin(_i2cAddressHex);
+    // MS5803_internal.begin();
 
     // When the ???? library is updated to remove the built-in delay after
     // forcing a sample, it would be better to operate in forced mode.
-    MS5803_internal.setSampling(SparkFun_MS5803_I2C::MODE_NORMAL,  // sensor mode
-    // MS5803_internal.setSampling(SparkFun_MS5803_I2C::MODE_FORCED,  // sensor mode
-                             SparkFun_MS5803_I2C::SAMPLING_X16,  // temperature oversampling
-                             SparkFun_MS5803_I2C::SAMPLING_X16,  //  pressure oversampling
-                             SparkFun_MS5803_I2C::SAMPLING_X16,  //  humidity oversampling
-                             SparkFun_MS5803_I2C::FILTER_OFF, // built-in IIR filter
-                             SparkFun_MS5803_I2C::STANDBY_MS_1000);  // sleep time between measurements (N/A in forced mode)
-    delay(100);  // Need this delay after changing sampling mode
+    // MS5803_internal.setSampling(SparkFun_MS5803_I2C::MODE_NORMAL,  // sensor mode
+    // // MS5803_internal.setSampling(SparkFun_MS5803_I2C::MODE_FORCED,  // sensor mode
+    //                          SparkFun_MS5803_I2C::SAMPLING_X16,  // temperature oversampling
+    //                          SparkFun_MS5803_I2C::SAMPLING_X16,  //  pressure oversampling
+    //                          SparkFun_MS5803_I2C::SAMPLING_X16,  //  humidity oversampling
+    //                          SparkFun_MS5803_I2C::FILTER_OFF, // built-in IIR filter
+    //                          SparkFun_MS5803_I2C::STANDBY_MS_1000);  // sleep time between measurements (N/A in forced mode)
+    // delay(100);  // Need this delay after changing sampling mode
 
     // Mark that the sensor is now active
     _millisSensorActivated = millis();
@@ -123,8 +124,8 @@ bool MeaSpecMS5803::addSingleMeasurementResult(void)
     waitForMeasurementCompletion();
 
     // Read values
-    float temp = MS5803_internal.getTemperature();
-    float press = MS5803_internal.getPressure();
+    float temp = MS5803_internal.getTemperature(CELSIUS, ADC_512);
+    float press = MS5803_internal.getPressure(ADC_4096);
 
     if (isnan(temp)) temp = -9999;
     if (isnan(press)) press = -9999;

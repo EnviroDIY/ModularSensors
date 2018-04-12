@@ -71,7 +71,7 @@ public:
     // bool startSingleMeasurement(void) override;  // for forced mode
     bool addSingleMeasurementResult(void) override;
 protected:
-    SparkFun_MS5803_I2C MS5803_internal;
+    SparkFun_MS5803_I2C MS5803_internal(_i2cAddressHex);
     uint8_t _i2cAddressHex;
 };
 
