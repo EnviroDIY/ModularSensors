@@ -30,7 +30,7 @@ public:
     void attachSensor(int varNum, Sensor *parentSense);
     virtual void onSensorUpdate(Sensor *parentSense);
 
-    // This sets up the sensor (generally attaching it to it's parent)
+    // This sets up the variable (generally attaching it to its parent)
     virtual bool setup(void);
 
     // This gets the variable's name using http://vocabulary.odm2.org/variablename/
