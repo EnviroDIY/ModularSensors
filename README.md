@@ -971,6 +971,26 @@ ExternalVoltage_Volt(&extvolt, "UUID", "customVarCode");  // raw voltage in volt
 //   1/gain = 10x: 0.65 mV
 ```
 _____
+
+### <a name="ExtTips"></a>[External I2C Tipping Bucket Counter](https://github.com/EnviroDIY/TippingBucketRainGauge)
+This module is for use with a simple external I2C tipping bucket counter.  This is *NOT* for direct counting of tips using an interrupt on the main processor.  The construction and programming of the tipping bucket counter is documented in the GitHub link above.  It is assumed that the processor of the tip counter takes care of its own power management.
+
+All constructor arguments are optional, but the first argument is for the I2C address of the top counter (if not 0x08) and the second is for the depth of rain (in mm) per tip event (if not 0.2mm).  Most metric tipping buckets are calibrated to have 1 tip per 0.2mm of rain.  Most English tipping buckets are calibrated to have 1 tip per 0.01" of rain, which is 0.254mm.
+
+```cpp
+#include <TippingBucket.h>
+TippingBucket tip(tippingBucketI2CAddress, depthPerTipEvent);
+```
+
+The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
+
+```cpp
+TippingBucket_Tips(&tip, "UUID", "customVarCode");  // raw count of tips
+TippingBucket_Depth(&tip, "UUID", "customVarCode");  // rain depth in mm
+// Range, accuracy, and resolution depend on the actual tipping bucket module
+```
+_____
+
 ### <a name="DS3231"></a>Maxim DS3231 Real Time Clock
 
 As the I2C [Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html) real time clock (RTC) is absolutely required for time-keeping on all AVR boards, this library also makes use of it for its on-board temperature sensor.  The DS3231 requires a 3.3V power supply.

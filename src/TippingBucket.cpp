@@ -21,10 +21,10 @@
 
 
 // The constructor - because this is I2C, only need the power pin and rain per event if a non-standard value is used
-TippingBucket::TippingBucket(int8_t powerPin, uint8_t i2cAddressHex, float rainPerTip)
+TippingBucket::TippingBucket(uint8_t i2cAddressHex, float rainPerTip)
      : Sensor(F("TippingBucket"), BUCKET_NUM_VARIABLES,
               BUCKET_WARM_UP_TIME_MS, BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS,
-              powerPin, -1, 1)
+              -1, -1, 1)
 {
     _i2cAddressHex  = i2cAddressHex;
     _rainPerTip = rainPerTip;

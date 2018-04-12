@@ -45,9 +45,10 @@
 class TippingBucket : public Sensor
 {
 public:
-    // The constructor, needs power pin, address of I2C device (0x08 by default),
-    // and the amount of depth of rain per tip event in mm (specified by the tipping bucket used, 0.2mm by default)
-    TippingBucket(int8_t powerPin, uint8_t i2cAddressHex = 0x08, float rainPerTip = 0.2);
+    // The constructor - all arguments are optional
+    // Address of I2C device is 0x08 by default
+    // Depth of rain per tip event in mm is 0.2mm by default
+    TippingBucket(uint8_t i2cAddressHex = 0x08, float rainPerTip = 0.2);
 
     bool setup(void) override;
     String getSensorLocation(void) override;

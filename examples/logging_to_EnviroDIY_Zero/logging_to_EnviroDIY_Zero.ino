@@ -273,10 +273,9 @@ MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
 //    External Tip Counter
 // ==========================================================================
 #include <TippingBucket.h>
-const int8_t TippingPower = -1;  // Pin to switch power on and off (-1 if unconnected)
-const uint8_t TippingBucketAddress = 0x08; //Address for external tip counter
-const uint8_t VolumePerTipEvent = 0.2; //0.2mm of rain per tip event
-TippingBucket tip(TippingPower, TippingBucketAddress, VolumePerTipEvent);
+const uint8_t tippingBucketI2CAddress = 0x08;  // I2C Address for external tip counter
+const uint8_t depthPerTipEvent = 0.2;  // rain depth in mm per tip event
+TippingBucket tip(tippingBucketI2CAddress, depthPerTipEvent);
 
 
 // Set up a 'new' UART for modbus communication - in this case, using SERCOM1
