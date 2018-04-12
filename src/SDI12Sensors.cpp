@@ -56,6 +56,7 @@ bool SDI12Sensors::setup(void)
 
     // Library default timeout should be 150ms, which is 10 times that specified
     // by the SDI-12 protocol for a sensor response.
+    // May want to bump it up even further here.
     _SDI12Internal.setTimeout(150);
     // Force the timeout value to be -9999 (This should be library default.)
     _SDI12Internal.setTimeoutValue(-9999);
@@ -100,17 +101,20 @@ bool SDI12Sensors::requestSensorAcknowledgement(void)
 
         if (sdiResponse == String(_SDI12address))
         {
-            MS_DBG(F("   "), getSensorName(), F(" replied as expected.\n"));
+            MS_DBG(F("   "), getSensorName(), F(" at "), getSensorLocation(),
+                   F(" replied as expected.\n"));
             didAcknowledge = true;
         }
         else if (sdiResponse.startsWith(String(_SDI12address)))
         {
-            MS_DBG(F("   "), getSensorName(), F(" replied, unexpectedly\n"));
+            MS_DBG(F("   "), getSensorName(), F(" at "), getSensorLocation(),
+                   F(" replied, unexpectedly\n"));
             didAcknowledge = true;
         }
         else
         {
-            MS_DBG(F("   "), getSensorName(), F(" did not reply!\n"));
+            MS_DBG(F("   "), getSensorName(), F(" at "), getSensorLocation(),
+                   F(" did not reply!\n"));
             didAcknowledge = false;
         }
 
@@ -124,7 +128,8 @@ bool SDI12Sensors::requestSensorAcknowledgement(void)
 // A helper function to run the "sensor info" SDI12 command
 bool SDI12Sensors::getSensorInfo(void)
 {
-    MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(), '\n');
+    MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(),
+           F(" at "), getSensorLocation(), '\n');
     // Make this the currently active SDI-12 Object
     _SDI12Internal.setActive();
     // Empty the buffer
@@ -219,7 +224,8 @@ bool SDI12Sensors::startSingleMeasurement(void)
     String sdiResponse;
 
 
-    MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(), '\n');
+    MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(),
+           F(" at "), getSensorLocation(), '\n');
     // Make this the currently active SDI-12 Object
     _SDI12Internal.setActive();
     // Empty the buffer
@@ -233,7 +239,8 @@ bool SDI12Sensors::startSingleMeasurement(void)
         goto finish;
     }
 
-    MS_DBG(F("   Beginning concurrent measurement on "), getSensorName(), '\n');
+    MS_DBG(F("   Beginning concurrent measurement on "), getSensorName(),
+           F(" at "), getSensorLocation(), '\n');
     startCommand = "";
     startCommand += _SDI12address;
     startCommand += "C!"; // Start concurrent measurement - format  [address]['C'][!]
@@ -274,7 +281,8 @@ bool SDI12Sensors::startSingleMeasurement(void)
     }
     else
     {
-        MS_DBG(F("   "), getSensorName(), F(" did not respond to measurement request!\n"));
+        MS_DBG(F("   "), getSensorName(), F(" at "), getSensorLocation(),
+               F(" did not respond to measurement request!\n"));
         _millisMeasurementRequested = 0;
         retVal = false;
         goto finish;
@@ -297,13 +305,15 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
 {
     if (_millisMeasurementRequested > 0)
     {
-        MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(), '\n');
+        MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(),
+               F(" at "), getSensorLocation(), '\n');
         // Make this the currently active SDI-12 Object
         _SDI12Internal.setActive();
         // Empty the buffer
         _SDI12Internal.clearBuffer();
 
-        MS_DBG(F("   Requesting data from "), getSensorName(), '\n');
+        MS_DBG(F("   Requesting data from "), getSensorName(),
+               F(" at "), getSensorLocation(), '\n');
         String getDataCommand = "";
         getDataCommand += _SDI12address;
         getDataCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
@@ -311,7 +321,10 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
         delay(30);  // It just needs this little delay
         MS_DBG(F("      >>> "), getDataCommand, F("\n"));
 
-        MS_DBG(F("   Receiving results from "), getSensorName(), '\n');
+        uint32_t startTime = millis();
+        while (_SDI12Internal.available() < 3 && (millis() - startTime) < 1500) {}
+        MS_DBG(F("   Receiving results from "), getSensorName(),
+               F(" at "), getSensorLocation(), '\n');
         _SDI12Internal.read();  // ignore the repeated SDI12 address
         for (int i = 0; i < _numReturnedVars; i++)
         {
@@ -322,8 +335,6 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
             verifyAndAddMeasurementResult(i, result);
 
         }
-        // uint32_t startTime = millis();
-        // while (_SDI12Internal.available() < 4 && (millis() - startTime) < 5000) {}
         // String sdiResponse = _SDI12Internal.readStringUntil('\n');
         // sdiResponse.trim();
         // _SDI12Internal.clearBuffer();
@@ -347,7 +358,8 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
     }
     else
     {
-        MS_DBG(F("   "), getSensorName(), F(" is not currently measuring!\n"));
+        MS_DBG(F("   "), getSensorName(), F(" at "), getSensorLocation(),
+               F(" is not currently measuring!\n"));
         return false;
     }
 }
