@@ -179,7 +179,11 @@ public:
 
             // Connect to the network before asking for quality
             // Only waiting for up to 5 seconds here for the internet!
-            if (!(_modem->isNetworkConnected())) success &= connectInternet(5000L);
+            if (!(_modem->isNetworkConnected()))
+            {
+                MS_MOD_DBG(F("No prior internet connection, attempting to make a connection."));
+                success &= connectInternet(5000L);
+            }
             if (success == false) return false;
 
             // Mark the time that a measurement was requested
@@ -437,14 +441,14 @@ public:
     uint32_t getNISTTime(void)
     {
         bool connectionMade = false;
-
         // bail if not connected to the internet
-        if (!_modem->isNetworkConnected())
+        // TODO:  Figure out why _model->isNetworkConnected() isn't working here
+        if (!(connectInternet(1000)))
         {
             MS_MOD_DBG(F("No internet connection, cannot connect to NIST.\n"));
             return 0;
         }
-        
+
         // Must ensure that we do not ping the daylight more than once every 4 seconds
         // NIST clearly specifies here that this is a requirement for all software
         /// that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi
