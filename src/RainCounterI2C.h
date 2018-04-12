@@ -8,7 +8,7 @@
  *rain gauge
  *
  *Documentation for the sensor can be found at:
- *https://github.com/EnviroDIY/RainCounterI2CRainGauge
+ *https://github.com/EnviroDIY/TippingBucketRainGauge
  *
  * For Rainfall:
  *  Accuracy and resolution are dependent on the sensor used
