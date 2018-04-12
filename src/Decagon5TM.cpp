@@ -41,9 +41,6 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         // Set up variables for receiving data
         float ea, temp, VWC = -9999;
 
-        // Make sure we've waited long enough for a reading to finish
-        // waitForMeasurementCompletion();
-
         MS_DBG(F("   Requesting data from "), getSensorName(), '\n');
         String getDataCommand = "";
         getDataCommand += _SDI12address;

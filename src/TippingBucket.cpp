@@ -49,9 +49,6 @@ bool TippingBucket::setup(void)
 
 bool TippingBucket::addSingleMeasurementResult(void)
 {
-    // Make sure we've waited long enough for a new reading to be available
-    // waitForMeasurementCompletion();
-
     //intialize values
     float rain = -9999; // Number of mm of rain
     int tips = -9999; // Number of tip events

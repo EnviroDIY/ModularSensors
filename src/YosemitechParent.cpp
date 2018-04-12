@@ -73,11 +73,6 @@ bool YosemitechParent::setup(void)
 // Different from the standard in that it waits for warm up and starts measurements
 bool YosemitechParent::wake(void)
 {
-    // if(!checkPowerOn()){powerUp();}
-
-    // Wait until the sensor is warmed up
-    // waitForWarmUp();
-
     // Send the command to begin taking readings, trying up to 5 times
     int ntries = 0;
     bool success = false;
@@ -164,8 +159,6 @@ bool YosemitechParent::addSingleMeasurementResult(void)
 
     if (_millisMeasurementRequested > 0)
     {
-        // Make sure we've waited long enough for a new reading to be available
-        // waitForMeasurementCompletion();
         // Get Values
         MS_DBG(F("Get Values:\n"));
         success = sensor.getValues(parmValue, tempValue, thirdValue);

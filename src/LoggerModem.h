@@ -168,15 +168,9 @@ public:
     {
         bool success = true;
 
-        // Check if activated, wake if not
-        // if (_millisSensorActivated == 0 || bitRead(_sensorStatus, 3))
-        //     success = wake();
-
-        // Check again if activated, only wait if it is
+        // Check if activated, only go on if it is
         if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
         {
-            // waitForStability();
-
             // Connect to the network before asking for quality
             // Only waiting for up to 5 seconds here for the internet!
             if (!(_modem->isNetworkConnected()))

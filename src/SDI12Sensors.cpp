@@ -72,13 +72,8 @@ bool SDI12Sensors::setup(void)
 
 bool SDI12Sensors::requestSensorAcknowledgement(void)
 {
-    // MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(), '\n');
-    // // Make this the currently active SDI-12 Object
-    // _SDI12Internal.setActive();
     // Empty the buffer
     _SDI12Internal.clearBuffer();
-
-    // waitForWarmUp();
 
     MS_DBG(F("   Asking for sensor acknowlegement\n"));
     String myCommand = "";
@@ -122,9 +117,6 @@ bool SDI12Sensors::requestSensorAcknowledgement(void)
         ntries++;
     }
 
-    // // De-activate the SDI-12 Object
-    // _SDI12Internal.forceHold();
-
     return didAcknowledge;
 }
 
@@ -132,10 +124,6 @@ bool SDI12Sensors::requestSensorAcknowledgement(void)
 // A helper function to run the "sensor info" SDI12 command
 bool SDI12Sensors::getSensorInfo(void)
 {
-    // Check if the power is on, turn it on if not
-    // bool wasOn = checkPowerOn();
-    // if(!wasOn){powerUp();}
-
     MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(), '\n');
     // Make this the currently active SDI-12 Object
     _SDI12Internal.setActive();
@@ -245,10 +233,6 @@ bool SDI12Sensors::startSingleMeasurement(void)
         goto finish;
     }
 
-    // These sensors should be stable at the first reading they are able to return
-    // BUT... we'll put this in for safety
-    // waitForStability();
-
     MS_DBG(F("   Beginning concurrent measurement on "), getSensorName(), '\n');
     startCommand = "";
     startCommand += _SDI12address;
@@ -318,9 +302,6 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
         _SDI12Internal.setActive();
         // Empty the buffer
         _SDI12Internal.clearBuffer();
-
-        // Make sure we've waited long enough for a reading to finish
-        // waitForMeasurementCompletion();
 
         MS_DBG(F("   Requesting data from "), getSensorName(), '\n');
         String getDataCommand = "";

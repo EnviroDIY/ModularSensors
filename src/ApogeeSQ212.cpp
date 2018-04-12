@@ -80,7 +80,9 @@ bool ApogeeSQ212::addSingleMeasurementResult(void)
     _millisMeasurementRequested = millis();
 
     // Make sure we've waited long enough for a new reading to be available
-    // waitForMeasurementCompletion();
+    // We're actually doing the wait here, because unlike most sensors we only
+    // started the measurement in this step.
+    waitForMeasurementCompletion();
 
     // Variables to store the results in
     float adcVoltage = -9999;

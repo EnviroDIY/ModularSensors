@@ -43,15 +43,9 @@ bool MaximDS3231::startSingleMeasurement(void)
 {
     bool success = true;
 
-    // Check if activated, wake if not
-    // if (_millisSensorActivated == 0 || bitRead(_sensorStatus, 3))
-    //     success = wake();
-
-    // Check again if activated, only wait if it is
+    // Check if activated, only wait if it is
     if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
     {
-        // waitForStability();
-
         // force a temperature sampling and conversion
         // this function already has a forced wait for the conversion to complete
         // TODO:  Test how long the conversion takes, update DS3231 lib accordingly!
@@ -76,9 +70,6 @@ bool MaximDS3231::startSingleMeasurement(void)
 
 bool MaximDS3231::addSingleMeasurementResult(void)
 {
-    // Make sure we've waited long enough for a reading to finish
-    // waitForMeasurementCompletion();
-
     // get the temperature value
     MS_DBG(F("Getting value\n"));
     float tempVal = rtc.getTemperature();

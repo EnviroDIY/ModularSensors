@@ -50,9 +50,6 @@ bool AOSongAM2315::addSingleMeasurementResult(void)
 
     if (_millisMeasurementRequested > 0)
     {
-        // Make sure we've waited long enough for a new reading to be available
-        // waitForMeasurementCompletion();
-
         Adafruit_AM2315 am2315;  // create a sensor object
         ret_val = am2315.readTemperatureAndHumidity(temp_val, humid_val);
 

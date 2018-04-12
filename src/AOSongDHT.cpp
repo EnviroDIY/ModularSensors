@@ -66,9 +66,6 @@ bool AOSongDHT::addSingleMeasurementResult(void)
 
     if (_millisMeasurementRequested > 0)
     {
-        // Make sure we've waited long enough for a new reading to be available
-        // waitForMeasurementCompletion();
-
         // Reading temperature or humidity takes about 250 milliseconds!
         for (uint8_t i = 0; i < 5; i++)  // Make 5 attempts to get a decent reading
         {

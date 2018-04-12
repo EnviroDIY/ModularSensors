@@ -178,8 +178,6 @@ bool Sensor::wake(void)
 {
     MS_DBG(F("Waking "), getSensorName(), F(" at "),
            getSensorLocation(), F("\n"));
-    // if(!checkPowerOn()){powerUp();}
-    // waitForWarmUp();
     // Mark the time that the sensor was activated
     _millisSensorActivated = millis();
     // Set the status bit for sensor activation (bit 3)
@@ -278,14 +276,9 @@ bool Sensor::startSingleMeasurement(void)
 {
     bool success = true;
 
-    // Check if activated, wake if not
-    // if (_millisSensorActivated == 0 || bitRead(_sensorStatus, 3))
-    //     success = wake();
-
-    // Check again if activated, only wait if it is
+    // Check if activated, only mark time if it is
     if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
     {
-        // waitForStability();
         // Mark the time that a measurement was requested
         _millisMeasurementRequested = millis();
     }
