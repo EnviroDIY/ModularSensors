@@ -173,7 +173,6 @@ bool Sensor::setup(void)
 
 
 // The function to wake up a sensor
-// By default, verifies the power is on and returns true
 bool Sensor::wake(void)
 {
     MS_DBG(F("Waking "), getSensorName(), F(" at "),

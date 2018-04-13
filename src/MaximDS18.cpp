@@ -187,7 +187,7 @@ bool MaximDS18::addSingleMeasurementResult(void)
 {
     bool success = false;
 
-    // Initialize float variables
+    // Initialize float variable
     float result = -9999;
 
     if (_millisMeasurementRequested > 0)

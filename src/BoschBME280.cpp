@@ -76,7 +76,7 @@ bool BoschBME280::setup(void)
 
 bool BoschBME280::wake(void)
 {
-    Sensor::wake();  // this will set timestamp and status bit; includes wait for warm-up
+    Sensor::wake();  // this will set timestamp and status bit
 
     // Restart always needed after power-up
     // As of Adafruit library version 1.0.7, this function includes all of the
@@ -129,7 +129,7 @@ bool BoschBME280::addSingleMeasurementResult(void)
         if (isnan(alt)) alt = -9999;
         if (isnan(humid)) humid = -9999;
 
-        if (temp == -140.85)  // This is the value returned if it's not attached
+        if (temp == -140.85)  // This is the value returned if the sensor is not attached
         {
             temp = press = alt = humid = -9999;
         }
@@ -154,6 +154,5 @@ bool BoschBME280::addSingleMeasurementResult(void)
     // Set the status bit for measurement completion (bit 6)
     _sensorStatus |= 0b01000000;
 
-    // Return success value
     return success;
 }

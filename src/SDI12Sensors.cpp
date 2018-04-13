@@ -162,9 +162,6 @@ bool SDI12Sensors::getSensorInfo(void)
     // De-activate the SDI-12 Object
     _SDI12Internal.forceHold();
 
-    // Turn the power back off it it had been turned on
-    // if(!wasOn){powerDown();}
-
     if (sdiResponse.length() > 1)
     {
         String sdi12Address = sdiResponse.substring(0,1);

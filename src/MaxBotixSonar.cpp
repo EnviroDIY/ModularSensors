@@ -149,6 +149,6 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
     // Set the status bit for measurement completion (bit 6)
     _sensorStatus |= 0b01000000;
 
-    // Return true when finished
+    // Return values shows if we got a not-obviously-bad reading
     return success;
 }
