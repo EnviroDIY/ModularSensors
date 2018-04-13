@@ -40,7 +40,7 @@ public:
 
     String getSensorLocation(void) override;
 
-    SENSOR_STATUS setup(void) override;
+    bool setup(void) override;
     bool wake(void) override;
 
     bool addSingleMeasurementResult(void) override;

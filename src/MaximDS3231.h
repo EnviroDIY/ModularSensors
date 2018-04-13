@@ -51,13 +51,12 @@ public:
 
     String getSensorLocation(void) override;
 
-    // Do nothing for any of the power up/down or wake/sleep functions
-    void powerUp(void) override {_millisPowerOn = millis();}
-    bool wake(void) override {_millisSensorActivated = millis(); return true;}
-    bool sleep(void) override {return true;}
-    void powerDown(void) override {}
+    // Do nothing for the power down and sleep functions
+    // The clock never sleeps or powers down
+    bool sleep(void) override;
+    void powerDown(void) override;
 
-    SENSOR_STATUS setup(void) override;
+    bool setup(void) override;
 
     bool startSingleMeasurement(void) override;
     bool addSingleMeasurementResult(void) override;

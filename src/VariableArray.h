@@ -61,6 +61,7 @@ public:
 
 protected:
     uint8_t _variableCount;
+    uint8_t _sensorCount;
     Variable **_variableList;
     uint8_t _maxSamplestoAverage;
 

@@ -40,11 +40,10 @@ public:
 
     String getSensorLocation(void) override;
 
-    virtual SENSOR_STATUS setup(void) override;
+    virtual bool setup(void) override;
     virtual bool wake(void) override;
     virtual bool sleep(void) override;
 
-    virtual bool startSingleMeasurement(void);
     virtual bool addSingleMeasurementResult(void);
 
 private:

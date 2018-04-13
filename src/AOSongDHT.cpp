@@ -37,11 +37,10 @@ AOSongDHT::AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type, uint8_t meas
 }
 
 
-SENSOR_STATUS AOSongDHT::setup(void)
+bool AOSongDHT::setup(void)
 {
-    SENSOR_STATUS retVal = Sensor::setup();
     dht_internal.begin();  // Start up the sensor
-    return retVal;
+    return Sensor::setup();  // this will set timestamp and status bit
 }
 
 
@@ -58,51 +57,61 @@ String AOSongDHT::getSensorName(void)
 
 bool AOSongDHT::addSingleMeasurementResult(void)
 {
-    // Make sure we've waited long enough for a new reading to be available
-    waitForMeasurementCompletion();
+    bool success = false;
 
-    // Reading temperature or humidity takes about 250 milliseconds!
+    // Initialize float variables
     float humid_val = -9999;
     float temp_val = -9999;
     float hi_val = -9999;
-    for (uint8_t i = 0; i < 5; i++)  // Make 5 attempts to get a decent reading
+
+    if (_millisMeasurementRequested > 0)
     {
-        // First read the humidity
-        humid_val = dht_internal.readHumidity();
-        // Read temperature as Celsius (the default)
-        temp_val = dht_internal.readTemperature();
-        // Check if any reads failed
-        // If they are NaN (not a number) then something went wrong
-        if (!isnan(humid_val) && !isnan(temp_val))
+        // Reading temperature or humidity takes about 250 milliseconds!
+        for (uint8_t i = 0; i < 5; i++)  // Make 5 attempts to get a decent reading
         {
-            // Compute heat index in Celsius (isFahreheit = false)
-            hi_val = dht_internal.computeHeatIndex(temp_val, humid_val, false);
-            MS_DBG(F("Temp is: "), temp_val, F("°C"));
-            MS_DBG(F(" Humidity is: "), humid_val, F("%"));
-            MS_DBG(F(" Calculated Heat Index is: "), hi_val, F("°C\n"));
-            break;
-        }
-        else
-        {
-            if (i < 4) {
-                MS_DBG(F("Failed to read from DHT sensor, Retrying...\n"));
-                delay(100);
+            // First read the humidity
+            humid_val = dht_internal.readHumidity();
+            // Read temperature as Celsius (the default)
+            temp_val = dht_internal.readTemperature();
+            // Check if any reads failed
+            // If they are NaN (not a number) then something went wrong
+            if (!isnan(humid_val) && !isnan(temp_val))
+            {
+                // Compute heat index in Celsius (isFahreheit = false)
+                hi_val = dht_internal.computeHeatIndex(temp_val, humid_val, false);
+                MS_DBG(F("Temp is: "), temp_val, F("°C"));
+                MS_DBG(F(" Humidity is: "), humid_val, F("%"));
+                MS_DBG(F(" Calculated Heat Index is: "), hi_val, F("°C\n"));
+                success = true;
+                break;
             }
-            else {
-                MS_DBG(F("Failed to read from DHT sensor!\n"));
-                if (isnan(humid_val)) humid_val = -9999;
-                if (isnan(temp_val)) temp_val = -9999;
+            else
+            {
+                if (i < 4) {
+                    MS_DBG(F("Failed to read from DHT sensor, Retrying...\n"));
+                    delay(100);
+                }
+                else {
+                    MS_DBG(F("Failed to read from DHT sensor!\n"));
+                    if (isnan(humid_val)) humid_val = -9999;
+                    if (isnan(temp_val)) temp_val = -9999;
+                }
             }
         }
     }
+    else MS_DBG(F("Sensor is not currently measuring!\n"));
 
     // Store the results in the sensorValues array
     verifyAndAddMeasurementResult(DHT_TEMP_VAR_NUM, temp_val);
     verifyAndAddMeasurementResult(DHT_HUMIDITY_VAR_NUM, humid_val);
     verifyAndAddMeasurementResult(DHT_HI_VAR_NUM, hi_val);
 
-    // Mark that we've already recorded the result of the measurement
+    // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
+    // Unset the status bit for a measurement having been requested (bit 5)
+    _sensorStatus &= 0b11011111;
+    // Set the status bit for measurement completion (bit 6)
+    _sensorStatus |= 0b01000000;
 
-    return true;
+    return success;
 }

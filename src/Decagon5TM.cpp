@@ -30,51 +30,43 @@
 
 bool Decagon5TM::addSingleMeasurementResult(void)
 {
-    if (_millisSensorActivated > 0)
+    if (_millisMeasurementRequested > 0)
     {
-        // Make sure we've waited long enough for a reading to finish
-        waitForMeasurementCompletion();
+        MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(), '\n');
+        // Make this the currently active SDI-12 Object
+        _SDI12Internal.setActive();
+        // Empty the buffer
+        _SDI12Internal.clearBuffer();
 
-        bool gotResult = false;
-        int ntries = 0;
+        // Set up variables for receiving data
         float ea, temp, VWC = -9999;
-        while (!gotResult and ntries < 4)
-        {
-            // Make this the currently active SDI-12 Object
-            _SDI12Internal.setActive();
 
-            // Empty the buffer
-            _SDI12Internal.clearBuffer();
+        MS_DBG(F("   Requesting data from "), getSensorName(), '\n');
+        String getDataCommand = "";
+        getDataCommand += _SDI12address;
+        getDataCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
+        _SDI12Internal.sendCommand(getDataCommand);
+        delay(30);  // It just needs this little delay
+        MS_DBG(F("      >>> "), getDataCommand, F("\n"));
 
-            MS_DBG(F("   Requesting data from "), getSensorName(), '\n');
-            String getDataCommand = "";
-            getDataCommand += _SDI12address;
-            getDataCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
-            _SDI12Internal.sendCommand(getDataCommand);
-            delay(30);  // It just needs this little delay
-            MS_DBG(F("      >>> "), getDataCommand, F("\n"));
+        MS_DBG(F("   Receiving results from "), getSensorName(), '\n');
+        _SDI12Internal.read();  // ignore the repeated SDI12 address
+        // First variable returned is the Dialectric E
+        ea = _SDI12Internal.parseFloat();
+        // Second variable returned is the temperature in °C
+        temp = _SDI12Internal.parseFloat();
+        // the "third" variable of VWC is actually calculated, not returned by the sensor!
+        VWC = (4.3e-6*(ea*ea*ea))
+                    - (5.5e-4*(ea*ea))
+                    + (2.92e-2 * ea)
+                    - 5.3e-2 ;
+        VWC *= 100;  // Convert to actual percent
 
-            MS_DBG(F("   Receiving results from "), getSensorName(), '\n');
-            _SDI12Internal.read();  // ignore the repeated SDI12 address
-            // First variable returned is the Dialectric E
-            ea = _SDI12Internal.parseFloat();
-            // Second variable returned is the temperature in °C
-            temp = _SDI12Internal.parseFloat();
-            // the "third" variable of VWC is actually calculated, not returned by the sensor!
-            VWC = (4.3e-6*(ea*ea*ea))
-                        - (5.5e-4*(ea*ea))
-                        + (2.92e-2 * ea)
-                        - 5.3e-2 ;
-            VWC *= 100;  // Convert to actual percent
+        // Empty the buffer again
+        _SDI12Internal.clearBuffer();
 
-            // Empty the buffer again
-            _SDI12Internal.clearBuffer();
-
-            // De-activate the SDI-12 Object
-            _SDI12Internal.forceHold();
-
-            ntries++;
-        }
+        // De-activate the SDI-12 Object
+        _SDI12Internal.forceHold();
 
         MS_DBG(F("Dialectric E: "), ea);
         MS_DBG(F(" Temperature: "), temp);
@@ -84,15 +76,19 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         verifyAndAddMeasurementResult(TM_TEMP_VAR_NUM, temp);
         verifyAndAddMeasurementResult(TM_VWC_VAR_NUM, VWC);
 
-      // Mark that we've already recorded the result of the measurement
-      _millisMeasurementRequested = 0;
+        // Unset the time stamp for the beginning of this measurement
+        _millisMeasurementRequested = 0;
+        // Unset the status bit for a measurement having been requested (bit 5)
+        _sensorStatus &= 0b11011111;
+        // Set the status bit for measurement completion (bit 6)
+        _sensorStatus |= 0b01000000;
 
-      // Return true when finished
-      return gotResult;
-  }
-  else
-  {
-      MS_DBG(F("   "), getSensorName(), F(" is not currently measuring!\n"));
-      return false;
-  }
+        // Return true when finished
+        return true;
+    }
+    else
+    {
+        MS_DBG(F("   "), getSensorName(), F(" is not currently measuring!\n"));
+        return false;
+    }
 }

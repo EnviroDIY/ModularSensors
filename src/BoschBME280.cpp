@@ -49,38 +49,35 @@ String BoschBME280::getSensorLocation(void)
 }
 
 
-SENSOR_STATUS BoschBME280::getStatus(void)
+bool BoschBME280::setup(void)
 {
-    // Check if the power is on, turn it on if not (Need power to get status)
-    bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up
-    waitForWarmUp();
+    bool retVal = Sensor::setup();  // this will set timestamp and status bit
 
     // Run begin fxn because it returns true or false for success in contact
-    bool status = bme_internal.begin(_i2cAddressHex);
+    // Make 5 attempts
+    uint8_t ntries = 0;
+    bool success = false;
+    while (!success and ntries < 5)
+    {
+        success = bme_internal.begin(_i2cAddressHex);
+        ntries++;
+    }
+    if (!success)
+    {
+        // Set the status error bit (bit 7)
+        _sensorStatus |= 0b10000000;
+    }
+    retVal &= success;
 
-    // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
 
-    if (!status) return SENSOR_ERROR;
-    else return SENSOR_READY;
-}
-
-
-SENSOR_STATUS BoschBME280::setup(void)
-{
-    SENSOR_STATUS setup = Sensor::setup();
-    SENSOR_STATUS stat = getStatus();
-    if (setup == SENSOR_READY && stat == SENSOR_READY) return SENSOR_READY;
-    else return SENSOR_ERROR;
+    return retVal;
 }
 
 
 bool BoschBME280::wake(void)
 {
-    Sensor::wake();
-    waitForWarmUp();
+    Sensor::wake();  // this will set timestamp and status bit
+
     // Restart always needed after power-up
     // As of Adafruit library version 1.0.7, this function includes all of the
     // various delays to allow the chip to wake up, get calibrations, get
@@ -105,57 +102,57 @@ bool BoschBME280::wake(void)
                              Adafruit_BME280::STANDBY_MS_1000);  // sleep time between measurements (N/A in forced mode)
     delay(100);  // Need this delay after changing sampling mode
 
-    // Mark that the sensor is now active
-    _millisSensorActivated = millis();
-
     return true;
 }
-
-// For operating in forced mode
-// bool BoschBME280::startSingleMeasurement(void)
-// {
-//     // waitForWarmUp();  // already done in wake
-//     waitForStability();
-//     bme_internal.takeForcedMeasurement(false);  // Don't want to wait to finish here
-//     _millisMeasurementRequested = millis();
-//     return true;
-// }
 
 
 bool BoschBME280::addSingleMeasurementResult(void)
 {
-    // Make sure we've waited long enough for a new reading to be available
-    waitForMeasurementCompletion();
+    bool success = false;
 
-    // Read values
-    float temp = bme_internal.readTemperature();
-    float press = bme_internal.readPressure();
-    float alt = bme_internal.readAltitude(SEALEVELPRESSURE_HPA);
-    float humid = bme_internal.readHumidity();
+    // Initialize float variables
+    float temp = -9999;
+    float press = -9999;
+    float alt = -9999;
+    float humid = -9999;
 
-    if (isnan(temp)) temp = -9999;
-    if (isnan(press)) press = -9999;
-    if (isnan(alt)) alt = -9999;
-    if (isnan(humid)) humid = -9999;
-
-    if (temp == -140.85)  // This is the value returned if it's not attached
+    if (_millisMeasurementRequested > 0)
     {
-        temp = press = alt = humid = -9999;
-    }
+        // Read values
+        temp = bme_internal.readTemperature();
+        press = bme_internal.readPressure();
+        alt = bme_internal.readAltitude(SEALEVELPRESSURE_HPA);
+        humid = bme_internal.readHumidity();
 
-    MS_DBG(F("Temperature: "), temp);
-    MS_DBG(F(" Humidity: "), humid);
-    MS_DBG(F(" Barometric Pressure: "), press);
-    MS_DBG(F(" Calculated Altitude: "), alt, F("\n"));
+        if (isnan(temp)) temp = -9999;
+        if (isnan(press)) press = -9999;
+        if (isnan(alt)) alt = -9999;
+        if (isnan(humid)) humid = -9999;
+
+        if (temp == -140.85)  // This is the value returned if the sensor is not attached
+        {
+            temp = press = alt = humid = -9999;
+        }
+        else success = true;
+
+        MS_DBG(F("Temperature: "), temp);
+        MS_DBG(F(" Humidity: "), humid);
+        MS_DBG(F(" Barometric Pressure: "), press);
+        MS_DBG(F(" Calculated Altitude: "), alt, F("\n"));
+    }
+    else MS_DBG(F("Sensor is not currently measuring!\n"));
 
     verifyAndAddMeasurementResult(BME280_TEMP_VAR_NUM, temp);
     verifyAndAddMeasurementResult(BME280_HUMIDITY_VAR_NUM, humid);
     verifyAndAddMeasurementResult(BME280_PRESSURE_VAR_NUM, press);
     verifyAndAddMeasurementResult(BME280_ALTITUDE_VAR_NUM, alt);
 
-    // Mark that we've already recorded the result of the measurement
+    // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
+    // Unset the status bit for a measurement having been requested (bit 5)
+    _sensorStatus &= 0b11011111;
+    // Set the status bit for measurement completion (bit 6)
+    _sensorStatus |= 0b01000000;
 
-    // Return true when finished
-    return true;
+    return success;
 }
