@@ -126,7 +126,7 @@ These functions are also available for each sensor, but should be used with caut
 - **setup()** - This "sets up" the variable - attaching it to its parent sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program _after_ calling the sensor setup.
 - **getValue()** - This returns the current value of the variable as a float.  You should call the update function before calling getValue.  As a backup, if the getValue function sees that the update function has not been called within the last 60 seconds, it will re-call it.
 - **getValueString()** - This is identical to getValue, except that it returns a string with the proper precision available from the sensor.
-- **attachSensor(int varNum, Sensor *parentSense)** - The compliment to a sensor's registerVariable() function.  This attaches a variable object to the sensor that is giving the value to the variable.  The variable is generally responsible for calling this function!
+- **attachSensor(int varNum, Sensor \*parentSense)** - The compliment to a sensor's registerVariable() function.  This attaches a variable object to the sensor that is giving the value to the variable.  The variable is generally responsible for calling this function!
 - **onSensorUpdate()** - This is the variable's response to the sensor's notifyVariables() function.  It accepts the new value from the sensor.  This is generally called by the sensor.
 
 ### <a name="individuals"></a>Examples Using Individual Sensor and Variable Functions
