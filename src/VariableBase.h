@@ -34,9 +34,9 @@ public:
     virtual bool setup(void);
 
     // This gets the variable's name using http://vocabulary.odm2.org/variablename/
-    virtual String getVarName(void);
+    String getVarName(void);
     // This gets the variable's unit using http://vocabulary.odm2.org/units/
-    virtual String getVarUnit(void);
+    String getVarUnit(void);
     // This returns a customized code for the variable, if one is given, and a default if not
     String getVarCode(void);
     // This returns the variable UUID, if one has been assigned
