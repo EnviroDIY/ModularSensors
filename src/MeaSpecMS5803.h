@@ -43,7 +43,7 @@
 
 #include "SensorBase.h"
 #include "VariableBase.h"
-#include "MS5803_Mayfly.h"
+#include "MS5803.h"
 
 #define MS5803_NUM_VARIABLES 2
 #define MS5803_WARM_UP_TIME_MS 10
