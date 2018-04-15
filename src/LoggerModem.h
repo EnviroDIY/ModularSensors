@@ -132,20 +132,28 @@ public:
     String getSensorLocation(void) override { return F("modemSerial"); }
 
     // The modem must be setup separately!
-    virtual SENSOR_STATUS setup(void) override {return SENSOR_READY;}
+    virtual bool setup(void) override {return true;}
 
     void powerUp(void) override
     {
         // Check if the modem is on; turn it on if not
         if(!modemOnOff->isOn()) modemOnOff->on();
+        // Mark the time that the sensor was powered
         _millisPowerOn = millis();
+        // Set the status bit for sensor power (bit 0)
+        _sensorStatus |= 0b00000001;
     }
 
     virtual bool wake(void) override
     {
+        bool retVal = true;
         // Check if the modem is on; turn it on if not
-        if(!modemOnOff->isOn()) return modemOnOff->on();
-        else return true;
+        // if(!modemOnOff->isOn()) retVal = modemOnOff->on();
+        // Mark the time that the sensor was activated
+        _millisSensorActivated = millis();
+        // Set the status bit for sensor activation (bit 3)
+        _sensorStatus |= 0b00001000;
+        return retVal;
     }
 
     virtual bool sleep(void) override { return true; }
@@ -158,18 +166,34 @@ public:
 
     bool startSingleMeasurement(void) override
     {
-        waitForWarmUp();
-        waitForStability();
+        bool success = true;
 
-        bool retVal = true;
+        // Check if activated, only go on if it is
+        if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
+        {
+            // Connect to the network before asking for quality
+            // Only waiting for up to 5 seconds here for the internet!
+            if (!(_modem->isNetworkConnected()))
+            {
+                MS_MOD_DBG(F("No prior internet connection, attempting to make a connection."));
+                success &= connectInternet(5000L);
+            }
+            if (success == false) return false;
 
-        // Connect to the network before asking for quality
-        // Only waiting for up to 5 seconds here for the internet!
-        if (!_modem->isNetworkConnected()) retVal &= connectInternet(5000L);
-        if (retVal == false) return false;
+            // Mark the time that a measurement was requested
+            _millisMeasurementRequested = millis();
+        }
+        // Make sure that the time of a measurement request is not set
+        else _millisMeasurementRequested = 0;
 
-        _millisMeasurementRequested = millis();
-        return retVal;
+        // Even if we failed to start a measurement, we still want to set the status
+        // bit to show that we attempted to start the measurement.
+        // Set the status bits for measurement requested (bit 5)
+        _sensorStatus |= 0b00100000;
+        // Verify that the status bit for a single measurement completion is not set (bit 6)
+        _sensorStatus &= 0b10111111;
+
+        return success;
     }
 
 
@@ -224,6 +248,14 @@ public:
 
         verifyAndAddMeasurementResult(RSSI_VAR_NUM, rssi);
         verifyAndAddMeasurementResult(PERCENT_SIGNAL_VAR_NUM, percent);
+
+        // Unset the time stamp for the beginning of this measurement
+        _millisMeasurementRequested = 0;
+        // Unset the status bit for a measurement having been requested (bit 5)
+        _sensorStatus &= 0b11011111;
+        // Set the status bit for measurement completion (bit 6)
+        _sensorStatus |= 0b01000000;
+
         return true;
     }
 
@@ -308,7 +340,7 @@ public:
         {
             MS_MOD_DBG(F("\nWaiting up to "), waitTime_ms/1000,
                        F(" seconds for WiFi network...\n"));
-            if (!_modem->isNetworkConnected())
+            if (!(_modem->isNetworkConnected()))
             {
                 MS_MOD_DBG("   Sending credentials...\n");
                 #if defined(TINY_GSM_MODEM_HAS_WIFI)
@@ -402,11 +434,19 @@ public:
     // over TCP because I don't have a UDP library for all the modems.
     uint32_t getNISTTime(void)
     {
+        bool connectionMade = false;
+        // bail if not connected to the internet
+        // TODO:  Figure out why _model->isNetworkConnected() isn't working here
+        if (!(connectInternet(1000)))
+        {
+            MS_MOD_DBG(F("No internet connection, cannot connect to NIST.\n"));
+            return 0;
+        }
+
         // Must ensure that we do not ping the daylight more than once every 4 seconds
         // NIST clearly specifies here that this is a requirement for all software
         /// that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi
         while (millis() < _lastNISTrequest + 4000) {}
-        bool connectionMade = false;
 
         // Make TCP connection
         MS_MOD_DBG(F("Connecting to NIST daytime Server\n"));
@@ -551,7 +591,6 @@ private:
         }
         else MS_MOD_DBG(F("   ... Modem failed to turn on!\n"));
 
-
         // Assign a chip type
         #if defined(TINY_GSM_MODEM_SIM800)
             loggerModemChip = sim_chip_SIM800;
@@ -579,6 +618,9 @@ private:
         #endif
 
         // MS_MOD_DBG(F("Modem chip: "), loggerModemChip, '\n');
+
+        // Set the status bit marking that the modem has been set up (bit 1)
+        _sensorStatus |= 0b00000010;
     }
 
     // Helper to get approximate RSSI from CSQ (assuming no noise)

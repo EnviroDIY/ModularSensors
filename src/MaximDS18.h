@@ -49,9 +49,8 @@ public:
     MaximDS18(DeviceAddress OneWireAddress, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
     MaximDS18(int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
 
-    SENSOR_STATUS setup(void) override;
+    bool setup(void) override;
     String getSensorLocation(void) override;
-    SENSOR_STATUS getStatus(void) override;
 
     bool startSingleMeasurement(void) override;
     bool addSingleMeasurementResult(void) override;

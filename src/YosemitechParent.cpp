@@ -54,16 +54,16 @@ String YosemitechParent::getSensorLocation(void)
 }
 
 
-SENSOR_STATUS YosemitechParent::setup(void)
+bool YosemitechParent::setup(void)
 {
-    SENSOR_STATUS retVal = Sensor::setup();
+    bool retVal = Sensor::setup();  // sets time stamp and status bits
     if (_RS485EnablePin > 0) pinMode(_RS485EnablePin, OUTPUT);
 
     #if defined(DEEP_DEBUGGING_SERIAL_OUTPUT)
         sensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
     #endif
 
-    sensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
+    retVal &= sensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
 
     return retVal;
 }
@@ -73,11 +73,6 @@ SENSOR_STATUS YosemitechParent::setup(void)
 // Different from the standard in that it waits for warm up and starts measurements
 bool YosemitechParent::wake(void)
 {
-    if(!checkPowerOn()){powerUp();}
-
-    // Wait until the sensor is warmed up
-    waitForWarmUp();
-
     // Send the command to begin taking readings, trying up to 5 times
     int ntries = 0;
     bool success = false;
@@ -89,10 +84,20 @@ bool YosemitechParent::wake(void)
     }
     if(success)
     {
+        // Mark the time that the sensor was activated
         _millisSensorActivated = millis();
+        // Set the status bit for sensor activation (bit 3)
+        _sensorStatus |= 0b00001000;
         MS_DBG(F("Sensor activated and measuring.\n"));
     }
-    else MS_DBG(F("Sensor NOT activated!\n"));
+    else
+    {
+        // Make sure the activation time is not set
+        _millisSensorActivated = 0;
+        // Make sure the status bit for sensor activation (bit 3) is not set
+        _sensorStatus &= 0b10000111;
+        MS_DBG(F("Sensor NOT activated!\n"));
+    }
 
     // Manually activate the brush
     // Needed for newer sensors that do not immediate activate on getting power
@@ -129,7 +134,11 @@ bool YosemitechParent::sleep(void)
     }
     if(success)
     {
+        // Unset the activation time
         _millisSensorActivated = 0;
+        // Unset the activated status bit (bit 3), stability (bit 4), measurement
+        // request (bit 5), and measurement completion (bit 6)
+        _sensorStatus &= 0b10000111;
         MS_DBG(F("Measurements stopped.\n"));
     }
     else MS_DBG(F("Measurements NOT stopped!\n"));
@@ -137,19 +146,6 @@ bool YosemitechParent::sleep(void)
     return success;
 }
 
-
-// Want to just check that the sensor is active
-bool YosemitechParent::startSingleMeasurement(void)
-{
-    bool success = true;
-    if (_millisSensorActivated == 0) success = wake();
-    if (_millisSensorActivated > 0)
-    {
-        waitForStability();
-        _millisMeasurementRequested = millis();
-    }
-    return success;
-}
 
 
 bool YosemitechParent::addSingleMeasurementResult(void)
@@ -161,10 +157,8 @@ bool YosemitechParent::addSingleMeasurementResult(void)
     float tempValue = -9999;
     float thirdValue = -9999;
 
-    if (_millisSensorActivated > 0)
+    if (_millisMeasurementRequested > 0)
     {
-        // Make sure we've waited long enough for a new reading to be available
-        waitForMeasurementCompletion();
         // Get Values
         MS_DBG(F("Get Values:\n"));
         success = sensor.getValues(parmValue, tempValue, thirdValue);
@@ -185,9 +179,6 @@ bool YosemitechParent::addSingleMeasurementResult(void)
         {
             MS_DBG(F("    Third: "), thirdValue, F("\n"));
         }
-
-        // Unset the measurement requsted time
-        _millisMeasurementRequested = 0;
     }
     else MS_DBG(F("Sensor is not currently measuring!\n"));
 
@@ -196,8 +187,12 @@ bool YosemitechParent::addSingleMeasurementResult(void)
     verifyAndAddMeasurementResult(1, tempValue);
     verifyAndAddMeasurementResult(2, thirdValue);
 
-    // Mark that we've already recorded the result of the measurement
+    // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
+    // Unset the status bit for a measurement having been requested (bit 5)
+    _sensorStatus &= 0b11011111;
+    // Set the status bit for measurement completion (bit 6)
+    _sensorStatus |= 0b01000000;
 
     // Return true when finished
     return success;

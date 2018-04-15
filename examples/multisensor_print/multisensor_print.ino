@@ -150,6 +150,18 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
 
 
 // ==========================================================================
+//    External Voltage via TI ADS1115
+// ==========================================================================
+#include <ExternalVoltage.h>
+const int8_t VoltPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t VoltData = 0;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const float VoltGain = 10; // Default 1/gain for grove voltage divider is 10x
+const uint8_t Volt_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
+const uint8_t VoltReadsToAvg = 1; // Only read one sample
+ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, Volt_ADS1115Address, VoltReadsToAvg);
+
+
+// ==========================================================================
 //    Maxbotix HRXL Ultrasonic Range Finder
 // ==========================================================================
 #include <MaxBotixSonar.h>
@@ -196,6 +208,15 @@ MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
 MaximDS18 ds18_4(OneWireAddress4, OneWirePower, OneWireBus);
 MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
 // MaximDS18 ds18_5(OneWirePower, OneWireBus);
+
+
+// ==========================================================================
+//    External I2C Rain Tipping Bucket Counter
+// ==========================================================================
+#include <RainCounterI2C.h>
+const uint8_t RainCounterI2CAddress = 0x08;  // I2C Address for external tip counter
+const uint8_t depthPerTipEvent = 0.2;  // rain depth in mm per tip event
+RainCounterI2C tip(RainCounterI2CAddress, depthPerTipEvent);
 
 
 // Set up a serial port for modbus communication - in this case, using AltSoftSerial
@@ -267,6 +288,7 @@ byte y532modbusAddress = 0x32;  // The modbus address of the Y532
 const uint8_t y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
 YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, y532NumberReadings);
 
+
 // ==========================================================================
 //    Zebra Tech D-Opto Dissolved Oxygen Sensor
 // ==========================================================================
@@ -281,53 +303,56 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 //    The array that contains all variables to be logged
 // ==========================================================================
 Variable *variableList[] = {
-    new ProcessorStats_Batt(&mayfly),
-    new ProcessorStats_FreeRam(&mayfly),
-    new MaximDS3231_Temp(&ds3231),
     new ApogeeSQ212_PAR(&SQ212),
-    new MaxBotixSonar_Range(&sonar1),
-    new MaxBotixSonar_Range(&sonar2),
+    new AOSongAM2315_Humidity(&am2315),
+    new AOSongAM2315_Temp(&am2315),
+    new AOSongDHT_Humidity(&dht),
+    new AOSongDHT_Temp(&dht),
+    new AOSongDHT_HI(&dht),
+    new BoschBME280_Temp(&bme280),
+    new BoschBME280_Humidity(&bme280),
+    new BoschBME280_Pressure(&bme280),
+    new BoschBME280_Altitude(&bme280),
+    new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
     new Decagon5TM_Ea(&fivetm),
     new Decagon5TM_Temp(&fivetm),
     new Decagon5TM_VWC(&fivetm),
-    new DecagonES2_Cond(&es2),
-    new DecagonES2_Temp(&es2),
     new DecagonCTD_Cond(&ctd),
     new DecagonCTD_Temp(&ctd),
     new DecagonCTD_Depth(&ctd),
+    new DecagonES2_Cond(&es2),
+    new DecagonES2_Temp(&es2),
+    new ExternalVoltage_Volt(&extvolt),
+    new MaxBotixSonar_Range(&sonar1),
+    new MaxBotixSonar_Range(&sonar2),
     new MaximDS18_Temp(&ds18_1),
     new MaximDS18_Temp(&ds18_2),
     new MaximDS18_Temp(&ds18_3),
     new MaximDS18_Temp(&ds18_4),
     new MaximDS18_Temp(&ds18_5),
-    new BoschBME280_Temp(&bme280),
-    new BoschBME280_Humidity(&bme280),
-    new BoschBME280_Pressure(&bme280),
-    new BoschBME280_Altitude(&bme280),
-    new AOSongDHT_Humidity(&dht),
-    new AOSongDHT_Temp(&dht),
-    new AOSongDHT_HI(&dht),
-    new AOSongAM2315_Humidity(&am2315),
-    new AOSongAM2315_Temp(&am2315),
-    new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
-    new ZebraTechDOpto_Temp(&dopto),
-    new ZebraTechDOpto_DOpct(&dopto),
-    new ZebraTechDOpto_DOmgL(&dopto),
-    new YosemitechY532_pH(&y532),
-    new YosemitechY532_Temp(&y532),
-    new YosemitechY532_Voltage(&y532),
+    new RainCounterI2C_Tips(&tip),
+    new RainCounterI2C_Depth(&tip),
     new YosemitechY504_DOpct(&y504),
     new YosemitechY504_Temp(&y504),
     new YosemitechY504_DOmgL(&y504),
-    new YosemitechY520_Cond(&y520),
-    new YosemitechY520_Temp(&y520),
-    new YosemitechY510_Turbidity(&y510),
     new YosemitechY510_Temp(&y510),
-    new YosemitechY511_Turbidity(&y511),
+    new YosemitechY510_Turbidity(&y510),
     new YosemitechY511_Temp(&y511),
-    new YosemitechY514_Chlorophyll(&y514),
+    new YosemitechY511_Turbidity(&y511),
     new YosemitechY514_Temp(&y514),
+    new YosemitechY514_Chlorophyll(&y514),
+    new YosemitechY520_Temp(&y520),
+    new YosemitechY520_Cond(&y520),
+    new YosemitechY532_Temp(&y532),
+    new YosemitechY532_Voltage(&y532),
+    new YosemitechY532_pH(&y532),
+    new ZebraTechDOpto_Temp(&dopto),
+    new ZebraTechDOpto_DOpct(&dopto),
+    new ZebraTechDOpto_DOmgL(&dopto),
+    new ProcessorStats_FreeRam(&mayfly),
+    new ProcessorStats_Batt(&mayfly),
+    new MaximDS3231_Temp(&ds3231),
     // new YOUR_variableName_HERE(&)
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
