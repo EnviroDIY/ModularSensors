@@ -1,15 +1,16 @@
 /*
-*MeaSpecMS5803.cpp
+ *MeaSpecMS5803.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Anthony Aufdenkampe <aaufdenkampe@limno.com>.
- * with help from Beth Fisher and Evan Host
+ * with help from Beth Fisher, Evan Host and Bobby Schulz
  *
- *This file is for the Measurement Specialties MS5803-14BA pressure sensor,
-  as in SparkFun Pressure Sensor Breakout - MS5803-14BA, which uses the .
- *It is dependent on the SparkFun_MS5803-14BA_Breakout_Arduino_Library
- *https://github.com/sparkfun/SparkFun_MS5803-14BA_Breakout_Arduino_Library
- *
+ *This file is for the Measurement Specialties MS5803 pressure sensor,
+  for which is used in SparkFun Pressure Sensor Breakout - MS5803-14BA.
+ *It is dependent on the https://github.com/EnviroDIY/MS5803 library, which was
+  modified for EnviroDIY_Modular sensors based on a fork
+  from the https://github.com/NorthernWidget/MS5803 library, which expanded on
+ *https://github.com/sparkfun/SparkFun_MS5803-14BA_Breakout_Arduino_Library *
  *Documentation for the sensor can be found at:
  *https://www.sparkfun.com/products/12909
  *https://cdn.sparkfun.com/datasheets/Sensors/Weather/ms5803_14ba.pdf
@@ -53,56 +54,34 @@ String MeaSpecMS5803::getSensorLocation(void)
 }
 
 
-SENSOR_STATUS MeaSpecMS5803::getStatus(void)
+bool MeaSpecMS5803::setup(void)
 {
-    // Check if the power is on, turn it on if not (Need power to get status)
-    bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
-    // Wait until the sensor is warmed up
-    waitForWarmUp();
+    bool retVal = Sensor::setup();  // this will set timestamp and status bit
 
     // Run begin fxn because it returns true or false for success in contact
-    MS5803_internal.reset();
-    bool status = MS5803_internal.begin(_i2cAddressHex, 14);
+    // Make 5 attempts
+    uint8_t ntries = 0;
+    bool success = false;
+    while (!success and ntries < 5)
+    {
+        success = MS5803_internal.begin(_i2cAddressHex);
+        ntries++;
+    }
+    if (!success)
+    {
+        // Set the status error bit (bit 7)
+        _sensorStatus |= 0b10000000;
+    }
+    retVal &= success;
 
-    // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
 
-    if (!status) return SENSOR_ERROR;
-    else return SENSOR_READY;
-}
-
-
-SENSOR_STATUS MeaSpecMS5803::setup(void)
-{
-    SENSOR_STATUS setup = Sensor::setup();
-    SENSOR_STATUS stat = getStatus();
-    if (setup == SENSOR_READY && stat == SENSOR_READY) return SENSOR_READY;
-    else return SENSOR_ERROR;
+  return retVal;
 }
 
 
 bool MeaSpecMS5803::wake(void)
 {
     Sensor::wake();
-    waitForWarmUp();
-    // Restart always needed after power-up
-
-    // MS5803_internal.begin();
-
-    // When the ???? library is updated to remove the built-in delay after
-    // forcing a sample, it would be better to operate in forced mode.
-    // MS5803_internal.setSampling(SparkFun_MS5803_I2C::MODE_NORMAL,  // sensor mode
-    // // MS5803_internal.setSampling(SparkFun_MS5803_I2C::MODE_FORCED,  // sensor mode
-    //                          SparkFun_MS5803_I2C::SAMPLING_X16,  // temperature oversampling
-    //                          SparkFun_MS5803_I2C::SAMPLING_X16,  //  pressure oversampling
-    //                          SparkFun_MS5803_I2C::SAMPLING_X16,  //  humidity oversampling
-    //                          SparkFun_MS5803_I2C::FILTER_OFF, // built-in IIR filter
-    //                          SparkFun_MS5803_I2C::STANDBY_MS_1000);  // sleep time between measurements (N/A in forced mode)
-    // delay(100);  // Need this delay after changing sampling mode
-
-    // Mark that the sensor is now active
-    _millisSensorActivated = millis();
 
     return true;
 }
@@ -117,33 +96,42 @@ bool MeaSpecMS5803::wake(void)
 //     return true;
 // }
 
-
 bool MeaSpecMS5803::addSingleMeasurementResult(void)
 {
-    // Make sure we've waited long enough for a new reading to be available
-    waitForMeasurementCompletion();
+    bool success = false;
 
-    // Read values
-    float temp = MS5803_internal.getTemperature(CELSIUS, ADC_512);
-    float press = MS5803_internal.getPressure(ADC_4096);
+    // Initialize float variables
+    float temp = -9999;
+    float press = -9999;
 
-    if (isnan(temp)) temp = -9999;
-    if (isnan(press)) press = -9999;
-
-    if (temp == -140.85)  // This is the value returned if it's not attached
+    if (_millisMeasurementRequested > 0)
     {
-        temp = press = -9999;
-    }
+        // Read values
+        float temp = MS5803_internal.getTemperature(CELSIUS, ADC_512);
+        float press = MS5803_internal.getPressure(ADC_4096);
 
-    MS_DBG(F("Temperature: "), temp);
-    MS_DBG(F("Pressure: "), press);
+        if (isnan(temp)) temp = -9999;
+        if (isnan(press)) press = -9999;
+
+        {
+            temp = press = -9999;
+        }
+        else success = true;
+
+        MS_DBG(F("Temperature: "), temp);
+        MS_DBG(F("Pressure: "), press);
+    }
+    else MS_DBG(F("Sensor is not currently measuring!\n"));
 
     verifyAndAddMeasurementResult(MS5803_TEMP_VAR_NUM, temp);
     verifyAndAddMeasurementResult(MS5803_PRESSURE_VAR_NUM, press);
 
-    // Mark that we've already recorded the result of the measurement
+    // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
+    // Unset the status bit for a measurement having been requested (bit 5)
+    _sensorStatus &= 0b11011111;
+    // Set the status bit for measurement completion (bit 6)
+    _sensorStatus |= 0b01000000;
 
-    // Return true when finished
-    return true;
+    return success;
 }
