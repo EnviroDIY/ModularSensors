@@ -215,15 +215,6 @@ MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
 
 
 // ==========================================================================
-//    MeaSpecMS5803 (Pressure, Temperature)
-// ==========================================================================
-#include <MeaSpecMS5803.h>
-uint8_t MS5803i2c_addr = 0x76;  // The MS5803 can be addressed either as 0x76 or 0x77
-const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr);
-
-
-// ==========================================================================
 //    External I2C Rain Tipping Bucket Counter
 // ==========================================================================
 #include <RainCounterI2C.h>
@@ -344,8 +335,6 @@ Variable *variableList[] = {
     new MaximDS18_Temp(&ds18_3),
     new MaximDS18_Temp(&ds18_4),
     new MaximDS18_Temp(&ds18_5),
-    new MeaSpecMS5803_Temp(&ms5803),
-    new MeaSpecMS5803_Pressure(&ms5803),
     new RainCounterI2C_Tips(&tip),
     new RainCounterI2C_Depth(&tip),
     new YosemitechY504_DOpct(&y504),
