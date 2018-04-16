@@ -57,6 +57,7 @@ String MeaSpecMS5803::getSensorLocation(void)
 bool MeaSpecMS5803::setup(void)
 {
     MS5803_internal.begin(_i2cAddressHex, 14);
+    MS5803_internal.reset();
     return Sensor::setup();  // this will set timestamp and status bit
 }
 
@@ -68,12 +69,11 @@ bool MeaSpecMS5803::addSingleMeasurementResult(void)
     // Initialize float variables
     float temp = -9999;
     float press = -9999;
-
     if (_millisMeasurementRequested > 0)
     {
         // Read values
-        float temp = MS5803_internal.getTemperature(CELSIUS, ADC_512);
-        float press = MS5803_internal.getPressure(ADC_4096);
+        temp = MS5803_internal.getTemperature(CELSIUS, ADC_512);
+        press = MS5803_internal.getPressure(ADC_4096);
 
         if (isnan(temp)) temp = -9999;
         if (isnan(press)) press = -9999;
