@@ -73,6 +73,7 @@ In order to support multiple functions and sensors, there are quite a lot of sub
 - [Adafruit DHT library](https://github.com/adafruit/DHT-sensor-library) - for other AOSong temperature and humidity sensors.
 - [Adafruit BME280 library](https://github.com/adafruit/Adafruit_BME280_Library) - for the Bosch BME280 environmental sensor.
 - [YosemitechModbus](https://github.com/EnviroDIY/YosemitechModbus) - for all Yosemitech environmental sensor.
+- [EnviroDIY MS5803 Library](https://github.com/EnviroDIY/MS5803) - for the TE Connectivity MEAS MS5803 pressure sensor
 
 ## <a name="Basic"></a>Basic Sensor and Variable Functions
 

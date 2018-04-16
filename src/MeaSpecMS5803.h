@@ -3,11 +3,13 @@
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Anthony Aufdenkampe <aaufdenkampe@limno.com>.
- * with help from Beth Fisher and Evan Host
+ * with help from Beth Fisher, Evan Host and Bobby Schulz
  *
- *This file is for the Measurement Specialties MS5803-14BA pressure sensor,
-  as in SparkFun Pressure Sensor Breakout - MS5803-14BA, which uses the .
- *It is dependent on the SparkFun_MS5803-14BA_Breakout_Arduino_Library
+ *This file is for the Measurement Specialties MS5803 pressure sensor,
+  for which is used in SparkFun Pressure Sensor Breakout - MS5803-14BA.
+ *It is dependent on the https://github.com/EnviroDIY/MS5803 library, which was
+  modified for EnviroDIY_Modular sensors based on a fork
+  from the https://github.com/NorthernWidget/MS5803 library, which expanded on
  *https://github.com/sparkfun/SparkFun_MS5803-14BA_Breakout_Arduino_Library
  *
  *Documentation for the sensor can be found at:
@@ -43,7 +45,7 @@
 
 #include "SensorBase.h"
 #include "VariableBase.h"
-#include "MS5803_Mayfly.h"
+#include "MS5803.h"
 
 #define MS5803_NUM_VARIABLES 2
 #define MS5803_WARM_UP_TIME_MS 10
@@ -63,16 +65,13 @@ class MeaSpecMS5803 : public Sensor
 public:
     MeaSpecMS5803(int8_t powerPin, uint8_t i2cAddressHex = 0x76, uint8_t measurementsToAverage = 1);
 
-    bool wake(void) override;
-    SENSOR_STATUS setup(void) override;
-    SENSOR_STATUS getStatus(void) override;
+    bool setup(void) override;
     String getSensorLocation(void) override;
 
-    // bool startSingleMeasurement(void) override;  // for forced mode
     bool addSingleMeasurementResult(void) override;
 protected:
-    uint8_t _i2cAddressHex;
     MS5803 MS5803_internal;
+    uint8_t _i2cAddressHex;
 };
 
 
