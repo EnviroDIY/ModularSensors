@@ -64,7 +64,7 @@ bool MeaSpecMS5803::setup(void)
     bool success = false;
     while (!success and ntries < 5)
     {
-        success = MS5803_internal.begin(_i2cAddressHex);
+        success = MS5803_internal.begin(_i2cAddressHex, 14);
         ntries++;
     }
     if (!success)
@@ -113,10 +113,6 @@ bool MeaSpecMS5803::addSingleMeasurementResult(void)
         if (isnan(temp)) temp = -9999;
         if (isnan(press)) press = -9999;
 
-        {
-            temp = press = -9999;
-        }
-        else success = true;
 
         MS_DBG(F("Temperature: "), temp);
         MS_DBG(F("Pressure: "), press);
