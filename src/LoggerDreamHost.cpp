@@ -56,6 +56,13 @@ void LoggerDreamHost::streamDreamHostRequest(Stream *stream)
 // Post the data to dream host.
 int LoggerDreamHost::postDataDreamHost(void)
 {
+    // do not continue if no modem!
+    if (!_modemAttached)
+    {
+        PRINTOUT(F("No modem attached, data cannot be sent out!\n"));
+        return 504;
+    }
+
     // Create a buffer for the response
     char response_buffer[12] = "";
     int did_respond = 0;
@@ -135,9 +142,12 @@ void LoggerDreamHost::log(void)
         // Turn on the LED to show we're taking a reading
         digitalWrite(_ledPin, HIGH);
 
-        // Turn on the modem to let it start searching for the network
-        _logModem->powerUp();
-        _logModem->wake();
+        if (_modemAttached)
+        {
+            // Turn on the modem to let it start searching for the network
+            _logModem->powerUp();
+            _logModem->wake();
+        }
 
         // Send power to all of the sensors
         MS_DBG(F("    Powering sensors...\n"));
@@ -155,30 +165,32 @@ void LoggerDreamHost::log(void)
         MS_DBG(F("  Cutting sensor power...\n"));
         sensorsPowerDown();
 
-        // Connect to the network
-        if (_logModem->connectInternet())
+        if (_modemAttached)
         {
-            if(_dualPost)
+            // Connect to the network
+            if (_logModem->connectInternet())
             {
-                // Post the data to the WebSDL
-                postDataEnviroDIY();
+                if(_dualPost)
+                {
+                    // Post the data to the WebSDL
+                    postDataEnviroDIY();
+                }
+
+                // Post the data to DreamHost
+                postDataDreamHost();
+
+                // Sync the clock every 288 readings (1/day at 5 min intervals)
+                if (_numTimepointsLogged % 288 == 0)
+                {
+                    syncRTClock(_logModem->getNISTTime());
+                }
+
+                // Disconnect from the network
+                _logModem->disconnectInternet();
             }
-
-            // Post the data to DreamHost
-            postDataDreamHost();
-
-            // Sync the clock every 288 readings (1/day at 5 min intervals)
-            if (_numTimepointsLogged % 288 == 0)
-            {
-                syncRTClock(_logModem->getNISTTime());
-            }
-
-            // Disconnect from the network
-            _logModem->disconnectInternet();
+            // Turn the modem off
+            _logModem->off();
         }
-
-        // Turn the modem off
-        _logModem->off();
 
         // Create a csv data record and save it to the log file
         logToSD(generateSensorDataCSV());
