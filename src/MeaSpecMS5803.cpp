@@ -56,26 +56,8 @@ String MeaSpecMS5803::getSensorLocation(void)
 
 bool MeaSpecMS5803::setup(void)
 {
-    bool retVal = Sensor::setup();  // this will set timestamp and status bit
-
-    // Run begin fxn because it returns true or false for success in contact
-    // Make 5 attempts
-    uint8_t ntries = 0;
-    bool success = false;
-    while (!success and ntries < 5)
-    {
-        success = MS5803_internal.begin(_i2cAddressHex, 14);
-        ntries++;
-    }
-    if (!success)
-    {
-        // Set the status error bit (bit 7)
-        _sensorStatus |= 0b10000000;
-    }
-    retVal &= success;
-
-
-  return retVal;
+    MS5803_internal.begin(_i2cAddressHex, 14);
+    return Sensor::setup();  // this will set timestamp and status bit
 }
 
 
@@ -95,7 +77,6 @@ bool MeaSpecMS5803::addSingleMeasurementResult(void)
 
         if (isnan(temp)) temp = -9999;
         if (isnan(press)) press = -9999;
-
 
         MS_DBG(F("Temperature: "), temp);
         MS_DBG(F("Pressure: "), press);
