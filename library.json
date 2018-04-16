@@ -229,6 +229,14 @@
             "platforms": "atmelavr, atmelsam"
         },
         {
+            "name": "MS5803",
+            "version": "https://github.com/EnviroDIY/MS5803.git",
+            "note": "General interface to MS5803-series pressure transducers",
+            "authors": [
+                "Bobby Schulz"
+            ]
+        },
+        {
             "name": "RTCZero",
             "library id": "873",
             "url": "https://github.com/arduino-libraries/RTCZero.git",

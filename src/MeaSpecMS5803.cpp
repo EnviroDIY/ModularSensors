@@ -79,23 +79,6 @@ bool MeaSpecMS5803::setup(void)
 }
 
 
-bool MeaSpecMS5803::wake(void)
-{
-    Sensor::wake();
-
-    return true;
-}
-
-// For operating in forced mode
-// bool MeaSpecMS5803::startSingleMeasurement(void)
-// {
-//     // waitForWarmUp();  // already done in wake
-//     waitForStability();
-//     MS5803_internal.takeForcedMeasurement(false);  // Don't want to wait to finish here
-//     _millisMeasurementRequested = millis();
-//     return true;
-// }
-
 bool MeaSpecMS5803::addSingleMeasurementResult(void)
 {
     bool success = false;
