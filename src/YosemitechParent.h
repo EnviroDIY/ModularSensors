@@ -32,19 +32,18 @@ public:
     YosemitechParent(byte modbusAddress, Stream* stream,
                      int8_t powerPin, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
                      yosemitechModel model = UNKNOWN, String sensName = "Yosemitech-Sensor", int numVariables = 2,
-                     int warmUpTime_ms = 1500, int stabilizationTime_ms = 20000, int remeasurementTime_ms = 2000);
+                     int warmUpTime_ms = 1500, int stabilizationTime_ms = 20000, int measurementTime_ms = 2000);
     YosemitechParent(byte modbusAddress, Stream& stream,
                      int8_t powerPin, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
                      yosemitechModel model = UNKNOWN, String sensName = "Yosemitech-Sensor", int numVariables = 2,
-                     int warmUpTime_ms = 1500, int stabilizationTime_ms = 20000, int remeasurementTime_ms = 2000);
+                     int warmUpTime_ms = 1500, int stabilizationTime_ms = 20000, int measurementTime_ms = 2000);
 
     String getSensorLocation(void) override;
 
-    virtual SENSOR_STATUS setup(void) override;
+    virtual bool setup(void) override;
     virtual bool wake(void) override;
     virtual bool sleep(void) override;
 
-    virtual bool startSingleMeasurement(void);
     virtual bool addSingleMeasurementResult(void);
 
 private:

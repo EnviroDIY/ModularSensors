@@ -5,7 +5,7 @@
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the Decagon Devices ES-2 Electrical Conductivity Sensor
- *It is dependent on the EnviroDIY SDI-12 library and the DecagonSDI12 super class.
+ *It is dependent on the EnviroDIY SDI-12 library and the SDI12Sensors super class.
  *
  *Documentation fo the SDI-12 Protocol commands and responses
  *for the Decagon ES-2 can be found at:
@@ -28,7 +28,7 @@
 #ifndef DecagonES2_h
 #define DecagonES2_h
 
-#include "DecagonSDI12.h"
+#include "SDI12Sensors.h"
 #include "VariableBase.h"
 
 #define ES2_NUM_VARIABLES 2
@@ -43,22 +43,22 @@
 #define ES2_TEMP_VAR_NUM 1
 
 // The main class for the Decagon ES-2
-class DecagonES2 : public DecagonSDI12
+class DecagonES2 : public SDI12Sensors
 {
 public:
     // Constructors with overloads
     DecagonES2(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
+     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("DecagonES2"), ES2_NUM_VARIABLES,
                     ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
     {}
     DecagonES2(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
+     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("DecagonES2"), ES2_NUM_VARIABLES,
                     ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
     {}
     DecagonES2(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
+     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("DecagonES2"), ES2_NUM_VARIABLES,
                     ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
     {}

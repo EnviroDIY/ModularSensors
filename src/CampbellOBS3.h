@@ -66,9 +66,10 @@ protected:
 };
 
 
-// Two different vars are ONLY needed because of the different dreamhost column tags
-// All that is needed for these are the constructors
-// Defines the "Low Turbidity Sensor"
+// The single available variable is turbidity
+// To utilize both high and low gain turbidity, you must create *two* sensor
+// objects on two different data pins and then create two variable objects, one
+// tied to each sensor.
 class CampbellOBS3_Turbidity : public Variable
 {
 public:

@@ -68,8 +68,7 @@ public:
     BoschBME280(int8_t powerPin, uint8_t i2cAddressHex = 0x76, uint8_t measurementsToAverage = 1);
 
     bool wake(void) override;
-    SENSOR_STATUS setup(void) override;
-    SENSOR_STATUS getStatus(void) override;
+    bool setup(void) override;
     String getSensorLocation(void) override;
 
     // bool startSingleMeasurement(void) override;  // for forced mode

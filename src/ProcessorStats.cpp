@@ -121,6 +121,14 @@ ProcessorStats::ProcessorStats(const char *version)
 String ProcessorStats::getSensorLocation(void) {return BOARD;}
 
 
+// Do nothing for the power down and sleep functions
+// We don't want the processor to go to sleep or power down with the sensors
+bool ProcessorStats::sleep(void)
+{return true;}
+void ProcessorStats::powerDown(void)
+{}
+
+
 #if defined(ARDUINO_ARCH_SAMD)
     extern "C" char *sbrk(int i);
 
@@ -201,6 +209,13 @@ bool ProcessorStats::addSingleMeasurementResult(void)
     #endif
 
     verifyAndAddMeasurementResult(PROCESSOR_RAM_VAR_NUM, sensorValue_freeRam);
+
+    // Unset the time stamp for the beginning of this measurement
+    _millisMeasurementRequested = 0;
+    // Unset the status bit for a measurement having been requested (bit 5)
+    _sensorStatus &= 0b11011111;
+    // Set the status bit for measurement completion (bit 6)
+    _sensorStatus |= 0b01000000;
 
     // Return true when finished
     return true;

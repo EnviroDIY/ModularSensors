@@ -14,9 +14,6 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
-// Some define statements
-#define STANDARD_SERIAL_OUTPUT Serial  // Without this there will be no output
-
 // Select your modem chip, comment out all of the others
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
 // #define TINY_GSM_MODEM_A6  // Select for a AI-Thinker A6 or A7 chip
@@ -42,7 +39,7 @@ const char *sketchName = "logging_to_EnviroDIY.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 1;
+const uint8_t loggingInterval = 5;
 // Your logger's timezone.
 const int8_t timeZone = -5;
 // Create a new logger instance
@@ -72,16 +69,38 @@ ProcessorStats mayfly(MFVersion) ;
 //    Modem/Internet connection options
 // ==========================================================================
 HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
+
+#if defined(TINY_GSM_MODEM_XBEE)
 const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+ModemSleepType ModemSleepMode = modem_sleep_reverse;  // How the modem is put to sleep
 
+#elif defined(TINY_GSM_MODEM_ESP8266)
+const int8_t modemSleepRqPin = 19;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
+const int8_t modemStatusPin = -1;   // Modem Status Pin (indicates power status) (-1 if unconnected)
+const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+ModemSleepType ModemSleepMode = modem_always_on;  // How the modem is put to sleep
+
+#else
+const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
+const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
+const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sleep
+#endif
 // Use "modem_sleep_held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
 // Use "modem_sleep_pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
 // Use "modem_sleep_reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
 // Use "modem_always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
+#if defined(TINY_GSM_MODEM_ESP8266)
+const long ModemBaud = 9600;  // Default for ESP8266 is 115200, but the Mayfly itself stutters above 57600
+#elif defined(TINY_GSM_MODEM_SIM800)
+const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble making it fast (19200 works)
+#elif defined(TINY_GSM_MODEM_XBEE)
+const long ModemBaud = 9600;  // Default for XBee is 9600, I've sped mine up to 57600
+#else
 const long ModemBaud = 9600;  // Modem baud rate
+#endif
 
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
@@ -183,10 +202,22 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 // ==========================================================================
 #include <DecagonES2.h>
 const char *ES2SDI12address = "3";  // The SDI-12 Address of the ES2
-// const int8_t SDI12Data = 7;  // The pin the 5TM is attached to
+// const int8_t SDI12Data = 7;  // The pin the ES2 is attached to
 // const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t ES2NumberReadings = 3;
 DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
+
+
+// ==========================================================================
+//    External Voltage via TI ADS1115
+// ==========================================================================
+#include <ExternalVoltage.h>
+const int8_t VoltPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t VoltData = 0;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const float VoltGain = 10; // Default 1/gain for grove voltage divider is 10x
+const uint8_t Volt_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
+const uint8_t VoltReadsToAvg = 1; // Only read one sample
+ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, Volt_ADS1115Address, VoltReadsToAvg);
 
 
 // ==========================================================================
@@ -236,6 +267,26 @@ MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
 MaximDS18 ds18_4(OneWireAddress4, OneWirePower, OneWireBus);
 MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
 // MaximDS18 ds18_5(OneWirePower, OneWireBus);
+
+
+// ==========================================================================
+//    MeaSpecMS5803 (Pressure, Temperature)
+// ==========================================================================
+#include <MeaSpecMS5803.h>
+// const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const uint8_t MS5803i2c_addr = 0x76;  // The MS5803 can be addressed either as 0x76 or 0x77
+const int MS5803maxPressure = 14;  // The maximum pressure measurable by the specific MS5803 model
+const uint8_t MS5803ReadingsToAvg = 1;
+MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803ReadingsToAvg);
+
+
+// ==========================================================================
+//    External I2C Rain Tipping Bucket Counter
+// ==========================================================================
+#include <RainCounterI2C.h>
+const uint8_t RainCounterI2CAddress = 0x08;  // I2C Address for external tip counter
+const uint8_t depthPerTipEvent = 0.2;  // rain depth in mm per tip event
+RainCounterI2C tip(RainCounterI2CAddress, depthPerTipEvent);
 
 
 // Set up a serial port for modbus communication - in this case, using AltSoftSerial
@@ -307,54 +358,73 @@ byte y532modbusAddress = 0x32;  // The modbus address of the Y532
 const uint8_t y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
 YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, y532NumberReadings);
 
+
+// ==========================================================================
+//    Zebra Tech D-Opto Dissolved Oxygen Sensor
+// ==========================================================================
+#include <ZebraTechDOpto.h>
+const char *DOptoDI12address = "5";  // The SDI-12 Address of the Zebra Tech D-Opto
+// const int8_t SDI12Data = 7;  // The pin the D-Opto is attached to
+// const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
+
+
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
 Variable *variableList[] = {
-    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaxBotixSonar_Range(&sonar2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AOSongDHT_Temp(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AOSongDHT_HI(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
+    new BoschBME280_Temp(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
+    new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
+    new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
+    new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
+    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
     new Decagon5TM_Ea(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
     new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
     new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonES2_Cond(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonES2_Temp(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonES2_Cond(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonES2_Temp(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaxBotixSonar_Range(&sonar2, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_1, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_2, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_3, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_4, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_5, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Temp(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongDHT_Temp(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongDHT_HI(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
-    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
-    new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY532_Voltage(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY532_pH(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-efgh-1234567890ab"),
+    new RainCounterI2C_Tips(&tip, "12345678-abcd-1234-efgh-1234567890ab"),
+    new RainCounterI2C_Depth(&tip, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY510_Temp(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY532_Voltage(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY532_pH(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     // new YOUR_variableName_HERE(&)
@@ -434,8 +504,11 @@ void setup()
     EnviroDIYLogger.setAlertPin(greenLED);
 
     // Setup the logger modem
-    #if defined(TINY_GSM_MODEM_XBEE) || defined(TINY_GSM_MODEM_ESP8266)
+    #if defined(TINY_GSM_MODEM_ESP8266)
         modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
+    #elif defined(TINY_GSM_MODEM_XBEE)
+        modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
+        // modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
     #else
         modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
     #endif
@@ -456,7 +529,14 @@ void setup()
     EnviroDIYLogger.begin();
 
     // Check for debugging mode
-    EnviroDIYLogger.checkForTestingMode(buttonPin);
+    pinMode(buttonPin, INPUT_PULLUP);
+    enableInterrupt(buttonPin, Logger::testingISR, CHANGE);
+    Serial.print(F("Push button on pin "));
+    Serial.print(buttonPin);
+    Serial.println(F(" at any time to enter sensor testing mode."));
+
+    // Blink the LEDs really fast to show start-up is done
+    greenredflash(6, 25);
 }
 
 

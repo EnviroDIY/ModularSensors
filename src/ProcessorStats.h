@@ -43,11 +43,10 @@ public:
 
     String getSensorLocation(void) override;
 
-    // Do nothing for any of the power up/down or wake/sleep functions
-    void powerUp(void) override {}
-    bool wake(void) override {return true;}
-    bool sleep(void) override {return true;}
-    void powerDown(void) override {}
+    // Do nothing for the power down and sleep functions
+    // We don't want the processor to go to sleep or power down with the sensors
+    bool sleep(void) override;
+    void powerDown(void) override;
 
     bool addSingleMeasurementResult(void) override;
 

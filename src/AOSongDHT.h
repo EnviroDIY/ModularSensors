@@ -74,7 +74,7 @@ public:
     // The constructor - need the power pin, the data pin, and the sensor type
     AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type, uint8_t measurementsToAverage = 1);
 
-    SENSOR_STATUS setup(void) override;
+    bool setup(void) override;
     String getSensorName(void) override;
 
     bool addSingleMeasurementResult(void) override;

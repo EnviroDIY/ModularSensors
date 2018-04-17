@@ -5,7 +5,7 @@
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
  *This file is for the Decagon Devices CTD-10
- *It is dependent on the EnviroDIY SDI-12 library and the DecagonSDI12 super class.
+ *It is dependent on the EnviroDIY SDI-12 library and the SDI12Sensors super class.
  *
  *Documentation for the SDI-12 Protocol commands and responses
  *for the Decagon CTD-10 can be found at:
@@ -34,7 +34,7 @@
 #ifndef DecagonCTD_h
 #define DecagonCTD_h
 
-#include "DecagonSDI12.h"
+#include "SDI12Sensors.h"
 #include "VariableBase.h"
 
 #define CTD_NUM_VARIABLES 3
@@ -52,22 +52,22 @@
 #define CTD_DEPTH_VAR_NUM 0
 
 // The main class for the Decagon CTD
-class DecagonCTD : public DecagonSDI12
+class DecagonCTD : public SDI12Sensors
 {
 public:
     // Constructors with overloads
     DecagonCTD(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
+     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("DecagonCTD"), CTD_NUM_VARIABLES,
                     CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
     {}
     DecagonCTD(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
+     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("DecagonCTD"), CTD_NUM_VARIABLES,
                     CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
     {}
     DecagonCTD(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
-     : DecagonSDI12(SDI12address, powerPin, dataPin, measurementsToAverage,
+     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                     F("DecagonCTD"), CTD_NUM_VARIABLES,
                     CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
     {}

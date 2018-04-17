@@ -18,27 +18,30 @@
  *     Accuracy is ± 0.1°C
  *     Resolution is 0.01°C
  *
- * Maximum warm-up time in SDI-12 mode: 200ms, assume stability at warm-up
- * Maximum measurement duration: 200ms
+ * Maximum warm-up time in SDI-12 mode: ~250ms
+ * Excitiation time before measurement: ~5225ms
+ * Maximum measurement duration: ~110ms
+ *
+ * Obnoxiously, the sensor will not take a "concurrent" measurement and leave
+ * the sensor powered on, so we must wait entire ~5200ms exitation time and the
+ * 110ms measurement time each time.
+ * There is the ability to do a non-concurrent measurement and leave the
+ * sensor powered on, in which case the re-measurement takes ~110ms, but doing
+ * it that way the sensor would send an interruption when it was finished,
+ * possibly colliding with and confusing other sensor results
  *
 */
 
 #ifndef ZebraTechDOpto_h
 #define ZebraTechDOpto_h
 
-#include <Arduino.h>
-
-// #define DEBUGGING_SERIAL_OUTPUT Serial
-#include "ModSensorDebugger.h"
-
-#include "SensorBase.h"
+#include "SDI12Sensors.h"
 #include "VariableBase.h"
-#include <SDI12_ExtInts.h>
 
 #define DOPTO_NUM_VARIABLES 3
-#define DOPTO_WARM_UP_TIME_MS 200
-#define DOPTO_STABILIZATION_TIME_MS 5000
-#define DOPTO_MEASUREMENT_TIME_MS 200
+#define DOPTO_WARM_UP_TIME_MS 275
+#define DOPTO_STABILIZATION_TIME_MS 0
+#define DOPTO_MEASUREMENT_TIME_MS 5335
 
 #define DOPTO_TEMP_RESOLUTION 2
 #define DOPTO_TEMP_VAR_NUM 0
@@ -49,45 +52,36 @@
 #define DOPTO_DOMGL_RESOLUTION 3
 #define DOPTO_DOMGL_VAR_NUM 2
 
-// The main class for the Decagon CTD
-class ZebraTechDOpto : public Sensor
+// The main class for the D-Opto
+class ZebraTechDOpto : public SDI12Sensors
 {
 public:
 
-    ZebraTechDOpto(char SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1);
-    ZebraTechDOpto(char *SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1);
-    ZebraTechDOpto(int SDI12address, int powerPin, int dataPin, int measurementsToAverage = 1);
+    // Constructors with overloads
+    ZebraTechDOpto(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                    F("ZebraTech D-Opto"), DOPTO_NUM_VARIABLES,
+                    DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS)
+    {}
+    ZebraTechDOpto(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                    F("ZebraTech D-Opto"), DOPTO_NUM_VARIABLES,
+                    DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS)
+    {}
+    ZebraTechDOpto(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                    F("ZebraTech D-Opto"), DOPTO_NUM_VARIABLES,
+                    DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS)
+    {}
 
-    String getSensorVendor(void);
-    String getSensorModel(void);
-    String getSensorVersion(void);
-    String getSensorSerialNumber(void);
-    String getSensorLocation(void) override;
-
-    virtual SENSOR_STATUS setup(void) override;
-    virtual SENSOR_STATUS getStatus(void) override;
-
-    virtual bool startSingleMeasurement(void);
-    virtual bool addSingleMeasurementResult(void);
-
-protected:
-    bool getSensorInfo(void);
-    SDI12 _SDI12Internal;
-
-private:
-    String _sensorVendor;
-    String _sensorModel;
-    String _sensorVersion;
-    String _sensorSerialNumber;
-    char _SDI12address;
 };
 
 
 // Defines the Temperature Variable
-class ZebraTechDOptoTemp : public Variable
+class ZebraTechDOpto_Temp : public Variable
 {
 public:
-    ZebraTechDOptoTemp(Sensor *parentSense,
+    ZebraTechDOpto_Temp(Sensor *parentSense,
                         String UUID = "", String customVarCode = "")
      : Variable(parentSense, DOPTO_TEMP_VAR_NUM,
                 F("temperature"), F("degreeCelsius"),
@@ -98,10 +92,10 @@ public:
 
 
 // Defines the Dissolved Oxygen Percent Saturation
-class ZebraTechDOptoDOpct : public Variable
+class ZebraTechDOpto_DOpct : public Variable
 {
 public:
-    ZebraTechDOptoDOpct(Sensor *parentSense,
+    ZebraTechDOpto_DOpct(Sensor *parentSense,
                          String UUID = "", String customVarCode = "")
      : Variable(parentSense, DOPTO_DOPCT_VAR_NUM,
                 F("oxygenDissolvedPercentOfSaturation"), F("percent"),
@@ -112,10 +106,10 @@ public:
 
 
 // Defines the Dissolved Oxygen Concentration
-class ZebraTechDOptoDOmgL : public Variable
+class ZebraTechDOpto_DOmgL : public Variable
 {
 public:
-    ZebraTechDOptoDOmgL(Sensor *parentSense,
+    ZebraTechDOpto_DOmgL(Sensor *parentSense,
                          String UUID = "", String customVarCode = "")
      : Variable(parentSense, DOPTO_DOMGL_VAR_NUM,
                 F("oxygenDissolved"), F("milligramPerLiter"),

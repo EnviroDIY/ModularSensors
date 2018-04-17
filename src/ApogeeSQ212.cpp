@@ -56,9 +56,15 @@ String ApogeeSQ212::getSensorLocation(void)
 
 bool ApogeeSQ212::addSingleMeasurementResult(void)
 {
-    // Start the Auxillary ADD
+    // We're actually only starting a measurment within the addSingleMeasurementResult
+    // function.  The measurements are very fast (8ms) so we're not going to worry
+    // about the time we're losing.  Doing it this way means that any other sensor
+    // that uses the same ADD will be able to set the gain properly and will not
+    // have that gain setting over-written here.
+
+    // Create an Auxillary ADD object
     Adafruit_ADS1115 ads(_i2cAddress);     /* Use this for the 16-bit version */
-    // Library default settings:
+    // ADS1115 Library default settings:
     //    - single-shot mode (powers down between conversions
     //    - 128 samples per second (8ms conversion time)
     //    - 2/3 gain +/- 6.144V range
@@ -69,8 +75,13 @@ bool ApogeeSQ212::addSingleMeasurementResult(void)
     ads.setGain(GAIN_ONE);
     // Begin ADC
     ads.begin();
+    // Mark the time that the measurement started
+    // Again, we're resetting this here because we only just started the ADD!
+    _millisMeasurementRequested = millis();
 
     // Make sure we've waited long enough for a new reading to be available
+    // We're actually doing the wait here, because unlike most sensors we only
+    // started the measurement in this step.
     waitForMeasurementCompletion();
 
     // Variables to store the results in
@@ -93,6 +104,13 @@ bool ApogeeSQ212::addSingleMeasurementResult(void)
     else MS_DBG(F("\n"));
 
     verifyAndAddMeasurementResult(SQ212_PAR_VAR_NUM, calibResult);
+
+    // Unset the time stamp for the beginning of this measurement
+    _millisMeasurementRequested = 0;
+    // Unset the status bit for a measurement having been requested (bit 5)
+    _sensorStatus &= 0b11011111;
+    // Set the status bit for measurement completion (bit 6)
+    _sensorStatus |= 0b01000000;
 
     if (adcVoltage < 3.6 and adcVoltage > -0.3) return true;
     else return false;

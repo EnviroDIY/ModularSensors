@@ -25,7 +25,9 @@
 class LoggerEnviroDIY : public Logger
 {
 public:
-    // Set up communications
+
+    // need a constructor to initially not have an modem attached
+    LoggerEnviroDIY();
 
     // Adds a loggerModem objct to the logger
     // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
@@ -65,6 +67,7 @@ public:
     virtual void log(void) override;
 
     // The internal modem instance
+    bool _modemAttached;
     loggerModem *_logModem;
 
 

@@ -35,33 +35,41 @@ AOSongAM2315::AOSongAM2315(int8_t powerPin, uint8_t measurementsToAverage)
 String AOSongAM2315::getSensorLocation(void){return F("I2C_0xB8");}
 
 
-SENSOR_STATUS AOSongAM2315::setup(void)
+bool AOSongAM2315::setup(void)
 {
-    SENSOR_STATUS retVal = Sensor::setup();
     Wire.begin();  // Start the wire library
-    return retVal;
+    return Sensor::setup();  // this will set timestamp and status bit
 }
 
 
 bool AOSongAM2315::addSingleMeasurementResult(void)
 {
-    // Make sure we've waited long enough for a new reading to be available
-    waitForMeasurementCompletion();
-
-    Adafruit_AM2315 am2315;  // create a sensor object
-
     float temp_val = -9999;
     float humid_val = -9999;
-    bool ret_val = am2315.readTemperatureAndHumidity(temp_val, humid_val);
+    bool ret_val = false;
 
-    if (!ret_val or isnan(temp_val)) temp_val = -9999;
-    if (!ret_val or isnan(humid_val)) humid_val = -9999;
+    if (_millisMeasurementRequested > 0)
+    {
+        Adafruit_AM2315 am2315;  // create a sensor object
+        ret_val = am2315.readTemperatureAndHumidity(temp_val, humid_val);
 
-    MS_DBG(F("Temp is: "), temp_val, F("°C"));
-    MS_DBG(F(" and humidity is: "), humid_val, F("%\n"));
+        if (!ret_val or isnan(temp_val)) temp_val = -9999;
+        if (!ret_val or isnan(humid_val)) humid_val = -9999;
+
+        MS_DBG(F("Temp is: "), temp_val, F("°C"));
+        MS_DBG(F(" and humidity is: "), humid_val, F("%\n"));
+    }
+    else MS_DBG(F("Sensor is not currently measuring!\n"));
 
     verifyAndAddMeasurementResult(AM2315_TEMP_VAR_NUM, temp_val);
     verifyAndAddMeasurementResult(AM2315_HUMIDITY_VAR_NUM, humid_val);
+
+    // Unset the time stamp for the beginning of this measurement
+    _millisMeasurementRequested = 0;
+    // Unset the status bit for a measurement having been requested (bit 5)
+    _sensorStatus &= 0b11011111;
+    // Set the status bit for measurement completion (bit 6)
+    _sensorStatus |= 0b01000000;
 
     return ret_val;
 }
