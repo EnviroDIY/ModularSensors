@@ -1,14 +1,17 @@
 # ModularSensors
 
-A "library" of sensors to give all sensors and variables a common interface of functions and returns and to make it very easy to iterate through and log data from many sensors and variables.  This library was written primarily for the [EnviroDIY Mayfly](https://envirodiy.org/mayfly/) but should be applicable to a variety of other Arduino-based boards as well.
+This Arduino library gives environmental sensors a common interface of functions for use with Arduino-compatible dataloggers, such as the EnviroDIY Mayfly. The ModularSensors library is specifically designed to support wireless, solar-powered environmental data logging applications, that is, to:
+* Retrieve data from many physical sensors;
+* Save that data to a SD memory card;
+* Transmit that data wirelessly to a web server; and
+* Put the processor, sensors and all other peripherals to sleep between readings to conserver power.
 
-Each sensor is implemented as a subclass of the "Sensor" class contained in "SensorBase.h".  Each variable is separately implemented as a subclass of the "Variable" class contained in "VariableBase.h".  The variables are tied to the sensor using an "[Observer](https://en.wikipedia.org/wiki/Observer_pattern)" software pattern.
+The ModularSensors library coordinates these tasks by [wrapping](https://en.wikipedia.org/wiki/Wrapper_function) native sensor and variable functions into a common interface of functions and returns and to harmonize and simplify the process of iterating through and logging data from a diverse set of sensors and variables. Although this library was written primarily for the [EnviroDIY Mayfly data logger board](https://envirodiy.org/mayfly/), it is also designed to be [compatible with a variety of other Arduino-based boards](#compatibility) as well.
 
-To use a sensor and variable in your sketch, you must separately include xxx.h for each sensor you intend to use.  While this may force you to write many more include statements, it decreases the library RAM usage on your Arduino board.  Regardless of how many sensors you intend to use, however, you must install all of the dependent libraries on your _computer_ for the IDE to be able to compile the library.
-
-#### Contents:
-- [Physical Dependencies](#pdeps)
-- [Library Dependencies](#ldeps)
+### Contents:
+- [Getting Started](#getStarted)
+  - [Physical Dependencies](#pdeps)
+  - [Library Dependencies](#ldeps)
 - [Basic Sensor and Variable Functions](#Basic)
     - [Individual Sensors Code Examples](#individuals)
 - [Grouped Sensor Functions](#Grouped)
@@ -19,31 +22,45 @@ To use a sensor and variable in your sketch, you must separately include xxx.h f
     - [EnviroDIY Logger Functions](#DIYlogger)
     - [Logger Code Examples](#LoggerExamples)
 - Available Sensors
-    - [Apogee SQ-212 Quantum Light Sensor, via TI ADS1115](#SQ212)
-    - [AOSong AM2315](#AM2315)
-    - [AOSong DHT](#DHT)
-    - [Bosch BME280](#BME280)
-    - [MaxBotix MaxSonar](#MaxBotix)
-    - [Campbell Scientific OBS-3+, via TI ADS1115](#OBS3)
-    - [Decagon Devices 5TM](#5TM)
-    - [Decagon Devices CTD-10](#CTD)
-    - [Decagon Devices ES-2](#ES2)
-    - [External Voltage, via TI ADS1115](#ExtVolt)
-    - [Maxim DS18 Temperature Probes](#DS18)
-    - [Measurement Specialties MS5803](#MS5803)
+    - [Apogee SQ-212: quantum light sensor, via TI ADS1115](#SQ212)
+    - [AOSong AM2315: humidity & temperature](#AM2315)
+    - [AOSong DHT: humidity & temperature](#DHT)
+    - [Bosch BME280: barometric pressure, humidity & temperature](#BME280)
+    - [Campbell Scientific OBS-3+: turbidity, via TI ADS1115](#OBS3)
+    - [Decagon Devices 5TM: soil moisture](#5TM)
+    - [Decagon Devices CTD-10: conductivity, temperature & depth](#CTD)
+    - [Decagon Devices ES-2: conductivity ](#ES2)
     - [External I2C Rain Tipping Bucket Counter](#ExtTips)
-    - [Yosemitech Brand Environmental Sensors](#Yosemitech)
-    - [Zebra-Tech D-Opto Dissolved Oxygen Sensor](#dOpto)
-    - [Maxim DS3231 Real Time Clock](#DS3231)
+    - [External Voltage: via TI ADS1115](#ExtVolt)
+    - [MaxBotix MaxSonar: water level](#MaxBotix)
+    - [Maxim DS18: temperature](#DS18)
+    - [Measurement Specialties MS5803: pressure](#MS5803)
+    - [Yosemitech: water quality sensors](#Yosemitech)
+    - [Zebra-Tech D-Opto: dissolved oxygen](#dOpto)
+    - [Maxim DS3231: real time clock](#DS3231)
     - [Processor Metadata Treated as Sensors](#Onboard)
 - [Notes on Arduino Streams and Software Serial](#SoftwareSerial)
 - [Processor/Board Compatibility](#compatibility)
+- [Contributing](#contribute)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
 
-## <a name="pdeps"></a>Physical Dependencies
 
-This library is designed for remote sensing applications, that is, to log data from many physical sensors and to put the processor and all peripherals to sleep to conserver power between readings.  The most banal functions of the library require only an AVR or SAMD processor, but making real use of this library requires:
+## <a name="getStarted"></a>Getting Started
 
-- A sufficiently powerful AVR or SAMD processor mounted on some sort of curcuit board.  (See [Processor/Board Compatibility](#compatibility) for more details on specific processors and boards that are supported.)
+Get started by reading this entire section, including Physical Dependencies](#pdeps) and [Library Dependencies](#ldeps), then try out one of our sketches in the [Examples](https://github.com/EnviroDIY/ModularSensors/tree/master/examples) folder.
+
+To use a sensor and variable in your sketch, you must separately include xxx.h for each sensor you intend to use.  While this may force you to write many more include statements, it decreases the library RAM usage on your Arduino board.  Regardless of how many sensors you intend to use, however, you must install all of the [dependent libraries](#ldeps) on your _computer_ for the Arduino software, PlatformIO or any other Integrated Development Environment (IDE) software to be able to compile the library.
+
+Each sensor is implemented as a subclass of the "Sensor" class contained in "SensorBase.h".  Each variable is separately implemented as a subclass of the "Variable" class contained in "VariableBase.h".  The variables are tied to the sensor using an "[Observer](https://en.wikipedia.org/wiki/Observer_pattern)" software pattern.
+
+
+
+### <a name="pdeps"></a>Physical Dependencies
+
+This library is designed for wireless, solar-powered environmental data logging applications, that is, to log data from many physical sensors and to put the processor and all peripherals to sleep to conserver power between readings.  The most banal functions of the library require only an AVR or SAMD processor, but making real use of this library requires:
+
+- A sufficiently powerful AVR or SAMD processor mounted on some sort of circuit board.  (See [Processor/Board Compatibility](#compatibility) for more details on specific processors and boards that are supported.)
     - For all AVR processors, you must also have a [Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html) high precision I2C real-time clock with the SQE/INT pin connected to a pin on your processor which supports either external or pin-change interrupts.
     - For SAMD boards, this library makes use of their on-board (though less accurate) real-time clock.
 - A SD card reader attached to the processor via SPI.
@@ -54,7 +71,7 @@ This library is designed for remote sensing applications, that is, to log data f
 - Protected water-proof enclosures and mountings for all of the above
 - An OTG cable to connect serial output from the board to a cell phone (Optional, but very helpful for debugging.)
 
-## <a name="ldeps"></a>Library Dependencies
+### <a name="ldeps"></a>Library Dependencies
 
 In order to support multiple functions and sensors, there are quite a lot of sub-libraries that this library is dependent on.  _Even if you do not use the modules, you must have all of the dependencies installed for the library itself to properly compile._
 
@@ -959,7 +976,7 @@ ZebraTechDOpto_DOmgL(&ctd, "UUID", "customVarCode");  // Dissolved oxygen concen
 ```
 _____
 
-### <a name="ExtVolt"></a>External Voltage on [TI ADS1115](http://www.ti.com/product/ADS1115)
+### <a name="ExtVolt"></a>External Voltage, via [TI ADS1115](http://www.ti.com/product/ADS1115)
 The TI ADS1115 ADD is a high resolution ADS that communicates with the board via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tying the address pin to ground.  Up to four of these ADD's be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input voltage of 2.0-5.5V, but this library assumes the ADS is powered with 3.3V.  For measuring raw external voltages, this library also allows you to give a gain factor/multiplier to account for use of a voltage divider, such as the [Seeed Grove Voltage Divider](http://wiki.seeedstudio.com/Grove-Voltage_Divider/).
 
 The Arduino pin controlling power on/off and the analog data pin _on the TI ADS1115_ are required for the sensor constructor.  If using a voltage divider to increase the measurable voltage range, enter the gain multiplier as the third argument.  If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the fourth argument.  The number of measurements to average, if more than one is desired, goes as the fifth argument.
@@ -1224,3 +1241,37 @@ ___
 - **Teensy 2.x/3.x** - Unsupported
 - **STM32** - Unsupported
 - Anything else not listed above as being supported.
+
+
+## <a name="contribute"></a>Contributing
+Open an [issue](https://github.com/EnviroDIY/ModularSensors/issues) to suggest and discuss potential changes/additions.
+
+For power contributors:
+
+1. Fork it!
+2. Create your feature branch: `git checkout -b my-new-feature`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin my-new-feature`
+5. Submit a pull request :D
+
+For those interested in creating wrapper functions for a new sensor, please contact us for guidance while we work on a guide. In brief, this library is built to fully take advantage of Objecting Oriented Programing (OOP) approaches. Each sensor is implemented as a subclass of the "Sensor" class contained in "SensorBase.h".  Each variable is separately implemented as a subclass of the "Variable" class contained in "VariableBase.h".  The variables are tied to the sensor using an "[Observer](https://en.wikipedia.org/wiki/Observer_pattern)" software pattern.
+
+
+## <a name="license"></a>License
+Software sketches and code are released under the BSD 3-Clause License -- See [LICENSE.md](https://github.com/EnviroDIY/ModularSensors/blob/master/LICENSE.md) file for details.
+
+Documentation is licensed as [Creative Commons Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/) (CC-BY-SA) copyright.
+
+Hardware designs shared are released, unless otherwise indicated, under the [CERN Open Hardware License 1.2](http://www.ohwr.org/licenses/cern-ohl/v1.2) (CERN_OHL).
+
+## <a name="acknowledgments"></a>Acknowledgments
+[EnviroDIY](http://envirodiy.org/)™ is presented by the Stroud Water Research Center, with contributions from a community of enthusiasts sharing do-it-yourself ideas for environmental science and monitoring.
+
+[Sara Damiano](https://github.com/SRGDamia1) is the primary developer of the EnviroDIY ModularSensors library, with input from many [other contributors](https://github.com/EnviroDIY/ModularSensors/graphs/contributors).
+
+This project has benefited from the support from the following funders:
+
+* William Penn Foundation
+* US Environmental Protection Agency (EPA)
+* National Science Foundation, awards [EAR-0724971](http://www.nsf.gov/awardsearch/showAward?AWD_ID=0724971), [EAR-1331856](http://www.nsf.gov/awardsearch/showAward?AWD_ID=1331856), [ACI-1339834](http://www.nsf.gov/awardsearch/showAward?AWD_ID=1339834)
+* Stroud Water Research Center endowment
