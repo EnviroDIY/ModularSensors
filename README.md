@@ -30,6 +30,7 @@ To use a sensor and variable in your sketch, you must separately include xxx.h f
     - [Decagon Devices ES-2](#ES2)
     - [External Voltage, via TI ADS1115](#ExtVolt)
     - [Maxim DS18 Temperature Probes](#DS18)
+    - [Measurement Specialties MS5803](#MS5803)
     - [External I2C Rain Tipping Bucket Counter](#ExtTips)
     - [Yosemitech Brand Environmental Sensors](#Yosemitech)
     - [Zebra-Tech D-Opto Dissolved Oxygen Sensor](#dOpto)
@@ -1000,6 +1001,37 @@ The two available variables are:  (UUID and customVarCode are optional; UUID mus
 RainCounterI2C_Tips(&tip, "UUID", "customVarCode");  // raw count of tips
 RainCounterI2C_Depth(&tip, "UUID", "customVarCode");  // rain depth in mm
 // Range, accuracy, and resolution depend on the actual tipping bucket module
+```
+_____
+
+### <a name="MS5803"></a>[Measurement Specialties MS5803](http://www.te.com/usa-en/product-CAT-BLPS0013.html) Digital Pressure Sensor
+
+These sensors come in several different pressure ranges.  The maximum measurable pressure is assumed to be 14bar (the most common model), but this can be changed in the constructor.  Although this sensor has the option of either I2C or SPI communication, this library only supports I2C.  _The I2C sensor address is assumed to be 0x76_, though it can be changed to 0x77 in the constructor if necessary.  The sensor address is determined by how the sensor is soldered onto its breakout board.  To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses.  No more than two can be attached.  These sensors should be attached to a 1.7-3.6V power source and the power supply to the sensor can be stopped between measurements.  NOTE:  These I2C addresses are the same as those available for the Bosch BME280 Barometric Pressure Sensor!  If you are also using one of those sensors, make sure that the address for that sensor does not conflict with the address of this sensor.  
+
+The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex and maximum pressure are optional as is the number of readings to average:
+
+```cpp
+#include <MeaSpecMS5803.h>
+MeaSpecMS5803 ms5803(I2CPower, i2cAddressHex, maxPressure, measurementsToAverage);
+```
+
+The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
+
+```cpp
+MeaSpecMS5803_Temp(&ms5803, "UUID", "customVarCode");  // temperature in °C
+MeaSpecMS5803_Pressure(&ms5803, "UUID", "customVarCode");  // pressure in millibar
+// For Pressure (sensor designed for water pressure):
+//   Resolution is 1 / 0.6 / 0.4 / 0.3 / 0.2 mbar (where 1 mbar = 100 pascals)
+//      at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
+//   Accuracy 0 to +40°C is ±20mbar
+//   Accuracy -40°C to +85°C is ±40mbar
+//   Range is 0 to 14 bar
+//   Long term stability is -20 mbar/yr
+
+// For Temperature:
+//   Resolution is <0.01°C
+//   Accuracy is ±0.8°C
+//   Range is -40°C to +85°C
 ```
 _____
 

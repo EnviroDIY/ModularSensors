@@ -37,12 +37,14 @@
 
 
 // The constructor - because this is I2C, only need the power pin
-MeaSpecMS5803::MeaSpecMS5803(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage)
+MeaSpecMS5803::MeaSpecMS5803(int8_t powerPin, uint8_t i2cAddressHex,
+                             int maxPressure, uint8_t measurementsToAverage)
      : Sensor(F("MeaSpecMS5803"), MS5803_NUM_VARIABLES,
               MS5803_WARM_UP_TIME_MS, MS5803_STABILIZATION_TIME_MS, MS5803_MEASUREMENT_TIME_MS,
               powerPin, -1, measurementsToAverage)
 {
-    _i2cAddressHex  = i2cAddressHex;
+    _i2cAddressHex = i2cAddressHex;
+    _maxPressure = maxPressure;
 }
 
 
@@ -56,7 +58,7 @@ String MeaSpecMS5803::getSensorLocation(void)
 
 bool MeaSpecMS5803::setup(void)
 {
-    MS5803_internal.begin(_i2cAddressHex, 14);
+    MS5803_internal.begin(_i2cAddressHex, _maxPressure);
     MS5803_internal.reset();
     return Sensor::setup();  // this will set timestamp and status bit
 }

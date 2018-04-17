@@ -273,9 +273,11 @@ MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
 //    MeaSpecMS5803 (Pressure, Temperature)
 // ==========================================================================
 #include <MeaSpecMS5803.h>
-uint8_t MS5803i2c_addr = 0x76;  // The MS5803 can be addressed either as 0x76 or 0x77
 // const int8_t I2CPower = -1;  // Pin to switch power on and off (-1 if unconnected)
-MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr);
+const uint8_t MS5803i2c_addr = 0x76;  // The MS5803 can be addressed either as 0x76 or 0x77
+const int MS5803maxPressure = 14;  // The maximum pressure measurable by the specific MS5803 model
+const uint8_t MS5803ReadingsToAvg = 1;
+MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803ReadingsToAvg);
 
 
 // ==========================================================================
