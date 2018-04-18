@@ -49,6 +49,7 @@ String LoggerDreamHost::generateDreamHostGetRequest(String fullURL)
     GETstring += String(fullURL);
     GETstring += String(F("  HTTP/1.1"));
     GETstring += String(F("\r\nHost: swrcsensors.dreamhosters.com"));
+    GETstring += String(F("\r\n\r\n"));
     return GETstring;
 }
 String LoggerDreamHost::generateDreamHostGetRequest(void)
@@ -78,7 +79,6 @@ int LoggerDreamHost::postDataDreamHost(String fullGetRequest)
         #if defined(STANDARD_SERIAL_OUTPUT)
             PRINTOUT(F("\n \\/------ Data to DreamHost ------\\/ \n"));
             STANDARD_SERIAL_OUTPUT.print(fullGetRequest);
-            PRINTOUT(F("\r\n\r\n"));
             STANDARD_SERIAL_OUTPUT.flush();
         #endif
 
