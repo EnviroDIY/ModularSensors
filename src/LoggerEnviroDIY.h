@@ -47,12 +47,14 @@ public:
 
     // This generates a fully structured POST request for EnviroDIY
     String generateEnviroDIYPostRequest(String enviroDIYjson);
+    String generateEnviroDIYPostRequest(void);
 
     // This utilizes an attached modem to make a TCP connection to the
     // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
     // over that connection.
     // The return is the http status code of the response.
     int postDataEnviroDIY(String fullPostRequest);
+    int postDataEnviroDIY(void);
 
     // ===================================================================== //
     // Convience functions to call several of the above functions

@@ -97,10 +97,14 @@ String LoggerEnviroDIY::generateEnviroDIYPostRequest(String enviroDIYjson)
     POSTstring += String(F("\r\nTOKEN: ")) + String(_registrationToken);
     // POSTstring += String(F("\r\nCache-Control: no-cache"));
     // POSTstring += String(F("\r\nConnection: close"));
-    POSTstring += String(F("\r\nContent-Length: ")) + String(generateSensorDataJSON().length());
+    POSTstring += String(F("\r\nContent-Length: ")) + String(enviroDIYjson.length());
     POSTstring += String(F("\r\nContent-Type: application/json\r\n\r\n"));
-    POSTstring += String(generateSensorDataJSON());
+    POSTstring += String(enviroDIYjson);
     return POSTstring;
+}
+String LoggerEnviroDIY::generateEnviroDIYPostRequest(void)
+{
+    return generateEnviroDIYPostRequest(generateSensorDataJSON());
 }
 
 
@@ -171,6 +175,10 @@ int LoggerEnviroDIY::postDataEnviroDIY(String fullPostRequest)
     PRINTOUT(responseCode, F("\n"));
 
     return responseCode;
+}
+int LoggerEnviroDIY::postDataEnviroDIY(void)
+{
+    return postDataEnviroDIY(generateEnviroDIYPostRequest());
 }
 
 

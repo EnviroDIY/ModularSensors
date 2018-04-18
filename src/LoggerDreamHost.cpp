@@ -51,6 +51,10 @@ String LoggerDreamHost::generateDreamHostGetRequest(String fullURL)
     GETstring += String(F("\r\nHost: swrcsensors.dreamhosters.com"));
     return GETstring;
 }
+String LoggerDreamHost::generateDreamHostGetRequest(void)
+{
+    return generateDreamHostGetRequest(generateSensorDataDreamHost());
+}
 
 
 // Post the data to dream host.
@@ -117,6 +121,10 @@ int LoggerDreamHost::postDataDreamHost(String fullGetRequest)
     PRINTOUT(responseCode, F("\n"));
 
     return responseCode;
+}
+int LoggerDreamHost::postDataDreamHost(void)
+{
+    return postDataDreamHost(generateDreamHostGetRequest());
 }
 
 
