@@ -19,8 +19,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // #define TINY_GSM_MODEM_A6  // Select for a AI-Thinker A6 or A7 chip
 // #define TINY_GSM_MODEM_M590  // Select for a Neoway M590
 // #define TINY_GSM_MODEM_U201  // Select for a U-blox U201
-// #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
-#define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
+#define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
+// #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
 
 // ==========================================================================
 //    Include the base required libraries
@@ -39,7 +39,7 @@ const char *sketchName = "logging_to_EnviroDIY.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 5;
+const uint8_t loggingInterval = 1;
 // Your logger's timezone.
 const int8_t timeZone = -5;
 // Create a new logger instance
@@ -281,38 +281,54 @@ void loop()
         EnviroDIYLogger._logModem->wake();
 
         // Send power to all of the sensors
-        Serial.print(F("    Powering sensors...\n"));
+        Serial.print(F("Powering sensors...\n"));
         EnviroDIYLogger.sensorsPowerUp();
         // Wake up all of the sensors
-        Serial.print(F("    Waking sensors...\n"));
+        Serial.print(F("Waking sensors...\n"));
         EnviroDIYLogger.sensorsWake();
         // Update the values from all attached sensors
-        Serial.print(F("  Updating sensor values...\n"));
+        Serial.print(F("Updating sensor values...\n"));
         EnviroDIYLogger.updateAllSensors();
         // Put sensors to sleep
-        Serial.print(F("  Putting sensors back to sleep...\n"));
+        Serial.print(F("Putting sensors back to sleep...\n"));
         EnviroDIYLogger.sensorsSleep();
         // Cut sensor power
-        Serial.print(F("  Cutting sensor power...\n"));
+        Serial.print(F("Cutting sensor power...\n"));
         EnviroDIYLogger.sensorsPowerDown();
 
         // Generate a csv with the sensor-recorded variables
-        String csvToGo = EnviroDIYLogger.generateSensorDataCSV();
+        String csvRaw = EnviroDIYLogger.generateSensorDataCSV();
 
         // Generate a json with the sensor-recorded variables
-        String jsonToGo = EnviroDIYLogger.generateSensorDataJSON();
+        String jsonRaw = EnviroDIYLogger.generateSensorDataJSON();
 
         // Calculate the total water pressure
-        float waterPressure = msPress->getValue() - bPress->getValue();
+        // As long as the seensor updates took less than two minutes, these
+        // getValue() functions will return the values from the last update
+        // that happened in the updateAllSensors() function
+        // The MS5803 reports pressure in millibar, the BME280 in pascal
+        // 1 pascal = 0.01 mbar
+        // This calculation gives a final result in mbar
+        Serial.print(F("Calculating water pressure...\n"));
+        float waterPressure = msPress->getValue() - (bPress->getValue())*0.01;
 
         // Add the water pressure to the csv string
-        csvToGo += ",";
+        String csvToGo = csvRaw + ",";
         csvToGo += String(waterPressure);
 
         // Add the total water pressure to the raw json
-        // TODO!!
-
-
+        // Figure out how long the original json is
+        int jsonLength = jsonRaw.length();
+        // Crop off the last ' }' from the json
+        String jsonToGo = jsonRaw.substring(0,jsonLength-2);
+        // add the UUID for the water pressure
+        jsonToGo += F(", \"");
+        jsonToGo += F("12345678-abcd-1234-efgh-1234567890ab");
+        jsonToGo += F("\": ");
+        // add the water pressure value
+        jsonToGo += String(waterPressure);
+        // re-add the last '}'
+        jsonToGo += F(" }");
 
         // Connect to the network
         if (EnviroDIYLogger._logModem->connectInternet())

@@ -439,7 +439,7 @@ void Logger::setFileName(char *fileName)
     _isFileNameSet = true;
 
     // Print out the file name
-    PRINTOUT(F("Data will be saved as "), _fileName, F("..."));
+    PRINTOUT(F("Data will be saved as "), _fileName, '\n');
     if (!_autoFileName) PRINTOUT(F("\n"));
 }
 // Same as above, with a string (overload function)
@@ -565,7 +565,7 @@ void Logger::setupLogFile(String filename, String header)
         setFileTimestame(logFile, T_WRITE);
         // Set access date time
         setFileTimestame(logFile, T_ACCESS);
-        PRINTOUT(F("   ... File created!\n"));
+        PRINTOUT(F("File created!\n"));
 
         // Add header information
         logFile.print(header);
