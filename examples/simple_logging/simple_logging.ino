@@ -229,7 +229,7 @@ MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803Readings
 // ==========================================================================
 #include <MPL115A2.h>
 // const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-const uint8_t MPL115A2_addr = 0x60;  // The MS5803 can be addressed either as 0x76 or 0x77
+const uint8_t MPL115A2_addr = 0x60;  
 const uint8_t MPL115A2ReadingsToAvg = 1;
 MPL115A2 mpl115a2(I2CPower, MPL115A2_addr, MPL115A2ReadingsToAvg);
 
