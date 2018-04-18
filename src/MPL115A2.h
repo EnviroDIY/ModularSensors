@@ -46,7 +46,7 @@
 #define MPL115A2_PRESSURE_VAR_NUM 1
 
 
-// The main class for the Measurement Specialties MS5803
+// The main class for the MPL115A2
 class MPL115A2 : public Sensor
 {
 public:
