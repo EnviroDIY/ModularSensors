@@ -89,7 +89,7 @@ String LoggerEnviroDIY::generateSensorDataJSON(void)
 }
 
 
-// This generates a fully structured post request for EnviroDIY
+// This generates a fully structured POST request for EnviroDIY
 String LoggerEnviroDIY::generateEnviroDIYPostRequest(String enviroDIYjson)
 {
     String POSTstring = String(F("POST /api/data-stream/ HTTP/1.1"));
@@ -116,6 +116,7 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
         PRINTOUT(F("No modem attached, data cannot be sent out!\n"));
         return 504;
     }
+
     // Create a buffer for the response
     char response_buffer[12] = "";
     int did_respond = 0;
@@ -171,6 +172,7 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
 
     return responseCode;
 }
+
 
 // ===================================================================== //
 // Convience functions to call several of the above functions

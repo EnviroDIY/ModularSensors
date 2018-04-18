@@ -42,14 +42,14 @@ String LoggerDreamHost::generateSensorDataDreamHost(void)
 }
 
 
-// Communication functions
-void LoggerDreamHost::streamDreamHostRequest(Stream *stream)
+// This generates a fully structured GET request for DreamHost
+String LoggerDreamHost::generateDreamHostGetRequest(String fullURL)
 {
-    stream->print(String(F("GET ")));
-    stream->print(generateSensorDataDreamHost());
-    stream->print(String(F("  HTTP/1.1")));
-    stream->print(String(F("\r\nHost: swrcsensors.dreamhosters.com")));
-    stream->print(String(F("\r\n\r\n")));
+    String GETstring = String(F("GET "));
+    GETstring += String(fullURL);
+    GETstring += String(F("  HTTP/1.1"));
+    GETstring += String(F("\r\nHost: swrcsensors.dreamhosters.com"));
+    return GETstring;
 }
 
 
@@ -73,12 +73,13 @@ int LoggerDreamHost::postDataDreamHost(void)
         // Send the request to the serial for debugging
         #if defined(STANDARD_SERIAL_OUTPUT)
             PRINTOUT(F("\n \\/------ Data to DreamHost ------\\/ \n"));
-            streamDreamHostRequest(&STANDARD_SERIAL_OUTPUT);  // for debugging
-            STANDARD_SERIAL_OUTPUT.flush();  // for debugging
+            STANDARD_SERIAL_OUTPUT.print(generateDreamHostGetRequest(generateSensorDataDreamHost()));
+            PRINTOUT(F("\r\n\r\n"));
+            STANDARD_SERIAL_OUTPUT.flush();
         #endif
 
         // Send the request to the modem stream
-        streamDreamHostRequest(_logModem->_client);
+        _logModem->_client->print(generateDreamHostGetRequest(generateSensorDataDreamHost()));
         _logModem->_client->flush();  // wait for sending to finish
 
         uint32_t start_timer;

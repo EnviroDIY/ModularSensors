@@ -45,7 +45,7 @@ public:
     // This generates a properly formatted JSON for EnviroDIY
     String generateSensorDataJSON(void);
 
-    // This generates a fully structured post request for EnviroDIY
+    // This generates a fully structured POST request for EnviroDIY
     String generateEnviroDIYPostRequest(String enviroDIYjson);
 
     // This utilizes an attached modem to make a TCP connection to the
