@@ -126,11 +126,6 @@ public:
     // Same as above, with a string (overload function)
     void setFileName(String fileName);
 
-    // This generates a file name from the logger id and the current date
-    // This will be used if the setFileName function is not called before
-    // the begin() function is called.
-    void setFileName(void);
-
     // This returns the current filename.  Must be run after setFileName.
     String getFileName(void){return _fileName;}
 
@@ -158,10 +153,16 @@ public:
     // This generates a comma separated list of volues of sensor data - including the time
     String generateSensorDataCSV(void);
 
-    // This initializes a file on the SD card and writes a header to it
+    // This initializes a file on the SD card with the given filename and
+    // writes the given header to it
+    void setupLogFile(String filename, String header);
+    // This initializes a file on the SD card using the logger's filename and
+    // writes a header to it based on the sensors attached to variables in the array
     void setupLogFile(void);
 
-    // This writes a record to the SD card
+    // This writes a record to the SD card with the given filename
+    void logToSD(String rec, String filename);
+    // This writes a record to the SD card, using the logger's filename
     void logToSD(String rec);
 
 
@@ -227,6 +228,18 @@ protected:
     static bool _isLoggingNow;
     static bool _isTestingNow;
     static bool _startTesting;
+
+    // This checks if the SD card is available and ready
+    bool initializeSDCard(uint8_t Pin);
+    bool initializeSDCard(void);
+
+    // This sets a timestamp on a file
+    void setFileTimestame(SdFile fileToStamp, uint8_t stampFlag);
+
+    // This generates a file name from the logger id and the current date
+    // This will be used if the setFileName function is not called before
+    // the begin() function is called.
+    void setFileName(void);
 };
 
 #endif

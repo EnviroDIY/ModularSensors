@@ -273,6 +273,11 @@ void LoggerEnviroDIY::begin(void)
     // Set up the sensors
     setupSensors();
 
+    // Set the filename for the logger to save to, if it hasn't been done
+    if(!_isFileNameSet){setFileName();}
+    else if(_autoFileName){setFileName();}
+    else setFileName(_fileName);  // This just for a nice print-out
+
     // Set up the log file
     setupLogFile();
 
