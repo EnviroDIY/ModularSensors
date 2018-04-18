@@ -89,21 +89,25 @@ String LoggerEnviroDIY::generateSensorDataJSON(void)
 }
 
 
-// Communication functions
-void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
+// This generates a fully structured post request for EnviroDIY
+String LoggerEnviroDIY::generateEnviroDIYPostRequest(String enviroDIYjson)
 {
-    stream->print(String(F("POST /api/data-stream/ HTTP/1.1")));
-    stream->print(String(F("\r\nHost: data.envirodiy.org")));
-    stream->print(String(F("\r\nTOKEN: ")) + String(_registrationToken));
-    // stream->print(String(F("\r\nCache-Control: no-cache")));
-    // stream->print(String(F("\r\nConnection: close")));
-    stream->print(String(F("\r\nContent-Length: ")) + String(generateSensorDataJSON().length()));
-    stream->print(String(F("\r\nContent-Type: application/json\r\n\r\n")));
-    stream->print(String(generateSensorDataJSON()));
+    String POSTstring = String(F("POST /api/data-stream/ HTTP/1.1"));
+    POSTstring += String(F("\r\nHost: data.envirodiy.org"));
+    POSTstring += String(F("\r\nTOKEN: ")) + String(_registrationToken);
+    // POSTstring += String(F("\r\nCache-Control: no-cache"));
+    // POSTstring += String(F("\r\nConnection: close"));
+    POSTstring += String(F("\r\nContent-Length: ")) + String(generateSensorDataJSON().length());
+    POSTstring += String(F("\r\nContent-Type: application/json\r\n\r\n"));
+    POSTstring += String(generateSensorDataJSON());
+    return POSTstring;
 }
 
 
-// Public function to send data
+// This utilizes an attached modem to make a TCP connection to the
+// EnviroDIY/ODM2DataSharingPortal and then streams out a post request
+// over that connection.
+// The return is the http status code of the response.
 int LoggerEnviroDIY::postDataEnviroDIY(void)
 {
     // do not continue if no modem!
@@ -122,13 +126,13 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
         // Send the request to the serial for debugging
         #if defined(STANDARD_SERIAL_OUTPUT)
             PRINTOUT(F("\n \\/---- Post Request to EnviroDIY ----\\/ \n"));
-            streamEnviroDIYRequest(&STANDARD_SERIAL_OUTPUT);  // for debugging
+            STANDARD_SERIAL_OUTPUT.print(generateEnviroDIYPostRequest(generateSensorDataJSON()));
             PRINTOUT(F("\r\n\r\n"));
-            STANDARD_SERIAL_OUTPUT.flush();  // for debugging
+            STANDARD_SERIAL_OUTPUT.flush();
         #endif
 
         // Send the request to the modem stream
-        streamEnviroDIYRequest(_logModem->_client);
+        _logModem->_client->print(generateEnviroDIYPostRequest(generateSensorDataJSON()));
         _logModem->_client->flush();  // wait for sending to finish
 
         uint32_t start_timer;
