@@ -108,7 +108,7 @@ String LoggerEnviroDIY::generateEnviroDIYPostRequest(String enviroDIYjson)
 // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
 // over that connection.
 // The return is the http status code of the response.
-int LoggerEnviroDIY::postDataEnviroDIY(void)
+int LoggerEnviroDIY::postDataEnviroDIY(String fullPostRequest)
 {
     // do not continue if no modem!
     if (!_modemAttached)
@@ -127,13 +127,13 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
         // Send the request to the serial for debugging
         #if defined(STANDARD_SERIAL_OUTPUT)
             PRINTOUT(F("\n \\/---- Post Request to EnviroDIY ----\\/ \n"));
-            STANDARD_SERIAL_OUTPUT.print(generateEnviroDIYPostRequest(generateSensorDataJSON()));
+            STANDARD_SERIAL_OUTPUT.print(fullPostRequest);
             PRINTOUT(F("\r\n\r\n"));
             STANDARD_SERIAL_OUTPUT.flush();
         #endif
 
         // Send the request to the modem stream
-        _logModem->_client->print(generateEnviroDIYPostRequest(generateSensorDataJSON()));
+        _logModem->_client->print(fullPostRequest);
         _logModem->_client->flush();  // wait for sending to finish
 
         uint32_t start_timer;
@@ -336,7 +336,7 @@ void LoggerEnviroDIY::log(void)
             if (_logModem->connectInternet())
             {
                 // Post the data to the WebSDL
-                postDataEnviroDIY();
+                postDataEnviroDIY(generateEnviroDIYPostRequest(generateSensorDataJSON()));
 
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
                 if (_numTimepointsLogged % 288 == 0)

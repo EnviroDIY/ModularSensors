@@ -54,7 +54,7 @@ String LoggerDreamHost::generateDreamHostGetRequest(String fullURL)
 
 
 // Post the data to dream host.
-int LoggerDreamHost::postDataDreamHost(void)
+int LoggerDreamHost::postDataDreamHost(String fullGetRequest)
 {
     // do not continue if no modem!
     if (!_modemAttached)
@@ -73,13 +73,13 @@ int LoggerDreamHost::postDataDreamHost(void)
         // Send the request to the serial for debugging
         #if defined(STANDARD_SERIAL_OUTPUT)
             PRINTOUT(F("\n \\/------ Data to DreamHost ------\\/ \n"));
-            STANDARD_SERIAL_OUTPUT.print(generateDreamHostGetRequest(generateSensorDataDreamHost()));
+            STANDARD_SERIAL_OUTPUT.print(fullGetRequest);
             PRINTOUT(F("\r\n\r\n"));
             STANDARD_SERIAL_OUTPUT.flush();
         #endif
 
         // Send the request to the modem stream
-        _logModem->_client->print(generateDreamHostGetRequest(generateSensorDataDreamHost()));
+        _logModem->_client->print(fullGetRequest);
         _logModem->_client->flush();  // wait for sending to finish
 
         uint32_t start_timer;
@@ -174,11 +174,11 @@ void LoggerDreamHost::log(void)
                 if(_dualPost)
                 {
                     // Post the data to the WebSDL
-                    postDataEnviroDIY();
+                    postDataEnviroDIY(generateEnviroDIYPostRequest(generateSensorDataJSON()));
                 }
 
                 // Post the data to DreamHost
-                postDataDreamHost();
+                postDataDreamHost(generateDreamHostGetRequest(generateSensorDataDreamHost()));
 
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
                 if (_numTimepointsLogged % 288 == 0)
