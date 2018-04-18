@@ -6,7 +6,9 @@ This Arduino library gives environmental sensors a common interface of functions
 * Transmit that data wirelessly to a web server; and
 * Put the processor, sensors and all other peripherals to sleep between readings to conserver power.
 
-The ModularSensors library coordinates these tasks by [wrapping](https://en.wikipedia.org/wiki/Wrapper_function) native sensor and variable functions into a common interface of functions and returns and to harmonize and simplify the process of iterating through and logging data from a diverse set of sensors and variables. Although this library was written primarily for the [EnviroDIY Mayfly data logger board](https://envirodiy.org/mayfly/), it is also designed to be [compatible with a variety of other Arduino-based boards](#compatibility) as well.
+The ModularSensors library coordinates these tasks by "wrapping" native sensor and variable functions into a common interface of functions and returns. These [wrapper functions](https://en.wikipedia.org/wiki/Wrapper_function) serve to harmonize and simplify the process of iterating through and logging data from a diverse set of sensors and variables.
+
+Although this library was written primarily for the [EnviroDIY Mayfly data logger board](https://envirodiy.org/mayfly/), it is also designed to be [compatible with a variety of other Arduino-based boards](#compatibility) as well.
 
 ### Contents:
 - [Getting Started](#getStarted)
@@ -48,7 +50,7 @@ The ModularSensors library coordinates these tasks by [wrapping](https://en.wiki
 
 ## <a name="getStarted"></a>Getting Started
 
-Get started by reading this entire section, including Physical Dependencies](#pdeps) and [Library Dependencies](#ldeps), then try out one of our sketches in the [Examples](https://github.com/EnviroDIY/ModularSensors/tree/master/examples) folder.
+Get started by reading this entire section, including [Physical Dependencies](#pdeps) and [Library Dependencies](#ldeps), then try out one of our sketches in the [Examples](https://github.com/EnviroDIY/ModularSensors/tree/master/examples) folder.
 
 To use a sensor and variable in your sketch, you must separately include xxx.h for each sensor you intend to use.  While this may force you to write many more include statements, it decreases the library RAM usage on your Arduino board.  Regardless of how many sensors you intend to use, however, you must install all of the [dependent libraries](#ldeps) on your _computer_ for the Arduino software, PlatformIO or any other Integrated Development Environment (IDE) software to be able to compile the library.
 
