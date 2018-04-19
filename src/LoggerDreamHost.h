@@ -32,10 +32,15 @@ public:
     // This creates all of the URL parameters
     String generateSensorDataDreamHost(void);
 
-    // Communication functions
-    void streamDreamHostRequest(Stream *stream);
+    // This generates a fully structured GET request for DreamHost
+    String generateDreamHostGetRequest(String fullURL);
+    String generateDreamHostGetRequest(void);
 
-    // Post the data to dream host.
+    // This utilizes an attached modem to make a TCP connection to the
+    // DreamHost URL and then streams out a get request
+    // over that connection.
+    // The return is the http status code of the response.
+    int postDataDreamHost(String fullGetRequest);
     int postDataDreamHost(void);
 
     // This prevents the logging function from dual-posting to EnviroDIY

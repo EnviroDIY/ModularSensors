@@ -89,22 +89,30 @@ String LoggerEnviroDIY::generateSensorDataJSON(void)
 }
 
 
-// Communication functions
-void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
+// This generates a fully structured POST request for EnviroDIY
+String LoggerEnviroDIY::generateEnviroDIYPostRequest(String enviroDIYjson)
 {
-    stream->print(String(F("POST /api/data-stream/ HTTP/1.1")));
-    stream->print(String(F("\r\nHost: data.envirodiy.org")));
-    stream->print(String(F("\r\nTOKEN: ")) + String(_registrationToken));
-    // stream->print(String(F("\r\nCache-Control: no-cache")));
-    // stream->print(String(F("\r\nConnection: close")));
-    stream->print(String(F("\r\nContent-Length: ")) + String(generateSensorDataJSON().length()));
-    stream->print(String(F("\r\nContent-Type: application/json\r\n\r\n")));
-    stream->print(String(generateSensorDataJSON()));
+    String POSTstring = String(F("POST /api/data-stream/ HTTP/1.1"));
+    POSTstring += String(F("\r\nHost: data.envirodiy.org"));
+    POSTstring += String(F("\r\nTOKEN: ")) + String(_registrationToken);
+    // POSTstring += String(F("\r\nCache-Control: no-cache"));
+    // POSTstring += String(F("\r\nConnection: close"));
+    POSTstring += String(F("\r\nContent-Length: ")) + String(enviroDIYjson.length());
+    POSTstring += String(F("\r\nContent-Type: application/json\r\n\r\n"));
+    POSTstring += String(enviroDIYjson);
+    return POSTstring;
+}
+String LoggerEnviroDIY::generateEnviroDIYPostRequest(void)
+{
+    return generateEnviroDIYPostRequest(generateSensorDataJSON());
 }
 
 
-// Public function to send data
-int LoggerEnviroDIY::postDataEnviroDIY(void)
+// This utilizes an attached modem to make a TCP connection to the
+// EnviroDIY/ODM2DataSharingPortal and then streams out a post request
+// over that connection.
+// The return is the http status code of the response.
+int LoggerEnviroDIY::postDataEnviroDIY(String fullPostRequest)
 {
     // do not continue if no modem!
     if (!_modemAttached)
@@ -112,6 +120,7 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
         PRINTOUT(F("No modem attached, data cannot be sent out!\n"));
         return 504;
     }
+
     // Create a buffer for the response
     char response_buffer[12] = "";
     int did_respond = 0;
@@ -122,13 +131,13 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
         // Send the request to the serial for debugging
         #if defined(STANDARD_SERIAL_OUTPUT)
             PRINTOUT(F("\n \\/---- Post Request to EnviroDIY ----\\/ \n"));
-            streamEnviroDIYRequest(&STANDARD_SERIAL_OUTPUT);  // for debugging
+            STANDARD_SERIAL_OUTPUT.print(fullPostRequest);
             PRINTOUT(F("\r\n\r\n"));
-            STANDARD_SERIAL_OUTPUT.flush();  // for debugging
+            STANDARD_SERIAL_OUTPUT.flush();
         #endif
 
         // Send the request to the modem stream
-        streamEnviroDIYRequest(_logModem->_client);
+        _logModem->_client->print(fullPostRequest);
         _logModem->_client->flush();  // wait for sending to finish
 
         uint32_t start_timer;
@@ -167,6 +176,11 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
 
     return responseCode;
 }
+int LoggerEnviroDIY::postDataEnviroDIY(void)
+{
+    return postDataEnviroDIY(generateEnviroDIYPostRequest());
+}
+
 
 // ===================================================================== //
 // Convience functions to call several of the above functions
@@ -273,6 +287,11 @@ void LoggerEnviroDIY::begin(void)
     // Set up the sensors
     setupSensors();
 
+    // Set the filename for the logger to save to, if it hasn't been done
+    if(!_isFileNameSet){setFileName();}
+    else if(_autoFileName){setFileName();}
+    else setFileName(_fileName);  // This just for a nice print-out
+
     // Set up the log file
     setupLogFile();
 
@@ -325,7 +344,7 @@ void LoggerEnviroDIY::log(void)
             if (_logModem->connectInternet())
             {
                 // Post the data to the WebSDL
-                postDataEnviroDIY();
+                postDataEnviroDIY(generateEnviroDIYPostRequest(generateSensorDataJSON()));
 
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
                 if (_numTimepointsLogged % 288 == 0)

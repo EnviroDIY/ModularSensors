@@ -43,7 +43,8 @@ const char *sketchName = "logger_test.ino";
 
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "SL099";
-const char *FileName = "doubleLoggerFile.csv";
+const char *FileName5min = "SL099_5MinuteInterval.csv";
+const char *FileName1min = "SL099_1MinuteInterval.csv";
 // Your logger's timezone.
 const int8_t timeZone = -5;
 // Create TWO new logger instances
@@ -192,19 +193,16 @@ void setup()
     logger1min.setupSensors();
     logger5min.setupSensors();
 
-    // Tell both loggers to save data to the same file
+    // Give the loggers different file names
     // If we wanted to auto-generate the file name, that could also be done by
-    // not calling this function.  If both "loggers" have the same logger id,
-    // they will end up with the same filename
-    logger1min.setFileName(FileName);
-    logger5min.setFileName(FileName);
+    // not calling this function, but in that case if both "loggers" have the
+    // same logger id, they will end up with the same filename
+    logger1min.setFileName(FileName1min);
+    logger5min.setFileName(FileName5min);
 
-    // Setup the logger file
-    // Because both loggers are saving to the same file, only
-    // need to do this once
+    // Setup the logger files.  This will automatically add headers to each
     logger1min.setupLogFile();
-    // Create a header for the second logger and write it to the SD card
-    logger5min.logToSD(logger5min.generateFileHeader());
+    logger5min.setupLogFile();
 
     // Print out the current time
     Serial.print(F("Current RTC time is: "));

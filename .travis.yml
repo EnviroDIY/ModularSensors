@@ -17,6 +17,7 @@ env:
     - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY/
     - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/
     - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/
+    - PLATFORMIO_CI_SRC=examples/barometric_correction/
 
     # SAMD examples
     - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY_Zero/ PLATFORMIO_CI_ZERO=1

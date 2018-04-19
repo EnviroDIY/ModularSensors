@@ -439,7 +439,7 @@ void Logger::setFileName(char *fileName)
     _isFileNameSet = true;
 
     // Print out the file name
-    PRINTOUT(F("Data will be saved as "), _fileName, F("..."));
+    PRINTOUT(F("Data will be saved as "), _fileName, '\n');
     if (!_autoFileName) PRINTOUT(F("\n"));
 }
 // Same as above, with a string (overload function)
@@ -509,85 +509,97 @@ String Logger::generateSensorDataCSV(void)
 }
 
 
-// This initializes a file on the SD card and writes a header to it
-void Logger::setupLogFile(void)
+// This checks if the SD card is available and ready
+bool Logger::initializeSDCard(uint8_t Pin)
 {
     // Initialise the SD card
-    if (!sd.begin(_SDCardPin, SPI_FULL_SPEED))
+    if (!sd.begin(Pin, SPI_FULL_SPEED))
     {
         PRINTOUT(F("Error: SD card failed to initialize or is missing.\n"));
         PRINTOUT(F("Data will not be saved!\n"));
+        return false;
     }
     else  // skip everything else if there's no SD card, otherwise it might hang
     {
         PRINTOUT(F("Successfully connected to SD Card with card/slave select on pin "));
-        PRINTOUT(_SDCardPin, F("\n"));
+        PRINTOUT(Pin, F("\n"));
+        return true;
+    }
+}
+bool Logger::initializeSDCard(void)
+{
+    return initializeSDCard(_SDCardPin);
+}
 
-        if(!_isFileNameSet){setFileName();}
-        else if(_autoFileName){setFileName();}
-        else setFileName(_fileName);  // This just for a nice print-out
 
+// This sets a timestamp on a file
+void Logger::setFileTimestame(SdFile fileToStamp, uint8_t stampFlag)
+{
+    fileToStamp.timestamp(stampFlag, dtFromEpoch(getNowEpoch()).year(),
+                                dtFromEpoch(getNowEpoch()).month(),
+                                dtFromEpoch(getNowEpoch()).date(),
+                                dtFromEpoch(getNowEpoch()).hour(),
+                                dtFromEpoch(getNowEpoch()).minute(),
+                                dtFromEpoch(getNowEpoch()).second());
+}
+
+
+// This initializes a file on the SD card with the given filename and writes the given header to it
+void Logger::setupLogFile(String filename, String header)
+{
+    // Initialise the SD card
+    // skip everything else if there's no SD card, otherwise it might hang
+    if (!initializeSDCard()) return;
+    else
+    {
         // Convert the string filename to a character file name for SdFat
-        uint8_t fileNameLength = _fileName.length() + 1;
+        uint8_t fileNameLength = filename.length() + 1;
         char charFileName[fileNameLength];
-        _fileName.toCharArray(charFileName, fileNameLength);
+        filename.toCharArray(charFileName, fileNameLength);
 
         // Open the file in write mode (and create it if it did not exist)
         logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END);
         // Set creation date time
-        logFile.timestamp(T_CREATE, dtFromEpoch(getNowEpoch()).year(),
-                                    dtFromEpoch(getNowEpoch()).month(),
-                                    dtFromEpoch(getNowEpoch()).date(),
-                                    dtFromEpoch(getNowEpoch()).hour(),
-                                    dtFromEpoch(getNowEpoch()).minute(),
-                                    dtFromEpoch(getNowEpoch()).second());
+        setFileTimestame(logFile, T_CREATE);
         // Set write/modification date time
-        logFile.timestamp(T_WRITE, dtFromEpoch(getNowEpoch()).year(),
-                                   dtFromEpoch(getNowEpoch()).month(),
-                                   dtFromEpoch(getNowEpoch()).date(),
-                                   dtFromEpoch(getNowEpoch()).hour(),
-                                   dtFromEpoch(getNowEpoch()).minute(),
-                                   dtFromEpoch(getNowEpoch()).second());
+        setFileTimestame(logFile, T_WRITE);
         // Set access date time
-        logFile.timestamp(T_ACCESS, dtFromEpoch(getNowEpoch()).year(),
-                                    dtFromEpoch(getNowEpoch()).month(),
-                                    dtFromEpoch(getNowEpoch()).date(),
-                                    dtFromEpoch(getNowEpoch()).hour(),
-                                    dtFromEpoch(getNowEpoch()).minute(),
-                                    dtFromEpoch(getNowEpoch()).second());
-        PRINTOUT(F("   ... File created!\n"));
+        setFileTimestame(logFile, T_ACCESS);
+        PRINTOUT(F("File created!\n"));
 
         // Add header information
-        logFile.print(generateFileHeader());
-        MS_DBG(generateFileHeader(), F("\n"));
+        logFile.print(header);
+        MS_DBG(header, F("\n"));
 
         //Close the file to save it
         logFile.close();
     }
 }
-
-
-// This writes a record to the SD card
-void Logger::logToSD(String rec)
+// This initializes a file on the SD card and writes a header to it
+void Logger::setupLogFile(void)
 {
-    // Make sure the SD card is still initialized
-    if (!sd.begin(_SDCardPin, SPI_FULL_SPEED))
-    {
-        PRINTOUT(F("Error: SD card failed to initialize or is missing.\n"));
-        PRINTOUT(F("Data will not be saved!.\n"));
-    }
+    setupLogFile(_fileName, generateFileHeader());
+}
+
+
+// This writes a record to the SD card with the given filename
+void Logger::logToSD(String rec, String filename)
+{
+    // Initialise the SD card
+    // skip everything else if there's no SD card, otherwise it might hang
+    if (!initializeSDCard()) return;
     else  // skip everything else if there's no SD card, otherwise it might hang
     {
         // Convert the string filename to a character file name for SdFat
-        uint8_t fileNameLength = _fileName.length() + 1;
+        uint8_t fileNameLength = filename.length() + 1;
         char charFileName[fileNameLength];
-        _fileName.toCharArray(charFileName, fileNameLength);
+        filename.toCharArray(charFileName, fileNameLength);
 
         // Check that the file exists, just in case someone yanked the SD card
         if (!logFile.open(charFileName, O_WRITE | O_AT_END))
         {
             PRINTOUT(F("SD Card File Lost!  Starting new file.\n"));
-            setupLogFile();
+            setupLogFile(filename, "");
         }
 
         // Write the CSV data
@@ -597,23 +609,18 @@ void Logger::logToSD(String rec)
         PRINTOUT(rec, F("\n"));
 
         // Set write/modification date time
-        logFile.timestamp(T_WRITE, dtFromEpoch(getNowEpoch()).year(),
-                                   dtFromEpoch(getNowEpoch()).month(),
-                                   dtFromEpoch(getNowEpoch()).date(),
-                                   dtFromEpoch(getNowEpoch()).hour(),
-                                   dtFromEpoch(getNowEpoch()).minute(),
-                                   dtFromEpoch(getNowEpoch()).second());
+        setFileTimestame(logFile, T_WRITE);
         // Set access date time
-        logFile.timestamp(T_ACCESS, dtFromEpoch(getNowEpoch()).year(),
-                                    dtFromEpoch(getNowEpoch()).month(),
-                                    dtFromEpoch(getNowEpoch()).date(),
-                                    dtFromEpoch(getNowEpoch()).hour(),
-                                    dtFromEpoch(getNowEpoch()).minute(),
-                                    dtFromEpoch(getNowEpoch()).second());
+        setFileTimestame(logFile, T_ACCESS);
 
         // Close the file to save it
         logFile.close();
     }
+}
+// This writes a record to the SD card, using the logger's filename
+void Logger::logToSD(String rec)
+{
+    logToSD(rec, _fileName);
 }
 
 
@@ -726,6 +733,11 @@ void Logger::testingMode()
 
     // Set up the sensors
     setupSensors();
+
+    // Set the filename for the logger to save to, if it hasn't been done
+    if(!_isFileNameSet){setFileName();}
+    else if(_autoFileName){setFileName();}
+    else setFileName(_fileName);  // This just for a nice print-out
 
     // Set up the log file
     setupLogFile();
