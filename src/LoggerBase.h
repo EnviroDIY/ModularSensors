@@ -125,6 +125,10 @@ public:
     void setFileName(char *fileName);
     // Same as above, with a string (overload function)
     void setFileName(String fileName);
+    // This generates a file name from the logger id and the current date
+    // This will be used if the setFileName function is not called before
+    // the begin() function is called.
+    void setFileName(void);
 
     // This returns the current filename.  Must be run after setFileName.
     String getFileName(void){return _fileName;}
@@ -235,11 +239,6 @@ protected:
 
     // This sets a timestamp on a file
     void setFileTimestame(SdFile fileToStamp, uint8_t stampFlag);
-
-    // This generates a file name from the logger id and the current date
-    // This will be used if the setFileName function is not called before
-    // the begin() function is called.
-    void setFileName(void);
 };
 
 #endif
