@@ -144,6 +144,17 @@
             "platforms": "atmelavr, atmelsam"
         },
         {
+            "name": "Adafruit MPL115A2",
+            "library id": "406",
+            "url": "https://github.com/adafruit/Adafruit_MPL115A2.git",
+            "version": ">=1.0.0",
+            "note": "MPL115A2 Barometer Library by Adafruit",
+            "authors": [
+                "Adafruit"
+            ],
+            "frameworks": "arduino"
+        },
+        {
             "name": "OneWire",
             "library id": "1",
             "url": "https://github.com/PaulStoffregen/OneWire.git",
