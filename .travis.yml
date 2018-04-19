@@ -17,6 +17,7 @@ env:
     - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY/
     - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/
     - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/
+    - PLATFORMIO_CI_SRC=examples/barometric_correction/
 
     # SAMD examples
     - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY_Zero/ PLATFORMIO_CI_ZERO=1
@@ -38,6 +39,7 @@ install:
     - pio lib -g install 19  # Adafruit DHT sensor library
     - pio lib -g install 773  # Adafruit AM2315
     - pio lib -g install 166  # Adafruit BME280 Library
+    - pio lib -g install 406  # Adafruit MPL115A2
     - pio lib -g install 1  # OneWire
     - pio lib -g install 54  # Dallas Temperature
     - pio lib -g install https://github.com/EnviroDIY/Arduino-SDI-12.git#ExtInts

@@ -4,8 +4,8 @@
  *
  *Initial library developement done by Bobby Schulz <schu3119@umn.edu>.
  *
- *This file is for the MPL115A2 barometric pressure sensor,
-  for which is used in MPL115A2 - I2C Barometric Pressure/Temperature Sensor by Adafruit
+ *This file is for the Freescale Semiconductor MPL115A2 Miniature I2C Digital
+ *Barometer
  *It is dependent on the https://github.com/adafruit/Adafruit_MPL115A2 library
  *
  *Documentation for the sensor can be found at:
@@ -25,21 +25,15 @@
 
 
 // The constructor - because this is I2C, only need the power pin
-MPL115A2::MPL115A2(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage)
+// This sensor has a set I2C address of 0x60.
+MPL115A2::MPL115A2(int8_t powerPin, uint8_t measurementsToAverage)
      : Sensor(F("MPL115A2"), MPL115A2_NUM_VARIABLES,
               MPL115A2_WARM_UP_TIME_MS, MPL115A2_STABILIZATION_TIME_MS, MPL115A2_MEASUREMENT_TIME_MS,
               powerPin, -1, measurementsToAverage)
-{
-    _i2cAddressHex = i2cAddressHex;
-}
+{}
 
 
-String MPL115A2::getSensorLocation(void)
-{
-    String address = F("I2C_0x");
-    address += String(_i2cAddressHex, HEX);
-    return address;
-}
+String MPL115A2::getSensorLocation(void){return F("I2C_0x60");}
 
 
 bool MPL115A2::setup(void)
@@ -51,11 +45,10 @@ bool MPL115A2::setup(void)
 
 bool MPL115A2::addSingleMeasurementResult(void)
 {
-    bool success = false;
-
     // Initialize float variables
     float temp = -9999;
     float press = -9999;
+
     if (_millisMeasurementRequested > 0)
     {
         // Read values
@@ -84,5 +77,6 @@ bool MPL115A2::addSingleMeasurementResult(void)
     // Set the status bit for measurement completion (bit 6)
     _sensorStatus |= 0b01000000;
 
-    return success;
+    // no way of knowing if successful, just return true
+    return true;
 }
