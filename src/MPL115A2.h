@@ -4,8 +4,8 @@
  *
  *Initial library developement done by Bobby Schulz <schu3119@umn.edu>.
  *
- *This file is for the MPL115A2 barometric pressure sensor,
-  for which is used in MPL115A2 - I2C Barometric Pressure/Temperature Sensor by Adafruit
+ *This file is for the Freescale Semiconductor MPL115A2 Miniature I2C Digital
+ *Barometer
  *It is dependent on the https://github.com/adafruit/Adafruit_MPL115A2 library
  *
  *Documentation for the sensor can be found at:
@@ -37,7 +37,7 @@
 #define MPL115A2_NUM_VARIABLES 2
 #define MPL115A2_WARM_UP_TIME_MS 6
 #define MPL115A2_STABILIZATION_TIME_MS 0
-#define MPL115A2_MEASUREMENT_TIME_MS 4
+#define MPL115A2_MEASUREMENT_TIME_MS 3
 
 #define MPL115A2_TEMP_RESOLUTION 2
 #define MPL115A2_TEMP_VAR_NUM 0
@@ -50,7 +50,7 @@
 class MPL115A2 : public Sensor
 {
 public:
-    MPL115A2(int8_t powerPin, uint8_t i2cAddressHex = 0x60, uint8_t measurementsToAverage = 1);
+    MPL115A2(int8_t powerPin, uint8_t measurementsToAverage = 1);
 
     bool setup(void) override;
     String getSensorLocation(void) override;

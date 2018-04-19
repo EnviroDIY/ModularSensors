@@ -224,14 +224,15 @@ const int MS5803maxPressure = 14;  // The maximum pressure measurable by the spe
 const uint8_t MS5803ReadingsToAvg = 1;
 MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803ReadingsToAvg);
 
+
 // ==========================================================================
-//    MPL1152A2 (Pressure, Temperature)
+//    Freescale Semiconductor MPL115A2 Barometer
 // ==========================================================================
 #include <MPL115A2.h>
 // const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-const uint8_t MPL115A2_addr = 0x60;  
 const uint8_t MPL115A2ReadingsToAvg = 1;
-MPL115A2 mpl115a2(I2CPower, MPL115A2_addr, MPL115A2ReadingsToAvg);
+MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
+
 
 // ==========================================================================
 //    External I2C Rain Tipping Bucket Counter
