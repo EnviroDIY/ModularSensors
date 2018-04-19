@@ -32,12 +32,12 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
     - [Decagon Devices 5TM: soil moisture](#5TM)
     - [Decagon Devices CTD-10: conductivity, temperature & depth](#CTD)
     - [Decagon Devices ES-2: conductivity ](#ES2)
-    - [External I2C Rain Tipping Bucket Counter](#ExtTips)
+    - [External I2C Rain Tipping Bucket Counter: rainfall totals](#ExtTips)
     - [External Voltage: via TI ADS1115](#ExtVolt)
-    - [Freescale Semiconductor MPL115A2](#MPL115A2)
+    - [Freescale Semiconductor MPL115A2: barometric pressure and temperature](#MPL115A2)
     - [MaxBotix MaxSonar: water level](#MaxBotix)
     - [Maxim DS18: temperature](#DS18)
-    - [Measurement Specialties MS5803](#MS5803)
+    - [Measurement Specialties MS5803: pressure and temperature](#MS5803)
     - [Yosemitech: water quality sensors](#Yosemitech)
     - [Zebra-Tech D-Opto: dissolved oxygen](#dOpto)
     - [Maxim DS3231: real time clock](#DS3231)
@@ -1039,7 +1039,6 @@ MeaSpecMS5803 ms5803(I2CPower, i2cAddressHex, maxPressure, measurementsToAverage
 The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-MeaSpecMS5803_Temp(&ms5803, "UUID", "customVarCode");  // temperature in °C
 MeaSpecMS5803_Pressure(&ms5803, "UUID", "customVarCode");  // pressure in millibar
 // For Pressure (sensor designed for water pressure):
 //   Resolution is 1 / 0.6 / 0.4 / 0.3 / 0.2 mbar (where 1 mbar = 100 pascals)
@@ -1048,7 +1047,7 @@ MeaSpecMS5803_Pressure(&ms5803, "UUID", "customVarCode");  // pressure in millib
 //   Accuracy -40°C to +85°C is ±40mbar
 //   Range is 0 to 14 bar
 //   Long term stability is -20 mbar/yr
-
+MeaSpecMS5803_Temp(&ms5803, "UUID", "customVarCode");  // temperature in °C
 // For Temperature:
 //   Resolution is <0.01°C
 //   Accuracy is ±0.8°C
