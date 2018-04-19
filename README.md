@@ -34,9 +34,10 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
     - [Decagon Devices ES-2: conductivity ](#ES2)
     - [External I2C Rain Tipping Bucket Counter](#ExtTips)
     - [External Voltage: via TI ADS1115](#ExtVolt)
+    - [Freescale Semiconductor MPL115A2](#MPL115A2)
     - [MaxBotix MaxSonar: water level](#MaxBotix)
     - [Maxim DS18: temperature](#DS18)
-    - [Measurement Specialties MS5803: pressure](#MS5803)
+    - [Measurement Specialties MS5803](#MS5803)
     - [Yosemitech: water quality sensors](#Yosemitech)
     - [Zebra-Tech D-Opto: dissolved oxygen](#dOpto)
     - [Maxim DS3231: real time clock](#DS3231)
@@ -92,6 +93,7 @@ In order to support multiple functions and sensors, there are quite a lot of sub
 - [Adafruit AM2315 library](https://github.com/adafruit/Adafruit_AM2315) - for the AOSong AM2315 temperature and humidity sensor.
 - [Adafruit DHT library](https://github.com/adafruit/DHT-sensor-library) - for other AOSong temperature and humidity sensors.
 - [Adafruit BME280 library](https://github.com/adafruit/Adafruit_BME280_Library) - for the Bosch BME280 environmental sensor.
+- [Adafruit MPL115A2 library](https://github.com/adafruit/Adafruit_MPL115A2) - for the Freescale Semiconductor MPL115A2 barometer.
 - [YosemitechModbus](https://github.com/EnviroDIY/YosemitechModbus) - for all Yosemitech environmental sensor.
 - [EnviroDIY MS5803 Library](https://github.com/EnviroDIY/MS5803) - for the TE Connectivity MEAS MS5803 pressure sensor
 
@@ -693,7 +695,7 @@ _____
 
 ### <a name="AM2315"></a>[AOSong AM2315](www.aosong.com/asp_bin/Products/en/AM2315.pdf) Encased I2C Temperature/Humidity Sensor
 
-The AOSong AM2315 and [CM2311](http://www.aosong.com/en/products/details.asp?id=193) communicate with the board via I2C.  Because this sensor can have only one I2C address, it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 3.3-5.5V power source and the power supply to the sensor can be stopped between measurements.
+The AOSong AM2315 and [CM2311](http://www.aosong.com/en/products/details.asp?id=193) communicate with the board via I2C.  Because this sensor can have only one I2C address (0xB8), it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 3.3-5.5V power source and the power supply to the sensor can be stopped between measurements.
 
 The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average:
 
@@ -1051,6 +1053,28 @@ MeaSpecMS5803_Pressure(&ms5803, "UUID", "customVarCode");  // pressure in millib
 //   Resolution is <0.01°C
 //   Accuracy is ±0.8°C
 //   Range is -40°C to +85°C
+```
+_____
+
+### <a name="MPL115A2"></a>[Freescale Semiconductor MPL115A2](https://www.nxp.com/docs/en/data-sheet/MPL115A2.pdf) Miniature I2C Digital Barometer
+
+The MPL115A2 communicate with the board via I2C.  Because this sensor can have only one I2C address (0x60), it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 2.375-5.5V power source and the power supply to the sensor can be stopped between measurements.
+
+The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average:
+
+```cpp
+#include <MPL115A2.h>
+MPL115A2 mpl115a2(I2CPower, measurementsToAverage);
+```
+
+The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
+
+```cpp
+MPL115A2_Pressure(&mpl115a2, "UUID", "customVarCode");  // Baraometric pressure in kPa
+//  Resolution is 0.15 kPa
+//  Accuracy is ±1 kPa
+//  Range is 50 to 115 kPa
+MPL115A2_Temp(&mpl115a2, "UUID", "customVarCode");  // Temperature in °C
 ```
 _____
 
