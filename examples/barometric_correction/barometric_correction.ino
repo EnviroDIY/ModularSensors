@@ -149,6 +149,26 @@ Variable *msPress = new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-efgh
 
 
 // ==========================================================================
+//    Maxim DS18 One Wire Temperature Sensor
+// ==========================================================================
+#include <MaximDS18.h>
+// OneWire Address [array of 8 hex characters]
+// DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA, 0x81, 0x16, 0x03, 0x0C};
+// DeviceAddress OneWireAddress2 = {0x28, 0xFF, 0x57, 0x90, 0x82, 0x16, 0x04, 0x67};
+// DeviceAddress OneWireAddress3 = {0x28, 0xFF, 0x74, 0x2B, 0x82, 0x16, 0x03, 0x57};
+// DeviceAddress OneWireAddress4 = {0x28, 0xFF, 0xB6, 0x6E, 0x84, 0x16, 0x05, 0x9B};
+// DeviceAddress OneWireAddress5 = {0x28, 0xFF, 0x3B, 0x07, 0x82, 0x16, 0x03, 0xB3};
+const int8_t OneWireBus = 4;  // Pin attached to the OneWire Bus (-1 if unconnected)
+const int8_t OneWirePower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// MaximDS18 ds18_1(OneWireAddress1, OneWirePower, OneWireBus);
+// MaximDS18 ds18_2(OneWireAddress2, OneWirePower, OneWireBus);
+// MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
+// MaximDS18 ds18_4(OneWireAddress4, OneWirePower, OneWireBus);
+// MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
+MaximDS18 ds18_u(OneWirePower, OneWireBus);
+
+
+// ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
 Variable *variableList[] = {
@@ -158,6 +178,7 @@ Variable *variableList[] = {
     bAlt,
     msTemp,
     msPress,
+    new MaximDS18_Temp(&ds18_u),
     new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
     new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
