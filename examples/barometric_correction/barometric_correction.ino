@@ -122,7 +122,9 @@ MaximDS3231 ds3231(1);
 //    Bosch BME280 Environmental Sensor (Temperature, Humidity, Pressure)
 // ==========================================================================
 #include <BoschBME280.h>
-uint8_t BMEi2c_addr = 0x76;  // The BME280 can be addressed either as 0x76 or 0x77
+uint8_t BMEi2c_addr = 0x77;
+// The BME280 can be addressed either as 0x77 (Adafruit default) or 0x76 (Grove default)
+// Either can be physically mofidied for the other address
 const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // Create a sensor object for the BME
 BoschBME280 bme280(I2CPower, BMEi2c_addr);
@@ -138,7 +140,7 @@ Variable *bAlt = new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234
 // ==========================================================================
 #include <MeaSpecMS5803.h>
 // const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-const uint8_t MS5803i2c_addr = 0x76;  // The MS5803 can be addressed either as 0x76 or 0x77
+const uint8_t MS5803i2c_addr = 0x76;  // The MS5803 can be addressed either as 0x76 (default) or 0x77
 const int MS5803maxPressure = 14;  // The maximum pressure measurable by the specific MS5803 model
 const uint8_t MS5803ReadingsToAvg = 1;
 // Create the sensor for the MS5803
