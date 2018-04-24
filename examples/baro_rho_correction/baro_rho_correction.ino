@@ -440,6 +440,7 @@ void loop()
         float waterTempertureC = msTemp->getValue();
         // Now calculate the depth of the water
         // For this, we're using the conversion between mbar and mm pure water at 4°C
+        // This calculation gives a final result in mm of water
         float waterDepth = waterPressure*10.1972;
         // Converting water depth for the changes of pressure with depth
         // First get water pressure in Pa for the calculation: 1 mbar = 100 Pa
@@ -451,7 +452,8 @@ void loop()
                         + 6.943248e-5 * pow(waterTempertureC,3)
                         - 3.821216e-7 * pow(waterTempertureC,4)
                         ;
-        rhoDepth = waterPressurePa/(waterDensity * gravitationalConstant);  // from P = rho * g * h
+        // This calculation gives a final result in mm of water
+        rhoDepth = 1000 * waterPressurePa/(waterDensity * gravitationalConstant);  // from P = rho * g * h
 
 
         // Add the water pressure and depth to the csv string
