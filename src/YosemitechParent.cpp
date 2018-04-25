@@ -150,18 +150,14 @@ bool YosemitechParent::sleep(void)
 
 bool YosemitechParent::addSingleMeasurementResult(void)
 {
-    bool success = false;
-
-    // Initialize float variables
-    float parmValue = -9999;
-    float tempValue = -9999;
-    float thirdValue = -9999;
-
-    if (_millisMeasurementRequested > 0)
+    switch (model)
     {
-        switch (model)
+        case Y4000:
         {
-            case Y4000:
+            // Initialize float variables
+            float DOmgL, Turbidity, Cond, pH, Temp, ORP, Chlorophyll, BGA = -9999;
+
+            if (_millisMeasurementRequested > 0)
             {
                 // Get Values
                 MS_DBG(F("Get Values:\n"));
@@ -185,7 +181,40 @@ bool YosemitechParent::addSingleMeasurementResult(void)
                                   pH, F("  "), Temp, F("  "), ORP, F("  "),
                                   Chlorophyll, F("  "), BGA, F("\n"));
             }
-            default:
+            else MS_DBG(F("Sensor is not currently measuring!\n"));
+
+            // Put values into the array
+            verifyAndAddMeasurementResult(0, DOmgL);
+            verifyAndAddMeasurementResult(1, Turbidity);
+            verifyAndAddMeasurementResult(2, Cond);
+            verifyAndAddMeasurementResult(3, pH);
+            verifyAndAddMeasurementResult(4, Temp);
+            verifyAndAddMeasurementResult(5, ORP);
+            verifyAndAddMeasurementResult(6, Chlorophyll);
+            verifyAndAddMeasurementResult(7, BGA);
+
+            // Unset the time stamp for the beginning of this measurement
+            _millisMeasurementRequested = 0;
+            // Unset the status bit for a measurement having been requested (bit 5)
+            _sensorStatus &= 0b11011111;
+            // Set the status bit for measurement completion (bit 6)
+            _sensorStatus |= 0b01000000;
+
+            // Return true when finished
+            return success;
+
+            break;
+        }
+        default:
+        {
+            bool success = false;
+
+            // Initialize float variables
+            float parmValue = -9999;
+            float tempValue = -9999;
+            float thirdValue = -9999;
+
+            if (_millisMeasurementRequested > 0)
             {
                 // Get Values
                 MS_DBG(F("Get Values:\n"));
@@ -207,24 +236,23 @@ bool YosemitechParent::addSingleMeasurementResult(void)
                 {
                     MS_DBG(F("    Third: "), thirdValue, F("\n"));
                 }
-
             }
+            else MS_DBG(F("Sensor is not currently measuring!\n"));
+
+            // Put values into the array
+            verifyAndAddMeasurementResult(0, parmValue);
+            verifyAndAddMeasurementResult(1, tempValue);
+            verifyAndAddMeasurementResult(2, thirdValue);
+
+            // Unset the time stamp for the beginning of this measurement
+            _millisMeasurementRequested = 0;
+            // Unset the status bit for a measurement having been requested (bit 5)
+            _sensorStatus &= 0b11011111;
+            // Set the status bit for measurement completion (bit 6)
+            _sensorStatus |= 0b01000000;
+
+            // Return true when finished
+            return success;
         }
     }
-    else MS_DBG(F("Sensor is not currently measuring!\n"));
-
-    // Put values into the array
-    verifyAndAddMeasurementResult(0, parmValue);
-    verifyAndAddMeasurementResult(1, tempValue);
-    verifyAndAddMeasurementResult(2, thirdValue);
-
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bit for a measurement having been requested (bit 5)
-    _sensorStatus &= 0b11011111;
-    // Set the status bit for measurement completion (bit 6)
-    _sensorStatus |= 0b01000000;
-
-    // Return true when finished
-    return success;
 }
