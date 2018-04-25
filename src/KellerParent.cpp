@@ -9,7 +9,7 @@
  *that are Software version 5.20-12.28 and later (i.e. made after the 2012 in the 28th week)
  *Only tested the Acculevel
 *
- *Documentation for the Yosemitech Protocol commands and responses, along with
+ *Documentation for the Keller Protocol commands and responses, along with
  *information about the various variables, can be found
  *in the EnviroDIY KellerModbus library at:
  * https://github.com/EnviroDIY/KellerModbus
