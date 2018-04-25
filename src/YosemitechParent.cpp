@@ -1,5 +1,5 @@
 /*
- *Yosemitech.cpp
+ *YosemitechParent.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -10,7 +10,7 @@
  *Documentation for the Yosemitech Protocol commands and responses, along with
  *information about the various variables, can be found
  *in the EnviroDIY Yosemitech library at:
- * https://github.com/EnviroDIY/Yosemitech
+ * https://github.com/EnviroDIY/YosemitechModbus
 */
 
 #include "YosemitechParent.h"

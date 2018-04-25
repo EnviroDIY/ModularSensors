@@ -1,6 +1,6 @@
 {
     "name": "EnviroDIY_ModularSensors",
-    "version": "0.10.0",
+    "version": "0.10.1",
     "description":  "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
     "keywords": "sensor, modular, sensors, logger, low power, sleeping, EnviroDIY",
     "platforms": "atmelavr, atmelsam",
@@ -199,7 +199,8 @@
             "authors": [
                 "Kevin M. Smith",
                 "Sara Damiano",
-                "Shannon Hicks"
+                "Shannon Hicks",
+                "Anthony Aufdenkampe"
             ],
             "frameworks": "arduino",
             "platforms": "atmelavr, atmelsam"
@@ -234,17 +235,27 @@
             "version": ">=0.1.9",
             "note": "Arduino library for communication with Yosemitech sensors via Modbus.",
             "authors": [
-                "Sara Damiano"
+                "Sara Damiano",
+                "Anthony Aufdenkampe"
             ],
             "frameworks": "arduino",
             "platforms": "atmelavr, atmelsam"
         },
         {
             "name": "MS5803",
-            "version": "https://github.com/EnviroDIY/MS5803.git",
+            "url": "https://github.com/EnviroDIY/MS5803.git",
             "note": "General interface to MS5803-series pressure transducers",
             "authors": [
                 "Bobby Schulz"
+            ]
+        },
+        {
+            "name": "KellerModbus",
+            "version": ">=0.1.0",
+            "url": "https://github.com/EnviroDIY/KellerModbus.git",
+            "note": "Arduino library for communication with Keller pressure and water level sensors via Modbus.",
+            "authors": [
+                "Anthony Aufdenkampe"
             ]
         },
         {

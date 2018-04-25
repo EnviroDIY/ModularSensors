@@ -17,7 +17,7 @@
 #include "ModSensorDebugger.h"
 
 // The largest number of variables from a single sensor
-#define MAX_NUMBER_VARS 4
+#define MAX_NUMBER_VARS 8
 
 
 class Variable;  // Forward declaration

@@ -12,15 +12,19 @@ the EnviroDIY data portal.
 
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
+
+NOTE: Modfied on April 24 for WSU testing
+NOTE: Based off ModularSensors v0.10.1 Keller branch
+
 *****************************************************************************/
 
 // Select your modem chip, comment out all of the others
-// #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
+#define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
 // #define TINY_GSM_MODEM_A6  // Select for a AI-Thinker A6 or A7 chip
 // #define TINY_GSM_MODEM_M590  // Select for a Neoway M590
 // #define TINY_GSM_MODEM_U201  // Select for a U-blox U201
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
-#define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
+// #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
 
 // ==========================================================================
 //    Include the base required libraries
@@ -34,14 +38,14 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Basic Logger Settings
 // ==========================================================================
 // The name of this file
-const char *sketchName = "logging_to_EnviroDIY.ino";
+const char *sketchName = "AnthonyTest2.ino";
 
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXXX";
+const char *LoggerID = "AnthonyTest2";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 5;
 // Your logger's timezone.
-const int8_t timeZone = -5;
+const int8_t timeZone = -6;  // Central Standard Time (CST=-6)
 // Create a new logger instance
 LoggerEnviroDIY EnviroDIYLogger;
 
@@ -61,7 +65,7 @@ const int8_t wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
 const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
 
 // Create the processor "sensor"
-const char *MFVersion = "v0.5";
+const char *MFVersion = "v0.5b";
 ProcessorStats mayfly(MFVersion) ;
 
 
@@ -102,7 +106,7 @@ const long ModemBaud = 9600;  // Default for XBee is 9600, I've sped mine up to 
 const long ModemBaud = 9600;  // Modem baud rate
 #endif
 
-const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
+const char *apn = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
 
@@ -117,7 +121,7 @@ loggerModem modem;
 #include <MaximDS3231.h>
 MaximDS3231 ds3231(1);
 
-
+/****
 // ==========================================================================
 //    AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
@@ -144,17 +148,17 @@ const int8_t SQ212Power = 22;  // Pin to switch power on and off (-1 if unconnec
 const int8_t SQ212Data = 2;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const uint8_t SQ212_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
 ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
-
+***/
 
 // ==========================================================================
 //    Bosch BME280 Environmental Sensor (Temperature, Humidity, Pressure)
 // ==========================================================================
 #include <BoschBME280.h>
-uint8_t BMEi2c_addr = 0x76;  // The BME280 can be addressed either as 0x76 or 0x77
-// const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+uint8_t BMEi2c_addr = 0x77;  // The BME280 can be addressed either as 0x76 or 0x77
+const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 BoschBME280 bme280(I2CPower, BMEi2c_addr);
 
-
+/***
 // ==========================================================================
 //    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
@@ -206,7 +210,7 @@ const char *ES2SDI12address = "3";  // The SDI-12 Address of the ES2
 // const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t ES2NumberReadings = 3;
 DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
-
+***/
 
 // ==========================================================================
 //    External Voltage via TI ADS1115
@@ -219,7 +223,7 @@ const uint8_t Volt_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
 const uint8_t VoltReadsToAvg = 1; // Only read one sample
 ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, Volt_ADS1115Address, VoltReadsToAvg);
 
-
+/***
 // ==========================================================================
 //    Maxbotix HRXL Ultrasonic Range Finder
 // ==========================================================================
@@ -287,7 +291,7 @@ MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803Readings
 // const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t MPL115A2ReadingsToAvg = 1;
 MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
-
+***/
 
 // ==========================================================================
 //    External I2C Rain Tipping Bucket Counter
@@ -313,13 +317,14 @@ const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends takin
 KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, modbusPower, max485EnablePin, acculevelNumberReadings);
 
 
+/***
 // ==========================================================================
 //    Yosemitech Y504 Dissolved Oxygen Sensor
 // ==========================================================================
 #include <YosemitechY504.h>
 byte y504modbusAddress = 0x04;  // The modbus address of the Y504
-// const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y504NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
 YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePin, y504NumberReadings);
 
@@ -387,71 +392,71 @@ const char *DOptoDI12address = "5";  // The SDI-12 Address of the Zebra Tech D-O
 // const int8_t SDI12Data = 7;  // The pin the D-Opto is attached to
 // const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
-
+***/
 
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
 Variable *variableList[] = {
-    new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongDHT_Temp(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongDHT_HI(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new AOSongDHT_Temp(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new AOSongDHT_HI(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
     new BoschBME280_Temp(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
     new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
     new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
-    new Decagon5TM_Ea(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonES2_Cond(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonES2_Temp(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
+    // new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
+    // new Decagon5TM_Ea(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new DecagonES2_Cond(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new DecagonES2_Temp(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
     new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaxBotixSonar_Range(&sonar2, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS18_Temp(&ds18_1, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS18_Temp(&ds18_2, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS18_Temp(&ds18_3, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS18_Temp(&ds18_4, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS18_Temp(&ds18_5, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MPL115A2_Temp(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MPL115A2_Pressure(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new MaxBotixSonar_Range(&sonar2, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new MaximDS18_Temp(&ds18_1, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new MaximDS18_Temp(&ds18_2, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new MaximDS18_Temp(&ds18_3, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new MaximDS18_Temp(&ds18_4, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new MaximDS18_Temp(&ds18_5, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new MPL115A2_Temp(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new MPL115A2_Pressure(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
     new RainCounterI2C_Tips(&tip, "12345678-abcd-1234-efgh-1234567890ab"),
     new RainCounterI2C_Depth(&tip, "12345678-abcd-1234-efgh-1234567890ab"),
     new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
     new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
     new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY510_Temp(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY532_Voltage(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY532_pH(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY510_Temp(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY532_Voltage(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY532_pH(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
     new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
     new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     // new YOUR_variableName_HERE(&)
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
@@ -498,12 +503,12 @@ void setup()
     // Start the stream for the modbus sensors
     modbusSerial.begin(9600);
 
-    // Start the SoftwareSerial stream for the sonar
-    sonarSerial.begin(9600);
-    // Allow interrupts for software serial
-    #if defined SoftwareSerial_ExtInts_h
-    enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
-    #endif
+    // // Start the SoftwareSerial stream for the sonar
+    // sonarSerial.begin(9600);
+    // // Allow interrupts for software serial
+    // #if defined SoftwareSerial_ExtInts_h
+    // enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+    // #endif
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);

@@ -38,6 +38,7 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
     - [MaxBotix MaxSonar: water level](#MaxBotix)
     - [Maxim DS18: temperature](#DS18)
     - [Measurement Specialties MS5803: pressure and temperature](#MS5803)
+    - [Keller Submersible Level Transmitters: pressure and temperature](#keller)
     - [Yosemitech: water quality sensors](#Yosemitech)
     - [Zebra-Tech D-Opto: dissolved oxygen](#dOpto)
     - [Maxim DS3231: real time clock](#DS3231)
@@ -1055,7 +1056,27 @@ MeaSpecMS5803_Temp(&ms5803, "UUID", "customVarCode");  // temperature in °C
 ```
 _____
 
-### <a name="MPL115A2"></a>[Freescale Semiconductor MPL115A2](https://www.nxp.com/docs/en/data-sheet/MPL115A2.pdf) Miniature I2C Digital Barometer
+### <a name="keller"></a>[Keller Submersible Water Level Transmitters](http://www.te.com/usa-en/product-CAT-BLPS0013.html) Pressure Sensor
+
+Many Keller pressure and water level sensors can communicate via Modbus RTU over RS485. The functions below should work with any Keller Series 30, Class 5, Group 20 sensor (such as the Keller Acculevel) that are Software version 5.20-12.28 and later (i.e. made after the 2012 in the 28th week). Note that these have only been tested with the Acculevel. More documentation for our implementation of the Keller Modbus communication Protocol commands and responses, along with information about the various variables, can be found in the [EnviroDIY KellerModbus library](https://github.com/EnviroDIY/KellerModbus). Sensors ship with default Slave addresses set to 0x01, but these can be reset. These Keller sensors expect an input voltage of 9-28 VDC, so they also require a voltage booster and an RS485 to TTL Serial converter with logic level shifting from the higher output voltage to the 3.3V or 5V of the Arduino data logging board.
+Digital communication with Keller sensors configured for SDI12 communication protocols are not supported by these functions.
+
+The sensor constructor requires as input: modbus address, the pin controlling sensor power, a stream instance for data (ie, ```Serial```), the Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter, and the number of readings to average.  (Use -1 for the enable pin if your adapter does not have one.) Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.  AltSoftSerial and HardwareSerial work fine.
+
+```cpp
+#include <KellerAcculevel.h>
+KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, modbusPower, max485EnablePin, acculevelNumberReadings);
+```
+
+The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
+
+```cpp
+new KellerAcculevel_Pressure(&acculevel, "UUID", "customVarCode");
+new KellerAcculevel_Temp(&acculevel, "UUID", "customVarCode");
+new KellerAcculevel_Height(&acculevel, "UUID", "customVarCode");
+
+```
+_____### <a name="MPL115A2"></a>[Freescale Semiconductor MPL115A2](https://www.nxp.com/docs/en/data-sheet/MPL115A2.pdf) Miniature I2C Digital Barometer
 
 The MPL115A2 communicate with the board via I2C.  Because this sensor can have only one I2C address (0x60), it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 2.375-5.5V power source and the power supply to the sensor can be stopped between measurements.
 
