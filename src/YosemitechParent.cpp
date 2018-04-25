@@ -150,10 +150,12 @@ bool YosemitechParent::sleep(void)
 
 bool YosemitechParent::addSingleMeasurementResult(void)
 {
-    switch (model)
+    switch (_model)
     {
         case Y4000:
         {
+            bool success = false;
+
             // Initialize float variables
             float DOmgL, Turbidity, Cond, pH, Temp, ORP, Chlorophyll, BGA = -9999;
 

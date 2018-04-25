@@ -1,4 +1,4 @@
-ORPY4000/*
+/*
  *YosemitechY4000.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *

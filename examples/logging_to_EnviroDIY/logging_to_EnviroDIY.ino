@@ -380,6 +380,17 @@ YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePi
 
 
 // ==========================================================================
+//    Yosemitech Y4000 Multiparameter Sonde (DOmgL, Turbidity, Cond, pH, Temp, ORP, Chlorophyll, BGA)
+// ==========================================================================
+#include <YosemitechY4000.h>
+byte y4000modbusAddress = 0x05;  // The modbus address of the Y4000
+// const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+const uint8_t y4000NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
+YosemitechY4000 y4000(y4000modbusAddress, modbusSerial, modbusPower, max485EnablePin, y4000NumberReadings);
+
+
+// ==========================================================================
 //    Zebra Tech D-Opto Dissolved Oxygen Sensor
 // ==========================================================================
 #include <ZebraTechDOpto.h>
@@ -444,6 +455,14 @@ Variable *variableList[] = {
     new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY532_Voltage(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY532_pH(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_DOmgL(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_Turbidity(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_Cond(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_pH(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_Temp(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_ORP(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_Chlorophyll(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_BGA(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
     new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
     new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
     new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
