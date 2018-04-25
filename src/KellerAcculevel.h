@@ -14,8 +14,8 @@
  * https://github.com/EnviroDIY/KellerModbus
 */
 
-#ifndef KellerParent_h
-#define KellerParent_h
+#ifndef KellerAcculevel_h
+#define KellerAcculevel_h
 
 #include "KellerParent.h"
 #include "VariableBase.h"
@@ -44,13 +44,13 @@ public:
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : KellerParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
                     Acculevel, F("KellerAcculevel"), KellerAcculevel_NUM_VARIABLES,
-                    KellerAcculevel_WARM_UP_TIME_MS, KellerAcculevel_STABILIZATION_TIME_MS, KellerAcculevel_MEASUREMENT_TIME_MSs)
+                    KellerAcculevel_WARM_UP_TIME_MS, KellerAcculevel_STABILIZATION_TIME_MS, KellerAcculevel_MEASUREMENT_TIME_MS)
     {}
     KellerAcculevel(byte modbusAddress, Stream& stream, int8_t powerPin,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : KellerParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
                     Acculevel, F("KellerAcculevel"), KellerAcculevel_NUM_VARIABLES,
-                    KellerAcculevel_WARM_UP_TIME_MS, KellerAcculevel_STABILIZATION_TIME_MS, KellerAcculevel_MEASUREMENT_TIME_MSs)
+                    KellerAcculevel_WARM_UP_TIME_MS, KellerAcculevel_STABILIZATION_TIME_MS, KellerAcculevel_MEASUREMENT_TIME_MS)
     {}
 };
 
