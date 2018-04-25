@@ -318,8 +318,8 @@ KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, modbusPower, max
 // ==========================================================================
 #include <YosemitechY504.h>
 byte y504modbusAddress = 0x04;  // The modbus address of the Y504
-const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+// const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y504NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
 YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePin, y504NumberReadings);
 
