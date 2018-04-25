@@ -101,7 +101,7 @@ bool YosemitechParent::wake(void)
 
     // Manually activate the brush
     // Needed for newer sensors that do not immediate activate on getting power
-    if ( _model == Y511 or _model == Y514 or _model == Y550)
+    if ( _model == Y511 or _model == Y514 or _model == Y550 or _model == Y4000)
     {
         MS_DBG(F("Activate Brush: "));
         if (sensor.activateBrush()) MS_DBG(F("Brush activated.\n"));
@@ -159,25 +159,56 @@ bool YosemitechParent::addSingleMeasurementResult(void)
 
     if (_millisMeasurementRequested > 0)
     {
-        // Get Values
-        MS_DBG(F("Get Values:\n"));
-        success = sensor.getValues(parmValue, tempValue, thirdValue);
-
-        // Fix not-a-number values
-        if (!success or isnan(parmValue)) parmValue = -9999;
-        if (!success or isnan(tempValue)) tempValue = -9999;
-        if (!success or isnan(thirdValue)) thirdValue = -9999;
-
-        // For conductivity, convert mS/cm to µS/cm
-        if (_model == Y520 and parmValue != -9999) parmValue *= 1000;
-
-        MS_DBG(F("    "), sensor.getParameter(), F(": "), parmValue, F("\n"));
-        MS_DBG(F("    Temp: "), tempValue, F("\n"));
-
-        // Not all sensors return a third value
-        if (_numReturnedVars > 2)
+        switch (model)
         {
-            MS_DBG(F("    Third: "), thirdValue, F("\n"));
+            case Y4000:
+            {
+                // Get Values
+                MS_DBG(F("Get Values:\n"));
+                success = sensor.getValues(DOmgL, Turbidity, Cond, pH, Temp, ORP, Chlorophyll, BGA);
+
+                // Fix not-a-number values
+                if (!success or isnan(DOmgL)) DOmgL = -9999;
+                if (!success or isnan(Turbidity)) Turbidity = -9999;
+                if (!success or isnan(Cond)) Cond = -9999;
+                if (!success or isnan(pH)) pH = -9999;
+                if (!success or isnan(Temp)) Temp = -9999;
+                if (!success or isnan(ORP)) ORP = -9999;
+                if (!success or isnan(Chlorophyll)) Chlorophyll = -9999;
+                if (!success or isnan(BGA)) BGA = -9999;
+
+                // For conductivity, convert mS/cm to µS/cm
+                if (Cond != -9999) Cond *= 1000;
+
+                MS_DBG(F("    "), sensor.getParameter(), F("\n"));
+                MS_DBG(F("    "), DOmgL, F("  "), Turbidity, F("  "), Cond, F("  "),
+                                  pH, F("  "), Temp, F("  "), ORP, F("  "),
+                                  Chlorophyll, F("  "), BGA, F("\n"));
+            }
+            default:
+            {
+                // Get Values
+                MS_DBG(F("Get Values:\n"));
+                success = sensor.getValues(parmValue, tempValue, thirdValue);
+
+                // Fix not-a-number values
+                if (!success or isnan(parmValue)) parmValue = -9999;
+                if (!success or isnan(tempValue)) tempValue = -9999;
+                if (!success or isnan(thirdValue)) thirdValue = -9999;
+
+                // For conductivity, convert mS/cm to µS/cm
+                if (_model == Y520 and parmValue != -9999) parmValue *= 1000;
+
+                MS_DBG(F("    "), sensor.getParameter(), F(": "), parmValue, F("\n"));
+                MS_DBG(F("    Temp: "), tempValue, F("\n"));
+
+                // Not all sensors return a third value
+                if (_numReturnedVars > 2)
+                {
+                    MS_DBG(F("    Third: "), thirdValue, F("\n"));
+                }
+
+            }
         }
     }
     else MS_DBG(F("Sensor is not currently measuring!\n"));
