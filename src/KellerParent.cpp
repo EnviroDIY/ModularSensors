@@ -1,42 +1,45 @@
 /*
- *Keller.cpp
+ *KellerParent.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Anthony Aufdenkampe <aaufdenkampe@limno.com>
  *
- *This file is for Modbus communication to  Keller Series 30, Class 5, Group 20 sensors,
+ *This file is for Modbus communication to  Keller pressure and water level sensors
+ *of Series 30, Class 5, Group 20 (such as the KellerAcculevel)
  *that are Software version 5.20-12.28 and later (i.e. made after the 2012 in the 28th week)
  *Only tested the Acculevel
- *
+*
  *Documentation for the Yosemitech Protocol commands and responses, along with
  *information about the various variables, can be found
  *in the EnviroDIY KellerModbus library at:
  * https://github.com/EnviroDIY/KellerModbus
 */
 
-#include "Keller.h"
+#include "KellerParent.h"
 
 // The constructor - need the sensor type, modbus address, power pin, stream for data, and number of readings to average
-Keller::Keller(byte modbusAddress, Stream* stream,
+KellerParent::KellerParent(byte modbusAddress, Stream* stream,
                int8_t powerPin, int8_t enablePin, uint8_t measurementsToAverage,
-               String sensName, int numVariables,
+               kellerModel model, String sensName, int numVariables,
                int warmUpTime_ms, int stabilizationTime_ms, int measurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
              powerPin, -1, measurementsToAverage)
 {
+    _model = model;
     _modbusAddress = modbusAddress;
     _stream = stream;
     _RS485EnablePin = enablePin;
 }
-Keller::Keller(byte modbusAddress, Stream& stream,
+KellerParent::KellerParent(byte modbusAddress, Stream& stream,
                int8_t powerPin, int8_t enablePin, uint8_t measurementsToAverage,
-               String sensName, int numVariables,
+               kellerModel model, String sensName, int numVariables,
                int warmUpTime_ms, int stabilizationTime_ms, int measurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
              powerPin, -1, measurementsToAverage)
 {
+    _model = model;
     _modbusAddress = modbusAddress;
     _stream = &stream;
     _RS485EnablePin = enablePin;
@@ -44,7 +47,7 @@ Keller::Keller(byte modbusAddress, Stream& stream,
 
 
 // The sensor installation location on the Mayfly
-String Keller::getSensorLocation(void)
+String KellerParent::getSensorLocation(void)
 {
     String sensorLocation = F("modbus_0x");
     if (_modbusAddress< 16) sensorLocation += "0";
@@ -53,7 +56,7 @@ String Keller::getSensorLocation(void)
 }
 
 
-bool Keller::setup(void)
+bool KellerParent::setup(void)
 {
     bool retVal = Sensor::setup();  // sets time stamp and status bits
     if (_RS485EnablePin > 0) pinMode(_RS485EnablePin, OUTPUT);
@@ -62,100 +65,39 @@ bool Keller::setup(void)
         sensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
     #endif
 
-    retVal &= sensor.begin(_model, _modbusAddress, _stream, _RS485EnablePin);
+    retVal &= sensor.begin(_modbusAddress, _stream, _RS485EnablePin);
 
     return retVal;
 }
 
 
 // The function to wake up a sensor
-// Different from the standard in that it waits for warm up and starts measurements
-bool Keller::wake(void)
+bool KellerParent::wake(void)
 {
-    // Send the command to begin taking readings, trying up to 5 times
-    int ntries = 0;
-    bool success = false;
-    while (!success && ntries < 5)
-    {
-        MS_DBG(F("Start Measurement ("), ntries+1, F("): "));
-        success = sensor.startMeasurement();
-        ntries++;
-    }
-    if(success)
-    {
-        // Mark the time that the sensor was activated
-        _millisSensorActivated = millis();
-        // Set the status bit for sensor activation (bit 3)
-        _sensorStatus |= 0b00001000;
-        MS_DBG(F("Sensor activated and measuring.\n"));
-    }
-    else
-    {
-        // Make sure the activation time is not set
-        _millisSensorActivated = 0;
-        // Make sure the status bit for sensor activation (bit 3) is not set
-        _sensorStatus &= 0b10000111;
-        MS_DBG(F("Sensor NOT activated!\n"));
-    }
+    Sensor::wake();  // this will set timestamp and status bit
 
-    // Manually activate the brush
-    // Needed for newer sensors that do not immediate activate on getting power
-    if ( _model == Y511 or _model == Y514 or _model == Y550)
-    {
-        MS_DBG(F("Activate Brush: "));
-        if (sensor.activateBrush()) MS_DBG(F("Brush activated.\n"));
-        else MS_DBG(F("Brush NOT activated!\n"));
-    }
-
-    return success;
+    return true;
 }
 
 
 // The function to put the sensor to sleep
-// Different from the standard in that it stops measurements
-bool Keller::sleep(void)
+bool KellerParent::sleep(void)
 {
-    if(!checkPowerOn()){return true;}
-    if(_millisSensorActivated == 0)
-    {
-        MS_DBG(F("Was not measuring!\n"));
-        return true;
-    }
-
-    // Send the command to begin taking readings, trying up to 5 times
-    bool success = false;
-    int ntries = 0;
-    while (!success && ntries < 5)
-    {
-        MS_DBG(F("Stop Measurement ("), ntries+1, F("): "));
-        success = sensor.stopMeasurement();
-        ntries++;
-    }
-    if(success)
-    {
-        // Unset the activation time
-        _millisSensorActivated = 0;
-        // Unset the activated status bit (bit 3), stability (bit 4), measurement
-        // request (bit 5), and measurement completion (bit 6)
-        _sensorStatus &= 0b10000111;
-        MS_DBG(F("Measurements stopped.\n"));
-    }
-    else MS_DBG(F("Measurements NOT stopped!\n"));
-
-    return success;
+    Sensor::sleep();
+    return true;
 }
 
 
 
-bool Keller::addSingleMeasurementResult(void)
+bool KellerParent::addSingleMeasurementResult(void)
 {
     bool success = false;
 
     // Initialize float variables
-    float waterPressureBar = -9999.0;
-    float waterTempertureC = -9999.0;
-    float waterDepthM = -9999.0;
-    float waterPressure_mBar = -9999.0
+    float waterPressureBar = -9999;
+    float waterTempertureC = -9999;
+    float waterDepthM = -9999;
+    float waterPressure_mBar = -9999;
 
     if (_millisMeasurementRequested > 0)
     {
