@@ -107,12 +107,30 @@ String LoggerEnviroDIY::generateEnviroDIYPostRequest(void)
     return generateEnviroDIYPostRequest(generateSensorDataJSON());
 }
 
+// This prints a fully structured post request for EnviroDIY to the
+// specified stream using the specified json.
+void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream, String enviroDIYjson)
+{
+    stream->print(String(F("POST /api/data-stream/ HTTP/1.1")));
+    stream->print(String(F("\r\nHost: data.envirodiy.org")));
+    stream->print(String(F("\r\nTOKEN: ")) + String(_registrationToken));
+    // stream->print(String(F("\r\nCache-Control: no-cache")));
+    // stream->print(String(F("\r\nConnection: close")));
+    stream->print(String(F("\r\nContent-Length: ")) + String(enviroDIYjson.length()));
+    stream->print(String(F("\r\nContent-Type: application/json\r\n\r\n")));
+    stream->print(String(enviroDIYjson));
+}
+void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
+{
+    streamEnviroDIYRequest(stream, generateSensorDataJSON());
+}
+
 
 // This utilizes an attached modem to make a TCP connection to the
 // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
 // over that connection.
 // The return is the http status code of the response.
-int LoggerEnviroDIY::postDataEnviroDIY(String fullPostRequest)
+int LoggerEnviroDIY::postDataEnviroDIY(String enviroDIYjson)
 {
     // do not continue if no modem!
     if (!_modemAttached)
@@ -131,18 +149,16 @@ int LoggerEnviroDIY::postDataEnviroDIY(String fullPostRequest)
         // Send the request to the serial for debugging
         #if defined(STANDARD_SERIAL_OUTPUT)
             PRINTOUT(F("\n \\/---- Post Request to EnviroDIY ----\\/ \n"));
-            STANDARD_SERIAL_OUTPUT.print(fullPostRequest);
+            streamEnviroDIYRequest(&STANDARD_SERIAL_OUTPUT, enviroDIYjson);
             PRINTOUT(F("\r\n\r\n"));
             STANDARD_SERIAL_OUTPUT.flush();
         #endif
 
         // Send the request to the modem stream
-        _logModem->_client->print(fullPostRequest);
+        streamEnviroDIYRequest(_logModem->_client, enviroDIYjson);
         _logModem->_client->flush();  // wait for sending to finish
 
-        uint32_t start_timer;
-        if (millis() < 4294957296) start_timer = millis();  // In case of roll-over
-        else start_timer = 0;
+        uint32_t start_timer = millis();
         while ((millis() - start_timer) < 10000L && _logModem->_client->available() < 12)
         {delay(10);}
 
@@ -178,7 +194,7 @@ int LoggerEnviroDIY::postDataEnviroDIY(String fullPostRequest)
 }
 int LoggerEnviroDIY::postDataEnviroDIY(void)
 {
-    return postDataEnviroDIY(generateEnviroDIYPostRequest(generateSensorDataJSON()));
+    return postDataEnviroDIY(generateSensorDataJSON());
 }
 
 
