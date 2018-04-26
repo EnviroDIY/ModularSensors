@@ -122,7 +122,50 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream, String enviroDIYjso
 }
 void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
 {
-    streamEnviroDIYRequest(stream, generateSensorDataJSON());
+    // first we need to calculate how long the json string is going to be
+    int jsonLength = 21;  // ' "sampling_feature": " '
+    jsonLength += 36;  // sampling feature GUID
+    jsonLength += 17;  // ' ", "timestamp": " '
+    jsonLength += 25;  // markedISO8601Time
+    jsonLength += 3;  // ' ",  '
+
+    for (int i = 0; i < Logger::_variableCount; i++)
+    {
+        jsonLength += 1;  // ' " '
+        jsonLength += 36;  // variable GUID
+        jsonLength += 3;  // ' ":  '
+        jsonLength += Logger::_variableList[i]->getValueString().length();
+        if (i + 1 != Logger::_variableCount)
+        {
+            jsonLength += 2;  // ", ";
+        }
+    }
+
+    Serial.println(jsonLength);
+    Serial.println(generateSensorDataJSON().length());
+
+    stream->print(String(F("POST /api/data-stream/ HTTP/1.1")));
+    stream->print(String(F("\r\nHost: data.envirodiy.org")));
+    stream->print(String(F("\r\nTOKEN: ")) + String(_registrationToken));
+    // stream->print(String(F("\r\nCache-Control: no-cache")));
+    // stream->print(String(F("\r\nConnection: close")));
+    stream->print(String(F("\r\nContent-Length: ")) + String(jsonLength));
+    stream->print(String(F("\r\nContent-Type: application/json\r\n\r\n")));
+    stream->print(String(F("{\"sampling_feature\": \"")));
+    stream->print(String(_samplingFeature)); + F("");
+    stream->print(String(F("\", \"timestamp\": \"")));
+    stream->print(String(Logger::markedISO8601Time) + F("\", "));
+
+    for (int i = 0; i < Logger::_variableCount; i++)
+    {
+        stream->print(String(F("\"")) + Logger::_variableList[i]->getVarUUID() + String(F("\": ")) + Logger::_variableList[i]->getValueString());
+        if (i + 1 != Logger::_variableCount)
+        {
+            stream->print(F(", "));
+        }
+    }
+
+    stream->print(F(" }"));
 }
 
 
@@ -149,13 +192,15 @@ int LoggerEnviroDIY::postDataEnviroDIY(String enviroDIYjson)
         // Send the request to the serial for debugging
         #if defined(STANDARD_SERIAL_OUTPUT)
             PRINTOUT(F("\n \\/---- Post Request to EnviroDIY ----\\/ \n"));
-            streamEnviroDIYRequest(&STANDARD_SERIAL_OUTPUT, enviroDIYjson);
+            if (enviroDIYjson.length() < 1) streamEnviroDIYRequest(&STANDARD_SERIAL_OUTPUT, enviroDIYjson);
+            else streamEnviroDIYRequest(&STANDARD_SERIAL_OUTPUT);
             PRINTOUT(F("\r\n\r\n"));
             STANDARD_SERIAL_OUTPUT.flush();
         #endif
 
         // Send the request to the modem stream
-        streamEnviroDIYRequest(_logModem->_client, enviroDIYjson);
+        if (enviroDIYjson.length() < 1) streamEnviroDIYRequest(_logModem->_client, enviroDIYjson);
+        else streamEnviroDIYRequest(_logModem->_client);
         _logModem->_client->flush();  // wait for sending to finish
 
         uint32_t start_timer = millis();
@@ -191,10 +236,6 @@ int LoggerEnviroDIY::postDataEnviroDIY(String enviroDIYjson)
     PRINTOUT(responseCode, F("\n"));
 
     return responseCode;
-}
-int LoggerEnviroDIY::postDataEnviroDIY(void)
-{
-    return postDataEnviroDIY(generateSensorDataJSON());
 }
 
 
@@ -372,7 +413,7 @@ void LoggerEnviroDIY::log(void)
             if (_logModem->connectInternet())
             {
                 // Post the data to the WebSDL
-                postDataEnviroDIY(generateEnviroDIYPostRequest(generateSensorDataJSON()));
+                postDataEnviroDIY();
 
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
                 if (_numTimepointsLogged % 288 == 0)

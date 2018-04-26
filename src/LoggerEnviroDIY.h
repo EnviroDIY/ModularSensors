@@ -55,16 +55,13 @@ public:
     void streamEnviroDIYRequest(Stream *stream, String enviroDIYjson);
     // This prints a fully structured post request for EnviroDIY to the
     // specified stream with the default json.
-    // TODO:  generate and stream the json on the fly to avoid problems
-    // retaining extremely long strings in memory!
     void streamEnviroDIYRequest(Stream *stream);
 
     // This utilizes an attached modem to make a TCP connection to the
     // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
     // over that connection.
     // The return is the http status code of the response.
-    int postDataEnviroDIY(String enviroDIYjson);
-    int postDataEnviroDIY(void);
+    int postDataEnviroDIY(String enviroDIYjson = "");
 
     // ===================================================================== //
     // Convience functions to call several of the above functions

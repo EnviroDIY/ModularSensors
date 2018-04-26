@@ -48,8 +48,7 @@ public:
     // DreamHost URL and then streams out a get request
     // over that connection.
     // The return is the http status code of the response.
-    int postDataDreamHost(String fullURL);
-    int postDataDreamHost(void);
+    int postDataDreamHost(String fullURL = "");
 
     // This prevents the logging function from dual-posting to EnviroDIY
     void disableDualPost(void);
