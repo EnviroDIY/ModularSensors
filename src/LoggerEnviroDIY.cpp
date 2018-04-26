@@ -141,9 +141,6 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
     }
     jsonLength += 1;  // }
 
-    Serial.println(jsonLength);
-    Serial.println(generateSensorDataJSON().length());
-
     stream->print(String(F("POST /api/data-stream/ HTTP/1.1")));
     stream->print(String(F("\r\nHost: data.envirodiy.org")));
     stream->print(String(F("\r\nTOKEN: ")) + String(_registrationToken));
