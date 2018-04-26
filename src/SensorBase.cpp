@@ -162,6 +162,15 @@ bool Sensor::setup(void)
     MS_DBG(_numReturnedVars);
     MS_DBG(F(" variable[s].\n"));
 
+    MS_DBG(getSensorName());
+    MS_DBG(F(" warms up in "));
+    MS_DBG(_warmUpTime_ms);
+    MS_DBG(F("ms, is stable after "));
+    MS_DBG(_stabilizationTime_ms);
+    MS_DBG(F("ms, and takes a single measurement in "));
+    MS_DBG(_measurementTime_ms);
+    MS_DBG(F("ms\n"));
+
     if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
     if (_dataPin > 0) pinMode(_dataPin, INPUT_PULLUP);
 

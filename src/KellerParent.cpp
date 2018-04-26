@@ -21,7 +21,7 @@
 KellerParent::KellerParent(byte modbusAddress, Stream* stream,
                int8_t powerPin, int8_t enablePin, uint8_t measurementsToAverage,
                kellerModel model, String sensName, int numVariables,
-               int warmUpTime_ms, int stabilizationTime_ms, int measurementTime_ms)
+               uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
              powerPin, -1, measurementsToAverage)
@@ -34,7 +34,7 @@ KellerParent::KellerParent(byte modbusAddress, Stream* stream,
 KellerParent::KellerParent(byte modbusAddress, Stream& stream,
                int8_t powerPin, int8_t enablePin, uint8_t measurementsToAverage,
                kellerModel model, String sensName, int numVariables,
-               int warmUpTime_ms, int stabilizationTime_ms, int measurementTime_ms)
+               uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
              powerPin, -1, measurementsToAverage)
