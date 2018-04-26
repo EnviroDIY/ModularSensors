@@ -60,12 +60,14 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void)
     byte res1 = 0;  //Data transfer values
     byte res2 = 0;
     byte res3 = 0;
+    byte config = 0;
 
     float res = 0;  //Calculated voltage in uV
 
+    byte i2c_status = -1;
     if (_millisMeasurementRequested > 0)
     {
-        i2c_soft.beginTransmission(MCP3421_ADR);
+        i2c_status = i2c_soft.beginTransmission(MCP3421_ADR);
         i2c_soft.write(B10001100);  // initiate conversion, One-Shot mode, 18 bits, PGA x1
         i2c_soft.endTransmission();
 
@@ -74,7 +76,8 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void)
         i2c_soft.requestFrom(MCP3421_ADR);
         res1 = i2c_soft.read();
         res2 = i2c_soft.read();
-        res3 = i2c_soft.readLast();
+        res3 = i2c_soft.read();
+        config = i2c_soft.readLast();
         i2c_soft.endTransmission();
 
         res = 0;
@@ -94,7 +97,8 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void)
     else MS_DBG(F("Sensor is not currently measuring!\n"));
 
     //ADD FAILURE CONDITIONS!!
-
+    if(isnan(res)) res = -9999; //list a failure if the sensor returns nan (not sure how this would happen, keep to be safe)
+    else if(res == 0 && i2c_status == 0 && config == 0) res = -9999; //List a failure when the sensor is not connected
     // Store the results in the sensorValues array
     verifyAndAddMeasurementResult(PTR_VOLT_VAR_NUM, res);
 
