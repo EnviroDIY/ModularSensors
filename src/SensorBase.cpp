@@ -154,22 +154,16 @@ void Sensor::powerDown(void)
 // By default, sets pin modes and returns true
 bool Sensor::setup(void)
 {
-    MS_DBG(F("Setting up "));
-    MS_DBG(getSensorName());
-    MS_DBG(F(" attached at "));
-    MS_DBG(getSensorLocation());
-    MS_DBG(F(" which can return up to "));
-    MS_DBG(_numReturnedVars);
-    MS_DBG(F(" variable[s].\n"));
+    MS_DBG(F("Setting up "), getSensorName(), F(" attached at "),
+           getSensorLocation(), F(" which can return up to "), _numReturnedVars,
+           F(" variable[s].\n"));
 
-    MS_DBG(getSensorName());
-    MS_DBG(F(" warms up in "));
-    MS_DBG(_warmUpTime_ms);
-    MS_DBG(F("ms, is stable after "));
-    MS_DBG(_stabilizationTime_ms);
-    MS_DBG(F("ms, and takes a single measurement in "));
-    MS_DBG(_measurementTime_ms);
-    MS_DBG(F("ms\n"));
+    MS_DBG(F("It warms up in "), _warmUpTime_ms, F("ms, is stable after "),
+           _stabilizationTime_ms, F("ms, and takes a single measurement in "),
+           _measurementTime_ms, F("ms.\n"));
+
+    MS_DBG(_measurementsToAverage);
+    MS_DBG(F(" individual measurements will be averaged for each reading.\n"));
 
     if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
     if (_dataPin > 0) pinMode(_dataPin, INPUT_PULLUP);
