@@ -108,13 +108,13 @@ int LoggerDreamHost::postDataDreamHost(String fullURL)
         // Send the request to the serial for debugging
         #if defined(STANDARD_SERIAL_OUTPUT)
             PRINTOUT(F("\n \\/------ Data to DreamHost ------\\/ \n"));
-            if (fullURL.length() < 1) streamDreamHostRequest(&STANDARD_SERIAL_OUTPUT, fullURL);
+            if (fullURL.length() > 1) streamDreamHostRequest(&STANDARD_SERIAL_OUTPUT, fullURL);
             else streamDreamHostRequest(&STANDARD_SERIAL_OUTPUT);
             STANDARD_SERIAL_OUTPUT.flush();
         #endif
 
         // Send the request to the modem stream
-        if (fullURL.length() < 1) streamDreamHostRequest(_logModem->_client, fullURL);
+        if (fullURL.length() > 1) streamDreamHostRequest(_logModem->_client, fullURL);
         else streamDreamHostRequest(_logModem->_client);
         _logModem->_client->flush();  // wait for sending to finish
 

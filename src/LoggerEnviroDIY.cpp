@@ -192,14 +192,14 @@ int LoggerEnviroDIY::postDataEnviroDIY(String enviroDIYjson)
         // Send the request to the serial for debugging
         #if defined(STANDARD_SERIAL_OUTPUT)
             PRINTOUT(F("\n \\/---- Post Request to EnviroDIY ----\\/ \n"));
-            if (enviroDIYjson.length() < 1) streamEnviroDIYRequest(&STANDARD_SERIAL_OUTPUT, enviroDIYjson);
+            if (enviroDIYjson.length() > 1) streamEnviroDIYRequest(&STANDARD_SERIAL_OUTPUT, enviroDIYjson);
             else streamEnviroDIYRequest(&STANDARD_SERIAL_OUTPUT);
             PRINTOUT(F("\r\n\r\n"));
             STANDARD_SERIAL_OUTPUT.flush();
         #endif
 
         // Send the request to the modem stream
-        if (enviroDIYjson.length() < 1) streamEnviroDIYRequest(_logModem->_client, enviroDIYjson);
+        if (enviroDIYjson.length() > 1) streamEnviroDIYRequest(_logModem->_client, enviroDIYjson);
         else streamEnviroDIYRequest(_logModem->_client);
         _logModem->_client->flush();  // wait for sending to finish
 
