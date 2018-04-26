@@ -18,7 +18,7 @@
 
 #include <Arduino.h>
 
-#define DEBUGGING_SERIAL_OUTPUT Serial
+// #define DEBUGGING_SERIAL_OUTPUT Serial
 // #define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
