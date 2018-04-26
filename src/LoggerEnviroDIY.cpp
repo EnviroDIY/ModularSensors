@@ -84,7 +84,7 @@ String LoggerEnviroDIY::generateSensorDataJSON(void)
         }
     }
 
-    jsonString += F(" }");
+    jsonString += F("}");
     return jsonString;
 }
 
@@ -123,23 +123,23 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream, String enviroDIYjso
 void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
 {
     // first we need to calculate how long the json string is going to be
-    int jsonLength = 21;  // ' "sampling_feature": " '
+    int jsonLength = 22;  // {"sampling_feature": "
     jsonLength += 36;  // sampling feature GUID
-    jsonLength += 17;  // ' ", "timestamp": " '
+    jsonLength += 17;  // ", "timestamp": "
     jsonLength += 25;  // markedISO8601Time
-    jsonLength += 3;  // ' ",  '
-
+    jsonLength += 3;  //  ",_
     for (int i = 0; i < Logger::_variableCount; i++)
     {
-        jsonLength += 1;  // ' " '
+        jsonLength += 1;  //  "
         jsonLength += 36;  // variable GUID
-        jsonLength += 3;  // ' ":  '
+        jsonLength += 3;  //  ":_
         jsonLength += Logger::_variableList[i]->getValueString().length();
         if (i + 1 != Logger::_variableCount)
         {
-            jsonLength += 2;  // ", ";
+            jsonLength += 2;  // ,_
         }
     }
+    jsonLength += 1;  // }
 
     Serial.println(jsonLength);
     Serial.println(generateSensorDataJSON().length());
@@ -165,7 +165,7 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
         }
     }
 
-    stream->print(F(" }"));
+    stream->print(F("}"));
 }
 
 
