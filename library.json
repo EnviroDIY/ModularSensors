@@ -232,7 +232,7 @@
             "name": "YosemitechModbus",
             "library id": "2078",
             "url": "https://github.com/EnviroDIY/YosemitechModbus.git",
-            "version": ">=0.1.9",
+            "version": ">=0.1.12",
             "note": "Arduino library for communication with Yosemitech sensors via Modbus.",
             "authors": [
                 "Sara Damiano",
