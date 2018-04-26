@@ -157,7 +157,14 @@ bool YosemitechParent::addSingleMeasurementResult(void)
             bool success = false;
 
             // Initialize float variables
-            float DOmgL, Turbidity, Cond, pH, Temp, ORP, Chlorophyll, BGA = -9999;
+            float DOmgL = -9999;
+            float Turbidity = -9999;
+            float Cond = -9999;
+            float pH = -9999;
+            float Temp = -9999;
+            float ORP = -9999;
+            float Chlorophyll = -9999;
+            float BGA = -9999;
 
             if (_millisMeasurementRequested > 0)
             {
