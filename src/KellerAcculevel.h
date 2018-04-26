@@ -39,13 +39,13 @@ public:
     KellerAcculevel(byte modbusAddress, Stream* stream, int8_t powerPin,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : KellerParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
-                    Acculevel, F("KellerAcculevel"), KellerAcculevel_NUM_VARIABLES,
+                    Acculevel, F("KellerAcculevel"), KELLER_NUM_VARIABLES,
                     KellerAcculevel_WARM_UP_TIME_MS, KellerAcculevel_STABILIZATION_TIME_MS, KellerAcculevel_MEASUREMENT_TIME_MS)
     {}
     KellerAcculevel(byte modbusAddress, Stream& stream, int8_t powerPin,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : KellerParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
-                    Acculevel, F("KellerAcculevel"), KellerAcculevel_NUM_VARIABLES,
+                    Acculevel, F("KellerAcculevel"), KELLER_NUM_VARIABLES,
                     KellerAcculevel_WARM_UP_TIME_MS, KellerAcculevel_STABILIZATION_TIME_MS, KellerAcculevel_MEASUREMENT_TIME_MS)
     {}
 };
@@ -56,7 +56,7 @@ class KellerAcculevel_Pressure : public Variable
 {
 public:
     KellerAcculevel_Pressure(Sensor *parentSense, String UUID = "", String customVarCode = "")
-     : Variable(parentSense, KellerAcculevel_PRESSURE_VAR_NUM,
+     : Variable(parentSense, KELLER_PRESSURE_VAR_NUM,
                 F("pressureGauge"), F("millibar"),
                 KellerAcculevel_PRESSURE_RESOLUTION,
                 F("kellerPress"), UUID, customVarCode)
@@ -69,7 +69,7 @@ class KellerAcculevel_Temp : public Variable
 {
 public:
     KellerAcculevel_Temp(Sensor *parentSense, String UUID = "", String customVarCode = "")
-     : Variable(parentSense, KellerAcculevel_TEMP_VAR_NUM,
+     : Variable(parentSense, KELLER_TEMP_VAR_NUM,
                 F("temperature"), F("degreeCelsius"),
                 KellerAcculevel_TEMP_RESOLUTION,
                 F("kellerTemp"), UUID, customVarCode)
@@ -81,7 +81,7 @@ class KellerAcculevel_Height : public Variable
 {
 public:
     KellerAcculevel_Height(Sensor *parentSense, String UUID = "", String customVarCode = "")
-     : Variable(parentSense, KellerAcculevel_HEIGHT_VAR_NUM,
+     : Variable(parentSense, KELLER_HEIGHT_VAR_NUM,
                 F("gaugeHeight"), F("meter"),
                 KellerAcculevel_HEIGHT_RESOLUTION,
                 F("kellerHeight"), UUID, customVarCode)

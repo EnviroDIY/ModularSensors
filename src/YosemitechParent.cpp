@@ -150,12 +150,12 @@ bool YosemitechParent::sleep(void)
 
 bool YosemitechParent::addSingleMeasurementResult(void)
 {
+    bool success = false;
+
     switch (_model)
     {
         case Y4000:
         {
-            bool success = false;
-
             // Initialize float variables
             float DOmgL = -9999;
             float Turbidity = -9999;
@@ -202,22 +202,10 @@ bool YosemitechParent::addSingleMeasurementResult(void)
             verifyAndAddMeasurementResult(6, Chlorophyll);
             verifyAndAddMeasurementResult(7, BGA);
 
-            // Unset the time stamp for the beginning of this measurement
-            _millisMeasurementRequested = 0;
-            // Unset the status bit for a measurement having been requested (bit 5)
-            _sensorStatus &= 0b11011111;
-            // Set the status bit for measurement completion (bit 6)
-            _sensorStatus |= 0b01000000;
-
-            // Return true when finished
-            return success;
-
             break;
         }
         default:
         {
-            bool success = false;
-
             // Initialize float variables
             float parmValue = -9999;
             float tempValue = -9999;
@@ -252,16 +240,16 @@ bool YosemitechParent::addSingleMeasurementResult(void)
             verifyAndAddMeasurementResult(0, parmValue);
             verifyAndAddMeasurementResult(1, tempValue);
             verifyAndAddMeasurementResult(2, thirdValue);
-
-            // Unset the time stamp for the beginning of this measurement
-            _millisMeasurementRequested = 0;
-            // Unset the status bit for a measurement having been requested (bit 5)
-            _sensorStatus &= 0b11011111;
-            // Set the status bit for measurement completion (bit 6)
-            _sensorStatus |= 0b01000000;
-
-            // Return true when finished
-            return success;
         }
     }
+
+    // Unset the time stamp for the beginning of this measurement
+    _millisMeasurementRequested = 0;
+    // Unset the status bit for a measurement having been requested (bit 5)
+    _sensorStatus &= 0b11011111;
+    // Set the status bit for measurement completion (bit 6)
+    _sensorStatus |= 0b01000000;
+
+    // Return true when finished
+    return success;
 }
