@@ -20,19 +20,15 @@
 #include "KellerParent.h"
 #include "VariableBase.h"
 
-#define KellerAcculevel_NUM_VARIABLES 3
 #define KellerAcculevel_WARM_UP_TIME_MS 500
 #define KellerAcculevel_STABILIZATION_TIME_MS 5000
 #define KellerAcculevel_MEASUREMENT_TIME_MS 1500
 
 #define KellerAcculevel_PRESSURE_RESOLUTION 5
-#define KellerAcculevel_PRESSURE_VAR_NUM 0
 
 #define KellerAcculevel_TEMP_RESOLUTION 2
-#define KellerAcculevel_TEMP_VAR_NUM 1
 
 #define KellerAcculevel_HEIGHT_RESOLUTION 4
-#define KellerAcculevel_HEIGHT_VAR_NUM 2
 
 
 // The main class for the Keller Sensors
@@ -86,7 +82,7 @@ class KellerAcculevel_Height : public Variable
 public:
     KellerAcculevel_Height(Sensor *parentSense, String UUID = "", String customVarCode = "")
      : Variable(parentSense, KellerAcculevel_HEIGHT_VAR_NUM,
-                F("gageHeight"), F("meter"),
+                F("gaugeHeight"), F("meter"),
                 KellerAcculevel_HEIGHT_RESOLUTION,
                 F("kellerHeight"), UUID, customVarCode)
     {}

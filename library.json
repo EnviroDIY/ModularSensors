@@ -1,6 +1,6 @@
 {
     "name": "EnviroDIY_ModularSensors",
-    "version": "0.10.1",
+    "version": "0.10.2",
     "description":  "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
     "keywords": "sensor, modular, sensors, logger, low power, sleeping, EnviroDIY",
     "platforms": "atmelavr, atmelsam",
@@ -243,7 +243,7 @@
         },
         {
             "name": "MS5803",
-            "url": "https://github.com/EnviroDIY/MS5803.git",
+            "version": "https://github.com/EnviroDIY/MS5803.git",
             "note": "General interface to MS5803-series pressure transducers",
             "authors": [
                 "Bobby Schulz"
@@ -251,8 +251,8 @@
         },
         {
             "name": "KellerModbus",
-            "version": ">=0.1.0",
-            "url": "https://github.com/EnviroDIY/KellerModbus.git",
+            "version": "https://github.com/EnviroDIY/KellerModbus.git",
+            "version_note": ">=0.1.0",
             "note": "Arduino library for communication with Keller pressure and water level sensors via Modbus.",
             "authors": [
                 "Anthony Aufdenkampe"
