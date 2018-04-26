@@ -27,6 +27,11 @@
 #include "SensorBase.h"
 #include <KellerModbus.h>
 
+#define KELLER_NUM_VARIABLES 3
+#define KELLER_PRESSURE_VAR_NUM 0
+#define KELLER_TEMP_VAR_NUM 1
+#define KELLER_HEIGHT_VAR_NUM 2
+
 // The main class for the Keller Sensors
 class KellerParent : public Sensor
 {
@@ -43,8 +48,6 @@ public:
     String getSensorLocation(void) override;
 
     virtual bool setup(void) override;
-    virtual bool wake(void) override;
-    virtual bool sleep(void) override;
 
     virtual bool addSingleMeasurementResult(void);
 

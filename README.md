@@ -383,6 +383,8 @@ Modem_SignalPercent(&modem, "UUID", "customVarCode");
 
 The modem does not behave quite the same as all the other sensors do, though.  Setup must be done with the '''setupModem(...)''' function; the normal '''setup()''' function does not do anything.  The '''sleep()''' and '''powerDown()''' functions also do not work, the modem will only go off with the '''off()''' function.
 
+Note for GPRSBee modems: To start the modem you will need to power the logger board off, connect the battery to the logger board, and finally attach the modem to the logger board. Then you may power the board and run your sketch. We have found that attaching a GPRSBee modem to power in a different sequence results in the modem reporting zero signal strength. Note, the Mayfly connected to a computer via USB does not supply sufficient power to the GPRSBee. If the community finds this true for other modems, please let us know.
+
 
 ### <a name="DIYlogger"></a>Additional Functions Available for a LoggerEnviroDIY Object:
 These functions attach a modem and set up the required registration token and sampling feature UUID for the EnviroDIY web streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  You *must* also add the correct variable UUID's to the constructors for each variable you are using.  All of the UUID and token values can be obtained after registering at http://data.envirodiy.org/.
@@ -721,7 +723,7 @@ _____
 
 ### <a name="BME280"></a>[Bosch BME280](https://www.bosch-sensortec.com/bst/products/all_products/bme280) Integrated Environmental Sensor
 
-Although this sensor has the option of either I2C or SPI communication, this library only supports I2C.  _The I2C sensor address is assumed to be 0x76_, though it can be changed to 0x77 in the constructor if necessary.  The sensor address is determined by how the sensor is soldered onto its breakout board.  To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses.  No more than two can be attached.  This module is likely to also work with the [Bosch BMP280 Barometric Pressure Sensor](https://www.bosch-sensortec.com/bst/products/all_products/bmp280), though it has not been tested on it.  These sensors should be attached to a 1.7-3.6V power source and the power supply to the sensor can be stopped between measurements.
+Although this sensor has the option of either I2C or SPI communication, this library only supports I2C.  The default I2C address varies by manufacturer and is either 0x77 or 0x76. The Adafruit and Sparkfun defaults are both 0x77 and Seeed/Grove default is 0x76, though all can be changed by physical modification of the sensor, if necessary (by cutting the board connection for the manufacturer default and soldering the optional address jumpers).  To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses.  No more than two can be attached (unless you use a multiplexer).  This module is likely to also work with the [Bosch BMP280 Barometric Pressure Sensor](https://www.bosch-sensortec.com/bst/products/all_products/bmp280), though it has not been tested on it.  These sensors should be attached to a 1.7-3.6V power source and the power supply to the sensor can be stopped between measurements.
 
 The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex is optional as is the number of readings to average:
 
@@ -1078,7 +1080,7 @@ new KellerAcculevel_Height(&acculevel, "UUID", "customVarCode");
 ```
 _____### <a name="MPL115A2"></a>[Freescale Semiconductor MPL115A2](https://www.nxp.com/docs/en/data-sheet/MPL115A2.pdf) Miniature I2C Digital Barometer
 
-The MPL115A2 communicate with the board via I2C.  Because this sensor can have only one I2C address (0x60), it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 2.375-5.5V power source and the power supply to the sensor can be stopped between measurements.
+The MPL115A2 communicates with the board via I2C.  Because this sensor can have only one I2C address (0x60), it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 2.375-5.5V power source and the power supply to the sensor can be stopped between measurements.
 
 The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average:
 
