@@ -1080,7 +1080,7 @@ new KellerAcculevel_Height(&acculevel, "UUID", "customVarCode");
 ```
 _____### <a name="MPL115A2"></a>[Freescale Semiconductor MPL115A2](https://www.nxp.com/docs/en/data-sheet/MPL115A2.pdf) Miniature I2C Digital Barometer
 
-The MPL115A2 communicate with the board via I2C.  Because this sensor can have only one I2C address (0x60), it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 2.375-5.5V power source and the power supply to the sensor can be stopped between measurements.
+The MPL115A2 communicates with the board via I2C.  Because this sensor can have only one I2C address (0x60), it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 2.375-5.5V power source and the power supply to the sensor can be stopped between measurements.
 
 The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average:
 

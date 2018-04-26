@@ -71,24 +71,6 @@ bool KellerParent::setup(void)
 }
 
 
-// The function to wake up a sensor
-bool KellerParent::wake(void)
-{
-    Sensor::wake();  // this will set timestamp and status bit
-
-    return true;
-}
-
-
-// The function to put the sensor to sleep
-bool KellerParent::sleep(void)
-{
-    Sensor::sleep();
-    return true;
-}
-
-
-
 bool KellerParent::addSingleMeasurementResult(void)
 {
     bool success = false;
@@ -121,9 +103,9 @@ bool KellerParent::addSingleMeasurementResult(void)
     else MS_DBG(F("Sensor is not currently measuring!\n"));
 
     // Put values into the array
-    verifyAndAddMeasurementResult(0, waterPressure_mBar);
-    verifyAndAddMeasurementResult(1, waterTempertureC);
-    verifyAndAddMeasurementResult(2, waterDepthM);
+    verifyAndAddMeasurementResult(KELLER_PRESSURE_VAR_NUM, waterPressure_mBar);
+    verifyAndAddMeasurementResult(KELLER_TEMP_VAR_NUM, waterTempertureC);
+    verifyAndAddMeasurementResult(KELLER_HEIGHT_VAR_NUM, waterDepthM);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
