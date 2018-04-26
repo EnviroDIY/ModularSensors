@@ -146,6 +146,9 @@ void LoggerDreamHost::log(void)
     // even interval of the logging interval
     if (checkInterval())
     {
+        // Flag to notify that we're in already awake and logging a point
+        Logger::_isLoggingNow = true;
+
         // Print a line to show new reading
         PRINTOUT(F("------------------------------------------\n"));
         // Turn on the LED to show we're taking a reading
@@ -208,6 +211,9 @@ void LoggerDreamHost::log(void)
         digitalWrite(_ledPin, LOW);
         // Print a line to show reading ended
         PRINTOUT(F("------------------------------------------\n\n"));
+
+        // Unset flag
+        Logger::_isLoggingNow = false;
     }
 
     // Check if it was instead the testing interrupt that woke us up

@@ -178,7 +178,7 @@ int LoggerEnviroDIY::postDataEnviroDIY(String fullPostRequest)
 }
 int LoggerEnviroDIY::postDataEnviroDIY(void)
 {
-    return postDataEnviroDIY(generateEnviroDIYPostRequest());
+    return postDataEnviroDIY(generateEnviroDIYPostRequest(generateSensorDataJSON()));
 }
 
 
@@ -189,8 +189,14 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
 // This defines what to do in the testing mode
 void LoggerEnviroDIY::testingMode()
 {
+    // Flag to notify that we're in testing mode
+    Logger::_isTestingNow = true;
+    // Unset the _startTesting flag
+    Logger::_startTesting = false;
+
     PRINTOUT(F("------------------------------------------\n"));
     PRINTOUT(F("Entering sensor testing mode\n"));
+    delay(100);  // This seems to prevent crashes, no clue why ....
 
     if (_modemAttached)
     {
@@ -246,6 +252,9 @@ void LoggerEnviroDIY::testingMode()
         // Turn off the modem
         _logModem->off();
     }
+
+    // Unset testing mode flag
+    Logger::_isTestingNow = false;
 }
 
 
@@ -310,6 +319,9 @@ void LoggerEnviroDIY::log(void)
     // even interval of the logging interval
     if (checkInterval())
     {
+        // Flag to notify that we're in already awake and logging a point
+        Logger::_isLoggingNow = true;
+
         // Print a line to show new reading
         PRINTOUT(F("------------------------------------------\n"));
         // Turn on the LED to show we're taking a reading
@@ -366,6 +378,9 @@ void LoggerEnviroDIY::log(void)
         digitalWrite(_ledPin, LOW);
         // Print a line to show reading ended
         PRINTOUT(F("------------------------------------------\n\n"));
+
+        // Unset flag
+        Logger::_isLoggingNow = false;
     }
 
     // Check if it was instead the testing interrupt that woke us up

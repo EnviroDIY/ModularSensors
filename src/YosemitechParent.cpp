@@ -186,9 +186,9 @@ bool YosemitechParent::addSingleMeasurementResult(void)
                 if (Cond != -9999) Cond *= 1000;
 
                 MS_DBG(F("    "), sensor.getParameter(), F("\n"));
-                MS_DBG(F("    "), DOmgL, F("  "), Turbidity, F("  "), Cond, F("  "),
-                                  pH, F("  "), Temp, F("  "), ORP, F("  "),
-                                  Chlorophyll, F("  "), BGA, F("\n"));
+                MS_DBG(F("    "), DOmgL, F(", "), Turbidity, F(", "), Cond, F(", "),
+                                  pH, F(", "), Temp, F(", "), ORP, F(", "),
+                                  Chlorophyll, F(", "), BGA, F("\n"));
             }
             else MS_DBG(F("Sensor is not currently measuring!\n"));
 
