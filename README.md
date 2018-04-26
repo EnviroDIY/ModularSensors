@@ -380,6 +380,8 @@ Modem_SignalPercent(&modem, "UUID", "customVarCode");
 
 The modem does not behave quite the same as all the other sensors do, though.  Setup must be done with the '''setupModem(...)''' function; the normal '''setup()''' function does not do anything.  The '''sleep()''' and '''powerDown()''' functions also do not work, the modem will only go off with the '''off()''' function.
 
+Note for GPRSBee modems: To start the modem you will need to power the logger board off, connect the battery to the logger board, and finally attach the modem to the logger board. Then you may power the board and run your sketch. We have found that attaching a GPRSBee modem to power in a different sequence results in the modem reporting zero signal strength. Note, the Mayfly connected to a computer via USB does not supply sufficient power to the GPRSBee. If the community finds this true for other modems, please let us know. 
+
 
 ### <a name="DIYlogger"></a>Additional Functions Available for a LoggerEnviroDIY Object:
 These functions attach a modem and set up the required registration token and sampling feature UUID for the EnviroDIY web streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  You *must* also add the correct variable UUID's to the constructors for each variable you are using.  All of the UUID and token values can be obtained after registering at http://data.envirodiy.org/.
