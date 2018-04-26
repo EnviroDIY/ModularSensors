@@ -154,13 +154,16 @@ void Sensor::powerDown(void)
 // By default, sets pin modes and returns true
 bool Sensor::setup(void)
 {
-    MS_DBG(F("Setting up "));
-    MS_DBG(getSensorName());
-    MS_DBG(F(" attached at "));
-    MS_DBG(getSensorLocation());
-    MS_DBG(F(" which can return up to "));
-    MS_DBG(_numReturnedVars);
-    MS_DBG(F(" variable[s].\n"));
+    MS_DBG(F("Setting up "), getSensorName(), F(" attached at "),
+           getSensorLocation(), F(" which can return up to "), _numReturnedVars,
+           F(" variable[s].\n"));
+
+    MS_DBG(F("It warms up in "), _warmUpTime_ms, F("ms, is stable after "),
+           _stabilizationTime_ms, F("ms, and takes a single measurement in "),
+           _measurementTime_ms, F("ms.\n"));
+
+    MS_DBG(_measurementsToAverage);
+    MS_DBG(F(" individual measurements will be averaged for each reading.\n"));
 
     if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
     if (_dataPin > 0) pinMode(_dataPin, INPUT_PULLUP);
@@ -273,6 +276,9 @@ void Sensor::clearValues(void)
 // that need no instructions to start a measurement.
 bool Sensor::startSingleMeasurement(void)
 {
+    MS_DBG(F("Starting measurement on "), getSensorName(), F(" at "),
+           getSensorLocation(), F(".\n"));
+
     bool success = true;
 
     // Check if activated, only mark time if it is
@@ -528,7 +534,7 @@ void Sensor::waitForStability(void){ while (!isStable()){} }
 // This checks to see if enough time has passed for measurement completion
 bool Sensor::isMeasurementComplete(void)
 {
-    uint32_t elapsed_since_wake_up = millis() - _millisMeasurementRequested;
+    uint32_t elapsed_since_meas_start = millis() - _millisMeasurementRequested;
 
     // If the sensor hasn't been asked to take a measurement, it will never return one,
     // so the measurement time is essentially already passed
@@ -540,10 +546,10 @@ bool Sensor::isMeasurementComplete(void)
         _sensorStatus |= 0b01000000;
         return true;
     }
-    // If the sensor is measuring and enough time has elapsed, it's stable
-    else if (elapsed_since_wake_up > _measurementTime_ms)
+    // If the sensor is measuring and enough time has elapsed, the reading is finished
+    else if (elapsed_since_meas_start > _measurementTime_ms)
     {
-        MS_DBG(F("It's been "), (elapsed_since_wake_up),
+        MS_DBG(F("It's been "), (elapsed_since_meas_start),
                F("ms, and measurement by "), getSensorName(), F(" at "),
                getSensorLocation(), F(" should be complete!\n"));
         // Set the status bit for measurement completion (bit 6)

@@ -676,6 +676,7 @@ void Logger::testingMode()
 
     PRINTOUT(F("------------------------------------------\n"));
     PRINTOUT(F("Entering sensor testing mode\n"));
+    delay(100);  // This seems to prevent crashes, no clue why ....
 
     // Power up all of the sensors
     sensorsPowerUp();

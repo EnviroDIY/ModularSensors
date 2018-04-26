@@ -13,8 +13,9 @@ the EnviroDIY data portal.
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
-NOTE: Modfied on April 24 for WSU testing
-NOTE: Based off ModularSensors v0.10.1 Keller branch
+NOTE: Modfied on April 25 for WSU testing
+NOTE: Based off ModularSensors v0.10.1 Develop branch
+https://github.com/EnviroDIY/ModularSensors/commit/7d0d15ae5bc6dddf13adbd735032e88c251c7ec2
 
 *****************************************************************************/
 
@@ -43,7 +44,7 @@ const char *sketchName = "AnthonyTest2.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "AnthonyTest2";
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 5;
+const uint8_t loggingInterval = 10;
 // Your logger's timezone.
 const int8_t timeZone = -6;  // Central Standard Time (CST=-6)
 // Create a new logger instance
@@ -316,7 +317,6 @@ const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chi
 const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends taking and averaging a few readings
 KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, modbusPower, max485EnablePin, acculevelNumberReadings);
 
-
 /***
 // ==========================================================================
 //    Yosemitech Y504 Dissolved Oxygen Sensor
@@ -325,7 +325,7 @@ KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, modbusPower, max
 byte y504modbusAddress = 0x04;  // The modbus address of the Y504
 const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const uint8_t y504NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+const uint8_t y504NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePin, y504NumberReadings);
 
 
@@ -336,7 +336,7 @@ YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePi
 byte y510modbusAddress = 0x0B;  // The modbus address of the Y510
 // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const uint8_t y510NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+const uint8_t y510NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 YosemitechY510 y510(y510modbusAddress, modbusSerial, modbusPower, max485EnablePin, y510NumberReadings);
 
 
@@ -347,7 +347,7 @@ YosemitechY510 y510(y510modbusAddress, modbusSerial, modbusPower, max485EnablePi
 byte y511modbusAddress = 0x1A;  // The modbus address of the Y511
 // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const uint8_t y511NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+const uint8_t y511NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 YosemitechY511 y511(y511modbusAddress, modbusSerial, modbusPower, max485EnablePin, y511NumberReadings);
 
 
@@ -358,7 +358,7 @@ YosemitechY511 y511(y511modbusAddress, modbusSerial, modbusPower, max485EnablePi
 byte y514modbusAddress = 0x14;  // The modbus address of the Y514
 // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const uint8_t y514NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+const uint8_t y514NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 YosemitechY514 y514(y514modbusAddress, modbusSerial, modbusPower, max485EnablePin, y514NumberReadings);
 
 
@@ -369,7 +369,7 @@ YosemitechY514 y514(y514modbusAddress, modbusSerial, modbusPower, max485EnablePi
 byte y520modbusAddress = 0x20;  // The modbus address of the Y520
 // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const uint8_t y520NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+const uint8_t y520NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 YosemitechY520 y520(y520modbusAddress, modbusSerial, modbusPower, max485EnablePin, y520NumberReadings);
 
 
@@ -382,8 +382,19 @@ byte y532modbusAddress = 0x32;  // The modbus address of the Y532
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
 YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, y532NumberReadings);
+***/
 
+// ==========================================================================
+//    Yosemitech Y4000 Multiparameter Sonde (DOmgL, Turbidity, Cond, pH, Temp, ORP, Chlorophyll, BGA)
+// ==========================================================================
+#include <YosemitechY4000.h>
+byte y4000modbusAddress = 0x05;  // The modbus address of the Y4000
+// const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+const uint8_t y4000NumberReadings = 3;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
+YosemitechY4000 y4000(y4000modbusAddress, modbusSerial, modbusPower, max485EnablePin, y4000NumberReadings);
 
+/***
 // ==========================================================================
 //    Zebra Tech D-Opto Dissolved Oxygen Sensor
 // ==========================================================================
@@ -449,6 +460,14 @@ Variable *variableList[] = {
     // new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
     // new YosemitechY532_Voltage(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
     // new YosemitechY532_pH(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_DOmgL(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_Turbidity(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_Cond(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_pH(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_Temp(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY4000_ORP(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY4000_Chlorophyll(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY4000_BGA(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
     // new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
     // new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
     // new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
