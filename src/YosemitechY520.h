@@ -15,10 +15,12 @@
  *based on their accuracy, not the resolution of the sensor
  *
  * For Conductivity:
- *     Accuracy is 1%
- *     Range is 1uS/cm~200 mS/cm
+ *     Resolution is 0.1 µS/cm
+ *     Accuracy is ± 1 % Full Scale
+ *     Range is 1 µS/cm to 200 mS/cm
  *
  * For Temperature:
+ *     Resolution is 0.1 °C
  *     Accuracy is ± 0.2°C
  *     Range is 0°C to + 50°C
  *
@@ -40,7 +42,7 @@
 #define Y520_COND_RESOLUTION 1
 #define Y520_COND_VAR_NUM 0
 
-#define Y520_TEMP_RESOLUTION 2
+#define Y520_TEMP_RESOLUTION 1
 #define Y520_TEMP_VAR_NUM 1
 
 // The main class for the Decagon Y520

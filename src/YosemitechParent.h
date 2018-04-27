@@ -1,5 +1,5 @@
 /*
- *Yosemitech.h
+ *YosemitechParent.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -10,7 +10,7 @@
  *Documentation for the Yosemitech Protocol commands and responses, along with
  *information about the various variables, can be found
  *in the EnviroDIY Yosemitech library at:
- * https://github.com/EnviroDIY/Yosemitech
+ * https://github.com/EnviroDIY/YosemitechModbus
 */
 
 #ifndef YosemitechParent_h
@@ -32,11 +32,11 @@ public:
     YosemitechParent(byte modbusAddress, Stream* stream,
                      int8_t powerPin, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
                      yosemitechModel model = UNKNOWN, String sensName = "Yosemitech-Sensor", int numVariables = 2,
-                     int warmUpTime_ms = 1500, int stabilizationTime_ms = 20000, int measurementTime_ms = 2000);
+                     uint32_t warmUpTime_ms = 1500, uint32_t stabilizationTime_ms = 20000, uint32_t measurementTime_ms = 2000);
     YosemitechParent(byte modbusAddress, Stream& stream,
                      int8_t powerPin, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
                      yosemitechModel model = UNKNOWN, String sensName = "Yosemitech-Sensor", int numVariables = 2,
-                     int warmUpTime_ms = 1500, int stabilizationTime_ms = 20000, int measurementTime_ms = 2000);
+                     uint32_t warmUpTime_ms = 1500, uint32_t stabilizationTime_ms = 20000, uint32_t measurementTime_ms = 2000);
 
     String getSensorLocation(void) override;
 

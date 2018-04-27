@@ -15,10 +15,12 @@
  *based on their accuracy, not the resolution of the sensor
  *
  * For pH:
- *     Accuracy is ±0.1 pH
- *     Range is 2-12 pH
+ *     Resolution is 0.01 pH units
+ *     Accuracy is ± 0.1 pH units
+ *     Range is 2 to 12 pH units
  *
  * For Temperature:
+ *     Resolution is 0.1 °C
  *     Accuracy is ± 0.2°C
  *     Range is 0°C to + 50°C
  *
@@ -37,13 +39,13 @@
 #define Y532_STABILIZATION_TIME_MS 4500
 #define Y532_MEASUREMENT_TIME_MS 1800
 
-#define Y532_PH_RESOLUTION 1
+#define Y532_PH_RESOLUTION 2
 #define Y532_PH_VAR_NUM 0
 
-#define Y532_TEMP_RESOLUTION 2
+#define Y532_TEMP_RESOLUTION 1
 #define Y532_TEMP_VAR_NUM 1
 
-#define Y532_VOLT_RESOLUTION 2
+#define Y532_VOLT_RESOLUTION 0
 #define Y532_VOLT_VAR_NUM 2
 
 // The main class for the Decagon Y532
