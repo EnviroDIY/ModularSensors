@@ -326,18 +326,6 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
-Variable *Press1 = new MeaSpecMS5803_Pressure(&ms5803);  //Initialize variables to be used by differential
-Variable *Press2 = new MPL115A2_Pressure(&mpl115a2);
-
-// ==========================================================================
-//    Differential calculator
-// ==========================================================================
-#include <Delta.h>
-float ScaleForVar1 = 1;  //Value which Variable 1 will be divided by
-float ScaleForVar2 = 10;  //Value which Variable 2 will be divided by
-String UnitsForDiff = "mbar";  //Units for the resulting output
-Delta delta(Press1, Press2, UnitsForDiff, ScaleForVar1, ScaleForVar2);
-
 Variable *variableList[] = {
     new ApogeeSQ212_PAR(&SQ212),
     new AOSongAM2315_Humidity(&am2315),
@@ -359,7 +347,6 @@ Variable *variableList[] = {
     new DecagonCTD_Depth(&ctd),
     new DecagonES2_Cond(&es2),
     new DecagonES2_Temp(&es2),
-    new Delta_Diff(&delta),
     new ExternalVoltage_Volt(&extvolt),
     new MaxBotixSonar_Range(&sonar1),
     new MaxBotixSonar_Range(&sonar2),
@@ -369,9 +356,9 @@ Variable *variableList[] = {
     new MaximDS18_Temp(&ds18_4),
     new MaximDS18_Temp(&ds18_5),
     new MeaSpecMS5803_Temp(&ms5803),
-    Press1,
+    new MeaSpecMS5803_Pressure(&ms5803),
     new MPL115A2_Temp(&mpl115a2),
-    Press2,
+    new MPL115A2_Pressure(&mpl115a2),
     new RainCounterI2C_Tips(&tip),
     new RainCounterI2C_Depth(&tip),
     new YosemitechY504_DOpct(&y504),
