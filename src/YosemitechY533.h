@@ -15,12 +15,19 @@
  *based on their accuracy, not the resolution of the sensor
  *
  * For pH:
+ *     Resolution is 0.01 pH units
  *     Accuracy is ±0.1 pH
  *     Range is 2-12 pH
  *
  * For Temperature:
+ *     Resolution is 0.1 °C
  *     Accuracy is ± 0.2°C
  *     Range is 0°C to + 50°C
+ *
+ * For ORP/Voltage:
+ *     Resolution is 1 mV
+ *     Accuracy is ± 20 mV
+ *     Range is -999 ~ 999 mV
  *
  * Time before sensor responds after power - 500ms
  * Time between "StartMeasurement" command and stable reading - 4.5sec
@@ -37,13 +44,13 @@
 #define Y533_STABILIZATION_TIME_MS 4500
 #define Y533_MEASUREMENT_TIME_MS 1800
 
-#define Y533_PH_RESOLUTION 1
+#define Y533_PH_RESOLUTION 2
 #define Y533_PH_VAR_NUM 0
 
-#define Y533_TEMP_RESOLUTION 2
+#define Y533_TEMP_RESOLUTION 1
 #define Y533_TEMP_VAR_NUM 1
 
-#define Y533_VOLT_RESOLUTION 2
+#define Y533_VOLT_RESOLUTION 0
 #define Y533_VOLT_VAR_NUM 2
 
 // The main class for the Decagon Y533

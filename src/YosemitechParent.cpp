@@ -1,5 +1,5 @@
 /*
- *Yosemitech.cpp
+ *YosemitechParent.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -10,7 +10,7 @@
  *Documentation for the Yosemitech Protocol commands and responses, along with
  *information about the various variables, can be found
  *in the EnviroDIY Yosemitech library at:
- * https://github.com/EnviroDIY/Yosemitech
+ * https://github.com/EnviroDIY/YosemitechModbus
 */
 
 #include "YosemitechParent.h"
@@ -19,7 +19,7 @@
 YosemitechParent::YosemitechParent(byte modbusAddress, Stream* stream,
                                    int8_t powerPin, int8_t enablePin, uint8_t measurementsToAverage,
                                    yosemitechModel model, String sensName, int numVariables,
-                                   int warmUpTime_ms, int stabilizationTime_ms, int measurementTime_ms)
+                                   uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
              powerPin, -1, measurementsToAverage)
@@ -32,7 +32,7 @@ YosemitechParent::YosemitechParent(byte modbusAddress, Stream* stream,
 YosemitechParent::YosemitechParent(byte modbusAddress, Stream& stream,
                                    int8_t powerPin, int8_t enablePin, uint8_t measurementsToAverage,
                                    yosemitechModel model, String sensName, int numVariables,
-                                   int warmUpTime_ms, int stabilizationTime_ms, int measurementTime_ms)
+                                   uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
              powerPin, -1, measurementsToAverage)
@@ -101,7 +101,7 @@ bool YosemitechParent::wake(void)
 
     // Manually activate the brush
     // Needed for newer sensors that do not immediate activate on getting power
-    if ( _model == Y511 or _model == Y514 or _model == Y550)
+    if ( _model == Y511 or _model == Y514 or _model == Y550 or _model == Y4000)
     {
         MS_DBG(F("Activate Brush: "));
         if (sensor.activateBrush()) MS_DBG(F("Brush activated.\n"));
@@ -152,40 +152,96 @@ bool YosemitechParent::addSingleMeasurementResult(void)
 {
     bool success = false;
 
-    // Initialize float variables
-    float parmValue = -9999;
-    float tempValue = -9999;
-    float thirdValue = -9999;
-
-    if (_millisMeasurementRequested > 0)
+    switch (_model)
     {
-        // Get Values
-        MS_DBG(F("Get Values:\n"));
-        success = sensor.getValues(parmValue, tempValue, thirdValue);
-
-        // Fix not-a-number values
-        if (!success or isnan(parmValue)) parmValue = -9999;
-        if (!success or isnan(tempValue)) tempValue = -9999;
-        if (!success or isnan(thirdValue)) thirdValue = -9999;
-
-        // For conductivity, convert mS/cm to µS/cm
-        if (_model == Y520 and parmValue != -9999) parmValue *= 1000;
-
-        MS_DBG(F("    "), sensor.getParameter(), F(": "), parmValue, F("\n"));
-        MS_DBG(F("    Temp: "), tempValue, F("\n"));
-
-        // Not all sensors return a third value
-        if (_numReturnedVars > 2)
+        case Y4000:
         {
-            MS_DBG(F("    Third: "), thirdValue, F("\n"));
+            // Initialize float variables
+            float DOmgL = -9999;
+            float Turbidity = -9999;
+            float Cond = -9999;
+            float pH = -9999;
+            float Temp = -9999;
+            float ORP = -9999;
+            float Chlorophyll = -9999;
+            float BGA = -9999;
+
+            if (_millisMeasurementRequested > 0)
+            {
+                // Get Values
+                MS_DBG(F("Get Values:\n"));
+                success = sensor.getValues(DOmgL, Turbidity, Cond, pH, Temp, ORP, Chlorophyll, BGA);
+
+                // Fix not-a-number values
+                if (!success or isnan(DOmgL)) DOmgL = -9999;
+                if (!success or isnan(Turbidity)) Turbidity = -9999;
+                if (!success or isnan(Cond)) Cond = -9999;
+                if (!success or isnan(pH)) pH = -9999;
+                if (!success or isnan(Temp)) Temp = -9999;
+                if (!success or isnan(ORP)) ORP = -9999;
+                if (!success or isnan(Chlorophyll)) Chlorophyll = -9999;
+                if (!success or isnan(BGA)) BGA = -9999;
+
+                // For conductivity, convert mS/cm to µS/cm
+                if (Cond != -9999) Cond *= 1000;
+
+                MS_DBG(F("    "), sensor.getParameter(), F("\n"));
+                MS_DBG(F("    "), DOmgL, F(", "), Turbidity, F(", "), Cond, F(", "),
+                                  pH, F(", "), Temp, F(", "), ORP, F(", "),
+                                  Chlorophyll, F(", "), BGA, F("\n"));
+            }
+            else MS_DBG(F("Sensor is not currently measuring!\n"));
+
+            // Put values into the array
+            verifyAndAddMeasurementResult(0, DOmgL);
+            verifyAndAddMeasurementResult(1, Turbidity);
+            verifyAndAddMeasurementResult(2, Cond);
+            verifyAndAddMeasurementResult(3, pH);
+            verifyAndAddMeasurementResult(4, Temp);
+            verifyAndAddMeasurementResult(5, ORP);
+            verifyAndAddMeasurementResult(6, Chlorophyll);
+            verifyAndAddMeasurementResult(7, BGA);
+
+            break;
+        }
+        default:
+        {
+            // Initialize float variables
+            float parmValue = -9999;
+            float tempValue = -9999;
+            float thirdValue = -9999;
+
+            if (_millisMeasurementRequested > 0)
+            {
+                // Get Values
+                MS_DBG(F("Get Values:\n"));
+                success = sensor.getValues(parmValue, tempValue, thirdValue);
+
+                // Fix not-a-number values
+                if (!success or isnan(parmValue)) parmValue = -9999;
+                if (!success or isnan(tempValue)) tempValue = -9999;
+                if (!success or isnan(thirdValue)) thirdValue = -9999;
+
+                // For conductivity, convert mS/cm to µS/cm
+                if (_model == Y520 and parmValue != -9999) parmValue *= 1000;
+
+                MS_DBG(F("    "), sensor.getParameter(), F(": "), parmValue, F("\n"));
+                MS_DBG(F("    Temp: "), tempValue, F("\n"));
+
+                // Not all sensors return a third value
+                if (_numReturnedVars > 2)
+                {
+                    MS_DBG(F("    Third: "), thirdValue, F("\n"));
+                }
+            }
+            else MS_DBG(F("Sensor is not currently measuring!\n"));
+
+            // Put values into the array
+            verifyAndAddMeasurementResult(0, parmValue);
+            verifyAndAddMeasurementResult(1, tempValue);
+            verifyAndAddMeasurementResult(2, thirdValue);
         }
     }
-    else MS_DBG(F("Sensor is not currently measuring!\n"));
-
-    // Put values into the array
-    verifyAndAddMeasurementResult(0, parmValue);
-    verifyAndAddMeasurementResult(1, tempValue);
-    verifyAndAddMeasurementResult(2, thirdValue);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;

@@ -443,7 +443,7 @@ void loop()
         if (EnviroDIYLogger._logModem->connectInternet())
         {
             // Post the data to the WebSDL
-            EnviroDIYLogger.postDataEnviroDIY(EnviroDIYLogger.generateEnviroDIYPostRequest(jsonToGo));
+            EnviroDIYLogger.postDataEnviroDIY(jsonToGo);
 
             // Disconnect from the network
             EnviroDIYLogger._logModem->disconnectInternet();

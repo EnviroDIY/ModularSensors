@@ -29,14 +29,16 @@ Variable::Variable(Sensor *parentSense, int varNum,
     _defaultVarCode = defaultVarCode;
     _customCode = customVarCode;
     _UUID = UUID;
+
+    // When we create the variable, we also want to initialize it with a current
+    // value of -9999 (ie, a bad result).
+    _currentValue = -9999;
 }
 
 void Variable::attachSensor(int varNum, Sensor *parentSense) {
-    MS_DBG(F("Attempting to register to "));
-    MS_DBG(parentSense->getSensorName());
-    MS_DBG(F(" attached at "));
-    MS_DBG(parentSense->getSensorLocation());
-    MS_DBG(F("...   "));
+    MS_DBG(F("Attempting to register "), getVarName());
+    MS_DBG(F(" to "), parentSense->getSensorName());
+    MS_DBG(F(" attached at "), parentSense->getSensorLocation(), F("...   "));
     parentSense->registerVariable(varNum, this);
 }
 
@@ -48,9 +50,8 @@ bool Variable::setup(void)
 
 void Variable::onSensorUpdate(Sensor *parentSense)
 {
-    sensorValue = parentSense->sensorValues[_varNum];
-    MS_DBG(F("... received "));
-    MS_DBG(sensorValue, F("\n"));
+    _currentValue = parentSense->sensorValues[_varNum];
+    MS_DBG(F("... received "), sensorValue, F("\n"));
 }
 
 String Variable::getVarUUID(void) {return _UUID;}
@@ -69,22 +70,22 @@ String Variable::getVarCode(void)
 }
 
 // This returns the current value of the variable as a float
-float Variable::getValue(void)
+float Variable::getValue(bool updateValue)
 {
-    parentSensor->checkForUpdate();
-    return sensorValue;
+    if (updateValue) parentSensor->update();
+    return _currentValue;
 }
 
 // This returns the current value of the variable as a string
 // with the correct number of significant figures
-String Variable::getValueString(void)
+String Variable::getValueString(bool updateValue)
 {
     // Need this because otherwise get extra spaces in strings from int
     if (_decimalResolution == 0)
     {
-        int val = int(getValue());
+        int val = int(getValue(updateValue));
         return String(val);
     }
     else
-    {return String(getValue(), _decimalResolution);}
+    {return String(getValue(updateValue), _decimalResolution);}
 }
