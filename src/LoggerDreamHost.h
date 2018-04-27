@@ -36,12 +36,19 @@ public:
     String generateDreamHostGetRequest(String fullURL);
     String generateDreamHostGetRequest(void);
 
+    // This prints a fully structured GET request for DreamHost to the
+    // specified stream using the specified url.
+    // This may be necessary to work around very long strings for the post request.
+    void streamDreamHostRequest(Stream *stream, String fullURL);
+    // This prints a fully structured GET request for DreamHost to the
+    // specified stream with the default url.
+    void streamDreamHostRequest(Stream *stream);
+
     // This utilizes an attached modem to make a TCP connection to the
     // DreamHost URL and then streams out a get request
     // over that connection.
     // The return is the http status code of the response.
-    int postDataDreamHost(String fullGetRequest);
-    int postDataDreamHost(void);
+    int postDataDreamHost(String fullURL = "");
 
     // This prevents the logging function from dual-posting to EnviroDIY
     void disableDualPost(void);

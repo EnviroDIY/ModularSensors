@@ -58,8 +58,38 @@ String LoggerDreamHost::generateDreamHostGetRequest(void)
 }
 
 
+// This prints a fully structured GET request for DreamHost to the
+// specified stream using the specified url.
+void LoggerDreamHost::streamDreamHostRequest(Stream *stream, String fullURL)
+{
+    stream->print(String(F("GET ")));
+    stream->print(fullURL);
+    stream->print(String(F("  HTTP/1.1")));
+    stream->print(String(F("\r\nHost: swrcsensors.dreamhosters.com")));
+    stream->print(String(F("\r\n\r\n")));
+}
+void LoggerDreamHost::streamDreamHostRequest(Stream *stream)
+{
+    stream->print(String(F("GET ")));
+
+    stream->print(String(_DreamHostPortalRX));
+    stream->print(String(F("?LoggerID=")) + String(Logger::_loggerID));
+    stream->print(String(F("?Loggertime=")) + String(Logger::markedEpochTime - 946684800));  // Correct time from epoch to y2k
+
+    for (int i = 0; i < Logger::_variableCount; i++)
+    {
+        stream->print(String(F("&")) + String(Logger::_variableList[i]->getVarCode()) \
+            + String(F("=")) + String(Logger::_variableList[i]->getValueString()));
+    }
+
+    stream->print(String(F("  HTTP/1.1")));
+    stream->print(String(F("\r\nHost: swrcsensors.dreamhosters.com")));
+    stream->print(String(F("\r\n\r\n")));
+}
+
+
 // Post the data to dream host.
-int LoggerDreamHost::postDataDreamHost(String fullGetRequest)
+int LoggerDreamHost::postDataDreamHost(String fullURL)
 {
     // do not continue if no modem!
     if (!_modemAttached)
@@ -78,17 +108,17 @@ int LoggerDreamHost::postDataDreamHost(String fullGetRequest)
         // Send the request to the serial for debugging
         #if defined(STANDARD_SERIAL_OUTPUT)
             PRINTOUT(F("\n \\/------ Data to DreamHost ------\\/ \n"));
-            STANDARD_SERIAL_OUTPUT.print(fullGetRequest);
+            if (fullURL.length() > 1) streamDreamHostRequest(&STANDARD_SERIAL_OUTPUT, fullURL);
+            else streamDreamHostRequest(&STANDARD_SERIAL_OUTPUT);
             STANDARD_SERIAL_OUTPUT.flush();
         #endif
 
         // Send the request to the modem stream
-        _logModem->_client->print(fullGetRequest);
+        if (fullURL.length() > 1) streamDreamHostRequest(_logModem->_client, fullURL);
+        else streamDreamHostRequest(_logModem->_client);
         _logModem->_client->flush();  // wait for sending to finish
 
-        uint32_t start_timer;
-        if (millis() < 4294957296) start_timer = millis();  // In case of roll-over
-        else start_timer = 0;
+        uint32_t start_timer = millis();
         while ((millis() - start_timer) < 10000L && _logModem->_client->available() < 12)
         {delay(10);}
 
@@ -121,10 +151,6 @@ int LoggerDreamHost::postDataDreamHost(String fullGetRequest)
     PRINTOUT(responseCode, F("\n"));
 
     return responseCode;
-}
-int LoggerDreamHost::postDataDreamHost(void)
-{
-    return postDataDreamHost(generateDreamHostGetRequest());
 }
 
 
@@ -185,11 +211,11 @@ void LoggerDreamHost::log(void)
                 if(_dualPost)
                 {
                     // Post the data to the WebSDL
-                    postDataEnviroDIY(generateEnviroDIYPostRequest(generateSensorDataJSON()));
+                    postDataEnviroDIY();
                 }
 
                 // Post the data to DreamHost
-                postDataDreamHost(generateDreamHostGetRequest(generateSensorDataDreamHost()));
+                postDataDreamHost();
 
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
                 if (_numTimepointsLogged % 288 == 0)
