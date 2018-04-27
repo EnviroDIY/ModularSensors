@@ -24,7 +24,7 @@
  *
  * For COD:
  *     Accuracy is ± ???
- *     Range is 0.75 to 370 mg/L
+ *     Range is 0.75 to 370 mg/L COD (equiv. KHP) 0.2 - 150 mg/L TOC (equiv. KHP)
  *     Resolution is 0.01 mg/L COD
  *
  * Time before sensor responds after power - 500ms

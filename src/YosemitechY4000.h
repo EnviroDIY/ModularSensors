@@ -16,6 +16,45 @@
  *based on their accuracy, not the resolution of the sensor.
  *For details, see documentaition for individual sensor probes
  *
+ * For Dissolved Oxygen:
+ *     Resolution is 0.01 mg/L
+ *     Accuracy is ± 0.3 mg/L
+ *     Range is 0-20mg/L or 0-200% Air Saturation
+ *
+ * For Turbidity:
+ *     Accuracy is ＜5% or 0.3NTU
+ *     Range is 0.1~1000 NTU
+ *
+ * For Conductivity:
+ *     Resolution is 0.1 µS/cm
+ *     Accuracy is ± 1 % Full Scale
+ *     Range is 1 µS/cm to 200 mS/cm
+ *
+ * For pH:
+ *     Resolution is 0.01 pH units
+ *     Accuracy is ± 0.1 pH units
+ *     Range is 2 to 12 pH units
+ *
+ * For Temperature:
+ *     Resolution is 0.1 °C
+ *     Accuracy is ± 0.2°C
+ *     Range is 0°C to + 50°C
+ *
+ * For ORP:
+ *     Resolution is 1 mV
+ *     Accuracy is ± 20 mV
+ *     Range is -999 ~ 999 mV
+ *
+ * For Chlorophyll:
+ *     Resolution is 0.1 µg/L / 0.1 RFU
+ *     Accuracy is ± 1 %
+ *     Range is 0 to 400 µg/L or 0 to 100 RFU
+ *
+ * For Blue-Green Algae:
+ *     Resolution is 0.01 µg/L / 0.01 RFU
+ *     Accuracy is ±  0.04ug/L PC
+ *     Range is 0 to 100 µg/L or 0 to 100 RFU
+ *
  * Time before sensor responds after power - 275-300ms (use 350 for safety)
  * Time between "StartMeasurement" command and stable reading depends on the
  * indindividual sensor probes, with Y520 Conductivity taking the longest
@@ -44,16 +83,16 @@
 #define Y4000_PH_RESOLUTION 2
 #define Y4000_PH_VAR_NUM 3
 
-#define Y4000_TEMP_RESOLUTION 2
+#define Y4000_TEMP_RESOLUTION 1
 #define Y4000_TEMP_VAR_NUM 4
 
-#define Y4000_ORP_RESOLUTION 2
+#define Y4000_ORP_RESOLUTION 0
 #define Y4000_ORP_VAR_NUM 5
 
 #define Y4000_CHLORO_RESOLUTION 1
 #define Y4000_CHLORO_VAR_NUM 6
 
-#define Y4000_BGA_RESOLUTION 1
+#define Y4000_BGA_RESOLUTION 2
 #define Y4000_BGA_VAR_NUM 7
 
 

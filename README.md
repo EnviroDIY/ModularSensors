@@ -808,13 +808,14 @@ _____
 This library currently supports the following Yosemitech sensors:
 
 - [Y502-A or Y504-A Optical Dissolved Oxygen Sensors](http://www.yosemitech.com/en/product-10.html)
-- [Y520-A 4-Electrode Conductivity Sensor](http://www.yosemitech.com/en/product-18.html)
 - [Y510-B Optical Turbidity Sensor](http://www.yosemitech.com/en/product-17.html)
 - [Y511-A Optical Turbidity Sensor with Wiper](http://www.yosemitech.com/en/product-16.html)
 - [Y514-A Chlorophyll Sensor with Wiper](http://www.yosemitech.com/en/product-14.html)
+- [Y520-A 4-Electrode Conductivity Sensor](http://www.yosemitech.com/en/product-18.html)
 - Y532-A Digital pH Sensor
 - Y533 ORP Sensor
 - [Y550-B UV254/COD Sensor with Wiper](http://www.yosemitech.com/en/product-21.html)
+- [Y4000 Multiparameter Sonde](http://www.yosemitech.com/en/product-20.html)
 
 All of these sensors require a 5-12V power supply and the power supply can be stopped between measurements.  (_Note that any user settings (such as brushing frequency) will be lost if the sensor loses power._)  They communicate via [Modbus RTU](https://en.wikipedia.org/wiki/Modbus) over [RS-485](https://en.wikipedia.org/wiki/RS-485).  To interface with them, you will need an RS485-to-TTL adapter.  The white wire of the Yosemitech sensor will connect to the "B" pin of the adapter and the green wire will connect to "A".  The red wire from the sensor should connect to the 5-12V power supply and the black to ground.  The Vcc pin on the adapter should be connected to another power supply (voltage depends on the specific adapter) and the ground to the same ground.  The red wire from the sensor _does not_ connect to the Vcc of the adapter.  The R/RO/RXD pin from the adapter connects to the TXD on the Arduino board and the D/DI/TXD pin from the adapter connects to the RXD.  If applicable, tie the RE and DE (receive/data enable) pins together and connect them to another pin on your board.  While this library supports an external enable pin, we have had very bad luck with most of them.  Adapters with automatic direction control tend to use very slightly more power, but have more stable communication.  There are a number of RS485-to-TTL adapters available.  When shopping for one, be mindful of the logic level of the TTL output by the adapter.  The MAX485, one of the most popular adapters, has a 5V logic level in the TTL signal.  This will _fry_ any board like the Mayfly that can only use on 3.3V logic.  You would need a voltage shifter in between the Mayfly and the MAX485 to make it work.
 
@@ -831,16 +832,16 @@ YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePi
 // Variables
 YosemitechY504_DOpct(&y504, "UUID", "customVarCode")  // DO percent saturation
 //  Resolution is 0.00000005 %
-//  Accuracy is 1%
+//  Accuracy is ± 1 %
 //  Range is 0-200% Saturation
 YosemitechY504_Temp(&y504, "UUID", "customVarCode")  // Temperature in °C
-//  Resolution is 0.00000001 °C
+//  Resolution is 0.1 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
 YosemitechY504_DOmgL(&y504, "UUID", "customVarCode")  // DO concentration in mg/L, calculated from percent saturation
 //  Resolution is 0.000000005 mg/L
 //  Accuracy is 1%
-//  Range is 0-20mg/L
+//  Range is 0-20mg/L or 0-200% Air Saturation
 ```
 
 ```cpp
@@ -853,7 +854,7 @@ YosemitechY510_Turbidity(&y510, "UUID", "customVarCode")  // Turbidity in NTU
 //  Accuracy is ± 5 % or 0.3 NTU
 //  Range is 0.1 to 1000 NTU
 YosemitechY510_Temp(&y510, "UUID", "customVarCode")  // Temperature in °C
-//  Resolution is 0.00000001 °C
+//  Resolution is 0.1 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
 ```
@@ -868,7 +869,7 @@ YosemitechY511_Turbidity(&y511, "UUID", "customVarCode")  // Turbidity in NTU
 //  Accuracy is ± 5 % or 0.3 NTU
 //  Range is 0.1 to 1000 NTU
 YosemitechY511_Temp(&y511, "UUID", "customVarCode")  // Temperature in °C
-//  Resolution is 0.00000001 °C
+//  Resolution is 0.1 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
 ```
@@ -879,11 +880,11 @@ YosemitechY511_Temp(&y511, "UUID", "customVarCode")  // Temperature in °C
 YosemitechY514 y514(y514modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY514_Chlorophyll(&y514, "UUID", "customVarCode")  // Chlorophyll concentration in µg/L
-//  Resolution is 0.00000009 µg/L
+//  Resolution is 0.1 µg/L / 0.1 RFU
 //  Accuracy is ± 1 %
 //  Range is 0 to 400 µg/L or 0 to 100 RFU
 YosemitechY514_Temp(&y514, "UUID", "customVarCode")  // Temperature in °C
-//  Resolution is 0.00000001 °C
+//  Resolution is 0.1 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
 ```
@@ -894,11 +895,11 @@ YosemitechY514_Temp(&y514, "UUID", "customVarCode")  // Temperature in °C
 YosemitechY520 y520(y520modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY520_Cond(&y520, "UUID", "customVarCode")  // Conductivity in µS/cm
-//  Resolution is 0.00000005 µS/cm
-//  Accuracy is ± 1 %
-//  Range is 1 to 200 µS/cm
+//  Resolution is 0.1 µS/cm
+//  Accuracy is ± 1 % Full Scale
+//  Range is 1 µS/cm to 200 mS/cm
 YosemitechY520_Temp(&y520, "UUID", "customVarCode")  // Temperature in °C
-//  Resolution is 0.00000001 °C
+//  Resolution is 0.1 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
 ```
@@ -909,14 +910,17 @@ YosemitechY520_Temp(&y520, "UUID", "customVarCode")  // Temperature in °C
 YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY532_pH(&y532, "UUID", "customVarCode")  // pH
-//  Resolution is 0.000000002 pH
-//  Accuracy is ± 0.1 pH
-//  Range is 2 to 12 pH
+//  Resolution is 0.01 pH units
+//  Accuracy is ± 0.1 pH units
+//  Range is 2 to 12 pH units
 YosemitechY532_Temp(&y532, "UUID", "customVarCode")  // Temperature in °C
-//  Resolution is 0.00000001 °C
+//  Resolution is 0.1 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
-YosemitechY532_Voltage(&y532, "UUID", "customVarCode")  // Electrode electrical potential
+YosemitechY532_Voltage(&y532, "UUID", "customVarCode")  // Electrode electrical potential in mV
+// Resolution is 1 mV
+// Accuracy is ± 20 mV
+// Range is -999 ~ 999 mV
 ```
 
 ```cpp
@@ -925,14 +929,17 @@ YosemitechY532_Voltage(&y532, "UUID", "customVarCode")  // Electrode electrical 
 YosemitechY533 y533(y533modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY533_pH(&y533, "UUID", "customVarCode")  // pH
-//  Resolution is 0.000000002 pH
-//  Accuracy is ± 0.1 pH
-//  Range is 2 to 12 pH
+//  Resolution is 0.01 pH units
+//  Accuracy is ± 0.1 pH units
+//  Range is 2 to 12 pH units
 YosemitechY533_Temp(&y533, "UUID", "customVarCode")  // Temperature in °C
-//  Resolution is 0.00000001 °C
+//  Resolution is 0.1 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
-YosemitechY533_Voltage(&y533, "UUID", "customVarCode")  // Electrode electrical potential
+YosemitechY533_Voltage(&y533, "UUID", "customVarCode")  // Electrode electrical potential in mV
+// Resolution is 1 mV
+// Accuracy is ± 20 mV
+// Range is -999 ~ 999 mV
 ```
 
 ```cpp
@@ -943,7 +950,7 @@ YosemitechY550 y550(y550modbusAddress, modbusSerial, modbusPower, max485EnablePi
 YosemitechY550_COD(&y550, "UUID", "customVarCode")  // COD in mg/L equiv. KHP
 //  Resolution is 0.01 mg/L COD
 //  Accuracy is ??
-//  Range is 0.75 to 370 mg/L
+//  Range is 0.75 to 370 mg/L COD (equiv. KHP) 0.2 - 150 mg/L TOC (equiv. KHP)
 YosemitechY550_Temp(&y550, "UUID", "customVarCode")  // Temperature in °C
 //  Resolution is 0.00000001 °C
 //  Accuracy is ± 0.2°C
@@ -952,6 +959,45 @@ YosemitechY550_Turbidity(&y550, "UUID", "customVarCode")  // Turbidity in NTU
 //  Resolution is 0.0000002 NTU
 //  Accuracy is ± 5 % or 0.3 NTU
 //  Range is 0.1 to 1000 NTU
+```
+
+```cpp
+// Multiparameter Sonde
+#include <YosemitechY4000.h>
+YosemitechY4000 y4000(YosemitechY4000, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
+// Variables
+YosemitechY4000_DOmgL(&y4000, "UUID", "customVarCode")  // DO concentration in mg/L, calculated from percent saturation
+//  Resolution is 0.01 mg/L
+//  Accuracy is ± 0.3 mg/L
+//  Range is 0-20mg/L or 0-200% Air Saturation
+YosemitechY4000_Turbidity(&y4000, "UUID", "customVarCode")  // Turbidity in NTU
+//  Resolution is 0.0000002 NTU
+//  Accuracy is ± 5 % or 0.3 NTU
+//  Range is 0.1 to 1000 NTU
+YosemitechY4000_Cond(&y4000, "UUID", "customVarCode")  // Conductivity in µS/cm
+//  Resolution is 0.1 µS/cm
+//  Accuracy is ± 1 % Full Scale
+//  Range is 1 µS/cm to 200 mS/cm
+YosemitechY4000_pH(&y4000, "UUID", "customVarCode")  // pH
+//  Resolution is 0.01 pH units
+//  Accuracy is ± 0.1 pH units
+//  Range is 2 to 12 pH units
+YosemitechY4000_Temp(&y4000, "UUID", "customVarCode")  // Temperature in °C
+//  Resolution is 0.1 °C
+//  Accuracy is ± 0.2°C
+//  Range is 0°C to + 50°C
+YosemitechY4000_ORP(&y4000, "UUID", "customVarCode")  // Electrode electrical potential in mV
+// Resolution is 1 mV
+// Accuracy is ± 20 mV
+// Range is -999 ~ 999 mV
+YosemitechY4000_Chlorophyll(&y4000, "UUID", "customVarCode")  // Chlorophyll concentration in µg/L
+//  Resolution is 0.1 µg/L / 0.1 RFU
+//  Accuracy is ± 1 %
+//  Range is 0 to 400 µg/L or 0 to 100 RFU
+YosemitechY4000_BGA(&y4000, "UUID", "customVarCode")  // blue-green algae concentration in µg/L
+//  Resolution is 0.01 µg/L / 0.01 RFU
+//  Accuracy is ±  0.04ug/L PC
+//  Range is 0 to 100 µg/L or 0 to 100 RFU
 ```
 _____
 
