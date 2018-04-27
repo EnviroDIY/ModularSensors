@@ -1085,7 +1085,7 @@ The MPL115A2 communicates with the board via I2C.  Because this sensor can have 
 The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average:
 
 ```cpp
-#include <MPL115A2.h>
+#include <FreescaleMPL115A2.h>
 MPL115A2 mpl115a2(I2CPower, measurementsToAverage);
 ```
 

@@ -228,7 +228,7 @@ MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803Readings
 // ==========================================================================
 //    Freescale Semiconductor MPL115A2 Barometer
 // ==========================================================================
-#include <MPL115A2.h>
+#include <FreescaleMPL115A2.h>
 // const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t MPL115A2ReadingsToAvg = 1;
 MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
