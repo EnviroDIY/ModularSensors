@@ -12,6 +12,7 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
 
 ### Contents:
 - [Getting Started](#getStarted)
+  - [What are sensors and variables?](#whatHo)
   - [Physical Dependencies](#pdeps)
   - [Library Dependencies](#ldeps)
 - [Basic Sensor and Variable Functions](#Basic)
@@ -52,11 +53,25 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
 
 ## <a name="getStarted"></a>Getting Started
 
-Get started by reading this entire section, including [Physical Dependencies](#pdeps) and [Library Dependencies](#ldeps), then try out one of our sketches in the [Examples](https://github.com/EnviroDIY/ModularSensors/tree/master/examples) folder.
+Get started by reading this section, collecting the [Physical Dependencies](#pdeps), and installing the [Library Dependencies](#ldeps).  Then try out one of our sketches in the [Examples](https://github.com/EnviroDIY/ModularSensors/tree/master/examples) folder.
 
 To use a sensor and variable in your sketch, you must separately include xxx.h for each sensor you intend to use.  While this may force you to write many more include statements, it decreases the library RAM usage on your Arduino board.  Regardless of how many sensors you intend to use, however, you must install all of the [dependent libraries](#ldeps) on your _computer_ for the Arduino software, PlatformIO or any other Integrated Development Environment (IDE) software to be able to compile the library.
 
 Each sensor is implemented as a subclass of the "Sensor" class contained in "SensorBase.h".  Each variable is separately implemented as a subclass of the "Variable" class contained in "VariableBase.h".  The variables are tied to the sensor using an "[Observer](https://en.wikipedia.org/wiki/Observer_pattern)" software pattern.
+
+
+
+### <a name="whatHo"></a>What are sensors and variables?
+
+Within this library, a sensor, a variable, and a logger mean very specific things:
+
+**Sensor** - A sensor is some sort of device that is capable of taking one or more measurements using some sort of method.  Most often we can think of these as probes or other instruments that can give back information about the world around them.  Sensors can usually be given power or have that power cut.  They may be awoken or activated and then returned to a sleeping/low power use state.  The may be able to be asked to begin a single reading.  They _**must**_ be capable of returning the value of their readings to a logger of some type.
+
+**Variable** - A variable is a single measurement value taken by a sensor.  It is characterized by a name (what it is a measurement of), a unit of measurement, and a resolution.  The [names](http://vocabulary.odm2.org/variablename/) and [units](http://vocabulary.odm2.org/units/) of measurements for all variables come from the controlled vocabularies developed for the ODM2 data system.  (http://vocabulary.odm2.org/)  The resolution is determined by the method used to take the measurement by the sensor.  A variable may also be assigned a Globally Unique Identifier (GUID) and a unique variable code.  Many sensors are capable of measuring multiple variables at a single time.  For example, a Decagon CTD-10 is a _sensor_.  It is able to measure 3 _variables_: specific conductance, temperature, and water depth.  The variable named "specificConductance" has _units_ of microsiemens per centimeter (µS/cm) and a _resolution_ of 1 µS/cm.  Each variable is explicitly tied to the "parent" sensor that "notifies" the variable when a new value has been measured.
+
+**Logger** - A logger is a device that can control all functions of the sensors that are attached to it and save the values of all variables measured by those sensors to an attached SD card.  In this library, all loggers are Arduino-style small processor circuit boards.
+
+**Modem** - A modem is a device that can be controlled by a logger to send out data directly to the world wide web.
 
 
 
