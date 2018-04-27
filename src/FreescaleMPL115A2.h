@@ -32,7 +32,7 @@
 
 #include "SensorBase.h"
 #include "VariableBase.h"
-#include <Adafruit_FreescaleMPL115A2.h>
+#include <Adafruit_MPL115A2.h>
 
 #define MPL115A2_NUM_VARIABLES 2
 #define MPL115A2_WARM_UP_TIME_MS 6
