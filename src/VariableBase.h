@@ -43,15 +43,15 @@ public:
     String getVarUUID(void);
 
     // This returns the current value of the variable as a float
-    float getValue(void);
+    float getValue(bool updateValue = false);
     // This returns the current value of the variable as a string with the correct number of significant figures
-    String getValueString(void);
+    String getValueString(bool updateValue = false);
 
     // This is the parent sensor for the variable
     Sensor *parentSensor;
 
 protected:
-    float sensorValue;
+    float _currentValue;
 
 private:
     uint8_t _varNum;

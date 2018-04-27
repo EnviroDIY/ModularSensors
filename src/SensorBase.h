@@ -111,11 +111,11 @@ public:
     // Notifies attached variables of new values
     void notifyVariables(void);
 
-    // This is the time that a value was last sent ot registered variables
-    // It is set in the notifyVariables() function.
-    // The "checkForUpdate()" function checks if values are older than 2 minutes.
-    uint32_t _sensorLastUpdated;
-    bool checkForUpdate(void);
+    // // This is the time that a value was last sent ot registered variables
+    // // It is set in the notifyVariables() function.
+    // // The "checkForUpdate()" function checks if values are older than 2 minutes.
+    // uint32_t _sensorLastUpdated;
+    // bool checkForUpdate(void);
 
     // The "isWarmedUp()" function checks whether or not enough time has passed
     // between the sensor receiving power and being ready to respond to logger

@@ -132,7 +132,6 @@ These functions are also available for each sensor, but should be used with caut
 - **averageMeasurements()** - Averages the values in the sensor's result array.
 - **notifyVariables()** - Notifies attached variables of new values.  It is the sensor's job to notify variables!
 - **registerVariable()** - The compliment to a variable's "attachSensor(int varNum, Sensor \*parentSense)" function.  These functions tie the variable and sensor together.  This is generally called by the variable, not by the sensor.
-- **checkForUpdate()** - Checks if the values in a sensor's result array are more than two minutes out of date and updates them if necessary.  This is generally called by an attached variable.
 - **checkPowerOn()** - Returns true if a sensors assigned power pin is currently "HIGH."
 - **isWarmedUp()** - Checks whether or not enough time has passed between the sensor receiving power and being ready to respond to logger commands.
 - **waitForWarmUp()** - Delays until time is passed for sensor warm-up.
@@ -148,8 +147,8 @@ These functions are also available for each sensor, but should be used with caut
 - **getVarCode()** - This returns a String with a customized code for the variable, if one is given, and a default if not
 - **getVarUUID()** - This returns the universally unique identifier of a variables, if one is assigned, as a String
 - **setup()** - This "sets up" the variable - attaching it to its parent sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program _after_ calling the sensor setup.
-- **getValue()** - This returns the current value of the variable as a float.  You should call the update function before calling getValue.  As a backup, if the getValue function sees that the update function has not been called within the last 60 seconds, it will re-call it.
-- **getValueString()** - This is identical to getValue, except that it returns a string with the proper precision available from the sensor.
+- **getValue(bool updateValue)** - This returns the current value of the variable as a float.  By default, it does not ask the parent sensor for a new value, but simply returns the last value a parent sensor notified it of, no matter the age of the value.  If you would like to ask the sensor to measure a new value and for that new value to be returned, set the boolean flag as true.
+- **getValueString(bool updateValue)** - This is identical to getValue, except that it returns a string with the proper precision available from the sensor.
 - **attachSensor(int varNum, Sensor \*parentSense)** - The compliment to a sensor's registerVariable() function.  This attaches a variable object to the sensor that is giving the value to the variable.  The variable is generally responsible for calling this function!
 - **onSensorUpdate()** - This is the variable's response to the sensor's notifyVariables() function.  It accepts the new value from the sensor.  This is generally called by the sensor.
 

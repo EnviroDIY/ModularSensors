@@ -29,7 +29,7 @@ Sensor::Sensor(String sensorName, uint8_t numReturnedVars,
     // This is the time that a value was last sent ot registered variables
     // It is set in the notifyVariables() function.
     // The "checkForUpdate()" function checks if values are older than 2 minutes.
-    _sensorLastUpdated = 0;
+    // _sensorLastUpdated = 0;
 
     // This is the time needed from the when a sensor has power until it's ready to talk
     // The _millisPowerOn value is set in the powerUp() function.  It is
@@ -219,7 +219,7 @@ void Sensor::notifyVariables(void)
     MS_DBG(F("Notifying variables registered to "), getSensorName(), F(" at "),
            getSensorLocation(), F(".\n"));
     // Make note of the last time updated
-    _sensorLastUpdated = millis();
+    // _sensorLastUpdated = millis();
 
     // Notify variables of update
     for (int i = 0; i < _numReturnedVars; i++)
@@ -236,27 +236,27 @@ void Sensor::notifyVariables(void)
             MS_DBG(F("\n"));
             variables[i]->onSensorUpdate(this);
         }
-        else MS_DBG(F("Null pointer\n"));
+        else MS_DBG(F("Null pointer!  No update sent!\n"));
     }
 }
 
 
-// This function checks if a sensor needs to be updated or not
-bool Sensor::checkForUpdate(void)
-{
-    uint32_t now = millis();
-    // MS_DBG(F("It has been "), (now - _sensorLastUpdated)/1000);
-    // MS_DBG(F(" seconds since "));
-    // MS_DBG(getSensorName(), F(" at "), getSensorLocation());
-    // MS_DBG(F(" was updated.\n"));
-    if ((now > 120000L and now > (_sensorLastUpdated + 120000L))
-        or _sensorLastUpdated == 0)
-    {
-        MS_DBG(F("Value out of date, updating\n"));
-        return(update());
-    }
-    else return(true);
-}
+// // This function checks if a sensor needs to be updated or not
+// bool Sensor::checkForUpdate(void)
+// {
+//     uint32_t now = millis();
+//     // MS_DBG(F("It has been "), (now - _sensorLastUpdated)/1000);
+//     // MS_DBG(F(" seconds since "));
+//     // MS_DBG(getSensorName(), F(" at "), getSensorLocation());
+//     // MS_DBG(F(" was updated.\n"));
+//     if ((now > 120000L and now > (_sensorLastUpdated + 120000L))
+//         or _sensorLastUpdated == 0)
+//     {
+//         MS_DBG(F("Value out of date, updating\n"));
+//         return(update());
+//     }
+//     else return(true);
+// }
 
 
 // This function just empties the value array
