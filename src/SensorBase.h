@@ -54,7 +54,7 @@ public:
     // Bit 7 - 0=No known errors, 1=Some sort of error has occurred
     uint8_t getStatus(void);
     // This function checks the current status
-    void updateStatusBits(void);
+    void updateStatusBits(bool debug=false);
 
     // This sets up the sensor, if necessary.  Defaults to true.
     // Generally, the sensor must be powered on for setup.
@@ -121,21 +121,21 @@ public:
     // between the sensor receiving power and being ready to respond to logger
     // commands.  The "waitForWarmUp()" function delays until the time passes.
     // "checkPowerOn()" checks if the power pin is currently high
-    bool checkPowerOn(void);
-    bool isWarmedUp(void);
+    bool checkPowerOn(bool debug=false);
+    bool isWarmedUp(bool debug=false);
     void waitForWarmUp(void);
 
     // The "isStable()" function checks whether or not enough time has passed
     // between the sensor being awoken/activated and being ready to output stable
     // values.  The "waitForStability()" function delays until the time passes.
-    bool isStable(void);
+    bool isStable(bool debug=false);
     void waitForStability(void);
 
     // The "isMeasurementComplete()" function checks whether or not enough time
     // has passed between when the sensor was asked to take a single measurement
     // and when that measurement should be complete.  The
     // "waitForMeasurementCompletion()" function delays until the time passes.
-    bool isMeasurementComplete(void);
+    bool isMeasurementComplete(bool debug=false);
     void waitForMeasurementCompletion(void);
 
 

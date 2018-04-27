@@ -306,7 +306,7 @@ bool VariableArray::updateAllSensors(void)
             // if (isLastVarFromSensor(i) and
             //     _variableList[i]->parentSensor->getNumberMeasurementsToAverage() > nMeasurementsCompleted[i])
             // {
-            //     _variableList[i]->parentSensor->updateStatusBits();
+            //     _variableList[i]->parentSensor->updateStatusBits(true);
             //     MS_DBG(i);
             //     MS_DBG(F(" - "));
             //     MS_DBG(_variableList[i]->parentSensor->getSensorName());
