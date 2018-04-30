@@ -15,11 +15,12 @@
  *based on their accuracy, not the resolution of the sensor
  *
  * For Chlorophyll:
- *     Accuracy is 1%
- *     Range is 0~400ug/L(Chl) or 0~100RFU
- *     Resolution is 0.1ug/L Chl
+ *     Resolution is 0.1 µg/L / 0.1 RFU
+ *     Accuracy is ± 1 %
+ *     Range is 0 to 400 µg/L or 0 to 100 RFU
  *
  * For Temperature:
+ *     Resolution is 0.1 °C
  *     Accuracy is ± 0.2°C
  *     Range is 0°C to + 50°C
  *
@@ -41,7 +42,7 @@
 #define Y514_CHLORO_RESOLUTION 1
 #define Y514_CHLORO_VAR_NUM 0
 
-#define Y514_TEMP_RESOLUTION 2
+#define Y514_TEMP_RESOLUTION 1
 #define Y514_TEMP_VAR_NUM 1
 
 // The main class for the Decagon Y514

@@ -222,6 +222,15 @@ MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803Readings
 
 
 // ==========================================================================
+//    Freescale Semiconductor MPL115A2 Barometer
+// ==========================================================================
+#include <FreescaleMPL115A2.h>
+// const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const uint8_t MPL115A2ReadingsToAvg = 1;
+MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
+
+
+// ==========================================================================
 //    External I2C Rain Tipping Bucket Counter
 // ==========================================================================
 #include <RainCounterI2C.h>
@@ -241,7 +250,7 @@ AltSoftSerial modbusSerial;
 byte y504modbusAddress = 0x04;  // The modbus address of the Y504
 const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const uint8_t y504NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+const uint8_t y504NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePin, y504NumberReadings);
 
 
@@ -252,7 +261,7 @@ YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePi
 byte y510modbusAddress = 0x0B;  // The modbus address of the Y510
 // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const uint8_t y510NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+const uint8_t y510NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 YosemitechY510 y510(y510modbusAddress, modbusSerial, modbusPower, max485EnablePin, y510NumberReadings);
 
 
@@ -263,7 +272,7 @@ YosemitechY510 y510(y510modbusAddress, modbusSerial, modbusPower, max485EnablePi
 byte y511modbusAddress = 0x1A;  // The modbus address of the Y511
 // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const uint8_t y511NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+const uint8_t y511NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 YosemitechY511 y511(y511modbusAddress, modbusSerial, modbusPower, max485EnablePin, y511NumberReadings);
 
 
@@ -274,7 +283,7 @@ YosemitechY511 y511(y511modbusAddress, modbusSerial, modbusPower, max485EnablePi
 byte y514modbusAddress = 0x14;  // The modbus address of the Y514
 // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const uint8_t y514NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+const uint8_t y514NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 YosemitechY514 y514(y514modbusAddress, modbusSerial, modbusPower, max485EnablePin, y514NumberReadings);
 
 
@@ -285,7 +294,7 @@ YosemitechY514 y514(y514modbusAddress, modbusSerial, modbusPower, max485EnablePi
 byte y520modbusAddress = 0x20;  // The modbus address of the Y520
 // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const uint8_t y520NumberReadings = 10;  // The manufacturer strongly recommends taking and averaging 10 readings
+const uint8_t y520NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 YosemitechY520 y520(y520modbusAddress, modbusSerial, modbusPower, max485EnablePin, y520NumberReadings);
 
 
@@ -344,6 +353,8 @@ Variable *variableList[] = {
     new MaximDS18_Temp(&ds18_5),
     new MeaSpecMS5803_Temp(&ms5803),
     new MeaSpecMS5803_Pressure(&ms5803),
+    new MPL115A2_Temp(&mpl115a2),
+    new MPL115A2_Pressure(&mpl115a2),
     new RainCounterI2C_Tips(&tip),
     new RainCounterI2C_Depth(&tip),
     new YosemitechY504_DOpct(&y504),

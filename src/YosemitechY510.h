@@ -15,10 +15,11 @@
  *based on their accuracy, not the resolution of the sensor
  *
  * For Turbidity:
- *     Accuracy is ＜5% or 0.3NTU
- *     Range is 0.1~1000 NTU
+ *     Accuracy is ± 5 % or 0.3 NTU
+ *     Range is 0.1 to 1000 NTU
  *
  * For Temperature:
+ *     Resolution is 0.1 °C
  *     Accuracy is ± 0.2°C
  *     Range is 0°C to + 50°C
  *
@@ -40,7 +41,7 @@
 #define Y510_TURB_RESOLUTION 2
 #define Y510_TURB_VAR_NUM 0
 
-#define Y510_TEMP_RESOLUTION 2
+#define Y510_TEMP_RESOLUTION 1
 #define Y510_TEMP_VAR_NUM 1
 
 // The main class for the Decagon Y510

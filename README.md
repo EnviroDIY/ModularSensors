@@ -12,6 +12,7 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
 
 ### Contents:
 - [Getting Started](#getStarted)
+  - [What are sensors and variables?](#whatHo)
   - [Physical Dependencies](#pdeps)
   - [Library Dependencies](#ldeps)
 - [Basic Sensor and Variable Functions](#Basic)
@@ -32,11 +33,13 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
     - [Decagon Devices 5TM: soil moisture](#5TM)
     - [Decagon Devices CTD-10: conductivity, temperature & depth](#CTD)
     - [Decagon Devices ES-2: conductivity ](#ES2)
-    - [External I2C Rain Tipping Bucket Counter](#ExtTips)
+    - [External I2C Rain Tipping Bucket Counter: rainfall totals](#ExtTips)
     - [External Voltage: via TI ADS1115](#ExtVolt)
+    - [Freescale Semiconductor MPL115A2: barometric pressure and temperature](#MPL115A2)
     - [MaxBotix MaxSonar: water level](#MaxBotix)
     - [Maxim DS18: temperature](#DS18)
-    - [Measurement Specialties MS5803: pressure](#MS5803)
+    - [Measurement Specialties MS5803: pressure and temperature](#MS5803)
+    - [Keller Submersible Level Transmitters: pressure and temperature](#keller)
     - [Yosemitech: water quality sensors](#Yosemitech)
     - [Zebra-Tech D-Opto: dissolved oxygen](#dOpto)
     - [Maxim DS3231: real time clock](#DS3231)
@@ -50,11 +53,25 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
 
 ## <a name="getStarted"></a>Getting Started
 
-Get started by reading this entire section, including [Physical Dependencies](#pdeps) and [Library Dependencies](#ldeps), then try out one of our sketches in the [Examples](https://github.com/EnviroDIY/ModularSensors/tree/master/examples) folder.
+Get started by reading this section, collecting the [Physical Dependencies](#pdeps), and installing the [Library Dependencies](#ldeps).  Then try out one of our sketches in the [Examples](https://github.com/EnviroDIY/ModularSensors/tree/master/examples) folder.
 
 To use a sensor and variable in your sketch, you must separately include xxx.h for each sensor you intend to use.  While this may force you to write many more include statements, it decreases the library RAM usage on your Arduino board.  Regardless of how many sensors you intend to use, however, you must install all of the [dependent libraries](#ldeps) on your _computer_ for the Arduino software, PlatformIO or any other Integrated Development Environment (IDE) software to be able to compile the library.
 
 Each sensor is implemented as a subclass of the "Sensor" class contained in "SensorBase.h".  Each variable is separately implemented as a subclass of the "Variable" class contained in "VariableBase.h".  The variables are tied to the sensor using an "[Observer](https://en.wikipedia.org/wiki/Observer_pattern)" software pattern.
+
+
+
+### <a name="whatHo"></a>What are sensors and variables?
+
+Within this library, a sensor, a variable, and a logger mean very specific things:
+
+**Sensor** - A sensor is some sort of device that is capable of taking one or more measurements using some sort of method.  Most often we can think of these as probes or other instruments that can give back information about the world around them.  Sensors can usually be given power or have that power cut.  They may be awoken or activated and then returned to a sleeping/low power use state.  The may be able to be asked to begin a single reading.  They _**must**_ be capable of returning the value of their readings to a logger of some type.
+
+**Variable** - A variable is a single measurement value taken by a sensor.  It is characterized by a name (what it is a measurement of), a unit of measurement, and a resolution.  The [names](http://vocabulary.odm2.org/variablename/) and [units](http://vocabulary.odm2.org/units/) of measurements for all variables come from the controlled vocabularies developed for the ODM2 data system.  (http://vocabulary.odm2.org/)  The resolution is determined by the method used to take the measurement by the sensor.  A variable may also be assigned a Globally Unique Identifier (GUID) and a unique variable code.  Many sensors are capable of measuring multiple variables at a single time.  For example, a Decagon CTD-10 is a _sensor_.  It is able to measure 3 _variables_: specific conductance, temperature, and water depth.  The variable named "specificConductance" has _units_ of microsiemens per centimeter (µS/cm) and a _resolution_ of 1 µS/cm.  Each variable is explicitly tied to the "parent" sensor that "notifies" the variable when a new value has been measured.
+
+**Logger** - A logger is a device that can control all functions of the sensors that are attached to it and save the values of all variables measured by those sensors to an attached SD card.  In this library, all loggers are Arduino-style small processor circuit boards.
+
+**Modem** - A modem is a device that can be controlled by a logger to send out data directly to the world wide web.
 
 
 
@@ -92,6 +109,7 @@ In order to support multiple functions and sensors, there are quite a lot of sub
 - [Adafruit AM2315 library](https://github.com/adafruit/Adafruit_AM2315) - for the AOSong AM2315 temperature and humidity sensor.
 - [Adafruit DHT library](https://github.com/adafruit/DHT-sensor-library) - for other AOSong temperature and humidity sensors.
 - [Adafruit BME280 library](https://github.com/adafruit/Adafruit_BME280_Library) - for the Bosch BME280 environmental sensor.
+- [Adafruit MPL115A2 library](https://github.com/adafruit/Adafruit_MPL115A2) - for the Freescale Semiconductor MPL115A2 barometer.
 - [YosemitechModbus](https://github.com/EnviroDIY/YosemitechModbus) - for all Yosemitech environmental sensor.
 - [EnviroDIY MS5803 Library](https://github.com/EnviroDIY/MS5803) - for the TE Connectivity MEAS MS5803 pressure sensor
 
@@ -129,7 +147,6 @@ These functions are also available for each sensor, but should be used with caut
 - **averageMeasurements()** - Averages the values in the sensor's result array.
 - **notifyVariables()** - Notifies attached variables of new values.  It is the sensor's job to notify variables!
 - **registerVariable()** - The compliment to a variable's "attachSensor(int varNum, Sensor \*parentSense)" function.  These functions tie the variable and sensor together.  This is generally called by the variable, not by the sensor.
-- **checkForUpdate()** - Checks if the values in a sensor's result array are more than two minutes out of date and updates them if necessary.  This is generally called by an attached variable.
 - **checkPowerOn()** - Returns true if a sensors assigned power pin is currently "HIGH."
 - **isWarmedUp()** - Checks whether or not enough time has passed between the sensor receiving power and being ready to respond to logger commands.
 - **waitForWarmUp()** - Delays until time is passed for sensor warm-up.
@@ -145,8 +162,8 @@ These functions are also available for each sensor, but should be used with caut
 - **getVarCode()** - This returns a String with a customized code for the variable, if one is given, and a default if not
 - **getVarUUID()** - This returns the universally unique identifier of a variables, if one is assigned, as a String
 - **setup()** - This "sets up" the variable - attaching it to its parent sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program _after_ calling the sensor setup.
-- **getValue()** - This returns the current value of the variable as a float.  You should call the update function before calling getValue.  As a backup, if the getValue function sees that the update function has not been called within the last 60 seconds, it will re-call it.
-- **getValueString()** - This is identical to getValue, except that it returns a string with the proper precision available from the sensor.
+- **getValue(bool updateValue)** - This returns the current value of the variable as a float.  By default, it does not ask the parent sensor for a new value, but simply returns the last value a parent sensor notified it of, no matter the age of the value.  If you would like to ask the sensor to measure a new value and for that new value to be returned, set the boolean flag as true.
+- **getValueString(bool updateValue)** - This is identical to getValue, except that it returns a string with the proper precision available from the sensor.
 - **attachSensor(int varNum, Sensor \*parentSense)** - The compliment to a sensor's registerVariable() function.  This attaches a variable object to the sensor that is giving the value to the variable.  The variable is generally responsible for calling this function!
 - **onSensorUpdate()** - This is the variable's response to the sensor's notifyVariables() function.  It accepts the new value from the sensor.  This is generally called by the sensor.
 
@@ -695,7 +712,7 @@ _____
 
 ### <a name="AM2315"></a>[AOSong AM2315](www.aosong.com/asp_bin/Products/en/AM2315.pdf) Encased I2C Temperature/Humidity Sensor
 
-The AOSong AM2315 and [CM2311](http://www.aosong.com/en/products/details.asp?id=193) communicate with the board via I2C.  Because this sensor can have only one I2C address, it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 3.3-5.5V power source and the power supply to the sensor can be stopped between measurements.
+The AOSong AM2315 and [CM2311](http://www.aosong.com/en/products/details.asp?id=193) communicate with the board via I2C.  Because this sensor can have only one I2C address (0xB8), it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 3.3-5.5V power source and the power supply to the sensor can be stopped between measurements.
 
 The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average:
 
@@ -805,13 +822,14 @@ _____
 This library currently supports the following Yosemitech sensors:
 
 - [Y502-A or Y504-A Optical Dissolved Oxygen Sensors](http://www.yosemitech.com/en/product-10.html)
-- [Y520-A 4-Electrode Conductivity Sensor](http://www.yosemitech.com/en/product-18.html)
 - [Y510-B Optical Turbidity Sensor](http://www.yosemitech.com/en/product-17.html)
 - [Y511-A Optical Turbidity Sensor with Wiper](http://www.yosemitech.com/en/product-16.html)
 - [Y514-A Chlorophyll Sensor with Wiper](http://www.yosemitech.com/en/product-14.html)
+- [Y520-A 4-Electrode Conductivity Sensor](http://www.yosemitech.com/en/product-18.html)
 - Y532-A Digital pH Sensor
 - Y533 ORP Sensor
 - [Y550-B UV254/COD Sensor with Wiper](http://www.yosemitech.com/en/product-21.html)
+- [Y4000 Multiparameter Sonde](http://www.yosemitech.com/en/product-20.html)
 
 All of these sensors require a 5-12V power supply and the power supply can be stopped between measurements.  (_Note that any user settings (such as brushing frequency) will be lost if the sensor loses power._)  They communicate via [Modbus RTU](https://en.wikipedia.org/wiki/Modbus) over [RS-485](https://en.wikipedia.org/wiki/RS-485).  To interface with them, you will need an RS485-to-TTL adapter.  The white wire of the Yosemitech sensor will connect to the "B" pin of the adapter and the green wire will connect to "A".  The red wire from the sensor should connect to the 5-12V power supply and the black to ground.  The Vcc pin on the adapter should be connected to another power supply (voltage depends on the specific adapter) and the ground to the same ground.  The red wire from the sensor _does not_ connect to the Vcc of the adapter.  The R/RO/RXD pin from the adapter connects to the TXD on the Arduino board and the D/DI/TXD pin from the adapter connects to the RXD.  If applicable, tie the RE and DE (receive/data enable) pins together and connect them to another pin on your board.  While this library supports an external enable pin, we have had very bad luck with most of them.  Adapters with automatic direction control tend to use very slightly more power, but have more stable communication.  There are a number of RS485-to-TTL adapters available.  When shopping for one, be mindful of the logic level of the TTL output by the adapter.  The MAX485, one of the most popular adapters, has a 5V logic level in the TTL signal.  This will _fry_ any board like the Mayfly that can only use on 3.3V logic.  You would need a voltage shifter in between the Mayfly and the MAX485 to make it work.
 
@@ -828,16 +846,16 @@ YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePi
 // Variables
 YosemitechY504_DOpct(&y504, "UUID", "customVarCode")  // DO percent saturation
 //  Resolution is 0.00000005 %
-//  Accuracy is 1%
+//  Accuracy is ± 1 %
 //  Range is 0-200% Saturation
 YosemitechY504_Temp(&y504, "UUID", "customVarCode")  // Temperature in °C
-//  Resolution is 0.00000001 °C
+//  Resolution is 0.1 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
 YosemitechY504_DOmgL(&y504, "UUID", "customVarCode")  // DO concentration in mg/L, calculated from percent saturation
 //  Resolution is 0.000000005 mg/L
 //  Accuracy is 1%
-//  Range is 0-20mg/L
+//  Range is 0-20mg/L or 0-200% Air Saturation
 ```
 
 ```cpp
@@ -850,7 +868,7 @@ YosemitechY510_Turbidity(&y510, "UUID", "customVarCode")  // Turbidity in NTU
 //  Accuracy is ± 5 % or 0.3 NTU
 //  Range is 0.1 to 1000 NTU
 YosemitechY510_Temp(&y510, "UUID", "customVarCode")  // Temperature in °C
-//  Resolution is 0.00000001 °C
+//  Resolution is 0.1 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
 ```
@@ -865,7 +883,7 @@ YosemitechY511_Turbidity(&y511, "UUID", "customVarCode")  // Turbidity in NTU
 //  Accuracy is ± 5 % or 0.3 NTU
 //  Range is 0.1 to 1000 NTU
 YosemitechY511_Temp(&y511, "UUID", "customVarCode")  // Temperature in °C
-//  Resolution is 0.00000001 °C
+//  Resolution is 0.1 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
 ```
@@ -876,11 +894,11 @@ YosemitechY511_Temp(&y511, "UUID", "customVarCode")  // Temperature in °C
 YosemitechY514 y514(y514modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY514_Chlorophyll(&y514, "UUID", "customVarCode")  // Chlorophyll concentration in µg/L
-//  Resolution is 0.00000009 µg/L
+//  Resolution is 0.1 µg/L / 0.1 RFU
 //  Accuracy is ± 1 %
 //  Range is 0 to 400 µg/L or 0 to 100 RFU
 YosemitechY514_Temp(&y514, "UUID", "customVarCode")  // Temperature in °C
-//  Resolution is 0.00000001 °C
+//  Resolution is 0.1 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
 ```
@@ -891,11 +909,11 @@ YosemitechY514_Temp(&y514, "UUID", "customVarCode")  // Temperature in °C
 YosemitechY520 y520(y520modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY520_Cond(&y520, "UUID", "customVarCode")  // Conductivity in µS/cm
-//  Resolution is 0.00000005 µS/cm
-//  Accuracy is ± 1 %
-//  Range is 1 to 200 µS/cm
+//  Resolution is 0.1 µS/cm
+//  Accuracy is ± 1 % Full Scale
+//  Range is 1 µS/cm to 200 mS/cm
 YosemitechY520_Temp(&y520, "UUID", "customVarCode")  // Temperature in °C
-//  Resolution is 0.00000001 °C
+//  Resolution is 0.1 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
 ```
@@ -906,14 +924,17 @@ YosemitechY520_Temp(&y520, "UUID", "customVarCode")  // Temperature in °C
 YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY532_pH(&y532, "UUID", "customVarCode")  // pH
-//  Resolution is 0.000000002 pH
-//  Accuracy is ± 0.1 pH
-//  Range is 2 to 12 pH
+//  Resolution is 0.01 pH units
+//  Accuracy is ± 0.1 pH units
+//  Range is 2 to 12 pH units
 YosemitechY532_Temp(&y532, "UUID", "customVarCode")  // Temperature in °C
-//  Resolution is 0.00000001 °C
+//  Resolution is 0.1 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
-YosemitechY532_Voltage(&y532, "UUID", "customVarCode")  // Electrode electrical potential
+YosemitechY532_Voltage(&y532, "UUID", "customVarCode")  // Electrode electrical potential in mV
+// Resolution is 1 mV
+// Accuracy is ± 20 mV
+// Range is -999 ~ 999 mV
 ```
 
 ```cpp
@@ -922,14 +943,17 @@ YosemitechY532_Voltage(&y532, "UUID", "customVarCode")  // Electrode electrical 
 YosemitechY533 y533(y533modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Variables
 YosemitechY533_pH(&y533, "UUID", "customVarCode")  // pH
-//  Resolution is 0.000000002 pH
-//  Accuracy is ± 0.1 pH
-//  Range is 2 to 12 pH
+//  Resolution is 0.01 pH units
+//  Accuracy is ± 0.1 pH units
+//  Range is 2 to 12 pH units
 YosemitechY533_Temp(&y533, "UUID", "customVarCode")  // Temperature in °C
-//  Resolution is 0.00000001 °C
+//  Resolution is 0.1 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
-YosemitechY533_Voltage(&y533, "UUID", "customVarCode")  // Electrode electrical potential
+YosemitechY533_Voltage(&y533, "UUID", "customVarCode")  // Electrode electrical potential in mV
+// Resolution is 1 mV
+// Accuracy is ± 20 mV
+// Range is -999 ~ 999 mV
 ```
 
 ```cpp
@@ -940,7 +964,7 @@ YosemitechY550 y550(y550modbusAddress, modbusSerial, modbusPower, max485EnablePi
 YosemitechY550_COD(&y550, "UUID", "customVarCode")  // COD in mg/L equiv. KHP
 //  Resolution is 0.01 mg/L COD
 //  Accuracy is ??
-//  Range is 0.75 to 370 mg/L
+//  Range is 0.75 to 370 mg/L COD (equiv. KHP) 0.2 - 150 mg/L TOC (equiv. KHP)
 YosemitechY550_Temp(&y550, "UUID", "customVarCode")  // Temperature in °C
 //  Resolution is 0.00000001 °C
 //  Accuracy is ± 0.2°C
@@ -949,6 +973,45 @@ YosemitechY550_Turbidity(&y550, "UUID", "customVarCode")  // Turbidity in NTU
 //  Resolution is 0.0000002 NTU
 //  Accuracy is ± 5 % or 0.3 NTU
 //  Range is 0.1 to 1000 NTU
+```
+
+```cpp
+// Multiparameter Sonde
+#include <YosemitechY4000.h>
+YosemitechY4000 y4000(YosemitechY4000, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
+// Variables
+YosemitechY4000_DOmgL(&y4000, "UUID", "customVarCode")  // DO concentration in mg/L, calculated from percent saturation
+//  Resolution is 0.01 mg/L
+//  Accuracy is ± 0.3 mg/L
+//  Range is 0-20mg/L or 0-200% Air Saturation
+YosemitechY4000_Turbidity(&y4000, "UUID", "customVarCode")  // Turbidity in NTU
+//  Resolution is 0.0000002 NTU
+//  Accuracy is ± 5 % or 0.3 NTU
+//  Range is 0.1 to 1000 NTU
+YosemitechY4000_Cond(&y4000, "UUID", "customVarCode")  // Conductivity in µS/cm
+//  Resolution is 0.1 µS/cm
+//  Accuracy is ± 1 % Full Scale
+//  Range is 1 µS/cm to 200 mS/cm
+YosemitechY4000_pH(&y4000, "UUID", "customVarCode")  // pH
+//  Resolution is 0.01 pH units
+//  Accuracy is ± 0.1 pH units
+//  Range is 2 to 12 pH units
+YosemitechY4000_Temp(&y4000, "UUID", "customVarCode")  // Temperature in °C
+//  Resolution is 0.1 °C
+//  Accuracy is ± 0.2°C
+//  Range is 0°C to + 50°C
+YosemitechY4000_ORP(&y4000, "UUID", "customVarCode")  // Electrode electrical potential in mV
+// Resolution is 1 mV
+// Accuracy is ± 20 mV
+// Range is -999 ~ 999 mV
+YosemitechY4000_Chlorophyll(&y4000, "UUID", "customVarCode")  // Chlorophyll concentration in µg/L
+//  Resolution is 0.1 µg/L / 0.1 RFU
+//  Accuracy is ± 1 %
+//  Range is 0 to 400 µg/L or 0 to 100 RFU
+YosemitechY4000_BGA(&y4000, "UUID", "customVarCode")  // blue-green algae concentration in µg/L
+//  Resolution is 0.01 µg/L / 0.01 RFU
+//  Accuracy is ±  0.04ug/L PC
+//  Range is 0 to 100 µg/L or 0 to 100 RFU
 ```
 _____
 
@@ -1039,7 +1102,6 @@ MeaSpecMS5803 ms5803(I2CPower, i2cAddressHex, maxPressure, measurementsToAverage
 The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-MeaSpecMS5803_Temp(&ms5803, "UUID", "customVarCode");  // temperature in °C
 MeaSpecMS5803_Pressure(&ms5803, "UUID", "customVarCode");  // pressure in millibar
 // For Pressure (sensor designed for water pressure):
 //   Resolution is 1 / 0.6 / 0.4 / 0.3 / 0.2 mbar (where 1 mbar = 100 pascals)
@@ -1048,11 +1110,53 @@ MeaSpecMS5803_Pressure(&ms5803, "UUID", "customVarCode");  // pressure in millib
 //   Accuracy -40°C to +85°C is ±40mbar
 //   Range is 0 to 14 bar
 //   Long term stability is -20 mbar/yr
-
+MeaSpecMS5803_Temp(&ms5803, "UUID", "customVarCode");  // temperature in °C
 // For Temperature:
 //   Resolution is <0.01°C
 //   Accuracy is ±0.8°C
 //   Range is -40°C to +85°C
+```
+_____
+
+### <a name="keller"></a>[Keller Submersible Water Level Transmitters](http://www.te.com/usa-en/product-CAT-BLPS0013.html) Pressure Sensor
+
+Many Keller pressure and water level sensors can communicate via Modbus RTU over RS485. The functions below should work with any Keller Series 30, Class 5, Group 20 sensor (such as the Keller Acculevel) that are Software version 5.20-12.28 and later (i.e. made after the 2012 in the 28th week). Note that these have only been tested with the Acculevel. More documentation for our implementation of the Keller Modbus communication Protocol commands and responses, along with information about the various variables, can be found in the [EnviroDIY KellerModbus library](https://github.com/EnviroDIY/KellerModbus). Sensors ship with default Slave addresses set to 0x01, but these can be reset. These Keller sensors expect an input voltage of 9-28 VDC, so they also require a voltage booster and an RS485 to TTL Serial converter with logic level shifting from the higher output voltage to the 3.3V or 5V of the Arduino data logging board.
+Digital communication with Keller sensors configured for SDI12 communication protocols are not supported by these functions.
+
+The sensor constructor requires as input: modbus address, the pin controlling sensor power, a stream instance for data (ie, ```Serial```), the Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter, and the number of readings to average.  (Use -1 for the enable pin if your adapter does not have one.) Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.  AltSoftSerial and HardwareSerial work fine.
+
+```cpp
+#include <KellerAcculevel.h>
+KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, modbusPower, max485EnablePin, acculevelNumberReadings);
+```
+
+The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
+
+```cpp
+new KellerAcculevel_Pressure(&acculevel, "UUID", "customVarCode");
+new KellerAcculevel_Temp(&acculevel, "UUID", "customVarCode");
+new KellerAcculevel_Height(&acculevel, "UUID", "customVarCode");
+
+```
+_____### <a name="MPL115A2"></a>[Freescale Semiconductor MPL115A2](https://www.nxp.com/docs/en/data-sheet/MPL115A2.pdf) Miniature I2C Digital Barometer
+
+The MPL115A2 communicates with the board via I2C.  Because this sensor can have only one I2C address (0x60), it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 2.375-5.5V power source and the power supply to the sensor can be stopped between measurements.
+
+The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average:
+
+```cpp
+#include <FreescaleMPL115A2.h>
+MPL115A2 mpl115a2(I2CPower, measurementsToAverage);
+```
+
+The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
+
+```cpp
+MPL115A2_Pressure(&mpl115a2, "UUID", "customVarCode");  // Baraometric pressure in kPa
+//  Resolution is 0.15 kPa
+//  Accuracy is ±1 kPa
+//  Range is 50 to 115 kPa
+MPL115A2_Temp(&mpl115a2, "UUID", "customVarCode");  // Temperature in °C
 ```
 _____
 

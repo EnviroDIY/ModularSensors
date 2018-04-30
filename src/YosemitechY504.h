@@ -15,10 +15,11 @@
  *based on their accuracy, not the resolution of the sensor
  *
  * For Dissolved Oxygen:
- *     Accuracy is 1%
+ *     Accuracy is ± 1 %
  *     Range is 0-20mg/L or 0-200% Saturation
  *
  * For Temperature:
+ *     Resolution is 0.1 °C
  *     Accuracy is ± 0.2°C
  *     Range is 0°C to + 50°C
  *
@@ -40,7 +41,7 @@
 #define Y504_DOPCT_RESOLUTION 1
 #define Y504_DOPCT_VAR_NUM 0
 
-#define Y504_TEMP_RESOLUTION 2
+#define Y504_TEMP_RESOLUTION 1
 #define Y504_TEMP_VAR_NUM 1
 
 #define Y504_DOMGL_RESOLUTION 2

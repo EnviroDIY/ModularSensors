@@ -300,25 +300,32 @@ bool VariableArray::updateAllSensors(void)
     {
         for (uint8_t i = 0; i < _variableCount; i++)
         {
-            // THIS IS PURELY FOR DEBUGGING!
+            // THIS IS PURELY FOR DEEP DEBUGGING OF THE TIMING!
+            // Leave this whole section commented out unless you want excessive
+            // printouts (ie, thousands of lines) of the timing information!!
             // if (isLastVarFromSensor(i) and
             //     _variableList[i]->parentSensor->getNumberMeasurementsToAverage() > nMeasurementsCompleted[i])
             // {
-            //     Serial.print(i);
-            //     Serial.print(" - ");
-            //     Serial.print(_variableList[i]->parentSensor->getSensorName());
-            //     Serial.print(" - millis: ");
-            //     Serial.print(millis());
-            //     Serial.print(" - status: 0b");
-            //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 7));
-            //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 6));
-            //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 5));
-            //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 4));
-            //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 3));
-            //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 2));
-            //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 1));
-            //     Serial.print(bitRead(_variableList[i]->parentSensor->getStatus(), 0));
-            //     Serial.println();
+            //     _variableList[i]->parentSensor->updateStatusBits(true);
+            //     MS_DBG(i);
+            //     MS_DBG(F(" - "));
+            //     MS_DBG(_variableList[i]->parentSensor->getSensorName());
+            //     MS_DBG(F(" at "));
+            //     MS_DBG(_variableList[i]->parentSensor->getSensorLocation());
+            //     MS_DBG(F(" - millis: "));
+            //     MS_DBG(millis());
+            //     MS_DBG(F(" - status: 0b"));
+            //     MS_DBG(bitRead(_variableList[i]->parentSensor->getStatus(), 7));
+            //     MS_DBG(bitRead(_variableList[i]->parentSensor->getStatus(), 6));
+            //     MS_DBG(bitRead(_variableList[i]->parentSensor->getStatus(), 5));
+            //     MS_DBG(bitRead(_variableList[i]->parentSensor->getStatus(), 4));
+            //     MS_DBG(bitRead(_variableList[i]->parentSensor->getStatus(), 3));
+            //     MS_DBG(bitRead(_variableList[i]->parentSensor->getStatus(), 2));
+            //     MS_DBG(bitRead(_variableList[i]->parentSensor->getStatus(), 1));
+            //     MS_DBG(bitRead(_variableList[i]->parentSensor->getStatus(), 0));
+            //     MS_DBG(F(" - measurement #"));
+            //     MS_DBG(nMeasurementsCompleted[i] + 1);
+            //     MS_DBG('\n');
             // }
             // END CHUNK FOR DEBUGGING!
 
@@ -326,48 +333,50 @@ bool VariableArray::updateAllSensors(void)
             if (isLastVarFromSensor(i) and
                 _variableList[i]->parentSensor->getNumberMeasurementsToAverage() > nMeasurementsCompleted[i])
             {
-                // if it's not currently measuring...
-                if (bitRead(_variableList[i]->parentSensor->getStatus(), 5) == 0)  // NOT currently measuring
+                // first, make sure the sensor is stable
+                if ( _variableList[i]->parentSensor->isStable())
                 {
-                    // but it is stable...
-                    if ( _variableList[i]->parentSensor->isStable())
+
+                // now, if the sensor is not currently measuring...
+                    if (bitRead(_variableList[i]->parentSensor->getStatus(), 5) == 0)  // NOT currently measuring
                     {
-                        // Start a reading
-                        MS_DBG(F("- Starting reading "));
+                            // Start a reading
+                            MS_DBG(F("- Starting reading "));
+                            MS_DBG(nMeasurementsCompleted[i]+1);
+                            MS_DBG(F(" on "));
+                            MS_DBG(_variableList[i]->parentSensor->getSensorName());
+                            MS_DBG(F(" at "));
+                            MS_DBG(_variableList[i]->parentSensor->getSensorLocation());
+                            MS_DBG(F(" -\n"));
+
+                            bool sensorSuccess_start = _variableList[i]->parentSensor->startSingleMeasurement();
+                            success &= sensorSuccess_start;
+
+                            if (sensorSuccess_start) MS_DBG(F("- Success -\n"));
+                            else MS_DBG(F("- Failed! -\n"));
+                    }
+
+                    // otherwise, it is currently measuring so...
+                    // if a measurement is finished, get the result and tick up the number of finished readings
+                    if(_variableList[i]->parentSensor->isMeasurementComplete())
+                    {
+                        // Get the value
+                        MS_DBG(F("-- Collected result of reading "));
                         MS_DBG(nMeasurementsCompleted[i]+1);
-                        MS_DBG(F(" on "));
+                        MS_DBG(F(" from "));
                         MS_DBG(_variableList[i]->parentSensor->getSensorName());
                         MS_DBG(F(" at "));
                         MS_DBG(_variableList[i]->parentSensor->getSensorLocation());
-                        MS_DBG(F(" -\n"));
+                        MS_DBG(F(" --\n"));
 
-                        bool sensorSuccess_start = _variableList[i]->parentSensor->startSingleMeasurement();
-                        success &= sensorSuccess_start;
+                        bool sensorSuccess_result = _variableList[i]->parentSensor->addSingleMeasurementResult();
+                        success &= sensorSuccess_result;
+                        nMeasurementsCompleted[i] += 1;  // increment the number of measurements that sensor has completed
 
-                        if (sensorSuccess_start) MS_DBG(F("- Success -\n"));
-                        else MS_DBG(F("- Failed! -\n"));
+                        if (sensorSuccess_result) MS_DBG(F("-- Success --\n"));
+                        else MS_DBG(F("-- Failed! --\n"));
                     }
-                }
 
-                // otherwise, it is currently measuring, so...
-                // if a measurement is finished, get the result and tick up the number of finished readings
-                if(_variableList[i]->parentSensor->isMeasurementComplete())
-                {
-                    // Get the value
-                    MS_DBG(F("-- Collected result of reading "));
-                    MS_DBG(nMeasurementsCompleted[i]+1);
-                    MS_DBG(F(" from "));
-                    MS_DBG(_variableList[i]->parentSensor->getSensorName());
-                    MS_DBG(F(" at "));
-                    MS_DBG(_variableList[i]->parentSensor->getSensorLocation());
-                    MS_DBG(F(" --\n"));
-
-                    bool sensorSuccess_result = _variableList[i]->parentSensor->addSingleMeasurementResult();
-                    success &= sensorSuccess_result;
-                    nMeasurementsCompleted[i] += 1;  // increment the number of measurements that sensor has completed
-
-                    if (sensorSuccess_result) MS_DBG(F("-- Success --\n"));
-                    else MS_DBG(F("-- Failed! --\n"));
                 }
 
                 // if all the readings are done, mark the whole sensor as done
