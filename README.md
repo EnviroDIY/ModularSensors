@@ -92,12 +92,12 @@ This library is designed for wireless, solar-powered environmental data logging 
 
 ### <a name="ldeps"></a>Library Dependencies
 
-In order to support multiple functions and sensors, there are quite a lot of sub-libraries that this library is dependent on.  _Even if you do not use the modules, you must have all of the dependencies installed for the library itself to properly compile._
+In order to support multiple functions and sensors, there are quite a lot of sub-libraries that this library is dependent on.  _Even if you do not use the modules, you must have all of the dependencies installed for the library itself to properly compile._  Please check the [library.json](https://github.com/EnviroDIY/ModularSensors/blob/master/library.json) file for more details on the versions required of each library.
 
 - [EnableInterrupt](https://github.com/GreyGnome/EnableInterrupt) - Administrates and handles pin change interrupts, allowing the logger to sleep and save battery.  This also controls the interrupts for the versions of SoftwareSerial and SDI-12 linked below that have been stripped of interrupt control.  Because we use this library, _you must always add the line ```#include <EnableInterrupt.h>``` to the top of your sketch._
 - AVR sleep library - This is for low power sleeping for AVR processors. (This library is built in to the Arduino IDE.)
 - [EnviroDIY DS-3231](https://github.com/EnviroDIY/Sodaq_DS3231) - For real time clock control
-- [RTCZero library](https://github.com/arduino-libraries/RTCZero) - This real time clock control and low power sleeping on SAMD processors. (This library may be built in to the Arduino IDE.)
+- [RTCZero library](https://github.com/arduino-libraries/RTCZero) - This real time clock control and low power sleeping on SAMD processors. (This library may be built in to the Arduino IDE.)  NOTE:  If using an AVR board, you must explicitly _ignore_ this library when compiling with PlatformIO or you will have compiler errors.
 - [SdFat library](https://github.com/greiman/SdFat) - This enables communication with the SD card.
 - [EnviroDIY version of the TinyGSM library](https://github.com/EnviroDIY/TinyGSM) - This provides internet (TCP/IP) connectivity.
 - [Adafruit ADS1X15 library](https://github.com/soligen2010/Adafruit_ADS1X15/) - For high-resolution analog to digital conversion.  Note that this is soligen2010's fork of the original Adafruit library; it corrects many problems in the Adafruit library such as a bug which gives the same output on all four inputs regardless of their values.  Do NOT use the original Adafruit version!
@@ -110,8 +110,9 @@ In order to support multiple functions and sensors, there are quite a lot of sub
 - [Adafruit DHT library](https://github.com/adafruit/DHT-sensor-library) - for other AOSong temperature and humidity sensors.
 - [Adafruit BME280 library](https://github.com/adafruit/Adafruit_BME280_Library) - for the Bosch BME280 environmental sensor.
 - [Adafruit MPL115A2 library](https://github.com/adafruit/Adafruit_MPL115A2) - for the Freescale Semiconductor MPL115A2 barometer.
-- [YosemitechModbus](https://github.com/EnviroDIY/YosemitechModbus) - for all Yosemitech environmental sensor.
+- [YosemitechModbus](https://github.com/EnviroDIY/YosemitechModbus) - for all Yosemitech modbus environmental sensors.
 - [EnviroDIY MS5803 Library](https://github.com/EnviroDIY/MS5803) - for the TE Connectivity MEAS MS5803 pressure sensor
+- [EnviroDIY KellerModbus Library](https://github.com/EnviroDIY/MS5803) - for all Keller modbus pressure and water level sensors.
 
 ## <a name="Basic"></a>Basic Sensor and Variable Functions
 
