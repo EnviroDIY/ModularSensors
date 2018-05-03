@@ -32,16 +32,20 @@ bool Decagon5TM::addSingleMeasurementResult(void)
 {
     if (_millisMeasurementRequested > 0)
     {
-        MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(), '\n');
+        MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(),
+               F(" at "), getSensorLocation(), '\n');
         // Make this the currently active SDI-12 Object
         _SDI12Internal.setActive();
         // Empty the buffer
         _SDI12Internal.clearBuffer();
 
         // Set up variables for receiving data
-        float ea, temp, VWC = -9999;
+        float ea = -9999;
+        float temp = -9999;
+        float VWC = -9999;
 
-        MS_DBG(F("   Requesting data from "), getSensorName(), '\n');
+        MS_DBG(F("   Requesting data from "), getSensorName(),
+               F(" at "), getSensorLocation(), '\n');
         String getDataCommand = "";
         getDataCommand += _SDI12address;
         getDataCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
@@ -49,18 +53,29 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         delay(30);  // It just needs this little delay
         MS_DBG(F("      >>> "), getDataCommand, F("\n"));
 
-        MS_DBG(F("   Receiving results from "), getSensorName(), '\n');
+        uint32_t startTime = millis();
+        while (_SDI12Internal.available() < 3 && (millis() - startTime) < 1500) {}
+        MS_DBG(F("   Receiving results from "), getSensorName(),
+               F(" at "), getSensorLocation(), '\n');
         _SDI12Internal.read();  // ignore the repeated SDI12 address
         // First variable returned is the Dialectric E
         ea = _SDI12Internal.parseFloat();
         // Second variable returned is the temperature in °C
         temp = _SDI12Internal.parseFloat();
         // the "third" variable of VWC is actually calculated, not returned by the sensor!
-        VWC = (4.3e-6*(ea*ea*ea))
-                    - (5.5e-4*(ea*ea))
-                    + (2.92e-2 * ea)
-                    - 5.3e-2 ;
-        VWC *= 100;  // Convert to actual percent
+        if (ea != -9999 && temp != -9999)
+        {
+            VWC = (4.3e-6*(ea*ea*ea))
+                        - (5.5e-4*(ea*ea))
+                        + (2.92e-2 * ea)
+                        - 5.3e-2 ;
+            VWC *= 100;  // Convert to actual percent
+        }
+
+        // String sdiResponse = _SDI12Internal.readStringUntil('\n');
+        // sdiResponse.trim();
+        // _SDI12Internal.clearBuffer();
+        // MS_DBG(F("      <<< "), sdiResponse, F("\n"));
 
         // Empty the buffer again
         _SDI12Internal.clearBuffer();
@@ -88,7 +103,8 @@ bool Decagon5TM::addSingleMeasurementResult(void)
     }
     else
     {
-        MS_DBG(F("   "), getSensorName(), F(" is not currently measuring!\n"));
+        MS_DBG(F("   "), getSensorName(), F(" at "), getSensorLocation(),
+               F(" is not currently measuring!\n"));
         return false;
     }
 }
