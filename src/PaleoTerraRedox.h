@@ -73,7 +73,7 @@ public:
     PaleoTerraRedox_Volt(Sensor *parentSense,
                        String UUID = "", String customVarCode = "")
       : Variable(parentSense, PTR_VOLT_VAR_NUM,
-               F("Voltage"), F("uV"),
+               F("Voltage"), F("mV"),
                PTR_VOLT_RESOLUTION,
                F("PTRVoltage"), UUID, customVarCode)
     {}
