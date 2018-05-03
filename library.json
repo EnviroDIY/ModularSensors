@@ -1,6 +1,6 @@
 {
     "name": "EnviroDIY_ModularSensors",
-    "version": "0.11.4",
+    "version": "0.11.5",
     "description":  "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
     "keywords": "sensor, modular, sensors, logger, low power, sleeping, EnviroDIY",
     "platforms": "atmelavr, atmelsam",
@@ -108,18 +108,6 @@
             "platforms": "atmelavr, atmelsam"
         },
         {
-            "name": "DHT sensor library",
-            "library id": "19",
-            "url": "http://github.com/adafruit/DHT-sensor-library.git",
-            "version": ">=1.3.0",
-            "note": "AOSong DHT Sensor Library by Adafruit",
-            "authors": [
-                "Adafruit"
-            ],
-            "frameworks": "arduino",
-            "platforms": "atmelavr, atmelsam"
-        },
-        {
             "name": "Adafruit AM2315",
             "library id": "773",
             "url": "https://github.com/adafruit/Adafruit_AM2315.git",
@@ -137,6 +125,18 @@
             "url": "https://github.com/adafruit/Adafruit_BME280_Library.git",
             "version": ">=1.0.7",
             "note": "Bosch BME280 Temp/Humidity/Pressure Sensor Library by Adafruit",
+            "authors": [
+                "Adafruit"
+            ],
+            "frameworks": "arduino",
+            "platforms": "atmelavr, atmelsam"
+        },
+        {
+            "name": "DHT sensor library",
+            "library id": "19",
+            "url": "http://github.com/adafruit/DHT-sensor-library.git",
+            "version": ">=1.3.0",
+            "note": "AOSong DHT Sensor Library by Adafruit",
             "authors": [
                 "Adafruit"
             ],
@@ -206,15 +206,33 @@
             "platforms": "atmelavr, atmelsam"
         },
         {
-            "name": "TinyGSM",
-            "version": "https://github.com/EnviroDIY/TinyGSM.git",
-            "note": "A small Arduino library for GPRS modules.",
+            "name": "KellerModbus",
+            "version": "https://github.com/EnviroDIY/KellerModbus.git",
+            "version_note": ">=0.1.0",
+            "note": "Arduino library for communication with Keller pressure and water level sensors via Modbus.",
             "authors": [
-                "Volodymyr Shymanskyy",
-                "Sara Damiano"
+                "Anthony Aufdenkampe"
+            ]
+        },
+        {
+            "name": "MS5803",
+            "version": "https://github.com/EnviroDIY/MS5803.git",
+            "note": "General interface to MS5803-series pressure transducers",
+            "authors": [
+                "Bobby Schulz"
+            ]
+        },
+        {
+            "name": "RTCZero",
+            "library id": "873",
+            "url": "https://github.com/arduino-libraries/RTCZero.git",
+            "version": ">=1.5.2",
+            "note": "Functions for using the processor real time clock in SAMD21 processors",
+            "authors": [
+                "Arduino"
             ],
             "frameworks": "arduino",
-            "platforms": "atmelavr, atmelsam"
+            "platforms": "atmelsam"
         },
         {
             "name": "SensorModbusMaster",
@@ -223,6 +241,17 @@
             "version": ">=0.6.2",
             "note": "EnviroDIY SensorModbusMaster - Arduino library for communicating via modbus with the Arduino acting as the modbus master.",
             "authors": [
+                "Sara Damiano"
+            ],
+            "frameworks": "arduino",
+            "platforms": "atmelavr, atmelsam"
+        },
+        {
+            "name": "TinyGSM",
+            "version": "https://github.com/EnviroDIY/TinyGSM.git",
+            "note": "A small Arduino library for GPRS modules.",
+            "authors": [
+                "Volodymyr Shymanskyy",
                 "Sara Damiano"
             ],
             "frameworks": "arduino",
@@ -240,35 +269,6 @@
             ],
             "frameworks": "arduino",
             "platforms": "atmelavr, atmelsam"
-        },
-        {
-            "name": "MS5803",
-            "version": "https://github.com/EnviroDIY/MS5803.git",
-            "note": "General interface to MS5803-series pressure transducers",
-            "authors": [
-                "Bobby Schulz"
-            ]
-        },
-        {
-            "name": "KellerModbus",
-            "version": "https://github.com/EnviroDIY/KellerModbus.git",
-            "version_note": ">=0.1.0",
-            "note": "Arduino library for communication with Keller pressure and water level sensors via Modbus.",
-            "authors": [
-                "Anthony Aufdenkampe"
-            ]
-        },
-        {
-            "name": "RTCZero",
-            "library id": "873",
-            "url": "https://github.com/arduino-libraries/RTCZero.git",
-            "version": ">=1.5.2",
-            "note": "Functions for using the processor real time clock in SAMD21 processors",
-            "authors": [
-                "Arduino"
-            ],
-            "frameworks": "arduino",
-            "platforms": "atmelsam"
         }
     ]
 }
