@@ -239,7 +239,7 @@ MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 // ==========================================================================
 #include <RainCounterI2C.h>
 const uint8_t RainCounterI2CAddress = 0x08;  // I2C Address for external tip counter
-const uint8_t depthPerTipEvent = 0.2;  // rain depth in mm per tip event
+const float depthPerTipEvent = 0.2;  // rain depth in mm per tip event
 RainCounterI2C tip(RainCounterI2CAddress, depthPerTipEvent);
 
 
