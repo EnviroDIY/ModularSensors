@@ -221,7 +221,7 @@ protected:
     int8_t _SDCardPin;
     int8_t _mcuWakePin;
     float _loggingIntervalMinutes;
-    uint8_t _interruptRate;
+    uint16_t _loggingIntervalSeconds;
     const char *_loggerID;
     bool _autoFileName;
     bool _isFileNameSet;
