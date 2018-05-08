@@ -49,7 +49,7 @@ void Logger::init(int8_t SDCardPin, int8_t mcuWakePin,
     _SDCardPin = SDCardPin;
     _mcuWakePin = mcuWakePin;
     _loggingIntervalMinutes = loggingIntervalMinutes;
-    _interruptRate = round(_loggingIntervalMinutes*60);  // convert to even seconds
+    _loggingIntervalSeconds = round(_loggingIntervalMinutes*60);  // convert to even seconds
     _loggerID = loggerID;
     _autoFileName = false;
     _isFileNameSet = false;
@@ -247,10 +247,11 @@ bool Logger::checkInterval(void)
     bool retval;
     uint32_t checkTime = getNowEpoch();
     MS_DBG(F("Current Unix Timestamp: "), checkTime, F("\n"));
-    MS_DBG(F("Mod of Logging Interval: "), checkTime % _interruptRate, F("\n"));
+    MS_DBG(F("Logging interval in seconds: "), _loggingIntervalSeconds, F("\n"));
+    MS_DBG(F("Mod of Logging Interval: "), checkTime % _loggingIntervalSeconds, F("\n"));
     MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged, F("\n"));
     MS_DBG(F("Mod of 120: "), checkTime % 120, F("\n"));
-    if ((checkTime % _interruptRate == 0 ) or
+    if ((checkTime % _loggingIntervalSeconds == 0 ) or
         (_numTimepointsLogged < 10 and checkTime % 120 == 0))
     {
         // Update the time variables with the current time
@@ -283,11 +284,12 @@ bool Logger::checkMarkedInterval(void)
 {
     bool retval;
     MS_DBG(F("Marked Time: "), markedEpochTime, F("\n"));
-    MS_DBG(F("Mod of Logging Interval: "), markedEpochTime % _interruptRate, F("\n"));
+    MS_DBG(F("Logging interval in seconds: "), _loggingIntervalSeconds, F("\n"));
+    MS_DBG(F("Mod of Logging Interval: "), markedEpochTime % _loggingIntervalSeconds, F("\n"));
     MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged, F("\n"));
     MS_DBG(F("Mod of 120: "), markedEpochTime % 120, F("\n"));
     if (markedEpochTime != 0 &&
-        ((markedEpochTime % _interruptRate == 0 ) or
+        ((markedEpochTime % _loggingIntervalSeconds == 0 ) or
         (_numTimepointsLogged < 10 and markedEpochTime % 120 == 0)))
     {
         // Update the number of readings taken
