@@ -418,8 +418,10 @@ Once the modem has been set up, it has all the functions of sensor object.  Thes
 As mentioned above, the cellular modems themselves are also sensors with the following variables:
 
 ```cpp
-Modem_RSSI(&modem, "UUID", "customVarCode");  // Received Signal Strength Indication, in dB
-Modem_SignalPercent(&modem, "UUID", "customVarCode");
+// Create the RSSI and signal strength variable objects for the modem and return
+// variable-type pointers to them
+Variable *modemRSSI = Modem_RSSI(&modem, "UUID", "customVarCode");  // Received Signal Strength Indication, in dB
+Variable *modemSinalPct = Modem_SignalPercent(&modem, "UUID", "customVarCode");  // "Percent" signal strength
 ```
 
 The modem does not behave quite the same as all the other sensors do, though.  Setup must be done with the '''setupModem(...)''' function; the normal '''setup()''' function does not do anything.  The '''sleep()''' and '''powerDown()''' functions also do not work, the modem will only go off with the '''off()''' function.

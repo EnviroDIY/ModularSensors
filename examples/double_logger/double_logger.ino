@@ -184,7 +184,7 @@ void setup()
     // There is no reason to call the setAlertPin() function, because we have to
     // write the loop on our own.
 
-    // Initialize the logger modem
+    // Setup the logger modem
     modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
 
     // Set up the sensors on both loggers
@@ -235,7 +235,6 @@ void setup()
 
 // Because of the way the sleep mode is set up, the processor will wake up
 // and start the loop every minute exactly on the minute.
-// Log the data
 void loop()
 {
     // Check if the current time is an even interval of the logging interval
