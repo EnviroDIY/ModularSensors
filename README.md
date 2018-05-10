@@ -38,11 +38,11 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
     - [Freescale Semiconductor MPL115A2: barometric pressure and temperature](#MPL115A2)
     - [MaxBotix MaxSonar: water level](#MaxBotix)
     - [Maxim DS18: temperature](#DS18)
+    - [Maxim DS3231: real time clock](#DS3231)
     - [Measurement Specialties MS5803: pressure and temperature](#MS5803)
     - [Keller Submersible Level Transmitters: pressure and temperature](#keller)
     - [Yosemitech: water quality sensors](#Yosemitech)
     - [Zebra-Tech D-Opto: dissolved oxygen](#dOpto)
-    - [Maxim DS3231: real time clock](#DS3231)
     - [Processor Metadata Treated as Sensors](#Onboard)
 - [Notes on Arduino Streams and Software Serial](#SoftwareSerial)
 - [Processor/Board Compatibility](#compatibility)
@@ -257,6 +257,32 @@ Variable \*variableList[] = {
 // Optionally, count the number of variables in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 ```
+
+You can also create and name variable pointer objects outside of the array and then reference those pointers inside of the array like so:
+
+```cpp
+// Create variable object and return pointers to them
+Variable *var1 = new sensor1_var1(&parentSensor1, "UUID", "customVarCode1");
+Variable *var2 = new sensor1_var2(&parentSensor1, "UUID", "customVarCode1");
+Variable *var3 = new sensor2_var1(&parentSensor2, "UUID", "customVarCode1");
+
+Variable *varX = new sensorX_varX(&parentSensor2, "UUID", "customVarCode1");
+// Create a new VariableArray object
+VariableArray myVars;
+// Create new variable objects in an array named "variableList" using the "new" keyword
+// UUID's and customVarCodes are optional
+Variable \*variableList[] = {
+    var1,
+    var2,
+    var3,
+    ...
+    varX
+};
+// Optionally, count the number of variables in the array
+int variableCount = sizeof(variableList) / sizeof(variableList[0]);
+```
+
+Creating the variable pointers outside of the array is particularly helpful when you want to reference the same variables in multiple arrays or you want to do any post measurement calculations on the variables.
 
 Once you have created the array of pointers, you can initialize the VariableArray module and setup all of the sensors at once in the setup function:
 
@@ -506,9 +532,11 @@ If you would like to do other things within the loop function, you should access
 
 - If you want to log on an even interval, use ```if (checkInterval())``` or ```if (checkMarkedInterval())``` to verify that the current or marked time is an even interval of the logging interval..
 - Call the ```markTime()``` function before printing/sending/saving any data that you want associate with a timestamp.
+- Power up all of your sensors with ```sensorsPowerUp()```.
 - Wake up all your sensors with ```sensorsWake()```.
 - Update all the sensors in your VariableArray together with ```updateAllSensors()```.
 - Immediately after running ```updateAllSensors()```, put sensors to sleep to save power with ```sensorsSleep()```.
+- Power down all of your sensors with ```sensorsPowerDown()```.
 - After updating the sensors, then call any functions you want to send/print/save data.
 - Finish by putting the logger back to sleep, if desired, with ```systemSleep()```.
 
@@ -524,42 +552,118 @@ Essentially all of the sensors can have their power supplies turned off between 
 Please, please, when setting up multiple sensors on a logger, be smart about it.  Don't try to connect too many sensors all at once or you're likely to exceed your logger's power regulator or come across strange interferences between them.  _**TEST YOUR LOGGER WITH ALL SENSORS ATTACHED BEFORE DEPLOYING IT TO THE FIELD!**_  Don't even think about skipping the in-lab testing!  Theoretically every single sensor possible could be attached to the same processor, but the reality is that boards have finite numbers of pins, solar panels can only create so much charge, and not all sensors like each other very much.
 _____
 
-### <a name="MaxBotix"></a>[MaxBotix MaxSonar](http://www.maxbotix.com/Ultrasonic_Sensors/High_Accuracy_Sensors.htm) - HRXL MaxSonar WR or WRS Series with TTL Outputs
+### <a name="AM2315"></a>[AOSong AM2315](www.aosong.com/asp_bin/Products/en/AM2315.pdf) Encased I2C Temperature/Humidity Sensor
 
-The IP67 rated HRXL-MaxSonar-WR ultrasonic rangefinders offer 1mm resolution, 2.7-5.5VDC operation, a narrow beam pattern, high power output, noise rejection, automatic calibration, and temperature compensation.  Depending on the precise model, the range finders have ranges between 300 and 9999mm and read rates of 6-7.5Hz.  This library supports TTL or RS323 sensor output, though an RS232-to-TTL adapter is needed for the RS232 models.  Analog and pulse-width outputs are not supported.  The MaxBotix sensors require a 2.7V-5.5V power supply to pin 6 on the sensor (which can be turned off between measurements) and the level of the TTL returned by the MaxSonar will match the power level it is supplied with.   The digital TTL or RS232 output is sent out on pin 5 on the sensor.  Pin 7 of the MaxSonar must be connected to power ground and pin 4 can optionally be used to trigger the MaxSonar.
+The AOSong AM2315 and [CM2311](http://www.aosong.com/en/products/details.asp?id=193) communicate with the board via I2C.  Because this sensor can have only one I2C address (0xB8), it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 3.3-5.5V power source and the power supply to the sensor can be stopped between measurements.
 
-If you are using the [MaxBotix HR-MaxTemp](https://www.maxbotix.com/Ultrasonic_Sensors/MB7955.htm) MB7955 temperature compensator on your MaxBotix (which greatly improves data quality), the red wire from the MaxTemp should be attached to pin 1 on the MaxSonar.  The white and shield wires from the MaxTemp should both be attached to Pin 7 or the MaxSonar (which is also attached to the Arduino ground).  The MaxTemp communicates directly with the MaxSonar and there is no need to make any changes on the Aruduino itself for the MaxTemp.
-
-The MaxBotix sensor have two different modes: free-ranging and triggered.  Unless the trigger pin is externally held low, the sensor will continuously take readings at a rate of 6Hz or greater and immediate report each result over the digital output pin.  (That is, it will be in free-ranging mode.)  When continuously powered and operating in free-range mode, the data output is automatically filtered to help improve accuracy.  If you are turning the power to the sensor off between readings, there is no advantage to using the free-ranging because many readings must be taken before the filter becomes effective.  In this case, you may save some power by setting up a trigger pin and manually trigger individual readings.
-
-The Arduino pin controlling power on/off, a stream instance for received data (ie, ```Serial```), and the Arduino pin controlling the trigger are required for the sensor constructor.  (Use -1 for the trigger pin if you do not have it connected.)  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
-
-This library supports using multiple MaxBotix sensors on the same logger, with a few caveats:  
- - Any sensor operating in free-ranging mode (powered at the same time as any other sensors with the trigger pins unconnected) must have a dedicated stream instance/serial port.
- - To have two sensors operating in free-ranging mode, they must each have a dedicated stream instance/serial port *AND* you must specify a unique _negative_ pin number for the trigger pin.  Giving a negative pin number ensures that the Arduino will not attempt to trigger trigger individual readings but will still be able to tell the sensors apart.  (Software-wise, simply specifying the different streams is not enough!)  Keep in mind that two or more free ranging sensors must be spaced far enough apart in the field to prevent interference between the sonar beams.
- - Two or more sensors may send data to the same stream instance/serial port if both sensors are being triggered and each is triggered by a different trigger pin.
- - "Daisy chaining" sensors so the pulse-width output of one sensor acts as the trigger for a second sensor is not supported.
-
-The main constructor for the sensor object is:  (The trigger pin and number of readings to average are optional.)
+The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average:
 
 ```cpp
-#include <MaxBotixSonar.h>
-MaxBotixSonar sonar(sonarStream, SonarPower, SonarTrigger, measurementsToAverage);
+#include <AOSongAM2315.h>
+// Create and return the AM2315 sensor object
+AOSongAM2315 am2315(I2CPower, measurementsToAverage);
 ```
 
-The single available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
+The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-MaxBotixSonar_Range(&sonar, "UUID", "customVarCode");  // Ultrasonic range in mm
-//  Resolution is 1mm
-//  Accuracy is ± 1%
-//  Range is 300mm 5000mm or 500mm to 9999mm, depending on  model
+// Create the temperature and humidity variable objects for the AM2315 and return variable-type pointers to them
+Variable *am2315Humid = new AOSongAM2315_Humidity(&am2315, "UUID", "customVarCode");  // Percent relative humidity
+//  Resolution is 0.1 % RH (16 bit)
+//  Accuracy is ± 2 % RH
+//  Range is 0 - 100 % RH
+Variable *am2315Temp= new AOSongAM2315_Temp(&am2315, "UUID", "customVarCode");  // Temperature in °C
+// Resolution is 0.1°C (16 bit)
+// Accuracy is ±0.1°C
+// Range is -40°C to +125°C
+```
+_____
+
+### <a name="DHT"></a>[AOSong DHT](http://www.aosong.com/en/products/index.asp) Digital-Output Relative Humidity & Temperature Sensor
+
+This module will work with an AOSong [DHT11/CHT11](http://www.aosong.com/en/products/details.asp?id=109), DHT21/AM2301, and [DHT22/AM2302/CM2302](http://www.aosong.com/en/products/details.asp?id=117).  These sensors use a single-bus single wire digital signaling protocol.  They can be connected to any digital pin.  Please keep in mind that, per manufacturer instructions, these sensors should not be polled more frequently than once every 2 seconds.  These sensors should be attached to a 3.3-6V power source and the power supply to the sensor can be stopped between measurements.  The communication with these sensors is slow and _interrupts are turned off during communication_.  (See the Adafruit DHT library's DHT.cpp for details.)  Keep this in mind if using this sensor in combination with a rain gauge or other interrupt-driven sensor.  Also note that the temperature sensor built into the AOSong DHT is a Maxim DS18 sensor.
+
+The Arduino pin controlling power on/off, the Arduino pin receiving data, and the sensor type are required for the sensor constructor.  The number of readings to average is optional:
+
+```cpp
+#include <AOSongDHT.h>/
+// Create and return the DHT sensor object
+AOSongDHT dht(DHTPower, DHTPin, dhtType, measurementsToAverage);
 ```
 
-In addition to the constructors for the sensor and variable, you must remember to "begin" your stream instance within the main setup function.  The baud rate must be set to 9600 for all MaxBotix sensors.
+The three available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-sonarStream.begin(9600);
+// Create the temperature, humidity, and heat index variable objects for the DHT and return variable-type pointers to them
+Variable *dhtHumid = new AOSongDHT_Humidity(&dht, "UUID", "customVarCode");  // Percent relative humidity
+//  Resolution is 0.1 % RH for DHT22 and 1 % RH for DHT11
+//  Accuracy is ± 2 % RH for DHT22 and ± 5 % RH for DHT11
+//  Range is 0 to 100 % RH
+Variable *dhtTemp = new AOSongDHT_Temp(&dht, "UUID", "customVarCode");  // Temperature in °C
+//  Resolution is 0.1°C
+//  Accuracy is ±0.5°C for DHT22 and ± ±2°C for DHT11
+//  Range is -40°C to +80°C
+Variable *dhtHI = new AOSongDHT_HI(&dht, "UUID", "customVarCode");  // Calculated Heat Index
+//  Resolution is 0.1°C
+//  Accuracy is ±0.5°C for DHT22 and ± ±2°C for DHT11
+//  Range is -40°C to +80°C
+```
+_____
+
+### <a name="SQ212"></a>[Apogee SQ-212 Quantum Light Sensor](https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/) Photosynthetically Active Radiation (PAR)
+This library will work with the Apogee SQ-212 and SQ-212 analog quantum light sensors, and could be readily adapted to work with similar sensors (e.g. SQ-215 or SQ225) with by simply changing the calibration factors.  These sensors send out a simple analog signal.  To convert that to a high resolution digital signal, the sensor must be attached to a TI ADS1115 ADD converter.  The TI ADS1115 ADD communicates with the main processor via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tying the address pin to ground.  Up to four of these ADD's be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input voltage of 2.0-5.5V, but this library assumes the ADS is powered with 3.3V.  The PAR sensors should be attached to a 5-24V power source and the power supply to the sensor can be stopped between measurements.
+
+The Arduino pin controlling power on/off and the analog data pin _on the TI ADS1115_ are required for the sensor constructor.  If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the third argument.
+
+```cpp
+#include <ApogeeSQ212.h>
+// Create and return the Apogee SQ-212 sensor object
+ApogeeSQ212 SQ212(SQ212Power, SQ212Data, ADS1x15_i2cAddress, measurementsToAverage);
+```
+
+The one available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
+
+```cpp
+// Create the PAR variable object for the Apogee SQ-212 and return a variable-type pointer to it
+Variable *sq212PAR = new ApogeeSQ212_PAR(&SQ212, "UUID", "customVarCode");  // Photosynthetically Active Radiation (PAR), in units of μmol m-2 s-1, or microeinsteins per square meter per second
+//  Resolution is 0.04 µmol m-2 s-1 (16 bit ADC)
+//  Accuracy is ± 0.5%
+//  Range is 0 to 2500 µmol m-2 s-1
+```
+_____
+
+### <a name="BME280"></a>[Bosch BME280](https://www.bosch-sensortec.com/bst/products/all_products/bme280) Integrated Environmental Sensor
+
+Although this sensor has the option of either I2C or SPI communication, this library only supports I2C.  The default I2C address varies by manufacturer and is either 0x77 or 0x76. The Adafruit and Sparkfun defaults are both 0x77 and Seeed/Grove default is 0x76, though all can be changed by physical modification of the sensor, if necessary (by cutting the board connection for the manufacturer default and soldering the optional address jumpers).  To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses.  No more than two can be attached (unless you use a multiplexer).  This module is likely to also work with the [Bosch BMP280 Barometric Pressure Sensor](https://www.bosch-sensortec.com/bst/products/all_products/bmp280), though it has not been tested on it.  These sensors should be attached to a 1.7-3.6V power source and the power supply to the sensor can be stopped between measurements.
+
+The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex is optional as is the number of readings to average:
+
+```cpp
+#include <BoschBME280.h>
+// Create and return the Bosch BME280 sensor object
+BoschBME280 bme280(I2CPower, i2cAddressHex, measurementsToAverage);
+```
+
+The four available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
+
+```cpp
+// Create the four variable objects for the BME280 and return variable-type pointers to them
+Variable *bme280Temp = new BoschBME280_Temp(&bme280, "UUID", "customVarCode");  // Temperature in °C
+//  Resolution is 0.01°C
+//  Accuracy is ±0.5°C
+//  Range is -40°C to +85°C
+Variable *bme280Humid = new BoschBME280_Humidity(&bme280, "UUID", "customVarCode");  // Percent relative humidity
+//  Resolution is 0.008 % RH (16 bit)
+//  Accuracy is ± 3 % RH
+//  Range is 0-100 % RH
+Variable *bme280Press = new BoschBME280_Pressure(&bme280, "UUID", "customVarCode");  // Barometric pressure in pascals
+//  Resolution is 0.18Pa
+//  Absolute Accuracy is ±1hPa
+//  Relative Accuracy is ±0.12hPa
+//  Range is 300 to 1100 hPa
+Variable *bme280Alt = new BoschBME280_Altitude(&bme280, "UUID", "customVarCode");  // Altitude in meters, calculated from barometric pressure
+//  Resolution is 1m
+//  Accuracy depends on geographic location
 ```
 _____
 
@@ -575,15 +679,19 @@ The main constructor for the sensor object is (called once each for high and low
 
 ```cpp
 #include <CampbellOBS3.h>
+// Create and return the low-range sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_x2_coeff_A, OBSLow_x1_coeff_B, OBSLow_x0_coeff_C, ADS1x15_i2cAddress, measurementsToAverage);
+// Create the high-range sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_x2_coeff_A, OBSHigh_x1_coeff_B, OBSHigh_x0_coeff_C, ADS1x15_i2cAddress, measurementsToAverage);
 ```
 
 The single available variable is (called once each for high and low range):
 
 ```cpp
-CampbellOBS3_Turbidity(&osb3low, "UUID", "customLowVarCode");  // Low Range Turbidity in NTU
-CampbellOBS3_Turbidity(&osb3high, "UUID", "customHighVarCode");  // High Range Turbidity in NTU
+// Create and return the low-range variable object and return a variable-type pointer to it
+Variable *obs3lowTurbid = new CampbellOBS3_Turbidity(&osb3low, "UUID", "customLowVarCode");  // Low Range Turbidity in NTU
+// Create the high-range variable object and return a variable-type pointer to it
+Variable *obs3highTurbid = new CampbellOBS3_Turbidity(&osb3high, "UUID", "customHighVarCode");  // High Range Turbidity in NTU
 //  Ranges: (depends on sediment size, particle shape, and reflectivity)
 //      Turbidity (low/high): 250/1000 NTU; 500/2000 NTU; 1000/4000 NTU
 //      Mud: 5000 to 10,000 mg L–1
@@ -612,19 +720,21 @@ The main constructor for the sensor object is:
 
 ```cpp
 #include <Decagon5TM.h>
+// Create and return the Decagon 5TM sensor object
 Decagon5TM fivetm(TMSDI12address, SDI12Power, SDI12Data, measurementsToAverage);
 ```
 
 The three available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-Decagon5TM_Ea(&fivetm, "UUID", "customVarCode");  // Ea/Matric Potential Variable in farads per meter
-Decagon5TM_VWC(&fivetm, "UUID", "customVarCode");  // Volumetric water content as percent, calculated from Ea via TOPP equation
+// Create the Ea, Temperature, and Volumetric Water Content variables for the 5TM  and return variable-type pointers to them
+Variable *fivetmEA = new Decagon5TM_Ea(&fivetm, "UUID", "customVarCode");  // Ea/Matric Potential Variable in farads per meter
+Variable *fivetmTemp = new Decagon5TM_VWC(&fivetm, "UUID", "customVarCode");  // Volumetric water content as percent, calculated from Ea via TOPP equation
 //  Resolution is 0.0008 m3/m3 (0.08% VWC) from 0 – 50% VW
 //  Accuracy for Generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typical
 //  Accuracy for Medium Specific Calibration: ± 0.02 m3/m3 (± 2% VWC)
 //  Range is 0 – 1 m3/m3 (0 – 100% VWC)
-Decagon5TM_Temp(&fivetm, "UUID", "customVarCode");  // Temperature in °C
+Variable *fivetmVWC = new Decagon5TM_Temp(&fivetm, "UUID", "customVarCode");  // Temperature in °C
 //  Resolution is 0.1°C
 //  Accuracy is ± 1°C
 //  Range is - 40°C to + 50°C
@@ -637,21 +747,23 @@ The main constructor for the sensor object is:
 
 ```cpp
 #include <DecagonCTD.h>
+// Create and return the Decagon CTD sensor object
 DecagonCTD ctd(CTDSDI12address, SDI12Power, SDI12Data, measurementsToAverage);
 ```
 
 The three available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-DecagonCTD_Cond(&ctd, "UUID", "customVarCode");  // Conductivity in µS/cm
+// Create the Conductivity, Temperature, and Water Depth variables for the CTD and return variable-type pointers to them
+Variable *ctdCond = new DecagonCTD_Cond(&ctd, "UUID", "customVarCode");  // Conductivity in µS/cm
 //  Resolution is 0.001 mS/cm = 1 µS/cm
 //  Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
 //  Range is 0 – 120 mS/cm (bulk)
-DecagonCTD_Temp(&ctd, "UUID", "customVarCode");  // Temperature in °C
+Variable *ctdTemp = new DecagonCTD_Temp(&ctd, "UUID", "customVarCode");  // Temperature in °C
 //  Resolution is 0.1°C
 //  Accuracy is ±1°C
 //  Range is -11°C to +49°C
-DecagonCTD_Depth(&ctd, "UUID", "customVarCode");  // Water depth in mm
+Variable *ctdDepth = new DecagonCTD_Depth(&ctd, "UUID", "customVarCode");  // Water depth in mm
 //  Resolution is 2 mm
 //  Accuracy is ±0.05% of full scale
 //  Range is 0 to 5 m or 0 to 10 m, depending on model
@@ -664,20 +776,91 @@ The main constructor for the sensor object is:
 
 ```cpp
 #include <DecagonES2.h>
+// Create and return the Decagon ES2 sensor object
 DecagonES2 es2(ES2SDI12address, SDI12Power, SDI12Data, measurementsToAverage);
 ```
 
 The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-DecagonES2_Cond(&es2, "UUID", "customVarCode");  // Conductivity in µS/cm
+// Create the Conductivity and Water Depth variables for the ES2 and return variable-type pointers to them
+Variable *es2Cond = new DecagonES2_Cond(&es2, "UUID", "customVarCode");  // Conductivity in µS/cm
 //  Resolution is 0.001 mS/cm = 1 µS/cm
 //  Accuracy is ±0.01mS/cm or ±10% (whichever is greater)
 //  Range is 0 – 120 mS/cm (bulk)
-DecagonES2_Temp(&es2, "UUID", "customVarCode");  // Temperature in °C
+Variable *es2Temp = new DecagonES2_Temp(&es2, "UUID", "customVarCode");  // Temperature in °C
 //  Resolution is 0.1°C
 //  Accuracy is ±1°C
 //  Range is -40°C to +50°C
+```
+_____
+
+### <a name="ExtVolt"></a>External Voltage, via [TI ADS1115](http://www.ti.com/product/ADS1115)
+The TI ADS1115 ADD is a high resolution ADS that communicates with the board via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tying the address pin to ground.  Up to four of these ADD's be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input voltage of 2.0-5.5V, but this library assumes the ADS is powered with 3.3V.  For measuring raw external voltages, this library also allows you to give a gain factor/multiplier to account for use of a voltage divider, such as the [Seeed Grove Voltage Divider](http://wiki.seeedstudio.com/Grove-Voltage_Divider/).
+
+The Arduino pin controlling power on/off and the analog data pin _on the TI ADS1115_ are required for the sensor constructor.  If using a voltage divider to increase the measurable voltage range, enter the gain multiplier as the third argument.  If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the fourth argument.  The number of measurements to average, if more than one is desired, goes as the fifth argument.
+
+```cpp
+#include <ExternalVoltage.h>
+// Create and return the voltage sensor
+ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, ADS1x15_i2cAddress, measurementsToAverage);
+```
+
+The one available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
+
+```cpp
+// Create the voltage variable and return a variable-type pointer to it
+Variable *extVoltage = new ExternalVoltage_Volt(&extvolt, "UUID", "customVarCode");  // raw voltage in volts
+// Range:
+//   without voltage divider:  0 - 3.6V
+//   1/gain = 3x: 0.3 ~ 12.9v
+//   1/gain = 10x: 1 ~ 43v
+// Accuracy is < ± 1%
+// Resolution: 16-bit ADC:
+//   without voltage divider:  0.05mV
+//   1/gain = 3x: 0.2mV
+//   1/gain = 10x: 0.65 mV
+```
+_____
+
+### <a name="MaxBotix"></a>[MaxBotix MaxSonar](http://www.maxbotix.com/Ultrasonic_Sensors/High_Accuracy_Sensors.htm) - HRXL MaxSonar WR or WRS Series with TTL Outputs
+
+The IP67 rated HRXL-MaxSonar-WR ultrasonic rangefinders offer 1mm resolution, 2.7-5.5VDC operation, a narrow beam pattern, high power output, noise rejection, automatic calibration, and temperature compensation.  Depending on the precise model, the range finders have ranges between 300 and 9999mm and read rates of 6-7.5Hz.  This library supports TTL or RS323 sensor output, though an RS232-to-TTL adapter is needed for the RS232 models.  Analog and pulse-width outputs are not supported.  The MaxBotix sensors require a 2.7V-5.5V power supply to pin 6 on the sensor (which can be turned off between measurements) and the level of the TTL returned by the MaxSonar will match the power level it is supplied with.   The digital TTL or RS232 output is sent out on pin 5 on the sensor.  Pin 7 of the MaxSonar must be connected to power ground and pin 4 can optionally be used to trigger the MaxSonar.
+
+If you are using the [MaxBotix HR-MaxTemp](https://www.maxbotix.com/Ultrasonic_Sensors/MB7955.htm) MB7955 temperature compensator on your MaxBotix (which greatly improves data quality), the red wire from the MaxTemp should be attached to pin 1 on the MaxSonar.  The white and shield wires from the MaxTemp should both be attached to Pin 7 or the MaxSonar (which is also attached to the Arduino ground).  The MaxTemp communicates directly with the MaxSonar and there is no need to make any changes on the Aruduino itself for the MaxTemp.
+
+The MaxBotix sensor have two different modes: free-ranging and triggered.  Unless the trigger pin is externally held low, the sensor will continuously take readings at a rate of 6Hz or greater and immediate report each result over the digital output pin.  (That is, it will be in free-ranging mode.)  When continuously powered and operating in free-range mode, the data output is automatically filtered to help improve accuracy.  If you are turning the power to the sensor off between readings, there is no advantage to using the free-ranging because many readings must be taken before the filter becomes effective.  In this case, you may save some power by setting up a trigger pin and manually trigger individual readings.
+
+The Arduino pin controlling power on/off, a stream instance for received data (ie, ```Serial```), and the Arduino pin controlling the trigger are required for the sensor constructor.  (Use -1 for the trigger pin if you do not have it connected.)  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
+
+This library supports using multiple MaxBotix sensors on the same logger, with a few caveats:  
+ - Any sensor operating in free-ranging mode (powered at the same time as any other sensors with the trigger pins unconnected) must have a dedicated stream instance/serial port.
+ - To have two sensors operating in free-ranging mode, they must each have a dedicated stream instance/serial port *AND* you must specify a unique _negative_ pin number for the trigger pin.  Giving a negative pin number ensures that the Arduino will not attempt to trigger trigger individual readings but will still be able to tell the sensors apart.  (Software-wise, simply specifying the different streams is not enough!)  Keep in mind that two or more free ranging sensors must be spaced far enough apart in the field to prevent interference between the sonar beams.
+ - Two or more sensors may send data to the same stream instance/serial port if both sensors are being triggered and each is triggered by a different trigger pin.
+ - "Daisy chaining" sensors so the pulse-width output of one sensor acts as the trigger for a second sensor is not supported.
+
+The main constructor for the sensor object is:  (The trigger pin and number of readings to average are optional.)
+
+```cpp
+#include <MaxBotixSonar.h>
+// Create and return the Maxbotix sonar sensor object;
+MaxBotixSonar sonar(sonarStream, SonarPower, SonarTrigger, measurementsToAverage);
+```
+
+The single available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
+
+```cpp
+// Create the sonar range variable object and return a variable-type pointer to it
+Variable *hrxlRange = new MaxBotixSonar_Range(&sonar, "UUID", "customVarCode");  // Ultrasonic range in mm
+//  Resolution is 1mm
+//  Accuracy is ± 1%
+//  Range is 300mm 5000mm or 500mm to 9999mm, depending on  model
+```
+
+In addition to the constructors for the sensor and variable, you must remember to "begin" your stream instance within the main setup function.  The baud rate must be set to 9600 for all MaxBotix sensors.
+
+```cpp
+sonarStream.begin(9600);
 ```
 _____
 
@@ -691,6 +874,7 @@ The main constructor for the sensor object is:
 
 ```cpp
 #include <MaximDS18.h>
+// Create and return a Maxim DS18 sensor object - address known
 MaximDS18 ds18(OneWireAddress, powerPin, dataPin, measurementsToAverage);
 ```
 
@@ -698,12 +882,14 @@ _If and only if you have exactly one sensor attached on your OneWire pin or bus_
 
 ```cpp
 #include <MaximDS18.h>
+// Create and return a Maxim DS18 sensor object - address NOT known
 MaximDS18 ds18(powerPin, dataPin, measurementsToAverage);
 ```
 
 The single available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
+// Create the temperature variable object for the DS18 and return a variable-type pointer to it
 MaximDS18_Temp(&ds18, "UUID", "customVarCode");  // Temperature in °C
 // Resolution is between 0.0625°C (12 bit) and 0.5°C (9-bit)
 // Accuracy is ±0.5°C from -10°C to +85°C for DS18S20 and DS18B20, ±2°C for DS1822 and MAX31820
@@ -711,110 +897,127 @@ MaximDS18_Temp(&ds18, "UUID", "customVarCode");  // Temperature in °C
 ```
 _____
 
-### <a name="AM2315"></a>[AOSong AM2315](www.aosong.com/asp_bin/Products/en/AM2315.pdf) Encased I2C Temperature/Humidity Sensor
+### <a name="DS3231"></a>Maxim DS3231 Real Time Clock
 
-The AOSong AM2315 and [CM2311](http://www.aosong.com/en/products/details.asp?id=193) communicate with the board via I2C.  Because this sensor can have only one I2C address (0xB8), it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 3.3-5.5V power source and the power supply to the sensor can be stopped between measurements.
+As the I2C [Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html) real time clock (RTC) is absolutely required for time-keeping on all AVR boards, this library also makes use of it for its on-board temperature sensor.  The DS3231 requires a 3.3V power supply.
 
-The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average:
+The only argument for the constructor is the number of readings to average, as the RTC requires constant power and is connected via I2C:
 
 ```cpp
-#include <AOSongAM2315.h>
-AOSongAM2315 am2315(I2CPower, measurementsToAverage);
+#include <MaximDS3231.h>
+// Create and return the DS3231 sensor object
+MaximDS3231 ds3231(measurementsToAverage);
+```
+
+The only available variables is:  (UUID and customVarCode are optional; UUID must always be listed first.)
+
+```cpp
+// Create the temperature variable object for the DS3231 and return a variable-type pointer to it
+MaximDS3231_Temp(&ds3231, "UUID", "customVarCode");  // Temperature in °C
+//  Resolution is 0.25°C
+//  Accuracy is ±3°C
+//  Range is 0°C to +70°C
+```
+_____
+
+### <a name="MS5803"></a>[Measurement Specialties MS5803](http://www.te.com/usa-en/product-CAT-BLPS0013.html) Digital Pressure Sensor
+
+These sensors come in several different pressure ranges.  The maximum measurable pressure is assumed to be 14bar (the most common model), but this can be changed in the constructor.  Although this sensor has the option of either I2C or SPI communication, this library only supports I2C.  _The I2C sensor address is assumed to be 0x76_, though it can be changed to 0x77 in the constructor if necessary.  The sensor address is determined by how the sensor is soldered onto its breakout board.  To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses.  No more than two can be attached.  These sensors should be attached to a 1.7-3.6V power source and the power supply to the sensor can be stopped between measurements.  NOTE:  These I2C addresses are the same as those available for the Bosch BME280 Barometric Pressure Sensor!  If you are also using one of those sensors, make sure that the address for that sensor does not conflict with the address of this sensor.  
+
+The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex and maximum pressure are optional as is the number of readings to average:
+
+```cpp
+#include <MeaSpecMS5803.h>
+// Create and return the MeaSpec MS5803 sensor object
+MeaSpecMS5803 ms5803(I2CPower, i2cAddressHex, maxPressure, measurementsToAverage);
 ```
 
 The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-AOSongAM2315_Humidity(&am2315, "UUID", "customVarCode");  // Percent relative humidity
-//  Resolution is 0.1 % RH (16 bit)
-//  Accuracy is ± 2 % RH
-//  Range is 0 - 100 % RH
-AOSongAM2315_Temp(&am2315, "UUID", "customVarCode");  // Temperature in °C
-// Resolution is 0.1°C (16 bit)
-// Accuracy is ±0.1°C
-// Range is -40°C to +125°C
+// Create the pressure and temperature variable objects for the MS5803 and return variable-type pointers to them
+Variable *ms5803Press = new MeaSpecMS5803_Pressure(&ms5803, "UUID", "customVarCode");  // pressure in millibar
+// For Pressure (sensor designed for water pressure):
+//   Resolution is 1 / 0.6 / 0.4 / 0.3 / 0.2 mbar (where 1 mbar = 100 pascals)
+//      at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
+//   Accuracy 0 to +40°C is ±20mbar
+//   Accuracy -40°C to +85°C is ±40mbar
+//   Range is 0 to 14 bar
+//   Long term stability is -20 mbar/yr
+Variable *ms5803Temp = new MeaSpecMS5803_Temp(&ms5803, "UUID", "customVarCode");  // temperature in °C
+// For Temperature:
+//   Resolution is <0.01°C
+//   Accuracy is ±0.8°C
+//   Range is -40°C to +85°C
 ```
 _____
 
-### <a name="BME280"></a>[Bosch BME280](https://www.bosch-sensortec.com/bst/products/all_products/bme280) Integrated Environmental Sensor
+### <a name="MPL115A2"></a>[Freescale Semiconductor MPL115A2](https://www.nxp.com/docs/en/data-sheet/MPL115A2.pdf) Miniature I2C Digital Barometer
 
-Although this sensor has the option of either I2C or SPI communication, this library only supports I2C.  The default I2C address varies by manufacturer and is either 0x77 or 0x76. The Adafruit and Sparkfun defaults are both 0x77 and Seeed/Grove default is 0x76, though all can be changed by physical modification of the sensor, if necessary (by cutting the board connection for the manufacturer default and soldering the optional address jumpers).  To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses.  No more than two can be attached (unless you use a multiplexer).  This module is likely to also work with the [Bosch BMP280 Barometric Pressure Sensor](https://www.bosch-sensortec.com/bst/products/all_products/bmp280), though it has not been tested on it.  These sensors should be attached to a 1.7-3.6V power source and the power supply to the sensor can be stopped between measurements.
+The MPL115A2 communicates with the board via I2C.  Because this sensor can have only one I2C address (0x60), it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 2.375-5.5V power source and the power supply to the sensor can be stopped between measurements.
 
-The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex is optional as is the number of readings to average:
+The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average:
 
 ```cpp
-#include <BoschBME280.h>
-BoschBME280 bme280(I2CPower, i2cAddressHex, measurementsToAverage);
+#include <FreescaleMPL115A2.h>
+// Create and return the Freescale MPL115A2 sensor object
+MPL115A2 mpl115a2(I2CPower, measurementsToAverage);
 ```
 
-The four available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
+The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-BoschBME280_Temp(&bme280, "UUID", "customVarCode");  // Temperature in °C
-//  Resolution is 0.01°C
-//  Accuracy is ±0.5°C
-//  Range is -40°C to +85°C
-BoschBME280_Humidity(&bme280, "UUID", "customVarCode");  // Percent relative humidity
-//  Resolution is 0.008 % RH (16 bit)
-//  Accuracy is ± 3 % RH
-//  Range is 0-100 % RH
-BoschBME280_Pressure(&bme280, "UUID", "customVarCode");  // Barometric pressure in pascals
-//  Resolution is 0.18Pa
-//  Absolute Accuracy is ±1hPa
-//  Relative Accuracy is ±0.12hPa
-//  Range is 300 to 1100 hPa
-BoschBME280_Altitude(&bme280, "UUID", "customVarCode");  // Altitude in meters, calculated from barometric pressure
-//  Resolution is 1m
-//  Accuracy depends on geographic location
+// Create the pressure and temperature variable objects for the MPL115A2 and return variable-type pointers to them
+Variable *mpl115a2Press = new MPL115A2_Pressure(&mpl115a2, "UUID", "customVarCode");  // Baraometric pressure in kPa
+//  Resolution is 0.15 kPa
+//  Accuracy is ±1 kPa
+//  Range is 50 to 115 kPa
+Variable *mpl115a2Temp = new MPL115A2_Temp(&mpl115a2, "UUID", "customVarCode");  // Temperature in °C
 ```
 _____
 
-### <a name="DHT"></a>[AOSong DHT](http://www.aosong.com/en/products/index.asp) Digital-Output Relative Humidity & Temperature Sensor
+### <a name="ExtTips"></a>[External I2C Rain Tipping Bucket Counter](https://github.com/EnviroDIY/TippingBucketRainGauge)
+This module is for use with a simple external I2C tipping bucket counter.  This is *NOT* for direct counting of tips using an interrupt on the main processor.  The construction and programming of the tipping bucket counter is documented in the GitHub link above.  It is assumed that the processor of the tip counter takes care of its own power management.
 
-This module will work with an AOSong [DHT11/CHT11](http://www.aosong.com/en/products/details.asp?id=109), DHT21/AM2301, and [DHT22/AM2302/CM2302](http://www.aosong.com/en/products/details.asp?id=117).  These sensors use a single-bus single wire digital signaling protocol.  They can be connected to any digital pin.  Please keep in mind that, per manufacturer instructions, these sensors should not be polled more frequently than once every 2 seconds.  These sensors should be attached to a 3.3-6V power source and the power supply to the sensor can be stopped between measurements.  The communication with these sensors is slow and _interrupts are turned off during communication_.  (See the Adafruit DHT library's DHT.cpp for details.)  Keep this in mind if using this sensor in combination with a rain gauge or other interrupt-driven sensor.  Also note that the temperature sensor built into the AOSong DHT is a Maxim DS18 sensor.
-
-The Arduino pin controlling power on/off, the Arduino pin receiving data, and the sensor type are required for the sensor constructor.  The number of readings to average is optional:
+All constructor arguments are optional, but the first argument is for the I2C address of the tip counter (if not 0x08) and the second is for the depth of rain (in mm) per tip event (if not 0.2mm).  Most metric tipping buckets are calibrated to have 1 tip per 0.2mm of rain.  Most English tipping buckets are calibrated to have 1 tip per 0.01" of rain, which is 0.254mm.  Note that you cannot input a number of measurements to average because averaging does not make sense with this kind of counted variable.
 
 ```cpp
-#include <AOSongDHT.h>
-AOSongDHT dht(DHTPower, DHTPin, dhtType, measurementsToAverage);
+#include <RainCounterI2C.h>
+// Create and return the rain counter sensor object
+RainCounterI2C tip(RainCounterI2CAddress, depthPerTipEvent);
 ```
 
-The three available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
+The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-AOSongDHT_Humidity(&dht, "UUID", "customVarCode");  // Percent relative humidity
-//  Resolution is 0.1 % RH for DHT22 and 1 % RH for DHT11
-//  Accuracy is ± 2 % RH for DHT22 and ± 5 % RH for DHT11
-//  Range is 0 to 100 % RH
-AOSongDHT_Temp(&dht, "UUID", "customVarCode");  // Temperature in °C
-//  Resolution is 0.1°C
-//  Accuracy is ±0.5°C for DHT22 and ± ±2°C for DHT11
-//  Range is -40°C to +80°C
-AOSongDHT_HI(&dht, "UUID", "customVarCode");  // Calculated Heat Index
-//  Resolution is 0.1°C
-//  Accuracy is ±0.5°C for DHT22 and ± ±2°C for DHT11
-//  Range is -40°C to +80°C
+// Create the tips and rain depth variable objects for the rain counter and return variable-type pointers to them
+Variable *rainTips = new RainCounterI2C_Tips(&tip, "UUID", "customVarCode");  // raw count of tips
+Variable *rainDepth = new RainCounterI2C_Depth(&tip, "UUID", "customVarCode");  // rain depth in mm
+// Range, accuracy, and resolution depend on the actual tipping bucket module
 ```
 _____
 
-### <a name="SQ212"></a>[Apogee SQ-212 Quantum Light Sensor](https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/) Photosynthetically Active Radiation (PAR)
-This library will work with the Apogee SQ-212 and SQ-212 analog quantum light sensors, and could be readily adapted to work with similar sensors (e.g. SQ-215 or SQ225) with by simply changing the calibration factors.  These sensors send out a simple analog signal.  To convert that to a high resolution digital signal, the sensor must be attached to a TI ADS1115 ADD converter.  The TI ADS1115 ADD communicates with the main processor via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tying the address pin to ground.  Up to four of these ADD's be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input voltage of 2.0-5.5V, but this library assumes the ADS is powered with 3.3V.  The PAR sensors should be attached to a 5-24V power source and the power supply to the sensor can be stopped between measurements.
+### <a name="keller"></a>[Keller Submersible Water Level Transmitters](http://www.te.com/usa-en/product-CAT-BLPS0013.html) Pressure Sensor
 
-The Arduino pin controlling power on/off and the analog data pin _on the TI ADS1115_ are required for the sensor constructor.  If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the third argument.
+Many Keller pressure and water level sensors can communicate via Modbus RTU over RS485. The functions below should work with any Keller Series 30, Class 5, Group 20 sensor (such as the Keller Acculevel) that are Software version 5.20-12.28 and later (i.e. made after the 2012 in the 28th week). Note that these have only been tested with the Acculevel. More documentation for our implementation of the Keller Modbus communication Protocol commands and responses, along with information about the various variables, can be found in the [EnviroDIY KellerModbus library](https://github.com/EnviroDIY/KellerModbus). Sensors ship with default Slave addresses set to 0x01, but these can be reset. These Keller sensors expect an input voltage of 9-28 VDC, so they also require a voltage booster and an RS485 to TTL Serial converter with logic level shifting from the higher output voltage to the 3.3V or 5V of the Arduino data logging board.
+Digital communication with Keller sensors configured for SDI12 communication protocols are not supported by these functions.
+
+The sensor constructor requires as input: modbus address, the pin controlling sensor power, and a stream instance for data (ie, ```Serial```).  The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.  (Use -1 for the enable pin if your adapter does not have one and you want to average more than one reading.) Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.  AltSoftSerial and HardwareSerial work fine.
 
 ```cpp
-#include <ApogeeSQ212.h>
-ApogeeSQ212 SQ212(SQ212Power, SQ212Data, ADS1x15_i2cAddress, measurementsToAverage);
+#include <KellerAcculevel.h>
+// Create and return the Keller AccuLevel sensor object
+KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, modbusPower, max485EnablePin, acculevelNumberReadings);
 ```
 
-The one available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
+The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-ApogeeSQ212_PAR(&SQ212, "UUID", "customVarCode");  // Photosynthetically Active Radiation (PAR), in units of μmol m-2 s-1, or microeinsteins per square meter per second
-//  Resolution is 0.04 µmol m-2 s-1 (16 bit ADC)
-//  Accuracy is ± 0.5%
-//  Range is 0 to 2500 µmol m-2 s-1
+// Create the pressure, temperature, and water height variable objects for the AccuLevel and return variable-type pointers to them
+Variable *acculevelPress = new KellerAcculevel_Pressure(&acculevel, "UUID", "customVarCode");  // vented & barometric pressure corrected water pressure in millibar
+Variable *acculevelTemp = new KellerAcculevel_Temp(&acculevel, "UUID", "customVarCode");  // water temperature in °C
+Variable *acculevelHeight = new KellerAcculevel_Height(&acculevel, "UUID", "customVarCode");  // water height above the sensor in meters
+
 ```
 _____
 
@@ -843,32 +1046,34 @@ The various sensor and variable constructors are:  (UUID and customVarCode are o
 ```cpp
 // Dissolved Oxygen Sensor
 #include <YosemitechY504.h>  // Use this for both the Y502-A and Y504-A
+// Create and return the Y504 DO sensor object
 YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
-// Variables
-YosemitechY504_DOpct(&y504, "UUID", "customVarCode")  // DO percent saturation
+// Create the dissolved oxygen percent, dissolved oxygen concentration, and temperature variable objects for the Y504 and return variable-type pointers to them
+Variable *y504DOpct = new YosemitechY504_DOpct(&y504, "UUID", "customVarCode");  // DO percent saturation
 //  Resolution is 0.00000005 %
 //  Accuracy is ± 1 %
 //  Range is 0-200% Saturation
-YosemitechY504_Temp(&y504, "UUID", "customVarCode")  // Temperature in °C
-//  Resolution is 0.1 °C
-//  Accuracy is ± 0.2°C
-//  Range is 0°C to + 50°C
-YosemitechY504_DOmgL(&y504, "UUID", "customVarCode")  // DO concentration in mg/L, calculated from percent saturation
+Variable *y504DOmgL = new YosemitechY504_DOmgL(&y504, "UUID", "customVarCode");  // DO concentration in mg/L, calculated from percent saturation
 //  Resolution is 0.000000005 mg/L
 //  Accuracy is 1%
 //  Range is 0-20mg/L or 0-200% Air Saturation
+Variable *y504Temp = new YosemitechY504_Temp(&y504, "UUID", "customVarCode");  // Temperature in °C
+//  Resolution is 0.1 °C
+//  Accuracy is ± 0.2°C
+//  Range is 0°C to + 50°C
 ```
 
 ```cpp
 // Turbidity Sensor without wiper
-#include <YosemitechY510.h>  // Use this for both the Y510-B
+#include <YosemitechY510.h>  // Use this for the Y510-B
+// Create and return the Y510-B turbidity sensor object
 YosemitechY510 y510(y510modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
-// Variables
-YosemitechY510_Turbidity(&y510, "UUID", "customVarCode")  // Turbidity in NTU
+// Create the turbidity and temperature variable objects for the Y510 and return variable-type pointers to them
+Variable *y510Turb = new YosemitechY510_Turbidity(&y510, "UUID", "customVarCode");  // Turbidity in NTU
 //  Resolution is 0.0000002 NTU
 //  Accuracy is ± 5 % or 0.3 NTU
 //  Range is 0.1 to 1000 NTU
-YosemitechY510_Temp(&y510, "UUID", "customVarCode")  // Temperature in °C
+Variable *y510Temp = new YosemitechY510_Temp(&y510, "UUID", "customVarCode");  // Temperature in °C
 //  Resolution is 0.1 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
@@ -876,14 +1081,15 @@ YosemitechY510_Temp(&y510, "UUID", "customVarCode")  // Temperature in °C
 
 ```cpp
 // Turbidity Sensor with wiper
-#include <YosemitechY511.h>  // Use this for both the Y511-A
+#include <YosemitechY511.h>  // Use this for the Y511-A
+// Create and return the Y511-A turbidity sensor object
 YosemitechY511 y511(y511modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
-// Variables
-YosemitechY511_Turbidity(&y511, "UUID", "customVarCode")  // Turbidity in NTU
+// Create the turbidity and temperature variable objects for the Y511 and return variable-type pointers to them
+Variable *y511Turb = new YosemitechY511_Turbidity(&y511, "UUID", "customVarCode");  // Turbidity in NTU
 //  Resolution is 0.0000002 NTU
 //  Accuracy is ± 5 % or 0.3 NTU
 //  Range is 0.1 to 1000 NTU
-YosemitechY511_Temp(&y511, "UUID", "customVarCode")  // Temperature in °C
+Variable *y511Temp = new YosemitechY511_Temp(&y511, "UUID", "customVarCode");  // Temperature in °C
 //  Resolution is 0.1 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
@@ -892,13 +1098,14 @@ YosemitechY511_Temp(&y511, "UUID", "customVarCode")  // Temperature in °C
 ```cpp
 // Chlorophyll Sensor
 #include <YosemitechY514.h>
+// Create and return the Y514 chlorophyll sensor object
 YosemitechY514 y514(y514modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
-// Variables
-YosemitechY514_Chlorophyll(&y514, "UUID", "customVarCode")  // Chlorophyll concentration in µg/L
+// Create the chlorophyll concentration and temperature variable objects for the Y514 and return variable-type pointers to them
+Variable *y514Chloro = new YosemitechY514_Chlorophyll(&y514, "UUID", "customVarCode");  // Chlorophyll concentration in µg/L
 //  Resolution is 0.1 µg/L / 0.1 RFU
 //  Accuracy is ± 1 %
 //  Range is 0 to 400 µg/L or 0 to 100 RFU
-YosemitechY514_Temp(&y514, "UUID", "customVarCode")  // Temperature in °C
+Variable *y514Temp = new YosemitechY514_Temp(&y514, "UUID", "customVarCode");  // Temperature in °C
 //  Resolution is 0.1 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
@@ -907,13 +1114,14 @@ YosemitechY514_Temp(&y514, "UUID", "customVarCode")  // Temperature in °C
 ```cpp
 // Conductivity Sensor
 #include <YosemitechY520.h>
+// Create and return the Y520 conductivity sensor object
 YosemitechY520 y520(y520modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
-// Variables
-YosemitechY520_Cond(&y520, "UUID", "customVarCode")  // Conductivity in µS/cm
+// Create the specific conductance and temperature variable objects for the Y520 and return variable-type pointers to them
+Variable *y520Cond = new YosemitechY520_Cond(&y520, "UUID", "customVarCode");  // Conductivity in µS/cm
 //  Resolution is 0.1 µS/cm
 //  Accuracy is ± 1 % Full Scale
 //  Range is 1 µS/cm to 200 mS/cm
-YosemitechY520_Temp(&y520, "UUID", "customVarCode")  // Temperature in °C
+Variable *y520Temp = new YosemitechY520_Temp(&y520, "UUID", "customVarCode");  // Temperature in °C
 //  Resolution is 0.1 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
@@ -922,94 +1130,98 @@ YosemitechY520_Temp(&y520, "UUID", "customVarCode")  // Temperature in °C
 ```cpp
 // pH Sensor
 #include <YosemitechY532.h>
+// Create and return the Y532 pH sensor object
 YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
-// Variables
-YosemitechY532_pH(&y532, "UUID", "customVarCode")  // pH
+// Create the pH, voltage, and temperature variable objects for the Y532 and return variable-type pointers to them
+Variable *y532pH = new YosemitechY532_pH(&y532, "UUID", "customVarCode");  // pH
 //  Resolution is 0.01 pH units
 //  Accuracy is ± 0.1 pH units
 //  Range is 2 to 12 pH units
-YosemitechY532_Temp(&y532, "UUID", "customVarCode")  // Temperature in °C
-//  Resolution is 0.1 °C
-//  Accuracy is ± 0.2°C
-//  Range is 0°C to + 50°C
-YosemitechY532_Voltage(&y532, "UUID", "customVarCode")  // Electrode electrical potential in mV
+Variable *y532Volt = new YosemitechY532_Voltage(&y532, "UUID", "customVarCode");  // Electrode electrical potential in mV
 // Resolution is 1 mV
 // Accuracy is ± 20 mV
 // Range is -999 ~ 999 mV
+Variable *y532Temp = new YosemitechY532_Temp(&y532, "UUID", "customVarCode");  // Temperature in °C
+//  Resolution is 0.1 °C
+//  Accuracy is ± 0.2°C
+//  Range is 0°C to + 50°C
 ```
 
 ```cpp
 // ORP Sensor
 #include <YosemitechY533.h>
+// Create and return the Y533 ORP sensor object
 YosemitechY533 y533(y533modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
-// Variables
-YosemitechY533_pH(&y533, "UUID", "customVarCode")  // pH
+// Create the pH, voltage, and temperature variable objects for the Y533 and return variable-type pointers to them
+Variable *y533pH = new YosemitechY533_pH(&y533, "UUID", "customVarCode");  // pH
 //  Resolution is 0.01 pH units
 //  Accuracy is ± 0.1 pH units
 //  Range is 2 to 12 pH units
-YosemitechY533_Temp(&y533, "UUID", "customVarCode")  // Temperature in °C
-//  Resolution is 0.1 °C
-//  Accuracy is ± 0.2°C
-//  Range is 0°C to + 50°C
-YosemitechY533_Voltage(&y533, "UUID", "customVarCode")  // Electrode electrical potential in mV
+Variable *y533Volt = new YosemitechY533_Voltage(&y533, "UUID", "customVarCode");  // Electrode electrical potential in mV
 // Resolution is 1 mV
 // Accuracy is ± 20 mV
 // Range is -999 ~ 999 mV
+Variable *y533Temp = new YosemitechY533_Temp(&y533, "UUID", "customVarCode");  // Temperature in °C
+//  Resolution is 0.1 °C
+//  Accuracy is ± 0.2°C
+//  Range is 0°C to + 50°C
 ```
 
 ```cpp
 // COD/UV254 Sensor
 #include <YosemitechY550.h>
+// Create and return the Y5550 COD/UV254 sensor object
 YosemitechY550 y550(y550modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
-// Variables
-YosemitechY550_COD(&y550, "UUID", "customVarCode")  // COD in mg/L equiv. KHP
+// Create the COD, turbidity, and temperature variable objects for the Y550 and return variable-type pointers to them
+Variable *y550COD = new YosemitechY550_COD(&y550, "UUID", "customVarCode");  // COD in mg/L equiv. KHP
 //  Resolution is 0.01 mg/L COD
 //  Accuracy is ??
 //  Range is 0.75 to 370 mg/L COD (equiv. KHP) 0.2 - 150 mg/L TOC (equiv. KHP)
-YosemitechY550_Temp(&y550, "UUID", "customVarCode")  // Temperature in °C
-//  Resolution is 0.00000001 °C
-//  Accuracy is ± 0.2°C
-//  Range is 5°C to + 45°C
-YosemitechY550_Turbidity(&y550, "UUID", "customVarCode")  // Turbidity in NTU
+Variable *y550Turb = new YosemitechY550_Turbidity(&y550, "UUID", "customVarCode");  // Turbidity in NTU
 //  Resolution is 0.0000002 NTU
 //  Accuracy is ± 5 % or 0.3 NTU
 //  Range is 0.1 to 1000 NTU
+Variable *y550Temp = new YosemitechY550_Temp(&y550, "UUID", "customVarCode");  // Temperature in °C
+//  Resolution is 0.00000001 °C
+//  Accuracy is ± 0.2°C
+//  Range is 5°C to + 45°C
 ```
 
 ```cpp
 // Multiparameter Sonde
 #include <YosemitechY4000.h>
+// Create and return the Y4000 multiparameter sonde sensor object
 YosemitechY4000 y4000(YosemitechY4000, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
-// Variables
-YosemitechY4000_DOmgL(&y4000, "UUID", "customVarCode")  // DO concentration in mg/L, calculated from percent saturation
+// Create all of the variable objects for the Y4000 and return variable-type pointers to them
+Variable *y4000DOmgl = new YosemitechY4000_DOmgL(&y4000, "UUID", "customVarCode");  // DO concentration in mg/L, calculated from percent saturation
 //  Resolution is 0.01 mg/L
 //  Accuracy is ± 0.3 mg/L
 //  Range is 0-20mg/L or 0-200% Air Saturation
-YosemitechY4000_Turbidity(&y4000, "UUID", "customVarCode")  // Turbidity in NTU
+Variable *y4000Turb = new YosemitechY4000_Turbidity(&y4000, "UUID", "customVarCode");  // Turbidity in NTU
 //  Resolution is 0.0000002 NTU
 //  Accuracy is ± 5 % or 0.3 NTU
 //  Range is 0.1 to 1000 NTU
-YosemitechY4000_Cond(&y4000, "UUID", "customVarCode")  // Conductivity in µS/cm
+Variable *y4000Cond = new YosemitechY4000_Cond(&y4000, "UUID", "customVarCode");  // Conductivity in µS/cm
 //  Resolution is 0.1 µS/cm
 //  Accuracy is ± 1 % Full Scale
 //  Range is 1 µS/cm to 200 mS/cm
-YosemitechY4000_pH(&y4000, "UUID", "customVarCode")  // pH
+Variable *y4000pH = new YosemitechY4000_pH(&y4000, "UUID", "customVarCode");  // pH
 //  Resolution is 0.01 pH units
 //  Accuracy is ± 0.1 pH units
 //  Range is 2 to 12 pH units
-YosemitechY4000_Temp(&y4000, "UUID", "customVarCode")  // Temperature in °C
+Variable *y4000Temp = new YosemitechY4000_Temp(&y4000, "UUID", "customVarCode");  // Temperature in °C
 //  Resolution is 0.1 °C
 //  Accuracy is ± 0.2°C
 //  Range is 0°C to + 50°C
-YosemitechY4000_ORP(&y4000, "UUID", "customVarCode")  // Electrode electrical potential in mV
+Variable *y4000ORP = new YosemitechY4000_ORP(&y4000, "UUID", "customVarCode");  // Electrode electrical potential in mV
 // Resolution is 1 mV
 // Accuracy is ± 20 mV
 // Range is -999 ~ 999 mV
-YosemitechY4000_Chlorophyll(&y4000, "UUID", "customVarCode")  // Chlorophyll concentration in µg/L
+Variable *y4000Chloro = new YosemitechY4000_Chlorophyll(&y4000, "UUID", "customVarCode");  // Chlorophyll concentration in µg/L
 //  Resolution is 0.1 µg/L / 0.1 RFU
 //  Accuracy is ± 1 %
 //  Range is 0 to 400 µg/L or 0 to 100 RFU
-YosemitechY4000_BGA(&y4000, "UUID", "customVarCode")  // blue-green algae concentration in µg/L
+Variable *y4000BGA = new YosemitechY4000_BGA(&y4000, "UUID", "customVarCode");  // blue-green algae concentration in µg/L
 //  Resolution is 0.01 µg/L / 0.01 RFU
 //  Accuracy is ±  0.04ug/L PC
 //  Range is 0 to 100 µg/L or 0 to 100 RFU
@@ -1028,157 +1240,21 @@ The main constructor for the sensor object is:
 
 ```cpp
 #include <ZebraTechDOpto.h>
+// Create and return the Zebra-Tech D-Optop sensor object
 ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data, measurementsToAverage);
 ```
 
 The three available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-ZebraTechDOpto_Temp(&ctd, "UUID", "customVarCode");  // Temperature in °C
+// Create the dissolved oxygen percent, dissolved oxygen concentration, and temperature variable objects for the Y504 and return variable-type pointers to them
+Variable *doptoTemp = new ZebraTechDOpto_Temp(&ctd, "UUID", "customVarCode");  // Temperature in °C
 //  Resolution is 0.01°C
 //  Accuracy is ± 0.1°C
-ZebraTechDOpto_DOpct(&ctd, "UUID", "customVarCode");  // Dissolved oxygen percent saturation
-ZebraTechDOpto_DOmgL(&ctd, "UUID", "customVarCode");  // Dissolved oxygen concentration in ppm (mg/L)
+Variable *doptoDOpct = new ZebraTechDOpto_DOpct(&ctd, "UUID", "customVarCode");  // Dissolved oxygen percent saturation
+Variable *doptoDOmgl = new ZebraTechDOpto_DOmgL(&ctd, "UUID", "customVarCode");  // Dissolved oxygen concentration in ppm (mg/L)
 //  Resolution is 0.01% / 0.001 PPM
 //  Accuracy is 1% of reading or 0.02PPM, whichever is greater
-```
-_____
-
-### <a name="ExtVolt"></a>External Voltage, via [TI ADS1115](http://www.ti.com/product/ADS1115)
-The TI ADS1115 ADD is a high resolution ADS that communicates with the board via I2C.  In the majority of break-out boards, and on the Mayfly, the I2C address of the ADS1x15 is set as 0x48 by tying the address pin to ground.  Up to four of these ADD's be used by changing the address value by changing the connection of the address pin on the ADS1x15.  The ADS1x15 requires an input voltage of 2.0-5.5V, but this library assumes the ADS is powered with 3.3V.  For measuring raw external voltages, this library also allows you to give a gain factor/multiplier to account for use of a voltage divider, such as the [Seeed Grove Voltage Divider](http://wiki.seeedstudio.com/Grove-Voltage_Divider/).
-
-The Arduino pin controlling power on/off and the analog data pin _on the TI ADS1115_ are required for the sensor constructor.  If using a voltage divider to increase the measurable voltage range, enter the gain multiplier as the third argument.  If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the fourth argument.  The number of measurements to average, if more than one is desired, goes as the fifth argument.
-
-```cpp
-#include <ExternalVoltage.h>
-ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, ADS1x15_i2cAddress, measurementsToAverage);
-```
-
-The one available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
-
-```cpp
-ExternalVoltage_Volt(&extvolt, "UUID", "customVarCode");  // raw voltage in volts
-// Range:
-//   without voltage divider:  0 - 3.6V
-//   1/gain = 3x: 0.3 ~ 12.9v
-//   1/gain = 10x: 1 ~ 43v
-// Accuracy is < ± 1%
-// Resolution: 16-bit ADC:
-//   without voltage divider:  0.05mV
-//   1/gain = 3x: 0.2mV
-//   1/gain = 10x: 0.65 mV
-```
-_____
-
-### <a name="ExtTips"></a>[External I2C Rain Tipping Bucket Counter](https://github.com/EnviroDIY/TippingBucketRainGauge)
-This module is for use with a simple external I2C tipping bucket counter.  This is *NOT* for direct counting of tips using an interrupt on the main processor.  The construction and programming of the tipping bucket counter is documented in the GitHub link above.  It is assumed that the processor of the tip counter takes care of its own power management.
-
-All constructor arguments are optional, but the first argument is for the I2C address of the tip counter (if not 0x08) and the second is for the depth of rain (in mm) per tip event (if not 0.2mm).  Most metric tipping buckets are calibrated to have 1 tip per 0.2mm of rain.  Most English tipping buckets are calibrated to have 1 tip per 0.01" of rain, which is 0.254mm.  Note that you cannot input a number of measurements to average because averaging does not make sense with this kind of counted variable.
-
-```cpp
-#include <RainCounterI2C.h>
-RainCounterI2C tip(RainCounterI2CAddress, depthPerTipEvent);
-```
-
-The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
-
-```cpp
-RainCounterI2C_Tips(&tip, "UUID", "customVarCode");  // raw count of tips
-RainCounterI2C_Depth(&tip, "UUID", "customVarCode");  // rain depth in mm
-// Range, accuracy, and resolution depend on the actual tipping bucket module
-```
-_____
-
-### <a name="MS5803"></a>[Measurement Specialties MS5803](http://www.te.com/usa-en/product-CAT-BLPS0013.html) Digital Pressure Sensor
-
-These sensors come in several different pressure ranges.  The maximum measurable pressure is assumed to be 14bar (the most common model), but this can be changed in the constructor.  Although this sensor has the option of either I2C or SPI communication, this library only supports I2C.  _The I2C sensor address is assumed to be 0x76_, though it can be changed to 0x77 in the constructor if necessary.  The sensor address is determined by how the sensor is soldered onto its breakout board.  To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses.  No more than two can be attached.  These sensors should be attached to a 1.7-3.6V power source and the power supply to the sensor can be stopped between measurements.  NOTE:  These I2C addresses are the same as those available for the Bosch BME280 Barometric Pressure Sensor!  If you are also using one of those sensors, make sure that the address for that sensor does not conflict with the address of this sensor.  
-
-The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex and maximum pressure are optional as is the number of readings to average:
-
-```cpp
-#include <MeaSpecMS5803.h>
-MeaSpecMS5803 ms5803(I2CPower, i2cAddressHex, maxPressure, measurementsToAverage);
-```
-
-The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
-
-```cpp
-MeaSpecMS5803_Pressure(&ms5803, "UUID", "customVarCode");  // pressure in millibar
-// For Pressure (sensor designed for water pressure):
-//   Resolution is 1 / 0.6 / 0.4 / 0.3 / 0.2 mbar (where 1 mbar = 100 pascals)
-//      at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
-//   Accuracy 0 to +40°C is ±20mbar
-//   Accuracy -40°C to +85°C is ±40mbar
-//   Range is 0 to 14 bar
-//   Long term stability is -20 mbar/yr
-MeaSpecMS5803_Temp(&ms5803, "UUID", "customVarCode");  // temperature in °C
-// For Temperature:
-//   Resolution is <0.01°C
-//   Accuracy is ±0.8°C
-//   Range is -40°C to +85°C
-```
-_____
-
-### <a name="keller"></a>[Keller Submersible Water Level Transmitters](http://www.te.com/usa-en/product-CAT-BLPS0013.html) Pressure Sensor
-
-Many Keller pressure and water level sensors can communicate via Modbus RTU over RS485. The functions below should work with any Keller Series 30, Class 5, Group 20 sensor (such as the Keller Acculevel) that are Software version 5.20-12.28 and later (i.e. made after the 2012 in the 28th week). Note that these have only been tested with the Acculevel. More documentation for our implementation of the Keller Modbus communication Protocol commands and responses, along with information about the various variables, can be found in the [EnviroDIY KellerModbus library](https://github.com/EnviroDIY/KellerModbus). Sensors ship with default Slave addresses set to 0x01, but these can be reset. These Keller sensors expect an input voltage of 9-28 VDC, so they also require a voltage booster and an RS485 to TTL Serial converter with logic level shifting from the higher output voltage to the 3.3V or 5V of the Arduino data logging board.
-Digital communication with Keller sensors configured for SDI12 communication protocols are not supported by these functions.
-
-The sensor constructor requires as input: modbus address, the pin controlling sensor power, a stream instance for data (ie, ```Serial```), the Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter, and the number of readings to average.  (Use -1 for the enable pin if your adapter does not have one.) Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.  AltSoftSerial and HardwareSerial work fine.
-
-```cpp
-#include <KellerAcculevel.h>
-KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, modbusPower, max485EnablePin, acculevelNumberReadings);
-```
-
-The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
-
-```cpp
-new KellerAcculevel_Pressure(&acculevel, "UUID", "customVarCode");
-new KellerAcculevel_Temp(&acculevel, "UUID", "customVarCode");
-new KellerAcculevel_Height(&acculevel, "UUID", "customVarCode");
-
-```
-_____### <a name="MPL115A2"></a>[Freescale Semiconductor MPL115A2](https://www.nxp.com/docs/en/data-sheet/MPL115A2.pdf) Miniature I2C Digital Barometer
-
-The MPL115A2 communicates with the board via I2C.  Because this sensor can have only one I2C address (0x60), it is only possible to connect one of these sensors to your system.  This sensor should be attached to a 2.375-5.5V power source and the power supply to the sensor can be stopped between measurements.
-
-The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average:
-
-```cpp
-#include <FreescaleMPL115A2.h>
-MPL115A2 mpl115a2(I2CPower, measurementsToAverage);
-```
-
-The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
-
-```cpp
-MPL115A2_Pressure(&mpl115a2, "UUID", "customVarCode");  // Baraometric pressure in kPa
-//  Resolution is 0.15 kPa
-//  Accuracy is ±1 kPa
-//  Range is 50 to 115 kPa
-MPL115A2_Temp(&mpl115a2, "UUID", "customVarCode");  // Temperature in °C
-```
-_____
-
-### <a name="DS3231"></a>Maxim DS3231 Real Time Clock
-
-As the I2C [Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html) real time clock (RTC) is absolutely required for time-keeping on all AVR boards, this library also makes use of it for its on-board temperature sensor.  The DS3231 requires a 3.3V power supply.
-
-The only argument for the constructor is the number of readings to average, as the RTC requires constant power and is connected via I2C:
-
-```cpp
-#include <OnboardSensors.h>
-MaximDS3231 ds3231(measurementsToAverage);
-```
-
-The only available variables is:  (UUID and customVarCode are optional; UUID must always be listed first.)
-
-```cpp
-MaximDS3231_Temp(&ds3231, "UUID", "customVarCode");  // Temperature in °C
-//  Resolution is 0.25°C
-//  Accuracy is ±3°C
-//  Range is 0°C to +70°C
 ```
 _____
 
@@ -1189,17 +1265,19 @@ The processor can return the amount of RAM it has available and, for some boards
 The main constructor for the sensor object is:
 
 ```cpp
-#include <OnboardSensors.h>
+#include <ProcessorStats.h>
+// Create and return the processor "sensor"
 ProcessorStats mayfly(MFVersion, measurementsToAverage);
 ```
 
 The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
 
 ```cpp
-ProcessorStats_Batt(&mayfly, "UUID", "customVarCode");  // Current battery voltage in volts
+// Create the battery voltage and free RAM variable objects for the Y504 and return variable-type pointers to them
+Variable *mayflyBatt = new ProcessorStats_Batt(&mayfly, "UUID", "customVarCode");  // Current battery voltage in volts
 //  Resolution is 0.005V (10 bit ADC)
 //  Range is 0 to 5 V
-ProcessorStats_FreeRam(&mayfly, "UUID", "customVarCode");  // Amount of free RAM in bits
+Variable *mayflyRAM = new ProcessorStats_FreeRam(&mayfly, "UUID", "customVarCode");  // Amount of free RAM in bits
 //  Resolution is 1 bit
 //  Accuracy is 1 bit
 //  Range is 0 to full RAM available on processor
