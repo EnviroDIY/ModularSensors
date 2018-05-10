@@ -244,9 +244,9 @@ int LoggerEnviroDIY::postDataEnviroDIY(String enviroDIYjson)
 void LoggerEnviroDIY::testingMode()
 {
     // Flag to notify that we're in testing mode
-    Logger::_isTestingNow = true;
-    // Unset the _startTesting flag
-    Logger::_startTesting = false;
+    Logger::isTestingNow = true;
+    // Unset the startTesting flag
+    Logger::startTesting = false;
 
     PRINTOUT(F("------------------------------------------\n"));
     PRINTOUT(F("Entering sensor testing mode\n"));
@@ -308,7 +308,7 @@ void LoggerEnviroDIY::testingMode()
     }
 
     // Unset testing mode flag
-    Logger::_isTestingNow = false;
+    Logger::isTestingNow = false;
 }
 
 
@@ -337,7 +337,7 @@ void LoggerEnviroDIY::begin(void)
         _logModem->powerUp();
         _logModem->wake();
         // Connect to the network
-        if (_logModem->connectInternet())
+        if (_logModem->connectInternet(120000L))
         {
             syncRTClock(_logModem->getNISTTime());
             // Disconnect from the network
@@ -374,7 +374,7 @@ void LoggerEnviroDIY::log(void)
     if (checkInterval())
     {
         // Flag to notify that we're in already awake and logging a point
-        Logger::_isLoggingNow = true;
+        Logger::isLoggingNow = true;
 
         // Print a line to show new reading
         PRINTOUT(F("------------------------------------------\n"));
@@ -434,11 +434,11 @@ void LoggerEnviroDIY::log(void)
         PRINTOUT(F("------------------------------------------\n\n"));
 
         // Unset flag
-        Logger::_isLoggingNow = false;
+        Logger::isLoggingNow = false;
     }
 
     // Check if it was instead the testing interrupt that woke us up
-    if (Logger::_startTesting) testingMode();
+    if (Logger::startTesting) testingMode();
 
     // Sleep
     if(_sleep){systemSleep();}

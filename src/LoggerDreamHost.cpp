@@ -173,7 +173,7 @@ void LoggerDreamHost::log(void)
     if (checkInterval())
     {
         // Flag to notify that we're in already awake and logging a point
-        Logger::_isLoggingNow = true;
+        Logger::isLoggingNow = true;
 
         // Print a line to show new reading
         PRINTOUT(F("------------------------------------------\n"));
@@ -239,11 +239,11 @@ void LoggerDreamHost::log(void)
         PRINTOUT(F("------------------------------------------\n\n"));
 
         // Unset flag
-        Logger::_isLoggingNow = false;
+        Logger::isLoggingNow = false;
     }
 
     // Check if it was instead the testing interrupt that woke us up
-    if (Logger::_startTesting) testingMode();
+    if (Logger::startTesting) testingMode();
 
     // Sleep
     if(_sleep){systemSleep();}
