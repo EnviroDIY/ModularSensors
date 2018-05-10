@@ -230,7 +230,8 @@ Variable *variableList_toGo[] = {
     y504Temp,
     y511Turb,
     y514Chloro,
-    y520Cond
+    y520Cond,
+    modemRSSI
 };
 int variableCount_toGo = sizeof(variableList_toGo) / sizeof(variableList_toGo[0]);
 
