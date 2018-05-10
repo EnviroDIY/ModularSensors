@@ -34,7 +34,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Basic Logger Settings
 // ==========================================================================
 // The name of this file
-const char *sketchName = "logging_to_EnviroDIY.ino";
+const char *sketchName = "barometric_correction.ino";
 
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "XXXXX";
@@ -51,7 +51,7 @@ LoggerEnviroDIY EnviroDIYLogger;
 // ==========================================================================
 #include <ProcessorStats.h>
 
-const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
 const int8_t greenLED = 8;  // Pin for the green LED (-1 if unconnected)
 const int8_t redLED = 9;  // Pin for the red LED (-1 if unconnected)
 const int8_t buttonPin = 21;  // Pin for a button to use to enter debugging mode (-1 if unconnected)
@@ -61,7 +61,7 @@ const int8_t wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
 const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
 
 // Create the processor "sensor"
-const char *MFVersion = "v0.5";
+const char *MFVersion = "v0.4";
 ProcessorStats mayfly(MFVersion) ;
 
 
@@ -93,7 +93,7 @@ ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sl
 // Use "modem_sleep_reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
 // Use "modem_always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
 #if defined(TINY_GSM_MODEM_ESP8266)
-const long ModemBaud = 9600;  // Default for ESP8266 is 115200, but the Mayfly itself stutters above 57600
+const long ModemBaud = 57600;  // Default for ESP8266 is 115200, but the Mayfly itself stutters above 57600
 #elif defined(TINY_GSM_MODEM_SIM800)
 const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble making it fast (19200 works)
 #elif defined(TINY_GSM_MODEM_XBEE)
@@ -180,7 +180,7 @@ Variable *variableList[] = {
     bAlt,
     msTemp,
     msPress,
-    new MaximDS18_Temp(&ds18_u),
+    new MaximDS18_Temp(&ds18_u, "12345678-abcd-1234-efgh-1234567890ab"),
     new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
     new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -348,11 +348,18 @@ void setup()
     // Setup the logger sleep mode
     EnviroDIYLogger.setupSleep();
 
+    // Hold up for 10-seconds to allow immediate entry into sensor testing mode
+    // EnviroDIYLogger.checkForTestingMode(buttonPin);
+
+    //  Set up an interrupt on a pin to enter sensor testing mode at any time
+    pinMode(buttonPin, INPUT_PULLUP);
+    enableInterrupt(buttonPin, Logger::testingISR, CHANGE);
+    Serial.print(F("Push button on pin "));
+    Serial.print(buttonPin);
+    Serial.println(F(" at any time to enter sensor testing mode."));
+
     Serial.print(F("Logger setup finished!\n"));
     Serial.print(F("------------------------------------------\n\n"));
-
-    // Check for sensor testing mode
-    EnviroDIYLogger.checkForTestingMode(buttonPin);
 
     // Blink the LEDs really fast to show start-up is done
     greenredflash(6, 25);
@@ -433,7 +440,7 @@ void loop()
         jsonToGo += F(", \"");
         jsonToGo += String(waterDepthUUID);
         jsonToGo += F("\": ");
-        // add the water pressure value
+        // add the water depth value
         jsonToGo += String(waterDepth);
         // re-add the last '}'
         jsonToGo += F(" }");
@@ -459,6 +466,9 @@ void loop()
         // Print a line to show reading ended
         Serial.print(F("------------------------------------------\n\n"));
     }
+
+    // Check if it was instead the testing interrupt that woke us up
+    if (Logger::startTesting) EnviroDIYLogger.testingMode();
 
     // Sleep
     EnviroDIYLogger.systemSleep();
