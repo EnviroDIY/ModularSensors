@@ -227,8 +227,8 @@ ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, Volt_ADS1115Address, Volt
 // ==========================================================================
 #include <MaxBotixSonar.h>
 const int8_t SonarPower = -1;  // Excite (power) pin (-1 if unconnected)
-const int8_t Sonar1Trigger = 18;  // Trigger pin (-1 if unconnected)
-const int8_t Sonar2Trigger = 19;  // Trigger pin (-1 if unconnected)
+const int8_t Sonar1Trigger = 18;  // Trigger pin (a negative number if unconnected)
+const int8_t Sonar2Trigger = 19;  // Trigger pin (a negative number if unconnected)
 
 // Set up a 'new' UART for receiving sonar data - in this case, using SERCOM2
 // In this case, the Rx will be on digital pin 5, which is SERCOM2's Rx Pad #3

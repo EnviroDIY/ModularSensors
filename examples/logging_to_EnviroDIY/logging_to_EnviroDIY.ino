@@ -225,8 +225,8 @@ ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, Volt_ADS1115Address, Volt
 // ==========================================================================
 #include <MaxBotixSonar.h>
 const int8_t SonarPower = 22;  // Excite (power) pin (-1 if unconnected)
-const int8_t Sonar1Trigger = A1;  // Trigger pin (-1 if unconnected)
-const int8_t Sonar2Trigger = A2;  // Trigger pin (-1 if unconnected)
+const int8_t Sonar1Trigger = A1;  // Trigger pin (a negative number if unconnected)
+const int8_t Sonar2Trigger = A2;  // Trigger pin (a negative number if unconnected)
 
 // Set up a serial port for receiving sonar data - in this case, using software serial
 // Because the standard software serial library uses interrupts that conflict
