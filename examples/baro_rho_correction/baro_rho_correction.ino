@@ -388,6 +388,9 @@ void setup()
 // ==========================================================================
 // Main loop function
 // ==========================================================================
+
+// Because of the way the sleep mode is set up, the processor will wake up
+// and start the loop every minute exactly on the minute.
 void loop()
 {
     // Assuming we were woken up by the clock, check if the current time is an
