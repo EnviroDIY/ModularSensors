@@ -3,13 +3,13 @@
 These example programs demonstrate how to  use the modular sensors library.
 
 To adjust any of these to work with your own sensor arrangements:
-1. Set your real time clock to the correct UTC time.
+1. Set your real time clock to the correct _UTC_ time.
 2. Select the sketch that most closely matches what you intend to do.
 3. If applicable, select the correct "modem" that you will use to connect your logger to the internet.
 4. Fill out your SKETCH_NAME, LoggerID, LOGGING_INTERVAL, and TIME_ZONE.
-5. Remove the chunks of code from the top of the program that apply to extranous sensors.
+5. Remove the chunks of code that apply to extraneous sensors.
 6. Duplicate the sensor specific chunks of code for any sensors you have more than one of.
-7. Correct all of the sensor power and data pins and sensor addresses to match your actual sensors and logger board attachment points.
+7. Correct all of the pin numbers, stream id's, and sensor addresses to match your actual sensors and logger board attachment points.
 8. Delete or add lines from the variableList[] to match your true arrangement.
 9. If logging data to EnviroDIY, register your site and sensors at http://data.envirodiy.org/.
 10. After registering your site and sensors, copy the UUID's and tokens from your site into the correct places in the example.

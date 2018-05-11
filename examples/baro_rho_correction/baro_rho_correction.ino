@@ -340,7 +340,7 @@ void setup()
     // whole generateFileHeader function, which is already a long annoying
     // string concatenation function) so instead we're just creating another set
     // of header rows for the csv with no values in the first spaces where
-    // header values existand then starting the new header information shifted
+    // header values exist and then starting the new header information shifted
     // over by that many columns/commas
     String extraHeaderSpacer = "";
     for (uint8_t i=0; i <= variableCount; i++) extraHeaderSpacer += ',';
@@ -513,6 +513,9 @@ void loop()
     }
 
     // Check if it was instead the testing interrupt that woke us up
+    // NOTE:  This testing mode will *NOT* show the values from any of the extra
+    // calculated variables added in the loop.  It will only show the variables
+    // listed in the variableList which is fed to the EnviroDIYLogger.
     if (Logger::startTesting) EnviroDIYLogger.testingMode();
 
     // Sleep

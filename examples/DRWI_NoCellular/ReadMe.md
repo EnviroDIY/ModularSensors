@@ -1,16 +1,27 @@
 # Examples using the Modular Sensors Library for DRWI sites with no Cellular Service
 
-This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.  This example should be used in cases where no cellular service of any kind is available and the data will only be logged on the SD card.  Before programming your board with this example, you must make the following customizations:
+This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.  This example should be used in cases where no cellular service of any kind is available and the data will only be logged on the SD card.
+
+____
+
+### Customizing this example sketch:
 
 
-Set the logger ID - change the "XXXX" in this section of code to the loggerID assigned by Stroud:
+#### Set the logger ID
+
+- Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
 
 ```cpp
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "XXXX";
 ```
 
-Set the calibration coefficients for the Campbell OBS3+ - The OBS3+ ships with a calibration certificate.  Change _**all**_ of the the ```xxxxE+xx``` values in this section of code to the values on that calibration sheet.  You should use the side of the calibration sheet that shows the calibration in _**volts**_.  The sketch will not compile if these values are not entered properly.  Do not change any values except those that are ```xxxxE+xx```!
+#### Set the calibration coefficients for the Campbell OBS3+
+
+ - The OBS3+ ships with a calibration certificate; you need this sheet!
+ - Change _**all**_ of the the ```xxxxE+xx``` values in this section of code to the values on that calibration sheet.  Use numbers from the side of the calibration sheet that shows the calibration in _**volts**_.
+    - The sketch will not compile if these values are not entered properly.
+    - Do not change any values except those that are ```xxxxE+xx```!
 
 ```cpp
 // ==========================================================================

@@ -6,7 +6,7 @@ This Arduino library gives environmental sensors a common interface of functions
 * Transmit that data wirelessly to a web server; and
 * Put the processor, sensors and all other peripherals to sleep between readings to conserve power.
 
-The ModularSensors library coordinates these tasks by "wrapping" native sensor and variable functions into a common interface of functions and returns. These [wrapper functions](https://en.wikipedia.org/wiki/Wrapper_function) serve to harmonize and simplify the process of iterating through and logging data from a diverse set of sensors and variables.
+The ModularSensors library coordinates these tasks by "wrapping" native sensor libraries into a common interface of functions and returns. These [wrapper functions](https://en.wikipedia.org/wiki/Wrapper_function) serve to harmonize and simplify the process of iterating through and logging data from a diverse set of sensors and variables.
 
 Although this library was written primarily for the [EnviroDIY Mayfly data logger board](https://envirodiy.org/mayfly/), it is also designed to be [compatible with a variety of other Arduino-based boards](#compatibility) as well.
 
@@ -58,6 +58,8 @@ Get started by reading this section, collecting the [Physical Dependencies](#pde
 To use a sensor and variable in your sketch, you must separately include xxx.h for each sensor you intend to use.  While this may force you to write many more include statements, it decreases the library RAM usage on your Arduino board.  Regardless of how many sensors you intend to use, however, you must install all of the [dependent libraries](#ldeps) on your _computer_ for the Arduino software, PlatformIO or any other Integrated Development Environment (IDE) software to be able to compile the library.
 
 Each sensor is implemented as a subclass of the "Sensor" class contained in "SensorBase.h".  Each variable is separately implemented as a subclass of the "Variable" class contained in "VariableBase.h".  The variables are tied to the sensor using an "[Observer](https://en.wikipedia.org/wiki/Observer_pattern)" software pattern.
+
+The "VariableArray" class contained in "VariableArray.h" defines the logic for iterating through many variable objects.  The various "Logger" classes are all sub-classes of variable arrays and add functionality for sleeping the processor, writing to an SD card, and communicating with the internet.
 
 
 
@@ -111,8 +113,8 @@ In order to support multiple functions and sensors, there are quite a lot of sub
 - [Adafruit BME280 library](https://github.com/adafruit/Adafruit_BME280_Library) - for the Bosch BME280 environmental sensor.
 - [Adafruit MPL115A2 library](https://github.com/adafruit/Adafruit_MPL115A2) - for the Freescale Semiconductor MPL115A2 barometer.
 - [YosemitechModbus](https://github.com/EnviroDIY/YosemitechModbus) - for all Yosemitech modbus environmental sensors.
-- [EnviroDIY MS5803 Library](https://github.com/EnviroDIY/MS5803) - for the TE Connectivity MEAS MS5803 pressure sensor
-- [EnviroDIY KellerModbus Library](https://github.com/EnviroDIY/MS5803) - for all Keller modbus pressure and water level sensors.
+- [Northern Widget MS5803 Library](https://github.com/NorthernWidget/MS5803) - for the TE Connectivity MEAS MS5803 pressure sensor
+- [EnviroDIY KellerModbus Library](https://github.com/EnviroDIY/KellerModbus) - for all Keller modbus pressure and water level sensors.
 
 ## <a name="Basic"></a>Basic Sensor and Variable Functions
 
@@ -325,9 +327,9 @@ A note about timezones:  It is possible to create multiple logger objects in you
 - **getNow()** - This gets the current epoch time (unix timestamp - number of seconds since Jan 1, 1970) and corrects it for the specified logger time zone offset.
 - **formatDateTime_ISO8601(DateTime dt)** - Formats a DateTime object into an ISO8601 formatted Arduino String.
 - **formatDateTime_ISO8601(uint32_t unixTime)** - Formats a unix timestamp into an ISO8601 formatted Arduino String.
-- **checkInterval()** - This returns true if the _current_ time is an even iterval of the logging interval, otherwise false.  This uses getNow() to get the curernt time.
+- **checkInterval()** - This returns true if the _current_ time is an even interval of the logging interval, otherwise false.  This uses getNow() to get the curernt time.
 - **markTime()** - This sets static variables for the date/time - this is needed so that all data outputs (SD, EnviroDIY, serial printing, etc) print the same time for updating the sensors - even though the routines to update the sensors and to output the data may take several seconds.  It is not currently possible to output the instantaneous time an individual sensor was updated, just a single marked time.  By custom, this should be called before updating the sensors, not after.  If you do not call this function before saving or sending data, there will be no timestamps associated with your data.  This is called for you every time the checkInterval() function is run.
-- **checkMarkedInterval()** - This returns true if the _marked_ time is an even iterval of the logging interval, otherwise false.  This uses the static time value set by markTime() to get the time.  It does not check the real-time-clock directly.
+- **checkMarkedInterval()** - This returns true if the _marked_ time is an even interval of the logging interval, otherwise false.  This uses the static time value set by markTime() to get the time.  It does not check the real-time-clock directly.
 
 
 #### Functions for the processor sleep modes:
@@ -542,12 +544,12 @@ If you would like to do other things within the loop function, you should access
 - After updating the sensors, then call any functions you want to send/print/save data.
 - Finish by putting the logger back to sleep, if desired, with ```systemSleep()```.
 
-The [double_logger example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger) demonstrates using a custom loop function in order to log two different groups of sensors at different logging intervals.  The [baro_rho_correction example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/baro_rho_correction) demonstrates using a custom loop function in order to create calculated variables before saving the data and sending it to the EnviroDIY data portal.  The [data_saving example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/data_saving) shows using a custom loop in order to save cellular data by saving data from many variables on the SD card, but only sending a portion of the data to the EnviroDIY data portal. 
+The [double_logger example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger) demonstrates using a custom loop function in order to log two different groups of sensors at different logging intervals.  The [baro_rho_correction example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/baro_rho_correction) demonstrates using a custom loop function in order to create calculated variables before saving the data and sending it to the EnviroDIY data portal.  The [data_saving example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/data_saving) shows using a custom loop in order to save cellular data by saving data from many variables on the SD card, but only sending a portion of the data to the EnviroDIY data portal.
 
 
 ## Available sensors
 
-There are a number of sensors supported by this library.  Depending on the sensor, it may communicate with the Arduino board using as a serial peripheral interface (SPI), inter-integrated curcuit (I2C, also called "Wire"), or some type of universal synchronous/asynchronous receiver/transmitter (USART, almost always simply called "serial") (USART or serial includes transistor-transistor logic (TTL), RS232 (adapter needed), and RS485 (adapter needed) communication).  See the section on [Processor Compatibility](#compatibility) for more specific notes on which pins are available for each type of communication on the various supported processors.
+There are a number of sensors supported by this library.  Depending on the sensor, it may communicate with the Arduino board using as a serial peripheral interface (SPI), inter-integrated circuit (I2C, also called "Wire," "Two Wire", or "TWI"), or some type of universal synchronous/asynchronous receiver/transmitter (UART/USART, or simply "serial") protocol.  (USART or serial includes transistor-transistor logic (TTL), RS232 (adapter needed), and RS485 (adapter needed) communication).  See the section on [Processor Compatibility](#compatibility) for more specific notes on which pins are available for each type of communication on the various supported processors.
 
 Essentially all of the sensors can have their power supplies turned off between readings, but not all boards are able to switch output power on and off.  When the sensor constructor asks for the Arduino pin controlling power on/off, use -1 for any board which is not capable of switching the output power on and off.
 

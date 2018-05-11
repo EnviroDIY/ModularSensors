@@ -221,7 +221,7 @@ int variableCount_complete = sizeof(variableList_complete) / sizeof(variableList
 
 
 // ==========================================================================
-//    The array that contains all variables to have their values send out over the internet
+//    The array that contains all variables to have their values sent out over the internet
 // ==========================================================================
 Variable *variableList_toGo[] = {
     y504DOmgL,
@@ -313,7 +313,7 @@ void setup()
 
     // Attach the same modem to both loggers
     // It is only needed for the logger that will be sending out data, but
-    // attaching it to both allows either logger to control NIST sunchronization
+    // attaching it to both allows either logger to control NIST synchronization
     loggerComplete.attachModem(&modem);
     loggerToGo.attachModem(&modem);
 
@@ -325,9 +325,9 @@ void setup()
     loggerToGo.setSamplingFeatureUUID(samplingFeature);
 
     // Because we've given it a modem and it knows all of the tokens, we can
-    // just "begin" the complete logger to set up the clock, sleep, and all of
-    // the sensors.  We don't need to bother with the "begin" for the other logger
-    // because it has the same processor and clock.
+    // just "begin" the complete logger to set up the datafile, clock, sleep,
+    // and all of the sensors.  We don't need to bother with the "begin" for the
+    // other logger because it has the same processor and clock.
     loggerComplete.begin();
 
     // Hold up for 10-seconds to allow immediate entry into sensor testing mode
@@ -407,6 +407,9 @@ void loop()
     // Check if it was instead the testing interrupt that woke us up
     // Want to enter the testing mode for the "complete" logger so we can see
     // the data from _ALL_ sensors
+    // NOTE:  The testingISR attached to the button at the end of the "setup()"
+    // function turns on the startTesting flag.  So we know if that flag is set
+    // then we want to run the testing mode function.
     if (Logger::startTesting) loggerComplete.testingMode();
 
     // Once a day, at midnight, sync the clock
