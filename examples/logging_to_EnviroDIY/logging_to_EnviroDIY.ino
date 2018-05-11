@@ -93,7 +93,7 @@ ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sl
 // Use "modem_sleep_reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
 // Use "modem_always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
 #if defined(TINY_GSM_MODEM_ESP8266)
-const long ModemBaud = 9600;  // Default for ESP8266 is 115200, but the Mayfly itself stutters above 57600
+const long ModemBaud = 57600;  // Default for ESP8266 is 115200, but the Mayfly itself stutters above 57600
 #elif defined(TINY_GSM_MODEM_SIM800)
 const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble making it fast (19200 works)
 #elif defined(TINY_GSM_MODEM_XBEE)
@@ -293,7 +293,7 @@ MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 //    PaleoTerraRedox (Oxidation-reduction potential)
 // ==========================================================================
 #include <PaleoTerraRedox.h>
-const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 const int sclPin1 = 4;  //Clock pin to be used with 1st redox probe
 const int sdaPin1 = 5;  //Data pin to be used with 1st redox probe
 const int sclPin2 = 6;  //Clock pin to be used with 2nd redox probe
@@ -580,7 +580,7 @@ void setup()
     // Attach the modem to the logger
     EnviroDIYLogger.attachModem(&modem);
 
-    // Set up the connection with EnviroDIY
+    // Enter the tokens for the connection with EnviroDIY
     EnviroDIYLogger.setToken(registrationToken);
     EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
 

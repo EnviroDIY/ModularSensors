@@ -36,11 +36,12 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
     - [External I2C Rain Tipping Bucket Counter: rainfall totals](#ExtTips)
     - [External Voltage: via TI ADS1115](#ExtVolt)
     - [Freescale Semiconductor MPL115A2: barometric pressure and temperature](#MPL115A2)
+    - [Keller Submersible Level Transmitters: pressure and temperature](#keller)
     - [MaxBotix MaxSonar: water level](#MaxBotix)
     - [Maxim DS18: temperature](#DS18)
     - [Maxim DS3231: real time clock](#DS3231)
     - [Measurement Specialties MS5803: pressure and temperature](#MS5803)
-    - [Keller Submersible Level Transmitters: pressure and temperature](#keller)
+    - [Paleo Terra Redox Probes: redox potential](#ptredox)
     - [Yosemitech: water quality sensors](#Yosemitech)
     - [Zebra-Tech D-Opto: dissolved oxygen](#dOpto)
     - [Processor Metadata Treated as Sensors](#Onboard)
@@ -542,7 +543,7 @@ If you would like to do other things within the loop function, you should access
 - After updating the sensors, then call any functions you want to send/print/save data.
 - Finish by putting the logger back to sleep, if desired, with ```systemSleep()```.
 
-The [double_logger example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger) demonstrates using a custom loop function in order to log two different groups of sensors at different logging intervals.  The [baro_rho_correction example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/baro_rho_correction) demonstrates using a custom loop function in order to create calculated variables before saving the data and sending it to the EnviroDIY data portal.  The [data_saving example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/data_saving) shows using a custom loop in order to save cellular data by saving data from many variables on the SD card, but only sending a portion of the data to the EnviroDIY data portal. 
+The [double_logger example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger) demonstrates using a custom loop function in order to log two different groups of sensors at different logging intervals.  The [baro_rho_correction example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/baro_rho_correction) demonstrates using a custom loop function in order to create calculated variables before saving the data and sending it to the EnviroDIY data portal.  The [data_saving example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/data_saving) shows using a custom loop in order to save cellular data by saving data from many variables on the SD card, but only sending a portion of the data to the EnviroDIY data portal.
 
 
 ## Available sensors
@@ -1023,6 +1024,27 @@ The two available variables are:  (UUID and customVarCode are optional; UUID mus
 Variable *acculevelPress = new KellerAcculevel_Pressure(&acculevel, "UUID", "customVarCode");  // vented & barometric pressure corrected water pressure in millibar
 Variable *acculevelTemp = new KellerAcculevel_Temp(&acculevel, "UUID", "customVarCode");  // water temperature in °C
 Variable *acculevelHeight = new KellerAcculevel_Height(&acculevel, "UUID", "customVarCode");  // water height above the sensor in meters
+
+```
+_____
+
+### <a name="ptredox"></a>[Paleo Terra Redox Probes](https://paleoterra.nl/index.html)
+
+Paleo Terra produces sturdy probes to measure redox potential in soils, sediments and surface waters.  The probes are sold with three output options:  raw voltage, amplified voltage, and digital I2C output.  This library supports the sensors with digital I2C output.  Unfortunately, these sensors are sold with only one option for an I2C address (0x68), which conflicts with the DS3231 real time clock.  Because of this, this library uses a software I2C emulator to connect this sensor on a different set of pins than the standard SCL and SDA pins on the main processor.
+
+The sensor constructor requires a power pin, the SDA (serial data) pin number, the SCL (serial clock) pin number, and optionally a number of readings to average as input.
+
+```cpp
+#include <PaleoTerraRedox.h>
+// Create and return the Keller AccuLevel sensor object
+PaleoTerraRedox redox1(I2CPower, sclPin1, sdaPin1, PaleoTerraReadingsToAvg);
+```
+
+The one available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
+
+```cpp
+// Create the voltage variable objects for the redox probe and return variable-type pointers to them
+Variable *ptrVoltage = new PaleoTerraRedox_Volt(&redox1, "UUID", "customVarCode");  // voltage in mV
 
 ```
 _____
