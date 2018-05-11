@@ -52,7 +52,7 @@ const int8_t wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
 const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
 
 // Create the processor "sensor"
-const char *MFVersion = "v0.5";
+const char *MFVersion = "v0.5b";
 ProcessorStats mayfly(MFVersion) ;
 
 
@@ -72,15 +72,15 @@ const uint8_t OBS3numberReadings = 10;
 const uint8_t OBS3_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
 // Campbell OBS 3+ Low Range calibration in Volts
 const int8_t OBSLowPin = 0;  // The low voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
-const float OBSLow_A = 4.0749E+00;  // The "A" value (X^2) from the low range calibration
-const float OBSLow_B = 9.1011E+01;  // The "B" value (X) from the low range calibration
-const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibration
+const float OBSLow_A = xxxxE+xx;  // The "A" value (X^2) from the low range calibration
+const float OBSLow_B = xxxxE+xx;  // The "B" value (X) from the low range calibration
+const float OBSLow_C = xxxxE+xx;  // The "C" value from the low range calibration
 CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, OBS3_ADS1115Address, OBS3numberReadings);
 // Campbell OBS 3+ High Range calibration in Volts
 const int8_t OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
-const float OBSHigh_A = 5.2996E+01;  // The "A" value (X^2) from the high range calibration
-const float OBSHigh_B = 3.7828E+02;  // The "B" value (X) from the high range calibration
-const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calibration
+const float OBSHigh_A = xxxxE+xx;  // The "A" value (X^2) from the high range calibration
+const float OBSHigh_B = xxxxE+xx;  // The "B" value (X) from the high range calibration
+const float OBSHigh_C = xxxxE+xx;  // The "C" value from the high range calibration
 CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OBS3_ADS1115Address, OBS3numberReadings);
 
 
@@ -99,23 +99,15 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 //    The array that contains all variables to be logged
 // ==========================================================================
 Variable *variableList[] = {
-    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
+    new ProcessorStats_Batt(&mayfly),
+    new MaximDS3231_Temp(&ds3231),
+    new DecagonCTD_Cond(&ctd),
+    new DecagonCTD_Temp(&ctd),
+    new DecagonCTD_Depth(&ctd),
+    new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
-
-
-// ==========================================================================
-// Device registration and sampling feature information
-//   This should be obtained after registration at http://data.envirodiy.org
-// ==========================================================================
-const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
-const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 
 
 // ==========================================================================

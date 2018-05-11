@@ -542,7 +542,7 @@ If you would like to do other things within the loop function, you should access
 - After updating the sensors, then call any functions you want to send/print/save data.
 - Finish by putting the logger back to sleep, if desired, with ```systemSleep()```.
 
-The double_logger example program demonstrates using a custom loop function in order to log two different groups of sensors at different logging intervals.
+The [double_logger example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger) demonstrates using a custom loop function in order to log two different groups of sensors at different logging intervals.  The [baro_rho_correction example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/baro_rho_correction) demonstrates using a custom loop function in order to create calculated variables before saving the data and sending it to the EnviroDIY data portal.  The [data_saving example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/data_saving) shows using a custom loop in order to save cellular data by saving data from many variables on the SD card, but only sending a portion of the data to the EnviroDIY data portal. 
 
 
 ## Available sensors

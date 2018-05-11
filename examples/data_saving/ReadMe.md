@@ -12,7 +12,7 @@ To adjust any of these to work with your own sensor arrangements:
 7. Correct all of the sensor power and data pins and sensor addresses to match your actual sensors and logger board attachment points.
 8. Delete or add lines from the variableList[] to match your true arrangement.
 9. If logging data to EnviroDIY, register your site and sensors at http://data.envirodiy.org/.
-10. After registering your site and sensors, copy the UUID's and tokens from your site into the correct places in the example.
+10. After registering your site and sensors, copy the "code snippet" from your site into the correct block in the example.
 11. If applicable, fill out your modem pins, sleep mode, serial port, and connection options.
 12. Fill out your logger board information, including the serial baud rate and LED pins.
 13. Verify that the setup() and loop() functions are doing what you expect.
