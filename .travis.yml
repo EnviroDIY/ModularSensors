@@ -52,6 +52,7 @@ install:
     - pio lib -g install 873  # RTCZero
     - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git  # #73, but need the git until Paul S. has a new release
     - pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
+    - pio lib -g install https://github.com/felias-fogg/SoftI2CMaster.git
     - pio lib -g update
 
 script: make travis-build
