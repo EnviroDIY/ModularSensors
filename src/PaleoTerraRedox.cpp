@@ -1,26 +1,15 @@
 /*
- *AOSongDHT.cpp
+ *PaleoTerraRedox.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for the AOSong Digital-output relative humidity & temperature sensor/modules:
- *DHT11, DHT21(AM2301), and DHT 22 (AM2302).  It is dependent on the Adafruit DHT Library
+ *This file is for the I2C Redox sensors made by Paleo Terra.  Because these
+ *sensors all ship with the same I2C address, this module is also dependent on
+ *a software I2C library to allow the use of multiple sensors.
  *
  *Documentation for the sensor can be found at:
- *http://www.aosong.com/en/products/details.asp?id=117
- *
- * For Relative Humidity:
- *  Resolution is 0.1 % RH
- *  Accuracy is ± 2 % RH
- *  Range is 0 to 100 % RH
- *
- * For Temperature:
- *  Resolution is 0.1°C
- *  Accuracy is ±0.5°C
- *  Range is -40°C to +80°C
- *
- * Warm up/sampling time: 1.7sec
+ *https://paleoterra.nl/
 */
 
 #include "PaleoTerraRedox.h"
@@ -38,14 +27,9 @@ PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin, int8_t dataPin, int8_t clockPi
 }
 
 
-bool PaleoTerraRedox::setup(void)
-{
-    return Sensor::setup();  // this will set timestamp and status bit
-}
-
 String PaleoTerraRedox::getSensorLocation(void)
 {
-    String sensorLocation = F("pins ");
+    String sensorLocation = F("I2C");
     sensorLocation += String(_dataPin);
     sensorLocation += F(",");
     sensorLocation += String(_clockPin);
@@ -96,9 +80,9 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void)
     }
     else MS_DBG(F("Sensor is not currently measuring!\n"));
 
-    //ADD FAILURE CONDITIONS!!
-    if(isnan(res)) res = -9999; //list a failure if the sensor returns nan (not sure how this would happen, keep to be safe)
-    else if(res == 0 && i2c_status == 0 && config == 0) res = -9999; //List a failure when the sensor is not connected
+    // ADD FAILURE CONDITIONS!!
+    if(isnan(res)) res = -9999;  // list a failure if the sensor returns nan (not sure how this would happen, keep to be safe)
+    else if(res == 0 && i2c_status == 0 && config == 0) res = -9999;  // List a failure when the sensor is not connected
     // Store the results in the sensorValues array
     verifyAndAddMeasurementResult(PTR_VOLT_VAR_NUM, res);
 

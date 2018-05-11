@@ -1,27 +1,15 @@
 /*
- *AOSongDHT.h
+ *PaleoTerraRedox.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for the AOSong Digital-output relative humidity & temperature sensor/modules:
- *DHT11, DHT21(AM2301), and DHT 22 (AM2302).  It is dependent on the Adafruit DHT Library
+ *This file is for the I2C Redox sensors made by Paleo Terra.  Because these
+ *sensors all ship with the same I2C address, this module is also dependent on
+ *a software I2C library to allow the use of multiple sensors.
  *
  *Documentation for the sensor can be found at:
- *http://www.aosong.com/en/products/details.asp?id=117
- *
- * For Relative Humidity:
- *  Resolution is 0.1 % RH for DHT22 and 1 % RH for DHT11
- *  Accuracy is ± 2 % RH for DHT22 and ± 5 % RH for DHT11
- *  Range is 0 to 100 % RH
- *
- * For Temperature:
- *  Resolution is 0.1°C
- *  Accuracy is ±0.5°C for DHT22 and ± ±2°C for DHT11
- *  Range is -40°C to +80°C
- *
- * Warm up time: 1.7sec; assume stable on warm-up
- * Re-sampling time: 2.0sec
+ *https://paleoterra.nl/
 */
 
 #ifndef PaleoTerraRedox_h
@@ -51,10 +39,10 @@
 class PaleoTerraRedox : public Sensor
 {
 public:
-    // The constructor - need the power pin, the data pin, and the sensor type
+    // The constructor - need the power pin, the I2C data pin (SDA), the I2C
+    // clock pin (SCL), and optionally a number of measurements to average
     PaleoTerraRedox(int8_t powerPin, int8_t dataPin, int8_t clockPin, uint8_t measurementsToAverage = 1);
-
-    bool setup(void) override;
+    
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
@@ -66,7 +54,7 @@ private:
 };
 
 
-// Defines the Humidity Variable
+// Defines the Redox Potential Variable
 class PaleoTerraRedox_Volt : public Variable
 {
 public:
