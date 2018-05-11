@@ -50,23 +50,30 @@ bool RainCounterI2C::setup(void)
 bool RainCounterI2C::addSingleMeasurementResult(void)
 {
     //intialize values
-    float rain = -9999; // Number of mm of rain
-    int tips = -9999; // Number of tip events
     uint8_t Byte1 = 0; // Low byte of data
     uint8_t Byte2 = 0; // High byte of data
 
-    Wire.requestFrom(int(_i2cAddressHex), 2); // Get data from external tip counter
-    Byte1 = Wire.read();
-    Byte2 = Wire.read();
+    float rain = -9999; // Number of mm of rain
+    int tips = -9999; // Number of tip events
 
-    tips = (Byte2 << 8) | (Byte1);  // Concatenate tip values
-    rain = float(tips) * _rainPerTip; // Multiply by tip coefficient (0.2 by default)
+    // Get data from external tip counter
+    // if the 'requestFrom' returns 0, it means no bytes were received
+    if (Wire.requestFrom(int(_i2cAddressHex), 2))
+    {
+        MS_DBG(F("Receiving data from External Tipper\n"));
+        Byte1 = Wire.read();
+        Byte2 = Wire.read();
 
-    if (tips < 0) rain = -9999; // If negetive value results, return failure
-    if (rain < 0) rain = -9999; // If negetive value results, return failure
+        tips = (Byte2 << 8) | (Byte1);  // Concatenate tip values
+        rain = float(tips) * _rainPerTip; // Multiply by tip coefficient (0.2 by default)
 
-    MS_DBG(F("Rain: "), rain);
-    MS_DBG(F("Tips: "), tips);
+        if (tips < 0) tips = -9999; // If negetive value results, return failure
+        if (rain < 0) rain = -9999; // If negetive value results, return failure
+    }
+    else MS_DBG(F("No bytes received from external tipper!\n"));
+
+    MS_DBG(F("Rain: "), rain, '\n');
+    MS_DBG(F("Tips: "), tips, '\n');
 
     verifyAndAddMeasurementResult(BUCKET_RAIN_VAR_NUM, rain);
     verifyAndAddMeasurementResult(BUCKET_TIPS_VAR_NUM, int(tips));

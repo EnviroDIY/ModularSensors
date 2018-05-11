@@ -15,9 +15,6 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
-// Some define statements
-#define STANDARD_SERIAL_OUTPUT Serial  // Without this there will be no output
-
 // Select your modem chip, comment out all of the others
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
 // #define TINY_GSM_MODEM_A6  // Select for a AI-Thinker A6 or A7 chip
@@ -42,7 +39,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 const char *sketchName = "logger_test.ino";
 
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "SL099";
+const char *LoggerID = "XXXXX";
 const char *FileName5min = "SL099_5MinuteInterval.csv";
 const char *FileName1min = "SL099_1MinuteInterval.csv";
 // Your logger's timezone.
@@ -66,6 +63,7 @@ const int8_t wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
 
+// Create the processor "sensor"
 const char *MFVersion = "v0.5";
 ProcessorStats mayfly(MFVersion) ;
 
@@ -186,7 +184,7 @@ void setup()
     // There is no reason to call the setAlertPin() function, because we have to
     // write the loop on our own.
 
-    // Initialize the logger modem
+    // Setup the logger modem
     modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
 
     // Set up the sensors on both loggers
@@ -237,7 +235,6 @@ void setup()
 
 // Because of the way the sleep mode is set up, the processor will wake up
 // and start the loop every minute exactly on the minute.
-// Log the data
 void loop()
 {
     // Check if the current time is an even interval of the logging interval
@@ -249,12 +246,21 @@ void loop()
         // Turn on the LED to show we're taking a reading
         digitalWrite(greenLED, HIGH);
 
+        // Send power to all of the sensors
+        Serial.print(F("Powering sensors...\n"));
+        logger1min.sensorsPowerUp();
         // Wake up all of the sensors
+        Serial.print(F("Waking sensors...\n"));
         logger1min.sensorsWake();
         // Update the values from all attached sensors
+        Serial.print(F("Updating sensor values...\n"));
         logger1min.updateAllSensors();
-        // Immediately put sensors to sleep to save power
+        // Put sensors to sleep
+        Serial.print(F("Putting sensors back to sleep...\n"));
         logger1min.sensorsSleep();
+        // Cut sensor power
+        Serial.print(F("Cutting sensor power...\n"));
+        logger1min.sensorsPowerDown();
 
         // Create a csv data record and save it to the log file
         logger1min.logToSD(logger1min.generateSensorDataCSV());
@@ -273,12 +279,21 @@ void loop()
         // Turn on the LED to show we're taking a reading
         digitalWrite(redLED, HIGH);
 
+        // Send power to all of the sensors
+        Serial.print(F("Powering sensors...\n"));
+        logger5min.sensorsPowerUp();
         // Wake up all of the sensors
+        Serial.print(F("Waking sensors...\n"));
         logger5min.sensorsWake();
         // Update the values from all attached sensors
+        Serial.print(F("Updating sensor values...\n"));
         logger5min.updateAllSensors();
-        // Immediately put sensors to sleep to save power
+        // Put sensors to sleep
+        Serial.print(F("Putting sensors back to sleep...\n"));
         logger5min.sensorsSleep();
+        // Cut sensor power
+        Serial.print(F("Cutting sensor power...\n"));
+        logger5min.sensorsPowerDown();
 
         // Create a csv data record and save it to the log file
         logger5min.logToSD(logger5min.generateSensorDataCSV());

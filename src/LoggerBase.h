@@ -197,6 +197,14 @@ public:
     // Time stamps - want to set them at a single time and carry them forward
     static uint32_t markedEpochTime;
 
+    // These are flag fariables noting the current state (logging/testing)
+    // NOTE:  if the logger isn't currently logging or testing or in the middle of set-up,
+    // it's probably sleeping
+    // Setting these as volatile because the flags can be changed in ISR's
+    static volatile bool isLoggingNow;
+    static volatile bool isTestingNow;
+    static volatile bool startTesting;
+
 
 
 // ===================================================================== //
@@ -221,17 +229,13 @@ protected:
     int8_t _SDCardPin;
     int8_t _mcuWakePin;
     float _loggingIntervalMinutes;
-    uint8_t _interruptRate;
+    uint16_t _loggingIntervalSeconds;
     const char *_loggerID;
     bool _autoFileName;
     bool _isFileNameSet;
     uint8_t _numTimepointsLogged;
     bool _sleep;
     int8_t _ledPin;
-
-    static bool _isLoggingNow;
-    static bool _isTestingNow;
-    static bool _startTesting;
 
     // This checks if the SD card is available and ready
     bool initializeSDCard(uint8_t Pin);

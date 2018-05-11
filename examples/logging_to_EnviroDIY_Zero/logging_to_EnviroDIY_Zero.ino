@@ -227,8 +227,8 @@ ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, Volt_ADS1115Address, Volt
 // ==========================================================================
 #include <MaxBotixSonar.h>
 const int8_t SonarPower = -1;  // Excite (power) pin (-1 if unconnected)
-const int8_t Sonar1Trigger = 18;  // Trigger pin (-1 if unconnected)
-const int8_t Sonar2Trigger = 19;  // Trigger pin (-1 if unconnected)
+const int8_t Sonar1Trigger = 18;  // Trigger pin (a negative number if unconnected)
+const int8_t Sonar2Trigger = 19;  // Trigger pin (a negative number if unconnected)
 
 // Set up a 'new' UART for receiving sonar data - in this case, using SERCOM2
 // In this case, the Rx will be on digital pin 5, which is SERCOM2's Rx Pad #3
@@ -311,7 +311,7 @@ PaleoTerraRedox redox3(I2CPower, sclPin3, sdaPin3, PaleoTerraReadingsToAvg);
 // ==========================================================================
 #include <RainCounterI2C.h>
 const uint8_t RainCounterI2CAddress = 0x08;  // I2C Address for external tip counter
-const uint8_t depthPerTipEvent = 0.2;  // rain depth in mm per tip event
+const float depthPerTipEvent = 0.2;  // rain depth in mm per tip event
 RainCounterI2C tip(RainCounterI2CAddress, depthPerTipEvent);
 
 

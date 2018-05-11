@@ -112,33 +112,39 @@ bool BoschBME280::addSingleMeasurementResult(void)
 
     // Initialize float variables
     float temp = -9999;
+    float humid = -9999;
     float press = -9999;
     float alt = -9999;
-    float humid = -9999;
 
     if (_millisMeasurementRequested > 0)
     {
         // Read values
+        MS_DBG(F("Getting values from BME280\n"));
         temp = bme_internal.readTemperature();
-        press = bme_internal.readPressure();
-        alt = bme_internal.readAltitude(SEALEVELPRESSURE_HPA);
-        humid = bme_internal.readHumidity();
-
         if (isnan(temp)) temp = -9999;
-        if (isnan(press)) press = -9999;
-        if (isnan(alt)) alt = -9999;
+        humid = bme_internal.readHumidity();
         if (isnan(humid)) humid = -9999;
+        press = bme_internal.readPressure();
+        if (isnan(press)) press = -9999;
+        alt = bme_internal.readAltitude(SEALEVELPRESSURE_HPA);
+        if (isnan(alt)) alt = -9999;
 
-        if (temp == -140.85)  // This is the value returned if the sensor is not attached
+        // Assume that if all three are 0, really a failed response
+        // May also return a very negative temp when receiving a bad response
+        if ((temp == 0 && press == 0 && humid == 0) || temp < -40)
         {
-            temp = press = alt = humid = -9999;
+            MS_DBG(F("All values 0 or bad, assuming sensor non-response!\n"));
+            temp =  -9999;
+            press = -9999;
+            humid = -9999;
+            alt = -9999;
         }
         else success = true;
 
         MS_DBG(F("Temperature: "), temp);
-        MS_DBG(F(" Humidity: "), humid);
-        MS_DBG(F(" Barometric Pressure: "), press);
-        MS_DBG(F(" Calculated Altitude: "), alt, F("\n"));
+        MS_DBG(F(" °C, Humidity: "), humid);
+        MS_DBG(F(" %RH, Barometric Pressure: "), press);
+        MS_DBG(F(" Pa, Calculated Altitude: "), alt, F("m ASL\n"));
     }
     else MS_DBG(F("Sensor is not currently measuring!\n"));
 

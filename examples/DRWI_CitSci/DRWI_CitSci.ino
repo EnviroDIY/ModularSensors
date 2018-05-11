@@ -211,7 +211,10 @@ void setup()
     // Begin the logger
     EnviroDIYLogger.begin();
 
-    // Check for debugging mode
+    // Hold up for 10-seconds to allow immediate entry into sensor testing mode
+    // EnviroDIYLogger.checkForTestingMode(buttonPin);
+
+    //  Set up an interrupt on a pin to enter sensor testing mode at any time
     pinMode(buttonPin, INPUT_PULLUP);
     enableInterrupt(buttonPin, Logger::testingISR, CHANGE);
     Serial.print(F("Push button on pin "));
