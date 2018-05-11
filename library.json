@@ -208,7 +208,7 @@
         {
             "name": "KellerModbus",
             "version": "https://github.com/EnviroDIY/KellerModbus.git",
-            "version_note": ">=0.1.0",
+            "version_note": ">=0.1.1",
             "note": "Arduino library for communication with Keller pressure and water level sensors via Modbus.",
             "authors": [
                 "Anthony Aufdenkampe"
@@ -216,7 +216,8 @@
         },
         {
             "name": "MS5803",
-            "version": "https://github.com/EnviroDIY/MS5803.git",
+            "version": "https://github.com/NorthernWidget/MS5803.git",
+            "version_note": ">=0.1.2",
             "note": "General interface to MS5803-series pressure transducers",
             "authors": [
                 "Bobby Schulz"
