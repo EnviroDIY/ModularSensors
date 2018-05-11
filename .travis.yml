@@ -15,8 +15,8 @@ env:
     - PLATFORMIO_CI_SRC=examples/simple_logging/
     - PLATFORMIO_CI_SRC=examples/double_logger/
     - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY/
-    - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/
-    - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/
+    # - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/
+    # - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/
     - PLATFORMIO_CI_SRC=examples/baro_rho_correction/
     - PLATFORMIO_CI_SRC=examples/data_saving/
 
