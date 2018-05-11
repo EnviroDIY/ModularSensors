@@ -44,7 +44,7 @@ String MaxBotixSonar::getSensorLocation(void)
 bool MaxBotixSonar::setup(void)
 {
     // Set up the trigger, if applicable
-    if(_triggerPin != -1)
+    if(_triggerPin > 0)
     {
         pinMode(_triggerPin, OUTPUT);
         digitalWrite(_triggerPin, LOW);
@@ -76,7 +76,7 @@ bool MaxBotixSonar::wake(void)
     // RoHS 1.8b090  0713
     // TempI
 
-    MS_DBG(F("Parsing Header Lines\n"));
+    MS_DBG(F("Parsing Header Lines from MaxBotix on "), getSensorLocation(), '\n');
     for(int i = 0; i < 6; i++)
     {
         String headerLine = _stream->readStringUntil('\r');
@@ -95,8 +95,8 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
 
     if (_millisMeasurementRequested > 0)
     {
-        MS_DBG(F("Getting readings from sonar\n"));
-        while (success == false && rangeAttempts < 25)
+        MS_DBG(F("Getting readings from MaxBotix on "), getSensorLocation(), '\n');
+        while (success == false && rangeAttempts < 3)
         {
              // If the sonar is running on a trigger, activating the trigger
              // should in theory happen within the startSingleMeasurement
@@ -104,11 +104,11 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
              // for each "single measurement" until a valid value is returned
              // and the measurement time is <166ms, we'll actually activate
              // the trigger here.
-            if(_triggerPin != -1)
+            if(_triggerPin > 0)
             {
-                MS_DBG(F("Triggering Sonar\n"));
+                MS_DBG(F("Triggering Sonar with "), _triggerPin, '\n');
                 digitalWrite(_triggerPin, HIGH);
-                delayMicroseconds(30);  // Trigger must be held low for >20 µs
+                delayMicroseconds(30);  // Trigger must be held high for >20 µs
                 digitalWrite(_triggerPin, LOW);
             }
 

@@ -30,8 +30,20 @@ This calls the same group of sensors as in multisensor_print.ino but now records
 ### logging_to_EnviroDIY.ino
 This calls the same group of sensors as in multisensor_print.ino and simple_logging.ino and sends the data to the EnviroDIY data portal in addition to logging it to an SD card.
 
+### logging_to_EnviroDIY_Zero.ino
+Identical to logging_to_EnviroDIY, but written for an Adafruit Feather M0 (SAMD21) processor.
+
 ### DWRI_CitSci.ino
 This is a simplified version of logging_to_EnviroDIY.ino using just the sensors and equipment standard to the DWRI Citizen Science grant.
 
+### DWRI_NoCellular.ino
+This is uses just the sensors and equipment standard to the DWRI Citizen Science grant for circumstances where there is no cellular signal.
+
 ### double_logger.ino
-This is a more complicated example using two different logger instances to log data at two different intervals, in this case, an AM3215 logging every minute, while checking the battery voltage only everu 5 minutes.  This showcases both how to use two different logging instances and how to use some of the functions to set up your own logging loop rather than using the log() function.
+This is a more complicated example using two different logger instances to log data at two different intervals, in this case, an AM3215 logging every minute, while checking the battery voltage only every 5 minutes.  This showcases both how to use two different logging instances and how to use some of the functions to set up your own logging loop rather than using the log() function.
+
+### baro_rho_correction.ino
+Like the double_logger example, this showcases how to set up your own logging loop rather than using the log() function.  In this case, though, there is only a single logger, but we are adding some extra calculated variables to the final output.
+
+### data_saving.ino
+This is another double logger example, but in this case, both loggers are going at the same interval and the only difference between the loggers is the list of variables.  There are two sets of variables, all coming from Yosemitech sensors.  Because each sensor outputs temperature and we don't want to waste cellular data sending out multiple nearly identical temperature values, we have one logger that logs every possible variable result to the SD card and another logger that sends only unique results to the EnviroDIY data portal.

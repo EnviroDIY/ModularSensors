@@ -230,8 +230,8 @@ ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, Volt_ADS1115Address, Volt
 // ==========================================================================
 #include <MaxBotixSonar.h>
 const int8_t SonarPower = 22;  // Excite (power) pin (-1 if unconnected)
-const int8_t Sonar1Trigger = A1;  // Trigger pin (-1 if unconnected)
-const int8_t Sonar2Trigger = A2;  // Trigger pin (-1 if unconnected)
+const int8_t Sonar1Trigger = A1;  // Trigger pin (a negative number if unconnected)
+const int8_t Sonar2Trigger = A2;  // Trigger pin (a negative number if unconnected)
 
 // Set up a serial port for receiving sonar data - in this case, using software serial
 // Because the standard software serial library uses interrupts that conflict
@@ -299,7 +299,7 @@ MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 // ==========================================================================
 #include <RainCounterI2C.h>
 const uint8_t RainCounterI2CAddress = 0x08;  // I2C Address for external tip counter
-const uint8_t depthPerTipEvent = 0.2;  // rain depth in mm per tip event
+const float depthPerTipEvent = 0.2;  // rain depth in mm per tip event
 RainCounterI2C tip(RainCounterI2CAddress, depthPerTipEvent);
 
 
@@ -577,7 +577,10 @@ void setup()
     // Begin the logger
     EnviroDIYLogger.begin();
 
-    // Check for debugging mode
+    // Hold up for 10-seconds to allow immediate entry into sensor testing mode
+    // EnviroDIYLogger.checkForTestingMode(buttonPin);
+
+    //  Set up an interrupt on a pin to enter sensor testing mode at any time
     pinMode(buttonPin, INPUT_PULLUP);
     enableInterrupt(buttonPin, Logger::testingISR, CHANGE);
     Serial.print(F("Push button on pin "));

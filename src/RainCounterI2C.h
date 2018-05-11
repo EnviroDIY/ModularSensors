@@ -38,7 +38,7 @@
 #define BUCKET_RAIN_RESOLUTION 2
 #define BUCKET_RAIN_VAR_NUM 0
 
-#define BUCKET_TIPS_RESOLUTION 1
+#define BUCKET_TIPS_RESOLUTION 0
 #define BUCKET_TIPS_VAR_NUM 1
 
 // The main class for the external tipping bucket counter

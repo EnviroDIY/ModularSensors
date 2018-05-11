@@ -22,9 +22,9 @@ uint32_t Logger::markedEpochTime = 0;
 DateTime Logger::markedDateTime = 0;
 char Logger::markedISO8601Time[26];
 // Initialize the testing/logging flags
-bool Logger::_isLoggingNow = false;
-bool Logger::_isTestingNow = false;
-bool Logger::_startTesting = false;
+volatile bool Logger::isLoggingNow = false;
+volatile bool Logger::isTestingNow = false;
+volatile bool Logger::startTesting = false;
 
 // Initialize the RTC for the SAMD boards
 #if defined(ARDUINO_ARCH_SAMD)
@@ -49,7 +49,7 @@ void Logger::init(int8_t SDCardPin, int8_t mcuWakePin,
     _SDCardPin = SDCardPin;
     _mcuWakePin = mcuWakePin;
     _loggingIntervalMinutes = loggingIntervalMinutes;
-    _interruptRate = round(_loggingIntervalMinutes*60);  // convert to even seconds
+    _loggingIntervalSeconds = round(_loggingIntervalMinutes*60);  // convert to even seconds
     _loggerID = loggerID;
     _autoFileName = false;
     _isFileNameSet = false;
@@ -60,6 +60,11 @@ void Logger::init(int8_t SDCardPin, int8_t mcuWakePin,
     {
         _sleep = true;
     }
+
+    // Set the testing/logging flags
+    isLoggingNow = false;
+    isTestingNow = false;
+    startTesting = false;
 
     PRINTOUT(F("   ... Success!\n"));
 };
@@ -247,10 +252,11 @@ bool Logger::checkInterval(void)
     bool retval;
     uint32_t checkTime = getNowEpoch();
     MS_DBG(F("Current Unix Timestamp: "), checkTime, F("\n"));
-    MS_DBG(F("Mod of Logging Interval: "), checkTime % _interruptRate, F("\n"));
+    MS_DBG(F("Logging interval in seconds: "), _loggingIntervalSeconds, F("\n"));
+    MS_DBG(F("Mod of Logging Interval: "), checkTime % _loggingIntervalSeconds, F("\n"));
     MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged, F("\n"));
     MS_DBG(F("Mod of 120: "), checkTime % 120, F("\n"));
-    if ((checkTime % _interruptRate == 0 ) or
+    if ((checkTime % _loggingIntervalSeconds == 0 ) or
         (_numTimepointsLogged < 10 and checkTime % 120 == 0))
     {
         // Update the time variables with the current time
@@ -283,11 +289,12 @@ bool Logger::checkMarkedInterval(void)
 {
     bool retval;
     MS_DBG(F("Marked Time: "), markedEpochTime, F("\n"));
-    MS_DBG(F("Mod of Logging Interval: "), markedEpochTime % _interruptRate, F("\n"));
+    MS_DBG(F("Logging interval in seconds: "), _loggingIntervalSeconds, F("\n"));
+    MS_DBG(F("Mod of Logging Interval: "), markedEpochTime % _loggingIntervalSeconds, F("\n"));
     MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged, F("\n"));
     MS_DBG(F("Mod of 120: "), markedEpochTime % 120, F("\n"));
     if (markedEpochTime != 0 &&
-        ((markedEpochTime % _interruptRate == 0 ) or
+        ((markedEpochTime % _loggingIntervalSeconds == 0 ) or
         (_numTimepointsLogged < 10 and markedEpochTime % 120 == 0)))
     {
         // Update the number of readings taken
@@ -658,9 +665,9 @@ void Logger::checkForTestingMode(int8_t buttonPin)
 void Logger::testingISR()
 {
     MS_DBG(F("Testing interrupt!\n"));
-    if (!Logger::_isTestingNow && !Logger::_isLoggingNow)
+    if (!Logger::isTestingNow && !Logger::isLoggingNow)
     {
-        Logger::_startTesting = true;
+        Logger::startTesting = true;
         MS_DBG(F("Testing flag has been set.\n"));
     }
 }
@@ -670,9 +677,9 @@ void Logger::testingISR()
 void Logger::testingMode()
 {
     // Flag to notify that we're in testing mode
-    Logger::_isTestingNow = true;
-    // Unset the _startTesting flag
-    Logger::_startTesting = false;
+    Logger::isTestingNow = true;
+    // Unset the startTesting flag
+    Logger::startTesting = false;
 
     PRINTOUT(F("------------------------------------------\n"));
     PRINTOUT(F("Entering sensor testing mode\n"));
@@ -707,7 +714,7 @@ void Logger::testingMode()
     sensorsPowerDown();
 
     // Unset testing mode flag
-    Logger::_isTestingNow = false;
+    Logger::isTestingNow = false;
 }
 
 
@@ -759,7 +766,7 @@ void Logger::log(void)
     if (checkInterval())
     {
         // Flag to notify that we're in already awake and logging a point
-        Logger::_isLoggingNow = true;
+        Logger::isLoggingNow = true;
 
         // Print a line to show new reading
         PRINTOUT(F("------------------------------------------\n"));
@@ -790,11 +797,11 @@ void Logger::log(void)
         PRINTOUT(F("------------------------------------------\n\n"));
 
         // Unset flag
-        Logger::_isLoggingNow = false;
+        Logger::isLoggingNow = false;
     }
 
     // Check if it was instead the testing interrupt that woke us up
-    if (Logger::_startTesting) testingMode();
+    if (Logger::startTesting) testingMode();
 
     // Sleep
     if(_sleep){systemSleep();}

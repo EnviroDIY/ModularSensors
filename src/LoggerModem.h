@@ -344,7 +344,8 @@ public:
             {
                 MS_MOD_DBG("   Sending credentials...\n");
                 #if defined(TINY_GSM_MODEM_HAS_WIFI)
-                _modem->networkConnect(_ssid, _pwd);
+                // make multiple attempts to send credentials
+                while (!_modem->networkConnect(_ssid, _pwd)) {};
                 #endif
                 if (_modem->waitForNetwork(waitTime_ms))
                 {

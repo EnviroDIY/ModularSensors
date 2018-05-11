@@ -29,11 +29,12 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <LoggerEnviroDIY.h>
 
+
 // ==========================================================================
 //    Basic Logger Settings
 // ==========================================================================
 // The name of this file
-const char *sketchName = "logging_to_EnviroDIY.ino";
+const char *sketchName = "baro_rho_correction.ino";
 
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "XXXXX";
@@ -50,7 +51,7 @@ LoggerEnviroDIY EnviroDIYLogger;
 // ==========================================================================
 #include <ProcessorStats.h>
 
-const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
 const int8_t greenLED = 8;  // Pin for the green LED (-1 if unconnected)
 const int8_t redLED = 9;  // Pin for the red LED (-1 if unconnected)
 const int8_t buttonPin = 21;  // Pin for a button to use to enter debugging mode (-1 if unconnected)
@@ -92,7 +93,7 @@ ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sl
 // Use "modem_sleep_reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
 // Use "modem_always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
 #if defined(TINY_GSM_MODEM_ESP8266)
-const long ModemBaud = 9600;  // Default for ESP8266 is 115200, but the Mayfly itself stutters above 57600
+const long ModemBaud = 57600;  // Default for ESP8266 is 115200, but the Mayfly itself stutters above 57600
 #elif defined(TINY_GSM_MODEM_SIM800)
 const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble making it fast (19200 works)
 #elif defined(TINY_GSM_MODEM_XBEE)
@@ -213,6 +214,7 @@ const char *rhoDepthUUID = "12345678-abcd-1234-efgh-1234567890ab";
 const char *rhoDepthVarName = "rhoDepth";
 const char *rhoDepthVarUnit = "millimeter";
 const char *rhoDepthVarCode = "DensityDepth";
+
 
 // ==========================================================================
 // Initialize variables for density correction
@@ -345,43 +347,38 @@ void setup()
     // the first row is the variable UUID's, we have two:
     // for calculated pressure and calculated depth
     EnviroDIYLogger.logToSD(extraHeaderSpacer + String(waterPressureUUID) +
-                            F(", ") + String(waterDepthUUID));
+                            F(", ") + String(waterDepthUUID) + F(", ") +
+                            String(rhoDepthUUID));
     // the next row is the sensor name, which is blank, so we'll put in a blank row
     EnviroDIYLogger.logToSD(extraHeaderSpacer + F(", "));
     // the third row is the variable name
     EnviroDIYLogger.logToSD(extraHeaderSpacer + String(waterPresureVarName) +
-                            F(", ") + String(waterDepthVarName));
+                            F(", ") + String(waterDepthVarName) + F(", ") +
+                            String(rhoDepthVarName));
     // the fourth row is the variable unit name
     EnviroDIYLogger.logToSD(extraHeaderSpacer + String(waterPresureVarUnit) +
-                            F(", ") + String(waterDepthVarUnit));
+                            F(", ") + String(waterDepthVarUnit) + F(", ") +
+                            String(rhoDepthVarUnit));
     // the last row is the variable code
     EnviroDIYLogger.logToSD(extraHeaderSpacer + String(waterPresureVarCode) +
-                            F(", ") + String(waterDepthVarCode));
-    // Now the same for the density corrected water level:
-    // the first row is the variable UUID's, we have two:
-    // for calculated pressure and calculated depth
-    EnviroDIYLogger.logToSD(extraHeaderSpacer + String(waterPressureUUID) +
-                            F(", ") + String(rhoDepthUUID));
-    // the next row is the sensor name, which is blank, so we'll put in a blank row
-    EnviroDIYLogger.logToSD(extraHeaderSpacer + F(", "));
-    // the third row is the variable name
-    EnviroDIYLogger.logToSD(extraHeaderSpacer + String(waterPresureVarName) +
-                            F(", ") + String(rhoDepthVarName));
-    // the fourth row is the variable unit name
-    EnviroDIYLogger.logToSD(extraHeaderSpacer + String(waterPresureVarUnit) +
-                            F(", ") + String(rhoDepthVarUnit));
-    // the last row is the variable code
-    EnviroDIYLogger.logToSD(extraHeaderSpacer + String(waterPresureVarCode) +
-                            F(", ") + String(rhoDepthVarCode));
+                            F(", ") + String(waterDepthVarCode) + F(", ") +
+                            String(rhoDepthVarCode));
 
     // Setup the logger sleep mode
     EnviroDIYLogger.setupSleep();
 
+    // Hold up for 10-seconds to allow immediate entry into sensor testing mode
+    // EnviroDIYLogger.checkForTestingMode(buttonPin);
+
+    //  Set up an interrupt on a pin to enter sensor testing mode at any time
+    pinMode(buttonPin, INPUT_PULLUP);
+    enableInterrupt(buttonPin, Logger::testingISR, CHANGE);
+    Serial.print(F("Push button on pin "));
+    Serial.print(buttonPin);
+    Serial.println(F(" at any time to enter sensor testing mode."));
+
     Serial.print(F("Logger setup finished!\n"));
     Serial.print(F("------------------------------------------\n\n"));
-
-    // Check for sensor testing mode
-    EnviroDIYLogger.checkForTestingMode(buttonPin);
 
     // Blink the LEDs really fast to show start-up is done
     greenredflash(6, 25);
@@ -391,6 +388,9 @@ void setup()
 // ==========================================================================
 // Main loop function
 // ==========================================================================
+
+// Because of the way the sleep mode is set up, the processor will wake up
+// and start the loop every minute exactly on the minute.
 void loop()
 {
     // Assuming we were woken up by the clock, check if the current time is an
@@ -511,6 +511,9 @@ void loop()
         // Print a line to show reading ended
         Serial.print(F("------------------------------------------\n\n"));
     }
+
+    // Check if it was instead the testing interrupt that woke us up
+    if (Logger::startTesting) EnviroDIYLogger.testingMode();
 
     // Sleep
     EnviroDIYLogger.systemSleep();
