@@ -10,7 +10,7 @@ Set the logger ID - change the "XXXX" in this section of code to the loggerID as
 const char *LoggerID = "XXXX";
 ```
 
-Set the calibration coefficients for the Campbell OBS3+ - The OBS3+ ships with a calibration certificate.  Change _all_ of the the xxxxE+xx values in this section of code to the values on that calibration sheet.  You should use the side of the calibration sheet that shows the calibration in _volts_.  The sketch will not compile if these values are not entered properly.  Do not change any values except those that are xxxxE+xx!
+Set the calibration coefficients for the Campbell OBS3+ - The OBS3+ ships with a calibration certificate.  Change _**all**_ of the the ```xxxxE+xx``` values in this section of code to the values on that calibration sheet.  You should use the side of the calibration sheet that shows the calibration in _**volts**_.  The sketch will not compile if these values are not entered properly.  Do not change any values except those that are ```xxxxE+xx```!
 
 ```cpp
 // ==========================================================================
