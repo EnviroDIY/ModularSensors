@@ -4,7 +4,7 @@ This Arduino library gives environmental sensors a common interface of functions
 * Retrieve data from many physical sensors;
 * Save that data to a SD memory card;
 * Transmit that data wirelessly to a web server; and
-* Put the processor, sensors and all other peripherals to sleep between readings to conserver power.
+* Put the processor, sensors and all other peripherals to sleep between readings to conserve power.
 
 The ModularSensors library coordinates these tasks by "wrapping" native sensor and variable functions into a common interface of functions and returns. These [wrapper functions](https://en.wikipedia.org/wiki/Wrapper_function) serve to harmonize and simplify the process of iterating through and logging data from a diverse set of sensors and variables.
 
@@ -30,8 +30,8 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
     - [AOSong DHT: humidity & temperature](#DHT)
     - [Bosch BME280: barometric pressure, humidity & temperature](#BME280)
     - [Campbell Scientific OBS-3+: turbidity, via TI ADS1115](#OBS3)
-    - [Decagon Devices 5TM: soil moisture](#5TM)
-    - [Decagon Devices CTD-10: conductivity, temperature & depth](#CTD)
+    - [Meter Environmental ECH2O 5TM (formerly Decagon Devices 5TM): soil moisture](#5TM)
+    - [Meter Environmental Hydros 21 (formerly Decagon Devices CTD-10): conductivity, temperature & depth](#CTD)
     - [Decagon Devices ES-2: conductivity ](#ES2)
     - [External I2C Rain Tipping Bucket Counter: rainfall totals](#ExtTips)
     - [External Voltage: via TI ADS1115](#ExtVolt)
@@ -710,9 +710,9 @@ Variable *obs3highTurbid = new CampbellOBS3_Turbidity(&osb3high, "UUID", "custom
 ```
 _____
 
-### <a name="5TM"></a>[Decagon Devices 5TM](https://www.decagon.com/en/soils/volumetric-water-content-sensors/5tm-vwc-temp/) Soil Moisture and Temperature Sensor
+### <a name="5TM"></a>[Meter Environmental ECH2O 5TM](https://www.metergroup.com/environment/products/ech2o-5tm-soil-moisture/) Soil Moisture and Temperature Sensor
 
-Decagon sensors communicate with the board using the [SDI-12 protocol](http://www.sdi-12.org/) (and the [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).  They require a 3.5-12V power supply, which can be turned off between measurements.  While contrary to the manual, they will run with power as low as 3.3V.  On the 5TM with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve.  On the bare-wire version, the power is connected to the _white_ cable, data to _red_, and ground to the unshielded cable.
+The 5TM soil moisture sensor communicates with the board using the [SDI-12 protocol](http://www.sdi-12.org/) (and the [Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12)).  It requires a 3.5-12V power supply, which can be turned off between measurements.  While contrary to the manual, they will run with power as low as 3.3V.  On the 5TM with a stereo cable, the power is connected to the tip, data to the ring, and ground to the sleeve.  On the bare-wire version, the power is connected to the _white_ cable, data to _red_, and ground to the unshielded cable.  Meter Environmental was formerly known as Decagon Devices and sold this sensor as the 5TM.
 
 The SDI-12 address of the sensor, the Arduino pin controlling power on/off, and the Arduino pin sending and receiving data are required for the sensor constructor.  Optionally, you can include a number of distinct readings to average.  The data pin must be a pin that supports pin-change interrupts.  To find or change the SDI-12 address of your sensor, load and run example [b_address_change](https://github.com/EnviroDIY/Arduino-SDI-12/tree/master/examples/b_address_change) within the SDI-12 library.
 
@@ -743,7 +743,9 @@ Variable *fivetmVWC = new Decagon5TM_Temp(&fivetm, "UUID", "customVarCode");  //
 ```
 _____
 
-### <a name="CTD"></a>[Decagon Devices CTD-5 or  CTD-10](https://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/ctd-10-sensor-electrical-conductivity-temperature-depth/) Electrical Conductivity, Temperature, and Depth Sensor
+### <a name="CTD"></a>[Meter Environmental Hydros 21](https://www.metergroup.com/environment/products/hydros-21-water-level-monitoring/) 3-in-1 Water Level Sensor (Electrical Conductivity, Temperature, and Depth Sensor)
+
+The Meter Environmental Hydros 21 has the same type of connections and communication protocol as the [Meter Environmental ECH2O 5TM](#5TM).  Meter Environmental was formerly known as Decagon Devices and sold this sensor as the CTD-5 or  CTD-10.
 
 The main constructor for the sensor object is:
 
@@ -773,6 +775,8 @@ Variable *ctdDepth = new DecagonCTD_Depth(&ctd, "UUID", "customVarCode");  // Wa
 _____
 
 ### <a name="ES2"></a>[Decagon Devices ES-2](http://www.decagon.com/en/hydrology/water-level-temperature-electrical-conductivity/es-2-electrical-conductivity-temperature/) Electrical Conductivity Sensor
+
+_NOTE:  Decagon Devices has become Meter Environmental and no longer sells this sensor._  If you still have one of these sensors, it follows the same connection and communication protocol as the [Meter Environmental ECH2O 5TM](#5TM).
 
 The main constructor for the sensor object is:
 
