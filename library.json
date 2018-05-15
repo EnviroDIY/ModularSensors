@@ -2,7 +2,7 @@
     "name": "EnviroDIY_ModularSensors",
     "version": "0.11.6",
     "description":  "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
-    "keywords": "sensor, modular, sensors, logger, low power, sleeping, EnviroDIY",
+    "keywords": "modular, sensor, sensors, datalogger, logger, low power, sleeping, EnviroDIY, ModularSensors, Mayfly, WikiWatershed",
     "platforms": "atmelavr, atmelsam",
     "frameworks": "arduino",
     "authors":

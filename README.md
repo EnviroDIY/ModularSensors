@@ -36,11 +36,11 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
     - [External I2C Rain Tipping Bucket Counter: rainfall totals](#ExtTips)
     - [External Voltage: via TI ADS1115](#ExtVolt)
     - [Freescale Semiconductor MPL115A2: barometric pressure and temperature](#MPL115A2)
+    - [Keller Submersible Level Transmitters: pressure and temperature](#keller)
     - [MaxBotix MaxSonar: water level](#MaxBotix)
     - [Maxim DS18: temperature](#DS18)
     - [Maxim DS3231: real time clock](#DS3231)
     - [Measurement Specialties MS5803: pressure and temperature](#MS5803)
-    - [Keller Submersible Level Transmitters: pressure and temperature](#keller)
     - [Yosemitech: water quality sensors](#Yosemitech)
     - [Zebra-Tech D-Opto: dissolved oxygen](#dOpto)
     - [Processor Metadata Treated as Sensors](#Onboard)
@@ -94,7 +94,7 @@ This library is designed for wireless, solar-powered environmental data logging 
 
 ### <a name="ldeps"></a>Library Dependencies
 
-In order to support multiple functions and sensors, there are quite a lot of sub-libraries that this library is dependent on.  _Even if you do not use the modules, you must have all of the dependencies installed for the library itself to properly compile._  Please check the [library.json](https://github.com/EnviroDIY/ModularSensors/blob/master/library.json) file for more details on the versions required of each library.
+In order to support multiple functions and sensors, there are quite a lot of sub-libraries that this library is dependent on.  _Even if you do not use the modules, you must have all of the dependencies installed for the library itself to properly compile._  Please check the [library.json](https://github.com/EnviroDIY/ModularSensors/blob/master/library.json) file for more details on the versions required of each library.  If you are using [PlatformIO](https://platformio.org), you can list "EnviroDIY_ModularSensors" in the ```lib_deps``` section of your platformio.ini file and all of these libraries will be installed automatically.  If using the "standard" Arduino IDE, you must install each of these libraries individually, or in a bundle from the [EnviroDIY Libraries](https://github.com/EnviroDIY/Libraries) meta-repository.
 
 - [EnableInterrupt](https://github.com/GreyGnome/EnableInterrupt) - Administrates and handles pin change interrupts, allowing the logger to sleep and save battery.  This also controls the interrupts for the versions of SoftwareSerial and SDI-12 linked below that have been stripped of interrupt control.  Because we use this library, _you must always add the line ```#include <EnableInterrupt.h>``` to the top of your sketch._
 - AVR sleep library - This is for low power sleeping for AVR processors. (This library is built in to the Arduino IDE.)
