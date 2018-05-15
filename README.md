@@ -414,7 +414,8 @@ Once the modem has been set up, it has all the functions of sensor object.  Thes
 - **openTCP(IPAddress ip, uint16_t port)** - Makes a TCP connection to a host ip address and port.  Returns 1 if successful.
 - **closeTCP()** - Breaks the TCP connection.
 - **disconnectInternet()** - Disconnects from the network, if applicable.
-- **off()** - Turns the modem off and empties the send and receive buffer.  Returns true if connection is successful.
+- **modemPowerUp()** - Turns the modem on.  Returns true if connection is successful.
+- **modemPowerDown()** - Turns the modem off and empties the send and receive buffer.  Returns true if connection is successful.
 - **getNISTTime()** - Returns the current Unix time stamp (_in UTC_) from NIST via the TIME protocol (rfc868).
 
 As mentioned above, the cellular modems themselves are also sensors with the following variables:
@@ -426,7 +427,7 @@ Variable *modemRSSI = Modem_RSSI(&modem, "UUID", "customVarCode");  // Received 
 Variable *modemSinalPct = Modem_SignalPercent(&modem, "UUID", "customVarCode");  // "Percent" signal strength
 ```
 
-The modem does not behave quite the same as all the other sensors do, though.  Setup must be done with the '''setupModem(...)''' function; the normal '''setup()''' function does not do anything.  The '''sleep()''' and '''powerDown()''' functions also do not work, the modem will only go off with the '''off()''' function.
+The modem does not behave quite the same as all the other sensors do, though.  Setup must be done with the ```setupModem(...)``` function; the normal ```setup()``` function does not do anything.  The ```powerUp()``` and ```powerDown()``` functions also do not work, the modem will only go on with the ```modemPowerUp()``` function and off with the ```modemPowerDown()``` function.
 
 Note for GPRSBee modems: To start the modem you will need to power the logger board off, connect the battery to the logger board, and finally attach the modem to the logger board. Then you may power the board and run your sketch. We have found that attaching a GPRSBee modem to power in a different sequence results in the modem reporting zero signal strength. Note, the Mayfly connected to a computer via USB does not supply sufficient power to the GPRSBee. If the community finds this true for other modems, please let us know.
 

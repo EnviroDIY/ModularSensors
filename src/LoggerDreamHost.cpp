@@ -184,7 +184,7 @@ void LoggerDreamHost::log(void)
         {
             // Turn on the modem to let it start searching for the network
             _logModem->powerUp();
-            _logModem->wake();
+            _logModem->modemPowerUp();
         }
 
         // Send power to all of the sensors
@@ -227,7 +227,7 @@ void LoggerDreamHost::log(void)
                 _logModem->disconnectInternet();
             }
             // Turn the modem off
-            _logModem->off();
+            _logModem->modemPowerDown();
         }
 
         // Create a csv data record and save it to the log file

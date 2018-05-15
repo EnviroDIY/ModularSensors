@@ -134,35 +134,19 @@ public:
     // The modem must be setup separately!
     virtual bool setup(void) override {return true;}
 
-    void powerUp(void) override
-    {
-        // Check if the modem is on; turn it on if not
-        if(!modemOnOff->isOn()) modemOnOff->on();
-        // Mark the time that the sensor was powered
-        _millisPowerOn = millis();
-        // Set the status bit for sensor power (bit 0)
-        _sensorStatus |= 0b00000001;
-    }
-
-    virtual bool wake(void) override
-    {
-        bool retVal = true;
-        // Check if the modem is on; turn it on if not
-        // if(!modemOnOff->isOn()) retVal = modemOnOff->on();
-        // Mark the time that the sensor was activated
-        _millisSensorActivated = millis();
-        // Set the status bit for sensor activation (bit 3)
-        _sensorStatus |= 0b00001000;
-        return retVal;
-    }
-
-    virtual bool sleep(void) override { return true; }
-
-    // Do NOT power down the modem with the regular sleep function.
+    // Do NOT turn the modem on and off with the regular power up and down or
+    // wake and sleep functions.
     // This is because when it is run in an array with other sensors, we will
     // generally want the modem to remain on after all the other sensors have
     // gone to sleep and powered down so the modem can send out data
-    void powerDown(void) override {}
+    void powerUp(void) override
+    {
+        MS_MOD_DBG(F("Skipping modem in sensor power up!\n"));
+    }
+    void powerDown(void) override
+    {
+        MS_MOD_DBG(F("Skipping modem in sensor power down!\n"));
+    }
 
     bool startSingleMeasurement(void) override
     {
@@ -419,8 +403,21 @@ public:
         MS_MOD_DBG(F("Closed TCP/IP.\n"));
     }
 
-    bool off(void)
+    bool modemPowerUp(void)
     {
+        MS_MOD_DBG(F("Turning modem on.\n"));
+        // Check if the modem is on; turn it on if not
+        if(!modemOnOff->isOn()) modemOnOff->on();
+        // Mark the time that the sensor was powered
+        _millisPowerOn = millis();
+        // Set the status bit for sensor power (bit 0)
+        _sensorStatus |= 0b00000001;
+        return modemOnOff->isOn();
+    }
+
+    bool modemPowerDown(void)
+    {
+        MS_MOD_DBG(F("Turning modem off.\n"));
         bool retVal = true;
          // Wait for any sending to complete
         _client->flush();

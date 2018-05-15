@@ -207,7 +207,7 @@ void setup()
     Serial.println(Logger::formatDateTime_ISO8601(Logger::getNowEpoch()));
 
     // Turn on the modem
-    modem.wake();
+    modem.modemPowerUp();
     // Connect to the network
     if (modem.connectInternet())
     {
@@ -217,7 +217,7 @@ void setup()
         modem.disconnectInternet();
     }
     // Turn off the modem
-    modem.off();
+    modem.modemPowerDown();
 
     // Set up the processor sleep mode
     // Because there's only one processor, we only need to do this once
@@ -307,7 +307,7 @@ void loop()
     if (Logger::markedEpochTime % 86400 == 0)
     {
         // Turn on the modem
-        modem.wake();
+        modem.modemPowerUp();
         // Connect to the network
         if (modem.connectInternet())
         {
@@ -317,7 +317,7 @@ void loop()
             modem.disconnectInternet();
         }
         // Turn off the modem
-        modem.off();
+        modem.modemPowerDown();
     }
 
     // Call the processor sleep

@@ -363,8 +363,7 @@ void loop()
         digitalWrite(greenLED, HIGH);
 
         // Turn on the modem to let it start searching for the network
-        modem.powerUp();
-        modem.wake();
+        modem.modemPowerUp();
 
         // Send power to all of the sensors
         Serial.print(F("Powering sensors...\n"));
@@ -396,7 +395,7 @@ void loop()
             modem.disconnectInternet();
         }
         // Turn the modem off
-        modem.off();
+        modem.modemPowerDown();
 
         // Turn off the LED
         digitalWrite(greenLED, LOW);
@@ -416,8 +415,7 @@ void loop()
     if (Logger::markedEpochTime % 86400 == 0)
     {
         // Turn on the modem
-        modem.powerUp();
-        modem.wake();
+        modem.modemPowerUp();
         // Connect to the network
         if (modem.connectInternet())
         {
@@ -427,7 +425,7 @@ void loop()
             modem.disconnectInternet();
         }
         // Turn off the modem
-        modem.off();
+        modem.modemPowerDown();
     }
 
     // Call the processor sleep

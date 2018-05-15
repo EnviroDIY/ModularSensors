@@ -304,8 +304,7 @@ void setup()
     // Now that the modem is attached, use it to sync the clock with NIST
     Serial.print(F("Attempting to synchronize RTC with NIST\n"));
     // Turn on the modem
-    EnviroDIYLogger._logModem->powerUp();
-    EnviroDIYLogger._logModem->wake();
+    EnviroDIYLogger._logModem->modemPowerUp();
     // Connect to the network
     if (EnviroDIYLogger._logModem->connectInternet())
     {
@@ -314,7 +313,7 @@ void setup()
         EnviroDIYLogger._logModem->disconnectInternet();
     }
     // Turn off the modem
-    EnviroDIYLogger._logModem->off();
+    EnviroDIYLogger._logModem->modemPowerDown();
 
     // Enter the tokens for the connection with EnviroDIY
     EnviroDIYLogger.setToken(registrationToken);
@@ -403,8 +402,7 @@ void loop()
         digitalWrite(greenLED, HIGH);
 
         // Turn on the modem to let it start searching for the network
-        EnviroDIYLogger._logModem->powerUp();
-        EnviroDIYLogger._logModem->wake();
+        EnviroDIYLogger._logModem->modemPowerUp();
 
         // Send power to all of the sensors
         Serial.print(F("Powering sensors...\n"));
@@ -501,7 +499,7 @@ void loop()
             EnviroDIYLogger._logModem->disconnectInternet();
         }
         // Turn the modem off
-        EnviroDIYLogger._logModem->off();
+        EnviroDIYLogger._logModem->modemPowerDown();
 
         // Create a csv data record and save it to the log file
         EnviroDIYLogger.logToSD(csvToGo);
