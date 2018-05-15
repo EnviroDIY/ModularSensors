@@ -468,7 +468,7 @@ void loop()
         // Figure out how long the original json is
         int jsonLength = jsonRaw.length();
         // Crop off the last ' }' from the json
-        String jsonToGo = jsonRaw.substring(0,jsonLength-2);
+        String jsonToGo = jsonRaw.substring(0,jsonLength-1);
         // add the UUID for the water pressure
         jsonToGo += F(", \"");
         jsonToGo += String(waterPressureUUID);
@@ -488,7 +488,7 @@ void loop()
         // add the density corrected water depth value
         jsonToGo += String(rhoDepth);
         // re-add the last '}'
-        jsonToGo += F(" }");
+        jsonToGo += F("}");
 
         // Connect to the network
         Serial.print(F("Connecting to the internet...\n"));
