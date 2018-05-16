@@ -43,13 +43,6 @@ bool AOSongAM2315::setup(void)
 }
 
 
-bool AOSongAM2315::wake(void)
-{
-    Wire.begin();
-    return Sensor::wake();  // this will set timestamp and status bit;
-}
-
-
 bool AOSongAM2315::addSingleMeasurementResult(void)
 {
     // Initialize float variables

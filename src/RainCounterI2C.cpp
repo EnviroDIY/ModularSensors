@@ -47,13 +47,6 @@ bool RainCounterI2C::setup(void)
 }
 
 
-bool RainCounterI2C::wake(void)
-{
-    Wire.begin();
-    return Sensor::wake();  // this will set timestamp and status bit;
-}
-
-
 bool RainCounterI2C::addSingleMeasurementResult(void)
 {
     //intialize values

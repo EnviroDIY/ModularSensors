@@ -65,13 +65,6 @@ bool MeaSpecMS5803::setup(void)
 }
 
 
-bool MeaSpecMS5803::wake(void)
-{
-    Wire.begin();
-    return Sensor::wake();  // this will set timestamp and status bit;
-}
-
-
 bool MeaSpecMS5803::addSingleMeasurementResult(void)
 {
     bool success = false;

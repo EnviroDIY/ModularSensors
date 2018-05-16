@@ -74,7 +74,6 @@ public:
                   int maxPressure = 14, uint8_t measurementsToAverage = 1);
 
     bool setup(void) override;
-    bool wake(void) override;
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;

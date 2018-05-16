@@ -53,7 +53,6 @@ public:
     MPL115A2(int8_t powerPin, uint8_t measurementsToAverage = 1);
 
     bool setup(void) override;
-    bool wake(void) override;
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
