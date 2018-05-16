@@ -43,6 +43,13 @@ bool MPL115A2::setup(void)
 }
 
 
+bool MPL115A2::wake(void)
+{
+    Wire.begin();
+    return Sensor::wake();  // this will set timestamp and status bit;
+}
+
+
 bool MPL115A2::addSingleMeasurementResult(void)
 {
     // Initialize float variables

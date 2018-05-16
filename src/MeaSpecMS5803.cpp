@@ -34,6 +34,7 @@
 */
 
 #include "MeaSpecMS5803.h"
+#include <Wire.h> // Wire library is used for I2C
 
 
 // The constructor - because this is I2C, only need the power pin
@@ -61,6 +62,13 @@ bool MeaSpecMS5803::setup(void)
     MS5803_internal.begin(_i2cAddressHex, _maxPressure);
     MS5803_internal.reset();
     return Sensor::setup();  // this will set timestamp and status bit
+}
+
+
+bool MeaSpecMS5803::wake(void)
+{
+    Wire.begin();
+    return Sensor::wake();  // this will set timestamp and status bit;
 }
 
 

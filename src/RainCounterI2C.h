@@ -51,6 +51,7 @@ public:
     RainCounterI2C(uint8_t i2cAddressHex = 0x08, float rainPerTip = 0.2);
 
     bool setup(void) override;
+    bool wake(void) override;
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
