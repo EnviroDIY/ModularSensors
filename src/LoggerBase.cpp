@@ -411,12 +411,18 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
         // Temporarily disables interrupts, so no mistakes are made when writing
         // to the processor registers
         noInterrupts();
+
         // Disable the processor ADC
         ADCSRA &= ~_BV(ADEN);
+
         // turn off the brown-out detector, if possible
         #if defined(BODS) && defined(BODSE)
             sleep_bod_disable();
         #endif
+
+        // disable all power modules
+        power_all_disable();
+
         // Set the sleep enable bit.
         sleep_enable();
         // Re-enables interrupts so we can wake up again
@@ -429,6 +435,10 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
         // This portion happens on the wake up..
         // Clear the SE (sleep enable) bit.
         sleep_disable();
+
+        // re-enable all power modules
+        power_all_enable();
+
         // Re-enable the processor ADC
         ADCSRA |= _BV(ADEN);
     }
