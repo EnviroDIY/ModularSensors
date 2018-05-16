@@ -309,6 +309,9 @@ void LoggerEnviroDIY::testingMode()
 
     // Unset testing mode flag
     Logger::isTestingNow = false;
+
+    // Sleep
+    if(_sleep){systemSleep();}
 }
 
 
@@ -366,6 +369,9 @@ void LoggerEnviroDIY::begin(void)
 
     PRINTOUT(F("Logger setup finished!\n"));
     PRINTOUT(F("------------------------------------------\n\n"));
+
+    // Sleep
+    if(_sleep){systemSleep();}
 }
 
 

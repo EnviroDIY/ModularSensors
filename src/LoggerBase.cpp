@@ -732,6 +732,9 @@ void Logger::testingMode()
 
     // Unset testing mode flag
     Logger::isTestingNow = false;
+
+    // Sleep
+    if(_sleep){systemSleep();}
 }
 
 
@@ -772,6 +775,9 @@ void Logger::testingMode()
 
     PRINTOUT(F("Logger setup finished!\n"));
     PRINTOUT(F("------------------------------------------\n\n"));
+
+    // Sleep
+    if(_sleep){systemSleep();}
 }
 
 
