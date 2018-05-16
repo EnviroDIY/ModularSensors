@@ -9,8 +9,12 @@
 
 #include "LoggerBase.h"  // To communicate with the internet
 
-#define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
-#include <EnableInterrupt.h>  // To handle external and pin change interrupts
+// To prevent compiler/linker crashes with Enable interrupt
+#define LIBCALL_ENABLEINTERRUPT
+// To handle external and pin change interrupts
+#include <EnableInterrupt.h>
+// For all i2c communication, including with the real time clock
+#include <Wire.h>
 
 
 // Initialize the static timezone
@@ -412,7 +416,7 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
         // to the processor registers
         noInterrupts();
 
-        // Disable the processor ADC
+        // Disable the processor ADC (must be disabled before it will power down)
         ADCSRA &= ~_BV(ADEN);
 
         // turn off the brown-out detector, if possible
@@ -433,14 +437,17 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
         sleep_cpu();
 
         // This portion happens on the wake up..
-        // Clear the SE (sleep enable) bit.
-        sleep_disable();
-
         // re-enable all power modules
         power_all_enable();
 
+        // Clear the SE (sleep enable) bit.
+        sleep_disable();
+
         // Re-enable the processor ADC
         ADCSRA |= _BV(ADEN);
+
+        // Re-start the "Wire" interface needed to communicate with the RTC
+        Wire.begin();
     }
 #endif
 
