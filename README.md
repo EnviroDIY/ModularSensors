@@ -44,6 +44,8 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
     - [Yosemitech: water quality sensors](#Yosemitech)
     - [Zebra-Tech D-Opto: dissolved oxygen](#dOpto)
     - [Processor Metadata Treated as Sensors](#Onboard)
+- [Help: Common problems and FAQ's](#help)
+    - [Power Draw over Serial Lines](#parasites)
 - [Notes on Arduino Streams and Software Serial](#SoftwareSerial)
 - [Processor/Board Compatibility](#compatibility)
 - [Contributing](#contribute)
@@ -1009,6 +1011,7 @@ _____
 ### <a name="keller"></a>[Keller Submersible Water Level Transmitters](http://www.te.com/usa-en/product-CAT-BLPS0013.html) Pressure Sensor
 
 Many Keller pressure and water level sensors can communicate via Modbus RTU over RS485. The functions below should work with any Keller Series 30, Class 5, Group 20 sensor (such as the Keller Acculevel) that are Software version 5.20-12.28 and later (i.e. made after the 2012 in the 28th week). Note that these have only been tested with the Acculevel. More documentation for our implementation of the Keller Modbus communication Protocol commands and responses, along with information about the various variables, can be found in the [EnviroDIY KellerModbus library](https://github.com/EnviroDIY/KellerModbus). Sensors ship with default Slave addresses set to 0x01, but these can be reset. These Keller sensors expect an input voltage of 9-28 VDC, so they also require a voltage booster and an RS485 to TTL Serial converter with logic level shifting from the higher output voltage to the 3.3V or 5V of the Arduino data logging board.
+
 Digital communication with Keller sensors configured for SDI12 communication protocols are not supported by these functions.
 
 The sensor constructor requires as input: modbus address, the pin controlling sensor power, and a stream instance for data (ie, ```Serial```).  The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.  (Use -1 for the enable pin if your adapter does not have one and you want to average more than one reading.) Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.  AltSoftSerial and HardwareSerial work fine.
@@ -1291,6 +1294,15 @@ Variable *mayflyRAM = new ProcessorStats_FreeRam(&mayfly, "UUID", "customVarCode
 //  Accuracy is 1 bit
 //  Range is 0 to full RAM available on processor
 ```
+_____
+
+
+## <a name="help"></a>Help: Common problems and FAQ's
+
+### <a name="parasites"></a>Power Draw over Serial Lines
+
+When deploying a logger out into the wild and depending on only battery or solar charging, getting the power draw from sensors to be as low as possible is crucial.  This library assumes that the main power/Vcc supply to each sensor can be turned on by setting its powerPin high and off by setting its powerPin low.  For most well-designed sensors, this should stop all power draw from the sensor.  Real sensors, Unfortunately, aren't as well designed as one might hope and some sensors (and particularly RS485 adapters) can continue to suck power from by way of high or floating data pins.  For most sensors, this library attempts to set all data pins low when sending the sensor to sleep.  The default I2C "Wire" pins are also explicitly forced low when the logger goes to sleep.  The "Serial" port pins, unfortunately, can't be controlled so easily:  there are too many different hardware and serial pin possibilities.  If you have a nasty power-stealing serial sensor or adapter, you can still stop it from drawing power!  It just takes a bit more work.  You will have to "write-out" your loop function.  (You can't just use ```log()```.)  When writing your loop function, add a ```SerialPortName.begin(BAUD);``` statement to the beginning of your loop, before ```sensorsPowerUp()```.  Then, at the end of the loop, after ```sensorsPowerDown()``` add ```SerialPortName.end(BAUD);```.  If you're lucky, that's all you should need to do.  When using a software serial port emulator, you may also want to explicity set your Rx and Tx pins low using ```digitalWrite(#, LOW);```.
+
 _____
 
 ## <a name="SoftwareSerial"></a>Notes on Arduino Streams and Software Serial
