@@ -417,14 +417,36 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
         noInterrupts();
 
         // Disable the processor ADC (must be disabled before it will power down)
+        // ADCSRA = ADC Control and Status Register A
+        // ADEN = ADC Enable
         ADCSRA &= ~_BV(ADEN);
 
         // turn off the brown-out detector, if possible
+        // BODS = brown-out detector sleep
+        // BODSE = brown-out detector sleep enable
         #if defined(BODS) && defined(BODSE)
             sleep_bod_disable();
         #endif
 
-        // disable all power modules
+        // turn off I2C
+        // TWCR = TWI Control Register
+        // TWEN = TWI Enable
+        // TWIE = TWI Interrupt Enable
+        // TWEA = TWI Enable Acknowledge
+        TWCR &= ~(bit(TWEN) | bit(TWIE) | bit(TWEA));
+
+        // probably over-kill, but hard-setting the I2C pins to LOW
+        // I2C devices have a nasty habit of stealing power from the SCL and SDA pins...
+        // This will only work for the "main" I2C/TWI interface
+        pinMode(SDA, INPUT);  // set input mode
+        pinMode(SCL, INPUT);
+        digitalWrite(SDA, LOW);  // Turn off pull-up resistors
+        digitalWrite(SCL, LOW);
+
+        // disable all power-reduction modules (ie, the processor module clocks)
+        // NOTE:  This only shuts down the various clocks on the processor via
+        // the power reduction register!  It does NOT actually disable the
+        // modules themselves or set the pins to any particular state!
         power_all_disable();
 
         // Set the sleep enable bit.
@@ -436,8 +458,11 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
         // This must happen after the SE bit is set.
         sleep_cpu();
 
-        // This portion happens on the wake up..
-        // re-enable all power modules
+        // ----------------- This portion happens on wake up -----------------
+
+        // Re-enable all power modules (ie, the processor module clocks)
+        // NOTE:  This only re-enables the various clocks on the processor!
+        // The modules may need to be re-initialized after the clocks re-start.
         power_all_enable();
 
         // Clear the SE (sleep enable) bit.
