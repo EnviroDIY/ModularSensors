@@ -183,7 +183,6 @@ void LoggerDreamHost::log(void)
         if (_modemAttached)
         {
             // Turn on the modem to let it start searching for the network
-            _logModem->powerUp();
             _logModem->modemPowerUp();
         }
 

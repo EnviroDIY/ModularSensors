@@ -331,11 +331,17 @@ void LoggerEnviroDIY::begin(void)
 
     if (_modemAttached)
     {
+        // Turn on the modem to let it start searching for the network
+        _logModem->modemPowerUp();
+    }
+
+    // Set up the sensors
+    setupSensors();
+
+    if (_modemAttached)
+    {
         // Synchronize the RTC with NIST
         PRINTOUT(F("Attempting to synchronize RTC with NIST\n"));
-        // Turn on the modem
-        _logModem->powerUp();
-        _logModem->modemPowerUp();
         // Connect to the network
         if (_logModem->connectInternet(120000L))
         {
@@ -346,9 +352,6 @@ void LoggerEnviroDIY::begin(void)
         // Turn off the modem
         _logModem->modemPowerDown();
     }
-
-    // Set up the sensors
-    setupSensors();
 
     // Set the filename for the logger to save to, if it hasn't been done
     if(!_isFileNameSet){setFileName();}

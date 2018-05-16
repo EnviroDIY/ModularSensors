@@ -22,10 +22,12 @@
 #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM808) || \
     defined(TINY_GSM_MODEM_SIM868) || defined(TINY_GSM_MODEM_SIM900) || \
     defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
-    defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_U201) || \
+    defined(TINY_GSM_MODEM_UBLOX) || defined(TINY_GSM_MODEM_M590) || \
+    defined(TINY_GSM_MODEM_M95) || defined(TINY_GSM_MODEM_BG96) || \
+    defined(TINY_GSM_MODEM_MC60) || \
     defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
   #define TINY_GSM_YIELD() { delay(1);}
-  #define TINY_GSM_RX_BUFFER 14  // So we never get much data
+  #define TINY_GSM_RX_BUFFER 14
   #include <TinyGsmClient.h>
 #else
   #include <NullModem.h>  // purely to help me debug compilation issues
@@ -46,10 +48,16 @@
     #define MODEM_NAME "AI-Thinker A6"
 #elif defined(TINY_GSM_MODEM_A7)
     #define MODEM_NAME "AI-Thinker A7"
+#elif defined(TINY_GSM_MODEM_UBLOX)
+    #define MODEM_NAME "u-blox Cellular"
 #elif defined(TINY_GSM_MODEM_M590)
     #define MODEM_NAME "Neoway M590"
-#elif defined(TINY_GSM_MODEM_U201)
-    #define MODEM_NAME "u-blox SARA U201"
+#elif defined(TINY_GSM_MODEM_M95)
+    #define MODEM_NAME "Quectel M95"
+#elif defined(TINY_GSM_MODEM_BG96)
+    #define MODEM_NAME "Quectel BG96"
+#elif defined(TINY_GSM_MODEM_MC60)
+    #define MODEM_NAME "Quectel MC60"
 #elif defined(TINY_GSM_MODEM_ESP8266)
     #define MODEM_NAME "ESP8266"
 #elif defined(TINY_GSM_MODEM_XBEE)
@@ -424,6 +432,10 @@ public:
         // Check if the modem is on; turn it off if so
         if(modemOnOff->isOn()) retVal = modemOnOff->off();
         else retVal =  true;
+        // Unset the status bits for sensor power (bit 0), warm-up (bit 2),
+        // activation (bit 3), stability (bit 4), measurement request (bit 5), and
+        // measurement completion (bit 6)
+        _sensorStatus &= 0b10000010;
         return retVal;
     }
 

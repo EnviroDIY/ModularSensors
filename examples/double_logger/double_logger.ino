@@ -187,9 +187,26 @@ void setup()
     // Setup the logger modem
     modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
 
+    // Turn on the modem
+    modem.modemPowerUp();
+
     // Set up the sensors on both loggers
     logger1min.setupSensors();
     logger5min.setupSensors();
+
+    // Print out the current time
+    Serial.print(F("Current RTC time is: "));
+    Serial.println(Logger::formatDateTime_ISO8601(Logger::getNowEpoch()));
+    // Connect to the network
+    if (modem.connectInternet())
+    {
+        // Synchronize the RTC
+        logger1min.syncRTClock(modem.getNISTTime());
+        // Disconnect from the network
+        modem.disconnectInternet();
+    }
+    // Turn off the modem
+    modem.modemPowerDown();
 
     // Give the loggers different file names
     // If we wanted to auto-generate the file name, that could also be done by
@@ -201,23 +218,6 @@ void setup()
     // Setup the logger files.  This will automatically add headers to each
     logger1min.setupLogFile();
     logger5min.setupLogFile();
-
-    // Print out the current time
-    Serial.print(F("Current RTC time is: "));
-    Serial.println(Logger::formatDateTime_ISO8601(Logger::getNowEpoch()));
-
-    // Turn on the modem
-    modem.modemPowerUp();
-    // Connect to the network
-    if (modem.connectInternet())
-    {
-        // Synchronize the RTC
-        logger1min.syncRTClock(modem.getNISTTime());
-        // Disconnect from the network
-        modem.disconnectInternet();
-    }
-    // Turn off the modem
-    modem.modemPowerDown();
 
     // Set up the processor sleep mode
     // Because there's only one processor, we only need to do this once

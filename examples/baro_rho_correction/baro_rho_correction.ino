@@ -300,11 +300,18 @@ void setup()
 
     // Attach the modem to the logger
     EnviroDIYLogger.attachModem(&modem);
-
-    // Now that the modem is attached, use it to sync the clock with NIST
-    Serial.print(F("Attempting to synchronize RTC with NIST\n"));
-    // Turn on the modem
+    // Immediately turn on the modem
     EnviroDIYLogger._logModem->modemPowerUp();
+
+    // Enter the tokens for the connection with EnviroDIY
+    EnviroDIYLogger.setToken(registrationToken);
+    EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
+
+    // Set up the sensors
+    EnviroDIYLogger.setupSensors();
+
+    // Sync the clock with NIST
+    Serial.print(F("Attempting to synchronize RTC with NIST\n"));
     // Connect to the network
     if (EnviroDIYLogger._logModem->connectInternet())
     {
@@ -314,13 +321,6 @@ void setup()
     }
     // Turn off the modem
     EnviroDIYLogger._logModem->modemPowerDown();
-
-    // Enter the tokens for the connection with EnviroDIY
-    EnviroDIYLogger.setToken(registrationToken);
-    EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
-
-    // Set up the sensors
-    EnviroDIYLogger.setupSensors();
 
     // Generate a logger file name from the LoggerID and the date/time on the RTC
     // This will start a new file every time the logger is reset
