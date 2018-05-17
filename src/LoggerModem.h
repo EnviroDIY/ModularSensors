@@ -319,7 +319,7 @@ public:
         }
 
         // Check that the modem is responding to AT commands.  If not, give up.
-        if (!_modem->testAT(1000))
+        if (!_modem->testAT(5000))
         {
             MS_MOD_DBG(F("\nModem does not respond to AT commands!\n"));
             return false;
@@ -583,8 +583,12 @@ private:
         static TinyGsmClient client(modem);
         _client = &client;
 
-        MS_MOD_DBG(F("Initializing "), F(MODEM_NAME), F("..."));
+        MS_MOD_DBG(F("Initializing "), F(MODEM_NAME), F("...\n"));
         String XBeeChip;
+        // Turn the modem on .. whether it was on or not
+        // Need to turn on no matter what because some modems don't have an
+        // effective way of telling us whether they're on or not
+        modemOnOff->on();
         // Check if the modem is on; turn it on if not
         if(!modemOnOff->isOn()) modemOnOff->on();
         // Check again if the modem is on.  Only "begin" if it responded.
