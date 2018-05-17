@@ -77,35 +77,36 @@ Variable *mayflyRAM = new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-ef
 HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
 
 #if defined(TINY_GSM_MODEM_XBEE)
+const long ModemBaud = 9600;  // Default for XBee is 9600, I've sped mine up to 57600
 const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 ModemSleepType ModemSleepMode = modem_sleep_reverse;  // How the modem is put to sleep
 
 #elif defined(TINY_GSM_MODEM_ESP8266)
+const long ModemBaud = 57600;  // Default for ESP8266 is 115200, but the Mayfly itself stutters above 57600
 const int8_t modemSleepRqPin = 19;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
 const int8_t modemStatusPin = -1;   // Modem Status Pin (indicates power status) (-1 if unconnected)
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 ModemSleepType ModemSleepMode = modem_always_on;  // How the modem is put to sleep
 
-#else
+#elif defined(TINY_GSM_MODEM_UBLOX)
+const long ModemBaud = 9600;
 const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sleep
-#endif
+
+#else
+const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble making it fast (19200 works)
+const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
+const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
+const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sleep
 // Use "modem_sleep_held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
 // Use "modem_sleep_pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
 // Use "modem_sleep_reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
 // Use "modem_always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
-#if defined(TINY_GSM_MODEM_ESP8266)
-const long ModemBaud = 57600;  // Default for ESP8266 is 115200, but the Mayfly itself stutters above 57600
-#elif defined(TINY_GSM_MODEM_SIM800)
-const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble making it fast (19200 works)
-#elif defined(TINY_GSM_MODEM_XBEE)
-const long ModemBaud = 9600;  // Default for XBee is 9600, I've sped mine up to 57600
-#else
-const long ModemBaud = 9600;  // Modem baud rate
 #endif
 
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
@@ -144,6 +145,7 @@ byte y504modbusAddress = 0x04;  // The modbus address of the Y504
 const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y504NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
+// Create and return the Yosemitech Y504 sensor object
 YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePin, y504NumberReadings);
 // Create the dissolved oxygen percent, dissolved oxygen concentration, and
 // temperature variable objects for the Y504 and return variable-type
@@ -162,7 +164,7 @@ byte y511modbusAddress = 0x1A;  // The modbus address of the Y511
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y511NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 // Create and return the Y511-A Turbidity sensor object
-YosemitechY511 y511(y511modbusAddress, modbusSerial, modbusPower, max485EnablePin, y511NumberReadings);// Create the turbidity and temperature variable objects for the Y510 and return variable-type pointers to them
+YosemitechY511 y511(y511modbusAddress, modbusSerial, modbusPower, max485EnablePin, y511NumberReadings);
 // Create the turbidity and temperature variable objects for the Y511 and return variable-type pointers to them
 Variable *y511Turb = new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *y511Temp = new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab");

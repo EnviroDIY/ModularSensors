@@ -60,7 +60,7 @@ const int8_t wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
 
-// Create the processor "sensor"
+// Create and return the processor "sensor"
 const char *MFVersion = "v0.5";
 ProcessorStats mayfly(MFVersion) ;
 
@@ -71,35 +71,36 @@ ProcessorStats mayfly(MFVersion) ;
 HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
 
 #if defined(TINY_GSM_MODEM_XBEE)
+const long ModemBaud = 9600;  // Default for XBee is 9600, I've sped mine up to 57600
 const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 ModemSleepType ModemSleepMode = modem_sleep_reverse;  // How the modem is put to sleep
 
 #elif defined(TINY_GSM_MODEM_ESP8266)
+const long ModemBaud = 57600;  // Default for ESP8266 is 115200, but the Mayfly itself stutters above 57600
 const int8_t modemSleepRqPin = 19;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
 const int8_t modemStatusPin = -1;   // Modem Status Pin (indicates power status) (-1 if unconnected)
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 ModemSleepType ModemSleepMode = modem_always_on;  // How the modem is put to sleep
 
-#else
+#elif defined(TINY_GSM_MODEM_UBLOX)
+const long ModemBaud = 9600;
 const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sleep
-#endif
+
+#else
+const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble making it fast (19200 works)
+const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
+const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
+const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sleep
 // Use "modem_sleep_held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
 // Use "modem_sleep_pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
 // Use "modem_sleep_reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
 // Use "modem_always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
-#if defined(TINY_GSM_MODEM_ESP8266)
-const long ModemBaud = 9600;  // Default for ESP8266 is 115200, but the Mayfly itself stutters above 57600
-#elif defined(TINY_GSM_MODEM_SIM800)
-const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble making it fast (19200 works)
-#elif defined(TINY_GSM_MODEM_XBEE)
-const long ModemBaud = 9600;  // Default for XBee is 9600, I've sped mine up to 57600
-#else
-const long ModemBaud = 9600;  // Modem baud rate
 #endif
 
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
@@ -115,6 +116,7 @@ loggerModem modem;
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
 #include <MaximDS3231.h>
+// Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
 
 
@@ -123,6 +125,7 @@ MaximDS3231 ds3231(1);
 // ==========================================================================
 #include <AOSongAM2315.h>
 const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// Create and return the AOSong AM2315 sensor object
 AOSongAM2315 am2315(I2CPower);
 
 
@@ -133,6 +136,7 @@ AOSongAM2315 am2315(I2CPower);
 const int8_t DHTPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t DHTPin = 10;  // DHT data pin
 DHTtype dhtType = DHT11;  // DHT type, either DHT11, DHT21, or DHT22
+// Create and return the AOSong DHT sensor object
 AOSongDHT dht(DHTPower, DHTPin, dhtType);
 
 
@@ -143,6 +147,7 @@ AOSongDHT dht(DHTPower, DHTPin, dhtType);
 const int8_t SQ212Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t SQ212Data = 2;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const uint8_t SQ212_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
+// Create and return the Apogee SQ212 sensor object
 ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
 
 
@@ -152,6 +157,7 @@ ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
 #include <BoschBME280.h>
 uint8_t BMEi2c_addr = 0x76;  // The BME280 can be addressed either as 0x76 or 0x77
 // const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// Create and return the Bosch BME280 sensor object
 BoschBME280 bme280(I2CPower, BMEi2c_addr);
 
 
@@ -167,12 +173,14 @@ const int8_t OBSLowPin = 0;  // The low voltage analog pin ON THE ADS1115 (NOT t
 const float OBSLow_A = 4.0749E+00;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = 9.1011E+01;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibration
+// Create and return the Campbell OBS3+ LOW RANGE sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, OBS3_ADS1115Address, OBS3numberReadings);
 // Campbell OBS 3+ High Range calibration in Volts
 const int8_t OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const float OBSHigh_A = 5.2996E+01;  // The "A" value (X^2) from the high range calibration
 const float OBSHigh_B = 3.7828E+02;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calibration
+// Create and return the Campbell OBS3+ HIGH RANGE sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OBS3_ADS1115Address, OBS3numberReadings);
 
 
@@ -183,6 +191,7 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OB
 const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
 const int8_t SDI12Data = 7;  // The pin the 5TM is attached to
 const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+// Create and return the Decagon 5TM sensor object
 Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
 
 
@@ -194,6 +203,7 @@ const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const uint8_t CTDnumberReadings = 6;  // The number of readings to average
 // const int8_t SDI12Data = 7;  // The pin the CTD is attached to
 // const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+// Create and return the Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 
 
@@ -205,6 +215,7 @@ const char *ES2SDI12address = "3";  // The SDI-12 Address of the ES2
 // const int8_t SDI12Data = 7;  // The pin the ES2 is attached to
 // const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t ES2NumberReadings = 3;
+// Create and return the Decagon ES2 sensor object
 DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
 
 
@@ -217,16 +228,13 @@ const int8_t VoltData = 0;  // The data pin ON THE ADS1115 (NOT the Arduino Pin 
 const float VoltGain = 10; // Default 1/gain for grove voltage divider is 10x
 const uint8_t Volt_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
 const uint8_t VoltReadsToAvg = 1; // Only read one sample
+// Create and return the External Voltage sensor object
 ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, Volt_ADS1115Address, VoltReadsToAvg);
 
 
 // ==========================================================================
 //    Maxbotix HRXL Ultrasonic Range Finder
 // ==========================================================================
-#include <MaxBotixSonar.h>
-const int8_t SonarPower = 22;  // Excite (power) pin (-1 if unconnected)
-const int8_t Sonar1Trigger = A1;  // Trigger pin (a negative number if unconnected)
-const int8_t Sonar2Trigger = A2;  // Trigger pin (a negative number if unconnected)
 
 // Set up a serial port for receiving sonar data - in this case, using software serial
 // Because the standard software serial library uses interrupts that conflict
@@ -244,7 +252,11 @@ const int8_t Sonar2Trigger = A2;  // Trigger pin (a negative number if unconnect
 const int SonarData = 11;     // data receive pin
 SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
 
-// Now actually creating the sensor object
+#include <MaxBotixSonar.h>
+const int8_t SonarPower = 22;  // Excite (power) pin (-1 if unconnected)
+const int8_t Sonar1Trigger = A1;  // Trigger pin (a negative number if unconnected) (A1 = 25)
+const int8_t Sonar2Trigger = A2;  // Trigger pin (a negative number if unconnected) (A2 = 26)
+// Create and return the MaxBotix Sonar sensor object
 MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger) ;
 MaxBotixSonar sonar2(sonarSerial, SonarPower, Sonar2Trigger) ;
 
@@ -261,11 +273,13 @@ DeviceAddress OneWireAddress4 = {0x28, 0xFF, 0xB6, 0x6E, 0x84, 0x16, 0x05, 0x9B}
 DeviceAddress OneWireAddress5 = {0x28, 0xFF, 0x3B, 0x07, 0x82, 0x16, 0x03, 0xB3};
 const int8_t OneWireBus = A0;  // Pin attached to the OneWire Bus (-1 if unconnected)
 const int8_t OneWirePower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// Create and return the Maxim DS18 sensor objects (use this form for a known address)
 MaximDS18 ds18_1(OneWireAddress1, OneWirePower, OneWireBus);
 MaximDS18 ds18_2(OneWireAddress2, OneWirePower, OneWireBus);
 MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
 MaximDS18 ds18_4(OneWireAddress4, OneWirePower, OneWireBus);
 MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
+// Create and return the Maxim DS18 sensor object (use this form for a single sensor on bus with an unknow address)
 // MaximDS18 ds18_5(OneWirePower, OneWireBus);
 
 
@@ -277,6 +291,7 @@ MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
 const uint8_t MS5803i2c_addr = 0x76;  // The MS5803 can be addressed either as 0x76 or 0x77
 const int MS5803maxPressure = 14;  // The maximum pressure measurable by the specific MS5803 model
 const uint8_t MS5803ReadingsToAvg = 1;
+// Create and return the MeaSpec MS5803 pressure and temperature sensor object
 MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803ReadingsToAvg);
 
 
@@ -286,6 +301,7 @@ MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803Readings
 #include <FreescaleMPL115A2.h>
 // const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t MPL115A2ReadingsToAvg = 1;
+// Create and return the MPL115A2 barometer sensor object
 MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 
 
@@ -295,6 +311,7 @@ MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 #include <RainCounterI2C.h>
 const uint8_t RainCounterI2CAddress = 0x08;  // I2C Address for external tip counter
 const float depthPerTipEvent = 0.2;  // rain depth in mm per tip event
+// Create and return the Rain Counter sensor object
 RainCounterI2C tip(RainCounterI2CAddress, depthPerTipEvent);
 
 
@@ -310,6 +327,7 @@ byte acculevelModbusAddress = 0x01;  // The modbus address of KellerAcculevel
 const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends taking and averaging a few readings
+// Create and return the Keller Acculevel sensor object
 KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, modbusPower, max485EnablePin, acculevelNumberReadings);
 
 
@@ -321,6 +339,7 @@ byte y504modbusAddress = 0x04;  // The modbus address of the Y504
 // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y504NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
+// Create and return the Yosemitech Y504 dissolved oxygen sensor object
 YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePin, y504NumberReadings);
 
 
@@ -332,6 +351,7 @@ byte y510modbusAddress = 0x0B;  // The modbus address of the Y510
 // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y510NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
+// Create and return the Y510-B Turbidity sensor object
 YosemitechY510 y510(y510modbusAddress, modbusSerial, modbusPower, max485EnablePin, y510NumberReadings);
 
 
@@ -343,6 +363,7 @@ byte y511modbusAddress = 0x1A;  // The modbus address of the Y511
 // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y511NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
+// Create and return the Y511-A Turbidity sensor object
 YosemitechY511 y511(y511modbusAddress, modbusSerial, modbusPower, max485EnablePin, y511NumberReadings);
 
 
@@ -354,6 +375,7 @@ byte y514modbusAddress = 0x14;  // The modbus address of the Y514
 // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y514NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
+// Create and return the Y514 chlorophyll sensor object
 YosemitechY514 y514(y514modbusAddress, modbusSerial, modbusPower, max485EnablePin, y514NumberReadings);
 
 
@@ -365,6 +387,7 @@ byte y520modbusAddress = 0x20;  // The modbus address of the Y520
 // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y520NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
+// Create and return the Y520 conductivity sensor object
 YosemitechY520 y520(y520modbusAddress, modbusSerial, modbusPower, max485EnablePin, y520NumberReadings);
 
 
@@ -376,6 +399,7 @@ byte y532modbusAddress = 0x32;  // The modbus address of the Y532
 // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
+// Create and return the Yosemitech Y532 pH sensor object
 YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, y532NumberReadings);
 
 
@@ -387,6 +411,7 @@ byte y4000modbusAddress = 0x05;  // The modbus address of the Y4000
 // const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y4000NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
+// Create and return the Yosemitech Y4000 multi-parameter sensor object
 YosemitechY4000 y4000(y4000modbusAddress, modbusSerial, modbusPower, max485EnablePin, y4000NumberReadings);
 
 
@@ -397,6 +422,7 @@ YosemitechY4000 y4000(y4000modbusAddress, modbusSerial, modbusPower, max485Enabl
 const char *DOptoDI12address = "5";  // The SDI-12 Address of the Zebra Tech D-Opto
 // const int8_t SDI12Data = 7;  // The pin the D-Opto is attached to
 // const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+// Create and return the Zebra Tech DOpto dissolved oxygen sensor object
 ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 
 
@@ -560,7 +586,7 @@ void setup()
     // Attach the modem to the logger
     EnviroDIYLogger.attachModem(&modem);
 
-    // Set up the connection with EnviroDIY
+    // Enter the tokens for the connection with EnviroDIY
     EnviroDIYLogger.setToken(registrationToken);
     EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
 
