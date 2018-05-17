@@ -1301,7 +1301,18 @@ _____
 
 ### <a name="parasites"></a>Power Draw over Serial Lines
 
-When deploying a logger out into the wild and depending on only battery or solar charging, getting the power draw from sensors to be as low as possible is crucial.  This library assumes that the main power/Vcc supply to each sensor can be turned on by setting its powerPin high and off by setting its powerPin low.  For most well-designed sensors, this should stop all power draw from the sensor.  Real sensors, Unfortunately, aren't as well designed as one might hope and some sensors (and particularly RS485 adapters) can continue to suck power from by way of high or floating data pins.  For most sensors, this library attempts to set all data pins low when sending the sensor to sleep.  The default I2C "Wire" pins are also explicitly forced low when the logger goes to sleep.  The "Serial" port pins, unfortunately, can't be controlled so easily:  there are too many different hardware and serial pin possibilities.  If you have a nasty power-stealing serial sensor or adapter, you can still stop it from drawing power!  It just takes a bit more work.  You will have to "write-out" your loop function.  (You can't just use ```log()```.)  When writing your loop function, add a ```SerialPortName.begin(BAUD);``` statement to the beginning of your loop, before ```sensorsPowerUp()```.  Then, at the end of the loop, after ```sensorsPowerDown()``` add ```SerialPortName.end(BAUD);```.  If you're lucky, that's all you should need to do.  When using a software serial port emulator, you may also want to explicity set your Rx and Tx pins low using ```digitalWrite(#, LOW);```.
+When deploying a logger out into the wild and depending on only battery or solar charging, getting the power draw from sensors to be as low as possible is crucial.  This library assumes that the main power/Vcc supply to each sensor can be turned on by setting its powerPin high and off by setting its powerPin low.  For most well-designed sensors, this should stop all power draw from the sensor.  Real sensors, unfortunately, aren't as well designed as one might hope and some sensors (and particularly RS485 adapters) can continue to suck power from by way of high or floating data pins.  For most sensors, this library attempts to set all data pins low when sending the sensors and then logger to sleep.  If you are still seeing "parasitic" power draw, here are some work-arounds you can try:
+
+- For sensors (and adapters) drawing power over a serial line:
+    - Write-out your entire loop function.  (Don't just use ```log()```.)
+    - Add a ```SerialPortName.begin(BAUD);``` statement to the beginning of your loop, before ```sensorsPowerUp()```.
+    - After ```sensorsPowerDown()``` add ```SerialPortName.end(BAUD);```.
+    - After "ending" the serial communication, explicitly set your Rx and Tx pins low using ```digitalWrite(#, LOW);```.
+- For sensors drawing power over I2C:
+    - Many (most?) boards have external pull-up resistors on the hardware I2C/Wire pins which cannot be disconnected from the main power supply.  This means I2C parasitic power draw is best solved via hardware, not software.
+    - Use a specially designed I2C isolator
+    - Use a generic opto-isolator or other type of isolator on both the SCL and SDA lines
+    - In this future, this library _may_ offer the option of using software I2C, which would allow you to use the same technique as is currently usable to stop serial parasitic draw.
 
 _____
 
