@@ -436,19 +436,15 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
             sleep_bod_disable();
         #endif
 
-        // turn off I2C  (NOTE:  This just mimics Wire.end() )
-        // TWCR = TWI Control Register
-        // TWEN = TWI Enable
-        // TWIE = TWI Interrupt Enable
-        // TWEA = TWI Enable Acknowledge
-        TWCR &= ~(bit(TWEN) | bit(TWIE) | bit(TWEA));
+        // turn off I2C
+        Wire.end();
 
-        // probably over-kill, but hard-setting the I2C pins to LOW
+        // Force the I2C pins to LOW
         // I2C devices have a nasty habit of stealing power from the SCL and SDA pins...
         // This will only work for the "main" I2C/TWI interface
-        pinMode(SDA, INPUT);  // set input mode
-        pinMode(SCL, INPUT);
-        digitalWrite(SDA, LOW);  // Turn off pull-up resistors
+        pinMode(SDA, OUTPUT);  // set output mode
+        pinMode(SCL, OUTPUT);
+        digitalWrite(SDA, LOW);  // Set the pins low
         digitalWrite(SCL, LOW);
 
         // disable all power-reduction modules (ie, the processor module clocks)
