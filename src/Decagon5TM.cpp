@@ -35,7 +35,8 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(),
                F(" at "), getSensorLocation(), '\n');
         // Make this the currently active SDI-12 Object
-        _SDI12Internal.setActive();
+        // Use begin() instead of just setActive() to ensure timer is set correctly.
+        _SDI12Internal.begin();;
         // Empty the buffer
         _SDI12Internal.clearBuffer();
 
@@ -81,7 +82,8 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         _SDI12Internal.clearBuffer();
 
         // De-activate the SDI-12 Object
-        _SDI12Internal.forceHold();
+        // Use end() instead of just forceHold to un-set the timers
+        _SDI12Internal.end();
 
         MS_DBG(F("Dialectric E: "), ea);
         MS_DBG(F(" Temperature: "), temp);
