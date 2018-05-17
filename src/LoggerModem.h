@@ -414,7 +414,11 @@ public:
     bool modemPowerUp(void)
     {
         MS_MOD_DBG(F("Turning modem on.\n"));
-        // Check if the modem is on; turn it on if not
+        // Turn the modem on .. whether it was on or not
+        // Need to turn on no matter what because some modems don't have an
+        // effective way of telling us whether they're on or not
+        modemOnOff->on();
+        // Double check if the modem is on; turn it on if not
         if(!modemOnOff->isOn()) modemOnOff->on();
         // Mark the time that the sensor was powered
         _millisPowerOn = millis();
@@ -429,7 +433,11 @@ public:
         bool retVal = true;
          // Wait for any sending to complete
         _client->flush();
-        // Check if the modem is on; turn it off if so
+        // Turn the modem off .. whether it was on or not
+        // Need to turn off no matter what because some modems don't have an
+        // effective way of telling us whether they're on or not
+        modemOnOff->off();
+        // Double check if the modem is on; turn it off if so
         if(modemOnOff->isOn()) retVal = modemOnOff->off();
         else retVal =  true;
         // Unset the status bits for sensor power (bit 0), warm-up (bit 2),
@@ -589,7 +597,7 @@ private:
         // Need to turn on no matter what because some modems don't have an
         // effective way of telling us whether they're on or not
         modemOnOff->on();
-        // Check if the modem is on; turn it on if not
+        // Double check if the modem is on; turn it on if not
         if(!modemOnOff->isOn()) modemOnOff->on();
         // Check again if the modem is on.  Only "begin" if it responded.
         if(modemOnOff->isOn())
