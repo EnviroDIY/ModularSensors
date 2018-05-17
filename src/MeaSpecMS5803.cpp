@@ -34,7 +34,6 @@
 */
 
 #include "MeaSpecMS5803.h"
-#include <Wire.h> // Wire library is used for I2C
 
 
 // The constructor - because this is I2C, only need the power pin
