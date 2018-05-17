@@ -96,7 +96,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
     if (_millisMeasurementRequested > 0)
     {
         MS_DBG(F("Getting readings from MaxBotix on "), getSensorLocation(), '\n');
-        while (success == false && rangeAttempts < 3)
+        while (success == false && rangeAttempts < 25)
         {
              // If the sonar is running on a trigger, activating the trigger
              // should in theory happen within the startSingleMeasurement
