@@ -382,7 +382,7 @@ Before creating a loggerModem instance, _you must add one of these lines to the 
 - ```#define TINY_GSM_MODEM_SIM808``` - for a SIMCom SIM808 (essentially a SIMCom SIM800 with GPS support)
 - ```#define TINY_GSM_MODEM_A6``` - for an AI-Thinker A6 or A7
 - ```#define TINY_GSM_MODEM_M590``` - for a Neoway M590
-- ```#define TINY_GSM_MODEM_U201``` - for a U-blox U201 (or a Digi 3G XBee running in bypass mode)
+- ```#define TINY_GSM_MODEM_UBLOX``` - for most u-blox cellular modems ((LEON-G100, LISA-U2xx, SARA-G3xx, SARA-U2xx, TOBY-L2xx, LARA-R2xx, MPCI-L2xx, or a Digi 3G XBee running in bypass mode)
 - ```#define TINY_GSM_MODEM_ESP8266``` - for an ESP8266 using the _default AT command firmware_
 - ```#define TINY_GSM_MODEM_XBEE``` - for Digi brand WiFi or Cellular XBee's running in normal (transparent) mode
 
