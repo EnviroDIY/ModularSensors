@@ -45,7 +45,7 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
     - [Zebra-Tech D-Opto: dissolved oxygen](#dOpto)
     - [Processor Metadata Treated as Sensors](#Onboard)
 - [Help: Common problems and FAQ's](#help)
-    - [Power Draw over Serial Lines](#parasites)
+    - [Power Draw over Data Lines](#parasites)
 - [Notes on Arduino Streams and Software Serial](#SoftwareSerial)
 - [Processor/Board Compatibility](#compatibility)
 - [Contributing](#contribute)
@@ -908,9 +908,9 @@ MaximDS18_Temp(&ds18, "UUID", "customVarCode");  // Temperature in °C
 ```
 _____
 
-### <a name="DS3231"></a>Maxim DS3231 Real Time Clock
+### <a name="DS3231"></a>[Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html) Real Time Clock
 
-As the I2C [Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html) real time clock (RTC) is absolutely required for time-keeping on all AVR boards, this library also makes use of it for its on-board temperature sensor.  The DS3231 requires a 3.3V power supply.
+The I2C [Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html) real time clock (RTC) is absolutely required for time-keeping on all AVR boards.  This library also makes use of it for its on-board temperature sensor.  The DS3231 requires a 3.3V power supply.
 
 The only argument for the constructor is the number of readings to average, as the RTC requires constant power and is connected via I2C:
 
@@ -1047,7 +1047,7 @@ This library currently supports the following Yosemitech sensors:
 - [Y550-B UV254/COD Sensor with Wiper](http://www.yosemitech.com/en/product-21.html)
 - [Y4000 Multiparameter Sonde](http://www.yosemitech.com/en/product-20.html)
 
-All of these sensors require a 5-12V power supply and the power supply can be stopped between measurements.  (_Note that any user settings (such as brushing frequency) will be lost if the sensor loses power._)  They communicate via [Modbus RTU](https://en.wikipedia.org/wiki/Modbus) over [RS-485](https://en.wikipedia.org/wiki/RS-485).  To interface with them, you will need an RS485-to-TTL adapter.  The white wire of the Yosemitech sensor will connect to the "B" pin of the adapter and the green wire will connect to "A".  The red wire from the sensor should connect to the 5-12V power supply and the black to ground.  The Vcc pin on the adapter should be connected to another power supply (voltage depends on the specific adapter) and the ground to the same ground.  The red wire from the sensor _does not_ connect to the Vcc of the adapter.  The R/RO/RXD pin from the adapter connects to the TXD on the Arduino board and the D/DI/TXD pin from the adapter connects to the RXD.  If applicable, tie the RE and DE (receive/data enable) pins together and connect them to another pin on your board.  While this library supports an external enable pin, we have had very bad luck with most of them.  Adapters with automatic direction control tend to use very slightly more power, but have more stable communication.  There are a number of RS485-to-TTL adapters available.  When shopping for one, be mindful of the logic level of the TTL output by the adapter.  The MAX485, one of the most popular adapters, has a 5V logic level in the TTL signal.  This will _fry_ any board like the Mayfly that can only use on 3.3V logic.  You would need a voltage shifter in between the Mayfly and the MAX485 to make it work.
+All of these sensors require a 5-12V power supply and the power supply can be stopped between measurements.  (_Note that any user settings (such as brushing frequency) will be lost if the sensor loses power._)  They communicate via [Modbus RTU](https://en.wikipedia.org/wiki/Modbus) over [RS-485](https://en.wikipedia.org/wiki/RS-485).  To interface with them, you will need an RS485-to-TTL adapter.  The white wire of the Yosemitech sensor will connect to the "B" pin of the adapter and the green wire will connect to "A".  The red wire from the sensor should connect to the 5-12V power supply and the black to ground.  The Vcc pin on the adapter should be connected to another power supply (voltage depends on the specific adapter) and the ground to the same ground.  The red wire from the sensor _does not_ connect to the Vcc of the adapter.  The R/RO/RXD pin from the adapter connects to the TXD on the Arduino board and the D/DI/TXD pin from the adapter connects to the RXD.  If applicable, tie the RE and DE (receive/data enable) pins together and connect them to another pin on your board.  While this library supports an external enable pin, we have had very bad luck with most of them.  Adapters with automatic direction control tend to use very slightly more power, but have more stable communication.  There are a number of RS485-to-TTL adapters available.  When shopping for one, be mindful of the logic level of the TTL output by the adapter.  The MAX485, one of the most popular adapters, has a 5V logic level in the TTL signal.  This will _fry_ any board like the Mayfly that uses 3.3V logic.  You would need a voltage shifter in between the Mayfly and the MAX485 to make it work.
 
 The sensor modbus address, the pin controlling sensor power, a stream instance for data (ie, ```Serial```), the Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter, and the number of readings to average are required for the sensor constructor.  (Use -1 for the enable pin if your adapter does not have one.)  For all of these sensors except pH, Yosemitech strongly recommends averaging 10 readings for each measurement.  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.  AltSoftSerial and HardwareSerial work fine.
 
@@ -1299,7 +1299,7 @@ _____
 
 ## <a name="help"></a>Help: Common problems and FAQ's
 
-### <a name="parasites"></a>Power Draw over Serial Lines
+### <a name="parasites"></a>Power Draw over Data Lines
 
 When deploying a logger out into the wild and depending on only battery or solar charging, getting the power draw from sensors to be as low as possible is crucial.  This library assumes that the main power/Vcc supply to each sensor can be turned on by setting its powerPin high and off by setting its powerPin low.  For most well-designed sensors, this should stop all power draw from the sensor.  Real sensors, unfortunately, aren't as well designed as one might hope and some sensors (and particularly RS485 adapters) can continue to suck power from by way of high or floating data pins.  For most sensors, this library attempts to set all data pins low when sending the sensors and then logger to sleep.  If you are still seeing "parasitic" power draw, here are some work-arounds you can try:
 
@@ -1312,7 +1312,7 @@ When deploying a logger out into the wild and depending on only battery or solar
     - Many (most?) boards have external pull-up resistors on the hardware I2C/Wire pins which cannot be disconnected from the main power supply.  This means I2C parasitic power draw is best solved via hardware, not software.
     - Use a specially designed I2C isolator
     - Use a generic opto-isolator or other type of isolator on both the SCL and SDA lines
-    - In this future, this library _may_ offer the option of using software I2C, which would allow you to use the same technique as is currently usable to stop serial parasitic draw.
+    - In this future, this library _may_ offer the option of using software I2C, which would allow you to use the same technique as is currently usable to stop serial parasitic draw.  Until such an update happens, however, hardware solutions are required.
 
 _____
 
@@ -1324,7 +1324,7 @@ For stream communication, **hardware serial** should always be your first choice
 
 If the [proper pins](https://www.pjrc.com/teensy/td_libs_AltSoftSerial.html) are available, **[AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial)** by Paul Stoffregen is also superior to SoftwareSerial, especially at slow baud rates.  Neither hardware serial nor AltSoftSerial require any modifications.  Because of the limited number of serial ports available on most boards, I suggest giving first priority (i.e. the first (or only) hardware serial port, "Serial") to your debugging stream going to your PC (if you intend to debug), second priority to the stream for the modem, and third priority to any sensors that require a stream for communication.  See the section on [Processor Compatibility](#compatibility) for more specific notes on what serial ports are available on the various supported processors.
 
-Another possible serial port emulator is [NeoSWSerial](https://github.com/SlashDevin/NeoSWSerial).  While not as stable as AltSoftSerial, it supports using any pin with pin change interrupts for communication. To use NeoSWSerial, you must open the NeoSWSerial.h file and find and uncomment the line ```//#define NEOSWSERIAL_EXTERNAL_PCINT```.  There are instructions in the ReadMe for the library on how to use EnableInterrupt to activate NeoSWSerial.  Note that NeoSWSerial is incompatible with any version of SDI-12 communication on most 8MHz processors (including the EnviroDIY Mayfly).  The two libraries can be compiled together, but because they are in competition for a timer, they cannot be used together.
+Another possible serial port emulator is [NeoSWSerial](https://github.com/SlashDevin/NeoSWSerial).  While not as stable as AltSoftSerial, it supports using any pin with pin change interrupts for communication. To use NeoSWSerial, you must open the NeoSWSerial.h file and find and uncomment the line ```//#define NEOSWSERIAL_EXTERNAL_PCINT``` and then recompile the library.  There are instructions in the NeoSWSerial ReadMe on how to use EnableInterrupt to activate NeoSWSerial.  Note that NeoSWSerial is generally incompatible with the SDI-12 communication library on most 8MHz processors (including the EnviroDIY Mayfly).  The two libraries can be compiled together, but because they are in competition for a timer, they cannot be used together.  The way this (ModularSensors) uses the SDI-12 library resets the timer settings when ending communication, so you may be able to use the two libraries together if the communication is not simultaneous.  Please test your configuration before deploying it!
 
 To use a hardware serial stream, you do not need to include any libraries or write any extra lines.  You can simply write in "Serial#" where ever you need a stream.  If you would like to give your hardware serial port an easy-to-remember alias, you can use code like this:
 
@@ -1392,11 +1392,12 @@ Fully supported
 - Most variants have one SPI port configured by default (likely pins 22 (MISO), 23 (MOSI), and 24 (SCK)).  Chip select/slave select and card detect pins vary by board.
 - Most variants have one I2C (Wire) interface configured by default (likely pins 20 (SDA) and 21 (SCL)).
 - There are up to _6_ total "sercom" ports hard which can be configured for either hardware serial, SPI, or I2C (wire) communication on this processor.  See https://learn.adafruit.com/using-atsamd21-sercom-to-add-more-spi-i2c-serial-ports/overview for more instructions on how to configure these ports, if you need them.
-- AltSoftSerial is not directly supported on the AtSAMD21, but with some effort, the timers could be configured to make it work.
-- SoftwareSerial_ExtInts is not supported at all on the AtSAMD21.
+- AltSoftSerial is not supported on the AtSAMD21.
+- SoftwareSerial_ExtInts is not supported on the AtSAMD21.
+- NeoSWSerial is not supported at all on the AtSAMD21.
 - Any digital pin can be used with SDI-12.
 - Because the USB controller is built into the processor, your USB serial connection will close as soon as the processor goes to sleep.  If you need to debug, I recommend using a serial port monitor like [Tera Term](https://ttssh2.osdn.jp/index.html.en) which will automatically renew its connection with the serial port when it connects and disconnects.  Otherwise, you will have to rely on lights on your alert pin or your modem to verify the processor is waking/sleeping properly.
-- There is a completely weird bug that causes the code to crash if using input pin 1 on the TI ADS1115 (used for the Campbell OBS3+, Apogee SQ212, and raw external voltages).  I have no idea at all why this happens.  Pins 0, 2, and 3 all work fine.  Just don't use pin 1.
+- There is a completely weird bug that causes the code to crash if using input pin 1 on the TI ADS1115 (used for the Campbell OBS3+, Apogee SQ212, and raw external voltages).  I have no idea at all why this happens.  Pins 0, 2, and 3 all work fine.  Just don't use pin 1.  This only seems to apply to the SAMD21 boards.
 ___
 
 #### AtMega2560 (Arduino Mega)
