@@ -93,6 +93,15 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
     int rangeAttempts = 0;
     int result = -9999;
 
+    // Clear anything out of the stream buffer
+    int junkChars = _stream->available();
+    if (junkChars)
+    {
+        MS_DBG(F("Dumping "), junkChars, " characters from MaxBotix stream buffer\n");
+        for (uint8_t i = 0; i < junkChars; i++)
+        _stream->read();
+    }
+
     if (_millisMeasurementRequested > 0)
     {
         MS_DBG(F("Getting readings from MaxBotix on "), getSensorLocation(), '\n');

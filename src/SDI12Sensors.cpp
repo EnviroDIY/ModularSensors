@@ -137,9 +137,11 @@ bool SDI12Sensors::getSensorInfo(void)
 {
     MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(),
            F(" at "), getSensorLocation(), '\n');
-    // Make this the currently active SDI-12 Object
+    // Check if this the currently active SDI-12 Object
+    bool wasActive = _SDI12Internal.isActive();
+    // If it wasn't active, activate it now.
     // Use begin() instead of just setActive() to ensure timer is set correctly.
-    _SDI12Internal.begin();;
+    if (!wasActive) _SDI12Internal.begin();
     // Empty the buffer
     _SDI12Internal.clearBuffer();
 
@@ -169,7 +171,7 @@ bool SDI12Sensors::getSensorInfo(void)
 
     // De-activate the SDI-12 Object
     // Use end() instead of just forceHold to un-set the timers
-    _SDI12Internal.end();
+    if (!wasActive) _SDI12Internal.end();
 
     if (sdiResponse.length() > 1)
     {
@@ -232,9 +234,11 @@ bool SDI12Sensors::startSingleMeasurement(void)
 
     MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(),
            F(" at "), getSensorLocation(), '\n');
-    // Make this the currently active SDI-12 Object
+    // Check if this the currently active SDI-12 Object
+    bool wasActive = _SDI12Internal.isActive();
+    // If it wasn't active, activate it now.
     // Use begin() instead of just setActive() to ensure timer is set correctly.
-    _SDI12Internal.begin();;
+    if (!wasActive) _SDI12Internal.begin();
     // Empty the buffer
     _SDI12Internal.clearBuffer();
 
@@ -267,7 +271,7 @@ bool SDI12Sensors::startSingleMeasurement(void)
 
     // De-activate the SDI-12 Object
     // Use end() instead of just forceHold to un-set the timers
-    _SDI12Internal.end();
+    if (!wasActive) _SDI12Internal.end();
 
     // Verify the number of results the sensor will send
     // int numVariables = sdiResponse.substring(4,5).toInt();
@@ -315,9 +319,11 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
     {
         MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(),
                F(" at "), getSensorLocation(), '\n');
-        // Make this the currently active SDI-12 Object
+        // Check if this the currently active SDI-12 Object
+        bool wasActive = _SDI12Internal.isActive();
+        // If it wasn't active, activate it now.
         // Use begin() instead of just setActive() to ensure timer is set correctly.
-        _SDI12Internal.begin();;
+        if (!wasActive) _SDI12Internal.begin();
         // Empty the buffer
         _SDI12Internal.clearBuffer();
 
@@ -354,7 +360,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
 
         // De-activate the SDI-12 Object
         // Use end() instead of just forceHold to un-set the timers
-        _SDI12Internal.end();
+        if (!wasActive) _SDI12Internal.end();
 
         // Unset the time stamp for the beginning of this measurement
         _millisMeasurementRequested = 0;
