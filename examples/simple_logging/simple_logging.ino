@@ -517,6 +517,9 @@ void setup()
     Serial.print(buttonPin);
     Serial.println(F(" at any time to enter sensor testing mode."));
 
+    // Sleep
+    logger.systemSleep();
+
 }
 
 

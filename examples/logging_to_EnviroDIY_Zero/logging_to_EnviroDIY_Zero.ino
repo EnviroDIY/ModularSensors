@@ -437,6 +437,7 @@ const char *DOptoDI12address = "5";  // The SDI-12 Address of the Zebra Tech D-O
 // Create and return the Zebra Tech DOpto dissolved oxygen sensor object
 ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 
+
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
@@ -610,6 +611,9 @@ void setup()
 
     // Begin the logger
     EnviroDIYLogger.begin();
+
+    // Sleep
+    EnviroDIYLogger.systemSleep();
 }
 
 

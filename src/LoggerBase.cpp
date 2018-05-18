@@ -806,9 +806,6 @@ void Logger::testingMode()
 
     PRINTOUT(F("Logger setup finished!\n"));
     PRINTOUT(F("------------------------------------------\n\n"));
-
-    // Sleep
-    if(_sleep){systemSleep();}
 }
 
 

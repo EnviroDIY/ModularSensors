@@ -344,6 +344,10 @@ void setup()
 
     // Blink the LEDs really fast to show start-up is done
     greenredflash(6, 25);
+
+    // Call the processor sleep
+    // Only need to do this for one of the loggers
+    loggerComplete.systemSleep();
 }
 
 
@@ -390,7 +394,7 @@ void loop()
 
         // End the stream for the modbus sensors
         // Because RS485 adapters tend to "steal" current from the data pins
-        // we will explicitly start and end the serial connection in the loop. 
+        // we will explicitly start and end the serial connection in the loop.
         modbusSerial.end();
 
         // Create a csv data record and save it to the log file

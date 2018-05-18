@@ -610,6 +610,9 @@ void setup()
 
     // Blink the LEDs really fast to show start-up is done
     greenredflash(6, 25);
+
+    // Sleep
+    EnviroDIYLogger.systemSleep();
 }
 
 

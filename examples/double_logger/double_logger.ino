@@ -251,6 +251,10 @@ void setup()
     Serial.println(F("Logger setup finished!\n"));
     Serial.println(F("------------------------------------------"));
     Serial.println();
+
+    // Call the processor sleep
+    // Only need to do this for one of the loggers
+    logger1min.systemSleep();
 }
 
 

@@ -369,9 +369,6 @@ void LoggerEnviroDIY::begin(void)
 
     PRINTOUT(F("Logger setup finished!\n"));
     PRINTOUT(F("------------------------------------------\n\n"));
-
-    // Sleep
-    if(_sleep){systemSleep();}
 }
 
 
