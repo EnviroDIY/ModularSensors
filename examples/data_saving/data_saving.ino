@@ -367,6 +367,11 @@ void loop()
         // Turn on the modem to let it start searching for the network
         modem.modemPowerUp();
 
+        // Start the stream for the modbus sensors
+        // Because RS485 adapters tend to "steal" current from the data pins
+        // we will explicitly start and end the serial connection in the loop.
+        modbusSerial.begin(9600);
+
         // Send power to all of the sensors
         Serial.print(F("Powering sensors...\n"));
         loggerComplete.sensorsPowerUp();
@@ -382,6 +387,11 @@ void loop()
         // Cut sensor power
         Serial.print(F("Cutting sensor power...\n"));
         loggerComplete.sensorsPowerDown();
+
+        // End the stream for the modbus sensors
+        // Because RS485 adapters tend to "steal" current from the data pins
+        // we will explicitly start and end the serial connection in the loop. 
+        modbusSerial.end();
 
         // Create a csv data record and save it to the log file
         loggerComplete.logToSD(loggerComplete.generateSensorDataCSV());
