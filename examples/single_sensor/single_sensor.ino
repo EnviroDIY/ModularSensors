@@ -45,10 +45,24 @@ const int SonarData = 11;     // data  pin
 const int SonarTrigger = -1;   // Trigger pin
 const int8_t SonarPower = 22;   // excite (power) pin
 
+
 #if defined __AVR__
-#include <SoftwareSerial_ExtInts.h>  // for the stream communication
-SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
-#elif defined __SAMD21G18A__
+
+// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+// SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
+
+#include <NeoSWSerial.h>  // for the stream communication
+NeoSWSerial sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
+void NeoSWSISR()
+{
+  NeoSWSerial::rxISR( *portInputRegister( digitalPinToPort( SonarData ) ) );
+}
+
+#endif
+
+
+
+#if defined __SAMD21G18A__
 #include "wiring_private.h" // pinPeripheral() function
 Uart Serial3(&sercom2, 5, 2, SERCOM_RX_PAD_3, UART_TX_PAD_2);
 void SERCOM2_Handler()
@@ -56,8 +70,6 @@ void SERCOM2_Handler()
     Serial3.IrqHandler();
 }
 HardwareSerial &sonarSerial = Serial3;
-#else
-HardwareSerial &sonarSerial = Serial1;
 #endif
 
 // Create a new instance of the sonar sensor;
@@ -96,10 +108,15 @@ void setup()
     Serial.begin(serialBaud);
     // Start the stream for the sonar
     sonarSerial.begin(9600);
+
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
     enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
     #endif
+    #if defined NeoSWSerial_h
+    enableInterrupt(SonarData, NeoSWSISR, CHANGE);
+    #endif
+
     #if defined __SAMD21G18A__
     // Assign pins to SERCOM functionality
     pinPeripheral(2, PIO_SERCOM);

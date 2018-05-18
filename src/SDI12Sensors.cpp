@@ -67,6 +67,13 @@ bool SDI12Sensors::setup(void)
 
     retVal &= getSensorInfo();
 
+    // Empty the SDI-12 buffer
+    _SDI12Internal.clearBuffer();
+
+    // De-activate the SDI-12 Object
+    // Use end() instead of just forceHold to un-set the timers
+    _SDI12Internal.end();
+
     return retVal;
 }
 
@@ -347,7 +354,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
 
         // De-activate the SDI-12 Object
         // Use end() instead of just forceHold to un-set the timers
-        _SDI12Internal.forceHold();
+        _SDI12Internal.end();
 
         // Unset the time stamp for the beginning of this measurement
         _millisMeasurementRequested = 0;
