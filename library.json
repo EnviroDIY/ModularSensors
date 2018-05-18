@@ -1,6 +1,6 @@
 {
     "name": "EnviroDIY_ModularSensors",
-    "version": "0.11.6",
+    "version": "0.11.7",
     "description":  "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
     "keywords": "modular, sensor, sensors, datalogger, logger, low power, sleeping, EnviroDIY, ModularSensors, Mayfly, WikiWatershed",
     "platforms": "atmelavr, atmelsam",
@@ -75,7 +75,7 @@
             "name": "SdFat",
             "library id": "322",
             "url": "https://github.com/greiman/SdFat.git",
-            "version": ">=1.0.0",
+            "version": ">=1.0.5",
             "note": "SdFat - FAT16/FAT32 file system for SD cards.",
             "authors": [
                 "Bill Greiman"
@@ -195,6 +195,7 @@
         {
             "name": "Arduino-SDI-12_ExtInts",
             "version": "https://github.com/EnviroDIY/Arduino-SDI-12.git#ExtInts",
+            "version_note": ">=1.3.1",
             "note": "EnviroDIY SDI-12 Library, dependent on external library for interrupts",
             "authors": [
                 "Kevin M. Smith",
@@ -243,7 +244,7 @@
             "name": "SensorModbusMaster",
             "library id": "1824",
             "url": "https://github.com/EnviroDIY/SensorModbusMaster.git",
-            "version": ">=0.6.2",
+            "version": ">=0.6.4",
             "note": "EnviroDIY SensorModbusMaster - Arduino library for communicating via modbus with the Arduino acting as the modbus master.",
             "authors": [
                 "Sara Damiano"
@@ -254,6 +255,7 @@
         {
             "name": "TinyGSM",
             "version": "https://github.com/EnviroDIY/TinyGSM.git",
+            "version_note": ">=0.3.40",
             "note": "A small Arduino library for GPRS modules.",
             "authors": [
                 "Volodymyr Shymanskyy",
