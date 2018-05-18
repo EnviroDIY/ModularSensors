@@ -22,10 +22,12 @@
 #if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM808) || \
     defined(TINY_GSM_MODEM_SIM868) || defined(TINY_GSM_MODEM_SIM900) || \
     defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
-    defined(TINY_GSM_MODEM_M590) || defined(TINY_GSM_MODEM_U201) || \
+    defined(TINY_GSM_MODEM_UBLOX) || defined(TINY_GSM_MODEM_M590) || \
+    defined(TINY_GSM_MODEM_M95) || defined(TINY_GSM_MODEM_BG96) || \
+    defined(TINY_GSM_MODEM_MC60) || \
     defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
   #define TINY_GSM_YIELD() { delay(1);}
-  #define TINY_GSM_RX_BUFFER 14  // So we never get much data
+  #define TINY_GSM_RX_BUFFER 14
   #include <TinyGsmClient.h>
 #else
   #include <NullModem.h>  // purely to help me debug compilation issues
@@ -46,10 +48,16 @@
     #define MODEM_NAME "AI-Thinker A6"
 #elif defined(TINY_GSM_MODEM_A7)
     #define MODEM_NAME "AI-Thinker A7"
+#elif defined(TINY_GSM_MODEM_UBLOX)
+    #define MODEM_NAME "u-blox Cellular"
 #elif defined(TINY_GSM_MODEM_M590)
     #define MODEM_NAME "Neoway M590"
-#elif defined(TINY_GSM_MODEM_U201)
-    #define MODEM_NAME "u-blox SARA U201"
+#elif defined(TINY_GSM_MODEM_M95)
+    #define MODEM_NAME "Quectel M95"
+#elif defined(TINY_GSM_MODEM_BG96)
+    #define MODEM_NAME "Quectel BG96"
+#elif defined(TINY_GSM_MODEM_MC60)
+    #define MODEM_NAME "Quectel MC60"
 #elif defined(TINY_GSM_MODEM_ESP8266)
     #define MODEM_NAME "ESP8266"
 #elif defined(TINY_GSM_MODEM_XBEE)
@@ -134,35 +142,19 @@ public:
     // The modem must be setup separately!
     virtual bool setup(void) override {return true;}
 
-    void powerUp(void) override
-    {
-        // Check if the modem is on; turn it on if not
-        if(!modemOnOff->isOn()) modemOnOff->on();
-        // Mark the time that the sensor was powered
-        _millisPowerOn = millis();
-        // Set the status bit for sensor power (bit 0)
-        _sensorStatus |= 0b00000001;
-    }
-
-    virtual bool wake(void) override
-    {
-        bool retVal = true;
-        // Check if the modem is on; turn it on if not
-        // if(!modemOnOff->isOn()) retVal = modemOnOff->on();
-        // Mark the time that the sensor was activated
-        _millisSensorActivated = millis();
-        // Set the status bit for sensor activation (bit 3)
-        _sensorStatus |= 0b00001000;
-        return retVal;
-    }
-
-    virtual bool sleep(void) override { return true; }
-
-    // Do NOT power down the modem with the regular sleep function.
+    // Do NOT turn the modem on and off with the regular power up and down or
+    // wake and sleep functions.
     // This is because when it is run in an array with other sensors, we will
     // generally want the modem to remain on after all the other sensors have
     // gone to sleep and powered down so the modem can send out data
-    void powerDown(void) override {}
+    void powerUp(void) override
+    {
+        MS_MOD_DBG(F("Skipping modem in sensor power up!\n"));
+    }
+    void powerDown(void) override
+    {
+        MS_MOD_DBG(F("Skipping modem in sensor power down!\n"));
+    }
 
     bool startSingleMeasurement(void) override
     {
@@ -327,7 +319,7 @@ public:
         }
 
         // Check that the modem is responding to AT commands.  If not, give up.
-        if (!_modem->testAT(1000))
+        if (!_modem->testAT(5000))
         {
             MS_MOD_DBG(F("\nModem does not respond to AT commands!\n"));
             return false;
@@ -419,14 +411,39 @@ public:
         MS_MOD_DBG(F("Closed TCP/IP.\n"));
     }
 
-    bool off(void)
+    bool modemPowerUp(void)
     {
+        MS_MOD_DBG(F("Turning modem on.\n"));
+        // Turn the modem on .. whether it was on or not
+        // Need to turn on no matter what because some modems don't have an
+        // effective way of telling us whether they're on or not
+        modemOnOff->on();
+        // Double check if the modem is on; turn it on if not
+        if(!modemOnOff->isOn()) modemOnOff->on();
+        // Mark the time that the sensor was powered
+        _millisPowerOn = millis();
+        // Set the status bit for sensor power (bit 0)
+        _sensorStatus |= 0b00000001;
+        return modemOnOff->isOn();
+    }
+
+    bool modemPowerDown(void)
+    {
+        MS_MOD_DBG(F("Turning modem off.\n"));
         bool retVal = true;
          // Wait for any sending to complete
         _client->flush();
-        // Check if the modem is on; turn it off if so
+        // Turn the modem off .. whether it was on or not
+        // Need to turn off no matter what because some modems don't have an
+        // effective way of telling us whether they're on or not
+        modemOnOff->off();
+        // Double check if the modem is on; turn it off if so
         if(modemOnOff->isOn()) retVal = modemOnOff->off();
         else retVal =  true;
+        // Unset the status bits for sensor power (bit 0), warm-up (bit 2),
+        // activation (bit 3), stability (bit 4), measurement request (bit 5), and
+        // measurement completion (bit 6)
+        _sensorStatus &= 0b10000010;
         return retVal;
     }
 
@@ -574,9 +591,13 @@ private:
         static TinyGsmClient client(modem);
         _client = &client;
 
-        MS_MOD_DBG(F("Initializing "), F(MODEM_NAME), F("..."));
+        MS_MOD_DBG(F("Initializing "), F(MODEM_NAME), F("...\n"));
         String XBeeChip;
-        // Check if the modem is on; turn it on if not
+        // Turn the modem on .. whether it was on or not
+        // Need to turn on no matter what because some modems don't have an
+        // effective way of telling us whether they're on or not
+        modemOnOff->on();
+        // Double check if the modem is on; turn it on if not
         if(!modemOnOff->isOn()) modemOnOff->on();
         // Check again if the modem is on.  Only "begin" if it responded.
         if(modemOnOff->isOn())

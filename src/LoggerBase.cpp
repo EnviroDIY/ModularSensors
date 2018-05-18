@@ -9,8 +9,12 @@
 
 #include "LoggerBase.h"  // To communicate with the internet
 
-#define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
-#include <EnableInterrupt.h>  // To handle external and pin change interrupts
+// To prevent compiler/linker crashes with Enable interrupt
+#define LIBCALL_ENABLEINTERRUPT
+// To handle external and pin change interrupts
+#include <EnableInterrupt.h>
+// For all i2c communication, including with the real time clock
+#include <Wire.h>
 
 
 // Initialize the static timezone
@@ -352,6 +356,11 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
         // The next timed interrupt will not be sent until this is cleared
         // rtc.clearINTStatus();
 
+        // Stop any I2C connections
+        // This function actually disables the two-wire pin functionality and
+        // turns off the internal pull-up resistors.
+        Wire.end();
+
         // USB connection will end at sleep because it's a separate mode in the processor
         USBDevice.detach();  // Disable USB
 
@@ -360,6 +369,9 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
 
         // Reattach the USB after waking
         USBDevice.attach();
+
+        // Re-start any I2C connections
+        Wire.begin();
     }
 
 #elif defined __AVR__
@@ -411,12 +423,38 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
         // Temporarily disables interrupts, so no mistakes are made when writing
         // to the processor registers
         noInterrupts();
-        // Disable the processor ADC
+
+        // Disable the processor ADC (must be disabled before it will power down)
+        // ADCSRA = ADC Control and Status Register A
+        // ADEN = ADC Enable
         ADCSRA &= ~_BV(ADEN);
+
         // turn off the brown-out detector, if possible
+        // BODS = brown-out detector sleep
+        // BODSE = brown-out detector sleep enable
         #if defined(BODS) && defined(BODSE)
             sleep_bod_disable();
         #endif
+
+        // turn off I2C
+        Wire.end();
+
+        // Force the I2C pins to LOW
+        // I2C devices have a nasty habit of stealing power from the SCL and SDA pins...
+        // This will only work for the "main" I2C/TWI interface
+        pinMode(SDA, OUTPUT);  // set output mode
+        pinMode(SCL, OUTPUT);
+        digitalWrite(SDA, LOW);  // Set the pins low
+        digitalWrite(SCL, LOW);
+
+        // disable all power-reduction modules (ie, the processor module clocks)
+        // NOTE:  This only shuts down the various clocks on the processor via
+        // the power reduction register!  It does NOT actually disable the
+        // modules themselves or set the pins to any particular state!  This
+        // means that the I2C/Serial/Timer/etc pins will still be active and
+        // powered unless they are turned off prior to calling this function.
+        power_all_disable();
+
         // Set the sleep enable bit.
         sleep_enable();
         // Re-enables interrupts so we can wake up again
@@ -426,11 +464,21 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
         // This must happen after the SE bit is set.
         sleep_cpu();
 
-        // This portion happens on the wake up..
+        // ----------------- This portion happens on wake up -----------------
+
+        // Re-enable all power modules (ie, the processor module clocks)
+        // NOTE:  This only re-enables the various clocks on the processor!
+        // The modules may need to be re-initialized after the clocks re-start.
+        power_all_enable();
+
         // Clear the SE (sleep enable) bit.
         sleep_disable();
+
         // Re-enable the processor ADC
         ADCSRA |= _BV(ADEN);
+
+        // Re-start the I2C interface
+        Wire.begin();
     }
 #endif
 
@@ -715,6 +763,9 @@ void Logger::testingMode()
 
     // Unset testing mode flag
     Logger::isTestingNow = false;
+
+    // Sleep
+    if(_sleep){systemSleep();}
 }
 
 
@@ -755,6 +806,9 @@ void Logger::testingMode()
 
     PRINTOUT(F("Logger setup finished!\n"));
     PRINTOUT(F("------------------------------------------\n\n"));
+
+    // Sleep
+    if(_sleep){systemSleep();}
 }
 
 

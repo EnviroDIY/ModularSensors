@@ -23,6 +23,7 @@
   #include <RTCZero.h>
 #elif defined __AVR__
   #include <avr/sleep.h>
+  #include <avr/power.h>
 #endif
 
 // Bring in the library to commuinicate with an external high-precision real time clock

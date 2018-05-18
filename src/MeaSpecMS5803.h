@@ -17,12 +17,19 @@
  *https://cdn.sparkfun.com/datasheets/Sensors/Weather/ms5803_14ba.pdf
  *
  * For Pressure (sensor designed for water pressure):
- *  Resolution is 1 / 0.6 / 0.4 / 0.3 / 0.2 mbar (where 1 mbar = 100 pascals)
- *  at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
- *  Accuracy 0 to +40°C is ±20mbar
- *  Accuracy -40°C to +85°C is ±40mbar
+ *  Resolution is:
+ *      14ba: 1 / 0.6 / 0.4 / 0.3 / 0.2 mbar (where 1 mbar = 100 pascals)
+ *      2ba: 0.13 / 0.084 / 0.054 / 0.036 / 0.024
+ *      1ba: 0.065 / 0.042 / 0.027 / 0.018 / 0.012
+ *    at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
+ *  Accuracy 0 to +40°C is:
+ *      14ba: ±20mbar
+ *      2ba: ±1.5mbar
+ *      1ba:  ±1.5mbar
  *  Range is 0 to 14 bar
- *  Long term stability is -20 mbar/yr
+ *  Long term stability is
+ *      14ba: -20 mbar/yr
+ *      2ba: -1 mbar/yr
  *
  * For Temperature:
  *  Resolution is <0.01°C
@@ -55,7 +62,7 @@
 #define MS5803_TEMP_RESOLUTION 2
 #define MS5803_TEMP_VAR_NUM 0
 
-#define MS5803_PRESSURE_RESOLUTION 1
+#define MS5803_PRESSURE_RESOLUTION 3
 #define MS5803_PRESSURE_VAR_NUM 1
 
 

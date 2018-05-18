@@ -19,7 +19,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
 // #define TINY_GSM_MODEM_A6  // Select for a AI-Thinker A6 or A7 chip
 // #define TINY_GSM_MODEM_M590  // Select for a Neoway M590
-// #define TINY_GSM_MODEM_U201  // Select for a U-blox U201
+// #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
 
@@ -63,7 +63,7 @@ const int8_t wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
 
-// Create the processor "sensor"
+// Create and return the processor "sensor"
 const char *MFVersion = "v0.5";
 ProcessorStats mayfly(MFVersion) ;
 
@@ -72,17 +72,40 @@ ProcessorStats mayfly(MFVersion) ;
 //    Modem/Internet connection options
 // ==========================================================================
 HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
+
+#if defined(TINY_GSM_MODEM_XBEE)
+const long ModemBaud = 9600;  // Default for XBee is 9600, I've sped mine up to 57600
 const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
-
 ModemSleepType ModemSleepMode = modem_sleep_reverse;  // How the modem is put to sleep
+
+#elif defined(TINY_GSM_MODEM_ESP8266)
+const long ModemBaud = 57600;  // Default for ESP8266 is 115200, but the Mayfly itself stutters above 57600
+const int8_t modemSleepRqPin = 19;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
+const int8_t modemStatusPin = -1;   // Modem Status Pin (indicates power status) (-1 if unconnected)
+const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+ModemSleepType ModemSleepMode = modem_always_on;  // How the modem is put to sleep
+
+#elif defined(TINY_GSM_MODEM_UBLOX)
+const long ModemBaud = 9600;
+const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
+const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
+const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sleep
+
+#else
+const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble making it fast (19200 works)
+const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
+const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
+const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sleep
 // Use "modem_sleep_held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
 // Use "modem_sleep_pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
 // Use "modem_sleep_reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
 // Use "modem_always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
+#endif
 
-const long ModemBaud = 9600;  // Modem baud rate
 const char *wifiId = "XXXXXXX";  // The WiFi access point
 const char *wifiPwd = "XXXXXXX";  // The password for connecting to WiFi
 // Create the loggerModem instance
@@ -94,6 +117,7 @@ loggerModem modem;
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
 #include <MaximDS3231.h>
+// Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
 
 
@@ -102,6 +126,7 @@ MaximDS3231 ds3231(1);
 // ==========================================================================
 #include <AOSongAM2315.h>
 const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// Create and return the AOSong AM2315 sensor object
 AOSongAM2315 am2315(I2CPower);
 
 
@@ -187,9 +212,26 @@ void setup()
     // Setup the logger modem
     modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
 
+    // Turn on the modem
+    modem.modemPowerUp();
+
     // Set up the sensors on both loggers
     logger1min.setupSensors();
     logger5min.setupSensors();
+
+    // Print out the current time
+    Serial.print(F("Current RTC time is: "));
+    Serial.println(Logger::formatDateTime_ISO8601(Logger::getNowEpoch()));
+    // Connect to the network
+    if (modem.connectInternet())
+    {
+        // Synchronize the RTC
+        logger1min.syncRTClock(modem.getNISTTime());
+        // Disconnect from the network
+        modem.disconnectInternet();
+    }
+    // Turn off the modem
+    modem.modemPowerDown();
 
     // Give the loggers different file names
     // If we wanted to auto-generate the file name, that could also be done by
@@ -201,23 +243,6 @@ void setup()
     // Setup the logger files.  This will automatically add headers to each
     logger1min.setupLogFile();
     logger5min.setupLogFile();
-
-    // Print out the current time
-    Serial.print(F("Current RTC time is: "));
-    Serial.println(Logger::formatDateTime_ISO8601(Logger::getNowEpoch()));
-
-    // Turn on the modem
-    modem.wake();
-    // Connect to the network
-    if (modem.connectInternet())
-    {
-        // Synchronize the RTC
-        logger1min.syncRTClock(modem.getNISTTime());
-        // Disconnect from the network
-        modem.disconnectInternet();
-    }
-    // Turn off the modem
-    modem.off();
 
     // Set up the processor sleep mode
     // Because there's only one processor, we only need to do this once
@@ -307,7 +332,7 @@ void loop()
     if (Logger::markedEpochTime % 86400 == 0)
     {
         // Turn on the modem
-        modem.wake();
+        modem.modemPowerUp();
         // Connect to the network
         if (modem.connectInternet())
         {
@@ -317,7 +342,7 @@ void loop()
             modem.disconnectInternet();
         }
         // Turn off the modem
-        modem.off();
+        modem.modemPowerDown();
     }
 
     // Call the processor sleep

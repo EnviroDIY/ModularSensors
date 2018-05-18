@@ -256,7 +256,7 @@ void LoggerEnviroDIY::testingMode()
     {
         // Turn on the modem to let it start searching for the network
         // Turn on the modem
-        _logModem->wake();
+        _logModem->modemPowerUp();
         // Connect to the network to make sure we have signal (only try for 10sec)
         _logModem->connectInternet(10000L);
     }
@@ -304,11 +304,14 @@ void LoggerEnviroDIY::testingMode()
         // Disconnect from the network
         _logModem->disconnectInternet();
         // Turn off the modem
-        _logModem->off();
+        _logModem->modemPowerDown();
     }
 
     // Unset testing mode flag
     Logger::isTestingNow = false;
+
+    // Sleep
+    if(_sleep){systemSleep();}
 }
 
 
@@ -331,11 +334,17 @@ void LoggerEnviroDIY::begin(void)
 
     if (_modemAttached)
     {
+        // Turn on the modem to let it start searching for the network
+        _logModem->modemPowerUp();
+    }
+
+    // Set up the sensors
+    setupSensors();
+
+    if (_modemAttached)
+    {
         // Synchronize the RTC with NIST
         PRINTOUT(F("Attempting to synchronize RTC with NIST\n"));
-        // Turn on the modem
-        _logModem->powerUp();
-        _logModem->wake();
         // Connect to the network
         if (_logModem->connectInternet(120000L))
         {
@@ -344,11 +353,8 @@ void LoggerEnviroDIY::begin(void)
             _logModem->disconnectInternet();
         }
         // Turn off the modem
-        _logModem->off();
+        _logModem->modemPowerDown();
     }
-
-    // Set up the sensors
-    setupSensors();
 
     // Set the filename for the logger to save to, if it hasn't been done
     if(!_isFileNameSet){setFileName();}
@@ -363,6 +369,9 @@ void LoggerEnviroDIY::begin(void)
 
     PRINTOUT(F("Logger setup finished!\n"));
     PRINTOUT(F("------------------------------------------\n\n"));
+
+    // Sleep
+    if(_sleep){systemSleep();}
 }
 
 
@@ -384,8 +393,7 @@ void LoggerEnviroDIY::log(void)
         if (_modemAttached)
         {
             // Turn on the modem to let it start searching for the network
-            _logModem->powerUp();
-            _logModem->wake();
+            _logModem->modemPowerUp();
         }
 
         // Send power to all of the sensors
@@ -422,7 +430,7 @@ void LoggerEnviroDIY::log(void)
                 _logModem->disconnectInternet();
             }
             // Turn the modem off
-            _logModem->off();
+            _logModem->modemPowerDown();
         }
 
         // Create a csv data record and save it to the log file
