@@ -6,7 +6,7 @@ This Arduino library gives environmental sensors a common interface of functions
 * Transmit that data wirelessly to a web server; and
 * Put the processor, sensors and all other peripherals to sleep between readings to conserve power.
 
-The ModularSensors library coordinates these tasks by "wrapping" native sensor and variable functions into a common interface of functions and returns. These [wrapper functions](https://en.wikipedia.org/wiki/Wrapper_function) serve to harmonize and simplify the process of iterating through and logging data from a diverse set of sensors and variables.
+The ModularSensors library coordinates these tasks by "wrapping" native sensor libraries into a common interface of functions and returns. These [wrapper functions](https://en.wikipedia.org/wiki/Wrapper_function) serve to harmonize and simplify the process of iterating through and logging data from a diverse set of sensors and variables.
 
 Although this library was written primarily for the [EnviroDIY Mayfly data logger board](https://envirodiy.org/mayfly/), it is also designed to be [compatible with a variety of other Arduino-based boards](#compatibility) as well.
 
@@ -36,14 +36,16 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
     - [External I2C Rain Tipping Bucket Counter: rainfall totals](#ExtTips)
     - [External Voltage: via TI ADS1115](#ExtVolt)
     - [Freescale Semiconductor MPL115A2: barometric pressure and temperature](#MPL115A2)
+    - [Keller Submersible Level Transmitters: pressure and temperature](#keller)
     - [MaxBotix MaxSonar: water level](#MaxBotix)
     - [Maxim DS18: temperature](#DS18)
     - [Maxim DS3231: real time clock](#DS3231)
     - [Measurement Specialties MS5803: pressure and temperature](#MS5803)
-    - [Keller Submersible Level Transmitters: pressure and temperature](#keller)
     - [Yosemitech: water quality sensors](#Yosemitech)
     - [Zebra-Tech D-Opto: dissolved oxygen](#dOpto)
     - [Processor Metadata Treated as Sensors](#Onboard)
+- [Help: Common problems and FAQ's](#help)
+    - [Power Draw over Data Lines](#parasites)
 - [Notes on Arduino Streams and Software Serial](#SoftwareSerial)
 - [Processor/Board Compatibility](#compatibility)
 - [Contributing](#contribute)
@@ -58,6 +60,8 @@ Get started by reading this section, collecting the [Physical Dependencies](#pde
 To use a sensor and variable in your sketch, you must separately include xxx.h for each sensor you intend to use.  While this may force you to write many more include statements, it decreases the library RAM usage on your Arduino board.  Regardless of how many sensors you intend to use, however, you must install all of the [dependent libraries](#ldeps) on your _computer_ for the Arduino software, PlatformIO or any other Integrated Development Environment (IDE) software to be able to compile the library.
 
 Each sensor is implemented as a subclass of the "Sensor" class contained in "SensorBase.h".  Each variable is separately implemented as a subclass of the "Variable" class contained in "VariableBase.h".  The variables are tied to the sensor using an "[Observer](https://en.wikipedia.org/wiki/Observer_pattern)" software pattern.
+
+The "VariableArray" class contained in "VariableArray.h" defines the logic for iterating through many variable objects.  The various "Logger" classes are all sub-classes of variable arrays and add functionality for sleeping the processor, writing to an SD card, and communicating with the internet.
 
 
 
@@ -92,7 +96,7 @@ This library is designed for wireless, solar-powered environmental data logging 
 
 ### <a name="ldeps"></a>Library Dependencies
 
-In order to support multiple functions and sensors, there are quite a lot of sub-libraries that this library is dependent on.  _Even if you do not use the modules, you must have all of the dependencies installed for the library itself to properly compile._  Please check the [library.json](https://github.com/EnviroDIY/ModularSensors/blob/master/library.json) file for more details on the versions required of each library.
+In order to support multiple functions and sensors, there are quite a lot of sub-libraries that this library is dependent on.  _Even if you do not use the modules, you must have all of the dependencies installed for the library itself to properly compile._  Please check the [library.json](https://github.com/EnviroDIY/ModularSensors/blob/master/library.json) file for more details on the versions required of each library.  If you are using [PlatformIO](https://platformio.org), you can list "EnviroDIY_ModularSensors" in the ```lib_deps``` section of your platformio.ini file and all of these libraries will be installed automatically.  If using the "standard" Arduino IDE, you must install each of these libraries individually, or in a bundle from the [EnviroDIY Libraries](https://github.com/EnviroDIY/Libraries) meta-repository.
 
 - [EnableInterrupt](https://github.com/GreyGnome/EnableInterrupt) - Administrates and handles pin change interrupts, allowing the logger to sleep and save battery.  This also controls the interrupts for the versions of SoftwareSerial and SDI-12 linked below that have been stripped of interrupt control.  Because we use this library, _you must always add the line ```#include <EnableInterrupt.h>``` to the top of your sketch._
 - AVR sleep library - This is for low power sleeping for AVR processors. (This library is built in to the Arduino IDE.)
@@ -111,8 +115,8 @@ In order to support multiple functions and sensors, there are quite a lot of sub
 - [Adafruit BME280 library](https://github.com/adafruit/Adafruit_BME280_Library) - for the Bosch BME280 environmental sensor.
 - [Adafruit MPL115A2 library](https://github.com/adafruit/Adafruit_MPL115A2) - for the Freescale Semiconductor MPL115A2 barometer.
 - [YosemitechModbus](https://github.com/EnviroDIY/YosemitechModbus) - for all Yosemitech modbus environmental sensors.
-- [EnviroDIY MS5803 Library](https://github.com/EnviroDIY/MS5803) - for the TE Connectivity MEAS MS5803 pressure sensor
-- [EnviroDIY KellerModbus Library](https://github.com/EnviroDIY/MS5803) - for all Keller modbus pressure and water level sensors.
+- [Northern Widget MS5803 Library](https://github.com/NorthernWidget/MS5803) - for the TE Connectivity MEAS MS5803 pressure sensor
+- [EnviroDIY KellerModbus Library](https://github.com/EnviroDIY/KellerModbus) - for all Keller modbus pressure and water level sensors.
 
 ## <a name="Basic"></a>Basic Sensor and Variable Functions
 
@@ -325,9 +329,9 @@ A note about timezones:  It is possible to create multiple logger objects in you
 - **getNow()** - This gets the current epoch time (unix timestamp - number of seconds since Jan 1, 1970) and corrects it for the specified logger time zone offset.
 - **formatDateTime_ISO8601(DateTime dt)** - Formats a DateTime object into an ISO8601 formatted Arduino String.
 - **formatDateTime_ISO8601(uint32_t unixTime)** - Formats a unix timestamp into an ISO8601 formatted Arduino String.
-- **checkInterval()** - This returns true if the _current_ time is an even iterval of the logging interval, otherwise false.  This uses getNow() to get the curernt time.
+- **checkInterval()** - This returns true if the _current_ time is an even interval of the logging interval, otherwise false.  This uses getNow() to get the curernt time.
 - **markTime()** - This sets static variables for the date/time - this is needed so that all data outputs (SD, EnviroDIY, serial printing, etc) print the same time for updating the sensors - even though the routines to update the sensors and to output the data may take several seconds.  It is not currently possible to output the instantaneous time an individual sensor was updated, just a single marked time.  By custom, this should be called before updating the sensors, not after.  If you do not call this function before saving or sending data, there will be no timestamps associated with your data.  This is called for you every time the checkInterval() function is run.
-- **checkMarkedInterval()** - This returns true if the _marked_ time is an even iterval of the logging interval, otherwise false.  This uses the static time value set by markTime() to get the time.  It does not check the real-time-clock directly.
+- **checkMarkedInterval()** - This returns true if the _marked_ time is an even interval of the logging interval, otherwise false.  This uses the static time value set by markTime() to get the time.  It does not check the real-time-clock directly.
 
 
 #### Functions for the processor sleep modes:
@@ -378,7 +382,7 @@ Before creating a loggerModem instance, _you must add one of these lines to the 
 - ```#define TINY_GSM_MODEM_SIM808``` - for a SIMCom SIM808 (essentially a SIMCom SIM800 with GPS support)
 - ```#define TINY_GSM_MODEM_A6``` - for an AI-Thinker A6 or A7
 - ```#define TINY_GSM_MODEM_M590``` - for a Neoway M590
-- ```#define TINY_GSM_MODEM_U201``` - for a U-blox U201 (or a Digi 3G XBee running in bypass mode)
+- ```#define TINY_GSM_MODEM_UBLOX``` - for most u-blox cellular modems ((LEON-G100, LISA-U2xx, SARA-G3xx, SARA-U2xx, TOBY-L2xx, LARA-R2xx, MPCI-L2xx, or a Digi 3G XBee running in bypass mode)
 - ```#define TINY_GSM_MODEM_ESP8266``` - for an ESP8266 using the _default AT command firmware_
 - ```#define TINY_GSM_MODEM_XBEE``` - for Digi brand WiFi or Cellular XBee's running in normal (transparent) mode
 
@@ -412,7 +416,8 @@ Once the modem has been set up, it has all the functions of sensor object.  Thes
 - **openTCP(IPAddress ip, uint16_t port)** - Makes a TCP connection to a host ip address and port.  Returns 1 if successful.
 - **closeTCP()** - Breaks the TCP connection.
 - **disconnectInternet()** - Disconnects from the network, if applicable.
-- **off()** - Turns the modem off and empties the send and receive buffer.  Returns true if connection is successful.
+- **modemPowerUp()** - Turns the modem on.  Returns true if connection is successful.
+- **modemPowerDown()** - Turns the modem off and empties the send and receive buffer.  Returns true if connection is successful.
 - **getNISTTime()** - Returns the current Unix time stamp (_in UTC_) from NIST via the TIME protocol (rfc868).
 
 As mentioned above, the cellular modems themselves are also sensors with the following variables:
@@ -424,7 +429,7 @@ Variable *modemRSSI = Modem_RSSI(&modem, "UUID", "customVarCode");  // Received 
 Variable *modemSinalPct = Modem_SignalPercent(&modem, "UUID", "customVarCode");  // "Percent" signal strength
 ```
 
-The modem does not behave quite the same as all the other sensors do, though.  Setup must be done with the '''setupModem(...)''' function; the normal '''setup()''' function does not do anything.  The '''sleep()''' and '''powerDown()''' functions also do not work, the modem will only go off with the '''off()''' function.
+The modem does not behave quite the same as all the other sensors do, though.  Setup must be done with the ```setupModem(...)``` function; the normal ```setup()``` function does not do anything.  The ```powerUp()``` and ```powerDown()``` functions also do not work, the modem will only go on with the ```modemPowerUp()``` function and off with the ```modemPowerDown()``` function.
 
 Note for GPRSBee modems: To start the modem you will need to power the logger board off, connect the battery to the logger board, and finally attach the modem to the logger board. Then you may power the board and run your sketch. We have found that attaching a GPRSBee modem to power in a different sequence results in the modem reporting zero signal strength. Note, the Mayfly connected to a computer via USB does not supply sufficient power to the GPRSBee. If the community finds this true for other modems, please let us know.
 
@@ -542,12 +547,12 @@ If you would like to do other things within the loop function, you should access
 - After updating the sensors, then call any functions you want to send/print/save data.
 - Finish by putting the logger back to sleep, if desired, with ```systemSleep()```.
 
-The [double_logger example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger) demonstrates using a custom loop function in order to log two different groups of sensors at different logging intervals.  The [baro_rho_correction example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/baro_rho_correction) demonstrates using a custom loop function in order to create calculated variables before saving the data and sending it to the EnviroDIY data portal.  The [data_saving example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/data_saving) shows using a custom loop in order to save cellular data by saving data from many variables on the SD card, but only sending a portion of the data to the EnviroDIY data portal. 
+The [double_logger example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger) demonstrates using a custom loop function in order to log two different groups of sensors at different logging intervals.  The [baro_rho_correction example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/baro_rho_correction) demonstrates using a custom loop function in order to create calculated variables before saving the data and sending it to the EnviroDIY data portal.  The [data_saving example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/data_saving) shows using a custom loop in order to save cellular data by saving data from many variables on the SD card, but only sending a portion of the data to the EnviroDIY data portal.
 
 
 ## Available sensors
 
-There are a number of sensors supported by this library.  Depending on the sensor, it may communicate with the Arduino board using as a serial peripheral interface (SPI), inter-integrated curcuit (I2C, also called "Wire"), or some type of universal synchronous/asynchronous receiver/transmitter (USART, almost always simply called "serial") (USART or serial includes transistor-transistor logic (TTL), RS232 (adapter needed), and RS485 (adapter needed) communication).  See the section on [Processor Compatibility](#compatibility) for more specific notes on which pins are available for each type of communication on the various supported processors.
+There are a number of sensors supported by this library.  Depending on the sensor, it may communicate with the Arduino board using as a serial peripheral interface (SPI), inter-integrated circuit (I2C, also called "Wire," "Two Wire", or "TWI"), or some type of universal synchronous/asynchronous receiver/transmitter (UART/USART, or simply "serial") protocol.  (USART or serial includes transistor-transistor logic (TTL), RS232 (adapter needed), and RS485 (adapter needed) communication).  See the section on [Processor Compatibility](#compatibility) for more specific notes on which pins are available for each type of communication on the various supported processors.
 
 Essentially all of the sensors can have their power supplies turned off between readings, but not all boards are able to switch output power on and off.  When the sensor constructor asks for the Arduino pin controlling power on/off, use -1 for any board which is not capable of switching the output power on and off.
 
@@ -903,9 +908,9 @@ MaximDS18_Temp(&ds18, "UUID", "customVarCode");  // Temperature in °C
 ```
 _____
 
-### <a name="DS3231"></a>Maxim DS3231 Real Time Clock
+### <a name="DS3231"></a>[Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html) Real Time Clock
 
-As the I2C [Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html) real time clock (RTC) is absolutely required for time-keeping on all AVR boards, this library also makes use of it for its on-board temperature sensor.  The DS3231 requires a 3.3V power supply.
+The I2C [Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3231.html) real time clock (RTC) is absolutely required for time-keeping on all AVR boards.  This library also makes use of it for its on-board temperature sensor.  The DS3231 requires a 3.3V power supply.
 
 The only argument for the constructor is the number of readings to average, as the RTC requires constant power and is connected via I2C:
 
@@ -928,7 +933,7 @@ _____
 
 ### <a name="MS5803"></a>[Measurement Specialties MS5803](http://www.te.com/usa-en/product-CAT-BLPS0013.html) Digital Pressure Sensor
 
-These sensors come in several different pressure ranges.  The maximum measurable pressure is assumed to be 14bar (the most common model), but this can be changed in the constructor.  Although this sensor has the option of either I2C or SPI communication, this library only supports I2C.  _The I2C sensor address is assumed to be 0x76_, though it can be changed to 0x77 in the constructor if necessary.  The sensor address is determined by how the sensor is soldered onto its breakout board.  To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses.  No more than two can be attached.  These sensors should be attached to a 1.7-3.6V power source and the power supply to the sensor can be stopped between measurements.  NOTE:  These I2C addresses are the same as those available for the Bosch BME280 Barometric Pressure Sensor!  If you are also using one of those sensors, make sure that the address for that sensor does not conflict with the address of this sensor.  
+These sensors come in several different pressure ranges.  The maximum measurable pressure is assumed to be 14bar (the most common model), but this can be changed in the constructor.  Although this sensor has the option of either I2C or SPI communication, this library only supports I2C.  _The I2C sensor address is assumed to be 0x76_, though it can be changed to 0x77 in the constructor if necessary. The Sparkfun default is 0x76 (14 BA currently available). Northern Widget supplies MS5803 sensors with 2 BA maximum pressure and their default is usually 0x77, but varies by model as outlined in their library (github.com/NorthernWidget/TP-Downhole_Library). The sensor address is determined by how the sensor is soldered onto its breakout board.  To connect two of these sensors to your system, you must ensure they are soldered so as to have different I2C addresses.  No more than two can be attached.  These sensors should be attached to a 1.7-3.6V power source and the power supply to the sensor can be stopped between measurements.  NOTE:  These I2C addresses are the same as those available for the Bosch BME280 Barometric Pressure Sensor!  If you are also using one of those sensors, make sure that the address for that sensor does not conflict with the address of this sensor.  
 
 The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex and maximum pressure are optional as is the number of readings to average:
 
@@ -1006,6 +1011,7 @@ _____
 ### <a name="keller"></a>[Keller Submersible Water Level Transmitters](http://www.te.com/usa-en/product-CAT-BLPS0013.html) Pressure Sensor
 
 Many Keller pressure and water level sensors can communicate via Modbus RTU over RS485. The functions below should work with any Keller Series 30, Class 5, Group 20 sensor (such as the Keller Acculevel) that are Software version 5.20-12.28 and later (i.e. made after the 2012 in the 28th week). Note that these have only been tested with the Acculevel. More documentation for our implementation of the Keller Modbus communication Protocol commands and responses, along with information about the various variables, can be found in the [EnviroDIY KellerModbus library](https://github.com/EnviroDIY/KellerModbus). Sensors ship with default Slave addresses set to 0x01, but these can be reset. These Keller sensors expect an input voltage of 9-28 VDC, so they also require a voltage booster and an RS485 to TTL Serial converter with logic level shifting from the higher output voltage to the 3.3V or 5V of the Arduino data logging board.
+
 Digital communication with Keller sensors configured for SDI12 communication protocols are not supported by these functions.
 
 The sensor constructor requires as input: modbus address, the pin controlling sensor power, and a stream instance for data (ie, ```Serial```).  The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.  (Use -1 for the enable pin if your adapter does not have one and you want to average more than one reading.) Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.  AltSoftSerial and HardwareSerial work fine.
@@ -1041,7 +1047,7 @@ This library currently supports the following Yosemitech sensors:
 - [Y550-B UV254/COD Sensor with Wiper](http://www.yosemitech.com/en/product-21.html)
 - [Y4000 Multiparameter Sonde](http://www.yosemitech.com/en/product-20.html)
 
-All of these sensors require a 5-12V power supply and the power supply can be stopped between measurements.  (_Note that any user settings (such as brushing frequency) will be lost if the sensor loses power._)  They communicate via [Modbus RTU](https://en.wikipedia.org/wiki/Modbus) over [RS-485](https://en.wikipedia.org/wiki/RS-485).  To interface with them, you will need an RS485-to-TTL adapter.  The white wire of the Yosemitech sensor will connect to the "B" pin of the adapter and the green wire will connect to "A".  The red wire from the sensor should connect to the 5-12V power supply and the black to ground.  The Vcc pin on the adapter should be connected to another power supply (voltage depends on the specific adapter) and the ground to the same ground.  The red wire from the sensor _does not_ connect to the Vcc of the adapter.  The R/RO/RXD pin from the adapter connects to the TXD on the Arduino board and the D/DI/TXD pin from the adapter connects to the RXD.  If applicable, tie the RE and DE (receive/data enable) pins together and connect them to another pin on your board.  While this library supports an external enable pin, we have had very bad luck with most of them.  Adapters with automatic direction control tend to use very slightly more power, but have more stable communication.  There are a number of RS485-to-TTL adapters available.  When shopping for one, be mindful of the logic level of the TTL output by the adapter.  The MAX485, one of the most popular adapters, has a 5V logic level in the TTL signal.  This will _fry_ any board like the Mayfly that can only use on 3.3V logic.  You would need a voltage shifter in between the Mayfly and the MAX485 to make it work.
+All of these sensors require a 5-12V power supply and the power supply can be stopped between measurements.  (_Note that any user settings (such as brushing frequency) will be lost if the sensor loses power._)  They communicate via [Modbus RTU](https://en.wikipedia.org/wiki/Modbus) over [RS-485](https://en.wikipedia.org/wiki/RS-485).  To interface with them, you will need an RS485-to-TTL adapter.  The white wire of the Yosemitech sensor will connect to the "B" pin of the adapter and the green wire will connect to "A".  The red wire from the sensor should connect to the 5-12V power supply and the black to ground.  The Vcc pin on the adapter should be connected to another power supply (voltage depends on the specific adapter) and the ground to the same ground.  The red wire from the sensor _does not_ connect to the Vcc of the adapter.  The R/RO/RXD pin from the adapter connects to the TXD on the Arduino board and the D/DI/TXD pin from the adapter connects to the RXD.  If applicable, tie the RE and DE (receive/data enable) pins together and connect them to another pin on your board.  While this library supports an external enable pin, we have had very bad luck with most of them.  Adapters with automatic direction control tend to use very slightly more power, but have more stable communication.  There are a number of RS485-to-TTL adapters available.  When shopping for one, be mindful of the logic level of the TTL output by the adapter.  The MAX485, one of the most popular adapters, has a 5V logic level in the TTL signal.  This will _fry_ any board like the Mayfly that uses 3.3V logic.  You would need a voltage shifter in between the Mayfly and the MAX485 to make it work.
 
 The sensor modbus address, the pin controlling sensor power, a stream instance for data (ie, ```Serial```), the Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter, and the number of readings to average are required for the sensor constructor.  (Use -1 for the enable pin if your adapter does not have one.)  For all of these sensors except pH, Yosemitech strongly recommends averaging 10 readings for each measurement.  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.  AltSoftSerial and HardwareSerial work fine.
 
@@ -1290,6 +1296,26 @@ Variable *mayflyRAM = new ProcessorStats_FreeRam(&mayfly, "UUID", "customVarCode
 ```
 _____
 
+
+## <a name="help"></a>Help: Common problems and FAQ's
+
+### <a name="parasites"></a>Power Draw over Data Lines
+
+When deploying a logger out into the wild and depending on only battery or solar charging, getting the power draw from sensors to be as low as possible is crucial.  This library assumes that the main power/Vcc supply to each sensor can be turned on by setting its powerPin high and off by setting its powerPin low.  For most well-designed sensors, this should stop all power draw from the sensor.  Real sensors, unfortunately, aren't as well designed as one might hope and some sensors (and particularly RS485 adapters) can continue to suck power from by way of high or floating data pins.  For most sensors, this library attempts to set all data pins low when sending the sensors and then logger to sleep.  If you are still seeing "parasitic" power draw, here are some work-arounds you can try:
+
+- For sensors (and adapters) drawing power over a serial line:
+    - Write-out your entire loop function.  (Don't just use ```log()```.)
+    - Add a ```SerialPortName.begin(BAUD);``` statement to the beginning of your loop, before ```sensorsPowerUp()```.
+    - After ```sensorsPowerDown()``` add ```SerialPortName.end(BAUD);```.
+    - After "ending" the serial communication, explicitly set your Rx and Tx pins low using ```digitalWrite(#, LOW);```.
+- For sensors drawing power over I2C:
+    - Many (most?) boards have external pull-up resistors on the hardware I2C/Wire pins which cannot be disconnected from the main power supply.  This means I2C parasitic power draw is best solved via hardware, not software.
+    - Use a specially designed I2C isolator
+    - Use a generic opto-isolator or other type of isolator on both the SCL and SDA lines
+    - In this future, this library _may_ offer the option of using software I2C, which would allow you to use the same technique as is currently usable to stop serial parasitic draw.  Until such an update happens, however, hardware solutions are required.
+
+_____
+
 ## <a name="SoftwareSerial"></a>Notes on Arduino Streams and Software Serial
 
 In this library, the Arduino communicates with the computer for debugging, the modem for sending data, and some sensors (like the [MaxBotix MaxSonar](#MaxBotix)) via instances of Arduino TTL "[streams](https://www.arduino.cc/en/Reference/Stream)."  The streams can either be an instance of [serial](https://www.arduino.cc/en/Reference/Serial) (aka hardware serial), [AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial), [the EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts), or any other stream type you desire.  The very commonly used build-in version of the software serial library for AVR processors uses interrupts that conflict with several other sub-libraries or this library and _cannot be used_!  I repeat:  **_You cannot use the built-in version of SoftwareSerial!_**  You simply cannot.  It will not work.  Period.  This is not a bug that will be fixed.
@@ -1298,7 +1324,7 @@ For stream communication, **hardware serial** should always be your first choice
 
 If the [proper pins](https://www.pjrc.com/teensy/td_libs_AltSoftSerial.html) are available, **[AltSoftSerial](https://github.com/PaulStoffregen/AltSoftSerial)** by Paul Stoffregen is also superior to SoftwareSerial, especially at slow baud rates.  Neither hardware serial nor AltSoftSerial require any modifications.  Because of the limited number of serial ports available on most boards, I suggest giving first priority (i.e. the first (or only) hardware serial port, "Serial") to your debugging stream going to your PC (if you intend to debug), second priority to the stream for the modem, and third priority to any sensors that require a stream for communication.  See the section on [Processor Compatibility](#compatibility) for more specific notes on what serial ports are available on the various supported processors.
 
-Another possible serial port emulator is [NeoSWSerial](https://github.com/SlashDevin/NeoSWSerial).  While not as stable as AltSoftSerial, it supports using any pin with pin change interrupts for communication. To use NeoSWSerial, you must open the NeoSWSerial.h file and find and uncomment the line ```//#define NEOSWSERIAL_EXTERNAL_PCINT```.  There are instructions in the ReadMe for the library on how to use EnableInterrupt to activate NeoSWSerial.  Note that NeoSWSerial is incompatible with any version of SDI-12 communication on most 8MHz processors (including the EnviroDIY Mayfly).  The two libraries can be compiled together, but because they are in competition for a timer, they cannot be used together.
+Another possible serial port emulator is [NeoSWSerial](https://github.com/SlashDevin/NeoSWSerial).  While not as stable as AltSoftSerial, it supports using any pin with pin change interrupts for communication. To use NeoSWSerial, you must open the NeoSWSerial.h file and find and uncomment the line ```//#define NEOSWSERIAL_EXTERNAL_PCINT``` and then recompile the library.  There are instructions in the NeoSWSerial ReadMe on how to use EnableInterrupt to activate NeoSWSerial.  Note that NeoSWSerial is generally incompatible with the SDI-12 communication library on most 8MHz processors (including the EnviroDIY Mayfly).  The two libraries can be compiled together, but because they are in competition for a timer, they cannot be used together.  The way this (ModularSensors) uses the SDI-12 library resets the timer settings when ending communication, so you may be able to use the two libraries together if the communication is not simultaneous.  Please test your configuration before deploying it!
 
 To use a hardware serial stream, you do not need to include any libraries or write any extra lines.  You can simply write in "Serial#" where ever you need a stream.  If you would like to give your hardware serial port an easy-to-remember alias, you can use code like this:
 
@@ -1366,11 +1392,12 @@ Fully supported
 - Most variants have one SPI port configured by default (likely pins 22 (MISO), 23 (MOSI), and 24 (SCK)).  Chip select/slave select and card detect pins vary by board.
 - Most variants have one I2C (Wire) interface configured by default (likely pins 20 (SDA) and 21 (SCL)).
 - There are up to _6_ total "sercom" ports hard which can be configured for either hardware serial, SPI, or I2C (wire) communication on this processor.  See https://learn.adafruit.com/using-atsamd21-sercom-to-add-more-spi-i2c-serial-ports/overview for more instructions on how to configure these ports, if you need them.
-- AltSoftSerial is not directly supported on the AtSAMD21, but with some effort, the timers could be configured to make it work.
-- SoftwareSerial_ExtInts is not supported at all on the AtSAMD21.
+- AltSoftSerial is not supported on the AtSAMD21.
+- SoftwareSerial_ExtInts is not supported on the AtSAMD21.
+- NeoSWSerial is not supported at all on the AtSAMD21.
 - Any digital pin can be used with SDI-12.
 - Because the USB controller is built into the processor, your USB serial connection will close as soon as the processor goes to sleep.  If you need to debug, I recommend using a serial port monitor like [Tera Term](https://ttssh2.osdn.jp/index.html.en) which will automatically renew its connection with the serial port when it connects and disconnects.  Otherwise, you will have to rely on lights on your alert pin or your modem to verify the processor is waking/sleeping properly.
-- There is a completely weird bug that causes the code to crash if using input pin 1 on the TI ADS1115 (used for the Campbell OBS3+, Apogee SQ212, and raw external voltages).  I have no idea at all why this happens.  Pins 0, 2, and 3 all work fine.  Just don't use pin 1.
+- There is a completely weird bug that causes the code to crash if using input pin 1 on the TI ADS1115 (used for the Campbell OBS3+, Apogee SQ212, and raw external voltages).  I have no idea at all why this happens.  Pins 0, 2, and 3 all work fine.  Just don't use pin 1.  This only seems to apply to the SAMD21 boards.
 ___
 
 #### AtMega2560 (Arduino Mega)

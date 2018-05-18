@@ -13,10 +13,10 @@ env:
     - PLATFORMIO_CI_SRC=examples/single_sensor/
     - PLATFORMIO_CI_SRC=examples/multisensor_print/
     - PLATFORMIO_CI_SRC=examples/simple_logging/
-    - PLATFORMIO_CI_SRC=examples/double_logger/
     - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY/
-    - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/
-    - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/
+    # - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/
+    # - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/
+    - PLATFORMIO_CI_SRC=examples/double_logger/
     - PLATFORMIO_CI_SRC=examples/baro_rho_correction/
     - PLATFORMIO_CI_SRC=examples/data_saving/
 
@@ -47,11 +47,12 @@ install:
     - pio lib -g install https://github.com/EnviroDIY/TinyGSM.git
     - pio lib -g install 1824  # SensorModbusMaster
     - pio lib -g install 2078  # YosemitechModbus
-    - pio lib -g install https://github.com/EnviroDIY/MS5803.git
+    - pio lib -g install 5431 # MS5803
     - pio lib -g install https://github.com/EnviroDIY/KellerModbus.git
     - pio lib -g install 873  # RTCZero
     - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git  # #73, but need the git until Paul S. has a new release
     - pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
+    # - pio lib -g install https://github.com/todbot/SoftI2CMaster.git
     - pio lib -g update
 
 script: make travis-build

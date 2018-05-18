@@ -18,7 +18,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
 // #define TINY_GSM_MODEM_A6  // Select for a AI-Thinker A6 or A7 chip
 // #define TINY_GSM_MODEM_M590  // Select for a Neoway M590
-// #define TINY_GSM_MODEM_U201  // Select for a U-blox U201
+// #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
 #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 // #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
 
@@ -60,9 +60,12 @@ const int8_t wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
 
-// Create the processor "sensor"
+// Create and return the processor "sensor"
 const char *MFVersion = "v0.5";
 ProcessorStats mayfly(MFVersion) ;
+// Create the battery voltage and free RAM variable objects for the Y504 and return variable-type pointers to them
+Variable *mayflyBatt = new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *mayflyRAM = new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -71,35 +74,36 @@ ProcessorStats mayfly(MFVersion) ;
 HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
 
 #if defined(TINY_GSM_MODEM_XBEE)
+const long ModemBaud = 9600;  // Default for XBee is 9600, I've sped mine up to 57600
 const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 ModemSleepType ModemSleepMode = modem_sleep_reverse;  // How the modem is put to sleep
 
 #elif defined(TINY_GSM_MODEM_ESP8266)
+const long ModemBaud = 57600;  // Default for ESP8266 is 115200, but the Mayfly itself stutters above 57600
 const int8_t modemSleepRqPin = 19;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
 const int8_t modemStatusPin = -1;   // Modem Status Pin (indicates power status) (-1 if unconnected)
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 ModemSleepType ModemSleepMode = modem_always_on;  // How the modem is put to sleep
 
-#else
+#elif defined(TINY_GSM_MODEM_UBLOX)
+const long ModemBaud = 9600;
 const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sleep
-#endif
+
+#else
+const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble making it fast (19200 works)
+const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
+const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
+const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sleep
 // Use "modem_sleep_held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
 // Use "modem_sleep_pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
 // Use "modem_sleep_reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
 // Use "modem_always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
-#if defined(TINY_GSM_MODEM_ESP8266)
-const long ModemBaud = 57600;  // Default for ESP8266 is 115200, but the Mayfly itself stutters above 57600
-#elif defined(TINY_GSM_MODEM_SIM800)
-const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble making it fast (19200 works)
-#elif defined(TINY_GSM_MODEM_XBEE)
-const long ModemBaud = 9600;  // Default for XBee is 9600, I've sped mine up to 57600
-#else
-const long ModemBaud = 9600;  // Modem baud rate
 #endif
 
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
@@ -109,13 +113,20 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a TinyGSM Client, and an on/off method
 loggerModem modem;
+// Create the RSSI and signal strength variable objects for the modem and return
+// variable-type pointers to them
+Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *modemSinalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
 #include <MaximDS3231.h>
+// Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
+// Create the temperature variable object for the DS3231
+Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -126,13 +137,30 @@ uint8_t BMEi2c_addr = 0x77;
 // The BME280 can be addressed either as 0x77 (Adafruit default) or 0x76 (Grove default)
 // Either can be physically mofidied for the other address
 const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-// Create a sensor object for the BME
+// Create and return the Bosch BME280 sensor object
 BoschBME280 bme280(I2CPower, BMEi2c_addr);
-// Create the four variable objects for the BME
+// Create the four variable objects for the BME and return variable pointers to them
 Variable *bTemp = new BoschBME280_Temp(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *bHumid = new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *bPress = new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *bAlt = new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
+
+
+// ==========================================================================
+//    Maxim DS18 One Wire Temperature Sensor
+// ==========================================================================
+#include <MaximDS18.h>
+// OneWire Address [array of 8 hex characters]
+// DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA, 0x81, 0x16, 0x03, 0x0C};
+const int8_t OneWireBus = 4;  // Pin attached to the OneWire Bus (-1 if unconnected)
+const int8_t OneWirePower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// Create and return the Maxim DS18 sensor object (use this form for a known address)
+// MaximDS18 ds18_1(OneWireAddress1, OneWirePower, OneWireBus);
+// Create and return the Maxim DS18 sensor object (use this form for a single sensor on bus with an unknow address)
+MaximDS18 ds18_u(OneWirePower, OneWireBus);
+// Create the temperature variable object for the DS18 and return a variable-type pointer to it
+Variable *ds18Temp = new MaximDS18_Temp(&ds18_u, "12345678-abcd-1234-efgh-1234567890ab");
+
 
 
 // ==========================================================================
@@ -143,50 +171,29 @@ Variable *bAlt = new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234
 const uint8_t MS5803i2c_addr = 0x76;  // The MS5803 can be addressed either as 0x76 (default) or 0x77
 const int MS5803maxPressure = 14;  // The maximum pressure measurable by the specific MS5803 model
 const uint8_t MS5803ReadingsToAvg = 1;
-// Create the sensor for the MS5803
+// Create and return the MeaSpec MS5803 sensor object
 MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803ReadingsToAvg);
-// Create the two variables for the MS5803
+// Create the temperature and pressure variable objects for the MS5803 and return variable pointers to them
 Variable *msTemp = new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *msPress = new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-efgh-1234567890ab");
-
-
-// ==========================================================================
-//    Maxim DS18 One Wire Temperature Sensor
-// ==========================================================================
-#include <MaximDS18.h>
-// OneWire Address [array of 8 hex characters]
-// DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA, 0x81, 0x16, 0x03, 0x0C};
-// DeviceAddress OneWireAddress2 = {0x28, 0xFF, 0x57, 0x90, 0x82, 0x16, 0x04, 0x67};
-// DeviceAddress OneWireAddress3 = {0x28, 0xFF, 0x74, 0x2B, 0x82, 0x16, 0x03, 0x57};
-// DeviceAddress OneWireAddress4 = {0x28, 0xFF, 0xB6, 0x6E, 0x84, 0x16, 0x05, 0x9B};
-// DeviceAddress OneWireAddress5 = {0x28, 0xFF, 0x3B, 0x07, 0x82, 0x16, 0x03, 0xB3};
-const int8_t OneWireBus = 4;  // Pin attached to the OneWire Bus (-1 if unconnected)
-const int8_t OneWirePower = 22;  // Pin to switch power on and off (-1 if unconnected)
-// MaximDS18 ds18_1(OneWireAddress1, OneWirePower, OneWireBus);
-// MaximDS18 ds18_2(OneWireAddress2, OneWirePower, OneWireBus);
-// MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
-// MaximDS18 ds18_4(OneWireAddress4, OneWirePower, OneWireBus);
-// MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
-MaximDS18 ds18_u(OneWirePower, OneWireBus);
 
 
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
 Variable *variableList[] = {
+    mayflyBatt,
+    mayflyRAM,
+    ds3231Temp,
     bTemp,
     bHumid,
     bPress,
     bAlt,
     msTemp,
     msPress,
-    new MaximDS18_Temp(&ds18_u, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
-    // new YOUR_variableName_HERE(&)
+    ds18Temp,
+    modemRSSI,
+    modemSinalPct
 };
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
@@ -300,12 +307,18 @@ void setup()
 
     // Attach the modem to the logger
     EnviroDIYLogger.attachModem(&modem);
+    // Immediately turn on the modem
+    EnviroDIYLogger._logModem->modemPowerUp();
 
-    // Now that the modem is attached, use it to sync the clock with NIST
+    // Enter the tokens for the connection with EnviroDIY
+    EnviroDIYLogger.setToken(registrationToken);
+    EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
+
+    // Set up the sensors
+    EnviroDIYLogger.setupSensors();
+
+    // Sync the clock with NIST
     Serial.print(F("Attempting to synchronize RTC with NIST\n"));
-    // Turn on the modem
-    EnviroDIYLogger._logModem->powerUp();
-    EnviroDIYLogger._logModem->wake();
     // Connect to the network
     if (EnviroDIYLogger._logModem->connectInternet())
     {
@@ -314,14 +327,7 @@ void setup()
         EnviroDIYLogger._logModem->disconnectInternet();
     }
     // Turn off the modem
-    EnviroDIYLogger._logModem->off();
-
-    // Enter the tokens for the connection with EnviroDIY
-    EnviroDIYLogger.setToken(registrationToken);
-    EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
-
-    // Set up the sensors
-    EnviroDIYLogger.setupSensors();
+    EnviroDIYLogger._logModem->modemPowerDown();
 
     // Generate a logger file name from the LoggerID and the date/time on the RTC
     // This will start a new file every time the logger is reset
@@ -340,7 +346,7 @@ void setup()
     // whole generateFileHeader function, which is already a long annoying
     // string concatenation function) so instead we're just creating another set
     // of header rows for the csv with no values in the first spaces where
-    // header values existand then starting the new header information shifted
+    // header values exist and then starting the new header information shifted
     // over by that many columns/commas
     String extraHeaderSpacer = "";
     for (uint8_t i=0; i <= variableCount; i++) extraHeaderSpacer += ',';
@@ -403,8 +409,7 @@ void loop()
         digitalWrite(greenLED, HIGH);
 
         // Turn on the modem to let it start searching for the network
-        EnviroDIYLogger._logModem->powerUp();
-        EnviroDIYLogger._logModem->wake();
+        EnviroDIYLogger._logModem->modemPowerUp();
 
         // Send power to all of the sensors
         Serial.print(F("Powering sensors...\n"));
@@ -468,7 +473,7 @@ void loop()
         // Figure out how long the original json is
         int jsonLength = jsonRaw.length();
         // Crop off the last ' }' from the json
-        String jsonToGo = jsonRaw.substring(0,jsonLength-2);
+        String jsonToGo = jsonRaw.substring(0,jsonLength-1);
         // add the UUID for the water pressure
         jsonToGo += F(", \"");
         jsonToGo += String(waterPressureUUID);
@@ -488,7 +493,7 @@ void loop()
         // add the density corrected water depth value
         jsonToGo += String(rhoDepth);
         // re-add the last '}'
-        jsonToGo += F(" }");
+        jsonToGo += F("}");
 
         // Connect to the network
         Serial.print(F("Connecting to the internet...\n"));
@@ -501,7 +506,7 @@ void loop()
             EnviroDIYLogger._logModem->disconnectInternet();
         }
         // Turn the modem off
-        EnviroDIYLogger._logModem->off();
+        EnviroDIYLogger._logModem->modemPowerDown();
 
         // Create a csv data record and save it to the log file
         EnviroDIYLogger.logToSD(csvToGo);
@@ -513,6 +518,9 @@ void loop()
     }
 
     // Check if it was instead the testing interrupt that woke us up
+    // NOTE:  This testing mode will *NOT* show the values from any of the extra
+    // calculated variables added in the loop.  It will only show the variables
+    // listed in the variableList which is fed to the EnviroDIYLogger.
     if (Logger::startTesting) EnviroDIYLogger.testingMode();
 
     // Sleep

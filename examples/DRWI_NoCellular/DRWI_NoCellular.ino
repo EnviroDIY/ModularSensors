@@ -60,6 +60,7 @@ ProcessorStats mayfly(MFVersion) ;
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
 #include <MaximDS3231.h>
+// Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
 
 
@@ -75,12 +76,14 @@ const int8_t OBSLowPin = 0;  // The low voltage analog pin ON THE ADS1115 (NOT t
 const float OBSLow_A = xxxxE+xx;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = xxxxE+xx;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = xxxxE+xx;  // The "C" value from the low range calibration
+// Create and return the Campbell OBS3+ LOW RANGE sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, OBS3_ADS1115Address, OBS3numberReadings);
 // Campbell OBS 3+ High Range calibration in Volts
 const int8_t OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const float OBSHigh_A = xxxxE+xx;  // The "A" value (X^2) from the high range calibration
 const float OBSHigh_B = xxxxE+xx;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = xxxxE+xx;  // The "C" value from the high range calibration
+// Create and return the Campbell OBS3+ HIGH RANGE sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OBS3_ADS1115Address, OBS3numberReadings);
 
 
@@ -92,6 +95,7 @@ const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const uint8_t CTDnumberReadings = 6;  // The number of readings to average
 const int8_t SDI12Data = 7;  // The pin the CTD is attached to
 const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+// Create and return the Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 
 

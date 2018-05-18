@@ -82,6 +82,7 @@ bool BoschBME280::wake(void)
     // As of Adafruit library version 1.0.7, this function includes all of the
     // various delays to allow the chip to wake up, get calibrations, get
     // coefficients, and set sampling modes.
+    // This will also restart "Wire"
     // Currently this is using the settings that Adafruit considered to be 'default'
     //  - sensor mode = normal (sensor measures, sleeps for the "standby time" and then automatically remeasures
     //  - temperature oversampling = 16x

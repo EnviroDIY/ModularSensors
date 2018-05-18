@@ -35,7 +35,8 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(),
                F(" at "), getSensorLocation(), '\n');
         // Make this the currently active SDI-12 Object
-        _SDI12Internal.setActive();
+        // Use begin() instead of just setActive() to ensure timer is set correctly.
+        _SDI12Internal.begin();;
         // Empty the buffer
         _SDI12Internal.clearBuffer();
 
@@ -60,10 +61,12 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         _SDI12Internal.read();  // ignore the repeated SDI12 address
         // First variable returned is the Dialectric E
         ea = _SDI12Internal.parseFloat();
+        if (ea < 0 || ea > 350) ea = -9999;
         // Second variable returned is the temperature in °C
         temp = _SDI12Internal.parseFloat();
+        if (temp < -50 || temp > 60) temp = -9999;  // Range is - 40°C to + 50°C
         // the "third" variable of VWC is actually calculated, not returned by the sensor!
-        if (ea != -9999 && temp != -9999)
+        if (ea != -9999)
         {
             VWC = (4.3e-6*(ea*ea*ea))
                         - (5.5e-4*(ea*ea))
@@ -81,7 +84,8 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         _SDI12Internal.clearBuffer();
 
         // De-activate the SDI-12 Object
-        _SDI12Internal.forceHold();
+        // Use end() instead of just forceHold to un-set the timers
+        _SDI12Internal.end();
 
         MS_DBG(F("Dialectric E: "), ea);
         MS_DBG(F(" Temperature: "), temp);
