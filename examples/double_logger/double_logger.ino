@@ -106,7 +106,6 @@ ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sl
 // Use "modem_always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
 #endif
 
-const long ModemBaud = 9600;  // Modem baud rate
 const char *wifiId = "XXXXXXX";  // The WiFi access point
 const char *wifiPwd = "XXXXXXX";  // The password for connecting to WiFi
 // Create the loggerModem instance

@@ -61,10 +61,12 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         _SDI12Internal.read();  // ignore the repeated SDI12 address
         // First variable returned is the Dialectric E
         ea = _SDI12Internal.parseFloat();
+        if (ea < 0 || ea > 350) ea = -9999;
         // Second variable returned is the temperature in °C
         temp = _SDI12Internal.parseFloat();
+        if (temp < -50 || temp > 60) temp = -9999;  // Range is - 40°C to + 50°C
         // the "third" variable of VWC is actually calculated, not returned by the sensor!
-        if (ea != -9999 && temp != -9999)
+        if (ea != -9999)
         {
             VWC = (4.3e-6*(ea*ea*ea))
                         - (5.5e-4*(ea*ea))
