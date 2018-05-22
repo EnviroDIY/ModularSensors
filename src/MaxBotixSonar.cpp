@@ -76,6 +76,9 @@ bool MaxBotixSonar::wake(void)
     // RoHS 1.8b090  0713
     // TempI
 
+    // NOTE ALSO:  Depending on what type of serial stream you are using, there
+    // may also be a bunch of junk in the buffer that this will clear out.
+
     MS_DBG(F("Parsing Header Lines from MaxBotix on "), getSensorLocation(), '\n');
     for(int i = 0; i < 6; i++)
     {
