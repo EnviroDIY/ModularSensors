@@ -78,15 +78,19 @@ MaxBotixSonar sonar(sonarSerial, SonarPower, SonarTrigger) ;
 // Create a new instance of the range variable;
 MaxBotixSonar_Range sonar_range(&sonar);
 
-// Create a function to calculate some value
-float add10(void)
+// Create a function to calculate the water depth from the sonar range
+// For this example, we'll assume that the sonar is mounted 5m above the stream bottom
+float calcDepth(void)
 {
-    return sonar_range.getValue() + 10;
+    float mountHeight = 5000;
+    float sonarRange = sonar_range.getValue();
+    return mountHeight - sonarRange;
 }
-
-
-// Create a calculated variable
-Variable calcVar(add10, "Calculated Value", "millimeter", 1, "", "CalcTest");
+// Create a calculated variable for the water depth
+// Variable calcVar(functionName, VariableName, VariableUnit, Resolution, UUID, Code);
+// VariableName must be a value from http://vocabulary.odm2.org/variablename/
+// VariableUnit must be a value from http://vocabulary.odm2.org/units/
+Variable waterDepth(calcDepth, "waterDepth", "millimeter", 0, "", "sonarDepth");
 
 // ==========================================================================
 // Board setup info
@@ -168,8 +172,8 @@ void loop()
     // Print the sonar result
     Serial.print("Current sonar range: ");
     Serial.println(sonar_range.getValueString());
-    Serial.print("Calculated sonar range + 10: ");
-    Serial.println(calcVar.getValueString());
+    Serial.print("Calculated water depth: ");
+    Serial.println(waterDepth.getValueString());
 
     // Put the sensor back to sleep
     sonar.sleep();
