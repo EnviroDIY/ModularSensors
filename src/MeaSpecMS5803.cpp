@@ -79,6 +79,11 @@ bool MeaSpecMS5803::addSingleMeasurementResult(void)
 
         if (isnan(temp)) temp = -9999;
         if (isnan(press)) press = -9999;
+        if (temp < -50 || temp > 95)  // Range is -40°C to +85°C
+        {
+            temp = -9999;
+            press = -9999;
+        }
 
         MS_DBG(F("Temperature: "), temp);
         MS_DBG(F("Pressure: "), press);
