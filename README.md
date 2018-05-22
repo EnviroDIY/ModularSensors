@@ -71,7 +71,7 @@ Within this library, a sensor, a variable, and a logger mean very specific thing
 
 **Sensor** - A sensor is some sort of device that is capable of taking one or more measurements using some sort of method.  Most often we can think of these as probes or other instruments that can give back information about the world around them.  Sensors can usually be given power or have that power cut.  They may be awoken or activated and then returned to a sleeping/low power use state.  The may be able to be asked to begin a single reading.  They _**must**_ be capable of returning the value of their readings to a logger of some type.
 
-**Variable** - A variable is a single measurement value taken by a sensor.  It is characterized by a name (what it is a measurement of), a unit of measurement, and a resolution.  The [names](http://vocabulary.odm2.org/variablename/) and [units](http://vocabulary.odm2.org/units/) of measurements for all variables come from the controlled vocabularies developed for the ODM2 data system.  (http://vocabulary.odm2.org/)  The resolution is determined by the method used to take the measurement by the sensor.  A variable may also be assigned a universally unique identifier (UUID) and a unique variable code.  Many sensors are capable of measuring multiple variables at a single time.  For example, a Decagon CTD-10 is a _sensor_.  It is able to measure 3 _variables_: specific conductance, temperature, and water depth.  The variable named "specificConductance" has _units_ of microsiemens per centimeter (µS/cm) and a _resolution_ of 1 µS/cm.  Each variable is explicitly tied to the "parent" sensor that "notifies" the variable when a new value has been measured.
+**Variable** - A variable is a result value taken by a sensor _or_ calculated from the results of one or more sensors.  It is characterized by a name (what it is a measurement of), a unit of measurement, and a resolution.  The [names](http://vocabulary.odm2.org/variablename/) and [units](http://vocabulary.odm2.org/units/) of measurements for all variables come from the controlled vocabularies developed for the ODM2 data system.  (http://vocabulary.odm2.org/)  The resolution is determined by the method used to take the measurement by the sensor.  A variable may also be assigned a universally unique identifier (UUID) and a unique variable code.  Many sensors are capable of measuring multiple variables at a single time.  For example, a Decagon CTD-10 is a _sensor_.  It is able to measure 3 _variables_: specific conductance, temperature, and water depth.  The variable named "specificConductance" has _units_ of microsiemens per centimeter (µS/cm) and a _resolution_ of 1 µS/cm.  Each measured variable is explicitly tied to the "parent" sensor that "notifies" the variable when a new value has been measured.  Each calculated variable has a parent function returning a float which is the value for that variable.
 
 **Logger** - A logger is a device that can control all functions of the sensors that are attached to it and save the values of all variables measured by those sensors to an attached SD card.  In this library, all loggers are Arduino-style small processor circuit boards.
 
@@ -161,16 +161,20 @@ These functions are also available for each sensor, but should be used with caut
 - **waitForMeasurementCompletion()** - Delays until time is passed for measurement completion.
 
 ### Functions for Each Variable
-- **Constructor** - Every variable requires a pointer to its parent sensor as part of the constructor.  Every variable also has two optional string entries, for a universally unique identifier (UUID or GUID) and a custom variable code.  _The UUID must always be listed first!_  In cases where you would like a custom variable code, but do not have a UUID, you **must** enter '""' as your UUID.
-- **getVarName()** - This returns the variable's name ,using http://vocabulary.odm2.org/variablename/, as a String.
+- **Constructor** - There are two forms of the constructor, one for measured variables (ie, ones whose values come directly from a senor) and another for calculated variables (ie, ones whose values are calculated from other vales).
+    - For _measured_ variables, the base variable constructor should not be used, but instead the constructor for the specific type of variable tied to a sensor should be used.  (That is, use the constructor for the MaxBotixSonar_Range variable sub-object, not the raw variable constructor.)  The sensor-measured variable constructors require a pointer to its parent sensor as the first argument of the constructor.  There are also two optional string entries, for a universally unique identifier (UUID or GUID) and a custom variable code.  _The UUID must always be listed first!_  In cases where you would like a custom variable code, but do not have a UUID, you **must** enter '""' as your UUID.
+    - For _calculated_ variables, you use the base variable object constructor.  The constructor requires a function which returns a float as its first argument, followed by Strings from the variable's name and unit.  Both of these strings should be values from the [ODM2 controlled vocabularies](http://vocabulary.odm2.org/).  Next an integer variable resolution is required.  Then two Strings for the variable UUID and variable code.  _All arguments are required in the calculated variable constructor!_
+- **getVarName()** - This returns the variable's name, using http://vocabulary.odm2.org/variablename/, as a String.
 - **getVarUnit()** - This returns the variable's unit, using http://vocabulary.odm2.org/units/, as a String.
 - **getVarCode()** - This returns a String with a customized code for the variable, if one is given, and a default if not
 - **getVarUUID()** - This returns the universally unique identifier of a variables, if one is assigned, as a String
 - **setup()** - This "sets up" the variable - attaching it to its parent sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program _after_ calling the sensor setup.
-- **getValue(bool updateValue)** - This returns the current value of the variable as a float.  By default, it does not ask the parent sensor for a new value, but simply returns the last value a parent sensor notified it of, no matter the age of the value.  If you would like to ask the sensor to measure a new value and for that new value to be returned, set the boolean flag as true.
+- **getValue(bool updateValue)** - This returns the current value of the variable as a float.  By default, it does not ask the parent sensor for a new value, but simply returns the last value a parent sensor notified it of, no matter the age of the value.  If you would like to ask the sensor to measure a new value and for that new value to be returned, set the boolean flag as true.  Calculated variables will never ask any sensors for updates.
 - **getValueString(bool updateValue)** - This is identical to getValue, except that it returns a string with the proper precision available from the sensor.
-- **attachSensor(int varNum, Sensor \*parentSense)** - The compliment to a sensor's registerVariable() function.  This attaches a variable object to the sensor that is giving the value to the variable.  The variable is generally responsible for calling this function!
-- **onSensorUpdate()** - This is the variable's response to the sensor's notifyVariables() function.  It accepts the new value from the sensor.  This is generally called by the sensor.
+- **attachSensor(int varNum, Sensor \*parentSense)** - The compliment to a sensor's registerVariable() function.  This attaches a variable object to the sensor that is giving the value to the variable.  The variable is generally responsible for calling this function!  This should never be called for a calculated variable.
+- **onSensorUpdate()** - This is the variable's response to the sensor's notifyVariables() function.  It accepts the new value from the sensor.  This is generally called by the sensor.  This should never be called for a calculated variable.
+- - **getParentSensorName()** - This is a helper - it returns the name of the parent sensor, if applicable
+- - **getParentSensorLocation()** - This is a helper - it returns the "location" of the parent sensor, if applicable
 
 ### <a name="individuals"></a>Examples Using Individual Sensor and Variable Functions
 To access and get values from a sensor, you must create an instance of the sensor class you are interested in using its constructor.  Each variable has different parameters that you must specify; these are described below within the section for each sensor.  You must then create a new instance for each _variable_, and reference a pointer to the parent sensor in the constructor.  Many variables can (and should) call the same parent sensor.  The variables are specific to the individual sensor because each sensor collects data and returns data in a unique way.  The constructors are all best called outside of the "setup()" or "loop()" functions.  The setup functions are then called (sensor, then variables) in the main "setup()" function and the update() and getValues() are called in the loop().  A very simple program to get data from a Decagon CTD might be something like:
@@ -211,13 +215,13 @@ loop()
 }
 ```
 
-The "[single_sensor](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/single_sensor)" example in the examples folder shows the same functionality for a MaxBotix Ultrasonic Range Finder.
+The "[single_sensor](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/single_sensor)" example in the examples folder shows the same functionality for a MaxBotix Ultrasonic Range Finder.  This example also includes using a calculated variable to output a water depth calculated from the sonar range.
 
 ## <a name="Grouped"></a>Grouped Sensor Functions
 Having a unified set of functions to access many sensors allows us to quickly poll through a list of sensors to get all results quickly.  To this end, "VariableArray.h" adds the class "VariableArray" with functions to use on an array of pointers to variable objects.
 
 ### Functions Available for a VariableArray Object:
-- **init(int variableCount, Variable variableList[])** - This initializes the variable array.  This must be called in the setup() function.  Note that the objects in the variable list must be pointers, not the variable objects themselves.
+- **init(int variableCount, Variable variableList[])** - This initializes the variable array.  This must be called in the setup() function.  Note that the objects in the variable list must be pointers, not the variable objects themselves.  The pointers may be to calculated or measured variable objects.
 - **getVariableCount()** - Simply returns the number of variables.
 - **getSensorCount()** - Returns the number of independent sensors.  This will often be different from the number of variables because many sensors can return multiple variables.
 - **setupSensors()** - This sets up all of the variables in the array and their respective sensors by running all of their setup() functions.  If a sensor doesn't respond to its setup command, the command is called 5 times in attempt to make a connection.  If all sensors are set up successfully, returns true.
@@ -231,18 +235,7 @@ Having a unified set of functions to access many sensors allows us to quickly po
 
 ### <a name="ArrayExamples"></a>VariableArray Examples:
 
-To use the VariableArray module, you must first create the array of pointers.  This should be done outside of the setup() or loop() functions.  Remember that you must create a new instance for each variable and each sensor.  The sensor functions for sensors within a variable array take advantage of all of the timestamps and status bits within the sensor object to minimize the amount of time that all sensors are powered and the processor is awake.  That is, the first sensor to be warmed up will be set up or activated first; the first sensor to stabilize will be asked for values first.  The order of the variables within the array should not matter, though for code readability, I strongly suggest putting all the variables attached to a single sensor next to each other in the array.
-
-Following the example from above, with a Decagon CTD, you would create an array with the three CTD variables like this:
-
-```cpp
-// Create a new VariableArray object
-VariableArray myVars;
-// Create the array of variables named "variableList" using the pre-created variable objects
-Variable \*variableList[] = {\*cond, \*temp, \*depth};
-// Optionally, count the number of variables in the array (in this case, it's 3)
-int variableCount = sizeof(variableList) / sizeof(variableList[0]);
-```
+To use the VariableArray module, you must first create the array of pointers.  This should be done outside of the setup() or loop() functions.  Remember that you must create a new instance for each variable and each sensor.  The sensor functions for sensors within a variable array take advantage of all of the timestamps and status bits within the sensor object to minimize the amount of time that all sensors are powered and the processor is awake.  That is, the first sensor to be warmed up will be set up or activated first; the first sensor to stabilize will be asked for values first.  All calculations for any calculated variables happen after all the sensor updating has finished.  The order of the variables within the array should not matter, though for code readability, I strongly suggest putting all the variables attached to a single sensor next to each other in the array.
 
 The asterisk must be put in front of the variable name to indicate that it is a pointer to your variable object.  With many variables, it is easier to create the object and the pointer to it all at once in the variable array.  This can be done using the "new" keyword like so:
 
@@ -265,20 +258,33 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 You can also create and name variable pointer objects outside of the array and then reference those pointers inside of the array like so:
 
 ```cpp
-// Create variable object and return pointers to them
+// Create measured variable objects and return pointers to them
 Variable *var1 = new sensor1_var1(&parentSensor1, "UUID", "customVarCode1");
 Variable *var2 = new sensor1_var2(&parentSensor1, "UUID", "customVarCode1");
 Variable *var3 = new sensor2_var1(&parentSensor2, "UUID", "customVarCode1");
 
+// Create a calculated measured variable object and return a pointer to it
+float calculationFunction(void)
+{
+    return var1->getValue() + 10;
+}
+Variable *calcVar4 = new Variable(calculationFunction, "varName",
+                                  "varUnit", varResolution,
+                                  "UUID", "varCode");
+
+// Continue creating variables..
 Variable *varX = new sensorX_varX(&parentSensor2, "UUID", "customVarCode1");
+
 // Create a new VariableArray object
 VariableArray myVars;
+
 // Create new variable objects in an array named "variableList" using the "new" keyword
 // UUID's and customVarCodes are optional
 Variable \*variableList[] = {
     var1,
     var2,
     var3,
+    var4,
     ...
     varX
 };

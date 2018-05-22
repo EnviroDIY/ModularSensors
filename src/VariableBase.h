@@ -20,7 +20,7 @@ class Sensor;  // Forward declaration
 class Variable
 {
 public:
-    // The constructor for a measured variable - that is, one whos values are
+    // The constructor for a measured variable - that is, one whose values are
     // updated by a sensor.
     Variable(Sensor *parentSense, int varNum,
              String varName = "Unknown", String varUnit = "Unknown",
@@ -28,7 +28,7 @@ public:
              String defaultVarCode = "Unknown",
              String UUID = "", String customVarCode = "");
 
-     // The constructor for a measured variable - that is, one whos value is
+     // The constructor for a measured variable - that is, one whose value is
      // calculated by the calcFxn which returns a float.
      // NOTE:  ALL arguments are required!
      Variable(float (*calcFxn)(),

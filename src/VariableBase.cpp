@@ -14,7 +14,7 @@
 //  The class and functions for interfacing with a specific variable.
 // ============================================================================
 
-// The constructor for a measured variable - that is, one whos values are
+// The constructor for a measured variable - that is, one whose values are
 // updated by a sensor.
 Variable::Variable(Sensor *parentSense, int varNum,
                    String varName, String varUnit,
@@ -38,7 +38,7 @@ Variable::Variable(Sensor *parentSense, int varNum,
     _currentValue = -9999;
 }
 
-// The constructor for a calculated variable  - that is, one whos value is
+// The constructor for a calculated variable  - that is, one whose value is
 // calculated by the calcFxn which returns a float.
 // NOTE:  ALL arguments are required!
 Variable::Variable(float (*calcFxn)(),
