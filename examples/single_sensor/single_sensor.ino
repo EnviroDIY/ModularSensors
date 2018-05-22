@@ -78,6 +78,16 @@ MaxBotixSonar sonar(sonarSerial, SonarPower, SonarTrigger) ;
 // Create a new instance of the range variable;
 MaxBotixSonar_Range sonar_range(&sonar);
 
+// Create a function to calculate some value
+float add10(void)
+{
+    return sonar_range.getValue() + 10;
+}
+
+
+// Create a calculated variable
+Variable calcVar(add10, "Calculated Value", "millimeter", 1, "", "CalcTest");
+
 // ==========================================================================
 // Board setup info
 // ==========================================================================
@@ -158,6 +168,8 @@ void loop()
     // Print the sonar result
     Serial.print("Current sonar range: ");
     Serial.println(sonar_range.getValueString());
+    Serial.print("Calculated sonar range + 10: ");
+    Serial.println(calcVar.getValueString());
 
     // Put the sensor back to sleep
     sonar.sleep();
