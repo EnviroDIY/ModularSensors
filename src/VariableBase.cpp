@@ -90,6 +90,16 @@ void Variable::onSensorUpdate(Sensor *parentSense)
 
 
 // This is a helper - it returns the name of the parent sensor, if applicable
+// This is needed for dealing with variables in arrays
+String Variable::getParentSensorLocation(void)
+{
+    if (!isCalculated) return parentSensor->getSensorLocation();
+    else return "Calculated";
+}
+
+
+// This is a helper - it returns the name of the parent sensor, if applicable
+// This is needed for dealing with variables in arrays
 String Variable::getParentSensorName(void)
 {
     if (!isCalculated) return parentSensor->getSensorName();
