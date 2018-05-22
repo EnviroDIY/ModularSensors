@@ -45,8 +45,8 @@
 
 #define BME280_NUM_VARIABLES 4
 #define BME280_WARM_UP_TIME_MS 100
-#define BME280_STABILIZATION_TIME_MS 0
-#define BME280_MEASUREMENT_TIME_MS 1000
+#define BME280_STABILIZATION_TIME_MS 4000   // 0.5 s for good numbers, but optimal at 4 s based on tests using bme280timingTest.ino
+#define BME280_MEASUREMENT_TIME_MS 1100     // 1.0 s according to datasheet, but slightly better stdev when 1.1 s
 
 #define BME280_TEMP_RESOLUTION 2
 #define BME280_TEMP_VAR_NUM 0
