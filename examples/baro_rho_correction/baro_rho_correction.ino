@@ -187,7 +187,11 @@ Variable *msPress = new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-efgh
 // 1 pascal = 0.01 mbar
 float calculateWaterPressure(void)
 {
-    float waterPressure = msPress->getValue() - (bPress->getValue())*0.01;
+    float totalPressureFromMS5803 = msPress->getValue();
+    float baroPressureFromBME280 = bPress->getValue();
+    float waterPressure = totalPressureFromMS5803 - (baroPressureFromBME280)*0.01;
+    if (totalPressureFromMS5803 = -9999 || baroPressureFromBME280 == -9999)
+        waterPressure = -9999;
     // Serial.print(F("Water pressure is "));  // for debugging
     // Serial.println(waterPressure);  // for debugging
     return waterPressure;
@@ -209,6 +213,7 @@ Variable *calcWaterPress = new Variable(calculateWaterPressure, waterPresureVarN
 float calculateWaterDepthRaw(void)
 {
     float waterDepth = calculateWaterPressure()*10.1972;
+    if (calculateWaterPressure() == -9999) waterDepth = -9999;
     // Serial.print(F("'Raw' water depth is "));  // for debugging
     // Serial.println(waterDepth);  // for debugging
     return waterDepth;
@@ -243,6 +248,8 @@ float calculateWaterDepthTempCorrected(void)
     // This calculation gives a final result in mm of water
     // from P = rho * g * h
     float rhoDepth = 1000 * waterPressurePa/(waterDensity * gravitationalConstant);
+    if (calculateWaterPressure() == -9999 || waterTempertureC == -9999)
+        rhoDepth = -9999;
     // Serial.print(F("Temperature corrected water depth is "));  // for debugging
     // Serial.println(rhoDepth);  // for debugging
     return rhoDepth;
