@@ -48,15 +48,15 @@ const int8_t SonarPower = 22;   // excite (power) pin
 
 #if defined __AVR__
 
-// #include <SoftwareSerial_ExtInts.h>  // for the stream communication
-// SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
+#include <SoftwareSerial_ExtInts.h>  // for the stream communication
+SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
 
-#include <NeoSWSerial.h>  // for the stream communication
-NeoSWSerial sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
-void NeoSWSISR()
-{
-  NeoSWSerial::rxISR( *portInputRegister( digitalPinToPort( SonarData ) ) );
-}
+// #include <NeoSWSerial.h>  // for the stream communication
+// NeoSWSerial sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
+// void NeoSWSISR()
+// {
+//   NeoSWSerial::rxISR( *portInputRegister( digitalPinToPort( SonarData ) ) );
+// }
 
 #endif
 
