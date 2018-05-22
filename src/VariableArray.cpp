@@ -10,17 +10,16 @@
 #include "VariableArray.h"
 
 
-// Initialization - cannot do this in constructor arduino has issues creating
-// instances of classes with non-empty constructors
-void VariableArray::init(int variableCount, Variable *variableList[])
+// Constructor
+VariableArray::VariableArray(int variableCount, Variable *variableList[])
 {
-    MS_DBG(F("Initializing variable array with "), variableCount, F(" variables...\n"));
     _variableCount = variableCount;
     _variableList = variableList;
 
     _maxSamplestoAverage = countMaxToAverage();
     _sensorCount = getSensorCount();
 
+    MS_DBG(F("Initializing variable array with "), variableCount, F(" variables...\n"));
     MS_DBG(F("   ... Success!\n"));
 }
 

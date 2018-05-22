@@ -24,7 +24,7 @@ class VariableArray
 public:
     // Initialization - cannot do this in constructor arduino has issues creating
     // instances of classes with non-empty constructors
-    virtual void init(int variableCount, Variable *variableList[]);
+    VariableArray(int variableCount, Variable *variableList[]);
 
     // Functions to return information about the list
 
