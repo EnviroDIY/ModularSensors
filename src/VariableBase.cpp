@@ -14,13 +14,16 @@
 //  The class and functions for interfacing with a specific variable.
 // ============================================================================
 
-// The constructor
+// The constructor for a measured variable - that is, one whos values are
+// updated by a sensor.
 Variable::Variable(Sensor *parentSense, int varNum,
                    String varName, String varUnit,
                    unsigned int decimalResolution,
                    String defaultVarCode,
                    String UUID, String customVarCode)
 {
+    _isCalculated = false;
+    _calcFxn = NULL;
     parentSensor = parentSense;
     _varNum = varNum;
     _varName = varName;
@@ -35,26 +38,63 @@ Variable::Variable(Sensor *parentSense, int varNum,
     _currentValue = -9999;
 }
 
-void Variable::attachSensor(int varNum, Sensor *parentSense) {
-    MS_DBG(F("Attempting to register "), getVarName());
-    MS_DBG(F(" to "), parentSense->getSensorName());
-    MS_DBG(F(" attached at "), parentSense->getSensorLocation(), F("...   "));
-    parentSense->registerVariable(varNum, this);
-}
-
-bool Variable::setup(void)
+// The constructor for a calculated variable  - that is, one whos value is
+// calculated by the calcFxn which returns a float.
+// NOTE:  ALL arguments are required!
+Variable::Variable(float (*calcFxn)(),
+                   String varName, String varUnit,
+                   unsigned int decimalResolution,
+                   String UUID, String customVarCode)
 {
-    attachSensor(_varNum, parentSensor);
-    return true;
+    _isCalculated = true;
+    _calcFxn = calcFxn;
+    parentSensor = NULL;
+    _varNum = 0;
+    _varName = varName;
+    _varUnit = varUnit;
+    _decimalResolution = decimalResolution;
+    _defaultVarCode = "";
+    _customCode = customVarCode;
+    _UUID = UUID;
+
+    // When we create the variable, we also want to initialize it with a current
+    // value of -9999 (ie, a bad result).
+    _currentValue = -9999;
 }
 
+
+// This notifies the parent sensor that it has an observing variable
+// This function should never be called for a calculated variable
+void Variable::attachSensor(int varNum, Sensor *parentSense)
+{
+    if (!_isCalculated)
+    {
+        MS_DBG(F("Attempting to register "), getVarName());
+        MS_DBG(F(" to "), parentSense->getSensorName());
+        MS_DBG(F(" attached at "), parentSense->getSensorLocation(), F("...   "));
+        parentSense->registerVariable(varNum, this);
+    }
+}
+
+
+// This is the function called by the parent sensor's notifyVariables() function
+// This function should never be called for a calculated variable
 void Variable::onSensorUpdate(Sensor *parentSense)
 {
-    _currentValue = parentSense->sensorValues[_varNum];
-    MS_DBG(F("... received "), sensorValue, F("\n"));
+    if (!_isCalculated)
+    {
+        _currentValue = parentSense->sensorValues[_varNum];
+        MS_DBG(F("... received "), sensorValue, F("\n"));
+    }
 }
 
-String Variable::getVarUUID(void) {return _UUID;}
+
+// This sets up the variable (generally attaching it to its parent)
+bool Variable::setup(void)
+{
+    if (!_isCalculated) attachSensor(_varNum, parentSensor);
+    return true;
+}
 
 // This returns the variable's name using http://vocabulary.odm2.org/variablename/
 String Variable::getVarName(void){return _varName;}
@@ -69,12 +109,28 @@ String Variable::getVarCode(void)
     else return _defaultVarCode;
 }
 
+// This returns the variable UUID, if one has been assigned
+String Variable::getVarUUID(void) {return _UUID;}
+
+
 // This returns the current value of the variable as a float
 float Variable::getValue(bool updateValue)
 {
-    if (updateValue) parentSensor->update();
-    return _currentValue;
+    if (_isCalculated)
+    {
+        // NOTE:  We cannot "update" the parent sensor's values before doing
+        // the calculation because we don't know which sensors those are.
+        // Make sure you update the parent sensors manually for a calculated
+        // variable!!
+        return _calcFxn();
+    }
+    else
+    {
+        if (updateValue) parentSensor->update();
+        return _currentValue;
+    }
 }
+
 
 // This returns the current value of the variable as a string
 // with the correct number of significant figures
