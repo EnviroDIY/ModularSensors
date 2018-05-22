@@ -492,12 +492,14 @@ String VariableArray::generateSensorDataCSV(void)
 // Check for unique sensors
 bool VariableArray::isLastVarFromSensor(int arrayIndex)
 {
+    // MS_DBG(F("Checking if "), _variableList[arrayIndex]->getVarName(), F(" ("),
+    //        arrayIndex, F(") is the last variable from a sensor..."));
+
     // Calculated variables are never the last variable from a sensor, simply
     // because the don't come from a sensor at all.
-    MS_DBG(F("Checking if "), arrayIndex, F(" is the last variable from a sensor..."));
     if (_variableList[arrayIndex]->isCalculated)
     {
-        MS_DBG(F("   ... Nope, it's calculated!\n"));
+        // MS_DBG(F("   ... Nope, it's calculated!\n"));
         return false;
     }
 
@@ -512,11 +514,11 @@ bool VariableArray::isLastVarFromSensor(int arrayIndex)
                 sensLoc == _variableList[j]->getParentSensorLocation())
             {
                 unique = false;
-                MS_DBG(F("   ... Nope, there are others after it!\n"));
+                // MS_DBG(F("   ... Nope, there are others after it!\n"));
                 break;
             }
         }
-        if (unique) MS_DBG(F("   ... Yes, it is!\n"));
+        // if (unique) MS_DBG(F("   ... Yes, it is!\n"));
         return unique;
     }
 }

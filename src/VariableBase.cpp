@@ -71,7 +71,7 @@ void Variable::attachSensor(int varNum, Sensor *parentSense)
     {
         MS_DBG(F("Attempting to register "), getVarName());
         MS_DBG(F(" to "), parentSense->getSensorName());
-        MS_DBG(F(" attached at "), parentSense->getSensorLocation(), F("...   "));
+        MS_DBG(F(" attached at "), parentSense->getSensorLocation(), F("...   \n"));
         parentSense->registerVariable(varNum, this);
     }
 }
