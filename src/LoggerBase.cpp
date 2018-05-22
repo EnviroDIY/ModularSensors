@@ -537,7 +537,7 @@ String Logger::generateFileHeader(void)
     // Create the header rows
     String dataHeader = "";
     // Next line will be the parent sensor names
-    makeHeaderRowMacro(logIDRowHeader, _variableList[i]->parentSensor->getSensorName())
+    makeHeaderRowMacro(logIDRowHeader, _variableList[i]->getParentSensorName())
     // Next comes the ODM2 variable name
     makeHeaderRowMacro(logIDRowHeader, _variableList[i]->getVarName())
     // Next comes the ODM2 unit name

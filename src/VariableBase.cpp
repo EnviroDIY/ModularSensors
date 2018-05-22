@@ -22,7 +22,7 @@ Variable::Variable(Sensor *parentSense, int varNum,
                    String defaultVarCode,
                    String UUID, String customVarCode)
 {
-    _isCalculated = false;
+    isCalculated = false;
     _calcFxn = NULL;
     parentSensor = parentSense;
     _varNum = varNum;
@@ -46,7 +46,7 @@ Variable::Variable(float (*calcFxn)(),
                    unsigned int decimalResolution,
                    String UUID, String customVarCode)
 {
-    _isCalculated = true;
+    isCalculated = true;
     _calcFxn = calcFxn;
     parentSensor = NULL;
     _varNum = 0;
@@ -67,7 +67,7 @@ Variable::Variable(float (*calcFxn)(),
 // This function should never be called for a calculated variable
 void Variable::attachSensor(int varNum, Sensor *parentSense)
 {
-    if (!_isCalculated)
+    if (!isCalculated)
     {
         MS_DBG(F("Attempting to register "), getVarName());
         MS_DBG(F(" to "), parentSense->getSensorName());
@@ -81,7 +81,7 @@ void Variable::attachSensor(int varNum, Sensor *parentSense)
 // This function should never be called for a calculated variable
 void Variable::onSensorUpdate(Sensor *parentSense)
 {
-    if (!_isCalculated)
+    if (!isCalculated)
     {
         _currentValue = parentSense->sensorValues[_varNum];
         MS_DBG(F("... received "), sensorValue, F("\n"));
@@ -89,10 +89,18 @@ void Variable::onSensorUpdate(Sensor *parentSense)
 }
 
 
+// This is a helper - it returns the name of the parent sensor, if applicable
+String Variable::getParentSensorName(void)
+{
+    if (!isCalculated) return parentSensor->getSensorName();
+    else return "Calculated";
+}
+
+
 // This sets up the variable (generally attaching it to its parent)
 bool Variable::setup(void)
 {
-    if (!_isCalculated) attachSensor(_varNum, parentSensor);
+    if (!isCalculated) attachSensor(_varNum, parentSensor);
     return true;
 }
 
@@ -116,7 +124,7 @@ String Variable::getVarUUID(void) {return _UUID;}
 // This returns the current value of the variable as a float
 float Variable::getValue(bool updateValue)
 {
-    if (_isCalculated)
+    if (isCalculated)
     {
         // NOTE:  We cannot "update" the parent sensor's values before doing
         // the calculation because we don't know which sensors those are.

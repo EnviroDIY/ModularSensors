@@ -42,6 +42,8 @@ public:
     void attachSensor(int varNum, Sensor *parentSense);
     // This is the function called by the parent sensor's notifyVariables() function
     virtual void onSensorUpdate(Sensor *parentSense);
+    // This is a helper - it returns the name of the parent sensor, if applicable
+    String getParentSensorName(void);
 
     // This sets up the variable (generally attaching it to its parent)
     virtual bool setup(void);
@@ -63,12 +65,12 @@ public:
 
     // This is the parent sensor for the variable
     Sensor *parentSensor;
+    bool isCalculated;
 
 protected:
     float _currentValue;
 
 private:
-    bool _isCalculated;
     float (*_calcFxn)(void);
     uint8_t _varNum;
     String _varName;

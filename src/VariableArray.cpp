@@ -29,18 +29,23 @@ void VariableArray::init(int variableCount, Variable *variableList[])
 int VariableArray::getSensorCount(void)
 {
     int numSensors = 0;
+    int numCalc = 0;
     // Check for unique sensors
     for (int i = 0; i < _variableCount; i++)
     {
         if (isLastVarFromSensor(i)) numSensors++;
+        if (_variableList[i]->isCalculated) numCalc++;
     }
-    MS_DBG(F("There are "), numSensors, F(" unique sensors in the group.\n"));
+    MS_DBG(F("There are "), numSensors, F(" unique sensors and "), numCalc,
+           F(" calculated variablesin the group.\n"));
     return numSensors;
 }
 
 
 // Public functions for interfacing with a list of sensors
 // This sets up all of the sensors in the list
+// NOTE:  Calculated variables will always be skipped in this process because
+// a calculated variable will never be marked as the last variable from a sensor.
 bool VariableArray::setupSensors(void)
 {
     bool success = true;
@@ -122,6 +127,8 @@ bool VariableArray::setupSensors(void)
 
 // This powers up the sensors
 // There's no checking or waiting here, just turning on pins
+// NOTE:  Calculated variables will always be skipped in this process because
+// a calculated variable will never be marked as the last variable from a sensor.
 void VariableArray::sensorsPowerUp(void)
 {
     MS_DBG(F("Powering up sensors...\n"));
@@ -143,6 +150,8 @@ void VariableArray::sensorsPowerUp(void)
 
 // This wakes/activates the sensors
 // Before a sensor is "awoken" we have to make sure it's had time to warm up
+// NOTE:  Calculated variables will always be skipped in this process because
+// a calculated variable will never be marked as the last variable from a sensor.
 bool VariableArray::sensorsWake(void)
 {
     MS_DBG(F("Waking sensors...\n"));
@@ -206,6 +215,8 @@ bool VariableArray::sensorsWake(void)
 // This puts sensors to sleep
 // We're not waiting for anything to be ready, we're just sending the command
 // to put it to sleep no matter what its current state is.
+// NOTE:  Calculated variables will always be skipped in this process because
+// a calculated variable will never be marked as the last variable from a sensor.
 bool VariableArray::sensorsSleep(void)
 {
     MS_DBG(F("Putting sensors to sleep...\n"));
@@ -232,6 +243,8 @@ bool VariableArray::sensorsSleep(void)
 
 // This cuts power to the sensors
 // We're not waiting for anything to be ready, we're just cutting power.
+// NOTE:  Calculated variables will always be skipped in this process because
+// a calculated variable will never be marked as the last variable from a sensor.
 void VariableArray::sensorsPowerDown(void)
 {
     MS_DBG(F("Powering down sensors...\n"));
@@ -255,6 +268,8 @@ void VariableArray::sensorsPowerDown(void)
 // Please note that this does NOT run the update functions, it instead uses
 // the startSingleMeasurement and addSingleMeasurementResult functions to
 // take advantage of the ability of sensors to be measuring concurrently.
+// NOTE:  Calculated variables will always be skipped in this process because
+// a calculated variable will never be marked as the last variable from a sensor.
 bool VariableArray::updateAllSensors(void)
 {
     bool success = true;
@@ -415,34 +430,48 @@ bool VariableArray::updateAllSensors(void)
 
 
 // This function prints out the results for any connected sensors to a stream
+// Calculated variable results will be included
 void VariableArray::printSensorData(Stream *stream)
 {
     for (int i = 0; i < _variableCount; i++)
     {
-        stream->print(_variableList[i]->parentSensor->getSensorName());
-        stream->print(F(" at "));
-        stream->print(_variableList[i]->parentSensor->getSensorLocation());
-        // stream->print(F(" with status 0b"));
-        // stream->print(bitRead(_variableList[i]->parentSensor->getStatus(), 7));
-        // stream->print(bitRead(_variableList[i]->parentSensor->getStatus(), 6));
-        // stream->print(bitRead(_variableList[i]->parentSensor->getStatus(), 5));
-        // stream->print(bitRead(_variableList[i]->parentSensor->getStatus(), 4));
-        // stream->print(bitRead(_variableList[i]->parentSensor->getStatus(), 3));
-        // stream->print(bitRead(_variableList[i]->parentSensor->getStatus(), 2));
-        // stream->print(bitRead(_variableList[i]->parentSensor->getStatus(), 1));
-        // stream->print(bitRead(_variableList[i]->parentSensor->getStatus(), 0));
-        stream->print(F(" reports "));
-        stream->print(_variableList[i]->getVarName());
-        stream->print(F(" is "));
-        stream->print(_variableList[i]->getValueString());
-        stream->print(F(" "));
-        stream->print(_variableList[i]->getVarUnit());
-        stream->println();
+        if (_variableList[i]->isCalculated)
+        {
+            stream->print(_variableList[i]->getVarName());
+            stream->print(F(" is calculated to be "));
+            stream->print(_variableList[i]->getValueString());
+            stream->print(F(" "));
+            stream->print(_variableList[i]->getVarUnit());
+            stream->println();
+        }
+        else
+        {
+            stream->print(_variableList[i]->parentSensor->getSensorName());
+            stream->print(F(" at "));
+            stream->print(_variableList[i]->parentSensor->getSensorLocation());
+            // stream->print(F(" with status 0b"));
+            // stream->print(bitRead(_variableList[i]->parentSensor->getStatus(), 7));
+            // stream->print(bitRead(_variableList[i]->parentSensor->getStatus(), 6));
+            // stream->print(bitRead(_variableList[i]->parentSensor->getStatus(), 5));
+            // stream->print(bitRead(_variableList[i]->parentSensor->getStatus(), 4));
+            // stream->print(bitRead(_variableList[i]->parentSensor->getStatus(), 3));
+            // stream->print(bitRead(_variableList[i]->parentSensor->getStatus(), 2));
+            // stream->print(bitRead(_variableList[i]->parentSensor->getStatus(), 1));
+            // stream->print(bitRead(_variableList[i]->parentSensor->getStatus(), 0));
+            stream->print(F(" reports "));
+            stream->print(_variableList[i]->getVarName());
+            stream->print(F(" is "));
+            stream->print(_variableList[i]->getValueString());
+            stream->print(F(" "));
+            stream->print(_variableList[i]->getVarUnit());
+            stream->println();
+        }
     }
 }
 
 
 // This generates a comma separated list of sensor values WITHOUT TIME STAMP
+// Calculated variable results will be included
 String VariableArray::generateSensorDataCSV(void)
 {
     String csvString = F("");
@@ -460,25 +489,34 @@ String VariableArray::generateSensorDataCSV(void)
 }
 
 
+// Check for unique sensors
 bool VariableArray::isLastVarFromSensor(int arrayIndex)
 {
-    // Check for unique sensors
-    String sensName = _variableList[arrayIndex]->parentSensor->getSensorName();
-    String sensLoc = _variableList[arrayIndex]->parentSensor->getSensorLocation();
-    bool unique = true;
-    for (int j = arrayIndex + 1; j < _variableCount; j++)
+    // Calculated variables are never the last variable from a sensor, simply
+    // because the don't come from a sensor at all.
+    if (_variableList[arrayIndex]->isCalculated) return false;
+
+    else
     {
-        if (sensName == _variableList[j]->parentSensor->getSensorName() &&
-            sensLoc == _variableList[j]->parentSensor->getSensorLocation())
+        String sensName = _variableList[arrayIndex]->parentSensor->getSensorName();
+        String sensLoc = _variableList[arrayIndex]->parentSensor->getSensorLocation();
+        bool unique = true;
+        for (int j = arrayIndex + 1; j < _variableCount; j++)
         {
-            unique = false;
-            break;
+            if (sensName == _variableList[j]->parentSensor->getSensorName() &&
+                sensLoc == _variableList[j]->parentSensor->getSensorLocation())
+            {
+                unique = false;
+                break;
+            }
         }
+        return unique;
     }
-    return unique;
 }
 
 
+// Count the maximum number of readings needed from a single sensor for the
+// requested averaging
 uint8_t VariableArray::countMaxToAverage(void)
 {
     int numReps = 0;
