@@ -25,9 +25,11 @@
 class LoggerEnviroDIY : public Logger
 {
 public:
-
-    // need a constructor to initially not have an modem attached
-    LoggerEnviroDIY();
+    // Constructor
+    LoggerEnviroDIY(int8_t SDCardPin, int8_t mcuWakePin,
+                    uint8_t loggingIntervalMinutes,
+                    const char *loggerID,
+                    VariableArray *inputArray);
 
     // Adds a loggerModem objct to the logger
     // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off

@@ -14,6 +14,14 @@
 //  Functions for the SWRC Sensors DreamHost data receivers.
 // ============================================================================
 
+// Constructor
+LoggerDreamHost::LoggerDreamHost(int8_t SDCardPin, int8_t mcuWakePin,
+                                 uint8_t loggingIntervalMinutes,
+                                 const char *loggerID,
+                                 VariableArray *inputArray)
+  : LoggerEnviroDIY(SDCardPin, mcuWakePin, loggingIntervalMinutes, loggerID, inputArray)
+ {}
+
 // Functions for private SWRC server
 void LoggerDreamHost::setDreamHostPortalRX(const char *URL)
 {
@@ -31,12 +39,12 @@ String LoggerDreamHost::generateSensorDataDreamHost(void)
     dhString += F("&Loggertime=");
     dhString += String(Logger::markedEpochTime - 946684800);  // Coorect time from epoch to y2k
 
-    for (int i = 0; i < Logger::_variableCount; i++)
+    for (int i = 0; i < _internalArray->getVariableCount(); i++)
     {
         dhString += F("&");
-        dhString += Logger::_variableList[i]->getVarCode();
+        dhString += _internalArray->arrayOfVars[i]->getVarCode();
         dhString += F("=");
-        dhString += Logger::_variableList[i]->getValueString();
+        dhString += _internalArray->arrayOfVars[i]->getValueString();
     }
     return dhString;
 }
@@ -76,10 +84,10 @@ void LoggerDreamHost::streamDreamHostRequest(Stream *stream)
     stream->print(String(F("?LoggerID=")) + String(Logger::_loggerID));
     stream->print(String(F("?Loggertime=")) + String(Logger::markedEpochTime - 946684800));  // Correct time from epoch to y2k
 
-    for (int i = 0; i < Logger::_variableCount; i++)
+    for (int i = 0; i < _internalArray->getVariableCount(); i++)
     {
-        stream->print(String(F("&")) + String(Logger::_variableList[i]->getVarCode()) \
-            + String(F("=")) + String(Logger::_variableList[i]->getValueString()));
+        stream->print(String(F("&")) + String(_internalArray->arrayOfVars[i]->getVarCode()) \
+            + String(F("=")) + String(_internalArray->arrayOfVars[i]->getValueString()));
     }
 
     stream->print(String(F("  HTTP/1.1")));
@@ -188,19 +196,19 @@ void LoggerDreamHost::log(void)
 
         // Send power to all of the sensors
         MS_DBG(F("    Powering sensors...\n"));
-        sensorsPowerUp();
+        _internalArray->sensorsPowerUp();
         // Wake up all of the sensors
         MS_DBG(F("    Waking sensors...\n"));
-        sensorsWake();
+        _internalArray->sensorsWake();
         // Update the values from all attached sensors
         MS_DBG(F("  Updating sensor values...\n"));
-        updateAllSensors();
+        _internalArray->updateAllSensors();
         // Put sensors to sleep
         MS_DBG(F("  Putting sensors back to sleep...\n"));
-        sensorsSleep();
+        _internalArray->sensorsSleep();
         // Cut sensor power
         MS_DBG(F("  Cutting sensor power...\n"));
-        sensorsPowerDown();
+        _internalArray->sensorsPowerDown();
 
         if (_modemAttached)
         {

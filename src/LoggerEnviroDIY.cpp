@@ -16,7 +16,11 @@
 // ============================================================================
 
 // Constructor
-LoggerEnviroDIY::LoggerEnviroDIY()
+LoggerEnviroDIY::LoggerEnviroDIY(int8_t SDCardPin, int8_t mcuWakePin,
+                                 uint8_t loggingIntervalMinutes,
+                                 const char *loggerID,
+                                 VariableArray *inputArray)
+  : Logger(SDCardPin, mcuWakePin, loggingIntervalMinutes, loggerID, inputArray)
 {
     _modemAttached = false;
 }
@@ -50,13 +54,10 @@ void LoggerEnviroDIY::setSamplingFeatureUUID(const char *samplingFeature)
 // This adds extra data to the datafile header
 String LoggerEnviroDIY::generateFileHeader(void)
 {
-    String dataHeader = "";
-
-    // Add additional UUID information
-    String  SFHeaderString = F("Sampling Feature: ");
-    SFHeaderString += _samplingFeature;
-    makeHeaderRowMacro(SFHeaderString, _variableList[i]->getVarUUID())
-
+    // All we're doing is putting the Sampling Feature UUID at the top
+    String dataHeader = F("Sampling Feature: ");
+    dataHeader += _samplingFeature;
+    dataHeader += "\r\n";
     // Put the basic header below
     dataHeader += Logger::generateFileHeader();
 
@@ -73,12 +74,12 @@ String LoggerEnviroDIY::generateSensorDataJSON(void)
     jsonString += F("\"timestamp\": \"");
     jsonString += String(Logger::markedISO8601Time) + F("\", ");
 
-    for (int i = 0; i < Logger::_variableCount; i++)
+    for (int i = 0; i < _internalArray->getVariableCount(); i++)
     {
         jsonString += F("\"");
-        jsonString += Logger::_variableList[i]->getVarUUID() + F("\": ");
-        jsonString += Logger::_variableList[i]->getValueString();
-        if (i + 1 != Logger::_variableCount)
+        jsonString += _internalArray->arrayOfVars[i]->getVarUUID() + F("\": ");
+        jsonString += _internalArray->arrayOfVars[i]->getValueString();
+        if (i + 1 != _internalArray->getVariableCount())
         {
             jsonString += F(", ");
         }
@@ -128,13 +129,13 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
     jsonLength += 17;  // ", "timestamp": "
     jsonLength += 25;  // markedISO8601Time
     jsonLength += 3;  //  ",_
-    for (int i = 0; i < Logger::_variableCount; i++)
+    for (int i = 0; i < _internalArray->getVariableCount(); i++)
     {
         jsonLength += 1;  //  "
         jsonLength += 36;  // variable UUID
         jsonLength += 3;  //  ":_
-        jsonLength += Logger::_variableList[i]->getValueString().length();
-        if (i + 1 != Logger::_variableCount)
+        jsonLength += _internalArray->arrayOfVars[i]->getValueString().length();
+        if (i + 1 != _internalArray->getVariableCount())
         {
             jsonLength += 2;  // ,_
         }
@@ -153,10 +154,10 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
     stream->print(String(F("\", \"timestamp\": \"")));
     stream->print(String(Logger::markedISO8601Time) + F("\", "));
 
-    for (int i = 0; i < Logger::_variableCount; i++)
+    for (int i = 0; i < _internalArray->getVariableCount(); i++)
     {
-        stream->print(String(F("\"")) + Logger::_variableList[i]->getVarUUID() + String(F("\": ")) + Logger::_variableList[i]->getValueString());
-        if (i + 1 != Logger::_variableCount)
+        stream->print(String(F("\"")) + _internalArray->arrayOfVars[i]->getVarUUID() + String(F("\": ")) + _internalArray->arrayOfVars[i]->getValueString());
+        if (i + 1 != _internalArray->getVariableCount())
         {
             stream->print(F(", "));
         }
@@ -237,7 +238,7 @@ int LoggerEnviroDIY::postDataEnviroDIY(String enviroDIYjson)
 
 
 // ===================================================================== //
-// Convience functions to call several of the above functions
+// Public functions for a "sensor testing" mode
 // ===================================================================== //
 
 // This defines what to do in the testing mode
@@ -262,24 +263,24 @@ void LoggerEnviroDIY::testingMode()
     }
 
     // Power up all of the sensors
-    sensorsPowerUp();
+    _internalArray->sensorsPowerUp();
 
     // Wake up all of the sensors
-    sensorsWake();
+    _internalArray->sensorsWake();
 
     // Update the sensors and print out data 25 times
     for (uint8_t i = 0; i < 25; i++)
     {
         PRINTOUT(F("------------------------------------------\n"));
         // Update the values from all attached sensors
-        updateAllSensors();
+        _internalArray->updateAllSensors();
         // Print out the current logger time
         PRINTOUT(F("Current logger time is "));
         PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
         PRINTOUT(F("    -----------------------\n"));
         // Print out the sensor data
         #if defined(STANDARD_SERIAL_OUTPUT)
-            printSensorData(&STANDARD_SERIAL_OUTPUT);
+            _internalArray->printSensorData(&STANDARD_SERIAL_OUTPUT);
         #endif
         PRINTOUT(F("    -----------------------\n"));
 
@@ -296,8 +297,8 @@ void LoggerEnviroDIY::testingMode()
     }
 
     // Put sensors to sleep
-    sensorsSleep();
-    sensorsPowerDown();
+    _internalArray->sensorsSleep();
+    _internalArray->sensorsPowerDown();
 
     if (_modemAttached)
     {
@@ -314,6 +315,10 @@ void LoggerEnviroDIY::testingMode()
     if(_sleep){systemSleep();}
 }
 
+
+// ===================================================================== //
+// Convience functions to call several of the above functions
+// ===================================================================== //
 
 // This calls all of the setup functions - must be run AFTER init
 void LoggerEnviroDIY::begin(void)
@@ -332,14 +337,24 @@ void LoggerEnviroDIY::begin(void)
     PRINTOUT(F("Current RTC time is: "));
     PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
 
+    PRINTOUT(F("Setting up logger "), _loggerID, F(" to record at "),
+             _loggingIntervalMinutes, F(" minute intervals.\n"));
+
+    PRINTOUT(F("This logger has a variable array with "),
+             _internalArray->getVariableCount(), F(" variables from "),
+             _internalArray->getSensorCount(), F(" sensors.\n"));
+
     if (_modemAttached)
     {
+        // Print out the modem info
+        PRINTOUT(F("This logger is also tied to a "));
+        PRINTOUT(_logModem->getSensorName(), F(" for internet connectivity.\n"));
         // Turn on the modem to let it start searching for the network
         _logModem->modemPowerUp();
     }
 
     // Set up the sensors
-    setupSensors();
+    _internalArray->setupSensors();
 
     if (_modemAttached)
     {
@@ -395,19 +410,19 @@ void LoggerEnviroDIY::log(void)
 
         // Send power to all of the sensors
         MS_DBG(F("    Powering sensors...\n"));
-        sensorsPowerUp();
+        _internalArray->sensorsPowerUp();
         // Wake up all of the sensors
         MS_DBG(F("    Waking sensors...\n"));
-        sensorsWake();
+        _internalArray->sensorsWake();
         // Update the values from all attached sensors
         MS_DBG(F("  Updating sensor values...\n"));
-        updateAllSensors();
+        _internalArray->updateAllSensors();
         // Put sensors to sleep
         MS_DBG(F("  Putting sensors back to sleep...\n"));
-        sensorsSleep();
+        _internalArray->sensorsSleep();
         // Cut sensor power
         MS_DBG(F("  Cutting sensor power...\n"));
-        sensorsPowerDown();
+        _internalArray->sensorsPowerDown();
 
         if (_modemAttached)
         {

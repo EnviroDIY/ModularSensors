@@ -38,18 +38,11 @@ volatile bool Logger::startTesting = false;
 
 // Initialization - cannot do this in constructor arduino has issues creating
 // instances of classes with non-empty constructors
-void Logger::init(int8_t SDCardPin, int8_t mcuWakePin,
-          uint8_t variableCount,
-          Variable *variableList[],
-          uint8_t loggingIntervalMinutes,
-          const char *loggerID)
+Logger::Logger(int8_t SDCardPin, int8_t mcuWakePin,
+               uint8_t loggingIntervalMinutes,
+               const char *loggerID,
+               VariableArray *inputArray)
 {
-    // initialize the variable array
-    VariableArray::init(variableCount, variableList);
-
-    PRINTOUT(F("Initializing logger "), loggerID, F(" to record at "),
-             loggingIntervalMinutes, F(" minute intervals ... "));
-
     _SDCardPin = SDCardPin;
     _mcuWakePin = mcuWakePin;
     _loggingIntervalMinutes = loggingIntervalMinutes;
@@ -58,6 +51,7 @@ void Logger::init(int8_t SDCardPin, int8_t mcuWakePin,
     _autoFileName = false;
     _isFileNameSet = false;
     _numTimepointsLogged = 0;
+    _internalArray = inputArray;
 
     // Set sleep variable, if an interrupt pin is given
     if(_mcuWakePin != -1)
@@ -69,8 +63,6 @@ void Logger::init(int8_t SDCardPin, int8_t mcuWakePin,
     isLoggingNow = false;
     isTestingNow = false;
     startTesting = false;
-
-    PRINTOUT(F("   ... Success!\n"));
 };
 
 
@@ -84,7 +76,6 @@ void Logger::setTimeZone(int8_t timeZone)
     else if (_timeZone > 0) PRINTOUT(F("UTC+"));
     else PRINTOUT(F("UTC"));
     if (_timeZone != 0) PRINTOUT(_timeZone, F("\n"));
-
 }
 
 
@@ -526,6 +517,23 @@ void Logger::setFileName(void)
     setFileName(fileName);
 }
 
+// This is a PRE-PROCESSOR MACRO to speed up generating header rows
+// Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
+#define makeHeaderRowMacro(firstCol, function) \
+    dataHeader += F("\""); \
+    dataHeader += firstCol; \
+    dataHeader += F("\","); \
+    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++) \
+    { \
+        dataHeader += F("\""); \
+        dataHeader += function; \
+        dataHeader += F("\""); \
+        if (i + 1 != _internalArray->getVariableCount()) \
+        { \
+            dataHeader += F(","); \
+        } \
+    } \
+    dataHeader += F("\r\n");
 
 // This creates a header for the logger file
 String Logger::generateFileHeader(void)
@@ -537,20 +545,56 @@ String Logger::generateFileHeader(void)
     // Create the header rows
     String dataHeader = "";
     // Next line will be the parent sensor names
-    makeHeaderRowMacro(logIDRowHeader, _variableList[i]->getParentSensorName())
+    makeHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getParentSensorName())
     // Next comes the ODM2 variable name
-    makeHeaderRowMacro(logIDRowHeader, _variableList[i]->getVarName())
+    makeHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarName())
     // Next comes the ODM2 unit name
-    makeHeaderRowMacro(logIDRowHeader, _variableList[i]->getVarUnit())
+    makeHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUnit())
+    // Next comes the variable UUIDs unit name
+    makeHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUUID())
 
     // We'll finish up the the custom variable codes
     String dtRowHeader = F("Date and Time in UTC");
     dtRowHeader += _timeZone;
-    makeHeaderRowMacro(dtRowHeader, _variableList[i]->getVarCode())
+    makeHeaderRowMacro(dtRowHeader, _internalArray->arrayOfVars[i]->getVarCode())
 
     // Return everything
     return dataHeader;
 }
+// // This sends a file header out over an Arduino stream
+// void Logger::streamFileHeader(Stream *stream)
+// {
+//     // Very first column of the header is the logger ID
+//     String logIDRowHeader = F("Data Logger: ");
+//     logIDRowHeader += String(_loggerID);
+//
+//     // First line will be the variable UUID's
+//     stream->print(logIDRowHeader);
+//     _internalArray->streamVariableUUIDs(stream);
+//     stream->println();
+//
+//     // Next line will be the parent sensor names
+//     stream->print(logIDRowHeader);
+//     _internalArray->streamParentSensorNames(stream);
+//     stream->println();
+//
+//     // Next comes the ODM2 variable name
+//     stream->print(logIDRowHeader);
+//     _internalArray->streamVariableNames(stream);
+//     stream->println();
+//
+//     // Next comes the ODM2 unit name
+//     stream->print(logIDRowHeader);
+//     _internalArray->streamVariableUnits(stream);
+//     stream->println();
+//
+//     // We'll finish up the the custom variable codes
+//     stream->print(F("Date and Time in UTC"));
+//     stream->print(_timeZone);
+//     stream->print(logIDRowHeader);
+//     _internalArray->streamVariableCodes(stream);
+//     stream->println();
+// }
 
 
 // This generates a comma separated list of volues of sensor data - including the time
@@ -559,9 +603,19 @@ String Logger::generateSensorDataCSV(void)
     String csvString = "";
     markedDateTime.addToString(csvString);
     csvString += F(",");
-    csvString += VariableArray::generateSensorDataCSV();
+    csvString += _internalArray->generateSensorDataCSV();
     return csvString;
 }
+// // This sends a comma separated list of volues of sensor data - including the
+// // time -  out over an Arduino stream
+// void Logger::streamSensorDataCSV(Stream *stream)
+// {
+//     String csvString = "";
+//     markedDateTime.addToString(csvString);
+//     csvString += F(",");
+//     stream->print(csvString);
+//     _internalArray->streamSensorDataCSV(stream);
+// }
 
 
 // This checks if the SD card is available and ready
@@ -734,32 +788,32 @@ void Logger::testingMode()
     delay(100);  // This seems to prevent crashes, no clue why ....
 
     // Power up all of the sensors
-    sensorsPowerUp();
+    _internalArray->sensorsPowerUp();
 
     // Wake up all of the sensors
-    sensorsWake();
+    _internalArray->sensorsWake();
 
     // Update the sensors and print out data 25 times
     for (uint8_t i = 0; i < 25; i++)
     {
         PRINTOUT(F("------------------------------------------\n"));
         // Update the values from all attached sensors
-        updateAllSensors();
+        _internalArray->updateAllSensors();
         // Print out the current logger time
         PRINTOUT(F("Current logger time is "));
         PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
         PRINTOUT(F("    -----------------------\n"));
         // Print out the sensor data
         #if defined(STANDARD_SERIAL_OUTPUT)
-            printSensorData(&STANDARD_SERIAL_OUTPUT);
+            _internalArray->printSensorData(&STANDARD_SERIAL_OUTPUT);
         #endif
         PRINTOUT(F("    -----------------------\n"));
         delay(5000);
     }
 
     // Put sensors to sleep
-    sensorsSleep();
-    sensorsPowerDown();
+    _internalArray->sensorsSleep();
+    _internalArray->sensorsPowerDown();
 
     // Unset testing mode flag
     Logger::isTestingNow = false;
@@ -790,8 +844,15 @@ void Logger::testingMode()
     PRINTOUT(F("Current RTC time is: "));
     PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
 
+    PRINTOUT(F("Setting up logger "), _loggerID, F(" to record at "),
+             _loggingIntervalMinutes, F(" minute intervals.\n"));
+
+    PRINTOUT(F("This logger has a variable array with "),
+             _internalArray->getVariableCount(), F(" variables from "),
+             _internalArray->getSensorCount(), F(" sensors.\n"));
+
     // Set up the sensors
-    setupSensors();
+    _internalArray->setupSensors();
 
     // Set the filename for the logger to save to, if it hasn't been done
     if(!_isFileNameSet){setFileName();}
@@ -826,19 +887,19 @@ void Logger::log(void)
 
         // Send power to all of the sensors
         MS_DBG(F("    Powering sensors...\n"));
-        sensorsPowerUp();
+        _internalArray->sensorsPowerUp();
         // Wake up all of the sensors
         MS_DBG(F("    Waking sensors...\n"));
-        sensorsWake();
+        _internalArray->sensorsWake();
         // Update the values from all attached sensors
         MS_DBG(F("  Updating sensor values...\n"));
-        updateAllSensors();
+        _internalArray->updateAllSensors();
         // Put sensors to sleep
         MS_DBG(F("  Putting sensors back to sleep...\n"));
-        sensorsSleep();
+        _internalArray->sensorsSleep();
         // Cut sensor power
         MS_DBG(F("  Cutting sensor power...\n"));
-        sensorsPowerDown();
+        _internalArray->sensorsPowerDown();
         // Create a csv data record and save it to the log file
         logToSD(generateSensorDataCSV());
 

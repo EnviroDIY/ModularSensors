@@ -36,16 +36,14 @@
 #include <SdFat.h>  // To communicate with the SD card
 
 // Defines the "Logger" Class
-class Logger : public VariableArray
+class Logger
 {
 public:
-    // Initialization - cannot do this in constructor arduino has issues creating
-    // instances of classes with non-empty constructors
-    void init(int8_t SDCardPin, int8_t mcuWakePin,
-              uint8_t variableCount,
-              Variable *variableList[],
-              uint8_t loggingIntervalMinutes,
-              const char *loggerID = 0);
+    // Constructor
+    Logger(int8_t SDCardPin, int8_t mcuWakePin,
+           uint8_t loggingIntervalMinutes,
+           const char *loggerID,
+           VariableArray *inputArray);
 
     // Sets the static timezone - this must be set
     static void setTimeZone(int8_t timeZone);
@@ -134,29 +132,17 @@ public:
     // This returns the current filename.  Must be run after setFileName.
     String getFileName(void){return _fileName;}
 
-    // This is a PRE-PROCESSOR MACRO to speed up generating header rows
-    // Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
-    #define makeHeaderRowMacro(firstCol, function) \
-        dataHeader += F("\""); \
-        dataHeader += firstCol; \
-        dataHeader += F("\","); \
-        for (uint8_t i = 0; i < _variableCount; i++) \
-        { \
-            dataHeader += F("\""); \
-            dataHeader += function; \
-            dataHeader += F("\""); \
-            if (i + 1 != _variableCount) \
-            { \
-                dataHeader += F(","); \
-            } \
-        } \
-        dataHeader += F("\r\n");
-
     // This creates a header for the logger file
     virtual String generateFileHeader(void);
+    // This prints a header onto a stream - this removes need to pass around
+    // very long string objects when not needed
+    // void streamFileHeader(Stream *stream);
 
     // This generates a comma separated list of volues of sensor data - including the time
     String generateSensorDataCSV(void);
+    // This sends a comma separated list of volues of sensor data - including the
+    // time -  out over an Arduino stream
+    // void streamSensorDataCSV(Stream *stream);
 
     // This initializes a file on the SD card with the given filename and
     // writes the given header to it
@@ -184,6 +170,7 @@ public:
 
     // This defines what to do in the testing mode
     virtual void testingMode();
+
 
     // ===================================================================== //
     // Convience functions to call several of the above functions
@@ -237,6 +224,7 @@ protected:
     uint8_t _numTimepointsLogged;
     bool _sleep;
     int8_t _ledPin;
+    VariableArray *_internalArray;
 
     // This checks if the SD card is available and ready
     bool initializeSDCard(uint8_t Pin);
