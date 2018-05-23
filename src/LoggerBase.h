@@ -162,7 +162,7 @@ public:
 
     // This checks to see if you want to enter the sensor mode
     // This should be run as the very last step within the setup function
-    void checkForTestingMode(int8_t buttonPin);
+    // void checkForTestingMode(int8_t buttonPin);
 
     // A function if you'd prefer to enter testing based on an interrupt
     static void testingISR(void);
@@ -221,12 +221,10 @@ protected:
     bool _autoFileName;
     bool _isFileNameSet;
     uint8_t _numTimepointsLogged;
-    bool _sleep;
     int8_t _ledPin;
     VariableArray *_internalArray;
 
     // This checks if the SD card is available and ready
-    bool initializeSDCard(uint8_t Pin);
     bool initializeSDCard(void);
 
     // This sets a timestamp on a file

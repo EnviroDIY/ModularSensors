@@ -52,12 +52,6 @@ Logger::Logger(const char *loggerID, uint8_t loggingIntervalMinutes,
     _numTimepointsLogged = 0;
     _internalArray = inputArray;
 
-    // Set sleep variable, if an interrupt pin is given
-    if(_mcuWakePin != -1)
-    {
-        _sleep = true;
-    }
-
     // Set the testing/logging flags
     isLoggingNow = false;
     isTestingNow = false;
@@ -250,6 +244,7 @@ bool Logger::checkInterval(void)
     MS_DBG(F("Mod of Logging Interval: "), checkTime % _loggingIntervalSeconds, F("\n"));
     MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged, F("\n"));
     MS_DBG(F("Mod of 120: "), checkTime % 120, F("\n"));
+
     if ((checkTime % _loggingIntervalSeconds == 0 ) or
         (_numTimepointsLogged < 10 and checkTime % 120 == 0))
     {
@@ -287,6 +282,7 @@ bool Logger::checkMarkedInterval(void)
     MS_DBG(F("Mod of Logging Interval: "), markedEpochTime % _loggingIntervalSeconds, F("\n"));
     MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged, F("\n"));
     MS_DBG(F("Mod of 120: "), markedEpochTime % 120, F("\n"));
+
     if (markedEpochTime != 0 &&
         ((markedEpochTime % _loggingIntervalSeconds == 0 ) or
         (_numTimepointsLogged < 10 and markedEpochTime % 120 == 0)))
@@ -549,7 +545,7 @@ String Logger::generateFileHeader(void)
     makeHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarName())
     // Next comes the ODM2 unit name
     makeHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUnit())
-    // Next comes the variable UUIDs unit name
+    // Next comes the variable UUIDs
     makeHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUUID())
 
     // We'll finish up the the custom variable codes
@@ -567,12 +563,7 @@ String Logger::generateFileHeader(void)
 //     String logIDRowHeader = F("Data Logger: ");
 //     logIDRowHeader += String(_loggerID);
 //
-//     // First line will be the variable UUID's
-//     stream->print(logIDRowHeader);
-//     _internalArray->streamVariableUUIDs(stream);
-//     stream->println();
-//
-//     // Next line will be the parent sensor names
+//     // First line will be the parent sensor names
 //     stream->print(logIDRowHeader);
 //     _internalArray->streamParentSensorNames(stream);
 //     stream->println();
@@ -585,6 +576,11 @@ String Logger::generateFileHeader(void)
 //     // Next comes the ODM2 unit name
 //     stream->print(logIDRowHeader);
 //     _internalArray->streamVariableUnits(stream);
+//     stream->println();
+//
+//     // Next comes the variable UUID's
+//     stream->print(logIDRowHeader);
+//     _internalArray->streamVariableUUIDs(stream);
 //     stream->println();
 //
 //     // We'll finish up the the custom variable codes
@@ -617,11 +613,11 @@ String Logger::generateSensorDataCSV(void)
 // }
 
 
-// This checks if the SD card is available and ready
-bool Logger::initializeSDCard(uint8_t Pin)
+// Private helper function - This checks if the SD card is available and ready
+bool Logger::initializeSDCard(void)
 {
     // Initialise the SD card
-    if (!sd.begin(Pin, SPI_FULL_SPEED))
+    if (!sd.begin(_SDCardPin, SPI_FULL_SPEED))
     {
         PRINTOUT(F("Error: SD card failed to initialize or is missing.\n"));
         PRINTOUT(F("Data will not be saved!\n"));
@@ -630,17 +626,13 @@ bool Logger::initializeSDCard(uint8_t Pin)
     else  // skip everything else if there's no SD card, otherwise it might hang
     {
         PRINTOUT(F("Successfully connected to SD Card with card/slave select on pin "));
-        PRINTOUT(Pin, F("\n"));
+        PRINTOUT(_SDCardPin, F("\n"));
         return true;
     }
 }
-bool Logger::initializeSDCard(void)
-{
-    return initializeSDCard(_SDCardPin);
-}
 
 
-// This sets a timestamp on a file
+// Private helper function - This sets a timestamp on a file
 void Logger::setFileTimestame(SdFile fileToStamp, uint8_t stampFlag)
 {
     fileToStamp.timestamp(stampFlag, dtFromEpoch(getNowEpoch()).year(),
@@ -738,29 +730,29 @@ void Logger::logToSD(String rec)
 
 // This checks to see if you want to enter the sensor mode
 // This should be run as the very last step within the setup function
-void Logger::checkForTestingMode(int8_t buttonPin)
-{
-    // Set the pin attached to some button to enter debug mode
-    if (buttonPin > 0) pinMode(buttonPin, INPUT_PULLUP);
-
-    // Flash the LED to let user know it is now possible to enter debug mode
-    for (uint8_t i = 0; i < 15; i++)
-    {
-        digitalWrite(_ledPin, HIGH);
-        delay(50);
-        digitalWrite(_ledPin, LOW);
-        delay(50);
-    }
-
-    // Look for up to 5 seconds for a button press
-    PRINTOUT(F("Push button NOW to enter sensor testing mode.\n"));
-    for (uint32_t start = millis(); millis() - start < 5000; )
-    {
-        if (digitalRead(buttonPin) == HIGH) testingMode();
-    }
-    PRINTOUT(F("------------------------------------------\n\n"));
-    PRINTOUT(F("End of sensor testing mode.\n"));
-}
+// void Logger::checkForTestingMode(int8_t buttonPin)
+// {
+//     // Set the pin attached to some button to enter debug mode
+//     if (buttonPin > 0) pinMode(buttonPin, INPUT_PULLUP);
+//
+//     // Flash the LED to let user know it is now possible to enter debug mode
+//     for (uint8_t i = 0; i < 15; i++)
+//     {
+//         digitalWrite(_ledPin, HIGH);
+//         delay(50);
+//         digitalWrite(_ledPin, LOW);
+//         delay(50);
+//     }
+//
+//     // Look for up to 5 seconds for a button press
+//     PRINTOUT(F("Push button NOW to enter sensor testing mode.\n"));
+//     for (uint32_t start = millis(); millis() - start < 5000; )
+//     {
+//         if (digitalRead(buttonPin) == HIGH) testingMode();
+//     }
+//     PRINTOUT(F("------------------------------------------\n\n"));
+//     PRINTOUT(F("End of sensor testing mode.\n"));
+// }
 
 // A static function if you'd prefer to enter testing based on an interrupt
 void Logger::testingISR()
@@ -818,7 +810,7 @@ void Logger::testingMode()
     Logger::isTestingNow = false;
 
     // Sleep
-    if(_sleep){systemSleep();}
+    if(_mcuWakePin > -1){systemSleep();}
 }
 
 
@@ -862,7 +854,7 @@ void Logger::testingMode()
     setupLogFile();
 
     // Setup sleep mode
-    if(_sleep){setupSleep();}
+    if(_mcuWakePin > -1){setupSleep();}
 
     PRINTOUT(F("Logger setup finished!\n"));
     PRINTOUT(F("------------------------------------------\n\n"));
@@ -915,5 +907,5 @@ void Logger::log(void)
     if (Logger::startTesting) testingMode();
 
     // Sleep
-    if(_sleep){systemSleep();}
+    if(_mcuWakePin > -1){systemSleep();}
 }
