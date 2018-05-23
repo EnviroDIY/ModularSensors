@@ -26,6 +26,9 @@ public:
     // instances of classes with non-empty constructors
     VariableArray(int variableCount, Variable *variableList[]);
 
+    // Leave the internal variable list public
+    Variable **arrayOfVars;
+
     // Functions to return information about the list
 
     // This just returns the number of variables (as input in the constructor)
@@ -82,7 +85,6 @@ public:
     // void streamVariableUUIDs(Stream *stream);
 
 protected:
-    Variable **_variableList;
     uint8_t _variableCount;
     uint8_t _sensorCount;
     uint8_t _maxSamplestoAverage;
@@ -90,7 +92,6 @@ protected:
 private:
     bool isLastVarFromSensor(int arrayIndex);
     uint8_t countMaxToAverage(void);
-    friend class Logger;
 };
 
 #endif
