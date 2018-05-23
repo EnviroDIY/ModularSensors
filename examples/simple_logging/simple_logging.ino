@@ -21,20 +21,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <LoggerBase.h>
 
 
-// ==========================================================================
-//    Basic Logger Settings
-// ==========================================================================
 // The name of this file
 const char *sketchName = "simple_logging.ino";
 
-// Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXXX";
-// How frequently (in minutes) to log data
-const uint8_t loggingInterval = 5;
-// Your logger's timezone.
-const int8_t timeZone = -5;
-// Create a new logger instance
-Logger logger;
 
 
 // ==========================================================================
@@ -42,7 +31,7 @@ Logger logger;
 // ==========================================================================
 #include <ProcessorStats.h>
 
-const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
 const int8_t greenLED = 8;  // Pin for the green LED (-1 if unconnected)
 const int8_t redLED = 9;  // Pin for the red LED (-1 if unconnected)
 const int8_t buttonPin = 21;  // Pin for a button to use to enter debugging mode (-1 if unconnected)
@@ -192,9 +181,17 @@ ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, Volt_ADS1115Address, Volt
 // Neither hardware serial nor AltSoftSerial require any modifications to
 // deal with interrupt conflicts.
 
-#include <SoftwareSerial_ExtInts.h>  // for the stream communication
 const int SonarData = 11;     // data receive pin
+
+#include <SoftwareSerial_ExtInts.h>  // for the stream communication
 SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
+
+// #include <NeoSWSerial.h>  // for the stream communication
+// NeoSWSerial sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
+// void NeoSWSISR()
+// {
+//   NeoSWSerial::rxISR( *portInputRegister( digitalPinToPort( SonarData ) ) );
+// }
 
 #include <MaxBotixSonar.h>
 const int8_t SonarPower = 22;  // Excite (power) pin (-1 if unconnected)
@@ -373,6 +370,8 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
+// Create pointers for all of the variables from the sensors
+// at the same time putting them into an array
 Variable *variableList[] = {
     new ApogeeSQ212_PAR(&SQ212),
     new AOSongAM2315_Humidity(&am2315),
@@ -441,7 +440,23 @@ Variable *variableList[] = {
     new MaximDS3231_Temp(&ds3231),
     // new YOUR_variableName_HERE(&)
 };
+// Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
+// Create the VariableArray object
+VariableArray varArray(variableCount, variableList);
+
+
+// ==========================================================================
+//    Data Logger Settings
+// ==========================================================================
+// Logger ID, also becomes the prefix for the name of the data file on SD card
+const char *LoggerID = "XXXXX";
+// How frequently (in minutes) to log data
+const uint8_t loggingInterval = 5;
+// Your logger's timezone.
+const int8_t timeZone = -5;
+// Create a new logger instance
+Logger logger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
@@ -478,7 +493,10 @@ void setup()
     sonarSerial.begin(9600);
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
-    enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+        enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+    #endif
+    #if defined NeoSWSerial_h
+        enableInterrupt(SonarData, NeoSWSISR, CHANGE);
     #endif
 
     // Set up pins for the LED's
@@ -499,9 +517,7 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
-    // Initialize the logger
-    logger.init(sdCardPin, wakePin, variableCount, variableList,
-                loggingInterval, LoggerID);
+    // Set information pins
     logger.setAlertPin(greenLED);
 
     // Begin the logger
@@ -517,9 +533,11 @@ void setup()
     Serial.print(buttonPin);
     Serial.println(F(" at any time to enter sensor testing mode."));
 
-    // Sleep
-    logger.systemSleep();
+    // Blink the LEDs really fast to show start-up is done
+    greenredflash(6, 25);
 
+    // Sleep
+    EnviroDIYLogger.systemSleep();
 }
 
 

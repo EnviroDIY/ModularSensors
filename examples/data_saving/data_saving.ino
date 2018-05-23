@@ -30,23 +30,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <LoggerEnviroDIY.h>
 
 
-// ==========================================================================
-//    Basic Logger Settings
-// ==========================================================================
 // The name of this file
 const char *sketchName = "data_saving.ino";
-
-// Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXXX";
-// How frequently (in minutes) to log data
-const uint8_t loggingInterval = 5;
-// Your logger's timezone.
-const int8_t timeZone = -5;
-// Create TWO new logger instances
-// one is a simple logger with all variables
-// one is an enviroDIY logger with an abbreviated list of variables
-LoggerEnviroDIY loggerComplete;
-LoggerEnviroDIY loggerToGo;
 
 
 // ==========================================================================
@@ -203,6 +188,10 @@ Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-123
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
+
+// Put all of the variable pointers into an Array
+// NOTE:  Since we've created all of the variable pointers above, we can just
+// reference them by name here.
 Variable *variableList_complete[] = {
     mayflyBatt,
     mayflyRAM,
@@ -219,12 +208,19 @@ Variable *variableList_complete[] = {
     modemRSSI,
     modemSinalPct
 };
+// Count up the number of pointers in the array
 int variableCount_complete = sizeof(variableList_complete) / sizeof(variableList_complete[0]);
+// Create the VariableArray object
+VariableArray arrayComplete(variableCount_complete, variableList_complete);
 
 
 // ==========================================================================
 //    The array that contains all variables to have their values sent out over the internet
 // ==========================================================================
+
+// Put all of the variable pointers into an Array
+// NOTE:  Since we've created all of the variable pointers above, we can just
+// reference them by name here.
 Variable *variableList_toGo[] = {
     y504DOmgL,
     y504Temp,
@@ -233,7 +229,25 @@ Variable *variableList_toGo[] = {
     y520Cond,
     modemRSSI
 };
+// Count up the number of pointers in the array
 int variableCount_toGo = sizeof(variableList_toGo) / sizeof(variableList_toGo[0]);
+// Create the VariableArray object
+VariableArray arrayToGo(variableCount_toGo, variableList_toGo);
+
+// ==========================================================================
+//    Data Logger Settings
+// ==========================================================================
+// Logger ID, also becomes the prefix for the name of the data file on SD card
+const char *LoggerID = "XXXXX";
+// How frequently (in minutes) to log data
+const uint8_t loggingInterval = 5;
+// Your logger's timezone.
+const int8_t timeZone = -5;
+// Create TWO new logger instances
+// one is a simple logger with all variables
+// one is an enviroDIY logger with an abbreviated list of variables
+LoggerEnviroDIY loggerComplete(LoggerID, loggingInterval, sdCardPin, wakePin, &arrayComplete);
+LoggerEnviroDIY loggerToGo(LoggerID, loggingInterval,sdCardPin, wakePin, &arrayToGo);
 
 
 // ==========================================================================
@@ -295,14 +309,6 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
-    // Initialize the two logger instances
-    loggerComplete.init(sdCardPin, wakePin, variableCount_complete, variableList_complete,
-                loggingInterval, LoggerID);
-    loggerToGo.init(sdCardPin, wakePin, variableCount_toGo, variableList_toGo,
-                loggingInterval, LoggerID);
-    // There is no reason to call the setAlertPin() function, because we have to
-    // write the loop on our own.
-
     // Setup the logger modem
     #if defined(TINY_GSM_MODEM_ESP8266)
         modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
@@ -318,6 +324,9 @@ void setup()
     // attaching it to both allows either logger to control NIST synchronization
     loggerComplete.attachModem(&modem);
     loggerToGo.attachModem(&modem);
+
+    // There is no reason to call the setAlertPin() function, because we have to
+    // write the loop on our own.
 
     // Set up the connection information with EnviroDIY for both loggers
     // Doing this for both loggers ensures that the header of the csv will have the tokens in it
@@ -378,19 +387,19 @@ void loop()
 
         // Send power to all of the sensors
         Serial.print(F("Powering sensors...\n"));
-        loggerComplete.sensorsPowerUp();
+        arrayComplete.sensorsPowerUp();
         // Wake up all of the sensors
         Serial.print(F("Waking sensors...\n"));
-        loggerComplete.sensorsWake();
+        arrayComplete.sensorsWake();
         // Update the values from all attached sensors
         Serial.print(F("Updating sensor values...\n"));
-        loggerComplete.updateAllSensors();
+        arrayComplete.updateAllSensors();
         // Put sensors to sleep
         Serial.print(F("Putting sensors back to sleep...\n"));
-        loggerComplete.sensorsSleep();
+        arrayComplete.sensorsSleep();
         // Cut sensor power
         Serial.print(F("Cutting sensor power...\n"));
-        loggerComplete.sensorsPowerDown();
+        arrayComplete.sensorsPowerDown();
 
         // End the stream for the modbus sensors
         // Because RS485 adapters tend to "steal" current from the data pins

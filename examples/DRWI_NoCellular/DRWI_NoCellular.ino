@@ -21,20 +21,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <LoggerBase.h>
 
-// ==========================================================================
-//    Basic Logger Settings
-// ==========================================================================
+
 // The name of this file
 const char *sketchName = "DRWI_NoCellular.ino";
-
-// Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXX";
-// How frequently (in minutes) to log data
-const uint8_t loggingInterval = 5;
-// Your logger's timezone.
-const int8_t timeZone = -5;
-// Create a new logger instance
-Logger logger;
 
 
 // ==========================================================================
@@ -42,7 +31,7 @@ Logger logger;
 // ==========================================================================
 #include <ProcessorStats.h>
 
-const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
 const int8_t greenLED = 8;  // Pin for the green LED (-1 if unconnected)
 const int8_t redLED = 9;  // Pin for the red LED (-1 if unconnected)
 const int8_t buttonPin = 21;  // Pin for a button to use to enter debugging mode (-1 if unconnected)
@@ -51,7 +40,7 @@ const int8_t wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
 
-// Create the processor "sensor"
+// Create and return the processor "sensor"
 const char *MFVersion = "v0.5b";
 ProcessorStats mayfly(MFVersion) ;
 
@@ -102,16 +91,41 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
+// Create pointers for all of the variables from the sensors
+// at the same time putting them into an array
 Variable *variableList[] = {
-    new ProcessorStats_Batt(&mayfly),
-    new MaximDS3231_Temp(&ds3231),
-    new DecagonCTD_Cond(&ctd),
-    new DecagonCTD_Temp(&ctd),
-    new DecagonCTD_Depth(&ctd),
-    new CampbellOBS3_Turbidity(&osb3low, "", "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "", "TurbHigh"),
+    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh")
 };
+// Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
+// Create the VariableArray object
+VariableArray varArray(variableCount, variableList);
+
+
+// ==========================================================================
+//    Data Logger Settings
+// ==========================================================================
+// Logger ID, also becomes the prefix for the name of the data file on SD card
+const char *LoggerID = "XXXXX";
+// How frequently (in minutes) to log data
+const uint8_t loggingInterval = 5;
+// Your logger's timezone.
+const int8_t timeZone = -5;
+// Create a new logger instance
+Logger logger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+
+// ==========================================================================
+// Device registration and sampling feature information
+//   This should be obtained after registration at http://data.envirodiy.org
+// ==========================================================================
+const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
+const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 
 
 // ==========================================================================
@@ -159,9 +173,7 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
-    // Initialize the logger
-    logger.init(sdCardPin, wakePin, variableCount, variableList,
-                loggingInterval, LoggerID);
+    // Set an alert pin
     logger.setAlertPin(greenLED);
 
     // Begin the logger
@@ -181,7 +193,7 @@ void setup()
     greenredflash(6, 25);
 
     // Sleep
-    EnviroDIYLogger.systemSleep();
+    logger.systemSleep();
 }
 
 

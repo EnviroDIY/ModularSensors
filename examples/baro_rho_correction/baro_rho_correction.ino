@@ -30,20 +30,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <LoggerEnviroDIY.h>
 
 
-// ==========================================================================
-//    Basic Logger Settings
-// ==========================================================================
 // The name of this file
 const char *sketchName = "baro_rho_correction.ino";
-
-// Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXXX";
-// How frequently (in minutes) to log data
-const uint8_t loggingInterval = 1;
-// Your logger's timezone.
-const int8_t timeZone = -5;
-// Create a new logger instance
-LoggerEnviroDIY EnviroDIYLogger;
 
 
 // ==========================================================================
@@ -61,7 +49,7 @@ const int8_t wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
 const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
 
 // Create and return the processor "sensor"
-const char *MFVersion = "v0.5";
+const char *MFVersion = "v0.5b";
 ProcessorStats mayfly(MFVersion) ;
 // Create the battery voltage and free RAM variable objects for the Y504 and return variable-type pointers to them
 Variable *mayflyBatt = new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
@@ -269,6 +257,7 @@ Variable *calcCorrDepth = new Variable(calculateWaterDepthTempCorrected, rhoDept
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
+// Put all of the variable pointers into an Array
 // NOTE:  Since we've created all of the variable pointers above, we can just
 // reference them by name here.
 Variable *variableList[] = {
@@ -288,7 +277,23 @@ Variable *variableList[] = {
     modemRSSI,
     modemSinalPct
 };
+// Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
+// Create the VariableArray object
+VariableArray varArray(variableCount, variableList);
+
+
+// ==========================================================================
+//    Data Logger Settings
+// ==========================================================================
+// Logger ID, also becomes the prefix for the name of the data file on SD card
+const char *LoggerID = "XXXXX";
+// How frequently (in minutes) to log data
+const uint8_t loggingInterval = 5;
+// Your logger's timezone.
+const int8_t timeZone = -5;
+// Create a new logger instance
+LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
@@ -347,11 +352,6 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
-    // Initialize the logger
-    EnviroDIYLogger.init(sdCardPin, wakePin, variableCount, variableList,
-                loggingInterval, LoggerID);
-    EnviroDIYLogger.setAlertPin(greenLED);
-
     // Setup the logger modem
     #if defined(TINY_GSM_MODEM_ESP8266)
         modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
@@ -362,17 +362,13 @@ void setup()
         modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
     #endif
 
-    // Attach the modem to the logger
+    // Attach the modem and information pins to the logger
     EnviroDIYLogger.attachModem(&modem);
+    EnviroDIYLogger.setAlertPin(greenLED);
 
     // Enter the tokens for the connection with EnviroDIY
     EnviroDIYLogger.setToken(registrationToken);
     EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
-
-    // Set up the connection with DreamHost
-    #ifdef DreamHostPortalRX
-        EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
-    #endif
 
     // Begin the logger
     EnviroDIYLogger.begin();
