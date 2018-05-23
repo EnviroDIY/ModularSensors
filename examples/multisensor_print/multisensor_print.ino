@@ -38,7 +38,7 @@ const int8_t redLED = 9;  // Pin for the red LED (-1 if unconnected)
 
 // Create and return the processor "sensor"
 const char *MFVersion = "v0.5";
-ProcessorStats mayfly(MFVersion) ;
+ProcessorStats mayfly(MFVersion);
 
 
 // ==========================================================================
@@ -590,8 +590,6 @@ void loop()
     Serial.print(F("Updated all sensors at "));
     Serial.println(getDateTime_ISO8601());
     sensors.printSensorData(&Serial);
-    Serial.print(F("In CSV Format:  "));
-    Serial.println(sensors.generateSensorDataCSV());
     // Turn off the LED to show we're done with the reading
     digitalWrite(greenLED, LOW);
     // Print a to close it off

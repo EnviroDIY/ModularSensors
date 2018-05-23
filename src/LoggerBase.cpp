@@ -685,7 +685,7 @@ void Logger::setupLogFile(String filename, String header)
 
         // Add header information
         logFile.print(header);
-        MS_DBG(header, F("\n"));
+        MS_DBG(F("File Header:\n"), header, F("\n"));
 
         //Close the file to save it
         logFile.close();
