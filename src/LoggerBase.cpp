@@ -38,9 +38,8 @@ volatile bool Logger::startTesting = false;
 
 // Initialization - cannot do this in constructor arduino has issues creating
 // instances of classes with non-empty constructors
-Logger::Logger(int8_t SDCardPin, int8_t mcuWakePin,
-               uint8_t loggingIntervalMinutes,
-               const char *loggerID,
+Logger::Logger(const char *loggerID, uint8_t loggingIntervalMinutes,
+               int8_t SDCardPin, int8_t mcuWakePin,
                VariableArray *inputArray)
 {
     _SDCardPin = SDCardPin;

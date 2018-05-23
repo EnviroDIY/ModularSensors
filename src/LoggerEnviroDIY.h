@@ -26,9 +26,8 @@ class LoggerEnviroDIY : public Logger
 {
 public:
     // Constructor
-    LoggerEnviroDIY(int8_t SDCardPin, int8_t mcuWakePin,
-                    uint8_t loggingIntervalMinutes,
-                    const char *loggerID,
+    LoggerEnviroDIY(const char *loggerID, uint8_t loggingIntervalMinutes,
+                    int8_t SDCardPin, int8_t mcuWakePin,
                     VariableArray *inputArray);
 
     // Adds a loggerModem objct to the logger

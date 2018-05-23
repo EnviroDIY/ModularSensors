@@ -27,9 +27,8 @@ class LoggerDreamHost : public LoggerEnviroDIY
 
 public:
     // Constructor
-    LoggerDreamHost(int8_t SDCardPin, int8_t mcuWakePin,
-                    uint8_t loggingIntervalMinutes,
-                    const char *loggerID,
+    LoggerDreamHost(const char *loggerID, uint8_t loggingIntervalMinutes,
+                    int8_t SDCardPin, int8_t mcuWakePin,
                     VariableArray *inputArray);
 
     // Functions for private SWRC server

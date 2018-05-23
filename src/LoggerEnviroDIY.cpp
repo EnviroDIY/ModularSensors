@@ -16,11 +16,10 @@
 // ============================================================================
 
 // Constructor
-LoggerEnviroDIY::LoggerEnviroDIY(int8_t SDCardPin, int8_t mcuWakePin,
-                                 uint8_t loggingIntervalMinutes,
-                                 const char *loggerID,
+LoggerEnviroDIY::LoggerEnviroDIY(const char *loggerID, uint8_t loggingIntervalMinutes,
+                                 int8_t SDCardPin, int8_t mcuWakePin,
                                  VariableArray *inputArray)
-  : Logger(SDCardPin, mcuWakePin, loggingIntervalMinutes, loggerID, inputArray)
+  : Logger(loggerID, loggingIntervalMinutes, SDCardPin, mcuWakePin, inputArray)
 {
     _modemAttached = false;
 }

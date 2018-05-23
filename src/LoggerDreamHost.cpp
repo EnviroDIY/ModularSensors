@@ -15,11 +15,10 @@
 // ============================================================================
 
 // Constructor
-LoggerDreamHost::LoggerDreamHost(int8_t SDCardPin, int8_t mcuWakePin,
-                                 uint8_t loggingIntervalMinutes,
-                                 const char *loggerID,
+LoggerDreamHost::LoggerDreamHost(const char *loggerID, uint8_t loggingIntervalMinutes,
+                                 int8_t SDCardPin, int8_t mcuWakePin,
                                  VariableArray *inputArray)
-  : LoggerEnviroDIY(SDCardPin, mcuWakePin, loggingIntervalMinutes, loggerID, inputArray)
+  : LoggerEnviroDIY(loggerID, loggingIntervalMinutes, SDCardPin, mcuWakePin, inputArray)
  {}
 
 // Functions for private SWRC server

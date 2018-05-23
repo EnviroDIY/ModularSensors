@@ -40,9 +40,8 @@ class Logger
 {
 public:
     // Constructor
-    Logger(int8_t SDCardPin, int8_t mcuWakePin,
-           uint8_t loggingIntervalMinutes,
-           const char *loggerID,
+    Logger(const char *loggerID, uint8_t loggingIntervalMinutes,
+           int8_t SDCardPin, int8_t mcuWakePin,
            VariableArray *inputArray);
 
     // Sets the static timezone - this must be set
