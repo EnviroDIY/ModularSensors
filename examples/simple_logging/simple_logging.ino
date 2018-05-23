@@ -537,7 +537,7 @@ void setup()
     greenredflash(6, 25);
 
     // Sleep
-    EnviroDIYLogger.systemSleep();
+    logger.systemSleep();
 }
 
 
