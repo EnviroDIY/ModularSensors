@@ -59,7 +59,7 @@ String KellerParent::getSensorLocation(void)
 bool KellerParent::setup(void)
 {
     bool retVal = Sensor::setup();  // sets time stamp and status bits
-    if (_RS485EnablePin > 0) pinMode(_RS485EnablePin, OUTPUT);
+    if (_RS485EnablePin >= 0) pinMode(_RS485EnablePin, OUTPUT);
 
     #if defined(DEEP_DEBUGGING_SERIAL_OUTPUT)
         sensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);

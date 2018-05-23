@@ -212,28 +212,13 @@ void setup()
     // Enter the tokens for the connection with EnviroDIY
     EnviroDIYLogger.setToken(registrationToken);
     EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
+    EnviroDIYLogger.setTestingModePin(buttonPin);
 
     // Set up the connection with DreamHost
     EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
 
     // Begin the logger
     EnviroDIYLogger.begin();
-
-    // Hold up for 10-seconds to allow immediate entry into sensor testing mode
-    // EnviroDIYLogger.checkForTestingMode(buttonPin);
-
-    //  Set up an interrupt on a pin to enter sensor testing mode at any time
-    pinMode(buttonPin, INPUT_PULLUP);
-    enableInterrupt(buttonPin, Logger::testingISR, CHANGE);
-    Serial.print(F("Push button on pin "));
-    Serial.print(buttonPin);
-    Serial.println(F(" at any time to enter sensor testing mode."));
-
-    // Blink the LEDs really fast to show start-up is done
-    greenredflash(6, 25);
-
-    // Sleep
-    EnviroDIYLogger.systemSleep();
 }
 
 

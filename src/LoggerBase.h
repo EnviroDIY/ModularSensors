@@ -58,6 +58,9 @@ public:
     // Sets up a pin for an LED or other way of alerting that data is being logged
     void setAlertPin(int8_t ledPin);
 
+    // Sets up a pin for an interrupt to enter testing mode
+    void setTestingModePin(int8_t buttonPin);
+
 
     // ===================================================================== //
     // Public functions to access the clock in proper format and time zone
@@ -222,6 +225,7 @@ protected:
     bool _isFileNameSet;
     uint8_t _numTimepointsLogged;
     int8_t _ledPin;
+    int8_t _buttonPin;
     VariableArray *_internalArray;
 
     // This checks if the SD card is available and ready

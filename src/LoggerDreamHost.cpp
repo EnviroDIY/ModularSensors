@@ -185,7 +185,7 @@ void LoggerDreamHost::log(void)
         // Print a line to show new reading
         PRINTOUT(F("------------------------------------------\n"));
         // Turn on the LED to show we're taking a reading
-        digitalWrite(_ledPin, HIGH);
+        if (_ledPin >= 0) digitalWrite(_ledPin, HIGH);
 
         if (_modemAttached)
         {
@@ -240,7 +240,7 @@ void LoggerDreamHost::log(void)
         logToSD(generateSensorDataCSV());
 
         // Turn off the LED
-        digitalWrite(_ledPin, LOW);
+        if (_ledPin >= 0) digitalWrite(_ledPin, LOW);
         // Print a line to show reading ended
         PRINTOUT(F("------------------------------------------\n\n"));
 
@@ -252,5 +252,5 @@ void LoggerDreamHost::log(void)
     if (Logger::startTesting) testingMode();
 
     // Sleep
-    if(_mcuWakePin > -1){systemSleep();}
+    if(_mcuWakePin >= 0){systemSleep();}
 }

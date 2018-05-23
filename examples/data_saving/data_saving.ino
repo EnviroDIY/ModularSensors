@@ -324,7 +324,7 @@ void setup()
     // attaching it to both allows either logger to control NIST synchronization
     loggerComplete.attachModem(&modem);
     loggerToGo.attachModem(&modem);
-
+    loggerComplete.setTestingModePin(buttonPin);
     // There is no reason to call the setAlertPin() function, because we have to
     // write the loop on our own.
 
@@ -340,23 +340,6 @@ void setup()
     // and all of the sensors.  We don't need to bother with the "begin" for the
     // other logger because it has the same processor and clock.
     loggerComplete.begin();
-
-    // Hold up for 10-seconds to allow immediate entry into sensor testing mode
-    // loggerComplete.checkForTestingMode(buttonPin);
-
-    //  Set up an interrupt on a pin to enter sensor testing mode at any time
-    pinMode(buttonPin, INPUT_PULLUP);
-    enableInterrupt(buttonPin, Logger::testingISR, CHANGE);
-    Serial.print(F("Push button on pin "));
-    Serial.print(buttonPin);
-    Serial.println(F(" at any time to enter sensor testing mode."));
-
-    // Blink the LEDs really fast to show start-up is done
-    greenredflash(6, 25);
-
-    // Call the processor sleep
-    // Only need to do this for one of the loggers
-    loggerComplete.systemSleep();
 }
 
 

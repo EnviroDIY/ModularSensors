@@ -10,6 +10,11 @@
 
 #include "LoggerEnviroDIY.h"
 
+// To prevent compiler/linker crashes with Enable interrupt
+#define LIBCALL_ENABLEINTERRUPT
+// To handle external and pin change interrupts
+#include <EnableInterrupt.h>
+
 
 // ============================================================================
 //  Functions for the EnviroDIY data portal receivers.
@@ -311,7 +316,7 @@ void LoggerEnviroDIY::testingMode()
     Logger::isTestingNow = false;
 
     // Sleep
-    if(_mcuWakePin > -1){systemSleep();}
+    if(_mcuWakePin >= 0){systemSleep();}
 }
 
 
@@ -323,7 +328,8 @@ void LoggerEnviroDIY::testingMode()
 void LoggerEnviroDIY::begin(void)
 {
     // Set up pins for the LED's
-    if (_ledPin > 0) pinMode(_ledPin, OUTPUT);
+    if (_ledPin >= 0) pinMode(_ledPin, OUTPUT);
+    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT_PULLUP);
 
     #if defined ARDUINO_ARCH_SAMD
         zero_sleep_rtc.begin();
@@ -340,8 +346,10 @@ void LoggerEnviroDIY::begin(void)
              _loggingIntervalMinutes, F(" minute intervals.\n"));
 
     PRINTOUT(F("This logger has a variable array with "),
-             _internalArray->getVariableCount(), F(" variables from "),
-             _internalArray->getSensorCount(), F(" sensors.\n"));
+             _internalArray->getVariableCount(), F(" variables, of which "),
+             _internalArray->getVariableCount() - _internalArray->getCalculatedVariableCount(),
+             F(" come from "),_internalArray->getSensorCount(), F(" sensors and "),
+             _internalArray->getCalculatedVariableCount(), F(" are calculated.\n"));
 
     if (_modemAttached)
     {
@@ -379,10 +387,22 @@ void LoggerEnviroDIY::begin(void)
     setupLogFile();
 
     // Setup sleep mode
-    if(_mcuWakePin > -1){setupSleep();}
+    if(_mcuWakePin >= 0){setupSleep();}
+
+    // Set up the interrupt to be able to enter sensor testing mode
+    if (_buttonPin >= 0)
+    {
+        enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
+        Serial.print(F("Push button on pin "));
+        Serial.print(_buttonPin);
+        Serial.println(F(" at any time to enter sensor testing mode."));
+    }
 
     PRINTOUT(F("Logger setup finished!\n"));
     PRINTOUT(F("------------------------------------------\n\n"));
+
+    // Sleep
+    if(_mcuWakePin >= 0){systemSleep();}
 }
 
 
@@ -399,7 +419,7 @@ void LoggerEnviroDIY::log(void)
         // Print a line to show new reading
         PRINTOUT(F("------------------------------------------\n"));
         // Turn on the LED to show we're taking a reading
-        digitalWrite(_ledPin, HIGH);
+        if (_ledPin >= 0) digitalWrite(_ledPin, HIGH);
 
         if (_modemAttached)
         {
@@ -448,7 +468,7 @@ void LoggerEnviroDIY::log(void)
         logToSD(generateSensorDataCSV());
 
         // Turn off the LED
-        digitalWrite(_ledPin, LOW);
+        if (_ledPin >= 0) digitalWrite(_ledPin, LOW);
         // Print a line to show reading ended
         PRINTOUT(F("------------------------------------------\n\n"));
 
@@ -460,5 +480,5 @@ void LoggerEnviroDIY::log(void)
     if (Logger::startTesting) testingMode();
 
     // Sleep
-    if(_mcuWakePin > -1){systemSleep();}
+    if(_mcuWakePin >= 0){systemSleep();}
 }

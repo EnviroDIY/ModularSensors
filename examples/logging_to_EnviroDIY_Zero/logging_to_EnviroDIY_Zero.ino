@@ -609,9 +609,6 @@ void setup()
 
     // Begin the logger
     EnviroDIYLogger.begin();
-
-    // Sleep
-    EnviroDIYLogger.systemSleep();
 }
 
 
