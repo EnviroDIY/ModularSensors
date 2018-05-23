@@ -28,8 +28,11 @@ public:
 
     // Functions to return information about the list
 
-    // This just returns the number of variables
+    // This just returns the number of variables (as input in the constructor)
     int getVariableCount(void){return _variableCount;}
+
+    // This counts and returns the number of calculated variables
+    int getCalculatedVariableCount(void);
 
     // This counts and returns the number of sensors
     int getSensorCount(void);
@@ -56,18 +59,38 @@ public:
     // This function prints out the results for any connected sensors to a stream
     void printSensorData(Stream *stream = &Serial);
 
+    // These generate some helpful comma-separated lists of variable information
     // This generates a comma separated list of sensor values WITHOUT TIME STAMP
     String generateSensorDataCSV(void);
+    // This generates a comma separated list of parent sensor names
+    // String listParentSensorNames(void);
+    // This generates a comma separated list of variable names
+    // String listVariableNames(void);
+    // This generates a comma separated list of variable units
+    // String listVariableUnits(void);
+    // This generates a comma separated list of variable codes
+    // String listVariableCodes(void);
+    // This generates a comma separated list of variable UUID's
+    // String listVariableUUIDs(void);
+    // These are identical to the above, except they directly send the data to
+    // an arduino stream to avoid passing around long strings.
+    // void streamSensorDataCSV(Stream *stream);
+    // void streamParentSensorNames(Stream *stream);
+    // void streamVariableNames(Stream *stream);
+    // void streamVariableUnits(Stream *stream);
+    // void streamVariableCodes(Stream *stream);
+    // void streamVariableUUIDs(Stream *stream);
 
 protected:
+    Variable **_variableList;
     uint8_t _variableCount;
     uint8_t _sensorCount;
-    Variable **_variableList;
     uint8_t _maxSamplestoAverage;
 
 private:
     bool isLastVarFromSensor(int arrayIndex);
     uint8_t countMaxToAverage(void);
+    friend class Logger;
 };
 
 #endif

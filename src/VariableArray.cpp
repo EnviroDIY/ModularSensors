@@ -18,9 +18,20 @@ VariableArray::VariableArray(int variableCount, Variable *variableList[])
 
     _maxSamplestoAverage = countMaxToAverage();
     _sensorCount = getSensorCount();
+}
 
-    MS_DBG(F("Initializing variable array with "), variableCount, F(" variables...\n"));
-    MS_DBG(F("   ... Success!\n"));
+// This counts and returns the number of calculated variables
+int VariableArray::getCalculatedVariableCount(void)
+{
+    int numCalc = 0;
+    // Check for unique sensors
+    for (int i = 0; i < _variableCount; i++)
+    {
+        if (_variableList[i]->isCalculated) numCalc++;
+    }
+    MS_DBG(F("There are "), numCalc,
+           F(" calculated variables in the group.\n"));
+    return numCalc;
 }
 
 
@@ -28,15 +39,12 @@ VariableArray::VariableArray(int variableCount, Variable *variableList[])
 int VariableArray::getSensorCount(void)
 {
     int numSensors = 0;
-    int numCalc = 0;
     // Check for unique sensors
     for (int i = 0; i < _variableCount; i++)
     {
         if (isLastVarFromSensor(i)) numSensors++;
-        if (_variableList[i]->isCalculated) numCalc++;
     }
-    MS_DBG(F("There are "), numSensors, F(" unique sensors and "), numCalc,
-           F(" calculated variablesin the group.\n"));
+    MS_DBG(F("There are "), numSensors, F(" unique sensors in the group.\n"));
     return numSensors;
 }
 
@@ -469,24 +477,56 @@ void VariableArray::printSensorData(Stream *stream)
 }
 
 
-// This generates a comma separated list of sensor values WITHOUT TIME STAMP
-// Calculated variable results will be included
-String VariableArray::generateSensorDataCSV(void)
-{
-    String csvString = F("");
-
-    for (uint8_t i = 0; i < _variableCount; i++)
-    {
-        csvString += _variableList[i]->getValueString();
-        if (i + 1 != _variableCount)
-        {
-            csvString += F(",");
-        }
+// These generate some helpful comma-separated lists of variable information
+// This is a PRE-PROCESSOR MACRO to speed up generating header rows
+// Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
+#define makeVarListCSV(function) \
+    { \
+        String csvString = ""; \
+        for (uint8_t i = 0; i < _variableCount; i++) \
+        { \
+            csvString += _variableList[i]->function; \
+            if (i + 1 != _variableCount) \
+            { \
+                csvString += F(","); \
+            } \
+        } \
+        return csvString; \
     }
+// This generates a comma separated list of sensor values WITHOUT TIME STAMP
+String VariableArray::generateSensorDataCSV(void){makeVarListCSV(getValueString())};
+// This generates a comma separated list of parent sensor names
+// String VariableArray::listParentSensorNames(void){makeVarListCSV(getParentSensorName())};
+// This generates a comma separated list of variable names
+// String VariableArray::listVariableNames(void){makeVarListCSV(getVarName())};
+// This generates a comma separated list of variable units
+// String VariableArray::listVariableUnits(void){makeVarListCSV(getVarUnit())};
+// This generates a comma separated list of variable codes
+// String VariableArray::listVariableCodes(void){makeVarListCSV(getVarCode())};
+// This generates a comma separated list of variable UUID's
+// String VariableArray::listVariableUUIDs(void){makeVarListCSV(getVarUUID())};
 
-    return csvString;
-}
 
+// These generate some helpful comma-separated lists of variable information
+// This is a PRE-PROCESSOR MACRO to speed up generating header rows
+// Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
+// #define streamVarListCSV(function) \
+//     { \
+//         for (uint8_t i = 0; i < _variableCount; i++) \
+//         { \
+//             stream->print(_variableList[i]->function); \
+//             if (i + 1 != _variableCount) \
+//             { \
+//                 stream->print(','); \
+//             } \
+//         } \
+//     }
+// void VariableArray::streamSensorDataCSV(Stream *stream){streamVarListCSV(getValueString())};
+// void VariableArray::streamParentSensorNames(Stream *stream){streamVarListCSV(getParentSensorName())};
+// void VariableArray::streamVariableNames(Stream *stream){streamVarListCSV(getVarName())};
+// void VariableArray::streamVariableUnits(Stream *stream){streamVarListCSV(getVarUnit())};
+// void VariableArray::streamVariableCodes(Stream *stream){streamVarListCSV(getVarCode())};
+// void VariableArray::streamVariableUUIDs(Stream *stream){streamVarListCSV(getVarUUID())};
 
 // Check for unique sensors
 bool VariableArray::isLastVarFromSensor(int arrayIndex)
