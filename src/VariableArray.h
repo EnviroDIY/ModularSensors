@@ -64,7 +64,7 @@ public:
 
     // These generate some helpful comma-separated lists of variable information
     // This generates a comma separated list of sensor values WITHOUT TIME STAMP
-    String generateSensorDataCSV(void);
+    // String generateSensorDataCSV(void);
     // This generates a comma separated list of parent sensor names
     // String listParentSensorNames(void);
     // This generates a comma separated list of variable names

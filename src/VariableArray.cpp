@@ -480,21 +480,21 @@ void VariableArray::printSensorData(Stream *stream)
 // These generate some helpful comma-separated lists of variable information
 // This is a PRE-PROCESSOR MACRO to speed up generating header rows
 // Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
-#define makeVarListCSV(function) \
-    { \
-        String csvString = ""; \
-        for (uint8_t i = 0; i < _variableCount; i++) \
-        { \
-            csvString += arrayOfVars[i]->function; \
-            if (i + 1 != _variableCount) \
-            { \
-                csvString += F(","); \
-            } \
-        } \
-        return csvString; \
-    }
+// #define makeVarListCSV(function) \
+//     { \
+//         String csvString = ""; \
+//         for (uint8_t i = 0; i < _variableCount; i++) \
+//         { \
+//             csvString += arrayOfVars[i]->function; \
+//             if (i + 1 != _variableCount) \
+//             { \
+//                 csvString += F(","); \
+//             } \
+//         } \
+//         return csvString; \
+//     }
 // This generates a comma separated list of sensor values WITHOUT TIME STAMP
-String VariableArray::generateSensorDataCSV(void){makeVarListCSV(getValueString())};
+// String VariableArray::generateSensorDataCSV(void){makeVarListCSV(getValueString())};
 // This generates a comma separated list of parent sensor names
 // String VariableArray::listParentSensorNames(void){makeVarListCSV(getParentSensorName())};
 // This generates a comma separated list of variable names
