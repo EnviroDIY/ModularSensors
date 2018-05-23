@@ -252,5 +252,5 @@ void LoggerDreamHost::log(void)
     if (Logger::startTesting) testingMode();
 
     // Sleep
-    if(_sleep){systemSleep();}
+    if(_mcuWakePin > -1){systemSleep();}
 }

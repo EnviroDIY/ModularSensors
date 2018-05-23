@@ -311,7 +311,7 @@ void LoggerEnviroDIY::testingMode()
     Logger::isTestingNow = false;
 
     // Sleep
-    if(_sleep){systemSleep();}
+    if(_mcuWakePin > -1){systemSleep();}
 }
 
 
@@ -379,7 +379,7 @@ void LoggerEnviroDIY::begin(void)
     setupLogFile();
 
     // Setup sleep mode
-    if(_sleep){setupSleep();}
+    if(_mcuWakePin > -1){setupSleep();}
 
     PRINTOUT(F("Logger setup finished!\n"));
     PRINTOUT(F("------------------------------------------\n\n"));
@@ -460,5 +460,5 @@ void LoggerEnviroDIY::log(void)
     if (Logger::startTesting) testingMode();
 
     // Sleep
-    if(_sleep){systemSleep();}
+    if(_mcuWakePin > -1){systemSleep();}
 }
