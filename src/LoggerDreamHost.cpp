@@ -47,22 +47,34 @@ String LoggerDreamHost::generateSensorDataDreamHost(void)
     }
     return dhString;
 }
+void LoggerDreamHost::streamSensorDataDreamHost(Stream *stream)
+{
+    stream->print(String(_DreamHostPortalRX));
+    stream->print(String(F("?LoggerID=")) + String(Logger::_loggerID));
+    stream->print(String(F("?Loggertime=")) + String(Logger::markedEpochTime - 946684800));  // Correct time from epoch to y2k
+
+    for (int i = 0; i < _internalArray->getVariableCount(); i++)
+    {
+        stream->print(String(F("&")) + String(_internalArray->arrayOfVars[i]->getVarCode()) \
+            + String(F("=")) + String(_internalArray->arrayOfVars[i]->getValueString()));
+    }
+}
 
 
-// This generates a fully structured GET request for DreamHost
-String LoggerDreamHost::generateDreamHostGetRequest(String fullURL)
-{
-    String GETstring = String(F("GET "));
-    GETstring += String(fullURL);
-    GETstring += String(F("  HTTP/1.1"));
-    GETstring += String(F("\r\nHost: swrcsensors.dreamhosters.com"));
-    GETstring += String(F("\r\n\r\n"));
-    return GETstring;
-}
-String LoggerDreamHost::generateDreamHostGetRequest(void)
-{
-    return generateDreamHostGetRequest(generateSensorDataDreamHost());
-}
+// // This generates a fully structured GET request for DreamHost
+// String LoggerDreamHost::generateDreamHostGetRequest(String fullURL)
+// {
+//     String GETstring = String(F("GET "));
+//     GETstring += String(fullURL);
+//     GETstring += String(F("  HTTP/1.1"));
+//     GETstring += String(F("\r\nHost: swrcsensors.dreamhosters.com"));
+//     GETstring += String(F("\r\n\r\n"));
+//     return GETstring;
+// }
+// String LoggerDreamHost::generateDreamHostGetRequest(void)
+// {
+//     return generateDreamHostGetRequest(generateSensorDataDreamHost());
+// }
 
 
 // This prints a fully structured GET request for DreamHost to the
@@ -77,18 +89,13 @@ void LoggerDreamHost::streamDreamHostRequest(Stream *stream, String fullURL)
 }
 void LoggerDreamHost::streamDreamHostRequest(Stream *stream)
 {
+    // Start the request
     stream->print(String(F("GET ")));
 
-    stream->print(String(_DreamHostPortalRX));
-    stream->print(String(F("?LoggerID=")) + String(Logger::_loggerID));
-    stream->print(String(F("?Loggertime=")) + String(Logger::markedEpochTime - 946684800));  // Correct time from epoch to y2k
+    // Stream the full URL with parameters
+    streamSensorDataDreamHost(stream);
 
-    for (int i = 0; i < _internalArray->getVariableCount(); i++)
-    {
-        stream->print(String(F("&")) + String(_internalArray->arrayOfVars[i]->getVarCode()) \
-            + String(F("=")) + String(_internalArray->arrayOfVars[i]->getValueString()));
-    }
-
+    // Send the rest of the HTTP header
     stream->print(String(F("  HTTP/1.1")));
     stream->print(String(F("\r\nHost: swrcsensors.dreamhosters.com")));
     stream->print(String(F("\r\n\r\n")));

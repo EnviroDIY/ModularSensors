@@ -48,10 +48,11 @@ public:
 
     // This generates a properly formatted JSON for EnviroDIY
     String generateSensorDataJSON(void);
+    void streamSensorDataJSON(Stream *stream);
 
-    // This generates a fully structured POST request for EnviroDIY
-    String generateEnviroDIYPostRequest(String enviroDIYjson);
-    String generateEnviroDIYPostRequest(void);
+    // // This generates a fully structured POST request for EnviroDIY
+    // String generateEnviroDIYPostRequest(String enviroDIYjson);
+    // String generateEnviroDIYPostRequest(void);
 
     // This prints a fully structured post request for EnviroDIY to the
     // specified stream using the specified json.

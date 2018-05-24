@@ -98,25 +98,45 @@ String LoggerEnviroDIY::generateSensorDataJSON(void)
     jsonString += F("}");
     return jsonString;
 }
+void LoggerEnviroDIY::streamSensorDataJSON(Stream *stream)
+{
+    stream->print(String(F("{")));
+    stream->print(String(F("\"sampling_feature\": \"")));
+    stream->print(String(_samplingFeature)); + F("");
+    stream->print(String(F("\", \"timestamp\": \"")));
+    stream->print(String(Logger::markedISO8601Time) + F("\", "));
+
+    for (int i = 0; i < _internalArray->getVariableCount(); i++)
+    {
+        stream->print(String(F("\"")) + _internalArray->arrayOfVars[i]->getVarUUID() + String(F("\": ")) + _internalArray->arrayOfVars[i]->getValueString());
+        if (i + 1 != _internalArray->getVariableCount())
+        {
+            stream->print(F(", "));
+        }
+    }
+
+    stream->print(F("}"));
+}
 
 
-// This generates a fully structured POST request for EnviroDIY
-String LoggerEnviroDIY::generateEnviroDIYPostRequest(String enviroDIYjson)
-{
-    String POSTstring = String(F("POST /api/data-stream/ HTTP/1.1"));
-    POSTstring += String(F("\r\nHost: data.envirodiy.org"));
-    POSTstring += String(F("\r\nTOKEN: ")) + String(_registrationToken);
-    // POSTstring += String(F("\r\nCache-Control: no-cache"));
-    // POSTstring += String(F("\r\nConnection: close"));
-    POSTstring += String(F("\r\nContent-Length: ")) + String(enviroDIYjson.length());
-    POSTstring += String(F("\r\nContent-Type: application/json\r\n\r\n"));
-    POSTstring += String(enviroDIYjson);
-    return POSTstring;
-}
-String LoggerEnviroDIY::generateEnviroDIYPostRequest(void)
-{
-    return generateEnviroDIYPostRequest(generateSensorDataJSON());
-}
+// // This generates a fully structured POST request for EnviroDIY
+// String LoggerEnviroDIY::generateEnviroDIYPostRequest(String enviroDIYjson)
+// {
+//     String POSTstring = String(F("POST /api/data-stream/ HTTP/1.1"));
+//     POSTstring += String(F("\r\nHost: data.envirodiy.org"));
+//     POSTstring += String(F("\r\nTOKEN: ")) + String(_registrationToken);
+//     // POSTstring += String(F("\r\nCache-Control: no-cache"));
+//     // POSTstring += String(F("\r\nConnection: close"));
+//     POSTstring += String(F("\r\nContent-Length: ")) + String(enviroDIYjson.length());
+//     POSTstring += String(F("\r\nContent-Type: application/json\r\n\r\n"));
+//     POSTstring += String(enviroDIYjson);
+//     return POSTstring;
+// }
+// String LoggerEnviroDIY::generateEnviroDIYPostRequest(void)
+// {
+//     return generateEnviroDIYPostRequest(generateSensorDataJSON());
+// }
+
 
 // This prints a fully structured post request for EnviroDIY to the
 // specified stream using the specified json.
@@ -133,7 +153,8 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream, String enviroDIYjso
 }
 void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
 {
-    // first we need to calculate how long the json string is going to be
+    // First we need to calculate how long the json string is going to be
+    // This is needed for the "Content-Length" header
     int jsonLength = 22;  // {"sampling_feature": "
     jsonLength += 36;  // sampling feature UUID
     jsonLength += 17;  // ", "timestamp": "
@@ -152,6 +173,7 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
     }
     jsonLength += 1;  // }
 
+    // Stream the HTTP headers for the post request
     stream->print(String(F("POST /api/data-stream/ HTTP/1.1")));
     stream->print(String(F("\r\nHost: data.envirodiy.org")));
     stream->print(String(F("\r\nTOKEN: ")) + String(_registrationToken));
@@ -159,21 +181,9 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
     // stream->print(String(F("\r\nConnection: close")));
     stream->print(String(F("\r\nContent-Length: ")) + String(jsonLength));
     stream->print(String(F("\r\nContent-Type: application/json\r\n\r\n")));
-    stream->print(String(F("{\"sampling_feature\": \"")));
-    stream->print(String(_samplingFeature)); + F("");
-    stream->print(String(F("\", \"timestamp\": \"")));
-    stream->print(String(Logger::markedISO8601Time) + F("\", "));
 
-    for (int i = 0; i < _internalArray->getVariableCount(); i++)
-    {
-        stream->print(String(F("\"")) + _internalArray->arrayOfVars[i]->getVarUUID() + String(F("\": ")) + _internalArray->arrayOfVars[i]->getValueString());
-        if (i + 1 != _internalArray->getVariableCount())
-        {
-            stream->print(F(", "));
-        }
-    }
-
-    stream->print(F("}"));
+    // Stream the JSON itself
+    streamSensorDataJSON(stream);
 }
 
 
