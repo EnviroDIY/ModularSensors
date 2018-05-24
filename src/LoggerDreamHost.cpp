@@ -237,7 +237,7 @@ void LoggerDreamHost::log(void)
         }
 
         // Create a csv data record and save it to the log file
-        logToSD(generateSensorDataCSV());
+        logToSD();
 
         // Turn off the LED
         if (_ledPin >= 0) digitalWrite(_ledPin, LOW);

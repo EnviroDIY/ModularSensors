@@ -245,9 +245,12 @@ void setup()
     logger1min.setFileName(FileName1min);
     logger5min.setFileName(FileName5min);
 
-    // Setup the logger files.  This will automatically add headers to each
-    logger1min.setupLogFile();
-    logger5min.setupLogFile();
+    // Setup the logger files.  Specifying true will put a default header at
+    // on to the file when it's created.
+    // Because we've already called setFileName, we do not need to specify the
+    // file name for this function.
+    logger1min.createLogFile(true);
+    logger5min.createLogFile(true);
 
     // Set up the processor sleep mode
     // Because there's only one processor, we only need to do this once
@@ -296,8 +299,8 @@ void loop()
         Serial.print(F("Cutting sensor power...\n"));
         array1min.sensorsPowerDown();
 
-        // Create a csv data record and save it to the log file
-        logger1min.logToSD(logger1min.generateSensorDataCSV());
+        // Stream the csv data to the SD card
+        logger1min.logToSD();
 
         // Turn off the LED
         digitalWrite(greenLED, LOW);
@@ -329,8 +332,8 @@ void loop()
         Serial.print(F("Cutting sensor power...\n"));
         array1min.sensorsPowerDown();
 
-        // Create a csv data record and save it to the log file
-        logger5min.logToSD(logger5min.generateSensorDataCSV());
+        // Stream the csv data to the SD card
+        logger5min.logToSD();
 
         // Turn off the LED
         digitalWrite(redLED, LOW);

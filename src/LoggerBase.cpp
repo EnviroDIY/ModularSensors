@@ -568,40 +568,46 @@ String Logger::generateFileHeader(void)
     // Return everything
     return dataHeader;
 }
-// // This sends a file header out over an Arduino stream
-// void Logger::streamFileHeader(Stream *stream)
-// {
-//     // Very first column of the header is the logger ID
-//     String logIDRowHeader = F("Data Logger: ");
-//     logIDRowHeader += String(_loggerID);
-//
-//     // First line will be the parent sensor names
-//     stream->print(logIDRowHeader);
-//     _internalArray->streamParentSensorNames(stream);
-//     stream->println();
-//
-//     // Next comes the ODM2 variable name
-//     stream->print(logIDRowHeader);
-//     _internalArray->streamVariableNames(stream);
-//     stream->println();
-//
-//     // Next comes the ODM2 unit name
-//     stream->print(logIDRowHeader);
-//     _internalArray->streamVariableUnits(stream);
-//     stream->println();
-//
-//     // Next comes the variable UUID's
-//     stream->print(logIDRowHeader);
-//     _internalArray->streamVariableUUIDs(stream);
-//     stream->println();
-//
-//     // We'll finish up the the custom variable codes
-//     stream->print(F("Date and Time in UTC"));
-//     stream->print(_timeZone);
-//     stream->print(logIDRowHeader);
-//     _internalArray->streamVariableCodes(stream);
-//     stream->println();
-// }
+
+// This is another PRE-PROCESSOR MACRO to speed up generating header rows
+// Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
+#define streamHeaderRowMacro(firstCol, function) \
+    stream->print(F("\"")); \
+    stream->print(firstCol); \
+    stream->print(F("\",")); \
+    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++) \
+    { \
+        stream->print(F("\"")); \
+        stream->print(function); \
+        stream->print(F("\"")); \
+        if (i + 1 != _internalArray->getVariableCount()) \
+        { \
+            stream->print(F(",")); \
+        } \
+    } \
+    stream->print(F("\r\n"));
+
+// This sends a file header out over an Arduino stream
+void Logger::streamFileHeader(Stream *stream)
+{
+    // Very first column of the header is the logger ID
+    String logIDRowHeader = F("Data Logger: ");
+    logIDRowHeader += String(_loggerID);
+
+    // Next line will be the parent sensor names
+    streamHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getParentSensorName())
+    // Next comes the ODM2 variable name
+    streamHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarName())
+    // Next comes the ODM2 unit name
+    streamHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUnit())
+    // Next comes the variable UUIDs
+    streamHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUUID())
+
+    // We'll finish up the the custom variable codes
+    String dtRowHeader = F("Date and Time in UTC");
+    dtRowHeader += _timeZone;
+    streamHeaderRowMacro(dtRowHeader, _internalArray->arrayOfVars[i]->getVarCode());
+}
 
 
 // This generates a comma separated list of volues of sensor data - including the time
@@ -622,23 +628,23 @@ String Logger::generateSensorDataCSV(void)
 
     return csvString;
 }
-// // This sends a comma separated list of volues of sensor data - including the
-// // time -  out over an Arduino stream
-// void Logger::streamSensorDataCSV(Stream *stream)
-// {
-//     String csvString = "";
-//     markedDateTime.addToString(csvString);
-//     csvString += F(",");
-//     stream->print(csvString);
-//     for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
-//     {
-//         stream->print(_internalArray->arrayOfVars[i]->getValueString());
-//         if (i + 1 != _internalArray->getVariableCount())
-//         {
-//             tream->print(F(","));
-//         }
-//     }
-// }
+// This sends a comma separated list of volues of sensor data - including the
+// time -  out over an Arduino stream
+void Logger::streamSensorDataCSV(Stream *stream)
+{
+    String csvString = "";
+    markedDateTime.addToString(csvString);
+    csvString += F(",");
+    stream->print(csvString);
+    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
+    {
+        stream->print(_internalArray->arrayOfVars[i]->getValueString());
+        if (i + 1 != _internalArray->getVariableCount())
+        {
+            stream->print(F(","));
+        }
+    }
+}
 
 
 // Private helper function - This checks if the SD card is available and ready
@@ -661,7 +667,7 @@ bool Logger::initializeSDCard(void)
 
 
 // Private helper function - This sets a timestamp on a file
-void Logger::setFileTimestame(SdFile fileToStamp, uint8_t stampFlag)
+void Logger::setFileTimestame(File fileToStamp, uint8_t stampFlag)
 {
     fileToStamp.timestamp(stampFlag, dtFromEpoch(getNowEpoch()).year(),
                                 dtFromEpoch(getNowEpoch()).month(),
@@ -672,78 +678,151 @@ void Logger::setFileTimestame(SdFile fileToStamp, uint8_t stampFlag)
 }
 
 
-// This initializes a file on the SD card with the given filename and writes the given header to it
-void Logger::setupLogFile(String filename, String header)
+// Private helper function - This opens or creates a file, converting a string
+// file name to a character file name
+bool Logger::openFile(String filename, bool createFile, bool writeDefaultHeader)
 {
     // Initialise the SD card
     // skip everything else if there's no SD card, otherwise it might hang
-    if (!initializeSDCard()) return;
-    else
-    {
-        // Convert the string filename to a character file name for SdFat
-        uint8_t fileNameLength = filename.length() + 1;
-        char charFileName[fileNameLength];
-        filename.toCharArray(charFileName, fileNameLength);
+    if (!initializeSDCard()) return false;
 
-        // Open the file in write mode (and create it if it did not exist)
-        logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END);
-        // Set creation date time
-        setFileTimestame(logFile, T_CREATE);
-        // Set write/modification date time
-        setFileTimestame(logFile, T_WRITE);
+    // Convert the string filename to a character file name for SdFat
+    uint8_t fileNameLength = filename.length() + 1;
+    char charFileName[fileNameLength];
+    filename.toCharArray(charFileName, fileNameLength);
+
+    // First attempt to open an already existing file (in write mode), so we
+    // tdon't try to re-create something that's already there.
+    // This should also prevent the header from being written over and over
+    // in the file.
+    if (logFile.open(charFileName, O_WRITE | O_AT_END))
+    {
+        MS_DBG(F("Opened existing file: "), filename, F("\n"));
         // Set access date time
         setFileTimestame(logFile, T_ACCESS);
-        PRINTOUT(F("File created!\n"));
+        return true;
+    }
+    else if (createFile)
+    {
+        // Create and then open the file in write mode
+        if (logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END))
+        {
+            MS_DBG(F("Created new file: "), filename, F("\n"));
+            // Set creation date time
+            setFileTimestame(logFile, T_CREATE);
+            // Write out a header, if requested
+            if (writeDefaultHeader)
+            {
+                // Add header information
+                streamFileHeader(&logFile);
+                // Print out the header for debugging
+                #if defined(DEBUGGING_SERIAL_OUTPUT)
+                    MS_DBG(F("File Header:\n"));
+                    streamFileHeader(&DEBUGGING_SERIAL_OUTPUT);
+                #endif
+                // Set write/modification date time
+                setFileTimestame(logFile, T_WRITE);
+            }
+            // Set access date time
+            setFileTimestame(logFile, T_ACCESS);
+            return true;
+        }
+        // Return false if we couldn't create the file
+        else
+        {
+            MS_DBG(F("Unable to create new file: "), filename, F("\n"));
+            return false;
+        }
+    }
+    // Return false if we couldn't access the file (and were not told to create it)
+    else
+    {
+        MS_DBG(F("Unable to to write to file: "), filename, F("\n"));
+        return false;
+    }
+}
 
-        // Add header information
-        logFile.print(header);
-        MS_DBG(F("File Header:\n"), header, F("\n"));
 
-        //Close the file to save it
+// These functions create a file on the SD card with the given filename and
+// set the proper timestamps to the file.
+// The filename may either be the one set by setFileName(String)/setFileName(void)
+// or can be specified in the function.
+// If specified, it will also write a header to the file based on
+// the sensors in the group.
+// This can be used to force a logger to create a file with a secondary file name.
+void Logger::createLogFile(String filename, bool writeDefaultHeader)
+{
+    // Attempt to create and open a file
+    if (openFile(filename, true, writeDefaultHeader))
+    {
+        // Close the file to save it (only do this if we'd opened it)
         logFile.close();
     }
 }
-// This initializes a file on the SD card and writes a header to it
-void Logger::setupLogFile(void)
+void Logger::createLogFile(bool writeDefaultHeader)
 {
-    setupLogFile(_fileName, generateFileHeader());
+    createLogFile(_fileName, writeDefaultHeader);
 }
 
 
-// This writes a record to the SD card, using the logger's filename
-// The filename may either be set by setFileName(String) or will be
-//automatically generated by setFileName(void)
-void Logger::logToSD(String rec)
+// These functions write a file on the SD card with the given filename and
+// set the proper timestamps to the file.
+// The filename may either be the one set by setFileName(String)/setFileName(void)
+// or can be specified in the function.
+// If the file does not already exist, the file will be created.
+// This can be used to force a logger to write to a file with a secondary file name.
+void Logger::logToSD(String filename, String rec)
 {
-    // Initialise the SD card
-    // skip everything else if there's no SD card, otherwise it might hang
-    if (!initializeSDCard()) return;
-    else  // skip everything else if there's no SD card, otherwise it might hang
+    // First attempt to open the file without creating a new one
+    if (openFile(filename, false, false)) goto writeRecord;
+    // Next try to create the file, bail if we couldn't create it
+    else if (openFile(filename, true, false)) goto writeRecord;
+    else
     {
-        // Convert the string filename to a character file name for SdFat
-        uint8_t fileNameLength = _fileName.length() + 1;
-        char charFileName[fileNameLength];
-        _fileName.toCharArray(charFileName, fileNameLength);
+        PRINTOUT(F("Unable to write to SD card!\n"));
+        return;
+    }
 
-        // Check that the file exists, just in case someone yanked the SD card
-        if (!logFile.open(charFileName, O_WRITE | O_AT_END))
-        {
-            PRINTOUT(F("SD Card File Lost!  Starting new file.\n"));
-            setupLogFile();
-        }
-
-        // Write the data
-        if (rec == "") logFile.println(generateSensorDataCSV());
-        else logFile.println(rec);
+    writeRecord:
+    {
+        // If we could successfully open or create the file, write the data to it
+        logFile.println(rec);
         // Echo the line to the serial port
         PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/ \n"));
         PRINTOUT(rec, F("\n"));
 
         // Set write/modification date time
         setFileTimestame(logFile, T_WRITE);
-        // Set access date time
-        setFileTimestame(logFile, T_ACCESS);
+        // Close the file to save it
+        logFile.close();
+    }
+}
+void Logger::logToSD(String rec)
+{
+    logToSD(_fileName, rec);
+}
+// NOTE:  This is structured differently than the version with a string input
+// record.  This is to avoid the creation/passing of very long strings.
+void Logger::logToSD(void)
+{
+    // First attempt to open the file without creating a new one
+    if (openFile(_fileName, false, false)) goto writeRecord;
+    // Next try to create the file, bail if we couldn't create it
+    if (openFile(_fileName, true, false)) goto writeRecord;
+    else return;
 
+    writeRecord:
+    {
+        // Write the data
+        streamSensorDataCSV(&logFile);
+        // Echo the line to the serial port
+        #if defined(STANDARD_SERIAL_OUTPUT)
+            PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/ \n"));
+            streamSensorDataCSV(&STANDARD_SERIAL_OUTPUT);
+        #endif
+
+        // Set write/modification date time
+        setFileTimestame(logFile, T_WRITE);
         // Close the file to save it
         logFile.close();
     }
@@ -879,8 +958,8 @@ void Logger::testingMode()
     else if(_autoFileName){setFileName();}
     else setFileName(_fileName);  // This just for a nice print-out
 
-    // Set up the log file
-    setupLogFile();
+    // Create the log file, adding the default header to it
+    createLogFile(true);
 
     // Setup sleep mode
     if(_mcuWakePin >= 0){setupSleep();}
@@ -933,7 +1012,7 @@ void Logger::log(void)
         MS_DBG(F("  Cutting sensor power...\n"));
         _internalArray->sensorsPowerDown();
         // Create a csv data record and save it to the log file
-        logToSD(generateSensorDataCSV());
+        logToSD();
 
         // Turn off the LED
         if (_ledPin >= 0) digitalWrite(_ledPin, LOW);

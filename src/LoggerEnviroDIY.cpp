@@ -383,8 +383,8 @@ void LoggerEnviroDIY::begin(void)
     else if(_autoFileName){setFileName();}
     else setFileName(_fileName);  // This just for a nice print-out
 
-    // Set up the log file
-    setupLogFile();
+    // Create the log file, adding the default header to it
+    createLogFile(true);
 
     // Setup sleep mode
     if(_mcuWakePin >= 0){setupSleep();}
@@ -465,7 +465,7 @@ void LoggerEnviroDIY::log(void)
         }
 
         // Create a csv data record and save it to the log file
-        logToSD(generateSensorDataCSV());
+        logToSD();
 
         // Turn off the LED
         if (_ledPin >= 0) digitalWrite(_ledPin, LOW);

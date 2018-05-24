@@ -389,8 +389,9 @@ void loop()
         // we will explicitly start and end the serial connection in the loop.
         modbusSerial.end();
 
-        // Create a csv data record and save it to the log file
-        loggerComplete.logToSD(loggerComplete.generateSensorDataCSV());
+        // Stream the variable results from the complete set of variables to
+        // the SD card
+        loggerComplete.logToSD();
 
         // Connect to the network
         Serial.print(F("Connecting to the internet...\n"));
