@@ -138,7 +138,7 @@ public:
     virtual String generateFileHeader(void);
     // This prints a header onto a stream - this removes need to pass around
     // very long string objects which can crash the logger
-    void streamFileHeader(Stream *stream);
+    virtual void streamFileHeader(Stream *stream);
 
     // This generates a comma separated list of volues of sensor data - including the time
     String generateSensorDataCSV(void);

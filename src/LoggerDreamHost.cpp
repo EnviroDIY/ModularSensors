@@ -212,6 +212,7 @@ void LoggerDreamHost::log(void)
         if (_modemAttached)
         {
             // Connect to the network
+            MS_DBG(F("  Connecting to the Internet...\n"));
             if (_logModem->connectInternet())
             {
                 if(_dualPost)
@@ -224,12 +225,14 @@ void LoggerDreamHost::log(void)
                 postDataDreamHost();
 
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
+                MS_DBG(F("  Running a daily clock sync...\n"));
                 if (_numTimepointsLogged % 288 == 0)
                 {
                     syncRTClock(_logModem->getNISTTime());
                 }
 
                 // Disconnect from the network
+                MS_DBG(F("  Disconnecting from the Internet...\n"));
                 _logModem->disconnectInternet();
             }
             // Turn the modem off

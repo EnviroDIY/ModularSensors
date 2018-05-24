@@ -808,7 +808,8 @@ void Logger::logToSD(void)
     // First attempt to open the file without creating a new one
     if (openFile(_fileName, false, false)) goto writeRecord;
     // Next try to create the file, bail if we couldn't create it
-    if (openFile(_fileName, true, false)) goto writeRecord;
+    // Do add a default header!
+    if (openFile(_fileName, true, true)) goto writeRecord;
     else return;
 
     writeRecord:
@@ -969,9 +970,9 @@ void Logger::testingMode()
     if (_buttonPin >= 0)
     {
         enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
-        Serial.print(F("Push button on pin "));
-        Serial.print(_buttonPin);
-        Serial.println(F(" at any time to enter sensor testing mode."));
+        PRINTOUT(F("Push button on pin "));
+        PRINTOUT(_buttonPin);
+        PRINTOUT(F(" at any time to enter sensor testing mode.\n"));
     }
 
     PRINTOUT(F("Logger setup finished!\n"));

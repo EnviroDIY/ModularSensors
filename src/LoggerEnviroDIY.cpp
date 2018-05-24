@@ -399,9 +399,9 @@ void LoggerEnviroDIY::begin(void)
     if (_buttonPin >= 0)
     {
         enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
-        Serial.print(F("Push button on pin "));
-        Serial.print(_buttonPin);
-        Serial.println(F(" at any time to enter sensor testing mode."));
+        PRINTOUT(F("Push button on pin "));
+        PRINTOUT(_buttonPin);
+        PRINTOUT(F(" at any time to enter sensor testing mode.\n"));
     }
 
     PRINTOUT(F("Logger setup finished!\n"));
@@ -452,18 +452,21 @@ void LoggerEnviroDIY::log(void)
         if (_modemAttached)
         {
             // Connect to the network
+            MS_DBG(F("  Connecting to the Internet...\n"));
             if (_logModem->connectInternet())
             {
                 // Post the data to the WebSDL
                 postDataEnviroDIY();
 
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
+                MS_DBG(F("  Running a daily clock sync...\n"));
                 if (_numTimepointsLogged % 288 == 0)
                 {
                     syncRTClock(_logModem->getNISTTime());
                 }
 
                 // Disconnect from the network
+                MS_DBG(F("  Disconnecting from the Internet...\n"));
                 _logModem->disconnectInternet();
             }
             // Turn the modem off
