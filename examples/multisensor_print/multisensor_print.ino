@@ -14,9 +14,6 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
-// Some define statements
-#define STANDARD_SERIAL_OUTPUT Serial  // Without this there will be no output
-
 // ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
@@ -26,16 +23,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <VariableArray.h>
 
 
-// ==========================================================================
-//    Basic Logger Settings
-// ==========================================================================
 // The name of this file
 const char *sketchName = "modular_sensors.ino";
-
-// Your logger's timezone.
-const int8_t timeZone = -5;
-// Create a new sensor array instance
-VariableArray sensors;
 
 
 // ==========================================================================
@@ -43,13 +32,13 @@ VariableArray sensors;
 // ==========================================================================
 #include <ProcessorStats.h>
 
-const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
 const int8_t greenLED = 8;  // Pin for the green LED (-1 if unconnected)
 const int8_t redLED = 9;  // Pin for the red LED (-1 if unconnected)
 
 // Create and return the processor "sensor"
 const char *MFVersion = "v0.5";
-ProcessorStats mayfly(MFVersion) ;
+ProcessorStats mayfly(MFVersion);
 
 
 // ==========================================================================
@@ -188,9 +177,17 @@ ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, Volt_ADS1115Address, Volt
 // Neither hardware serial nor AltSoftSerial require any modifications to
 // deal with interrupt conflicts.
 
-#include <SoftwareSerial_ExtInts.h>  // for the stream communication
 const int SonarData = 11;     // data receive pin
+
+#include <SoftwareSerial_ExtInts.h>  // for the stream communication
 SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
+
+// #include <NeoSWSerial.h>  // for the stream communication
+// NeoSWSerial sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
+// void NeoSWSISR()
+// {
+//   NeoSWSerial::rxISR( *portInputRegister( digitalPinToPort( SonarData ) ) );
+// }
 
 #include <MaxBotixSonar.h>
 const int8_t SonarPower = 22;  // Excite (power) pin (-1 if unconnected)
@@ -369,6 +366,8 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
+// Create pointers for all of the variables from the sensors
+// at the same time putting them into an array
 Variable *variableList[] = {
     new ApogeeSQ212_PAR(&SQ212),
     new AOSongAM2315_Humidity(&am2315),
@@ -437,7 +436,10 @@ Variable *variableList[] = {
     new MaximDS3231_Temp(&ds3231),
     // new YOUR_variableName_HERE(&)
 };
+// Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
+// Create the VariableArray object
+VariableArray sensors(variableCount, variableList);
 
 
 // ==========================================================================
@@ -457,6 +459,9 @@ void greenredflash(int numFlash = 4, int rate = 75)
   }
   digitalWrite(redLED, LOW);
 }
+
+// The clock's timezone.
+const int8_t timeZone = -5;
 
 // Helper function to get the current date/time from the RTC
 // as a unix timestamp - and apply the correct time zone.
@@ -518,7 +523,10 @@ void setup()
     sonarSerial.begin(9600);
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
-    enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+        enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+    #endif
+    #if defined NeoSWSerial_h
+        enableInterrupt(SonarData, NeoSWSISR, CHANGE);
     #endif
 
     // Start the Real Time Clock
@@ -539,9 +547,6 @@ void setup()
     Serial.print(F("There are "));
     Serial.print(String(variableCount));
     Serial.println(F(" variables to be recorded."));
-
-    // Initialize the sensor array;
-    sensors.init(variableCount, variableList);
 
     // Set up all the sensors
     sensors.setupSensors();
@@ -585,8 +590,6 @@ void loop()
     Serial.print(F("Updated all sensors at "));
     Serial.println(getDateTime_ISO8601());
     sensors.printSensorData(&Serial);
-    Serial.print(F("In CSV Format:  "));
-    Serial.println(sensors.generateSensorDataCSV());
     // Turn off the LED to show we're done with the reading
     digitalWrite(greenLED, LOW);
     // Print a to close it off

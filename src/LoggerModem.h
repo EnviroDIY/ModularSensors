@@ -44,20 +44,22 @@
     #define MODEM_NAME "SIMCom SIM868"
 #elif defined(TINY_GSM_MODEM_SIM900)
     #define MODEM_NAME "SIMCom SIM900"
-#elif defined(TINY_GSM_MODEM_A6)
-    #define MODEM_NAME "AI-Thinker A6"
-#elif defined(TINY_GSM_MODEM_A7)
-    #define MODEM_NAME "AI-Thinker A7"
 #elif defined(TINY_GSM_MODEM_UBLOX)
     #define MODEM_NAME "u-blox Cellular"
-#elif defined(TINY_GSM_MODEM_M590)
-    #define MODEM_NAME "Neoway M590"
 #elif defined(TINY_GSM_MODEM_M95)
     #define MODEM_NAME "Quectel M95"
 #elif defined(TINY_GSM_MODEM_BG96)
     #define MODEM_NAME "Quectel BG96"
+#elif defined(TINY_GSM_MODEM_A6)
+    #define MODEM_NAME "AI-Thinker A6"
+#elif defined(TINY_GSM_MODEM_A7)
+    #define MODEM_NAME "AI-Thinker A7"
+#elif defined(TINY_GSM_MODEM_M590)
+    #define MODEM_NAME "Neoway M590"
 #elif defined(TINY_GSM_MODEM_MC60)
     #define MODEM_NAME "Quectel MC60"
+#elif defined(TINY_GSM_MODEM_MC60E)
+    #define MODEM_NAME "Quectel MC60E"
 #elif defined(TINY_GSM_MODEM_ESP8266)
     #define MODEM_NAME "ESP8266"
 #elif defined(TINY_GSM_MODEM_XBEE)

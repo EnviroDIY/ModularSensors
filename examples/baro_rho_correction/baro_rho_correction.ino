@@ -31,19 +31,16 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 
 // ==========================================================================
-//    Basic Logger Settings
+//    Data Logger Settings
 // ==========================================================================
 // The name of this file
 const char *sketchName = "baro_rho_correction.ino";
-
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 1;
+const uint8_t loggingInterval = 5;
 // Your logger's timezone.
 const int8_t timeZone = -5;
-// Create a new logger instance
-LoggerEnviroDIY EnviroDIYLogger;
 
 
 // ==========================================================================
@@ -269,6 +266,7 @@ Variable *calcCorrDepth = new Variable(calculateWaterDepthTempCorrected, rhoDept
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
+// Put all of the variable pointers into an Array
 // NOTE:  Since we've created all of the variable pointers above, we can just
 // reference them by name here.
 Variable *variableList[] = {
@@ -288,7 +286,12 @@ Variable *variableList[] = {
     modemRSSI,
     modemSinalPct
 };
+// Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
+// Create the VariableArray object
+VariableArray varArray(variableCount, variableList);
+// Create a new logger instance
+LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
@@ -347,11 +350,6 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
-    // Initialize the logger
-    EnviroDIYLogger.init(sdCardPin, wakePin, variableCount, variableList,
-                loggingInterval, LoggerID);
-    EnviroDIYLogger.setAlertPin(greenLED);
-
     // Setup the logger modem
     #if defined(TINY_GSM_MODEM_ESP8266)
         modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
@@ -362,36 +360,17 @@ void setup()
         modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
     #endif
 
-    // Attach the modem to the logger
+    // Attach the modem and information pins to the logger
     EnviroDIYLogger.attachModem(&modem);
+    EnviroDIYLogger.setAlertPin(greenLED);
+    EnviroDIYLogger.setTestingModePin(buttonPin);
 
     // Enter the tokens for the connection with EnviroDIY
     EnviroDIYLogger.setToken(registrationToken);
     EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
 
-    // Set up the connection with DreamHost
-    #ifdef DreamHostPortalRX
-        EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
-    #endif
-
     // Begin the logger
     EnviroDIYLogger.begin();
-
-    // Hold up for 10-seconds to allow immediate entry into sensor testing mode
-    // EnviroDIYLogger.checkForTestingMode(buttonPin);
-
-    //  Set up an interrupt on a pin to enter sensor testing mode at any time
-    pinMode(buttonPin, INPUT_PULLUP);
-    enableInterrupt(buttonPin, Logger::testingISR, CHANGE);
-    Serial.print(F("Push button on pin "));
-    Serial.print(buttonPin);
-    Serial.println(F(" at any time to enter sensor testing mode."));
-
-    // Blink the LEDs really fast to show start-up is done
-    greenredflash(6, 25);
-
-    // Sleep
-    EnviroDIYLogger.systemSleep();
 }
 
 

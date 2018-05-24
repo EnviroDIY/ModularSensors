@@ -26,15 +26,21 @@ class LoggerDreamHost : public LoggerEnviroDIY
 {
 
 public:
+    // Constructor
+    LoggerDreamHost(const char *loggerID, uint16_t loggingIntervalMinutes,
+                    int8_t SDCardPin, int8_t mcuWakePin,
+                    VariableArray *inputArray);
+
     // Functions for private SWRC server
     void setDreamHostPortalRX(const char *URL);
 
     // This creates all of the URL parameters
     String generateSensorDataDreamHost(void);
+    void streamSensorDataDreamHost(Stream *stream);
 
-    // This generates a fully structured GET request for DreamHost
-    String generateDreamHostGetRequest(String fullURL);
-    String generateDreamHostGetRequest(void);
+    // // This generates a fully structured GET request for DreamHost
+    // String generateDreamHostGetRequest(String fullURL);
+    // String generateDreamHostGetRequest(void);
 
     // This prints a fully structured GET request for DreamHost to the
     // specified stream using the specified url.

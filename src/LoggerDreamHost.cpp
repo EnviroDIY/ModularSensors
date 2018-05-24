@@ -14,6 +14,13 @@
 //  Functions for the SWRC Sensors DreamHost data receivers.
 // ============================================================================
 
+// Constructor
+LoggerDreamHost::LoggerDreamHost(const char *loggerID, uint16_t loggingIntervalMinutes,
+                                 int8_t SDCardPin, int8_t mcuWakePin,
+                                 VariableArray *inputArray)
+  : LoggerEnviroDIY(loggerID, loggingIntervalMinutes, SDCardPin, mcuWakePin, inputArray)
+ {}
+
 // Functions for private SWRC server
 void LoggerDreamHost::setDreamHostPortalRX(const char *URL)
 {
@@ -31,31 +38,43 @@ String LoggerDreamHost::generateSensorDataDreamHost(void)
     dhString += F("&Loggertime=");
     dhString += String(Logger::markedEpochTime - 946684800);  // Coorect time from epoch to y2k
 
-    for (int i = 0; i < Logger::_variableCount; i++)
+    for (int i = 0; i < _internalArray->getVariableCount(); i++)
     {
         dhString += F("&");
-        dhString += Logger::_variableList[i]->getVarCode();
+        dhString += _internalArray->arrayOfVars[i]->getVarCode();
         dhString += F("=");
-        dhString += Logger::_variableList[i]->getValueString();
+        dhString += _internalArray->arrayOfVars[i]->getValueString();
     }
     return dhString;
 }
+void LoggerDreamHost::streamSensorDataDreamHost(Stream *stream)
+{
+    stream->print(String(_DreamHostPortalRX));
+    stream->print(String(F("?LoggerID=")) + String(Logger::_loggerID));
+    stream->print(String(F("?Loggertime=")) + String(Logger::markedEpochTime - 946684800));  // Correct time from epoch to y2k
+
+    for (int i = 0; i < _internalArray->getVariableCount(); i++)
+    {
+        stream->print(String(F("&")) + String(_internalArray->arrayOfVars[i]->getVarCode()) \
+            + String(F("=")) + String(_internalArray->arrayOfVars[i]->getValueString()));
+    }
+}
 
 
-// This generates a fully structured GET request for DreamHost
-String LoggerDreamHost::generateDreamHostGetRequest(String fullURL)
-{
-    String GETstring = String(F("GET "));
-    GETstring += String(fullURL);
-    GETstring += String(F("  HTTP/1.1"));
-    GETstring += String(F("\r\nHost: swrcsensors.dreamhosters.com"));
-    GETstring += String(F("\r\n\r\n"));
-    return GETstring;
-}
-String LoggerDreamHost::generateDreamHostGetRequest(void)
-{
-    return generateDreamHostGetRequest(generateSensorDataDreamHost());
-}
+// // This generates a fully structured GET request for DreamHost
+// String LoggerDreamHost::generateDreamHostGetRequest(String fullURL)
+// {
+//     String GETstring = String(F("GET "));
+//     GETstring += String(fullURL);
+//     GETstring += String(F("  HTTP/1.1"));
+//     GETstring += String(F("\r\nHost: swrcsensors.dreamhosters.com"));
+//     GETstring += String(F("\r\n\r\n"));
+//     return GETstring;
+// }
+// String LoggerDreamHost::generateDreamHostGetRequest(void)
+// {
+//     return generateDreamHostGetRequest(generateSensorDataDreamHost());
+// }
 
 
 // This prints a fully structured GET request for DreamHost to the
@@ -70,18 +89,13 @@ void LoggerDreamHost::streamDreamHostRequest(Stream *stream, String fullURL)
 }
 void LoggerDreamHost::streamDreamHostRequest(Stream *stream)
 {
+    // Start the request
     stream->print(String(F("GET ")));
 
-    stream->print(String(_DreamHostPortalRX));
-    stream->print(String(F("?LoggerID=")) + String(Logger::_loggerID));
-    stream->print(String(F("?Loggertime=")) + String(Logger::markedEpochTime - 946684800));  // Correct time from epoch to y2k
+    // Stream the full URL with parameters
+    streamSensorDataDreamHost(stream);
 
-    for (int i = 0; i < Logger::_variableCount; i++)
-    {
-        stream->print(String(F("&")) + String(Logger::_variableList[i]->getVarCode()) \
-            + String(F("=")) + String(Logger::_variableList[i]->getValueString()));
-    }
-
+    // Send the rest of the HTTP header
     stream->print(String(F("  HTTP/1.1")));
     stream->print(String(F("\r\nHost: swrcsensors.dreamhosters.com")));
     stream->print(String(F("\r\n\r\n")));
@@ -178,7 +192,7 @@ void LoggerDreamHost::log(void)
         // Print a line to show new reading
         PRINTOUT(F("------------------------------------------\n"));
         // Turn on the LED to show we're taking a reading
-        digitalWrite(_ledPin, HIGH);
+        if (_ledPin >= 0) digitalWrite(_ledPin, HIGH);
 
         if (_modemAttached)
         {
@@ -188,23 +202,24 @@ void LoggerDreamHost::log(void)
 
         // Send power to all of the sensors
         MS_DBG(F("    Powering sensors...\n"));
-        sensorsPowerUp();
+        _internalArray->sensorsPowerUp();
         // Wake up all of the sensors
         MS_DBG(F("    Waking sensors...\n"));
-        sensorsWake();
+        _internalArray->sensorsWake();
         // Update the values from all attached sensors
         MS_DBG(F("  Updating sensor values...\n"));
-        updateAllSensors();
+        _internalArray->updateAllSensors();
         // Put sensors to sleep
         MS_DBG(F("  Putting sensors back to sleep...\n"));
-        sensorsSleep();
+        _internalArray->sensorsSleep();
         // Cut sensor power
         MS_DBG(F("  Cutting sensor power...\n"));
-        sensorsPowerDown();
+        _internalArray->sensorsPowerDown();
 
         if (_modemAttached)
         {
             // Connect to the network
+            MS_DBG(F("  Connecting to the Internet...\n"));
             if (_logModem->connectInternet())
             {
                 if(_dualPost)
@@ -217,12 +232,14 @@ void LoggerDreamHost::log(void)
                 postDataDreamHost();
 
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
+                MS_DBG(F("  Running a daily clock sync...\n"));
                 if (_numTimepointsLogged % 288 == 0)
                 {
                     syncRTClock(_logModem->getNISTTime());
                 }
 
                 // Disconnect from the network
+                MS_DBG(F("  Disconnecting from the Internet...\n"));
                 _logModem->disconnectInternet();
             }
             // Turn the modem off
@@ -230,10 +247,10 @@ void LoggerDreamHost::log(void)
         }
 
         // Create a csv data record and save it to the log file
-        logToSD(generateSensorDataCSV());
+        logToSD();
 
         // Turn off the LED
-        digitalWrite(_ledPin, LOW);
+        if (_ledPin >= 0) digitalWrite(_ledPin, LOW);
         // Print a line to show reading ended
         PRINTOUT(F("------------------------------------------\n\n"));
 
@@ -245,5 +262,5 @@ void LoggerDreamHost::log(void)
     if (Logger::startTesting) testingMode();
 
     // Sleep
-    if(_sleep){systemSleep();}
+    if(_mcuWakePin >= 0){systemSleep();}
 }
