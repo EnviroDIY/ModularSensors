@@ -15,7 +15,7 @@
 // ============================================================================
 
 // Constructor
-LoggerDreamHost::LoggerDreamHost(const char *loggerID, uint8_t loggingIntervalMinutes,
+LoggerDreamHost::LoggerDreamHost(const char *loggerID, uint16_t loggingIntervalMinutes,
                                  int8_t SDCardPin, int8_t mcuWakePin,
                                  VariableArray *inputArray)
   : LoggerEnviroDIY(loggerID, loggingIntervalMinutes, SDCardPin, mcuWakePin, inputArray)

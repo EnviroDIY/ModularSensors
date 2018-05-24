@@ -40,7 +40,7 @@ class Logger
 {
 public:
     // Constructor
-    Logger(const char *loggerID, uint8_t loggingIntervalMinutes,
+    Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
            int8_t SDCardPin, int8_t mcuWakePin,
            VariableArray *inputArray);
 
@@ -230,8 +230,7 @@ protected:
     // Initialization variables
     int8_t _SDCardPin;
     int8_t _mcuWakePin;
-    float _loggingIntervalMinutes;
-    uint16_t _loggingIntervalSeconds;
+    uint16_t _loggingIntervalMinutes;
     const char *_loggerID;
     bool _autoFileName;
     bool _isFileNameSet;

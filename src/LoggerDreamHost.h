@@ -27,7 +27,7 @@ class LoggerDreamHost : public LoggerEnviroDIY
 
 public:
     // Constructor
-    LoggerDreamHost(const char *loggerID, uint8_t loggingIntervalMinutes,
+    LoggerDreamHost(const char *loggerID, uint16_t loggingIntervalMinutes,
                     int8_t SDCardPin, int8_t mcuWakePin,
                     VariableArray *inputArray);
 

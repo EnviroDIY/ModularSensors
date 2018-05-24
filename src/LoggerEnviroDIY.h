@@ -26,7 +26,7 @@ class LoggerEnviroDIY : public Logger
 {
 public:
     // Constructor
-    LoggerEnviroDIY(const char *loggerID, uint8_t loggingIntervalMinutes,
+    LoggerEnviroDIY(const char *loggerID, uint16_t loggingIntervalMinutes,
                     int8_t SDCardPin, int8_t mcuWakePin,
                     VariableArray *inputArray);
 
@@ -42,6 +42,9 @@ public:
 
     // This adds extra data to the datafile header
     String generateFileHeader(void);
+    // This prints a header onto a stream - this removes need to pass around
+    // very long string objects which can crash the logger
+    void streamFileHeader(Stream *stream);
 
     // This generates a properly formatted JSON for EnviroDIY
     String generateSensorDataJSON(void);

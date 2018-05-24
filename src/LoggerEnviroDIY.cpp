@@ -21,7 +21,7 @@
 // ============================================================================
 
 // Constructor
-LoggerEnviroDIY::LoggerEnviroDIY(const char *loggerID, uint8_t loggingIntervalMinutes,
+LoggerEnviroDIY::LoggerEnviroDIY(const char *loggerID, uint16_t loggingIntervalMinutes,
                                  int8_t SDCardPin, int8_t mcuWakePin,
                                  VariableArray *inputArray)
   : Logger(loggerID, loggingIntervalMinutes, SDCardPin, mcuWakePin, inputArray)
@@ -66,6 +66,12 @@ String LoggerEnviroDIY::generateFileHeader(void)
     dataHeader += Logger::generateFileHeader();
 
     return dataHeader;
+}
+void LoggerEnviroDIY::streamFileHeader(Stream *stream)
+{
+    stream->print(F("Sampling Feature: "));
+    stream->println(_samplingFeature);
+    Logger::streamFileHeader(stream);
 }
 
 
