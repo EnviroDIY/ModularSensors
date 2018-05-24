@@ -30,8 +30,17 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <LoggerEnviroDIY.h>
 
 
+// ==========================================================================
+//    Data Logger Settings
+// ==========================================================================
 // The name of this file
 const char *sketchName = "logging_to_EnviroDIY.ino";
+// Logger ID, also becomes the prefix for the name of the data file on SD card
+const char *LoggerID = "XXXXX";
+// How frequently (in minutes) to log data
+const uint8_t loggingInterval = 5;
+// Your logger's timezone.
+const int8_t timeZone = -5;
 
 
 // ==========================================================================
@@ -501,17 +510,6 @@ Variable *variableList[] = {
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
-
-
-// ==========================================================================
-//    Data Logger Settings
-// ==========================================================================
-// Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXXX";
-// How frequently (in minutes) to log data
-const uint8_t loggingInterval = 5;
-// Your logger's timezone.
-const int8_t timeZone = -5;
 // Create a new logger instance
 LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 

@@ -30,8 +30,17 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <LoggerEnviroDIY.h>
 
 
+// ==========================================================================
+//    Data Logger Settings
+// ==========================================================================
 // The name of this file
 const char *sketchName = "data_saving.ino";
+// Logger ID, also becomes the prefix for the name of the data file on SD card
+const char *LoggerID = "XXXXX";
+// How frequently (in minutes) to log data
+const uint8_t loggingInterval = 5;
+// Your logger's timezone.
+const int8_t timeZone = -5;
 
 
 // ==========================================================================
@@ -212,6 +221,8 @@ Variable *variableList_complete[] = {
 int variableCount_complete = sizeof(variableList_complete) / sizeof(variableList_complete[0]);
 // Create the VariableArray object
 VariableArray arrayComplete(variableCount_complete, variableList_complete);
+// Create the new logger instance
+LoggerEnviroDIY loggerComplete(LoggerID, loggingInterval, sdCardPin, wakePin, &arrayComplete);
 
 
 // ==========================================================================
@@ -233,20 +244,7 @@ Variable *variableList_toGo[] = {
 int variableCount_toGo = sizeof(variableList_toGo) / sizeof(variableList_toGo[0]);
 // Create the VariableArray object
 VariableArray arrayToGo(variableCount_toGo, variableList_toGo);
-
-// ==========================================================================
-//    Data Logger Settings
-// ==========================================================================
-// Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXXX";
-// How frequently (in minutes) to log data
-const uint8_t loggingInterval = 5;
-// Your logger's timezone.
-const int8_t timeZone = -5;
-// Create TWO new logger instances
-// one is a simple logger with all variables
-// one is an enviroDIY logger with an abbreviated list of variables
-LoggerEnviroDIY loggerComplete(LoggerID, loggingInterval, sdCardPin, wakePin, &arrayComplete);
+// Create the new logger instance
 LoggerEnviroDIY loggerToGo(LoggerID, loggingInterval,sdCardPin, wakePin, &arrayToGo);
 
 
@@ -368,19 +366,19 @@ void loop()
         // we will explicitly start and end the serial connection in the loop.
         modbusSerial.begin(9600);
 
-        // Send power to all of the sensors
+        // Send power to all of the sensors (do this directly on the VariableArray)
         Serial.print(F("Powering sensors...\n"));
         arrayComplete.sensorsPowerUp();
-        // Wake up all of the sensors
+        // Wake up all of the sensors (do this directly on the VariableArray)
         Serial.print(F("Waking sensors...\n"));
         arrayComplete.sensorsWake();
-        // Update the values from all attached sensors
+        // Update the values from all attached sensors (do this directly on the VariableArray)
         Serial.print(F("Updating sensor values...\n"));
         arrayComplete.updateAllSensors();
-        // Put sensors to sleep
+        // Put sensors to sleep (do this directly on the VariableArray)
         Serial.print(F("Putting sensors back to sleep...\n"));
         arrayComplete.sensorsSleep();
-        // Cut sensor power
+        // Cut sensor power (do this directly on the VariableArray)
         Serial.print(F("Cutting sensor power...\n"));
         arrayComplete.sensorsPowerDown();
 

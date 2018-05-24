@@ -32,8 +32,18 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <LoggerModem.h>
 
 
+// ==========================================================================
+//    Data Logger Settings
+// ==========================================================================
 // The name of this file
 const char *sketchName = "logger_test.ino";
+// Logger ID - since it's the same logger device, we only need one
+const char *LoggerID = "XXXXX";
+// The TWO filenames for the different logging intervals
+const char *FileName5min = "Logger_5MinuteInterval.csv";
+const char *FileName1min = "Logger_1MinuteInterval.csv";
+// Your logger's timezone.
+const int8_t timeZone = -5;
 
 
 // ==========================================================================
@@ -122,43 +132,33 @@ AOSongAM2315 am2315(I2CPower);
 // ==========================================================================
 // The two arrays that contains the variables for the different intervals
 // ==========================================================================
-// Create pointers for all of the variables from the sensors
-// at the same time putting them into an array
+// Create pointers for all of the variables from the sensors recording at 1
+// minute intervals and at the same time putting them into an array
 Variable *variableList_at1min[] = {
     new AOSongAM2315_Humidity(&am2315),
     new AOSongAM2315_Temp(&am2315)
     // new YOUR_variableName_HERE(&)
 };
-// Count up the number of pointers in the array
+// Count up the number of pointers in the 1-minute array
 int variableCount1min = sizeof(variableList_at1min) / sizeof(variableList_at1min[0]);
-// Create the VariableArray object
+// Create the 1-minute VariableArray object
 VariableArray array1min(variableCount1min, variableList_at1min);
+// Create the 1-minute  logger instance
+Logger  logger1min(LoggerID, 1, sdCardPin, wakePin, &array1min);
 
-// Create pointers for all of the variables from the sensors
-// at the same time putting them into an array
+// Create pointers for all of the variables from the sensors recording at 5
+// minute intervals and at the same time putting them into an array
 Variable *variableList_at5min[] = {
     new MaximDS3231_Temp(&ds3231),
     new ProcessorStats_Batt(&mayfly),
     new ProcessorStats_FreeRam(&mayfly)
     // new YOUR_variableName_HERE(&)
 };
-// Count up the number of pointers in the array
+// Count up the number of pointers in the 5-minute array
 int variableCount5min = sizeof(variableList_at5min) / sizeof(variableList_at5min[0]);
-// Create the VariableArray object
+// Create the 5-minute VariableArray object
 VariableArray array5min(variableCount5min, variableList_at5min);
-
-// ==========================================================================
-//    Data Logger Settings
-// ==========================================================================
-// Logger ID - since it's the same logger device, we only need one
-const char *LoggerID = "XXXXX";
-// The TWO filenames for the different logging intervals
-const char *FileName5min = "Logger_5MinuteInterval.csv";
-const char *FileName1min = "Logger_1MinuteInterval.csv";
-// Your logger's timezone.
-const int8_t timeZone = -5;
-// Create TWO new logger instances with different logging intervals
-Logger  logger1min(LoggerID, 1, sdCardPin, wakePin, &array1min);
+// Create the 1-minute  logger instance
 Logger  logger5min(LoggerID, 5, sdCardPin, wakePin, &array5min);
 
 
@@ -220,7 +220,7 @@ void setup()
     // Turn on the modem
     modem.modemPowerUp();
 
-    // Set up the sensors on both loggers
+    // Set up the sensors (do this directly on the VariableArray)
     array1min.setupSensors();
     array5min.setupSensors();
 
@@ -283,19 +283,19 @@ void loop()
         // Turn on the LED to show we're taking a reading
         digitalWrite(greenLED, HIGH);
 
-        // Send power to all of the sensors
+        // Send power to all of the sensors (do this directly on the VariableArray)
         Serial.print(F("Powering sensors...\n"));
         array1min.sensorsPowerUp();
-        // Wake up all of the sensors
+        // Wake up all of the sensors (do this directly on the VariableArray)
         Serial.print(F("Waking sensors...\n"));
         array1min.sensorsWake();
-        // Update the values from all attached sensors
+        // Update the values from all attached sensors (do this directly on the VariableArray)
         Serial.print(F("Updating sensor values...\n"));
         array1min.updateAllSensors();
-        // Put sensors to sleep
+        // Put sensors to sleep (do this directly on the VariableArray)
         Serial.print(F("Putting sensors back to sleep...\n"));
         array1min.sensorsSleep();
-        // Cut sensor power
+        // Cut sensor power (do this directly on the VariableArray)
         Serial.print(F("Cutting sensor power...\n"));
         array1min.sensorsPowerDown();
 
@@ -316,19 +316,19 @@ void loop()
         // Turn on the LED to show we're taking a reading
         digitalWrite(redLED, HIGH);
 
-        // Send power to all of the sensors
+        // Send power to all of the sensors (do this directly on the VariableArray)
         Serial.print(F("Powering sensors...\n"));
         array1min.sensorsPowerUp();
-        // Wake up all of the sensors
+        // Wake up all of the sensors (do this directly on the VariableArray)
         Serial.print(F("Waking sensors...\n"));
         array1min.sensorsWake();
-        // Update the values from all attached sensors
+        // Update the values from all attached sensors (do this directly on the VariableArray)
         Serial.print(F("Updating sensor values...\n"));
         array1min.updateAllSensors();
-        // Put sensors to sleep
+        // Put sensors to sleep (do this directly on the VariableArray)
         Serial.print(F("Putting sensors back to sleep...\n"));
         array1min.sensorsSleep();
-        // Cut sensor power
+        // Cut sensor power (do this directly on the VariableArray)
         Serial.print(F("Cutting sensor power...\n"));
         array1min.sensorsPowerDown();
 

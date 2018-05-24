@@ -22,8 +22,17 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <LoggerBase.h>
 
 
+// ==========================================================================
+//    Data Logger Settings
+// ==========================================================================
 // The name of this file
 const char *sketchName = "DRWI_NoCellular.ino";
+// Logger ID, also becomes the prefix for the name of the data file on SD card
+const char *LoggerID = "XXXXX";
+// How frequently (in minutes) to log data
+const uint8_t loggingInterval = 5;
+// Your logger's timezone.
+const int8_t timeZone = -5;
 
 
 // ==========================================================================
@@ -106,17 +115,6 @@ Variable *variableList[] = {
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
-
-
-// ==========================================================================
-//    Data Logger Settings
-// ==========================================================================
-// Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXXX";
-// How frequently (in minutes) to log data
-const uint8_t loggingInterval = 5;
-// Your logger's timezone.
-const int8_t timeZone = -5;
 // Create a new logger instance
 Logger logger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
@@ -173,7 +171,7 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
-    // Set an alert pin
+    // Set pins for alerts and entering testing mode
     logger.setAlertPin(greenLED);
     logger.setTestingModePin(buttonPin);
 
@@ -190,5 +188,3 @@ void loop()
     // Log the data
     logger.log();
 }
-
-EnviroDIYLogger.setTestingModePin(buttonPin);

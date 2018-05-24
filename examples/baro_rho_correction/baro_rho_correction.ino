@@ -30,8 +30,17 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <LoggerEnviroDIY.h>
 
 
+// ==========================================================================
+//    Data Logger Settings
+// ==========================================================================
 // The name of this file
 const char *sketchName = "baro_rho_correction.ino";
+// Logger ID, also becomes the prefix for the name of the data file on SD card
+const char *LoggerID = "XXXXX";
+// How frequently (in minutes) to log data
+const uint8_t loggingInterval = 5;
+// Your logger's timezone.
+const int8_t timeZone = -5;
 
 
 // ==========================================================================
@@ -49,7 +58,7 @@ const int8_t wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
 const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
 
 // Create and return the processor "sensor"
-const char *MFVersion = "v0.5b";
+const char *MFVersion = "v0.5";
 ProcessorStats mayfly(MFVersion) ;
 // Create the battery voltage and free RAM variable objects for the Y504 and return variable-type pointers to them
 Variable *mayflyBatt = new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
@@ -281,17 +290,6 @@ Variable *variableList[] = {
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
-
-
-// ==========================================================================
-//    Data Logger Settings
-// ==========================================================================
-// Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXXX";
-// How frequently (in minutes) to log data
-const uint8_t loggingInterval = 5;
-// Your logger's timezone.
-const int8_t timeZone = -5;
 // Create a new logger instance
 LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
