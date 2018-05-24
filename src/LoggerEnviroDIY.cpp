@@ -367,6 +367,10 @@ void LoggerEnviroDIY::begin(void)
              F(" come from "),_internalArray->getSensorCount(), F(" sensors and "),
              _internalArray->getCalculatedVariableCount(), F(" are calculated.\n"));
 
+    // Create the log file, adding the default header to it
+    if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName, '\n');
+    else PRINTOUT(F("Unable to create a file to save data to!"));
+
     if (_modemAttached)
     {
         // Print out the modem info
@@ -383,6 +387,7 @@ void LoggerEnviroDIY::begin(void)
     {
         // Synchronize the RTC with NIST
         PRINTOUT(F("Attempting to synchronize RTC with NIST\n"));
+        PRINTOUT(F("This may take up to two minutes!\n"));
         // Connect to the network
         if (_logModem->connectInternet(120000L))
         {
@@ -393,14 +398,6 @@ void LoggerEnviroDIY::begin(void)
         // Turn off the modem
         _logModem->modemPowerDown();
     }
-
-    // Set the filename for the logger to save to, if it hasn't been done
-    if(!_isFileNameSet){setFileName();}
-    else if(_autoFileName){setFileName();}
-    else setFileName(_fileName);  // This just for a nice print-out
-
-    // Create the log file, adding the default header to it
-    createLogFile(true);
 
     // Setup sleep mode
     if(_mcuWakePin >= 0){setupSleep();}

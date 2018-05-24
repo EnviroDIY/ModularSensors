@@ -126,10 +126,6 @@ public:
     void setFileName(char *fileName);
     // Same as above, with a string (overload function)
     void setFileName(String fileName);
-    // This generates a file name from the logger id and the current date
-    // This will be used if the setFileName function is not called before
-    // the begin() function is called.
-    void setFileName(void);
 
     // This returns the current filename.  Must be run after setFileName.
     String getFileName(void){return _fileName;}
@@ -154,8 +150,8 @@ public:
     // If asked to, these functions will also write a header to the file based
     // on the variable information from the variable array.
     // This can be used to force a logger to create a file with a secondary file name.
-    void createLogFile(String filename, bool writeDefaultHeader = false);
-    void createLogFile(bool writeDefaultHeader = false);
+    bool createLogFile(String filename, bool writeDefaultHeader = false);
+    bool createLogFile(bool writeDefaultHeader = false);
 
     // These functions create a file on an SD card and set the modified/accessed
     // timestamps in that file.
@@ -166,9 +162,9 @@ public:
     // The line to be written to the file can either be specified or will be
     // a comma separated list of the current values of all variables in the
     // variable array.
-    void logToSD(String filename, String rec);
-    void logToSD(String rec);
-    void logToSD(void);
+    bool logToSD(String filename, String rec);
+    bool logToSD(String rec);
+    bool logToSD(void);
 
 
     // ===================================================================== //
@@ -218,6 +214,7 @@ protected:
     SdFat sd;
     File logFile;
     String _fileName;
+    bool _autoFileName;
 
     // Static variables - identical for EVERY logger
     static int8_t _timeZone;
@@ -228,22 +225,25 @@ protected:
     static char markedISO8601Time[26];
 
     // Initialization variables
+    const char *_loggerID;
+    uint16_t _loggingIntervalMinutes;
     int8_t _SDCardPin;
     int8_t _mcuWakePin;
-    uint16_t _loggingIntervalMinutes;
-    const char *_loggerID;
-    bool _autoFileName;
-    bool _isFileNameSet;
+    VariableArray *_internalArray;
+
     uint8_t _numTimepointsLogged;
     int8_t _ledPin;
     int8_t _buttonPin;
-    VariableArray *_internalArray;
 
     // This checks if the SD card is available and ready
     bool initializeSDCard(void);
 
+    // This generates a file name from the logger id and the current date
+    // NOTE:  This cannot be called until the set-up after the RTC is started
+    void generateAutoFileName(void);
+
     // This sets a timestamp on a file
-    void setFileTimestame(File fileToStamp, uint8_t stampFlag);
+    void setFileTimestamp(File fileToStamp, uint8_t stampFlag);
 
     // This opens or creates a file, converting a string file name to a
     // characterd file name

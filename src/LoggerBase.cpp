@@ -42,23 +42,28 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
                int8_t SDCardPin, int8_t mcuWakePin,
                VariableArray *inputArray)
 {
+    // Set parameters from constructor
+    _loggerID = loggerID;
+    _loggingIntervalMinutes = loggingIntervalMinutes;
     _SDCardPin = SDCardPin;
     _mcuWakePin = mcuWakePin;
-    _loggingIntervalMinutes = loggingIntervalMinutes;
-    _loggerID = loggerID;
-    _autoFileName = false;
-    _isFileNameSet = false;
-    _numTimepointsLogged = 0;
     _internalArray = inputArray;
 
-    // Set the testing/logging flags
+    // Initialize with no points recorded
+    _numTimepointsLogged = 0;
+
+    // Set the testing/logging flags to false
     isLoggingNow = false;
     isTestingNow = false;
     startTesting = false;
 
-    // Set the info pin numbers
+    // Initialize with informational pins set void
     _ledPin = -1;
     _buttonPin = -1;
+
+    // Initialize with no file name
+    _fileName = "";
+    _autoFileName = true;
 };
 
 
@@ -484,43 +489,33 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
 // ===================================================================== //
 
 // This sets a file name, if you want to decide on it in advance
-void Logger::setFileName(char *fileName)
-{
-    // Save the filename to the static String
-    _fileName = fileName;
-    _isFileNameSet = true;
-
-    // Print out the file name
-    PRINTOUT(F("Data will be saved as "), _fileName, '\n');
-    if (!_autoFileName) PRINTOUT(F("\n"));
-}
-// Same as above, with a string (overload function)
 void Logger::setFileName(String fileName)
 {
-    // Convert the string filename to a character file name
-    uint8_t fileNameLength = fileName.length() + 1;
-    char charFileName[fileNameLength];
-    fileName.toCharArray(charFileName, fileNameLength);
-    setFileName(charFileName);
+    _fileName = fileName;
+    _autoFileName = false;
+}
+// Same as above, with a character array (overload function)
+void Logger::setFileName(char *fileName)
+{
+    setFileName(String(fileName));
 }
 
 
 // This generates a file name from the logger id and the current date
 // This will be used if the setFileName function is not called before
 // the begin() function is called.
-void Logger::setFileName(void)
+void Logger::generateAutoFileName(void)
 {
-    _autoFileName = true;
-    // Generate the file name from logger ID and date
-    String fileName = "";
-    if (_loggerID)
+    if (_autoFileName)
     {
-        fileName +=  String(_loggerID);
+        // Generate the file name from logger ID and date
+        String fileName =  String(_loggerID);
         fileName +=  F("_");
+        fileName +=  formatDateTime_ISO8601(getNowEpoch()).substring(0, 10);
+        fileName +=  F(".csv");
+        setFileName(fileName);
+        _fileName = fileName;
     }
-    fileName +=  formatDateTime_ISO8601(getNowEpoch()).substring(0, 10);
-    fileName +=  F(".csv");
-    setFileName(fileName);
 }
 
 // This is a PRE-PROCESSOR MACRO to speed up generating header rows
@@ -667,7 +662,7 @@ bool Logger::initializeSDCard(void)
 
 
 // Private helper function - This sets a timestamp on a file
-void Logger::setFileTimestame(File fileToStamp, uint8_t stampFlag)
+void Logger::setFileTimestamp(File fileToStamp, uint8_t stampFlag)
 {
     fileToStamp.timestamp(stampFlag, dtFromEpoch(getNowEpoch()).year(),
                                 dtFromEpoch(getNowEpoch()).month(),
@@ -692,14 +687,14 @@ bool Logger::openFile(String filename, bool createFile, bool writeDefaultHeader)
     filename.toCharArray(charFileName, fileNameLength);
 
     // First attempt to open an already existing file (in write mode), so we
-    // tdon't try to re-create something that's already there.
+    // don't try to re-create something that's already there.
     // This should also prevent the header from being written over and over
     // in the file.
     if (logFile.open(charFileName, O_WRITE | O_AT_END))
     {
         MS_DBG(F("Opened existing file: "), filename, F("\n"));
         // Set access date time
-        setFileTimestame(logFile, T_ACCESS);
+        setFileTimestamp(logFile, T_ACCESS);
         return true;
     }
     else if (createFile)
@@ -709,7 +704,7 @@ bool Logger::openFile(String filename, bool createFile, bool writeDefaultHeader)
         {
             MS_DBG(F("Created new file: "), filename, F("\n"));
             // Set creation date time
-            setFileTimestame(logFile, T_CREATE);
+            setFileTimestamp(logFile, T_CREATE);
             // Write out a header, if requested
             if (writeDefaultHeader)
             {
@@ -721,10 +716,10 @@ bool Logger::openFile(String filename, bool createFile, bool writeDefaultHeader)
                     streamFileHeader(&DEBUGGING_SERIAL_OUTPUT);
                 #endif
                 // Set write/modification date time
-                setFileTimestame(logFile, T_WRITE);
+                setFileTimestamp(logFile, T_WRITE);
             }
             // Set access date time
-            setFileTimestame(logFile, T_ACCESS);
+            setFileTimestamp(logFile, T_ACCESS);
             return true;
         }
         // Return false if we couldn't create the file
@@ -750,18 +745,21 @@ bool Logger::openFile(String filename, bool createFile, bool writeDefaultHeader)
 // If specified, it will also write a header to the file based on
 // the sensors in the group.
 // This can be used to force a logger to create a file with a secondary file name.
-void Logger::createLogFile(String filename, bool writeDefaultHeader)
+bool Logger::createLogFile(String filename, bool writeDefaultHeader)
 {
     // Attempt to create and open a file
     if (openFile(filename, true, writeDefaultHeader))
     {
         // Close the file to save it (only do this if we'd opened it)
         logFile.close();
+        return true;
     }
+    else return false;
 }
-void Logger::createLogFile(bool writeDefaultHeader)
+bool Logger::createLogFile(bool writeDefaultHeader)
 {
-    createLogFile(_fileName, writeDefaultHeader);
+    if (_autoFileName) generateAutoFileName();
+    return createLogFile(_fileName, writeDefaultHeader);
 }
 
 
@@ -771,16 +769,17 @@ void Logger::createLogFile(bool writeDefaultHeader)
 // or can be specified in the function.
 // If the file does not already exist, the file will be created.
 // This can be used to force a logger to write to a file with a secondary file name.
-void Logger::logToSD(String filename, String rec)
+bool Logger::logToSD(String filename, String rec)
 {
     // First attempt to open the file without creating a new one
     if (openFile(filename, false, false)) goto writeRecord;
     // Next try to create the file, bail if we couldn't create it
+    // This will not attempt to generate a new file name or add a header!
     else if (openFile(filename, true, false)) goto writeRecord;
     else
     {
         PRINTOUT(F("Unable to write to SD card!\n"));
-        return;
+        return false;
     }
 
     writeRecord:
@@ -792,25 +791,28 @@ void Logger::logToSD(String filename, String rec)
         PRINTOUT(rec, F("\n"));
 
         // Set write/modification date time
-        setFileTimestame(logFile, T_WRITE);
+        setFileTimestamp(logFile, T_WRITE);
         // Close the file to save it
         logFile.close();
+        return true;
     }
 }
-void Logger::logToSD(String rec)
+bool Logger::logToSD(String rec)
 {
-    logToSD(_fileName, rec);
+    return logToSD(_fileName, rec);
 }
 // NOTE:  This is structured differently than the version with a string input
 // record.  This is to avoid the creation/passing of very long strings.
-void Logger::logToSD(void)
+bool Logger::logToSD(void)
 {
     // First attempt to open the file without creating a new one
     if (openFile(_fileName, false, false)) goto writeRecord;
-    // Next try to create the file, bail if we couldn't create it
-    // Do add a default header!
+    // Next try to create a new file, bail if we couldn't create it
+    // Generate a filename with the current date, if the file name isn't set
+    if (_autoFileName) generateAutoFileName();
+    // Do add a default header to the new file!
     if (openFile(_fileName, true, true)) goto writeRecord;
-    else return;
+    else return false;
 
     writeRecord:
     {
@@ -824,9 +826,10 @@ void Logger::logToSD(void)
         #endif
 
         // Set write/modification date time
-        setFileTimestame(logFile, T_WRITE);
+        setFileTimestamp(logFile, T_WRITE);
         // Close the file to save it
         logFile.close();
+        return true;
     }
 }
 
@@ -952,16 +955,12 @@ void Logger::testingMode()
              F(" come from "),_internalArray->getSensorCount(), F(" sensors and "),
              _internalArray->getCalculatedVariableCount(), F(" are calculated.\n"));
 
+    // Create the log file, adding the default header to it
+    if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName, '\n');
+    else PRINTOUT(F("Unable to create a file to save data to!"));
+
     // Set up the sensors
     _internalArray->setupSensors();
-
-    // Set the filename for the logger to save to, if it hasn't been done
-    if(!_isFileNameSet){setFileName();}
-    else if(_autoFileName){setFileName();}
-    else setFileName(_fileName);  // This just for a nice print-out
-
-    // Create the log file, adding the default header to it
-    createLogFile(true);
 
     // Setup sleep mode
     if(_mcuWakePin >= 0){setupSleep();}
