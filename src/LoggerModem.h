@@ -57,8 +57,8 @@
 #elif defined(TINY_GSM_MODEM_M590)
     #define MODEM_NAME "Neoway M590"
 #elif defined(TINY_GSM_MODEM_MC60)
-    #define MODEM_NAME "Quectel MC60E"
-#elif defined(TINY_GSM_MODEM_MC60)
+    #define MODEM_NAME "Quectel MC60"
+#elif defined(TINY_GSM_MODEM_MC60E)
     #define MODEM_NAME "Quectel MC60E"
 #elif defined(TINY_GSM_MODEM_ESP8266)
     #define MODEM_NAME "ESP8266"
