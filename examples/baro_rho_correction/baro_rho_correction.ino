@@ -194,8 +194,8 @@ float calculateWaterPressure(void)
     return waterPressure;
 }
 // Properties of the calculated water pressure variable
-String waterPresureVarName = "pressureGauge";  // This must be a value from http://vocabulary.odm2.org/variablename/
-String waterPresureVarUnit = "millibar";  // This must be a value from http://vocabulary.odm2.org/units/
+const char *waterPresureVarName = "pressureGauge";  // This must be a value from http://vocabulary.odm2.org/variablename/
+const char *waterPresureVarUnit = "millibar";  // This must be a value from http://vocabulary.odm2.org/units/
 int waterPresureVarResolution = 3;
 const char *waterPressureUUID = "12345678-abcd-1234-efgh-1234567890ab";
 const char *waterPresureVarCode = "CorrectedPressure";
@@ -216,8 +216,8 @@ float calculateWaterDepthRaw(void)
     return waterDepth;
 }
 // Properties of the calculated water depth variable
-String waterDepthVarName = "waterDepth";  // This must be a value from http://vocabulary.odm2.org/variablename/
-String waterDepthVarUnit = "millimeter";  // This must be a value from http://vocabulary.odm2.org/units/
+const char *waterDepthVarName = "waterDepth";  // This must be a value from http://vocabulary.odm2.org/variablename/
+const char *waterDepthVarUnit = "millimeter";  // This must be a value from http://vocabulary.odm2.org/units/
 int waterDepthVarResolution = 3;
 const char *waterDepthUUID = "12345678-abcd-1234-efgh-1234567890ab";
 const char *waterDepthVarCode = "CalcDepth";
@@ -252,8 +252,8 @@ float calculateWaterDepthTempCorrected(void)
     return rhoDepth;
 }
 // Properties of the calculated temperature corrected water depth variable
-String rhoDepthVarName = "waterDepth";  // This must be a value from http://vocabulary.odm2.org/variablename/
-String rhoDepthVarUnit = "millimeter";  // This must be a value from http://vocabulary.odm2.org/units/
+const char *rhoDepthVarName = "waterDepth";  // This must be a value from http://vocabulary.odm2.org/variablename/
+const char *rhoDepthVarUnit = "millimeter";  // This must be a value from http://vocabulary.odm2.org/units/
 int rhoDepthVarResolution = 3;
 const char *rhoDepthUUID = "12345678-abcd-1234-efgh-1234567890ab";
 const char *rhoDepthVarCode = "DensityDepth";

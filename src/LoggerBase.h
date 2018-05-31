@@ -125,7 +125,7 @@ public:
     // Public functions for logging data to an SD card
     // ===================================================================== //
     // This sets a file name, if you want to decide on it in advance
-    void setFileName(char *fileName);
+    void setFileName(const char *fileName);
     // Same as above, with a string (overload function)
     void setFileName(String& fileName);
 

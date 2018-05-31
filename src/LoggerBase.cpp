@@ -495,7 +495,7 @@ void Logger::setFileName(String& fileName)
     _autoFileName = false;
 }
 // Same as above, with a character array (overload function)
-void Logger::setFileName(char *fileName)
+void Logger::setFileName(const char *fileName)
 {
     String StrName = String(fileName);
     setFileName(StrName);
