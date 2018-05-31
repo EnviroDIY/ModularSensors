@@ -45,7 +45,7 @@ public:
     // This prints a fully structured GET request for DreamHost to the
     // specified stream using the specified url.
     // This may be necessary to work around very long strings for the post request.
-    void streamDreamHostRequest(Stream *stream, String fullURL);
+    void streamDreamHostRequest(Stream *stream, String& fullURL);
     // This prints a fully structured GET request for DreamHost to the
     // specified stream with the default url.
     void streamDreamHostRequest(Stream *stream);

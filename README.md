@@ -515,7 +515,7 @@ EnviroDIYLogger.setUUIDs(UUIDs[]);
 modem.setupModem(modemStream, vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType, APN);
 
 // Attach the modem to the logger
-EnviroDIYLogger.attachModem(&modem);
+EnviroDIYLogger.attachModem(modem);
 
 // Begin the logger;
 EnviroDIYLogger.begin();

@@ -320,8 +320,8 @@ void setup()
     // Attach the same modem to both loggers
     // It is only needed for the logger that will be sending out data, but
     // attaching it to both allows either logger to control NIST synchronization
-    loggerComplete.attachModem(&modem);
-    loggerToGo.attachModem(&modem);
+    loggerComplete.attachModem(modem);
+    loggerToGo.attachModem(modem);
     loggerComplete.setTestingModePin(buttonPin);
     // There is no reason to call the setAlertPin() function, because we have to
     // write the loop on our own.

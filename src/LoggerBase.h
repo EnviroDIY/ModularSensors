@@ -123,9 +123,9 @@ public:
     // Public functions for logging data to an SD card
     // ===================================================================== //
     // This sets a file name, if you want to decide on it in advance
-    void setFileName(char *fileName);
+    void setFileName(char& fileName);
     // Same as above, with a string (overload function)
-    void setFileName(String fileName);
+    void setFileName(String& fileName);
 
     // This returns the current filename.  Must be run after setFileName.
     String getFileName(void){return _fileName;}
@@ -150,7 +150,7 @@ public:
     // If asked to, these functions will also write a header to the file based
     // on the variable information from the variable array.
     // This can be used to force a logger to create a file with a secondary file name.
-    bool createLogFile(String filename, bool writeDefaultHeader = false);
+    bool createLogFile(String& filename, bool writeDefaultHeader = false);
     bool createLogFile(bool writeDefaultHeader = false);
 
     // These functions create a file on an SD card and set the modified/accessed
@@ -162,8 +162,8 @@ public:
     // The line to be written to the file can either be specified or will be
     // a comma separated list of the current values of all variables in the
     // variable array.
-    bool logToSD(String filename, String rec);
-    bool logToSD(String rec);
+    bool logToSD(String& filename, String& rec);
+    bool logToSD(String& rec);
     bool logToSD(void);
 
 
@@ -225,7 +225,7 @@ protected:
     static char markedISO8601Time[26];
 
     // Initialization variables
-    const char *_loggerID;
+    const char* _loggerID;
     uint16_t _loggingIntervalMinutes;
     int8_t _SDCardPin;
     int8_t _mcuWakePin;

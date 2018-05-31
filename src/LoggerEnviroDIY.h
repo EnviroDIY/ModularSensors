@@ -32,7 +32,7 @@ public:
 
     // Adds a loggerModem objct to the logger
     // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
-    void attachModem(loggerModem *modem);
+    void attachModem(loggerModem& modem);
 
     // Adds the site registration token
     void setToken(const char *registrationToken);
@@ -57,7 +57,7 @@ public:
     // This prints a fully structured post request for EnviroDIY to the
     // specified stream using the specified json.
     // This may be necessary to work around very long strings for the post request.
-    void streamEnviroDIYRequest(Stream *stream, String enviroDIYjson);
+    void streamEnviroDIYRequest(Stream *stream, String& enviroDIYjson);
     // This prints a fully structured post request for EnviroDIY to the
     // specified stream with the default json.
     void streamEnviroDIYRequest(Stream *stream);
@@ -85,7 +85,7 @@ public:
 
     // The internal modem instance
     bool _modemAttached;
-    loggerModem *_logModem;
+    loggerModem _logModem;
 
 
 private:
