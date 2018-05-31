@@ -690,7 +690,7 @@ private:
 class Modem_RSSI : public Variable
 {
 public:
-    Modem_RSSI(Sensor *parentSense, String UUID = "", String customVarCode = "")
+    Modem_RSSI(Sensor *parentSense, String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
      : Variable(parentSense, RSSI_VAR_NUM,
                 F("RSSI"), F("decibelMiliWatt"),
                 RSSI_RESOLUTION,
@@ -703,7 +703,7 @@ public:
 class Modem_SignalPercent : public Variable
 {
 public:
-    Modem_SignalPercent(Sensor *parentSense, String UUID = "", String customVarCode = "")
+    Modem_SignalPercent(Sensor *parentSense, String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
      : Variable(parentSense, PERCENT_SIGNAL_VAR_NUM,
                 F("signalPercent"), F("percent"),
                 PERCENT_SIGNAL_RESOLUTION,

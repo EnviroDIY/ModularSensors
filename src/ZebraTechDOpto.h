@@ -82,7 +82,7 @@ class ZebraTechDOpto_Temp : public Variable
 {
 public:
     ZebraTechDOpto_Temp(Sensor *parentSense,
-                        String UUID = "", String customVarCode = "")
+                        String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
      : Variable(parentSense, DOPTO_TEMP_VAR_NUM,
                 F("temperature"), F("degreeCelsius"),
                 DOPTO_TEMP_RESOLUTION,
@@ -96,7 +96,7 @@ class ZebraTechDOpto_DOpct : public Variable
 {
 public:
     ZebraTechDOpto_DOpct(Sensor *parentSense,
-                         String UUID = "", String customVarCode = "")
+                         String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
      : Variable(parentSense, DOPTO_DOPCT_VAR_NUM,
                 F("oxygenDissolvedPercentOfSaturation"), F("percent"),
                 DOPTO_DOPCT_RESOLUTION,
@@ -110,7 +110,7 @@ class ZebraTechDOpto_DOmgL : public Variable
 {
 public:
     ZebraTechDOpto_DOmgL(Sensor *parentSense,
-                         String UUID = "", String customVarCode = "")
+                         String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
      : Variable(parentSense, DOPTO_DOMGL_VAR_NUM,
                 F("oxygenDissolved"), F("milligramPerLiter"),
                 DOPTO_DOMGL_RESOLUTION,

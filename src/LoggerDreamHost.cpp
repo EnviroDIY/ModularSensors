@@ -103,7 +103,7 @@ void LoggerDreamHost::streamDreamHostRequest(Stream *stream)
 
 
 // Post the data to dream host.
-int LoggerDreamHost::postDataDreamHost(String fullURL)
+int LoggerDreamHost::postDataDreamHost(String& fullURL)
 {
     // do not continue if no modem!
     if (!_modemAttached)

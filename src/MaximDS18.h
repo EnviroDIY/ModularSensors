@@ -72,7 +72,7 @@ class MaximDS18_Temp : public Variable
 {
 public:
     MaximDS18_Temp(Sensor *parentSense,
-                   String UUID = "", String customVarCode = "")
+                   String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
       : Variable(parentSense, DS18_TEMP_VAR_NUM,
                F("temperature"), F("degreeCelsius"),
                DS18_TEMP_RESOLUTION,

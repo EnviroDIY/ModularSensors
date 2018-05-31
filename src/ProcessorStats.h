@@ -61,7 +61,7 @@ class ProcessorStats_Batt : public Variable
 {
 public:
     ProcessorStats_Batt(Sensor *parentSense,
-                        String UUID = "", String customVarCode = "")
+                        String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
       : Variable(parentSense, PROCESSOR_BATTERY_VAR_NUM,
                  F("batteryVoltage"), F("Volt"),
                  PROCESSOR_BATTERY_RESOLUTION,
@@ -75,7 +75,7 @@ class ProcessorStats_FreeRam : public Variable
 {
 public:
     ProcessorStats_FreeRam(Sensor *parentSense,
-                           String UUID = "", String customVarCode = "")
+                           String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
       : Variable(parentSense, PROCESSOR_RAM_VAR_NUM,
                  F("Free SRAM"), F("Bit"),
                  PROCESSOR_RAM_RESOLUTION,

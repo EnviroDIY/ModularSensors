@@ -20,7 +20,7 @@ Variable::Variable(Sensor *parentSense, int varNum,
                    String varName, String varUnit,
                    unsigned int decimalResolution,
                    String defaultVarCode,
-                   String UUID, String customVarCode)
+                   String& UUID, String& customVarCode)
 {
     isCalculated = false;
     _calcFxn = NULL;
@@ -42,9 +42,9 @@ Variable::Variable(Sensor *parentSense, int varNum,
 // calculated by the calcFxn which returns a float.
 // NOTE:  ALL arguments are required!
 Variable::Variable(float (*calcFxn)(),
-                   String varName, String varUnit,
+                   String& varName, String& varUnit,
                    unsigned int decimalResolution,
-                   String UUID, String customVarCode)
+                   String& UUID, String& customVarCode)
 {
     isCalculated = true;
     _calcFxn = calcFxn;

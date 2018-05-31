@@ -77,7 +77,7 @@ public:
     static DateTime dtFromEpoch(uint32_t epochTime);
 
     // This converts a date-time object into a ISO8601 formatted string
-    static String formatDateTime_ISO8601(DateTime dt);
+    static String formatDateTime_ISO8601(DateTime& dt);
 
     // This converts an epoch time (unix time) into a ISO8601 formatted string
     static String formatDateTime_ISO8601(uint32_t epochTime);
@@ -123,7 +123,7 @@ public:
     // Public functions for logging data to an SD card
     // ===================================================================== //
     // This sets a file name, if you want to decide on it in advance
-    void setFileName(char* fileName);
+    void setFileName(char *fileName);
     // Same as above, with a string (overload function)
     void setFileName(String& fileName);
 
@@ -225,7 +225,7 @@ protected:
     static char markedISO8601Time[26];
 
     // Initialization variables
-    const char* _loggerID;
+    const char *_loggerID;
     uint16_t _loggingIntervalMinutes;
     int8_t _SDCardPin;
     int8_t _mcuWakePin;

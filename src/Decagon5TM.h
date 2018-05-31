@@ -75,7 +75,7 @@ public:
 class Decagon5TM_Ea : public Variable
 {
 public:
-    Decagon5TM_Ea(Sensor *parentSense, String UUID = "", String customVarCode = "")
+    Decagon5TM_Ea(Sensor *parentSense, String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
      : Variable(parentSense, TM_EA_VAR_NUM,
                 F("permittivity"), F("faradPerMeter"),
                 TM_EA_RESOLUTION,
@@ -88,7 +88,7 @@ public:
 class Decagon5TM_Temp : public Variable
 {
 public:
-    Decagon5TM_Temp(Sensor *parentSense, String UUID = "", String customVarCode = "")
+    Decagon5TM_Temp(Sensor *parentSense, String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
      : Variable(parentSense, TM_TEMP_VAR_NUM,
                 F("temperature"), F("degreeCelsius"),
                 TM_TEMP_RESOLUTION,
@@ -101,7 +101,7 @@ public:
 class Decagon5TM_VWC : public Variable
 {
 public:
-    Decagon5TM_VWC(Sensor *parentSense, String UUID = "", String customVarCode = "")
+    Decagon5TM_VWC(Sensor *parentSense, String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
      : Variable(parentSense, TM_VWC_VAR_NUM,
                 F("volumetricWaterContent"), F("percent"),
                 TM_VWC_RESOLUTION,

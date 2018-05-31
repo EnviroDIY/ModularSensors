@@ -7,7 +7,7 @@
  *This file is for the basic logging functions - ie, saving to an SD card.
 */
 
-#include "LoggerBase.h"  // To communicate with the internet
+#include "LoggerBase.h"
 
 // To prevent compiler/linker crashes with Enable interrupt
 #define LIBCALL_ENABLEINTERRUPT
@@ -151,7 +151,7 @@ DateTime Logger::dtFromEpoch(uint32_t epochTime)
 }
 
 // This converts a date-time object into a ISO8601 formatted string
-String Logger::formatDateTime_ISO8601(DateTime dt)
+String Logger::formatDateTime_ISO8601(DateTime& dt)
 {
     // Set up an inital string
     String dateTimeStr;
@@ -495,7 +495,7 @@ void Logger::setFileName(String& fileName)
     _autoFileName = false;
 }
 // Same as above, with a character array (overload function)
-void Logger::setFileName(char* fileName)
+void Logger::setFileName(char *fileName)
 {
     String StrName = String(fileName);
     setFileName(StrName);

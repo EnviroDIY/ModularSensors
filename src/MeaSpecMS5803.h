@@ -89,7 +89,7 @@ class MeaSpecMS5803_Temp : public Variable
 {
 public:
     MeaSpecMS5803_Temp(Sensor *parentSense,
-                     String UUID = "", String customVarCode = "")
+                     String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
       : Variable(parentSense, MS5803_TEMP_VAR_NUM,
                F("temperature"), F("degreeCelsius"),
                MS5803_TEMP_RESOLUTION,
@@ -103,7 +103,7 @@ class MeaSpecMS5803_Pressure : public Variable
 {
 public:
     MeaSpecMS5803_Pressure(Sensor *parentSense,
-                         String UUID = "", String customVarCode = "")
+                         String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
       : Variable(parentSense, MS5803_PRESSURE_VAR_NUM,
                F("barometricPressure"), F("Millibar"),
                MS5803_PRESSURE_RESOLUTION,

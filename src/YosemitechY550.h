@@ -75,7 +75,7 @@ public:
 class YosemitechY550_COD : public Variable
 {
 public:
-    YosemitechY550_COD(Sensor *parentSense, String UUID = "", String customVarCode = "")
+    YosemitechY550_COD(Sensor *parentSense, String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
      : Variable(parentSense, Y550_COD_VAR_NUM,
                 F("COD"), F("milligramPerLiter"),
                 Y550_COD_RESOLUTION,
@@ -88,7 +88,7 @@ public:
 class YosemitechY550_Temp : public Variable
 {
 public:
-    YosemitechY550_Temp(Sensor *parentSense, String UUID = "", String customVarCode = "")
+    YosemitechY550_Temp(Sensor *parentSense, String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
      : Variable(parentSense, Y550_TEMP_VAR_NUM,
                 F("temperature"), F("degreeCelsius"),
                 Y550_TEMP_RESOLUTION,
@@ -101,7 +101,7 @@ public:
 class YosemitechY550_Turbidity : public Variable
 {
 public:
-    YosemitechY550_Turbidity(Sensor *parentSense, String UUID = "", String customVarCode = "")
+    YosemitechY550_Turbidity(Sensor *parentSense, String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
      : Variable(parentSense, Y550_TURB_VAR_NUM,
                 F("turbidity"), F("nephelometricTurbidityUnit"),
                 Y550_TURB_RESOLUTION,

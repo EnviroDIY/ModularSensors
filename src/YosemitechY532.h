@@ -73,7 +73,7 @@ class YosemitechY532_pH : public Variable
 {
 public:
     YosemitechY532_pH(Sensor *parentSense,
-                      String UUID = "", String customVarCode = "")
+                      String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
      : Variable(parentSense, Y532_PH_VAR_NUM,
                 F("pH"), F("pH"),
                 Y532_PH_RESOLUTION,
@@ -87,7 +87,7 @@ class YosemitechY532_Temp : public Variable
 {
 public:
     YosemitechY532_Temp(Sensor *parentSense,
-                        String UUID = "", String customVarCode = "")
+                        String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
      : Variable(parentSense, Y532_TEMP_VAR_NUM,
                 F("temperature"), F("degreeCelsius"),
                 Y532_TEMP_RESOLUTION,
@@ -101,7 +101,7 @@ class YosemitechY532_Voltage : public Variable
 {
 public:
     YosemitechY532_Voltage(Sensor *parentSense,
-                           String UUID = "", String customVarCode = "")
+                           String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
      : Variable(parentSense, Y532_VOLT_VAR_NUM,
                 F("voltage"), F("millivolt"),
                 Y532_VOLT_RESOLUTION,

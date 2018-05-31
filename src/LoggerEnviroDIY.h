@@ -66,7 +66,7 @@ public:
     // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
     // over that connection.
     // The return is the http status code of the response.
-    int postDataEnviroDIY(String enviroDIYjson = "");
+    int postDataEnviroDIY(String& enviroDIYjson = VAR_BASE_EMPTY);
 
     // ===================================================================== //
     // Convience functions to call several of the above functions

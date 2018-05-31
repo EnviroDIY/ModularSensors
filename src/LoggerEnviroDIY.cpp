@@ -191,7 +191,7 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
 // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
 // over that connection.
 // The return is the http status code of the response.
-int LoggerEnviroDIY::postDataEnviroDIY(String enviroDIYjson)
+int LoggerEnviroDIY::postDataEnviroDIY(String& enviroDIYjson)
 {
     // do not continue if no modem!
     if (!_modemAttached)

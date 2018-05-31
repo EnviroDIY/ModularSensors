@@ -72,7 +72,7 @@ class YosemitechY504_DOpct : public Variable
 {
 public:
     YosemitechY504_DOpct(Sensor *parentSense,
-                         String UUID = "", String customVarCode = "")
+                         String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
      : Variable(parentSense, Y504_DOPCT_VAR_NUM,
                 F("oxygenDissolvedPercentOfSaturation"), F("percent"),
                 Y504_DOPCT_RESOLUTION,
@@ -86,7 +86,7 @@ class YosemitechY504_Temp : public Variable
 {
 public:
     YosemitechY504_Temp(Sensor *parentSense,
-                        String UUID = "", String customVarCode = "")
+                        String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
      : Variable(parentSense, Y504_TEMP_VAR_NUM,
                 F("temperature"), F("degreeCelsius"),
                 Y504_TEMP_RESOLUTION,
@@ -100,7 +100,7 @@ class YosemitechY504_DOmgL : public Variable
 {
 public:
     YosemitechY504_DOmgL(Sensor *parentSense,
-                         String UUID = "", String customVarCode = "")
+                         String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
      : Variable(parentSense, Y504_DOMGL_VAR_NUM,
                 F("oxygenDissolved"), F("milligramPerLiter"),
                 Y504_DOMGL_RESOLUTION,

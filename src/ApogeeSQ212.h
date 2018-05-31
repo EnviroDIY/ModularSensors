@@ -74,7 +74,7 @@ class ApogeeSQ212_PAR : public Variable
 {
 public:
     ApogeeSQ212_PAR(Sensor *parentSense,
-                    String UUID = "", String customVarCode = "")
+                    String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
       : Variable(parentSense, SQ212_PAR_VAR_NUM,
                  F("radiationIncomingPAR"), F("microeinsteinPerSquareMeterPerSecond"),
                  SQ212_PAR_RESOLUTION,
