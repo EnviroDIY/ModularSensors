@@ -136,7 +136,7 @@ class loggerModem : public Sensor
 public:
     // Constructors
     loggerModem()
-        : Sensor(F(MODEM_NAME), MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1)
+        : Sensor(MODEM_NAME, MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1)
     {_lastNISTrequest = 0;}
 
     String getSensorLocation(void) override { return F("modemSerial"); }
@@ -692,9 +692,9 @@ class Modem_RSSI : public Variable
 public:
     Modem_RSSI(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, RSSI_VAR_NUM,
-                F("RSSI"), F("decibelMiliWatt"),
+                "RSSI", "decibelMiliWatt",
                 RSSI_RESOLUTION,
-                F("RSSI"), UUID, customVarCode)
+                "RSSI", UUID, customVarCode)
     {}
 };
 
@@ -705,9 +705,9 @@ class Modem_SignalPercent : public Variable
 public:
     Modem_SignalPercent(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, PERCENT_SIGNAL_VAR_NUM,
-                F("signalPercent"), "percent",
+                "signalPercent", "percent",
                 PERCENT_SIGNAL_RESOLUTION,
-                F("signalPercent"), UUID, customVarCode)
+                "signalPercent", UUID, customVarCode)
     {}
 };
 
