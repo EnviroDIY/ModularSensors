@@ -187,7 +187,7 @@ float calculateWaterPressure(void)
     float totalPressureFromMS5803 = msPress->getValue();
     float baroPressureFromBME280 = bPress->getValue();
     float waterPressure = totalPressureFromMS5803 - (baroPressureFromBME280)*0.01;
-    if (totalPressureFromMS5803 = -9999 || baroPressureFromBME280 == -9999)
+    if (totalPressureFromMS5803 == -9999 || baroPressureFromBME280 == -9999)
         waterPressure = -9999;
     // Serial.print(F("Water pressure is "));  // for debugging
     // Serial.println(waterPressure);  // for debugging
