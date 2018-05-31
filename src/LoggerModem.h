@@ -456,7 +456,8 @@ public:
     {
         bool connectionMade = false;
         // bail if not connected to the internet
-        // TODO:  Figure out why _model->isNetworkConnected() isn't working here
+        // TODO:  Figure out why _modem->isNetworkConnected() isn't working here
+        // if (!_modem->isNetworkConnected())
         if (!(connectInternet(1000)))
         {
             MS_MOD_DBG(F("No internet connection, cannot connect to NIST.\n"));
