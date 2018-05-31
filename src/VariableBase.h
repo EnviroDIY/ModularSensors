@@ -25,16 +25,16 @@ public:
     // The constructor for a measured variable - that is, one whose values are
     // updated by a sensor.
     Variable(Sensor *parentSense, int varNum,
-             String varName = VAR_BASE_UNKNOWN, String varUnit = VAR_BASE_UNKNOWN,
+             const char *varName = VAR_BASE_UNKNOWN, const char *varUnit = VAR_BASE_UNKNOWN,
              unsigned int decimalResolution = 0,
-             String defaultVarCode = VAR_BASE_UNKNOWN,
+             const char *defaultVarCode = VAR_BASE_UNKNOWN,
              const char *UUID = "", const char *customVarCode = "");
 
      // The constructor for a measured variable - that is, one whose value is
      // calculated by the calcFxn which returns a float.
      // NOTE:  ALL arguments are required!
      Variable(float (*calcFxn)(),
-              String& varName, String& varUnit,
+              const char *varName, const char *varUnit,
               unsigned int decimalResolution,
               const char *UUID, const char *customVarCode);
 
@@ -79,10 +79,10 @@ protected:
 private:
     float (*_calcFxn)(void);
     uint8_t _varNum;
-    String _varName;
-    String _varUnit;
+    const char *_varName;
+    const char *_varUnit;
     unsigned int _decimalResolution;
-    String _defaultVarCode;
+    const char *_defaultVarCode;
     const char *_customCode;
     const char *_UUID;
 };

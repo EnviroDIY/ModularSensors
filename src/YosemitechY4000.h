@@ -106,13 +106,13 @@ public:
     YosemitechY4000(byte modbusAddress, Stream* stream, int8_t powerPin,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
-                        Y4000, F("YosemitechY4000"), Y4000_NUM_VARIABLES,
+                        Y4000, "YosemitechY4000", Y4000_NUM_VARIABLES,
                         Y4000_WARM_UP_TIME_MS, Y4000_STABILIZATION_TIME_MS, Y4000_MEASUREMENT_TIME_MS)
     {}
     YosemitechY4000(byte modbusAddress, Stream& stream, int8_t powerPin,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
-                        Y4000, F("YosemitechY4000"), Y4000_NUM_VARIABLES,
+                        Y4000, "YosemitechY4000", Y4000_NUM_VARIABLES,
                         Y4000_WARM_UP_TIME_MS, Y4000_STABILIZATION_TIME_MS, Y4000_MEASUREMENT_TIME_MS)
     {}
 };
@@ -125,9 +125,9 @@ public:
     YosemitechY4000_DOmgL(Sensor *parentSense,
                          const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y4000_DOMGL_VAR_NUM,
-                F("oxygenDissolved"), F("milligramPerLiter"),
+                "oxygenDissolved", "milligramPerLiter",
                 Y4000_DOMGL_RESOLUTION,
-                F("Y4000DOmgL"), UUID, customVarCode)
+                "Y4000DOmgL", UUID, customVarCode)
     {}
 };
 
@@ -137,9 +137,9 @@ class YosemitechY4000_Turbidity : public Variable
 public:
     YosemitechY4000_Turbidity(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y4000_TURB_VAR_NUM,
-                F("turbidity"), F("nephelometricTurbidityUnit"),
+                "turbidity", "nephelometricTurbidityUnit",
                 Y4000_TURB_RESOLUTION,
-                F("Y4000Turbidity"), UUID, customVarCode)
+                "Y4000Turbidity", UUID, customVarCode)
     {}
 };
 
@@ -149,9 +149,9 @@ class YosemitechY4000_Cond : public Variable
 public:
     YosemitechY4000_Cond(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y4000_COND_VAR_NUM,
-                F("specificConductance"), F("microsiemenPerCentimeter"),
+                "specificConductance", "microsiemenPerCentimeter",
                 Y4000_COND_RESOLUTION,
-                F("Y4000Cond"), UUID, customVarCode)
+                "Y4000Cond", UUID, customVarCode)
     {}
 };
 
@@ -162,9 +162,9 @@ public:
     YosemitechY4000_pH(Sensor *parentSense,
                       const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y4000_PH_VAR_NUM,
-                F("pH"), F("pH"),
+                "pH", "pH",
                 Y4000_PH_RESOLUTION,
-                F("Y4000pH"), UUID, customVarCode)
+                "Y4000pH", UUID, customVarCode)
     {}
 };
 
@@ -175,9 +175,9 @@ public:
     YosemitechY4000_Temp(Sensor *parentSense,
                         const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y4000_TEMP_VAR_NUM,
-                F("temperature"), F("degreeCelsius"),
+                "temperature", "degreeCelsius",
                 Y4000_TEMP_RESOLUTION,
-                F("Y4000temp"), UUID, customVarCode)
+                "Y4000temp", UUID, customVarCode)
     {}
 };
 
@@ -188,9 +188,9 @@ public:
     YosemitechY4000_ORP(Sensor *parentSense,
                            const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y4000_ORP_VAR_NUM,
-                F("ORP"), F("millivolt"),
+                "ORP", "millivolt",
                 Y4000_ORP_RESOLUTION,
-                F("Y4000Potential"), UUID, customVarCode)
+                "Y4000Potential", UUID, customVarCode)
     {}
 };
 
@@ -201,9 +201,9 @@ public:
     YosemitechY4000_Chlorophyll(Sensor *parentSense,
                                const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y4000_CHLORO_VAR_NUM,
-                F("chlorophyllFluorescence"), F("microgramPerLiter"),
+                "chlorophyllFluorescence", "microgramPerLiter",
                 Y4000_CHLORO_RESOLUTION,
-                F("Y4000Chloro"), UUID, customVarCode)
+                "Y4000Chloro", UUID, customVarCode)
     {}
 };
 
@@ -214,9 +214,9 @@ public:
     YosemitechY4000_BGA(Sensor *parentSense,
                                const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y4000_BGA_VAR_NUM,
-                F("blueGreenAlgaeCyanobacteriaPhycocyanin"), F("microgramPerLiter"),
+                "blueGreenAlgaeCyanobacteriaPhycocyanin", "microgramPerLiter",
                 Y4000_BGA_RESOLUTION,
-                F("Y4000BGA"), UUID, customVarCode)
+                "Y4000BGA", UUID, customVarCode)
     {}
 };
 

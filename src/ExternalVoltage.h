@@ -28,7 +28,7 @@
  * http://wiki.seeedstudio.com/Grove-Voltage_Divider
  *
  * Technical specifications for the TI ADS1115 can be found at:
- * http://www.ti.com/product/ADS1115 
+ * http://www.ti.com/product/ADS1115
  *
  * Response time: < 1ms
  * Resample time: max of ADC (860/sec)
@@ -83,9 +83,9 @@ public:
     ExternalVoltage_Volt(Sensor *parentSense,
                          const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, EXT_VOLT_VAR_NUM,
-                 F("voltage"), F("volt"),
+                 "voltage", "volt",
                  EXT_VOLT_RESOLUTION,
-                 F("extVoltage"), UUID, customVarCode)
+                 "extVoltage", UUID, customVarCode)
     {}
 };
 

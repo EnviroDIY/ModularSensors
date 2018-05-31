@@ -76,9 +76,9 @@ public:
     ApogeeSQ212_PAR(Sensor *parentSense,
                     const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, SQ212_PAR_VAR_NUM,
-                 F("radiationIncomingPAR"), F("microeinsteinPerSquareMeterPerSecond"),
+                 "radiationIncomingPAR", "microeinsteinPerSquareMeterPerSecond",
                  SQ212_PAR_RESOLUTION,
-                 F("photosyntheticallyActiveRadiation"), UUID, customVarCode)
+                 "photosyntheticallyActiveRadiation", UUID, customVarCode)
     {}
 };
 

@@ -36,7 +36,7 @@
 
 // The constructor - need the power pin and the data pin
 ApogeeSQ212::ApogeeSQ212(int8_t powerPin, int8_t dataPin, uint8_t i2cAddress, uint8_t measurementsToAverage)
-    : Sensor(F("ApogeeSQ212"), SQ212_NUM_VARIABLES,
+    : Sensor("ApogeeSQ212", SQ212_NUM_VARIABLES,
              SQ212_WARM_UP_TIME_MS, SQ212_STABILIZATION_TIME_MS, SQ212_MEASUREMENT_TIME_MS,
              powerPin, dataPin, measurementsToAverage)
 {

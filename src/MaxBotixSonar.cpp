@@ -15,7 +15,7 @@
 
 
 MaxBotixSonar::MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin, uint8_t measurementsToAverage)
-    : Sensor(F("MaxBotixMaxSonar"), HRXL_NUM_VARIABLES,
+    : Sensor("MaxBotixMaxSonar", HRXL_NUM_VARIABLES,
              HRXL_WARM_UP_TIME_MS, HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage)
 {
@@ -23,7 +23,7 @@ MaxBotixSonar::MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin,
     _stream = stream;
 }
 MaxBotixSonar::MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin, uint8_t measurementsToAverage)
-    : Sensor(F("MaxBotixMaxSonar"), HRXL_NUM_VARIABLES,
+    : Sensor("MaxBotixMaxSonar", HRXL_NUM_VARIABLES,
              HRXL_WARM_UP_TIME_MS, HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage)
 {

@@ -53,13 +53,13 @@ public:
     YosemitechY514(byte modbusAddress, Stream* stream, int8_t powerPin,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
-                        Y514, F("YosemitechY514"), Y514_NUM_VARIABLES,
+                        Y514, "YosemitechY514", Y514_NUM_VARIABLES,
                         Y514_WARM_UP_TIME_MS, Y514_STABILIZATION_TIME_MS, Y514_MEASUREMENT_TIME_MS)
     {}
     YosemitechY514(byte modbusAddress, Stream& stream, int8_t powerPin,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
-                        Y514, ("YosemitechY514"), Y514_NUM_VARIABLES,
+                        Y514, "YosemitechY514", Y514_NUM_VARIABLES,
                         Y514_WARM_UP_TIME_MS, Y514_STABILIZATION_TIME_MS, Y514_MEASUREMENT_TIME_MS)
     {}
 };
@@ -72,9 +72,9 @@ public:
     YosemitechY514_Chlorophyll(Sensor *parentSense,
                                const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y514_CHLORO_VAR_NUM,
-                F("chlorophyllFluorescence"), F("microgramPerLiter"),
+                "chlorophyllFluorescence", "microgramPerLiter",
                 Y514_CHLORO_RESOLUTION,
-                F("Y514Chloro"), UUID, customVarCode)
+                "Y514Chloro", UUID, customVarCode)
     {}
 };
 
@@ -86,9 +86,9 @@ public:
     YosemitechY514_Temp(Sensor *parentSense,
                         const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y514_TEMP_VAR_NUM,
-                F("temperature"), F("degreeCelsius"),
+                "temperature", "degreeCelsius",
                 Y514_TEMP_RESOLUTION,
-                F("Y514temp"), UUID, customVarCode)
+                "Y514temp", UUID, customVarCode)
     {}
 };
 #endif

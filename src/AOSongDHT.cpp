@@ -28,7 +28,7 @@
 
 // The constructor - need the power pin, data pin, and type of DHT
 AOSongDHT::AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type, uint8_t measurementsToAverage)
-    : Sensor(F("AOSongDHT"), DHT_NUM_VARIABLES,
+    : Sensor("AOSongDHT", DHT_NUM_VARIABLES,
              DHT_WARM_UP_TIME_MS, DHT_STABILIZATION_TIME_MS, DHT_MEASUREMENT_TIME_MS,
              powerPin, dataPin, measurementsToAverage),
     dht_internal(dataPin, type)

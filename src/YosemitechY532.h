@@ -56,13 +56,13 @@ public:
     YosemitechY532(byte modbusAddress, Stream* stream, int8_t powerPin,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
-                        Y532, F("YosemitechY532"), Y532_NUM_VARIABLES,
+                        Y532, "YosemitechY532", Y532_NUM_VARIABLES,
                         Y532_WARM_UP_TIME_MS, Y532_STABILIZATION_TIME_MS, Y532_MEASUREMENT_TIME_MS)
     {}
     YosemitechY532(byte modbusAddress, Stream& stream, int8_t powerPin,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
-                        Y532, F("YosemitechY532"), Y532_NUM_VARIABLES,
+                        Y532, "YosemitechY532", Y532_NUM_VARIABLES,
                         Y532_WARM_UP_TIME_MS, Y532_STABILIZATION_TIME_MS, Y532_MEASUREMENT_TIME_MS)
     {}
 };
@@ -75,9 +75,9 @@ public:
     YosemitechY532_pH(Sensor *parentSense,
                       const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y532_PH_VAR_NUM,
-                F("pH"), F("pH"),
+                "pH", "pH",
                 Y532_PH_RESOLUTION,
-                F("Y532pH"), UUID, customVarCode)
+                "Y532pH", UUID, customVarCode)
     {}
 };
 
@@ -89,9 +89,9 @@ public:
     YosemitechY532_Temp(Sensor *parentSense,
                         const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y532_TEMP_VAR_NUM,
-                F("temperature"), F("degreeCelsius"),
+                "temperature", "degreeCelsius",
                 Y532_TEMP_RESOLUTION,
-                F("Y532temp"), UUID, customVarCode)
+                "Y532temp", UUID, customVarCode)
     {}
 };
 
@@ -103,9 +103,9 @@ public:
     YosemitechY532_Voltage(Sensor *parentSense,
                            const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y532_VOLT_VAR_NUM,
-                F("voltage"), F("millivolt"),
+                "voltage", "millivolt",
                 Y532_VOLT_RESOLUTION,
-                F("Y532Potential"), UUID, customVarCode)
+                "Y532Potential", UUID, customVarCode)
     {}
 };
 

@@ -16,7 +16,7 @@
 
 // The constructor - need the number of measurements the sensor will return, SDI-12 address, the power pin, and the data pin
 SDI12Sensors::SDI12Sensors(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
-                           String sensorName, uint8_t numReturnedVars,
+                           const char *sensorName, uint8_t numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
@@ -26,7 +26,7 @@ SDI12Sensors::SDI12Sensors(char SDI12address, int8_t powerPin, int8_t dataPin, u
     _SDI12address = SDI12address;
 }
 SDI12Sensors::SDI12Sensors(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
-                           String sensorName, uint8_t numReturnedVars,
+                           const char *sensorName, uint8_t numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
@@ -36,7 +36,7 @@ SDI12Sensors::SDI12Sensors(char *SDI12address, int8_t powerPin, int8_t dataPin, 
     _SDI12address = *SDI12address;
 }
 SDI12Sensors::SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
-                           String sensorName, uint8_t numReturnedVars,
+                           const char *sensorName, uint8_t numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,

@@ -705,7 +705,7 @@ class Modem_SignalPercent : public Variable
 public:
     Modem_SignalPercent(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, PERCENT_SIGNAL_VAR_NUM,
-                F("signalPercent"), F("percent"),
+                F("signalPercent"), "percent",
                 PERCENT_SIGNAL_RESOLUTION,
                 F("signalPercent"), UUID, customVarCode)
     {}

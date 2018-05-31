@@ -74,9 +74,9 @@ public:
     MaximDS18_Temp(Sensor *parentSense,
                    const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, DS18_TEMP_VAR_NUM,
-               F("temperature"), F("degreeCelsius"),
+               "temperature", "degreeCelsius",
                DS18_TEMP_RESOLUTION,
-               F("DS18Temp"), UUID, customVarCode)
+               "DS18Temp", UUID, customVarCode)
     {}
 };
 

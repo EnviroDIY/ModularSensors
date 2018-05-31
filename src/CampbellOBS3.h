@@ -76,9 +76,9 @@ public:
     CampbellOBS3_Turbidity(Sensor *parentSense,
                            const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, OBS3_TURB_VAR_NUM,
-                 F("turbidity"), F("nephelometricTurbidityUnit"),
+                 "turbidity", "nephelometricTurbidityUnit",
                  OBS3_RESOLUTION,
-                 F("Turbidity"), UUID, customVarCode)
+                 "turbidity", UUID, customVarCode)
     {}
 };
 

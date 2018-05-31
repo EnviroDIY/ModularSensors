@@ -27,7 +27,7 @@ class Sensor
 {
 public:
 
-    Sensor(String sensorName = "Unknown", uint8_t numReturnedVars = 1,
+    Sensor(const char *sensorName = "Unknown", uint8_t numReturnedVars = 1,
            uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0,
            int8_t powerPin = -1, int8_t dataPin = -1, uint8_t measurementsToAverage = 1);
 
@@ -143,7 +143,7 @@ protected:
 
     int8_t _dataPin;  // SIGNED int, to allow negative numbers for unused pins
     int8_t _powerPin;  // SIGNED int, to allow negative numbers for unused pins
-    String _sensorName;
+    const char *_sensorName;
     uint8_t _numReturnedVars;
     uint8_t _measurementsToAverage;
     uint8_t numberGoodMeasurementsMade[MAX_NUMBER_VARS];

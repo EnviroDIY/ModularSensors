@@ -55,13 +55,13 @@ public:
     YosemitechY504(byte modbusAddress, Stream* stream, int8_t powerPin,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
-                        Y504, F("YosemitechY504"), Y504_NUM_VARIABLES,
+                        Y504, "YosemitechY504", Y504_NUM_VARIABLES,
                         Y504_WARM_UP_TIME_MS, Y504_STABILIZATION_TIME_MS, Y504_MEASUREMENT_TIME_MS)
     {}
     YosemitechY504(byte modbusAddress, Stream& stream, int8_t powerPin,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
-                        Y504, F("YosemitechY504"), Y504_NUM_VARIABLES,
+                        Y504, "YosemitechY504", Y504_NUM_VARIABLES,
                         Y504_WARM_UP_TIME_MS, Y504_STABILIZATION_TIME_MS, Y504_MEASUREMENT_TIME_MS)
     {}
 };
@@ -74,9 +74,9 @@ public:
     YosemitechY504_DOpct(Sensor *parentSense,
                          const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y504_DOPCT_VAR_NUM,
-                F("oxygenDissolvedPercentOfSaturation"), F("percent"),
+                "oxygenDissolvedPercentOfSaturation", "percent",
                 Y504_DOPCT_RESOLUTION,
-                F("Y504DOpct"), UUID, customVarCode)
+                "Y504DOpct", UUID, customVarCode)
     {}
 };
 
@@ -88,9 +88,9 @@ public:
     YosemitechY504_Temp(Sensor *parentSense,
                         const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y504_TEMP_VAR_NUM,
-                F("temperature"), F("degreeCelsius"),
+                "temperature", "degreeCelsius",
                 Y504_TEMP_RESOLUTION,
-                F("Y504temp"), UUID, customVarCode)
+                "Y504temp", UUID, customVarCode)
     {}
 };
 
@@ -102,9 +102,9 @@ public:
     YosemitechY504_DOmgL(Sensor *parentSense,
                          const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y504_DOMGL_VAR_NUM,
-                F("oxygenDissolved"), F("milligramPerLiter"),
+                "oxygenDissolved", "milligramPerLiter",
                 Y504_DOMGL_RESOLUTION,
-                F("Y504DOmgL"), UUID, customVarCode)
+                "Y504DOmgL", UUID, customVarCode)
     {}
 };
 

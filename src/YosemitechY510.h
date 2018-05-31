@@ -52,13 +52,13 @@ public:
     YosemitechY510(byte modbusAddress, Stream* stream, int8_t powerPin,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
-                        Y510, F("YosemitechY510"), Y510_NUM_VARIABLES,
+                        Y510, "YosemitechY510", Y510_NUM_VARIABLES,
                         Y510_WARM_UP_TIME_MS, Y510_STABILIZATION_TIME_MS, Y510_MEASUREMENT_TIME_MS)
     {}
     YosemitechY510(byte modbusAddress, Stream& stream, int8_t powerPin,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
-                        Y510, F("YosemitechY510"), Y510_NUM_VARIABLES,
+                        Y510, "YosemitechY510", Y510_NUM_VARIABLES,
                         Y510_WARM_UP_TIME_MS, Y510_STABILIZATION_TIME_MS, Y510_MEASUREMENT_TIME_MS)
     {}
 };
@@ -70,9 +70,9 @@ class YosemitechY510_Turbidity : public Variable
 public:
     YosemitechY510_Turbidity(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y510_TURB_VAR_NUM,
-                F("turbidity"), F("nephelometricTurbidityUnit"),
+                "turbidity", "nephelometricTurbidityUnit",
                 Y510_TURB_RESOLUTION,
-                F("Y510Turbidity"), UUID, customVarCode)
+                "Y510Turbidity", UUID, customVarCode)
     {}
 };
 
@@ -83,9 +83,9 @@ class YosemitechY510_Temp : public Variable
 public:
     YosemitechY510_Temp(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y510_TEMP_VAR_NUM,
-                F("temperature"), F("degreeCelsius"),
+                "temperature", "degreeCelsius",
                 Y510_TEMP_RESOLUTION,
-                F("Y510temp"), UUID, customVarCode)
+                "Y510temp", UUID, customVarCode)
     {}
 };
 

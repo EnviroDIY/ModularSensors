@@ -22,7 +22,7 @@
 
 // The constructor - if the hex address is known - also need the power pin and the data pin
 MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
-  : Sensor(F("MaximDS18"), DS18_NUM_VARIABLES,
+  : Sensor("MaximDS18", DS18_NUM_VARIABLES,
            DS18_WARM_UP_TIME_MS, DS18_STABILIZATION_TIME_MS, DS18_MEASUREMENT_TIME_MS,
            powerPin, dataPin, measurementsToAverage),
     oneWire(dataPin), tempSensors(&oneWire)
@@ -34,7 +34,7 @@ MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int8_t powerPin, int8_t dataP
 // The constructor - if the hex address is NOT known - only need the power pin and the data pin
 // Can only use this if there is only a single sensor on the pin
 MaximDS18::MaximDS18(int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
-  : Sensor(F("MaximDS18"), DS18_NUM_VARIABLES,
+  : Sensor("MaximDS18", DS18_NUM_VARIABLES,
            DS18_WARM_UP_TIME_MS, DS18_STABILIZATION_TIME_MS, DS18_MEASUREMENT_TIME_MS,
            powerPin, dataPin, measurementsToAverage),
     oneWire(dataPin), tempSensors(&oneWire)

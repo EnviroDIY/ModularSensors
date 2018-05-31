@@ -58,9 +58,9 @@ public:
     MaxBotixSonar_Range(Sensor *parentSense,
                         const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, HRXL_VAR_NUM,
-               F("distance"), F("millimeter"),
+               "distance", "millimeter",
                HRXL_RESOLUTION,
-               F("SonarRange"), UUID, customVarCode)
+               "SonarRange", UUID, customVarCode)
     {}
 };
 
