@@ -67,7 +67,7 @@ class MPL115A2_Temp : public Variable
 {
 public:
     MPL115A2_Temp(Sensor *parentSense,
-                     String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
+                     const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, MPL115A2_TEMP_VAR_NUM,
                F("temperature"), F("degreeCelsius"),
                MPL115A2_TEMP_RESOLUTION,
@@ -81,7 +81,7 @@ class MPL115A2_Pressure : public Variable
 {
 public:
     MPL115A2_Pressure(Sensor *parentSense,
-                         String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
+                         const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, MPL115A2_PRESSURE_VAR_NUM,
                F("atmosphericPressure"), F("kPa"),
                MPL115A2_PRESSURE_RESOLUTION,

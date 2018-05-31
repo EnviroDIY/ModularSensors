@@ -65,7 +65,7 @@ class AOSongAM2315_Humidity : public Variable
 {
 public:
     AOSongAM2315_Humidity(Sensor *parentSense,
-                          String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY) :
+                          const char *UUID = "", const char *customVarCode = "") :
       Variable(parentSense, AM2315_HUMIDITY_VAR_NUM,
                F("relativeHumidity"), F("percent"),
                AM2315_HUMIDITY_RESOLUTION,
@@ -79,7 +79,7 @@ class AOSongAM2315_Temp : public Variable
 {
 public:
     AOSongAM2315_Temp(Sensor *parentSense,
-                      String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY) :
+                      const char *UUID = "", const char *customVarCode = "") :
       Variable(parentSense, AM2315_TEMP_VAR_NUM,
                F("temperature"), F("degreeCelsius"),
                AM2315_TEMP_RESOLUTION,

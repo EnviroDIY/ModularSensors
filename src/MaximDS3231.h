@@ -67,7 +67,7 @@ class MaximDS3231_Temp : public Variable
 {
 public:
     MaximDS3231_Temp(Sensor *parentSense,
-                     String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
+                     const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, DS3231_TEMP_VAR_NUM,
                  F("temperatureRTC"), F("degreeCelsius"),
                  DS3231_TEMP_RESOLUTION,

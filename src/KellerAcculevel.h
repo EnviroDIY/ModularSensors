@@ -55,7 +55,7 @@ public:
 class KellerAcculevel_Pressure : public Variable
 {
 public:
-    KellerAcculevel_Pressure(Sensor *parentSense, String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
+    KellerAcculevel_Pressure(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, KELLER_PRESSURE_VAR_NUM,
                 F("pressureGauge"), F("millibar"),
                 KellerAcculevel_PRESSURE_RESOLUTION,
@@ -68,7 +68,7 @@ public:
 class KellerAcculevel_Temp : public Variable
 {
 public:
-    KellerAcculevel_Temp(Sensor *parentSense, String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
+    KellerAcculevel_Temp(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, KELLER_TEMP_VAR_NUM,
                 F("temperature"), F("degreeCelsius"),
                 KellerAcculevel_TEMP_RESOLUTION,
@@ -80,7 +80,7 @@ public:
 class KellerAcculevel_Height : public Variable
 {
 public:
-    KellerAcculevel_Height(Sensor *parentSense, String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
+    KellerAcculevel_Height(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, KELLER_HEIGHT_VAR_NUM,
                 F("gaugeHeight"), F("meter"),
                 KellerAcculevel_HEIGHT_RESOLUTION,

@@ -70,7 +70,7 @@ class YosemitechY514_Chlorophyll : public Variable
 {
 public:
     YosemitechY514_Chlorophyll(Sensor *parentSense,
-                               String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
+                               const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y514_CHLORO_VAR_NUM,
                 F("chlorophyllFluorescence"), F("microgramPerLiter"),
                 Y514_CHLORO_RESOLUTION,
@@ -84,7 +84,7 @@ class YosemitechY514_Temp : public Variable
 {
 public:
     YosemitechY514_Temp(Sensor *parentSense,
-                        String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
+                        const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y514_TEMP_VAR_NUM,
                 F("temperature"), F("degreeCelsius"),
                 Y514_TEMP_RESOLUTION,

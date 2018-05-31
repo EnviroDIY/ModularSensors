@@ -35,6 +35,8 @@
 
 #include <SdFat.h>  // To communicate with the SD card
 
+static String LOGGER_EMPTY = "";
+
 // Defines the "Logger" Class
 class Logger
 {

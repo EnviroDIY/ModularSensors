@@ -15,8 +15,7 @@
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
-static String VAR_BASE_UNKNOWN = "Unknown";
-static String VAR_BASE_EMPTY = "";
+const char* VAR_BASE_UNKNOWN = "Unknown";
 
 class Sensor;  // Forward declaration
 
@@ -29,7 +28,7 @@ public:
              String varName = VAR_BASE_UNKNOWN, String varUnit = VAR_BASE_UNKNOWN,
              unsigned int decimalResolution = 0,
              String defaultVarCode = VAR_BASE_UNKNOWN,
-             String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY);
+             const char *UUID = "", const char *customVarCode = "");
 
      // The constructor for a measured variable - that is, one whose value is
      // calculated by the calcFxn which returns a float.
@@ -37,7 +36,7 @@ public:
      Variable(float (*calcFxn)(),
               String& varName, String& varUnit,
               unsigned int decimalResolution,
-              String& UUID, String& customVarCode);
+              const char *UUID, const char *customVarCode);
 
     // These functions tie the variable and sensor together
     // They should never be called for a calculated variable
@@ -84,8 +83,8 @@ private:
     String _varUnit;
     unsigned int _decimalResolution;
     String _defaultVarCode;
-    String _customCode;
-    String _UUID;
+    const char *_customCode;
+    const char *_UUID;
 };
 
 #endif

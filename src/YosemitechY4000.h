@@ -123,7 +123,7 @@ class YosemitechY4000_DOmgL : public Variable
 {
 public:
     YosemitechY4000_DOmgL(Sensor *parentSense,
-                         String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
+                         const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y4000_DOMGL_VAR_NUM,
                 F("oxygenDissolved"), F("milligramPerLiter"),
                 Y4000_DOMGL_RESOLUTION,
@@ -135,7 +135,7 @@ public:
 class YosemitechY4000_Turbidity : public Variable
 {
 public:
-    YosemitechY4000_Turbidity(Sensor *parentSense, String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
+    YosemitechY4000_Turbidity(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y4000_TURB_VAR_NUM,
                 F("turbidity"), F("nephelometricTurbidityUnit"),
                 Y4000_TURB_RESOLUTION,
@@ -147,7 +147,7 @@ public:
 class YosemitechY4000_Cond : public Variable
 {
 public:
-    YosemitechY4000_Cond(Sensor *parentSense, String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
+    YosemitechY4000_Cond(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y4000_COND_VAR_NUM,
                 F("specificConductance"), F("microsiemenPerCentimeter"),
                 Y4000_COND_RESOLUTION,
@@ -160,7 +160,7 @@ class YosemitechY4000_pH : public Variable
 {
 public:
     YosemitechY4000_pH(Sensor *parentSense,
-                      String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
+                      const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y4000_PH_VAR_NUM,
                 F("pH"), F("pH"),
                 Y4000_PH_RESOLUTION,
@@ -173,7 +173,7 @@ class YosemitechY4000_Temp : public Variable
 {
 public:
     YosemitechY4000_Temp(Sensor *parentSense,
-                        String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
+                        const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y4000_TEMP_VAR_NUM,
                 F("temperature"), F("degreeCelsius"),
                 Y4000_TEMP_RESOLUTION,
@@ -186,7 +186,7 @@ class YosemitechY4000_ORP : public Variable
 {
 public:
     YosemitechY4000_ORP(Sensor *parentSense,
-                           String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
+                           const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y4000_ORP_VAR_NUM,
                 F("ORP"), F("millivolt"),
                 Y4000_ORP_RESOLUTION,
@@ -199,7 +199,7 @@ class YosemitechY4000_Chlorophyll : public Variable
 {
 public:
     YosemitechY4000_Chlorophyll(Sensor *parentSense,
-                               String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
+                               const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y4000_CHLORO_VAR_NUM,
                 F("chlorophyllFluorescence"), F("microgramPerLiter"),
                 Y4000_CHLORO_RESOLUTION,
@@ -212,7 +212,7 @@ class YosemitechY4000_BGA : public Variable
 {
 public:
     YosemitechY4000_BGA(Sensor *parentSense,
-                               String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
+                               const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y4000_BGA_VAR_NUM,
                 F("blueGreenAlgaeCyanobacteriaPhycocyanin"), F("microgramPerLiter"),
                 Y4000_BGA_RESOLUTION,

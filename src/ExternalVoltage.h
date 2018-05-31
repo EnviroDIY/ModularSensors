@@ -81,7 +81,7 @@ class ExternalVoltage_Volt : public Variable
 {
 public:
     ExternalVoltage_Volt(Sensor *parentSense,
-                         String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
+                         const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, EXT_VOLT_VAR_NUM,
                  F("voltage"), F("volt"),
                  EXT_VOLT_RESOLUTION,

@@ -197,8 +197,8 @@ float calculateWaterPressure(void)
 String waterPresureVarName = "pressureGauge";  // This must be a value from http://vocabulary.odm2.org/variablename/
 String waterPresureVarUnit = "millibar";  // This must be a value from http://vocabulary.odm2.org/units/
 int waterPresureVarResolution = 3;
-String waterPressureUUID = "12345678-abcd-1234-efgh-1234567890ab";
-String waterPresureVarCode = "CorrectedPressure";
+const char *waterPressureUUID = "12345678-abcd-1234-efgh-1234567890ab";
+const char *waterPresureVarCode = "CorrectedPressure";
 // Create the calculated water pressure variable objects and return a variable pointer to it
 Variable *calcWaterPress = new Variable(calculateWaterPressure, waterPresureVarName,
                                         waterPresureVarUnit, waterPresureVarResolution,
@@ -219,8 +219,8 @@ float calculateWaterDepthRaw(void)
 String waterDepthVarName = "waterDepth";  // This must be a value from http://vocabulary.odm2.org/variablename/
 String waterDepthVarUnit = "millimeter";  // This must be a value from http://vocabulary.odm2.org/units/
 int waterDepthVarResolution = 3;
-String waterDepthUUID = "12345678-abcd-1234-efgh-1234567890ab";
-String waterDepthVarCode = "CalcDepth";
+const char *waterDepthUUID = "12345678-abcd-1234-efgh-1234567890ab";
+const char *waterDepthVarCode = "CalcDepth";
 // Create the calculated raw water depth variable objects and return a variable pointer to it
 Variable *calcRawDepth = new Variable(calculateWaterDepthRaw, waterDepthVarName,
                                       waterDepthVarUnit, waterDepthVarResolution,
@@ -255,8 +255,8 @@ float calculateWaterDepthTempCorrected(void)
 String rhoDepthVarName = "waterDepth";  // This must be a value from http://vocabulary.odm2.org/variablename/
 String rhoDepthVarUnit = "millimeter";  // This must be a value from http://vocabulary.odm2.org/units/
 int rhoDepthVarResolution = 3;
-String rhoDepthUUID = "12345678-abcd-1234-efgh-1234567890ab";
-String rhoDepthVarCode = "DensityDepth";
+const char *rhoDepthUUID = "12345678-abcd-1234-efgh-1234567890ab";
+const char *rhoDepthVarCode = "DensityDepth";
 // Create the temperature corrected water depth variable objects and return a variable pointer to it
 Variable *calcCorrDepth = new Variable(calculateWaterDepthTempCorrected, rhoDepthVarName,
                                        rhoDepthVarUnit, rhoDepthVarResolution,

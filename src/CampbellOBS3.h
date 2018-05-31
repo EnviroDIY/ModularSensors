@@ -74,7 +74,7 @@ class CampbellOBS3_Turbidity : public Variable
 {
 public:
     CampbellOBS3_Turbidity(Sensor *parentSense,
-                           String& UUID = VAR_BASE_EMPTY, String& customVarCode = VAR_BASE_EMPTY)
+                           const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, OBS3_TURB_VAR_NUM,
                  F("turbidity"), F("nephelometricTurbidityUnit"),
                  OBS3_RESOLUTION,
