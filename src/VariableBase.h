@@ -15,8 +15,6 @@
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
-const char* VAR_BASE_UNKNOWN = "Unknown";
-
 class Sensor;  // Forward declaration
 
 class Variable
@@ -85,6 +83,7 @@ private:
     const char *_defaultVarCode;
     const char *_customCode;
     const char *_UUID;
+    static const char* VAR_BASE_UNKNOWN;
 };
 
 #endif

@@ -14,6 +14,8 @@
 //  The class and functions for interfacing with a specific variable.
 // ============================================================================
 
+const char* Variable::VAR_BASE_UNKNOWN = "Unknown";
+
 // The constructor for a measured variable - that is, one whose values are
 // updated by a sensor.
 Variable::Variable(Sensor *parentSense, int varNum,
