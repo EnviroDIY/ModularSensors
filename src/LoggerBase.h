@@ -29,9 +29,11 @@
 // Bring in the library to commuinicate with an external high-precision real time clock
 // This also implements a needed date/time class
 #include <Sodaq_DS3231.h>
-#define EPOCH_TIME_OFF 946684800  // This is 2000-jan-01 00:00:00 in epoch time
-// Need this b/c the date/time class in Sodaq_DS3231 treats a 32-bit long timestamp
-// as time from 2000-jan-01 00:00:00 instead of the standard epoch of 1970-jan-01 00:00:00
+#define EPOCH_TIME_OFF 946684800
+// This is 2000-jan-01 00:00:00 in "epoch" time
+// Need this b/c the date/time class in Sodaq_DS3231 treats a 32-bit long
+// timestamp as time from 2000-jan-01 00:00:00 instead of the standard (unix)
+// epoch beginning 1970-jan-01 00:00:00.
 
 #include <SdFat.h>  // To communicate with the SD card
 
@@ -198,8 +200,8 @@ public:
     static uint32_t markedEpochTime;
 
     // These are flag fariables noting the current state (logging/testing)
-    // NOTE:  if the logger isn't currently logging or testing or in the middle of set-up,
-    // it's probably sleeping
+    // NOTE:  if the logger isn't currently logging or testing or in the middle
+    // of set-up, it's probably sleeping
     // Setting these as volatile because the flags can be changed in ISR's
     static volatile bool isLoggingNow;
     static volatile bool isTestingNow;
@@ -238,18 +240,20 @@ protected:
     int8_t _buttonPin;
 
     // This checks if the SD card is available and ready
+    // We run this check before every communication with the SD card to prevent
+    // hanging.
     bool initializeSDCard(void);
 
     // This generates a file name from the logger id and the current date
-    // NOTE:  This cannot be called until the set-up after the RTC is started
+    // NOTE:  This cannot be called until *after* the RTC is started
     void generateAutoFileName(void);
 
     // This sets a timestamp on a file
     void setFileTimestamp(File fileToStamp, uint8_t stampFlag);
 
     // This opens or creates a file, converting a string file name to a
-    // characterd file name
-    bool openFile(String filename, bool createFile, bool writeDefaultHeader);
+    // character file name
+    bool openFile(String& filename, bool createFile, bool writeDefaultHeader);
 };
 
 #endif

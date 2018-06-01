@@ -676,7 +676,7 @@ void Logger::setFileTimestamp(File fileToStamp, uint8_t stampFlag)
 
 // Private helper function - This opens or creates a file, converting a string
 // file name to a character file name
-bool Logger::openFile(String filename, bool createFile, bool writeDefaultHeader)
+bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader)
 {
     // Initialise the SD card
     // skip everything else if there's no SD card, otherwise it might hang

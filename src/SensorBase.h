@@ -61,9 +61,9 @@ public:
     virtual bool setup(void);
 
     // This updates the sensor's values
-    // This includes clears the values array, starts and averages as many
-    // measurement readings as requested, and then notifies the registerd
-    // variables of the new resutls.
+    // This clears the values array, starts and averages as many measurement
+    // readings as requested, and then notifies the registered variables
+    // of the new results.  All possible waits are included in this function!
     virtual bool update(void);
 
     // This turns on the sensor power, if applicable
@@ -76,6 +76,7 @@ public:
     // This wakes the sensor up, if necessary - that is, does whatever it takes to
     // get a sensor in the proper state to begin a measurement after the power is on.
     // This *may* require a waitForWarmUp() before wake commands can be sent.
+    // The wait is NOT included in this function!
     // This also sets the _millisSensorActivated timestamp.
     // By default, verifies the power is on and returns true
     virtual bool wake(void);
@@ -88,6 +89,7 @@ public:
     // This also sets the _millisMeasurementRequested timestamp.
     // This *may* require a waitForWarmUp() before measurement commands can be sent.
     // This *may* also require a waitForStability() before returned measurements will be any good.
+    // The waits are NOT included in this function!
     virtual bool startSingleMeasurement(void);
 
     // This next function must be implemented for ever sensor!!
@@ -95,13 +97,14 @@ public:
     // This also un-sets the _millisMeasurementRequested timestamp.
     // This *may* also require a waitForStability() before returned measurements will be any good.
     // This will often require a waitForMeasurementCompletion() to ensure a measurement is done.
+    // The waits are NOT included in this function!
     virtual bool addSingleMeasurementResult(void) = 0;
 
     // This is the array of result values for each sensor
     float sensorValues[MAX_NUMBER_VARS];
     // Clears the values array
     void clearValues();
-    // This verifies that a measurement is OK before adding it to the array
+    // This verifies that a measurement is OK (ie, not -9999) before adding it to the array
     void verifyAndAddMeasurementResult(int resultNumber, float resultValue);
     void verifyAndAddMeasurementResult(int resultNumber, int resultValue);
     void averageMeasurements(void);
