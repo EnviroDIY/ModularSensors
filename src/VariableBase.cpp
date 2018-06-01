@@ -14,13 +14,15 @@
 //  The class and functions for interfacing with a specific variable.
 // ============================================================================
 
+const char* Variable::VAR_BASE_UNKNOWN = "Unknown";
+
 // The constructor for a measured variable - that is, one whose values are
 // updated by a sensor.
 Variable::Variable(Sensor *parentSense, int varNum,
-                   String varName, String varUnit,
+                   const char *varName, const char *varUnit,
                    unsigned int decimalResolution,
-                   String defaultVarCode,
-                   String UUID, String customVarCode)
+                   const char *defaultVarCode,
+                   const char *UUID, const char *customVarCode)
 {
     isCalculated = false;
     _calcFxn = NULL;
@@ -42,9 +44,9 @@ Variable::Variable(Sensor *parentSense, int varNum,
 // calculated by the calcFxn which returns a float.
 // NOTE:  ALL arguments are required!
 Variable::Variable(float (*calcFxn)(),
-                   String varName, String varUnit,
+                   const char *varName, const char *varUnit,
                    unsigned int decimalResolution,
-                   String UUID, String customVarCode)
+                   const char *UUID, const char *customVarCode)
 {
     isCalculated = true;
     _calcFxn = calcFxn;
@@ -123,7 +125,7 @@ String Variable::getVarUnit(void){return _varUnit;}
 // This returns a customized code for the variable, if one is given, and a default if not
 String Variable::getVarCode(void)
 {
-    if (_customCode != "") return _customCode;
+    if (strcmp(_customCode,"") != 0) return _customCode;
     else return _defaultVarCode;
 }
 

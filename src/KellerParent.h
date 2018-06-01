@@ -38,11 +38,11 @@ class KellerParent : public Sensor
 public:
     KellerParent(byte modbusAddress, Stream* stream,
              int8_t powerPin, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
-             kellerModel model = OTHER, String sensName = "Keller-Sensor", int numVariables = 3,
+             kellerModel model = OTHER, const char *sensName = "Keller-Sensor", int numVariables = 3,
              uint32_t warmUpTime_ms = 500, uint32_t stabilizationTime_ms = 5000, uint32_t measurementTime_ms = 1500);
     KellerParent(byte modbusAddress, Stream& stream,
              int8_t powerPin, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
-             kellerModel model = OTHER, String sensName = "Keller-Sensor", int numVariables = 3,
+             kellerModel model = OTHER, const char *sensName = "Keller-Sensor", int numVariables = 3,
              uint32_t warmUpTime_ms = 500, uint32_t stabilizationTime_ms = 5000, uint32_t measurementTime_ms = 1500);
 
     String getSensorLocation(void) override;

@@ -97,7 +97,7 @@
 
 // Need to know the Mayfly version because the battery resistor depends on it
 ProcessorStats::ProcessorStats(const char *version)
-    : Sensor(F(BOARD), PROCESSOR_NUM_VARIABLES,
+    : Sensor(BOARD, PROCESSOR_NUM_VARIABLES,
              PROCESSOR_WARM_UP_TIME_MS, PROCESSOR_STABILIZATION_TIME_MS, PROCESSOR_MEASUREMENT_TIME_MS,
              -1, -1, 1)
 {

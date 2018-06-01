@@ -84,11 +84,11 @@ class BoschBME280_Temp : public Variable
 {
 public:
     BoschBME280_Temp(Sensor *parentSense,
-                     String UUID = "", String customVarCode = "")
+                     const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, BME280_TEMP_VAR_NUM,
-               F("temperature"), F("degreeCelsius"),
+               "temperature", "degreeCelsius",
                BME280_TEMP_RESOLUTION,
-               F("BoschBME280Temp"), UUID, customVarCode)
+               "BoschBME280Temp", UUID, customVarCode)
     {}
 };
 
@@ -98,11 +98,11 @@ class BoschBME280_Humidity : public Variable
 {
 public:
     BoschBME280_Humidity(Sensor *parentSense,
-                         String UUID = "", String customVarCode = "")
+                         const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, BME280_HUMIDITY_VAR_NUM,
-               F("relativeHumidity"), F("percent"),
+               "relativeHumidity", "percent",
                BME280_HUMIDITY_RESOLUTION,
-               F("BoschBME280Humidity"), UUID, customVarCode)
+               "BoschBME280Humidity", UUID, customVarCode)
     {}
 };
 
@@ -112,11 +112,11 @@ class BoschBME280_Pressure : public Variable
 {
 public:
     BoschBME280_Pressure(Sensor *parentSense,
-                         String UUID = "", String customVarCode = "")
+                         const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, BME280_PRESSURE_VAR_NUM,
-               F("barometricPressure"), F("pascal"),
+               "barometricPressure", "pascal",
                BME280_PRESSURE_RESOLUTION,
-               F("BoschBME280Pressure"), UUID, customVarCode)
+               "BoschBME280Pressure", UUID, customVarCode)
     {}
 };
 
@@ -126,11 +126,11 @@ class BoschBME280_Altitude : public Variable
 {
 public:
     BoschBME280_Altitude(Sensor *parentSense,
-                         String UUID = "", String customVarCode = "")
+                         const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, BME280_ALTITUDE_VAR_NUM,
-               F("heightAboveSeaFloor"), F("meter"),
+               "heightAboveSeaFloor", "meter",
                BME280_ALTITUDE_RESOLUTION,
-               F("BoschBME280Altitude"), UUID, customVarCode)
+               "BoschBME280Altitude", UUID, customVarCode)
     {}
 };
 

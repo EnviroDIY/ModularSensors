@@ -29,11 +29,15 @@
 // Bring in the library to commuinicate with an external high-precision real time clock
 // This also implements a needed date/time class
 #include <Sodaq_DS3231.h>
-#define EPOCH_TIME_OFF 946684800  // This is 2000-jan-01 00:00:00 in epoch time
-// Need this b/c the date/time class in Sodaq_DS3231 treats a 32-bit long timestamp
-// as time from 2000-jan-01 00:00:00 instead of the standard epoch of 1970-jan-01 00:00:00
+#define EPOCH_TIME_OFF 946684800
+// This is 2000-jan-01 00:00:00 in "epoch" time
+// Need this b/c the date/time class in Sodaq_DS3231 treats a 32-bit long
+// timestamp as time from 2000-jan-01 00:00:00 instead of the standard (unix)
+// epoch beginning 1970-jan-01 00:00:00.
 
 #include <SdFat.h>  // To communicate with the SD card
+
+static String LOGGER_EMPTY = "";
 
 // Defines the "Logger" Class
 class Logger
@@ -77,7 +81,7 @@ public:
     static DateTime dtFromEpoch(uint32_t epochTime);
 
     // This converts a date-time object into a ISO8601 formatted string
-    static String formatDateTime_ISO8601(DateTime dt);
+    static String formatDateTime_ISO8601(DateTime& dt);
 
     // This converts an epoch time (unix time) into a ISO8601 formatted string
     static String formatDateTime_ISO8601(uint32_t epochTime);
@@ -123,9 +127,9 @@ public:
     // Public functions for logging data to an SD card
     // ===================================================================== //
     // This sets a file name, if you want to decide on it in advance
-    void setFileName(char *fileName);
+    void setFileName(const char *fileName);
     // Same as above, with a string (overload function)
-    void setFileName(String fileName);
+    void setFileName(String& fileName);
 
     // This returns the current filename.  Must be run after setFileName.
     String getFileName(void){return _fileName;}
@@ -150,7 +154,7 @@ public:
     // If asked to, these functions will also write a header to the file based
     // on the variable information from the variable array.
     // This can be used to force a logger to create a file with a secondary file name.
-    bool createLogFile(String filename, bool writeDefaultHeader = false);
+    bool createLogFile(String& filename, bool writeDefaultHeader = false);
     bool createLogFile(bool writeDefaultHeader = false);
 
     // These functions create a file on an SD card and set the modified/accessed
@@ -162,8 +166,8 @@ public:
     // The line to be written to the file can either be specified or will be
     // a comma separated list of the current values of all variables in the
     // variable array.
-    bool logToSD(String filename, String rec);
-    bool logToSD(String rec);
+    bool logToSD(String& filename, String& rec);
+    bool logToSD(String& rec);
     bool logToSD(void);
 
 
@@ -196,8 +200,8 @@ public:
     static uint32_t markedEpochTime;
 
     // These are flag fariables noting the current state (logging/testing)
-    // NOTE:  if the logger isn't currently logging or testing or in the middle of set-up,
-    // it's probably sleeping
+    // NOTE:  if the logger isn't currently logging or testing or in the middle
+    // of set-up, it's probably sleeping
     // Setting these as volatile because the flags can be changed in ISR's
     static volatile bool isLoggingNow;
     static volatile bool isTestingNow;
@@ -236,18 +240,20 @@ protected:
     int8_t _buttonPin;
 
     // This checks if the SD card is available and ready
+    // We run this check before every communication with the SD card to prevent
+    // hanging.
     bool initializeSDCard(void);
 
     // This generates a file name from the logger id and the current date
-    // NOTE:  This cannot be called until the set-up after the RTC is started
+    // NOTE:  This cannot be called until *after* the RTC is started
     void generateAutoFileName(void);
 
     // This sets a timestamp on a file
     void setFileTimestamp(File fileToStamp, uint8_t stampFlag);
 
     // This opens or creates a file, converting a string file name to a
-    // characterd file name
-    bool openFile(String filename, bool createFile, bool writeDefaultHeader);
+    // character file name
+    bool openFile(String& filename, bool createFile, bool writeDefaultHeader);
 };
 
 #endif

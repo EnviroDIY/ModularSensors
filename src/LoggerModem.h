@@ -136,7 +136,7 @@ class loggerModem : public Sensor
 public:
     // Constructors
     loggerModem()
-        : Sensor(F(MODEM_NAME), MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1)
+        : Sensor(MODEM_NAME, MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1)
     {_lastNISTrequest = 0;}
 
     String getSensorLocation(void) override { return F("modemSerial"); }
@@ -456,7 +456,8 @@ public:
     {
         bool connectionMade = false;
         // bail if not connected to the internet
-        // TODO:  Figure out why _model->isNetworkConnected() isn't working here
+        // TODO:  Figure out why _modem->isNetworkConnected() isn't working here
+        // if (!_modem->isNetworkConnected())
         if (!(connectInternet(1000)))
         {
             MS_MOD_DBG(F("No internet connection, cannot connect to NIST.\n"));
@@ -689,11 +690,11 @@ private:
 class Modem_RSSI : public Variable
 {
 public:
-    Modem_RSSI(Sensor *parentSense, String UUID = "", String customVarCode = "")
+    Modem_RSSI(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, RSSI_VAR_NUM,
-                F("RSSI"), F("decibelMiliWatt"),
+                "RSSI", "decibelMiliWatt",
                 RSSI_RESOLUTION,
-                F("RSSI"), UUID, customVarCode)
+                "RSSI", UUID, customVarCode)
     {}
 };
 
@@ -702,11 +703,11 @@ public:
 class Modem_SignalPercent : public Variable
 {
 public:
-    Modem_SignalPercent(Sensor *parentSense, String UUID = "", String customVarCode = "")
+    Modem_SignalPercent(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, PERCENT_SIGNAL_VAR_NUM,
-                F("signalPercent"), F("percent"),
+                "signalPercent", "percent",
                 PERCENT_SIGNAL_RESOLUTION,
-                F("signalPercent"), UUID, customVarCode)
+                "signalPercent", UUID, customVarCode)
     {}
 };
 

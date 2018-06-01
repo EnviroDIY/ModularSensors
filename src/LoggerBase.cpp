@@ -7,7 +7,7 @@
  *This file is for the basic logging functions - ie, saving to an SD card.
 */
 
-#include "LoggerBase.h"  // To communicate with the internet
+#include "LoggerBase.h"
 
 // To prevent compiler/linker crashes with Enable interrupt
 #define LIBCALL_ENABLEINTERRUPT
@@ -151,7 +151,7 @@ DateTime Logger::dtFromEpoch(uint32_t epochTime)
 }
 
 // This converts a date-time object into a ISO8601 formatted string
-String Logger::formatDateTime_ISO8601(DateTime dt)
+String Logger::formatDateTime_ISO8601(DateTime& dt)
 {
     // Set up an inital string
     String dateTimeStr;
@@ -489,15 +489,16 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
 // ===================================================================== //
 
 // This sets a file name, if you want to decide on it in advance
-void Logger::setFileName(String fileName)
+void Logger::setFileName(String& fileName)
 {
     _fileName = fileName;
     _autoFileName = false;
 }
 // Same as above, with a character array (overload function)
-void Logger::setFileName(char *fileName)
+void Logger::setFileName(const char *fileName)
 {
-    setFileName(String(fileName));
+    String StrName = String(fileName);
+    setFileName(StrName);
 }
 
 
@@ -675,7 +676,7 @@ void Logger::setFileTimestamp(File fileToStamp, uint8_t stampFlag)
 
 // Private helper function - This opens or creates a file, converting a string
 // file name to a character file name
-bool Logger::openFile(String filename, bool createFile, bool writeDefaultHeader)
+bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader)
 {
     // Initialise the SD card
     // skip everything else if there's no SD card, otherwise it might hang
@@ -745,7 +746,7 @@ bool Logger::openFile(String filename, bool createFile, bool writeDefaultHeader)
 // If specified, it will also write a header to the file based on
 // the sensors in the group.
 // This can be used to force a logger to create a file with a secondary file name.
-bool Logger::createLogFile(String filename, bool writeDefaultHeader)
+bool Logger::createLogFile(String& filename, bool writeDefaultHeader)
 {
     // Attempt to create and open a file
     if (openFile(filename, true, writeDefaultHeader))
@@ -769,7 +770,7 @@ bool Logger::createLogFile(bool writeDefaultHeader)
 // or can be specified in the function.
 // If the file does not already exist, the file will be created.
 // This can be used to force a logger to write to a file with a secondary file name.
-bool Logger::logToSD(String filename, String rec)
+bool Logger::logToSD(String& filename, String& rec)
 {
     // First attempt to open the file without creating a new one
     if (openFile(filename, false, false)) goto writeRecord;
@@ -797,7 +798,7 @@ bool Logger::logToSD(String filename, String rec)
         return true;
     }
 }
-bool Logger::logToSD(String rec)
+bool Logger::logToSD(String& rec)
 {
     return logToSD(_fileName, rec);
 }

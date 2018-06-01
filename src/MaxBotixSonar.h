@@ -56,11 +56,11 @@ class MaxBotixSonar_Range : public Variable
 {
 public:
     MaxBotixSonar_Range(Sensor *parentSense,
-                        String UUID = "", String customVarCode = "")
+                        const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, HRXL_VAR_NUM,
-               F("distance"), F("millimeter"),
+               "distance", "millimeter",
                HRXL_RESOLUTION,
-               F("SonarRange"), UUID, customVarCode)
+               "SonarRange", UUID, customVarCode)
     {}
 };
 

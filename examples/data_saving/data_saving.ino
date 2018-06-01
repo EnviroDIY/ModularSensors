@@ -59,7 +59,7 @@ const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be d
 
 // Create and return the processor "sensor"
 const char *MFVersion = "v0.5";
-ProcessorStats mayfly(MFVersion) ;
+ProcessorStats mayfly(MFVersion);
 // Create the battery voltage and free RAM variable objects for the Y504 and return variable-type pointers to them
 Variable *mayflyBatt = new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *mayflyRAM = new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
@@ -320,8 +320,8 @@ void setup()
     // Attach the same modem to both loggers
     // It is only needed for the logger that will be sending out data, but
     // attaching it to both allows either logger to control NIST synchronization
-    loggerComplete.attachModem(&modem);
-    loggerToGo.attachModem(&modem);
+    loggerComplete.attachModem(modem);
+    loggerToGo.attachModem(modem);
     loggerComplete.setTestingModePin(buttonPin);
     // There is no reason to call the setAlertPin() function, because we have to
     // write the loop on our own.

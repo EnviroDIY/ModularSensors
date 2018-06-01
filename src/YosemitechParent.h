@@ -31,11 +31,11 @@ class YosemitechParent : public Sensor
 public:
     YosemitechParent(byte modbusAddress, Stream* stream,
                      int8_t powerPin, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
-                     yosemitechModel model = UNKNOWN, String sensName = "Yosemitech-Sensor", int numVariables = 2,
+                     yosemitechModel model = UNKNOWN, const char *sensName = "Yosemitech-Sensor", int numVariables = 2,
                      uint32_t warmUpTime_ms = 1500, uint32_t stabilizationTime_ms = 20000, uint32_t measurementTime_ms = 2000);
     YosemitechParent(byte modbusAddress, Stream& stream,
                      int8_t powerPin, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
-                     yosemitechModel model = UNKNOWN, String sensName = "Yosemitech-Sensor", int numVariables = 2,
+                     yosemitechModel model = UNKNOWN, const char *sensName = "Yosemitech-Sensor", int numVariables = 2,
                      uint32_t warmUpTime_ms = 1500, uint32_t stabilizationTime_ms = 20000, uint32_t measurementTime_ms = 2000);
 
     String getSensorLocation(void) override;

@@ -15,7 +15,7 @@
 // ============================================================================
 
 // The constructor
-Sensor::Sensor(String sensorName, uint8_t numReturnedVars,
+Sensor::Sensor(const char *sensorName, uint8_t numReturnedVars,
                uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms,
                int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
 {

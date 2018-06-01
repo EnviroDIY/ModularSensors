@@ -597,7 +597,7 @@ void setup()
     #endif
 
     // Attach the modem and information pins to the logger
-    EnviroDIYLogger.attachModem(&modem);
+    EnviroDIYLogger.attachModem(modem);
     EnviroDIYLogger.setAlertPin(greenLED);
     // No button on the feather, so we're not attaching a testingMode pin
 

@@ -203,7 +203,7 @@ void setup()
     modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
 
     // Attach the modem and information pins to the logger
-    EnviroDIYLogger.attachModem(&modem);
+    EnviroDIYLogger.attachModem(modem);
     EnviroDIYLogger.setAlertPin(greenLED);
     EnviroDIYLogger.setTestingModePin(buttonPin);
 

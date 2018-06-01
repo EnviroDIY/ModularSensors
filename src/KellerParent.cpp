@@ -20,7 +20,7 @@
 // The constructor - need the sensor type, modbus address, power pin, stream for data, and number of readings to average
 KellerParent::KellerParent(byte modbusAddress, Stream* stream,
                int8_t powerPin, int8_t enablePin, uint8_t measurementsToAverage,
-               kellerModel model, String sensName, int numVariables,
+               kellerModel model, const char *sensName, int numVariables,
                uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
@@ -33,7 +33,7 @@ KellerParent::KellerParent(byte modbusAddress, Stream* stream,
 }
 KellerParent::KellerParent(byte modbusAddress, Stream& stream,
                int8_t powerPin, int8_t enablePin, uint8_t measurementsToAverage,
-               kellerModel model, String sensName, int numVariables,
+               kellerModel model, const char *sensName, int numVariables,
                uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,

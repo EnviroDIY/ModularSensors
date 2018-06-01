@@ -27,7 +27,7 @@
 // The constructor - because this is I2C, only need the power pin
 // This sensor has a set I2C address of 0x60.
 MPL115A2::MPL115A2(int8_t powerPin, uint8_t measurementsToAverage)
-     : Sensor(F("MPL115A2"), MPL115A2_NUM_VARIABLES,
+     : Sensor("MPL115A2", MPL115A2_NUM_VARIABLES,
               MPL115A2_WARM_UP_TIME_MS, MPL115A2_STABILIZATION_TIME_MS, MPL115A2_MEASUREMENT_TIME_MS,
               powerPin, -1, measurementsToAverage)
 {}
