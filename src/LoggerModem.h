@@ -321,6 +321,7 @@ public:
         }
 
         // Check that the modem is responding to AT commands.  If not, give up.
+        MS_MOD_DBG(F("\nWaiting up to 5 seconds for modem to respond to AT commands...\n"));
         if (!_modem->testAT(5000))
         {
             MS_MOD_DBG(F("\nModem does not respond to AT commands!\n"));
@@ -548,7 +549,7 @@ private:
                     F(" and on/off via 2.5 second pulse on pin "), modemSleepRqPin, F(".\n"));
                 static pulsedOnOff modem_sleep_pulsed;
                 modemOnOff = &modem_sleep_pulsed;
-                modem_sleep_pulsed.init(vcc33Pin, modemSleepRqPin, modemStatusPin);
+                modem_sleep_pulsed.init(vcc33Pin, modemSleepRqPin, modemStatusPin, true);
                 break;
             }
             case modem_sleep_held:
@@ -559,7 +560,7 @@ private:
                     F(" and on/off by holding pin "), modemSleepRqPin, F(" high.\n"));
                 static heldOnOff modem_sleep_held;
                 modemOnOff = &modem_sleep_held;
-                modem_sleep_held.init(vcc33Pin, modemSleepRqPin, modemStatusPin);
+                modem_sleep_held.init(vcc33Pin, modemSleepRqPin, modemStatusPin, true);
                 break;
             }
             case modem_sleep_reverse:
@@ -568,9 +569,9 @@ private:
                     F(" with power on pin "), vcc33Pin,
                     F(" status on pin "), modemStatusPin,
                     F(" and on/off by holding pin "), modemSleepRqPin, F(" low.\n"));
-                static reverseOnOff modem_sleep_reverse;
-                modemOnOff = &modem_sleep_reverse;
-                modem_sleep_reverse.init(vcc33Pin, modemSleepRqPin, modemStatusPin);
+                static heldOnOff modem_sleep_held;
+                modemOnOff = &modem_sleep_held;
+                modem_sleep_held.init(vcc33Pin, modemSleepRqPin, modemStatusPin, false);
                 break;
             }
             default:

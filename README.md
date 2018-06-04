@@ -389,7 +389,7 @@ Before creating a loggerModem instance, _you must define your modem at top of yo
 - ```#define TINY_GSM_MODEM_SIM800``` - for a SIMCom SIM800 or variant thereof (including current [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
 - ```#define TINY_GSM_MODEM_SIM808``` - for a SIMCom SIM808 (essentially a SIMCom SIM800 with GPS support)
 - ```#define TINY_GSM_MODEM_SIM868``` - for a SIMCom SIM868 (another SIM800 variant with GPS support)
-- ```#define TINY_GSM_MODEM_UBLOX``` - for most u-blox cellular modems ((LEON-G100, LISA-U2xx, SARA-G3xx, SARA-U2xx, TOBY-L2xx, LARA-R2xx, MPCI-L2xx, or a Digi 3G XBee running in bypass mode)
+- ```#define TINY_GSM_MODEM_UBLOX``` - for most u-blox cellular modems (LEON-G100, LISA-U2xx, SARA-G3xx, SARA-U2xx, TOBY-L2xx, LARA-R2xx, MPCI-L2xx, or a Digi 3G XBee running in bypass mode)
 - ```#define TINY_GSM_MODEM_M95``` - for an Quectel M95
 - ```#define TINY_GSM_MODEM_BG96``` - for an Quectel BG96
 - ```#define TINY_GSM_MODEM_A6``` - for an AI-Thinker A6
