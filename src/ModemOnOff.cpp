@@ -174,7 +174,7 @@ bool pulsedOnOff::off(void)
         pulse();
 
         // Wait until is off
-        for (uint32_t start = millis(); millis() - start < 5000; )
+        for (uint32_t start = millis(); millis() - start < 1000; )
         {
             if (!isOn())
             {

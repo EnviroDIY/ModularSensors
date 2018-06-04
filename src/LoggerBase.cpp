@@ -958,7 +958,7 @@ void Logger::testingMode()
 
     // Create the log file, adding the default header to it
     if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName, '\n');
-    else PRINTOUT(F("Unable to create a file to save data to!"));
+    else PRINTOUT(F("Unable to create a file to save data to!\n"));
 
     // Set up the sensors
     _internalArray->setupSensors();

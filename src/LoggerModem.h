@@ -158,84 +158,101 @@ public:
         MS_MOD_DBG(F("Skipping modem in sensor power down!\n"));
     }
 
-    bool startSingleMeasurement(void) override
-    {
-        bool success = true;
-
-        // Check if activated, only go on if it is
-        if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
-        {
-            // Connect to the network before asking for quality
-            // Only waiting for up to 5 seconds here for the internet!
-            if (!(_modem->isNetworkConnected()))
-            {
-                MS_MOD_DBG(F("No prior internet connection, attempting to make a connection."));
-                success &= connectInternet(5000L);
-            }
-            if (success == false) return false;
-
-            // Mark the time that a measurement was requested
-            _millisMeasurementRequested = millis();
-        }
-        // Make sure that the time of a measurement request is not set
-        else _millisMeasurementRequested = 0;
-
-        // Even if we failed to start a measurement, we still want to set the status
-        // bit to show that we attempted to start the measurement.
-        // Set the status bits for measurement requested (bit 5)
-        _sensorStatus |= 0b00100000;
-        // Verify that the status bit for a single measurement completion is not set (bit 6)
-        _sensorStatus &= 0b10111111;
-
-        return success;
-    }
+    // bool startSingleMeasurement(void) override
+    // {
+    //     bool success = true;
+    //
+    //     // Check if activated, only go on if it is
+    //     if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
+    //     {
+    //         // Connect to the network before asking for quality
+    //         // Only waiting for up to 5 seconds here for the internet!
+    //         if (!(_modem->isNetworkConnected()))
+    //         {
+    //             MS_MOD_DBG(F("No prior internet connection, attempting to make a connection."));
+    //             success &= connectInternet(2000L);
+    //         }
+    //         if (success == false) return false;
+    //
+    //         // Mark the time that a measurement was requested
+    //         _millisMeasurementRequested = millis();
+    //     }
+    //     // Make sure that the time of a measurement request is not set
+    //     else _millisMeasurementRequested = 0;
+    //
+    //     // Even if we failed to start a measurement, we still want to set the status
+    //     // bit to show that we attempted to start the measurement.
+    //     // Set the status bits for measurement requested (bit 5)
+    //     _sensorStatus |= 0b00100000;
+    //     // Verify that the status bit for a single measurement completion is not set (bit 6)
+    //     _sensorStatus &= 0b10111111;
+    //
+    //     return success;
+    // }
 
 
     bool addSingleMeasurementResult(void) override
     {
-        // The XBee needs to make a connection and have that connection return a
-        // value before it knows the signal quality
-        // Connecting to the NIST daytime server, which immediately returns a
-        // 4 byte response and then closes the connection
-        if (loggerModemChip == sim_chip_XBeeWifi || loggerModemChip == sim_chip_XBeeCell)
-        {
-            // Must ensure that we do not ping the daylight more than once every 4 seconds
-            // NIST clearly specifies here that this is a requirement for all software
-            /// that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi
-            while (millis() < _lastNISTrequest + 4000) {}
-            MS_MOD_DBG("Connecting to NIST daytime server to check connection strength...\n");
-            IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
-            openTCP(ip, 37);
-            _client->print(F("Hi!"));  // Need to send something before connection is made
-            delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
-            while (_client->available()) _client->read();  // Delete anything returned
-            _lastNISTrequest = millis();
-        }
-
         int signalQual = 0;
         int percent = 0;
         int rssi = -9999;
-        // Get signal quality
-        if (_modem->isNetworkConnected())
-        {
-            MS_MOD_DBG("Getting signal quality:\n");
-            signalQual = _modem->getSignalQuality();
 
-            // Convert signal quality to RSSI, if necessary
-            if (loggerModemChip == sim_chip_XBeeWifi ||
-                loggerModemChip == sim_chip_XBeeCell ||
-                loggerModemChip == sim_chip_ESP8266)
+        // Check that the modem is responding to AT commands.  If not, give up.
+        MS_MOD_DBG(F("\nWaiting up to 5 seconds for modem to respond to AT commands...\n"));
+        if (_modem->testAT(5000))
+        {
+            // The XBee needs to make an actual TCP connection and get some sort
+            // of response on that connection before it knows the signal quality.
+            // Connecting to the NIST daytime server, which immediately returns a
+            // 4 byte response and then closes the connection
+            if (loggerModemChip == sim_chip_XBeeWifi || loggerModemChip == sim_chip_XBeeCell)
             {
-                rssi = signalQual;
-                percent = getPctFromRSSI(signalQual);
+                // Connect to the network
+                // Only waiting for up to 5 seconds here for the internet!
+                if (!(_modem->isNetworkConnected()))
+                {
+                    MS_MOD_DBG(F("No prior internet connection, attempting to make a connection."));
+                    connectInternet(5000L);
+                }
+                // Must ensure that we do not ping the daylight more than once every 4 seconds
+                // NIST clearly specifies here that this is a requirement for all software
+                /// that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi
+                while (millis() < _lastNISTrequest + 4000) {}
+                MS_MOD_DBG("Connecting to NIST daytime server to check connection strength...\n");
+                IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
+                openTCP(ip, 37);
+                _client->print(F("Hi!"));  // Need to send something before connection is made
+                delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
+                while (_client->available()) _client->read();  // Delete anything returned
+                _lastNISTrequest = millis();
             }
-            else
-            {
-                rssi = getRSSIFromCSQ(signalQual);
-                percent = getPctFromCSQ(signalQual);
-            }
+
+            // Get signal quality
+            // Non XBee's do not need to be registered or "connnected" to the
+            // network to get quality
+            // if (_modem->isNetworkConnected())
+            // {
+
+                MS_MOD_DBG("Getting signal quality:\n");
+                signalQual = _modem->getSignalQuality();
+
+                // Convert signal quality to RSSI, if necessary
+                if (loggerModemChip == sim_chip_XBeeWifi ||
+                    loggerModemChip == sim_chip_XBeeCell ||
+                    loggerModemChip == sim_chip_ESP8266)
+                {
+                    rssi = signalQual;
+                    percent = getPctFromRSSI(signalQual);
+                }
+                else
+                {
+                    rssi = getRSSIFromCSQ(signalQual);
+                    percent = getPctFromCSQ(signalQual);
+                }
+            // }
+            // else MS_MOD_DBG("Insufficient signal to connect to the internet!\n");
         }
-        else MS_MOD_DBG("Insufficient signal to connect to the internet!\n");
+        else MS_MOD_DBG(F("\nModem does not respond to AT commands!\n"));
 
         MS_MOD_DBG(F("RSSI: "), rssi, F("\n"));
         MS_MOD_DBG(F("Percent signal strength: "), percent, F("\n"));
@@ -433,21 +450,17 @@ public:
     bool modemPowerDown(void)
     {
         MS_MOD_DBG(F("Turning modem off.\n"));
-        bool retVal = true;
          // Wait for any sending to complete
         _client->flush();
         // Turn the modem off .. whether it was on or not
         // Need to turn off no matter what because some modems don't have an
         // effective way of telling us whether they're on or not
         modemOnOff->off();
-        // Double check if the modem is on; turn it off if so
-        if(modemOnOff->isOn()) retVal = modemOnOff->off();
-        else retVal =  true;
         // Unset the status bits for sensor power (bit 0), warm-up (bit 2),
         // activation (bit 3), stability (bit 4), measurement request (bit 5), and
         // measurement completion (bit 6)
         _sensorStatus &= 0b10000010;
-        return retVal;
+        return true;
     }
 
     // Get the time from NIST via TIME protocol (rfc868)
