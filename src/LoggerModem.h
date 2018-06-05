@@ -100,6 +100,16 @@
     #define MS_MOD_DBG(...)
 #endif  // MODEM_DEBUGGING_SERIAL_OUTPUT
 
+// For the various ways of waking and sleeping the modem
+typedef enum ModemSleepType
+{
+    modem_sleep_held = 0,   // Turns the modem on by setting the onoff/DTR/Key HIGH and off by setting it LOW
+    modem_sleep_reverse,    // Turns the modem on by setting the onoff/DTR/Key LOW and off by setting it HIGH
+    modem_sleep_pulsed,     // Turns the modem on and off by pulsing the onoff/DTR/Key pin HIGH for 2 seconds
+    modem_sleep_rev_pulse,  // Turns the modem on and off by pulsing the onoff/DTR/Key pin LOW 2 seconds
+    modem_always_on
+} ModemSleepType;
+
 //  For the various chips
 typedef enum ModemChipType
 {
@@ -136,11 +146,11 @@ public:
                     ModemSleepType sleepType,
                     const char *APN)
         : Sensor(MODEM_NAME, MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
-          _tinyModem(*modemStream), _tinyClient(_tinyModem),
-          _modemOnOff(vcc33Pin, modemStatusPin,modemSleepRqPin, sleepType)
+          _tinyModem(*modemStream), _tinyClient(_tinyModem)
     {
         _APN = APN;
         _lastNISTrequest = 0;
+        constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
     loggerModem(Stream &modemStream,
                     int vcc33Pin,
@@ -149,11 +159,11 @@ public:
                     ModemSleepType sleepType,
                     const char *APN)
         : Sensor(MODEM_NAME, MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
-          _tinyModem(modemStream), _tinyClient(_tinyModem),
-          _modemOnOff(vcc33Pin, modemStatusPin,modemSleepRqPin, sleepType)
+          _tinyModem(modemStream), _tinyClient(_tinyModem)
     {
         _APN = APN;
         _lastNISTrequest = 0;
+        constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
 
     loggerModem(Stream *modemStream,
@@ -164,12 +174,12 @@ public:
                     const char *ssid,
                     const char *pwd)
         : Sensor(MODEM_NAME, MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
-          _tinyModem(*modemStream), _tinyClient(_tinyModem),
-          _modemOnOff(vcc33Pin, modemStatusPin,modemSleepRqPin, sleepType)
+          _tinyModem(*modemStream), _tinyClient(_tinyModem)
     {
         _ssid = ssid;
         _pwd = pwd;
         _lastNISTrequest = 0;
+        constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
     loggerModem(Stream &modemStream,
                     int vcc33Pin,
@@ -179,12 +189,12 @@ public:
                     const char *ssid,
                     const char *pwd)
         : Sensor(MODEM_NAME, MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
-          _tinyModem(modemStream), _tinyClient(_tinyModem),
-          _modemOnOff(vcc33Pin, modemStatusPin,modemSleepRqPin, sleepType)
+          _tinyModem(modemStream), _tinyClient(_tinyModem)
     {
         _ssid = ssid;
         _pwd = pwd;
         _lastNISTrequest = 0;
+        constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
 
     String getSensorLocation(void) override { return F("modemSerial"); }
@@ -194,16 +204,8 @@ public:
     {
         bool retVal = false;
 
-        #if defined(TINY_GSM_MODEM_XBEE)  // ALL XBee's use modem_sleep_reverse!
-            if (_modemOnOff.sleepType != modem_sleep_reverse)
-            {
-                MS_MOD_DBG(F("Correcting sleep type for XBee to modem_sleep_reverse!"));
-                _modemOnOff.sleepType = modem_sleep_reverse;
-            }
-        #endif
-
         // Set the on-off pin modes
-        _modemOnOff.begin();
+        _modemOnOff->begin();
 
         // Initialize the modem
         MS_MOD_DBG(F("Starting up the "), F(MODEM_NAME), F("...\n"));
@@ -211,11 +213,11 @@ public:
         // Turn the modem on .. whether it was on or not
         // Need to turn on no matter what because some modems don't have an
         // effective way of telling us whether they're on or not
-        _modemOnOff.on();
+        _modemOnOff->on();
         // Double check if the modem is on; turn it on if not
-        if(!_modemOnOff.isOn()) _modemOnOff.on();
+        if(!_modemOnOff->isOn()) _modemOnOff->on();
         // Check again if the modem is on.  Only "begin" if it responded.
-        if(_modemOnOff.isOn())
+        if(_modemOnOff->isOn())
         {
             retVal = _tinyModem.begin();
             #if defined(TINY_GSM_MODEM_XBEE)
@@ -223,7 +225,7 @@ public:
                 XBeeChip = _tinyModem.getBeeType();
             #endif
 
-            _modemOnOff.off();
+            _modemOnOff->off();
             MS_MOD_DBG(F("   ... Complete!\n"));
         }
         else MS_MOD_DBG(F("   ... Modem failed to turn on!\n"));
@@ -370,9 +372,9 @@ public:
         bool retVal = false;
 
         // Check if the modem is on; turn it on if not
-        if(!_modemOnOff.isOn()) _modemOnOff.on();
+        if(!_modemOnOff->isOn()) _modemOnOff->on();
         // Check again if the modem is on.  If it still isn't on, give up
-        if(!_modemOnOff.isOn())
+        if(!_modemOnOff->isOn())
         {
             MS_MOD_DBG(F("\nModem failed to turn on!\n"));
             return false;
@@ -478,14 +480,14 @@ public:
         // Turn the modem on .. whether it was on or not
         // Need to turn on no matter what because some modems don't have an
         // effective way of telling us whether they're on or not
-        _modemOnOff.on();
+        _modemOnOff->on();
         // Double check if the modem is on; turn it on if not
-        if(!_modemOnOff.isOn()) _modemOnOff.on();
+        if(!_modemOnOff->isOn()) _modemOnOff->on();
         // Mark the time that the sensor was powered
         _millisPowerOn = millis();
         // Set the status bit for sensor power (bit 0)
         _sensorStatus |= 0b00000001;
-        return _modemOnOff.isOn();
+        return _modemOnOff->isOn();
     }
 
     bool modemPowerDown(void)
@@ -496,7 +498,7 @@ public:
         // Turn the modem off .. whether it was on or not
         // Need to turn off no matter what because some modems don't have an
         // effective way of telling us whether they're on or not
-        _modemOnOff.off();
+        _modemOnOff->off();
         // Unset the status bits for sensor power (bit 0), warm-up (bit 2),
         // activation (bit 3), stability (bit 4), measurement request (bit 5), and
         // measurement completion (bit 6)
@@ -572,7 +574,8 @@ public:
 
     TinyGsm _tinyModem;
     TinyGsmClient _tinyClient;
-    ModemOnOff _modemOnOff;
+    ModemOnOff *_modemOnOff;  // This must be a pointer because ModemOnOff is an
+                              // abstract class - that is, it has pure virtual functions
 
 private:
     const char *_APN;
@@ -614,6 +617,48 @@ private:
         return pct;
     }
 
+    // Construct the on-off instances
+    void constructOnOff(int vcc33Pin, int modemStatusPin, int modemSleepRqPin,
+                        ModemSleepType sleepType)
+    {
+        #if defined(TINY_GSM_MODEM_XBEE)  // ALL XBee's use modem_sleep_reverse!
+            if (sleepType != modem_sleep_reverse) sleepType = modem_sleep_reverse;
+        #endif
+
+        switch(sleepType)
+        {
+            case modem_sleep_held:
+            {
+                static heldOnOff modem_sleep_held(vcc33Pin, modemStatusPin, modemSleepRqPin, true);
+                _modemOnOff = &modem_sleep_held;
+                break;
+            }
+            case modem_sleep_reverse:
+            {
+                static heldOnOff modem_sleep_held(vcc33Pin, modemStatusPin, modemSleepRqPin, false);
+                _modemOnOff = &modem_sleep_held;
+                break;
+            }
+            case modem_sleep_pulsed:
+            {
+                static pulsedOnOff modem_sleep_pulsed(vcc33Pin, modemStatusPin, modemSleepRqPin, true);
+                _modemOnOff = &modem_sleep_pulsed;
+                break;
+            }
+            case modem_sleep_rev_pulse:
+            {
+                static pulsedOnOff modem_sleep_pulsed(vcc33Pin, modemStatusPin, modemSleepRqPin, false);
+                _modemOnOff = &modem_sleep_pulsed;
+                break;
+            }
+            default:  // modem_always_on
+            {
+                static heldOnOff modem_sleep_held(-1, -1, -1, false);
+                _modemOnOff = &modem_sleep_held;
+                break;
+            }
+        }
+    }
 };
 
 

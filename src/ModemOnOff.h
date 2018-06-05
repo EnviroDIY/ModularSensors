@@ -15,16 +15,6 @@
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
-// For the various ways of waking and sleeping the modem
-typedef enum ModemSleepType
-{
-  modem_sleep_held = 0,   // Turns the modem on by setting the onoff/DTR/Key HIGH and off by setting it LOW
-  modem_sleep_reverse,    // Turns the modem on by setting the onoff/DTR/Key LOW and off by setting it HIGH
-  modem_sleep_pulsed,     // Turns the modem on and off by pulsing the onoff/DTR/Key pin HIGH for 2 seconds
-  modem_sleep_rev_pulse,  // Turns the modem on and off by pulsing the onoff/DTR/Key pin LOW 2 seconds
-  modem_always_on
-} ModemSleepType;
-
 
 /* ===========================================================================
 * Classes for turning modems on and off
@@ -39,27 +29,69 @@ class ModemOnOff
 {
 public:
     // Constructor
-    ModemOnOff(int vcc33Pin, int modemSleepRqPin, int modemStatusPin,
-               ModemSleepType sleepType);
+    ModemOnOff(int vcc33Pin, int modemSleepRqPin, int modemStatusPin, bool isHighWhenOn);
 
     // Initializes the instance
     virtual void begin(void);
-
     virtual bool isOn(void);
-    virtual bool on(void);
-    virtual bool off(void);
-    ModemSleepType _sleepType;
+    virtual bool on(void) = 0;
+    virtual bool off(void) = 0;
 
-private:
+protected:
     int8_t _vcc33Pin;
     int8_t _modemSleepRqPin;
     int8_t _modemStatusPin;
     bool _isNowOn;
+    bool _isHighWhenOn;
 
     void powerOn(void);
     void powerOff(void);
+
+};
+
+
+
+/* ===========================================================================
+* Functions for the pulsed on-off method.
+* This turns the modem on and off by turning the onoff/DTR/Key pin on for two
+* seconds and then back off.
+* This is used by the Sodaq GPRSBee v0.4 and the Adafruit Fona.
+* ========================================================================= */
+
+// Turns the modem on and off by pulsing the onoff/DTR/Key pin on for 2 seconds
+// "On" can either be a high or low pulse
+class pulsedOnOff : public ModemOnOff
+{
+public:
+    pulsedOnOff(int vcc33Pin, int modemSleepRqPin, int modemStatusPin, bool isHighWhenOn)
+      : ModemOnOff(vcc33Pin, modemSleepRqPin, modemStatusPin, isHighWhenOn)
+      {}
+    bool on(void) override;
+    bool off(void) override;
+
+private:
     void pulse(void);
 
+};
+
+
+/* ===========================================================================
+* Functions for the held on-off method.
+* This turns the modem on by setting and holding the onoff/DTR/Key pin to
+* either high or low.
+* A "high" on is used by the Sodaq GPRSBee v0.6 and Sodaq 3GBee.
+* A "low" on is used by the all Digi XBee's.
+* ========================================================================= */
+
+// Turns the modem on by setting the onoff/DTR/Key high and off by setting it low
+class heldOnOff : public ModemOnOff
+{
+public:
+    heldOnOff(int vcc33Pin, int modemSleepRqPin, int modemStatusPin, bool isHighWhenOn)
+      : ModemOnOff(vcc33Pin, modemSleepRqPin, modemStatusPin, isHighWhenOn)
+      {}
+    bool on(void) override;
+    bool off(void) override;
 };
 
 #endif /* ModemOnOff_h */
