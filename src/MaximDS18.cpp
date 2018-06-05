@@ -25,7 +25,7 @@ MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int8_t powerPin, int8_t dataP
   : Sensor("MaximDS18", DS18_NUM_VARIABLES,
            DS18_WARM_UP_TIME_MS, DS18_STABILIZATION_TIME_MS, DS18_MEASUREMENT_TIME_MS,
            powerPin, dataPin, measurementsToAverage),
-    oneWire(dataPin), tempSensors(&oneWire)
+    _internalOneWire(dataPin), _internalDallasTemp(&_internalOneWire)
 {
     for (int i = 0; i < 8; i++) _OneWireAddress[i] = OneWireAddress[i];
     // _OneWireAddress = OneWireAddress;
@@ -37,7 +37,7 @@ MaximDS18::MaximDS18(int8_t powerPin, int8_t dataPin, uint8_t measurementsToAver
   : Sensor("MaximDS18", DS18_NUM_VARIABLES,
            DS18_WARM_UP_TIME_MS, DS18_STABILIZATION_TIME_MS, DS18_MEASUREMENT_TIME_MS,
            powerPin, dataPin, measurementsToAverage),
-    oneWire(dataPin), tempSensors(&oneWire)
+    _internalOneWire(dataPin), _internalDallasTemp(&_internalOneWire)
 {
     _addressKnown = false;
 }
@@ -76,7 +76,7 @@ bool MaximDS18::setup(void)
     uint8_t ntries = 0;
 
     bool retVal = Sensor::setup();  // this will set timestamp and status bit
-    tempSensors.begin();
+    _internalDallasTemp.begin();
 
     // Find the address if it's not known
     if (!_addressKnown)
@@ -89,7 +89,7 @@ bool MaximDS18::setup(void)
         // Try 5 times to get an address
         while (!gotAddress and ntries <5)
         {
-            gotAddress = oneWire.search(address);
+            gotAddress = _internalOneWire.search(address);
             ntries++;
         }
         if (gotAddress)
@@ -109,7 +109,7 @@ bool MaximDS18::setup(void)
     // If the address is known, make sure the given address is valid
     else
     {
-        if (!tempSensors.validAddress(_OneWireAddress))
+        if (!_internalDallasTemp.validAddress(_OneWireAddress))
         {
             MS_DBG(F("This sensor address is not valid: "));
             MS_DBG(makeAddressString(_OneWireAddress), F("\n"));
@@ -123,7 +123,7 @@ bool MaximDS18::setup(void)
         bool madeConnection = false;
         while (!madeConnection and ntries <5)
         {
-            madeConnection = tempSensors.isConnected(_OneWireAddress);
+            madeConnection = _internalDallasTemp.isConnected(_OneWireAddress);
             ntries++;
         }
         if (!madeConnection)
@@ -138,7 +138,7 @@ bool MaximDS18::setup(void)
 
     // Set resolution to 12 bit
     // All variable resolution sensors start up at 12 bit resolution by default
-    if (!tempSensors.setResolution(_OneWireAddress, 12))
+    if (!_internalDallasTemp.setResolution(_OneWireAddress, 12))
     {
         MS_DBG(F("Unable to set the resolution of this sensor: "));
         MS_DBG(makeAddressString(_OneWireAddress), F("\n"));
@@ -148,7 +148,7 @@ bool MaximDS18::setup(void)
 
     // Tell the sensor that we do NOT want to wait for conversions to finish
     // That is, we're in ASYNC mode and will get values when we're ready
-    tempSensors.setWaitForConversion(false);
+    _internalDallasTemp.setWaitForConversion(false);
 
     return retVal;
 }
@@ -165,7 +165,7 @@ bool MaximDS18::startSingleMeasurement(void)
     {
         // Send the command to get temperatures
         MS_DBG(F("Asking DS18 to take a measurement\n"));
-        success = tempSensors.requestTemperaturesByAddress(_OneWireAddress);
+        success = _internalDallasTemp.requestTemperaturesByAddress(_OneWireAddress);
 
         // Mark the time that a measurement was requested
         _millisMeasurementRequested = millis();
@@ -193,7 +193,7 @@ bool MaximDS18::addSingleMeasurementResult(void)
     if (_millisMeasurementRequested > 0)
     {
         MS_DBG(F("Requesting temperature result\n"));
-        result = tempSensors.getTempC(_OneWireAddress);
+        result = _internalDallasTemp.getTempC(_OneWireAddress);
         MS_DBG(F("Received "), result, F("°C\n"));
 
         // If a DS18 cannot get a good measurement, it returns 85
