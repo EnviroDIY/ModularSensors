@@ -135,14 +135,84 @@ class loggerModem : public Sensor
 // ==========================================================================//
 public:
     // Constructors
-    loggerModem()
+    loggerModem(Stream *modemStream,
+                    int vcc33Pin,
+                    int modemStatusPin,
+                    int modemSleepRqPin,
+                    ModemSleepType sleepType,
+                    const char *APN)
         : Sensor(MODEM_NAME, MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1)
-    {_lastNISTrequest = 0;}
+    {
+        _stream = modemStream;
+        _vcc33Pin = vcc33Pin;
+        _modemStatusPin = modemStatusPin;
+        _modemSleepRqPin = modemSleepRqPin;
+        _sleepType = sleepType;
+        _lastNISTrequest = 0;
+        _APN = APN;
+    }
+    loggerModem(Stream &modemStream,
+                    int vcc33Pin,
+                    int modemStatusPin,
+                    int modemSleepRqPin,
+                    ModemSleepType sleepType,
+                    const char *APN)
+        : Sensor(MODEM_NAME, MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1)
+    {
+        _stream = &modemStream;
+        _vcc33Pin = vcc33Pin;
+        _modemStatusPin = modemStatusPin;
+        _modemSleepRqPin = modemSleepRqPin;
+        _sleepType = sleepType;
+        _APN = APN;
+        _lastNISTrequest = 0;
+    }
+
+    loggerModem(Stream *modemStream,
+                    int vcc33Pin,
+                    int modemStatusPin,
+                    int modemSleepRqPin,
+                    ModemSleepType sleepType,
+                    const char *ssid,
+                    const char *pwd)
+        : Sensor(MODEM_NAME, MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1)
+    {
+        _stream = modemStream;
+        _vcc33Pin = vcc33Pin;
+        _modemStatusPin = modemStatusPin;
+        _modemSleepRqPin = modemSleepRqPin;
+        _sleepType = sleepType;
+        _ssid = ssid;
+        _pwd = pwd;
+        _lastNISTrequest = 0;
+    }
+    loggerModem(Stream &modemStream,
+                    int vcc33Pin,
+                    int modemStatusPin,
+                    int modemSleepRqPin,
+                    ModemSleepType sleepType,
+                    const char *ssid,
+                    const char *pwd)
+        : Sensor(MODEM_NAME, MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1)
+    {
+        _stream = &modemStream;
+        _vcc33Pin = vcc33Pin;
+        _modemStatusPin = modemStatusPin;
+        _modemSleepRqPin = modemSleepRqPin;
+        _sleepType = sleepType;
+        _ssid = ssid;
+        _pwd = pwd;
+        _lastNISTrequest = 0;
+    }
 
     String getSensorLocation(void) override { return F("modemSerial"); }
 
     // The modem must be setup separately!
-    virtual bool setup(void) override {return true;}
+    virtual bool setup(void) override
+    {
+        init(_stream, _vcc33Pin, _modemStatusPin, _modemSleepRqPin, _sleepType);
+        return true;
+    }
 
     // Do NOT turn the modem on and off with the regular power up and down or
     // wake and sleep functions.
@@ -157,38 +227,6 @@ public:
     {
         MS_MOD_DBG(F("Skipping modem in sensor power down!\n"));
     }
-
-    // bool startSingleMeasurement(void) override
-    // {
-    //     bool success = true;
-    //
-    //     // Check if activated, only go on if it is
-    //     if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
-    //     {
-    //         // Connect to the network before asking for quality
-    //         // Only waiting for up to 5 seconds here for the internet!
-    //         if (!(_modem->isNetworkConnected()))
-    //         {
-    //             MS_MOD_DBG(F("No prior internet connection, attempting to make a connection."));
-    //             success &= connectInternet(2000L);
-    //         }
-    //         if (success == false) return false;
-    //
-    //         // Mark the time that a measurement was requested
-    //         _millisMeasurementRequested = millis();
-    //     }
-    //     // Make sure that the time of a measurement request is not set
-    //     else _millisMeasurementRequested = 0;
-    //
-    //     // Even if we failed to start a measurement, we still want to set the status
-    //     // bit to show that we attempted to start the measurement.
-    //     // Set the status bits for measurement requested (bit 5)
-    //     _sensorStatus |= 0b00100000;
-    //     // Verify that the status bit for a single measurement completion is not set (bit 6)
-    //     _sensorStatus &= 0b10111111;
-    //
-    //     return success;
-    // }
 
 
     bool addSingleMeasurementResult(void) override
@@ -275,51 +313,7 @@ public:
 // These are the unique functions for the modem as an internet connected device
 // ==========================================================================//
 public:
-    void setupModem(Stream *modemStream,
-                    int vcc33Pin,
-                    int modemStatusPin,
-                    int modemSleepRqPin,
-                    ModemSleepType sleepType,
-                    const char *APN)
-    {
-        _APN = APN;
-        init(modemStream, vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
-    }
-    void setupModem(Stream &modemStream,
-                    int vcc33Pin,
-                    int modemStatusPin,
-                    int modemSleepRqPin,
-                    ModemSleepType sleepType,
-                    const char *APN)
-    {
-        _APN = APN;
-        init(&modemStream, vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
-    }
 
-    void setupModem(Stream *modemStream,
-                    int vcc33Pin,
-                    int modemStatusPin,
-                    int modemSleepRqPin,
-                    ModemSleepType sleepType,
-                    const char *ssid,
-                    const char *pwd)
-    {
-        _ssid = ssid;
-        _pwd = pwd;
-        init(modemStream, vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
-    }
-    void setupModem(Stream &modemStream,
-                    int vcc33Pin,
-                    int modemStatusPin,
-                    int modemSleepRqPin,
-                    ModemSleepType sleepType,
-                    const char *ssid,
-                    const char *pwd)
-    {
-        _ssid = ssid;
-        _pwd = pwd;
-        init(&modemStream, vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
-    }
 
     int getSignalRSSI(void) {return sensorValues[RSSI_VAR_NUM];}
     int getSignalPercent(void) {return sensorValues[PERCENT_SIGNAL_VAR_NUM];}
@@ -534,6 +528,11 @@ public:
     TinyGsmClient *_client;
 
 private:
+    Stream* _stream;
+    int8_t _vcc33Pin;
+    int8_t _modemStatusPin;
+    int8_t _modemSleepRqPin;
+    ModemSleepType _sleepType;
     const char *_APN;
     const char *_ssid;
     const char *_pwd;
