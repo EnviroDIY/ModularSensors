@@ -216,19 +216,19 @@ int LoggerEnviroDIY::postDataEnviroDIY(String& enviroDIYjson)
         #endif
 
         // Send the request to the modem stream
-        if (enviroDIYjson.length() > 1) streamEnviroDIYRequest(_logModem->_client, enviroDIYjson);
-        else streamEnviroDIYRequest(_logModem->_client);
-        _logModem->_client->flush();  // wait for sending to finish
+        if (enviroDIYjson.length() > 1) streamEnviroDIYRequest(_logModem->_tinyClient, enviroDIYjson);
+        else streamEnviroDIYRequest(_logModem->_tinyClient);
+        _logModem->_tinyClient.flush();  // wait for sending to finish
 
         uint32_t start_timer = millis();
-        while ((millis() - start_timer) < 10000L && _logModem->_client->available() < 12)
+        while ((millis() - start_timer) < 10000L && _logModem->_tinyClient.available() < 12)
         {delay(10);}
 
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
         // we don't care about so we're not reading to save on total
         // data used for transmission.
-        did_respond = _logModem->_client->readBytes(response_buffer, 12);
+        did_respond = _logModem->_tinyClient.readBytes(response_buffer, 12);
 
         // Close the TCP/IP connection as soon as the first 12 characters are read
         // We don't need anything else and stoping here should save data use.
