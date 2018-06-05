@@ -26,7 +26,7 @@ LoggerEnviroDIY::LoggerEnviroDIY(const char *loggerID, uint16_t loggingIntervalM
                                  VariableArray *inputArray)
   : Logger(loggerID, loggingIntervalMinutes, SDCardPin, mcuWakePin, inputArray)
 {
-    _modemAttached = false;
+    _logModem = NULL;
 }
 
 
@@ -35,8 +35,7 @@ LoggerEnviroDIY::LoggerEnviroDIY(const char *loggerID, uint16_t loggingIntervalM
 // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
 void LoggerEnviroDIY::attachModem(loggerModem& modem)
 {
-    _logModem = modem;
-    _modemAttached = true;
+    _logModem = &modem;
     MS_DBG(F("Modem attached!\n"));
 }
 
@@ -194,7 +193,7 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
 int LoggerEnviroDIY::postDataEnviroDIY(String& enviroDIYjson)
 {
     // do not continue if no modem!
-    if (!_modemAttached)
+    if (_logModem == NULL)
     {
         PRINTOUT(F("No modem attached, data cannot be sent out!\n"));
         return 504;
@@ -205,7 +204,7 @@ int LoggerEnviroDIY::postDataEnviroDIY(String& enviroDIYjson)
     int did_respond = 0;
 
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
-    if(_logModem.openTCP("data.envirodiy.org", 80))
+    if(_logModem->openTCP("data.envirodiy.org", 80))
     {
         // Send the request to the serial for debugging
         #if defined(STANDARD_SERIAL_OUTPUT)
@@ -217,23 +216,23 @@ int LoggerEnviroDIY::postDataEnviroDIY(String& enviroDIYjson)
         #endif
 
         // Send the request to the modem stream
-        if (enviroDIYjson.length() > 1) streamEnviroDIYRequest(_logModem._client, enviroDIYjson);
-        else streamEnviroDIYRequest(_logModem._client);
-        _logModem._client->flush();  // wait for sending to finish
+        if (enviroDIYjson.length() > 1) streamEnviroDIYRequest(_logModem->_client, enviroDIYjson);
+        else streamEnviroDIYRequest(_logModem->_client);
+        _logModem->_client->flush();  // wait for sending to finish
 
         uint32_t start_timer = millis();
-        while ((millis() - start_timer) < 10000L && _logModem._client->available() < 12)
+        while ((millis() - start_timer) < 10000L && _logModem->_client->available() < 12)
         {delay(10);}
 
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
         // we don't care about so we're not reading to save on total
         // data used for transmission.
-        did_respond = _logModem._client->readBytes(response_buffer, 12);
+        did_respond = _logModem->_client->readBytes(response_buffer, 12);
 
         // Close the TCP/IP connection as soon as the first 12 characters are read
         // We don't need anything else and stoping here should save data use.
-        _logModem.closeTCP();
+        _logModem->closeTCP();
     }
     else PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data Portal -- \n"));
 
@@ -273,13 +272,13 @@ void LoggerEnviroDIY::testingMode()
     PRINTOUT(F("Entering sensor testing mode\n"));
     delay(100);  // This seems to prevent crashes, no clue why ....
 
-    if (_modemAttached)
+    if (_logModem != NULL)
     {
         // Turn on the modem to let it start searching for the network
         // Turn on the modem
-        _logModem.modemPowerUp();
+        _logModem->modemPowerUp();
         // Connect to the network to make sure we have signal (only try for 10sec)
-        _logModem.connectInternet(10000L);
+        _logModem->connectInternet(10000L);
     }
 
     // Power up all of the sensors
@@ -304,12 +303,12 @@ void LoggerEnviroDIY::testingMode()
         #endif
         PRINTOUT(F("    -----------------------\n"));
 
-        if (_modemAttached)
+        if (_logModem != NULL)
         {
             // Specially highlight the modem signal quality in the debug mode
-            _logModem.update();
+            _logModem->update();
             PRINTOUT(F("Current modem signal is "));
-            PRINTOUT(_logModem.getSignalPercent());
+            PRINTOUT(_logModem->getSignalPercent());
             PRINTOUT(F("%\n"));
         }
 
@@ -320,12 +319,12 @@ void LoggerEnviroDIY::testingMode()
     _internalArray->sensorsSleep();
     _internalArray->sensorsPowerDown();
 
-    if (_modemAttached)
+    if (_logModem != NULL)
     {
         // Disconnect from the network
-        _logModem.disconnectInternet();
+        _logModem->disconnectInternet();
         // Turn off the modem
-        _logModem.modemPowerDown();
+        _logModem->modemPowerDown();
     }
 
     // Unset testing mode flag
@@ -371,32 +370,32 @@ void LoggerEnviroDIY::begin(void)
     if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName, '\n');
     else PRINTOUT(F("Unable to create a file to save data to!"));
 
-    if (_modemAttached)
+    if (_logModem != NULL)
     {
         // Print out the modem info
         PRINTOUT(F("This logger is also tied to a "));
-        PRINTOUT(_logModem.getSensorName(), F(" for internet connectivity.\n"));
+        PRINTOUT(_logModem->getSensorName(), F(" for internet connectivity.\n"));
         // Turn on the modem to let it start searching for the network
-        _logModem.modemPowerUp();
+        _logModem->modemPowerUp();
     }
 
     // Set up the sensors
     _internalArray->setupSensors();
 
-    if (_modemAttached)
+    if (_logModem != NULL)
     {
         // Synchronize the RTC with NIST
         PRINTOUT(F("Attempting to synchronize RTC with NIST\n"));
         PRINTOUT(F("This may take up to two minutes!\n"));
         // Connect to the network
-        if (_logModem.connectInternet(120000L))
+        if (_logModem->connectInternet(120000L))
         {
-            syncRTClock(_logModem.getNISTTime());
+            syncRTClock(_logModem->getNISTTime());
             // Disconnect from the network
-            _logModem.disconnectInternet();
+            _logModem->disconnectInternet();
         }
         // Turn off the modem
-        _logModem.modemPowerDown();
+        _logModem->modemPowerDown();
     }
 
     // Setup sleep mode
@@ -434,10 +433,10 @@ void LoggerEnviroDIY::log(void)
         // Turn on the LED to show we're taking a reading
         if (_ledPin >= 0) digitalWrite(_ledPin, HIGH);
 
-        if (_modemAttached)
+        if (_logModem != NULL)
         {
             // Turn on the modem to let it start searching for the network
-            _logModem.modemPowerUp();
+            _logModem->modemPowerUp();
         }
 
         // Send power to all of the sensors
@@ -456,11 +455,11 @@ void LoggerEnviroDIY::log(void)
         MS_DBG(F("  Cutting sensor power...\n"));
         _internalArray->sensorsPowerDown();
 
-        if (_modemAttached)
+        if (_logModem != NULL)
         {
             // Connect to the network
             MS_DBG(F("  Connecting to the Internet...\n"));
-            if (_logModem.connectInternet())
+            if (_logModem->connectInternet())
             {
                 // Post the data to the WebSDL
                 postDataEnviroDIY();
@@ -469,15 +468,15 @@ void LoggerEnviroDIY::log(void)
                 MS_DBG(F("  Running a daily clock sync...\n"));
                 if (_numTimepointsLogged % 288 == 0)
                 {
-                    syncRTClock(_logModem.getNISTTime());
+                    syncRTClock(_logModem->getNISTTime());
                 }
 
                 // Disconnect from the network
                 MS_DBG(F("  Disconnecting from the Internet...\n"));
-                _logModem.disconnectInternet();
+                _logModem->disconnectInternet();
             }
             // Turn the modem off
-            _logModem.modemPowerDown();
+            _logModem->modemPowerDown();
         }
 
         // Create a csv data record and save it to the log file

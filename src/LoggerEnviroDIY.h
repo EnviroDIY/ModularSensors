@@ -84,8 +84,10 @@ public:
     virtual void log(void) override;
 
     // The internal modem instance
-    bool _modemAttached;
-    loggerModem _logModem;
+    loggerModem *_logModem;
+    // NOTE:  The internal _logModem must be a POINTER not a reference because
+    // it is possible for no modem to be attached (and thus the pointer could
+    // be null).  It is not possible to have a null reference.
 
 
 private:
