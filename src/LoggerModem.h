@@ -314,7 +314,6 @@ public:
 // ==========================================================================//
 public:
 
-
     int getSignalRSSI(void) {return sensorValues[RSSI_VAR_NUM];}
     int getSignalPercent(void) {return sensorValues[PERCENT_SIGNAL_VAR_NUM];}
 
