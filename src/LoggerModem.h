@@ -221,7 +221,7 @@ public:
         {
             retVal = _tinyModem.begin();
             #if defined(TINY_GSM_MODEM_XBEE)
-                if (sleepType != modem_always_on) _tinyModem.setupPinSleep();
+                /*if (sleepType != modem_always_on)*/ _tinyModem.setupPinSleep();
                 XBeeChip = _tinyModem.getBeeType();
             #endif
 

@@ -128,8 +128,8 @@ int LoggerDreamHost::postDataDreamHost(String& fullURL)
         #endif
 
         // Send the request to the modem stream
-        if (fullURL.length() > 1) streamDreamHostRequest(_logModem->_tinyClient, fullURL);
-        else streamDreamHostRequest(_logModem->_tinyClient);
+        if (fullURL.length() > 1) streamDreamHostRequest(&_logModem->_tinyClient, fullURL);
+        else streamDreamHostRequest(&_logModem->_tinyClient);
         _logModem->_tinyClient.flush();  // wait for sending to finish
 
         uint32_t start_timer = millis();

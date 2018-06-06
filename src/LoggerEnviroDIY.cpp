@@ -216,8 +216,8 @@ int LoggerEnviroDIY::postDataEnviroDIY(String& enviroDIYjson)
         #endif
 
         // Send the request to the modem stream
-        if (enviroDIYjson.length() > 1) streamEnviroDIYRequest(_logModem->_tinyClient, enviroDIYjson);
-        else streamEnviroDIYRequest(_logModem->_tinyClient);
+        if (enviroDIYjson.length() > 1) streamEnviroDIYRequest(&_logModem->_tinyClient, enviroDIYjson);
+        else streamEnviroDIYRequest(&_logModem->_tinyClient);
         _logModem->_tinyClient.flush();  // wait for sending to finish
 
         uint32_t start_timer = millis();
