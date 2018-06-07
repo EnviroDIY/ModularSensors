@@ -146,9 +146,8 @@ public:
         : Sensor(MODEM_NAME, MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
           _tinyModem(*modemStream), _tinyClient(_tinyModem),
           _APN(APN), _lastNISTrequest(0)
-          ,_vcc33Pin(vcc33Pin), _modemSleepRqPin(modemSleepRqPin), _modemStatusPin(modemStatusPin), _sleepType(sleepType)
     {
-        // _modemOnOff = constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
+        _modemOnOff = constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
     loggerModem(Stream &modemStream,
                 uint8_t vcc33Pin, uint8_t modemStatusPin, uint8_t modemSleepRqPin,
@@ -157,9 +156,8 @@ public:
         : Sensor(MODEM_NAME, MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
           _tinyModem(modemStream), _tinyClient(_tinyModem),
           _APN(APN), _lastNISTrequest(0)
-          ,_vcc33Pin(vcc33Pin), _modemSleepRqPin(modemSleepRqPin), _modemStatusPin(modemStatusPin), _sleepType(sleepType)
     {
-        // _modemOnOff = constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
+        _modemOnOff = constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
 
     loggerModem(Stream *modemStream,
@@ -169,9 +167,8 @@ public:
         : Sensor(MODEM_NAME, MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
           _tinyModem(*modemStream), _tinyClient(_tinyModem),
           _ssid(ssid), _pwd(pwd), _lastNISTrequest(0)
-          ,_vcc33Pin(vcc33Pin), _modemSleepRqPin(modemSleepRqPin), _modemStatusPin(modemStatusPin), _sleepType(sleepType)
     {
-        // _modemOnOff = constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
+        _modemOnOff = constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
 
     loggerModem(Stream &modemStream,
@@ -181,9 +178,8 @@ public:
         : Sensor(MODEM_NAME, MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
           _tinyModem(modemStream), _tinyClient(_tinyModem),
           _ssid(ssid), _pwd(pwd), _lastNISTrequest(0)
-          ,_vcc33Pin(vcc33Pin), _modemSleepRqPin(modemSleepRqPin), _modemStatusPin(modemStatusPin), _sleepType(sleepType)
     {
-        // _modemOnOff = constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
+        _modemOnOff = constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
 
     String getSensorLocation(void) override { return F("modemSerial"); }
@@ -192,9 +188,6 @@ public:
     virtual bool setup(void) override
     {
         bool retVal = false;
-
-        _modemOnOff = constructOnOff(_vcc33Pin, _modemStatusPin, _modemSleepRqPin, _sleepType);
-        Serial.println((long)&_modemOnOff);
 
         // Set the on-off pin modes
         _modemOnOff->begin();
@@ -596,11 +589,6 @@ private:
     const char *_ssid;
     const char *_pwd;
     uint32_t _lastNISTrequest;
-    int8_t _vcc33Pin;
-    int8_t _modemSleepRqPin;
-    int8_t _modemStatusPin;
-    ModemSleepType _sleepType;
-
 
 private:
     // Helper to get approximate RSSI from CSQ (assuming no noise)

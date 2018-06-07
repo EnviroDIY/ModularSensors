@@ -64,7 +64,8 @@ protected:
 class pulsedOnOff : public ModemOnOff
 {
 public:
-    pulsedOnOff(int8_t vcc33Pin, int8_t modemSleepRqPin, int8_t modemStatusPin, bool isHighWhenOn);
+    pulsedOnOff(int8_t vcc33Pin, int8_t modemSleepRqPin, int8_t modemStatusPin,
+                bool isHighWhenOn);
     void begin(void) override;
     bool on(void) override;
     bool off(void) override;
