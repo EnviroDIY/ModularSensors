@@ -21,16 +21,11 @@
 
 
 // Constructor
-ModemOnOff::ModemOnOff(int vcc33Pin, int modemSleepRqPin, int modemStatusPin,
+ModemOnOff::ModemOnOff(int8_t vcc33Pin, int8_t modemSleepRqPin, int8_t modemStatusPin,
                        bool isHighWhenOn)
-{
-    _vcc33Pin = vcc33Pin;
-    _modemSleepRqPin = modemSleepRqPin;
-    _modemStatusPin = modemStatusPin;
-    _isHighWhenOn = isHighWhenOn;
-    // Assume modem is off at constructor
-    _isNowOn = false;
-}
+  : _vcc33Pin(vcc33Pin), _modemSleepRqPin(modemSleepRqPin), _modemStatusPin(modemStatusPin),
+    _isHighWhenOn(isHighWhenOn)
+{}
 
 
 // Begins the instance - ie, sets pin modes
@@ -39,7 +34,7 @@ void ModemOnOff::begin(void)
 {
     MS_DBG(F("Initializing modem on/off with power on pin "), _vcc33Pin,
            F(" status on pin "), _modemStatusPin,
-           F(" and on/off via pin "), modemSleepRqPin, F("..."));
+           F(" and on/off via pin "), _modemSleepRqPin, F(".\n"));
 
     // Set pin modes
     if (_vcc33Pin >= 0)
@@ -59,8 +54,6 @@ void ModemOnOff::begin(void)
 
     // Initialize assuming modem is off
     _isNowOn = false;
-
-    MS_DBG(F("   ... Success!\n"));
 }
 
 // Function to check if the modem is currently on
@@ -85,6 +78,7 @@ void ModemOnOff::powerOn(void)
         digitalWrite(_vcc33Pin, HIGH);
         MS_DBG(F("Sending power to modem.\n"));
     }
+    else MS_DBG(F("No power control on modem.\n"));
 }
 
 // Function to cut power from the modem - sets power pin low
@@ -94,6 +88,7 @@ void ModemOnOff::powerOff(void)
         digitalWrite(_vcc33Pin, LOW);
         MS_DBG(F("Cutting modem power.\n"));
     }
+    else MS_DBG(F("No power control on modem.\n"));
 }
 
 
@@ -105,6 +100,18 @@ void ModemOnOff::powerOff(void)
 * This is used by the Sodaq GPRSBee v0.4 and the Adafruit Fona.
 * ========================================================================= */
 
+pulsedOnOff::pulsedOnOff(int8_t vcc33Pin, int8_t modemSleepRqPin,
+                         int8_t modemStatusPin, bool isHighWhenOn)
+  : ModemOnOff(vcc33Pin, modemSleepRqPin, modemStatusPin, isHighWhenOn)
+ {}
+
+void pulsedOnOff::begin(void)
+{
+    ModemOnOff::begin();
+    MS_DBG(F("Pin "), _modemSleepRqPin, F(" is pulsed to "), _isHighWhenOn,
+           F(" for 2.5 seconds to turn modem on.\n"));
+}
+
 // Turns the modem on and off by pulsing the onoff/DTR/Key pin on for 2 seconds
 bool pulsedOnOff::on(void)
 {
@@ -112,7 +119,7 @@ bool pulsedOnOff::on(void)
     powerOn();
 
     // If no pin assigned to turn it on or off, assume it's on and return
-    if (_modemSleepRqPin <= 0)
+    if (_modemSleepRqPin < 0)
     {
         MS_DBG(F("No modem on/sleep pin assigned, assuming modem is on/awake."));
         _isNowOn = true;
@@ -153,7 +160,7 @@ bool pulsedOnOff::on(void)
 bool pulsedOnOff::off(void)
 {
     // If no pin assigned to turn it on or off, assume it's off and return
-    if (_modemSleepRqPin <= 0)
+    if (_modemSleepRqPin < 0)
     {
         MS_DBG(F("No modem on/sleep pin assigned, assuming modem is off/asleep."));
         _isNowOn = false;
@@ -174,7 +181,7 @@ bool pulsedOnOff::off(void)
         pulse();
 
         // Wait until is off
-        for (uint32_t start = millis(); millis() - start < 1000; )
+        for (uint32_t start = millis(); millis() - start < 500; )
         {
             if (!isOn())
             {
@@ -216,6 +223,18 @@ void pulsedOnOff::pulse(void)
 * A "low" on is used by the all Digi XBee's.
 * ========================================================================= */
 
+heldOnOff::heldOnOff(int8_t vcc33Pin, int8_t modemSleepRqPin,
+                     int8_t modemStatusPin, bool isHighWhenOn)
+  : ModemOnOff(vcc33Pin, modemSleepRqPin, modemStatusPin, isHighWhenOn)
+{}
+
+void heldOnOff::begin(void)
+{
+    ModemOnOff::begin();
+    MS_DBG(F("Pin "), _modemSleepRqPin, F(" held "), _isHighWhenOn,
+           F(" to turn modem on.\n"));
+}
+
 // Turns the modem on by setting the onoff/DTR/Key high and off by setting it low
 bool heldOnOff::on(void)
 {
@@ -223,7 +242,7 @@ bool heldOnOff::on(void)
     powerOn();
 
     // If no pin assigned to turn it on or off, assume it's on and return
-    if (_modemSleepRqPin <= 0)
+    if (_modemSleepRqPin < 0)
     {
         MS_DBG(F("No modem on/sleep pin assigned, assuming modem is on/awake."));
         _isNowOn = true;
@@ -234,7 +253,7 @@ bool heldOnOff::on(void)
     // at to turn the modem on
     MS_DBG(F("Turning modem on by setting pin "), _modemSleepRqPin, F(" to "),
            _isHighWhenOn, F(".\n"));
-    digitalWrite(_modemSleepRqPin, HIGH);
+    digitalWrite(_modemSleepRqPin, _isHighWhenOn);
 
     // Wait until is actually on
     for (uint32_t start = millis(); millis() - start < 5000; )
@@ -256,7 +275,7 @@ bool heldOnOff::on(void)
 bool heldOnOff::off(void)
 {
     // If no pin assigned to turn it on or off, assume it's off and return
-    if (_modemSleepRqPin <= 0)
+    if (_modemSleepRqPin < 0)
     {
         MS_DBG(F("No modem on/sleep pin assigned, assuming modem is off/asleep."));
         _isNowOn = false;
@@ -267,10 +286,10 @@ bool heldOnOff::off(void)
     // at to turn the modem off
     MS_DBG(F("Turning modem off by setting pin "), _modemSleepRqPin, F(" to "),
            !_isHighWhenOn, F(".\n"));
-    digitalWrite(_modemSleepRqPin, LOW);
+    digitalWrite(_modemSleepRqPin, !_isHighWhenOn);
 
     // Wait until is off
-    for (uint32_t start = millis(); millis() - start < 5000; )
+    for (uint32_t start = millis(); millis() - start < 500; )
     {
         if (!isOn())
         {
@@ -278,7 +297,6 @@ bool heldOnOff::off(void)
             powerOff();
             return true;
         }
-        delay(5);
     }
 
     // If the modem doesn't show it's off within 5 seconds, cut the power
