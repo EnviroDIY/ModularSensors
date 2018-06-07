@@ -12,7 +12,7 @@
 
 #include <Arduino.h>
 
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+#define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
 #include "SensorBase.h"
@@ -22,8 +22,7 @@
 class VariableArray
 {
 public:
-    // Initialization - cannot do this in constructor arduino has issues creating
-    // instances of classes with non-empty constructors
+    // Constructor
     VariableArray(int variableCount, Variable *variableList[]);
 
     // Leave the internal variable list public
