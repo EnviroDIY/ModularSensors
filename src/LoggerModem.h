@@ -15,7 +15,7 @@
 #define LoggerModem_h
 
 #include <Arduino.h>
-// #define MODEM_DEBUGGING_SERIAL_OUTPUT Serial
+#define MODEM_DEBUGGING_SERIAL_OUTPUT Serial
 // #define TINY_GSM_DEBUG Serial
 
 #include "ModemOnOff.h"
@@ -580,9 +580,7 @@ public:
 
     TinyGsm _tinyModem;
     TinyGsmClient _tinyClient;
-    ModemOnOff *_modemOnOff;
-    // This must be a pointer because ModemOnOff is an abstract class - that is,
-    // it has pure virtual functions
+    ModemOnOff _modemOnOff;
 
 private:
     const char *_APN;
@@ -625,7 +623,7 @@ private:
     }
 
     // Construct the on-off instances
-    ModemOnOff *constructOnOff(int8_t vcc33Pin, int8_t modemStatusPin, int8_t modemSleepRqPin,
+    ModemOnOff<heldOnOff> constructOnOff(int8_t vcc33Pin, int8_t modemStatusPin, int8_t modemSleepRqPin,
                         ModemSleepType sleepType)
     {
         #if defined(TINY_GSM_MODEM_XBEE)  // ALL XBee's use modem_sleep_reverse!
@@ -636,23 +634,23 @@ private:
         {
             case modem_sleep_held:
             {
-                return new heldOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, true);
+                return heldOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, true);
             }
             case modem_sleep_reverse:
             {
-                return new heldOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, false);
+                return heldOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, false);
             }
             case modem_sleep_pulsed:
             {
-                return new pulsedOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, true);
+                return pulsedOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, true);
             }
             case modem_sleep_rev_pulse:
             {
-                return new pulsedOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, false);
+                return pulsedOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, false);
             }
             default:  // modem_always_on
             {
-                return new heldOnOff(-1, -1, -1, true);
+                return heldOnOff(-1, -1, -1, true);
             }
         }
     }
