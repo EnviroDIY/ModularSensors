@@ -31,64 +31,18 @@ class ModemOnOff
 public:
     // Constructor
     ModemOnOff(int8_t vcc33Pin, int8_t modemSleepRqPin, int8_t modemStatusPin,
-                           bool isHighWhenOn)
-      : _vcc33Pin(vcc33Pin), _modemSleepRqPin(modemSleepRqPin), _modemStatusPin(modemStatusPin),
-        _isHighWhenOn(isHighWhenOn)
-    {}
-
-
-    // Checks if the status pin is reading on
-    bool isOn(void)
-    {
-        if (_modemStatusPin >= 0)
-        {
-            bool status = digitalRead(_modemStatusPin);
-            if (!_isHighWhenOn) status = !status;
-            // MS_DBG(F("Is modem on? "), status, F("\n"));
-            return status;
-        }
-        // No status pin. Return the "internal" status code.
-        return _isNowOn;
-    }
+                           bool isHighWhenOn);
 
     // Begins the instance - ie, sets pin modes
     // This is the stuff that cannot happen in the constructor
     void begin(void)
-    {
-        MS_DBG(F("Initializing modem on/off with power on pin "), _vcc33Pin,
-               F(" status on pin "), _modemStatusPin,
-               F(" and on/off via pin "), _modemSleepRqPin, F(".\n"));
 
-        // Set pin modes
-        if (_vcc33Pin >= 0)
-        {
-            pinMode(_vcc33Pin, OUTPUT);  // Set pin mode
-            digitalWrite(_vcc33Pin, LOW);  // Set power off
-        }
-        if (_modemSleepRqPin >= 0)
-        {
-            pinMode(_modemSleepRqPin, OUTPUT);  // Set pin mode
-            digitalWrite(_modemSleepRqPin, !_isHighWhenOn);  // Set to off
-        }
-        if (_modemStatusPin >= 0)
-        {
-            pinMode(_modemStatusPin, INPUT_PULLUP);
-        }
+    // Turn the modem on and off
+    bool on(void);
+    bool off(void);
 
-        // Initialize assuming modem is off
-        _isNowOn = false;
-
-        static_cast<T*>(this)->begin();  // CRTP = static polymorphism
-    }
-
-    bool on(void)
-    {
-      return static_cast<T*>(this)->on();  // CRTP = static polymorphism
-    };
-    bool off(void)
-    {
-      return static_cast<T*>(this)->on();  // CRTP = static polymorphism
-    };
+    // Check if the modem is currently on
+    bool isOn(void);
 
 protected:
     int8_t _vcc33Pin;
