@@ -109,7 +109,7 @@ pulsedOnOff::pulsedOnOff(int8_t vcc33Pin, int8_t modemSleepRqPin,
 void pulsedOnOff::begin(void)
 {
     ModemOnOff::begin();
-    MS_DBG(F("Pin "), _modemSleepRqPin, F(" is pulsed to "), _isHighWhenOn,
+    MS_DBG(F("Pin "), _modemSleepRqPin, F(" will be pulsed to "), _isHighWhenOn,
            F(" for 2.5 seconds to turn modem on.\n"));
 }
 
@@ -232,7 +232,7 @@ heldOnOff::heldOnOff(int8_t vcc33Pin, int8_t modemSleepRqPin,
 void heldOnOff::begin(void)
 {
     ModemOnOff::begin();
-    MS_DBG(F("Pin "), _modemSleepRqPin, F(" held "), _isHighWhenOn,
+    MS_DBG(F("Pin "), _modemSleepRqPin, F(" will be held "), _isHighWhenOn,
            F(" to turn modem on.\n"));
 }
 

@@ -25,24 +25,23 @@
 * Functions for the OnOff class
 * ========================================================================= */
 
-template <class T>
 class ModemOnOff
 {
 public:
     // Constructor
     ModemOnOff(int8_t vcc33Pin, int8_t modemSleepRqPin, int8_t modemStatusPin,
-                           bool isHighWhenOn);
+               bool isHighWhenOn);
 
     // Begins the instance - ie, sets pin modes
     // This is the stuff that cannot happen in the constructor
-    void begin(void)
-
-    // Turn the modem on and off
-    bool on(void);
-    bool off(void);
+    virtual void begin(void);
 
     // Check if the modem is currently on
-    bool isOn(void);
+    virtual bool isOn(void);
+
+    // Turn the modem on and off
+    virtual bool on(void) = 0;
+    virtual bool off(void) = 0;
 
 protected:
     int8_t _vcc33Pin;
@@ -51,27 +50,9 @@ protected:
     bool _isHighWhenOn;
     bool _isNowOn;
 
-    // Function to supply power to the modem - sets power pin high
-    void powerOn(void)
-    {
-        if (_vcc33Pin >= 0)
-        {
-            digitalWrite(_vcc33Pin, HIGH);
-            MS_DBG(F("Sending power to modem.\n"));
-        }
-        else MS_DBG(F("No power control on modem.\n"));
-    }
-
-
-    // Function to cut power from the modem - sets power pin low
-    void powerOff(void)
-    {
-        if (_vcc33Pin >= 0) {
-            digitalWrite(_vcc33Pin, LOW);
-            MS_DBG(F("Cutting modem power.\n"));
-        }
-        else MS_DBG(F("No power control on modem.\n"));
-    }
+    // Turn the modem power on and off
+    void powerOn(void);
+    void powerOff(void);
 
 };
 
@@ -86,14 +67,14 @@ protected:
 
 // Turns the modem on and off by pulsing the onoff/DTR/Key pin on for 2 seconds
 // "On" can either be a high or low pulse
-class pulsedOnOff : public ModemOnOff<pulsedOnOff>
+class pulsedOnOff : public ModemOnOff
 {
 public:
     pulsedOnOff(int8_t vcc33Pin, int8_t modemSleepRqPin, int8_t modemStatusPin,
                 bool isHighWhenOn);
-    void begin(void);
-    bool on(void);
-    bool off(void);
+    void begin(void) override;
+    bool on(void) override;
+    bool off(void) override;
 
 private:
     void pulse(void);
@@ -110,13 +91,13 @@ private:
 * ========================================================================= */
 
 // Turns the modem on by setting the onoff/DTR/Key high and off by setting it low
-class heldOnOff : public ModemOnOff<heldOnOff>
+class heldOnOff : public ModemOnOff
 {
 public:
     heldOnOff(int8_t vcc33Pin, int8_t modemSleepRqPin, int8_t modemStatusPin, bool isHighWhenOn);
-    void begin(void);
-    bool on(void);
-    bool off(void);
+    void begin(void) override;
+    bool on(void) override;
+    bool off(void) override;
 };
 
 #endif /* ModemOnOff_h */

@@ -190,7 +190,11 @@ public:
         bool retVal = false;
 
         // Set the on-off pin modes
+        Serial.print("Start modem setup on-off pointer:");
+        Serial.println((long)&_modemOnOff);
         _modemOnOff->begin();
+        Serial.print("After first begin on-off pointer:");
+        Serial.println((long)&_modemOnOff);
 
         // Initialize the modem
         MS_MOD_DBG(F("Starting up the "), F(MODEM_NAME), F("...\n"));
@@ -244,6 +248,7 @@ public:
         MS_MOD_DBG(F("Modem chip: "), loggerModemChip, '\n');
 
         _modemOnOff->begin();
+        Serial.print("After second begin on-off pointer:");
         Serial.println((long)&_modemOnOff);
 
         // Set the status bit marking that the modem has been set up (bit 1)
@@ -272,6 +277,9 @@ public:
         int signalQual = 0;
         int percent = 0;
         int rssi = -9999;
+
+        Serial.print("addSingleMeasurementResult on-off pointer:");
+        Serial.println((long)&_modemOnOff);
 
         // Check that the modem is responding to AT commands.  If not, give up.
         MS_MOD_DBG(F("\nWaiting up to 5 seconds for modem to respond to AT commands...\n"));
@@ -357,6 +365,10 @@ public:
 
     bool connectInternet(uint32_t waitTime_ms = 50000L)
     {
+
+    Serial.print("connectInternet on-off pointer:");
+    Serial.println((long)&_modemOnOff);
+
         bool retVal = false;
 
         // Check if the modem is on; turn it on if not
@@ -465,11 +477,11 @@ public:
     bool modemPowerUp(void)
     {
         MS_MOD_DBG(F("Turning modem on0.\n"));
-        delay(1000);
+        delay(2000);
 
         Serial.println((long)&_modemOnOff);
 
-        delay(1000);
+        delay(2000);
             MS_MOD_DBG(F("Turning modem on0.5.\n"));
         // Turn the modem on .. whether it was on or not
         // Need to turn on no matter what because some modems don't have an
@@ -580,7 +592,9 @@ public:
 
     TinyGsm _tinyModem;
     TinyGsmClient _tinyClient;
-    ModemOnOff _modemOnOff;
+    ModemOnOff *_modemOnOff;
+    // This must be a pointer because ModemOnOff is an abstract class - that is,
+    // it has pure virtual functions
 
 private:
     const char *_APN;
@@ -623,7 +637,7 @@ private:
     }
 
     // Construct the on-off instances
-    ModemOnOff<heldOnOff> constructOnOff(int8_t vcc33Pin, int8_t modemStatusPin, int8_t modemSleepRqPin,
+    ModemOnOff *constructOnOff(int8_t vcc33Pin, int8_t modemStatusPin, int8_t modemSleepRqPin,
                         ModemSleepType sleepType)
     {
         #if defined(TINY_GSM_MODEM_XBEE)  // ALL XBee's use modem_sleep_reverse!
@@ -634,23 +648,23 @@ private:
         {
             case modem_sleep_held:
             {
-                return heldOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, true);
+                return new heldOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, true);
             }
             case modem_sleep_reverse:
             {
-                return heldOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, false);
+                return new heldOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, false);
             }
             case modem_sleep_pulsed:
             {
-                return pulsedOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, true);
+                return new pulsedOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, true);
             }
             case modem_sleep_rev_pulse:
             {
-                return pulsedOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, false);
+                return new pulsedOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, false);
             }
             default:  // modem_always_on
             {
-                return heldOnOff(-1, -1, -1, true);
+                return new heldOnOff(-1, -1, -1, true);
             }
         }
     }

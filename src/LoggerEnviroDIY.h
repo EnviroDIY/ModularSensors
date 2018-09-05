@@ -16,7 +16,12 @@
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
-#include "LoggerModem.h"  // To communicate with the internet
+// To communicate with the internet via client
+#if defined(ARDUINO_DASH)
+  #include <ArduinoCompat/Client.h>
+#else
+  #include <Client.h>
+#endif
 #include "LoggerBase.h"
 
 // ============================================================================
@@ -32,7 +37,7 @@ public:
 
     // Adds a loggerModem objct to the logger
     // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
-    void attachModem(loggerModem& modem);
+    void attachClient(Client& inClient);
 
     // Adds the site registration token
     void setToken(const char *registrationToken);
@@ -84,7 +89,7 @@ public:
     virtual void log(void) override;
 
     // The internal modem instance
-    loggerModem *_logModem;
+    Client *_client;
     // NOTE:  The internal _logModem must be a POINTER not a reference because
     // it is possible for no modem to be attached (and thus the pointer could
     // be null).  It is not possible to have a null reference.
