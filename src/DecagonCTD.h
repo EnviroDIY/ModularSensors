@@ -58,17 +58,17 @@ public:
     // Constructors with overloads
     DecagonCTD(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
      : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    F("DecagonCTD"), CTD_NUM_VARIABLES,
+                    "DecagonCTD", CTD_NUM_VARIABLES,
                     CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
     {}
     DecagonCTD(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
      : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    F("DecagonCTD"), CTD_NUM_VARIABLES,
+                    "DecagonCTD", CTD_NUM_VARIABLES,
                     CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
     {}
     DecagonCTD(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
      : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    F("DecagonCTD"), CTD_NUM_VARIABLES,
+                    "DecagonCTD", CTD_NUM_VARIABLES,
                     CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
     {}
 };
@@ -78,11 +78,11 @@ public:
 class DecagonCTD_Cond : public Variable
 {
 public:
-    DecagonCTD_Cond(Sensor *parentSense, String UUID = "", String customVarCode = "")
+    DecagonCTD_Cond(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, CTD_COND_VAR_NUM,
-                F("specificConductance"), F("microsiemenPerCentimeter"),
+                "specificConductance", "microsiemenPerCentimeter",
                 CTD_COND_RESOLUTION,
-                F("CTDcond"), UUID, customVarCode)
+                "CTDcond", UUID, customVarCode)
     {}
 };
 
@@ -91,11 +91,11 @@ public:
 class DecagonCTD_Temp : public Variable
 {
 public:
-    DecagonCTD_Temp(Sensor *parentSense, String UUID = "", String customVarCode = "")
+    DecagonCTD_Temp(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, CTD_TEMP_VAR_NUM,
-                F("temperature"), F("degreeCelsius"),
+                "temperature", "degreeCelsius",
                 CTD_TEMP_RESOLUTION,
-                F("CTDtemp"), UUID, customVarCode)
+                "CTDtemp", UUID, customVarCode)
     {}
 };
 
@@ -104,11 +104,11 @@ public:
 class DecagonCTD_Depth : public Variable
 {
 public:
-    DecagonCTD_Depth(Sensor *parentSense, String UUID = "", String customVarCode = "")
+    DecagonCTD_Depth(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, CTD_DEPTH_VAR_NUM,
-                F("waterDepth"), F("millimeter"),
+                "waterDepth", "millimeter",
                 CTD_DEPTH_RESOLUTION,
-                F("CTDdepth"), UUID, customVarCode)
+                "CTDdepth", UUID, customVarCode)
     {}
 };
 

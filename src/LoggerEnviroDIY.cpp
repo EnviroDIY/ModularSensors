@@ -10,13 +10,21 @@
 
 #include "LoggerEnviroDIY.h"
 
+// To prevent compiler/linker crashes with Enable interrupt
+#define LIBCALL_ENABLEINTERRUPT
+// To handle external and pin change interrupts
+#include <EnableInterrupt.h>
+
 
 // ============================================================================
 //  Functions for the EnviroDIY data portal receivers.
 // ============================================================================
 
 // Constructor
-LoggerEnviroDIY::LoggerEnviroDIY()
+LoggerEnviroDIY::LoggerEnviroDIY(const char *loggerID, uint16_t loggingIntervalMinutes,
+                                 int8_t SDCardPin, int8_t mcuWakePin,
+                                 VariableArray *inputArray)
+  : Logger(loggerID, loggingIntervalMinutes, SDCardPin, mcuWakePin, inputArray)
 {
     _modemAttached = false;
 }
@@ -25,7 +33,7 @@ LoggerEnviroDIY::LoggerEnviroDIY()
 // Set up communications
 // Adds a loggerModem objct to the logger
 // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
-void LoggerEnviroDIY::attachModem(loggerModem *modem)
+void LoggerEnviroDIY::attachModem(loggerModem& modem)
 {
     _logModem = modem;
     _modemAttached = true;
@@ -50,17 +58,20 @@ void LoggerEnviroDIY::setSamplingFeatureUUID(const char *samplingFeature)
 // This adds extra data to the datafile header
 String LoggerEnviroDIY::generateFileHeader(void)
 {
-    String dataHeader = "";
-
-    // Add additional UUID information
-    String  SFHeaderString = F("Sampling Feature: ");
-    SFHeaderString += _samplingFeature;
-    makeHeaderRowMacro(SFHeaderString, _variableList[i]->getVarUUID())
-
+    // All we're doing is putting the Sampling Feature UUID at the top
+    String dataHeader = F("Sampling Feature: ");
+    dataHeader += _samplingFeature;
+    dataHeader += "\r\n";
     // Put the basic header below
     dataHeader += Logger::generateFileHeader();
 
     return dataHeader;
+}
+void LoggerEnviroDIY::streamFileHeader(Stream *stream)
+{
+    stream->print(F("Sampling Feature: "));
+    stream->println(_samplingFeature);
+    Logger::streamFileHeader(stream);
 }
 
 
@@ -73,12 +84,12 @@ String LoggerEnviroDIY::generateSensorDataJSON(void)
     jsonString += F("\"timestamp\": \"");
     jsonString += String(Logger::markedISO8601Time) + F("\", ");
 
-    for (int i = 0; i < Logger::_variableCount; i++)
+    for (int i = 0; i < _internalArray->getVariableCount(); i++)
     {
         jsonString += F("\"");
-        jsonString += Logger::_variableList[i]->getVarUUID() + F("\": ");
-        jsonString += Logger::_variableList[i]->getValueString();
-        if (i + 1 != Logger::_variableCount)
+        jsonString += _internalArray->arrayOfVars[i]->getVarUUID() + F("\": ");
+        jsonString += _internalArray->arrayOfVars[i]->getValueString();
+        if (i + 1 != _internalArray->getVariableCount())
         {
             jsonString += F(", ");
         }
@@ -87,29 +98,49 @@ String LoggerEnviroDIY::generateSensorDataJSON(void)
     jsonString += F("}");
     return jsonString;
 }
+void LoggerEnviroDIY::streamSensorDataJSON(Stream *stream)
+{
+    stream->print(String(F("{")));
+    stream->print(String(F("\"sampling_feature\": \"")));
+    stream->print(String(_samplingFeature)); + F("");
+    stream->print(String(F("\", \"timestamp\": \"")));
+    stream->print(String(Logger::markedISO8601Time) + F("\", "));
+
+    for (int i = 0; i < _internalArray->getVariableCount(); i++)
+    {
+        stream->print(String(F("\"")) + _internalArray->arrayOfVars[i]->getVarUUID() + String(F("\": ")) + _internalArray->arrayOfVars[i]->getValueString());
+        if (i + 1 != _internalArray->getVariableCount())
+        {
+            stream->print(F(", "));
+        }
+    }
+
+    stream->print(F("}"));
+}
 
 
-// This generates a fully structured POST request for EnviroDIY
-String LoggerEnviroDIY::generateEnviroDIYPostRequest(String enviroDIYjson)
-{
-    String POSTstring = String(F("POST /api/data-stream/ HTTP/1.1"));
-    POSTstring += String(F("\r\nHost: data.envirodiy.org"));
-    POSTstring += String(F("\r\nTOKEN: ")) + String(_registrationToken);
-    // POSTstring += String(F("\r\nCache-Control: no-cache"));
-    // POSTstring += String(F("\r\nConnection: close"));
-    POSTstring += String(F("\r\nContent-Length: ")) + String(enviroDIYjson.length());
-    POSTstring += String(F("\r\nContent-Type: application/json\r\n\r\n"));
-    POSTstring += String(enviroDIYjson);
-    return POSTstring;
-}
-String LoggerEnviroDIY::generateEnviroDIYPostRequest(void)
-{
-    return generateEnviroDIYPostRequest(generateSensorDataJSON());
-}
+// // This generates a fully structured POST request for EnviroDIY
+// String LoggerEnviroDIY::generateEnviroDIYPostRequest(String enviroDIYjson)
+// {
+//     String POSTstring = String(F("POST /api/data-stream/ HTTP/1.1"));
+//     POSTstring += String(F("\r\nHost: data.envirodiy.org"));
+//     POSTstring += String(F("\r\nTOKEN: ")) + String(_registrationToken);
+//     // POSTstring += String(F("\r\nCache-Control: no-cache"));
+//     // POSTstring += String(F("\r\nConnection: close"));
+//     POSTstring += String(F("\r\nContent-Length: ")) + String(enviroDIYjson.length());
+//     POSTstring += String(F("\r\nContent-Type: application/json\r\n\r\n"));
+//     POSTstring += String(enviroDIYjson);
+//     return POSTstring;
+// }
+// String LoggerEnviroDIY::generateEnviroDIYPostRequest(void)
+// {
+//     return generateEnviroDIYPostRequest(generateSensorDataJSON());
+// }
+
 
 // This prints a fully structured post request for EnviroDIY to the
 // specified stream using the specified json.
-void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream, String enviroDIYjson)
+void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream, String& enviroDIYjson)
 {
     stream->print(String(F("POST /api/data-stream/ HTTP/1.1")));
     stream->print(String(F("\r\nHost: data.envirodiy.org")));
@@ -122,25 +153,27 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream, String enviroDIYjso
 }
 void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
 {
-    // first we need to calculate how long the json string is going to be
+    // First we need to calculate how long the json string is going to be
+    // This is needed for the "Content-Length" header
     int jsonLength = 22;  // {"sampling_feature": "
     jsonLength += 36;  // sampling feature UUID
     jsonLength += 17;  // ", "timestamp": "
     jsonLength += 25;  // markedISO8601Time
     jsonLength += 3;  //  ",_
-    for (int i = 0; i < Logger::_variableCount; i++)
+    for (int i = 0; i < _internalArray->getVariableCount(); i++)
     {
         jsonLength += 1;  //  "
         jsonLength += 36;  // variable UUID
         jsonLength += 3;  //  ":_
-        jsonLength += Logger::_variableList[i]->getValueString().length();
-        if (i + 1 != Logger::_variableCount)
+        jsonLength += _internalArray->arrayOfVars[i]->getValueString().length();
+        if (i + 1 != _internalArray->getVariableCount())
         {
             jsonLength += 2;  // ,_
         }
     }
     jsonLength += 1;  // }
 
+    // Stream the HTTP headers for the post request
     stream->print(String(F("POST /api/data-stream/ HTTP/1.1")));
     stream->print(String(F("\r\nHost: data.envirodiy.org")));
     stream->print(String(F("\r\nTOKEN: ")) + String(_registrationToken));
@@ -148,21 +181,9 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
     // stream->print(String(F("\r\nConnection: close")));
     stream->print(String(F("\r\nContent-Length: ")) + String(jsonLength));
     stream->print(String(F("\r\nContent-Type: application/json\r\n\r\n")));
-    stream->print(String(F("{\"sampling_feature\": \"")));
-    stream->print(String(_samplingFeature)); + F("");
-    stream->print(String(F("\", \"timestamp\": \"")));
-    stream->print(String(Logger::markedISO8601Time) + F("\", "));
 
-    for (int i = 0; i < Logger::_variableCount; i++)
-    {
-        stream->print(String(F("\"")) + Logger::_variableList[i]->getVarUUID() + String(F("\": ")) + Logger::_variableList[i]->getValueString());
-        if (i + 1 != Logger::_variableCount)
-        {
-            stream->print(F(", "));
-        }
-    }
-
-    stream->print(F("}"));
+    // Stream the JSON itself
+    streamSensorDataJSON(stream);
 }
 
 
@@ -170,7 +191,7 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
 // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
 // over that connection.
 // The return is the http status code of the response.
-int LoggerEnviroDIY::postDataEnviroDIY(String enviroDIYjson)
+int LoggerEnviroDIY::postDataEnviroDIY(String& enviroDIYjson)
 {
     // do not continue if no modem!
     if (!_modemAttached)
@@ -184,7 +205,7 @@ int LoggerEnviroDIY::postDataEnviroDIY(String enviroDIYjson)
     int did_respond = 0;
 
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
-    if(_logModem->openTCP("data.envirodiy.org", 80))
+    if(_logModem.openTCP("data.envirodiy.org", 80))
     {
         // Send the request to the serial for debugging
         #if defined(STANDARD_SERIAL_OUTPUT)
@@ -196,23 +217,23 @@ int LoggerEnviroDIY::postDataEnviroDIY(String enviroDIYjson)
         #endif
 
         // Send the request to the modem stream
-        if (enviroDIYjson.length() > 1) streamEnviroDIYRequest(_logModem->_client, enviroDIYjson);
-        else streamEnviroDIYRequest(_logModem->_client);
-        _logModem->_client->flush();  // wait for sending to finish
+        if (enviroDIYjson.length() > 1) streamEnviroDIYRequest(_logModem._client, enviroDIYjson);
+        else streamEnviroDIYRequest(_logModem._client);
+        _logModem._client->flush();  // wait for sending to finish
 
         uint32_t start_timer = millis();
-        while ((millis() - start_timer) < 10000L && _logModem->_client->available() < 12)
+        while ((millis() - start_timer) < 10000L && _logModem._client->available() < 12)
         {delay(10);}
 
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
         // we don't care about so we're not reading to save on total
         // data used for transmission.
-        did_respond = _logModem->_client->readBytes(response_buffer, 12);
+        did_respond = _logModem._client->readBytes(response_buffer, 12);
 
         // Close the TCP/IP connection as soon as the first 12 characters are read
         // We don't need anything else and stoping here should save data use.
-        _logModem->closeTCP();
+        _logModem.closeTCP();
     }
     else PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data Portal -- \n"));
 
@@ -237,7 +258,7 @@ int LoggerEnviroDIY::postDataEnviroDIY(String enviroDIYjson)
 
 
 // ===================================================================== //
-// Convience functions to call several of the above functions
+// Public functions for a "sensor testing" mode
 // ===================================================================== //
 
 // This defines what to do in the testing mode
@@ -256,39 +277,39 @@ void LoggerEnviroDIY::testingMode()
     {
         // Turn on the modem to let it start searching for the network
         // Turn on the modem
-        _logModem->modemPowerUp();
+        _logModem.modemPowerUp();
         // Connect to the network to make sure we have signal (only try for 10sec)
-        _logModem->connectInternet(10000L);
+        _logModem.connectInternet(10000L);
     }
 
     // Power up all of the sensors
-    sensorsPowerUp();
+    _internalArray->sensorsPowerUp();
 
     // Wake up all of the sensors
-    sensorsWake();
+    _internalArray->sensorsWake();
 
     // Update the sensors and print out data 25 times
     for (uint8_t i = 0; i < 25; i++)
     {
         PRINTOUT(F("------------------------------------------\n"));
         // Update the values from all attached sensors
-        updateAllSensors();
+        _internalArray->updateAllSensors();
         // Print out the current logger time
         PRINTOUT(F("Current logger time is "));
         PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
         PRINTOUT(F("    -----------------------\n"));
         // Print out the sensor data
         #if defined(STANDARD_SERIAL_OUTPUT)
-            printSensorData(&STANDARD_SERIAL_OUTPUT);
+            _internalArray->printSensorData(&STANDARD_SERIAL_OUTPUT);
         #endif
         PRINTOUT(F("    -----------------------\n"));
 
         if (_modemAttached)
         {
             // Specially highlight the modem signal quality in the debug mode
-            _logModem->update();
+            _logModem.update();
             PRINTOUT(F("Current modem signal is "));
-            PRINTOUT(_logModem->getSignalPercent());
+            PRINTOUT(_logModem.getSignalPercent());
             PRINTOUT(F("%\n"));
         }
 
@@ -296,30 +317,35 @@ void LoggerEnviroDIY::testingMode()
     }
 
     // Put sensors to sleep
-    sensorsSleep();
-    sensorsPowerDown();
+    _internalArray->sensorsSleep();
+    _internalArray->sensorsPowerDown();
 
     if (_modemAttached)
     {
         // Disconnect from the network
-        _logModem->disconnectInternet();
+        _logModem.disconnectInternet();
         // Turn off the modem
-        _logModem->modemPowerDown();
+        _logModem.modemPowerDown();
     }
 
     // Unset testing mode flag
     Logger::isTestingNow = false;
 
     // Sleep
-    if(_sleep){systemSleep();}
+    if(_mcuWakePin >= 0){systemSleep();}
 }
 
+
+// ===================================================================== //
+// Convience functions to call several of the above functions
+// ===================================================================== //
 
 // This calls all of the setup functions - must be run AFTER init
 void LoggerEnviroDIY::begin(void)
 {
     // Set up pins for the LED's
-    if (_ledPin > 0) pinMode(_ledPin, OUTPUT);
+    if (_ledPin >= 0) pinMode(_ledPin, OUTPUT);
+    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT_PULLUP);
 
     #if defined ARDUINO_ARCH_SAMD
         zero_sleep_rtc.begin();
@@ -332,43 +358,64 @@ void LoggerEnviroDIY::begin(void)
     PRINTOUT(F("Current RTC time is: "));
     PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
 
+    PRINTOUT(F("Setting up logger "), _loggerID, F(" to record at "),
+             _loggingIntervalMinutes, F(" minute intervals.\n"));
+
+    PRINTOUT(F("This logger has a variable array with "),
+             _internalArray->getVariableCount(), F(" variables, of which "),
+             _internalArray->getVariableCount() - _internalArray->getCalculatedVariableCount(),
+             F(" come from "),_internalArray->getSensorCount(), F(" sensors and "),
+             _internalArray->getCalculatedVariableCount(), F(" are calculated.\n"));
+
+    // Create the log file, adding the default header to it
+    if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName, '\n');
+    else PRINTOUT(F("Unable to create a file to save data to!"));
+
     if (_modemAttached)
     {
+        // Print out the modem info
+        PRINTOUT(F("This logger is also tied to a "));
+        PRINTOUT(_logModem.getSensorName(), F(" for internet connectivity.\n"));
         // Turn on the modem to let it start searching for the network
-        _logModem->modemPowerUp();
+        _logModem.modemPowerUp();
     }
 
     // Set up the sensors
-    setupSensors();
+    _internalArray->setupSensors();
 
     if (_modemAttached)
     {
         // Synchronize the RTC with NIST
         PRINTOUT(F("Attempting to synchronize RTC with NIST\n"));
+        PRINTOUT(F("This may take up to two minutes!\n"));
         // Connect to the network
-        if (_logModem->connectInternet(120000L))
+        if (_logModem.connectInternet(120000L))
         {
-            syncRTClock(_logModem->getNISTTime());
+            syncRTClock(_logModem.getNISTTime());
             // Disconnect from the network
-            _logModem->disconnectInternet();
+            _logModem.disconnectInternet();
         }
         // Turn off the modem
-        _logModem->modemPowerDown();
+        _logModem.modemPowerDown();
     }
 
-    // Set the filename for the logger to save to, if it hasn't been done
-    if(!_isFileNameSet){setFileName();}
-    else if(_autoFileName){setFileName();}
-    else setFileName(_fileName);  // This just for a nice print-out
-
-    // Set up the log file
-    setupLogFile();
-
     // Setup sleep mode
-    if(_sleep){setupSleep();}
+    if(_mcuWakePin >= 0){setupSleep();}
+
+    // Set up the interrupt to be able to enter sensor testing mode
+    if (_buttonPin >= 0)
+    {
+        enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
+        PRINTOUT(F("Push button on pin "));
+        PRINTOUT(_buttonPin);
+        PRINTOUT(F(" at any time to enter sensor testing mode.\n"));
+    }
 
     PRINTOUT(F("Logger setup finished!\n"));
     PRINTOUT(F("------------------------------------------\n\n"));
+
+    // Sleep
+    if(_mcuWakePin >= 0){systemSleep();}
 }
 
 
@@ -385,56 +432,59 @@ void LoggerEnviroDIY::log(void)
         // Print a line to show new reading
         PRINTOUT(F("------------------------------------------\n"));
         // Turn on the LED to show we're taking a reading
-        digitalWrite(_ledPin, HIGH);
+        if (_ledPin >= 0) digitalWrite(_ledPin, HIGH);
 
         if (_modemAttached)
         {
             // Turn on the modem to let it start searching for the network
-            _logModem->modemPowerUp();
+            _logModem.modemPowerUp();
         }
 
         // Send power to all of the sensors
         MS_DBG(F("    Powering sensors...\n"));
-        sensorsPowerUp();
+        _internalArray->sensorsPowerUp();
         // Wake up all of the sensors
         MS_DBG(F("    Waking sensors...\n"));
-        sensorsWake();
+        _internalArray->sensorsWake();
         // Update the values from all attached sensors
         MS_DBG(F("  Updating sensor values...\n"));
-        updateAllSensors();
+        _internalArray->updateAllSensors();
         // Put sensors to sleep
         MS_DBG(F("  Putting sensors back to sleep...\n"));
-        sensorsSleep();
+        _internalArray->sensorsSleep();
         // Cut sensor power
         MS_DBG(F("  Cutting sensor power...\n"));
-        sensorsPowerDown();
+        _internalArray->sensorsPowerDown();
 
         if (_modemAttached)
         {
             // Connect to the network
-            if (_logModem->connectInternet())
+            MS_DBG(F("  Connecting to the Internet...\n"));
+            if (_logModem.connectInternet())
             {
                 // Post the data to the WebSDL
                 postDataEnviroDIY();
 
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
+                MS_DBG(F("  Running a daily clock sync...\n"));
                 if (_numTimepointsLogged % 288 == 0)
                 {
-                    syncRTClock(_logModem->getNISTTime());
+                    syncRTClock(_logModem.getNISTTime());
                 }
 
                 // Disconnect from the network
-                _logModem->disconnectInternet();
+                MS_DBG(F("  Disconnecting from the Internet...\n"));
+                _logModem.disconnectInternet();
             }
             // Turn the modem off
-            _logModem->modemPowerDown();
+            _logModem.modemPowerDown();
         }
 
         // Create a csv data record and save it to the log file
-        logToSD(generateSensorDataCSV());
+        logToSD();
 
         // Turn off the LED
-        digitalWrite(_ledPin, LOW);
+        if (_ledPin >= 0) digitalWrite(_ledPin, LOW);
         // Print a line to show reading ended
         PRINTOUT(F("------------------------------------------\n\n"));
 
@@ -446,5 +496,5 @@ void LoggerEnviroDIY::log(void)
     if (Logger::startTesting) testingMode();
 
     // Sleep
-    if(_sleep){systemSleep();}
+    if(_mcuWakePin >= 0){systemSleep();}
 }

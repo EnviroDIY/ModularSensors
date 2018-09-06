@@ -15,7 +15,7 @@
 
 
 MaxBotixSonar::MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin, uint8_t measurementsToAverage)
-    : Sensor(F("MaxBotixMaxSonar"), HRXL_NUM_VARIABLES,
+    : Sensor("MaxBotixMaxSonar", HRXL_NUM_VARIABLES,
              HRXL_WARM_UP_TIME_MS, HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage)
 {
@@ -23,7 +23,7 @@ MaxBotixSonar::MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin,
     _stream = stream;
 }
 MaxBotixSonar::MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin, uint8_t measurementsToAverage)
-    : Sensor(F("MaxBotixMaxSonar"), HRXL_NUM_VARIABLES,
+    : Sensor("MaxBotixMaxSonar", HRXL_NUM_VARIABLES,
              HRXL_WARM_UP_TIME_MS, HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage)
 {
@@ -44,7 +44,7 @@ String MaxBotixSonar::getSensorLocation(void)
 bool MaxBotixSonar::setup(void)
 {
     // Set up the trigger, if applicable
-    if(_triggerPin > 0)
+    if(_triggerPin >= 0)
     {
         pinMode(_triggerPin, OUTPUT);
         digitalWrite(_triggerPin, LOW);
@@ -116,7 +116,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
              // for each "single measurement" until a valid value is returned
              // and the measurement time is <166ms, we'll actually activate
              // the trigger here.
-            if(_triggerPin > 0)
+            if(_triggerPin >= 0)
             {
                 MS_DBG(F("Triggering Sonar with "), _triggerPin, '\n');
                 digitalWrite(_triggerPin, HIGH);

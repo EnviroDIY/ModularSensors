@@ -15,7 +15,7 @@
 // ============================================================================
 
 // The constructor
-Sensor::Sensor(String sensorName, uint8_t numReturnedVars,
+Sensor::Sensor(const char *sensorName, uint8_t numReturnedVars,
                uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms,
                int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
 {
@@ -109,7 +109,7 @@ uint8_t Sensor::getStatus(void)
 // This turns on sensor power
 void Sensor::powerUp(void)
 {
-    if (_powerPin > 0)
+    if (_powerPin >= 0)
     {
         MS_DBG(F("Powering "), getSensorName(), F(" at "), getSensorLocation(),
                F(" with pin "), _powerPin, F("\n"));
@@ -130,7 +130,7 @@ void Sensor::powerUp(void)
 // This turns off sensor power
 void Sensor::powerDown(void)
 {
-    if (_powerPin > 0)
+    if (_powerPin >= 0)
     {
         MS_DBG(F("Turning off power to "), getSensorName(), F(" at "),
                getSensorLocation(), F(" with pin "), _powerPin, F("\n"));
@@ -165,8 +165,8 @@ bool Sensor::setup(void)
     MS_DBG(_measurementsToAverage);
     MS_DBG(F(" individual measurements will be averaged for each reading.\n"));
 
-    if (_powerPin > 0) pinMode(_powerPin, OUTPUT);
-    if (_dataPin > 0) pinMode(_dataPin, INPUT_PULLUP);
+    if (_powerPin >= 0) pinMode(_powerPin, OUTPUT);
+    if (_dataPin >= 0) pinMode(_dataPin, INPUT_PULLUP);
 
     // Set the status bit marking that the sensor has been set up (bit 1)
     _sensorStatus |= 0b00000010;
@@ -413,7 +413,7 @@ bool Sensor::checkPowerOn(bool debug)
 {
     if (debug) MS_DBG(F("Checking power status:  Power to "), getSensorName(),
                F(" at "), getSensorLocation());
-    if (_powerPin > 0)
+    if (_powerPin >= 0)
     {
         int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
 

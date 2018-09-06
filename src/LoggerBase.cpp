@@ -7,7 +7,7 @@
  *This file is for the basic logging functions - ie, saving to an SD card.
 */
 
-#include "LoggerBase.h"  // To communicate with the internet
+#include "LoggerBase.h"
 
 // To prevent compiler/linker crashes with Enable interrupt
 #define LIBCALL_ENABLEINTERRUPT
@@ -38,39 +38,32 @@ volatile bool Logger::startTesting = false;
 
 // Initialization - cannot do this in constructor arduino has issues creating
 // instances of classes with non-empty constructors
-void Logger::init(int8_t SDCardPin, int8_t mcuWakePin,
-          uint8_t variableCount,
-          Variable *variableList[],
-          uint8_t loggingIntervalMinutes,
-          const char *loggerID)
+Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
+               int8_t SDCardPin, int8_t mcuWakePin,
+               VariableArray *inputArray)
 {
-    // initialize the variable array
-    VariableArray::init(variableCount, variableList);
-
-    PRINTOUT(F("Initializing logger "), loggerID, F(" to record at "),
-             loggingIntervalMinutes, F(" minute intervals ... "));
-
+    // Set parameters from constructor
+    _loggerID = loggerID;
+    _loggingIntervalMinutes = loggingIntervalMinutes;
     _SDCardPin = SDCardPin;
     _mcuWakePin = mcuWakePin;
-    _loggingIntervalMinutes = loggingIntervalMinutes;
-    _loggingIntervalSeconds = round(_loggingIntervalMinutes*60);  // convert to even seconds
-    _loggerID = loggerID;
-    _autoFileName = false;
-    _isFileNameSet = false;
+    _internalArray = inputArray;
+
+    // Initialize with no points recorded
     _numTimepointsLogged = 0;
 
-    // Set sleep variable, if an interrupt pin is given
-    if(_mcuWakePin != -1)
-    {
-        _sleep = true;
-    }
-
-    // Set the testing/logging flags
+    // Set the testing/logging flags to false
     isLoggingNow = false;
     isTestingNow = false;
     startTesting = false;
 
-    PRINTOUT(F("   ... Success!\n"));
+    // Initialize with informational pins set void
+    _ledPin = -1;
+    _buttonPin = -1;
+
+    // Initialize with no file name
+    _fileName = "";
+    _autoFileName = true;
 };
 
 
@@ -84,7 +77,6 @@ void Logger::setTimeZone(int8_t timeZone)
     else if (_timeZone > 0) PRINTOUT(F("UTC+"));
     else PRINTOUT(F("UTC"));
     if (_timeZone != 0) PRINTOUT(_timeZone, F("\n"));
-
 }
 
 
@@ -112,6 +104,14 @@ void Logger::setAlertPin(int8_t ledPin)
 {
     _ledPin = ledPin;
     MS_DBG(F("Pin "), _ledPin, F(" set as LED alert pin\n"));
+}
+
+
+// Sets up a pin for an interrupt to enter testing mode
+void Logger::setTestingModePin(int8_t buttonPin)
+{
+    _buttonPin = buttonPin;
+    MS_DBG(F("Pin "), _buttonPin, F(" set as testing mode entry pin\n"));
 }
 
 
@@ -151,7 +151,7 @@ DateTime Logger::dtFromEpoch(uint32_t epochTime)
 }
 
 // This converts a date-time object into a ISO8601 formatted string
-String Logger::formatDateTime_ISO8601(DateTime dt)
+String Logger::formatDateTime_ISO8601(DateTime& dt)
 {
     // Set up an inital string
     String dateTimeStr;
@@ -256,11 +256,12 @@ bool Logger::checkInterval(void)
     bool retval;
     uint32_t checkTime = getNowEpoch();
     MS_DBG(F("Current Unix Timestamp: "), checkTime, F("\n"));
-    MS_DBG(F("Logging interval in seconds: "), _loggingIntervalSeconds, F("\n"));
-    MS_DBG(F("Mod of Logging Interval: "), checkTime % _loggingIntervalSeconds, F("\n"));
+    MS_DBG(F("Logging interval in seconds: "), (_loggingIntervalMinutes*60), F("\n"));
+    MS_DBG(F("Mod of Logging Interval: "), checkTime % (_loggingIntervalMinutes*60), F("\n"));
     MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged, F("\n"));
     MS_DBG(F("Mod of 120: "), checkTime % 120, F("\n"));
-    if ((checkTime % _loggingIntervalSeconds == 0 ) or
+
+    if ((checkTime % (_loggingIntervalMinutes*60) == 0 ) or
         (_numTimepointsLogged < 10 and checkTime % 120 == 0))
     {
         // Update the time variables with the current time
@@ -293,12 +294,13 @@ bool Logger::checkMarkedInterval(void)
 {
     bool retval;
     MS_DBG(F("Marked Time: "), markedEpochTime, F("\n"));
-    MS_DBG(F("Logging interval in seconds: "), _loggingIntervalSeconds, F("\n"));
-    MS_DBG(F("Mod of Logging Interval: "), markedEpochTime % _loggingIntervalSeconds, F("\n"));
+    MS_DBG(F("Logging interval in seconds: "), (_loggingIntervalMinutes*60), F("\n"));
+    MS_DBG(F("Mod of Logging Interval: "), markedEpochTime % (_loggingIntervalMinutes*60), F("\n"));
     MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged, F("\n"));
     MS_DBG(F("Mod of 120: "), markedEpochTime % 120, F("\n"));
+
     if (markedEpochTime != 0 &&
-        ((markedEpochTime % _loggingIntervalSeconds == 0 ) or
+        ((markedEpochTime % (_loggingIntervalMinutes*60) == 0 ) or
         (_numTimepointsLogged < 10 and markedEpochTime % 120 == 0)))
     {
         // Update the number of readings taken
@@ -487,45 +489,53 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
 // ===================================================================== //
 
 // This sets a file name, if you want to decide on it in advance
-void Logger::setFileName(char *fileName)
+void Logger::setFileName(String& fileName)
 {
-    // Save the filename to the static String
     _fileName = fileName;
-    _isFileNameSet = true;
-
-    // Print out the file name
-    PRINTOUT(F("Data will be saved as "), _fileName, '\n');
-    if (!_autoFileName) PRINTOUT(F("\n"));
+    _autoFileName = false;
 }
-// Same as above, with a string (overload function)
-void Logger::setFileName(String fileName)
+// Same as above, with a character array (overload function)
+void Logger::setFileName(const char *fileName)
 {
-    // Convert the string filename to a character file name
-    uint8_t fileNameLength = fileName.length() + 1;
-    char charFileName[fileNameLength];
-    fileName.toCharArray(charFileName, fileNameLength);
-    setFileName(charFileName);
+    String StrName = String(fileName);
+    setFileName(StrName);
 }
 
 
 // This generates a file name from the logger id and the current date
 // This will be used if the setFileName function is not called before
 // the begin() function is called.
-void Logger::setFileName(void)
+void Logger::generateAutoFileName(void)
 {
-    _autoFileName = true;
-    // Generate the file name from logger ID and date
-    String fileName = "";
-    if (_loggerID)
+    if (_autoFileName)
     {
-        fileName +=  String(_loggerID);
+        // Generate the file name from logger ID and date
+        String fileName =  String(_loggerID);
         fileName +=  F("_");
+        fileName +=  formatDateTime_ISO8601(getNowEpoch()).substring(0, 10);
+        fileName +=  F(".csv");
+        setFileName(fileName);
+        _fileName = fileName;
     }
-    fileName +=  formatDateTime_ISO8601(getNowEpoch()).substring(0, 10);
-    fileName +=  F(".csv");
-    setFileName(fileName);
 }
 
+// This is a PRE-PROCESSOR MACRO to speed up generating header rows
+// Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
+#define makeHeaderRowMacro(firstCol, function) \
+    dataHeader += F("\""); \
+    dataHeader += firstCol; \
+    dataHeader += F("\","); \
+    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++) \
+    { \
+        dataHeader += F("\""); \
+        dataHeader += function; \
+        dataHeader += F("\""); \
+        if (i + 1 != _internalArray->getVariableCount()) \
+        { \
+            dataHeader += F(","); \
+        } \
+    } \
+    dataHeader += F("\r\n");
 
 // This creates a header for the logger file
 String Logger::generateFileHeader(void)
@@ -537,19 +547,61 @@ String Logger::generateFileHeader(void)
     // Create the header rows
     String dataHeader = "";
     // Next line will be the parent sensor names
-    makeHeaderRowMacro(logIDRowHeader, _variableList[i]->parentSensor->getSensorName())
+    makeHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getParentSensorName())
     // Next comes the ODM2 variable name
-    makeHeaderRowMacro(logIDRowHeader, _variableList[i]->getVarName())
+    makeHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarName())
     // Next comes the ODM2 unit name
-    makeHeaderRowMacro(logIDRowHeader, _variableList[i]->getVarUnit())
+    makeHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUnit())
+    // Next comes the variable UUIDs
+    makeHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUUID())
 
     // We'll finish up the the custom variable codes
     String dtRowHeader = F("Date and Time in UTC");
     dtRowHeader += _timeZone;
-    makeHeaderRowMacro(dtRowHeader, _variableList[i]->getVarCode())
+    makeHeaderRowMacro(dtRowHeader, _internalArray->arrayOfVars[i]->getVarCode())
 
     // Return everything
     return dataHeader;
+}
+
+// This is another PRE-PROCESSOR MACRO to speed up generating header rows
+// Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
+#define streamHeaderRowMacro(firstCol, function) \
+    stream->print(F("\"")); \
+    stream->print(firstCol); \
+    stream->print(F("\",")); \
+    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++) \
+    { \
+        stream->print(F("\"")); \
+        stream->print(function); \
+        stream->print(F("\"")); \
+        if (i + 1 != _internalArray->getVariableCount()) \
+        { \
+            stream->print(F(",")); \
+        } \
+    } \
+    stream->print(F("\r\n"));
+
+// This sends a file header out over an Arduino stream
+void Logger::streamFileHeader(Stream *stream)
+{
+    // Very first column of the header is the logger ID
+    String logIDRowHeader = F("Data Logger: ");
+    logIDRowHeader += String(_loggerID);
+
+    // Next line will be the parent sensor names
+    streamHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getParentSensorName())
+    // Next comes the ODM2 variable name
+    streamHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarName())
+    // Next comes the ODM2 unit name
+    streamHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUnit())
+    // Next comes the variable UUIDs
+    streamHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUUID())
+
+    // We'll finish up the the custom variable codes
+    String dtRowHeader = F("Date and Time in UTC");
+    dtRowHeader += _timeZone;
+    streamHeaderRowMacro(dtRowHeader, _internalArray->arrayOfVars[i]->getVarCode());
 }
 
 
@@ -559,16 +611,43 @@ String Logger::generateSensorDataCSV(void)
     String csvString = "";
     markedDateTime.addToString(csvString);
     csvString += F(",");
-    csvString += VariableArray::generateSensorDataCSV();
+
+    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
+    {
+        csvString += _internalArray->arrayOfVars[i]->getValueString();
+        if (i + 1 != _internalArray->getVariableCount())
+        {
+            csvString += F(",");
+        }
+    }
+
     return csvString;
+}
+// This sends a comma separated list of volues of sensor data - including the
+// time -  out over an Arduino stream
+void Logger::streamSensorDataCSV(Stream *stream)
+{
+    String csvString = "";
+    markedDateTime.addToString(csvString);
+    csvString += F(",");
+    stream->print(csvString);
+    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
+    {
+        stream->print(_internalArray->arrayOfVars[i]->getValueString());
+        if (i + 1 != _internalArray->getVariableCount())
+        {
+            stream->print(F(","));
+        }
+    }
+    stream->println();
 }
 
 
-// This checks if the SD card is available and ready
-bool Logger::initializeSDCard(uint8_t Pin)
+// Private helper function - This checks if the SD card is available and ready
+bool Logger::initializeSDCard(void)
 {
     // Initialise the SD card
-    if (!sd.begin(Pin, SPI_FULL_SPEED))
+    if (!sd.begin(_SDCardPin, SPI_FULL_SPEED))
     {
         PRINTOUT(F("Error: SD card failed to initialize or is missing.\n"));
         PRINTOUT(F("Data will not be saved!\n"));
@@ -577,18 +656,14 @@ bool Logger::initializeSDCard(uint8_t Pin)
     else  // skip everything else if there's no SD card, otherwise it might hang
     {
         PRINTOUT(F("Successfully connected to SD Card with card/slave select on pin "));
-        PRINTOUT(Pin, F("\n"));
+        PRINTOUT(_SDCardPin, F("\n"));
         return true;
     }
 }
-bool Logger::initializeSDCard(void)
-{
-    return initializeSDCard(_SDCardPin);
-}
 
 
-// This sets a timestamp on a file
-void Logger::setFileTimestame(SdFile fileToStamp, uint8_t stampFlag)
+// Private helper function - This sets a timestamp on a file
+void Logger::setFileTimestamp(File fileToStamp, uint8_t stampFlag)
 {
     fileToStamp.timestamp(stampFlag, dtFromEpoch(getNowEpoch()).year(),
                                 dtFromEpoch(getNowEpoch()).month(),
@@ -599,83 +674,164 @@ void Logger::setFileTimestame(SdFile fileToStamp, uint8_t stampFlag)
 }
 
 
-// This initializes a file on the SD card with the given filename and writes the given header to it
-void Logger::setupLogFile(String filename, String header)
+// Private helper function - This opens or creates a file, converting a string
+// file name to a character file name
+bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader)
 {
     // Initialise the SD card
     // skip everything else if there's no SD card, otherwise it might hang
-    if (!initializeSDCard()) return;
+    if (!initializeSDCard()) return false;
+
+    // Convert the string filename to a character file name for SdFat
+    uint8_t fileNameLength = filename.length() + 1;
+    char charFileName[fileNameLength];
+    filename.toCharArray(charFileName, fileNameLength);
+
+    // First attempt to open an already existing file (in write mode), so we
+    // don't try to re-create something that's already there.
+    // This should also prevent the header from being written over and over
+    // in the file.
+    if (logFile.open(charFileName, O_WRITE | O_AT_END))
+    {
+        MS_DBG(F("Opened existing file: "), filename, F("\n"));
+        // Set access date time
+        setFileTimestamp(logFile, T_ACCESS);
+        return true;
+    }
+    else if (createFile)
+    {
+        // Create and then open the file in write mode
+        if (logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END))
+        {
+            MS_DBG(F("Created new file: "), filename, F("\n"));
+            // Set creation date time
+            setFileTimestamp(logFile, T_CREATE);
+            // Write out a header, if requested
+            if (writeDefaultHeader)
+            {
+                // Add header information
+                streamFileHeader(&logFile);
+                // Print out the header for debugging
+                #if defined(DEBUGGING_SERIAL_OUTPUT)
+                    MS_DBG(F("File Header:\n"));
+                    streamFileHeader(&DEBUGGING_SERIAL_OUTPUT);
+                #endif
+                // Set write/modification date time
+                setFileTimestamp(logFile, T_WRITE);
+            }
+            // Set access date time
+            setFileTimestamp(logFile, T_ACCESS);
+            return true;
+        }
+        // Return false if we couldn't create the file
+        else
+        {
+            MS_DBG(F("Unable to create new file: "), filename, F("\n"));
+            return false;
+        }
+    }
+    // Return false if we couldn't access the file (and were not told to create it)
     else
     {
-        // Convert the string filename to a character file name for SdFat
-        uint8_t fileNameLength = filename.length() + 1;
-        char charFileName[fileNameLength];
-        filename.toCharArray(charFileName, fileNameLength);
-
-        // Open the file in write mode (and create it if it did not exist)
-        logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END);
-        // Set creation date time
-        setFileTimestame(logFile, T_CREATE);
-        // Set write/modification date time
-        setFileTimestame(logFile, T_WRITE);
-        // Set access date time
-        setFileTimestame(logFile, T_ACCESS);
-        PRINTOUT(F("File created!\n"));
-
-        // Add header information
-        logFile.print(header);
-        MS_DBG(header, F("\n"));
-
-        //Close the file to save it
-        logFile.close();
+        MS_DBG(F("Unable to to write to file: "), filename, F("\n"));
+        return false;
     }
 }
-// This initializes a file on the SD card and writes a header to it
-void Logger::setupLogFile(void)
+
+
+// These functions create a file on the SD card with the given filename and
+// set the proper timestamps to the file.
+// The filename may either be the one set by setFileName(String)/setFileName(void)
+// or can be specified in the function.
+// If specified, it will also write a header to the file based on
+// the sensors in the group.
+// This can be used to force a logger to create a file with a secondary file name.
+bool Logger::createLogFile(String& filename, bool writeDefaultHeader)
 {
-    setupLogFile(_fileName, generateFileHeader());
+    // Attempt to create and open a file
+    if (openFile(filename, true, writeDefaultHeader))
+    {
+        // Close the file to save it (only do this if we'd opened it)
+        logFile.close();
+        return true;
+    }
+    else return false;
+}
+bool Logger::createLogFile(bool writeDefaultHeader)
+{
+    if (_autoFileName) generateAutoFileName();
+    return createLogFile(_fileName, writeDefaultHeader);
 }
 
 
-// This writes a record to the SD card with the given filename
-void Logger::logToSD(String rec, String filename)
+// These functions write a file on the SD card with the given filename and
+// set the proper timestamps to the file.
+// The filename may either be the one set by setFileName(String)/setFileName(void)
+// or can be specified in the function.
+// If the file does not already exist, the file will be created.
+// This can be used to force a logger to write to a file with a secondary file name.
+bool Logger::logToSD(String& filename, String& rec)
 {
-    // Initialise the SD card
-    // skip everything else if there's no SD card, otherwise it might hang
-    if (!initializeSDCard()) return;
-    else  // skip everything else if there's no SD card, otherwise it might hang
+    // First attempt to open the file without creating a new one
+    if (openFile(filename, false, false)) goto writeRecord;
+    // Next try to create the file, bail if we couldn't create it
+    // This will not attempt to generate a new file name or add a header!
+    else if (openFile(filename, true, false)) goto writeRecord;
+    else
     {
-        // Convert the string filename to a character file name for SdFat
-        uint8_t fileNameLength = filename.length() + 1;
-        char charFileName[fileNameLength];
-        filename.toCharArray(charFileName, fileNameLength);
+        PRINTOUT(F("Unable to write to SD card!\n"));
+        return false;
+    }
 
-        // Check that the file exists, just in case someone yanked the SD card
-        if (!logFile.open(charFileName, O_WRITE | O_AT_END))
-        {
-            PRINTOUT(F("SD Card File Lost!  Starting new file.\n"));
-            setupLogFile(filename, "");
-        }
-
-        // Write the CSV data
+    writeRecord:
+    {
+        // If we could successfully open or create the file, write the data to it
         logFile.println(rec);
         // Echo the line to the serial port
         PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/ \n"));
         PRINTOUT(rec, F("\n"));
 
         // Set write/modification date time
-        setFileTimestame(logFile, T_WRITE);
-        // Set access date time
-        setFileTimestame(logFile, T_ACCESS);
-
+        setFileTimestamp(logFile, T_WRITE);
         // Close the file to save it
         logFile.close();
+        return true;
     }
 }
-// This writes a record to the SD card, using the logger's filename
-void Logger::logToSD(String rec)
+bool Logger::logToSD(String& rec)
 {
-    logToSD(rec, _fileName);
+    return logToSD(_fileName, rec);
+}
+// NOTE:  This is structured differently than the version with a string input
+// record.  This is to avoid the creation/passing of very long strings.
+bool Logger::logToSD(void)
+{
+    // First attempt to open the file without creating a new one
+    if (openFile(_fileName, false, false)) goto writeRecord;
+    // Next try to create a new file, bail if we couldn't create it
+    // Generate a filename with the current date, if the file name isn't set
+    if (_autoFileName) generateAutoFileName();
+    // Do add a default header to the new file!
+    if (openFile(_fileName, true, true)) goto writeRecord;
+    else return false;
+
+    writeRecord:
+    {
+        // Write the data
+        streamSensorDataCSV(&logFile);
+        // Echo the line to the serial port
+        #if defined(STANDARD_SERIAL_OUTPUT)
+            PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/ \n"));
+            streamSensorDataCSV(&STANDARD_SERIAL_OUTPUT);
+            PRINTOUT(F("\r\n"));
+        #endif
+
+        // Set write/modification date time
+        setFileTimestamp(logFile, T_WRITE);
+        // Close the file to save it
+        logFile.close();
+        return true;
+    }
 }
 
 
@@ -685,29 +841,29 @@ void Logger::logToSD(String rec)
 
 // This checks to see if you want to enter the sensor mode
 // This should be run as the very last step within the setup function
-void Logger::checkForTestingMode(int8_t buttonPin)
-{
-    // Set the pin attached to some button to enter debug mode
-    if (buttonPin > 0) pinMode(buttonPin, INPUT_PULLUP);
-
-    // Flash the LED to let user know it is now possible to enter debug mode
-    for (uint8_t i = 0; i < 15; i++)
-    {
-        digitalWrite(_ledPin, HIGH);
-        delay(50);
-        digitalWrite(_ledPin, LOW);
-        delay(50);
-    }
-
-    // Look for up to 5 seconds for a button press
-    PRINTOUT(F("Push button NOW to enter sensor testing mode.\n"));
-    for (uint32_t start = millis(); millis() - start < 5000; )
-    {
-        if (digitalRead(buttonPin) == HIGH) testingMode();
-    }
-    PRINTOUT(F("------------------------------------------\n\n"));
-    PRINTOUT(F("End of sensor testing mode.\n"));
-}
+// void Logger::checkForTestingMode(int8_t buttonPin)
+// {
+//     // Set the pin attached to some button to enter debug mode
+//     if (buttonPin >= 0) pinMode(buttonPin, INPUT_PULLUP);
+//
+//     // Flash the LED to let user know it is now possible to enter debug mode
+//     for (uint8_t i = 0; i < 15; i++)
+//     {
+//         digitalWrite(_ledPin, HIGH);
+//         delay(50);
+//         digitalWrite(_ledPin, LOW);
+//         delay(50);
+//     }
+//
+//     // Look for up to 5 seconds for a button press
+//     PRINTOUT(F("Push button NOW to enter sensor testing mode.\n"));
+//     for (uint32_t start = millis(); millis() - start < 5000; )
+//     {
+//         if (digitalRead(buttonPin) == HIGH) testingMode();
+//     }
+//     PRINTOUT(F("------------------------------------------\n\n"));
+//     PRINTOUT(F("End of sensor testing mode.\n"));
+// }
 
 // A static function if you'd prefer to enter testing based on an interrupt
 void Logger::testingISR()
@@ -734,38 +890,38 @@ void Logger::testingMode()
     delay(100);  // This seems to prevent crashes, no clue why ....
 
     // Power up all of the sensors
-    sensorsPowerUp();
+    _internalArray->sensorsPowerUp();
 
     // Wake up all of the sensors
-    sensorsWake();
+    _internalArray->sensorsWake();
 
     // Update the sensors and print out data 25 times
     for (uint8_t i = 0; i < 25; i++)
     {
         PRINTOUT(F("------------------------------------------\n"));
         // Update the values from all attached sensors
-        updateAllSensors();
+        _internalArray->updateAllSensors();
         // Print out the current logger time
         PRINTOUT(F("Current logger time is "));
         PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
         PRINTOUT(F("    -----------------------\n"));
         // Print out the sensor data
         #if defined(STANDARD_SERIAL_OUTPUT)
-            printSensorData(&STANDARD_SERIAL_OUTPUT);
+            _internalArray->printSensorData(&STANDARD_SERIAL_OUTPUT);
         #endif
         PRINTOUT(F("    -----------------------\n"));
         delay(5000);
     }
 
     // Put sensors to sleep
-    sensorsSleep();
-    sensorsPowerDown();
+    _internalArray->sensorsSleep();
+    _internalArray->sensorsPowerDown();
 
     // Unset testing mode flag
     Logger::isTestingNow = false;
 
     // Sleep
-    if(_sleep){systemSleep();}
+    if(_mcuWakePin >= 0){systemSleep();}
 }
 
 
@@ -777,7 +933,8 @@ void Logger::testingMode()
  void Logger::begin(void)
 {
     // Set up pins for the LED's
-    if (_ledPin > 0) pinMode(_ledPin, OUTPUT);
+    if (_ledPin >= 0) pinMode(_ledPin, OUTPUT);
+    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT_PULLUP);
 
     #if defined ARDUINO_ARCH_SAMD
         zero_sleep_rtc.begin();
@@ -790,22 +947,39 @@ void Logger::testingMode()
     PRINTOUT(F("Current RTC time is: "));
     PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
 
+    PRINTOUT(F("Setting up logger "), _loggerID, F(" to record at "),
+             _loggingIntervalMinutes, F(" minute intervals.\n"));
+
+    PRINTOUT(F("This logger has a variable array with "),
+             _internalArray->getVariableCount(), F(" variables, of which "),
+             _internalArray->getVariableCount() - _internalArray->getCalculatedVariableCount(),
+             F(" come from "),_internalArray->getSensorCount(), F(" sensors and "),
+             _internalArray->getCalculatedVariableCount(), F(" are calculated.\n"));
+
+    // Create the log file, adding the default header to it
+    if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName, '\n');
+    else PRINTOUT(F("Unable to create a file to save data to!\n"));
+
     // Set up the sensors
-    setupSensors();
-
-    // Set the filename for the logger to save to, if it hasn't been done
-    if(!_isFileNameSet){setFileName();}
-    else if(_autoFileName){setFileName();}
-    else setFileName(_fileName);  // This just for a nice print-out
-
-    // Set up the log file
-    setupLogFile();
+    _internalArray->setupSensors();
 
     // Setup sleep mode
-    if(_sleep){setupSleep();}
+    if(_mcuWakePin >= 0){setupSleep();}
+
+    // Set up the interrupt to be able to enter sensor testing mode
+    if (_buttonPin >= 0)
+    {
+        enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
+        PRINTOUT(F("Push button on pin "));
+        PRINTOUT(_buttonPin);
+        PRINTOUT(F(" at any time to enter sensor testing mode.\n"));
+    }
 
     PRINTOUT(F("Logger setup finished!\n"));
     PRINTOUT(F("------------------------------------------\n\n"));
+
+    // Sleep
+    if(_mcuWakePin >= 0){systemSleep();}
 }
 
 
@@ -822,28 +996,28 @@ void Logger::log(void)
         // Print a line to show new reading
         PRINTOUT(F("------------------------------------------\n"));
         // Turn on the LED to show we're taking a reading
-        digitalWrite(_ledPin, HIGH);
+        if (_ledPin >= 0) digitalWrite(_ledPin, HIGH);
 
         // Send power to all of the sensors
         MS_DBG(F("    Powering sensors...\n"));
-        sensorsPowerUp();
+        _internalArray->sensorsPowerUp();
         // Wake up all of the sensors
         MS_DBG(F("    Waking sensors...\n"));
-        sensorsWake();
+        _internalArray->sensorsWake();
         // Update the values from all attached sensors
         MS_DBG(F("  Updating sensor values...\n"));
-        updateAllSensors();
+        _internalArray->updateAllSensors();
         // Put sensors to sleep
         MS_DBG(F("  Putting sensors back to sleep...\n"));
-        sensorsSleep();
+        _internalArray->sensorsSleep();
         // Cut sensor power
         MS_DBG(F("  Cutting sensor power...\n"));
-        sensorsPowerDown();
+        _internalArray->sensorsPowerDown();
         // Create a csv data record and save it to the log file
-        logToSD(generateSensorDataCSV());
+        logToSD();
 
         // Turn off the LED
-        digitalWrite(_ledPin, LOW);
+        if (_ledPin >= 0) digitalWrite(_ledPin, LOW);
         // Print a line to show reading ended
         PRINTOUT(F("------------------------------------------\n\n"));
 
@@ -855,5 +1029,5 @@ void Logger::log(void)
     if (Logger::startTesting) testingMode();
 
     // Sleep
-    if(_sleep){systemSleep();}
+    if(_mcuWakePin >= 0){systemSleep();}
 }

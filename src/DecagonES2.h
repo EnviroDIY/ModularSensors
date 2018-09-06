@@ -49,17 +49,17 @@ public:
     // Constructors with overloads
     DecagonES2(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
      : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    F("DecagonES2"), ES2_NUM_VARIABLES,
+                    "DecagonES2", ES2_NUM_VARIABLES,
                     ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
     {}
     DecagonES2(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
      : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    F("DecagonES2"), ES2_NUM_VARIABLES,
+                    "DecagonES2", ES2_NUM_VARIABLES,
                     ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
     {}
     DecagonES2(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
      : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
-                    F("DecagonES2"), ES2_NUM_VARIABLES,
+                    "DecagonES2", ES2_NUM_VARIABLES,
                     ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
     {}
 };
@@ -69,11 +69,11 @@ public:
 class DecagonES2_Cond : public Variable
 {
 public:
-    DecagonES2_Cond(Sensor *parentSense, String UUID = "", String customVarCode = "")
+    DecagonES2_Cond(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, ES2_COND_VAR_NUM,
-                F("specificConductance"), F("microsiemenPerCentimeter"),
+                "specificConductance", "microsiemenPerCentimeter",
                 ES2_COND_RESOLUTION,
-                F("ES2Cond"), UUID, customVarCode)
+                "ES2Cond", UUID, customVarCode)
     {}
 };
 
@@ -81,11 +81,11 @@ public:
 class DecagonES2_Temp : public Variable
 {
 public:
-    DecagonES2_Temp(Sensor *parentSense, String UUID = "", String customVarCode = "")
+    DecagonES2_Temp(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, ES2_TEMP_VAR_NUM,
-                F("temperature"), F("degreeCelsius"),
+                "temperature", "degreeCelsius",
                 ES2_TEMP_RESOLUTION,
-                F("ES2temp"), UUID, customVarCode)
+                "ES2temp", UUID, customVarCode)
     {}
 };
 

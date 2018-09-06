@@ -18,7 +18,7 @@
 // The constructor - need the sensor type, modbus address, power pin, stream for data, and number of readings to average
 YosemitechParent::YosemitechParent(byte modbusAddress, Stream* stream,
                                    int8_t powerPin, int8_t enablePin, uint8_t measurementsToAverage,
-                                   yosemitechModel model, String sensName, int numVariables,
+                                   yosemitechModel model, const char *sensName, int numVariables,
                                    uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
@@ -31,7 +31,7 @@ YosemitechParent::YosemitechParent(byte modbusAddress, Stream* stream,
 }
 YosemitechParent::YosemitechParent(byte modbusAddress, Stream& stream,
                                    int8_t powerPin, int8_t enablePin, uint8_t measurementsToAverage,
-                                   yosemitechModel model, String sensName, int numVariables,
+                                   yosemitechModel model, const char *sensName, int numVariables,
                                    uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
@@ -57,7 +57,7 @@ String YosemitechParent::getSensorLocation(void)
 bool YosemitechParent::setup(void)
 {
     bool retVal = Sensor::setup();  // sets time stamp and status bits
-    if (_RS485EnablePin > 0) pinMode(_RS485EnablePin, OUTPUT);
+    if (_RS485EnablePin >= 0) pinMode(_RS485EnablePin, OUTPUT);
 
     #if defined(DEEP_DEBUGGING_SERIAL_OUTPUT)
         sensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);

@@ -33,20 +33,17 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 
 // ==========================================================================
-//    Basic Logger Settings
+//    Data Logger Settings
 // ==========================================================================
 // The name of this file
 const char *sketchName = "logger_test.ino";
-
-// Logger ID, also becomes the prefix for the name of the data file on SD card
+// Logger ID - since it's the same logger device, we only need one
 const char *LoggerID = "XXXXX";
-const char *FileName5min = "SL099_5MinuteInterval.csv";
-const char *FileName1min = "SL099_1MinuteInterval.csv";
+// The TWO filenames for the different logging intervals
+const char *FileName5min = "Logger_5MinuteInterval.csv";
+const char *FileName1min = "Logger_1MinuteInterval.csv";
 // Your logger's timezone.
 const int8_t timeZone = -5;
-// Create TWO new logger instances
-Logger logger1min;
-Logger logger5min;
 
 
 // ==========================================================================
@@ -54,7 +51,7 @@ Logger logger5min;
 // ==========================================================================
 #include <ProcessorStats.h>
 
-const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
 const int8_t greenLED = 8;  // Pin for the green LED (-1 if unconnected)
 const int8_t redLED = 9;  // Pin for the red LED (-1 if unconnected)
 const int8_t buttonPin = 21;  // Pin for a button to use to enter debugging mode (-1 if unconnected)
@@ -106,8 +103,10 @@ ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sl
 // Use "modem_always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
 #endif
 
-const char *wifiId = "XXXXXXX";  // The WiFi access point
-const char *wifiPwd = "XXXXXXX";  // The password for connecting to WiFi
+const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
+const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
+const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
+
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a TinyGSM Client, and an on/off method
 loggerModem modem;
@@ -133,20 +132,34 @@ AOSongAM2315 am2315(I2CPower);
 // ==========================================================================
 // The two arrays that contains the variables for the different intervals
 // ==========================================================================
+// Create pointers for all of the variables from the sensors recording at 1
+// minute intervals and at the same time putting them into an array
 Variable *variableList_at1min[] = {
     new AOSongAM2315_Humidity(&am2315),
     new AOSongAM2315_Temp(&am2315)
     // new YOUR_variableName_HERE(&)
 };
+// Count up the number of pointers in the 1-minute array
 int variableCount1min = sizeof(variableList_at1min) / sizeof(variableList_at1min[0]);
+// Create the 1-minute VariableArray object
+VariableArray array1min(variableCount1min, variableList_at1min);
+// Create the 1-minute  logger instance
+Logger  logger1min(LoggerID, 1, sdCardPin, wakePin, &array1min);
+
+// Create pointers for all of the variables from the sensors recording at 5
+// minute intervals and at the same time putting them into an array
 Variable *variableList_at5min[] = {
     new MaximDS3231_Temp(&ds3231),
     new ProcessorStats_Batt(&mayfly),
     new ProcessorStats_FreeRam(&mayfly)
     // new YOUR_variableName_HERE(&)
 };
+// Count up the number of pointers in the 5-minute array
 int variableCount5min = sizeof(variableList_at5min) / sizeof(variableList_at5min[0]);
-
+// Create the 5-minute VariableArray object
+VariableArray array5min(variableCount5min, variableList_at5min);
+// Create the 1-minute  logger instance
+Logger  logger5min(LoggerID, 5, sdCardPin, wakePin, &array5min);
 
 
 // ==========================================================================
@@ -201,23 +214,15 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
-    // Initialize the two logger instances
-    logger1min.init(sdCardPin, wakePin, variableCount1min, variableList_at1min,
-                1, LoggerID);
-    logger5min.init(sdCardPin, wakePin, variableCount5min, variableList_at5min,
-                5, LoggerID);
-    // There is no reason to call the setAlertPin() function, because we have to
-    // write the loop on our own.
-
     // Setup the logger modem
     modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
 
     // Turn on the modem
     modem.modemPowerUp();
 
-    // Set up the sensors on both loggers
-    logger1min.setupSensors();
-    logger5min.setupSensors();
+    // Set up the sensors (do this directly on the VariableArray)
+    array1min.setupSensors();
+    array5min.setupSensors();
 
     // Print out the current time
     Serial.print(F("Current RTC time is: "));
@@ -240,9 +245,12 @@ void setup()
     logger1min.setFileName(FileName1min);
     logger5min.setFileName(FileName5min);
 
-    // Setup the logger files.  This will automatically add headers to each
-    logger1min.setupLogFile();
-    logger5min.setupLogFile();
+    // Setup the logger files.  Specifying true will put a default header at
+    // on to the file when it's created.
+    // Because we've already called setFileName, we do not need to specify the
+    // file name for this function.
+    logger1min.createLogFile(true);
+    logger5min.createLogFile(true);
 
     // Set up the processor sleep mode
     // Because there's only one processor, we only need to do this once
@@ -275,24 +283,24 @@ void loop()
         // Turn on the LED to show we're taking a reading
         digitalWrite(greenLED, HIGH);
 
-        // Send power to all of the sensors
+        // Send power to all of the sensors (do this directly on the VariableArray)
         Serial.print(F("Powering sensors...\n"));
-        logger1min.sensorsPowerUp();
-        // Wake up all of the sensors
+        array1min.sensorsPowerUp();
+        // Wake up all of the sensors (do this directly on the VariableArray)
         Serial.print(F("Waking sensors...\n"));
-        logger1min.sensorsWake();
-        // Update the values from all attached sensors
+        array1min.sensorsWake();
+        // Update the values from all attached sensors (do this directly on the VariableArray)
         Serial.print(F("Updating sensor values...\n"));
-        logger1min.updateAllSensors();
-        // Put sensors to sleep
+        array1min.updateAllSensors();
+        // Put sensors to sleep (do this directly on the VariableArray)
         Serial.print(F("Putting sensors back to sleep...\n"));
-        logger1min.sensorsSleep();
-        // Cut sensor power
+        array1min.sensorsSleep();
+        // Cut sensor power (do this directly on the VariableArray)
         Serial.print(F("Cutting sensor power...\n"));
-        logger1min.sensorsPowerDown();
+        array1min.sensorsPowerDown();
 
-        // Create a csv data record and save it to the log file
-        logger1min.logToSD(logger1min.generateSensorDataCSV());
+        // Stream the csv data to the SD card
+        logger1min.logToSD();
 
         // Turn off the LED
         digitalWrite(greenLED, LOW);
@@ -308,24 +316,24 @@ void loop()
         // Turn on the LED to show we're taking a reading
         digitalWrite(redLED, HIGH);
 
-        // Send power to all of the sensors
+        // Send power to all of the sensors (do this directly on the VariableArray)
         Serial.print(F("Powering sensors...\n"));
-        logger5min.sensorsPowerUp();
-        // Wake up all of the sensors
+        array1min.sensorsPowerUp();
+        // Wake up all of the sensors (do this directly on the VariableArray)
         Serial.print(F("Waking sensors...\n"));
-        logger5min.sensorsWake();
-        // Update the values from all attached sensors
+        array1min.sensorsWake();
+        // Update the values from all attached sensors (do this directly on the VariableArray)
         Serial.print(F("Updating sensor values...\n"));
-        logger5min.updateAllSensors();
-        // Put sensors to sleep
+        array1min.updateAllSensors();
+        // Put sensors to sleep (do this directly on the VariableArray)
         Serial.print(F("Putting sensors back to sleep...\n"));
-        logger5min.sensorsSleep();
-        // Cut sensor power
+        array1min.sensorsSleep();
+        // Cut sensor power (do this directly on the VariableArray)
         Serial.print(F("Cutting sensor power...\n"));
-        logger5min.sensorsPowerDown();
+        array1min.sensorsPowerDown();
 
-        // Create a csv data record and save it to the log file
-        logger5min.logToSD(logger5min.generateSensorDataCSV());
+        // Stream the csv data to the SD card
+        logger5min.logToSD();
 
         // Turn off the LED
         digitalWrite(redLED, LOW);
