@@ -21,37 +21,38 @@
 
 
 // Constructor
-ModemOnOff::ModemOnOff()
+ModemOnOff::ModemOnOff(int vcc33Pin, int modemSleepRqPin, int modemStatusPin,
+                       bool isHighWhenOn)
 {
-    _vcc33Pin = -1;
-    _modemSleepRqPin = -1;
-    _modemStatusPin = -1;
+    _vcc33Pin = vcc33Pin;
+    _modemSleepRqPin = modemSleepRqPin;
+    _modemStatusPin = modemStatusPin;
+    _isHighWhenOn = isHighWhenOn;
+    // Assume modem is off at constructor
+    _isNowOn = false;
 }
 
-// Initializes the instance
-void ModemOnOff::init(int vcc33Pin, int modemSleepRqPin, int modemStatusPin,
-                      bool isHighWhenOn)
-{
-    MS_DBG(F("Initializing modem on/off..."));
 
-    // Set whether using high or low to turn on
-    _isHighWhenOn = isHighWhenOn;
+// Begins the instance - ie, sets pin modes
+// This is the stuff that cannot happen in the constructor
+void ModemOnOff::begin(void)
+{
+    MS_DBG(F("Initializing modem on/off with power on pin "), _vcc33Pin,
+           F(" status on pin "), _modemStatusPin,
+           F(" and on/off via pin "), modemSleepRqPin, F("..."));
 
     // Set pin modes
-    _vcc33Pin = vcc33Pin;
-    if (vcc33Pin >= 0)
+    if (_vcc33Pin >= 0)
     {
         pinMode(_vcc33Pin, OUTPUT);  // Set pin mode
         digitalWrite(_vcc33Pin, LOW);  // Set power off
     }
-    _modemSleepRqPin = modemSleepRqPin;
-    if (modemSleepRqPin >= 0)
+    if (_modemSleepRqPin >= 0)
     {
         pinMode(_modemSleepRqPin, OUTPUT);  // Set pin mode
-        digitalWrite(_modemSleepRqPin, !isHighWhenOn);  // Set to off
+        digitalWrite(_modemSleepRqPin, !_isHighWhenOn);  // Set to off
     }
-    _modemStatusPin = modemStatusPin;
-    if (modemStatusPin >= 0)
+    if (_modemStatusPin >= 0)
     {
         pinMode(_modemStatusPin, INPUT_PULLUP);
     }
@@ -140,7 +141,6 @@ bool pulsedOnOff::on(void)
                 _isNowOn = true;
                 return true;
             }
-            delay(5);
         }
 
         // If the modem doesn't show it's on within 5 seconds, return false
@@ -152,7 +152,7 @@ bool pulsedOnOff::on(void)
 
 bool pulsedOnOff::off(void)
 {
-    // If no pin assigned to turn it on or off, assume it's pff and return
+    // If no pin assigned to turn it on or off, assume it's off and return
     if (_modemSleepRqPin <= 0)
     {
         MS_DBG(F("No modem on/sleep pin assigned, assuming modem is off/asleep."));
@@ -183,7 +183,6 @@ bool pulsedOnOff::off(void)
                 powerOff();
                 return true;
             }
-            delay(5);
         }
 
         // If the modem doesn't show it's off within 5 seconds, cut the power
@@ -246,7 +245,6 @@ bool heldOnOff::on(void)
             _isNowOn = true;
             return true;
         }
-        delay(5);
     }
 
     // If the modem doesn't show it's on within 5 seconds, return false

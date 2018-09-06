@@ -382,39 +382,40 @@ For more intense _code_ debugging for any individual component of the library (s
 
 ### <a name="Modem"></a>Functions for a LoggerModem:
 
-A loggerModem serves two functions:  First, it communicates with the internet via WiFi or cellular service and sends data to remote services.  Second, it acts as a sensor which can return the strength of the WiFi or cellular connection.  A loggerModem object is a combination of a [TinyGsm](https://github.com/EnviroDIY/TinyGSM) (modem instance), a TinyGsmClient, and a ModemOnOff to control modem power.
+A loggerModem serves two functions:  First, it communicates with the internet via WiFi or cellular service and sends data to remote services.  Second, it acts as a sensor which can return the strength of the WiFi or cellular connection.  A loggerModem object is a combination of a [TinyGsm](https://github.com/EnviroDIY/TinyGSM) (modem instance), a TinyGsmClient, and a ModemOnOff to control modem power.  Quite a number of modem chip types are supported.
 
 Before creating a loggerModem instance, _you must define your modem at top of your sketch_, before any include statements.  ie:
-- ```#define TINY_GSM_MODEM_SIM900``` - for a SIMCom SIM900, or variant thereof (including older [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
-- ```#define TINY_GSM_MODEM_SIM800``` - for a SIMCom SIM800 or variant thereof (including current [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
-- ```#define TINY_GSM_MODEM_SIM808``` - for a SIMCom SIM808 (essentially a SIMCom SIM800 with GPS support)
-- ```#define TINY_GSM_MODEM_SIM868``` - for a SIMCom SIM868 (another SIM800 variant with GPS support)
+- ```#define TINY_GSM_MODEM_SIM900``` - for a SIMCom SIM900 Quad-band GSM/GPRS module, or variant thereof (including older [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
+- ```#define TINY_GSM_MODEM_SIM800``` - for a SIMCom SIM800 Quad-band GSM/GPRS module or variant thereof (including current [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
+- ```#define TINY_GSM_MODEM_SIM808``` - for a SIMCom SIM808 Quad-band GSM/GPRS/GPS module
+- ```#define TINY_GSM_MODEM_SIM868``` - for a SIMCom SIM868 Quad-Band GSM/GPRS/GNSS module
 - ```#define TINY_GSM_MODEM_UBLOX``` - for most u-blox cellular modems (LEON-G100, LISA-U2xx, SARA-G3xx, SARA-U2xx, TOBY-L2xx, LARA-R2xx, MPCI-L2xx, or a Digi 3G XBee running in bypass mode)
-- ```#define TINY_GSM_MODEM_M95``` - for an Quectel M95
-- ```#define TINY_GSM_MODEM_BG96``` - for an Quectel BG96
-- ```#define TINY_GSM_MODEM_A6``` - for an AI-Thinker A6
-- ```#define TINY_GSM_MODEM_A7``` - for an AI-Thinker A7
-- ```#define TINY_GSM_MODEM_M590``` - for a Neoway M590
-- ```#define TINY_GSM_MODEM_MC60``` - for a Quectel MC60
-- ```#define TINY_GSM_MODEM_MC60E``` - for a Quectel MC60E
-- ```#define TINY_GSM_MODEM_ESP8266``` - for an ESP8266 using the _default AT command firmware_
-- ```#define TINY_GSM_MODEM_XBEE``` - for Digi brand WiFi or Cellular XBee's running in normal (transparent) mode
-
-Then you must create the modem object:
-
-```cpp
-// Create the modem object
-loggerModem modem;
-```
+- ```#define TINY_GSM_MODEM_M95``` - for an Quectel M95 Quad-band GSM/GPRS module
+- ```#define TINY_GSM_MODEM_BG96``` - for an Quectel BG96 LTE Cat M1/Cat NB1/EGPRS module
+- ```#define TINY_GSM_MODEM_A6``` - for an AI-Thinker A6 GSM/GPRS module
+- ```#define TINY_GSM_MODEM_A7``` - for an AI-Thinker A7 GSM/GPRS module
+- ```#define TINY_GSM_MODEM_M590``` - for a Neoway M590GSM/GPRS module
+- ```#define TINY_GSM_MODEM_MC60``` - for a Quectel MC60 quad-band full-featured GSM/GPRS module
+- ```#define TINY_GSM_MODEM_MC60E``` - for a Quectel MC60E quad-band full-featured GSM/GPRS/GNSS module
+- ```#define TINY_GSM_MODEM_ESP8266``` - for an ESP8266 WiFi module using the _default AT command firmware_
+- ```#define TINY_GSM_MODEM_XBEE``` - for Digi brand WiFi or Cellular XBee's running in transparent (default) mode
 
 See [TinyGSM's documentation](https://github.com/vshymanskyy/TinyGSM/blob/master/README.md) for a more details about of all of the chip variants and modules that are supported.
 
-After defining your modem, set it up using one of these two commands, depending on whether you are using cellular or WiFi communication:
+The constructors for the loggerModem object are (one for WiFi and the other for cellular modems)
 
-- **setupModem(Stream modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin, ModemSleepType sleepType, const char \*APN)** - Sets up the internet communcation with a cellular modem.  Note that the modemStream and APN should be pointers.  Use -1 for any pins that are not connected.
-- **setupModem(Stream modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin, ModemSleepType sleepType, const char \*ssid, const char \*pwd)** - Sets up the internet communication with a WiFi modem.  Note that the modemStream, ssid, and password should be pointers.  Use -1 for any pins that are not connected.
+```cpp
+// Create the modem object - wifi modem
+loggerModem modem(Stream modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin, ModemSleepType sleepType, const char *ssid, const char *pwd);
+```
+
+```cpp
+// Create the modem object - cellular modem
+loggerModem modem(Stream modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin, ModemSleepType sleepType, const char *APN);
+```
+
 - The **vcc33Pin** is the pin that controls whether or not the modem itself is powered.  Use -1 if your modem is always receiving power or if you want to control modem power independently.
-    - NOTE:  _Many_ modem chips require more power than the 0.5A that most Arduino-style boards can provide!  The power draw is particularly high during network connection and sending.  Some chips require up to 2.5A.  _Know your modem's specs!_  If it requires more power than your board can provide, ensure that the modem has an alternate battery connection or power source!
+    - NOTE:  _Many_ modem chips require more power than the 0.5A that most Arduino-style boards can provide!  The power draw is particularly high during network connection and sending.  Some chips require up to 2.5A.  _Know your modem chip's specs!_  If it requires more power than your main control board can provide, ensure that the modem has an alternate battery connection or power source!
 - The **modemStatusPin** is the pin that indicates whether the modem is turned on and it is clear to send data.  If you use -1, the modem is assumed to always be ready.
 - The **modemSleepRqPin** is the _pin_ used to put the modem to sleep or to wake it up.
 - The **ModemSleepType** controls _how the modemSleepRqPin is used_ to put the modem to sleep between readings.
@@ -444,7 +445,7 @@ Variable *modemRSSI = Modem_RSSI(&modem, "UUID", "customVarCode");  // Received 
 Variable *modemSinalPct = Modem_SignalPercent(&modem, "UUID", "customVarCode");  // "Percent" signal strength
 ```
 
-The modem does not behave quite the same as all the other sensors do, though.  Setup must be done with the ```setupModem(...)``` function; the normal ```setup()``` function does not do anything.  The ```powerUp()``` and ```powerDown()``` functions also do not work, the modem will only go on with the ```modemPowerUp()``` function and off with the ```modemPowerDown()``` function.
+The major difference between a "modem" sensor and any other sensor is the power-up method.  The normal ```powerUp()``` and ```powerDown()``` functions used by every other sensor do not work, the modem will only go on with the ```modemPowerUp()``` function and off with the ```modemPowerDown()``` function.  This special functionality is in place because it is assumed that you will want the modem to be on to connect to the internet and send out data, even after the power has been cut to other sensors.
 
 Special note for Sodaq GPRSBee modems: To start the modem you will need to power the logger board off, connect the battery to the logger board, and finally attach the modem to the logger board.  Then you may power the board and run your sketch. We have found that attaching a GPRSBee modem to power in a different sequence results in the modem reporting zero signal strength.
 

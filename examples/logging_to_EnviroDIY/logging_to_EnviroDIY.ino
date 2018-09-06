@@ -106,7 +106,14 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a TinyGSM Client, and an on/off method
-loggerModem modem;
+#if defined(TINY_GSM_MODEM_ESP8266)
+loggerModem modem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
+#elif defined(TINY_GSM_MODEM_XBEE)
+loggerModem modem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
+// loggerModem modem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
+#else
+loggerModem modem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
+#endif
 
 
 // ==========================================================================
@@ -583,16 +590,6 @@ void setup()
     Logger::setTimeZone(timeZone);
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
-
-    // Setup the logger modem
-    #if defined(TINY_GSM_MODEM_ESP8266)
-        modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
-    #elif defined(TINY_GSM_MODEM_XBEE)
-        modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
-        // modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
-    #else
-        modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
-    #endif
 
     // Attach the modem and information pins to the logger
     EnviroDIYLogger.attachModem(modem);

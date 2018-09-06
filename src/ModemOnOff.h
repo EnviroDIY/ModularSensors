@@ -29,12 +29,10 @@ class ModemOnOff
 {
 public:
     // Constructor
-    ModemOnOff();
+    ModemOnOff(int vcc33Pin, int modemSleepRqPin, int modemStatusPin, bool isHighWhenOn);
 
     // Initializes the instance
-    virtual void init(int vcc33Pin, int modemSleepRqPin, int modemStatusPin,
-                      bool isHighWhenOn = true);
-
+    virtual void begin(void);
     virtual bool isOn(void);
     virtual bool on(void) = 0;
     virtual bool off(void) = 0;
@@ -65,6 +63,9 @@ protected:
 class pulsedOnOff : public ModemOnOff
 {
 public:
+    pulsedOnOff(int vcc33Pin, int modemSleepRqPin, int modemStatusPin, bool isHighWhenOn)
+      : ModemOnOff(vcc33Pin, modemSleepRqPin, modemStatusPin, isHighWhenOn)
+      {}
     bool on(void) override;
     bool off(void) override;
 
@@ -86,6 +87,9 @@ private:
 class heldOnOff : public ModemOnOff
 {
 public:
+    heldOnOff(int vcc33Pin, int modemSleepRqPin, int modemStatusPin, bool isHighWhenOn)
+      : ModemOnOff(vcc33Pin, modemSleepRqPin, modemStatusPin, isHighWhenOn)
+      {}
     bool on(void) override;
     bool off(void) override;
 };

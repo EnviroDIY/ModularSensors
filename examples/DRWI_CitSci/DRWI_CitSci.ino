@@ -65,15 +65,16 @@ ProcessorStats mayfly(MFVersion) ;
 //    Modem/Internet connection options
 // ==========================================================================
 HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
+const long ModemBaud = 9600;  // Modem baud rate - SIM800 auto-detects, but I've had trouble making it fast (19200 works)
 const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sleep
-const long ModemBaud = 9600;  // Modem baud rate
+
 const char *apn = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a TinyGSM Client, and an on/off method
-loggerModem modem;
+loggerModem modem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
 
 
 // ==========================================================================
@@ -198,9 +199,6 @@ void setup()
     Logger::setTimeZone(timeZone);
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
-
-    // Setup the logger modem
-    modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
 
     // Attach the modem and information pins to the logger
     EnviroDIYLogger.attachModem(modem);
