@@ -120,7 +120,7 @@ loggerModem modem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, Mo
 // Create the RSSI and signal strength variable objects for the modem and return
 // variable-type pointers to them
 Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *modemSinalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -201,15 +201,15 @@ float calculateWaterPressure(void)
     return waterPressure;
 }
 // Properties of the calculated water pressure variable
-const char *waterPresureVarName = "pressureGauge";  // This must be a value from http://vocabulary.odm2.org/variablename/
-const char *waterPresureVarUnit = "millibar";  // This must be a value from http://vocabulary.odm2.org/units/
-int waterPresureVarResolution = 3;
+const char *waterPressureVarName = "pressureGauge";  // This must be a value from http://vocabulary.odm2.org/variablename/
+const char *waterPressureVarUnit = "millibar";  // This must be a value from http://vocabulary.odm2.org/units/
+int waterPressureVarResolution = 3;
 const char *waterPressureUUID = "12345678-abcd-1234-efgh-1234567890ab";
-const char *waterPresureVarCode = "CorrectedPressure";
+const char *waterPressureVarCode = "CorrectedPressure";
 // Create the calculated water pressure variable objects and return a variable pointer to it
-Variable *calcWaterPress = new Variable(calculateWaterPressure, waterPresureVarName,
-                                        waterPresureVarUnit, waterPresureVarResolution,
-                                        waterPressureUUID, waterPresureVarCode);
+Variable *calcWaterPress = new Variable(calculateWaterPressure, waterPressureVarName,
+                                        waterPressureVarUnit, waterPressureVarResolution,
+                                        waterPressureUUID, waterPressureVarCode);
 
 // Create the function to calculate the "raw" water depth
 // For this, we're using the conversion between mbar and mm pure water at 4°C
@@ -291,7 +291,7 @@ Variable *variableList[] = {
     calcRawDepth,
     calcCorrDepth,
     modemRSSI,
-    modemSinalPct
+    modemSignalPct
 };
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);

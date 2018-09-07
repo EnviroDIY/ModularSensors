@@ -28,7 +28,7 @@ public:
              const char *defaultVarCode = VAR_BASE_UNKNOWN,
              const char *UUID = "", const char *customVarCode = "");
 
-     // The constructor for a measured variable - that is, one whose value is
+     // The constructor for a calculated variable - that is, one whose value is
      // calculated by the calcFxn which returns a float.
      // NOTE:  ALL arguments are required!
      Variable(float (*calcFxn)(),
