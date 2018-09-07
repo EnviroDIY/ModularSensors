@@ -31,7 +31,6 @@ install:
     - git rm library.json
     - pip install -U platformio
     - pio upgrade
-    - pio update
     - pio lib -g install 2079  # DS3231
     - pio lib -g install 311  # EnableInterrupt
     - pio lib -g install 322  # SdFat
@@ -53,6 +52,6 @@ install:
     - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git  # #73, but need the git until Paul S. has a new release
     - pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
     # - pio lib -g install https://github.com/todbot/SoftI2CMaster.git
-    - pio lib -g update
+    - pio update
 
 script: make travis-build

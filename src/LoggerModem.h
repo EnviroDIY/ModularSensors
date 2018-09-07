@@ -44,20 +44,22 @@
     #define MODEM_NAME "SIMCom SIM868"
 #elif defined(TINY_GSM_MODEM_SIM900)
     #define MODEM_NAME "SIMCom SIM900"
-#elif defined(TINY_GSM_MODEM_A6)
-    #define MODEM_NAME "AI-Thinker A6"
-#elif defined(TINY_GSM_MODEM_A7)
-    #define MODEM_NAME "AI-Thinker A7"
 #elif defined(TINY_GSM_MODEM_UBLOX)
     #define MODEM_NAME "u-blox Cellular"
-#elif defined(TINY_GSM_MODEM_M590)
-    #define MODEM_NAME "Neoway M590"
 #elif defined(TINY_GSM_MODEM_M95)
     #define MODEM_NAME "Quectel M95"
 #elif defined(TINY_GSM_MODEM_BG96)
     #define MODEM_NAME "Quectel BG96"
+#elif defined(TINY_GSM_MODEM_A6)
+    #define MODEM_NAME "AI-Thinker A6"
+#elif defined(TINY_GSM_MODEM_A7)
+    #define MODEM_NAME "AI-Thinker A7"
+#elif defined(TINY_GSM_MODEM_M590)
+    #define MODEM_NAME "Neoway M590"
 #elif defined(TINY_GSM_MODEM_MC60)
     #define MODEM_NAME "Quectel MC60"
+#elif defined(TINY_GSM_MODEM_MC60E)
+    #define MODEM_NAME "Quectel MC60E"
 #elif defined(TINY_GSM_MODEM_ESP8266)
     #define MODEM_NAME "ESP8266"
 #elif defined(TINY_GSM_MODEM_XBEE)
@@ -134,7 +136,7 @@ class loggerModem : public Sensor
 public:
     // Constructors
     loggerModem()
-        : Sensor(F(MODEM_NAME), MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1)
+        : Sensor(MODEM_NAME, MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1)
     {_lastNISTrequest = 0;}
 
     String getSensorLocation(void) override { return F("modemSerial"); }
@@ -156,84 +158,101 @@ public:
         MS_MOD_DBG(F("Skipping modem in sensor power down!\n"));
     }
 
-    bool startSingleMeasurement(void) override
-    {
-        bool success = true;
-
-        // Check if activated, only go on if it is
-        if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
-        {
-            // Connect to the network before asking for quality
-            // Only waiting for up to 5 seconds here for the internet!
-            if (!(_modem->isNetworkConnected()))
-            {
-                MS_MOD_DBG(F("No prior internet connection, attempting to make a connection."));
-                success &= connectInternet(5000L);
-            }
-            if (success == false) return false;
-
-            // Mark the time that a measurement was requested
-            _millisMeasurementRequested = millis();
-        }
-        // Make sure that the time of a measurement request is not set
-        else _millisMeasurementRequested = 0;
-
-        // Even if we failed to start a measurement, we still want to set the status
-        // bit to show that we attempted to start the measurement.
-        // Set the status bits for measurement requested (bit 5)
-        _sensorStatus |= 0b00100000;
-        // Verify that the status bit for a single measurement completion is not set (bit 6)
-        _sensorStatus &= 0b10111111;
-
-        return success;
-    }
+    // bool startSingleMeasurement(void) override
+    // {
+    //     bool success = true;
+    //
+    //     // Check if activated, only go on if it is
+    //     if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
+    //     {
+    //         // Connect to the network before asking for quality
+    //         // Only waiting for up to 5 seconds here for the internet!
+    //         if (!(_modem->isNetworkConnected()))
+    //         {
+    //             MS_MOD_DBG(F("No prior internet connection, attempting to make a connection."));
+    //             success &= connectInternet(2000L);
+    //         }
+    //         if (success == false) return false;
+    //
+    //         // Mark the time that a measurement was requested
+    //         _millisMeasurementRequested = millis();
+    //     }
+    //     // Make sure that the time of a measurement request is not set
+    //     else _millisMeasurementRequested = 0;
+    //
+    //     // Even if we failed to start a measurement, we still want to set the status
+    //     // bit to show that we attempted to start the measurement.
+    //     // Set the status bits for measurement requested (bit 5)
+    //     _sensorStatus |= 0b00100000;
+    //     // Verify that the status bit for a single measurement completion is not set (bit 6)
+    //     _sensorStatus &= 0b10111111;
+    //
+    //     return success;
+    // }
 
 
     bool addSingleMeasurementResult(void) override
     {
-        // The XBee needs to make a connection and have that connection return a
-        // value before it knows the signal quality
-        // Connecting to the NIST daytime server, which immediately returns a
-        // 4 byte response and then closes the connection
-        if (loggerModemChip == sim_chip_XBeeWifi || loggerModemChip == sim_chip_XBeeCell)
-        {
-            // Must ensure that we do not ping the daylight more than once every 4 seconds
-            // NIST clearly specifies here that this is a requirement for all software
-            /// that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi
-            while (millis() < _lastNISTrequest + 4000) {}
-            MS_MOD_DBG("Connecting to NIST daytime server to check connection strength...\n");
-            IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
-            openTCP(ip, 37);
-            _client->print(F("Hi!"));  // Need to send something before connection is made
-            delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
-            while (_client->available()) _client->read();  // Delete anything returned
-            _lastNISTrequest = millis();
-        }
-
         int signalQual = 0;
         int percent = 0;
         int rssi = -9999;
-        // Get signal quality
-        if (_modem->isNetworkConnected())
-        {
-            MS_MOD_DBG("Getting signal quality:\n");
-            signalQual = _modem->getSignalQuality();
 
-            // Convert signal quality to RSSI, if necessary
-            if (loggerModemChip == sim_chip_XBeeWifi ||
-                loggerModemChip == sim_chip_XBeeCell ||
-                loggerModemChip == sim_chip_ESP8266)
+        // Check that the modem is responding to AT commands.  If not, give up.
+        MS_MOD_DBG(F("\nWaiting up to 5 seconds for modem to respond to AT commands...\n"));
+        if (_modem->testAT(5000))
+        {
+            // The XBee needs to make an actual TCP connection and get some sort
+            // of response on that connection before it knows the signal quality.
+            // Connecting to the NIST daytime server, which immediately returns a
+            // 4 byte response and then closes the connection
+            if (loggerModemChip == sim_chip_XBeeWifi || loggerModemChip == sim_chip_XBeeCell)
             {
-                rssi = signalQual;
-                percent = getPctFromRSSI(signalQual);
+                // Connect to the network
+                // Only waiting for up to 5 seconds here for the internet!
+                if (!(_modem->isNetworkConnected()))
+                {
+                    MS_MOD_DBG(F("No prior internet connection, attempting to make a connection."));
+                    connectInternet(5000L);
+                }
+                // Must ensure that we do not ping the daylight more than once every 4 seconds
+                // NIST clearly specifies here that this is a requirement for all software
+                /// that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi
+                while (millis() < _lastNISTrequest + 4000) {}
+                MS_MOD_DBG("Connecting to NIST daytime server to check connection strength...\n");
+                IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
+                openTCP(ip, 37);
+                _client->print(F("Hi!"));  // Need to send something before connection is made
+                delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
+                while (_client->available()) _client->read();  // Delete anything returned
+                _lastNISTrequest = millis();
             }
-            else
-            {
-                rssi = getRSSIFromCSQ(signalQual);
-                percent = getPctFromCSQ(signalQual);
-            }
+
+            // Get signal quality
+            // Non XBee's do not need to be registered or "connnected" to the
+            // network to get quality
+            // if (_modem->isNetworkConnected())
+            // {
+
+                MS_MOD_DBG("Getting signal quality:\n");
+                signalQual = _modem->getSignalQuality();
+
+                // Convert signal quality to RSSI, if necessary
+                if (loggerModemChip == sim_chip_XBeeWifi ||
+                    loggerModemChip == sim_chip_XBeeCell ||
+                    loggerModemChip == sim_chip_ESP8266)
+                {
+                    rssi = signalQual;
+                    percent = getPctFromRSSI(signalQual);
+                }
+                else
+                {
+                    rssi = getRSSIFromCSQ(signalQual);
+                    percent = getPctFromCSQ(signalQual);
+                }
+            // }
+            // else MS_MOD_DBG("Insufficient signal to connect to the internet!\n");
         }
-        else MS_MOD_DBG("Insufficient signal to connect to the internet!\n");
+        else MS_MOD_DBG(F("\nModem does not respond to AT commands!\n"));
 
         MS_MOD_DBG(F("RSSI: "), rssi, F("\n"));
         MS_MOD_DBG(F("Percent signal strength: "), percent, F("\n"));
@@ -319,6 +338,7 @@ public:
         }
 
         // Check that the modem is responding to AT commands.  If not, give up.
+        MS_MOD_DBG(F("\nWaiting up to 5 seconds for modem to respond to AT commands...\n"));
         if (!_modem->testAT(5000))
         {
             MS_MOD_DBG(F("\nModem does not respond to AT commands!\n"));
@@ -430,21 +450,17 @@ public:
     bool modemPowerDown(void)
     {
         MS_MOD_DBG(F("Turning modem off.\n"));
-        bool retVal = true;
          // Wait for any sending to complete
         _client->flush();
         // Turn the modem off .. whether it was on or not
         // Need to turn off no matter what because some modems don't have an
         // effective way of telling us whether they're on or not
         modemOnOff->off();
-        // Double check if the modem is on; turn it off if so
-        if(modemOnOff->isOn()) retVal = modemOnOff->off();
-        else retVal =  true;
         // Unset the status bits for sensor power (bit 0), warm-up (bit 2),
         // activation (bit 3), stability (bit 4), measurement request (bit 5), and
         // measurement completion (bit 6)
         _sensorStatus &= 0b10000010;
-        return retVal;
+        return true;
     }
 
     // Get the time from NIST via TIME protocol (rfc868)
@@ -454,7 +470,8 @@ public:
     {
         bool connectionMade = false;
         // bail if not connected to the internet
-        // TODO:  Figure out why _model->isNetworkConnected() isn't working here
+        // TODO:  Figure out why _modem->isNetworkConnected() isn't working here
+        // if (!_modem->isNetworkConnected())
         if (!(connectInternet(1000)))
         {
             MS_MOD_DBG(F("No internet connection, cannot connect to NIST.\n"));
@@ -545,7 +562,7 @@ private:
                     F(" and on/off via 2.5 second pulse on pin "), modemSleepRqPin, F(".\n"));
                 static pulsedOnOff modem_sleep_pulsed;
                 modemOnOff = &modem_sleep_pulsed;
-                modem_sleep_pulsed.init(vcc33Pin, modemSleepRqPin, modemStatusPin);
+                modem_sleep_pulsed.init(vcc33Pin, modemSleepRqPin, modemStatusPin, true);
                 break;
             }
             case modem_sleep_held:
@@ -556,7 +573,7 @@ private:
                     F(" and on/off by holding pin "), modemSleepRqPin, F(" high.\n"));
                 static heldOnOff modem_sleep_held;
                 modemOnOff = &modem_sleep_held;
-                modem_sleep_held.init(vcc33Pin, modemSleepRqPin, modemStatusPin);
+                modem_sleep_held.init(vcc33Pin, modemSleepRqPin, modemStatusPin, true);
                 break;
             }
             case modem_sleep_reverse:
@@ -565,9 +582,9 @@ private:
                     F(" with power on pin "), vcc33Pin,
                     F(" status on pin "), modemStatusPin,
                     F(" and on/off by holding pin "), modemSleepRqPin, F(" low.\n"));
-                static reverseOnOff modem_sleep_reverse;
-                modemOnOff = &modem_sleep_reverse;
-                modem_sleep_reverse.init(vcc33Pin, modemSleepRqPin, modemStatusPin);
+                static heldOnOff modem_sleep_held;
+                modemOnOff = &modem_sleep_held;
+                modem_sleep_held.init(vcc33Pin, modemSleepRqPin, modemStatusPin, false);
                 break;
             }
             default:
@@ -687,11 +704,11 @@ private:
 class Modem_RSSI : public Variable
 {
 public:
-    Modem_RSSI(Sensor *parentSense, String UUID = "", String customVarCode = "")
+    Modem_RSSI(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, RSSI_VAR_NUM,
-                F("RSSI"), F("decibelMiliWatt"),
+                "RSSI", "decibelMiliWatt",
                 RSSI_RESOLUTION,
-                F("RSSI"), UUID, customVarCode)
+                "RSSI", UUID, customVarCode)
     {}
 };
 
@@ -700,11 +717,11 @@ public:
 class Modem_SignalPercent : public Variable
 {
 public:
-    Modem_SignalPercent(Sensor *parentSense, String UUID = "", String customVarCode = "")
+    Modem_SignalPercent(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, PERCENT_SIGNAL_VAR_NUM,
-                F("signalPercent"), F("percent"),
+                "signalPercent", "percent",
                 PERCENT_SIGNAL_RESOLUTION,
-                F("signalPercent"), UUID, customVarCode)
+                "signalPercent", UUID, customVarCode)
     {}
 };
 

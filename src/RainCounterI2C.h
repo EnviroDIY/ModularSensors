@@ -64,11 +64,11 @@ class RainCounterI2C_Tips : public Variable
 {
 public:
     RainCounterI2C_Tips(Sensor *parentSense,
-                     String UUID = "", String customVarCode = "")
+                     const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, BUCKET_TIPS_VAR_NUM,
-               F("precipitation"), F("event"),
+               "precipitation", "event",
                BUCKET_TIPS_RESOLUTION,
-               F("RainCounterI2CTips"), UUID, customVarCode)
+               "RainCounterI2CTips", UUID, customVarCode)
     {}
 };
 
@@ -77,11 +77,11 @@ class RainCounterI2C_Depth : public Variable
 {
 public:
     RainCounterI2C_Depth(Sensor *parentSense,
-                     String UUID = "", String customVarCode = "")
+                     const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, BUCKET_RAIN_VAR_NUM,
-               F("precipitation"), F("millimeter"),
+               "precipitation", "millimeter",
                BUCKET_RAIN_RESOLUTION,
-               F("RainCounterI2CVol"), UUID, customVarCode)
+               "RainCounterI2CVol", UUID, customVarCode)
     {}
 };
 

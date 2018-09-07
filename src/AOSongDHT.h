@@ -90,11 +90,11 @@ class AOSongDHT_Humidity : public Variable
 {
 public:
     AOSongDHT_Humidity(Sensor *parentSense,
-                       String UUID = "", String customVarCode = "")
+                       const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, DHT_HUMIDITY_VAR_NUM,
-               F("relativeHumidity"), F("percent"),
+               "relativeHumidity", "percent",
                DHT_HUMIDITY_RESOLUTION,
-               F("DHTHumidity"), UUID, customVarCode)
+               "DHTHumidity", UUID, customVarCode)
     {}
 };
 
@@ -104,11 +104,11 @@ class AOSongDHT_Temp : public Variable
 {
 public:
     AOSongDHT_Temp(Sensor *parentSense,
-                   String UUID = "", String customVarCode = "")
+                   const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, DHT_TEMP_VAR_NUM,
-               F("temperature"), F("degreeCelsius"),
+               "temperature", "degreeCelsius",
                DHT_TEMP_RESOLUTION,
-               F("DHTTemp"), UUID, customVarCode)
+               "DHTTemp", UUID, customVarCode)
     {}
 };
 
@@ -118,11 +118,11 @@ class AOSongDHT_HI : public Variable
 {
 public:
     AOSongDHT_HI(Sensor *parentSense,
-                 String UUID = "", String customVarCode = "")
+                 const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, DHT_HI_VAR_NUM,
-               F("heatIndex"), F("degreeCelsius"),
+               "heatIndex", "degreeCelsius",
                DHT_HI_RESOLUTION,
-               F("DHTHI"), UUID, customVarCode)
+               "DHTHI", UUID, customVarCode)
     {}
 };
 

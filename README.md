@@ -61,7 +61,9 @@ To use a sensor and variable in your sketch, you must separately include xxx.h f
 
 Each sensor is implemented as a subclass of the "Sensor" class contained in "SensorBase.h".  Each variable is separately implemented as a subclass of the "Variable" class contained in "VariableBase.h".  The variables are tied to the sensor using an "[Observer](https://en.wikipedia.org/wiki/Observer_pattern)" software pattern.
 
-The "VariableArray" class contained in "VariableArray.h" defines the logic for iterating through many variable objects.  The various "Logger" classes are all sub-classes of variable arrays and add functionality for sleeping the processor, writing to an SD card, and communicating with the internet.
+The "VariableArray" class contained in "VariableArray.h" defines the logic for iterating through many variable objects.  The VariableArray class takes advantage of various time stamps within the Sensor class to optimize the timing of communcations with many sensors.
+
+The "Logger" class defines functions for sleeping the processor and writing to an SD card.  The logger subclasses add functionality for communicating with the internet and sending data to particular data receivers.
 
 
 
@@ -71,7 +73,7 @@ Within this library, a sensor, a variable, and a logger mean very specific thing
 
 **Sensor** - A sensor is some sort of device that is capable of taking one or more measurements using some sort of method.  Most often we can think of these as probes or other instruments that can give back information about the world around them.  Sensors can usually be given power or have that power cut.  They may be awoken or activated and then returned to a sleeping/low power use state.  The may be able to be asked to begin a single reading.  They _**must**_ be capable of returning the value of their readings to a logger of some type.
 
-**Variable** - A variable is a single measurement value taken by a sensor.  It is characterized by a name (what it is a measurement of), a unit of measurement, and a resolution.  The [names](http://vocabulary.odm2.org/variablename/) and [units](http://vocabulary.odm2.org/units/) of measurements for all variables come from the controlled vocabularies developed for the ODM2 data system.  (http://vocabulary.odm2.org/)  The resolution is determined by the method used to take the measurement by the sensor.  A variable may also be assigned a universally unique identifier (UUID) and a unique variable code.  Many sensors are capable of measuring multiple variables at a single time.  For example, a Decagon CTD-10 is a _sensor_.  It is able to measure 3 _variables_: specific conductance, temperature, and water depth.  The variable named "specificConductance" has _units_ of microsiemens per centimeter (µS/cm) and a _resolution_ of 1 µS/cm.  Each variable is explicitly tied to the "parent" sensor that "notifies" the variable when a new value has been measured.
+**Variable** - A variable is a result value taken by a sensor _or_ calculated from the results of one or more sensors.  It is characterized by a name (what it is a measurement of), a unit of measurement, and a resolution.  The [names](http://vocabulary.odm2.org/variablename/) and [units](http://vocabulary.odm2.org/units/) of measurements for all variables come from the controlled vocabularies developed for the ODM2 data system.  (http://vocabulary.odm2.org/)  The resolution is determined by the method used to take the measurement by the sensor.  A variable may also be assigned a universally unique identifier (UUID) and a unique variable code.  Many sensors are capable of measuring multiple variables at a single time.  For example, a Decagon CTD-10 is a _sensor_.  It is able to measure 3 _variables_: specific conductance, temperature, and water depth.  The variable named "specificConductance" has _units_ of microsiemens per centimeter (µS/cm) and a _resolution_ of 1 µS/cm.  Each measured variable is explicitly tied to the "parent" sensor that "notifies" the variable when a new value has been measured.  Each calculated variable has a parent function returning a float which is the value for that variable.
 
 **Logger** - A logger is a device that can control all functions of the sensors that are attached to it and save the values of all variables measured by those sensors to an attached SD card.  In this library, all loggers are Arduino-style small processor circuit boards.
 
@@ -99,12 +101,12 @@ This library is designed for wireless, solar-powered environmental data logging 
 In order to support multiple functions and sensors, there are quite a lot of sub-libraries that this library is dependent on.  _Even if you do not use the modules, you must have all of the dependencies installed for the library itself to properly compile._  Please check the [library.json](https://github.com/EnviroDIY/ModularSensors/blob/master/library.json) file for more details on the versions required of each library.  If you are using [PlatformIO](https://platformio.org), you can list "EnviroDIY_ModularSensors" in the ```lib_deps``` section of your platformio.ini file and all of these libraries will be installed automatically.  If using the "standard" Arduino IDE, you must install each of these libraries individually, or in a bundle from the [EnviroDIY Libraries](https://github.com/EnviroDIY/Libraries) meta-repository.
 
 - [EnableInterrupt](https://github.com/GreyGnome/EnableInterrupt) - Administrates and handles pin change interrupts, allowing the logger to sleep and save battery.  This also controls the interrupts for the versions of SoftwareSerial and SDI-12 linked below that have been stripped of interrupt control.  Because we use this library, _you must always add the line ```#include <EnableInterrupt.h>``` to the top of your sketch._
-- AVR sleep library - This is for low power sleeping for AVR processors. (This library is built in to the Arduino IDE.)
+- AVR sleep library - This is for low power sleeping for AVR processors. (This library is built in to the Arduino and PlatformIO IDEs.)
 - [EnviroDIY DS-3231](https://github.com/EnviroDIY/Sodaq_DS3231) - For real time clock control
 - [RTCZero library](https://github.com/arduino-libraries/RTCZero) - This real time clock control and low power sleeping on SAMD processors. (This library may be built in to the Arduino IDE.)  NOTE:  If using an AVR board, you must explicitly _ignore_ this library when compiling with PlatformIO or you will have compiler errors.
 - [SdFat library](https://github.com/greiman/SdFat) - This enables communication with the SD card.
 - [EnviroDIY version of the TinyGSM library](https://github.com/EnviroDIY/TinyGSM) - This provides internet (TCP/IP) connectivity.
-- [Adafruit ADS1X15 library](https://github.com/soligen2010/Adafruit_ADS1X15/) - For high-resolution analog to digital conversion.  Note that this is soligen2010's fork of the original Adafruit library; it corrects many problems in the Adafruit library such as a bug which gives the same output on all four inputs regardless of their values.  Do NOT use the original Adafruit version!
+- [Adafruit ADS1X15 library](https://github.com/soligen2010/Adafruit_ADS1X15/) - For high-resolution analog to digital conversion.  Note that this is soligen2010's fork of the original Adafruit library; it corrects many problems in the Adafruit library such as a bug which gives the same output on all four inputs regardless of their values.  Do _NOT_ use the original Adafruit version!
 - [EnviroDIY Arduino SDI-12 library](https://github.com/EnviroDIY/Arduino-SDI-12/tree/ExtInts) - For control of SDI-12 based sensors.  This modified version is needed so there are no pin change interrupt conflicts with the SoftwareSerial library or the software pin change interrupt library used to wake the processor.
 - [SensorModbusMaster](https://github.com/EnviroDIY/SensorModbusMaster) - for easy communication with Modbus devices.
 - [OneWire](https://github.com/PaulStoffregen/OneWire) - This enables communication with Maxim/Dallas OneWire devices.
@@ -125,7 +127,7 @@ Generally useful functions:
 - **Constructor** - Each sensor has a unique constructor, the exact format of which is dependent on the individual sensor.
 - **getSensorName()** - This gets the name of the sensor and returns it as a string.
 - **getSensorLocation()** - This returns the Arduino pin sending and receiving data or other sensor installation information as a string.  This is the location where the sensor is connected to the data logger, NOT the position of the sensor in the environment.  Generally this value is set in the constructor for the sensor.
-- **setNumberMeasurementsToAverage(int nReadings)** - Sets the number of readings for the sensor to take.  This value can also be set by the constructor.
+- **setNumberMeasurementsToAverage(int nReadings)** - Sets the number of readings for the sensor to take.  This value can also be set by the constructor.  NOTE:  This will beome the number of readings actually taken by a sensor prior to data averaging.  Any "bad" (-9999) values returned by the sensor will not be included in the final averaging.  This the actual number of "good" values that are averaged may be less than what is set by setNumberMeasurementsToAverage or in the sensor constructor.
 - **getNumberMeasurementsToAverage()** - Returns an unsigned 8-bit integer with the number of readings the sensor will be taking before averaging and giving a final result.
 - **getStatus()** - This returns the 8-bit code for the current status of the sensor:
     - Bit 0 - 0=Not powered, 1=Powered
@@ -161,16 +163,20 @@ These functions are also available for each sensor, but should be used with caut
 - **waitForMeasurementCompletion()** - Delays until time is passed for measurement completion.
 
 ### Functions for Each Variable
-- **Constructor** - Every variable requires a pointer to its parent sensor as part of the constructor.  Every variable also has two optional string entries, for a universally unique identifier (UUID or GUID) and a custom variable code.  _The UUID must always be listed first!_  In cases where you would like a custom variable code, but do not have a UUID, you **must** enter '""' as your UUID.
-- **getVarName()** - This returns the variable's name ,using http://vocabulary.odm2.org/variablename/, as a String.
+- **Constructor** - There are two forms of the constructor, one for measured variables (ie, ones whose values come directly from a senor) and another for calculated variables (ie, ones whose values are calculated from other vales).
+    - For _measured_ variables, the base variable constructor should not be used, but instead the constructor for the specific type of variable tied to a sensor should be used.  (That is, use the constructor for the MaxBotixSonar_Range variable sub-object, not the raw variable constructor.)  Each sensor-measured variable constructor requires a pointer to its parent sensor as the first argument of the constructor.  There are also two optional string entries, for a universally unique identifier (UUID or GUID) and a custom variable code.  _The UUID must always be listed first!_  In cases where you would like a custom variable code, but do not have a UUID, you **must** enter '""' as your UUID.
+    - For _calculated_ variables, you use the base variable object constructor.  The constructor requires a function which returns a float as its first argument, followed by Strings from the variable's name and unit.  Both of these strings should be values from the [ODM2 controlled vocabularies](http://vocabulary.odm2.org/).  Next an integer variable resolution is required.  Then two Strings for the variable UUID and variable code.  _All arguments are required in the calculated variable constructor!_
+- **getVarName()** - This returns the variable's name, using http://vocabulary.odm2.org/variablename/, as a String.
 - **getVarUnit()** - This returns the variable's unit, using http://vocabulary.odm2.org/units/, as a String.
 - **getVarCode()** - This returns a String with a customized code for the variable, if one is given, and a default if not
 - **getVarUUID()** - This returns the universally unique identifier of a variables, if one is assigned, as a String
 - **setup()** - This "sets up" the variable - attaching it to its parent sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program _after_ calling the sensor setup.
-- **getValue(bool updateValue)** - This returns the current value of the variable as a float.  By default, it does not ask the parent sensor for a new value, but simply returns the last value a parent sensor notified it of, no matter the age of the value.  If you would like to ask the sensor to measure a new value and for that new value to be returned, set the boolean flag as true.
+- **getValue(bool updateValue)** - This returns the current value of the variable as a float.  By default, it does not ask the parent sensor for a new value, but simply returns the last value a parent sensor notified it of, no matter the age of the value.  If you would like to ask the sensor to measure a new value and for that new value to be returned, set the boolean flag as true.  Calculated variables will never ask any sensors for updates.
 - **getValueString(bool updateValue)** - This is identical to getValue, except that it returns a string with the proper precision available from the sensor.
-- **attachSensor(int varNum, Sensor \*parentSense)** - The compliment to a sensor's registerVariable() function.  This attaches a variable object to the sensor that is giving the value to the variable.  The variable is generally responsible for calling this function!
-- **onSensorUpdate()** - This is the variable's response to the sensor's notifyVariables() function.  It accepts the new value from the sensor.  This is generally called by the sensor.
+- **attachSensor(int varNum, Sensor \*parentSense)** - The compliment to a sensor's registerVariable() function.  This attaches a variable object to the sensor that is giving the value to the variable.  The variable is generally responsible for calling this function!  This should never be called for a calculated variable.
+- **onSensorUpdate()** - This is the variable's response to the sensor's notifyVariables() function.  It accepts the new value from the sensor.  This is generally called by the sensor.  This should never be called for a calculated variable.
+- - **getParentSensorName()** - This is a helper - it returns the name of the parent sensor, if applicable
+- - **getParentSensorLocation()** - This is a helper - it returns the "location" of the parent sensor, if applicable
 
 ### <a name="individuals"></a>Examples Using Individual Sensor and Variable Functions
 To access and get values from a sensor, you must create an instance of the sensor class you are interested in using its constructor.  Each variable has different parameters that you must specify; these are described below within the section for each sensor.  You must then create a new instance for each _variable_, and reference a pointer to the parent sensor in the constructor.  Many variables can (and should) call the same parent sensor.  The variables are specific to the individual sensor because each sensor collects data and returns data in a unique way.  The constructors are all best called outside of the "setup()" or "loop()" functions.  The setup functions are then called (sensor, then variables) in the main "setup()" function and the update() and getValues() are called in the loop().  A very simple program to get data from a Decagon CTD might be something like:
@@ -211,13 +217,13 @@ loop()
 }
 ```
 
-The "[single_sensor](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/single_sensor)" example in the examples folder shows the same functionality for a MaxBotix Ultrasonic Range Finder.
+The "[single_sensor](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/single_sensor)" example in the examples folder shows the same functionality for a MaxBotix Ultrasonic Range Finder.  This example also includes using a calculated variable to output a water depth calculated from the sonar range.
 
 ## <a name="Grouped"></a>Grouped Sensor Functions
 Having a unified set of functions to access many sensors allows us to quickly poll through a list of sensors to get all results quickly.  To this end, "VariableArray.h" adds the class "VariableArray" with functions to use on an array of pointers to variable objects.
 
 ### Functions Available for a VariableArray Object:
-- **init(int variableCount, Variable variableList[])** - This initializes the variable array.  This must be called in the setup() function.  Note that the objects in the variable list must be pointers, not the variable objects themselves.
+- **VariableArray(int variableCount, Variable variableList[])** - This is the constructor; it creates the variable array object.  Note that the objects in the variable list must be pointers, not the variable objects themselves.  The pointers may be to calculated or measured variable objects.
 - **getVariableCount()** - Simply returns the number of variables.
 - **getSensorCount()** - Returns the number of independent sensors.  This will often be different from the number of variables because many sensors can return multiple variables.
 - **setupSensors()** - This sets up all of the variables in the array and their respective sensors by running all of their setup() functions.  If a sensor doesn't respond to its setup command, the command is called 5 times in attempt to make a connection.  If all sensors are set up successfully, returns true.
@@ -227,72 +233,71 @@ Having a unified set of functions to access many sensors allows us to quickly po
 - **sensorsPowerDown()** - This cuts power to all sensors, skipping repeated sensors.  No return.
 - **updateAllSensors()** - This updates all sensor values, skipping repeated sensors.  Returns true.  Does NOT return any values.
 - **printSensorData(Stream stream)** - This prints current sensor values along with meta-data to a stream (either hardware or software serial).  By default, it will print to the first Serial port.  Note that the input is a pointer to a stream instance so to use a hardware serial instance you must use an ampersand before the serial name (ie, &Serial1).
-- **generateSensorDataCSV()** - This returns an Arduino String containing comma separated list of sensor values.  This string does _NOT_ contain a time stamp of any kind.
 
 ### <a name="ArrayExamples"></a>VariableArray Examples:
 
-To use the VariableArray module, you must first create the array of pointers.  This should be done outside of the setup() or loop() functions.  Remember that you must create a new instance for each variable and each sensor.  The sensor functions for sensors within a variable array take advantage of all of the timestamps and status bits within the sensor object to minimize the amount of time that all sensors are powered and the processor is awake.  That is, the first sensor to be warmed up will be set up or activated first; the first sensor to stabilize will be asked for values first.  The order of the variables within the array should not matter, though for code readability, I strongly suggest putting all the variables attached to a single sensor next to each other in the array.
-
-Following the example from above, with a Decagon CTD, you would create an array with the three CTD variables like this:
-
-```cpp
-// Create a new VariableArray object
-VariableArray myVars;
-// Create the array of variables named "variableList" using the pre-created variable objects
-Variable \*variableList[] = {\*cond, \*temp, \*depth};
-// Optionally, count the number of variables in the array (in this case, it's 3)
-int variableCount = sizeof(variableList) / sizeof(variableList[0]);
-```
+To use the VariableArray module, you must first create the array of pointers.  This should be done outside of the setup() or loop() functions.  Remember that for measured variables you must first create a new sensor instance and then one or more new variable instances for that sensor (depending on how many values it can return.)  The sensor functions for sensors within a variable array take advantage of all of the timestamps and status bits within the sensor object to minimize the amount of time that all sensors are powered and the processor is awake.  That is, the first sensor to be warmed up will be set up or activated first; the first sensor to stabilize will be asked for values first.  All calculations for any calculated variables happen after all the sensor updating has finished.  The order of the variables within the array should not matter, though for code readability, I strongly suggest putting all the variables attached to a single sensor next to each other in the array.
 
 The asterisk must be put in front of the variable name to indicate that it is a pointer to your variable object.  With many variables, it is easier to create the object and the pointer to it all at once in the variable array.  This can be done using the "new" keyword like so:
 
 ```cpp
-// Create a new VariableArray object
-VariableArray myVars;
 // Create new variable objects in an array named "variableList" using the "new" keyword
 // UUID's and customVarCodes are optional
 Variable \*variableList[] = {
     new Sensor1_Variable1(&parentSensor1, "UUID", "customVarCode1"),
     new Sensor1_Variable2(&parentSensor1, "UUID", "customVarCode2"),
-    new Sensor2_Variable1(&parentSensor2, "UUID", "customVarCode3"),
     ...
     new SensorX_VariableX(&parentSensorx, "UUID", "customVarCode4")
 };
-// Optionally, count the number of variables in the array
+// Count the number of variables in the array (you can count them manually, too)
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
+// Create the VariableArray object
+VariableArray myVarArray(variableCount, variableList);
 ```
 
 You can also create and name variable pointer objects outside of the array and then reference those pointers inside of the array like so:
 
 ```cpp
-// Create variable object and return pointers to them
+// Create measured variable objects and return pointers to them
+// NOTE:  We are actually creating subclasses of variables here (tied to particular
+// sensors) but returning pointers to the variable superclass as required for
+// the variable array.
 Variable *var1 = new sensor1_var1(&parentSensor1, "UUID", "customVarCode1");
 Variable *var2 = new sensor1_var2(&parentSensor1, "UUID", "customVarCode1");
 Variable *var3 = new sensor2_var1(&parentSensor2, "UUID", "customVarCode1");
 
-Variable *varX = new sensorX_varX(&parentSensor2, "UUID", "customVarCode1");
-// Create a new VariableArray object
-VariableArray myVars;
-// Create new variable objects in an array named "variableList" using the "new" keyword
-// UUID's and customVarCodes are optional
+// Create a calculated measured variable object and return a pointer to it
+float calculationFunction(void)
+{
+    return var1->getValue() + 10;
+}
+Variable *calcVar4 = new Variable(calculationFunction, "varName",
+                                  "varUnit", varResolution,
+                                  "UUID", "varCode");
+
+// Continue creating variables..
+Variable *varX = new sensorX_varX(&parentSensorX, "UUID", "customVarCodeX");
+
+// Put the already created variable type pointers into an array
 Variable \*variableList[] = {
     var1,
     var2,
     var3,
+    var4,
     ...
     varX
 };
-// Optionally, count the number of variables in the array
+// Count the number of variables in the array (you can count them manually, too)
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
+// Create the VariableArray object
+VariableArray myVarArray(variableCount, variableList);
 ```
 
 Creating the variable pointers outside of the array is particularly helpful when you want to reference the same variables in multiple arrays or you want to do any post measurement calculations on the variables.
 
-Once you have created the array of pointers, you can initialize the VariableArray module and setup all of the sensors at once in the setup function:
+Once you have created the array of pointers, you can initialize the VariableArray module and setup all of the variables and their parent sensors at once in the setup function:
 
 ```cpp
-// Initialize the sensor array;
-myVars.init(variableCount, variableList);
 // Set up all the sensors AND variables (BOTH are done by this function)
 myVars.setupSensors();
 ```
@@ -300,38 +305,49 @@ myVars.setupSensors();
 You can then get values or variable names for all of the sensors within the loop with calls like:
 
 ```cpp
-// Update the sensor value(s)
-myVars.updateAllSensors();
+// Send power to all of the sensors
+myVarArray.sensorsPowerUp();
+// Wake up all of the sensors
+myVarArray.sensorsWake();
+// Update the values from all attached sensors
+myVarArray.updateAllSensors();
+// Put sensors to sleep
+myVarArray.sensorsSleep();
+// Cut sensor power
+myVarArray.sensorsPowerDown();
 // Print the data to the screen
-myVars.printSensorData();
+myVarArray.printSensorData();
 ```
 
 ## <a name="Logger"></a>Basic Logger Functions
-Our main reason to unify the output from many sensors and variables is to easily log the data to an SD card and to send it to a live streaming data receiver, like the [MonitorMyWatershed/EnviroDIY data portal](http://data.envirodiy.org/).  There are several modules available to use with the sensors to log data and stream data:  LoggerBase, LoggerEnviroDIY, and LoggerModem.  The classes Logger (in LoggerBase) is a sub-class of VariableArray and LoggerEnviroDIY (in LoggerEnviroDIY) is in-turn a sub-class of Logger.   They contain all of the functions available to a VariableArray as described above.  The Logger class adds the abilities to communicate with a real time clock, to put the board into deep sleep between readings to conserver power, and to write the data from the sensors to a csv file on a connected SD card.  The LoggerModem module is essentially a wrapper for [TinyGSM](https://github.com/EnviroDIY/TinyGSM) which adds quick functions for turning modem on and off to save power and to synchronize the real-time clock with the [NIST Internet time service](https://www.nist.gov/pml/time-and-frequency-division/services/internet-time-service-its).  The LoggerEnviroDIY class uses LoggerModem to add the ability to properly format and send data to the [EnviroDIY data portal](http://data.envirodiy.org/).
+Our main reason to unify the output from many sensors and variables is to easily log the data to an SD card and to send it to a live streaming data receiver, like the [MonitorMyWatershed/EnviroDIY data portal](http://data.envirodiy.org/).  There are several modules available to use with the sensors to log data and stream data:  LoggerBase, LoggerEnviroDIY, and LoggerModem.  The classes Logger (in LoggerBase) is a parent class for LoggerEnviroDIY (in LoggerEnviroDIY).  Both also contain an internal VariableArray object.  The Logger class has the abilities to communicate with a real time clock, to put the board into deep sleep between readings to conserver power, and to write the data from the sensors to a csv file on a connected SD card.  The LoggerEnviroDIY class can also have a LoggerModem attached, synchronize the time to NIST, and format and send data to the [EnviroDIY data portal](http://data.envirodiy.org/).  The LoggerModem module is essentially a wrapper for [TinyGSM](https://github.com/EnviroDIY/TinyGSM) which adds quick functions for turning modem on and off to save power and to synchronize the real-time clock with the [NIST Internet time service](https://www.nist.gov/pml/time-and-frequency-division/services/internet-time-service-its).
 
 ### Functions Available for a Logger Object:
 
 #### Setup and initialization functions:
 
-- **init(int SDCardPin, int mcuWakePin, int variableCount, Variable \*variableList[], float loggingIntervalMinutes, const char \*loggerID = 0)** - Initializes the logger object.  Must happen within the setup function.  Note that the variableList[], and loggerID are pointers.  The SDCardPin is the pin of the chip select/slave select for the SPI connection to the SD card.
+- **Logger(const char *loggerID, uint16_t loggingIntervalMinutes, int8_t SDCardPin, int8_t mcuWakePin, VariableArray *inputArray)** - The constructor; creates the logger object.  Note that the variableList[], and loggerID are pointers.  The SDCardPin is the pin of the chip select/slave select for the SPI connection to the SD card.
   - NOTE regarding *loggingIntervalMinutes*: For the first 20 minutes that a logger has been powered up for a deployment, the logger will take readings at 2 minute intervals for 10 measurements, to assist with confirming that the deployment is successful. Afterwards, the time between measurements will revert to the number of minutes set with *loggingIntervalMinutes*.
 - **setAlertPin(int ledPin)** - Optionally sets a pin to put out an alert that a measurement is being logged.  This is intended to be a pin with a LED on it so you can see the light come on when a measurement is being taken.
+- **setTestingModePin(int buttonPin)** - Optionally sets a pin that is attached to a button or some other interrupt source to force the logger to enter sensor testing mode.
 
 #### Timezone functions:
 
 - **setTimeZone(int timeZone)** - Sets the timezone that you wish data to be logged in (in +/- hours from UTC).  _This must always be set!_
+- **getTimeZone()** - Returns the set timezone.
 - **setTZOffset(int offset)** - This sets the offset between the built-in clock and the timezone the data should be logged in.  If your clock is set in UTC, then the TZOffset should be the same as the TimeZone.  For example, if you would like your clock to be set in UTC but your data should be output in Eastern Standard Time, both setTimeZone and setTZOffset should be called with -5.  On the other hand, if your clock is already set EST, you do not need to call the setTZOffset function (or can call it with 0).
 A note about timezones:  It is possible to create multiple logger objects in your code if you want to log different sensors at different intervals, _but every logger object will always have the same timezone and timezone offset_.  If you attempt to call these functions more than once for different loggers, whatever value was called last will apply to every logger.
+- **getTZOffset()** - Returns the set timezone offset.
 
 #### Functions to access the clock in proper format and time zone:
 
 - **syncRTClock(uint32_t timestamp)** - This synchronizes the real time clock with the provided timestamp, which should be a unix timestamp _in UTC_.
-- **getNow()** - This gets the current epoch time (unix timestamp - number of seconds since Jan 1, 1970) and corrects it for the specified logger time zone offset.
+- **getNowEpoch()** - This gets the current epoch time (unix timestamp - number of seconds since Jan 1, 1970) and corrects it for the specified logger time zone offset.
 - **formatDateTime_ISO8601(DateTime dt)** - Formats a DateTime object into an ISO8601 formatted Arduino String.
 - **formatDateTime_ISO8601(uint32_t unixTime)** - Formats a unix timestamp into an ISO8601 formatted Arduino String.
-- **checkInterval()** - This returns true if the _current_ time is an even interval of the logging interval, otherwise false.  This uses getNow() to get the curernt time.
+- **checkInterval()** - This returns true if the _current_ time is an even interval of the logging interval, otherwise false.  This uses getNowEpoch() to get the curernt time.
 - **markTime()** - This sets static variables for the date/time - this is needed so that all data outputs (SD, EnviroDIY, serial printing, etc) print the same time for updating the sensors - even though the routines to update the sensors and to output the data may take several seconds.  It is not currently possible to output the instantaneous time an individual sensor was updated, just a single marked time.  By custom, this should be called before updating the sensors, not after.  If you do not call this function before saving or sending data, there will be no timestamps associated with your data.  This is called for you every time the checkInterval() function is run.
-- **checkMarkedInterval()** - This returns true if the _marked_ time is an even interval of the logging interval, otherwise false.  This uses the static time value set by markTime() to get the time.  It does not check the real-time-clock directly.
+- **checkMarkedInterval()** - This returns true if the _marked_ time is an even interval of the logging interval, otherwise false.  This uses the static time value set by markTime() to get the time.  It does not check the current time.
 
 
 #### Functions for the processor sleep modes:
@@ -341,29 +357,21 @@ A note about timezones:  It is possible to create multiple logger objects in you
 
 #### Functions for logging data:
 
-- **setFileName(fileName)** - This sets a specified file name for data to be saved as, if you want to decide on it in advance.  Note that you must include the file extention (ie., '.txt') in the file name.  If you do not call the setFileName function with a specific name, a csv file name will automatically be generated from the logger id and the current date.
+- **setFileName(fileName)** - This sets a specified file name for data to be saved as, if you want to decide on it in advance.  Note that you must include the file extension (ie., '.txt') in the file name.  If you do not call the setFileName function with a specific name, a csv file name will automatically be generated from the logger id and the current date.
 - **getFileName()** - This returns the current filename as an Arduino String.
-- **setupLogFile()** - This creates a file on the SD card and writes a header to it.  It also sets the "file created" time stamp.
-- **logToSD(String rec)** - This writes a data line containing "rec" the the SD card and sets the "file modified" timestamp.  
-- **generateFileHeader()** - This returns and Aruduino String with a comma separated list of headers for the csv.  The headers will be ordered based on the order variables are listed in the array fed to the init function.
-- **generateSensorDataCSV()** - This returns an Arduino String containing the time and a comma separated list of sensor values.  The data will be ordered based on the order variables are listed in the array fed to the init function.
+- **createLogFile(String filename, bool writeDefaultHeader = false)** or **createLogFile(bool writeDefaultHeader = false)** - These functions create a file on an SD card and set the created/modified/accessed timestamps in that file.  The filename may either be the one automatically generated by the logger id and the date, the one set by setFileName(String), or can be specified in the function.  If asked to, these functions will also write a header to the file based on the variable information from the variable array.  This can be used to force a logger to create a file with a secondary file name.
+- **logToSD(String filename, String rec)** or **logToSD(String rec)** or **logToSD(void)** - These functions create a file on an SD card and set the modified/accessed timestamps in that file.  The filename may either be the one automatically generated by the logger id and the date, the one set by setFileName(String), or can be specified in the function.  If the file does not already exist, the file will be created.  The line to be written to the file can either be specified or will be a comma separated list of the current values of all variables in the variable array.
+- **streamFileHeader(Stream \*stream)** - This prints a header for a csv out to an Arduino stream.  The header will be ordered based on the order variables are listed in the VariableArray.
+    - If you would prefer to manually work with and change the header, the function **generateFileHeader()** returns an Aruduino String with a comma separated list of headers for the csv.  This header _will_ be a very, very long string.  _If the string is too long, it may not be printed or cause the entire program to crash!_  Only try to work directly with the header string for VariableArray's with a small number of variables.
+- **streamSensorDataCSV(Stream \*stream)**  - This returns an Arduino String containing the time and a comma separated list of sensor values.  The data will be ordered based on the order variables are listed in the VariableArray.
+    - If you would like the manipulate or add to the csv data, **generateSensorDataCSV()** returns an Arduino String containing the same information as is printed streamSensorDataCSV(Stream \*stream).  Before using this function, take into account the same warnings as given with generateFileHeader(), although this string will be much, much shorter than the string created by generateFileHeader().
 
 #### Functions for sensor testing and communication debugging:
 
 By default, some status and set-up information will be sent to the Serial (for AVR processors) or SerialUSB (for SAMD processors).  To stop all print out or to change the port the print out goes to, open ModSensorDebugger.h and change or remove lines 15-21 that define the STANDARD_SERIAL_OUTPUT.
 
 There is also a built-in function for "testing" sensors within sensor arrays - that is, continuously displaying current sensor values to test that the sensors are working properly:
-- **testingMode()** - Enters a "testing" mode for the sensors.  It prints out all of the sensor results for 25 records worth of data with a 5-second delay between readings.  The printouts go to whichever serial port is given in the ```#define STANDARD_SERIAL_OUTPUT``` statement.
-
-Testing mode can be entered directly in a set-up or loop function by calling the ```testingMode()``` function.  There is also a function to hold code to wait for a button press to enter test testing mode.  I suggest only running this as the very last step of the setup function.
-- **checkForTestingMode(int buttonPin)** - This stops everything and waits for five seconds for a button to be pressed to enter allow the user to enter "sensor testing" mode.
-
-If you would like to be able to enter the testing mode via a button press at any time while the logger is asleep, you can use the testingISR() function to define an interrupt for entering testing mode.  Please note that the ISR verifies that you are not in the middle of taking/logging a measurement before beginning the testing mode, so you cannot enter testing mode during that time.  Also note that the testing mode will not return any valid results until after the full setup is complete, so don't try to enter testing mode before then.
-```cpp
-pinMode(pinNumber, INPUT_PULLUP);
-enableInterrupt(buttonPin, Logger::testingISR, CHANGE);
-```
-
+- **testingMode()** - Enters a "testing" mode for the sensors.  It prints out all of the sensor results for 25 records worth of data with a 5-second delay between readings.  The printouts go to whichever serial port is given in the ```#define STANDARD_SERIAL_OUTPUT``` statement.  Testing mode can be entered directly in a set-up or loop function by calling the ```testingMode()``` function.  If you have set a pin for testing mode via an interrupt with the setTestingModePin(buttonPin) function, you can also enter testing mode any time except when the logger is already taking a data point by creating an interrupt on that pin (ie, by pushing a button).
 
 For more intense _code_ debugging for any individual component of the library (sensor communication, modem communication, variable array functions, etc), open the source file header (\*.h), for that component.  Find the line ```// #define DEBUGGING_SERIAL_OUTPUT xxxxx```, where xxxxx is the name of a serial output (ie, Serial or USBSerial).  Remove the two comment slashes from that line.  Then recompile and upload your code.  This will (sometimes dramatically) increase the number of statements going out to the debugging serial port.  A few sensors also the line ```// #define DEEP_DEBUGGING_SERIAL_OUTPUT xxxxx```, uncommenting of which will send even more information to the defined port.  Note that this type of debugging is intended to help find errors in the code of this library, not problems with the sensors themselves!
 
@@ -376,13 +384,19 @@ For more intense _code_ debugging for any individual component of the library (s
 
 A loggerModem serves two functions:  First, it communicates with the internet via WiFi or cellular service and sends data to remote services.  Second, it acts as a sensor which can return the strength of the WiFi or cellular connection.  A loggerModem object is a combination of a [TinyGsm](https://github.com/EnviroDIY/TinyGSM) (modem instance), a TinyGsmClient, and a ModemOnOff to control modem power.
 
-Before creating a loggerModem instance, _you must add one of these lines to the top of your sketch_, before any include statements:
-
-- ```#define TINY_GSM_MODEM_SIM800``` - for a SIMCom SIM800, SIM900, or variant thereof (including [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
+Before creating a loggerModem instance, _you must define your modem at top of your sketch_, before any include statements.  ie:
+- ```#define TINY_GSM_MODEM_SIM900``` - for a SIMCom SIM900, or variant thereof (including older [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
+- ```#define TINY_GSM_MODEM_SIM800``` - for a SIMCom SIM800 or variant thereof (including current [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
 - ```#define TINY_GSM_MODEM_SIM808``` - for a SIMCom SIM808 (essentially a SIMCom SIM800 with GPS support)
-- ```#define TINY_GSM_MODEM_A6``` - for an AI-Thinker A6 or A7
+- ```#define TINY_GSM_MODEM_SIM868``` - for a SIMCom SIM868 (another SIM800 variant with GPS support)
+- ```#define TINY_GSM_MODEM_UBLOX``` - for most u-blox cellular modems (LEON-G100, LISA-U2xx, SARA-G3xx, SARA-U2xx, TOBY-L2xx, LARA-R2xx, MPCI-L2xx, or a Digi 3G XBee running in bypass mode)
+- ```#define TINY_GSM_MODEM_M95``` - for an Quectel M95
+- ```#define TINY_GSM_MODEM_BG96``` - for an Quectel BG96
+- ```#define TINY_GSM_MODEM_A6``` - for an AI-Thinker A6
+- ```#define TINY_GSM_MODEM_A7``` - for an AI-Thinker A7
 - ```#define TINY_GSM_MODEM_M590``` - for a Neoway M590
-- ```#define TINY_GSM_MODEM_UBLOX``` - for most u-blox cellular modems ((LEON-G100, LISA-U2xx, SARA-G3xx, SARA-U2xx, TOBY-L2xx, LARA-R2xx, MPCI-L2xx, or a Digi 3G XBee running in bypass mode)
+- ```#define TINY_GSM_MODEM_MC60``` - for a Quectel MC60
+- ```#define TINY_GSM_MODEM_MC60E``` - for a Quectel MC60E
 - ```#define TINY_GSM_MODEM_ESP8266``` - for an ESP8266 using the _default AT command firmware_
 - ```#define TINY_GSM_MODEM_XBEE``` - for Digi brand WiFi or Cellular XBee's running in normal (transparent) mode
 
@@ -393,13 +407,14 @@ Then you must create the modem object:
 loggerModem modem;
 ```
 
-See [TinyGSM's documentation](https://github.com/vshymanskyy/TinyGSM/blob/master/README.md) for a full list of all of the chip variants and modules that are supported.
+See [TinyGSM's documentation](https://github.com/vshymanskyy/TinyGSM/blob/master/README.md) for a more details about of all of the chip variants and modules that are supported.
 
 After defining your modem, set it up using one of these two commands, depending on whether you are using cellular or WiFi communication:
 
 - **setupModem(Stream modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin, ModemSleepType sleepType, const char \*APN)** - Sets up the internet communcation with a cellular modem.  Note that the modemStream and APN should be pointers.  Use -1 for any pins that are not connected.
 - **setupModem(Stream modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin, ModemSleepType sleepType, const char \*ssid, const char \*pwd)** - Sets up the internet communication with a WiFi modem.  Note that the modemStream, ssid, and password should be pointers.  Use -1 for any pins that are not connected.
-- The **vcc33Pin** is the pin that controls whether or not the modem itself is powered.  Use -1 if your modem is always receiving power from your logger board or if you want to control modem power independently.
+- The **vcc33Pin** is the pin that controls whether or not the modem itself is powered.  Use -1 if your modem is always receiving power or if you want to control modem power independently.
+    - NOTE:  _Many_ modem chips require more power than the 0.5A that most Arduino-style boards can provide!  The power draw is particularly high during network connection and sending.  Some chips require up to 2.5A.  _Know your modem's specs!_  If it requires more power than your board can provide, ensure that the modem has an alternate battery connection or power source!
 - The **modemStatusPin** is the pin that indicates whether the modem is turned on and it is clear to send data.  If you use -1, the modem is assumed to always be ready.
 - The **modemSleepRqPin** is the _pin_ used to put the modem to sleep or to wake it up.
 - The **ModemSleepType** controls _how the modemSleepRqPin is used_ to put the modem to sleep between readings.
@@ -431,22 +446,21 @@ Variable *modemSinalPct = Modem_SignalPercent(&modem, "UUID", "customVarCode"); 
 
 The modem does not behave quite the same as all the other sensors do, though.  Setup must be done with the ```setupModem(...)``` function; the normal ```setup()``` function does not do anything.  The ```powerUp()``` and ```powerDown()``` functions also do not work, the modem will only go on with the ```modemPowerUp()``` function and off with the ```modemPowerDown()``` function.
 
-Note for GPRSBee modems: To start the modem you will need to power the logger board off, connect the battery to the logger board, and finally attach the modem to the logger board. Then you may power the board and run your sketch. We have found that attaching a GPRSBee modem to power in a different sequence results in the modem reporting zero signal strength. Note, the Mayfly connected to a computer via USB does not supply sufficient power to the GPRSBee. If the community finds this true for other modems, please let us know.
+Special note for Sodaq GPRSBee modems: To start the modem you will need to power the logger board off, connect the battery to the logger board, and finally attach the modem to the logger board.  Then you may power the board and run your sketch. We have found that attaching a GPRSBee modem to power in a different sequence results in the modem reporting zero signal strength.
 
 
 ### <a name="DIYlogger"></a>Additional Functions Available for a LoggerEnviroDIY Object:
 These functions attach a modem and set up the required registration token and sampling feature UUID for the EnviroDIY web streaming data loader API.  **All three** functions must be called before calling any of the other EnviroDIYLogger functions.  You *must* also add the correct variable UUID's to the constructors for each variable you are using.  All of the UUID and token values can be obtained after registering at http://data.envirodiy.org/.
 
-- **attachModem(loggerModem &modem)** - Attaches a loggerModem to the logger, which the logger then can use to send data to the internet.  See [Modem and Internet Functions](#Modem) for more information on how the modem must be set up before it is attached to the logger.  You must include an ampersand to tie in the already created modem!
+- **attachModem(loggerModem &modem)** - Attaches a loggerModem to the logger, which the logger then can use to send data to the internet.  See [Modem and Internet Functions](#Modem) for more information on how the modem must be set up before it is attached to the logger.  You must include an ampersand to tie in the already created modem!  If you do not attach a modem, you cannot send data to The EnviroDIY data portal!
 - **setToken(const char \*registrationToken)** - Sets the registration token to access the EnviroDIY streaming data loader API.  Note that the input is a pointer to the registrationToken.
 - **setSamplingFeatureUUID(const char \*samplingFeatureUUID)** - Sets the universally unique identifier (UUID or GUID) of the sampling feature.  Note that the input is a pointer to the samplingFeatureUUID.
 
-Because sending data to EnviroDIY depends on having some sort of modem or internet connection, there is a modem object created within the LoggerEnviroDIY Object.  To set up that modem object, you still need to call the functions listed in the LoggerModem section, but you need to add an extra "modem." before the function name to call the internal modem object.  You do not need to separately create the object.
+Within the loop, these functions can then format and send out data:
 
-Within the loop, these two functions will then format and send out data:
-
-- **generateSensorDataJSON()** - Generates a properly formatted JSON string to go to the EnviroDIY streaming data loader API.
-- **postDataEnviroDIY()** - Creates proper headers and sends data to the EnviroDIY data portal.  Depends on the modem support module.  Returns an HTML response code.
+- **streamSensorDataJSON(Stream \*stream)** - Prints a properly formatted EnviroDIY datqa portal JSON string to the selected Arduino stream.
+    - If you would like the manipulate or add to the csv data, **generateSensorDataJSON()** returns an Arduino String containing the same information as is printed by streamSensorDataJSON(Stream \*stream).  Keep in mind, the JSON is likely to be a very long string and _may crash your program_.  Only use generateSensorDataJSON() when working with a small variable array
+- **postDataEnviroDIY(String enviroDIYjson = "");** - Creates proper HTTP headers and sends the entered JSON to the EnviroDIY data portal.  Depends on the having a modem attached.  Returns an HTML response code.  If you do not enter a JSON, the streamSensorDataJSON(Stream \*stream) function will be used internally to generate one.  Please keep in mind when attempting to enter a String JSON that very long strings _may crash your program_.
 
 ### <a name="LoggerExamples"></a>Logger Examples:
 
@@ -465,20 +479,20 @@ Logger logger;
 // Import Logger Module
 #include <LoggerEnviroDIY.h>
 // Create a new logger instance
-LoggerEnviroDIY EnviroDIYLogger;
+LoggerEnviroDIY EnviroDIYLogger(loggerID, loggingIntervalMinutes, SDCardPin, mcuWakePin, inputArray);
 ```
 
-_Within the setup function_, you must then initialize the logger and then run the logger setup.  For the EnviroDIY logger, you must also set up the communication.  (Please note that these are shown with default values.):
+_Within the setup function_, you must then set the logger time zones and attach informational pins.  For the EnviroDIY logger, you must also set up the communication.:
 
 ```cpp
 // Set the time zone and offset from the RTC
 logger.setTimeZone(timeZone);
 logger.setTZOffset(offset);
-// Initialize the logger
-logger.init(SDCardPin, mcuWakePin, variableCount, variableList, loggingIntervalMinutes, loggerID);
 // OPTIONAL - specify a pin to give an alert when a measurement is taken
 // This should generally be a pin with an LED
 setAlertPin(int ledPin);
+// OPTIONAL - specify a pin for entering testing mode
+setTestingModePin(int buttonPin);
 // Begin the logger;
 logger.begin();
 ```
@@ -489,11 +503,11 @@ logger.begin();
 // Set the time zone and offset from the RTC
 EnviroDIYLogger.setTimeZone(timeZone);
 EnviroDIYLogger.setTZOffset(offset);
-// Initialize the logger
-EnviroDIYLogger.init(SDCardPin, mcuWakePin, variableCount, variableList, loggingIntervalMinutes, loggerID);
 // OPTIONAL - specify a pin to give an alert when a measurement is taken
 // This should generally be a pin with an LED
 setAlertPin(ledPin);
+// OPTIONAL - specify a pin for entering testing mode
+setTestingModePin(int buttonPin);
 // Set up the communication with EnviroDIY
 EnviroDIYLogger.setToken(registrationToken);
 EnviroDIYLogger.setSamplingFeature(samplingFeature);
@@ -503,22 +517,13 @@ EnviroDIYLogger.setUUIDs(UUIDs[]);
 modem.setupModem(modemStream, vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType, APN);
 
 // Attach the modem to the logger
-EnviroDIYLogger.attachModem(&modem);
-
-// Connect to the network
-if (modem.connectInternet())
-{
-    // Synchronize the RTC
-    EnviroDIYLogger.syncRTClock();
-}
-// Disconnect from the network
-modem.disconnectInternet();
+EnviroDIYLogger.attachModem(modem);
 
 // Begin the logger;
 EnviroDIYLogger.begin();
 ```
 
-_Within the main loop function_, all logging and sending of data can be done using a single program line.  Because the built-in log functions already handle sleeping and waking the board processor, **there cannot be nothing else within the loop function.**
+_Within the main loop function_, all logging and sending of data can be done using a single program line.  Because the built-in log functions already handle sleeping and waking the board processor, **there cannot be nothing else within the loop function.**  This is a wonderful helper if you are setting up your logger to do only the "normal" things.  Please keep in mind, _this is not the only option_.
 
 ```cpp
 void loop()
@@ -547,7 +552,7 @@ If you would like to do other things within the loop function, you should access
 - After updating the sensors, then call any functions you want to send/print/save data.
 - Finish by putting the logger back to sleep, if desired, with ```systemSleep()```.
 
-The [double_logger example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger) demonstrates using a custom loop function in order to log two different groups of sensors at different logging intervals.  The [baro_rho_correction example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/baro_rho_correction) demonstrates using a custom loop function in order to create calculated variables before saving the data and sending it to the EnviroDIY data portal.  The [data_saving example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/data_saving) shows using a custom loop in order to save cellular data by saving data from many variables on the SD card, but only sending a portion of the data to the EnviroDIY data portal.
+The [double_logger example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger) demonstrates using a custom loop function in order to log two different groups of sensors at different logging intervals.  The [data_saving example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/data_saving) shows using a custom loop in order to save cellular data by saving data from many variables on the SD card, but only sending a portion of the data to the EnviroDIY data portal.
 
 
 ## Available sensors

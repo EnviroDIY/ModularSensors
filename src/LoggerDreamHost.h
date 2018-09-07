@@ -26,20 +26,26 @@ class LoggerDreamHost : public LoggerEnviroDIY
 {
 
 public:
+    // Constructor
+    LoggerDreamHost(const char *loggerID, uint16_t loggingIntervalMinutes,
+                    int8_t SDCardPin, int8_t mcuWakePin,
+                    VariableArray *inputArray);
+
     // Functions for private SWRC server
     void setDreamHostPortalRX(const char *URL);
 
     // This creates all of the URL parameters
     String generateSensorDataDreamHost(void);
+    void streamSensorDataDreamHost(Stream *stream);
 
-    // This generates a fully structured GET request for DreamHost
-    String generateDreamHostGetRequest(String fullURL);
-    String generateDreamHostGetRequest(void);
+    // // This generates a fully structured GET request for DreamHost
+    // String generateDreamHostGetRequest(String fullURL);
+    // String generateDreamHostGetRequest(void);
 
     // This prints a fully structured GET request for DreamHost to the
     // specified stream using the specified url.
     // This may be necessary to work around very long strings for the post request.
-    void streamDreamHostRequest(Stream *stream, String fullURL);
+    void streamDreamHostRequest(Stream *stream, String& fullURL);
     // This prints a fully structured GET request for DreamHost to the
     // specified stream with the default url.
     void streamDreamHostRequest(Stream *stream);
@@ -48,7 +54,7 @@ public:
     // DreamHost URL and then streams out a get request
     // over that connection.
     // The return is the http status code of the response.
-    int postDataDreamHost(String fullURL = "");
+    int postDataDreamHost(String& fullURL = LOGGER_EMPTY);
 
     // This prevents the logging function from dual-posting to EnviroDIY
     void disableDualPost(void);

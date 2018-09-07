@@ -22,7 +22,7 @@
 
 // The constructor - because this is I2C, only need the power pin and rain per event if a non-standard value is used
 RainCounterI2C::RainCounterI2C(uint8_t i2cAddressHex, float rainPerTip)
-     : Sensor(F("RainCounterI2C"), BUCKET_NUM_VARIABLES,
+     : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES,
               BUCKET_WARM_UP_TIME_MS, BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS,
               -1, -1, 1)
 {
