@@ -18,6 +18,23 @@
 #define MODEM_DEBUGGING_SERIAL_OUTPUT Serial
 // #define TINY_GSM_DEBUG Serial
 
+#ifdef MODEM_DEBUGGING_SERIAL_OUTPUT
+    namespace {
+        template<typename T>
+        static void MS_MOD_DBG(T last) {
+            MODEM_DEBUGGING_SERIAL_OUTPUT.print(last);
+        }
+
+        template<typename T, typename... Args>
+        static void MS_MOD_DBG(T head, Args... tail) {
+            MODEM_DEBUGGING_SERIAL_OUTPUT.print(head);
+            MS_MOD_DBG(tail...);
+        }
+    }
+#else
+    #define MS_MOD_DBG(...)
+#endif  // MODEM_DEBUGGING_SERIAL_OUTPUT
+
 #include "ModemOnOff.h"
 #include "SensorBase.h"
 #include "VariableBase.h"
@@ -81,24 +98,6 @@
 
 #define PERCENT_SIGNAL_VAR_NUM 1
 #define PERCENT_SIGNAL_RESOLUTION 0
-
-
-#ifdef MODEM_DEBUGGING_SERIAL_OUTPUT
-    namespace {
-        template<typename T>
-        static void MS_MOD_DBG(T last) {
-            MODEM_DEBUGGING_SERIAL_OUTPUT.print(last);
-        }
-
-        template<typename T, typename... Args>
-        static void MS_MOD_DBG(T head, Args... tail) {
-            MODEM_DEBUGGING_SERIAL_OUTPUT.print(head);
-            MS_MOD_DBG(tail...);
-        }
-    }
-#else
-    #define MS_MOD_DBG(...)
-#endif  // MODEM_DEBUGGING_SERIAL_OUTPUT
 
 // For the various ways of waking and sleeping the modem
 typedef enum ModemSleepType
@@ -190,10 +189,10 @@ public:
         bool retVal = false;
 
         // Set the on-off pin modes
-        Serial.print("Start modem setup on-off pointer:");
+        Serial.print("Start modem setup on-off pointer:  ");
         Serial.println((long)&_modemOnOff);
         _modemOnOff->begin();
-        Serial.print("After first begin on-off pointer:");
+        Serial.print("After first begin on-off pointer:  ");
         Serial.println((long)&_modemOnOff);
 
         // Initialize the modem
@@ -248,7 +247,7 @@ public:
         MS_MOD_DBG(F("Modem chip: "), loggerModemChip, '\n');
 
         _modemOnOff->begin();
-        Serial.print("After second begin on-off pointer:");
+        Serial.print("After second begin on-off pointer:  ");
         Serial.println((long)&_modemOnOff);
 
         // Set the status bit marking that the modem has been set up (bit 1)
@@ -278,7 +277,7 @@ public:
         int percent = 0;
         int rssi = -9999;
 
-        Serial.print("addSingleMeasurementResult on-off pointer:");
+        Serial.print("addSingleMeasurementResult on-off pointer:  ");
         Serial.println((long)&_modemOnOff);
 
         // Check that the modem is responding to AT commands.  If not, give up.
@@ -366,7 +365,7 @@ public:
     bool connectInternet(uint32_t waitTime_ms = 50000L)
     {
 
-    Serial.print("connectInternet on-off pointer:");
+    Serial.print("connectInternet on-off pointer:  ");
     Serial.println((long)&_modemOnOff);
 
         bool retVal = false;
@@ -398,10 +397,10 @@ public:
             if (!(_tinyModem.isNetworkConnected()))
             {
                 MS_MOD_DBG("   Sending credentials...\n");
-                #if defined(TINY_GSM_MODEM_HAS_WIFI)
+                // #if defined(TINY_GSM_MODEM_HAS_WIFI)
                 // make multiple attempts to send credentials
                 while (!_tinyModem.networkConnect(_ssid, _pwd)) {};
-                #endif
+                // #endif
                 if (_tinyModem.waitForNetwork(waitTime_ms))
                 {
                     retVal = true;
@@ -422,9 +421,9 @@ public:
                        F(" seconds for cellular network...\n"));
             if (_tinyModem.waitForNetwork(waitTime_ms))
             {
-                #if defined(TINY_GSM_MODEM_HAS_GPRS)
+                // #if defined(TINY_GSM_MODEM_HAS_GPRS)
                 _tinyModem.gprsConnect(_APN, "", "");
-                #endif
+                // #endif
                 MS_MOD_DBG("   ...Connected!\n");
                 retVal = true;
             }
@@ -439,9 +438,9 @@ public:
         if (loggerModemChip != sim_chip_XBeeWifi &&
             loggerModemChip != sim_chip_ESP8266)
         {
-            #if defined(TINY_GSM_MODEM_HAS_GPRS)
+            // #if defined(TINY_GSM_MODEM_HAS_GPRS)
             _tinyModem.gprsDisconnect();
-            #endif
+            // #endif
             MS_MOD_DBG(F("Disconnected from cellular network.\n"));
         }
         else{}
@@ -479,6 +478,7 @@ public:
         MS_MOD_DBG(F("Turning modem on0.\n"));
         delay(2000);
 
+        Serial.print("modemPowerUp on-off pointer:  ");
         Serial.println((long)&_modemOnOff);
 
         delay(2000);
