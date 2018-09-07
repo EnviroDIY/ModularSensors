@@ -277,8 +277,8 @@ MaximDS18 ds18_2(OneWireAddress2, OneWirePower, OneWireBus);
 MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
 MaximDS18 ds18_4(OneWireAddress4, OneWirePower, OneWireBus);
 MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
-// Create and return the Maxim DS18 sensor object (use this form for a single sensor on bus with an unknow address)
-// MaximDS18 ds18_5(OneWirePower, OneWireBus);
+// Create and return the Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
+// MaximDS18 ds18_u(OneWirePower, OneWireBus);
 
 
 // ==========================================================================
@@ -469,6 +469,7 @@ Variable *variableList[] = {
     new MaximDS18_Temp(&ds18_3, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_4, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_5, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new MaximDS18_Temp(&ds18_u, "12345678-abcd-1234-efgh-1234567890ab"),
     new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-efgh-1234567890ab"),
     new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-efgh-1234567890ab"),
     new MPL115A2_Temp(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
