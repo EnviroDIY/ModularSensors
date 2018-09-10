@@ -18,22 +18,6 @@
 #define MODEM_DEBUGGING_SERIAL_OUTPUT Serial
 // #define TINY_GSM_DEBUG Serial
 
-#ifdef MODEM_DEBUGGING_SERIAL_OUTPUT
-    namespace {
-        template<typename T>
-        static void MS_MOD_DBG(T last) {
-            MODEM_DEBUGGING_SERIAL_OUTPUT.print(last);
-        }
-
-        template<typename T, typename... Args>
-        static void MS_MOD_DBG(T head, Args... tail) {
-            MODEM_DEBUGGING_SERIAL_OUTPUT.print(head);
-            MS_MOD_DBG(tail...);
-        }
-    }
-#else
-    #define MS_MOD_DBG(...)
-#endif  // MODEM_DEBUGGING_SERIAL_OUTPUT
 
 #include "ModemOnOff.h"
 #include "SensorBase.h"
@@ -98,6 +82,24 @@
 
 #define PERCENT_SIGNAL_VAR_NUM 1
 #define PERCENT_SIGNAL_RESOLUTION 0
+
+
+#ifdef MODEM_DEBUGGING_SERIAL_OUTPUT
+    namespace {
+        template<typename T>
+        static void MS_MOD_DBG(T last) {
+            MODEM_DEBUGGING_SERIAL_OUTPUT.print(last);
+        }
+
+        template<typename T, typename... Args>
+        static void MS_MOD_DBG(T head, Args... tail) {
+            MODEM_DEBUGGING_SERIAL_OUTPUT.print(head);
+            MS_MOD_DBG(tail...);
+        }
+    }
+#else
+    #define MS_MOD_DBG(...)
+#endif  // MODEM_DEBUGGING_SERIAL_OUTPUT
 
 // For the various ways of waking and sleeping the modem
 typedef enum ModemSleepType
@@ -418,7 +420,7 @@ public:
         else
         {
             MS_MOD_DBG(F("\nWaiting up to "), waitTime_ms/1000,
-                       F(" seconds for cellular network...\n"));
+                       F(" seconds for cellular network registration...\n"));
             if (_tinyModem.waitForNetwork(waitTime_ms))
             {
                 // #if defined(TINY_GSM_MODEM_HAS_GPRS)
@@ -486,7 +488,7 @@ public:
         // Turn the modem on .. whether it was on or not
         // Need to turn on no matter what because some modems don't have an
         // effective way of telling us whether they're on or not
-        _modemOnOff->begin();
+        // _modemOnOff->begin();
         MS_MOD_DBG(F("Turning modem on1.\n"));
         delay(1000);
         // Turn the modem on .. whether it was on or not
@@ -640,9 +642,9 @@ private:
     ModemOnOff *constructOnOff(int8_t vcc33Pin, int8_t modemStatusPin, int8_t modemSleepRqPin,
                         ModemSleepType sleepType)
     {
-        #if defined(TINY_GSM_MODEM_XBEE)  // ALL XBee's use modem_sleep_reverse!
-            if (sleepType != modem_sleep_reverse) sleepType = modem_sleep_reverse;
-        #endif
+        // #if defined(TINY_GSM_MODEM_XBEE)  // ALL XBee's use modem_sleep_reverse!
+        //     if (sleepType != modem_sleep_reverse) sleepType = modem_sleep_reverse;
+        // #endif
 
         switch(sleepType)
         {
