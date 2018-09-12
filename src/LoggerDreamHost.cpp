@@ -59,6 +59,10 @@ void LoggerDreamHost::streamSensorDataDreamHost(Stream *stream)
             + String(F("=")) + String(_internalArray->arrayOfVars[i]->getValueString()));
     }
 }
+void LoggerDreamHost::streamSensorDataDreamHost(Stream& stream)
+{
+    streamSensorDataDreamHost(&stream);
+}
 
 
 // // This generates a fully structured GET request for DreamHost
@@ -87,6 +91,10 @@ void LoggerDreamHost::streamDreamHostRequest(Stream *stream, String& fullURL)
     stream->print(String(F("\r\nHost: swrcsensors.dreamhosters.com")));
     stream->print(String(F("\r\n\r\n")));
 }
+void LoggerDreamHost::streamDreamHostRequest(Stream& stream, String& fullURL)
+{
+    streamDreamHostRequest(&stream, fullURL);
+}
 void LoggerDreamHost::streamDreamHostRequest(Stream *stream)
 {
     // Start the request
@@ -99,6 +107,10 @@ void LoggerDreamHost::streamDreamHostRequest(Stream *stream)
     stream->print(String(F("  HTTP/1.1")));
     stream->print(String(F("\r\nHost: swrcsensors.dreamhosters.com")));
     stream->print(String(F("\r\n\r\n")));
+}
+void LoggerDreamHost::streamDreamHostRequest(Stream& stream)
+{
+    streamDreamHostRequest(&stream);
 }
 
 
@@ -128,19 +140,19 @@ int LoggerDreamHost::postDataDreamHost(String& fullURL)
         #endif
 
         // Send the request to the modem stream
-        if (fullURL.length() > 1) streamDreamHostRequest(&_logModem->_tinyClient, fullURL);
-        else streamDreamHostRequest(&_logModem->_tinyClient);
-        _logModem->_tinyClient.flush();  // wait for sending to finish
+        if (fullURL.length() > 1) streamDreamHostRequest(_logModem->_tinyClient, fullURL);
+        else streamDreamHostRequest(_logModem->_tinyClient);
+        _logModem->_tinyClient->flush();  // wait for sending to finish
 
         uint32_t start_timer = millis();
-        while ((millis() - start_timer) < 10000L && _logModem->_tinyClient.available() < 12)
+        while ((millis() - start_timer) < 10000L && _logModem->_tinyClient->available() < 12)
         {delay(10);}
 
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
         // we don't care about so we're not reading to save on total
         // data used for transmission.
-        did_respond = _logModem->_tinyClient.readBytes(response_buffer, 12);
+        did_respond = _logModem->_tinyClient->readBytes(response_buffer, 12);
 
         // Close the TCP/IP connection as soon as the first 12 characters are read
         // We don't need anything else and stoping here should save data use.

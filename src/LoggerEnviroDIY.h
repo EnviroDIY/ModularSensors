@@ -49,6 +49,7 @@ public:
     // This generates a properly formatted JSON for EnviroDIY
     String generateSensorDataJSON(void);
     void streamSensorDataJSON(Stream *stream);
+    void streamSensorDataJSON(Stream& stream);
 
     // // This generates a fully structured POST request for EnviroDIY
     // String generateEnviroDIYPostRequest(String enviroDIYjson);
@@ -58,9 +59,11 @@ public:
     // specified stream using the specified json.
     // This may be necessary to work around very long strings for the post request.
     void streamEnviroDIYRequest(Stream *stream, String& enviroDIYjson);
+    void streamEnviroDIYRequest(Stream& stream, String& enviroDIYjson);
     // This prints a fully structured post request for EnviroDIY to the
     // specified stream with the default json.
     void streamEnviroDIYRequest(Stream *stream);
+    void streamEnviroDIYRequest(Stream& stream);
 
     // This utilizes an attached modem to make a TCP connection to the
     // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
