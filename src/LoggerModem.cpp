@@ -12,32 +12,24 @@
 
 
 // Constructors
-loggerModem::loggerModem(TinyGsmModem *inModem, Client *inClient,
-            uint8_t vcc33Pin, uint8_t modemStatusPin, uint8_t modemSleepRqPin,
-            ModemSleepType sleepType,
+loggerModem::loggerModem(TinyGsmModem *inModem, Client *inClient, ModemOnOff *onOff,
             const char *APN)
     : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
       _APN(APN), _lastNISTrequest(0)
 {
     _tinyModem = inModem;
     _inClient = inClient;
-    // ALL XBee's use modem_sleep_reverse!
-    if (_tinyModem->getModemName().indexOf("XBee") > 0) sleepType = modem_sleep_reverse;
-    _modemOnOff = constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
+    _modemOnOff = onOff;
 }
 
-loggerModem::loggerModem(TinyGsmModem *inModem, Client *inClient,
-            uint8_t vcc33Pin, uint8_t modemStatusPin, uint8_t modemSleepRqPin,
-            ModemSleepType sleepType,
+loggerModem::loggerModem(TinyGsmModem *inModem, Client *inClient, ModemOnOff *onOff,
             const char *ssid, const char *pwd)
     : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
       _ssid(ssid), _pwd(pwd), _lastNISTrequest(0)
 {
     _tinyModem = inModem;
     _inClient = inClient;
-    // ALL XBee's use modem_sleep_reverse!
-    if (_tinyModem->getModemName().indexOf("XBee") > 0 ) sleepType = modem_sleep_reverse;
-    _modemOnOff = constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
+    _modemOnOff = onOff;
 }
 
 String loggerModem::getSensorName(void) { return _tinyModem->getModemName(); }
@@ -439,33 +431,4 @@ int loggerModem::getPctFromRSSI(int rssi)
     if (rssi == 0) pct = 0;
     if (rssi == (255-93)) pct = 0;  // This is a no-data-yet value from XBee
     return pct;
-}
-
-// Construct the on-off instances
-ModemOnOff* loggerModem::constructOnOff(int8_t vcc33Pin, int8_t modemStatusPin, int8_t modemSleepRqPin,
-                    ModemSleepType sleepType)
-{
-    switch(sleepType)
-    {
-        case modem_sleep_held:
-        {
-            return new heldOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, true);
-        }
-        case modem_sleep_reverse:
-        {
-            return new heldOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, false);
-        }
-        case modem_sleep_pulsed:
-        {
-            return new pulsedOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, true);
-        }
-        case modem_sleep_rev_pulse:
-        {
-            return new pulsedOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, false);
-        }
-        default:  // modem_always_on
-        {
-            return new heldOnOff(-1, -1, -1, true);
-        }
-    }
 }

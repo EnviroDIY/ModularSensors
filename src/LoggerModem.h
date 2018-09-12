@@ -54,16 +54,6 @@
     #define MS_MOD_DBG(...)
 #endif  // MODEM_DEBUGGING_SERIAL_OUTPUT
 
-// For the various ways of waking and sleeping the modem
-typedef enum ModemSleepType
-{
-    modem_sleep_held = 0,   // Turns the modem on by setting the onoff/DTR/Key HIGH and off by setting it LOW
-    modem_sleep_reverse,    // Turns the modem on by setting the onoff/DTR/Key LOW and off by setting it HIGH
-    modem_sleep_pulsed,     // Turns the modem on and off by pulsing the onoff/DTR/Key pin HIGH for 2 seconds
-    modem_sleep_rev_pulse,  // Turns the modem on and off by pulsing the onoff/DTR/Key pin LOW 2 seconds
-    modem_always_on
-} ModemSleepType;
-
 /* ===========================================================================
 * Functions for the modem class
 * This is basically a wrapper for TinyGsm
@@ -76,14 +66,10 @@ class loggerModem : public Sensor
 // ==========================================================================//
 public:
     // Constructors
-    loggerModem(TinyGsmModem *inModem, Client *inClient,
-                uint8_t vcc33Pin, uint8_t modemStatusPin, uint8_t modemSleepRqPin,
-                ModemSleepType sleepType,
+    loggerModem(TinyGsmModem *inModem, Client *inClient, ModemOnOff *onOff,
                 const char *APN);
 
-    loggerModem(TinyGsmModem *inModem, Client *inClient,
-                uint8_t vcc33Pin, uint8_t modemStatusPin, uint8_t modemSleepRqPin,
-                ModemSleepType sleepType,
+    loggerModem(TinyGsmModem *inModem, Client *inClient, ModemOnOff *onOff,
                 const char *ssid, const char *pwd);
 
     String getSensorName(void) override;
@@ -148,10 +134,6 @@ private:
     static int getPctFromCSQ(int csq);
     // Helper to get signal percent from CSQ
     static int getPctFromRSSI(int rssi);
-
-    // Construct the on-off instances
-    ModemOnOff *constructOnOff(int8_t vcc33Pin, int8_t modemStatusPin, int8_t modemSleepRqPin,
-                        ModemSleepType sleepType);
 
 };
 
