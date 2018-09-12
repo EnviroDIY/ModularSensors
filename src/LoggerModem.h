@@ -15,7 +15,7 @@
 #define LoggerModem_h
 
 #include <Arduino.h>
-#define MODEM_DEBUGGING_SERIAL_OUTPUT Serial
+// #define MODEM_DEBUGGING_SERIAL_OUTPUT Serial
 // #define TINY_GSM_DEBUG Serial
 
 #define TINY_GSM_YIELD() { delay(1); }
@@ -117,8 +117,8 @@ public:
 
 public:
     // All of these must be pointers - these are all abstract classes!
-    Client *_inClient;
     TinyGsmModem *_tinyModem;
+    Client *_tinyClient;
     ModemOnOff *_modemOnOff;
 
 private:

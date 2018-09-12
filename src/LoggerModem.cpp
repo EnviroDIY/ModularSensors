@@ -18,7 +18,7 @@ loggerModem::loggerModem(TinyGsmModem *inModem, Client *inClient, ModemOnOff *on
       _APN(APN), _lastNISTrequest(0)
 {
     _tinyModem = inModem;
-    _inClient = inClient;
+    _tinyClient = inClient;
     _modemOnOff = onOff;
 }
 
@@ -28,7 +28,7 @@ loggerModem::loggerModem(TinyGsmModem *inModem, Client *inClient, ModemOnOff *on
       _ssid(ssid), _pwd(pwd), _lastNISTrequest(0)
 {
     _tinyModem = inModem;
-    _inClient = inClient;
+    _tinyClient = inClient;
     _modemOnOff = onOff;
 }
 
@@ -40,15 +40,10 @@ bool loggerModem::setup(void)
 {
     bool retVal = false;
 
-    // Set the on-off pin modes
-    Serial.print("Start modem setup on-off pointer:  ");
-    Serial.println((long)&_modemOnOff);
-    _modemOnOff->begin();
-    Serial.print("After first begin on-off pointer:  ");
-    Serial.println((long)&_modemOnOff);
-
     // Initialize the modem
     MS_MOD_DBG(F("Starting up the "), _tinyModem->getModemName(), F("...\n"));
+
+    _modemOnOff->begin();
 
     // Turn the modem on .. whether it was on or not
     // Need to turn on no matter what because some modems don't have an
@@ -60,15 +55,10 @@ bool loggerModem::setup(void)
     if(_modemOnOff->isOn())
     {
         retVal = _tinyModem->begin();
-        _tinyModem->sleepEnable();
         _modemOnOff->off();
         MS_MOD_DBG(F("   ... Complete!\n"));
     }
     else MS_MOD_DBG(F("   ... Modem failed to turn on!\n"));
-
-    _modemOnOff->begin();
-    Serial.print("After second begin on-off pointer:  ");
-    Serial.println((long)&_modemOnOff);
 
     // Set the status bit marking that the modem has been set up (bit 1)
     _sensorStatus |= 0b00000010;
@@ -97,9 +87,6 @@ bool loggerModem::addSingleMeasurementResult(void)
     int percent = 0;
     int rssi = -9999;
 
-    Serial.print("addSingleMeasurementResult on-off pointer:  ");
-    Serial.println((long)&_modemOnOff);
-
     // Check that the modem is responding to AT commands.  If not, give up.
     MS_MOD_DBG(F("\nWaiting up to 5 seconds for modem to respond to AT commands...\n"));
     if (_tinyModem->testAT(5000))
@@ -124,9 +111,9 @@ bool loggerModem::addSingleMeasurementResult(void)
             MS_MOD_DBG("Connecting to NIST daytime server to check connection strength...\n");
             IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
             openTCP(ip, 37);
-            _inClient->print(F("Hi!"));  // Need to send something before connection is made
+            _tinyClient->print(F("Hi!"));  // Need to send something before connection is made
             delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
-            while (_inClient->available()) _inClient->read();  // Delete anything returned
+            while (_tinyClient->available()) _tinyClient->read();  // Delete anything returned
             _lastNISTrequest = millis();
         }
 
@@ -178,10 +165,6 @@ bool loggerModem::addSingleMeasurementResult(void)
 // ==========================================================================//
 bool loggerModem::connectInternet(uint32_t waitTime_ms)
 {
-
-Serial.print("connectInternet on-off pointer:  ");
-Serial.println((long)&_modemOnOff);
-
     bool retVal = false;
 
     // Check if the modem is on; turn it on if not
@@ -265,7 +248,7 @@ void loggerModem::disconnectInternet(void)
 int loggerModem::openTCP(const char *host, uint16_t port)
 {
     MS_MOD_DBG("Connecting to ", host, "...");
-    int ret_val = _inClient->connect(host, port);
+    int ret_val = _tinyClient->connect(host, port);
     if (ret_val) MS_MOD_DBG("   ...Success!\n");
     else MS_MOD_DBG("   ...Connection failed.\n");
     return ret_val;
@@ -274,7 +257,7 @@ int loggerModem::openTCP(const char *host, uint16_t port)
 int loggerModem::openTCP(IPAddress ip, uint16_t port)
 {
     MS_MOD_DBG("Connecting to ", ip, "...");
-    int ret_val = _inClient->connect(ip, port);
+    int ret_val = _tinyClient->connect(ip, port);
     if (ret_val) MS_MOD_DBG("   ...Success!\n");
     else MS_MOD_DBG("   ...Connection failed.\n");
     return ret_val;
@@ -282,38 +265,19 @@ int loggerModem::openTCP(IPAddress ip, uint16_t port)
 
 void loggerModem::closeTCP(void)
 {
-    _inClient->stop();
+    _tinyClient->stop();
     MS_MOD_DBG(F("Closed TCP/IP.\n"));
 }
 
 bool loggerModem::modemPowerUp(void)
 {
-    MS_MOD_DBG(F("Turning modem on0.\n"));
-    delay(2000);
-
-    Serial.print("modemPowerUp on-off pointer:  ");
-    Serial.println((long)&_modemOnOff);
-
-    delay(2000);
-        MS_MOD_DBG(F("Turning modem on0.5.\n"));
     // Turn the modem on .. whether it was on or not
     // Need to turn on no matter what because some modems don't have an
     // effective way of telling us whether they're on or not
-    // _modemOnOff->begin();
-    MS_MOD_DBG(F("Turning modem on1.\n"));
-    delay(1000);
-    // Turn the modem on .. whether it was on or not
-    // Need to turn on no matter what because some modems don't have an
-    // effective way of telling us whether they're on or not
+    MS_MOD_DBG(F("Turning modem on.\n"));
     _modemOnOff->on();
-    delay(1000);
-        MS_MOD_DBG(F("Turning modem on2.\n"));
-        delay(1000);
     // Double check if the modem is on; turn it on if not
     if(!_modemOnOff->isOn()) _modemOnOff->on();
-    delay(1000);
-        MS_MOD_DBG(F("Turning modem on3.\n"));
-        delay(1000);
     // Mark the time that the sensor was powered
     _millisPowerOn = millis();
     // Set the status bit for sensor power (bit 0)
@@ -325,7 +289,7 @@ bool loggerModem::modemPowerDown(void)
 {
     MS_MOD_DBG(F("Turning modem off.\n"));
      // Wait for any sending to complete
-    _inClient->flush();
+    _tinyClient->flush();
     // Turn the modem off .. whether it was on or not
     // Need to turn off no matter what because some modems don't have an
     // effective way of telling us whether they're on or not
@@ -363,7 +327,7 @@ uint32_t loggerModem::getNISTTime(void)
     {
         IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
         connectionMade = openTCP(ip, 37);  // XBee's address lookup falters on time.nist.gov
-        _inClient->print(F("Hi!"));
+        _tinyClient->print(F("Hi!"));
         delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
     }
     else connectionMade = openTCP("time.nist.gov", 37);
@@ -372,7 +336,7 @@ uint32_t loggerModem::getNISTTime(void)
     if (connectionMade)
     {
         long start = millis();
-        while (_inClient->available() < 4 && millis() - start < 5000){}
+        while (_tinyClient->available() < 4 && millis() - start < 5000){}
 
         // Response is returned as 32-bit number as soon as connection is made
         // Connection is then immediately closed, so there is no need to close it
@@ -380,7 +344,7 @@ uint32_t loggerModem::getNISTTime(void)
         byte response[4] = {0};
         for (uint8_t i = 0; i < 4; i++)
         {
-            response[i] = _inClient->read();
+            response[i] = _tinyClient->read();
             // MS_MOD_DBG("\n",response[i]);
             secFrom1900 += 0x000000FF & response[i];
             // MS_MOD_DBG("\n*****",String(secFrom1900, BIN),"*****");
