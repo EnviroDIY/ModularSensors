@@ -14,14 +14,6 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
-// Select your modem chip, comment out all of the others
-// #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
-// #define TINY_GSM_MODEM_A6  // Select for a AI-Thinker A6 or A7 chip
-// #define TINY_GSM_MODEM_M590  // Select for a Neoway M590
-// #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
-// #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
-#define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
-
 // ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
@@ -58,7 +50,7 @@ const int8_t wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
 const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
 
 // Create and return the processor "sensor"
-const char *MFVersion = "v0.5";
+const char *MFVersion = "v0.5b";
 ProcessorStats mayfly(MFVersion) ;
 // Create the battery voltage and free RAM variable objects for the Y504 and return variable-type pointers to them
 Variable *mayflyBatt = new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
@@ -68,59 +60,57 @@ Variable *mayflyRAM = new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-ef
 // ==========================================================================
 //    Modem/Internet connection options
 // ==========================================================================
-HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
 
-#if defined(TINY_GSM_MODEM_XBEE)
-const long ModemBaud = 9600;  // Default for XBee is 9600, I've sped mine up to 57600
-const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
+// Select your modem chip, comment out all of the others
+// #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
+// #define TINY_GSM_MODEM_A6  // Select for a AI-Thinker A6 or A7 chip
+// #define TINY_GSM_MODEM_M590  // Select for a Neoway M590
+// #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
+// #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
+#define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
+
+// Include TinyGSM for the modem
+// This include must be included below the define of the modem name!
+#include <TinyGsmClient.h>
+
+ // Set the serial port for the modem - software serial can also be used.
+HardwareSerial &ModemSerial = Serial1;
+
+// Create a variable the the modem baud rate - this will be used tin the begin function for the port
+const long ModemBaud = 9600;
+
+// Create a TinyGSM modem to run on that serial port and return a pointer to it
+TinyGsm *tinyModem = new TinyGsm(ModemSerial);
+
+// Now create a TCP client on that modem and return a pointer to it
+TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
+
+// Describe the physical pin connection of your modem to your board
+const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+const int8_t modemSleepRqPin = 23;  // Modem Sleep Request Pin (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
-const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
-ModemSleepType ModemSleepMode = modem_sleep_reverse;  // How the modem is put to sleep
 
-#elif defined(TINY_GSM_MODEM_ESP8266)
-const long ModemBaud = 57600;  // Default for ESP8266 is 115200, but the Mayfly itself stutters above 57600
-const int8_t modemSleepRqPin = 19;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
-const int8_t modemStatusPin = -1;   // Modem Status Pin (indicates power status) (-1 if unconnected)
-const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
-ModemSleepType ModemSleepMode = modem_always_on;  // How the modem is put to sleep
+// And create a pointer to the method to be used to turn the modem on and off
+// The on/off method needs the pins and to know whether the sleep request is a HIGH or LOW value
+// Use heldOnOff if the sleep request pin is set and kept to keep the modem awake
+// Use pulsedOnOff if the sleep request pin is quickly switched to wake the modem up
+// The Sodaq GPRSBee rev6 uses heldOnOff with the pin held high
+// All Digi XBee's uses heldOnOff with the pin held low
+// The Adafruit Fona and Sodaq GPRSBee rev4 use a low pulsedOnOff
+ModemOnOff *modemOnOff = new heldOnOff(modemVCCPin, modemSleepRqPin, modemStatusPin, HIGH);
+// ModemOnOff *modemOnOff = new heldOnOff(modemVCCPin, modemSleepRqPin, modemStatusPin, LOW);
+// ModemOnOff *modemOnOff = new pulsedOnOff(modemVCCPin, modemSleepRqPin, modemStatusPin, HIGH);
+// ModemOnOff *modemOnOff = new pulsedOnOff(modemVCCPin, modemSleepRqPin, modemStatusPin, LOW);
 
-#elif defined(TINY_GSM_MODEM_UBLOX)
-const long ModemBaud = 9600;  // SARA-U201 default seems to be 9600
-const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
-const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
-const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
-ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sleep
-
-#else
-const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble making it fast (19200 works)
-const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
-const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
-const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
-ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sleep
-// Use "modem_sleep_held" if the DTR pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
-// Use "modem_sleep_pulsed" if the DTR pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
-// Use "modem_sleep_reverse" if the DTR pin is held LOW to keep the modem awake, as with all XBees.
-// Use "modem_always_on" if you do not want the library to control the modem power and sleep or if none of the above apply.
-#endif
-
+// And we still need the connection information for the network
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
 
 // Create the loggerModem instance
-// A "loggerModem" is a combination of a TinyGSM Modem, a TinyGSM Client, and an on/off method
-#if defined(TINY_GSM_MODEM_ESP8266)
-loggerModem modem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
-#elif defined(TINY_GSM_MODEM_XBEE)
-loggerModem modem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
-// loggerModem modem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
-#else
-loggerModem modem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
-#endif
-// Create the RSSI and signal strength variable objects for the modem and return
-// variable-type pointers to them
-Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab");
+// A "loggerModem" is a combination of a TinyGSM Modem, a Client, and an on/off method
+loggerModem modem(tinyModem, tinyClient, modemOnOff, wifiId, wifiPwd);
+// loggerModem modem(tinyModem, tinyClient, modemOnOff, apn);
 
 
 // ==========================================================================
