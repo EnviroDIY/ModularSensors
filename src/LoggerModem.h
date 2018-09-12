@@ -18,59 +18,11 @@
 #define MODEM_DEBUGGING_SERIAL_OUTPUT Serial
 // #define TINY_GSM_DEBUG Serial
 
+#include <TinyGSMCommon.h>
 
 #include "ModemOnOff.h"
 #include "SensorBase.h"
 #include "VariableBase.h"
-
-#if defined(TINY_GSM_MODEM_SIM800) || defined(TINY_GSM_MODEM_SIM808) || \
-    defined(TINY_GSM_MODEM_SIM868) || defined(TINY_GSM_MODEM_SIM900) || \
-    defined(TINY_GSM_MODEM_A6) || defined(TINY_GSM_MODEM_A7) || \
-    defined(TINY_GSM_MODEM_UBLOX) || defined(TINY_GSM_MODEM_M590) || \
-    defined(TINY_GSM_MODEM_M95) || defined(TINY_GSM_MODEM_BG96) || \
-    defined(TINY_GSM_MODEM_MC60) || \
-    defined(TINY_GSM_MODEM_ESP8266) || defined(TINY_GSM_MODEM_XBEE)
-  #define TINY_GSM_YIELD() { delay(1);}
-  #define TINY_GSM_RX_BUFFER 14
-  #include <TinyGsmClient.h>
-#else
-  #include <NullModem.h>  // purely to help me debug compilation issues
-#endif
-
-// #if defined(USE_TINY_GSM)
-
-// Give the modems names
-#if defined(TINY_GSM_MODEM_SIM800)
-    #define MODEM_NAME "SIMCom SIM800"
-#elif defined(TINY_GSM_MODEM_SIM808)
-    #define MODEM_NAME "SIMCom SIM808"
-#elif defined(TINY_GSM_MODEM_SIM868)
-    #define MODEM_NAME "SIMCom SIM868"
-#elif defined(TINY_GSM_MODEM_SIM900)
-    #define MODEM_NAME "SIMCom SIM900"
-#elif defined(TINY_GSM_MODEM_UBLOX)
-    #define MODEM_NAME "u-blox Cellular"
-#elif defined(TINY_GSM_MODEM_M95)
-    #define MODEM_NAME "Quectel M95"
-#elif defined(TINY_GSM_MODEM_BG96)
-    #define MODEM_NAME "Quectel BG96"
-#elif defined(TINY_GSM_MODEM_A6)
-    #define MODEM_NAME "AI-Thinker A6"
-#elif defined(TINY_GSM_MODEM_A7)
-    #define MODEM_NAME "AI-Thinker A7"
-#elif defined(TINY_GSM_MODEM_M590)
-    #define MODEM_NAME "Neoway M590"
-#elif defined(TINY_GSM_MODEM_MC60)
-    #define MODEM_NAME "Quectel MC60"
-#elif defined(TINY_GSM_MODEM_MC60E)
-    #define MODEM_NAME "Quectel MC60E"
-#elif defined(TINY_GSM_MODEM_ESP8266)
-    #define MODEM_NAME "ESP8266"
-#elif defined(TINY_GSM_MODEM_XBEE)
-    #define MODEM_NAME "Digi XBee"
-#else
-    #define MODEM_NAME "NO MODEM SELECTED"
-#endif
 
 #define MODEM_NUM_VARIABLES 2
 #define MODEM_WARM_UP_TIME_MS 0
@@ -111,23 +63,6 @@ typedef enum ModemSleepType
     modem_always_on
 } ModemSleepType;
 
-//  For the various chips
-typedef enum ModemChipType
-{
-  sim_chip_SIM800 = 0,
-  sim_chip_SIM808,
-  sim_chip_SIM868,
-  sim_chip_SIM900,
-  sim_chip_A6,
-  sim_chip_A7,
-  sim_chip_M590,
-  sim_chip_ublox,
-  sim_chip_ESP8266,
-  sim_chip_XBeeWifi,
-  sim_chip_XBeeCell,
-  sim_chip_Undefined
-} ModemChipType;
-
 /* ===========================================================================
 * Functions for the modem class
 * This is basically a wrapper for TinyGsm
@@ -144,20 +79,24 @@ public:
                 uint8_t vcc33Pin, uint8_t modemStatusPin, uint8_t modemSleepRqPin,
                 ModemSleepType sleepType,
                 const char *APN)
-        : Sensor(MODEM_NAME, MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
+        : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
           _tinyModem(*modemStream), _tinyClient(_tinyModem),
           _APN(APN), _lastNISTrequest(0)
     {
+        // ALL XBee's use modem_sleep_reverse!
+        if (_tinyModem->getModemName().indexOf("XBee") > 0) sleepType = modem_sleep_reverse;
         _modemOnOff = constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
     loggerModem(Stream &modemStream,
                 uint8_t vcc33Pin, uint8_t modemStatusPin, uint8_t modemSleepRqPin,
                 ModemSleepType sleepType,
                 const char *APN)
-        : Sensor(MODEM_NAME, MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
+        : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
           _tinyModem(modemStream), _tinyClient(_tinyModem),
           _APN(APN), _lastNISTrequest(0)
     {
+        // ALL XBee's use modem_sleep_reverse!
+        if (_tinyModem->getModemName().indexOf("XBee") > 0) sleepType = modem_sleep_reverse;
         _modemOnOff = constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
 
@@ -165,10 +104,12 @@ public:
                 uint8_t vcc33Pin, uint8_t modemStatusPin, uint8_t modemSleepRqPin,
                 ModemSleepType sleepType,
                 const char *ssid, const char *pwd)
-        : Sensor(MODEM_NAME, MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
+        : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
           _tinyModem(*modemStream), _tinyClient(_tinyModem),
           _ssid(ssid), _pwd(pwd), _lastNISTrequest(0)
     {
+        // ALL XBee's use modem_sleep_reverse!
+        if (_tinyModem->getModemName().indexOf("XBee") > 0 ) sleepType = modem_sleep_reverse;
         _modemOnOff = constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
 
@@ -176,13 +117,16 @@ public:
                 uint8_t vcc33Pin, uint8_t modemStatusPin, uint8_t modemSleepRqPin,
                 ModemSleepType sleepType,
                 const char *ssid, const char *pwd)
-        : Sensor(MODEM_NAME, MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
+        : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
           _tinyModem(modemStream), _tinyClient(_tinyModem),
           _ssid(ssid), _pwd(pwd), _lastNISTrequest(0)
     {
+        // ALL XBee's use modem_sleep_reverse!
+        if (_tinyModem->getModemName().indexOf("XBee") > 0 ) sleepType = modem_sleep_reverse;
         _modemOnOff = constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
 
+    String getSensorName(void) override { return _tinyModem->getModemName(); }
     String getSensorLocation(void) override { return F("modemSerial"); }
 
     // The modem must be setup separately!
@@ -198,8 +142,8 @@ public:
         Serial.println((long)&_modemOnOff);
 
         // Initialize the modem
-        MS_MOD_DBG(F("Starting up the "), F(MODEM_NAME), F("...\n"));
-        String XBeeChip;
+        MS_MOD_DBG(F("Starting up the "), _tinyModem->getModemName(), F("...\n"));
+
         // Turn the modem on .. whether it was on or not
         // Need to turn on no matter what because some modems don't have an
         // effective way of telling us whether they're on or not
@@ -209,44 +153,12 @@ public:
         // Check again if the modem is on.  Only "begin" if it responded.
         if(_modemOnOff->isOn())
         {
-            retVal = _tinyModem.begin();
-            #if defined(TINY_GSM_MODEM_XBEE)
-                /*if (sleepType != modem_always_on)*/ _tinyModem.setupPinSleep();
-                XBeeChip = _tinyModem.getBeeType();
-            #endif
-
+            retVal = _tinyModem->begin();
+            _tinyModem->sleepEnable();
             _modemOnOff->off();
             MS_MOD_DBG(F("   ... Complete!\n"));
         }
         else MS_MOD_DBG(F("   ... Modem failed to turn on!\n"));
-
-        // Assign a chip type
-        #if defined(TINY_GSM_MODEM_SIM800)
-            loggerModemChip = sim_chip_SIM800;
-        #elif defined(TINY_GSM_MODEM_SIM808)
-            loggerModemChip = sim_chip_SIM808;
-        #elif defined(TINY_GSM_MODEM_SIM868)
-            loggerModemChip = sim_chip_SIM868;
-        #elif defined(TINY_GSM_MODEM_SIM900)
-            loggerModemChip = sim_chip_SIM900;
-        #elif defined(TINY_GSM_MODEM_A6)
-            loggerModemChip = sim_chip_A6;
-        #elif defined(TINY_GSM_MODEM_A7)
-            loggerModemChip = sim_chip_A7;
-        #elif defined(TINY_GSM_MODEM_M590)
-            loggerModemChip = sim_chip_M590;
-        #elif defined(TINY_GSM_MODEM_UBLOX)
-            loggerModemChip = sim_chip_ublox;
-        #elif defined(TINY_GSM_MODEM_ESP8266)
-            loggerModemChip = sim_chip_ESP8266;
-        #elif defined(TINY_GSM_MODEM_XBEE)
-            if (XBeeChip = "S6B Wifi") loggerModemChip = sim_chip_XBeeWifi;
-            else loggerModemChip = sim_chip_XBeeCell;
-        #else
-            loggerModemChip = sim_chip_SIM800;
-        #endif
-
-        MS_MOD_DBG(F("Modem chip: "), loggerModemChip, '\n');
 
         _modemOnOff->begin();
         Serial.print("After second begin on-off pointer:  ");
@@ -284,17 +196,17 @@ public:
 
         // Check that the modem is responding to AT commands.  If not, give up.
         MS_MOD_DBG(F("\nWaiting up to 5 seconds for modem to respond to AT commands...\n"));
-        if (_tinyModem.testAT(5000))
+        if (_tinyModem->testAT(5000))
         {
             // The XBee needs to make an actual TCP connection and get some sort
             // of response on that connection before it knows the signal quality.
             // Connecting to the NIST daytime server, which immediately returns a
             // 4 byte response and then closes the connection
-            if (loggerModemChip == sim_chip_XBeeWifi || loggerModemChip == sim_chip_XBeeCell)
+            if (_tinyModem->getModemName().indexOf("XBee") > 0)
             {
                 // Connect to the network
                 // Only waiting for up to 5 seconds here for the internet!
-                if (!(_tinyModem.isNetworkConnected()))
+                if (!(_tinyModem->isNetworkConnected()))
                 {
                     MS_MOD_DBG(F("No prior internet connection, attempting to make a connection."));
                     connectInternet(5000L);
@@ -306,25 +218,24 @@ public:
                 MS_MOD_DBG("Connecting to NIST daytime server to check connection strength...\n");
                 IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
                 openTCP(ip, 37);
-                _tinyClient.print(F("Hi!"));  // Need to send something before connection is made
+                _tinyClient->print(F("Hi!"));  // Need to send something before connection is made
                 delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
-                while (_tinyClient.available()) _tinyClient.read();  // Delete anything returned
+                while (_tinyClient->available()) _tinyClient->read();  // Delete anything returned
                 _lastNISTrequest = millis();
             }
 
             // Get signal quality
             // Non XBee's do not need to be registered or "connnected" to the
             // network to get quality
-            // if (_tinyModem.isNetworkConnected())
+            // if (_tinyModem->isNetworkConnected())
             // {
 
                 MS_MOD_DBG("Getting signal quality:\n");
-                signalQual = _tinyModem.getSignalQuality();
+                signalQual = _tinyModem->getSignalQuality();
 
                 // Convert signal quality to RSSI, if necessary
-                if (loggerModemChip == sim_chip_XBeeWifi ||
-                    loggerModemChip == sim_chip_XBeeCell ||
-                    loggerModemChip == sim_chip_ESP8266)
+                if (_tinyModem->getModemName().indexOf("XBee") > 0 ||
+                    _tinyModem->getModemName().indexOf("ESP8266") > 0)
                 {
                     rssi = signalQual;
                     percent = getPctFromRSSI(signalQual);
@@ -383,7 +294,7 @@ public:
 
         // Check that the modem is responding to AT commands.  If not, give up.
         MS_MOD_DBG(F("\nWaiting up to 5 seconds for modem to respond to AT commands...\n"));
-        if (!_tinyModem.testAT(5000))
+        if (!_tinyModem->testAT(5000))
         {
             MS_MOD_DBG(F("\nModem does not respond to AT commands!\n"));
             return false;
@@ -396,14 +307,14 @@ public:
         {
             MS_MOD_DBG(F("\nWaiting up to "), waitTime_ms/1000,
                        F(" seconds for WiFi network...\n"));
-            if (!(_tinyModem.isNetworkConnected()))
+            if (!(_tinyModem->isNetworkConnected()))
             {
                 MS_MOD_DBG("   Sending credentials...\n");
                 // #if defined(TINY_GSM_MODEM_HAS_WIFI)
                 // make multiple attempts to send credentials
-                while (!_tinyModem.networkConnect(_ssid, _pwd)) {};
+                while (!_tinyModem->networkConnect(_ssid, _pwd)) {};
                 // #endif
-                if (_tinyModem.waitForNetwork(waitTime_ms))
+                if (_tinyModem->waitForNetwork(waitTime_ms))
                 {
                     retVal = true;
                     MS_MOD_DBG("   ... Connected!\n");
@@ -421,10 +332,10 @@ public:
         {
             MS_MOD_DBG(F("\nWaiting up to "), waitTime_ms/1000,
                        F(" seconds for cellular network registration...\n"));
-            if (_tinyModem.waitForNetwork(waitTime_ms))
+            if (_tinyModem->waitForNetwork(waitTime_ms))
             {
                 // #if defined(TINY_GSM_MODEM_HAS_GPRS)
-                _tinyModem.gprsConnect(_APN, "", "");
+                _tinyModem->gprsConnect(_APN, "", "");
                 // #endif
                 MS_MOD_DBG("   ...Connected!\n");
                 retVal = true;
@@ -437,16 +348,15 @@ public:
 
     void disconnectInternet(void)
     {
-        if (loggerModemChip != sim_chip_XBeeWifi &&
-            loggerModemChip != sim_chip_ESP8266)
+        if (_tinyModem->hasGPRS())
         {
             // #if defined(TINY_GSM_MODEM_HAS_GPRS)
-            _tinyModem.gprsDisconnect();
+            _tinyModem->gprsDisconnect();
             // #endif
             MS_MOD_DBG(F("Disconnected from cellular network.\n"));
         }
         else{}
-            // _tinyModem.networkDisconnect();  // Eh.. why bother?
+            // _tinyModem->networkDisconnect();  // Eh.. why bother?
             // MS_MOD_DBG(F("Disconnected from WiFi network.\n"));
         _millisSensorActivated = 0;
     }
@@ -454,7 +364,7 @@ public:
     int openTCP(const char *host, uint16_t port)
     {
         MS_MOD_DBG("Connecting to ", host, "...");
-        int ret_val = _tinyClient.connect(host, port);
+        int ret_val = _tinyClient->connect(host, port);
         if (ret_val) MS_MOD_DBG("   ...Success!\n");
         else MS_MOD_DBG("   ...Connection failed.\n");
         return ret_val;
@@ -463,7 +373,7 @@ public:
     int openTCP(IPAddress ip, uint16_t port)
     {
         MS_MOD_DBG("Connecting to ", ip, "...");
-        int ret_val = _tinyClient.connect(ip, port);
+        int ret_val = _tinyClient->connect(ip, port);
         if (ret_val) MS_MOD_DBG("   ...Success!\n");
         else MS_MOD_DBG("   ...Connection failed.\n");
         return ret_val;
@@ -471,7 +381,7 @@ public:
 
     void closeTCP(void)
     {
-        _tinyClient.stop();
+        _tinyClient->stop();
         MS_MOD_DBG(F("Closed TCP/IP.\n"));
     }
 
@@ -514,7 +424,7 @@ public:
     {
         MS_MOD_DBG(F("Turning modem off.\n"));
          // Wait for any sending to complete
-        _tinyClient.flush();
+        _tinyClient->flush();
         // Turn the modem off .. whether it was on or not
         // Need to turn off no matter what because some modems don't have an
         // effective way of telling us whether they're on or not
@@ -533,8 +443,8 @@ public:
     {
         bool connectionMade = false;
         // bail if not connected to the internet
-        // TODO:  Figure out why _tinyModem.isNetworkConnected() isn't working here
-        // if (!_tinyModem.isNetworkConnected())
+        // TODO:  Figure out why _tinyModem->isNetworkConnected() isn't working here
+        // if (!_tinyModem->isNetworkConnected())
         if (!(connectInternet(1000)))
         {
             MS_MOD_DBG(F("No internet connection, cannot connect to NIST.\n"));
@@ -548,11 +458,11 @@ public:
 
         // Make TCP connection
         MS_MOD_DBG(F("Connecting to NIST daytime Server\n"));
-        if (loggerModemChip == sim_chip_XBeeWifi || loggerModemChip == sim_chip_XBeeCell)
+        if (_tinyModem->getModemName().indexOf("XBee") > 0)
         {
             IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
             connectionMade = openTCP(ip, 37);  // XBee's address lookup falters on time.nist.gov
-            _tinyClient.print(F("Hi!"));
+            _tinyClient->print(F("Hi!"));
             delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
         }
         else connectionMade = openTCP("time.nist.gov", 37);
@@ -561,7 +471,7 @@ public:
         if (connectionMade)
         {
             long start = millis();
-            while (_tinyClient.available() < 4 && millis() - start < 5000){}
+            while (_tinyClient->available() < 4 && millis() - start < 5000){}
 
             // Response is returned as 32-bit number as soon as connection is made
             // Connection is then immediately closed, so there is no need to close it
@@ -569,7 +479,7 @@ public:
             byte response[4] = {0};
             for (uint8_t i = 0; i < 4; i++)
             {
-                response[i] = _tinyClient.read();
+                response[i] = _tinyClient->read();
                 // MS_MOD_DBG("\n",response[i]);
                 secFrom1900 += 0x000000FF & response[i];
                 // MS_MOD_DBG("\n*****",String(secFrom1900, BIN),"*****");
@@ -590,13 +500,10 @@ public:
     }
 
 public:
-    ModemChipType loggerModemChip;
-
-    TinyGsm _tinyModem;
-    TinyGsmClient _tinyClient;
+    // All of these must be pointers - these are all abstract classes!
     ModemOnOff *_modemOnOff;
-    // This must be a pointer because ModemOnOff is an abstract class - that is,
-    // it has pure virtual functions
+    TinyGsmModem *_tinyModem;
+    Client *_tinyClient;
 
 private:
     const char *_APN;
@@ -642,10 +549,6 @@ private:
     ModemOnOff *constructOnOff(int8_t vcc33Pin, int8_t modemStatusPin, int8_t modemSleepRqPin,
                         ModemSleepType sleepType)
     {
-        // #if defined(TINY_GSM_MODEM_XBEE)  // ALL XBee's use modem_sleep_reverse!
-        //     if (sleepType != modem_sleep_reverse) sleepType = modem_sleep_reverse;
-        // #endif
-
         switch(sleepType)
         {
             case modem_sleep_held:
