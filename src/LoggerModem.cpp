@@ -194,10 +194,7 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
         if (!(_tinyModem->isNetworkConnected()))
         {
             MS_MOD_DBG("   Sending credentials...\n");
-            // #if defined(TINY_GSM_MODEM_HAS_WIFI)
-            // make multiple attempts to send credentials
             while (!_tinyModem->networkConnect(_ssid, _pwd)) {};
-            // #endif
             if (_tinyModem->waitForNetwork(waitTime_ms))
             {
                 retVal = true;
@@ -218,9 +215,7 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
                    F(" seconds for cellular network registration...\n"));
         if (_tinyModem->waitForNetwork(waitTime_ms))
         {
-            // #if defined(TINY_GSM_MODEM_HAS_GPRS)
             _tinyModem->gprsConnect(_APN, "", "");
-            // #endif
             MS_MOD_DBG("   ...Connected!\n");
             retVal = true;
         }
@@ -234,9 +229,7 @@ void loggerModem::disconnectInternet(void)
 {
     if (_tinyModem->hasGPRS())
     {
-        // #if defined(TINY_GSM_MODEM_HAS_GPRS)
         _tinyModem->gprsDisconnect();
-        // #endif
         MS_MOD_DBG(F("Disconnected from cellular network.\n"));
     }
     else{}
@@ -308,9 +301,7 @@ uint32_t loggerModem::getNISTTime(void)
 {
     bool connectionMade = false;
     // bail if not connected to the internet
-    // TODO:  Figure out why _tinyModem->isNetworkConnected() isn't working here
-    // if (!_tinyModem->isNetworkConnected())
-    if (!(connectInternet(1000)))
+    if (!_tinyModem->isNetworkConnected())
     {
         MS_MOD_DBG(F("No internet connection, cannot connect to NIST.\n"));
         return 0;
