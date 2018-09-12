@@ -18,6 +18,7 @@
 #define MODEM_DEBUGGING_SERIAL_OUTPUT Serial
 // #define TINY_GSM_DEBUG Serial
 
+#define TINY_GSM_YIELD() { delay(1); }
 #include <TinyGSMCommon.h>
 
 #include "ModemOnOff.h"
@@ -75,52 +76,29 @@ class loggerModem : public Sensor
 // ==========================================================================//
 public:
     // Constructors
-    loggerModem(Stream *modemStream,
+    loggerModem(TinyGsmModem *inModem, Client *inClient,
                 uint8_t vcc33Pin, uint8_t modemStatusPin, uint8_t modemSleepRqPin,
                 ModemSleepType sleepType,
                 const char *APN)
         : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
-          _tinyModem(*modemStream), _tinyClient(_tinyModem),
           _APN(APN), _lastNISTrequest(0)
     {
-        // ALL XBee's use modem_sleep_reverse!
-        if (_tinyModem->getModemName().indexOf("XBee") > 0) sleepType = modem_sleep_reverse;
-        _modemOnOff = constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
-    }
-    loggerModem(Stream &modemStream,
-                uint8_t vcc33Pin, uint8_t modemStatusPin, uint8_t modemSleepRqPin,
-                ModemSleepType sleepType,
-                const char *APN)
-        : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
-          _tinyModem(modemStream), _tinyClient(_tinyModem),
-          _APN(APN), _lastNISTrequest(0)
-    {
+        _tinyModem = inModem;
+        _inClient = inClient;
         // ALL XBee's use modem_sleep_reverse!
         if (_tinyModem->getModemName().indexOf("XBee") > 0) sleepType = modem_sleep_reverse;
         _modemOnOff = constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
     }
 
-    loggerModem(Stream *modemStream,
+    loggerModem(TinyGsmModem *inModem, Client *inClient,
                 uint8_t vcc33Pin, uint8_t modemStatusPin, uint8_t modemSleepRqPin,
                 ModemSleepType sleepType,
                 const char *ssid, const char *pwd)
         : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
-          _tinyModem(*modemStream), _tinyClient(_tinyModem),
           _ssid(ssid), _pwd(pwd), _lastNISTrequest(0)
     {
-        // ALL XBee's use modem_sleep_reverse!
-        if (_tinyModem->getModemName().indexOf("XBee") > 0 ) sleepType = modem_sleep_reverse;
-        _modemOnOff = constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
-    }
-
-    loggerModem(Stream &modemStream,
-                uint8_t vcc33Pin, uint8_t modemStatusPin, uint8_t modemSleepRqPin,
-                ModemSleepType sleepType,
-                const char *ssid, const char *pwd)
-        : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
-          _tinyModem(modemStream), _tinyClient(_tinyModem),
-          _ssid(ssid), _pwd(pwd), _lastNISTrequest(0)
-    {
+        _tinyModem = inModem;
+        _inClient = inClient;
         // ALL XBee's use modem_sleep_reverse!
         if (_tinyModem->getModemName().indexOf("XBee") > 0 ) sleepType = modem_sleep_reverse;
         _modemOnOff = constructOnOff(vcc33Pin, modemStatusPin, modemSleepRqPin, sleepType);
@@ -218,9 +196,9 @@ public:
                 MS_MOD_DBG("Connecting to NIST daytime server to check connection strength...\n");
                 IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
                 openTCP(ip, 37);
-                _tinyClient->print(F("Hi!"));  // Need to send something before connection is made
+                _inClient->print(F("Hi!"));  // Need to send something before connection is made
                 delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
-                while (_tinyClient->available()) _tinyClient->read();  // Delete anything returned
+                while (_inClient->available()) _inClient->read();  // Delete anything returned
                 _lastNISTrequest = millis();
             }
 
@@ -364,7 +342,7 @@ public:
     int openTCP(const char *host, uint16_t port)
     {
         MS_MOD_DBG("Connecting to ", host, "...");
-        int ret_val = _tinyClient->connect(host, port);
+        int ret_val = _inClient->connect(host, port);
         if (ret_val) MS_MOD_DBG("   ...Success!\n");
         else MS_MOD_DBG("   ...Connection failed.\n");
         return ret_val;
@@ -373,7 +351,7 @@ public:
     int openTCP(IPAddress ip, uint16_t port)
     {
         MS_MOD_DBG("Connecting to ", ip, "...");
-        int ret_val = _tinyClient->connect(ip, port);
+        int ret_val = _inClient->connect(ip, port);
         if (ret_val) MS_MOD_DBG("   ...Success!\n");
         else MS_MOD_DBG("   ...Connection failed.\n");
         return ret_val;
@@ -381,7 +359,7 @@ public:
 
     void closeTCP(void)
     {
-        _tinyClient->stop();
+        _inClient->stop();
         MS_MOD_DBG(F("Closed TCP/IP.\n"));
     }
 
@@ -424,7 +402,7 @@ public:
     {
         MS_MOD_DBG(F("Turning modem off.\n"));
          // Wait for any sending to complete
-        _tinyClient->flush();
+        _inClient->flush();
         // Turn the modem off .. whether it was on or not
         // Need to turn off no matter what because some modems don't have an
         // effective way of telling us whether they're on or not
@@ -462,7 +440,7 @@ public:
         {
             IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
             connectionMade = openTCP(ip, 37);  // XBee's address lookup falters on time.nist.gov
-            _tinyClient->print(F("Hi!"));
+            _inClient->print(F("Hi!"));
             delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
         }
         else connectionMade = openTCP("time.nist.gov", 37);
@@ -471,7 +449,7 @@ public:
         if (connectionMade)
         {
             long start = millis();
-            while (_tinyClient->available() < 4 && millis() - start < 5000){}
+            while (_inClient->available() < 4 && millis() - start < 5000){}
 
             // Response is returned as 32-bit number as soon as connection is made
             // Connection is then immediately closed, so there is no need to close it
@@ -479,7 +457,7 @@ public:
             byte response[4] = {0};
             for (uint8_t i = 0; i < 4; i++)
             {
-                response[i] = _tinyClient->read();
+                response[i] = _inClient->read();
                 // MS_MOD_DBG("\n",response[i]);
                 secFrom1900 += 0x000000FF & response[i];
                 // MS_MOD_DBG("\n*****",String(secFrom1900, BIN),"*****");
@@ -501,9 +479,9 @@ public:
 
 public:
     // All of these must be pointers - these are all abstract classes!
-    ModemOnOff *_modemOnOff;
+    Client *_inClient;
     TinyGsmModem *_tinyModem;
-    Client *_tinyClient;
+    ModemOnOff *_modemOnOff;
 
 private:
     const char *_APN;
