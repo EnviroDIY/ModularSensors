@@ -15,7 +15,7 @@
 #include "PaleoTerraRedox.h"
 
 
-// The constructor - need the power pin, data pin, and type of DHT
+// The constructor for software mode- need the power pin, data pin, and type of DHT
 PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin, int8_t dataPin, int8_t clockPin, uint8_t measurementsToAverage)
     : Sensor(F("PaleoTerraRedox"), PTR_NUM_VARIABLES,
              PTR_WARM_UP_TIME_MS, PTR_STABILIZATION_TIME_MS, PTR_MEASUREMENT_TIME_MS,
@@ -26,13 +26,31 @@ PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin, int8_t dataPin, int8_t clockPi
     _clockPin = clockPin;
 }
 
+// The constructor for hardware mode- need the power pin, and ADR
+PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin, uint8_t ADR, uint8_t measurementsToAverage)
+    : Sensor(F("PaleoTerraRedox"), PTR_NUM_VARIABLES,
+             PTR_WARM_UP_TIME_MS, PTR_STABILIZATION_TIME_MS, PTR_MEASUREMENT_TIME_MS,
+             powerPin, dataPin, measurementsToAverage)
+{
+    Wire.begin();
+    _ADR = ADR; //Copy slave address
+    HardwareI2C = true; //Set hardware flag
+}
+
 
 String PaleoTerraRedox::getSensorLocation(void)
 {
-    String sensorLocation = F("I2C");
-    sensorLocation += String(_dataPin);
-    sensorLocation += F(",");
-    sensorLocation += String(_clockPin);
+    if(HardwareI2C) {  //If using hardware, return address
+        String sensorLocation = F("I2C");
+        sensorLocation += String(_ADR);
+    }
+
+    else{  //If using software, return pins
+        String sensorLocation = F("I2C");
+        sensorLocation += String(_dataPin);
+        sensorLocation += F(",");
+        sensorLocation += String(_clockPin);
+    }
     return sensorLocation;
 }
 
@@ -51,18 +69,34 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void)
     byte i2c_status = -1;
     if (_millisMeasurementRequested > 0)
     {
-        i2c_status = i2c_soft.beginTransmission(MCP3421_ADR);
-        i2c_soft.write(B10001100);  // initiate conversion, One-Shot mode, 18 bits, PGA x1
-        i2c_soft.endTransmission();
+        if(HardwareI2C) {
+            Wire.beginTransmission(_ADR);
+            Wire.write(B10001100);  // initiate conversion, One-Shot mode, 18 bits, PGA x1
+            i2c_status = Wire.endTransmission();
 
-        delay(300);
+            delay(300);
 
-        i2c_soft.requestFrom(MCP3421_ADR);
-        res1 = i2c_soft.read();
-        res2 = i2c_soft.read();
-        res3 = i2c_soft.read();
-        config = i2c_soft.readLast();
-        i2c_soft.endTransmission();
+            Wire.requestFrom(_ADR, 4); //Get 4 bytes from device
+            res1 = Wire.read();
+            res2 = Wire.read();
+            res3 = Wire.read();
+            config = Wire.read();
+        }
+
+        else {
+            i2c_status = i2c_soft.beginTransmission(MCP3421_ADR);
+            i2c_soft.write(B10001100);  // initiate conversion, One-Shot mode, 18 bits, PGA x1
+            i2c_soft.endTransmission();
+
+            delay(300);
+
+            i2c_soft.requestFrom(MCP3421_ADR);
+            res1 = i2c_soft.read();
+            res2 = i2c_soft.read();
+            res3 = i2c_soft.read();
+            config = i2c_soft.readLast();
+            i2c_soft.endTransmission();
+        }
 
         res = 0;
         int sign = bitRead(res1,1); // one but least significant bit

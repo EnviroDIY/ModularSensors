@@ -24,6 +24,7 @@
 #include "VariableBase.h"
 
 #include <SoftI2CMaster.h>
+#include <Wire.h>
 
 #define PTR_NUM_VARIABLES 1
 #define PTR_WARM_UP_TIME_MS 1
@@ -42,6 +43,8 @@ public:
     // The constructor - need the power pin, the I2C data pin (SDA), the I2C
     // clock pin (SCL), and optionally a number of measurements to average
     PaleoTerraRedox(int8_t powerPin, int8_t dataPin, int8_t clockPin, uint8_t measurementsToAverage = 1);
+
+    PaleoTerraRedox(int8_t powerPin, uint8_t ADR, uint8_t measurementsToAverage = 1);
     
     String getSensorLocation(void) override;
 
@@ -51,6 +54,8 @@ private:
     SoftI2CMaster i2c_soft;
     uint8_t _dataPin;
     uint8_t _clockPin;
+    uint8_t _ADR; //Hardware slave address
+    bool HardwareI2C = false; //Default hardware to false
 };
 
 
