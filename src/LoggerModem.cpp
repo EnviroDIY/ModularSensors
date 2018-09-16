@@ -189,18 +189,21 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
     // the credentials every time.  (True for both ESP8266 and Wifi XBee)
     if (_ssid)
     {
-        MS_MOD_DBG(F("\nWaiting up to "), waitTime_ms/1000,
-                   F(" seconds for WiFi network...\n"));
+        MS_MOD_DBG(F("\nAttempting to connect to WiFi network...\n"));
         if (!(_tinyModem->isNetworkConnected()))
         {
             MS_MOD_DBG("   Sending credentials...\n");
             while (!_tinyModem->networkConnect(_ssid, _pwd)) {};
+            MS_MOD_DBG(F("   Waiting up to "), waitTime_ms/1000,
+                       F(" seconds for connection\n"));
+            uint32_t start = millis();
             if (_tinyModem->waitForNetwork(waitTime_ms))
             {
                 retVal = true;
-                MS_MOD_DBG("   ... Connected!\n");
+                MS_MOD_DBG("   ... WiFi connected after ", millis() - start,
+                           " milliseconds!\n");
             }
-            else MS_MOD_DBG("   ... Connection failed\n");
+            else MS_MOD_DBG("   ... WiFi connection failed\n");
         }
         else
         {
@@ -213,8 +216,11 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
     {
         MS_MOD_DBG(F("\nWaiting up to "), waitTime_ms/1000,
                    F(" seconds for cellular network registration...\n"));
+        uint32_t start = millis();
         if (_tinyModem->waitForNetwork(waitTime_ms))
         {
+            MS_MOD_DBG("   ... Registered after ", millis() - start,
+                       " milliseconds.  Connecting to GPRS...\n");
             _tinyModem->gprsConnect(_APN, "", "");
             MS_MOD_DBG("   ...Connected!\n");
             retVal = true;
@@ -309,7 +315,7 @@ uint32_t loggerModem::getNISTTime(void)
 
     // Must ensure that we do not ping the daylight more than once every 4 seconds
     // NIST clearly specifies here that this is a requirement for all software
-    /// that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi
+    // that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi
     while (millis() < _lastNISTrequest + 4000) {}
 
     // Make TCP connection
@@ -318,40 +324,58 @@ uint32_t loggerModem::getNISTTime(void)
     {
         IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
         connectionMade = openTCP(ip, 37);  // XBee's address lookup falters on time.nist.gov
-        _tinyClient->print(F("Hi!"));
+        _tinyClient->print(F("Hi!"));  // Need to send something before connection is made
         delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
     }
     else connectionMade = openTCP("time.nist.gov", 37);
 
-    // Wait up to 5 seconds for a response
+    // Wait up to 15 seconds for a response
     if (connectionMade)
     {
         long start = millis();
-        while (_tinyClient->available() < 4 && millis() - start < 5000){}
+        while (_tinyClient->available() < 4 && millis() - start < 15000L){}
 
-        // Response is returned as 32-bit number as soon as connection is made
-        // Connection is then immediately closed, so there is no need to close it
-        uint32_t secFrom1900 = 0;
-        byte response[4] = {0};
-        for (uint8_t i = 0; i < 4; i++)
+        if (_tinyClient->available() >= 4)
         {
-            response[i] = _tinyClient->read();
-            // MS_MOD_DBG("\n",response[i]);
-            secFrom1900 += 0x000000FF & response[i];
-            // MS_MOD_DBG("\n*****",String(secFrom1900, BIN),"*****");
-            if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;}
-        }
-        // MS_MOD_DBG("\n*****",secFrom1900,"*****");
+            MS_MOD_DBG("\nNIST responded after ", millis() - start, " ms");
+            // Response is returned as 32-bit number as soon as connection is made
+            // Connection is then immediately closed, so there is no need to close it
+            uint32_t secFrom1900 = 0;
+            byte response[4] = {0};
+            for (uint8_t i = 0; i < 4; i++)
+            {
+                response[i] = _tinyClient->read();
+                MS_MOD_DBG("\nResponse Byte [", i, "]:",response[i], "(",
+                           String(response[i], BIN),")");
+                secFrom1900 += 0x000000FF & response[i];
+                MS_MOD_DBG("\nseconds from 1900 after byte: ",String(secFrom1900, BIN));
+                if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;}
+            }
+            MS_MOD_DBG("\nfinal seconds from 1900:  ",secFrom1900);
 
-        // Return the timestamp
-        uint32_t unixTimeStamp = secFrom1900 - 2208988800;
-        MS_MOD_DBG(F("Timestamp returned by NIST (UTC): "), unixTimeStamp, '\n');
-        // If before Jan 1, 2017 or after Jan 1, 2030, most likely an error
-        if (unixTimeStamp < 1483228800) return 0;
-        else if (unixTimeStamp > 1893456000) return 0;
-        else return unixTimeStamp;
+            // Close the TCP connection, just in case
+            closeTCP();
+
+            // Return the timestamp
+            uint32_t unixTimeStamp = secFrom1900 - 2208988800;
+            MS_MOD_DBG(F("\nUnix Timestamp returned by NIST (UTC): "), unixTimeStamp, '\n');
+            // If before Jan 1, 2017 or after Jan 1, 2030, most likely an error
+            if (unixTimeStamp < 1483228800) return 0;
+            else if (unixTimeStamp > 1893456000) return 0;
+            else return unixTimeStamp;
+        }
+        else
+        {
+            MS_MOD_DBG(F("NIST Time server did not respond!\n"));
+            // Close the TCP connection, just in case
+            closeTCP();
+            return 0;
+        }
     }
-    else MS_MOD_DBG(F("Unable to open TCP to NIST\n"));
+    else MS_MOD_DBG(F("Unable to open TCP to NIST!\n"));
+
+    // Close the TCP connection, just in case
+    closeTCP();
     return 0;
 }
 
