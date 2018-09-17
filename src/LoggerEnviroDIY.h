@@ -81,7 +81,7 @@ public:
 
     // This calls all of the setup functions - must be run AFTER init
     // This version syncs the clock!
-    virtual void begin(void) override;
+    virtual void beginAndSync(void);
 
     // This is a one-and-done to log data
     virtual void logAndSend(void);
