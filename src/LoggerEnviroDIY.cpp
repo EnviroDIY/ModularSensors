@@ -430,7 +430,7 @@ void LoggerEnviroDIY::begin(void)
 
 
 // This is a one-and-done to log data
-void LoggerEnviroDIY::log(void)
+void LoggerEnviroDIY::logAndSend(void)
 {
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval

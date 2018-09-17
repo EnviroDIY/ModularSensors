@@ -67,7 +67,7 @@ public:
     // ===================================================================== //
 
     // This is a one-and-done to log data
-    virtual void log(void);
+    virtual void logAndSend(void) override;
 
 private:
     const char *_DreamHostPortalRX;

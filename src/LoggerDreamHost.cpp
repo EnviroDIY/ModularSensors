@@ -192,7 +192,7 @@ void LoggerDreamHost::disableDualPost(void)
 // ===================================================================== //
 
 // This is a one-and-done to log data
-void LoggerDreamHost::log(void)
+void LoggerDreamHost::logAndSend(void)
 {
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval

@@ -81,10 +81,10 @@ public:
 
     // This calls all of the setup functions - must be run AFTER init
     // This version syncs the clock!
-    virtual void begin(void);
+    virtual void begin(void) override;
 
     // This is a one-and-done to log data
-    virtual void log(void) override;
+    virtual void logAndSend(void);
 
     // The internal modem instance
     loggerModem *_logModem;
