@@ -19,7 +19,7 @@
 // #define TINY_GSM_DEBUG Serial
 
 #define TINY_GSM_YIELD() { delay(1); }
-#include <TinyGSMCommon.h>
+#include <TinyGsmCommon.h>
 
 #include "ModemOnOff.h"
 #include "SensorBase.h"
