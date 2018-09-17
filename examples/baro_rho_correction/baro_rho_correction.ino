@@ -112,6 +112,11 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 loggerModem modem(tinyModem, tinyClient, modemOnOff, wifiId, wifiPwd);
 // loggerModem modem(tinyModem, tinyClient, modemOnOff, apn);
 
+// Create the RSSI and signal strength variable objects for the modem and return
+// variable-type pointers to them
+Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab");
+
 
 // ==========================================================================
 //    Maxim DS3231 RTC (Real Time Clock)

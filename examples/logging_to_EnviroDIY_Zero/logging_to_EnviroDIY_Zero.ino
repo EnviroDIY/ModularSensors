@@ -59,7 +59,6 @@ ProcessorStats feather(featherVersion) ;
 // ==========================================================================
 //    Modem/Internet connection options
 // ==========================================================================
-HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
 
 // Select your modem chip, comment out all of the others
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
