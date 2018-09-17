@@ -30,7 +30,7 @@ PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin, int8_t dataPin, int8_t clockPi
 PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin, uint8_t ADR, uint8_t measurementsToAverage)
     : Sensor(F("PaleoTerraRedox"), PTR_NUM_VARIABLES,
              PTR_WARM_UP_TIME_MS, PTR_STABILIZATION_TIME_MS, PTR_MEASUREMENT_TIME_MS,
-             powerPin, dataPin, measurementsToAverage)
+             powerPin, measurementsToAverage)
 {
     Wire.begin();
     _ADR = ADR; //Copy slave address
@@ -40,13 +40,14 @@ PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin, uint8_t ADR, uint8_t measureme
 
 String PaleoTerraRedox::getSensorLocation(void)
 {
+    String sensorLocation = "";
     if(HardwareI2C) {  //If using hardware, return address
-        String sensorLocation = F("I2C");
-        sensorLocation += String(_ADR);
+        sensorLocation = F("I2C_0x");
+        sensorLocation += String(_ADR, HEX);
     }
 
     else{  //If using software, return pins
-        String sensorLocation = F("I2C");
+        sensorLocation = F("I2C");
         sensorLocation += String(_dataPin);
         sensorLocation += F(",");
         sensorLocation += String(_clockPin);
