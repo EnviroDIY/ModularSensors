@@ -22,6 +22,7 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
 - Logger Functions
     - [Basic Logger Functions](#Logger)
     - [Modem and Internet Functions](#Modem)
+        - [Notes on some specific modems](#SpecificModems)
     - [EnviroDIY Logger Functions](#DIYlogger)
     - [Logger Code Examples](#LoggerExamples)
 - Available Sensors
@@ -382,14 +383,14 @@ For more intense _code_ debugging for any individual component of the library (s
 
 ### <a name="Modem"></a>Functions for a LoggerModem:
 
-A loggerModem serves two functions:  First, it communicates with the internet via WiFi or cellular service and sends data to remote services.  Second, it acts as a sensor which can return the strength of the WiFi or cellular connection.  A loggerModem object is a combination of a [TinyGsm](https://github.com/EnviroDIY/TinyGSM) (modem instance), a TinyGsmClient, and a ModemOnOff to control modem power.  Quite a number of modem chip types are supported.
+A loggerModem serves two functions:  First, it communicates with the internet via WiFi or cellular service and sends data to remote services.  Second, it acts as a sensor which can return the strength of the WiFi or cellular connection.  A loggerModem object is a combination of a [TinyGsm](https://github.com/EnviroDIY/TinyGSM) (modem instance), a TCP Client (generally through TinyGSM), and a ModemOnOff to control modem power.  The TinyGSM library supports quite a number of different modem chips.  See [TinyGSM's documentation](https://github.com/vshymanskyy/TinyGSM/blob/master/README.md) for a more details about of all of the chip variants and modules that are supported.
 
-Before creating a loggerModem instance, _you must define your modem at top of your sketch_, before any include statements.  ie:
-- ```#define TINY_GSM_MODEM_SIM900``` - for a SIMCom SIM900 Quad-band GSM/GPRS module, or variant thereof (including older [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
-- ```#define TINY_GSM_MODEM_SIM800``` - for a SIMCom SIM800 Quad-band GSM/GPRS module or variant thereof (including current [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
+The first step in creating a loggerModem instance is defining your modem chip type.  _This define statement must be above the include statement for the TinyGSM modem library._
+- ```#define TINY_GSM_MODEM_SIM900``` - for a SIMCom SIM900 Quad-band GSM/GPRS module, or variant thereof (including older rev4 [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
+- ```#define TINY_GSM_MODEM_SIM800``` - for a SIMCom SIM800 Quad-band GSM/GPRS module or variant thereof (including current rev6 [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
 - ```#define TINY_GSM_MODEM_SIM808``` - for a SIMCom SIM808 Quad-band GSM/GPRS/GPS module
 - ```#define TINY_GSM_MODEM_SIM868``` - for a SIMCom SIM868 Quad-Band GSM/GPRS/GNSS module
-- ```#define TINY_GSM_MODEM_UBLOX``` - for most u-blox cellular modems (LEON-G100, LISA-U2xx, SARA-G3xx, SARA-U2xx, TOBY-L2xx, LARA-R2xx, MPCI-L2xx, or a Digi 3G XBee running in bypass mode)
+- ```#define TINY_GSM_MODEM_UBLOX``` - for most u-blox cellular modems (LEON-G100, LISA-U2xx, SARA-G3xx, SARA-U2xx, TOBY-L2xx, LARA-R2xx, MPCI-L2xx, or a Digi 3G or LTE-M XBee running in bypass mode)
 - ```#define TINY_GSM_MODEM_M95``` - for an Quectel M95 Quad-band GSM/GPRS module
 - ```#define TINY_GSM_MODEM_BG96``` - for an Quectel BG96 LTE Cat M1/Cat NB1/EGPRS module
 - ```#define TINY_GSM_MODEM_A6``` - for an AI-Thinker A6 GSM/GPRS module
@@ -400,34 +401,54 @@ Before creating a loggerModem instance, _you must define your modem at top of yo
 - ```#define TINY_GSM_MODEM_ESP8266``` - for an ESP8266 WiFi module using the _default AT command firmware_
 - ```#define TINY_GSM_MODEM_XBEE``` - for Digi brand WiFi or Cellular XBee's running in transparent (default) mode
 
-See [TinyGSM's documentation](https://github.com/vshymanskyy/TinyGSM/blob/master/README.md) for a more details about of all of the chip variants and modules that are supported.
-
-The constructors for the loggerModem object are (one for WiFi and the other for cellular modems)
-
+Below the modem definition, include TinyGSM.  Then set up a serial port and create a TinyGSM modem and client.  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  Remember to begin the serial port in the "setup" function.
 ```cpp
-// Create the modem object - wifi modem
-loggerModem modem(Stream modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin, ModemSleepType sleepType, const char *ssid, const char *pwd);
+// Include TinyGSM for the modem
+// This include must be included below the define of the modem name!
+#include <TinyGsmClient.h>
+
+ // Set the serial port for the modem - software serial can also be used.
+HardwareSerial &ModemSerial = Serial1;
+
+// Create a variable for the modem baud rate - this will be used in the begin function for the port
+const long ModemBaud = 9600;
+
+// Create a new TinyGSM modem to run on that serial port and return a pointer to it
+TinyGsm *tinyModem = new TinyGsm(ModemSerial);
+
+// Create a new TCP client on that modem and return a pointer to it
+TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
+
 ```
 
+Next, create the "on-off" for the modem - that is the pins and method that will be used to turn the modem on and off.  There are two main pin-based methods used to activate modem chips - either holding a pin to be high or low to keep the modem on or sending a "pulse" of high or low voltage to a pin to turn it on and another to turn it off.  The constructors for either type of on-off are:
 ```cpp
-// Create the modem object - cellular modem
-loggerModem modem(Stream modemStream, int vcc33Pin, int modemStatusPin, int modemSleepRqPin, ModemSleepType sleepType, const char *APN);
+ModemOnOff *modemOnOff = new heldOnOff(modemVCCPin, modemSleepRqPin, modemStatusPin, LOW);
+// ModemOnOff *modemOnOff = new heldOnOff(modemVCCPin, modemSleepRqPin, modemStatusPin, HIGH);
+// ModemOnOff *modemOnOff = new pulsedOnOff(modemVCCPin, modemSleepRqPin, modemStatusPin, HIGH);
+// ModemOnOff *modemOnOff = new pulsedOnOff(modemVCCPin, modemSleepRqPin, modemStatusPin, LOW);
 ```
 
-- The **vcc33Pin** is the pin that controls whether or not the modem itself is powered.  Use -1 if your modem is always receiving power or if you want to control modem power independently.
+- Use **heldOnOff** if the sleep request pin is set and kept to keep the modem awake.
+- Use **pulsedOnOff** if the sleep request pin is quickly switched to wake the modem up.
+- The **vcc33Pin** is the pin that controls whether or not the modem itself is powered.  Use -1 if your modem is always receiving power or if you want to control modem power independently.  (And make sure that you really do power your modem!)
     - NOTE:  _Many_ modem chips require more power than the 0.5A that most Arduino-style boards can provide!  The power draw is particularly high during network connection and sending.  Some chips require up to 2.5A.  _Know your modem chip's specs!_  If it requires more power than your main control board can provide, ensure that the modem has an alternate battery connection or power source!
+    - ALSO NOTE:  Generally speaking, do **NOT** use the same power pin for your modem as your sensors.  In nearly all cases, you will want your modem to be powered when your other sensors are not.
 - The **modemStatusPin** is the pin that indicates whether the modem is turned on and it is clear to send data.  If you use -1, the modem is assumed to always be ready.
 - The **modemSleepRqPin** is the _pin_ used to put the modem to sleep or to wake it up.
-- The **ModemSleepType** controls _how the modemSleepRqPin is used_ to put the modem to sleep between readings.
-    - Use _"modem_sleep_held"_ if the SleepRq pin is held HIGH to keep the modem awake, as with a Sodaq GPRSBee rev6.
-    - Use _"modem_sleep_pulsed"_ if the SleepRq pin is pulsed high and then low to wake the modem up, as with an Adafruit Fona or Sodaq GPRSBee rev4.
-    - Use _"modem_sleep_reverse"_ if the SleepRq pin is held LOW to keep the modem awake, as with all XBees.
-    - Use *"modem_always_on"* if you do not want the library to control the modem power and sleep.
-- Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.
+- The last argument is whether the sleep request pin is set to a HIGH or LOW value.
+
+With the modem, client, and on-off all set up, there are two different constructors for the "loggerModem", depending on whether the modem is cellular or WiFi:
+```cpp
+// Create the loggerModem instance
+// A "loggerModem" is a combination of a TinyGSM Modem, a Client, and an on/off method
+loggerModem modem(tinyModem, tinyClient, modemOnOff, apn);  // for cellular modems
+// loggerModem modem(tinyModem, tinyClient, modemOnOff, wifiId, wifiPwd);  // for WiFi modems
+```
 
 Once the modem has been set up, it has all the functions of sensor object.  These additional functions are available:
 
-- **connectInternet()** - Connects to the internet via WiFi or cellular network.  Returns true if connection is successful.
+- **connectInternet(uint32_t waitTime_ms = 50000L)** - Connects to the internet via WiFi or cellular network.  Returns true if connection is successful.  Decrease the wait time to save power.
 - **openTCP(const char host, uint16_t port)** - Makes a TCP connection to a host URL and port.  (The most common port for public URLs is "80"; if you don't know the port, try this first.)  Returns 1 if successful.
 - **openTCP(IPAddress ip, uint16_t port)** - Makes a TCP connection to a host ip address and port.  Returns 1 if successful.
 - **closeTCP()** - Breaks the TCP connection.
@@ -447,7 +468,31 @@ Variable *modemSinalPct = Modem_SignalPercent(&modem, "UUID", "customVarCode"); 
 
 The major difference between a "modem" sensor and any other sensor is the power-up method.  The normal ```powerUp()``` and ```powerDown()``` functions used by every other sensor do not work, the modem will only go on with the ```modemPowerUp()``` function and off with the ```modemPowerDown()``` function.  This special functionality is in place because it is assumed that you will want the modem to be on to connect to the internet and send out data, even after the power has been cut to other sensors.
 
-Special note for Sodaq GPRSBee modems: To start the modem you will need to power the logger board off, connect the battery to the logger board, and finally attach the modem to the logger board.  Then you may power the board and run your sketch. We have found that attaching a GPRSBee modem to power in a different sequence results in the modem reporting zero signal strength.
+
+#### <a name="SpecificModems"></a> Some special notes for specific modems:
+
+-  **Sodaq GPRSBee:**
+    - These are SIM800 based boards.
+    - The Sodaq GPRSBee rev6 uses heldOnOff with the pin held high.
+    - The Sodaq GPRSBee rev4 uses a low pulsedOnOff.
+    - To start the modem you will need to power the logger board off, connect the battery to the logger board, and finally attach the modem to the logger board.  Then you may power the board and run your sketch. We have found that attaching a GPRSBee modem to power in a different sequence results in the modem reporting zero signal strength.
+- **Sodaq 3GBee:**
+    - These are u-blox based boards (SARA U201).
+    - They use heldOnOff with the pin held high.
+    - They do not have a pin to indicate status.
+- **Digi XBee's:**
+    - This library does _NOT_ support the ZigBee, 900mHZ, or any other radio-based XBee's.  It is for the cellular and WiFi Bee's only.
+    - You must set up your XBee to utilize sleep mode.  The easiest way to set them up is to connect them to a computer via a UART dock and use Digi's free [XCTU](https://www.digi.com/products/xbee-rf-solutions/xctu-software/xctu) program.  
+        - In "I/O Settings" -> "D8" select "Sleep Request [1]"  (This is the default.)
+        - In "Sleep Commands" -> "Sleep Mode" select "Pin Sleep [1]"
+        - For further power savings on cellular boards, in "Network" -> "Device Options" unset bit 1 to disable remote manager.  Set bit 3 to enable LTE PSM (Power Saving Mode) for LTE-M boards.
+        - For further power savings on WiFi boards, in "Sleep Commands" -> "Sleep Options" unset bit 6 and set bit 9 for disconnected deep sleep.  (That is, put in a value of 200.)
+    - Once they have been set up, all Digi XBee's uses heldOnOff with the pin held low.
+    - The 3G Bee and the LTE-M Bee are based on u-blox chips (SARA U201 and SARA R410M) and can be used as such in bypass mode.  There's no particular advantage to this, though.
+- **Adafruit Fona:**
+    - The 2G Fona is based on a SIM800 and uses a high pulse to turn on and off.
+    - The 3G Fona is not currently supported.
+
 
 
 ### <a name="DIYlogger"></a>Additional Functions Available for a LoggerEnviroDIY Object:
@@ -1035,7 +1080,12 @@ The two available variables are:  (UUID and customVarCode are optional; UUID mus
 Variable *acculevelPress = new KellerAcculevel_Pressure(&acculevel, "UUID", "customVarCode");  // vented & barometric pressure corrected water pressure in millibar
 Variable *acculevelTemp = new KellerAcculevel_Temp(&acculevel, "UUID", "customVarCode");  // water temperature in °C
 Variable *acculevelHeight = new KellerAcculevel_Height(&acculevel, "UUID", "customVarCode");  // water height above the sensor in meters
+```
 
+In addition to the constructors for the sensor and variable, you must remember to "begin" your stream instance within the main setup function.  The baud rate must be set to 9600 for all Keller sensors.
+
+```cpp
+modbusSerial.begin(9600);
 ```
 _____
 
@@ -1243,6 +1293,12 @@ Variable *y4000BGA = new YosemitechY4000_BGA(&y4000, "UUID", "customVarCode");  
 //  Resolution is 0.01 µg/L / 0.01 RFU
 //  Accuracy is ±  0.04ug/L PC
 //  Range is 0 to 100 µg/L or 0 to 100 RFU
+```
+
+In addition to the constructors for the sensor and variable, you must remember to "begin" your stream instance within the main setup function.  The baud rate must be set to 9600 for all Yosemitech sensors.
+
+```cpp
+modbusSerial.begin(9600);
 ```
 _____
 

@@ -78,7 +78,7 @@ ProcessorStats mayfly(MFVersion) ;
  // Set the serial port for the modem - software serial can also be used.
 HardwareSerial &ModemSerial = Serial1;
 
-// Create a variable the the modem baud rate - this will be used tin the begin function for the port
+// Create a variable for the modem baud rate - this will be used in the begin function for the port
 #if defined(TINY_GSM_MODEM_XBEE)
 const long ModemBaud = 9600;  // Default for XBee is 9600, I've sped mine up to 57600
 #elif defined(TINY_GSM_MODEM_ESP8266)
@@ -89,10 +89,10 @@ const long ModemBaud = 9600;  // SARA-U201 default seems to be 9600
 const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble making it fast (19200 works)
 #endif
 
-// Create a TinyGSM modem to run on that serial port and return a pointer to it
+// Create a new TinyGSM modem to run on that serial port and return a pointer to it
 TinyGsm *tinyModem = new TinyGsm(ModemSerial);
 
-// Now create a TCP client on that modem and return a pointer to it
+// Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 // Describe the physical pin connection of your modem to your board

@@ -76,13 +76,13 @@ ProcessorStats mayfly(MFVersion) ;
  // Set the serial port for the modem - software serial can also be used.
 HardwareSerial &ModemSerial = Serial1;
 
-// Create a variable the the modem baud rate - this will be used tin the begin function for the port
+// Create a variable for the modem baud rate - this will be used in the begin function for the port
 const long ModemBaud = 9600;
 
-// Create a TinyGSM modem to run on that serial port and return a pointer to it
+// Create a new TinyGSM modem to run on that serial port and return a pointer to it
 TinyGsm *tinyModem = new TinyGsm(ModemSerial);
 
-// Now create a TCP client on that modem and return a pointer to it
+// Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 // Describe the physical pin connection of your modem to your board
