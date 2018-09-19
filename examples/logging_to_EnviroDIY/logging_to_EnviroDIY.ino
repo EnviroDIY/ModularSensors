@@ -79,6 +79,11 @@ const long ModemBaud = 9600;
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
 TinyGsm *tinyModem = new TinyGsm(ModemSerial);
 
+// Use this if you want to spy on modem communication
+// #include <StreamDebugger.h>
+// StreamDebugger modemDebugger(Serial1, Serial);
+// TinyGsm *tinyModem = new TinyGsm(modemDebugger);
+
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
