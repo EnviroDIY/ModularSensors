@@ -31,19 +31,16 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 
 // ==========================================================================
-//    Basic Logger Settings
+//    Data Logger Settings
 // ==========================================================================
 // The name of this file
 const char *sketchName = "logging_to_EnviroDIY.ino";
-
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 5;
 // Your logger's timezone.
 const int8_t timeZone = -5;
-// Create a new logger instance
-LoggerEnviroDIY EnviroDIYLogger;
 
 
 // ==========================================================================
@@ -51,7 +48,7 @@ LoggerEnviroDIY EnviroDIYLogger;
 // ==========================================================================
 #include <ProcessorStats.h>
 
-const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
 const int8_t greenLED = 8;  // Pin for the green LED (-1 if unconnected)
 const int8_t redLED = 9;  // Pin for the red LED (-1 if unconnected)
 const int8_t buttonPin = 21;  // Pin for a button to use to enter debugging mode (-1 if unconnected)
@@ -85,7 +82,7 @@ const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or of
 ModemSleepType ModemSleepMode = modem_always_on;  // How the modem is put to sleep
 
 #elif defined(TINY_GSM_MODEM_UBLOX)
-const long ModemBaud = 9600;
+const long ModemBaud = 9600;  // SARA-U201 default seems to be 9600
 const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
@@ -248,9 +245,17 @@ ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, Volt_ADS1115Address, Volt
 // Neither hardware serial nor AltSoftSerial require any modifications to
 // deal with interrupt conflicts.
 
-#include <SoftwareSerial_ExtInts.h>  // for the stream communication
 const int SonarData = 11;     // data receive pin
+
+#include <SoftwareSerial_ExtInts.h>  // for the stream communication
 SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
+
+// #include <NeoSWSerial.h>  // for the stream communication
+// NeoSWSerial sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
+// void NeoSWSISR()
+// {
+//   NeoSWSerial::rxISR( *portInputRegister( digitalPinToPort( SonarData ) ) );
+// }
 
 #include <MaxBotixSonar.h>
 const int8_t SonarPower = 22;  // Excite (power) pin (-1 if unconnected)
@@ -279,8 +284,8 @@ MaximDS18 ds18_2(OneWireAddress2, OneWirePower, OneWireBus);
 MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
 MaximDS18 ds18_4(OneWireAddress4, OneWirePower, OneWireBus);
 MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
-// Create and return the Maxim DS18 sensor object (use this form for a single sensor on bus with an unknow address)
-// MaximDS18 ds18_5(OneWirePower, OneWireBus);
+// Create and return the Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
+// MaximDS18 ds18_u(OneWirePower, OneWireBus);
 
 
 // ==========================================================================
@@ -446,6 +451,8 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
+// Create pointers for all of the variables from the sensors
+// at the same time putting them into an array
 Variable *variableList[] = {
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
     new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -475,6 +482,7 @@ Variable *variableList[] = {
     new MaximDS18_Temp(&ds18_3, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_4, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_5, "12345678-abcd-1234-efgh-1234567890ab"),
+    // new MaximDS18_Temp(&ds18_u, "12345678-abcd-1234-efgh-1234567890ab"),
     new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-efgh-1234567890ab"),
     new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-efgh-1234567890ab"),
     new MPL115A2_Temp(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -519,7 +527,12 @@ Variable *variableList[] = {
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     // new YOUR_variableName_HERE(&)
 };
+// Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
+// Create the VariableArray object
+VariableArray varArray(variableCount, variableList);
+// Create a new logger instance
+LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
@@ -567,7 +580,10 @@ void setup()
     sonarSerial.begin(9600);
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
-    enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+        enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+    #endif
+    #if defined NeoSWSerial_h
+        enableInterrupt(SonarData, NeoSWSISR, CHANGE);
     #endif
 
     // Set up pins for the LED's
@@ -588,11 +604,6 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
-    // Initialize the logger
-    EnviroDIYLogger.init(sdCardPin, wakePin, variableCount, variableList,
-                loggingInterval, LoggerID);
-    EnviroDIYLogger.setAlertPin(greenLED);
-
     // Setup the logger modem
     #if defined(TINY_GSM_MODEM_ESP8266)
         modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, wifiId, wifiPwd);
@@ -603,33 +614,17 @@ void setup()
         modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
     #endif
 
-    // Attach the modem to the logger
-    EnviroDIYLogger.attachModem(&modem);
+    // Attach the modem and information pins to the logger
+    EnviroDIYLogger.attachModem(modem);
+    EnviroDIYLogger.setAlertPin(greenLED);
+    EnviroDIYLogger.setTestingModePin(buttonPin);
 
     // Enter the tokens for the connection with EnviroDIY
     EnviroDIYLogger.setToken(registrationToken);
     EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
 
-    // Set up the connection with DreamHost
-    #ifdef DreamHostPortalRX
-        EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
-    #endif
-
     // Begin the logger
     EnviroDIYLogger.begin();
-
-    // Hold up for 10-seconds to allow immediate entry into sensor testing mode
-    // EnviroDIYLogger.checkForTestingMode(buttonPin);
-
-    //  Set up an interrupt on a pin to enter sensor testing mode at any time
-    pinMode(buttonPin, INPUT_PULLUP);
-    enableInterrupt(buttonPin, Logger::testingISR, CHANGE);
-    Serial.print(F("Push button on pin "));
-    Serial.print(buttonPin);
-    Serial.println(F(" at any time to enter sensor testing mode."));
-
-    // Blink the LEDs really fast to show start-up is done
-    greenredflash(6, 25);
 }
 
 

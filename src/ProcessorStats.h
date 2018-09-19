@@ -61,11 +61,11 @@ class ProcessorStats_Batt : public Variable
 {
 public:
     ProcessorStats_Batt(Sensor *parentSense,
-                        String UUID = "", String customVarCode = "")
+                        const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, PROCESSOR_BATTERY_VAR_NUM,
-                 F("batteryVoltage"), F("Volt"),
+                 "batteryVoltage", "volt",
                  PROCESSOR_BATTERY_RESOLUTION,
-                 F("Battery"), UUID, customVarCode)
+                 "Battery", UUID, customVarCode)
     {}
 };
 
@@ -75,11 +75,11 @@ class ProcessorStats_FreeRam : public Variable
 {
 public:
     ProcessorStats_FreeRam(Sensor *parentSense,
-                           String UUID = "", String customVarCode = "")
+                           const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, PROCESSOR_RAM_VAR_NUM,
-                 F("Free SRAM"), F("Bit"),
+                 "Free SRAM", "Bit",
                  PROCESSOR_RAM_RESOLUTION,
-                 F("FreeRam"), UUID, customVarCode)
+                 "FreeRam", UUID, customVarCode)
     {}
 };
 

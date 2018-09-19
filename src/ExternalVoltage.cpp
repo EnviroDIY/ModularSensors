@@ -40,7 +40,7 @@
 // The constructor - need the power pin the data pin, and gain if non standard
 ExternalVoltage::ExternalVoltage(int8_t powerPin, int8_t dataPin, float gain,
                                  uint8_t i2cAddress, uint8_t measurementsToAverage)
-    : Sensor(F("ExternalVoltage"), EXT_VOLT_NUM_VARIABLES,
+    : Sensor("ExternalVoltage", EXT_VOLT_NUM_VARIABLES,
              EXT_VOLT_WARM_UP_TIME_MS, EXT_VOLT_STABILIZATION_TIME_MS, EXT_VOLT_MEASUREMENT_TIME_MS,
              powerPin, dataPin, measurementsToAverage)
 {
@@ -53,7 +53,7 @@ String ExternalVoltage::getSensorLocation(void)
 {
     String sensorLocation = F("ADS1115_0x");
     sensorLocation += String(_i2cAddress, HEX);
-     sensorLocation += F("_Pin");
+    sensorLocation += F("_Pin");
     sensorLocation += String(_dataPin);
     return sensorLocation;
 }

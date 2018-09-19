@@ -25,13 +25,14 @@
 class LoggerEnviroDIY : public Logger
 {
 public:
-
-    // need a constructor to initially not have an modem attached
-    LoggerEnviroDIY();
+    // Constructor
+    LoggerEnviroDIY(const char *loggerID, uint16_t loggingIntervalMinutes,
+                    int8_t SDCardPin, int8_t mcuWakePin,
+                    VariableArray *inputArray);
 
     // Adds a loggerModem objct to the logger
     // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
-    void attachModem(loggerModem *modem);
+    void attachModem(loggerModem& modem);
 
     // Adds the site registration token
     void setToken(const char *registrationToken);
@@ -40,19 +41,23 @@ public:
     void setSamplingFeatureUUID(const char *samplingFeature);
 
     // This adds extra data to the datafile header
-    String generateFileHeader(void);
+    String generateFileHeader(void) override;
+    // This prints a header onto a stream - this removes need to pass around
+    // very long string objects which can crash the logger
+    void streamFileHeader(Stream *stream) override;
 
     // This generates a properly formatted JSON for EnviroDIY
     String generateSensorDataJSON(void);
+    void streamSensorDataJSON(Stream *stream);
 
-    // This generates a fully structured POST request for EnviroDIY
-    String generateEnviroDIYPostRequest(String enviroDIYjson);
-    String generateEnviroDIYPostRequest(void);
+    // // This generates a fully structured POST request for EnviroDIY
+    // String generateEnviroDIYPostRequest(String enviroDIYjson);
+    // String generateEnviroDIYPostRequest(void);
 
     // This prints a fully structured post request for EnviroDIY to the
     // specified stream using the specified json.
     // This may be necessary to work around very long strings for the post request.
-    void streamEnviroDIYRequest(Stream *stream, String enviroDIYjson);
+    void streamEnviroDIYRequest(Stream *stream, String& enviroDIYjson);
     // This prints a fully structured post request for EnviroDIY to the
     // specified stream with the default json.
     void streamEnviroDIYRequest(Stream *stream);
@@ -61,7 +66,7 @@ public:
     // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
     // over that connection.
     // The return is the http status code of the response.
-    int postDataEnviroDIY(String enviroDIYjson = "");
+    int postDataEnviroDIY(String& enviroDIYjson = LOGGER_EMPTY);
 
     // ===================================================================== //
     // Convience functions to call several of the above functions
@@ -80,7 +85,7 @@ public:
 
     // The internal modem instance
     bool _modemAttached;
-    loggerModem *_logModem;
+    loggerModem _logModem;
 
 
 private:

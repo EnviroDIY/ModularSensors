@@ -32,7 +32,8 @@ public:
     ModemOnOff();
 
     // Initializes the instance
-    virtual void init(int vcc33Pin, int modemSleepRqPin, int modemStatusPin);
+    virtual void init(int vcc33Pin, int modemSleepRqPin, int modemStatusPin,
+                      bool isHighWhenOn = true);
 
     virtual bool isOn(void);
     virtual bool on(void) = 0;
@@ -42,6 +43,8 @@ protected:
     int8_t _vcc33Pin;
     int8_t _modemSleepRqPin;
     int8_t _modemStatusPin;
+    bool _isNowOn;
+    bool _isHighWhenOn;
 
     void powerOn(void);
     void powerOff(void);
@@ -58,6 +61,7 @@ protected:
 * ========================================================================= */
 
 // Turns the modem on and off by pulsing the onoff/DTR/Key pin on for 2 seconds
+// "On" can either be a high or low pulse
 class pulsedOnOff : public ModemOnOff
 {
 public:
@@ -72,32 +76,16 @@ private:
 
 /* ===========================================================================
 * Functions for the held on-off method.
-* This turns the modem on by setting the onoff/DTR/Key pin high and off by
-* setting it low.
-* This is used by the Sodaq GPRSBee v0.6.
+* This turns the modem on by setting and holding the onoff/DTR/Key pin to
+* either high or low.
+* A "high" on is used by the Sodaq GPRSBee v0.6 and Sodaq 3GBee.
+* A "low" on is used by the all Digi XBee's.
 * ========================================================================= */
 
 // Turns the modem on by setting the onoff/DTR/Key high and off by setting it low
 class heldOnOff : public ModemOnOff
 {
 public:
-    bool on(void) override;
-    bool off(void) override;
-};
-
-
-/* ===========================================================================
-* Functions for the reverse on-off method.
-* This turns the modem on by setting the onoff/DTR/Key pin LOW and off by
-* setting it HIGH.
-* This is used by the XBee's
-* ========================================================================= */
-
-// Turns the modem on by setting the onoff/DTR/Key LOW and off by setting it HIGH
-class reverseOnOff : public ModemOnOff
-{
-public:
-    bool isOn(void) override;
     bool on(void) override;
     bool off(void) override;
 };

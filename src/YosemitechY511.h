@@ -52,13 +52,13 @@ public:
     YosemitechY511(byte modbusAddress, Stream* stream, int8_t powerPin,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
-                        Y511, F("YosemitechY511"), Y511_NUM_VARIABLES,
+                        Y511, "YosemitechY511", Y511_NUM_VARIABLES,
                         Y511_WARM_UP_TIME_MS, Y511_STABILIZATION_TIME_MS, Y511_MEASUREMENT_TIME_MS)
     {}
     YosemitechY511(byte modbusAddress, Stream& stream, int8_t powerPin,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : YosemitechParent(modbusAddress, stream,powerPin,  enablePin, measurementsToAverage,
-                        Y511, F("YosemitechY511"), Y511_NUM_VARIABLES,
+                        Y511, "YosemitechY511", Y511_NUM_VARIABLES,
                         Y511_WARM_UP_TIME_MS, Y511_STABILIZATION_TIME_MS, Y511_MEASUREMENT_TIME_MS)
     {}
 };
@@ -68,11 +68,11 @@ public:
 class YosemitechY511_Turbidity : public Variable
 {
 public:
-    YosemitechY511_Turbidity(Sensor *parentSense, String UUID = "", String customVarCode = "")
+    YosemitechY511_Turbidity(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y511_TURB_VAR_NUM,
-                F("turbidity"), F("nephelometricTurbidityUnit"),
+                "turbidity", "nephelometricTurbidityUnit",
                 Y511_TURB_RESOLUTION,
-                F("Y511Turbidity"), UUID, customVarCode)
+                "Y511Turbidity", UUID, customVarCode)
     {}
 };
 
@@ -81,11 +81,11 @@ public:
 class YosemitechY511_Temp : public Variable
 {
 public:
-    YosemitechY511_Temp(Sensor *parentSense, String UUID = "", String customVarCode = "")
+    YosemitechY511_Temp(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, Y511_TEMP_VAR_NUM,
-                F("temperature"), F("degreeCelsius"),
+                "temperature", "degreeCelsius",
                 Y511_TEMP_RESOLUTION,
-                F("Y511temp"), UUID, customVarCode)
+                "Y511temp", UUID, customVarCode)
     {}
 };
 

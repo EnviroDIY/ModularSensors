@@ -15,7 +15,7 @@
 
 
 MaxBotixSonar::MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin, uint8_t measurementsToAverage)
-    : Sensor(F("MaxBotixMaxSonar"), HRXL_NUM_VARIABLES,
+    : Sensor("MaxBotixMaxSonar", HRXL_NUM_VARIABLES,
              HRXL_WARM_UP_TIME_MS, HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage)
 {
@@ -23,7 +23,7 @@ MaxBotixSonar::MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin,
     _stream = stream;
 }
 MaxBotixSonar::MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin, uint8_t measurementsToAverage)
-    : Sensor(F("MaxBotixMaxSonar"), HRXL_NUM_VARIABLES,
+    : Sensor("MaxBotixMaxSonar", HRXL_NUM_VARIABLES,
              HRXL_WARM_UP_TIME_MS, HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage)
 {
@@ -44,7 +44,7 @@ String MaxBotixSonar::getSensorLocation(void)
 bool MaxBotixSonar::setup(void)
 {
     // Set up the trigger, if applicable
-    if(_triggerPin > 0)
+    if(_triggerPin >= 0)
     {
         pinMode(_triggerPin, OUTPUT);
         digitalWrite(_triggerPin, LOW);
@@ -76,6 +76,9 @@ bool MaxBotixSonar::wake(void)
     // RoHS 1.8b090  0713
     // TempI
 
+    // NOTE ALSO:  Depending on what type of serial stream you are using, there
+    // may also be a bunch of junk in the buffer that this will clear out.
+
     MS_DBG(F("Parsing Header Lines from MaxBotix on "), getSensorLocation(), '\n');
     for(int i = 0; i < 6; i++)
     {
@@ -93,6 +96,15 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
     int rangeAttempts = 0;
     int result = -9999;
 
+    // Clear anything out of the stream buffer
+    int junkChars = _stream->available();
+    if (junkChars)
+    {
+        MS_DBG(F("Dumping "), junkChars, " characters from MaxBotix stream buffer\n");
+        for (uint8_t i = 0; i < junkChars; i++)
+        _stream->read();
+    }
+
     if (_millisMeasurementRequested > 0)
     {
         MS_DBG(F("Getting readings from MaxBotix on "), getSensorLocation(), '\n');
@@ -104,7 +116,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
              // for each "single measurement" until a valid value is returned
              // and the measurement time is <166ms, we'll actually activate
              // the trigger here.
-            if(_triggerPin > 0)
+            if(_triggerPin >= 0)
             {
                 MS_DBG(F("Triggering Sonar with "), _triggerPin, '\n');
                 digitalWrite(_triggerPin, HIGH);
