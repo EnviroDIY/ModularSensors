@@ -49,8 +49,8 @@ const int8_t wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
 const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
 
 // Create and return the processor "sensor"
-const char *MFVersion = "v0.5";
-ProcessorStats mayfly(MFVersion) ;
+const char *MFVersion = "v0.5b";
+ProcessorStats mayfly(MFVersion);
 
 
 // ==========================================================================
@@ -174,6 +174,16 @@ ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, Volt_ADS1115Address, Volt
 
 
 // ==========================================================================
+//    Freescale Semiconductor MPL115A2 Barometer
+// ==========================================================================
+#include <FreescaleMPL115A2.h>
+// const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const uint8_t MPL115A2ReadingsToAvg = 1;
+// Create and return the MPL115A2 barometer sensor object
+MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
+
+
+// ==========================================================================
 //    Maxbotix HRXL Ultrasonic Range Finder
 // ==========================================================================
 
@@ -228,7 +238,7 @@ MaximDS18 ds18_2(OneWireAddress2, OneWirePower, OneWireBus);
 MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
 MaximDS18 ds18_4(OneWireAddress4, OneWirePower, OneWireBus);
 MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
-// Create and return the Maxim DS18 sensor object (use this form for a single sensor on bus with an unknow address)
+// Create and return the Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
 // MaximDS18 ds18_5(OneWirePower, OneWireBus);
 
 
@@ -242,16 +252,6 @@ const int MS5803maxPressure = 14;  // The maximum pressure measurable by the spe
 const uint8_t MS5803ReadingsToAvg = 1;
 // Create and return the MeaSpec MS5803 pressure and temperature sensor object
 MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803ReadingsToAvg);
-
-
-// ==========================================================================
-//    Freescale Semiconductor MPL115A2 Barometer
-// ==========================================================================
-#include <FreescaleMPL115A2.h>
-// const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-const uint8_t MPL115A2ReadingsToAvg = 1;
-// Create and return the MPL115A2 barometer sensor object
-MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 
 
 // ==========================================================================

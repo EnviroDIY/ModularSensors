@@ -52,7 +52,7 @@ const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be d
 // Create and return the processor "sensor"
 const char *MFVersion = "v0.5b";
 ProcessorStats mayfly(MFVersion);
-// Create the battery voltage and free RAM variable objects for the Y504 and return variable-type pointers to them
+// Create the battery voltage and free RAM variable objects for the processor and return variable-type pointers to them
 Variable *mayflyBatt = new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *mayflyRAM = new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
 
@@ -124,7 +124,7 @@ Variable *modemSinalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef
 #include <MaximDS3231.h>
 // Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
-// Create the temperature variable object for the DS3231
+// Create the temperature variable object for the DS3231 and return a variable-type pointer to it
 Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab");
 
 
@@ -141,7 +141,7 @@ byte y504modbusAddress = 0x04;  // The modbus address of the Y504
 const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y504NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
-// Create and return the Yosemitech Y504 sensor object
+// Create and return the Yosemitech Y504 dissolved oxygen sensor object
 YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePin, y504NumberReadings);
 // Create the dissolved oxygen percent, dissolved oxygen concentration, and
 // temperature variable objects for the Y504 and return variable-type

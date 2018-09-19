@@ -51,7 +51,7 @@ const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be d
 
 // Create and return the processor "sensor"
 const char *MFVersion = "v0.5b";
-ProcessorStats mayfly(MFVersion) ;
+ProcessorStats mayfly(MFVersion);
 // Create the battery voltage and free RAM variable objects for the Y504 and return variable-type pointers to them
 Variable *mayflyBatt = new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *mayflyRAM = new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
@@ -155,7 +155,7 @@ const int8_t OneWireBus = 4;  // Pin attached to the OneWire Bus (-1 if unconnec
 const int8_t OneWirePower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // Create and return the Maxim DS18 sensor object (use this form for a known address)
 // MaximDS18 ds18_1(OneWireAddress1, OneWirePower, OneWireBus);
-// Create and return the Maxim DS18 sensor object (use this form for a single sensor on bus with an unknow address)
+// Create and return the Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
 MaximDS18 ds18_u(OneWirePower, OneWireBus);
 // Create the temperature variable object for the DS18 and return a variable-type pointer to it
 Variable *ds18Temp = new MaximDS18_Temp(&ds18_u, "12345678-abcd-1234-efgh-1234567890ab");

@@ -79,7 +79,12 @@ HardwareSerial &ModemSerial = Serial1;
 const long ModemBaud = 9600;
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(ModemSerial);
+// TinyGsm *tinyModem = new TinyGsm(ModemSerial);
+
+// Use this if you want to spy on modem communication
+#include <StreamDebugger.h>
+StreamDebugger modemDebugger(Serial1, Serial);
+TinyGsm *tinyModem = new TinyGsm(modemDebugger);
 
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
@@ -233,6 +238,16 @@ ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, Volt_ADS1115Address, Volt
 
 
 // ==========================================================================
+//    Freescale Semiconductor MPL115A2 Barometer
+// ==========================================================================
+#include <FreescaleMPL115A2.h>
+// const int8_t I2CPower = -1;  // Pin to switch power on and off (-1 if unconnected)
+const uint8_t MPL115A2ReadingsToAvg = 1;
+// Create and return the MPL115A2 barometer sensor object
+MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
+
+
+// ==========================================================================
 //    Maxbotix HRXL Ultrasonic Range Finder
 // ==========================================================================
 
@@ -292,16 +307,6 @@ const int MS5803maxPressure = 14;  // The maximum pressure measurable by the spe
 const uint8_t MS5803ReadingsToAvg = 1;
 // Create and return the MeaSpec MS5803 pressure and temperature sensor object
 MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803ReadingsToAvg);
-
-
-// ==========================================================================
-//    Freescale Semiconductor MPL115A2 Barometer
-// ==========================================================================
-#include <FreescaleMPL115A2.h>
-// const int8_t I2CPower = -1;  // Pin to switch power on and off (-1 if unconnected)
-const uint8_t MPL115A2ReadingsToAvg = 1;
-// Create and return the MPL115A2 barometer sensor object
-MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 
 
 // ==========================================================================
@@ -598,7 +603,7 @@ void setup()
     EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Begin the logger
-    EnviroDIYLogger.begin();
+    EnviroDIYLogger.beginAndSync();
 }
 
 
@@ -608,5 +613,5 @@ void setup()
 void loop()
 {
     // Log the data
-    EnviroDIYLogger.log();
+    EnviroDIYLogger.logAndSend();
 }

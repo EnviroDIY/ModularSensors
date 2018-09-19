@@ -26,6 +26,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <LoggerDreamHost.h>
 
+
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
@@ -55,7 +56,7 @@ const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be d
 
 // Create and return the processor "sensor"
 const char *MFVersion = "v0.5b";
-ProcessorStats mayfly(MFVersion) ;
+ProcessorStats mayfly(MFVersion);
 
 
 // ==========================================================================
@@ -95,7 +96,7 @@ const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status)
 ModemOnOff *modemOnOff = new heldOnOff(modemVCCPin, modemSleepRqPin, modemStatusPin, HIGH);
 
 // And we still need the connection information for the network
-const char *apn = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
+const char *apn = "hologram";  // The APN for the gprs connection, unnecessary for WiFi
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and an on/off method
 loggerModem modem(tinyModem, tinyClient, modemOnOff, apn);
@@ -150,13 +151,13 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
-    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
+    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
 };
@@ -237,7 +238,7 @@ void setup()
     EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
 
     // Begin the logger
-    EnviroDIYLogger.begin();
+    EnviroDIYLogger.beginAndSync();
 }
 
 
@@ -247,5 +248,5 @@ void setup()
 void loop()
 {
     // Log the data
-    EnviroDIYLogger.log();
+    EnviroDIYLogger.logAndSend();
 }

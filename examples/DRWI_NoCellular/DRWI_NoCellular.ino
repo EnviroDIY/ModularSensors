@@ -51,7 +51,7 @@ const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be d
 
 // Create and return the processor "sensor"
 const char *MFVersion = "v0.5b";
-ProcessorStats mayfly(MFVersion) ;
+ProcessorStats mayfly(MFVersion);
 
 
 // ==========================================================================
@@ -103,13 +103,13 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
-    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh")
+    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
+    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
 };
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);

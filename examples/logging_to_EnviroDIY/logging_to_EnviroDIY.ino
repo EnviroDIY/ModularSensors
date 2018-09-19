@@ -51,7 +51,7 @@ const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be d
 
 // Create and return the processor "sensor"
 const char *MFVersion = "v0.5b";
-ProcessorStats mayfly(MFVersion) ;
+ProcessorStats mayfly(MFVersion);
 
 
 // ==========================================================================
@@ -231,6 +231,16 @@ ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, Volt_ADS1115Address, Volt
 
 
 // ==========================================================================
+//    Freescale Semiconductor MPL115A2 Barometer
+// ==========================================================================
+#include <FreescaleMPL115A2.h>
+// const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const uint8_t MPL115A2ReadingsToAvg = 1;
+// Create and return the MPL115A2 barometer sensor object
+MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
+
+
+// ==========================================================================
 //    Maxbotix HRXL Ultrasonic Range Finder
 // ==========================================================================
 
@@ -302,23 +312,13 @@ MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803Readings
 
 
 // ==========================================================================
-//    Freescale Semiconductor MPL115A2 Barometer
-// ==========================================================================
-#include <FreescaleMPL115A2.h>
-// const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-const uint8_t MPL115A2ReadingsToAvg = 1;
-// Create and return the MPL115A2 barometer sensor object
-MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
-
-
-// ==========================================================================
 //    External I2C Rain Tipping Bucket Counter
 // ==========================================================================
 #include <RainCounterI2C.h>
 const uint8_t RainCounterI2CAddress = 0x08;  // I2C Address for external tip counter
 const float depthPerTipEvent = 0.2;  // rain depth in mm per tip event
 // Create and return the Rain Counter sensor object
-RainCounterI2C tip(RainCounterI2CAddress, depthPerTipEvent);
+RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 
 
 // Set up a serial port for modbus communication - in this case, using AltSoftSerial
@@ -471,8 +471,8 @@ Variable *variableList[] = {
     new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-efgh-1234567890ab"),
     new MPL115A2_Temp(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
     new MPL115A2_Pressure(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
-    new RainCounterI2C_Tips(&tip, "12345678-abcd-1234-efgh-1234567890ab"),
-    new RainCounterI2C_Depth(&tip, "12345678-abcd-1234-efgh-1234567890ab"),
+    new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab"),
+    new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab"),
     new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
     new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
     new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -595,7 +595,7 @@ void setup()
     EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Begin the logger
-    EnviroDIYLogger.begin();
+    EnviroDIYLogger.beginAndSync();
 }
 
 
@@ -605,5 +605,5 @@ void setup()
 void loop()
 {
     // Log the data
-    EnviroDIYLogger.log();
+    EnviroDIYLogger.logAndSend();
 }

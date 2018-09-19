@@ -98,7 +98,7 @@
 
 
 
-// The main class for the Decagon Y4000
+// The main class for the Yosemitech Y4000
 class YosemitechY4000 : public YosemitechParent
 {
 public:
