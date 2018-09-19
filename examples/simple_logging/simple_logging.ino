@@ -255,6 +255,31 @@ MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 
 
 // ==========================================================================
+//    PaleoTerraRedox (Oxidation-reduction potential)
+// ==========================================================================
+#include <PaleoTerraRedox.h>
+// const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const uint8_t PaleoTerraReadingsToAvg = 1;
+//Uncomment for Legacy Software I2C
+// const int sclPin1 = 4;  //Clock pin to be used with 1st redox probe
+// const int sdaPin1 = 5;  //Data pin to be sed with 1st redox probe
+// const int sclPin2 = 6;  //Clock pin to be used with 2nd redox probe
+// const int sdaPin2 = 7;  //Data pin to be used with 2nd redox probe
+// const int sclPin3 = 10;  //Clock pin to be used with 2nd redox probe
+// const int sdaPin3 = 11;  //Data pin to be used with 2nd redox probe
+// PaleoTerraRedox redox1(I2CPower, sclPin1, sdaPin1, PaleoTerraReadingsToAvg);
+// PaleoTerraRedox redox2(I2CPower, sclPin2, sdaPin2, PaleoTerraReadingsToAvg);
+// PaleoTerraRedox redox3(I2CPower, sclPin3, sdaPin3, PaleoTerraReadingsToAvg);
+
+const int ADR1 = 0x69;  //Address 1 (For MCP3421A1)
+const int ADR2 = 0x6A;  //Address 2 (For MCP3421A2)
+const int ADR3 = 0x6B;  //Address 3 (For MCP3421A3)
+PaleoTerraRedox redox1(I2CPower, ADR1, PaleoTerraReadingsToAvg);
+PaleoTerraRedox redox2(I2CPower, ADR2, PaleoTerraReadingsToAvg);
+PaleoTerraRedox redox3(I2CPower, ADR3, PaleoTerraReadingsToAvg);
+
+
+// ==========================================================================
 //    External I2C Rain Tipping Bucket Counter
 // ==========================================================================
 #include <RainCounterI2C.h>
@@ -413,6 +438,9 @@ Variable *variableList[] = {
     new MeaSpecMS5803_Pressure(&ms5803),
     new MPL115A2_Temp(&mpl115a2),
     new MPL115A2_Pressure(&mpl115a2),
+    new PaleoTerraRedox_Volt(&redox1),
+    new PaleoTerraRedox_Volt(&redox2),
+    new PaleoTerraRedox_Volt(&redox3),
     new RainCounterI2C_Tips(&tip),
     new RainCounterI2C_Depth(&tip),
     new KellerAcculevel_Pressure(&acculevel),

@@ -41,6 +41,7 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
     - [Maxim DS18: temperature](#DS18)
     - [Maxim DS3231: real time clock](#DS3231)
     - [Measurement Specialties MS5803: pressure and temperature](#MS5803)
+    - [Paleo Terra Redox Probes: redox potential](#ptredox)
     - [Yosemitech: water quality sensors](#Yosemitech)
     - [Zebra-Tech D-Opto: dissolved oxygen](#dOpto)
     - [Processor Metadata Treated as Sensors](#Onboard)
@@ -1034,6 +1035,27 @@ The two available variables are:  (UUID and customVarCode are optional; UUID mus
 Variable *acculevelPress = new KellerAcculevel_Pressure(&acculevel, "UUID", "customVarCode");  // vented & barometric pressure corrected water pressure in millibar
 Variable *acculevelTemp = new KellerAcculevel_Temp(&acculevel, "UUID", "customVarCode");  // water temperature in °C
 Variable *acculevelHeight = new KellerAcculevel_Height(&acculevel, "UUID", "customVarCode");  // water height above the sensor in meters
+
+```
+_____
+
+### <a name="ptredox"></a>[Paleo Terra Redox Probes](https://paleoterra.nl/index.html)
+
+Paleo Terra produces sturdy probes to measure redox potential in soils, sediments and surface waters.  The probes are sold with three output options:  raw voltage, amplified voltage, and digital I2C output.  This library supports the sensors with digital I2C output.  Unfortunately, these sensors are sold with only one option for an I2C address (0x68), which conflicts with the DS3231 real time clock.  Because of this, this library uses a software I2C emulator to connect this sensor on a different set of pins than the standard SCL and SDA pins on the main processor.
+
+The sensor constructor requires a power pin, the SDA (serial data) pin number, the SCL (serial clock) pin number, and optionally a number of readings to average as input.
+
+```cpp
+#include <PaleoTerraRedox.h>
+// Create and return the Keller AccuLevel sensor object
+PaleoTerraRedox redox1(I2CPower, sclPin1, sdaPin1, PaleoTerraReadingsToAvg);
+```
+
+The one available variable is:  (UUID and customVarCode are optional; UUID must always be listed first.)
+
+```cpp
+// Create the voltage variable objects for the redox probe and return variable-type pointers to them
+Variable *ptrVoltage = new PaleoTerraRedox_Volt(&redox1, "UUID", "customVarCode");  // voltage in mV
 
 ```
 _____

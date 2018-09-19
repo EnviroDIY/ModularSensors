@@ -48,6 +48,7 @@ const int8_t SonarPower = 22;   // excite (power) pin
 
 #if defined __AVR__
 
+
 #include <SoftwareSerial_ExtInts.h>  // for the stream communication
 SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
 
