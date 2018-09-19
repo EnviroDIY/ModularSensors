@@ -19,9 +19,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // Set up connection with the "DreamHost" data portal
 #define DreamHostPortalRX "TALK TO STROUD FOR THIS VALUE"
 
-// Select your modem chip
-#define TINY_GSM_MODEM_SIM800
-
 // ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
@@ -64,16 +61,44 @@ ProcessorStats mayfly(MFVersion) ;
 // ==========================================================================
 //    Modem/Internet connection options
 // ==========================================================================
-HardwareSerial &ModemSerial = Serial1; // The serial port for the modem - software serial can also be used.
-const int8_t modemSleepRqPin = 23;  // Modem SleepRq Pin (for sleep requests) (-1 if unconnected)
-const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
+
+#define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
+
+// Include TinyGSM for the modem
+// This include must be included below the define of the modem name!
+#include <TinyGsmClient.h>
+
+ // Set the serial port for the modem - software serial can also be used.
+HardwareSerial &ModemSerial = Serial1;
+
+// Create a variable for the modem baud rate - this will be used in the begin function for the port
+const long ModemBaud = 9600;
+
+// Create a new TinyGSM modem to run on that serial port and return a pointer to it
+TinyGsm *tinyModem = new TinyGsm(ModemSerial);
+
+// Create a new TCP client on that modem and return a pointer to it
+TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
+
+// Describe the physical pin connection of your modem to your board
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
-ModemSleepType ModemSleepMode = modem_sleep_held;  // How the modem is put to sleep
-const long ModemBaud = 9600;  // Modem baud rate
+const int8_t modemSleepRqPin = 23;  // Modem Sleep Request Pin (-1 if unconnected)
+const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
+
+// And create a pointer to the method to be used to turn the modem on and off
+// The on/off method needs the pins and to know whether the sleep request is a HIGH or LOW value
+// Use heldOnOff if the sleep request pin is set and kept to keep the modem awake
+// Use pulsedOnOff if the sleep request pin is quickly switched to wake the modem up
+// The Sodaq GPRSBee rev6 uses heldOnOff with the pin held high
+// All Digi XBee's uses heldOnOff with the pin held low
+// The Adafruit Fona and Sodaq GPRSBee rev4 use a low pulsedOnOff
+ModemOnOff *modemOnOff = new heldOnOff(modemVCCPin, modemSleepRqPin, modemStatusPin, HIGH);
+
+// And we still need the connection information for the network
 const char *apn = "apn.konekt.io";  // The APN for the gprs connection, unnecessary for WiFi
 // Create the loggerModem instance
-// A "loggerModem" is a combination of a TinyGSM Modem, a TinyGSM Client, and an on/off method
-loggerModem modem;
+// A "loggerModem" is a combination of a TinyGSM Modem, a Client, and an on/off method
+loggerModem modem(tinyModem, tinyClient, modemOnOff, apn);
 
 
 // ==========================================================================
@@ -198,9 +223,6 @@ void setup()
     Logger::setTimeZone(timeZone);
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
-
-    // Setup the logger modem
-    modem.setupModem(&ModemSerial, modemVCCPin, modemStatusPin, modemSleepRqPin, ModemSleepMode, apn);
 
     // Attach the modem and information pins to the logger
     EnviroDIYLogger.attachModem(modem);

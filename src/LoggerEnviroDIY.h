@@ -49,6 +49,7 @@ public:
     // This generates a properly formatted JSON for EnviroDIY
     String generateSensorDataJSON(void);
     void streamSensorDataJSON(Stream *stream);
+    void streamSensorDataJSON(Stream& stream);
 
     // // This generates a fully structured POST request for EnviroDIY
     // String generateEnviroDIYPostRequest(String enviroDIYjson);
@@ -58,9 +59,11 @@ public:
     // specified stream using the specified json.
     // This may be necessary to work around very long strings for the post request.
     void streamEnviroDIYRequest(Stream *stream, String& enviroDIYjson);
+    void streamEnviroDIYRequest(Stream& stream, String& enviroDIYjson);
     // This prints a fully structured post request for EnviroDIY to the
     // specified stream with the default json.
     void streamEnviroDIYRequest(Stream *stream);
+    void streamEnviroDIYRequest(Stream& stream);
 
     // This utilizes an attached modem to make a TCP connection to the
     // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
@@ -84,8 +87,10 @@ public:
     virtual void log(void) override;
 
     // The internal modem instance
-    bool _modemAttached;
-    loggerModem _logModem;
+    loggerModem *_logModem;
+    // NOTE:  The internal _logModem must be a POINTER not a reference because
+    // it is possible for no modem to be attached (and thus the pointer could
+    // be null).  It is not possible to have a null reference.
 
 
 private:

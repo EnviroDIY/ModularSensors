@@ -22,8 +22,7 @@
 class VariableArray
 {
 public:
-    // Initialization - cannot do this in constructor arduino has issues creating
-    // instances of classes with non-empty constructors
+    // Constructor
     VariableArray(int variableCount, Variable *variableList[]);
 
     // Leave the internal variable list public
