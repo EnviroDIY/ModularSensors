@@ -17,7 +17,7 @@
 
 // The constructor for software mode- need the power pin, data pin, and type of DHT
 PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin, int8_t dataPin, int8_t clockPin, uint8_t measurementsToAverage)
-    : Sensor(F("PaleoTerraRedox"), PTR_NUM_VARIABLES,
+    : Sensor("PaleoTerraRedox", PTR_NUM_VARIABLES,
              PTR_WARM_UP_TIME_MS, PTR_STABILIZATION_TIME_MS, PTR_MEASUREMENT_TIME_MS,
              powerPin, dataPin, measurementsToAverage),
     i2c_soft(dataPin, clockPin, 0)
@@ -28,7 +28,7 @@ PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin, int8_t dataPin, int8_t clockPi
 
 // The constructor for hardware mode- need the power pin, and ADR
 PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin, uint8_t ADR, uint8_t measurementsToAverage)
-    : Sensor(F("PaleoTerraRedox"), PTR_NUM_VARIABLES,
+    : Sensor("PaleoTerraRedox", PTR_NUM_VARIABLES,
              PTR_WARM_UP_TIME_MS, PTR_STABILIZATION_TIME_MS, PTR_MEASUREMENT_TIME_MS,
              powerPin, measurementsToAverage)
 {

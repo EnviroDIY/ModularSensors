@@ -64,11 +64,11 @@ class PaleoTerraRedox_Volt : public Variable
 {
 public:
     PaleoTerraRedox_Volt(Sensor *parentSense,
-                       String UUID = "", String customVarCode = "")
+                       const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, PTR_VOLT_VAR_NUM,
-               F("Voltage"), F("mV"),
+               "Voltage", "mV",
                PTR_VOLT_RESOLUTION,
-               F("PTRVoltage"), UUID, customVarCode)
+               "PTRVoltage", UUID, customVarCode)
     {}
 };
 
