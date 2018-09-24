@@ -125,6 +125,29 @@ bool loggerModem::setup(void)
     return retVal;
 }
 
+
+// The function to wake up a sensor
+bool loggerModem::wake(void)
+{
+    MS_DBG(F("Waking "), getSensorName(), F("\n"));
+
+    // For the wifi modems, the SSID and password need to be set before they
+    // can join a network.
+    // For cellular modems, network registration happens automatically.  The
+    // GPRS bearer (APN) is then set after registration.
+    if (_ssid && _tinyModem->hasWifi())
+    {
+       _tinyModem->networkConnect(_ssid, _pwd);
+    }
+
+    // Mark the time that the sensor was activated
+    _millisSensorActivated = millis();
+    // Set the status bit for sensor activation (bit 3)
+    _sensorStatus |= 0b00001000;
+    return true;
+}
+
+
 // Do NOT turn the modem on and off with the regular power up and down or
 // wake and sleep functions.
 // This is because when it is run in an array with other sensors, we will
@@ -214,7 +237,85 @@ bool loggerModem::addSingleMeasurementResult(void)
 
     return retVal;
 }
-    return true;
+
+
+// This checks to see if enough time has passed for warm-up
+// In the case of the modem, we consider it to be warmed up when it responds to
+// AT commands
+bool loggerModem::isWarmedUp(bool debug)
+{
+
+    // If the sensor doesn't have power, then it will never be warmed up,
+    // so the warm up time is essentially already passed.
+    if (!bitRead(_sensorStatus, 0))
+    {
+        if (debug) MS_DBG(getSensorName(), F(" at "),    getSensorLocation(),
+              F(" does not have power and cannot warm up!\n"));
+        // Set the status bit for warm-up completion (bit 2)
+        _sensorStatus |= 0b00000100;
+        return true;
+    }
+
+    uint32_t elapsed_since_power_on = millis() - _millisPowerOn;
+    bool isATready = _tinyModem->testAT(100);
+
+    // If the modem is now responding to AT commands, it's warmed up
+    if (isATready)
+    {
+        if (debug) MS_DBG(F("It's been "), (elapsed_since_power_on), F("ms, and "),
+              getSensorName(), F(" is now responding to AT commands!\n"));
+        // Set the status bit for warm-up completion (bit 2)
+        _sensorStatus |= 0b00000100;
+        return true;
+    }
+    // If the modem isn't responding to AT commands yet, we still need to wait
+    else
+    {
+        // Make sure the status bits for warm-up (bit 2), activation (bit 3),
+        // stability (bit 4), measurement start (bit 5), and measurement
+        // completion (bit 6) are not set
+        _sensorStatus &= 0b10000011;
+        return false;
+    }
+}
+
+
+// This checks to see if enough time has passed for stability
+// In the case of the modem, we consider it to be "stable" when it has registered
+// on the network
+bool loggerModem::isStable(bool debug)
+{
+    // If the sensor isn't awake/activated it will never stabilize,
+    // so the stabilization time is essentially already passed
+    if (!bitRead(_sensorStatus, 3))
+    {
+        if (debug) MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
+               F(" is not active and cannot stabilize!\n"));
+        // Set the status bit for stability completion (bit 4)
+        _sensorStatus |= 0b00010000;
+        return true;
+    }
+
+    uint32_t elapsed_since_wake_up = millis() - _millisSensorActivated;
+    bool isConnected = _tinyModem->isNetworkConnected();
+
+    // If the modem is registered on the network, it's "stable"
+    if (isConnected)
+    {
+        if (debug) MS_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
+               getSensorName(), F(" is now registered on the network!\n"));
+        // Set the status bit for stability completion (bit 4)
+        _sensorStatus |= 0b00010000;
+        return true;
+    }
+    // If the modem isn't registerd yet, we still need to wait
+    else
+    {
+        // Make sure the status bits for stability (bit 4), measurement
+        // start (bit 5) and measurement completion (bit 6) are not set
+        _sensorStatus &= 0b10001111;
+        return false;
+    }
 }
 
 

@@ -76,6 +76,7 @@ public:
     String getSensorLocation(void) override;
 
     virtual bool setup(void) override;
+    virtual bool wake(void) override;
 
     // Do NOT turn the modem on and off with the regular power up and down or
     // wake and sleep functions.
@@ -87,6 +88,11 @@ public:
 
     // Turns modem signal strength into a measurement
     bool addSingleMeasurementResult(void) override;
+
+protected:
+    // We override these because the modem can tell us if it's ready or not
+    bool isWarmedUp(bool debug=false) override;
+    bool isStable(bool debug=false) override;
 
 
 // ==========================================================================//

@@ -125,20 +125,20 @@ public:
     // commands.  The "waitForWarmUp()" function delays until the time passes.
     // "checkPowerOn()" checks if the power pin is currently high
     bool checkPowerOn(bool debug=false);
-    bool isWarmedUp(bool debug=false);
+    virtual bool isWarmedUp(bool debug=false);
     void waitForWarmUp(void);
 
     // The "isStable()" function checks whether or not enough time has passed
     // between the sensor being awoken/activated and being ready to output stable
     // values.  The "waitForStability()" function delays until the time passes.
-    bool isStable(bool debug=false);
+    virtual bool isStable(bool debug=false);
     void waitForStability(void);
 
     // The "isMeasurementComplete()" function checks whether or not enough time
     // has passed between when the sensor was asked to take a single measurement
     // and when that measurement should be complete.  The
     // "waitForMeasurementCompletion()" function delays until the time passes.
-    bool isMeasurementComplete(bool debug=false);
+    virtual bool isMeasurementComplete(bool debug=false);
     void waitForMeasurementCompletion(void);
 
 
