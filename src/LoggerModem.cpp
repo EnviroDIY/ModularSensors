@@ -244,6 +244,7 @@ bool loggerModem::addSingleMeasurementResult(void)
 // AT commands
 bool loggerModem::isWarmedUp(bool debug)
 {
+    MS_DBG(F("Checking if modem is ready to respond to AT commands.\n"));
 
     // If the sensor doesn't have power, then it will never be warmed up,
     // so the warm up time is essentially already passed.
@@ -285,6 +286,8 @@ bool loggerModem::isWarmedUp(bool debug)
 // on the network
 bool loggerModem::isStable(bool debug)
 {
+    MS_DBG(F("Checking if modem is registered on network.\n"));
+
     // If the sensor isn't awake/activated it will never stabilize,
     // so the stabilization time is essentially already passed
     if (!bitRead(_sensorStatus, 3))
