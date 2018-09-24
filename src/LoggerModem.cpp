@@ -15,7 +15,7 @@
 loggerModem::loggerModem(TinyGsmModem *inModem, Client *inClient, ModemOnOff *onOff,
             const char *APN)
     : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES, MODEM_WARM_UP_TIME_MS, 0, 0, -1, -1, 1),
-      _APN(APN), _lastNISTrequest(0)
+      _apn(APN), _lastNISTrequest(0)
 {
     _tinyModem = inModem;
     _tinyClient = inClient;
@@ -60,6 +60,65 @@ bool loggerModem::setup(void)
     }
     else MS_MOD_DBG(F("   ... Modem failed to turn on!\n"));
 
+    /*
+    // Set some warm-up times for specific models
+    if (_tinyModem->getModemName().indexOf("SIMCom SIM800") > 0)
+    {
+        _warmUpTime_ms = 3400;  // Time until serial port becomes active
+        _coolDownTime_ms = 3100;  // power down (gracefully) takes >3sec
+    }
+    if (_tinyModem->getModemName().indexOf("SIMCom SIM900") > 0)
+    {
+        _warmUpTime_ms = 3600;  // Time until serial port becomes active
+        _coolDownTime_ms = 1800;  // power down (gracefully) takes >1.
+    }
+    if (_tinyModem->getModemName().indexOf("SARA-U2") > 0  ||
+        _tinyModem->getModemName().indexOf("XBee® Cellular 3G") > 0)
+    {
+        _warmUpTime_ms = 6000;  // Time until system and digital pins are operational
+        _coolDownTime_ms = 6000;  // power down time is until Vint pin is reading low
+    }
+    if (_tinyModem->getModemName().indexOf("SARA-R4") > 0  ||
+        _tinyModem->getModemName().indexOf("XBee3™ Cellular LTE-M") > 0)
+    {
+        _warmUpTime_ms = 4600;  // Time until system and digital pins are operational
+        _coolDownTime_ms = 4600;  // power down time is until Vint pin is reading low
+    }
+    if (_tinyModem->getModemName().indexOf("LISA-U2") > 0)
+    {
+        _warmUpTime_ms = 3000;  // Time until system and digital pins are operational
+        _coolDownTime_ms = 2600;  // power down (gracefully) takes ~2.5sec
+    }
+    if (_tinyModem->getModemName().indexOf("Digi XBee® Cellular LTE Cat 1") > 0  ||
+        _tinyModem->getModemName().indexOf("Digi XBee3™ Cellular LTE CAT 1") > 0  ||
+        _tinyModem->getModemName().indexOf("Telit LE866") > 0)
+    {
+        _warmUpTime_ms = 25000L;  // Wait with 25s time-out for first AT response
+        _coolDownTime_ms = 10000L;  // Wait with 10s time-out for sleep
+    }
+    if (_tinyModem->getModemName().indexOf("ESP8266") > 0)
+    {
+        _warmUpTime_ms = 200;
+        _coolDownTime_ms = 200;
+        // power down ???
+    }
+    if (_tinyModem->getModemName().indexOf("Neoway M590") > 0)
+    {
+        _warmUpTime_ms = 300;  // Time until UART is active
+        _coolDownTime_ms = 5000;  // power down (gracefully) takes ~5sec
+    }
+    if (_tinyModem->getModemName().indexOf("Quectel BG96") > 0)
+    {
+        _warmUpTime_ms = 4900;  // > 4.9 sec
+        _coolDownTime_ms = 2000;  // > 2 sec
+    }
+    if (_tinyModem->getModemName().indexOf("Quectel MC60") > 0)
+    {
+        _warmUpTime_ms = 4000;  // Ready in 4-5 seconds
+        _coolDownTime_ms = 2000;  // disconnect in 2-12 seconds
+    }
+    */
+
     // Set the status bit marking that the modem has been set up (bit 1)
     _sensorStatus |= 0b00000010;
 
@@ -84,7 +143,7 @@ void loggerModem::powerDown(void)
 bool loggerModem::addSingleMeasurementResult(void)
 {
     int signalQual = 0;
-    int percent = 0;
+    int percent = -9999;
     int rssi = -9999;
 
     // Check that the modem is responding to AT commands.  If not, give up.
@@ -221,7 +280,7 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
         {
             MS_MOD_DBG("   ... Registered after ", millis() - start,
                        " milliseconds.  Connecting to GPRS...\n");
-            _tinyModem->gprsConnect(_APN, "", "");
+            _tinyModem->gprsConnect(_apn, "", "");
             MS_MOD_DBG("   ...Connected!\n");
             retVal = true;
         }
@@ -238,9 +297,11 @@ void loggerModem::disconnectInternet(void)
         _tinyModem->gprsDisconnect();
         MS_MOD_DBG(F("Disconnected from cellular network.\n"));
     }
-    else{}
-        // _tinyModem->networkDisconnect();  // Eh.. why bother?
-        // MS_MOD_DBG(F("Disconnected from WiFi network.\n"));
+    else
+    {
+        _tinyModem->networkDisconnect();
+        MS_MOD_DBG(F("Disconnected from WiFi network.\n"));
+    }
     _millisSensorActivated = 0;
 }
 
@@ -307,7 +368,8 @@ uint32_t loggerModem::getNISTTime(void)
 {
     bool connectionMade = false;
     // bail if not connected to the internet
-    if (!_tinyModem->isNetworkConnected())
+    if ( (_tinyModem->hasGPRS() && !_tinyModem->isGprsConnected()) ||
+         (_tinyModem->hasWifi() && !_tinyModem->isNetworkConnected()) )
     {
         MS_MOD_DBG(F("No internet connection, cannot connect to NIST.\n"));
         return 0;
@@ -403,7 +465,7 @@ int loggerModem::getPctFromCSQ(int csq)
     return 0;
 }
 
-// Helper to get signal percent from CSQ
+// Helper to get signal percent from RSSI
 int loggerModem::getPctFromRSSI(int rssi)
 {
     int pct = 1.6163*rssi + 182.61;

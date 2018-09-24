@@ -75,7 +75,6 @@ public:
     String getSensorName(void) override;
     String getSensorLocation(void) override;
 
-    // The modem must be setup separately!
     virtual bool setup(void) override;
 
     // Do NOT turn the modem on and off with the regular power up and down or
@@ -122,18 +121,19 @@ public:
     ModemOnOff *_modemOnOff;
 
 private:
-    const char *_APN;
-    const char *_ssid;
-    const char *_pwd;
-    uint32_t _lastNISTrequest;
-
-private:
     // Helper to get approximate RSSI from CSQ (assuming no noise)
     static int getRSSIFromCSQ(int csq);
     // Helper to get signal percent from CSQ
     static int getPctFromCSQ(int csq);
     // Helper to get signal percent from CSQ
     static int getPctFromRSSI(int rssi);
+
+private:
+    const char *_apn;
+    const char *_ssid;
+    const char *_pwd;
+    uint32_t _lastNISTrequest;
+    // uint32_t _coolDownTime_ms;
 
 };
 

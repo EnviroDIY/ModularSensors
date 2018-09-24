@@ -255,7 +255,7 @@
         {
             "name": "TinyGSM",
             "version": "https://github.com/EnviroDIY/TinyGSM.git",
-            "version_note": "=0.4.0",
+            "version_note": "=0.4.2",
             "note": "A small Arduino library for GPRS modules.",
             "authors": [
                 "Volodymyr Shymanskyy",
@@ -268,7 +268,7 @@
             "name": "YosemitechModbus",
             "library id": "2078",
             "url": "https://github.com/EnviroDIY/YosemitechModbus.git",
-            "version": "=0.2.0",
+            "version": "=0.2.1",
             "note": "Arduino library for communication with Yosemitech sensors via Modbus.",
             "authors": [
                 "Sara Damiano",
