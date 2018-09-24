@@ -145,62 +145,59 @@ bool loggerModem::addSingleMeasurementResult(void)
     int signalQual = 0;
     int percent = -9999;
     int rssi = -9999;
+    bool retVal = false;
 
-    // Check that the modem is responding to AT commands.  If not, give up.
-    MS_MOD_DBG(F("\nWaiting up to 5 seconds for modem to respond to AT commands...\n"));
-    if (_tinyModem->testAT(5000))
+    // Check if the modem is on; otherwise bail
+    if(!_modemOnOff->isOn())
     {
-        // The XBee needs to make an actual TCP connection and get some sort
-        // of response on that connection before it knows the signal quality.
-        // Connecting to the NIST daytime server, which immediately returns a
-        // 4 byte response and then closes the connection
-        if (_tinyModem->getModemName().indexOf("XBee") > 0)
-        {
-            // Connect to the network
-            // Only waiting for up to 5 seconds here for the internet!
-            if (!(_tinyModem->isNetworkConnected()))
-            {
-                MS_MOD_DBG(F("No prior internet connection, attempting to make a connection."));
-                connectInternet(5000L);
-            }
-            // Must ensure that we do not ping the daylight more than once every 4 seconds
-            // NIST clearly specifies here that this is a requirement for all software
-            /// that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi
-            while (millis() < _lastNISTrequest + 4000) {}
-            MS_MOD_DBG("Connecting to NIST daytime server to check connection strength...\n");
-            IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
-            openTCP(ip, 37);
-            _tinyClient->print(F("Hi!"));  // Need to send something before connection is made
-            delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
-            while (_tinyClient->available()) _tinyClient->read();  // Delete anything returned
-            _lastNISTrequest = millis();
-        }
-
-        // Get signal quality
-        // Non XBee's do not need to be registered or "connnected" to the
-        // network to get quality
-        // if (_tinyModem->isNetworkConnected())
-        // {
-
-            MS_MOD_DBG("Getting signal quality:\n");
-            signalQual = _tinyModem->getSignalQuality();
-
-            // Convert signal quality to RSSI, if necessary
-            if (_tinyModem->getModemName().indexOf("XBee") > 0 ||
-                _tinyModem->getModemName().indexOf("ESP8266") > 0)
-            {
-                rssi = signalQual;
-                percent = getPctFromRSSI(signalQual);
-            }
-            else
-            {
-                rssi = getRSSIFromCSQ(signalQual);
-                percent = getPctFromCSQ(signalQual);
-            }
-        // }
-        // else MS_MOD_DBG("Insufficient signal to connect to the internet!\n");
+        MS_MOD_DBG(F("Modem is off; unable to get signal quality."));
+        goto finish;
     }
-    else MS_MOD_DBG(F("\nModem does not respond to AT commands!\n"));
+
+    // Check if connected to the network; otherwise bail
+    if (!(_tinyModem->isNetworkConnected()))
+    {
+        MS_MOD_DBG(F("Modem is not connected to network; unable to get signal quality."));
+        goto finish;
+    }
+
+    // The XBee needs to make an actual TCP connection and get some sort
+    // of response on that connection before it knows the signal quality.
+    // Connecting to the NIST daytime server, which immediately returns a
+    // 4 byte response and then closes the connection
+    if (_tinyModem->getModemName().indexOf("XBee") > 0)
+    {
+        // Must ensure that we do not ping the daylight more than once every 4 seconds
+        // NIST clearly specifies here that this is a requirement for all software
+        /// that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi
+        while (millis() < _lastNISTrequest + 4000) {}
+        MS_MOD_DBG("Connecting to NIST daytime server to check connection strength...\n");
+        IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
+        openTCP(ip, 37);
+        _tinyClient->print(F("Hi!"));  // Need to send something before connection is made
+        delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
+        while (_tinyClient->available()) _tinyClient->read();  // Delete anything returned
+        _lastNISTrequest = millis();
+    }
+
+    // Get signal quality
+    MS_MOD_DBG("Getting signal quality:\n");
+    signalQual = _tinyModem->getSignalQuality();
+
+    // Convert signal quality to RSSI, if necessary
+    if (_tinyModem->getModemName().indexOf("XBee") > 0 ||
+        _tinyModem->getModemName().indexOf("ESP8266") > 0)
+    {
+        rssi = signalQual;
+        percent = getPctFromRSSI(signalQual);
+    }
+    else
+    {
+        rssi = getRSSIFromCSQ(signalQual);
+        percent = getPctFromCSQ(signalQual);
+    }
+
+    finish:
 
     MS_MOD_DBG(F("RSSI: "), rssi, F("\n"));
     MS_MOD_DBG(F("Percent signal strength: "), percent, F("\n"));
@@ -215,6 +212,8 @@ bool loggerModem::addSingleMeasurementResult(void)
     // Set the status bit for measurement completion (bit 6)
     _sensorStatus |= 0b01000000;
 
+    return retVal;
+}
     return true;
 }
 
