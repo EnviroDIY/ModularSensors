@@ -382,7 +382,10 @@ void LoggerEnviroDIY::beginAndSync(void)
     if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName, '\n');
     else PRINTOUT(F("Unable to create a file to save data to!\n"));
 
-    // Set up the sensors
+    // Turn on the modem to let it start searching for the network
+    if (_logModem != NULL) _logModem->modemPowerUp();
+
+    // Set up the sensors, this includes the modem
     PRINTOUT(F("Setting up sensors.\n"));
     _internalArray->setupSensors();
 
@@ -391,9 +394,6 @@ void LoggerEnviroDIY::beginAndSync(void)
         // Print out the modem info
         PRINTOUT(F("This logger is tied to a "));
         PRINTOUT(_logModem->getSensorName(), F(" for internet connectivity.\n"));
-
-        // Turn on the modem to let it start searching for the network
-        _logModem->modemPowerUp();
 
         // Synchronize the RTC with NIST
         PRINTOUT(F("Attempting to synchronize RTC with NIST\n"));
