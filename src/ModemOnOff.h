@@ -39,6 +39,10 @@ public:
     // Check if the modem is currently on
     virtual bool isOn(void);
 
+    // Turn the modem power on and off
+    void powerOn(void);
+    void powerOff(void);
+
     // Turn the modem on and off
     virtual bool on(void) = 0;
     virtual bool off(void) = 0;
@@ -48,11 +52,6 @@ protected:
     int8_t _modemSleepRqPin;
     int8_t _modemStatusPin;
     bool _isHighWhenOn;
-    bool _isNowOn;
-
-    // Turn the modem power on and off
-    void powerOn(void);
-    void powerOff(void);
 
 };
 

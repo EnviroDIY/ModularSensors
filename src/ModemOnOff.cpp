@@ -51,9 +51,6 @@ void ModemOnOff::begin(void)
     {
         pinMode(_modemStatusPin, INPUT_PULLUP);
     }
-
-    // Initialize assuming modem is off
-    _isNowOn = false;
 }
 
 // Function to check if the modem is currently on
@@ -67,8 +64,8 @@ bool ModemOnOff::isOn(void)
         // MS_DBG(F("Is modem on? "), status, F("\n"));
         return status;
     }
-    // No status pin. Return the "internal" status code.
-    return _isNowOn;
+    // No status pin. Return true.
+    return true;
 }
 
 // Function to supply power to the modem - sets power pin high
@@ -123,15 +120,13 @@ bool pulsedOnOff::on(void)
     if (_modemSleepRqPin < 0)
     {
         MS_DBG(F("No modem on/sleep pin assigned, assuming modem is on/awake."));
-        _isNowOn = true;
         return true;
     }
 
     // Check if it's already on before sending pulse
-    if (isOn())
+    if (_modemStatusPin >= 0 && isOn())
     {
         MS_DBG(F("Modem was already on.\n"));
-        _isNowOn = true;
         return true;
     }
     else
@@ -140,20 +135,25 @@ bool pulsedOnOff::on(void)
                _modemSleepRqPin, F(".\n"));
         pulse();
 
-        // Wait until is actually on
-        for (uint32_t start = millis(); millis() - start < 5000; )
+        // If we can't tell if we've succeeded, assume we have and exit
+        if (_modemStatusPin < 0)
+        {
+            MS_DBG(F("Assume modem now on.\n"));
+            return true;
+        }
+
+        // If there's a status pin available, wait until modem shows it's on
+        for (uint32_t start = millis(); millis() - start < 10000L; )
         {
             if (isOn())
             {
-                MS_DBG(F("Modem now on.\n"));
-                _isNowOn = true;
+                MS_DBG(F("Modem on after "), millis() - start, F("ms.\n"));
                 return true;
             }
         }
 
-        // If the modem doesn't show it's on within 5 seconds, return false
+        // If the modem doesn't show it's on within 10 seconds, return false
         MS_DBG(F("Failed to turn modem on!\n"));
-        _isNowOn = false;
         return false;
     }
 }
@@ -164,15 +164,13 @@ bool pulsedOnOff::off(void)
     if (_modemSleepRqPin < 0)
     {
         MS_DBG(F("No modem on/sleep pin assigned, assuming modem is off/asleep."));
-        _isNowOn = false;
         return true;
     }
 
     // Check if it's already off before sending pulse
-    if (!isOn())
+    if (_modemStatusPin >= 0 && !isOn())
     {
         MS_DBG(F("Modem was not ever on.\n"));
-        _isNowOn = false;
         return true;
     }
     else
@@ -181,25 +179,30 @@ bool pulsedOnOff::off(void)
                _modemSleepRqPin, F(".\n"));
         pulse();
 
-        // Wait until is off
-        for (uint32_t start = millis(); millis() - start < 500; )
+        // If we can't tell if we've succeeded, assume we have and exit
+        if (_modemStatusPin < 0)
+        {
+            MS_DBG(F("Assume modem now on.\n"));
+            return true;
+        }
+
+        // If there's a status pin available, wait until modem shows it's off
+        for (uint32_t start = millis(); millis() - start < 10000L; )
         {
             if (!isOn())
             {
-                MS_DBG(F("Modem now off.\n"));
-                _isNowOn = false;
+                MS_DBG(F("Modem off after "), millis() - start, F("ms.\n"));
                 powerOff();
                 return true;
             }
         }
 
-        // If the modem doesn't show it's off within 5 seconds, cut the power
+        // If the modem doesn't show it's off within 10 seconds, cut the power
         // anyway and return true
         MS_DBG(F("Failed to turn modem off with on/sleep pin!\n"));
         // Power down anyway
         powerOff();
-        _isNowOn = false;
-        return true;
+        return false;
     }
 }
 
@@ -246,7 +249,6 @@ bool heldOnOff::on(void)
     if (_modemSleepRqPin < 0)
     {
         MS_DBG(F("No modem on/sleep pin assigned, assuming modem is on/awake."));
-        _isNowOn = true;
         return true;
     }
 
@@ -256,20 +258,25 @@ bool heldOnOff::on(void)
            _isHighWhenOn, F(".\n"));
     digitalWrite(_modemSleepRqPin, _isHighWhenOn);
 
-    // Wait until is actually on
-    for (uint32_t start = millis(); millis() - start < 5000; )
+    // If we can't tell if we've succeeded, assume we have and exit
+    if (_modemStatusPin < 0)
+    {
+        MS_DBG(F("Assume modem now on.\n"));
+        return true;
+    }
+
+    // If there's a status pin available, wait until modem shows it's on
+    for (uint32_t start = millis(); millis() - start < 10000L; )
     {
         if (isOn())
         {
-            MS_DBG(F("Modem now on.\n"));
-            _isNowOn = true;
+            MS_DBG(F("Modem on after "), millis() - start, F("ms.\n"));
             return true;
         }
     }
 
     // If the modem doesn't show it's on within 5 seconds, return false
     MS_DBG(F("Failed to turn modem on.\n"));
-    _isNowOn = false;
     return false;
 }
 
@@ -279,7 +286,6 @@ bool heldOnOff::off(void)
     if (_modemSleepRqPin < 0)
     {
         MS_DBG(F("No modem on/sleep pin assigned, assuming modem is off/asleep."));
-        _isNowOn = false;
         return true;
     }
 
@@ -289,22 +295,27 @@ bool heldOnOff::off(void)
            !_isHighWhenOn, F(".\n"));
     digitalWrite(_modemSleepRqPin, !_isHighWhenOn);
 
-    // Wait until is off
-    for (uint32_t start = millis(); millis() - start < 500; )
+    // If we can't tell if we've succeeded, assume we have and exit
+    if (_modemStatusPin < 0)
+    {
+        MS_DBG(F("Assume modem now off.\n"));
+        return true;
+    }
+
+    // If there's a status pin available, wait until modem shows it's off
+    for (uint32_t start = millis(); millis() - start < 10000L; )
     {
         if (!isOn())
         {
-            MS_DBG(F("Modem now off.\n"));
+            MS_DBG(F("Modem off after "), millis() - start, F("ms.\n"));
             powerOff();
             return true;
         }
     }
 
-    // If the modem doesn't show it's off within 5 seconds, cut the power
-    // anyway and return true
+    // If the modem doesn't show it's off within 10 seconds, cut the power anyway
     MS_DBG(F("Failed to turn modem off.\n"));
     // Power down
     powerOff();
-    _isNowOn = false;
     return false;
 }
