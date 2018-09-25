@@ -21,7 +21,6 @@
 #define TINY_GSM_YIELD() { delay(1); }
 #include <TinyGsmCommon.h>
 
-#include "ModemOnOff.h"
 #include "SensorBase.h"
 #include "VariableBase.h"
 

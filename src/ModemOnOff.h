@@ -25,12 +25,13 @@
 * Functions for the OnOff class
 * ========================================================================= */
 
+/*
 class ModemOnOff
 {
 public:
     // Constructor
-    ModemOnOff(int8_t vcc33Pin, int8_t modemSleepRqPin, int8_t modemStatusPin,
-               bool isHighWhenOn);
+    ModemOnOff(int8_t modemSleepRqPin, bool sleepRqLevel,
+               int8_t modemStatusPin, bool statusLevel);
 
     // Begins the instance - ie, sets pin modes
     // This is the stuff that cannot happen in the constructor
@@ -39,22 +40,18 @@ public:
     // Check if the modem is currently on
     virtual bool isOn(void);
 
-    // Turn the modem power on and off
-    void powerOn(void);
-    void powerOff(void);
-
     // Turn the modem on and off
     virtual bool on(void) = 0;
     virtual bool off(void) = 0;
 
 protected:
-    int8_t _vcc33Pin;
     int8_t _modemSleepRqPin;
+    bool _sleepRqLevel;
     int8_t _modemStatusPin;
-    bool _isHighWhenOn;
+    bool _statusLevel;
 
 };
-
+*/
 
 
 /* ===========================================================================
@@ -66,17 +63,31 @@ protected:
 
 // Turns the modem on and off by pulsing the onoff/DTR/Key pin on for 2 seconds
 // "On" can either be a high or low pulse
-class pulsedOnOff : public ModemOnOff
+class pulsedOnOff
 {
 public:
-    pulsedOnOff(int8_t vcc33Pin, int8_t modemSleepRqPin, int8_t modemStatusPin,
-                bool isHighWhenOn);
-    void begin(void) override;
-    bool on(void) override;
-    bool off(void) override;
+    // Constructor
+    pulsedOnOff(int8_t modemSleepRqPin, bool sleepRqLevel, uint16_t pulseTime_ms,
+                int8_t modemStatusPin, bool statusLevel);
+
+     // Begins the instance - ie, sets pin modes
+     // This is the stuff that cannot happen in the constructor
+    static void begin(void);
+
+    // Check if the modem is currently on
+    static bool isOn(void);
+
+    // Turn the modem on and off
+    static bool on(void);
+    static bool off(void);
 
 private:
-    void pulse(void);
+    static int8_t _modemSleepRqPin;
+    static bool _sleepRqLevel;
+    static int8_t _modemStatusPin;
+    static bool _statusLevel;
+    static uint16_t _pulseTime_ms;
+    static void pulse(void);
 
 };
 
@@ -90,13 +101,29 @@ private:
 * ========================================================================= */
 
 // Turns the modem on by setting the onoff/DTR/Key high and off by setting it low
-class heldOnOff : public ModemOnOff
+class heldOnOff
 {
 public:
-    heldOnOff(int8_t vcc33Pin, int8_t modemSleepRqPin, int8_t modemStatusPin, bool isHighWhenOn);
-    void begin(void) override;
-    bool on(void) override;
-    bool off(void) override;
+    // Constructor
+    heldOnOff(int8_t modemSleepRqPin, bool sleepRqLevel,
+              int8_t modemStatusPin, bool statusLevel);
+
+   // Begins the instance - ie, sets pin modes
+   // This is the stuff that cannot happen in the constructor
+    static void begin(void);
+
+    // Check if the modem is currently on
+    static bool isOn(void);
+
+    // Turn the modem on and off
+    static bool on(void);
+    static bool off(void);
+
+private:
+    static int8_t _modemSleepRqPin;
+    static bool _sleepRqLevel;
+    static int8_t _modemStatusPin;
+    static bool _statusLevel;
 };
 
 #endif /* ModemOnOff_h */
