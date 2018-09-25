@@ -80,6 +80,10 @@ String Sensor::getSensorLocation(void)
 String Sensor::getSensorName(void){return _sensorName;}
 
 
+// This returns the number of the power pin
+int8_t Sensor::getPowerPin(void){return _powerPin;}
+
+
 // These functions get and set the number of readings to average for a sensor
 // Generally these values should be set in the constructor
 void Sensor::setNumberMeasurementsToAverage(int nReadings)

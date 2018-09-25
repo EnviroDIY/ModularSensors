@@ -58,6 +58,9 @@ public:
     // This function updates the values for any connected sensors.
     bool updateAllSensors(void);
 
+    // This function powers, wakes, updates values, sleeps and powers down.
+    bool completeUpdate(void);
+
     // This function prints out the results for any connected sensors to a stream
     void printSensorData(Stream *stream = &Serial);
 
@@ -91,6 +94,23 @@ protected:
 private:
     bool isLastVarFromSensor(int arrayIndex);
     uint8_t countMaxToAverage(void);
+
+#ifdef DEBUGGING_SERIAL_OUTPUT
+    template<typename T>
+    void prettyPrintArray(T arrayToPrint[])
+    {
+        MS_DBG('[');
+        for (uint8_t i = 0; i < _variableCount; i++)
+        {
+            MS_DBG(arrayToPrint[i]);
+            if ( (i+1) < _variableCount ) MS_DBG(',', '\t');
+        }
+        MS_DBG(']', '\n');
+    }
+#else
+    #define prettyPrintArray(...)
+#endif
+
 };
 
 #endif

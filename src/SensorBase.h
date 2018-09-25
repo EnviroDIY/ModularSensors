@@ -36,6 +36,8 @@ public:
     virtual String getSensorLocation(void);
     // This gets the name of the sensor.
     virtual String getSensorName(void);
+    // This gets the pin number for the power pin.
+    virtual int8_t getPowerPin(void);
 
     // These functions get and set the number of readings to average for a sensor
     // Generally these values should be set in the constructor
