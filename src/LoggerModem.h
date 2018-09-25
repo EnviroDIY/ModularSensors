@@ -66,11 +66,11 @@ class loggerModem : public Sensor
 // ==========================================================================//
 public:
     // Constructors
-    loggerModem(TinyGsmModem *inModem, Client *inClient, ModemOnOff *onOff,
-                const char *APN);
+    loggerModem(int8_t powerPin, bool (*wakeFxn)(), bool (*sleepFxn)(),
+                TinyGsmModem *inModem, Client *inClient, const char *APN);
 
-    loggerModem(TinyGsmModem *inModem, Client *inClient, ModemOnOff *onOff,
-                const char *ssid, const char *pwd);
+    loggerModem(int8_t powerPin, bool (*wakeFxn)(), bool (*sleepFxn)(),
+                TinyGsmModem *inModem, Client *inClient, const char *ssid, const char *pwd);
 
     String getSensorName(void) override;
     String getSensorLocation(void) override;
@@ -78,14 +78,14 @@ public:
     virtual bool setup(void) override;
     virtual bool wake(void) override;
 
-    // Do NOT turn the modem on and off with the regular power up and down or
-    // wake and sleep functions.
+    // Do NOT turn the modem off with the regular power down!
     // This is because when it is run in an array with other sensors, we will
     // generally want the modem to remain on after all the other sensors have
     // gone to sleep and powered down so the modem can send out data
-    void powerUp(void) override;
     void powerDown(void) override;
 
+    // This actually sends the modem the connection parameters
+    virtual bool startSingleMeasurement(void);
     // Turns modem signal strength into a measurement
     bool addSingleMeasurementResult(void) override;
 
@@ -93,6 +93,7 @@ protected:
     // We override these because the modem can tell us if it's ready or not
     bool isWarmedUp(bool debug=false) override;
     bool isStable(bool debug=false) override;
+    bool isMeasurementComplete(bool debug=false) override;
 
 
 // ==========================================================================//
@@ -111,9 +112,8 @@ public:
     int openTCP(IPAddress ip, uint16_t port);
     // This has the same functionality as Client->close with debugging text
     void closeTCP(void);
-    // Special power functions for the modem
-    bool modemPowerUp(void);
-    bool modemPowerDown(void);
+    // Special sleep and power function for the modem
+    bool modemSleepPowerDown(void);
 
     // Get the time from NIST via TIME protocol (rfc868)
     // This would be much more efficient if done over UDP, but I'm doing it
@@ -124,7 +124,6 @@ public:
     // All of these must be pointers - these are all abstract classes!
     TinyGsmModem *_tinyModem;
     Client *_tinyClient;
-    ModemOnOff *_modemOnOff;
 
 private:
     // Helper to get approximate RSSI from CSQ (assuming no noise)
@@ -135,10 +134,13 @@ private:
     static int getPctFromRSSI(int rssi);
 
 private:
+    bool (*_wakeFxn)(void);
+    bool (*_sleepFxn)(void);
     const char *_apn;
     const char *_ssid;
     const char *_pwd;
     uint32_t _lastNISTrequest;
+    String _modemName;
     // uint32_t _coolDownTime_ms;
 
 };
