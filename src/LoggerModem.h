@@ -77,10 +77,11 @@ public:
     virtual bool setup(void) override;
     virtual bool wake(void) override;
 
-    // Do NOT turn the modem off with the regular power down!
+    // Do NOT turn the modem on and off with the regular power up and down!
     // This is because when it is run in an array with other sensors, we will
     // generally want the modem to remain on after all the other sensors have
     // gone to sleep and powered down so the modem can send out data
+    void powerUp(void) override;
     void powerDown(void) override;
 
     // This actually sends the modem the connection parameters
@@ -90,7 +91,6 @@ public:
 
 protected:
     // We override these because the modem can tell us if it's ready or not
-    bool isWarmedUp(bool debug=false) override;
     bool isStable(bool debug=false) override;
     bool isMeasurementComplete(bool debug=false) override;
 

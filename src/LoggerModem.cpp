@@ -168,10 +168,14 @@ bool loggerModem::wake(void)
 }
 
 
-// Do NOT turn the modem off with the regular power down!
+// Do NOT turn the modem on and off with the regular power up and down!
 // This is because when it is run in an array with other sensors, we will
 // generally want the modem to remain on after all the other sensors have
 // gone to sleep and powered down so the modem can send out data
+void loggerModem::powerUp(void)
+{
+    MS_MOD_DBG(F("Skipping modem in sensor power up!\n"));
+}
 void loggerModem::powerDown(void)
 {
     MS_MOD_DBG(F("Skipping modem in sensor power down!\n"));
@@ -451,6 +455,24 @@ void loggerModem::closeTCP(void)
 {
     _tinyClient->stop();
     MS_MOD_DBG(F("Closed TCP/IP.\n"));
+}
+
+
+bool loggerModem::modemPowerUp(void)
+{
+    if (_powerPin >= 0)
+    {
+        MS_DBG(F("Powering "), getSensorName(), F(" with pin "), _powerPin, F("\n"));
+        digitalWrite(_powerPin, HIGH);
+        // Mark the time that the sensor was powered
+        _millisPowerOn = millis();
+    }
+    else
+    {
+        MS_DBG(F("Power to "), getSensorName(), F(" is not controlled by this library.\n"));
+    }
+    // Set the status bit for sensor power (bit 0)
+    _sensorStatus |= 0b00000001;
 }
 
 

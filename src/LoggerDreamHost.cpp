@@ -206,27 +206,13 @@ void LoggerDreamHost::logAndSend(void)
         // Turn on the LED to show we're taking a reading
         if (_ledPin >= 0) digitalWrite(_ledPin, HIGH);
 
-        if (_logModem != NULL)
-        {
-            // Turn on the modem to let it start searching for the network
-            _logModem->modemPowerUp();
-        }
+        // Turn on the modem to let it start searching for the network
+        if (_logModem != NULL) _logModem->modemPowerUp();
 
-        // Send power to all of the sensors
-        MS_DBG(F("    Powering sensors...\n"));
-        _internalArray->sensorsPowerUp();
-        // Wake up all of the sensors
-        MS_DBG(F("    Waking sensors...\n"));
-        _internalArray->sensorsWake();
-        // Update the values from all attached sensors
-        MS_DBG(F("  Updating sensor values...\n"));
-        _internalArray->updateAllSensors();
-        // Put sensors to sleep
-        MS_DBG(F("  Putting sensors back to sleep...\n"));
-        _internalArray->sensorsSleep();
-        // Cut sensor power
-        MS_DBG(F("  Cutting sensor power...\n"));
-        _internalArray->sensorsPowerDown();
+        // Do a complete sensor update
+        MS_DBG(F("    Running a complete sensor update...\n"));
+        delay(5000);
+        _internalArray->completeUpdate();
 
         if (_logModem != NULL)
         {
@@ -255,7 +241,7 @@ void LoggerDreamHost::logAndSend(void)
                 _logModem->disconnectInternet();
             }
             // Turn the modem off
-            _logModem->modemPowerDown();
+            _logModem->modemSleepPowerDown();
         }
 
         // Create a csv data record and save it to the log file
