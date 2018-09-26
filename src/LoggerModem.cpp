@@ -270,7 +270,7 @@ bool loggerModem::addSingleMeasurementResult(void)
             // NIST clearly specifies here that this is a requirement for all software
             /// that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi
             while (millis() < _lastNISTrequest + 4000) {}
-            MS_MOD_DBG("Connecting to NIST daytime server to check connection strength...\n");
+            MS_MOD_DBG(F("Connecting to NIST daytime server to check connection strength...\n"));
             IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
             success &= openTCP(ip, 37);
             _tinyClient->print(F("Hi!"));  // Need to send something before connection is made
@@ -280,7 +280,7 @@ bool loggerModem::addSingleMeasurementResult(void)
         }
 
         // Get signal quality
-        MS_MOD_DBG("Getting signal quality:\n");
+        MS_MOD_DBG(F("Getting signal quality:\n"));
         signalQual = _tinyModem->getSignalQuality();
 
         // Convert signal quality to RSSI, if necessary
@@ -342,16 +342,6 @@ bool loggerModem::isStable(bool debug)
         _sensorStatus |= 0b00000100;
         return true;
     }
-    // If we've exceeded the time-out, give up
-    else if (elapsed_since_wake_up > MODEM_MAX_REPLY_TIME)
-    {
-        if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
-               getSensorName(), F(" is not responding to AT commands!  Ending wait.\n"));
-
-        // Set the status bit for stability completion (bit 4)
-        _sensorStatus |= 0b00010000;
-        return true;
-    }
     // If the modem is now responding to AT commands, it's "stable"
     else if (_tinyModem->testAT(100))
     {
@@ -366,6 +356,16 @@ bool loggerModem::isStable(bool debug)
         {
             _tinyModem->networkConnect(_ssid, _pwd);
         }
+
+        // Set the status bit for stability completion (bit 4)
+        _sensorStatus |= 0b00010000;
+        return true;
+    }
+    // If we've exceeded the time-out, give up
+    else if (elapsed_since_wake_up > MODEM_MAX_REPLY_TIME)
+    {
+        if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
+               getSensorName(), F(" has maxed out wait for AT command reply!  Ending wait.\n"));
 
         // Set the status bit for stability completion (bit 4)
         _sensorStatus |= 0b00010000;
@@ -399,16 +399,6 @@ bool loggerModem::isMeasurementComplete(bool debug)
         _sensorStatus |= 0b01000000;
         return true;
     }
-    // If we've exceeded the time-out, give up
-    else if (elapsed_since_wake_up > MODEM_MAX_SEARCH_TIME)
-    {
-        if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
-               getSensorName(), F(" has not yet registered on the network!  Ending wait.\n"));
-
-        // Set the status bit for stability completion (bit 4)
-        _sensorStatus |= 0b00010000;
-        return true;
-    }
     // If the modem is registered on the network, it's "stable"
     else if (_tinyModem->isNetworkConnected())
     {
@@ -424,6 +414,16 @@ bool loggerModem::isMeasurementComplete(bool debug)
 
         // Set the status bit for measurement completion (bit 6)
         _sensorStatus |= 0b01000000;
+        return true;
+    }
+    // If we've exceeded the time-out, give up
+    else if (elapsed_since_wake_up > MODEM_MAX_SEARCH_TIME)
+    {
+        if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
+               getSensorName(), F(" has not yet registered on the network!  Ending wait.\n"));
+
+        // Set the status bit for stability completion (bit 4)
+        _sensorStatus |= 0b00010000;
         return true;
     }
     // If the modem isn't registered yet, we still need to wait
@@ -453,34 +453,35 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
     }
 
     // Check that the modem is responding to AT commands.  If not, give up.
+    uint32_t start = millis();
     MS_MOD_DBG(F("\nWaiting up to 5 seconds for modem to respond to AT commands...\n"));
     if (!_tinyModem->testAT(5000))
     {
         MS_MOD_DBG(F("\nModem does not respond to AT commands!\n"));
         return false;
     }
+    else MS_MOD_DBG(F("   ... AT OK after "), millis() - start, F(" milliseconds!\n"));
 
     if (_ssid)
     {
         MS_MOD_DBG(F("\nAttempting to connect to WiFi network...\n"));
         if (!(_tinyModem->isNetworkConnected()))
         {
-            MS_MOD_DBG("   Sending credentials...\n");
+            MS_MOD_DBG(F("   Sending credentials...\n"));
             while (!_tinyModem->networkConnect(_ssid, _pwd)) {};
             MS_MOD_DBG(F("   Waiting up to "), waitTime_ms/1000,
                        F(" seconds for connection\n"));
-            uint32_t start = millis();
             if (_tinyModem->waitForNetwork(waitTime_ms))
             {
                 retVal = true;
-                MS_MOD_DBG("   ... WiFi connected after ", millis() - start,
-                           " milliseconds!\n");
+                MS_MOD_DBG(F("   ... WiFi connected after "), millis() - start,
+                           F(" milliseconds!\n"));
             }
-            else MS_MOD_DBG("   ... WiFi connection failed\n");
+            else MS_MOD_DBG(F("   ... WiFi connection failed\n"));
         }
         else
         {
-            MS_MOD_DBG("   ... Connected with saved WiFi settings!\n");
+            MS_MOD_DBG(F("   ... Connected with saved WiFi settings!\n"));
             retVal = true;
         }
 
@@ -489,16 +490,16 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
     {
         MS_MOD_DBG(F("\nWaiting up to "), waitTime_ms/1000,
                    F(" seconds for cellular network registration...\n"));
-        uint32_t start = millis();
         if (_tinyModem->waitForNetwork(waitTime_ms))
         {
-            MS_MOD_DBG("   ... Registered after ", millis() - start,
-                       " milliseconds.  Connecting to GPRS...\n");
+            MS_MOD_DBG(F("   ... Registered after "), millis() - start,
+                       F(" milliseconds.  Connecting to GPRS...\n"));
             _tinyModem->gprsConnect(_apn, "", "");
-            MS_MOD_DBG("   ...Connected!\n");
+            MS_MOD_DBG(F("   ... Connected after "), millis() - start,
+                       F(" milliseconds.\n"));
             retVal = true;
         }
-        else MS_MOD_DBG("   ...Connection failed.\n");
+        else MS_MOD_DBG(F("   ...Connection failed.\n"));
     }
     return retVal;
 }
@@ -522,20 +523,20 @@ void loggerModem::disconnectInternet(void)
 
 int loggerModem::openTCP(const char *host, uint16_t port)
 {
-    MS_MOD_DBG("Connecting to ", host, "...");
+    MS_MOD_DBG(F("Connecting to "), host, F("..."));
     int ret_val = _tinyClient->connect(host, port);
-    if (ret_val) MS_MOD_DBG("   ...Success!\n");
-    else MS_MOD_DBG("   ...Connection failed.\n");
+    if (ret_val) MS_MOD_DBG(F("   ...Success!\n"));
+    else MS_MOD_DBG(F("   ...Connection failed.\n"));
     return ret_val;
 }
 
 
 int loggerModem::openTCP(IPAddress ip, uint16_t port)
 {
-    MS_MOD_DBG("Connecting to ", ip, "...");
+    MS_MOD_DBG(F("Connecting to "), ip, F("..."));
     int ret_val = _tinyClient->connect(ip, port);
-    if (ret_val) MS_MOD_DBG("   ...Success!\n");
-    else MS_MOD_DBG("   ...Connection failed.\n");
+    if (ret_val) MS_MOD_DBG(F("   ...Success!\n"));
+    else MS_MOD_DBG(F("   ...Connection failed.\n"));
     return ret_val;
 }
 
@@ -664,7 +665,7 @@ uint32_t loggerModem::getNISTTime(void)
 
         if (_tinyClient->available() >= 4)
         {
-            MS_MOD_DBG("\nNIST responded after ", millis() - start, " ms");
+            MS_MOD_DBG(F("\nNIST responded after "), millis() - start, F(" ms"));
             // Response is returned as 32-bit number as soon as connection is made
             // Connection is then immediately closed, so there is no need to close it
             uint32_t secFrom1900 = 0;
@@ -672,13 +673,13 @@ uint32_t loggerModem::getNISTTime(void)
             for (uint8_t i = 0; i < 4; i++)
             {
                 response[i] = _tinyClient->read();
-                MS_MOD_DBG("\nResponse Byte [", i, "]:",response[i], "(",
-                           String(response[i], BIN),")");
+                MS_MOD_DBG(F("\nResponse Byte ["), i, F("]:"),response[i], '(',
+                           String(response[i], BIN),')');
                 secFrom1900 += 0x000000FF & response[i];
-                MS_MOD_DBG("\nseconds from 1900 after byte: ",String(secFrom1900, BIN));
+                MS_MOD_DBG(F("\nseconds from 1900 after byte: "),String(secFrom1900, BIN));
                 if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;}
             }
-            MS_MOD_DBG("\nfinal seconds from 1900:  ",secFrom1900);
+            MS_MOD_DBG(F("\nfinal seconds from 1900:  "),secFrom1900);
 
             // Close the TCP connection, just in case
             closeTCP();
