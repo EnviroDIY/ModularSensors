@@ -24,6 +24,11 @@
 #include "SensorBase.h"
 #include "VariableBase.h"
 
+// Maximum time to wait for a reply from the modem
+#define MODEM_MAX_REPLY_TIME 5000L
+// Maximum time the modem is allows to search for the network
+#define MODEM_MAX_SEARCH_TIME 45000L
+
 #define MODEM_NUM_VARIABLES 2
 #define MODEM_WARM_UP_TIME_MS 0
 #define MODEM_STABILIZATION_TIME_MS 0
@@ -84,14 +89,18 @@ public:
     void powerUp(void) override;
     void powerDown(void) override;
 
-    // This actually sends the modem the connection parameters
-    virtual bool startSingleMeasurement(void);
     // Turns modem signal strength into a measurement
     bool addSingleMeasurementResult(void) override;
 
 protected:
     // We override these because the modem can tell us if it's ready or not
+
+    // The modem is "stable" when it responds to AT commands.
+    // For a WiFi modem, this actually sets the network connection parameters!!
     bool isStable(bool debug=false) override;
+
+    // The a measurement is "complete" when the modem is registered on the network.
+    // For a cellular modem, this actually sets the GPRS bearer/APN!!
     bool isMeasurementComplete(bool debug=false) override;
 
 
@@ -112,6 +121,7 @@ public:
     // This has the same functionality as Client->close with debugging text
     void closeTCP(void);
     // Special sleep and power function for the modem
+    void modemPowerUp(void);
     bool modemSleepPowerDown(void);
 
     // Get the time from NIST via TIME protocol (rfc868)

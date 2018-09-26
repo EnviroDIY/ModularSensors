@@ -43,7 +43,8 @@ loggerModem::loggerModem(int8_t powerPin, bool (*wakeFxn)(), bool (*sleepFxn)(),
 String loggerModem::getSensorName(void) { return _modemName; }
 String loggerModem::getSensorLocation(void) { return F("modemSerial"); }
 
-// The modem must be setup separately!
+
+// NOTE!! Power is left ON after set-up
 bool loggerModem::setup(void)
 {
     bool retVal = false;
@@ -62,50 +63,67 @@ bool loggerModem::setup(void)
     else MS_MOD_DBG(F("   ... Modem failed to turn on!\n"));
 
     // Set some warm-up times for specific models
+    // NOTE:  These times are for raw cellular chips they do no necessarily
+    // apply to assembled break-out boards or modules
     if (_modemName.indexOf("SIMCom SIM800") > 0)
     {
         _warmUpTime_ms = 450; // Time after power on before "PWRKEY" can be used
         _stabilizationTime_ms = 3000;  // Time after end pulse until serial port becomes active (>3sec)
+        // _on_pull_down_ms = 1100;  // >1s
+        // _off_pull_down_ms = 600;  // 1sec > t > 3.3sec
         // _disconnetTime_ms = 3100;  // power down (gracefully) takes >3sec
     }
     if (_modemName.indexOf("SIMCom SIM900") > 0)
     {
         _warmUpTime_ms = 1000; // Time after power on before "PWRKEY" can be used (guess - diagram isn't clear)
         _stabilizationTime_ms = 2200;  // Time after end pulse until serial port becomes active (>2.2sec)
+        // _on_pull_down_ms = 1100;  // >1s
+        // _off_pull_down_ms = 600;  // 0.5sec > pull down > 1sec
         // _disconnetTime_ms = 1800;  // power down (gracefully) takes >1.
+    }
+    if (_modemName.indexOf("SARA-R4") > 0  ||
+        _modemName.indexOf("XBee3™ Cellular LTE-M") > 0  ||
+        _modemName.indexOf("Digi XBee3™ Cellular NB-IoT") > 0)
+    {
+        _warmUpTime_ms = 0; // Module turns on when power is applied - level of PWR_ON then irrelevant
+        _stabilizationTime_ms = 4600;  // Time until system and digital pins are operational
+        // _on_pull_down_ms = 200;  // 0.15-3.2s
+        // _off_pull_down_ms = 1600;  // >1.5s
+        // _disconnetTime_ms = 4600;  // power down time is until Vint pin is reading low
     }
     if (_modemName.indexOf("SARA-U2") > 0  ||
         _modemName.indexOf("XBee® Cellular 3G") > 0)
     {
         _warmUpTime_ms = 0; // Module turns on when power is applied - level of PWR_ON then irrelevant
         _stabilizationTime_ms = 6000;  // Time until system and digital pins are operational
+        // _on_pull_down_ms = 1;  // 50-80µs
+        // _off_pull_down_ms = 1000;  // >1s
         // _disconnetTime_ms = 6000;  // power down time is until Vint pin is reading low
-    }
-    if (_modemName.indexOf("SARA-R4") > 0  ||
-        _modemName.indexOf("XBee3™ Cellular LTE-M") > 0)
-    {
-        _warmUpTime_ms = 0; // Module turns on when power is applied - level of PWR_ON then irrelevant
-        _stabilizationTime_ms = 4600;  // Time until system and digital pins are operational
-        // _disconnetTime_ms = 4600;  // power down time is until Vint pin is reading low
     }
     if (_modemName.indexOf("LISA-U2") > 0)
     {
         _warmUpTime_ms = 0; // Module turns on when power is applied - level of PWR_ON then irrelevant
         _stabilizationTime_ms = 3000;  // Time until system and digital pins are operational
+        // _on_pull_down_ms = 1;  // 50-80µs
+        // _off_pull_down_ms = 1000;  // >1s
         // _disconnetTime_ms = 2600;  // power down (gracefully) takes ~2.5sec
     }
     if (_modemName.indexOf("Digi XBee® Cellular LTE Cat 1") > 0  ||
         _modemName.indexOf("Digi XBee3™ Cellular LTE CAT 1") > 0  ||
         _modemName.indexOf("Telit LE866") > 0)
     {
-        _warmUpTime_ms = 0; // Module turns on when power is applied - level of PWR_ON then irrelevant
+        _warmUpTime_ms = 0; // Module turns on when power is applied
         _stabilizationTime_ms = 25000L;  // Wait with 25s time-out for first AT response
+        // _on_pull_down_ms = 0;  // N/A - standard chip cannot be powered on with pin
+        // _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
         // _disconnetTime_ms = 10000L;  // Wait with 10s time-out for sleep
     }
     if (_modemName.indexOf("ESP8266") > 0)
     {
         _warmUpTime_ms = 0; // Module turns on when power is applied
         _stabilizationTime_ms = 200;
+        // _on_pull_down_ms = 10;  // immediate
+        // _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
         // _disconnetTime_ms = 200;
         // power down ???
     }
@@ -113,18 +131,32 @@ bool loggerModem::setup(void)
     {
         _warmUpTime_ms = 0; // ON/OFF pin should be held low as soon as power is applied
         _stabilizationTime_ms = 300;  // Time until UART is active
+        // _on_pull_down_ms = 510;  // >300ms (>500ms recommended)
+        // _off_pull_down_ms = 510;  // >300ms
         // _disconnetTime_ms = 5000;  // power down (gracefully) takes ~5sec
     }
     if (_modemName.indexOf("Quectel BG96") > 0)
     {
         _warmUpTime_ms = 30; // Time after VBAT is stable before PWRKEY can be used
-        _stabilizationTime_ms = 4900;  // > 4.9 sec
+        _stabilizationTime_ms = 4900;  // > USB active at >4.8 sec, URAT at >4.9
+        // _on_pull_down_ms = 110;  // >100ms
+        // _off_pull_down_ms = 700;  // ≥ 650ms
         // _disconnetTime_ms = 2000;  // > 2 sec
+    }
+    if (_modemName.indexOf("Quectel M95") > 0)
+    {
+        _warmUpTime_ms = 30; // Time after VBAT is stable before PWRKEY can be used
+        _stabilizationTime_ms = 0;  // should respond after as soon as PWRKEY pulse ends
+        // _on_pull_down_ms = 2000;  // until either status key goes on, or > 1.0 sec (~2s)
+        // _off_pull_down_ms = 700;  // 0.6s<Pulldown<1s
+        // _disconnetTime_ms = 2000;  // disconnect in 2-12 seconds
     }
     if (_modemName.indexOf("Quectel MC60") > 0)
     {
         _warmUpTime_ms = 100; // Time after VBAT is stable before PWRKEY can be used
-        _stabilizationTime_ms = 4000;  // Ready in 4-5 seconds
+        _stabilizationTime_ms = 0;  // should respond after as soon as PWRKEY pulse ends
+        // _on_pull_down_ms = 1100;  // >1s
+        // _off_pull_down_ms = 700;  // 0.6s<Pulldown<1s
         // _disconnetTime_ms = 2000;  // disconnect in 2-12 seconds
     }
 
@@ -179,41 +211,6 @@ void loggerModem::powerUp(void)
 void loggerModem::powerDown(void)
 {
     MS_MOD_DBG(F("Skipping modem in sensor power down!\n"));
-}
-
-
-// Starting a measurement is providing connection parameters
-bool loggerModem::startSingleMeasurement(void)
-{
-    MS_DBG(F("Setting up connection for "), getSensorName(), F(".\n"));
-
-    bool success = true;
-
-    // Check if activated, only mark time if it is
-    if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
-    {
-        // For the wifi modems, the SSID and password need to be set before they
-        // can join a network.
-        // For cellular modems, network registration happens automatically.  The
-        // GPRS bearer (APN) is then set after registration.
-        if (_ssid && _tinyModem->hasWifi())
-        {
-           _tinyModem->networkConnect(_ssid, _pwd);
-        }
-
-        // Mark the time that a measurement was requested
-        _millisMeasurementRequested = millis();
-    }
-    // Make sure that the time of a measurement request is not set
-    else _millisMeasurementRequested = 0;
-
-    // Even if we failed to start a measurement, we still want to set the status
-    // bit to show that we attempted to start the measurement.
-    // Set the status bits for measurement requested (bit 5)
-    _sensorStatus |= 0b00100000;
-    // Verify that the status bit for a single measurement completion is not set (bit 6)
-    _sensorStatus &= 0b10111111;
-    return success;
 }
 
 
@@ -300,11 +297,31 @@ bool loggerModem::isStable(bool debug)
         _sensorStatus |= 0b00010000;
         return true;
     }
+    // If we've exceeded the time-out, give up
+    else if (elapsed_since_wake_up > MODEM_MAX_REPLY_TIME)
+    {
+        if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
+               getSensorName(), F(" is not responding to AT commands!  Ending wait.\n"));
+
+        // Set the status bit for stability completion (bit 4)
+        _sensorStatus |= 0b00010000;
+        return true;
+    }
     // If the modem is now responding to AT commands, it's "stable"
     else if (_tinyModem->testAT(100))
     {
         if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
                getSensorName(), F(" is now responding to AT commands!\n"));
+
+        // For the wifi modems, the SSID and password need to be set before they
+        // can join a network.  We'll do this as soon as it responds to commands.
+        // For cellular modems, network registration happens automatically.  The
+        // GPRS bearer (APN) is then set after registration.
+        if (_ssid && _tinyModem->hasWifi())
+        {
+            _tinyModem->networkConnect(_ssid, _pwd);
+        }
+
         // Set the status bit for stability completion (bit 4)
         _sensorStatus |= 0b00010000;
         return true;
@@ -325,6 +342,7 @@ bool loggerModem::isStable(bool debug)
 // the modem has registered on the network
 bool loggerModem::isMeasurementComplete(bool debug)
 {
+    uint32_t elapsed_since_wake_up = millis() - _millisSensorActivated;
     uint32_t elapsed_since_meas_start = millis() - _millisMeasurementRequested;
 
     // If the modem never responded to AT commands, we'll never get a
@@ -337,11 +355,29 @@ bool loggerModem::isMeasurementComplete(bool debug)
         _sensorStatus |= 0b01000000;
         return true;
     }
+    // If we've exceeded the time-out, give up
+    else if (elapsed_since_wake_up > MODEM_MAX_SEARCH_TIME)
+    {
+        if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
+               getSensorName(), F(" has not yet registered on the network!  Ending wait.\n"));
+
+        // Set the status bit for stability completion (bit 4)
+        _sensorStatus |= 0b00010000;
+        return true;
+    }
     // If the modem is registered on the network, it's "stable"
     else if (_tinyModem->isNetworkConnected())
     {
         if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_meas_start), F("ms, and "),
                getSensorName(), F(" is now registered on the network!\n"));
+
+        // For the cellular modems, the APN must be set after registration
+        // on the network.  We'll do this as soon as registration is complete.
+        if (_ssid && _tinyModem->hasWifi())
+        {
+            _tinyModem->gprsConnect(_apn, "", "");
+        }
+
         // Set the status bit for measurement completion (bit 6)
         _sensorStatus |= 0b01000000;
         return true;
@@ -362,6 +398,15 @@ bool loggerModem::isMeasurementComplete(bool debug)
 bool loggerModem::connectInternet(uint32_t waitTime_ms)
 {
     bool retVal = false;
+
+    if (bitRead(getStatus(), 0) == 0)  // NOT yet powered
+        modemPowerUp();
+
+    if (bitRead(getStatus(), 0) == 3)  // NOT yet awake/actively measuring
+    {
+        waitForWarmUp();
+        wake();  // This sets the modem to on
+    }
 
     // Check that the modem is responding to AT commands.  If not, give up.
     MS_MOD_DBG(F("\nWaiting up to 5 seconds for modem to respond to AT commands...\n"));
@@ -458,7 +503,7 @@ void loggerModem::closeTCP(void)
 }
 
 
-bool loggerModem::modemPowerUp(void)
+void loggerModem::modemPowerUp(void)
 {
     if (_powerPin >= 0)
     {
