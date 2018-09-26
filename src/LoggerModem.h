@@ -148,6 +148,7 @@ private:
     int8_t _statusPin;
     bool _statusLevel;
     uint32_t _indicatorTime_ms;
+    uint32_t _disconnetTime_ms;
     bool (*_wakeFxn)(void);
     bool (*_sleepFxn)(void);
     const char *_apn;
@@ -155,7 +156,6 @@ private:
     const char *_pwd;
     uint32_t _lastNISTrequest;
     String _modemName;
-    // uint32_t _coolDownTime_ms;
 
 };
 

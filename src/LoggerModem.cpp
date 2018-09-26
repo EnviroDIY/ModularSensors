@@ -18,7 +18,7 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES,
              MODEM_WARM_UP_TIME_MS, MODEM_STABILIZATION_TIME_MS, MODEM_MEASUREMENT_TIME_MS,
              powerPin, -1, 1),
-      _statusPin(statusPin),  _statusLevel(statusLevel), _indicatorTime_ms(0),
+      _statusPin(statusPin),  _statusLevel(statusLevel), _indicatorTime_ms(0), _disconnetTime_ms(0),
       _apn(APN), _lastNISTrequest(0)
 {
     _tinyModem = inModem;
@@ -34,7 +34,7 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES,
              MODEM_WARM_UP_TIME_MS, MODEM_STABILIZATION_TIME_MS, MODEM_MEASUREMENT_TIME_MS,
              powerPin, -1, 1),
-      _statusPin(statusPin),  _statusLevel(statusLevel), _indicatorTime_ms(0),
+      _statusPin(statusPin),  _statusLevel(statusLevel), _indicatorTime_ms(0), _disconnetTime_ms(0),
       _ssid(ssid), _pwd(pwd), _lastNISTrequest(0)
 {
     _tinyModem = inModem;
@@ -78,7 +78,7 @@ bool loggerModem::setup(void)
         _stabilizationTime_ms = 2100;  // Time after end pulse until serial port becomes active (>3sec from start of pulse)
         // _on_pull_down_ms = 1100;  // >1s
         // _off_pull_down_ms = 600;  // 1sec > t > 3.3sec
-        // _disconnetTime_ms = 3100;  // power down (gracefully) takes >3sec
+        _disconnetTime_ms = 3100;  // power down (gracefully) takes >3sec
     }
     if (_modemName.indexOf("SIMCom SIM900") > 0)
     {
@@ -87,7 +87,7 @@ bool loggerModem::setup(void)
         _stabilizationTime_ms = 2200;  // Time after end pulse until serial port becomes active (>2.2sec)
         // _on_pull_down_ms = 1100;  // >1s
         // _off_pull_down_ms = 600;  // 0.5sec > pull down > 1sec
-        // _disconnetTime_ms = 1800;  // power down (gracefully) takes >1.
+        _disconnetTime_ms = 1800;  // power down (gracefully) takes >1.
     }
     if (_modemName.indexOf("SARA-R4") > 0  ||
         _modemName.indexOf("XBee3™ Cellular LTE-M") > 0  ||
@@ -98,7 +98,7 @@ bool loggerModem::setup(void)
         _stabilizationTime_ms = 4600;  // Time until system and digital pins are operational
         // _on_pull_down_ms = 200;  // 0.15-3.2s
         // _off_pull_down_ms = 1600;  // >1.5s
-        // _disconnetTime_ms = 4600;  // power down time is until Vint pin is reading low
+        _disconnetTime_ms = 4600;  // power down time is until Vint pin is reading low
     }
     if (_modemName.indexOf("SARA-U2") > 0  ||
         _modemName.indexOf("XBee® Cellular 3G") > 0)
@@ -108,7 +108,7 @@ bool loggerModem::setup(void)
         _stabilizationTime_ms = 6000;  // Time until system and digital pins are operational
         // _on_pull_down_ms = 1;  // 50-80µs
         // _off_pull_down_ms = 1000;  // >1s
-        // _disconnetTime_ms = 6000;  // power down time is until Vint pin is reading low
+        _disconnetTime_ms = 6000;  // power down time is until Vint pin is reading low
     }
     if (_modemName.indexOf("SARA-G3") > 0)
     {
@@ -117,7 +117,7 @@ bool loggerModem::setup(void)
         _stabilizationTime_ms = 5000;  // Time until system and digital pins are operational
         // _on_pull_down_ms = 5;  // >5ms
         // _off_pull_down_ms = 1000;  // >1s
-        // _disconnetTime_ms = 6000;  // power down time is until Vint pin is reading low
+        _disconnetTime_ms = 6000;  // power down time is until Vint pin is reading low
     }
     if (_modemName.indexOf("LISA-U2") > 0)
     {
@@ -126,7 +126,7 @@ bool loggerModem::setup(void)
         _stabilizationTime_ms = 3000;  // Time until system and digital pins are operational
         // _on_pull_down_ms = 1;  // 50-80µs
         // _off_pull_down_ms = 1000;  // >1s
-        // _disconnetTime_ms = 2600;  // power down (gracefully) takes ~2.5sec
+        _disconnetTime_ms = 2600;  // power down (gracefully) takes ~2.5sec
     }
     if (_modemName.indexOf("Digi XBee® Cellular LTE Cat 1") > 0  ||
         _modemName.indexOf("Digi XBee3™ Cellular LTE CAT 1") > 0  ||
@@ -137,7 +137,7 @@ bool loggerModem::setup(void)
         _stabilizationTime_ms = 25000L;  // Wait with 25s time-out for first AT response
         // _on_pull_down_ms = 0;  // N/A - standard chip cannot be powered on with pin
         // _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
-        // _disconnetTime_ms = 10000L;  // Wait with 10s time-out for sleep
+        _disconnetTime_ms = 10000L;  // Wait with 10s time-out for sleep
     }
     if (_modemName.indexOf("ESP8266") > 0)
     {
@@ -146,7 +146,7 @@ bool loggerModem::setup(void)
         _stabilizationTime_ms = 200;
         // _on_pull_down_ms = 10;  // immediate
         // _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
-        // _disconnetTime_ms = 200;
+        _disconnetTime_ms = 200;
         // power down ???
     }
     if (_modemName.indexOf("Neoway M590") > 0)
@@ -156,7 +156,7 @@ bool loggerModem::setup(void)
         _stabilizationTime_ms = 300;  // Time until UART is active
         // _on_pull_down_ms = 510;  // >300ms (>500ms recommended)
         // _off_pull_down_ms = 510;  // >300ms
-        // _disconnetTime_ms = 5000;  // power down (gracefully) takes ~5sec
+        _disconnetTime_ms = 5000;  // power down (gracefully) takes ~5sec
     }
     if (_modemName.indexOf("Quectel BG96") > 0)
     {
@@ -165,7 +165,7 @@ bool loggerModem::setup(void)
         _stabilizationTime_ms = 4900;  // USB active at >4.2 sec, status at >4.8 sec, URAT at >4.9
         // _on_pull_down_ms = 110;  // >100ms
         // _off_pull_down_ms = 700;  // ≥ 650ms
-        // _disconnetTime_ms = 2000;  // > 2 sec
+        _disconnetTime_ms = 2000;  // > 2 sec
     }
     if (_modemName.indexOf("Quectel M95") > 0)
     {
@@ -174,7 +174,7 @@ bool loggerModem::setup(void)
         _stabilizationTime_ms = 0;  // UART should respond as soon as PWRKEY pulse ends
         // _on_pull_down_ms = 2000;  // until either status key goes on, or > 1.0 sec (~2s)
         // _off_pull_down_ms = 700;  // 0.6s<Pulldown<1s
-        // _disconnetTime_ms = 2000;  // disconnect in 2-12 seconds
+        _disconnetTime_ms = 2000;  // disconnect in 2-12 seconds
     }
     if (_modemName.indexOf("Quectel MC60") > 0)
     {
@@ -183,7 +183,7 @@ bool loggerModem::setup(void)
         _stabilizationTime_ms = 0;  // UART should respond as soon as PWRKEY pulse ends
         // _on_pull_down_ms = 1100;  // >1s
         // _off_pull_down_ms = 700;  // 0.6s<Pulldown<1s
-        // _disconnetTime_ms = 2000;  // disconnect in 2-12 seconds
+        _disconnetTime_ms = 2000;  // disconnect in 2-12 seconds
     }
     if (_modemName.indexOf("AI-Thinker A") > 0)
     {
@@ -192,7 +192,7 @@ bool loggerModem::setup(void)
         _stabilizationTime_ms = 0;  // ??
         // _on_pull_down_ms = 2000;  // >2s
         // _off_pull_down_ms = 0;  // ??
-        // _disconnetTime_ms = 0;  // ??
+        _disconnetTime_ms = 0;  // ??
     }
 
     // Set the status bit marking that the modem has been set up (bit 1)
@@ -550,38 +550,54 @@ void loggerModem::closeTCP(void)
 
 void loggerModem::modemPowerUp(void)
 {
-    if (_powerPin >= 0)
-    {
-        MS_DBG(F("Powering "), getSensorName(), F(" with pin "), _powerPin, F("\n"));
-        digitalWrite(_powerPin, HIGH);
-        // Mark the time that the sensor was powered
-        _millisPowerOn = millis();
-    }
-    else
-    {
-        MS_DBG(F("Power to "), getSensorName(), F(" is not controlled by this library.\n"));
-    }
-    // Set the status bit for sensor power (bit 0)
-    _sensorStatus |= 0b00000001;
+    Sensor::powerUp();
 }
 
 
 bool loggerModem::modemSleepPowerDown(void)
 {
+    bool success = true;
+
     MS_MOD_DBG(F("Turning modem off.\n"));
      // Wait for any sending to complete
     _tinyClient->flush();
-    // Turn the modem off .. whether it was on or not
-    // Need to turn off no matter what because some modems don't have an
-    // effective way of telling us whether they're on or not
-    _sleepFxn();
-    // Unset the status bits for sensor power (bit 0), warm-up (bit 2),
-    // activation (bit 3), stability (bit 4), measurement request (bit 5), and
-    // measurement completion (bit 6)
-    _sensorStatus &= 0b10000010;
+    uint32_t start = millis();
 
+    // If there's a status pin available, check before running the sleep function
+    if (_statusPin >= 0 && _statusPin != _statusLevel)
+        MS_MOD_DBG(F("Modem appears to have already been off.\n"));
+    else
+    {
+        // Run the sleep function
+        MS_MOD_DBG(F("Running sleep function.\n"));
+        success &= _sleepFxn();
+    }
+
+    // If there's a status pin available, wait until modem shows it's ready to be powered off
+    // This allows the modem to shut down gracefully.
+    MS_MOD_DBG(F("Waiting for graceful shutdown...\n"));
+    if (_statusPin >= 0)
+    {
+        while (millis() - start < 10000L && _statusPin == _statusLevel){}
+        if (_statusPin == _statusLevel)
+            MS_MOD_DBG(F("  ... Modem did not successfully shut down!\n"));
+        else MS_MOD_DBG(F("  ... complete.\n"));
+    }
+    else if (_disconnetTime_ms > 0)
+    {
+        while (millis() - start < _disconnetTime_ms){}
+        MS_MOD_DBG(F("  ... assumed to be complete.\n"));
+    }
+    
+    // Unset the activation time
+    _millisSensorActivated = 0;
+    // Unset the activated status bit (bit 3), stability (bit 4), measeurement
+    // request (bit 5) and measurement completion (bit 6)
+    _sensorStatus &= 0b10000111;
+
+    // Now power down
     Sensor::powerDown();
-    return true;
+    return success;
 }
 
 // Get the time from NIST via TIME protocol (rfc868)
