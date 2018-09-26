@@ -103,15 +103,15 @@ class YosemitechY4000 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY4000(byte modbusAddress, Stream* stream, int8_t powerPin,
+    YosemitechY4000(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                         Y4000, "YosemitechY4000", Y4000_NUM_VARIABLES,
                         Y4000_WARM_UP_TIME_MS, Y4000_STABILIZATION_TIME_MS, Y4000_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY4000(byte modbusAddress, Stream& stream, int8_t powerPin,
+    YosemitechY4000(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                         Y4000, "YosemitechY4000", Y4000_NUM_VARIABLES,
                         Y4000_WARM_UP_TIME_MS, Y4000_STABILIZATION_TIME_MS, Y4000_MEASUREMENT_TIME_MS)
     {}

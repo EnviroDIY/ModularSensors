@@ -49,13 +49,13 @@ class YosemitechY511 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY511(byte modbusAddress, Stream* stream, int8_t powerPin,
+    YosemitechY511(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                         Y511, "YosemitechY511", Y511_NUM_VARIABLES,
                         Y511_WARM_UP_TIME_MS, Y511_STABILIZATION_TIME_MS, Y511_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY511(byte modbusAddress, Stream& stream, int8_t powerPin,
+    YosemitechY511(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : YosemitechParent(modbusAddress, stream,powerPin,  enablePin, measurementsToAverage,
                         Y511, "YosemitechY511", Y511_NUM_VARIABLES,

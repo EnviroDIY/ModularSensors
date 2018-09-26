@@ -36,15 +36,15 @@ class KellerAcculevel : public KellerParent
 {
 public:
     // Constructors with overloads
-    KellerAcculevel(byte modbusAddress, Stream* stream, int8_t powerPin,
+    KellerAcculevel(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : KellerParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : KellerParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                     Acculevel, "KellerAcculevel", KELLER_NUM_VARIABLES,
                     KellerAcculevel_WARM_UP_TIME_MS, KellerAcculevel_STABILIZATION_TIME_MS, KellerAcculevel_MEASUREMENT_TIME_MS)
     {}
-    KellerAcculevel(byte modbusAddress, Stream& stream, int8_t powerPin,
+    KellerAcculevel(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : KellerParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : KellerParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                     Acculevel, "KellerAcculevel", KELLER_NUM_VARIABLES,
                     KellerAcculevel_WARM_UP_TIME_MS, KellerAcculevel_STABILIZATION_TIME_MS, KellerAcculevel_MEASUREMENT_TIME_MS)
     {}
