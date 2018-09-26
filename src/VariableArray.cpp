@@ -443,6 +443,13 @@ bool VariableArray::completeUpdate(void)
     bool success = true;
     uint8_t nSensorsCompleted = 0;
 
+    // Purely for debugging
+    uint8_t arrayPositions[_variableCount];
+    for (uint8_t i = 0; i < _variableCount; i++)
+        arrayPositions[i] = i;
+    MS_DBG(F("arrayPositions:\t\t\t"));
+    prettyPrintArray(arrayPositions);
+
     // Create an array with the unique-ness value (so we can skip the function later)
     bool uniqueSensors[_variableCount];
     for (uint8_t i = 0; i < _variableCount; i++)
@@ -459,7 +466,7 @@ bool VariableArray::completeUpdate(void)
     uint8_t nMeasurementsToAverage[_variableCount];
     for (uint8_t i = 0; i < _variableCount; i++)
         nMeasurementsToAverage[i] = arrayOfVars[i]->parentSensor->getNumberMeasurementsToAverage();
-    MS_DBG(F("nMeasurementsToAverage:\t\t\t"));
+    MS_DBG(F("nMeasurementsToAverage:\t\t"));
     prettyPrintArray(nMeasurementsToAverage);
 
     // Create an array of the power pins
@@ -494,7 +501,7 @@ bool VariableArray::completeUpdate(void)
     }
     MS_DBG(F("powerPins:\t\t\t"));
     prettyPrintArray(powerPins);
-    MS_DBG(F("nMeasurementsOnPin:\t\t\t"));
+    MS_DBG(F("nMeasurementsOnPin:\t\t"));
     prettyPrintArray(nMeasurementsOnPin);
     MS_DBG(F("powerPinIndex:\t\t\t"));
     prettyPrintArray(powerPinIndex);
