@@ -24,9 +24,9 @@
 #include "SensorBase.h"
 #include "VariableBase.h"
 
-// Maximum time to wait for a reply from the modem
+// Maximum time to wait for a reply to an AT command from the modem
 #define MODEM_MAX_REPLY_TIME 5000L
-// Maximum time the modem is allows to search for the network
+// Maximum time the modem is allowed to search for the network
 #define MODEM_MAX_SEARCH_TIME 45000L
 
 #define MODEM_NUM_VARIABLES 2
@@ -70,10 +70,12 @@ class loggerModem : public Sensor
 // ==========================================================================//
 public:
     // Constructors
-    loggerModem(int8_t powerPin, bool (*wakeFxn)(), bool (*sleepFxn)(),
+    loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
+                bool (*wakeFxn)(), bool (*sleepFxn)(),
                 TinyGsmModem *inModem, Client *inClient, const char *APN);
 
-    loggerModem(int8_t powerPin, bool (*wakeFxn)(), bool (*sleepFxn)(),
+    loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
+                bool (*wakeFxn)(), bool (*sleepFxn)(),
                 TinyGsmModem *inModem, Client *inClient, const char *ssid, const char *pwd);
 
     String getSensorName(void) override;
@@ -143,6 +145,9 @@ private:
     static int getPctFromRSSI(int rssi);
 
 private:
+    int8_t _statusPin;
+    bool _statusLevel;
+    uint32_t _indicatorTime_ms;
     bool (*_wakeFxn)(void);
     bool (*_sleepFxn)(void);
     const char *_apn;
