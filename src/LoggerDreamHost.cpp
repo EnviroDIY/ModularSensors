@@ -211,7 +211,6 @@ void LoggerDreamHost::logAndSend(void)
 
         // Do a complete sensor update
         MS_DBG(F("    Running a complete sensor update...\n"));
-        delay(5000);
         _internalArray->completeUpdate();
 
         if (_logModem != NULL)
