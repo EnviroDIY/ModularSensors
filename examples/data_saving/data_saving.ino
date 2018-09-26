@@ -32,7 +32,8 @@ const char *LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 5;
 // Your logger's timezone.
-const int8_t timeZone = -5;
+const int8_t timeZone = -5;  // Eastern Standard Time
+// NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
 
 // ==========================================================================
@@ -63,8 +64,6 @@ Variable *mayflyRAM = new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-ef
 
 // Select your modem chip, comment out all of the others
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
-// #define TINY_GSM_MODEM_A6  // Select for a AI-Thinker A6 or A7 chip
-// #define TINY_GSM_MODEM_M590  // Select for a Neoway M590
 // #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
@@ -89,18 +88,20 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 const int8_t modemSleepRqPin = 23;  // Modem Sleep Request Pin (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
+const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is powered on (HIGH or LOW)
 
-// And create a pointer to the method to be used to turn the modem on and off
-// The on/off method needs the pins and to know whether the sleep request is a HIGH or LOW value
-// Use heldOnOff if the sleep request pin is set and kept to keep the modem awake
-// Use pulsedOnOff if the sleep request pin is quickly switched to wake the modem up
-// The Sodaq GPRSBee rev6 uses heldOnOff with the pin held high
-// All Digi XBee's uses heldOnOff with the pin held low
-// The Adafruit Fona and Sodaq GPRSBee rev4 use a low pulsedOnOff
-ModemOnOff *modemOnOff = new heldOnOff(modemVCCPin, modemSleepRqPin, modemStatusPin, HIGH);
-// ModemOnOff *modemOnOff = new heldOnOff(modemVCCPin, modemSleepRqPin, modemStatusPin, LOW);
-// ModemOnOff *modemOnOff = new pulsedOnOff(modemVCCPin, modemSleepRqPin, modemStatusPin, HIGH);
-// ModemOnOff *modemOnOff = new pulsedOnOff(modemVCCPin, modemSleepRqPin, modemStatusPin, LOW);
+// And create the wake and sleep methods for the modem
+// These can be functions of any type and must return a boolean
+bool onFxn(void)
+{
+    digitalWrite(modemSleepRqPin, LOW);
+    return true;
+}
+bool offFxn(void)
+{
+    digitalWrite(modemSleepRqPin, HIGH);
+    return true;
+}
 
 // And we still need the connection information for the network
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
@@ -108,9 +109,9 @@ const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
 
 // Create the loggerModem instance
-// A "loggerModem" is a combination of a TinyGSM Modem, a Client, and an on/off method
-loggerModem modem(tinyModem, tinyClient, modemOnOff, wifiId, wifiPwd);
-// loggerModem modem(tinyModem, tinyClient, modemOnOff, apn);
+// A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
+// loggerModem modem(modemVCCPin, modemOnOffheld.on, modemOnOffheld.off, tinyModem, tinyClient, wifiId, wifiPwd);
+loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, onFxn, offFxn, tinyModem, tinyClient, apn);
 
 // Create the RSSI and signal strength variable objects for the modem and return
 // variable-type pointers to them
@@ -137,12 +138,13 @@ AltSoftSerial modbusSerial;
 //    Yosemitech Y504 Dissolved Oxygen Sensor
 // ==========================================================================
 #include <YosemitechY504.h>
-byte y504modbusAddress = 0x04;  // The modbus address of the Y504
-const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+byte y504ModbusAddress = 0x04;  // The modbus address of the Y504
+const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y504NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 // Create and return the Yosemitech Y504 dissolved oxygen sensor object
-YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePin, y504NumberReadings);
+YosemitechY504 y504(y504ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y504NumberReadings);
 // Create the dissolved oxygen percent, dissolved oxygen concentration, and
 // temperature variable objects for the Y504 and return variable-type
 // pointers to them
@@ -155,12 +157,13 @@ Variable *y504Temp = new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-123
 //    Yosemitech Y511 Turbidity Sensor with Wiper
 // ==========================================================================
 #include <YosemitechY511.h>
-byte y511modbusAddress = 0x1A;  // The modbus address of the Y511
-// const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+byte y511ModbusAddress = 0x1A;  // The modbus address of the Y511
+// const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y511NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 // Create and return the Y511-A Turbidity sensor object
-YosemitechY511 y511(y511modbusAddress, modbusSerial, modbusPower, max485EnablePin, y511NumberReadings);
+YosemitechY511 y511(y511ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y511NumberReadings);
 // Create the turbidity and temperature variable objects for the Y511 and return variable-type pointers to them
 Variable *y511Turb = new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *y511Temp = new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab");
@@ -170,12 +173,13 @@ Variable *y511Temp = new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-123
 //    Yosemitech Y514 Chlorophyll Sensor
 // ==========================================================================
 #include <YosemitechY514.h>
-byte y514modbusAddress = 0x14;  // The modbus address of the Y514
-// const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+byte y514ModbusAddress = 0x14;  // The modbus address of the Y514
+// const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y514NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 // Create and return the Y514 chlorophyll sensor object
-YosemitechY514 y514(y514modbusAddress, modbusSerial, modbusPower, max485EnablePin, y514NumberReadings);
+YosemitechY514 y514(y514ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y514NumberReadings);
 // Create the chlorophyll concentration and temperature variable objects for the Y514 and return variable-type pointers to them
 Variable *y514Chloro = new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *y514Temp = new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab");
@@ -185,12 +189,13 @@ Variable *y514Temp = new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-123
 //    Yosemitech Y520 Conductivity Sensor
 // ==========================================================================
 #include <YosemitechY520.h>
-byte y520modbusAddress = 0x20;  // The modbus address of the Y520
-// const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+byte y520ModbusAddress = 0x20;  // The modbus address of the Y520
+// const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y520NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 // Create and return the Y520 conductivity sensor object
-YosemitechY520 y520(y520modbusAddress, modbusSerial, modbusPower, max485EnablePin, y520NumberReadings);
+YosemitechY520 y520(y520ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y520NumberReadings);
 // Create the specific conductance and temperature variable objects for the Y520 and return variable-type pointers to them
 Variable *y520Cond = new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab");
@@ -297,6 +302,9 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
+    // Set up pin for the modem
+    pinMode(modemSleepRqPin, OUTPUT);
+
     // Print a start-up note to the first serial port
     Serial.print(F("Now running "));
     Serial.print(sketchName);
@@ -394,7 +402,7 @@ void loop()
             modem.disconnectInternet();
         }
         // Turn the modem off
-        modem.modemPowerDown();
+        modem.modemSleepPowerDown();
 
         // Turn off the LED
         digitalWrite(greenLED, LOW);
@@ -424,7 +432,7 @@ void loop()
             modem.disconnectInternet();
         }
         // Turn off the modem
-        modem.modemPowerDown();
+        modem.modemSleepPowerDown();
     }
 
     // Call the processor sleep

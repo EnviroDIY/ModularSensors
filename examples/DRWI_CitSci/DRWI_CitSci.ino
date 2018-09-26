@@ -37,7 +37,8 @@ const char *LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 5;
 // Your logger's timezone.
-const int8_t timeZone = -5;
+const int8_t timeZone = -5;  // Eastern Standard Time
+// NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
 
 // ==========================================================================
@@ -85,21 +86,27 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 const int8_t modemSleepRqPin = 23;  // Modem Sleep Request Pin (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
+const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is powered on (HIGH or LOW)
 
-// And create a pointer to the method to be used to turn the modem on and off
-// The on/off method needs the pins and to know whether the sleep request is a HIGH or LOW value
-// Use heldOnOff if the sleep request pin is set and kept to keep the modem awake
-// Use pulsedOnOff if the sleep request pin is quickly switched to wake the modem up
-// The Sodaq GPRSBee rev6 uses heldOnOff with the pin held high
-// All Digi XBee's uses heldOnOff with the pin held low
-// The Adafruit Fona and Sodaq GPRSBee rev4 use a low pulsedOnOff
-ModemOnOff *modemOnOff = new heldOnOff(modemVCCPin, modemSleepRqPin, modemStatusPin, HIGH);
+// And create the wake and sleep methods for the modem
+// These can be functions of any type and must return a boolean
+bool onFxn(void)
+{
+    digitalWrite(modemSleepRqPin, HIGH);
+    return true;
+}
+bool offFxn(void)
+{
+    digitalWrite(modemSleepRqPin, LOW);
+    return true;
+}
 
 // And we still need the connection information for the network
 const char *apn = "hologram";  // The APN for the gprs connection, unnecessary for WiFi
 // Create the loggerModem instance
-// A "loggerModem" is a combination of a TinyGSM Modem, a Client, and an on/off method
-loggerModem modem(tinyModem, tinyClient, modemOnOff, apn);
+// A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
+loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, onFxn, offFxn, tinyModem, tinyClient, apn);
+
 
 
 // ==========================================================================
@@ -212,6 +219,9 @@ void setup()
     pinMode(redLED, OUTPUT);
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
+
+    // Set up pin for the modem
+    pinMode(modemSleepRqPin, OUTPUT);
 
     // Print a start-up note to the first serial port
     Serial.print(F("Now running "));
