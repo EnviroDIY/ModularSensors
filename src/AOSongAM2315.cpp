@@ -38,8 +38,8 @@ String AOSongAM2315::getSensorLocation(void){return F("I2C_0xB8");}
 
 bool AOSongAM2315::setup(void)
 {
-    Wire.begin();  // Start the wire library
-    return Sensor::setup();  // this will set timestamp and status bit
+    Wire.begin();  // Start the wire library (sensor power not required)
+    return Sensor::setup();  // this will set pin modes and the setup status bit
 }
 
 

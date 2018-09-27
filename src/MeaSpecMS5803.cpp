@@ -58,9 +58,20 @@ String MeaSpecMS5803::getSensorLocation(void)
 
 bool MeaSpecMS5803::setup(void)
 {
+    bool retVal = Sensor::setup();  // this will set pin modes and the setup status bit
+
+    // This sensor needs power for setup!
+    bool wasOn = checkPowerOn();
+    if(!wasOn){powerUp();}
+    waitForWarmUp();
+
     MS5803_internal.begin(_i2cAddressHex, _maxPressure);
     MS5803_internal.reset();
-    return Sensor::setup();  // this will set timestamp and status bit
+
+    // Turn the power back off it it had been turned on
+    if(wasOn){powerDown();}
+
+    return retVal;
 }
 
 

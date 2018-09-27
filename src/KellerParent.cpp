@@ -60,7 +60,7 @@ String KellerParent::getSensorLocation(void)
 
 bool KellerParent::setup(void)
 {
-    bool retVal = Sensor::setup();  // sets time stamp and status bits
+    bool retVal = Sensor::setup();  // this will set pin modes and the setup status bit
     if (_RS485EnablePin >= 0) pinMode(_RS485EnablePin, OUTPUT);
     if (_powerPin2 >= 0) pinMode(_powerPin2, OUTPUT);
 
@@ -68,6 +68,7 @@ bool KellerParent::setup(void)
         sensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
     #endif
 
+    // This sensor begin is just setting more pin modes, etc, no sensor power required
     retVal &= sensor.begin(_modbusAddress, _stream, _RS485EnablePin);
 
     return retVal;

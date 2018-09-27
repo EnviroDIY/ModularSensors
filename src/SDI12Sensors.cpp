@@ -49,7 +49,12 @@ SDI12Sensors::SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin, ui
 
 bool SDI12Sensors::setup(void)
 {
-    bool retVal = Sensor::setup();  // this will set timestamp and status bit
+    bool retVal = Sensor::setup();  // this will set pin modes and the setup status bit
+
+    // This sensor needs power for setup!
+    bool wasOn = checkPowerOn();
+    if(!wasOn){powerUp();}
+    waitForWarmUp();
 
     // Begin the SDI-12 interface
     _SDI12Internal.begin();
@@ -73,6 +78,9 @@ bool SDI12Sensors::setup(void)
     // De-activate the SDI-12 Object
     // Use end() instead of just forceHold to un-set the timers
     _SDI12Internal.end();
+
+    // Turn the power back off it it had been turned on
+    if(wasOn){powerDown();}
 
     return retVal;
 }

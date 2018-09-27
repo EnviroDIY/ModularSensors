@@ -39,8 +39,8 @@ AOSongDHT::AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type, uint8_t meas
 
 bool AOSongDHT::setup(void)
 {
-    dht_internal.begin();  // Start up the sensor
-    return Sensor::setup();  // this will set timestamp and status bit
+    dht_internal.begin();  // Start up the sensor (only sets pin modes, sensor power not required)
+    return Sensor::setup();  // this will set pin modes and the setup status bit
 }
 
 

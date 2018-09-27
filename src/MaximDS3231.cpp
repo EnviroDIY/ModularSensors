@@ -26,7 +26,8 @@ String MaximDS3231::getSensorLocation(void) {return F("I2C_0x68");}
 bool MaximDS3231::setup(void)
 {
     rtc.begin();
-    return Sensor::setup();
+    return Sensor::setup();  // this will set pin modes and the setup status bit
+    // The clock should be continuously powered, so we never need to worry about power up
 }
 
 

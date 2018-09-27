@@ -38,8 +38,21 @@ String MPL115A2::getSensorLocation(void){return F("I2C_0x60");}
 
 bool MPL115A2::setup(void)
 {
+    bool retVal = Sensor::setup();  // this will set pin modes and the setup status bit
+
+    // This sensor needs power for setup!
+    // The bme280's begin() reads required data from the sensor.
+    bool wasOn = checkPowerOn();
+    if(!wasOn){powerUp();}
+    waitForWarmUp();
+
+    // Run the sensor begin()
     mpl115a2_internal.begin();
-    return Sensor::setup();  // this will set timestamp and status bit
+
+    // Turn the power back off it it had been turned on
+    if(wasOn){powerDown();}
+
+    return retVal;
 }
 
 

@@ -41,9 +41,8 @@ String RainCounterI2C::getSensorLocation(void)
 
 bool RainCounterI2C::setup(void)
 {
-    Sensor::setup();
-    Wire.begin(); //Initalize wire (I2C) functionality
-    return true;
+    Wire.begin();  // Start the wire library (sensor power not required)
+    return Sensor::setup();  // this will set pin modes and the setup status bit
 }
 
 

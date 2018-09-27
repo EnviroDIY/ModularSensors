@@ -75,7 +75,13 @@ bool MaximDS18::setup(void)
 {
     uint8_t ntries = 0;
 
-    bool retVal = Sensor::setup();  // this will set timestamp and status bit
+    bool retVal = Sensor::setup();  // this will set pin modes and the setup status bit
+
+    // Need to power up for setup
+    bool wasOn = checkPowerOn();
+    if(!wasOn){powerUp();}
+    waitForWarmUp();
+
     _internalDallasTemp.begin();
 
     // Find the address if it's not known
@@ -149,6 +155,9 @@ bool MaximDS18::setup(void)
     // Tell the sensor that we do NOT want to wait for conversions to finish
     // That is, we're in ASYNC mode and will get values when we're ready
     _internalDallasTemp.setWaitForConversion(false);
+
+    // Turn the power back off it it had been turned on
+    if(wasOn){powerDown();}
 
     return retVal;
 }

@@ -51,7 +51,13 @@ String BoschBME280::getSensorLocation(void)
 
 bool BoschBME280::setup(void)
 {
-    bool retVal = Sensor::setup();  // this will set timestamp and status bit
+    bool retVal = Sensor::setup();  // this will set pin modes and the setup status bit
+
+    // This sensor needs power for setup!
+    // The bme280's begin() reads required data from the sensor.
+    bool wasOn = checkPowerOn();
+    if(!wasOn){powerUp();}
+    waitForWarmUp();
 
     // Run begin fxn because it returns true or false for success in contact
     // Make 5 attempts
@@ -69,6 +75,8 @@ bool BoschBME280::setup(void)
     }
     retVal &= success;
 
+    // Turn the power back off it it had been turned on
+    if(wasOn){powerDown();}
 
     return retVal;
 }

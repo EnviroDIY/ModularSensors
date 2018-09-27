@@ -54,7 +54,7 @@ bool MaxBotixSonar::setup(void)
     // Even the slowest sensors should respond at a rate of 6Hz (166ms).
     _stream->setTimeout(180);
 
-    return Sensor::setup();  // this will set timestamp and status bit
+    return Sensor::setup();  // this will set pin modes and the setup status bit
 }
 
 

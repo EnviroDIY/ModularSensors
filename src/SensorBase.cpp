@@ -196,7 +196,7 @@ bool Sensor::wake(void)
 // Does NOT power down the sensor!
 bool Sensor::sleep(void)
 {
-    MS_DBG(F("Putting to "), getSensorName(), F(" at "),
+    MS_DBG(F("Putting "), getSensorName(), F(" at "),
            getSensorLocation(), F(" to sleep\n"));
     // Unset the activation time
     _millisSensorActivated = 0;
@@ -221,7 +221,7 @@ void Sensor::registerVariable(int varNum, Variable* var)
 void Sensor::notifyVariables(void)
 {
     MS_DBG(F("Notifying variables registered to "), getSensorName(), F(" at "),
-           getSensorLocation(), F(".\n"));
+           getSensorLocation(), F(" of value update.\n"));
     // Make note of the last time updated
     // _sensorLastUpdated = millis();
 
