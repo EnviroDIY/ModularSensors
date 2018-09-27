@@ -485,6 +485,17 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
     if (bitRead(getStatus(), 0) == 0)  // NOT yet powered
         modemPowerUp();
 
+    // Check if the modem has previously be set-up and set it up if not
+    // we're doing this because it's possible that the modem might be skipped
+    // during the main setup/begin function due to low battery power.
+    // Some of the parameters for the modem functionality are actually read
+    // during the modem set up, so we need to make sure a set-up happens.
+    if (bitRead(getStatus(), 1) == 0)  // NOT yet set up
+    {
+        waitForWarmUp();
+        setup();
+    }
+
     if (bitRead(getStatus(), 0) == 3)  // NOT yet awake/actively measuring
     {
         waitForWarmUp();
@@ -629,7 +640,7 @@ bool loggerModem::modemSleepPowerDown(void)
     MS_MOD_DBG(F("Waiting for graceful shutdown...\n"));
     if (_statusPin >= 0)
     {
-        while (millis() - start < 10000L && _statusPin == _statusLevel){}
+        while (millis() - start < 10000L /*&& _statusPin == _statusLevel*/){MS_MOD_DBG(millis() - start,':', _statusPin);}
         if (_statusPin == _statusLevel)
             MS_MOD_DBG(F("  ... Modem did not successfully shut down!\n"));
         else MS_MOD_DBG(F("  ... shutdown complete after "), millis() - start, F("ms.\n"));

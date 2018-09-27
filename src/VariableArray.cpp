@@ -60,6 +60,18 @@ bool VariableArray::setupSensors(void)
     MS_DBG(F("Beginning setup for sensors and variables...\n"));
 
     // First power all of the sensors
+    // NOTE:  Because we are running this *before* running each sensor's setup
+    // function, this may actually fail to power a sensors if the pin mode for
+    // that sensor's power pin is not correct.  The pin modes are set *during*
+    // most sensor's set-up function.  For this reason, each sensor that requires
+    // power for setup should have a powerUp() and waitForWarmup() written into
+    // its setup function.
+    // But, for logger boards that have been programmed more than once, the pin
+    // mode from the previous power up of the MCU is usually retained so chances
+    // are high that this will actually power up the sensors. If this does
+    // successfully power up the sensors, it saves us all of the waitForWarmup()
+    // time and prevents the power from flickering on and off during setup in
+    // cases where many sensors are powered on the same circuit.
     MS_DBG(F("Powering up sensors for setup.\n"));
     sensorsPowerUp();
 
