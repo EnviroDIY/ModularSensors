@@ -133,10 +133,10 @@ bool VariableArray::setupSensors(void)
     sensorsPowerDown();
 
     // Now attach all of the variables to their parents
-    MS_DBG(F("Attaching variables to their parent sensors.\n"));
-    for (int i = 0; i < _variableCount; i++){
-        success &= arrayOfVars[i]->setup();
-    }
+    // MS_DBG(F("Attaching variables to their parent sensors.\n"));
+    // for (int i = 0; i < _variableCount; i++){
+    //     success &= arrayOfVars[i]->setup();
+    // }
 
     if (success)
         MS_DBG(F("   ... Success!\n"));

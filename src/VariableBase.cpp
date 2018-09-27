@@ -38,6 +38,9 @@ Variable::Variable(Sensor *parentSense, int varNum,
     // When we create the variable, we also want to initialize it with a current
     // value of -9999 (ie, a bad result).
     _currentValue = -9999;
+
+    // Attach to the parent sensor right at object creation
+    attachSensor(_varNum, parentSensor);
 }
 
 // The constructor for a calculated variable  - that is, one whose value is
@@ -110,11 +113,11 @@ String Variable::getParentSensorName(void)
 
 
 // This sets up the variable (generally attaching it to its parent)
-bool Variable::setup(void)
-{
-    if (!isCalculated) attachSensor(_varNum, parentSensor);
-    return true;
-}
+// bool Variable::setup(void)
+// {
+//     if (!isCalculated) attachSensor(_varNum, parentSensor);
+//     return true;
+// }
 
 // This returns the variable's name using http://vocabulary.odm2.org/variablename/
 String Variable::getVarName(void){return _varName;}

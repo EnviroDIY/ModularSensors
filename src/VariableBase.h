@@ -50,7 +50,7 @@ public:
     String getParentSensorLocation(void);
 
     // This sets up the variable (generally attaching it to its parent)
-    virtual bool setup(void);
+    // virtual bool setup(void);
 
     // This gets the variable's name using http://vocabulary.odm2.org/variablename/
     String getVarName(void);

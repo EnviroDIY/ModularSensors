@@ -200,7 +200,7 @@ bool Sensor::sleep(void)
            getSensorLocation(), F(" to sleep\n"));
     // Unset the activation time
     _millisSensorActivated = 0;
-    // Unset the activated status bit (bit 3), stability (bit 4), measeurement
+    // Unset the activated status bit (bit 3), stability (bit 4), measurement
     // request (bit 5) and measurement completion (bit 6)
     _sensorStatus &= 0b10000111;
     return true;
