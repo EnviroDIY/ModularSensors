@@ -169,12 +169,11 @@ These functions are also available for each sensor, but should be used with caut
     - For _calculated_ variables, you use the base variable object constructor.  The constructor requires a function which returns a float as its first argument, followed by Strings from the variable's name and unit.  Both of these strings should be values from the [ODM2 controlled vocabularies](http://vocabulary.odm2.org/).  Next an integer variable resolution is required.  Then two Strings for the variable UUID and variable code.  _All arguments are required in the calculated variable constructor!_
 - **getVarName()** - This returns the variable's name, using http://vocabulary.odm2.org/variablename/, as a String.
 - **getVarUnit()** - This returns the variable's unit, using http://vocabulary.odm2.org/units/, as a String.
-- **getVarCode()** - This returns a String with a customized code for the variable, if one is given, and a default if not
-- **getVarUUID()** - This returns the universally unique identifier of a variables, if one is assigned, as a String
-- **setup()** - This "sets up" the variable - attaching it to its parent sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program _after_ calling the sensor setup.
+- **getVarCode()** - This returns a String with a customized code for the variable, if one is given, and a default if not.
+- **getVarUUID()** - This returns the universally unique identifier of a variables, if one is assigned, as a String.
 - **getValue(bool updateValue)** - This returns the current value of the variable as a float.  By default, it does not ask the parent sensor for a new value, but simply returns the last value a parent sensor notified it of, no matter the age of the value.  If you would like to ask the sensor to measure a new value and for that new value to be returned, set the boolean flag as true.  Calculated variables will never ask any sensors for updates.
 - **getValueString(bool updateValue)** - This is identical to getValue, except that it returns a string with the proper precision available from the sensor.
-- **attachSensor(int varNum, Sensor \*parentSense)** - The compliment to a sensor's registerVariable() function.  This attaches a variable object to the sensor that is giving the value to the variable.  The variable is generally responsible for calling this function!  This should never be called for a calculated variable.
+- **attachSensor(int varNum, Sensor \*parentSense)** - The compliment to a sensor's registerVariable() function.  This attaches a variable object to the sensor that is giving the value to the variable.  This generally only needs to happen in the constructor for a non-calculated variable.
 - **onSensorUpdate()** - This is the variable's response to the sensor's notifyVariables() function.  It accepts the new value from the sensor.  This is generally called by the sensor.  This should never be called for a calculated variable.
 - - **getParentSensorName()** - This is a helper - it returns the name of the parent sensor, if applicable
 - - **getParentSensorLocation()** - This is a helper - it returns the "location" of the parent sensor, if applicable
@@ -198,11 +197,8 @@ setup()
     // Start the primary serial connection
     Serial.begin(SERIAL_BAUD);
 
-    // Set up the sensor first and then the variables
+    // Set up the sensor
     ctd.setup();
-    cond.setup();
-    temp.setup();
-    depth.setup();
 }
 
 loop()
@@ -232,7 +228,8 @@ Having a unified set of functions to access many sensors allows us to quickly po
 - **sensorsWake()** - This wakes all sensors, skipping repeated sensors.  Returns true.
 - **sensorsSleep()** - This puts all sensors to sleep, skipping repeated sensors.  Returns true.
 - **sensorsPowerDown()** - This cuts power to all sensors, skipping repeated sensors.  No return.
-- **updateAllSensors()** - This updates all sensor values, skipping repeated sensors.  Returns true.  Does NOT return any values.
+- **updateAllSensors()** - This updates all sensor values, skipping repeated sensors.  Does not power or wake/sleep sensors.  Returns true.  Does NOT return any values.
+- **completeUpdate()** - This updates all sensor values, including power up, wake, sleep and power down.  Repeated sensors are skipped.  Returns true.  Does NOT return any values.
 - **printSensorData(Stream stream)** - This prints current sensor values along with meta-data to a stream (either hardware or software serial).  By default, it will print to the first Serial port.  Note that the input is a pointer to a stream instance so to use a hardware serial instance you must use an ampersand before the serial name (ie, &Serial1).
 
 ### <a name="ArrayExamples"></a>VariableArray Examples:
@@ -299,7 +296,7 @@ Creating the variable pointers outside of the array is particularly helpful when
 Once you have created the array of pointers, you can initialize the VariableArray module and setup all of the variables and their parent sensors at once in the setup function:
 
 ```cpp
-// Set up all the sensors AND variables (BOTH are done by this function)
+// Set up all the sensors
 myVars.setupSensors();
 ```
 
@@ -383,9 +380,11 @@ For more intense _code_ debugging for any individual component of the library (s
 
 ### <a name="Modem"></a>Functions for a LoggerModem:
 
-A loggerModem serves two functions:  First, it communicates with the internet via WiFi or cellular service and sends data to remote services.  Second, it acts as a sensor which can return the strength of the WiFi or cellular connection.  A loggerModem object is a combination of a [TinyGsm](https://github.com/EnviroDIY/TinyGSM) (modem instance), a TCP Client (generally through TinyGSM), and a ModemOnOff to control modem power.  The TinyGSM library supports quite a number of different modem chips.  See [TinyGSM's documentation](https://github.com/vshymanskyy/TinyGSM/blob/master/README.md) for a more details about of all of the chip variants and modules that are supported.
+A loggerModem serves two functions:  First, it communicates with the internet via WiFi or cellular service and sends data to remote services.  Second, it acts as a sensor which can return the strength of the WiFi or cellular connection.
 
-The first step in creating a loggerModem instance is defining your modem chip type.  _This define statement must be above the include statement for the TinyGSM modem library._
+A loggerModem object has power and status pins, and communicates on an Arduiono stream with a combination of a [TinyGsm](https://github.com/EnviroDIY/TinyGSM) modem instance and a TCP Client (generally through TinyGSM).  For modems that support it, functions can be created and used to put the board into deep sleep/powered down mode and to wake it back up.  The TinyGSM library supports quite a number of different modem chips.  See [TinyGSM's documentation](https://github.com/vshymanskyy/TinyGSM/blob/master/README.md) for a more details about of all of the chip variants and modules that are supported.
+
+Use a pre-processor define statement to select your modem chip type.  _This define statement must be above the include statement for the TinyGSM modem library._
 - ```#define TINY_GSM_MODEM_SIM900``` - for a SIMCom SIM900 Quad-band GSM/GPRS module, or variant thereof (including older rev4 [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
 - ```#define TINY_GSM_MODEM_SIM800``` - for a SIMCom SIM800 Quad-band GSM/GPRS module or variant thereof (including current rev6 [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
 - ```#define TINY_GSM_MODEM_SIM808``` - for a SIMCom SIM808 Quad-band GSM/GPRS/GPS module
@@ -401,7 +400,7 @@ The first step in creating a loggerModem instance is defining your modem chip ty
 - ```#define TINY_GSM_MODEM_ESP8266``` - for an ESP8266 WiFi module using the _default AT command firmware_
 - ```#define TINY_GSM_MODEM_XBEE``` - for Digi brand WiFi or Cellular XBee's running in transparent (default) mode
 
-Below the modem definition, include TinyGSM.  Then set up a serial port and create a TinyGSM modem and client.  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  Remember to begin the serial port in the "setup" function.
+_Below_ the modem definition, include TinyGSM.  Then set up a serial port and create a TinyGSM modem and client.  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  Remember to begin the serial port in the "setup" function.
 ```cpp
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
@@ -421,30 +420,40 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 ```
 
-Next, create the "on-off" for the modem - that is the pins and method that will be used to turn the modem on and off.  There are two main pin-based methods used to activate modem chips - either holding a pin to be high or low to keep the modem on or sending a "pulse" of high or low voltage to a pin to turn it on and another to turn it off.  The constructors for either type of on-off are:
+You must create the functions that will be used to wake the modem from deep sleep/powered down mode and to put it back to sleep.  Most cellular and wifi chips have a pin that can be held either high or low or an AT command that can be used to put them into deep sleep and then wake them.  The exact commands and timing vary by both chip and completed board, so you need to provide exactly what function should be used for your modem.  The function can have any content, including setting and reading pins or sending AT commands, but it must take no arguments and return a boolean indicating its success (or simply return "true").  The wake/sleep function should NOT include turning the power pin on and off and should also not included any waiting for the status pin to come on.  The library already handles both of those functions.  Remember, if you use any pins in the wake or sleep functions, those pins must have the proper pin mode and initial pin state set in the setup() function (ie ```pinMode(#, OUTPUT);```).
+
+For a standard SIM800, the PWRKEY pin must be pulled LOW for > 1 sec to turn the chip on and pull LOW again for between 1 and 3.3 seconds to turn it off.  A single function then could be written for both wake and sleep:  (NOTE:  Sodaq's GPRSBee rev6 does NOT use this method.)
 ```cpp
-ModemOnOff *modemOnOff = new heldOnOff(modemVCCPin, modemSleepRqPin, modemStatusPin, LOW);
-// ModemOnOff *modemOnOff = new heldOnOff(modemVCCPin, modemSleepRqPin, modemStatusPin, HIGH);
-// ModemOnOff *modemOnOff = new pulsedOnOff(modemVCCPin, modemSleepRqPin, modemStatusPin, HIGH);
-// ModemOnOff *modemOnOff = new pulsedOnOff(modemVCCPin, modemSleepRqPin, modemStatusPin, LOW);
+bool wakeSleepFxn(void)
+{
+    digitalWrite(modemSleepRqPin, LOW);
+    delay(1100);  // >1s
+    digitalWrite(modemSleepRqPin, HIGH);
+    return true;
+}
 ```
 
-- Use **heldOnOff** if the sleep request pin is set and kept to keep the modem awake.
-- Use **pulsedOnOff** if the sleep request pin is quickly switched to wake the modem up.
+If your modem doesn't support sleep or you don't want to use it, you can create a function that only returns true:
+```cpp
+bool wakeSleepFxn(void){ return true; }
+```
+
+
+With the wake and sleep functions set, you can create the loggerModem instance with one of two constructors, depending on whether the modem is cellular or WiFi:
+```cpp
+// Create the loggerModem instance
+// A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
+loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);  // for cellular modems
+// loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);  // for WiFi modems
+```
+
 - The **vcc33Pin** is the pin that controls whether or not the modem itself is powered.  Use -1 if your modem is always receiving power or if you want to control modem power independently.  (And make sure that you really do power your modem!)
     - NOTE:  _Many_ modem chips require more power than the 0.5A that most Arduino-style boards can provide!  The power draw is particularly high during network connection and sending.  Some chips require up to 2.5A.  _Know your modem chip's specs!_  If it requires more power than your main control board can provide, ensure that the modem has an alternate battery connection or power source!
     - ALSO NOTE:  Generally speaking, do **NOT** use the same power pin for your modem as your sensors.  In nearly all cases, you will want your modem to be powered when your other sensors are not.
 - The **modemStatusPin** is the pin that indicates whether the modem is turned on and it is clear to send data.  If you use -1, the modem is assumed to always be ready.
-- The **modemSleepRqPin** is the _pin_ used to put the modem to sleep or to wake it up.
-- The last argument is whether the sleep request pin is set to a HIGH or LOW value.
-
-With the modem, client, and on-off all set up, there are two different constructors for the "loggerModem", depending on whether the modem is cellular or WiFi:
-```cpp
-// Create the loggerModem instance
-// A "loggerModem" is a combination of a TinyGSM Modem, a Client, and an on/off method
-loggerModem modem(tinyModem, tinyClient, modemOnOff, apn);  // for cellular modems
-// loggerModem modem(tinyModem, tinyClient, modemOnOff, wifiId, wifiPwd);  // for WiFi modems
-```
+- The **modemStatusLevel** is the level (HIGH or LOW) which the status pin will be at when the modem is _awake_.
+- The wake and sleep functions are the ones created for the modem.
+- The passwords and APN's are those needed for your cellular network.  NOTE:  Only WPA wifi security is supported.
 
 Once the modem has been set up, it has all the functions of sensor object.  These additional functions are available:
 
@@ -453,8 +462,8 @@ Once the modem has been set up, it has all the functions of sensor object.  Thes
 - **openTCP(IPAddress ip, uint16_t port)** - Makes a TCP connection to a host ip address and port.  Returns 1 if successful.
 - **closeTCP()** - Breaks the TCP connection.
 - **disconnectInternet()** - Disconnects from the network, if applicable.
-- **modemPowerUp()** - Turns the modem on.  Returns true if connection is successful.
-- **modemPowerDown()** - Turns the modem off and empties the send and receive buffer.  Returns true if connection is successful.
+- **modemPowerUp()** - Turns the modem on.  No return.
+- **modemSleepPowerDown()** - Runs the sleep function, waits for the status indicator to go off, then powers the modem down.  Returns true if successful.
 - **getNISTTime()** - Returns the current Unix time stamp (_in UTC_) from NIST via the TIME protocol (rfc868).
 
 As mentioned above, the cellular modems themselves are also sensors with the following variables:
@@ -466,20 +475,32 @@ Variable *modemRSSI = Modem_RSSI(&modem, "UUID", "customVarCode");  // Received 
 Variable *modemSinalPct = Modem_SignalPercent(&modem, "UUID", "customVarCode");  // "Percent" signal strength
 ```
 
-The major difference between a "modem" sensor and any other sensor is the power-up method.  The normal ```powerUp()``` and ```powerDown()``` functions used by every other sensor do not work, the modem will only go on with the ```modemPowerUp()``` function and off with the ```modemPowerDown()``` function.  This special functionality is in place because it is assumed that you will want the modem to be on to connect to the internet and send out data, even after the power has been cut to other sensors.
+The major difference between a "modem" sensor and any other sensor is the power-up method.  The normal ```powerUp()``` and ```powerDown()``` functions used by every other sensor do not work, the modem will only go on with the ```modemPowerUp()``` function and off with the ```modemSleepPowerDown()``` function.  This special functionality is in place because it is assumed that you will want the modem to be on to connect to the internet and send out data, even after the power has been cut to other sensors.
 
 
 #### <a name="SpecificModems"></a> Some special notes for specific modems:
 
 -  **Sodaq GPRSBee:**
     - These are SIM800 based boards.
-    - The Sodaq GPRSBee rev6 uses heldOnOff with the pin held high.
-    - The Sodaq GPRSBee rev4 uses a low pulsedOnOff.
+    - The Sodaq GPRSBee rev4 acts like a "standard" SIM800 and is woken and put to sleep with a 1 second low pulse.  (Example functions above)
+    - The Sodaq GPRSBee rev6 breaks the pins out differently.  The DTR/sleep_rq pin must be held high to keep the module on.  ie:
+        ```cpp
+        bool wakeFxn(void)
+        {
+            digitalWrite(modemSleepRqPin, HIGH);
+            return true;
+        }
+        bool sleepFxn(void)
+        {
+            digitalWrite(modemSleepRqPin, LOW);
+            return true;
+        }
+        ```
     - To start the modem you will need to power the logger board off, connect the battery to the logger board, and finally attach the modem to the logger board.  Then you may power the board and run your sketch. We have found that attaching a GPRSBee modem to power in a different sequence results in the modem reporting zero signal strength.
-- **Sodaq 3GBee:**
-    - These are u-blox based boards (SARA U201).
-    - They use heldOnOff with the pin held high.
-    - They do not have a pin to indicate status.
+- **Sodaq uBee:**
+    - These are u-blox based boards.
+    - The power to the cellular chip can be controlled by the DTR pin.  The chip turns on as soon as power is applied.
+    - The cellular chip can be put to sleep by either a low pulse on the PWR_ON pin (Bee pin 16/RTS) or by using the !inyGSM poweroff function (```tinyModem->poweroff()```).
 - **Digi XBee's:**
     - This library does _NOT_ support the ZigBee, 900mHZ, or any other radio-based XBee's.  It is for the cellular and WiFi Bee's only.
     - You must set up your XBee to utilize sleep mode.  The easiest way to set them up is to connect them to a computer via a UART dock and use Digi's free [XCTU](https://www.digi.com/products/xbee-rf-solutions/xctu-software/xctu) program.  
@@ -487,8 +508,20 @@ The major difference between a "modem" sensor and any other sensor is the power-
         - In "Sleep Commands" -> "Sleep Mode" select "Pin Sleep [1]"
         - For further power savings on cellular boards, in "Network" -> "Device Options" unset bit 1 to disable remote manager.  Set bit 3 to enable LTE PSM (Power Saving Mode) for LTE-M boards.
         - For further power savings on WiFi boards, in "Sleep Commands" -> "Sleep Options" unset bit 6 and set bit 9 for disconnected deep sleep.  (That is, put in a value of 200.)
-    - Once they have been set up, all Digi XBee's uses heldOnOff with the pin held low.
-    - The 3G Bee and the LTE-M Bee are based on u-blox chips (SARA U201 and SARA R410M) and can be used as such in bypass mode.  There's no particular advantage to this, though.
+    - Once they have been set up, on all Digi XBee's, the sleep_rq pin must be held LOW to keep the module on.  When that pin goes high, the module will turn off.  ie:
+        ```cpp
+        bool wakeFxn(void)
+        {
+            digitalWrite(modemSleepRqPin, LOW);
+            return true;
+        }
+        bool sleepFxn(void)
+        {
+            digitalWrite(modemSleepRqPin, HIGH);
+            return true;
+        }
+        ```
+    - The Digi 3G XBee and the LTE-M XBee3 are based on u-blox chips (SARA U201 and SARA R410M) and can be used as such in bypass mode.  There's no particular advantage to this, though.
 - **Adafruit Fona:**
     - The 2G Fona is based on a SIM800 and uses a high pulse to turn on and off.
     - The 3G Fona is not currently supported.
@@ -1065,12 +1098,12 @@ Many Keller pressure and water level sensors can communicate via Modbus RTU over
 
 Digital communication with Keller sensors configured for SDI12 communication protocols are not supported by these functions.
 
-The sensor constructor requires as input: modbus address, the pin controlling sensor power, and a stream instance for data (ie, ```Serial```).  The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.  (Use -1 for the enable pin if your adapter does not have one and you want to average more than one reading.) Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.  AltSoftSerial and HardwareSerial work fine.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.  The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.  (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.) Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.  AltSoftSerial and HardwareSerial work fine.  Two power pins are provided so that the RS485 adapter and the sensor can be powered separately.  If the power to both are controlled by the same pin, use -1 for the second power pin or omit the argument.  If they are controlled by different pins _and no other sensors are dependent on power from either pin_ then the order of the pins doesn't matter.  If the RS485 adapter and the sensor are controlled by different pins _and any other sensors are controlled by the same pins_ you should put the shared pin first and the un-shared pin second.  Both pins _cannot_ be shared pins.
 
 ```cpp
 #include <KellerAcculevel.h>
 // Create and return the Keller AccuLevel sensor object
-KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, modbusPower, max485EnablePin, acculevelNumberReadings);
+KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, powerPin1, powerPin2, max485EnablePin, acculevelNumberReadings);
 ```
 
 The two available variables are:  (UUID and customVarCode are optional; UUID must always be listed first.)
@@ -1105,7 +1138,7 @@ This library currently supports the following Yosemitech sensors:
 
 All of these sensors require a 5-12V power supply and the power supply can be stopped between measurements.  (_Note that any user settings (such as brushing frequency) will be lost if the sensor loses power._)  They communicate via [Modbus RTU](https://en.wikipedia.org/wiki/Modbus) over [RS-485](https://en.wikipedia.org/wiki/RS-485).  To interface with them, you will need an RS485-to-TTL adapter.  The white wire of the Yosemitech sensor will connect to the "B" pin of the adapter and the green wire will connect to "A".  The red wire from the sensor should connect to the 5-12V power supply and the black to ground.  The Vcc pin on the adapter should be connected to another power supply (voltage depends on the specific adapter) and the ground to the same ground.  The red wire from the sensor _does not_ connect to the Vcc of the adapter.  The R/RO/RXD pin from the adapter connects to the TXD on the Arduino board and the D/DI/TXD pin from the adapter connects to the RXD.  If applicable, tie the RE and DE (receive/data enable) pins together and connect them to another pin on your board.  While this library supports an external enable pin, we have had very bad luck with most of them.  Adapters with automatic direction control tend to use very slightly more power, but have more stable communication.  There are a number of RS485-to-TTL adapters available.  When shopping for one, be mindful of the logic level of the TTL output by the adapter.  The MAX485, one of the most popular adapters, has a 5V logic level in the TTL signal.  This will _fry_ any board like the Mayfly that uses 3.3V logic.  You would need a voltage shifter in between the Mayfly and the MAX485 to make it work.
 
-The sensor modbus address, the pin controlling sensor power, a stream instance for data (ie, ```Serial```), the Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter, and the number of readings to average are required for the sensor constructor.  (Use -1 for the enable pin if your adapter does not have one.)  For all of these sensors except pH, Yosemitech strongly recommends averaging 10 readings for each measurement.  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.  AltSoftSerial and HardwareSerial work fine.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.  The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.  (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)  For all of these sensors except pH, Yosemitech strongly recommends averaging 10 readings for each measurement.  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.  AltSoftSerial and HardwareSerial work fine.  Two power pins are provided so that the RS485 adapter and the sensor can be powered separately.  If the power to both are controlled by the same pin, use -1 for the second power pin or omit the argument.  If they are controlled by different pins _and no other sensors are dependent on power from either pin_ then the order of the pins doesn't matter.  If the RS485 adapter and the sensor are controlled by different pins _and any other sensors are controlled by the same pins_ you should put the shared pin first and the un-shared pin second.  Both pins _cannot_ be shared pins.
 
 By default, this library cuts power to the sensors between readings, causing them to lose track of their brushing interval.  The library manually activates the brushes as part of the "wake" command.  There are currently no other ways to set the brushing interval in this library.
 
@@ -1115,7 +1148,7 @@ The various sensor and variable constructors are:  (UUID and customVarCode are o
 // Dissolved Oxygen Sensor
 #include <YosemitechY504.h>  // Use this for both the Y502-A and Y504-A
 // Create and return the Y504 DO sensor object
-YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
+YosemitechY504 y504(y504ModbusAddress, modbusSerial, powerPin1, powerPin2, max485EnablePin, measurementsToAverage);
 // Create the dissolved oxygen percent, dissolved oxygen concentration, and temperature variable objects for the Y504 and return variable-type pointers to them
 Variable *y504DOpct = new YosemitechY504_DOpct(&y504, "UUID", "customVarCode");  // DO percent saturation
 //  Resolution is 0.00000005 %
@@ -1135,7 +1168,7 @@ Variable *y504Temp = new YosemitechY504_Temp(&y504, "UUID", "customVarCode");  /
 // Turbidity Sensor without wiper
 #include <YosemitechY510.h>  // Use this for the Y510-B
 // Create and return the Y510-B turbidity sensor object
-YosemitechY510 y510(y510modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
+YosemitechY510 y510(y510ModbusAddress, modbusSerial, powerPin1, powerPin2, max485EnablePin, measurementsToAverage);
 // Create the turbidity and temperature variable objects for the Y510 and return variable-type pointers to them
 Variable *y510Turb = new YosemitechY510_Turbidity(&y510, "UUID", "customVarCode");  // Turbidity in NTU
 //  Resolution is 0.0000002 NTU
@@ -1151,7 +1184,7 @@ Variable *y510Temp = new YosemitechY510_Temp(&y510, "UUID", "customVarCode");  /
 // Turbidity Sensor with wiper
 #include <YosemitechY511.h>  // Use this for the Y511-A
 // Create and return the Y511-A turbidity sensor object
-YosemitechY511 y511(y511modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
+YosemitechY511 y511(y511ModbusAddress, modbusSerial, powerPin1, powerPin2, max485EnablePin, measurementsToAverage);
 // Create the turbidity and temperature variable objects for the Y511 and return variable-type pointers to them
 Variable *y511Turb = new YosemitechY511_Turbidity(&y511, "UUID", "customVarCode");  // Turbidity in NTU
 //  Resolution is 0.0000002 NTU
@@ -1167,7 +1200,7 @@ Variable *y511Temp = new YosemitechY511_Temp(&y511, "UUID", "customVarCode");  /
 // Chlorophyll Sensor
 #include <YosemitechY514.h>
 // Create and return the Y514 chlorophyll sensor object
-YosemitechY514 y514(y514modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
+YosemitechY514 y514(y514ModbusAddress, modbusSerial, powerPin1, powerPin2, max485EnablePin, measurementsToAverage);
 // Create the chlorophyll concentration and temperature variable objects for the Y514 and return variable-type pointers to them
 Variable *y514Chloro = new YosemitechY514_Chlorophyll(&y514, "UUID", "customVarCode");  // Chlorophyll concentration in µg/L
 //  Resolution is 0.1 µg/L / 0.1 RFU
@@ -1183,7 +1216,7 @@ Variable *y514Temp = new YosemitechY514_Temp(&y514, "UUID", "customVarCode");  /
 // Conductivity Sensor
 #include <YosemitechY520.h>
 // Create and return the Y520 conductivity sensor object
-YosemitechY520 y520(y520modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
+YosemitechY520 y520(y520ModbusAddress, modbusSerial, powerPin1, powerPin2, max485EnablePin, measurementsToAverage);
 // Create the specific conductance and temperature variable objects for the Y520 and return variable-type pointers to them
 Variable *y520Cond = new YosemitechY520_Cond(&y520, "UUID", "customVarCode");  // Conductivity in µS/cm
 //  Resolution is 0.1 µS/cm
@@ -1199,7 +1232,7 @@ Variable *y520Temp = new YosemitechY520_Temp(&y520, "UUID", "customVarCode");  /
 // pH Sensor
 #include <YosemitechY532.h>
 // Create and return the Y532 pH sensor object
-YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
+YosemitechY532 y532(y532ModbusAddress, modbusSerial, powerPin1, powerPin2, max485EnablePin, measurementsToAverage);
 // Create the pH, voltage, and temperature variable objects for the Y532 and return variable-type pointers to them
 Variable *y532pH = new YosemitechY532_pH(&y532, "UUID", "customVarCode");  // pH
 //  Resolution is 0.01 pH units
@@ -1219,7 +1252,7 @@ Variable *y532Temp = new YosemitechY532_Temp(&y532, "UUID", "customVarCode");  /
 // ORP Sensor
 #include <YosemitechY533.h>
 // Create and return the Y533 ORP sensor object
-YosemitechY533 y533(y533modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
+YosemitechY533 y533(y533ModbusAddress, modbusSerial, powerPin1, powerPin2, max485EnablePin, measurementsToAverage);
 // Create the pH, voltage, and temperature variable objects for the Y533 and return variable-type pointers to them
 Variable *y533pH = new YosemitechY533_pH(&y533, "UUID", "customVarCode");  // pH
 //  Resolution is 0.01 pH units
@@ -1239,7 +1272,7 @@ Variable *y533Temp = new YosemitechY533_Temp(&y533, "UUID", "customVarCode");  /
 // COD/UV254 Sensor
 #include <YosemitechY550.h>
 // Create and return the Y5550 COD/UV254 sensor object
-YosemitechY550 y550(y550modbusAddress, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
+YosemitechY550 y550(y550ModbusAddress, modbusSerial, powerPin1, powerPin2, max485EnablePin, measurementsToAverage);
 // Create the COD, turbidity, and temperature variable objects for the Y550 and return variable-type pointers to them
 Variable *y550COD = new YosemitechY550_COD(&y550, "UUID", "customVarCode");  // COD in mg/L equiv. KHP
 //  Resolution is 0.01 mg/L COD

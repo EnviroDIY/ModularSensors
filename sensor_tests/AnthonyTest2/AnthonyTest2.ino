@@ -179,7 +179,7 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 #if defined(TINY_GSM_MODEM_ESP8266)
 loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
 #elif defined(TINY_GSM_MODEM_XBEE)
-// loggerModem modem(modemVCCPin, modemOnOffheld.on, modemOnOffheld.off, tinyModem, tinyClient, wifiId, wifiPwd);
+// loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
 loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
 #elif defined(TINY_GSM_MODEM_UBLOX)
 loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);

@@ -110,7 +110,7 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-// loggerModem modem(modemVCCPin, modemOnOffheld.on, modemOnOffheld.off, tinyModem, tinyClient, wifiId, wifiPwd);
+// loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
 loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
 
 // Create the RSSI and signal strength variable objects for the modem and return
