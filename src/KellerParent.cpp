@@ -112,12 +112,12 @@ void KellerParent::powerDown(void)
         // Unset the power-on time
         _millisPowerOn = 0;
     }
-        if (_powerPin2 >= 0)
-        {
-            MS_DBG(F("Turning off secondary power to "), getSensorName(), F(" at "),
-                   getSensorLocation(), F(" with pin "), _powerPin2, F("\n"));
-            digitalWrite(_powerPin2, LOW);
-        }
+    if (_powerPin2 >= 0)
+    {
+        MS_DBG(F("Turning off secondary power to "), getSensorName(), F(" at "),
+               getSensorLocation(), F(" with pin "), _powerPin2, F("\n"));
+        digitalWrite(_powerPin2, LOW);
+    }
     if (_powerPin < 0 && _powerPin2 < 0)
     {
         MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation(),

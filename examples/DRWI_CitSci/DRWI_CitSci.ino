@@ -90,12 +90,12 @@ const bool modemStatusLevel = HIGH;  // The level of the status pin when the mod
 
 // And create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool onFxn(void)
+bool wakeFxn(void)
 {
     digitalWrite(modemSleepRqPin, HIGH);
     return true;
 }
-bool offFxn(void)
+bool sleepFxn(void)
 {
     digitalWrite(modemSleepRqPin, LOW);
     return true;
@@ -105,7 +105,7 @@ bool offFxn(void)
 const char *apn = "hologram";  // The APN for the gprs connection, unnecessary for WiFi
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, onFxn, offFxn, tinyModem, tinyClient, apn);
+loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
 
 
 

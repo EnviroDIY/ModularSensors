@@ -128,28 +128,28 @@ const bool modemStatusLevel = HIGH;  // The level of the status pin when the mod
 // And create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
 #if defined(TINY_GSM_MODEM_XBEE)
-bool onFxn(void)
+bool wakeFxn(void)
 {
     digitalWrite(modemSleepRqPin, LOW);
     return true;
 }
-bool offFxn(void)
+bool sleepFxn(void)
 {
     digitalWrite(modemSleepRqPin, HIGH);
     return true;
 }
 #elif defined(TINY_GSM_MODEM_ESP8266)
-bool onFxn(void){return true;}
-bool offFxn(void){return true;}
+bool wakeFxn(void){return true;}
+bool sleepFxn(void){return true;}
 #elif defined(TINY_GSM_MODEM_UBLOX)
-bool onFxn(void)
+bool wakeFxn(void)
 {
     digitalWrite(modemSleepRqPin, LOW);
     delayMicroseconds(60);  // 50-80µs
     digitalWrite(modemSleepRqPin, HIGH);
     return true;
 }
-bool offFxn(void)
+bool sleepFxn(void)
 {
     digitalWrite(modemSleepRqPin, LOW);
     delay(1100);  // >1s
@@ -157,12 +157,12 @@ bool offFxn(void)
     return true;
 }
 #else
-bool onFxn(void)
+bool wakeFxn(void)
 {
     digitalWrite(modemSleepRqPin, HIGH);
     return true;
 }
-bool offFxn(void)
+bool sleepFxn(void)
 {
     digitalWrite(modemSleepRqPin, LOW);
     return true;
@@ -177,14 +177,14 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 #if defined(TINY_GSM_MODEM_ESP8266)
-loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, onFxn, offFxn, tinyModem, tinyClient, wifiId, wifiPwd);
+loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
 #elif defined(TINY_GSM_MODEM_XBEE)
 // loggerModem modem(modemVCCPin, modemOnOffheld.on, modemOnOffheld.off, tinyModem, tinyClient, wifiId, wifiPwd);
-loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, onFxn, offFxn, tinyModem, tinyClient, apn);
+loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
 #elif defined(TINY_GSM_MODEM_UBLOX)
-loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, onFxn, offFxn, tinyModem, tinyClient, apn);
+loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
 #else
-loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, onFxn, offFxn, tinyModem, tinyClient, apn);
+loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
 #endif
 
 // Create the RSSI and signal strength variable objects for the modem and return
