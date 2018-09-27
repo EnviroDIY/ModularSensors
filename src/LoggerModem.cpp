@@ -204,7 +204,11 @@ bool loggerModem::setup(void)
     }
 
     // Set the status bit marking that the modem has been set up (bit 1)
-    _sensorStatus |= 0b00000010;
+    // Only set the bit if setup was successful!
+    if (success) _sensorStatus |= 0b00000010;
+    // Otherwise, set the status error bit (bit 7)
+    else _sensorStatus |= 0b10000000;
+
 
     return success;
 }

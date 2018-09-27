@@ -72,6 +72,8 @@ bool BoschBME280::setup(void)
     {
         // Set the status error bit (bit 7)
         _sensorStatus |= 0b10000000;
+        // UN-set the set-up bit (bit 1) since setup failed!
+        _sensorStatus &= 0b11111101;
     }
     retVal &= success;
 

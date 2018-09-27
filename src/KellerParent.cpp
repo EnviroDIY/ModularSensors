@@ -69,6 +69,7 @@ bool KellerParent::setup(void)
     #endif
 
     // This sensor begin is just setting more pin modes, etc, no sensor power required
+    // This realy can't fail so adding the return value is just for show
     retVal &= sensor.begin(_modbusAddress, _stream, _RS485EnablePin);
 
     return retVal;

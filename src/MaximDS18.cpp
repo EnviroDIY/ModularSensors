@@ -159,6 +159,14 @@ bool MaximDS18::setup(void)
     // Turn the power back off it it had been turned on
     if(wasOn){powerDown();}
 
+    if (!retVal)  // if set-up failed
+    {
+        // Set the status error bit (bit 7)
+        _sensorStatus |= 0b10000000;
+        // UN-set the set-up bit (bit 1) since setup failed!
+        _sensorStatus &= 0b11111101;
+    }
+
     return retVal;
 }
 

@@ -65,6 +65,7 @@ bool MeaSpecMS5803::setup(void)
     if(!wasOn){powerUp();}
     waitForWarmUp();
 
+    // This doesn't return anything to indicate failure or success, we just have to hope
     MS5803_internal.begin(_i2cAddressHex, _maxPressure);
     MS5803_internal.reset();
 
