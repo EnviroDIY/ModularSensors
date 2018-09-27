@@ -51,7 +51,7 @@ String loggerModem::getSensorLocation(void) { return F("modemSerial"); }
 // NOTE!! Power is left ON after set-up
 bool loggerModem::setup(void)
 {
-    bool retVal = false;
+    bool success = false;
 
     // Initialize the modem
     MS_MOD_DBG(F("Starting up the modem...\n"));
@@ -59,14 +59,20 @@ bool loggerModem::setup(void)
     if (_powerPin >= 0) pinMode(_powerPin, OUTPUT);
     if (_statusPin >= 0) pinMode(_statusPin, INPUT_PULLUP);
 
-    // Turn the modem on, and if successful, begin
-    if(_wakeFxn())
+    if (!bitRead(_sensorStatus, 0))
     {
-        retVal = _tinyModem->begin();
+        MS_MOD_DBG(getSensorName(), F(" doesn't have power and cannot be set up!\n"));
+        success = false;
+    }
+
+    // Turn the modem on, and if successful, begin
+    else if(_wakeFxn())
+    {
+        success = _tinyModem->begin();  // This generally begins with a 5 second testAT()
         _modemName = _tinyModem->getModemName();
         MS_MOD_DBG(F("   ... Complete!\n"));
     }
-    else MS_MOD_DBG(F("   ... Modem failed to turn on!\n"));
+    else MS_MOD_DBG(F("   ... Modem failed to turn on and cannot be set up!\n"));
 
     // Set some warm-up times for specific models
     // NOTE:  These times are for raw cellular chips they do no necessarily
@@ -77,7 +83,7 @@ bool loggerModem::setup(void)
         _indicatorTime_ms = 2100;  // Time after end pulse until status pin becomes active (>3sec from start of pulse)
         _stabilizationTime_ms = 2100;  // Time after end pulse until serial port becomes active (>3sec from start of pulse)
         // _on_pull_down_ms = 1100;  // >1s
-        // _off_pull_down_ms = 600;  // 1sec > t > 3.3sec
+        // _off_pull_down_ms = 1100;  // 1sec > t > 3.3sec
         _disconnetTime_ms = 3100;  // power down (gracefully) takes >3sec
     }
     if (_modemName.indexOf("SIMCom SIM900") > 0)
@@ -104,7 +110,8 @@ bool loggerModem::setup(void)
         _modemName.indexOf("XBee® Cellular 3G") > 0)
     {
         _warmUpTime_ms = 0; // Module turns on when power is applied - level of PWR_ON then irrelevant
-        _indicatorTime_ms = 250;  // Time after end pulse until V_INT becomes active ??? Unclear in diagram!
+        _indicatorTime_ms = 35;  // Time after end pulse until V_INT becomes active
+                                 // Unclear in diagram! Taking value from Lisa U2
         _stabilizationTime_ms = 6000;  // Time until system and digital pins are operational
         // _on_pull_down_ms = 1;  // 50-80µs
         // _off_pull_down_ms = 1000;  // >1s
@@ -113,7 +120,8 @@ bool loggerModem::setup(void)
     if (_modemName.indexOf("SARA-G3") > 0)
     {
         _warmUpTime_ms = 0; // Module turns on when power is applied - level of PWR_ON then irrelevant
-        _indicatorTime_ms = 250;  // Time after end pulse until V_INT becomes active ??? Unclear in diagram!
+        _indicatorTime_ms = 35;  // Time after end pulse until V_INT becomes active
+                                 // Unclear in diagram! Taking value from Lisa U2
         _stabilizationTime_ms = 5000;  // Time until system and digital pins are operational
         // _on_pull_down_ms = 5;  // >5ms
         // _off_pull_down_ms = 1000;  // >1s
@@ -133,7 +141,7 @@ bool loggerModem::setup(void)
         _modemName.indexOf("Telit LE866") > 0)
     {
         _warmUpTime_ms = 0; // Module turns on when power is applied
-        _indicatorTime_ms = 100;  // N/A? - No status pin on Telit chip
+        _indicatorTime_ms = 0;  // N/A? - No status pin on Telit chip
         _stabilizationTime_ms = 25000L;  // Wait with 25s time-out for first AT response
         // _on_pull_down_ms = 0;  // N/A - standard chip cannot be powered on with pin
         // _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
@@ -142,8 +150,8 @@ bool loggerModem::setup(void)
     if (_modemName.indexOf("ESP8266") > 0)
     {
         _warmUpTime_ms = 0; // Module turns on when power is applied
-        _indicatorTime_ms = 0;  // N/A? - No status pin
-        _stabilizationTime_ms = 200;
+        _indicatorTime_ms = 350;  // N/A? - No status pin - use boot time if using a GPIO pin
+        _stabilizationTime_ms = 350;  // Boot up time 200-300ms
         // _on_pull_down_ms = 10;  // immediate
         // _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
         _disconnetTime_ms = 200;
@@ -198,7 +206,7 @@ bool loggerModem::setup(void)
     // Set the status bit marking that the modem has been set up (bit 1)
     _sensorStatus |= 0b00000010;
 
-    return retVal;
+    return success;
 }
 
 
@@ -207,21 +215,42 @@ bool loggerModem::setup(void)
 bool loggerModem::wake(void)
 {
     // Try the given wake function up to 5 times
+    uint32_t start;
     int ntries = 0;
     bool success = false;
     while (!success && ntries < 5)
     {
-        MS_MOD_DBG(F("Waking "), getSensorName(), F("("), ntries+1, F("): "));
+        // If the modem isn't powered, quit the wake
+        if (!bitRead(_sensorStatus, 0))
+        {
+            MS_MOD_DBG(getSensorName(), F(" doesn't have power and will never wake up!\n"));
+            success = false;
+            break;
+        }
+
+        MS_MOD_DBG(F("Waking "), getSensorName(), F("("), ntries+1, F(")"));
+        start = millis();
         success = _wakeFxn();
         ntries++;
     }
+
+    // Before we quit, check the status pin
+    // Only works if the status pin comes on immediately
+    if ( (_statusPin >= 0 && start - millis() > _indicatorTime_ms &&
+              digitalRead(_statusPin) != _statusLevel))
+    {
+        MS_DBG(F("It's been "), (start - millis()), F("ms, and status pin on "),
+              getSensorName(), F(" indicates it failed to wake!\n"));
+        success = false;
+    }
+
     if(success)
     {
         // Mark the time that the sensor was activated
         _millisSensorActivated = millis();
         // Set the status bit for sensor activation (bit 3)
         _sensorStatus |= 0b00001000;
-        MS_DBG(F("Sensor activated and measuring.\n"));
+        MS_DBG(getSensorName(), F(" should be awake.\n"));
     }
     else
     {
@@ -229,7 +258,7 @@ bool loggerModem::wake(void)
         _millisSensorActivated = 0;
         // Make sure the status bit for sensor activation (bit 3) is not set
         _sensorStatus &= 0b10000111;
-        MS_DBG(F("Sensor NOT activated!\n"));
+        MS_DBG(getSensorName(), F(" is not awake!\n"));
     }
     return success;
 }
@@ -299,7 +328,7 @@ bool loggerModem::addSingleMeasurementResult(void)
         MS_MOD_DBG(F("RSSI: "), rssi, F("\n"));
         MS_MOD_DBG(F("Percent signal strength: "), percent, F("\n"));
     }
-    else MS_DBG(F("MModem is not connected to network; unable to get signal quality!\n"));
+    else MS_DBG(F("Modem is not connected to network; unable to get signal quality!\n"));
 
     verifyAndAddMeasurementResult(RSSI_VAR_NUM, rssi);
     verifyAndAddMeasurementResult(PERCENT_SIGNAL_VAR_NUM, percent);
@@ -322,9 +351,19 @@ bool loggerModem::isStable(bool debug)
 {
     uint32_t elapsed_since_wake_up = millis() - _millisSensorActivated;
 
-    // If the modem never turned on, then it will never respond and thus it's
+    // If the modem isn't powered, then it will never respond and thus it's
     // essentially already "stable."
-    if (!bitRead(_sensorStatus, 3))
+    if (!bitRead(_sensorStatus, 0))
+    {
+        if (debug) MS_MOD_DBG(getSensorName(),
+                F(" is not on and AT commands will not be attempted!\n"));
+        // Set the status bit for stability completion (bit 4)
+        _sensorStatus |= 0b00010000;
+        return true;
+    }
+    // If the modem never "woke", then it will never respond and thus it's
+    // essentially already "stable."
+    else if (!bitRead(_sensorStatus, 3))
     {
         if (debug) MS_MOD_DBG(getSensorName(),
                 F(" is not on and AT commands will not be attempted!\n"));
