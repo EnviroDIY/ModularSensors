@@ -86,8 +86,8 @@ bool SDI12Sensors::setup(void)
     {
         // Set the status error bit (bit 7)
         _sensorStatus |= 0b10000000;
-        // UN-set the set-up bit (bit 1) since setup failed!
-        _sensorStatus &= 0b11111101;
+        // UN-set the set-up bit (bit 0) since setup failed!
+        _sensorStatus &= 0b11111110;
     }
 
     return retVal;
@@ -245,15 +245,20 @@ String SDI12Sensors::getSensorLocation(void)
 // Sending the command to get a concurrent measurement
 bool SDI12Sensors::startSingleMeasurement(void)
 {
-    bool retVal = false;
+    // this will check that it's awake/active and set timestamp and status bit
+    bool success = Sensor::startSingleMeasurement();
+
+    // if the sensor::startSingleMeasurement() failed, bail
+    if (!success) return success;
+
     String startCommand;
     String sdiResponse;
-
+    bool wasActive;
 
     MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(),
            F(" at "), getSensorLocation(), '\n');
     // Check if this the currently active SDI-12 Object
-    bool wasActive = _SDI12Internal.isActive();
+    wasActive = _SDI12Internal.isActive();
     if (wasActive) MS_DBG(F("   SDI-12 instance for "), getSensorName(),
            F(" at "), getSensorLocation(), " was already active!\n");
     // If it wasn't active, activate it now.
@@ -266,8 +271,8 @@ bool SDI12Sensors::startSingleMeasurement(void)
     if (!requestSensorAcknowledgement())
     {
         _millisMeasurementRequested = 0;
-        retVal = false;
-        goto finish;
+        _sensorStatus &= 0b10111111;
+        return false;
     }
 
     MS_DBG(F("   Beginning concurrent measurement on "), getSensorName(),
@@ -306,36 +311,31 @@ bool SDI12Sensors::startSingleMeasurement(void)
     if (sdiResponse.length() > 0)
     {
         MS_DBG(F("   Concurrent measurement started.\n"));
-        // Mark the time that a measurement was requested
+        // Update the time that a measurement was requested
         _millisMeasurementRequested = millis();
-        retVal = true;
-        goto finish;
+        // Set the status bit for measurement start success (bit 6)
+        _sensorStatus |= 0b01000000;
+        return true;
     }
     else
     {
         MS_DBG(F("   "), getSensorName(), F(" at "), getSensorLocation(),
                F(" did not respond to measurement request!\n"));
         _millisMeasurementRequested = 0;
-        retVal = false;
-        goto finish;
+        _sensorStatus &= 0b10111111;
+        return false;
     }
-
-    finish:
-
-    // Even if we failed to start a measurement, we still want to set the status
-    // bit to show that we attempted to start the measurement.
-    // Set the status bits for measurement requested (bit 5)
-    _sensorStatus |= 0b00100000;
-    // Verify that the status bit for a single measurement completion is not set (bit 6)
-    _sensorStatus &= 0b10111111;
-
-    return retVal;
 }
 
 
 bool SDI12Sensors::addSingleMeasurementResult(void)
 {
-    if (_millisMeasurementRequested > 0)
+    bool success = false;
+
+    // Check if BOTH a measurement start attempt was made (status bit 5 set)
+    // AND that attempt was successful (bit 6 set, _millisMeasurementRequested > 0)
+    // Only go on to get a result if it is
+    if (bitRead(_sensorStatus, 5) && bitRead(_sensorStatus, 6) && _millisMeasurementRequested > 0)
     {
         MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(),
                F(" at "), getSensorLocation(), '\n');
@@ -384,20 +384,24 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
         // Use end() instead of just forceHold to un-set the timers
         if (!wasActive) _SDI12Internal.end();
 
-        // Unset the time stamp for the beginning of this measurement
-        _millisMeasurementRequested = 0;
-        // Unset the status bit for a measurement having been requested (bit 5)
-        _sensorStatus &= 0b11011111;
-        // Set the status bit for measurement completion (bit 6)
-        _sensorStatus |= 0b01000000;
-
-        // Return true when finished
-        return true;
+        success  = true;
     }
     else
     {
+        // If there's no measurement, need to make sure we send over all
+        // of the "failed" result values
         MS_DBG(F("   "), getSensorName(), F(" at "), getSensorLocation(),
                F(" is not currently measuring!\n"));
-        return false;
+       for (int i = 0; i < _numReturnedVars; i++)
+       {
+           verifyAndAddMeasurementResult(i, -9999);
+       }
     }
+
+    // Unset the time stamp for the beginning of this measurement
+    _millisMeasurementRequested = 0;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10011111;
+
+     return success;
 }

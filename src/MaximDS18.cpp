@@ -163,8 +163,8 @@ bool MaximDS18::setup(void)
     {
         // Set the status error bit (bit 7)
         _sensorStatus |= 0b10000000;
-        // UN-set the set-up bit (bit 1) since setup failed!
-        _sensorStatus &= 0b11111101;
+        // UN-set the set-up bit (bit 0) since setup failed!
+        _sensorStatus &= 0b11111110;
     }
 
     return retVal;
@@ -175,27 +175,31 @@ bool MaximDS18::setup(void)
 // Because we put ourselves in ASYNC mode in setup, we don't have to wait for finish
 bool MaximDS18::startSingleMeasurement(void)
 {
-    bool success = true;
+    // this will check that it's awake/active and set timestamp and status bit
+    bool success = Sensor::startSingleMeasurement();
 
-    // Check if activated, only go on if it is
-    if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
+    // if the sensor::startSingleMeasurement() failed, bail
+    if (!success) return success;
+
+    // Send the command to get temperatures
+    MS_DBG(F("Asking DS18 to take a measurement\n"));
+    success &= _internalDallasTemp.requestTemperaturesByAddress(_OneWireAddress);
+
+    if (success)
     {
-        // Send the command to get temperatures
-        MS_DBG(F("Asking DS18 to take a measurement\n"));
-        success = _internalDallasTemp.requestTemperaturesByAddress(_OneWireAddress);
-
-        // Mark the time that a measurement was requested
+        // Update the time that a measurement was requested
         _millisMeasurementRequested = millis();
     }
-    // Make sure that the time of a measurement request is not set
-    else _millisMeasurementRequested = 0;
+    // Otherwise, make sure that the measurement start time and success bit (bit 6) are unset
+    else
+    {
+        MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
+               F(" did not successfully start a measurement.\n"));
+        _millisMeasurementRequested = 0;
+        _sensorStatus &= 0b10111111;
+        success = false;
+    }
 
-    // Even if we failed to start a measurement, we still want to set the status
-    // bit to show that we attempted to start the measurement.
-    // Set the status bits for measurement requested (bit 5)
-    _sensorStatus |= 0b00100000;
-    // Verify that the status bit for a single measurement completion is not set (bit 6)
-    _sensorStatus &= 0b10111111;
     return success;
 }
 
@@ -207,7 +211,10 @@ bool MaximDS18::addSingleMeasurementResult(void)
     // Initialize float variable
     float result = -9999;
 
-    if (_millisMeasurementRequested > 0)
+    // Check if BOTH a measurement start attempt was made (status bit 5 set)
+    // AND that attempt was successful (bit 6 set, _millisMeasurementRequested > 0)
+    // Only go on to get a result if it is
+    if (bitRead(_sensorStatus, 5) && bitRead(_sensorStatus, 6) && _millisMeasurementRequested > 0)
     {
         MS_DBG(F("Requesting temperature result\n"));
         result = _internalDallasTemp.getTempC(_OneWireAddress);
@@ -226,10 +233,8 @@ bool MaximDS18::addSingleMeasurementResult(void)
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
-    // Unset the status bit for a measurement having been requested (bit 5)
-    _sensorStatus &= 0b11011111;
-    // Set the status bit for measurement completion (bit 6)
-    _sensorStatus |= 0b01000000;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10011111;
 
     return success;
 }

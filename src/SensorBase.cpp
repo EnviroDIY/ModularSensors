@@ -26,11 +26,6 @@ Sensor::Sensor(const char *sensorName, uint8_t numReturnedVars,
     _dataPin = dataPin;
     _measurementsToAverage = measurementsToAverage;
 
-    // This is the time that a value was last sent ot registered variables
-    // It is set in the notifyVariables() function.
-    // The "checkForUpdate()" function checks if values are older than 2 minutes.
-    // _sensorLastUpdated = 0;
-
     // This is the time needed from the when a sensor has power until it's ready to talk
     // The _millisPowerOn value is set in the powerUp() function.  It is
     // un-set in the powerDown() function.
@@ -94,14 +89,13 @@ int Sensor::getNumberMeasurementsToAverage(void){return _measurementsToAverage;}
 
 
 // This returns the 8-bit code for the current status of the sensor.
-// Bit 0 - 0=Not powered, 1=Powered
-// Bit 1 - 0=Has NOT been set up, 1=Has been setup
-// Bit 2 - 0=Is NOT warmed up, 1=Is warmed up
-// Bit 3 - 0=Not awake/actively measuring, 1=Is awake/actively measuring
-// Bit 4 - 0=Readings not stable, 1=Readings should be stable
-// bit 5 - 0=Measurement requested, 1=No measurements have been requested
-// bit 6 - 0=Measurement complete (IFF bit 3 and 4 are set!)
-//         1=Waiting for measurement completion (IFF bit 3 and 4 are set!),
+// Bit 0 - 0=Has NOT been set up, 1=Has been setup
+// Bit 1 - 0=No attempt made to power sensor, 1=Attempt made to power sensor
+// Bit 2 - 0=Power up attampt failed, 1=Power up attempt succeeded
+// Bit 3 - 0=Wake/Activate not yet attempted, 1=Attempt made to wake sensor
+// Bit 4 - 0=Wake/Activate failed, 1=Is awake/actively measuring
+// bit 5 - 0=Measurement start attempted, 1=No measurements have been requested
+// bit 6 - 0=Measurement start failed, 1=Measurement attempt succeeded
 // Bit 7 - 0=No known errors, 1=Some sort of error has occured
 uint8_t Sensor::getStatus(void)
 {
@@ -125,9 +119,11 @@ void Sensor::powerUp(void)
     {
         MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation(),
                F(" is not controlled by this library.\n"));
+        // Mark the power-on time, just in case it  had not been marked
+        if (_millisPowerOn == 0) _millisPowerOn = millis();
     }
-    // Set the status bit for sensor power (bit 0)
-    _sensorStatus |= 0b00000001;
+    // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
+    _sensorStatus |= 0b00000110;
 }
 
 
@@ -147,10 +143,9 @@ void Sensor::powerDown(void)
         MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation(),
                F(" is not controlled by this library.\n"));
     }
-    // Unset the status bits for sensor power (bit 0), warm-up (bit 2),
-    // activation (bit 3), stability (bit 4), measurement request (bit 5), and
-    // measurement completion (bit 6)
-    _sensorStatus &= 0b10000010;
+    // Unset the status bits for sensor power (bits 1 & 2),
+    // activation (bits 3 & 4), and measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10000001;
 }
 
 
@@ -172,8 +167,8 @@ bool Sensor::setup(void)
     if (_powerPin >= 0) pinMode(_powerPin, OUTPUT);
     if (_dataPin >= 0) pinMode(_dataPin, INPUT_PULLUP);
 
-    // Set the status bit marking that the sensor has been set up (bit 1)
-    _sensorStatus |= 0b00000010;
+    // Set the status bit marking that the sensor has been set up (bit 0)
+    _sensorStatus |= 0b00000001;
 
     return true;
 }
@@ -182,13 +177,33 @@ bool Sensor::setup(void)
 // The function to wake up a sensor
 bool Sensor::wake(void)
 {
+    bool success = true;
     MS_DBG(F("Waking "), getSensorName(), F(" at "),
            getSensorLocation(), F("\n"));
-    // Mark the time that the sensor was activated
-    _millisSensorActivated = millis();
-    // Set the status bit for sensor activation (bit 3)
+    // Set the status bit for sensor activation attempt (bit 3)
+    // Setting this bit even if the activation failed, to show the attempt was made
     _sensorStatus |= 0b00001000;
-    return true;
+
+    // Check if the an attempt was made to power the sensor (bit 1) and it succeeded (bit 2)
+    // Currently there is no double check that the powerOn() was successful
+    if (bitRead(_sensorStatus, 1) && bitRead(_sensorStatus, 2))
+    {
+        // Mark the time that a measurement was requested
+        _millisSensorActivated = millis();
+        // Set the status bit for sensor wake/activation success (bit 4)
+        _sensorStatus |= 0b00010000;
+    }
+    // Otherwise, make sure that the wake time and wake success bit (bit 4) are unset
+    else
+    {
+       MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
+              F(" doesn't have power and will never wake up!\n"));
+        _millisSensorActivated = 0;
+        _sensorStatus &= 0b11101111;
+        success = false;
+    }
+
+    return success;
 }
 
 
@@ -200,10 +215,44 @@ bool Sensor::sleep(void)
            getSensorLocation(), F(" to sleep\n"));
     // Unset the activation time
     _millisSensorActivated = 0;
-    // Unset the activated status bit (bit 3), stability (bit 4), measurement
-    // request (bit 5) and measurement completion (bit 6)
+    // Unset the status bits for sensor activation (bits 3 & 4) and measurement
+    // request (bits 5 & 6)
     _sensorStatus &= 0b10000111;
     return true;
+}
+
+
+// This is a place holder for starting a single measurment, for those sensors
+// that need no instructions to start a measurement.
+bool Sensor::startSingleMeasurement(void)
+{
+    bool success = true;
+    MS_DBG(F("Starting measurement on "), getSensorName(), F(" at "),
+           getSensorLocation(), F(".\n"));
+    // Set the status bits for measurement requested (bit 5)
+    // Setting this bit even if we failed to start a measurement to show that an attempt was made.
+    _sensorStatus |= 0b00100000;
+
+    // Check if BOTH an activation/wake attempt was made (status bit 3 set)
+    // AND that attempt was successful (bit 4 set, _millisSensorActivated > 0)
+    // Only mark the measurement request time if it is
+    if (bitRead(_sensorStatus, 3) && bitRead(_sensorStatus, 4) && _millisSensorActivated > 0)
+    {
+        // Mark the time that a measurement was requested
+        _millisMeasurementRequested = millis();
+        // Set the status bit for measurement start success (bit 6)
+        _sensorStatus |= 0b01000000;
+    }
+    // Otherwise, make sure that the measurement start time and success bit (bit 6) are unset
+    else
+    {
+        MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
+               F(" isn't awake/active!  A measurment cannot be started.\n"));
+       _millisMeasurementRequested = 0;
+       _sensorStatus &= 0b10111111;
+        success = false;
+    }
+    return success;
 }
 
 
@@ -222,8 +271,6 @@ void Sensor::notifyVariables(void)
 {
     MS_DBG(F("Notifying variables registered to "), getSensorName(), F(" at "),
            getSensorLocation(), F(" of value update.\n"));
-    // Make note of the last time updated
-    // _sensorLastUpdated = millis();
 
     // Notify variables of update
     for (int i = 0; i < _numReturnedVars; i++)
@@ -245,24 +292,6 @@ void Sensor::notifyVariables(void)
 }
 
 
-// // This function checks if a sensor needs to be updated or not
-// bool Sensor::checkForUpdate(void)
-// {
-//     uint32_t now = millis();
-//     // MS_DBG(F("It has been "), (now - _sensorLastUpdated)/1000);
-//     // MS_DBG(F(" seconds since "));
-//     // MS_DBG(getSensorName(), F(" at "), getSensorLocation());
-//     // MS_DBG(F(" was updated.\n"));
-//     if ((now > 120000L and now > (_sensorLastUpdated + 120000L))
-//         or _sensorLastUpdated == 0)
-//     {
-//         MS_DBG(F("Value out of date, updating\n"));
-//         return(update());
-//     }
-//     else return(true);
-// }
-
-
 // This function just empties the value array
 void Sensor::clearValues(void)
 {
@@ -273,34 +302,6 @@ void Sensor::clearValues(void)
         sensorValues[i] =  -9999;
         numberGoodMeasurementsMade[i] = 0;
     }
-}
-
-
-// This is a place holder for starting a single measurment, for those sensors
-// that need no instructions to start a measurement.
-bool Sensor::startSingleMeasurement(void)
-{
-    MS_DBG(F("Starting measurement on "), getSensorName(), F(" at "),
-           getSensorLocation(), F(".\n"));
-
-    bool success = true;
-
-    // Check if activated, only mark time if it is
-    if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
-    {
-        // Mark the time that a measurement was requested
-        _millisMeasurementRequested = millis();
-    }
-    // Make sure that the time of a measurement request is not set
-    else _millisMeasurementRequested = 0;
-
-    // Even if we failed to start a measurement, we still want to set the status
-    // bit to show that we attempted to start the measurement.
-    // Set the status bits for measurement requested (bit 5)
-    _sensorStatus |= 0b00100000;
-    // Verify that the status bit for a single measurement completion is not set (bit 6)
-    _sensorStatus &= 0b10111111;
-    return success;
 }
 
 
@@ -426,10 +427,10 @@ bool Sensor::checkPowerOn(bool debug)
             if (debug) MS_DBG(F(" was off.\n"));
             // Reset time of power on, in-case it was set to a value
             if (_millisPowerOn != 0) _millisPowerOn = 0;
-            // Unset the status bits for sensor power (bit 0), warm-up (bit 2),
+            // Unset the status bits for sensor power (bit 1), warm-up (bit 2),
             // activation (bit 3), stability (bit 4), measurement start (bit 5),
             /// and measurement completion (bit 6)
-            _sensorStatus &= 0b10000010;
+            _sensorStatus &= 0b10000001;
             return false;
         }
         else
@@ -437,8 +438,8 @@ bool Sensor::checkPowerOn(bool debug)
             if (debug) MS_DBG((" was on.\n"));
             // Mark the power-on time, just in case it  had not been marked
             if (_millisPowerOn == 0) _millisPowerOn = millis();
-            // Set the status bit for sensor power (bit 0)
-            _sensorStatus |= 0b00000001;
+            // Set the status bit for sensor power (bit 1)
+            _sensorStatus |= 0b00000010;
             return true;
         }
     }
@@ -447,8 +448,8 @@ bool Sensor::checkPowerOn(bool debug)
         if (debug) MS_DBG(F(" is not controlled by this library.\n"));
         // Mark the power-on time, just in case it  had not been marked
         if (_millisPowerOn == 0) _millisPowerOn = millis();
-        // Set the status bit for sensor power (bit 0)
-        _sensorStatus |= 0b00000001;
+        // Set the status bit for sensor power (bit 1)
+        _sensorStatus |= 0b00000010;
         return true;
     }
 }
@@ -461,7 +462,8 @@ bool Sensor::isWarmedUp(bool debug)
 
     // If the sensor doesn't have power, then it will never be warmed up,
     // so the warm up time is essentially already passed.
-    if (!bitRead(_sensorStatus, 0))
+    // Check if the an attempt was made to power the sensor (bit 1) and it succeeded (bit 2)
+    if (bitRead(_sensorStatus, 1) && bitRead(_sensorStatus, 2))
     {
         if (debug) MS_DBG(getSensorName(), F(" at "),    getSensorLocation(),
               F(" does not have power and cannot warm up!\n"));
@@ -492,84 +494,71 @@ bool Sensor::isWarmedUp(bool debug)
 
 // This delays until enough time has passed for the sensor to "warm up" - that
 // is - to be ready to communicate and to be asked to take readings
+// NOTE:  This is "blocking" - that is, nothing else can happen during this wait.
 void Sensor::waitForWarmUp(void){ while (!isWarmedUp()){} }
 
 
 // This checks to see if enough time has passed for stability
 bool Sensor::isStable(bool debug)
 {
-    uint32_t elapsed_since_wake_up = millis() - _millisSensorActivated;
-
-    // If the sensor isn't awake/activated it will never stabilize,
-    // so the stabilization time is essentially already passed
-    if (!bitRead(_sensorStatus, 3))
+    // If no attempt has been made to activate the sensor (staus bit 3 not set)
+    // or the attempt failed (bit 4 unset, _millisSensorActivated = 0), the sensor
+    // will never stabilize, so the stabilization time is essentially already passed
+    if (!bitRead(_sensorStatus, 3) || !bitRead(_sensorStatus, 4) || _millisSensorActivated == 0)
     {
         if (debug) MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
                F(" is not active and cannot stabilize!\n"));
-        // Set the status bit for stability completion (bit 4)
-        _sensorStatus |= 0b00010000;
         return true;
     }
+
+    uint32_t elapsed_since_wake_up = millis() - _millisSensorActivated;
     // If the sensor has been activated and enough time has elapsed, it's stable
-    else if (elapsed_since_wake_up > _stabilizationTime_ms)
+    if (elapsed_since_wake_up > _stabilizationTime_ms)
     {
         if (debug) MS_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
                getSensorName(), F(" at "), getSensorLocation(),
                F(" should be stable!\n"));
-        // Set the status bit for stability completion (bit 4)
-        _sensorStatus |= 0b00010000;
         return true;
     }
     // If the sensor has been activated but the time hasn't passed, we still need to wait
-    else
-    {
-        // Make sure the status bits for stability (bit 4), measurement
-        // start (bit 5) and measurement completion (bit 6) are not set
-        _sensorStatus &= 0b10001111;
-        return false;
-    }
+    else return false;
 }
 
 // This delays until enough time has passed for the sensor to stabilize before
 // taking readings
+// NOTE:  This is "blocking" - that is, nothing else can happen during this wait.
 void Sensor::waitForStability(void){ while (!isStable()){} }
 
 
 // This checks to see if enough time has passed for measurement completion
 bool Sensor::isMeasurementComplete(bool debug)
 {
-    uint32_t elapsed_since_meas_start = millis() - _millisMeasurementRequested;
-
-    // If the sensor hasn't been asked to take a measurement, it will never return one,
-    // so the measurement time is essentially already passed
-    if (!bitRead(_sensorStatus, 5))
+    // If no attempt has been made to start a measurement (staus bit 5 not set)
+    // or the attempt failed (bit 6 not set, _millisMeasurementRequested = 0),
+    // the sensor will never return a result, so the measurement time is
+    // essentially already passed
+    if (!bitRead(_sensorStatus, 5) || !bitRead(_sensorStatus, 6) || _millisMeasurementRequested == 0)
     {
         if (debug) MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
                F(" is not measuring and will not return a value!\n"));
-        // Set the status bit for measurement completion (bit 6)
-        _sensorStatus |= 0b01000000;
         return true;
     }
+
+    uint32_t elapsed_since_meas_start = millis() - _millisMeasurementRequested;
     // If the sensor is measuring and enough time has elapsed, the reading is finished
-    else if (elapsed_since_meas_start > _measurementTime_ms)
+    if (elapsed_since_meas_start > _measurementTime_ms)
     {
         if (debug) MS_DBG(F("It's been "), (elapsed_since_meas_start),
                F("ms, and measurement by "), getSensorName(), F(" at "),
                getSensorLocation(), F(" should be complete!\n"));
-        // Set the status bit for measurement completion (bit 6)
-        _sensorStatus |= 0b01000000;
         return true;
     }
     // If the sensor is measuring but the time hasn't passed, we still need to wait
-    else
-    {
-        // Make sure the status bit for measurement completion (bit 6) is not set
-        _sensorStatus &= 0b10111111;
-        return false;
-    }
+    else return false;
 }
 
 // This delays until enough time has passed for the sensor to give a new value
+// NOTE:  This is "blocking" - that is, nothing else can happen during this wait.
 void Sensor::waitForMeasurementCompletion(void){ while (!isMeasurementComplete()){} }
 
 

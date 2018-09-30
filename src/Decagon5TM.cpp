@@ -30,7 +30,17 @@
 
 bool Decagon5TM::addSingleMeasurementResult(void)
 {
-    if (_millisMeasurementRequested > 0)
+    bool success = false;
+
+    // Set up the float variables for receiving data
+    float ea = -9999;
+    float temp = -9999;
+    float VWC = -9999;
+
+    // Check if BOTH a measurement start attempt was made (status bit 5 set)
+    // AND that attempt was successful (bit 6 set, _millisMeasurementRequested > 0)
+    // Only go on to get a result if it is
+    if (bitRead(_sensorStatus, 5) && bitRead(_sensorStatus, 6) && _millisMeasurementRequested > 0)
     {
         MS_DBG(F("   Activating SDI-12 instance for "), getSensorName(),
                F(" at "), getSensorLocation(), '\n');
@@ -39,12 +49,6 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         _SDI12Internal.begin();;
         // Empty the buffer
         _SDI12Internal.clearBuffer();
-
-        // Set up variables for receiving data
-        float ea = -9999;
-        float temp = -9999;
-        float VWC = -9999;
-
         MS_DBG(F("   Requesting data from "), getSensorName(),
                F(" at "), getSensorLocation(), '\n');
         String getDataCommand = "";
@@ -87,28 +91,26 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         // Use end() instead of just forceHold to un-set the timers
         _SDI12Internal.end();
 
-        MS_DBG(F("Dialectric E: "), ea);
-        MS_DBG(F(" Temperature: "), temp);
-        MS_DBG(F(" Volumetric Water Content: "), VWC, F("\n"));
-
-        verifyAndAddMeasurementResult(TM_EA_VAR_NUM, ea);
-        verifyAndAddMeasurementResult(TM_TEMP_VAR_NUM, temp);
-        verifyAndAddMeasurementResult(TM_VWC_VAR_NUM, VWC);
-
-        // Unset the time stamp for the beginning of this measurement
-        _millisMeasurementRequested = 0;
-        // Unset the status bit for a measurement having been requested (bit 5)
-        _sensorStatus &= 0b11011111;
-        // Set the status bit for measurement completion (bit 6)
-        _sensorStatus |= 0b01000000;
-
-        // Return true when finished
-        return true;
+        success = true;
     }
     else
     {
         MS_DBG(F("   "), getSensorName(), F(" at "), getSensorLocation(),
                F(" is not currently measuring!\n"));
-        return false;
     }
+
+    MS_DBG(F("Dialectric E: "), ea);
+    MS_DBG(F(" Temperature: "), temp);
+    MS_DBG(F(" Volumetric Water Content: "), VWC, F("\n"));
+
+    verifyAndAddMeasurementResult(TM_EA_VAR_NUM, ea);
+    verifyAndAddMeasurementResult(TM_TEMP_VAR_NUM, temp);
+    verifyAndAddMeasurementResult(TM_VWC_VAR_NUM, VWC);
+
+    // Unset the time stamp for the beginning of this measurement
+    _millisMeasurementRequested = 0;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10011111;
+
+    return success;
 }

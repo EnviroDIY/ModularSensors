@@ -45,14 +45,23 @@ public:
     int getNumberMeasurementsToAverage(void);
 
     // This returns the 8-bit code for the current status of the sensor.
-    // Bit 0 - 0=Not powered, 1=Powered
-    // Bit 1 - 0=Has NOT been set up, 1=Has been setup
-    // Bit 2 - 0=Is NOT warmed up, 1=Is warmed up
-    // Bit 3 - 0=Not awake/actively measuring, 1=Is awake/actively measuring
-    // Bit 4 - 0=Readings not stable, 1=Readings should be stable
-    // Bit 5 - 0=Measurement requested, 1=No measurements have been requested
-    // Bit 6 - 0=Waiting for measurement completion (IFF bit 3 and 4 are set!),
-    //         1=Measurement complete (IFF bit 3 and 4 are set!)
+    // Bit 0 - 0=Has NOT been successfully set up, 1=Has been setup
+    // Bit 1 - 0=No attempt made to power sensor, 1=Attempt made to power sensor
+    // Bit 2 - 0=Power up attampt failed, 1=Power up attempt succeeded
+    //       - Use the isWarmedUp() function to check if enough time has passed
+    //         to be ready for sensor communication.
+    // Bit 3 - 0=Activation/wake attempt made, 1=No activation/wake attempt made
+    //       - check _millisSensorActivated or bit 4 to see if wake() attempt was successful
+    //       - a failed activation attempt will give _millisSensorActivated = 0
+    // Bit 4 - 0=Wake/Activate failed, 1=Is awake/actively measuring
+    //       - Use the isStable() function to check if enough time has passed
+    //         to begin a measurement.
+    // Bit 5 - 0=Start measurement requested attempt made, 1=No measurements have been requested
+    //       - check _millisMeasurementRequested or bit 6 to see if startSingleMeasurement() attempt was successful
+    //       - a failed request attempt will give _millisMeasurementRequested = 0
+    // Bit 6 - 0=Measurement start failed, 1=Measurement attempt succeeded
+    //       - Use the isMeasurementComplete() to check if enough time has passed
+    //         for a measurement to have been completed.
     // Bit 7 - 0=No known errors, 1=Some sort of error has occurred
     uint8_t getStatus(void);
     // This function checks the current status
@@ -115,12 +124,6 @@ public:
     void registerVariable(int varNum, Variable* var);
     // Notifies attached variables of new values
     void notifyVariables(void);
-
-    // // This is the time that a value was last sent ot registered variables
-    // // It is set in the notifyVariables() function.
-    // // The "checkForUpdate()" function checks if values are older than 2 minutes.
-    // uint32_t _sensorLastUpdated;
-    // bool checkForUpdate(void);
 
     // The "isWarmedUp()" function checks whether or not enough time has passed
     // between the sensor receiving power and being ready to respond to logger

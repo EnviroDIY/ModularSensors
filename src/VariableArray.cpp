@@ -203,7 +203,7 @@ bool VariableArray::sensorsWake(void)
         {
             if (isLastVarFromSensor(i)) // Skip non-unique sensors
             {
-                if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) == 0)  // NOT yet awake
+                if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) == 0)  // No attempts yet made to wake the sensor up
                 {
                     if (arrayOfVars[i]->parentSensor->isWarmedUp())  // already warmed up
                     {
@@ -315,15 +315,15 @@ bool VariableArray::updateAllSensors(void)
     {
         if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {
-            if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) == 0)  // NOT awake/activated
+            if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) == 0)  // No attempts yet made to wake the sensor up
             {
                 MS_DBG(F("2."), i, F(" --->> "));
                 MS_DBG(arrayOfVars[i]->getParentSensorName());
                 MS_DBG(F(" at "));
                 MS_DBG(arrayOfVars[i]->getParentSensorLocation());
-                MS_DBG(F(" isn't awake/active!  No readings will be taken! <<--- 2."), i, '\n');
+                MS_DBG(F(" isn't awake/active!  No measurements will be taken! <<--- 2."), i, '\n');
 
-                // Set the number of readings already equal to whatever total
+                // Set the number of measurements already equal to whatever total
                 // number requested to ensure the sensor is skipped in further loops.
                 nMeasurementsCompleted[i] = arrayOfVars[i]->parentSensor->getNumberMeasurementsToAverage();
                 // Bump up the finished count.
@@ -367,12 +367,12 @@ bool VariableArray::updateAllSensors(void)
             // END CHUNK FOR DEBUGGING!
             ***/
 
-            // Only do checks on sensors that still have readings to finish
+            // Only do checks on sensors that still have measurements to finish
             if (isLastVarFromSensor(i) and
                 arrayOfVars[i]->parentSensor->getNumberMeasurementsToAverage() > nMeasurementsCompleted[i])
             {
                 // first, make sure the sensor is stable
-                if ( arrayOfVars[i]->parentSensor->isStable())
+                if ( arrayOfVars[i]->parentSensor->isStable(true))
                 {
 
                 // now, if the sensor is not currently measuring...
@@ -396,7 +396,7 @@ bool VariableArray::updateAllSensors(void)
                     }
 
                     // otherwise, it is currently measuring so...
-                    // if a measurement is finished, get the result and tick up the number of finished readings
+                    // if a measurement is finished, get the result and tick up the number of finished measurements
                     if(arrayOfVars[i]->parentSensor->isMeasurementComplete())
                     {
                         // Get the value
@@ -418,10 +418,10 @@ bool VariableArray::updateAllSensors(void)
 
                 }
 
-                // if all the readings are done, mark the whole sensor as done
+                // if all the measurements are done, mark the whole sensor as done
                 if (nMeasurementsCompleted[i] == arrayOfVars[i]->parentSensor->getNumberMeasurementsToAverage())
                 {
-                    MS_DBG(F("--- Finished all readings from "));
+                    MS_DBG(F("--- Finished all measurements from "));
                     MS_DBG(arrayOfVars[i]->getParentSensorName());
                     MS_DBG(F(" at "));
                     MS_DBG(arrayOfVars[i]->getParentSensorLocation());
@@ -434,7 +434,7 @@ bool VariableArray::updateAllSensors(void)
         }
     }
 
-    // Average readings and notify varibles of the updates
+    // Average measurements and notify varibles of the updates
     MS_DBG(F("5 --->> Averaging results and notifying all variables. ...\n"));
     for (uint8_t i = 0; i < _variableCount; i++)
     {
@@ -616,11 +616,11 @@ bool VariableArray::completeUpdate(void)
             // END CHUNK FOR DEBUGGING!
             ***/
 
-            // Only do checks on sensors that still have readings to finish
+            // Only do checks on sensors that still have measurements to finish
             if (lastSensorVariable[i] && nMeasurementsToAverage[i] > nMeasurementsCompleted[i])
             {
                 // Wake the sensors as they are ready
-                if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) == 0)  // NOT yet awake
+                if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) == 0)  // No attempts yet made to wake the sensor up
                 {
                     if (arrayOfVars[i]->parentSensor->isWarmedUp())  // already warmed up
                     {
@@ -637,8 +637,8 @@ bool VariableArray::completeUpdate(void)
                         if (sensorSuccess_wake) MS_DBG(F("   ... Success. <<--- 3."), i, '\n');
                         else  // If the sensor could not be woken up
                         {
-                            MS_DBG(F("   ... failed! No readings will be taken! <<--- 3."), i, '\n');
-                            // Set the number of readings already equal to whatever total
+                            MS_DBG(F("   ... failed! No measurements will be taken! <<--- 3."), i, '\n');
+                            // Set the number of measurements already equal to whatever total
                             // number requested to ensure the sensor is skipped in further loops.
                             nMeasurementsCompleted[i] = nMeasurementsToAverage[i];
                             // increment the number of measurements that the power pin has completed
@@ -672,7 +672,7 @@ bool VariableArray::completeUpdate(void)
                     }
 
                     // otherwise, it is currently measuring so...
-                    // if a measurement is finished, get the result and tick up the number of finished readings
+                    // if a measurement is finished, get the result and tick up the number of finished measurements
                     if(arrayOfVars[i]->parentSensor->isMeasurementComplete())
                     {
                         // Get the value
@@ -696,10 +696,10 @@ bool VariableArray::completeUpdate(void)
 
                 }
 
-                // If all the readings are done
+                // If all the measurements are done
                 if (nMeasurementsCompleted[i] == nMeasurementsToAverage[i])
                 {
-                    MS_DBG(F("6."), i, F(" --->> Finished all readings from "));
+                    MS_DBG(F("6."), i, F(" --->> Finished all measurements from "));
                     MS_DBG(arrayOfVars[i]->getParentSensorName());
                     MS_DBG(F(" at "));
                     MS_DBG(arrayOfVars[i]->getParentSensorLocation());
@@ -737,7 +737,7 @@ bool VariableArray::completeUpdate(void)
         }
     }
 
-    // Average readings and notify varibles of the updates
+    // Average measurements and notify varibles of the updates
     MS_DBG(F("8 --->> Averaging results and notifying all variables. ...\n"));
     for (uint8_t i = 0; i < _variableCount; i++)
     {
@@ -887,7 +887,7 @@ bool VariableArray::isLastVarFromSensor(int arrayIndex)
 }
 
 
-// Count the maximum number of readings needed from a single sensor for the
+// Count the maximum number of measurements needed from a single sensor for the
 // requested averaging
 uint8_t VariableArray::countMaxToAverage(void)
 {

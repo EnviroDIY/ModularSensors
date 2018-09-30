@@ -79,7 +79,6 @@ public:
                 TinyGsmModem *inModem, Client *inClient, const char *ssid, const char *pwd);
 
     String getSensorName(void) override;
-    String getSensorLocation(void) override;
 
     virtual bool setup(void) override;
     virtual bool wake(void) override;
@@ -145,7 +144,6 @@ private:
     static int getPctFromRSSI(int rssi);
 
 private:
-    int8_t _statusPin;
     bool _statusLevel;
     uint32_t _indicatorTime_ms;
     uint32_t _disconnetTime_ms;

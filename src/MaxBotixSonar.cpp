@@ -61,7 +61,11 @@ bool MaxBotixSonar::setup(void)
 // Parsing and tossing the header lines in the wake-up
 bool MaxBotixSonar::wake(void)
 {
-    bool isAwake = Sensor::wake();  // takes care of timing stamps and status bits
+    // this will check for power and set timestamp and status bit
+    bool success = Sensor::wake();
+
+    // if the sensor::wake() failed, there's no power, so bail
+    if (!success) return success;
 
     // NOTE: After the power is turned on to the MaxBotix, it sends several lines
     // of header to the serial port, beginning at ~65ms and finising at ~160ms.
@@ -78,14 +82,22 @@ bool MaxBotixSonar::wake(void)
 
     // NOTE ALSO:  Depending on what type of serial stream you are using, there
     // may also be a bunch of junk in the buffer that this will clear out.
-
-    MS_DBG(F("Parsing Header Lines from MaxBotix on "), getSensorLocation(), '\n');
+    MS_DBG(F("Dumping Header Lines from MaxBotix on "), getSensorLocation(), '\n');
     for(int i = 0; i < 6; i++)
     {
         String headerLine = _stream->readStringUntil('\r');
         MS_DBG(i, F(" - "), headerLine, F("\n"));
     }
-    return isAwake;
+    // Clear anything else out of the stream buffer
+    int junkChars = _stream->available();
+    if (junkChars)
+    {
+        MS_DBG(F("Dumping "), junkChars, " characters from MaxBotix stream buffer\n");
+        for (uint8_t i = 0; i < junkChars; i++)
+        _stream->read();
+    }
+
+    return success;
 }
 
 
@@ -105,7 +117,10 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
         _stream->read();
     }
 
-    if (_millisMeasurementRequested > 0)
+    // Check if BOTH a measurement start attempt was made (status bit 5 set)
+    // AND that attempt was successful (bit 6 set, _millisMeasurementRequested > 0)
+    // Only go on to get a result if it is
+    if (bitRead(_sensorStatus, 5) && bitRead(_sensorStatus, 6) && _millisMeasurementRequested > 0)
     {
         MS_DBG(F("Getting readings from MaxBotix on "), getSensorLocation(), '\n');
         while (success == false && rangeAttempts < 25)
@@ -156,10 +171,8 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
-    // Unset the status bit for a measurement having been requested (bit 5)
-    _sensorStatus &= 0b11011111;
-    // Set the status bit for measurement completion (bit 6)
-    _sensorStatus |= 0b01000000;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10011111;
 
     // Return values shows if we got a not-obviously-bad reading
     return success;

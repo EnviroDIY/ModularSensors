@@ -72,8 +72,8 @@ bool BoschBME280::setup(void)
     {
         // Set the status error bit (bit 7)
         _sensorStatus |= 0b10000000;
-        // UN-set the set-up bit (bit 1) since setup failed!
-        _sensorStatus &= 0b11111101;
+        // UN-set the set-up bit (bit 0) since setup failed!
+        _sensorStatus &= 0b11111110;
     }
     retVal &= success;
 
@@ -86,7 +86,11 @@ bool BoschBME280::setup(void)
 
 bool BoschBME280::wake(void)
 {
-    Sensor::wake();  // this will set timestamp and status bit
+    // this will check for power and set timestamp and status bit
+    bool success = Sensor::wake();
+
+    // if the sensor::wake() failed, there's no power, so bail
+    if (!success) return success;
 
     // Restart always needed after power-up
     // As of Adafruit library version 1.0.7, this function includes all of the
@@ -113,7 +117,7 @@ bool BoschBME280::wake(void)
                              Adafruit_BME280::STANDBY_MS_1000);  // sleep time between measurements (N/A in forced mode)
     delay(100);  // Need this delay after changing sampling mode
 
-    return true;
+    return success;
 }
 
 
@@ -127,7 +131,10 @@ bool BoschBME280::addSingleMeasurementResult(void)
     float press = -9999;
     float alt = -9999;
 
-    if (_millisMeasurementRequested > 0)
+    // Check if BOTH a measurement start attempt was made (status bit 5 set)
+    // AND that attempt was successful (bit 6 set, _millisMeasurementRequested > 0)
+    // Only go on to get a result if it is
+    if (bitRead(_sensorStatus, 5) && bitRead(_sensorStatus, 6) && _millisMeasurementRequested > 0)
     {
         // Read values
         MS_DBG(F("Getting values from BME280\n"));
@@ -166,10 +173,8 @@ bool BoschBME280::addSingleMeasurementResult(void)
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
-    // Unset the status bit for a measurement having been requested (bit 5)
-    _sensorStatus &= 0b11011111;
-    // Set the status bit for measurement completion (bit 6)
-    _sensorStatus |= 0b01000000;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10011111;
 
     return success;
 }

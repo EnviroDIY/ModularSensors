@@ -42,29 +42,18 @@ void MaximDS3231::powerDown(void)
 // Sending the device a request to start temp conversion.
 bool MaximDS3231::startSingleMeasurement(void)
 {
-    bool success = true;
+    // this will check that it's awake/active and set timestamp and status bit
+    bool success = Sensor::startSingleMeasurement();
 
-    // Check if activated, only wait if it is
-    if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
-    {
-        // force a temperature sampling and conversion
-        // this function already has a forced wait for the conversion to complete
-        // TODO:  Test how long the conversion takes, update DS3231 lib accordingly!
-        MS_DBG(F("Forcing new temperature reading\n"));
-        rtc.convertTemperature(false);
+    // if the sensor::startSingleMeasurement() failed, bail
+    if (!success) return success;
 
-        // Mark the time that a measurement was requested
-        _millisMeasurementRequested = millis();
-    }
-    // Make sure that the time of a measurement request is not set
-    else _millisMeasurementRequested = 0;
+    // force a temperature sampling and conversion
+    // this function already has a forced wait for the conversion to complete
+    // TODO:  Test how long the conversion takes, update DS3231 lib accordingly!
+    MS_DBG(F("Forcing new temperature reading\n"));
+    rtc.convertTemperature(false);
 
-    // Even if we failed to start a measurement, we still want to set the status
-    // bit to show that we attempted to start the measurement.
-    // Set the status bits for measurement requested (bit 5)
-    _sensorStatus |= 0b00100000;
-    // Verify that the status bit for a single measurement completion is not set (bit 6)
-    _sensorStatus &= 0b10111111;
     return success;
 }
 
@@ -80,10 +69,8 @@ bool MaximDS3231::addSingleMeasurementResult(void)
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
-    // Unset the status bit for a measurement having been requested (bit 5)
-    _sensorStatus &= 0b11011111;
-    // Set the status bit for measurement completion (bit 6)
-    _sensorStatus |= 0b01000000;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10011111;
 
     // Return true when finished
     return true;

@@ -78,9 +78,14 @@ bool YosemitechParent::setup(void)
 // Different from the standard in that it waits for warm up and starts measurements
 bool YosemitechParent::wake(void)
 {
+    // this will check for power and set timestamp and status bit
+    bool success = Sensor::wake();
+
+    // if the sensor::wake() failed, there's no power, so bail
+    if (!success) return success;
+
     // Send the command to begin taking readings, trying up to 5 times
     int ntries = 0;
-    bool success = false;
     while (!success && ntries < 5)
     {
         MS_DBG(F("Start Measurement ("), ntries+1, F("): "));
@@ -89,19 +94,16 @@ bool YosemitechParent::wake(void)
     }
     if(success)
     {
-        // Mark the time that the sensor was activated
+        // Update the time that the sensor was activated
         _millisSensorActivated = millis();
-        // Set the status bit for sensor activation (bit 3)
-        _sensorStatus |= 0b00001000;
         MS_DBG(F("Sensor activated and measuring.\n"));
     }
     else
     {
-        // Make sure the activation time is not set
+        MS_DBG(getSensorName(), F(" was NOT activated!\n"));
+        // Make sure the activation time is zero and the wake success bit (bit 4) is unset
         _millisSensorActivated = 0;
-        // Make sure the status bit for sensor activation (bit 3) is not set
-        _sensorStatus &= 0b10000111;
-        MS_DBG(F("Sensor NOT activated!\n"));
+        _sensorStatus &= 0b11101111;
     }
 
     // Manually activate the brush
@@ -141,8 +143,8 @@ bool YosemitechParent::sleep(void)
     {
         // Unset the activation time
         _millisSensorActivated = 0;
-        // Unset the activated status bit (bit 3), stability (bit 4), measurement
-        // request (bit 5), and measurement completion (bit 6)
+        // Unset the status bits for sensor activation (bits 3 & 4) and measurement
+        // request (bits 5 & 6)
         _sensorStatus &= 0b10000111;
         MS_DBG(F("Measurements stopped.\n"));
     }
@@ -174,8 +176,8 @@ void YosemitechParent::powerUp(void)
         MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation(),
                F(" is not controlled by this library.\n"));
     }
-    // Set the status bit for sensor power (bit 0)
-    _sensorStatus |= 0b00000001;
+    // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
+    _sensorStatus |= 0b00000110;
 }
 
 
@@ -201,10 +203,9 @@ void YosemitechParent::powerDown(void)
         MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation(),
                F(" is not controlled by this library.\n"));
     }
-    // Unset the status bits for sensor power (bit 0), warm-up (bit 2),
-    // activation (bit 3), stability (bit 4), measurement request (bit 5), and
-    // measurement completion (bit 6)
-    _sensorStatus &= 0b10000010;
+    // Unset the status bits for sensor power (bits 1 & 2),
+    // activation (bits 3 & 4), and measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10000001;
 }
 
 
@@ -212,22 +213,25 @@ bool YosemitechParent::addSingleMeasurementResult(void)
 {
     bool success = false;
 
-    switch (_model)
+    // Check if BOTH a measurement start attempt was made (status bit 5 set)
+    // AND that attempt was successful (bit 6 set, _millisMeasurementRequested > 0)
+    // Only go on to get a result if it is
+    if (bitRead(_sensorStatus, 5) && bitRead(_sensorStatus, 6) && _millisMeasurementRequested > 0)
     {
-        case Y4000:
+        switch (_model)
         {
-            // Initialize float variables
-            float DOmgL = -9999;
-            float Turbidity = -9999;
-            float Cond = -9999;
-            float pH = -9999;
-            float Temp = -9999;
-            float ORP = -9999;
-            float Chlorophyll = -9999;
-            float BGA = -9999;
-
-            if (_millisMeasurementRequested > 0)
+            case Y4000:
             {
+                // Initialize float variables
+                float DOmgL = -9999;
+                float Turbidity = -9999;
+                float Cond = -9999;
+                float pH = -9999;
+                float Temp = -9999;
+                float ORP = -9999;
+                float Chlorophyll = -9999;
+                float BGA = -9999;
+
                 // Get Values
                 MS_DBG(F("Get Values:\n"));
                 success = sensor.getValues(DOmgL, Turbidity, Cond, pH, Temp, ORP, Chlorophyll, BGA);
@@ -249,30 +253,26 @@ bool YosemitechParent::addSingleMeasurementResult(void)
                 MS_DBG(F("    "), DOmgL, F(", "), Turbidity, F(", "), Cond, F(", "),
                                   pH, F(", "), Temp, F(", "), ORP, F(", "),
                                   Chlorophyll, F(", "), BGA, F("\n"));
+
+                // Put values into the array
+                verifyAndAddMeasurementResult(0, DOmgL);
+                verifyAndAddMeasurementResult(1, Turbidity);
+                verifyAndAddMeasurementResult(2, Cond);
+                verifyAndAddMeasurementResult(3, pH);
+                verifyAndAddMeasurementResult(4, Temp);
+                verifyAndAddMeasurementResult(5, ORP);
+                verifyAndAddMeasurementResult(6, Chlorophyll);
+                verifyAndAddMeasurementResult(7, BGA);
+
+                break;
             }
-            else MS_DBG(F("Sensor is not currently measuring!\n"));
-
-            // Put values into the array
-            verifyAndAddMeasurementResult(0, DOmgL);
-            verifyAndAddMeasurementResult(1, Turbidity);
-            verifyAndAddMeasurementResult(2, Cond);
-            verifyAndAddMeasurementResult(3, pH);
-            verifyAndAddMeasurementResult(4, Temp);
-            verifyAndAddMeasurementResult(5, ORP);
-            verifyAndAddMeasurementResult(6, Chlorophyll);
-            verifyAndAddMeasurementResult(7, BGA);
-
-            break;
-        }
-        default:
-        {
-            // Initialize float variables
-            float parmValue = -9999;
-            float tempValue = -9999;
-            float thirdValue = -9999;
-
-            if (_millisMeasurementRequested > 0)
+            default:
             {
+                // Initialize float variables
+                float parmValue = -9999;
+                float tempValue = -9999;
+                float thirdValue = -9999;
+
                 // Get Values
                 MS_DBG(F("Get Values:\n"));
                 success = sensor.getValues(parmValue, tempValue, thirdValue);
@@ -293,20 +293,20 @@ bool YosemitechParent::addSingleMeasurementResult(void)
                 {
                     MS_DBG(F("    Third: "), thirdValue, F("\n"));
                 }
-            }
-            else MS_DBG(F("Sensor is not currently measuring!\n"));
 
-            // Put values into the array
-            verifyAndAddMeasurementResult(0, parmValue);
-            verifyAndAddMeasurementResult(1, tempValue);
-            verifyAndAddMeasurementResult(2, thirdValue);
+                // Put values into the array
+                verifyAndAddMeasurementResult(0, parmValue);
+                verifyAndAddMeasurementResult(1, tempValue);
+                verifyAndAddMeasurementResult(2, thirdValue);
+            }
         }
     }
+    else MS_DBG(F("Sensor is not currently measuring!\n"));
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
-    // Unset the status bit for a measurement having been requested (bit 5)
-    _sensorStatus &= 0b11011111;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10011111;
     // Set the status bit for measurement completion (bit 6)
     _sensorStatus |= 0b01000000;
 

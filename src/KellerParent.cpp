@@ -98,8 +98,8 @@ void KellerParent::powerUp(void)
         MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation(),
                F(" is not controlled by this library.\n"));
     }
-    // Set the status bit for sensor power (bit 0)
-    _sensorStatus |= 0b00000001;
+    // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
+    _sensorStatus |= 0b00000110;
 }
 
 
@@ -125,10 +125,9 @@ void KellerParent::powerDown(void)
         MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation(),
                F(" is not controlled by this library.\n"));
     }
-    // Unset the status bits for sensor power (bit 0), warm-up (bit 2),
-    // activation (bit 3), stability (bit 4), measurement request (bit 5), and
-    // measurement completion (bit 6)
-    _sensorStatus &= 0b10000010;
+    // Unset the status bits for sensor power (bits 1 & 2),
+    // activation (bits 3 & 4), and measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10000001;
 }
 
 
@@ -142,7 +141,10 @@ bool KellerParent::addSingleMeasurementResult(void)
     float waterDepthM = -9999;
     float waterPressure_mBar = -9999;
 
-    if (_millisMeasurementRequested > 0)
+    // Check if BOTH a measurement start attempt was made (status bit 5 set)
+    // AND that attempt was successful (bit 6 set, _millisMeasurementRequested > 0)
+    // Only go on to get a result if it is
+    if (bitRead(_sensorStatus, 5) && bitRead(_sensorStatus, 6) && _millisMeasurementRequested > 0)
     {
         // Get Values
         MS_DBG(F("Get Values:\n"));
@@ -170,10 +172,8 @@ bool KellerParent::addSingleMeasurementResult(void)
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
-    // Unset the status bit for a measurement having been requested (bit 5)
-    _sensorStatus &= 0b11011111;
-    // Set the status bit for measurement completion (bit 6)
-    _sensorStatus |= 0b01000000;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10011111;
 
     // Return true when finished
     return success;
