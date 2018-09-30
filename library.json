@@ -63,7 +63,7 @@
             "name": "EnableInterrupt",
             "library id": "311",
             "url": "https://github.com/GreyGnome/EnableInterrupt.git",
-            "version": "=1.0.0",
+            "version": "=0.9.8",
             "note": "GreyGnome's EnableInterrupt - Assign an interrupt to any supported pin on all Arduinos",
             "authors": [
                 "Mike 'GreyGnome' Schwager"
@@ -255,7 +255,7 @@
         {
             "name": "TinyGSM",
             "version": "https://github.com/EnviroDIY/TinyGSM.git",
-            "version_note": "=0.4.2",
+            "version_note": "=0.4.3",
             "note": "A small Arduino library for GPRS modules.",
             "authors": [
                 "Volodymyr Shymanskyy",
