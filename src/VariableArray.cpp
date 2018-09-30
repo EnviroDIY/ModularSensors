@@ -686,7 +686,7 @@ bool VariableArray::completeUpdate(void)
                     // If a measurement is finished, get the result and tick up
                     // the number of finished measurements.  We aren't bothering
                     // to check if the measurement start was successful,
-                    // isMeasurementComplete(true) will do that and we stil want the
+                    // isMeasurementComplete() will do that and we stil want the
                     // addSingleMeasurementResult() function to fill in the -9999
                     // results for a failed measurement.
                     if(arrayOfVars[i]->parentSensor->isMeasurementComplete())

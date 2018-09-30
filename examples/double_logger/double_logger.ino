@@ -84,10 +84,10 @@ TinyGsm *tinyModem = new TinyGsm(ModemSerial);
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 // Describe the physical pin connection of your modem to your board
-const int8_t modemVCCPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+const int8_t modemVccPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 const int8_t modemSleepRqPin = 23;  // Modem Sleep Request Pin (-1 if unconnected)
-const int8_t modemStatusPin = 19;   // Modem Status Pin (indicates power status) (-1 if unconnected)
-const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is powered on (HIGH or LOW)
+const int8_t modemStatusPin = 19;   // Modem Status Pin (-1 if unconnected)
+const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // And create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -109,8 +109,8 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-// loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
-loggerModem modem(modemVCCPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
+// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
 
 
 
