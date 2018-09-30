@@ -365,6 +365,9 @@ bool loggerModem::isStable(bool debug)
     {
         if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and status pin on "),
               getSensorName(), F(" indicates it is off.  AT commands will not be attempted!\n"));
+        // Unset status bit 4 (wake up success) and _millisSensorActivated
+        _millisSensorActivated = 0;
+        _sensorStatus &= 0b11101111;
         return true;
     }
     // If the modem is now responding to AT commands, it's "stable"
@@ -389,6 +392,9 @@ bool loggerModem::isStable(bool debug)
     {
         if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
                getSensorName(), F(" has maxed out wait for AT command reply!  Ending wait.\n"));
+         // Unset status bit 4 (wake up success) and _millisSensorActivated
+         _millisSensorActivated = 0;
+         _sensorStatus &= 0b11101111;
         return true;
     }
     // If the modem isn't responding to AT commands yet, we still need to wait
@@ -401,14 +407,17 @@ bool loggerModem::isStable(bool debug)
 // the modem has registered on the network
 bool loggerModem::isMeasurementComplete(bool debug)
 {
-    // If the modem never responded to AT commands, we'll never get a
-    // signal strength, so the measurement is essentially "done."
-    if (!bitRead(_sensorStatus, 5) || !bitRead(_sensorStatus, 6) || _millisMeasurementRequested == 0)
+    // If the modem never responded to AT commands,this will fail.
+    if (_millisSensorActivated == 0)
     {
         if (debug) MS_MOD_DBG(getSensorName(),
                F(" is not responding to AT commands and will not give signal strength!\n"));
         return true;
     }
+
+    // Unlike most sensors where we're interested in the millis since measurement
+    // was started for a measurement completion time, for the modem the only
+    // time of interest is the time since it was turned on.
     uint32_t elapsed_since_wake_up = millis() - _millisSensorActivated;
     // If the modem is registered on the network, it's "stable"
     if (_tinyModem->isNetworkConnected())
