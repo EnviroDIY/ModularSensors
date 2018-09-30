@@ -60,7 +60,7 @@ bool loggerModem::setup(void)
 
     // Check if the an attempt was made to power the sensor (bit 1) and it succeeded (bit 2)
     // Currently there is no double check that the powerOn() was successful
-    if (bitRead(_sensorStatus, 1) && bitRead(_sensorStatus, 2))
+    if (!bitRead(_sensorStatus, 1) || !bitRead(_sensorStatus, 2))
     {
         MS_MOD_DBG(getSensorName(), F(" doesn't have power and cannot be set up!\n"));
         success = false;
@@ -330,7 +330,7 @@ bool loggerModem::addSingleMeasurementResult(void)
         MS_MOD_DBG(F("RSSI: "), rssi, F("\n"));
         MS_MOD_DBG(F("Percent signal strength: "), percent, F("\n"));
     }
-    else MS_MOD_DBG(getSensorName(), F("  is not connected to the network; unable to get signal quality!\n"));
+    else MS_MOD_DBG(getSensorName(), F(" is not connected to the network; unable to get signal quality!\n"));
 
     verifyAndAddMeasurementResult(RSSI_VAR_NUM, rssi);
     verifyAndAddMeasurementResult(PERCENT_SIGNAL_VAR_NUM, percent);
@@ -448,9 +448,9 @@ bool loggerModem::isMeasurementComplete(bool debug)
 // ==========================================================================//
 bool loggerModem::connectInternet(uint32_t waitTime_ms)
 {
-    bool retVal = false;
+    bool retVal = true;
 
-    if (bitRead(getStatus(), 0) == 0)  // NOT yet powered
+    if (bitRead(getStatus(), 1) == 0 || bitRead(getStatus(), 2) == 0)  // NOT yet powered
         modemPowerUp();
 
     // Check if the modem has previously be set-up and set it up if not
@@ -458,16 +458,26 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
     // during the main setup/begin function due to low battery power.
     // Some of the parameters for the modem functionality are actually read
     // during the modem set up, so we need to make sure a set-up happens.
-    if (bitRead(getStatus(), 1) == 0)  // NOT yet set up
+    if (bitRead(getStatus(), 0) == 0)  // NOT yet set up
     {
         waitForWarmUp();
-        setup();
+        retVal &= setup();
+    }
+    if (!retVal)
+    {
+        MS_MOD_DBG(F("Modem setup failed! Cannot connect to the internet!\n"));
+        return retVal;
     }
 
-    if (bitRead(getStatus(), 0) == 3)  // NOT yet awake/actively measuring
+    if (bitRead(getStatus(), 3) == 0)  // NOT yet awake/actively measuring
     {
         waitForWarmUp();
-        wake();  // This sets the modem to on
+        retVal &= wake();  // This sets the modem to on
+    }
+    if (!retVal)
+    {
+        MS_MOD_DBG(F("Modem did't wake up! Cannot connect to the internet!\n"));
+        return retVal;
     }
 
     // Check that the modem is responding to AT commands.  If not, give up.
@@ -475,7 +485,7 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
     MS_MOD_DBG(F("\nWaiting up to 5 seconds for "), getSensorName(), F(" to respond to AT commands...\n"));
     if (!_tinyModem->testAT(5000))
     {
-        MS_MOD_DBG(F("No response to AT commands!\n"));
+        MS_MOD_DBG(F("No response to AT commands! Cannot connect to the internet!\n"));
         return false;
     }
     else MS_MOD_DBG(F("   ... AT OK after "), millis() - start, F(" milliseconds!\n"));
@@ -489,20 +499,15 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
             while (!_tinyModem->networkConnect(_ssid, _pwd)) {};
             MS_MOD_DBG(F("   Waiting up to "), waitTime_ms/1000,
                        F(" seconds for connection\n"));
-            if (_tinyModem->waitForNetwork(waitTime_ms))
+            if (!_tinyModem->waitForNetwork(waitTime_ms))
             {
-                retVal = true;
-                MS_MOD_DBG(F("   ... WiFi connected after "), millis() - start,
-                           F(" milliseconds!\n"));
+                MS_MOD_DBG(F("   ... WiFi connection failed\n"));
+                return false;
             }
-            else MS_MOD_DBG(F("   ... WiFi connection failed\n"));
         }
-        else
-        {
-            MS_MOD_DBG(F("   ... Connected with saved WiFi settings!\n"));
-            retVal = true;
-        }
-
+        MS_MOD_DBG(F("   ... WiFi connected after "), millis() - start,
+                   F(" milliseconds!\n"));
+        return true;
     }
     else
     {
