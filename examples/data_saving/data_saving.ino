@@ -95,22 +95,22 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 // Describe the physical pin connection of your modem to your board
 #if defined(TINY_GSM_MODEM_XBEE)
-const int8_t modemVccPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+const int8_t modemVccPin = -2;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 const int8_t modemSleepRqPin = 23;  // Modem Sleep Request Pin (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (-1 if unconnected)
 const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
 #elif defined(TINY_GSM_MODEM_ESP8266)
-const int8_t modemVccPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+const int8_t modemVccPin = -2;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 const int8_t modemSleepRqPin = -1;  // Modem Sleep Request Pin (-1 if unconnected)
 const int8_t modemStatusPin = -1;   // Modem Status Pin (-1 if unconnected)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 #elif defined(TINY_GSM_MODEM_UBLOX)
-const int8_t modemVccPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
-const int8_t modemSleepRqPin = 23;  // Modem Sleep Request Pin (-1 if unconnected)
+const int8_t modemVccPin = 23;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+const int8_t modemSleepRqPin = 20;  // Modem Sleep Request Pin (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (-1 if unconnected)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 #else
-const int8_t modemVccPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+const int8_t modemVccPin = -2;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 const int8_t modemSleepRqPin = 23;  // Modem Sleep Request Pin (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (-1 if unconnected)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
@@ -137,6 +137,13 @@ bool wakeFxn(void){return true;}  // Turns on when power is applied
 bool sleepFxn(void)
 {
     if (modemSleepRqPin >=0) return tinyModem->poweroff();   // Need a reset pin connected..
+    else if (loggingInterval > 1)
+    {
+        tinyModem->sendAT(GF("+GSLP="), (loggingInterval-1)*60*1000);
+        // Power down for 1 minute less than logging interval
+        // Better:  Calculate length of loop and power down for logging interval - loop time
+        return tinyModem->waitResponse() == 1;
+    }
     else return true;
 }
 #elif defined(TINY_GSM_MODEM_UBLOX)
@@ -148,11 +155,9 @@ bool sleepFxn(void)
     {
         digitalWrite(modemSleepRqPin, LOW);
         digitalWrite(redLED, HIGH);
-        Serial.println("LOW");
-        delay(1100);  // >1s
+        delay(1100);  // >1s pulse for power down
         digitalWrite(modemSleepRqPin, HIGH);
         digitalWrite(redLED, LOW);
-        Serial.println("HIGH");
         return true;
     }
 }
@@ -460,52 +465,53 @@ void loop()
         Serial.print(F("------------------------------------------\n"));
         // Turn on the LED to show we're taking a reading
         digitalWrite(greenLED, HIGH);
+        digitalWrite(greenLED, HIGH);
 
         // Turn on the modem to let it start searching for the network
-        modem.modemPowerUp();
+        // Only turn the modem on if the battery at the last interval was high enough
+        if (mayflyBatt->getValue() > 3.7)
+            modem.modemPowerUp();
 
         // Start the stream for the modbus sensors
         // Because RS485 adapters tend to "steal" current from the data pins
         // we will explicitly start and end the serial connection in the loop.
         modbusSerial.begin(9600);
 
-        // Send power to all of the sensors (do this directly on the VariableArray)
-        Serial.print(F("Powering sensors...\n"));
-        arrayComplete.sensorsPowerUp();
-        // Wake up all of the sensors (do this directly on the VariableArray)
-        Serial.print(F("Waking sensors...\n"));
-        arrayComplete.sensorsWake();
-        // Update the values from all attached sensors (do this directly on the VariableArray)
-        Serial.print(F("Updating sensor values...\n"));
-        arrayComplete.updateAllSensors();
-        // Put sensors to sleep (do this directly on the VariableArray)
-        Serial.print(F("Putting sensors back to sleep...\n"));
-        arrayComplete.sensorsSleep();
-        // Cut sensor power (do this directly on the VariableArray)
-        Serial.print(F("Cutting sensor power...\n"));
-        arrayComplete.sensorsPowerDown();
+        // Do a complete update on the "full" array.
+        // This will do all the power management
+        Serial.print(F("Updating all sensors...\n"));
+        arrayComplete.completeUpdate();
 
         // End the stream for the modbus sensors
         // Because RS485 adapters tend to "steal" current from the data pins
         // we will explicitly start and end the serial connection in the loop.
         modbusSerial.end();
+        // Explicitly set the pin modes for the AltSoftSerial pins to make sure they're low
+        pinMode(5, OUTPUT);
+        pinMode(6, OUTPUT);
+        digitalWrite(5, LOW);
+        digitalWrite(6, LOW);
 
         // Stream the variable results from the complete set of variables to
         // the SD card
         loggerComplete.logToSD();
 
         // Connect to the network
-        Serial.print(F("Connecting to the internet...\n"));
-        if (modem.connectInternet())
+        // Again, we're only doing this if the battery is doing well
+        if (mayflyBatt->getValue() > 3.7)
         {
-            // Post the data to the WebSDL
-            loggerToGo.postDataEnviroDIY();
+            Serial.print(F("Connecting to the internet...\n"));
+            if (modem.connectInternet())
+            {
+                // Post the data to the WebSDL
+                loggerToGo.postDataEnviroDIY();
 
-            // Disconnect from the network
-            modem.disconnectInternet();
+                // Disconnect from the network
+                modem.disconnectInternet();
+            }
+            // Turn the modem off
+            modem.modemSleepPowerDown();
         }
-        // Turn the modem off
-        modem.modemSleepPowerDown();
 
         // Turn off the LED
         digitalWrite(greenLED, LOW);
@@ -522,7 +528,7 @@ void loop()
     if (Logger::startTesting) loggerComplete.testingMode();
 
     // Once a day, at midnight, sync the clock
-    if (Logger::markedEpochTime % 86400 == 0)
+    if (Logger::markedEpochTime % 86400 == 0 && mayflyBatt->getValue() > 3.7)
     {
         // Turn on the modem
         modem.modemPowerUp();

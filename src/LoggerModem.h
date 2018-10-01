@@ -27,7 +27,7 @@
 // Maximum time to wait for a reply to an AT command from the modem
 #define MODEM_MAX_REPLY_TIME 5000L
 // Maximum time the modem is allowed to search for the network
-#define MODEM_MAX_SEARCH_TIME 45000L
+#define MODEM_MAX_SEARCH_TIME 15000L
 
 #define MODEM_NUM_VARIABLES 2
 #define MODEM_WARM_UP_TIME_MS 0

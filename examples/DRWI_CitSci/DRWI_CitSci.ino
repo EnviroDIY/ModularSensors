@@ -54,10 +54,16 @@ const int8_t wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
+const int8_t sensorPowerPin = 22;  // For the Mayfly, almost all sensors are powered off one pin
 
 // Create and return the processor "sensor"
 const char *MFVersion = "v0.5b";
 ProcessorStats mayfly(MFVersion);
+// Create the battery voltage and free RAM variable objects for the processor and return variable-type pointers to them
+// We're going to use the battery variable in the set-up and loop to decide if the battery level is high enough to
+// send data over the modem or if the data should only be logged.
+Variable *mayflyBatt = new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *mayflyRAM = new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -83,7 +89,7 @@ TinyGsm *tinyModem = new TinyGsm(ModemSerial);
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 // Describe the physical pin connection of your modem to your board
-const int8_t modemVccPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+const int8_t modemVccPin = -2;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 const int8_t modemSleepRqPin = 23;  // Modem Sleep Request Pin (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (-1 if unconnected)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
@@ -163,7 +169,7 @@ Variable *variableList[] = {
     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
-    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
+    mayflyBatt,
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -216,12 +222,22 @@ void setup()
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
+    digitalWrite(greenLED, LOW);
     pinMode(redLED, OUTPUT);
+    digitalWrite(redLED, LOW);
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
-    // Set up pin for the modem
+    // Set up some of the power pins so the board boots up with them off
+    pinMode(modemVccPin, OUTPUT);
+    digitalWrite(modemVccPin, LOW);
+    pinMode(sensorPowerPin, OUTPUT);
+    digitalWrite(sensorPowerPin, LOW);
+
+    // Set up the sleep/wake pin for the modem and put it's inital value as "off"
+
     pinMode(modemSleepRqPin, OUTPUT);
+    digitalWrite(modemSleepRqPin, LOW);
 
     // Print a start-up note to the first serial port
     Serial.print(F("Now running "));
@@ -248,7 +264,11 @@ void setup()
     EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
 
     // Begin the logger
-    EnviroDIYLogger.beginAndSync();
+    mayfly.update();
+    Serial.print("Battery: ");
+    Serial.println(mayflyBatt->getValue());
+    if (mayflyBatt->getValue() > 3.7) EnviroDIYLogger.beginAndSync();
+    else EnviroDIYLogger.begin();
 }
 
 
@@ -258,5 +278,8 @@ void setup()
 void loop()
 {
     // Log the data
-    EnviroDIYLogger.logAndSend();
+    if (mayflyBatt->getValue() > 3.7)
+    // This will check against the battery level at the previous logging interval!
+        EnviroDIYLogger.logAndSend();
+    else EnviroDIYLogger.log();
 }

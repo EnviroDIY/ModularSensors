@@ -97,22 +97,22 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 // Describe the physical pin connection of your modem to your board
 #if defined(TINY_GSM_MODEM_XBEE)
-const int8_t modemVccPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+const int8_t modemVccPin = -2;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 const int8_t modemSleepRqPin = 23;  // Modem Sleep Request Pin (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (-1 if unconnected)
 const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
 #elif defined(TINY_GSM_MODEM_ESP8266)
-const int8_t modemVccPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+const int8_t modemVccPin = -2;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 const int8_t modemSleepRqPin = -1;  // Modem Sleep Request Pin (-1 if unconnected)
 const int8_t modemStatusPin = -1;   // Modem Status Pin (-1 if unconnected)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 #elif defined(TINY_GSM_MODEM_UBLOX)
-const int8_t modemVccPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
-const int8_t modemSleepRqPin = 23;  // Modem Sleep Request Pin (-1 if unconnected)
+const int8_t modemVccPin = 23;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+const int8_t modemSleepRqPin = 20;  // Modem Sleep Request Pin (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (-1 if unconnected)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 #else
-const int8_t modemVccPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+const int8_t modemVccPin = -2;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 const int8_t modemSleepRqPin = 23;  // Modem Sleep Request Pin (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (-1 if unconnected)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
@@ -139,6 +139,13 @@ bool wakeFxn(void){return true;}  // Turns on when power is applied
 bool sleepFxn(void)
 {
     if (modemSleepRqPin >=0) return tinyModem->poweroff();   // Need a reset pin connected..
+    else if (loggingInterval > 1)
+    {
+        tinyModem->sendAT(GF("+GSLP="), (loggingInterval-1)*60*1000);
+        // Power down for 1 minute less than logging interval
+        // Better:  Calculate length of loop and power down for logging interval - loop time
+        return tinyModem->waitResponse() == 1;
+    }
     else return true;
 }
 #elif defined(TINY_GSM_MODEM_UBLOX)
@@ -150,11 +157,9 @@ bool sleepFxn(void)
     {
         digitalWrite(modemSleepRqPin, LOW);
         digitalWrite(redLED, HIGH);
-        Serial.println("LOW");
-        delay(1100);  // >1s
+        delay(1100);  // >1s pulse for power down
         digitalWrite(modemSleepRqPin, HIGH);
         digitalWrite(redLED, LOW);
-        Serial.println("HIGH");
         return true;
     }
 }

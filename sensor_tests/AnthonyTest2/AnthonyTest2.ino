@@ -60,7 +60,9 @@ const int8_t sensorPowerPin = 22;  // For the Mayfly, almost all sensors are pow
 const char *MFVersion = "v0.5b";
 ProcessorStats mayfly(MFVersion);
 // Create the battery voltage and free RAM variable objects for the processor and return variable-type pointers to them
-// Variable *mayflyBatt = new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
+// We're going to use the battery variable in the set-up and loop to decide if the battery level is high enough to
+// send data over the modem or if the data should only be logged.
+Variable *mayflyBatt = new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
 // Variable *mayflyRAM = new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
 
 
@@ -93,24 +95,24 @@ const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble makin
 #endif
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
-// TinyGsm *tinyModem = new TinyGsm(ModemSerial);
+TinyGsm *tinyModem = new TinyGsm(ModemSerial);
 
 // Use this if you want to spy on modem communication
-#include <StreamDebugger.h>
-StreamDebugger modemDebugger(Serial1, Serial);
-TinyGsm *tinyModem = new TinyGsm(modemDebugger);
+// #include <StreamDebugger.h>
+// StreamDebugger modemDebugger(Serial1, Serial);
+// TinyGsm *tinyModem = new TinyGsm(modemDebugger);
 
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 // Describe the physical pin connection of your modem to your board
 #if defined(TINY_GSM_MODEM_XBEE)
-const int8_t modemVccPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+const int8_t modemVccPin = -2;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 const int8_t modemSleepRqPin = 23;  // Modem Sleep Request Pin (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (-1 if unconnected)
 const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
 #elif defined(TINY_GSM_MODEM_ESP8266)
-const int8_t modemVccPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+const int8_t modemVccPin = -2;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 const int8_t modemSleepRqPin = -1;  // Modem Sleep Request Pin (-1 if unconnected)
 const int8_t modemStatusPin = -1;   // Modem Status Pin (-1 if unconnected)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
@@ -120,7 +122,7 @@ const int8_t modemSleepRqPin = 20;  // Modem Sleep Request Pin (-1 if unconnecte
 const int8_t modemStatusPin = 19;   // Modem Status Pin (-1 if unconnected)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 #else
-const int8_t modemVccPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+const int8_t modemVccPin = -2;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 const int8_t modemSleepRqPin = 23;  // Modem Sleep Request Pin (-1 if unconnected)
 const int8_t modemStatusPin = 19;   // Modem Status Pin (-1 if unconnected)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
@@ -147,6 +149,13 @@ bool wakeFxn(void){return true;}  // Turns on when power is applied
 bool sleepFxn(void)
 {
     if (modemSleepRqPin >=0) return tinyModem->poweroff();   // Need a reset pin connected..
+    else if (loggingInterval > 1)
+    {
+        tinyModem->sendAT(GF("+GSLP="), (loggingInterval-1)*60*1000);
+        // Power down for 1 minute less than logging interval
+        // Better:  Calculate length of loop and power down for logging interval - loop time
+        return tinyModem->waitResponse() == 1;
+    }
     else return true;
 }
 #elif defined(TINY_GSM_MODEM_UBLOX)
@@ -158,11 +167,9 @@ bool sleepFxn(void)
     {
         digitalWrite(modemSleepRqPin, LOW);
         digitalWrite(redLED, HIGH);
-        Serial.println("LOW");
-        delay(1100);  // >1s
+        delay(1100);  // >1s pulse for power down
         digitalWrite(modemSleepRqPin, HIGH);
         digitalWrite(redLED, LOW);
-        Serial.println("HIGH");
         return true;
     }
 }
@@ -741,7 +748,7 @@ Variable *variableList[] = {
     // new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
     // new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
     new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
+    mayflyBatt,
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
     // new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     // new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -866,7 +873,11 @@ void setup()
     EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Begin the logger
-    EnviroDIYLogger.beginAndSync();
+    mayfly.update();
+    Serial.print("Battery: ");
+    Serial.println(mayflyBatt->getValue());
+    if (mayflyBatt->getValue() > 3.7) EnviroDIYLogger.beginAndSync();
+    else EnviroDIYLogger.begin();
 }
 
 
@@ -876,5 +887,8 @@ void setup()
 void loop()
 {
     // Log the data
-    EnviroDIYLogger.logAndSend();
+    if (mayflyBatt->getValue() > 3.7)
+    // This will check against the battery level at the previous logging interval!
+        EnviroDIYLogger.logAndSend();
+    else EnviroDIYLogger.log();
 }

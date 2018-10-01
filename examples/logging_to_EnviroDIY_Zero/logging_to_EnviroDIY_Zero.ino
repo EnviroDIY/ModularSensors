@@ -51,6 +51,7 @@ const int8_t wakePin = 6;  // Interrupt/Alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPin = 4;  // SD Card Chip Select/Slave Select Pin (must be defined!)
+const int8_t sensorPowerPin = -1;  // The feather doesn't have a master "sensor power" bus
 
 // Create and return the processor "sensor"
 const char *featherVersion = "M0";
@@ -75,7 +76,15 @@ ProcessorStats feather(featherVersion) ;
 HardwareSerial &ModemSerial = Serial1;
 
 // Create a variable for the modem baud rate - this will be used in the begin function for the port
-const long ModemBaud = 9600;
+#if defined(TINY_GSM_MODEM_XBEE)
+const long ModemBaud = 9600;  // Default for XBee is 9600
+#elif defined(TINY_GSM_MODEM_ESP8266)
+const long ModemBaud = 57600;  // Default for ESP8266 is 115200, but the Mayfly itself stutters above 57600
+#elif defined(TINY_GSM_MODEM_UBLOX)
+const long ModemBaud = 9600;  // SARA-U201 default seems to be 9600
+#else
+const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble making it fast (19200 works)
+#endif
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
 TinyGsm *tinyModem = new TinyGsm(ModemSerial);
@@ -89,23 +98,84 @@ TinyGsm *tinyModem = new TinyGsm(ModemSerial);
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 // Describe the physical pin connection of your modem to your board
-const int8_t modemVccPin = -1;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+#if defined(TINY_GSM_MODEM_XBEE)
+const int8_t modemVccPin = -2;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+const int8_t modemSleepRqPin = 14;  // Modem Sleep Request Pin (-1 if unconnected)
+const int8_t modemStatusPin = 15;   // Modem Status Pin (-1 if unconnected)const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
+#elif defined(TINY_GSM_MODEM_ESP8266)
+const int8_t modemVccPin = -2;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+const int8_t modemSleepRqPin = -1;  // Modem Sleep Request Pin (-1 if unconnected)
+const int8_t modemStatusPin = -1;   // Modem Status Pin (-1 if unconnected)
+const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
+#elif defined(TINY_GSM_MODEM_UBLOX)
+const int8_t modemVccPin = 9;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
 const int8_t modemSleepRqPin = 14;  // Modem Sleep Request Pin (-1 if unconnected)
 const int8_t modemStatusPin = 15;   // Modem Status Pin (-1 if unconnected)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
+#else
+const int8_t modemVccPin = -2;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
+const int8_t modemSleepRqPin = 14;  // Modem Sleep Request Pin (-1 if unconnected)
+const int8_t modemStatusPin = 15;   // Modem Status Pin (-1 if unconnected)
+const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
+#endif
 
 // And create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
+#if defined(TINY_GSM_MODEM_XBEE)
+// After setting up pin sleep, the sleep request pin is held LOW to keep the XBee on
 bool wakeFxn(void)
 {
     digitalWrite(modemSleepRqPin, LOW);
+    digitalWrite(redLED, HIGH);  // Because the XBee doesn't have any lights
     return true;
 }
 bool sleepFxn(void)
 {
     digitalWrite(modemSleepRqPin, HIGH);
+    digitalWrite(redLED, LOW);
     return true;
 }
+#elif defined(TINY_GSM_MODEM_ESP8266)
+bool wakeFxn(void){return true;}  // Turns on when power is applied
+bool sleepFxn(void)
+{
+    if (modemSleepRqPin >=0) return tinyModem->poweroff();   // Need a reset pin connected..
+    else if (loggingInterval > 1)
+    {
+        tinyModem->sendAT(GF("+GSLP="), (loggingInterval-1)*60*1000);
+        // Power down for 1 minute less than logging interval
+        // Better:  Calculate length of loop and power down for logging interval - loop time
+        return tinyModem->waitResponse() == 1;
+    }
+    else return true;
+}
+#elif defined(TINY_GSM_MODEM_UBLOX)
+bool wakeFxn(void){return true;}  // Turns on when power is applied
+bool sleepFxn(void)
+{
+    if (modemSleepRqPin < 0) return tinyModem->poweroff();
+    else
+    {
+        digitalWrite(modemSleepRqPin, LOW);
+        digitalWrite(redLED, HIGH);
+        delay(1100);  // >1s pulse for power down
+        digitalWrite(modemSleepRqPin, HIGH);
+        digitalWrite(redLED, LOW);
+        return true;
+    }
+}
+#else
+bool wakeFxn(void)
+{
+    digitalWrite(modemSleepRqPin, HIGH);
+    return true;
+}
+bool sleepFxn(void)
+{
+    digitalWrite(modemSleepRqPin, LOW);
+    return true;
+}
+#endif
 
 // And we still need the connection information for the network
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
@@ -114,8 +184,16 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
+#if defined(TINY_GSM_MODEM_ESP8266)
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
+#elif defined(TINY_GSM_MODEM_XBEE)
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
+// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
+#elif defined(TINY_GSM_MODEM_UBLOX)
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
+#else
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
+#endif
 
 
 // ==========================================================================
@@ -161,7 +239,9 @@ ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
 //    Bosch BME280 Environmental Sensor (Temperature, Humidity, Pressure)
 // ==========================================================================
 #include <BoschBME280.h>
-uint8_t BMEi2c_addr = 0x76;  // The BME280 can be addressed either as 0x76 or 0x77
+uint8_t BMEi2c_addr = 0x76;
+// The BME280 can be addressed either as 0x77 (Adafruit default) or 0x76 (Grove default)
+// Either can be physically mofidied for the other address
 // const int8_t I2CPower = -1;  // Pin to switch power on and off (-1 if unconnected)
 // Create and return the Bosch BME280 sensor object
 BoschBME280 bme280(I2CPower, BMEi2c_addr);
@@ -599,12 +679,41 @@ void setup()
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
+    digitalWrite(greenLED, LOW);
     pinMode(redLED, OUTPUT);
+    digitalWrite(redLED, LOW);
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
-    // Set up pin for the modem
-    pinMode(modemSleepRqPin, OUTPUT);
+    // Set up some of the power pins so the board boots up with them off
+    if (modemVccPin >= 0)
+    {
+        pinMode(modemVccPin, OUTPUT);
+        digitalWrite(modemVccPin, LOW);
+    }
+    if (sensorPowerPin >= 0)
+    {
+        pinMode(sensorPowerPin, OUTPUT);
+        digitalWrite(sensorPowerPin, LOW);
+    }
+
+    // Set up the sleep/wake pin for the modem and put it's inital value as "off"
+    #if defined(TINY_GSM_MODEM_XBEE)
+        pinMode(modemSleepRqPin, OUTPUT);
+        digitalWrite(modemSleepRqPin, HIGH);
+    #elif defined(TINY_GSM_MODEM_ESP8266)
+        if (modemSleepRqPin >= 0)
+        {
+            pinMode(modemSleepRqPin, OUTPUT);
+            digitalWrite(modemSleepRqPin, HIGH);
+        }
+    #elif defined(TINY_GSM_MODEM_UBLOX)
+        pinMode(modemSleepRqPin, OUTPUT);
+        digitalWrite(modemSleepRqPin, HIGH);
+    #else
+        pinMode(modemSleepRqPin, OUTPUT);
+        digitalWrite(modemSleepRqPin, LOW);
+    #endif
 
     // Print a start-up note to the first serial port
     Serial.print(F("Now running "));
