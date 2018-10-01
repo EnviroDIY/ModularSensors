@@ -279,6 +279,11 @@ void loggerModem::powerDown(void)
 {
     MS_MOD_DBG(F("Skipping "), getSensorName(), F(" in sensor power down!\n"));
 }
+bool loggerModem::sleep(void)
+{
+    MS_MOD_DBG(F("Skipping "), getSensorName(), F(" in sensor sleep!\n"));
+    return true;
+}
 
 
 bool loggerModem::addSingleMeasurementResult(void)
