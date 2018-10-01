@@ -463,33 +463,22 @@ bool Sensor::isWarmedUp(bool debug)
     // If the sensor doesn't have power, then it will never be warmed up,
     // so the warm up time is essentially already passed.
     // Check if the an attempt was made to power the sensor (bit 1) and it succeeded (bit 2)
-    if (bitRead(_sensorStatus, 1) && bitRead(_sensorStatus, 2))
+    if (!bitRead(_sensorStatus, 1) || !bitRead(_sensorStatus, 2) || _millisPowerOn == 0)
     {
-        if (debug) MS_DBG(getSensorName(), F(" at "),    getSensorLocation(),
+        if (debug) MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
               F(" does not have power and cannot warm up!\n"));
-        // Set the status bit for warm-up completion (bit 2)
-        _sensorStatus |= 0b00000100;
         return true;
     }
     // If the sensor has power and enough time has elapsed, it's warmed up
     else if (elapsed_since_power_on > _warmUpTime_ms)
     {
         if (debug) MS_DBG(F("It's been "), (elapsed_since_power_on), F("ms, and "),
-              getSensorName(), F(" at "),    getSensorLocation(),
+              getSensorName(), F(" at "), getSensorLocation(),
               F(" should be warmed up!\n"));
-        // Set the status bit for warm-up completion (bit 2)
-        _sensorStatus |= 0b00000100;
         return true;
     }
     // If the sensor has power but the time hasn't passed, we still need to wait
-    else
-    {
-        // Make sure the status bits for warm-up (bit 2), activation (bit 3),
-        // stability (bit 4), measurement start (bit 5), and measurement
-        // completion (bit 6) are not set
-        _sensorStatus &= 0b10000011;
-        return false;
-    }
+    else return false;
 }
 
 // This delays until enough time has passed for the sensor to "warm up" - that

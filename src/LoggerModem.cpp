@@ -204,6 +204,10 @@ bool loggerModem::setup(void)
         // _off_pull_down_ms = 0;  // ??
         _disconnetTime_ms = 0;  // ??
     }
+    if (_modemName.indexOf("XBee") > 0)
+    {
+        _indicatorTime_ms = 50;  // ??? WAG!
+    }
 
     // Set the status bit marking that the modem has been set up (bit 0)
     // Only set the bit if setup was successful!
@@ -590,6 +594,8 @@ void loggerModem::modemPowerUp(void)
     else
     {
         MS_MOD_DBG(F("Power to "), getSensorName(), F(" is not controlled by this library.\n"));
+        // Mark the power-on time, just in case it  had not been marked
+        if (_millisPowerOn == 0) _millisPowerOn = millis();
     }
     // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
     _sensorStatus |= 0b00000110;
@@ -699,13 +705,13 @@ uint32_t loggerModem::getNISTTime(void)
             for (uint8_t i = 0; i < 4; i++)
             {
                 response[i] = _tinyClient->read();
-                MS_MOD_DBG(F("\nResponse Byte ["), i, F("]:"),response[i], '(',
-                           String(response[i], BIN),')');
+                // MS_MOD_DBG(F("\nResponse Byte ["), i, F("]:"),response[i], '(',
+                //            String(response[i], BIN),')');
                 secFrom1900 += 0x000000FF & response[i];
-                MS_MOD_DBG(F("\nseconds from 1900 after byte: "),String(secFrom1900, BIN));
+                // MS_MOD_DBG(F("\nseconds from 1900 after byte: "),String(secFrom1900, BIN));
                 if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;}
             }
-            MS_MOD_DBG(F("\nfinal seconds from 1900:  "),secFrom1900);
+            // MS_MOD_DBG(F("\nfinal seconds from 1900:  "),secFrom1900);
 
             // Close the TCP connection, just in case
             closeTCP();
