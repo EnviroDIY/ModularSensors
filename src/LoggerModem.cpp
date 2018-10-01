@@ -436,6 +436,9 @@ bool loggerModem::isMeasurementComplete(bool debug)
     {
         if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
                getSensorName(), F(" has not yet registered on the network!  Ending wait.\n"));
+         // Unset status bit 6 (start measurement success) and _millisMeasurementRequested
+         _millisMeasurementRequested = 0;
+         _sensorStatus &= 0b11101111;
         return true;
     }
     // If the modem isn't registered yet, we still need to wait

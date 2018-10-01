@@ -383,7 +383,7 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
     {
         // Set the pin attached to the RTC alarm to be in the right mode to listen to
         // an interrupt and attach the "Wake" ISR to it.
-        pinMode(_mcuWakePin, INPUT);
+        pinMode(_mcuWakePin, INPUT_PULLUP);
         enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
 
         // Unfortunately, because of the way the alarm on the DS3231 is set up, it
