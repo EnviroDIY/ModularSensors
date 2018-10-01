@@ -56,7 +56,7 @@ bool loggerModem::setup(void)
     MS_MOD_DBG(F("Setting up the modem ...\n"));
 
     if (_powerPin >= 0) pinMode(_powerPin, OUTPUT);
-    if (_dataPin >= 0) pinMode(_dataPin, INPUT_PULLUP);
+    if (_dataPin >= 0) pinMode(_dataPin, INPUT);
 
     // Check if the an attempt was made to power the sensor (bit 1) and it succeeded (bit 2)
     // Currently there is no double check that the powerOn() was successful
@@ -226,7 +226,7 @@ bool loggerModem::wake(void)
     if (!success) return success;
 
     // Try the given wake function up to 5 times
-    uint32_t start;
+    uint32_t start = millis();
     int ntries = 0;
     while (!success && ntries < 5)
     {

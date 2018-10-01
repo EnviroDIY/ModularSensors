@@ -165,7 +165,7 @@ bool Sensor::setup(void)
     MS_DBG(F(" individual measurements will be averaged for each reading.\n"));
 
     if (_powerPin >= 0) pinMode(_powerPin, OUTPUT);
-    if (_dataPin >= 0) pinMode(_dataPin, INPUT_PULLUP);
+    if (_dataPin >= 0) pinMode(_dataPin, INPUT);
 
     // Set the status bit marking that the sensor has been set up (bit 0)
     _sensorStatus |= 0b00000001;

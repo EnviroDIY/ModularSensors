@@ -383,7 +383,7 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
     {
         // Set the pin attached to the RTC alarm to be in the right mode to listen to
         // an interrupt and attach the "Wake" ISR to it.
-        pinMode(_mcuWakePin, INPUT_PULLUP);
+        pinMode(_mcuWakePin, INPUT);
         enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
 
         // Unfortunately, because of the way the alarm on the DS3231 is set up, it
@@ -844,7 +844,7 @@ bool Logger::logToSD(void)
 // void Logger::checkForTestingMode(int8_t buttonPin)
 // {
 //     // Set the pin attached to some button to enter debug mode
-//     if (buttonPin >= 0) pinMode(buttonPin, INPUT_PULLUP);
+//     if (buttonPin >= 0) pinMode(buttonPin, INPUT);
 //
 //     // Flash the LED to let user know it is now possible to enter debug mode
 //     for (uint8_t i = 0; i < 15; i++)
@@ -934,7 +934,7 @@ void Logger::testingMode()
 {
     // Set up pins for the LED's
     if (_ledPin >= 0) pinMode(_ledPin, OUTPUT);
-    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT_PULLUP);
+    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT);
 
     #if defined ARDUINO_ARCH_SAMD
         zero_sleep_rtc.begin();

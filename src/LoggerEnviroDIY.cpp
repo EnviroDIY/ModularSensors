@@ -356,7 +356,7 @@ void LoggerEnviroDIY::beginAndSync(void)
 {
     // Set up pins for the LED's
     if (_ledPin >= 0) pinMode(_ledPin, OUTPUT);
-    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT_PULLUP);
+    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT);
 
     #if defined ARDUINO_ARCH_SAMD
         zero_sleep_rtc.begin();

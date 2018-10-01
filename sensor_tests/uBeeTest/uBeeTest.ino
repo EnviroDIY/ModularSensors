@@ -115,7 +115,6 @@ void setup()
     // Serial.println(success);
     // tinyModem->poweroff();
 
-
     Serial.println("setting 20 & 23 high, 19 input");
     digitalWrite(20, HIGH);
     digitalWrite(23, HIGH);
@@ -142,23 +141,89 @@ void setup()
     Serial.println(digitalRead(19));
     // tinyModem->poweroff();
 
-    Serial.println("outputting a 1 sec low pulse on 23");
-    digitalWrite(23, LOW);
-    delay(1100);
-    digitalWrite(23, HIGH);
+    Serial.println("outputting a 60µs low pulse on 20");
+    digitalWrite(20, LOW);
+    delayMicroseconds(60);
+    digitalWrite(20, HIGH);
     delay(15000L);
 
     success = tinyModem->testAT(7000L);
-    Serial.print("After pin 23 low pulse: ");
+    Serial.print("After pin 20 low pulse: ");
     Serial.println(success);
     Serial.print("Pin 19 state: ");
     Serial.println(digitalRead(19));
     // tinyModem->poweroff();
 
+    Serial.println("outputting a 1 sec low pulse on 20");
+    digitalWrite(20, LOW);
+    delay(1100);
+    digitalWrite(20, HIGH);
+    Serial.println(millis());
+    while (true)
+    {
+        if (!digitalRead(19))
+        {
+            Serial.println(millis());
+            tinyModem->testAT(1000L);
+            break;
+        }
+    }
+    // tinyModem->poweroff();
 
+    Serial.println("setting 20 & 23 high, 19 input pullup");
+    digitalWrite(20, HIGH);
+    digitalWrite(23, HIGH);
+    pinMode(19, INPUT_PULLUP);
+    delay(15000L);
 
+    success = tinyModem->testAT(7000L);
+    Serial.print("Pin 20 & 23 HIGH: ");
+    Serial.println(success);
+    Serial.print("Pin 19 state: ");
+    Serial.println(digitalRead(19));
+    // tinyModem->poweroff();
 
+    Serial.println("outputting a 1 sec low pulse on 20");
+    digitalWrite(20, LOW);
+    delay(1100);
+    digitalWrite(20, HIGH);
+    delay(15000L);
 
+    success = tinyModem->testAT(7000L);
+    Serial.print("After pin 20 low pulse: ");
+    Serial.println(success);
+    Serial.print("Pin 19 state: ");
+    Serial.println(digitalRead(19));
+    // tinyModem->poweroff();
+
+    Serial.println("outputting a 60µs low pulse on 20");
+    digitalWrite(20, LOW);
+    delayMicroseconds(60);
+    digitalWrite(20, HIGH);
+    delay(15000L);
+
+    success = tinyModem->testAT(7000L);
+    Serial.print("After pin 20 low pulse: ");
+    Serial.println(success);
+    Serial.print("Pin 19 state: ");
+    Serial.println(digitalRead(19));
+    // tinyModem->poweroff();
+
+    Serial.println("outputting a 1 sec low pulse on 20");
+    digitalWrite(20, LOW);
+    delay(1100);
+    digitalWrite(20, HIGH);
+    Serial.println(millis());
+    while (true)
+    {
+        if (!digitalRead(19))
+        {
+            Serial.println(millis());
+            tinyModem->testAT(1000L);
+            break;
+        }
+    }
+    // tinyModem->poweroff();
 }
 
 void loop(){}
