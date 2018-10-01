@@ -50,7 +50,7 @@ String loggerModem::getSensorName(void) { return _modemName; }
 // NOTE!! Power is left ON after set-up
 bool loggerModem::setup(void)
 {
-    bool success = false;
+    bool success = true;
 
     // Initialize the modem
     MS_MOD_DBG(F("Setting up the modem ...\n"));
@@ -71,7 +71,8 @@ bool loggerModem::setup(void)
     {
         success &= _tinyModem->begin();  // This generally begins with a 5 second testAT()
         _modemName = _tinyModem->getModemName();
-        MS_MOD_DBG(F("   ... Complete!  It's a "), getSensorName(), F(".\n"));
+        if (success) MS_MOD_DBG(F("   ... Complete!  It's a "), getSensorName(), F(".\n"));
+        else MS_MOD_DBG(F("   ... Failed!  It's a "), getSensorName(), F(".\n"));
     }
     else MS_MOD_DBG(F("   ... "), getSensorName(), F(" failed to turn on and cannot be set up!\n"));
 
@@ -209,7 +210,6 @@ bool loggerModem::setup(void)
     if (success) _sensorStatus |= 0b00000001;
     // Otherwise, set the status error bit (bit 7)
     else _sensorStatus |= 0b10000000;
-
 
     return success;
 }
@@ -427,7 +427,7 @@ bool loggerModem::isMeasurementComplete(bool debug)
 
         // For the cellular modems, the APN must be set after registration
         // on the network.  We'll do this as soon as registration is complete.
-        if (_ssid && _tinyModem->hasWifi()) _tinyModem->gprsConnect(_apn, "", "");
+        if (_apn && _tinyModem->hasGPRS()) _tinyModem->gprsConnect(_apn, "", "");
 
         return true;
     }
@@ -460,6 +460,7 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
     // during the modem set up, so we need to make sure a set-up happens.
     if (bitRead(getStatus(), 0) == 0)  // NOT yet set up
     {
+        MS_MOD_DBG(F("Modem has not yet been set up.  Running setup now.\n"));
         waitForWarmUp();
         retVal &= setup();
     }
