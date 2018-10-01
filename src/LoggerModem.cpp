@@ -231,26 +231,28 @@ bool loggerModem::wake(void)
 
     // Try the given wake function up to 5 times
     uint32_t start = millis();
+    bool fxnSuccess = false;
     int ntries = 0;
-    while (!success && ntries < 5)
+    while (!fxnSuccess && ntries < 5)
     {
         MS_MOD_DBG(F("Waking "), getSensorName(), F("("), ntries+1, F(")"));
         start = millis();
-        success = _wakeFxn();
+        fxnSuccess = _wakeFxn();
         ntries++;
     }
+    success &= fxnSuccess;
 
     // Before we quit, check the status pin
     // Only works if the status pin comes on immediately
-    if ( (_dataPin >= 0 && start - millis() > _indicatorTime_ms &&
-              digitalRead(_dataPin) != _statusLevel))
+    if ((_dataPin >= 0 && start - millis() > _indicatorTime_ms &&
+         digitalRead(_dataPin) != _statusLevel))
     {
         MS_MOD_DBG(F("It's been "), (start - millis()), F("ms, and status pin on "),
-              getSensorName(), F(" indicates it failed to wake!\n"));
+              getSensorName(), F(" is "), digitalRead(_dataPin), F(" indicating it is off!\n"));
         success = false;
     }
 
-    if(success)
+    if (success)
     {
         // Update the time that the sensor was activated
         _millisSensorActivated = millis();
@@ -373,7 +375,8 @@ bool loggerModem::isStable(bool debug)
               digitalRead(_dataPin) != _statusLevel))
     {
         if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and status pin on "),
-              getSensorName(), F(" indicates it is off.  AT commands will not be attempted!\n"));
+              getSensorName(), F(" is "), digitalRead(_dataPin),
+              F(" indicating it is off.  AT commands will not be attempted!\n"));
         // Unset status bit 4 (wake up success) and _millisSensorActivated
         _millisSensorActivated = 0;
         _sensorStatus &= 0b11101111;
@@ -420,7 +423,7 @@ bool loggerModem::isMeasurementComplete(bool debug)
     if (_millisSensorActivated == 0)
     {
         if (debug) MS_MOD_DBG(getSensorName(),
-               F(" is not responding to AT commands and will not give signal strength!\n"));
+               F(" is not responding to AT commands; will not ask for signal strength!\n"));
         return true;
     }
 
