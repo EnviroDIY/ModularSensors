@@ -92,6 +92,7 @@ public:
     void powerDown(void) override;
 
     // Turns modem signal strength into a measurement
+    bool startSingleMeasurement(void) override;
     bool addSingleMeasurementResult(void) override;
 
 protected:
