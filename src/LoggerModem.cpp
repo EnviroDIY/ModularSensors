@@ -247,9 +247,10 @@ bool loggerModem::wake(void)
     uint32_t start = millis();
     bool fxnSuccess = false;
     int ntries = 0;
+    MS_MOD_DBG(F("Waking "), getSensorName());
     while (!fxnSuccess && ntries < 5)
     {
-        MS_MOD_DBG(F("Waking "), getSensorName(), F("("), ntries+1, F(")"));
+        MS_MOD_DBG(F(" ("), ntries+1, F("): "));
         start = millis();
         fxnSuccess = _wakeFxn();
         ntries++;

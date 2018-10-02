@@ -197,7 +197,6 @@ bool MaximDS18::startSingleMeasurement(void)
                F(" did not successfully start a measurement.\n"));
         _millisMeasurementRequested = 0;
         _sensorStatus &= 0b10111111;
-        success = false;
     }
 
     return success;

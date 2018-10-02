@@ -85,15 +85,18 @@ bool YosemitechParent::wake(void)
     if (!success) return success;
 
     // Send the command to begin taking readings, trying up to 5 times
+    bool startSuccess = false;
     int ntries = 0;
-    MS_DBG(F("Start Measurement on \n"), getSensorName(), F(" at "),
-           getSensorLocation(), F(": "));
-    while (!success && ntries < 5)
+    MS_DBG(F("Start Measurement on "), getSensorName(), F(" at "),
+           getSensorLocation());
+    while (!startSuccess && ntries < 5)
     {
-        MS_DBG(F("("), ntries+1, F("): "));
-        success = sensor.startMeasurement();
+        MS_DBG(F(" ("), ntries+1, F("): "));
+        startSuccess = sensor.startMeasurement();
         ntries++;
     }
+    success &= startSuccess;
+
     if(success)
     {
         // Update the time that the sensor was activated
@@ -112,8 +115,8 @@ bool YosemitechParent::wake(void)
     // Needed for newer sensors that do not immediate activate on getting power
     if ( _model == Y511 or _model == Y514 or _model == Y550 or _model == Y4000)
     {
-        MS_DBG(F("Activate Brush on \n"), getSensorName(), F(" at "),
-               getSensorLocation(), '\n');
+        MS_DBG(F("Activate Brush on "), getSensorName(), F(" at "),
+               getSensorLocation(), ':');
         if (sensor.activateBrush()) MS_DBG(F("Brush activated.\n"));
         else MS_DBG(F("Brush NOT activated!\n"));
     }
@@ -137,11 +140,11 @@ bool YosemitechParent::sleep(void)
     // Send the command to begin taking readings, trying up to 5 times
     bool success = false;
     int ntries = 0;
-    MS_DBG(F("Stop Measurement on \n"), getSensorName(), F(" at "),
-           getSensorLocation(), F(": "));
+    MS_DBG(F("Stop Measurement on "), getSensorName(), F(" at "),
+           getSensorLocation());
     while (!success && ntries < 5)
     {
-        MS_DBG(F("("), ntries+1, F("): "));
+        MS_DBG(F(" ("), ntries+1, F("): "));
         success = sensor.stopMeasurement();
         ntries++;
     }
@@ -173,8 +176,8 @@ void YosemitechParent::powerUp(void)
     }
     if (_powerPin2 >= 0)
     {
-        MS_DBG(F("Applying secondary power to "), getSensorName(), F(" at "), getSensorLocation(),
-               F(" with pin "), _powerPin2, F("\n"));
+        MS_DBG(F("Applying secondary power to "), getSensorName(), F(" at "),
+                getSensorLocation(), F(" with pin "), _powerPin2, F("\n"));
         digitalWrite(_powerPin2, HIGH);
     }
     if (_powerPin < 0 && _powerPin2 < 0)
