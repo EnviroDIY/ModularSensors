@@ -60,21 +60,21 @@ bool loggerModem::setup(void)
 
     // Check if the an attempt was made to power the sensor (bit 1) and it succeeded (bit 2)
     // Currently there is no double check that the powerOn() was successful
-    if (!bitRead(_sensorStatus, 1) || !bitRead(_sensorStatus, 2))
+    if (!bitRead(_sensorStatus, 1) || !bitRead(_sensorStatus, 2) || _millisPowerOn == 0)
     {
         MS_MOD_DBG(getSensorName(), F(" doesn't have power and cannot be set up!\n"));
         success = false;
     }
 
     // Turn the modem on, and if successful, begin
-    else if(_wakeFxn())
+    else if(wake())
     {
         success &= _tinyModem->begin();  // This generally begins with a 5 second testAT()
         _modemName = _tinyModem->getModemName();
         if (success) MS_MOD_DBG(F("   ... Complete!  It's a "), getSensorName(), F(".\n"));
         else MS_MOD_DBG(F("   ... Failed!  It's a "), getSensorName(), F(".\n"));
     }
-    else MS_MOD_DBG(F("   ... "), getSensorName(), F(" failed to turn on and cannot be set up!\n"));
+    else MS_MOD_DBG(F("   ... "), getSensorName(), F(" did not wake up and cannot be set up!\n"));
 
     // Set some warm-up times for specific models
     // NOTE:  These times are for raw cellular chips they do no necessarily
@@ -287,13 +287,55 @@ bool loggerModem::sleep(void)
     return true;
 }
 
+bool loggerModem::startSingleMeasurement(void)
+{
+    bool success = true;
+    MS_DBG(F("Starting measurement on "), getSensorName(), F(" at "),
+           getSensorLocation(), F(".\n"));
+    // Set the status bits for measurement requested (bit 5)
+    // Setting this bit even if we failed to start a measurement to show that an attempt was made.
+    _sensorStatus |= 0b00100000;
+
+    // Check if BOTH an activation/wake attempt was made (status bit 3 set)
+    // AND that attempt was successful (bit 4 set, _millisSensorActivated > 0)
+    // Only mark the measurement request time if it is
+    if (bitRead(_sensorStatus, 3) && bitRead(_sensorStatus, 4) && _millisSensorActivated > 0)
+    {
+
+        // For the wifi modems, the SSID and password need to be set before they
+        // can join a network.
+        // For cellular modems, network registration (should) happen automatically.
+        // The GPRS bearer (APN) is then set after registration when making the GPRS
+        // (data) link.
+        if (_ssid && _tinyModem->hasWifi() && !_tinyModem->isNetworkConnected())
+        {
+            success &= _tinyModem->networkConnect(_ssid, _pwd);
+        }
+
+        // Mark the time that a measurement was requested
+        _millisMeasurementRequested = millis();
+        // Set the status bit for measurement start success (bit 6)
+        _sensorStatus |= 0b01000000;
+    }
+    // Otherwise, make sure that the measurement start time and success bit (bit 6) are unset
+    else
+    {
+        MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
+               F(" isn't awake/active!  A measurment cannot be started.\n"));
+        _millisMeasurementRequested = 0;
+        _sensorStatus &= 0b10111111;
+        success = false;
+    }
+    return success;
+}
+
 
 bool loggerModem::addSingleMeasurementResult(void)
 {
     bool success = true;
 
     // Initialize float variable
-    int signalQual = 0;
+    int signalQual = -9999;
     int percent = -9999;
     int rssi = -9999;
 
@@ -324,15 +366,16 @@ bool loggerModem::addSingleMeasurementResult(void)
         // Get signal quality
         MS_MOD_DBG(F("Getting signal quality:\n"));
         signalQual = _tinyModem->getSignalQuality();
+        MS_MOD_DBG(F("Raw signal quality: "), signalQual, F("\n"));
 
         // Convert signal quality to RSSI, if necessary
-        if (_modemName.indexOf("XBee") > 0 ||
-            _modemName.indexOf("ESP8266") > 0)
+        if ((_modemName.indexOf("XBee") > 0 || _modemName.indexOf("ESP8266") > 0)
+            && signalQual != -9999)
         {
             rssi = signalQual;
             percent = getPctFromRSSI(signalQual);
         }
-        else
+        else if (signalQual != -9999)
         {
             rssi = getRSSIFromCSQ(signalQual);
             percent = getPctFromCSQ(signalQual);
@@ -387,16 +430,6 @@ bool loggerModem::isStable(bool debug)
     {
         if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
                getSensorName(), F(" is now responding to AT commands!\n"));
-
-        // For the wifi modems, the SSID and password need to be set before they
-        // can join a network.  We'll do this as soon as it responds to commands.
-        // For cellular modems, network registration happens automatically.  The
-        // GPRS bearer (APN) is then set after registration.
-        if (_ssid && _tinyModem->hasWifi())
-        {
-            _tinyModem->networkConnect(_ssid, _pwd);
-        }
-
         return true;
     }
     // If we've exceeded the time-out, give up
@@ -436,11 +469,6 @@ bool loggerModem::isMeasurementComplete(bool debug)
     {
         if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
                getSensorName(), F(" is now registered on the network!\n"));
-
-        // For the cellular modems, the APN must be set after registration
-        // on the network.  We'll do this as soon as registration is complete.
-        if (_apn && _tinyModem->hasGPRS()) _tinyModem->gprsConnect(_apn, "", "");
-
         return true;
     }
     // If we've exceeded the time-out, give up
