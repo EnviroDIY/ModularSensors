@@ -43,14 +43,15 @@ const int8_t timeZone = -5;
 // ==========================================================================
 #include <ProcessorStats.h>
 
-const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
-const int8_t greenLED = 8;  // Pin for the green LED (-1 if unconnected)
-const int8_t redLED = 9;  // Pin for the red LED (-1 if unconnected)
-const int8_t buttonPin = 21;  // Pin for a button to use to enter debugging mode (-1 if unconnected)
-const int8_t wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
+const long serialBaud = 115200;   // Baud rate for the primary serial port for debugging
+const int8_t greenLED = 8;        // MCU pin for the green LED (-1 if not applicable)
+const int8_t redLED = 9;          // MCU pin for the red LED (-1 if not applicable)
+const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
+const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
+const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
+const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create and return the processor "sensor"
 const char *MFVersion = "v0.5b";
@@ -84,9 +85,9 @@ TinyGsm *tinyModem = new TinyGsm(ModemSerial);
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 // Describe the physical pin connection of your modem to your board
-const int8_t modemVccPin = -2;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
-const int8_t modemSleepRqPin = 23;  // Modem Sleep Request Pin (-1 if unconnected)
-const int8_t modemStatusPin = 19;   // Modem Status Pin (-1 if unconnected)
+const int8_t modemVccPin = -2;  // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // And create the wake and sleep methods for the modem

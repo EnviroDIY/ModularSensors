@@ -30,9 +30,9 @@ TinyGsm *tinyModem = new TinyGsm(modemDebugger);
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 // Describe the physical pin connection of your modem to your board
-const int8_t modemVccPin = -2;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
-const int8_t modemSleepRqPin = 23;  // Modem Sleep Request Pin (-1 if unconnected)
-const int8_t modemStatusPin = 19;   // Modem Status Pin (-1 if unconnected)
+const int8_t modemVccPin = -2;  // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 
 bool wakeFxn(void){return true;}  // Turns on when power is applied

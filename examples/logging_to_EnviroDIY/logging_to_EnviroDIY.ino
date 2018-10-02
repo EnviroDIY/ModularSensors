@@ -41,15 +41,15 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 // ==========================================================================
 #include <ProcessorStats.h>
 
-const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
-const int8_t greenLED = 8;  // Pin for the green LED (-1 if unconnected)
-const int8_t redLED = 9;  // Pin for the red LED (-1 if unconnected)
-const int8_t buttonPin = 21;  // Pin for a button to use to enter debugging mode (-1 if unconnected)
-const int8_t wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
+const long serialBaud = 115200;   // Baud rate for the primary serial port for debugging
+const int8_t greenLED = 8;        // MCU pin for the green LED (-1 if not applicable)
+const int8_t redLED = 9;          // MCU pin for the red LED (-1 if not applicable)
+const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
+const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
-const int8_t sensorPowerPin = 22;  // For the Mayfly, almost all sensors are powered off one pin
+const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
+const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create and return the processor "sensor"
 const char *MFVersion = "v0.5b";
@@ -81,7 +81,7 @@ const long ModemBaud = 57600;  // Default for ESP8266 is 115200, but the Mayfly 
 #elif defined(TINY_GSM_MODEM_UBLOX)
 const long ModemBaud = 9600;  // SARA-U201 default seems to be 9600
 #else
-const long ModemBaud = 9600;  // SIM800 auto-detects, but I've had trouble making it fast (19200 works)
+const long ModemBaud = 9600;
 #endif
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
@@ -97,24 +97,27 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 // Describe the physical pin connection of your modem to your board
 #if defined(TINY_GSM_MODEM_XBEE)
-const int8_t modemVccPin = -2;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
-const int8_t modemSleepRqPin = 23;  // Modem Sleep Request Pin (-1 if unconnected)
-const int8_t modemStatusPin = 19;   // Modem Status Pin (-1 if unconnected)
+const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
 const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
 #elif defined(TINY_GSM_MODEM_ESP8266)
-const int8_t modemVccPin = -2;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
-const int8_t modemSleepRqPin = -1;  // Modem Sleep Request Pin (-1 if unconnected)
-const int8_t modemStatusPin = -1;   // Modem Status Pin (-1 if unconnected)
+const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemResetPin = -1;     // MCU Pin connected to ESP8266's RSTB pin (-1 if unconnected)
+const int8_t espSleepRqPin = 13;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
+const int8_t modemSleepRqPin = 19;   // MCU pin used for wake from light sleep (-1 if not applicable)
+const int8_t espStatusPin = -1;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
+const int8_t modemStatusPin = -1;    // MCU pin used to read modem status (-1 if not applicable)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 #elif defined(TINY_GSM_MODEM_UBLOX)
-const int8_t modemVccPin = 23;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
-const int8_t modemSleepRqPin = 20;  // Modem Sleep Request Pin (-1 if unconnected)
-const int8_t modemStatusPin = 19;   // Modem Status Pin (-1 if unconnected)
+const int8_t modemVccPin = 23;       // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemSleepRqPin = 20;   // MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if not applicable)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 #else
-const int8_t modemVccPin = -2;  // Modem power pin, if it can be turned on or off (-1 if unconnected)
-const int8_t modemSleepRqPin = 23;  // Modem Sleep Request Pin (-1 if unconnected)
-const int8_t modemStatusPin = 19;   // Modem Status Pin (-1 if unconnected)
+const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemSleepRqPin = 23;   // MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if not applicable)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 #endif
 
@@ -124,9 +127,14 @@ const bool modemStatusLevel = HIGH;  // The level of the status pin when the mod
 // After setting up pin sleep, the sleep request pin is held LOW to keep the XBee on
 bool wakeFxn(void)
 {
-    digitalWrite(modemSleepRqPin, LOW);
-    digitalWrite(redLED, HIGH);  // Because the XBee doesn't have any lights
-    return true;
+    if (modemVccPin >= 0)  // Turns on when power is applied
+        return true;
+    else
+    {
+        digitalWrite(modemSleepRqPin, LOW);
+        digitalWrite(redLED, HIGH);  // Because the XBee doesn't have any lights
+        return true;
+    }
 }
 bool sleepFxn(void)
 {
@@ -135,21 +143,90 @@ bool sleepFxn(void)
     return true;
 }
 #elif defined(TINY_GSM_MODEM_ESP8266)
-bool wakeFxn(void){return true;}  // Turns on when power is applied
+bool wakeFxn(void)
+{
+    if (modemVccPin >= 0)  // Turns on when power is applied
+    {
+        digitalWrite(redLED, HIGH);  // Because the ESP8266 doesn't have any lights
+        return true;
+    }
+    else if (modemResetPin >= 0)
+    {
+        digitalWrite(modemResetPin, LOW);
+        delay(1);
+        digitalWrite(modemResetPin, HIGH);
+        digitalWrite(redLED, HIGH);
+        return true;
+    }
+    else if (modemSleepRqPin >= 0)
+    {
+        digitalWrite(modemSleepRqPin, LOW);
+        delay(1);
+        digitalWrite(modemSleepRqPin, HIGH);
+        digitalWrite(redLED, HIGH);
+        return true;
+    }
+    else return true;
+}
 bool sleepFxn(void)
 {
-    if (modemSleepRqPin >=0) return tinyModem->poweroff();   // Need a reset pin connected..
-    else if (loggingInterval > 1)
+    // Use this if you have an external pin connected to the reset pin to wake from deep sleep
+    if (modemResetPin >= 0)
     {
-        tinyModem->sendAT(GF("+GSLP="), (loggingInterval-1)*60*1000);
-        // Power down for 1 minute less than logging interval
-        // Better:  Calculate length of loop and power down for logging interval - loop time
-        return tinyModem->waitResponse() == 1;
+        digitalWrite(redLED, LOW);
+        return tinyModem->poweroff();
+    }
+    // Use this if you have GPIO16 connected to the reset pin to wake from deep sleep
+    // NOTE:  This will NOT work nicely with things like "testingMode" and the
+    // initial 2-minute logging interval at boot up.
+    // if (loggingInterval > 1)
+    // {
+    //     uint32_t sleepSeconds = (((uint32_t)loggingInterval) * 60 * 1000) - 75000L;
+    //     String sleepCommand = String(sleepSeconds);
+    //     tinyModem->sendAT(GF("+GSLP="), sleepCommand);
+    //     // Power down for 1 minute less than logging interval
+    //     // Better:  Calculate length of loop and power down for logging interval - loop time
+    //     return tinyModem->waitResponse() == 1;
+    // }
+    // Use this if you don't have access to the ESP8266's reset pin for deep sleep but you
+    // do have access to another GPIO pin for light sleep
+    if (modemSleepRqPin >= 0 && modemStatusPin >= 0)
+    {
+        tinyModem->sendAT(GF("+WAKEUPGPIO=1,"), String(espSleepRqPin), GF(",0,"),
+                          String(espStatusPin), GF(","), modemStatusLevel);
+        bool success = tinyModem->waitResponse() == 1;
+        tinyModem->sendAT(GF("+SLEEP=1"));
+        success &= tinyModem->waitResponse() == 1;
+        digitalWrite(redLED, LOW);
+        return success;
+    }
+    else if (modemSleepRqPin >= 0 && modemStatusPin < 0)
+    {
+        tinyModem->sendAT(GF("+WAKEUPGPIO=1,"), String(espSleepRqPin), GF(",0"));
+        bool success = tinyModem->waitResponse() == 1;
+        tinyModem->sendAT(GF("+SLEEP=1"));
+        success &= tinyModem->waitResponse() == 1;
+        digitalWrite(redLED, LOW);
+        return success;
     }
     else return true;
 }
 #elif defined(TINY_GSM_MODEM_UBLOX)
-bool wakeFxn(void){return true;}  // Turns on when power is applied
+bool wakeFxn(void)
+{
+    if (modemVccPin >= 0)  // Turns on when power is applied
+        return true;
+    else if(modemSleepRqPin >= 0)
+    {
+        digitalWrite(modemSleepRqPin, LOW);
+        digitalWrite(redLED, HIGH);
+        delay(200); // 0.15-3.2s pulse for wake on SARA R4/N4
+        // delayMicroseconds(65); // 50-80µs pulse for wake on SARA/LISA U2/G2
+        digitalWrite(modemSleepRqPin, HIGH);
+        digitalWrite(redLED, LOW);
+        return true;
+    }
+}
 bool sleepFxn(void)
 {
     if (modemSleepRqPin < 0) return tinyModem->poweroff();
@@ -704,6 +781,11 @@ void setup()
         {
             pinMode(modemSleepRqPin, OUTPUT);
             digitalWrite(modemSleepRqPin, HIGH);
+        }
+        if (modemResetPin >= 0)
+        {
+            pinMode(modemResetPin, OUTPUT);
+            digitalWrite(modemResetPin, HIGH);
         }
     #elif defined(TINY_GSM_MODEM_UBLOX)
         pinMode(modemSleepRqPin, OUTPUT);
