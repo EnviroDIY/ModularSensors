@@ -216,7 +216,8 @@ bool MaximDS18::addSingleMeasurementResult(void)
     // Only go on to get a result if it is
     if (bitRead(_sensorStatus, 5) && bitRead(_sensorStatus, 6) && _millisMeasurementRequested > 0)
     {
-        MS_DBG(F("Requesting temperature result\n"));
+        MS_DBG(F("Requesting temperature result from "), getSensorName(),
+               F(" at "), getSensorLocation(), '\n');
         result = _internalDallasTemp.getTempC(_OneWireAddress);
         MS_DBG(F("Received "), result, F("°C\n"));
 
@@ -226,7 +227,8 @@ bool MaximDS18::addSingleMeasurementResult(void)
         else success = true;
         MS_DBG(F("Temperature: "), result, F(" °C\n"));
     }
-    else MS_DBG(F("Sensor is not currently measuring!\n"));
+    else MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
+         F(" is not currently measuring!\n"));
 
     // Put value into the array
     verifyAndAddMeasurementResult(DS18_TEMP_VAR_NUM, result);

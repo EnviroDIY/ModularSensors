@@ -72,6 +72,7 @@ bool AOSongDHT::addSingleMeasurementResult(void)
         // Reading temperature or humidity takes about 250 milliseconds!
         for (uint8_t i = 0; i < 5; i++)  // Make 5 attempts to get a decent reading
         {
+            MS_DBG(F("Getting values from "), getSensorName(), F(" at "), getSensorLocation(), '\n');
             // First read the humidity
             humid_val = dht_internal.readHumidity();
             // Read temperature as Celsius (the default)
@@ -102,7 +103,8 @@ bool AOSongDHT::addSingleMeasurementResult(void)
             }
         }
     }
-    else MS_DBG(F("Sensor is not currently measuring!\n"));
+    else MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
+         F(" is not currently measuring!\n"));
 
     // Store the results in the sensorValues array
     verifyAndAddMeasurementResult(DHT_TEMP_VAR_NUM, temp_val);

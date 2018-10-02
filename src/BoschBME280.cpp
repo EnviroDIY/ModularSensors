@@ -164,7 +164,8 @@ bool BoschBME280::addSingleMeasurementResult(void)
         MS_DBG(F(" %RH, Barometric Pressure: "), press);
         MS_DBG(F(" Pa, Calculated Altitude: "), alt, F("m ASL\n"));
     }
-    else MS_DBG(F("Sensor is not currently measuring!\n"));
+    else MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
+         F(" is not currently measuring!\n"));
 
     verifyAndAddMeasurementResult(BME280_TEMP_VAR_NUM, temp);
     verifyAndAddMeasurementResult(BME280_HUMIDITY_VAR_NUM, humid);

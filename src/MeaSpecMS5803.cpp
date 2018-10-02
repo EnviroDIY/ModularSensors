@@ -89,6 +89,7 @@ bool MeaSpecMS5803::addSingleMeasurementResult(void)
     // Only go on to get a result if it is
     if (bitRead(_sensorStatus, 5) && bitRead(_sensorStatus, 6) && _millisMeasurementRequested > 0)
     {
+        MS_DBG(F("Getting values from "), getSensorName(), F(" at "), getSensorLocation(), '\n');
         // Read values
         temp = MS5803_internal.getTemperature(CELSIUS, ADC_512);
         press = MS5803_internal.getPressure(ADC_4096);
@@ -104,7 +105,8 @@ bool MeaSpecMS5803::addSingleMeasurementResult(void)
         MS_DBG(F("Temperature: "), temp);
         MS_DBG(F("Pressure: "), press);
     }
-    else MS_DBG(F("Sensor is not currently measuring!\n"));
+    else MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
+         F(" is not currently measuring!\n"));
 
     verifyAndAddMeasurementResult(MS5803_TEMP_VAR_NUM, temp);
     verifyAndAddMeasurementResult(MS5803_PRESSURE_VAR_NUM, press);

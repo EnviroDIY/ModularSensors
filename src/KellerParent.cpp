@@ -147,7 +147,8 @@ bool KellerParent::addSingleMeasurementResult(void)
     if (bitRead(_sensorStatus, 5) && bitRead(_sensorStatus, 6) && _millisMeasurementRequested > 0)
     {
         // Get Values
-        MS_DBG(F("Get Values:\n"));
+        MS_DBG(F("Get Values from"), getSensorName(), F(" at "),
+               getSensorLocation(), F(":\n"));
         success = sensor.getValues(waterPressureBar, waterTempertureC);
         waterDepthM = sensor.calcWaterDepthM(waterPressureBar, waterTempertureC);  // float calcWaterDepthM(float waterPressureBar, float waterTempertureC)
 
@@ -163,7 +164,8 @@ bool KellerParent::addSingleMeasurementResult(void)
         MS_DBG(F("    Temp_C: "), waterTempertureC, F("\n"));
         MS_DBG(F("    Height_m:"), waterDepthM, F("\n"));
     }
-    else MS_DBG(F("Sensor is not currently measuring!\n"));
+    else MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
+         F(" is not currently measuring!\n"));
 
     // Put values into the array
     verifyAndAddMeasurementResult(KELLER_PRESSURE_VAR_NUM, waterPressure_mBar);

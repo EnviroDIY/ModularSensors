@@ -489,7 +489,7 @@ bool loggerModem::isMeasurementComplete(bool debug)
     if (elapsed_since_wake_up > MODEM_MAX_SEARCH_TIME)
     {
         if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
-               getSensorName(), F(" has not yet registered on the network!  Ending wait.\n"));
+               getSensorName(), F(" has maxed out wait for network registration!  Ending wait.\n"));
          // Unset status bit 6 (start measurement success) and _millisMeasurementRequested
          _millisMeasurementRequested = 0;
          _sensorStatus &= 0b11101111;
@@ -756,13 +756,14 @@ uint32_t loggerModem::getNISTTime(void)
             for (uint8_t i = 0; i < 4; i++)
             {
                 response[i] = _tinyClient->read();
-                // MS_MOD_DBG(F("\nResponse Byte ["), i, F("]:"),response[i], '(',
-                //            String(response[i], BIN),')');
+                MS_MOD_DBG(F("\nResponse Byte "), i, F(": "), (char)response[i],
+                           F(" = "), response[i], F(" = "), String(response[i], BIN));
                 secFrom1900 += 0x000000FF & response[i];
                 // MS_MOD_DBG(F("\nseconds from 1900 after byte: "),String(secFrom1900, BIN));
                 if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;}
             }
-            // MS_MOD_DBG(F("\nfinal seconds from 1900:  "),secFrom1900);
+            MS_MOD_DBG(F("\nSeconds from 1900 returned by NIST (UTC):  "),
+                       secFrom1900, String(secFrom1900, BIN));
 
             // Close the TCP connection, just in case
             closeTCP();
