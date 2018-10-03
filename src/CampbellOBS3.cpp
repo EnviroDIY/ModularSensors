@@ -57,7 +57,7 @@ String CampbellOBS3::getSensorLocation(void)
 
 bool CampbellOBS3::addSingleMeasurementResult(void)
 {
-    // We're actually only starting a measurment within the addSingleMeasurementResult
+    // We're actually only starting a measurement within the addSingleMeasurementResult
     // function.  The measurements are very fast (8ms) so we're not going to worry
     // about the time we're losing.  Doing it this way means that any other sensor
     // that uses the same ADD will be able to set the gain properly and will not

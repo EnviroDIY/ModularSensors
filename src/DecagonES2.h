@@ -85,7 +85,7 @@ public:
      : Variable(parentSense, ES2_TEMP_VAR_NUM,
                 "temperature", "degreeCelsius",
                 ES2_TEMP_RESOLUTION,
-                "ES2temp", UUID, customVarCode)
+                "ES2Temp", UUID, customVarCode)
     {}
 };
 

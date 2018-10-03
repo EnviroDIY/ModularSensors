@@ -305,7 +305,7 @@ bool loggerModem::sleep(void)
 bool loggerModem::startSingleMeasurement(void)
 {
     bool success = true;
-    MS_DBG(F("Starting measurement on "), getSensorName(), F(" at "),
+    MS_MOD_DBG(F("Starting measurement on "), getSensorName(), F(" at "),
            getSensorLocation(), F(".\n"));
     // Set the status bits for measurement requested (bit 5)
     // Setting this bit even if we failed to start a measurement to show that an attempt was made.
@@ -335,8 +335,8 @@ bool loggerModem::startSingleMeasurement(void)
     // Otherwise, make sure that the measurement start time and success bit (bit 6) are unset
     else
     {
-        MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
-               F(" isn't awake/active!  A measurment cannot be started.\n"));
+        MS_MOD_DBG(getSensorName(), F(" at "), getSensorLocation(),
+               F(" isn't awake/active!  A measurement cannot be started.\n"));
         _millisMeasurementRequested = 0;
         _sensorStatus &= 0b10111111;
         success = false;
@@ -590,13 +590,13 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
 void loggerModem::disconnectInternet(void)
 {
     uint32_t start = millis();
-    if (_tinyModem->hasGPRS())
+    if (_tinyModem->hasGPRS() && _modemName.indexOf("XBee") < 0)  // XBee doesn't like to disconnect)
     {
         _tinyModem->gprsDisconnect();
         MS_MOD_DBG(F("Disconnected from cellular network after "), millis() - start,
                    F(" milliseconds.\n"));
     }
-    else
+    else if (_modemName.indexOf("XBee") < 0)  // XBee doesn't like to disconnect
     {
         _tinyModem->networkDisconnect();
         MS_MOD_DBG(F("Disconnected from WiFi network after "), millis() - start,

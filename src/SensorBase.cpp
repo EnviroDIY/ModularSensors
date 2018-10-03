@@ -222,7 +222,7 @@ bool Sensor::sleep(void)
 }
 
 
-// This is a place holder for starting a single measurment, for those sensors
+// This is a place holder for starting a single measurement, for those sensors
 // that need no instructions to start a measurement.
 bool Sensor::startSingleMeasurement(void)
 {
@@ -247,7 +247,7 @@ bool Sensor::startSingleMeasurement(void)
     else
     {
         MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
-               F(" isn't awake/active!  A measurment cannot be started.\n"));
+               F(" isn't awake/active!  A measurement cannot be started.\n"));
        _millisMeasurementRequested = 0;
        _sensorStatus &= 0b10111111;
         success = false;
@@ -287,7 +287,8 @@ void Sensor::notifyVariables(void)
             MS_DBG(F("\n"));
             variables[i]->onSensorUpdate(this);
         }
-        else MS_DBG(F("Null pointer!  No update sent!\n"));
+        else MS_DBG(F("No variable registered for return value "), i,
+                    F("!  No update sent!\n"));
     }
 }
 
@@ -438,8 +439,8 @@ bool Sensor::checkPowerOn(bool debug)
             if (debug) MS_DBG((" was on.\n"));
             // Mark the power-on time, just in case it  had not been marked
             if (_millisPowerOn == 0) _millisPowerOn = millis();
-            // Set the status bit for sensor power (bit 1)
-            _sensorStatus |= 0b00000010;
+            // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
+            _sensorStatus |= 0b00000110;
             return true;
         }
     }
@@ -448,8 +449,8 @@ bool Sensor::checkPowerOn(bool debug)
         if (debug) MS_DBG(F(" is not controlled by this library.\n"));
         // Mark the power-on time, just in case it  had not been marked
         if (_millisPowerOn == 0) _millisPowerOn = millis();
-        // Set the status bit for sensor power (bit 1)
-        _sensorStatus |= 0b00000010;
+        // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
+        _sensorStatus |= 0b00000110;
         return true;
     }
 }
@@ -549,20 +550,3 @@ bool Sensor::isMeasurementComplete(bool debug)
 // This delays until enough time has passed for the sensor to give a new value
 // NOTE:  This is "blocking" - that is, nothing else can happen during this wait.
 void Sensor::waitForMeasurementCompletion(void){ while (!isMeasurementComplete()){} }
-
-
-void Sensor::updateStatusBits(bool debug)
-{
-    // first check that there is power, just return if not
-    if (!checkPowerOn(debug)) return;
-    // if the sensor isn't warmed-up, quit
-    if (!isWarmedUp(debug)) return;
-    // if the sensor is not awake/active, quit
-    if (!bitRead(_sensorStatus, 3)) return;
-    // if the sensor hasn't stabilized, quit
-    if (!isStable(debug)) return;
-    // if the sensor is not taking a measurement, quit
-    if (!bitRead(_sensorStatus, 5)) return;
-    // Last thing it to check if a measurement is finished
-    isMeasurementComplete(debug);
-}

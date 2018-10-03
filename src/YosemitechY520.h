@@ -86,7 +86,7 @@ public:
      : Variable(parentSense, Y520_TEMP_VAR_NUM,
                 "temperature", "degreeCelsius",
                 Y520_TEMP_RESOLUTION,
-                "Y520temp", UUID, customVarCode)
+                "Y520Temp", UUID, customVarCode)
     {}
 };
 

@@ -78,7 +78,7 @@ public:
       : Variable(parentSense, OBS3_TURB_VAR_NUM,
                  "turbidity", "nephelometricTurbidityUnit",
                  OBS3_RESOLUTION,
-                 "turbidity", UUID, customVarCode)
+                 "OBS3Turbidity", UUID, customVarCode)
     {}
 };
 

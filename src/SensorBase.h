@@ -64,8 +64,6 @@ public:
     //         for a measurement to have been completed.
     // Bit 7 - 0=No known errors, 1=Some sort of error has occurred
     uint8_t getStatus(void);
-    // This function checks the current status
-    void updateStatusBits(bool debug=false);
 
     // This sets up the sensor, if necessary.  Defaults to true.
     // Generally, the sensor must be powered on for setup.

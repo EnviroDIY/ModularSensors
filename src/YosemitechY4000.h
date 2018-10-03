@@ -177,7 +177,7 @@ public:
      : Variable(parentSense, Y4000_TEMP_VAR_NUM,
                 "temperature", "degreeCelsius",
                 Y4000_TEMP_RESOLUTION,
-                "Y4000temp", UUID, customVarCode)
+                "Y4000Temp", UUID, customVarCode)
     {}
 };
 
