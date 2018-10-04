@@ -556,6 +556,9 @@ void loop()
 
         // Turn on the modem to let it start searching for the network
         // Only turn the modem on if the battery at the last interval was high enough
+        // NOTE:  if the modemPowerUp function is not run before the completeUpdate
+        // function is run, the modem will not be powered and will not return
+        // a signal strength readign.
         if (mayflyBatt->getValue() > 3.7)
             modem.modemPowerUp();
 
@@ -574,8 +577,8 @@ void loop()
         // we will explicitly start and end the serial connection in the loop.
         modbusSerial.end();
         // Explicitly set the pin modes for the AltSoftSerial pins to make sure they're low
-        pinMode(5, OUTPUT);
-        pinMode(6, OUTPUT);
+        pinMode(5, OUTPUT);  // On a Mayfly, pin D5 is the AltSoftSerial Tx pin
+        pinMode(6, OUTPUT);  // On a Mayfly, pin D6 is the AltSoftSerial Rx pin
         digitalWrite(5, LOW);
         digitalWrite(6, LOW);
 
