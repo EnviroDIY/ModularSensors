@@ -128,18 +128,20 @@ Generally useful functions:
 - **Constructor** - Each sensor has a unique constructor, the exact format of which is dependent on the individual sensor.
 - **getSensorName()** - This gets the name of the sensor and returns it as a string.
 - **getSensorLocation()** - This returns the Arduino pin sending and receiving data or other sensor installation information as a string.  This is the location where the sensor is connected to the data logger, NOT the position of the sensor in the environment.  Generally this value is set in the constructor for the sensor.
-- **setNumberMeasurementsToAverage(int nReadings)** - Sets the number of readings for the sensor to take.  This value can also be set by the constructor.  NOTE:  This will beome the number of readings actually taken by a sensor prior to data averaging.  Any "bad" (-9999) values returned by the sensor will not be included in the final averaging.  This the actual number of "good" values that are averaged may be less than what is set by setNumberMeasurementsToAverage or in the sensor constructor.
+- **setNumberMeasurementsToAverage(int nReadings)** - Sets the number of readings for the sensor to take.  This value can also be set by the constructor.  NOTE:  This will become the number of readings actually taken by a sensor prior to data averaging.  Any "bad" (-9999) values returned by the sensor will not be included in the final averaging.  This the actual number of "good" values that are averaged may be less than what is set by setNumberMeasurementsToAverage or in the sensor constructor.
 - **getNumberMeasurementsToAverage()** - Returns an unsigned 8-bit integer with the number of readings the sensor will be taking before averaging and giving a final result.
 - **getStatus()** - This returns the 8-bit code for the current status of the sensor:
-    - Bit 0 - 0=Not powered, 1=Powered
-    - Bit 1 - 0=Has NOT been set up, 1=Has been setup
-    - Bit 2 - 0=Is NOT warmed up, 1=Is warmed up
-    - Bit 3 - 0=Not awake/actively measuring, 1=Is awake/actively measuring
-    - Bit 4 - 0=Readings not stable, 1=Readings should be stable
-    - Bit 5 - 0=Measurement requested, 1=No measurements have been requested
-    - Bit 6 - 1=Waiting for measurement completion (IFF bit 3 and 4 are set!), 1=Measurement complete (IFF bit 3 and 4 are set!),
+    - Bit 0 - 0=Has NOT been successfully set up, 1=Has been setup
+    - Bit 1 - 0=No attempt made to power sensor, 1=Attempt made to power sensor
+    - Bit 2 - 0=Power up attampt failed, 1=Power up attempt succeeded
+        - Use the isWarmedUp() function to check if enough time has passed to be ready for sensor communication.
+    - Bit 3 - 0=Activation/wake attempt made, 1=No activation/wake attempt made
+    - Bit 4 - 0=Wake/Activate failed, 1=Is awake/actively measuring
+        - Use the isStable() function to check if enough time has passed to begin a measurement.
+    - Bit 5 - 0=Start measurement requested attempt made, 1=No measurements have been requested
+    - Bit 6 - 0=Measurement start failed, 1=Measurement attempt succeeded
+        - Use the isMeasurementComplete() to check if enough time has passed for a measurement to have been completed.
     - Bit 7 - 0=No known errors, 1=Some sort of error has occurred
-- **updateStatusBits()** - This function checks the current status.
 - **setup()** - This "sets up" the sensor - setting up serial ports, etc required for the given sensor.  This must always be called for each sensor within the "setup" loop of your Arduino program _before_ calling the corresponding variable setup.
 - **update()** - This updates the sensor values and returns true when finished.  For digital sensors with a single information return, this only needs to be called once for each sensor, even if there are multiple variable subclasses for the sensor.  In general, the update function powers the sensor, wakes/activates it, tells it to start measurements and get values as many times as requested, averages all the values, notifies the attached variables that new values are available, and then puts the sensor back to sleep if it had been asleep at the start of the update.
 
@@ -173,7 +175,7 @@ These functions are also available for each sensor, but should be used with caut
 - **getVarUUID()** - This returns the universally unique identifier of a variables, if one is assigned, as a String.
 - **getValue(bool updateValue)** - This returns the current value of the variable as a float.  By default, it does not ask the parent sensor for a new value, but simply returns the last value a parent sensor notified it of, no matter the age of the value.  If you would like to ask the sensor to measure a new value and for that new value to be returned, set the boolean flag as true.  Calculated variables will never ask any sensors for updates.
 - **getValueString(bool updateValue)** - This is identical to getValue, except that it returns a string with the proper precision available from the sensor.
-- **attachSensor(int varNum, Sensor \*parentSense)** - The compliment to a sensor's registerVariable() function.  This attaches a variable object to the sensor that is giving the value to the variable.  This generally only needs to happen in the constructor for a non-calculated variable.
+- **attachSensor(int varNum, Sensor \*parentSense)** - The compliment to a sensor's registerVariable() function.  This attaches a variable object to the sensor that is giving the value to the variable.  This is called by the constructor for a non-calculated variable and generally shouldn't be used.
 - **onSensorUpdate()** - This is the variable's response to the sensor's notifyVariables() function.  It accepts the new value from the sensor.  This is generally called by the sensor.  This should never be called for a calculated variable.
 - - **getParentSensorName()** - This is a helper - it returns the name of the parent sensor, if applicable
 - - **getParentSensorLocation()** - This is a helper - it returns the "location" of the parent sensor, if applicable
@@ -187,7 +189,9 @@ const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const uint8_t measurementsToAverage = 10;  // The number of readings to average
 const int SDI12Data = 7;  // The pin the CTD is attached to
 const int SDI12Power = 22;  // The sensor power pin (use -1 if not applicable)
+// Create the sensor object
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, measurementsToAverage);
+// Create the three variable objects and link them to the sensor
 DecagonCTD_Cond cond(&ctd);  // The ampersand (&) *must* be included
 DecagonCTD_Temp temp(&ctd);
 DecagonCTD_Depth depth(&ctd);
@@ -230,11 +234,11 @@ Having a unified set of functions to access many sensors allows us to quickly po
 - **sensorsPowerDown()** - This cuts power to all sensors, skipping repeated sensors.  No return.
 - **updateAllSensors()** - This updates all sensor values, skipping repeated sensors.  Does not power or wake/sleep sensors.  Returns true.  Does NOT return any values.
 - **completeUpdate()** - This updates all sensor values, including power up, wake, sleep and power down.  Repeated sensors are skipped.  Returns true.  Does NOT return any values.
-- **printSensorData(Stream stream)** - This prints current sensor values along with meta-data to a stream (either hardware or software serial).  By default, it will print to the first Serial port.  Note that the input is a pointer to a stream instance so to use a hardware serial instance you must use an ampersand before the serial name (ie, &Serial1).
+- **printSensorData(Stream \*stream)** - This prints current sensor values along with meta-data to a stream (either hardware or software serial).  By default, it will print to the first Serial port.  Note that the input is a pointer to a stream instance - to use a hardware serial instance you must use an ampersand before the serial name (ie, &Serial1).
 
 ### <a name="ArrayExamples"></a>VariableArray Examples:
 
-To use the VariableArray module, you must first create the array of pointers.  This should be done outside of the setup() or loop() functions.  Remember that for measured variables you must first create a new sensor instance and then one or more new variable instances for that sensor (depending on how many values it can return.)  The sensor functions for sensors within a variable array take advantage of all of the timestamps and status bits within the sensor object to minimize the amount of time that all sensors are powered and the processor is awake.  That is, the first sensor to be warmed up will be set up or activated first; the first sensor to stabilize will be asked for values first.  All calculations for any calculated variables happen after all the sensor updating has finished.  The order of the variables within the array should not matter, though for code readability, I strongly suggest putting all the variables attached to a single sensor next to each other in the array.
+To use the VariableArray module, you must first create the array of pointers.  This should be done outside of the setup() or loop() functions.  Remember that for measured variables you must first create a new sensor instance and then one or more new variable instances for that sensor (depending on how many values it can return.)  The sensor functions for sensors within a variable array take advantage of all of the timestamps and status bits within the sensor object to minimize the amount of time that all sensors are powered and the processor is awake.  That is, the first sensor to be warmed up will be set up or activated first; the first sensor to stabilize will be asked for values first.  All calculations for any calculated variables happen after all the sensor updating has finished.  The order of the variables within the array should not matter, though for code readability, I strongly suggest putting all the variables attached to a single sensor next to each other in the array.  When creating a logger, the order of variables in the array determines the order the values will be written to the data file.
 
 The asterisk must be put in front of the variable name to indicate that it is a pointer to your variable object.  With many variables, it is easier to create the object and the pointer to it all at once in the variable array.  This can be done using the "new" keyword like so:
 
@@ -245,7 +249,7 @@ Variable \*variableList[] = {
     new Sensor1_Variable1(&parentSensor1, "UUID", "customVarCode1"),
     new Sensor1_Variable2(&parentSensor1, "UUID", "customVarCode2"),
     ...
-    new SensorX_VariableX(&parentSensorx, "UUID", "customVarCode4")
+    new SensorX_VariableX(&parentSensorX, "UUID", "customVarCodeX")
 };
 // Count the number of variables in the array (you can count them manually, too)
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
@@ -384,7 +388,7 @@ A loggerModem serves two functions:  First, it communicates with the internet vi
 
 A loggerModem object has power and status pins, and communicates on an Arduiono stream with a combination of a [TinyGsm](https://github.com/EnviroDIY/TinyGSM) modem instance and a TCP Client (generally through TinyGSM).  For modems that support it, functions can be created and used to put the board into deep sleep/powered down mode and to wake it back up.  The TinyGSM library supports quite a number of different modem chips.  See [TinyGSM's documentation](https://github.com/vshymanskyy/TinyGSM/blob/master/README.md) for a more details about of all of the chip variants and modules that are supported.
 
-Use a pre-processor define statement to select your modem chip type.  _This define statement must be above the include statement for the TinyGSM modem library._
+Before setting up the TinyGSM modem, use a pre-processor define statement to select your modem chip type.  _This define statement must be above the include statement for the TinyGSM modem library._
 - ```#define TINY_GSM_MODEM_SIM900``` - for a SIMCom SIM900 Quad-band GSM/GPRS module, or variant thereof (including older rev4 [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
 - ```#define TINY_GSM_MODEM_SIM800``` - for a SIMCom SIM800 Quad-band GSM/GPRS module or variant thereof (including current rev6 [Sodaq GPRSBees](https://shop.sodaq.com/en/gprsbee.html))
 - ```#define TINY_GSM_MODEM_SIM808``` - for a SIMCom SIM808 Quad-band GSM/GPRS/GPS module
@@ -400,7 +404,7 @@ Use a pre-processor define statement to select your modem chip type.  _This defi
 - ```#define TINY_GSM_MODEM_ESP8266``` - for an ESP8266 WiFi module using the _default AT command firmware_
 - ```#define TINY_GSM_MODEM_XBEE``` - for Digi brand WiFi or Cellular XBee's running in transparent (default) mode
 
-_Below_ the modem definition, include TinyGSM.  Then set up a serial port and create a TinyGSM modem and client.  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  Remember to begin the serial port in the "setup" function.
+_Below_ the modem definition, include TinyGSM.  Then set up a serial port and create a TinyGSM modem and client.  Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  _Remember to begin the serial port in the "setup" function._
 ```cpp
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
@@ -438,6 +442,7 @@ If your modem doesn't support sleep or you don't want to use it, you can create 
 bool wakeSleepFxn(void){ return true; }
 ```
 
+The programs in the examples folder show wake and sleep methods for XBee's, u-blox break-outs, and ESP8266 break-outs.
 
 With the wake and sleep functions set, you can create the loggerModem instance with one of two constructors, depending on whether the modem is cellular or WiFi:
 ```cpp
@@ -450,7 +455,7 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepF
 - The **vcc33Pin** is the pin that controls whether or not the modem itself is powered.  Use -1 if your modem is always receiving power or if you want to control modem power independently.  (And make sure that you really do power your modem!)
     - NOTE:  _Many_ modem chips require more power than the 0.5A that most Arduino-style boards can provide!  The power draw is particularly high during network connection and sending.  Some chips require up to 2.5A.  _Know your modem chip's specs!_  If it requires more power than your main control board can provide, ensure that the modem has an alternate battery connection or power source!
     - ALSO NOTE:  Generally speaking, do **NOT** use the same power pin for your modem as your sensors.  In nearly all cases, you will want your modem to be powered when your other sensors are not.
-- The **modemStatusPin** is the pin that indicates whether the modem is turned on and it is clear to send data.  If you use -1, the modem is assumed to always be ready.
+- The **modemStatusPin** is the pin that indicates whether the modem is turned on and it is clear to send data.  If you use -1, the modem is assumed to be ready as soon as the wake function finishes and stay ready until modemSleepPowerDown is run.
 - The **modemStatusLevel** is the level (HIGH or LOW) which the status pin will be at when the modem is _awake_.
 - The wake and sleep functions are the ones created for the modem.
 - The passwords and APN's are those needed for your cellular network.  NOTE:  Only WPA wifi security is supported.
@@ -466,7 +471,7 @@ Once the modem has been set up, it has all the functions of sensor object.  Thes
 - **modemSleepPowerDown()** - Runs the sleep function, waits for the status indicator to go off, then powers the modem down.  Returns true if successful.
 - **getNISTTime()** - Returns the current Unix time stamp (_in UTC_) from NIST via the TIME protocol (rfc868).
 
-As mentioned above, the cellular modems themselves are also sensors with the following variables:
+As mentioned above, the cellular modems themselves are also sensors with the following variables:  (Temperature may be added at some point in the future.)
 
 ```cpp
 // Create the RSSI and signal strength variable objects for the modem and return
@@ -500,7 +505,7 @@ The major difference between a "modem" sensor and any other sensor is the power-
 - **Sodaq uBee:**
     - These are u-blox based boards.
     - The power to the cellular chip can be controlled by the DTR pin.  The chip turns on as soon as power is applied.
-    - The cellular chip can be put to sleep by either a low pulse on the PWR_ON pin (Bee pin 16/RTS) or by using the !inyGSM poweroff function (```tinyModem->poweroff()```).
+    - The cellular chip can be put to sleep by either a low pulse on the PWR_ON pin (Bee pin 16/RTS) or by using the TinyGSM poweroff function (```tinyModem->poweroff()```).
 - **Digi XBee's:**
     - This library does _NOT_ support the ZigBee, 900mHZ, or any other radio-based XBee's.  It is for the cellular and WiFi Bee's only.
     - You must set up your XBee to utilize sleep mode.  The easiest way to set them up is to connect them to a computer via a UART dock and use Digi's free [XCTU](https://www.digi.com/products/xbee-rf-solutions/xctu-software/xctu) program.  
