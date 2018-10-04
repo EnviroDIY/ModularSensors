@@ -51,7 +51,7 @@ void LoggerDreamHost::streamSensorDataDreamHost(Stream *stream)
 {
     stream->print(String(_DreamHostPortalRX));
     stream->print(String(F("?LoggerID=")) + String(Logger::_loggerID));
-    stream->print(String(F("?Loggertime=")) + String(Logger::markedEpochTime - 946684800));  // Correct time from epoch to y2k
+    stream->print(String(F("&Loggertime=")) + String(Logger::markedEpochTime - 946684800));  // Correct time from epoch to y2k
 
     for (int i = 0; i < _internalArray->getVariableCount(); i++)
     {
@@ -213,6 +213,9 @@ void LoggerDreamHost::logAndSend(void)
         MS_DBG(F("    Running a complete sensor update...\n"));
         _internalArray->completeUpdate();
 
+        // Create a csv data record and save it to the log file
+        logToSD();
+
         if (_logModem != NULL)
         {
             // Connect to the network
@@ -242,9 +245,6 @@ void LoggerDreamHost::logAndSend(void)
             // Turn the modem off
             _logModem->modemSleepPowerDown();
         }
-
-        // Create a csv data record and save it to the log file
-        logToSD();
 
         // Turn off the LED
         if (_ledPin >= 0) digitalWrite(_ledPin, LOW);

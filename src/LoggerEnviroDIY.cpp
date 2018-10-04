@@ -448,6 +448,9 @@ void LoggerEnviroDIY::logAndSend(void)
         MS_DBG(F("    Running a complete sensor update...\n"));
         _internalArray->completeUpdate();
 
+        // Create a csv data record and save it to the log file
+        logToSD();
+
         if (_logModem != NULL)
         {
             // Connect to the network
@@ -471,9 +474,6 @@ void LoggerEnviroDIY::logAndSend(void)
             // Turn the modem off
             _logModem->modemSleepPowerDown();
         }
-
-        // Create a csv data record and save it to the log file
-        logToSD();
 
         // Turn off the LED
         if (_ledPin >= 0) digitalWrite(_ledPin, LOW);
