@@ -43,6 +43,8 @@ CampbellOBS3::CampbellOBS3(int8_t powerPin, int8_t dataPin,
     _x0_coeff_C = x0_coeff_C;
     _i2cAddress = i2cAddress;
 }
+// Destructor
+CampbellOBS3::~CampbellOBS3(){}
 
 
 String CampbellOBS3::getSensorLocation(void)

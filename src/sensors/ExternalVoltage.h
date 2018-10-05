@@ -43,7 +43,7 @@
 #include "ModSensorDebugger.h"
 
 #include "../SensorBase.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 
 #define ADS1115_ADDRESS (0x48) // 1001 000 (ADDR = GND)
 
@@ -67,7 +67,8 @@ public:
     // If nothing is given a 1x gain is used.
     ExternalVoltage(int8_t powerPin, int8_t dataPin, float gain = 1,
                     uint8_t i2cAddress = ADS1115_ADDRESS, uint8_t measurementsToAverage = 1);
-    ~ExternalVoltage(){}
+    // Destructor
+    ~ExternalVoltage();
 
     String getSensorLocation(void) override;
 

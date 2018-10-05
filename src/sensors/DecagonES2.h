@@ -29,7 +29,7 @@
 #define DecagonES2_h
 
 #include "SDI12Sensors.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 
 #define ES2_NUM_VARIABLES 2
 #define ES2_WARM_UP_TIME_MS 250
@@ -62,6 +62,7 @@ public:
                     "DecagonES2", ES2_NUM_VARIABLES,
                     ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
     {}
+    // Destructor
     ~DecagonES2(){}
 };
 

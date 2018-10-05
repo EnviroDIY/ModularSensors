@@ -19,7 +19,7 @@
 #include "ModSensorDebugger.h"
 
 #include "../SensorBase.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 
 #define PROCESSOR_NUM_VARIABLES 2
 #define PROCESSOR_WARM_UP_TIME_MS 0
@@ -40,7 +40,7 @@ class ProcessorStats : public Sensor
 public:
     // Need to know the Mayfly version because the battery resistor depends on it
     ProcessorStats(const char *version);
-    ~ProcessorStats(){}
+    ~ProcessorStats();
 
     String getSensorLocation(void) override;
 

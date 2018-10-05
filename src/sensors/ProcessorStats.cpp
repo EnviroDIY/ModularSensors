@@ -116,6 +116,8 @@ ProcessorStats::ProcessorStats(const char *version)
         _batteryPin = -1;
     #endif
 }
+// Destructor
+ProcessorStats::~ProcessorStats(){}
 
 
 String ProcessorStats::getSensorLocation(void) {return BOARD;}

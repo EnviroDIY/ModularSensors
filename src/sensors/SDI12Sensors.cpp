@@ -45,6 +45,8 @@ SDI12Sensors::SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin, ui
 {
     _SDI12address = SDI12address + '0';
 }
+// Destructor
+SDI12Sensors::~SDI12Sensors(){}
 
 
 bool SDI12Sensors::setup(void)

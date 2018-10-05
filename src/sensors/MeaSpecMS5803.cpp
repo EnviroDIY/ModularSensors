@@ -46,6 +46,8 @@ MeaSpecMS5803::MeaSpecMS5803(int8_t powerPin, uint8_t i2cAddressHex,
     _i2cAddressHex = i2cAddressHex;
     _maxPressure = maxPressure;
 }
+// Destructor
+MeaSpecMS5803::~MeaSpecMS5803(){}
 
 
 String MeaSpecMS5803::getSensorLocation(void)

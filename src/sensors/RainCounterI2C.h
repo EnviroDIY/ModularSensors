@@ -27,7 +27,7 @@
 
 
 #include "../SensorBase.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 #include <Wire.h>
 
 #define BUCKET_NUM_VARIABLES 2
@@ -49,7 +49,8 @@ public:
     // Address of I2C device is 0x08 by default
     // Depth of rain per tip event in mm is 0.2mm by default
     RainCounterI2C(uint8_t i2cAddressHex = 0x08, float rainPerTip = 0.2);
-    ~RainCounterI2C(){}
+    // Destructor
+    ~RainCounterI2C();
 
     bool setup(void) override;
     String getSensorLocation(void) override;

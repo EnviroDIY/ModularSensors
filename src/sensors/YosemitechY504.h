@@ -31,7 +31,7 @@
 #define YosemitechY504_h
 
 #include "YosemitechParent.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 
 #define Y504_NUM_VARIABLES 3
 #define Y504_WARM_UP_TIME_MS 375

@@ -32,7 +32,7 @@
 #define YosemitechY532_h
 
 #include "YosemitechParent.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 
 #define Y532_NUM_VARIABLES 3
 #define Y532_WARM_UP_TIME_MS 500

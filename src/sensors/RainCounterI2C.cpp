@@ -29,6 +29,8 @@ RainCounterI2C::RainCounterI2C(uint8_t i2cAddressHex, float rainPerTip)
     _i2cAddressHex  = i2cAddressHex;
     _rainPerTip = rainPerTip;
 }
+// Destructor
+RainCounterI2C::~RainCounterI2C(){}
 
 
 String RainCounterI2C::getSensorLocation(void)

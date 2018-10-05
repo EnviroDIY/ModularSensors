@@ -64,7 +64,7 @@
 #define YosemitechY4000_h
 
 #include "YosemitechParent.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 
 #define Y4000_NUM_VARIABLES 8
 // Time for communication to begin
@@ -96,8 +96,6 @@
 
 #define Y4000_BGA_RESOLUTION 2
 #define Y4000_BGA_VAR_NUM 7
-
-
 
 
 // The main class for the Yosemitech Y4000

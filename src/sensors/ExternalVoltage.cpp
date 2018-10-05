@@ -47,6 +47,8 @@ ExternalVoltage::ExternalVoltage(int8_t powerPin, int8_t dataPin, float gain,
     _gain = gain;
     _i2cAddress = i2cAddress;
 }
+// Destructor
+ExternalVoltage::~ExternalVoltage(){}
 
 
 String ExternalVoltage::getSensorLocation(void)

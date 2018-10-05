@@ -22,7 +22,7 @@
 #include "ModSensorDebugger.h"
 
 #include "../SensorBase.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 
 #define HRXL_NUM_VARIABLES 1
 #define HRXL_WARM_UP_TIME_MS 160
@@ -37,7 +37,7 @@ class MaxBotixSonar : public Sensor
 public:
     MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin = -1, uint8_t measurementsToAverage = 1);
     MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin = -1, uint8_t measurementsToAverage = 1);
-    ~MaxBotixSonar(){}
+    ~MaxBotixSonar();
 
     String getSensorLocation(void) override;
 

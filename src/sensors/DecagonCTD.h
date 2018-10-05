@@ -35,7 +35,7 @@
 #define DecagonCTD_h
 
 #include "SDI12Sensors.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 
 #define CTD_NUM_VARIABLES 3
 #define CTD_WARM_UP_TIME_MS 500
@@ -71,6 +71,7 @@ public:
                     "DecagonCTD", CTD_NUM_VARIABLES,
                     CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
     {}
+    // Destructor
     ~DecagonCTD(){}
 };
 

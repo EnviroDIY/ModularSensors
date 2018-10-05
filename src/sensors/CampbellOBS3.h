@@ -34,7 +34,7 @@
 #include "ModSensorDebugger.h"
 
 #include "../SensorBase.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 
 #define ADS1115_ADDRESS (0x48) // 1001 000 (ADDR = GND)
 
@@ -62,7 +62,8 @@ public:
     CampbellOBS3(int8_t powerPin, int8_t dataPin,
                  float x2_coeff_A, float x1_coeff_B, float x0_coeff_C,
                  uint8_t i2cAddress = ADS1115_ADDRESS, uint8_t measurementsToAverage = 1);
-    ~CampbellOBS3(){}
+    // Destructor
+    ~CampbellOBS3();
 
     String getSensorLocation(void) override;
 

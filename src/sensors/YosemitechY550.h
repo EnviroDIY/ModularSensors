@@ -35,7 +35,7 @@
 #define YosemitechY550_h
 
 #include "YosemitechParent.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 
 #define Y550_NUM_VARIABLES 2
 #define Y550_WARM_UP_TIME_MS 1500

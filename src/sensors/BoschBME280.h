@@ -40,7 +40,7 @@
 
 
 #include "../SensorBase.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 #include <Adafruit_BME280.h>
 
 #define BME280_NUM_VARIABLES 4
@@ -66,7 +66,7 @@ class BoschBME280 : public Sensor
 {
 public:
     BoschBME280(int8_t powerPin, uint8_t i2cAddressHex = 0x76, uint8_t measurementsToAverage = 1);
-    ~BoschBME280(){};
+    ~BoschBME280();
 
     bool wake(void) override;
     bool setup(void) override;

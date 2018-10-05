@@ -30,7 +30,7 @@
 #include "ModSensorDebugger.h"
 
 #include "../SensorBase.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 
 #include <DallasTemperature.h>
 #include <OneWire.h>
@@ -48,7 +48,7 @@ class MaximDS18 : public Sensor
 public:
     MaximDS18(DeviceAddress OneWireAddress, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
     MaximDS18(int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
-    ~MaximDS18(){}
+    ~MaximDS18();
 
     bool setup(void) override;
     String getSensorLocation(void) override;

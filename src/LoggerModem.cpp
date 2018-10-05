@@ -27,7 +27,6 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     _sleepFxn = sleepFxn;
     _modemName = "unspecified modem";
 }
-
 loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                          bool (*wakeFxn)(), bool (*sleepFxn)(),
                          TinyGsmModem *inModem, Client *inClient, const char *ssid, const char *pwd)
@@ -43,6 +42,9 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     _sleepFxn = sleepFxn;
     _modemName = "unspecified modem";
 }
+// Destructor
+loggerModem::~loggerModem(){}
+
 
 String loggerModem::getSensorName(void) { return _modemName; }
 

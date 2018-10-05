@@ -31,6 +31,7 @@ AOSongAM2315::AOSongAM2315(int8_t powerPin, uint8_t measurementsToAverage)
              AM2315_WARM_UP_TIME_MS, AM2315_STABILIZATION_TIME_MS, AM2315_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage)
 {}
+AOSongAM2315::~AOSongAM2315(){}
 
 
 String AOSongAM2315::getSensorLocation(void){return F("I2C_0xB8");}

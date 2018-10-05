@@ -26,7 +26,7 @@
 #include "ModSensorDebugger.h"
 
 #include "../SensorBase.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 
 #define DS3231_NUM_VARIABLES 1
 #define DS3231_WARM_UP_TIME_MS 0
@@ -43,11 +43,8 @@ class MaximDS3231 : public Sensor
 {
 public:
     // Only input is the number of readings to average
-    MaximDS3231(uint8_t measurementsToAverage = 1)
-    : Sensor("MaximDS3231", DS3231_NUM_VARIABLES,
-             DS3231_WARM_UP_TIME_MS, DS3231_STABILIZATION_TIME_MS, DS3231_MEASUREMENT_TIME_MS,
-             -1, -1, measurementsToAverage)
-    {}
+    MaximDS3231(uint8_t measurementsToAverage = 1);
+    // Destructor
     ~MaximDS3231(){}
 
     String getSensorLocation(void) override;

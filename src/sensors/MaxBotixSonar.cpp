@@ -30,6 +30,8 @@ MaxBotixSonar::MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin,
     _triggerPin = triggerPin;
     _stream = &stream;
 }
+// Destructor
+MaxBotixSonar::~MaxBotixSonar(){}
 
 
 // unfortunately, we really cannot know where the stream is attached.

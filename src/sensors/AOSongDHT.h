@@ -33,7 +33,7 @@
 #include "ModSensorDebugger.h"
 
 #include "../SensorBase.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 
 #include <DHT.h>
 // Undefine these macros so I can use a typedef instead
@@ -73,7 +73,8 @@ class AOSongDHT : public Sensor
 public:
     // The constructor - need the power pin, the data pin, and the sensor type
     AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type, uint8_t measurementsToAverage = 1);
-    ~AOSongDHT(){};
+    // Destructor
+    ~AOSongDHT();
 
     bool setup(void) override;
     String getSensorName(void) override;

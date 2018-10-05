@@ -41,6 +41,8 @@ MaximDS18::MaximDS18(int8_t powerPin, int8_t dataPin, uint8_t measurementsToAver
 {
     _addressKnown = false;
 }
+// Destructor
+MaximDS18::~MaximDS18(){}
 
 
 // Turns the address into a printable string

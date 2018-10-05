@@ -28,6 +28,8 @@ LoggerEnviroDIY::LoggerEnviroDIY(const char *loggerID, uint16_t loggingIntervalM
 {
     _logModem = NULL;
 }
+// Destructor
+LoggerEnviroDIY::~LoggerEnviroDIY(){}
 
 
 // Set up communications

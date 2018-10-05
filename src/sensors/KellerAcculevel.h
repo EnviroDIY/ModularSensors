@@ -18,7 +18,7 @@
 #define KellerAcculevel_h
 
 #include "KellerParent.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 
 #define KellerAcculevel_WARM_UP_TIME_MS 500
 #define KellerAcculevel_STABILIZATION_TIME_MS 5000
@@ -48,6 +48,7 @@ public:
                     Acculevel, "KellerAcculevel", KELLER_NUM_VARIABLES,
                     KellerAcculevel_WARM_UP_TIME_MS, KellerAcculevel_STABILIZATION_TIME_MS, KellerAcculevel_MEASUREMENT_TIME_MS)
     {}
+    // Destructor
     ~KellerAcculevel(){}
 };
 

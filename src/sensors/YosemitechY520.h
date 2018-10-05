@@ -32,7 +32,7 @@
 #define YosemitechY520_h
 
 #include "YosemitechParent.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 
 #define Y520_NUM_VARIABLES 2
 #define Y520_WARM_UP_TIME_MS 1600

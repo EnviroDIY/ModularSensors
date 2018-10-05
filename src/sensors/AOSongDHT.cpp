@@ -35,6 +35,8 @@ AOSongDHT::AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type, uint8_t meas
 {
     _dhtType = type;
 }
+// Destructor - does nothing.
+AOSongDHT::~AOSongDHT(){}
 
 
 bool AOSongDHT::setup(void)

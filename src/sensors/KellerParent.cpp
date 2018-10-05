@@ -46,6 +46,8 @@ KellerParent::KellerParent(byte modbusAddress, Stream& stream,
     _RS485EnablePin = enablePin;
     _powerPin2 = powerPin2;
 }
+// Destructor
+KellerParent::~KellerParent(){}
 
 
 // The sensor installation location on the Mayfly

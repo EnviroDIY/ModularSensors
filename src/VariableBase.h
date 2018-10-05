@@ -37,7 +37,7 @@ public:
               const char *UUID, const char *customVarCode);
 
     // Destructor
-    virtual ~Variable(){}
+    virtual ~Variable();
 
     // These functions tie the variable and sensor together
     // They should never be called for a calculated variable

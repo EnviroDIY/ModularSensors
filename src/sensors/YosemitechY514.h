@@ -32,7 +32,7 @@
 #define YosemitechY514_h
 
 #include "YosemitechParent.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 
 #define Y514_NUM_VARIABLES 2
 #define Y514_WARM_UP_TIME_MS 1300

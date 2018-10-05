@@ -36,7 +36,7 @@
 #define ZebraTechDOpto_h
 
 #include "SDI12Sensors.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 
 #define DOPTO_NUM_VARIABLES 3
 #define DOPTO_WARM_UP_TIME_MS 275

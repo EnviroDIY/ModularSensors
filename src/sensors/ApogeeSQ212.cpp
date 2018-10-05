@@ -42,6 +42,8 @@ ApogeeSQ212::ApogeeSQ212(int8_t powerPin, int8_t dataPin, uint8_t i2cAddress, ui
 {
     _i2cAddress = i2cAddress;
 }
+// Destructor
+ApogeeSQ212::~ApogeeSQ212(){};
 
 
 String ApogeeSQ212::getSensorLocation(void)

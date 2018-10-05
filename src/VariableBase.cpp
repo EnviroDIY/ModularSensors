@@ -67,6 +67,9 @@ Variable::Variable(float (*calcFxn)(),
     _currentValue = -9999;
 }
 
+// Destructor
+Variable::~Variable(){}
+
 
 // This notifies the parent sensor that it has an observing variable
 // This function should never be called for a calculated variable

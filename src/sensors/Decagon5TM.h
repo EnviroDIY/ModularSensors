@@ -30,7 +30,7 @@
 #define Decagon5TM_h
 
 #include "SDI12Sensors.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 
 #define TM_NUM_VARIABLES 3
 #define TM_WARM_UP_TIME_MS 200
@@ -66,6 +66,7 @@ public:
                     "Decagon5TM", TM_NUM_VARIABLES,
                     TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
     {}
+    // Destructor
     ~Decagon5TM(){}
 
     virtual bool addSingleMeasurementResult(void) override;

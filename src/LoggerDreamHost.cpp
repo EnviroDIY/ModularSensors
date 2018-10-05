@@ -19,7 +19,9 @@ LoggerDreamHost::LoggerDreamHost(const char *loggerID, uint16_t loggingIntervalM
                                  int8_t SDCardPin, int8_t mcuWakePin,
                                  VariableArray *inputArray)
   : LoggerEnviroDIY(loggerID, loggingIntervalMinutes, SDCardPin, mcuWakePin, inputArray)
- {}
+{}
+// Destructor
+LoggerDreamHost::~LoggerDreamHost(){}
 
 // Functions for private SWRC server
 void LoggerDreamHost::setDreamHostPortalRX(const char *URL)

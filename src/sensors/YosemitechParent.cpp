@@ -44,6 +44,8 @@ YosemitechParent::YosemitechParent(byte modbusAddress, Stream& stream,
     _RS485EnablePin = enablePin;
     _powerPin2 = powerPin2;
 }
+// Destructor
+YosemitechParent::~YosemitechParent(){}
 
 
 // The sensor installation location on the Mayfly

@@ -31,7 +31,7 @@
 
 
 #include "../SensorBase.h"
-#include "VariableBase.h"
+#include "../VariableBase.h"
 #include <Adafruit_MPL115A2.h>
 
 #define MPL115A2_NUM_VARIABLES 2
@@ -51,7 +51,7 @@ class MPL115A2 : public Sensor
 {
 public:
     MPL115A2(int8_t powerPin, uint8_t measurementsToAverage = 1);
-    ~MPL115A2(){}
+    ~MPL115A2();
 
     bool setup(void) override;
     String getSensorLocation(void) override;
