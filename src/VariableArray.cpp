@@ -316,7 +316,7 @@ bool VariableArray::updateAllSensors(void)
         if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {
             if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) == 0 ||  // No attempt made to wake the sensor up
-                bitRead(arrayOfVars[i]->parentSensor->getStatus(), 4) == 0 )  // Wake up failed
+                bitRead(arrayOfVars[i]->parentSensor->getStatus(), 4) == 0 )  // OR Wake up failed
             {
                 MS_DBG(i, F(" --->> "));
                 MS_DBG(arrayOfVars[i]->getParentSensorName());
@@ -375,8 +375,8 @@ bool VariableArray::updateAllSensors(void)
                 if ( arrayOfVars[i]->parentSensor->isStable())
                 {
 
-                // now, if the sensor is not currently measuring...
-                    if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 5) == 0)  // NOT currently measuring
+                    // now, if the sensor is not currently measuring...
+                    if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 5) == 0)  // NO attempt yet to start a measurement
                     {
                             // Start a reading
                             MS_DBG(i, '.', nMeasurementsCompleted[i]+1,
@@ -397,6 +397,9 @@ bool VariableArray::updateAllSensors(void)
 
                     // otherwise, it is currently measuring so...
                     // if a measurement is finished, get the result and tick up the number of finished measurements
+                    // NOTE:  isMeasurementComplete() will immediately return true if the attempt to start a
+                    // measurement failed (bit 6 not set).  In that case, the addSingleMeasurementResult()
+                    // will be "adding" -9999 values.
                     if(arrayOfVars[i]->parentSensor->isMeasurementComplete())
                     {
                         // Get the value
@@ -463,7 +466,7 @@ bool VariableArray::completeUpdate(void)
     bool success = true;
     uint8_t nSensorsCompleted = 0;
 
-    // Create an array with the unique-ness value (so we can skip the function later)
+    // Create an array with the unique-ness value (so we can skip the function calls later)
     bool lastSensorVariable[_variableCount];
     for (uint8_t i = 0; i < _variableCount; i++)
         lastSensorVariable[i] = isLastVarFromSensor(i);

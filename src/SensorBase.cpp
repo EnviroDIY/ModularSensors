@@ -185,8 +185,7 @@ bool Sensor::wake(void)
     // Setting this bit even if the activation failed, to show the attempt was made
     _sensorStatus |= 0b00001000;
 
-    // Check if the an attempt was made to power the sensor (bit 1) and it succeeded (bit 2)
-    // Currently there is no double check that the powerOn() was successful
+    // Check if the sensor was successfully powered
     if (bitRead(_sensorStatus, 2))
     {
         // Mark the time that a measurement was requested
@@ -433,9 +432,8 @@ bool Sensor::checkPowerOn(bool debug)
             if (debug) MS_DBG(F(" was off.\n"));
             // Reset time of power on, in-case it was set to a value
             if (_millisPowerOn != 0) _millisPowerOn = 0;
-            // Unset the status bits for sensor power (bit 1), warm-up (bit 2),
-            // activation (bit 3), stability (bit 4), measurement start (bit 5),
-            /// and measurement completion (bit 6)
+            // Unset the status bits for sensor power (bits 1 & 2),
+            // activation (bits 3 & 4), and measurement request (bits 5 & 6)
             _sensorStatus &= 0b10000001;
             return false;
         }
@@ -464,19 +462,18 @@ bool Sensor::checkPowerOn(bool debug)
 // This checks to see if enough time has passed for warm-up
 bool Sensor::isWarmedUp(bool debug)
 {
-    uint32_t elapsed_since_power_on = millis() - _millisPowerOn;
-
     // If the sensor doesn't have power, then it will never be warmed up,
     // so the warm up time is essentially already passed.
-    // Check if the an attempt was made to power the sensor (bit 1) and it succeeded (bit 2)
     if (!bitRead(_sensorStatus, 2))
     {
         if (debug) MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
               F(" does not have power and cannot warm up!\n"));
         return true;
     }
+
+    uint32_t elapsed_since_power_on = millis() - _millisPowerOn;
     // If the sensor has power and enough time has elapsed, it's warmed up
-    else if (elapsed_since_power_on > _warmUpTime_ms)
+    if (elapsed_since_power_on > _warmUpTime_ms)
     {
         if (debug) MS_DBG(F("It's been "), (elapsed_since_power_on), F("ms, and "),
               getSensorName(), F(" at "), getSensorLocation(),
@@ -496,9 +493,8 @@ void Sensor::waitForWarmUp(void){ while (!isWarmedUp()){} }
 // This checks to see if enough time has passed for stability
 bool Sensor::isStable(bool debug)
 {
-    // If no attempt has been made to activate the sensor (staus bit 3 not set)
-    // or the attempt failed (bit 4 unset, _millisSensorActivated = 0), the sensor
-    // will never stabilize, so the stabilization time is essentially already passed
+    // If the sensor failed to activate, it will never stabilize, so the
+    // stabilization time is essentially already passed
     if (!bitRead(_sensorStatus, 4))
     {
         if (debug) MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
@@ -528,10 +524,8 @@ void Sensor::waitForStability(void){ while (!isStable()){} }
 // This checks to see if enough time has passed for measurement completion
 bool Sensor::isMeasurementComplete(bool debug)
 {
-    // If no attempt has been made to start a measurement (staus bit 5 not set)
-    // or the attempt failed (bit 6 not set, _millisMeasurementRequested = 0),
-    // the sensor will never return a result, so the measurement time is
-    // essentially already passed
+    // If a measurement failed to start, the sensor will never return a result,
+    // so the measurement time is essentially already passed
     if (!bitRead(_sensorStatus, 6))
     {
         if (debug) MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
