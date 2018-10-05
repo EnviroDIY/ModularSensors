@@ -37,6 +37,7 @@ class MaxBotixSonar : public Sensor
 public:
     MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin = -1, uint8_t measurementsToAverage = 1);
     MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin = -1, uint8_t measurementsToAverage = 1);
+    ~MaxBotixSonar(){}
 
     String getSensorLocation(void) override;
 
@@ -62,6 +63,7 @@ public:
                HRXL_RESOLUTION,
                "SonarRange", UUID, customVarCode)
     {}
+    ~MaxBotixSonar_Range(){}
 };
 
 #endif

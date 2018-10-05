@@ -66,6 +66,7 @@ public:
                     "Decagon5TM", TM_NUM_VARIABLES,
                     TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
     {}
+    ~Decagon5TM(){}
 
     virtual bool addSingleMeasurementResult(void) override;
 };
@@ -81,6 +82,7 @@ public:
                 TM_EA_RESOLUTION,
                 "SoilEa", UUID, customVarCode)
     {}
+    ~Decagon5TM_Ea(){}
 };
 
 
@@ -94,6 +96,7 @@ public:
                 TM_TEMP_RESOLUTION,
                 "SoilTemp", UUID, customVarCode)
     {}
+    ~Decagon5TM_Temp(){}
 };
 
 
@@ -107,6 +110,7 @@ public:
                 TM_VWC_RESOLUTION,
                 "SoilVWC", UUID, customVarCode)
     {}
+    ~Decagon5TM_VWC(){}
 };
 
 #endif

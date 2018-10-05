@@ -117,6 +117,7 @@ public:
                         Y4000, "YosemitechY4000", Y4000_NUM_VARIABLES,
                         Y4000_WARM_UP_TIME_MS, Y4000_STABILIZATION_TIME_MS, Y4000_MEASUREMENT_TIME_MS)
     {}
+    ~YosemitechY4000(){}
 };
 
 
@@ -131,6 +132,7 @@ public:
                 Y4000_DOMGL_RESOLUTION,
                 "Y4000DOmgL", UUID, customVarCode)
     {}
+    ~YosemitechY4000_DOmgL(){}
 };
 
 // Defines the Turbidity
@@ -143,6 +145,7 @@ public:
                 Y4000_TURB_RESOLUTION,
                 "Y4000Turbidity", UUID, customVarCode)
     {}
+    ~YosemitechY4000_Turbidity(){}
 };
 
 // Defines the Conductivity
@@ -155,6 +158,7 @@ public:
                 Y4000_COND_RESOLUTION,
                 "Y4000Cond", UUID, customVarCode)
     {}
+    ~YosemitechY4000_Cond(){}
 };
 
 // Defines the pH
@@ -168,6 +172,7 @@ public:
                 Y4000_PH_RESOLUTION,
                 "Y4000pH", UUID, customVarCode)
     {}
+    ~YosemitechY4000_pH(){}
 };
 
 // Defines the Temperature Variable
@@ -181,6 +186,7 @@ public:
                 Y4000_TEMP_RESOLUTION,
                 "Y4000Temp", UUID, customVarCode)
     {}
+    ~YosemitechY4000_Temp(){}
 };
 
 // Defines the Electrode Electrical Potential
@@ -194,6 +200,7 @@ public:
                 Y4000_ORP_RESOLUTION,
                 "Y4000Potential", UUID, customVarCode)
     {}
+    ~YosemitechY4000_ORP(){}
 };
 
 // Defines the Chlorophyll Concentration
@@ -207,6 +214,7 @@ public:
                 Y4000_CHLORO_RESOLUTION,
                 "Y4000Chloro", UUID, customVarCode)
     {}
+    ~YosemitechY4000_Chlorophyll(){}
 };
 
 // Defines the Blue Green Algae (BGA) Concentration
@@ -220,6 +228,7 @@ public:
                 Y4000_BGA_RESOLUTION,
                 "Y4000BGA", UUID, customVarCode)
     {}
+    ~YosemitechY4000_BGA(){}
 };
 
 

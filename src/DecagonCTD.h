@@ -71,6 +71,7 @@ public:
                     "DecagonCTD", CTD_NUM_VARIABLES,
                     CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
     {}
+    ~DecagonCTD(){}
 };
 
 
@@ -84,6 +85,7 @@ public:
                 CTD_COND_RESOLUTION,
                 "CTDcond", UUID, customVarCode)
     {}
+    ~DecagonCTD_Cond(){}
 };
 
 
@@ -97,6 +99,7 @@ public:
                 CTD_TEMP_RESOLUTION,
                 "CTDtemp", UUID, customVarCode)
     {}
+    ~DecagonCTD_Temp(){}
 };
 
 
@@ -110,6 +113,7 @@ public:
                 CTD_DEPTH_RESOLUTION,
                 "CTDdepth", UUID, customVarCode)
     {}
+    ~DecagonCTD_Depth(){}
 };
 
 #endif

@@ -36,6 +36,9 @@ public:
               unsigned int decimalResolution,
               const char *UUID, const char *customVarCode);
 
+    // Destructor
+    virtual ~Variable(){}
+
     // These functions tie the variable and sensor together
     // They should never be called for a calculated variable
     // This notifies the parent sensor that it has an observing variable

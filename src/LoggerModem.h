@@ -78,6 +78,7 @@ public:
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                 bool (*wakeFxn)(), bool (*sleepFxn)(),
                 TinyGsmModem *inModem, Client *inClient, const char *ssid, const char *pwd);
+    ~loggerModem(){}
 
     String getSensorName(void) override;
 
@@ -172,6 +173,7 @@ public:
                 RSSI_RESOLUTION,
                 "RSSI", UUID, customVarCode)
     {}
+    ~Modem_RSSI(){}
 };
 
 
@@ -185,6 +187,7 @@ public:
                 PERCENT_SIGNAL_RESOLUTION,
                 "signalPercent", UUID, customVarCode)
     {}
+    ~Modem_SignalPercent(){}
 };
 
 // #endif /* USE_TINY_GSM */

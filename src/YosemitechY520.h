@@ -62,6 +62,7 @@ public:
                         Y520, "YosemitechY520", Y520_NUM_VARIABLES,
                         Y520_WARM_UP_TIME_MS, Y520_STABILIZATION_TIME_MS, Y520_MEASUREMENT_TIME_MS)
     {}
+    ~YosemitechY520(){}
 };
 
 
@@ -75,6 +76,7 @@ public:
                 Y520_COND_RESOLUTION,
                 "Y520Cond", UUID, customVarCode)
     {}
+    ~YosemitechY520_Cond(){}
 };
 
 
@@ -88,6 +90,7 @@ public:
                 Y520_TEMP_RESOLUTION,
                 "Y520Temp", UUID, customVarCode)
     {}
+    ~YosemitechY520_Temp(){}
 };
 
 #endif

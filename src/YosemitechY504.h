@@ -64,6 +64,7 @@ public:
                         Y504, "YosemitechY504", Y504_NUM_VARIABLES,
                         Y504_WARM_UP_TIME_MS, Y504_STABILIZATION_TIME_MS, Y504_MEASUREMENT_TIME_MS)
     {}
+    ~YosemitechY504(){}
 };
 
 
@@ -78,6 +79,7 @@ public:
                 Y504_DOPCT_RESOLUTION,
                 "Y504DOpct", UUID, customVarCode)
     {}
+    ~YosemitechY504_DOpct(){}
 };
 
 
@@ -92,6 +94,7 @@ public:
                 Y504_TEMP_RESOLUTION,
                 "Y504Temp", UUID, customVarCode)
     {}
+    ~YosemitechY504_Temp(){}
 };
 
 
@@ -106,6 +109,7 @@ public:
                 Y504_DOMGL_RESOLUTION,
                 "Y504DOmgL", UUID, customVarCode)
     {}
+    ~YosemitechY504_DOmgL(){}
 };
 
 #endif

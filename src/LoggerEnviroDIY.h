@@ -29,6 +29,7 @@ public:
     LoggerEnviroDIY(const char *loggerID, uint16_t loggingIntervalMinutes,
                     int8_t SDCardPin, int8_t mcuWakePin,
                     VariableArray *inputArray);
+    virtual ~LoggerEnviroDIY(){}
 
     // Adds a loggerModem objct to the logger
     // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off

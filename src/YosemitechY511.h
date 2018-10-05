@@ -61,6 +61,7 @@ public:
                         Y511, "YosemitechY511", Y511_NUM_VARIABLES,
                         Y511_WARM_UP_TIME_MS, Y511_STABILIZATION_TIME_MS, Y511_MEASUREMENT_TIME_MS)
     {}
+    ~YosemitechY511(){}
 };
 
 
@@ -74,6 +75,7 @@ public:
                 Y511_TURB_RESOLUTION,
                 "Y511Turbidity", UUID, customVarCode)
     {}
+    ~YosemitechY511_Turbidity(){}
 };
 
 
@@ -87,6 +89,7 @@ public:
                 Y511_TEMP_RESOLUTION,
                 "Y511Temp", UUID, customVarCode)
     {}
+    ~YosemitechY511_Temp(){}
 };
 
 #endif

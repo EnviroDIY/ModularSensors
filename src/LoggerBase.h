@@ -47,6 +47,7 @@ public:
     Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
            int8_t SDCardPin, int8_t mcuWakePin,
            VariableArray *inputArray);
+    virtual ~Logger(){}
 
     // Sets the static timezone - this must be set
     static void setTimeZone(int8_t timeZone);

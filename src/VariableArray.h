@@ -24,6 +24,7 @@ class VariableArray
 public:
     // Constructor
     VariableArray(int variableCount, Variable *variableList[]);
+    virtual ~VariableArray(){}
 
     // Leave the internal variable list public
     Variable **arrayOfVars;

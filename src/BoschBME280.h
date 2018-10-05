@@ -66,6 +66,7 @@ class BoschBME280 : public Sensor
 {
 public:
     BoschBME280(int8_t powerPin, uint8_t i2cAddressHex = 0x76, uint8_t measurementsToAverage = 1);
+    ~BoschBME280(){};
 
     bool wake(void) override;
     bool setup(void) override;
@@ -90,6 +91,7 @@ public:
                BME280_TEMP_RESOLUTION,
                "BoschBME280Temp", UUID, customVarCode)
     {}
+    ~BoschBME280_Temp(){};
 };
 
 
@@ -104,6 +106,7 @@ public:
                BME280_HUMIDITY_RESOLUTION,
                "BoschBME280Humidity", UUID, customVarCode)
     {}
+    ~BoschBME280_Humidity(){};
 };
 
 

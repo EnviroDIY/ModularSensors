@@ -48,6 +48,7 @@ public:
              DS3231_WARM_UP_TIME_MS, DS3231_STABILIZATION_TIME_MS, DS3231_MEASUREMENT_TIME_MS,
              -1, -1, measurementsToAverage)
     {}
+    ~MaximDS3231(){}
 
     String getSensorLocation(void) override;
 
@@ -68,6 +69,7 @@ public:
                  DS3231_TEMP_RESOLUTION,
                  "BoardTemp", UUID, customVarCode)
     {}
+    ~MaximDS3231_Temp(){}
 };
 
 #endif

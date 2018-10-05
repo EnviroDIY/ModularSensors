@@ -68,6 +68,7 @@ public:
                         Y550, "YosemitechY550", Y550_NUM_VARIABLES,
                         Y550_WARM_UP_TIME_MS, Y550_STABILIZATION_TIME_MS, Y550_MEASUREMENT_TIME_MS)
     {}
+    ~YosemitechY550(){}
 };
 
 
@@ -81,6 +82,7 @@ public:
                 Y550_COD_RESOLUTION,
                 "Y550COD", UUID, customVarCode)
     {}
+    ~YosemitechY550_COD(){}
 };
 
 
@@ -94,6 +96,7 @@ public:
                 Y550_TEMP_RESOLUTION,
                 "Y550Temp", UUID, customVarCode)
     {}
+    ~YosemitechY550_Temp(){}
 };
 
 
@@ -107,6 +110,7 @@ public:
                 Y550_TURB_RESOLUTION,
                 "Y550Turbidity", UUID, customVarCode)
     {}
+    ~YosemitechY550_Turbidity(){}
 };
 
 #endif

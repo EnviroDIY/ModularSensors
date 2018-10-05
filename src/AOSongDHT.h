@@ -73,6 +73,7 @@ class AOSongDHT : public Sensor
 public:
     // The constructor - need the power pin, the data pin, and the sensor type
     AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type, uint8_t measurementsToAverage = 1);
+    ~AOSongDHT(){};
 
     bool setup(void) override;
     String getSensorName(void) override;
@@ -96,6 +97,7 @@ public:
                DHT_HUMIDITY_RESOLUTION,
                "DHTHumidity", UUID, customVarCode)
     {}
+    ~AOSongDHT_Humidity(){};
 };
 
 
@@ -110,6 +112,7 @@ public:
                DHT_TEMP_RESOLUTION,
                "DHTTemp", UUID, customVarCode)
     {}
+    ~AOSongDHT_Temp(){};
 };
 
 
@@ -124,6 +127,7 @@ public:
                DHT_HI_RESOLUTION,
                "DHTHI", UUID, customVarCode)
     {}
+    ~AOSongDHT_HI(){};
 };
 
 #endif

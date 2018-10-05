@@ -30,6 +30,7 @@ public:
     LoggerDreamHost(const char *loggerID, uint16_t loggingIntervalMinutes,
                     int8_t SDCardPin, int8_t mcuWakePin,
                     VariableArray *inputArray);
+    virtual ~LoggerDreamHost(){}
 
     // Functions for private SWRC server
     void setDreamHostPortalRX(const char *URL);

@@ -51,6 +51,7 @@ class AOSongAM2315 : public Sensor
 public:
     // The constructor - because this is I2C, only need the power pin
     AOSongAM2315(int8_t powerPin, uint8_t measurementsToAverage = 1);
+    ~AOSongAM2315(){};
 
     String getSensorLocation(void) override;
 
@@ -71,6 +72,7 @@ public:
                AM2315_HUMIDITY_RESOLUTION,
                "AM2315Humidity", UUID, customVarCode)
     {}
+    ~AOSongAM2315_Humidity(){};
 };
 
 
@@ -85,6 +87,7 @@ public:
                AM2315_TEMP_RESOLUTION,
                "AM2315Temp", UUID, customVarCode)
     {}
+    ~AOSongAM2315_Temp(){};
 };
 
 #endif

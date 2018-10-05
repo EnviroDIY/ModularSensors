@@ -41,6 +41,7 @@ public:
     SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1,
                  const char *sensorName = "SDI12-Sensor", uint8_t numReturnedVars = 1,
                  uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0);
+    virtual ~SDI12Sensors(){}
 
     String getSensorVendor(void);
     String getSensorModel(void);

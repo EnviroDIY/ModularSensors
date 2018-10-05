@@ -60,6 +60,7 @@ public:
     // The constructor - need the power pin and the data pin  ON THE ADC
     ApogeeSQ212(int8_t powerPin, int8_t dataPin,
                 uint8_t i2cAddress = ADS1115_ADDRESS, uint8_t measurementsToAverage = 1);
+    ~ApogeeSQ212(){};
 
     String getSensorLocation(void) override;
 
@@ -82,6 +83,7 @@ public:
                  SQ212_PAR_RESOLUTION,
                  "photosyntheticallyActiveRadiation", UUID, customVarCode)
     {}
+    ~ApogeeSQ212_PAR(){};
 };
 
 #endif

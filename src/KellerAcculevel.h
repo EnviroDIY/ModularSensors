@@ -48,6 +48,7 @@ public:
                     Acculevel, "KellerAcculevel", KELLER_NUM_VARIABLES,
                     KellerAcculevel_WARM_UP_TIME_MS, KellerAcculevel_STABILIZATION_TIME_MS, KellerAcculevel_MEASUREMENT_TIME_MS)
     {}
+    ~KellerAcculevel(){}
 };
 
 
@@ -61,6 +62,7 @@ public:
                 KellerAcculevel_PRESSURE_RESOLUTION,
                 "kellerPress", UUID, customVarCode)
     {}
+    ~KellerAcculevel_Pressure(){}
 };
 
 
@@ -74,6 +76,7 @@ public:
                 KellerAcculevel_TEMP_RESOLUTION,
                 "kellerTemp", UUID, customVarCode)
     {}
+    ~KellerAcculevel_Temp(){}
 };
 
 // Defines the gageHeight (Water level with regard to an arbitrary gage datum) Variable
@@ -86,6 +89,7 @@ public:
                 KellerAcculevel_HEIGHT_RESOLUTION,
                 "kellerHeight", UUID, customVarCode)
     {}
+    ~KellerAcculevel_Height(){}
 };
 
 #endif

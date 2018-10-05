@@ -51,6 +51,7 @@ class MPL115A2 : public Sensor
 {
 public:
     MPL115A2(int8_t powerPin, uint8_t measurementsToAverage = 1);
+    ~MPL115A2(){}
 
     bool setup(void) override;
     String getSensorLocation(void) override;
@@ -73,6 +74,7 @@ public:
                MPL115A2_TEMP_RESOLUTION,
                "MPL115A2_Temp", UUID, customVarCode)
     {}
+    ~MPL115A2_Temp(){}
 };
 
 
@@ -87,6 +89,7 @@ public:
                MPL115A2_PRESSURE_RESOLUTION,
                "MPL115A2_Pressure", UUID, customVarCode)
     {}
+    ~MPL115A2_Pressure(){}
 };
 
 

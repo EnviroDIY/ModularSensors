@@ -62,6 +62,7 @@ public:
                         Y514, "YosemitechY514", Y514_NUM_VARIABLES,
                         Y514_WARM_UP_TIME_MS, Y514_STABILIZATION_TIME_MS, Y514_MEASUREMENT_TIME_MS)
     {}
+    ~YosemitechY514(){}
 };
 
 
@@ -76,6 +77,7 @@ public:
                 Y514_CHLORO_RESOLUTION,
                 "Y514Chloro", UUID, customVarCode)
     {}
+    ~YosemitechY514_Chlorophyll(){}
 };
 
 
@@ -90,5 +92,6 @@ public:
                 Y514_TEMP_RESOLUTION,
                 "Y514Temp", UUID, customVarCode)
     {}
+    ~YosemitechY514_Temp(){}
 };
 #endif

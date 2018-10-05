@@ -62,6 +62,7 @@ public:
                     "DecagonES2", ES2_NUM_VARIABLES,
                     ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
     {}
+    ~DecagonES2(){}
 };
 
 
@@ -75,6 +76,7 @@ public:
                 ES2_COND_RESOLUTION,
                 "ES2Cond", UUID, customVarCode)
     {}
+    ~DecagonES2_Cond(){}
 };
 
 // Defines the Temperature Variable
@@ -87,6 +89,7 @@ public:
                 ES2_TEMP_RESOLUTION,
                 "ES2Temp", UUID, customVarCode)
     {}
+    ~DecagonES2_Temp(){}
 };
 
 #endif

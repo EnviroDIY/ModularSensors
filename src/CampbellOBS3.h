@@ -62,6 +62,7 @@ public:
     CampbellOBS3(int8_t powerPin, int8_t dataPin,
                  float x2_coeff_A, float x1_coeff_B, float x0_coeff_C,
                  uint8_t i2cAddress = ADS1115_ADDRESS, uint8_t measurementsToAverage = 1);
+    ~CampbellOBS3(){}
 
     String getSensorLocation(void) override;
 
@@ -87,6 +88,7 @@ public:
                  OBS3_RESOLUTION,
                  "OBS3Turbidity", UUID, customVarCode)
     {}
+    ~CampbellOBS3_Turbidity(){}
 };
 
 
@@ -102,6 +104,7 @@ public:
                  OBS3_VOLT_RESOLUTION,
                  "OBS3Voltage", UUID, customVarCode)
     {}
+    ~CampbellOBS3_Voltage(){}
 };
 
 #endif

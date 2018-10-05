@@ -67,6 +67,7 @@ public:
     // If nothing is given a 1x gain is used.
     ExternalVoltage(int8_t powerPin, int8_t dataPin, float gain = 1,
                     uint8_t i2cAddress = ADS1115_ADDRESS, uint8_t measurementsToAverage = 1);
+    ~ExternalVoltage(){}
 
     String getSensorLocation(void) override;
 
@@ -89,6 +90,7 @@ public:
                  EXT_VOLT_RESOLUTION,
                  "extVoltage", UUID, customVarCode)
     {}
+    ~ExternalVoltage_Volt(){}
 };
 
 #endif

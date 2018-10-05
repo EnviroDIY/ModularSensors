@@ -65,6 +65,7 @@ public:
                         Y532, "YosemitechY532", Y532_NUM_VARIABLES,
                         Y532_WARM_UP_TIME_MS, Y532_STABILIZATION_TIME_MS, Y532_MEASUREMENT_TIME_MS)
     {}
+    ~YosemitechY532(){}
 };
 
 
@@ -79,6 +80,7 @@ public:
                 Y532_PH_RESOLUTION,
                 "Y532pH", UUID, customVarCode)
     {}
+    ~YosemitechY532_pH(){}
 };
 
 
@@ -93,6 +95,7 @@ public:
                 Y532_TEMP_RESOLUTION,
                 "Y532Temp", UUID, customVarCode)
     {}
+    ~YosemitechY532_Temp(){}
 };
 
 
@@ -107,6 +110,7 @@ public:
                 Y532_VOLT_RESOLUTION,
                 "Y532Potential", UUID, customVarCode)
     {}
+    ~YosemitechY532_Voltage(){}
 };
 
 #endif
