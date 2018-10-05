@@ -38,8 +38,10 @@
 
 #define ADS1115_ADDRESS (0x48) // 1001 000 (ADDR = GND)
 
-// low and high range are treated as completely independent, so only 1 "variable"
-#define OBS3_NUM_VARIABLES 1
+// low and high range are treated as completely independent, so only 2 "variables"
+// One for the raw voltage and another for the calibrated turbidity.
+// To get both high and low range values, create two sensor objects!
+#define OBS3_NUM_VARIABLES 2
 // Using the warm-up time of the ADS1115
 #define OBS3_WARM_UP_TIME_MS 2
 #define OBS3_STABILIZATION_TIME_MS 2000
@@ -48,6 +50,9 @@
 #define OBS3_TURB_VAR_NUM 0
 #define OBS3_RESOLUTION 3
 #define OBS3_HR_RESOLUTION 2
+
+#define OBS3_VOLTAGE_VAR_NUM 1
+#define OBS3_VOLT_RESOLUTION 5
 
 // The main class for the Campbell OBS3
 class CampbellOBS3 : public Sensor
@@ -68,7 +73,7 @@ protected:
 };
 
 
-// The single available variable is turbidity
+// The main variable returned is turbidity
 // To utilize both high and low gain turbidity, you must create *two* sensor
 // objects on two different data pins and then create two variable objects, one
 // tied to each sensor.
@@ -81,6 +86,21 @@ public:
                  "turbidity", "nephelometricTurbidityUnit",
                  OBS3_RESOLUTION,
                  "OBS3Turbidity", UUID, customVarCode)
+    {}
+};
+
+
+// Also returning raw voltage
+// This could be helpful if the calibration equation was typed incorrectly
+class CampbellOBS3_Voltage : public Variable
+{
+public:
+    CampbellOBS3_Voltage(Sensor *parentSense,
+                         const char *UUID = "", const char *customVarCode = "")
+      : Variable(parentSense, OBS3_VOLTAGE_VAR_NUM,
+                 "voltage", "volt",
+                 OBS3_VOLT_RESOLUTION,
+                 "OBS3Voltage", UUID, customVarCode)
     {}
 };
 

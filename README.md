@@ -780,13 +780,17 @@ CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_x2_coeff_A, OBSLow_x1_coeff_B,
 CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_x2_coeff_A, OBSHigh_x1_coeff_B, OBSHigh_x0_coeff_C, ADS1x15_i2cAddress, measurementsToAverage);
 ```
 
-The single available variable is (called once each for high and low range):
+The two available variables are (called once each for high and low range):
 
 ```cpp
 // Create and return the low-range variable object and return a variable-type pointer to it
 Variable *obs3lowTurbid = new CampbellOBS3_Turbidity(&osb3low, "UUID", "customLowVarCode");  // Low Range Turbidity in NTU
+// Create and return the low-range variable object and return a variable-type pointer to it
+Variable *obs3lowVotage = new CampbellOBS3_Voltage(&osb3low, "UUID", "customLowVarCode");  // Raw voltage in volts
 // Create the high-range variable object and return a variable-type pointer to it
 Variable *obs3highTurbid = new CampbellOBS3_Turbidity(&osb3high, "UUID", "customHighVarCode");  // High Range Turbidity in NTU
+// Create and return the low-range variable object and return a variable-type pointer to it
+Variable *obs3highVotage = new CampbellOBS3_Voltage(&osb3high, "UUID", "customLowVarCode");  // Raw voltage in volts
 //  Ranges: (depends on sediment size, particle shape, and reflectivity)
 //      Turbidity (low/high): 250/1000 NTU; 500/2000 NTU; 1000/4000 NTU
 //      Mud: 5000 to 10,000 mg L–1

@@ -97,12 +97,17 @@ bool CampbellOBS3::addSingleMeasurementResult(void)
             calibResult = (_x2_coeff_A * sq(adcVoltage)) + (_x1_coeff_B * adcVoltage) + _x0_coeff_C;
             MS_DBG(F("calibResult: "), calibResult, '\n');
         }
-        else MS_DBG('\n');
+        else  // set invalid voltages back to -9999
+        {
+            adcVoltage = -9999;
+            MS_DBG('\n');
+        }
     }
     else MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
          F(" is not currently measuring!\n"));
 
-    verifyAndAddMeasurementResult(SQ212_PAR_VAR_NUM, calibResult);
+    verifyAndAddMeasurementResult(OBS3_TURB_VAR_NUM, calibResult);
+    verifyAndAddMeasurementResult(OBS3_VOLTAGE_VAR_NUM, adcVoltage);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;

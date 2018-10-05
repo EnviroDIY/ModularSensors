@@ -372,8 +372,9 @@ const float OBSLow_B = 9.1011E+01;  // The "B" value (X) from the low range cali
 const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibration
 // Create and return the Campbell OBS3+ LOW RANGE sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, OBS3_ADS1115Address, OBS3numberReadings);
-// Create the turbidity variable object for the low range OBS3 and return a variable-type pointer to it
-// Variable *obs3TurbLow = new ApogeeSQ212_PAR(&osb3low, "12345678-abcd-1234-efgh-1234567890ab");
+// Create the turbidity and voltage variable objects for the low range OBS3 and return variable-type pointers to them
+// Variable *obs3TurbLow = new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *obs3VoltLow = new CampbellOBS3_Voltage(&osb3low, "12345678-abcd-1234-efgh-1234567890ab");
 
 // Campbell OBS 3+ High Range calibration in Volts
 const int8_t OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
@@ -382,8 +383,9 @@ const float OBSHigh_B = 3.7828E+02;  // The "B" value (X) from the high range ca
 const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calibration
 // Create and return the Campbell OBS3+ HIGH RANGE sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OBS3_ADS1115Address, OBS3numberReadings);
-// Create the turbidity variable object for the high range OBS3 and return a variable-type pointer to it
+// Create the turbidity and voltage variable objects for the high range OBS3 and return variable-type pointers to them
 // Variable *obs3TurbHigh = new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *obs3VoltHigh = new CampbellOBS3_Voltage(&osb3high, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -773,7 +775,9 @@ Variable *variableList[] = {
     new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
     // new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
     // new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
+    // new CampbellOBS3_Voltage(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLowV"),
     // new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
+    // new CampbellOBS3_Voltage(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHighV"),
     // new Decagon5TM_Ea(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
     // new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
     // new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
