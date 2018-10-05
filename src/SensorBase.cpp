@@ -186,7 +186,7 @@ bool Sensor::wake(void)
 
     // Check if the an attempt was made to power the sensor (bit 1) and it succeeded (bit 2)
     // Currently there is no double check that the powerOn() was successful
-    if (bitRead(_sensorStatus, 1) && bitRead(_sensorStatus, 2))
+    if (bitRead(_sensorStatus, 2))
     {
         // Mark the time that a measurement was requested
         _millisSensorActivated = millis();
@@ -233,10 +233,9 @@ bool Sensor::startSingleMeasurement(void)
     // Setting this bit even if we failed to start a measurement to show that an attempt was made.
     _sensorStatus |= 0b00100000;
 
-    // Check if BOTH an activation/wake attempt was made (status bit 3 set)
-    // AND that attempt was successful (bit 4 set, _millisSensorActivated > 0)
+    // Check if there was a successful wake (bit 4 set)
     // Only mark the measurement request time if it is
-    if (bitRead(_sensorStatus, 3) && bitRead(_sensorStatus, 4) && _millisSensorActivated > 0)
+    if (bitRead(_sensorStatus, 4))
     {
         // Mark the time that a measurement was requested
         _millisMeasurementRequested = millis();
@@ -464,7 +463,7 @@ bool Sensor::isWarmedUp(bool debug)
     // If the sensor doesn't have power, then it will never be warmed up,
     // so the warm up time is essentially already passed.
     // Check if the an attempt was made to power the sensor (bit 1) and it succeeded (bit 2)
-    if (!bitRead(_sensorStatus, 1) || !bitRead(_sensorStatus, 2) || _millisPowerOn == 0)
+    if (!bitRead(_sensorStatus, 2))
     {
         if (debug) MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
               F(" does not have power and cannot warm up!\n"));
@@ -494,7 +493,7 @@ bool Sensor::isStable(bool debug)
     // If no attempt has been made to activate the sensor (staus bit 3 not set)
     // or the attempt failed (bit 4 unset, _millisSensorActivated = 0), the sensor
     // will never stabilize, so the stabilization time is essentially already passed
-    if (!bitRead(_sensorStatus, 3) || !bitRead(_sensorStatus, 4) || _millisSensorActivated == 0)
+    if (!bitRead(_sensorStatus, 4))
     {
         if (debug) MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
                F(" is not active and cannot stabilize!\n"));
@@ -527,7 +526,7 @@ bool Sensor::isMeasurementComplete(bool debug)
     // or the attempt failed (bit 6 not set, _millisMeasurementRequested = 0),
     // the sensor will never return a result, so the measurement time is
     // essentially already passed
-    if (!bitRead(_sensorStatus, 5) || !bitRead(_sensorStatus, 6) || _millisMeasurementRequested == 0)
+    if (!bitRead(_sensorStatus, 6))
     {
         if (debug) MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
                F(" is not measuring and will not return a value!\n"));

@@ -319,10 +319,9 @@ bool loggerModem::startSingleMeasurement(void)
     // Setting this bit even if we failed to start a measurement to show that an attempt was made.
     _sensorStatus |= 0b00100000;
 
-    // Check if BOTH an activation/wake attempt was made (status bit 3 set)
-    // AND that attempt was successful (bit 4 set, _millisSensorActivated > 0)
+    // Check if the modem was successfully awoken (bit 4 set)
     // Only mark the measurement request time if it is
-    if (bitRead(_sensorStatus, 3) && bitRead(_sensorStatus, 4) && _millisSensorActivated > 0)
+    if (bitRead(_sensorStatus, 4))
     {
         // For the wifi modems, the SSID and password need to be set before they
         // can join a network.
@@ -422,7 +421,7 @@ bool loggerModem::isStable(bool debug)
 {
     // If the modem never "woke", then it will never respond and thus it's
     // essentially already "stable."
-    if (!bitRead(_sensorStatus, 3) || !bitRead(_sensorStatus, 4) || _millisSensorActivated == 0)
+    if (!bitRead(_sensorStatus, 4))
     {
         if (debug) MS_MOD_DBG(getSensorName(),
                 F(" did not wake; AT commands will not be attempted!\n"));
