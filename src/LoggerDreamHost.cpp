@@ -156,7 +156,7 @@ int LoggerDreamHost::postDataDreamHost(String& fullURL)
 
         // Close the TCP/IP connection as soon as the first 12 characters are read
         // We don't need anything else and stoping here should save data use.
-        _logModem->closeTCP();
+        _logModem->_tinyClient->stop();
     }
     else PRINTOUT(F("\n -- Unable to Establish Connection to DreamHost -- \n"));
 
