@@ -58,35 +58,42 @@ bool loggerModem::setup(void)
     if (_powerPin >= 0) pinMode(_powerPin, OUTPUT);
     if (_dataPin >= 0) pinMode(_dataPin, INPUT);
 
-    // Check if the an attempt was made to power the sensor (bit 1) and it succeeded (bit 2)
-    // Currently there is no double check that the powerOn() was successful
-    if (!bitRead(_sensorStatus, 1) || !bitRead(_sensorStatus, 2) || _millisPowerOn == 0)
-    {
-        MS_MOD_DBG(getSensorName(), F(" doesn't have power and cannot be set up!\n"));
-        success = false;
-    }
-
     // Turn the modem on, and if successful, begin
-    else if(wake())
+    if(wake())
     {
-        success &= _tinyModem->begin();  // This generally begins with a 5 second testAT()
+        // The begin() generally starts with a 5 second testAT(), that should
+        // be enough time to allow any modem to be ready to respond
+        success &= _tinyModem->begin();
         _modemName = _tinyModem->getModemName();
         if (success) MS_MOD_DBG(F("   ... Complete!  It's a "), getSensorName(), F(".\n"));
         else MS_MOD_DBG(F("   ... Failed!  It's a "), getSensorName(), F(".\n"));
     }
     else MS_MOD_DBG(F("   ... "), getSensorName(), F(" did not wake up and cannot be set up!\n"));
 
-    // Set some warm-up times for specific models
+    // Set some timing for specific cellular chipsets based on their documentation
     // NOTE:  These times are for raw cellular chips they do no necessarily
     // apply to assembled break-out boards or modules
+    // **warmUpTime** = Length of time after power is applied to module before the
+    // enable pin can be called to turn on the module or other wake fxn can be used.
+    // If the module boots up as soon as power is applied, this value is 0.
+    // **indicatorTime** = Length of time from the completion of wake up  request
+    // until the modem status pin begins to show an "on" status.
+    // **stabilizationTime** =  Length of time from the completion of wake up
+    // request until UART port becomes available for AT commands.  This becomes
+    // the MAXIMUM amount of time we will wait for a response.  Where I could
+    // find a time listed for boot up in the documentation, I use that time.
+    // Where I could not find it listed, I use 5 seconds.
+    // **disconnetTime** - Approximate length of time for unit to gracefully
+    // close sockets and disconnect from the network.  Most manufactures strongly
+    // recommend allowing a graceful shut-down rather than a sudden power-off.
     if (_modemName.indexOf("SIMCom SIM800") >= 0)
     {
         MS_MOD_DBG(F("Using expected warm-up and disconnect timing for a SIMCom SIM800\n"));
-        _warmUpTime_ms = 450; // Time after power on before "PWRKEY" can be used
-        _indicatorTime_ms = 2100;  // Time after end pulse until status pin becomes active (>3sec from start of pulse)
-        _stabilizationTime_ms = 2100;  // Time after end pulse until serial port becomes active (>3sec from start of pulse)
+        _warmUpTime_ms = 450; // Time after power on before "PWRKEY" can be used - >0.4sec
+        _indicatorTime_ms = 2000;  // Time after end pulse until status pin becomes active (>3sec from start of 1s pulse)
+        _stabilizationTime_ms = 2000;  // Time after end pulse until serial port becomes active (>3sec from start of 1s pulse)
         // _on_pull_down_ms = 1100;  // >1s
-        // _off_pull_down_ms = 1100;  // 1sec > t > 3.3sec
+        // _off_pull_down_ms = 1100;  // 1sec > t > 33sec
         _disconnetTime_ms = 3100;  // power down (gracefully) takes >3sec
     }
     if (_modemName.indexOf("SIMCom SIM900") >= 0)
@@ -97,19 +104,22 @@ bool loggerModem::setup(void)
         _stabilizationTime_ms = 2200;  // Time after end pulse until serial port becomes active (>2.2sec)
         // _on_pull_down_ms = 1100;  // >1s
         // _off_pull_down_ms = 600;  // 0.5sec > pull down > 1sec
-        _disconnetTime_ms = 1800;  // power down (gracefully) takes >1.
+        _disconnetTime_ms = 1800;  // power down (gracefully) takes >1.7 sec
     }
     if (_modemName.indexOf("SARA-R4") >= 0  ||
         _modemName.indexOf("XBee3™ Cellular LTE-M") >= 0  ||
         _modemName.indexOf("Digi XBee3™ Cellular NB-IoT") >= 0)
     {
         MS_MOD_DBG(F("Using expected warm-up and disconnect timing for a u-blox SARA-R4\n"));
-        _warmUpTime_ms = 250; // Time after power on before PWR_ON can be used ??? Unclear in diagram!
+        _warmUpTime_ms = 250; // Time after power on before PWR_ON can be used ??? Unclear in documentation!
         _indicatorTime_ms = 0;  // V_INT becomes active mid-way through on-pulse
-        _stabilizationTime_ms = 4600;  // Time until system and digital pins are operational
+        _stabilizationTime_ms = 4500;  // Time until system and digital pins are operational (~4.5s)
         // _on_pull_down_ms = 200;  // 0.15-3.2s
         // _off_pull_down_ms = 1600;  // >1.5s
-        _disconnetTime_ms = 4600;  // power down time is until Vint pin is reading low
+        _disconnetTime_ms = 5000;  // Power down time "can largely vary depending
+        // on the application / network settings and the concurrent module
+        // activities."  Vint/status pin should be monitored and power not withdrawn
+        // until that pin reads low.  Giving 5sec here in case it is not monitored.
     }
     if (_modemName.indexOf("SARA-U2") >= 0  ||
         _modemName.indexOf("XBee® Cellular 3G") >= 0)
@@ -117,32 +127,39 @@ bool loggerModem::setup(void)
         MS_MOD_DBG(F("Using expected warm-up and disconnect timing for a u-blox SARA-U2\n"));
         _warmUpTime_ms = 0; // Module turns on when power is applied - level of PWR_ON then irrelevant
         _indicatorTime_ms = 35;  // Time after end pulse until V_INT becomes active
-                                 // Unclear in diagram! Taking value from Lisa U2
+                                 // Unspecified in documentation! Taking value from Lisa U2
         _stabilizationTime_ms = 6000;  // Time until system and digital pins are operational
+        // (6 sec typical for SARA U201, others 5 sec typical)
         // _on_pull_down_ms = 1;  // 50-80µs
         // _off_pull_down_ms = 1000;  // >1s
-        _disconnetTime_ms = 6000;  // power down time is until Vint pin is reading low
+        _disconnetTime_ms = 5000;  // Power down time "can largely vary depending
+        // on the application / network settings and the concurrent module
+        // activities."  Vint/status pin should be monitored and power not withdrawn
+        // until that pin reads low.  Giving 5sec here in case it is not monitored.
     }
     if (_modemName.indexOf("SARA-G3") >= 0)
     {
         MS_MOD_DBG(F("Using expected warm-up and disconnect timing for a u-blox SARA-G3\n"));
         _warmUpTime_ms = 0; // Module turns on when power is applied - level of PWR_ON then irrelevant
         _indicatorTime_ms = 35;  // Time after end pulse until V_INT becomes active
-                                 // Unclear in diagram! Taking value from Lisa U2
-        _stabilizationTime_ms = 5000;  // Time until system and digital pins are operational
+                                 // Unspecified in documentation! Taking value from Lisa U2
+        _stabilizationTime_ms = 5000;  // Time until system and digital pins are operational (5 sec typical)
         // _on_pull_down_ms = 5;  // >5ms
         // _off_pull_down_ms = 1000;  // >1s
-        _disconnetTime_ms = 6000;  // power down time is until Vint pin is reading low
+        _disconnetTime_ms = 5000;  // Power down time "can largely vary depending
+        // on the application / network settings and the concurrent module
+        // activities."  Vint/status pin should be monitored and power not withdrawn
+        // until that pin reads low.  Giving 5sec here in case it is not monitored.
     }
     if (_modemName.indexOf("LISA-U2") >= 0)
     {
         MS_MOD_DBG(F("Using expected warm-up and disconnect timing for a u-blox LISA-U2\n"));
         _warmUpTime_ms = 0; // Module turns on when power is applied - level of PWR_ON then irrelevant
         _indicatorTime_ms = 35;  // Time after end pulse until V_INT becomes active <35ms
-        _stabilizationTime_ms = 3000;  // Time until system and digital pins are operational
+        _stabilizationTime_ms = 3000;  // Time until system and digital pins are operational (3 sec typical)
         // _on_pull_down_ms = 1;  // 50-80µs
         // _off_pull_down_ms = 1000;  // >1s
-        _disconnetTime_ms = 2600;  // power down (gracefully) takes ~2.5sec
+        _disconnetTime_ms = 400;  // power down (gracefully) takes ~400ms
     }
     if (_modemName.indexOf("Digi XBee® Cellular LTE Cat 1") >= 0  ||
         _modemName.indexOf("Digi XBee3™ Cellular LTE CAT 1") >= 0  ||
@@ -150,8 +167,10 @@ bool loggerModem::setup(void)
     {
         MS_MOD_DBG(F("Using expected warm-up and disconnect timing for a Telit LE866\n"));
         _warmUpTime_ms = 0; // Module turns on when power is applied
-        _indicatorTime_ms = 0;  // N/A? - No status pin on Telit chip
-        _stabilizationTime_ms = 25000L;  // Wait with 25s time-out for first AT response
+        _indicatorTime_ms = 0;  // Documentation does not specify how long between
+        // power on and high reading on VAUX / PWRMON pin
+        _stabilizationTime_ms = 5000;  // Documentation says to wait up to 25 (!!)
+        // seconds.  I'm not that patient.
         // _on_pull_down_ms = 0;  // N/A - standard chip cannot be powered on with pin
         // _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
         _disconnetTime_ms = 10000L;  // Wait with 10s time-out for sleep
@@ -170,9 +189,11 @@ bool loggerModem::setup(void)
     if (_modemName.indexOf("Neoway M590") >= 0)
     {
         MS_MOD_DBG(F("Using expected warm-up and disconnect timing for a Neoway M590\n"));
-        _warmUpTime_ms = 0; // ON/OFF pin should be held low as soon as power is applied
-        _indicatorTime_ms = 300;  // Time after end pulse until status pin becomes active (?? not specified)
-        _stabilizationTime_ms = 300;  // Time until UART is active
+        _warmUpTime_ms = 300; // ON/OFF pin can be held low when power is applied
+        // If the ON/OFF pin is not held low at time power is applied, wait at
+        // least 300ms before dropping it low to turn the module on
+        _indicatorTime_ms = 300;  // Time after end pulse until VCCIO becomes active
+        _stabilizationTime_ms = 300;  // Time until UART is active (300ms)
         // _on_pull_down_ms = 510;  // >300ms (>500ms recommended)
         // _off_pull_down_ms = 510;  // >300ms
         _disconnetTime_ms = 5000;  // power down (gracefully) takes ~5sec
@@ -182,7 +203,7 @@ bool loggerModem::setup(void)
         MS_MOD_DBG(F("Using expected warm-up and disconnect timing for a Quectel BG96\n"));
         _warmUpTime_ms = 30; // Time after VBAT is stable before PWRKEY can be used
         _indicatorTime_ms = 4800;  // Time after end pulse until status pin becomes active
-        _stabilizationTime_ms = 4900;  // USB active at >4.2 sec, status at >4.8 sec, URAT at >4.9
+        _stabilizationTime_ms = 4200;  // USB active at >4.2 sec, status at >4.8 sec, URAT at >4.9
         // _on_pull_down_ms = 110;  // >100ms
         // _off_pull_down_ms = 700;  // ≥ 650ms
         _disconnetTime_ms = 2000;  // > 2 sec
@@ -192,7 +213,7 @@ bool loggerModem::setup(void)
         MS_MOD_DBG(F("Using expected warm-up and disconnect timing for a Quectel M95\n"));
         _warmUpTime_ms = 30; // Time after VBAT is stable before PWRKEY can be used
         _indicatorTime_ms = 0;  // Time after end pulse until status pin becomes active (54ms after start of pulse)
-        _stabilizationTime_ms = 0;  // UART should respond as soon as PWRKEY pulse ends
+        _stabilizationTime_ms = 500;  // UART should respond as soon as PWRKEY pulse ends
         // _on_pull_down_ms = 2000;  // until either status key goes on, or > 1.0 sec (~2s)
         // _off_pull_down_ms = 700;  // 0.6s<Pulldown<1s
         _disconnetTime_ms = 2000;  // disconnect in 2-12 seconds
@@ -202,7 +223,7 @@ bool loggerModem::setup(void)
         MS_MOD_DBG(F("Using expected warm-up and disconnect timing for a Quectel MC60\n"));
         _warmUpTime_ms = 100; // Time after VBAT is stable before PWRKEY can be used
         _indicatorTime_ms = 0;  // Time after end pulse until status pin becomes active (54ms after start of pulse)
-        _stabilizationTime_ms = 0;  // UART should respond as soon as PWRKEY pulse ends
+        _stabilizationTime_ms = 500;  // UART should respond as soon as PWRKEY pulse ends
         // _on_pull_down_ms = 1100;  // >1s
         // _off_pull_down_ms = 700;  // 0.6s<Pulldown<1s
         _disconnetTime_ms = 2000;  // disconnect in 2-12 seconds
@@ -212,7 +233,7 @@ bool loggerModem::setup(void)
         MS_MOD_DBG(F("Using expected warm-up and disconnect timing for an AI-Thinker A6\n"));
         _warmUpTime_ms = 0; //??
         _indicatorTime_ms = 0;  // ??
-        _stabilizationTime_ms = 0;  // ??
+        _stabilizationTime_ms = 500;  // ??
         // _on_pull_down_ms = 2000;  // >2s
         // _off_pull_down_ms = 0;  // ??
         _disconnetTime_ms = 0;  // ??
@@ -237,33 +258,20 @@ bool loggerModem::setup(void)
 // There are so many ways to wake a modem that we're requiring an input function
 bool loggerModem::wake(void)
 {
-    // this will check for power and set timestamp and status bit
-    bool success = Sensor::wake();
+    // sensor::wake() checks if the power pin is on and sets the wake timestamp
+    // and status bits.  If it returns false, there's no reason to go on
+    if (!Sensor::wake()) return false;
 
-    // if the sensor::wake() failed, there's no power, so bail
-    if (!success) return success;
-
-    // Try the given wake function up to 5 times
-    uint32_t start = millis();
-    bool fxnSuccess = false;
-    int ntries = 0;
+    // Run the input wake function
     MS_MOD_DBG(F("Waking "), getSensorName());
-    while (!fxnSuccess && ntries < 5)
-    {
-        MS_MOD_DBG(F(" ("), ntries+1, F("): "));
-        start = millis();
-        fxnSuccess = _wakeFxn();
-        ntries++;
-    }
-    success &= fxnSuccess;
+    bool success = _wakeFxn();
 
-    // Before we quit, check the status pin
+    // Check the status pin
     // Only works if the status pin comes on immediately
-    if ((_dataPin >= 0 && start - millis() > _indicatorTime_ms &&
-         digitalRead(_dataPin) != _statusLevel))
+    if ((_dataPin >= 0 && _indicatorTime_ms == 0 && digitalRead(_dataPin) != _statusLevel))
     {
-        MS_MOD_DBG(F("It's been "), (start - millis()), F("ms, and status pin on "),
-              getSensorName(), F(" is "), digitalRead(_dataPin), F(" indicating it is off!\n"));
+        MS_MOD_DBG(F("Status pin on "), getSensorName(), F(" is "),
+                   digitalRead(_dataPin), F(" indicating it is off!\n"));
         success = false;
     }
 
@@ -316,7 +324,6 @@ bool loggerModem::startSingleMeasurement(void)
     // Only mark the measurement request time if it is
     if (bitRead(_sensorStatus, 3) && bitRead(_sensorStatus, 4) && _millisSensorActivated > 0)
     {
-
         // For the wifi modems, the SSID and password need to be set before they
         // can join a network.
         // For cellular modems, network registration (should) happen automatically.
@@ -365,13 +372,9 @@ bool loggerModem::addSingleMeasurementResult(void)
         // 4 byte response and then closes the connection
         if (_modemName.indexOf("XBee") >= 0)
         {
-            // Must ensure that we do not ping the daylight more than once every 4 seconds
-            // NIST clearly specifies here that this is a requirement for all software
-            /// that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi
-            while (millis() < _lastNISTrequest + 4000) {}
             MS_MOD_DBG(F("Connecting to NIST daytime server to check connection strength...\n"));
             IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
-            success &= openTCP(ip, 37);
+            success &= _tinyClient->connect(ip, 37);
             _tinyClient->print(F("Hi!"));  // Need to send something before connection is made
             delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
             while (_tinyClient->available()) _tinyClient->read();  // Delete anything returned
@@ -423,7 +426,7 @@ bool loggerModem::isStable(bool debug)
     if (!bitRead(_sensorStatus, 3) || !bitRead(_sensorStatus, 4) || _millisSensorActivated == 0)
     {
         if (debug) MS_MOD_DBG(getSensorName(),
-                F(" is not on and AT commands will not be attempted!\n"));
+                F(" did not wake; AT commands will not be attempted!\n"));
         return true;
     }
 
@@ -436,19 +439,23 @@ bool loggerModem::isStable(bool debug)
               getSensorName(), F(" is "), digitalRead(_dataPin),
               F(" indicating it is off.  AT commands will not be attempted!\n"));
         // Unset status bit 4 (wake up success) and _millisSensorActivated
+        // We unset these bits here because it's possible that a modem "passed"
+        // the wake command, but never really woke.  For sensors that take time
+        // before their status pin becomes active, (_indicatorTime_ms > 0) we
+        // don't know immediately that they failed to wake
         _millisSensorActivated = 0;
         _sensorStatus &= 0b11101111;
         return true;
     }
     // If the modem is now responding to AT commands, it's "stable"
-    else if (_tinyModem->testAT(100))
+    else if (_tinyModem->testAT(10))
     {
         if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
                getSensorName(), F(" is now responding to AT commands!\n"));
         return true;
     }
-    // If we've exceeded the time-out, give up
-    else if (elapsed_since_wake_up > MODEM_MAX_REPLY_TIME)
+    // If we've exceeded the documented time until UART should respond (plus 500ms buffer), give up
+    else if (elapsed_since_wake_up > (_stabilizationTime_ms + 500))
     {
         if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
                getSensorName(), F(" has maxed out wait for AT command reply!  Ending wait.\n"));
@@ -457,7 +464,8 @@ bool loggerModem::isStable(bool debug)
          _sensorStatus &= 0b11101111;
         return true;
     }
-    // If the modem isn't responding to AT commands yet, we still need to wait
+    // If the modem isn't responding to AT commands yet, but its status pin shows
+    // it's on and we haven't maxed out the response time, we still need to wait
     else return false;
 }
 
@@ -474,6 +482,14 @@ bool loggerModem::isMeasurementComplete(bool debug)
                F(" is not responding to AT commands; will not ask for signal strength!\n"));
         return true;
     }
+
+    // For XBee's, we need to open a socket before we get signal strentgh
+    // For ease, we're opening that socket to NIST
+    // Because NIST very clearly specifies that we may not ping more frequently
+    // than once every 4 seconds, we need to wait if it hasn't been that long.
+    // See:  https://tf.nist.gov/tf-cgi/servers.cgi
+    if (_modemName.indexOf("XBee") >= 0 && millis() - _lastNISTrequest < 4000)
+        return false;
 
     // Unlike most sensors where we're interested in the millis since measurement
     // was started for a measurement completion time, for the modem the only
@@ -493,7 +509,7 @@ bool loggerModem::isMeasurementComplete(bool debug)
                getSensorName(), F(" has maxed out wait for network registration!  Ending wait.\n"));
          // Unset status bit 6 (start measurement success) and _millisMeasurementRequested
          _millisMeasurementRequested = 0;
-         _sensorStatus &= 0b11101111;
+         _sensorStatus &= 0b10111111;
         return true;
     }
     // If the modem isn't registered yet, we still need to wait
@@ -519,7 +535,6 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
     if (bitRead(getStatus(), 0) == 0)  // NOT yet set up
     {
         MS_MOD_DBG(F("Modem has not yet been set up.  Running setup now.\n"));
-        waitForWarmUp();
         retVal &= setup();
     }
     if (!retVal)
@@ -528,7 +543,7 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
         return retVal;
     }
 
-    if (bitRead(getStatus(), 3) == 0)  // NOT yet awake/actively measuring
+    if (bitRead(getStatus(), 3) == 0)  // No attempts yet to wake the modem
     {
         waitForWarmUp();
         retVal &= wake();  // This sets the modem to on
@@ -541,15 +556,15 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
 
     // Check that the modem is responding to AT commands.  If not, give up.
     uint32_t start = millis();
-    MS_MOD_DBG(F("\nWaiting up to 5 seconds for "), getSensorName(), F(" to respond to AT commands...\n"));
-    if (!_tinyModem->testAT(5000))
+    MS_MOD_DBG(F("\nWaiting for "), getSensorName(), F(" to respond to AT commands...\n"));
+    if (!_tinyModem->testAT(_stabilizationTime_ms + 500))
     {
         MS_MOD_DBG(F("No response to AT commands! Cannot connect to the internet!\n"));
         return false;
     }
     else MS_MOD_DBG(F("   ... AT OK after "), millis() - start, F(" milliseconds!\n"));
 
-    if (_ssid)
+    if (_tinyModem->hasWifi())
     {
         MS_MOD_DBG(F("\nAttempting to connect to WiFi network...\n"));
         if (!(_tinyModem->isNetworkConnected()))
@@ -568,7 +583,7 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
                    F(" milliseconds!\n"));
         return true;
     }
-    else
+    else  // must be GPRS
     {
         MS_MOD_DBG(F("\nWaiting up to "), waitTime_ms/1000,
                    F(" seconds for cellular network registration...\n"));
@@ -590,13 +605,16 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
 void loggerModem::disconnectInternet(void)
 {
     uint32_t start = millis();
-    if (_tinyModem->hasGPRS() && _modemName.indexOf("XBee") < 0)  // XBee doesn't like to disconnect)
+    if (_tinyModem->hasGPRS() && _modemName.indexOf("XBee") < 0)  // XBee doesn't like to disconnect
     {
         _tinyModem->gprsDisconnect();
         MS_MOD_DBG(F("Disconnected from cellular network after "), millis() - start,
                    F(" milliseconds.\n"));
     }
     else if (_modemName.indexOf("XBee") < 0)  // XBee doesn't like to disconnect
+    // If you tell the XBee to disconnect, it will not reconnect to the same
+    // access point until it has been restarted or powered on and off.
+    // Since we may not have control of the power off, we just won't disconnect.
     {
         _tinyModem->networkDisconnect();
         MS_MOD_DBG(F("Disconnected from WiFi network after "), millis() - start,
@@ -606,6 +624,7 @@ void loggerModem::disconnectInternet(void)
 }
 
 
+/***
 int loggerModem::openTCP(const char *host, uint16_t port)
 {
     MS_MOD_DBG(F("Connecting to "), host, F("..."));
@@ -632,6 +651,7 @@ void loggerModem::closeTCP(void)
         _tinyClient->stop();
     MS_MOD_DBG(F("Closed TCP/IP.\n"));
 }
+***/
 
 
 void loggerModem::modemPowerUp(void)
@@ -657,11 +677,8 @@ void loggerModem::modemPowerUp(void)
 bool loggerModem::modemSleepPowerDown(void)
 {
     bool success = true;
-
-    MS_MOD_DBG(F("Turning "), getSensorName(), F(" off.\n"));
-     // Wait for any sending to complete
-    _tinyClient->flush();
     uint32_t start = millis();
+    MS_MOD_DBG(F("Turning "), getSensorName(), F(" off.\n"));
 
     // If there's a status pin available, check before running the sleep function
     if (_dataPin >= 0 && digitalRead(_dataPin) != _statusLevel)
@@ -735,11 +752,11 @@ uint32_t loggerModem::getNISTTime(void)
     if (_modemName.indexOf("XBee") >= 0)
     {
         IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
-        connectionMade = openTCP(ip, 37);  // XBee's address lookup falters on time.nist.gov
+        connectionMade = _tinyClient->connect(ip, 37);  // XBee's address lookup falters on time.nist.gov
         _tinyClient->print(F("Hi!"));  // Need to send something before connection is made
         delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
     }
-    else connectionMade = openTCP("time.nist.gov", 37);
+    else connectionMade = _tinyClient->connect("time.nist.gov", 37);
 
     // Wait up to 15 seconds for a response
     if (connectionMade)
@@ -767,7 +784,7 @@ uint32_t loggerModem::getNISTTime(void)
                        secFrom1900, String(secFrom1900, BIN));
 
             // Close the TCP connection, just in case
-            closeTCP();
+            _tinyClient->stop();
 
             // Return the timestamp
             uint32_t unixTimeStamp = secFrom1900 - 2208988800;
@@ -780,15 +797,10 @@ uint32_t loggerModem::getNISTTime(void)
         else
         {
             MS_MOD_DBG(F("NIST Time server did not respond!\n"));
-            // Close the TCP connection, just in case
-            closeTCP();
             return 0;
         }
     }
     else MS_MOD_DBG(F("Unable to open TCP to NIST!\n"));
-
-    // Close the TCP connection, just in case
-    closeTCP();
     return 0;
 }
 

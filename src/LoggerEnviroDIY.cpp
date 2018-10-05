@@ -216,7 +216,7 @@ int LoggerEnviroDIY::postDataEnviroDIY(String& enviroDIYjson)
     int did_respond = 0;
 
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
-    if(_logModem->openTCP("data.envirodiy.org", 80))
+    if(_logModem->_tinyClient->connect("data.envirodiy.org", 80))
     {
         // Send the request to the serial for debugging
         #if defined(STANDARD_SERIAL_OUTPUT)

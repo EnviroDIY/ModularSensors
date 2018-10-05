@@ -462,14 +462,13 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepF
 
 Once the modem has been set up, it has all the functions of sensor object.  These additional functions are available:
 
-- **connectInternet(uint32_t waitTime_ms = 50000L)** - Connects to the internet via WiFi or cellular network.  Returns true if connection is successful.  Decrease the wait time to save power.
-- **openTCP(const char host, uint16_t port)** - Makes a TCP connection to a host URL and port.  (The most common port for public URLs is "80"; if you don't know the port, try this first.)  Returns 1 if successful.
-- **openTCP(IPAddress ip, uint16_t port)** - Makes a TCP connection to a host ip address and port.  Returns 1 if successful.
-- **closeTCP()** - Breaks the TCP connection.
-- **disconnectInternet()** - Disconnects from the network, if applicable.
 - **modemPowerUp()** - Turns the modem on.  No return.
 - **modemSleepPowerDown()** - Runs the sleep function, waits for the status indicator to go off, then powers the modem down.  Returns true if successful.
+- **connectInternet(uint32_t waitTime_ms = 50000L)** - Connects to the internet via WiFi or cellular network.  Returns true if connection is successful.  Decrease the wait time to save power.
+- **disconnectInternet()** - Disconnects from the network, if applicable.
 - **getNISTTime()** - Returns the current Unix time stamp (_in UTC_) from NIST via the TIME protocol (rfc868).
+
+The internal TinyGSM modem and Client objects are also accessible within the loggerModem as \_tinyModem and \_tinyClient and retain all the functions of a TinyGSM modem and Arduino Client, respectively.
 
 As mentioned above, the cellular modems themselves are also sensors with the following variables:  (Temperature may be added at some point in the future.)
 

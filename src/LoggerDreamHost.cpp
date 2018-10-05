@@ -129,7 +129,7 @@ int LoggerDreamHost::postDataDreamHost(String& fullURL)
     int did_respond = 0;
 
     // Open a TCP/IP connection to DreamHost
-    if(_logModem->openTCP("swrcsensors.dreamhosters.com", 80))
+    if(_logModem->_tinyClient->connect("swrcsensors.dreamhosters.com", 80))
     {
         // Send the request to the serial for debugging
         #if defined(STANDARD_SERIAL_OUTPUT)

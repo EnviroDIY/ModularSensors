@@ -118,11 +118,11 @@ public:
     void disconnectInternet(void);
 
     // This has the same functionality as Client->connect with debugging text
-    int openTCP(const char *host, uint16_t port);
+    // int openTCP(const char *host, uint16_t port);
     // This has the same functionality as Client->connect with debugging text
-    int openTCP(IPAddress ip, uint16_t port);
+    // int openTCP(IPAddress ip, uint16_t port);
     // This has the same functionality as Client->close with debugging text
-    void closeTCP(void);
+    // void closeTCP(void);
     // Special sleep and power function for the modem
     void modemPowerUp(void);
     bool modemSleepPowerDown(void);
