@@ -175,15 +175,13 @@ bool MaximDS18::setup(void)
 // Because we put ourselves in ASYNC mode in setup, we don't have to wait for finish
 bool MaximDS18::startSingleMeasurement(void)
 {
-    // this will check that it's awake/active and set timestamp and status bit
-    bool success = Sensor::startSingleMeasurement();
-
-    // if the sensor::startSingleMeasurement() failed, bail
-    if (!success) return success;
+    // Sensor::startSingleMeasurement() checks that if it's awake/active and sets
+    // the timestamp and status bits.  If it returns false, there's no reason to go on.
+    if (!Sensor::startSingleMeasurement()) return false;
 
     // Send the command to get temperatures
     MS_DBG(F("Asking DS18 to take a measurement\n"));
-    success &= _internalDallasTemp.requestTemperaturesByAddress(_OneWireAddress);
+    bool success = _internalDallasTemp.requestTemperaturesByAddress(_OneWireAddress);
 
     if (success)
     {

@@ -258,8 +258,8 @@ bool loggerModem::setup(void)
 // There are so many ways to wake a modem that we're requiring an input function
 bool loggerModem::wake(void)
 {
-    // sensor::wake() checks if the power pin is on and sets the wake timestamp
-    // and status bits.  If it returns false, there's no reason to go on
+    // Sensor::wake() checks if the power pin is on and sets the wake timestamp
+    // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
 
     // Run the input wake function

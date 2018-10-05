@@ -351,7 +351,7 @@ void LoggerEnviroDIY::testingMode()
 // This calls all of the setup functions - must be run AFTER init
 void LoggerEnviroDIY::beginAndSync(void)
 {
-    // Set up pins for the LED's
+    // Set up pins for the LED and button
     if (_ledPin >= 0) pinMode(_ledPin, OUTPUT);
     if (_buttonPin >= 0) pinMode(_buttonPin, INPUT);
 

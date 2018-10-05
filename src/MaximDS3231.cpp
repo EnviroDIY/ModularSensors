@@ -42,11 +42,9 @@ void MaximDS3231::powerDown(void)
 // Sending the device a request to start temp conversion.
 bool MaximDS3231::startSingleMeasurement(void)
 {
-    // this will check that it's awake/active and set timestamp and status bit
-    bool success = Sensor::startSingleMeasurement();
-
-    // if the sensor::startSingleMeasurement() failed, bail
-    if (!success) return success;
+    // Sensor::startSingleMeasurement() checks that if it's awake/active and sets
+    // the timestamp and status bits.  If it returns false, there's no reason to go on.
+    if (!Sensor::startSingleMeasurement()) return false;
 
     // force a temperature sampling and conversion
     // this function already has a forced wait for the conversion to complete
@@ -54,7 +52,7 @@ bool MaximDS3231::startSingleMeasurement(void)
     MS_DBG(F("Forcing new temperature reading by DS3231\n"));
     rtc.convertTemperature(false);
 
-    return success;
+    return true;
 }
 
 

@@ -245,11 +245,9 @@ String SDI12Sensors::getSensorLocation(void)
 // Sending the command to get a concurrent measurement
 bool SDI12Sensors::startSingleMeasurement(void)
 {
-    // this will check that it's awake/active and set timestamp and status bit
-    bool success = Sensor::startSingleMeasurement();
-
-    // if the sensor::startSingleMeasurement() failed, bail
-    if (!success) return success;
+    // Sensor::startSingleMeasurement() checks that if it's awake/active and sets
+    // the timestamp and status bits.  If it returns false, there's no reason to go on.
+    if (!Sensor::startSingleMeasurement()) return false;
 
     String startCommand;
     String sdiResponse;
