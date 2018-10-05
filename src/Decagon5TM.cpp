@@ -56,7 +56,7 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         getDataCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
         _SDI12Internal.sendCommand(getDataCommand);
         delay(30);  // It just needs this little delay
-        MS_DBG(F("      >>> "), getDataCommand, F("\n"));
+        MS_DBG(F("      >>> "), getDataCommand, '\n');
 
         uint32_t startTime = millis();
         while (_SDI12Internal.available() < 3 && (millis() - startTime) < 1500) {}
@@ -82,7 +82,7 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         // String sdiResponse = _SDI12Internal.readStringUntil('\n');
         // sdiResponse.trim();
         // _SDI12Internal.clearBuffer();
-        // MS_DBG(F("      <<< "), sdiResponse, F("\n"));
+        // MS_DBG(F("      <<< "), sdiResponse, '\n');
 
         // Empty the buffer again
         _SDI12Internal.clearBuffer();
@@ -101,7 +101,7 @@ bool Decagon5TM::addSingleMeasurementResult(void)
 
     MS_DBG(F("Dialectric E: "), ea);
     MS_DBG(F(" Temperature: "), temp);
-    MS_DBG(F(" Volumetric Water Content: "), VWC, F("\n"));
+    MS_DBG(F(" Volumetric Water Content: "), VWC, '\n');
 
     verifyAndAddMeasurementResult(TM_EA_VAR_NUM, ea);
     verifyAndAddMeasurementResult(TM_TEMP_VAR_NUM, temp);

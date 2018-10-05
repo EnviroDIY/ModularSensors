@@ -110,7 +110,7 @@ void Sensor::powerUp(void)
     if (_powerPin >= 0)
     {
         MS_DBG(F("Powering "), getSensorName(), F(" at "), getSensorLocation(),
-               F(" with pin "), _powerPin, F("\n"));
+               F(" with pin "), _powerPin, '\n');
         digitalWrite(_powerPin, HIGH);
         // Mark the time that the sensor was powered
         _millisPowerOn = millis();
@@ -133,7 +133,7 @@ void Sensor::powerDown(void)
     if (_powerPin >= 0)
     {
         MS_DBG(F("Turning off power to "), getSensorName(), F(" at "),
-               getSensorLocation(), F(" with pin "), _powerPin, F("\n"));
+               getSensorLocation(), F(" with pin "), _powerPin, '\n');
         digitalWrite(_powerPin, LOW);
         // Unset the power-on time
         _millisPowerOn = 0;
@@ -179,7 +179,7 @@ bool Sensor::wake(void)
 {
     bool success = true;
     MS_DBG(F("Waking "), getSensorName(), F(" at "),
-           getSensorLocation(), F("\n"));
+           getSensorLocation(), '\n');
     // Set the status bit for sensor activation attempt (bit 3)
     // Setting this bit even if the activation failed, to show the attempt was made
     _sensorStatus |= 0b00001000;
@@ -284,7 +284,7 @@ void Sensor::notifyVariables(void)
             MS_DBG(F(" which is "));
             MS_DBG(variables[i]->getVarName());
             MS_DBG(F("...   "));
-            MS_DBG(F("\n"));
+            MS_DBG('\n');
             variables[i]->onSensorUpdate(this);
         }
         else MS_DBG(F("No variable registered for return value "), i,
@@ -356,7 +356,7 @@ void Sensor::averageMeasurements(void)
     {
         if (numberGoodMeasurementsMade[i] > 0)
             sensorValues[i] /=  numberGoodMeasurementsMade[i];
-        MS_DBG(F("    ->Result #"), i, F(": "), sensorValues[i], F("\n"));
+        MS_DBG(F("    ->Result #"), i, F(": "), sensorValues[i], '\n');
     }
 }
 

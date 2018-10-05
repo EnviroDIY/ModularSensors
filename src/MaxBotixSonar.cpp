@@ -84,7 +84,7 @@ bool MaxBotixSonar::wake(void)
     for(int i = 0; i < 6; i++)
     {
         String headerLine = _stream->readStringUntil('\r');
-        MS_DBG(i, F(" - "), headerLine, F("\n"));
+        MS_DBG(i, F(" - "), headerLine, '\n');
     }
     // Clear anything else out of the stream buffer
     int junkChars = _stream->available();
@@ -141,7 +141,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
             // "wait" for the measurement.
             result = _stream->parseInt();
             _stream->read();  // To throw away the carriage return
-            MS_DBG(F("Sonar Range: "), result, F("\n"));
+            MS_DBG(F("Sonar Range: "), result, '\n');
             rangeAttempts++;
 
             // If it cannot obtain a result , the sonar is supposed to send a value
@@ -153,7 +153,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
             // capable of reading 0, so we also know the 0 value is bad.
             if (result <= 300 || result == 500 || result == 4999 || result == 9999 || result == 0)
             {
-                MS_DBG(F("Bad or Suspicious Result, Retry Attempt #"), rangeAttempts, F("\n"));
+                MS_DBG(F("Bad or Suspicious Result, Retry Attempt #"), rangeAttempts, '\n');
                 result = -9999;
             }
             else

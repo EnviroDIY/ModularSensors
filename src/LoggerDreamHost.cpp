@@ -174,7 +174,7 @@ int LoggerDreamHost::postDataDreamHost(String& fullURL)
     else responseCode=504;
 
     PRINTOUT(F(" -- Response Code -- \n"));
-    PRINTOUT(responseCode, F("\n"));
+    PRINTOUT(responseCode, '\n');
 
     return responseCode;
 }

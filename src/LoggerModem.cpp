@@ -384,7 +384,7 @@ bool loggerModem::addSingleMeasurementResult(void)
         // Get signal quality
         MS_MOD_DBG(F("Getting signal quality:\n"));
         signalQual = _tinyModem->getSignalQuality();
-        MS_MOD_DBG(F("Raw signal quality: "), signalQual, F("\n"));
+        MS_MOD_DBG(F("Raw signal quality: "), signalQual, '\n');
 
         // Convert signal quality to RSSI, if necessary
         if ((_modemName.indexOf("XBee") >= 0 || _modemName.indexOf("ESP8266") >= 0)
@@ -399,8 +399,8 @@ bool loggerModem::addSingleMeasurementResult(void)
             percent = getPctFromCSQ(signalQual);
         }
 
-        MS_MOD_DBG(F("RSSI: "), rssi, F("\n"));
-        MS_MOD_DBG(F("Percent signal strength: "), percent, F("\n"));
+        MS_MOD_DBG(F("RSSI: "), rssi, '\n');
+        MS_MOD_DBG(F("Percent signal strength: "), percent, '\n');
     }
     else MS_MOD_DBG(getSensorName(), F(" is not connected to the network; unable to get signal quality!\n"));
 
@@ -658,7 +658,7 @@ void loggerModem::modemPowerUp(void)
 {
     if (_powerPin >= 0)
     {
-        MS_MOD_DBG(F("Powering "), getSensorName(), F(" with pin "), _powerPin, F("\n"));
+        MS_MOD_DBG(F("Powering "), getSensorName(), F(" with pin "), _powerPin, '\n');
         digitalWrite(_powerPin, HIGH);
         // Mark the time that the sensor was powered
         _millisPowerOn = millis();
@@ -712,7 +712,7 @@ bool loggerModem::modemSleepPowerDown(void)
     // Now power down
     if (_powerPin >= 0)
     {
-        MS_MOD_DBG(F("Turning off power to "), getSensorName(), F(" with pin "), _powerPin, F("\n"));
+        MS_MOD_DBG(F("Turning off power to "), getSensorName(), F(" with pin "), _powerPin, '\n');
         digitalWrite(_powerPin, LOW);
         // Unset the power-on time
         _millisPowerOn = 0;

@@ -100,13 +100,13 @@ bool MaximDS18::setup(void)
         }
         if (gotAddress)
         {
-            MS_DBG(F("Sensor found at "), makeAddressString(address), F("\n"));
+            MS_DBG(F("Sensor found at "), makeAddressString(address), '\n');
             for (int i = 0; i < 8; i++) _OneWireAddress[i] = address[i];
             _addressKnown = true;  // Now we know the address
         }
         else
         {
-            MS_DBG(F("Unable to find address for DS18 on pin "), _dataPin, F("\n"));
+            MS_DBG(F("Unable to find address for DS18 on pin "), _dataPin, '\n');
             // set the status error bit! (bit 7)
             _sensorStatus |= 0b10000000;
             return false;
@@ -118,7 +118,7 @@ bool MaximDS18::setup(void)
         if (!_internalDallasTemp.validAddress(_OneWireAddress))
         {
             MS_DBG(F("This sensor address is not valid: "));
-            MS_DBG(makeAddressString(_OneWireAddress), F("\n"));
+            MS_DBG(makeAddressString(_OneWireAddress), '\n');
             // set the status error bit! (bit 7)
             _sensorStatus |= 0b10000000;
             return false;
@@ -135,7 +135,7 @@ bool MaximDS18::setup(void)
         if (!madeConnection)
         {
             MS_DBG(F("This sensor is not currently connected: "));
-            MS_DBG(makeAddressString(_OneWireAddress), F("\n"));
+            MS_DBG(makeAddressString(_OneWireAddress), '\n');
             // set the status error bit! (bit 7)
             _sensorStatus |= 0b10000000;
             return false;
@@ -147,7 +147,7 @@ bool MaximDS18::setup(void)
     if (!_internalDallasTemp.setResolution(_OneWireAddress, 12))
     {
         MS_DBG(F("Unable to set the resolution of this sensor: "));
-        MS_DBG(makeAddressString(_OneWireAddress), F("\n"));
+        MS_DBG(makeAddressString(_OneWireAddress), '\n');
         // We're not setting the error bit if this fails because not all sensors
         // have variable resolution.
     }

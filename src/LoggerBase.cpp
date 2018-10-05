@@ -76,7 +76,7 @@ void Logger::setTimeZone(int8_t timeZone)
     if (_timeZone == 0) PRINTOUT(F("UTC\n"));
     else if (_timeZone > 0) PRINTOUT(F("UTC+"));
     else PRINTOUT(F("UTC"));
-    if (_timeZone != 0) PRINTOUT(_timeZone, F("\n"));
+    if (_timeZone != 0) PRINTOUT(_timeZone, '\n');
 }
 
 
@@ -95,7 +95,7 @@ void Logger::setTZOffset(int8_t offset)
         PRINTOUT(F("UTC+"));
     else PRINTOUT(F("UTC"));
     if ((_timeZone - _offset) != 0)
-        PRINTOUT(_timeZone - _offset, F("\n"));
+        PRINTOUT(_timeZone - _offset, '\n');
 }
 
 
@@ -208,7 +208,7 @@ bool Logger::syncRTClock(uint32_t nist)
     uint32_t nist_logTZ = nist + getTimeZone()*3600;
     uint32_t nist_rtcTZ = nist_logTZ - getTZOffset()*3600;
     MS_DBG(F("         Correct Time for Logger: "), nist_logTZ, F(" -> "), \
-        formatDateTime_ISO8601(nist_logTZ), F("\n"));
+        formatDateTime_ISO8601(nist_logTZ), '\n');
 
     // See how long it took to get the time from NIST
     int sync_time = (millis() - start_millis)/1000;
@@ -216,8 +216,8 @@ bool Logger::syncRTClock(uint32_t nist)
     // Check the current RTC time
     uint32_t cur_logTZ = getNowEpoch();
     MS_DBG(F("            Time Returned by RTC: "), cur_logTZ, F(" -> "), \
-        formatDateTime_ISO8601(cur_logTZ), F("\n"));
-    MS_DBG(F("Offset: "), abs(nist_logTZ - cur_logTZ), F("\n"));
+        formatDateTime_ISO8601(cur_logTZ), '\n');
+    MS_DBG(F("Offset: "), abs(nist_logTZ - cur_logTZ), '\n');
 
     // If the RTC and NIST disagree by more than 5 seconds, set the clock
     if ((abs(nist_logTZ - cur_logTZ) > 5) && (nist != 0))
@@ -255,25 +255,25 @@ bool Logger::checkInterval(void)
 {
     bool retval;
     uint32_t checkTime = getNowEpoch();
-    MS_DBG(F("Current Unix Timestamp: "), checkTime, F("\n"));
-    MS_DBG(F("Logging interval in seconds: "), (_loggingIntervalMinutes*60), F("\n"));
-    MS_DBG(F("Mod of Logging Interval: "), checkTime % (_loggingIntervalMinutes*60), F("\n"));
-    MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged, F("\n"));
-    MS_DBG(F("Mod of 120: "), checkTime % 120, F("\n"));
+    MS_DBG(F("Current Unix Timestamp: "), checkTime, '\n');
+    MS_DBG(F("Logging interval in seconds: "), (_loggingIntervalMinutes*60), '\n');
+    MS_DBG(F("Mod of Logging Interval: "), checkTime % (_loggingIntervalMinutes*60), '\n');
+    MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged, '\n');
+    MS_DBG(F("Mod of 120: "), checkTime % 120, '\n');
 
     if ((checkTime % (_loggingIntervalMinutes*60) == 0 ) or
         (_numTimepointsLogged < 10 and checkTime % 120 == 0))
     {
         // Update the time variables with the current time
         markTime();
-        MS_DBG(F("Time marked at (unix): "), markedEpochTime, F("\n"));
-        MS_DBG(F("    year: "), markedDateTime.year(), F("\n"));
-        MS_DBG(F("    month: "), markedDateTime.month(), F("\n"));
-        MS_DBG(F("    date: "), markedDateTime.date(), F("\n"));
-        MS_DBG(F("    hour: "), markedDateTime.hour(), F("\n"));
-        MS_DBG(F("    minute: "), markedDateTime.minute(), F("\n"));
-        MS_DBG(F("    second: "), markedDateTime.second(), F("\n"));
-        MS_DBG(F("Time marked at [char]: "), markedISO8601Time, F("\n"));
+        MS_DBG(F("Time marked at (unix): "), markedEpochTime, '\n');
+        MS_DBG(F("    year: "), markedDateTime.year(), '\n');
+        MS_DBG(F("    month: "), markedDateTime.month(), '\n');
+        MS_DBG(F("    date: "), markedDateTime.date(), '\n');
+        MS_DBG(F("    hour: "), markedDateTime.hour(), '\n');
+        MS_DBG(F("    minute: "), markedDateTime.minute(), '\n');
+        MS_DBG(F("    second: "), markedDateTime.second(), '\n');
+        MS_DBG(F("Time marked at [char]: "), markedISO8601Time, '\n');
         // Update the number of readings taken
         _numTimepointsLogged ++;
         MS_DBG(F("Time to log!\n"));
@@ -293,11 +293,11 @@ bool Logger::checkInterval(void)
 bool Logger::checkMarkedInterval(void)
 {
     bool retval;
-    MS_DBG(F("Marked Time: "), markedEpochTime, F("\n"));
-    MS_DBG(F("Logging interval in seconds: "), (_loggingIntervalMinutes*60), F("\n"));
-    MS_DBG(F("Mod of Logging Interval: "), markedEpochTime % (_loggingIntervalMinutes*60), F("\n"));
-    MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged, F("\n"));
-    MS_DBG(F("Mod of 120: "), markedEpochTime % 120, F("\n"));
+    MS_DBG(F("Marked Time: "), markedEpochTime, '\n');
+    MS_DBG(F("Logging interval in seconds: "), (_loggingIntervalMinutes*60), '\n');
+    MS_DBG(F("Mod of Logging Interval: "), markedEpochTime % (_loggingIntervalMinutes*60), '\n');
+    MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged, '\n');
+    MS_DBG(F("Mod of 120: "), markedEpochTime % 120, '\n');
 
     if (markedEpochTime != 0 &&
         ((markedEpochTime % (_loggingIntervalMinutes*60) == 0 ) or
@@ -656,7 +656,7 @@ bool Logger::initializeSDCard(void)
     else  // skip everything else if there's no SD card, otherwise it might hang
     {
         PRINTOUT(F("Successfully connected to SD Card with card/slave select on pin "));
-        PRINTOUT(_SDCardPin, F("\n"));
+        PRINTOUT(_SDCardPin, '\n');
         return true;
     }
 }
@@ -693,7 +693,7 @@ bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader
     // in the file.
     if (logFile.open(charFileName, O_WRITE | O_AT_END))
     {
-        MS_DBG(F("Opened existing file: "), filename, F("\n"));
+        MS_DBG(F("Opened existing file: "), filename, '\n');
         // Set access date time
         setFileTimestamp(logFile, T_ACCESS);
         return true;
@@ -703,7 +703,7 @@ bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader
         // Create and then open the file in write mode
         if (logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END))
         {
-            MS_DBG(F("Created new file: "), filename, F("\n"));
+            MS_DBG(F("Created new file: "), filename, '\n');
             // Set creation date time
             setFileTimestamp(logFile, T_CREATE);
             // Write out a header, if requested
@@ -726,14 +726,14 @@ bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader
         // Return false if we couldn't create the file
         else
         {
-            MS_DBG(F("Unable to create new file: "), filename, F("\n"));
+            MS_DBG(F("Unable to create new file: "), filename, '\n');
             return false;
         }
     }
     // Return false if we couldn't access the file (and were not told to create it)
     else
     {
-        MS_DBG(F("Unable to to write to file: "), filename, F("\n"));
+        MS_DBG(F("Unable to to write to file: "), filename, '\n');
         return false;
     }
 }
@@ -789,7 +789,7 @@ bool Logger::logToSD(String& filename, String& rec)
         logFile.println(rec);
         // Echo the line to the serial port
         PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/ \n"));
-        PRINTOUT(rec, F("\n"));
+        PRINTOUT(rec, '\n');
 
         // Set write/modification date time
         setFileTimestamp(logFile, T_WRITE);
@@ -903,7 +903,7 @@ void Logger::testingMode()
         _internalArray->updateAllSensors();
         // Print out the current logger time
         PRINTOUT(F("Current logger time is "));
-        PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
+        PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), '\n');
         PRINTOUT(F("    -----------------------\n"));
         // Print out the sensor data
         #if defined(STANDARD_SERIAL_OUTPUT)
@@ -945,7 +945,7 @@ void Logger::testingMode()
 
     // Print out the current time
     PRINTOUT(F("Current RTC time is: "));
-    PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
+    PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), '\n');
 
     PRINTOUT(F("Setting up logger "), _loggerID, F(" to record at "),
              _loggingIntervalMinutes, F(" minute intervals.\n"));

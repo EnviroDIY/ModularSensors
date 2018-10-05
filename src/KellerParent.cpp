@@ -82,7 +82,7 @@ void KellerParent::powerUp(void)
     if (_powerPin >= 0)
     {
         MS_DBG(F("Powering "), getSensorName(), F(" at "), getSensorLocation(),
-               F(" with pin "), _powerPin, F("\n"));
+               F(" with pin "), _powerPin, '\n');
         digitalWrite(_powerPin, HIGH);
         // Mark the time that the sensor was powered
         _millisPowerOn = millis();
@@ -90,7 +90,7 @@ void KellerParent::powerUp(void)
     if (_powerPin2 >= 0)
     {
         MS_DBG(F("Applying secondary power to "), getSensorName(), F(" at "), getSensorLocation(),
-               F(" with pin "), _powerPin2, F("\n"));
+               F(" with pin "), _powerPin2, '\n');
         digitalWrite(_powerPin2, HIGH);
     }
     if (_powerPin < 0 && _powerPin2 < 0)
@@ -109,7 +109,7 @@ void KellerParent::powerDown(void)
     if (_powerPin >= 0)
     {
         MS_DBG(F("Turning off power to "), getSensorName(), F(" at "),
-               getSensorLocation(), F(" with pin "), _powerPin, F("\n"));
+               getSensorLocation(), F(" with pin "), _powerPin, '\n');
         digitalWrite(_powerPin, LOW);
         // Unset the power-on time
         _millisPowerOn = 0;
@@ -117,7 +117,7 @@ void KellerParent::powerDown(void)
     if (_powerPin2 >= 0)
     {
         MS_DBG(F("Turning off secondary power to "), getSensorName(), F(" at "),
-               getSensorLocation(), F(" with pin "), _powerPin2, F("\n"));
+               getSensorLocation(), F(" with pin "), _powerPin2, '\n');
         digitalWrite(_powerPin2, LOW);
     }
     if (_powerPin < 0 && _powerPin2 < 0)
@@ -160,9 +160,9 @@ bool KellerParent::addSingleMeasurementResult(void)
         // For waterPressureBar, convert bar to millibar
         if (waterPressureBar != -9999) waterPressure_mBar = 1000*waterPressureBar;
 
-        MS_DBG(F("    Pressure_mbar:"), waterPressure_mBar, F("\n"));
-        MS_DBG(F("    Temp_C: "), waterTempertureC, F("\n"));
-        MS_DBG(F("    Height_m:"), waterDepthM, F("\n"));
+        MS_DBG(F("    Pressure_mbar:"), waterPressure_mBar, '\n');
+        MS_DBG(F("    Temp_C: "), waterTempertureC, '\n');
+        MS_DBG(F("    Height_m:"), waterDepthM, '\n');
     }
     else MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
          F(" is not currently measuring!\n"));

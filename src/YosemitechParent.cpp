@@ -166,7 +166,7 @@ void YosemitechParent::powerUp(void)
     if (_powerPin >= 0)
     {
         MS_DBG(F("Powering "), getSensorName(), F(" at "), getSensorLocation(),
-               F(" with pin "), _powerPin, F("\n"));
+               F(" with pin "), _powerPin, '\n');
         digitalWrite(_powerPin, HIGH);
         // Mark the time that the sensor was powered
         _millisPowerOn = millis();
@@ -174,7 +174,7 @@ void YosemitechParent::powerUp(void)
     if (_powerPin2 >= 0)
     {
         MS_DBG(F("Applying secondary power to "), getSensorName(), F(" at "),
-                getSensorLocation(), F(" with pin "), _powerPin2, F("\n"));
+                getSensorLocation(), F(" with pin "), _powerPin2, '\n');
         digitalWrite(_powerPin2, HIGH);
     }
     if (_powerPin < 0 && _powerPin2 < 0)
@@ -193,7 +193,7 @@ void YosemitechParent::powerDown(void)
     if (_powerPin >= 0)
     {
         MS_DBG(F("Turning off power to "), getSensorName(), F(" at "),
-               getSensorLocation(), F(" with pin "), _powerPin, F("\n"));
+               getSensorLocation(), F(" with pin "), _powerPin, '\n');
         digitalWrite(_powerPin, LOW);
         // Unset the power-on time
         _millisPowerOn = 0;
@@ -201,7 +201,7 @@ void YosemitechParent::powerDown(void)
     if (_powerPin2 >= 0)
     {
         MS_DBG(F("Turning off secondary power to "), getSensorName(), F(" at "),
-               getSensorLocation(), F(" with pin "), _powerPin2, F("\n"));
+               getSensorLocation(), F(" with pin "), _powerPin2, '\n');
         digitalWrite(_powerPin2, LOW);
     }
     if (_powerPin < 0 && _powerPin2 < 0)
@@ -256,10 +256,10 @@ bool YosemitechParent::addSingleMeasurementResult(void)
                 // For conductivity, convert mS/cm to µS/cm
                 if (Cond != -9999) Cond *= 1000;
 
-                MS_DBG(F("    "), sensor.getParameter(), F("\n"));
+                MS_DBG(F("    "), sensor.getParameter(), '\n');
                 MS_DBG(F("    "), DOmgL, F(", "), Turbidity, F(", "), Cond, F(", "),
                                   pH, F(", "), Temp, F(", "), ORP, F(", "),
-                                  Chlorophyll, F(", "), BGA, F("\n"));
+                                  Chlorophyll, F(", "), BGA, '\n');
 
                 // Put values into the array
                 verifyAndAddMeasurementResult(0, DOmgL);
@@ -293,13 +293,13 @@ bool YosemitechParent::addSingleMeasurementResult(void)
                 // For conductivity, convert mS/cm to µS/cm
                 if (_model == Y520 and parmValue != -9999) parmValue *= 1000;
 
-                MS_DBG(F("    "), sensor.getParameter(), F(": "), parmValue, F("\n"));
-                MS_DBG(F("    Temp: "), tempValue, F("\n"));
+                MS_DBG(F("    "), sensor.getParameter(), F(": "), parmValue, '\n');
+                MS_DBG(F("    Temp: "), tempValue, '\n');
 
                 // Not all sensors return a third value
                 if (_numReturnedVars > 2)
                 {
-                    MS_DBG(F("    Third: "), thirdValue, F("\n"));
+                    MS_DBG(F("    Third: "), thirdValue, '\n');
                 }
 
                 // Put values into the array

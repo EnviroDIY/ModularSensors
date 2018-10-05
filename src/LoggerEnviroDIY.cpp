@@ -262,7 +262,7 @@ int LoggerEnviroDIY::postDataEnviroDIY(String& enviroDIYjson)
     else responseCode=504;
 
     PRINTOUT(F(" -- Response Code -- \n"));
-    PRINTOUT(responseCode, F("\n"));
+    PRINTOUT(responseCode, '\n');
 
     return responseCode;
 }
@@ -304,7 +304,7 @@ void LoggerEnviroDIY::testingMode()
         _internalArray->updateAllSensors();
         // Print out the current logger time
         PRINTOUT(F("Current logger time is "));
-        PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
+        PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), '\n');
         PRINTOUT(F("    -----------------------\n"));
         // Print out the sensor data
         #if defined(STANDARD_SERIAL_OUTPUT)
@@ -364,7 +364,7 @@ void LoggerEnviroDIY::beginAndSync(void)
 
     // Print out the current time
     PRINTOUT(F("Current RTC time is: "));
-    PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), F("\n"));
+    PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), '\n');
 
     PRINTOUT(F("Setting up logger "), _loggerID, F(" to record at "),
              _loggingIntervalMinutes, F(" minute intervals.\n"));

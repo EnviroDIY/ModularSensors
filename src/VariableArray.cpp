@@ -512,7 +512,7 @@ bool VariableArray::completeUpdate(void)
             if (powerPins[j] == powerPins[i])
             {
                 lastPinVariable[i] = 0;
-                // MS_DBG(i, F(" isn't the last variable on pin, matches "), j, F("\n"));
+                // MS_DBG(i, F(" isn't the last variable on pin, matches "), j, '\n');
                 if (!lastSensorVariable[j]) nMeasurementsOnPin[j] = 0;
                 nMeasurementsOnPin[j] += nMeasurementsOnPin[i];
                 nMeasurementsOnPin[i] = 0;
