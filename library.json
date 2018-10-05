@@ -194,8 +194,9 @@
         },
         {
             "name": "Arduino-SDI-12_ExtInts",
-            "version": "https://github.com/EnviroDIY/Arduino-SDI-12.git#ExtInts",
-            "version_note": "=1.3.3",
+            "version": "https://github.com/EnviroDIY/Arduino-SDI-12.git#b6f2031d2875d386da3e0f080a21047247402341",
+            "version_branch": "https://github.com/EnviroDIY/Arduino-SDI-12.git#ExtInts",
+            "version_number": "=1.3.3",
             "note": "EnviroDIY SDI-12 Library, dependent on external library for interrupts",
             "authors": [
                 "Kevin M. Smith",
@@ -208,8 +209,9 @@
         },
         {
             "name": "KellerModbus",
-            "version": "https://github.com/EnviroDIY/KellerModbus.git",
-            "version_note": "=0.1.1",
+            "library id": "5439",
+            "url": "https://github.com/EnviroDIY/KellerModbus.git",
+            "version": "=0.1.1",
             "note": "Arduino library for communication with Keller pressure and water level sensors via Modbus.",
             "authors": [
                 "Anthony Aufdenkampe"
@@ -254,7 +256,7 @@
         },
         {
             "name": "TinyGSM",
-            "version": "https://github.com/EnviroDIY/TinyGSM.git",
+            "version": "https://github.com/EnviroDIY/TinyGSM.git#e0bac8d7dab34a416497377bd2c148e222fc6014",
             "version_note": "=0.4.4",
             "note": "A small Arduino library for GPRS modules.",
             "authors": [
