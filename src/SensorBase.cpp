@@ -137,15 +137,16 @@ void Sensor::powerDown(void)
         digitalWrite(_powerPin, LOW);
         // Unset the power-on time
         _millisPowerOn = 0;
+        // Unset the status bits for sensor power (bits 1 & 2),
+        // activation (bits 3 & 4), and measurement request (bits 5 & 6)
+        _sensorStatus &= 0b10000001;
     }
     else
     {
         MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation(),
                F(" is not controlled by this library.\n"));
+        // Do NOT unset any status bits or timestamps if we didn't really power down!
     }
-    // Unset the status bits for sensor power (bits 1 & 2),
-    // activation (bits 3 & 4), and measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10000001;
 }
 
 
@@ -211,13 +212,18 @@ bool Sensor::wake(void)
 // Does NOT power down the sensor!
 bool Sensor::sleep(void)
 {
-    MS_DBG(F("Putting "), getSensorName(), F(" at "),
-           getSensorLocation(), F(" to sleep\n"));
+    /***
+    MS_DBG(F("Putting "), getSensorName(), F(" at "), getSensorLocation(), F(" to sleep\n"));
     // Unset the activation time
     _millisSensorActivated = 0;
     // Unset the status bits for sensor activation (bits 3 & 4) and measurement
     // request (bits 5 & 6)
     _sensorStatus &= 0b10000111;
+    ***/
+    // If nothing needs to be done to make the sensor go to sleep, we'll leave
+    // the bits and time stamps set because running the sleep function doesn't
+    // do anything.  If the sensor has a power pin and it is powered down, then
+    // the activation/wake bits will be unset by the powerDown() function.
     return true;
 }
 

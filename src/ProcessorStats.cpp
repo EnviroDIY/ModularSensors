@@ -121,14 +121,6 @@ ProcessorStats::ProcessorStats(const char *version)
 String ProcessorStats::getSensorLocation(void) {return BOARD;}
 
 
-// Do nothing for the power down and sleep functions
-// We don't want the processor to go to sleep or power down with the sensors
-bool ProcessorStats::sleep(void)
-{return true;}
-void ProcessorStats::powerDown(void)
-{}
-
-
 #if defined(ARDUINO_ARCH_SAMD)
     extern "C" char *sbrk(int i);
 

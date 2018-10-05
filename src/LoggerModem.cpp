@@ -304,11 +304,7 @@ void loggerModem::powerDown(void)
 {
     MS_MOD_DBG(F("Skipping "), getSensorName(), F(" in sensor power down!\n"));
 }
-bool loggerModem::sleep(void)
-{
-    MS_MOD_DBG(F("Skipping "), getSensorName(), F(" in sensor sleep!\n"));
-    return true;
-}
+
 
 bool loggerModem::startSingleMeasurement(void)
 {
@@ -706,6 +702,9 @@ bool loggerModem::modemSleepPowerDown(void)
 
     // Unset the activation time
     _millisSensorActivated = 0;
+    // Unset the status bits for sensor activation (bits 3 & 4) and measurement
+    // request (bits 5 & 6)
+    _sensorStatus &= 0b10000111;
 
     // Now power down
     if (_powerPin >= 0)
@@ -714,14 +713,15 @@ bool loggerModem::modemSleepPowerDown(void)
         digitalWrite(_powerPin, LOW);
         // Unset the power-on time
         _millisPowerOn = 0;
+        // Unset the status bits for sensor power (bits 1 & 2),
+        // activation (bits 3 & 4), and measurement request (bits 5 & 6)
+        _sensorStatus &= 0b10000001;
     }
     else
     {
         MS_MOD_DBG(F("Power to "), getSensorName(), F(" is not controlled by this library.\n"));
+         // Do NOT unset the power status bits or timestamps if we didn't really power down!
     }
-    // Unset the status bits for sensor power (bits 1 & 2),
-    // activation (bits 3 & 4), and measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10000001;
 
     return success;
 }

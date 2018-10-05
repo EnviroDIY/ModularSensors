@@ -51,11 +51,6 @@ public:
 
     String getSensorLocation(void) override;
 
-    // Do nothing for the power down and sleep functions
-    // The clock never sleeps or powers down
-    bool sleep(void) override;
-    void powerDown(void) override;
-
     bool setup(void) override;
 
     bool startSingleMeasurement(void) override;

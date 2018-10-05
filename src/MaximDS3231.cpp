@@ -31,14 +31,6 @@ bool MaximDS3231::setup(void)
 }
 
 
-// Do nothing for the power down and sleep functions
-// The clock never sleeps or powers down
-bool MaximDS3231::sleep(void)
-{return true;}
-void MaximDS3231::powerDown(void)
-{}
-
-
 // Sending the device a request to start temp conversion.
 bool MaximDS3231::startSingleMeasurement(void)
 {

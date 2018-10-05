@@ -113,6 +113,9 @@ void KellerParent::powerDown(void)
         digitalWrite(_powerPin, LOW);
         // Unset the power-on time
         _millisPowerOn = 0;
+        // Unset the status bits for sensor power (bits 1 & 2),
+        // activation (bits 3 & 4), and measurement request (bits 5 & 6)
+        _sensorStatus &= 0b10000001;
     }
     if (_powerPin2 >= 0)
     {
@@ -124,10 +127,8 @@ void KellerParent::powerDown(void)
     {
         MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation(),
                F(" is not controlled by this library.\n"));
+        // Do NOT unset any status bits or timestamps if we didn't really power down!
     }
-    // Unset the status bits for sensor power (bits 1 & 2),
-    // activation (bits 3 & 4), and measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10000001;
 }
 
 
