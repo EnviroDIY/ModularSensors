@@ -549,7 +549,9 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
     }
 
     // Check that the modem is responding to AT commands.  If not, give up.
-    uint32_t start = millis();
+    #ifdef MODEM_DEBUGGING_SERIAL_OUTPUT
+        uint32_t start = millis();
+    #endif
     MS_MOD_DBG(F("\nWaiting for "), getSensorName(), F(" to respond to AT commands...\n"));
     if (!_tinyModem->testAT(_stabilizationTime_ms + 500))
     {
@@ -598,7 +600,9 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
 
 void loggerModem::disconnectInternet(void)
 {
-    uint32_t start = millis();
+    #ifdef MODEM_DEBUGGING_SERIAL_OUTPUT
+        uint32_t start = millis();
+    #endif
     if (_tinyModem->hasGPRS() && _modemName.indexOf("XBee") < 0)  // XBee doesn't like to disconnect
     {
         _tinyModem->gprsDisconnect();

@@ -16,6 +16,7 @@
 
 #include <Arduino.h>
 
+// #define MODEM_DEBUGGING_SERIAL_OUTPUT Serial
 // #define TINY_GSM_DEBUG Serial
 
 #define TINY_GSM_YIELD() { delay(1); }
