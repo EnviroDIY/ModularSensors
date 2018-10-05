@@ -115,10 +115,9 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
         _stream->read();
     }
 
-    // Check if BOTH a measurement start attempt was made (status bit 5 set)
-    // AND that attempt was successful (bit 6 set, _millisMeasurementRequested > 0)
-    // Only go on to get a result if it is
-    if (bitRead(_sensorStatus, 5) && bitRead(_sensorStatus, 6) && _millisMeasurementRequested > 0)
+    // Check a measurement was *successfully* started (status bit 6 set)
+    // Only go on to get a result if it was
+    if (bitRead(_sensorStatus, 6))
     {
         MS_DBG(F("Getting readings from MaxBotix on "), getSensorLocation(), '\n');
         while (success == false && rangeAttempts < 25)

@@ -50,10 +50,9 @@ bool AOSongAM2315::addSingleMeasurementResult(void)
     float humid_val = -9999;
     bool ret_val = false;
 
-    // Check if BOTH a measurement start attempt was made (status bit 5 set)
-    // AND that attempt was successful (bit 6 set, _millisMeasurementRequested > 0)
-    // Only go on to get a result if it is
-    if (bitRead(_sensorStatus, 5) && bitRead(_sensorStatus, 6) && _millisMeasurementRequested > 0)
+    // Check a measurement was *successfully* started (status bit 6 set)
+    // Only go on to get a result if it was
+    if (bitRead(_sensorStatus, 6))
     {
         MS_DBG(F("Getting values from "), getSensorName(), '\n');
         Adafruit_AM2315 am2315;  // create a sensor object

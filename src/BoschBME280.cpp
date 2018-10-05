@@ -129,10 +129,9 @@ bool BoschBME280::addSingleMeasurementResult(void)
     float press = -9999;
     float alt = -9999;
 
-    // Check if BOTH a measurement start attempt was made (status bit 5 set)
-    // AND that attempt was successful (bit 6 set, _millisMeasurementRequested > 0)
-    // Only go on to get a result if it is
-    if (bitRead(_sensorStatus, 5) && bitRead(_sensorStatus, 6) && _millisMeasurementRequested > 0)
+    // Check a measurement was *successfully* started (status bit 6 set)
+    // Only go on to get a result if it was
+    if (bitRead(_sensorStatus, 6))
     {
         // Read values
         MS_DBG(F("Getting values from BME280\n"));
