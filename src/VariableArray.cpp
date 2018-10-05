@@ -72,8 +72,8 @@ bool VariableArray::setupSensors(void)
     // successfully power up the sensors, it saves us all of the waitForWarmup()
     // time and prevents the power from flickering on and off during setup in
     // cases where many sensors are powered on the same circuit.
-    MS_DBG(F("Powering up sensors for setup.\n"));
-    sensorsPowerUp();
+    // MS_DBG(F("Powering up sensors for setup.\n"));
+    // sensorsPowerUp();
 
     // Now run all the set-up functions
     MS_DBG(F("Running setup functions.\n"));
@@ -130,7 +130,7 @@ bool VariableArray::setupSensors(void)
     }
 
     // Power down all sensor;
-    sensorsPowerDown();
+    // sensorsPowerDown();
 
     // Now attach all of the variables to their parents
     // MS_DBG(F("Attaching variables to their parent sensors.\n"));
