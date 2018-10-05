@@ -38,8 +38,10 @@
 
 #define ADS1115_ADDRESS (0x48) // 1001 000 (ADDR = GND)
 
-#define OBS3_NUM_VARIABLES 1  // low and high range are treated as completely independent
-#define OBS3_WARM_UP_TIME_MS 2  // Actually warm-up time of ADC
+// low and high range are treated as completely independent, so only 1 "variable"
+#define OBS3_NUM_VARIABLES 1
+// Using the warm-up time of the ADS1115
+#define OBS3_WARM_UP_TIME_MS 2
 #define OBS3_STABILIZATION_TIME_MS 2000
 #define OBS3_MEASUREMENT_TIME_MS 100
 

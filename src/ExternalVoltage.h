@@ -48,9 +48,11 @@
 #define ADS1115_ADDRESS (0x48) // 1001 000 (ADDR = GND)
 
 #define EXT_VOLT_NUM_VARIABLES 1
-#define EXT_VOLT_WARM_UP_TIME_MS 2  // Actually warm-up time of ADC
-#define EXT_VOLT_STABILIZATION_TIME_MS 1  // Unknown!
-#define EXT_VOLT_MEASUREMENT_TIME_MS 1  // Unknown!
+// Using the warm-up time of the ADS1115
+#define EXT_VOLT_WARM_UP_TIME_MS 2
+// Assume a voltage is instantly ready
+#define EXT_VOLT_STABILIZATION_TIME_MS 0
+#define EXT_VOLT_MEASUREMENT_TIME_MS 0
 
 #define EXT_VOLT_VAR_NUM 0
 #define EXT_VOLT_RESOLUTION 5

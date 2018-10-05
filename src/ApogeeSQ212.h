@@ -43,9 +43,11 @@
 #define ADS1115_ADDRESS (0x48) // 1001 000 (ADDR = GND)
 
 #define SQ212_NUM_VARIABLES 1
-#define SQ212_WARM_UP_TIME_MS 2  // Actually warm-up time of ADC
-#define SQ212_STABILIZATION_TIME_MS 2  // Unknown!
-#define SQ212_MEASUREMENT_TIME_MS 2  // Unknown!
+// Using the warm-up time of the ADS1115
+#define SQ212_WARM_UP_TIME_MS 2
+// These times are not known!
+#define SQ212_STABILIZATION_TIME_MS 2
+#define SQ212_MEASUREMENT_TIME_MS 2
 
 #define SQ212_PAR_VAR_NUM 0
 #define SQ212_PAR_RESOLUTION 2
