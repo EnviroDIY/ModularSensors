@@ -78,24 +78,21 @@ bool YosemitechParent::setup(void)
 // Different from the standard in that it waits for warm up and starts measurements
 bool YosemitechParent::wake(void)
 {
-    // this will check for power and set timestamp and status bit
-    bool success = Sensor::wake();
-
-    // if the sensor::wake() failed, there's no power, so bail
-    if (!success) return success;
+    // sensor::wake() checks if the power pin is on and sets the wake timestamp
+    // and status bits.  If it returns false, there's no reason to go on
+    if (!Sensor::wake()) return false;
 
     // Send the command to begin taking readings, trying up to 5 times
-    bool startSuccess = false;
+    bool success = false;
     int ntries = 0;
     MS_DBG(F("Start Measurement on "), getSensorName(), F(" at "),
            getSensorLocation());
-    while (!startSuccess && ntries < 5)
+    while (!success && ntries < 5)
     {
         MS_DBG(F(" ("), ntries+1, F("): "));
-        startSuccess = sensor.startMeasurement();
+        success = sensor.startMeasurement();
         ntries++;
     }
-    success &= startSuccess;
 
     if(success)
     {

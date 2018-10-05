@@ -86,11 +86,9 @@ bool BoschBME280::setup(void)
 
 bool BoschBME280::wake(void)
 {
-    // this will check for power and set timestamp and status bit
-    bool success = Sensor::wake();
-
-    // if the sensor::wake() failed, there's no power, so bail
-    if (!success) return success;
+    // sensor::wake() checks if the power pin is on and sets the wake timestamp
+    // and status bits.  If it returns false, there's no reason to go on
+    if (!Sensor::wake()) return false;
 
     // Restart always needed after power-up
     // As of Adafruit library version 1.0.7, this function includes all of the
@@ -117,7 +115,7 @@ bool BoschBME280::wake(void)
                              Adafruit_BME280::STANDBY_MS_1000);  // sleep time between measurements (N/A in forced mode)
     delay(100);  // Need this delay after changing sampling mode
 
-    return success;
+    return true;
 }
 
 

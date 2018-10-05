@@ -61,11 +61,9 @@ bool MaxBotixSonar::setup(void)
 // Parsing and tossing the header lines in the wake-up
 bool MaxBotixSonar::wake(void)
 {
-    // this will check for power and set timestamp and status bit
-    bool success = Sensor::wake();
-
-    // if the sensor::wake() failed, there's no power, so bail
-    if (!success) return success;
+    // sensor::wake() checks if the power pin is on and sets the wake timestamp
+    // and status bits.  If it returns false, there's no reason to go on
+    if (!Sensor::wake()) return false;
 
     // NOTE: After the power is turned on to the MaxBotix, it sends several lines
     // of header to the serial port, beginning at ~65ms and finising at ~160ms.
@@ -97,7 +95,7 @@ bool MaxBotixSonar::wake(void)
         _stream->read();
     }
 
-    return success;
+    return true;
 }
 
 
