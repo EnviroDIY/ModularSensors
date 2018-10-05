@@ -39,7 +39,7 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
-#include <ProcessorStats.h>
+#include <sensors/ProcessorStats.h>
 
 const long serialBaud = 115200;   // Baud rate for the primary serial port for debugging
 const int8_t greenLED = 8;        // MCU pin for the green LED (-1 if not applicable)
@@ -283,7 +283,7 @@ Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-e
 // ==========================================================================
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
-#include <MaximDS3231.h>
+#include <sensors/MaximDS3231.h>
 // Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
 // Create the temperature variable object for the DS3231 and return a variable-type pointer to it
@@ -298,7 +298,7 @@ AltSoftSerial modbusSerial;
 // ==========================================================================
 //    Yosemitech Y504 Dissolved Oxygen Sensor
 // ==========================================================================
-#include <YosemitechY504.h>
+#include <sensors/YosemitechY504.h>
 byte y504ModbusAddress = 0x04;  // The modbus address of the Y504
 const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
@@ -317,7 +317,7 @@ Variable *y504Temp = new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-123
 // ==========================================================================
 //    Yosemitech Y511 Turbidity Sensor with Wiper
 // ==========================================================================
-#include <YosemitechY511.h>
+#include <sensors/YosemitechY511.h>
 byte y511ModbusAddress = 0x1A;  // The modbus address of the Y511
 // const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 // const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
@@ -333,7 +333,7 @@ Variable *y511Temp = new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-123
 // ==========================================================================
 //    Yosemitech Y514 Chlorophyll Sensor
 // ==========================================================================
-#include <YosemitechY514.h>
+#include <sensors/YosemitechY514.h>
 byte y514ModbusAddress = 0x14;  // The modbus address of the Y514
 // const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 // const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
@@ -349,7 +349,7 @@ Variable *y514Temp = new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-123
 // ==========================================================================
 //    Yosemitech Y520 Conductivity Sensor
 // ==========================================================================
-#include <YosemitechY520.h>
+#include <sensors/YosemitechY520.h>
 byte y520ModbusAddress = 0x20;  // The modbus address of the Y520
 // const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 // const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)

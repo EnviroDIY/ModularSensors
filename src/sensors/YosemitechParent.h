@@ -22,7 +22,7 @@
 // #define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
-#include "SensorBase.h"
+#include "../SensorBase.h"
 #include <YosemitechModbus.h>
 
 // The main class for the Yosemitech Sensors

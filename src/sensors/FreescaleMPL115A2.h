@@ -30,7 +30,7 @@
 #include "ModSensorDebugger.h"
 
 
-#include "SensorBase.h"
+#include "../SensorBase.h"
 #include "VariableBase.h"
 #include <Adafruit_MPL115A2.h>
 

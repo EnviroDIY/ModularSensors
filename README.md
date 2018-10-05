@@ -184,7 +184,7 @@ These functions are also available for each sensor, but should be used with caut
 To access and get values from a sensor, you must create an instance of the sensor class you are interested in using its constructor.  Each variable has different parameters that you must specify; these are described below within the section for each sensor.  You must then create a new instance for each _variable_, and reference a pointer to the parent sensor in the constructor.  Many variables can (and should) call the same parent sensor.  The variables are specific to the individual sensor because each sensor collects data and returns data in a unique way.  The constructors are all best called outside of the "setup()" or "loop()" functions.  The setup functions are then called (sensor, then variables) in the main "setup()" function and the update() and getValues() are called in the loop().  A very simple program to get data from a Decagon CTD might be something like:
 
 ```cpp
-#include <DecagonCTD.h>
+#include <sensors/DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const uint8_t measurementsToAverage = 10;  // The number of readings to average
 const int SDI12Data = 7;  // The pin the CTD is attached to
@@ -654,7 +654,7 @@ The AOSong AM2315 and [CM2311](http://www.aosong.com/en/products/details.asp?id=
 The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average:
 
 ```cpp
-#include <AOSongAM2315.h>
+#include <sensors/AOSongAM2315.h>
 // Create and return the AM2315 sensor object
 AOSongAM2315 am2315(I2CPower, measurementsToAverage);
 ```
@@ -681,7 +681,7 @@ This module will work with an AOSong [DHT11/CHT11](http://www.aosong.com/en/prod
 The Arduino pin controlling power on/off, the Arduino pin receiving data, and the sensor type are required for the sensor constructor.  The number of readings to average is optional:
 
 ```cpp
-#include <AOSongDHT.h>/
+#include <sensors/AOSongDHT.h>/
 // Create and return the DHT sensor object
 AOSongDHT dht(DHTPower, DHTPin, dhtType, measurementsToAverage);
 ```
@@ -711,7 +711,7 @@ This library will work with the Apogee SQ-212 and SQ-212 analog quantum light se
 The Arduino pin controlling power on/off and the analog data pin _on the TI ADS1115_ are required for the sensor constructor.  If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the third argument.
 
 ```cpp
-#include <ApogeeSQ212.h>
+#include <sensors/ApogeeSQ212.h>
 // Create and return the Apogee SQ-212 sensor object
 ApogeeSQ212 SQ212(SQ212Power, SQ212Data, ADS1x15_i2cAddress, measurementsToAverage);
 ```
@@ -734,7 +734,7 @@ Although this sensor has the option of either I2C or SPI communication, this lib
 The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex is optional as is the number of readings to average:
 
 ```cpp
-#include <BoschBME280.h>
+#include <sensors/BoschBME280.h>
 // Create and return the Bosch BME280 sensor object
 BoschBME280 bme280(I2CPower, i2cAddressHex, measurementsToAverage);
 ```
@@ -773,7 +773,7 @@ Note that to access both the high and low range returns, two instances must be c
 The main constructor for the sensor object is (called once each for high and low range):
 
 ```cpp
-#include <CampbellOBS3.h>
+#include <sensors/CampbellOBS3.h>
 // Create and return the low-range sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_x2_coeff_A, OBSLow_x1_coeff_B, OBSLow_x0_coeff_C, ADS1x15_i2cAddress, measurementsToAverage);
 // Create the high-range sensor object
@@ -818,7 +818,7 @@ Keep in mind that SDI12 is a slow communication protocol (only 1200 baud) and _A
 The main constructor for the sensor object is:
 
 ```cpp
-#include <Decagon5TM.h>
+#include <sensors/Decagon5TM.h>
 // Create and return the Decagon 5TM sensor object
 Decagon5TM fivetm(TMSDI12address, SDI12Power, SDI12Data, measurementsToAverage);
 ```
@@ -847,7 +847,7 @@ The Meter Environmental Hydros 21 has the same type of connections and communica
 The main constructor for the sensor object is:
 
 ```cpp
-#include <DecagonCTD.h>
+#include <sensors/DecagonCTD.h>
 // Create and return the Decagon CTD sensor object
 DecagonCTD ctd(CTDSDI12address, SDI12Power, SDI12Data, measurementsToAverage);
 ```
@@ -878,7 +878,7 @@ _NOTE:  Decagon Devices has become Meter Environmental and no longer sells this 
 The main constructor for the sensor object is:
 
 ```cpp
-#include <DecagonES2.h>
+#include <sensors/DecagonES2.h>
 // Create and return the Decagon ES2 sensor object
 DecagonES2 es2(ES2SDI12address, SDI12Power, SDI12Data, measurementsToAverage);
 ```
@@ -904,7 +904,7 @@ The TI ADS1115 ADD is a high resolution ADS that communicates with the board via
 The Arduino pin controlling power on/off and the analog data pin _on the TI ADS1115_ are required for the sensor constructor.  If using a voltage divider to increase the measurable voltage range, enter the gain multiplier as the third argument.  If your ADD converter is not at the standard address of 0x48, you can enter its actual address as the fourth argument.  The number of measurements to average, if more than one is desired, goes as the fifth argument.
 
 ```cpp
-#include <ExternalVoltage.h>
+#include <sensors/ExternalVoltage.h>
 // Create and return the voltage sensor
 ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, ADS1x15_i2cAddress, measurementsToAverage);
 ```
@@ -945,7 +945,7 @@ This library supports using multiple MaxBotix sensors on the same logger, with a
 The main constructor for the sensor object is:  (The trigger pin and number of readings to average are optional.)
 
 ```cpp
-#include <MaxBotixSonar.h>
+#include <sensors/MaxBotixSonar.h>
 // Create and return the Maxbotix sonar sensor object;
 MaxBotixSonar sonar(sonarStream, SonarPower, SonarTrigger, measurementsToAverage);
 ```
@@ -976,7 +976,7 @@ The OneWire hex address of the sensor, the Arduino pin controlling power on/off,
 The main constructor for the sensor object is:
 
 ```cpp
-#include <MaximDS18.h>
+#include <sensors/MaximDS18.h>
 // Create and return a Maxim DS18 sensor object - address known
 MaximDS18 ds18(OneWireAddress, powerPin, dataPin, measurementsToAverage);
 ```
@@ -984,7 +984,7 @@ MaximDS18 ds18(OneWireAddress, powerPin, dataPin, measurementsToAverage);
 _If and only if you have exactly one sensor attached on your OneWire pin or bus_, you can use this constructor to save yourself the trouble of finding the address:
 
 ```cpp
-#include <MaximDS18.h>
+#include <sensors/MaximDS18.h>
 // Create and return a Maxim DS18 sensor object - address NOT known
 MaximDS18 ds18(powerPin, dataPin, measurementsToAverage);
 ```
@@ -1007,7 +1007,7 @@ The I2C [Maxim DS3231](https://www.maximintegrated.com/en/products/digital/real-
 The only argument for the constructor is the number of readings to average, as the RTC requires constant power and is connected via I2C:
 
 ```cpp
-#include <MaximDS3231.h>
+#include <sensors/MaximDS3231.h>
 // Create and return the DS3231 sensor object
 MaximDS3231 ds3231(measurementsToAverage);
 ```
@@ -1030,7 +1030,7 @@ These sensors come in several different pressure ranges.  The maximum measurable
 The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex and maximum pressure are optional as is the number of readings to average:
 
 ```cpp
-#include <MeaSpecMS5803.h>
+#include <sensors/MeaSpecMS5803.h>
 // Create and return the MeaSpec MS5803 sensor object
 MeaSpecMS5803 ms5803(I2CPower, i2cAddressHex, maxPressure, measurementsToAverage);
 ```
@@ -1062,7 +1062,7 @@ The MPL115A2 communicates with the board via I2C.  Because this sensor can have 
 The only input needed for the sensor constructor is the Arduino pin controlling power on/off and optionally the number of readings to average:
 
 ```cpp
-#include <FreescaleMPL115A2.h>
+#include <sensors/FreescaleMPL115A2.h>
 // Create and return the Freescale MPL115A2 sensor object
 MPL115A2 mpl115a2(I2CPower, measurementsToAverage);
 ```
@@ -1085,7 +1085,7 @@ This module is for use with a simple external I2C tipping bucket counter.  This 
 All constructor arguments are optional, but the first argument is for the I2C address of the tip counter (if not 0x08) and the second is for the depth of rain (in mm) per tip event (if not 0.2mm).  Most metric tipping buckets are calibrated to have 1 tip per 0.2mm of rain.  Most English tipping buckets are calibrated to have 1 tip per 0.01" of rain, which is 0.254mm.  Note that you cannot input a number of measurements to average because averaging does not make sense with this kind of counted variable.
 
 ```cpp
-#include <RainCounterI2C.h>
+#include <sensors/RainCounterI2C.h>
 // Create and return the rain counter sensor object
 RainCounterI2C tip(RainCounterI2CAddress, depthPerTipEvent);
 ```
@@ -1109,7 +1109,7 @@ Digital communication with Keller sensors configured for SDI12 communication pro
 The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, ```Serial```), and one or two power pins.  The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.  (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.) Please see the section "[Notes on Arduino Streams and Software Serial](#SoftwareSerial)" for more information about what streams can be used along with this library.  In tests on these sensors, SoftwareSerial_ExtInts _did not work_ to communicate with these sensors, because it isn't stable enough.  AltSoftSerial and HardwareSerial work fine.  Two power pins are provided so that the RS485 adapter and the sensor can be powered separately.  If the power to both are controlled by the same pin, use -1 for the second power pin or omit the argument.  If they are controlled by different pins _and no other sensors are dependent on power from either pin_ then the order of the pins doesn't matter.  If the RS485 adapter and the sensor are controlled by different pins _and any other sensors are controlled by the same pins_ you should put the shared pin first and the un-shared pin second.  Both pins _cannot_ be shared pins.
 
 ```cpp
-#include <KellerAcculevel.h>
+#include <sensors/KellerAcculevel.h>
 // Create and return the Keller AccuLevel sensor object
 KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, powerPin1, powerPin2, max485EnablePin, acculevelNumberReadings);
 ```
@@ -1154,7 +1154,7 @@ The various sensor and variable constructors are:  (UUID and customVarCode are o
 
 ```cpp
 // Dissolved Oxygen Sensor
-#include <YosemitechY504.h>  // Use this for both the Y502-A and Y504-A
+#include <sensors/YosemitechY504.h>  // Use this for both the Y502-A and Y504-A
 // Create and return the Y504 DO sensor object
 YosemitechY504 y504(y504ModbusAddress, modbusSerial, powerPin1, powerPin2, max485EnablePin, measurementsToAverage);
 // Create the dissolved oxygen percent, dissolved oxygen concentration, and temperature variable objects for the Y504 and return variable-type pointers to them
@@ -1174,7 +1174,7 @@ Variable *y504Temp = new YosemitechY504_Temp(&y504, "UUID", "customVarCode");  /
 
 ```cpp
 // Turbidity Sensor without wiper
-#include <YosemitechY510.h>  // Use this for the Y510-B
+#include <sensors/YosemitechY510.h>  // Use this for the Y510-B
 // Create and return the Y510-B turbidity sensor object
 YosemitechY510 y510(y510ModbusAddress, modbusSerial, powerPin1, powerPin2, max485EnablePin, measurementsToAverage);
 // Create the turbidity and temperature variable objects for the Y510 and return variable-type pointers to them
@@ -1190,7 +1190,7 @@ Variable *y510Temp = new YosemitechY510_Temp(&y510, "UUID", "customVarCode");  /
 
 ```cpp
 // Turbidity Sensor with wiper
-#include <YosemitechY511.h>  // Use this for the Y511-A
+#include <sensors/YosemitechY511.h>  // Use this for the Y511-A
 // Create and return the Y511-A turbidity sensor object
 YosemitechY511 y511(y511ModbusAddress, modbusSerial, powerPin1, powerPin2, max485EnablePin, measurementsToAverage);
 // Create the turbidity and temperature variable objects for the Y511 and return variable-type pointers to them
@@ -1206,7 +1206,7 @@ Variable *y511Temp = new YosemitechY511_Temp(&y511, "UUID", "customVarCode");  /
 
 ```cpp
 // Chlorophyll Sensor
-#include <YosemitechY514.h>
+#include <sensors/YosemitechY514.h>
 // Create and return the Y514 chlorophyll sensor object
 YosemitechY514 y514(y514ModbusAddress, modbusSerial, powerPin1, powerPin2, max485EnablePin, measurementsToAverage);
 // Create the chlorophyll concentration and temperature variable objects for the Y514 and return variable-type pointers to them
@@ -1222,7 +1222,7 @@ Variable *y514Temp = new YosemitechY514_Temp(&y514, "UUID", "customVarCode");  /
 
 ```cpp
 // Conductivity Sensor
-#include <YosemitechY520.h>
+#include <sensors/YosemitechY520.h>
 // Create and return the Y520 conductivity sensor object
 YosemitechY520 y520(y520ModbusAddress, modbusSerial, powerPin1, powerPin2, max485EnablePin, measurementsToAverage);
 // Create the specific conductance and temperature variable objects for the Y520 and return variable-type pointers to them
@@ -1238,7 +1238,7 @@ Variable *y520Temp = new YosemitechY520_Temp(&y520, "UUID", "customVarCode");  /
 
 ```cpp
 // pH Sensor
-#include <YosemitechY532.h>
+#include <sensors/YosemitechY532.h>
 // Create and return the Y532 pH sensor object
 YosemitechY532 y532(y532ModbusAddress, modbusSerial, powerPin1, powerPin2, max485EnablePin, measurementsToAverage);
 // Create the pH, voltage, and temperature variable objects for the Y532 and return variable-type pointers to them
@@ -1258,7 +1258,7 @@ Variable *y532Temp = new YosemitechY532_Temp(&y532, "UUID", "customVarCode");  /
 
 ```cpp
 // ORP Sensor
-#include <YosemitechY533.h>
+#include <sensors/YosemitechY533.h>
 // Create and return the Y533 ORP sensor object
 YosemitechY533 y533(y533ModbusAddress, modbusSerial, powerPin1, powerPin2, max485EnablePin, measurementsToAverage);
 // Create the pH, voltage, and temperature variable objects for the Y533 and return variable-type pointers to them
@@ -1278,7 +1278,7 @@ Variable *y533Temp = new YosemitechY533_Temp(&y533, "UUID", "customVarCode");  /
 
 ```cpp
 // COD/UV254 Sensor
-#include <YosemitechY550.h>
+#include <sensors/YosemitechY550.h>
 // Create and return the Y5550 COD/UV254 sensor object
 YosemitechY550 y550(y550ModbusAddress, modbusSerial, powerPin1, powerPin2, max485EnablePin, measurementsToAverage);
 // Create the COD, turbidity, and temperature variable objects for the Y550 and return variable-type pointers to them
@@ -1298,7 +1298,7 @@ Variable *y550Temp = new YosemitechY550_Temp(&y550, "UUID", "customVarCode");  /
 
 ```cpp
 // Multiparameter Sonde
-#include <YosemitechY4000.h>
+#include <sensors/YosemitechY4000.h>
 // Create and return the Y4000 multiparameter sonde sensor object
 YosemitechY4000 y4000(YosemitechY4000, modbusSerial, modbusPower, max485EnablePin, measurementsToAverage);
 // Create all of the variable objects for the Y4000 and return variable-type pointers to them
@@ -1354,7 +1354,7 @@ Keep in mind that SDI12 is a slow communication protocol (only 1200 baud) and _A
 The main constructor for the sensor object is:
 
 ```cpp
-#include <ZebraTechDOpto.h>
+#include <sensors/ZebraTechDOpto.h>
 // Create and return the Zebra-Tech D-Optop sensor object
 ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data, measurementsToAverage);
 ```
@@ -1380,7 +1380,7 @@ The processor can return the amount of RAM it has available and, for some boards
 The main constructor for the sensor object is:
 
 ```cpp
-#include <ProcessorStats.h>
+#include <sensors/ProcessorStats.h>
 // Create and return the processor "sensor"
 ProcessorStats mayfly(MFVersion, measurementsToAverage);
 ```

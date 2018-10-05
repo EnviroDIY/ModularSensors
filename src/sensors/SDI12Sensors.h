@@ -24,7 +24,7 @@
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
-#include "SensorBase.h"
+#include "../SensorBase.h"
 #include <SDI12_ExtInts.h>
 
 // The main class for the Decagon CTD

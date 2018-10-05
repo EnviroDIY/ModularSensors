@@ -24,7 +24,7 @@
 // #define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
-#include "SensorBase.h"
+#include "../SensorBase.h"
 #include <KellerModbus.h>
 
 #define KELLER_NUM_VARIABLES 3

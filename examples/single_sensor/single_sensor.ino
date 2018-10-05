@@ -27,7 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Maxbotix HRXL
 // ==========================================================================
-#include <MaxBotixSonar.h>
+#include <sensors/MaxBotixSonar.h>
 
 // Define a serial port for receiving data - in this case, using software serial
 // Because the standard software serial library uses interrupts that conflict

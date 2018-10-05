@@ -39,7 +39,7 @@
 #include "ModSensorDebugger.h"
 
 
-#include "SensorBase.h"
+#include "../SensorBase.h"
 #include "VariableBase.h"
 #include <Adafruit_BME280.h>
 

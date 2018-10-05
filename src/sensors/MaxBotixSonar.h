@@ -21,7 +21,7 @@
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
-#include "SensorBase.h"
+#include "../SensorBase.h"
 #include "VariableBase.h"
 
 #define HRXL_NUM_VARIABLES 1

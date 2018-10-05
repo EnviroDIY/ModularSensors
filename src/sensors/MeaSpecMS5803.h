@@ -50,7 +50,7 @@
 #include "ModSensorDebugger.h"
 
 
-#include "SensorBase.h"
+#include "../SensorBase.h"
 #include "VariableBase.h"
 #include "MS5803.h"
 

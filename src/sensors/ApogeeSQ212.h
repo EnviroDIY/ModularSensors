@@ -37,7 +37,7 @@
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #include "ModSensorDebugger.h"
 
-#include "SensorBase.h"
+#include "../SensorBase.h"
 #include "VariableBase.h"
 
 #define ADS1115_ADDRESS (0x48) // 1001 000 (ADDR = GND)
