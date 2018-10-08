@@ -62,7 +62,7 @@ public:
     DecagonCTD(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
     DecagonCTD(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
     // Destructor
-    ~DecagonCTD(){}
+    ~DecagonCTD();
 };
 
 
