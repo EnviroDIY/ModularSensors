@@ -19,7 +19,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerEnviroDIY.h>
 
 
 // ==========================================================================
@@ -90,7 +89,7 @@ const long ModemBaud = 9600;
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
 TinyGsm *tinyModem = new TinyGsm(ModemSerial);
 
-// // Use this if you want to spy on modem communication
+// Use this if you want to spy on modem communication
 // #include <StreamDebugger.h>
 // StreamDebugger modemDebugger(Serial1, Serial);
 // TinyGsm *tinyModem = new TinyGsm(modemDebugger);
@@ -262,12 +261,13 @@ const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
 
 // Create the loggerModem instance
+#include <loggerModem.h>
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 #if defined(TINY_GSM_MODEM_ESP8266)
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
 #elif defined(TINY_GSM_MODEM_XBEE)
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
-// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
+// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
 #elif defined(TINY_GSM_MODEM_UBLOX)
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
 #else
@@ -365,6 +365,7 @@ Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-123
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
+#include <VariableArray.h>
 
 // Put all of the variable pointers into an Array
 // NOTE:  Since we've created all of the variable pointers above, we can just
@@ -390,6 +391,7 @@ int variableCount_complete = sizeof(variableList_complete) / sizeof(variableList
 // Create the VariableArray object
 VariableArray arrayComplete(variableCount_complete, variableList_complete);
 // Create the new logger instance
+#include <LoggerEnviroDIY.h>
 LoggerEnviroDIY loggerComplete(LoggerID, loggingInterval, sdCardPin, wakePin, &arrayComplete);
 
 

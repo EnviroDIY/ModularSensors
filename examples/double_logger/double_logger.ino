@@ -95,11 +95,13 @@ const bool modemStatusLevel = HIGH;  // The level of the status pin when the mod
 bool wakeFxn(void)
 {
     digitalWrite(modemSleepRqPin, LOW);
+    digitalWrite(redLED, HIGH);  // Because the XBee doesn't have any lights
     return true;
 }
 bool sleepFxn(void)
 {
     digitalWrite(modemSleepRqPin, HIGH);
+    digitalWrite(redLED, LOW);
     return true;
 }
 

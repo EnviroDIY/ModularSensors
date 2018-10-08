@@ -19,7 +19,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerEnviroDIY.h>
 
 
 // ==========================================================================
@@ -90,7 +89,7 @@ const long ModemBaud = 9600;
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
 TinyGsm *tinyModem = new TinyGsm(ModemSerial);
 
-// // Use this if you want to spy on modem communication
+// Use this if you want to spy on modem communication
 // #include <StreamDebugger.h>
 // StreamDebugger modemDebugger(Serial1, Serial);
 // TinyGsm *tinyModem = new TinyGsm(modemDebugger);
@@ -264,6 +263,7 @@ const char *wifiPwd = "phone970";  // The password for connecting to WiFi, unnec
 // const char *wifiPwd = "W4171n843";  // The password for connecting to WiFi, unnecessary for gprs
 
 // Create the loggerModem instance
+#include <loggerModem.h>
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 #if defined(TINY_GSM_MODEM_ESP8266)
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
@@ -432,6 +432,7 @@ Variable *calcCorrDepth = new Variable(calculateWaterDepthTempCorrected, rhoDept
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
+#include <VariableArray.h>
 // Put all of the variable pointers into an Array
 // NOTE:  Since we've created all of the variable pointers above, we can just
 // reference them by name here.
@@ -457,6 +458,7 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
 // Create a new logger instance
+#include <LoggerEnviroDIY.h>
 LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
@@ -563,7 +565,11 @@ void setup()
     EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Begin the logger
-    EnviroDIYLogger.begin();
+    mayfly.update();
+    Serial.print("Battery: ");
+    Serial.println(mayflyBatt->getValue());
+    if (mayflyBatt->getValue() > 3.7) EnviroDIYLogger.beginAndSync();
+    else EnviroDIYLogger.begin();
 }
 
 
@@ -573,5 +579,8 @@ void setup()
 void loop()
 {
     // Log the data
-    EnviroDIYLogger.log();
+    if (mayflyBatt->getValue() > 3.7)
+    // This will check against the battery level at the previous logging interval!
+        EnviroDIYLogger.logAndSend();
+    else EnviroDIYLogger.log();
 }

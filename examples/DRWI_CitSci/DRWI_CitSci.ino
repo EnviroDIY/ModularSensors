@@ -235,7 +235,6 @@ void setup()
     digitalWrite(sensorPowerPin, LOW);
 
     // Set up the sleep/wake pin for the modem and put it's inital value as "off"
-
     pinMode(modemSleepRqPin, OUTPUT);
     digitalWrite(modemSleepRqPin, LOW);
 
