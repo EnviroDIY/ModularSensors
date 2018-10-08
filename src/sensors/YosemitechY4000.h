@@ -69,10 +69,12 @@
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines
-#define Y504_NUM_VARIABLES 3
-#define Y504_WARM_UP_TIME_MS 375
-#define Y504_STABILIZATION_TIME_MS 8000
-#define Y504_MEASUREMENT_TIME_MS 1700
+#define Y4000_NUM_VARIABLES 8
+#define Y4000_WARM_UP_TIME_MS 1600
+// Time for communication to begin
+#define Y4000_STABILIZATION_TIME_MS 60000L
+// Y4000 Modbus manual says 60s; we find Cond takes about that long to respond.
+#define Y4000_MEASUREMENT_TIME_MS 3000
 
 #define Y4000_DOMGL_RESOLUTION 2
 #define Y4000_DOMGL_VAR_NUM 0

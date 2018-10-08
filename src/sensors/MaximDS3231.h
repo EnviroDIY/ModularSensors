@@ -47,7 +47,7 @@ public:
     // Only input is the number of readings to average
     MaximDS3231(uint8_t measurementsToAverage = 1);
     // Destructor
-    ~MaximDS3231(){}
+    ~MaximDS3231();
 
     String getSensorLocation(void) override;
 
