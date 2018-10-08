@@ -17,7 +17,7 @@
  * Reset time is < 480 µs
  */
 
-#include "sensors/MaximDS18.h"
+#include "MaximDS18.h"
 
 
 // The constructor - if the hex address is known - also need the power pin and the data pin

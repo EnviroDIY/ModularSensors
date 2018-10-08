@@ -15,7 +15,7 @@
  * https://github.com/EnviroDIY/KellerModbus
 */
 
-#include "sensors//KellerParent.h"
+#include "KellerParent.h"
 
 // The constructor - need the sensor type, modbus address, power pin, stream for data, and number of readings to average
 KellerParent::KellerParent(byte modbusAddress, Stream* stream,

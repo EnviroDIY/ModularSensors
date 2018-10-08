@@ -33,7 +33,7 @@
  * Assume sensor is immediately stable
 */
 
-#include "sensors/MeaSpecMS5803.h"
+#include "MeaSpecMS5803.h"
 
 
 // The constructor - because this is I2C, only need the power pin

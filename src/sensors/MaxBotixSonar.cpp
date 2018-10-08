@@ -11,7 +11,7 @@
  * Warm up time to completion of header:  160ms
  */
 
-#include "sensors/MaxBotixSonar.h"
+#include "MaxBotixSonar.h"
 
 
 MaxBotixSonar::MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin, uint8_t measurementsToAverage)

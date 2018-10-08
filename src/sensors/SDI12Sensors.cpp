@@ -11,7 +11,7 @@
 #define LIBCALL_ENABLEINTERRUPT  // To prevent compiler/linker crashes
 #include <EnableInterrupt.h>  // To handle external and pin change interrupts
 
-#include "sensors//SDI12Sensors.h"
+#include "SDI12Sensors.h"
 
 
 // The constructor - need the number of measurements the sensor will return, SDI-12 address, the power pin, and the data pin

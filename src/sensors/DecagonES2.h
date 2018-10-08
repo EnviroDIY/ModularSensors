@@ -50,11 +50,23 @@ class DecagonES2 : public SDI12Sensors
 {
 public:
     // Constructors with overloads
-    DecagonES2(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
-    DecagonES2(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
-    DecagonES2(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
+    DecagonES2(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                    "DecagonES2", ES2_NUM_VARIABLES,
+                    ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
+    {}
+    DecagonES2(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                    "DecagonES2", ES2_NUM_VARIABLES,
+                    ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
+    {}
+    DecagonES2(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                    "DecagonES2", ES2_NUM_VARIABLES,
+                    ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
+    {}
     // Destructor
-    ~DecagonES2();
+    ~DecagonES2(){}
 };
 
 

@@ -58,9 +58,21 @@ class DecagonCTD : public SDI12Sensors
 {
 public:
     // Constructors with overloads
-    DecagonCTD(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
-    DecagonCTD(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
-    DecagonCTD(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
+    DecagonCTD(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                    "DecagonCTD", CTD_NUM_VARIABLES,
+                    CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
+    {}
+    DecagonCTD(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                    "DecagonCTD", CTD_NUM_VARIABLES,
+                    CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
+    {}
+    DecagonCTD(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                    "DecagonCTD", CTD_NUM_VARIABLES,
+                    CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
+    {}
     // Destructor
     ~DecagonCTD();
 };

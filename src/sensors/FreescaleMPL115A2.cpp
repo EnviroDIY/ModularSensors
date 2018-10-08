@@ -21,7 +21,7 @@
  * Assume sensor is immediately stable
 */
 
-#include "sensors/FreescaleMPL115A2.h"
+#include "FreescaleMPL115A2.h"
 
 
 // The constructor - because this is I2C, only need the power pin

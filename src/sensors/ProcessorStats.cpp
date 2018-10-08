@@ -12,7 +12,7 @@
  * If the processor is awake, it's ready to take a reading.
 */
 
-#include "sensors/ProcessorStats.h"
+#include "ProcessorStats.h"
 
 // EnviroDIY boards
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)

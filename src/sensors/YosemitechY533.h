@@ -62,14 +62,22 @@ class YosemitechY533 : public YosemitechParent
 public:
     // Constructors with overloads
     YosemitechY533(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
+                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                        Y533, "YosemitechY533", Y533_NUM_VARIABLES,
+                        Y533_WARM_UP_TIME_MS, Y533_STABILIZATION_TIME_MS, Y533_MEASUREMENT_TIME_MS)
+    {}
     YosemitechY533(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
-    ~YosemitechY533();
+                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                        Y533, "YosemitechY533", Y533_NUM_VARIABLES,
+                        Y533_WARM_UP_TIME_MS, Y533_STABILIZATION_TIME_MS, Y533_MEASUREMENT_TIME_MS)
+    {}
+    ~YosemitechY533(){}
 };
 
 
-// Defines the pH variable
+// Defines the pH Variable
 class YosemitechY533_pH : public Variable
 {
 public:

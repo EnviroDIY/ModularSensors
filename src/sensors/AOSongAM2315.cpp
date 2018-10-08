@@ -20,7 +20,7 @@
  *
  * Warm up/stability/re-sampling time: 2sec
 */
-#include "sensors/AOSongAM2315.h"
+#include "AOSongAM2315.h"
 #include <Adafruit_AM2315.h>
 
 
