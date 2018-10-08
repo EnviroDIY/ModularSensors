@@ -13,7 +13,7 @@
  * https://github.com/EnviroDIY/YosemitechModbus
 */
 
-#include "YosemitechParent.h"
+#include "sensors//YosemitechParent.h"
 
 // The constructor - need the sensor type, modbus address, power pin, stream for data, and number of readings to average
 YosemitechParent::YosemitechParent(byte modbusAddress, Stream* stream,

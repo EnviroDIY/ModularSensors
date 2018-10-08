@@ -1,5 +1,5 @@
 /*
- *YosemitechY514.h
+ *YosemitechY514.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -28,39 +28,25 @@
  * Time between "StartMeasurement" command and stable reading - 8sec
 */
 
-// Header Guards
-#ifndef YosemitechY514_h
-#define YosemitechY514_h
+#include "sensors/YosemitechY514.h"
 
-// Included Dependencies
-#include "VariableBase.h"
-#include "sensors/YosemitechParent.h"
-
-// Sensor Specific Defines
-#define Y514_NUM_VARIABLES 2
-#define Y514_WARM_UP_TIME_MS 1300
-#define Y514_STABILIZATION_TIME_MS 8000
-#define Y514_MEASUREMENT_TIME_MS 2000
-
-#define Y514_CHLORO_RESOLUTION 1
-#define Y514_CHLORO_VAR_NUM 0
-
-#define Y514_TEMP_RESOLUTION 1
-#define Y514_TEMP_VAR_NUM 1
-
-// The main class for the Decagon Y514
-class YosemitechY514 : public YosemitechParent
-{
-public:
-    // Constructors with overloads
-    YosemitechY514(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
-    YosemitechY514(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
-    ~YosemitechY514();
-};
+// Constructors with overloads
+YosemitechY514::YosemitechY514(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2,
+                               int8_t enablePin, uint8_t measurementsToAverage)
+  : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                    Y514, "YosemitechY514", Y514_NUM_VARIABLES,
+                    Y514_WARM_UP_TIME_MS, Y514_STABILIZATION_TIME_MS, Y514_MEASUREMENT_TIME_MS)
+{}
+YosemitechY514::YosemitechY514(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2,
+                               int8_t enablePin, uint8_t measurementsToAverage)
+  : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                    Y514, "YosemitechY514", Y514_NUM_VARIABLES,
+                    Y514_WARM_UP_TIME_MS, Y514_STABILIZATION_TIME_MS, Y514_MEASUREMENT_TIME_MS)
+{}
+YosemitechY514::~YosemitechY514(){}
 
 
+/***
 // Defines the Chlorophyll Concentration
 class YosemitechY514_Chlorophyll : public Variable
 {
@@ -89,4 +75,4 @@ public:
     {}
     ~YosemitechY514_Temp(){}
 };
-#endif  // Header Guard
+***/

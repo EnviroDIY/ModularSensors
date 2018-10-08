@@ -26,7 +26,7 @@
 */
 
 
-#include "CampbellOBS3.h"
+#include "sensors/CampbellOBS3.h"
 #include <Adafruit_ADS1015.h>
 
 

@@ -1,5 +1,5 @@
 /*
- *DecagonES2.h
+ *DecagonES2.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -25,39 +25,28 @@
  * Maximum measurement duration: 250ms
 */
 
-// Header Guards
-#ifndef DecagonES2_h
-#define DecagonES2_h
+#include "sensors/DecagonES2.h"
 
-// Included Dependencies
-#include "VariableBase.h"
-#include "sensors/SDI12Sensors.h"
+// Constructors with overloads
+DecagonES2::DecagonES2(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
+  : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                "DecagonES2", ES2_NUM_VARIABLES,
+                ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
+{}
+DecagonES2::DecagonES2(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
+  : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                "DecagonES2", ES2_NUM_VARIABLES,
+                ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
+{}
+DecagonES2::DecagonES2(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
+  : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                "DecagonES2", ES2_NUM_VARIABLES,
+                ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
+{}
+// Destructor
+DecagonES2::~DecagonES2(){}
 
-// Sensor Specific Defines
-#define ES2_NUM_VARIABLES 2
-#define ES2_WARM_UP_TIME_MS 250
-#define ES2_STABILIZATION_TIME_MS 0
-#define ES2_MEASUREMENT_TIME_MS 250
-
-#define ES2_COND_RESOLUTION 0
-#define ES2_COND_VAR_NUM 0
-
-#define ES2_TEMP_RESOLUTION 1
-#define ES2_TEMP_VAR_NUM 1
-
-// The main class for the Decagon ES-2
-class DecagonES2 : public SDI12Sensors
-{
-public:
-    // Constructors with overloads
-    DecagonES2(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
-    DecagonES2(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
-    DecagonES2(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
-    // Destructor
-    ~DecagonES2();
-};
-
-
+/***
 // Defines the Conductivity Variable
 class DecagonES2_Cond : public Variable
 {
@@ -83,5 +72,4 @@ public:
     {}
     ~DecagonES2_Temp(){}
 };
-
-#endif  // Header Guard
+***/

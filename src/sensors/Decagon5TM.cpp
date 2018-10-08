@@ -26,7 +26,29 @@
  * Maximum measurement duration: 200ms
 */
 
-#include "Decagon5TM.h"
+#include "sensors/Decagon5TM.h"
+
+// Constructors with overloads
+Decagon5TM::Decagon5TM(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
+  : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                "Decagon5TM", TM_NUM_VARIABLES,
+                TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
+{}
+Decagon5TM::Decagon5TM(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
+  : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                "Decagon5TM", TM_NUM_VARIABLES,
+                TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
+{}
+Decagon5TM(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
+  : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                "Decagon5TM", TM_NUM_VARIABLES,
+                TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
+{}
+
+
+// Destructor
+Decagon5TM::~Decagon5TM(){}
+
 
 bool Decagon5TM::addSingleMeasurementResult(void)
 {

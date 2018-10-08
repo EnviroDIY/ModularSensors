@@ -1,5 +1,5 @@
 /*
- *YosemitechY520.h
+ *YosemitechY520.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -28,39 +28,26 @@
  * Time between "StartMeasurement" command and stable reading - 10sec
 */
 
-// Header Guards
-#ifndef YosemitechY520_h
-#define YosemitechY520_h
+#include "sensors/YosemitechY520.h"
 
-// Included Dependencies
-#include "VariableBase.h"
-#include "sensors/YosemitechParent.h"
-
-// Sensor Specific Defines
-#define Y504_NUM_VARIABLES 3
-#define Y504_WARM_UP_TIME_MS 375
-#define Y504_STABILIZATION_TIME_MS 8000
-#define Y504_MEASUREMENT_TIME_MS 1700
-
-#define Y520_COND_RESOLUTION 1
-#define Y520_COND_VAR_NUM 0
-
-#define Y520_TEMP_RESOLUTION 1
-#define Y520_TEMP_VAR_NUM 1
-
-// The main class for the Decagon Y520
-class YosemitechY520 : public YosemitechParent
-{
-public:
-    // Constructors with overloads
-    YosemitechY520(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
-    YosemitechY520(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
-    ~YosemitechY520();
+// Constructors with overloads
+YosemitechY520::YosemitechY520(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2,
+                               int8_t enablePin, uint8_t measurementsToAverage)
+  : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                    Y520, "YosemitechY520", Y520_NUM_VARIABLES,
+                    Y520_WARM_UP_TIME_MS, Y520_STABILIZATION_TIME_MS, Y520_MEASUREMENT_TIME_MS)
+{}
+YosemitechY520::YosemitechY520(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2,
+                               int8_t enablePin, uint8_t measurementsToAverage)
+  : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                    Y520, "YosemitechY520", Y520_NUM_VARIABLES,
+                    Y520_WARM_UP_TIME_MS, Y520_STABILIZATION_TIME_MS, Y520_MEASUREMENT_TIME_MS)
+{}
+YosemitechY520::~YosemitechY520(){}
 };
 
 
+/***
 // Defines the Conductivity
 class YosemitechY520_Cond : public Variable
 {
@@ -87,5 +74,4 @@ public:
     {}
     ~YosemitechY520_Temp(){}
 };
-
-#endif  // Header Guard
+***/

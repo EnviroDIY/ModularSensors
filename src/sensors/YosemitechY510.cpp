@@ -1,5 +1,5 @@
 /*
- *YosemitechY510.h
+ *YosemitechY510.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -31,35 +31,24 @@
 #ifndef YosemitechY510_h
 #define YosemitechY510_h
 
-// Included Dependencies
-#include "VariableBase.h"
-#include "sensors/YosemitechParent.h"
+#include "sensors/YosemitechY510.h"
 
-// Sensor Specific Defines
-#define Y510_NUM_VARIABLES 2
-#define Y510_WARM_UP_TIME_MS 500
-#define Y510_STABILIZATION_TIME_MS 22000
-#define Y510_MEASUREMENT_TIME_MS 1700
+// Constructors with overloads
+YosemitechY510::YosemitechY510(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2,
+                               int8_t enablePin, uint8_t measurementsToAverage)
+  : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                    Y510, "YosemitechY510", Y510_NUM_VARIABLES,
+                    Y510_WARM_UP_TIME_MS, Y510_STABILIZATION_TIME_MS, Y510_MEASUREMENT_TIME_MS)
+{}
+YosemitechY510::YosemitechY510(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2,
+                               int8_t enablePin, uint8_t measurementsToAverage)
+  : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                    Y510, "YosemitechY510", Y510_NUM_VARIABLES,
+                    Y510_WARM_UP_TIME_MS, Y510_STABILIZATION_TIME_MS, Y510_MEASUREMENT_TIME_MS)
+{}
+YosemitechY510::~YosemitechY510(){}
 
-#define Y510_TURB_RESOLUTION 2
-#define Y510_TURB_VAR_NUM 0
-
-#define Y510_TEMP_RESOLUTION 1
-#define Y510_TEMP_VAR_NUM 1
-
-// The main class for the Decagon Y510
-class YosemitechY510 : public YosemitechParent
-{
-public:
-    // Constructors with overloads
-    YosemitechY510(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
-    YosemitechY510(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
-    ~YosemitechY510();
-};
-
-
+/***
 // Defines the Turbidity
 class YosemitechY510_Turbidity : public Variable
 {
@@ -86,5 +75,4 @@ public:
     {}
     ~YosemitechY510_Temp(){}
 };
-
-#endif  // Header Guard
+***/

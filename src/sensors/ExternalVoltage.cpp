@@ -33,7 +33,7 @@
 */
 
 
-#include "ExternalVoltage.h"
+#include "sensors/ExternalVoltage.h"
 #include <Adafruit_ADS1015.h>
 
 

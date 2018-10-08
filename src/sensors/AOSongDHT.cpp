@@ -23,7 +23,7 @@
  * Warm up/sampling time: 1.7sec
 */
 
-#include "AOSongDHT.h"
+#include "sensors/AOSongDHT.h"
 
 
 // The constructor - need the power pin, data pin, and type of DHT

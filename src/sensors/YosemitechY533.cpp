@@ -1,5 +1,5 @@
 /*
- *YosemitechY533.h
+ *YosemitechY533.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -33,43 +33,26 @@
  * Time between "StartMeasurement" command and stable reading - 4.5sec
 */
 
-// Header Guards
-#ifndef YosemitechY533_h
-#define YosemitechY533_h
+#include "sensors/YosemitechY533.h"
 
-// Included Dependencies
-#include "VariableBase.h"
-#include "sensors/YosemitechParent.h"
-
-// Sensor Specific Defines
-#define Y533_NUM_VARIABLES 3
-#define Y533_WARM_UP_TIME_MS 500
-#define Y533_STABILIZATION_TIME_MS 4500
-#define Y533_MEASUREMENT_TIME_MS 1800
-
-#define Y533_PH_RESOLUTION 2
-#define Y533_PH_VAR_NUM 0
-
-#define Y533_TEMP_RESOLUTION 1
-#define Y533_TEMP_VAR_NUM 1
-
-#define Y533_VOLT_RESOLUTION 0
-#define Y533_VOLT_VAR_NUM 2
-
-// The main class for the Decagon Y533
-class YosemitechY533 : public YosemitechParent
-{
-public:
-    // Constructors with overloads
-    YosemitechY533(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
-    YosemitechY533(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
-    ~YosemitechY533();
-};
+// Constructors with overloads
+YosemitechY533(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2,
+               int8_t enablePin, uint8_t measurementsToAverage)
+  : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                    Y533, "YosemitechY533", Y533_NUM_VARIABLES,
+                    Y533_WARM_UP_TIME_MS, Y533_STABILIZATION_TIME_MS, Y533_MEASUREMENT_TIME_MS)
+{}
+YosemitechY533(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2,
+               int8_t enablePin, uint8_t measurementsToAverage)
+  : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                    Y533, "YosemitechY533", Y533_NUM_VARIABLES,
+                    Y533_WARM_UP_TIME_MS, Y533_STABILIZATION_TIME_MS, Y533_MEASUREMENT_TIME_MS)
+{}
+~YosemitechY533(){}
 
 
-// Defines the pH variable
+/***
+// Defines the pH
 class YosemitechY533_pH : public Variable
 {
 public:
@@ -112,5 +95,4 @@ public:
     {}
     ~YosemitechY533_Voltage(){}
 };
-
-#endif  // Header Guard
+***/

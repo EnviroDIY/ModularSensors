@@ -1,5 +1,5 @@
 /*
- *YosemitechY550.h
+ *YosemitechY550.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -31,42 +31,25 @@
  * Time between "StartMeasurement" command and stable reading - 22sec
 */
 
-// Header Guards
-#ifndef YosemitechY550_h
-#define YosemitechY550_h
+#include "sensors/YosemitechY550.h"
 
-// Included Dependencies
-#include "VariableBase.h"
-#include "sensors/YosemitechParent.h"
-
-// Sensor Specific Defines
-#define Y550_NUM_VARIABLES 2
-#define Y550_WARM_UP_TIME_MS 1500
-#define Y550_STABILIZATION_TIME_MS 2000
-#define Y550_MEASUREMENT_TIME_MS 2000
-
-#define Y550_COD_RESOLUTION 2
-#define Y550_COD_VAR_NUM 0
-
-#define Y550_TEMP_RESOLUTION 2
-#define Y550_TEMP_VAR_NUM 1
-
-#define Y550_TURB_RESOLUTION 2
-#define Y550_TURB_VAR_NUM 2
-
-// The main class for the Decagon Y550
-class YosemitechY550 : public YosemitechParent
-{
-public:
-    // Constructors with overloads
-    YosemitechY550(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
-    YosemitechY550(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
-    ~YosemitechY550();
-};
+// Constructors with overloads
+YosemitechY550::YosemitechY550(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2,
+                               int8_t enablePin, uint8_t measurementsToAverage)
+  : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                    Y550, "YosemitechY550", Y550_NUM_VARIABLES,
+                    Y550_WARM_UP_TIME_MS, Y550_STABILIZATION_TIME_MS, Y550_MEASUREMENT_TIME_MS)
+{}
+YosemitechY550::YosemitechY550(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2,
+                               int8_t enablePin, uint8_t measurementsToAverage)
+  : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                    Y550, "YosemitechY550", Y550_NUM_VARIABLES,
+                    Y550_WARM_UP_TIME_MS, Y550_STABILIZATION_TIME_MS, Y550_MEASUREMENT_TIME_MS)
+{}
+YosemitechY550::~YosemitechY550(){}
 
 
+/***
 // Defines the Carbon Oxygen Demand
 class YosemitechY550_COD : public Variable
 {
@@ -107,5 +90,4 @@ public:
     {}
     ~YosemitechY550_Turbidity(){}
 };
-
-#endif  // Header Guard
+***/

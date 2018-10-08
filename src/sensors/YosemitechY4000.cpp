@@ -1,5 +1,5 @@
 /*
- *YosemitechY4000.h
+ *YosemitechY4000.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Anthony Audfdenkampe <aaufdenkampe@limno.com>,
@@ -60,59 +60,25 @@
  * indindividual sensor probes, with Y520 Conductivity taking the longest
 */
 
-// Header Guards
-#ifndef YosemitechY4000_h
-#define YosemitechY4000_h
+#include "sensors/YosemitechY4000.h"
 
-// Included Dependencies
-#include "VariableBase.h"
-#include "sensors/YosemitechParent.h"
-
-// Sensor Specific Defines
-#define Y504_NUM_VARIABLES 3
-#define Y504_WARM_UP_TIME_MS 375
-#define Y504_STABILIZATION_TIME_MS 8000
-#define Y504_MEASUREMENT_TIME_MS 1700
-
-#define Y4000_DOMGL_RESOLUTION 2
-#define Y4000_DOMGL_VAR_NUM 0
-
-#define Y4000_TURB_RESOLUTION 2
-#define Y4000_TURB_VAR_NUM 1
-
-#define Y4000_COND_RESOLUTION 1
-#define Y4000_COND_VAR_NUM 2
-
-#define Y4000_PH_RESOLUTION 2
-#define Y4000_PH_VAR_NUM 3
-
-#define Y4000_TEMP_RESOLUTION 1
-#define Y4000_TEMP_VAR_NUM 4
-
-#define Y4000_ORP_RESOLUTION 0
-#define Y4000_ORP_VAR_NUM 5
-
-#define Y4000_CHLORO_RESOLUTION 1
-#define Y4000_CHLORO_VAR_NUM 6
-
-#define Y4000_BGA_RESOLUTION 2
-#define Y4000_BGA_VAR_NUM 7
+// Constructors with overloads
+YosemitechY4000::YosemitechY4000(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2,
+                                 int8_t enablePin, uint8_t measurementsToAverage)
+  : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                    Y4000, "YosemitechY4000", Y4000_NUM_VARIABLES,
+                    Y4000_WARM_UP_TIME_MS, Y4000_STABILIZATION_TIME_MS, Y4000_MEASUREMENT_TIME_MS)
+{}
+YosemitechY4000::YosemitechY4000(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2,
+                                 int8_t enablePin, uint8_t measurementsToAverage)
+  : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                    Y4000, "YosemitechY4000", Y4000_NUM_VARIABLES,
+                    Y4000_WARM_UP_TIME_MS, Y4000_STABILIZATION_TIME_MS, Y4000_MEASUREMENT_TIME_MS)
+{}
+YosemitechY4000::~YosemitechY4000(){}
 
 
-// The main class for the Yosemitech Y4000
-class YosemitechY4000 : public YosemitechParent
-{
-public:
-    // Constructors with overloads
-    YosemitechY4000(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
-    YosemitechY4000(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
-    // Destructor
-    ~YosemitechY4000();
-};
-
-
+/***
 // Defines the Dissolved Oxygen Concentration
 class YosemitechY4000_DOmgL : public Variable
 {
@@ -222,7 +188,4 @@ public:
     {}
     ~YosemitechY4000_BGA(){}
 };
-
-
-
-#endif  // Header Guard
+***/

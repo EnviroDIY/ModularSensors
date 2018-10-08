@@ -30,7 +30,7 @@
 */
 
 
-#include "ApogeeSQ212.h"
+#include "sensors/ApogeeSQ212.h"
 #include <Adafruit_ADS1015.h>
 
 

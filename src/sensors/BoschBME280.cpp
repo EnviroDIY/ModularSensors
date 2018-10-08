@@ -28,7 +28,7 @@
  * Slowest response time (humidity): 1sec
 */
 
-#include "BoschBME280.h"
+#include "sensors/BoschBME280.h"
 
 
 // The constructor - because this is I2C, only need the power pin

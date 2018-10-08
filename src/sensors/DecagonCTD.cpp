@@ -1,5 +1,5 @@
 /*
- *DecagonCTD.h
+ *DecagonCTD.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -30,42 +30,28 @@
  * Maximum measurement duration: 500ms
 */
 
-// Header Guards
-#ifndef DecagonCTD_h
-#define DecagonCTD_h
+#include "sensors/DecagonCTD.h"
 
-// Included Dependencies
-#include "VariableBase.h"
-#include "sensors/SDI12Sensors.h"
+// Constructors with overloads
+DecagonCTD::DecagonCTD(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
+  : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                "DecagonCTD", CTD_NUM_VARIABLES,
+                CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
+{}
+DecagonCTD::DecagonCTD(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
+  : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                "DecagonCTD", CTD_NUM_VARIABLES,
+                CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
+{}
+DecagonCTD::DecagonCTD(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
+  : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                "DecagonCTD", CTD_NUM_VARIABLES,
+                CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
+{}
+// Destructor
+DecagonCTD::~DecagonCTD(){}
 
-// Sensor Specific Defines
-#define CTD_NUM_VARIABLES 3
-#define CTD_WARM_UP_TIME_MS 500
-#define CTD_STABILIZATION_TIME_MS 0
-#define CTD_MEASUREMENT_TIME_MS 500
-
-#define CTD_COND_RESOLUTION 0
-#define CTD_COND_VAR_NUM 2
-
-#define CTD_TEMP_RESOLUTION 1
-#define CTD_TEMP_VAR_NUM 1
-
-#define CTD_DEPTH_RESOLUTION 0
-#define CTD_DEPTH_VAR_NUM 0
-
-// The main class for the Decagon CTD
-class DecagonCTD : public SDI12Sensors
-{
-public:
-    // Constructors with overloads
-    DecagonCTD(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
-    DecagonCTD(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
-    DecagonCTD(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
-    // Destructor
-    ~DecagonCTD(){}
-};
-
-
+/***
 // Defines the Conductivity Variable
 class DecagonCTD_Cond : public Variable
 {
@@ -106,5 +92,4 @@ public:
     {}
     ~DecagonCTD_Depth(){}
 };
-
-#endif  // Header Guard
+***/

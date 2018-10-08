@@ -1,5 +1,5 @@
 /*
- *YosemitechY532.h
+ *YosemitechY532.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -28,42 +28,25 @@
  * Time between "StartMeasurement" command and stable reading - 4.5sec
 */
 
-// Header Guards
-#ifndef YosemitechY532_h
-#define YosemitechY532_h
+#include "sensors/YosemitechY532.h"
 
-// Included Dependencies
-#include "VariableBase.h"
-#include "sensors/YosemitechParent.h"
-
-// Sensor Specific Defines
-#define Y532_NUM_VARIABLES 3
-#define Y532_WARM_UP_TIME_MS 500
-#define Y532_STABILIZATION_TIME_MS 4500
-#define Y532_MEASUREMENT_TIME_MS 1800
-
-#define Y532_PH_RESOLUTION 2
-#define Y532_PH_VAR_NUM 0
-
-#define Y532_TEMP_RESOLUTION 1
-#define Y532_TEMP_VAR_NUM 1
-
-#define Y532_VOLT_RESOLUTION 0
-#define Y532_VOLT_VAR_NUM 2
-
-// The main class for the Decagon Y532
-class YosemitechY532 : public YosemitechParent
-{
-public:
-    // Constructors with overloads
-    YosemitechY532(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
-    YosemitechY532(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
-    ~YosemitechY532();
-};
+// Constructors with overloads
+YosemitechY532::YosemitechY532(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2,
+                               int8_t enablePin, uint8_t measurementsToAverage)
+  : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                    Y532, "YosemitechY532", Y532_NUM_VARIABLES,
+                    Y532_WARM_UP_TIME_MS, Y532_STABILIZATION_TIME_MS, Y532_MEASUREMENT_TIME_MS)
+{}
+YosemitechY532::YosemitechY532(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2,
+                               int8_t enablePin, uint8_t measurementsToAverage)
+  : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                    Y532, "YosemitechY532", Y532_NUM_VARIABLES,
+                    Y532_WARM_UP_TIME_MS, Y532_STABILIZATION_TIME_MS, Y532_MEASUREMENT_TIME_MS)
+{}
+YosemitechY532::~YosemitechY532(){}
 
 
+/***
 // Defines the pH
 class YosemitechY532_pH : public Variable
 {
@@ -107,5 +90,4 @@ public:
     {}
     ~YosemitechY532_Voltage(){}
 };
-
-#endif  // Header Guard
+***/

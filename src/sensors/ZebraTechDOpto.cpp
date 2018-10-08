@@ -1,5 +1,5 @@
 /*
- *ZebraTechDOpto.h
+ *ZebraTechDOpto.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -32,47 +32,31 @@
  *
 */
 
-// Header Guards
-#ifndef ZebraTechDOpto_h
-#define ZebraTechDOpto_h
-
-// Included Dependencies
-#include "VariableBase.h"
-#include "sensors/SDI12Sensors.h"
-
-// Sensor Specific Defines
-#define DOPTO_NUM_VARIABLES 3
-#define DOPTO_WARM_UP_TIME_MS 275
-#define DOPTO_STABILIZATION_TIME_MS 0
-#define DOPTO_MEASUREMENT_TIME_MS 5335
-
-#define DOPTO_TEMP_RESOLUTION 2
-#define DOPTO_TEMP_VAR_NUM 0
-
-#define DOPTO_DOPCT_RESOLUTION 2
-#define DOPTO_DOPCT_VAR_NUM 1
-
-#define DOPTO_DOMGL_RESOLUTION 3
-#define DOPTO_DOMGL_VAR_NUM 2
-
-// The main class for the D-Opto
-class ZebraTechDOpto : public SDI12Sensors
-{
-public:
-    // Constructors with overloads
-    ZebraTechDOpto(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
-    ZebraTechDOpto(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
-    ZebraTechDOpto(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
-    // Destructor
-    ~ZebraTechDOpto();
-};
+#include "sensors/ZebraTechDOpto.h"
 
 
+// Constructors with overloads
+ZebraTechDOpto::ZebraTechDOpto(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
+ : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
+                DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS)
+{}
+ZebraTechDOpto::ZebraTechDOpto(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
+ : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
+                DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS)
+{}
+ZebraTechDOpto::ZebraTechDOpto(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
+ : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
+                DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS)
+{}
+ZebraTechDOpto::~ZebraTechDOpto(){}
+
+
+/***
 // Defines the Temperature Variable
-class ZebraTechDOpto_Temp : public Variable
-{
-public:
-    ZebraTechDOpto_Temp(Sensor *parentSense,
+ZebraTechDOpto_Temp::ZebraTechDOpto_Temp(Sensor *parentSense,
                         const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, DOPTO_TEMP_VAR_NUM,
                 "temperature", "degreeCelsius",
@@ -111,5 +95,4 @@ public:
     {}
     ~ZebraTechDOpto_DOmgL(){}
 };
-
-#endif  // Header Guard
+***/

@@ -1,5 +1,5 @@
 /*
- *YosemitechY504.h
+ *YosemitechY504.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -27,42 +27,26 @@
  * Time between "StartMeasurement" command and stable reading - 8sec
 */
 
-// Header Guards
-#ifndef YosemitechY504_h
-#define YosemitechY504_h
+#include "sensors/YosemitechY504.h"
 
-// Included Dependencies
-#include "VariableBase.h"
-#include "sensors/YosemitechParent.h"
-
-// Sensor Specific Defines
-#define Y504_NUM_VARIABLES 3
-#define Y504_WARM_UP_TIME_MS 375
-#define Y504_STABILIZATION_TIME_MS 8000
-#define Y504_MEASUREMENT_TIME_MS 1700
-
-#define Y504_DOPCT_RESOLUTION 1
-#define Y504_DOPCT_VAR_NUM 0
-
-#define Y504_TEMP_RESOLUTION 1
-#define Y504_TEMP_VAR_NUM 1
-
-#define Y504_DOMGL_RESOLUTION 2
-#define Y504_DOMGL_VAR_NUM 2
-
-// The main class for the Decagon Y504
-class YosemitechY504 : public YosemitechParent
-{
-public:
-    // Constructors with overloads
-    YosemitechY504(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
-    YosemitechY504(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
-    ~YosemitechY504();
-};
+// Constructors with overloads
+YosemitechY504::YosemitechY504(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2,
+                               int8_t enablePin, uint8_t measurementsToAverage)
+  : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                    Y504, "YosemitechY504", Y504_NUM_VARIABLES,
+                    Y504_WARM_UP_TIME_MS, Y504_STABILIZATION_TIME_MS, Y504_MEASUREMENT_TIME_MS)
+{}
+YosemitechY504::YosemitechY504(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2,
+                               int8_t enablePin, uint8_t measurementsToAverage)
+  : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
+                    Y504, "YosemitechY504", Y504_NUM_VARIABLES,
+                    Y504_WARM_UP_TIME_MS, Y504_STABILIZATION_TIME_MS, Y504_MEASUREMENT_TIME_MS)
+{}
+// Destructor
+YosemitechY504::~YosemitechY504(){}
 
 
+/***
 // Defines the Dissolved Oxygen Percent Saturation
 class YosemitechY504_DOpct : public Variable
 {
@@ -106,5 +90,4 @@ public:
     {}
     ~YosemitechY504_DOmgL(){}
 };
-
-#endif  // Header Guard
+***/

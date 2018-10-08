@@ -17,7 +17,7 @@
  * Assume sensor is immediately stable
 */
 
-#include "RainCounterI2C.h"
+#include "sensors/RainCounterI2C.h"
 
 
 // The constructor - because this is I2C, only need the power pin and rain per event if a non-standard value is used
