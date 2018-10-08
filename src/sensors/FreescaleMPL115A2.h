@@ -21,19 +21,20 @@
  * Assume sensor is immediately stable
 */
 
+// Header Guards
 #ifndef FreescaleMPL115A2_h
 #define FreescaleMPL115A2_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
-
-
-#include "../SensorBase.h"
-#include "../VariableBase.h"
+#include "VariableBase.h"
+#include "SensorBase.h"
 #include <Adafruit_MPL115A2.h>
 
+// Sensor Specific Defines
 #define MPL115A2_NUM_VARIABLES 2
 #define MPL115A2_WARM_UP_TIME_MS 6
 #define MPL115A2_STABILIZATION_TIME_MS 0
@@ -93,4 +94,4 @@ public:
 };
 
 
-#endif
+#endif  // Header Guard

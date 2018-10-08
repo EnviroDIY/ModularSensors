@@ -30,13 +30,15 @@
  * Maximum measurement duration: 500ms
 */
 
-
+// Header Guards
 #ifndef DecagonCTD_h
 #define DecagonCTD_h
 
-#include "SDI12Sensors.h"
-#include "../VariableBase.h"
+// Included Dependencies
+#include "VariableBase.h"
+#include "sensors/SDI12Sensors.h"
 
+// Sensor Specific Defines
 #define CTD_NUM_VARIABLES 3
 #define CTD_WARM_UP_TIME_MS 500
 #define CTD_STABILIZATION_TIME_MS 0
@@ -117,4 +119,4 @@ public:
     ~DecagonCTD_Depth(){}
 };
 
-#endif
+#endif  // Header Guard

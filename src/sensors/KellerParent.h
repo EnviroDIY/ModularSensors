@@ -15,18 +15,20 @@
  * https://github.com/EnviroDIY/KellerModbus
 */
 
+// Header Guards
 #ifndef KellerParent_h
 #define KellerParent_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 // #define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
-#include "ModSensorDebugger.h"
 
-#include "../SensorBase.h"
+// Included Dependencies
+#include "ModSensorDebugger.h"
+#include "SensorBase.h"
 #include <KellerModbus.h>
 
+// Sensor Specific Defines
 #define KELLER_NUM_VARIABLES 3
 #define KELLER_PRESSURE_VAR_NUM 0
 #define KELLER_TEMP_VAR_NUM 1
@@ -65,4 +67,4 @@ private:
     int8_t _powerPin2;
 };
 
-#endif
+#endif  // Header Guard

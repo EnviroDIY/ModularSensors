@@ -7,14 +7,16 @@
  *This file is for the basic logging functions - ie, saving to an SD card.
 */
 
+// Header Guards
 #ifndef LoggerBase_h
 #define LoggerBase_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
-#include "ModSensorDebugger.h"
 
+// Included Dependencies
+//#include <Arduino.h>
+#include "ModSensorDebugger.h"
 #include "VariableArray.h"
 
 // Bring in the libraries to handle the processor sleep/standby modes
@@ -258,4 +260,4 @@ protected:
     bool openFile(String& filename, bool createFile, bool writeDefaultHeader);
 };
 
-#endif
+#endif  // Header Guard

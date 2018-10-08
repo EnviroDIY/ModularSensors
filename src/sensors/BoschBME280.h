@@ -30,19 +30,20 @@
  * Assume sensor is immediately stable
 */
 
+// Header Guards
 #ifndef BoschBME280_h
 #define BoschBME280_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
-
-
-#include "../SensorBase.h"
-#include "../VariableBase.h"
+#include "VariableBase.h"
+#include "SensorBase.h"
 #include <Adafruit_BME280.h>
 
+// Sensor Specific Defines
 #define BME280_NUM_VARIABLES 4
 #define BME280_WARM_UP_TIME_MS 100
 #define BME280_STABILIZATION_TIME_MS 4000   // 0.5 s for good numbers, but optimal at 4 s based on tests using bme280timingTest.ino
@@ -138,4 +139,4 @@ public:
 };
 
 
-#endif
+#endif  // Header Guard

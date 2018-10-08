@@ -33,12 +33,15 @@
  * Time between "StartMeasurement" command and stable reading - 4.5sec
 */
 
+// Header Guards
 #ifndef YosemitechY533_h
 #define YosemitechY533_h
 
-#include "YosemitechParent.h"
-#include "../VariableBase.h"
+// Included Dependencies
+#include "VariableBase.h"
+#include "sensors/YosemitechParent.h"
 
+// Sensor Specific Defines
 #define Y533_NUM_VARIABLES 3
 #define Y533_WARM_UP_TIME_MS 500
 #define Y533_STABILIZATION_TIME_MS 4500
@@ -118,4 +121,4 @@ public:
     ~YosemitechY533_Voltage(){}
 };
 
-#endif
+#endif  // Header Guard

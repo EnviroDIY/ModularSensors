@@ -25,12 +25,15 @@
  * Maximum measurement duration: 250ms
 */
 
+// Header Guards
 #ifndef DecagonES2_h
 #define DecagonES2_h
 
-#include "SDI12Sensors.h"
-#include "../VariableBase.h"
+// Included Dependencies
+#include "VariableBase.h"
+#include "sensors/SDI12Sensors.h"
 
+// Sensor Specific Defines
 #define ES2_NUM_VARIABLES 2
 #define ES2_WARM_UP_TIME_MS 250
 #define ES2_STABILIZATION_TIME_MS 0
@@ -93,4 +96,4 @@ public:
     ~DecagonES2_Temp(){}
 };
 
-#endif
+#endif  // Header Guard

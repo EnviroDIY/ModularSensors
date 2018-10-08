@@ -12,15 +12,19 @@
  * If the processor is awake, it's ready to take a reading.
 */
 
+// Header Guards
 #ifndef ProcessorStats_h
 #define ProcessorStats_h
 
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
+#include "VariableBase.h"
+#include "SensorBase.h"
 
-#include "../SensorBase.h"
-#include "../VariableBase.h"
-
+// Sensor Specific Defines
 #define PROCESSOR_NUM_VARIABLES 2
 #define PROCESSOR_WARM_UP_TIME_MS 0
 #define PROCESSOR_STABILIZATION_TIME_MS 0
@@ -81,4 +85,4 @@ public:
     ~ProcessorStats_FreeRam(){}
 };
 
-#endif
+#endif  // Header Guard

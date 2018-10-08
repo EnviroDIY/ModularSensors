@@ -7,14 +7,16 @@
  *This file is for the sensor base class.
 */
 
+// Header Guards
 #ifndef SensorBase_h
 #define SensorBase_h
 
-#include <Arduino.h>
-#include <pins_arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
+#include <pins_arduino.h>
 
 // The largest number of variables from a single sensor
 #define MAX_NUMBER_VARS 8
@@ -185,4 +187,4 @@ protected:
     Variable *variables[MAX_NUMBER_VARS];
 };
 
-#endif
+#endif  // Header Guard

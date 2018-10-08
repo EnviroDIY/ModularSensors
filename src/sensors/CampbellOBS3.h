@@ -25,17 +25,19 @@
  * Maximum data rate = 10Hz (100ms/sample)
 */
 
+// Header Guards
 #ifndef CampbellOBS3_h
 #define CampbellOBS3_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
+#include "VariableBase.h"
+#include "SensorBase.h"
 
-#include "../SensorBase.h"
-#include "../VariableBase.h"
-
+// Sensor Specific Defines
 #define ADS1115_ADDRESS (0x48) // 1001 000 (ADDR = GND)
 
 // low and high range are treated as completely independent, so only 2 "variables"
@@ -108,4 +110,4 @@ public:
     ~CampbellOBS3_Voltage(){}
 };
 
-#endif
+#endif  // Header Guard

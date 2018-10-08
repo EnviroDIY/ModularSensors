@@ -7,15 +7,18 @@
  *This file is for the variable base class.
 */
 
+// Header Guards
 #ifndef VariableBase_h
 #define VariableBase_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
-#include "ModSensorDebugger.h"
 
-class Sensor;  // Forward declaration
+// Forward Declared Dependences
+class Sensor;
+
+// Included Dependencies
+#include "ModSensorDebugger.h"
 
 class Variable
 {
@@ -89,4 +92,4 @@ private:
     static const char* VAR_BASE_UNKNOWN;
 };
 
-#endif
+#endif  // Header Guard

@@ -17,17 +17,19 @@
  * The temperature conversion typically takes 125 ms, with a max time of 200 ms.
 */
 
+// Header Guards
 #ifndef MaximDS3231_h
 #define MaximDS3231_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
+#include "VariableBase.h"
+#include "SensorBase.h"
 
-#include "../SensorBase.h"
-#include "../VariableBase.h"
-
+// Sensor Specific Defines
 #define DS3231_NUM_VARIABLES 1
 #define DS3231_WARM_UP_TIME_MS 0
 #define DS3231_STABILIZATION_TIME_MS 0
@@ -69,4 +71,4 @@ public:
     ~MaximDS3231_Temp(){}
 };
 
-#endif
+#endif  // Header Guard

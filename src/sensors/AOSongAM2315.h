@@ -22,17 +22,19 @@
  * Measurement time: 2sec
 */
 
+// Header Guards
 #ifndef AOSongAM2315_h
 #define AOSongAM2315_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
+#include "VariableBase.h"
+#include "SensorBase.h"
 
-#include "../SensorBase.h"
-#include "../VariableBase.h"
-
+// Sensor Specific Defines
 #define AM2315_NUM_VARIABLES 2
 #define AM2315_WARM_UP_TIME_MS 500
 #define AM2315_STABILIZATION_TIME_MS 500
@@ -91,4 +93,4 @@ public:
     ~AOSongAM2315_Temp(){};
 };
 
-#endif
+#endif  // Header Guard

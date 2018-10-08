@@ -24,18 +24,19 @@
  * Re-sampling time: 2.0sec
 */
 
+// Header Guards
 #ifndef AOSongDHT_h
 #define AOSongDHT_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
-
-#include "../SensorBase.h"
-#include "../VariableBase.h"
-
+#include "VariableBase.h"
+#include "SensorBase.h"
 #include <DHT.h>
+
 // Undefine these macros so I can use a typedef instead
 #undef DHT11
 #undef DHT21
@@ -43,6 +44,7 @@
 #undef DHT22
 #undef AM2302
 
+// Sensor Specific Defines
 #define DHT_NUM_VARIABLES 3
 #define DHT_WARM_UP_TIME_MS 1700
 #define DHT_STABILIZATION_TIME_MS 0
@@ -131,4 +133,4 @@ public:
     ~AOSongDHT_HI(){};
 };
 
-#endif
+#endif  // Header Guard

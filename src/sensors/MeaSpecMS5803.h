@@ -41,19 +41,20 @@
  * Assume sensor is immediately stable
 */
 
+// Header Guards
 #ifndef MeaSpecMS5803_h
 #define MeaSpecMS5803_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
+#include "VariableBase.h"
+#include "SensorBase.h"
+#include <MS5803.h>
 
-
-#include "../SensorBase.h"
-#include "../VariableBase.h"
-#include "MS5803.h"
-
+// Sensor Specific Defines
 #define MS5803_NUM_VARIABLES 2
 #define MS5803_WARM_UP_TIME_MS 10
 #define MS5803_STABILIZATION_TIME_MS 0
@@ -115,4 +116,4 @@ public:
 };
 
 
-#endif
+#endif  // Header Guard

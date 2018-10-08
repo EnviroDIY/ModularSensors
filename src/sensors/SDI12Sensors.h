@@ -4,30 +4,27 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for all Decagon Devices that communicate with SDI-12
+ *This file is for all Devices that communicate over SDI-12
  *It is dependent on the EnviroDIY SDI-12 library.
  *
- *Documentation for the SDI-12 Protocol commands and responses
- *for the Decagon CTD-10 can be found at:
- * http://manuals.decagon.com/Integration%20Guides/CTD%20Integrators%20Guide.pdf
- *for the Decagon ES-2 Electrical Conductivity and Temperature:
- * http://manuals.decagon.com/Integration%20Guides/ES-2%20Integrators%20Guide.pdf
- *for the Decagon 5TM Soil Moisture and Temperature:
- * http://manuals.decagon.com/Integration%20Guides/5TM%20Integrators%20Guide.pdf
+ *Documentation for the SDI-12 Protocol commands and responses can be found at:
+ *http://www.sdi-12.org/
 */
 
+// Header Guards
 #ifndef SDI12Sensors_h
 #define SDI12Sensors_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
-#include "ModSensorDebugger.h"
 
-#include "../SensorBase.h"
+// Included Dependencies
+#include "ModSensorDebugger.h"
+#include "VariableBase.h"
+#include "SensorBase.h"
 #include <SDI12_ExtInts.h>
 
-// The main class for the Decagon CTD
+// The main class for SDI-12 Sensors
 class SDI12Sensors : public Sensor
 {
 public:
@@ -67,4 +64,4 @@ private:
     String _sensorSerialNumber;
 };
 
-#endif
+#endif  // Header Guard

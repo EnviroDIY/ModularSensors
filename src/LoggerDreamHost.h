@@ -7,14 +7,15 @@
  *This file is for the EnviroDIY logging functions - ie, sending get requests to DreamHost
 */
 
+// Header Guards
 #ifndef LoggerDreamHost_h
 #define LoggerDreamHost_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
-#include "ModSensorDebugger.h"
 
+// Included Dependencies
+#include "ModSensorDebugger.h"
 #include "LoggerEnviroDIY.h"
 
 
@@ -75,4 +76,4 @@ private:
     bool _dualPost = true;
 };
 
-#endif
+#endif  // Header Guard

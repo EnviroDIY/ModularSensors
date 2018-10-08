@@ -14,12 +14,15 @@
  * https://github.com/EnviroDIY/KellerModbus
 */
 
+// Header Guards
 #ifndef KellerAcculevel_h
 #define KellerAcculevel_h
 
-#include "KellerParent.h"
-#include "../VariableBase.h"
+// Included Dependencies
+#include "VariableBase.h"
+#include "sensors/KellerParent.h"
 
+// Sensor Specific Defines
 #define KellerAcculevel_WARM_UP_TIME_MS 500
 #define KellerAcculevel_STABILIZATION_TIME_MS 5000
 #define KellerAcculevel_MEASUREMENT_TIME_MS 1500
@@ -93,4 +96,4 @@ public:
     ~KellerAcculevel_Height(){}
 };
 
-#endif
+#endif  // Header Guard

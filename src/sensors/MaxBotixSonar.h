@@ -13,17 +13,19 @@
  * Warm up time to completion of header:  160ms
  */
 
+// Header Guards
 #ifndef MaxBotixSonar_h
 #define MaxBotixSonar_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
+#include "VariableBase.h"
+#include "SensorBase.h"
 
-#include "../SensorBase.h"
-#include "../VariableBase.h"
-
+// Sensor Specific Defines
 #define HRXL_NUM_VARIABLES 1
 #define HRXL_WARM_UP_TIME_MS 160
 #define HRXL_STABILIZATION_TIME_MS 0
@@ -66,4 +68,4 @@ public:
     ~MaxBotixSonar_Range(){}
 };
 
-#endif
+#endif  // Header Guard

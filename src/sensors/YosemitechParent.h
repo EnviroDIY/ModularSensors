@@ -13,16 +13,18 @@
  * https://github.com/EnviroDIY/YosemitechModbus
 */
 
+// Header Guards
 #ifndef YosemitechParent_h
 #define YosemitechParent_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 // #define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
-#include "ModSensorDebugger.h"
 
-#include "../SensorBase.h"
+// Included Dependencies
+#include "ModSensorDebugger.h"
+#include "VariableBase.h"
+#include "SensorBase.h"
 #include <YosemitechModbus.h>
 
 // The main class for the Yosemitech Sensors
@@ -60,4 +62,4 @@ private:
     int8_t _powerPin2;
 };
 
-#endif
+#endif  // Header Guard

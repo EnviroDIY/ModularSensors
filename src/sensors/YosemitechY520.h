@@ -28,16 +28,19 @@
  * Time between "StartMeasurement" command and stable reading - 10sec
 */
 
+// Header Guards
 #ifndef YosemitechY520_h
 #define YosemitechY520_h
 
-#include "YosemitechParent.h"
-#include "../VariableBase.h"
+// Included Dependencies
+#include "VariableBase.h"
+#include "sensors/YosemitechParent.h"
 
-#define Y520_NUM_VARIABLES 2
-#define Y520_WARM_UP_TIME_MS 1600
-#define Y520_STABILIZATION_TIME_MS 10000
-#define Y520_MEASUREMENT_TIME_MS 2700
+// Sensor Specific Defines
+#define Y504_NUM_VARIABLES 3
+#define Y504_WARM_UP_TIME_MS 375
+#define Y504_STABILIZATION_TIME_MS 8000
+#define Y504_MEASUREMENT_TIME_MS 1700
 
 #define Y520_COND_RESOLUTION 1
 #define Y520_COND_VAR_NUM 0
@@ -93,4 +96,4 @@ public:
     ~YosemitechY520_Temp(){}
 };
 
-#endif
+#endif  // Header Guard

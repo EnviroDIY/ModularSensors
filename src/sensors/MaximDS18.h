@@ -21,20 +21,21 @@
  * Reset time is < 480 µs
 */
 
+// Header Guards
 #ifndef MaximDS18_h
 #define MaximDS18_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
-
-#include "../SensorBase.h"
-#include "../VariableBase.h"
-
+#include "VariableBase.h"
+#include "SensorBase.h"
 #include <DallasTemperature.h>
 #include <OneWire.h>
 
+// Sensor Specific Defines
 #define DS18_NUM_VARIABLES 1
 #define DS18_WARM_UP_TIME_MS 2
 #define DS18_STABILIZATION_TIME_MS 0
@@ -84,4 +85,4 @@ public:
     ~MaximDS18_Temp(){}
 };
 
-#endif
+#endif  // Header Guard

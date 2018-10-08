@@ -7,9 +7,11 @@
  */
 
 
+// Header Guards
 #ifndef ModSensorDebugger_h
 #define ModSensorDebugger_h
 
+// Included Dependencies
 #include <Arduino.h>
 
 #ifndef STANDARD_SERIAL_OUTPUT

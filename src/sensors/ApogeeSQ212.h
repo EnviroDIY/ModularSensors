@@ -29,17 +29,19 @@
  * Resample time: max of ADC (860/sec)
 */
 
+// Header Guards
 #ifndef ApogeeSQ212_h
 #define ApogeeSQ212_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
+#include "VariableBase.h"
+#include "SensorBase.h"
 
-#include "../SensorBase.h"
-#include "../VariableBase.h"
-
+// Sensor Specific Defines
 #define ADS1115_ADDRESS (0x48) // 1001 000 (ADDR = GND)
 
 #define SQ212_NUM_VARIABLES 1
@@ -87,4 +89,4 @@ public:
     ~ApogeeSQ212_PAR(){};
 };
 
-#endif
+#endif  // Header Guard

@@ -26,16 +26,19 @@
  * Maximum measurement duration: 200ms
 */
 
+// Header Guards
 #ifndef Decagon5TM_h
 #define Decagon5TM_h
 
-#include "SDI12Sensors.h"
-#include "../VariableBase.h"
+// Included Dependencies
+#include "VariableBase.h"
+#include "sensors/SDI12Sensors.h"
 
-#define TM_NUM_VARIABLES 3
-#define TM_WARM_UP_TIME_MS 200
-#define TM_STABILIZATION_TIME_MS 0
-#define TM_MEASUREMENT_TIME_MS 200
+// Sensor Specific Defines
+#define DOPTO_NUM_VARIABLES 3
+#define DOPTO_WARM_UP_TIME_MS 275
+#define DOPTO_STABILIZATION_TIME_MS 0
+#define DOPTO_MEASUREMENT_TIME_MS 5335
 
 #define TM_EA_RESOLUTION 4
 #define TM_EA_VAR_NUM 0
@@ -114,4 +117,4 @@ public:
     ~Decagon5TM_VWC(){}
 };
 
-#endif
+#endif  // Header Guard

@@ -17,19 +17,20 @@
  * Assume sensor is immediately stable
 */
 
+// Header Guards
 #ifndef RainCounterI2C_h
 #define RainCounterI2C_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
-
-
-#include "../SensorBase.h"
-#include "../VariableBase.h"
+#include "VariableBase.h"
+#include "SensorBase.h"
 #include <Wire.h>
 
+// Sensor Specific Defines
 #define BUCKET_NUM_VARIABLES 2
 #define BUCKET_WARM_UP_TIME_MS 0
 #define BUCKET_STABILIZATION_TIME_MS 0
@@ -90,4 +91,4 @@ public:
 };
 
 
-#endif
+#endif  // Header Guard

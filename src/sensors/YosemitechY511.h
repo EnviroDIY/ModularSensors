@@ -27,12 +27,15 @@
  * Time between "StartMeasurement" command and stable reading - 22sec
 */
 
+// Header Guards
 #ifndef YosemitechY511_h
 #define YosemitechY511_h
 
-#include "YosemitechParent.h"
-#include "../VariableBase.h"
+// Included Dependencies
+#include "VariableBase.h"
+#include "sensors/YosemitechParent.h"
 
+// Sensor Specific Defines
 #define Y511_NUM_VARIABLES 2
 #define Y511_WARM_UP_TIME_MS 500
 #define Y511_STABILIZATION_TIME_MS 22000
@@ -92,4 +95,4 @@ public:
     ~YosemitechY511_Temp(){}
 };
 
-#endif
+#endif  // Header Guard

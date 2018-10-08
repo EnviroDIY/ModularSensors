@@ -31,12 +31,15 @@
  * Time between "StartMeasurement" command and stable reading - 22sec
 */
 
+// Header Guards
 #ifndef YosemitechY550_h
 #define YosemitechY550_h
 
-#include "YosemitechParent.h"
-#include "../VariableBase.h"
+// Included Dependencies
+#include "VariableBase.h"
+#include "sensors/YosemitechParent.h"
 
+// Sensor Specific Defines
 #define Y550_NUM_VARIABLES 2
 #define Y550_WARM_UP_TIME_MS 1500
 #define Y550_STABILIZATION_TIME_MS 2000
@@ -113,4 +116,4 @@ public:
     ~YosemitechY550_Turbidity(){}
 };
 
-#endif
+#endif  // Header Guard
