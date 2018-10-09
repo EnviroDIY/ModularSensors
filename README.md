@@ -254,6 +254,7 @@ Variable \*variableList[] = {
 // Count the number of variables in the array (you can count them manually, too)
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
+#include <VariableArray.h>
 VariableArray myVarArray(variableCount, variableList);
 ```
 
@@ -292,6 +293,7 @@ Variable \*variableList[] = {
 // Count the number of variables in the array (you can count them manually, too)
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
+#include <VariableArray.h>
 VariableArray myVarArray(variableCount, variableList);
 ```
 
@@ -301,22 +303,14 @@ Once you have created the array of pointers, you can initialize the VariableArra
 
 ```cpp
 // Set up all the sensors
-myVars.setupSensors();
+myVarArray.setupSensors();
 ```
 
 You can then get values or variable names for all of the sensors within the loop with calls like:
 
 ```cpp
-// Send power to all of the sensors
-myVarArray.sensorsPowerUp();
-// Wake up all of the sensors
-myVarArray.sensorsWake();
-// Update the values from all attached sensors
-myVarArray.updateAllSensors();
-// Put sensors to sleep
-myVarArray.sensorsSleep();
-// Cut sensor power
-myVarArray.sensorsPowerDown();
+// Update all sensor values
+myVarArray.completeUpdate();
 // Print the data to the screen
 myVarArray.printSensorData();
 ```
@@ -447,6 +441,7 @@ The programs in the examples folder show wake and sleep methods for XBee's, u-bl
 With the wake and sleep functions set, you can create the loggerModem instance with one of two constructors, depending on whether the modem is cellular or WiFi:
 ```cpp
 // Create the loggerModem instance
+#include <LoggerModem.h>
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);  // for cellular modems
 // loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);  // for WiFi modems
