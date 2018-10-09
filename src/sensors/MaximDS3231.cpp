@@ -20,7 +20,7 @@
 #include "MaximDS3231.h"
 
 // Only input is the number of readings to average
-MaximDS3231::MaximDS3231(uint8_t measurementsToAverage = 1)
+MaximDS3231::MaximDS3231(uint8_t measurementsToAverage)
   : Sensor("MaximDS3231", DS3231_NUM_VARIABLES,
            DS3231_WARM_UP_TIME_MS, DS3231_STABILIZATION_TIME_MS, DS3231_MEASUREMENT_TIME_MS,
            -1, -1, measurementsToAverage)
