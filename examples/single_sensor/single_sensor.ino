@@ -27,7 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Maxbotix HRXL
 // ==========================================================================
-#include <MaxBotixSonar.h>
+#include <sensors/MaxBotixSonar.h>
 
 // Define a serial port for receiving data - in this case, using software serial
 // Because the standard software serial library uses interrupts that conflict
@@ -146,9 +146,8 @@ void setup()
     // Print a start-up note to the first serial port
     Serial.println(F("Single Sensor Example - Sonar Ranging"));
 
-    // Set up the sensor and variables
+    // Set up the sensor
     sonar.setup();
-    sonar_range.setup();
 }
 
 

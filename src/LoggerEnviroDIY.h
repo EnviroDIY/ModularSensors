@@ -8,16 +8,17 @@
  * http://data.enviroDIY.org
 */
 
+// Header Guards
 #ifndef LoggerEnviroDIY_h
 #define LoggerEnviroDIY_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
-#include "ModSensorDebugger.h"
 
-#include "LoggerModem.h"  // To communicate with the internet
+// Included Dependencies
+#include "ModSensorDebugger.h"
 #include "LoggerBase.h"
+#include "LoggerModem.h"
 
 // ============================================================================
 //  Functions for the EnviroDIY data portal receivers.
@@ -29,6 +30,7 @@ public:
     LoggerEnviroDIY(const char *loggerID, uint16_t loggingIntervalMinutes,
                     int8_t SDCardPin, int8_t mcuWakePin,
                     VariableArray *inputArray);
+    virtual ~LoggerEnviroDIY();
 
     // Adds a loggerModem objct to the logger
     // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
@@ -49,6 +51,7 @@ public:
     // This generates a properly formatted JSON for EnviroDIY
     String generateSensorDataJSON(void);
     void streamSensorDataJSON(Stream *stream);
+    void streamSensorDataJSON(Stream& stream);
 
     // // This generates a fully structured POST request for EnviroDIY
     // String generateEnviroDIYPostRequest(String enviroDIYjson);
@@ -58,9 +61,11 @@ public:
     // specified stream using the specified json.
     // This may be necessary to work around very long strings for the post request.
     void streamEnviroDIYRequest(Stream *stream, String& enviroDIYjson);
+    void streamEnviroDIYRequest(Stream& stream, String& enviroDIYjson);
     // This prints a fully structured post request for EnviroDIY to the
     // specified stream with the default json.
     void streamEnviroDIYRequest(Stream *stream);
+    void streamEnviroDIYRequest(Stream& stream);
 
     // This utilizes an attached modem to make a TCP connection to the
     // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
@@ -78,14 +83,16 @@ public:
 
     // This calls all of the setup functions - must be run AFTER init
     // This version syncs the clock!
-    virtual void begin(void);
+    virtual void beginAndSync(void);
 
     // This is a one-and-done to log data
-    virtual void log(void) override;
+    virtual void logAndSend(void);
 
     // The internal modem instance
-    bool _modemAttached;
-    loggerModem _logModem;
+    loggerModem *_logModem;
+    // NOTE:  The internal _logModem must be a POINTER not a reference because
+    // it is possible for no modem to be attached (and thus the pointer could
+    // be null).  It is not possible to have a null reference.
 
 
 private:
@@ -94,4 +101,4 @@ private:
     const char *_samplingFeature;
 };
 
-#endif
+#endif  // Header Guard

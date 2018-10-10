@@ -7,14 +7,15 @@
  *This file is for the EnviroDIY logging functions - ie, sending get requests to DreamHost
 */
 
+// Header Guards
 #ifndef LoggerDreamHost_h
 #define LoggerDreamHost_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
-#include "ModSensorDebugger.h"
 
+// Included Dependencies
+#include "ModSensorDebugger.h"
 #include "LoggerEnviroDIY.h"
 
 
@@ -30,6 +31,7 @@ public:
     LoggerDreamHost(const char *loggerID, uint16_t loggingIntervalMinutes,
                     int8_t SDCardPin, int8_t mcuWakePin,
                     VariableArray *inputArray);
+    virtual ~LoggerDreamHost();
 
     // Functions for private SWRC server
     void setDreamHostPortalRX(const char *URL);
@@ -37,6 +39,7 @@ public:
     // This creates all of the URL parameters
     String generateSensorDataDreamHost(void);
     void streamSensorDataDreamHost(Stream *stream);
+    void streamSensorDataDreamHost(Stream& stream);
 
     // // This generates a fully structured GET request for DreamHost
     // String generateDreamHostGetRequest(String fullURL);
@@ -46,9 +49,11 @@ public:
     // specified stream using the specified url.
     // This may be necessary to work around very long strings for the post request.
     void streamDreamHostRequest(Stream *stream, String& fullURL);
+    void streamDreamHostRequest(Stream& stream, String& fullURL);
     // This prints a fully structured GET request for DreamHost to the
     // specified stream with the default url.
     void streamDreamHostRequest(Stream *stream);
+    void streamDreamHostRequest(Stream& stream);
 
     // This utilizes an attached modem to make a TCP connection to the
     // DreamHost URL and then streams out a get request
@@ -64,11 +69,11 @@ public:
     // ===================================================================== //
 
     // This is a one-and-done to log data
-    virtual void log(void);
+    virtual void logAndSend(void) override;
 
 private:
     const char *_DreamHostPortalRX;
     bool _dualPost = true;
 };
 
-#endif
+#endif  // Header Guard

@@ -7,24 +7,25 @@
  *This file is for the variable array class.
 */
 
+// Header Guards
 #ifndef VariableArray_h
 #define VariableArray_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
-#include "ModSensorDebugger.h"
 
-#include "SensorBase.h"
+// Included Dependencies
+#include "ModSensorDebugger.h"
 #include "VariableBase.h"
+#include "SensorBase.h"
 
 // Defines another class for interfacing with a list of pointers to sensor instances
 class VariableArray
 {
 public:
-    // Initialization - cannot do this in constructor arduino has issues creating
-    // instances of classes with non-empty constructors
+    // Constructor
     VariableArray(int variableCount, Variable *variableList[]);
+    virtual ~VariableArray();
 
     // Leave the internal variable list public
     Variable **arrayOfVars;
@@ -59,6 +60,9 @@ public:
     // This function updates the values for any connected sensors.
     bool updateAllSensors(void);
 
+    // This function powers, wakes, updates values, sleeps and powers down.
+    bool completeUpdate(void);
+
     // This function prints out the results for any connected sensors to a stream
     void printSensorData(Stream *stream = &Serial);
 
@@ -92,6 +96,23 @@ protected:
 private:
     bool isLastVarFromSensor(int arrayIndex);
     uint8_t countMaxToAverage(void);
+
+#ifdef DEBUGGING_SERIAL_OUTPUT
+    template<typename T>
+    void prettyPrintArray(T arrayToPrint[])
+    {
+        MS_DBG('[');
+        for (uint8_t i = 0; i < _variableCount; i++)
+        {
+            MS_DBG(arrayToPrint[i]);
+            if ( (i+1) < _variableCount ) MS_DBG(',', '\t');
+        }
+        MS_DBG(']', '\n');
+    }
+#else
+    #define prettyPrintArray(...)
+#endif  // DEBUGGING_SERIAL_OUTPUT
+
 };
 
-#endif
+#endif  // Header Guard

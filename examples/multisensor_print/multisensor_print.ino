@@ -30,21 +30,21 @@ const char *sketchName = "modular_sensors.ino";
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
-#include <ProcessorStats.h>
+#include <sensors/ProcessorStats.h>
 
 const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
 const int8_t greenLED = 8;  // Pin for the green LED (-1 if unconnected)
 const int8_t redLED = 9;  // Pin for the red LED (-1 if unconnected)
 
 // Create and return the processor "sensor"
-const char *MFVersion = "v0.5";
+const char *MFVersion = "v0.5b";
 ProcessorStats mayfly(MFVersion);
 
 
 // ==========================================================================
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
-#include <MaximDS3231.h>
+#include <sensors/MaximDS3231.h>
 // Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
 
@@ -52,7 +52,7 @@ MaximDS3231 ds3231(1);
 // ==========================================================================
 //    AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
-#include <AOSongAM2315.h>
+#include <sensors/AOSongAM2315.h>
 const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // Create and return the AOSong AM2315 sensor object
 AOSongAM2315 am2315(I2CPower);
@@ -61,7 +61,7 @@ AOSongAM2315 am2315(I2CPower);
 // ==========================================================================
 //    AOSong DHT 11/21 (AM2301)/22 (AM2302) Digital Humidity and Temperature
 // ==========================================================================
-#include <AOSongDHT.h>
+#include <sensors/AOSongDHT.h>
 const int8_t DHTPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t DHTPin = 10;  // DHT data pin
 DHTtype dhtType = DHT11;  // DHT type, either DHT11, DHT21, or DHT22
@@ -72,7 +72,7 @@ AOSongDHT dht(DHTPower, DHTPin, dhtType);
 // ==========================================================================
 //    Apogee SQ-212 Photosynthetically Active Radiation (PAR) Sensor
 // ==========================================================================
-#include <ApogeeSQ212.h>
+#include <sensors/ApogeeSQ212.h>
 const int8_t SQ212Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t SQ212Data = 2;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const uint8_t SQ212_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
@@ -83,7 +83,7 @@ ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
 // ==========================================================================
 //    Bosch BME280 Environmental Sensor (Temperature, Humidity, Pressure)
 // ==========================================================================
-#include <BoschBME280.h>
+#include <sensors/BoschBME280.h>
 uint8_t BMEi2c_addr = 0x76;  // The BME280 can be addressed either as 0x76 or 0x77
 // const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // Create and return the Bosch BME280 sensor object
@@ -93,7 +93,7 @@ BoschBME280 bme280(I2CPower, BMEi2c_addr);
 // ==========================================================================
 //    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
-#include <CampbellOBS3.h>
+#include <sensors/CampbellOBS3.h>
 const int8_t OBS3Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t OBS3numberReadings = 10;
 const uint8_t OBS3_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
@@ -116,7 +116,7 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OB
 // ==========================================================================
 //    Decagon 5TM Soil Moisture Sensor
 // ==========================================================================
-#include <Decagon5TM.h>
+#include <sensors/Decagon5TM.h>
 const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
 const int8_t SDI12Data = 7;  // The pin the 5TM is attached to
 const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
@@ -127,7 +127,7 @@ Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
 // ==========================================================================
 //    Decagon CTD Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
-#include <DecagonCTD.h>
+#include <sensors/DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const uint8_t CTDnumberReadings = 6;  // The number of readings to average
 // const int8_t SDI12Data = 7;  // The pin the CTD is attached to
@@ -139,7 +139,7 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 // ==========================================================================
 //    Decagon ES2 Conductivity and Temperature Sensor
 // ==========================================================================
-#include <DecagonES2.h>
+#include <sensors/DecagonES2.h>
 const char *ES2SDI12address = "3";  // The SDI-12 Address of the ES2
 // const int8_t SDI12Data = 7;  // The pin the ES2 is attached to
 // const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
@@ -151,7 +151,7 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
 // ==========================================================================
 //    External Voltage via TI ADS1115
 // ==========================================================================
-#include <ExternalVoltage.h>
+#include <sensors/ExternalVoltage.h>
 const int8_t VoltPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t VoltData = 0;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const float VoltGain = 10; // Default 1/gain for grove voltage divider is 10x
@@ -159,6 +159,16 @@ const uint8_t Volt_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
 const uint8_t VoltReadsToAvg = 1; // Only read one sample
 // Create and return the External Voltage sensor object
 ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, Volt_ADS1115Address, VoltReadsToAvg);
+
+
+// ==========================================================================
+//    Freescale Semiconductor MPL115A2 Barometer
+// ==========================================================================
+#include <sensors/FreescaleMPL115A2.h>
+// const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const uint8_t MPL115A2ReadingsToAvg = 1;
+// Create and return the MPL115A2 barometer sensor object
+MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 
 
 // ==========================================================================
@@ -189,7 +199,7 @@ SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, on
 //   NeoSWSerial::rxISR( *portInputRegister( digitalPinToPort( SonarData ) ) );
 // }
 
-#include <MaxBotixSonar.h>
+#include <sensors/MaxBotixSonar.h>
 const int8_t SonarPower = 22;  // Excite (power) pin (-1 if unconnected)
 const int8_t Sonar1Trigger = A1;  // Trigger pin (a negative number if unconnected) (A1 = 25)
 const int8_t Sonar2Trigger = A2;  // Trigger pin (a negative number if unconnected) (A2 = 26)
@@ -201,7 +211,7 @@ MaxBotixSonar sonar2(sonarSerial, SonarPower, Sonar2Trigger) ;
 // ==========================================================================
 //    Maxim DS18 One Wire Temperature Sensor
 // ==========================================================================
-#include <MaximDS18.h>
+#include <sensors/MaximDS18.h>
 // OneWire Address [array of 8 hex characters]
 DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA, 0x81, 0x16, 0x03, 0x0C};
 DeviceAddress OneWireAddress2 = {0x28, 0xFF, 0x57, 0x90, 0x82, 0x16, 0x04, 0x67};
@@ -216,14 +226,14 @@ MaximDS18 ds18_2(OneWireAddress2, OneWirePower, OneWireBus);
 MaximDS18 ds18_3(OneWireAddress3, OneWirePower, OneWireBus);
 MaximDS18 ds18_4(OneWireAddress4, OneWirePower, OneWireBus);
 MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
-// Create and return the Maxim DS18 sensor object (use this form for a single sensor on bus with an unknow address)
-// MaximDS18 ds18_5(OneWirePower, OneWireBus);
+// Create and return the Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
+// MaximDS18 ds18_u(OneWirePower, OneWireBus);
 
 
 // ==========================================================================
 //    MeaSpecMS5803 (Pressure, Temperature)
 // ==========================================================================
-#include <MeaSpecMS5803.h>
+#include <sensors/MeaSpecMS5803.h>
 // const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t MS5803i2c_addr = 0x76;  // The MS5803 can be addressed either as 0x76 or 0x77
 const int MS5803maxPressure = 14;  // The maximum pressure measurable by the specific MS5803 model
@@ -233,23 +243,13 @@ MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803Readings
 
 
 // ==========================================================================
-//    Freescale Semiconductor MPL115A2 Barometer
-// ==========================================================================
-#include <FreescaleMPL115A2.h>
-// const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-const uint8_t MPL115A2ReadingsToAvg = 1;
-// Create and return the MPL115A2 barometer sensor object
-MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
-
-
-// ==========================================================================
 //    External I2C Rain Tipping Bucket Counter
 // ==========================================================================
-#include <RainCounterI2C.h>
+#include <sensors/RainCounterI2C.h>
 const uint8_t RainCounterI2CAddress = 0x08;  // I2C Address for external tip counter
 const float depthPerTipEvent = 0.2;  // rain depth in mm per tip event
 // Create and return the Rain Counter sensor object
-RainCounterI2C tip(RainCounterI2CAddress, depthPerTipEvent);
+RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 
 
 // Set up a serial port for modbus communication - in this case, using AltSoftSerial
@@ -259,103 +259,124 @@ AltSoftSerial modbusSerial;
 // ==========================================================================
 //    Keller Acculevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
-#include <KellerAcculevel.h>
+#include <sensors/KellerAcculevel.h>
 byte acculevelModbusAddress = 0x01;  // The modbus address of KellerAcculevel
-const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends taking and averaging a few readings
 // Create and return the Keller Acculevel sensor object
-KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, modbusPower, max485EnablePin, acculevelNumberReadings);
+KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, acculevelNumberReadings);
 
 
 // ==========================================================================
 //    Yosemitech Y504 Dissolved Oxygen Sensor
 // ==========================================================================
-#include <YosemitechY504.h>
-byte y504modbusAddress = 0x04;  // The modbus address of the Y504
-// const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+#include <sensors/YosemitechY504.h>
+byte y504ModbusAddress = 0x04;  // The modbus address of the Y504
+// const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y504NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 // Create and return the Yosemitech Y504 dissolved oxygen sensor object
-YosemitechY504 y504(y504modbusAddress, modbusSerial, modbusPower, max485EnablePin, y504NumberReadings);
+YosemitechY504 y504(y504ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y504NumberReadings);
 
 
 // ==========================================================================
 //    Yosemitech Y510 Turbidity Sensor
 // ==========================================================================
-#include <YosemitechY510.h>
-byte y510modbusAddress = 0x0B;  // The modbus address of the Y510
-// const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+#include <sensors/YosemitechY510.h>
+byte y510ModbusAddress = 0x0B;  // The modbus address of the Y510
+// const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y510NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 // Create and return the Y510-B Turbidity sensor object
-YosemitechY510 y510(y510modbusAddress, modbusSerial, modbusPower, max485EnablePin, y510NumberReadings);
+YosemitechY510 y510(y510ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y510NumberReadings);
 
 
 // ==========================================================================
 //    Yosemitech Y511 Turbidity Sensor with Wiper
 // ==========================================================================
-#include <YosemitechY511.h>
-byte y511modbusAddress = 0x1A;  // The modbus address of the Y511
-// const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+#include <sensors/YosemitechY511.h>
+byte y511ModbusAddress = 0x1A;  // The modbus address of the Y511
+// const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y511NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 // Create and return the Y511-A Turbidity sensor object
-YosemitechY511 y511(y511modbusAddress, modbusSerial, modbusPower, max485EnablePin, y511NumberReadings);
+YosemitechY511 y511(y511ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y511NumberReadings);
 
 
 // ==========================================================================
 //    Yosemitech Y514 Chlorophyll Sensor
 // ==========================================================================
-#include <YosemitechY514.h>
-byte y514modbusAddress = 0x14;  // The modbus address of the Y514
-// const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+#include <sensors/YosemitechY514.h>
+byte y514ModbusAddress = 0x14;  // The modbus address of the Y514
+// const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y514NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 // Create and return the Y514 chlorophyll sensor object
-YosemitechY514 y514(y514modbusAddress, modbusSerial, modbusPower, max485EnablePin, y514NumberReadings);
+YosemitechY514 y514(y514ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y514NumberReadings);
 
 
 // ==========================================================================
 //    Yosemitech Y520 Conductivity Sensor
 // ==========================================================================
-#include <YosemitechY520.h>
-byte y520modbusAddress = 0x20;  // The modbus address of the Y520
-// const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+#include <sensors/YosemitechY520.h>
+byte y520ModbusAddress = 0x20;  // The modbus address of the Y520
+// const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y520NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 // Create and return the Y520 conductivity sensor object
-YosemitechY520 y520(y520modbusAddress, modbusSerial, modbusPower, max485EnablePin, y520NumberReadings);
+YosemitechY520 y520(y520ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y520NumberReadings);
 
 
 // ==========================================================================
 //    Yosemitech Y532 pH
 // ==========================================================================
-#include <YosemitechY532.h>
-byte y532modbusAddress = 0x32;  // The modbus address of the Y532
-// const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+#include <sensors/YosemitechY532.h>
+byte y532ModbusAddress = 0x32;  // The modbus address of the Y532
+// const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
 // Create and return the Yosemitech Y532 pH sensor object
-YosemitechY532 y532(y532modbusAddress, modbusSerial, modbusPower, max485EnablePin, y532NumberReadings);
+YosemitechY532 y532(y532ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y532NumberReadings);
+
+
+// ==========================================================================
+//    Yosemitech Y550 COD Sensor with Wiper
+// ==========================================================================
+#include <sensors/YosemitechY550.h>
+byte y550ModbusAddress = 0x50;  // The modbus address of the Y550
+// const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
+// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+const uint8_t y550NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
+// Create and return the Y550 conductivity sensor object
+YosemitechY550 y550(y550ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y550NumberReadings);
 
 
 // ==========================================================================
 //    Yosemitech Y4000 Multiparameter Sonde (DOmgL, Turbidity, Cond, pH, Temp, ORP, Chlorophyll, BGA)
 // ==========================================================================
-#include <YosemitechY4000.h>
-byte y4000modbusAddress = 0x05;  // The modbus address of the Y4000
-// const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+#include <sensors/YosemitechY4000.h>
+byte y4000ModbusAddress = 0x05;  // The modbus address of the Y4000
+// const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y4000NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 // Create and return the Yosemitech Y4000 multi-parameter sensor object
-YosemitechY4000 y4000(y4000modbusAddress, modbusSerial, modbusPower, max485EnablePin, y4000NumberReadings);
+YosemitechY4000 y4000(y4000ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y4000NumberReadings);
 
 
 // ==========================================================================
 //    Zebra Tech D-Opto Dissolved Oxygen Sensor
 // ==========================================================================
-#include <ZebraTechDOpto.h>
+#include <sensors/ZebraTechDOpto.h>
 const char *DOptoDI12address = "5";  // The SDI-12 Address of the Zebra Tech D-Opto
 // const int8_t SDI12Data = 7;  // The pin the D-Opto is attached to
 // const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
@@ -397,12 +418,13 @@ Variable *variableList[] = {
     new MaximDS18_Temp(&ds18_3),
     new MaximDS18_Temp(&ds18_4),
     new MaximDS18_Temp(&ds18_5),
+    // new MaximDS18_Temp(&ds18_u),
     new MeaSpecMS5803_Temp(&ms5803),
     new MeaSpecMS5803_Pressure(&ms5803),
     new MPL115A2_Temp(&mpl115a2),
     new MPL115A2_Pressure(&mpl115a2),
-    new RainCounterI2C_Tips(&tip),
-    new RainCounterI2C_Depth(&tip),
+    new RainCounterI2C_Tips(&tbi2c),
+    new RainCounterI2C_Depth(&tbi2c),
     new KellerAcculevel_Pressure(&acculevel),
     new KellerAcculevel_Temp(&acculevel),
     new KellerAcculevel_Height(&acculevel),
