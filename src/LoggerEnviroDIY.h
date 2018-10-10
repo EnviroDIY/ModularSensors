@@ -8,16 +8,17 @@
  * http://data.enviroDIY.org
 */
 
+// Header Guards
 #ifndef LoggerEnviroDIY_h
 #define LoggerEnviroDIY_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
-#include "ModSensorDebugger.h"
 
-#include "LoggerModem.h"  // To communicate with the internet
+// Included Dependencies
+#include "ModSensorDebugger.h"
 #include "LoggerBase.h"
+#include "LoggerModem.h"
 
 // ============================================================================
 //  Functions for the EnviroDIY data portal receivers.
@@ -29,6 +30,7 @@ public:
     LoggerEnviroDIY(const char *loggerID, uint16_t loggingIntervalMinutes,
                     int8_t SDCardPin, int8_t mcuWakePin,
                     VariableArray *inputArray);
+    virtual ~LoggerEnviroDIY();
 
     // Adds a loggerModem objct to the logger
     // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
@@ -99,4 +101,4 @@ private:
     const char *_samplingFeature;
 };
 
-#endif
+#endif  // Header Guard

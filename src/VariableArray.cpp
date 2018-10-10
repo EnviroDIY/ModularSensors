@@ -19,6 +19,9 @@ VariableArray::VariableArray(int variableCount, Variable *variableList[])
     _maxSamplestoAverage = countMaxToAverage();
     _sensorCount = getSensorCount();
 }
+// Destructor
+VariableArray::~VariableArray(){}
+
 
 // This counts and returns the number of calculated variables
 int VariableArray::getCalculatedVariableCount(void)

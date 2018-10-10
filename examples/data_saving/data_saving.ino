@@ -19,7 +19,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerEnviroDIY.h>
 
 
 // ==========================================================================
@@ -39,7 +38,7 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
-#include <ProcessorStats.h>
+#include <sensors/ProcessorStats.h>
 
 const long serialBaud = 115200;   // Baud rate for the primary serial port for debugging
 const int8_t greenLED = 8;        // MCU pin for the green LED (-1 if not applicable)
@@ -90,7 +89,7 @@ const long ModemBaud = 9600;
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
 TinyGsm *tinyModem = new TinyGsm(ModemSerial);
 
-// // Use this if you want to spy on modem communication
+// Use this if you want to spy on modem communication
 // #include <StreamDebugger.h>
 // StreamDebugger modemDebugger(Serial1, Serial);
 // TinyGsm *tinyModem = new TinyGsm(modemDebugger);
@@ -262,12 +261,13 @@ const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
 
 // Create the loggerModem instance
+#include <LoggerModem.h>
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 #if defined(TINY_GSM_MODEM_ESP8266)
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
 #elif defined(TINY_GSM_MODEM_XBEE)
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
-// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
+// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
 #elif defined(TINY_GSM_MODEM_UBLOX)
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
 #else
@@ -283,7 +283,7 @@ Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-e
 // ==========================================================================
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
-#include <MaximDS3231.h>
+#include <sensors/MaximDS3231.h>
 // Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
 // Create the temperature variable object for the DS3231 and return a variable-type pointer to it
@@ -298,7 +298,7 @@ AltSoftSerial modbusSerial;
 // ==========================================================================
 //    Yosemitech Y504 Dissolved Oxygen Sensor
 // ==========================================================================
-#include <YosemitechY504.h>
+#include <sensors/YosemitechY504.h>
 byte y504ModbusAddress = 0x04;  // The modbus address of the Y504
 const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
@@ -317,7 +317,7 @@ Variable *y504Temp = new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-123
 // ==========================================================================
 //    Yosemitech Y511 Turbidity Sensor with Wiper
 // ==========================================================================
-#include <YosemitechY511.h>
+#include <sensors/YosemitechY511.h>
 byte y511ModbusAddress = 0x1A;  // The modbus address of the Y511
 // const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 // const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
@@ -333,7 +333,7 @@ Variable *y511Temp = new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-123
 // ==========================================================================
 //    Yosemitech Y514 Chlorophyll Sensor
 // ==========================================================================
-#include <YosemitechY514.h>
+#include <sensors/YosemitechY514.h>
 byte y514ModbusAddress = 0x14;  // The modbus address of the Y514
 // const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 // const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
@@ -349,7 +349,7 @@ Variable *y514Temp = new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-123
 // ==========================================================================
 //    Yosemitech Y520 Conductivity Sensor
 // ==========================================================================
-#include <YosemitechY520.h>
+#include <sensors/YosemitechY520.h>
 byte y520ModbusAddress = 0x20;  // The modbus address of the Y520
 // const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 // const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
@@ -365,6 +365,7 @@ Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-123
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
+#include <VariableArray.h>
 
 // Put all of the variable pointers into an Array
 // NOTE:  Since we've created all of the variable pointers above, we can just
@@ -390,6 +391,7 @@ int variableCount_complete = sizeof(variableList_complete) / sizeof(variableList
 // Create the VariableArray object
 VariableArray arrayComplete(variableCount_complete, variableList_complete);
 // Create the new logger instance
+#include <LoggerEnviroDIY.h>
 LoggerEnviroDIY loggerComplete(LoggerID, loggingInterval, sdCardPin, wakePin, &arrayComplete);
 
 

@@ -7,14 +7,15 @@
  *This file is for the EnviroDIY logging functions - ie, sending get requests to DreamHost
 */
 
+// Header Guards
 #ifndef LoggerDreamHost_h
 #define LoggerDreamHost_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
-#include "ModSensorDebugger.h"
 
+// Included Dependencies
+#include "ModSensorDebugger.h"
 #include "LoggerEnviroDIY.h"
 
 
@@ -30,6 +31,7 @@ public:
     LoggerDreamHost(const char *loggerID, uint16_t loggingIntervalMinutes,
                     int8_t SDCardPin, int8_t mcuWakePin,
                     VariableArray *inputArray);
+    virtual ~LoggerDreamHost();
 
     // Functions for private SWRC server
     void setDreamHostPortalRX(const char *URL);
@@ -74,4 +76,4 @@ private:
     bool _dualPost = true;
 };
 
-#endif
+#endif  // Header Guard

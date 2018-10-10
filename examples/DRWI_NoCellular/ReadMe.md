@@ -27,7 +27,7 @@ const char *LoggerID = "XXXX";
 // ==========================================================================
 //    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
-#include <CampbellOBS3.h>
+#include <sensors/CampbellOBS3.h>
 const int8_t OBS3Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t OBS3numberReadings = 10;
 const uint8_t OBS3_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC

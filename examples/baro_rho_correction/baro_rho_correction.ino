@@ -19,7 +19,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerEnviroDIY.h>
 
 
 // ==========================================================================
@@ -39,7 +38,7 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
-#include <ProcessorStats.h>
+#include <sensors/ProcessorStats.h>
 
 const long serialBaud = 115200;   // Baud rate for the primary serial port for debugging
 const int8_t greenLED = 8;        // MCU pin for the green LED (-1 if not applicable)
@@ -90,7 +89,7 @@ const long ModemBaud = 9600;
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
 TinyGsm *tinyModem = new TinyGsm(ModemSerial);
 
-// // Use this if you want to spy on modem communication
+// Use this if you want to spy on modem communication
 // #include <StreamDebugger.h>
 // StreamDebugger modemDebugger(Serial1, Serial);
 // TinyGsm *tinyModem = new TinyGsm(modemDebugger);
@@ -264,6 +263,7 @@ const char *wifiPwd = "phone970";  // The password for connecting to WiFi, unnec
 // const char *wifiPwd = "W4171n843";  // The password for connecting to WiFi, unnecessary for gprs
 
 // Create the loggerModem instance
+#include <LoggerModem.h>
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 #if defined(TINY_GSM_MODEM_ESP8266)
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
@@ -285,7 +285,7 @@ Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-e
 // ==========================================================================
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
-#include <MaximDS3231.h>
+#include <sensors/MaximDS3231.h>
 // Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
 // Create the temperature variable object for the DS3231
@@ -295,7 +295,7 @@ Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-12
 // ==========================================================================
 //    Bosch BME280 Environmental Sensor (Temperature, Humidity, Pressure)
 // ==========================================================================
-#include <BoschBME280.h>
+#include <sensors/BoschBME280.h>
 uint8_t BMEi2c_addr = 0x77;
 // The BME280 can be addressed either as 0x77 (Adafruit default) or 0x76 (Grove default)
 // Either can be physically mofidied for the other address
@@ -312,7 +312,7 @@ Variable *bme280Alt = new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh
 // ==========================================================================
 //    Maxim DS18 One Wire Temperature Sensor
 // ==========================================================================
-#include <MaximDS18.h>
+#include <sensors/MaximDS18.h>
 // OneWire Address [array of 8 hex characters]
 // DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA, 0x81, 0x16, 0x03, 0x0C};
 const int8_t OneWireBus = 4;  // Pin attached to the OneWire Bus (-1 if unconnected)
@@ -328,7 +328,7 @@ Variable *ds18Temp = new MaximDS18_Temp(&ds18_u, "12345678-abcd-1234-efgh-123456
 // ==========================================================================
 //    MeaSpecMS5803 (Pressure, Temperature)
 // ==========================================================================
-#include <MeaSpecMS5803.h>
+#include <sensors/MeaSpecMS5803.h>
 // const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t MS5803i2c_addr = 0x76;  // The MS5803 can be addressed either as 0x76 (default) or 0x77
 const int MS5803maxPressure = 14;  // The maximum pressure measurable by the specific MS5803 model
@@ -432,6 +432,7 @@ Variable *calcCorrDepth = new Variable(calculateWaterDepthTempCorrected, rhoDept
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
+#include <VariableArray.h>
 // Put all of the variable pointers into an Array
 // NOTE:  Since we've created all of the variable pointers above, we can just
 // reference them by name here.
@@ -457,6 +458,7 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
 // Create a new logger instance
+#include <LoggerEnviroDIY.h>
 LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
@@ -563,7 +565,11 @@ void setup()
     EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Begin the logger
-    EnviroDIYLogger.begin();
+    mayfly.update();
+    Serial.print("Battery: ");
+    Serial.println(mayflyBatt->getValue());
+    if (mayflyBatt->getValue() > 3.7) EnviroDIYLogger.beginAndSync();
+    else EnviroDIYLogger.begin();
 }
 
 
@@ -573,5 +579,8 @@ void setup()
 void loop()
 {
     // Log the data
-    EnviroDIYLogger.log();
+    if (mayflyBatt->getValue() > 3.7)
+    // This will check against the battery level at the previous logging interval!
+        EnviroDIYLogger.logAndSend();
+    else EnviroDIYLogger.log();
 }

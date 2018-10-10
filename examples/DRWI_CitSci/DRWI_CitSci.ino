@@ -24,7 +24,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerDreamHost.h>
 
 
 // ==========================================================================
@@ -44,7 +43,7 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
-#include <ProcessorStats.h>
+#include <sensors/ProcessorStats.h>
 
 const long serialBaud = 115200;   // Baud rate for the primary serial port for debugging
 const int8_t greenLED = 8;        // MCU pin for the green LED (-1 if not applicable)
@@ -110,6 +109,7 @@ bool sleepFxn(void)
 // And we still need the connection information for the network
 const char *apn = "hologram";  // The APN for the gprs connection, unnecessary for WiFi
 // Create the loggerModem instance
+#include <LoggerModem.h>
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
 
@@ -118,7 +118,7 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepF
 // ==========================================================================
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
-#include <MaximDS3231.h>
+#include <sensors/MaximDS3231.h>
 // Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
 
@@ -126,7 +126,7 @@ MaximDS3231 ds3231(1);
 // ==========================================================================
 //    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
-#include <CampbellOBS3.h>
+#include <sensors/CampbellOBS3.h>
 const int8_t OBS3Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t OBS3numberReadings = 10;
 const uint8_t OBS3_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
@@ -149,7 +149,7 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OB
 // ==========================================================================
 //    Decagon CTD Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
-#include <DecagonCTD.h>
+#include <sensors/DecagonCTD.h>
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const uint8_t CTDnumberReadings = 6;  // The number of readings to average
 const int8_t SDI12Data = 7;  // The pin the CTD is attached to
@@ -161,6 +161,7 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
+#include <VariableArray.h>
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
@@ -178,7 +179,9 @@ Variable *variableList[] = {
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
+
 // Create a new logger instance
+#include <LoggerDreamHost.h>
 LoggerDreamHost EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
@@ -235,7 +238,6 @@ void setup()
     digitalWrite(sensorPowerPin, LOW);
 
     // Set up the sleep/wake pin for the modem and put it's inital value as "off"
-
     pinMode(modemSleepRqPin, OUTPUT);
     digitalWrite(modemSleepRqPin, LOW);
 

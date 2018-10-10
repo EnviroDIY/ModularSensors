@@ -7,16 +7,17 @@
  *This file is for the variable array class.
 */
 
+// Header Guards
 #ifndef VariableArray_h
 #define VariableArray_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
-#include "ModSensorDebugger.h"
 
-#include "SensorBase.h"
+// Included Dependencies
+#include "ModSensorDebugger.h"
 #include "VariableBase.h"
+#include "SensorBase.h"
 
 // Defines another class for interfacing with a list of pointers to sensor instances
 class VariableArray
@@ -24,6 +25,7 @@ class VariableArray
 public:
     // Constructor
     VariableArray(int variableCount, Variable *variableList[]);
+    virtual ~VariableArray();
 
     // Leave the internal variable list public
     Variable **arrayOfVars;
@@ -109,8 +111,8 @@ private:
     }
 #else
     #define prettyPrintArray(...)
-#endif
+#endif  // DEBUGGING_SERIAL_OUTPUT
 
 };
 
-#endif
+#endif  // Header Guard

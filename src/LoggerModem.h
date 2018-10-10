@@ -8,22 +8,21 @@
  *and adds in the power functions to turn the modem on and off.
 */
 
-// FOR DEBUGGING
-// #define TINY_GSM_MODEM_SIM800
-
+// Header Guards
 #ifndef LoggerModem_h
 #define LoggerModem_h
 
-#include <Arduino.h>
-
+// FOR DEBUGGING
 // #define MODEM_DEBUGGING_SERIAL_OUTPUT Serial
 // #define TINY_GSM_DEBUG Serial
+// #define TINY_GSM_MODEM_SIM800
+// #define TINY_GSM_YIELD() { delay(1); }
 
-#define TINY_GSM_YIELD() { delay(1); }
-#include <TinyGsmCommon.h>
-
-#include "SensorBase.h"
+// Included Dependencies
 #include "VariableBase.h"
+#include "SensorBase.h"
+#include <Arduino.h>
+#include <TinyGsmCommon.h>
 
 // Maximum time to wait for a reply to an AT command from the modem
 #define MODEM_MAX_REPLY_TIME 5000L
@@ -78,6 +77,7 @@ public:
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                 bool (*wakeFxn)(), bool (*sleepFxn)(),
                 TinyGsmModem *inModem, Client *inClient, const char *ssid, const char *pwd);
+    ~loggerModem();
 
     String getSensorName(void) override;
 
@@ -172,6 +172,7 @@ public:
                 RSSI_RESOLUTION,
                 "RSSI", UUID, customVarCode)
     {}
+    ~Modem_RSSI(){}
 };
 
 
@@ -185,8 +186,7 @@ public:
                 PERCENT_SIGNAL_RESOLUTION,
                 "signalPercent", UUID, customVarCode)
     {}
+    ~Modem_SignalPercent(){}
 };
 
-// #endif /* USE_TINY_GSM */
-
-#endif /* LoggerModem_h */
+#endif  // Header Guard

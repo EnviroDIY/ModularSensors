@@ -36,8 +36,7 @@ volatile bool Logger::startTesting = false;
 #endif
 
 
-// Initialization - cannot do this in constructor arduino has issues creating
-// instances of classes with non-empty constructors
+// Constructor
 Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
                int8_t SDCardPin, int8_t mcuWakePin,
                VariableArray *inputArray)
@@ -64,7 +63,9 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
     // Initialize with no file name
     _fileName = "";
     _autoFileName = true;
-};
+}
+// Destructor
+Logger::~Logger(){}
 
 
 // Sets the static timezone - this must be set

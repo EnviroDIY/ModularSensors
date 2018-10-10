@@ -1,6 +1,6 @@
 {
     "name": "EnviroDIY_ModularSensors",
-    "version": "0.14.0",
+    "version": "0.15.3",
     "description":  "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
     "keywords": "modular, sensor, sensors, datalogger, logger, low power, sleeping, EnviroDIY, ModularSensors, Mayfly, WikiWatershed",
     "platforms": "atmelavr, atmelsam",
@@ -44,6 +44,18 @@
     [
         "examples/*/*.ino"
     ],
+    "build":
+    {
+        "srcFilter":
+        [
+            "+<*.c>",
+            "+<*.cpp>",
+            "+<*.h>",
+            "+<sensors/*.c>",
+            "+<sensors/*.cpp>",
+            "+<sensors/*.h>"
+        ]
+    },
     "dependencies":
     [
         {
@@ -63,7 +75,7 @@
             "name": "EnableInterrupt",
             "library id": "311",
             "url": "https://github.com/GreyGnome/EnableInterrupt.git",
-            "version": "=0.9.8",
+            "version": "=1.0.0",
             "note": "GreyGnome's EnableInterrupt - Assign an interrupt to any supported pin on all Arduinos",
             "authors": [
                 "Mike 'GreyGnome' Schwager"
@@ -256,8 +268,8 @@
         },
         {
             "name": "TinyGSM",
-            "version": "https://github.com/EnviroDIY/TinyGSM.git#e0bac8d7dab34a416497377bd2c148e222fc6014",
-            "version_note": "=0.4.4",
+            "version": "https://github.com/EnviroDIY/TinyGSM.git#68886a2a27feb24a5c00e15e3753f88d323effa9",
+            "version_note": "=0.4.5",
             "note": "A small Arduino library for GPRS modules.",
             "authors": [
                 "Volodymyr Shymanskyy",

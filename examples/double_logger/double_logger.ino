@@ -41,7 +41,7 @@ const int8_t timeZone = -5;
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
-#include <ProcessorStats.h>
+#include <sensors/ProcessorStats.h>
 
 const long serialBaud = 115200;   // Baud rate for the primary serial port for debugging
 const int8_t greenLED = 8;        // MCU pin for the green LED (-1 if not applicable)
@@ -95,11 +95,13 @@ const bool modemStatusLevel = HIGH;  // The level of the status pin when the mod
 bool wakeFxn(void)
 {
     digitalWrite(modemSleepRqPin, LOW);
+    digitalWrite(redLED, HIGH);  // Because the XBee doesn't have any lights
     return true;
 }
 bool sleepFxn(void)
 {
     digitalWrite(modemSleepRqPin, HIGH);
+    digitalWrite(redLED, LOW);
     return true;
 }
 
@@ -118,7 +120,7 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepF
 // ==========================================================================
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
-#include <MaximDS3231.h>
+#include <sensors/MaximDS3231.h>
 // Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
 
@@ -126,7 +128,7 @@ MaximDS3231 ds3231(1);
 // ==========================================================================
 //    AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
-#include <AOSongAM2315.h>
+#include <sensors/AOSongAM2315.h>
 const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // Create and return the AOSong AM2315 sensor object
 AOSongAM2315 am2315(I2CPower);
