@@ -26,6 +26,8 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     _wakeFxn = wakeFxn;
     _sleepFxn = sleepFxn;
     _modemName = "unspecified modem";
+    _pwd = NULL;
+    _ssid = NULL;
 }
 loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                          bool (*wakeFxn)(), bool (*sleepFxn)(),
@@ -41,6 +43,7 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     _wakeFxn = wakeFxn;
     _sleepFxn = sleepFxn;
     _modemName = "unspecified modem";
+    _apn = NULL;
 }
 // Destructor
 loggerModem::~loggerModem(){}
@@ -60,8 +63,13 @@ bool loggerModem::setup(void)
     if (_powerPin >= 0) pinMode(_powerPin, OUTPUT);
     if (_dataPin >= 0) pinMode(_dataPin, INPUT);
 
-    // Turn the modem on, and if successful, begin
-    if(wake())
+    // Check if the modem was awake, wake it if not
+    // NOTE:  We ar NOT powering up the modem!  Set up will NOT be successful
+    // unless the modem is already powered external to this function.
+    bool wasAwake = (bitRead(_sensorStatus, 3) && bitRead(_sensorStatus, 4));
+    if(!wasAwake) success &= wake();
+
+    if (success)
     {
         // The begin() generally starts with a 5 second testAT(), that should
         // be enough time to allow any modem to be ready to respond
@@ -242,8 +250,11 @@ bool loggerModem::setup(void)
     }
     if (_modemName.indexOf("XBee") >= 0)
     {
-        MS_MOD_DBG(F("Using status timing for a Digi XBee\n"));
+        MS_MOD_DBG(F("Putting connection values into flash memory for the Digi XBee\n"));
         _indicatorTime_ms = 50;  // ??? WAG!
+        // XBee saves all configurations to flash, so we can set them here
+        if (_tinyModem->hasWifi()) _tinyModem->networkConnect(_ssid, _pwd);
+        else _tinyModem->gprsConnect(_apn, "", "");
     }
 
     // Set the status bit marking that the modem has been set up (bit 0)
@@ -251,6 +262,9 @@ bool loggerModem::setup(void)
     if (success) _sensorStatus |= 0b00000001;
     // Otherwise, set the status error bit (bit 7)
     else _sensorStatus |= 0b10000000;
+
+    // Put the modem to sleep after finishing setup
+    if(!wasAwake) success &= modemSleepPowerDown();
 
     return success;
 }
@@ -323,10 +337,14 @@ bool loggerModem::startSingleMeasurement(void)
     {
         // For the wifi modems, the SSID and password need to be set before they
         // can join a network.
-        // For cellular modems, network registration (should) happen automatically.
+        // For **MOST** cellular modems, network registration (should) happen automatically.
         // The GPRS bearer (APN) is then set after registration when making the GPRS
         // (data) link.
-        if (_ssid && _tinyModem->hasWifi() && !_tinyModem->isNetworkConnected())
+        // For XBee models, the SSID, password, and APN are always saved in
+        // the board's memory, even if power is disconnected, so those values
+        // are set in the setup function.
+        if (_ssid && _tinyModem->hasWifi() && !_tinyModem->isNetworkConnected() &&
+            _modemName.indexOf("XBee") < 0 )
         {
             success &= _tinyModem->networkConnect(_ssid, _pwd);
         }
@@ -362,11 +380,11 @@ bool loggerModem::addSingleMeasurementResult(void)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6))
     {
-        // The XBee needs to make an actual TCP connection and get some sort
+        // The WiFi XBee needs to make an actual TCP connection and get some sort
         // of response on that connection before it knows the signal quality.
         // Connecting to the NIST daytime server, which immediately returns a
         // 4 byte response and then closes the connection
-        if (_modemName.indexOf("XBee") >= 0)
+        if (_modemName.indexOf("XBee") >= 0  && _tinyModem->hasWifi())
         {
             MS_MOD_DBG(F("Connecting to NIST daytime server to check connection strength...\n"));
             IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
