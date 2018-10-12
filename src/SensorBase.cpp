@@ -262,7 +262,7 @@ bool Sensor::startSingleMeasurement(void)
     // Otherwise, make sure that the measurement start time and success bit (bit 6) are unset
     else
     {
-        MS_DBG(getSensorNameAndLocation, F(" isn't awake/active!  A measurement cannot be started."));
+        MS_DBG(getSensorNameAndLocation(), F(" isn't awake/active!  A measurement cannot be started."));
        _millisMeasurementRequested = 0;
        _sensorStatus &= 0b10111111;
         success = false;
@@ -476,7 +476,7 @@ bool Sensor::isWarmedUp(bool debug)
     if (elapsed_since_power_on > _warmUpTime_ms)
     {
         if (debug) MS_DBG(F("It's been "), (elapsed_since_power_on), F("ms, and "),
-              getSensorNameAndLocation, F(" should be warmed up!"));
+              getSensorNameAndLocation(), F(" should be warmed up!"));
         return true;
     }
     // If the sensor has power but the time hasn't passed, we still need to wait
