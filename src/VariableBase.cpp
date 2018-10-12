@@ -79,7 +79,7 @@ void Variable::attachSensor(int varNum, Sensor *parentSense)
     {
         MS_DBG(F("Attempting to register "), getVarName());
         MS_DBG(F(" to "), parentSense->getSensorName());
-        MS_DBG(F(" attached at "), parentSense->getSensorLocation(), F("...   \n"));
+        MS_DBG(F(" attached at "), parentSense->getSensorLocation(), F("...   "));
         parentSense->registerVariable(varNum, this);
     }
 }
@@ -92,17 +92,8 @@ void Variable::onSensorUpdate(Sensor *parentSense)
     if (!isCalculated)
     {
         _currentValue = parentSense->sensorValues[_varNum];
-        MS_DBG(F("... received "), _currentValue, '\n');
+        MS_DBG(F("... received "), _currentValue);
     }
-}
-
-
-// This is a helper - it returns the name of the parent sensor, if applicable
-// This is needed for dealing with variables in arrays
-String Variable::getParentSensorLocation(void)
-{
-    if (!isCalculated) return parentSensor->getSensorLocation();
-    else return "Calculated";
 }
 
 
@@ -110,7 +101,16 @@ String Variable::getParentSensorLocation(void)
 // This is needed for dealing with variables in arrays
 String Variable::getParentSensorName(void)
 {
-    if (!isCalculated) return parentSensor->getSensorName();
+    if (!isCalculated) return parentSensor->getSensorNameAndLocation();
+    else return "Calculated";
+}
+
+
+// This is a helper - it returns the name and location of the parent sensor, if applicable
+// This is needed for dealing with variables in arrays
+String Variable::getParentSensorNameAndLocation(void)
+{
+    if (!isCalculated) return parentSensor->getSensorNameAndLocation();
     else return "Calculated";
 }
 

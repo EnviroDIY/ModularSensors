@@ -85,7 +85,7 @@ bool CampbellOBS3::addSingleMeasurementResult(void)
 
         // Print out the calibration curve
         MS_DBG(F("Input calibration Curve: "));
-        MS_DBG(_x2_coeff_A, F("x^2 + "), _x1_coeff_B, F("x + "), _x0_coeff_C, '\n');
+        MS_DBG(_x2_coeff_A, F("x^2 + "), _x1_coeff_B, F("x + "), _x0_coeff_C);
 
         // Read Analog to Digital Converter (ADC)
         // Taking this reading includes the 8ms conversion delay.
@@ -97,16 +97,14 @@ bool CampbellOBS3::addSingleMeasurementResult(void)
         {
             // Apply the unique calibration curve for the given sensor
             calibResult = (_x2_coeff_A * sq(adcVoltage)) + (_x1_coeff_B * adcVoltage) + _x0_coeff_C;
-            MS_DBG(F("calibResult: "), calibResult, '\n');
+            MS_DBG(F("calibResult: "), calibResult);
         }
         else  // set invalid voltages back to -9999
         {
             adcVoltage = -9999;
-            MS_DBG('\n');
         }
     }
-    else MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
-         F(" is not currently measuring!\n"));
+    else MS_DBG(getSensorNameAndLocation(), F(" is not currently measuring!"));
 
     verifyAndAddMeasurementResult(OBS3_TURB_VAR_NUM, calibResult);
     verifyAndAddMeasurementResult(OBS3_VOLTAGE_VAR_NUM, adcVoltage);

@@ -139,7 +139,7 @@ bool BoschBME280::addSingleMeasurementResult(void)
     if (bitRead(_sensorStatus, 6))
     {
         // Read values
-        MS_DBG(F("Getting values from BME280\n"));
+        MS_DBG(F("Getting values from BME280"));
         temp = bme_internal.readTemperature();
         if (isnan(temp)) temp = -9999;
         humid = bme_internal.readHumidity();
@@ -153,7 +153,7 @@ bool BoschBME280::addSingleMeasurementResult(void)
         // May also return a very negative temp when receiving a bad response
         if ((temp == 0 && press == 0 && humid == 0) || temp < -40)
         {
-            MS_DBG(F("All values 0 or bad, assuming sensor non-response!\n"));
+            MS_DBG(F("All values 0 or bad, assuming sensor non-response!"));
             temp =  -9999;
             press = -9999;
             humid = -9999;
@@ -164,10 +164,9 @@ bool BoschBME280::addSingleMeasurementResult(void)
         MS_DBG(F("Temperature: "), temp);
         MS_DBG(F(" °C, Humidity: "), humid);
         MS_DBG(F(" %RH, Barometric Pressure: "), press);
-        MS_DBG(F(" Pa, Calculated Altitude: "), alt, F("m ASL\n"));
+        MS_DBG(F(" Pa, Calculated Altitude: "), alt, F("m ASL"));
     }
-    else MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
-         F(" is not currently measuring!\n"));
+    else MS_DBG(getSensorNameAndLocation(), F(" is not currently measuring!"));
 
     verifyAndAddMeasurementResult(BME280_TEMP_VAR_NUM, temp);
     verifyAndAddMeasurementResult(BME280_HUMIDITY_VAR_NUM, humid);

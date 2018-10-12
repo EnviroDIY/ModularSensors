@@ -88,8 +88,7 @@ bool YosemitechParent::wake(void)
     // Send the command to begin taking readings, trying up to 5 times
     bool success = false;
     int ntries = 0;
-    MS_DBG(F("Start Measurement on "), getSensorName(), F(" at "),
-           getSensorLocation());
+    MS_DBG(F("Start Measurement on "), getSensorNameAndLocation());
     while (!success && ntries < 5)
     {
         MS_DBG(F(" ("), ntries+1, F("): "));
@@ -101,11 +100,11 @@ bool YosemitechParent::wake(void)
     {
         // Update the time that the sensor was activated
         _millisSensorActivated = millis();
-        MS_DBG(getSensorName(), F(" at "), getSensorLocation(), F(" activated and measuring.\n"));
+        MS_DBG(getSensorNameAndLocation(), F(" activated and measuring."));
     }
     else
     {
-        MS_DBG(getSensorName(), F(" at "), getSensorLocation(), F(" was NOT activated!\n"));
+        MS_DBG(getSensorNameAndLocation(), F(" was NOT activated!"));
         // Make sure the activation time is zero and the wake success bit (bit 4) is unset
         _millisSensorActivated = 0;
         _sensorStatus &= 0b11101111;
@@ -115,10 +114,9 @@ bool YosemitechParent::wake(void)
     // Needed for newer sensors that do not immediate activate on getting power
     if ( _model == Y511 or _model == Y514 or _model == Y550 or _model == Y4000)
     {
-        MS_DBG(F("Activate Brush on "), getSensorName(), F(" at "),
-               getSensorLocation(), ':');
-        if (sensor.activateBrush()) MS_DBG(F("Brush activated.\n"));
-        else MS_DBG(F("Brush NOT activated!\n"));
+        MS_DBG(F("Activate Brush on "), getSensorNameAndLocation());
+        if (sensor.activateBrush()) MS_DBG(F("Brush activated."));
+        else MS_DBG(F("Brush NOT activated!"));
     }
 
     return success;
@@ -132,16 +130,14 @@ bool YosemitechParent::sleep(void)
     if(!checkPowerOn()){return true;}
     if(_millisSensorActivated == 0)
     {
-        MS_DBG(getSensorName(), F(" at "),
-               getSensorLocation(), F("Was not measuring!\n"));
+        MS_DBG(getSensorNameAndLocation(), F("was not measuring!"));
         return true;
     }
 
     // Send the command to begin taking readings, trying up to 5 times
     bool success = false;
     int ntries = 0;
-    MS_DBG(F("Stop Measurement on "), getSensorName(), F(" at "),
-           getSensorLocation());
+    MS_DBG(F("Stop Measurement on "), getSensorNameAndLocation());
     while (!success && ntries < 5)
     {
         MS_DBG(F(" ("), ntries+1, F("): "));
@@ -155,9 +151,9 @@ bool YosemitechParent::sleep(void)
         // Unset the status bits for sensor activation (bits 3 & 4) and measurement
         // request (bits 5 & 6)
         _sensorStatus &= 0b10000111;
-        MS_DBG(F("Measurements stopped.\n"));
+        MS_DBG(F("Measurements stopped."));
     }
-    else MS_DBG(F("Measurements NOT stopped!\n"));
+    else MS_DBG(F("Measurements NOT stopped!"));
 
     return success;
 }
@@ -168,22 +164,22 @@ void YosemitechParent::powerUp(void)
 {
     if (_powerPin >= 0)
     {
-        MS_DBG(F("Powering "), getSensorName(), F(" at "), getSensorLocation(),
-               F(" with pin "), _powerPin, '\n');
+        MS_DBG(F("Powering "), getSensorNameAndLocation(),
+               F(" with pin "), _powerPin);
         digitalWrite(_powerPin, HIGH);
         // Mark the time that the sensor was powered
         _millisPowerOn = millis();
     }
     if (_powerPin2 >= 0)
     {
-        MS_DBG(F("Applying secondary power to "), getSensorName(), F(" at "),
-                getSensorLocation(), F(" with pin "), _powerPin2, '\n');
+        MS_DBG(F("Applying secondary power to "), getSensorNameAndLocation(),
+               F(" with pin "), _powerPin2);
         digitalWrite(_powerPin2, HIGH);
     }
     if (_powerPin < 0 && _powerPin2 < 0)
     {
-        MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation(),
-               F(" is not controlled by this library.\n"));
+        MS_DBG(F("Power to "), getSensorNameAndLocation(),
+               F(" is not controlled by this library."));
     }
     // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
     _sensorStatus |= 0b00000110;
@@ -195,8 +191,8 @@ void YosemitechParent::powerDown(void)
 {
     if (_powerPin >= 0)
     {
-        MS_DBG(F("Turning off power to "), getSensorName(), F(" at "),
-               getSensorLocation(), F(" with pin "), _powerPin, '\n');
+        MS_DBG(F("Turning off power to "), getSensorNameAndLocation(),
+               F(" with pin "), _powerPin);
         digitalWrite(_powerPin, LOW);
         // Unset the power-on time
         _millisPowerOn = 0;
@@ -206,14 +202,14 @@ void YosemitechParent::powerDown(void)
     }
     if (_powerPin2 >= 0)
     {
-        MS_DBG(F("Turning off secondary power to "), getSensorName(), F(" at "),
-               getSensorLocation(), F(" with pin "), _powerPin2, '\n');
+        MS_DBG(F("Turning off secondary power to "), getSensorNameAndLocation(),
+               F(" with pin "), _powerPin2);
         digitalWrite(_powerPin2, LOW);
     }
     if (_powerPin < 0 && _powerPin2 < 0)
     {
-        MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation(),
-               F(" is not controlled by this library.\n"));
+        MS_DBG(F("Power to "), getSensorNameAndLocation(),
+               F(" is not controlled by this library."));
         // Do NOT unset any status bits or timestamps if we didn't really power down!
     }
 }
@@ -242,8 +238,7 @@ bool YosemitechParent::addSingleMeasurementResult(void)
                 float BGA = -9999;
 
                 // Get Values
-                MS_DBG(F("Get Values from"), getSensorName(), F(" at "),
-                       getSensorLocation(), F(":\n"));
+                MS_DBG(F("Get Values from"), getSensorNameAndLocation());
                 success = sensor.getValues(DOmgL, Turbidity, Cond, pH, Temp, ORP, Chlorophyll, BGA);
 
                 // Fix not-a-number values
@@ -259,10 +254,10 @@ bool YosemitechParent::addSingleMeasurementResult(void)
                 // For conductivity, convert mS/cm to µS/cm
                 if (Cond != -9999) Cond *= 1000;
 
-                MS_DBG(F("    "), sensor.getParameter(), '\n');
+                MS_DBG(F("    "), sensor.getParameter());
                 MS_DBG(F("    "), DOmgL, F(", "), Turbidity, F(", "), Cond, F(", "),
                                   pH, F(", "), Temp, F(", "), ORP, F(", "),
-                                  Chlorophyll, F(", "), BGA, '\n');
+                                  Chlorophyll, F(", "), BGA);
 
                 // Put values into the array
                 verifyAndAddMeasurementResult(0, DOmgL);
@@ -284,8 +279,7 @@ bool YosemitechParent::addSingleMeasurementResult(void)
                 float thirdValue = -9999;
 
                 // Get Values
-                MS_DBG(F("Get Values from"), getSensorName(), F(" at "),
-                       getSensorLocation(), F(":\n"));
+                MS_DBG(F("Get Values from"), getSensorNameAndLocation());
                 success = sensor.getValues(parmValue, tempValue, thirdValue);
 
                 // Fix not-a-number values
@@ -296,13 +290,13 @@ bool YosemitechParent::addSingleMeasurementResult(void)
                 // For conductivity, convert mS/cm to µS/cm
                 if (_model == Y520 and parmValue != -9999) parmValue *= 1000;
 
-                MS_DBG(F("    "), sensor.getParameter(), F(": "), parmValue, '\n');
-                MS_DBG(F("    Temp: "), tempValue, '\n');
+                MS_DBG(F("    "), sensor.getParameter(), F(": "), parmValue);
+                MS_DBG(F("    Temp: "), tempValue);
 
                 // Not all sensors return a third value
                 if (_numReturnedVars > 2)
                 {
-                    MS_DBG(F("    Third: "), thirdValue, '\n');
+                    MS_DBG(F("    Third: "), thirdValue);
                 }
 
                 // Put values into the array
@@ -312,8 +306,7 @@ bool YosemitechParent::addSingleMeasurementResult(void)
             }
         }
     }
-    else MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
-         F(" is not currently measuring!\n"));
+    else MS_DBG(getSensorNameAndLocation(), F(" is not currently measuring!"));
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;

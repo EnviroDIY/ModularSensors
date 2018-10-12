@@ -27,7 +27,7 @@
     namespace {
         template<typename T>
         static void PRINTOUT(T last) {
-            STANDARD_SERIAL_OUTPUT.print(last);
+            STANDARD_SERIAL_OUTPUT.println(last);
         }
 
         template<typename T, typename... Args>
@@ -43,7 +43,7 @@
     namespace {
         template<typename T>
         static void MS_DBG(T last) {
-            DEBUGGING_SERIAL_OUTPUT.print(last);
+            DEBUGGING_SERIAL_OUTPUT.println(last);
         }
 
         template<typename T, typename... Args>

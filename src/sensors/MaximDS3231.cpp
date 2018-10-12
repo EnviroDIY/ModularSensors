@@ -49,7 +49,7 @@ bool MaximDS3231::startSingleMeasurement(void)
     // force a temperature sampling and conversion
     // this function already has a forced wait for the conversion to complete
     // TODO:  Test how long the conversion takes, update DS3231 lib accordingly!
-    MS_DBG(F("Forcing new temperature reading by DS3231\n"));
+    MS_DBG(F("Forcing new temperature reading by DS3231"));
     rtc.convertTemperature(false);
 
     return true;
@@ -59,9 +59,9 @@ bool MaximDS3231::startSingleMeasurement(void)
 bool MaximDS3231::addSingleMeasurementResult(void)
 {
     // get the temperature value
-    MS_DBG(F("Getting temperature from DS3231\n"));
+    MS_DBG(F("Getting temperature from DS3231"));
     float tempVal = rtc.getTemperature();
-    MS_DBG(F("Current temp is "), tempVal, '\n');
+    MS_DBG(F("Current temp is "), tempVal);
 
     verifyAndAddMeasurementResult(DS3231_TEMP_VAR_NUM, tempVal);
 

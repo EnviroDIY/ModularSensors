@@ -83,22 +83,22 @@ void KellerParent::powerUp(void)
 {
     if (_powerPin >= 0)
     {
-        MS_DBG(F("Powering "), getSensorName(), F(" at "), getSensorLocation(),
-               F(" with pin "), _powerPin, '\n');
+        MS_DBG(F("Powering "), getSensorNameAndLocation(),
+               F(" with pin "), _powerPin);
         digitalWrite(_powerPin, HIGH);
         // Mark the time that the sensor was powered
         _millisPowerOn = millis();
     }
     if (_powerPin2 >= 0)
     {
-        MS_DBG(F("Applying secondary power to "), getSensorName(), F(" at "), getSensorLocation(),
-               F(" with pin "), _powerPin2, '\n');
+        MS_DBG(F("Applying secondary power to "), getSensorNameAndLocation(),
+               F(" with pin "), _powerPin2);
         digitalWrite(_powerPin2, HIGH);
     }
     if (_powerPin < 0 && _powerPin2 < 0)
     {
-        MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation(),
-               F(" is not controlled by this library.\n"));
+        MS_DBG(F("Power to "), getSensorNameAndLocation(),
+               F(" is not controlled by this library."));
     }
     // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
     _sensorStatus |= 0b00000110;
@@ -110,8 +110,8 @@ void KellerParent::powerDown(void)
 {
     if (_powerPin >= 0)
     {
-        MS_DBG(F("Turning off power to "), getSensorName(), F(" at "),
-               getSensorLocation(), F(" with pin "), _powerPin, '\n');
+        MS_DBG(F("Turning off power to "), getSensorNameAndLocation(),
+               F(" with pin "), _powerPin);
         digitalWrite(_powerPin, LOW);
         // Unset the power-on time
         _millisPowerOn = 0;
@@ -121,14 +121,14 @@ void KellerParent::powerDown(void)
     }
     if (_powerPin2 >= 0)
     {
-        MS_DBG(F("Turning off secondary power to "), getSensorName(), F(" at "),
-               getSensorLocation(), F(" with pin "), _powerPin2, '\n');
+        MS_DBG(F("Turning off secondary power to "), getSensorNameAndLocation(),
+               F(" with pin "), _powerPin2);
         digitalWrite(_powerPin2, LOW);
     }
     if (_powerPin < 0 && _powerPin2 < 0)
     {
-        MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation(),
-               F(" is not controlled by this library.\n"));
+        MS_DBG(F("Power to "), getSensorNameAndLocation(),
+               F(" is not controlled by this library."));
         // Do NOT unset any status bits or timestamps if we didn't really power down!
     }
 }
@@ -149,8 +149,7 @@ bool KellerParent::addSingleMeasurementResult(void)
     if (bitRead(_sensorStatus, 6))
     {
         // Get Values
-        MS_DBG(F("Get Values from"), getSensorName(), F(" at "),
-               getSensorLocation(), F(":\n"));
+        MS_DBG(F("Get Values from"), getSensorNameAndLocation());
         success = sensor.getValues(waterPressureBar, waterTempertureC);
         waterDepthM = sensor.calcWaterDepthM(waterPressureBar, waterTempertureC);  // float calcWaterDepthM(float waterPressureBar, float waterTempertureC)
 
@@ -162,12 +161,11 @@ bool KellerParent::addSingleMeasurementResult(void)
         // For waterPressureBar, convert bar to millibar
         if (waterPressureBar != -9999) waterPressure_mBar = 1000*waterPressureBar;
 
-        MS_DBG(F("    Pressure_mbar:"), waterPressure_mBar, '\n');
-        MS_DBG(F("    Temp_C: "), waterTempertureC, '\n');
-        MS_DBG(F("    Height_m:"), waterDepthM, '\n');
+        MS_DBG(F("    Pressure_mbar:"), waterPressure_mBar);
+        MS_DBG(F("    Temp_C: "), waterTempertureC);
+        MS_DBG(F("    Height_m:"), waterDepthM);
     }
-    else MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
-         F(" is not currently measuring!\n"));
+    else MS_DBG(getSensorNameAndLocation(), F(" is not currently measuring!"));
 
     // Put values into the array
     verifyAndAddMeasurementResult(KELLER_PRESSURE_VAR_NUM, waterPressure_mBar);

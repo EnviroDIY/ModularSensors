@@ -14,9 +14,6 @@
 
 // FOR DEBUGGING
 // #define MODEM_DEBUGGING_SERIAL_OUTPUT Serial
-// #define TINY_GSM_DEBUG Serial
-// #define TINY_GSM_MODEM_SIM800
-// #define TINY_GSM_YIELD() { delay(1); }
 
 // Included Dependencies
 #include "VariableBase.h"
@@ -24,15 +21,38 @@
 #include <Arduino.h>
 #include <TinyGsmCommon.h>
 
-// Maximum time to wait for a reply to an AT command from the modem
-#define MODEM_MAX_REPLY_TIME 5000L
-// Maximum time the modem is allowed to search for the network
-#define MODEM_MAX_SEARCH_TIME 15000L
 
 #define MODEM_NUM_VARIABLES 2
-#define MODEM_WARM_UP_TIME_MS 0
-#define MODEM_STABILIZATION_TIME_MS 0
-#define MODEM_MEASUREMENT_TIME_MS 0
+
+// Set some default timing variables for the modems.
+// Some of these times are reset for specific modems in the modem set-up function
+// based on the values in the modem chip's datasheet.
+
+// Length of time after power is applied to module before the enable pin can be
+// called to turn on the module or other wake fxn can be used.  If the module
+// boots up as soon as power is applied, this value is 0.
+// This is used as the sensor variable _warmUpTime_ms.
+#define MODEM_WARM_UP_TIME_MS 50
+// Length of time from the completion of wake up function until UART port becomes
+// available for AT commands.  This is the MAXIMUM amount of time we will wait
+// for a response from the modem.
+// This is used as the sensor variable _stabilizationTime_ms.
+#define MODEM_ATRESPONSE_TIME_MS 5000L
+// The maximum amount of time we are willing to wait for a network connection
+// before accepting the modem signal strength.  Most modems do not give
+// real signal strength until they've connected to the network, which takes
+// more time in areas of weaker signal.
+// This is used as the sensor variable _measurementTime_ms.
+#define MODEM_MAX_SEARCH_TIME 15000L
+// Length of time from the completion of wake up  request until the modem status
+// pin begins to show an "on" status.
+// This is the modem-only variable _statusTime_ms.
+#define MODEM_STATUS_TIME_MS 5000
+// Approximate length of time for unit to gracefully close sockets and disconnect
+// from the network.  Most manufactures strongly recommend allowing a graceful
+// shut-down rather than a sudden power-off.
+// This is the modem-only variable _disconnetTime_ms.
+#define MODEM_DISCONNECT_TIME_MS 5000
 
 #define RSSI_VAR_NUM 0
 #define RSSI_RESOLUTION 0
@@ -45,7 +65,7 @@
     namespace {
         template<typename T>
         static void MS_MOD_DBG(T last) {
-            MODEM_DEBUGGING_SERIAL_OUTPUT.print(last);
+            MODEM_DEBUGGING_SERIAL_OUTPUT.println(last);
         }
 
         template<typename T, typename... Args>
@@ -147,7 +167,7 @@ private:
 
 private:
     bool _statusLevel;
-    uint32_t _indicatorTime_ms;
+    uint32_t _statusTime_ms;
     uint32_t _disconnetTime_ms;
     bool (*_wakeFxn)(void);
     bool (*_sleepFxn)(void);

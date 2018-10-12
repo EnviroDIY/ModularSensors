@@ -55,7 +55,7 @@ bool AOSongAM2315::addSingleMeasurementResult(void)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6))
     {
-        MS_DBG(F("Getting values from "), getSensorName(), '\n');
+        MS_DBG(F("Getting values from "), getSensorName());
         Adafruit_AM2315 am2315;  // create a sensor object
         ret_val = am2315.readTemperatureAndHumidity(temp_val, humid_val);
 
@@ -63,10 +63,9 @@ bool AOSongAM2315::addSingleMeasurementResult(void)
         if (!ret_val or isnan(humid_val)) humid_val = -9999;
 
         MS_DBG(F("Temp is: "), temp_val, F("°C"));
-        MS_DBG(F(" and humidity is: "), humid_val, F("%\n"));
+        MS_DBG(F(" and humidity is: "), humid_val, F("%"));
     }
-    else MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
-         F(" is not currently measuring!\n"));
+    else MS_DBG(getSensorNameAndLocation(), F(" is not currently measuring!"));
 
     verifyAndAddMeasurementResult(AM2315_TEMP_VAR_NUM, temp_val);
     verifyAndAddMeasurementResult(AM2315_HUMIDITY_VAR_NUM, humid_val);

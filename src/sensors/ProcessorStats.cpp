@@ -136,7 +136,7 @@ String ProcessorStats::getSensorLocation(void) {return BOARD;}
 bool ProcessorStats::addSingleMeasurementResult(void)
 {
     // Get the battery voltage
-    MS_DBG(F("Getting battery voltage\n"));
+    MS_DBG(F("Getting battery voltage"));
 
     float sensorValue_battery = -9999;
 
@@ -188,7 +188,7 @@ bool ProcessorStats::addSingleMeasurementResult(void)
     verifyAndAddMeasurementResult(PROCESSOR_BATTERY_VAR_NUM, sensorValue_battery);
 
     // Used only for debugging - can be removed
-    MS_DBG(F("Getting Free RAM\n"));
+    MS_DBG(F("Getting Free RAM"));
 
     #if defined __AVR__
     extern int __heap_start, *__brkval;

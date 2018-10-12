@@ -96,12 +96,10 @@ bool ExternalVoltage::addSingleMeasurementResult(void)
         {
             // Apply the gain calculation, with a defualt gain of 10 V/V Gain
             calibResult = adcVoltage * _gain ;
-            MS_DBG(F("calibResult: "), calibResult, '\n');
+            MS_DBG(F("calibResult: "), calibResult);
         }
-        else MS_DBG('\n');
     }
-    else MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
-         F(" is not currently measuring!\n"));
+    else MS_DBG(getSensorNameAndLocation(), F(" is not currently measuring!"));
 
     verifyAndAddMeasurementResult(EXT_VOLT_VAR_NUM, calibResult);
 

@@ -77,6 +77,13 @@ String Sensor::getSensorLocation(void)
 String Sensor::getSensorName(void){return _sensorName;}
 
 
+// This concatentates and returns the name and location.
+String Sensor::getSensorNameAndLocation(void)
+{
+    return getSensorName() + " at " + getSensorLocation();
+}
+
+
 // This returns the number of the power pin
 int8_t Sensor::getPowerPin(void){return _powerPin;}
 
@@ -111,16 +118,16 @@ void Sensor::powerUp(void)
 {
     if (_powerPin >= 0)
     {
-        MS_DBG(F("Powering "), getSensorName(), F(" at "), getSensorLocation(),
-               F(" with pin "), _powerPin, '\n');
+        MS_DBG(F("Powering "), getSensorNameAndLocation(),
+               F(" with pin "), _powerPin);
         digitalWrite(_powerPin, HIGH);
         // Mark the time that the sensor was powered
         _millisPowerOn = millis();
     }
     else
     {
-        MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation(),
-               F(" is not controlled by this library.\n"));
+        MS_DBG(F("Power to "), getSensorNameAndLocation(),
+               F(" is not controlled by this library."));
         // Mark the power-on time, just in case it  had not been marked
         if (_millisPowerOn == 0) _millisPowerOn = millis();
     }
@@ -134,8 +141,8 @@ void Sensor::powerDown(void)
 {
     if (_powerPin >= 0)
     {
-        MS_DBG(F("Turning off power to "), getSensorName(), F(" at "),
-               getSensorLocation(), F(" with pin "), _powerPin, '\n');
+        MS_DBG(F("Turning off power to "), getSensorNameAndLocation(),
+               F(" with pin "), _powerPin);
         digitalWrite(_powerPin, LOW);
         // Unset the power-on time
         _millisPowerOn = 0;
@@ -145,8 +152,8 @@ void Sensor::powerDown(void)
     }
     else
     {
-        MS_DBG(F("Power to "), getSensorName(), F(" at "), getSensorLocation(),
-               F(" is not controlled by this library.\n"));
+        MS_DBG(F("Power to "), getSensorNameAndLocation(),
+               F(" is not controlled by this library."));
         // Do NOT unset any status bits or timestamps if we didn't really power down!
     }
 }
@@ -158,14 +165,14 @@ bool Sensor::setup(void)
 {
     MS_DBG(F("Setting up "), getSensorName(), F(" attached at "),
            getSensorLocation(), F(" which can return up to "), _numReturnedVars,
-           F(" variable[s].\n"));
+           F(" variable[s]."));
 
     MS_DBG(F("It warms up in "), _warmUpTime_ms, F("ms, is stable after "),
            _stabilizationTime_ms, F("ms, and takes a single measurement in "),
-           _measurementTime_ms, F("ms.\n"));
+           _measurementTime_ms, F("ms."));
 
     MS_DBG(_measurementsToAverage);
-    MS_DBG(F(" individual measurements will be averaged for each reading.\n"));
+    MS_DBG(F(" individual measurements will be averaged for each reading."));
 
     if (_powerPin >= 0) pinMode(_powerPin, OUTPUT);
     if (_dataPin >= 0) pinMode(_dataPin, INPUT);
@@ -180,7 +187,7 @@ bool Sensor::setup(void)
 // The function to wake up a sensor
 bool Sensor::wake(void)
 {
-    MS_DBG(F("Waking "), getSensorName(), F(" at "), getSensorLocation(), '\n');
+    MS_DBG(F("Waking "), getSensorNameAndLocation());
     // Set the status bit for sensor activation attempt (bit 3)
     // Setting this bit even if the activation failed, to show the attempt was made
     _sensorStatus |= 0b00001000;
@@ -188,8 +195,7 @@ bool Sensor::wake(void)
     // Check if the sensor was successfully powered
     if (!bitRead(_sensorStatus, 2))
     {
-       MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
-              F(" doesn't have power and will never wake up!\n"));
+       MS_DBG(getSensorNameAndLocation(), F(" doesn't have power and will never wake up!"));
         // Make sure that the wake time and wake success bit (bit 4) are unset
         _millisSensorActivated = 0;
         _sensorStatus &= 0b11101111;
@@ -206,8 +212,7 @@ bool Sensor::wake(void)
     // result of this setup attempt!
     if (!bitRead(_sensorStatus, 0))
     {
-        MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
-               F(" was never properly set up, attempting setup now!\n"));
+        MS_DBG(getSensorNameAndLocation(), F(" was never properly set up, attempting setup now!"));
         setup();
     }
 
@@ -220,7 +225,7 @@ bool Sensor::wake(void)
 bool Sensor::sleep(void)
 {
     /***
-    MS_DBG(F("Putting "), getSensorName(), F(" at "), getSensorLocation(), F(" to sleep\n"));
+    MS_DBG(F("Putting "), getSensorNameAndLocation(), F(" to sleep"));
     // Unset the activation time
     _millisSensorActivated = 0;
     // Unset the status bits for sensor activation (bits 3 & 4) and measurement
@@ -240,8 +245,7 @@ bool Sensor::sleep(void)
 bool Sensor::startSingleMeasurement(void)
 {
     bool success = true;
-    MS_DBG(F("Starting measurement on "), getSensorName(), F(" at "),
-           getSensorLocation(), F(".\n"));
+    MS_DBG(F("Starting measurement on "), getSensorNameAndLocation());
     // Set the status bits for measurement requested (bit 5)
     // Setting this bit even if we failed to start a measurement to show that an attempt was made.
     _sensorStatus |= 0b00100000;
@@ -258,8 +262,7 @@ bool Sensor::startSingleMeasurement(void)
     // Otherwise, make sure that the measurement start time and success bit (bit 6) are unset
     else
     {
-        MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
-               F(" isn't awake/active!  A measurement cannot be started.\n"));
+        MS_DBG(getSensorNameAndLocation, F(" isn't awake/active!  A measurement cannot be started."));
        _millisMeasurementRequested = 0;
        _sensorStatus &= 0b10111111;
         success = false;
@@ -272,35 +275,30 @@ void Sensor::registerVariable(int varNum, Variable* var)
 {
     variables[varNum] = var;
     MS_DBG(F("... Registration from "));
-    MS_DBG(getSensorName(), F(" at "), getSensorLocation());
+    MS_DBG(getSensorNameAndLocation());
     MS_DBG(F(" for "));
     MS_DBG(var->getVarName());
-    MS_DBG(F(" accepted.\n"));
+    MS_DBG(F(" accepted."));
 }
 
 
 void Sensor::notifyVariables(void)
 {
-    MS_DBG(F("Notifying variables registered to "), getSensorName(), F(" at "),
-           getSensorLocation(), F(" of value update.\n"));
+    MS_DBG(F("Notifying variables registered to "), getSensorNameAndLocation(),
+           F(" of value update."));
 
     // Notify variables of update
     for (int i = 0; i < _numReturnedVars; i++)
     {
         if (variables[i] != NULL)  // Bad things happen if try to update nullptr
         {
-            MS_DBG(F("Sending value update from "));
-            MS_DBG(getSensorName(), F(" at "), getSensorLocation());
-            MS_DBG(F(" to variable "));
-            MS_DBG(i);
-            MS_DBG(F(" which is "));
-            MS_DBG(variables[i]->getVarName());
-            MS_DBG(F("...   "));
-            MS_DBG('\n');
-            variables[i]->onSensorUpdate(this);
+            MS_DBG(F("Sending value update from "), getSensorNameAndLocation(),
+                   F(" to variable "), i, F(" which is "),
+                   variables[i]->getVarName(), F("...   "));
+                   variables[i]->onSensorUpdate(this);
         }
         else MS_DBG(F("No variable registered for return value "), i,
-                    F("!  No update sent!\n"));
+                    F("!  No update sent!"));
     }
 }
 
@@ -308,8 +306,7 @@ void Sensor::notifyVariables(void)
 // This function just empties the value array
 void Sensor::clearValues(void)
 {
-    MS_DBG(F("Clearing value array for "), getSensorName(), F(" at "),
-           getSensorLocation(), F(".\n"));
+    MS_DBG(F("Clearing value array for "), getSensorNameAndLocation());
     for (int i = 0; i < _numReturnedVars; i++)
     {
         sensorValues[i] =  -9999;
@@ -326,8 +323,7 @@ void Sensor::verifyAndAddMeasurementResult(int resultNumber, float resultValue)
     if (sensorValues[resultNumber] == -9999 and resultValue != -9999)
     {
         MS_DBG(F("Putting "), resultValue, F(" in result array for variable "),
-               resultNumber, F(" from "), getSensorName(), F(" at "),
-               getSensorLocation(), F(".\n"));
+               resultNumber, F(" from "), getSensorNameAndLocation());
         sensorValues[resultNumber] =  resultValue;
         numberGoodMeasurementsMade[resultNumber] += 1;
     }
@@ -336,21 +332,20 @@ void Sensor::verifyAndAddMeasurementResult(int resultNumber, float resultValue)
     else if (sensorValues[resultNumber] != -9999 and resultValue != -9999)
     {
         MS_DBG(F("Adding "), resultValue, F(" to result array for variable "),
-               resultNumber, F(" from "), getSensorName(), F(" at "),
-               getSensorLocation(), F(".\n"));
+               resultNumber, F(" from "), getSensorNameAndLocation());
         sensorValues[resultNumber] +=  resultValue;
         numberGoodMeasurementsMade[resultNumber] += 1;
     }
     // If the new result is bad and there were only bad results, do nothing
     else if (sensorValues[resultNumber] == -9999 and resultValue == -9999)
         MS_DBG(F("Ignoring bad result for variable "),
-               resultNumber, F(" from "), getSensorName(), F(" at "),
-               getSensorLocation(), F("; no good results yet.\n"));
+               resultNumber, F(" from "), getSensorNameAndLocation(),
+               F("; no good results yet."));
     // If the new result is bad and there were already good results, do nothing
     else if (sensorValues[resultNumber] != -9999 and resultValue == -9999)
         MS_DBG(F("Ignoring bad result for variable "),
-               resultNumber, F(" from "), getSensorName(), F(" at "),
-               getSensorLocation(), F("; good results already in array.\n"));
+               resultNumber, F(" from "), getSensorNameAndLocation(),
+               F("; good results already in array."));
 }
 void Sensor::verifyAndAddMeasurementResult(int resultNumber, int resultValue)
 {
@@ -361,14 +356,13 @@ void Sensor::verifyAndAddMeasurementResult(int resultNumber, int resultValue)
 
 void Sensor::averageMeasurements(void)
 {
-    MS_DBG(F("Averaging results from "), getSensorName(), F(" at "),
-           getSensorLocation(), F(" over "), _measurementsToAverage,
-           F(" reading[s]\n"));
+    MS_DBG(F("Averaging results from "), getSensorNameAndLocation(),
+           F(" over "), _measurementsToAverage, F(" reading[s]"));
     for (int i = 0; i < _numReturnedVars; i++)
     {
         if (numberGoodMeasurementsMade[i] > 0)
             sensorValues[i] /=  numberGoodMeasurementsMade[i];
-        MS_DBG(F("    ->Result #"), i, F(": "), sensorValues[i], '\n');
+        MS_DBG(F("    ->Result #"), i, F(": "), sensorValues[i]);
     }
 }
 
@@ -429,15 +423,14 @@ bool Sensor::update(void)
 // This is a helper function to check if the power needs to be turned on
 bool Sensor::checkPowerOn(bool debug)
 {
-    if (debug) MS_DBG(F("Checking power status:  Power to "), getSensorName(),
-               F(" at "), getSensorLocation());
+    if (debug) MS_DBG(F("Checking power status:  Power to "), getSensorNameAndLocation());
     if (_powerPin >= 0)
     {
         int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
 
         if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
         {
-            if (debug) MS_DBG(F(" was off.\n"));
+            if (debug) MS_DBG(F(" was off."));
             // Reset time of power on, in-case it was set to a value
             if (_millisPowerOn != 0) _millisPowerOn = 0;
             // Unset the status bits for sensor power (bits 1 & 2),
@@ -447,7 +440,7 @@ bool Sensor::checkPowerOn(bool debug)
         }
         else
         {
-            if (debug) MS_DBG((" was on.\n"));
+            if (debug) MS_DBG((" was on."));
             // Mark the power-on time, just in case it  had not been marked
             if (_millisPowerOn == 0) _millisPowerOn = millis();
             // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
@@ -457,7 +450,7 @@ bool Sensor::checkPowerOn(bool debug)
     }
     else
     {
-        if (debug) MS_DBG(F(" is not controlled by this library.\n"));
+        if (debug) MS_DBG(F(" is not controlled by this library."));
         // Mark the power-on time, just in case it  had not been marked
         if (_millisPowerOn == 0) _millisPowerOn = millis();
         // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
@@ -474,8 +467,7 @@ bool Sensor::isWarmedUp(bool debug)
     // so the warm up time is essentially already passed.
     if (!bitRead(_sensorStatus, 2))
     {
-        if (debug) MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
-              F(" does not have power and cannot warm up!\n"));
+        if (debug) MS_DBG(getSensorNameAndLocation(), F(" does not have power and cannot warm up!"));
         return true;
     }
 
@@ -484,8 +476,7 @@ bool Sensor::isWarmedUp(bool debug)
     if (elapsed_since_power_on > _warmUpTime_ms)
     {
         if (debug) MS_DBG(F("It's been "), (elapsed_since_power_on), F("ms, and "),
-              getSensorName(), F(" at "), getSensorLocation(),
-              F(" should be warmed up!\n"));
+              getSensorNameAndLocation, F(" should be warmed up!"));
         return true;
     }
     // If the sensor has power but the time hasn't passed, we still need to wait
@@ -505,8 +496,7 @@ bool Sensor::isStable(bool debug)
     // stabilization time is essentially already passed
     if (!bitRead(_sensorStatus, 4))
     {
-        if (debug) MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
-               F(" is not active and cannot stabilize!\n"));
+        if (debug) MS_DBG(getSensorNameAndLocation(), F(" is not active and cannot stabilize!"));
         return true;
     }
 
@@ -515,8 +505,7 @@ bool Sensor::isStable(bool debug)
     if (elapsed_since_wake_up > _stabilizationTime_ms)
     {
         if (debug) MS_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
-               getSensorName(), F(" at "), getSensorLocation(),
-               F(" should be stable!\n"));
+               getSensorNameAndLocation(), F(" should be stable!"));
         return true;
     }
     // If the sensor has been activated but the time hasn't passed, we still need to wait
@@ -536,8 +525,7 @@ bool Sensor::isMeasurementComplete(bool debug)
     // so the measurement time is essentially already passed
     if (!bitRead(_sensorStatus, 6))
     {
-        if (debug) MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
-               F(" is not measuring and will not return a value!\n"));
+        if (debug) MS_DBG(getSensorNameAndLocation(), F(" is not measuring and will not return a value!"));
         return true;
     }
 
@@ -546,8 +534,8 @@ bool Sensor::isMeasurementComplete(bool debug)
     if (elapsed_since_meas_start > _measurementTime_ms)
     {
         if (debug) MS_DBG(F("It's been "), (elapsed_since_meas_start),
-               F("ms, and measurement by "), getSensorName(), F(" at "),
-               getSensorLocation(), F(" should be complete!\n"));
+                          F("ms, and measurement by "), getSensorNameAndLocation(),
+                          F(" should be complete!"));
         return true;
     }
     // If the sensor is measuring but the time hasn't passed, we still need to wait

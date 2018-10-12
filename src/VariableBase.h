@@ -51,9 +51,9 @@ public:
     // This is a helper - it returns the name of the parent sensor, if applicable
     // This is needed for dealing with variables in arrays
     String getParentSensorName(void);
+    // This is a helper - it returns the name and location of the parent sensor, if applicable
     // This is needed for dealing with variables in arrays
-    // This is a helper - it returns the "location" of the parent sensor, if applicable
-    String getParentSensorLocation(void);
+    String getParentSensorNameAndLocation(void);
 
     // This sets up the variable (generally attaching it to its parent)
     // virtual bool setup(void);

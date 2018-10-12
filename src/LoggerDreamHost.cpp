@@ -27,7 +27,7 @@ LoggerDreamHost::~LoggerDreamHost(){}
 void LoggerDreamHost::setDreamHostPortalRX(const char *URL)
 {
     _DreamHostPortalRX = URL;
-    MS_DBG(F("Dreamhost portal URL set!\n"));
+    MS_DBG(F("Dreamhost portal URL set!"));
 }
 
 
@@ -122,7 +122,7 @@ int LoggerDreamHost::postDataDreamHost(String& fullURL)
     // do not continue if no modem!
     if (_logModem == NULL)
     {
-        PRINTOUT(F("No modem attached, data cannot be sent out!\n"));
+        PRINTOUT(F("No modem attached, data cannot be sent out!"));
         return 504;
     }
 
@@ -135,7 +135,7 @@ int LoggerDreamHost::postDataDreamHost(String& fullURL)
     {
         // Send the request to the serial for debugging
         #if defined(STANDARD_SERIAL_OUTPUT)
-            PRINTOUT(F("\n \\/------ Data to DreamHost ------\\/ \n"));
+            PRINTOUT(F("\n \\/------ Data to DreamHost ------\\/ "));
             if (fullURL.length() > 1) streamDreamHostRequest(&STANDARD_SERIAL_OUTPUT, fullURL);
             else streamDreamHostRequest(&STANDARD_SERIAL_OUTPUT);
             STANDARD_SERIAL_OUTPUT.flush();
@@ -160,7 +160,7 @@ int LoggerDreamHost::postDataDreamHost(String& fullURL)
         // We don't need anything else and stoping here should save data use.
         _logModem->_tinyClient->stop();
     }
-    else PRINTOUT(F("\n -- Unable to Establish Connection to DreamHost -- \n"));
+    else PRINTOUT(F("\n -- Unable to Establish Connection to DreamHost -- "));
 
     // Process the HTTP response
     int responseCode = 0;
@@ -175,8 +175,8 @@ int LoggerDreamHost::postDataDreamHost(String& fullURL)
     }
     else responseCode=504;
 
-    PRINTOUT(F(" -- Response Code -- \n"));
-    PRINTOUT(responseCode, '\n');
+    PRINTOUT(F(" -- Response Code -- "));
+    PRINTOUT(responseCode);
 
     return responseCode;
 }
@@ -204,7 +204,7 @@ void LoggerDreamHost::logAndSend(void)
         Logger::isLoggingNow = true;
 
         // Print a line to show new reading
-        PRINTOUT(F("------------------------------------------\n"));
+        PRINTOUT(F("------------------------------------------"));
         // Turn on the LED to show we're taking a reading
         if (_ledPin >= 0) digitalWrite(_ledPin, HIGH);
 
@@ -212,7 +212,7 @@ void LoggerDreamHost::logAndSend(void)
         if (_logModem != NULL) _logModem->modemPowerUp();
 
         // Do a complete sensor update
-        MS_DBG(F("    Running a complete sensor update...\n"));
+        MS_DBG(F("    Running a complete sensor update..."));
         _internalArray->completeUpdate();
 
         // Create a csv data record and save it to the log file
@@ -221,7 +221,7 @@ void LoggerDreamHost::logAndSend(void)
         if (_logModem != NULL)
         {
             // Connect to the network
-            MS_DBG(F("  Connecting to the Internet...\n"));
+            MS_DBG(F("  Connecting to the Internet..."));
             if (_logModem->connectInternet())
             {
                 if(_dualPost)
@@ -234,14 +234,14 @@ void LoggerDreamHost::logAndSend(void)
                 postDataDreamHost();
 
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
-                MS_DBG(F("  Running a daily clock sync...\n"));
+                MS_DBG(F("  Running a daily clock sync..."));
                 if (_numTimepointsLogged % 288 == 0)
                 {
                     syncRTClock(_logModem->getNISTTime());
                 }
 
                 // Disconnect from the network
-                MS_DBG(F("  Disconnecting from the Internet...\n"));
+                MS_DBG(F("  Disconnecting from the Internet..."));
                 _logModem->disconnectInternet();
             }
             // Turn the modem off
@@ -251,7 +251,7 @@ void LoggerDreamHost::logAndSend(void)
         // Turn off the LED
         if (_ledPin >= 0) digitalWrite(_ledPin, LOW);
         // Print a line to show reading ended
-        PRINTOUT(F("------------------------------------------\n\n"));
+        PRINTOUT(F("------------------------------------------\n"));
 
         // Unset flag
         Logger::isLoggingNow = false;

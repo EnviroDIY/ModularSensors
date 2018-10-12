@@ -83,17 +83,17 @@ bool MaxBotixSonar::wake(void)
 
     // NOTE ALSO:  Depending on what type of serial stream you are using, there
     // may also be a bunch of junk in the buffer that this will clear out.
-    MS_DBG(F("Dumping Header Lines from MaxBotix on "), getSensorLocation(), '\n');
+    MS_DBG(F("Dumping Header Lines from MaxBotix on "), getSensorLocation());
     for(int i = 0; i < 6; i++)
     {
         String headerLine = _stream->readStringUntil('\r');
-        MS_DBG(i, F(" - "), headerLine, '\n');
+        MS_DBG(i, F(" - "), headerLine);
     }
     // Clear anything else out of the stream buffer
     int junkChars = _stream->available();
     if (junkChars)
     {
-        MS_DBG(F("Dumping "), junkChars, " characters from MaxBotix stream buffer\n");
+        MS_DBG(F("Dumping "), junkChars, F(" characters from MaxBotix stream buffer"));
         for (uint8_t i = 0; i < junkChars; i++)
         _stream->read();
     }
@@ -113,7 +113,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
     int junkChars = _stream->available();
     if (junkChars)
     {
-        MS_DBG(F("Dumping "), junkChars, " characters from MaxBotix stream buffer\n");
+        MS_DBG(F("Dumping "), junkChars, F(" characters from MaxBotix stream buffer"));
         for (uint8_t i = 0; i < junkChars; i++)
         _stream->read();
     }
@@ -122,7 +122,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6))
     {
-        MS_DBG(F("Getting readings from MaxBotix on "), getSensorLocation(), '\n');
+        MS_DBG(F("Getting readings from MaxBotix on "), getSensorLocation());
         while (success == false && rangeAttempts < 25)
         {
              // If the sonar is running on a trigger, activating the trigger
@@ -133,7 +133,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
              // the trigger here.
             if(_triggerPin >= 0)
             {
-                MS_DBG(F("Triggering Sonar with "), _triggerPin, '\n');
+                MS_DBG(F("Triggering Sonar with "), _triggerPin);
                 digitalWrite(_triggerPin, HIGH);
                 delayMicroseconds(30);  // Trigger must be held high for >20 µs
                 digitalWrite(_triggerPin, LOW);
@@ -143,7 +143,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
             // "wait" for the measurement.
             result = _stream->parseInt();
             _stream->read();  // To throw away the carriage return
-            MS_DBG(F("Sonar Range: "), result, '\n');
+            MS_DBG(F("Sonar Range: "), result);
             rangeAttempts++;
 
             // If it cannot obtain a result , the sonar is supposed to send a value
@@ -155,18 +155,17 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
             // capable of reading 0, so we also know the 0 value is bad.
             if (result <= 300 || result == 500 || result == 4999 || result == 9999 || result == 0)
             {
-                MS_DBG(F("Bad or Suspicious Result, Retry Attempt #"), rangeAttempts, '\n');
+                MS_DBG(F("Bad or Suspicious Result, Retry Attempt #"), rangeAttempts);
                 result = -9999;
             }
             else
             {
-                MS_DBG(F("Good result found\n"));
+                MS_DBG(F("Good result found"));
                 success = true;
             }
         }
     }
-    else MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
-         F(" is not currently measuring!\n"));
+    else MS_DBG(getSensorNameAndLocation(), F(" is not currently measuring!"));
 
     verifyAndAddMeasurementResult(HRXL_VAR_NUM, result);
 

@@ -39,6 +39,8 @@ public:
     virtual String getSensorLocation(void);
     // This gets the name of the sensor.
     virtual String getSensorName(void);
+    // This concatentates and returns the name and location.
+    String getSensorNameAndLocation(void);
     // This gets the pin number for the power pin.
     virtual int8_t getPowerPin(void);
 

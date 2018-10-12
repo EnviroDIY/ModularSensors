@@ -92,12 +92,10 @@ bool ApogeeSQ212::addSingleMeasurementResult(void)
         {
             // Apogee SQ-212 Calibration Factor = 1.0 μmol m-2 s-1 per mV;
             calibResult = 1 * adcVoltage * 1000 ;  // in units of μmol m-2 s-1 (microeinsteinPerSquareMeterPerSecond)
-            MS_DBG(F("calibResult: "), calibResult, '\n');
+            MS_DBG(F("calibResult: "), calibResult);
         }
-        else MS_DBG('\n');
     }
-    else MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
-         F(" is not currently measuring!\n"));
+    else MS_DBG(getSensorNameAndLocation(), F(" is not currently measuring!"));
 
     verifyAndAddMeasurementResult(SQ212_PAR_VAR_NUM, calibResult);
 

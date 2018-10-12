@@ -73,11 +73,12 @@ void Logger::setTimeZone(int8_t timeZone)
 {
     _timeZone = timeZone;
     // Some helpful prints for debugging
-    PRINTOUT(F("Logger timezone is "));
-    if (_timeZone == 0) PRINTOUT(F("UTC\n"));
-    else if (_timeZone > 0) PRINTOUT(F("UTC+"));
-    else PRINTOUT(F("UTC"));
-    if (_timeZone != 0) PRINTOUT(_timeZone, '\n');
+    #ifdef STANDARD_SERIAL_OUTPUT
+        const char* prtout1 = "Logger timezone is set to UTC";
+        if (_timeZone == 0) PRINTOUT(prtout1);
+        else if (_timeZone > 0) PRINTOUT(prtout1, '+', _timeZone);
+        else PRINTOUT(prtout1, _timeZone);
+    #endif
 }
 
 
@@ -89,14 +90,12 @@ void Logger::setTZOffset(int8_t offset)
 {
     _offset = offset;
     // Some helpful prints for debugging
-    PRINTOUT(F("RTC timezone is "));
-    if ((_timeZone - _offset) == 0)
-        PRINTOUT(F("UTC\n"));
-    else if ((_timeZone - _offset) > 0)
-        PRINTOUT(F("UTC+"));
-    else PRINTOUT(F("UTC"));
-    if ((_timeZone - _offset) != 0)
-        PRINTOUT(_timeZone - _offset, '\n');
+    #ifdef STANDARD_SERIAL_OUTPUT
+        const char* prtout1 = "RTC timezone is set to UTC";
+        if ((_timeZone - _offset) == 0) PRINTOUT(prtout1);
+        else if ((_timeZone - _offset) > 0) PRINTOUT(prtout1, '+', (_timeZone - _offset));
+        else PRINTOUT(prtout1, (_timeZone - _offset));
+    #endif
 }
 
 
@@ -104,7 +103,7 @@ void Logger::setTZOffset(int8_t offset)
 void Logger::setAlertPin(int8_t ledPin)
 {
     _ledPin = ledPin;
-    MS_DBG(F("Pin "), _ledPin, F(" set as LED alert pin\n"));
+    MS_DBG(F("Pin "), _ledPin, F(" set as LED alert pin"));
 }
 
 
@@ -112,7 +111,7 @@ void Logger::setAlertPin(int8_t ledPin)
 void Logger::setTestingModePin(int8_t buttonPin)
 {
     _buttonPin = buttonPin;
-    MS_DBG(F("Pin "), _buttonPin, F(" set as testing mode entry pin\n"));
+    MS_DBG(F("Pin "), _buttonPin, F(" set as testing mode entry pin"));
 }
 
 
@@ -158,7 +157,7 @@ String Logger::formatDateTime_ISO8601(DateTime& dt)
     String dateTimeStr;
     // Convert the DateTime object to a String
     dt.addToString(dateTimeStr);
-    dateTimeStr.replace(F(" "), F("T"));
+    dateTimeStr.replace(" ", "T");
     String tzString = String(_timeZone);
     if (-24 <= _timeZone && _timeZone <= -10)
     {
@@ -202,14 +201,14 @@ bool Logger::syncRTClock(uint32_t nist)
     // If the timestamp is zero, just exit
     if  (nist == 0)
     {
-        PRINTOUT(F("Bad timestamp, skipping sync.\n"));
+        PRINTOUT(F("Bad timestamp, skipping sync."));
         return false;
     }
 
     uint32_t nist_logTZ = nist + getTimeZone()*3600;
     uint32_t nist_rtcTZ = nist_logTZ - getTZOffset()*3600;
     MS_DBG(F("         Correct Time for Logger: "), nist_logTZ, F(" -> "), \
-        formatDateTime_ISO8601(nist_logTZ), '\n');
+        formatDateTime_ISO8601(nist_logTZ));
 
     // See how long it took to get the time from NIST
     int sync_time = (millis() - start_millis)/1000;
@@ -217,19 +216,19 @@ bool Logger::syncRTClock(uint32_t nist)
     // Check the current RTC time
     uint32_t cur_logTZ = getNowEpoch();
     MS_DBG(F("            Time Returned by RTC: "), cur_logTZ, F(" -> "), \
-        formatDateTime_ISO8601(cur_logTZ), '\n');
-    MS_DBG(F("Offset: "), abs(nist_logTZ - cur_logTZ), '\n');
+        formatDateTime_ISO8601(cur_logTZ));
+    MS_DBG(F("Offset: "), abs(nist_logTZ - cur_logTZ));
 
     // If the RTC and NIST disagree by more than 5 seconds, set the clock
     if ((abs(nist_logTZ - cur_logTZ) > 5) && (nist != 0))
     {
         setNowEpoch(nist_rtcTZ + sync_time/2);
-        PRINTOUT(F("Clock synced!\n"));
+        PRINTOUT(F("Clock synced!"));
         return true;
     }
     else
     {
-        PRINTOUT(F("Clock already within 5 seconds of time.\n"));
+        PRINTOUT(F("Clock already within 5 seconds of time."));
         return false;
     }
 }
@@ -256,33 +255,33 @@ bool Logger::checkInterval(void)
 {
     bool retval;
     uint32_t checkTime = getNowEpoch();
-    MS_DBG(F("Current Unix Timestamp: "), checkTime, '\n');
-    MS_DBG(F("Logging interval in seconds: "), (_loggingIntervalMinutes*60), '\n');
-    MS_DBG(F("Mod of Logging Interval: "), checkTime % (_loggingIntervalMinutes*60), '\n');
-    MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged, '\n');
-    MS_DBG(F("Mod of 120: "), checkTime % 120, '\n');
+    MS_DBG(F("Current Unix Timestamp: "), checkTime);
+    MS_DBG(F("Logging interval in seconds: "), (_loggingIntervalMinutes*60));
+    MS_DBG(F("Mod of Logging Interval: "), checkTime % (_loggingIntervalMinutes*60));
+    MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged);
+    MS_DBG(F("Mod of 120: "), checkTime % 120);
 
     if ((checkTime % (_loggingIntervalMinutes*60) == 0 ) or
         (_numTimepointsLogged < 10 and checkTime % 120 == 0))
     {
         // Update the time variables with the current time
         markTime();
-        MS_DBG(F("Time marked at (unix): "), markedEpochTime, '\n');
-        MS_DBG(F("    year: "), markedDateTime.year(), '\n');
-        MS_DBG(F("    month: "), markedDateTime.month(), '\n');
-        MS_DBG(F("    date: "), markedDateTime.date(), '\n');
-        MS_DBG(F("    hour: "), markedDateTime.hour(), '\n');
-        MS_DBG(F("    minute: "), markedDateTime.minute(), '\n');
-        MS_DBG(F("    second: "), markedDateTime.second(), '\n');
-        MS_DBG(F("Time marked at [char]: "), markedISO8601Time, '\n');
+        MS_DBG(F("Time marked at (unix): "), markedEpochTime);
+        MS_DBG(F("    year: "), markedDateTime.year());
+        MS_DBG(F("    month: "), markedDateTime.month());
+        MS_DBG(F("    date: "), markedDateTime.date());
+        MS_DBG(F("    hour: "), markedDateTime.hour());
+        MS_DBG(F("    minute: "), markedDateTime.minute());
+        MS_DBG(F("    second: "), markedDateTime.second());
+        MS_DBG(F("Time marked at [char]: "), markedISO8601Time);
         // Update the number of readings taken
         _numTimepointsLogged ++;
-        MS_DBG(F("Time to log!\n"));
+        MS_DBG(F("Time to log!"));
         retval = true;
     }
     else
     {
-        MS_DBG(F("Not time yet.\n"));
+        MS_DBG(F("Not time yet."));
         retval = false;
     }
     return retval;
@@ -294,11 +293,11 @@ bool Logger::checkInterval(void)
 bool Logger::checkMarkedInterval(void)
 {
     bool retval;
-    MS_DBG(F("Marked Time: "), markedEpochTime, '\n');
-    MS_DBG(F("Logging interval in seconds: "), (_loggingIntervalMinutes*60), '\n');
-    MS_DBG(F("Mod of Logging Interval: "), markedEpochTime % (_loggingIntervalMinutes*60), '\n');
-    MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged, '\n');
-    MS_DBG(F("Mod of 120: "), markedEpochTime % 120, '\n');
+    MS_DBG(F("Marked Time: "), markedEpochTime);
+    MS_DBG(F("Logging interval in seconds: "), (_loggingIntervalMinutes*60));
+    MS_DBG(F("Mod of Logging Interval: "), markedEpochTime % (_loggingIntervalMinutes*60));
+    MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged);
+    MS_DBG(F("Mod of 120: "), markedEpochTime % 120);
 
     if (markedEpochTime != 0 &&
         ((markedEpochTime % (_loggingIntervalMinutes*60) == 0 ) or
@@ -306,12 +305,12 @@ bool Logger::checkMarkedInterval(void)
     {
         // Update the number of readings taken
         _numTimepointsLogged ++;
-        MS_DBG(F("Time to log!\n"));
+        MS_DBG(F("Time to log!"));
         retval = true;
     }
     else
     {
-        MS_DBG(F("Not time yet, back to sleep\n"));
+        MS_DBG(F("Not time yet, back to sleep"));
         retval = false;
     }
     return retval;
@@ -325,7 +324,7 @@ bool Logger::checkMarkedInterval(void)
 // Set up the Interrupt Service Request for waking
 // In this case, we're doing nothing, we just want the processor to wake
 // This must be a static function (which means it can only call other static funcions.)
-void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!\n"));}
+void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!"));}
 
 #if defined ARDUINO_ARCH_SAMD
 
@@ -650,14 +649,14 @@ bool Logger::initializeSDCard(void)
     // Initialise the SD card
     if (!sd.begin(_SDCardPin, SPI_FULL_SPEED))
     {
-        PRINTOUT(F("Error: SD card failed to initialize or is missing.\n"));
-        PRINTOUT(F("Data will not be saved!\n"));
+        PRINTOUT(F("Error: SD card failed to initialize or is missing."));
+        PRINTOUT(F("Data will not be saved!"));
         return false;
     }
     else  // skip everything else if there's no SD card, otherwise it might hang
     {
         PRINTOUT(F("Successfully connected to SD Card with card/slave select on pin "));
-        PRINTOUT(_SDCardPin, '\n');
+        PRINTOUT(_SDCardPin);
         return true;
     }
 }
@@ -694,7 +693,7 @@ bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader
     // in the file.
     if (logFile.open(charFileName, O_WRITE | O_AT_END))
     {
-        MS_DBG(F("Opened existing file: "), filename, '\n');
+        MS_DBG(F("Opened existing file: "), filename);
         // Set access date time
         setFileTimestamp(logFile, T_ACCESS);
         return true;
@@ -704,7 +703,7 @@ bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader
         // Create and then open the file in write mode
         if (logFile.open(charFileName, O_CREAT | O_WRITE | O_AT_END))
         {
-            MS_DBG(F("Created new file: "), filename, '\n');
+            MS_DBG(F("Created new file: "), filename);
             // Set creation date time
             setFileTimestamp(logFile, T_CREATE);
             // Write out a header, if requested
@@ -714,7 +713,7 @@ bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader
                 streamFileHeader(&logFile);
                 // Print out the header for debugging
                 #if defined(DEBUGGING_SERIAL_OUTPUT)
-                    MS_DBG(F("File Header:\n"));
+                    MS_DBG(F("File Header:"));
                     streamFileHeader(&DEBUGGING_SERIAL_OUTPUT);
                 #endif
                 // Set write/modification date time
@@ -727,14 +726,14 @@ bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader
         // Return false if we couldn't create the file
         else
         {
-            MS_DBG(F("Unable to create new file: "), filename, '\n');
+            MS_DBG(F("Unable to create new file: "), filename);
             return false;
         }
     }
     // Return false if we couldn't access the file (and were not told to create it)
     else
     {
-        MS_DBG(F("Unable to to write to file: "), filename, '\n');
+        MS_DBG(F("Unable to to write to file: "), filename);
         return false;
     }
 }
@@ -780,7 +779,7 @@ bool Logger::logToSD(String& filename, String& rec)
     else if (openFile(filename, true, false)) goto writeRecord;
     else
     {
-        PRINTOUT(F("Unable to write to SD card!\n"));
+        PRINTOUT(F("Unable to write to SD card!"));
         return false;
     }
 
@@ -789,8 +788,8 @@ bool Logger::logToSD(String& filename, String& rec)
         // If we could successfully open or create the file, write the data to it
         logFile.println(rec);
         // Echo the line to the serial port
-        PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/ \n"));
-        PRINTOUT(rec, '\n');
+        PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/ "));
+        PRINTOUT(rec);
 
         // Set write/modification date time
         setFileTimestamp(logFile, T_WRITE);
@@ -822,9 +821,9 @@ bool Logger::logToSD(void)
         streamSensorDataCSV(&logFile);
         // Echo the line to the serial port
         #if defined(STANDARD_SERIAL_OUTPUT)
-            PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/ \n"));
+            PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/ "));
             streamSensorDataCSV(&STANDARD_SERIAL_OUTPUT);
-            PRINTOUT(F("\r\n"));
+            PRINTOUT('\n');
         #endif
 
         // Set write/modification date time
@@ -857,23 +856,23 @@ bool Logger::logToSD(void)
 //     }
 //
 //     // Look for up to 5 seconds for a button press
-//     PRINTOUT(F("Push button NOW to enter sensor testing mode.\n"));
+//     PRINTOUT(F("Push button NOW to enter sensor testing mode."));
 //     for (uint32_t start = millis(); millis() - start < 5000; )
 //     {
 //         if (digitalRead(buttonPin) == HIGH) testingMode();
 //     }
-//     PRINTOUT(F("------------------------------------------\n\n"));
-//     PRINTOUT(F("End of sensor testing mode.\n"));
+//     PRINTOUT(F("------------------------------------------\n"));
+//     PRINTOUT(F("End of sensor testing mode."));
 // }
 
 // A static function if you'd prefer to enter testing based on an interrupt
 void Logger::testingISR()
 {
-    MS_DBG(F("Testing interrupt!\n"));
+    MS_DBG(F("Testing interrupt!"));
     if (!Logger::isTestingNow && !Logger::isLoggingNow)
     {
         Logger::startTesting = true;
-        MS_DBG(F("Testing flag has been set.\n"));
+        MS_DBG(F("Testing flag has been set."));
     }
 }
 
@@ -886,8 +885,8 @@ void Logger::testingMode()
     // Unset the startTesting flag
     Logger::startTesting = false;
 
-    PRINTOUT(F("------------------------------------------\n"));
-    PRINTOUT(F("Entering sensor testing mode\n"));
+    PRINTOUT(F("------------------------------------------"));
+    PRINTOUT(F("Entering sensor testing mode"));
     delay(100);  // This seems to prevent crashes, no clue why ....
 
     // Power up all of the sensors
@@ -899,18 +898,18 @@ void Logger::testingMode()
     // Update the sensors and print out data 25 times
     for (uint8_t i = 0; i < 25; i++)
     {
-        PRINTOUT(F("------------------------------------------\n"));
+        PRINTOUT(F("------------------------------------------"));
         // Update the values from all attached sensors
         _internalArray->updateAllSensors();
         // Print out the current logger time
         PRINTOUT(F("Current logger time is "));
-        PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), '\n');
-        PRINTOUT(F("    -----------------------\n"));
+        PRINTOUT(formatDateTime_ISO8601(getNowEpoch()));
+        PRINTOUT(F("    -----------------------"));
         // Print out the sensor data
         #if defined(STANDARD_SERIAL_OUTPUT)
             _internalArray->printSensorData(&STANDARD_SERIAL_OUTPUT);
         #endif
-        PRINTOUT(F("    -----------------------\n"));
+        PRINTOUT(F("    -----------------------"));
         delay(5000);
     }
 
@@ -946,20 +945,20 @@ void Logger::testingMode()
 
     // Print out the current time
     PRINTOUT(F("Current RTC time is: "));
-    PRINTOUT(formatDateTime_ISO8601(getNowEpoch()), '\n');
+    PRINTOUT(formatDateTime_ISO8601(getNowEpoch()));
 
     PRINTOUT(F("Setting up logger "), _loggerID, F(" to record at "),
-             _loggingIntervalMinutes, F(" minute intervals.\n"));
+             _loggingIntervalMinutes, F(" minute intervals."));
 
     PRINTOUT(F("This logger has a variable array with "),
              _internalArray->getVariableCount(), F(" variables, of which "),
              _internalArray->getVariableCount() - _internalArray->getCalculatedVariableCount(),
              F(" come from "),_internalArray->getSensorCount(), F(" sensors and "),
-             _internalArray->getCalculatedVariableCount(), F(" are calculated.\n"));
+             _internalArray->getCalculatedVariableCount(), F(" are calculated."));
 
     // Create the log file, adding the default header to it
-    if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName, '\n');
-    else PRINTOUT(F("Unable to create a file to save data to!\n"));
+    if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
+    else PRINTOUT(F("Unable to create a file to save data to!"));
 
     // Set up the sensors
     _internalArray->setupSensors();
@@ -973,11 +972,11 @@ void Logger::testingMode()
         enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
         PRINTOUT(F("Push button on pin "));
         PRINTOUT(_buttonPin);
-        PRINTOUT(F(" at any time to enter sensor testing mode.\n"));
+        PRINTOUT(F(" at any time to enter sensor testing mode."));
     }
 
-    PRINTOUT(F("Logger setup finished!\n"));
-    PRINTOUT(F("------------------------------------------\n\n"));
+    PRINTOUT(F("Logger setup finished!"));
+    PRINTOUT(F("------------------------------------------\n"));
 
     // Sleep
     if(_mcuWakePin >= 0){systemSleep();}
@@ -995,12 +994,12 @@ void Logger::log(void)
         Logger::isLoggingNow = true;
 
         // Print a line to show new reading
-        PRINTOUT(F("------------------------------------------\n"));
+        PRINTOUT(F("------------------------------------------"));
         // Turn on the LED to show we're taking a reading
         if (_ledPin >= 0) digitalWrite(_ledPin, HIGH);
 
         // Do a complete sensor update
-        MS_DBG(F("    Running a complete sensor update...\n"));
+        MS_DBG(F("    Running a complete sensor update..."));
         _internalArray->completeUpdate();
 
         // Create a csv data record and save it to the log file
@@ -1009,7 +1008,7 @@ void Logger::log(void)
         // Turn off the LED
         if (_ledPin >= 0) digitalWrite(_ledPin, LOW);
         // Print a line to show reading ended
-        PRINTOUT(F("------------------------------------------\n\n"));
+        PRINTOUT(F("------------------------------------------\n"));
 
         // Unset flag
         Logger::isLoggingNow = false;
