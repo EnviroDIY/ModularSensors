@@ -180,32 +180,38 @@ bool Sensor::setup(void)
 // The function to wake up a sensor
 bool Sensor::wake(void)
 {
-    bool success = true;
-    MS_DBG(F("Waking "), getSensorName(), F(" at "),
-           getSensorLocation(), '\n');
+    MS_DBG(F("Waking "), getSensorName(), F(" at "), getSensorLocation(), '\n');
     // Set the status bit for sensor activation attempt (bit 3)
     // Setting this bit even if the activation failed, to show the attempt was made
     _sensorStatus |= 0b00001000;
 
     // Check if the sensor was successfully powered
-    if (bitRead(_sensorStatus, 2))
-    {
-        // Mark the time that a measurement was requested
-        _millisSensorActivated = millis();
-        // Set the status bit for sensor wake/activation success (bit 4)
-        _sensorStatus |= 0b00010000;
-    }
-    // Otherwise, make sure that the wake time and wake success bit (bit 4) are unset
-    else
+    if (!bitRead(_sensorStatus, 2))
     {
        MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
               F(" doesn't have power and will never wake up!\n"));
+        // Make sure that the wake time and wake success bit (bit 4) are unset
         _millisSensorActivated = 0;
         _sensorStatus &= 0b11101111;
-        success = false;
+        return false;
     }
 
-    return success;
+    // Mark the time that the sensor was activated
+    _millisSensorActivated = millis();
+    // Set the status bit for sensor wake/activation success (bit 4)
+    _sensorStatus |= 0b00010000;
+
+    // check if the sensor was successfully set up, run set up if not
+    // NOTE:  we're setting the wake status bits and time regardless of the
+    // result of this setup attempt!
+    if (!bitRead(_sensorStatus, 0))
+    {
+        MS_DBG(getSensorName(), F(" at "), getSensorLocation(),
+               F(" was never properly set up, attempting setup now!\n"));
+        setup();
+    }
+
+    return true;
 }
 
 

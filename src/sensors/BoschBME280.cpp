@@ -56,7 +56,7 @@ bool BoschBME280::setup(void)
     bool retVal = Sensor::setup();  // this will set pin modes and the setup status bit
 
     // This sensor needs power for setup!
-    // The bme280's begin() reads required data from the sensor.
+    // The bme280's begin() reads required calibration data from the sensor.
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
     waitForWarmUp();
@@ -88,11 +88,12 @@ bool BoschBME280::setup(void)
 
 bool BoschBME280::wake(void)
 {
-    // Sensor::wake() checks if the power pin is on and sets the wake timestamp
-    // and status bits.  If it returns false, there's no reason to go on.
+    // Sensor::wake() checks if the power pin is on, setup has been successful,
+    // and sets the wake timestamp and status bits.  If it returns false,
+    // there's no reason to go on.
     if (!Sensor::wake()) return false;
 
-    // Restart always needed after power-up
+    // Restart always needed after power-up to set sampling modes
     // As of Adafruit library version 1.0.7, this function includes all of the
     // various delays to allow the chip to wake up, get calibrations, get
     // coefficients, and set sampling modes.
@@ -102,8 +103,10 @@ bool BoschBME280::wake(void)
     //  - temperature oversampling = 16x
     //  - pressure oversampling = 16x
     //  - humidity oversampling = 16x
-    //  - built-in IIR filter = off oversampling = 16x
+    //  - built-in IIR filter = off
     //  - sleep time between measurements = 0.5ms
+    // TODO:  Figure out why this is necessary; setSampling should be enough
+    // this adds a bunch of small delays...
     bme_internal.begin(_i2cAddressHex);
 
     // When the Adafruit library is updated to remove the built-in delay after

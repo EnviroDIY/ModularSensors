@@ -43,7 +43,7 @@ bool MPL115A2::setup(void)
     bool retVal = Sensor::setup();  // this will set pin modes and the setup status bit
 
     // This sensor needs power for setup!
-    // The bme280's begin() reads required data from the sensor.
+    // The MPL115A2's begin() reads required coefficients from the sensor.
     bool wasOn = checkPowerOn();
     if(!wasOn){powerUp();}
     waitForWarmUp();
