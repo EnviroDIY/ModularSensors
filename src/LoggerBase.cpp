@@ -511,9 +511,9 @@ void Logger::generateAutoFileName(void)
     {
         // Generate the file name from logger ID and date
         String fileName =  String(_loggerID);
-        fileName +=  F("_");
+        fileName +=  "_";
         fileName +=  formatDateTime_ISO8601(getNowEpoch()).substring(0, 10);
-        fileName +=  F(".csv");
+        fileName +=  ".csv";
         setFileName(fileName);
         _fileName = fileName;
     }
@@ -521,21 +521,21 @@ void Logger::generateAutoFileName(void)
 
 // This is a PRE-PROCESSOR MACRO to speed up generating header rows
 // Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
-#define makeHeaderRowMacro(firstCol, function) \
-    dataHeader += F("\""); \
+#define MAKE_CSV_ROW(firstCol, function) \
+    dataHeader += "\""; \
     dataHeader += firstCol; \
-    dataHeader += F("\","); \
+    dataHeader += "\","; \
     for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++) \
     { \
-        dataHeader += F("\""); \
+        dataHeader += "\""; \
         dataHeader += function; \
-        dataHeader += F("\""); \
+        dataHeader += "\""; \
         if (i + 1 != _internalArray->getVariableCount()) \
         { \
-            dataHeader += F(","); \
+            dataHeader += ","; \
         } \
     } \
-    dataHeader += F("\r\n");
+    dataHeader += "\r\n";
 
 // This creates a header for the logger file
 String Logger::generateFileHeader(void)
@@ -547,18 +547,18 @@ String Logger::generateFileHeader(void)
     // Create the header rows
     String dataHeader = "";
     // Next line will be the parent sensor names
-    makeHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getParentSensorName())
+    MAKE_CSV_ROW(logIDRowHeader, _internalArray->arrayOfVars[i]->getParentSensorName())
     // Next comes the ODM2 variable name
-    makeHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarName())
+    MAKE_CSV_ROW(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarName())
     // Next comes the ODM2 unit name
-    makeHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUnit())
+    MAKE_CSV_ROW(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUnit())
     // Next comes the variable UUIDs
-    makeHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUUID())
+    MAKE_CSV_ROW(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUUID())
 
     // We'll finish up the the custom variable codes
     String dtRowHeader = F("Date and Time in UTC");
     dtRowHeader += _timeZone;
-    makeHeaderRowMacro(dtRowHeader, _internalArray->arrayOfVars[i]->getVarCode())
+    MAKE_CSV_ROW(dtRowHeader, _internalArray->arrayOfVars[i]->getVarCode())
 
     // Return everything
     return dataHeader;
@@ -566,21 +566,21 @@ String Logger::generateFileHeader(void)
 
 // This is another PRE-PROCESSOR MACRO to speed up generating header rows
 // Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
-#define streamHeaderRowMacro(firstCol, function) \
-    stream->print(F("\"")); \
+#define STREAM_CSV_ROW(firstCol, function) \
+    stream->print("\""); \
     stream->print(firstCol); \
-    stream->print(F("\",")); \
+    stream->print("\","); \
     for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++) \
     { \
-        stream->print(F("\"")); \
+        stream->print("\""); \
         stream->print(function); \
-        stream->print(F("\"")); \
+        stream->print("\""); \
         if (i + 1 != _internalArray->getVariableCount()) \
         { \
-            stream->print(F(",")); \
+            stream->print(","); \
         } \
     } \
-    stream->print(F("\r\n"));
+    stream->println();
 
 // This sends a file header out over an Arduino stream
 void Logger::streamFileHeader(Stream *stream)
@@ -590,18 +590,18 @@ void Logger::streamFileHeader(Stream *stream)
     logIDRowHeader += String(_loggerID);
 
     // Next line will be the parent sensor names
-    streamHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getParentSensorName())
+    STREAM_CSV_ROW(logIDRowHeader, _internalArray->arrayOfVars[i]->getParentSensorName())
     // Next comes the ODM2 variable name
-    streamHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarName())
+    STREAM_CSV_ROW(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarName())
     // Next comes the ODM2 unit name
-    streamHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUnit())
+    STREAM_CSV_ROW(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUnit())
     // Next comes the variable UUIDs
-    streamHeaderRowMacro(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUUID())
+    STREAM_CSV_ROW(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUUID())
 
     // We'll finish up the the custom variable codes
     String dtRowHeader = F("Date and Time in UTC");
     dtRowHeader += _timeZone;
-    streamHeaderRowMacro(dtRowHeader, _internalArray->arrayOfVars[i]->getVarCode());
+    STREAM_CSV_ROW(dtRowHeader, _internalArray->arrayOfVars[i]->getVarCode());
 }
 
 
@@ -642,7 +642,6 @@ void Logger::streamSensorDataCSV(Stream *stream)
     stream->println();
 }
 
-
 // Private helper function - This checks if the SD card is available and ready
 bool Logger::initializeSDCard(void)
 {
@@ -655,8 +654,8 @@ bool Logger::initializeSDCard(void)
     }
     else  // skip everything else if there's no SD card, otherwise it might hang
     {
-        PRINTOUT(F("Successfully connected to SD Card with card/slave select on pin "));
-        PRINTOUT(_SDCardPin);
+        PRINTOUT(F("Successfully connected to SD Card with card/slave select on pin "),
+                 _SDCardPin);
         return true;
     }
 }
@@ -666,11 +665,11 @@ bool Logger::initializeSDCard(void)
 void Logger::setFileTimestamp(File fileToStamp, uint8_t stampFlag)
 {
     fileToStamp.timestamp(stampFlag, dtFromEpoch(getNowEpoch()).year(),
-                                dtFromEpoch(getNowEpoch()).month(),
-                                dtFromEpoch(getNowEpoch()).date(),
-                                dtFromEpoch(getNowEpoch()).hour(),
-                                dtFromEpoch(getNowEpoch()).minute(),
-                                dtFromEpoch(getNowEpoch()).second());
+                                     dtFromEpoch(getNowEpoch()).month(),
+                                     dtFromEpoch(getNowEpoch()).date(),
+                                     dtFromEpoch(getNowEpoch()).hour(),
+                                     dtFromEpoch(getNowEpoch()).minute(),
+                                     dtFromEpoch(getNowEpoch()).second());
 }
 
 
@@ -773,30 +772,30 @@ bool Logger::createLogFile(bool writeDefaultHeader)
 bool Logger::logToSD(String& filename, String& rec)
 {
     // First attempt to open the file without creating a new one
-    if (openFile(filename, false, false)) goto writeRecord;
-    // Next try to create the file, bail if we couldn't create it
-    // This will not attempt to generate a new file name or add a header!
-    else if (openFile(filename, true, false)) goto writeRecord;
-    else
+    if (!openFile(filename, false, false))
     {
-        PRINTOUT(F("Unable to write to SD card!"));
-        return false;
+        // Next try to create the file, bail if we couldn't create it
+        // This will not attempt to generate a new file name or add a header!
+        if (!openFile(filename, true, false))
+        {
+            PRINTOUT(F("Unable to write to SD card!"));
+            return false;
+        }
     }
 
-    writeRecord:
-    {
-        // If we could successfully open or create the file, write the data to it
-        logFile.println(rec);
-        // Echo the line to the serial port
-        PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/ "));
-        PRINTOUT(rec);
+    // If we could successfully open or create the file, write the data to it
+    logFile.println(rec);
+    // Echo the line to the serial port
+    PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/ "));
+    PRINTOUT(rec);
 
-        // Set write/modification date time
-        setFileTimestamp(logFile, T_WRITE);
-        // Close the file to save it
-        logFile.close();
-        return true;
-    }
+    // Set write/modification date time
+    setFileTimestamp(logFile, T_WRITE);
+    // Set access date time
+    setFileTimestamp(logFile, T_ACCESS);
+    // Close the file to save it
+    logFile.close();
+    return true;
 }
 bool Logger::logToSD(String& rec)
 {
@@ -807,31 +806,36 @@ bool Logger::logToSD(String& rec)
 bool Logger::logToSD(void)
 {
     // First attempt to open the file without creating a new one
-    if (openFile(_fileName, false, false)) goto writeRecord;
-    // Next try to create a new file, bail if we couldn't create it
-    // Generate a filename with the current date, if the file name isn't set
-    if (_autoFileName) generateAutoFileName();
-    // Do add a default header to the new file!
-    if (openFile(_fileName, true, true)) goto writeRecord;
-    else return false;
-
-    writeRecord:
+    if (!openFile(_fileName, false, false))
     {
-        // Write the data
-        streamSensorDataCSV(&logFile);
-        // Echo the line to the serial port
-        #if defined(STANDARD_SERIAL_OUTPUT)
-            PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/ "));
-            streamSensorDataCSV(&STANDARD_SERIAL_OUTPUT);
-            PRINTOUT('\n');
-        #endif
+        // Next try to create a new file, bail if we couldn't create it
+        // Generate a filename with the current date, if the file name isn't set
+        if (_autoFileName) generateAutoFileName();
+        // Do add a default header to the new file!
+        if (!openFile(_fileName, true, true))
+        {
+            PRINTOUT(F("Unable to write to SD card!"));
+            return false;
+        }
 
-        // Set write/modification date time
-        setFileTimestamp(logFile, T_WRITE);
-        // Close the file to save it
-        logFile.close();
-        return true;
     }
+
+    // Write the data
+    streamSensorDataCSV(&logFile);
+    // Echo the line to the serial port
+    #if defined(STANDARD_SERIAL_OUTPUT)
+        PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/ "));
+        streamSensorDataCSV(&STANDARD_SERIAL_OUTPUT);
+        PRINTOUT('\n');
+    #endif
+
+    // Set write/modification date time
+    setFileTimestamp(logFile, T_WRITE);
+    // Set access date time
+    setFileTimestamp(logFile, T_ACCESS);
+    // Close the file to save it
+    logFile.close();
+    return true;
 }
 
 
@@ -841,29 +845,32 @@ bool Logger::logToSD(void)
 
 // This checks to see if you want to enter the sensor mode
 // This should be run as the very last step within the setup function
-// void Logger::checkForTestingMode(int8_t buttonPin)
-// {
-//     // Set the pin attached to some button to enter debug mode
-//     if (buttonPin >= 0) pinMode(buttonPin, INPUT);
-//
-//     // Flash the LED to let user know it is now possible to enter debug mode
-//     for (uint8_t i = 0; i < 15; i++)
-//     {
-//         digitalWrite(_ledPin, HIGH);
-//         delay(50);
-//         digitalWrite(_ledPin, LOW);
-//         delay(50);
-//     }
-//
-//     // Look for up to 5 seconds for a button press
-//     PRINTOUT(F("Push button NOW to enter sensor testing mode."));
-//     for (uint32_t start = millis(); millis() - start < 5000; )
-//     {
-//         if (digitalRead(buttonPin) == HIGH) testingMode();
-//     }
-//     PRINTOUT(F("------------------------------------------\n"));
-//     PRINTOUT(F("End of sensor testing mode."));
-// }
+/***
+void Logger::checkForTestingMode(int8_t buttonPin)
+{
+    // Set the pin attached to some button to enter debug mode
+    if (buttonPin >= 0) pinMode(buttonPin, INPUT);
+
+    // Flash the LED to let user know it is now possible to enter debug mode
+    for (uint8_t i = 0; i < 15; i++)
+    {
+        digitalWrite(_ledPin, HIGH);
+        delay(50);
+        digitalWrite(_ledPin, LOW);
+        delay(50);
+    }
+
+    // Look for up to 5 seconds for a button press
+    PRINTOUT(F("Push button NOW to enter sensor testing mode."));
+    for (uint32_t start = millis(); millis() - start < 5000; )
+    {
+        if (digitalRead(buttonPin) == HIGH) testingMode();
+    }
+    PRINTOUT(F("------------------------------------------\n"));
+    PRINTOUT(F("End of sensor testing mode."));
+}
+***/
+
 
 // A static function if you'd prefer to enter testing based on an interrupt
 void Logger::testingISR()
@@ -877,7 +884,7 @@ void Logger::testingISR()
 }
 
 
-    // This defines what to do in the testing mode
+// This defines what to do in the testing mode
 void Logger::testingMode()
 {
     // Flag to notify that we're in testing mode
@@ -900,6 +907,8 @@ void Logger::testingMode()
     {
         PRINTOUT(F("------------------------------------------"));
         // Update the values from all attached sensors
+        // NOTE:  NOT using complete update because we want everything left
+        // on between iterations in testing mode.
         _internalArray->updateAllSensors();
         // Print out the current logger time
         PRINTOUT(F("Current logger time is "));

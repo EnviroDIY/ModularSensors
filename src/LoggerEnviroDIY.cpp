@@ -391,8 +391,8 @@ void LoggerEnviroDIY::beginAndSync(void)
     if (_logModem != NULL)
     {
         // Print out the modem info
-        PRINTOUT(F("This logger is tied to a "));
-        PRINTOUT(_logModem->getSensorName(), F(" for internet connectivity."));
+        PRINTOUT(F("This logger is tied to a "), _logModem->getSensorName(),
+                 F(" for internet connectivity."));
 
         // Synchronize the RTC with NIST
         PRINTOUT(F("Attempting to synchronize RTC with NIST"));
