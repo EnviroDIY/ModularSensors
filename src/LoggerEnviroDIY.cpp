@@ -57,17 +57,6 @@ void LoggerEnviroDIY::setSamplingFeatureUUID(const char *samplingFeature)
 
 
 // This adds extra data to the datafile header
-String LoggerEnviroDIY::generateFileHeader(void)
-{
-    // All we're doing is putting the Sampling Feature UUID at the top
-    String dataHeader = F("Sampling Feature: ");
-    dataHeader += _samplingFeature;
-    dataHeader += "\r\n";
-    // Put the basic header below
-    dataHeader += Logger::generateFileHeader();
-
-    return dataHeader;
-}
 void LoggerEnviroDIY::streamFileHeader(Stream *stream)
 {
     stream->print(F("Sampling Feature: "));
@@ -122,25 +111,6 @@ void LoggerEnviroDIY::streamSensorDataJSON(Stream& stream)
 {
     streamSensorDataJSON(&stream);
 }
-
-
-// // This generates a fully structured POST request for EnviroDIY
-// String LoggerEnviroDIY::generateEnviroDIYPostRequest(String enviroDIYjson)
-// {
-//     String POSTstring = String(F("POST /api/data-stream/ HTTP/1.1"));
-//     POSTstring += String(F("\r\nHost: data.envirodiy.org"));
-//     POSTstring += String(F("\r\nTOKEN: ")) + String(_registrationToken);
-//     // POSTstring += String(F("\r\nCache-Control: no-cache"));
-//     // POSTstring += String(F("\r\nConnection: close"));
-//     POSTstring += String(F("\r\nContent-Length: ")) + String(enviroDIYjson.length());
-//     POSTstring += String(F("\r\nContent-Type: application/json\r\n\r\n"));
-//     POSTstring += String(enviroDIYjson);
-//     return POSTstring;
-// }
-// String LoggerEnviroDIY::generateEnviroDIYPostRequest(void)
-// {
-//     return generateEnviroDIYPostRequest(generateSensorDataJSON());
-// }
 
 
 // This prints a fully structured post request for EnviroDIY to the
@@ -240,8 +210,7 @@ int LoggerEnviroDIY::postDataEnviroDIY(String& enviroDIYjson)
 
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
-        // we don't care about so we're not reading to save on total
-        // data used for transmission.
+        // we don't care about.
         did_respond = _logModem->_tinyClient->readBytes(response_buffer, 12);
 
         // Close the TCP/IP connection as soon as the first 12 characters are read

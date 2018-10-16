@@ -519,50 +519,6 @@ void Logger::generateAutoFileName(void)
     }
 }
 
-// This is a PRE-PROCESSOR MACRO to speed up generating header rows
-// Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
-#define MAKE_CSV_ROW(firstCol, function) \
-    dataHeader += "\""; \
-    dataHeader += firstCol; \
-    dataHeader += "\","; \
-    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++) \
-    { \
-        dataHeader += "\""; \
-        dataHeader += function; \
-        dataHeader += "\""; \
-        if (i + 1 != _internalArray->getVariableCount()) \
-        { \
-            dataHeader += ","; \
-        } \
-    } \
-    dataHeader += "\r\n";
-
-// This creates a header for the logger file
-String Logger::generateFileHeader(void)
-{
-    // Very first column of the header is the logger ID
-    String logIDRowHeader = F("Data Logger: ");
-    logIDRowHeader += String(_loggerID);
-
-    // Create the header rows
-    String dataHeader = "";
-    // Next line will be the parent sensor names
-    MAKE_CSV_ROW(logIDRowHeader, _internalArray->arrayOfVars[i]->getParentSensorName())
-    // Next comes the ODM2 variable name
-    MAKE_CSV_ROW(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarName())
-    // Next comes the ODM2 unit name
-    MAKE_CSV_ROW(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUnit())
-    // Next comes the variable UUIDs
-    MAKE_CSV_ROW(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUUID())
-
-    // We'll finish up the the custom variable codes
-    String dtRowHeader = F("Date and Time in UTC");
-    dtRowHeader += _timeZone;
-    MAKE_CSV_ROW(dtRowHeader, _internalArray->arrayOfVars[i]->getVarCode())
-
-    // Return everything
-    return dataHeader;
-}
 
 // This is another PRE-PROCESSOR MACRO to speed up generating header rows
 // Again, THIS IS NOT A FUNCTION, it is a pre-processor macro

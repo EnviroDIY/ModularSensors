@@ -43,9 +43,6 @@ public:
     void setSamplingFeatureUUID(const char *samplingFeature);
 
     // This adds extra data to the datafile header
-    String generateFileHeader(void) override;
-    // This prints a header onto a stream - this removes need to pass around
-    // very long string objects which can crash the logger
     void streamFileHeader(Stream *stream) override;
 
     // This generates a properly formatted JSON for EnviroDIY
