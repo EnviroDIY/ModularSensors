@@ -52,6 +52,9 @@ public:
     // to the specified stream.
     void printEnviroDIYRequest(Stream *stream);
 
+    // This writes the post request to a "queue" file for later
+    bool queueDataEnviroDIY(void);
+
     // This utilizes an attached modem to make a TCP connection to the
     // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
     // over that connection.

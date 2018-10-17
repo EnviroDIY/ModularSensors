@@ -167,6 +167,41 @@ void LoggerEnviroDIY::printEnviroDIYRequest(Stream *stream)
 }
 
 
+// This writes the post request to a "queue" file for later
+bool LoggerEnviroDIY::queueDataEnviroDIY(void)
+{
+    String queueFile = "EnviroDIYQueue.txt";
+    // First attempt to open the file without creating a new one
+    if (!openFile(queueFile, true, false))
+    {
+        // Next try to create the file, bail if we couldn't create it
+        // This will not attempt to generate a new file name or add a header!
+        if (!openFile(queueFile, true, false))
+        {
+            PRINTOUT(F("Unable to write to SD card!"));
+            return false;
+        }
+    }
+
+    // If we could successfully open or create the file, write the request to it
+    printEnviroDIYRequest(&logFile);
+    // Echo the line to the serial port
+    #if defined(STANDARD_SERIAL_OUTPUT)
+    PRINTOUT(F("\n \\/---- Queued POST request ----\\/ "));
+        printEnviroDIYRequest(&STANDARD_SERIAL_OUTPUT);
+        PRINTOUT('\n');
+    #endif
+
+    // Set write/modification date time
+    setFileTimestamp(logFile, T_WRITE);
+    // Set access date time
+    setFileTimestamp(logFile, T_ACCESS);
+    // Close the file to save it
+    logFile.close();
+    return true;
+}
+
+
 // This utilizes an attached modem to make a TCP connection to the
 // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
 // over that connection.
