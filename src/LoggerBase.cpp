@@ -539,7 +539,7 @@ void Logger::generateAutoFileName(void)
     stream->println();
 
 // This sends a file header out over an Arduino stream
-void Logger::streamFileHeader(Stream *stream)
+void Logger::printFileHeader(Stream *stream)
 {
     // Very first line of the header is the logger ID
     stream->print(F("Data Logger: "));
@@ -566,27 +566,9 @@ void Logger::streamFileHeader(Stream *stream)
 }
 
 
-// This generates a comma separated list of volues of sensor data - including the time
-String Logger::generateSensorDataCSV(void)
-{
-    String csvString = "";
-    markedDateTime.addToString(csvString);
-    csvString += F(",");
-
-    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
-    {
-        csvString += _internalArray->arrayOfVars[i]->getValueString();
-        if (i + 1 != _internalArray->getVariableCount())
-        {
-            csvString += F(",");
-        }
-    }
-
-    return csvString;
-}
-// This sends a comma separated list of volues of sensor data - including the
+// This prints a comma separated list of volues of sensor data - including the
 // time -  out over an Arduino stream
-void Logger::streamSensorDataCSV(Stream *stream)
+void Logger::printSensorDataCSV(Stream *stream)
 {
     String csvString = "";
     markedDateTime.addToString(csvString);
@@ -670,11 +652,11 @@ bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader
             if (writeDefaultHeader)
             {
                 // Add header information
-                streamFileHeader(&logFile);
+                printFileHeader(&logFile);
                 // Print out the header for debugging
                 #if defined(DEBUGGING_SERIAL_OUTPUT)
                     MS_DBG(F("\n \\/---- File Header ----\\/ "));
-                    streamFileHeader(&DEBUGGING_SERIAL_OUTPUT);
+                    printFileHeader(&DEBUGGING_SERIAL_OUTPUT);
                     MS_DBG('\n');
                 #endif
                 // Set write/modification date time
@@ -783,11 +765,11 @@ bool Logger::logToSD(void)
     }
 
     // Write the data
-    streamSensorDataCSV(&logFile);
+    printSensorDataCSV(&logFile);
     // Echo the line to the serial port
     #if defined(STANDARD_SERIAL_OUTPUT)
         PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/ "));
-        streamSensorDataCSV(&STANDARD_SERIAL_OUTPUT);
+        printSensorDataCSV(&STANDARD_SERIAL_OUTPUT);
         PRINTOUT('\n');
     #endif
 

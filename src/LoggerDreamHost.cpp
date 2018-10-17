@@ -31,25 +31,8 @@ void LoggerDreamHost::setDreamHostPortalRX(const char *URL)
 }
 
 
-// This creates all of the URL parameters
-String LoggerDreamHost::generateSensorDataDreamHost(void)
-{
-    String dhString = String(_DreamHostPortalRX);
-    dhString += F("?LoggerID=");
-    dhString += String(Logger::_loggerID);
-    dhString += F("&Loggertime=");
-    dhString += String(Logger::markedEpochTime - 946684800);  // Coorect time from epoch to y2k
-
-    for (int i = 0; i < _internalArray->getVariableCount(); i++)
-    {
-        dhString += F("&");
-        dhString += _internalArray->arrayOfVars[i]->getVarCode();
-        dhString += F("=");
-        dhString += _internalArray->arrayOfVars[i]->getValueString();
-    }
-    return dhString;
-}
-void LoggerDreamHost::streamSensorDataDreamHost(Stream *stream)
+// This prints the URL out to an Arduino stream
+void LoggerDreamHost::printSensorDataDreamHost(Stream *stream)
 {
     stream->print(String(_DreamHostPortalRX));
     stream->print(String(F("?LoggerID=")) + String(Logger::_loggerID));
@@ -61,63 +44,27 @@ void LoggerDreamHost::streamSensorDataDreamHost(Stream *stream)
             + String(F("=")) + String(_internalArray->arrayOfVars[i]->getValueString()));
     }
 }
-void LoggerDreamHost::streamSensorDataDreamHost(Stream& stream)
-{
-    streamSensorDataDreamHost(&stream);
-}
-
-
-// // This generates a fully structured GET request for DreamHost
-// String LoggerDreamHost::generateDreamHostGetRequest(String fullURL)
-// {
-//     String GETstring = String(F("GET "));
-//     GETstring += String(fullURL);
-//     GETstring += String(F("  HTTP/1.1"));
-//     GETstring += String(F("\r\nHost: swrcsensors.dreamhosters.com"));
-//     GETstring += String(F("\r\n\r\n"));
-//     return GETstring;
-// }
-// String LoggerDreamHost::generateDreamHostGetRequest(void)
-// {
-//     return generateDreamHostGetRequest(generateSensorDataDreamHost());
-// }
 
 
 // This prints a fully structured GET request for DreamHost to the
-// specified stream using the specified url.
-void LoggerDreamHost::streamDreamHostRequest(Stream *stream, String& fullURL)
-{
-    stream->print(String(F("GET ")));
-    stream->print(fullURL);
-    stream->print(String(F("  HTTP/1.1")));
-    stream->print(String(F("\r\nHost: swrcsensors.dreamhosters.com")));
-    stream->print(String(F("\r\n\r\n")));
-}
-void LoggerDreamHost::streamDreamHostRequest(Stream& stream, String& fullURL)
-{
-    streamDreamHostRequest(&stream, fullURL);
-}
-void LoggerDreamHost::streamDreamHostRequest(Stream *stream)
+// specified stream
+void LoggerDreamHost::printDreamHostRequest(Stream *stream)
 {
     // Start the request
     stream->print(String(F("GET ")));
 
     // Stream the full URL with parameters
-    streamSensorDataDreamHost(stream);
+    printSensorDataDreamHost(stream);
 
     // Send the rest of the HTTP header
     stream->print(String(F("  HTTP/1.1")));
     stream->print(String(F("\r\nHost: swrcsensors.dreamhosters.com")));
     stream->print(String(F("\r\n\r\n")));
 }
-void LoggerDreamHost::streamDreamHostRequest(Stream& stream)
-{
-    streamDreamHostRequest(&stream);
-}
 
 
 // Post the data to dream host.
-int LoggerDreamHost::postDataDreamHost(String& fullURL)
+int LoggerDreamHost::postDataDreamHost(void)
 {
     // do not continue if no modem!
     if (_logModem == NULL)
@@ -136,14 +83,12 @@ int LoggerDreamHost::postDataDreamHost(String& fullURL)
         // Send the request to the serial for debugging
         #if defined(STANDARD_SERIAL_OUTPUT)
             PRINTOUT(F("\n \\/------ Data to DreamHost ------\\/ "));
-            if (fullURL.length() > 1) streamDreamHostRequest(&STANDARD_SERIAL_OUTPUT, fullURL);
-            else streamDreamHostRequest(&STANDARD_SERIAL_OUTPUT);
+            printDreamHostRequest(&STANDARD_SERIAL_OUTPUT);
             STANDARD_SERIAL_OUTPUT.flush();
         #endif
 
         // Send the request to the modem stream
-        if (fullURL.length() > 1) streamDreamHostRequest(_logModem->_tinyClient, fullURL);
-        else streamDreamHostRequest(_logModem->_tinyClient);
+        printDreamHostRequest(_logModem->_tinyClient);
         _logModem->_tinyClient->flush();  // wait for sending to finish
 
         uint32_t start_timer = millis();

@@ -75,7 +75,7 @@ void LoggerEnviroDIY::setSamplingFeatureUUID(const char *samplingFeature)
     stream->println();
 
 // This adds extra data to the datafile header
-void LoggerEnviroDIY::streamFileHeader(Stream *stream)
+void LoggerEnviroDIY::printFileHeader(Stream *stream)
 {
     // Very first line of the header is the logger ID
     stream->print(F("Data Logger: "));
@@ -86,7 +86,7 @@ void LoggerEnviroDIY::streamFileHeader(Stream *stream)
     stream->println(_fileName);
 
     // Next we're going to print the sampling feature UUID
-    // NOTE:  This is the only line different from in Logger::streamFileHeader
+    // NOTE:  This is the only line different from in Logger::printFileHeader
     stream->print(F("Sampling Feature UUID: "));
     stream->println(_samplingFeature);
 
@@ -107,30 +107,8 @@ void LoggerEnviroDIY::streamFileHeader(Stream *stream)
 }
 
 
-// This generates a properly formatted JSON for EnviroDIY
-String LoggerEnviroDIY::generateSensorDataJSON(void)
-{
-    String jsonString = F("{");
-    jsonString += F("\"sampling_feature\": \"");
-    jsonString += String(_samplingFeature) + F("\", ");
-    jsonString += F("\"timestamp\": \"");
-    jsonString += String(Logger::markedISO8601Time) + F("\", ");
-
-    for (int i = 0; i < _internalArray->getVariableCount(); i++)
-    {
-        jsonString += F("\"");
-        jsonString += _internalArray->arrayOfVars[i]->getVarUUID() + F("\": ");
-        jsonString += _internalArray->arrayOfVars[i]->getValueString();
-        if (i + 1 != _internalArray->getVariableCount())
-        {
-            jsonString += F(", ");
-        }
-    }
-
-    jsonString += F("}");
-    return jsonString;
-}
-void LoggerEnviroDIY::streamSensorDataJSON(Stream *stream)
+// This prints a properly formatted JSON for EnviroDIY to an Arduino stream
+void LoggerEnviroDIY::printSensorDataJSON(Stream *stream)
 {
     stream->print(String(F("{")));
     stream->print(String(F("\"sampling_feature\": \"")));
@@ -149,30 +127,11 @@ void LoggerEnviroDIY::streamSensorDataJSON(Stream *stream)
 
     stream->print(F("}"));
 }
-void LoggerEnviroDIY::streamSensorDataJSON(Stream& stream)
-{
-    streamSensorDataJSON(&stream);
-}
 
 
 // This prints a fully structured post request for EnviroDIY to the
-// specified stream using the specified json.
-void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream, String& enviroDIYjson)
-{
-    stream->print(String(F("POST /api/data-stream/ HTTP/1.1")));
-    stream->print(String(F("\r\nHost: data.envirodiy.org")));
-    stream->print(String(F("\r\nTOKEN: ")) + String(_registrationToken));
-    // stream->print(String(F("\r\nCache-Control: no-cache")));
-    // stream->print(String(F("\r\nConnection: close")));
-    stream->print(String(F("\r\nContent-Length: ")) + String(enviroDIYjson.length()));
-    stream->print(String(F("\r\nContent-Type: application/json\r\n\r\n")));
-    stream->print(String(enviroDIYjson));
-}
-void LoggerEnviroDIY::streamEnviroDIYRequest(Stream& stream, String& enviroDIYjson)
-{
-    streamEnviroDIYRequest(&stream, enviroDIYjson);
-}
-void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
+// specified stream.
+void LoggerEnviroDIY::printEnviroDIYRequest(Stream *stream)
 {
     // First we need to calculate how long the json string is going to be
     // This is needed for the "Content-Length" header
@@ -204,11 +163,7 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream *stream)
     stream->print(String(F("\r\nContent-Type: application/json\r\n\r\n")));
 
     // Stream the JSON itself
-    streamSensorDataJSON(stream);
-}
-void LoggerEnviroDIY::streamEnviroDIYRequest(Stream& stream)
-{
-    streamEnviroDIYRequest(&stream);
+    printSensorDataJSON(stream);
 }
 
 
@@ -216,7 +171,7 @@ void LoggerEnviroDIY::streamEnviroDIYRequest(Stream& stream)
 // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
 // over that connection.
 // The return is the http status code of the response.
-int LoggerEnviroDIY::postDataEnviroDIY(String& enviroDIYjson)
+int LoggerEnviroDIY::postDataEnviroDIY(void)
 {
     // do not continue if no modem!
     if (_logModem == NULL)
@@ -235,15 +190,13 @@ int LoggerEnviroDIY::postDataEnviroDIY(String& enviroDIYjson)
         // Send the request to the serial for debugging
         #if defined(STANDARD_SERIAL_OUTPUT)
             PRINTOUT(F("\n \\/---- Post Request to EnviroDIY ----\\/ "));
-            if (enviroDIYjson.length() > 1) streamEnviroDIYRequest(&STANDARD_SERIAL_OUTPUT, enviroDIYjson);
-            else streamEnviroDIYRequest(&STANDARD_SERIAL_OUTPUT);
+            printEnviroDIYRequest(&STANDARD_SERIAL_OUTPUT);
             PRINTOUT('\n');
             STANDARD_SERIAL_OUTPUT.flush();
         #endif
 
         // Send the request to the modem stream
-        if (enviroDIYjson.length() > 1) streamEnviroDIYRequest(_logModem->_tinyClient, enviroDIYjson);
-        else streamEnviroDIYRequest(_logModem->_tinyClient);
+        printEnviroDIYRequest(_logModem->_tinyClient);
         _logModem->_tinyClient->flush();  // wait for sending to finish
 
         uint32_t start_timer = millis();

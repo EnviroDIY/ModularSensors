@@ -43,32 +43,20 @@ public:
     void setSamplingFeatureUUID(const char *samplingFeature);
 
     // This adds extra data to the datafile header
-    void streamFileHeader(Stream *stream) override;
+    void printFileHeader(Stream *stream) override;
 
     // This generates a properly formatted JSON for EnviroDIY
-    String generateSensorDataJSON(void);
-    void streamSensorDataJSON(Stream *stream);
-    void streamSensorDataJSON(Stream& stream);
+    void printSensorDataJSON(Stream *stream);
 
-    // // This generates a fully structured POST request for EnviroDIY
-    // String generateEnviroDIYPostRequest(String enviroDIYjson);
-    // String generateEnviroDIYPostRequest(void);
-
-    // This prints a fully structured post request for EnviroDIY to the
-    // specified stream using the specified json.
-    // This may be necessary to work around very long strings for the post request.
-    void streamEnviroDIYRequest(Stream *stream, String& enviroDIYjson);
-    void streamEnviroDIYRequest(Stream& stream, String& enviroDIYjson);
-    // This prints a fully structured post request for EnviroDIY to the
-    // specified stream with the default json.
-    void streamEnviroDIYRequest(Stream *stream);
-    void streamEnviroDIYRequest(Stream& stream);
+    // This prints a fully structured post request for WikiWatershed/EnviroDIY
+    // to the specified stream.
+    void printEnviroDIYRequest(Stream *stream);
 
     // This utilizes an attached modem to make a TCP connection to the
     // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
     // over that connection.
     // The return is the http status code of the response.
-    int postDataEnviroDIY(String& enviroDIYjson = LOGGER_EMPTY);
+    int postDataEnviroDIY(void);
 
     // ===================================================================== //
     // Convience functions to call several of the above functions

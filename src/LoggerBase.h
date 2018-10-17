@@ -39,8 +39,6 @@
 
 #include <SdFat.h>  // To communicate with the SD card
 
-static String LOGGER_EMPTY = "";
-
 // Defines the "Logger" Class
 class Logger
 {
@@ -140,13 +138,11 @@ public:
 
     // This prints a header onto a stream - this removes need to pass around
     // very long string objects which can crash the logger
-    virtual void streamFileHeader(Stream *stream);
+    virtual void printFileHeader(Stream *stream);
 
-    // This generates a comma separated list of volues of sensor data - including the time
-    String generateSensorDataCSV(void);
-    // This sends a comma separated list of volues of sensor data - including the
+    // This prints a comma separated list of volues of sensor data - including the
     // time -  out over an Arduino stream
-    void streamSensorDataCSV(Stream *stream);
+    void printSensorDataCSV(Stream *stream);
 
     // These functions create a file on an SD card and set the created/modified/
     // accessed timestamps in that file.
