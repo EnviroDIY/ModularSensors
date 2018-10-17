@@ -388,16 +388,16 @@ void LoggerEnviroDIY::beginAndSync(void)
              F(" come from "),_internalArray->getSensorCount(), F(" sensors and "),
              _internalArray->getCalculatedVariableCount(), F(" are calculated."));
 
+     // Turn on the modem to let it start searching for the network
+     if (_logModem != NULL) _logModem->modemPowerUp();
+
+     // Set up the sensors, this includes the modem
+     PRINTOUT(F("Setting up sensors."));
+     _internalArray->setupSensors();
+
     // Create the log file, adding the default header to it
     if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
     else PRINTOUT(F("Unable to create a file to save data to!"));
-
-    // Turn on the modem to let it start searching for the network
-    if (_logModem != NULL) _logModem->modemPowerUp();
-
-    // Set up the sensors, this includes the modem
-    PRINTOUT(F("Setting up sensors."));
-    _internalArray->setupSensors();
 
     if (_logModem != NULL)
     {

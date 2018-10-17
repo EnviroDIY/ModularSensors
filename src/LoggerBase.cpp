@@ -673,8 +673,9 @@ bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader
                 streamFileHeader(&logFile);
                 // Print out the header for debugging
                 #if defined(DEBUGGING_SERIAL_OUTPUT)
-                    MS_DBG(F("File Header:"));
+                    MS_DBG(F("\n \\/---- File Header ----\\/ "));
                     streamFileHeader(&DEBUGGING_SERIAL_OUTPUT);
+                    MS_DBG('\n');
                 #endif
                 // Set write/modification date time
                 setFileTimestamp(logFile, T_WRITE);
@@ -914,8 +915,7 @@ void Logger::testingMode()
     #endif
 
     // Print out the current time
-    PRINTOUT(F("Current RTC time is: "));
-    PRINTOUT(formatDateTime_ISO8601(getNowEpoch()));
+    PRINTOUT(F("Current RTC time is: "), formatDateTime_ISO8601(getNowEpoch()));
 
     PRINTOUT(F("Setting up logger "), _loggerID, F(" to record at "),
              _loggingIntervalMinutes, F(" minute intervals."));
@@ -926,12 +926,12 @@ void Logger::testingMode()
              F(" come from "),_internalArray->getSensorCount(), F(" sensors and "),
              _internalArray->getCalculatedVariableCount(), F(" are calculated."));
 
+     // Set up the sensors
+     _internalArray->setupSensors();
+
     // Create the log file, adding the default header to it
     if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
     else PRINTOUT(F("Unable to create a file to save data to!"));
-
-    // Set up the sensors
-    _internalArray->setupSensors();
 
     // Setup sleep mode
     if(_mcuWakePin >= 0){setupSleep();}
