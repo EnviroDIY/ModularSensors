@@ -193,6 +193,12 @@ public:
     // This is a one-and-done to log data
     virtual void log(void);
 
+    // This function immediately puts the logger back to sleep
+    // This would be used to allow a logger to continue to gain charge and not
+    // begin logging until reaching a power threshold
+    virtual void continueSleep(void);
+
+
     // Public variables
     // Time stamps - want to set them at a single time and carry them forward
     static uint32_t markedEpochTime;
@@ -231,11 +237,15 @@ protected:
     uint16_t _loggingIntervalMinutes;
     int8_t _SDCardPin;
     int8_t _mcuWakePin;
-    VariableArray *_internalArray;
-
-    uint8_t _numTimepointsLogged;
     int8_t _ledPin;
     int8_t _buttonPin;
+    VariableArray *_internalArray;
+
+    // The number of time points that have been logged.
+    // NOTE:  This is not intended to be a perfect count, and it will zero
+    // after every time the logger restarts (such as running out of battery).
+    // A value of -1 indicates that set-up hasn't been run.
+    int8_t _numTimepointsLogged;
 
     // This checks if the SD card is available and ready
     // We run this check before every communication with the SD card to prevent

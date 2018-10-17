@@ -972,3 +972,13 @@ void Logger::log(void)
     // Sleep
     if(_mcuWakePin >= 0){systemSleep();}
 }
+
+
+// This function immediately puts the logger back to sleep
+// This would be used to allow a logger to continue to gain charge and not
+// begin logging until reaching a power threshold
+void Logger::continueSleep(void)
+{
+    // Sleep
+    if(_mcuWakePin >= 0){systemSleep();}
+}
