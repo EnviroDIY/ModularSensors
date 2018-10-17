@@ -550,13 +550,13 @@ void Logger::streamFileHeader(Stream *stream)
     stream->println(_fileName);
 
     // Next line will be the parent sensor names
-    STREAM_CSV_ROW(F("\"Sensor Name:\""), _internalArray->arrayOfVars[i]->getParentSensorName())
+    STREAM_CSV_ROW(F("Sensor Name:"), _internalArray->arrayOfVars[i]->getParentSensorName())
     // Next comes the ODM2 variable name
-    STREAM_CSV_ROW(F("\"Variable Name:\""), _internalArray->arrayOfVars[i]->getVarName())
+    STREAM_CSV_ROW(F("Variable Name:"), _internalArray->arrayOfVars[i]->getVarName())
     // Next comes the ODM2 unit name
-    STREAM_CSV_ROW(F("\"Result Unit:\""), _internalArray->arrayOfVars[i]->getVarUnit())
+    STREAM_CSV_ROW(F("Result Unit:"), _internalArray->arrayOfVars[i]->getVarUnit())
     // Next comes the variable UUIDs
-    STREAM_CSV_ROW(F("\"Result UUID:\""), _internalArray->arrayOfVars[i]->getVarUUID())
+    STREAM_CSV_ROW(F("Result UUID:"), _internalArray->arrayOfVars[i]->getVarUUID())
 
     // We'll finish up the the custom variable codes
     String dtRowHeader = F("Date and Time in UTC");
