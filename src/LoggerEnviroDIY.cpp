@@ -376,8 +376,7 @@ void LoggerEnviroDIY::beginAndSync(void)
     #endif
 
     // Print out the current time
-    PRINTOUT(F("Current RTC time is: "));
-    PRINTOUT(formatDateTime_ISO8601(getNowEpoch()));
+    PRINTOUT(F("Current RTC time is: "), formatDateTime_ISO8601(getNowEpoch()));
 
     PRINTOUT(F("Setting up logger "), _loggerID, F(" to record at "),
              _loggingIntervalMinutes, F(" minute intervals."));
