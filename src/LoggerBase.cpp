@@ -520,7 +520,7 @@ void Logger::generateAutoFileName(void)
 }
 
 
-// This is another PRE-PROCESSOR MACRO to speed up generating header rows
+// This is a PRE-PROCESSOR MACRO to speed up generating header rows
 // Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
 #define STREAM_CSV_ROW(firstCol, function) \
     stream->print("\""); \
@@ -541,22 +541,27 @@ void Logger::generateAutoFileName(void)
 // This sends a file header out over an Arduino stream
 void Logger::streamFileHeader(Stream *stream)
 {
-    // Very first column of the header is the logger ID
-    String logIDRowHeader = F("Data Logger: ");
-    logIDRowHeader += String(_loggerID);
+    // Very first line of the header is the logger ID
+    stream->print(F("Data Logger: "));
+    stream->println(_loggerID);
+
+    // Next we're going to print the current file name
+    stream->print(F("Data Logger File: "));
+    stream->println(_fileName);
 
     // Next line will be the parent sensor names
-    STREAM_CSV_ROW(logIDRowHeader, _internalArray->arrayOfVars[i]->getParentSensorName())
+    STREAM_CSV_ROW(F("\"Sensor Name:\""), _internalArray->arrayOfVars[i]->getParentSensorName())
     // Next comes the ODM2 variable name
-    STREAM_CSV_ROW(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarName())
+    STREAM_CSV_ROW(F("\"Variable Name:\""), _internalArray->arrayOfVars[i]->getVarName())
     // Next comes the ODM2 unit name
-    STREAM_CSV_ROW(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUnit())
+    STREAM_CSV_ROW(F("\"Result Unit:\""), _internalArray->arrayOfVars[i]->getVarUnit())
     // Next comes the variable UUIDs
-    STREAM_CSV_ROW(logIDRowHeader, _internalArray->arrayOfVars[i]->getVarUUID())
+    STREAM_CSV_ROW(F("\"Result UUID:\""), _internalArray->arrayOfVars[i]->getVarUUID())
 
     // We'll finish up the the custom variable codes
     String dtRowHeader = F("Date and Time in UTC");
-    dtRowHeader += _timeZone;
+    if (_timeZone > 0) dtRowHeader += '+' + _timeZone;
+    else if (_timeZone < 0) dtRowHeader += _timeZone;
     STREAM_CSV_ROW(dtRowHeader, _internalArray->arrayOfVars[i]->getVarCode());
 }
 

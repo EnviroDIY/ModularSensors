@@ -56,12 +56,54 @@ void LoggerEnviroDIY::setSamplingFeatureUUID(const char *samplingFeature)
 }
 
 
+// This is a PRE-PROCESSOR MACRO to speed up generating header rows
+// Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
+#define STREAM_CSV_ROW(firstCol, function) \
+    stream->print("\""); \
+    stream->print(firstCol); \
+    stream->print("\","); \
+    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++) \
+    { \
+        stream->print("\""); \
+        stream->print(function); \
+        stream->print("\""); \
+        if (i + 1 != _internalArray->getVariableCount()) \
+        { \
+            stream->print(","); \
+        } \
+    } \
+    stream->println();
+
 // This adds extra data to the datafile header
 void LoggerEnviroDIY::streamFileHeader(Stream *stream)
 {
-    stream->print(F("Sampling Feature: "));
+    // Very first line of the header is the logger ID
+    stream->print(F("Data Logger: "));
+    stream->println(_loggerID);
+
+    // Next we're going to print the current file name
+    stream->print(F("Data Logger File: "));
+    stream->println(_fileName);
+
+    // Next we're going to print the sampling feature UUID
+    // NOTE:  This is the only line different from in Logger::streamFileHeader
+    stream->print(F("Sampling Feature UUID: "));
     stream->println(_samplingFeature);
-    Logger::streamFileHeader(stream);
+
+    // Next line will be the parent sensor names
+    STREAM_CSV_ROW(F("\"Sensor Name:\""), _internalArray->arrayOfVars[i]->getParentSensorName())
+    // Next comes the ODM2 variable name
+    STREAM_CSV_ROW(F("\"Variable Name:\""), _internalArray->arrayOfVars[i]->getVarName())
+    // Next comes the ODM2 unit name
+    STREAM_CSV_ROW(F("\"Result Unit:\""), _internalArray->arrayOfVars[i]->getVarUnit())
+    // Next comes the variable UUIDs
+    STREAM_CSV_ROW(F("\"Result UUID:\""), _internalArray->arrayOfVars[i]->getVarUUID())
+
+    // We'll finish up the the custom variable codes
+    String dtRowHeader = F("Date and Time in UTC");
+    if (_timeZone > 0) dtRowHeader += '+' + _timeZone;
+    else if (_timeZone < 0) dtRowHeader += _timeZone;
+    STREAM_CSV_ROW(dtRowHeader, _internalArray->arrayOfVars[i]->getVarCode());
 }
 
 
