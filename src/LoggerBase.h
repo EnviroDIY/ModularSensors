@@ -138,8 +138,6 @@ public:
     // This returns the current filename.  Must be run after setFileName.
     String getFileName(void){return _fileName;}
 
-    // This creates a header for the logger file
-    virtual String generateFileHeader(void);
     // This prints a header onto a stream - this removes need to pass around
     // very long string objects which can crash the logger
     virtual void streamFileHeader(Stream *stream);

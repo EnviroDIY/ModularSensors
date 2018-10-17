@@ -739,58 +739,6 @@ void VariableArray::printSensorData(Stream *stream)
     }
 }
 
-/***
-// These generate some helpful comma-separated lists of variable information
-// This is a PRE-PROCESSOR MACRO to speed up generating header rows
-// Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
-#define makeVarListCSV(function) \
-    { \
-        String csvString = ""; \
-        for (uint8_t i = 0; i < _variableCount; i++) \
-        { \
-            csvString += arrayOfVars[i]->function; \
-            if (i + 1 != _variableCount) \
-            { \
-                csvString += F(","); \
-            } \
-        } \
-        return csvString; \
-    }
-// This generates a comma separated list of sensor values WITHOUT TIME STAMP
-String VariableArray::generateSensorDataCSV(void){makeVarListCSV(getValueString())};
-// This generates a comma separated list of parent sensor names
-String VariableArray::listParentSensorNames(void){makeVarListCSV(getParentSensorNameAndLocation())};
-// This generates a comma separated list of variable names
-String VariableArray::listVariableNames(void){makeVarListCSV(getVarName())};
-// This generates a comma separated list of variable units
-String VariableArray::listVariableUnits(void){makeVarListCSV(getVarUnit())};
-// This generates a comma separated list of variable codes
-String VariableArray::listVariableCodes(void){makeVarListCSV(getVarCode())};
-// This generates a comma separated list of variable UUID's
-String VariableArray::listVariableUUIDs(void){makeVarListCSV(getVarUUID())};
-
-
-// These generate some helpful comma-separated lists of variable information
-// This is a PRE-PROCESSOR MACRO to speed up generating header rows
-// Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
-#define streamVarListCSV(function) \
-    { \
-        for (uint8_t i = 0; i < _variableCount; i++) \
-        { \
-            stream->print(arrayOfVars[i]->function); \
-            if (i + 1 != _variableCount) \
-            { \
-                stream->print(','); \
-            } \
-        } \
-    }
-void VariableArray::streamSensorDataCSV(Stream *stream){streamVarListCSV(getValueString())};
-void VariableArray::streamParentSensorNames(Stream *stream){streamVarListCSV(getParentSensorNameAndLocation())};
-void VariableArray::streamVariableNames(Stream *stream){streamVarListCSV(getVarName())};
-void VariableArray::streamVariableUnits(Stream *stream){streamVarListCSV(getVarUnit())};
-void VariableArray::streamVariableCodes(Stream *stream){streamVarListCSV(getVarCode())};
-void VariableArray::streamVariableUUIDs(Stream *stream){streamVarListCSV(getVarUUID())};
-***/
 
 // Check for unique sensors
 bool VariableArray::isLastVarFromSensor(int arrayIndex)

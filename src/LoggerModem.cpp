@@ -60,24 +60,31 @@ bool loggerModem::setup(void)
     MS_MOD_DBG(F("Setting up the modem ..."));
 
     // Bail if there's no power
-    if (!checkPowerOn()) return false;
+    if (!checkPowerOn())
+    {
+        MS_MOD_DBG(F("Modem doesn't have power and cannot be set-up!"));
+        return false;
+    }
 
     // Check if the modem was awake, wake it if not
     // NOTE:  We ar NOT powering up the modem!  Set up will NOT be successful
     // unless the modem is already powered external to this function.
-    bool wasAwake = ( (_dataPin >= 0 && digitalRead(_dataPin) != _statusLevel)
+    bool wasAwake = ( (_dataPin >= 0 && digitalRead(_dataPin) == _statusLevel)
                      && !bitRead(_sensorStatus, 4) );
     if (!wasAwake)
     {
+        MS_MOD_DBG(F("Running modem's wake function ..."));
         success &= _wakeFxn();
         // NOTE:  not setting wake bits here because we'll go back to sleep
         // before the end of this function if we weren't awake
     }
+    else MS_MOD_DBG(F("Modem was already awake."));
 
     if (success)
     {
         // The begin() generally starts with a 5 second testAT(), that should
         // be enough time to allow any modem to be ready to respond
+        MS_MOD_DBG(F("Running modem's begin function ..."));
         success &= _tinyModem->begin();
         _modemName = _tinyModem->getModemName();
         if (success) MS_MOD_DBG(F("   ... Complete!  It's a "), getSensorName());
@@ -257,7 +264,7 @@ bool loggerModem::setup(void)
     if (_tinyModem->hasWifi() && _ssid == NULL)
         MS_MOD_DBG(F("WARNING:  Wifi modem with no SSID given!"));
      if (_tinyModem->hasGPRS() && _apn == NULL)
-         MS_MOD_DBG(F("WARNING:  Cellular modem with no SSID given!"));
+         MS_MOD_DBG(F("WARNING:  Cellular modem with no APN given!"));
 
     // Set the status bit marking that the modem has been set up (bit 0)
     // Only set the bit if setup was successful!
@@ -266,7 +273,7 @@ bool loggerModem::setup(void)
     else _sensorStatus |= 0b10000000;
 
     // Put the modem to sleep after finishing setup
-    if(wasAwake  || (_dataPin >= 0 && digitalRead(_dataPin) == _statusLevel))
+    if(wasAwake || (_dataPin >= 0 && digitalRead(_dataPin) == _statusLevel))
         success &= _sleepFxn();
 
     return success;

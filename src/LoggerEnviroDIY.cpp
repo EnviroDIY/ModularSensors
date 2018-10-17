@@ -56,23 +56,54 @@ void LoggerEnviroDIY::setSamplingFeatureUUID(const char *samplingFeature)
 }
 
 
-// This adds extra data to the datafile header
-String LoggerEnviroDIY::generateFileHeader(void)
-{
-    // All we're doing is putting the Sampling Feature UUID at the top
-    String dataHeader = F("Sampling Feature: ");
-    dataHeader += _samplingFeature;
-    dataHeader += "\r\n";
-    // Put the basic header below
-    dataHeader += Logger::generateFileHeader();
+// This is a PRE-PROCESSOR MACRO to speed up generating header rows
+// Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
+#define STREAM_CSV_ROW(firstCol, function) \
+    stream->print("\""); \
+    stream->print(firstCol); \
+    stream->print("\","); \
+    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++) \
+    { \
+        stream->print("\""); \
+        stream->print(function); \
+        stream->print("\""); \
+        if (i + 1 != _internalArray->getVariableCount()) \
+        { \
+            stream->print(","); \
+        } \
+    } \
+    stream->println();
 
-    return dataHeader;
-}
+// This adds extra data to the datafile header
 void LoggerEnviroDIY::streamFileHeader(Stream *stream)
 {
-    stream->print(F("Sampling Feature: "));
+    // Very first line of the header is the logger ID
+    stream->print(F("Data Logger: "));
+    stream->println(_loggerID);
+
+    // Next we're going to print the current file name
+    stream->print(F("Data Logger File: "));
+    stream->println(_fileName);
+
+    // Next we're going to print the sampling feature UUID
+    // NOTE:  This is the only line different from in Logger::streamFileHeader
+    stream->print(F("Sampling Feature UUID: "));
     stream->println(_samplingFeature);
-    Logger::streamFileHeader(stream);
+
+    // Next line will be the parent sensor names
+    STREAM_CSV_ROW(F("Sensor Name:"), _internalArray->arrayOfVars[i]->getParentSensorName())
+    // Next comes the ODM2 variable name
+    STREAM_CSV_ROW(F("Variable Name:"), _internalArray->arrayOfVars[i]->getVarName())
+    // Next comes the ODM2 unit name
+    STREAM_CSV_ROW(F("Result Unit:"), _internalArray->arrayOfVars[i]->getVarUnit())
+    // Next comes the variable UUIDs
+    STREAM_CSV_ROW(F("Result UUID:"), _internalArray->arrayOfVars[i]->getVarUUID())
+
+    // We'll finish up the the custom variable codes
+    String dtRowHeader = F("Date and Time in UTC");
+    if (_timeZone > 0) dtRowHeader += '+' + _timeZone;
+    else if (_timeZone < 0) dtRowHeader += _timeZone;
+    STREAM_CSV_ROW(dtRowHeader, _internalArray->arrayOfVars[i]->getVarCode());
 }
 
 
@@ -122,25 +153,6 @@ void LoggerEnviroDIY::streamSensorDataJSON(Stream& stream)
 {
     streamSensorDataJSON(&stream);
 }
-
-
-// // This generates a fully structured POST request for EnviroDIY
-// String LoggerEnviroDIY::generateEnviroDIYPostRequest(String enviroDIYjson)
-// {
-//     String POSTstring = String(F("POST /api/data-stream/ HTTP/1.1"));
-//     POSTstring += String(F("\r\nHost: data.envirodiy.org"));
-//     POSTstring += String(F("\r\nTOKEN: ")) + String(_registrationToken);
-//     // POSTstring += String(F("\r\nCache-Control: no-cache"));
-//     // POSTstring += String(F("\r\nConnection: close"));
-//     POSTstring += String(F("\r\nContent-Length: ")) + String(enviroDIYjson.length());
-//     POSTstring += String(F("\r\nContent-Type: application/json\r\n\r\n"));
-//     POSTstring += String(enviroDIYjson);
-//     return POSTstring;
-// }
-// String LoggerEnviroDIY::generateEnviroDIYPostRequest(void)
-// {
-//     return generateEnviroDIYPostRequest(generateSensorDataJSON());
-// }
 
 
 // This prints a fully structured post request for EnviroDIY to the
@@ -240,8 +252,7 @@ int LoggerEnviroDIY::postDataEnviroDIY(String& enviroDIYjson)
 
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
-        // we don't care about so we're not reading to save on total
-        // data used for transmission.
+        // we don't care about.
         did_respond = _logModem->_tinyClient->readBytes(response_buffer, 12);
 
         // Close the TCP/IP connection as soon as the first 12 characters are read
@@ -365,8 +376,7 @@ void LoggerEnviroDIY::beginAndSync(void)
     #endif
 
     // Print out the current time
-    PRINTOUT(F("Current RTC time is: "));
-    PRINTOUT(formatDateTime_ISO8601(getNowEpoch()));
+    PRINTOUT(F("Current RTC time is: "), formatDateTime_ISO8601(getNowEpoch()));
 
     PRINTOUT(F("Setting up logger "), _loggerID, F(" to record at "),
              _loggingIntervalMinutes, F(" minute intervals."));
@@ -377,22 +387,22 @@ void LoggerEnviroDIY::beginAndSync(void)
              F(" come from "),_internalArray->getSensorCount(), F(" sensors and "),
              _internalArray->getCalculatedVariableCount(), F(" are calculated."));
 
+     // Turn on the modem to let it start searching for the network
+     if (_logModem != NULL) _logModem->modemPowerUp();
+
+     // Set up the sensors, this includes the modem
+     PRINTOUT(F("Setting up sensors."));
+     _internalArray->setupSensors();
+
     // Create the log file, adding the default header to it
     if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
     else PRINTOUT(F("Unable to create a file to save data to!"));
 
-    // Turn on the modem to let it start searching for the network
-    if (_logModem != NULL) _logModem->modemPowerUp();
-
-    // Set up the sensors, this includes the modem
-    PRINTOUT(F("Setting up sensors."));
-    _internalArray->setupSensors();
-
     if (_logModem != NULL)
     {
         // Print out the modem info
-        PRINTOUT(F("This logger is tied to a "));
-        PRINTOUT(_logModem->getSensorName(), F(" for internet connectivity."));
+        PRINTOUT(F("This logger is tied to a "), _logModem->getSensorName(),
+                 F(" for internet connectivity."));
 
         // Synchronize the RTC with NIST
         PRINTOUT(F("Attempting to synchronize RTC with NIST"));
