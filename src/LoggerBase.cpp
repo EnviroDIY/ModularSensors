@@ -603,7 +603,7 @@ void Logger::streamSensorDataCSV(Stream *stream)
     stream->println();
 }
 
-// Private helper function - This checks if the SD card is available and ready
+// Protected helper function - This checks if the SD card is available and ready
 bool Logger::initializeSDCard(void)
 {
     // Initialise the SD card
@@ -622,7 +622,7 @@ bool Logger::initializeSDCard(void)
 }
 
 
-// Private helper function - This sets a timestamp on a file
+// Protected helper function - This sets a timestamp on a file
 void Logger::setFileTimestamp(File fileToStamp, uint8_t stampFlag)
 {
     fileToStamp.timestamp(stampFlag, dtFromEpoch(getNowEpoch()).year(),
@@ -634,7 +634,7 @@ void Logger::setFileTimestamp(File fileToStamp, uint8_t stampFlag)
 }
 
 
-// Private helper function - This opens or creates a file, converting a string
+// Protected helper function - This opens or creates a file, converting a string
 // file name to a character file name
 bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader)
 {

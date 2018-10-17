@@ -84,6 +84,7 @@ bool loggerModem::setup(void)
     {
         // The begin() generally starts with a 5 second testAT(), that should
         // be enough time to allow any modem to be ready to respond
+        MS_MOD_DBG(F("Running modem's begin function ..."));
         success &= _tinyModem->begin();
         _modemName = _tinyModem->getModemName();
         if (success) MS_MOD_DBG(F("   ... Complete!  It's a "), getSensorName());
