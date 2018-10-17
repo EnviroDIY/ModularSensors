@@ -171,8 +171,7 @@ bool Sensor::setup(void)
            _stabilizationTime_ms, F("ms, and takes a single measurement in "),
            _measurementTime_ms, F("ms."));
 
-    MS_DBG(_measurementsToAverage);
-    MS_DBG(F(" individual measurements will be averaged for each reading."));
+    MS_DBG(_measurementsToAverage, F(" individual measurements will be averaged for each reading."));
 
     if (_powerPin >= 0) pinMode(_powerPin, OUTPUT);
     if (_dataPin >= 0) pinMode(_dataPin, INPUT);

@@ -530,11 +530,18 @@ void setup()
     loggerToGo.setToken(registrationToken);
     loggerToGo.setSamplingFeatureUUID(samplingFeature);
 
+    // Update the Mayfly "sensor" to get us updated battery voltages
+    // We'll use the battery voltage to decide which version of the begin() to use
+    // NOTE:  This update happens very fast
+    mayfly.update();
+
     // Because we've given it a modem and it knows all of the tokens, we can
     // just "begin" the complete logger to set up the datafile, clock, sleep,
     // and all of the sensors.  We don't need to bother with the "begin" for the
     // other logger because it has the same processor and clock.
-    loggerComplete.begin();
+    if (mayflyBatt->getValue() < 3.4) loggerComplete.begin(true);  // skip sensor set-up
+    else if (mayflyBatt->getValue() < 3.7) loggerComplete.begin();  // set up sensors
+    else loggerComplete.beginAndSync();  // set up sensors and synchronize clock with NIST
 }
 
 
@@ -546,9 +553,16 @@ void setup()
 // and start the loop every minute exactly on the minute.
 void loop()
 {
+    // Update the Mayfly "sensor" to get us updated battery voltages
+    // NOTE:  This update happens fast enough that it won't throw off the check
+    // interval timing.  If the update took more than 1 second to run,
+    // it would throw off the checkInterval() function.
+    mayfly.update();
+
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
-    if (loggerComplete.checkInterval())
+    // We're only doing anything at all if the battery is above 3.4V
+    if (loggerComplete.checkInterval() && mayflyBatt->getValue() > 3.4)
     {
         // Print a line to show new reading
         Serial.print(F("------------------------------------------\n"));
@@ -571,6 +585,8 @@ void loop()
 
         // Do a complete update on the "full" array.
         // This will do all the power management
+        // NOTE:  The wake function for each sensor should force sensor setup
+        // to run if the sensor was not previously set up.
         Serial.print(F("Updating all sensors...\n"));
         arrayComplete.completeUpdate();
 

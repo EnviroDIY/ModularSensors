@@ -855,8 +855,7 @@ void Logger::testingMode()
         // on between iterations in testing mode.
         _internalArray->updateAllSensors();
         // Print out the current logger time
-        PRINTOUT(F("Current logger time is "));
-        PRINTOUT(formatDateTime_ISO8601(getNowEpoch()));
+        PRINTOUT(F("Current logger time is "), formatDateTime_ISO8601(getNowEpoch()));
         PRINTOUT(F("    -----------------------"));
         // Print out the sensor data
         #if defined(STANDARD_SERIAL_OUTPUT)
@@ -889,7 +888,7 @@ void Logger::testingMode()
 {
     // Set up pins for the LED and button
     if (_ledPin >= 0) pinMode(_ledPin, OUTPUT);
-    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT);
+    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT_PULLUP);
 
     #if defined ARDUINO_ARCH_SAMD
         zero_sleep_rtc.begin();
@@ -913,7 +912,7 @@ void Logger::testingMode()
     if (!skipSensorSetup)
     {
          // Set up the sensors
-         PRINTOUT(F("Setting up sensors."));
+         PRINTOUT(F("Setting up sensors..."));
          _internalArray->setupSensors();
 
         // Create the log file, adding the default header to it
@@ -936,10 +935,13 @@ void Logger::testingMode()
     if (_buttonPin >= 0)
     {
         enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
-        PRINTOUT(F("Push button on pin "));
-        PRINTOUT(_buttonPin);
-        PRINTOUT(F(" at any time to enter sensor testing mode."));
+        PRINTOUT(F("Push button on pin "), _buttonPin,
+                 F(" at any time to enter sensor testing mode."));
     }
+
+    // Make sure all sensors are powered down at the end
+    // The should be, but just in case
+    _internalArray->sensorsPowerDown();
 
     PRINTOUT(F("Logger setup finished!"));
     PRINTOUT(F("------------------------------------------\n"));
@@ -959,7 +961,7 @@ void Logger::log(void)
     if (_numIntervals < 0)
     {
         // Set up the sensors
-        PRINTOUT(F("Setting up sensors."));
+        PRINTOUT(F("Sensors had not been set up!  Setting them up now."));
         _internalArray->setupSensors();
 
        // Create the log file, adding the default header to it

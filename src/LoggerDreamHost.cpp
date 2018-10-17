@@ -147,7 +147,7 @@ void LoggerDreamHost::logAndSend(void)
     if (_numIntervals < 0)
     {
         // Set up the sensors
-        PRINTOUT(F("Setting up sensors."));
+        PRINTOUT(F("Sensors had not been set up!  Setting them up now."));
         _internalArray->setupSensors();
 
        // Create the log file, adding the default header to it
@@ -198,9 +198,9 @@ void LoggerDreamHost::logAndSend(void)
                 postDataDreamHost();
 
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
-                MS_DBG(F("  Running a daily clock sync..."));
                 if (_numIntervals % 288 == 0)
                 {
+                    MS_DBG(F("  Running a daily clock sync..."));
                     syncRTClock(_logModem->getNISTTime());
                 }
 

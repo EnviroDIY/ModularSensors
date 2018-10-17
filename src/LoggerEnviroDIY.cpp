@@ -306,8 +306,7 @@ void LoggerEnviroDIY::testingMode()
         // on between iterations in testing mode.
         _internalArray->updateAllSensors();
         // Print out the current logger time
-        PRINTOUT(F("Current logger time is "));
-        PRINTOUT(formatDateTime_ISO8601(getNowEpoch()));
+        PRINTOUT(F("Current logger time is "), formatDateTime_ISO8601(getNowEpoch()));
         PRINTOUT(F("    -----------------------"));
         // Print out the sensor data
         #if defined(STANDARD_SERIAL_OUTPUT)
@@ -319,9 +318,7 @@ void LoggerEnviroDIY::testingMode()
         {
             // Specially highlight the modem signal quality in the debug mode
             _logModem->update();
-            PRINTOUT(F("Current modem signal is "));
-            PRINTOUT(_logModem->getSignalPercent());
-            PRINTOUT(F("%"));
+            PRINTOUT(F("Current modem signal is "), _logModem->getSignalPercent(), "%");
         }
 
         delay(5000);
@@ -381,7 +378,7 @@ void LoggerEnviroDIY::beginAndSync(void)
      if (_logModem != NULL) _logModem->modemPowerUp();
 
      // Set up the sensors, this includes the modem
-     PRINTOUT(F("Setting up sensors."));
+     PRINTOUT(F("Setting up sensors..."));
      _internalArray->setupSensors();
 
     // Create the log file, adding the default header to it
@@ -421,10 +418,13 @@ void LoggerEnviroDIY::beginAndSync(void)
     if (_buttonPin >= 0)
     {
         enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
-        PRINTOUT(F("Push button on pin "));
-        PRINTOUT(_buttonPin);
-        PRINTOUT(F(" at any time to enter sensor testing mode."));
+        PRINTOUT(F("Push button on pin "), _buttonPin,
+                 F(" at any time to enter sensor testing mode."));
     }
+
+    // Make sure all sensors are powered down at the end
+    // The should be, but just in case
+    _internalArray->sensorsPowerDown();
 
     PRINTOUT(F("Logger setup finished!"));
     PRINTOUT(F("------------------------------------------\n"));
@@ -444,7 +444,7 @@ void LoggerEnviroDIY::logAndSend(void)
     if (_numIntervals < 0)
     {
         // Set up the sensors
-        PRINTOUT(F("Setting up sensors."));
+        PRINTOUT(F("Sensors had not been set up!  Setting them up now."));
         _internalArray->setupSensors();
 
        // Create the log file, adding the default header to it
@@ -489,9 +489,9 @@ void LoggerEnviroDIY::logAndSend(void)
                 postDataEnviroDIY();
 
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
-                MS_DBG(F("  Running a daily clock sync..."));
                 if (_numIntervals % 288 == 0)
                 {
+                    MS_DBG(F("  Running a daily clock sync..."));
                     syncRTClock(_logModem->getNISTTime());
                 }
 
