@@ -195,11 +195,6 @@ public:
     // This is a one-and-done to log data
     virtual void log(void);
 
-    // This function immediately puts the logger back to sleep
-    // This would be used to allow a logger to continue to gain charge and not
-    // begin logging until reaching a power threshold
-    virtual void continueSleep(void);
-
 
     // Public variables
     // Time stamps - want to set them at a single time and carry them forward

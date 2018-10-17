@@ -147,6 +147,7 @@ void LoggerDreamHost::logAndSend(void)
     if (_numIntervals < 0)
     {
         // Set up the sensors
+        PRINTOUT(F("Setting up sensors."));
         _internalArray->setupSensors();
 
        // Create the log file, adding the default header to it

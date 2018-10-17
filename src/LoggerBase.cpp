@@ -959,6 +959,7 @@ void Logger::log(void)
     if (_numIntervals < 0)
     {
         // Set up the sensors
+        PRINTOUT(F("Setting up sensors."));
         _internalArray->setupSensors();
 
        // Create the log file, adding the default header to it
@@ -1002,16 +1003,6 @@ void Logger::log(void)
     // Check if it was instead the testing interrupt that woke us up
     if (Logger::startTesting) testingMode();
 
-    // Sleep
-    if(_mcuWakePin >= 0){systemSleep();}
-}
-
-
-// This function immediately puts the logger back to sleep
-// This would be used to allow a logger to continue to gain charge and not
-// begin logging until reaching a power threshold
-void Logger::continueSleep(void)
-{
     // Sleep
     if(_mcuWakePin >= 0){systemSleep();}
 }
