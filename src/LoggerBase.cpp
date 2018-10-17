@@ -48,8 +48,8 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
     _mcuWakePin = mcuWakePin;
     _internalArray = inputArray;
 
-    // Initialize with no points recorded
-    _numTimepointsLogged = 0;
+    // Initialize with a negative number of intervals - that is, set-up not run
+    _numIntervals = -1;
 
     // Set the testing/logging flags to false
     isLoggingNow = false;
@@ -258,11 +258,11 @@ bool Logger::checkInterval(void)
     MS_DBG(F("Current Unix Timestamp: "), checkTime);
     MS_DBG(F("Logging interval in seconds: "), (_loggingIntervalMinutes*60));
     MS_DBG(F("Mod of Logging Interval: "), checkTime % (_loggingIntervalMinutes*60));
-    MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged);
+    MS_DBG(F("Number of Intervals so far: "), _numIntervals);
     MS_DBG(F("Mod of 120: "), checkTime % 120);
 
     if ((checkTime % (_loggingIntervalMinutes*60) == 0 ) or
-        (_numTimepointsLogged < 10 and checkTime % 120 == 0))
+        (_numIntervals < 10 and checkTime % 120 == 0))
     {
         // Update the time variables with the current time
         markTime();
@@ -274,8 +274,8 @@ bool Logger::checkInterval(void)
         MS_DBG(F("    minute: "), markedDateTime.minute());
         MS_DBG(F("    second: "), markedDateTime.second());
         MS_DBG(F("Time marked at [char]: "), markedISO8601Time);
-        // Update the number of readings taken
-        _numTimepointsLogged ++;
+        // Tick up the number of intervals
+        _numIntervals++;
         MS_DBG(F("Time to log!"));
         retval = true;
     }
@@ -296,15 +296,15 @@ bool Logger::checkMarkedInterval(void)
     MS_DBG(F("Marked Time: "), markedEpochTime);
     MS_DBG(F("Logging interval in seconds: "), (_loggingIntervalMinutes*60));
     MS_DBG(F("Mod of Logging Interval: "), markedEpochTime % (_loggingIntervalMinutes*60));
-    MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged);
+    MS_DBG(F("Number of Intervals so far: "), _numIntervals);
     MS_DBG(F("Mod of 120: "), markedEpochTime % 120);
 
     if (markedEpochTime != 0 &&
         ((markedEpochTime % (_loggingIntervalMinutes*60) == 0 ) or
-        (_numTimepointsLogged < 10 and markedEpochTime % 120 == 0)))
+        (_numIntervals < 10 and markedEpochTime % 120 == 0)))
     {
-        // Update the number of readings taken
-        _numTimepointsLogged ++;
+        // Tick up the number of intervals
+        _numIntervals++;
         MS_DBG(F("Time to log!"));
         retval = true;
     }
@@ -882,8 +882,10 @@ void Logger::testingMode()
 // Convience functions to call several of the above functions
 // ===================================================================== //
 
-// This calls all of the setup functions - must be run AFTER init
- void Logger::begin(void)
+// This does all of the setup that can't happen in the constructors
+// That is, things that require the actual processor/MCU to do something
+// rather than the compiler to do something.
+ void Logger::begin(bool skipSensorSetup)
 {
     // Set up pins for the LED and button
     if (_ledPin >= 0) pinMode(_ledPin, OUTPUT);
@@ -908,17 +910,29 @@ void Logger::testingMode()
              F(" come from "),_internalArray->getSensorCount(), F(" sensors and "),
              _internalArray->getCalculatedVariableCount(), F(" are calculated."));
 
-     // Set up the sensors
-     _internalArray->setupSensors();
+    if (!skipSensorSetup)
+    {
+         // Set up the sensors
+         PRINTOUT(F("Setting up sensors."));
+         _internalArray->setupSensors();
 
-    // Create the log file, adding the default header to it
-    if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
-    else PRINTOUT(F("Unable to create a file to save data to!"));
+        // Create the log file, adding the default header to it
+        if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
+        else PRINTOUT(F("Unable to create a file to save data to!"));
+
+        // Set the number of intervals to 0
+        // When the logger instance is created, it will have _numIntervals set to -1.
+        // We use the negative value to indicate that the sensors and log file have
+        // not been set up
+        _numIntervals = 0;
+    }
 
     // Setup sleep mode
     if(_mcuWakePin >= 0){setupSleep();}
 
     // Set up the interrupt to be able to enter sensor testing mode
+    // NOTE:  Entering testing mode before the sensors have been set-up may
+    // give unexpected results.
     if (_buttonPin >= 0)
     {
         enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
@@ -938,8 +952,27 @@ void Logger::testingMode()
 // This is a one-and-done to log data
 void Logger::log(void)
 {
+    // If the number of intervals is negative, then the sensors and file on
+    // the SD card haven't been setup and we want to set them up.
+    // NOTE:  Unless it completed in less than one second, the sensor set-up
+    // will take the place of logging for this interval!
+    if (_numIntervals < 0)
+    {
+        // Set up the sensors
+        _internalArray->setupSensors();
+
+       // Create the log file, adding the default header to it
+       if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
+       else PRINTOUT(F("Unable to create a file to save data to!"));
+
+       // Now, set the number of intervals to 0
+       _numIntervals = 0;
+    }
+
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
+    // NOTE:  When checkInterval() returns true, it also ticks up the value of
+    // _numIntervals.
     if (checkInterval())
     {
         // Flag to notify that we're in already awake and logging a point

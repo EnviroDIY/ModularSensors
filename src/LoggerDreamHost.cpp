@@ -97,8 +97,7 @@ int LoggerDreamHost::postDataDreamHost(void)
 
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
-        // we don't care about so we're not reading to save on total
-        // data used for transmission.
+        // we don't care about.
         did_respond = _logModem->_tinyClient->readBytes(response_buffer, 12);
 
         // Close the TCP/IP connection as soon as the first 12 characters are read
@@ -141,8 +140,27 @@ void LoggerDreamHost::disableDualPost(void)
 // This is a one-and-done to log data
 void LoggerDreamHost::logAndSend(void)
 {
+    // If the number of intervals is negative, then the sensors and file on
+    // the SD card haven't been setup and we want to set them up.
+    // NOTE:  Unless it completed in less than one second, the sensor set-up
+    // will take the place of logging for this interval!
+    if (_numIntervals < 0)
+    {
+        // Set up the sensors
+        _internalArray->setupSensors();
+
+       // Create the log file, adding the default header to it
+       if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
+       else PRINTOUT(F("Unable to create a file to save data to!"));
+
+       // Now, set the number of intervals to 0
+       _numIntervals = 0;
+    }
+
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
+    // NOTE:  When checkInterval() returns true, it also ticks up the value of
+    // _numIntervals.
     if (checkInterval())
     {
         // Flag to notify that we're in already awake and logging a point
@@ -180,7 +198,7 @@ void LoggerDreamHost::logAndSend(void)
 
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
                 MS_DBG(F("  Running a daily clock sync..."));
-                if (_numTimepointsLogged % 288 == 0)
+                if (_numIntervals % 288 == 0)
                 {
                     syncRTClock(_logModem->getNISTTime());
                 }

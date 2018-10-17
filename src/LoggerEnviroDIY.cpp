@@ -302,6 +302,8 @@ void LoggerEnviroDIY::testingMode()
     {
         PRINTOUT(F("------------------------------------------"));
         // Update the values from all attached sensors
+        // NOTE:  NOT using complete update because we want everything left
+        // on between iterations in testing mode.
         _internalArray->updateAllSensors();
         // Print out the current logger time
         PRINTOUT(F("Current logger time is "));
@@ -386,6 +388,12 @@ void LoggerEnviroDIY::beginAndSync(void)
     if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
     else PRINTOUT(F("Unable to create a file to save data to!"));
 
+    // Set the number of intervals to 0
+    // When the logger instance is created, it will have _numIntervals set to -1.
+    // We use the negative value to indicate that the sensors and log file have
+    // not been set up
+    _numIntervals = 0;
+
     if (_logModem != NULL)
     {
         // Print out the modem info
@@ -429,8 +437,27 @@ void LoggerEnviroDIY::beginAndSync(void)
 // This is a one-and-done to log data
 void LoggerEnviroDIY::logAndSend(void)
 {
+    // If the number of intervals is negative, then the sensors and file on
+    // the SD card haven't been setup and we want to set them up.
+    // NOTE:  Unless it completed in less than one second, the sensor set-up
+    // will take the place of logging for this interval!
+    if (_numIntervals < 0)
+    {
+        // Set up the sensors
+        _internalArray->setupSensors();
+
+       // Create the log file, adding the default header to it
+       if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
+       else PRINTOUT(F("Unable to create a file to save data to!"));
+
+       // Now, set the number of intervals to 0
+       _numIntervals = 0;
+    }
+
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
+    // NOTE:  When checkInterval() returns true, it also ticks up the value of
+    // _numIntervals.
     if (checkInterval())
     {
         // Flag to notify that we're in already awake and logging a point
@@ -462,7 +489,7 @@ void LoggerEnviroDIY::logAndSend(void)
 
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
                 MS_DBG(F("  Running a daily clock sync..."));
-                if (_numTimepointsLogged % 288 == 0)
+                if (_numIntervals % 288 == 0)
                 {
                     syncRTClock(_logModem->getNISTTime());
                 }

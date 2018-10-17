@@ -187,8 +187,10 @@ public:
     // ===================================================================== //
     // Convience functions to call several of the above functions
     // ===================================================================== //
-    // This calls all of the setup functions - must be run AFTER init
-    virtual void begin(void);
+    // This does all of the setup that can't happen in the constructors
+    // That is, things that require the actual processor/MCU to do something
+    // rather than the compiler to do something.
+    virtual void begin(bool skipSensorSetup = false);
 
     // This is a one-and-done to log data
     virtual void log(void);
@@ -241,11 +243,11 @@ protected:
     int8_t _buttonPin;
     VariableArray *_internalArray;
 
-    // The number of time points that have been logged.
+    // The number of logging intervals that have passed.
     // NOTE:  This is not intended to be a perfect count, and it will zero
     // after every time the logger restarts (such as running out of battery).
-    // A value of -1 indicates that set-up hasn't been run.
-    int8_t _numTimepointsLogged;
+    // A value of -1 indicates that sensor set-up hasn't been run!
+    int8_t _numIntervals;
 
     // This checks if the SD card is available and ready
     // We run this check before every communication with the SD card to prevent
