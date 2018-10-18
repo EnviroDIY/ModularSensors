@@ -138,7 +138,7 @@ void LoggerDreamHost::disableDualPost(void)
 // ===================================================================== //
 
 // This is a one-and-done to log data
-void LoggerDreamHost::logAndSend(void)
+void LoggerDreamHost::logDataAndSend(void)
 {
     // If the number of intervals is negative, then the sensors and file on
     // the SD card haven't been setup and we want to set them up.

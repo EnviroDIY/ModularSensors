@@ -193,7 +193,7 @@ public:
     virtual void begin(bool skipSensorSetup = false);
 
     // This is a one-and-done to log data
-    virtual void log(void);
+    virtual void logData(void);
 
 
     // Public variables

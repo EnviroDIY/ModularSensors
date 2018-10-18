@@ -389,7 +389,7 @@ void Logger::wakeISR(void)
         // cannot interrupt on any frequencies other than every second, minute,
         // hour, day, or date.  We could set it to alarm hourly every 5 minutes past
         // the hour, but not every 5 minutes.  This is why we set the alarm for
-        // every minute and still need the timer function.  This is a hardware
+        // every minute and use the checkInterval function.  This is a hardware
         // limitation of the DS3231; it is not due to the libraries or software.
         rtc.enableInterrupts(EveryMinute);
 
@@ -963,7 +963,7 @@ void Logger::testingMode()
 
 
 // This is a one-and-done to log data
-void Logger::log(void)
+void Logger::logData(void)
 {
     // If the number of intervals is negative, then the sensors and file on
     // the SD card haven't been setup and we want to set them up.

@@ -581,6 +581,6 @@ void loop()
     // Log the data
     if (mayflyBatt->getValue() > 3.7)
     // This will check against the battery level at the previous logging interval!
-        EnviroDIYLogger.logAndSend();
-    else EnviroDIYLogger.log();
+        EnviroDIYLogger.logDataAndSend();
+    else EnviroDIYLogger.logData();
 }

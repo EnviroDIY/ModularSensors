@@ -74,7 +74,7 @@ public:
     virtual void beginAndSync(void);
 
     // This is a one-and-done to log data
-    virtual void logAndSend(void);
+    virtual void logDataAndSend(void);
 
     // The internal modem instance
     loggerModem *_logModem;

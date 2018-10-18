@@ -436,7 +436,7 @@ void LoggerEnviroDIY::beginAndSync(void)
 
 
 // This is a one-and-done to log data
-void LoggerEnviroDIY::logAndSend(void)
+void LoggerEnviroDIY::logDataAndSend(void)
 {
     // If the number of intervals is negative, then the sensors and file on
     // the SD card haven't been setup and we want to set them up.

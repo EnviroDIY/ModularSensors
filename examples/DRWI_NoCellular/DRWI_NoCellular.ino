@@ -186,5 +186,5 @@ void setup()
 void loop()
 {
     // Log the data
-    logger.log();
+    logger.logData();
 }

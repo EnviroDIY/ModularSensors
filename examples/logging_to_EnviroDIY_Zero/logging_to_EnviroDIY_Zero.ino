@@ -833,5 +833,5 @@ void setup()
 void loop()
 {
     // Log the data
-    EnviroDIYLogger.logAndSend();
+    EnviroDIYLogger.logDataAndSend();
 }
