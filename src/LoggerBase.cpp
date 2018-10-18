@@ -23,8 +23,6 @@ int8_t Logger::_timeZone = 0;
 int8_t Logger::_offset = 0;
 // Initialize the static timestamps
 uint32_t Logger::markedEpochTime = 0;
-// DateTime Logger::markedDateTime = 0;
-// char Logger::markedISO8601Time[26];
 // Initialize the testing/logging flags
 volatile bool Logger::isLoggingNow = false;
 volatile bool Logger::isTestingNow = false;
@@ -244,8 +242,6 @@ bool Logger::syncRTClock(uint32_t nist)
 void Logger::markTime(void)
 {
   Logger::markedEpochTime = getNowEpoch();
-  // Logger::markedDateTime = dtFromEpoch(markedEpochTime);
-  // formatDateTime_ISO8601(markedDateTime).toCharArray(markedISO8601Time, 26);
 }
 
 

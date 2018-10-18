@@ -225,10 +225,6 @@ protected:
     static int8_t _timeZone;
     static int8_t _offset;
 
-    // Time stamps - want to set them at a single time and carry them forward
-    // static DateTime markedDateTime;
-    // static char markedISO8601Time[26];
-
     // Initialization variables
     const char *_loggerID;
     uint16_t _loggingIntervalMinutes;
