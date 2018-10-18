@@ -72,7 +72,7 @@ bool MeaSpecMS5803::setup(void)
     MS5803_internal.reset();
 
     // Turn the power back off it it had been turned on
-    if(wasOn){powerDown();}
+    if(!wasOn){powerDown();}
 
     return retVal;
 }

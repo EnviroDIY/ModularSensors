@@ -82,7 +82,7 @@ bool SDI12Sensors::setup(void)
     _SDI12Internal.end();
 
     // Turn the power back off it it had been turned on
-    if(wasOn){powerDown();}
+    if(!wasOn){powerDown();}
 
     if (!retVal)  // if set-up failed
     {
@@ -162,11 +162,7 @@ bool SDI12Sensors::getSensorInfo(void)
     _SDI12Internal.clearBuffer();
 
     // Check that the sensor is there and responding
-    if (!requestSensorAcknowledgement())
-    {
-        // if(!wasOn){powerDown();}
-        return false;
-    }
+    if (!requestSensorAcknowledgement()) return false;
 
     MS_DBG(F("   Getting sensor info"));
     String myCommand = "";

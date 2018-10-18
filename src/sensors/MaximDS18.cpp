@@ -159,7 +159,7 @@ bool MaximDS18::setup(void)
     _internalDallasTemp.setWaitForConversion(false);
 
     // Turn the power back off it it had been turned on
-    if(wasOn){powerDown();}
+    if(!wasOn){powerDown();}
 
     if (!retVal)  // if set-up failed
     {
