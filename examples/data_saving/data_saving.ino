@@ -453,6 +453,12 @@ void setup()
     // Start the primary serial connection
     Serial.begin(serialBaud);
 
+    // Print a start-up note to the first serial port
+    Serial.print(F("Now running "));
+    Serial.print(sketchName);
+    Serial.print(F(" on Logger "));
+    Serial.println(LoggerID);
+
     // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);
 
@@ -466,18 +472,6 @@ void setup()
     digitalWrite(redLED, LOW);
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
-
-    // Set up some of the power pins so the board boots up with them off
-    if (modemVccPin >= 0)
-    {
-        pinMode(modemVccPin, OUTPUT);
-        digitalWrite(modemVccPin, LOW);
-    }
-    if (sensorPowerPin >= 0)
-    {
-        pinMode(sensorPowerPin, OUTPUT);
-        digitalWrite(sensorPowerPin, LOW);
-    }
 
     // Set up the sleep/wake pin for the modem and put it's inital value as "off"
     #if defined(TINY_GSM_MODEM_XBEE)
@@ -501,12 +495,6 @@ void setup()
         pinMode(modemSleepRqPin, OUTPUT);
         digitalWrite(modemSleepRqPin, LOW);
     #endif
-
-    // Print a start-up note to the first serial port
-    Serial.print(F("Now running "));
-    Serial.print(sketchName);
-    Serial.print(F(" on Logger "));
-    Serial.println(LoggerID);
 
     // Set the timezone and offsets
     // Logging in the given time zone

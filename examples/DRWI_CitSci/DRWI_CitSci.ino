@@ -58,12 +58,6 @@ const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 i
 // Create and return the processor "sensor"
 const char *MFVersion = "v0.5b";
 ProcessorStats mayfly(MFVersion);
-// Create the battery voltage and free RAM variable objects for the processor and return variable-type pointers to them
-// We're going to use the battery variable in the set-up and loop to decide if the battery level is high enough to
-// send data over the modem or if the data should only be logged.
-Variable *mayflyBatt = new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *mayflyRAM = new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
-
 
 // ==========================================================================
 //    Modem/Internet connection options
@@ -78,9 +72,6 @@ Variable *mayflyBatt = new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh
  // Set the serial port for the modem - software serial can also be used.
 HardwareSerial &ModemSerial = Serial1;
 
-// Create a variable for the modem baud rate - this will be used in the begin function for the port
-const long ModemBaud = 9600;
-
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
 TinyGsm *tinyModem = new TinyGsm(ModemSerial);
 
@@ -88,21 +79,22 @@ TinyGsm *tinyModem = new TinyGsm(ModemSerial);
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 // Describe the physical pin connection of your modem to your board
-const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
-const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
+const long ModemBaud = 9600;         // Communication speed of the modem
+const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemSleepRqPin = 23;   // MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if not applicable)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // And create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool wakeFxn(void)
-{
-    digitalWrite(modemSleepRqPin, HIGH);
-    return true;
-}
 bool sleepFxn(void)
 {
     digitalWrite(modemSleepRqPin, LOW);
+    return true;
+}
+bool wakeFxn(void)
+{
+    digitalWrite(modemSleepRqPin, HIGH);
     return true;
 }
 
@@ -170,7 +162,7 @@ Variable *variableList[] = {
     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
-    mayflyBatt,
+    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -212,6 +204,26 @@ void greenredflash(int numFlash = 4, int rate = 75)
 }
 
 
+// Read's the battery voltage
+float getBatteryVoltage(const char *version = MFVersion)
+{
+    float batteryVoltage;
+    if (strcmp(version, "v0.3") == 0 or strcmp(version, "v0.4") == 0)
+    {
+        // Get the battery voltage
+        float rawBattery = analogRead(A6);
+        batteryVoltage = (3.3 / 1023.) * 1.47 * rawBattery;
+    }
+    if (strcmp(version, "v0.5") == 0 or strcmp(version, "v0.5b") == 0)
+    {
+        // Get the battery voltage
+        float rawBattery = analogRead(A6);
+        batteryVoltage = (3.3 / 1023.) * 4.7 * rawBattery;
+    }
+    return batteryVoltage;
+}
+
+
 // ==========================================================================
 // Main setup function
 // ==========================================================================
@@ -219,6 +231,12 @@ void setup()
 {
     // Start the primary serial connection
     Serial.begin(serialBaud);
+
+    // Print a start-up note to the first serial port
+    Serial.print(F("Now running "));
+    Serial.print(sketchName);
+    Serial.print(F(" on Logger "));
+    Serial.println(LoggerID);
 
     // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);
@@ -231,21 +249,9 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
-    // Set up some of the power pins so the board boots up with them off
-    pinMode(modemVccPin, OUTPUT);
-    digitalWrite(modemVccPin, LOW);
-    pinMode(sensorPowerPin, OUTPUT);
-    digitalWrite(sensorPowerPin, LOW);
-
     // Set up the sleep/wake pin for the modem and put it's inital value as "off"
     pinMode(modemSleepRqPin, OUTPUT);
     digitalWrite(modemSleepRqPin, LOW);
-
-    // Print a start-up note to the first serial port
-    Serial.print(F("Now running "));
-    Serial.print(sketchName);
-    Serial.print(F(" on Logger "));
-    Serial.println(LoggerID);
 
     // Set the timezone and offsets
     // Logging in the given time zone
@@ -266,11 +272,11 @@ void setup()
     EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
 
     // Begin the logger
-    mayfly.update();
     Serial.print("Battery: ");
-    Serial.println(mayflyBatt->getValue());
-    if (mayflyBatt->getValue() > 3.7) EnviroDIYLogger.beginAndSync();
-    else EnviroDIYLogger.begin();
+    Serial.println(getBatteryVoltage());
+    if (getBatteryVoltage() < 3.4) EnviroDIYLogger.begin(true);  // skip sensor set-up
+    else if (getBatteryVoltage() < 3.7) EnviroDIYLogger.begin();  // set up sensors
+    else EnviroDIYLogger.beginAndSync();  // set up sensors and synchronize clock with NIST
 }
 
 
@@ -280,8 +286,8 @@ void setup()
 void loop()
 {
     // Log the data
-    if (mayflyBatt->getValue() > 3.7)
     // This will check against the battery level at the previous logging interval!
-        EnviroDIYLogger.logDataAndSend();
-    else EnviroDIYLogger.logData();
+    if (getBatteryVoltage() < 3.4) EnviroDIYLogger.systemSleep();  // just keep sleeping
+    else if (getBatteryVoltage() < 3.7) EnviroDIYLogger.logData();  // log data
+    else EnviroDIYLogger.logDataAndSend();  // log data and send it out
 }
