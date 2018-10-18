@@ -28,7 +28,7 @@
   #include <avr/power.h>
 #endif
 
-// Bring in the library to commuinicate with an external high-precision real time clock
+// Bring in the library to communicate with an external high-precision real time clock
 // This also implements a needed date/time class
 #include <Sodaq_DS3231.h>
 #define EPOCH_TIME_OFF 946684800
@@ -226,8 +226,8 @@ protected:
     static int8_t _offset;
 
     // Time stamps - want to set them at a single time and carry them forward
-    static DateTime markedDateTime;
-    static char markedISO8601Time[26];
+    // static DateTime markedDateTime;
+    // static char markedISO8601Time[26];
 
     // Initialization variables
     const char *_loggerID;

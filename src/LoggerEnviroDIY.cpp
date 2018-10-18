@@ -114,7 +114,7 @@ void LoggerEnviroDIY::printSensorDataJSON(Stream *stream)
     stream->print(String(F("\"sampling_feature\": \"")));
     stream->print(String(_samplingFeature)); + F("");
     stream->print(String(F("\", \"timestamp\": \"")));
-    stream->print(String(Logger::markedISO8601Time) + F("\", "));
+    stream->print(String(formatDateTime_ISO8601(markedEpochTime)) + F("\", "));
 
     for (int i = 0; i < _internalArray->getVariableCount(); i++)
     {
@@ -353,7 +353,7 @@ void LoggerEnviroDIY::beginAndSync(void)
 {
     // Set up pins for the LED and button
     if (_ledPin >= 0) pinMode(_ledPin, OUTPUT);
-    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT);
+    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT_PULLUP);
 
     #if defined ARDUINO_ARCH_SAMD
         zero_sleep_rtc.begin();
@@ -382,6 +382,7 @@ void LoggerEnviroDIY::beginAndSync(void)
      _internalArray->setupSensors();
 
     // Create the log file, adding the default header to it
+    if (_autoFileName) generateAutoFileName();
     if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
     else PRINTOUT(F("Unable to create a file to save data to!"));
 
@@ -448,6 +449,7 @@ void LoggerEnviroDIY::logAndSend(void)
         _internalArray->setupSensors();
 
        // Create the log file, adding the default header to it
+       if (_autoFileName) generateAutoFileName();
        if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
        else PRINTOUT(F("Unable to create a file to save data to!"));
 

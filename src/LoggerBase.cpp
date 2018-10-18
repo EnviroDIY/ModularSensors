@@ -23,8 +23,8 @@ int8_t Logger::_timeZone = 0;
 int8_t Logger::_offset = 0;
 // Initialize the static timestamps
 uint32_t Logger::markedEpochTime = 0;
-DateTime Logger::markedDateTime = 0;
-char Logger::markedISO8601Time[26];
+// DateTime Logger::markedDateTime = 0;
+// char Logger::markedISO8601Time[26];
 // Initialize the testing/logging flags
 volatile bool Logger::isLoggingNow = false;
 volatile bool Logger::isTestingNow = false;
@@ -244,8 +244,8 @@ bool Logger::syncRTClock(uint32_t nist)
 void Logger::markTime(void)
 {
   Logger::markedEpochTime = getNowEpoch();
-  Logger::markedDateTime = dtFromEpoch(markedEpochTime);
-  formatDateTime_ISO8601(markedDateTime).toCharArray(markedISO8601Time, 26);
+  // Logger::markedDateTime = dtFromEpoch(markedEpochTime);
+  // formatDateTime_ISO8601(markedDateTime).toCharArray(markedISO8601Time, 26);
 }
 
 
@@ -267,13 +267,6 @@ bool Logger::checkInterval(void)
         // Update the time variables with the current time
         markTime();
         MS_DBG(F("Time marked at (unix): "), markedEpochTime);
-        MS_DBG(F("    year: "), markedDateTime.year());
-        MS_DBG(F("    month: "), markedDateTime.month());
-        MS_DBG(F("    date: "), markedDateTime.date());
-        MS_DBG(F("    hour: "), markedDateTime.hour());
-        MS_DBG(F("    minute: "), markedDateTime.minute());
-        MS_DBG(F("    second: "), markedDateTime.second());
-        MS_DBG(F("Time marked at [char]: "), markedISO8601Time);
         // Tick up the number of intervals
         _numIntervals++;
         MS_DBG(F("Time to log!"));
@@ -310,7 +303,7 @@ bool Logger::checkMarkedInterval(void)
     }
     else
     {
-        MS_DBG(F("Not time yet, back to sleep"));
+        MS_DBG(F("Not time yet."));
         retval = false;
     }
     return retval;
@@ -324,7 +317,10 @@ bool Logger::checkMarkedInterval(void)
 // Set up the Interrupt Service Request for waking
 // In this case, we're doing nothing, we just want the processor to wake
 // This must be a static function (which means it can only call other static funcions.)
-void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!"));}
+void Logger::wakeISR(void)
+{
+    // MS_DBG(F("Clock interrupt!"));
+}
 
 #if defined ARDUINO_ARCH_SAMD
 
@@ -368,6 +364,9 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!"));}
 
         // Put the processor into sleep mode.
         zero_sleep_rtc.standbyMode();
+
+        // ---------------------------------------------------------------------
+        // -- The portion below this happens on wake up, after any wake ISR's --
 
         // Reattach the USB after waking
         USBDevice.attach();
@@ -459,6 +458,7 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!"));}
 
         // Set the sleep enable bit.
         sleep_enable();
+
         // Re-enables interrupts so we can wake up again
         interrupts();
 
@@ -466,7 +466,8 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!"));}
         // This must happen after the SE bit is set.
         sleep_cpu();
 
-        // ----------------- This portion happens on wake up -----------------
+        // ---------------------------------------------------------------------
+        // -- The portion below this happens on wake up, after any wake ISR's --
 
         // Re-enable all power modules (ie, the processor module clocks)
         // NOTE:  This only re-enables the various clocks on the processor!
@@ -571,7 +572,7 @@ void Logger::printFileHeader(Stream *stream)
 void Logger::printSensorDataCSV(Stream *stream)
 {
     String csvString = "";
-    markedDateTime.addToString(csvString);
+    dtFromEpoch(markedEpochTime).addToString(csvString);
     csvString += F(",");
     stream->print(csvString);
     for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
@@ -743,12 +744,17 @@ bool Logger::logToSD(String& filename, String& rec)
 }
 bool Logger::logToSD(String& rec)
 {
+    // Get a new file name if the name is blank
+    if (_fileName == "") generateAutoFileName();
     return logToSD(_fileName, rec);
 }
 // NOTE:  This is structured differently than the version with a string input
 // record.  This is to avoid the creation/passing of very long strings.
 bool Logger::logToSD(void)
 {
+    // Get a new file name if the name is blank
+    if (_fileName == "") generateAutoFileName();
+
     // First attempt to open the file without creating a new one
     if (!openFile(_fileName, false, false))
     {
@@ -793,7 +799,7 @@ bool Logger::logToSD(void)
 void Logger::checkForTestingMode(int8_t buttonPin)
 {
     // Set the pin attached to some button to enter debug mode
-    if (buttonPin >= 0) pinMode(buttonPin, INPUT);
+    if (buttonPin >= 0) pinMode(buttonPin, INPUT_PULLUP);
 
     // Flash the LED to let user know it is now possible to enter debug mode
     for (uint8_t i = 0; i < 15; i++)
@@ -819,11 +825,11 @@ void Logger::checkForTestingMode(int8_t buttonPin)
 // A static function if you'd prefer to enter testing based on an interrupt
 void Logger::testingISR()
 {
-    MS_DBG(F("Testing interrupt!"));
+    // MS_DBG(F("Testing interrupt!"));
     if (!Logger::isTestingNow && !Logger::isLoggingNow)
     {
         Logger::startTesting = true;
-        MS_DBG(F("Testing flag has been set."));
+        // MS_DBG(F("Testing flag has been set."));
     }
 }
 
@@ -887,7 +893,11 @@ void Logger::testingMode()
  void Logger::begin(bool skipSensorSetup)
 {
     // Set up pins for the LED and button
-    if (_ledPin >= 0) pinMode(_ledPin, OUTPUT);
+    if (_ledPin >= 0)
+    {
+        pinMode(_ledPin, OUTPUT);
+        digitalWrite(_ledPin, LOW);
+    }
     if (_buttonPin >= 0) pinMode(_buttonPin, INPUT_PULLUP);
 
     #if defined ARDUINO_ARCH_SAMD
@@ -916,6 +926,7 @@ void Logger::testingMode()
          _internalArray->setupSensors();
 
         // Create the log file, adding the default header to it
+        if (_autoFileName) generateAutoFileName();
         if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
         else PRINTOUT(F("Unable to create a file to save data to!"));
 
@@ -965,6 +976,7 @@ void Logger::log(void)
         _internalArray->setupSensors();
 
        // Create the log file, adding the default header to it
+       if (_autoFileName) generateAutoFileName();
        if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
        else PRINTOUT(F("Unable to create a file to save data to!"));
 
