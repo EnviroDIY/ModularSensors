@@ -417,9 +417,29 @@ void Logger::wakeISR(void)
             DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
         #endif
 
-        // This clears the interrrupt flag in status register of the clock
+        // Make sure the RTC is still sending out interrupts
+        rtc.enableInterrupts(EveryMinute);
+
+        // Clear the last interrupt flag in the RTC status register
         // The next timed interrupt will not be sent until this is cleared
         rtc.clearINTStatus();
+
+        // Make sure we're still set up to handle the clock interrupt
+        pinMode(_mcuWakePin, INPUT_PULLUP);
+        enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
+
+        // Stop any I2C connections
+        // This function actually disables the two-wire pin functionality and
+        // turns off the internal pull-up resistors.
+        // It does NOT set the pin mode!
+        Wire.end();
+        // Now force the I2C pins to LOW
+        // I2C devices have a nasty habit of stealing power from the SCL and SDA pins...
+        // This will only work for the "main" I2C/TWI interface
+        pinMode(SDA, OUTPUT);  // set output mode
+        pinMode(SCL, OUTPUT);
+        digitalWrite(SDA, LOW);  // Set the pins low
+        digitalWrite(SCL, LOW);
 
         // Temporarily disables interrupts, so no mistakes are made when writing
         // to the processor registers
@@ -436,17 +456,6 @@ void Logger::wakeISR(void)
         #if defined(BODS) && defined(BODSE)
             sleep_bod_disable();
         #endif
-
-        // turn off I2C
-        Wire.end();
-
-        // Force the I2C pins to LOW
-        // I2C devices have a nasty habit of stealing power from the SCL and SDA pins...
-        // This will only work for the "main" I2C/TWI interface
-        pinMode(SDA, OUTPUT);  // set output mode
-        pinMode(SCL, OUTPUT);
-        digitalWrite(SDA, LOW);  // Set the pins low
-        digitalWrite(SCL, LOW);
 
         // disable all power-reduction modules (ie, the processor module clocks)
         // NOTE:  This only shuts down the various clocks on the processor via
@@ -469,6 +478,10 @@ void Logger::wakeISR(void)
         // ---------------------------------------------------------------------
         // -- The portion below this happens on wake up, after any wake ISR's --
 
+        // Temporarily disables interrupts, so no mistakes are made when writing
+        // to the processor registers
+        noInterrupts();
+
         // Re-enable all power modules (ie, the processor module clocks)
         // NOTE:  This only re-enables the various clocks on the processor!
         // The modules may need to be re-initialized after the clocks re-start.
@@ -480,8 +493,16 @@ void Logger::wakeISR(void)
         // Re-enable the processor ADC
         ADCSRA |= _BV(ADEN);
 
+        // Re-enables interrupts
+        interrupts();
+
         // Re-start the I2C interface
+        pinMode(SDA, INPUT_PULLUP);  // set as input with the pull-up on
+        pinMode(SCL, INPUT_PULLUP);
         Wire.begin();
+
+        // The logger will now start the next function after the systemSleep
+        // function in either the loop or setup
     }
 #endif
 
@@ -875,6 +896,9 @@ void Logger::testingMode()
     _internalArray->sensorsSleep();
     _internalArray->sensorsPowerDown();
 
+    PRINTOUT(F("Exiting testing mode"));
+    PRINTOUT(F("------------------------------------------"));
+
     // Unset testing mode flag
     Logger::isTestingNow = false;
 
@@ -903,6 +927,10 @@ void Logger::testingMode()
     #if defined ARDUINO_ARCH_SAMD
         zero_sleep_rtc.begin();
     #else
+        // Set the pins for I2C
+        pinMode(SDA, INPUT_PULLUP);
+        pinMode(SCL, INPUT_PULLUP);
+        Wire.begin();
         rtc.begin();
         delay(100);
     #endif
@@ -972,7 +1000,7 @@ void Logger::logData(void)
     if (_numIntervals < 0)
     {
         // Set up the sensors
-        PRINTOUT(F("Sensors had not been set up!  Setting them up now."));
+        PRINTOUT(F("Sensors and data file had not been set up!  Setting them up now."));
         _internalArray->setupSensors();
 
        // Create the log file, adding the default header to it
