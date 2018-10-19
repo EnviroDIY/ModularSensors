@@ -1,7 +1,7 @@
 /*****************************************************************************
 logging_to_EnviroDIY.ino
 Written By:  Sara Damiano (sdamiano@stroudcenter.org)
-Development Environment: PlatformIO 3.2.1
+Development Environment: PlatformIO
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
 Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
@@ -878,6 +878,15 @@ void setup()
     // Start the primary serial connection
     Serial.begin(serialBaud);
 
+    // Print a start-up note to the first serial port
+    Serial.print(F("Now running "));
+    Serial.print(sketchName);
+    Serial.print(F(" on Logger "));
+    Serial.println(LoggerID);
+
+    Serial.print(F("Using ModularSensors Library version "));
+    Serial.println(MODULAR_SENSORS_VERSION);
+
     // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);
 
@@ -931,12 +940,6 @@ void setup()
         pinMode(modemSleepRqPin, OUTPUT);
         digitalWrite(modemSleepRqPin, LOW);
     #endif
-
-    // Print a start-up note to the first serial port
-    Serial.print(F("Now running "));
-    Serial.print(sketchName);
-    Serial.print(F(" on Logger "));
-    Serial.println(LoggerID);
 
     // Set the timezone and offsets
     // Logging in the given time zone

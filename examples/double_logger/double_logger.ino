@@ -1,11 +1,13 @@
 /*****************************************************************************
 double_logger.ino
 Written By:  Sara Damiano (sdamiano@stroudcenter.org)
-Development Environment: PlatformIO 3.2.1
+Development Environment: PlatformIO
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
 Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
+
+This example sketch is written for ModularSensors library version 0.16.0
 
 This sketch is an example of logging data from different variables at two
 different logging intervals.  This example uses more of the manual functions
@@ -194,6 +196,16 @@ void setup()
     // Start the primary serial connection
     Serial.begin(serialBaud);
 
+    // Print a start-up note to the first serial port
+    Serial.print(F("Now running "));
+    Serial.print(sketchName);
+    Serial.print(F(" on Logger "));
+    Serial.println(LoggerID);
+    Serial.println();
+
+    Serial.print(F("Using ModularSensors Library version "));
+    Serial.println(MODULAR_SENSORS_VERSION);
+
     // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);
 
@@ -205,12 +217,6 @@ void setup()
 
     // Set up pin for the modem
     pinMode(modemSleepRqPin, OUTPUT);
-
-    // Print a start-up note to the first serial port
-    Serial.print(F("Now running "));
-    Serial.print(sketchName);
-    Serial.print(F(" on Logger "));
-    Serial.println(LoggerID);
 
     // Set the timezone and offsets
     // Logging in the given time zone

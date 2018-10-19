@@ -1,11 +1,13 @@
 /*****************************************************************************
 logging_to_EnviroDIY_Zero.ino
 Written By:  Sara Damiano (sdamiano@stroudcenter.org)
-Development Environment: PlatformIO 3.2.1
+Development Environment: PlatformIO
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
 Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
+
+This example sketch is written for ModularSensors library version 0.16.0
 
 This sketch is an example of logging data to an SD card and sending the data to
 the EnviroDIY data portal via a AtSAMD21 board, such as an Arduino Zero or Feather M0.
@@ -764,6 +766,10 @@ void setup()
     Serial.print(sketchName);
     Serial.print(F(" on Logger "));
     Serial.println(LoggerID);
+    Serial.println();
+
+    Serial.print(F("Using ModularSensors Library version "));
+    Serial.println(MODULAR_SENSORS_VERSION);
 
     // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);

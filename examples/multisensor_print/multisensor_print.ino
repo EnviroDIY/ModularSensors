@@ -1,11 +1,13 @@
 /*****************************************************************************
 multisensor_print.ino
 Written By:  Sara Damiano (sdamiano@stroudcenter.org)
-Development Environment: PlatformIO 3.2.1
+Development Environment: PlatformIO
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
 Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
+
+This example sketch is written for ModularSensors library version 0.16.0
 
 This sketch is an example of printing data from multiple sensors using
 the modular sensor library.
@@ -538,6 +540,13 @@ void setup()
     // Start the primary serial connection
     Serial.begin(serialBaud);
 
+    // Print a start-up note to the first serial port
+    Serial.print(F("Now running "));
+    Serial.println(sketchName);
+
+    Serial.print(F("Using ModularSensors Library version "));
+    Serial.println(MODULAR_SENSORS_VERSION);
+
     // Start the stream for the modbus sensors
     modbusSerial.begin(9600);
 
@@ -561,9 +570,7 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
-    // Print a start-up note to the first serial port
-    Serial.print(F("Now running "));
-    Serial.println(sketchName);
+    // Print out the current time
     Serial.print(F("Current Mayfly RTC time is: "));
     Serial.println(getDateTime_ISO8601());
     Serial.print(F("There are "));
