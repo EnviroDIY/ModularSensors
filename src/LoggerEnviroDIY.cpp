@@ -381,11 +381,6 @@ void LoggerEnviroDIY::beginAndSync(void)
      PRINTOUT(F("Setting up sensors..."));
      _internalArray->setupSensors();
 
-    // Create the log file, adding the default header to it
-    if (_autoFileName) generateAutoFileName();
-    if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
-    else PRINTOUT(F("Unable to create a file to save data to!"));
-
     // Set the number of intervals to 0
     // When the logger instance is created, it will have _numIntervals set to -1.
     // We use the negative value to indicate that the sensors and log file have
@@ -411,6 +406,11 @@ void LoggerEnviroDIY::beginAndSync(void)
         // Turn off the modem
         _logModem->modemSleepPowerDown();
     }
+
+   // Create the log file, adding the default header to it
+   if (_autoFileName) generateAutoFileName();
+   if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
+   else PRINTOUT(F("Unable to create a file to save data to!"));
 
     // Setup sleep mode
     if(_mcuWakePin >= 0){setupSleep();}
