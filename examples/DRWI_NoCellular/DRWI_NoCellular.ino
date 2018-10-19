@@ -19,7 +19,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerBase.h>
 
 
 // ==========================================================================
@@ -32,7 +31,8 @@ const char *LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 5;
 // Your logger's timezone.
-const int8_t timeZone = -5;
+const int8_t timeZone = -5;  // Eastern Standard Time
+// NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
 
 // ==========================================================================
@@ -40,19 +40,19 @@ const int8_t timeZone = -5;
 // ==========================================================================
 #include <sensors/ProcessorStats.h>
 
-const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
-const int8_t greenLED = 8;  // Pin for the green LED (-1 if unconnected)
-const int8_t redLED = 9;  // Pin for the red LED (-1 if unconnected)
-const int8_t buttonPin = 21;  // Pin for a button to use to enter debugging mode (-1 if unconnected)
-const int8_t wakePin = A7;  // Interrupt/Alarm pin to wake from sleep
+const long serialBaud = 115200;   // Baud rate for the primary serial port for debugging
+const int8_t greenLED = 8;        // MCU pin for the green LED (-1 if not applicable)
+const int8_t redLED = 9;          // MCU pin for the red LED (-1 if not applicable)
+const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
+const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPin = 12;  // SD Card Chip Select/Slave Select Pin (must be defined!)
+const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
+const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create and return the processor "sensor"
 const char *MFVersion = "v0.5b";
 ProcessorStats mayfly(MFVersion);
-
 
 // ==========================================================================
 //    Maxim DS3231 RTC (Real Time Clock)
@@ -100,6 +100,7 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
+#include <VariableArray.h>
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
@@ -115,7 +116,9 @@ Variable *variableList[] = {
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
+
 // Create a new logger instance
+#include <LoggerBase.h>
 Logger logger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 // ==========================================================================
@@ -145,6 +148,26 @@ void greenredflash(int numFlash = 4, int rate = 75)
 }
 
 
+// Read's the battery voltage
+float getBatteryVoltage(const char *version = MFVersion)
+{
+    float batteryVoltage;
+    if (strcmp(version, "v0.3") == 0 or strcmp(version, "v0.4") == 0)
+    {
+        // Get the battery voltage
+        float rawBattery = analogRead(A6);
+        batteryVoltage = (3.3 / 1023.) * 1.47 * rawBattery;
+    }
+    if (strcmp(version, "v0.5") == 0 or strcmp(version, "v0.5b") == 0)
+    {
+        // Get the battery voltage
+        float rawBattery = analogRead(A6);
+        batteryVoltage = (3.3 / 1023.) * 4.7 * rawBattery;
+    }
+    return batteryVoltage;
+}
+
+
 // ==========================================================================
 // Main setup function
 // ==========================================================================
@@ -153,17 +176,19 @@ void setup()
     // Start the primary serial connection
     Serial.begin(serialBaud);
 
-    // Set up pins for the LED's
-    pinMode(greenLED, OUTPUT);
-    pinMode(redLED, OUTPUT);
-    // Blink the LEDs to show the board is on and starting up
-    greenredflash();
-
     // Print a start-up note to the first serial port
     Serial.print(F("Now running "));
     Serial.print(sketchName);
     Serial.print(F(" on Logger "));
     Serial.println(LoggerID);
+
+    // Set up pins for the LED's
+    pinMode(greenLED, OUTPUT);
+    digitalWrite(greenLED, LOW);
+    pinMode(redLED, OUTPUT);
+    digitalWrite(redLED, LOW);
+    // Blink the LEDs to show the board is on and starting up
+    greenredflash();
 
     // Set the timezone and offsets
     // Logging in the given time zone
@@ -176,7 +201,10 @@ void setup()
     logger.setTestingModePin(buttonPin);
 
     // Begin the logger
-    logger.begin();
+    Serial.print("Battery: ");
+    Serial.println(getBatteryVoltage());
+    if (getBatteryVoltage() < 3.4) logger.begin(true);  // skip sensor set-up
+    else logger.begin();  // set up sensors
 }
 
 
@@ -186,5 +214,8 @@ void setup()
 void loop()
 {
     // Log the data
-    logger.log();
+    Serial.print("Battery: ");
+    Serial.println(getBatteryVoltage());
+    if (getBatteryVoltage() < 3.4) logger.systemSleep();  // just go back to sleep
+    else logger.logData();  // log data
 }

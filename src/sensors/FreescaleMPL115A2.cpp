@@ -53,7 +53,7 @@ bool MPL115A2::setup(void)
     mpl115a2_internal.begin();
 
     // Turn the power back off it it had been turned on
-    if(wasOn){powerDown();}
+    if(!wasOn){powerDown();}
 
     return retVal;
 }

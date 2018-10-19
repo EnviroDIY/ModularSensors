@@ -80,7 +80,7 @@ bool BoschBME280::setup(void)
     retVal &= success;
 
     // Turn the power back off it it had been turned on
-    if(wasOn){powerDown();}
+    if(!wasOn){powerDown();}
 
     return retVal;
 }

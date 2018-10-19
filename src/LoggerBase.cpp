@@ -23,8 +23,6 @@ int8_t Logger::_timeZone = 0;
 int8_t Logger::_offset = 0;
 // Initialize the static timestamps
 uint32_t Logger::markedEpochTime = 0;
-DateTime Logger::markedDateTime = 0;
-char Logger::markedISO8601Time[26];
 // Initialize the testing/logging flags
 volatile bool Logger::isLoggingNow = false;
 volatile bool Logger::isTestingNow = false;
@@ -48,8 +46,8 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
     _mcuWakePin = mcuWakePin;
     _internalArray = inputArray;
 
-    // Initialize with no points recorded
-    _numTimepointsLogged = 0;
+    // Initialize with a negative number of intervals - that is, set-up not run
+    _numIntervals = -1;
 
     // Set the testing/logging flags to false
     isLoggingNow = false;
@@ -244,8 +242,6 @@ bool Logger::syncRTClock(uint32_t nist)
 void Logger::markTime(void)
 {
   Logger::markedEpochTime = getNowEpoch();
-  Logger::markedDateTime = dtFromEpoch(markedEpochTime);
-  formatDateTime_ISO8601(markedDateTime).toCharArray(markedISO8601Time, 26);
 }
 
 
@@ -258,24 +254,17 @@ bool Logger::checkInterval(void)
     MS_DBG(F("Current Unix Timestamp: "), checkTime);
     MS_DBG(F("Logging interval in seconds: "), (_loggingIntervalMinutes*60));
     MS_DBG(F("Mod of Logging Interval: "), checkTime % (_loggingIntervalMinutes*60));
-    MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged);
+    MS_DBG(F("Number of Intervals so far: "), _numIntervals);
     MS_DBG(F("Mod of 120: "), checkTime % 120);
 
     if ((checkTime % (_loggingIntervalMinutes*60) == 0 ) or
-        (_numTimepointsLogged < 10 and checkTime % 120 == 0))
+        (_numIntervals < 10 and checkTime % 120 == 0))
     {
         // Update the time variables with the current time
         markTime();
         MS_DBG(F("Time marked at (unix): "), markedEpochTime);
-        MS_DBG(F("    year: "), markedDateTime.year());
-        MS_DBG(F("    month: "), markedDateTime.month());
-        MS_DBG(F("    date: "), markedDateTime.date());
-        MS_DBG(F("    hour: "), markedDateTime.hour());
-        MS_DBG(F("    minute: "), markedDateTime.minute());
-        MS_DBG(F("    second: "), markedDateTime.second());
-        MS_DBG(F("Time marked at [char]: "), markedISO8601Time);
-        // Update the number of readings taken
-        _numTimepointsLogged ++;
+        // Tick up the number of intervals
+        _numIntervals++;
         MS_DBG(F("Time to log!"));
         retval = true;
     }
@@ -296,21 +285,21 @@ bool Logger::checkMarkedInterval(void)
     MS_DBG(F("Marked Time: "), markedEpochTime);
     MS_DBG(F("Logging interval in seconds: "), (_loggingIntervalMinutes*60));
     MS_DBG(F("Mod of Logging Interval: "), markedEpochTime % (_loggingIntervalMinutes*60));
-    MS_DBG(F("Number of Readings so far: "), _numTimepointsLogged);
+    MS_DBG(F("Number of Intervals so far: "), _numIntervals);
     MS_DBG(F("Mod of 120: "), markedEpochTime % 120);
 
     if (markedEpochTime != 0 &&
         ((markedEpochTime % (_loggingIntervalMinutes*60) == 0 ) or
-        (_numTimepointsLogged < 10 and markedEpochTime % 120 == 0)))
+        (_numIntervals < 10 and markedEpochTime % 120 == 0)))
     {
-        // Update the number of readings taken
-        _numTimepointsLogged ++;
+        // Tick up the number of intervals
+        _numIntervals++;
         MS_DBG(F("Time to log!"));
         retval = true;
     }
     else
     {
-        MS_DBG(F("Not time yet, back to sleep"));
+        MS_DBG(F("Not time yet."));
         retval = false;
     }
     return retval;
@@ -324,7 +313,10 @@ bool Logger::checkMarkedInterval(void)
 // Set up the Interrupt Service Request for waking
 // In this case, we're doing nothing, we just want the processor to wake
 // This must be a static function (which means it can only call other static funcions.)
-void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!"));}
+void Logger::wakeISR(void)
+{
+    // MS_DBG(F("Clock interrupt!"));
+}
 
 #if defined ARDUINO_ARCH_SAMD
 
@@ -369,6 +361,9 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!"));}
         // Put the processor into sleep mode.
         zero_sleep_rtc.standbyMode();
 
+        // ---------------------------------------------------------------------
+        // -- The portion below this happens on wake up, after any wake ISR's --
+
         // Reattach the USB after waking
         USBDevice.attach();
 
@@ -390,7 +385,7 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!"));}
         // cannot interrupt on any frequencies other than every second, minute,
         // hour, day, or date.  We could set it to alarm hourly every 5 minutes past
         // the hour, but not every 5 minutes.  This is why we set the alarm for
-        // every minute and still need the timer function.  This is a hardware
+        // every minute and use the checkInterval function.  This is a hardware
         // limitation of the DS3231; it is not due to the libraries or software.
         rtc.enableInterrupts(EveryMinute);
 
@@ -418,9 +413,29 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!"));}
             DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
         #endif
 
-        // This clears the interrrupt flag in status register of the clock
+        // Make sure the RTC is still sending out interrupts
+        rtc.enableInterrupts(EveryMinute);
+
+        // Clear the last interrupt flag in the RTC status register
         // The next timed interrupt will not be sent until this is cleared
         rtc.clearINTStatus();
+
+        // Make sure we're still set up to handle the clock interrupt
+        pinMode(_mcuWakePin, INPUT_PULLUP);
+        enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
+
+        // Stop any I2C connections
+        // This function actually disables the two-wire pin functionality and
+        // turns off the internal pull-up resistors.
+        // It does NOT set the pin mode!
+        Wire.end();
+        // Now force the I2C pins to LOW
+        // I2C devices have a nasty habit of stealing power from the SCL and SDA pins...
+        // This will only work for the "main" I2C/TWI interface
+        pinMode(SDA, OUTPUT);  // set output mode
+        pinMode(SCL, OUTPUT);
+        digitalWrite(SDA, LOW);  // Set the pins low
+        digitalWrite(SCL, LOW);
 
         // Temporarily disables interrupts, so no mistakes are made when writing
         // to the processor registers
@@ -438,17 +453,6 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!"));}
             sleep_bod_disable();
         #endif
 
-        // turn off I2C
-        Wire.end();
-
-        // Force the I2C pins to LOW
-        // I2C devices have a nasty habit of stealing power from the SCL and SDA pins...
-        // This will only work for the "main" I2C/TWI interface
-        pinMode(SDA, OUTPUT);  // set output mode
-        pinMode(SCL, OUTPUT);
-        digitalWrite(SDA, LOW);  // Set the pins low
-        digitalWrite(SCL, LOW);
-
         // disable all power-reduction modules (ie, the processor module clocks)
         // NOTE:  This only shuts down the various clocks on the processor via
         // the power reduction register!  It does NOT actually disable the
@@ -459,6 +463,7 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!"));}
 
         // Set the sleep enable bit.
         sleep_enable();
+
         // Re-enables interrupts so we can wake up again
         interrupts();
 
@@ -466,7 +471,12 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!"));}
         // This must happen after the SE bit is set.
         sleep_cpu();
 
-        // ----------------- This portion happens on wake up -----------------
+        // ---------------------------------------------------------------------
+        // -- The portion below this happens on wake up, after any wake ISR's --
+
+        // Temporarily disables interrupts, so no mistakes are made when writing
+        // to the processor registers
+        noInterrupts();
 
         // Re-enable all power modules (ie, the processor module clocks)
         // NOTE:  This only re-enables the various clocks on the processor!
@@ -479,8 +489,16 @@ void Logger::wakeISR(void){MS_DBG(F("Clock interrupt!"));}
         // Re-enable the processor ADC
         ADCSRA |= _BV(ADEN);
 
+        // Re-enables interrupts
+        interrupts();
+
         // Re-start the I2C interface
+        pinMode(SDA, INPUT_PULLUP);  // set as input with the pull-up on
+        pinMode(SCL, INPUT_PULLUP);
         Wire.begin();
+
+        // The logger will now start the next function after the systemSleep
+        // function in either the loop or setup
     }
 #endif
 
@@ -539,7 +557,7 @@ void Logger::generateAutoFileName(void)
     stream->println();
 
 // This sends a file header out over an Arduino stream
-void Logger::streamFileHeader(Stream *stream)
+void Logger::printFileHeader(Stream *stream)
 {
     // Very first line of the header is the logger ID
     stream->print(F("Data Logger: "));
@@ -566,30 +584,12 @@ void Logger::streamFileHeader(Stream *stream)
 }
 
 
-// This generates a comma separated list of volues of sensor data - including the time
-String Logger::generateSensorDataCSV(void)
-{
-    String csvString = "";
-    markedDateTime.addToString(csvString);
-    csvString += F(",");
-
-    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
-    {
-        csvString += _internalArray->arrayOfVars[i]->getValueString();
-        if (i + 1 != _internalArray->getVariableCount())
-        {
-            csvString += F(",");
-        }
-    }
-
-    return csvString;
-}
-// This sends a comma separated list of volues of sensor data - including the
+// This prints a comma separated list of volues of sensor data - including the
 // time -  out over an Arduino stream
-void Logger::streamSensorDataCSV(Stream *stream)
+void Logger::printSensorDataCSV(Stream *stream)
 {
     String csvString = "";
-    markedDateTime.addToString(csvString);
+    dtFromEpoch(markedEpochTime).addToString(csvString);
     csvString += F(",");
     stream->print(csvString);
     for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
@@ -670,11 +670,11 @@ bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader
             if (writeDefaultHeader)
             {
                 // Add header information
-                streamFileHeader(&logFile);
+                printFileHeader(&logFile);
                 // Print out the header for debugging
                 #if defined(DEBUGGING_SERIAL_OUTPUT)
                     MS_DBG(F("\n \\/---- File Header ----\\/ "));
-                    streamFileHeader(&DEBUGGING_SERIAL_OUTPUT);
+                    printFileHeader(&DEBUGGING_SERIAL_OUTPUT);
                     MS_DBG('\n');
                 #endif
                 // Set write/modification date time
@@ -761,12 +761,17 @@ bool Logger::logToSD(String& filename, String& rec)
 }
 bool Logger::logToSD(String& rec)
 {
+    // Get a new file name if the name is blank
+    if (_fileName == "") generateAutoFileName();
     return logToSD(_fileName, rec);
 }
 // NOTE:  This is structured differently than the version with a string input
 // record.  This is to avoid the creation/passing of very long strings.
 bool Logger::logToSD(void)
 {
+    // Get a new file name if the name is blank
+    if (_fileName == "") generateAutoFileName();
+
     // First attempt to open the file without creating a new one
     if (!openFile(_fileName, false, false))
     {
@@ -783,11 +788,11 @@ bool Logger::logToSD(void)
     }
 
     // Write the data
-    streamSensorDataCSV(&logFile);
+    printSensorDataCSV(&logFile);
     // Echo the line to the serial port
     #if defined(STANDARD_SERIAL_OUTPUT)
         PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/ "));
-        streamSensorDataCSV(&STANDARD_SERIAL_OUTPUT);
+        printSensorDataCSV(&STANDARD_SERIAL_OUTPUT);
         PRINTOUT('\n');
     #endif
 
@@ -811,7 +816,7 @@ bool Logger::logToSD(void)
 void Logger::checkForTestingMode(int8_t buttonPin)
 {
     // Set the pin attached to some button to enter debug mode
-    if (buttonPin >= 0) pinMode(buttonPin, INPUT);
+    if (buttonPin >= 0) pinMode(buttonPin, INPUT_PULLUP);
 
     // Flash the LED to let user know it is now possible to enter debug mode
     for (uint8_t i = 0; i < 15; i++)
@@ -837,11 +842,11 @@ void Logger::checkForTestingMode(int8_t buttonPin)
 // A static function if you'd prefer to enter testing based on an interrupt
 void Logger::testingISR()
 {
-    MS_DBG(F("Testing interrupt!"));
+    // MS_DBG(F("Testing interrupt!"));
     if (!Logger::isTestingNow && !Logger::isLoggingNow)
     {
         Logger::startTesting = true;
-        MS_DBG(F("Testing flag has been set."));
+        // MS_DBG(F("Testing flag has been set."));
     }
 }
 
@@ -873,8 +878,7 @@ void Logger::testingMode()
         // on between iterations in testing mode.
         _internalArray->updateAllSensors();
         // Print out the current logger time
-        PRINTOUT(F("Current logger time is "));
-        PRINTOUT(formatDateTime_ISO8601(getNowEpoch()));
+        PRINTOUT(F("Current logger time is "), formatDateTime_ISO8601(getNowEpoch()));
         PRINTOUT(F("    -----------------------"));
         // Print out the sensor data
         #if defined(STANDARD_SERIAL_OUTPUT)
@@ -888,6 +892,9 @@ void Logger::testingMode()
     _internalArray->sensorsSleep();
     _internalArray->sensorsPowerDown();
 
+    PRINTOUT(F("Exiting testing mode"));
+    PRINTOUT(F("------------------------------------------"));
+
     // Unset testing mode flag
     Logger::isTestingNow = false;
 
@@ -900,16 +907,26 @@ void Logger::testingMode()
 // Convience functions to call several of the above functions
 // ===================================================================== //
 
-// This calls all of the setup functions - must be run AFTER init
- void Logger::begin(void)
+// This does all of the setup that can't happen in the constructors
+// That is, things that require the actual processor/MCU to do something
+// rather than the compiler to do something.
+ void Logger::begin(bool skipSensorSetup)
 {
     // Set up pins for the LED and button
-    if (_ledPin >= 0) pinMode(_ledPin, OUTPUT);
-    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT);
+    if (_ledPin >= 0)
+    {
+        pinMode(_ledPin, OUTPUT);
+        digitalWrite(_ledPin, LOW);
+    }
+    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT_PULLUP);
 
     #if defined ARDUINO_ARCH_SAMD
         zero_sleep_rtc.begin();
     #else
+        // Set the pins for I2C
+        pinMode(SDA, INPUT_PULLUP);
+        pinMode(SCL, INPUT_PULLUP);
+        Wire.begin();
         rtc.begin();
         delay(100);
     #endif
@@ -926,24 +943,40 @@ void Logger::testingMode()
              F(" come from "),_internalArray->getSensorCount(), F(" sensors and "),
              _internalArray->getCalculatedVariableCount(), F(" are calculated."));
 
-     // Set up the sensors
-     _internalArray->setupSensors();
+    if (!skipSensorSetup)
+    {
+         // Set up the sensors
+         PRINTOUT(F("Setting up sensors..."));
+         _internalArray->setupSensors();
 
-    // Create the log file, adding the default header to it
-    if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
-    else PRINTOUT(F("Unable to create a file to save data to!"));
+        // Create the log file, adding the default header to it
+        if (_autoFileName) generateAutoFileName();
+        if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
+        else PRINTOUT(F("Unable to create a file to save data to!"));
+
+        // Set the number of intervals to 0
+        // When the logger instance is created, it will have _numIntervals set to -1.
+        // We use the negative value to indicate that the sensors and log file have
+        // not been set up
+        _numIntervals = 0;
+    }
 
     // Setup sleep mode
     if(_mcuWakePin >= 0){setupSleep();}
 
     // Set up the interrupt to be able to enter sensor testing mode
+    // NOTE:  Entering testing mode before the sensors have been set-up may
+    // give unexpected results.
     if (_buttonPin >= 0)
     {
         enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
-        PRINTOUT(F("Push button on pin "));
-        PRINTOUT(_buttonPin);
-        PRINTOUT(F(" at any time to enter sensor testing mode."));
+        PRINTOUT(F("Push button on pin "), _buttonPin,
+                 F(" at any time to enter sensor testing mode."));
     }
+
+    // Make sure all sensors are powered down at the end
+    // The should be, but just in case
+    _internalArray->sensorsPowerDown();
 
     PRINTOUT(F("Logger setup finished!"));
     PRINTOUT(F("------------------------------------------\n"));
@@ -954,10 +987,31 @@ void Logger::testingMode()
 
 
 // This is a one-and-done to log data
-void Logger::log(void)
+void Logger::logData(void)
 {
+    // If the number of intervals is negative, then the sensors and file on
+    // the SD card haven't been setup and we want to set them up.
+    // NOTE:  Unless it completed in less than one second, the sensor set-up
+    // will take the place of logging for this interval!
+    if (_numIntervals < 0)
+    {
+        // Set up the sensors
+        PRINTOUT(F("Sensors and data file had not been set up!  Setting them up now."));
+        _internalArray->setupSensors();
+
+       // Create the log file, adding the default header to it
+       if (_autoFileName) generateAutoFileName();
+       if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
+       else PRINTOUT(F("Unable to create a file to save data to!"));
+
+       // Now, set the number of intervals to 0
+       _numIntervals = 0;
+    }
+
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
+    // NOTE:  When checkInterval() returns true, it also ticks up the value of
+    // _numIntervals.
     if (checkInterval())
     {
         // Flag to notify that we're in already awake and logging a point

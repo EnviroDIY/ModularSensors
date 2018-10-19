@@ -70,7 +70,7 @@ bool loggerModem::setup(void)
     // NOTE:  We ar NOT powering up the modem!  Set up will NOT be successful
     // unless the modem is already powered external to this function.
     bool wasAwake = ( (_dataPin >= 0 && digitalRead(_dataPin) == _statusLevel)
-                     && !bitRead(_sensorStatus, 4) );
+                     || bitRead(_sensorStatus, 4) );
     if (!wasAwake)
     {
         MS_MOD_DBG(F("Running modem's wake function ..."));
@@ -273,8 +273,13 @@ bool loggerModem::setup(void)
     else _sensorStatus |= 0b10000000;
 
     // Put the modem to sleep after finishing setup
-    if(wasAwake || (_dataPin >= 0 && digitalRead(_dataPin) == _statusLevel))
+    // Only go to sleep if it had been asleep and is now awake
+    bool isAwake = ( (_dataPin >= 0 && digitalRead(_dataPin) == _statusLevel)
+                    || bitRead(_sensorStatus, 4) );
+    if (!wasAwake && isAwake)
         success &= _sleepFxn();
+    // Do NOT power down at the end, because this fxn cannot have powered the
+    // modem up.
 
     return success;
 }

@@ -171,11 +171,10 @@ bool Sensor::setup(void)
            _stabilizationTime_ms, F("ms, and takes a single measurement in "),
            _measurementTime_ms, F("ms."));
 
-    MS_DBG(_measurementsToAverage);
-    MS_DBG(F(" individual measurements will be averaged for each reading."));
+    MS_DBG(_measurementsToAverage, F(" individual measurements will be averaged for each reading."));
 
-    if (_powerPin >= 0) pinMode(_powerPin, OUTPUT);
-    if (_dataPin >= 0) pinMode(_dataPin, INPUT);
+    if (_powerPin >= 0) pinMode(_powerPin, OUTPUT);  // NOTE:  Not setting value
+    if (_dataPin >= 0) pinMode(_dataPin, INPUT);  // NOTE:  Not turning on pull-up!
 
     // Set the status bit marking that the sensor has been set up (bit 0)
     _sensorStatus |= 0b00000001;
@@ -411,7 +410,7 @@ bool Sensor::update(void)
     if(wasActive){sleep();}
 
     // Turn the power back off it it had been turned on
-    if(wasOn){powerDown();}
+    if(!wasOn){powerDown();}
 
     // Update the registered variables with the new values
     notifyVariables();

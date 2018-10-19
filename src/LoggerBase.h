@@ -28,7 +28,7 @@
   #include <avr/power.h>
 #endif
 
-// Bring in the library to commuinicate with an external high-precision real time clock
+// Bring in the library to communicate with an external high-precision real time clock
 // This also implements a needed date/time class
 #include <Sodaq_DS3231.h>
 #define EPOCH_TIME_OFF 946684800
@@ -38,8 +38,6 @@
 // epoch beginning 1970-jan-01 00:00:00.
 
 #include <SdFat.h>  // To communicate with the SD card
-
-static String LOGGER_EMPTY = "";
 
 // Defines the "Logger" Class
 class Logger
@@ -140,13 +138,11 @@ public:
 
     // This prints a header onto a stream - this removes need to pass around
     // very long string objects which can crash the logger
-    virtual void streamFileHeader(Stream *stream);
+    virtual void printFileHeader(Stream *stream);
 
-    // This generates a comma separated list of volues of sensor data - including the time
-    String generateSensorDataCSV(void);
-    // This sends a comma separated list of volues of sensor data - including the
+    // This prints a comma separated list of volues of sensor data - including the
     // time -  out over an Arduino stream
-    void streamSensorDataCSV(Stream *stream);
+    void printSensorDataCSV(Stream *stream);
 
     // These functions create a file on an SD card and set the created/modified/
     // accessed timestamps in that file.
@@ -191,11 +187,14 @@ public:
     // ===================================================================== //
     // Convience functions to call several of the above functions
     // ===================================================================== //
-    // This calls all of the setup functions - must be run AFTER init
-    virtual void begin(void);
+    // This does all of the setup that can't happen in the constructors
+    // That is, things that require the actual processor/MCU to do something
+    // rather than the compiler to do something.
+    virtual void begin(bool skipSensorSetup = false);
 
     // This is a one-and-done to log data
-    virtual void log(void);
+    virtual void logData(void);
+
 
     // Public variables
     // Time stamps - want to set them at a single time and carry them forward
@@ -226,20 +225,20 @@ protected:
     static int8_t _timeZone;
     static int8_t _offset;
 
-    // Time stamps - want to set them at a single time and carry them forward
-    static DateTime markedDateTime;
-    static char markedISO8601Time[26];
-
     // Initialization variables
     const char *_loggerID;
     uint16_t _loggingIntervalMinutes;
     int8_t _SDCardPin;
     int8_t _mcuWakePin;
-    VariableArray *_internalArray;
-
-    uint8_t _numTimepointsLogged;
     int8_t _ledPin;
     int8_t _buttonPin;
+    VariableArray *_internalArray;
+
+    // The number of logging intervals that have passed.
+    // NOTE:  This is not intended to be a perfect count, and it will zero
+    // after every time the logger restarts (such as running out of battery).
+    // A value of -1 indicates that sensor set-up hasn't been run!
+    int8_t _numIntervals;
 
     // This checks if the SD card is available and ready
     // We run this check before every communication with the SD card to prevent
