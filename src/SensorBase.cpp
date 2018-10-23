@@ -351,14 +351,6 @@ void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber, int16_t resultV
     float float_val = resultValue;  // cast the int16_t to a float
     verifyAndAddMeasurementResult(resultNumber, float_val);
 }
-void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber, uint32_t resultValue)
-{
-    MS_DBG(F("Adding "), resultValue, F(" to result array for variable "),
-           resultNumber, F(" from "), getSensorNameAndLocation(),
-           F(" without verification."));
-    sensorValues[resultNumber] +=  resultValue;
-    numberGoodMeasurementsMade[resultNumber] += 1;
-}
 
 
 void Sensor::averageMeasurements(void)

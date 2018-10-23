@@ -56,7 +56,7 @@ public:
 private:
     const char *_version;
     int8_t _batteryPin;
-    uint32_t sampNum;
+    int16_t sampNum;
 };
 
 
