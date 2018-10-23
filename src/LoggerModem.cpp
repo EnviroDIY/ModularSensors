@@ -431,7 +431,9 @@ bool loggerModem::addSingleMeasurementResult(void)
             success &= _tinyClient->connect(ip, 37);
             _tinyClient->print(F("Hi!"));  // Need to send something before connection is made
             delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
-            while (_tinyClient->available()) _tinyClient->read();  // Delete anything returned
+            char junkBuff[5];
+            _tinyClient->readBytes(junkBuff, 4);  // Dump the returned bytes
+            // This should ensure we don't wait for more than 4 character time outs
             _lastNISTrequest = millis();
         }
 
