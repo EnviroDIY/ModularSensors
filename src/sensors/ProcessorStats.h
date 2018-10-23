@@ -97,9 +97,9 @@ public:
     ProcessorStats_SampleNumber(Sensor *parentSense,
                            const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, PROCESSOR_SAMPNUM_VAR_NUM,
-                 "Free SRAM", "Bit",
+                 "sequenceNumber", "Dimensionless",
                  PROCESSOR_SAMPNUM_RESOLUTION,
-                 "FreeRam", UUID, customVarCode)
+                 "SampNum", UUID, customVarCode)
     {}
     ~ProcessorStats_SampleNumber(){}
 };
