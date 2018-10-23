@@ -378,7 +378,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
         MS_DBG(F("   "), getSensorNameAndLocation(), F(" is not currently measuring!"));
        for (uint8_t i = 0; i < _numReturnedVars; i++)
        {
-           verifyAndAddMeasurementResult(i, -9999);
+           verifyAndAddMeasurementResult(i, (float)-9999);
        }
     }
 

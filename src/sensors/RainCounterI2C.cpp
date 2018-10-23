@@ -77,7 +77,7 @@ bool RainCounterI2C::addSingleMeasurementResult(void)
     MS_DBG(F("Tips: "), tips);
 
     verifyAndAddMeasurementResult(BUCKET_RAIN_VAR_NUM, rain);
-    verifyAndAddMeasurementResult(BUCKET_TIPS_VAR_NUM, int(tips));
+    verifyAndAddMeasurementResult(BUCKET_TIPS_VAR_NUM, tips);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;

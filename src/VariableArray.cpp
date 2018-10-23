@@ -177,7 +177,8 @@ bool VariableArray::sensorsWake(void)
         {
             if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) == 1)  // already awake
             {
-                MS_DBG(arrayOfVars[i]->getParentSensorNameAndLocation(), F(" was already awake."));
+                MS_DBG(F("   ... Wake up of "), arrayOfVars[i]->getParentSensorNameAndLocation(),
+                       F(" has already been attempted."));
                 nSensorsAwake++;
             }
         }
@@ -378,8 +379,8 @@ bool VariableArray::updateAllSensors(void)
                         success &= sensorSuccess_result;
                         nMeasurementsCompleted[i] += 1;  // increment the number of measurements that sensor has completed
 
-                        if (sensorSuccess_result) MS_DBG(F("   ... Success. <<--- "), i, '.', nMeasurementsCompleted[i], '\n');
-                        else MS_DBG(F("   ... Failed! <<--- "), i, '.', nMeasurementsCompleted[i], '\n');
+                        if (sensorSuccess_result) MS_DBG(F("   ... Success. <<--- "), i, '.', nMeasurementsCompleted[i]);
+                        else MS_DBG(F("   ... Failed! <<--- "), i, '.', nMeasurementsCompleted[i]);
                     }
 
                 }
@@ -671,20 +672,20 @@ bool VariableArray::completeUpdate(void)
                                 arrayOfVars[i]->getParentSensorNameAndLocation());
 
                                 arrayOfVars[k]->parentSensor->powerDown();
-                                MS_DBG(F("   ... Complete. <<--- "), k, '\n');
+                                MS_DBG(F("   ... Complete. <<--- "), k);
                             }
                         }
                     }
 
                     nSensorsCompleted++;  // mark the whole sensor as done
-                    MS_DBG(F("*****--- "), nSensorsCompleted, F(" sensors now complete ---*****\n"));
+                    MS_DBG(F("*****--- "), nSensorsCompleted, F(" sensors now complete ---*****"));
                 }
             }
         }
     }
 
     // Average measurements and notify varibles of the updates
-    MS_DBG(F("----->> Averaging results and notifying all variables. ...\n"));
+    MS_DBG(F("----->> Averaging results and notifying all variables. ..."));
     for (uint8_t i = 0; i < _variableCount; i++)
     {
         if (lastSensorVariable[i])

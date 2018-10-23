@@ -92,6 +92,9 @@ bool MeaSpecMS5803::addSingleMeasurementResult(void)
     {
         MS_DBG(F("Getting values from "), getSensorNameAndLocation());
         // Read values
+        // NOTE:  These functions actually include the request to begin
+        // a measurement and the wait for said measurement to finish.
+        // It's pretty fast (max of 11 ms) so we'll just wait.
         temp = MS5803_internal.getTemperature(CELSIUS, ADC_512);
         press = MS5803_internal.getPressure(ADC_4096);
 
