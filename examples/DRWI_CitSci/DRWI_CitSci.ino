@@ -255,7 +255,7 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
-    // Set up the sleep/wake pin for the modem and put it's inital value as "off"
+    // Set up the sleep/wake pin for the modem and put its inital value as "off"
     pinMode(modemSleepRqPin, OUTPUT);
     digitalWrite(modemSleepRqPin, LOW);
 

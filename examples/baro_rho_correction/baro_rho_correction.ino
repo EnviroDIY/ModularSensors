@@ -99,8 +99,8 @@ const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if 
 const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
 // And create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-// After setting up pin sleep, the sleep request pin is held LOW to keep the XBee on
-// Use XCTU to set up pin sleep!
+// After enabling pin sleep, the sleep request pin is held LOW to keep the XBee on
+// Enable pin sleep in the setup function or using XCTU prior to connecting the XBee
 bool sleepFxn(void)
 {
     if (modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
@@ -534,10 +534,24 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
-    // Set up the sleep/wake pin for the modem and put it's inital value as "off"
+    // Set up the sleep/wake pin for the modem and put its inital value as "off"
     #if defined(TINY_GSM_MODEM_XBEE)
         pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, HIGH);
+        digitalWrite(modemSleepRqPin, LOW);  // Turn it on to talk, just in case
+        if (tinyModem->commandMode())
+        {
+            tinyModem->sendAT(GF("SM"),1);  // Pin sleep
+            tinyModem->waitResponse();
+            tinyModem->sendAT(GF("DO"),0);  // Disable remote manager
+            tinyModem->waitResponse();
+            tinyModem->sendAT(GF("SO"),0);  // For Cellular - disconnected sleep
+            tinyModem->waitResponse();
+            tinyModem->sendAT(GF("SO"),200);  // For WiFi - Disassociate from AP for Deep Sleep
+            tinyModem->waitResponse();
+            tinyModem->writeChanges();
+            tinyModem->exitCommand();
+        }
+        digitalWrite(modemSleepRqPin, HIGH);  // back to sleep
     #elif defined(TINY_GSM_MODEM_ESP8266)
         if (modemSleepRqPin >= 0)
         {
