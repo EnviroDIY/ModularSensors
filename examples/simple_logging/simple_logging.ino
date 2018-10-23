@@ -468,6 +468,7 @@ Variable *variableList[] = {
     new ZebraTechDOpto_Temp(&dopto),
     new ZebraTechDOpto_DOpct(&dopto),
     new ZebraTechDOpto_DOmgL(&dopto),
+    new ProcessorStats_SampleNumber(&mayfly),
     new ProcessorStats_FreeRam(&mayfly),
     new ProcessorStats_Batt(&mayfly),
     new MaximDS3231_Temp(&ds3231),

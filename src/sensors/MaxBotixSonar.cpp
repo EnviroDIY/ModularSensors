@@ -107,7 +107,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
     // Initialize values
     bool success = false;
     int rangeAttempts = 0;
-    int result = -9999;
+    int16_t result = -9999;
 
     // Clear anything out of the stream buffer
     int junkChars = _stream->available();

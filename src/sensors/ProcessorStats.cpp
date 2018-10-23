@@ -102,6 +102,7 @@ ProcessorStats::ProcessorStats(const char *version)
              -1, -1, 1)
 {
     _version = version;
+    sampNum = 0;
 
     #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) || defined(ARDUINO_AVR_SODAQ_MBILI)
         _batteryPin = A6;
@@ -203,6 +204,11 @@ bool ProcessorStats::addSingleMeasurementResult(void)
     #endif
 
     verifyAndAddMeasurementResult(PROCESSOR_RAM_VAR_NUM, sensorValue_freeRam);
+
+    // bump up the sample number
+    sampNum += 1;
+
+    verifyAndAddMeasurementResult(PROCESSOR_SAMPNUM_VAR_NUM, sampNum);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;

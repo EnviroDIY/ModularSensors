@@ -25,7 +25,7 @@
 #include "SensorBase.h"
 
 // Sensor Specific Defines
-#define PROCESSOR_NUM_VARIABLES 2
+#define PROCESSOR_NUM_VARIABLES 3
 #define PROCESSOR_WARM_UP_TIME_MS 0
 #define PROCESSOR_STABILIZATION_TIME_MS 0
 #define PROCESSOR_MEASUREMENT_TIME_MS 0
@@ -35,6 +35,9 @@
 
 #define PROCESSOR_RAM_RESOLUTION 0
 #define PROCESSOR_RAM_VAR_NUM 1
+
+#define PROCESSOR_SAMPNUM_RESOLUTION 0
+#define PROCESSOR_SAMPNUM_VAR_NUM 2
 
 
 // The "Main" class for the Processor
@@ -52,7 +55,8 @@ public:
 
 private:
     const char *_version;
-    int _batteryPin;
+    int8_t _batteryPin;
+    uint32_t sampNum;
 };
 
 
@@ -83,6 +87,21 @@ public:
                  "FreeRam", UUID, customVarCode)
     {}
     ~ProcessorStats_FreeRam(){}
+};
+
+
+// Defines the "Sample Number" This is a board diagnostic
+class ProcessorStats_SampleNumber : public Variable
+{
+public:
+    ProcessorStats_SampleNumber(Sensor *parentSense,
+                           const char *UUID = "", const char *customVarCode = "")
+      : Variable(parentSense, PROCESSOR_SAMPNUM_VAR_NUM,
+                 "Free SRAM", "Bit",
+                 PROCESSOR_SAMPNUM_RESOLUTION,
+                 "FreeRam", UUID, customVarCode)
+    {}
+    ~ProcessorStats_SampleNumber(){}
 };
 
 #endif  // Header Guard

@@ -58,6 +58,7 @@ ProcessorStats mayfly(MFVersion);
 // Create the battery voltage and free RAM variable objects for the processor and return variable-type pointers to them
 Variable *mayflyBatt = new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *mayflyRAM = new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *mayflySampNo = new ProcessorStats_SampleNumber(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -454,6 +455,7 @@ Variable *calcCorrDepth = new Variable(calculateWaterDepthTempCorrected, rhoDept
 Variable *variableList[] = {
     mayflyBatt,
     mayflyRAM,
+    mayflySampNo,
     ds3231Temp,
     bme280Temp,
     bme280Humid,

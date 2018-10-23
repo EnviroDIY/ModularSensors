@@ -119,8 +119,11 @@ public:
     // Clears the values array
     void clearValues();
     // This verifies that a measurement is OK (ie, not -9999) before adding it to the array
-    void verifyAndAddMeasurementResult(int resultNumber, float resultValue);
-    void verifyAndAddMeasurementResult(int resultNumber, int resultValue);
+    void verifyAndAddMeasurementResult(uint8_t resultNumber, float resultValue);
+    void verifyAndAddMeasurementResult(uint8_t resultNumber, int16_t resultValue);
+    // NOTE:  for an uint32_t result, there is NO ERROR VERIFICATION
+    // That is, -9999 is accepted and averaged as a real value of 4294957297.
+    void verifyAndAddMeasurementResult(uint8_t resultNumber, uint32_t resultValue);
     void averageMeasurements(void);
 
     // These tie the variables to their parent sensor

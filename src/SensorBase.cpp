@@ -315,7 +315,7 @@ void Sensor::clearValues(void)
 
 
 // This verifies that a measurement is good before adding it to the values to be averaged
-void Sensor::verifyAndAddMeasurementResult(int resultNumber, float resultValue)
+void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber, float resultValue)
 {
     // If the new result is good and there was were only bad results, set the
     // result value as the new result and add 1 to the good result total
@@ -346,10 +346,18 @@ void Sensor::verifyAndAddMeasurementResult(int resultNumber, float resultValue)
                resultNumber, F(" from "), getSensorNameAndLocation(),
                F("; good results already in array."));
 }
-void Sensor::verifyAndAddMeasurementResult(int resultNumber, int resultValue)
+void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber, int16_t resultValue)
 {
     float float_val = resultValue;
     verifyAndAddMeasurementResult(resultNumber, float_val);
+}
+void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber, uint32_t resultValue)
+{
+    MS_DBG(F("Adding "), resultValue, F(" to result array for variable "),
+           resultNumber, F(" from "), getSensorNameAndLocation(),
+           F(" without verification."));
+    sensorValues[resultNumber] +=  resultValue;
+    numberGoodMeasurementsMade[resultNumber] += 1;
 }
 
 

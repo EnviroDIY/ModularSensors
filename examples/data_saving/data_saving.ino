@@ -58,6 +58,7 @@ ProcessorStats mayfly(MFVersion);
 // Create the battery voltage and free RAM variable objects for the processor and return variable-type pointers to them
 Variable *mayflyBatt = new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *mayflyRAM = new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *mayflySampNo = new ProcessorStats_SampleNumber(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -390,6 +391,7 @@ Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-123
 Variable *variableList_complete[] = {
     mayflyBatt,
     mayflyRAM,
+    mayflySampNo,
     ds3231Temp,
     y504DOpct,
     y504DOmgL,

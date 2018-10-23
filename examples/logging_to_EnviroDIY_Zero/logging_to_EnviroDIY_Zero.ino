@@ -2,7 +2,7 @@
 logging_to_EnviroDIY_Zero.ino
 Written By:  Sara Damiano (sdamiano@stroudcenter.org)
 Development Environment: PlatformIO
-Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
+Hardware Platform: Adafruit Adalogger M0
 Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
@@ -709,6 +709,7 @@ Variable *variableList[] = {
     new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
     new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
     new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_SampleNumber(&feather, "12345678-abcd-1234-efgh-1234567890ab"),
     new ProcessorStats_FreeRam(&feather, "12345678-abcd-1234-efgh-1234567890ab"),
     new ProcessorStats_Batt(&feather, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
