@@ -437,7 +437,7 @@ MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 // Neither hardware serial nor AltSoftSerial require any modifications to
 // deal with interrupt conflicts.
 
-const int SonarData = 11;     // data receive pin
+const int8_t SonarData = 11;     // data receive pin
 
 #include <SoftwareSerial_ExtInts.h>  // for the stream communication
 SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
@@ -737,9 +737,9 @@ const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sam
 // ==========================================================================
 
 // Flashes the LED's on the primary board
-void greenredflash(int numFlash = 4, int rate = 75)
+void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 {
-  for (int i = 0; i < numFlash; i++) {
+  for (uint8_t i = 0; i < numFlash; i++) {
     digitalWrite(greenLED, HIGH);
     digitalWrite(redLED, LOW);
     delay(rate);

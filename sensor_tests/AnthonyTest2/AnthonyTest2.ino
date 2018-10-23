@@ -498,7 +498,7 @@ MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 // Neither hardware serial nor AltSoftSerial require any modifications to
 // deal with interrupt conflicts.
 
-const int SonarData = 11;     // data receive pin
+const int8_t SonarData = 11;     // data receive pin
 
 #include <SoftwareSerial_ExtInts.h>  // for the stream communication
 SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
@@ -566,12 +566,12 @@ MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803Readings
 // ==========================================================================
 #include <sensors/PaleoTerraRedox.h>
 // const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-const int sclPin1 = 4;  //Clock pin to be used with 1st redox probe
-const int sdaPin1 = 5;  //Data pin to be used with 1st redox probe
-const int sclPin2 = 6;  //Clock pin to be used with 2nd redox probe
-const int sdaPin2 = 7;  //Data pin to be used with 2nd redox probe
-const int sclPin3 = 10;  //Clock pin to be used with 2nd redox probe
-const int sdaPin3 = 11;  //Data pin to be used with 2nd redox probe
+const int8_t sclPin1 = 4;  //Clock pin to be used with 1st redox probe
+const int8_t sdaPin1 = 5;  //Data pin to be used with 1st redox probe
+const int8_t sclPin2 = 6;  //Clock pin to be used with 2nd redox probe
+const int8_t sdaPin2 = 7;  //Data pin to be used with 2nd redox probe
+const int8_t sclPin3 = 10;  //Clock pin to be used with 2nd redox probe
+const int8_t sdaPin3 = 11;  //Data pin to be used with 2nd redox probe
 const uint8_t PaleoTerraReadingsToAvg = 1;
 Create and return the Paleo Terra Redox sensor objects
 PaleoTerraRedox redox1(I2CPower, sclPin1, sdaPin1, PaleoTerraReadingsToAvg);
@@ -873,9 +873,9 @@ const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sam
 // ==========================================================================
 
 // Flashes the LED's on the primary board
-void greenredflash(int numFlash = 4, int rate = 75)
+void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 {
-  for (int i = 0; i < numFlash; i++) {
+  for (uint8_t i = 0; i < numFlash; i++) {
     digitalWrite(greenLED, HIGH);
     digitalWrite(redLED, LOW);
     delay(rate);
