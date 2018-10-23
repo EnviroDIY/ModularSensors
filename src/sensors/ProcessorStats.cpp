@@ -192,7 +192,7 @@ bool ProcessorStats::addSingleMeasurementResult(void)
     MS_DBG(F("Getting Free RAM"));
 
     #if defined __AVR__
-    extern int __heap_start, *__brkval;
+    extern int16_t __heap_start, *__brkval;
     int16_t v;
     float sensorValue_freeRam = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
 

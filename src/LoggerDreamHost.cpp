@@ -75,7 +75,7 @@ int16_t LoggerDreamHost::postDataDreamHost(void)
 
     // Create a buffer for the response
     char response_buffer[12] = "";
-    int did_respond = 0;
+    uint16_t did_respond = 0;
 
     // Open a TCP/IP connection to DreamHost
     if(_logModem->_tinyClient->connect("swrcsensors.dreamhosters.com", 80))

@@ -217,7 +217,7 @@ int16_t LoggerEnviroDIY::postDataEnviroDIY(void)
 
     // Create a buffer for the response
     char response_buffer[12] = "";
-    int did_respond = 0;
+    uint16_t did_respond = 0;
 
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
     if(_logModem->_tinyClient->connect("data.envirodiy.org", 80))

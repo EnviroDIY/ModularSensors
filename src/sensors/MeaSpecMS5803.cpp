@@ -38,7 +38,7 @@
 
 // The constructor - because this is I2C, only need the power pin
 MeaSpecMS5803::MeaSpecMS5803(int8_t powerPin, uint8_t i2cAddressHex,
-                             int maxPressure, uint8_t measurementsToAverage)
+                             int16_t maxPressure, uint8_t measurementsToAverage)
      : Sensor("MeaSpecMS5803", MS5803_NUM_VARIABLES,
               MS5803_WARM_UP_TIME_MS, MS5803_STABILIZATION_TIME_MS, MS5803_MEASUREMENT_TIME_MS,
               powerPin, -1, measurementsToAverage)
