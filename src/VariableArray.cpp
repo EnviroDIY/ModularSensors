@@ -11,7 +11,7 @@
 
 
 // Constructor
-VariableArray::VariableArray(int variableCount, Variable *variableList[])
+VariableArray::VariableArray(uint8_t variableCount, Variable *variableList[])
 {
     _variableCount = variableCount;
     arrayOfVars = variableList;
@@ -24,11 +24,11 @@ VariableArray::~VariableArray(){}
 
 
 // This counts and returns the number of calculated variables
-int VariableArray::getCalculatedVariableCount(void)
+uint8_t VariableArray::getCalculatedVariableCount(void)
 {
-    int numCalc = 0;
+    uint8_t numCalc = 0;
     // Check for unique sensors
-    for (int i = 0; i < _variableCount; i++)
+    for (uint8_t i = 0; i < _variableCount; i++)
     {
         if (arrayOfVars[i]->isCalculated) numCalc++;
     }
@@ -38,11 +38,11 @@ int VariableArray::getCalculatedVariableCount(void)
 
 
 // This counts and returns the number of sensors
-int VariableArray::getSensorCount(void)
+uint8_t VariableArray::getSensorCount(void)
 {
-    int numSensors = 0;
+    uint8_t numSensors = 0;
     // Check for unique sensors
-    for (int i = 0; i < _variableCount; i++)
+    for (uint8_t i = 0; i < _variableCount; i++)
     {
         if (isLastVarFromSensor(i)) numSensors++;
     }
@@ -82,7 +82,7 @@ bool VariableArray::setupSensors(void)
 
     // Check for any sensors that have been set up outside of this (ie, the modem)
     uint8_t nSensorsSetup = 0;
-    for (int i = 0; i < _variableCount; i++)
+    for (uint8_t i = 0; i < _variableCount; i++)
     {
         if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {
@@ -102,7 +102,7 @@ bool VariableArray::setupSensors(void)
     // We keep looping until they've all been done.
     while (nSensorsSetup < _sensorCount)
     {
-        for (int i = 0; i < _variableCount; i++)
+        for (uint8_t i = 0; i < _variableCount; i++)
         {
             bool sensorSuccess = false;
             if (isLastVarFromSensor(i)) // Skip non-unique sensors
@@ -131,7 +131,7 @@ bool VariableArray::setupSensors(void)
 
     // Now attach all of the variables to their parents
     // MS_DBG(F("Attaching variables to their parent sensors."));
-    // for (int i = 0; i < _variableCount; i++){
+    // for (uint8_t i = 0; i < _variableCount; i++){
     //     success &= arrayOfVars[i]->setup();
     // }
 
@@ -148,7 +148,7 @@ bool VariableArray::setupSensors(void)
 void VariableArray::sensorsPowerUp(void)
 {
     MS_DBG(F("Powering up sensors..."));
-    for (int i = 0; i < _variableCount; i++)
+    for (uint8_t i = 0; i < _variableCount; i++)
     {
         if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {
@@ -171,7 +171,7 @@ bool VariableArray::sensorsWake(void)
     uint8_t nSensorsAwake = 0;
 
     // Check for any sensors that are awake outside of being sent a "wake" command
-    for (int i = 0; i < _variableCount; i++)
+    for (uint8_t i = 0; i < _variableCount; i++)
     {
         if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {
@@ -189,7 +189,7 @@ bool VariableArray::sensorsWake(void)
     // We keep looping until they've all been done.
     while (nSensorsAwake < _sensorCount)
     {
-        for (int i = 0; i < _variableCount; i++)
+        for (uint8_t i = 0; i < _variableCount; i++)
         {
             if (isLastVarFromSensor(i)) // Skip non-unique sensors
             {
@@ -227,7 +227,7 @@ bool VariableArray::sensorsSleep(void)
 {
     MS_DBG(F("Putting sensors to sleep..."));
     bool success = true;
-    for (int i = 0; i < _variableCount; i++)
+    for (uint8_t i = 0; i < _variableCount; i++)
     {
         if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {
@@ -251,7 +251,7 @@ bool VariableArray::sensorsSleep(void)
 void VariableArray::sensorsPowerDown(void)
 {
     MS_DBG(F("Powering down sensors..."));
-    for (int i = 0; i < _variableCount; i++)
+    for (uint8_t i = 0; i < _variableCount; i++)
     {
         if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {
@@ -291,7 +291,7 @@ bool VariableArray::updateAllSensors(void)
 
     // Check for any sensors that didn't wake up and mark them as "complete" so
     // they will be skipped in further looping.
-    for (int i = 0; i < _variableCount; i++)
+    for (uint8_t i = 0; i < _variableCount; i++)
     {
         if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {
@@ -705,7 +705,7 @@ bool VariableArray::completeUpdate(void)
 // Calculated variable results will be included
 void VariableArray::printSensorData(Stream *stream)
 {
-    for (int i = 0; i < _variableCount; i++)
+    for (uint8_t i = 0; i < _variableCount; i++)
     {
         if (arrayOfVars[i]->isCalculated)
         {
@@ -777,8 +777,8 @@ bool VariableArray::isLastVarFromSensor(int arrayIndex)
 // requested averaging
 uint8_t VariableArray::countMaxToAverage(void)
 {
-    int numReps = 0;
-    for (int i = 0; i < _variableCount; i++)
+    uint8_t numReps = 0;
+    for (uint8_t i = 0; i < _variableCount; i++)
     {
         if (isLastVarFromSensor(i)) // Skip non-unique sensors
         {

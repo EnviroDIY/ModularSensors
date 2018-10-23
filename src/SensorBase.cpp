@@ -94,7 +94,7 @@ void Sensor::setNumberMeasurementsToAverage(int nReadings)
 {
     _measurementsToAverage = nReadings;
 }
-int Sensor::getNumberMeasurementsToAverage(void){return _measurementsToAverage;}
+uint8_t Sensor::getNumberMeasurementsToAverage(void){return _measurementsToAverage;}
 
 
 // This returns the 8-bit code for the current status of the sensor.
@@ -287,7 +287,7 @@ void Sensor::notifyVariables(void)
            F(" of value update."));
 
     // Notify variables of update
-    for (int i = 0; i < _numReturnedVars; i++)
+    for (uint8_t i = 0; i < _numReturnedVars; i++)
     {
         if (variables[i] != NULL)  // Bad things happen if try to update nullptr
         {
@@ -306,7 +306,7 @@ void Sensor::notifyVariables(void)
 void Sensor::clearValues(void)
 {
     MS_DBG(F("Clearing value array for "), getSensorNameAndLocation());
-    for (int i = 0; i < _numReturnedVars; i++)
+    for (uint8_t i = 0; i < _numReturnedVars; i++)
     {
         sensorValues[i] =  -9999;
         numberGoodMeasurementsMade[i] = 0;
@@ -348,7 +348,7 @@ void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber, float resultVal
 }
 void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber, int16_t resultValue)
 {
-    float float_val = resultValue;
+    float float_val = resultValue;  // cast the int16_t to a float
     verifyAndAddMeasurementResult(resultNumber, float_val);
 }
 void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber, uint32_t resultValue)
@@ -365,7 +365,7 @@ void Sensor::averageMeasurements(void)
 {
     MS_DBG(F("Averaging results from "), getSensorNameAndLocation(),
            F(" over "), _measurementsToAverage, F(" reading[s]"));
-    for (int i = 0; i < _numReturnedVars; i++)
+    for (uint8_t i = 0; i < _numReturnedVars; i++)
     {
         if (numberGoodMeasurementsMade[i] > 0)
             sensorValues[i] /=  numberGoodMeasurementsMade[i];
@@ -402,7 +402,7 @@ bool Sensor::update(void)
     waitForStability();
 
     // loop through as many measurements as requested
-    for (int j = 0; j < _measurementsToAverage; j++)
+    for (uint8_t j = 0; j < _measurementsToAverage; j++)
     {
         // start a measurement
         ret_val += startSingleMeasurement();
@@ -433,7 +433,7 @@ bool Sensor::checkPowerOn(bool debug)
     if (debug) MS_DBG(F("Checking power status:  Power to "), getSensorNameAndLocation());
     if (_powerPin >= 0)
     {
-        int powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
+        int8_t powerBitNumber = log(digitalPinToBitMask(_powerPin))/log(2);
 
         if (bitRead(*portInputRegister(digitalPinToPort(_powerPin)), powerBitNumber) == LOW)
         {

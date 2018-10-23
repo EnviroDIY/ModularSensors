@@ -131,16 +131,16 @@ protected:
 // These are the unique functions for the modem as an internet connected device
 // ==========================================================================//
 public:
-    int getSignalRSSI(void) {return sensorValues[RSSI_VAR_NUM];}
-    int getSignalPercent(void) {return sensorValues[PERCENT_SIGNAL_VAR_NUM];}
+    int16_t getSignalRSSI(void) {return sensorValues[RSSI_VAR_NUM];}
+    int16_t getSignalPercent(void) {return sensorValues[PERCENT_SIGNAL_VAR_NUM];}
 
     bool connectInternet(uint32_t waitTime_ms = 50000L);
     void disconnectInternet(void);
 
     // This has the same functionality as Client->connect with debugging text
-    // int openTCP(const char *host, uint16_t port);
+    // int16_t openTCP(const char *host, uint16_t port);
     // This has the same functionality as Client->connect with debugging text
-    // int openTCP(IPAddress ip, uint16_t port);
+    // int16_t openTCP(IPAddress ip, uint16_t port);
     // This has the same functionality as Client->close with debugging text
     // void closeTCP(void);
     // Special sleep and power function for the modem
@@ -159,11 +159,11 @@ public:
 
 private:
     // Helper to get approximate RSSI from CSQ (assuming no noise)
-    static int getRSSIFromCSQ(int csq);
+    static int16_t getRSSIFromCSQ(int16_t csq);
     // Helper to get signal percent from CSQ
-    static int getPctFromCSQ(int csq);
+    static int16_t getPctFromCSQ(int16_t csq);
     // Helper to get signal percent from CSQ
-    static int getPctFromRSSI(int rssi);
+    static int16_t getPctFromRSSI(int16_t rssi);
 
 private:
     bool _statusLevel;

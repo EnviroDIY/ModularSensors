@@ -127,7 +127,7 @@ String ProcessorStats::getSensorLocation(void) {return BOARD;}
 #if defined(ARDUINO_ARCH_SAMD)
     extern "C" char *sbrk(int i);
 
-    int FreeRam () {
+    int16_t FreeRam () {
       char stack_dummy = 0;
       return &stack_dummy - sbrk(0);
     }
@@ -193,7 +193,7 @@ bool ProcessorStats::addSingleMeasurementResult(void)
 
     #if defined __AVR__
     extern int __heap_start, *__brkval;
-    int v;
+    int16_t v;
     float sensorValue_freeRam = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
 
     #elif defined(ARDUINO_ARCH_SAMD)

@@ -49,7 +49,7 @@ public:
     bool addSingleMeasurementResult(void) override;
 
 private:
-    int _triggerPin;
+    int8_t _triggerPin;
     Stream* _stream;
 };
 

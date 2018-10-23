@@ -18,9 +18,9 @@ const char* Variable::VAR_BASE_UNKNOWN = "Unknown";
 
 // The constructor for a measured variable - that is, one whose values are
 // updated by a sensor.
-Variable::Variable(Sensor *parentSense, int varNum,
+Variable::Variable(Sensor *parentSense, uint8_t varNum,
                    const char *varName, const char *varUnit,
-                   unsigned int decimalResolution,
+                   uint8_t decimalResolution,
                    const char *defaultVarCode,
                    const char *UUID, const char *customVarCode)
 {
@@ -48,7 +48,7 @@ Variable::Variable(Sensor *parentSense, int varNum,
 // NOTE:  ALL arguments are required!
 Variable::Variable(float (*calcFxn)(),
                    const char *varName, const char *varUnit,
-                   unsigned int decimalResolution,
+                   uint8_t decimalResolution,
                    const char *UUID, const char *customVarCode)
 {
     isCalculated = true;
@@ -165,7 +165,7 @@ String Variable::getValueString(bool updateValue)
     // Need this because otherwise get extra spaces in strings from int
     if (_decimalResolution == 0)
     {
-        int val = int(getValue(updateValue));
+        int16_t val = int(getValue(updateValue));
         return String(val);
     }
     else

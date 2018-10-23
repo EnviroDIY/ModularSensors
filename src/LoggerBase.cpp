@@ -209,7 +209,7 @@ bool Logger::syncRTClock(uint32_t nist)
         formatDateTime_ISO8601(nist_logTZ));
 
     // See how long it took to get the time from NIST
-    int sync_time = (millis() - start_millis)/1000;
+    uint32_t sync_time = (millis() - start_millis)/1000;
 
     // Check the current RTC time
     uint32_t cur_logTZ = getNowEpoch();

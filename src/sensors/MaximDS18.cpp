@@ -27,7 +27,7 @@ MaximDS18::MaximDS18(DeviceAddress OneWireAddress, int8_t powerPin, int8_t dataP
            powerPin, dataPin, measurementsToAverage),
     _internalOneWire(dataPin), _internalDallasTemp(&_internalOneWire)
 {
-    for (int i = 0; i < 8; i++) _OneWireAddress[i] = OneWireAddress[i];
+    for (uint8_t i = 0; i < 8; i++) _OneWireAddress[i] = OneWireAddress[i];
     // _OneWireAddress = OneWireAddress;
     _addressKnown = true;
 }
@@ -103,7 +103,7 @@ bool MaximDS18::setup(void)
         if (gotAddress)
         {
             MS_DBG(F("Sensor found at "), makeAddressString(address));
-            for (int i = 0; i < 8; i++) _OneWireAddress[i] = address[i];
+            for (uint8_t i = 0; i < 8; i++) _OneWireAddress[i] = address[i];
             _addressKnown = true;  // Now we know the address
         }
         else

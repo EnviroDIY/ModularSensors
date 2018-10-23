@@ -38,7 +38,7 @@ void LoggerDreamHost::printSensorDataDreamHost(Stream *stream)
     stream->print(String(F("?LoggerID=")) + String(Logger::_loggerID));
     stream->print(String(F("&Loggertime=")) + String(Logger::markedEpochTime - 946684800));  // Correct time from epoch to y2k
 
-    for (int i = 0; i < _internalArray->getVariableCount(); i++)
+    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
     {
         stream->print(String(F("&")) + String(_internalArray->arrayOfVars[i]->getVarCode()) \
             + String(F("=")) + String(_internalArray->arrayOfVars[i]->getValueString()));
@@ -64,7 +64,7 @@ void LoggerDreamHost::printDreamHostRequest(Stream *stream)
 
 
 // Post the data to dream host.
-int LoggerDreamHost::postDataDreamHost(void)
+int16_t LoggerDreamHost::postDataDreamHost(void)
 {
     // do not continue if no modem!
     if (_logModem == NULL)
@@ -107,11 +107,11 @@ int LoggerDreamHost::postDataDreamHost(void)
     else PRINTOUT(F("\n -- Unable to Establish Connection to DreamHost -- "));
 
     // Process the HTTP response
-    int responseCode = 0;
+    int16_t responseCode = 0;
     if (did_respond > 0)
     {
         char responseCode_char[4];
-        for (int i = 0; i < 3; i++)
+        for (uint8_t i = 0; i < 3; i++)
         {
             responseCode_char[i] = response_buffer[i+9];
         }
