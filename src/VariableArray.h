@@ -79,13 +79,13 @@ private:
     template<typename T>
     void prettyPrintArray(T arrayToPrint[])
     {
-        MS_DBG('[');
+        DEBUGGING_SERIAL_OUTPUT.print("[,\t");
         for (uint8_t i = 0; i < _variableCount; i++)
         {
-            MS_DBG(arrayToPrint[i]);
-            if ( (i+1) < _variableCount ) MS_DBG(',', '\t');
+            DEBUGGING_SERIAL_OUTPUT.print(arrayToPrint[i]);
+            DEBUGGING_SERIAL_OUTPUT.print(",\t");
         }
-        MS_DBG(']', '\n');
+        DEBUGGING_SERIAL_OUTPUT.println("]");
     }
 #else
     #define prettyPrintArray(...)
