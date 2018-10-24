@@ -268,7 +268,7 @@ const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (
 const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends taking and averaging a few readings
 // Create and return the Keller Acculevel sensor object
-KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, modbusSensorPower, rs485AdapterPower, max485EnablePin, acculevelNumberReadings);
+KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, acculevelNumberReadings);
 
 
 // ==========================================================================
@@ -281,7 +281,7 @@ byte y504ModbusAddress = 0x04;  // The modbus address of the Y504
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y504NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 // Create and return the Yosemitech Y504 dissolved oxygen sensor object
-YosemitechY504 y504(y504ModbusAddress, modbusSerial, modbusSensorPower, rs485AdapterPower, max485EnablePin, y504NumberReadings);
+YosemitechY504 y504(y504ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y504NumberReadings);
 
 
 // ==========================================================================
@@ -294,7 +294,7 @@ byte y510ModbusAddress = 0x0B;  // The modbus address of the Y510
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y510NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 // Create and return the Y510-B Turbidity sensor object
-YosemitechY510 y510(y510ModbusAddress, modbusSerial, modbusSensorPower, rs485AdapterPower, max485EnablePin, y510NumberReadings);
+YosemitechY510 y510(y510ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y510NumberReadings);
 
 
 // ==========================================================================
@@ -307,7 +307,7 @@ byte y511ModbusAddress = 0x1A;  // The modbus address of the Y511
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y511NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 // Create and return the Y511-A Turbidity sensor object
-YosemitechY511 y511(y511ModbusAddress, modbusSerial, modbusSensorPower, rs485AdapterPower, max485EnablePin, y511NumberReadings);
+YosemitechY511 y511(y511ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y511NumberReadings);
 
 
 // ==========================================================================
@@ -320,7 +320,7 @@ byte y514ModbusAddress = 0x14;  // The modbus address of the Y514
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y514NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 // Create and return the Y514 chlorophyll sensor object
-YosemitechY514 y514(y514ModbusAddress, modbusSerial, modbusSensorPower, rs485AdapterPower, max485EnablePin, y514NumberReadings);
+YosemitechY514 y514(y514ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y514NumberReadings);
 
 
 // ==========================================================================
@@ -333,7 +333,7 @@ byte y520ModbusAddress = 0x20;  // The modbus address of the Y520
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y520NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 // Create and return the Y520 conductivity sensor object
-YosemitechY520 y520(y520ModbusAddress, modbusSerial, modbusSensorPower, rs485AdapterPower, max485EnablePin, y520NumberReadings);
+YosemitechY520 y520(y520ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y520NumberReadings);
 
 
 // ==========================================================================
@@ -346,7 +346,7 @@ byte y532ModbusAddress = 0x32;  // The modbus address of the Y532
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
 // Create and return the Yosemitech Y532 pH sensor object
-YosemitechY532 y532(y532ModbusAddress, modbusSerial, modbusSensorPower, rs485AdapterPower, max485EnablePin, y532NumberReadings);
+YosemitechY532 y532(y532ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y532NumberReadings);
 
 
 // ==========================================================================
@@ -359,7 +359,7 @@ byte y550ModbusAddress = 0x50;  // The modbus address of the Y550
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y550NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 // Create and return the Y550 conductivity sensor object
-YosemitechY550 y550(y550ModbusAddress, modbusSerial, modbusSensorPower, rs485AdapterPower, max485EnablePin, y550NumberReadings);
+YosemitechY550 y550(y550ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y550NumberReadings);
 
 
 // ==========================================================================
@@ -372,7 +372,7 @@ byte y4000ModbusAddress = 0x05;  // The modbus address of the Y4000
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y4000NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 // Create and return the Yosemitech Y4000 multi-parameter sensor object
-YosemitechY4000 y4000(y4000ModbusAddress, modbusSerial, modbusSensorPower, rs485AdapterPower, max485EnablePin, y4000NumberReadings);
+YosemitechY4000 y4000(y4000ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y4000NumberReadings);
 
 
 // ==========================================================================
