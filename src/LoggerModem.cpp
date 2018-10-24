@@ -752,6 +752,8 @@ bool loggerModem::modemSleepPowerDown(void)
 
     // Unset the activation time
     _millisSensorActivated = 0;
+    // Unset the measurement request time
+    _millisMeasurementRequested = 0;
     // Unset the status bits for sensor activation (bits 3 & 4) and measurement
     // request (bits 5 & 6)
     _sensorStatus &= 0b10000111;
