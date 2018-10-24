@@ -105,6 +105,11 @@ bool MeaSpecMS5803::addSingleMeasurementResult(void)
             temp = -9999;
             press = -9999;
         }
+        if (press == 0)  // Returns 0 when disconnected, which is highly unlikely to be a real value.
+        {
+            temp = -9999;
+            press = -9999;
+        }
 
         MS_DBG(F("Temperature: "), temp);
         MS_DBG(F("Pressure: "), press);
