@@ -38,7 +38,8 @@
 #include "SensorBase.h"
 
 // Sensor Specific Defines
-#define ADS1115_ADDRESS (0x48) // 1001 000 (ADDR = GND)
+#define ADS1115_ADDRESS 0x48
+// 1001 000 (ADDR = GND)
 
 // low and high range are treated as completely independent, so only 2 "variables"
 // One for the raw voltage and another for the calibrated turbidity.

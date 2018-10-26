@@ -155,8 +155,8 @@ bool SDI12Sensors::getSensorInfo(void)
     bool wasActive = _SDI12Internal.isActive();
     // If it wasn't active, activate it now.
     // Use begin() instead of just setActive() to ensure timer is set correctly.
-    if (wasActive) MS_DBG(F("   SDI-12 instance for "), getSensorNameAndLocation(),
-                          F(" was already active!"));
+    if (wasActive) {MS_DBG(F("   SDI-12 instance for "), getSensorNameAndLocation(),
+                          F(" was already active!"));}
     if (!wasActive) _SDI12Internal.begin();
     // Empty the buffer
     _SDI12Internal.clearBuffer();
@@ -250,8 +250,8 @@ bool SDI12Sensors::startSingleMeasurement(void)
     MS_DBG(F("   Activating SDI-12 instance for "), getSensorNameAndLocation());
     // Check if this the currently active SDI-12 Object
     wasActive = _SDI12Internal.isActive();
-    if (wasActive) MS_DBG(F("   SDI-12 instance for "), getSensorNameAndLocation(),
-                          F(" was already active!"));
+    if (wasActive) {MS_DBG(F("   SDI-12 instance for "), getSensorNameAndLocation(),
+                          F(" was already active!"));}
     // If it wasn't active, activate it now.
     // Use begin() instead of just setActive() to ensure timer is set correctly.
     if (!wasActive) _SDI12Internal.begin();
@@ -328,8 +328,8 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
         MS_DBG(F("   Activating SDI-12 instance for "), getSensorNameAndLocation());
         // Check if this the currently active SDI-12 Object
         bool wasActive = _SDI12Internal.isActive();
-        if (wasActive) MS_DBG(F("   SDI-12 instance for "), getSensorNameAndLocation(),
-                              F(" was already active!"));
+        if (wasActive) {MS_DBG(F("   SDI-12 instance for "), getSensorNameAndLocation(),
+                              F(" was already active!"));}
         // If it wasn't active, activate it now.
         // Use begin() instead of just setActive() to ensure timer is set correctly.
         if (!wasActive) _SDI12Internal.begin();

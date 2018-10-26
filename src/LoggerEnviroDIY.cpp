@@ -112,7 +112,7 @@ void LoggerEnviroDIY::printSensorDataJSON(Stream *stream)
 {
     stream->print(String(F("{")));
     stream->print(String(F("\"sampling_feature\": \"")));
-    stream->print(String(_samplingFeature)); + F("");
+    stream->print(String(_samplingFeature));
     stream->print(String(F("\", \"timestamp\": \"")));
     stream->print(String(formatDateTime_ISO8601(markedEpochTime)) + F("\", "));
 

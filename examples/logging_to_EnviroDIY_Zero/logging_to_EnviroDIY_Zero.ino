@@ -323,7 +323,7 @@ AOSongDHT dht(DHTPower, DHTPin, dhtType);
 // ==========================================================================
 #include <sensors/ApogeeSQ212.h>
 const int8_t SQ212Power = -1;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t SQ212Data = 0;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const int8_t SQ212Data = 2;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const uint8_t SQ212_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
 // Create and return the Apogee SQ212 sensor object
 ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
@@ -404,7 +404,7 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
 // ==========================================================================
 #include <sensors/ExternalVoltage.h>
 const int8_t VoltPower = -1;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t VoltData = 0;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const int8_t VoltData = 2;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const float VoltGain = 10; // Default 1/gain for grove voltage divider is 10x
 const uint8_t Volt_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
 const uint8_t VoltReadsToAvg = 1; // Only read one sample
@@ -759,9 +759,9 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 // ==========================================================================
 void setup()
 {
-    // Wait for the native/onboard USB port to be ready
-    // NOTE:  This waits for the USB drivers to be active on the chip, not for
-    // any information to be sent or a serial port monitor to connect.
+    // Wait for USB connection to be established by PC
+    // NOTE:  Only use this when debugging - if not connected to a PC, this
+    // will prevent the script from starting
     while (!Serial){}
 
     // Start the primary serial connection
@@ -805,6 +805,7 @@ void setup()
         Serial.println(F("Setting up sleep mode on the XBee."));
         pinMode(modemSleepRqPin, OUTPUT);
         digitalWrite(modemSleepRqPin, LOW);  // Turn it on to talk, just in case
+        tinyModem->init();  // initialize
         if (tinyModem->commandMode())
         {
             tinyModem->sendAT(F("SM"),1);  // Pin sleep

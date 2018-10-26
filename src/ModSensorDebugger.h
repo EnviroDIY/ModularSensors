@@ -19,8 +19,8 @@
 
 #ifndef STANDARD_SERIAL_OUTPUT
     #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
-      #define Serial SERIAL_PORT_USBVIRTUAL
-      #define STANDARD_SERIAL_OUTPUT Serial
+      // #define Serial SERIAL_PORT_USBVIRTUAL
+      #define STANDARD_SERIAL_OUTPUT SERIAL_PORT_USBVIRTUAL
     #elif defined __AVR__
       #define STANDARD_SERIAL_OUTPUT Serial
     #endif
@@ -58,6 +58,19 @@
 #else
     #define MS_DBG(...)
 #endif  // DEBUGGING_SERIAL_OUTPUT
+
+
+/***
+#if defined(__AVR__)
+  typedef const __FlashStringHelper* GsmConstStr;
+  #define GFP(x) (reinterpret_cast<GsmConstStr>(x))
+  #define GF(x)  F(x)
+#else
+  typedef const char* GsmConstStr;
+  #define GFP(x) x
+  #define GF(x)  x
+#endif
+***/
 
 
 #endif  // ModSensorDebugger_h
