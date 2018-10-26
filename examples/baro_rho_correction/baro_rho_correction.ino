@@ -129,7 +129,7 @@ bool wakeFxn(void)
 // Describe the physical pin connection of your modem to your board
 const long ModemBaud = 57600;        // Communication speed of the modem
 const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemResetPin = -1;     // MCU Pin connected to ESP8266's RSTB pin (-1 if unconnected)
+const int8_t modemResetPin = -1;     // MCU pin connected to ESP8266's RSTB pin (-1 if unconnected)
 const int8_t espSleepRqPin = 13;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
 const int8_t modemSleepRqPin = 19;   // MCU pin used for wake from light sleep (-1 if not applicable)
 const int8_t espStatusPin = -1;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
@@ -153,7 +153,7 @@ bool sleepFxn(void)
     // {
     //     uint32_t sleepSeconds = (((uint32_t)loggingInterval) * 60 * 1000) - 75000L;
     //     String sleepCommand = String(sleepSeconds);
-    //     tinyModem->sendAT(GF("+GSLP="), sleepCommand);
+    //     tinyModem->sendAT(F("+GSLP="), sleepCommand);
     //     // Power down for 1 minute less than logging interval
     //     // Better:  Calculate length of loop and power down for logging interval - loop time
     //     return tinyModem->waitResponse() == 1;
@@ -163,10 +163,10 @@ bool sleepFxn(void)
     // pin to view the sleep status.
     else if (modemSleepRqPin >= 0 && modemStatusPin >= 0)
     {
-        tinyModem->sendAT(GF("+WAKEUPGPIO=1,"), String(espSleepRqPin), GF(",0,"),
-                          String(espStatusPin), GF(","), modemStatusLevel);
+        tinyModem->sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
+                          String(espStatusPin), F(","), modemStatusLevel);
         bool success = tinyModem->waitResponse() == 1;
-        tinyModem->sendAT(GF("+SLEEP=1"));
+        tinyModem->sendAT(F("+SLEEP=1"));
         success &= tinyModem->waitResponse() == 1;
         digitalWrite(redLED, LOW);
         return success;
@@ -174,9 +174,9 @@ bool sleepFxn(void)
     // Light sleep without the status pin
     else if (modemSleepRqPin >= 0 && modemStatusPin < 0)
     {
-        tinyModem->sendAT(GF("+WAKEUPGPIO=1,"), String(espSleepRqPin), GF(",0"));
+        tinyModem->sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0"));
         bool success = tinyModem->waitResponse() == 1;
-        tinyModem->sendAT(GF("+SLEEP=1"));
+        tinyModem->sendAT(F("+SLEEP=1"));
         success &= tinyModem->waitResponse() == 1;
         digitalWrite(redLED, LOW);
         return success;
@@ -538,17 +538,18 @@ void setup()
 
     // Set up the sleep/wake pin for the modem and put its inital value as "off"
     #if defined(TINY_GSM_MODEM_XBEE)
+        Serial.println(F("Setting up sleep mode on the XBee."));
         pinMode(modemSleepRqPin, OUTPUT);
         digitalWrite(modemSleepRqPin, LOW);  // Turn it on to talk, just in case
         if (tinyModem->commandMode())
         {
-            tinyModem->sendAT(GF("SM"),1);  // Pin sleep
+            tinyModem->sendAT(F("SM"),1);  // Pin sleep
             tinyModem->waitResponse();
-            tinyModem->sendAT(GF("DO"),0);  // Disable remote manager
+            tinyModem->sendAT(F("DO"),0);  // Disable remote manager
             tinyModem->waitResponse();
-            tinyModem->sendAT(GF("SO"),0);  // For Cellular - disconnected sleep
+            tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
             tinyModem->waitResponse();
-            tinyModem->sendAT(GF("SO"),200);  // For WiFi - Disassociate from AP for Deep Sleep
+            tinyModem->sendAT(F("SO"),200);  // For WiFi - Disassociate from AP for Deep Sleep
             tinyModem->waitResponse();
             tinyModem->writeChanges();
             tinyModem->exitCommand();
