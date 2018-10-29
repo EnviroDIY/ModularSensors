@@ -90,7 +90,7 @@ bool MaxBotixSonar::wake(void)
         MS_DBG(i, F(" - "), headerLine);
     }
     // Clear anything else out of the stream buffer
-    int junkChars = _stream->available();
+    uint8_t junkChars = _stream->available();
     if (junkChars)
     {
         MS_DBG(F("Dumping "), junkChars, F(" characters from MaxBotix stream buffer"));
@@ -106,16 +106,22 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
 {
     // Initialize values
     bool success = false;
-    int rangeAttempts = 0;
-    int result = -9999;
+    uint8_t rangeAttempts = 0;
+    int16_t result = -9999;
 
     // Clear anything out of the stream buffer
-    int junkChars = _stream->available();
+    uint8_t junkChars = _stream->available();
     if (junkChars)
     {
-        MS_DBG(F("Dumping "), junkChars, F(" characters from MaxBotix stream buffer"));
+        MS_DBG(F("Dumping "), junkChars, F(" characters from MaxBotix stream buffer:"));
         for (uint8_t i = 0; i < junkChars; i++)
-        _stream->read();
+        {
+            #ifdef DEBUGGING_SERIAL_OUTPUT
+            DEBUGGING_SERIAL_OUTPUT.print(_stream->read());
+            #else
+            _stream->read();
+            #endif            
+        }
     }
 
     // Check a measurement was *successfully* started (status bit 6 set)

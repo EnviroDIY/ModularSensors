@@ -102,6 +102,7 @@ ProcessorStats::ProcessorStats(const char *version)
              -1, -1, 1)
 {
     _version = version;
+    sampNum = 0;
 
     #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) || defined(ARDUINO_AVR_SODAQ_MBILI)
         _batteryPin = A6;
@@ -126,7 +127,7 @@ String ProcessorStats::getSensorLocation(void) {return BOARD;}
 #if defined(ARDUINO_ARCH_SAMD)
     extern "C" char *sbrk(int i);
 
-    int FreeRam () {
+    int16_t FreeRam () {
       char stack_dummy = 0;
       return &stack_dummy - sbrk(0);
     }
@@ -191,8 +192,8 @@ bool ProcessorStats::addSingleMeasurementResult(void)
     MS_DBG(F("Getting Free RAM"));
 
     #if defined __AVR__
-    extern int __heap_start, *__brkval;
-    int v;
+    extern int16_t __heap_start, *__brkval;
+    int16_t v;
     float sensorValue_freeRam = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
 
     #elif defined(ARDUINO_ARCH_SAMD)
@@ -203,6 +204,11 @@ bool ProcessorStats::addSingleMeasurementResult(void)
     #endif
 
     verifyAndAddMeasurementResult(PROCESSOR_RAM_VAR_NUM, sensorValue_freeRam);
+
+    // bump up the sample number
+    sampNum += 1;
+
+    verifyAndAddMeasurementResult(PROCESSOR_SAMPNUM_VAR_NUM, sampNum);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;

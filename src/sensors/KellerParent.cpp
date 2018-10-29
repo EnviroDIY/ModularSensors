@@ -20,7 +20,7 @@
 // The constructor - need the sensor type, modbus address, power pin, stream for data, and number of readings to average
 KellerParent::KellerParent(byte modbusAddress, Stream* stream,
                int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage,
-               kellerModel model, const char *sensName, int numVariables,
+               kellerModel model, const char *sensName, uint8_t numVariables,
                uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
@@ -34,7 +34,7 @@ KellerParent::KellerParent(byte modbusAddress, Stream* stream,
 }
 KellerParent::KellerParent(byte modbusAddress, Stream& stream,
                int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage,
-               kellerModel model, const char *sensName, int numVariables,
+               kellerModel model, const char *sensName, uint8_t numVariables,
                uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
@@ -115,6 +115,10 @@ void KellerParent::powerDown(void)
         digitalWrite(_powerPin, LOW);
         // Unset the power-on time
         _millisPowerOn = 0;
+        // Unset the activation time
+        _millisSensorActivated = 0;
+        // Unset the measurement request time
+        _millisMeasurementRequested = 0;
         // Unset the status bits for sensor power (bits 1 & 2),
         // activation (bits 3 & 4), and measurement request (bits 5 & 6)
         _sensorStatus &= 0b10000001;

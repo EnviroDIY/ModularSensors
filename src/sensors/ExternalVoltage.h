@@ -47,7 +47,8 @@
 #include "SensorBase.h"
 
 // Sensor Specific Defines
-#define ADS1115_ADDRESS (0x48) // 1001 000 (ADDR = GND)
+#define ADS1115_ADDRESS 0x48
+// 1001 000 (ADDR = GND)
 
 #define EXT_VOLT_NUM_VARIABLES 1
 // Using the warm-up time of the ADS1115

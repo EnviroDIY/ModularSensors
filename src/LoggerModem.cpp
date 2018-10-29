@@ -412,9 +412,9 @@ bool loggerModem::addSingleMeasurementResult(void)
     bool success = true;
 
     // Initialize float variable
-    int signalQual = -9999;
-    int percent = -9999;
-    int rssi = -9999;
+    int16_t signalQual = -9999;
+    int16_t percent = -9999;
+    int16_t rssi = -9999;
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
@@ -669,20 +669,20 @@ void loggerModem::disconnectInternet(void)
 
 
 /***
-int loggerModem::openTCP(const char *host, uint16_t port)
+int16_t loggerModem::openTCP(const char *host, uint16_t port)
 {
     MS_MOD_DBG(F("Connecting to "), host, F("..."));
-    int ret_val = _tinyClient->connect(host, port);
+    int16_t ret_val = _tinyClient->connect(host, port);
     if (ret_val) MS_MOD_DBG(F("   ...Success!"));
     else MS_MOD_DBG(F("   ...Connection failed."));
     return ret_val;
 }
 
 
-int loggerModem::openTCP(IPAddress ip, uint16_t port)
+int16_t loggerModem::openTCP(IPAddress ip, uint16_t port)
 {
     MS_MOD_DBG(F("Connecting to "), ip, F("..."));
-    int ret_val = _tinyClient->connect(ip, port);
+    int16_t ret_val = _tinyClient->connect(ip, port);
     if (ret_val) MS_MOD_DBG(F("   ...Success!"));
     else MS_MOD_DBG(F("   ...Connection failed."));
     return ret_val;
@@ -752,6 +752,8 @@ bool loggerModem::modemSleepPowerDown(void)
 
     // Unset the activation time
     _millisSensorActivated = 0;
+    // Unset the measurement request time
+    _millisMeasurementRequested = 0;
     // Unset the status bits for sensor activation (bits 3 & 4) and measurement
     // request (bits 5 & 6)
     _sensorStatus &= 0b10000111;
@@ -853,11 +855,11 @@ uint32_t loggerModem::getNISTTime(void)
 }
 
 // Helper to get approximate RSSI from CSQ (assuming no noise)
-int loggerModem::getRSSIFromCSQ(int csq)
+int16_t loggerModem::getRSSIFromCSQ(int16_t csq)
 {
-    int CSQs[33]  = {  0,   1,   2,   3,   4,   5,   6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 99};
-    int RSSIs[33] = {113, 111, 109, 107, 105, 103, 101, 99, 97, 95, 93, 91, 89, 87, 85, 83, 81, 79, 77, 75, 73, 71, 69, 67, 65, 63, 61, 59, 57, 55, 53, 51, 0};
-    for (int i = 0; i < 33; i++)
+    int16_t CSQs[33]  = {  0,   1,   2,   3,   4,   5,   6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 99};
+    int16_t RSSIs[33] = {113, 111, 109, 107, 105, 103, 101, 99, 97, 95, 93, 91, 89, 87, 85, 83, 81, 79, 77, 75, 73, 71, 69, 67, 65, 63, 61, 59, 57, 55, 53, 51, 0};
+    for (uint8_t i = 0; i < 33; i++)
     {
         if (CSQs[i] == csq) return RSSIs[i];
     }
@@ -865,11 +867,11 @@ int loggerModem::getRSSIFromCSQ(int csq)
 }
 
 // Helper to get signal percent from CSQ
-int loggerModem::getPctFromCSQ(int csq)
+int16_t loggerModem::getPctFromCSQ(int16_t csq)
 {
-    int CSQs[33] = {0, 1, 2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 99};
-    int PCTs[33] = {0, 3, 6, 10, 13, 16, 19, 23, 26, 29, 32, 36, 39, 42, 45, 48, 52, 55, 58, 61, 65, 68, 71, 74, 78, 81, 84, 87, 90, 94, 97, 100, 0};
-    for (int i = 0; i < 33; i++)
+    int16_t CSQs[33] = {0, 1, 2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 99};
+    int16_t PCTs[33] = {0, 3, 6, 10, 13, 16, 19, 23, 26, 29, 32, 36, 39, 42, 45, 48, 52, 55, 58, 61, 65, 68, 71, 74, 78, 81, 84, 87, 90, 94, 97, 100, 0};
+    for (uint8_t i = 0; i < 33; i++)
     {
         if (CSQs[i] == csq) return PCTs[i];
     }
@@ -877,9 +879,9 @@ int loggerModem::getPctFromCSQ(int csq)
 }
 
 // Helper to get signal percent from RSSI
-int loggerModem::getPctFromRSSI(int rssi)
+int16_t loggerModem::getPctFromRSSI(int16_t rssi)
 {
-    int pct = 1.6163*rssi + 182.61;
+    int16_t pct = 1.6163*rssi + 182.61;
     if (rssi == 0) pct = 0;
     if (rssi == (255-93)) pct = 0;  // This is a no-data-yet value from XBee
     return pct;

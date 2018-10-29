@@ -47,7 +47,7 @@ public:
     // These functions get and set the number of readings to average for a sensor
     // Generally these values should be set in the constructor
     void setNumberMeasurementsToAverage(int nReadings);
-    int getNumberMeasurementsToAverage(void);
+    uint8_t getNumberMeasurementsToAverage(void);
 
     // This returns the 8-bit code for the current status of the sensor.
     // Bit 0 - 0=Has NOT been successfully set up, 1=Has been setup
@@ -119,8 +119,8 @@ public:
     // Clears the values array
     void clearValues();
     // This verifies that a measurement is OK (ie, not -9999) before adding it to the array
-    void verifyAndAddMeasurementResult(int resultNumber, float resultValue);
-    void verifyAndAddMeasurementResult(int resultNumber, int resultValue);
+    void verifyAndAddMeasurementResult(uint8_t resultNumber, float resultValue);
+    void verifyAndAddMeasurementResult(uint8_t resultNumber, int16_t resultValue);
     void averageMeasurements(void);
 
     // These tie the variables to their parent sensor

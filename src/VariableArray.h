@@ -12,7 +12,7 @@
 #define VariableArray_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+#define DEBUGGING_SERIAL_OUTPUT Serial
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
@@ -24,7 +24,7 @@ class VariableArray
 {
 public:
     // Constructor
-    VariableArray(int variableCount, Variable *variableList[]);
+    VariableArray(uint8_t variableCount, Variable *variableList[]);
     virtual ~VariableArray();
 
     // Leave the internal variable list public
@@ -33,13 +33,13 @@ public:
     // Functions to return information about the list
 
     // This just returns the number of variables (as input in the constructor)
-    int getVariableCount(void){return _variableCount;}
+    uint8_t getVariableCount(void){return _variableCount;}
 
     // This counts and returns the number of calculated variables
-    int getCalculatedVariableCount(void);
+    uint8_t getCalculatedVariableCount(void);
 
     // This counts and returns the number of sensors
-    int getSensorCount(void);
+    uint8_t getSensorCount(void);
 
     // Public functions for interfacing with a list of sensors
     // This sets up all of the sensors in the list
@@ -79,13 +79,13 @@ private:
     template<typename T>
     void prettyPrintArray(T arrayToPrint[])
     {
-        MS_DBG('[');
+        DEBUGGING_SERIAL_OUTPUT.print("[,\t");
         for (uint8_t i = 0; i < _variableCount; i++)
         {
-            MS_DBG(arrayToPrint[i]);
-            if ( (i+1) < _variableCount ) MS_DBG(',', '\t');
+            DEBUGGING_SERIAL_OUTPUT.print(arrayToPrint[i]);
+            DEBUGGING_SERIAL_OUTPUT.print(",\t");
         }
-        MS_DBG(']', '\n');
+        DEBUGGING_SERIAL_OUTPUT.println("]");
     }
 #else
     #define prettyPrintArray(...)

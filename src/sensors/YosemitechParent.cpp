@@ -18,7 +18,7 @@
 // The constructor - need the sensor type, modbus address, power pin, stream for data, and number of readings to average
 YosemitechParent::YosemitechParent(byte modbusAddress, Stream* stream,
                                    int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage,
-                                   yosemitechModel model, const char *sensName, int numVariables,
+                                   yosemitechModel model, const char *sensName, uint8_t numVariables,
                                    uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
@@ -32,7 +32,7 @@ YosemitechParent::YosemitechParent(byte modbusAddress, Stream* stream,
 }
 YosemitechParent::YosemitechParent(byte modbusAddress, Stream& stream,
                                    int8_t powerPin, int8_t powerPin2, int8_t enablePin, uint8_t measurementsToAverage,
-                                   yosemitechModel model, const char *sensName, int numVariables,
+                                   yosemitechModel model, const char *sensName, uint8_t numVariables,
                                    uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensName, numVariables,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
@@ -87,7 +87,7 @@ bool YosemitechParent::wake(void)
 
     // Send the command to begin taking readings, trying up to 5 times
     bool success = false;
-    int ntries = 0;
+    uint8_t ntries = 0;
     MS_DBG(F("Start Measurement on "), getSensorNameAndLocation());
     while (!success && ntries < 5)
     {
@@ -136,7 +136,7 @@ bool YosemitechParent::sleep(void)
 
     // Send the command to begin taking readings, trying up to 5 times
     bool success = false;
-    int ntries = 0;
+    uint8_t ntries = 0;
     MS_DBG(F("Stop Measurement on "), getSensorNameAndLocation());
     while (!success && ntries < 5)
     {
@@ -148,6 +148,8 @@ bool YosemitechParent::sleep(void)
     {
         // Unset the activation time
         _millisSensorActivated = 0;
+        // Unset the measurement request time
+        _millisMeasurementRequested = 0;
         // Unset the status bits for sensor activation (bits 3 & 4) and measurement
         // request (bits 5 & 6)
         _sensorStatus &= 0b10000111;
@@ -196,6 +198,10 @@ void YosemitechParent::powerDown(void)
         digitalWrite(_powerPin, LOW);
         // Unset the power-on time
         _millisPowerOn = 0;
+        // Unset the activation time
+        _millisSensorActivated = 0;
+        // Unset the measurement request time
+        _millisMeasurementRequested = 0;
         // Unset the status bits for sensor power (bits 1 & 2),
         // activation (bits 3 & 4), and measurement request (bits 5 & 6)
         _sensorStatus &= 0b10000001;

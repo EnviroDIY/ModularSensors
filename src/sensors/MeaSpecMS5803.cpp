@@ -38,7 +38,7 @@
 
 // The constructor - because this is I2C, only need the power pin
 MeaSpecMS5803::MeaSpecMS5803(int8_t powerPin, uint8_t i2cAddressHex,
-                             int maxPressure, uint8_t measurementsToAverage)
+                             int16_t maxPressure, uint8_t measurementsToAverage)
      : Sensor("MeaSpecMS5803", MS5803_NUM_VARIABLES,
               MS5803_WARM_UP_TIME_MS, MS5803_STABILIZATION_TIME_MS, MS5803_MEASUREMENT_TIME_MS,
               powerPin, -1, measurementsToAverage)
@@ -92,12 +92,20 @@ bool MeaSpecMS5803::addSingleMeasurementResult(void)
     {
         MS_DBG(F("Getting values from "), getSensorNameAndLocation());
         // Read values
+        // NOTE:  These functions actually include the request to begin
+        // a measurement and the wait for said measurement to finish.
+        // It's pretty fast (max of 11 ms) so we'll just wait.
         temp = MS5803_internal.getTemperature(CELSIUS, ADC_512);
         press = MS5803_internal.getPressure(ADC_4096);
 
         if (isnan(temp)) temp = -9999;
         if (isnan(press)) press = -9999;
         if (temp < -50 || temp > 95)  // Range is -40°C to +85°C
+        {
+            temp = -9999;
+            press = -9999;
+        }
+        if (press == 0)  // Returns 0 when disconnected, which is highly unlikely to be a real value.
         {
             temp = -9999;
             press = -9999;

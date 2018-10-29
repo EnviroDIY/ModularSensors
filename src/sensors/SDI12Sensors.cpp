@@ -68,9 +68,11 @@ bool SDI12Sensors::setup(void)
     // Force the timeout value to be -9999 (This should be library default.)
     _SDI12Internal.setTimeoutValue(-9999);
 
+    #ifdef __AVR__
     // Allow the SDI-12 library access to interrupts
     MS_DBG(F("Enabling interrupts for SDI12 on pin "), _dataPin);
     enableInterrupt(_dataPin, SDI12::handleInterrupt, CHANGE);
+    #endif
 
     retVal &= getSensorInfo();
 
@@ -155,8 +157,8 @@ bool SDI12Sensors::getSensorInfo(void)
     bool wasActive = _SDI12Internal.isActive();
     // If it wasn't active, activate it now.
     // Use begin() instead of just setActive() to ensure timer is set correctly.
-    if (wasActive) MS_DBG(F("   SDI-12 instance for "), getSensorNameAndLocation(),
-                          F(" was already active!"));
+    if (wasActive) {MS_DBG(F("   SDI-12 instance for "), getSensorNameAndLocation(),
+                          F(" was already active!"));}
     if (!wasActive) _SDI12Internal.begin();
     // Empty the buffer
     _SDI12Internal.clearBuffer();
@@ -191,19 +193,19 @@ bool SDI12Sensors::getSensorInfo(void)
         MS_DBG(F("   SDI12 Address:"), sdi12Address);
         float sdi12Version = sdiResponse.substring(1,3).toFloat();
         sdi12Version /= 10;
-        MS_DBG(F(", SDI12 Version:"), sdi12Version);
+        MS_DBG(F("   SDI12 Version:"), sdi12Version);
         _sensorVendor = sdiResponse.substring(3,11);
         _sensorVendor.trim();
-        MS_DBG(F(", Sensor Vendor:"), _sensorVendor);
+        MS_DBG(F("   Sensor Vendor:"), _sensorVendor);
         _sensorModel = sdiResponse.substring(11,17);
         _sensorModel.trim();
-        MS_DBG(F(", Sensor Model:"), _sensorModel);
+        MS_DBG(F("   Sensor Model:"), _sensorModel);
         _sensorVersion = sdiResponse.substring(17,20);
         _sensorVersion.trim();
-        MS_DBG(F(", Sensor Version:"), _sensorVersion);
+        MS_DBG(F("   Sensor Version:"), _sensorVersion);
         _sensorSerialNumber = sdiResponse.substring(20);
         _sensorSerialNumber.trim();
-        MS_DBG(F(", Sensor Serial Number:"), _sensorSerialNumber);
+        MS_DBG(F("   Sensor Serial Number:"), _sensorSerialNumber);
         return true;
     }
     else return false;
@@ -250,8 +252,8 @@ bool SDI12Sensors::startSingleMeasurement(void)
     MS_DBG(F("   Activating SDI-12 instance for "), getSensorNameAndLocation());
     // Check if this the currently active SDI-12 Object
     wasActive = _SDI12Internal.isActive();
-    if (wasActive) MS_DBG(F("   SDI-12 instance for "), getSensorNameAndLocation(),
-                          F(" was already active!"));
+    if (wasActive) {MS_DBG(F("   SDI-12 instance for "), getSensorNameAndLocation(),
+                          F(" was already active!"));}
     // If it wasn't active, activate it now.
     // Use begin() instead of just setActive() to ensure timer is set correctly.
     if (!wasActive) _SDI12Internal.begin();
@@ -289,7 +291,7 @@ bool SDI12Sensors::startSingleMeasurement(void)
     if (!wasActive) _SDI12Internal.end();
 
     // Verify the number of results the sensor will send
-    // int numVariables = sdiResponse.substring(4,5).toInt();
+    // uint8_t numVariables = sdiResponse.substring(4,5).toInt();
     // if (numVariables != _numReturnedVars)
     // {
     //     MS_DBG(numVariables, F(" results expected"));
@@ -328,8 +330,8 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
         MS_DBG(F("   Activating SDI-12 instance for "), getSensorNameAndLocation());
         // Check if this the currently active SDI-12 Object
         bool wasActive = _SDI12Internal.isActive();
-        if (wasActive) MS_DBG(F("   SDI-12 instance for "), getSensorNameAndLocation(),
-                              F(" was already active!"));
+        if (wasActive) {MS_DBG(F("   SDI-12 instance for "), getSensorNameAndLocation(),
+                              F(" was already active!"));}
         // If it wasn't active, activate it now.
         // Use begin() instead of just setActive() to ensure timer is set correctly.
         if (!wasActive) _SDI12Internal.begin();
@@ -348,7 +350,7 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
         while (_SDI12Internal.available() < 3 && (millis() - startTime) < 1500) {}
         MS_DBG(F("   Receiving results from "), getSensorNameAndLocation());
         _SDI12Internal.read();  // ignore the repeated SDI12 address
-        for (int i = 0; i < _numReturnedVars; i++)
+        for (uint8_t i = 0; i < _numReturnedVars; i++)
         {
             float result = _SDI12Internal.parseFloat();
             // The SDI-12 library should return -9999 on timeout
@@ -376,9 +378,9 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
         // If there's no measurement, need to make sure we send over all
         // of the "failed" result values
         MS_DBG(F("   "), getSensorNameAndLocation(), F(" is not currently measuring!"));
-       for (int i = 0; i < _numReturnedVars; i++)
+       for (uint8_t i = 0; i < _numReturnedVars; i++)
        {
-           verifyAndAddMeasurementResult(i, -9999);
+           verifyAndAddMeasurementResult(i, (float)-9999);
        }
     }
 

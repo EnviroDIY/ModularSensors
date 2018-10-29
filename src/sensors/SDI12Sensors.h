@@ -23,6 +23,8 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <SDI12_ExtInts.h>
+// NOTE:  Could use the "regular" sdi-12 library with build flag -D SDI12_EXTERNAL_PCINT
+// Unfortunately, that is not compatible with the Arduino IDE
 
 // The main class for SDI-12 Sensors
 class SDI12Sensors : public Sensor

@@ -55,7 +55,7 @@ bool RainCounterI2C::addSingleMeasurementResult(void)
     uint8_t Byte2 = 0; // High byte of data
 
     float rain = -9999; // Number of mm of rain
-    int tips = -9999; // Number of tip events
+    int16_t tips = -9999; // Number of tip events
 
     // Get data from external tip counter
     // if the 'requestFrom' returns 0, it means no bytes were received
@@ -77,7 +77,7 @@ bool RainCounterI2C::addSingleMeasurementResult(void)
     MS_DBG(F("Tips: "), tips);
 
     verifyAndAddMeasurementResult(BUCKET_RAIN_VAR_NUM, rain);
-    verifyAndAddMeasurementResult(BUCKET_TIPS_VAR_NUM, int(tips));
+    verifyAndAddMeasurementResult(BUCKET_TIPS_VAR_NUM, tips);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;

@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.16.0
+This example sketch is written for ModularSensors library version 0.16.1
 
 This sketch is an example of getting data from a single sensor, in this case, a
 MaxBotix Ultrasonic Range Finder
@@ -47,8 +47,8 @@ const char *sketchName = "single_sensor.ino";
 // Neither hardware serial nor AltSoftSerial require any modifications to
 // deal with interrupt conflicts.
 
-const int SonarData = 11;     // data  pin
-const int SonarTrigger = -1;   // Trigger pin
+const int8_t SonarData = 11;     // data  pin
+const int8_t SonarTrigger = -1;   // Trigger pin
 const int8_t SonarPower = 22;   // excite (power) pin
 
 
@@ -106,9 +106,9 @@ const int8_t greenLED = 8;  // Pin for the green LED
 const int8_t redLED = 9;  // Pin for the red LED
 
 // Flashes to Mayfly's LED's
-void greenredflash(int numFlash = 4)
+void greenredflash(uint8_t numFlash = 4)
 {
-  for (int i = 0; i < numFlash; i++) {
+  for (uint8_t i = 0; i < numFlash; i++) {
     digitalWrite(greenLED, HIGH);
     digitalWrite(redLED, LOW);
     delay(75);

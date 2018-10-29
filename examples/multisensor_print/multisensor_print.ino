@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.16.0
+This example sketch is written for ModularSensors library version 0.16.1
 
 This sketch is an example of printing data from multiple sensors using
 the modular sensor library.
@@ -189,7 +189,7 @@ MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 // Neither hardware serial nor AltSoftSerial require any modifications to
 // deal with interrupt conflicts.
 
-const int SonarData = 11;     // data receive pin
+const int8_t SonarData = 11;     // data receive pin
 
 #include <SoftwareSerial_ExtInts.h>  // for the stream communication
 SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
@@ -238,7 +238,7 @@ MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
 #include <sensors/MeaSpecMS5803.h>
 // const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t MS5803i2c_addr = 0x76;  // The MS5803 can be addressed either as 0x76 or 0x77
-const int MS5803maxPressure = 14;  // The maximum pressure measurable by the specific MS5803 model
+const int16_t MS5803maxPressure = 14;  // The maximum pressure measurable by the specific MS5803 model
 const uint8_t MS5803ReadingsToAvg = 1;
 // Create and return the MeaSpec MS5803 pressure and temperature sensor object
 MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803ReadingsToAvg);
@@ -392,6 +392,7 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
+    new ProcessorStats_SampleNumber(&mayfly),
     new ApogeeSQ212_PAR(&SQ212),
     new AOSongAM2315_Humidity(&am2315),
     new AOSongAM2315_Temp(&am2315),
@@ -471,9 +472,9 @@ VariableArray sensors(variableCount, variableList);
 // ==========================================================================
 
 // Flashes the LED's on the primary board
-void greenredflash(int numFlash = 4, int rate = 75)
+void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 {
-  for (int i = 0; i < numFlash; i++) {
+  for (uint8_t i = 0; i < numFlash; i++) {
     digitalWrite(greenLED, HIGH);
     digitalWrite(redLED, LOW);
     delay(rate);

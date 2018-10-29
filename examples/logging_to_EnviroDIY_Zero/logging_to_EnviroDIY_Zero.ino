@@ -2,12 +2,12 @@
 logging_to_EnviroDIY_Zero.ino
 Written By:  Sara Damiano (sdamiano@stroudcenter.org)
 Development Environment: PlatformIO
-Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
+Hardware Platform: Adafruit Adalogger M0
 Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.16.0
+This example sketch is written for ModularSensors library version 0.16.1
 
 This sketch is an example of logging data to an SD card and sending the data to
 the EnviroDIY data portal via a AtSAMD21 board, such as an Arduino Zero or Feather M0.
@@ -126,7 +126,7 @@ bool wakeFxn(void)
 // Describe the physical pin connection of your modem to your board
 const long ModemBaud = 57600;        // Communication speed of the modem
 const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemResetPin = -1;     // MCU Pin connected to ESP8266's RSTB pin (-1 if unconnected)
+const int8_t modemResetPin = -1;     // MCU pin connected to ESP8266's RSTB pin (-1 if unconnected)
 const int8_t espSleepRqPin = 13;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
 const int8_t modemSleepRqPin = 15;   // MCU pin used for wake from light sleep (-1 if not applicable)
 const int8_t espStatusPin = -1;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
@@ -150,7 +150,7 @@ bool sleepFxn(void)
     // {
     //     uint32_t sleepSeconds = (((uint32_t)loggingInterval) * 60 * 1000) - 75000L;
     //     String sleepCommand = String(sleepSeconds);
-    //     tinyModem->sendAT(GF("+GSLP="), sleepCommand);
+    //     tinyModem->sendAT(F("+GSLP="), sleepCommand);
     //     // Power down for 1 minute less than logging interval
     //     // Better:  Calculate length of loop and power down for logging interval - loop time
     //     return tinyModem->waitResponse() == 1;
@@ -160,10 +160,10 @@ bool sleepFxn(void)
     // pin to view the sleep status.
     else if (modemSleepRqPin >= 0 && modemStatusPin >= 0)
     {
-        tinyModem->sendAT(GF("+WAKEUPGPIO=1,"), String(espSleepRqPin), GF(",0,"),
-                          String(espStatusPin), GF(","), modemStatusLevel);
+        tinyModem->sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
+                          String(espStatusPin), F(","), modemStatusLevel);
         bool success = tinyModem->waitResponse() == 1;
-        tinyModem->sendAT(GF("+SLEEP=1"));
+        tinyModem->sendAT(F("+SLEEP=1"));
         success &= tinyModem->waitResponse() == 1;
         digitalWrite(redLED, LOW);
         return success;
@@ -171,9 +171,9 @@ bool sleepFxn(void)
     // Light sleep without the status pin
     else if (modemSleepRqPin >= 0 && modemStatusPin < 0)
     {
-        tinyModem->sendAT(GF("+WAKEUPGPIO=1,"), String(espSleepRqPin), GF(",0"));
+        tinyModem->sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0"));
         bool success = tinyModem->waitResponse() == 1;
-        tinyModem->sendAT(GF("+SLEEP=1"));
+        tinyModem->sendAT(F("+SLEEP=1"));
         success &= tinyModem->waitResponse() == 1;
         digitalWrite(redLED, LOW);
         return success;
@@ -323,7 +323,7 @@ AOSongDHT dht(DHTPower, DHTPin, dhtType);
 // ==========================================================================
 #include <sensors/ApogeeSQ212.h>
 const int8_t SQ212Power = -1;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t SQ212Data = 0;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const int8_t SQ212Data = 2;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const uint8_t SQ212_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
 // Create and return the Apogee SQ212 sensor object
 ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
@@ -404,7 +404,7 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
 // ==========================================================================
 #include <sensors/ExternalVoltage.h>
 const int8_t VoltPower = -1;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t VoltData = 0;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const int8_t VoltData = 2;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const float VoltGain = 10; // Default 1/gain for grove voltage divider is 10x
 const uint8_t Volt_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
 const uint8_t VoltReadsToAvg = 1; // Only read one sample
@@ -427,8 +427,8 @@ MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 // ==========================================================================
 
 // Set up a 'new' UART for receiving sonar data - in this case, using SERCOM2
-// In this case, the Rx will be on digital pin 5, which is SERCOM2's Rx Pad #3
-// Although the MaxBotix cannot use it, the Tx will be on digital pin 2, which is SERCOM2's Rx Pad #2
+// In this case, the Rx will be on digital pin 5, which is SERCOM2's Pad #3
+// Although the MaxBotix cannot use it, the Tx will be on digital pin 2, which is SERCOM2's Pad #2
 // NOTE:  SERCOM2 is undefinied on a "standard" Arduino Zero and many clones,
 //        but not all!  Please check the variant.cpp file for you individual board!
 //        Sodaq Autonomo's and Sodaq One's do NOT follow the 'standard' SERCOM definitions!
@@ -478,7 +478,7 @@ MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
 #include <sensors/MeaSpecMS5803.h>
 // const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t MS5803i2c_addr = 0x76;  // The MS5803 can be addressed either as 0x76 or 0x77
-const int MS5803maxPressure = 14;  // The maximum pressure measurable by the specific MS5803 model
+const int16_t MS5803maxPressure = 14;  // The maximum pressure measurable by the specific MS5803 model
 const uint8_t MS5803ReadingsToAvg = 1;
 // Create and return the MeaSpec MS5803 pressure and temperature sensor object
 MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803ReadingsToAvg);
@@ -495,8 +495,8 @@ RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 
 
 // Set up a 'new' UART for modbus communication - in this case, using SERCOM1
-// In this case, the Rx will be on digital pin 11, which is SERCOM1's Rx Pad #0
-// The Tx will be on digital pin 10, which is SERCOM1's Rx Pad #2
+// In this case, the Rx will be on digital pin 11, which is SERCOM1's Pad #0
+// The Tx will be on digital pin 10, which is SERCOM1's Pad #2
 // NOTE:  SERCOM1 is undefinied on a "standard" Arduino Zero and many clones,
 //        but not all!  Please check the variant.cpp file for you individual board!
 //        Sodaq Autonomo's and Sodaq One's do NOT follow the 'standard' SERCOM definitions!
@@ -644,6 +644,7 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
+    new ProcessorStats_SampleNumber(&feather, "12345678-abcd-1234-efgh-1234567890ab"),
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
     new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
     new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -739,9 +740,9 @@ const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sam
 // ==========================================================================
 
 // Flashes the LED's on the primary board
-void greenredflash(int numFlash = 4, int rate = 75)
+void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 {
-  for (int i = 0; i < numFlash; i++) {
+  for (uint8_t i = 0; i < numFlash; i++) {
     digitalWrite(greenLED, HIGH);
     digitalWrite(redLED, LOW);
     delay(rate);
@@ -758,6 +759,11 @@ void greenredflash(int numFlash = 4, int rate = 75)
 // ==========================================================================
 void setup()
 {
+    // Wait for USB connection to be established by PC
+    // NOTE:  Only use this when debugging - if not connected to a PC, this
+    // will prevent the script from starting
+    while (!Serial){}
+
     // Start the primary serial connection
     Serial.begin(serialBaud);
 
@@ -781,10 +787,10 @@ void setup()
     sonarSerial.begin(9600);
 
     // Assign pins SERCOM functionality
-    pinPeripheral(2, PIO_SERCOM);
-    pinPeripheral(5, PIO_SERCOM);
-    pinPeripheral(10, PIO_SERCOM);
-    pinPeripheral(11, PIO_SERCOM);
+    pinPeripheral(2, PIO_SERCOM); // Serial3 Tx = SERCOM2 Pad #2
+    pinPeripheral(5, PIO_SERCOM);  // Serial3 Rx = SERCOM2 Pad #3
+    pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx = SERCOM1 Pad #2
+    pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx = SERCOM1 Pad #0
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
@@ -796,17 +802,19 @@ void setup()
 
     // Set up the sleep/wake pin for the modem and put its inital value as "off"
     #if defined(TINY_GSM_MODEM_XBEE)
+        Serial.println(F("Setting up sleep mode on the XBee."));
         pinMode(modemSleepRqPin, OUTPUT);
         digitalWrite(modemSleepRqPin, LOW);  // Turn it on to talk, just in case
+        tinyModem->init();  // initialize
         if (tinyModem->commandMode())
         {
-            tinyModem->sendAT(GF("SM"),1);  // Pin sleep
+            tinyModem->sendAT(F("SM"),1);  // Pin sleep
             tinyModem->waitResponse();
-            tinyModem->sendAT(GF("DO"),0);  // Disable remote manager
+            tinyModem->sendAT(F("DO"),0);  // Disable remote manager
             tinyModem->waitResponse();
-            tinyModem->sendAT(GF("SO"),0);  // For Cellular - disconnected sleep
+            tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
             tinyModem->waitResponse();
-            tinyModem->sendAT(GF("SO"),200);  // For WiFi - Disassociate from AP for Deep Sleep
+            tinyModem->sendAT(F("SO"),200);  // For WiFi - Disassociate from AP for Deep Sleep
             tinyModem->waitResponse();
             tinyModem->writeChanges();
             tinyModem->exitCommand();
@@ -848,6 +856,9 @@ void setup()
 
     // Begin the logger
     EnviroDIYLogger.beginAndSync();
+
+    // Run "testing" mode
+    EnviroDIYLogger.testingMode();
 }
 
 

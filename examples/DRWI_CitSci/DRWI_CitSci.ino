@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.16.0
+This example sketch is written for ModularSensors library version 0.16.1
 
 This sketch is an example of logging data to an SD card and sending the data to
 both the EnviroDIY data portal and Stroud's custom data portal as should be
@@ -192,9 +192,9 @@ const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sam
 // ==========================================================================
 
 // Flashes the LED's on the primary board
-void greenredflash(int numFlash = 4, int rate = 75)
+void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 {
-  for (int i = 0; i < numFlash; i++) {
+  for (uint8_t i = 0; i < numFlash; i++) {
     digitalWrite(greenLED, HIGH);
     digitalWrite(redLED, LOW);
     delay(rate);

@@ -112,11 +112,11 @@ void LoggerEnviroDIY::printSensorDataJSON(Stream *stream)
 {
     stream->print(String(F("{")));
     stream->print(String(F("\"sampling_feature\": \"")));
-    stream->print(String(_samplingFeature)); + F("");
+    stream->print(String(_samplingFeature));
     stream->print(String(F("\", \"timestamp\": \"")));
     stream->print(String(formatDateTime_ISO8601(markedEpochTime)) + F("\", "));
 
-    for (int i = 0; i < _internalArray->getVariableCount(); i++)
+    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
     {
         stream->print(String(F("\"")) + _internalArray->arrayOfVars[i]->getVarUUID() + String(F("\": ")) + _internalArray->arrayOfVars[i]->getValueString());
         if (i + 1 != _internalArray->getVariableCount())
@@ -135,12 +135,12 @@ void LoggerEnviroDIY::printEnviroDIYRequest(Stream *stream)
 {
     // First we need to calculate how long the json string is going to be
     // This is needed for the "Content-Length" header
-    int jsonLength = 22;  // {"sampling_feature": "
+    uint16_t jsonLength = 22;  // {"sampling_feature": "
     jsonLength += 36;  // sampling feature UUID
     jsonLength += 17;  // ", "timestamp": "
     jsonLength += 25;  // markedISO8601Time
     jsonLength += 3;  //  ",_
-    for (int i = 0; i < _internalArray->getVariableCount(); i++)
+    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
     {
         jsonLength += 1;  //  "
         jsonLength += 36;  // variable UUID
@@ -206,7 +206,7 @@ bool LoggerEnviroDIY::queueDataEnviroDIY(void)
 // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
 // over that connection.
 // The return is the http status code of the response.
-int LoggerEnviroDIY::postDataEnviroDIY(void)
+int16_t LoggerEnviroDIY::postDataEnviroDIY(void)
 {
     // do not continue if no modem!
     if (_logModem == NULL)
@@ -217,7 +217,7 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
 
     // Create a buffer for the response
     char response_buffer[12] = "";
-    int did_respond = 0;
+    uint16_t did_respond = 0;
 
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
     if(_logModem->_tinyClient->connect("data.envirodiy.org", 80))
@@ -250,11 +250,11 @@ int LoggerEnviroDIY::postDataEnviroDIY(void)
     else PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data Portal -- "));
 
     // Process the HTTP response
-    int responseCode = 0;
+    int16_t responseCode = 0;
     if (did_respond > 0)
     {
         char responseCode_char[4];
-        for (int i = 0; i < 3; i++)
+        for (uint8_t i = 0; i < 3; i++)
         {
             responseCode_char[i] = response_buffer[i+9];
         }
