@@ -68,9 +68,11 @@ bool SDI12Sensors::setup(void)
     // Force the timeout value to be -9999 (This should be library default.)
     _SDI12Internal.setTimeoutValue(-9999);
 
+    #ifdef __AVR__
     // Allow the SDI-12 library access to interrupts
     MS_DBG(F("Enabling interrupts for SDI12 on pin "), _dataPin);
     enableInterrupt(_dataPin, SDI12::handleInterrupt, CHANGE);
+    #endif
 
     retVal &= getSensorInfo();
 
@@ -191,19 +193,19 @@ bool SDI12Sensors::getSensorInfo(void)
         MS_DBG(F("   SDI12 Address:"), sdi12Address);
         float sdi12Version = sdiResponse.substring(1,3).toFloat();
         sdi12Version /= 10;
-        MS_DBG(F(", SDI12 Version:"), sdi12Version);
+        MS_DBG(F("   SDI12 Version:"), sdi12Version);
         _sensorVendor = sdiResponse.substring(3,11);
         _sensorVendor.trim();
-        MS_DBG(F(", Sensor Vendor:"), _sensorVendor);
+        MS_DBG(F("   Sensor Vendor:"), _sensorVendor);
         _sensorModel = sdiResponse.substring(11,17);
         _sensorModel.trim();
-        MS_DBG(F(", Sensor Model:"), _sensorModel);
+        MS_DBG(F("   Sensor Model:"), _sensorModel);
         _sensorVersion = sdiResponse.substring(17,20);
         _sensorVersion.trim();
-        MS_DBG(F(", Sensor Version:"), _sensorVersion);
+        MS_DBG(F("   Sensor Version:"), _sensorVersion);
         _sensorSerialNumber = sdiResponse.substring(20);
         _sensorSerialNumber.trim();
-        MS_DBG(F(", Sensor Serial Number:"), _sensorSerialNumber);
+        MS_DBG(F("   Sensor Serial Number:"), _sensorSerialNumber);
         return true;
     }
     else return false;
