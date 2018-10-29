@@ -453,9 +453,9 @@ Variable *calcCorrDepth = new Variable(calculateWaterDepthTempCorrected, rhoDept
 // NOTE:  Since we've created all of the variable pointers above, we can just
 // reference them by name here.
 Variable *variableList[] = {
+    mayflySampNo,
     mayflyBatt,
     mayflyRAM,
-    mayflySampNo,
     ds3231Temp,
     bme280Temp,
     bme280Humid,

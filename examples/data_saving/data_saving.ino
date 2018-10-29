@@ -389,9 +389,9 @@ Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-123
 // NOTE:  Since we've created all of the variable pointers above, we can just
 // reference them by name here.
 Variable *variableList_complete[] = {
+    mayflySampNo,
     mayflyBatt,
     mayflyRAM,
-    mayflySampNo,
     ds3231Temp,
     y504DOpct,
     y504DOmgL,

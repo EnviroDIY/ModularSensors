@@ -405,6 +405,7 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
+    new ProcessorStats_SampleNumber(&mayfly),
     new ApogeeSQ212_PAR(&SQ212),
     new AOSongAM2315_Humidity(&am2315),
     new AOSongAM2315_Temp(&am2315),
@@ -468,7 +469,6 @@ Variable *variableList[] = {
     new ZebraTechDOpto_Temp(&dopto),
     new ZebraTechDOpto_DOpct(&dopto),
     new ZebraTechDOpto_DOmgL(&dopto),
-    new ProcessorStats_SampleNumber(&mayfly),
     new ProcessorStats_FreeRam(&mayfly),
     new ProcessorStats_Batt(&mayfly),
     new MaximDS3231_Temp(&ds3231),
