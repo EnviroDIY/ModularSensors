@@ -427,8 +427,8 @@ MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 // ==========================================================================
 
 // Set up a 'new' UART for receiving sonar data - in this case, using SERCOM2
-// In this case, the Rx will be on digital pin 5, which is SERCOM2's Rx Pad #3
-// Although the MaxBotix cannot use it, the Tx will be on digital pin 2, which is SERCOM2's Rx Pad #2
+// In this case, the Rx will be on digital pin 5, which is SERCOM2's Pad #3
+// Although the MaxBotix cannot use it, the Tx will be on digital pin 2, which is SERCOM2's Pad #2
 // NOTE:  SERCOM2 is undefinied on a "standard" Arduino Zero and many clones,
 //        but not all!  Please check the variant.cpp file for you individual board!
 //        Sodaq Autonomo's and Sodaq One's do NOT follow the 'standard' SERCOM definitions!
@@ -495,8 +495,8 @@ RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 
 
 // Set up a 'new' UART for modbus communication - in this case, using SERCOM1
-// In this case, the Rx will be on digital pin 11, which is SERCOM1's Rx Pad #0
-// The Tx will be on digital pin 10, which is SERCOM1's Rx Pad #2
+// In this case, the Rx will be on digital pin 11, which is SERCOM1's Pad #0
+// The Tx will be on digital pin 10, which is SERCOM1's Pad #2
 // NOTE:  SERCOM1 is undefinied on a "standard" Arduino Zero and many clones,
 //        but not all!  Please check the variant.cpp file for you individual board!
 //        Sodaq Autonomo's and Sodaq One's do NOT follow the 'standard' SERCOM definitions!
@@ -777,20 +777,6 @@ void setup()
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
 
-    // Assign pins SERCOM functionality for extra UARTS
-    pinPeripheral(2, PIO_SERCOM);
-    pinPeripheral(5, PIO_SERCOM);
-    pinPeripheral(10, PIO_SERCOM);
-    pinPeripheral(11, PIO_SERCOM);
-
-    // Set up pins for the LED's
-    pinMode(greenLED, OUTPUT);
-    digitalWrite(greenLED, LOW);
-    pinMode(redLED, OUTPUT);
-    digitalWrite(redLED, LOW);
-    // Blink the LEDs to show the board is on and starting up
-    greenredflash();
-
     // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);
 
@@ -799,6 +785,20 @@ void setup()
 
     // Start the SoftwareSerial stream for the sonar
     sonarSerial.begin(9600);
+
+    // Assign pins SERCOM functionality
+    pinPeripheral(2, PIO_SERCOM); // Serial3 Tx = SERCOM2 Pad #2
+    pinPeripheral(5, PIO_SERCOM);  // Serial3 Rx = SERCOM2 Pad #3
+    pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx = SERCOM1 Pad #2
+    pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx = SERCOM1 Pad #0
+
+    // Set up pins for the LED's
+    pinMode(greenLED, OUTPUT);
+    digitalWrite(greenLED, LOW);
+    pinMode(redLED, OUTPUT);
+    digitalWrite(redLED, LOW);
+    // Blink the LEDs to show the board is on and starting up
+    greenredflash();
 
     // Set up the sleep/wake pin for the modem and put its inital value as "off"
     #if defined(TINY_GSM_MODEM_XBEE)

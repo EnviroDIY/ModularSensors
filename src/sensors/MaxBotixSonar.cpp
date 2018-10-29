@@ -113,9 +113,15 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
     uint8_t junkChars = _stream->available();
     if (junkChars)
     {
-        MS_DBG(F("Dumping "), junkChars, F(" characters from MaxBotix stream buffer"));
+        MS_DBG(F("Dumping "), junkChars, F(" characters from MaxBotix stream buffer:"));
         for (uint8_t i = 0; i < junkChars; i++)
-        _stream->read();
+        {
+            #ifdef DEBUGGING_SERIAL_OUTPUT
+            DEBUGGING_SERIAL_OUTPUT.print(_stream->read());
+            #else
+            _stream->read();
+            #endif            
+        }
     }
 
     // Check a measurement was *successfully* started (status bit 6 set)
