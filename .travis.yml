@@ -1,12 +1,10 @@
 matrix:
     include:
-
       - language: node_js
         sudo: false
         before_script:
           - npm install -g jsonlint
         script: jsonlint -q library.json
-
 
       - language: python
         python:
@@ -17,7 +15,6 @@ matrix:
         cache:
             directories:
                 - "~/.platformio"
-
         env:
             # AVR examples
             - PLATFORMIO_CI_SRC=examples/single_sensor/
@@ -32,13 +29,11 @@ matrix:
 
             # SAMD examples
             - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY_Zero/ PLATFORMIO_CI_ZERO=1
-
         before_install:
         - git config --global user.email "sdamiano@stroudcenter.org"
         - git config --global user.name "SRGDamia1"
-
         install:
-             - git rm library.json
+            - git rm library.json
             - pip install jsonschema
             - pip install -U platformio
             - pio upgrade
@@ -64,5 +59,4 @@ matrix:
             - pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
             # - pio lib -g install https://github.com/todbot/SoftI2CMaster.git
             - pio update
-
         script: make travis-build
