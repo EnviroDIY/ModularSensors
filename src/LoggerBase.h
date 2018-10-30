@@ -233,12 +233,7 @@ protected:
     int8_t _ledPin;
     int8_t _buttonPin;
     VariableArray *_internalArray;
-
-    // The number of logging intervals that have passed.
-    // NOTE:  This is not intended to be a perfect count, and it will zero
-    // after every time the logger restarts (such as running out of battery).
-    // A value of -1 indicates that sensor set-up hasn't been run!
-    int8_t _numIntervals;
+    bool _areSensorsSetup;
 
     // This checks if the SD card is available and ready
     // We run this check before every communication with the SD card to prevent

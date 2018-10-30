@@ -144,7 +144,7 @@ void LoggerDreamHost::logDataAndSend(void)
     // the SD card haven't been setup and we want to set them up.
     // NOTE:  Unless it completed in less than one second, the sensor set-up
     // will take the place of logging for this interval!
-    if (_numIntervals < 0)
+    if (!_areSensorsSetup)
     {
         // Set up the sensors
         PRINTOUT(F("Sensors and data file had not been set up!  Setting them up now."));
@@ -154,14 +154,12 @@ void LoggerDreamHost::logDataAndSend(void)
        if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
        else PRINTOUT(F("Unable to create a file to save data to!"));
 
-       // Now, set the number of intervals to 0
-       _numIntervals = 0;
+       // Mark sensors as having been setup
+       _areSensorsSetup = 1;
     }
 
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
-    // NOTE:  When checkInterval() returns true, it also ticks up the value of
-    // _numIntervals.
     if (checkInterval())
     {
         // Flag to notify that we're in already awake and logging a point
@@ -197,8 +195,8 @@ void LoggerDreamHost::logDataAndSend(void)
                 // Post the data to DreamHost
                 postDataDreamHost();
 
-                // Sync the clock every 288 readings (1/day at 5 min intervals)
-                if (_numIntervals % 288 == 0)
+                // Sync the clock at midnight
+                if (markedEpochTime != 0 && markedEpochTime % 86400 == 0)
                 {
                     MS_DBG(F("  Running a daily clock sync..."));
                     syncRTClock(_logModem->getNISTTime());
