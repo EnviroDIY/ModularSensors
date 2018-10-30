@@ -1,7 +1,16 @@
+before_install:
+    - git config --global user.email "sdamiano@stroudcenter.org"
+    - git config --global user.name "SRGDamia1"
+sudo: false
+git:
+  depth: 1
+cache:
+    directories:
+        - "~/.platformio"
+
 matrix:
     include:
       - language: node_js
-        sudo: false
         before_script:
           - npm install -g jsonlint
         script: jsonlint -q library.json
@@ -9,54 +18,69 @@ matrix:
       - language: python
         python:
             - "2.7"
-        sudo: false
-        git:
-          depth: 1
-        cache:
-            directories:
-                - "~/.platformio"
         env:
-            # AVR examples
             - PLATFORMIO_CI_SRC=examples/single_sensor/
-            - PLATFORMIO_CI_SRC=examples/multisensor_print/
-            - PLATFORMIO_CI_SRC=examples/simple_logging/
-            - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY/
-            # - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/
-            # - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/
-            - PLATFORMIO_CI_SRC=examples/double_logger/
-            - PLATFORMIO_CI_SRC=examples/baro_rho_correction/
-            - PLATFORMIO_CI_SRC=examples/data_saving/
+        script: make travis-build
 
-            # SAMD examples
+      - language: python
+        python:
+            - "2.7"
+        env:
+            - PLATFORMIO_CI_SRC=examples/multisensor_print/
+        script: make travis-build
+
+      - language: python
+        python:
+            - "2.7"
+        env:
+            - PLATFORMIO_CI_SRC=examples/simple_logging/
+        script: make travis-build
+
+      - language: python
+        python:
+            - "2.7"
+        env:
+            - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY/
+        script: make travis-build
+
+      - language: python
+        python:
+            - "2.7"
+        env:
             - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY_Zero/ PLATFORMIO_CI_ZERO=1
-        before_install:
-        - git config --global user.email "sdamiano@stroudcenter.org"
-        - git config --global user.name "SRGDamia1"
-        install:
-            - git rm library.json
-            - pip install jsonschema
-            - pip install -U platformio
-            - pio upgrade
-            - pio lib -g install 2079  # DS3231
-            - pio lib -g install 311  # EnableInterrupt
-            - pio lib -g install 322  # SdFat
-            - pio lib -g install 344  # soligen2010 fork of Adafruit ADS1X15
-            - pio lib -g install 31  # Adafruit Unified Sensor
-            - pio lib -g install 19  # Adafruit DHT sensor library
-            - pio lib -g install 773  # Adafruit AM2315
-            - pio lib -g install 166  # Adafruit BME280 Library
-            - pio lib -g install 406  # Adafruit MPL115A2
-            - pio lib -g install 1  # OneWire
-            - pio lib -g install 54  # Dallas Temperature
-            - pio lib -g install https://github.com/EnviroDIY/Arduino-SDI-12.git#ExtInts
-            - pio lib -g install https://github.com/EnviroDIY/TinyGSM.git
-            - pio lib -g install 1824  # SensorModbusMaster
-            - pio lib -g install 2078  # YosemitechModbus
-            - pio lib -g install 5431 # MS5803
-            - pio lib -g install 5439 # KellerModbus
-            - pio lib -g install 873  # RTCZero
-            - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git  # #73, but need the git until Paul S. has a new release
-            - pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
-            # - pio lib -g install https://github.com/todbot/SoftI2CMaster.git
-            - pio update
+        script: make travis-build
+
+      - language: python
+        python:
+            - "2.7"
+        env:
+            - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/
+        script: make travis-build
+
+      - language: python
+        python:
+            - "2.7"
+        env:
+            - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/
+        script: make travis-build
+
+      - language: python
+        python:
+            - "2.7"
+        env:
+            - PLATFORMIO_CI_SRC=examples/double_logger/
+        script: make travis-build
+
+      - language: python
+        python:
+            - "2.7"
+        env:
+            - PLATFORMIO_CI_SRC=examples/baro_rho_correction/
+        script: make travis-build
+
+      - language: python
+        python:
+            - "2.7"
+        env:
+            - PLATFORMIO_CI_SRC=examples/data_saving/
         script: make travis-build
