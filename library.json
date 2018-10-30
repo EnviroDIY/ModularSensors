@@ -54,7 +54,7 @@
             "+<sensors/*.c>",
             "+<sensors/*.cpp>",
             "+<sensors/*.h>"
-        ]
+        ],
         "flags":
         [
             "-D SDI12_EXTERNAL_PCINT",
