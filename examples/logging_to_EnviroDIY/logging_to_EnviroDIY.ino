@@ -21,20 +21,21 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
-
-
+#include <Time.h>
+#include "mayfly_routing.h"
+//#define DEBUGGING_SERIAL_OUTPUT Serial
+//#include "lib/ModularSensors/src/sensors/ProcessorStats.h"
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
 // The name of this file
 const char *sketchName = "logging_to_EnviroDIY.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXXX";
+const char *LoggerID = "nh07h";
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 5;
+//const uint8_t loggingInterval = 5;
 // Your logger's timezone.
-const int8_t timeZone = -5;  // Eastern Standard Time
-// NOTE:  Daylight savings time will not be applied!  Please use standard time!
+const int8_t timeZone = -8;
 
 
 // ==========================================================================
@@ -53,9 +54,11 @@ const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (m
 const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create and return the processor "sensor"
+#if !defined(BOARD_NAME)
 const char *MFVersion = "v0.5b";
-ProcessorStats mayfly(MFVersion);
-
+#endif
+ProcessorStats mayflyPhy(MFVersion);
+#define CHECK_SLEEP_POWER
 
 // ==========================================================================
 //    Modem/Internet connection options
@@ -65,25 +68,33 @@ ProcessorStats mayfly(MFVersion);
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
 // #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
+#ifdef CHECK_SLEEP_POWER
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
-
+#endif //CHECK_SLEEP_POWER
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
 #include <TinyGsmClient.h>
 
+
  // Set the serial port for the modem - software serial can also be used.
 HardwareSerial &ModemSerial = Serial1;
+#define RS485PHY_TX 5  // AltSoftSerial Tx pin 
+#define RS485PHY_RX 6  // AltSoftSerial Rx pin
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
+//#define DEBUG_STREAMDEBUGGER
+#if !defined(DEBUG_STREAMDEBUGGER)
 TinyGsm *tinyModem = new TinyGsm(ModemSerial);
+#endif //DEBUG_STREAMDEBUGGER
 
 // Use this to create a modem if you want to spy on modem communication through
 // a secondary Arduino stream.  Make sure you install the StreamDebugger library!
 // https://github.com/vshymanskyy/StreamDebugger
-// #include <StreamDebugger.h>
-// StreamDebugger modemDebugger(Serial1, Serial);
-// TinyGsm *tinyModem = new TinyGsm(modemDebugger);
-
+#ifdef DEBUG_STREAMDEBUGGER
+ #include <StreamDebugger.h>
+ StreamDebugger modemDebugger(Serial1, Serial);
+ TinyGsm *tinyModem = new TinyGsm(modemDebugger);
+#endif //DEBUG_STREAMDEBUGGER
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
@@ -104,21 +115,27 @@ bool sleepFxn(void)
     {
         digitalWrite(modemSleepRqPin, HIGH);
         digitalWrite(redLED, LOW);
+        Serial.println(F("sleepFxnH"));
         return true;
     }
-    else return true;
+    Serial.println(F("sleepFxn!"));
+    return true;
 }
 bool wakeFxn(void)
 {
-    if (modemVccPin >= 0)  // Turns on when power is applied
+    if (modemVccPin >= 0){  // Turns on when power is applied
+        Serial.print(F("wakeFxnV!="));
+        Serial.println(modemVccPin);
         return true;
-    else if (modemSleepRqPin >= 0)
+    }else if (modemSleepRqPin >= 0)
     {
         digitalWrite(modemSleepRqPin, LOW);
         digitalWrite(redLED, HIGH);  // Because the XBee doesn't have any lights
+        Serial.println(F("wakeFxnL"));
         return true;
     }
-    else return true;
+    Serial.print(F("wakeFxn!"));
+    return true;
 }
 
 #elif defined(TINY_GSM_MODEM_ESP8266)
@@ -270,17 +287,22 @@ bool sleepFxn(void)
 #endif
 
 // And we still need the connection information for the network
+#if !defined(BOARD_NAME)
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
 
+//#define SENSOR_CONFIG_GENERAL 1
+//#define SENSOR_CONFIG_KELLER_ACCULEVEL 1
+#define SENSOR_CONFIG_KELLER_NANOLEVEL 1
+#endif
 // Create the loggerModem instance
 #include <LoggerModem.h>
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 #if defined(TINY_GSM_MODEM_ESP8266)
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
 #elif defined(TINY_GSM_MODEM_XBEE)
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
+loggerModem modemPhy(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
 // loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
 #elif defined(TINY_GSM_MODEM_UBLOX)
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
@@ -295,13 +317,29 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepF
 #include <sensors/MaximDS3231.h>
 // Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
+// ==========================================================================
+//    External Voltage via TI ADS1115
+// ==========================================================================
+#include <sensors/ExternalVoltage.h>
+const int8_t VoltPower = -1;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t VoltData0 = 0;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const int8_t VoltData1 = 1;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const float VoltGain = 2; // Voltage divider 100K+100K Iternnaly 0-3.6V Default 1/gain for grove voltage divider is 10x
+const uint8_t Volt_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
+const uint8_t VoltReadsToAvg = 1; // Only read one sample
+// Create and return the External Voltage sensor object
+ExternalVoltage extvolt0(VoltPower, VoltData0, VoltGain, Volt_ADS1115Address, VoltReadsToAvg);
+ExternalVoltage extvolt1(VoltPower, VoltData1, VoltGain, Volt_ADS1115Address, VoltReadsToAvg);
 
-
+#ifdef SENSOR_CONFIG_GENERAL
+const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t SDI12Data = 7;  // The pin the 5TM is attached to
+const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 // ==========================================================================
 //    AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
 #include <sensors/AOSongAM2315.h>
-const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+//const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // Create and return the AOSong AM2315 sensor object
 AOSongAM2315 am2315(I2CPower);
 
@@ -501,14 +539,18 @@ const float depthPerTipEvent = 0.2;  // rain depth in mm per tip event
 // Create and return the Rain Counter sensor object
 RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 
+#endif //SENSOR_CONFIG_GENERAL
 
 // Set up a serial port for modbus communication - in this case, using AltSoftSerial
 #include <AltSoftSerial.h>
 AltSoftSerial modbusSerial;
 
+const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 // ==========================================================================
 //    Keller Acculevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
+#ifdef SENSOR_CONFIG_KELLER_ACCULEVEL
 #include <sensors/KellerAcculevel.h>
 byte acculevelModbusAddress = 0x01;  // The modbus address of KellerAcculevel
 const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
@@ -517,7 +559,19 @@ const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chi
 const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends taking and averaging a few readings
 // Create and return the Keller Acculevel sensor object
 KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, acculevelNumberReadings);
+#endif //SENSOR_CONFIG_KELLER_ACCULEVEL
 
+// ==========================================================================
+//    Keller Nanolevel High Accuracy Submersible Level Transmitter
+// ==========================================================================
+#ifdef SENSOR_CONFIG_KELLER_NANOLEVEL
+#include <KellerNanolevel.h>
+byte nanolevelModbusAddress = 0x01;  // The modbus address of KellerNanolevel
+const uint8_t nanolevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
+// Create and return the Keller Nanolevel sensor object
+KellerNanolevel nanolevelfn(nanolevelModbusAddress, modbusSerial, modbusPower, max485EnablePin, nanolevelNumberReadings);
+#endif //SENSOR_CONFIG_KELLER_NANOLEVEL
+#ifdef SENSOR_CONFIG_GENERAL
 
 // ==========================================================================
 //    Yosemitech Y504 Dissolved Oxygen Sensor
@@ -632,7 +686,7 @@ const char *DOptoDI12address = "5";  // The SDI-12 Address of the Zebra Tech D-O
 // const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 // Create and return the Zebra Tech DOpto dissolved oxygen sensor object
 ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
-
+#endif //SENSOR_CONFIG_GENERAL
 
 // ==========================================================================
 //    The array that contains all variables to be logged
@@ -641,7 +695,11 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
-    new ProcessorStats_SampleNumber(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
+#if defined(ProcessorStats_seqNum_UUID)
+    //Always have this first so can see on debug screen
+    new ProcessorStats_SampleNumber(&mayflyPhy,ProcessorStats_seqNum_UUID),
+#endif
+#ifdef SENSOR_CONFIG_GENERAL
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
     new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
     new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -679,9 +737,18 @@ Variable *variableList[] = {
     new MPL115A2_Pressure(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
     new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab"),
     new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab"),
+#endif //SENSOR_CONFIG_GENERAL
+#ifdef SENSOR_CONFIG_KELLER_ACCULEVEL
     new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
     new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
     new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
+#endif // SENSOR_CONFIG_KELLER_ACCULEVEL
+#ifdef SENSOR_CONFIG_KELLER_NANOLEVEL
+//   new KellerNanolevel_Pressure(&nanolevelfn, "12345678-abcd-1234-efgh-1234567890ab"),
+    new KellerNanolevel_Height(&nanolevelfn, KellerNanolevel_Height_UUID),
+    new KellerNanolevel_Temp(&nanolevelfn,   KellerNanolevel_Temp_UUID),
+#endif //SENSOR_CONFIG_KELLER_NANOLEVEL
+#ifdef SENSOR_CONFIG_GENERAL
     new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -707,11 +774,24 @@ Variable *variableList[] = {
     new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
     new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
     new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_FreeRam(&mayflyPhy, "12345678-abcd-1234-efgh-1234567890ab"),
+#endif // SENSOR_CONFIG_GENERAL
+#if defined(ProcessorStats_Batt_UUID)
+    new ProcessorStats_Batt(&mayflyPhy,   ProcessorStats_Batt_UUID),
+#endif
+#if defined(MaximDS3231_Temp_UUID)
+    new MaximDS3231_Temp(&ds3231,      MaximDS3231_Temp_UUID),
+#endif //MaximDS3231_Temp_UUID
+    //new Modem_RSSI(&modemPhy, "12345678-abcd-1234-efgh-1234567890ab"),
+#if defined(Modem_SignalPercent_UUID)
+    //new Modem_SignalPercent(&modemPhy, Modem_SignalPercent_UUID),
+#endif
+#if defined(Volt0_UUID)
+    new ExternalVoltage_Volt(&extvolt0, Volt0_UUID),
+#endif
+#if defined(Volt1_UUID)
+    new ExternalVoltage_Volt(&extvolt1, Volt1_UUID),
+#endif
     // new YOUR_variableName_HERE(&)
 };
 // Count up the number of pointers in the array
@@ -728,8 +808,8 @@ LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &
 // Device registration and sampling feature information
 //   This should be obtained after registration at http://data.envirodiy.org
 // ==========================================================================
-const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
-const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
+const char *registrationToken = registrationToken_UUID;   // Device registration token
+const char *samplingFeature  =  samplingFeature_UUID;     // Sampling feature UUID
 
 
 // ==========================================================================
@@ -756,8 +836,15 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 // ==========================================================================
 void setup()
 {
+    //ADCSRA |= _BV(ADEN);
+    //uint8_t mcu_status = MCUSR; is already cleared by Arduino startup???
+    //MCUSR = 0; //reset for unique read
     // Start the primary serial connection
     Serial.begin(serialBaud);
+    Serial.print(F("---Boot(BUILD_TIMESTAMP "));
+    Serial.print(EnviroDIYLogger.formatDateTime_ISO8601(BUILD_TIMESTAMP)); //Naughty but only uses stack.
+    Serial.print(F(") "));
+    //MCUSR Serial.println(mcu_status,HEX);
 
     // Print a start-up note to the first serial port
     Serial.print(F("Now running "));
@@ -773,10 +860,17 @@ void setup()
     ModemSerial.begin(ModemBaud);
 
     // Start the stream for the modbus sensors
+#if !defined(SENSOR_RS485_PHY)
     modbusSerial.begin(9600);
+#else
+    digitalWrite(RS485PHY_TX, LOW);   // Reset AltSoftSerial Tx pin to LOW
+    digitalWrite(RS485PHY_RX, LOW);   // Reset AltSoftSerial Rx pin to LOW
+#endif
 
+#ifdef SENSOR_CONFIG_GENERAL
     // Start the SoftwareSerial stream for the sonar
     sonarSerial.begin(9600);
+#endif // SENSOR_CONFIG_GENERAL
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
         enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
@@ -795,23 +889,27 @@ void setup()
 
     // Set up the sleep/wake pin for the modem and put its inital value as "off"
     #if defined(TINY_GSM_MODEM_XBEE)
-        Serial.println(F("Setting up sleep mode on the XBee."));
-        pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, LOW);  // Turn it on to talk, just in case
+        if(modemSleepRqPin >= 0) 
+        {
+            Serial.print(F("Setting up sleep mode on the XBee. "));
+            Serial.println(modemSleepRqPin);
+            pinMode(modemSleepRqPin, OUTPUT);
+            digitalWrite(modemSleepRqPin, LOW);  // Turn it on to talk, just in case
+        }
         if (tinyModem->commandMode())
         {
             tinyModem->sendAT(F("SM"),1);  // Pin sleep
             tinyModem->waitResponse();
             tinyModem->sendAT(F("DO"),0);  // Disable remote manager
             tinyModem->waitResponse();
-            tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
-            tinyModem->waitResponse();
-            tinyModem->sendAT(F("SO"),200);  // For WiFi - Disassociate from AP for Deep Sleep
-            tinyModem->waitResponse();
-            tinyModem->writeChanges();
-            tinyModem->exitCommand();
+            //tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
+            //tinyModem->waitResponse();
+        } else {
+            PRINTOUT(F("Xbee Modem - not available! Not set to pin sleep"));
         }
-        digitalWrite(modemSleepRqPin, HIGH);  // back to sleep
+        if(modemSleepRqPin >= 0) {
+            digitalWrite(modemSleepRqPin, HIGH);  // back to sleep
+        }
     #elif defined(TINY_GSM_MODEM_ESP8266)
         if (modemSleepRqPin >= 0)
         {
@@ -836,9 +934,9 @@ void setup()
     Logger::setTimeZone(timeZone);
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
-
+#ifdef CHECK_SLEEP_POWER
     // Attach the modem and information pins to the logger
-    EnviroDIYLogger.attachModem(modem);
+    EnviroDIYLogger.attachModem(modemPhy);
     EnviroDIYLogger.setAlertPin(greenLED);
     EnviroDIYLogger.setTestingModePin(buttonPin);
 
@@ -848,6 +946,32 @@ void setup()
 
     // Begin the logger
     EnviroDIYLogger.beginAndSync();
+#endif //CHECK_SLEEP_POWER
+    #if defined(TINY_GSM_MODEM_XBEE)
+    wakeFxn();
+    if (tinyModem->commandMode() )
+    {
+        PRINTOUT(F("IP number is "));
+        tinyModem->sendAT(F("MY"));  // Request IP #
+        tinyModem->waitResponse();
+        if( XBEE_S6B_WIFI == tinyModem->getBeeType()) {
+            // Cellular 3G Global SM yes, SO no
+            // Cellular LTE-M SM yes, SO no
+            // Cellular LTE CAT1 - SM yes, SO 0
+            // WiFi S6B SM yes, SO yes
+            //For WiFi AP  Bit4/0x140 Associate in sleep or default 0x100 Disassociate for Deep Sleep
+            tinyModem->sendAT(F("SO"),140); 
+            tinyModem->waitResponse();
+            tinyModem->writeChanges();
+            tinyModem->exitCommand();
+       }
+    } else {
+        PRINTOUT(F("nh: Check IP number. not in CMD modem!"));
+    }
+    sleepFxn();
+    #endif //TINY_GSM_MODEM_XBEE
+
+
 }
 
 
@@ -857,5 +981,115 @@ void setup()
 void loop()
 {
     // Log the data
+#if !defined(SENSOR_RS485_PHY)
+    //older EnviroDIYLogger.logAndSend();
     EnviroDIYLogger.logDataAndSend();
+#else //SENSOR_RS485_PHY
+
+    // If the number of intervals is negative, then the sensors and file on
+    // the SD card haven't been setup and we want to set them up.
+    // NOTE:  Unless it completed in less than one second, the sensor set-up
+    // will take the place of logging for this interval!
+    #if 0
+    if (EnviroDIYLogger._numIntervals < 0)
+    {
+        // Set up the sensors
+        PRINTOUT(F("Sensors and data file had not been set up!  Setting them up now."));
+        varArray.setupSensors();
+
+       // Create the log file, adding the default header to it
+       if (EnviroDIYLogger._autoFileName) generateAutoFileName();
+       if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
+       else PRINTOUT(F("Unable to create a file to save data to!"));
+
+       // Now, set the number of intervals to 0
+       EnviroDIYLogger._numIntervals = 0;
+    }
+#endif
+    // Reset AltSoftSerial pins to LOW, to reduce power bleed on sleep, 
+    // because Modbus Stop bit leaves these pins HIGH
+
+    // Assuming we were woken up by the clock, check if the current time is an
+    // even interval of the logging interval
+    if (EnviroDIYLogger.checkInterval())
+    {
+        // Flag to notify that we're in already awake and logging a point
+        //Logger::isLoggingNow = true;
+
+        // Print a line to show new reading
+        PRINTOUT(F("---NewReading------------------------------\n"));
+
+#if !defined(CHECK_SLEEP_POWER)
+        // Turn on the LED to show we're taking a reading
+        digitalWrite(greenLED, HIGH);
+
+        // Start the stream for the modbus sensors
+        // Because RS485 adapters tend to "steal" current from the data pins
+        // we will explicitly start and end the serial connection in the loop.
+        modbusSerial.begin(9600);
+
+        // Do a complete sensor update
+        MS_DBG(F("    Running a complete sensor update...\n"));
+        //_internalArray->completeUpdate();
+        varArray.completeUpdate();
+
+        // End the stream for the modbus sensors
+        // Because RS485 adapters tend to "steal" current from the data pins
+        // we will explicitly start and end the serial connection in the loop.
+        modbusSerial.end();
+        // Reset AltSoftSerial pins to LOW, to reduce power bleed on sleep, 
+        // because Modbus Stop bit leaves these pins HIGH
+        digitalWrite( RS485PHY_TX, LOW);   // Reset AltSoftSerial Tx pin to LOW
+        digitalWrite( RS485PHY_RX, LOW);   // Reset AltSoftSerial Rx pin to LOW
+
+        // Create a csv data record and save it to the log file
+        EnviroDIYLogger.logToSD();
+         // Turn on the modem to let it start searching for the network
+        //if (_logModem != NULL) _logModem->modemPowerUp();
+        if (EnviroDIYLogger._logModem != NULL) modemPhy.modemPowerUp();
+        //modemPhy.modemPowerUp();
+        if (EnviroDIYLogger._logModem != NULL)
+        {
+            // Connect to the network
+            MS_DBG(F("  Connecting to the Internet...\n"));
+            if (modemPhy.connectInternet())
+            {
+                MS_DBG(F("  sending..\n"));
+                // Post the data to the WebSDL
+                EnviroDIYLogger.postDataEnviroDIY();
+
+                // Sync the clock every 288 readings (1/day at 5 min intervals)
+                //MS_DBG(F("  Running a daily clock sync...\n"));
+                //if (_numTimepointsLogged % 288 == 0)
+                //{
+                //    EnviroDIYLogger.syncRTClock(_logModem->getNISTTime());
+                //}
+
+                // Disconnect from the network
+                MS_DBG(F("  Disconnecting from the Internet...\n"));
+                modemPhy.disconnectInternet();
+            } else {MS_DBG(F("  No internet connection...\n"));}
+            // Turn the modem off
+            modemPhy.modemSleepPowerDown();
+        }
+
+        // Turn off the LED
+        digitalWrite(greenLED, LOW);
+        // Print a line to show reading ended
+        PRINTOUT(F("---Complete-------------------------------\n\n"));
+#endif //(CHECK_SLEEP_POWER)
+        // Unset flag
+        //Logger::isLoggingNow = false;
+    }
+
+    // Check if it was instead the testing interrupt that woke us up
+    //if (EnviroDIYLogger.startTesting) EnviroDIYLogger.testingMode();
+
+    // Sleep
+    //if(_mcuWakePin >= 0){systemSleep();}
+    EnviroDIYLogger.systemSleep();
+#if defined(CHECK_SLEEP_POWER)
+    PRINTOUT(F("A"));
+#endif //(CHECK_SLEEP_POWER)
+#endif //SENSOR_RS485_PHY
 }
