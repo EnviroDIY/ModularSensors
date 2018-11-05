@@ -23,7 +23,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <Time.h>
 #include "mayfly_routing.h"
-//#define DEBUGGING_SERIAL_OUTPUT Serial
+#define DEBUGGING_SERIAL_OUTPUT Serial
 //#include "lib/ModularSensors/src/sensors/ProcessorStats.h"
 // ==========================================================================
 //    Data Logger Settings
@@ -58,7 +58,7 @@ const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 i
 const char *MFVersion = "v0.5b";
 #endif
 ProcessorStats mayflyPhy(MFVersion);
-#define CHECK_SLEEP_POWER
+//#define CHECK_SLEEP_POWER
 
 // ==========================================================================
 //    Modem/Internet connection options
@@ -68,7 +68,7 @@ ProcessorStats mayflyPhy(MFVersion);
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
 // #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
-#ifdef CHECK_SLEEP_POWER
+#if !defined(CHECK_SLEEP_POWER)
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
 #endif //CHECK_SLEEP_POWER
 // Include TinyGSM for the modem
@@ -82,7 +82,7 @@ HardwareSerial &ModemSerial = Serial1;
 #define RS485PHY_RX 6  // AltSoftSerial Rx pin
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
-//#define DEBUG_STREAMDEBUGGER
+#define DEBUG_STREAMDEBUGGER
 #if !defined(DEBUG_STREAMDEBUGGER)
 TinyGsm *tinyModem = new TinyGsm(ModemSerial);
 #endif //DEBUG_STREAMDEBUGGER
@@ -934,7 +934,7 @@ void setup()
     Logger::setTimeZone(timeZone);
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
-#ifdef CHECK_SLEEP_POWER
+#if !defined(CHECK_SLEEP_POWER)
     // Attach the modem and information pins to the logger
     EnviroDIYLogger.attachModem(modemPhy);
     EnviroDIYLogger.setAlertPin(greenLED);
@@ -1071,7 +1071,7 @@ void loop()
             } else {MS_DBG(F("  No internet connection...\n"));}
             // Turn the modem off
             modemPhy.modemSleepPowerDown();
-        }
+        } else MS_DBG(F("  No Modem configured.\n"));
 
         // Turn off the LED
         digitalWrite(greenLED, LOW);
