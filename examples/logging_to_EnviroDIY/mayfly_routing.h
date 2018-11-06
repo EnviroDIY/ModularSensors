@@ -14,7 +14,7 @@
 //Mayfly sn 180256 Rev 0.5b test
 #define BOARD03 3
 
-#define BOARD_NAME BOARD02
+#define BOARD_NAME BOARD03
 
 
 #if   BOARD_NAME == BOARD01
@@ -53,14 +53,14 @@ const char *wifiId = "AzondeNetSsid";  // The WiFi access point, unnecessary for
 const char *wifiPwd = NULL;  // The password for connecting to WiFi, unnecessary for gprs
 //#define SENSOR_CONFIG_GENERAL 1
 //#define SENSOR_CONFIG_KELLER_ACCULEVEL 1
-//#define SENSOR_CONFIG_KELLER_NANOLEVEL 1
+#define SENSOR_CONFIG_KELLER_NANOLEVEL 1
 #define registrationToken_UUID "7b19191b-b3d6-416d-9e07-4fbe549f2493"
 #define samplingFeature_UUID   "b918f150-4fff-424d-813a-a69a808a93b6"
 
-//#define KellerNanolevel_Height_UUID "f40a9dff-2c54-43ae-a016-1c5095c188eb"
-//#define KellerNanolevel_Temp_UUID   "7bc30855-ae08-4865-ab89-a8e17df93bfc"
-//#define ProcessorStats_Batt_UUID    "2c58e64d-6b66-4d9e-b893-bfdb10b65426"
-//#define MaximDS3231_Temp_UUID       "3907922a-56fe-46f3-a56e-9de6b77d3679"
+#define KellerNanolevel_Height_UUID "f40a9dff-2c54-43ae-a016-1c5095c188eb"
+#define KellerNanolevel_Temp_UUID   "7bc30855-ae08-4865-ab89-a8e17df93bfc"
+#define ProcessorStats_Batt_UUID    "2c58e64d-6b66-4d9e-b893-bfdb10b65426"
+#define MaximDS3231_Temp_UUID       "3907922a-56fe-46f3-a56e-9de6b77d3679"
 //#define Modem_RSSI_UUID ""
 // Try without as something crashing Mayfly
 //#define Modem_SignalPercent_UUID    "0cf94fc8-a5d2-4fbe-82f2-2a81650575a8"
