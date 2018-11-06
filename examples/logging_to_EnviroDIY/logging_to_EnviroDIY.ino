@@ -946,8 +946,8 @@ void setup()
 
     // Begin the logger
     EnviroDIYLogger.beginAndSync();
-#endif //CHECK_SLEEP_POWER
-    #if defined(TINY_GSM_MODEM_XBEE)
+
+#if defined(TINY_GSM_MODEM_XBEE)
     wakeFxn();
     if (tinyModem->commandMode() )
     {
@@ -955,22 +955,23 @@ void setup()
         tinyModem->sendAT(F("MY"));  // Request IP #
         tinyModem->waitResponse();
         if( XBEE_S6B_WIFI == tinyModem->getBeeType()) {
+            MS_DBG(F("  Set XB WiFi\n"));
             // Cellular 3G Global SM yes, SO no
             // Cellular LTE-M SM yes, SO no
             // Cellular LTE CAT1 - SM yes, SO 0
             // WiFi S6B SM yes, SO yes
             //For WiFi AP  Bit4/0x140 Associate in sleep or default 0x100 Disassociate for Deep Sleep
-            tinyModem->sendAT(F("SO"),140); 
+            tinyModem->sendAT(F("SO"),100); //0X140 or 320 decimal
             tinyModem->waitResponse();
             tinyModem->writeChanges();
-            tinyModem->exitCommand();
-       }
+        }
+        tinyModem->exitCommand();
     } else {
         PRINTOUT(F("nh: Check IP number. not in CMD modem!"));
     }
     sleepFxn();
     #endif //TINY_GSM_MODEM_XBEE
-
+#endif //CHECK_SLEEP_POWER
 
 }
 
