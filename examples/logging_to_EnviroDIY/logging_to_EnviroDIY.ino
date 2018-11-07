@@ -545,7 +545,7 @@ RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 #include <AltSoftSerial.h>
 AltSoftSerial modbusSerial;
 
-const int8_t modbusPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t modbusSensorPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 // ==========================================================================
 //    Keller Acculevel High Accuracy Submersible Level Transmitter
@@ -555,7 +555,7 @@ const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chi
 byte acculevelModbusAddress = 0x01;  // The modbus address of KellerAcculevel
 const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
-const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+//const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends taking and averaging a few readings
 // Create and return the Keller Acculevel sensor object
 KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, acculevelNumberReadings);
@@ -569,7 +569,7 @@ KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPowe
 byte nanolevelModbusAddress = 0x01;  // The modbus address of KellerNanolevel
 const uint8_t nanolevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
 // Create and return the Keller Nanolevel sensor object
-KellerNanolevel nanolevelfn(nanolevelModbusAddress, modbusSerial, modbusPower, max485EnablePin, nanolevelNumberReadings);
+KellerNanolevel nanolevelfn(nanolevelModbusAddress, modbusSerial, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
 #endif //SENSOR_CONFIG_KELLER_NANOLEVEL
 #ifdef SENSOR_CONFIG_GENERAL
 
@@ -699,6 +699,15 @@ Variable *variableList[] = {
     //Always have this first so can see on debug screen
     new ProcessorStats_SampleNumber(&mayflyPhy,ProcessorStats_seqNum_UUID),
 #endif
+#if defined(ProcessorStats_Batt_UUID)
+    new ProcessorStats_Batt(&mayflyPhy,   ProcessorStats_Batt_UUID),
+#endif
+#if defined(Volt0_UUID)
+    new ExternalVoltage_Volt(&extvolt0, Volt0_UUID),
+#endif
+#if defined(Volt1_UUID)
+    new ExternalVoltage_Volt(&extvolt1, Volt1_UUID),
+#endif
 #ifdef SENSOR_CONFIG_GENERAL
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
     new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -776,21 +785,12 @@ Variable *variableList[] = {
     new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
     new ProcessorStats_FreeRam(&mayflyPhy, "12345678-abcd-1234-efgh-1234567890ab"),
 #endif // SENSOR_CONFIG_GENERAL
-#if defined(ProcessorStats_Batt_UUID)
-    new ProcessorStats_Batt(&mayflyPhy,   ProcessorStats_Batt_UUID),
-#endif
 #if defined(MaximDS3231_Temp_UUID)
     new MaximDS3231_Temp(&ds3231,      MaximDS3231_Temp_UUID),
 #endif //MaximDS3231_Temp_UUID
     //new Modem_RSSI(&modemPhy, "12345678-abcd-1234-efgh-1234567890ab"),
 #if defined(Modem_SignalPercent_UUID)
     //new Modem_SignalPercent(&modemPhy, Modem_SignalPercent_UUID),
-#endif
-#if defined(Volt0_UUID)
-    new ExternalVoltage_Volt(&extvolt0, Volt0_UUID),
-#endif
-#if defined(Volt1_UUID)
-    new ExternalVoltage_Volt(&extvolt1, Volt1_UUID),
 #endif
     // new YOUR_variableName_HERE(&)
 };
@@ -843,7 +843,7 @@ void setup()
     Serial.begin(serialBaud);
     Serial.print(F("---Boot(BUILD_TIMESTAMP "));
     Serial.print(EnviroDIYLogger.formatDateTime_ISO8601(BUILD_TIMESTAMP)); //Naughty but only uses stack.
-    Serial.print(F(") "));
+    Serial.println(F(") "));
     //MCUSR Serial.println(mcu_status,HEX);
 
     // Print a start-up note to the first serial port
@@ -979,7 +979,7 @@ void setup()
 // ==========================================================================
 // Main loop function
 // ==========================================================================
-void loop()
+void processEverything()
 {
     // Log the data
 #if !defined(SENSOR_RS485_PHY)
@@ -1093,4 +1093,17 @@ void loop()
     PRINTOUT(F("A"));
 #endif //(CHECK_SLEEP_POWER)
 #endif //SENSOR_RS485_PHY
+}
+// ==========================================================================
+// Main loop function
+// ==========================================================================
+void loop()
+{
+    processEverything();
+    #if 0
+    for (;;) {
+		loop();
+		if (serialEventRun) serialEventRun();
+	}
+    #endif
 }
