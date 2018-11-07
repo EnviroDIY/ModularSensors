@@ -37,7 +37,7 @@ const char *wifiPwd = "";  // The password for connecting to WiFi, unnecessary f
 
 #define MaximDS3231_Temp_UUID    "4b36e862-8dea-4f8a-a0d1-29ae20a92812"
 #define ProcessorStats_Batt_UUID "0f9c6292-3646-4ab6-8aa3-ca542d5eee49"
-#define ProcessorStats_seqNum_UUID  "c552fac5-c45c-416c-a634-5f22a20672de" 
+#define ProcessorStats_SampleNum_UUID  "c552fac5-c45c-416c-a634-5f22a20672de" 
 #define Volt0_UUID "ef0c5561-42c8-49b2-8bc1-67cfbe2ffdd7"
 #define Volt1_UUID "ea56e49f-ae3c-49b0-b993-736c92c034ff"
 
@@ -64,7 +64,7 @@ const char *wifiPwd = NULL;  // The password for connecting to WiFi, unnecessary
 //#define Modem_RSSI_UUID ""
 // Try without as something crashing Mayfly
 //#define Modem_SignalPercent_UUID    "0cf94fc8-a5d2-4fbe-82f2-2a81650575a8"
-#define ProcessorStats_seqNum_UUID  "0cf94fc8-a5d2-4fbe-82f2-2a81650575a8"
+#define ProcessorStats_SampleNum_UUID  "0cf94fc8-a5d2-4fbe-82f2-2a81650575a8"
 
 #elif BOARD_NAME == BOARD03
 //**************************************************************************
@@ -92,7 +92,7 @@ const char *wifiPwd = NULL;//"";  // The password for connecting to WiFi, unnece
 // Try without as something crashing Mayfly
 //#define Modem_SignalPercent_UUID    ""
 // The following mapped to Mayfly_FreeRAM
-#define ProcessorStats_seqNum_UUID   "5fbb799d-630d-486f-a0ff-015f0195d393"
+#define ProcessorStats_SampleNum_UUID "5fbb799d-630d-486f-a0ff-015f0195d393"
 // From LiIon 100K+100K
 #define Volt0_UUID "d3b78c2e-312b-4e2a-b804-8230c963f912"
 // From Solar - 100K+100K

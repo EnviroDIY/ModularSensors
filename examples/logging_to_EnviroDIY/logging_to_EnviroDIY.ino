@@ -695,9 +695,9 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
-#if defined(ProcessorStats_seqNum_UUID)
+#if defined(ProcessorStats_SampleNum_UUID)
     //Always have this first so can see on debug screen
-    new ProcessorStats_SampleNumber(&mayflyPhy,ProcessorStats_seqNum_UUID),
+    new ProcessorStats_SampleNumber(&mayflyPhy,ProcessorStats_SampleNum_UUID),
 #endif
 #if defined(ProcessorStats_Batt_UUID)
     new ProcessorStats_Batt(&mayflyPhy,   ProcessorStats_Batt_UUID),
@@ -851,7 +851,7 @@ void setup()
     Serial.print(sketchName);
     Serial.print(F(" on Logger "));
     Serial.println(LoggerID);
-    Serial.println();
+    //Serial.println();
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
