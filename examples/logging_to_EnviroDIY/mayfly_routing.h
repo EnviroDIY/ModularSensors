@@ -14,7 +14,7 @@
 //Mayfly sn 180256 Rev 0.5b test
 #define BOARD03 3
 
-#define BOARD_NAME BOARD03
+#define BOARD_NAME BOARD02
 
 
 #if   BOARD_NAME == BOARD01

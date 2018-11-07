@@ -829,8 +829,43 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
   }
   digitalWrite(redLED, LOW);
 }
+// ==========================================================================
+// ini setup function
+// ==========================================================================
+#if 0
+//Place holder 
+#include <SdFat.h>  // To communicate with the SD card
+#include "IniFile.h"
+bool readIni()
+{
+    SdFat sdCard;
+    //Local testing 
+    // Initialise the SD card
+    if (!sdCard.begin(sdCardPin, SPI_FULL_SPEED))
+    {
+        PRINTOUT(F("readIni Error: SD card failed to initialize or is missing."));
 
+        return false;
+    }
+    else  // skip everything else if there's no SD card, otherwise it might hang
+    {
+        PRINTOUT(F("redaIni connected to SD Card with card/slave select on pin "),
+                 sdCardPin);
+        return true;
+    }
+    const char *filename = "/net.ini";
+    IniFile ini(filename);
+    if (!ini.open()) 
+    {
+        Serial.print("Ini file ");
+        Serial.print(filename);
+        Serial.println(" does not exist");
+        return false;
+    }
+  }
 
+}
+#endif
 // ==========================================================================
 // Main setup function
 // ==========================================================================
