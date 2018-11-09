@@ -24,7 +24,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <Time.h>
 #include "mayfly_routing.h"
 #define DEBUGGING_SERIAL_OUTPUT Serial
-//#include "lib/ModularSensors/src/sensors/ProcessorStats.h"
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
@@ -36,6 +35,7 @@ const char *LoggerID = "nh07h";
 //const uint8_t loggingInterval = 5;
 // Your logger's timezone.
 const int8_t timeZone = -8;
+// NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
 
 // ==========================================================================
@@ -74,7 +74,6 @@ ProcessorStats mayflyPhy(MFVersion);
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
 #include <TinyGsmClient.h>
-
 
  // Set the serial port for the modem - software serial can also be used.
 HardwareSerial &ModemSerial = Serial1;
@@ -886,7 +885,7 @@ void setup()
     Serial.print(sketchName);
     Serial.print(F(" on Logger "));
     Serial.println(LoggerID);
-    //Serial.println();
+    Serial.println();
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
@@ -1119,7 +1118,7 @@ void processEverything()
     }
 
     // Check if it was instead the testing interrupt that woke us up
-    //if (EnviroDIYLogger.startTesting) EnviroDIYLogger.testingMode();
+    if (EnviroDIYLogger.startTesting) EnviroDIYLogger.testingMode();
 
     // Sleep
     //if(_mcuWakePin >= 0){systemSleep();}

@@ -13,7 +13,7 @@
 #define LoggerModem_h
 
 // FOR DEBUGGING
-//#define MODEM_DEBUGGING_SERIAL_OUTPUT Serial
+// #define MODEM_DEBUGGING_SERIAL_OUTPUT Serial
 
 // Included Dependencies
 #include "VariableBase.h"
