@@ -546,13 +546,14 @@ AltSoftSerial modbusSerial;
 
 const int8_t modbusSensorPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+const int8_t rs485AdapterPower = 22;// Pin to switch RS485 adapter power on and off (-1 if unconnected)
 // ==========================================================================
 //    Keller Acculevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
 #ifdef SENSOR_CONFIG_KELLER_ACCULEVEL
 #include <sensors/KellerAcculevel.h>
 byte acculevelModbusAddress = 0x01;  // The modbus address of KellerAcculevel
-const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+//const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 //const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends taking and averaging a few readings
@@ -568,7 +569,8 @@ KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPowe
 byte nanolevelModbusAddress = 0x01;  // The modbus address of KellerNanolevel
 const uint8_t nanolevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
 // Create and return the Keller Nanolevel sensor object
-KellerNanolevel nanolevelfn(nanolevelModbusAddress, modbusSerial, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
+//KellerNanolevel nanolevelfn(nanolevelModbusAddress, modbusSerial, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
+KellerNanolevel nanolevelfn(nanolevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
 #endif //SENSOR_CONFIG_KELLER_NANOLEVEL
 #ifdef SENSOR_CONFIG_GENERAL
 

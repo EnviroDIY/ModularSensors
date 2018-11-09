@@ -1,5 +1,5 @@
 /*
- *KellerAcculevel.h
+ *KellerNanolevel.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Anthony Aufdenkampe <aaufdenkampe@limno.com>
@@ -17,10 +17,12 @@
 #ifndef KellerNanolevel_h
 #define KellerNanolevel_h
 
-// doesn't work here see #define DEBUGGING_SERIAL_OUTPUT Serial
-#include "KellerNanoParent.h"
+// Included Dependencies
 #include "VariableBase.h"
+//#include "KellerNanoParent.h"
+#include "sensors/KellerParent.h"
 
+// Sensor Specific Defines
 #define KellerNanolevel_WARM_UP_TIME_MS 500
 #define KellerNanolevel_STABILIZATION_TIME_MS 5000
 #define KellerNanolevel_MEASUREMENT_TIME_MS 1500
@@ -33,22 +35,25 @@
 
 
 // The main class for the Keller Sensors
-class KellerNanolevel : public KellerNanoParent
+//class KellerNanolevel : public KellerNanoParent
+class KellerNanolevel : public KellerParent
 {
 public:
     // Constructors with overloads
-    KellerNanolevel(byte modbusAddress, Stream* stream, int8_t powerPin,
+    KellerNanolevel(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : KellerNanoParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : KellerParent(modbusAddress, stream, powerPin, powerPin2, enablePin,measurementsToAverage,
                     Nanolevel_kellerModel, "KellerNanolevel", KELLER_NUM_VARIABLES,
                     KellerNanolevel_WARM_UP_TIME_MS, KellerNanolevel_STABILIZATION_TIME_MS, KellerNanolevel_MEASUREMENT_TIME_MS)
     {}
-    KellerNanolevel(byte modbusAddress, Stream& stream, int8_t powerPin,
+    KellerNanolevel(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : KellerNanoParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : KellerParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                     Nanolevel_kellerModel, "KellerNanolevel", KELLER_NUM_VARIABLES,
                     KellerNanolevel_WARM_UP_TIME_MS, KellerNanolevel_STABILIZATION_TIME_MS, KellerNanolevel_MEASUREMENT_TIME_MS)
     {}
+    // Destructor
+    ~KellerNanolevel(){}
 };
 
 
@@ -62,6 +67,7 @@ public:
                 KellerNanolevel_PRESSURE_RESOLUTION,
                 "kellerPress", UUID, customVarCode)
     {}
+    ~KellerNanolevel_Pressure(){}
 };
 
 
@@ -75,6 +81,7 @@ public:
                 KellerNanolevel_TEMP_RESOLUTION,
                 "kellerTemp", UUID, customVarCode)
     {}
+    ~KellerNanolevel_Temp(){}
 };
 
 // Defines the gageHeight (Water level with regard to an arbitrary gage datum) Variable
@@ -87,6 +94,7 @@ public:
                 KellerNanolevel_HEIGHT_RESOLUTION,
                 "kellerHeight", UUID, customVarCode)
     {}
+    ~KellerNanolevel_Height(){}
 };
 
-#endif
+#endif  // Header Guard
