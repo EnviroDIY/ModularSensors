@@ -19,68 +19,68 @@ matrix:
         python:
             - "2.7"
         env:
-            - PLATFORMIO_CI_SRC=examples/single_sensor/
+            - PLATFORMIO_CI_SRC=examples/single_sensor/ PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
         script: make travis-build
 
       - language: python
         python:
             - "2.7"
         env:
-            - PLATFORMIO_CI_SRC=examples/multisensor_print/
+            - PLATFORMIO_CI_SRC=examples/multisensor_print/ PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
         script: make travis-build
 
       - language: python
         python:
             - "2.7"
         env:
-            - PLATFORMIO_CI_SRC=examples/simple_logging/
+            - PLATFORMIO_CI_SRC=examples/simple_logging/ PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
         script: make travis-build
 
       - language: python
         python:
             - "2.7"
         env:
-            - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY/
+            - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY/ PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
         script: make travis-build
 
       - language: python
         python:
             - "2.7"
         env:
-            - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY_Zero/ PLATFORMIO_CI_ZERO=1
+            - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY_Zero/ PLATFORMIO_CI_ZERO=1 PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
         script: make travis-build
 
       - language: python
         python:
             - "2.7"
         env:
-            - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/
+            - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/ PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
         script: make travis-build
 
       - language: python
         python:
             - "2.7"
         env:
-            - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/
+            - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/ PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
         script: make travis-build
 
       - language: python
         python:
             - "2.7"
         env:
-            - PLATFORMIO_CI_SRC=examples/double_logger/
+            - PLATFORMIO_CI_SRC=examples/double_logger/ PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
         script: make travis-build
 
       - language: python
         python:
             - "2.7"
         env:
-            - PLATFORMIO_CI_SRC=examples/baro_rho_correction/
+            - PLATFORMIO_CI_SRC=examples/baro_rho_correction/ PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
         script: make travis-build
 
       - language: python
         python:
             - "2.7"
         env:
-            - PLATFORMIO_CI_SRC=examples/data_saving/
+            - PLATFORMIO_CI_SRC=examples/data_saving/ PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
         script: make travis-build

@@ -22,8 +22,12 @@
 #include "ModSensorDebugger.h"
 #include "VariableBase.h"
 #include "SensorBase.h"
+#ifdef SDI12_EXTERNAL_PCINT
+#include <SDI12.h>
+#else
 #include <SDI12_ExtInts.h>
-// NOTE:  Could use the "regular" sdi-12 library with build flag -D SDI12_EXTERNAL_PCINT
+#endif
+// NOTE:  Can use the "regular" sdi-12 library with build flag -D SDI12_EXTERNAL_PCINT
 // Unfortunately, that is not compatible with the Arduino IDE
 
 // The main class for SDI-12 Sensors

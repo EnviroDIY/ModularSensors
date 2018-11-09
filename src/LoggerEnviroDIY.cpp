@@ -496,6 +496,7 @@ void LoggerEnviroDIY::logDataAndSend(void)
                 MS_DBG(F("  Disconnecting from the Internet..."));
                 _logModem->disconnectInternet();
             }
+            else {MS_DBG(F("  Could not connect to the internet!"));}
             // Turn the modem off
             _logModem->modemSleepPowerDown();
         }
