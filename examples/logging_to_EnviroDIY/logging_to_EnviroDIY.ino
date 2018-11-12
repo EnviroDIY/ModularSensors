@@ -567,7 +567,7 @@ KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPowe
 //    Keller Nanolevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
 #ifdef SENSOR_CONFIG_KELLER_NANOLEVEL
-#include <KellerNanolevel.h>
+#include <sensors/KellerNanolevel.h>
 byte nanolevelModbusAddress = 0x01;  // The modbus address of KellerNanolevel
 const uint8_t nanolevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
 // Create and return the Keller Nanolevel sensor object
