@@ -52,7 +52,7 @@ const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for 
 const char *wifiId = "AzondeNetSsid";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = NULL;  // The password for connecting to WiFi, unnecessary for gprs
 //#define SENSOR_CONFIG_GENERAL 1
-//#define SENSOR_CONFIG_KELLER_ACCULEVEL 1
+#define SENSOR_CONFIG_KELLER_ACCULEVEL 1
 #define SENSOR_CONFIG_KELLER_NANOLEVEL 1
 #define registrationToken_UUID "7b19191b-b3d6-416d-9e07-4fbe549f2493"
 #define samplingFeature_UUID   "b918f150-4fff-424d-813a-a69a808a93b6"
@@ -65,6 +65,11 @@ const char *wifiPwd = NULL;  // The password for connecting to WiFi, unnecessary
 // Try without as something crashing Mayfly
 //#define Modem_SignalPercent_UUID    "0cf94fc8-a5d2-4fbe-82f2-2a81650575a8"
 #define ProcessorStats_SampleNum_UUID  "0cf94fc8-a5d2-4fbe-82f2-2a81650575a8"
+ 
+// From LiIon 100K+100K
+#define Volt0_UUID "9e47e1aa-2ef6-4283-9a25-537cfd78b17b"
+// From Solar - 100K+100K
+#define Volt1_UUID "ebddd4d7-562d-481b-8356-d1f464fc5685"
 
 #elif BOARD_NAME == BOARD03
 //**************************************************************************

@@ -37,6 +37,8 @@ const char *LoggerID = "nh07h";
 const int8_t timeZone = -8;
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
+const char compile_date[] = __DATE__ " " __TIME__;
+const char file_name[] = __FILE__;
 
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
@@ -554,7 +556,7 @@ const int8_t rs485AdapterPower = 22;// Pin to switch RS485 adapter power on and 
 #include <sensors/KellerAcculevel.h>
 byte acculevelModbusAddress = 0x01;  // The modbus address of KellerAcculevel
 //const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
-const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
+//const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 //const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends taking and averaging a few readings
 // Create and return the Keller Acculevel sensor object
@@ -877,9 +879,11 @@ void setup()
     //MCUSR = 0; //reset for unique read
     // Start the primary serial connection
     Serial.begin(serialBaud);
-    Serial.print(F("---Boot(BUILD_TIMESTAMP "));
-    Serial.print(EnviroDIYLogger.formatDateTime_ISO8601(BUILD_TIMESTAMP)); //Naughty but only uses stack.
-    Serial.println(F(") "));
+    Serial.print(F("---Boot ")); //BUILD_TIMESTAMP "));
+    //Serial.print(EnviroDIYLogger.formatDateTime_ISO8601(BUILD_TIMESTAMP)); //Naughty but only uses stack.
+    Serial.println(compile_date);
+    Serial.println(file_name); //Dir and filename
+
     //MCUSR Serial.println(mcu_status,HEX);
 
     // Print a start-up note to the first serial port
