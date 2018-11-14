@@ -39,10 +39,12 @@
 #define ES2_STABILIZATION_TIME_MS 0
 #define ES2_MEASUREMENT_TIME_MS 250
 
-#define ES2_COND_RESOLUTION 0
+#define ES2_COND_RESOLUTION 1
+// adding extra digit to resolution for averaging
 #define ES2_COND_VAR_NUM 0
 
-#define ES2_TEMP_RESOLUTION 1
+#define ES2_TEMP_RESOLUTION 2
+// adding extra digit to resolution for averaging
 #define ES2_TEMP_VAR_NUM 1
 
 // The main class for the Decagon ES-2

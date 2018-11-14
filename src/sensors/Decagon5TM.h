@@ -40,13 +40,16 @@
 #define TM_STABILIZATION_TIME_MS 0
 #define TM_MEASUREMENT_TIME_MS 200
 
-#define TM_EA_RESOLUTION 4
+#define TM_EA_RESOLUTION 5
+// adding extra digit to resolution for averaging
 #define TM_EA_VAR_NUM 0
 
-#define TM_TEMP_RESOLUTION 1
+#define TM_TEMP_RESOLUTION 2
+// adding extra digit to resolution for averaging
 #define TM_TEMP_VAR_NUM 1
 
-#define TM_VWC_RESOLUTION 2
+#define TM_VWC_RESOLUTION 3
+// adding extra digit to resolution for averaging
 #define TM_VWC_VAR_NUM 2
 
 // The main class for the Decagon 5TM
