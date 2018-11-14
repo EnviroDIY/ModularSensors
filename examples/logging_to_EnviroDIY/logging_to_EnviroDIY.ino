@@ -332,10 +332,21 @@ const uint8_t VoltReadsToAvg = 1; // Only read one sample
 ExternalVoltage extvolt0(VoltPower, VoltData0, VoltGain, Volt_ADS1115Address, VoltReadsToAvg);
 ExternalVoltage extvolt1(VoltPower, VoltData1, VoltGain, Volt_ADS1115Address, VoltReadsToAvg);
 
-#ifdef SENSOR_CONFIG_GENERAL
 const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t SDI12Data = 7;  // The pin the 5TM is attached to
 const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+// ==========================================================================
+//    Ti INA219 High Side Current/Voltage Sensor (Current mA, Voltage, Power)
+// ==========================================================================
+#include <sensors/TiIna219.h>
+uint8_t INA219i2c_addr = 0x40; // 1000000 (Board A0+A1=GND)
+// The INA219 can be addressed either as 0x40 (Adafruit default) or 0x41 44 45
+// Either can be physically mofidied for the other address
+// const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+// Create and return the Bosch BME280 sensor object
+TiIna219 ina219_phy(I2CPower, INA219i2c_addr);
+
+#ifdef SENSOR_CONFIG_GENERAL
 // ==========================================================================
 //    AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
@@ -710,6 +721,8 @@ Variable *variableList[] = {
 #if defined(Volt1_UUID)
     new ExternalVoltage_Volt(&extvolt1, Volt1_UUID),
 #endif
+    new TiIna219_mA  (&ina219_phy, "12345678-abcd-1234-efgh-1234567890ab"),
+    new TiIna219_Volt(&ina219_phy, "12345678-abcd-1234-efgh-1234567890ab"),
 #ifdef SENSOR_CONFIG_GENERAL
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
     new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
