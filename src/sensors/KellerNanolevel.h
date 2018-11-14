@@ -2,13 +2,13 @@
  *KellerNanolevel.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
- *Initial library developement done by Anthony Aufdenkampe <aaufdenkampe@limno.com>
+ *Initial library developement done by Anthony Aufdenkampe <aaufdenkampe@limno.com>,updated by Neil Hancock.
  *
  *This file is for Modbus communication to  Keller Series 30, Class 5, Group 20 sensors,
  *that are Software version 5.20-12.28 and later (i.e. made after the 2012 in the 28th week)
  *Only tested the Acculevel
  *
- *Documentation for the Yosemitech Protocol commands and responses, along with
+ *Documentation for the Keller Protocol commands and responses, along with
  *information about the various variables, can be found
  *in the EnviroDIY KellerModbus library at:
  * https://github.com/EnviroDIY/KellerModbus
@@ -19,7 +19,6 @@
 
 // Included Dependencies
 #include "VariableBase.h"
-//#include "KellerNanoParent.h"
 #include "sensors/KellerParent.h"
 
 // Sensor Specific Defines
@@ -35,7 +34,6 @@
 
 
 // The main class for the Keller Sensors
-//class KellerNanolevel : public KellerNanoParent
 class KellerNanolevel : public KellerParent
 {
 public:
