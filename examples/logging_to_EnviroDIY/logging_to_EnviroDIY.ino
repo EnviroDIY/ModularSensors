@@ -30,7 +30,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // The name of this file
 const char *sketchName = "logging_to_EnviroDIY.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "nh07h";
+const char *LoggerID = "nh07k";
 // How frequently (in minutes) to log data
 //const uint8_t loggingInterval = 5;
 // Your logger's timezone.
@@ -332,19 +332,21 @@ const uint8_t VoltReadsToAvg = 1; // Only read one sample
 ExternalVoltage extvolt0(VoltPower, VoltData0, VoltGain, Volt_ADS1115Address, VoltReadsToAvg);
 ExternalVoltage extvolt1(VoltPower, VoltData1, VoltGain, Volt_ADS1115Address, VoltReadsToAvg);
 
-const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t I2CPower = -1;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t SDI12Data = 7;  // The pin the 5TM is attached to
 const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+#if defined(SENSOR_CONFIG_IA921)
 // ==========================================================================
 //    Ti INA219 High Side Current/Voltage Sensor (Current mA, Voltage, Power)
 // ==========================================================================
 #include <sensors/TiIna219.h>
-uint8_t INA219i2c_addr = 0x40; // 1000000 (Board A0+A1=GND)
+//uint8_t INA219i2c_addr = 0x40; // 1000000 (Board A0+A1=GND)
 // The INA219 can be addressed either as 0x40 (Adafruit default) or 0x41 44 45
 // Either can be physically mofidied for the other address
 // const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // Create and return the Bosch BME280 sensor object
-TiIna219 ina219_phy(I2CPower, INA219i2c_addr);
+TiIna219 ina219_phy(I2CPower);
+#endif //SENSOR_CONFIG_IA921
 
 #ifdef SENSOR_CONFIG_GENERAL
 // ==========================================================================
@@ -721,8 +723,10 @@ Variable *variableList[] = {
 #if defined(Volt1_UUID)
     new ExternalVoltage_Volt(&extvolt1, Volt1_UUID),
 #endif
-    new TiIna219_mA  (&ina219_phy, "12345678-abcd-1234-efgh-1234567890ab"),
-    new TiIna219_Volt(&ina219_phy, "12345678-abcd-1234-efgh-1234567890ab"),
+#if defined(SENSOR_CONFIG_IA921)
+    new TiIna219_mA  (&ina219_phy, "804be0c8-3dc0-4be6-9537-63fe8240e98f"),
+    new TiIna219_Volt(&ina219_phy, "08b2e561-21fd-44cb-b429-c2be536c7bd9"),
+#endif //SENSOR_CONFIG_IA921
 #ifdef SENSOR_CONFIG_GENERAL
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
     new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),

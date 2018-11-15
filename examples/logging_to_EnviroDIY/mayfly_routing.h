@@ -52,6 +52,7 @@ const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for 
 const char *wifiId = "AzondeNetSsid";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = NULL;  // The password for connecting to WiFi, unnecessary for gprs
 //#define SENSOR_CONFIG_GENERAL 1
+#define SENSOR_CONFIG_IA921 1
 //#define SENSOR_CONFIG_KELLER_ACCULEVEL 1
 #define SENSOR_CONFIG_KELLER_NANOLEVEL 1
 #define registrationToken_UUID "7b19191b-b3d6-416d-9e07-4fbe549f2493"
