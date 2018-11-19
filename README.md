@@ -25,6 +25,8 @@ The following sensors are currently supported:
 - [External Voltage: via TI ADS1115](https://github.com/EnviroDIY/ModularSensors/wiki/TI-ADS1115-Voltage)
 - [Freescale Semiconductor MPL115A2: barometric pressure and temperature](https://github.com/EnviroDIY/ModularSensors/wiki/Freescale-MPL115A2)
 - [Keller Submersible Level Transmitters: pressure and temperature](https://github.com/EnviroDIY/ModularSensors/wiki/Keller-Level)
+    - Acculevel
+    - Nanolevel
 - [MaxBotix MaxSonar: water level](https://github.com/EnviroDIY/ModularSensors/wiki/MaxBotix-MaxSonar)
 - [Maxim DS18: temperature](https://github.com/EnviroDIY/ModularSensors/wiki/Maxim-DS18)
 - [Maxim DS3231: real time clock](https://github.com/EnviroDIY/ModularSensors/wiki/Maxim-DS3231)

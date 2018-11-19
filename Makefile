@@ -16,7 +16,7 @@ travis-build:
 	pio lib -g install 1@2.3.4  # OneWire
 	pio lib -g install 54@3.8.0  # Dallas Temperature
 	pio lib -g install 1486@1.3.4 # SDI-12
-	pio lib -g install 5439@0.1.1 # KellerModbus
+	pio lib -g install 5439@0.2.0 # KellerModbus
 	pio lib -g install 5431@0.1.2 # MS5803
 	pio lib -g install 873@1.5.2  # RTCZero
 	pio lib -g install 1824@0.6.4  # SensorModbusMaster

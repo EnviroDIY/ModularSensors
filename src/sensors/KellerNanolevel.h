@@ -22,15 +22,15 @@
 #include "sensors/KellerParent.h"
 
 // Sensor Specific Defines
-#define KellerNanolevel_WARM_UP_TIME_MS 500
-#define KellerNanolevel_STABILIZATION_TIME_MS 5000
-#define KellerNanolevel_MEASUREMENT_TIME_MS 1500
+#define NANOLEVEL_WARM_UP_TIME_MS 500
+#define NANOLEVEL_STABILIZATION_TIME_MS 5000
+#define NANOLEVEL_MEASUREMENT_TIME_MS 1500
 
-#define KellerNanolevel_PRESSURE_RESOLUTION 5
+#define NANOLEVEL_PRESSURE_RESOLUTION 5
 
-#define KellerNanolevel_TEMP_RESOLUTION 2
+#define NANOLEVEL_TEMP_RESOLUTION 2
 
-#define KellerNanolevel_HEIGHT_RESOLUTION 4
+#define NANOLEVEL_HEIGHT_RESOLUTION 4
 
 
 // The main class for the Keller Sensors
@@ -41,14 +41,14 @@ public:
     KellerNanolevel(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : KellerParent(modbusAddress, stream, powerPin, powerPin2, enablePin,measurementsToAverage,
-                    Nanolevel_kellerModel, "KellerNanolevel", KELLER_NUM_VARIABLES,
-                    KellerNanolevel_WARM_UP_TIME_MS, KellerNanolevel_STABILIZATION_TIME_MS, KellerNanolevel_MEASUREMENT_TIME_MS)
+                    KellerNanolevel, "KellerNanolevel", KELLER_NUM_VARIABLES,
+                    NANOLEVEL_WARM_UP_TIME_MS, NANOLEVEL_STABILIZATION_TIME_MS, NANOLEVEL_MEASUREMENT_TIME_MS)
     {}
     KellerNanolevel(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : KellerParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                    Nanolevel_kellerModel, "KellerNanolevel", KELLER_NUM_VARIABLES,
-                    KellerNanolevel_WARM_UP_TIME_MS, KellerNanolevel_STABILIZATION_TIME_MS, KellerNanolevel_MEASUREMENT_TIME_MS)
+                    KellerNanolevel, "KellerNanolevel", KELLER_NUM_VARIABLES,
+                    NANOLEVEL_WARM_UP_TIME_MS, NANOLEVEL_STABILIZATION_TIME_MS, NANOLEVEL_MEASUREMENT_TIME_MS)
     {}
     // Destructor
     ~KellerNanolevel(){}
@@ -62,7 +62,7 @@ public:
     KellerNanolevel_Pressure(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, KELLER_PRESSURE_VAR_NUM,
                 "pressureGauge", "millibar",
-                KellerNanolevel_PRESSURE_RESOLUTION,
+                NANOLEVEL_PRESSURE_RESOLUTION,
                 "kellerPress", UUID, customVarCode)
     {}
     ~KellerNanolevel_Pressure(){}
@@ -76,7 +76,7 @@ public:
     KellerNanolevel_Temp(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, KELLER_TEMP_VAR_NUM,
                 "temperature", "degreeCelsius",
-                KellerNanolevel_TEMP_RESOLUTION,
+                NANOLEVEL_TEMP_RESOLUTION,
                 "kellerTemp", UUID, customVarCode)
     {}
     ~KellerNanolevel_Temp(){}
@@ -89,7 +89,7 @@ public:
     KellerNanolevel_Height(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, KELLER_HEIGHT_VAR_NUM,
                 "gaugeHeight", "meter",
-                KellerNanolevel_HEIGHT_RESOLUTION,
+                NANOLEVEL_HEIGHT_RESOLUTION,
                 "kellerHeight", UUID, customVarCode)
     {}
     ~KellerNanolevel_Height(){}

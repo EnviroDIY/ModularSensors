@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.16.2
+This example sketch is written for ModularSensors library version 0.17.0
 
 This sketch is an example of logging data to an SD card and sending the data to
 the EnviroDIY data portal.
@@ -506,17 +506,14 @@ RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 #include <AltSoftSerial.h>
 AltSoftSerial modbusSerial;
 
-const int8_t modbusSensorPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const int8_t rs485AdapterPower = 22;// Pin to switch RS485 adapter power on and off (-1 if unconnected)
 // ==========================================================================
 //    Keller Acculevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
 #include <sensors/KellerAcculevel.h>
 byte acculevelModbusAddress = 0x01;  // The modbus address of KellerAcculevel
-//const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
-//const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
-//const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
+const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends taking and averaging a few readings
 // Create and return the Keller Acculevel sensor object
 KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, acculevelNumberReadings);
@@ -526,9 +523,12 @@ KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPowe
 // ==========================================================================
 #include <sensors/KellerNanolevel.h>
 byte nanolevelModbusAddress = 0x01;  // The modbus address of KellerNanolevel
+// const int8_t rs485AdapterPower = -1;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t modbusSensorPower = -1;  // Pin to switch sensor power on and off (-1 if unconnected)
+// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t nanolevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
 // Create and return the Keller Nanolevel sensor object
-KellerNanolevel nanolevelfn(nanolevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
+KellerNanolevel nanolevel(nanolevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
 
 // ==========================================================================
 //    Yosemitech Y504 Dissolved Oxygen Sensor
@@ -693,6 +693,9 @@ Variable *variableList[] = {
     new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
     new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
     new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
+    new KellerNanolevel_Pressure(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab"),
+    new KellerNanolevel_Temp(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab"),
+    new KellerNanolevel_Height(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab"),

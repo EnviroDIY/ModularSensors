@@ -23,15 +23,15 @@
 #include "sensors/KellerParent.h"
 
 // Sensor Specific Defines
-#define KellerAcculevel_WARM_UP_TIME_MS 500
-#define KellerAcculevel_STABILIZATION_TIME_MS 5000
-#define KellerAcculevel_MEASUREMENT_TIME_MS 1500
+#define ACCULEVEL_WARM_UP_TIME_MS 500
+#define ACCULEVEL_STABILIZATION_TIME_MS 5000
+#define ACCULEVEL_MEASUREMENT_TIME_MS 1500
 
-#define KellerAcculevel_PRESSURE_RESOLUTION 5
+#define ACCULEVEL_PRESSURE_RESOLUTION 5
 
-#define KellerAcculevel_TEMP_RESOLUTION 2
+#define ACCULEVEL_TEMP_RESOLUTION 2
 
-#define KellerAcculevel_HEIGHT_RESOLUTION 4
+#define ACCULEVEL_HEIGHT_RESOLUTION 4
 
 
 // The main class for the Keller Sensors
@@ -42,14 +42,14 @@ public:
     KellerAcculevel(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : KellerParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                    Acculevel, "KellerAcculevel", KELLER_NUM_VARIABLES,
-                    KellerAcculevel_WARM_UP_TIME_MS, KellerAcculevel_STABILIZATION_TIME_MS, KellerAcculevel_MEASUREMENT_TIME_MS)
+                    KellerAcculevel, "KellerAcculevel", KELLER_NUM_VARIABLES,
+                    ACCULEVEL_WARM_UP_TIME_MS, ACCULEVEL_STABILIZATION_TIME_MS, ACCULEVEL_MEASUREMENT_TIME_MS)
     {}
     KellerAcculevel(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : KellerParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                    Acculevel, "KellerAcculevel", KELLER_NUM_VARIABLES,
-                    KellerAcculevel_WARM_UP_TIME_MS, KellerAcculevel_STABILIZATION_TIME_MS, KellerAcculevel_MEASUREMENT_TIME_MS)
+                    KellerAcculevel, "KellerAcculevel", KELLER_NUM_VARIABLES,
+                    ACCULEVEL_WARM_UP_TIME_MS, ACCULEVEL_STABILIZATION_TIME_MS, ACCULEVEL_MEASUREMENT_TIME_MS)
     {}
     // Destructor
     ~KellerAcculevel(){}
@@ -63,7 +63,7 @@ public:
     KellerAcculevel_Pressure(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, KELLER_PRESSURE_VAR_NUM,
                 "pressureGauge", "millibar",
-                KellerAcculevel_PRESSURE_RESOLUTION,
+                ACCULEVEL_PRESSURE_RESOLUTION,
                 "kellerPress", UUID, customVarCode)
     {}
     ~KellerAcculevel_Pressure(){}
@@ -77,7 +77,7 @@ public:
     KellerAcculevel_Temp(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, KELLER_TEMP_VAR_NUM,
                 "temperature", "degreeCelsius",
-                KellerAcculevel_TEMP_RESOLUTION,
+                ACCULEVEL_TEMP_RESOLUTION,
                 "kellerTemp", UUID, customVarCode)
     {}
     ~KellerAcculevel_Temp(){}
@@ -90,7 +90,7 @@ public:
     KellerAcculevel_Height(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
      : Variable(parentSense, KELLER_HEIGHT_VAR_NUM,
                 "gaugeHeight", "meter",
-                KellerAcculevel_HEIGHT_RESOLUTION,
+                ACCULEVEL_HEIGHT_RESOLUTION,
                 "kellerHeight", UUID, customVarCode)
     {}
     ~KellerAcculevel_Height(){}
