@@ -724,8 +724,12 @@ Variable *variableList[] = {
     new ExternalVoltage_Volt(&extvolt1, Volt1_UUID),
 #endif
 #if defined(SENSOR_CONFIG_IA921)
-    new TiIna219_mA  (&ina219_phy, "804be0c8-3dc0-4be6-9537-63fe8240e98f"),
-    new TiIna219_Volt(&ina219_phy, "08b2e561-21fd-44cb-b429-c2be536c7bd9"),
+    #if defined(INA219_MA_UUID)
+    new TiIna219_mA  (&ina219_phy, INA219_MA_UUID),
+    #endif
+    #if defined(INA219_VOLT_UUID)
+    new TiIna219_Volt(&ina219_phy, INA219_VOLT_UUID),
+    #endif
 #endif //SENSOR_CONFIG_IA921
 #ifdef SENSOR_CONFIG_GENERAL
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),

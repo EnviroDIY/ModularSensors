@@ -11,10 +11,10 @@
 #define BOARD01 1
 //Mayfly sn 180368 Rev 0.5b - RS485 switched
 #define BOARD02 2
-//Mayfly sn 180256 Rev 0.5b test
+//Mayfly sn 180256 Rev 0.5ba test
 #define BOARD03 3
 
-#define BOARD_NAME BOARD02
+#define BOARD_NAME BOARD01
 
 
 #if   BOARD_NAME == BOARD01
@@ -44,7 +44,7 @@ const char *wifiPwd = "";  // The password for connecting to WiFi, unnecessary f
 #elif BOARD_NAME == BOARD02
 //**************************************************************************
 #define SENSOR_RS485_PHY 1
-const char *MFVersion = "v0.5b";
+const char *MFVersion = "v0.5ba";
 const char *MFsn ="180368";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 2;
@@ -61,6 +61,8 @@ const char *wifiPwd = NULL;  // The password for connecting to WiFi, unnecessary
 #define KellerNanolevel_Height_UUID "f40a9dff-2c54-43ae-a016-1c5095c188eb"
 #define KellerNanolevel_Temp_UUID   "7bc30855-ae08-4865-ab89-a8e17df93bfc"
 #define ProcessorStats_Batt_UUID    "2c58e64d-6b66-4d9e-b893-bfdb10b65426"
+#define INA219_MA_UUID              "804be0c8-3dc0-4be6-9537-63fe8240e98f"
+#define INA219_VOLT_UUID            "08b2e561-21fd-44cb-b429-c2be536c7bd9"
 #define MaximDS3231_Temp_UUID       "3907922a-56fe-46f3-a56e-9de6b77d3679"
 //#define Modem_RSSI_UUID ""
 // Try without as something crashing Mayfly
