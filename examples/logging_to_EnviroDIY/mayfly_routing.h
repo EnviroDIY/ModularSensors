@@ -20,10 +20,12 @@
 #if   BOARD_NAME == BOARD01
 //**************************************************************************
 //#define SENSOR_RS485_PHY TRUE
-const char *MFVersion = "v0.4";
-const char *MFsn ="160141";
+//const char *MFVersion = "v0.4";
+//const char *MFsn ="160141";
+const char *MFVersion = "v0.5bb";
+const char *MFsn ="180322";
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 5;
+const uint8_t loggingInterval = 2;
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId = "ArthurStrGuest";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "";  // The password for connecting to WiFi, unnecessary for gprs
@@ -81,7 +83,7 @@ const char *wifiPwd = NULL;  // The password for connecting to WiFi, unnecessary
 const char *MFVersion = "v0.5b";
 const char *MFsn ="180256";
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 5;
+const uint8_t loggingInterval = 15;
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId = "AzondeNetSsid";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = NULL;//"";  // The password for connecting to WiFi, unnecessary for gprs

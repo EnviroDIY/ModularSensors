@@ -144,20 +144,17 @@ bool ProcessorStats::addSingleMeasurementResult(void)
     #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
         uint16_t rawBattery_adc=0;
         uint8_t adcLp;
+
         #define SAMPLE_BATTERY_PIN_NUM 4
         for (adcLp=0;adcLp<SAMPLE_BATTERY_PIN_NUM; adcLp++) 
         {
             rawBattery_adc += analogRead(_batteryPin);
         }
-        if (strcmp(_version, "v0.5bb") == 0)
-        {
-            //sensorValue_battery = (3.3 / 1024.) * 4.7 * ((float)(rawBattery_adc/SAMPLE_BATTERY_PIN_NUM) );
-            #define CONST_VBATT_0_5BB 0.015146484  // (3.3 / 1024.) * 4.7 series 1M+270K
-            sensorValue_battery = CONST_VBATT_0_5BB * ((float)(rawBattery_adc/SAMPLE_BATTERY_PIN_NUM) );
-        } else 
+
         if (strcmp(_version, "v0.5ba") == 0)
         {
-            #define CONST_VBATT_0_5BA 0.006445312  // (3.3 / 1024)*2.0 series 1M+1M     
+            //For series 1M+270K mult raw_adc by ((3.3 / 1023) * 4.7037) 
+            #define CONST_VBATT_0_5BA 0.0151732
             sensorValue_battery = CONST_VBATT_0_5BA * ((float)(rawBattery_adc/SAMPLE_BATTERY_PIN_NUM) );
         } else 
         if (strcmp(_version, "v0.5") == 0 or strcmp(_version, "v0.5b") == 0)
