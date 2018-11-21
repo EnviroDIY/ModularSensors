@@ -44,13 +44,16 @@
 #define CTD_STABILIZATION_TIME_MS 0
 #define CTD_MEASUREMENT_TIME_MS 500
 
-#define CTD_COND_RESOLUTION 0
+#define CTD_COND_RESOLUTION 1
+// adding extra digit to resolution for averaging
 #define CTD_COND_VAR_NUM 2
 
-#define CTD_TEMP_RESOLUTION 1
+#define CTD_TEMP_RESOLUTION 2
+// adding extra digit to resolution for averaging
 #define CTD_TEMP_VAR_NUM 1
 
-#define CTD_DEPTH_RESOLUTION 0
+#define CTD_DEPTH_RESOLUTION 1
+// adding extra digit to resolution for averaging
 #define CTD_DEPTH_VAR_NUM 0
 
 // The main class for the Decagon CTD

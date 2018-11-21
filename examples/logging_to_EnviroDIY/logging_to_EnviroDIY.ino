@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.16.2
+This example sketch is written for ModularSensors library version 0.17.0
 
 This sketch is an example of logging data to an SD card and sending the data to
 the EnviroDIY data portal.
@@ -777,8 +777,8 @@ Variable *variableList[] = {
 #endif // SENSOR_CONFIG_KELLER_ACCULEVEL
 #ifdef SENSOR_CONFIG_KELLER_NANOLEVEL
 //   new KellerNanolevel_Pressure(&nanolevelfn, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerNanolevel_Height(&nanolevelfn, KellerNanolevel_Height_UUID),
     new KellerNanolevel_Temp(&nanolevelfn,   KellerNanolevel_Temp_UUID),
+    new KellerNanolevel_Height(&nanolevelfn, KellerNanolevel_Height_UUID),
 #endif //SENSOR_CONFIG_KELLER_NANOLEVEL
 #ifdef SENSOR_CONFIG_GENERAL
     new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
