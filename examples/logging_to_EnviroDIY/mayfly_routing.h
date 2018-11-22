@@ -14,7 +14,7 @@
 //Mayfly sn 180256 Rev 0.5ba test
 #define BOARD03 3
 
-#define BOARD_NAME BOARD02
+#define BOARD_NAME BOARD03
 
 
 #if   BOARD_NAME == BOARD01
@@ -22,7 +22,7 @@
 //#define SENSOR_RS485_PHY TRUE
 //const char *MFVersion = "v0.4";
 //const char *MFsn ="160141";
-const char *MFVersion = "v0.5bb";
+const char *MFVersion = "v0.5ba";
 const char *MFsn ="180322";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 2;

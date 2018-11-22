@@ -903,6 +903,10 @@ void setup()
     //Serial.print(EnviroDIYLogger.formatDateTime_ISO8601(BUILD_TIMESTAMP)); //Naughty but only uses stack.
     Serial.println(compile_date);
     Serial.println(file_name); //Dir and filename
+    Serial.print(F("Mayfly Sn: "));
+    Serial.print(MFsn);
+    Serial.print(F(" "));
+    Serial.println(MFVersion);
 
     //MCUSR Serial.println(mcu_status,HEX);
 
@@ -1005,6 +1009,7 @@ void setup()
     EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Begin the logger
+    PRINTOUT(F("beginAndSync "));
     EnviroDIYLogger.beginAndSync();
 
 #if defined(TINY_GSM_MODEM_XBEE)

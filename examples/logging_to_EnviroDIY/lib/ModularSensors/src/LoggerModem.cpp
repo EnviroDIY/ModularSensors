@@ -138,10 +138,10 @@ bool loggerModem::setup(void)
         _stabilizationTime_ms = 4500;  // Time until system and digital pins are operational (~4.5s)
         // _on_pull_down_ms = 200;  // 0.15-3.2s
         // _off_pull_down_ms = 1600;  // >1.5s
-        _disconnetTime_ms = 5000;  // Power down time "can largely vary depending
+        _disconnetTime_ms = 15000L;  // Power down time "can largely vary depending
         // on the application / network settings and the concurrent module
         // activities."  Vint/status pin should be monitored and power not withdrawn
-        // until that pin reads low.  Giving 5sec here in case it is not monitored.
+        // until that pin reads low.  Giving 15sec here in case it is not monitored.
     }
     if (_modemName.indexOf(F("SARA-U2")) >= 0  ||
         _modemName.indexOf(F("XBee® Cellular 3G")) >= 0)
@@ -152,12 +152,13 @@ bool loggerModem::setup(void)
                                  // Unspecified in documentation! Taking value from Lisa U2
         _stabilizationTime_ms = 6000;  // Time until system and digital pins are operational
         // (6 sec typical for SARA U201, others 5 sec typical)
+        // Time for an AT response may be much longer when using a 3G XBee in bypass mode!
         // _on_pull_down_ms = 1;  // 50-80µs
         // _off_pull_down_ms = 1000;  // >1s
-        _disconnetTime_ms = 5000;  // Power down time "can largely vary depending
+        _disconnetTime_ms = 15000L;  // Power down time "can largely vary depending
         // on the application / network settings and the concurrent module
         // activities."  Vint/status pin should be monitored and power not withdrawn
-        // until that pin reads low.  Giving 5sec here in case it is not monitored.
+        // until that pin reads low.  Giving 15sec here in case it is not monitored.
     }
     if (_modemName.indexOf(F("SARA-G3")) >= 0)
     {
@@ -165,13 +166,13 @@ bool loggerModem::setup(void)
         _warmUpTime_ms = 0; // Module turns on when power is applied - level of PWR_ON then irrelevant
         _statusTime_ms = 35;  // Time after end pulse until V_INT becomes active
                                  // Unspecified in documentation! Taking value from Lisa U2
-        _stabilizationTime_ms = MODEM_ATRESPONSE_TIME_MS;  // Time until system and digital pins are operational (5 sec typical)
+        _stabilizationTime_ms = 5000;  // Time until system and digital pins are operational (5 sec typical)
         // _on_pull_down_ms = 5;  // >5ms
         // _off_pull_down_ms = 1000;  // >1s
-        _disconnetTime_ms = 5000;  // Power down time "can largely vary depending
+        _disconnetTime_ms = 15000L;  // Power down time "can largely vary depending
         // on the application / network settings and the concurrent module
         // activities."  Vint/status pin should be monitored and power not withdrawn
-        // until that pin reads low.  Giving 5sec here in case it is not monitored.
+        // until that pin reads low.  Giving 15sec here in case it is not monitored.
     }
     if (_modemName.indexOf(F("LISA-U2")) >= 0)
     {
@@ -189,7 +190,7 @@ bool loggerModem::setup(void)
     {
         MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a Telit LE866"));
         _warmUpTime_ms = 0; // Module turns on when power is applied
-        _statusTime_ms = 0;  // Documentation does not specify how long between
+        _statusTime_ms = 50;  // Documentation does not specify how long between
         // power on and high reading on VAUX / PWRMON pin
         _stabilizationTime_ms = MODEM_ATRESPONSE_TIME_MS;  // Documentation says to wait up to 25 (!!)
         // seconds.  I'm not that patient.
@@ -227,7 +228,7 @@ bool loggerModem::setup(void)
         _stabilizationTime_ms = 4200;  // USB active at >4.2 sec, status at >4.8 sec, URAT at >4.9
         // _on_pull_down_ms = 110;  // >100ms
         // _off_pull_down_ms = 700;  // ≥ 650ms
-        _disconnetTime_ms = 2000;  // > 2 sec
+        _disconnetTime_ms = 3000;  // > 2 sec
     }
     if (_modemName.indexOf(F("Quectel M95")) >= 0)
     {
@@ -237,7 +238,7 @@ bool loggerModem::setup(void)
         _stabilizationTime_ms = 500;  // UART should respond as soon as PWRKEY pulse ends
         // _on_pull_down_ms = 2000;  // until either status key goes on, or > 1.0 sec (~2s)
         // _off_pull_down_ms = 700;  // 0.6s<Pulldown<1s
-        _disconnetTime_ms = 2000;  // disconnect in 2-12 seconds
+        _disconnetTime_ms = 12000;  // disconnect in 2-12 seconds
     }
     if (_modemName.indexOf(F("Quectel MC60")) >= 0)
     {
@@ -247,18 +248,14 @@ bool loggerModem::setup(void)
         _stabilizationTime_ms = 500;  // UART should respond as soon as PWRKEY pulse ends
         // _on_pull_down_ms = 1100;  // >1s
         // _off_pull_down_ms = 700;  // 0.6s<Pulldown<1s
-        _disconnetTime_ms = 2000;  // disconnect in 2-12 seconds
+        _disconnetTime_ms = 12000;  // disconnect in 2-12 seconds
     }
     if (_modemName.indexOf(F("XBee")) >= 0)
     {
         MS_MOD_DBG(F("Putting connection values into flash memory for the Digi XBee"));
         _statusTime_ms = 50;  // ??? WAG!
         // XBee saves all configurations to flash, so we can set them here
-        if (_tinyModem->hasWifi()) 
-        {
-            _tinyModem->networkConnect(_ssid, _pwd);
-            //_tinyModem->setupPinSleep(true);//   setupPinSleep();
-        }
+        if (_tinyModem->hasWifi()) _tinyModem->networkConnect(_ssid, _pwd);
         else _tinyModem->gprsConnect(_apn, "", "");
     }
     MS_MOD_DBG(_modemName, F(" warms up in "), _warmUpTime_ms, F("ms, indicates status in "),
@@ -281,7 +278,10 @@ bool loggerModem::setup(void)
     bool isAwake = ( (_dataPin >= 0 && digitalRead(_dataPin) == _statusLevel)
                     || bitRead(_sensorStatus, 4) );
     if (!wasAwake && isAwake)
+    {
+        MS_MOD_DBG(F("Running modem's sleep function ..."));
         success &= _sleepFxn();
+    }
     // Do NOT power down at the end, because this fxn cannot have powered the
     // modem up.
 
@@ -330,7 +330,10 @@ bool loggerModem::wake(void)
     {
         MS_MOD_DBG(F("Status pin on "), getSensorName(), F(" is "),
                    digitalRead(_dataPin), F(" indicating it is off!"));
-        success = false;
+        // Make sure that the wake time and wake success bit (bit 4) are unset
+        _millisSensorActivated = 0;
+        _sensorStatus &= 0b11101111;
+        return false;
     }
 
     if (success)
@@ -568,8 +571,12 @@ bool loggerModem::isMeasurementComplete(bool debug)
         if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
                getSensorName(), F(" has maxed out wait for network registration!  Ending wait."));
          // Unset status bit 6 (start measurement success) and _millisMeasurementRequested
-         _millisMeasurementRequested = 0;
-         _sensorStatus &= 0b10111111;
+         // _millisMeasurementRequested = 0;
+         // _sensorStatus &= 0b10111111;
+         // Leave status bits and times set - we can actually ask for signal
+         // strength even if the network registration failed, although we'd
+         // prefer to wait until it succeeds to get the "real" strength the
+         // antenna is seeing at the time of sending.
         return true;
     }
     // If the modem isn't registered yet, we still need to wait
@@ -584,11 +591,14 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
 {
     bool retVal = true;
 
-    if (bitRead(_sensorStatus, 1) == 0 || bitRead(_sensorStatus, 2) == 0)  // NOT yet powered
+    if (bitRead(_sensorStatus, 1) == 0 || bitRead(_sensorStatus, 2) == 0){  // NOT yet powered
+        MS_MOD_DBG(F("connectInternet: modemPowerUp "),_sensorStatus);
         modemPowerUp();
+    }
 
     if (bitRead(_sensorStatus, 3) == 0)  // No attempts yet to wake the modem
     {
+        MS_MOD_DBG(F("connectInternet: waitForWarmUp "),_sensorStatus);
         waitForWarmUp();
         retVal &= wake();  // This sets the modem to on, will also set-up if necessary
     }
@@ -646,7 +656,11 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
                        F(" milliseconds."));
             retVal = true;
         }
-        else MS_MOD_DBG(F("   ...Connection failed."));
+        else
+        {
+            MS_MOD_DBG(F("   ...GPRS connection failed."));
+            return false;
+        }
     }
     return retVal;
 }
@@ -672,7 +686,6 @@ void loggerModem::disconnectInternet(void)
         MS_MOD_DBG(F("Disconnected from WiFi network after "), millis() - start,
                    F(" milliseconds."));
     }
-    _millisSensorActivated = 0;
 }
 
 
@@ -746,8 +759,8 @@ bool loggerModem::modemSleepPowerDown(void)
     // This allows the modem to shut down gracefully.
     if (_dataPin >= 0)
     {
-        MS_MOD_DBG(F("Waiting up to 15 seconds for graceful shutdown..."));
-        while (millis() - start < 15000L && digitalRead(_dataPin) == _statusLevel){}
+        MS_MOD_DBG(F("Waiting up to 25 seconds for graceful shutdown..."));
+        while (millis() - start < 25000L && digitalRead(_dataPin) == _statusLevel){}
         if (digitalRead(_dataPin) == _statusLevel)
             MS_MOD_DBG(F("  ... "), getSensorName(), F(" did not successfully shut down!"));
         else MS_MOD_DBG(F("  ... shutdown complete after "), millis() - start, F("ms."));
