@@ -13,8 +13,9 @@
 #define LoggerEnviroDIY_h
 
 // Debugging Statement
+#ifdef LoggerEnviroDIY_DBG
 #define DEBUGGING_SERIAL_OUTPUT Serial
-
+#endif //
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #include "LoggerBase.h"
@@ -74,7 +75,8 @@ public:
     // This version syncs the clock!
     virtual void beginLogger(void);
     virtual void timeSync(void);
-    virtual bool parseIni(const char *ini_fn,ini_handler handler);
+    virtual bool parseIniSd(const char *ini_fn,ini_handler handler_fn);
+
     // This is a one-and-done to log data
     virtual void logDataAndSend(void);
 
@@ -86,6 +88,7 @@ public:
 
 
 private:
+    virtual int8_t inihParseFile(ini_handler handler_fn);
     // Tokens and UUID's for EnviroDIY
     const char *_registrationToken;
     const char *_samplingFeature;

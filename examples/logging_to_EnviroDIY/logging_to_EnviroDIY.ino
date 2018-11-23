@@ -855,44 +855,11 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
   digitalWrite(redLED, LOW);
 }
 // ==========================================================================
-// ini setup function
+// inihUnhandled 
+// For any Unhandled sections this is called
 // ==========================================================================
-#if 0
-//Place holder 
-#include <SdFat.h>  // To communicate with the SD card
-#include "IniFile.h"
-bool readIni()
-{
-    SdFat sdCard;
-    //Local testing 
-    // Initialise the SD card
-    if (!sdCard.begin(sdCardPin, SPI_FULL_SPEED))
-    {
-        PRINTOUT(F("readIni Error: SD card failed to initialize or is missing."));
 
-        return false;
-    }
-    else  // skip everything else if there's no SD card, otherwise it might hang
-    {
-        PRINTOUT(F("redaIni connected to SD Card with card/slave select on pin "),
-                 sdCardPin);
-        return true;
-    }
-    const char *filename = "/net.ini";
-    IniFile ini(filename);
-    if (!ini.open()) 
-    {
-        Serial.print("Ini file ");
-        Serial.print(filename);
-        Serial.println(" does not exist");
-        return false;
-    }
-  }
-
-}
-#endif
-
-static int ini_dumper( const char* section, const char* name,
+static int inihUnhandledFn( const char* section, const char* name,
                   const char* value)
 {
     static char prev_section[50] = "";
@@ -902,12 +869,13 @@ static int ini_dumper( const char* section, const char* name,
         if (prev_section[0] ) {
             Serial.println();
         } 
-        Serial.println(F("["));
+        Serial.print(F("["));
         Serial.print(section);
         Serial.println(F("]"));
         strncpy(prev_section, section, sizeof(prev_section));
         prev_section[sizeof(prev_section) - 1] = '\0';
     }
+    //Serial.print(section);
     //printf("%s = %s\n", name, value);
     Serial.print(name);
     Serial.print(F("="));  
@@ -1034,10 +1002,11 @@ void setup()
     EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Begin the logger
-    PRINTOUT(F("*beginAndNoSync "));
+    PRINTOUT(F("***beginAndNoSync "));
     EnviroDIYLogger.beginLogger();
-    EnviroDIYLogger.parseIni(MayflyIniID,ini_dumper);
-    PRINTOUT(F("*timeSync "));
+    PRINTOUT(F("***parseIni "));
+    EnviroDIYLogger.parseIniSd(MayflyIniID,inihUnhandledFn);
+    PRINTOUT(F("***timeSync "));
     EnviroDIYLogger.timeSync();
 #if defined(TINY_GSM_MODEM_XBEE)
     wakeFxn();
