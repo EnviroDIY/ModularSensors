@@ -375,7 +375,6 @@ void LoggerEnviroDIY::beginLogger(void)
              _internalArray->getCalculatedVariableCount(), F(" are calculated."));
 
      // Turn on the modem to let it start searching for the network
-     //if (_logModem != NULL) _logModem->modemPowerUp();
 
      // Set up the sensors, this includes the modem
      PRINTOUT(F("Setting up sensors..."));
@@ -383,28 +382,6 @@ void LoggerEnviroDIY::beginLogger(void)
 
     // Mark sensors as having been setup
     _areSensorsSetup = 1;
-
-    //if (_logModem != NULL)
-    #if 0
-    {
-        // Print out the modem info
-        PRINTOUT(F("This logger is tied to a "), _logModem->getSensorName(),
-                 F(" for internet connectivity."));
-
-        // Synchronize the RTC with NIST
-        PRINTOUT(F("Attempting to synchronize RTC with NIST"));
-        PRINTOUT(F("This may take up to two minutes!"));
-        // Connect to the network
-        if (_logModem->connectInternet(120000L))
-        {
-            syncRTClock(_logModem->getNISTTime());
-            // Disconnect from the network
-            _logModem->disconnectInternet();
-        }
-        // Turn off the modem
-        _logModem->modemSleepPowerDown();
-    }
-    #endif //0
 
    // Create the log file, adding the default header to it
    if (_autoFileName) generateAutoFileName();
@@ -429,8 +406,6 @@ void LoggerEnviroDIY::beginLogger(void)
     PRINTOUT(F("Logger setup finished!"));
     PRINTOUT(F("------------------------------------------\n"));
 
-    // Sleep
-    // when to if(_mcuWakePin >= 0){systemSleep();}
 }
 
 void LoggerEnviroDIY::timeSync(void)
