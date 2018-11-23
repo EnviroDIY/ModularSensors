@@ -349,7 +349,7 @@ void LoggerEnviroDIY::testingMode()
 // ===================================================================== //
 
 // This calls all of the setup functions - must be run AFTER init
-void LoggerEnviroDIY::beginAndSync(void)
+void LoggerEnviroDIY::beginLogger(void)
 {
     // Set up pins for the LED and button
     if (_ledPin >= 0) pinMode(_ledPin, OUTPUT);
@@ -375,7 +375,7 @@ void LoggerEnviroDIY::beginAndSync(void)
              _internalArray->getCalculatedVariableCount(), F(" are calculated."));
 
      // Turn on the modem to let it start searching for the network
-     if (_logModem != NULL) _logModem->modemPowerUp();
+     //if (_logModem != NULL) _logModem->modemPowerUp();
 
      // Set up the sensors, this includes the modem
      PRINTOUT(F("Setting up sensors..."));
@@ -384,7 +384,8 @@ void LoggerEnviroDIY::beginAndSync(void)
     // Mark sensors as having been setup
     _areSensorsSetup = 1;
 
-    if (_logModem != NULL)
+    //if (_logModem != NULL)
+    #if 0
     {
         // Print out the modem info
         PRINTOUT(F("This logger is tied to a "), _logModem->getSensorName(),
@@ -403,6 +404,7 @@ void LoggerEnviroDIY::beginAndSync(void)
         // Turn off the modem
         _logModem->modemSleepPowerDown();
     }
+    #endif //0
 
    // Create the log file, adding the default header to it
    if (_autoFileName) generateAutoFileName();
@@ -428,11 +430,61 @@ void LoggerEnviroDIY::beginAndSync(void)
     PRINTOUT(F("------------------------------------------\n"));
 
     // Sleep
-    if(_mcuWakePin >= 0){systemSleep();}
+    // when to if(_mcuWakePin >= 0){systemSleep();}
 }
 
+void LoggerEnviroDIY::timeSync(void)
+{
+     // Turn on the modem to let it start searching for the network
+     if (_logModem != NULL) _logModem->modemPowerUp();
 
-// This is a one-and-done to log data
+    if (_logModem != NULL)
+    {
+        // Print out the modem info
+        PRINTOUT(F("This logger is tied to a "), _logModem->getSensorName(),
+                 F(" for internet connectivity."));
+
+        // Synchronize the RTC with NIST
+        PRINTOUT(F("Attempting to synchronize RTC with NIST"));
+        PRINTOUT(F("This may take up to two minutes!"));
+        // Connect to the network
+        if (_logModem->connectInternet(120000L))
+        {
+            syncRTClock(_logModem->getNISTTime());
+            // Disconnect from the network
+            _logModem->disconnectInternet();
+        }
+        // Turn off the modem
+        _logModem->modemSleepPowerDown();
+    }
+
+}
+//typedef int (*ini_handler)( const char* section,
+//                           const char* name, const char* value);
+bool LoggerEnviroDIY::parseIni(const char *ini_fn,ini_handler handler)
+{
+
+    // Initialise the SD card
+    // skip everything else if there's no SD card, otherwise it might hang
+    if (!initializeSDCard()) return false;
+
+    // Convert the string filename to a character file name for SdFat
+    //uint8_t fileNameLength = ini_fn.length() + 1;
+    //char charFileName[fileNameLength];
+    //filename.toCharArray(charFileName, fileNameLength);
+    if (logFile.open(ini_fn))
+    {
+        PRINTOUT(F("ini.Opened existing file: "), ini_fn);
+        //int read(void* buf, size_t nbyte);
+    } else
+    {
+        PRINTOUT(F("ini.No file "),ini_fn);
+        return false;
+    }
+    //error = ini_parse_file( ini_handler);
+    logFile.close();
+    return true;
+}
 void LoggerEnviroDIY::logDataAndSend(void)
 {
     // If the number of intervals is negative, then the sensors and file on

@@ -31,6 +31,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 const char *sketchName = "logging_to_EnviroDIY.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "nh07k";
+const char *MayflyIniID = "mayfly.ini";
 // How frequently (in minutes) to log data
 //const uint8_t loggingInterval = 5;
 // Your logger's timezone.
@@ -823,7 +824,8 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 VariableArray varArray(variableCount, variableList);
 
 // Create a new logger instance
-#include <LoggerEnviroDIY.h>
+//#include <LoggerEnviroDIY.h>
+#include "lib\ModularSensors\src\LoggerEnviroDIY.h"
 LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
@@ -889,6 +891,29 @@ bool readIni()
 
 }
 #endif
+
+static int ini_dumper( const char* section, const char* name,
+                  const char* value)
+{
+    static char prev_section[50] = "";
+
+    if (strcmp(section, prev_section)) {
+        //printf("%s[%s]\n", (prev_section[0] ? "\n" : ""), section);
+        if (prev_section[0] ) {
+            Serial.println();
+        } 
+        Serial.println(F("["));
+        Serial.print(section);
+        Serial.println(F("]"));
+        strncpy(prev_section, section, sizeof(prev_section));
+        prev_section[sizeof(prev_section) - 1] = '\0';
+    }
+    //printf("%s = %s\n", name, value);
+    Serial.print(name);
+    Serial.print(F("="));  
+    Serial.println(value);  
+    return 1;
+}
 // ==========================================================================
 // Main setup function
 // ==========================================================================
@@ -1009,9 +1034,11 @@ void setup()
     EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Begin the logger
-    PRINTOUT(F("beginAndSync "));
-    EnviroDIYLogger.beginAndSync();
-
+    PRINTOUT(F("*beginAndNoSync "));
+    EnviroDIYLogger.beginLogger();
+    EnviroDIYLogger.parseIni(MayflyIniID,ini_dumper);
+    PRINTOUT(F("*timeSync "));
+    EnviroDIYLogger.timeSync();
 #if defined(TINY_GSM_MODEM_XBEE)
     wakeFxn();
     if (tinyModem->commandMode() )
