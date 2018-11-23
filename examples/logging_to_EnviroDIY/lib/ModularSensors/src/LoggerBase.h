@@ -12,7 +12,7 @@
 #define LoggerBase_h
 
 // Debugging Statement
-//#define DEBUGGING_SERIAL_OUTPUT Serial
+// #define DEBUGGING_SERIAL_OUTPUT Serial
 
 // Included Dependencies
 //#include <Arduino.h>
