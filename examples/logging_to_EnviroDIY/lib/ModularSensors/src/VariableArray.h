@@ -16,6 +16,7 @@
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+//#pragma message( "lib/ModularSensors/src/variableArray.h including VariableBase.h")
 #include "VariableBase.h"
 #include "SensorBase.h"
 

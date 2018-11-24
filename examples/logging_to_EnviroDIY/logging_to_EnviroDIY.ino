@@ -707,29 +707,37 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
+//#pragma message( "including lib/ModularSensors/src/VariableBase.h")
+//#include "lib/ModularSensors/src/VariableBase.h"
+//#pragma message( "including <VariableArray.h>")
 #include <VariableArray.h>
+//#pragma message( "including VariableArray.h")
+//#include "lib/ModularSensors/src/VariableArray.h"
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
 #if defined(ProcessorStats_SampleNum_UUID)
     //Always have this first so can see on debug screen
-    new ProcessorStats_SampleNumber(&mayflyPhy,ProcessorStats_SampleNum_UUID),
+    //new ProcessorStats_SampleNumber(&mayflyPhy,ProcessorStats_SampleNum_UUID),
+    new ProcessorStats_SampleNumber(&mayflyPhy,"SampleNum_UUID"),
 #endif
 #if defined(ProcessorStats_Batt_UUID)
-    new ProcessorStats_Batt(&mayflyPhy,   ProcessorStats_Batt_UUID),
+    //new ProcessorStats_Batt(&mayflyPhy,   ProcessorStats_Batt_UUID),
+    new ProcessorStats_Batt(&mayflyPhy, "Batt_UUID"),
 #endif
 #if defined(Volt0_UUID)
-    new ExternalVoltage_Volt(&extvolt0, Volt0_UUID),
+    //new ExternalVoltage_Volt(&extvolt0, Volt0_UUID),
+    new ExternalVoltage_Volt(&extvolt0, "Volt0_UUID"),
 #endif
 #if defined(Volt1_UUID)
-    new ExternalVoltage_Volt(&extvolt1, Volt1_UUID),
+    new ExternalVoltage_Volt(&extvolt1, "Volt1_UUID"),
 #endif
 #if defined(SENSOR_CONFIG_IA921)
     #if defined(INA219_MA_UUID)
-    new TiIna219_mA  (&ina219_phy, INA219_MA_UUID),
+    new TiIna219_mA  (&ina219_phy, "INA219_MA_UUID"),
     #endif
     #if defined(INA219_VOLT_UUID)
-    new TiIna219_Volt(&ina219_phy, INA219_VOLT_UUID),
+    new TiIna219_Volt(&ina219_phy, "INA219_VOLT_UUID"),
     #endif
 #endif //SENSOR_CONFIG_IA921
 #ifdef SENSOR_CONFIG_GENERAL
@@ -778,8 +786,8 @@ Variable *variableList[] = {
 #endif // SENSOR_CONFIG_KELLER_ACCULEVEL
 #ifdef SENSOR_CONFIG_KELLER_NANOLEVEL
 //   new KellerNanolevel_Pressure(&nanolevelfn, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerNanolevel_Temp(&nanolevelfn,   KellerNanolevel_Temp_UUID),
-    new KellerNanolevel_Height(&nanolevelfn, KellerNanolevel_Height_UUID),
+    new KellerNanolevel_Temp(&nanolevelfn,   "KellerNanolevel_Temp_UUID"),
+    new KellerNanolevel_Height(&nanolevelfn, "KellerNanolevel_Height_UUID"),
 #endif //SENSOR_CONFIG_KELLER_NANOLEVEL
 #ifdef SENSOR_CONFIG_GENERAL
     new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -810,7 +818,7 @@ Variable *variableList[] = {
     new ProcessorStats_FreeRam(&mayflyPhy, "12345678-abcd-1234-efgh-1234567890ab"),
 #endif // SENSOR_CONFIG_GENERAL
 #if defined(MaximDS3231_Temp_UUID)
-    new MaximDS3231_Temp(&ds3231,      MaximDS3231_Temp_UUID),
+    new MaximDS3231_Temp(&ds3231,      "MaximDS3231_Temp_UUID"),
 #endif //MaximDS3231_Temp_UUID
     //new Modem_RSSI(&modemPhy, "12345678-abcd-1234-efgh-1234567890ab"),
 #if defined(Modem_SignalPercent_UUID)
@@ -819,13 +827,19 @@ Variable *variableList[] = {
     // new YOUR_variableName_HERE(&)
 };
 // Count up the number of pointers in the array
-int variableCount = sizeof(variableList) / sizeof(variableList[0]);
+const int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
+//Need to define a ram place holder for UUIDs
+#define MAX_UUID_SZ 38
+char varUuid[variableCount][MAX_UUID_SZ];
+//#include <array.h>
+//std::array<String,variableCount> varUuid_arry;
+//std::array<std::array<char,MAX_UUID_SZ>,variableCount> varUuid_array;
 
 // Create a new logger instance
-//#include <LoggerEnviroDIY.h>
-#include "lib\ModularSensors\src\LoggerEnviroDIY.h"
+#include <LoggerEnviroDIY.h>
+//#include "lib\ModularSensors\src\LoggerEnviroDIY.h"
 LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
@@ -863,23 +877,55 @@ static int inihUnhandledFn( const char* section, const char* name,
                   const char* value)
 {
     static char prev_section[50] = "";
+    String currentUuid="tbd";
+    if (strcmp("UUIDs",section)== 0)
+    {
+        int8_t value_idx = atoi(value); //or atol??
+        if ((value_idx <= variableCount) && (value_idx>0) )
+        {
+            value_idx -= 1;
+            currentUuid = variableList[value_idx]->getVarUUID();
+            strcpy(&varUuid[value_idx][0], name);
+            variableList[value_idx]->setVarUUID(&varUuid[value_idx][0]);
+            #if 1
+            //Serial.print(&varUuid[value_idx][0]-&varUuid[0][0]);
+            Serial.print(F("["));
+            Serial.print(value);
+            Serial.print(F("]{"));
+            //Serial.print(name);
+            //Serial.print(F("}="));
+            Serial.print(currentUuid);
+            Serial.print(F("}-->"));
+            Serial.println(variableList[value_idx]->getVarUUID() );
+            #endif //
+        } else {
+            Serial.print(F("UUIDs idxError:"));
+            Serial.println(value_idx);
+        }
+    } else if (strcmp("COMMON",section)== 0) {
+        Serial.print(F("set "));
+        Serial.print(name);
+        Serial.print(F(" to "));  
+        Serial.println(value);  
 
-    if (strcmp(section, prev_section)) {
-        //printf("%s[%s]\n", (prev_section[0] ? "\n" : ""), section);
-        if (prev_section[0] ) {
-            Serial.println();
-        } 
-        Serial.print(F("["));
-        Serial.print(section);
-        Serial.println(F("]"));
-        strncpy(prev_section, section, sizeof(prev_section));
-        prev_section[sizeof(prev_section) - 1] = '\0';
+    } else {
+        if (strcmp(section, prev_section)) {
+            //printf("%s[%s]\n", (prev_section[0] ? "\n" : ""), section);
+            if (prev_section[0] ) {
+                Serial.println();
+            } 
+            Serial.print(F("["));
+            Serial.print(section);
+            Serial.println(F("]"));
+            strncpy(prev_section, section, sizeof(prev_section));
+            prev_section[sizeof(prev_section) - 1] = '\0';
+        }
+        //Serial.print(section);
+        //printf("%s = %s\n", name, value);
+        Serial.print(name);
+        Serial.print(F("="));  
+        Serial.println(value);  
     }
-    //Serial.print(section);
-    //printf("%s = %s\n", name, value);
-    Serial.print(name);
-    Serial.print(F("="));  
-    Serial.println(value);  
     return 1;
 }
 // ==========================================================================
@@ -892,31 +938,26 @@ void setup()
     //MCUSR = 0; //reset for unique read
     // Start the primary serial connection
     Serial.begin(serialBaud);
-    Serial.print(F("---Boot ")); //BUILD_TIMESTAMP "));
-    //Serial.print(EnviroDIYLogger.formatDateTime_ISO8601(BUILD_TIMESTAMP)); //Naughty but only uses stack.
-    Serial.println(compile_date);
+    Serial.print(F("---Boot ")); 
+    Serial.print(compile_date);
+    extern int16_t __heap_start, *__brkval;
+    uint16_t top_stack = (int) &top_stack  - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+    Serial.print(F(" Ram available:"));
+    Serial.println(top_stack );// Stack and heap ??
+    //MCUSR Serial.println(mcu_status,HEX);
     Serial.println(file_name); //Dir and filename
     Serial.print(F("Mayfly Sn: "));
     Serial.print(MFsn);
     Serial.print(F(" "));
-    Serial.println(MFVersion);
-
-    //MCUSR Serial.println(mcu_status,HEX);
-
-    // Print a start-up note to the first serial port
-    Serial.print(F("Now running "));
-    Serial.print(sketchName);
-    Serial.print(F(" on Logger "));
-    Serial.println(LoggerID);
-    Serial.println();
-
-    Serial.print(F("Using ModularSensors Library version "));
-    Serial.println(MODULAR_SENSORS_VERSION);
-
+    Serial.print(MFVersion);
+    Serial.print(F(" Logger:"));
+    Serial.print(LoggerID);
+    Serial.print(F("ModularSensors vers "));
+    Serial.print(MODULAR_SENSORS_VERSION);
+ 
     // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);
 
-    // Start the stream for the modbus sensors
 #if !defined(SENSOR_RS485_PHY)
     modbusSerial.begin(9600);
 #else
@@ -1006,6 +1047,17 @@ void setup()
     EnviroDIYLogger.beginLogger();
     PRINTOUT(F("***parseIni "));
     EnviroDIYLogger.parseIniSd(MayflyIniID,inihUnhandledFn);
+    #if 1
+    Serial.println(F(" List of UUIDs"));
+    uint8_t i_lp;
+    for (i_lp=0;i_lp<variableCount;i_lp++)
+    {
+        Serial.print(F("["));
+        Serial.print(i_lp);
+        Serial.print(F("] "));
+        Serial.println(variableList[i_lp]->getVarUUID() );
+    }
+#endif
     PRINTOUT(F("***timeSync "));
     EnviroDIYLogger.timeSync();
 #if defined(TINY_GSM_MODEM_XBEE)
