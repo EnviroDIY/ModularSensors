@@ -7,7 +7,6 @@
  *This file is for the variable base class.
 */
 
-//#pragma message( "including variableBase.h")
 #include "VariableBase.h"
 #include "SensorBase.h"
 
@@ -137,20 +136,10 @@ String Variable::getVarCode(void)
 }
 
 // This returns the variable UUID, if one has been assigned
-String Variable::getVarUUID(void) 
-{
-    //if (_UUID2 != NULL) {
-    //    return _UUID2;
-    //}
-    return _UUID;
-}
+String Variable::getVarUUID(void) {return _UUID;}
 
-// This returns the variable UUID, if one has been assigned
-void Variable::setVarUUID(char *newUUID) 
-{
-    _UUID =  newUUID;
-    //_UUID2 =  newUUID;
-}
+// Set the variable UUID.
+void Variable::setVarUUID(char *newUUID) { _UUID =  newUUID;}
 
 // This returns the current value of the variable as a float
 float Variable::getValue(bool updateValue)

@@ -8,7 +8,6 @@
 */
 
 // Header Guards
-//#pragma message( "lib/ModularSensors/src/variableBase.h")
 #ifndef VariableBase_h
 #define VariableBase_h
 
@@ -21,7 +20,6 @@ class Sensor;
 // Included Dependencies
 #include "ModSensorDebugger.h"
 
-//#pragma message( "lib/ModularSensors/src/variableBase.h has setVarUUID")
 class Variable
 {
 public:
@@ -68,7 +66,7 @@ public:
     String getVarCode(void);
     // This returns the variable UUID, if one has been assigned
     String getVarUUID(void);
-
+    // Set the variable UUID.
     void   setVarUUID(char *UUID);
 
     // This returns the current value of the variable as a float
@@ -93,7 +91,6 @@ private:
     const char *_defaultVarCode;
     const char *_customCode;
     const char *_UUID;
-    //char *_UUID2=NULL; //Not const Progmem
     static const char* VAR_BASE_UNKNOWN;
 };
 
