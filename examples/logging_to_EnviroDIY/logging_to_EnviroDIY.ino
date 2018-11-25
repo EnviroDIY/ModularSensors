@@ -22,13 +22,15 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <Time.h>
-#include "mayfly_routing.h"
+#include <errno.h>
+#include "ms_cfg.h" //must be before modular_sensors_common.h
+#include "ms_common.h"
 #define DEBUGGING_SERIAL_OUTPUT Serial
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
 // The name of this file
-const char *sketchName = "logging_to_EnviroDIY.ino";
+//const char *sketchName = "logging_to_EnviroDIY.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "nh07k";
 const char *MayflyIniID = "mayfly.ini";
@@ -60,7 +62,9 @@ const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 i
 #if !defined(BOARD_NAME)
 const char *MFVersion = "v0.5b";
 #endif
+#if defined(ProcessorStats_ACT)
 ProcessorStats mayflyPhy(MFVersion);
+#endif //ProcessorStats_ACT
 //#define CHECK_SLEEP_POWER
 
 // ==========================================================================
@@ -294,9 +298,6 @@ const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for 
 const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
 
-//#define SENSOR_CONFIG_GENERAL 1
-//#define SENSOR_CONFIG_KELLER_ACCULEVEL 1
-#define SENSOR_CONFIG_KELLER_NANOLEVEL 1
 #endif
 // Create the loggerModem instance
 #include <LoggerModem.h>
@@ -322,6 +323,7 @@ MaximDS3231 ds3231(1);
 // ==========================================================================
 //    External Voltage via TI ADS1115
 // ==========================================================================
+#ifdef ExternalVoltage_ACT
 #include <sensors/ExternalVoltage.h>
 const int8_t VoltPower = -1;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t VoltData0 = 0;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
@@ -332,11 +334,11 @@ const uint8_t VoltReadsToAvg = 1; // Only read one sample
 // Create and return the External Voltage sensor object
 ExternalVoltage extvolt0(VoltPower, VoltData0, VoltGain, Volt_ADS1115Address, VoltReadsToAvg);
 ExternalVoltage extvolt1(VoltPower, VoltData1, VoltGain, Volt_ADS1115Address, VoltReadsToAvg);
-
+#endif //ExternalVoltage_ACT
 const int8_t I2CPower = -1;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t SDI12Data = 7;  // The pin the 5TM is attached to
 const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
-#if defined(SENSOR_CONFIG_IA921)
+#if defined(INA219_PHY_ACT)
 // ==========================================================================
 //    Ti INA219 High Side Current/Voltage Sensor (Current mA, Voltage, Power)
 // ==========================================================================
@@ -347,7 +349,7 @@ const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnec
 // const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // Create and return the Bosch BME280 sensor object
 TiIna219 ina219_phy(I2CPower);
-#endif //SENSOR_CONFIG_IA921
+#endif //INA219_PHY_ACT
 
 #ifdef SENSOR_CONFIG_GENERAL
 // ==========================================================================
@@ -566,7 +568,7 @@ const int8_t rs485AdapterPower = 22;// Pin to switch RS485 adapter power on and 
 // ==========================================================================
 //    Keller Acculevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
-#ifdef SENSOR_CONFIG_KELLER_ACCULEVEL
+#ifdef KellerAcculevel_ACT 
 #include <sensors/KellerAcculevel.h>
 byte acculevelModbusAddress = 0x01;  // The modbus address of KellerAcculevel
 //const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
@@ -575,18 +577,18 @@ byte acculevelModbusAddress = 0x01;  // The modbus address of KellerAcculevel
 const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends taking and averaging a few readings
 // Create and return the Keller Acculevel sensor object
 KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, acculevelNumberReadings);
-#endif //SENSOR_CONFIG_KELLER_ACCULEVEL
+#endif //KellerAcculevel_ACT 
 
 // ==========================================================================
 //    Keller Nanolevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
-#ifdef SENSOR_CONFIG_KELLER_NANOLEVEL
+#ifdef KellerNanolevel_ACT
 #include <sensors/KellerNanolevel.h>
 byte nanolevelModbusAddress = 0x01;  // The modbus address of KellerNanolevel
 const uint8_t nanolevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
 // Create and return the Keller Nanolevel sensor object
 KellerNanolevel nanolevelfn(nanolevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
-#endif //SENSOR_CONFIG_KELLER_NANOLEVEL
+#endif //KellerNanolevel_ACT
 #ifdef SENSOR_CONFIG_GENERAL
 
 // ==========================================================================
@@ -716,30 +718,25 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
-#if defined(ProcessorStats_SampleNum_UUID)
+#if defined(ProcessorStats_SampleNumber_UUID)
     //Always have this first so can see on debug screen
-    //new ProcessorStats_SampleNumber(&mayflyPhy,ProcessorStats_SampleNum_UUID),
-    new ProcessorStats_SampleNumber(&mayflyPhy,"SampleNum_UUID"),
+    new ProcessorStats_SampleNumber(&mayflyPhy,ProcessorStats_SampleNumber_UUID),
 #endif
 #if defined(ProcessorStats_Batt_UUID)
-    //new ProcessorStats_Batt(&mayflyPhy,   ProcessorStats_Batt_UUID),
-    new ProcessorStats_Batt(&mayflyPhy, "Batt_UUID"),
+    new ProcessorStats_Batt(&mayflyPhy,   ProcessorStats_Batt_UUID),
 #endif
-#if defined(Volt0_UUID)
-    //new ExternalVoltage_Volt(&extvolt0, Volt0_UUID),
-    new ExternalVoltage_Volt(&extvolt0, "Volt0_UUID"),
+#if defined(ExternalVoltage_Volt0_UUID)
+    new ExternalVoltage_Volt(&extvolt0, ExternalVoltage_Volt0_UUID),
 #endif
-#if defined(Volt1_UUID)
-    new ExternalVoltage_Volt(&extvolt1, "Volt1_UUID"),
+#if defined(ExternalVoltage_Volt1_UUID)
+    new ExternalVoltage_Volt(&extvolt1, ExternalVoltage_Volt1_UUID),
 #endif
-#if defined(SENSOR_CONFIG_IA921)
-    #if defined(INA219_MA_UUID)
-    new TiIna219_mA  (&ina219_phy, "INA219_MA_UUID"),
-    #endif
-    #if defined(INA219_VOLT_UUID)
-    new TiIna219_Volt(&ina219_phy, "INA219_VOLT_UUID"),
-    #endif
-#endif //SENSOR_CONFIG_IA921
+#if defined(INA219_MA_UUID)
+    new TiIna219_mA  (&ina219_phy, INA219_MA_UUID),
+#endif
+#if defined(INA219_VOLT_UUID)
+    new TiIna219_Volt(&ina219_phy, INA219_VOLT_UUID),
+#endif
 #ifdef SENSOR_CONFIG_GENERAL
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
     new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -779,15 +776,15 @@ Variable *variableList[] = {
     new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab"),
     new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab"),
 #endif //SENSOR_CONFIG_GENERAL
-#ifdef SENSOR_CONFIG_KELLER_ACCULEVEL
+#ifdef KellerAcculevel_ACT
     new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
     new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
     new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
-#endif // SENSOR_CONFIG_KELLER_ACCULEVEL
-#ifdef SENSOR_CONFIG_KELLER_NANOLEVEL
+#endif // KellerAcculevel_ACT
+#ifdef KellerNanolevel_ACT
 //   new KellerNanolevel_Pressure(&nanolevelfn, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerNanolevel_Temp(&nanolevelfn,   "KellerNanolevel_Temp_UUID"),
-    new KellerNanolevel_Height(&nanolevelfn, "KellerNanolevel_Height_UUID"),
+    new KellerNanolevel_Temp(&nanolevelfn,   KellerNanolevel_Temp_UUID),
+    new KellerNanolevel_Height(&nanolevelfn, KellerNanolevel_Height_UUID),
 #endif //SENSOR_CONFIG_KELLER_NANOLEVEL
 #ifdef SENSOR_CONFIG_GENERAL
     new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -818,7 +815,7 @@ Variable *variableList[] = {
     new ProcessorStats_FreeRam(&mayflyPhy, "12345678-abcd-1234-efgh-1234567890ab"),
 #endif // SENSOR_CONFIG_GENERAL
 #if defined(MaximDS3231_Temp_UUID)
-    new MaximDS3231_Temp(&ds3231,      "MaximDS3231_Temp_UUID"),
+    new MaximDS3231_Temp(&ds3231,      MaximDS3231_Temp_UUID),
 #endif //MaximDS3231_Temp_UUID
     //new Modem_RSSI(&modemPhy, "12345678-abcd-1234-efgh-1234567890ab"),
 #if defined(Modem_SignalPercent_UUID)
@@ -830,13 +827,9 @@ Variable *variableList[] = {
 const int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
-//Need to define a ram place holder for UUIDs
-#define MAX_UUID_SZ 38
-char varUuid[variableCount][MAX_UUID_SZ];
-//#include <array.h>
-//std::array<String,variableCount> varUuid_arry;
-//std::array<std::array<char,MAX_UUID_SZ>,variableCount> varUuid_array;
-
+#ifdef USE_SD_MAYFLY_INI
+ persistent_store_t ps;
+ #endif //#define USE_SD_MAYFLY_INI
 // Create a new logger instance
 #include <LoggerEnviroDIY.h>
 //#include "lib\ModularSensors\src\LoggerEnviroDIY.h"
@@ -868,66 +861,109 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
   }
   digitalWrite(redLED, LOW);
 }
+
+
 // ==========================================================================
 // inihUnhandled 
 // For any Unhandled sections this is called
 // ==========================================================================
+#ifdef USE_SD_MAYFLY_INI
+//expect to be in near space
+#define mCONST_UNI(p1) const char p1##_pm[] PROGMEM = #p1
+mCONST_UNI(BOOT);
+mCONST_UNI(VER);
+mCONST_UNI(MAYFLY_SN);
+mCONST_UNI(MAYFLY_REV);
+mCONST_UNI(MAYFLY_INIT_ID);
 
-static int inihUnhandledFn( const char* section, const char* name,
-                  const char* value)
+mCONST_UNI(COMMON);
+mCONST_UNI(LOGGER_ID);// = "nh07k" ;
+mCONST_UNI(LOGGING_INTERVAL_MIN); 
+mCONST_UNI(TIME_ZONE);
+mCONST_UNI(GEOGRAPHICAL_ID); 
+
+mCONST_UNI(NETWORK);
+mCONST_UNI(apn);
+mCONST_UNI(WiFiId);
+mCONST_UNI(WiFiPwd);
+
+
+mCONST_UNI(PROVIDER);
+mCONST_UNI(CLOUD_ID);
+mCONST_UNI(REGISTRATION_TOKEN);
+mCONST_UNI(SAMPLING_FEATURE);
+
+mCONST_UNI(UUIDs);
+
+static int inihUnhandledFn( const char* section, const char* name, const char* value)
 {
-    static char prev_section[50] = "";
-    String currentUuid="tbd";
-    if (strcmp("UUIDs",section)== 0)
+    if (strcmp_P(section,PROVIDER_pm)== 0)
     {
-        int8_t value_idx = atoi(value); //or atol??
-        if ((value_idx <= variableCount) && (value_idx>0) )
+        if        (strcmp_P(name,REGISTRATION_TOKEN_pm)== 0) {
+            strcpy(ps.provider.s.registration_token, value);
+        } else if (strcmp_P(name,CLOUD_ID_pm)== 0) {
+            strcpy(ps.provider.s.cloudId, value);
+        } else if (strcmp_P(name,SAMPLING_FEATURE_pm)== 0) {
+            strcpy(ps.provider.s.sampling_feature, value);
+        } else {
+            Serial.print(F("PROVIDER not supported:"));
+            Serial.print(name);
+            Serial.print("=");
+            Serial.println(value);
+        }
+    } else if (strcmp_P(section,UUIDs_pm)== 0)
+    {
+        long value_idx;
+        char *endptr;
+        //String currentUuid="tbd";
+        errno=0;
+        value_idx = strtoul(value,&endptr,10);
+    
+        if ((value_idx <= variableCount) && (value_idx>0) &&(errno!=ERANGE) )
         {
-            value_idx -= 1;
-            currentUuid = variableList[value_idx]->getVarUUID();
-            strcpy(&varUuid[value_idx][0], name);
-            variableList[value_idx]->setVarUUID(&varUuid[value_idx][0]);
-            #if 1
-            //Serial.print(&varUuid[value_idx][0]-&varUuid[0][0]);
+            value_idx -= 1; //remove end-of-string  
+            //currentUuid = variableList[value_idx]->getVarUUID();
+            strcpy(&ps.provider.s.uuid[value_idx][0], name);
+            variableList[value_idx]->setVarUUID(&ps.provider.s.uuid[value_idx][0]);
+            #if 0
             Serial.print(F("["));
             Serial.print(value);
             Serial.print(F("]{"));
-            //Serial.print(name);
-            //Serial.print(F("}="));
             Serial.print(currentUuid);
             Serial.print(F("}-->"));
             Serial.println(variableList[value_idx]->getVarUUID() );
             #endif //
         } else {
             Serial.print(F("UUIDs idxError:"));
-            Serial.println(value_idx);
+            Serial.print(value_idx);
+            Serial.print(F(" from "));
+            Serial.print(name);
+            Serial.print("=");
+            Serial.println(value);
         }
-    } else if (strcmp("COMMON",section)== 0) {
-        Serial.print(F("set "));
+    } else if (strcmp_P(section,COMMON_pm)== 0) {
+        Serial.print(F("COMMON tbd "));
         Serial.print(name);
         Serial.print(F(" to "));  
         Serial.println(value);  
 
+    } else if (strcmp_P(section,BOOT_pm)== 0) {
+        Serial.print(F("BOOT tbd "));
+        Serial.print(name);
+        Serial.print(F(" to "));  
+        Serial.println(value);  
     } else {
-        if (strcmp(section, prev_section)) {
-            //printf("%s[%s]\n", (prev_section[0] ? "\n" : ""), section);
-            if (prev_section[0] ) {
-                Serial.println();
-            } 
-            Serial.print(F("["));
-            Serial.print(section);
-            Serial.println(F("]"));
-            strncpy(prev_section, section, sizeof(prev_section));
-            prev_section[sizeof(prev_section) - 1] = '\0';
-        }
-        //Serial.print(section);
-        //printf("%s = %s\n", name, value);
+        Serial.print(F("Not supported ["));
+        Serial.print(section);
+        Serial.println(F("] "));
         Serial.print(name);
         Serial.print(F("="));  
         Serial.println(value);  
     }
     return 1;
 }
+#endif //USE_SD_MAYFLY_INI
+
 // ==========================================================================
 // Main setup function
 // ==========================================================================
@@ -985,6 +1021,7 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
+
     // Set up the sleep/wake pin for the modem and put its inital value as "off"
     #if defined(TINY_GSM_MODEM_XBEE)
         if(modemSleepRqPin >= 0) 
@@ -1026,7 +1063,25 @@ void setup()
         pinMode(modemSleepRqPin, OUTPUT);
         digitalWrite(modemSleepRqPin, LOW);
     #endif
-
+#ifdef USE_SD_MAYFLY_INI
+    PRINTOUT(F("***parseIni "));
+    EnviroDIYLogger.parseIniSd(MayflyIniID,inihUnhandledFn);
+#endif //USE_SD_MAYFLY_INI
+    #if 1
+    Serial.println(F(" List of UUIDs"));
+    uint8_t i_lp;
+    for (i_lp=0;i_lp<variableCount;i_lp++)
+    {
+        Serial.print(F("["));
+        Serial.print(i_lp);
+        Serial.print(F("] "));
+        Serial.println(variableList[i_lp]->getVarUUID() );
+    }
+    //Serial.print(F("sF "))
+    Serial.print(samplingFeature);
+    Serial.print(F("/"));
+    Serial.println(ps.provider.s.sampling_feature);
+    #endif //1
     // Set the timezone and offsets
     // Logging in the given time zone
     Logger::setTimeZone(timeZone);
@@ -1039,25 +1094,15 @@ void setup()
     EnviroDIYLogger.setTestingModePin(buttonPin);
 
     // Enter the tokens for the connection with EnviroDIY
-    EnviroDIYLogger.setToken(registrationToken);
-    EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
+    //EnviroDIYLogger.setToken(registrationToken);
+    EnviroDIYLogger.setToken(ps.provider.s.registration_token);
+    //EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
+    EnviroDIYLogger.setSamplingFeatureUUID(ps.provider.s.sampling_feature);
 
     // Begin the logger
     PRINTOUT(F("***beginAndNoSync "));
     EnviroDIYLogger.beginLogger();
-    PRINTOUT(F("***parseIni "));
-    EnviroDIYLogger.parseIniSd(MayflyIniID,inihUnhandledFn);
-    #if 1
-    Serial.println(F(" List of UUIDs"));
-    uint8_t i_lp;
-    for (i_lp=0;i_lp<variableCount;i_lp++)
-    {
-        Serial.print(F("["));
-        Serial.print(i_lp);
-        Serial.print(F("] "));
-        Serial.println(variableList[i_lp]->getVarUUID() );
-    }
-#endif
+
     PRINTOUT(F("***timeSync "));
     EnviroDIYLogger.timeSync();
 #if defined(TINY_GSM_MODEM_XBEE)
