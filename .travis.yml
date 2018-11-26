@@ -7,6 +7,28 @@ git:
 cache:
     directories:
         - "~/.platformio"
+language: python
+python:
+    - "2.7"
+install:
+    # Get the current branch
+    - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+    - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH, PR=$PR, BRANCH=$BRANCH"
+    # Remove src files to emulate a user library installation
+    - git rm library.json
+    - git rm library.properties
+    - git rm -r src
+    # Install PlatformIO (this should be cached!)
+    - pip install -U platformio
+     -pio upgrade
+    # Install this library
+    - pio lib -g install https://github.com/EnviroDIY/ModularSensors.git#$BRANCH
+    # Install serial libraries needed for most examples
+    - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git  # #73, but need the git until Paul S. has a new release
+    - pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
+    - pio update
+script:
+    - platformio ci --project-option="lib_ignore = RTCZero"  --project-option="lib_ldf_mode = deep" --board=mayfly
 
 matrix:
     include:
@@ -15,72 +37,33 @@ matrix:
           - npm install -g jsonlint
         script: jsonlint -q library.json
 
-      - language: python
-        python:
-            - "2.7"
-        env:
-            - PLATFORMIO_CI_SRC=examples/single_sensor/ PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
-        script: make travis-build
+      - env:
+            - PLATFORMIO_CI_SRC=examples/single_sensor/
 
-      - language: python
-        python:
-            - "2.7"
-        env:
-            - PLATFORMIO_CI_SRC=examples/multisensor_print/ PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
-        script: make travis-build
+      - env:
+            - PLATFORMIO_CI_SRC=examples/multisensor_print/
 
-      - language: python
-        python:
-            - "2.7"
-        env:
-            - PLATFORMIO_CI_SRC=examples/simple_logging/ PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
-        script: make travis-build
+      - env:
+            - PLATFORMIO_CI_SRC=examples/simple_logging/
 
-      - language: python
-        python:
-            - "2.7"
-        env:
-            - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY/ PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
-        script: make travis-build
+      - env:
+            - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY/
+      - env:
+            - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/
 
-      - language: python
-        python:
-            - "2.7"
-        env:
-            - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY_Zero/ PLATFORMIO_CI_ZERO=1 PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
-        script: make travis-build
+      - env:
+            - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/
 
-      - language: python
-        python:
-            - "2.7"
-        env:
-            - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/ PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
-        script: make travis-build
+      - env:
+            - PLATFORMIO_CI_SRC=examples/double_logger/
 
-      - language: python
-        python:
-            - "2.7"
-        env:
-            - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/ PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
-        script: make travis-build
+      - env:
+            - PLATFORMIO_CI_SRC=examples/baro_rho_correction/
 
-      - language: python
-        python:
-            - "2.7"
-        env:
-            - PLATFORMIO_CI_SRC=examples/double_logger/ PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
-        script: make travis-build
+      - env:
+            - PLATFORMIO_CI_SRC=examples/data_saving/
 
-      - language: python
-        python:
-            - "2.7"
-        env:
-            - PLATFORMIO_CI_SRC=examples/baro_rho_correction/ PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
-        script: make travis-build
-
-      - language: python
-        python:
-            - "2.7"
-        env:
-            - PLATFORMIO_CI_SRC=examples/data_saving/ PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
-        script: make travis-build
+      - env:
+            - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY_Zero/
+        script:
+            - platformio ci --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial, SoftI2CMaster"  --project-option="lib_ldf_mode = deep" --board=adafruit_feather_m0
