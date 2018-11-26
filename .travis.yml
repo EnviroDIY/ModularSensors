@@ -1,13 +1,6 @@
 before_install:
     - git config --global user.email "sdamiano@stroudcenter.org"
     - git config --global user.name "SRGDamia1"
-    # Remove the cloned repo to emulate a user library installation
-    - cd ../..
-    - rm -r EnviroDIY
-    # - git rm library.json
-    # - git rm library.properties
-    # - git rm pio_set_global_flags.py
-    # - git rm -r src
 
 sudo: false
 git:
@@ -19,6 +12,13 @@ language: python
 python:
     - "2.7"
 install:
+    # Remove the cloned repo to emulate a user library installation
+    - cd ../..
+    - rm -r -f EnviroDIY
+    # - git rm library.json
+    # - git rm library.properties
+    # - git rm pio_set_global_flags.py
+    # - git rm -r src
     # Install PlatformIO (this should be cached!)
     - pip install -U platformio
     - pio upgrade
