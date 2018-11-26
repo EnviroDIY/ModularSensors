@@ -28,7 +28,7 @@ install:
     - pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
     # - pio update
 script:
-    - platformio ci --project-option="lib_ignore = RTCZero"  --project-option="lib_ldf_mode = deep" --board=mayfly
+    - platformio ci --project-option="lib_ignore = RTCZero"  --project-option="lib_ldf_mode = deep+" --board=mayfly
 
 matrix:
     include:
@@ -45,7 +45,7 @@ matrix:
       - env: PLATFORMIO_CI_SRC=examples/double_logger/
       - env: PLATFORMIO_CI_SRC=examples/baro_rho_correction/
       - env: PLATFORMIO_CI_SRC=examples/data_saving/
-      
+
       - env: PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY_Zero/
         script:
-            - platformio ci --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial, SoftI2CMaster"  --project-option="lib_ldf_mode = deep" --board=adafruit_feather_m0
+            - platformio ci --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial, SoftI2CMaster"  --project-option="lib_ldf_mode = deep+" --board=adafruit_feather_m0
