@@ -26,44 +26,26 @@ install:
     # Install serial libraries needed for most examples
     - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git  # #73, but need the git until Paul S. has a new release
     - pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
-    - pio update
+    # - pio update
 script:
     - platformio ci --project-option="lib_ignore = RTCZero"  --project-option="lib_ldf_mode = deep" --board=mayfly
 
 matrix:
     include:
       - language: node_js
-        install:
-          - npm install -g jsonlint
+        install: npm install -g jsonlint
         script: jsonlint -q library.json
 
-      - env:
-            - PLATFORMIO_CI_SRC=examples/single_sensor/
-
-      - env:
-            - PLATFORMIO_CI_SRC=examples/multisensor_print/
-
-      - env:
-            - PLATFORMIO_CI_SRC=examples/simple_logging/
-
-      - env:
-            - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY/
-      - env:
-            - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/
-
-      - env:
-            - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/
-
-      - env:
-            - PLATFORMIO_CI_SRC=examples/double_logger/
-
-      - env:
-            - PLATFORMIO_CI_SRC=examples/baro_rho_correction/
-
-      - env:
-            - PLATFORMIO_CI_SRC=examples/data_saving/
-
-      - env:
-            - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY_Zero/
+      - env: PLATFORMIO_CI_SRC=examples/single_sensor/
+      - env: PLATFORMIO_CI_SRC=examples/multisensor_print/
+      - env: PLATFORMIO_CI_SRC=examples/simple_logging/
+      - env: PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY/
+      - env: PLATFORMIO_CI_SRC=examples/DRWI_CitSci/
+      - env: PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/
+      - env: PLATFORMIO_CI_SRC=examples/double_logger/
+      - env: PLATFORMIO_CI_SRC=examples/baro_rho_correction/
+      - env: PLATFORMIO_CI_SRC=examples/data_saving/
+      
+      - env: PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY_Zero/
         script:
             - platformio ci --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial, SoftI2CMaster"  --project-option="lib_ldf_mode = deep" --board=adafruit_feather_m0

@@ -55,11 +55,7 @@
             "+<sensors/*.cpp>",
             "+<sensors/*.h>"
         ],
-        "flags":
-        [
-            "-D SDI12_EXTERNAL_PCINT",
-            "-D NEOSWSERIAL_EXTERNAL_PCINT"
-        ]
+        "extraScript": "pio_set_global_flags.py"
     },
     "dependencies":
     [
