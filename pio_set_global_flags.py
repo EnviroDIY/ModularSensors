@@ -1,7 +1,7 @@
 Import('env')
 from os.path import join, realpath
 
-pass flags to local build environment (for just this library)
+# pass flags to local build environment (for just this library)
 env.Append(
     CPPDEFINES=[
         ("NEOSWSERIAL_EXTERNAL_PCINT",),
