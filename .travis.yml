@@ -20,7 +20,7 @@ install:
     - git rm -r src
     # Install PlatformIO (this should be cached!)
     - pip install -U platformio
-     -pio upgrade
+    - pio upgrade
     # Install this library
     - pio lib -g install https://github.com/EnviroDIY/ModularSensors.git#$BRANCH
     # Install serial libraries needed for most examples
@@ -33,7 +33,7 @@ script:
 matrix:
     include:
       - language: node_js
-        before_script:
+        install:
           - npm install -g jsonlint
         script: jsonlint -q library.json
 
