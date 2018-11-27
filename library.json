@@ -55,7 +55,7 @@
             "+<sensors/*.cpp>",
             "+<sensors/*.h>"
         ],
-        "extraScript": "pio_set_global_flags.py",        
+        "extraScript": "pioScripts/pio_set_global_flags.py",        
         "libLDFMode": "deep+"
     },
     "dependencies":
