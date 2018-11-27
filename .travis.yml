@@ -15,7 +15,7 @@ install:
     # Remove the cloned repo to emulate a user library installation
     - git rm library.json
     - git rm library.properties
-    - git rm pio_set_global_flags.py
+    - git rm -r pioScripts
     - git rm -r src
     # Install PlatformIO (this should be cached!)
     - pip install -U platformio
