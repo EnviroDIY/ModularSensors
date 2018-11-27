@@ -32,7 +32,7 @@ install:
     - pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
     - pio update
 script:
-    - platformio ci -v --project-option="lib_ignore = RTCZero"  --project-option="lib_ldf_mode = deep+" --board=mayfly
+    - platformio ci -v --project-option="lib_ignore = RTCZero" --project-option="lib_ldf_mode = deep+" --board=mayfly
 
 matrix:
     include:
