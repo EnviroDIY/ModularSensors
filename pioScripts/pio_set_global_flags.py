@@ -8,8 +8,8 @@ env.Append(
         ("SDI12_EXTERNAL_PCINT",)
     ]
 )
-print ">>>>>LOCAL ENV<<<<<"
-print env.Dump()
+# print ">>>>>LOCAL ENV<<<<<"
+# print env.Dump()
 
 # append the same flags to the global build environment (for all libraries, etc)
 global_env = DefaultEnvironment()
@@ -19,5 +19,5 @@ global_env.Append(
         ("SDI12_EXTERNAL_PCINT",)
     ]
 )
-print "<<<<<GLOBAL ENV>>>>>"
-print global_env.Dump()
+# print "<<<<<GLOBAL ENV>>>>>"
+# print global_env.Dump()

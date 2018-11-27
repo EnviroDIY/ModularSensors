@@ -40,16 +40,36 @@ matrix:
         install: npm install -g jsonlint
         script: jsonlint -q library.json
 
-      - env: PLATFORMIO_CI_SRC=examples/single_sensor/
-      - env: PLATFORMIO_CI_SRC=examples/multisensor_print/
-      - env: PLATFORMIO_CI_SRC=examples/simple_logging/
-      - env: PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY/
-      - env: PLATFORMIO_CI_SRC=examples/DRWI_CitSci/
-      - env: PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/
-      - env: PLATFORMIO_CI_SRC=examples/double_logger/
-      - env: PLATFORMIO_CI_SRC=examples/baro_rho_correction/
-      - env: PLATFORMIO_CI_SRC=examples/data_saving/
+      - env:
+          - PLATFORMIO_CI_SRC=examples/single_sensor/
+          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
+      - env:
+          - PLATFORMIO_CI_SRC=examples/multisensor_print/
+          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
+      - env:
+          - PLATFORMIO_CI_SRC=examples/simple_logging/
+          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
+      - env:
+          - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY/
+          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
+      - env:
+          - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/
+          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
+      - env:
+          - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/
+          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
+      - env:
+          - PLATFORMIO_CI_SRC=examples/double_logger/
+          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
+      - env:
+          - PLATFORMIO_CI_SRC=examples/baro_rho_correction/
+          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
+      - env:
+          - PLATFORMIO_CI_SRC=examples/data_saving/
+          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
 
-      - env: PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY_Zero/
+      - env:
+        - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY_Zero/
+        - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
         script:
             - platformio ci -v --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial, SoftI2CMaster"  --project-option="lib_ldf_mode = deep+" --board=adafruit_feather_m0
