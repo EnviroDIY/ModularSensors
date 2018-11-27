@@ -7,14 +7,16 @@
  *This file is for the basic logging functions - ie, saving to an SD card.
 */
 
+// Header Guards
 #ifndef LoggerBase_h
 #define LoggerBase_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
-#include "ModSensorDebugger.h"
 
+// Included Dependencies
+//#include <Arduino.h>
+#include "ModSensorDebugger.h"
 #include "VariableArray.h"
 
 // Bring in the libraries to handle the processor sleep/standby modes
@@ -26,7 +28,7 @@
   #include <avr/power.h>
 #endif
 
-// Bring in the library to commuinicate with an external high-precision real time clock
+// Bring in the library to communicate with an external high-precision real time clock
 // This also implements a needed date/time class
 #include <Sodaq_DS3231.h>
 #define EPOCH_TIME_OFF 946684800
@@ -37,8 +39,6 @@
 
 #include <SdFat.h>  // To communicate with the SD card
 
-static String LOGGER_EMPTY = "";
-
 // Defines the "Logger" Class
 class Logger
 {
@@ -47,6 +47,8 @@ public:
     Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
            int8_t SDCardPin, int8_t mcuWakePin,
            VariableArray *inputArray);
+    // Destructor
+    virtual ~Logger();
 
     // Sets the static timezone - this must be set
     static void setTimeZone(int8_t timeZone);
@@ -134,17 +136,13 @@ public:
     // This returns the current filename.  Must be run after setFileName.
     String getFileName(void){return _fileName;}
 
-    // This creates a header for the logger file
-    virtual String generateFileHeader(void);
     // This prints a header onto a stream - this removes need to pass around
     // very long string objects which can crash the logger
-    virtual void streamFileHeader(Stream *stream);
+    virtual void printFileHeader(Stream *stream);
 
-    // This generates a comma separated list of volues of sensor data - including the time
-    String generateSensorDataCSV(void);
-    // This sends a comma separated list of volues of sensor data - including the
+    // This prints a comma separated list of volues of sensor data - including the
     // time -  out over an Arduino stream
-    void streamSensorDataCSV(Stream *stream);
+    void printSensorDataCSV(Stream *stream);
 
     // These functions create a file on an SD card and set the created/modified/
     // accessed timestamps in that file.
@@ -189,11 +187,14 @@ public:
     // ===================================================================== //
     // Convience functions to call several of the above functions
     // ===================================================================== //
-    // This calls all of the setup functions - must be run AFTER init
-    virtual void begin(void);
+    // This does all of the setup that can't happen in the constructors
+    // That is, things that require the actual processor/MCU to do something
+    // rather than the compiler to do something.
+    virtual void begin(bool skipSensorSetup = false);
 
     // This is a one-and-done to log data
-    virtual void log(void);
+    virtual void logData(void);
+
 
     // Public variables
     // Time stamps - want to set them at a single time and carry them forward
@@ -224,20 +225,15 @@ protected:
     static int8_t _timeZone;
     static int8_t _offset;
 
-    // Time stamps - want to set them at a single time and carry them forward
-    static DateTime markedDateTime;
-    static char markedISO8601Time[26];
-
     // Initialization variables
     const char *_loggerID;
     uint16_t _loggingIntervalMinutes;
     int8_t _SDCardPin;
     int8_t _mcuWakePin;
-    VariableArray *_internalArray;
-
-    uint8_t _numTimepointsLogged;
     int8_t _ledPin;
     int8_t _buttonPin;
+    VariableArray *_internalArray;
+    bool _areSensorsSetup;
 
     // This checks if the SD card is available and ready
     // We run this check before every communication with the SD card to prevent
@@ -256,4 +252,4 @@ protected:
     bool openFile(String& filename, bool createFile, bool writeDefaultHeader);
 };
 
-#endif
+#endif  // Header Guard

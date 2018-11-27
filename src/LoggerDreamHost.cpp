@@ -19,41 +19,26 @@ LoggerDreamHost::LoggerDreamHost(const char *loggerID, uint16_t loggingIntervalM
                                  int8_t SDCardPin, int8_t mcuWakePin,
                                  VariableArray *inputArray)
   : LoggerEnviroDIY(loggerID, loggingIntervalMinutes, SDCardPin, mcuWakePin, inputArray)
- {}
+{}
+// Destructor
+LoggerDreamHost::~LoggerDreamHost(){}
 
 // Functions for private SWRC server
 void LoggerDreamHost::setDreamHostPortalRX(const char *URL)
 {
     _DreamHostPortalRX = URL;
-    MS_DBG(F("Dreamhost portal URL set!\n"));
+    MS_DBG(F("Dreamhost portal URL set!"));
 }
 
 
-// This creates all of the URL parameters
-String LoggerDreamHost::generateSensorDataDreamHost(void)
-{
-    String dhString = String(_DreamHostPortalRX);
-    dhString += F("?LoggerID=");
-    dhString += String(Logger::_loggerID);
-    dhString += F("&Loggertime=");
-    dhString += String(Logger::markedEpochTime - 946684800);  // Coorect time from epoch to y2k
-
-    for (int i = 0; i < _internalArray->getVariableCount(); i++)
-    {
-        dhString += F("&");
-        dhString += _internalArray->arrayOfVars[i]->getVarCode();
-        dhString += F("=");
-        dhString += _internalArray->arrayOfVars[i]->getValueString();
-    }
-    return dhString;
-}
-void LoggerDreamHost::streamSensorDataDreamHost(Stream *stream)
+// This prints the URL out to an Arduino stream
+void LoggerDreamHost::printSensorDataDreamHost(Stream *stream)
 {
     stream->print(String(_DreamHostPortalRX));
     stream->print(String(F("?LoggerID=")) + String(Logger::_loggerID));
-    stream->print(String(F("?Loggertime=")) + String(Logger::markedEpochTime - 946684800));  // Correct time from epoch to y2k
+    stream->print(String(F("&Loggertime=")) + String(Logger::markedEpochTime - 946684800));  // Correct time from epoch to y2k
 
-    for (int i = 0; i < _internalArray->getVariableCount(); i++)
+    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
     {
         stream->print(String(F("&")) + String(_internalArray->arrayOfVars[i]->getVarCode()) \
             + String(F("=")) + String(_internalArray->arrayOfVars[i]->getValueString()));
@@ -61,39 +46,15 @@ void LoggerDreamHost::streamSensorDataDreamHost(Stream *stream)
 }
 
 
-// // This generates a fully structured GET request for DreamHost
-// String LoggerDreamHost::generateDreamHostGetRequest(String fullURL)
-// {
-//     String GETstring = String(F("GET "));
-//     GETstring += String(fullURL);
-//     GETstring += String(F("  HTTP/1.1"));
-//     GETstring += String(F("\r\nHost: swrcsensors.dreamhosters.com"));
-//     GETstring += String(F("\r\n\r\n"));
-//     return GETstring;
-// }
-// String LoggerDreamHost::generateDreamHostGetRequest(void)
-// {
-//     return generateDreamHostGetRequest(generateSensorDataDreamHost());
-// }
-
-
 // This prints a fully structured GET request for DreamHost to the
-// specified stream using the specified url.
-void LoggerDreamHost::streamDreamHostRequest(Stream *stream, String& fullURL)
-{
-    stream->print(String(F("GET ")));
-    stream->print(fullURL);
-    stream->print(String(F("  HTTP/1.1")));
-    stream->print(String(F("\r\nHost: swrcsensors.dreamhosters.com")));
-    stream->print(String(F("\r\n\r\n")));
-}
-void LoggerDreamHost::streamDreamHostRequest(Stream *stream)
+// specified stream
+void LoggerDreamHost::printDreamHostRequest(Stream *stream)
 {
     // Start the request
     stream->print(String(F("GET ")));
 
     // Stream the full URL with parameters
-    streamSensorDataDreamHost(stream);
+    printSensorDataDreamHost(stream);
 
     // Send the rest of the HTTP header
     stream->print(String(F("  HTTP/1.1")));
@@ -103,57 +64,54 @@ void LoggerDreamHost::streamDreamHostRequest(Stream *stream)
 
 
 // Post the data to dream host.
-int LoggerDreamHost::postDataDreamHost(String& fullURL)
+int16_t LoggerDreamHost::postDataDreamHost(void)
 {
     // do not continue if no modem!
-    if (!_modemAttached)
+    if (_logModem == NULL)
     {
-        PRINTOUT(F("No modem attached, data cannot be sent out!\n"));
+        PRINTOUT(F("No modem attached, data cannot be sent out!"));
         return 504;
     }
 
     // Create a buffer for the response
     char response_buffer[12] = "";
-    int did_respond = 0;
+    uint16_t did_respond = 0;
 
     // Open a TCP/IP connection to DreamHost
-    if(_logModem.openTCP("swrcsensors.dreamhosters.com", 80))
+    if(_logModem->_tinyClient->connect("swrcsensors.dreamhosters.com", 80))
     {
         // Send the request to the serial for debugging
         #if defined(STANDARD_SERIAL_OUTPUT)
-            PRINTOUT(F("\n \\/------ Data to DreamHost ------\\/ \n"));
-            if (fullURL.length() > 1) streamDreamHostRequest(&STANDARD_SERIAL_OUTPUT, fullURL);
-            else streamDreamHostRequest(&STANDARD_SERIAL_OUTPUT);
+            PRINTOUT(F("\n \\/------ Data to DreamHost ------\\/ "));
+            printDreamHostRequest(&STANDARD_SERIAL_OUTPUT);
             STANDARD_SERIAL_OUTPUT.flush();
         #endif
 
         // Send the request to the modem stream
-        if (fullURL.length() > 1) streamDreamHostRequest(_logModem._client, fullURL);
-        else streamDreamHostRequest(_logModem._client);
-        _logModem._client->flush();  // wait for sending to finish
+        printDreamHostRequest(_logModem->_tinyClient);
+        _logModem->_tinyClient->flush();  // wait for sending to finish
 
         uint32_t start_timer = millis();
-        while ((millis() - start_timer) < 10000L && _logModem._client->available() < 12)
+        while ((millis() - start_timer) < 10000L && _logModem->_tinyClient->available() < 12)
         {delay(10);}
 
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
-        // we don't care about so we're not reading to save on total
-        // data used for transmission.
-        did_respond = _logModem._client->readBytes(response_buffer, 12);
+        // we don't care about.
+        did_respond = _logModem->_tinyClient->readBytes(response_buffer, 12);
 
         // Close the TCP/IP connection as soon as the first 12 characters are read
         // We don't need anything else and stoping here should save data use.
-        _logModem.closeTCP();
+        _logModem->_tinyClient->stop();
     }
-    else PRINTOUT(F("\n -- Unable to Establish Connection to DreamHost -- \n"));
+    else PRINTOUT(F("\n -- Unable to Establish Connection to DreamHost -- "));
 
     // Process the HTTP response
-    int responseCode = 0;
+    int16_t responseCode = 0;
     if (did_respond > 0)
     {
         char responseCode_char[4];
-        for (int i = 0; i < 3; i++)
+        for (uint8_t i = 0; i < 3; i++)
         {
             responseCode_char[i] = response_buffer[i+9];
         }
@@ -161,8 +119,8 @@ int LoggerDreamHost::postDataDreamHost(String& fullURL)
     }
     else responseCode=504;
 
-    PRINTOUT(F(" -- Response Code -- \n"));
-    PRINTOUT(responseCode, F("\n"));
+    PRINTOUT(F(" -- Response Code -- "));
+    PRINTOUT(responseCode);
 
     return responseCode;
 }
@@ -180,8 +138,26 @@ void LoggerDreamHost::disableDualPost(void)
 // ===================================================================== //
 
 // This is a one-and-done to log data
-void LoggerDreamHost::log(void)
+void LoggerDreamHost::logDataAndSend(void)
 {
+    // If the number of intervals is negative, then the sensors and file on
+    // the SD card haven't been setup and we want to set them up.
+    // NOTE:  Unless it completed in less than one second, the sensor set-up
+    // will take the place of logging for this interval!
+    if (!_areSensorsSetup)
+    {
+        // Set up the sensors
+        PRINTOUT(F("Sensors and data file had not been set up!  Setting them up now."));
+        _internalArray->setupSensors();
+
+       // Create the log file, adding the default header to it
+       if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
+       else PRINTOUT(F("Unable to create a file to save data to!"));
+
+       // Mark sensors as having been setup
+       _areSensorsSetup = 1;
+    }
+
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
     if (checkInterval())
@@ -190,37 +166,25 @@ void LoggerDreamHost::log(void)
         Logger::isLoggingNow = true;
 
         // Print a line to show new reading
-        PRINTOUT(F("------------------------------------------\n"));
+        PRINTOUT(F("------------------------------------------"));
         // Turn on the LED to show we're taking a reading
         if (_ledPin >= 0) digitalWrite(_ledPin, HIGH);
 
-        if (_modemAttached)
-        {
-            // Turn on the modem to let it start searching for the network
-            _logModem.modemPowerUp();
-        }
+        // Turn on the modem to let it start searching for the network
+        if (_logModem != NULL) _logModem->modemPowerUp();
 
-        // Send power to all of the sensors
-        MS_DBG(F("    Powering sensors...\n"));
-        _internalArray->sensorsPowerUp();
-        // Wake up all of the sensors
-        MS_DBG(F("    Waking sensors...\n"));
-        _internalArray->sensorsWake();
-        // Update the values from all attached sensors
-        MS_DBG(F("  Updating sensor values...\n"));
-        _internalArray->updateAllSensors();
-        // Put sensors to sleep
-        MS_DBG(F("  Putting sensors back to sleep...\n"));
-        _internalArray->sensorsSleep();
-        // Cut sensor power
-        MS_DBG(F("  Cutting sensor power...\n"));
-        _internalArray->sensorsPowerDown();
+        // Do a complete sensor update
+        MS_DBG(F("    Running a complete sensor update..."));
+        _internalArray->completeUpdate();
 
-        if (_modemAttached)
+        // Create a csv data record and save it to the log file
+        logToSD();
+
+        if (_logModem != NULL)
         {
             // Connect to the network
-            MS_DBG(F("  Connecting to the Internet...\n"));
-            if (_logModem.connectInternet())
+            MS_DBG(F("  Connecting to the Internet..."));
+            if (_logModem->connectInternet())
             {
                 if(_dualPost)
                 {
@@ -231,28 +195,25 @@ void LoggerDreamHost::log(void)
                 // Post the data to DreamHost
                 postDataDreamHost();
 
-                // Sync the clock every 288 readings (1/day at 5 min intervals)
-                MS_DBG(F("  Running a daily clock sync...\n"));
-                if (_numTimepointsLogged % 288 == 0)
+                // Sync the clock at midnight
+                if (markedEpochTime != 0 && markedEpochTime % 86400 == 0)
                 {
-                    syncRTClock(_logModem.getNISTTime());
+                    MS_DBG(F("  Running a daily clock sync..."));
+                    syncRTClock(_logModem->getNISTTime());
                 }
 
                 // Disconnect from the network
-                MS_DBG(F("  Disconnecting from the Internet...\n"));
-                _logModem.disconnectInternet();
+                MS_DBG(F("  Disconnecting from the Internet..."));
+                _logModem->disconnectInternet();
             }
             // Turn the modem off
-            _logModem.modemPowerDown();
+            _logModem->modemSleepPowerDown();
         }
-
-        // Create a csv data record and save it to the log file
-        logToSD();
 
         // Turn off the LED
         if (_ledPin >= 0) digitalWrite(_ledPin, LOW);
         // Print a line to show reading ended
-        PRINTOUT(F("------------------------------------------\n\n"));
+        PRINTOUT(F("------------------------------------------\n"));
 
         // Unset flag
         Logger::isLoggingNow = false;

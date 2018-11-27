@@ -7,24 +7,27 @@
  *This file is for the variable base class.
 */
 
+// Header Guards
 #ifndef VariableBase_h
 #define VariableBase_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
-#include "ModSensorDebugger.h"
 
-class Sensor;  // Forward declaration
+// Forward Declared Dependences
+class Sensor;
+
+// Included Dependencies
+#include "ModSensorDebugger.h"
 
 class Variable
 {
 public:
     // The constructor for a measured variable - that is, one whose values are
     // updated by a sensor.
-    Variable(Sensor *parentSense, int varNum,
+    Variable(Sensor *parentSense, uint8_t varNum,
              const char *varName = VAR_BASE_UNKNOWN, const char *varUnit = VAR_BASE_UNKNOWN,
-             unsigned int decimalResolution = 0,
+             uint8_t decimalResolution = 0,
              const char *defaultVarCode = VAR_BASE_UNKNOWN,
              const char *UUID = "", const char *customVarCode = "");
 
@@ -33,8 +36,11 @@ public:
      // NOTE:  ALL arguments are required!
      Variable(float (*calcFxn)(),
               const char *varName, const char *varUnit,
-              unsigned int decimalResolution,
+              uint8_t decimalResolution,
               const char *UUID, const char *customVarCode);
+
+    // Destructor
+    virtual ~Variable();
 
     // These functions tie the variable and sensor together
     // They should never be called for a calculated variable
@@ -45,12 +51,12 @@ public:
     // This is a helper - it returns the name of the parent sensor, if applicable
     // This is needed for dealing with variables in arrays
     String getParentSensorName(void);
+    // This is a helper - it returns the name and location of the parent sensor, if applicable
     // This is needed for dealing with variables in arrays
-    // This is a helper - it returns the "location" of the parent sensor, if applicable
-    String getParentSensorLocation(void);
+    String getParentSensorNameAndLocation(void);
 
     // This sets up the variable (generally attaching it to its parent)
-    virtual bool setup(void);
+    // virtual bool setup(void);
 
     // This gets the variable's name using http://vocabulary.odm2.org/variablename/
     String getVarName(void);
@@ -79,11 +85,11 @@ private:
     uint8_t _varNum;
     const char *_varName;
     const char *_varUnit;
-    unsigned int _decimalResolution;
+    uint8_t _decimalResolution;
     const char *_defaultVarCode;
     const char *_customCode;
     const char *_UUID;
     static const char* VAR_BASE_UNKNOWN;
 };
 
-#endif
+#endif  // Header Guard

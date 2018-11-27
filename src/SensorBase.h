@@ -7,14 +7,16 @@
  *This file is for the sensor base class.
 */
 
+// Header Guards
 #ifndef SensorBase_h
 #define SensorBase_h
 
-#include <Arduino.h>
-#include <pins_arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
+#include <pins_arduino.h>
 
 // The largest number of variables from a single sensor
 #define MAX_NUMBER_VARS 8
@@ -30,31 +32,43 @@ public:
     Sensor(const char *sensorName = "Unknown", uint8_t numReturnedVars = 1,
            uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0,
            int8_t powerPin = -1, int8_t dataPin = -1, uint8_t measurementsToAverage = 1);
+    virtual ~Sensor();
 
     // These functions are dependent on the constructor and return the constructor values
     // This gets the place the sensor is installed ON THE ARDUINO (ie, pin number)
     virtual String getSensorLocation(void);
     // This gets the name of the sensor.
     virtual String getSensorName(void);
+    // This concatentates and returns the name and location.
+    String getSensorNameAndLocation(void);
+    // This gets the pin number for the power pin.
+    virtual int8_t getPowerPin(void);
 
     // These functions get and set the number of readings to average for a sensor
     // Generally these values should be set in the constructor
     void setNumberMeasurementsToAverage(int nReadings);
-    int getNumberMeasurementsToAverage(void);
+    uint8_t getNumberMeasurementsToAverage(void);
 
     // This returns the 8-bit code for the current status of the sensor.
-    // Bit 0 - 0=Not powered, 1=Powered
-    // Bit 1 - 0=Has NOT been set up, 1=Has been setup
-    // Bit 2 - 0=Is NOT warmed up, 1=Is warmed up
-    // Bit 3 - 0=Not awake/actively measuring, 1=Is awake/actively measuring
-    // Bit 4 - 0=Readings not stable, 1=Readings should be stable
-    // Bit 5 - 0=Measurement requested, 1=No measurements have been requested
-    // Bit 6 - 0=Waiting for measurement completion (IFF bit 3 and 4 are set!),
-    //         1=Measurement complete (IFF bit 3 and 4 are set!)
+    // Bit 0 - 0=Has NOT been successfully set up, 1=Has been setup
+    // Bit 1 - 0=No attempt made to power sensor, 1=Attempt made to power sensor
+    // Bit 2 - 0=Power up attampt failed, 1=Power up attempt succeeded
+    //       - Use the isWarmedUp() function to check if enough time has passed
+    //         to be ready for sensor communication.
+    // Bit 3 - 0=Activation/wake attempt made, 1=No activation/wake attempt made
+    //       - check _millisSensorActivated or bit 4 to see if wake() attempt was successful
+    //       - a failed activation attempt will give _millisSensorActivated = 0
+    // Bit 4 - 0=Wake/Activate failed, 1=Is awake/actively measuring
+    //       - Use the isStable() function to check if enough time has passed
+    //         to begin a measurement.
+    // Bit 5 - 0=Start measurement requested attempt made, 1=No measurements have been requested
+    //       - check _millisMeasurementRequested or bit 6 to see if startSingleMeasurement() attempt was successful
+    //       - a failed request attempt will give _millisMeasurementRequested = 0
+    // Bit 6 - 0=Measurement start failed, 1=Measurement attempt succeeded
+    //       - Use the isMeasurementComplete() to check if enough time has passed
+    //         for a measurement to have been completed.
     // Bit 7 - 0=No known errors, 1=Some sort of error has occurred
     uint8_t getStatus(void);
-    // This function checks the current status
-    void updateStatusBits(bool debug=false);
 
     // This sets up the sensor, if necessary.  Defaults to true.
     // Generally, the sensor must be powered on for setup.
@@ -105,8 +119,8 @@ public:
     // Clears the values array
     void clearValues();
     // This verifies that a measurement is OK (ie, not -9999) before adding it to the array
-    void verifyAndAddMeasurementResult(int resultNumber, float resultValue);
-    void verifyAndAddMeasurementResult(int resultNumber, int resultValue);
+    void verifyAndAddMeasurementResult(uint8_t resultNumber, float resultValue);
+    void verifyAndAddMeasurementResult(uint8_t resultNumber, int16_t resultValue);
     void averageMeasurements(void);
 
     // These tie the variables to their parent sensor
@@ -114,31 +128,25 @@ public:
     // Notifies attached variables of new values
     void notifyVariables(void);
 
-    // // This is the time that a value was last sent ot registered variables
-    // // It is set in the notifyVariables() function.
-    // // The "checkForUpdate()" function checks if values are older than 2 minutes.
-    // uint32_t _sensorLastUpdated;
-    // bool checkForUpdate(void);
-
     // The "isWarmedUp()" function checks whether or not enough time has passed
     // between the sensor receiving power and being ready to respond to logger
     // commands.  The "waitForWarmUp()" function delays until the time passes.
     // "checkPowerOn()" checks if the power pin is currently high
     bool checkPowerOn(bool debug=false);
-    bool isWarmedUp(bool debug=false);
+    virtual bool isWarmedUp(bool debug=false);
     void waitForWarmUp(void);
 
     // The "isStable()" function checks whether or not enough time has passed
     // between the sensor being awoken/activated and being ready to output stable
     // values.  The "waitForStability()" function delays until the time passes.
-    bool isStable(bool debug=false);
+    virtual bool isStable(bool debug=false);
     void waitForStability(void);
 
     // The "isMeasurementComplete()" function checks whether or not enough time
     // has passed between when the sensor was asked to take a single measurement
     // and when that measurement should be complete.  The
     // "waitForMeasurementCompletion()" function delays until the time passes.
-    bool isMeasurementComplete(bool debug=false);
+    virtual bool isMeasurementComplete(bool debug=false);
     void waitForMeasurementCompletion(void);
 
 
@@ -181,4 +189,4 @@ protected:
     Variable *variables[MAX_NUMBER_VARS];
 };
 
-#endif
+#endif  // Header Guard
