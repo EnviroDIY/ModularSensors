@@ -20,6 +20,8 @@ install:
     # Install PlatformIO (this should be cached!)
     - pip install -U platformio
     - pio upgrade
+    # Uninstall any old version of the current library from the Travis cache
+    - pio lib uninstall EnviroDIY_ModularSensors
     # Get the current branch
     - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
     - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH, PR=$PR, BRANCH=$BRANCH"
@@ -28,7 +30,7 @@ install:
     # Install serial libraries needed for most examples
     - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git  # #73, but need the git until Paul S. has a new release
     - pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
-    # - pio update
+    - pio update
 script:
     - platformio ci -v --project-option="lib_ignore = RTCZero"  --project-option="lib_ldf_mode = deep+" --board=mayfly
 
