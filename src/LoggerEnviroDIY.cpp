@@ -110,18 +110,18 @@ void LoggerEnviroDIY::printFileHeader(Stream *stream)
 // This prints a properly formatted JSON for EnviroDIY to an Arduino stream
 void LoggerEnviroDIY::printSensorDataJSON(Stream *stream)
 {
-    stream->print(String(F("{")));
-    stream->print(String(F("\"sampling_feature\": \"")));
+    stream->print('{');
+    stream->print(String("\"sampling_feature\":\""));
     stream->print(String(_samplingFeature));
-    stream->print(String(F("\", \"timestamp\": \"")));
-    stream->print(String(formatDateTime_ISO8601(markedEpochTime)) + F("\", "));
+    stream->print(String("\",\"timestamp\":\""));
+    stream->print(String(formatDateTime_ISO8601(markedEpochTime)) + String("\","));
 
     for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
     {
-        stream->print(String(F("\"")) + _internalArray->arrayOfVars[i]->getVarUUID() + String(F("\": ")) + _internalArray->arrayOfVars[i]->getValueString());
+        stream->print(String('"') + _internalArray->arrayOfVars[i]->getVarUUID() + String(F("\":")) + _internalArray->arrayOfVars[i]->getValueString());
         if (i + 1 != _internalArray->getVariableCount())
         {
-            stream->print(F(", "));
+            stream->print(',');
         }
     }
 
@@ -135,20 +135,20 @@ void LoggerEnviroDIY::printEnviroDIYRequest(Stream *stream)
 {
     // First we need to calculate how long the json string is going to be
     // This is needed for the "Content-Length" header
-    uint16_t jsonLength = 22;  // {"sampling_feature": "
+    uint16_t jsonLength = 21;  // {"sampling_feature":"
     jsonLength += 36;  // sampling feature UUID
-    jsonLength += 17;  // ", "timestamp": "
+    jsonLength += 15;  // ","timestamp":"
     jsonLength += 25;  // markedISO8601Time
-    jsonLength += 3;  //  ",_
+    jsonLength += 2;  //  ",
     for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
     {
         jsonLength += 1;  //  "
         jsonLength += 36;  // variable UUID
-        jsonLength += 3;  //  ":_
+        jsonLength += 2;  //  ":
         jsonLength += _internalArray->arrayOfVars[i]->getValueString().length();
         if (i + 1 != _internalArray->getVariableCount())
         {
-            jsonLength += 2;  // ,_
+            jsonLength += 1;  // ,
         }
     }
     jsonLength += 1;  // }
