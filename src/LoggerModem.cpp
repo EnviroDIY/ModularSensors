@@ -591,11 +591,14 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
 {
     bool retVal = true;
 
-    if (bitRead(_sensorStatus, 1) == 0 || bitRead(_sensorStatus, 2) == 0)  // NOT yet powered
+    if (bitRead(_sensorStatus, 1) == 0 || bitRead(_sensorStatus, 2) == 0){  // NOT yet powered
+        MS_MOD_DBG(F("connectInternet: modemPowerUp "),_sensorStatus);
         modemPowerUp();
+    }
 
     if (bitRead(_sensorStatus, 3) == 0)  // No attempts yet to wake the modem
     {
+        MS_MOD_DBG(F("connectInternet: waitForWarmUp "),_sensorStatus);
         waitForWarmUp();
         retVal &= wake();  // This sets the modem to on, will also set-up if necessary
     }
@@ -610,12 +613,16 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
         uint32_t start = millis();
     #endif
     MS_MOD_DBG(F("\nWaiting for "), getSensorName(), F(" to respond to AT commands..."));
-    if (!_tinyModem->testAT(_stabilizationTime_ms + 500))
+    if (!_tinyModem->testAT(_stabilizationTime_ms + 1000))
     {
-        MS_MOD_DBG(F("No response to AT commands! Cannot connect to the internet!"));
-        return false;
+        MS_MOD_DBG(F("No response to AT commands! Need to **reset** Modem"));
+        if (!_tinyModem->testAT(_stabilizationTime_ms + 1500))
+        {
+            MS_MOD_DBG(F("No response to 2nd attemp AT commands! Cannot connect to the internet!"));
+            return false;
+        }
     }
-    else MS_MOD_DBG(F("   ... AT OK after "), millis() - start, F(" milliseconds!"));
+    MS_MOD_DBG(F("   ... AT OK after "), millis() - start, F(" milliseconds!"));
 
     if (_tinyModem->hasWifi())
     {
