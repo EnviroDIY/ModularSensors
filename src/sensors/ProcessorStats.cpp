@@ -142,17 +142,32 @@ bool ProcessorStats::addSingleMeasurementResult(void)
     float sensorValue_battery = -9999;
 
     #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
+        uint16_t rawBattery_adc=0;
+        uint8_t adcLp;
+
+        #define SAMPLE_BATTERY_PIN_NUM 4
+        for (adcLp=0;adcLp<SAMPLE_BATTERY_PIN_NUM; adcLp++) 
+        {
+            rawBattery_adc += analogRead(_batteryPin);
+        }
+
+        if (strcmp(_version, "v0.5ba") == 0)
+        {
+            //For series 1M+270K mult raw_adc by ((3.3 / 1023) * 4.7037) 
+            #define CONST_VBATT_0_5BA 0.0151732
+            sensorValue_battery = CONST_VBATT_0_5BA * ((float)(rawBattery_adc/SAMPLE_BATTERY_PIN_NUM) );
+        } else 
+        if (strcmp(_version, "v0.5") == 0 or strcmp(_version, "v0.5b") == 0)
+        {
+            // Get the battery voltage for series 10M+2.7M
+            sensorValue_battery = (3.3 / 1023.) * 4.7 * ((float)(rawBattery_adc/SAMPLE_BATTERY_PIN_NUM) );
+        } else
         if (strcmp(_version, "v0.3") == 0 or strcmp(_version, "v0.4") == 0)
         {
             // Get the battery voltage
-            float rawBattery = analogRead(_batteryPin);
-            sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
-        }
-        if (strcmp(_version, "v0.5") == 0 or strcmp(_version, "v0.5b") == 0)
-        {
-            // Get the battery voltage
-            float rawBattery = analogRead(_batteryPin);
-            sensorValue_battery = (3.3 / 1023.) * 4.7 * rawBattery;
+            sensorValue_battery = (3.3 / 1023.) * 1.47 * ((float)(rawBattery_adc/SAMPLE_BATTERY_PIN_NUM) );
+        } else {
+                MS_DBG(F("Unknown _version %s", _version));
         }
 
     #elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)

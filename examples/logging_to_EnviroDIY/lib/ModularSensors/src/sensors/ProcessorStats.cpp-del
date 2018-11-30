@@ -170,7 +170,6 @@ bool ProcessorStats::addSingleMeasurementResult(void)
                 MS_DBG(F("Unknown _version %s", _version));
         }
 
-
     #elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
         float measuredvbat = analogRead(_batteryPin);
         measuredvbat *= 2;    // we divided by 2, so multiply back
