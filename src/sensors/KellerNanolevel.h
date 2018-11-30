@@ -14,6 +14,7 @@
  * https://github.com/EnviroDIY/KellerModbus
 */
 
+// Header Guards
 #ifndef KellerNanolevel_h
 #define KellerNanolevel_h
 
@@ -40,7 +41,7 @@ public:
     // Constructors with overloads
     KellerNanolevel(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : KellerParent(modbusAddress, stream, powerPin, powerPin2, enablePin,measurementsToAverage,
+     : KellerParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                     Nanolevel_kellerModel, "KellerNanolevel", KELLER_NUM_VARIABLES,
                     NANOLEVEL_WARM_UP_TIME_MS, NANOLEVEL_STABILIZATION_TIME_MS, NANOLEVEL_MEASUREMENT_TIME_MS)
     {}

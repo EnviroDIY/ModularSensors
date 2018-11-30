@@ -8,7 +8,7 @@
  *that are Software version 5.20-12.28 and later (i.e. made after the 2012 in the 28th week)
  *Only tested the Acculevel
  *
- *Documentation for the Yosemitech Protocol commands and responses, along with
+ *Documentation for the Keller Protocol commands and responses, along with
  *information about the various variables, can be found
  *in the EnviroDIY KellerModbus library at:
  * https://github.com/EnviroDIY/KellerModbus
@@ -42,13 +42,13 @@ public:
     KellerAcculevel(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : KellerParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                    KellerAcculevel, "KellerAcculevel", KELLER_NUM_VARIABLES,
+                    Acculevel_kellerModel, "KellerAcculevel", KELLER_NUM_VARIABLES,
                     ACCULEVEL_WARM_UP_TIME_MS, ACCULEVEL_STABILIZATION_TIME_MS, ACCULEVEL_MEASUREMENT_TIME_MS)
     {}
     KellerAcculevel(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : KellerParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
-                    KellerAcculevel, "KellerAcculevel", KELLER_NUM_VARIABLES,
+                    Acculevel_kellerModel, "KellerAcculevel", KELLER_NUM_VARIABLES,
                     ACCULEVEL_WARM_UP_TIME_MS, ACCULEVEL_STABILIZATION_TIME_MS, ACCULEVEL_MEASUREMENT_TIME_MS)
     {}
     // Destructor

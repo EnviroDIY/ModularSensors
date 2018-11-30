@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.17.0
+This example sketch is written for ModularSensors library version 0.17.2
 
 This sketch is an example of logging data from different variables at two
 different logging intervals.  This example uses more of the manual functions
