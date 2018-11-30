@@ -66,6 +66,8 @@ public:
     String getVarCode(void);
     // This returns the variable UUID, if one has been assigned
     String getVarUUID(void);
+    // Set the variable UUID.
+    void   setVarUUID(char *UUID);
 
     // This returns the current value of the variable as a float
     float getValue(bool updateValue = false);

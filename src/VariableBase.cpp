@@ -138,6 +138,8 @@ String Variable::getVarCode(void)
 // This returns the variable UUID, if one has been assigned
 String Variable::getVarUUID(void) {return _UUID;}
 
+// Set the variable UUID.
+void Variable::setVarUUID(char *newUUID) { _UUID =  newUUID;}
 
 // This returns the current value of the variable as a float
 float Variable::getValue(bool updateValue)

@@ -13,13 +13,15 @@
 #define LoggerEnviroDIY_h
 
 // Debugging Statement
+#ifdef LoggerEnviroDIY_DBG
 #define DEBUGGING_SERIAL_OUTPUT Serial
-
+#endif //
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #include "LoggerBase.h"
 #include "LoggerModem.h"
-
+typedef int (*ini_handler)( const char* section,
+                           const char* name, const char* value);
 // ============================================================================
 //  Functions for the EnviroDIY data portal receivers.
 // ============================================================================
@@ -71,7 +73,9 @@ public:
 
     // This calls all of the setup functions - must be run AFTER init
     // This version syncs the clock!
-    virtual void beginAndSync(void);
+    virtual void beginLogger(void);
+    virtual void timeSync(void);
+    virtual bool parseIniSd(const char *ini_fn,ini_handler handler_fn);
 
     // This is a one-and-done to log data
     virtual void logDataAndSend(void);
@@ -84,6 +88,7 @@ public:
 
 
 private:
+    virtual int8_t inihParseFile(ini_handler handler_fn);
     // Tokens and UUID's for EnviroDIY
     const char *_registrationToken;
     const char *_samplingFeature;
