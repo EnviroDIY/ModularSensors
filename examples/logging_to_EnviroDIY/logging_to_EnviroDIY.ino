@@ -40,8 +40,9 @@ const char *MayflyIniID = "mayfly.ini";
 const int8_t timeZone = -8;
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
-const char compile_date[] = __DATE__ " " __TIME__;
+const char build_date[] = __DATE__ " " __TIME__;
 const char file_name[] = __FILE__;
+const char build_epochTime = BUILD_TIMESTAMP;
 
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
@@ -975,9 +976,12 @@ void setup()
     // Start the primary serial connection
     Serial.begin(serialBaud);
     Serial.print(F("---Boot ")); 
-    Serial.print(compile_date);
+    Serial.print(build_date);
+    Serial.print("/");
+    Serial.print(build_epochTime);
     extern int16_t __heap_start, *__brkval;
     uint16_t top_stack = (int) &top_stack  - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+ 
     Serial.print(F(" Ram available:"));
     Serial.println(top_stack );// Stack and heap ??
     //MCUSR Serial.println(mcu_status,HEX);

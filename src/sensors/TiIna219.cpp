@@ -2,10 +2,9 @@
  *TiIna219.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
-*/
+ */
 
 #include "TiIna219.h"
-
 
 // The constructor - because this is I2C, only need the power pin
 TiIna219::TiIna219(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage)
@@ -29,39 +28,24 @@ String TiIna219::getSensorLocation(void)
 
 bool TiIna219::setup(void)
 {
-    bool retVal = Sensor::setup();  // this will set pin modes and the setup status bit
+    bool wasOn;
+    Sensor::setup();  // this will set pin modes and the setup status bit
 
     // This sensor needs power for setup!
     // The INA219's begin() reads required calibration data from the sensor.
-    bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
-    waitForWarmUp();
+    wasOn = checkPowerOn();
+    if(!wasOn)
+    {
+        powerUp();
+        waitForWarmUp();
+    }
 
-    // Run begin fxn because it returns true or false for success in contact
-    // Make 5 attempts
-    uint8_t ntries = 0;
-    //bool success = false;
-    bool success = true;
-    //?? nh while (!success and ntries < 5)
-    {
-        //success = ina219_phy.begin(_i2cAddressHex);
-        //success = ina219_phy.begin();
-        ina219_phy.begin();
-        ntries++;
-    }
-    //if (!success)
-    {
-        // Set the status error bit (bit 7)
-        _sensorStatus |= 0b10000000;
-        // UN-set the set-up bit (bit 0) since setup failed!
-        _sensorStatus &= 0b11111110;
-    }
-    retVal &= success;
+    ina219_phy.begin();
 
     // Turn the power back off it it had been turned on
     if(!wasOn){powerDown();}
 
-    return retVal;
+    return true;
 }
 
 
@@ -116,8 +100,7 @@ bool TiIna219::addSingleMeasurementResult(void)
     // Initialize float variables
     float current_mA = -9999;
     float busV_V = -9999;
-    float power_mW = -9999;
-    //float alt = -9999;
+    //float power_mW = -9999; Not clear what value power as can be calculated
 
     // Check a measurement was *successfully* started (status bit 6 set)
     // Only go on to get a result if it was
@@ -129,29 +112,14 @@ bool TiIna219::addSingleMeasurementResult(void)
         if (isnan(current_mA)) current_mA = -9999;
         busV_V = ina219_phy.getBusVoltage_V();
         if (isnan(busV_V)) busV_V = -9999;
-        power_mW = ina219_phy.getPower_mW();
-        if (isnan(power_mW)) power_mW = -9999;
+        //power_mW = ina219_phy.getPower_mW();
+        //if (isnan(power_mW)) power_mW = -9999;
 
-
-        // Assume that if all three are 0, really a failed response
-        // May also return a very negative temp when receiving a bad response
-#if 0
-        if ((current_mA == 0  && busV_V == 0 && power_mW == 0))
-        {
-            MS_DBG(F("All values 0 or bad, assuming sensor non-response!"));
-            current_mA =  -9999;
-            power_mW = -9999;
-            busV_V = -9999;
-            alt = -9999;
-        }
-        else
-#endif //0 
         success = true;
 
         MS_DBG(F("mA, current: "), current_mA);
         MS_DBG(F(" V, BusV: "), busV_V);
         //MS_DBG(F("mW, Power: "), power_mW);
-        //MS_DBG(F(" Pa, Calculated Altitude: "), alt, F("m ASL"));
     }
     else MS_DBG(getSensorNameAndLocation(), F(" is not currently measuring!"));
 
