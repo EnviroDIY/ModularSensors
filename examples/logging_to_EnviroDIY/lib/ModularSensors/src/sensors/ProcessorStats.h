@@ -52,6 +52,7 @@ public:
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
+    bool getBatteryV(float *batteryV);
 
 private:
     const char *_version;

@@ -42,7 +42,8 @@ const int8_t timeZone = -8;
 
 const char build_date[] = __DATE__ " " __TIME__;
 const char file_name[] = __FILE__;
-const char build_epochTime = BUILD_TIMESTAMP;
+//const char build_epochTime = __BUILD_TIMESTAMP__;
+//const char build_epochTime = __TIME_UNIX__;
 
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
@@ -964,7 +965,11 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
     return 1;
 }
 #endif //USE_SD_MAYFLY_INI
-
+    float LiIonBatt_V;
+#define LBATT_UNUSEABLE_V 3.6
+#define LBATT_LOW_V   3.7
+#define LBATT_MEDIUM_V 3.8
+#define LBATT_GOOD_V 3.9
 // ==========================================================================
 // Main setup function
 // ==========================================================================
@@ -977,8 +982,9 @@ void setup()
     Serial.begin(serialBaud);
     Serial.print(F("---Boot ")); 
     Serial.print(build_date);
-    Serial.print("/");
-    Serial.print(build_epochTime);
+    //Serial.write('/');
+    //Serial.print(build_epochTime,HEX);
+    //Serial.print(__TIMESTAMP__); //still a ASC string Tue Dec 04 19:47:20 2018
     extern int16_t __heap_start, *__brkval;
     uint16_t top_stack = (int) &top_stack  - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
  
@@ -991,10 +997,13 @@ void setup()
     Serial.print(F(" "));
     Serial.print(MFVersion);
     Serial.print(F(" Logger:"));
-    Serial.print(LoggerID);
+    Serial.println(LoggerID);
     Serial.print(F("ModularSensors vers "));
-    Serial.print(MODULAR_SENSORS_VERSION);
- 
+    Serial.println(MODULAR_SENSORS_VERSION);
+    mayflyPhy.getBatteryV(&LiIonBatt_V);
+    Serial.print(F("BatV="));
+    Serial.println(LiIonBatt_V);
+
     // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);
 
@@ -1104,7 +1113,7 @@ void setup()
     EnviroDIYLogger.setSamplingFeatureUUID(ps.provider.s.sampling_feature);
 
     // Begin the logger
-    PRINTOUT(F("***beginAndNoSync "));
+    PRINTOUT(F("beginAndNoSync "));
     EnviroDIYLogger.beginLogger();
 
     PRINTOUT(F("***timeSync "));
@@ -1141,7 +1150,7 @@ void setup()
 // ==========================================================================
 // Main loop function
 // ==========================================================================
-void processEverything()
+void processSensors()
 {
     // Log the data
 #if !defined(SENSOR_RS485_PHY)
@@ -1179,9 +1188,19 @@ void processEverything()
         // Flag to notify that we're in already awake and logging a point
         //Logger::isLoggingNow = true;
 
+        mayflyPhy.getBatteryV(&LiIonBatt_V);
+        if ( LiIonBatt_V < LBATT_UNUSEABLE_V) {
+            MS_DBG(F("---NewReading CANCELLED--Lbatt_V="));
+            MS_DBG(LiIonBatt_V);
+            MS_DBG("\n");
+            return;
+        }
         // Print a line to show new reading
-        PRINTOUT(F("---NewReading------------------------------\n"));
-
+        PRINTOUT(F("---NewReading-----------------------------"));
+        MS_DBG(F("Lbatt_V="),LiIonBatt_V);
+        //MS_DBG(LiIonBatt_V);
+        //MS_DBG("\n");
+        //PRINTOUT(F("----------------------------\n"));
 #if !defined(CHECK_SLEEP_POWER)
         // Turn on the LED to show we're taking a reading
         digitalWrite(greenLED, HIGH);
@@ -1192,7 +1211,7 @@ void processEverything()
         modbusSerial.begin(9600);
 
         // Do a complete sensor update
-        MS_DBG(F("    Running a complete sensor update...\n"));
+        //MS_DBG(F("    Running a complete sensor update...\n"));
         //_internalArray->completeUpdate();
         varArray.completeUpdate();
 
@@ -1209,6 +1228,12 @@ void processEverything()
         EnviroDIYLogger.logToSD();
          // Turn on the modem to let it start searching for the network
         //if (_logModem != NULL) _logModem->modemPowerUp();
+        if ( LiIonBatt_V < LBATT_MEDIUM_V) {
+            MS_DBG(F("---Cloud Update CANCELLED--V="));
+            MS_DBG(LiIonBatt_V);
+            MS_DBG("\n");
+            return;
+        }
         if (EnviroDIYLogger._logModem != NULL) modemPhy.modemPowerUp();
         //modemPhy.modemPowerUp();
         if (EnviroDIYLogger._logModem != NULL)
@@ -1239,12 +1264,16 @@ void processEverything()
         // Turn off the LED
         digitalWrite(greenLED, LOW);
         // Print a line to show reading ended
-        PRINTOUT(F("---Complete-------------------------------\n\n"));
+        PRINTOUT(F("---Complete-------------------------------\n"));
 #endif //(CHECK_SLEEP_POWER)
         // Unset flag
         //Logger::isLoggingNow = false;
     }
+}
 
+void processEverything()
+{
+    processSensors();
     // Check if it was instead the testing interrupt that woke us up
     if (EnviroDIYLogger.startTesting) EnviroDIYLogger.testingMode();
 
