@@ -296,6 +296,17 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepF
 // Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
 
+// ==========================================================================
+//    Ti INA219 High Side Current/Voltage Sensor (Current mA, Voltage, Power)
+// ==========================================================================
+#include <sensors/TiIna219.h>
+//uint8_t INA219i2c_addr = 0x40; // 1000000 (Board A0+A1=GND)
+// The INA219 can be addressed either as 0x40 (Adafruit default) or 0x41 44 45
+// Either can be physically mofidied for the other address
+#define  I2CPower 22  // Pin to switch power on and off (-1 if unconnected)
+// Create and return the Bosch BME280 sensor object
+TiIna219 ina219_phy(I2CPower);
+#undef I2CPower
 
 // ==========================================================================
 //    AOSong AM2315 Digital Humidity and Temperature Sensor
@@ -653,6 +664,8 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 // at the same time putting them into an array
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
+    new TiIna219_Volt(&ina219_phy, "INA219_VOLT_UUID"),
+    new TiIna219_mA  (&ina219_phy, "INA219_MA_UUID"),
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
     new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
     new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
