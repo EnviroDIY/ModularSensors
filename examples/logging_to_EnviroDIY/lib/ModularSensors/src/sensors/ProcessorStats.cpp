@@ -132,9 +132,46 @@ String ProcessorStats::getSensorLocation(void) {return BOARD;}
       return &stack_dummy - sbrk(0);
     }
 #endif
-bool ProcessorStats::getBatteryV(float *batteryV) //sensorValue_battery
+//float *ProcessorStats::getBatteryVm1(float *batteryV) //sensorValue_battery
+
+ps_Lbatt_status_t ProcessorStats::isBatteryStatusAbove(bool newBattReading, ps_pwr_req_t status_req) 
 {
-    *batteryV = (float) -999.0;
+    ps_Lbatt_status_t lion_status;
+    ps_Lbatt_status_t retValue;
+
+    if (newBattReading) {
+        getBatteryVm1(&LiIonBatt_V);
+        MS_DBG(F("Getting battery voltage"));
+    }
+    if      (LiIonBatt_V>=PS_LBATT_GOOD_V)   { lion_status=PS_LBATT_HEAVY_STATUS;
+    }else if(LiIonBatt_V>=PS_LBATT_MEDIUM_V) { lion_status=PS_LBATT_MEDIUM_STATUS;
+    }else if(LiIonBatt_V>=PS_LBATT_LOW_V)    { lion_status=PS_LBATT_LOW_STATUS;
+    }else if(LiIonBatt_V>=PS_LBATT_USEABLE_V){ lion_status=PS_LBATT_BARELYUSEABLE_STATUS;
+    }else                                    { lion_status=PS_LBATT_UNUSEABLE_STATUS;
+    }
+    retValue=lion_status;
+    switch (status_req){
+        //PS_LBATT_REQUEST_STATUS: //implicit
+        default: 
+        break; 
+        //PS_PWR_USEABLE_REQ: if (PS_PWR_BARELYUSEABLE_STATUS>=lion_status) retValue=PS_PWR_FAILED_TEST_STATUS; break;
+        PS_PWR_LOW_REQ:    if (PS_LBATT_LOW_STATUS>=lion_status)    retValue=PS_LBATT_UNUSEABLE_STATUS; break;
+        PS_PWR_MEDIUM_REQ: if (PS_LBATT_MEDIUM_STATUS>=lion_status) retValue=PS_LBATT_UNUSEABLE_STATUS; break;
+        PS_PWR_HEAVY_REQ:  if (PS_LBATT_HEAVY_STATUS>=lion_status)   retValue=PS_LBATT_UNUSEABLE_STATUS; break;
+    }
+    return retValue;
+}
+float ProcessorStats::getBatteryVm1(bool newBattReading) //sensorValue_battery
+{ 
+    if (newBattReading) {
+        return getBatteryVm1(&LiIonBatt_V);
+    } else {
+        return LiIonBatt_V;
+    }
+}
+float ProcessorStats::getBatteryVm1(float *BattV) //sensorValue_battery
+{
+    //float batteryV;// = (float) -999.0;
     #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
         uint16_t rawBattery_adc=0;
         uint8_t adcLp;
@@ -149,17 +186,17 @@ bool ProcessorStats::getBatteryV(float *batteryV) //sensorValue_battery
         {
             //For series 1M+270K mult raw_adc by ((3.3 / 1023) * 4.7037) 
             #define CONST_VBATT_0_5BA 0.0151732
-            *batteryV = CONST_VBATT_0_5BA * ((float)(rawBattery_adc/SAMPLE_BATTERY_PIN_NUM) );
+            *BattV = CONST_VBATT_0_5BA * ((float)(rawBattery_adc/SAMPLE_BATTERY_PIN_NUM) );
         } else 
         if (strcmp(_version, "v0.5") == 0 or strcmp(_version, "v0.5b") == 0)
         {
             // Get the battery voltage for series 10M+2.7M
-            *batteryV = (3.3 / 1023.) * 4.7 * ((float)(rawBattery_adc/SAMPLE_BATTERY_PIN_NUM) );
+            *BattV = (3.3 / 1023.) * 4.7 * ((float)(rawBattery_adc/SAMPLE_BATTERY_PIN_NUM) );
         } else
         if (strcmp(_version, "v0.3") == 0 or strcmp(_version, "v0.4") == 0)
         {
             // Get the battery voltage
-            *batteryV = (3.3 / 1023.) * 1.47 * ((float)(rawBattery_adc/SAMPLE_BATTERY_PIN_NUM) );
+            *BattV = (3.3 / 1023.) * 1.47 * ((float)(rawBattery_adc/SAMPLE_BATTERY_PIN_NUM) );
         } else {
                 MS_DBG(F("Unknown _version %s", _version));
         }
@@ -169,44 +206,42 @@ bool ProcessorStats::getBatteryV(float *batteryV) //sensorValue_battery
         measuredvbat *= 2;    // we divided by 2, so multiply back
         measuredvbat *= 3.3;  // Multiply by 3.3V, our reference voltage
         measuredvbat /= 1024; // convert to voltage
-        *batteryV = measuredvbat;
+        *BattV = measuredvbat;
 
     #elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA)
         if (strcmp(_version, "v0.1") == 0)
         {
             // Get the battery voltage
             float rawBattery = analogRead(_batteryPin);
-            *batteryV = (3.3 / 1023.) * 2 * rawBattery;
+            *BattV = (3.3 / 1023.) * 2 * rawBattery;
         }
         if (strcmp(_version, "v0.2") == 0)
         {
             // Get the battery voltage
             float rawBattery = analogRead(_batteryPin);
-            *batteryV = (3.3 / 1023.) * 1.47 * rawBattery;
+            *BattV = (3.3 / 1023.) * 1.47 * rawBattery;
         }
 
     #elif defined(ARDUINO_AVR_SODAQ_NDOGO) || defined(ARDUINO_SODAQ_AUTONOMO) || defined(ARDUINO_AVR_SODAQ_MBILI)
         // Get the battery voltage
         float rawBattery = analogRead(_batteryPin);
-        *batteryV = (3.3 / 1023.) * 1.47 * rawBattery;
+        *BattV = (3.3 / 1023.) * 1.47 * rawBattery;
 
     #else
-        *batteryV = -9999;
+        *BattV = -9999;
 
     #endif    
-    return true;
+    return *BattV;
 }
 
 bool ProcessorStats::addSingleMeasurementResult(void)
 {
     // Get the battery voltage
-    MS_DBG(F("Getting battery voltage"));
+    //MS_DBG(F("Getting battery voltage"));
+    // assume early getBatteryVm1(&LiIonBatt_V);
 
-    float sensorValue_battery;
-
-    getBatteryV(&sensorValue_battery);
-
-    verifyAndAddMeasurementResult(PROCESSOR_BATTERY_VAR_NUM, sensorValue_battery);
+    verifyAndAddMeasurementResult(PROCESSOR_BATTERY_VAR_NUM, LiIonBatt_V);
+    //verifyAndAddMeasurementResult(PROCESSOR_BATTERY_VAR_NUM, sensorValue_battery);
 
     // Used only for debugging - can be removed
     MS_DBG(F("Getting Free RAM"));

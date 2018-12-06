@@ -39,7 +39,31 @@
 #define PROCESSOR_SAMPNUM_RESOLUTION 0
 #define PROCESSOR_SAMPNUM_VAR_NUM 2
 
+#define PS_LBATT_USEABLE_V 3.6
+#define PS_LBATT_LOW_V   3.7
+#define PS_LBATT_MEDIUM_V 3.8
+#define PS_LBATT_GOOD_V 3.9
 
+typedef enum {
+   PS_PWR_STATUS_REQ, //0 returns status
+   //Order of following important and should map to ps_Lbatt_status_t
+   PS_PWR_USEABLE_REQ,//1 returns status if above 1, or else 0
+   PS_PWR_LOW_REQ,    //2 returns status if above 2, or else 0
+   PS_PWR_MEDIUM_REQ, //3 returns status if above 3, or else 0
+   PS_PWR_HEAVY_REQ,  //4 returns status if above 4, or else 0
+   //End of regular STATUS 
+} ps_pwr_req_t;
+typedef enum {
+   PS_LBATT_UNUSEABLE_STATUS, //0 PS_LBATT_REQUEST_STATUS,
+   //Order of following important and should maps to  ps_pwr_req_t
+   PS_LBATT_BARELYUSEABLE_STATUS,//1 returns status if above 1, or else 0
+   PS_LBATT_LOW_STATUS,    //2 returns status if above 2, or else 0
+   PS_LBATT_MEDIUM_STATUS, //3 returns status if above 3, or else 0
+   PS_LBATT_HEAVY_STATUS,  //4 returns status if above 4, or else 0
+   //End of regular STATUS 
+} ps_Lbatt_status_t;
+
+ 
 // The "Main" class for the Processor
 // Only need a sleep and wake since these DON'T use the default of powering up and down
 class ProcessorStats : public Sensor
@@ -52,12 +76,15 @@ public:
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
-    bool getBatteryV(float *batteryV);
+    float getBatteryVm1(bool newBattReading);
+    float getBatteryVm1(float *BattV);
+    ps_Lbatt_status_t  isBatteryStatusAbove(bool newBattReading=false,ps_pwr_req_t status_req=PS_PWR_USEABLE_REQ);
 
 private:
     const char *_version;
     int8_t _batteryPin;
     int16_t sampNum;
+    float LiIonBatt_V=-999.0;
 };
 
 

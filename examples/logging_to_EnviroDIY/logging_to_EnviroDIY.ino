@@ -966,10 +966,7 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
 }
 #endif //USE_SD_MAYFLY_INI
     float LiIonBatt_V;
-#define LBATT_UNUSEABLE_V 3.6
-#define LBATT_LOW_V   3.7
-#define LBATT_MEDIUM_V 3.8
-#define LBATT_GOOD_V 3.9
+
 // ==========================================================================
 // Main setup function
 // ==========================================================================
@@ -1000,12 +997,24 @@ void setup()
     Serial.println(LoggerID);
     Serial.print(F("ModularSensors vers "));
     Serial.println(MODULAR_SENSORS_VERSION);
-    mayflyPhy.getBatteryV(&LiIonBatt_V);
-    Serial.print(F("BatV="));
-    Serial.println(LiIonBatt_V);
 
     // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);
+    bool LiBattPower_Unseable;
+    do {
+        LiBattPower_Unseable = ((PS_LBATT_UNUSEABLE_STATUS == mayflyPhy.isBatteryStatusAbove(true,PS_PWR_LOW_REQ))?true:false);
+        if (LiBattPower_Unseable)
+        {
+            #if 1//defined(CHECK_SLEEP_POWER)
+            PRINTOUT(F("BatteryLow-ShouldSleep"));
+            MS_DBG(F("BatV="),mayflyPhy.getBatteryVm1(false));
+            #endif //(CHECK_SLEEP_POWER)
+            delay(10); //Seconds
+            //EnviroDIYLogger.systemSleep();
+        }
+    } while (LiBattPower_Unseable); 
+
+    MS_DBG(F("BatV="),mayflyPhy.getBatteryVm1(false));
 
 #if !defined(SENSOR_RS485_PHY)
     modbusSerial.begin(9600);
@@ -1188,16 +1197,17 @@ void processSensors()
         // Flag to notify that we're in already awake and logging a point
         //Logger::isLoggingNow = true;
 
-        mayflyPhy.getBatteryV(&LiIonBatt_V);
-        if ( LiIonBatt_V < LBATT_UNUSEABLE_V) {
+        //float LiIonBatt_V = mayflyPhy.getBatteryVm1();
+        if (PS_LBATT_UNUSEABLE_STATUS==mayflyPhy.isBatteryStatusAbove(true,PS_PWR_USEABLE_REQ)) {
+        //if ( LiIonBatt_V < LBATT_UNUSEABLE_V) {
             MS_DBG(F("---NewReading CANCELLED--Lbatt_V="));
-            MS_DBG(LiIonBatt_V);
+            MS_DBG(mayflyPhy.getBatteryVm1(false));
             MS_DBG("\n");
             return;
         }
         // Print a line to show new reading
         PRINTOUT(F("---NewReading-----------------------------"));
-        MS_DBG(F("Lbatt_V="),LiIonBatt_V);
+        MS_DBG(F("Lbatt_V="),mayflyPhy.getBatteryVm1(false));
         //MS_DBG(LiIonBatt_V);
         //MS_DBG("\n");
         //PRINTOUT(F("----------------------------\n"));
@@ -1227,10 +1237,11 @@ void processSensors()
         // Create a csv data record and save it to the log file
         EnviroDIYLogger.logToSD();
          // Turn on the modem to let it start searching for the network
-        //if (_logModem != NULL) _logModem->modemPowerUp();
-        if ( LiIonBatt_V < LBATT_MEDIUM_V) {
+
+        //if Modem  is Cellular then PS_PWR_HEAVY_REQ
+        if (PS_LBATT_UNUSEABLE_STATUS==mayflyPhy.isBatteryStatusAbove(false,PS_PWR_MEDIUM_REQ)) {          
             MS_DBG(F("---Cloud Update CANCELLED--V="));
-            MS_DBG(LiIonBatt_V);
+            MS_DBG(F("Lbatt_V="),mayflyPhy.getBatteryVm1(false));
             MS_DBG("\n");
             return;
         }
@@ -1247,8 +1258,8 @@ void processSensors()
                 EnviroDIYLogger.postDataEnviroDIY();
 
                 // Sync the clock every 288 readings (1/day at 5 min intervals)
-                //MS_DBG(F("  Running a daily clock sync...\n"));
                 //if (_numTimepointsLogged % 288 == 0)
+                //MS_DBG(F("  Running a daily clock sync...\n"));
                 //{
                 //    EnviroDIYLogger.syncRTClock(_logModem->getNISTTime());
                 //}
