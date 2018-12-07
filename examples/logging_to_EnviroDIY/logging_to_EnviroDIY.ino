@@ -1239,43 +1239,46 @@ void processSensors()
          // Turn on the modem to let it start searching for the network
 
         //if Modem  is Cellular then PS_PWR_HEAVY_REQ
-        if (PS_LBATT_UNUSEABLE_STATUS==mayflyPhy.isBatteryStatusAbove(false,PS_PWR_MEDIUM_REQ)) {          
-            MS_DBG(F("---Cloud Update CANCELLED--V="));
-            MS_DBG(F("Lbatt_V="),mayflyPhy.getBatteryVm1(false));
-            MS_DBG("\n");
+        if (PS_LBATT_UNUSEABLE_STATUS==mayflyPhy.isBatteryStatusAbove(false,PS_PWR_MEDIUM_REQ)) 
+        {          
+            MS_DBG(F("---NewCloud Update CANCELLED---\n"));
+            //MS_DBG(F("Lbatt_V="),mayflyPhy.getBatteryVm1(false));
+            //MS_DBG("\n");
             return;
-        }
-        if (EnviroDIYLogger._logModem != NULL) modemPhy.modemPowerUp();
-        //modemPhy.modemPowerUp();
-        if (EnviroDIYLogger._logModem != NULL)
+        } else 
         {
-            // Connect to the network
-            MS_DBG(F("  Connecting to the Internet...\n"));
-            if (modemPhy.connectInternet())
+            if (EnviroDIYLogger._logModem != NULL) modemPhy.modemPowerUp();
+            //modemPhy.modemPowerUp();
+            if (EnviroDIYLogger._logModem != NULL)
             {
-                MS_DBG(F("  sending..\n"));
-                // Post the data to the WebSDL
-                EnviroDIYLogger.postDataEnviroDIY();
+                // Connect to the network
+                MS_DBG(F("  Connecting to the Internet...\n"));
+                if (modemPhy.connectInternet())
+                {
+                    MS_DBG(F("  sending..\n"));
+                    // Post the data to the WebSDL
+                    EnviroDIYLogger.postDataEnviroDIY();
 
-                // Sync the clock every 288 readings (1/day at 5 min intervals)
-                //if (_numTimepointsLogged % 288 == 0)
-                //MS_DBG(F("  Running a daily clock sync...\n"));
-                //{
-                //    EnviroDIYLogger.syncRTClock(_logModem->getNISTTime());
-                //}
+                    // Sync the clock every 288 readings (1/day at 5 min intervals)
+                    //if (_numTimepointsLogged % 288 == 0)
+                    //MS_DBG(F("  Running a daily clock sync...\n"));
+                    //{
+                    //    EnviroDIYLogger.syncRTClock(_logModem->getNISTTime());
+                    //}
 
-                // Disconnect from the network
-                MS_DBG(F("  Disconnecting from the Internet...\n"));
-                modemPhy.disconnectInternet();
-            } else {MS_DBG(F("  No internet connection...\n"));}
-            // Turn the modem off
-            modemPhy.modemSleepPowerDown();
-        } else MS_DBG(F("  No Modem configured.\n"));
-
+                    // Disconnect from the network
+                    MS_DBG(F("  Disconnecting from the Internet...\n"));
+                    modemPhy.disconnectInternet();
+                } else {MS_DBG(F("  No internet connection...\n"));}
+                // Turn the modem off
+                modemPhy.modemSleepPowerDown();
+            } else MS_DBG(F("  No Modem configured.\n"));
+            PRINTOUT(F("---Complete-------------------------------\n"));
+        }
         // Turn off the LED
         digitalWrite(greenLED, LOW);
         // Print a line to show reading ended
-        PRINTOUT(F("---Complete-------------------------------\n"));
+
 #endif //(CHECK_SLEEP_POWER)
         // Unset flag
         //Logger::isLoggingNow = false;

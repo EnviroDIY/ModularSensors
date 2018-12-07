@@ -141,7 +141,9 @@ ps_Lbatt_status_t ProcessorStats::isBatteryStatusAbove(bool newBattReading, ps_p
 
     if (newBattReading) {
         getBatteryVm1(&LiIonBatt_V);
-        MS_DBG(F("Getting battery voltage"));
+        MS_DBG(F(" isBatteryStatusAbove Vnew="),LiIonBatt_V);
+    } else {
+        MS_DBG(F(" isBatteryStatusAbove Vold="),LiIonBatt_V);
     }
     if      (LiIonBatt_V>=PS_LBATT_GOOD_V)   { lion_status=PS_LBATT_HEAVY_STATUS;
     }else if(LiIonBatt_V>=PS_LBATT_MEDIUM_V) { lion_status=PS_LBATT_MEDIUM_STATUS;
@@ -151,14 +153,24 @@ ps_Lbatt_status_t ProcessorStats::isBatteryStatusAbove(bool newBattReading, ps_p
     }
     retValue=lion_status;
     switch (status_req){
+        case PS_PWR_LOW_REQ:    if (PS_LBATT_LOW_STATUS>lion_status)    {retValue=PS_LBATT_UNUSEABLE_STATUS;} break;
+        case PS_PWR_MEDIUM_REQ: if (PS_LBATT_MEDIUM_STATUS>lion_status) {retValue=PS_LBATT_UNUSEABLE_STATUS;} break;
+        case PS_PWR_HEAVY_REQ:  if (PS_LBATT_HEAVY_STATUS>lion_status)  {retValue=PS_LBATT_UNUSEABLE_STATUS;} break;
         //PS_LBATT_REQUEST_STATUS: //implicit
+        //PS_PWR_USEABLE_REQ: if (PS_PWR_BARELYUSEABLE_STATUS>=lion_status) retValue=PS_PWR_FAILED_TEST_STATUS; break; Implicit
         default: 
-        break; 
-        //PS_PWR_USEABLE_REQ: if (PS_PWR_BARELYUSEABLE_STATUS>=lion_status) retValue=PS_PWR_FAILED_TEST_STATUS; break;
-        PS_PWR_LOW_REQ:    if (PS_LBATT_LOW_STATUS>=lion_status)    retValue=PS_LBATT_UNUSEABLE_STATUS; break;
-        PS_PWR_MEDIUM_REQ: if (PS_LBATT_MEDIUM_STATUS>=lion_status) retValue=PS_LBATT_UNUSEABLE_STATUS; break;
-        PS_PWR_HEAVY_REQ:  if (PS_LBATT_HEAVY_STATUS>=lion_status)   retValue=PS_LBATT_UNUSEABLE_STATUS; break;
+           break; 
     }
+
+    #if 0
+    Serial.print(F("Req:"));
+    Serial.print(status_req);
+    Serial.print(F(" Status:"));
+    Serial.print(lion_status);
+    Serial.print(F(" retStatus:"));
+    Serial.println(retValue);
+    #endif
+    MS_DBG(F(" isBatteryStatusAbove=%d,req %d"),retValue,status_req);
     return retValue;
 }
 float ProcessorStats::getBatteryVm1(bool newBattReading) //sensorValue_battery
@@ -198,7 +210,7 @@ float ProcessorStats::getBatteryVm1(float *BattV) //sensorValue_battery
             // Get the battery voltage
             *BattV = (3.3 / 1023.) * 1.47 * ((float)(rawBattery_adc/SAMPLE_BATTERY_PIN_NUM) );
         } else {
-                MS_DBG(F("Unknown _version %s", _version));
+            MS_DBG(F("Unknown _version "), _version);
         }
 
     #elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
