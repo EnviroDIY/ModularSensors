@@ -170,7 +170,7 @@ ps_Lbatt_status_t ProcessorStats::isBatteryStatusAbove(bool newBattReading, ps_p
     Serial.print(F(" retStatus:"));
     Serial.println(retValue);
     #endif
-    MS_DBG(F(" isBatteryStatusAbove=%d,req %d"),retValue,status_req);
+    MS_DBG(F(" isBatteryStatusAbove="),retValue,F(" req="),status_req);
     return retValue;
 }
 float ProcessorStats::getBatteryVm1(bool newBattReading) //sensorValue_battery

@@ -47,10 +47,10 @@
    It may require some hysteresis thresholds to be added.
 */
 
-#define PS_LBATT_USEABLE_V 3.6
-#define PS_LBATT_LOW_V     3.7
-#define PS_LBATT_MEDIUM_V  3.8
-#define PS_LBATT_GOOD_V    3.9
+#define PS_LBATT_USEABLE_V 3.7
+#define PS_LBATT_LOW_V     3.8
+#define PS_LBATT_MEDIUM_V  3.9
+#define PS_LBATT_GOOD_V    4.0
 #define PS_LBATT_HYSTERESIS 0.05 
 
 typedef enum {

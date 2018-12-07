@@ -1242,9 +1242,6 @@ void processSensors()
         if (PS_LBATT_UNUSEABLE_STATUS==mayflyPhy.isBatteryStatusAbove(false,PS_PWR_MEDIUM_REQ)) 
         {          
             MS_DBG(F("---NewCloud Update CANCELLED---\n"));
-            //MS_DBG(F("Lbatt_V="),mayflyPhy.getBatteryVm1(false));
-            //MS_DBG("\n");
-            return;
         } else 
         {
             if (EnviroDIYLogger._logModem != NULL) modemPhy.modemPowerUp();
