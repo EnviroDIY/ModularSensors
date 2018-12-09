@@ -12,7 +12,10 @@
 #define LoggerBase_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+//#define LoggerBase_DBG 1
+#ifdef LoggerBase_DBG
+  #define DEBUGGING_SERIAL_OUTPUT Serial
+#endif //LoggerBase_DBG
 
 // Included Dependencies
 //#include <Arduino.h>
@@ -61,6 +64,7 @@ public:
     static void setTZOffset(int8_t offset);
     static int8_t getTZOffset(void) { return Logger::_offset; }
 
+    void setLoggingInterval(uint16_t loggingIntervalMinutes);
     // Sets up a pin for an LED or other way of alerting that data is being logged
     void setAlertPin(int8_t ledPin);
 

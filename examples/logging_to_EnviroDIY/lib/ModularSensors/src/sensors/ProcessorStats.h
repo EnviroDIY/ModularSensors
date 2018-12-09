@@ -47,12 +47,15 @@
    It may require some hysteresis thresholds to be added.
 */
 
-#define PS_LBATT_USEABLE_V 3.7
-#define PS_LBATT_LOW_V     3.8
-#define PS_LBATT_MEDIUM_V  3.9
-#define PS_LBATT_GOOD_V    4.0
-#define PS_LBATT_HYSTERESIS 0.05 
 
+typedef enum {
+   PSLR_0500mA=0, //500mA or less 
+   PSLR_1000mA,
+   PSLR_4000mA, //4000mA or more
+   PSLR_NUM, ///Number of Battery types supported 
+   PSLR_UNDEF,
+} ps_liion_rating_t;
+#define PSLR_LIION  PSLR_0500mA
 typedef enum {
    PS_PWR_STATUS_REQ=0, //0 returns status
    //Order of following important and should map to ps_Lbatt_status_t
@@ -114,6 +117,21 @@ public:
     //float getBatteryVm2a(bool newBattReading);//snap float voltage
     //float getBatteryVm2b(bool newBattReading);//snap load voltage
     //float getBatteryVm2diff(bool newBattReading); //getDifference in measured batteryV using internal reference
+//use EDIY_PROGMEM
+const float PS_LBATT_HYSTERESIS=0.05; 
+const float PS_LBATT_USEABLE_V=3.7;  
+const float PS_LBATT_LOW_V=3.8;
+const float PS_LBATT_MEDIUM_V=3.9;
+const float PS_LBATT_GOOD_V=4.0;
+#define PS_TYPES 5
+#define PS_LPBATT_TBL_NUM (PS_TYPES+1)
+//                                              0   1   2   3   Hyst
+const float PS_LBATT_TBL[PSLR_NUM][PS_LPBATT_TBL_NUM] = {
+    {3.7,3.8,3.9,4.0,0.05},
+    {3.6,3.7,3.8,3.9,0.04},
+    {3.5,3.6,3.7,3.8,0.03}
+   };
+
 private:
     const char *_version;
     int8_t _batteryPin;

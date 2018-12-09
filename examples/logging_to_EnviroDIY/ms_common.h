@@ -114,7 +114,7 @@ typedef struct {
 #endif //USE_PS_modularSensorsCommon)
 
 //******
-#define USE_PS_modularSensorsNetork 1
+#define USE_PS_modularSensorsNetwork 1
 //******
 #if defined(USE_PS_modularSensorsNetwork)
 #define MSCN_APN_SZ 32
@@ -130,10 +130,10 @@ typedef struct {
     STRCT_SZ(sz)
     MSN_ACTIVE s;
 } modularSensorsNetwork_t;
-#define mModularSensorsNetwork_t(p1) modularSensorsNetork_t p1 
+#define mModularSensorsNetwork_t(p1) modularSensorsNetwork_t p1 
 #else
 #define mModularSensorsNetwork_t(p1)
-#endif //USE_PS_modularSensorsNetork
+#endif //USE_PS_modularSensorsNetwork
 
 //******
 #define USE_PS_Provider 1

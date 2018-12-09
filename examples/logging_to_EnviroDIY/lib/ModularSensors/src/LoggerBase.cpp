@@ -96,6 +96,15 @@ void Logger::setTZOffset(int8_t offset)
     #endif
 }
 
+//
+void Logger::setLoggingInterval(uint16_t loggingIntervalMinutes)
+{
+    _loggingIntervalMinutes = loggingIntervalMinutes;
+    #ifdef DEBUGGING_SERIAL_OUTPUT
+        const char* prtout1 = "Logging interval:";
+        PRINTOUT(prtout1, _loggingIntervalMinutes);
+    #endif
+}
 
 // Sets up a pin for an LED or other way of alerting that data is being logged
 void Logger::setAlertPin(int8_t ledPin)

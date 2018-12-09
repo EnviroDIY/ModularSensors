@@ -35,15 +35,15 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #if   BOARD_NAME == BOARD01
 //**************************************************************************
 //#define SENSOR_RS485_PHY TRUE
-//const char *MFVersion = "v0.4";
-//const char *MFsn ="160141";
-const char *MFVersion = "v0.5ba";
-const char *MFsn ="180322";
+//#define MFVersion_DEF  "v0.4"
+//const char *MFsn_def =F("160141")
+#define MFVersion_DEF  "v0.5ba"
+#define MFsn_def F("180322")
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 2;
-const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
-const char *wifiId = "ArthurStrGuest";  // The WiFi access point, unnecessary for gprs
-const char *wifiPwd = "";  // The password for connecting to WiFi, unnecessary for gprs
+const uint8_t loggingInterval_def = 2;
+const char *apn_def = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
+const char *wifiId_def = "ArthurStrGuest";  // The WiFi access point, unnecessary for gprs
+const char *wifiPwd_def = "";  // The password for connecting to WiFi, unnecessary for gprs
 
 #define registrationToken_UUID   "38486242-cd9f-42f5-ad17-79b480cf2d28"
 #define samplingFeature_UUID     "cb344d37-b557-400d-b999-f9b125cade29"
@@ -59,13 +59,14 @@ const char *wifiPwd = "";  // The password for connecting to WiFi, unnecessary f
 #elif BOARD_NAME == BOARD02
 //**************************************************************************
 #define SENSOR_RS485_PHY 1
-const char *MFVersion = "v0.5ba";
-const char *MFsn ="180368";
+//#define MFVersion_DEF = "v0.5ba";
+#define MFVersion_DEF "v0.5ba"
+#define MFsn_def  F("180368")
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 2;
-const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
-const char *wifiId = "AzondeNetSsid";  // The WiFi access point, unnecessary for gprs
-const char *wifiPwd = NULL;  // The password for connecting to WiFi, unnecessary for gprs
+const uint8_t loggingInterval_def = 2;
+const char *apn_def = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
+const char *wifiId_def = "AzondeNetSsid";  // The WiFi access point, unnecessary for gprs
+const char *wifiPwd_def = NULL;  // The password for connecting to WiFi, unnecessary for gprs
 //#define SENSOR_CONFIG_GENERAL 1
 //#define KellerAcculevel_ACT 1
 
@@ -78,12 +79,13 @@ const char *wifiPwd = NULL;  // The password for connecting to WiFi, unnecessary
 #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
 //#define KellerNanolevel_Temp_UUID   "7bc30855-ae08-4865-ab89-a8e17df93bfc"
 #define KellerNanolevel_Temp_UUID "KellerNanolevel_Temp_UUID"
-//#define SENSOR_CONFIG_IA921 1
-#define INA219_PHY_ACT 1
-//#define INA219_MA_UUID              "804be0c8-3dc0-4be6-9537-63fe8240e98f"
-#define INA219_MA_UUID              "INA219_MA_UUID"
-//#define INA219_VOLT_UUID            "08b2e561-21fd-44cb-b429-c2be536c7bd9"
-#define INA219_VOLT_UUID            "INA219_VOLT_UUID"
+//#define INA219_PHY_ACT 1
+#ifdef INA219_PHY_ACT
+  //#define INA219_MA_UUID              "804be0c8-3dc0-4be6-9537-63fe8240e98f"
+  #define INA219_MA_UUID              "INA219_MA_UUID"
+  //#define INA219_VOLT_UUID            "08b2e561-21fd-44cb-b429-c2be536c7bd9"
+  #define INA219_VOLT_UUID            "INA219_VOLT_UUID"
+#endif //INA219_PHY_ACT
 //#define MaximDS3231_Temp_UUID       "3907922a-56fe-46f3-a56e-9de6b77d3679"
 #define MaximDS3231_Temp_UUID       "MaximDS3231_Temp_UUID"
 //#define Modem_RSSI_UUID ""
@@ -107,13 +109,13 @@ const char *wifiPwd = NULL;  // The password for connecting to WiFi, unnecessary
 //**************************************************************************
 //Keller Nanolevel with XBP-u.fl 
 #define SENSOR_RS485_PHY 1
-const char *MFVersion = "v0.5b";
-const char *MFsn ="180256";
+#define MFVersion_DEF  "v0.5b"
+#define MFsn_def F("180256")
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 15;
-const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
-const char *wifiId = "AzondeNetSsid";  // The WiFi access point, unnecessary for gprs
-const char *wifiPwd = NULL;//"";  // The password for connecting to WiFi, unnecessary for gprs
+const uint8_t loggingInterval_def = 15;
+const char *apn_def = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
+const char *wifiId_def = "AzondeNetSsid";  // The WiFi access point, unnecessary for gprs
+const char *wifiPwd_def = NULL;//"";  // The password for connecting to WiFi, unnecessary for gprs
 //#define SENSOR_CONFIG_GENERAL 1
 //#define SENSOR_CONFIG_KELLER_ACCULEVEL 1
 
