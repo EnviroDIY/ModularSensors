@@ -34,9 +34,10 @@ void LoggerDreamHost::setDreamHostPortalRX(const char *URL)
 // This prints the URL out to an Arduino stream
 void LoggerDreamHost::printSensorDataDreamHost(Stream *stream)
 {
-    stream->print(String(_DreamHostPortalRX));
-    stream->print(String(F("?LoggerID=")) + String(Logger::_loggerID));
-    stream->print(String(F("&Loggertime=")) + String(Logger::markedEpochTime - 946684800));  // Correct time from epoch to y2k
+    stream->print(String(_DreamHostPortalRX) +
+                  String(F("?LoggerID=")) + String(Logger::_loggerID) +
+                  String(F("&Loggertime=")) +
+                  String(Logger::markedEpochTime - 946684800));  // Correct time from epoch to y2k
 
     for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
     {
@@ -57,9 +58,9 @@ void LoggerDreamHost::printDreamHostRequest(Stream *stream)
     printSensorDataDreamHost(stream);
 
     // Send the rest of the HTTP header
-    stream->print(String(F("  HTTP/1.1")));
-    stream->print(String(F("\r\nHost: swrcsensors.dreamhosters.com")));
-    stream->print(String(F("\r\n\r\n")));
+    stream->print(String(F("  HTTP/1.1")) +
+                  String(F("\r\nHost: swrcsensors.dreamhosters.com")) +
+                  String(F("\r\n\r\n")));
 }
 
 

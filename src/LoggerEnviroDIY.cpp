@@ -56,6 +56,53 @@ void LoggerEnviroDIY::setSamplingFeatureUUID(const char *samplingFeature)
 }
 
 
+    // Calculates how long the JSON will be
+uint16_t LoggerEnviroDIY::calculateJsonSize()
+{
+    uint16_t jsonLength = 21;  // {"sampling_feature":"
+    jsonLength += 36;  // sampling feature UUID
+    jsonLength += 15;  // ","timestamp":"
+    jsonLength += 25;  // markedISO8601Time
+    jsonLength += 2;  //  ",
+    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
+    {
+        jsonLength += 1;  //  "
+        jsonLength += 36;  // variable UUID
+        jsonLength += 2;  //  ":
+        jsonLength += _internalArray->arrayOfVars[i]->getValueString().length();
+        if (i + 1 != _internalArray->getVariableCount())
+        {
+            jsonLength += 1;  // ,
+        }
+    }
+    jsonLength += 1;  // }
+
+    return jsonLength;
+}
+
+
+// Calculates how long the full post request will be, including headers
+uint16_t LoggerEnviroDIY::calculatePostSize()
+{
+    uint16_t postLength = 31;  // "POST /api/data-stream/ HTTP/1.1"
+    postLength += 28;  // "\r\nHost: data.envirodiy.org"
+    postLength += 11;  // "\r\nTOKEN: "
+    postLength += 36;  // registrationToken
+    // postLength += 27;  // "\r\nCache-Control: no-cache"
+    // postLength += 21;  // "\r\nConnection: close"
+    postLength += 20;  // "\r\nContent-Length: "
+    postLength += String(calculateJsonSize()).length();
+    postLength += 42;  // "\r\nContent-Type: application/json\r\n\r\n"
+    postLength += calculateJsonSize();
+    return postLength;
+}
+
+
+// Calculates how big of a buffer to make for storing post/json data
+uint16_t LoggerEnviroDIY::calculateBufferSize()
+{ return min(512, calculatePostSize());}
+
+
 // This is a PRE-PROCESSOR MACRO to speed up generating header rows
 // Again, THIS IS NOT A FUNCTION, it is a pre-processor macro
 #define STREAM_CSV_ROW(firstCol, function) \
@@ -110,22 +157,29 @@ void LoggerEnviroDIY::printFileHeader(Stream *stream)
 // This prints a properly formatted JSON for EnviroDIY to an Arduino stream
 void LoggerEnviroDIY::printSensorDataJSON(Stream *stream)
 {
-    stream->print('{');
-    stream->print(String("\"sampling_feature\":\""));
-    stream->print(String(_samplingFeature));
-    stream->print(String("\",\"timestamp\":\""));
-    stream->print(String(formatDateTime_ISO8601(markedEpochTime)) + String("\","));
+    stream->print('{' + String("\"sampling_feature\":\"") +
+                  String(_samplingFeature) + String("\",\"timestamp\":\"") +
+                  String(formatDateTime_ISO8601(markedEpochTime)) + String("\","));
 
     for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
     {
-        stream->print(String('"') + _internalArray->arrayOfVars[i]->getVarUUID() + String(F("\":")) + _internalArray->arrayOfVars[i]->getValueString());
         if (i + 1 != _internalArray->getVariableCount())
         {
-            stream->print(',');
+            stream->print(String('"') +
+                          _internalArray->arrayOfVars[i]->getVarUUID() +
+                          String(F("\":")) +
+                          _internalArray->arrayOfVars[i]->getValueString() +
+                          ',');
+        }
+        else
+        {
+            stream->print(String('"') +
+                    _internalArray->arrayOfVars[i]->getVarUUID() +
+                    String(F("\":")) +
+                     _internalArray->arrayOfVars[i]->getValueString() +
+                     '}');
         }
     }
-
-    stream->print(F("}"));
 }
 
 
@@ -133,34 +187,14 @@ void LoggerEnviroDIY::printSensorDataJSON(Stream *stream)
 // specified stream.
 void LoggerEnviroDIY::printEnviroDIYRequest(Stream *stream)
 {
-    // First we need to calculate how long the json string is going to be
-    // This is needed for the "Content-Length" header
-    uint16_t jsonLength = 21;  // {"sampling_feature":"
-    jsonLength += 36;  // sampling feature UUID
-    jsonLength += 15;  // ","timestamp":"
-    jsonLength += 25;  // markedISO8601Time
-    jsonLength += 2;  //  ",
-    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
-    {
-        jsonLength += 1;  //  "
-        jsonLength += 36;  // variable UUID
-        jsonLength += 2;  //  ":
-        jsonLength += _internalArray->arrayOfVars[i]->getValueString().length();
-        if (i + 1 != _internalArray->getVariableCount())
-        {
-            jsonLength += 1;  // ,
-        }
-    }
-    jsonLength += 1;  // }
-
     // Stream the HTTP headers for the post request
-    stream->print(String(F("POST /api/data-stream/ HTTP/1.1")));
-    stream->print(String(F("\r\nHost: data.envirodiy.org")));
-    stream->print(String(F("\r\nTOKEN: ")) + String(_registrationToken));
-    // stream->print(String(F("\r\nCache-Control: no-cache")));
-    // stream->print(String(F("\r\nConnection: close")));
-    stream->print(String(F("\r\nContent-Length: ")) + String(jsonLength));
-    stream->print(String(F("\r\nContent-Type: application/json\r\n\r\n")));
+    stream->print(String(F("POST /api/data-stream/ HTTP/1.1")) +
+                  String(F("\r\nHost: data.envirodiy.org")) +
+                  String(F("\r\nTOKEN: ")) + String(_registrationToken) +
+                  // String(F("\r\nCache-Control: no-cache")) +
+                  // String(F("\r\nConnection: close")) +
+                  String(F("\r\nContent-Length: ")) + String(calculateJsonSize()) +
+                  String(F("\r\nContent-Type: application/json\r\n\r\n")));
 
     // Stream the JSON itself
     printSensorDataJSON(stream);

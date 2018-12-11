@@ -42,6 +42,13 @@ public:
     // Adds the sampling feature UUID
     void setSamplingFeatureUUID(const char *samplingFeature);
 
+    // Calculates how long the JSON will be
+    uint16_t calculateJsonSize();
+    // Calculates how long the full post request will be, including headers
+    uint16_t calculatePostSize();
+    // Calculates how big of a buffer to make for storing post/json data
+    uint16_t calculateBufferSize();
+
     // This adds extra data to the datafile header
     void printFileHeader(Stream *stream) override;
 
