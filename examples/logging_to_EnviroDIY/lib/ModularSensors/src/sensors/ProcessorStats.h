@@ -101,7 +101,8 @@ public:
    * - Heavy power demand, that can support cellular comms, and all sensors and SD card logging
    */
     ps_Lbatt_status_t  isBatteryStatusAbove(bool newBattReading=false,ps_pwr_req_t status_req=PS_PWR_USEABLE_REQ);
-
+    void setBatteryType(ps_liion_rating_t LiionType);
+    void printBatteryThresholds(void);
     /* Get Battery voltage
      * This measures a complex Voltage, which when there is no other external voltage, is the LiIon Battery.
      * What is really desired, is to measure the charge remaining in the LiIon battery (this is the API to do that).
@@ -117,21 +118,32 @@ public:
     //float getBatteryVm2a(bool newBattReading);//snap float voltage
     //float getBatteryVm2b(bool newBattReading);//snap load voltage
     //float getBatteryVm2diff(bool newBattReading); //getDifference in measured batteryV using internal reference
-//use EDIY_PROGMEM
-const float PS_LBATT_HYSTERESIS=0.05; 
-const float PS_LBATT_USEABLE_V=3.7;  
-const float PS_LBATT_LOW_V=3.8;
-const float PS_LBATT_MEDIUM_V=3.9;
-const float PS_LBATT_GOOD_V=4.0;
-#define PS_TYPES 5
-#define PS_LPBATT_TBL_NUM (PS_TYPES+1)
-//                                              0   1   2   3   Hyst
-const float PS_LBATT_TBL[PSLR_NUM][PS_LPBATT_TBL_NUM] = {
-    {3.7,3.8,3.9,4.0,0.05},
-    {3.6,3.7,3.8,3.9,0.04},
-    {3.5,3.6,3.7,3.8,0.03}
-   };
 
+#define PS_TYPES 4
+#define PS_LPBATT_TBL_NUM (PS_TYPES+1)
+//    
+ ps_liion_rating_t _liion_type;
+//use EDIY_PROGMEM
+const float PS_LBATT_TBL[PSLR_NUM][PS_LPBATT_TBL_NUM] = {
+//    0    1    2    3   Hyst
+//   Use  Low  Med  Good
+    {3.7, 3.8, 3.9, 4.0, 0.05},
+    {3.6, 3.7, 3.8, 3.9, 0.04},
+    {3.5, 3.6, 3.7, 3.8, 0.03}
+   };
+//use EDIY_PROGMEM
+#define PS_LBATT_USEABLE_V  PS_LBATT_TBL[_liion_type][0]
+#define PS_LBATT_LOW_V      PS_LBATT_TBL[_liion_type][1]
+#define PS_LBATT_MEDIUM_V   PS_LBATT_TBL[_liion_type][2]
+#define PS_LBATT_GOOD_V     PS_LBATT_TBL[_liion_type][3]
+#define PS_LBATT_HYSTERESIS PS_LBATT_TBL[_liion_type][4]
+#if 0
+#define PS_LBATT_USEABLE_V 3.7  
+#define PS_LBATT_LOW_V 3.8
+#define PS_LBATT_MEDIUM_V 3.9
+#define PS_LBATT_GOOD_V 4.0
+#define PS_LBATT_HYSTERESIS 0.05 
+#endif
 private:
     const char *_version;
     int8_t _batteryPin;

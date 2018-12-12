@@ -966,18 +966,16 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
                 Serial.println(intervalMin);
             }
         } else if (strcmp_P(name,LIION_TYPE_pm)== 0){
-            //convert str to num
-            long intervalMin;
+            //convert  str to num with error checking
+            long batLiionType;
             char *endptr;
             errno=0;
-            intervalMin = strtoul(value,&endptr,10);
-            #define LIION_TYP_MAX 2
-            if ((intervalMin <= LIION_TYP_MAX) && (intervalMin>0) &&(errno!=ERANGE) ) {
-                //EnviroDIYLogger.setLoggingInterval(intervalMin);
-                //#error "needs defining"
+            batLiionType = strtoul(value,&endptr,10);
+            if ((batLiionType < PSLR_NUM) && (batLiionType>0) &&(errno!=ERANGE) ) {
+                mayflyPhy.setBatteryType((ps_liion_rating_t )batLiionType);
             } else {
-                Serial.print(F(" Set LiIon Type error (0-2) with:"));
-                Serial.println(intervalMin);
+                Serial.print(F(" Set LiIon Type error; (range 0-2) read:"));
+                Serial.println(batLiionType);
             }
         } else {
             Serial.print(F("COMMON tbd "));
@@ -1095,13 +1093,14 @@ void setup()
         {
             #if 1//defined(CHECK_SLEEP_POWER)
             Serial.print(lp_wait++);
-            Serial.print(F(": BatteryLow-Sleep30sec, BatV="));
+            Serial.print(F(": BatteryLow-Sleep60sec, BatV="));
             Serial.println(mayflyPhy.getBatteryVm1(false));
-            //PRINTOUT(F("BatteryLow-Sleep30sec,lp="),lp_wait++);
-            //MS_DBG(F("BatV="),mayflyPhy.getBatteryVm1(false));
+            delay(500); //500mS Let chars exit!!
             #endif //(CHECK_SLEEP_POWER)
-            delay(30000); //Seconds
-            //EnviroDIYLogger.systemSleep();
+            //delay(59000); //60Seconds
+            //if(_mcuWakePin >= 0){systemSleep();}
+            EnviroDIYLogger.systemSleep();
+            Serial.println(F("----Wakeup"));
         }
     } while (LiBattPower_Unseable); 
 
@@ -1141,7 +1140,7 @@ void setup()
     PRINTOUT(F("***parseIni "));
     EnviroDIYLogger.parseIniSd(MayflyIniID,inihUnhandledFn);
 #endif //USE_SD_MAYFLY_INI
-    #if 1
+#if 0
     Serial.print(F(" .ini-Logger:"));
     Serial.println(ps.msc.s.logger_id[0]);
     Serial.println(F(" List of UUIDs"));
@@ -1157,10 +1156,11 @@ void setup()
     Serial.print(samplingFeature);
     Serial.print(F("/"));
     Serial.println(ps.provider.s.sampling_feature);
-    #endif //1
+#endif //1
     //List PowerManagementSystem LiIon Bat thresholds
-    Serial.print(F("Battery LiIonType="));
-    Serial.println(PSLR_LIION);
+
+    mayflyPhy.printBatteryThresholds();
+#if 0
     uint8_t psilp,psolp;
     for (psolp=0; psolp<PSLR_NUM;psolp++) {
         Serial.print(psolp);
@@ -1171,7 +1171,7 @@ void setup()
         }
         Serial.println();
     }
-
+#endif //0
     // Set up the sleep/wake pin for the modem and put its inital value as "off"
     #if defined(TINY_GSM_MODEM_XBEE)
         if(modemSleepRqPin >= 0) 

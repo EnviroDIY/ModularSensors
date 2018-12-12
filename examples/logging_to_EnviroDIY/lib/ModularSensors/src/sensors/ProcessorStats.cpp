@@ -103,6 +103,7 @@ ProcessorStats::ProcessorStats(const char *version)
 {
     _version = version;
     sampNum = 0;
+    _liion_type=PSLR_0500mA;
 
     #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) || defined(ARDUINO_AVR_SODAQ_MBILI)
         _batteryPin = A6;
@@ -133,7 +134,22 @@ String ProcessorStats::getSensorLocation(void) {return BOARD;}
     }
 #endif
 //float *ProcessorStats::getBatteryVm1(float *batteryV) //sensorValue_battery
-
+void ProcessorStats::setBatteryType(ps_liion_rating_t LiionType) {
+    _liion_type = LiionType;
+}
+void ProcessorStats::printBatteryThresholds() {
+    Serial.print(F("Battery LiIonType="));
+    Serial.println(_liion_type);
+    Serial.print(F(" Thresholds USEABLE="));
+    Serial.print(PS_LBATT_USEABLE_V);
+    Serial.print(F("V LOW="));
+    Serial.print(PS_LBATT_LOW_V);
+    Serial.print(F("V MEDIUM="));
+    Serial.print(PS_LBATT_MEDIUM_V);
+    Serial.print(F("V GOOD="));
+    Serial.print(PS_LBATT_GOOD_V);
+    Serial.println(F("V"));
+}
 ps_Lbatt_status_t ProcessorStats::isBatteryStatusAbove(bool newBattReading, ps_pwr_req_t status_req) 
 {
     ps_Lbatt_status_t lion_status;
