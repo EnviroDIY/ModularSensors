@@ -32,7 +32,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // The name of this file
 //const char *sketchName = "logging_to_EnviroDIY.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID_def = "nh07k"; //FUT mv ps.msc.s.logger_id
+const char *LoggerID_def = "nh07j"; //FUT mv ps.msc.s.logger_id
 const char *MayflyIniID = "mayfly.ini"; //FUT mv to epprom/boot 
 // How frequently (in minutes) to log data
 //const uint8_t loggingInterval = 5;
@@ -900,7 +900,8 @@ const char REGISTRATION_TOKEN_pm[] EDIY_PROGMEM = "REGISTRATION_TOKEN";
 const char SAMPLING_FEATURE_pm[] EDIY_PROGMEM = "SAMPLING_FEATURE";
 
 const char UUIDs_pm[] EDIY_PROGMEM = "UUIDs";
-
+const char index_pm[] EDIY_PROGMEM = "index";
+static uint8_t uuid_index =0;
 static int inihUnhandledFn( const char* section, const char* name, const char* value)
 {
     if (strcmp_P(section,PROVIDER_pm)== 0)
@@ -919,33 +920,35 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
         }
     } else if (strcmp_P(section,UUIDs_pm)== 0)
     {
-        long value_idx;
-        char *endptr;
-        errno=0;
-        value_idx = strtoul(value,&endptr,10);
-    
-        if ((value_idx <= variableCount) && (value_idx>0) &&(errno!=ERANGE) )
-        {
-            value_idx -= 1; //remove end-of-string  
-            //currentUuid = variableList[value_idx]->getVarUUID();
-            strcpy(&ps.provider.s.uuid[value_idx][0], name);
-            variableList[value_idx]->setVarUUID(&ps.provider.s.uuid[value_idx][0]);
-            #if 0
+        /*FUT:Add easier method to mng 
+        perhaps1) "UUID_label"="UUID"
+        then search variableList till find UUID_label
+        perhaps2) "dummyDefaultUID"="UUID" 
+            "ASQ212_PAR"="UUID"
+            then search variablList till find dummyDefaultUID and replace with UUID
+        perhaps3) "SensorName"="UUID" 
+            "ApogeeSQ212_PAR"="UUID"
+            then search variablList till fin SensorsName
+
+        */
+        if (strcmp_P(name,index_pm)== 0) {
             Serial.print(F("["));
+            Serial.print(uuid_index);
+            Serial.print(F("]={"));
             Serial.print(value);
-            Serial.print(F("]{"));
-            Serial.print(currentUuid);
-            Serial.print(F("}-->"));
-            Serial.println(variableList[value_idx]->getVarUUID() );
-            #endif //
-        } else {
-            Serial.print(F("UUIDs idxError:"));
-            Serial.print(value_idx);
-            Serial.print(F(" from "));
+            Serial.print(F("} replacing {"));
+            Serial.print(variableList[uuid_index]->getVarUUID() );
+            Serial.println(F("}"));
+            strcpy(&ps.provider.s.uuid[uuid_index][0], value);
+            variableList[uuid_index]->setVarUUID(&ps.provider.s.uuid[uuid_index][0]);
+            uuid_index++;
+        } else 
+        {
+            Serial.print(F("UUIDs not supported:"));
             Serial.print(name);
             Serial.print("=");
             Serial.println(value);
-        }
+        } 
     } else if (strcmp_P(section,COMMON_pm)== 0) {
         if (strcmp_P(name,LOGGER_ID_pm)== 0) {
             strcpy(ps.msc.s.logger_id, value);
@@ -1020,6 +1023,8 @@ const char MAYFLY_INIT_ID_pm[] EDIY_PROGMEM = "MAYFLY_INIT_ID";
             //FUT needs to be checked for sz
             Serial.print(F("Mayfly SerialNum :"));
             Serial.println(value);
+#if 0
+//Need to use to update EEPROM. Can cause problems if wrong. 
         } else if (strcmp_P(name,MAYFLY_REV_pm)== 0) {
             //FUT: needs to go into EEPROM
             //strcpy(ps.hw_boot.s.rev, value);
@@ -1027,6 +1032,7 @@ const char MAYFLY_INIT_ID_pm[] EDIY_PROGMEM = "MAYFLY_INIT_ID";
             strcpy(MFVersion, value);
             Serial.print(F("Mayfly Rev:"));
             Serial.println(MFVersion);
+#endif //
         } else
         {
             Serial.print(F("BOOT tbd "));
@@ -1301,9 +1307,7 @@ void processSensors()
         // Flag to notify that we're in already awake and logging a point
         //Logger::isLoggingNow = true;
 
-        //float LiIonBatt_V = mayflyPhy.getBatteryVm1();
         if (PS_LBATT_UNUSEABLE_STATUS==mayflyPhy.isBatteryStatusAbove(true,PS_PWR_USEABLE_REQ)) {
-        //if ( LiIonBatt_V < LBATT_UNUSEABLE_V) {
             MS_DBG(F("---NewReading CANCELLED--Lbatt_V="));
             MS_DBG(mayflyPhy.getBatteryVm1(false));
             MS_DBG("\n");
@@ -1390,7 +1394,7 @@ void processEverything()
 {
     processSensors();
     // Check if it was instead the testing interrupt that woke us up
-    if (EnviroDIYLogger.startTesting) EnviroDIYLogger.testingMode();
+    // not implemented yet: if (EnviroDIYLogger.startTesting) EnviroDIYLogger.testingMode();
 
     // Sleep
     //if(_mcuWakePin >= 0){systemSleep();}
