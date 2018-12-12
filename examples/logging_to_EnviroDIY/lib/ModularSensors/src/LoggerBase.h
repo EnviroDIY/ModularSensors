@@ -65,6 +65,7 @@ public:
     static int8_t getTZOffset(void) { return Logger::_offset; }
 
     void setLoggingInterval(uint16_t loggingIntervalMinutes);
+
     // Sets up a pin for an LED or other way of alerting that data is being logged
     void setAlertPin(int8_t ledPin);
 
