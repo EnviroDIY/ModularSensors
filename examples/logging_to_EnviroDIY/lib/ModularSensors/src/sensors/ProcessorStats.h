@@ -135,13 +135,13 @@ const float PS_LBATT_TBL[PSLR_NUM][PS_LPBATT_TBL_NUM] = {
 #define PS_LBATT_USEABLE_V  PS_LBATT_TBL[_liion_type][0]
 #define PS_LBATT_LOW_V      PS_LBATT_TBL[_liion_type][1]
 #define PS_LBATT_MEDIUM_V   PS_LBATT_TBL[_liion_type][2]
-#define PS_LBATT_GOOD_V     PS_LBATT_TBL[_liion_type][3]
+#define PS_LBATT_HEAVY_V    PS_LBATT_TBL[_liion_type][3]
 #define PS_LBATT_HYSTERESIS PS_LBATT_TBL[_liion_type][4]
 #if 0
 #define PS_LBATT_USEABLE_V 3.7  
 #define PS_LBATT_LOW_V 3.8
 #define PS_LBATT_MEDIUM_V 3.9
-#define PS_LBATT_GOOD_V 4.0
+#define PS_LBATT_HEAVY_V 4.0
 #define PS_LBATT_HYSTERESIS 0.05 
 #endif
 private:

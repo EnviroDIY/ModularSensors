@@ -1050,13 +1050,126 @@ const char MAYFLY_INIT_ID_pm[] EDIY_PROGMEM = "MAYFLY_INIT_ID";
     return 1;
 }
 #endif //USE_SD_MAYFLY_INI
-    float LiIonBatt_V;
+//mayfly Sleep processing
+#define mfSLEEP_TEST
+#ifdef mfSLEEP_TEST
+void mfSystemSleep()
+{
+  //This method handles any sensor specific sleep setup
+  sensorsSleep();
+  
+  //Wait until the serial ports have finished transmitting
+  Serial.flush();
+  //Serial1.flush();
+  
+  //The next timed interrupt will not be sent until this is cleared
+  rtc.clearINTStatus();
+    
+  //Disable ADC
+  ADCSRA &= ~_BV(ADEN);
+  
+  //Sleep time
+  noInterrupts();
+  sleep_enable();
+  interrupts();
+  sleep_cpu();
+  sleep_disable();
+ 
+  //Enbale ADC
+  ADCSRA |= _BV(ADEN);
+  
+  //This method handles any sensor specific wake setup
+ // sensorsWake();
+}
+ 
+void sensorsSleep()
+{
+  //Add any code which your sensors require before sleep
+}
+#endif //mfSLEEP_TEST
 
+// ==========================================================================
+// Modem setup
+// ==========================================================================
+bool modemSetup=false;
+ void setupModem(){
+   // Set up the sleep/wake pin for the modem and put its inital value as "off"
+    #if defined(TINY_GSM_MODEM_XBEE)
+        if(modemSleepRqPin >= 0) 
+        {
+            Serial.print(F("Setting up sleep mode on the XBee. "));
+            Serial.println(modemSleepRqPin);
+            pinMode(modemSleepRqPin, OUTPUT);
+            digitalWrite(modemSleepRqPin, LOW);  // Turn it on to talk, just in case
+        }
+        if (tinyModem->commandMode())
+        {
+            tinyModem->sendAT(F("SM"),1);  // Pin sleep
+            tinyModem->waitResponse();
+            tinyModem->sendAT(F("DO"),0);  // Disable remote manager
+            tinyModem->waitResponse();
+            //tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
+            //tinyModem->waitResponse();
+        } else {
+            PRINTOUT(F("Xbee Modem - not available! Not set to pin sleep"));
+        }
+        if(modemSleepRqPin >= 0) {
+            digitalWrite(modemSleepRqPin, HIGH);  // back to sleep
+        }
+    #elif defined(TINY_GSM_MODEM_ESP8266)
+        if (modemSleepRqPin >= 0)
+        {
+            pinMode(modemSleepRqPin, OUTPUT);
+            digitalWrite(modemSleepRqPin, HIGH);
+        }
+        if (modemResetPin >= 0)
+        {
+            pinMode(modemResetPin, OUTPUT);
+            digitalWrite(modemResetPin, HIGH);
+        }
+    #elif defined(TINY_GSM_MODEM_UBLOX)
+        pinMode(modemSleepRqPin, OUTPUT);
+        digitalWrite(modemSleepRqPin, HIGH);
+    #else
+        pinMode(modemSleepRqPin, OUTPUT);
+        digitalWrite(modemSleepRqPin, LOW);
+    #endif
+    modemSetup = true;
+ }
+ // ====================
+  void modemCheckHasIp() {
+#if defined(TINY_GSM_MODEM_XBEE)
+    //expect wakeFxn();
+    if (tinyModem->commandMode() )
+    {
+        PRINTOUT(F("IP number is "));
+        tinyModem->sendAT(F("MY"));  // Request IP #
+        tinyModem->waitResponse();
+        if( XBEE_S6B_WIFI == tinyModem->getBeeType()) {
+            MS_DBG(F("  Set XB WiFi\n"));
+            // Cellular 3G Global SM yes, SO no
+            // Cellular LTE-M SM yes, SO no
+            // Cellular LTE CAT1 - SM yes, SO 0
+            // WiFi S6B SM yes, SO yes
+            //For WiFi AP  Bit4/0x140 Associate in sleep or default 0x100 Disassociate for Deep Sleep
+            tinyModem->sendAT(F("SO"),100); //0X140 or 320 decimal
+            tinyModem->waitResponse();
+            tinyModem->writeChanges();
+        }
+        tinyModem->exitCommand();
+    } else {
+        PRINTOUT(F("nh: Check IP number. not in CMD modem!"));
+    }
+    //Expect sleepFxn();
+#endif //TINY_GSM_MODEM_XBEE   
+  }
 // ==========================================================================
 // Main setup function
 // ==========================================================================
 void setup()
 {
+    bool LiBattPower_Unseable;
+    uint16_t lp_wait=1;
     //ADCSRA |= _BV(ADEN);
     //uint8_t mcu_status = MCUSR; is already cleared by Arduino startup???
     //MCUSR = 0; //reset for unique read
@@ -1085,21 +1198,26 @@ void setup()
     Serial.print(F("Current Time: "));
     Serial.println(EnviroDIYLogger.formatDateTime_ISO8601(EnviroDIYLogger.getNowEpoch()+(timeZone_def*60)) );
 
-    bool LiBattPower_Unseable;
-    uint16_t lp_wait=1;
+    EnviroDIYLogger.beginRtc(); //need for systemSleep()
     do {
         LiBattPower_Unseable = ((PS_LBATT_UNUSEABLE_STATUS == mayflyPhy.isBatteryStatusAbove(true,PS_PWR_LOW_REQ))?true:false);
         if (LiBattPower_Unseable)
         {
+            /* Sleep 
+            * If can't collect data wait for more power to accumulate.
+            * This sleep appears to taking 5mA, where as later sleep takes 3.7mA
+            * Under no other load conditions the mega1284 takes about 35mA
+            * Another issue is that onstartup currently requires turning on comms device to set it up.
+            * On an XbeeS6 WiFi this can take 20seconds for some reason.
+            */
             #if 1//defined(CHECK_SLEEP_POWER)
             Serial.print(lp_wait++);
             Serial.print(F(": BatteryLow-Sleep60sec, BatV="));
             Serial.println(mayflyPhy.getBatteryVm1(false));
-            delay(500); //500mS Let chars exit!!
             #endif //(CHECK_SLEEP_POWER)
             //delay(59000); //60Seconds
             //if(_mcuWakePin >= 0){systemSleep();}
-            EnviroDIYLogger.systemSleep();
+            EnviroDIYLogger.systemSleep(); 
             Serial.println(F("----Wakeup"));
         }
     } while (LiBattPower_Unseable); 
@@ -1172,47 +1290,7 @@ void setup()
         Serial.println();
     }
 #endif //0
-    // Set up the sleep/wake pin for the modem and put its inital value as "off"
-    #if defined(TINY_GSM_MODEM_XBEE)
-        if(modemSleepRqPin >= 0) 
-        {
-            Serial.print(F("Setting up sleep mode on the XBee. "));
-            Serial.println(modemSleepRqPin);
-            pinMode(modemSleepRqPin, OUTPUT);
-            digitalWrite(modemSleepRqPin, LOW);  // Turn it on to talk, just in case
-        }
-        if (tinyModem->commandMode())
-        {
-            tinyModem->sendAT(F("SM"),1);  // Pin sleep
-            tinyModem->waitResponse();
-            tinyModem->sendAT(F("DO"),0);  // Disable remote manager
-            tinyModem->waitResponse();
-            //tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
-            //tinyModem->waitResponse();
-        } else {
-            PRINTOUT(F("Xbee Modem - not available! Not set to pin sleep"));
-        }
-        if(modemSleepRqPin >= 0) {
-            digitalWrite(modemSleepRqPin, HIGH);  // back to sleep
-        }
-    #elif defined(TINY_GSM_MODEM_ESP8266)
-        if (modemSleepRqPin >= 0)
-        {
-            pinMode(modemSleepRqPin, OUTPUT);
-            digitalWrite(modemSleepRqPin, HIGH);
-        }
-        if (modemResetPin >= 0)
-        {
-            pinMode(modemResetPin, OUTPUT);
-            digitalWrite(modemResetPin, HIGH);
-        }
-    #elif defined(TINY_GSM_MODEM_UBLOX)
-        pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, HIGH);
-    #else
-        pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, LOW);
-    #endif
+ 
 
     // Set the timezone and offsets
     // Logging in the given time zone
@@ -1221,48 +1299,19 @@ void setup()
     Logger::setTZOffset(timeZone_def);
 #if !defined(CHECK_SLEEP_POWER)
     // Attach the modem and information pins to the logger
-    EnviroDIYLogger.attachModem(modemPhy);
+    EnviroDIYLogger.attachModem(modemPhy); //Only saves the modemPhy - no other action
     EnviroDIYLogger.setAlertPin(greenLED);
-    EnviroDIYLogger.setTestingModePin(buttonPin);
+    //EnviroDIYLogger.setTestingModePin(buttonPin);
 
     // Enter the tokens for the connection with EnviroDIY
-    //EnviroDIYLogger.setToken(registrationToken);
     EnviroDIYLogger.setToken(ps.provider.s.registration_token);
-    //EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
     EnviroDIYLogger.setSamplingFeatureUUID(ps.provider.s.sampling_feature);
 
     // Begin the logger
     PRINTOUT(F("beginAndNoSync "));
     EnviroDIYLogger.beginLogger();
 
-    PRINTOUT(F("***timeSync "));
-    EnviroDIYLogger.timeSync();
-#if defined(TINY_GSM_MODEM_XBEE)
-    wakeFxn();
-    if (tinyModem->commandMode() )
-    {
-        PRINTOUT(F("IP number is "));
-        tinyModem->sendAT(F("MY"));  // Request IP #
-        tinyModem->waitResponse();
-        if( XBEE_S6B_WIFI == tinyModem->getBeeType()) {
-            MS_DBG(F("  Set XB WiFi\n"));
-            // Cellular 3G Global SM yes, SO no
-            // Cellular LTE-M SM yes, SO no
-            // Cellular LTE CAT1 - SM yes, SO 0
-            // WiFi S6B SM yes, SO yes
-            //For WiFi AP  Bit4/0x140 Associate in sleep or default 0x100 Disassociate for Deep Sleep
-            tinyModem->sendAT(F("SO"),100); //0X140 or 320 decimal
-            tinyModem->waitResponse();
-            tinyModem->writeChanges();
-        }
-        tinyModem->exitCommand();
-    } else {
-        PRINTOUT(F("nh: Check IP number. not in CMD modem!"));
-    }
-    sleepFxn();
-    #endif //TINY_GSM_MODEM_XBEE
-#endif //CHECK_SLEEP_POWER
-
+#endif //CHECK_SLEEP_POWER   
 }
 
 
@@ -1316,8 +1365,6 @@ void processSensors()
         // Print a line to show new reading
         PRINTOUT(F("---NewReading-----------------------------"));
         MS_DBG(F("Lbatt_V="),mayflyPhy.getBatteryVm1(false));
-        //MS_DBG(LiIonBatt_V);
-        //MS_DBG("\n");
         //PRINTOUT(F("----------------------------\n"));
 #if !defined(CHECK_SLEEP_POWER)
         // Turn on the LED to show we're taking a reading
@@ -1356,6 +1403,13 @@ void processSensors()
             //modemPhy.modemPowerUp();
             if (EnviroDIYLogger._logModem != NULL)
             {
+                if (!modemSetup) {
+                    // The first time thru, setup modem. Can't do it in regular setup due to potential power drain.
+                    setupModem();
+                    modemCheckHasIp();
+                    PRINTOUT(F("***timeSync "));
+                    EnviroDIYLogger.timeSync();
+                }
                 // Connect to the network
                 MS_DBG(F("  Connecting to the Internet...\n"));
                 if (modemPhy.connectInternet())

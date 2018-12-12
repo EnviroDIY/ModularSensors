@@ -353,7 +353,14 @@ void LoggerEnviroDIY::testingMode()
 // ===================================================================== //
 // Convience functions to call several of the above functions
 // ===================================================================== //
-
+void LoggerEnviroDIY::beginRtc(void) {
+    #if defined ARDUINO_ARCH_SAMD
+        zero_sleep_rtc.begin();
+    #else
+        rtc.begin();
+        delay(100);
+    #endif
+}
 // This calls all of the setup functions - must be run AFTER init
 void LoggerEnviroDIY::beginLogger(void)
 {
@@ -361,13 +368,7 @@ void LoggerEnviroDIY::beginLogger(void)
     if (_ledPin >= 0) pinMode(_ledPin, OUTPUT);
     if (_buttonPin >= 0) pinMode(_buttonPin, INPUT_PULLUP);
 
-    #if defined ARDUINO_ARCH_SAMD
-        zero_sleep_rtc.begin();
-    #else
-        rtc.begin();
-        delay(100);
-    #endif
-
+    //beginRtc()
     // Print out the current time
     PRINTOUT(F("Current RTC time is: "), formatDateTime_ISO8601(getNowEpoch()));
 

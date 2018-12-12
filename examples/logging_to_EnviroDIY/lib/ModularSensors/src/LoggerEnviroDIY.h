@@ -73,6 +73,7 @@ public:
 
     // This calls all of the setup functions - must be run AFTER init
     // This version syncs the clock!
+    virtual void beginRtc(void);
     virtual void beginLogger(void);
     virtual void timeSync(void);
     virtual bool parseIniSd(const char *ini_fn,ini_handler handler_fn);

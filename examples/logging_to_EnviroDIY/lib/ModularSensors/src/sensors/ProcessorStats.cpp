@@ -147,7 +147,7 @@ void ProcessorStats::printBatteryThresholds() {
     Serial.print(F("V MEDIUM="));
     Serial.print(PS_LBATT_MEDIUM_V);
     Serial.print(F("V GOOD="));
-    Serial.print(PS_LBATT_GOOD_V);
+    Serial.print(PS_LBATT_HEAVY_V);
     Serial.println(F("V"));
 }
 ps_Lbatt_status_t ProcessorStats::isBatteryStatusAbove(bool newBattReading, ps_pwr_req_t status_req) 
@@ -161,7 +161,7 @@ ps_Lbatt_status_t ProcessorStats::isBatteryStatusAbove(bool newBattReading, ps_p
     } else {
         MS_DBG(F(" isBatteryStatusAbove Vold="),LiIonBatt_V);
     }
-    if      (LiIonBatt_V>=PS_LBATT_GOOD_V)   { lion_status=PS_LBATT_HEAVY_STATUS;
+    if      (LiIonBatt_V>=PS_LBATT_HEAVY_V)  { lion_status=PS_LBATT_HEAVY_STATUS;
     }else if(LiIonBatt_V>=PS_LBATT_MEDIUM_V) { lion_status=PS_LBATT_MEDIUM_STATUS;
     }else if(LiIonBatt_V>=PS_LBATT_LOW_V)    { lion_status=PS_LBATT_LOW_STATUS;
     }else if(LiIonBatt_V>=PS_LBATT_USEABLE_V){ lion_status=PS_LBATT_BARELYUSEABLE_STATUS;
