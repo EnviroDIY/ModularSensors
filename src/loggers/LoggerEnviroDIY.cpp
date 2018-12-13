@@ -8,7 +8,7 @@
  * http://data.enviroDIY.org
 */
 
-#include "LoggerEnviroDIY.h"
+#include "loggers/LoggerEnviroDIY.h"
 
 // To prevent compiler/linker crashes with Enable interrupt
 #define LIBCALL_ENABLEINTERRUPT

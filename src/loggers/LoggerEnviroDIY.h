@@ -13,7 +13,7 @@
 #define LoggerEnviroDIY_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+#define DEBUGGING_SERIAL_OUTPUT Serial
 
 // Send Buffer
 // This determines how many characters to set out at once over the TCP/UDP

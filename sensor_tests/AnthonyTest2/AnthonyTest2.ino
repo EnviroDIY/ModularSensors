@@ -24,7 +24,7 @@ https://github.com/EnviroDIY/ModularSensors/commit/7d0d15ae5bc6dddf13adbd735032e
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerEnviroDIY.h>
+#include <loggers/LoggerEnviroDIY.h>
 
 
 // ==========================================================================

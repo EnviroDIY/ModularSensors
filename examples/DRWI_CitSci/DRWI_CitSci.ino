@@ -175,7 +175,7 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 VariableArray varArray(variableCount, variableList);
 
 // Create a new logger instance
-#include <LoggerDreamHost.h>
+#include <loggers/LoggerDreamHost.h>
 LoggerDreamHost EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 

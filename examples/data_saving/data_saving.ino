@@ -410,7 +410,7 @@ int variableCount_complete = sizeof(variableList_complete) / sizeof(variableList
 // Create the VariableArray object
 VariableArray arrayComplete(variableCount_complete, variableList_complete);
 // Create the new logger instance
-#include <LoggerEnviroDIY.h>
+#include <loggers/LoggerEnviroDIY.h>
 LoggerEnviroDIY loggerComplete(LoggerID, loggingInterval, sdCardPin, wakePin, &arrayComplete);
 
 

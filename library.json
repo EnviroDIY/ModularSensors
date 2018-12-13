@@ -53,7 +53,10 @@
             "+<*.h>",
             "+<sensors/*.c>",
             "+<sensors/*.cpp>",
-            "+<sensors/*.h>"
+            "+<sensors/*.h>",
+            "+<loggers/*.c>",
+            "+<loggers/*.cpp>",
+            "+<loggers/*.h>"
         ],
         "libLDFMode": "deep+"
     },

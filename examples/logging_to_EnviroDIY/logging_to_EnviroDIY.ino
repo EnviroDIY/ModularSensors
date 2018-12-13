@@ -734,7 +734,7 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 VariableArray varArray(variableCount, variableList);
 
 // Create a new logger instance
-#include <LoggerEnviroDIY.h>
+#include <loggers/LoggerEnviroDIY.h>
 LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
