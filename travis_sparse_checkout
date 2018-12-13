@@ -1,0 +1,2 @@
+# when travis clones the directory, only want to include examples
+/examples
