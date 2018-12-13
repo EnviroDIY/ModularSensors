@@ -939,13 +939,15 @@ void Logger::testingMode()
          PRINTOUT(F("Setting up sensors..."));
          _internalArray->setupSensors();
 
-        // Create the log file, adding the default header to it
-        if (_autoFileName) generateAutoFileName();
-        if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
-        else PRINTOUT(F("Unable to create a file to save data to!"));
-
         // Mark sensors as having been setup
         _areSensorsSetup = 1;
+
+       // Create the log file, adding the default header to it
+       // Writing to the SD card can be power intensive, so if we're skipping
+       // the sensor setup we'll skip this too.
+       if (_autoFileName) generateAutoFileName();
+       if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
+       else PRINTOUT(F("Unable to create a file to save data to!"));
     }
 
     // Setup sleep mode

@@ -14,6 +14,8 @@
 #define LIBCALL_ENABLEINTERRUPT
 // To handle external and pin change interrupts
 #include <EnableInterrupt.h>
+// For all i2c communication, including with the real time clock
+#include <Wire.h>
 
 
 // ============================================================================
@@ -47,7 +49,7 @@ const char *LoggerEnviroDIY::contentTypeHeader = "\r\nContent-Type: application/
 const char *LoggerEnviroDIY::samplingFeatureTag = "{\"sampling_feature\":\"";
 const char *LoggerEnviroDIY::timestampTag = "\",\"timestamp\":\"";
 
-char LoggerEnviroDIY::txBuffer[LOGGER_SEND_BUFFER_SIZE] = {'\0'};
+char LoggerEnviroDIY::txBuffer[MS_LOGGER_SEND_BUFFER_SIZE] = {'\0'};
 
 
 // Set up communications
@@ -56,7 +58,32 @@ char LoggerEnviroDIY::txBuffer[LOGGER_SEND_BUFFER_SIZE] = {'\0'};
 void LoggerEnviroDIY::attachModem(loggerModem& modem)
 {
     _logModem = &modem;
-    MS_DBG(F("Modem attached!"));
+    // Print out the modem info
+    PRINTOUT(F("A "), _logModem->getSensorName(),
+             F(" has been tied to this logger!"));
+}
+
+
+// Takes advantage of the modem to synchronize the clock
+bool LoggerEnviroDIY::syncRTC()
+{
+    bool success = false;
+    if (_logModem != NULL)
+    {
+        // Synchronize the RTC with NIST
+        PRINTOUT(F("Attempting to synchronize RTC with NIST"));
+        PRINTOUT(F("This may take up to two minutes!"));
+        // Connect to the network
+        if (_logModem->connectInternet(120000L))
+        {
+            success = syncRTClock(_logModem->getNISTTime());
+            // Disconnect from the network
+            _logModem->disconnectInternet();
+        }
+        // Turn off the modem
+        _logModem->modemSleepPowerDown();
+    }
+    return success;
 }
 
 
@@ -122,7 +149,7 @@ uint16_t LoggerEnviroDIY::calculatePostSize()
 void LoggerEnviroDIY::emptyTxBuffer(void)
 {
     MS_DBG(F("Dumping the TX Buffer"));
-    for (int i = 0; i < LOGGER_SEND_BUFFER_SIZE; i++)
+    for (int i = 0; i < MS_LOGGER_SEND_BUFFER_SIZE; i++)
     {
         txBuffer[i] = '\0';
     }
@@ -133,7 +160,7 @@ void LoggerEnviroDIY::emptyTxBuffer(void)
 int LoggerEnviroDIY::bufferFree(void)
 {
     MS_DBG(F("Current TX Buffer Size: "), strlen(txBuffer));
-    return LOGGER_SEND_BUFFER_SIZE - strlen(txBuffer);
+    return MS_LOGGER_SEND_BUFFER_SIZE - strlen(txBuffer);
 }
 
 
@@ -478,6 +505,9 @@ void LoggerEnviroDIY::testingMode()
         _logModem->modemSleepPowerDown();
     }
 
+    PRINTOUT(F("Exiting testing mode"));
+    PRINTOUT(F("------------------------------------------"));
+
     // Unset testing mode flag
     Logger::isTestingNow = false;
 
@@ -490,16 +520,24 @@ void LoggerEnviroDIY::testingMode()
 // Convience functions to call several of the above functions
 // ===================================================================== //
 
-// This calls all of the setup functions - must be run AFTER init
+// This calls all of the setup functions
 void LoggerEnviroDIY::beginAndSync(void)
 {
     // Set up pins for the LED and button
-    if (_ledPin >= 0) pinMode(_ledPin, OUTPUT);
+    if (_ledPin >= 0)
+    {
+        pinMode(_ledPin, OUTPUT);
+        digitalWrite(_ledPin, LOW);
+    }
     if (_buttonPin >= 0) pinMode(_buttonPin, INPUT_PULLUP);
 
     #if defined ARDUINO_ARCH_SAMD
         zero_sleep_rtc.begin();
     #else
+        // Set the pins for I2C
+        pinMode(SDA, INPUT_PULLUP);
+        pinMode(SCL, INPUT_PULLUP);
+        Wire.begin();
         rtc.begin();
         delay(100);
     #endif
@@ -528,22 +566,8 @@ void LoggerEnviroDIY::beginAndSync(void)
 
     if (_logModem != NULL)
     {
-        // Print out the modem info
-        PRINTOUT(F("This logger is tied to a "), _logModem->getSensorName(),
-                 F(" for internet connectivity."));
-
         // Synchronize the RTC with NIST
-        PRINTOUT(F("Attempting to synchronize RTC with NIST"));
-        PRINTOUT(F("This may take up to two minutes!"));
-        // Connect to the network
-        if (_logModem->connectInternet(120000L))
-        {
-            syncRTClock(_logModem->getNISTTime());
-            // Disconnect from the network
-            _logModem->disconnectInternet();
-        }
-        // Turn off the modem
-        _logModem->modemSleepPowerDown();
+        syncRTC();
     }
 
    // Create the log file, adding the default header to it

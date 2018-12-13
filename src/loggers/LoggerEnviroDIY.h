@@ -13,7 +13,7 @@
 #define LoggerEnviroDIY_h
 
 // Debugging Statement
-#define DEBUGGING_SERIAL_OUTPUT Serial
+// #define DEBUGGING_SERIAL_OUTPUT Serial
 
 // Send Buffer
 // This determines how many characters to set out at once over the TCP/UDP
@@ -21,7 +21,7 @@
 // decreasing it will save memory.  Do not make it smaller than 47 (to keep all
 // variable values with their UUID's) or bigger than 1500 (a typical TCP/UDP
 // Maximum Transmission Unit).
-#define LOGGER_SEND_BUFFER_SIZE 750
+#define MS_LOGGER_SEND_BUFFER_SIZE 750
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
@@ -44,6 +44,9 @@ public:
     // Adds a loggerModem objct to the logger
     // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
     void attachModem(loggerModem& modem);
+
+    // Takes advantage of the modem to synchronize the clock
+    bool syncRTC();
 
     // Adds the site registration token
     void setToken(const char *registrationToken);
@@ -88,7 +91,7 @@ public:
     // This version particularly highlights the modem signal strength!
     virtual void testingMode() override;
 
-    // This calls all of the setup functions - must be run AFTER init
+    // This calls all of the setup functions
     // This version syncs the clock!
     virtual void beginAndSync(void);
 
@@ -102,10 +105,10 @@ public:
     // be null).  It is not possible to have a null reference.
 
 protected:
-    static char txBuffer[LOGGER_SEND_BUFFER_SIZE];
+    static char txBuffer[MS_LOGGER_SEND_BUFFER_SIZE];
     static int bufferFree(void);
 
-    // portions POST request
+    // portions of the POST request
     static const char *postHeader;
     static const char *HTTPtag;
     static const char *hostHeader;
