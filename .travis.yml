@@ -6,6 +6,7 @@ sudo: false
 git:
   depth: 1
 cache:
+    pip: true
     directories:
         - "~/.platformio"
 language: python
