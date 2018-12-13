@@ -21,8 +21,8 @@ install:
     - pip install -U platformio
     - pio upgrade
     # Uninstall any old version of the current library from the Travis cache
-    - if pio lib show EnviroDIY_ModularSensors; then
-        pio lib -g uninstall EnviroDIY_ModularSensors;
+    - if pio lib -g uninstall EnviroDIY_ModularSensors; then
+        echo "Uninstalled cached version of ModularSensors";
       fi
     # Install this library from the branch we're working on
     - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
@@ -31,9 +31,9 @@ install:
         echo "Installing ModularSensors from https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_BRANCH";
       fi
     - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-        pio lib install https://github.com/$TRAVIS_REPO_SLUG.git#$BRANCH;
+        pio lib -g install https://github.com/$TRAVIS_REPO_SLUG.git#$BRANCH;
       else
-        pio lib install https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_BRANCH;
+        pio lib -g install https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_BRANCH;
       fi
     # Install serial libraries needed for most examples
     - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git  # #73, but need the git until Paul S. has a new release
