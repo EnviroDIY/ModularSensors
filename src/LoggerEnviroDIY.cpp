@@ -32,6 +32,24 @@ LoggerEnviroDIY::LoggerEnviroDIY(const char *loggerID, uint16_t loggingIntervalM
 LoggerEnviroDIY::~LoggerEnviroDIY(){}
 
 
+// Constant values for post requests
+// I want to refer to these more than once while ensuring there is only one copy in memory
+const char *LoggerEnviroDIY::postHeader = "POST /api/data-stream/";
+const char *LoggerEnviroDIY::HTTPtag = "  HTTP/1.1";
+const char *LoggerEnviroDIY::hostHeader = "\r\nHost: ";
+const char *LoggerEnviroDIY::enviroDIYHost = "data.envirodiy.org";
+const char *LoggerEnviroDIY::tokenHeader = "\r\nTOKEN: ";
+// const unsigned char *LoggerEnviroDIY::cacheHeader = "\r\nCache-Control: no-cache";
+// const unsigned char *LoggerEnviroDIY::connectionHeader = "\r\nConnection: close";
+const char *LoggerEnviroDIY::contentLengthHeader = "\r\nContent-Length: ";
+const char *LoggerEnviroDIY::contentTypeHeader = "\r\nContent-Type: application/json\r\n\r\n";
+
+const char *LoggerEnviroDIY::samplingFeatureTag = "{\"sampling_feature\":\"";
+const char *LoggerEnviroDIY::timestampTag = "\",\"timestamp\":\"";
+
+char LoggerEnviroDIY::txBuffer[LOGGER_SEND_BUFFER_SIZE] = {'\0'};
+
+
 // Set up communications
 // Adds a loggerModem objct to the logger
 // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
@@ -56,7 +74,7 @@ void LoggerEnviroDIY::setSamplingFeatureUUID(const char *samplingFeature)
 }
 
 
-    // Calculates how long the JSON will be
+// Calculates how long the JSON will be
 uint16_t LoggerEnviroDIY::calculateJsonSize()
 {
     uint16_t jsonLength = 21;  // {"sampling_feature":"
@@ -81,6 +99,7 @@ uint16_t LoggerEnviroDIY::calculateJsonSize()
 }
 
 
+/*
 // Calculates how long the full post request will be, including headers
 uint16_t LoggerEnviroDIY::calculatePostSize()
 {
@@ -96,11 +115,44 @@ uint16_t LoggerEnviroDIY::calculatePostSize()
     postLength += calculateJsonSize();
     return postLength;
 }
+*/
 
 
-// Calculates how big of a buffer to make for storing post/json data
-uint16_t LoggerEnviroDIY::calculateBufferSize()
-{ return min(512, calculatePostSize());}
+// Empties the outgoing buffer
+void LoggerEnviroDIY::emptyTxBuffer(void)
+{
+    MS_DBG(F("Dumping the TX Buffer"));
+    for (int i = 0; i < LOGGER_SEND_BUFFER_SIZE; i++)
+    {
+        txBuffer[i] = '\0';
+    }
+}
+
+
+// Returns how much space is left in the buffer
+int LoggerEnviroDIY::bufferFree(void)
+{
+    MS_DBG(F("Current TX Buffer Size: "), strlen(txBuffer));
+    return LOGGER_SEND_BUFFER_SIZE - strlen(txBuffer);
+}
+
+
+// Sends the tx buffer to a stream and then clears it
+void LoggerEnviroDIY::printTxBuffer(Stream *stream)
+{
+    // Send the out buffer so far to the serial for debugging
+    #if defined(STANDARD_SERIAL_OUTPUT)
+        PRINTOUT('\n');
+        STANDARD_SERIAL_OUTPUT.write(txBuffer, strlen(txBuffer));
+        PRINTOUT('\n');
+        STANDARD_SERIAL_OUTPUT.flush();
+    #endif
+    stream->write(txBuffer, strlen(txBuffer));
+    stream->flush();
+
+    // empty the buffer after printing it
+    emptyTxBuffer();
+}
 
 
 // This is a PRE-PROCESSOR MACRO to speed up generating header rows
@@ -157,29 +209,25 @@ void LoggerEnviroDIY::printFileHeader(Stream *stream)
 // This prints a properly formatted JSON for EnviroDIY to an Arduino stream
 void LoggerEnviroDIY::printSensorDataJSON(Stream *stream)
 {
-    stream->print('{' + String("\"sampling_feature\":\"") +
-                  String(_samplingFeature) + String("\",\"timestamp\":\"") +
-                  String(formatDateTime_ISO8601(markedEpochTime)) + String("\","));
+    stream->print(samplingFeatureTag);
+    stream->print(_samplingFeature);
+    stream->print(timestampTag);
+    stream->print(formatDateTime_ISO8601(markedEpochTime));
+    stream->print(F("\","));
 
     for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
     {
+        stream->print('"');
+        stream->print(_internalArray->arrayOfVars[i]->getVarUUID());
+        stream->print(F("\":"));
+        stream->print(_internalArray->arrayOfVars[i]->getValueString());
         if (i + 1 != _internalArray->getVariableCount())
         {
-            stream->print(String('"') +
-                          _internalArray->arrayOfVars[i]->getVarUUID() +
-                          String(F("\":")) +
-                          _internalArray->arrayOfVars[i]->getValueString() +
-                          ',');
-        }
-        else
-        {
-            stream->print(String('"') +
-                    _internalArray->arrayOfVars[i]->getVarUUID() +
-                    String(F("\":")) +
-                     _internalArray->arrayOfVars[i]->getValueString() +
-                     '}');
+            stream->print(',');
         }
     }
+
+    stream->print('}');
 }
 
 
@@ -188,13 +236,17 @@ void LoggerEnviroDIY::printSensorDataJSON(Stream *stream)
 void LoggerEnviroDIY::printEnviroDIYRequest(Stream *stream)
 {
     // Stream the HTTP headers for the post request
-    stream->print(String(F("POST /api/data-stream/ HTTP/1.1")) +
-                  String(F("\r\nHost: data.envirodiy.org")) +
-                  String(F("\r\nTOKEN: ")) + String(_registrationToken) +
-                  // String(F("\r\nCache-Control: no-cache")) +
-                  // String(F("\r\nConnection: close")) +
-                  String(F("\r\nContent-Length: ")) + String(calculateJsonSize()) +
-                  String(F("\r\nContent-Type: application/json\r\n\r\n")));
+    stream->print(postHeader);
+    stream->print(HTTPtag);
+    stream->print(hostHeader);
+    stream->print(enviroDIYHost);
+    stream->print(tokenHeader);
+    stream->print(_registrationToken);
+    // stream->print(cacheHeader);
+    // stream->print(connectionHeader);
+    stream->print(contentLengthHeader);
+    stream->print(calculateJsonSize());
+    stream->print(contentTypeHeader);
 
     // Stream the JSON itself
     printSensorDataJSON(stream);
@@ -249,24 +301,80 @@ int16_t LoggerEnviroDIY::postDataEnviroDIY(void)
         return 504;
     }
 
-    // Create a buffer for the response
-    char response_buffer[12] = "";
+    // Create a buffer for the portions of the request and response
+    char tempBuffer[37] = "";
     uint16_t did_respond = 0;
 
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
-    if(_logModem->_tinyClient->connect("data.envirodiy.org", 80))
+    if(_logModem->_tinyClient->connect(enviroDIYHost, 80))
     {
-        // Send the request to the serial for debugging
-        #if defined(STANDARD_SERIAL_OUTPUT)
-            PRINTOUT(F("\n \\/---- Post Request to EnviroDIY ----\\/ "));
-            printEnviroDIYRequest(&STANDARD_SERIAL_OUTPUT);
-            PRINTOUT('\n');
-            STANDARD_SERIAL_OUTPUT.flush();
-        #endif
+        // copy the initial post header into the tx buffer
+        strcpy(txBuffer, postHeader);
+        strcat(txBuffer, HTTPtag);
 
-        // Send the request to the modem stream
-        printEnviroDIYRequest(_logModem->_tinyClient);
-        _logModem->_tinyClient->flush();  // wait for sending to finish
+        // add the rest of the HTTP POST headers to the outgoing buffer
+        // before adding each line/chunk to the outgoing buffer, we make sure
+        // there is space for that line, sending out buffer if not
+        if (bufferFree() < 28) printTxBuffer(_logModem->_tinyClient);
+        strcat(txBuffer, hostHeader);
+        strcat(txBuffer, enviroDIYHost);
+
+        if (bufferFree() < 47) printTxBuffer(_logModem->_tinyClient);
+        strcat(txBuffer, tokenHeader);
+        strcat(txBuffer, _registrationToken);
+
+        // if (bufferFree() < 27) printTxBuffer(_logModem->_tinyClient);
+        // strcat(txBuffer, cacheHeader);
+
+        // if (bufferFree() < 21) printTxBuffer(_logModem->_tinyClient);
+        // strcat(txBuffer, connectionHeader);
+
+        if (bufferFree() < 26) printTxBuffer(_logModem->_tinyClient);
+        strcat(txBuffer, contentLengthHeader);
+        itoa(calculateJsonSize(), tempBuffer, 10);
+        strcat(txBuffer, tempBuffer);
+
+        if (bufferFree() < 42) printTxBuffer(_logModem->_tinyClient);
+        strcat(txBuffer, contentTypeHeader);
+
+        // put the start of the JSON into the outgoing response_buffer
+        if (bufferFree() < 21) printTxBuffer(_logModem->_tinyClient);
+        strcat(txBuffer, samplingFeatureTag);
+
+        if (bufferFree() < 36) printTxBuffer(_logModem->_tinyClient);
+        strcat(txBuffer, _samplingFeature);
+
+        if (bufferFree() < 42) printTxBuffer(_logModem->_tinyClient);
+        strcat(txBuffer, timestampTag);
+        formatDateTime_ISO8601(markedEpochTime).toCharArray(tempBuffer, 37);
+        strcat(txBuffer, tempBuffer);
+        txBuffer[strlen(txBuffer)] = '"';
+        txBuffer[strlen(txBuffer)] = ',';
+
+        for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
+        {
+            // Once the buffer fills, send it out
+            if (bufferFree() < 47) printTxBuffer(_logModem->_tinyClient);
+
+            txBuffer[strlen(txBuffer)] = '"';
+            _internalArray->arrayOfVars[i]->getVarUUID().toCharArray(tempBuffer, 37);
+            strcat(txBuffer, tempBuffer);
+            txBuffer[strlen(txBuffer)] = '"';
+            txBuffer[strlen(txBuffer)] = ':';
+            _internalArray->arrayOfVars[i]->getValueString().toCharArray(tempBuffer, 37);
+            strcat(txBuffer, tempBuffer);
+            if (i + 1 != _internalArray->getVariableCount())
+            {
+                txBuffer[strlen(txBuffer)] = ',';
+            }
+            else
+            {
+                txBuffer[strlen(txBuffer)] = '}';
+            }
+        }
+
+        // Send out the finished request (or the last unsent section of it)
+        printTxBuffer(_logModem->_tinyClient);
 
         uint32_t start_timer = millis();
         while ((millis() - start_timer) < 10000L && _logModem->_tinyClient->available() < 12)
@@ -275,7 +383,7 @@ int16_t LoggerEnviroDIY::postDataEnviroDIY(void)
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
-        did_respond = _logModem->_tinyClient->readBytes(response_buffer, 12);
+        did_respond = _logModem->_tinyClient->readBytes(tempBuffer, 12);
 
         // Close the TCP/IP connection as soon as the first 12 characters are read
         // We don't need anything else and stoping here should save data use.
@@ -290,7 +398,7 @@ int16_t LoggerEnviroDIY::postDataEnviroDIY(void)
         char responseCode_char[4];
         for (uint8_t i = 0; i < 3; i++)
         {
-            responseCode_char[i] = response_buffer[i+9];
+            responseCode_char[i] = tempBuffer[i+9];
         }
         responseCode = atoi(responseCode_char);
     }

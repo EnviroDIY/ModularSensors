@@ -15,10 +15,19 @@
 // Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 
+// Send Buffer
+// This determines how many characters to set out at once over the TCP/UDP
+// connection.  Increasing this may decrease data use by a loger, while
+// decreasing it will save memory.  Do not make it smaller than 47 (to keep all
+// variable values with their UUID's) or bigger than 1500 (a typical TCP/UDP
+// Maximum Transmission Unit).
+#define LOGGER_SEND_BUFFER_SIZE 750
+
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #include "LoggerBase.h"
 #include "LoggerModem.h"
+
 
 // ============================================================================
 //  Functions for the EnviroDIY data portal receivers.
@@ -45,9 +54,12 @@ public:
     // Calculates how long the JSON will be
     uint16_t calculateJsonSize();
     // Calculates how long the full post request will be, including headers
-    uint16_t calculatePostSize();
-    // Calculates how big of a buffer to make for storing post/json data
-    uint16_t calculateBufferSize();
+    // uint16_t calculatePostSize();
+
+    // This fills the TX buffer with nulls ('\0')
+    static void emptyTxBuffer(void);
+    // This writes the TX buffer to a stream and also to the debugging port
+    static void printTxBuffer(Stream *stream);
 
     // This adds extra data to the datafile header
     void printFileHeader(Stream *stream) override;
@@ -89,6 +101,24 @@ public:
     // it is possible for no modem to be attached (and thus the pointer could
     // be null).  It is not possible to have a null reference.
 
+protected:
+    static char txBuffer[LOGGER_SEND_BUFFER_SIZE];
+    static int bufferFree(void);
+
+    // portions POST request
+    static const char *postHeader;
+    static const char *HTTPtag;
+    static const char *hostHeader;
+    static const char *enviroDIYHost;
+    static const char *tokenHeader;
+    // static const char *cacheHeader;
+    // static const char *connectionHeader;
+    static const char *contentLengthHeader;
+    static const char *contentTypeHeader;
+
+    // portions of the JSON
+    static const char *samplingFeatureTag;
+    static const char *timestampTag;
 
 private:
     // Tokens and UUID's for EnviroDIY

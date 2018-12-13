@@ -23,6 +23,14 @@ LoggerDreamHost::LoggerDreamHost(const char *loggerID, uint16_t loggingIntervalM
 // Destructor
 LoggerDreamHost::~LoggerDreamHost(){}
 
+
+// Constant portions of the requests
+const char *LoggerDreamHost::getHeader = "GET ";
+const char *LoggerDreamHost::dreamhostHost = "swrcsensors.dreamhosters.com";
+const char *LoggerDreamHost::loggerTag = "?LoggerID=";
+const char *LoggerDreamHost::timestampTagDH = "&Loggertime=";
+
+
 // Functions for private SWRC server
 void LoggerDreamHost::setDreamHostPortalRX(const char *URL)
 {
@@ -34,15 +42,18 @@ void LoggerDreamHost::setDreamHostPortalRX(const char *URL)
 // This prints the URL out to an Arduino stream
 void LoggerDreamHost::printSensorDataDreamHost(Stream *stream)
 {
-    stream->print(String(_DreamHostPortalRX) +
-                  String(F("?LoggerID=")) + String(Logger::_loggerID) +
-                  String(F("&Loggertime=")) +
-                  String(Logger::markedEpochTime - 946684800));  // Correct time from epoch to y2k
+    stream->print(_DreamHostPortalRX);
+    stream->print(loggerTag);
+    stream->print(_loggerID);
+    stream->print(timestampTagDH);
+    stream->print(String(Logger::markedEpochTime - 946684800));  // Correct time from epoch to y2k
 
     for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
     {
-        stream->print(String(F("&")) + String(_internalArray->arrayOfVars[i]->getVarCode()) \
-            + String(F("=")) + String(_internalArray->arrayOfVars[i]->getValueString()));
+        stream->print('&');
+        stream->print(_internalArray->arrayOfVars[i]->getVarCode());
+        stream->print('=');
+        stream->print(_internalArray->arrayOfVars[i]->getValueString());
     }
 }
 
@@ -52,15 +63,16 @@ void LoggerDreamHost::printSensorDataDreamHost(Stream *stream)
 void LoggerDreamHost::printDreamHostRequest(Stream *stream)
 {
     // Start the request
-    stream->print(String(F("GET ")));
+    stream->print(getHeader);
 
     // Stream the full URL with parameters
     printSensorDataDreamHost(stream);
 
     // Send the rest of the HTTP header
-    stream->print(String(F("  HTTP/1.1")) +
-                  String(F("\r\nHost: swrcsensors.dreamhosters.com")) +
-                  String(F("\r\n\r\n")));
+    stream->print(HTTPtag);
+    stream->print(hostHeader);
+    stream->print(dreamhostHost);
+    stream->print(F("\r\n\r\n"));
 }
 
 
@@ -74,23 +86,54 @@ int16_t LoggerDreamHost::postDataDreamHost(void)
         return 504;
     }
 
-    // Create a buffer for the response
-    char response_buffer[12] = "";
+    // Create a buffer for the portions of the request and response
+    char tempBuffer[37] = "";
     uint16_t did_respond = 0;
 
     // Open a TCP/IP connection to DreamHost
-    if(_logModem->_tinyClient->connect("swrcsensors.dreamhosters.com", 80))
+    if(_logModem->_tinyClient->connect(dreamhostHost, 80))
     {
-        // Send the request to the serial for debugging
-        #if defined(STANDARD_SERIAL_OUTPUT)
-            PRINTOUT(F("\n \\/------ Data to DreamHost ------\\/ "));
-            printDreamHostRequest(&STANDARD_SERIAL_OUTPUT);
-            STANDARD_SERIAL_OUTPUT.flush();
-        #endif
+        // copy the initial post header into the tx buffer
+        strcpy(txBuffer, getHeader);
 
-        // Send the request to the modem stream
-        printDreamHostRequest(_logModem->_tinyClient);
-        _logModem->_tinyClient->flush();  // wait for sending to finish
+        // add in the dreamhost receiver URL
+        strcat(txBuffer, _DreamHostPortalRX);
+
+        // start the URL parameters
+        if (bufferFree() < 16) printTxBuffer(_logModem->_tinyClient);
+        strcat(txBuffer, loggerTag);
+        strcat(txBuffer, _loggerID);
+
+        if (bufferFree() < 22) printTxBuffer(_logModem->_tinyClient);
+        strcat(txBuffer, timestampTagDH);
+        itoa(Logger::markedEpochTime - 946684800, tempBuffer, 10);
+        strcat(txBuffer, tempBuffer);
+
+        for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
+        {
+            // Once the buffer fills, send it out
+            if (bufferFree() < 47) printTxBuffer(_logModem->_tinyClient);
+
+            txBuffer[strlen(txBuffer)] = '&';
+            _internalArray->arrayOfVars[i]->getVarCode().toCharArray(tempBuffer, 37);
+            strcat(txBuffer, tempBuffer);
+            txBuffer[strlen(txBuffer)] = '=';
+            _internalArray->arrayOfVars[i]->getValueString().toCharArray(tempBuffer, 37);
+            strcat(txBuffer, tempBuffer);
+        }
+
+        // add the rest of the HTTP GET headers to the outgoing buffer
+        if (bufferFree() < 52) printTxBuffer(_logModem->_tinyClient);
+        strcat(txBuffer, HTTPtag);
+        strcat(txBuffer, hostHeader);
+        strcat(txBuffer, enviroDIYHost);
+        txBuffer[strlen(txBuffer)] = '\r';
+        txBuffer[strlen(txBuffer)] = '\n';
+        txBuffer[strlen(txBuffer)] = '\r';
+        txBuffer[strlen(txBuffer)] = '\n';
+
+        // Send out the finished request (or the last unsent section of it)
+        printTxBuffer(_logModem->_tinyClient);
 
         uint32_t start_timer = millis();
         while ((millis() - start_timer) < 10000L && _logModem->_tinyClient->available() < 12)
@@ -99,7 +142,7 @@ int16_t LoggerDreamHost::postDataDreamHost(void)
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
-        did_respond = _logModem->_tinyClient->readBytes(response_buffer, 12);
+        did_respond = _logModem->_tinyClient->readBytes(tempBuffer, 12);
 
         // Close the TCP/IP connection as soon as the first 12 characters are read
         // We don't need anything else and stoping here should save data use.
@@ -114,7 +157,7 @@ int16_t LoggerDreamHost::postDataDreamHost(void)
         char responseCode_char[4];
         for (uint8_t i = 0; i < 3; i++)
         {
-            responseCode_char[i] = response_buffer[i+9];
+            responseCode_char[i] = tempBuffer[i+9];
         }
         responseCode = atoi(responseCode_char);
     }

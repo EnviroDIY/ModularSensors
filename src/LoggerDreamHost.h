@@ -59,6 +59,14 @@ public:
     // This is a one-and-done to log data
     virtual void logDataAndSend(void) override;
 
+protected:
+    // portions of the GET request
+    static const char *getHeader;
+    static const char *dreamhostHost;
+    static const char *loggerTag;
+    static const char *timestampTagDH;
+
+
 private:
     const char *_DreamHostPortalRX;
     bool _dualPost = true;
