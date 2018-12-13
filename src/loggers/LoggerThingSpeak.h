@@ -12,10 +12,10 @@
 #define LoggerThingSpeak_h
 
 // Debugging Statement
-#define DEBUGGING_SERIAL_OUTPUT Serial
+// #define DEBUGGING_SERIAL_OUTPUT Serial
 
 // Send Buffer
-#define MS_TS_SEND_BUFFER_SIZE 120
+#define MS_TS_SEND_BUFFER_SIZE 200
 
 // MQTT User Name
 // The user name doesn't actually mean anything for ThingSpeak

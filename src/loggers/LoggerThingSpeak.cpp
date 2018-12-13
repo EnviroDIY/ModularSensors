@@ -138,30 +138,35 @@ bool LoggerThingSpeak::mqttThingSpeak(void)
     if(_mqttClient.connect(mqttClient, mqttUser, _thingSpeakMQTTKey))
     {
         // Create a buffer for the portions of the request and response
-        char tempBuffer[12] = "";
+        char tempBuffer[26] = "";
 
         char topicBuffer[42] = "channels/";
         strcat(topicBuffer, _thingSpeakChannelID);
         strcat(topicBuffer, "/publish/");
         strcat(topicBuffer, _thingSpeakChannelKey);
-        MS_DBG(F("Topic String: "), String(topicBuffer));
+        MS_DBG(F("Topic: "), String(topicBuffer));
 
         emptyMsgBuffer();
 
-        for (uint8_t i = 1; i <= numChannels; i++)
+        formatDateTime_ISO8601(markedEpochTime).toCharArray(tempBuffer, 26);
+        strcat(msgBuffer, "created_at=");
+        strcat(msgBuffer, tempBuffer);
+        msgBuffer[strlen(msgBuffer)] = '&';
+
+        for (uint8_t i = 0; i < numChannels; i++)
         {
             strcat(msgBuffer, "field");
             itoa(i, tempBuffer, 12);
             strcat(msgBuffer, tempBuffer);
             msgBuffer[strlen(msgBuffer)] = '=';
-            _internalArray->arrayOfVars[i]->getValueString().toCharArray(tempBuffer, 12);
+            _internalArray->arrayOfVars[i]->getValueString().toCharArray(tempBuffer, 26);
             strcat(msgBuffer, tempBuffer);
-            if (i != numChannels)
+            if (i + 1 != numChannels)
             {
                 msgBuffer[strlen(msgBuffer)] = '&';
             }
-            MS_DBG(i, " ", _internalArray->arrayOfVars[i]->getVarCode(), " ", _internalArray->arrayOfVars[i]->getValueString(), String(msgBuffer));
         }
+        MS_DBG(F("Message: "), String(msgBuffer));
 
         _mqttClient.publish(topicBuffer, msgBuffer);
         MS_DBG(F("Topic published!  Current state: "), _mqttClient.state());

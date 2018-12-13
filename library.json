@@ -246,6 +246,16 @@
             ]
         },
         {
+            "name": "PubSubClient",
+            "library id": "89",
+            "url": "https://github.com/knolleary/pubsubclient.git",
+            "version": "=2.7",
+            "note": "A client library for MQTT messaging.",
+            "authors": [
+                "Nick O'Leary"
+            ]
+        },
+        {
             "name": "RTCZero",
             "library id": "873",
             "url": "https://github.com/arduino-libraries/RTCZero.git",
