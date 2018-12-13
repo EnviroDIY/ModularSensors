@@ -27,13 +27,14 @@ To use this fork, start with a working ModularSensors 0.17.02 or later built usi
 EnviroDIY/ModularSensors/exampleslogging_to_EnviroDIY.ino
 https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_EnviroDIY
 and in the platformio.ini substitute
-
+<blockquote><pre><code>
     ;EnviroDIY_ModularSensors@=0.17.2
     https://github.com/neilh10/ModularSensors#release1
-;  ^^ Use this when working from an official release of the library
-;    https://github.com/EnviroDIY/ModularSensors.git#develop
-;  ^^ Use this when if you want to pull from the develop branch   
-    https://github.com/neilh10/Adafruit_INA219#envirodiy
+;  ^^ Use this when working from an official release of the library   
+;    https://github.com/EnviroDIY/ModularSensors.git#develop   
+;  ^^ Use this when if you want to pull from the develop branch    
+    https://github.com/neilh10/Adafruit_INA219#envirodiy   
+</code></pre></blockquote>
 
 This library is a volunteer open source effort by the author, and is built on the effort of a number of people who open sourced their effor with ModularSensors - thankyou thankyou. 
 As an open source addition to ModularSensors you are free to use at your own discretion, and at your own risk. I've provided some description of what tests I've run at 
