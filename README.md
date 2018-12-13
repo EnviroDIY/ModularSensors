@@ -65,4 +65,4 @@ Hardware designs shared are released, unless otherwise indicated, under the [CER
 See https://github.com/EnviroDIY/ModularSensors#acknowledgments   
 [Beth Fisher](https://github.com/fisherba) for sharing/helping with her vision of ModularSensors.   
 [Anthony Aufdenkampe](https://github.com/aufdenkampe) for releasing the Modbus Interface/WingBoard, and making it possible to access a class of +12V Modbus Industrial Sensors.   
-[Sara Damiano](https://github.com/SRGDamia1) for being the "force" behind ModularSensors:).
+[Sara Damiano](https://github.com/SRGDamia1) for being the "Class maestro" of ModularSensors :).   
