@@ -35,7 +35,10 @@ and in the platformio.ini substitute
 ;  ^^ Use this when if you want to pull from the develop branch   
     https://github.com/neilh10/Adafruit_INA219#envirodiy
 
-This library is a volunteer open source effort by the author, and is built on the effort of a number of people who open sourced their effor with ModularSensors - thankyou thankyou.
+This library is a volunteer open source effort by the author, and is built on the effort of a number of people who open sourced their effor with ModularSensors - thankyou thankyou. 
+As an open source addition to ModularSensors you are free to use at your own discretion, and at your own risk. I've provided some description of what tests I've run at 
+https://github.com/neilh10/ModularSensors/wiki/Testing-overview
+  
 
 For understanding ModularSensors, the best place to start is to visit enviroDIY.org. 
 For bugs or issues with THIS fork, please open an issue. 
@@ -45,7 +48,9 @@ For changes made on this fork the best place to start is with a source differenc
 ## Contributing
 Open an [issue](https://github.com/EnviroDIY/ModularSensors/issues) to suggest and discuss potential changes/additions for the whole library. 
 
-For power contributors,fork-it, modify and generate Pull Requests. 
+For this fork Open an [issue](https://github.com/neilh10/ModularSensors/issues) to suggest and discuss potential changes/additions for this fork. 
+
+For power contributors,fork-it, modify and generate Pull Requests.
 https://github.com/neilh10/ModularSensors/wiki/git-cmds-for-preparing-for-a-PR
 
 ## License
