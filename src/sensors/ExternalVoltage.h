@@ -39,8 +39,10 @@
 #define ExternalVoltage_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
-
+//#define  ExternalVoltage_DBG 1
+#ifdef ExternalVoltage_DBG
+#define DEBUGGING_SERIAL_OUTPUT Serial
+#endif // ExternalVoltage_DBG
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #include "VariableBase.h"

@@ -48,11 +48,11 @@ public:
     void printFileHeader(Stream *stream) override;
 
     // This generates a properly formatted JSON for EnviroDIY
-    void printSensorDataJSON(Stream *stream);
+    uint16_t printSensorDataJSON(Stream *stream);
 
     // This prints a fully structured post request for WikiWatershed/EnviroDIY
     // to the specified stream.
-    void printEnviroDIYRequest(Stream *stream);
+    uint16_t printEnviroDIYRequest(Stream *stream);
 
     // This writes the post request to a "queue" file for later
     bool queueDataEnviroDIY(void);
@@ -73,6 +73,7 @@ public:
 
     // This calls all of the setup functions - must be run AFTER init
     // This version syncs the clock!
+    virtual void beginRtc(void);
     virtual void beginLogger(void);
     virtual void timeSync(void);
     virtual bool parseIniSd(const char *ini_fn,ini_handler handler_fn);
@@ -85,6 +86,8 @@ public:
     // NOTE:  The internal _logModem must be a POINTER not a reference because
     // it is possible for no modem to be attached (and thus the pointer could
     // be null).  It is not possible to have a null reference.
+    uint32_t tx_chars=0;
+    uint32_t rx_chars=0;
 
 
 private:

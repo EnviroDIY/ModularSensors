@@ -108,62 +108,66 @@ void LoggerEnviroDIY::printFileHeader(Stream *stream)
 
 
 // This prints a properly formatted JSON for EnviroDIY to an Arduino stream
-void LoggerEnviroDIY::printSensorDataJSON(Stream *stream)
+uint16_t LoggerEnviroDIY::printSensorDataJSON(Stream *stream)
 {
-    stream->print(String(F("{")));
-    stream->print(String(F("\"sampling_feature\": \"")));
-    stream->print(String(_samplingFeature));
-    stream->print(String(F("\", \"timestamp\": \"")));
-    stream->print(String(formatDateTime_ISO8601(markedEpochTime)) + F("\", "));
+    uint16_t txChars;
+    txChars = stream->print('{');
+    txChars +=stream->print(String("\"sampling_feature\":\""));
+    txChars +=stream->print(String(_samplingFeature));
+    txChars +=stream->print(String("\",\"timestamp\":\""));
+    txChars +=stream->print(String(formatDateTime_ISO8601(markedEpochTime)) + String("\","));
 
     for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
     {
-        stream->print(String(F("\"")) + _internalArray->arrayOfVars[i]->getVarUUID() + String(F("\": ")) + _internalArray->arrayOfVars[i]->getValueString());
+        txChars +=stream->print(String('"') + _internalArray->arrayOfVars[i]->getVarUUID() + String(F("\":")) + _internalArray->arrayOfVars[i]->getValueString());
         if (i + 1 != _internalArray->getVariableCount())
         {
-            stream->print(F(", "));
+            txChars +=stream->print(',');
         }
     }
 
-    stream->print(F("}"));
+    txChars +=stream->print(F("}"));
+    return txChars;
 }
 
 
 // This prints a fully structured post request for EnviroDIY to the
 // specified stream.
-void LoggerEnviroDIY::printEnviroDIYRequest(Stream *stream)
+uint16_t LoggerEnviroDIY::printEnviroDIYRequest(Stream *stream)
 {
+    uint16_t txChars=0;
     // First we need to calculate how long the json string is going to be
     // This is needed for the "Content-Length" header
-    uint16_t jsonLength = 22;  // {"sampling_feature": "
+    uint16_t jsonLength = 21;  // {"sampling_feature":"
     jsonLength += 36;  // sampling feature UUID
-    jsonLength += 17;  // ", "timestamp": "
+    jsonLength += 15;  // ","timestamp":"
     jsonLength += 25;  // markedISO8601Time
-    jsonLength += 3;  //  ",_
+    jsonLength += 2;  //  ",
     for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
     {
         jsonLength += 1;  //  "
         jsonLength += 36;  // variable UUID
-        jsonLength += 3;  //  ":_
+        jsonLength += 2;  //  ":
         jsonLength += _internalArray->arrayOfVars[i]->getValueString().length();
         if (i + 1 != _internalArray->getVariableCount())
         {
-            jsonLength += 2;  // ,_
+            jsonLength += 1;  // ,
         }
     }
     jsonLength += 1;  // }
 
     // Stream the HTTP headers for the post request
-    stream->print(String(F("POST /api/data-stream/ HTTP/1.1")));
-    stream->print(String(F("\r\nHost: data.envirodiy.org")));
-    stream->print(String(F("\r\nTOKEN: ")) + String(_registrationToken));
-    // stream->print(String(F("\r\nCache-Control: no-cache")));
-    // stream->print(String(F("\r\nConnection: close")));
-    stream->print(String(F("\r\nContent-Length: ")) + String(jsonLength));
-    stream->print(String(F("\r\nContent-Type: application/json\r\n\r\n")));
+    txChars += stream->print(String(F("POST /api/data-stream/ HTTP/1.1")));
+    txChars += stream->print(String(F("\r\nHost: data.envirodiy.org")));
+    txChars += stream->print(String(F("\r\nTOKEN: ")) + String(_registrationToken));
+    // tx_chars += stream->print(String(F("\r\nCache-Control: no-cache")));
+    // tx_chars += stream->print(String(F("\r\nConnection: close")));
+    txChars += stream->print(String(F("\r\nContent-Length: ")) + String(jsonLength));
+    txChars += stream->print(String(F("\r\nContent-Type: application/json\r\n\r\n")));
 
     // Stream the JSON itself
-    printSensorDataJSON(stream);
+    txChars +=printSensorDataJSON(stream);
+    return txChars;
 }
 
 
@@ -231,7 +235,7 @@ int16_t LoggerEnviroDIY::postDataEnviroDIY(void)
         #endif
 
         // Send the request to the modem stream
-        printEnviroDIYRequest(_logModem->_tinyClient);
+        tx_chars += printEnviroDIYRequest(_logModem->_tinyClient);
         _logModem->_tinyClient->flush();  // wait for sending to finish
 
         uint32_t start_timer = millis();
@@ -347,7 +351,14 @@ void LoggerEnviroDIY::testingMode()
 // ===================================================================== //
 // Convience functions to call several of the above functions
 // ===================================================================== //
-
+void LoggerEnviroDIY::beginRtc(void) {
+    #if defined ARDUINO_ARCH_SAMD
+        zero_sleep_rtc.begin();
+    #else
+        rtc.begin();
+        delay(100);
+    #endif
+}
 // This calls all of the setup functions - must be run AFTER init
 void LoggerEnviroDIY::beginLogger(void)
 {
@@ -355,13 +366,7 @@ void LoggerEnviroDIY::beginLogger(void)
     if (_ledPin >= 0) pinMode(_ledPin, OUTPUT);
     if (_buttonPin >= 0) pinMode(_buttonPin, INPUT_PULLUP);
 
-    #if defined ARDUINO_ARCH_SAMD
-        zero_sleep_rtc.begin();
-    #else
-        rtc.begin();
-        delay(100);
-    #endif
-
+    // beginRtc() needs to have been run before the following
     // Print out the current time
     PRINTOUT(F("Current RTC time is: "), formatDateTime_ISO8601(getNowEpoch()));
 
