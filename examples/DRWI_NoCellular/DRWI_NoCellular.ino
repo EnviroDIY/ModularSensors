@@ -120,8 +120,9 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 VariableArray varArray(variableCount, variableList);
 
 // Create a new logger instance
-#include <LoggerBase.h>
-Logger logger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+#include <loggers/LoggerEnviroDIY.h>
+LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+
 
 // ==========================================================================
 // Device registration and sampling feature information
@@ -202,15 +203,19 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
-    // Set pins for alerts and entering testing mode
-    logger.setAlertPin(greenLED);
-    logger.setTestingModePin(buttonPin);
+    // Attach the modem and information pins to the logger
+    EnviroDIYLogger.setAlertPin(greenLED);
+    EnviroDIYLogger.setTestingModePin(buttonPin);
+
+    // Enter the tokens for the connection with EnviroDIY
+    EnviroDIYLogger.setToken(registrationToken);
+    EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Begin the logger
     Serial.print("Battery: ");
     Serial.println(getBatteryVoltage());
-    if (getBatteryVoltage() < 3.4) logger.begin(true);  // skip sensor set-up
-    else logger.begin();  // set up sensors
+    if (getBatteryVoltage() < 3.4) EnviroDIYLogger.begin(true);  // skip sensor set-up
+    else EnviroDIYLogger.begin();  // set up sensors
 }
 
 
@@ -222,6 +227,6 @@ void loop()
     // Log the data
     Serial.print("Battery: ");
     Serial.println(getBatteryVoltage());
-    if (getBatteryVoltage() < 3.4) logger.systemSleep();  // just go back to sleep
-    else logger.logData();  // log data
+    if (getBatteryVoltage() < 3.4) EnviroDIYLogger.systemSleep();  // just go back to sleep
+    else EnviroDIYLogger.logData();  // log data
 }

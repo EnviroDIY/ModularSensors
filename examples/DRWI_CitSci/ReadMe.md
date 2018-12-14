@@ -4,22 +4,18 @@ This is the code example that should be used for all groups working with the Str
 
 Before programming your board with this example, you must register your site and sensors at http://data.envirodiy.org/.  Stroud can provide directions for registering your site if you need assistance.
 
-____
+_______
 
-### Customizing this example sketch:
+##To Use this Example:
 
-
-#### Set the proper address for data to go to Stroud's older "DreamHost" visualization tool
-
-- Change the ```"TALK TO STROUD FOR THIS VALUE"``` in this section of code to the real URL given to you by Stroud:
-
-```cpp
-// Set up connection with the "DreamHost" data portal
-#define DreamHostPortalRX "TALK TO STROUD FOR THIS VALUE"
-```
+#### Prepare and set up PlatformIO
+- Register a site and sensors at the WikiWatershed/EnviroDIY data portal (http://data.WikiWatershed.org/)
+- Create a new PlatformIO project
+- Copy and paste the contents of the platformio.ini file in this example into the platformio.ini for your new project
+    - It is important that your platformio configuration has the lib_ldf_mode and build flags set as they are in the example.  Without this, the program won't compile or send data.
+- Download logging_to_EnviroDIY.ino and put it into the src directory of your project.  Delete main.cpp in that folder.
 
 #### Set the logger ID
-
 - Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
 
 ```cpp
@@ -28,9 +24,8 @@ const char *LoggerID = "XXXX";
 ```
 
 #### Set the calibration coefficients for the Campbell OBS3+
-
- - The OBS3+ ships with a calibration certificate; you need this sheet!
- - Change _**all**_ of the the ```xxxxE+xx``` values in this section of code to the values on that calibration sheet.  Use numbers from the side of the calibration sheet that shows the calibration in _**volts**_.
+- The OBS3+ ships with a calibration certificate; you need this sheet!
+- Change _**all**_ of the the ```xxxxE+xx``` values in this section of code to the values on that calibration sheet.  Use numbers from the side of the calibration sheet that shows the calibration in _**volts**_.
     - The sketch will not compile if these values are not entered properly.
     - Do not change any values except those that are ```xxxxE+xx```!
 
@@ -56,12 +51,11 @@ const float OBSHigh_C = xxxxE+xx;  // The "C" value from the high range calibrat
 CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OBS3_ADS1115Address, OBS3numberReadings);
 ```
 
-#### Set the universally universal identifiers (UUID) for each variable
-
-- Change _**all**_ of the the ```"12345678-abcd-1234-efgh-1234567890ab"``` values in this section of code to the values shown on the EnviroDIY data portal for your variables.
-    - After you register your site and variables, you should see a group of empty plots on the page for your site.  The plots have titles like "Temperature" and below the plot will be a list of the "Medium", "Sensor", and "UUID" for that variable.
-    - Copy the appropriate UUID from below each plot to its proper place in this section of the code.
-    - For example, the ```"12345678-abcd-1234-efgh-1234567890ab"``` in the first line (```new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab")```) will be replaced by the UUID listed under the plot titled "Battery Voltage" with the sensor listed below as "EnviroDIY_Mayfly Data Logger".
+-Set the universally universal identifiers (UUID) for each variable
+    - Change _**all**_ of the the ```"12345678-abcd-1234-efgh-1234567890ab"``` values in this section of code to the values shown on the EnviroDIY data portal for your variables.
+        - After you register your site and variables, you should see a group of empty plots on the page for your site.  The plots have titles like "Temperature" and below the plot will be a list of the "Medium", "Sensor", and "UUID" for that variable.
+        - Copy the appropriate UUID from below each plot to its proper place in this section of the code.
+        - For example, the ```"12345678-abcd-1234-efgh-1234567890ab"``` in the first line (```new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab")```) will be replaced by the UUID listed under the plot titled "Battery Voltage" with the sensor listed below as "EnviroDIY_Mayfly Data Logger".
 
 ```cpp
 // ==========================================================================
@@ -93,3 +87,6 @@ Variable *variableList[] = {
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 ```
+
+#### Upload!
+- Test everything at home **before** deploying out in the wild!
