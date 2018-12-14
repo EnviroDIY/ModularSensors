@@ -6,7 +6,7 @@ Before using this example, you must register a site and sensors at the data port
 
 _______
 
-##To Use this Example:
+## To Use this Example:
 
 #### Prepare and set up PlatformIO
 - Register a site and sensors at the WikiWatershed/EnviroDIY data portal (http://data.WikiWatershed.org/)
@@ -51,6 +51,11 @@ const float OBSHigh_C = xxxxE+xx;  // The "C" value from the high range calibrat
 CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OBS3_ADS1115Address, OBS3numberReadings);
 ```
 
+#### Set the universally universal identifiers (UUID) for each variable
+- Change _**all**_ of the the ```"12345678-abcd-1234-efgh-1234567890ab"``` values in this section of code to the values shown on the EnviroDIY data portal for your variables.
+    - After you register your site and variables, you should see a group of empty plots on the page for your site.  The plots have titles like "Temperature" and below the plot will be a list of the "Medium", "Sensor", and "UUID" for that variable.
+    - Copy the appropriate UUID from below each plot to its proper place in this section of the code.
+    - For example, the ```"12345678-abcd-1234-efgh-1234567890ab"``` in the first line (```new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab")```) will be replaced by the UUID listed under the plot titled "Battery Voltage" with the sensor listed below as "EnviroDIY_Mayfly Data Logger".
 
 ```cpp
 // ==========================================================================
@@ -64,8 +69,6 @@ Variable *variableList[] = {
     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
-    new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
 };
 ```
 
