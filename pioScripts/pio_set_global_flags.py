@@ -17,6 +17,7 @@ global_env.Append(
     CPPDEFINES=[
         ("NEOSWSERIAL_EXTERNAL_PCINT",),
         ("SDI12_EXTERNAL_PCINT",)
+        ("MQTT_MAX_PACKET_SIZE",240)
     ]
 )
 # print "<<<<<GLOBAL ENV>>>>>"

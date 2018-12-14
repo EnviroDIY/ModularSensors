@@ -12,7 +12,11 @@ All of the documentation for this library is now available over in the [wiki](ht
 
 Although this library was written primarily for the [EnviroDIY Mayfly data logger board](https://envirodiy.org/mayfly/), it is also designed to be [compatible with a variety of other Arduino-based boards](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Compatibility) as well.
 
-The following sensors are currently supported:
+Data can currently be sent to these web services:
+- [WikiWatershed/EnviroDIY Data Portal](https://github.com/EnviroDIY/ModularSensors/wiki/EnviroDIY-Logger-Functions)
+- [ThingSpeak](https://github.com/EnviroDIY/ModularSensors/wiki/ThingSpeak-Logger-Functions)
+
+These sensors are currently supported:
 - [Apogee SQ-212: quantum light sensor, via TI ADS1115](https://github.com/EnviroDIY/ModularSensors/wiki/Apogee-SQ212)
 - [AOSong AM2315: humidity & temperature](https://github.com/EnviroDIY/ModularSensors/wiki/AOSong-AM2315)
 - [AOSong DHT: humidity & temperature](https://github.com/EnviroDIY/ModularSensors/wiki/AOSong-DHT)

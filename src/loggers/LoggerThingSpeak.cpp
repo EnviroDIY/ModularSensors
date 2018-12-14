@@ -134,48 +134,55 @@ bool LoggerThingSpeak::mqttThingSpeak(void)
     uint8_t numChannels = min(_internalArray->getVariableCount(), 8);
     MS_DBG(numChannels, F(" channels will be sent to ThingSpeak"));
 
+    // Create a buffer for the portions of the request and response
+    char tempBuffer[26] = "";
+
+    char topicBuffer[42] = "channels/";
+    strcat(topicBuffer, _thingSpeakChannelID);
+    strcat(topicBuffer, "/publish/");
+    strcat(topicBuffer, _thingSpeakChannelKey);
+    MS_DBG(F("Topic: "), String(topicBuffer));
+
+    emptyMsgBuffer();
+
+    formatDateTime_ISO8601(markedEpochTime).toCharArray(tempBuffer, 26);
+    strcat(msgBuffer, "created_at=");
+    strcat(msgBuffer, tempBuffer);
+    msgBuffer[strlen(msgBuffer)] = '&';
+
+    for (uint8_t i = 0; i < numChannels; i++)
+    {
+        strcat(msgBuffer, "field");
+        itoa(i+1, tempBuffer, 12);
+        strcat(msgBuffer, tempBuffer);
+        msgBuffer[strlen(msgBuffer)] = '=';
+        _internalArray->arrayOfVars[i]->getValueString().toCharArray(tempBuffer, 26);
+        strcat(msgBuffer, tempBuffer);
+        if (i + 1 != numChannels)
+        {
+            msgBuffer[strlen(msgBuffer)] = '&';
+        }
+    }
+    MS_DBG(F("Message: "), String(msgBuffer));
+
     // Make the MQTT connection
+    // Note:  the client id and the user name do not mean anything for ThingSpeak
     if(_mqttClient.connect(mqttClient, mqttUser, _thingSpeakMQTTKey))
     {
-        // Create a buffer for the portions of the request and response
-        char tempBuffer[26] = "";
-
-        char topicBuffer[42] = "channels/";
-        strcat(topicBuffer, _thingSpeakChannelID);
-        strcat(topicBuffer, "/publish/");
-        strcat(topicBuffer, _thingSpeakChannelKey);
-        MS_DBG(F("Topic: "), String(topicBuffer));
-
-        emptyMsgBuffer();
-
-        formatDateTime_ISO8601(markedEpochTime).toCharArray(tempBuffer, 26);
-        strcat(msgBuffer, "created_at=");
-        strcat(msgBuffer, tempBuffer);
-        msgBuffer[strlen(msgBuffer)] = '&';
-
-        for (uint8_t i = 0; i < numChannels; i++)
+        if (_mqttClient.publish(topicBuffer, msgBuffer))
         {
-            strcat(msgBuffer, "field");
-            itoa(i, tempBuffer, 12);
-            strcat(msgBuffer, tempBuffer);
-            msgBuffer[strlen(msgBuffer)] = '=';
-            _internalArray->arrayOfVars[i]->getValueString().toCharArray(tempBuffer, 26);
-            strcat(msgBuffer, tempBuffer);
-            if (i + 1 != numChannels)
-            {
-                msgBuffer[strlen(msgBuffer)] = '&';
-            }
+            MS_DBG(F("Topic published!  Current state: "), _mqttClient.state());
+            return true;
         }
-        MS_DBG(F("Message: "), String(msgBuffer));
-
-        _mqttClient.publish(topicBuffer, msgBuffer);
-        MS_DBG(F("Topic published!  Current state: "), _mqttClient.state());
-
-        return true;
+        else
+        {
+            MS_DBG(F("MQTT publish failed with state: "), _mqttClient.state());
+            return false;
+        }
     }
     else
     {
-        MS_DBG(F("MQTT Connection failed with state: "), _mqttClient.state());
+        MS_DBG(F("MQTT connection failed with state: "), _mqttClient.state());
         return false;
     }
 }
