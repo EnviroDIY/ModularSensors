@@ -436,12 +436,14 @@ bool loggerModem::addSingleMeasurementResult(void)
             MS_MOD_DBG(F("Connecting to NIST daytime server to check connection strength..."));
             IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
             success &= _tinyClient->connect(ip, 37);
-            _tinyClient->print(F("Hi!"));  // Need to send something before connection is made
+            _tinyClient->print(F("!"));  // Need to send something before connection is made
             delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
             char junkBuff[5];
             _tinyClient->readBytes(junkBuff, 4);  // Dump the returned bytes
             // This should ensure we don't wait for more than 4 character time outs
             _lastNISTrequest = millis();
+            _tinyClient->stop();  // NIST will close on it's side, but need to stop
+            // because otherwise the Bee won't realize the socket has closed
         }
 
         // Get signal quality
@@ -817,7 +819,7 @@ uint32_t loggerModem::getNISTTime(void)
     {
         IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
         connectionMade = _tinyClient->connect(ip, 37);  // XBee's address lookup falters on time.nist.gov
-        _tinyClient->print(F("Hi!"));  // Need to send something before connection is made
+        _tinyClient->print(F("!"));  // Need to send something before connection is made
         delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
     }
     else connectionMade = _tinyClient->connect("time.nist.gov", 37);
