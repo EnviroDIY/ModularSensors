@@ -1,5 +1,6 @@
 /*
  *LoggerBase.h
+
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -18,6 +19,7 @@
 //#include <Arduino.h>
 #include "ModSensorDebugger.h"
 #include "VariableArray.h"
+#include "LoggerModem.h"
 
 // Bring in the libraries to handle the processor sleep/standby modes
 // The SAMD library can also the built-in clock on those modules
@@ -39,9 +41,17 @@
 
 #include <SdFat.h>  // To communicate with the SD card
 
+// The largest number of variables from a single sensor
+#define MAX_NUMBER_SENDERS 4
+
+
+class dataSender;  // Forward declaration
+
+
 // Defines the "Logger" Class
 class Logger
 {
+
 public:
     // Constructor
     Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
@@ -49,6 +59,62 @@ public:
            VariableArray *inputArray);
     // Destructor
     virtual ~Logger();
+
+    // A pointer to the internal variable array instance
+    const char * getLoggerID(){return _loggerID;}
+
+    // A pointer to the internal variable array instance
+    VariableArray *_internalArray;
+
+    // Returns the number of variables in the internal array
+    uint8_t getArrayVarCount();
+
+    // These are reflections of the variable returns
+    // This gets the name of the parent sensor, if applicable
+    String getParentSensorNameAtI(uint8_t position_i);
+    // This gets the name and location of the parent sensor, if applicable
+    String getParentSensorNameAndLocationAtI(uint8_t position_i);
+    // This gets the variable's name using http://vocabulary.odm2.org/variablename/
+    String getVarNameAtI(uint8_t position_i);
+    // This gets the variable's unit using http://vocabulary.odm2.org/units/
+    String getVarUnitAtI(uint8_t position_i);
+    // This returns a customized code for the variable, if one is given, and a default if not
+    String getVarCodeAtI(uint8_t position_i);
+    // This returns the variable UUID, if one has been assigned
+    String getVarUUIDAtI(uint8_t position_i);
+    // This returns the current value of the variable as a string with the
+    // correct number of significant figures
+    String getValueStringAtI(uint8_t position_i);
+
+    // Adds a loggerModem objct to the logger
+    // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
+    void attachModem(loggerModem& modem);
+
+    // The internal modem instance
+    loggerModem *_logModem;
+    // NOTE:  The internal _logModem must be a POINTER not a reference because
+    // it is possible for no modem to be attached (and thus the pointer could
+    // be null).  It is not possible to have a null reference.
+
+    // Takes advantage of the modem to synchronize the clock
+    bool syncRTC();
+
+    // Sets up a pin for an LED or other way of alerting that data is being logged
+    void setAlertPin(int8_t ledPin);
+    void alertOn();
+    void alertOff();
+
+    // Sets up a pin for an interrupt to enter testing mode
+    void setTestingModePin(int8_t buttonPin);
+
+    // Adds the sampling feature UUID
+    void setSamplingFeatureUUID(const char *samplingFeatureUUID);
+    const char * getSamplingFeatureUUID(){return _samplingFeatureUUID;}
+
+
+    // ===================================================================== //
+    // Public functions to access the clock in proper format and time zone
+    // ===================================================================== //
 
     // Sets the static timezone - this must be set
     static void setTimeZone(int8_t timeZone);
@@ -61,16 +127,6 @@ public:
     static void setTZOffset(int8_t offset);
     static int8_t getTZOffset(void) { return Logger::_offset; }
 
-    // Sets up a pin for an LED or other way of alerting that data is being logged
-    void setAlertPin(int8_t ledPin);
-
-    // Sets up a pin for an interrupt to enter testing mode
-    void setTestingModePin(int8_t buttonPin);
-
-
-    // ===================================================================== //
-    // Public functions to access the clock in proper format and time zone
-    // ===================================================================== //
     // This gets the current epoch time (unix time, ie, the number of seconds
     // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
     #if defined(ARDUINO_ARCH_SAMD)
@@ -88,8 +144,8 @@ public:
     // This converts an epoch time (unix time) into a ISO8601 formatted string
     static String formatDateTime_ISO8601(uint32_t epochTime);
 
-    // This syncronizes the real time clock
-    bool syncRTClock(uint32_t nist);
+    // This sets the real time clock to the given time
+    bool setRTClock(uint32_t setTime);
 
     // This sets static variables for the date/time - this is needed so that all
     // data outputs (SD, EnviroDIY, serial printing, etc) print the same time
@@ -187,6 +243,10 @@ public:
     // ===================================================================== //
     // Convience functions to call several of the above functions
     // ===================================================================== //
+
+    // Setup the sensors and log files
+    virtual void setupSensorsAndFile(bool skipMe = false);
+
     // This does all of the setup that can't happen in the constructors
     // That is, things that require the actual processor/MCU to do something
     // rather than the compiler to do something.
@@ -219,7 +279,6 @@ protected:
     SdFat sd;
     File logFile;
     String _fileName;
-    bool _autoFileName;
 
     // Static variables - identical for EVERY logger
     static int8_t _timeZone;
@@ -232,8 +291,8 @@ protected:
     int8_t _mcuWakePin;
     int8_t _ledPin;
     int8_t _buttonPin;
-    VariableArray *_internalArray;
     bool _areSensorsSetup;
+    const char *_samplingFeatureUUID;
 
     // This checks if the SD card is available and ready
     // We run this check before every communication with the SD card to prevent
@@ -250,6 +309,9 @@ protected:
     // This opens or creates a file, converting a string file name to a
     // character file name
     bool openFile(String& filename, bool createFile, bool writeDefaultHeader);
+
+    // An array of all of the attached data senders
+    dataSender *dataSenders[MAX_NUMBER_SENDERS];
 };
 
 #endif  // Header Guard

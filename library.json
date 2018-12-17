@@ -54,10 +54,11 @@
             "+<sensors/*.c>",
             "+<sensors/*.cpp>",
             "+<sensors/*.h>",
-            "+<loggers/*.c>",
-            "+<loggers/*.cpp>",
-            "+<loggers/*.h>"
+            "+<senders/*.c>",
+            "+<senders/*.cpp>",
+            "+<senders/*.h>"
         ],
+        "extraScript": "pioScripts/pio_set_global_flags.py",
         "libLDFMode": "deep+"
     },
     "dependencies":

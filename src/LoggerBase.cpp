@@ -1,5 +1,6 @@
 /*
  *LoggerBase.h
+ 
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -8,6 +9,7 @@
 */
 
 #include "LoggerBase.h"
+#include "dataSenderBase.h"
 
 // To prevent compiler/linker crashes with Enable interrupt
 #define LIBCALL_ENABLEINTERRUPT
@@ -60,10 +62,136 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
 
     // Initialize with no file name
     _fileName = "";
-    _autoFileName = true;
+
+    // Start with no feature UUID
+    _samplingFeatureUUID = NULL;
 }
 // Destructor
 Logger::~Logger(){}
+
+
+// Returns the number of variables in the internal array
+uint8_t Logger::getArrayVarCount()
+{
+    return _internalArray->getVariableCount();
+}
+
+// This gets the name of the parent sensor, if applicable
+String Logger::getParentSensorNameAtI(uint8_t position_i)
+{
+    return _internalArray->arrayOfVars[position_i]->getParentSensorName();
+}
+// This gets the name and location of the parent sensor, if applicable
+String Logger::getParentSensorNameAndLocationAtI(uint8_t position_i)
+{
+    return _internalArray->arrayOfVars[position_i]->getParentSensorNameAndLocation();
+}
+// This gets the variable's name using http://vocabulary.odm2.org/variablename/
+String Logger::getVarNameAtI(uint8_t position_i)
+{
+    return _internalArray->arrayOfVars[position_i]->getVarName();
+}
+// This gets the variable's unit using http://vocabulary.odm2.org/units/
+String Logger::getVarUnitAtI(uint8_t position_i)
+{
+    return _internalArray->arrayOfVars[position_i]->getVarUnit();
+}
+// This returns a customized code for the variable, if one is given, and a default if not
+String Logger::getVarCodeAtI(uint8_t position_i)
+{
+    return _internalArray->arrayOfVars[position_i]->getVarCode();
+}
+// This returns the variable UUID, if one has been assigned
+String Logger::getVarUUIDAtI(uint8_t position_i)
+{
+    return _internalArray->arrayOfVars[position_i]->getVarUUID();
+}
+// This returns the current value of the variable as a string with the
+// correct number of significant figures
+String Logger::getValueStringAtI(uint8_t position_i)
+{
+    return _internalArray->arrayOfVars[position_i]->getValueString();
+}
+
+
+// Set up communications
+// Adds a loggerModem objct to the logger
+// loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
+void Logger::attachModem(loggerModem& modem)
+{
+    _logModem = &modem;
+    // Print out the modem info
+    PRINTOUT(F("A "), _logModem->getSensorName(),
+             F(" has been tied to this logger!"));
+}
+
+
+// Takes advantage of the modem to synchronize the clock
+bool Logger::syncRTC()
+{
+    bool success = false;
+    if (_logModem != NULL)
+    {
+        // Synchronize the RTC with NIST
+        PRINTOUT(F("Attempting to synchronize RTC with NIST"));
+        PRINTOUT(F("This may take up to two minutes!"));
+        // Connect to the network
+        if (_logModem->connectInternet(120000L))
+        {
+            success = setRTClock(_logModem->getNISTTime());
+            // Disconnect from the network
+            _logModem->disconnectInternet();
+        }
+        // Turn off the modem
+        _logModem->modemSleepPowerDown();
+    }
+    return success;
+}
+
+
+// Sets up a pin for an LED or other way of alerting that data is being logged
+void Logger::setAlertPin(int8_t ledPin)
+{
+    _ledPin = ledPin;
+    pinMode(_ledPin, OUTPUT);
+    MS_DBG(F("Pin "), _ledPin, F(" set as LED alert pin"));
+}
+void Logger::alertOn()
+{
+    if (_ledPin >= 0)
+    {
+        digitalWrite(_ledPin, HIGH);
+    }
+}
+void Logger::alertOff()
+{
+    if (_ledPin >= 0)
+    {
+    digitalWrite(_ledPin, LOW);
+    }
+}
+
+
+// Sets up a pin for an interrupt to enter testing mode
+void Logger::setTestingModePin(int8_t buttonPin)
+{
+    _buttonPin = buttonPin;
+    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT_PULLUP);
+    MS_DBG(F("Pin "), _buttonPin, F(" set as testing mode entry pin"));
+}
+
+
+// Adds the sampling feature UUID
+void Logger::setSamplingFeatureUUID(const char *samplingFeatureUUID)
+{
+    _samplingFeatureUUID = samplingFeatureUUID;
+    MS_DBG(F("Sampling feature UUID set!"));
+}
+
+
+// ===================================================================== //
+// Public functions to access the clock in proper format and time zone
+// ===================================================================== //
 
 
 // Sets the static timezone - this must be set
@@ -95,27 +223,6 @@ void Logger::setTZOffset(int8_t offset)
         else PRINTOUT(prtout1, (_timeZone - _offset));
     #endif
 }
-
-
-// Sets up a pin for an LED or other way of alerting that data is being logged
-void Logger::setAlertPin(int8_t ledPin)
-{
-    _ledPin = ledPin;
-    MS_DBG(F("Pin "), _ledPin, F(" set as LED alert pin"));
-}
-
-
-// Sets up a pin for an interrupt to enter testing mode
-void Logger::setTestingModePin(int8_t buttonPin)
-{
-    _buttonPin = buttonPin;
-    MS_DBG(F("Pin "), _buttonPin, F(" set as testing mode entry pin"));
-}
-
-
-// ===================================================================== //
-// Public functions to access the clock in proper format and time zone
-// ===================================================================== //
 
 // This gets the current epoch time (unix time, ie, the number of seconds
 // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
@@ -191,37 +298,32 @@ String Logger::formatDateTime_ISO8601(uint32_t epochTime)
 }
 
 
-// This syncronizes the real time clock
-bool Logger::syncRTClock(uint32_t nist)
+// This sets the real time clock to the given time
+bool Logger::setRTClock(uint32_t setTime)
 {
-    uint32_t start_millis = millis();
-
     // If the timestamp is zero, just exit
-    if  (nist == 0)
+    if  (setTime == 0)
     {
-        PRINTOUT(F("Bad timestamp, skipping sync."));
+        PRINTOUT(F("Bad timestamp, not setting clock."));
         return false;
     }
 
-    uint32_t nist_logTZ = nist + getTimeZone()*3600;
-    uint32_t nist_rtcTZ = nist_logTZ - getTZOffset()*3600;
-    MS_DBG(F("         Correct Time for Logger: "), nist_logTZ, F(" -> "), \
-        formatDateTime_ISO8601(nist_logTZ));
-
-    // See how long it took to get the time from NIST
-    uint32_t sync_time = (millis() - start_millis)/1000;
+    uint32_t set_logTZ = setTime + getTimeZone()*3600;
+    uint32_t set_rtcTZ = set_logTZ - getTZOffset()*3600;
+    MS_DBG(F("         Correct Time for Logger: "), set_logTZ, F(" -> "), \
+        formatDateTime_ISO8601(set_logTZ));
 
     // Check the current RTC time
     uint32_t cur_logTZ = getNowEpoch();
     MS_DBG(F("            Time Returned by RTC: "), cur_logTZ, F(" -> "), \
         formatDateTime_ISO8601(cur_logTZ));
-    MS_DBG(F("Offset: "), abs(nist_logTZ - cur_logTZ));
+    MS_DBG(F("Offset: "), abs(set_logTZ - cur_logTZ));
 
     // If the RTC and NIST disagree by more than 5 seconds, set the clock
-    if ((abs(nist_logTZ - cur_logTZ) > 5) && (nist != 0))
+    if ((abs(set_logTZ - cur_logTZ) > 5) && (setTime != 0))
     {
-        setNowEpoch(nist_rtcTZ + sync_time/2);
-        PRINTOUT(F("Clock synced!"));
+        setNowEpoch(set_rtcTZ);
+        PRINTOUT(F("Clock set!"));
         return true;
     }
     else
@@ -313,6 +415,9 @@ void Logger::wakeISR(void)
     // Sets up the sleep mode
     void Logger::setupSleep(void)
     {
+        // Nothing to do if we don't have a wake pin
+        if(_mcuWakePin < 0) return;
+
         // Alarms on the RTC built into the SAMD21 appear to be identical to those
         // in the DS3231.  See more notes below.
         // We're setting the alarm seconds to 59 and then seting it to go off
@@ -326,6 +431,9 @@ void Logger::wakeISR(void)
     // This DOES NOT sleep or wake the sensors!!
     void Logger::systemSleep(void)
     {
+        // Don't go to sleep unless there's a wake pin!
+        if (_mcuWakePin < 0) return;
+
         // Wait until the serial ports have finished transmitting
         // This does not clear their buffers, it just waits until they are finished
         // TODO:  Make sure can find all serial ports
@@ -366,6 +474,9 @@ void Logger::wakeISR(void)
     // Sets up the sleep mode
     void Logger::setupSleep(void)
     {
+        // Nothing to do if we don't have a wake pin
+        if(_mcuWakePin < 0) return;
+
         // Set the pin attached to the RTC alarm to be in the right mode to listen to
         // an interrupt and attach the "Wake" ISR to it.
         pinMode(_mcuWakePin, INPUT_PULLUP);
@@ -393,6 +504,9 @@ void Logger::wakeISR(void)
     // This DOES NOT sleep or wake the sensors!!
     void Logger::systemSleep(void)
     {
+        // Don't go to sleep unless there's a wake pin!
+        if (_mcuWakePin < 0) return;
+
         // Wait until the serial ports have finished transmitting
         // This does not clear their buffers, it just waits until they are finished
         // TODO:  Make sure can find all serial ports
@@ -500,7 +614,6 @@ void Logger::wakeISR(void)
 void Logger::setFileName(String& fileName)
 {
     _fileName = fileName;
-    _autoFileName = false;
 }
 // Same as above, with a character array (overload function)
 void Logger::setFileName(const char *fileName)
@@ -515,16 +628,13 @@ void Logger::setFileName(const char *fileName)
 // the begin() function is called.
 void Logger::generateAutoFileName(void)
 {
-    if (_autoFileName)
-    {
-        // Generate the file name from logger ID and date
-        String fileName =  String(_loggerID);
-        fileName +=  "_";
-        fileName +=  formatDateTime_ISO8601(getNowEpoch()).substring(0, 10);
-        fileName +=  ".csv";
-        setFileName(fileName);
-        _fileName = fileName;
-    }
+    // Generate the file name from logger ID and date
+    String fileName =  String(_loggerID);
+    fileName +=  "_";
+    fileName +=  formatDateTime_ISO8601(getNowEpoch()).substring(0, 10);
+    fileName +=  ".csv";
+    setFileName(fileName);
+    _fileName = fileName;
 }
 
 
@@ -534,12 +644,12 @@ void Logger::generateAutoFileName(void)
     stream->print("\""); \
     stream->print(firstCol); \
     stream->print("\","); \
-    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++) \
+    for (uint8_t i = 0; i < getArrayVarCount(); i++) \
     { \
         stream->print("\""); \
         stream->print(function); \
         stream->print("\""); \
-        if (i + 1 != _internalArray->getVariableCount()) \
+        if (i + 1 != getArrayVarCount()) \
         { \
             stream->print(","); \
         } \
@@ -557,20 +667,24 @@ void Logger::printFileHeader(Stream *stream)
     stream->print(F("Data Logger File: "));
     stream->println(_fileName);
 
+    // Adding the sampling feature UUID (only applies to EnviroDIY logger)
+    stream->print(F("Sampling Feature UUID: "));
+    stream->println(_samplingFeatureUUID);
+
     // Next line will be the parent sensor names
-    STREAM_CSV_ROW(F("Sensor Name:"), _internalArray->arrayOfVars[i]->getParentSensorName())
+    STREAM_CSV_ROW(F("Sensor Name:"), getParentSensorNameAtI(i))
     // Next comes the ODM2 variable name
-    STREAM_CSV_ROW(F("Variable Name:"), _internalArray->arrayOfVars[i]->getVarName())
+    STREAM_CSV_ROW(F("Variable Name:"), getVarNameAtI(i))
     // Next comes the ODM2 unit name
-    STREAM_CSV_ROW(F("Result Unit:"), _internalArray->arrayOfVars[i]->getVarUnit())
+    STREAM_CSV_ROW(F("Result Unit:"), getVarUnitAtI(i))
     // Next comes the variable UUIDs
-    STREAM_CSV_ROW(F("Result UUID:"), _internalArray->arrayOfVars[i]->getVarUUID())
+    STREAM_CSV_ROW(F("Result UUID:"), getVarUUIDAtI(i))
 
     // We'll finish up the the custom variable codes
     String dtRowHeader = F("Date and Time in UTC");
     if (_timeZone > 0) dtRowHeader += '+' + _timeZone;
     else if (_timeZone < 0) dtRowHeader += _timeZone;
-    STREAM_CSV_ROW(dtRowHeader, _internalArray->arrayOfVars[i]->getVarCode());
+    STREAM_CSV_ROW(dtRowHeader, getVarCodeAtI(i));
 }
 
 
@@ -582,10 +696,10 @@ void Logger::printSensorDataCSV(Stream *stream)
     dtFromEpoch(markedEpochTime).addToString(csvString);
     csvString += F(",");
     stream->print(csvString);
-    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
+    for (uint8_t i = 0; i < getArrayVarCount(); i++)
     {
-        stream->print(_internalArray->arrayOfVars[i]->getValueString());
-        if (i + 1 != _internalArray->getVariableCount())
+        stream->print(getValueStringAtI(i));
+        if (i + 1 != getArrayVarCount())
         {
             stream->print(F(","));
         }
@@ -704,13 +818,18 @@ bool Logger::createLogFile(String& filename, bool writeDefaultHeader)
     {
         // Close the file to save it (only do this if we'd opened it)
         logFile.close();
+        PRINTOUT(F("Data will be saved as "), _fileName);
         return true;
     }
-    else return false;
+    else
+    {
+        PRINTOUT(F("Unable to create a file to save data to!"));
+        return false;
+    }
 }
 bool Logger::createLogFile(bool writeDefaultHeader)
 {
-    if (_autoFileName) generateAutoFileName();
+    if (_fileName = "") generateAutoFileName();
     return createLogFile(_fileName, writeDefaultHeader);
 }
 
@@ -767,7 +886,7 @@ bool Logger::logToSD(void)
     {
         // Next try to create a new file, bail if we couldn't create it
         // Generate a filename with the current date, if the file name isn't set
-        if (_autoFileName) generateAutoFileName();
+        if (_fileName = "") generateAutoFileName();
         // Do add a default header to the new file!
         if (!openFile(_fileName, true, true))
         {
@@ -875,6 +994,7 @@ void Logger::testingMode()
             _internalArray->printSensorData(&STANDARD_SERIAL_OUTPUT);
         #endif
         PRINTOUT(F("    -----------------------"));
+
         delay(5000);
     }
 
@@ -889,7 +1009,7 @@ void Logger::testingMode()
     Logger::isTestingNow = false;
 
     // Sleep
-    if(_mcuWakePin >= 0){systemSleep();}
+    systemSleep();
 }
 
 
@@ -897,19 +1017,33 @@ void Logger::testingMode()
 // Convience functions to call several of the above functions
 // ===================================================================== //
 
+// Setup the sensors and log files
+void Logger::setupSensorsAndFile(bool skipMe)
+{
+    // skip everything if requested
+    if (skipMe) return;
+
+    // if this is done, skip
+    if (_areSensorsSetup) return;
+
+    // Set up the sensors
+    PRINTOUT(F("Setting up sensors..."));
+    _internalArray->setupSensors();
+
+    // Create the log file, adding the default header to it
+    // Writing to the SD card can be power intensive, so if we're skipping
+    // the sensor setup we'll skip this too.
+    createLogFile(true);
+
+    // Mark sensors as having been setup
+    _areSensorsSetup = true;
+}
+
 // This does all of the setup that can't happen in the constructors
 // That is, things that require the actual processor/MCU to do something
 // rather than the compiler to do something.
  void Logger::begin(bool skipSensorSetup)
 {
-    // Set up pins for the LED and button
-    if (_ledPin >= 0)
-    {
-        pinMode(_ledPin, OUTPUT);
-        digitalWrite(_ledPin, LOW);
-    }
-    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT_PULLUP);
-
     #if defined ARDUINO_ARCH_SAMD
         zero_sleep_rtc.begin();
     #else
@@ -928,30 +1062,15 @@ void Logger::testingMode()
              _loggingIntervalMinutes, F(" minute intervals."));
 
     PRINTOUT(F("This logger has a variable array with "),
-             _internalArray->getVariableCount(), F(" variables, of which "),
-             _internalArray->getVariableCount() - _internalArray->getCalculatedVariableCount(),
+             getArrayVarCount(), F(" variables, of which "),
+             getArrayVarCount() - _internalArray->getCalculatedVariableCount(),
              F(" come from "),_internalArray->getSensorCount(), F(" sensors and "),
              _internalArray->getCalculatedVariableCount(), F(" are calculated."));
 
-    if (!skipSensorSetup)
-    {
-         // Set up the sensors
-         PRINTOUT(F("Setting up sensors..."));
-         _internalArray->setupSensors();
-
-        // Mark sensors as having been setup
-        _areSensorsSetup = 1;
-
-       // Create the log file, adding the default header to it
-       // Writing to the SD card can be power intensive, so if we're skipping
-       // the sensor setup we'll skip this too.
-       if (_autoFileName) generateAutoFileName();
-       if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
-       else PRINTOUT(F("Unable to create a file to save data to!"));
-    }
+    setupSensorsAndFile(skipSensorSetup);
 
     // Setup sleep mode
-    if(_mcuWakePin >= 0){setupSleep();}
+    setupSleep();
 
     // Set up the interrupt to be able to enter sensor testing mode
     // NOTE:  Entering testing mode before the sensors have been set-up may
@@ -971,31 +1090,17 @@ void Logger::testingMode()
     PRINTOUT(F("------------------------------------------\n"));
 
     // Sleep
-    if(_mcuWakePin >= 0){systemSleep();}
+    systemSleep();
 }
 
 
 // This is a one-and-done to log data
 void Logger::logData(void)
 {
-    // If the number of intervals is negative, then the sensors and file on
-    // the SD card haven't been setup and we want to set them up.
+    // Set sensors and file up if it hasn't happened already
     // NOTE:  Unless it completed in less than one second, the sensor set-up
     // will take the place of logging for this interval!
-    if (!_areSensorsSetup)
-    {
-        // Set up the sensors
-        PRINTOUT(F("Sensors and data file had not been set up!  Setting them up now."));
-        _internalArray->setupSensors();
-
-       // Create the log file, adding the default header to it
-       if (_autoFileName) generateAutoFileName();
-       if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
-       else PRINTOUT(F("Unable to create a file to save data to!"));
-
-       // Mark sensors as having been setup
-       _areSensorsSetup = 1;
-    }
+    setupSensorsAndFile();
 
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
@@ -1007,7 +1112,7 @@ void Logger::logData(void)
         // Print a line to show new reading
         PRINTOUT(F("------------------------------------------"));
         // Turn on the LED to show we're taking a reading
-        if (_ledPin >= 0) digitalWrite(_ledPin, HIGH);
+        alertOn();
 
         // Do a complete sensor update
         MS_DBG(F("    Running a complete sensor update..."));
@@ -1017,7 +1122,7 @@ void Logger::logData(void)
         logToSD();
 
         // Turn off the LED
-        if (_ledPin >= 0) digitalWrite(_ledPin, LOW);
+        alertOff();
         // Print a line to show reading ended
         PRINTOUT(F("------------------------------------------\n"));
 
@@ -1029,5 +1134,5 @@ void Logger::logData(void)
     if (Logger::startTesting) testingMode();
 
     // Sleep
-    if(_mcuWakePin >= 0){systemSleep();}
+    systemSleep();
 }
