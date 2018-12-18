@@ -28,9 +28,11 @@ install:
       fi
     # Install this library from the branch we're working on
     - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-        echo "Installing ModularSensors from https://github.com/$TRAVIS_REPO_SLUG.git#$TRAVIS_BRANCH";
+        # echo "Installing ModularSensors from https://github.com/$TRAVIS_REPO_SLUG.git#$TRAVIS_BRANCH";
+        echo "Installing ModularSensors from https://github.com/$TRAVIS_REPO_SLUG.git#$TRAVIS_COMMIT";
       else
-        echo "Installing ModularSensors from https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_BRANCH";
+        # echo "Installing ModularSensors from https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_BRANCH";
+        echo "Installing ModularSensors from https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_SHA";
       fi
     - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
         pio lib -g install https://github.com/$TRAVIS_REPO_SLUG.git#$BRANCH;
