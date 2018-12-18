@@ -131,10 +131,6 @@ Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 
-// Create a data-sender for the EnviroDIY/WikiWatershed POST endpoint
-#include <senders/DreamHostSender.h>
-EnviroDIYSender EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
-
 
 // ==========================================================================
 //    Working Functions
@@ -210,6 +206,7 @@ void setup()
     // Attach the modem and information pins to the logger
     dataLogger.setAlertPin(greenLED);
     dataLogger.setTestingModePin(buttonPin);
+    dataLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Begin the logger
     // At lowest battery level, skip sensor set-up
