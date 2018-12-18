@@ -27,17 +27,19 @@ install:
         echo "Uninstalled cached version of ModularSensors";
       fi
     # Install this library from the branch we're working on
+    # echo "Installing ModularSensors from https://github.com/$TRAVIS_REPO_SLUG.git#$TRAVIS_BRANCH";
+    # echo "Installing ModularSensors from https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_BRANCH";
     - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-        # echo "Installing ModularSensors from https://github.com/$TRAVIS_REPO_SLUG.git#$TRAVIS_BRANCH";
         echo "Installing ModularSensors from https://github.com/$TRAVIS_REPO_SLUG.git#$TRAVIS_COMMIT";
       else
-        # echo "Installing ModularSensors from https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_BRANCH";
         echo "Installing ModularSensors from https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_SHA";
       fi
+    # pio lib -g install https://github.com/$TRAVIS_REPO_SLUG.git#$BRANCH;
+    # pio lib -g install https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_BRANCH;
     - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-        pio lib -g install https://github.com/$TRAVIS_REPO_SLUG.git#$BRANCH;
+        pio lib -g -f install https://github.com/$TRAVIS_REPO_SLUG.git#$TRAVIS_COMMIT;
       else
-        pio lib -g install https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_BRANCH;
+        pio lib -g -f install https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_SHA;
       fi
     # Install serial libraries needed for most examples
     - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git  # #73, but need the git until Paul S. has a new release
