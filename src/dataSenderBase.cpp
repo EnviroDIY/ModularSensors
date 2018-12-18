@@ -20,6 +20,7 @@ const char *dataSender::hostHeader = "\r\nHost: ";
 dataSender::dataSender(Logger& baseLogger, uint8_t sendEveryX, uint8_t sendOffset)
 {
     _baseLogger = &baseLogger;
+    _baseLogger->registerDataSender(this);  // register self with logger
     _sendEveryX = sendEveryX;
     _sendOffset = sendOffset;
 }

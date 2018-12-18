@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.18.0
+This example sketch is written for ModularSensors library version 0.19.0
 
 This sketch is an example of logging data from a Decagon CTD-10 and a Campbell
 OBS 3+ to an SD card.
@@ -120,8 +120,8 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 VariableArray varArray(variableCount, variableList);
 
 // Create a new logger instance
-#include <loggers/LoggerEnviroDIY.h>
-LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+#include <LoggerBase.h>
+Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
@@ -130,6 +130,10 @@ LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &
 // ==========================================================================
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
+
+// Create a data-sender for the EnviroDIY/WikiWatershed POST endpoint
+#include <senders/DreamHostSender.h>
+EnviroDIYSender EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
 
 
 // ==========================================================================
@@ -204,18 +208,21 @@ void setup()
     Logger::setTZOffset(timeZone);
 
     // Attach the modem and information pins to the logger
-    EnviroDIYLogger.setAlertPin(greenLED);
-    EnviroDIYLogger.setTestingModePin(buttonPin);
-
-    // Enter the tokens for the connection with EnviroDIY
-    EnviroDIYLogger.setToken(registrationToken);
-    EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
+    dataLogger.setAlertPin(greenLED);
+    dataLogger.setTestingModePin(buttonPin);
 
     // Begin the logger
-    Serial.print("Battery: ");
-    Serial.println(getBatteryVoltage());
-    if (getBatteryVoltage() < 3.4) EnviroDIYLogger.begin(true);  // skip sensor set-up
-    else EnviroDIYLogger.begin();  // set up sensors
+    // At lowest battery level, skip sensor set-up
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
+    else dataLogger.begin();  // set up sensors
+
+    // At very good battery voltage, or with suspicious time stamp, sync the clock
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() > 3.9 ||
+        dataLogger.getNowEpoch() < 1545091200 ||  /*Before 12/18/2018*/
+        dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+        dataLogger.syncRTC();
 }
 
 
@@ -225,8 +232,8 @@ void setup()
 void loop()
 {
     // Log the data
-    Serial.print("Battery: ");
-    Serial.println(getBatteryVoltage());
-    if (getBatteryVoltage() < 3.4) EnviroDIYLogger.systemSleep();  // just go back to sleep
-    else EnviroDIYLogger.logData();  // log data
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() < 3.4) dataLogger.systemSleep();  // just go back to sleep
+    else if (getBatteryVoltage() < 3.7) dataLogger.logData();  // log data, but don't send
+    else dataLogger.logDataAndSend();  // send data
 }

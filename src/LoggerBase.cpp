@@ -233,7 +233,7 @@ void Logger::sendDataToRemotes(void)
     {
         if (dataSenders[i] != NULL)
         {
-            MS_DBG(F("Sending data to "), dataSenders[i]->getEndpoint())
+            PRINTOUT(F("\nSending data to "), dataSenders[i]->getEndpoint());
             dataSenders[i]->sendData(_logModem->getClient());
         }
     }
@@ -719,8 +719,11 @@ void Logger::printFileHeader(Stream *stream)
     stream->println(_fileName);
 
     // Adding the sampling feature UUID (only applies to EnviroDIY logger)
-    stream->print(F("Sampling Feature UUID: "));
-    stream->println(_samplingFeatureUUID);
+    if (strlen(_samplingFeatureUUID) > 1)
+    {
+        stream->print(F("Sampling Feature UUID: "));
+        stream->println(_samplingFeatureUUID);
+    }
 
     // Next line will be the parent sensor names
     STREAM_CSV_ROW(F("Sensor Name:"), getParentSensorNameAtI(i))
@@ -729,7 +732,11 @@ void Logger::printFileHeader(Stream *stream)
     // Next comes the ODM2 unit name
     STREAM_CSV_ROW(F("Result Unit:"), getVarUnitAtI(i))
     // Next comes the variable UUIDs
-    STREAM_CSV_ROW(F("Result UUID:"), getVarUUIDAtI(i))
+    // We'll only add UUID's if we see a UUID for the first variable
+    if (getVarUUIDAtI(0).length() > 1)
+    {
+        STREAM_CSV_ROW(F("Result UUID:"), getVarUUIDAtI(i))
+    }
 
     // We'll finish up the the custom variable codes
     String dtRowHeader = F("Date and Time in UTC");

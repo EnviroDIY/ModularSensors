@@ -24,7 +24,7 @@ https://github.com/EnviroDIY/ModularSensors/commit/7d0d15ae5bc6dddf13adbd735032e
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <loggers/LoggerEnviroDIY.h>
+#include <senders/EnviroDIYSender.h>
 
 
 // ==========================================================================
@@ -857,7 +857,9 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
 // Create a new logger instance
-LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+#include <LoggerBase.h>
+Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+EnviroDIYSender EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
 
 
 // ==========================================================================
@@ -980,9 +982,9 @@ void setup()
     Logger::setTZOffset(timeZone);
 
     // Attach the modem and information pins to the logger
-    EnviroDIYLogger.attachModem(modem);
-    EnviroDIYLogger.setAlertPin(greenLED);
-    EnviroDIYLogger.setTestingModePin(buttonPin);
+    dataLogger.attachModem(modem);
+    dataLogger.setAlertPin(greenLED);
+    dataLogger.setTestingModePin(buttonPin);
 
     // Enter the tokens for the connection with EnviroDIY
     EnviroDIYLogger.setToken(registrationToken);
@@ -992,8 +994,8 @@ void setup()
     mayfly.update();
     Serial.print("Battery: ");
     Serial.println(mayflyBatt->getValue());
-    if (mayflyBatt->getValue() > 3.7) EnviroDIYLogger.beginAndSync();
-    else EnviroDIYLogger.begin();
+    if (mayflyBatt->getValue() > 3.7) dataLogger.beginAndSync();
+    else dataLogger.begin();
 }
 
 
@@ -1005,6 +1007,6 @@ void loop()
     // Log the data
     if (mayflyBatt->getValue() > 3.7)
     // This will check against the battery level at the previous logging interval!
-        EnviroDIYLogger.logDataAndSend();
-    else EnviroDIYLogger.logData();
+        dataLogger.logDataAndSend();
+    else dataLogger.logData();
 }

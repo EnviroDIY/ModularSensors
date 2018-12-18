@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.18.0
+This example sketch is written for ModularSensors library version 0.19.0
 
 This sketch is an example of logging data to an SD card and sending the data to
 the EnviroDIY data portal via a AtSAMD21 board, such as an Arduino Zero or Feather M0.
@@ -737,8 +737,8 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 VariableArray varArray(variableCount, variableList);
 
 // Create a new logger instance
-#include <loggers/LoggerEnviroDIY.h>
-LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+#include <LoggerBase.h>
+Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
@@ -747,6 +747,10 @@ LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &
 // ==========================================================================
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
+
+// Create a data-sender for the EnviroDIY/WikiWatershed POST endpoint
+#include <senders/DreamHostSender.h>
+EnviroDIYSender EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
 
 
 // ==========================================================================
@@ -860,19 +864,15 @@ void setup()
     Logger::setTZOffset(timeZone);
 
     // Attach the modem and information pins to the logger
-    EnviroDIYLogger.attachModem(modem);
-    EnviroDIYLogger.setAlertPin(greenLED);
+    dataLogger.attachModem(modem);
+    dataLogger.setAlertPin(greenLED);
     // No button on the feather, so we're not attaching a testingMode pin
 
-    // Enter the tokens for the connection with EnviroDIY
-    EnviroDIYLogger.setToken(registrationToken);
-    EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
-
     // Begin the logger
-    EnviroDIYLogger.beginAndSync();
+    dataLogger.begin();
 
     // Run "testing" mode
-    EnviroDIYLogger.testingMode();
+    dataLogger.testingMode();
 }
 
 
@@ -882,5 +882,5 @@ void setup()
 void loop()
 {
     // Log the data
-    EnviroDIYLogger.logDataAndSend();
+    dataLogger.logDataAndSend();
 }

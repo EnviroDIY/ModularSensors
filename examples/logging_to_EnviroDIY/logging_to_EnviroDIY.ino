@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.18.0
+This example sketch is written for ModularSensors library version 0.19.0
 
 This sketch is an example of logging data to an SD card and sending the data to
 the EnviroDIY data portal.
@@ -652,80 +652,86 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
-    new ProcessorStats_SampleNumber(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongDHT_Temp(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongDHT_HI(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Temp(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
-    new CampbellOBS3_Voltage(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLowV"),
-    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
-    new CampbellOBS3_Voltage(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHighV"),
-    new Decagon5TM_Ea(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonES2_Cond(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonES2_Temp(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaxBotixSonar_Range(&sonar2, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS18_Temp(&ds18_1, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS18_Temp(&ds18_2, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS18_Temp(&ds18_3, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS18_Temp(&ds18_4, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS18_Temp(&ds18_5, "12345678-abcd-1234-efgh-1234567890ab"),
-    // new MaximDS18_Temp(&ds18_u, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MPL115A2_Temp(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MPL115A2_Pressure(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
-    new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab"),
-    new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerNanolevel_Pressure(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerNanolevel_Temp(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerNanolevel_Height(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY510_Temp(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY532_Voltage(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY532_pH(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY4000_DOmgL(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY4000_Turbidity(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY4000_Cond(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY4000_pH(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY4000_Temp(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY4000_ORP(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY4000_Chlorophyll(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY4000_BGA(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_SampleNumber(&mayfly, "00100000-abcd-1234-efgh-1234567890ab"),
+    // new ApogeeSQ212_PAR(&SQ212, "00200000-abcd-1234-efgh-1234567890ab"),
+    // new AOSongAM2315_Humidity(&am2315, "00300000-abcd-1234-efgh-1234567890ab"),
+    // new AOSongAM2315_Temp(&am2315, "00400000-abcd-1234-efgh-1234567890ab"),
+    // new AOSongDHT_Humidity(&dht, "00500000-abcd-1234-efgh-1234567890ab"),
+    // new AOSongDHT_Temp(&dht, "00600000-abcd-1234-efgh-1234567890ab"),
+    // new AOSongDHT_HI(&dht, "00700000-abcd-1234-efgh-1234567890ab"),
+    // new BoschBME280_Temp(&bme280, "00800000-abcd-1234-efgh-1234567890ab"),
+    // new BoschBME280_Humidity(&bme280, "00900000-abcd-1234-efgh-1234567890ab"),
+    // new BoschBME280_Pressure(&bme280, "01000000-abcd-1234-efgh-1234567890ab"),
+    // new BoschBME280_Altitude(&bme280, "01100000-abcd-1234-efgh-1234567890ab"),
+    // new CampbellOBS3_Turbidity(&osb3low, "01200000-abcd-1234-efgh-1234567890ab", "TurbLow"),
+    // new CampbellOBS3_Voltage(&osb3low, "01300000-abcd-1234-efgh-1234567890ab", "TurbLowV"),
+    // new CampbellOBS3_Turbidity(&osb3high, "01400000-abcd-1234-efgh-1234567890ab", "TurbHigh"),
+    // new CampbellOBS3_Voltage(&osb3high, "01500000-abcd-1234-efgh-1234567890ab", "TurbHighV"),
+    // new Decagon5TM_Ea(&fivetm, "01600000-abcd-1234-efgh-1234567890ab"),
+    // new Decagon5TM_Temp(&fivetm, "01700000-abcd-1234-efgh-1234567890ab"),
+    // new Decagon5TM_VWC(&fivetm, "01800000-abcd-1234-efgh-1234567890ab"),
+    // new DecagonCTD_Cond(&ctd, "01900000-abcd-1234-efgh-1234567890ab"),
+    // new DecagonCTD_Temp(&ctd, "02000000-abcd-1234-efgh-1234567890ab"),
+    // new DecagonCTD_Depth(&ctd, "02100000-abcd-1234-efgh-1234567890ab"),
+    // new DecagonCTD_Cond(&ctd2, "02200000-abcd-1234-efgh-1234567890ab"),
+    // new DecagonCTD_Temp(&ctd2, "02300000-abcd-1234-efgh-1234567890ab"),
+    // new DecagonCTD_Depth(&ctd2, "02400000-abcd-1234-efgh-1234567890ab"),
+    // new DecagonES2_Cond(&es2, "02500000-abcd-1234-efgh-1234567890ab"),
+    // new DecagonES2_Temp(&es2, "02600000-abcd-1234-efgh-1234567890ab"),
+    // new ExternalVoltage_Volt(&extvolt, "02700000-abcd-1234-efgh-1234567890ab"),
+    // new MaxBotixSonar_Range(&sonar1, "02800000-abcd-1234-efgh-1234567890ab"),
+    // new MaxBotixSonar_Range(&sonar2, "02900000-abcd-1234-efgh-1234567890ab"),
+    // new MaximDS18_Temp(&ds18_1, "03000000-abcd-1234-efgh-1234567890ab"),
+    // new MaximDS18_Temp(&ds18_2, "03100000-abcd-1234-efgh-1234567890ab"),
+    // new MaximDS18_Temp(&ds18_3, "03200000-abcd-1234-efgh-1234567890ab"),
+    // new MaximDS18_Temp(&ds18_4, "03300000-abcd-1234-efgh-1234567890ab"),
+    // new MaximDS18_Temp(&ds18_5, "03400000-abcd-1234-efgh-1234567890ab"),
+    // new MaximDS18_Temp(&ds18_u, "03500000-abcd-1234-efgh-1234567890ab"),
+    // new MeaSpecMS5803_Temp(&ms5803, "03600000-abcd-1234-efgh-1234567890ab"),
+    // new MeaSpecMS5803_Pressure(&ms5803, "03700000-abcd-1234-efgh-1234567890ab"),
+    // new MPL115A2_Temp(&mpl115a2, "03800000-abcd-1234-efgh-1234567890ab"),
+    // new MPL115A2_Pressure(&mpl115a2, "03900000-abcd-1234-efgh-1234567890ab"),
+    // new PaleoTerraRedox_Volt(&redox1, "04000000-abcd-1234-efgh-1234567890ab"),
+    // new PaleoTerraRedox_Volt(&redox2, "04100000-abcd-1234-efgh-1234567890ab"),
+    // new PaleoTerraRedox_Volt(&redox3, "04200000-abcd-1234-efgh-1234567890ab"),
+    // new RainCounterI2C_Tips(&tbi2c, "04300000-abcd-1234-efgh-1234567890ab"),
+    // new RainCounterI2C_Depth(&tbi2c, "04400000-abcd-1234-efgh-1234567890ab"),
+    // new KellerAcculevel_Pressure(&acculevel, "04500000-abcd-1234-efgh-1234567890ab"),
+    // new KellerAcculevel_Temp(&acculevel, "04600000-abcd-1234-efgh-1234567890ab"),
+    // new KellerAcculevel_Height(&acculevel, "04700000-abcd-1234-efgh-1234567890ab"),
+    // new KellerNanolevel_Pressure(&nanolevel, "04800000-abcd-1234-efgh-1234567890ab"),
+    // new KellerNanolevel_Temp(&nanolevel, "04900000-abcd-1234-efgh-1234567890ab"),
+    // new KellerNanolevel_Height(&nanolevel, "05000000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY504_DOpct(&y504, "05100000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY504_Temp(&y504, "05200000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY504_DOmgL(&y504, "05300000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY510_Temp(&y510, "05400000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY510_Turbidity(&y510, "05500000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY511_Temp(&y511, "05600000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY511_Turbidity(&y511, "05700000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY514_Temp(&y514, "05800000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY514_Chlorophyll(&y514, "05900000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY520_Temp(&y520, "06000000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY520_Cond(&y520, "06100000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY532_Temp(&y532, "06200000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY532_Voltage(&y532, "06300000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY532_pH(&y532, "06400000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY4000_DOmgL(&y4000, "06500000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY4000_Turbidity(&y4000, "06600000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY4000_Cond(&y4000, "06700000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY4000_pH(&y4000, "06800000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY4000_Temp(&y4000, "06900000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY4000_ORP(&y4000, "07000000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY4000_Chlorophyll(&y4000, "07100000-abcd-1234-efgh-1234567890ab"),
+    // new YosemitechY4000_BGA(&y4000, "07200000-abcd-1234-efgh-1234567890ab"),
+    // new ZebraTechDOpto_Temp(&dopto, "07300000-abcd-1234-efgh-1234567890ab"),
+    // new ZebraTechDOpto_DOpct(&dopto, "07400000-abcd-1234-efgh-1234567890ab"),
+    // new ZebraTechDOpto_DOmgL(&dopto, "07500000-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_FreeRam(&mayfly, "07600000-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_Batt(&mayfly, "07700000-abcd-1234-efgh-1234567890ab"),
+    new MaximDS3231_Temp(&ds3231, "07800000-abcd-1234-efgh-1234567890ab"),
+    new Modem_RSSI(&modem, "07900000-abcd-1234-efgh-1234567890ab"),
+    new Modem_SignalPercent(&modem, "08000000-abcd-1234-efgh-1234567890ab"),
     // new YOUR_variableName_HERE(&)
 };
 // Count up the number of pointers in the array
@@ -734,8 +740,8 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 VariableArray varArray(variableCount, variableList);
 
 // Create a new logger instance
-#include <loggers/LoggerEnviroDIY.h>
-LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+#include <LoggerBase.h>
+Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
@@ -744,6 +750,10 @@ LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &
 // ==========================================================================
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
+
+// Create a data-sender for the EnviroDIY/WikiWatershed POST endpoint
+#include <senders/DreamHostSender.h>
+EnviroDIYSender EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
 
 
 // ==========================================================================
@@ -762,6 +772,26 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
     delay(rate);
   }
   digitalWrite(redLED, LOW);
+}
+
+
+// Read's the battery voltage
+float getBatteryVoltage(const char *version = MFVersion)
+{
+    float batteryVoltage;
+    if (strcmp(version, "v0.3") == 0 or strcmp(version, "v0.4") == 0)
+    {
+        // Get the battery voltage
+        float rawBattery = analogRead(A6);
+        batteryVoltage = (3.3 / 1023.) * 1.47 * rawBattery;
+    }
+    if (strcmp(version, "v0.5") == 0 or strcmp(version, "v0.5b") == 0)
+    {
+        // Get the battery voltage
+        float rawBattery = analogRead(A6);
+        batteryVoltage = (3.3 / 1023.) * 4.7 * rawBattery;
+    }
+    return batteryVoltage;
 }
 
 
@@ -812,6 +842,7 @@ void setup()
         Serial.println(F("Setting up sleep mode on the XBee."));
         pinMode(modemSleepRqPin, OUTPUT);
         digitalWrite(modemSleepRqPin, LOW);  // Turn it on to talk, just in case
+        tinyModem->init();  // initialize
         if (tinyModem->commandMode())
         {
             tinyModem->sendAT(F("SM"),1);  // Pin sleep
@@ -852,16 +883,22 @@ void setup()
     Logger::setTZOffset(timeZone);
 
     // Attach the modem and information pins to the logger
-    EnviroDIYLogger.attachModem(modem);
-    EnviroDIYLogger.setAlertPin(greenLED);
-    EnviroDIYLogger.setTestingModePin(buttonPin);
-
-    // Enter the tokens for the connection with EnviroDIY
-    EnviroDIYLogger.setToken(registrationToken);
-    EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
+    dataLogger.attachModem(modem);
+    dataLogger.setAlertPin(greenLED);
+    dataLogger.setTestingModePin(buttonPin);
 
     // Begin the logger
-    EnviroDIYLogger.beginAndSync();
+    // At lowest battery level, skip sensor set-up
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
+    else dataLogger.begin();  // set up sensors
+
+    // At very good battery voltage, or with suspicious time stamp, sync the clock
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() > 3.9 ||
+        dataLogger.getNowEpoch() < 1545091200 ||  /*Before 12/18/2018*/
+        dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+        dataLogger.syncRTC();
 }
 
 
@@ -871,5 +908,8 @@ void setup()
 void loop()
 {
     // Log the data
-    EnviroDIYLogger.logDataAndSend();
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() < 3.4) dataLogger.systemSleep();  // just go back to sleep
+    else if (getBatteryVoltage() < 3.7) dataLogger.logData();  // log data, but don't send
+    else dataLogger.logDataAndSend();  // send data
 }

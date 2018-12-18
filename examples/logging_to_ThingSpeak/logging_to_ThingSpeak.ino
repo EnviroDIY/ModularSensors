@@ -7,6 +7,8 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
+This example sketch is written for ModularSensors library version 0.19.0
+
 This sketch is an example of logging data to an SD card and sending the data to
 both the EnviroDIY data portal and Stroud's custom data portal.
 
@@ -241,8 +243,8 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 VariableArray varArray(variableCount, variableList);
 
 // Create a new logger instance
-#include <loggers/LoggerThingSpeak.h>
-LoggerThingSpeak TSLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+#include <LoggerBase.h>
+Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
@@ -251,6 +253,10 @@ LoggerThingSpeak TSLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArr
 const char *thingSpeakMQTTKey = "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from Account > MyProfile.
 const char *thingSpeakChannelID = "######";  // The numeric channel id for your channel
 const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
+
+// Create a data-sender for ThingSpeak
+#include <senders/ThingSpeakSender.h>
+ThingSpeakSender TsMqtt(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
 
 
 // ==========================================================================
@@ -352,15 +358,12 @@ void setup()
     Logger::setTZOffset(timeZone);
 
     // Attach the modem and information pins to the logger
-    TSLogger.attachModem(modem);
-    TSLogger.setAlertPin(greenLED);
-    TSLogger.setTestingModePin(buttonPin);
-
-    TSLogger.setThingSpeakParams(thingSpeakMQTTKey, thingSpeakChannelID,
-                                        thingSpeakChannelKey);
+    dataLogger.attachModem(modem);
+    dataLogger.setAlertPin(greenLED);
+    dataLogger.setTestingModePin(buttonPin);
 
     // Begin the logger
-    TSLogger.begin();
+    dataLogger.begin();
 }
 
 
@@ -372,7 +375,7 @@ void loop()
     // Log the data
     Serial.print("Battery: ");
     Serial.println(getBatteryVoltage());
-    if (getBatteryVoltage() < 3.4) TSLogger.systemSleep();  // just go back to sleep
-    else if (getBatteryVoltage() < 3.7) TSLogger.logData();  // log data, but don't send
-    else TSLogger.logDataAndSend();  // send data
+    if (getBatteryVoltage() < 3.4) dataLogger.systemSleep();  // just go back to sleep
+    else if (getBatteryVoltage() < 3.7) dataLogger.logData();  // log data, but don't send
+    else dataLogger.logDataAndSend();  // send data
 }

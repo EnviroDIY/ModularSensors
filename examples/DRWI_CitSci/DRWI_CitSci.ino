@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.18.0
+This example sketch is written for ModularSensors library version 0.19.0
 
 This sketch is an example of logging data to an SD card and sending the data to
 both the EnviroDIY data portal and Stroud's custom data portal as should be
@@ -61,6 +61,7 @@ const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 i
 const char *MFVersion = "v0.5b";
 ProcessorStats mayfly(MFVersion);
 
+
 // ==========================================================================
 //    Modem/Internet connection options
 // ==========================================================================
@@ -106,7 +107,6 @@ const char *apn = "hologram";  // The APN for the gprs connection, unnecessary f
 #include <LoggerModem.h>
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
-
 
 
 // ==========================================================================
@@ -175,8 +175,8 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 VariableArray varArray(variableCount, variableList);
 
 // Create a new logger instance
-#include <loggers/LoggerDreamHost.h>
-LoggerDreamHost EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+#include <LoggerBase.h>
+Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
@@ -185,6 +185,10 @@ LoggerDreamHost EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &
 // ==========================================================================
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
+
+// Create a data-sender for the EnviroDIY/WikiWatershed POST endpoint
+#include <senders/DreamHostSender.h>
+EnviroDIYSender EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
 
 
 // ==========================================================================
@@ -266,23 +270,22 @@ void setup()
     Logger::setTZOffset(timeZone);
 
     // Attach the modem and information pins to the logger
-    EnviroDIYLogger.attachModem(modem);
-    EnviroDIYLogger.setAlertPin(greenLED);
-    EnviroDIYLogger.setTestingModePin(buttonPin);
-
-    // Enter the tokens for the connection with EnviroDIY
-    EnviroDIYLogger.setToken(registrationToken);
-    EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
-
-    // Set up the connection with DreamHost
-    EnviroDIYLogger.setDreamHostPortalRX(DreamHostPortalRX);
+    dataLogger.attachModem(modem);
+    dataLogger.setAlertPin(greenLED);
+    dataLogger.setTestingModePin(buttonPin);
 
     // Begin the logger
-    Serial.print("Battery: ");
-    Serial.println(getBatteryVoltage());
-    if (getBatteryVoltage() < 3.4) EnviroDIYLogger.begin(true);  // skip sensor set-up
-    else if (getBatteryVoltage() < 3.7) EnviroDIYLogger.begin();  // set up sensors
-    else EnviroDIYLogger.beginAndSync();  // set up sensors and synchronize clock with NIST
+    // At lowest battery level, skip sensor set-up
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
+    else dataLogger.begin();  // set up sensors
+
+    // At very good battery voltage, or with suspicious time stamp, sync the clock
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() > 3.9 ||
+        dataLogger.getNowEpoch() < 1545091200 ||  /*Before 12/18/2018*/
+        dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+        dataLogger.syncRTC();
 }
 
 
@@ -292,8 +295,8 @@ void setup()
 void loop()
 {
     // Log the data
-    // This will check against the battery level at the previous logging interval!
-    if (getBatteryVoltage() < 3.4) EnviroDIYLogger.systemSleep();  // just keep sleeping
-    else if (getBatteryVoltage() < 3.7) EnviroDIYLogger.logData();  // log data
-    else EnviroDIYLogger.logDataAndSend();  // log data and send it out
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() < 3.4) dataLogger.systemSleep();  // just go back to sleep
+    else if (getBatteryVoltage() < 3.7) dataLogger.logData();  // log data, but don't send
+    else dataLogger.logDataAndSend();  // send data
 }
