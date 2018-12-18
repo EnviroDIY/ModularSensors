@@ -31,9 +31,6 @@ DreamHostSender::~DreamHostSender(){}
 
 
 // Constant portions of the requests
-const char *DreamHostSender::getHeader = "GET ";
-const char *EnviroDIYSender::HTTPtag = "  HTTP/1.1";
-const char *EnviroDIYSender::hostHeader = "\r\nHost: ";
 const char *DreamHostSender::dreamhostHost = "swrcsensors.dreamhosters.com";
 const char *DreamHostSender::loggerTag = "?LoggerID=";
 const char *DreamHostSender::timestampTagDH = "&Loggertime=";

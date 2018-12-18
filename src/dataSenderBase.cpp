@@ -10,6 +10,12 @@
 
 char dataSender::txBuffer[MS_SEND_BUFFER_SIZE] = {'\0'};
 
+// Basic chunks of HTTP
+const char *dataSender::getHeader = "GET ";
+const char *dataSender::postHeader = "POST ";
+const char *dataSender::HTTPtag = "  HTTP/1.1";
+const char *dataSender::hostHeader = "\r\nHost: ";
+
 // Constructor
 dataSender::dataSender(Logger& baseLogger, uint8_t sendEveryX, uint8_t sendOffset)
 {

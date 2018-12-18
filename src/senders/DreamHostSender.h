@@ -56,9 +56,6 @@ public:
 
 protected:
     // portions of the GET request
-    static const char *getHeader;
-    static const char *HTTPtag;
-    static const char *hostHeader;
     static const char *dreamhostHost;
     static const char *loggerTag;
     static const char *timestampTagDH;

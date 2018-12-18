@@ -62,6 +62,12 @@ protected:
     uint8_t _sendEveryX;
     uint8_t _sendOffset;
 
+    // Basic chunks of HTTP
+    static const char *getHeader;
+    static const char *postHeader;
+    static const char *HTTPtag;
+    static const char *hostHeader;
+
 };
 
 #endif  // Header Guard

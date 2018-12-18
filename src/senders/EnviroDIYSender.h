@@ -63,9 +63,7 @@ public:
 protected:
 
     // portions of the POST request
-    static const char *postHeader;
-    static const char *HTTPtag;
-    static const char *hostHeader;
+    static const char *postEndpoint;
     static const char *enviroDIYHost;
     static const char *tokenHeader;
     // static const char *cacheHeader;

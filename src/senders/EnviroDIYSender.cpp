@@ -42,9 +42,7 @@ EnviroDIYSender::~EnviroDIYSender(){}
 
 // Constant values for post requests
 // I want to refer to these more than once while ensuring there is only one copy in memory
-const char *EnviroDIYSender::postHeader = "POST /api/data-stream/";
-const char *EnviroDIYSender::HTTPtag = "  HTTP/1.1";
-const char *EnviroDIYSender::hostHeader = "\r\nHost: ";
+const char *EnviroDIYSender::postEndpoint = "/api/data-stream/";
 const char *EnviroDIYSender::enviroDIYHost = "data.envirodiy.org";
 const char *EnviroDIYSender::tokenHeader = "\r\nTOKEN: ";
 // const unsigned char *EnviroDIYSender::cacheHeader = "\r\nCache-Control: no-cache";
