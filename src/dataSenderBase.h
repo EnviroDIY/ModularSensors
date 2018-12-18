@@ -42,11 +42,6 @@ public:
     // Returns the data destination
     virtual String getEndpoint(void) = 0;
 
-    // This fills the TX buffer with nulls ('\0')
-    static void emptyTxBuffer(void);
-    // This writes the TX buffer to a stream and also to the debugging port
-    static void printTxBuffer(Stream *stream);
-
     // This opens a socket to the correct receiver and sends out the formatted data
     // This depends on an internet connection already being made and a client
     // being available
@@ -57,7 +52,12 @@ protected:
     Logger *_baseLogger;
 
     static char txBuffer[MS_SEND_BUFFER_SIZE];
+    // This returns the number of empty spots in the buffer
     static int bufferFree(void);
+    // This fills the TX buffer with nulls ('\0')
+    static void emptyTxBuffer(void);
+    // This writes the TX buffer to a stream and also to the debugging port
+    static void printTxBuffer(Stream *stream);
 
     uint8_t _sendEveryX;
     uint8_t _sendOffset;

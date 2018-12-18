@@ -8,7 +8,7 @@
  * http://data.enviroDIY.org
 */
 
-#include "senders/EnviroDIYSender.h"
+#include "EnviroDIYSender.h"
 
 // To prevent compiler/linker crashes with Enable interrupt
 #define LIBCALL_ENABLEINTERRUPT

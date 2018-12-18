@@ -8,7 +8,7 @@
  * http://data.enviroDIY.org
 */
 
-#include "senders/ThingSpeakSender.h"
+#include "ThingSpeakSender.h"
 
 
 // ============================================================================

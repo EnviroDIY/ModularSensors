@@ -7,7 +7,7 @@
  *This file is for the EnviroDIY logging functions - ie, sending get requests to DreamHost
 */
 
-#include "senders/DreamHostSender.h"
+#include "DreamHostSender.h"
 
 
 // ============================================================================

@@ -58,7 +58,6 @@
             "+<senders/*.cpp>",
             "+<senders/*.h>"
         ],
-        "extraScript": "pioScripts/pio_set_global_flags.py",
         "libLDFMode": "deep+"
     },
     "dependencies":
