@@ -17,12 +17,12 @@
 // Constructor
 DreamHostSender::DreamHostSender(Logger& baseLogger,
                                  uint8_t sendEveryX, uint8_t sendOffset)
-  : dataSender(baseLogger,sendEveryX, sendOffset)
+  : dataSender(baseLogger, sendEveryX, sendOffset)
 {}
 DreamHostSender::DreamHostSender(Logger& baseLogger,
                                  const char *URL, uint8_t sendEveryX,
                                  uint8_t sendOffset)
-  : dataSender(baseLogger,sendEveryX, sendOffset)
+  : dataSender(baseLogger, sendEveryX, sendOffset)
 {
     setDreamHostPortalRX(URL);
 }

@@ -10,13 +10,6 @@
 
 #include "EnviroDIYSender.h"
 
-// To prevent compiler/linker crashes with Enable interrupt
-#define LIBCALL_ENABLEINTERRUPT
-// To handle external and pin change interrupts
-#include <EnableInterrupt.h>
-// For all i2c communication, including with the real time clock
-#include <Wire.h>
-
 
 // ============================================================================
 //  Functions for the EnviroDIY data portal receivers.
@@ -25,13 +18,13 @@
 // Constructor
 EnviroDIYSender::EnviroDIYSender(Logger& baseLogger,
                                  uint8_t sendEveryX, uint8_t sendOffset)
-  : dataSender(baseLogger,sendEveryX, sendOffset)
+  : dataSender(baseLogger, sendEveryX, sendOffset)
 {}
 EnviroDIYSender::EnviroDIYSender(Logger& baseLogger,
                                  const char *registrationToken,
                                  const char *samplingFeatureUUID,
                                  uint8_t sendEveryX, uint8_t sendOffset)
-  : dataSender(baseLogger,sendEveryX, sendOffset)
+  : dataSender(baseLogger, sendEveryX, sendOffset)
 {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);

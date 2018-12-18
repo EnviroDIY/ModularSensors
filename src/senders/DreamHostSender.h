@@ -16,7 +16,7 @@
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
-#include "senders/EnviroDIYSender.h"
+#include "dataSenderBase.h"
 
 
 // ============================================================================

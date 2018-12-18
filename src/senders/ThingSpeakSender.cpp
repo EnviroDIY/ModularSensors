@@ -18,14 +18,14 @@
 // Constructor
 ThingSpeakSender::ThingSpeakSender(Logger& baseLogger,
                                    uint8_t sendEveryX, uint8_t sendOffset)
-  : dataSender(baseLogger,sendEveryX, sendOffset)
+  : dataSender(baseLogger, sendEveryX, sendOffset)
 {}
 ThingSpeakSender::ThingSpeakSender(Logger& baseLogger,
                                    const char *thingSpeakMQTTKey,
                                    const char *thingSpeakChannelID,
                                    const char *thingSpeakChannelKey,
                                    uint8_t sendEveryX, uint8_t sendOffset)
-  : dataSender(baseLogger,sendEveryX, sendOffset)
+  : dataSender(baseLogger, sendEveryX, sendOffset)
 {
    setMQTTKey(thingSpeakMQTTKey);
    setChannelID(thingSpeakChannelID);
