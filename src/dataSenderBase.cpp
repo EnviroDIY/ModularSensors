@@ -11,9 +11,8 @@
 char dataSender::txBuffer[MS_SEND_BUFFER_SIZE] = {'\0'};
 
 // Constructor
-dataSender::dataSender(Logger& baseLogger, Client& inClient, uint8_t sendEveryX, uint8_t sendOffset)
+dataSender::dataSender(Logger& baseLogger, uint8_t sendEveryX, uint8_t sendOffset)
 {
-    _tinyClient = &inClient;
     _baseLogger = &baseLogger;
     _sendEveryX = sendEveryX;
     _sendOffset = sendOffset;

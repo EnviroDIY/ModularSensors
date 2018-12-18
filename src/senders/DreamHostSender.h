@@ -28,11 +28,14 @@ class DreamHostSender : public dataSender
 
 public:
     // Constructor
-    DreamHostSender(Logger& baseLogger, Client& inClient,
+    DreamHostSender(Logger& baseLogger,
                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    DreamHostSender(Logger& baseLogger, Client& inClient, const char *URL,
+    DreamHostSender(Logger& baseLogger, const char *URL,
                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     virtual ~DreamHostSender();
+
+    // Returns the data destination
+    virtual String getEndpoint(void){return String(dreamhostHost);}
 
     // Functions for private SWRC server
     void setDreamHostPortalRX(const char *URL);
@@ -49,7 +52,7 @@ public:
     // over that connection.
     // The return is the http status code of the response.
     // int16_t postDataDreamHost(void);
-    int16_t sendData(void);
+    int16_t sendData(Client *_outClient);
 
 protected:
     // portions of the GET request

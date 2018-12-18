@@ -34,17 +34,13 @@ class dataSender
 public:
 
     // Constructor - requires a logger modem
-    dataSender(Logger& baseLogger, Client& inClient,
+    dataSender(Logger& baseLogger,
                uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     // Destructor
     virtual ~dataSender();
 
-    // A pointer to the internal client instance
-    Client *_tinyClient;
-
-    // Takes advantage of the modem to synchronize the clock
-    // This will power the modem up and down
-    bool syncRTC();
+    // Returns the data destination
+    virtual String getEndpoint(void) = 0;
 
     // This fills the TX buffer with nulls ('\0')
     static void emptyTxBuffer(void);
@@ -54,7 +50,7 @@ public:
     // This opens a socket to the correct receiver and sends out the formatted data
     // This depends on an internet connection already being made and a client
     // being available
-    virtual int16_t sendData() = 0;
+    virtual int16_t sendData(Client *_outClient) = 0;
 
 protected:
     // The internal logger instance

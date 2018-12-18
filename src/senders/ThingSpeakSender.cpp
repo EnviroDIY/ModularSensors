@@ -16,16 +16,16 @@
 // ============================================================================
 
 // Constructor
-ThingSpeakSender::ThingSpeakSender(Logger& baseLogger, Client& inClient,
+ThingSpeakSender::ThingSpeakSender(Logger& baseLogger,
                                    uint8_t sendEveryX, uint8_t sendOffset)
-  : dataSender(baseLogger, inClient, sendEveryX, sendOffset)
+  : dataSender(baseLogger,sendEveryX, sendOffset)
 {}
-ThingSpeakSender::ThingSpeakSender(Logger& baseLogger, Client& inClient,
+ThingSpeakSender::ThingSpeakSender(Logger& baseLogger,
                                    const char *thingSpeakMQTTKey,
                                    const char *thingSpeakChannelID,
                                    const char *thingSpeakChannelKey,
                                    uint8_t sendEveryX, uint8_t sendOffset)
-  : dataSender(baseLogger, inClient, sendEveryX, sendOffset)
+  : dataSender(baseLogger,sendEveryX, sendOffset)
 {
    setMQTTKey(thingSpeakMQTTKey);
    setChannelID(thingSpeakChannelID);
@@ -75,7 +75,7 @@ void ThingSpeakSender::setThingSpeakParams(const char *MQTTKey,
 
 // This sends the data to ThingSpeak
 // bool ThingSpeakSender::mqttThingSpeak(void)
-int16_t ThingSpeakSender::sendData(void)
+int16_t ThingSpeakSender::sendData(Client *_outClient)
 {
     bool retVal = false;
 
@@ -84,10 +84,10 @@ int16_t ThingSpeakSender::sendData(void)
     if (_baseLogger->getArrayVarCount() > 8)
     {
         MS_DBG(F("No more than 8 fields of data can be sent to a single ThingSpeak channel!"));
-        MS_DBG(F("Only the first 8 channels worth of data will be sent."));
+        MS_DBG(F("Only the first 8 fields worth of data will be sent."));
     }
     uint8_t numChannels = min(_baseLogger->getArrayVarCount(), 8);
-    MS_DBG(numChannels, F(" channels will be sent to ThingSpeak"));
+    MS_DBG(numChannels, F(" fields will be sent to ThingSpeak"));
 
     // Create a buffer for the portions of the request and response
     char tempBuffer[26] = "";
@@ -121,7 +121,7 @@ int16_t ThingSpeakSender::sendData(void)
     MS_DBG(F("Message: "), String(txBuffer));
 
     // Set the client connection parameters
-    _mqttClient.setClient(*_tinyClient);
+    _mqttClient.setClient(*_outClient);
     _mqttClient.setServer(mqttServer, 1883);
 
     // Make the MQTT connection

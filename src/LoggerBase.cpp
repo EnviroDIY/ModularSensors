@@ -1,6 +1,6 @@
 /*
  *LoggerBase.h
- 
+
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -49,7 +49,7 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
     _internalArray = inputArray;
 
     // Mark sensor set-up as not set up
-    _areSensorsSetup = 0;
+    _areSensorsSetup = false;
 
     // Set the testing/logging flags to false
     isLoggingNow = false;
@@ -65,10 +65,65 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
 
     // Start with no feature UUID
     _samplingFeatureUUID = NULL;
+
+    // Clear arrays
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++)
+    {
+        dataSenders[i] = NULL;
+    }
 }
 // Destructor
 Logger::~Logger(){}
 
+
+
+// ===================================================================== //
+// Public functions to get and set basic logging paramters
+// ===================================================================== //
+
+// Adds the sampling feature UUID
+void Logger::setSamplingFeatureUUID(const char *samplingFeatureUUID)
+{
+    _samplingFeatureUUID = samplingFeatureUUID;
+    MS_DBG(F("Sampling feature UUID set!"));
+}
+
+// Sets up a pin for an LED or other way of alerting that data is being logged
+void Logger::setAlertPin(int8_t ledPin)
+{
+    _ledPin = ledPin;
+    pinMode(_ledPin, OUTPUT);
+    MS_DBG(F("Pin "), _ledPin, F(" set as LED alert pin"));
+}
+void Logger::alertOn()
+{
+    if (_ledPin >= 0)
+    {
+        digitalWrite(_ledPin, HIGH);
+    }
+}
+void Logger::alertOff()
+{
+    if (_ledPin >= 0)
+    {
+    digitalWrite(_ledPin, LOW);
+    }
+}
+
+
+// Sets up a pin for an interrupt to enter testing mode
+void Logger::setTestingModePin(int8_t buttonPin)
+{
+    _buttonPin = buttonPin;
+    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT_PULLUP);
+    MS_DBG(F("Pin "), _buttonPin, F(" set as testing mode entry pin"));
+}
+
+
+
+// ===================================================================== //
+// Public functions to get information about the attached variable array
+// ===================================================================== //
 
 // Returns the number of variables in the internal array
 uint8_t Logger::getArrayVarCount()
@@ -114,6 +169,11 @@ String Logger::getValueStringAtI(uint8_t position_i)
 }
 
 
+
+// ===================================================================== //
+// Public functions for internet and dataSenders
+// ===================================================================== //
+
 // Set up communications
 // Adds a loggerModem objct to the logger
 // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
@@ -136,6 +196,8 @@ bool Logger::syncRTC()
         PRINTOUT(F("Attempting to synchronize RTC with NIST"));
         PRINTOUT(F("This may take up to two minutes!"));
         // Connect to the network
+        // The connectInternet function will also power the modem up and run
+        // its setup function if necessary.
         if (_logModem->connectInternet(120000L))
         {
             success = setRTClock(_logModem->getNISTTime());
@@ -149,50 +211,39 @@ bool Logger::syncRTC()
 }
 
 
-// Sets up a pin for an LED or other way of alerting that data is being logged
-void Logger::setAlertPin(int8_t ledPin)
+void Logger::registerDataSender(dataSender* sender)
 {
-    _ledPin = ledPin;
-    pinMode(_ledPin, OUTPUT);
-    MS_DBG(F("Pin "), _ledPin, F(" set as LED alert pin"));
-}
-void Logger::alertOn()
-{
-    if (_ledPin >= 0)
+    // find the next empty spot in the sender array
+    uint8_t i = 0;
+    for (; i < MAX_NUMBER_SENDERS; i++)
     {
-        digitalWrite(_ledPin, HIGH);
+        if (dataSenders[i] == NULL) break;
+    }
+
+    // register the sender there
+    dataSenders[i] = sender;
+}
+
+
+void Logger::sendDataToRemotes(void)
+{
+    MS_DBG(F("Sending out remote data."));
+
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++)
+    {
+        if (dataSenders[i] != NULL)
+        {
+            MS_DBG(F("Sending data to "), dataSenders[i]->getEndpoint())
+            dataSenders[i]->sendData(_logModem->getClient());
+        }
     }
 }
-void Logger::alertOff()
-{
-    if (_ledPin >= 0)
-    {
-    digitalWrite(_ledPin, LOW);
-    }
-}
 
-
-// Sets up a pin for an interrupt to enter testing mode
-void Logger::setTestingModePin(int8_t buttonPin)
-{
-    _buttonPin = buttonPin;
-    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT_PULLUP);
-    MS_DBG(F("Pin "), _buttonPin, F(" set as testing mode entry pin"));
-}
-
-
-// Adds the sampling feature UUID
-void Logger::setSamplingFeatureUUID(const char *samplingFeatureUUID)
-{
-    _samplingFeatureUUID = samplingFeatureUUID;
-    MS_DBG(F("Sampling feature UUID set!"));
-}
 
 
 // ===================================================================== //
 // Public functions to access the clock in proper format and time zone
 // ===================================================================== //
-
 
 // Sets the static timezone - this must be set
 void Logger::setTimeZone(int8_t timeZone)
@@ -1018,11 +1069,8 @@ void Logger::testingMode()
 // ===================================================================== //
 
 // Setup the sensors and log files
-void Logger::setupSensorsAndFile(bool skipMe)
+void Logger::setupSensorsAndFile(void)
 {
-    // skip everything if requested
-    if (skipMe) return;
-
     // if this is done, skip
     if (_areSensorsSetup) return;
 
@@ -1067,7 +1115,7 @@ void Logger::setupSensorsAndFile(bool skipMe)
              F(" come from "),_internalArray->getSensorCount(), F(" sensors and "),
              _internalArray->getCalculatedVariableCount(), F(" are calculated."));
 
-    setupSensorsAndFile(skipSensorSetup);
+    if (!skipSensorSetup) setupSensorsAndFile();
 
     // Setup sleep mode
     setupSleep();
@@ -1120,6 +1168,76 @@ void Logger::logData(void)
 
         // Create a csv data record and save it to the log file
         logToSD();
+
+        // Turn off the LED
+        alertOff();
+        // Print a line to show reading ended
+        PRINTOUT(F("------------------------------------------\n"));
+
+        // Unset flag
+        Logger::isLoggingNow = false;
+    }
+
+    // Check if it was instead the testing interrupt that woke us up
+    if (Logger::startTesting) testingMode();
+
+    // Sleep
+    systemSleep();
+}
+// This is a one-and-done to log data
+void Logger::logDataAndSend(void)
+{
+    // Set sensors and file up if it hasn't happened already
+    // NOTE:  Unless it completed in less than one second, the sensor set-up
+    // will take the place of logging for this interval!
+    setupSensorsAndFile();
+
+    // Assuming we were woken up by the clock, check if the current time is an
+    // even interval of the logging interval
+    if (checkInterval())
+    {
+        // Flag to notify that we're in already awake and logging a point
+        Logger::isLoggingNow = true;
+
+        // Print a line to show new reading
+        PRINTOUT(F("------------------------------------------"));
+        // Turn on the LED to show we're taking a reading
+        alertOn();
+
+        // Turn on the modem to let it start searching for the network
+        if (_logModem != NULL) _logModem->modemPowerUp();
+
+        // Do a complete sensor update
+        MS_DBG(F("    Running a complete sensor update..."));
+        _internalArray->completeUpdate();
+
+        // Create a csv data record and save it to the log file
+        logToSD();
+
+        if (_logModem != NULL)
+        {
+            // Connect to the network
+            MS_DBG(F("  Connecting to the Internet..."));
+            if (_logModem->connectInternet())
+            {
+                // Post the data to the WebSDL
+                sendDataToRemotes();
+
+                // Sync the clock at midnight
+                if (markedEpochTime != 0 && markedEpochTime % 86400 == 0)
+                {
+                    MS_DBG(F("  Running a daily clock sync..."));
+                    setRTClock(_logModem->getNISTTime());
+                }
+
+                // Disconnect from the network
+                MS_DBG(F("  Disconnecting from the Internet..."));
+                _logModem->disconnectInternet();
+            }
+            else {MS_DBG(F("  Could not connect to the internet!"));}
+            // Turn the modem off
+            _logModem->modemSleepPowerDown();
+        }
 
         // Turn off the LED
         alertOff();

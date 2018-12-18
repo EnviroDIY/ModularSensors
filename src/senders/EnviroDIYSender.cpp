@@ -23,15 +23,15 @@
 // ============================================================================
 
 // Constructor
-EnviroDIYSender::EnviroDIYSender(Logger& baseLogger, Client& inClient,
+EnviroDIYSender::EnviroDIYSender(Logger& baseLogger,
                                  uint8_t sendEveryX, uint8_t sendOffset)
-  : dataSender(baseLogger, inClient, sendEveryX, sendOffset)
+  : dataSender(baseLogger,sendEveryX, sendOffset)
 {}
-EnviroDIYSender::EnviroDIYSender(Logger& baseLogger, Client& inClient,
+EnviroDIYSender::EnviroDIYSender(Logger& baseLogger,
                                  const char *registrationToken,
                                  const char *samplingFeatureUUID,
                                  uint8_t sendEveryX, uint8_t sendOffset)
-  : dataSender(baseLogger, inClient, sendEveryX, sendOffset)
+  : dataSender(baseLogger,sendEveryX, sendOffset)
 {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
@@ -159,14 +159,14 @@ void EnviroDIYSender::printEnviroDIYRequest(Stream *stream)
 // over that connection.
 // The return is the http status code of the response.
 // int16_t EnviroDIYSender::postDataEnviroDIY(void)
-int16_t EnviroDIYSender::sendData(void)
+int16_t EnviroDIYSender::sendData(Client *_outClient)
 {
     // Create a buffer for the portions of the request and response
     char tempBuffer[37] = "";
     uint16_t did_respond = 0;
 
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
-    if(_tinyClient->connect(enviroDIYHost, 80))
+    if(_outClient->connect(enviroDIYHost, 80))
     {
         // copy the initial post header into the tx buffer
         strcpy(txBuffer, postHeader);
@@ -175,36 +175,36 @@ int16_t EnviroDIYSender::sendData(void)
         // add the rest of the HTTP POST headers to the outgoing buffer
         // before adding each line/chunk to the outgoing buffer, we make sure
         // there is space for that line, sending out buffer if not
-        if (bufferFree() < 28) printTxBuffer(_tinyClient);
+        if (bufferFree() < 28) printTxBuffer(_outClient);
         strcat(txBuffer, hostHeader);
         strcat(txBuffer, enviroDIYHost);
 
-        if (bufferFree() < 47) printTxBuffer(_tinyClient);
+        if (bufferFree() < 47) printTxBuffer(_outClient);
         strcat(txBuffer, tokenHeader);
         strcat(txBuffer, _registrationToken);
 
-        // if (bufferFree() < 27) printTxBuffer(_tinyClient);
+        // if (bufferFree() < 27) printTxBuffer(_outClient);
         // strcat(txBuffer, cacheHeader);
 
-        // if (bufferFree() < 21) printTxBuffer(_tinyClient);
+        // if (bufferFree() < 21) printTxBuffer(_outClient);
         // strcat(txBuffer, connectionHeader);
 
-        if (bufferFree() < 26) printTxBuffer(_tinyClient);
+        if (bufferFree() < 26) printTxBuffer(_outClient);
         strcat(txBuffer, contentLengthHeader);
         itoa(calculateJsonSize(), tempBuffer, 10);
         strcat(txBuffer, tempBuffer);
 
-        if (bufferFree() < 42) printTxBuffer(_tinyClient);
+        if (bufferFree() < 42) printTxBuffer(_outClient);
         strcat(txBuffer, contentTypeHeader);
 
         // put the start of the JSON into the outgoing response_buffer
-        if (bufferFree() < 21) printTxBuffer(_tinyClient);
+        if (bufferFree() < 21) printTxBuffer(_outClient);
         strcat(txBuffer, samplingFeatureTag);
 
-        if (bufferFree() < 36) printTxBuffer(_tinyClient);
+        if (bufferFree() < 36) printTxBuffer(_outClient);
         strcat(txBuffer, _baseLogger->getSamplingFeatureUUID());
 
-        if (bufferFree() < 42) printTxBuffer(_tinyClient);
+        if (bufferFree() < 42) printTxBuffer(_outClient);
         strcat(txBuffer, timestampTag);
         _baseLogger->formatDateTime_ISO8601(_baseLogger->markedEpochTime).toCharArray(tempBuffer, 37);
         strcat(txBuffer, tempBuffer);
@@ -214,7 +214,7 @@ int16_t EnviroDIYSender::sendData(void)
         for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++)
         {
             // Once the buffer fills, send it out
-            if (bufferFree() < 47) printTxBuffer(_tinyClient);
+            if (bufferFree() < 47) printTxBuffer(_outClient);
 
             txBuffer[strlen(txBuffer)] = '"';
             _baseLogger->getVarUUIDAtI(i).toCharArray(tempBuffer, 37);
@@ -234,20 +234,20 @@ int16_t EnviroDIYSender::sendData(void)
         }
 
         // Send out the finished request (or the last unsent section of it)
-        printTxBuffer(_tinyClient);
+        printTxBuffer(_outClient);
 
         uint32_t start_timer = millis();
-        while ((millis() - start_timer) < 10000L && _tinyClient->available() < 12)
+        while ((millis() - start_timer) < 10000L && _outClient->available() < 12)
         {delay(10);}
 
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
-        did_respond = _tinyClient->readBytes(tempBuffer, 12);
+        did_respond = _outClient->readBytes(tempBuffer, 12);
 
         // Close the TCP/IP connection as soon as the first 12 characters are read
         // We don't need anything else and stoping here should save data use.
-        _tinyClient->stop();
+        _outClient->stop();
     }
     else PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data Portal -- "));
 

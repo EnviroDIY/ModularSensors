@@ -27,16 +27,16 @@ class EnviroDIYSender : public dataSender
 {
 public:
     // Constructor
-    EnviroDIYSender(Logger& baseLogger, Client& inClient,
+    EnviroDIYSender(Logger& baseLogger,
                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    EnviroDIYSender(Logger& baseLogger, Client& inClient,
+    EnviroDIYSender(Logger& baseLogger,
                     const char *registrationToken,
                     const char *samplingFeatureUUID,
                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     virtual ~EnviroDIYSender();
 
-    // The internal logger instance
-    Logger *_baseLogger;
+    // Returns the data destination
+    virtual String getEndpoint(void){return String(enviroDIYHost);}
 
     // Adds the site registration token
     void setToken(const char *registrationToken);
@@ -58,7 +58,7 @@ public:
     // over that connection.
     // The return is the http status code of the response.
     // int16_t postDataEnviroDIY(void);
-    virtual int16_t sendData();
+    virtual int16_t sendData(Client *_outClient);
 
 protected:
 

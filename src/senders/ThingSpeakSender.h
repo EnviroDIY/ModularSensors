@@ -35,14 +35,17 @@ class ThingSpeakSender : public dataSender
 {
 public:
     // Constructor
-    ThingSpeakSender(Logger& baseLogger, Client& inClient,
+    ThingSpeakSender(Logger& baseLogger,
                      uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    ThingSpeakSender(Logger& baseLogger, Client& inClient,
+    ThingSpeakSender(Logger& baseLogger,
                      const char *thingSpeakMQTTKey,
                      const char *thingSpeakChannelID,
                      const char *thingSpeakChannelKey,
                      uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     virtual ~ThingSpeakSender();
+
+    // Returns the data destination
+    virtual String getEndpoint(void){return String(mqttServer);}
 
     // Adds the MQTT API Key from Account > MyProfile
     void setMQTTKey(const char *thingSpeakMQTTKey);
@@ -59,7 +62,7 @@ public:
 
     // This sends the data to ThingSpeak
     // bool mqttThingSpeak(void);
-    virtual int16_t sendData();
+    virtual int16_t sendData(Client *_outClient);
 
 protected:
     static const char *mqttServer;

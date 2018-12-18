@@ -15,14 +15,14 @@
 // ============================================================================
 
 // Constructor
-DreamHostSender::DreamHostSender(Logger& baseLogger, Client& inClient,
+DreamHostSender::DreamHostSender(Logger& baseLogger,
                                  uint8_t sendEveryX, uint8_t sendOffset)
-  : dataSender(baseLogger, inClient, sendEveryX, sendOffset)
+  : dataSender(baseLogger,sendEveryX, sendOffset)
 {}
-DreamHostSender::DreamHostSender(Logger& baseLogger, Client& inClient,
+DreamHostSender::DreamHostSender(Logger& baseLogger,
                                  const char *URL, uint8_t sendEveryX,
                                  uint8_t sendOffset)
-  : dataSender(baseLogger, inClient, sendEveryX, sendOffset)
+  : dataSender(baseLogger,sendEveryX, sendOffset)
 {
     setDreamHostPortalRX(URL);
 }
@@ -86,14 +86,14 @@ void DreamHostSender::printDreamHostRequest(Stream *stream)
 
 // Post the data to dream host.
 // int16_t DreamHostSender::postDataDreamHost(void)
-int16_t DreamHostSender::sendData(void)
+int16_t DreamHostSender::sendData(Client *_outClient)
 {
     // Create a buffer for the portions of the request and response
     char tempBuffer[37] = "";
     uint16_t did_respond = 0;
 
     // Open a TCP/IP connection to DreamHost
-    if(_tinyClient->connect(dreamhostHost, 80))
+    if(_outClient->connect(dreamhostHost, 80))
     {
         // copy the initial post header into the tx buffer
         strcpy(txBuffer, getHeader);
@@ -102,11 +102,11 @@ int16_t DreamHostSender::sendData(void)
         strcat(txBuffer, _DreamHostPortalRX);
 
         // start the URL parameters
-        if (bufferFree() < 16) printTxBuffer(_tinyClient);
+        if (bufferFree() < 16) printTxBuffer(_outClient);
         strcat(txBuffer, loggerTag);
         strcat(txBuffer, _baseLogger->getLoggerID());
 
-        if (bufferFree() < 22) printTxBuffer(_tinyClient);
+        if (bufferFree() < 22) printTxBuffer(_outClient);
         strcat(txBuffer, timestampTagDH);
         itoa(Logger::markedEpochTime - 946684800, tempBuffer, 10);
         strcat(txBuffer, tempBuffer);
@@ -114,7 +114,7 @@ int16_t DreamHostSender::sendData(void)
         for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++)
         {
             // Once the buffer fills, send it out
-            if (bufferFree() < 47) printTxBuffer(_tinyClient);
+            if (bufferFree() < 47) printTxBuffer(_outClient);
 
             txBuffer[strlen(txBuffer)] = '&';
             _baseLogger->getVarCodeAtI(i).toCharArray(tempBuffer, 37);
@@ -125,7 +125,7 @@ int16_t DreamHostSender::sendData(void)
         }
 
         // add the rest of the HTTP GET headers to the outgoing buffer
-        if (bufferFree() < 52) printTxBuffer(_tinyClient);
+        if (bufferFree() < 52) printTxBuffer(_outClient);
         strcat(txBuffer, HTTPtag);
         strcat(txBuffer, hostHeader);
         strcat(txBuffer, dreamhostHost);
@@ -135,20 +135,20 @@ int16_t DreamHostSender::sendData(void)
         txBuffer[strlen(txBuffer)] = '\n';
 
         // Send out the finished request (or the last unsent section of it)
-        printTxBuffer(_tinyClient);
+        printTxBuffer(_outClient);
 
         uint32_t start_timer = millis();
-        while ((millis() - start_timer) < 10000L && _tinyClient->available() < 12)
+        while ((millis() - start_timer) < 10000L && _outClient->available() < 12)
         {delay(10);}
 
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
-        did_respond = _tinyClient->readBytes(tempBuffer, 12);
+        did_respond = _outClient->readBytes(tempBuffer, 12);
 
         // Close the TCP/IP connection as soon as the first 12 characters are read
         // We don't need anything else and stoping here should save data use.
-        _tinyClient->stop();
+        _outClient->stop();
     }
     else PRINTOUT(F("\n -- Unable to Establish Connection to DreamHost -- "));
 

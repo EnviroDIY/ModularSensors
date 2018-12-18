@@ -90,6 +90,14 @@ class loggerModem : public Sensor
 // ==========================================================================//
 public:
     // Constructors
+    // Note:  The client for the TinyGSM Modem is needed as an input because
+    // the tiny GSM client class is a subclass of the unique modem class, not
+    // of the generalized modem class.  That means the client cannot be create
+    // until the specific modem is defined.  So the user must first create the
+    // specific modem in their sketch, create that modem's client, and then
+    // feed that client back in here.  The TinyGSM library has a bunch of
+    // typedef's in the TinyGsmClient.h that make this somewhat invisible to
+    // the user.
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                 bool (*wakeFxn)(), bool (*sleepFxn)(),
                 TinyGsmModem *inModem, Client *inClient, const char *APN);
@@ -133,6 +141,8 @@ protected:
 public:
     int16_t getSignalRSSI(void) {return sensorValues[RSSI_VAR_NUM];}
     int16_t getSignalPercent(void) {return sensorValues[PERCENT_SIGNAL_VAR_NUM];}
+
+    Client * getClient(void){return _tinyClient;}
 
     bool connectInternet(uint32_t waitTime_ms = 50000L);
     void disconnectInternet(void);
