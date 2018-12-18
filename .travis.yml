@@ -37,9 +37,9 @@ install:
     # pio lib -g install https://github.com/$TRAVIS_REPO_SLUG.git#$BRANCH;
     # pio lib -g install https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_BRANCH;
     - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-        pio lib -g -f install https://github.com/$TRAVIS_REPO_SLUG.git#$TRAVIS_COMMIT;
+        pio lib -g install -f https://github.com/$TRAVIS_REPO_SLUG.git#$TRAVIS_COMMIT;
       else
-        pio lib -g -f install https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_SHA;
+        pio lib -g install -f https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_SHA;
       fi
     # Install serial libraries needed for most examples
     - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git  # #73, but need the git until Paul S. has a new release
