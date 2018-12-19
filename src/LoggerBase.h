@@ -1,5 +1,6 @@
 /*
  *LoggerBase.h
+
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -18,6 +19,7 @@
 //#include <Arduino.h>
 #include "ModSensorDebugger.h"
 #include "VariableArray.h"
+#include "LoggerModem.h"
 
 // Bring in the libraries to handle the processor sleep/standby modes
 // The SAMD library can also the built-in clock on those modules
@@ -39,9 +41,17 @@
 
 #include <SdFat.h>  // To communicate with the SD card
 
+// The largest number of variables from a single sensor
+#define MAX_NUMBER_SENDERS 4
+
+
+class dataSender;  // Forward declaration
+
+
 // Defines the "Logger" Class
 class Logger
 {
+
 public:
     // Constructor
     Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
@@ -50,6 +60,97 @@ public:
     // Destructor
     virtual ~Logger();
 
+    // ===================================================================== //
+    // Public functions to get and set basic logging paramters
+    // ===================================================================== //
+
+    // A pointer to the internal variable array instance
+    const char * getLoggerID(){return _loggerID;}
+
+    // Adds the sampling feature UUID
+    void setSamplingFeatureUUID(const char *samplingFeatureUUID);
+    const char * getSamplingFeatureUUID(){return _samplingFeatureUUID;}
+
+    // Sets up a pin for an LED or other way of alerting that data is being logged
+    void setAlertPin(int8_t ledPin);
+    void alertOn();
+    void alertOff();
+
+    // Sets up a pin for an interrupt to enter testing mode
+    void setTestingModePin(int8_t buttonPin);
+
+protected:
+    // Initialization variables
+    const char *_loggerID;
+    uint16_t _loggingIntervalMinutes;
+    int8_t _SDCardPin;
+    int8_t _mcuWakePin;
+    int8_t _ledPin;
+    int8_t _buttonPin;
+    bool _areSensorsSetup;
+    const char *_samplingFeatureUUID;
+
+    // ===================================================================== //
+    // Public functions to get information about the attached variable array
+    // ===================================================================== //
+
+public:
+    // Returns the number of variables in the internal array
+    uint8_t getArrayVarCount();
+
+    // These are reflections of the variable returns
+    // This gets the name of the parent sensor, if applicable
+    String getParentSensorNameAtI(uint8_t position_i);
+    // This gets the name and location of the parent sensor, if applicable
+    String getParentSensorNameAndLocationAtI(uint8_t position_i);
+    // This gets the variable's name using http://vocabulary.odm2.org/variablename/
+    String getVarNameAtI(uint8_t position_i);
+    // This gets the variable's unit using http://vocabulary.odm2.org/units/
+    String getVarUnitAtI(uint8_t position_i);
+    // This returns a customized code for the variable, if one is given, and a default if not
+    String getVarCodeAtI(uint8_t position_i);
+    // This returns the variable UUID, if one has been assigned
+    String getVarUUIDAtI(uint8_t position_i);
+    // This returns the current value of the variable as a string with the
+    // correct number of significant figures
+    String getValueStringAtI(uint8_t position_i);
+
+protected:
+    // A pointer to the internal variable array instance
+    VariableArray *_internalArray;
+
+    // ===================================================================== //
+    // Public functions for internet and dataSenders
+    // ===================================================================== //
+
+public:
+    // Adds a loggerModem objct to the logger
+    // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
+    void attachModem(loggerModem& modem);
+
+    // Takes advantage of the modem to synchronize the clock
+    bool syncRTC();
+
+    // These tie the variables to their parent sensor
+    void registerDataSender(dataSender* sender);
+    // Notifies attached variables of new values
+    void sendDataToRemotes(void);
+
+protected:
+    // The internal modem instance
+    loggerModem *_logModem;
+    // NOTE:  The internal _logModem must be a POINTER not a reference because
+    // it is possible for no modem to be attached (and thus the pointer could
+    // be null).  It is not possible to have a null reference.
+
+    // An array of all of the attached data senders
+    dataSender *dataSenders[MAX_NUMBER_SENDERS];
+
+    // ===================================================================== //
+    // Public functions to access the clock in proper format and time zone
+    // ===================================================================== //
+
+public:
     // Sets the static timezone - this must be set
     static void setTimeZone(int8_t timeZone);
     static int8_t getTimeZone(void) { return Logger::_timeZone; }
@@ -61,16 +162,6 @@ public:
     static void setTZOffset(int8_t offset);
     static int8_t getTZOffset(void) { return Logger::_offset; }
 
-    // Sets up a pin for an LED or other way of alerting that data is being logged
-    void setAlertPin(int8_t ledPin);
-
-    // Sets up a pin for an interrupt to enter testing mode
-    void setTestingModePin(int8_t buttonPin);
-
-
-    // ===================================================================== //
-    // Public functions to access the clock in proper format and time zone
-    // ===================================================================== //
     // This gets the current epoch time (unix time, ie, the number of seconds
     // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
     #if defined(ARDUINO_ARCH_SAMD)
@@ -88,8 +179,8 @@ public:
     // This converts an epoch time (unix time) into a ISO8601 formatted string
     static String formatDateTime_ISO8601(uint32_t epochTime);
 
-    // This syncronizes the real time clock
-    bool syncRTClock(uint32_t nist);
+    // This sets the real time clock to the given time
+    bool setRTClock(uint32_t setTime);
 
     // This sets static variables for the date/time - this is needed so that all
     // data outputs (SD, EnviroDIY, serial printing, etc) print the same time
@@ -108,11 +199,16 @@ public:
     // or we're in the first 15 minutes of logging
     bool checkMarkedInterval(void);
 
+protected:
+    // Static variables - identical for EVERY logger
+    static int8_t _timeZone;
+    static int8_t _offset;
 
     // ============================================================================
     //  Public Functions for sleeping the logger
     // ============================================================================
 
+public:
     // Set up the Interrupt Service Request for waking
     // In this case, we're doing nothing, we just want the processor to wake
     // This must be a static function (which means it can only call other static funcions.)
@@ -128,6 +224,8 @@ public:
     // ===================================================================== //
     // Public functions for logging data to an SD card
     // ===================================================================== //
+
+public:
     // This sets a file name, if you want to decide on it in advance
     void setFileName(const char *fileName);
     // Same as above, with a string (overload function)
@@ -168,72 +266,12 @@ public:
     bool logToSD(String& rec);
     bool logToSD(void);
 
-
-    // ===================================================================== //
-    // Public functions for a "sensor testing" mode
-    // ===================================================================== //
-
-    // This checks to see if you want to enter the sensor mode
-    // This should be run as the very last step within the setup function
-    // void checkForTestingMode(int8_t buttonPin);
-
-    // A function if you'd prefer to enter testing based on an interrupt
-    static void testingISR(void);
-
-    // This defines what to do in the testing mode
-    virtual void testingMode();
-
-
-    // ===================================================================== //
-    // Convience functions to call several of the above functions
-    // ===================================================================== //
-    // This does all of the setup that can't happen in the constructors
-    // That is, things that require the actual processor/MCU to do something
-    // rather than the compiler to do something.
-    virtual void begin(bool skipSensorSetup = false);
-
-    // This is a one-and-done to log data
-    virtual void logData(void);
-
-
-    // Public variables
-    // Time stamps - want to set them at a single time and carry them forward
-    static uint32_t markedEpochTime;
-
-    // These are flag fariables noting the current state (logging/testing)
-    // NOTE:  if the logger isn't currently logging or testing or in the middle
-    // of set-up, it's probably sleeping
-    // Setting these as volatile because the flags can be changed in ISR's
-    static volatile bool isLoggingNow;
-    static volatile bool isTestingNow;
-    static volatile bool startTesting;
-
-
-
-// ===================================================================== //
-// Things that are private and protected below here
-// ===================================================================== //
 protected:
 
     // The SD card and file
     SdFat sd;
     File logFile;
     String _fileName;
-    bool _autoFileName;
-
-    // Static variables - identical for EVERY logger
-    static int8_t _timeZone;
-    static int8_t _offset;
-
-    // Initialization variables
-    const char *_loggerID;
-    uint16_t _loggingIntervalMinutes;
-    int8_t _SDCardPin;
-    int8_t _mcuWakePin;
-    int8_t _ledPin;
-    int8_t _buttonPin;
-    VariableArray *_internalArray;
-    bool _areSensorsSetup;
 
     // This checks if the SD card is available and ready
     // We run this check before every communication with the SD card to prevent
@@ -250,6 +288,52 @@ protected:
     // This opens or creates a file, converting a string file name to a
     // character file name
     bool openFile(String& filename, bool createFile, bool writeDefaultHeader);
+
+
+    // ===================================================================== //
+    // Public functions for a "sensor testing" mode
+    // ===================================================================== //
+
+public:
+    // This checks to see if you want to enter the sensor mode
+    // This should be run as the very last step within the setup function
+    // void checkForTestingMode(int8_t buttonPin);
+
+    // A function if you'd prefer to enter testing based on an interrupt
+    static void testingISR(void);
+
+    // This defines what to do in the testing mode
+    virtual void testingMode();
+
+
+    // ===================================================================== //
+    // Convience functions to call several of the above functions
+    // ===================================================================== //
+
+    // Setup the sensors and log files
+    virtual void setupSensorsAndFile(void);
+
+    // This does all of the setup that can't happen in the constructors
+    // That is, things that require the actual processor/MCU to do something
+    // rather than the compiler to do something.
+    virtual void begin(bool skipSensorSetup = false);
+
+    // This is a one-and-done to log data
+    virtual void logData(void);
+    void logDataAndSend(void);
+
+    // Public variables
+    // Time stamps - want to set them at a single time and carry them forward
+    static uint32_t markedEpochTime;
+
+    // These are flag fariables noting the current state (logging/testing)
+    // NOTE:  if the logger isn't currently logging or testing or in the middle
+    // of set-up, it's probably sleeping
+    // Setting these as volatile because the flags can be changed in ISR's
+    static volatile bool isLoggingNow;
+    static volatile bool isTestingNow;
+    static volatile bool startTesting;
+
 };
 
 #endif  // Header Guard

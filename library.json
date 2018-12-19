@@ -1,8 +1,8 @@
 {
     "name": "EnviroDIY_ModularSensors",
-    "version": "0.17.3",
+    "version": "0.19.0",
     "description":  "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
-    "keywords": "modular, sensor, sensors, datalogger, logger, low power, sleeping, EnviroDIY, ModularSensors, Mayfly, WikiWatershed",
+    "keywords": "modular, sensor, sensors, datalogger, logger, low power, sleeping, EnviroDIY, ModularSensors, Mayfly, WikiWatershed, ThingSpeak",
     "platforms": "atmelavr, atmelsam",
     "frameworks": "arduino",
     "authors":
@@ -53,7 +53,10 @@
             "+<*.h>",
             "+<sensors/*.c>",
             "+<sensors/*.cpp>",
-            "+<sensors/*.h>"
+            "+<sensors/*.h>",
+            "+<senders/*.c>",
+            "+<senders/*.cpp>",
+            "+<senders/*.h>"
         ],
         "libLDFMode": "deep+"
     },
@@ -88,7 +91,7 @@
             "name": "SdFat",
             "library id": "322",
             "url": "https://github.com/greiman/SdFat.git",
-            "version": "=1.0.7",
+            "version": "=1.0.8",
             "note": "SdFat - FAT16/FAT32 file system for SD cards.",
             "authors": [
                 "Bill Greiman"
@@ -243,6 +246,16 @@
             ]
         },
         {
+            "name": "PubSubClient",
+            "library id": "89",
+            "url": "https://github.com/knolleary/pubsubclient.git",
+            "version": "=2.7",
+            "note": "A client library for MQTT messaging.",
+            "authors": [
+                "Nick O'Leary"
+            ]
+        },
+        {
             "name": "RTCZero",
             "library id": "873",
             "url": "https://github.com/arduino-libraries/RTCZero.git",
@@ -268,7 +281,7 @@
         },
         {
             "name": "TinyGSM",
-            "version": "https://github.com/EnviroDIY/TinyGSM.git#3b971ba75990e82536a250f72e637700ff771934",
+            "version": "https://github.com/EnviroDIY/TinyGSM.git#de5e5e359e5f8d10a3a1d12e1ec95f7239a439d1",
             "version_note": "=0.4.5",
             "note": "A small Arduino library for GPRS modules.",
             "authors": [

@@ -27,22 +27,26 @@ install:
         echo "Uninstalled cached version of ModularSensors";
       fi
     # Install this library from the branch we're working on
+    # echo "Installing ModularSensors from https://github.com/$TRAVIS_REPO_SLUG.git#$TRAVIS_BRANCH";
+    # echo "Installing ModularSensors from https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_BRANCH";
     - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-        echo "Installing ModularSensors from https://github.com/$TRAVIS_REPO_SLUG.git#$TRAVIS_BRANCH";
+        echo "Installing ModularSensors from https://github.com/$TRAVIS_REPO_SLUG.git#$TRAVIS_COMMIT";
       else
-        echo "Installing ModularSensors from https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_BRANCH";
+        echo "Installing ModularSensors from https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_SHA";
       fi
+    # pio lib -g install https://github.com/$TRAVIS_REPO_SLUG.git#$BRANCH;
+    # pio lib -g install https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_BRANCH;
     - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-        pio lib -g install https://github.com/$TRAVIS_REPO_SLUG.git#$BRANCH;
+        pio lib -g install https://github.com/$TRAVIS_REPO_SLUG.git#$TRAVIS_COMMIT;
       else
-        pio lib -g install https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_BRANCH;
+        pio lib -g install https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_SHA;
       fi
     # Install serial libraries needed for most examples
     - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git  # #73, but need the git until Paul S. has a new release
     - pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
     - pio update
 script:
-    - platformio ci -v --project-option="lib_ignore = RTCZero" --project-option="lib_ldf_mode = deep+" --board=mayfly
+    - platformio ci --project-option="lib_ignore = RTCZero" --project-option="lib_ldf_mode = deep+" --board=mayfly
 
 matrix:
     include:
@@ -77,9 +81,13 @@ matrix:
       - env:
           - PLATFORMIO_CI_SRC=examples/data_saving/
           - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
+      - env:
+          - PLATFORMIO_CI_SRC=examples/logging_to_ThingSpeak/
+          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D MQTT_MAX_PACKET_SIZE=240"
 
       - env:
         - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY_Zero/
         - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
+
         script:
             - platformio ci -v --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial, SoftI2CMaster"  --project-option="lib_ldf_mode = deep+" --board=adafruit_feather_m0

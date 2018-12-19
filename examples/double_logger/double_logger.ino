@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.17.3
+This example sketch is written for ModularSensors library version 0.19.0
 
 This sketch is an example of logging data from different variables at two
 different logging intervals.  This example uses more of the manual functions
@@ -211,7 +211,9 @@ void setup()
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
+    digitalWrite(greenLED, LOW);
     pinMode(redLED, OUTPUT);
+    digitalWrite(redLED, LOW);
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
@@ -239,7 +241,7 @@ void setup()
     if (modem.connectInternet())
     {
         // Synchronize the RTC
-        logger1min.syncRTClock(modem.getNISTTime());
+        logger1min.setRTClock(modem.getNISTTime());
         // Disconnect from the network
         modem.disconnectInternet();
     }
@@ -357,7 +359,7 @@ void loop()
         if (modem.connectInternet())
         {
             // Synchronize the RTC
-            logger1min.syncRTClock(modem.getNISTTime());
+            logger1min.setRTClock(modem.getNISTTime());
             // Disconnect from the network
             modem.disconnectInternet();
         }

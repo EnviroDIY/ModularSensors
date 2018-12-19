@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.17.3
+This example sketch is written for ModularSensors library version 0.19.0
 
 This sketch is an example of logging data to an SD card and sending the data to
 the EnviroDIY data portal.
@@ -734,8 +734,8 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 VariableArray varArray(variableCount, variableList);
 
 // Create a new logger instance
-#include <LoggerEnviroDIY.h>
-LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+#include <LoggerBase.h>
+Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
@@ -744,6 +744,10 @@ LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &
 // ==========================================================================
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
+
+// Create a data-sender for the EnviroDIY/WikiWatershed POST endpoint
+#include <senders/EnviroDIYSender.h>
+EnviroDIYSender EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
 
 
 // ==========================================================================
@@ -762,6 +766,26 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
     delay(rate);
   }
   digitalWrite(redLED, LOW);
+}
+
+
+// Read's the battery voltage
+float getBatteryVoltage(const char *version = MFVersion)
+{
+    float batteryVoltage;
+    if (strcmp(version, "v0.3") == 0 or strcmp(version, "v0.4") == 0)
+    {
+        // Get the battery voltage
+        float rawBattery = analogRead(A6);
+        batteryVoltage = (3.3 / 1023.) * 1.47 * rawBattery;
+    }
+    if (strcmp(version, "v0.5") == 0 or strcmp(version, "v0.5b") == 0)
+    {
+        // Get the battery voltage
+        float rawBattery = analogRead(A6);
+        batteryVoltage = (3.3 / 1023.) * 4.7 * rawBattery;
+    }
+    return batteryVoltage;
 }
 
 
@@ -812,6 +836,7 @@ void setup()
         Serial.println(F("Setting up sleep mode on the XBee."));
         pinMode(modemSleepRqPin, OUTPUT);
         digitalWrite(modemSleepRqPin, LOW);  // Turn it on to talk, just in case
+        tinyModem->init();  // initialize
         if (tinyModem->commandMode())
         {
             tinyModem->sendAT(F("SM"),1);  // Pin sleep
@@ -852,16 +877,22 @@ void setup()
     Logger::setTZOffset(timeZone);
 
     // Attach the modem and information pins to the logger
-    EnviroDIYLogger.attachModem(modem);
-    EnviroDIYLogger.setAlertPin(greenLED);
-    EnviroDIYLogger.setTestingModePin(buttonPin);
-
-    // Enter the tokens for the connection with EnviroDIY
-    EnviroDIYLogger.setToken(registrationToken);
-    EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
+    dataLogger.attachModem(modem);
+    dataLogger.setAlertPin(greenLED);
+    dataLogger.setTestingModePin(buttonPin);
 
     // Begin the logger
-    EnviroDIYLogger.beginAndSync();
+    // At lowest battery level, skip sensor set-up
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
+    else dataLogger.begin();  // set up sensors
+
+    // At very good battery voltage, or with suspicious time stamp, sync the clock
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() > 3.9 ||
+        dataLogger.getNowEpoch() < 1545091200 ||  /*Before 12/18/2018*/
+        dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+        dataLogger.syncRTC();
 }
 
 
@@ -871,5 +902,8 @@ void setup()
 void loop()
 {
     // Log the data
-    EnviroDIYLogger.logDataAndSend();
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() < 3.4) dataLogger.systemSleep();  // just go back to sleep
+    else if (getBatteryVoltage() < 3.7) dataLogger.logData();  // log data, but don't send
+    else dataLogger.logDataAndSend();  // send data
 }

@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.17.3
+This example sketch is written for ModularSensors library version 0.19.0
 
 This sketch is an example of getting data from a single sensor, in this case, a
 MaxBotix Ultrasonic Range Finder

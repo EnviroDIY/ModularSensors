@@ -24,7 +24,6 @@ https://github.com/EnviroDIY/ModularSensors/commit/7d0d15ae5bc6dddf13adbd735032e
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerEnviroDIY.h>
 
 
 // ==========================================================================
@@ -76,6 +75,8 @@ Variable *mayflyBatt = new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh
 #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 // #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
+// #define TINY_GSM_DEBUG Serial
+#define TINY_GSM_YIELD() { delay(1); }
 
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
@@ -285,6 +286,7 @@ const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
 
 // Create the loggerModem instance
+#include <LoggerModem.h>
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 #if defined(TINY_GSM_MODEM_ESP8266)
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
@@ -613,8 +615,23 @@ KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPowe
 // Variable *acculevTemp = new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
 // Variable *acculevHeight = new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
 
-
 /***
+// ==========================================================================
+//    Keller Nanolevel High Accuracy Submersible Level Transmitter
+// ==========================================================================
+#include <sensors/KellerNanolevel.h>
+byte nanolevelModbusAddress = 0x01;  // The modbus address of KellerNanolevel
+// const int8_t rs485AdapterPower = -1;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t modbusSensorPower = -1;  // Pin to switch sensor power on and off (-1 if unconnected)
+// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+const uint8_t nanolevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
+// Create and return the Keller Nanolevel sensor object
+KellerNanolevel nanolevel(nanolevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
+// Create the pressure, temperature, and height variable objects for the Nanolevel and return variable-type pointers to them
+// Variable *acculevPress = new KellerNanolevel_Pressure(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *acculevTemp = new KellerNanolevel_Temp(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *acculevHeight = new KellerNanolevel_Height(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
+
 // ==========================================================================
 //    Yosemitech Y504 Dissolved Oxygen Sensor
 // ==========================================================================
@@ -777,6 +794,7 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
+#include <VariableArray.h>
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
@@ -856,8 +874,10 @@ Variable *variableList[] = {
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
+
 // Create a new logger instance
-LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+#include <LoggerBase.h>
+Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
@@ -866,6 +886,10 @@ LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &
 // ==========================================================================
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
+
+// Create a data-sender for the EnviroDIY/WikiWatershed POST endpoint
+#include <senders/EnviroDIYSender.h>
+EnviroDIYSender EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
 
 
 // ==========================================================================
@@ -887,6 +911,26 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 }
 
 
+// Read's the battery voltage
+float getBatteryVoltage(const char *version = MFVersion)
+{
+    float batteryVoltage;
+    if (strcmp(version, "v0.3") == 0 or strcmp(version, "v0.4") == 0)
+    {
+        // Get the battery voltage
+        float rawBattery = analogRead(A6);
+        batteryVoltage = (3.3 / 1023.) * 1.47 * rawBattery;
+    }
+    if (strcmp(version, "v0.5") == 0 or strcmp(version, "v0.5b") == 0)
+    {
+        // Get the battery voltage
+        float rawBattery = analogRead(A6);
+        batteryVoltage = (3.3 / 1023.) * 4.7 * rawBattery;
+    }
+    return batteryVoltage;
+}
+
+
 // ==========================================================================
 // Main setup function
 // ==========================================================================
@@ -900,6 +944,7 @@ void setup()
     Serial.print(sketchName);
     Serial.print(F(" on Logger "));
     Serial.println(LoggerID);
+    Serial.println();
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
@@ -929,6 +974,8 @@ void setup()
     greenredflash();
 
     // Set up some of the power pins so the board boots up with them off
+    // NOTE:  This isn't necessary at all.  The logger begin() function
+    // should leave all power pins off when it finishes.
     if (modemVccPin >= 0)
     {
         pinMode(modemVccPin, OUTPUT);
@@ -965,6 +1012,11 @@ void setup()
             pinMode(modemSleepRqPin, OUTPUT);
             digitalWrite(modemSleepRqPin, HIGH);
         }
+        if (modemResetPin >= 0)
+        {
+            pinMode(modemResetPin, OUTPUT);
+            digitalWrite(modemResetPin, HIGH);
+        }
     #elif defined(TINY_GSM_MODEM_UBLOX)
         pinMode(modemSleepRqPin, OUTPUT);
         digitalWrite(modemSleepRqPin, HIGH);
@@ -980,20 +1032,25 @@ void setup()
     Logger::setTZOffset(timeZone);
 
     // Attach the modem and information pins to the logger
-    EnviroDIYLogger.attachModem(modem);
-    EnviroDIYLogger.setAlertPin(greenLED);
-    EnviroDIYLogger.setTestingModePin(buttonPin);
-
-    // Enter the tokens for the connection with EnviroDIY
-    EnviroDIYLogger.setToken(registrationToken);
-    EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
+    dataLogger.attachModem(modem);
+    dataLogger.setAlertPin(greenLED);
+    dataLogger.setTestingModePin(buttonPin);
 
     // Begin the logger
     mayfly.update();
     Serial.print("Battery: ");
-    Serial.println(mayflyBatt->getValue());
-    if (mayflyBatt->getValue() > 3.7) EnviroDIYLogger.beginAndSync();
-    else EnviroDIYLogger.begin();
+    Serial.println(getBatteryVoltage());
+    // At lowest battery level, skip sensor set-up
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
+    else dataLogger.begin();  // set up sensors
+
+    // At very good battery voltage, or with suspicious time stamp, sync the clock
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() > 3.9 ||
+        dataLogger.getNowEpoch() < 1545091200 ||  /*Before 12/18/2018*/
+        dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+        dataLogger.syncRTC();
 }
 
 
@@ -1003,8 +1060,10 @@ void setup()
 void loop()
 {
     // Log the data
-    if (mayflyBatt->getValue() > 3.7)
-    // This will check against the battery level at the previous logging interval!
-        EnviroDIYLogger.logDataAndSend();
-    else EnviroDIYLogger.logData();
+    Serial.print("Battery: ");
+    Serial.println(getBatteryVoltage());
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() < 3.4) dataLogger.systemSleep();  // just go back to sleep
+    else if (getBatteryVoltage() < 3.7) dataLogger.logData();  // log data, but don't send
+    else dataLogger.logDataAndSend();  // send data
 }
