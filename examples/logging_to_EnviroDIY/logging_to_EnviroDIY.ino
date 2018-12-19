@@ -296,17 +296,6 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepF
 // Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
 
-// ==========================================================================
-//    Ti INA219 High Side Current/Voltage Sensor (Current mA, Voltage, Power)
-// ==========================================================================
-#include <sensors/TiIna219.h>
-//uint8_t INA219i2c_addr = 0x40; // 1000000 (Board A0+A1=GND)
-// The INA219 can be addressed either as 0x40 (Adafruit default) or 0x41 44 45
-// Either can be physically mofidied for the other address
-#define  I2CPower 22  // Pin to switch power on and off (-1 if unconnected)
-// Create and return the Bosch BME280 sensor object
-TiIna219 ina219_phy(I2CPower);
-#undef I2CPower
 
 // ==========================================================================
 //    AOSong AM2315 Digital Humidity and Temperature Sensor
@@ -513,6 +502,19 @@ const float depthPerTipEvent = 0.2;  // rain depth in mm per tip event
 RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 
 
+// ==========================================================================
+//    Ti INA219 High Side Current/Voltage Sensor (Current mA, Voltage, Power)
+// ==========================================================================
+#include <sensors/TIINA219.h>
+// uint8_t INA219i2c_addr = 0x40; // 1000000 (Board A0+A1=GND)
+// The INA219 can be addressed either as 0x40 (Adafruit default) or 0x41 44 45
+// Either can be physically mofidied for the other address
+// const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const uint8_t INA219ReadingsToAvg = 1;
+// Create and return the INA219 sensor object
+TIINA219 ina219(I2CPower, INA219i2c_addr, INA219ReadingsToAvg);
+
+
 // Set up a serial port for modbus communication - in this case, using AltSoftSerial
 #include <AltSoftSerial.h>
 AltSoftSerial modbusSerial;
@@ -540,6 +542,7 @@ byte nanolevelModbusAddress = 0x01;  // The modbus address of KellerNanolevel
 const uint8_t nanolevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
 // Create and return the Keller Nanolevel sensor object
 KellerNanolevel nanolevel(nanolevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
+
 
 // ==========================================================================
 //    Yosemitech Y504 Dissolved Oxygen Sensor
@@ -664,8 +667,6 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 // at the same time putting them into an array
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
-    new TiIna219_Volt(&ina219_phy, "INA219_VOLT_UUID"),
-    new TiIna219_mA  (&ina219_phy, "INA219_MA_UUID"),
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
     new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
     new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -703,6 +704,9 @@ Variable *variableList[] = {
     new MPL115A2_Pressure(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
     new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab"),
     new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab"),
+    new TIINA219_Current  (&ina219_phy, "08100000-abcd-1234-efgh-1234567890ab"),
+    new TIINA219_Volt(&ina219_phy, "08200000-abcd-1234-efgh-1234567890ab"),
+    new TIINA219_Power  (&ina219_phy, "08300000-abcd-1234-efgh-1234567890ab"),
     new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
     new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
     new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),

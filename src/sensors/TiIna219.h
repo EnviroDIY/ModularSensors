@@ -1,10 +1,10 @@
 /*
- *TiIna219.h
+ *TIINA219.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Neil hancock
   *
- *This file is for the TiIna219 Current/Voltage  Sensor
+ *This file is for the TIINA219 Current/Voltage  Sensor
  *It is dependent on the Adafruit Ina219 Library
  *
  *Documentation for the sensor can be found at:
@@ -12,7 +12,7 @@
  *http://www.ti.com/product/INA219
  *
  * For Current Sensor with 0.1Ohms:
- *  Full scale ranges are 
+ *  Full scale ranges are
  *   +-3.2Amps resolution is 0.8mA
  *   +-0.4Amps resolution is 0.1mA
  *  Absolute Accuracy is range dependent, and approx 2LSB (R accuracy unknown)
@@ -20,15 +20,14 @@
  * For Voltage :
  *  Resolution is +-0.001V
  *  Accuracy is ?
- *  Range is 0 to 5V(?)
+ *  Range is 0 to 26V
  *
- *
- * Sensor reads instantenously over I2C bus 
+ * A single conversion takes >532 µs (586 µs typical) at 12 bit resolution
 */
 
 // Header Guards
-#ifndef TiIna219_h
-#define TiIna219_h
+#ifndef TIINA219_h
+#define TIINA219_h
 
 // Debugging Statement
 #define DEBUGGING_SERIAL_OUTPUT Serial
@@ -40,36 +39,34 @@
 #include <Adafruit_INA219.h>
 
 // Sensor Specific Defines
+
+#define INA219_NUM_VARIABLES 3
+
+#define INA219_WARM_UP_TIME_MS 100
+#define INA219_STABILIZATION_TIME_MS 4000   // 0.5 s for good numbers, but optimal at 4 s based on tests using INA219timingTest.ino
+#define INA219_MEASUREMENT_TIME_MS 1100     // 1.0 s according to datasheet, but slightly better stdev when 1.1 s
+
 #define INA219_CURRENT_MA_RESOLUTION 4
 #define INA219_CURRENT_MA_VAR_NUM 0
 
 #define INA219_BUS_VOLTAGE_RESOLUTION 4
 #define INA219_BUS_VOLTAGE_VAR_NUM 1
 
-//#define INA219_POWER_MW_RESOLUTION 2
-//#define INA219_POWER_MW_VAR_NUM 2
-#if defined(INA219_POWER_MW_VAR_NUM)
-#define INA219_NUM_VARIABLES 3
-#else
-#define INA219_NUM_VARIABLES 2
-#endif //INA219_POWER_MW_VAR_NUM
-#define INA219_WARM_UP_TIME_MS 100
-#define INA219_STABILIZATION_TIME_MS 4000   // 0.5 s for good numbers, but optimal at 4 s based on tests using INA219timingTest.ino
-#define INA219_MEASUREMENT_TIME_MS 1100     // 1.0 s according to datasheet, but slightly better stdev when 1.1 s
-
+#define INA219_POWER_MW_RESOLUTION 2
+#define INA219_POWER_MW_VAR_NUM 2
 #define INA219_ADDRESS_BASE 0x40
+
 // The main class for the TexasInstruments INA219
-class TiIna219 : public Sensor
+class TIINA219 : public Sensor
 {
 public:
-    TiIna219(int8_t powerPin, uint8_t i2cAddressHex = INA219_ADDRESS_BASE, uint8_t measurementsToAverage = 1);
-    ~TiIna219();
+    TIINA219(int8_t powerPin, uint8_t i2cAddressHex = INA219_ADDRESS_BASE, uint8_t measurementsToAverage = 1);
+    ~TIINA219();
 
     bool wake(void) override;
     bool setup(void) override;
     String getSensorLocation(void) override;
 
-    // bool startSingleMeasurement(void) override;  // for forced mode
     bool addSingleMeasurementResult(void) override;
 protected:
     Adafruit_INA219 ina219_phy;
@@ -78,49 +75,46 @@ protected:
 
 
 // Defines the Temperature Variable
-class TiIna219_mA : public Variable
+class TIINA219_Current : public Variable
 {
 public:
-    TiIna219_mA(Sensor *parentSense,
+    TIINA219_Current(Sensor *parentSense,
                      const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, INA219_CURRENT_MA_VAR_NUM,
                "amp", "mA",
                INA219_CURRENT_MA_RESOLUTION,
-               "TiIna219Amp", UUID, customVarCode)
+               "TIINA219Amp", UUID, customVarCode)
     {}
-    ~TiIna219_mA(){};
+    ~TIINA219_Current(){};
 };
 
 
 // Defines the Volt Variable
-class TiIna219_Volt : public Variable
+class TIINA219_Volt : public Variable
 {
 public:
-    TiIna219_Volt(Sensor *parentSense,
+    TIINA219_Volt(Sensor *parentSense,
                          const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, INA219_BUS_VOLTAGE_VAR_NUM,
                "Volt", "V",
                INA219_BUS_VOLTAGE_RESOLUTION,
-               "TiIna219Volt", UUID, customVarCode)
+               "TIINA219Volt", UUID, customVarCode)
     {}
-    ~TiIna219_Volt(){};
+    ~TIINA219_Volt(){};
 };
 
-#if defined(INA219_POWER_MW_VAR_NUM)
+
 // Defines the Power Variable
-class TiIna219_Power : public Variable
+class TIINA219_Power : public Variable
 {
 public:
-    TiIna219_Power(Sensor *parentSense,
+    TIINA219_Power(Sensor *parentSense,
                          const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, INA219_POWER_MW_VAR_NUM,
-               "barometricPressure", "pascal",
+               "milliwatt", "mW",
                INA219_POWER_MW_RESOLUTION,
-               "TiIna219Pressure", UUID, customVarCode)
+               "TIINA219Power", UUID, customVarCode)
     {}
 };
-#endif //INA219_POWER_MW_VAR_NUM
-
-
 
 #endif  // Header Guard

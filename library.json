@@ -160,6 +160,18 @@
             "platforms": "atmelavr, atmelsam"
         },
         {
+            "name": "Adafruit INA219",
+            "library id": "160",
+            "url": "https://github.com/adafruit/Adafruit_INA219",
+            "version": "=1.0.4",
+            "note": "This is a library for the Adafruit INA219 high side DC current sensor boards",
+            "authors": [
+                "Adafruit"
+            ],
+            "frameworks": "arduino",
+            "platforms": "atmelavr, atmelsam"
+        },
+        {
             "name": "Adafruit MPL115A2",
             "library id": "406",
             "url": "https://github.com/adafruit/Adafruit_MPL115A2.git",
