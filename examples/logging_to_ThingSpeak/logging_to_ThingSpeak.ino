@@ -1,5 +1,5 @@
 /*****************************************************************************
-DWRI_CitSci.ino
+logger_test.ino
 Written By:  Sara Damiano (sdamiano@stroudcenter.org)
 Development Environment: PlatformIO
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
@@ -10,16 +10,11 @@ Software License: BSD-3.
 This example sketch is written for ModularSensors library version 0.19.0
 
 This sketch is an example of logging data to an SD card and sending the data to
-both the EnviroDIY data portal and Stroud's custom data portal as should be
-used by groups involved with The William Penn Foundation's Delaware River
-Watershed Initiative
+both the EnviroDIY data portal and Stroud's custom data portal.
 
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
-
-// Set up connection with the "DreamHost" data portal
-#define DreamHostPortalRX "TALK TO STROUD FOR THIS VALUE"
 
 // ==========================================================================
 //    Include the base required libraries
@@ -32,9 +27,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The name of this file
-const char *sketchName = "DWRI_CitSci.ino";
+const char *sketchName = "logging_to_ThingSpeak.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXXX";
+const char *LoggerID = "SL099";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 5;
 // Your logger's timezone.
@@ -66,7 +61,8 @@ ProcessorStats mayfly(MFVersion);
 //    Modem/Internet connection options
 // ==========================================================================
 
-#define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
+// Select your modem chip, comment out all of the others
+#define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
@@ -78,35 +74,107 @@ HardwareSerial &ModemSerial = Serial1;
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
 TinyGsm *tinyModem = new TinyGsm(ModemSerial);
 
+// Use this to create a modem if you want to spy on modem communication through
+// a secondary Arduino stream.  Make sure you install the StreamDebugger library!
+// https://github.com/vshymanskyy/StreamDebugger
+// #include <StreamDebugger.h>
+// StreamDebugger modemDebugger(Serial1, Serial);
+// TinyGsm *tinyModem = new TinyGsm(modemDebugger);
+
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 // Describe the physical pin connection of your modem to your board
-const long ModemBaud = 9600;         // Communication speed of the modem
+const long ModemBaud = 57600;        // Communication speed of the modem
 const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemSleepRqPin = 23;   // MCU pin used for modem sleep/wake request (-1 if not applicable)
-const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if not applicable)
+const int8_t modemResetPin = -1;     // MCU pin connected to ESP8266's RSTB pin (-1 if unconnected)
+const int8_t espSleepRqPin = 13;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
+const int8_t modemSleepRqPin = 19;   // MCU pin used for wake from light sleep (-1 if not applicable)
+const int8_t espStatusPin = -1;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
+const int8_t modemStatusPin = -1;    // MCU pin used to read modem status (-1 if not applicable)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
-
 // And create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
 bool sleepFxn(void)
 {
-    digitalWrite(modemSleepRqPin, LOW);
-    return true;
+    // Use this if you have an MCU pin connected to the ESP's reset pin to wake from deep sleep
+    if (modemResetPin >= 0)
+    {
+        digitalWrite(redLED, LOW);
+        return tinyModem->poweroff();
+    }
+    // Use this if you have GPIO16 connected to the reset pin to wake from deep sleep
+    // but no other MCU pin connected to the reset pin.
+    // NOTE:  This will NOT work nicely with things like "testingMode" and the
+    // initial 2-minute logging interval at boot up.
+    // if (loggingInterval > 1)
+    // {
+    //     uint32_t sleepSeconds = (((uint32_t)loggingInterval) * 60 * 1000) - 75000L;
+    //     String sleepCommand = String(sleepSeconds);
+    //     tinyModem->sendAT(F("+GSLP="), sleepCommand);
+    //     // Power down for 1 minute less than logging interval
+    //     // Better:  Calculate length of loop and power down for logging interval - loop time
+    //     return tinyModem->waitResponse() == 1;
+    // }
+    // Use this if you don't have access to the ESP8266's reset pin for deep sleep but you
+    // do have access to another GPIO pin for light sleep.  This also sets up another
+    // pin to view the sleep status.
+    else if (modemSleepRqPin >= 0 && modemStatusPin >= 0)
+    {
+        tinyModem->sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
+                          String(espStatusPin), F(","), modemStatusLevel);
+        bool success = tinyModem->waitResponse() == 1;
+        tinyModem->sendAT(F("+SLEEP=1"));
+        success &= tinyModem->waitResponse() == 1;
+        digitalWrite(redLED, LOW);
+        return success;
+    }
+    // Light sleep without the status pin
+    else if (modemSleepRqPin >= 0 && modemStatusPin < 0)
+    {
+        tinyModem->sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0"));
+        bool success = tinyModem->waitResponse() == 1;
+        tinyModem->sendAT(F("+SLEEP=1"));
+        success &= tinyModem->waitResponse() == 1;
+        digitalWrite(redLED, LOW);
+        return success;
+    }
+    else return true;  // DON'T go to sleep if we can't wake up!
 }
 bool wakeFxn(void)
 {
-    digitalWrite(modemSleepRqPin, HIGH);
-    return true;
+    if (modemVccPin >= 0)  // Turns on when power is applied
+    {
+        digitalWrite(redLED, HIGH);  // Because the ESP8266 doesn't have any lights
+        return true;
+    }
+    else if (modemResetPin >= 0)
+    {
+        digitalWrite(modemResetPin, LOW);
+        delay(1);
+        digitalWrite(modemResetPin, HIGH);
+        digitalWrite(redLED, HIGH);
+        return true;
+    }
+    else if (modemSleepRqPin >= 0)
+    {
+        digitalWrite(modemSleepRqPin, LOW);
+        delay(1);
+        digitalWrite(modemSleepRqPin, HIGH);
+        digitalWrite(redLED, HIGH);
+        return true;
+    }
+    else return true;
 }
 
 // And we still need the connection information for the network
-const char *apn = "hologram";  // The APN for the gprs connection, unnecessary for WiFi
+const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
+const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
+
 // Create the loggerModem instance
 #include <LoggerModem.h>
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
 
 
 // ==========================================================================
@@ -126,16 +194,17 @@ const uint8_t OBS3numberReadings = 10;
 const uint8_t OBS3_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
 // Campbell OBS 3+ Low Range calibration in Volts
 const int8_t OBSLowPin = 0;  // The low voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
-const float OBSLow_A = 0.000E+00;  // The "A" value (X^2) from the low range calibration
-const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calibration
-const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
+const float OBSLow_A = 4.0749E+00;  // The "A" value (X^2) from the low range calibration
+const float OBSLow_B = 9.1011E+01;  // The "B" value (X) from the low range calibration
+const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibration
 // Create and return the Campbell OBS3+ LOW RANGE sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, OBS3_ADS1115Address, OBS3numberReadings);
+
 // Campbell OBS 3+ High Range calibration in Volts
 const int8_t OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
-const float OBSHigh_A = 0.000E+00;  // The "A" value (X^2) from the high range calibration
-const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range calibration
-const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
+const float OBSHigh_A = 5.2996E+01;  // The "A" value (X^2) from the high range calibration
+const float OBSHigh_B = 3.7828E+02;  // The "B" value (X) from the high range calibration
+const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calibration
 // Create and return the Campbell OBS3+ HIGH RANGE sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OBS3_ADS1115Address, OBS3numberReadings);
 
@@ -151,7 +220,6 @@ const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnec
 // Create and return the Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 
-
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
@@ -159,15 +227,15 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
-    new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
-    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
+    new CampbellOBS3_Turbidity(&osb3low, "01200000-abcd-1234-efgh-1234567890ab", "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "01400000-abcd-1234-efgh-1234567890ab", "TurbHigh"),
+    new DecagonCTD_Cond(&ctd, "01900000-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Temp(&ctd, "02000000-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Depth(&ctd, "02100000-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_Batt(&mayfly, "07700000-abcd-1234-efgh-1234567890ab"),
+    new MaximDS3231_Temp(&ds3231, "07800000-abcd-1234-efgh-1234567890ab"),
+    new Modem_RSSI(&modem, "07900000-abcd-1234-efgh-1234567890ab"),
+    // new YOUR_variableName_HERE(&)
 };
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
@@ -180,19 +248,15 @@ Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
-// Device registration and sampling feature information
-//   This should be obtained after registration at http://data.envirodiy.org
+// ThingSpeak Information
 // ==========================================================================
-const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
-const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
+const char *thingSpeakMQTTKey = "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from Account > MyProfile.
+const char *thingSpeakChannelID = "######";  // The numeric channel id for your channel
+const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
 
-// Create a data-sender for the EnviroDIY/WikiWatershed POST endpoint
-#include <senders/EnviroDIYSender.h>
-EnviroDIYSender EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
-
-// Create a data-sender to DreamHost
-#include <senders/DreamHostSender.h>
-DreamHostSender DreamHostGET(dataLogger, DreamHostPortalRX);
+// Create a data-sender for ThingSpeak
+#include <senders/ThingSpeakSender.h>
+ThingSpeakSender TsMqtt(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
 
 
 // ==========================================================================
@@ -263,9 +327,29 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
-    // Set up the sleep/wake pin for the modem and put its inital value as "off"
-    pinMode(modemSleepRqPin, OUTPUT);
-    digitalWrite(modemSleepRqPin, LOW);
+    // Set up some of the power pins so the board boots up with them off
+    // NOTE:  This isn't necessary at all.  The logger begin() function
+    // should leave all power pins off when it finishes.
+    if (modemVccPin >= 0)
+    {
+        pinMode(modemVccPin, OUTPUT);
+        digitalWrite(modemVccPin, LOW);
+    }
+    if (sensorPowerPin >= 0)
+    {
+        pinMode(sensorPowerPin, OUTPUT);
+        digitalWrite(sensorPowerPin, LOW);
+    }
+    if (modemSleepRqPin >= 0)
+    {
+        pinMode(modemSleepRqPin, OUTPUT);
+        digitalWrite(modemSleepRqPin, HIGH);
+    }
+    if (modemResetPin >= 0)
+    {
+        pinMode(modemResetPin, OUTPUT);
+        digitalWrite(modemResetPin, HIGH);
+    }
 
     // Set the timezone and offsets
     // Logging in the given time zone
@@ -279,17 +363,7 @@ void setup()
     dataLogger.setTestingModePin(buttonPin);
 
     // Begin the logger
-    // At lowest battery level, skip sensor set-up
-    // Note:  Please change these battery voltages to match your battery
-    if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
-    else dataLogger.begin();  // set up sensors
-
-    // At very good battery voltage, or with suspicious time stamp, sync the clock
-    // Note:  Please change these battery voltages to match your battery
-    if (getBatteryVoltage() > 3.9 ||
-        dataLogger.getNowEpoch() < 1545091200 ||  /*Before 12/18/2018*/
-        dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
-        dataLogger.syncRTC();
+    dataLogger.begin();
 }
 
 
@@ -299,7 +373,6 @@ void setup()
 void loop()
 {
     // Log the data
-    // Note:  Please change these battery voltages to match your battery
     if (getBatteryVoltage() < 3.4) dataLogger.systemSleep();  // just go back to sleep
     else if (getBatteryVoltage() < 3.7) dataLogger.logData();  // log data, but don't send
     else dataLogger.logDataAndSend();  // send data

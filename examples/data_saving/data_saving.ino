@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.17.2
+This example sketch is written for ModularSensors library version 0.19.0
 
 This sketch is an example of logging data to an SD card and sending only a
 portion of that data to the EnviroDIY data portal.
@@ -409,9 +409,10 @@ Variable *variableList_complete[] = {
 int variableCount_complete = sizeof(variableList_complete) / sizeof(variableList_complete[0]);
 // Create the VariableArray object
 VariableArray arrayComplete(variableCount_complete, variableList_complete);
-// Create the new logger instance
-#include <LoggerEnviroDIY.h>
-LoggerEnviroDIY loggerComplete(LoggerID, loggingInterval, sdCardPin, wakePin, &arrayComplete);
+
+// Create a new logger instance
+#include <LoggerBase.h>
+Logger loggerAllVars(LoggerID, loggingInterval, sdCardPin, wakePin, &arrayComplete);
 
 
 // ==========================================================================
@@ -434,7 +435,7 @@ int variableCount_toGo = sizeof(variableList_toGo) / sizeof(variableList_toGo[0]
 // Create the VariableArray object
 VariableArray arrayToGo(variableCount_toGo, variableList_toGo);
 // Create the new logger instance
-LoggerEnviroDIY loggerToGo(LoggerID, loggingInterval,sdCardPin, wakePin, &arrayToGo);
+Logger loggerToGo(LoggerID, loggingInterval,sdCardPin, wakePin, &arrayToGo);
 
 
 // ==========================================================================
@@ -443,6 +444,10 @@ LoggerEnviroDIY loggerToGo(LoggerID, loggingInterval,sdCardPin, wakePin, &arrayT
 // ==========================================================================
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
+
+// Create a data-sender for the EnviroDIY/WikiWatershed POST endpoint
+#include <senders/EnviroDIYSender.h>
+EnviroDIYSender EnviroDIYPOST(loggerToGo, registrationToken, samplingFeature);
 
 
 // ==========================================================================
@@ -543,17 +548,15 @@ void setup()
     // Attach the same modem to both loggers
     // It is only needed for the logger that will be sending out data, but
     // attaching it to both allows either logger to control NIST synchronization
-    loggerComplete.attachModem(modem);
+    loggerAllVars.attachModem(modem);
     loggerToGo.attachModem(modem);
-    loggerComplete.setTestingModePin(buttonPin);
+    loggerAllVars.setTestingModePin(buttonPin);
     // There is no reason to call the setAlertPin() function, because we have to
     // write the loop on our own.
 
     // Set up the connection information with EnviroDIY for both loggers
     // Doing this for both loggers ensures that the header of the csv will have the tokens in it
-    loggerComplete.setToken(registrationToken);
-    loggerComplete.setSamplingFeatureUUID(samplingFeature);
-    loggerToGo.setToken(registrationToken);
+    loggerAllVars.setSamplingFeatureUUID(samplingFeature);
     loggerToGo.setSamplingFeatureUUID(samplingFeature);
 
     // Update the Mayfly "sensor" to get us updated battery voltages
@@ -565,9 +568,15 @@ void setup()
     // just "begin" the complete logger to set up the datafile, clock, sleep,
     // and all of the sensors.  We don't need to bother with the "begin" for the
     // other logger because it has the same processor and clock.
-    if (mayflyBatt->getValue() < 3.4) loggerComplete.begin(true);  // skip sensor set-up
-    else if (mayflyBatt->getValue() < 3.7) loggerComplete.begin();  // set up sensors
-    else loggerComplete.beginAndSync();  // set up sensors and synchronize clock with NIST
+    if (mayflyBatt->getValue() < 3.4) loggerAllVars.begin(true);
+    else loggerAllVars.begin();  // set up sensors
+
+    // At very good battery voltage, or with suspicious time stamp, sync the clock
+    // Note:  Please change these battery voltages to match your battery
+    if (mayflyBatt->getValue() > 3.9 ||
+        loggerAllVars.getNowEpoch() < 1545091200 ||  /*Before 12/18/2018*/
+        loggerAllVars.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+        loggerAllVars.syncRTC();
 }
 
 
@@ -588,7 +597,7 @@ void loop()
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
     // We're only doing anything at all if the battery is above 3.4V
-    if (loggerComplete.checkInterval() && mayflyBatt->getValue() > 3.4)
+    if (loggerAllVars.checkInterval() && mayflyBatt->getValue() > 3.4)
     {
         // Print a line to show new reading
         Serial.print(F("------------------------------------------\n"));
@@ -628,7 +637,7 @@ void loop()
 
         // Stream the variable results from the complete set of variables to
         // the SD card
-        loggerComplete.logToSD();
+        loggerAllVars.logToSD();
 
         // Connect to the network
         // Again, we're only doing this if the battery is doing well
@@ -638,7 +647,7 @@ void loop()
             if (modem.connectInternet())
             {
                 // Post the data to the WebSDL
-                loggerToGo.postDataEnviroDIY();
+                loggerToGo.sendDataToRemotes();
 
                 // Disconnect from the network
                 modem.disconnectInternet();
@@ -659,7 +668,7 @@ void loop()
     // NOTE:  The testingISR attached to the button at the end of the "setup()"
     // function turns on the startTesting flag.  So we know if that flag is set
     // then we want to run the testing mode function.
-    if (Logger::startTesting) loggerComplete.testingMode();
+    if (Logger::startTesting) loggerAllVars.testingMode();
 
     // Once a day, at midnight, sync the clock
     if (Logger::markedEpochTime % 86400 == 0 && mayflyBatt->getValue() > 3.7)
@@ -670,7 +679,7 @@ void loop()
         if (modem.connectInternet())
         {
             // Synchronize the RTC (the loggers have the same clock, pick one)
-            loggerComplete.syncRTClock(modem.getNISTTime());
+            loggerAllVars.setRTClock(modem.getNISTTime());
             // Disconnect from the network
             modem.disconnectInternet();
         }
@@ -680,5 +689,5 @@ void loop()
 
     // Call the processor sleep
     // Only need to do this for one of the loggers
-    loggerComplete.systemSleep();
+    loggerAllVars.systemSleep();
 }
