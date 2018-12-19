@@ -14,6 +14,12 @@
 //  Functions for the SWRC Sensors DreamHost data receivers.
 // ============================================================================
 
+// Constant portions of the requests
+const char *DreamHostSender::dreamhostHost = "swrcsensors.dreamhosters.com";
+const int DreamHostSender::dreamhostPort = 80;
+const char *DreamHostSender::loggerTag = "?LoggerID=";
+const char *DreamHostSender::timestampTagDH = "&Loggertime=";
+
 // Constructor
 DreamHostSender::DreamHostSender(Logger& baseLogger,
                                  uint8_t sendEveryX, uint8_t sendOffset)
@@ -28,12 +34,6 @@ DreamHostSender::DreamHostSender(Logger& baseLogger,
 }
 // Destructor
 DreamHostSender::~DreamHostSender(){}
-
-
-// Constant portions of the requests
-const char *DreamHostSender::dreamhostHost = "swrcsensors.dreamhosters.com";
-const char *DreamHostSender::loggerTag = "?LoggerID=";
-const char *DreamHostSender::timestampTagDH = "&Loggertime=";
 
 
 // Functions for private SWRC server
@@ -90,7 +90,7 @@ int16_t DreamHostSender::sendData(Client *_outClient)
     uint16_t did_respond = 0;
 
     // Open a TCP/IP connection to DreamHost
-    if(_outClient->connect(dreamhostHost, 80))
+    if(_outClient->connect(dreamhostHost, dreamhostPort))
     {
         // copy the initial post header into the tx buffer
         strcpy(txBuffer, getHeader);

@@ -15,6 +15,21 @@
 //  Functions for the EnviroDIY data portal receivers.
 // ============================================================================
 
+// Constant values for post requests
+// I want to refer to these more than once while ensuring there is only one copy in memory
+const char *EnviroDIYSender::postEndpoint = "/api/data-stream/";
+const char *EnviroDIYSender::enviroDIYHost = "data.envirodiy.org";
+const int EnviroDIYSender::enviroDIYPort = 80;
+const char *EnviroDIYSender::tokenHeader = "\r\nTOKEN: ";
+// const unsigned char *EnviroDIYSender::cacheHeader = "\r\nCache-Control: no-cache";
+// const unsigned char *EnviroDIYSender::connectionHeader = "\r\nConnection: close";
+const char *EnviroDIYSender::contentLengthHeader = "\r\nContent-Length: ";
+const char *EnviroDIYSender::contentTypeHeader = "\r\nContent-Type: application/json\r\n\r\n";
+
+const char *EnviroDIYSender::samplingFeatureTag = "{\"sampling_feature\":\"";
+const char *EnviroDIYSender::timestampTag = "\",\"timestamp\":\"";
+
+
 // Constructor
 EnviroDIYSender::EnviroDIYSender(Logger& baseLogger,
                                  uint8_t sendEveryX, uint8_t sendOffset)
@@ -31,20 +46,6 @@ EnviroDIYSender::EnviroDIYSender(Logger& baseLogger,
 }
 // Destructor
 EnviroDIYSender::~EnviroDIYSender(){}
-
-
-// Constant values for post requests
-// I want to refer to these more than once while ensuring there is only one copy in memory
-const char *EnviroDIYSender::postEndpoint = "/api/data-stream/";
-const char *EnviroDIYSender::enviroDIYHost = "data.envirodiy.org";
-const char *EnviroDIYSender::tokenHeader = "\r\nTOKEN: ";
-// const unsigned char *EnviroDIYSender::cacheHeader = "\r\nCache-Control: no-cache";
-// const unsigned char *EnviroDIYSender::connectionHeader = "\r\nConnection: close";
-const char *EnviroDIYSender::contentLengthHeader = "\r\nContent-Length: ";
-const char *EnviroDIYSender::contentTypeHeader = "\r\nContent-Type: application/json\r\n\r\n";
-
-const char *EnviroDIYSender::samplingFeatureTag = "{\"sampling_feature\":\"";
-const char *EnviroDIYSender::timestampTag = "\",\"timestamp\":\"";
 
 
 void EnviroDIYSender::setToken(const char *registrationToken)
@@ -157,7 +158,7 @@ int16_t EnviroDIYSender::sendData(Client *_outClient)
     uint16_t did_respond = 0;
 
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
-    if(_outClient->connect(enviroDIYHost, 80))
+    if(_outClient->connect(enviroDIYHost, enviroDIYPort))
     {
         // copy the initial post header into the tx buffer
         strcpy(txBuffer, postHeader);

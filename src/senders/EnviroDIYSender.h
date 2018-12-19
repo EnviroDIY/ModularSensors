@@ -65,6 +65,7 @@ protected:
     // portions of the POST request
     static const char *postEndpoint;
     static const char *enviroDIYHost;
+    static const int enviroDIYPort;
     static const char *tokenHeader;
     // static const char *cacheHeader;
     // static const char *connectionHeader;

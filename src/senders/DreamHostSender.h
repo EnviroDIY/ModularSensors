@@ -57,6 +57,7 @@ public:
 protected:
     // portions of the GET request
     static const char *dreamhostHost;
+    static const int dreamhostPort;
     static const char *loggerTag;
     static const char *timestampTagDH;
 

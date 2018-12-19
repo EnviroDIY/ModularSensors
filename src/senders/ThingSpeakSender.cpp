@@ -15,6 +15,14 @@
 //  Functions for the EnviroDIY data portal receivers.
 // ============================================================================
 
+// Constant values for MQTT publish
+// I want to refer to these more than once while ensuring there is only one copy in memory
+const char *ThingSpeakSender::mqttServer = "mqtt.thingspeak.com";
+const int ThingSpeakSender::mqttPort = 1883;
+const char *ThingSpeakSender::mqttClient = THING_SPEAK_CLIENT_NAME;
+const char *ThingSpeakSender::mqttUser = THING_SPEAK_USER_NAME;
+
+
 // Constructor
 ThingSpeakSender::ThingSpeakSender(Logger& baseLogger,
                                    uint8_t sendEveryX, uint8_t sendOffset)
@@ -33,13 +41,6 @@ ThingSpeakSender::ThingSpeakSender(Logger& baseLogger,
 }
 // Destructor
 ThingSpeakSender::~ThingSpeakSender(){}
-
-
-// Constant values for MQTT publish
-// I want to refer to these more than once while ensuring there is only one copy in memory
-const char *ThingSpeakSender::mqttServer = "mqtt.thingspeak.com";
-const char *ThingSpeakSender::mqttClient = THING_SPEAK_CLIENT_NAME;
-const char *ThingSpeakSender::mqttUser = THING_SPEAK_USER_NAME;
 
 
 void ThingSpeakSender::setMQTTKey(const char *thingSpeakMQTTKey)
@@ -122,7 +123,7 @@ int16_t ThingSpeakSender::sendData(Client *_outClient)
 
     // Set the client connection parameters
     _mqttClient.setClient(*_outClient);
-    _mqttClient.setServer(mqttServer, 1883);
+    _mqttClient.setServer(mqttServer, mqttPort);
 
     // Make the MQTT connection
     // Note:  the client id and the user name do not mean anything for ThingSpeak
@@ -130,18 +131,18 @@ int16_t ThingSpeakSender::sendData(Client *_outClient)
     {
         if (_mqttClient.publish(topicBuffer, txBuffer))
         {
-            MS_DBG(F("Topic published!  Current state: "), _mqttClient.state());
+            PRINTOUT(F("ThingSpeak topic published!  Current state: "), _mqttClient.state());
             retVal = true;
         }
         else
         {
-            MS_DBG(F("MQTT publish failed with state: "), _mqttClient.state());
+            PRINTOUT(F("MQTT publish failed with state: "), _mqttClient.state());
             retVal = false;
         }
     }
     else
     {
-        MS_DBG(F("MQTT connection failed with state: "), _mqttClient.state());
+        PRINTOUT(F("MQTT connection failed with state: "), _mqttClient.state());
         retVal = false;
     }
 

@@ -373,8 +373,6 @@ void setup()
 void loop()
 {
     // Log the data
-    Serial.print("Battery: ");
-    Serial.println(getBatteryVoltage());
     if (getBatteryVoltage() < 3.4) dataLogger.systemSleep();  // just go back to sleep
     else if (getBatteryVoltage() < 3.7) dataLogger.logData();  // log data, but don't send
     else dataLogger.logDataAndSend();  // send data
