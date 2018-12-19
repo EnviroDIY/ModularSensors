@@ -82,12 +82,12 @@ matrix:
           - PLATFORMIO_CI_SRC=examples/data_saving/
           - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
       - env:
-          - PLATFORMIO_CI_SRC=examples/data_saving/
-          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
+          - PLATFORMIO_CI_SRC=examples/logging_to_ThingSpeak/
+          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D MQTT_MAX_PACKET_SIZE=240"
 
       - env:
-        - PLATFORMIO_CI_SRC=examples/logging_to_ThingSpeak/
-        - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D MQTT_MAX_PACKET_SIZE=240"
+        - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY_Zero/
+        - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
 
         script:
             - platformio ci -v --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial, SoftI2CMaster"  --project-option="lib_ldf_mode = deep+" --board=adafruit_feather_m0

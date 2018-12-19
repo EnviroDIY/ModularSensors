@@ -446,7 +446,7 @@ const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Dev
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 
 // Create a data-sender for the EnviroDIY/WikiWatershed POST endpoint
-#include <senders/DreamHostSender.h>
+#include <senders/EnviroDIYSender.h>
 EnviroDIYSender EnviroDIYPOST(loggerToGo, registrationToken, samplingFeature);
 
 
