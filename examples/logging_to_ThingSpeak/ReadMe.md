@@ -16,7 +16,9 @@ _______
 #### Modify the Example
 - Modify logging_to_ThingSpeak.ino to have the sensor and variable objects that you are interested.  Also make sure you have the correct modem configurations.  See the pages for the individual sensors and modems in the [wiki](https://github.com/EnviroDIY/ModularSensors/wiki/Home) for code snippets/examples.
     - Don't forget to put in your wifi username/password or cellular APN!
-- Order the variables in your variable array in the same order as your fields are on ThingSpeak.  This order is __crucial__.  Data being sent to ThingSpeak can only be identified by the field number, regardless of any names you have given the field in your channel.
+- Order the variables in your variable array in the same order as your fields are on ThingSpeak.
+    - This order is __crucial__.  The results from the variables in the VariableArray will be sent to ThingSpeak in the order they are in the array; that is, the first variable in the array will be sent as Field1, the second as Field2, etc.
+    - Any UUID's or custom variable codes are ignored for ThingSpeak.  They will only appear in the header of your file on the SD card.
 - Find this information for your ThingSpeak account and channel and put it into logging_to_ThingSpeak.ino:
 
 ```cpp
