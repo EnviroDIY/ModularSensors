@@ -123,19 +123,6 @@ void setup()
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
 
-    // Start the stream for the modbus sensors
-    modbusSerial.begin(9600);
-
-    // Start the SoftwareSerial stream for the sonar
-    sonarSerial.begin(9600);
-    // Allow interrupts for software serial
-    #if defined SoftwareSerial_ExtInts_h
-        enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
-    #endif
-    #if defined NeoSWSerial_h
-        enableInterrupt(SonarData, NeoSWSISR, CHANGE);
-    #endif
-
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
     digitalWrite(greenLED, LOW);
