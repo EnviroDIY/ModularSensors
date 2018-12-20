@@ -14,7 +14,7 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
-#define DreamHostPortalRX "http://swrcsensors.dreamhosters.com/portalRX_EST_universal.php"
+#define DreamHostPortalRX "xxxx"
 
 // ==========================================================================
 //    Include the base required libraries

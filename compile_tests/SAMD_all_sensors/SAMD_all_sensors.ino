@@ -940,7 +940,7 @@ ThingSpeakSender ThingSpeakMQTT(dataLogger, thingSpeakMQTTKey, thingSpeakChannel
 
 #if defined(DreamHostPortalRX)
 // Create a data-sender for DreamHost
-#include <senders/EnviroDIYSender.h>
+#include <senders/DreamHostSender.h>
 EnviroDIYSender DreamHostGet(dataLogger, DreamHostPortalRX);
 #endif
 
