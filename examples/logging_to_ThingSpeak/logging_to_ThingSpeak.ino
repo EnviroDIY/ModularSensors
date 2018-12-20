@@ -1,5 +1,5 @@
 /*****************************************************************************
-logger_test.ino
+logging_to_thingSpeak.ino
 Written By:  Sara Damiano (sdamiano@stroudcenter.org)
 Development Environment: PlatformIO
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
@@ -10,7 +10,7 @@ Software License: BSD-3.
 This example sketch is written for ModularSensors library version 0.19.0
 
 This sketch is an example of logging data to an SD card and sending the data to
-both the EnviroDIY data portal and Stroud's custom data portal.
+ThingSpeak.
 
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
@@ -29,7 +29,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // The name of this file
 const char *sketchName = "logging_to_ThingSpeak.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "SL099";
+const char *LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval = 5;
 // Your logger's timezone.
@@ -373,6 +373,7 @@ void setup()
 void loop()
 {
     // Log the data
+    // Note:  Please change these battery voltages to match your battery
     if (getBatteryVoltage() < 3.4) dataLogger.systemSleep();  // just go back to sleep
     else if (getBatteryVoltage() < 3.7) dataLogger.logData();  // log data, but don't send
     else dataLogger.logDataAndSend();  // send data

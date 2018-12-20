@@ -1,5 +1,5 @@
 /*****************************************************************************
-logging_to_EnviroDIY.ino
+baro_rho_correction.ino
 Written By:  Sara Damiano (sdamiano@stroudcenter.org)
 Development Environment: PlatformIO
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
@@ -65,7 +65,7 @@ Variable *mayflySampNo = new ProcessorStats_SampleNumber(&mayfly, "12345678-abcd
 //    Modem/Internet connection options
 // ==========================================================================
 
-// Select your modem chip, comment out all of the others
+// Select your modem chip
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
 // #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
