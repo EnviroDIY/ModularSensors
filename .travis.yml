@@ -85,7 +85,7 @@ matrix:
           - PLATFORMIO_CI_SRC=examples/logging_to_ThingSpeak/
           - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D MQTT_MAX_PACKET_SIZE=240"
       - env:
-          - PLATFORMIO_CI_SRC=examples/AVR_all_sensors/
+          - PLATFORMIO_CI_SRC=compile_tests/AVR_all_sensors/
           - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
 
       - env:
