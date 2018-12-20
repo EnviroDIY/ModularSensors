@@ -1,4 +1,4 @@
-dataLogger/*****************************************************************************
+/*****************************************************************************
 logging_to_EnviroDIY_Zero.ino
 Written By:  Sara Damiano (sdamiano@stroudcenter.org)
 Development Environment: PlatformIO
@@ -16,7 +16,7 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
-#define DreamHostPortalRX "http://swrcsensors.dreamhosters.com/portalRX_EST_universal.php"
+#define DreamHostPortalRX "xxxx"
 
 // ==========================================================================
 //    Include the base required libraries
@@ -605,6 +605,22 @@ TIINA219 ina219(I2CPower, INA219i2c_addr, INA219ReadingsToAvg);
 // Variable *inaVolt = new TIINA219_Volt(&ina219, "12345678-abcd-1234-efgh-1234567890ab");
 // Variable *inaPower = new TIINA219_Power(&ina219, "12345678-abcd-1234-efgh-1234567890ab");
 
+
+// Set up a 'new' UART for modbus communication - in this case, using SERCOM1
+// In this case, the Rx will be on digital pin 11, which is SERCOM1's Pad #0
+// The Tx will be on digital pin 10, which is SERCOM1's Pad #2
+// NOTE:  SERCOM1 is undefinied on a "standard" Arduino Zero and many clones,
+//        but not all!  Please check the variant.cpp file for you individual board!
+//        Sodaq Autonomo's and Sodaq One's do NOT follow the 'standard' SERCOM definitions!
+Uart Serial2(&sercom1, 11, 10, SERCOM_RX_PAD_0, UART_TX_PAD_2);
+// Hand over the interrupts to the sercom port
+void SERCOM1_Handler()
+{
+    Serial2.IrqHandler();
+}
+// This is just a pointer to help me remember the port name
+HardwareSerial &modbusSerial = Serial2;
+
 // ==========================================================================
 //    Keller Acculevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
@@ -877,8 +893,8 @@ Variable *variableList[] = {
     new ZebraTechDOpto_Temp(&dopto, "07300000-abcd-1234-efgh-1234567890ab"),
     new ZebraTechDOpto_DOpct(&dopto, "07400000-abcd-1234-efgh-1234567890ab"),
     new ZebraTechDOpto_DOmgL(&dopto, "07500000-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_FreeRam(&mayfly, "07600000-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_Batt(&mayfly, "07700000-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_FreeRam(&feather, "07600000-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_Batt(&feather, "07700000-abcd-1234-efgh-1234567890ab"),
     new MaximDS3231_Temp(&ds3231, "07800000-abcd-1234-efgh-1234567890ab"),
     new Modem_RSSI(&modem, "07900000-abcd-1234-efgh-1234567890ab"),
     new Modem_SignalPercent(&modem, "08000000-abcd-1234-efgh-1234567890ab"),
@@ -1045,7 +1061,7 @@ void setup()
     dataLogger.setTestingModePin(buttonPin);
 
     // Begin the logger
-    dataLogger.beginAndSync();
+    dataLogger.begin();
 
     // Run "testing" mode
     dataLogger.testingMode();
