@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.1
+This example sketch is written for ModularSensors library version 0.19.2
 
 This sketch is an example of logging data to an SD card and sending the data to
 ThingSpeak.
@@ -254,9 +254,9 @@ const char *thingSpeakMQTTKey = "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from A
 const char *thingSpeakChannelID = "######";  // The numeric channel id for your channel
 const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
 
-// Create a data-sender for ThingSpeak
-#include <senders/ThingSpeakSender.h>
-ThingSpeakSender TsMqtt(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
+// Create a data publisher for ThingSpeak
+#include <publishers/ThingSpeakPublisher.h>
+ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
 
 
 // ==========================================================================

@@ -1,5 +1,5 @@
 /*
- *ThingSpeakSender.cpp
+ *ThingSpeakPublisher.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -8,7 +8,7 @@
  * http://data.enviroDIY.org
 */
 
-#include "ThingSpeakSender.h"
+#include "ThingSpeakPublisher.h"
 
 
 // ============================================================================
@@ -17,54 +17,54 @@
 
 // Constant values for MQTT publish
 // I want to refer to these more than once while ensuring there is only one copy in memory
-const char *ThingSpeakSender::mqttServer = "mqtt.thingspeak.com";
-const int ThingSpeakSender::mqttPort = 1883;
-const char *ThingSpeakSender::mqttClient = THING_SPEAK_CLIENT_NAME;
-const char *ThingSpeakSender::mqttUser = THING_SPEAK_USER_NAME;
+const char *ThingSpeakPublisher::mqttServer = "mqtt.thingspeak.com";
+const int ThingSpeakPublisher::mqttPort = 1883;
+const char *ThingSpeakPublisher::mqttClient = THING_SPEAK_CLIENT_NAME;
+const char *ThingSpeakPublisher::mqttUser = THING_SPEAK_USER_NAME;
 
 
 // Constructor
-ThingSpeakSender::ThingSpeakSender(Logger& baseLogger,
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger,
                                    uint8_t sendEveryX, uint8_t sendOffset)
-  : dataSender(baseLogger, sendEveryX, sendOffset)
+  : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {}
-ThingSpeakSender::ThingSpeakSender(Logger& baseLogger,
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger,
                                    const char *thingSpeakMQTTKey,
                                    const char *thingSpeakChannelID,
                                    const char *thingSpeakChannelKey,
                                    uint8_t sendEveryX, uint8_t sendOffset)
-  : dataSender(baseLogger, sendEveryX, sendOffset)
+  : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {
    setMQTTKey(thingSpeakMQTTKey);
    setChannelID(thingSpeakChannelID);
    setChannelKey(thingSpeakChannelKey);
 }
 // Destructor
-ThingSpeakSender::~ThingSpeakSender(){}
+ThingSpeakPublisher::~ThingSpeakPublisher(){}
 
 
-void ThingSpeakSender::setMQTTKey(const char *thingSpeakMQTTKey)
+void ThingSpeakPublisher::setMQTTKey(const char *thingSpeakMQTTKey)
 {
     _thingSpeakMQTTKey = thingSpeakMQTTKey;
     MS_DBG(F("MQTT Key set!"));
 }
 
 
-void ThingSpeakSender::setChannelID(const char *thingSpeakChannelID)
+void ThingSpeakPublisher::setChannelID(const char *thingSpeakChannelID)
 {
     _thingSpeakChannelID = thingSpeakChannelID;
     MS_DBG(F("Channel ID set!"));
 }
 
 
-void ThingSpeakSender::setChannelKey(const char *thingSpeakChannelKey)
+void ThingSpeakPublisher::setChannelKey(const char *thingSpeakChannelKey)
 {
     _thingSpeakChannelKey = thingSpeakChannelKey;
     MS_DBG(F("Channel Key set!"));
 }
 
 // Sets all 3 ThingSpeak parameters
-void ThingSpeakSender::setThingSpeakParams(const char *MQTTKey,
+void ThingSpeakPublisher::setThingSpeakParams(const char *MQTTKey,
                                            const char *channelID,
                                            const char *channelKey)
 {
@@ -75,8 +75,8 @@ void ThingSpeakSender::setThingSpeakParams(const char *MQTTKey,
 
 
 // This sends the data to ThingSpeak
-// bool ThingSpeakSender::mqttThingSpeak(void)
-int16_t ThingSpeakSender::sendData(Client *_outClient)
+// bool ThingSpeakPublisher::mqttThingSpeak(void)
+int16_t ThingSpeakPublisher::sendData(Client *_outClient)
 {
     bool retVal = false;
 

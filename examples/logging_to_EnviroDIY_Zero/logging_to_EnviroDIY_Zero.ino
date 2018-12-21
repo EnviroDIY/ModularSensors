@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.1
+This example sketch is written for ModularSensors library version 0.19.2
 
 This sketch is an example of logging data to an SD card and sending the data to
 the EnviroDIY data portal via a AtSAMD21 board, such as an Arduino Zero or Feather M0.
@@ -162,9 +162,9 @@ Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 
-// Create a data-sender for the EnviroDIY/WikiWatershed POST endpoint
-#include <senders/EnviroDIYSender.h>
-EnviroDIYSender EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
+// Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
+#include <publishers/EnviroDIYPublisher.h>
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
 
 
 // ==========================================================================

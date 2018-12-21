@@ -1,5 +1,5 @@
 /*
- *DreamHostSender.cpp
+ *DreamHostPublisher.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -7,7 +7,7 @@
  *This file is for the EnviroDIY logging functions - ie, sending get requests to DreamHost
 */
 
-#include "DreamHostSender.h"
+#include "DreamHostPublisher.h"
 
 
 // ============================================================================
@@ -15,29 +15,29 @@
 // ============================================================================
 
 // Constant portions of the requests
-const char *DreamHostSender::dreamhostHost = "swrcsensors.dreamhosters.com";
-const int DreamHostSender::dreamhostPort = 80;
-const char *DreamHostSender::loggerTag = "?LoggerID=";
-const char *DreamHostSender::timestampTagDH = "&Loggertime=";
+const char *DreamHostPublisher::dreamhostHost = "swrcsensors.dreamhosters.com";
+const int DreamHostPublisher::dreamhostPort = 80;
+const char *DreamHostPublisher::loggerTag = "?LoggerID=";
+const char *DreamHostPublisher::timestampTagDH = "&Loggertime=";
 
 // Constructor
-DreamHostSender::DreamHostSender(Logger& baseLogger,
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger,
                                  uint8_t sendEveryX, uint8_t sendOffset)
-  : dataSender(baseLogger, sendEveryX, sendOffset)
+  : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {}
-DreamHostSender::DreamHostSender(Logger& baseLogger,
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger,
                                  const char *URL, uint8_t sendEveryX,
                                  uint8_t sendOffset)
-  : dataSender(baseLogger, sendEveryX, sendOffset)
+  : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {
     setDreamHostPortalRX(URL);
 }
 // Destructor
-DreamHostSender::~DreamHostSender(){}
+DreamHostPublisher::~DreamHostPublisher(){}
 
 
 // Functions for private SWRC server
-void DreamHostSender::setDreamHostPortalRX(const char *URL)
+void DreamHostPublisher::setDreamHostPortalRX(const char *URL)
 {
     _DreamHostPortalRX = URL;
     MS_DBG(F("Dreamhost portal URL set!"));
@@ -45,7 +45,7 @@ void DreamHostSender::setDreamHostPortalRX(const char *URL)
 
 
 // This prints the URL out to an Arduino stream
-void DreamHostSender::printSensorDataDreamHost(Stream *stream)
+void DreamHostPublisher::printSensorDataDreamHost(Stream *stream)
 {
     stream->print(_DreamHostPortalRX);
     stream->print(loggerTag);
@@ -65,7 +65,7 @@ void DreamHostSender::printSensorDataDreamHost(Stream *stream)
 
 // This prints a fully structured GET request for DreamHost to the
 // specified stream
-void DreamHostSender::printDreamHostRequest(Stream *stream)
+void DreamHostPublisher::printDreamHostRequest(Stream *stream)
 {
     // Start the request
     stream->print(getHeader);
@@ -82,8 +82,8 @@ void DreamHostSender::printDreamHostRequest(Stream *stream)
 
 
 // Post the data to dream host.
-// int16_t DreamHostSender::postDataDreamHost(void)
-int16_t DreamHostSender::sendData(Client *_outClient)
+// int16_t DreamHostPublisher::postDataDreamHost(void)
+int16_t DreamHostPublisher::sendData(Client *_outClient)
 {
     // Create a buffer for the portions of the request and response
     char tempBuffer[37] = "";

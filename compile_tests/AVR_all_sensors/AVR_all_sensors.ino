@@ -917,14 +917,14 @@ Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 
-// Create a data-sender for the EnviroDIY/WikiWatershed POST endpoint
-#include <senders/EnviroDIYSender.h>
-EnviroDIYSender EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
+// Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
+#include <publishers/EnviroDIYPublisher.h>
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
 
 #ifdef DreamHostPortalRX
-// Create a data-sender to DreamHost
-#include <senders/DreamHostSender.h>
-DreamHostSender DreamHostGET(dataLogger, DreamHostPortalRX);
+// Create a data publisher to DreamHost
+#include <publishers/DreamHostPublisher.h>
+DreamHostPublisher DreamHostGET(dataLogger, DreamHostPortalRX);
 #endif
 
 
@@ -935,14 +935,8 @@ const char *thingSpeakMQTTKey = "xxxxxxxxxxxxxxxx";  // Your MQTT API Key from A
 const char *thingSpeakChannelID = "######";  // The numeric channel id for your channel
 const char *thingSpeakChannelKey = "xxxxxxxxxxxxxxxx";  // The Write API Key for your channel
 
-#include <senders/ThingSpeakSender.h>
-ThingSpeakSender ThingSpeakMQTT(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
-
-#if defined(DreamHostPortalRX)
-// Create a data-sender for DreamHost
-#include <senders/EnviroDIYSender.h>
-EnviroDIYSender DreamHostGet(dataLogger, DreamHostPortalRX);
-#endif
+#include <publishers/ThingSpeakPublisher.h>
+ThingSpeakPublisher ThingSpeakMQTT(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
 
 
 // ==========================================================================

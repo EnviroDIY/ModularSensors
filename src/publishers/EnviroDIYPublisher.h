@@ -1,5 +1,5 @@
 /*
- *EnviroDIYSender.h
+ *EnviroDIYPublisher.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -9,31 +9,31 @@
 */
 
 // Header Guards
-#ifndef EnviroDIYSender_h
-#define EnviroDIYSender_h
+#ifndef EnviroDIYPublisher_h
+#define EnviroDIYPublisher_h
 
 // Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
-#include "dataSenderBase.h"
+#include "dataPublisherBase.h"
 
 
 // ============================================================================
 //  Functions for the EnviroDIY data portal receivers.
 // ============================================================================
-class EnviroDIYSender : public dataSender
+class EnviroDIYPublisher : public dataPublisher
 {
 public:
     // Constructor
-    EnviroDIYSender(Logger& baseLogger,
+    EnviroDIYPublisher(Logger& baseLogger,
                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    EnviroDIYSender(Logger& baseLogger,
+    EnviroDIYPublisher(Logger& baseLogger,
                     const char *registrationToken,
                     const char *samplingFeatureUUID,
                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    virtual ~EnviroDIYSender();
+    virtual ~EnviroDIYPublisher();
 
     // Returns the data destination
     virtual String getEndpoint(void){return String(enviroDIYHost);}

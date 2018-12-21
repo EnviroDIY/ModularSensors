@@ -9,7 +9,7 @@
 */
 
 #include "LoggerBase.h"
-#include "dataSenderBase.h"
+#include "dataPublisherBase.h"
 
 // To prevent compiler/linker crashes with Enable interrupt
 #define LIBCALL_ENABLEINTERRUPT
@@ -69,7 +69,7 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
     // Clear arrays
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++)
     {
-        dataSenders[i] = NULL;
+        dataPublishers[i] = NULL;
     }
 }
 // Destructor
@@ -171,7 +171,7 @@ String Logger::getValueStringAtI(uint8_t position_i)
 
 
 // ===================================================================== //
-// Public functions for internet and dataSenders
+// Public functions for internet and dataPublishers
 // ===================================================================== //
 
 // Set up communications
@@ -211,17 +211,17 @@ bool Logger::syncRTC()
 }
 
 
-void Logger::registerDataSender(dataSender* sender)
+void Logger::registerDataPublisher(dataPublisher* publisher)
 {
-    // find the next empty spot in the sender array
+    // find the next empty spot in the publisher array
     uint8_t i = 0;
     for (; i < MAX_NUMBER_SENDERS; i++)
     {
-        if (dataSenders[i] == NULL) break;
+        if (dataPublishers[i] == NULL) break;
     }
 
-    // register the sender there
-    dataSenders[i] = sender;
+    // register the publisher there
+    dataPublishers[i] = publisher;
 }
 
 
@@ -231,10 +231,10 @@ void Logger::sendDataToRemotes(void)
 
     for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++)
     {
-        if (dataSenders[i] != NULL)
+        if (dataPublishers[i] != NULL)
         {
-            PRINTOUT(F("\nSending data to "), dataSenders[i]->getEndpoint());
-            dataSenders[i]->sendData(_logModem->getClient());
+            PRINTOUT(F("\nSending data to "), dataPublishers[i]->getEndpoint());
+            dataPublishers[i]->sendData(_logModem->getClient());
         }
     }
 }
