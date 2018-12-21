@@ -46,7 +46,8 @@ install:
     - pio lib -g install https://github.com/EnviroDIY/SoftwareSerial_ExtInts.git
     - pio update
 script:
-    - platformio ci --project-option="lib_ldf_mode = deep+" --board=mayfly  --board=megaatmega2560 --board=adafruit_feather_m0  --board=sodaq_autonomo
+    - platformio ci --project-option="lib_ldf_mode = deep+" --project-option="lib_ignore = RTCZero" --board=mayfly  --board=megaatmega2560
+    - platformio ci --project-option="lib_ldf_mode = deep+" --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial, SoftI2CMaster" --board=adafruit_feather_m0  --board=sodaq_autonomo
 
 matrix:
     include:
@@ -56,7 +57,7 @@ matrix:
 
       - env:
           - PLATFORMIO_CI_SRC=examples/single_sensor/
-          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
+          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D ENABLE_SERIAL2 -D ENABLE_SERIAL3"
       - env:
           - PLATFORMIO_CI_SRC=examples/multisensor_print/
           - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
@@ -80,7 +81,7 @@ matrix:
           - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
       - env:
           - PLATFORMIO_CI_SRC=examples/data_saving/
-          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
+          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D ENABLE_SERIAL2 -D ENABLE_SERIAL3"
       - env:
           - PLATFORMIO_CI_SRC=examples/logging_to_ThingSpeak/
           - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D MQTT_MAX_PACKET_SIZE=240"
@@ -92,10 +93,10 @@ matrix:
         - PLATFORMIO_CI_SRC=compile_tests/AVR_all_sensors/
         - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
         script:
-          - platformio ci --project-option="lib_ldf_mode = deep+" --board=mayfly
+          - platformio ci --project-option="lib_ldf_mode = deep+" --project-option="lib_ignore = RTCZero" --board=mayfly
 
       - env:
         - PLATFORMIO_CI_SRC=compile_tests/SAMD_all_sensors/
         - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
         script:
-          - platformio ci --project-option="lib_ldf_mode = deep+" --board=adafruit_feather_m0
+          - platformio ci --project-option="lib_ldf_mode = deep+" --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial, SoftI2CMaster" --board=adafruit_feather_m0

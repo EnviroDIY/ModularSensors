@@ -55,7 +55,7 @@ const int8_t SonarPower = 22;   // excite (power) pin
 
 
 #if defined __AVR__
-// Set up a serial port for modbus communication - in this case, using SoftwareSerial_ExtInts
+// Set up a serial port for serial communication - in this case, using SoftwareSerial_ExtInts
 #include <SoftwareSerial_ExtInts.h>  // for the stream communication
 SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
 #endif

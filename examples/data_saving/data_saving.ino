@@ -157,7 +157,7 @@ HardwareSerial &modbusSerial = Serial2;
 
 #if defined ARDUINO_SODAQ_AUTONOMO
 // Serial2 is already defined on the Autonomo
-HardwareSerial &sonarSerial = Serial2;
+HardwareSerial &modbusSerial = Serial2;
 #endif
 
 // ==========================================================================
