@@ -7,8 +7,6 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.17.2
-
 This sketch is an example of logging data to an SD card and sending the data to
 the EnviroDIY data portal via a AtSAMD21 board, such as an Arduino Zero or Feather M0.
 
@@ -29,6 +27,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
+// The library version this library was written for
+const char *libraryVersion = "0.19.2";
 // The name of this file
 const char *sketchName = "SAMD_all_sensors.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -980,6 +980,10 @@ void setup()
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
+
+    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
+        Serial.println(F("WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT \
+         VERSION OF MODULAR SENSORS THAN WHAT YOU HAVE INSTALLED!!"));
 
     // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);

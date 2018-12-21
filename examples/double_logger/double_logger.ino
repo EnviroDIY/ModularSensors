@@ -29,6 +29,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
+// The library version this example was written for
+const char *libraryVersion = "0.19.2";
 // The name of this file
 const char *sketchName = "logger_test.ino";
 // Logger ID - since it's the same logger device, we only need one
@@ -205,6 +207,10 @@ void setup()
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
+
+    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
+        Serial.println(F("WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT \
+        VERSION OF MODULAR SENSORS THAN WHAT YOU HAVE INSTALLED!!"));
 
     // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);
