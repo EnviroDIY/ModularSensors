@@ -35,7 +35,6 @@ const char *sketchName = "single_sensor.ino";
 // ==========================================================================
 //    Maxbotix HRXL
 // ==========================================================================
-#include <sensors/MaxBotixSonar.h>
 
 // Define a serial port for receiving data - in this case, using software serial
 // Because the standard software serial library uses interrupts that conflict
@@ -49,19 +48,6 @@ const char *sketchName = "single_sensor.ino";
 // Neither hardware serial nor AltSoftSerial require any modifications to
 // deal with interrupt conflicts.
 
-const int SonarData = 11;     // data  pin
-const int SonarTrigger = -1;   // Trigger pin
-const int8_t SonarPower = 22;   // excite (power) pin
-
-
-#if defined __AVR__
-// Set up a serial port for serial communication - in this case, using SoftwareSerial_ExtInts
-#include <SoftwareSerial_ExtInts.h>  // for the stream communication
-SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
-#endif
-
-
-
 #if defined ARDUINO_SAMD_ZERO
 // On an Arduino Zero or Feather M0, we'll create serial 3 on SERCOM2
 #include "wiring_private.h" // pinPeripheral() function
@@ -71,12 +57,22 @@ void SERCOM2_Handler()
     Serial3.IrqHandler();
 }
 HardwareSerial &sonarSerial = Serial3;
-#endif
 
-#if defined ARDUINO_SODAQ_AUTONOMO
+#elif defined ARDUINO_SODAQ_AUTONOMO
 // Serial3 is already defined on the Autonomo
 HardwareSerial &sonarSerial = Serial3;
+
+#else
+// Set up a serial port for serial communication - in this case, using SoftwareSerial_ExtInts
+#include <SoftwareSerial_ExtInts.h>  // for the stream communication
+const int SonarData = 11;     // data  pin
+SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
 #endif
+
+
+#include <sensors/MaxBotixSonar.h>
+const int SonarTrigger = -1;   // Trigger pin
+const int8_t SonarPower = 22;   // excite (power) pin
 
 // Create a new instance of the sonar sensor;
 MaxBotixSonar sonar(sonarSerial, SonarPower, SonarTrigger) ;
@@ -141,15 +137,12 @@ void setup()
     // Start the stream for the sonar
     sonarSerial.begin(9600);
 
-
-    #if defined __AVR__
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
     enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
     #endif
     #if defined NeoSWSerial_h
     enableInterrupt(SonarData, NeoSWSISR, CHANGE);
-    #endif
     #endif
 
     #if defined ARDUINO_SAMD_ZERO

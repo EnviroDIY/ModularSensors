@@ -137,11 +137,9 @@ MaximDS3231 ds3231(1);
 Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab");
 
 
-#if defined __AVR__
-// Set up a serial port for modbus communication - in this case, using AltSoftSerial
-#include <AltSoftSerial.h>
-AltSoftSerial modbusSerial;
-#endif
+// ==========================================================================
+//           Set up the serial port for MODBUS communication
+// ==========================================================================
 
 #if defined ARDUINO_SAMD_ZERO
 // On an Arduino Zero or Feather M0, we'll create serial 2 on SERCOM1
@@ -153,11 +151,15 @@ void SERCOM1_Handler()
     Serial2.IrqHandler();
 }
 HardwareSerial &modbusSerial = Serial2;
-#endif
 
-#if defined ARDUINO_SODAQ_AUTONOMO
+#elif defined ARDUINO_SODAQ_AUTONOMO
 // Serial2 is already defined on the Autonomo
 HardwareSerial &modbusSerial = Serial2;
+
+#else
+// For AVR, using AltSoftSerial
+#include <AltSoftSerial.h>
+AltSoftSerial modbusSerial;
 #endif
 
 // ==========================================================================
