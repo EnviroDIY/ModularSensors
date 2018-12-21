@@ -43,7 +43,7 @@ install:
       fi
     - pio update
 script:
-    - platformio ci --project-option="lib_ignore = RTCZero" --project-option="lib_ldf_mode = deep+" --board=mayfly  --board=megaatmega2560 --board=adafruit_feather_m0  --board=sodaq_autonomo
+    - platformio ci --project-option="lib_ldf_mode = deep+" --board=mayfly  --board=megaatmega2560 --board=adafruit_feather_m0  --board=sodaq_autonomo
 
 matrix:
     include:
