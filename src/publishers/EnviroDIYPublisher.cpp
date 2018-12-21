@@ -1,5 +1,5 @@
 /*
- *EnviroDIYSender.cpp
+ *EnviroDIYPublisher.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -8,7 +8,7 @@
  * http://data.enviroDIY.org
 */
 
-#include "EnviroDIYSender.h"
+#include "EnviroDIYPublisher.h"
 
 
 // ============================================================================
@@ -17,38 +17,38 @@
 
 // Constant values for post requests
 // I want to refer to these more than once while ensuring there is only one copy in memory
-const char *EnviroDIYSender::postEndpoint = "/api/data-stream/";
-const char *EnviroDIYSender::enviroDIYHost = "data.envirodiy.org";
-const int EnviroDIYSender::enviroDIYPort = 80;
-const char *EnviroDIYSender::tokenHeader = "\r\nTOKEN: ";
-// const unsigned char *EnviroDIYSender::cacheHeader = "\r\nCache-Control: no-cache";
-// const unsigned char *EnviroDIYSender::connectionHeader = "\r\nConnection: close";
-const char *EnviroDIYSender::contentLengthHeader = "\r\nContent-Length: ";
-const char *EnviroDIYSender::contentTypeHeader = "\r\nContent-Type: application/json\r\n\r\n";
+const char *EnviroDIYPublisher::postEndpoint = "/api/data-stream/";
+const char *EnviroDIYPublisher::enviroDIYHost = "data.envirodiy.org";
+const int EnviroDIYPublisher::enviroDIYPort = 80;
+const char *EnviroDIYPublisher::tokenHeader = "\r\nTOKEN: ";
+// const unsigned char *EnviroDIYPublisher::cacheHeader = "\r\nCache-Control: no-cache";
+// const unsigned char *EnviroDIYPublisher::connectionHeader = "\r\nConnection: close";
+const char *EnviroDIYPublisher::contentLengthHeader = "\r\nContent-Length: ";
+const char *EnviroDIYPublisher::contentTypeHeader = "\r\nContent-Type: application/json\r\n\r\n";
 
-const char *EnviroDIYSender::samplingFeatureTag = "{\"sampling_feature\":\"";
-const char *EnviroDIYSender::timestampTag = "\",\"timestamp\":\"";
+const char *EnviroDIYPublisher::samplingFeatureTag = "{\"sampling_feature\":\"";
+const char *EnviroDIYPublisher::timestampTag = "\",\"timestamp\":\"";
 
 
 // Constructor
-EnviroDIYSender::EnviroDIYSender(Logger& baseLogger,
+EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger,
                                  uint8_t sendEveryX, uint8_t sendOffset)
-  : dataSender(baseLogger, sendEveryX, sendOffset)
+  : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {}
-EnviroDIYSender::EnviroDIYSender(Logger& baseLogger,
+EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger,
                                  const char *registrationToken,
                                  const char *samplingFeatureUUID,
                                  uint8_t sendEveryX, uint8_t sendOffset)
-  : dataSender(baseLogger, sendEveryX, sendOffset)
+  : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
 // Destructor
-EnviroDIYSender::~EnviroDIYSender(){}
+EnviroDIYPublisher::~EnviroDIYPublisher(){}
 
 
-void EnviroDIYSender::setToken(const char *registrationToken)
+void EnviroDIYPublisher::setToken(const char *registrationToken)
 {
     _registrationToken = registrationToken;
     MS_DBG(F("Registration token set!"));
@@ -56,7 +56,7 @@ void EnviroDIYSender::setToken(const char *registrationToken)
 
 
 // Calculates how long the JSON will be
-uint16_t EnviroDIYSender::calculateJsonSize()
+uint16_t EnviroDIYPublisher::calculateJsonSize()
 {
     uint16_t jsonLength = 21;  // {"sampling_feature":"
     jsonLength += 36;  // sampling feature UUID
@@ -82,7 +82,7 @@ uint16_t EnviroDIYSender::calculateJsonSize()
 
 /*
 // Calculates how long the full post request will be, including headers
-uint16_t EnviroDIYSender::calculatePostSize()
+uint16_t EnviroDIYPublisher::calculatePostSize()
 {
     uint16_t postLength = 31;  // "POST /api/data-stream/ HTTP/1.1"
     postLength += 28;  // "\r\nHost: data.envirodiy.org"
@@ -100,7 +100,7 @@ uint16_t EnviroDIYSender::calculatePostSize()
 
 
 // This prints a properly formatted JSON for EnviroDIY to an Arduino stream
-void EnviroDIYSender::printSensorDataJSON(Stream *stream)
+void EnviroDIYPublisher::printSensorDataJSON(Stream *stream)
 {
     stream->print(samplingFeatureTag);
     stream->print(_baseLogger->getSamplingFeatureUUID());
@@ -126,7 +126,7 @@ void EnviroDIYSender::printSensorDataJSON(Stream *stream)
 
 // This prints a fully structured post request for EnviroDIY to the
 // specified stream.
-void EnviroDIYSender::printEnviroDIYRequest(Stream *stream)
+void EnviroDIYPublisher::printEnviroDIYRequest(Stream *stream)
 {
     // Stream the HTTP headers for the post request
     stream->print(postHeader);
@@ -150,8 +150,8 @@ void EnviroDIYSender::printEnviroDIYRequest(Stream *stream)
 // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
 // over that connection.
 // The return is the http status code of the response.
-// int16_t EnviroDIYSender::postDataEnviroDIY(void)
-int16_t EnviroDIYSender::sendData(Client *_outClient)
+// int16_t EnviroDIYPublisher::postDataEnviroDIY(void)
+int16_t EnviroDIYPublisher::sendData(Client *_outClient)
 {
     // Create a buffer for the portions of the request and response
     char tempBuffer[37] = "";

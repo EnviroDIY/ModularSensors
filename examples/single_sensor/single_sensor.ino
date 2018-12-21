@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.0
+This example sketch is written for ModularSensors library version 0.19.2
 
 This sketch is an example of getting data from a single sensor, in this case, a
 MaxBotix Ultrasonic Range Finder
@@ -23,6 +23,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <SensorBase.h>
 #include <VariableBase.h>
 
+// The library version this example was written for
+const char *libraryVersion = "0.19.2";
 // The name of this file
 const char *sketchName = "single_sensor.ino";
 
@@ -116,6 +118,10 @@ void setup()
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
+
+    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
+        Serial.println(F("WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT \
+        VERSION OF MODULAR SENSORS THAN WHAT YOU HAVE INSTALLED!!"));
 
     // Start the stream for the sonar
     sonarSerial.begin(9600);

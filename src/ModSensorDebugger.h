@@ -15,7 +15,7 @@
 #include <Arduino.h>
 
 // The current library version number
-#define MODULAR_SENSORS_VERSION "0.19.0"
+#define MODULAR_SENSORS_VERSION "0.19.2"
 
 #ifndef STANDARD_SERIAL_OUTPUT
     #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)

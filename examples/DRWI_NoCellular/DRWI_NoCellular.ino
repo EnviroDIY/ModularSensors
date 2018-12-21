@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.0
+This example sketch is written for ModularSensors library version 0.19.2
 
 This sketch is an example of logging data from a Decagon CTD-10 and a Campbell
 OBS 3+ to an SD card.
@@ -26,6 +26,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
+// The library version this example was written for
+const char *libraryVersion = "0.19.2";
 // The name of this file
 const char *sketchName = "DRWI_NoCellular.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -188,6 +190,10 @@ void setup()
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
+
+    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
+        Serial.println(F("WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT \
+        VERSION OF MODULAR SENSORS THAN WHAT YOU HAVE INSTALLED!!"));
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);

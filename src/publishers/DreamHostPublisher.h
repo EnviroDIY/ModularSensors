@@ -1,5 +1,5 @@
 /*
- *DreamHostSender.h
+ *DreamHostPublisher.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -8,31 +8,31 @@
 */
 
 // Header Guards
-#ifndef DreamHostSender_h
-#define DreamHostSender_h
+#ifndef DreamHostPublisher_h
+#define DreamHostPublisher_h
 
 // Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
-#include "dataSenderBase.h"
+#include "dataPublisherBase.h"
 
 
 // ============================================================================
 //  Functions for the SWRC Sensors DreamHost data receivers.
 // ============================================================================
 
-class DreamHostSender : public dataSender
+class DreamHostPublisher : public dataPublisher
 {
 
 public:
     // Constructor
-    DreamHostSender(Logger& baseLogger,
+    DreamHostPublisher(Logger& baseLogger,
                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    DreamHostSender(Logger& baseLogger, const char *URL,
+    DreamHostPublisher(Logger& baseLogger, const char *URL,
                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    virtual ~DreamHostSender();
+    virtual ~DreamHostPublisher();
 
     // Returns the data destination
     virtual String getEndpoint(void){return String(dreamhostHost);}

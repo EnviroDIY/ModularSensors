@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.0
+This example sketch is written for ModularSensors library version 0.19.2
 
 This sketch is an example of logging data to an SD card and sending the data to
 the EnviroDIY data portal.
@@ -26,6 +26,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
+// The library version this example was written for
+const char *libraryVersion = "0.19.2";
 // The name of this file
 const char *sketchName = "baro_rho_correction.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -487,8 +489,8 @@ Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 
-#include <senders/EnviroDIYSender.h>
-EnviroDIYSender EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
+#include <publishers/EnviroDIYPublisher.h>
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
 
 
 // ==========================================================================
@@ -527,6 +529,10 @@ void setup()
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
+
+    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
+        Serial.println(F("WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT \
+        VERSION OF MODULAR SENSORS THAN WHAT YOU HAVE INSTALLED!!"));
 
     // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);

@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.0
+This example sketch is written for ModularSensors library version 0.19.2
 
 This sketch is an example of printing data from multiple sensors using
 the modular sensor library.
@@ -25,6 +25,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <VariableArray.h>
 
 
+// The library version this example was written for
+const char *libraryVersion = "0.19.2";
 // The name of this file
 const char *sketchName = "modular_sensors.ino";
 
@@ -150,18 +152,9 @@ void setup()
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
 
-    // Start the stream for the modbus sensors
-    modbusSerial.begin(9600);
-
-    // Start the SoftwareSerial stream for the sonar
-    sonarSerial.begin(9600);
-    // Allow interrupts for software serial
-    #if defined SoftwareSerial_ExtInts_h
-        enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
-    #endif
-    #if defined NeoSWSerial_h
-        enableInterrupt(SonarData, NeoSWSISR, CHANGE);
-    #endif
+    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
+        Serial.println(F("WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT \
+        VERSION OF MODULAR SENSORS THAN WHAT YOU HAVE INSTALLED!!"));
 
     // Start the Real Time Clock
     rtc.begin();

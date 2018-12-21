@@ -45,7 +45,7 @@
 #define MAX_NUMBER_SENDERS 4
 
 
-class dataSender;  // Forward declaration
+class dataPublisher;  // Forward declaration
 
 
 // Defines the "Logger" Class
@@ -120,7 +120,7 @@ protected:
     VariableArray *_internalArray;
 
     // ===================================================================== //
-    // Public functions for internet and dataSenders
+    // Public functions for internet and dataPublishers
     // ===================================================================== //
 
 public:
@@ -132,7 +132,7 @@ public:
     bool syncRTC();
 
     // These tie the variables to their parent sensor
-    void registerDataSender(dataSender* sender);
+    void registerDataPublisher(dataPublisher* publisher);
     // Notifies attached variables of new values
     void sendDataToRemotes(void);
 
@@ -143,8 +143,8 @@ protected:
     // it is possible for no modem to be attached (and thus the pointer could
     // be null).  It is not possible to have a null reference.
 
-    // An array of all of the attached data senders
-    dataSender *dataSenders[MAX_NUMBER_SENDERS];
+    // An array of all of the attached data publishers
+    dataPublisher *dataPublishers[MAX_NUMBER_SENDERS];
 
     // ===================================================================== //
     // Public functions to access the clock in proper format and time zone

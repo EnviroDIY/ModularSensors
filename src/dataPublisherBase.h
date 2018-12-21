@@ -1,5 +1,5 @@
 /*
- *dataSenderBase.h
+ *dataPublisherBase.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -8,8 +8,8 @@
 */
 
 // Header Guards
-#ifndef dataSenderBase_h
-#define dataSenderBase_h
+#ifndef dataPublisherBase_h
+#define dataPublisherBase_h
 
 // Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
@@ -28,16 +28,16 @@
 #include "LoggerBase.h"
 #include "Client.h"
 
-class dataSender
+class dataPublisher
 {
 
 public:
 
     // Constructor - requires a logger modem
-    dataSender(Logger& baseLogger,
+    dataPublisher(Logger& baseLogger,
                uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     // Destructor
-    virtual ~dataSender();
+    virtual ~dataPublisher();
 
     // Returns the data destination
     virtual String getEndpoint(void) = 0;

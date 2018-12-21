@@ -1,5 +1,5 @@
 /*
- *ThingSpeakSender.h
+ *ThingSpeakPublisher.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -8,8 +8,8 @@
 */
 
 // Header Guards
-#ifndef ThingSpeakSender_h
-#define ThingSpeakSender_h
+#ifndef ThingSpeakPublisher_h
+#define ThingSpeakPublisher_h
 
 // Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
@@ -24,25 +24,25 @@
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
-#include "dataSenderBase.h"
+#include "dataPublisherBase.h"
 #include <PubSubClient.h>
 
 
 // ============================================================================
 //  Functions for the EnviroDIY data portal receivers.
 // ============================================================================
-class ThingSpeakSender : public dataSender
+class ThingSpeakPublisher : public dataPublisher
 {
 public:
     // Constructor
-    ThingSpeakSender(Logger& baseLogger,
+    ThingSpeakPublisher(Logger& baseLogger,
                      uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    ThingSpeakSender(Logger& baseLogger,
+    ThingSpeakPublisher(Logger& baseLogger,
                      const char *thingSpeakMQTTKey,
                      const char *thingSpeakChannelID,
                      const char *thingSpeakChannelKey,
                      uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    virtual ~ThingSpeakSender();
+    virtual ~ThingSpeakPublisher();
 
     // Returns the data destination
     virtual String getEndpoint(void){return String(mqttServer);}
