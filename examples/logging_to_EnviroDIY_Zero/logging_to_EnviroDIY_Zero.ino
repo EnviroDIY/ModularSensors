@@ -20,7 +20,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Include the base required libraries
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
-#include <wiring_private.h> // Needed for SAMD pinPeripheral() function
 #include <EnableInterrupt.h>  // for external and pin change interrupts
 
 
@@ -212,8 +211,8 @@ void setup()
     Serial.println(MODULAR_SENSORS_VERSION);
 
     if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
-        Serial.println(F("WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT \
-        VERSION OF MODULAR SENSORS THAN WHAT YOU HAVE INSTALLED!!"));
+        Serial.println(F(
+            "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
     // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);

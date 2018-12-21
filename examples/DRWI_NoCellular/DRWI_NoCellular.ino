@@ -192,8 +192,8 @@ void setup()
     Serial.println(MODULAR_SENSORS_VERSION);
 
     if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
-        Serial.println(F("WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT \
-        VERSION OF MODULAR SENSORS THAN WHAT YOU HAVE INSTALLED!!"));
+        Serial.println(F(
+            "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
