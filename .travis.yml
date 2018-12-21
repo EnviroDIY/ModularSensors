@@ -93,7 +93,7 @@ matrix:
           # Install serial libraries
           - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git
           - pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
-          - platformio ci --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial, SoftI2CMaster"  --project-option="lib_ldf_mode = deep+" --board=mayfly
+          - platformio ci --project-option="lib_ldf_mode = deep+" --board=mayfly
           # Uninstall serial libraries so they don't cache and mess up the SAMD compiler
           - pio lib -g uninstall AltSoftSerial
           - pio lib -g uninstall SoftwaterSerial_ExternalInts
@@ -102,4 +102,4 @@ matrix:
         - PLATFORMIO_CI_SRC=compile_tests/SAMD_all_sensors/
         - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
         script:
-          - platformio ci --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial, SoftI2CMaster"  --project-option="lib_ldf_mode = deep+" --board=adafruit_feather_m0
+          - platformio ci --project-option="lib_ldf_mode = deep+" --board=adafruit_feather_m0
