@@ -143,7 +143,8 @@ Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-12
 AltSoftSerial modbusSerial;
 #endif
 
-#if defined __SAMD21__
+#if defined ARDUINO_SAMD_ZERO
+// On an Arduino Zero or Feather M0, we'll create serial 2 on SERCOM1
 #include <wiring_private.h> // Needed for SAMD pinPeripheral() function
 Uart Serial2(&sercom1, 11, 10, SERCOM_RX_PAD_0, UART_TX_PAD_2);
 // Hand over the interrupts to the sercom port
@@ -151,8 +152,12 @@ void SERCOM1_Handler()
 {
     Serial2.IrqHandler();
 }
-// This is just a pointer to help me remember the port name
 HardwareSerial &modbusSerial = Serial2;
+#endif
+
+#if defined ARDUINO_SODAQ_AUTONOMO
+// Serial2 is already defined on the Autonomo
+HardwareSerial &sonarSerial = Serial2;
 #endif
 
 // ==========================================================================
@@ -339,6 +344,12 @@ void setup()
     // Start the stream for the modbus sensors
     modbusSerial.begin(9600);
 
+    #if defined ARDUINO_SAMD_ZERO
+    // Assign pins to SERCOM functionality
+    pinPeripheral(10, PIO_SERCOM);
+    pinPeripheral(11, PIO_SERCOM);
+    #endif
+
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
     digitalWrite(greenLED, LOW);
@@ -441,11 +452,19 @@ void loop()
         // Because RS485 adapters tend to "steal" current from the data pins
         // we will explicitly start and end the serial connection in the loop.
         modbusSerial.end();
+
+        #if defined AltSoftSerial_h
         // Explicitly set the pin modes for the AltSoftSerial pins to make sure they're low
         pinMode(5, OUTPUT);  // On a Mayfly, pin D5 is the AltSoftSerial Tx pin
         pinMode(6, OUTPUT);  // On a Mayfly, pin D6 is the AltSoftSerial Rx pin
         digitalWrite(5, LOW);
         digitalWrite(6, LOW);
+        #endif
+
+        #if defined ARDUINO_SAMD_ZERO
+        digitalWrite(10, LOW);
+        digitalWrite(11, LOW);
+        #endif
 
         // Stream the variable results from the complete set of variables to
         // the SD card

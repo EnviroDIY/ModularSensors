@@ -55,28 +55,26 @@ const int8_t SonarPower = 22;   // excite (power) pin
 
 
 #if defined __AVR__
-
+// Set up a serial port for modbus communication - in this case, using SoftwareSerial_ExtInts
 #include <SoftwareSerial_ExtInts.h>  // for the stream communication
 SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
-
-// #include <NeoSWSerial.h>  // for the stream communication
-// NeoSWSerial sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
-// void NeoSWSISR()
-// {
-//   NeoSWSerial::rxISR( *portInputRegister( digitalPinToPort( SonarData ) ) );
-// }
-
 #endif
 
 
 
-#if defined __SAMD21__
+#if defined ARDUINO_SAMD_ZERO
+// On an Arduino Zero or Feather M0, we'll create serial 3 on SERCOM2
 #include "wiring_private.h" // pinPeripheral() function
 Uart Serial3(&sercom2, 5, 2, SERCOM_RX_PAD_3, UART_TX_PAD_2);
 void SERCOM2_Handler()
 {
     Serial3.IrqHandler();
 }
+HardwareSerial &sonarSerial = Serial3;
+#endif
+
+#if defined ARDUINO_SODAQ_AUTONOMO
+// Serial3 is already defined on the Autonomo
 HardwareSerial &sonarSerial = Serial3;
 #endif
 
@@ -143,6 +141,8 @@ void setup()
     // Start the stream for the sonar
     sonarSerial.begin(9600);
 
+
+    #if defined __AVR__
     // Allow interrupts for software serial
     #if defined SoftwareSerial_ExtInts_h
     enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
@@ -150,8 +150,9 @@ void setup()
     #if defined NeoSWSerial_h
     enableInterrupt(SonarData, NeoSWSISR, CHANGE);
     #endif
+    #endif
 
-    #if defined __SAMD21G18A__
+    #if defined ARDUINO_SAMD_ZERO
     // Assign pins to SERCOM functionality
     pinPeripheral(2, PIO_SERCOM);
     pinPeripheral(5, PIO_SERCOM);
