@@ -70,7 +70,7 @@ SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, on
 
 
 
-#if defined __SAMD21G18A__
+#if defined __SAMD21__
 #include "wiring_private.h" // pinPeripheral() function
 Uart Serial3(&sercom2, 5, 2, SERCOM_RX_PAD_3, UART_TX_PAD_2);
 void SERCOM2_Handler()
