@@ -49,9 +49,12 @@ const char *sketchName = "single_sensor.ino";
 // Neither hardware serial nor AltSoftSerial require any modifications to
 // deal with interrupt conflicts.
 
-const int8_t SonarData = 11;     // data  pin
-const int8_t SonarTrigger = -1;   // Trigger pin
+const int SonarData = 11;     // data  pin
+const int SonarTrigger = -1;   // Trigger pin
 const int8_t SonarPower = 22;   // excite (power) pin
+
+
+#if defined __AVR__
 
 #include <SoftwareSerial_ExtInts.h>  // for the stream communication
 SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
@@ -62,6 +65,20 @@ SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, on
 // {
 //   NeoSWSerial::rxISR( *portInputRegister( digitalPinToPort( SonarData ) ) );
 // }
+
+#endif
+
+
+
+#if defined __SAMD21G18A__
+#include "wiring_private.h" // pinPeripheral() function
+Uart Serial3(&sercom2, 5, 2, SERCOM_RX_PAD_3, UART_TX_PAD_2);
+void SERCOM2_Handler()
+{
+    Serial3.IrqHandler();
+}
+HardwareSerial &sonarSerial = Serial3;
+#endif
 
 // Create a new instance of the sonar sensor;
 MaxBotixSonar sonar(sonarSerial, SonarPower, SonarTrigger) ;
@@ -91,9 +108,9 @@ const int8_t greenLED = 8;  // Pin for the green LED
 const int8_t redLED = 9;  // Pin for the red LED
 
 // Flashes to Mayfly's LED's
-void greenredflash(uint8_t numFlash = 4)
+void greenredflash(int numFlash = 4)
 {
-  for (uint8_t i = 0; i < numFlash; i++) {
+  for (int i = 0; i < numFlash; i++) {
     digitalWrite(greenLED, HIGH);
     digitalWrite(redLED, LOW);
     delay(75);

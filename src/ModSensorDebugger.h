@@ -18,7 +18,8 @@
 #define MODULAR_SENSORS_VERSION "0.19.2"
 
 #ifndef STANDARD_SERIAL_OUTPUT
-    #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
+    // #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
+    #if defined(SERIAL_PORT_USBVIRTUAL)
       // #define Serial SERIAL_PORT_USBVIRTUAL
       #define STANDARD_SERIAL_OUTPUT SERIAL_PORT_USBVIRTUAL
     #elif defined __AVR__
