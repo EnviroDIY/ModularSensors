@@ -46,7 +46,7 @@ install:
     - pio lib -g install https://github.com/EnviroDIY/SoftwareSerial_ExtInts.git
     - pio update
 script:
-    - platformio ci --project-option="lib_ldf_mode = deep+" --project-option="lib_ignore = RTCZero" --board=mayfly  --board=megaatmega2560
+    - platformio ci --project-option="lib_ldf_mode = deep+" --lib="AltSoftSerial" --lib="SoftwareSerial_ExtInts" --project-option="lib_ignore = RTCZero" --board=mayfly  --board=megaatmega2560
     - platformio ci --project-option="lib_ldf_mode = deep+" --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial, SoftI2CMaster" --board=adafruit_feather_m0  --board=sodaq_autonomo
 
 matrix:
