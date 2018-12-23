@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.17.2
+This example sketch is written for ModularSensors library version 0.19.2
 
 This sketch is an example of logging data from a Decagon CTD-10 and a Campbell
 OBS 3+ to an SD card.
@@ -26,6 +26,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
+// The library version this example was written for
+const char *libraryVersion = "0.19.2";
 // The name of this file
 const char *sketchName = "DRWI_NoCellular.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -121,7 +123,8 @@ VariableArray varArray(variableCount, variableList);
 
 // Create a new logger instance
 #include <LoggerBase.h>
-Logger logger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+
 
 // ==========================================================================
 // Device registration and sampling feature information
@@ -188,6 +191,10 @@ void setup()
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
 
+    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
+        Serial.println(F(
+            "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
+
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
     digitalWrite(greenLED, LOW);
@@ -202,15 +209,23 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
-    // Set pins for alerts and entering testing mode
-    logger.setAlertPin(greenLED);
-    logger.setTestingModePin(buttonPin);
+    // Attach the modem and information pins to the logger
+    dataLogger.setAlertPin(greenLED);
+    dataLogger.setTestingModePin(buttonPin);
+    dataLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Begin the logger
-    Serial.print("Battery: ");
-    Serial.println(getBatteryVoltage());
-    if (getBatteryVoltage() < 3.4) logger.begin(true);  // skip sensor set-up
-    else logger.begin();  // set up sensors
+    // At lowest battery level, skip sensor set-up
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
+    else dataLogger.begin();  // set up sensors
+
+    // At very good battery voltage, or with suspicious time stamp, sync the clock
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() > 3.9 ||
+        dataLogger.getNowEpoch() < 1545091200 ||  /*Before 12/18/2018*/
+        dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+        dataLogger.syncRTC();
 }
 
 
@@ -220,8 +235,8 @@ void setup()
 void loop()
 {
     // Log the data
-    Serial.print("Battery: ");
-    Serial.println(getBatteryVoltage());
-    if (getBatteryVoltage() < 3.4) logger.systemSleep();  // just go back to sleep
-    else logger.logData();  // log data
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() < 3.4) dataLogger.systemSleep();  // just go back to sleep
+    else if (getBatteryVoltage() < 3.7) dataLogger.logData();  // log data, but don't send
+    else dataLogger.logDataAndSend();  // send data
 }

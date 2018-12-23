@@ -1,5 +1,5 @@
 /*****************************************************************************
-logging_to_EnviroDIY.ino
+baro_rho_correction.ino
 Written By:  Sara Damiano (sdamiano@stroudcenter.org)
 Development Environment: PlatformIO
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.17.2
+This example sketch is written for ModularSensors library version 0.19.2
 
 This sketch is an example of logging data to an SD card and sending the data to
 the EnviroDIY data portal.
@@ -26,6 +26,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
+// The library version this example was written for
+const char *libraryVersion = "0.19.2";
 // The name of this file
 const char *sketchName = "baro_rho_correction.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -65,11 +67,8 @@ Variable *mayflySampNo = new ProcessorStats_SampleNumber(&mayfly, "12345678-abcd
 //    Modem/Internet connection options
 // ==========================================================================
 
-// Select your modem chip, comment out all of the others
-// #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
-// #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
-// #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
-#define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
+// Select your modem chip
+#define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
 
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
@@ -91,166 +90,6 @@ TinyGsm *tinyModem = new TinyGsm(ModemSerial);
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
-#if defined(TINY_GSM_MODEM_XBEE)
-// Describe the physical pin connection of your modem to your board
-const long ModemBaud = 9600;        // Communication speed of the modem
-const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
-const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
-const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
-// And create the wake and sleep methods for the modem
-// These can be functions of any type and must return a boolean
-// After enabling pin sleep, the sleep request pin is held LOW to keep the XBee on
-// Enable pin sleep in the setup function or using XCTU prior to connecting the XBee
-bool sleepFxn(void)
-{
-    if (modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
-    {
-        digitalWrite(modemSleepRqPin, HIGH);
-        digitalWrite(redLED, LOW);
-        return true;
-    }
-    else return true;
-}
-bool wakeFxn(void)
-{
-    if (modemVccPin >= 0)  // Turns on when power is applied
-        return true;
-    else if (modemSleepRqPin >= 0)
-    {
-        digitalWrite(modemSleepRqPin, LOW);
-        digitalWrite(redLED, HIGH);  // Because the XBee doesn't have any lights
-        return true;
-    }
-    else return true;
-}
-
-#elif defined(TINY_GSM_MODEM_ESP8266)
-// Describe the physical pin connection of your modem to your board
-const long ModemBaud = 57600;        // Communication speed of the modem
-const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemResetPin = -1;     // MCU pin connected to ESP8266's RSTB pin (-1 if unconnected)
-const int8_t espSleepRqPin = 13;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
-const int8_t modemSleepRqPin = 19;   // MCU pin used for wake from light sleep (-1 if not applicable)
-const int8_t espStatusPin = -1;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
-const int8_t modemStatusPin = -1;    // MCU pin used to read modem status (-1 if not applicable)
-const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
-// And create the wake and sleep methods for the modem
-// These can be functions of any type and must return a boolean
-bool sleepFxn(void)
-{
-    // Use this if you have an MCU pin connected to the ESP's reset pin to wake from deep sleep
-    if (modemResetPin >= 0)
-    {
-        digitalWrite(redLED, LOW);
-        return tinyModem->poweroff();
-    }
-    // Use this if you have GPIO16 connected to the reset pin to wake from deep sleep
-    // but no other MCU pin connected to the reset pin.
-    // NOTE:  This will NOT work nicely with things like "testingMode" and the
-    // initial 2-minute logging interval at boot up.
-    // if (loggingInterval > 1)
-    // {
-    //     uint32_t sleepSeconds = (((uint32_t)loggingInterval) * 60 * 1000) - 75000L;
-    //     String sleepCommand = String(sleepSeconds);
-    //     tinyModem->sendAT(F("+GSLP="), sleepCommand);
-    //     // Power down for 1 minute less than logging interval
-    //     // Better:  Calculate length of loop and power down for logging interval - loop time
-    //     return tinyModem->waitResponse() == 1;
-    // }
-    // Use this if you don't have access to the ESP8266's reset pin for deep sleep but you
-    // do have access to another GPIO pin for light sleep.  This also sets up another
-    // pin to view the sleep status.
-    else if (modemSleepRqPin >= 0 && modemStatusPin >= 0)
-    {
-        tinyModem->sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
-                          String(espStatusPin), F(","), modemStatusLevel);
-        bool success = tinyModem->waitResponse() == 1;
-        tinyModem->sendAT(F("+SLEEP=1"));
-        success &= tinyModem->waitResponse() == 1;
-        digitalWrite(redLED, LOW);
-        return success;
-    }
-    // Light sleep without the status pin
-    else if (modemSleepRqPin >= 0 && modemStatusPin < 0)
-    {
-        tinyModem->sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0"));
-        bool success = tinyModem->waitResponse() == 1;
-        tinyModem->sendAT(F("+SLEEP=1"));
-        success &= tinyModem->waitResponse() == 1;
-        digitalWrite(redLED, LOW);
-        return success;
-    }
-    else return true;  // DON'T go to sleep if we can't wake up!
-}
-bool wakeFxn(void)
-{
-    if (modemVccPin >= 0)  // Turns on when power is applied
-    {
-        digitalWrite(redLED, HIGH);  // Because the ESP8266 doesn't have any lights
-        return true;
-    }
-    else if (modemResetPin >= 0)
-    {
-        digitalWrite(modemResetPin, LOW);
-        delay(1);
-        digitalWrite(modemResetPin, HIGH);
-        digitalWrite(redLED, HIGH);
-        return true;
-    }
-    else if (modemSleepRqPin >= 0)
-    {
-        digitalWrite(modemSleepRqPin, LOW);
-        delay(1);
-        digitalWrite(modemSleepRqPin, HIGH);
-        digitalWrite(redLED, HIGH);
-        return true;
-    }
-    else return true;
-}
-
-#elif defined(TINY_GSM_MODEM_UBLOX)
-// Describe the physical pin connection of your modem to your board
-const long ModemBaud = 9600;         // Communication speed of the modem
-const int8_t modemVccPin = 23;       // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemSleepRqPin = 20;   // MCU pin used for modem sleep/wake request (-1 if not applicable)
-const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if not applicable)
-const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
-// And create the wake and sleep methods for the modem
-// These can be functions of any type and must return a boolean
-bool sleepFxn(void)
-{
-    if (modemVccPin >= 0 && modemSleepRqPin < 0)
-        return tinyModem->poweroff();
-    else if (modemSleepRqPin >= 0)
-    {
-        digitalWrite(modemSleepRqPin, LOW);
-        digitalWrite(redLED, HIGH);  // A light to watch to verify pulse timing
-        delay(1100);  // >1s pulse for power down
-        digitalWrite(modemSleepRqPin, HIGH);
-        digitalWrite(redLED, LOW);
-        return true;
-    }
-    else return true;  // DON'T go to sleep if we can't wake up!
-}
-bool wakeFxn(void)
-{
-    if (modemVccPin >= 0)  // Turns on when power is applied
-        return true;
-    else if(modemSleepRqPin >= 0)
-    {
-        digitalWrite(modemSleepRqPin, LOW);
-        digitalWrite(redLED, HIGH);
-        delay(200); // 0.15-3.2s pulse for wake on SARA R4/N4
-        // delayMicroseconds(65); // 50-80µs pulse for wake on SARA/LISA U2/G2
-        digitalWrite(modemSleepRqPin, HIGH);
-        digitalWrite(redLED, LOW);
-        return true;
-    }
-    else return true;
-}
-
-#else
 // Describe the physical pin connection of your modem to your board
 const long ModemBaud = 9600;         // Communication speed of the modem
 const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
@@ -271,7 +110,6 @@ bool sleepFxn(void)
     digitalWrite(redLED, LOW);
     return true;
 }
-#endif
 
 // And we still need the connection information for the network
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
@@ -281,16 +119,7 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 // Create the loggerModem instance
 #include <LoggerModem.h>
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-#if defined(TINY_GSM_MODEM_ESP8266)
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
-#elif defined(TINY_GSM_MODEM_XBEE)
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
-// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
-#elif defined(TINY_GSM_MODEM_UBLOX)
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
-#else
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
-#endif
 
 // Create the RSSI and signal strength variable objects for the modem and return
 // variable-type pointers to them
@@ -476,8 +305,8 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 VariableArray varArray(variableCount, variableList);
 
 // Create a new logger instance
-#include <LoggerEnviroDIY.h>
-LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+#include <LoggerBase.h>
+Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
@@ -486,6 +315,9 @@ LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &
 // ==========================================================================
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
+
+#include <publishers/EnviroDIYPublisher.h>
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
 
 
 // ==========================================================================
@@ -525,6 +357,10 @@ void setup()
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
 
+    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
+        Serial.println(F(
+            "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
+
     // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);
 
@@ -537,42 +373,8 @@ void setup()
     greenredflash();
 
     // Set up the sleep/wake pin for the modem and put its inital value as "off"
-    #if defined(TINY_GSM_MODEM_XBEE)
-        Serial.println(F("Setting up sleep mode on the XBee."));
-        pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, LOW);  // Turn it on to talk, just in case
-        if (tinyModem->commandMode())
-        {
-            tinyModem->sendAT(F("SM"),1);  // Pin sleep
-            tinyModem->waitResponse();
-            tinyModem->sendAT(F("DO"),0);  // Disable remote manager
-            tinyModem->waitResponse();
-            tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
-            tinyModem->waitResponse();
-            tinyModem->sendAT(F("SO"),200);  // For WiFi - Disassociate from AP for Deep Sleep
-            tinyModem->waitResponse();
-            tinyModem->writeChanges();
-            tinyModem->exitCommand();
-        }
-        digitalWrite(modemSleepRqPin, HIGH);  // back to sleep
-    #elif defined(TINY_GSM_MODEM_ESP8266)
-        if (modemSleepRqPin >= 0)
-        {
-            pinMode(modemSleepRqPin, OUTPUT);
-            digitalWrite(modemSleepRqPin, HIGH);
-        }
-        if (modemResetPin >= 0)
-        {
-            pinMode(modemResetPin, OUTPUT);
-            digitalWrite(modemResetPin, HIGH);
-        }
-    #elif defined(TINY_GSM_MODEM_UBLOX)
-        pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, HIGH);
-    #else
-        pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, LOW);
-    #endif
+    pinMode(modemSleepRqPin, OUTPUT);
+    digitalWrite(modemSleepRqPin, LOW);
 
     // Set the timezone and offsets
     // Logging in the given time zone
@@ -581,21 +383,24 @@ void setup()
     Logger::setTZOffset(timeZone);
 
     // Attach the modem and information pins to the logger
-    EnviroDIYLogger.attachModem(modem);
-    EnviroDIYLogger.setAlertPin(greenLED);
-    EnviroDIYLogger.setTestingModePin(buttonPin);
+    dataLogger.attachModem(modem);
+    dataLogger.setAlertPin(greenLED);
+    dataLogger.setTestingModePin(buttonPin);
 
-    // Enter the tokens for the connection with EnviroDIY
-    EnviroDIYLogger.setToken(registrationToken);
-    EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
-
-    // Begin the logger
+    // Update the mayfly to get the processor battery level
     mayfly.update();
-    Serial.print("Battery: ");
-    Serial.println(mayflyBatt->getValue());
-    // if (mayflyBatt->getValue() < 3.4) EnviroDIYLogger.begin(true);  // skip sensor set-up
-    // else if (mayflyBatt->getValue() < 3.7) EnviroDIYLogger.begin();  // set up sensors
-    // else EnviroDIYLogger.beginAndSync();  // set up sensors and synchronize clock with NIST
+    // Begin the logger
+    // At lowest battery level, skip sensor set-up
+    // Note:  Please change these battery voltages to match your battery
+    if (mayflyBatt->getValue() < 3.4) dataLogger.begin(true);
+    else dataLogger.begin();  // set up sensors
+
+    // At very good battery voltage, or with suspicious time stamp, sync the clock
+    // Note:  Please change these battery voltages to match your battery
+    if (mayflyBatt->getValue() > 3.9 ||
+        dataLogger.getNowEpoch() < 1545091200 ||  /*Before 12/18/2018*/
+        dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+        dataLogger.syncRTC();
 }
 
 
@@ -605,9 +410,8 @@ void setup()
 void loop()
 {
     // Log the data
-    Serial.print("Battery: ");
-    Serial.println(mayflyBatt->getValue());
-    if (mayflyBatt->getValue() < 3.4) EnviroDIYLogger.systemSleep();  // just go back to sleep
-    else if (mayflyBatt->getValue() < 3.7) EnviroDIYLogger.logData();  // log data, but don't send
-    else EnviroDIYLogger.logDataAndSend();  // send data
+    // Note:  Please change these battery voltages to match your battery
+    if (mayflyBatt->getValue() < 3.4) dataLogger.systemSleep();  // just go back to sleep
+    else if (mayflyBatt->getValue() < 3.7) dataLogger.logData();  // log data, but don't send
+    else dataLogger.logDataAndSend();  // send data
 }

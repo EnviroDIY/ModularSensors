@@ -6,13 +6,19 @@ This Arduino library gives environmental sensors a common interface of functions
 * Transmit that data wirelessly to a web server; and
 * Put the processor, sensors and all other peripherals to sleep between readings to conserve power.
 
-The ModularSensors library coordinates these tasks by "wrapping" native sensor libraries into a common interface of functions and returns. These [wrapper functions](https://en.wikipedia.org/wiki/Wrapper_function) serve to harmonize and simplify the process of iterating through and logging data from a diverse set of sensors and variables.
+The ModularSensors library coordinates these tasks by "wrapping" native sensor libraries into a common interface of functions and returns. These [wrapper functions](https://en.wikipedia.org/wiki/Wrapper_function) serve to harmonize and simplify the process of iterating through and logging data from a diverse set of sensors and variables.  Using the common sensor and variable interface, the library attempts to optimize measurement timing as much as possible to reduce logger "on-time" and power consumption.
 
-All of the documentation for this library is now available over in the [wiki](https://github.com/EnviroDIY/ModularSensors/wiki/Home).  Please, please, take the time to read it!
+We have a guide for getting started [right here](https://github.com/EnviroDIY/ModularSensors/wiki/Getting-Started).
 
 Although this library was written primarily for the [EnviroDIY Mayfly data logger board](https://envirodiy.org/mayfly/), it is also designed to be [compatible with a variety of other Arduino-based boards](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Compatibility) as well.
 
-The following sensors are currently supported:
+## Data can currently be sent to these web services:
+
+- [WikiWatershed/EnviroDIY Data Portal](https://github.com/EnviroDIY/ModularSensors/wiki/EnviroDIY-Portal-Functions)
+- [ThingSpeak](https://github.com/EnviroDIY/ModularSensors/wiki/ThingSpeak-Functions)
+
+## These sensors are currently supported:
+
 - [Apogee SQ-212: quantum light sensor, via TI ADS1115](https://github.com/EnviroDIY/ModularSensors/wiki/Apogee-SQ212)
 - [AOSong AM2315: humidity & temperature](https://github.com/EnviroDIY/ModularSensors/wiki/AOSong-AM2315)
 - [AOSong DHT: humidity & temperature](https://github.com/EnviroDIY/ModularSensors/wiki/AOSong-DHT)
@@ -31,6 +37,7 @@ The following sensors are currently supported:
 - [Maxim DS18: temperature](https://github.com/EnviroDIY/ModularSensors/wiki/Maxim-DS18)
 - [Maxim DS3231: real time clock](https://github.com/EnviroDIY/ModularSensors/wiki/Maxim-DS3231)
 - [Measurement Specialties MS5803: pressure and temperature](https://github.com/EnviroDIY/ModularSensors/wiki/Measurement-Specialties-MS5803)
+- [TI INA219: current, voltage, and power draw](https://github.com/EnviroDIY/ModularSensors/wiki/TI-INA219)
 - [Yosemitech: water quality sensors](https://github.com/EnviroDIY/ModularSensors/wiki/Yosemitech-Sensors)
     - Y502-A or Y504-A: Optical DO and Temperature
     - Y510-B: Optical Turbidity and Temperature
@@ -42,21 +49,15 @@ The following sensors are currently supported:
     - Y550-B: UV254/COD, Turbidity, and Temperature
     - Y4000 Multiparameter Sonde
 - [Zebra-Tech D-Opto: dissolved oxygen](https://github.com/EnviroDIY/ModularSensors/wiki/ZebraTech-DOpto)
-- [Processor Metadata Treated as Sensors](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Metadata)
+- [Processor Metrics: battery voltage, free RAM, sample count](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Metadata)
+
 
 
 ## Contributing
-Open an [issue](https://github.com/EnviroDIY/ModularSensors/issues) to suggest and discuss potential changes/additions.
+Open an [issue](https://github.com/EnviroDIY/ModularSensors/issues) to suggest and discuss potential changes/additions.  Feel free to open issues about any bugs you find or any sensors you would like to have added.
 
-For power contributors:
+If you would like to directly help with the coding development of the library, there are some [tips here](https://github.com/EnviroDIY/ModularSensors/wiki/Developer-Setup) on how to set up PlatformIO so you can fork the library and test programs while in the library repo.  Please _take time to familiarize yourself with the [terminology, classes and data structures](https://github.com/EnviroDIY/ModularSensors/wiki/Terminology) this library uses_.  This library is built to fully take advantage of Objecting Oriented Programing (OOP) approaches and is larger and more complicated than many Arduino libraries.  There is _extensive_ documentation in the wiki and an _enormous_ number of comments and debugging printouts in the code itself to help you get going.
 
-1. Fork it!
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request :D
-
-For those interested in creating wrapper functions for a new sensor, please contact us for guidance while we work on a guide. In brief, this library is built to fully take advantage of Objecting Oriented Programing (OOP) approaches. Each sensor is implemented as a subclass of the "Sensor" class contained in "SensorBase.h".  Each variable is separately implemented as a subclass of the "Variable" class contained in "VariableBase.h".  The variables are tied to the sensor using an "[Observer](https://en.wikipedia.org/wiki/Observer_pattern)" software pattern.
 
 
 ## License

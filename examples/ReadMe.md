@@ -18,32 +18,55 @@ To adjust any of these to work with your own sensor arrangements:
 13. Verify that the setup() and loop() functions are doing what you expect.
 14. Program your board!
 
-### single_sensor.ino
-This shows making use of the unified set of commands to print data from a MaxBotix ultrasonic range finder to the serial port.  It also shows creating a calculated variable which is the water depth.  
+### [single_sensor](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/single_sensor)
 
-### multisensor_print.ino
-This shows using an array of sensors to easily update all of them and print all results to the serial port.  This example calls on at least one of every single sensor available in this library.
+This shows making use of the unified set of commands to print data from a MaxBotix ultrasonic range finder to the serial port.  It also shows creating a calculated variable which is the water depth.
 
-### simple_logging.ino
-This calls the same group of sensors as in multisensor_print.ino but now records the data to a SD card instead of simply printing it to the serial port.
 
-### logging_to_EnviroDIY.ino
-This calls the same group of sensors as in multisensor_print.ino and simple_logging.ino and sends the data to the EnviroDIY data portal in addition to logging it to an SD card.
+### [multisensor_print](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/multisensor_print)
 
-### logging_to_EnviroDIY_Zero.ino
+This shows using an array of sensors to easily update all of them and print all results to the serial port.
+
+
+### [simple_logging](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/simple_logging)
+
+This calls the same group of sensors as in multisensor_print but now records the data to a SD card instead of simply printing it to the serial port.
+
+
+### [logging_to_EnviroDIY](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_EnviroDIY)
+
+This calls the same group of sensors again and sends the data to the EnviroDIY/WikiWatershed Data Portal in addition to logging it to an SD card.
+
+
+### [logging_to_EnviroDIY_Zero](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_EnviroDIY_Zero)
+
 Identical to logging_to_EnviroDIY, but written for an Adafruit Feather M0 (SAMD21) processor.
 
-### DWRI_CitSci.ino
-This is a simplified version of logging_to_EnviroDIY.ino using just the sensors and equipment standard to the DWRI Citizen Science grant.
 
-### DWRI_NoCellular.ino
+### [logging_to_EnviroDIY_Zero](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_ThingSpeak)
+    This sends data to ThingSpeak instead of the WikiWatershed Data Portal.
+
+
+### [DWRI_CitSci](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/)
+
+This is examples uses the sensors and equipment standard groups participating in the DWRI Citizen Science project with the Stroud Water Research Center..
+
+
+### [DWRI_NoCellular](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/DWRI_NoCellular)
+
 This is uses just the sensors and equipment standard to the DWRI Citizen Science grant for circumstances where there is no cellular signal.
 
-### baro_rho_correction.ino
-This example demonstrates how to work with calculated variables.
 
-### double_logger.ino
+### [baro_rho_correction](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/baro_rho_correction)
+
+This example demonstrates how to work with calculated variables and calculates water depth by correcting the total pressure measured by a MeaSpec MS5803 with the atmospheric pressure measured by a Bosch BME280 environmental sensor and the temperature measured by a Maxim DS18 temperature probe.
+
+
+### [double_logger](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger)
+
 This is a more complicated example using two different logger instances to log data at two different intervals, in this case, an AM3215 logging every minute, while checking the battery voltage only every 5 minutes.  This showcases both how to use two different logging instances and how to use some of the functions to set up your own logging loop rather than using the logData() function.
 
-### data_saving.ino
-This is another double logger example, but in this case, both loggers are going at the same interval and the only difference between the loggers is the list of variables.  There are two sets of variables, all coming from Yosemitech sensors.  Because each sensor outputs temperature and we don't want to waste cellular data sending out multiple nearly identical temperature values, we have one logger that logs every possible variable result to the SD card and another logger that sends only unique results to the EnviroDIY data portal.
+
+### [data_saving](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/)
+
+This is another double logger example, but in this case, both loggers are going at the same interval and the only difference between the loggers is the list of variables.  There are two sets of variables, all coming from Yosemitech sensors.  Because each sensor outputs temperature and we don't want to waste cellular data sending out multiple nearly identical temperature values, we have one logger that logs every possible variable result to the SD card and another logger that sends only unique results to the EnviroDIY data portal.  This example also shows how to stop power draw from an RS485 adapter with automatic flow detection.

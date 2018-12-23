@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.17.2
+This example sketch is written for ModularSensors library version 0.19.2
 
 This sketch is an example of getting data from a single sensor, in this case, a
 MaxBotix Ultrasonic Range Finder
@@ -23,6 +23,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <SensorBase.h>
 #include <VariableBase.h>
 
+// The library version this example was written for
+const char *libraryVersion = "0.19.2";
 // The name of this file
 const char *sketchName = "single_sensor.ino";
 
@@ -33,7 +35,6 @@ const char *sketchName = "single_sensor.ino";
 // ==========================================================================
 //    Maxbotix HRXL
 // ==========================================================================
-#include <sensors/MaxBotixSonar.h>
 
 // Define a serial port for receiving data - in this case, using software serial
 // Because the standard software serial library uses interrupts that conflict
@@ -47,19 +48,31 @@ const char *sketchName = "single_sensor.ino";
 // Neither hardware serial nor AltSoftSerial require any modifications to
 // deal with interrupt conflicts.
 
-const int8_t SonarData = 11;     // data  pin
-const int8_t SonarTrigger = -1;   // Trigger pin
-const int8_t SonarPower = 22;   // excite (power) pin
+#if defined ARDUINO_SAMD_ZERO
+// On an Arduino Zero or Feather M0, we'll create serial 3 on SERCOM2
+#include "wiring_private.h" // pinPeripheral() function
+Uart Serial3(&sercom2, 5, 2, SERCOM_RX_PAD_3, UART_TX_PAD_2);
+void SERCOM2_Handler()
+{
+    Serial3.IrqHandler();
+}
+HardwareSerial &sonarSerial = Serial3;
 
+#elif defined ARDUINO_SODAQ_AUTONOMO
+// Serial3 is already defined on the Autonomo
+HardwareSerial &sonarSerial = Serial3;
+
+#else
+// Set up a serial port for serial communication - in this case, using SoftwareSerial_ExtInts
 #include <SoftwareSerial_ExtInts.h>  // for the stream communication
+const int SonarData = 11;     // data  pin
 SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
+#endif
 
-// #include <NeoSWSerial.h>  // for the stream communication
-// NeoSWSerial sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
-// void NeoSWSISR()
-// {
-//   NeoSWSerial::rxISR( *portInputRegister( digitalPinToPort( SonarData ) ) );
-// }
+
+#include <sensors/MaxBotixSonar.h>
+const int SonarTrigger = -1;   // Trigger pin
+const int8_t SonarPower = 22;   // excite (power) pin
 
 // Create a new instance of the sonar sensor;
 MaxBotixSonar sonar(sonarSerial, SonarPower, SonarTrigger) ;
@@ -89,9 +102,9 @@ const int8_t greenLED = 8;  // Pin for the green LED
 const int8_t redLED = 9;  // Pin for the red LED
 
 // Flashes to Mayfly's LED's
-void greenredflash(uint8_t numFlash = 4)
+void greenredflash(int numFlash = 4)
 {
-  for (uint8_t i = 0; i < numFlash; i++) {
+  for (int i = 0; i < numFlash; i++) {
     digitalWrite(greenLED, HIGH);
     digitalWrite(redLED, LOW);
     delay(75);
@@ -117,6 +130,10 @@ void setup()
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
 
+    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
+        Serial.println(F(
+            "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
+
     // Start the stream for the sonar
     sonarSerial.begin(9600);
 
@@ -128,7 +145,7 @@ void setup()
     enableInterrupt(SonarData, NeoSWSISR, CHANGE);
     #endif
 
-    #if defined __SAMD21G18A__
+    #if defined ARDUINO_SAMD_ZERO
     // Assign pins to SERCOM functionality
     pinPeripheral(2, PIO_SERCOM);
     pinPeripheral(5, PIO_SERCOM);
