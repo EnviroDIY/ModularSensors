@@ -14,6 +14,23 @@
 // Constructors
 loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                          bool (*wakeFxn)(), bool (*sleepFxn)(),
+                         TinyGsmModem *inModem, Client *inClient)
+    : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES,
+             MODEM_WARM_UP_TIME_MS, MODEM_ATRESPONSE_TIME_MS, MODEM_MAX_SEARCH_TIME,
+             powerPin, statusPin, 1),
+      _statusLevel(statusLevel), _statusTime_ms(MODEM_STATUS_TIME_MS),
+      _disconnetTime_ms(MODEM_DISCONNECT_TIME_MS),
+      _apn(NULL), _ssid(NULL), _pwd(NULL), _lastNISTrequest(0)
+{
+    _tinyModem = inModem;
+    _tinyClient = inClient;
+    _wakeFxn = wakeFxn;
+    _sleepFxn = sleepFxn;
+    _modemName = "unspecified modem";
+    //_ssid2=NULL;
+}
+loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
+                         bool (*wakeFxn)(), bool (*sleepFxn)(),
                          TinyGsmModem *inModem, Client *inClient, const char *APN)
     : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES,
              MODEM_WARM_UP_TIME_MS, MODEM_ATRESPONSE_TIME_MS, MODEM_MAX_SEARCH_TIME,
@@ -27,6 +44,8 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     _wakeFxn = wakeFxn;
     _sleepFxn = sleepFxn;
     _modemName = "unspecified modem";
+    _apn2 = APN;
+    //_ssid2=NULL;
 }
 loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                          bool (*wakeFxn)(), bool (*sleepFxn)(),
@@ -43,10 +62,21 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     _wakeFxn = wakeFxn;
     _sleepFxn = sleepFxn;
     _modemName = "unspecified modem";
+    _ssid2 = ssid;
+    _pwd2 = pwd;
 }
 // Destructor
 loggerModem::~loggerModem(){}
 
+void loggerModem::setApn(const char *APN){ _apn = APN; _apn2 = APN;
+}
+void loggerModem::setWiFiId(const char *WiFiId) {_ssid = WiFiId; _ssid2= WiFiId;
+}
+void loggerModem::setWiFiPwd(const char *WiFiPwd){_pwd = WiFiPwd;_pwd2 = WiFiPwd;
+ }
+String loggerModem::getApn(void){ return _apn2; }
+String loggerModem::getWiFiId(void) {return _ssid2;}
+String loggerModem::getWiFiPwd(void){return _pwd2; }
 
 String loggerModem::getSensorName(void) { return _modemName; }
 
@@ -436,12 +466,14 @@ bool loggerModem::addSingleMeasurementResult(void)
             MS_MOD_DBG(F("Connecting to NIST daytime server to check connection strength..."));
             IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
             success &= _tinyClient->connect(ip, 37);
-            _tinyClient->print(F("Hi!"));  // Need to send something before connection is made
+            _tinyClient->print(F("!"));  // Need to send something before connection is made
             delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
             char junkBuff[5];
             _tinyClient->readBytes(junkBuff, 4);  // Dump the returned bytes
             // This should ensure we don't wait for more than 4 character time outs
             _lastNISTrequest = millis();
+            _tinyClient->stop();  // NIST will close on it's side, but need to stop
+            // because otherwise the Bee won't realize the socket has closed
         }
 
         // Get signal quality
@@ -824,7 +856,7 @@ uint32_t loggerModem::getNISTTime(void)
     {
         IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
         connectionMade = _tinyClient->connect(ip, 37);  // XBee's address lookup falters on time.nist.gov
-        _tinyClient->print(F("Hi!"));  // Need to send something before connection is made
+        _tinyClient->print(F("!"));  // Need to send something before connection is made
         delay(100); // Need this delay!  Can get away with 50, but 100 is safer.
     }
     else connectionMade = _tinyClient->connect("time.nist.gov", 37);

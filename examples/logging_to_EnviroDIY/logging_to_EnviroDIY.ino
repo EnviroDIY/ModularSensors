@@ -61,7 +61,7 @@ const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (m
 const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create and return the processor "sensor"
-#if 1 //defined(BOARD_NAME)
+#if 1 //defined(PROFILE_NAME)
 #define MFVERSION_SZ 10
  char MFVersion[MFVERSION_SZ] = MFVersion_DEF;//"v0.5b";
 #endif
@@ -296,10 +296,10 @@ bool sleepFxn(void)
 #endif
 
 // And we still need the connection information for the network
-#if !defined(BOARD_NAME)
-const char *apn_def = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
-const char *wifiId_def = "xxxxx";  // The WiFi access point, unnecessary for gprs
-const char *wifiPwd_def = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
+#if 1//!defined(PROFILE_NAME)
+const char *apn_def = APN_CDEF;  // The APN for the gprs connection, unnecessary for WiFi
+const char *wifiId_def = WIFIID_CDEF;  // The WiFi access point, unnecessary for gprs
+const char *wifiPwd_def = WIFIPWD_CDEF;  // The password for connecting to WiFi, unnecessary for gprs
 
 #endif
 // Create the loggerModem instance
@@ -308,7 +308,8 @@ const char *wifiPwd_def = "xxxxx";  // The password for connecting to WiFi, unne
 #if defined(TINY_GSM_MODEM_ESP8266)
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId_def, wifiPwd_def);
 #elif defined(TINY_GSM_MODEM_XBEE)
-loggerModem modemPhy(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId_def, wifiPwd_def);
+loggerModem modemPhy(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient);
+//loggerModem modemPhy(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId_def, wifiPwd_def);
 // loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn_def);
 #elif defined(TINY_GSM_MODEM_UBLOX)
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn_def);
@@ -866,7 +867,6 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
   digitalWrite(redLED, LOW);
 }
 
-
 // ==========================================================================
 // inihUnhandled 
 // For any Unhandled sections this is called
@@ -951,7 +951,7 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
         } 
     } else if (strcmp_P(section,COMMON_pm)== 0) {
         if (strcmp_P(name,LOGGER_ID_pm)== 0) {
-            strcpy(ps.msc.s.logger_id, value);
+            strcpy((char *)LOGGER_ID_ADDR, value);
         } else if (strcmp_P(name,LOGGING_INTERVAL_MIN_pm)== 0){
             //convert str to num
             long intervalMin;
@@ -985,17 +985,29 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
         }
     } else if (strcmp_P(section,NETWORK_pm)== 0) {
         if (strcmp_P(name,apn_pm)== 0) {
-            strcpy(ps.msn.s.apn, value);
+#define APN_ADDR ps.msn.s.apn
+            strcpy((char *)APN_ADDR, value);
+            modemPhy.setApn(APN_ADDR);
             Serial.print(F("APN :"));
-            Serial.println(value);
+            Serial.println((char *)APN_ADDR);
         } else if (strcmp_P(name,WiFiId_pm)== 0)  {
-            strcpy(ps.msn.s.WiFiId, value);
-            Serial.print(F("WiFiId :"));
-            Serial.println(value);
+#define WIFIID_ADDR ps.msn.s.WiFiId
+            Serial.print(F("WiFiId: was '"));
+            Serial.print(modemPhy.getWiFiId());
+            strcpy((char *)WIFIID_ADDR, value);
+            modemPhy.setWiFiId(WIFIID_ADDR);
+            //modemPhy.setWiFiId(value);
+            Serial.print(F("' now '"));
+            Serial.print(modemPhy.getWiFiId());
+            //Serial.print(WIFIID_ADDR);
+            Serial.println("'");
         } else if (strcmp_P(name,WiFiPwd_pm)== 0) {
-            strcpy(ps.msn.s.WiFiPwd, value);
-            Serial.print(F("WiFiPwd :"));
-            Serial.println(value);
+#define WIFIPWD_ADDR ps.msn.s.WiFiPwd
+            strcpy((char *)WIFIPWD_ADDR, value);
+            modemPhy.setWiFiPwd(WIFIPWD_ADDR);
+            Serial.print(F("WiFiPwd:'"));
+            Serial.print(WIFIPWD_ADDR);
+            Serial.println("'");
         } else {
             Serial.print(F("NETWORK tbd "));
             Serial.print(name);
@@ -1196,9 +1208,9 @@ void setup()
     Serial.print(F("ModularSensors vers "));
     Serial.println(MODULAR_SENSORS_VERSION);
     Serial.print(F("Current Time: "));
+    EnviroDIYLogger.beginRtc();
     Serial.println(EnviroDIYLogger.formatDateTime_ISO8601(EnviroDIYLogger.getNowEpoch()+(timeZone_def*60)) );
 
-    EnviroDIYLogger.beginRtc(); //need for systemSleep()
     do {
         LiBattPower_Unseable = ((PS_LBATT_UNUSEABLE_STATUS == mayflyPhy.isBatteryStatusAbove(true,PS_PWR_LOW_REQ))?true:false);
         if (LiBattPower_Unseable)

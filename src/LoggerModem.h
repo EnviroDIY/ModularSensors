@@ -90,6 +90,18 @@ class loggerModem : public Sensor
 // ==========================================================================//
 public:
     // Constructors
+    // Note:  The client for the TinyGSM Modem is needed as an input because
+    // the tiny GSM client class is a subclass of the unique modem class, not
+    // of the generalized modem class.  That means the client cannot be create
+    // until the specific modem is defined.  So the user must first create the
+    // specific modem in their sketch, create that modem's client, and then
+    // feed that client back in here.  The TinyGSM library has a bunch of
+    // typedef's in the TinyGsmClient.h that make this somewhat invisible to
+    // the user.
+        loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
+                bool (*wakeFxn)(), bool (*sleepFxn)(),
+                TinyGsmModem *inModem, Client *inClient);
+
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                 bool (*wakeFxn)(), bool (*sleepFxn)(),
                 TinyGsmModem *inModem, Client *inClient, const char *APN);
@@ -115,6 +127,12 @@ public:
     bool startSingleMeasurement(void) override;
     bool addSingleMeasurementResult(void) override;
 
+    void setApn(const char *APN);
+    void setWiFiId(const char *WiFiId);
+    void setWiFiPwd(const char *WiFiPwd);
+    String getApn(void);
+    String getWiFiId(void);
+    String getWiFiPwd(void);
 protected:
     // We override these because the modem can tell us if it's ready or not
 
@@ -174,6 +192,9 @@ private:
     const char *_apn;
     const char *_ssid;
     const char *_pwd;
+    String _apn2;
+    String _ssid2;
+    String _pwd2;
     uint32_t _lastNISTrequest;
     String _modemName;
 

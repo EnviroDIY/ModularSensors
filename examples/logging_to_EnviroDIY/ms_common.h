@@ -83,7 +83,7 @@ typedef struct
 } hw_boot_t;
 #define mHw_boot_t(p1) hw_boot_t p1 
 #else
-#define mHw_boot_t 
+#define mHw_boot_t(p1) 
 #endif //USE_PS_HW_BOOT
 //******
 // For extensibility - each structures data size (not including sz) can be defined at the beginning of the structure
@@ -121,9 +121,9 @@ typedef struct {
 #define MSCN_WIFI_ID_SZ 32
 #define MSCN_WIFI_PWD_SZ 32
 typedef struct {
-    uint8_t apn[MSCN_APN_SZ];     //32
-    uint8_t WiFiId[MSCN_WIFI_ID_SZ]; //32? 
-    uint8_t WiFiPwd[MSCN_WIFI_PWD_SZ]; //32??
+    char apn[MSCN_APN_SZ];     //32
+    char WiFiId[MSCN_WIFI_ID_SZ]; //32? 
+    char WiFiPwd[MSCN_WIFI_PWD_SZ]; //32??
     } msn01_t;
 #define MSN_ACTIVE msn01_t
 typedef struct {
@@ -169,4 +169,6 @@ typedef struct {
   mModularSensorsNetwork_t(msn);  
   mProvider_t(provider);
 } persistent_store_t;
+
+#define LOGGER_ID_ADDR ps.msc.s.logger_id
 #endif //ms_common_h

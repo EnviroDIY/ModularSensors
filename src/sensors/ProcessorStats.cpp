@@ -154,13 +154,18 @@ ps_Lbatt_status_t ProcessorStats::isBatteryStatusAbove(bool newBattReading, ps_p
 {
     ps_Lbatt_status_t lion_status;
     ps_Lbatt_status_t retValue;
+#ifdef ProcessorStats_DBG
+    float threshold_V;
+#define threshold_store(p1) threshold_V=p1
+#else
+#define threshold_store(p1)
+#endif 
 
     if (newBattReading) {
         getBatteryVm1(&LiIonBatt_V);
-        MS_DBG(F(" isBatteryStatusAbove Vnew="),LiIonBatt_V);
-    } else {
-        MS_DBG(F(" isBatteryStatusAbove Vold="),LiIonBatt_V);
-    }
+    } 
+
+    // determine expected status from thresholds
     if      (LiIonBatt_V>=PS_LBATT_HEAVY_V)  { lion_status=PS_LBATT_HEAVY_STATUS;
     }else if(LiIonBatt_V>=PS_LBATT_MEDIUM_V) { lion_status=PS_LBATT_MEDIUM_STATUS;
     }else if(LiIonBatt_V>=PS_LBATT_LOW_V)    { lion_status=PS_LBATT_LOW_STATUS;
@@ -168,25 +173,24 @@ ps_Lbatt_status_t ProcessorStats::isBatteryStatusAbove(bool newBattReading, ps_p
     }else                                    { lion_status=PS_LBATT_UNUSEABLE_STATUS;
     }
     retValue=lion_status;
+
+    //Check if meets the requested threshold/status
     switch (status_req){
-        case PS_PWR_LOW_REQ:    if (PS_LBATT_LOW_STATUS>lion_status)    {retValue=PS_LBATT_UNUSEABLE_STATUS;} break;
-        case PS_PWR_MEDIUM_REQ: if (PS_LBATT_MEDIUM_STATUS>lion_status) {retValue=PS_LBATT_UNUSEABLE_STATUS;} break;
-        case PS_PWR_HEAVY_REQ:  if (PS_LBATT_HEAVY_STATUS>lion_status)  {retValue=PS_LBATT_UNUSEABLE_STATUS;} break;
+        case PS_PWR_LOW_REQ:    if (PS_LBATT_LOW_STATUS>lion_status)    {retValue=PS_LBATT_UNUSEABLE_STATUS;} threshold_store(PS_LBATT_LOW_V);   break;
+        case PS_PWR_MEDIUM_REQ: if (PS_LBATT_MEDIUM_STATUS>lion_status) {retValue=PS_LBATT_UNUSEABLE_STATUS;} threshold_store(PS_LBATT_MEDIUM_V);break;
+        case PS_PWR_HEAVY_REQ:  if (PS_LBATT_HEAVY_STATUS>lion_status)  {retValue=PS_LBATT_UNUSEABLE_STATUS;} threshold_store(PS_LBATT_HEAVY_V); break;
         //PS_LBATT_REQUEST_STATUS: //implicit
         //PS_PWR_USEABLE_REQ: if (PS_PWR_BARELYUSEABLE_STATUS>=lion_status) retValue=PS_PWR_FAILED_TEST_STATUS; break; Implicit
         default: 
+           threshold_store(PS_LBATT_USEABLE_V);
            break; 
     }
 
-    #if 0
-    Serial.print(F("Req:"));
-    Serial.print(status_req);
-    Serial.print(F(" Status:"));
-    Serial.print(lion_status);
-    Serial.print(F(" retStatus:"));
-    Serial.println(retValue);
-    #endif
-    MS_DBG(F(" isBatteryStatusAbove="),retValue,F(" req="),status_req);
+    if (newBattReading) {
+        MS_DBG(F(" isBatteryStatusAbove rsp:"),retValue,F(" (Vnew="),LiIonBatt_V,F("V) req:"),status_req,F(" (above "),threshold_V,F("V)"));
+    } else {
+        MS_DBG(F(" isBatteryStatusAbove rsp:"),retValue,F(" (Vold="),LiIonBatt_V,F("V) req:"),status_req,F(" (above "),threshold_V,F("V)"));
+    }
     return retValue;
 }
 float ProcessorStats::getBatteryVm1(bool newBattReading) //sensorValue_battery
@@ -265,13 +269,10 @@ float ProcessorStats::getBatteryVm1(float *sensorValue_battery ) //sensorValue_b
 bool ProcessorStats::addSingleMeasurementResult(void)
 {
     // Get the battery voltage
-    //MS_DBG(F("Getting battery voltage"));
-    // assume early getBatteryVm1(&LiIonBatt_V);
+    // assume earlier getBatteryVm1(&LiIonBatt_V);
+    //MS_DBG(F("LiIonBatt_V="),LiIonBatt_V);
 
     verifyAndAddMeasurementResult(PROCESSOR_BATTERY_VAR_NUM, LiIonBatt_V);
-
-    // Used only for debugging - can be removed
-    MS_DBG(F("Getting Free RAM"));
 
     #if defined __AVR__
     extern int16_t __heap_start, *__brkval;
@@ -284,6 +285,7 @@ bool ProcessorStats::addSingleMeasurementResult(void)
     #else
     float sensorValue_freeRam = -9999;
     #endif
+    MS_DBG(F("Free RAM="),(unsigned int)sensorValue_freeRam);
 
     verifyAndAddMeasurementResult(PROCESSOR_RAM_VAR_NUM, sensorValue_freeRam);
 

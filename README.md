@@ -7,7 +7,7 @@ This version of the ModularSensors library is a rugged solar powered wireless da
 * Supports 12V/Modbus interface through Wingboard 
 * Stores the readings  to a SD memory card;
 * Transmit that data wirelessly to a web server; and
-* powers sensors when used, and powers the board down to a quiescent of about 3mA between usage.   
+* powers sensors when used, and powers the board down to a quiescent of about 3mA between useage.
 ## New for this fork   
 * Scales the rollout of multiple loggers with configuration .ini on the SD memory card
 * Manages the available LiIon battery power, with best management practices for power demand management,

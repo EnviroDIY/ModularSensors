@@ -17,7 +17,10 @@
 #define ProcessorStats_h
 
 // Debugging Statement
+#ifdef ProcessorStats_DBG
 #define DEBUGGING_SERIAL_OUTPUT Serial
+#endif //
+
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
