@@ -9,10 +9,12 @@ This version of the ModularSensors library is a rugged solar powered wireless da
 * Transmit that data wirelessly to a web server; and
 * powers sensors when used, and powers the board down to a quiescent of about 3mA between useage.
 ## New for this fork   
+* ONLY applies to ModularSensors\examples\logging_to_EnviroDIY
 * Scales the rollout of multiple loggers with configuration .ini on the SD memory card
 * Manages the available LiIon battery power, with best management practices for power demand management,
 * Tested for ruggedness/reliability with the Xbee WiFi S6 module (and future the Xbee LTE family and Xbee ISM band modules)
 
+To use, from platformio.ini open folder ModularSensors\examples\logging_to_EnviroDIY - and press icon "Build" (the tick mark)
 This is an open source fork of https://github.com/EnviroDIY/ModularSensors   
 EnviroDIY/ModularSensors is a comprehensive package that covers a number of boards and example usages. Its the recommended starting point for anybody new to ModularSensors, its assumed you read the excellent https://github.com/EnviroDIY/ModularSensors/blob/master/README.md
 There is an comprehensive manual on riparian monitoring using the Mayfly  https://www.envirodiy.org/mayfly-sensor-station-manual/
