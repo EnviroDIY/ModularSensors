@@ -25,10 +25,13 @@ Boards for riparian monitoring need solar & LiIon battery, wireless modules such
 Other more extensible boards based on the Arm Cortex M family will probably be supported over time -
  eg Adafruit Feather Alogger
 
-To use this fork, start with a working ModularSensors 0.17.02 or later built using PlatformIO and working with a Mayfly 0.5b
+To use this fork, and underestand the New features, at this point you need to have code famalirity with ModularSensor. I hope to make this simpler in the future.   
+Start with a working ModularSensors 0.17.02 or later built using PlatformIO and working with a Mayfly 0.5b
 EnviroDIY/ModularSensors/exampleslogging_to_EnviroDIY.ino
 https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_EnviroDIY
-and in the platformio.ini substitute
+Verify builds and dowloads to your Mayfly.
+
+Now in the platformio.ini substitute
 <blockquote><pre><code>
     ;EnviroDIY_ModularSensors@=0.17.2
     https://github.com/neilh10/ModularSensors#release1
@@ -36,8 +39,13 @@ and in the platformio.ini substitute
 ;    https://github.com/EnviroDIY/ModularSensors.git#develop   
 ;  ^^ Use this when if you want to pull from the develop branch    
     https://github.com/neilh10/Adafruit_INA219#envirodiy   
+    https://github.com/PaulStoffregen/AltSoftSerial.git
+    https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
 </code></pre></blockquote>
 
+Then delete the directories - ModularSensors\examples\logging_to_EnviroDIY\.piolibdeps  and .pioenvs to force areferesh.
+
+Finally build, and download. It now requires the SD card to have a Mayfly.ini https://github.com/neilh10/ModularSensors/wiki/Feature-INI-file
 This library is a volunteer open source effort by the author, and is built on the effort of a number of people who open sourced their effor with ModularSensors - thankyou thankyou. 
 As an open source addition to ModularSensors you are free to use at your own discretion, and at your own risk. I've provided some description of what tests I've run at 
 https://github.com/neilh10/ModularSensors/wiki/Testing-overview
