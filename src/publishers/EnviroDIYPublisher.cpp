@@ -130,6 +130,7 @@ void EnviroDIYPublisher::printEnviroDIYRequest(Stream *stream)
 {
     // Stream the HTTP headers for the post request
     stream->print(postHeader);
+    stream->print(postEndpoint);
     stream->print(HTTPtag);
     stream->print(hostHeader);
     stream->print(enviroDIYHost);
@@ -162,6 +163,7 @@ int16_t EnviroDIYPublisher::sendData(Client *_outClient)
     {
         // copy the initial post header into the tx buffer
         strcpy(txBuffer, postHeader);
+        strcat(txBuffer, postEndpoint);
         strcat(txBuffer, HTTPtag);
 
         // add the rest of the HTTP POST headers to the outgoing buffer
