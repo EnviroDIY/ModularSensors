@@ -49,8 +49,10 @@ ProcessorStats mayfly(MFVersion);
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
+
 // Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
+
 
 
 // ==========================================================================
@@ -62,11 +64,11 @@ Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mayfly),
     new ProcessorStats_FreeRam(&mayfly),
     new ProcessorStats_Batt(&mayfly),
-    new MaximDS3231_Temp(&ds3231),
-    // new YOUR_variableName_HERE(&)
+    new MaximDS3231_Temp(&ds3231)
 };
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
+
 // Create the VariableArray object
 VariableArray sensors(variableCount, variableList);
 

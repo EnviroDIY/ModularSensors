@@ -65,6 +65,7 @@ include/readme.txt
 .vscode
 
 # Other
+compile_tests/
 logger_test/
 YosemitechDO/
 LongTermLogger/

@@ -57,46 +57,114 @@ const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 i
 // Create and return the processor "sensor"
 const char *MFVersion = "v0.5b";
 ProcessorStats mayfly(MFVersion);
+
 // Create the battery voltage and free RAM variable objects for the processor and return variable-type pointers to them
+// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
 Variable *mayflyBatt = new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *mayflyRAM = new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *mayflySampNo = new ProcessorStats_SampleNumber(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
-//    Modem/Internet connection options
+//    Settings for Additional Serial Ports
 // ==========================================================================
 
-// Select your modem chip
-#define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
+// The modem and a number of sensors communicate over UART/TTL - often called "serial".
+// "Hardware" serial ports (automatically controlled by the MCU) are generally
+// the most accurate and should be configured and used for as many peripherals
+// as possible.  In some cases (ie, modbus communication) many sensors can share
+// the same serial port.
+
+#if not defined(ARDUINO_ARCH_SAMD)  // For AVR boards
+// Unfortunately, most AVR boards have only one or two hardware serial ports,
+// so we'll set up three types of extra software serial ports to use
+
+// AltSoftSerial by Paul Stoffregen (https://github.com/PaulStoffregen/AltSoftSerial)
+// is the most accurate software serial port for AVR boards.
+// AltSoftSerial can only be used on one set of pins on each board so only one
+// AltSoftSerial port can be used.
+// Not all AVR boards are supported by AltSoftSerial.
+#include <AltSoftSerial.h>
+AltSoftSerial altSoftSerial;
+#endif  // End software serial for avr boards
+
+
+// The SAMD21 has 6 "SERCOM" ports, any of which can be used for UART communication.
+// The "core" code for most boards defines one or more UART (Serial) ports with
+// the SERCOMs and uses others for I2C and SPI.  We can create new UART ports on
+// any available SERCOM.  The table below shows definitions for select boards.
+
+// Board =>   Arduino Zero       Adafruit Feather    Sodaq Boards
+// -------    ---------------    ----------------    ----------------
+// SERCOM0    Serial1 (D0/D1)    Serial1 (D0/D1)     Serial (D0/D1)
+// SERCOM1    Available          Available           Serial3 (D12/D13)
+// SERCOM2    Available          Available           I2C (A4/A5)
+// SERCOM3    I2C (D20/D21)      I2C (D20/D21)       SPI (D11/12/13)
+// SERCOM4    SPI (D21/22/23)    SPI (D21/22/23)     SPI1/Serial2
+// SERCOM5    EDBG/Serial        Available           Serial1
+
+
+#if defined(ARDUINO_ARCH_SAMD) \
+  && not defined(ARDUINO_SODAQ_AUTONOMO) && not defined(ARDUINO_SODAQ_EXPLORER) \
+  && not defined(ARDUINO_SODAQ_ONE) && not defined(ARDUINO_SODAQ_SARA) \
+  && not defined(ARDUINO_SODAQ_SFF)
+  #include <wiring_private.h> // Needed for SAMD pinPeripheral() function
+// Set up a 'new' UART using SERCOM1
+// The Rx will be on digital pin 11, which is SERCOM1's Pad #0
+// The Tx will be on digital pin 10, which is SERCOM1's Pad #2
+// NOTE:  SERCOM1 is undefinied on a "standard" Arduino Zero and many clones,
+//        but not all!  Please check the variant.cpp file for you individual board!
+//        Sodaq Autonomo's and Sodaq One's do NOT follow the 'standard' SERCOM definitions!
+Uart Serial2(&sercom1, 11, 10, SERCOM_RX_PAD_0, UART_TX_PAD_2);
+// Hand over the interrupts to the sercom port
+void SERCOM1_Handler()
+{
+    Serial2.IrqHandler();
+}
+#endif  // End hardware serial on SAMD21 boards
+
+
+// ==========================================================================
+//    Modem MCU Type and TinyGSM Client
+// ==========================================================================
+
+// Select your modem chip - this determines the exact commands sent to it
+#define TINY_GSM_MODEM_SIM800  // Select for a SIMCOM SIM800, SIM900, or variant thereof
 
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
 #include <TinyGsmClient.h>
 
- // Set the serial port for the modem - software serial can also be used.
-HardwareSerial &ModemSerial = Serial1;
+// Create a reference to the serial port for the modem
+HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(ModemSerial);
+TinyGsm *tinyModem = new TinyGsm(modemSerial);
 
 // Use this to create a modem if you want to spy on modem communication through
 // a secondary Arduino stream.  Make sure you install the StreamDebugger library!
 // https://github.com/vshymanskyy/StreamDebugger
 // #include <StreamDebugger.h>
-// StreamDebugger modemDebugger(Serial1, Serial);
+// StreamDebugger modemDebugger(modemSerial, Serial);
 // TinyGsm *tinyModem = new TinyGsm(modemDebugger);
 
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
+
+// ==========================================================================
+//    Specific Modem Pins and On-Off Methods
+// ==========================================================================
+
+// THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
 // Describe the physical pin connection of your modem to your board
 const long ModemBaud = 9600;         // Communication speed of the modem
 const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemSleepRqPin = 23;   // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if not applicable)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
-// And create the wake and sleep methods for the modem
+
+// Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
 bool wakeFxn(void)
 {
@@ -111,7 +179,12 @@ bool sleepFxn(void)
     return true;
 }
 
-// And we still need the connection information for the network
+
+// ==========================================================================
+//    Network Information and LoggerModem Object
+// ==========================================================================
+
+// Network connection information
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
@@ -131,48 +204,37 @@ Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-e
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
+
 // Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
+
 // Create the temperature variable object for the DS3231 and return a variable-type pointer to it
 Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
-//           Set up the serial port for MODBUS communication
-// ==========================================================================
-
-#if defined ARDUINO_SAMD_ZERO
-// On an Arduino Zero or Feather M0, we'll create serial 2 on SERCOM1
-#include <wiring_private.h> // Needed for SAMD pinPeripheral() function
-Uart Serial2(&sercom1, 11, 10, SERCOM_RX_PAD_0, UART_TX_PAD_2);
-// Hand over the interrupts to the sercom port
-void SERCOM1_Handler()
-{
-    Serial2.IrqHandler();
-}
-HardwareSerial &modbusSerial = Serial2;
-
-#elif defined ARDUINO_SODAQ_AUTONOMO
-// Serial2 is already defined on the Autonomo
-HardwareSerial &modbusSerial = Serial2;
-
-#else
-// For AVR, using AltSoftSerial
-#include <AltSoftSerial.h>
-AltSoftSerial modbusSerial;
-#endif
-
-// ==========================================================================
 //    Yosemitech Y504 Dissolved Oxygen Sensor
 // ==========================================================================
 #include <sensors/YosemitechY504.h>
+
+// Create a reference to the serial port for modbus
+// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
+#if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
+#else
+AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
+// NeoSWSerial &modbusSerial = neoSSerial1;  // For software serial if needed
+#endif
+
 byte y504ModbusAddress = 0x04;  // The modbus address of the Y504
 const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y504NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
+
 // Create and return the Yosemitech Y504 dissolved oxygen sensor object
 YosemitechY504 y504(y504ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y504NumberReadings);
+
 // Create the dissolved oxygen percent, dissolved oxygen concentration, and
 // temperature variable objects for the Y504 and return variable-type
 // pointers to them
@@ -185,13 +247,25 @@ Variable *y504Temp = new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-123
 //    Yosemitech Y511 Turbidity Sensor with Wiper
 // ==========================================================================
 #include <sensors/YosemitechY511.h>
+
+// Create a reference to the serial port for modbus
+// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
+// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
+// #else
+// AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
+// // NeoSWSerial &modbusSerial = neoSSerial1;  // For software serial if needed
+// #endif
+
 byte y511ModbusAddress = 0x1A;  // The modbus address of the Y511
 // const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 // const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y511NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
+
 // Create and return the Y511-A Turbidity sensor object
 YosemitechY511 y511(y511ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y511NumberReadings);
+
 // Create the turbidity and temperature variable objects for the Y511 and return variable-type pointers to them
 Variable *y511Turb = new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *y511Temp = new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab");
@@ -201,14 +275,27 @@ Variable *y511Temp = new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-123
 //    Yosemitech Y514 Chlorophyll Sensor
 // ==========================================================================
 #include <sensors/YosemitechY514.h>
+
+// Create a reference to the serial port for modbus
+// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
+// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
+// #else
+// AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
+// // NeoSWSerial &modbusSerial = neoSSerial1;  // For software serial if needed
+// #endif
+
 byte y514ModbusAddress = 0x14;  // The modbus address of the Y514
 // const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 // const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y514NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
+
 // Create and return the Y514 chlorophyll sensor object
 YosemitechY514 y514(y514ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y514NumberReadings);
+
 // Create the chlorophyll concentration and temperature variable objects for the Y514 and return variable-type pointers to them
+// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
 Variable *y514Chloro = new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *y514Temp = new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab");
 
@@ -217,13 +304,25 @@ Variable *y514Temp = new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-123
 //    Yosemitech Y520 Conductivity Sensor
 // ==========================================================================
 #include <sensors/YosemitechY520.h>
+
+// Create a reference to the serial port for modbus
+// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
+// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
+// #else
+// AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
+// // NeoSWSerial &modbusSerial = neoSSerial1;  // For software serial if needed
+// #endif
+
 byte y520ModbusAddress = 0x20;  // The modbus address of the Y520
 // const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 // const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y520NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
+
 // Create and return the Y520 conductivity sensor object
 YosemitechY520 y520(y520ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y520NumberReadings);
+
 // Create the specific conductance and temperature variable objects for the Y520 and return variable-type pointers to them
 Variable *y520Cond = new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab");
@@ -323,6 +422,13 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 // ==========================================================================
 void setup()
 {
+    // Wait for USB connection to be established by PC
+    // NOTE:  Only use this when debugging - if not connected to a PC, this
+    // will prevent the script from starting
+    #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA32U4)
+      while (!SerialUSB && (millis() < 10000)){}
+    #endif
+
     // Start the primary serial connection
     Serial.begin(serialBaud);
 
@@ -341,12 +447,12 @@ void setup()
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
     // Start the serial connection with the modem
-    ModemSerial.begin(ModemBaud);
+    modemSerial.begin(ModemBaud);
 
     // Start the stream for the modbus sensors
     modbusSerial.begin(9600);
 
-    #if defined ARDUINO_SAMD_ZERO
+    #if defined ARDUINO_ARCH_SAMD
     // Assign pins to SERCOM functionality
     pinPeripheral(10, PIO_SERCOM);
     pinPeripheral(11, PIO_SERCOM);
