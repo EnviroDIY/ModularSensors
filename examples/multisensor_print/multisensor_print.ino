@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.2
+This example sketch is written for ModularSensors library version 0.19.3
 
 This sketch is an example of printing data from multiple sensors using
 the modular sensor library.
@@ -26,7 +26,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 
 // The library version this example was written for
-const char *libraryVersion = "0.19.2";
+const char *libraryVersion = "0.19.3";
 // The name of this file
 const char *sketchName = "modular_sensors.ino";
 

@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.2
+This example sketch is written for ModularSensors library version 0.19.3
 
 This sketch is an example of logging data to an SD card and sending the data to
 the EnviroDIY data portal via a AtSAMD21 board, such as an Arduino Zero or Feather M0.
@@ -27,7 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.19.2";
+const char *libraryVersion = "0.19.3";
 // The name of this file
 const char *sketchName = "logging_to_EnviroDIY_Zero.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card

@@ -30,7 +30,7 @@ https://github.com/EnviroDIY/ModularSensors/commit/7d0d15ae5bc6dddf13adbd735032e
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.19.2";
+const char *libraryVersion = "0.19.3";
 // The name of this file
 const char *sketchName = "AnthonyTest2.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
