@@ -18,11 +18,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 #define DreamHostPortalRX "xxxx"
 
-#if defined(ARDUINO_SODAQ_AUTONOMO) || defined(ARDUINO_SODAQ_EXPLORER) \
-  || defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_SARA) \
-  || defined(ARDUINO_SODAQ_SFF)
-    #define ENABLE_SERIAL2
-#endif
 // ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
