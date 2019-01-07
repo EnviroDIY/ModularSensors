@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.2
+This example sketch is written for ModularSensors library version 0.19.3
 
 This sketch is an example of printing data from multiple sensors using
 the modular sensor library.
@@ -26,7 +26,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 
 // The library version this example was written for
-const char *libraryVersion = "0.19.2";
+const char *libraryVersion = "0.19.3";
 // The name of this file
 const char *sketchName = "modular_sensors.ino";
 
@@ -49,6 +49,7 @@ ProcessorStats mayfly(MFVersion);
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
+
 // Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
 
@@ -62,11 +63,11 @@ Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mayfly),
     new ProcessorStats_FreeRam(&mayfly),
     new ProcessorStats_Batt(&mayfly),
-    new MaximDS3231_Temp(&ds3231),
-    // new YOUR_variableName_HERE(&)
+    new MaximDS3231_Temp(&ds3231)
 };
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
+
 // Create the VariableArray object
 VariableArray sensors(variableCount, variableList);
 

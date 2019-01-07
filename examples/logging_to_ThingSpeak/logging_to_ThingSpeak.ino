@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.2
+This example sketch is written for ModularSensors library version 0.19.3
 
 This sketch is an example of logging data to an SD card and sending the data to
 ThingSpeak.
@@ -27,7 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.19.2";
+const char *libraryVersion = "0.19.3";
 // The name of this file
 const char *sketchName = "logging_to_ThingSpeak.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -60,42 +60,52 @@ ProcessorStats mayfly(MFVersion);
 
 
 // ==========================================================================
-//    Modem/Internet connection options
+//    Modem MCU Type and TinyGSM Client
 // ==========================================================================
 
-// Select your modem chip, comment out all of the others
+// Select your modem chip - this determines the exact commands sent to it
 #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
 #include <TinyGsmClient.h>
 
- // Set the serial port for the modem - software serial can also be used.
-HardwareSerial &ModemSerial = Serial1;
+// Create a reference to the serial port for the modem
+// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
+HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
+// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
+// NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(ModemSerial);
+TinyGsm *tinyModem = new TinyGsm(modemSerial);
 
 // Use this to create a modem if you want to spy on modem communication through
 // a secondary Arduino stream.  Make sure you install the StreamDebugger library!
 // https://github.com/vshymanskyy/StreamDebugger
 // #include <StreamDebugger.h>
-// StreamDebugger modemDebugger(Serial1, Serial);
+// StreamDebugger modemDebugger(modemSerial, Serial);
 // TinyGsm *tinyModem = new TinyGsm(modemDebugger);
 
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
+
+// ==========================================================================
+//    Specific Modem Pins and On-Off Methods
+// ==========================================================================
+
+// This should work with most ESP8266 breakouts
 // Describe the physical pin connection of your modem to your board
 const long ModemBaud = 57600;        // Communication speed of the modem
 const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemResetPin = -1;     // MCU pin connected to ESP8266's RSTB pin (-1 if unconnected)
+const int8_t modemResetPin = -1;     // MCU pin connected to ESP8266's RSTB/GPIO16 pin (-1 if unconnected)
 const int8_t espSleepRqPin = 13;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
 const int8_t modemSleepRqPin = 19;   // MCU pin used for wake from light sleep (-1 if not applicable)
 const int8_t espStatusPin = -1;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
 const int8_t modemStatusPin = -1;    // MCU pin used to read modem status (-1 if not applicable)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
-// And create the wake and sleep methods for the modem
+
+// Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
 bool sleepFxn(void)
 {
@@ -169,7 +179,13 @@ bool wakeFxn(void)
     else return true;
 }
 
-// And we still need the connection information for the network
+
+// ==========================================================================
+//    Network Information and LoggerModem Object
+// ==========================================================================
+
+// Network connection information
+const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
 
@@ -226,21 +242,22 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 //    The array that contains all variables to be logged
 // ==========================================================================
 #include <VariableArray.h>
+
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
-    new CampbellOBS3_Turbidity(&osb3low, "01200000-abcd-1234-efgh-1234567890ab", "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "01400000-abcd-1234-efgh-1234567890ab", "TurbHigh"),
-    new DecagonCTD_Cond(&ctd, "01900000-abcd-1234-efgh-1234567890ab"),
-    new DecagonCTD_Temp(&ctd, "02000000-abcd-1234-efgh-1234567890ab"),
-    new DecagonCTD_Depth(&ctd, "02100000-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_Batt(&mayfly, "07700000-abcd-1234-efgh-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "07800000-abcd-1234-efgh-1234567890ab"),
-    new Modem_RSSI(&modem, "07900000-abcd-1234-efgh-1234567890ab"),
-    // new YOUR_variableName_HERE(&)
+    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
+    new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab")
 };
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
+
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
 
@@ -323,7 +340,7 @@ void setup()
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
     // Start the serial connection with the modem
-    ModemSerial.begin(ModemBaud);
+    modemSerial.begin(ModemBaud);
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);

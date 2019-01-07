@@ -1,8 +1,8 @@
 // ==========================================================================
-//    Modem/Internet connection options
+//    Modem MCU Type and TinyGSM Client
 // ==========================================================================
 
-// Select your modem chip
+// Select your modem chip - this determines the exact commands sent to it
 #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
 // #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
 
@@ -10,18 +10,18 @@
 // This include must be included below the define of the modem name!
 #include <TinyGsmClient.h>
 
- // Set the serial port for the modem - software serial can also be used.
-HardwareSerial &ModemSerial = Serial1;
+// Create a reference to the serial port for the modem
+HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
 // Create a variable for the modem baud rate - this will be used in the begin function for the port
 const long ModemBaud = 9600;  // SARA-U201 default seems to be 9600
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
-// TinyGsm *tinyModem = new TinyGsm(ModemSerial);
+// TinyGsm *tinyModem = new TinyGsm(modemSerial);
 
 // Use this if you want to spy on modem communication
 #include <StreamDebugger.h>
-StreamDebugger modemDebugger(Serial1, Serial);
+StreamDebugger modemDebugger(modemSerial, Serial);
 TinyGsm *tinyModem = new TinyGsm(modemDebugger);
 
 // Create a new TCP client on that modem and return a pointer to it
@@ -33,7 +33,7 @@ const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request
 const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 
-// And we still need the connection information for the network
+// Network connection information
 const char *apn = "hologram";  // The APN for the gprs connection, unnecessary for WiFi
 
 void setup()

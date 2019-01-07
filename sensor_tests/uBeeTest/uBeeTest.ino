@@ -1,8 +1,8 @@
 // ==========================================================================
-//    Modem/Internet connection options
+//    Modem MCU Type and TinyGSM Client
 // ==========================================================================
 
-// Select your modem chip
+// Select your modem chip - this determines the exact commands sent to it
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
 #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
@@ -12,18 +12,18 @@
 // This include must be included below the define of the modem name!
 #include <TinyGsmClient.h>
 
- // Set the serial port for the modem - software serial can also be used.
-HardwareSerial &ModemSerial = Serial1;
+// Create a reference to the serial port for the modem
+HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
 // Create a variable for the modem baud rate - this will be used in the begin function for the port
 const long ModemBaud = 9600;  // SARA-U201 default seems to be 9600
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
-// TinyGsm *tinyModem = new TinyGsm(ModemSerial);
+// TinyGsm *tinyModem = new TinyGsm(modemSerial);
 
 // Use this if you want to spy on modem communication
 #include <StreamDebugger.h>
-StreamDebugger modemDebugger(Serial1, Serial);
+StreamDebugger modemDebugger(modemSerial, Serial);
 TinyGsm *tinyModem = new TinyGsm(modemDebugger);
 
 // Create a new TCP client on that modem and return a pointer to it
@@ -54,7 +54,7 @@ bool sleepFxn(void)
     return tinyModem->poweroff();
 }
 
-// And we still need the connection information for the network
+// Network connection information
 const char *apn = "hologram";  // The APN for the gprs connection, unnecessary for WiFi
 
 void setup()

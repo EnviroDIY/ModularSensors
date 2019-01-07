@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.2
+This example sketch is written for ModularSensors library version 0.19.3
 
 This sketch is an example of logging data from a Decagon CTD-10 and a Campbell
 OBS 3+ to an SD card.
@@ -27,7 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.19.2";
+const char *libraryVersion = "0.19.3";
 // The name of this file
 const char *sketchName = "DRWI_NoCellular.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -58,10 +58,12 @@ const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 i
 const char *MFVersion = "v0.5b";
 ProcessorStats mayfly(MFVersion);
 
+
 // ==========================================================================
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
+
 // Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
 
@@ -93,10 +95,12 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OB
 //    Decagon CTD Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
 #include <sensors/DecagonCTD.h>
+
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const uint8_t CTDnumberReadings = 6;  // The number of readings to average
 const int8_t SDI12Data = 7;  // The pin the CTD is attached to
 const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+
 // Create and return the Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 
@@ -105,6 +109,7 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 //    The array that contains all variables to be logged
 // ==========================================================================
 #include <VariableArray.h>
+
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
@@ -114,10 +119,11 @@ Variable *variableList[] = {
     new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
     new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab")
 };
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
+
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
 

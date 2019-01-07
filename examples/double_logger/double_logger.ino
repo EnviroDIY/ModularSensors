@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.2
+This example sketch is written for ModularSensors library version 0.19.3
 
 This sketch is an example of logging data from different variables at two
 different logging intervals.  This example uses more of the manual functions
@@ -30,7 +30,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.19.2";
+const char *libraryVersion = "0.19.3";
 // The name of this file
 const char *sketchName = "logger_test.ino";
 // Logger ID - since it's the same logger device, we only need one
@@ -63,10 +63,10 @@ ProcessorStats mayfly(MFVersion);
 
 
 // ==========================================================================
-//    Modem/Internet connection options
+//    Modem MCU Type and TinyGSM Client
 // ==========================================================================
 
-// Select your modem chip
+// Select your modem chip - this determines the exact commands sent to it
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
 // #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
@@ -76,14 +76,14 @@ ProcessorStats mayfly(MFVersion);
 // This include must be included below the define of the modem name!
 #include <TinyGsmClient.h>
 
- // Set the serial port for the modem - software serial can also be used.
-HardwareSerial &ModemSerial = Serial1;
+// Create a reference to the serial port for the modem
+HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
 // Create a variable for the modem baud rate - this will be used in the begin function for the port
 const long ModemBaud = 9600;
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(ModemSerial);
+TinyGsm *tinyModem = new TinyGsm(modemSerial);
 
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
@@ -94,7 +94,7 @@ const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request
 const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 
-// And create the wake and sleep methods for the modem
+// Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
 bool wakeFxn(void)
 {
@@ -109,7 +109,7 @@ bool sleepFxn(void)
     return true;
 }
 
-// And we still need the connection information for the network
+// Network connection information
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
@@ -146,7 +146,6 @@ AOSongAM2315 am2315(I2CPower);
 Variable *variableList_at1min[] = {
     new AOSongAM2315_Humidity(&am2315),
     new AOSongAM2315_Temp(&am2315)
-    // new YOUR_variableName_HERE(&)
 };
 // Count up the number of pointers in the 1-minute array
 int variableCount1min = sizeof(variableList_at1min) / sizeof(variableList_at1min[0]);
@@ -161,7 +160,6 @@ Variable *variableList_at5min[] = {
     new MaximDS3231_Temp(&ds3231),
     new ProcessorStats_Batt(&mayfly),
     new ProcessorStats_FreeRam(&mayfly)
-    // new YOUR_variableName_HERE(&)
 };
 // Count up the number of pointers in the 5-minute array
 int variableCount5min = sizeof(variableList_at5min) / sizeof(variableList_at5min[0]);
@@ -213,7 +211,7 @@ void setup()
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
     // Start the serial connection with the modem
-    ModemSerial.begin(ModemBaud);
+    modemSerial.begin(ModemBaud);
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
