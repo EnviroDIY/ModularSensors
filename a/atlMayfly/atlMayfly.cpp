@@ -30,7 +30,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.19.2";
+const char *libraryVersion = "0.19.3";
 // The name of this file
 const char *sketchName = "atlMayfly.cpp";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -1071,8 +1071,6 @@ void setup()
     Serial.print(MFVersion);
     Serial.print(F(" Logger:"));
     Serial.println(LoggerID_def);
-    Serial.print(F("ModularSensors vers "));
-    Serial.println(MODULAR_SENSORS_VERSION);
     Serial.print(F("Current Time: "));
     Serial.println(Logger::formatDateTime_ISO8601(dataLogger.getNowEpoch()+(timeZone_def*60)) );
 
@@ -1102,12 +1100,14 @@ void setup()
     MS_DBG(F("BatV="),mayflyPhy.getBatteryVm1(false));
 
     Serial.print(F("Using ModularSensors Library version "));
-    Serial.println(MODULAR_SENSORS_VERSION);
+    Serial.print(MODULAR_SENSORS_VERSION);
 
-    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
-        Serial.println(F(
-            "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
-
+    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion)) {
+        Serial.print(F(
+            "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS :"));
+        Serial.print(libraryVersion);
+    }
+    Serial.println();
     // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);
 
