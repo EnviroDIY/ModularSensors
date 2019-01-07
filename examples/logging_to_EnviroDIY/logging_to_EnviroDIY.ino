@@ -54,9 +54,9 @@ const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
 
-// Create and return the processor "sensor"
-const char *MFVersion = "v0.5b";
-ProcessorStats mayfly(MFVersion);
+// Create and return the main processor chip "sensor" - for general metadata
+const char *mcuBoardVersion = "v0.5b";
+ProcessorStats mcuBoard(mcuBoardVersion);
 
 
 // ==========================================================================
@@ -99,10 +99,10 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 #define USE_XBEE_WIFI  // If you're using a S6B wifi XBee
 // Describe the physical pin connection of your modem to your board
 const long ModemBaud = 9600;        // Communication speed of the modem
+const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
 const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
-const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -169,9 +169,9 @@ MaximDS3231 ds3231(1);
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
-    new ProcessorStats_SampleNumber(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab")
@@ -219,22 +219,11 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 
 
 // Read's the battery voltage
-float getBatteryVoltage(const char *version = MFVersion)
+// NOTE: This will actually return the battery level from the previous update!
+float getBatteryVoltage()
 {
-    float batteryVoltage;
-    if (strcmp(version, "v0.3") == 0 or strcmp(version, "v0.4") == 0)
-    {
-        // Get the battery voltage
-        float rawBattery = analogRead(A6);
-        batteryVoltage = (3.3 / 1023.) * 1.47 * rawBattery;
-    }
-    if (strcmp(version, "v0.5") == 0 or strcmp(version, "v0.5b") == 0)
-    {
-        // Get the battery voltage
-        float rawBattery = analogRead(A6);
-        batteryVoltage = (3.3 / 1023.) * 4.7 * rawBattery;
-    }
-    return batteryVoltage;
+    if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
+    return mcuBoard.sensorValues[0];
 }
 
 
@@ -243,6 +232,13 @@ float getBatteryVoltage(const char *version = MFVersion)
 // ==========================================================================
 void setup()
 {
+    // Wait for USB connection to be established by PC
+    // NOTE:  Only use this when debugging - if not connected to a PC, this
+    // will prevent the script from starting
+    #if defined(SERIAL_PORT_USBVIRTUAL)
+      while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)){}
+    #endif
+
     // Start the primary serial connection
     Serial.begin(serialBaud);
 

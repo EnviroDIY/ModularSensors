@@ -57,9 +57,9 @@ const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
 
-// Create and return the processor "sensor"
-const char *MFVersion = "v0.5b";
-ProcessorStats mayfly(MFVersion);
+// Create and return the main processor chip "sensor" - for general metadata
+const char *mcuBoardVersion = "v0.5b";
+ProcessorStats mcuBoard(mcuBoardVersion);
 
 
 // ==========================================================================
@@ -67,10 +67,11 @@ ProcessorStats mayfly(MFVersion);
 // ==========================================================================
 
 // Select your modem chip - this determines the exact commands sent to it
-// #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
-// #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
-// #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
+
+#if defined(TINY_GSM_MODEM_XBEE)
+  #define TINY_GSM_YIELD() { delay(1); }  // Use to counter slow (9600) baud rate
+#endif
 
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
@@ -79,35 +80,56 @@ ProcessorStats mayfly(MFVersion);
 // Create a reference to the serial port for the modem
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
-// Create a variable for the modem baud rate - this will be used in the begin function for the port
-const long ModemBaud = 9600;
-
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
 TinyGsm *tinyModem = new TinyGsm(modemSerial);
 
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
+
+// ==========================================================================
+//    Specific Modem Pins and On-Off Methods
+// ==========================================================================
+
+// This should apply to all Digi brand XBee modules.
 // Describe the physical pin connection of your modem to your board
-const int8_t modemVccPin = -2;  // MCU pin controlling modem power (-1 if not applicable)
+const long ModemBaud = 9600;        // Communication speed of the modem
+const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
+const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
-const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool wakeFxn(void)
-{
-    digitalWrite(modemSleepRqPin, LOW);
-    digitalWrite(redLED, HIGH);  // Because the XBee doesn't have any lights
-    return true;
-}
+// After enabling pin sleep, the sleep request pin is held LOW to keep the XBee on
+// Enable pin sleep in the setup function or using XCTU prior to connecting the XBee
 bool sleepFxn(void)
 {
-    digitalWrite(modemSleepRqPin, HIGH);
-    digitalWrite(redLED, LOW);
-    return true;
+    if (modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
+    {
+        digitalWrite(modemSleepRqPin, HIGH);
+        digitalWrite(redLED, LOW);
+        return true;
+    }
+    else return true;
 }
+bool wakeFxn(void)
+{
+    if (modemVccPin >= 0)  // Turns on when power is applied
+        return true;
+    else if (modemSleepRqPin >= 0)
+    {
+        digitalWrite(modemSleepRqPin, LOW);
+        digitalWrite(redLED, HIGH);  // Because the XBee doesn't have any lights
+        return true;
+    }
+    else return true;
+}
+
+
+// ==========================================================================
+//    Network Information and LoggerModem Object
+// ==========================================================================
 
 // Network connection information
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
@@ -125,6 +147,7 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepF
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
+
 // Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
 
@@ -133,7 +156,9 @@ MaximDS3231 ds3231(1);
 //    AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
 #include <sensors/AOSongAM2315.h>
-const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+
+const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+
 // Create and return the AOSong AM2315 sensor object
 AOSongAM2315 am2315(I2CPower);
 
@@ -158,8 +183,8 @@ Logger  logger1min(LoggerID, 1, sdCardPin, wakePin, &array1min);
 // minute intervals and at the same time putting them into an array
 Variable *variableList_at5min[] = {
     new MaximDS3231_Temp(&ds3231),
-    new ProcessorStats_Batt(&mayfly),
-    new ProcessorStats_FreeRam(&mayfly)
+    new ProcessorStats_Batt(&mcuBoard),
+    new ProcessorStats_FreeRam(&mcuBoard)
 };
 // Count up the number of pointers in the 5-minute array
 int variableCount5min = sizeof(variableList_at5min) / sizeof(variableList_at5min[0]);

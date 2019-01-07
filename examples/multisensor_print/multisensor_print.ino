@@ -36,13 +36,13 @@ const char *sketchName = "modular_sensors.ino";
 // ==========================================================================
 #include <sensors/ProcessorStats.h>
 
-const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
-const int8_t greenLED = 8;  // Pin for the green LED (-1 if unconnected)
-const int8_t redLED = 9;  // Pin for the red LED (-1 if unconnected)
+const long serialBaud = 115200;   // Baud rate for the primary serial port for debugging
+const int8_t greenLED = 8;        // MCU pin for the green LED (-1 if not applicable)
+const int8_t redLED = 9;          // MCU pin for the red LED (-1 if not applicable)
 
-// Create and return the processor "sensor"
-const char *MFVersion = "v0.5b";
-ProcessorStats mayfly(MFVersion);
+// Create and return the main processor chip "sensor" - for general metadata
+const char *mcuBoardVersion = "v0.5b";
+ProcessorStats mcuBoard(mcuBoardVersion);
 
 
 // ==========================================================================
@@ -61,9 +61,9 @@ MaximDS3231 ds3231(1);
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
-    new ProcessorStats_SampleNumber(&mayfly),
-    new ProcessorStats_FreeRam(&mayfly),
-    new ProcessorStats_Batt(&mayfly),
+    new ProcessorStats_SampleNumber(&mcuBoard),
+    new ProcessorStats_FreeRam(&mcuBoard),
+    new ProcessorStats_Batt(&mcuBoard),
     new MaximDS3231_Temp(&ds3231)
 };
 // Count up the number of pointers in the array

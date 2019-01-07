@@ -54,9 +54,9 @@ const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
 
-// Create and return the processor "sensor"
-const char *MFVersion = "v0.5b";
-ProcessorStats mayfly(MFVersion);
+// Create and return the main processor chip "sensor" - for general metadata
+const char *mcuBoardVersion = "v0.5b";
+ProcessorStats mcuBoard(mcuBoardVersion);
 
 
 // ==========================================================================
@@ -97,13 +97,13 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 // This should work with most ESP8266 breakouts
 // Describe the physical pin connection of your modem to your board
 const long ModemBaud = 57600;        // Communication speed of the modem
+const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemResetPin = -1;     // MCU pin connected to ESP8266's RSTB/GPIO16 pin (-1 if unconnected)
 const int8_t espSleepRqPin = 13;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
 const int8_t modemSleepRqPin = 19;   // MCU pin used for wake from light sleep (-1 if not applicable)
 const int8_t espStatusPin = -1;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
 const int8_t modemStatusPin = -1;    // MCU pin used to read modem status (-1 if not applicable)
-const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -209,7 +209,7 @@ MaximDS3231 ds3231(1);
 // ==========================================================================
 #include <sensors/CampbellOBS3.h>
 
-const int8_t OBS3Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t OBS3Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t OBS3numberReadings = 10;
 const uint8_t OBS3_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
 // Campbell OBS 3+ Low Range calibration in Volts
@@ -220,6 +220,7 @@ const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibra
 
 // Create and return the Campbell OBS3+ LOW RANGE sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, OBS3_ADS1115Address, OBS3numberReadings);
+
 
 // Campbell OBS 3+ High Range calibration in Volts
 const int8_t OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
@@ -238,8 +239,8 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OB
 
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const uint8_t CTDnumberReadings = 6;  // The number of readings to average
-const int8_t SDI12Data = 7;  // The pin the CTD is attached to
-const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t SDI12Data = 7;  // The SDI12 data pin
 
 // Create and return the Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
@@ -257,7 +258,7 @@ Variable *variableList[] = {
     new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab")
 };
@@ -304,22 +305,11 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 
 
 // Read's the battery voltage
-float getBatteryVoltage(const char *version = MFVersion)
+// NOTE: This will actually return the battery level from the previous update!
+float getBatteryVoltage()
 {
-    float batteryVoltage;
-    if (strcmp(version, "v0.3") == 0 or strcmp(version, "v0.4") == 0)
-    {
-        // Get the battery voltage
-        float rawBattery = analogRead(A6);
-        batteryVoltage = (3.3 / 1023.) * 1.47 * rawBattery;
-    }
-    if (strcmp(version, "v0.5") == 0 or strcmp(version, "v0.5b") == 0)
-    {
-        // Get the battery voltage
-        float rawBattery = analogRead(A6);
-        batteryVoltage = (3.3 / 1023.) * 4.7 * rawBattery;
-    }
-    return batteryVoltage;
+    if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
+    return mcuBoard.sensorValues[0];
 }
 
 
