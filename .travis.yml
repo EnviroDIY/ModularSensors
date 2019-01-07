@@ -63,9 +63,6 @@ matrix:
           - PLATFORMIO_CI_SRC=examples/simple_logging/
           - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT"
       - env:
-          - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY/
-          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT"
-      - env:
           - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/
           - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT"
       - env:

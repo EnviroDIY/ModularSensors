@@ -31,51 +31,16 @@ const char *sketchName = "single_sensor.ino";
 // ==========================================================================
 // Set up the sensor object
 // ==========================================================================
-
-// ==========================================================================
-//    Maxbotix HRXL
-// ==========================================================================
-
-// Define a serial port for receiving data - in this case, using software serial
-// Because the standard software serial library uses interrupts that conflict
-// with several other libraries used within this program, we must use a
-// version of software serial that has been stripped of interrupts and define
-// the interrrupts for it using the enableInterrup library.
-
-// If enough hardware serial ports are available on your processor, you should
-// use one of those instead.  If the proper pins are avaialbe, AltSoftSerial
-// by Paul Stoffregen is also superior to SoftwareSerial for this sensor.
-// Neither hardware serial nor AltSoftSerial require any modifications to
-// deal with interrupt conflicts.
-
-#if defined ARDUINO_SAMD_ZERO
-// On an Arduino Zero or Feather M0, we'll create serial 3 on SERCOM2
-#include "wiring_private.h" // pinPeripheral() function
-Uart Serial3(&sercom2, 5, 2, SERCOM_RX_PAD_3, UART_TX_PAD_2);
-void SERCOM2_Handler()
-{
-    Serial3.IrqHandler();
-}
-HardwareSerial &sonarSerial = Serial3;
-
-#elif defined ARDUINO_SODAQ_AUTONOMO
-// Serial3 is already defined on the Autonomo
-HardwareSerial &sonarSerial = Serial3;
-
-#else
-// Set up a serial port for serial communication - in this case, using SoftwareSerial_ExtInts
-#include <SoftwareSerial_ExtInts.h>  // for the stream communication
-const int SonarData = 11;     // data  pin
-SoftwareSerial_ExtInts sonarSerial(SonarData, -1);  // No Tx pin is required, only Rx
-#endif
-
-
 #include <sensors/MaxBotixSonar.h>
-const int SonarTrigger = -1;   // Trigger pin
+
+// Create a reference to the serial port for the sonar
+HardwareSerial &sonarSerial = Serial1;  // Use hardware serial if possible
+
 const int8_t SonarPower = 22;   // excite (power) pin
+const int SonarTrigger = -1;   // Trigger pin
 
 // Create a new instance of the sonar sensor;
-MaxBotixSonar sonar(sonarSerial, SonarPower, SonarTrigger) ;
+MaxBotixSonar sonar(sonarSerial, SonarPower, SonarTrigger);
 
 // Create a new instance of the range variable;
 MaxBotixSonar_Range sonar_range(&sonar);
@@ -136,20 +101,6 @@ void setup()
 
     // Start the stream for the sonar
     sonarSerial.begin(9600);
-
-    // Allow interrupts for software serial
-    #if defined SoftwareSerial_ExtInts_h
-    enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
-    #endif
-    #if defined NeoSWSerial_h
-    enableInterrupt(SonarData, NeoSWSISR, CHANGE);
-    #endif
-
-    #if defined ARDUINO_SAMD_ZERO
-    // Assign pins to SERCOM functionality
-    pinPeripheral(2, PIO_SERCOM);
-    pinPeripheral(5, PIO_SERCOM);
-    #endif
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);

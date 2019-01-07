@@ -109,7 +109,7 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 
 
 // ==========================================================================
-//    The array that contains all variables to be logged
+//    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 #include <VariableArray.h>
 
@@ -130,15 +130,20 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
 
-// Create a new logger instance
+
+// ==========================================================================
+//     The Logger Object[s]
+// ==========================================================================
 #include <LoggerBase.h>
+
+// Create a new logger instance
 Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
-// ==========================================================================
 // Device registration and sampling feature information
-//   This should be obtained after registration at http://data.envirodiy.org
-// ==========================================================================
+// This should be obtained after registration at http://data.envirodiy.org
+// This is needed so the logger file will be "drag-and-drop" ready for manual
+// upload to the portal.
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 
@@ -221,7 +226,7 @@ void setup()
     // At very good battery voltage, or with suspicious time stamp, sync the clock
     // Note:  Please change these battery voltages to match your battery
     if (getBatteryVoltage() > 3.9 ||
-        dataLogger.getNowEpoch() < 1545091200 ||  /*Before 12/18/2018*/
+        dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
         dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
         dataLogger.syncRTC();
 }

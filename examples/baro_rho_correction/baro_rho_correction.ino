@@ -125,6 +125,7 @@ bool sleepFxn(void)
 // ==========================================================================
 //    Network Information and LoggerModem Object
 // ==========================================================================
+#include <LoggerModem.h>
 
 // Network connection information
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
@@ -132,7 +133,6 @@ const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
 
 // Create the loggerModem instance
-#include <LoggerModem.h>
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
 
@@ -307,12 +307,12 @@ Variable *calcCorrDepth = new Variable(calculateWaterDepthTempCorrected, rhoDept
 
 
 // ==========================================================================
-//    The array that contains all variables to be logged
+//    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 #include <VariableArray.h>
 
-// Put all of the variable pointers into an Array
-// NOTE:  Since we've created all of the variable pointers above, we can just
+// Put all of the variable pointers into an array
+// NOTE:  Since we've created all of the variable pointers above, we can
 // reference them by name here.
 Variable *variableList[] = {
     mcuBoardSampNo,
@@ -338,15 +338,21 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
 
-// Create a new logger instance
+
+// ==========================================================================
+//     The Logger Object[s]
+// ==========================================================================
 #include <LoggerBase.h>
+
+// Create a new logger instance
 Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
-// Device registration and sampling feature information
-//   This should be obtained after registration at http://data.envirodiy.org
+//    A Publisher to WikiWatershed
 // ==========================================================================
+// Device registration and sampling feature information can be obtained after
+// registration at http://data.WikiWatershed.org
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 
@@ -433,7 +439,7 @@ void setup()
     // At very good battery voltage, or with suspicious time stamp, sync the clock
     // Note:  Please change these battery voltages to match your battery
     if (mcuBoardBatt->getValue() > 3.9 ||
-        dataLogger.getNowEpoch() < 1545091200 ||  /*Before 12/18/2018*/
+        dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
         dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
         dataLogger.syncRTC();
 }

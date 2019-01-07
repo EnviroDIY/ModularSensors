@@ -15,14 +15,6 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
-#define DreamHostPortalRX "xxxx"
-
-#if defined(ARDUINO_SODAQ_AUTONOMO) || defined(ARDUINO_SODAQ_EXPLORER) \
-  || defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_SARA) \
-  || defined(ARDUINO_SODAQ_SFF)
-    #define ENABLE_SERIAL2
-    #define ENABLE_SERIAL3
-#endif
 // ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
@@ -119,7 +111,7 @@ const int8_t softSerialRx = A3;     // data in pin
 const int8_t softSerialTx = A4;     // data out pin
 
 #include <SoftwareSerial_ExtInts.h>  // for the stream communication
-SoftwareSerial_ExtInts softSerial_A3A4(softSerialRx, softSerialTx);
+SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 #endif  // End software serial for avr boards
 
 
@@ -451,6 +443,7 @@ bool sleepFxn(void)
 // ==========================================================================
 //    Network Information and LoggerModem Object
 // ==========================================================================
+#include <LoggerModem.h>
 
 // Network connection information
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
@@ -458,7 +451,6 @@ const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
 
 // Create the loggerModem instance
-#include <LoggerModem.h>
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 #if defined(TINY_GSM_MODEM_ESP8266) || defined(USE_XBEE_WIFI)
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
@@ -708,7 +700,8 @@ MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 HardwareSerial &sonarSerial = Serial3;  // Use hardware serial if possible
 #else
 // AltSoftSerial &sonarSerial = altSoftSerial;  // For software serial if needed
-NeoSWSerial &sonarSerial = neoSSerial1;  // For software serial if needed
+// NeoSWSerial &sonarSerial = neoSSerial1;  // For software serial if needed
+SoftwareSerial_ExtInts &sonarSerial = softSerial1;  // For software serial if needed
 #endif
 
 const int8_t SonarPower = sensorPowerPin;  // Excite (power) pin (-1 if unconnected)
@@ -756,7 +749,7 @@ MaximDS18 ds18_5(OneWireAddress5, OneWirePower, OneWireBus);
 #include <sensors/MeaSpecMS5803.h>
 
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const uint8_t MS5803i2c_addr = 0x76;  // The MS5803 can be addressed either as 0x76 or 0x77
+const uint8_t MS5803i2c_addr = 0x76;  // The MS5803 can be addressed either as 0x76 (default) or 0x77
 const int16_t MS5803maxPressure = 14;  // The maximum pressure measurable by the specific MS5803 model
 const uint8_t MS5803ReadingsToAvg = 1;
 
@@ -1132,7 +1125,7 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 
 
 // ==========================================================================
-//    The array that contains all variables to be logged
+//    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 #include <VariableArray.h>
 
@@ -1222,15 +1215,21 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
 
-// Create a new logger instance
+
+// ==========================================================================
+//     The Logger Object[s]
+// ==========================================================================
 #include <LoggerBase.h>
+
+// Create a new logger instance
 Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
-// Device registration and sampling feature information
-//   This should be obtained after registration at http://data.envirodiy.org
+//    A Publisher to WikiWatershed
 // ==========================================================================
+// Device registration and sampling feature information can be obtained after
+// registration at http://data.WikiWatershed.org
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 
@@ -1239,14 +1238,27 @@ const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sam
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
 
 
+// ==========================================================================
+//    A Publisher to DreamHost
+// ==========================================================================
+// NOTE:  This is an outdated data collection tool used by the Stroud Center.
+// It us unlikely that you will use this.
+
+const char * DreamHostPortalRX = "xxxx";
+
 // Create a data publisher to DreamHost
 #include <publishers/DreamHostPublisher.h>
 DreamHostPublisher DreamHostGET(dataLogger, DreamHostPortalRX);
 
 
 // ==========================================================================
-// ThingSpeak Information
+//    ThingSpeak Data Publisher
 // ==========================================================================
+// Create a channel with fields on ThingSpeak in advance
+// The fields will be sent in exactly the order they are in the variable array.
+// Any custom name or identifier given to the field on ThingSpeak fields is irrelevant.
+// No more than 8 fields of data can go to any one channel.  Any fields beyond the
+// eighth in the array will be ignored.
 const char *thingSpeakMQTTKey = "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from Account > MyProfile.
 const char *thingSpeakChannelID = "######";  // The numeric channel id for your channel
 const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
@@ -1422,7 +1434,7 @@ void setup()
     // At very good battery voltage, or with suspicious time stamp, sync the clock
     // Note:  Please change these battery voltages to match your battery
     if (getBatteryVoltage() > 3.9 ||
-        dataLogger.getNowEpoch() < 1545091200 ||  /*Before 12/18/2018*/
+        dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
         dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
         dataLogger.syncRTC();
 }

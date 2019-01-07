@@ -22,8 +22,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerBase.h>
-#include <LoggerModem.h>
 
 
 // ==========================================================================
@@ -32,14 +30,15 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // The library version this example was written for
 const char *libraryVersion = "0.19.3";
 // The name of this file
-const char *sketchName = "logger_test.ino";
-// Logger ID - since it's the same logger device, we only need one
+const char *sketchName = "double_logger.ino";
+// Logger ID - we're only using one logger ID for both "loggers"
 const char *LoggerID = "XXXXX";
 // The TWO filenames for the different logging intervals
 const char *FileName5min = "Logger_5MinuteInterval.csv";
 const char *FileName1min = "Logger_1MinuteInterval.csv";
 // Your logger's timezone.
-const int8_t timeZone = -5;
+const int8_t timeZone = -5;  // Eastern Standard Time
+// NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
 
 // ==========================================================================
@@ -130,6 +129,7 @@ bool wakeFxn(void)
 // ==========================================================================
 //    Network Information and LoggerModem Object
 // ==========================================================================
+#include <LoggerModem.h>
 
 // Network connection information
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
@@ -164,8 +164,10 @@ AOSongAM2315 am2315(I2CPower);
 
 
 // ==========================================================================
-// The two arrays that contains the variables for the different intervals
+//    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
+#include <VariableArray.h>
+
 // Create pointers for all of the variables from the sensors recording at 1
 // minute intervals and at the same time putting them into an array
 Variable *variableList_at1min[] = {
@@ -176,8 +178,6 @@ Variable *variableList_at1min[] = {
 int variableCount1min = sizeof(variableList_at1min) / sizeof(variableList_at1min[0]);
 // Create the 1-minute VariableArray object
 VariableArray array1min(variableCount1min, variableList_at1min);
-// Create the 1-minute  logger instance
-Logger  logger1min(LoggerID, 1, sdCardPin, wakePin, &array1min);
 
 // Create pointers for all of the variables from the sensors recording at 5
 // minute intervals and at the same time putting them into an array
@@ -190,7 +190,17 @@ Variable *variableList_at5min[] = {
 int variableCount5min = sizeof(variableList_at5min) / sizeof(variableList_at5min[0]);
 // Create the 5-minute VariableArray object
 VariableArray array5min(variableCount5min, variableList_at5min);
+
+
+// ==========================================================================
+//     The Logger Object[s]
+// ==========================================================================
+#include <LoggerBase.h>
+
 // Create the 1-minute  logger instance
+Logger  logger1min(LoggerID, 1, sdCardPin, wakePin, &array1min);
+
+// Create the 5-minute  logger instance
 Logger  logger5min(LoggerID, 5, sdCardPin, wakePin, &array5min);
 
 

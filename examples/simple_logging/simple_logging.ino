@@ -68,9 +68,10 @@ MaximDS3231 ds3231(1);
 
 
 // ==========================================================================
-//    The array that contains all variables to be logged
+//    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 #include <VariableArray.h>
+
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
@@ -85,9 +86,14 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
 
-// Create a new logger instance
+
+// ==========================================================================
+//     The Logger Object[s]
+// ==========================================================================
 #include <LoggerBase.h>
-Logger logger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+
+// Create a new logger instance
+Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
@@ -146,11 +152,11 @@ void setup()
     Logger::setTZOffset(timeZone);
 
     // Set information pins
-    logger.setAlertPin(greenLED);
-    logger.setTestingModePin(buttonPin);
+    dataLogger.setAlertPin(greenLED);
+    dataLogger.setTestingModePin(buttonPin);
 
     // Begin the logger
-    logger.begin();
+    dataLogger.begin();
 }
 
 
@@ -160,5 +166,5 @@ void setup()
 void loop()
 {
     // Log the data
-    logger.logData();
+    dataLogger.logData();
 }

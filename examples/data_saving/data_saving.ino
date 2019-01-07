@@ -16,8 +16,6 @@ DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
-#define DreamHostPortalRX "xxxx"
-
 // ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
@@ -77,7 +75,7 @@ Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-
 // as possible.  In some cases (ie, modbus communication) many sensors can share
 // the same serial port.
 
-#if not defined(ARDUINO_ARCH_SAMD)  // For AVR boards
+#if not defined(ARDUINO_ARCH_SAMD) && not defined(ATMEGA2560)  // For AVR boards
 // Unfortunately, most AVR boards have only one or two hardware serial ports,
 // so we'll set up three types of extra software serial ports to use
 
@@ -186,6 +184,7 @@ bool sleepFxn(void)
 // ==========================================================================
 //    Network Information and LoggerModem Object
 // ==========================================================================
+#include <LoggerModem.h>
 
 // Network connection information
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
@@ -193,7 +192,6 @@ const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
 
 // Create the loggerModem instance
-#include <LoggerModem.h>
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
 
@@ -337,12 +335,12 @@ Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-123
 
 
 // ==========================================================================
-//    The array that contains all variables to be logged
+//    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 #include <VariableArray.h>
 
-// Put all of the variable pointers into an Array
-// NOTE:  Since we've created all of the variable pointers above, we can just
+// Put ALL of the variable pointers into the first array
+// NOTE:  Since we've created all of the variable pointers above, we can
 // reference them by name here.
 Variable *variableList_complete[] = {
     mcuBoardSampNo,
@@ -366,18 +364,9 @@ int variableCount_complete = sizeof(variableList_complete) / sizeof(variableList
 // Create the VariableArray object
 VariableArray arrayComplete(variableCount_complete, variableList_complete);
 
-// Create a new logger instance
-#include <LoggerBase.h>
-Logger loggerAllVars(LoggerID, loggingInterval, sdCardPin, wakePin, &arrayComplete);
 
-
-// ==========================================================================
-//    The array that contains all variables to have their values sent out over the internet
-// ==========================================================================
-
-// Put all of the variable pointers into an Array
-// NOTE:  Since we've created all of the variable pointers above, we can just
-// reference them by name here.
+// Put only the particularly interesting variables into a second array
+// NOTE:  We can put some of the exact same variables into multiple arrays
 Variable *variableList_toGo[] = {
     y504DOmgL,
     y504Temp,
@@ -390,14 +379,24 @@ Variable *variableList_toGo[] = {
 int variableCount_toGo = sizeof(variableList_toGo) / sizeof(variableList_toGo[0]);
 // Create the VariableArray object
 VariableArray arrayToGo(variableCount_toGo, variableList_toGo);
+
+
+// ==========================================================================
+//     The Logger Object[s]
+// ==========================================================================
+#include <LoggerBase.h>
+
+Logger loggerAllVars(LoggerID, loggingInterval, sdCardPin, wakePin, &arrayComplete);
+
 // Create the new logger instance
 Logger loggerToGo(LoggerID, loggingInterval,sdCardPin, wakePin, &arrayToGo);
 
 
 // ==========================================================================
-// Device registration and sampling feature information
-//   This should be obtained after registration at http://data.envirodiy.org
+//    A Publisher to WikiWatershed
 // ==========================================================================
+// Device registration and sampling feature information can be obtained after
+// registration at http://data.WikiWatershed.org
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 
@@ -516,7 +515,7 @@ void setup()
     // At very good battery voltage, or with suspicious time stamp, sync the clock
     // Note:  Please change these battery voltages to match your battery
     if (mcuBoardBatt->getValue() > 3.9 ||
-        loggerAllVars.getNowEpoch() < 1545091200 ||  /*Before 12/18/2018*/
+        loggerAllVars.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
         loggerAllVars.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
         loggerAllVars.syncRTC();
 }

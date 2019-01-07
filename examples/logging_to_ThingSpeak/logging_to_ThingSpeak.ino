@@ -183,6 +183,7 @@ bool wakeFxn(void)
 // ==========================================================================
 //    Network Information and LoggerModem Object
 // ==========================================================================
+#include <LoggerModem.h>
 
 // Network connection information
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
@@ -190,7 +191,6 @@ const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
 
 // Create the loggerModem instance
-#include <LoggerModem.h>
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
 
@@ -245,19 +245,20 @@ const int8_t SDI12Data = 7;  // The SDI12 data pin
 // Create and return the Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 
+
 // ==========================================================================
-//    The array that contains all variables to be logged
+//    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 #include <VariableArray.h>
 
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
-    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
     new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
     new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab")
@@ -268,14 +269,24 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
 
-// Create a new logger instance
+
+// ==========================================================================
+//     The Logger Object[s]
+// ==========================================================================
 #include <LoggerBase.h>
+
+// Create a new logger instance
 Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
-// ThingSpeak Information
+//    ThingSpeak Data Publisher
 // ==========================================================================
+// Create a channel with fields on ThingSpeak in advance
+// The fields will be sent in exactly the order they are in the variable array.
+// Any custom name or identifier given to the field on ThingSpeak fields is irrelevant.
+// No more than 8 fields of data can go to any one channel.  Any fields beyond the
+// eighth in the array will be ignored.
 const char *thingSpeakMQTTKey = "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from Account > MyProfile.
 const char *thingSpeakChannelID = "######";  // The numeric channel id for your channel
 const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
@@ -382,7 +393,17 @@ void setup()
     dataLogger.setTestingModePin(buttonPin);
 
     // Begin the logger
-    dataLogger.begin();
+    // At lowest battery level, skip sensor set-up
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
+    else dataLogger.begin();  // set up sensors
+
+    // At very good battery voltage, or with suspicious time stamp, sync the clock
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() > 3.9 ||
+        dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
+        dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+        dataLogger.syncRTC();
 }
 
 
