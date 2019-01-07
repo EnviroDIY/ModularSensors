@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.17.2
+This example sketch is written for ModularSensors library version 0.19.2
 
 This sketch is an example of logging data from different variables at two
 different logging intervals.  This example uses more of the manual functions
@@ -29,6 +29,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
+// The library version this example was written for
+const char *libraryVersion = "0.19.2";
 // The name of this file
 const char *sketchName = "logger_test.ino";
 // Logger ID - since it's the same logger device, we only need one
@@ -64,7 +66,7 @@ ProcessorStats mayfly(MFVersion);
 //    Modem/Internet connection options
 // ==========================================================================
 
-// Select your modem chip, comment out all of the others
+// Select your modem chip
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
 // #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
@@ -206,12 +208,18 @@ void setup()
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
 
+    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
+        Serial.println(F(
+            "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
+
     // Start the serial connection with the modem
     ModemSerial.begin(ModemBaud);
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
+    digitalWrite(greenLED, LOW);
     pinMode(redLED, OUTPUT);
+    digitalWrite(redLED, LOW);
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
@@ -239,7 +247,7 @@ void setup()
     if (modem.connectInternet())
     {
         // Synchronize the RTC
-        logger1min.syncRTClock(modem.getNISTTime());
+        logger1min.setRTClock(modem.getNISTTime());
         // Disconnect from the network
         modem.disconnectInternet();
     }
@@ -357,7 +365,7 @@ void loop()
         if (modem.connectInternet())
         {
             // Synchronize the RTC
-            logger1min.syncRTClock(modem.getNISTTime());
+            logger1min.setRTClock(modem.getNISTTime());
             // Disconnect from the network
             modem.disconnectInternet();
         }

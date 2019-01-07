@@ -21,29 +21,21 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <Time.h>
-#include <errno.h>
-#include "ms_cfg.h" //must be before modular_sensors_common.h
-#include "ms_common.h"
-#define DEBUGGING_SERIAL_OUTPUT Serial
+
+
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
 // The name of this file
-//const char *sketchName = "logging_to_EnviroDIY.ino";
+const char *sketchName = "logging_to_EnviroDIY.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID_def = "nh07j"; //FUT mv ps.msc.s.logger_id
-const char *MayflyIniID = "mayfly.ini"; //FUT mv to epprom/boot 
+const char *LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
-//const uint8_t loggingInterval = 5;
+const uint8_t loggingInterval = 5;
 // Your logger's timezone.
-const int8_t timeZone_def = -8;
+const int8_t timeZone = -5;  // Eastern Standard Time
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
-const char build_date[] = __DATE__ " " __TIME__;
-const char file_name[] = __FILE__;
-//const char build_epochTime = __BUILD_TIMESTAMP__;
-//const char build_epochTime = __TIME_UNIX__;
 
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
@@ -61,14 +53,9 @@ const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (m
 const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create and return the processor "sensor"
-#if 1 //defined(PROFILE_NAME)
-#define MFVERSION_SZ 10
- char MFVersion[MFVERSION_SZ] = MFVersion_DEF;//"v0.5b";
-#endif
-#if defined(ProcessorStats_ACT)
-ProcessorStats mayflyPhy(MFVersion);
-#endif //ProcessorStats_ACT
-//#define CHECK_SLEEP_POWER
+const char *MFVersion = "v0.5b";
+ProcessorStats mayfly(MFVersion);
+
 
 // ==========================================================================
 //    Modem/Internet connection options
@@ -78,32 +65,25 @@ ProcessorStats mayflyPhy(MFVersion);
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
 // #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
-#if !defined(CHECK_SLEEP_POWER)
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
-#endif //CHECK_SLEEP_POWER
+
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
 #include <TinyGsmClient.h>
 
  // Set the serial port for the modem - software serial can also be used.
 HardwareSerial &ModemSerial = Serial1;
-#define RS485PHY_TX 5  // AltSoftSerial Tx pin 
-#define RS485PHY_RX 6  // AltSoftSerial Rx pin
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
-//#define STREAMDEBUGGER_DBG
-#if !defined(STREAMDEBUGGER_DBG)
 TinyGsm *tinyModem = new TinyGsm(ModemSerial);
-#endif //STREAMDEBUGGER_DBG
 
 // Use this to create a modem if you want to spy on modem communication through
 // a secondary Arduino stream.  Make sure you install the StreamDebugger library!
 // https://github.com/vshymanskyy/StreamDebugger
-#ifdef STREAMDEBUGGER_DBG
- #include <StreamDebugger.h>
- StreamDebugger modemDebugger(Serial1, Serial);
- TinyGsm *tinyModem = new TinyGsm(modemDebugger);
-#endif //STREAMDEBUGGER_DBG
+// #include <StreamDebugger.h>
+// StreamDebugger modemDebugger(Serial1, Serial);
+// TinyGsm *tinyModem = new TinyGsm(modemDebugger);
+
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
@@ -124,27 +104,21 @@ bool sleepFxn(void)
     {
         digitalWrite(modemSleepRqPin, HIGH);
         digitalWrite(redLED, LOW);
-        Serial.println(F("sleepFxnH"));
         return true;
     }
-    Serial.println(F("sleepFxn!"));
-    return true;
+    else return true;
 }
 bool wakeFxn(void)
 {
-    if (modemVccPin >= 0){  // Turns on when power is applied
-        Serial.print(F("wakeFxnV!="));
-        Serial.println(modemVccPin);
+    if (modemVccPin >= 0)  // Turns on when power is applied
         return true;
-    }else if (modemSleepRqPin >= 0)
+    else if (modemSleepRqPin >= 0)
     {
         digitalWrite(modemSleepRqPin, LOW);
         digitalWrite(redLED, HIGH);  // Because the XBee doesn't have any lights
-        Serial.println(F("wakeFxnL"));
         return true;
     }
-    Serial.print(F("wakeFxn!"));
-    return true;
+    else return true;
 }
 
 #elif defined(TINY_GSM_MODEM_ESP8266)
@@ -296,25 +270,22 @@ bool sleepFxn(void)
 #endif
 
 // And we still need the connection information for the network
-#if 1//!defined(PROFILE_NAME)
-const char *apn_def = APN_CDEF;  // The APN for the gprs connection, unnecessary for WiFi
-const char *wifiId_def = WIFIID_CDEF;  // The WiFi access point, unnecessary for gprs
-const char *wifiPwd_def = WIFIPWD_CDEF;  // The password for connecting to WiFi, unnecessary for gprs
+const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
+const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
+const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
 
-#endif
 // Create the loggerModem instance
 #include <LoggerModem.h>
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 #if defined(TINY_GSM_MODEM_ESP8266)
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId_def, wifiPwd_def);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
 #elif defined(TINY_GSM_MODEM_XBEE)
-loggerModem modemPhy(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient);
-//loggerModem modemPhy(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId_def, wifiPwd_def);
-// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn_def);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
+// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
 #elif defined(TINY_GSM_MODEM_UBLOX)
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn_def);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
 #else
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn_def);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
 #endif
 
 
@@ -324,43 +295,13 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepF
 #include <sensors/MaximDS3231.h>
 // Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
-// ==========================================================================
-//    External Voltage via TI ADS1115
-// ==========================================================================
-#ifdef ExternalVoltage_ACT
-#include <sensors/ExternalVoltage.h>
-const int8_t VoltPower = -1;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t VoltData0 = 0;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
-const int8_t VoltData1 = 1;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
-const float VoltGain = 2; // Voltage divider 100K+100K Iternnaly 0-3.6V Default 1/gain for grove voltage divider is 10x
-const uint8_t Volt_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
-const uint8_t VoltReadsToAvg = 1; // Only read one sample
-// Create and return the External Voltage sensor object
-ExternalVoltage extvolt0(VoltPower, VoltData0, VoltGain, Volt_ADS1115Address, VoltReadsToAvg);
-ExternalVoltage extvolt1(VoltPower, VoltData1, VoltGain, Volt_ADS1115Address, VoltReadsToAvg);
-#endif //ExternalVoltage_ACT
-const int8_t I2CPower = -1;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t SDI12Data = 7;  // The pin the 5TM is attached to
-const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
-#if defined(INA219_PHY_ACT)
-// ==========================================================================
-//    Ti INA219 High Side Current/Voltage Sensor (Current mA, Voltage, Power)
-// ==========================================================================
-#include <sensors/TiIna219.h>
-//uint8_t INA219i2c_addr = 0x40; // 1000000 (Board A0+A1=GND)
-// The INA219 can be addressed either as 0x40 (Adafruit default) or 0x41 44 45
-// Either can be physically mofidied for the other address
-// const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-// Create and return the Bosch BME280 sensor object
-TiIna219 ina219_phy(I2CPower);
-#endif //INA219_PHY_ACT
 
-#ifdef SENSOR_CONFIG_GENERAL
+
 // ==========================================================================
 //    AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
 #include <sensors/AOSongAM2315.h>
-//const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
 // Create and return the AOSong AM2315 sensor object
 AOSongAM2315 am2315(I2CPower);
 
@@ -560,40 +501,34 @@ const float depthPerTipEvent = 0.2;  // rain depth in mm per tip event
 // Create and return the Rain Counter sensor object
 RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 
-#endif //SENSOR_CONFIG_GENERAL
 
 // Set up a serial port for modbus communication - in this case, using AltSoftSerial
 #include <AltSoftSerial.h>
 AltSoftSerial modbusSerial;
 
-const int8_t modbusSensorPower = 22;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
-const int8_t rs485AdapterPower = 22;// Pin to switch RS485 adapter power on and off (-1 if unconnected)
 // ==========================================================================
 //    Keller Acculevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
-#ifdef KellerAcculevel_ACT 
 #include <sensors/KellerAcculevel.h>
 byte acculevelModbusAddress = 0x01;  // The modbus address of KellerAcculevel
-//const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
-//const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
-//const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
+const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends taking and averaging a few readings
 // Create and return the Keller Acculevel sensor object
 KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, acculevelNumberReadings);
-#endif //KellerAcculevel_ACT 
 
 // ==========================================================================
 //    Keller Nanolevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
-#ifdef KellerNanolevel_ACT
 #include <sensors/KellerNanolevel.h>
 byte nanolevelModbusAddress = 0x01;  // The modbus address of KellerNanolevel
+// const int8_t rs485AdapterPower = -1;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t modbusSensorPower = -1;  // Pin to switch sensor power on and off (-1 if unconnected)
+// const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t nanolevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
 // Create and return the Keller Nanolevel sensor object
-KellerNanolevel nanolevelfn(nanolevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
-#endif //KellerNanolevel_ACT
-#ifdef SENSOR_CONFIG_GENERAL
+KellerNanolevel nanolevel(nanolevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
 
 // ==========================================================================
 //    Yosemitech Y504 Dissolved Oxygen Sensor
@@ -708,40 +643,16 @@ const char *DOptoDI12address = "5";  // The SDI-12 Address of the Zebra Tech D-O
 // const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
 // Create and return the Zebra Tech DOpto dissolved oxygen sensor object
 ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
-#endif //SENSOR_CONFIG_GENERAL
+
 
 // ==========================================================================
 //    The array that contains all variables to be logged
 // ==========================================================================
-//#pragma message( "including lib/ModularSensors/src/VariableBase.h")
-//#include "lib/ModularSensors/src/VariableBase.h"
-//#pragma message( "including <VariableArray.h>")
 #include <VariableArray.h>
-//#pragma message( "including VariableArray.h")
-//#include "lib/ModularSensors/src/VariableArray.h"
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
-#if defined(ProcessorStats_SampleNumber_UUID)
-    //Always have this first so can see on debug screen
-    new ProcessorStats_SampleNumber(&mayflyPhy,ProcessorStats_SampleNumber_UUID),
-#endif
-#if defined(ProcessorStats_Batt_UUID)
-    new ProcessorStats_Batt(&mayflyPhy,   ProcessorStats_Batt_UUID),
-#endif
-#if defined(ExternalVoltage_Volt0_UUID)
-    new ExternalVoltage_Volt(&extvolt0, ExternalVoltage_Volt0_UUID),
-#endif
-#if defined(ExternalVoltage_Volt1_UUID)
-    new ExternalVoltage_Volt(&extvolt1, ExternalVoltage_Volt1_UUID),
-#endif
-#if defined(INA219_MA_UUID)
-    new TiIna219_mA  (&ina219_phy, INA219_MA_UUID),
-#endif
-#if defined(INA219_VOLT_UUID)
-    new TiIna219_Volt(&ina219_phy, INA219_VOLT_UUID),
-#endif
-#ifdef SENSOR_CONFIG_GENERAL
+    new ProcessorStats_SampleNumber(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
     new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
     new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -779,18 +690,12 @@ Variable *variableList[] = {
     new MPL115A2_Pressure(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
     new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab"),
     new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab"),
-#endif //SENSOR_CONFIG_GENERAL
-#ifdef KellerAcculevel_ACT
     new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
     new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
     new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
-#endif // KellerAcculevel_ACT
-#ifdef KellerNanolevel_ACT
-//   new KellerNanolevel_Pressure(&nanolevelfn, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerNanolevel_Temp(&nanolevelfn,   KellerNanolevel_Temp_UUID),
-    new KellerNanolevel_Height(&nanolevelfn, KellerNanolevel_Height_UUID),
-#endif //SENSOR_CONFIG_KELLER_NANOLEVEL
-#ifdef SENSOR_CONFIG_GENERAL
+    new KellerNanolevel_Pressure(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab"),
+    new KellerNanolevel_Temp(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab"),
+    new KellerNanolevel_Height(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
     new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -816,37 +721,29 @@ Variable *variableList[] = {
     new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
     new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
     new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_FreeRam(&mayflyPhy, "12345678-abcd-1234-efgh-1234567890ab"),
-#endif // SENSOR_CONFIG_GENERAL
-#if defined(MaximDS3231_Temp_UUID)
-    new MaximDS3231_Temp(&ds3231,      MaximDS3231_Temp_UUID),
-#endif //MaximDS3231_Temp_UUID
-    //new Modem_RSSI(&modemPhy, "12345678-abcd-1234-efgh-1234567890ab"),
-#if defined(Modem_SignalPercent_UUID)
-    //new Modem_SignalPercent(&modemPhy, Modem_SignalPercent_UUID),
-#endif
+    new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     // new YOUR_variableName_HERE(&)
 };
 // Count up the number of pointers in the array
-const int variableCount = sizeof(variableList) / sizeof(variableList[0]);
+int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
-#ifdef USE_SD_MAYFLY_INI
- persistent_store_t ps;
- #endif //#define USE_SD_MAYFLY_INI
+
 // Create a new logger instance
 #include <LoggerEnviroDIY.h>
-//#include "lib\ModularSensors\src\LoggerEnviroDIY.h"
+LoggerEnviroDIY EnviroDIYLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
-LoggerEnviroDIY EnviroDIYLogger(LoggerID_def, loggingInterval_def, sdCardPin, wakePin, &varArray);
-//LoggerEnviroDIY EnviroDIYLogger(ps.msc.s.logger_id, loggingInterval, sdCardPin, wakePin, &varArray);
 
 // ==========================================================================
 // Device registration and sampling feature information
 //   This should be obtained after registration at http://data.envirodiy.org
 // ==========================================================================
-const char *registrationToken = registrationToken_UUID;   // Device registration token
-const char *samplingFeature  =  samplingFeature_UUID;     // Sampling feature UUID
+const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
+const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 
 
 // ==========================================================================
@@ -867,267 +764,68 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
   digitalWrite(redLED, LOW);
 }
 
+
 // ==========================================================================
-// inihUnhandled 
-// For any Unhandled sections this is called
+// Main setup function
 // ==========================================================================
-#ifdef USE_SD_MAYFLY_INI
-//expect to be in near space
-  //#define EDIY_PROGMEM PROGMEM
-#define mCONST_UNI(p1) const char p1##_pm[] PROGMEM = #p1
-const char BOOT_pm[] EDIY_PROGMEM = "BOOT";
-const char VER_pm[] EDIY_PROGMEM = "VER";
-const char MAYFLY_SN_pm[] EDIY_PROGMEM = "MAYFLY_SN"; 
-const char MAYFLY_REV_pm[] EDIY_PROGMEM = "MAYFLY_REV";
-const char MAYFLY_INIT_ID_pm[] EDIY_PROGMEM = "MAYFLY_INIT_ID";
-
-const char COMMON_pm[] EDIY_PROGMEM = "COMMON";
-const char LOGGER_ID_pm[] EDIY_PROGMEM = "LOGGER_ID";
-//mCONST_UNI(LOGGER_ID);// = "nh07k" ;
-const char LOGGING_INTERVAL_MIN_pm[] EDIY_PROGMEM = "LOGGING_INTERVAL_MIN";
-const char LIION_TYPE_pm[] EDIY_PROGMEM = "LIION_TYPE";
-const char TIME_ZONE_pm[] EDIY_PROGMEM = "TIME_ZONE";
-const char GEOGRAPHICAL_ID_pm[] EDIY_PROGMEM = "GEOGRAPHICAL_ID";
-
-const char NETWORK_pm[] EDIY_PROGMEM = "NETWORK";
-const char apn_pm[] EDIY_PROGMEM = "apn";
-const char WiFiId_pm[] EDIY_PROGMEM = "WiFiId";
-const char WiFiPwd_pm[] EDIY_PROGMEM = "WiFiPwd";
-
-const char PROVIDER_pm[] EDIY_PROGMEM = "PROVIDER";
-const char CLOUD_ID_pm[] EDIY_PROGMEM = "CLOUD_ID";
-const char REGISTRATION_TOKEN_pm[] EDIY_PROGMEM = "REGISTRATION_TOKEN";
-const char SAMPLING_FEATURE_pm[] EDIY_PROGMEM = "SAMPLING_FEATURE";
-
-const char UUIDs_pm[] EDIY_PROGMEM = "UUIDs";
-const char index_pm[] EDIY_PROGMEM = "index";
-static uint8_t uuid_index =0;
-static int inihUnhandledFn( const char* section, const char* name, const char* value)
+void setup()
 {
-    if (strcmp_P(section,PROVIDER_pm)== 0)
-    {
-        if        (strcmp_P(name,REGISTRATION_TOKEN_pm)== 0) {
-            strcpy(ps.provider.s.registration_token, value);
-        } else if (strcmp_P(name,CLOUD_ID_pm)== 0) {
-            strcpy(ps.provider.s.cloudId, value);
-        } else if (strcmp_P(name,SAMPLING_FEATURE_pm)== 0) {
-            strcpy(ps.provider.s.sampling_feature, value);
-        } else {
-            Serial.print(F("PROVIDER not supported:"));
-            Serial.print(name);
-            Serial.print("=");
-            Serial.println(value);
-        }
-    } else if (strcmp_P(section,UUIDs_pm)== 0)
-    {
-        /*FUT:Add easier method to mng 
-        perhaps1) "UUID_label"="UUID"
-        then search variableList till find UUID_label
-        perhaps2) "dummyDefaultUID"="UUID" 
-            "ASQ212_PAR"="UUID"
-            then search variablList till find dummyDefaultUID and replace with UUID
-        perhaps3) "SensorName"="UUID" 
-            "ApogeeSQ212_PAR"="UUID"
-            then search variablList till fin SensorsName
+    // Start the primary serial connection
+    Serial.begin(serialBaud);
 
-        */
-        if (strcmp_P(name,index_pm)== 0) {
-            Serial.print(F("["));
-            Serial.print(uuid_index);
-            Serial.print(F("]={"));
-            Serial.print(value);
-            Serial.print(F("} replacing {"));
-            Serial.print(variableList[uuid_index]->getVarUUID() );
-            Serial.println(F("}"));
-            strcpy(&ps.provider.s.uuid[uuid_index][0], value);
-            variableList[uuid_index]->setVarUUID(&ps.provider.s.uuid[uuid_index][0]);
-            uuid_index++;
-        } else 
-        {
-            Serial.print(F("UUIDs not supported:"));
-            Serial.print(name);
-            Serial.print("=");
-            Serial.println(value);
-        } 
-    } else if (strcmp_P(section,COMMON_pm)== 0) {
-        if (strcmp_P(name,LOGGER_ID_pm)== 0) {
-            strcpy((char *)LOGGER_ID_ADDR, value);
-        } else if (strcmp_P(name,LOGGING_INTERVAL_MIN_pm)== 0){
-            //convert str to num
-            long intervalMin;
-            char *endptr;
-            errno=0;
-            intervalMin = strtoul(value,&endptr,10);
-            #define INTERVAL_MINUTES_MAX 480
-            if ((intervalMin <= INTERVAL_MINUTES_MAX) && (intervalMin>0) &&(errno!=ERANGE) ) {
-                EnviroDIYLogger.setLoggingInterval(intervalMin);
-            } else {
-                Serial.print(F(" Set interval error(0-480) with:"));
-                Serial.println(intervalMin);
-            }
-        } else if (strcmp_P(name,LIION_TYPE_pm)== 0){
-            //convert  str to num with error checking
-            long batLiionType;
-            char *endptr;
-            errno=0;
-            batLiionType = strtoul(value,&endptr,10);
-            if ((batLiionType < PSLR_NUM) && (batLiionType>0) &&(errno!=ERANGE) ) {
-                mayflyPhy.setBatteryType((ps_liion_rating_t )batLiionType);
-            } else {
-                Serial.print(F(" Set LiIon Type error; (range 0-2) read:"));
-                Serial.println(batLiionType);
-            }
-        } else {
-            Serial.print(F("COMMON tbd "));
-            Serial.print(name);
-            Serial.print(F(" to "));  
-            Serial.println(value);  
-        }
-    } else if (strcmp_P(section,NETWORK_pm)== 0) {
-        if (strcmp_P(name,apn_pm)== 0) {
-#define APN_ADDR ps.msn.s.apn
-            strcpy((char *)APN_ADDR, value);
-            modemPhy.setApn(APN_ADDR);
-            Serial.print(F("APN :"));
-            Serial.println((char *)APN_ADDR);
-        } else if (strcmp_P(name,WiFiId_pm)== 0)  {
-#define WIFIID_ADDR ps.msn.s.WiFiId
-            Serial.print(F("WiFiId: was '"));
-            Serial.print(modemPhy.getWiFiId());
-            strcpy((char *)WIFIID_ADDR, value);
-            modemPhy.setWiFiId(WIFIID_ADDR);
-            //modemPhy.setWiFiId(value);
-            Serial.print(F("' now '"));
-            Serial.print(modemPhy.getWiFiId());
-            //Serial.print(WIFIID_ADDR);
-            Serial.println("'");
-        } else if (strcmp_P(name,WiFiPwd_pm)== 0) {
-#define WIFIPWD_ADDR ps.msn.s.WiFiPwd
-            strcpy((char *)WIFIPWD_ADDR, value);
-            modemPhy.setWiFiPwd(WIFIPWD_ADDR);
-            Serial.print(F("WiFiPwd:'"));
-            Serial.print(WIFIPWD_ADDR);
-            Serial.println("'");
-        } else {
-            Serial.print(F("NETWORK tbd "));
-            Serial.print(name);
-            Serial.print(F(" to "));  
-            Serial.println(value);  
-        }
-    } else if (strcmp_P(section,BOOT_pm)== 0) 
-    {
-        #if 0
-        //FUT: needs to go into EEPROM
-        if (strcmp_P(name,VER_pm)== 0) {
-            strcpy(ps.provider.s.registration_token, value);
-        } else
-        const char VER_pm[] EDIY_PROGMEM = "VER";
-const char MAYFLY_SN_pm[] EDIY_PROGMEM = "MAYFLY_SN"; 
-const char MAYFLY_REV_pm[] EDIY_PROGMEM = "MAYFLY_REV";
-const char MAYFLY_INIT_ID_pm[] EDIY_PROGMEM = "MAYFLY_INIT_ID";
-        #endif  
-        if (strcmp_P(name,MAYFLY_SN_pm)== 0) {
-            //FUT: needs to go into EEPROM
-            //strcpy(ps.hw_boot.s.serial_num, value);
-            //MFsn_def
-            //FUT needs to be checked for sz
-            Serial.print(F("Mayfly SerialNum :"));
-            Serial.println(value);
-#if 0
-//Need to use to update EEPROM. Can cause problems if wrong. 
-        } else if (strcmp_P(name,MAYFLY_REV_pm)== 0) {
-            //FUT: needs to go into EEPROM
-            //strcpy(ps.hw_boot.s.rev, value);
-            //FUT needs to be checked for sz
-            strcpy(MFVersion, value);
-            Serial.print(F("Mayfly Rev:"));
-            Serial.println(MFVersion);
-#endif //
-        } else
-        {
-            Serial.print(F("BOOT tbd "));
-            Serial.print(name);
-            Serial.print(F(" to "));  
-            Serial.println(value);
-        }  
-    } else
-    {
-        Serial.print(F("Not supported ["));
-        Serial.print(section);
-        Serial.println(F("] "));
-        Serial.print(name);
-        Serial.print(F("="));  
-        Serial.println(value);  
-    }
-    return 1;
-}
-#endif //USE_SD_MAYFLY_INI
-//mayfly Sleep processing
-#define mfSLEEP_TEST
-#ifdef mfSLEEP_TEST
-void mfSystemSleep()
-{
-  //This method handles any sensor specific sleep setup
-  sensorsSleep();
-  
-  //Wait until the serial ports have finished transmitting
-  Serial.flush();
-  //Serial1.flush();
-  
-  //The next timed interrupt will not be sent until this is cleared
-  rtc.clearINTStatus();
-    
-  //Disable ADC
-  ADCSRA &= ~_BV(ADEN);
-  
-  //Sleep time
-  noInterrupts();
-  sleep_enable();
-  interrupts();
-  sleep_cpu();
-  sleep_disable();
- 
-  //Enbale ADC
-  ADCSRA |= _BV(ADEN);
-  
-  //This method handles any sensor specific wake setup
- // sensorsWake();
-}
- 
-void sensorsSleep()
-{
-  //Add any code which your sensors require before sleep
-}
-#endif //mfSLEEP_TEST
+    // Print a start-up note to the first serial port
+    Serial.print(F("Now running "));
+    Serial.print(sketchName);
+    Serial.print(F(" on Logger "));
+    Serial.println(LoggerID);
+    Serial.println();
 
-// ==========================================================================
-// Modem setup
-// ==========================================================================
-bool modemSetup=false;
- void setupModem(){
-   // Set up the sleep/wake pin for the modem and put its inital value as "off"
+    Serial.print(F("Using ModularSensors Library version "));
+    Serial.println(MODULAR_SENSORS_VERSION);
+
+    // Start the serial connection with the modem
+    ModemSerial.begin(ModemBaud);
+
+    // Start the stream for the modbus sensors
+    modbusSerial.begin(9600);
+
+    // Start the SoftwareSerial stream for the sonar
+    sonarSerial.begin(9600);
+    // Allow interrupts for software serial
+    #if defined SoftwareSerial_ExtInts_h
+        enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
+    #endif
+    #if defined NeoSWSerial_h
+        enableInterrupt(SonarData, NeoSWSISR, CHANGE);
+    #endif
+
+    // Set up pins for the LED's
+    pinMode(greenLED, OUTPUT);
+    digitalWrite(greenLED, LOW);
+    pinMode(redLED, OUTPUT);
+    digitalWrite(redLED, LOW);
+    // Blink the LEDs to show the board is on and starting up
+    greenredflash();
+
+    // Set up the sleep/wake pin for the modem and put its inital value as "off"
     #if defined(TINY_GSM_MODEM_XBEE)
-        if(modemSleepRqPin >= 0) 
-        {
-            Serial.print(F("Setting up sleep mode on the XBee. "));
-            Serial.println(modemSleepRqPin);
-            pinMode(modemSleepRqPin, OUTPUT);
-            digitalWrite(modemSleepRqPin, LOW);  // Turn it on to talk, just in case
-        }
+        Serial.println(F("Setting up sleep mode on the XBee."));
+        pinMode(modemSleepRqPin, OUTPUT);
+        digitalWrite(modemSleepRqPin, LOW);  // Turn it on to talk, just in case
         if (tinyModem->commandMode())
         {
             tinyModem->sendAT(F("SM"),1);  // Pin sleep
             tinyModem->waitResponse();
             tinyModem->sendAT(F("DO"),0);  // Disable remote manager
             tinyModem->waitResponse();
-            //tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
-            //tinyModem->waitResponse();
-        } else {
-            PRINTOUT(F("Xbee Modem - not available! Not set to pin sleep"));
+            tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
+            tinyModem->waitResponse();
+            tinyModem->sendAT(F("SO"),200);  // For WiFi - Disassociate from AP for Deep Sleep
+            tinyModem->waitResponse();
+            tinyModem->writeChanges();
+            tinyModem->exitCommand();
         }
-        if(modemSleepRqPin >= 0) {
-            digitalWrite(modemSleepRqPin, HIGH);  // back to sleep
-        }
+        digitalWrite(modemSleepRqPin, HIGH);  // back to sleep
     #elif defined(TINY_GSM_MODEM_ESP8266)
         if (modemSleepRqPin >= 0)
         {
@@ -1146,340 +844,32 @@ bool modemSetup=false;
         pinMode(modemSleepRqPin, OUTPUT);
         digitalWrite(modemSleepRqPin, LOW);
     #endif
-    modemSetup = true;
- }
- // ====================
-  void modemCheckHasIp() {
-#if defined(TINY_GSM_MODEM_XBEE)
-    //expect wakeFxn();
-    if (tinyModem->commandMode() )
-    {
-        PRINTOUT(F("IP number is "));
-        tinyModem->sendAT(F("MY"));  // Request IP #
-        tinyModem->waitResponse();
-        if( XBEE_S6B_WIFI == tinyModem->getBeeType()) {
-            MS_DBG(F("  Set XB WiFi\n"));
-            // Cellular 3G Global SM yes, SO no
-            // Cellular LTE-M SM yes, SO no
-            // Cellular LTE CAT1 - SM yes, SO 0
-            // WiFi S6B SM yes, SO yes
-            //For WiFi AP  Bit4/0x140 Associate in sleep or default 0x100 Disassociate for Deep Sleep
-            tinyModem->sendAT(F("SO"),100); //0X140 or 320 decimal
-            tinyModem->waitResponse();
-            tinyModem->writeChanges();
-        }
-        tinyModem->exitCommand();
-    } else {
-        PRINTOUT(F("nh: Check IP number. not in CMD modem!"));
-    }
-    //Expect sleepFxn();
-#endif //TINY_GSM_MODEM_XBEE   
-  }
-// ==========================================================================
-// Main setup function
-// ==========================================================================
-void setup()
-{
-    bool LiBattPower_Unseable;
-    uint16_t lp_wait=1;
-    //ADCSRA |= _BV(ADEN);
-    //uint8_t mcu_status = MCUSR; is already cleared by Arduino startup???
-    //MCUSR = 0; //reset for unique read
-    // Start the primary serial connection
-    Serial.begin(serialBaud);
-    Serial.print(F("---Boot. Build date:")); 
-    Serial.print(build_date);
-    //Serial.write('/');
-    //Serial.print(build_epochTime,HEX);
-    //Serial.print(__TIMESTAMP__); //still a ASC string Tue Dec 04 19:47:20 2018
-    extern int16_t __heap_start, *__brkval;
-    uint16_t top_stack = (int) &top_stack  - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
- 
-    Serial.print(F(" Ram available:"));
-    Serial.println(top_stack );// Stack and heap ??
-    //MCUSR Serial.println(mcu_status,HEX);
-    Serial.println(file_name); //Dir and filename
-    Serial.print(F("Mayfly Sn: "));
-    Serial.print(MFsn_def);
-    Serial.print(F(" "));
-    Serial.print(MFVersion);
-    Serial.print(F(" Logger:"));
-    Serial.println(LoggerID_def);
-    Serial.print(F("ModularSensors vers "));
-    Serial.println(MODULAR_SENSORS_VERSION);
-    Serial.print(F("Current Time: "));
-    EnviroDIYLogger.beginRtc();
-    Serial.println(EnviroDIYLogger.formatDateTime_ISO8601(EnviroDIYLogger.getNowEpoch()+(timeZone_def*60)) );
-
-    do {
-        LiBattPower_Unseable = ((PS_LBATT_UNUSEABLE_STATUS == mayflyPhy.isBatteryStatusAbove(true,PS_PWR_LOW_REQ))?true:false);
-        if (LiBattPower_Unseable)
-        {
-            /* Sleep 
-            * If can't collect data wait for more power to accumulate.
-            * This sleep appears to taking 5mA, where as later sleep takes 3.7mA
-            * Under no other load conditions the mega1284 takes about 35mA
-            * Another issue is that onstartup currently requires turning on comms device to set it up.
-            * On an XbeeS6 WiFi this can take 20seconds for some reason.
-            */
-            #if 1//defined(CHECK_SLEEP_POWER)
-            Serial.print(lp_wait++);
-            Serial.print(F(": BatteryLow-Sleep60sec, BatV="));
-            Serial.println(mayflyPhy.getBatteryVm1(false));
-            #endif //(CHECK_SLEEP_POWER)
-            //delay(59000); //60Seconds
-            //if(_mcuWakePin >= 0){systemSleep();}
-            EnviroDIYLogger.systemSleep(); 
-            Serial.println(F("----Wakeup"));
-        }
-    } while (LiBattPower_Unseable); 
-
-    MS_DBG(F("BatV="),mayflyPhy.getBatteryVm1(false));
-
-    // Start the serial connection with the modem
-    ModemSerial.begin(ModemBaud);
-
-#if !defined(SENSOR_RS485_PHY)
-    modbusSerial.begin(9600);
-#else
-    digitalWrite(RS485PHY_TX, LOW);   // Reset AltSoftSerial Tx pin to LOW
-    digitalWrite(RS485PHY_RX, LOW);   // Reset AltSoftSerial Rx pin to LOW
-#endif
-
-#ifdef SENSOR_CONFIG_GENERAL
-    // Start the SoftwareSerial stream for the sonar
-    sonarSerial.begin(9600);
-#endif // SENSOR_CONFIG_GENERAL
-    // Allow interrupts for software serial
-    #if defined SoftwareSerial_ExtInts_h
-        enableInterrupt(SonarData, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
-    #endif
-    #if defined NeoSWSerial_h
-        enableInterrupt(SonarData, NeoSWSISR, CHANGE);
-    #endif
-
-    // Set up pins for the LED's
-    pinMode(greenLED, OUTPUT);
-    digitalWrite(greenLED, LOW);
-    pinMode(redLED, OUTPUT);
-    digitalWrite(redLED, LOW);
-    // Blink the LEDs to show the board is on and starting up
-    greenredflash();
-
-#ifdef USE_SD_MAYFLY_INI
-    PRINTOUT(F("***parseIni "));
-    EnviroDIYLogger.parseIniSd(MayflyIniID,inihUnhandledFn);
-#endif //USE_SD_MAYFLY_INI
-#if 0
-    Serial.print(F(" .ini-Logger:"));
-    Serial.println(ps.msc.s.logger_id[0]);
-    Serial.println(F(" List of UUIDs"));
-    uint8_t i_lp;
-    for (i_lp=0;i_lp<variableCount;i_lp++)
-    {
-        Serial.print(F("["));
-        Serial.print(i_lp);
-        Serial.print(F("] "));
-        Serial.println(variableList[i_lp]->getVarUUID() );
-    }
-    //Serial.print(F("sF "))
-    Serial.print(samplingFeature);
-    Serial.print(F("/"));
-    Serial.println(ps.provider.s.sampling_feature);
-#endif //1
-    //List PowerManagementSystem LiIon Bat thresholds
-
-    mayflyPhy.printBatteryThresholds();
-#if 0
-    uint8_t psilp,psolp;
-    for (psolp=0; psolp<PSLR_NUM;psolp++) {
-        Serial.print(psolp);
-        Serial.print(F(": "));
-        for (psilp=0; psilp<PS_LPBATT_TBL_NUM;psilp++) {
-            Serial.print(mayflyPhy.PS_LBATT_TBL[psolp][psilp]);
-            Serial.print(F(", "));
-        }
-        Serial.println();
-    }
-#endif //0
- 
 
     // Set the timezone and offsets
     // Logging in the given time zone
-    Logger::setTimeZone(timeZone_def);
+    Logger::setTimeZone(timeZone);
     // Offset is the same as the time zone because the RTC is in UTC
-    Logger::setTZOffset(timeZone_def);
-#if !defined(CHECK_SLEEP_POWER)
+    Logger::setTZOffset(timeZone);
+
     // Attach the modem and information pins to the logger
-    EnviroDIYLogger.attachModem(modemPhy); //Only saves the modemPhy - no other action
+    EnviroDIYLogger.attachModem(modem);
     EnviroDIYLogger.setAlertPin(greenLED);
-    //EnviroDIYLogger.setTestingModePin(buttonPin);
+    EnviroDIYLogger.setTestingModePin(buttonPin);
 
     // Enter the tokens for the connection with EnviroDIY
-    EnviroDIYLogger.setToken(ps.provider.s.registration_token);
-    EnviroDIYLogger.setSamplingFeatureUUID(ps.provider.s.sampling_feature);
+    EnviroDIYLogger.setToken(registrationToken);
+    EnviroDIYLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Begin the logger
-    PRINTOUT(F("beginAndNoSync "));
-    EnviroDIYLogger.beginLogger();
-
-#endif //CHECK_SLEEP_POWER   
+    EnviroDIYLogger.beginAndSync();
 }
 
 
-// ==========================================================================
-// Main loop function
-// ==========================================================================
-void processSensors()
-{
-    // Log the data
-#if !defined(SENSOR_RS485_PHY)
-    //older EnviroDIYLogger.logAndSend();
-    EnviroDIYLogger.logDataAndSend();
-#else //SENSOR_RS485_PHY
-
-    // If the number of intervals is negative, then the sensors and file on
-    // the SD card haven't been setup and we want to set them up.
-    // NOTE:  Unless it completed in less than one second, the sensor set-up
-    // will take the place of logging for this interval!
-    #if 0
-    if (EnviroDIYLogger._numIntervals < 0)
-    {
-        // Set up the sensors
-        PRINTOUT(F("Sensors and data file had not been set up!  Setting them up now."));
-        varArray.setupSensors();
-
-       // Create the log file, adding the default header to it
-       if (EnviroDIYLogger._autoFileName) generateAutoFileName();
-       if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
-       else PRINTOUT(F("Unable to create a file to save data to!"));
-
-       // Now, set the number of intervals to 0
-       EnviroDIYLogger._numIntervals = 0;
-    }
-#endif
-    // Reset AltSoftSerial pins to LOW, to reduce power bleed on sleep, 
-    // because Modbus Stop bit leaves these pins HIGH
-
-    // Assuming we were woken up by the clock, check if the current time is an
-    // even interval of the logging interval
-    if (EnviroDIYLogger.checkInterval())
-    {
-        // Flag to notify that we're in already awake and logging a point
-        //Logger::isLoggingNow = true;
-
-        if (PS_LBATT_UNUSEABLE_STATUS==mayflyPhy.isBatteryStatusAbove(true,PS_PWR_USEABLE_REQ)) {
-            MS_DBG(F("---NewReading CANCELLED--Lbatt_V="));
-            MS_DBG(mayflyPhy.getBatteryVm1(false));
-            MS_DBG("\n");
-            return;
-        }
-        // Print a line to show new reading
-        PRINTOUT(F("---NewReading-----------------------------"));
-        MS_DBG(F("Lbatt_V="),mayflyPhy.getBatteryVm1(false));
-        //PRINTOUT(F("----------------------------\n"));
-#if !defined(CHECK_SLEEP_POWER)
-        // Turn on the LED to show we're taking a reading
-        digitalWrite(greenLED, HIGH);
-
-        // Start the stream for the modbus sensors
-        // Because RS485 adapters tend to "steal" current from the data pins
-        // we will explicitly start and end the serial connection in the loop.
-        modbusSerial.begin(9600);
-
-        // Do a complete sensor update
-        //MS_DBG(F("    Running a complete sensor update...\n"));
-        //_internalArray->completeUpdate();
-        varArray.completeUpdate();
-
-        // End the stream for the modbus sensors
-        // Because RS485 adapters tend to "steal" current from the data pins
-        // we will explicitly start and end the serial connection in the loop.
-        modbusSerial.end();
-        // Reset AltSoftSerial pins to LOW, to reduce power bleed on sleep, 
-        // because Modbus Stop bit leaves these pins HIGH
-        digitalWrite( RS485PHY_TX, LOW);   // Reset AltSoftSerial Tx pin to LOW
-        digitalWrite( RS485PHY_RX, LOW);   // Reset AltSoftSerial Rx pin to LOW
-
-        // Create a csv data record and save it to the log file
-        EnviroDIYLogger.logToSD();
-         // Turn on the modem to let it start searching for the network
-
-        //if Modem  is Cellular then PS_PWR_HEAVY_REQ
-        if (PS_LBATT_UNUSEABLE_STATUS==mayflyPhy.isBatteryStatusAbove(false,PS_PWR_MEDIUM_REQ)) 
-        {          
-            MS_DBG(F("---NewCloud Update CANCELLED---\n"));
-        } else 
-        {
-            if (EnviroDIYLogger._logModem != NULL) modemPhy.modemPowerUp();
-            //modemPhy.modemPowerUp();
-            if (EnviroDIYLogger._logModem != NULL)
-            {
-                if (!modemSetup) {
-                    // The first time thru, setup modem. Can't do it in regular setup due to potential power drain.
-                    setupModem();
-                    modemCheckHasIp();
-                    PRINTOUT(F("***timeSync "));
-                    EnviroDIYLogger.timeSync();
-                }
-                // Connect to the network
-                MS_DBG(F("  Connecting to the Internet...\n"));
-                if (modemPhy.connectInternet())
-                {
-                    MS_DBG(F("  sending..\n"));
-                    // Post the data to the WebSDL
-                    EnviroDIYLogger.postDataEnviroDIY();
-
-                    // Sync the clock every 288 readings (1/day at 5 min intervals)
-                    //if (_numTimepointsLogged % 288 == 0)
-                    //MS_DBG(F("  Running a daily clock sync...\n"));
-                    //{
-                    //    EnviroDIYLogger.syncRTClock(_logModem->getNISTTime());
-                    //}
-
-                    // Disconnect from the network
-                    MS_DBG(F("  Disconnecting from the Internet...\n"));
-                    modemPhy.disconnectInternet();
-                } else {MS_DBG(F("  No internet connection...\n"));}
-                // Turn the modem off
-                modemPhy.modemSleepPowerDown();
-            } else MS_DBG(F("  No Modem configured.\n"));
-            PRINTOUT(F("---Complete-------------------------------\n"));
-        }
-        // Turn off the LED
-        digitalWrite(greenLED, LOW);
-        // Print a line to show reading ended
-
-#endif //(CHECK_SLEEP_POWER)
-        // Unset flag
-        //Logger::isLoggingNow = false;
-    }
-}
-
-void processEverything()
-{
-    processSensors();
-    // Check if it was instead the testing interrupt that woke us up
-    // not implemented yet: if (EnviroDIYLogger.startTesting) EnviroDIYLogger.testingMode();
-
-    // Sleep
-    //if(_mcuWakePin >= 0){systemSleep();}
-    EnviroDIYLogger.systemSleep();
-#if defined(CHECK_SLEEP_POWER)
-    PRINTOUT(F("A"));
-#endif //(CHECK_SLEEP_POWER)
-#endif //SENSOR_RS485_PHY
-}
 // ==========================================================================
 // Main loop function
 // ==========================================================================
 void loop()
 {
-    processEverything();
-    #if 0
-    for (;;) {
-		loop();
-		if (serialEventRun) serialEventRun();
-	}
-    #endif
+    // Log the data
+    EnviroDIYLogger.logDataAndSend();
 }

@@ -5,7 +5,9 @@ before_install:
 sudo: false
 git:
   depth: 1
+  sparse_checkout: travis_sparse_checkout
 cache:
+    pip: true
     directories:
         - "~/.platformio"
 language: python
@@ -14,25 +16,38 @@ python:
 install:
     # Remove the cloned repo to emulate a user library installation
     - git rm library.json
-    - git rm library.properties
-    - git rm -r pioScripts
-    - git rm -r src
+    # - git rm library.properties
+    # - git rm -r pioScripts
+    # - git rm -r src
     # Install PlatformIO (this should be cached!)
     - pip install -U platformio
     - pio upgrade
     # Uninstall any old version of the current library from the Travis cache
-    # - pio lib -g uninstall EnviroDIY_ModularSensors
-    # Get the current branch
-    - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
-    - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH, PR=$PR, BRANCH=$BRANCH"
+    - if pio lib -g uninstall EnviroDIY_ModularSensors; then
+        echo "Uninstalled cached version of ModularSensors";
+      fi
     # Install this library from the branch we're working on
-    - pio lib -g install https://github.com/EnviroDIY/ModularSensors.git#$BRANCH
-    # Install serial libraries needed for most examples
-    - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git  # #73, but need the git until Paul S. has a new release
-    - pio lib -g install https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
+    # echo "Installing ModularSensors from https://github.com/$TRAVIS_REPO_SLUG.git#$TRAVIS_BRANCH";
+    # echo "Installing ModularSensors from https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_BRANCH";
+    - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+        echo "Installing ModularSensors from https://github.com/$TRAVIS_REPO_SLUG.git#$TRAVIS_COMMIT";
+      else
+        echo "Installing ModularSensors from https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_SHA";
+      fi
+    # pio lib -g install https://github.com/$TRAVIS_REPO_SLUG.git#$BRANCH;
+    # pio lib -g install https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_BRANCH;
+    - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+        pio lib -g install https://github.com/$TRAVIS_REPO_SLUG.git#$TRAVIS_COMMIT;
+      else
+        pio lib -g install https://github.com/$TRAVIS_PULL_REQUEST_SLUG.git#$TRAVIS_PULL_REQUEST_SHA;
+      fi
+    # Install serial libraries (these should be ignored by SAMD boards)
+    - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git
+    - pio lib -g install https://github.com/EnviroDIY/SoftwareSerial_ExtInts.git
     - pio update
 script:
-    - platformio ci -v --project-option="lib_ignore = RTCZero" --project-option="lib_ldf_mode = deep+" --board=mayfly
+    - platformio ci --project-option="lib_ldf_mode = deep+" --project-option="lib_ignore = RTCZero" --board=mayfly  --board=megaatmega2560
+    - platformio ci --project-option="lib_ldf_mode = deep+" --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial, SoftI2CMaster" --board=adafruit_feather_m0  --board=sodaq_autonomo
 
 matrix:
     include:
@@ -42,7 +57,7 @@ matrix:
 
       - env:
           - PLATFORMIO_CI_SRC=examples/single_sensor/
-          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
+          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D ENABLE_SERIAL2 -D ENABLE_SERIAL3"
       - env:
           - PLATFORMIO_CI_SRC=examples/multisensor_print/
           - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
@@ -66,10 +81,22 @@ matrix:
           - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
       - env:
           - PLATFORMIO_CI_SRC=examples/data_saving/
-          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
-
+          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D ENABLE_SERIAL2 -D ENABLE_SERIAL3"
+      - env:
+          - PLATFORMIO_CI_SRC=examples/logging_to_ThingSpeak/
+          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D MQTT_MAX_PACKET_SIZE=240"
       - env:
         - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY_Zero/
         - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
+
+      - env:
+        - PLATFORMIO_CI_SRC=compile_tests/AVR_all_sensors/
+        - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
         script:
-            - platformio ci -v --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial, SoftI2CMaster"  --project-option="lib_ldf_mode = deep+" --board=adafruit_feather_m0
+          - platformio ci --project-option="lib_ldf_mode = deep+" --project-option="lib_ignore = RTCZero" --board=mayfly
+
+      - env:
+        - PLATFORMIO_CI_SRC=compile_tests/SAMD_all_sensors/
+        - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT"
+        script:
+          - platformio ci --project-option="lib_ldf_mode = deep+" --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial, SoftI2CMaster" --board=adafruit_feather_m0

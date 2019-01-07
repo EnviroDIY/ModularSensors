@@ -2,7 +2,7 @@
 //    Modem/Internet connection options
 // ==========================================================================
 
-// Select your modem chip, comment out all of the others
+// Select your modem chip
 #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
 // #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
 

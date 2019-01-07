@@ -1,5 +1,6 @@
 /*
  *LoggerBase.h
+
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -8,6 +9,7 @@
 */
 
 #include "LoggerBase.h"
+#include "dataPublisherBase.h"
 
 // To prevent compiler/linker crashes with Enable interrupt
 #define LIBCALL_ENABLEINTERRUPT
@@ -47,7 +49,7 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
     _internalArray = inputArray;
 
     // Mark sensor set-up as not set up
-    _areSensorsSetup = 0;
+    _areSensorsSetup = false;
 
     // Set the testing/logging flags to false
     isLoggingNow = false;
@@ -60,11 +62,188 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
 
     // Initialize with no file name
     _fileName = "";
-    _autoFileName = true;
+
+    // Start with no feature UUID
+    _samplingFeatureUUID = NULL;
+
+    // Clear arrays
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++)
+    {
+        dataPublishers[i] = NULL;
+    }
 }
 // Destructor
 Logger::~Logger(){}
 
+
+
+// ===================================================================== //
+// Public functions to get and set basic logging paramters
+// ===================================================================== //
+
+// Adds the sampling feature UUID
+void Logger::setSamplingFeatureUUID(const char *samplingFeatureUUID)
+{
+    _samplingFeatureUUID = samplingFeatureUUID;
+    MS_DBG(F("Sampling feature UUID set!"));
+}
+
+// Sets up a pin for an LED or other way of alerting that data is being logged
+void Logger::setAlertPin(int8_t ledPin)
+{
+    _ledPin = ledPin;
+    pinMode(_ledPin, OUTPUT);
+    MS_DBG(F("Pin "), _ledPin, F(" set as LED alert pin"));
+}
+void Logger::alertOn()
+{
+    if (_ledPin >= 0)
+    {
+        digitalWrite(_ledPin, HIGH);
+    }
+}
+void Logger::alertOff()
+{
+    if (_ledPin >= 0)
+    {
+    digitalWrite(_ledPin, LOW);
+    }
+}
+
+
+// Sets up a pin for an interrupt to enter testing mode
+void Logger::setTestingModePin(int8_t buttonPin)
+{
+    _buttonPin = buttonPin;
+    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT_PULLUP);
+    MS_DBG(F("Pin "), _buttonPin, F(" set as testing mode entry pin"));
+}
+
+
+
+// ===================================================================== //
+// Public functions to get information about the attached variable array
+// ===================================================================== //
+
+// Returns the number of variables in the internal array
+uint8_t Logger::getArrayVarCount()
+{
+    return _internalArray->getVariableCount();
+}
+
+// This gets the name of the parent sensor, if applicable
+String Logger::getParentSensorNameAtI(uint8_t position_i)
+{
+    return _internalArray->arrayOfVars[position_i]->getParentSensorName();
+}
+// This gets the name and location of the parent sensor, if applicable
+String Logger::getParentSensorNameAndLocationAtI(uint8_t position_i)
+{
+    return _internalArray->arrayOfVars[position_i]->getParentSensorNameAndLocation();
+}
+// This gets the variable's name using http://vocabulary.odm2.org/variablename/
+String Logger::getVarNameAtI(uint8_t position_i)
+{
+    return _internalArray->arrayOfVars[position_i]->getVarName();
+}
+// This gets the variable's unit using http://vocabulary.odm2.org/units/
+String Logger::getVarUnitAtI(uint8_t position_i)
+{
+    return _internalArray->arrayOfVars[position_i]->getVarUnit();
+}
+// This returns a customized code for the variable, if one is given, and a default if not
+String Logger::getVarCodeAtI(uint8_t position_i)
+{
+    return _internalArray->arrayOfVars[position_i]->getVarCode();
+}
+// This returns the variable UUID, if one has been assigned
+String Logger::getVarUUIDAtI(uint8_t position_i)
+{
+    return _internalArray->arrayOfVars[position_i]->getVarUUID();
+}
+// This returns the current value of the variable as a string with the
+// correct number of significant figures
+String Logger::getValueStringAtI(uint8_t position_i)
+{
+    return _internalArray->arrayOfVars[position_i]->getValueString();
+}
+
+
+
+// ===================================================================== //
+// Public functions for internet and dataPublishers
+// ===================================================================== //
+
+// Set up communications
+// Adds a loggerModem objct to the logger
+// loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
+void Logger::attachModem(loggerModem& modem)
+{
+    _logModem = &modem;
+    // Print out the modem info
+    PRINTOUT(F("A "), _logModem->getSensorName(),
+             F(" has been tied to this logger!"));
+}
+
+
+// Takes advantage of the modem to synchronize the clock
+bool Logger::syncRTC()
+{
+    bool success = false;
+    if (_logModem != NULL)
+    {
+        // Synchronize the RTC with NIST
+        PRINTOUT(F("Attempting to synchronize RTC with NIST"));
+        PRINTOUT(F("This may take up to two minutes!"));
+        // Connect to the network
+        // The connectInternet function will also power the modem up and run
+        // its setup function if necessary.
+        if (_logModem->connectInternet(120000L))
+        {
+            success = setRTClock(_logModem->getNISTTime());
+            // Disconnect from the network
+            _logModem->disconnectInternet();
+        }
+        // Turn off the modem
+        _logModem->modemSleepPowerDown();
+    }
+    return success;
+}
+
+
+void Logger::registerDataPublisher(dataPublisher* publisher)
+{
+    // find the next empty spot in the publisher array
+    uint8_t i = 0;
+    for (; i < MAX_NUMBER_SENDERS; i++)
+    {
+        if (dataPublishers[i] == NULL) break;
+    }
+
+    // register the publisher there
+    dataPublishers[i] = publisher;
+}
+
+
+void Logger::sendDataToRemotes(void)
+{
+    MS_DBG(F("Sending out remote data."));
+
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++)
+    {
+        if (dataPublishers[i] != NULL)
+        {
+            PRINTOUT(F("\nSending data to "), dataPublishers[i]->getEndpoint());
+            dataPublishers[i]->sendData(_logModem->getClient());
+        }
+    }
+}
+
+
+
+// ===================================================================== //
+// Public functions to access the clock in proper format and time zone
+// ===================================================================== //
 
 // Sets the static timezone - this must be set
 void Logger::setTimeZone(int8_t timeZone)
@@ -105,7 +284,7 @@ void Logger::setLoggingInterval(uint16_t loggingIntervalMinutes)
         PRINTOUT(prtout1, _loggingIntervalMinutes);
     #endif
 }
-
+#if 0
 // Sets up a pin for an LED or other way of alerting that data is being logged
 void Logger::setAlertPin(int8_t ledPin)
 {
@@ -120,7 +299,7 @@ void Logger::setTestingModePin(int8_t buttonPin)
     _buttonPin = buttonPin;
     MS_DBG(F("Pin "), _buttonPin, F(" set as testing mode entry pin"));
 }
-
+#endif //0
 
 // ===================================================================== //
 // Public functions to access the clock in proper format and time zone
@@ -200,37 +379,32 @@ String Logger::formatDateTime_ISO8601(uint32_t epochTime)
 }
 
 
-// This syncronizes the real time clock
-bool Logger::syncRTClock(uint32_t nist)
+// This sets the real time clock to the given time
+bool Logger::setRTClock(uint32_t setTime)
 {
-    uint32_t start_millis = millis();
-
     // If the timestamp is zero, just exit
-    if  (nist == 0)
+    if  (setTime == 0)
     {
-        PRINTOUT(F("Bad timestamp, skipping sync."));
+        PRINTOUT(F("Bad timestamp, not setting clock."));
         return false;
     }
 
-    uint32_t nist_logTZ = nist + getTimeZone()*3600;
-    uint32_t nist_rtcTZ = nist_logTZ - getTZOffset()*3600;
-    MS_DBG(F("         Correct Time for Logger: "), nist_logTZ, F(" -> "), \
-        formatDateTime_ISO8601(nist_logTZ));
-
-    // See how long it took to get the time from NIST
-    uint32_t sync_time = (millis() - start_millis)/1000;
+    uint32_t set_logTZ = setTime + getTimeZone()*3600;
+    uint32_t set_rtcTZ = set_logTZ - getTZOffset()*3600;
+    MS_DBG(F("         Correct Time for Logger: "), set_logTZ, F(" -> "), \
+        formatDateTime_ISO8601(set_logTZ));
 
     // Check the current RTC time
     uint32_t cur_logTZ = getNowEpoch();
     MS_DBG(F("            Time Returned by RTC: "), cur_logTZ, F(" -> "), \
         formatDateTime_ISO8601(cur_logTZ));
-    MS_DBG(F("Offset: "), abs(nist_logTZ - cur_logTZ));
+    MS_DBG(F("Offset: "), abs(set_logTZ - cur_logTZ));
 
     // If the RTC and NIST disagree by more than 5 seconds, set the clock
-    if ((abs(nist_logTZ - cur_logTZ) > 5) && (nist != 0))
+    if ((abs(set_logTZ - cur_logTZ) > 5) && (setTime != 0))
     {
-        setNowEpoch(nist_rtcTZ + sync_time/2);
-        PRINTOUT(F("Clock synced!"));
+        setNowEpoch(set_rtcTZ);
+        PRINTOUT(F("Clock set!"));
         return true;
     }
     else
@@ -322,6 +496,9 @@ void Logger::wakeISR(void)
     // Sets up the sleep mode
     void Logger::setupSleep(void)
     {
+        // Nothing to do if we don't have a wake pin
+        if(_mcuWakePin < 0) return;
+
         // Alarms on the RTC built into the SAMD21 appear to be identical to those
         // in the DS3231.  See more notes below.
         // We're setting the alarm seconds to 59 and then seting it to go off
@@ -335,6 +512,9 @@ void Logger::wakeISR(void)
     // This DOES NOT sleep or wake the sensors!!
     void Logger::systemSleep(void)
     {
+        // Don't go to sleep unless there's a wake pin!
+        if (_mcuWakePin < 0) return;
+
         // Wait until the serial ports have finished transmitting
         // This does not clear their buffers, it just waits until they are finished
         // TODO:  Make sure can find all serial ports
@@ -375,6 +555,9 @@ void Logger::wakeISR(void)
     // Sets up the sleep mode
     void Logger::setupSleep(void)
     {
+        // Nothing to do if we don't have a wake pin
+        if(_mcuWakePin < 0) return;
+
         // Set the pin attached to the RTC alarm to be in the right mode to listen to
         // an interrupt and attach the "Wake" ISR to it.
         pinMode(_mcuWakePin, INPUT_PULLUP);
@@ -402,6 +585,9 @@ void Logger::wakeISR(void)
     // This DOES NOT sleep or wake the sensors!!
     void Logger::systemSleep(void)
     {
+        // Don't go to sleep unless there's a wake pin!
+        if (_mcuWakePin < 0) return;
+
         // Wait until the serial ports have finished transmitting
         // This does not clear their buffers, it just waits until they are finished
         // TODO:  Make sure can find all serial ports
@@ -509,7 +695,6 @@ void Logger::wakeISR(void)
 void Logger::setFileName(String& fileName)
 {
     _fileName = fileName;
-    _autoFileName = false;
 }
 // Same as above, with a character array (overload function)
 void Logger::setFileName(const char *fileName)
@@ -524,16 +709,13 @@ void Logger::setFileName(const char *fileName)
 // the begin() function is called.
 void Logger::generateAutoFileName(void)
 {
-    if (_autoFileName)
-    {
-        // Generate the file name from logger ID and date
-        String fileName =  String(_loggerID);
-        fileName +=  "_";
-        fileName +=  formatDateTime_ISO8601(getNowEpoch()).substring(0, 10);
-        fileName +=  ".csv";
-        setFileName(fileName);
-        _fileName = fileName;
-    }
+    // Generate the file name from logger ID and date
+    String fileName =  String(_loggerID);
+    fileName +=  "_";
+    fileName +=  formatDateTime_ISO8601(getNowEpoch()).substring(0, 10);
+    fileName +=  ".csv";
+    setFileName(fileName);
+    _fileName = fileName;
 }
 
 
@@ -543,12 +725,12 @@ void Logger::generateAutoFileName(void)
     stream->print("\""); \
     stream->print(firstCol); \
     stream->print("\","); \
-    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++) \
+    for (uint8_t i = 0; i < getArrayVarCount(); i++) \
     { \
         stream->print("\""); \
         stream->print(function); \
         stream->print("\""); \
-        if (i + 1 != _internalArray->getVariableCount()) \
+        if (i + 1 != getArrayVarCount()) \
         { \
             stream->print(","); \
         } \
@@ -566,20 +748,31 @@ void Logger::printFileHeader(Stream *stream)
     stream->print(F("Data Logger File: "));
     stream->println(_fileName);
 
+    // Adding the sampling feature UUID (only applies to EnviroDIY logger)
+    if (strlen(_samplingFeatureUUID) > 1)
+    {
+        stream->print(F("Sampling Feature UUID: "));
+        stream->println(_samplingFeatureUUID);
+    }
+
     // Next line will be the parent sensor names
-    STREAM_CSV_ROW(F("Sensor Name:"), _internalArray->arrayOfVars[i]->getParentSensorName())
+    STREAM_CSV_ROW(F("Sensor Name:"), getParentSensorNameAtI(i))
     // Next comes the ODM2 variable name
-    STREAM_CSV_ROW(F("Variable Name:"), _internalArray->arrayOfVars[i]->getVarName())
+    STREAM_CSV_ROW(F("Variable Name:"), getVarNameAtI(i))
     // Next comes the ODM2 unit name
-    STREAM_CSV_ROW(F("Result Unit:"), _internalArray->arrayOfVars[i]->getVarUnit())
+    STREAM_CSV_ROW(F("Result Unit:"), getVarUnitAtI(i))
     // Next comes the variable UUIDs
-    STREAM_CSV_ROW(F("Result UUID:"), _internalArray->arrayOfVars[i]->getVarUUID())
+    // We'll only add UUID's if we see a UUID for the first variable
+    if (getVarUUIDAtI(0).length() > 1)
+    {
+        STREAM_CSV_ROW(F("Result UUID:"), getVarUUIDAtI(i))
+    }
 
     // We'll finish up the the custom variable codes
     String dtRowHeader = F("Date and Time in UTC");
     if (_timeZone > 0) dtRowHeader += '+' + _timeZone;
     else if (_timeZone < 0) dtRowHeader += _timeZone;
-    STREAM_CSV_ROW(dtRowHeader, _internalArray->arrayOfVars[i]->getVarCode());
+    STREAM_CSV_ROW(dtRowHeader, getVarCodeAtI(i));
 }
 
 
@@ -591,10 +784,10 @@ void Logger::printSensorDataCSV(Stream *stream)
     dtFromEpoch(markedEpochTime).addToString(csvString);
     csvString += F(",");
     stream->print(csvString);
-    for (uint8_t i = 0; i < _internalArray->getVariableCount(); i++)
+    for (uint8_t i = 0; i < getArrayVarCount(); i++)
     {
-        stream->print(_internalArray->arrayOfVars[i]->getValueString());
-        if (i + 1 != _internalArray->getVariableCount())
+        stream->print(getValueStringAtI(i));
+        if (i + 1 != getArrayVarCount())
         {
             stream->print(F(","));
         }
@@ -713,13 +906,18 @@ bool Logger::createLogFile(String& filename, bool writeDefaultHeader)
     {
         // Close the file to save it (only do this if we'd opened it)
         logFile.close();
+        PRINTOUT(F("Data will be saved as "), _fileName);
         return true;
     }
-    else return false;
+    else
+    {
+        PRINTOUT(F("Unable to create a file to save data to!"));
+        return false;
+    }
 }
 bool Logger::createLogFile(bool writeDefaultHeader)
 {
-    if (_autoFileName) generateAutoFileName();
+    if (_fileName = "") generateAutoFileName();
     return createLogFile(_fileName, writeDefaultHeader);
 }
 
@@ -776,7 +974,7 @@ bool Logger::logToSD(void)
     {
         // Next try to create a new file, bail if we couldn't create it
         // Generate a filename with the current date, if the file name isn't set
-        if (_autoFileName) generateAutoFileName();
+        if (_fileName = "") generateAutoFileName();
         // Do add a default header to the new file!
         if (!openFile(_fileName, true, true))
         {
@@ -884,6 +1082,7 @@ void Logger::testingMode()
             _internalArray->printSensorData(&STANDARD_SERIAL_OUTPUT);
         #endif
         PRINTOUT(F("    -----------------------"));
+
         delay(5000);
     }
 
@@ -898,7 +1097,7 @@ void Logger::testingMode()
     Logger::isTestingNow = false;
 
     // Sleep
-    if(_mcuWakePin >= 0){systemSleep();}
+    systemSleep();
 }
 
 
@@ -906,19 +1105,30 @@ void Logger::testingMode()
 // Convience functions to call several of the above functions
 // ===================================================================== //
 
+// Setup the sensors and log files
+void Logger::setupSensorsAndFile(void)
+{
+    // if this is done, skip
+    if (_areSensorsSetup) return;
+
+    // Set up the sensors
+    PRINTOUT(F("Setting up sensors..."));
+    _internalArray->setupSensors();
+
+    // Create the log file, adding the default header to it
+    // Writing to the SD card can be power intensive, so if we're skipping
+    // the sensor setup we'll skip this too.
+    createLogFile(true);
+
+    // Mark sensors as having been setup
+    _areSensorsSetup = true;
+}
+
 // This does all of the setup that can't happen in the constructors
 // That is, things that require the actual processor/MCU to do something
 // rather than the compiler to do something.
  void Logger::begin(bool skipSensorSetup)
 {
-    // Set up pins for the LED and button
-    if (_ledPin >= 0)
-    {
-        pinMode(_ledPin, OUTPUT);
-        digitalWrite(_ledPin, LOW);
-    }
-    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT_PULLUP);
-
     #if defined ARDUINO_ARCH_SAMD
         zero_sleep_rtc.begin();
     #else
@@ -937,28 +1147,15 @@ void Logger::testingMode()
              _loggingIntervalMinutes, F(" minute intervals."));
 
     PRINTOUT(F("This logger has a variable array with "),
-             _internalArray->getVariableCount(), F(" variables, of which "),
-             _internalArray->getVariableCount() - _internalArray->getCalculatedVariableCount(),
+             getArrayVarCount(), F(" variables, of which "),
+             getArrayVarCount() - _internalArray->getCalculatedVariableCount(),
              F(" come from "),_internalArray->getSensorCount(), F(" sensors and "),
              _internalArray->getCalculatedVariableCount(), F(" are calculated."));
 
-    if (!skipSensorSetup)
-    {
-         // Set up the sensors
-         PRINTOUT(F("Setting up sensors..."));
-         _internalArray->setupSensors();
-
-        // Create the log file, adding the default header to it
-        if (_autoFileName) generateAutoFileName();
-        if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
-        else PRINTOUT(F("Unable to create a file to save data to!"));
-
-        // Mark sensors as having been setup
-        _areSensorsSetup = 1;
-    }
+    if (!skipSensorSetup) setupSensorsAndFile();
 
     // Setup sleep mode
-    if(_mcuWakePin >= 0){setupSleep();}
+    setupSleep();
 
     // Set up the interrupt to be able to enter sensor testing mode
     // NOTE:  Entering testing mode before the sensors have been set-up may
@@ -978,31 +1175,17 @@ void Logger::testingMode()
     PRINTOUT(F("------------------------------------------\n"));
 
     // Sleep
-    if(_mcuWakePin >= 0){systemSleep();}
+    systemSleep();
 }
 
 
 // This is a one-and-done to log data
 void Logger::logData(void)
 {
-    // If the number of intervals is negative, then the sensors and file on
-    // the SD card haven't been setup and we want to set them up.
+    // Set sensors and file up if it hasn't happened already
     // NOTE:  Unless it completed in less than one second, the sensor set-up
     // will take the place of logging for this interval!
-    if (!_areSensorsSetup)
-    {
-        // Set up the sensors
-        PRINTOUT(F("Sensors and data file had not been set up!  Setting them up now."));
-        _internalArray->setupSensors();
-
-       // Create the log file, adding the default header to it
-       if (_autoFileName) generateAutoFileName();
-       if (createLogFile(true)) PRINTOUT(F("Data will be saved as "), _fileName);
-       else PRINTOUT(F("Unable to create a file to save data to!"));
-
-       // Mark sensors as having been setup
-       _areSensorsSetup = 1;
-    }
+    setupSensorsAndFile();
 
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
@@ -1014,7 +1197,7 @@ void Logger::logData(void)
         // Print a line to show new reading
         PRINTOUT(F("------------------------------------------"));
         // Turn on the LED to show we're taking a reading
-        if (_ledPin >= 0) digitalWrite(_ledPin, HIGH);
+        alertOn();
 
         // Do a complete sensor update
         MS_DBG(F("    Running a complete sensor update..."));
@@ -1024,7 +1207,7 @@ void Logger::logData(void)
         logToSD();
 
         // Turn off the LED
-        if (_ledPin >= 0) digitalWrite(_ledPin, LOW);
+        alertOff();
         // Print a line to show reading ended
         PRINTOUT(F("------------------------------------------\n"));
 
@@ -1036,5 +1219,337 @@ void Logger::logData(void)
     if (Logger::startTesting) testingMode();
 
     // Sleep
-    if(_mcuWakePin >= 0){systemSleep();}
+    systemSleep();
 }
+// This is a one-and-done to log data
+void Logger::logDataAndSend(void)
+{
+    // Set sensors and file up if it hasn't happened already
+    // NOTE:  Unless it completed in less than one second, the sensor set-up
+    // will take the place of logging for this interval!
+    setupSensorsAndFile();
+
+    // Assuming we were woken up by the clock, check if the current time is an
+    // even interval of the logging interval
+    if (checkInterval())
+    {
+        // Flag to notify that we're in already awake and logging a point
+        Logger::isLoggingNow = true;
+
+        // Print a line to show new reading
+        PRINTOUT(F("------------------------------------------"));
+        // Turn on the LED to show we're taking a reading
+        alertOn();
+
+        // Turn on the modem to let it start searching for the network
+        if (_logModem != NULL) _logModem->modemPowerUp();
+
+        // Do a complete sensor update
+        MS_DBG(F("    Running a complete sensor update..."));
+        _internalArray->completeUpdate();
+
+        // Create a csv data record and save it to the log file
+        logToSD();
+
+        if (_logModem != NULL)
+        {
+            // Connect to the network
+            MS_DBG(F("  Connecting to the Internet..."));
+            if (_logModem->connectInternet())
+            {
+                // Post the data to the WebSDL
+                sendDataToRemotes();
+
+                // Sync the clock at midnight
+                if (markedEpochTime != 0 && markedEpochTime % 86400 == 0)
+                {
+                    MS_DBG(F("  Running a daily clock sync..."));
+                    setRTClock(_logModem->getNISTTime());
+                }
+
+                // Disconnect from the network
+                MS_DBG(F("  Disconnecting from the Internet..."));
+                _logModem->disconnectInternet();
+            }
+            else {MS_DBG(F("  Could not connect to the internet!"));}
+            // Turn the modem off
+            _logModem->modemSleepPowerDown();
+        }
+
+        // Turn off the LED
+        alertOff();
+        // Print a line to show reading ended
+        PRINTOUT(F("------------------------------------------\n"));
+
+        // Unset flag
+        Logger::isLoggingNow = false;
+    }
+
+    // Check if it was instead the testing interrupt that woke us up
+    if (Logger::startTesting) testingMode();
+
+    // Sleep
+    systemSleep();
+}
+
+// ===================================================================== //
+// Parse an ini file for customization
+// ===================================================================== //
+
+#define INI_USE_STACK 1
+/* Maximum line length for any line in INI file (stack or heap). Note that
+   this must be 3 more than the longest line (due to '\r', '\n', and '\0'). */
+//#define INI_MAX_LINE 200
+#define INI_MAX_LINE 100
+#define MAX_SECTION 50
+#define MAX_NAME 50
+/* Nonzero to allow multi-line value parsing, in the style of Python's
+   configparser. If allowed, ini_parse() will call the handler with the same
+   name for each subsequent line parsed. */
+#ifndef INI_ALLOW_MULTILINE
+#define INI_ALLOW_MULTILINE 1
+#endif
+
+/* Nonzero to allow a UTF-8 BOM sequence (0xEF 0xBB 0xBF) at the start of
+   the file. See https://github.com/benhoyt/inih/issues/21 */
+#ifndef INI_ALLOW_BOM
+#define INI_ALLOW_BOM 1
+#endif
+
+/* Chars that begin a start-of-line comment. Per Python configparser, allow
+   both ; and # comments at the start of a line by default. */
+#ifndef INI_START_COMMENT_PREFIXES
+#define INI_START_COMMENT_PREFIXES ";#"
+#endif
+
+/* Nonzero to allow inline comments (with valid inline comment characters
+   specified by INI_INLINE_COMMENT_PREFIXES). Set to 0 to turn off and match
+   Python 3.2+ configparser behaviour. */
+#ifndef INI_ALLOW_INLINE_COMMENTS
+#define INI_ALLOW_INLINE_COMMENTS 1
+#endif
+#ifndef INI_INLINE_COMMENT_PREFIXES
+#define INI_INLINE_COMMENT_PREFIXES ";"
+#endif
+
+/* Strip whitespace chars off end of given string, in place. Return s. */
+static char* rstrip(char* s)
+{
+    char* p = s + strlen(s);
+    while (p > s && isspace((unsigned char)(*--p)))
+        *p = '\0';
+    return s;
+}
+
+/* Return pointer to first non-whitespace char in given string. */
+static char* lskip(const char* s)
+{
+    while (*s && isspace((unsigned char)(*s)))
+        s++;
+    return (char*)s;
+}
+
+/* Return pointer to first char (of chars) or inline comment in given string,
+   or pointer to null at end of string if neither found. Inline comment must
+   be prefixed by a whitespace character to register as a comment. */
+static char* find_chars_or_comment(const char* s, const char* chars)
+{
+#if INI_ALLOW_INLINE_COMMENTS
+    int was_space = 0;
+    while (*s && (!chars || !strchr(chars, *s)) &&
+           !(was_space && strchr(INI_INLINE_COMMENT_PREFIXES, *s))) {
+        was_space = isspace((unsigned char)(*s));
+        s++;
+    }
+#else
+    while (*s && (!chars || !strchr(chars, *s))) {
+        s++;
+    }
+#endif
+    return (char*)s;
+}
+
+/* Version of strncpy that ensures dest (size bytes) is null-terminated. */
+static char* strncpy0(char* dest, const char* src, size_t size)
+{
+    strncpy(dest, src, size - 1);
+    dest[size - 1] = '\0';
+    return dest;
+}
+
+/* Parse given INI-style file. 
+   May have [section]s, 
+   name=value pairs (whitespace stripped), and 
+   comments starting with ';' (semicolon). 
+   Section  is "" if name=value pair parsed before any section heading. 
+   name:value     pairs are also supported as a concession to Python's configparser.
+
+   For each name=value pair parsed, call handler function with given user
+   pointer as well as section, name, and value (data only valid for duration
+   of handler call). 
+   Handler should return nonzero on success, zero on error.
+
+   Returns 0 on success, 
+     line number of last error on parse error (doesn't stop on first error), 
+
+   https://en.wikipedia.org/wiki/INI_file
+   https://github.com/benhoyt/inih
+*/
+int8_t Logger::inihParseFile(ini_handler handler_fn)
+//int8_t inihParseFile(ini_handler handler_fn)
+{
+    /* Uses a fair bit of stack (use heap instead if you need to) */
+#if INI_USE_STACK
+    char line[INI_MAX_LINE];
+    int max_line = INI_MAX_LINE;
+#else
+    char* line;
+    int max_line = INI_INITIAL_ALLOC;
+#endif
+#if INI_ALLOW_REALLOC && !INI_USE_STACK
+    char* new_line;
+    int offset;
+#endif
+    char section[MAX_SECTION] = "";
+    char prev_name[MAX_NAME] = "";
+
+    char* start;
+    char* end;
+    char* name;
+    char* value;
+    int lineno = 0;
+    int error = 0;
+
+#if !INI_USE_STACK
+    line = (char*)malloc(INI_INITIAL_ALLOC);
+    if (!line) {
+        return -2;
+    }
+#endif
+
+    /* Scan through stream line by line */
+#define reader_fn(line1,max_line1) logFile.fgets(line1,max_line1)
+    while (reader_fn(line, max_line) != 0) 
+    {
+#if INI_ALLOW_REALLOC && !INI_USE_STACK
+        offset = strlen(line);
+        while (offset == max_line - 1 && line[offset - 1] != '\n') {
+            max_line *= 2;
+            if (max_line > INI_MAX_LINE)
+                max_line = INI_MAX_LINE;
+            new_line = realloc(line, max_line);
+            if (!new_line) {
+                free(line);
+                return -2;
+            }
+            line = new_line;
+            if (reader_fn(line + offset, max_line - offset) == NULL)
+                break;
+            if (max_line >= INI_MAX_LINE)
+                break;
+            offset += strlen(line + offset);
+        }
+#endif
+
+        lineno++;
+
+        start = line;
+#if INI_ALLOW_BOM
+        if (lineno == 1 && (unsigned char)start[0] == 0xEF &&
+                           (unsigned char)start[1] == 0xBB &&
+                           (unsigned char)start[2] == 0xBF) {
+            start += 3;
+        }
+#endif
+        start = lskip(rstrip(start));
+
+        if (strchr(INI_START_COMMENT_PREFIXES, *start)) {
+            /* Start-of-line comment */
+        }
+#if INI_ALLOW_MULTILINE
+        else if (*prev_name && *start && start > line) {
+            /* Non-blank line with leading whitespace, treat as continuation
+               of previous name's value (as per Python configparser). */
+            if (!handler_fn( section, prev_name, start) && !error)
+                error = lineno;
+        }
+#endif
+        else if (*start == '[') {
+            /* A "[section]" line */
+            end = find_chars_or_comment(start + 1, "]");
+            if (*end == ']') {
+                *end = '\0';
+                strncpy0(section, start + 1, sizeof(section));
+                *prev_name = '\0';
+            }
+            else if (!error) {
+                /* No ']' found on section line */
+                error = lineno;
+            }
+        }
+        else if (*start) {
+            /* Not a comment, must be a name[=:]value pair */
+            end = find_chars_or_comment(start, "=:");
+            if (*end == '=' || *end == ':') {
+                *end = '\0';
+                name = rstrip(start);
+                value = end + 1;
+#if INI_ALLOW_INLINE_COMMENTS
+                end = find_chars_or_comment(value, NULL);
+                if (*end)
+                    *end = '\0';
+#endif
+                value = lskip(value);
+                rstrip(value);
+
+                /* Valid name[=:]value pair found, call handler */
+                strncpy0(prev_name, name, sizeof(prev_name));
+                if (!handler_fn(section, name, value) && !error)
+                    error = lineno;
+            }
+            else if (!error) {
+                /* No '=' or ':' found on name[=:]value line */
+                error = lineno;
+            }
+        }
+
+#if INI_STOP_ON_FIRST_ERROR
+        if (error)
+            break;
+#endif
+    }
+
+#if !INI_USE_STACK
+    free(line);
+#endif
+
+    return error;
+}
+
+bool Logger::parseIniSd(const char *ini_fn,ini_handler unhandledFn)
+{
+    uint8_t ini_err;
+    // Initialise the SD card
+    // skip everything else if there's no SD card, otherwise it might hang
+    if (!initializeSDCard()) return false;
+
+    if (logFile.open(ini_fn))
+    {
+        ini_err = inihParseFile(unhandledFn); //handle return errors
+        logFile.close();
+        PRINTOUT(F("Parse ini; "),ini_fn);
+        if (ini_err) {
+            PRINTOUT(F("Error on line :"),ini_err);
+        } else {
+            PRINTOUT(F("Completed."));
+        }
+    } else
+    {
+        PRINTOUT(F("Parse ini; No file "),ini_fn);
+        return false;
+    }
+    return true;
+}
+
+// End parse.ini
+

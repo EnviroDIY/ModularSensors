@@ -48,11 +48,11 @@ public:
     void printFileHeader(Stream *stream) override;
 
     // This generates a properly formatted JSON for EnviroDIY
-    uint16_t printSensorDataJSON(Stream *stream);
+    void printSensorDataJSON(Stream *stream);
 
     // This prints a fully structured post request for WikiWatershed/EnviroDIY
     // to the specified stream.
-    uint16_t printEnviroDIYRequest(Stream *stream);
+    void printEnviroDIYRequest(Stream *stream);
 
     // This writes the post request to a "queue" file for later
     bool queueDataEnviroDIY(void);
@@ -86,8 +86,6 @@ public:
     // NOTE:  The internal _logModem must be a POINTER not a reference because
     // it is possible for no modem to be attached (and thus the pointer could
     // be null).  It is not possible to have a null reference.
-    uint32_t tx_chars=0;
-    uint32_t rx_chars=0;
 
 
 private:
