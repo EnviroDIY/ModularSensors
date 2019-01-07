@@ -60,9 +60,6 @@ matrix:
           - PLATFORMIO_CI_SRC=examples/single_sensor/
           - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT -D ENABLE_SERIAL3"
       - env:
-          - PLATFORMIO_CI_SRC=examples/multisensor_print/
-          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT"
-      - env:
           - PLATFORMIO_CI_SRC=examples/simple_logging/
           - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT"
       - env:
