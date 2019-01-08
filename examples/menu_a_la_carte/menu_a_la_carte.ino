@@ -1443,6 +1443,8 @@ void setup()
 // ==========================================================================
 // Main loop function
 // ==========================================================================
+// Use this short loop for simple data logging and sending
+// /*
 void loop()
 {
     // Log the data
@@ -1451,3 +1453,78 @@ void loop()
     else if (getBatteryVoltage() < 3.7) dataLogger.logData();  // log data, but don't send
     else dataLogger.logDataAndSend();  // send data
 }
+// */
+
+
+// Use this long loop when you want to do something special
+// Because of the way alarms work on the RTC, it will wake the processor and
+// start the loop every minute exactly on the minute.
+// The processor may also be woken up by another interrupt or level change on a
+// pin - from a button or some other input.
+// The "if" statements in the loop determine what will happen - whether the
+// sensors update, testing mode starts, or it goes back to sleep.
+/*
+void loop()
+{
+    // Set sensors and file up if it hasn't happened already
+    // NOTE:  Unless it completed in less than one second, the sensor set-up
+    // will take the place of logging for this interval!
+    dataLogger.setupSensorsAndFile();
+
+    // Assuming we were woken up by the clock, check if the current time is an
+    // even interval of the logging interval
+    if (getBatteryVoltage() > 3.4 && dataLogger.checkInterval())
+    {
+        // Flag to notify that we're in already awake and logging a point
+        Logger::isLoggingNow = true;
+
+        // Print a line to show new reading
+        PRINTOUT(F("------------------------------------------"));
+        // Turn on the LED to show we're taking a reading
+        dataLogger.alertOn();
+
+        // Turn on the modem to let it start searching for the network
+        if (getBatteryVoltage() > 3.7) modem.modemPowerUp();
+
+        // Do a complete sensor update - this includes powering all of the
+        // sensors, getting updated values, and turing them back off.
+        varArray.completeUpdate();
+
+        // Create a csv data record and save it to the log file
+        dataLogger.logToSD();
+
+        // Connect to the network
+        if (modem.connectInternet())
+        {
+            // Post the data to the WebSDL
+            dataLogger.sendDataToRemotes();
+
+            // Sync the clock at midnight
+            if (dataLogger.markedEpochTime != 0 && dataLogger.markedEpochTime % 86400 == 0)
+            {
+                Serial.println(F("  Running a daily clock sync..."));
+                dataLogger.setRTClock(modem.getNISTTime());
+            }
+
+            // Disconnect from the network
+            modem.disconnectInternet();
+        }
+        // Turn the modem off
+        modem.modemSleepPowerDown();
+
+        // Turn off the LED
+        dataLogger.alertOff();
+        // Print a line to show reading ended
+        PRINTOUT(F("------------------------------------------\n"));
+
+        // Unset flag
+        Logger::isLoggingNow = false;
+    }
+
+    // Check if it was instead the testing interrupt that woke us up
+    if (Logger::startTesting) dataLogger.testingMode();
+
+    // Sleep
+    dataLogger.systemSleep();
+}
+*/

@@ -319,8 +319,12 @@ void setup()
 // Main loop function
 // ==========================================================================
 
-// Because of the way the sleep mode is set up, the processor will wake up
-// and start the loop every minute exactly on the minute.
+// Because of the way alarms work on the RTC, it will wake the processor and
+// start the loop every minute exactly on the minute.
+// The processor may also be woken up by another interrupt or level change on a 
+// pin - from a button or some other input.  
+// The "if" statements in the loop determine what will happen - whether the 
+// sensors update, testing mode starts, or it goes back to sleep.
 void loop()
 {
     // Check if the current time is an even interval of the logging interval

@@ -158,6 +158,8 @@ int16_t EnviroDIYPublisher::sendData(Client *_outClient)
     char tempBuffer[37] = "";
     uint16_t did_respond = 0;
 
+    MS_DBG(F("Outgoing JSON size: "), calculateJsonSize())
+
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
     if(_outClient->connect(enviroDIYHost, enviroDIYPort))
     {

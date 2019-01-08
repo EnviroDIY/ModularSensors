@@ -97,7 +97,7 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
     strcat(topicBuffer, _thingSpeakChannelID);
     strcat(topicBuffer, "/publish/");
     strcat(topicBuffer, _thingSpeakChannelKey);
-    MS_DBG(F("Topic: "), String(topicBuffer));
+    MS_DBG(F("Topic ["), strlen(topicBuffer), F("]: "), String(topicBuffer));
 
     emptyTxBuffer();
 
@@ -119,7 +119,7 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
             txBuffer[strlen(txBuffer)] = '&';
         }
     }
-    MS_DBG(F("Message: "), String(txBuffer));
+    MS_DBG(F("Message ["), strlen(txBuffer), F("]: "), String(txBuffer));
 
     // Set the client connection parameters
     _mqttClient.setClient(*_outClient);
