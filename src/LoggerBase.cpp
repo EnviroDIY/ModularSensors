@@ -1214,7 +1214,11 @@ void Logger::logDataAndSend(void)
         // Turn on the modem to let it start searching for the network
         if (_logModem != NULL) _logModem->modemPowerUp();
 
-        // Do a complete sensor update
+        // Do a complete update on the variable array.
+        // This this includes powering all of the sensors, getting updated
+        // values, and turing them back off.
+        // NOTE:  The wake function for each sensor should force sensor setup
+        // to run if the sensor was not previously set up.
         MS_DBG(F("    Running a complete sensor update..."));
         _internalArray->completeUpdate();
 
@@ -1258,6 +1262,6 @@ void Logger::logDataAndSend(void)
     // Check if it was instead the testing interrupt that woke us up
     if (Logger::startTesting) testingMode();
 
-    // Sleep
+    // Call the processor sleep
     systemSleep();
 }

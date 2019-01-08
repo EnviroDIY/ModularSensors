@@ -1473,49 +1473,62 @@ void loop()
 
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
-    if (getBatteryVoltage() > 3.4 && dataLogger.checkInterval())
+    // We're only doing anything at all if the battery is above 3.4V
+    if (dataLogger.checkInterval() && getBatteryVoltage() > 3.4)
     {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
 
         // Print a line to show new reading
-        PRINTOUT(F("------------------------------------------"));
+        Serial.println(F("------------------------------------------"));
         // Turn on the LED to show we're taking a reading
         dataLogger.alertOn();
 
         // Turn on the modem to let it start searching for the network
-        if (getBatteryVoltage() > 3.7) modem.modemPowerUp();
+        // Only turn the modem on if the battery at the last interval was high enough
+        // NOTE:  if the modemPowerUp function is not run before the completeUpdate
+        // function is run, the modem will not be powered and will not return
+        // a signal strength readign.
+        if (getBatteryVoltage() > 3.7)
+            modem.modemPowerUp();
 
-        // Do a complete sensor update - this includes powering all of the
-        // sensors, getting updated values, and turing them back off.
+        // Do a complete update on the variable array.
+        // This this includes powering all of the sensors, getting updated
+        // values, and turing them back off.
+        // NOTE:  The wake function for each sensor should force sensor setup
+        // to run if the sensor was not previously set up.
         varArray.completeUpdate();
 
         // Create a csv data record and save it to the log file
         dataLogger.logToSD();
 
         // Connect to the network
-        if (modem.connectInternet())
+        // Again, we're only doing this if the battery is doing well
+        if (getBatteryVoltage() > 3.7)
         {
-            // Post the data to the WebSDL
-            dataLogger.sendDataToRemotes();
-
-            // Sync the clock at midnight
-            if (dataLogger.markedEpochTime != 0 && dataLogger.markedEpochTime % 86400 == 0)
+            if (modem.connectInternet())
             {
-                Serial.println(F("  Running a daily clock sync..."));
-                dataLogger.setRTClock(modem.getNISTTime());
-            }
+                // Post the data to the WebSDL
+                dataLogger.sendDataToRemotes();
 
-            // Disconnect from the network
-            modem.disconnectInternet();
+                // Sync the clock at midnight
+                if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
+                {
+                    Serial.println(F("  Running a daily clock sync..."));
+                    dataLogger.setRTClock(modem.getNISTTime());
+                }
+
+                // Disconnect from the network
+                modem.disconnectInternet();
+            }
+            // Turn the modem off
+            modem.modemSleepPowerDown();
         }
-        // Turn the modem off
-        modem.modemSleepPowerDown();
 
         // Turn off the LED
         dataLogger.alertOff();
         // Print a line to show reading ended
-        PRINTOUT(F("------------------------------------------\n"));
+        Serial.println(F("------------------------------------------\n"));
 
         // Unset flag
         Logger::isLoggingNow = false;
@@ -1524,7 +1537,7 @@ void loop()
     // Check if it was instead the testing interrupt that woke us up
     if (Logger::startTesting) dataLogger.testingMode();
 
-    // Sleep
+    // Call the processor sleep
     dataLogger.systemSleep();
 }
 */

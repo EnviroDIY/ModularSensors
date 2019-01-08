@@ -491,9 +491,8 @@ void setup()
     // attaching it to both allows either logger to control NIST synchronization
     loggerAllVars.attachModem(modem);
     loggerToGo.attachModem(modem);
+    loggerAllVars.setAlertPin(greenLED);
     loggerAllVars.setTestingModePin(buttonPin);
-    // There is no reason to call the setAlertPin() function, because we have to
-    // write the loop on our own.
 
     // Set up the connection information with EnviroDIY for both loggers
     // Doing this for both loggers ensures that the header of the csv will have the tokens in it
@@ -538,11 +537,13 @@ void loop()
     // We're only doing anything at all if the battery is above 3.4V
     if (loggerAllVars.checkInterval() && mcuBoardBatt->getValue() > 3.4)
     {
+        // Flag to notify that we're in already awake and logging a point
+        Logger::isLoggingNow = true;
+
         // Print a line to show new reading
-        Serial.print(F("------------------------------------------\n"));
+        Serial.println(F("------------------------------------------"));
         // Turn on the LED to show we're taking a reading
-        digitalWrite(greenLED, HIGH);
-        digitalWrite(greenLED, HIGH);
+        loggerAllVars.alertOn();
 
         // Turn on the modem to let it start searching for the network
         // Only turn the modem on if the battery at the last interval was high enough
@@ -558,10 +559,10 @@ void loop()
         modbusSerial.begin(9600);
 
         // Do a complete update on the "full" array.
-        // This will do all the power management
+        // This this includes powering all of the sensors, getting updated
+        // values, and turing them back off.
         // NOTE:  The wake function for each sensor should force sensor setup
         // to run if the sensor was not previously set up.
-        Serial.print(F("Updating all sensors...\n"));
         arrayComplete.completeUpdate();
 
         // End the stream for the modbus sensors
@@ -582,19 +583,25 @@ void loop()
         digitalWrite(11, LOW);
         #endif
 
-        // Stream the variable results from the complete set of variables to
-        // the SD card
+        // Create a csv data record and save it to the log file
         loggerAllVars.logToSD();
 
         // Connect to the network
         // Again, we're only doing this if the battery is doing well
         if (mcuBoardBatt->getValue() > 3.7)
         {
-            Serial.print(F("Connecting to the internet...\n"));
             if (modem.connectInternet())
             {
                 // Post the data to the WebSDL
                 loggerToGo.sendDataToRemotes();
+
+                // Sync the clock at midnight
+                // NOTE:  All loggers have the same clock, pick one
+                if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
+                {
+                    Serial.println(F("  Running a daily clock sync..."));
+                    loggerAllVars.setRTClock(modem.getNISTTime());
+                }
 
                 // Disconnect from the network
                 modem.disconnectInternet();
@@ -604,9 +611,12 @@ void loop()
         }
 
         // Turn off the LED
-        digitalWrite(greenLED, LOW);
+        loggerAllVars.alertOff();
         // Print a line to show reading ended
-        Serial.print(F("------------------------------------------\n\n"));
+        Serial.println(F("------------------------------------------\n"));
+
+        // Unset flag
+        Logger::isLoggingNow = false;
     }
 
     // Check if it was instead the testing interrupt that woke us up
@@ -616,23 +626,6 @@ void loop()
     // function turns on the startTesting flag.  So we know if that flag is set
     // then we want to run the testing mode function.
     if (Logger::startTesting) loggerAllVars.testingMode();
-
-    // Once a day, at midnight, sync the clock
-    if (Logger::markedEpochTime % 86400 == 0 && mcuBoardBatt->getValue() > 3.7)
-    {
-        // Turn on the modem
-        modem.modemPowerUp();
-        // Connect to the network
-        if (modem.connectInternet())
-        {
-            // Synchronize the RTC (the loggers have the same clock, pick one)
-            loggerAllVars.setRTClock(modem.getNISTTime());
-            // Disconnect from the network
-            modem.disconnectInternet();
-        }
-        // Turn off the modem
-        modem.modemSleepPowerDown();
-    }
 
     // Call the processor sleep
     // Only need to do this for one of the loggers
