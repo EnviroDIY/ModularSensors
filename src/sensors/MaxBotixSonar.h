@@ -18,7 +18,7 @@
 #define MaxBotixSonar_h
 
 // Debugging Statement
-#define DEBUGGING_SERIAL_OUTPUT Serial
+// #define DEBUGGING_SERIAL_OUTPUT Serial
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
