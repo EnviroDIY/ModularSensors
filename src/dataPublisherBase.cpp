@@ -52,7 +52,6 @@ void dataPublisher::printTxBuffer(Stream *stream)
 {
     // Send the out buffer so far to the serial for debugging
     #if defined(STANDARD_SERIAL_OUTPUT)
-        PRINTOUT('\n');
         STANDARD_SERIAL_OUTPUT.write(txBuffer, strlen(txBuffer));
         PRINTOUT('\n');
         STANDARD_SERIAL_OUTPUT.flush();

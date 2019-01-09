@@ -120,7 +120,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
             DEBUGGING_SERIAL_OUTPUT.print(_stream->read());
             #else
             _stream->read();
-            #endif            
+            #endif
         }
     }
 
