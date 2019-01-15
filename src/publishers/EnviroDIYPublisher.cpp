@@ -105,7 +105,7 @@ void EnviroDIYPublisher::printSensorDataJSON(Stream *stream)
     stream->print(samplingFeatureTag);
     stream->print(_baseLogger->getSamplingFeatureUUID());
     stream->print(timestampTag);
-    stream->print(_baseLogger->formatDateTime_ISO8601(_baseLogger->markedEpochTime));
+    stream->print(_baseLogger->formatDateTime_ISO8601(Logger::markedEpochTime));
     stream->print(F("\","));
 
     for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++)
@@ -130,6 +130,7 @@ void EnviroDIYPublisher::printEnviroDIYRequest(Stream *stream)
 {
     // Stream the HTTP headers for the post request
     stream->print(postHeader);
+    stream->print(postEndpoint);
     stream->print(HTTPtag);
     stream->print(hostHeader);
     stream->print(enviroDIYHost);
@@ -157,11 +158,14 @@ int16_t EnviroDIYPublisher::sendData(Client *_outClient)
     char tempBuffer[37] = "";
     uint16_t did_respond = 0;
 
+    MS_DBG(F("Outgoing JSON size: "), calculateJsonSize())
+
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
     if(_outClient->connect(enviroDIYHost, enviroDIYPort))
     {
         // copy the initial post header into the tx buffer
         strcpy(txBuffer, postHeader);
+        strcat(txBuffer, postEndpoint);
         strcat(txBuffer, HTTPtag);
 
         // add the rest of the HTTP POST headers to the outgoing buffer
@@ -183,7 +187,7 @@ int16_t EnviroDIYPublisher::sendData(Client *_outClient)
 
         if (bufferFree() < 26) printTxBuffer(_outClient);
         strcat(txBuffer, contentLengthHeader);
-        itoa(calculateJsonSize(), tempBuffer, 10);
+        itoa(calculateJsonSize(), tempBuffer, 10);  // BASE 10
         strcat(txBuffer, tempBuffer);
 
         if (bufferFree() < 42) printTxBuffer(_outClient);
@@ -198,7 +202,7 @@ int16_t EnviroDIYPublisher::sendData(Client *_outClient)
 
         if (bufferFree() < 42) printTxBuffer(_outClient);
         strcat(txBuffer, timestampTag);
-        _baseLogger->formatDateTime_ISO8601(_baseLogger->markedEpochTime).toCharArray(tempBuffer, 37);
+        _baseLogger->formatDateTime_ISO8601(Logger::markedEpochTime).toCharArray(tempBuffer, 37);
         strcat(txBuffer, tempBuffer);
         txBuffer[strlen(txBuffer)] = '"';
         txBuffer[strlen(txBuffer)] = ',';

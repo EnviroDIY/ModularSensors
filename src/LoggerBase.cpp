@@ -394,7 +394,7 @@ bool Logger::setRTClock(uint32_t setTime)
 // called before updating the sensors, not after.
 void Logger::markTime(void)
 {
-  Logger::markedEpochTime = getNowEpoch();
+    Logger::markedEpochTime = getNowEpoch();
 }
 
 
@@ -404,15 +404,15 @@ bool Logger::checkInterval(void)
 {
     bool retval;
     uint32_t checkTime = getNowEpoch();
-    MS_DBG(F("Current Unix Timestamp: "), checkTime);
-    MS_DBG(F("Logging interval in seconds: "), (_loggingIntervalMinutes*60));
-    MS_DBG(F("Mod of Logging Interval: "), checkTime % (_loggingIntervalMinutes*60));
+    MS_DBG(F("Current Unix Timestamp: "), checkTime,
+           F("  Logging interval in seconds: "), (_loggingIntervalMinutes*60),
+           F("  Mod of Logging Interval: "), checkTime % (_loggingIntervalMinutes*60));
 
     if (checkTime % (_loggingIntervalMinutes*60) == 0)
     {
         // Update the time variables with the current time
         markTime();
-        MS_DBG(F("Time marked at (unix): "), markedEpochTime);
+        MS_DBG(F("Time marked at (unix): "), Logger::markedEpochTime);
         MS_DBG(F("Time to log!"));
         retval = true;
     }
@@ -430,12 +430,12 @@ bool Logger::checkInterval(void)
 bool Logger::checkMarkedInterval(void)
 {
     bool retval;
-    MS_DBG(F("Marked Time: "), markedEpochTime);
-    MS_DBG(F("Logging interval in seconds: "), (_loggingIntervalMinutes*60));
-    MS_DBG(F("Mod of Logging Interval: "), markedEpochTime % (_loggingIntervalMinutes*60));
+    MS_DBG(F("Marked Time: "), Logger::markedEpochTime,
+           F("  Logging interval in seconds: "), (_loggingIntervalMinutes*60),
+           F("  Mod of Logging Interval: "), Logger::markedEpochTime % (_loggingIntervalMinutes*60));
 
-    if (markedEpochTime != 0 &&
-        (markedEpochTime % (_loggingIntervalMinutes*60) == 0))
+    if (Logger::markedEpochTime != 0 &&
+        (Logger::markedEpochTime % (_loggingIntervalMinutes*60) == 0))
     {
         MS_DBG(F("Time to log!"));
         retval = true;
@@ -467,13 +467,18 @@ void Logger::wakeISR(void)
     void Logger::setupSleep(void)
     {
         // Nothing to do if we don't have a wake pin
-        if(_mcuWakePin < 0) return;
+        if(_mcuWakePin < 0)
+        {
+            MS_DBG(F("Use a non-negative wake pin to request sleep!"));
+            return;
+        }
 
         // Alarms on the RTC built into the SAMD21 appear to be identical to those
         // in the DS3231.  See more notes below.
         // We're setting the alarm seconds to 59 and then seting it to go off
         // whenever the seconds match the 59.  I'm using 59 instead of 00
         // because there seems to be a bit of a wake-up delay
+        MS_DBG(F("Setting alarm on SAMD built-in RTC for every minute."));
         zero_sleep_rtc.setAlarmSeconds(59);
         zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);
     }
@@ -483,7 +488,13 @@ void Logger::wakeISR(void)
     void Logger::systemSleep(void)
     {
         // Don't go to sleep unless there's a wake pin!
-        if (_mcuWakePin < 0) return;
+        if(_mcuWakePin < 0)
+        {
+            MS_DBG(F("Use a non-negative wake pin to request sleep!"));
+            return;
+        }
+
+        MS_DBG(F("Putting processor to sleep."));
 
         // Wait until the serial ports have finished transmitting
         // This does not clear their buffers, it just waits until they are finished
@@ -520,13 +531,17 @@ void Logger::wakeISR(void)
         Wire.begin();
     }
 
-#elif defined __AVR__
+#elif defined ARDUINO_ARCH_AVR
 
     // Sets up the sleep mode
     void Logger::setupSleep(void)
     {
         // Nothing to do if we don't have a wake pin
-        if(_mcuWakePin < 0) return;
+        if(_mcuWakePin < 0)
+        {
+            MS_DBG(F("Use a non-negative wake pin to request sleep!"));
+            return;
+        }
 
         // Set the pin attached to the RTC alarm to be in the right mode to listen to
         // an interrupt and attach the "Wake" ISR to it.
@@ -539,6 +554,7 @@ void Logger::wakeISR(void)
         // the hour, but not every 5 minutes.  This is why we set the alarm for
         // every minute and use the checkInterval function.  This is a hardware
         // limitation of the DS3231; it is not due to the libraries or software.
+        MS_DBG(F("Setting alarm on DS3231 RTC for every minute."));
         rtc.enableInterrupts(EveryMinute);
 
         // Set the sleep mode
@@ -556,7 +572,13 @@ void Logger::wakeISR(void)
     void Logger::systemSleep(void)
     {
         // Don't go to sleep unless there's a wake pin!
-        if (_mcuWakePin < 0) return;
+        if (_mcuWakePin < 0)
+        {
+            MS_DBG(F("Unable to sleep because no wake pin assigned!"));
+            return;
+        }
+
+        MS_DBG(F("Putting processor to sleep."));
 
         // Wait until the serial ports have finished transmitting
         // This does not clear their buffers, it just waits until they are finished
@@ -722,7 +744,9 @@ void Logger::printFileHeader(Stream *stream)
     if (strlen(_samplingFeatureUUID) > 1)
     {
         stream->print(F("Sampling Feature UUID: "));
-        stream->println(_samplingFeatureUUID);
+        // stream->println(_samplingFeatureUUID);
+        stream->print(_samplingFeatureUUID);
+        stream->println(',');
     }
 
     // Next line will be the parent sensor names
@@ -751,7 +775,7 @@ void Logger::printFileHeader(Stream *stream)
 void Logger::printSensorDataCSV(Stream *stream)
 {
     String csvString = "";
-    dtFromEpoch(markedEpochTime).addToString(csvString);
+    dtFromEpoch(Logger::markedEpochTime).addToString(csvString);
     csvString += F(",");
     stream->print(csvString);
     for (uint8_t i = 0; i < getArrayVarCount(); i++)
@@ -1214,7 +1238,11 @@ void Logger::logDataAndSend(void)
         // Turn on the modem to let it start searching for the network
         if (_logModem != NULL) _logModem->modemPowerUp();
 
-        // Do a complete sensor update
+        // Do a complete update on the variable array.
+        // This this includes powering all of the sensors, getting updated
+        // values, and turing them back off.
+        // NOTE:  The wake function for each sensor should force sensor setup
+        // to run if the sensor was not previously set up.
         MS_DBG(F("    Running a complete sensor update..."));
         _internalArray->completeUpdate();
 
@@ -1231,7 +1259,7 @@ void Logger::logDataAndSend(void)
                 sendDataToRemotes();
 
                 // Sync the clock at midnight
-                if (markedEpochTime != 0 && markedEpochTime % 86400 == 0)
+                if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
                 {
                     MS_DBG(F("  Running a daily clock sync..."));
                     setRTClock(_logModem->getNISTTime());
@@ -1258,6 +1286,6 @@ void Logger::logDataAndSend(void)
     // Check if it was instead the testing interrupt that woke us up
     if (Logger::startTesting) testingMode();
 
-    // Sleep
+    // Call the processor sleep
     systemSleep();
 }

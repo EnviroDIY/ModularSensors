@@ -1,60 +1,35 @@
 # Examples using the Modular Sensors Library
 
-These example programs demonstrate how to  use the modular sensors library.
+These example programs demonstrate how to use the modular sensors library.  Each example has slightly different functionality.  If you are unsure which to use, the "menu_a_la_carte" example has code in it for every possible sensor and modem.  You can start with it and delete as necessary to cut down to only what you will be using.
 
-To adjust any of these to work with your own sensor arrangements:
-1. Set your real time clock to the correct _UTC_ time.
-2. Select the sketch that most closely matches what you intend to do.
-3. If applicable, select the correct "modem" that you will use to connect your logger to the internet.
-4. Fill out your SKETCH_NAME, LoggerID, LOGGING_INTERVAL, and TIME_ZONE.
-5. Remove the chunks of code that apply to extraneous sensors.
-6. Duplicate the sensor specific chunks of code for any sensors you have more than one of.
-7. Correct all of the pin numbers, stream id's, and sensor addresses to match your actual sensors and logger board attachment points.
-8. Delete or add lines from the variableList[] to match your true arrangement.
-9. If logging data to EnviroDIY, register your site and sensors at http://data.envirodiy.org/.
-10. After registering your site and sensors, copy the UUID's and tokens from your site into the correct places in the example.
-11. If applicable, fill out your modem pins, sleep mode, serial port, and connection options.
-12. Fill out your logger board information, including the serial baud rate and LED pins.
-13. Verify that the setup() and loop() functions are doing what you expect.
-14. Program your board!
+
+### [menu_a_la_carte](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/menu_a_la_carte)
+
+This shows most of the functions of the library at once.  It has code in it for every possible sensor and modem and for both AVR and SAMD boards.  It is also over 1500 lines long.
+
 
 ### [single_sensor](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/single_sensor)
 
 This shows making use of the unified set of commands to print data from a MaxBotix ultrasonic range finder to the serial port.  It also shows creating a calculated variable which is the water depth.
 
 
-### [multisensor_print](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/multisensor_print)
-
-This shows using an array of sensors to easily update all of them and print all results to the serial port.
-
-
 ### [simple_logging](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/simple_logging)
 
-This calls the same group of sensors as in multisensor_print but now records the data to a SD card instead of simply printing it to the serial port.
-
-
-### [logging_to_EnviroDIY](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_EnviroDIY)
-
-This calls the same group of sensors again and sends the data to the EnviroDIY/WikiWatershed Data Portal in addition to logging it to an SD card.
-
-
-### [logging_to_EnviroDIY_Zero](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_EnviroDIY_Zero)
-
-Identical to logging_to_EnviroDIY, but written for an Adafruit Feather M0 (SAMD21) processor.
-
-
-### [logging_to_EnviroDIY_Zero](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_ThingSpeak)
-    This sends data to ThingSpeak instead of the WikiWatershed Data Portal.
+This shows how to create multiple sensors, create variables for the sensors in a variable array, and log the data from the sensors to an SD card.
 
 
 ### [DWRI_CitSci](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/)
 
-This is examples uses the sensors and equipment standard groups participating in the DWRI Citizen Science project with the Stroud Water Research Center..
+This example uses the sensors and equipment standard groups participating in the DWRI Citizen Science project with the Stroud Water Research Center. It includes a Meter Hydros 21 (formerly know as a Decagon CTD), a Campbell OBS3+, and a Sodaq GPRSBee for communication.  The results are saved to the SD card and posted to the WikiWatershed data portal.
 
 
 ### [DWRI_NoCellular](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/DWRI_NoCellular)
 
-This is uses just the sensors and equipment standard to the DWRI Citizen Science grant for circumstances where there is no cellular signal.
+This is uses the sensors and equipment standard to the DWRI Citizen Science grant but omits the data publisher for circumstances where there is no cellular signal.
+
+
+### [logging_to_ThingSpeak](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_ThingSpeak)
+    This uses an ESP8266 to send data to ThingSpeak. It also includes a Meter Hydros 21 (formerly know as a Decagon CTD) and a Campbell OBS3+.
 
 
 ### [baro_rho_correction](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/baro_rho_correction)

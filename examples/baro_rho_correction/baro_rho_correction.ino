@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.2
+This example sketch is written for ModularSensors library version 0.19.3
 
 This sketch is an example of logging data to an SD card and sending the data to
 the EnviroDIY data portal.
@@ -27,7 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.19.2";
+const char *libraryVersion = "0.19.3";
 // The name of this file
 const char *sketchName = "baro_rho_correction.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -54,49 +54,59 @@ const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
 
-// Create and return the processor "sensor"
-const char *MFVersion = "v0.5b";
-ProcessorStats mayfly(MFVersion);
+// Create and return the main processor chip "sensor" - for general metadata
+const char *mcuBoardVersion = "v0.5b";
+ProcessorStats mcuBoard(mcuBoardVersion);
+
 // Create the battery voltage and free RAM variable objects for the processor and return variable-type pointers to them
-Variable *mayflyBatt = new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *mayflyRAM = new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *mayflySampNo = new ProcessorStats_SampleNumber(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
+// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
+Variable *mcuBoardBatt = new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *mcuBoardAvailableRAM = new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
-//    Modem/Internet connection options
+//    Modem MCU Type and TinyGSM Client
 // ==========================================================================
 
-// Select your modem chip
-#define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
+// Select your modem chip - this determines the exact commands sent to it
+#define TINY_GSM_MODEM_SIM800  // Select for a SIMCOM SIM800, SIM900, or variant thereof
+
 
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
 #include <TinyGsmClient.h>
 
- // Set the serial port for the modem - software serial can also be used.
-HardwareSerial &ModemSerial = Serial1;
+// Create a reference to the serial port for the modem
+HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(ModemSerial);
+TinyGsm *tinyModem = new TinyGsm(modemSerial);
 
 // Use this to create a modem if you want to spy on modem communication through
 // a secondary Arduino stream.  Make sure you install the StreamDebugger library!
 // https://github.com/vshymanskyy/StreamDebugger
 // #include <StreamDebugger.h>
-// StreamDebugger modemDebugger(Serial1, Serial);
+// StreamDebugger modemDebugger(modemSerial, Serial);
 // TinyGsm *tinyModem = new TinyGsm(modemDebugger);
 
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
+
+// ==========================================================================
+//    Specific Modem Pins and On-Off Methods
+// ==========================================================================
+
+// THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
 // Describe the physical pin connection of your modem to your board
 const long ModemBaud = 9600;         // Communication speed of the modem
+const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemSleepRqPin = 23;   // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if not applicable)
-const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
-// And create the wake and sleep methods for the modem
+
+// Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
 bool wakeFxn(void)
 {
@@ -111,18 +121,24 @@ bool sleepFxn(void)
     return true;
 }
 
-// And we still need the connection information for the network
+
+// ==========================================================================
+//    Network Information and LoggerModem Object
+// ==========================================================================
+#include <LoggerModem.h>
+
+// Network connection information
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
 
 // Create the loggerModem instance
-#include <LoggerModem.h>
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
 
 // Create the RSSI and signal strength variable objects for the modem and return
 // variable-type pointers to them
+// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
 Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab");
 
@@ -131,9 +147,12 @@ Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-e
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
+
 // Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
-// Create the temperature variable object for the DS3231
+
+// Create the temperature variable object for the DS3231 and return a variable-type pointer to it
+// Use this to create a variable pointer with a name to use in multiple arrays or any calculated variables.
 Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab");
 
 
@@ -141,13 +160,17 @@ Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-12
 //    Bosch BME280 Environmental Sensor (Temperature, Humidity, Pressure)
 // ==========================================================================
 #include <sensors/BoschBME280.h>
+
 uint8_t BMEi2c_addr = 0x77;
 // The BME280 can be addressed either as 0x77 (Adafruit default) or 0x76 (Grove default)
 // Either can be physically mofidied for the other address
-const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+
 // Create and return the Bosch BME280 sensor object
 BoschBME280 bme280(I2CPower, BMEi2c_addr);
+
 // Create the four variable objects for the BME280 and return variable-type pointers to them
+// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
 Variable *bme280Humid = new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *bme280Temp = new BoschBME280_Temp(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *bme280Press = new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
@@ -158,15 +181,20 @@ Variable *bme280Alt = new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh
 //    Maxim DS18 One Wire Temperature Sensor
 // ==========================================================================
 #include <sensors/MaximDS18.h>
+
 // OneWire Address [array of 8 hex characters]
 // DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA, 0x81, 0x16, 0x03, 0x0C};
 const int8_t OneWireBus = 4;  // Pin attached to the OneWire Bus (-1 if unconnected)
-const int8_t OneWirePower = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t OneWirePower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+
 // Create and return the Maxim DS18 sensor object (use this form for a known address)
 // MaximDS18 ds18_1(OneWireAddress1, OneWirePower, OneWireBus);
+
 // Create and return the Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
 MaximDS18 ds18_u(OneWirePower, OneWireBus);
+
 // Create the temperature variable object for the DS18 and return a variable-type pointer to it
+// Use this to create a variable pointer with a name to use in multiple arrays or any calculated variables.
 Variable *ds18Temp = new MaximDS18_Temp(&ds18_u, "12345678-abcd-1234-efgh-1234567890ab");
 
 
@@ -174,13 +202,17 @@ Variable *ds18Temp = new MaximDS18_Temp(&ds18_u, "12345678-abcd-1234-efgh-123456
 //    MeaSpecMS5803 (Pressure, Temperature)
 // ==========================================================================
 #include <sensors/MeaSpecMS5803.h>
-// const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+
+// const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t MS5803i2c_addr = 0x76;  // The MS5803 can be addressed either as 0x76 (default) or 0x77
 const int16_t MS5803maxPressure = 14;  // The maximum pressure measurable by the specific MS5803 model
 const uint8_t MS5803ReadingsToAvg = 1;
+
 // Create and return the MeaSpec MS5803 pressure and temperature sensor object
 MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803ReadingsToAvg);
+
 // Create the conductivity and temperature variable objects for the ES2 and return variable-type pointers to them
+// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
 Variable *ms5803Press = new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *ms5803Temp = new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-efgh-1234567890ab");
 
@@ -275,16 +307,17 @@ Variable *calcCorrDepth = new Variable(calculateWaterDepthTempCorrected, rhoDept
 
 
 // ==========================================================================
-//    The array that contains all variables to be logged
+//    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 #include <VariableArray.h>
-// Put all of the variable pointers into an Array
-// NOTE:  Since we've created all of the variable pointers above, we can just
+
+// Put all of the variable pointers into an array
+// NOTE:  Since we've created all of the variable pointers above, we can
 // reference them by name here.
 Variable *variableList[] = {
-    mayflySampNo,
-    mayflyBatt,
-    mayflyRAM,
+    mcuBoardSampNo,
+    mcuBoardBatt,
+    mcuBoardAvailableRAM,
     ds3231Temp,
     bme280Temp,
     bme280Humid,
@@ -301,21 +334,29 @@ Variable *variableList[] = {
 };
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
+
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
 
-// Create a new logger instance
+
+// ==========================================================================
+//     The Logger Object[s]
+// ==========================================================================
 #include <LoggerBase.h>
+
+// Create a new logger instance
 Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
-// Device registration and sampling feature information
-//   This should be obtained after registration at http://data.envirodiy.org
+//    A Publisher to WikiWatershed
 // ==========================================================================
+// Device registration and sampling feature information can be obtained after
+// registration at http://data.WikiWatershed.org
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 
+// Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
 
@@ -362,7 +403,7 @@ void setup()
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
     // Start the serial connection with the modem
-    ModemSerial.begin(ModemBaud);
+    modemSerial.begin(ModemBaud);
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
@@ -388,17 +429,17 @@ void setup()
     dataLogger.setTestingModePin(buttonPin);
 
     // Update the mayfly to get the processor battery level
-    mayfly.update();
+    mcuBoard.update();
     // Begin the logger
     // At lowest battery level, skip sensor set-up
     // Note:  Please change these battery voltages to match your battery
-    if (mayflyBatt->getValue() < 3.4) dataLogger.begin(true);
+    if (mcuBoardBatt->getValue() < 3.4) dataLogger.begin(true);
     else dataLogger.begin();  // set up sensors
 
     // At very good battery voltage, or with suspicious time stamp, sync the clock
     // Note:  Please change these battery voltages to match your battery
-    if (mayflyBatt->getValue() > 3.9 ||
-        dataLogger.getNowEpoch() < 1545091200 ||  /*Before 12/18/2018*/
+    if (mcuBoardBatt->getValue() > 3.9 ||
+        dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
         dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
         dataLogger.syncRTC();
 }
@@ -411,7 +452,7 @@ void loop()
 {
     // Log the data
     // Note:  Please change these battery voltages to match your battery
-    if (mayflyBatt->getValue() < 3.4) dataLogger.systemSleep();  // just go back to sleep
-    else if (mayflyBatt->getValue() < 3.7) dataLogger.logData();  // log data, but don't send
+    if (mcuBoardBatt->getValue() < 3.4) dataLogger.systemSleep();  // just go back to sleep
+    else if (mcuBoardBatt->getValue() < 3.7) dataLogger.logData();  // log data, but don't send
     else dataLogger.logDataAndSend();  // send data
 }
