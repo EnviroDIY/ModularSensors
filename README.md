@@ -1,5 +1,7 @@
 # ModularSensors
 
+### [Just getting started?](https://github.com/EnviroDIY/ModularSensors/wiki/Getting-Started)
+
 This Arduino library gives environmental sensors a common interface of functions for use with Arduino-compatible dataloggers, such as the EnviroDIY Mayfly. The ModularSensors library is specifically designed to support wireless, solar-powered environmental data logging applications, that is, to:
 * Retrieve data from many physical sensors;
 * Save that data to a SD memory card;
@@ -8,9 +10,8 @@ This Arduino library gives environmental sensors a common interface of functions
 
 The ModularSensors library coordinates these tasks by "wrapping" native sensor libraries into a common interface of functions and returns. These [wrapper functions](https://en.wikipedia.org/wiki/Wrapper_function) serve to harmonize and simplify the process of iterating through and logging data from a diverse set of sensors and variables.  Using the common sensor and variable interface, the library attempts to optimize measurement timing as much as possible to reduce logger "on-time" and power consumption.
 
-We have a guide for getting started [right here](https://github.com/EnviroDIY/ModularSensors/wiki/Getting-Started).
-
 Although this library was written primarily for the [EnviroDIY Mayfly data logger board](https://envirodiy.org/mayfly/), it is also designed to be [compatible with a variety of other Arduino-based boards](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Compatibility) as well.
+
 
 ## Data can currently be sent to these web services:
 
