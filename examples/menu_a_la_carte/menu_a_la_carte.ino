@@ -87,7 +87,7 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 AltSoftSerial altSoftSerial;
 
 #if not defined(ATMEGA32U4)  // NeoSWSerial Doesn't support Leonardo
-// NeoSWSerial (https://github.com/SlashDevin/NeoSWSerial) is the best software
+// NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
 // serial that can be used on any pin supporting interrupts.
 // You can use as many instances of NeoSWSerial as you want.
 // Not all AVR boards are supported by NeoSWSerial.
