@@ -37,9 +37,9 @@
 
 // Sensor Specific Defines
 #define Y511_NUM_VARIABLES 2
-#define Y511_WARM_UP_TIME_MS 500
-#define Y511_STABILIZATION_TIME_MS 22000
-#define Y511_MEASUREMENT_TIME_MS 1700
+#define Y511_WARM_UP_TIME_MS 8000         // 500 ms to receive commands, but if activating brush warmup+stabilization must >20s
+#define Y511_STABILIZATION_TIME_MS 40000  // warmup+stabilization > 48 s for consecutive readings to give different results
+#define Y511_MEASUREMENT_TIME_MS 4000     // could potentially be lower with a longer stabilization time. More testing needed.
 
 #define Y511_TURB_RESOLUTION 2
 #define Y511_TURB_VAR_NUM 0
