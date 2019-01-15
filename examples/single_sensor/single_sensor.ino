@@ -62,7 +62,7 @@ Variable waterDepth(calcDepth, "waterDepth", "millimeter", 0, "", "sonarDepth");
 // ==========================================================================
 // Board setup info
 // ==========================================================================
-const long serialBaud = 57600;  // Baud rate for the primary serial port for debugging
+const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
 const int8_t greenLED = 8;  // Pin for the green LED
 const int8_t redLED = 9;  // Pin for the red LED
 
