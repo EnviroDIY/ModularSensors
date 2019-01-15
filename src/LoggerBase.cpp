@@ -744,7 +744,9 @@ void Logger::printFileHeader(Stream *stream)
     if (strlen(_samplingFeatureUUID) > 1)
     {
         stream->print(F("Sampling Feature UUID: "));
-        stream->println(_samplingFeatureUUID);
+        // stream->println(_samplingFeatureUUID);
+        stream->print(_samplingFeatureUUID);
+        stream->println(',');
     }
 
     // Next line will be the parent sensor names
