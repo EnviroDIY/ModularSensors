@@ -90,6 +90,11 @@ const char *wifiPwd_def = "";  // The password for connecting to WiFi, unnecessa
 // Rev0.5ba is an enhancement on 0.5b
 // C4 removed, strap for AA2/Vbat AA3/SolarV, C 100uF Cer across XbeeVcc
 #define MFVersion_DEF "v0.5ba"
+#define LOGGERID_DEF_STR "msLog01"
+#define NEW_LOGGERID_MAX_SIZE 40
+//#define NEW_LOGGERID_MAX_SIZE  3 ///Test
+#define configIniID_DEF_STR "ms_cfg.ini"  
+#define CONFIG_TIME_ZONE_DEF -8
 
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval_def = 15;

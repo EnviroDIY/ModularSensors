@@ -23,6 +23,8 @@
 #include "ModSensorDebugger.h"
 #include "VariableArray.h"
 #include "LoggerModem.h"
+#include <Arduino.h>  // The base Arduino library
+#include "ms_cfg.h"
 
 // Bring in the libraries to handle the processor sleep/standby modes
 // The SAMD library can also the built-in clock on those modules
@@ -75,8 +77,6 @@ public:
     // Adds the sampling feature UUID
     void setSamplingFeatureUUID(const char *samplingFeatureUUID);
     const char * getSamplingFeatureUUID(){return _samplingFeatureUUID;}
-
-    void setLoggingInterval(uint16_t loggingIntervalMinutes);
 
     // Sets up a pin for an LED or other way of alerting that data is being logged
     void setAlertPin(int8_t ledPin);
@@ -341,20 +341,7 @@ public:
     static volatile bool isTestingNow;
     static volatile bool startTesting;
 
-    // ===================================================================== //
-    // Public functions for a "reading .ini" file
-    // ===================================================================== //
-
-public:
-    bool parseIniSd(const char *ini_fn,ini_handler handler_fn);
-    //virtual bool parseIniSd(const char *ini_fn,ini_handler handler_fn);
-
-private:
-    virtual int8_t inihParseFile(ini_handler handler_fn);
-    // Tokens and UUID's for EnviroDIY
-    const char *_registrationToken;
-    const char *_samplingFeature;
-
+#include "LoggerBaseExtH.h"
 };
 
 #endif  // Header Guard

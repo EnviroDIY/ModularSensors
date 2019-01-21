@@ -34,16 +34,17 @@ const char *libraryVersion = "0.19.3";
 // The name of this file
 const char *sketchName = "atlMayfly.cpp";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID_def = "nh07m"; //FUT mv ps.msc.s.logger_id
-const char *configIniID = "ms_cfg.ini";  
+const char *LoggerID_def = LOGGERID_DEF_STR;
+const char *configIniID = configIniID_DEF_STR;  
 // How frequently (in minutes) to log data
 //const uint8_t loggingInterval = 5;
-// Your logger's timezone.
-const int8_t timeZone_def = -8;
+// The logger's timezone default.
+int8_t timeZone =  CONFIG_TIME_ZONE_DEF;
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
 const char build_date[] = __DATE__ " " __TIME__;
 const char file_name[] = __FILE__;
+//const char git_version[] = GIT_BRANCH;
 //const char build_epochTime = __BUILD_TIMESTAMP__;
 //const char build_epochTime = __TIME_UNIX__;
 
@@ -160,8 +161,8 @@ const char *wifiPwd_def = WIFIPWD_CDEF;  // The password for connecting to WiFi,
 #if defined(TINY_GSM_MODEM_ESP8266)
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId_def, wifiPwd_def);
 #elif defined(TINY_GSM_MODEM_XBEE)
-loggerModem modemPhy(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient);
-//loggerModem modemPhy(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId_def, wifiPwd_def);
+//loggerModem modemPhy(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient);
+loggerModem modemPhy(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId_def, wifiPwd_def);
 // loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn_def);
 #elif defined(TINY_GSM_MODEM_UBLOX)
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn_def);
@@ -733,7 +734,7 @@ const char LOGGER_ID_pm[] EDIY_PROGMEM = "LOGGER_ID";
 const char LOGGING_INTERVAL_MIN_pm[] EDIY_PROGMEM = "LOGGING_INTERVAL_MIN";
 const char LIION_TYPE_pm[] EDIY_PROGMEM = "LIION_TYPE";
 const char TIME_ZONE_pm[] EDIY_PROGMEM = "TIME_ZONE";
-const char GEOGRAPHICAL_ID_pm[] EDIY_PROGMEM = "GEOGRAPHICAL_ID";
+//FUT const char GEOGRAPHICAL_ID_pm[] EDIY_PROGMEM = "GEOGRAPHICAL_ID";
 
 const char NETWORK_pm[] EDIY_PROGMEM = "NETWORK";
 const char apn_pm[] EDIY_PROGMEM = "apn";
@@ -748,20 +749,35 @@ const char SAMPLING_FEATURE_pm[] EDIY_PROGMEM = "SAMPLING_FEATURE";
 const char UUIDs_pm[] EDIY_PROGMEM = "UUIDs";
 const char index_pm[] EDIY_PROGMEM = "index";
 static uint8_t uuid_index =0;
+
+#define RAM_AVAILABLE   ramAvailable();
+#define RAM_REPORT_LEVEL 1
+void ramAvailable(){
+    extern int16_t __heap_start, *__brkval;
+    uint16_t top_stack = (int) &top_stack  - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+    Serial.print(F(" Ram available:"));
+    Serial.println(top_stack );// Stack and heap ??    
+}
 static int inihUnhandledFn( const char* section, const char* name, const char* value)
 {
+    #if RAM_REPORT_LEVEL > 1
+    bool ram_track = true;
+    #endif
     if (strcmp_P(section,PROVIDER_pm)== 0)
     {
         if        (strcmp_P(name,REGISTRATION_TOKEN_pm)== 0) {
+            //TODO: njh move storage to class EnviroDIYPublisher
             strcpy(ps.provider.s.registration_token, value);
             Serial.print(F("PROVIDER Setting registration token: "));
             Serial.println(ps.provider.s.registration_token );
             EnviroDIYPOST.setToken(ps.provider.s.registration_token);
         } else if (strcmp_P(name,CLOUD_ID_pm)== 0) {
+            //TODO: njh move storage to class EnviroDIYPublisher
             strcpy(ps.provider.s.cloudId, value);
             Serial.print(F("PROVIDER Setting cloudId: "));
             Serial.println(ps.provider.s.cloudId );
         } else if (strcmp_P(name,SAMPLING_FEATURE_pm)== 0) {
+            //TODO: njh move storage to class EnviroDIYPublisher
             strcpy(ps.provider.s.sampling_feature, value);
             Serial.print(F("PROVIDER Setting SamplingFeature: "));
             Serial.println(ps.provider.s.sampling_feature );
@@ -774,35 +790,45 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
         }
     } else if (strcmp_P(section,UUIDs_pm)== 0)
     {
-        /*FUT:Add easier method to mng 
-        perhaps1) "UUID_label"="UUID"
-        then search variableList till find UUID_label
-        perhaps2) "dummyDefaultUID"="UUID" 
-            "ASQ212_PAR"="UUID"
-            then search variablList till find dummyDefaultUID and replace with UUID
-        perhaps3) "SensorName"="UUID" 
-            "ApogeeSQ212_PAR"="UUID"
-            then search variablList till fin SensorsName
-
+        /* UUIDs are applied to internal sensor Array as follows: 
+        1) "UUID_label"="UUID"
+        eg ASQ212_PAR="UUID"
+           search variableList for UUID_label and if found replace with "UUID"
+        2) index="UUID"
+           if the word "index" is there with a UUID, then the UUID is applied in sequence. 
+           Any UUID_label's found also increment the counted 'index'
         */
-        if (strcmp_P(name,index_pm)== 0) {
-            Serial.print(F("["));
-            Serial.print(uuid_index);
-            Serial.print(F("]={"));
-            Serial.print(value);
-            if (uuid_index < variableCount ) 
+
+        uint8_t uuid_search_i=0;
+    
+        Serial.print(F(""));
+        Serial.print(uuid_index);
+        Serial.print(":");
+        Serial.print(name);
+        Serial.print(F("={"));
+        Serial.print(value);        
+        do {
+            if (strcmp((const char *)variableList[uuid_search_i]->getVarUUID().c_str(),name)==0) 
+            {//Found a match
+                variableList[uuid_search_i]->setVarUUID((char *)value,true);
+                uuid_search_i=variableCount;
+            }
+            uuid_search_i++;
+        } while (uuid_search_i < variableCount );
+        
+        if (uuid_search_i > variableCount) {
+            Serial.println(F("} match  & added."));
+        } else 
+        if (strcmp_P(name,index_pm)== 0) { //Check if index and then simple reference
+            if (uuid_index < variableCount) 
             {
                 Serial.print(F("} replacing {"));
                 Serial.print(variableList[uuid_index]->getVarUUID() );
                 Serial.println(F("}"));
-
-                strcpy(&ps.provider.s.uuid[uuid_index][0], value);
-                variableList[uuid_index]->setVarUUID(&ps.provider.s.uuid[uuid_index][0]);
-            
+                variableList[uuid_index]->setVarUUID((char *)value,true);           
             } else {
                 Serial.println(F("} out of range. Notused"));
             }
-            uuid_index++;
         } else 
         {
             Serial.print(F("UUIDs not supported:"));
@@ -810,11 +836,14 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             Serial.print("=");
             Serial.println(value);
         } 
-    } else if (strcmp_P(section,COMMON_pm)== 0) {
+        uuid_index++;
+    } else if (strcmp_P(section,COMMON_pm)== 0) {// [COMMON] processing
         if (strcmp_P(name,LOGGER_ID_pm)== 0) {
-            strcpy((char *)LOGGER_ID_ADDR, value);
+            Serial.print(F("COMMON LoggerId Set: "));
+            Serial.println(value);
+            dataLogger.setLoggerId(value,true);
         } else if (strcmp_P(name,LOGGING_INTERVAL_MIN_pm)== 0){
-            //convert str to num
+            //convert str to num with error checking
             long intervalMin;
             char *endptr;
             errno=0;
@@ -842,6 +871,19 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
                 Serial.print(F(" Set LiIon Type error; (range 0-2) read:"));
                 Serial.println(batLiionType);
             }
+        } else if (strcmp_P(name,TIME_ZONE_pm)== 0){
+            //convert  str to num with error checking
+            long time_zone_local;
+            char *endptr;
+            errno=0;
+            time_zone_local = strtoul(value,&endptr,10);    
+            if ((time_zone_local < 13) && (time_zone_local> -13) &&(errno!=ERANGE) ) {
+                Serial.print(F("COMMON Set TimeZone ; "));
+                timeZone=time_zone_local;
+            } else {
+                Serial.print(F("COMMON Set TimeZone error; (range -12 : +12) read:"));     
+            }
+            Serial.println(time_zone_local);           
         } else {
             Serial.print(F("COMMON tbd "));
             Serial.print(name);
@@ -850,28 +892,25 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
         }
     } else if (strcmp_P(section,NETWORK_pm)== 0) {
         if (strcmp_P(name,apn_pm)== 0) {
-#define APN_ADDR ps.msn.s.apn
-            strcpy((char *)APN_ADDR, value);
-            modemPhy.setApn(APN_ADDR);
-            Serial.print(F("APN :"));
-            Serial.println((char *)APN_ADDR);
+            Serial.print(F("NETWORK APN: was '"));
+            Serial.print(modemPhy.getApn());
+            modemPhy.setWiFiId(value,true);
+            Serial.print(F("' now '"));
+            Serial.print(modemPhy.getApn());
+            Serial.println("'");            
         } else if (strcmp_P(name,WiFiId_pm)== 0)  {
-#define WIFIID_ADDR ps.msn.s.WiFiId
-            Serial.print(F("WiFiId: was '"));
+            Serial.print(F("NETWORK WiFiId: was '"));
             Serial.print(modemPhy.getWiFiId());
-            strcpy((char *)WIFIID_ADDR, value);
-            modemPhy.setWiFiId(WIFIID_ADDR);
-            //modemPhy.setWiFiId(value);
+            modemPhy.setWiFiId(value,true);
             Serial.print(F("' now '"));
             Serial.print(modemPhy.getWiFiId());
-            //Serial.print(WIFIID_ADDR);
             Serial.println("'");
         } else if (strcmp_P(name,WiFiPwd_pm)== 0) {
-#define WIFIPWD_ADDR ps.msn.s.WiFiPwd
-            strcpy((char *)WIFIPWD_ADDR, value);
-            modemPhy.setWiFiPwd(WIFIPWD_ADDR);
-            Serial.print(F("WiFiPwd:'"));
-            Serial.print(WIFIPWD_ADDR);
+            Serial.print(F("NETWORK WiFiPwd: was '"));
+            Serial.print(modemPhy.getWiFiPwd());
+            modemPhy.setWiFiPwd(value,true);
+            Serial.print(F("' now '"));
+            Serial.print(modemPhy.getWiFiPwd());
             Serial.println("'");
         } else {
             Serial.print(F("NETWORK tbd "));
@@ -924,6 +963,9 @@ const char MAYFLY_INIT_ID_pm[] EDIY_PROGMEM = "MAYFLY_INIT_ID";
         Serial.print(F("="));  
         Serial.println(value);  
     }
+    #if RAM_REPORT_LEVEL > 1
+    if (ram_track) RAM_AVAILABLE;
+    #endif //RAM_REPORT_LEVEL
     return 1;
 }
 #endif //USE_SD_MAYFLY_INI
@@ -972,9 +1014,9 @@ void setupModem() //njh Move to loggerModem???
 { 
     // Set up the sleep/wake pin for the modem and put its inital value as "off"
     #if defined(TINY_GSM_MODEM_XBEE)
+        MS_DBG(F("Setting up sleep mode on the XBee. "));
         if(modemSleepRqPin >= 0) 
         {
-            Serial.print(F("Setting up sleep mode on the XBee. "));
             Serial.println(modemSleepRqPin);
             pinMode(modemSleepRqPin, OUTPUT);
             digitalWrite(modemSleepRqPin, LOW);  // Turn it on to talk, just in case
@@ -988,7 +1030,7 @@ void setupModem() //njh Move to loggerModem???
             //tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
             //tinyModem->waitResponse();
         } else {
-            PRINTOUT(F("Xbee Modem - not available! Not set to pin sleep"));
+            PRINTOUT(F("Xbee Modem Cmd Mode Err - not available! Not set to pin sleep"));
         }
         if(modemSleepRqPin >= 0) {
             digitalWrite(modemSleepRqPin, HIGH);  // back to sleep
@@ -1036,11 +1078,12 @@ void modemCheckHasIp()  //njh Move to loggerModem???
         }
         tinyModem->exitCommand();
     } else {
-        PRINTOUT(F("nh: Check IP number. not in CMD modem!"));
+        PRINTOUT(F("Xbee Check IP number. not in CMD modem!"));
     }
     //Expect sleepFxn();
 #endif //TINY_GSM_MODEM_XBEE   
 }
+
 // ==========================================================================
 // Main setup function
 // ==========================================================================
@@ -1058,21 +1101,12 @@ void setup()
     //Serial.write('/');
     //Serial.print(build_epochTime,HEX);
     //Serial.print(__TIMESTAMP__); //still a ASC string Tue Dec 04 19:47:20 2018
-    extern int16_t __heap_start, *__brkval;
-    uint16_t top_stack = (int) &top_stack  - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
- 
-    Serial.print(F(" Ram available:"));
-    Serial.println(top_stack );// Stack and heap ??
+
     //MCUSR Serial.println(mcu_status,HEX);
     Serial.println(file_name); //Dir and filename
-    Serial.print(F("Mayfly Sn: "));
-    Serial.print(MFsn_def);
-    Serial.print(F(" "));
+    Serial.print(F("Mayfly "));
     Serial.print(MFVersion);
-    Serial.print(F(" Logger:"));
-    Serial.println(LoggerID_def);
-    Serial.print(F("Current Time: "));
-    Serial.println(Logger::formatDateTime_ISO8601(dataLogger.getNowEpoch()+(timeZone_def*60)) );
+    ramAvailable();
 
     do {
         LiBattPower_Unseable = ((PS_LBATT_UNUSEABLE_STATUS == mayflyPhy.isBatteryStatusAbove(true,PS_PWR_LOW_REQ))?true:false);
@@ -1097,7 +1131,7 @@ void setup()
         }
     } while (LiBattPower_Unseable); 
 
-    MS_DBG(F("BatV="),mayflyPhy.getBatteryVm1(false));
+    MS_DBG(F("Good BatV="),mayflyPhy.getBatteryVm1(false));
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.print(MODULAR_SENSORS_VERSION);
@@ -1109,6 +1143,7 @@ void setup()
     }
     Serial.println();
     // Start the serial connection with the modem
+    modemSetup=false;
     ModemSerial.begin(ModemBaud);
 
 #if !defined(CONFIG_SENSOR_RS485_PHY)
@@ -1128,9 +1163,10 @@ void setup()
     greenredflash();
 
 #ifdef USE_SD_MAYFLY_INI
-    PRINTOUT(F("***parseIni "));
+    PRINTOUT(F("---parseIni "));
     dataLogger.parseIniSd(configIniID,inihUnhandledFn);
 #endif //USE_SD_MAYFLY_INI
+
 #if 0
     Serial.print(F(" .ini-Logger:"));
     Serial.println(ps.msc.s.logger_id[0]);
@@ -1163,7 +1199,10 @@ void setup()
         Serial.println();
     }
 #endif //0
-#if 1
+
+    Serial.print(F("Current Time: "));
+    Serial.println(Logger::formatDateTime_ISO8601(dataLogger.getNowEpoch()+(timeZone*60)) );
+#if 0
  //FUT: njh now part of Move to loggerModem???
     // Set up the sleep/wake pin for the modem and put its inital value as "off"
     Serial.println(F("Setting up sleep mode on the XBee."));
@@ -1187,9 +1226,9 @@ void setup()
 #endif
     // Set the timezone and offsets
     // Logging in the given time zone
-    Logger::setTimeZone(timeZone_def);
+    Logger::setTimeZone(timeZone);
     // Offset is the same as the time zone because the RTC is in UTC
-    Logger::setTZOffset(timeZone_def);
+    Logger::setTZOffset(timeZone);
 
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modemPhy);
@@ -1197,9 +1236,9 @@ void setup()
     dataLogger.setTestingModePin(buttonPin);
     //dataLogger.attachBoardPhy(&mayflyPhy);
     //dataLogger.setSensorSerial(&modbusSerial);
+    ramAvailable();
     // Begin the logger
     dataLogger.begin();
-    //njh needs to be done later dataLogger.syncRTC();
 #if 0
     // At lowest battery level, skip sensor set-up
     // Note:  Please change these battery voltages to match your battery
@@ -1213,6 +1252,14 @@ void setup()
         dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
         dataLogger.syncRTC();
 #endif //0
+#if 0
+    Serial.print(F("WiFiId: '"));
+    Serial.print(modemPhy.getWiFiId());
+    Serial.print(F("' WiFiPwd: '"));
+    Serial.print(modemPhy.getWiFiPwd());
+    Serial.print("' ");
+#endif //
+
 }
 
 
@@ -1287,6 +1334,7 @@ void processSensors()
                 modemPhy.modemPowerUp();
                 if (!modemSetup) {
                     modemSetup = true;
+                    MS_DBG(F("  Modem setup up 1st pass\n"));
                     // The first time thru, setup modem. Can't do it in regular setup due to potential power drain.
                     setupModem();
                     modemCheckHasIp();

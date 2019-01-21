@@ -139,7 +139,47 @@ String Variable::getVarCode(void)
 String Variable::getVarUUID(void) {return _UUID;}
 
 // Set the variable UUID.
-void Variable::setVarUUID(char *newUUID) { _UUID =  newUUID;}
+void Variable::setVarUUID(char *newUUID, bool copyUid, uint8_t uuidSize) 
+{ 
+    #ifdef DEBUGGING_SERIAL_OUTPUT
+        #if defined __AVR__
+        extern int16_t __heap_start, *__brkval;
+        int16_t v;
+        int ramStart = freeRamCalc();
+
+        #elif defined(ARDUINO_ARCH_SAMD)
+        int ramStart = FreeRam();
+
+        #else
+        int ramStart = -9999;
+        #endif
+    #endif //DEBUGGING_SERIAL_OUTPUT
+    _UUID =  newUUID;
+
+    if (copyUid) {
+
+        /* This allocate a memory for the UUID and copy it into there
+        * before assigning reference to it
+        */
+
+        if (NULL==_UUID_buf) {
+            _UUID_buf = new char[uuidSize];
+        } 
+        if (NULL==_UUID_buf) {
+            //Major problem
+            PRINTOUT(F("setVarUUID error - new didn't work for"), newUUID);
+        } else {
+            memcpy (_UUID_buf,newUUID,uuidSize);
+            _UUID =  _UUID_buf;
+        }
+        MS_DBG(F("setVarUUID cp "), newUUID);
+
+    } 
+    #ifdef DEBUGGING_SERIAL_OUTPUT
+        int ramEnd=freeRamCalc();
+        MS_DBG(F("setVarUUID ramUsed "), ramStart-ramEnd," left:",ramEnd);
+    #endif //DEBUGGING_SERIAL_OUTPUT
+}
 
 // This returns the current value of the variable as a float
 float Variable::getValue(bool updateValue)

@@ -45,6 +45,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define EFP(x) x
   #define EF(x)  x
 #endif
+// Need to declar     int16_t v;
+#define freeRamCalc() (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval)
 /*****************************************************************************
  * Persistent structures.
  * Defines data structures for per software build & geographical location customizations 
@@ -114,7 +116,7 @@ typedef struct {
 #endif //USE_PS_modularSensorsCommon)
 
 //******
-#define USE_PS_modularSensorsNetwork 1
+//#define USE_PS_modularSensorsNetwork 1
 //******
 #if defined(USE_PS_modularSensorsNetwork)
 #define MSCN_APN_SZ 32
@@ -151,7 +153,7 @@ typedef struct {
     char cloudId[UUIDE_CLOUD_ID_SZ]; //ASCII url 
     char registration_token[UUIDE_REGISTRATION_TOKEN_SZ];
     char sampling_feature[UUIDE_SAMPLING_FEAUTRE_SZ];
-    char uuid[UUIDE_SENSOR_CNT_MAX_SZ][UUIDE_SENSOR_UUID_SZ];
+    //char uuid[UUIDE_SENSOR_CNT_MAX_SZ][UUIDE_SENSOR_UUID_SZ];
 } uuid_envirodiy01_t;
 #define UUID_ACTIVE uuid_envirodiy01_t
 typedef struct {
@@ -171,4 +173,5 @@ typedef struct {
 } persistent_store_t;
 
 #define LOGGER_ID_ADDR ps.msc.s.logger_id
+
 #endif //ms_common_h
