@@ -100,15 +100,16 @@ public:
     // the user.
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                 bool (*wakeFxn)(), bool (*sleepFxn)(),
-                TinyGsmModem *inModem, Client *inClient);
-
-    loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
-                bool (*wakeFxn)(), bool (*sleepFxn)(),
                 TinyGsmModem *inModem, Client *inClient, const char *APN);
 
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                 bool (*wakeFxn)(), bool (*sleepFxn)(),
                 TinyGsmModem *inModem, Client *inClient, const char *ssid, const char *pwd);
+
+    loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
+                bool (*wakeFxn)(), bool (*sleepFxn)(),
+                TinyGsmModem *inModem, Client *inClient);
+
     ~loggerModem();
 
     String getSensorName(void) override;
