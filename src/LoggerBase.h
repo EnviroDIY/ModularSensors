@@ -23,8 +23,11 @@
 #include "ModSensorDebugger.h"
 #include "VariableArray.h"
 #include "LoggerModem.h"
+<<<<<<< HEAD
 #include <Arduino.h>  // The base Arduino library
 #include "ms_cfg.h"
+=======
+>>>>>>> v0.19.3
 
 // Bring in the libraries to handle the processor sleep/standby modes
 // The SAMD library can also the built-in clock on those modules
