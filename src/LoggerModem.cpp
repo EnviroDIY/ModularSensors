@@ -312,10 +312,16 @@ bool loggerModem::wake(void)
 
     // Check the status pin and wake bits before running wake function
     // Don't want to accidently pulse an already on modem to off
-    if ((_dataPin >= 0 && _statusTime_ms == 0 && digitalRead(_dataPin) == _statusLevel)
-        || bitRead(_sensorStatus, 4))
+    if ( bitRead(_sensorStatus, 4))
     {
-        MS_MOD_DBG(getSensorName(), F(" was already on!"));
+        MS_MOD_DBG(getSensorName(), F(" has already been woken up!  Will not run wake function."));
+        success = true;
+    }
+    // NOTE:  It's possible that the status pin is on, but the modem is actually
+    // mid-shutdow.  In that case, we'll mistakenly skip re-waking it.
+    else if (_dataPin > 0 && digitalRead(_dataPin) == _statusLevel)
+    {
+        MS_MOD_DBG(getSensorName(), F(" was already on!  Will not run wake function."));
         success = true;
     }
     else
@@ -326,7 +332,7 @@ bool loggerModem::wake(void)
 
     // Re-check the status pin
     // Only works if the status pin comes on immediately
-    if ((_dataPin >= 0 && _statusTime_ms == 0 && digitalRead(_dataPin) != _statusLevel))
+    if (_dataPin > 0 && _statusTime_ms == 0 && digitalRead(_dataPin) != _statusLevel)
     {
         MS_MOD_DBG(F("Status pin on "), getSensorName(), F(" is "),
                    digitalRead(_dataPin), F(" indicating it is off!"));
@@ -339,8 +345,10 @@ bool loggerModem::wake(void)
     if (success)
     {
         // Mark the time that the modem woke up
+        // NOTE:  This is the ONLY place _millisSensorActivated is set!
         if (_millisSensorActivated == 0) _millisSensorActivated = millis();
         // Set the status bit for sensor wake/activation success (bit 4)
+        // NOTE:  This is the ONLY place bit 4 is set!
         _sensorStatus |= 0b00010000;
         MS_MOD_DBG(getSensorName(), F(" should be awake."));
     }
@@ -776,8 +784,15 @@ bool loggerModem::modemSleepPowerDown(void)
     MS_MOD_DBG(F("Turning "), getSensorName(), F(" off."));
 
     // If there's a status pin available, check before running the sleep function
+    // NOTE:  It's possible that the modem could still be in the process of turning
+    // on and thus status pin isn't valid yet.  In that case, we wouldn't yet
+    // know it's coming on and so we'd mistakenly assume it's already off and
+    // not turn it back off.
     if (_dataPin >= 0 && digitalRead(_dataPin) != _statusLevel)
-        MS_MOD_DBG(getSensorName(), F("  appears to have already been off."));
+        MS_MOD_DBG(getSensorName(), F(" appears to have already been off.  Will not run sleep function."));
+    // Also check against the status bits
+    else if (!bitread(_sensorStatus, 4))
+        MS_MOD_DBG(getSensorName(), F(" was never sucessfully turned on.  Will not run sleep function."));
     else
     {
         // Run the sleep function
