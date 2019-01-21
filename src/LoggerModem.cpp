@@ -447,18 +447,21 @@ bool loggerModem::addSingleMeasurementResult(void)
         }
 
         // Get signal quality
+        // NOTE:  We can't actually distinguish between a bad modem response, no
+        // modem response, and a real response from the modem of no service/signal.
+        // The TinyGSM getSignalQuality function returns the same "no signal"
+        // value (99 CSQ or 0 RSSI) in all 3 cases.
         MS_MOD_DBG(F("Getting signal quality:"));
         signalQual = _tinyModem->getSignalQuality();
         MS_MOD_DBG(F("Raw signal quality: "), signalQual);
 
         // Convert signal quality to RSSI, if necessary
-        if ((_modemName.indexOf(F("XBee")) >= 0 || _modemName.indexOf(F("ESP8266")) >= 0)
-            && signalQual != -9999)
+        if ((_modemName.indexOf(F("XBee")) >= 0 || _modemName.indexOf(F("ESP8266")) >= 0))
         {
             rssi = signalQual;
             percent = getPctFromRSSI(signalQual);
         }
-        else if (signalQual != -9999)
+        else
         {
             rssi = getRSSIFromCSQ(signalQual);
             percent = getPctFromCSQ(signalQual);
@@ -525,6 +528,8 @@ bool loggerModem::isStable(bool debug)
         if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
                getSensorName(), F(" has maxed out wait for AT command reply!  Ending wait."));
          // Unset status bit 4 (wake up success) and _millisSensorActivated
+         // It's safe to unset these here because we've already tested and failed
+         // to respond to AT commands.
          _millisSensorActivated = 0;
          _sensorStatus &= 0b11101111;
         return true;
@@ -537,51 +542,81 @@ bool loggerModem::isStable(bool debug)
 
 // This checks to see if enough time has passed for measurement completion
 // In the case of the modem, we consider a measurement to be "complete" when
-// the modem has registered on the network
+// the modem has registered on the network *and* returns good signal strength.
+// In theory, both of these things happen at the same time - as soon as the
+// module detects a network with sufficient signal strength, it connects and
+// will respond corretly to requests for its connection status and the signal
+// strength.  In reality sometimes the modem might respond with successful
+// network connection before it responds with a valid signal strength or it
+// might be able to return a real measurement of cellular signal strength but
+// not be able to register to the network.  We'd prefer to wait until it both
+// responses are good so we're getting an actual signal strength and it's as
+// close as possible to what the antenna is will see when the data publishers
+// push data.
 bool loggerModem::isMeasurementComplete(bool debug)
 {
-    // If the modem never responded to AT commands,this will fail.
-    if (_millisSensorActivated == 0)
+    // If a measurement failed to start, the sensor will never return a result,
+    // so the measurement time is essentially already passed
+    // For a cellular modem nothing happens to "start" a measurement so bit 6
+    // will be set by startSingleMeasurement() as long as bit 4 was set by wake().
+    // For a WiFi modem, startSingleMeasurement actually sets the WiFi connection
+    // parameters.
+    if (!bitRead(_sensorStatus, 6))
     {
-        if (debug) MS_MOD_DBG(getSensorName(),
-               F(" is not responding to AT commands; will not ask for signal strength!"));
+        if (debug) {MS_DBG(getSensorName(),
+            F(" is not measuring and will not return a value!"));}
         return true;
     }
 
-    // For XBee's, we need to open a socket before we get signal strentgh
-    // For ease, we're opening that socket to NIST
+    // just defining this to not call twice below
+    uint32_t now = millis();
+
+    // For Wifi XBee's, we need to open a socket before we get signal strength
+    // For ease, we will be opening that socket to NIST in addSingleMeasurementResult.
     // Because NIST very clearly specifies that we may not ping more frequently
     // than once every 4 seconds, we need to wait if it hasn't been that long.
     // See:  https://tf.nist.gov/tf-cgi/servers.cgi
-    if (_modemName.indexOf(F("XBee")) >= 0 && millis() - _lastNISTrequest < 4000)
+    if (_modemName.indexOf(F("XBee")) >= 0  && _tinyModem->hasWifi()
+        && now - _lastNISTrequest < 4000)
+    {
         return false;
+    }
 
-    // Unlike most sensors where we're interested in the millis since measurement
-    // was started for a measurement completion time, for the modem the only
-    // time of interest is the time since it was turned on.
-    uint32_t elapsed_since_wake_up = millis() - _millisSensorActivated;
-    // If the modem is registered on the network, it's "stable"
-    if (_tinyModem->isNetworkConnected())
+    // Check how long we've been waiting for the network connection and/or a
+    // good measurement of signal quality.
+    uint32_t elapsed_in_wait;
+
+    // Cellular modems and wifi modems with the connection paramters always
+    // saved to flash (like XBees) begin searching for and attempt to register
+    // to the network as soon as they are awake - the GPRS paramters that need
+    // to be set to actually *use* the network don't have to be set until we
+    // make the attempt to use it.
+    if (_tinyModem->hasGPRS() || _modemName.indexOf(F("XBee")) >= 0)
+        elapsed_in_wait = now - _millisSensorActivated;
+
+    // For Wifi modems without settings in flash, the connection parameters
+    // need to set before it can register to the network - that is done in the
+    // startSingleMeasurement() function and becomes the measurement request time.
+    else elapsed_in_wait = now - _millisMeasurementRequested;
+
+    // If we've exceeded the allowed time to wait for the network, give up
+    if (elapsed_in_wait > MODEM_MAX_SEARCH_TIME)
     {
-        if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
-               getSensorName(), F(" is now registered on the network!"));
-        return true;
-    }
-    // If we've exceeded the time-out, give up
-    if (elapsed_since_wake_up > MODEM_MAX_SEARCH_TIME)
-    {
-        if (debug) MS_MOD_DBG(F("It's been "), (elapsed_since_wake_up), F("ms, and "),
+        if (debug) MS_MOD_DBG(F("It's been "), (elapsed_in_wait), F("ms, and "),
                getSensorName(), F(" has maxed out wait for network registration!  Ending wait."));
-         // Unset status bit 6 (start measurement success) and _millisMeasurementRequested
-         // _millisMeasurementRequested = 0;
-         // _sensorStatus &= 0b10111111;
-         // Leave status bits and times set - we can actually ask for signal
-         // strength even if the network registration failed, although we'd
-         // prefer to wait until it succeeds to get the "real" strength the
-         // antenna is seeing at the time of sending.
+         // Leave status bits and times set - can still get a valid value!
         return true;
     }
-    // If the modem isn't registered yet, we still need to wait
+
+    bool isConnected = _tinyModem->isNetworkConnected();  // Is the network connected
+    int signalResponse = _tinyModem->getSignalQuality();
+    if (_tinyModem->isNetworkConnected() && signalResponse != 0 && signalResponse != 99)
+    {
+        if (debug) MS_MOD_DBG(F("It's been "), (elapsed_in_wait), F("ms, and "),
+               getSensorName(), F(" is now registered on the network and reporting valid signal strength!"));
+        return true;
+    }
+    // If the modem isn't registered yet or doesn't report valid signal, we still need to wait
     return false;
 }
 
@@ -873,8 +908,14 @@ uint32_t loggerModem::getNISTTime(void)
 // Helper to get approximate RSSI from CSQ (assuming no noise)
 int16_t loggerModem::getRSSIFromCSQ(int16_t csq)
 {
-    int16_t CSQs[33]  = {  0,   1,   2,   3,   4,   5,   6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 99};
-    int16_t RSSIs[33] = {113, 111, 109, 107, 105, 103, 101, 99, 97, 95, 93, 91, 89, 87, 85, 83, 81, 79, 77, 75, 73, 71, 69, 67, 65, 63, 61, 59, 57, 55, 53, 51, 0};
+    int16_t CSQs[33]  = {   0,    1,    2,    3,    4,    5,    6,   7,   8,   9,
+                           10,   11,   12,   13,   14,   15,   16,  17,  18,  19,
+                           20,   21,   22,   23,   24,   25,   26,  27,  28,  29,
+                           30,   31,   99};
+    int16_t RSSIs[33] = {-113, -111, -109, -107, -105, -103, -101, -99, -97, -95,
+                          -93,  -91,  -89,  -87,  -85,  -83,  -81, -79, -77, -75,
+                          -73,  -71,  -69,  -67,  -65,  -63,  -61, -59, -57, -55,
+                          -53,  -51,    0};
     for (uint8_t i = 0; i < 33; i++)
     {
         if (CSQs[i] == csq) return RSSIs[i];
@@ -885,8 +926,14 @@ int16_t loggerModem::getRSSIFromCSQ(int16_t csq)
 // Helper to get signal percent from CSQ
 int16_t loggerModem::getPctFromCSQ(int16_t csq)
 {
-    int16_t CSQs[33] = {0, 1, 2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 99};
-    int16_t PCTs[33] = {0, 3, 6, 10, 13, 16, 19, 23, 26, 29, 32, 36, 39, 42, 45, 48, 52, 55, 58, 61, 65, 68, 71, 74, 78, 81, 84, 87, 90, 94, 97, 100, 0};
+    int16_t CSQs[33]  = {   0,    1,    2,    3,    4,    5,    6,   7,   8,   9,
+                           10,   11,   12,   13,   14,   15,   16,  17,  18,  19,
+                           20,   21,   22,   23,   24,   25,   26,  27,  28,  29,
+                           30,   31,   99};
+    int16_t PCTs[33] = {    0,    3,    6,   10,   13,   16,   19,  23,  26,  29,
+                           32,   36,   39,   42,   45,   48,   52,  55,  58,  61,
+                           65,   68,   71,   74,   78,   81,   84,  87,  90,  94,
+                           97,  100,    0};
     for (uint8_t i = 0; i < 33; i++)
     {
         if (CSQs[i] == csq) return PCTs[i];
