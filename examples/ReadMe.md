@@ -29,7 +29,8 @@ This is uses the sensors and equipment standard to the DWRI Citizen Science gran
 
 
 ### [logging_to_ThingSpeak](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_ThingSpeak)
-    This uses an ESP8266 to send data to ThingSpeak. It also includes a Meter Hydros 21 (formerly know as a Decagon CTD) and a Campbell OBS3+.
+
+This uses an ESP8266 to send data to ThingSpeak. It also includes a Meter Hydros 21 (formerly know as a Decagon CTD) and a Campbell OBS3+.
 
 
 ### [baro_rho_correction](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/baro_rho_correction)
