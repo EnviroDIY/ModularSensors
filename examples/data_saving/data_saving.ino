@@ -54,15 +54,15 @@ const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
 
-// Create and return the processor "sensor"
-const char *MFVersion = "v0.5b";
-ProcessorStats mayfly(MFVersion);
+// Create and return the main processor chip "sensor" - for general metadata
+const char *mcuBoardVersion = "v0.5b";
+ProcessorStats mcuBoard(mcuBoardVersion);
 
 // Create the battery voltage and free RAM variable objects for the processor and return variable-type pointers to them
 // Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
-Variable *mayflyBatt = new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *mayflyRAM = new ProcessorStats_FreeRam(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *mayflySampNo = new ProcessorStats_SampleNumber(&mayfly, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *mcuBoardBatt = new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *mcuBoardAvailableRAM = new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -75,7 +75,7 @@ Variable *mayflySampNo = new ProcessorStats_SampleNumber(&mayfly, "12345678-abcd
 // as possible.  In some cases (ie, modbus communication) many sensors can share
 // the same serial port.
 
-#if not defined(ARDUINO_ARCH_SAMD)  // For AVR boards
+#if not defined(ARDUINO_ARCH_SAMD) && not defined(ATMEGA2560)  // For AVR boards
 // Unfortunately, most AVR boards have only one or two hardware serial ports,
 // so we'll set up three types of extra software serial ports to use
 
@@ -136,6 +136,7 @@ void SERCOM1_Handler()
 #include <TinyGsmClient.h>
 
 // Create a reference to the serial port for the modem
+// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
@@ -159,10 +160,10 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 // THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
 // Describe the physical pin connection of your modem to your board
 const long ModemBaud = 9600;         // Communication speed of the modem
+const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemSleepRqPin = 23;   // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if not applicable)
-const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -183,6 +184,7 @@ bool sleepFxn(void)
 // ==========================================================================
 //    Network Information and LoggerModem Object
 // ==========================================================================
+#include <LoggerModem.h>
 
 // Network connection information
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
@@ -190,12 +192,12 @@ const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
 
 // Create the loggerModem instance
-#include <LoggerModem.h>
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
 
 // Create the RSSI and signal strength variable objects for the modem and return
 // variable-type pointers to them
+// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
 Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab");
 
@@ -209,6 +211,7 @@ Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-e
 MaximDS3231 ds3231(1);
 
 // Create the temperature variable object for the DS3231 and return a variable-type pointer to it
+// Use this to create a variable pointer with a name to use in multiple arrays or any calculated variables.
 Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab");
 
 
@@ -227,7 +230,7 @@ AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
 #endif
 
 byte y504ModbusAddress = 0x04;  // The modbus address of the Y504
-const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+const int8_t rs485AdapterPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y504NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
@@ -238,6 +241,7 @@ YosemitechY504 y504(y504ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 // Create the dissolved oxygen percent, dissolved oxygen concentration, and
 // temperature variable objects for the Y504 and return variable-type
 // pointers to them
+// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
 Variable *y504DOpct = new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *y504DOmgL = new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *y504Temp = new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab");
@@ -258,7 +262,7 @@ Variable *y504Temp = new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-123
 // #endif
 
 byte y511ModbusAddress = 0x1A;  // The modbus address of the Y511
-// const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t rs485AdapterPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 // const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y511NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
@@ -267,6 +271,7 @@ const uint8_t y511NumberReadings = 5;  // The manufacturer recommends averaging 
 YosemitechY511 y511(y511ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y511NumberReadings);
 
 // Create the turbidity and temperature variable objects for the Y511 and return variable-type pointers to them
+// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
 Variable *y511Turb = new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *y511Temp = new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab");
 
@@ -286,7 +291,7 @@ Variable *y511Temp = new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-123
 // #endif
 
 byte y514ModbusAddress = 0x14;  // The modbus address of the Y514
-// const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t rs485AdapterPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 // const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y514NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
@@ -315,7 +320,7 @@ Variable *y514Temp = new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-123
 // #endif
 
 byte y520ModbusAddress = 0x20;  // The modbus address of the Y520
-// const int8_t rs485AdapterPower = 22;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+// const int8_t rs485AdapterPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 // const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y520NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
@@ -324,22 +329,23 @@ const uint8_t y520NumberReadings = 5;  // The manufacturer recommends averaging 
 YosemitechY520 y520(y520ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y520NumberReadings);
 
 // Create the specific conductance and temperature variable objects for the Y520 and return variable-type pointers to them
+// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
 Variable *y520Cond = new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
-//    The array that contains all variables to be logged
+//    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 #include <VariableArray.h>
 
-// Put all of the variable pointers into an Array
-// NOTE:  Since we've created all of the variable pointers above, we can just
+// Put ALL of the variable pointers into the first array
+// NOTE:  Since we've created all of the variable pointers above, we can
 // reference them by name here.
 Variable *variableList_complete[] = {
-    mayflySampNo,
-    mayflyBatt,
-    mayflyRAM,
+    mcuBoardSampNo,
+    mcuBoardBatt,
+    mcuBoardAvailableRAM,
     ds3231Temp,
     y504DOpct,
     y504DOmgL,
@@ -358,18 +364,9 @@ int variableCount_complete = sizeof(variableList_complete) / sizeof(variableList
 // Create the VariableArray object
 VariableArray arrayComplete(variableCount_complete, variableList_complete);
 
-// Create a new logger instance
-#include <LoggerBase.h>
-Logger loggerAllVars(LoggerID, loggingInterval, sdCardPin, wakePin, &arrayComplete);
 
-
-// ==========================================================================
-//    The array that contains all variables to have their values sent out over the internet
-// ==========================================================================
-
-// Put all of the variable pointers into an Array
-// NOTE:  Since we've created all of the variable pointers above, we can just
-// reference them by name here.
+// Put only the particularly interesting variables into a second array
+// NOTE:  We can put some of the exact same variables into multiple arrays
 Variable *variableList_toGo[] = {
     y504DOmgL,
     y504Temp,
@@ -382,14 +379,24 @@ Variable *variableList_toGo[] = {
 int variableCount_toGo = sizeof(variableList_toGo) / sizeof(variableList_toGo[0]);
 // Create the VariableArray object
 VariableArray arrayToGo(variableCount_toGo, variableList_toGo);
+
+
+// ==========================================================================
+//     The Logger Object[s]
+// ==========================================================================
+#include <LoggerBase.h>
+
+Logger loggerAllVars(LoggerID, loggingInterval, sdCardPin, wakePin, &arrayComplete);
+
 // Create the new logger instance
 Logger loggerToGo(LoggerID, loggingInterval,sdCardPin, wakePin, &arrayToGo);
 
 
 // ==========================================================================
-// Device registration and sampling feature information
-//   This should be obtained after registration at http://data.envirodiy.org
+//    A Publisher to WikiWatershed
 // ==========================================================================
+// Device registration and sampling feature information can be obtained after
+// registration at http://data.WikiWatershed.org
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 
@@ -425,8 +432,8 @@ void setup()
     // Wait for USB connection to be established by PC
     // NOTE:  Only use this when debugging - if not connected to a PC, this
     // will prevent the script from starting
-    #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA32U4)
-      while (!SerialUSB && (millis() < 10000)){}
+    #if defined(SERIAL_PORT_USBVIRTUAL)
+      while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)){}
     #endif
 
     // Start the primary serial connection
@@ -446,17 +453,20 @@ void setup()
         Serial.println(F(
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
+    // Assign pins SERCOM functionality for SAMD boards
+    #if defined(ARDUINO_ARCH_SAMD) \
+      && not defined(ARDUINO_SODAQ_AUTONOMO) && not defined(ARDUINO_SODAQ_EXPLORER) \
+      && not defined(ARDUINO_SODAQ_ONE) && not defined(ARDUINO_SODAQ_SARA) \
+      && not defined(ARDUINO_SODAQ_SFF)
+    pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx = SERCOM1 Pad #2
+    pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx = SERCOM1 Pad #0
+    #endif
+
     // Start the serial connection with the modem
     modemSerial.begin(ModemBaud);
 
-    // Start the stream for the modbus sensors
+    // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
     modbusSerial.begin(9600);
-
-    #if defined ARDUINO_ARCH_SAMD
-    // Assign pins to SERCOM functionality
-    pinPeripheral(10, PIO_SERCOM);
-    pinPeripheral(11, PIO_SERCOM);
-    #endif
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
@@ -481,9 +491,8 @@ void setup()
     // attaching it to both allows either logger to control NIST synchronization
     loggerAllVars.attachModem(modem);
     loggerToGo.attachModem(modem);
+    loggerAllVars.setAlertPin(greenLED);
     loggerAllVars.setTestingModePin(buttonPin);
-    // There is no reason to call the setAlertPin() function, because we have to
-    // write the loop on our own.
 
     // Set up the connection information with EnviroDIY for both loggers
     // Doing this for both loggers ensures that the header of the csv will have the tokens in it
@@ -493,19 +502,19 @@ void setup()
     // Update the Mayfly "sensor" to get us updated battery voltages
     // We'll use the battery voltage to decide which version of the begin() to use
     // NOTE:  This update happens very fast
-    mayfly.update();
+    mcuBoard.update();
 
     // Because we've given it a modem and it knows all of the tokens, we can
     // just "begin" the complete logger to set up the datafile, clock, sleep,
     // and all of the sensors.  We don't need to bother with the "begin" for the
     // other logger because it has the same processor and clock.
-    if (mayflyBatt->getValue() < 3.4) loggerAllVars.begin(true);
+    if (mcuBoardBatt->getValue() < 3.4) loggerAllVars.begin(true);
     else loggerAllVars.begin();  // set up sensors
 
     // At very good battery voltage, or with suspicious time stamp, sync the clock
     // Note:  Please change these battery voltages to match your battery
-    if (mayflyBatt->getValue() > 3.9 ||
-        loggerAllVars.getNowEpoch() < 1545091200 ||  /*Before 12/18/2018*/
+    if (mcuBoardBatt->getValue() > 3.9 ||
+        loggerAllVars.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
         loggerAllVars.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
         loggerAllVars.syncRTC();
 }
@@ -515,33 +524,33 @@ void setup()
 // Main loop function
 // ==========================================================================
 
-// Because of the way the sleep mode is set up, the processor will wake up
-// and start the loop every minute exactly on the minute.
+// Because of the way alarms work on the RTC, it will wake the processor and
+// start the loop every minute exactly on the minute.
+// The processor may also be woken up by another interrupt or level change on a
+// pin - from a button or some other input.
+// The "if" statements in the loop determine what will happen - whether the
+// sensors update, testing mode starts, or it goes back to sleep.
 void loop()
 {
-    // Update the Mayfly "sensor" to get us updated battery voltages
-    // NOTE:  This update happens fast enough that it won't throw off the check
-    // interval timing.  If the update took more than 1 second to run,
-    // it would throw off the checkInterval() function.
-    mayfly.update();
-
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
     // We're only doing anything at all if the battery is above 3.4V
-    if (loggerAllVars.checkInterval() && mayflyBatt->getValue() > 3.4)
+    if (loggerAllVars.checkInterval() && mcuBoardBatt->getValue() > 3.4)
     {
+        // Flag to notify that we're in already awake and logging a point
+        Logger::isLoggingNow = true;
+
         // Print a line to show new reading
-        Serial.print(F("------------------------------------------\n"));
+        Serial.println(F("------------------------------------------"));
         // Turn on the LED to show we're taking a reading
-        digitalWrite(greenLED, HIGH);
-        digitalWrite(greenLED, HIGH);
+        loggerAllVars.alertOn();
 
         // Turn on the modem to let it start searching for the network
         // Only turn the modem on if the battery at the last interval was high enough
         // NOTE:  if the modemPowerUp function is not run before the completeUpdate
         // function is run, the modem will not be powered and will not return
         // a signal strength readign.
-        if (mayflyBatt->getValue() > 3.7)
+        if (mcuBoardBatt->getValue() > 3.7)
             modem.modemPowerUp();
 
         // Start the stream for the modbus sensors
@@ -550,10 +559,10 @@ void loop()
         modbusSerial.begin(9600);
 
         // Do a complete update on the "full" array.
-        // This will do all the power management
+        // This this includes powering all of the sensors, getting updated
+        // values, and turing them back off.
         // NOTE:  The wake function for each sensor should force sensor setup
         // to run if the sensor was not previously set up.
-        Serial.print(F("Updating all sensors...\n"));
         arrayComplete.completeUpdate();
 
         // End the stream for the modbus sensors
@@ -574,19 +583,25 @@ void loop()
         digitalWrite(11, LOW);
         #endif
 
-        // Stream the variable results from the complete set of variables to
-        // the SD card
+        // Create a csv data record and save it to the log file
         loggerAllVars.logToSD();
 
         // Connect to the network
         // Again, we're only doing this if the battery is doing well
-        if (mayflyBatt->getValue() > 3.7)
+        if (mcuBoardBatt->getValue() > 3.7)
         {
-            Serial.print(F("Connecting to the internet...\n"));
             if (modem.connectInternet())
             {
                 // Post the data to the WebSDL
                 loggerToGo.sendDataToRemotes();
+
+                // Sync the clock at midnight
+                // NOTE:  All loggers have the same clock, pick one
+                if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
+                {
+                    Serial.println(F("  Running a daily clock sync..."));
+                    loggerAllVars.setRTClock(modem.getNISTTime());
+                }
 
                 // Disconnect from the network
                 modem.disconnectInternet();
@@ -596,9 +611,12 @@ void loop()
         }
 
         // Turn off the LED
-        digitalWrite(greenLED, LOW);
+        loggerAllVars.alertOff();
         // Print a line to show reading ended
-        Serial.print(F("------------------------------------------\n\n"));
+        Serial.println(F("------------------------------------------\n"));
+
+        // Unset flag
+        Logger::isLoggingNow = false;
     }
 
     // Check if it was instead the testing interrupt that woke us up
@@ -608,23 +626,6 @@ void loop()
     // function turns on the startTesting flag.  So we know if that flag is set
     // then we want to run the testing mode function.
     if (Logger::startTesting) loggerAllVars.testingMode();
-
-    // Once a day, at midnight, sync the clock
-    if (Logger::markedEpochTime % 86400 == 0 && mayflyBatt->getValue() > 3.7)
-    {
-        // Turn on the modem
-        modem.modemPowerUp();
-        // Connect to the network
-        if (modem.connectInternet())
-        {
-            // Synchronize the RTC (the loggers have the same clock, pick one)
-            loggerAllVars.setRTClock(modem.getNISTTime());
-            // Disconnect from the network
-            modem.disconnectInternet();
-        }
-        // Turn off the modem
-        modem.modemSleepPowerDown();
-    }
 
     // Call the processor sleep
     // Only need to do this for one of the loggers

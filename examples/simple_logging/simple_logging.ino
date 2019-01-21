@@ -53,9 +53,9 @@ const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
 
-// Create and return the processor "sensor"
-const char *MFVersion = "v0.5b";
-ProcessorStats mayfly(MFVersion);
+// Create and return the main processor chip "sensor" - for general metadata
+const char *mcuBoardVersion = "v0.5b";
+ProcessorStats mcuBoard(mcuBoardVersion);
 
 
 // ==========================================================================
@@ -68,15 +68,16 @@ MaximDS3231 ds3231(1);
 
 
 // ==========================================================================
-//    The array that contains all variables to be logged
+//    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 #include <VariableArray.h>
+
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
-    new ProcessorStats_SampleNumber(&mayfly),
-    new ProcessorStats_FreeRam(&mayfly),
-    new ProcessorStats_Batt(&mayfly),
+    new ProcessorStats_SampleNumber(&mcuBoard),
+    new ProcessorStats_FreeRam(&mcuBoard),
+    new ProcessorStats_Batt(&mcuBoard),
     new MaximDS3231_Temp(&ds3231)
 };
 // Count up the number of pointers in the array
@@ -85,9 +86,14 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
 
-// Create a new logger instance
+
+// ==========================================================================
+//     The Logger Object[s]
+// ==========================================================================
 #include <LoggerBase.h>
-Logger logger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+
+// Create a new logger instance
+Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
@@ -146,11 +152,11 @@ void setup()
     Logger::setTZOffset(timeZone);
 
     // Set information pins
-    logger.setAlertPin(greenLED);
-    logger.setTestingModePin(buttonPin);
+    dataLogger.setAlertPin(greenLED);
+    dataLogger.setTestingModePin(buttonPin);
 
     // Begin the logger
-    logger.begin();
+    dataLogger.begin();
 }
 
 
@@ -160,5 +166,5 @@ void setup()
 void loop()
 {
     // Log the data
-    logger.logData();
+    dataLogger.logData();
 }

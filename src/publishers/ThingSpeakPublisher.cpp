@@ -97,11 +97,11 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
     strcat(topicBuffer, _thingSpeakChannelID);
     strcat(topicBuffer, "/publish/");
     strcat(topicBuffer, _thingSpeakChannelKey);
-    MS_DBG(F("Topic: "), String(topicBuffer));
+    MS_DBG(F("Topic ["), strlen(topicBuffer), F("]: "), String(topicBuffer));
 
     emptyTxBuffer();
 
-    _baseLogger->formatDateTime_ISO8601(_baseLogger->markedEpochTime).toCharArray(tempBuffer, 26);
+    _baseLogger->formatDateTime_ISO8601(Logger::markedEpochTime).toCharArray(tempBuffer, 26);
     strcat(txBuffer, "created_at=");
     strcat(txBuffer, tempBuffer);
     txBuffer[strlen(txBuffer)] = '&';
@@ -109,7 +109,7 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
     for (uint8_t i = 0; i < numChannels; i++)
     {
         strcat(txBuffer, "field");
-        itoa(i+1, tempBuffer, 12);
+        itoa(i+1, tempBuffer, 10);  // BASE 10
         strcat(txBuffer, tempBuffer);
         txBuffer[strlen(txBuffer)] = '=';
         _baseLogger->getValueStringAtI(i).toCharArray(tempBuffer, 26);
@@ -119,7 +119,7 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
             txBuffer[strlen(txBuffer)] = '&';
         }
     }
-    MS_DBG(F("Message: "), String(txBuffer));
+    MS_DBG(F("Message ["), strlen(txBuffer), F("]: "), String(txBuffer));
 
     // Set the client connection parameters
     _mqttClient.setClient(*_outClient);

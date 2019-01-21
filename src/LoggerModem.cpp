@@ -710,14 +710,11 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
 {
     bool retVal = true;
 
-    if (bitRead(_sensorStatus, 1) == 0 || bitRead(_sensorStatus, 2) == 0){  // NOT yet powered
-        MS_MOD_DBG(F("connectInternet: modemPowerUp "),_sensorStatus);
+    if (bitRead(_sensorStatus, 1) == 0 || bitRead(_sensorStatus, 2) == 0)  // NOT yet powered
         modemPowerUp();
-    }
 
     if (bitRead(_sensorStatus, 3) == 0)  // No attempts yet to wake the modem
     {
-        MS_MOD_DBG(F("connectInternet: waitForWarmUp "),_sensorStatus);
         waitForWarmUp();
         retVal &= wake();  // This sets the modem to on, will also set-up if necessary
     }

@@ -54,9 +54,9 @@ const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
 
-// Create and return the processor "sensor"
-const char *MFVersion = "v0.5b";
-ProcessorStats mayfly(MFVersion);
+// Create and return the main processor chip "sensor" - for general metadata
+const char *mcuBoardVersion = "v0.5b";
+ProcessorStats mcuBoard(mcuBoardVersion);
 
 
 // ==========================================================================
@@ -97,13 +97,13 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 // This should work with most ESP8266 breakouts
 // Describe the physical pin connection of your modem to your board
 const long ModemBaud = 57600;        // Communication speed of the modem
+const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemResetPin = -1;     // MCU pin connected to ESP8266's RSTB/GPIO16 pin (-1 if unconnected)
 const int8_t espSleepRqPin = 13;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
 const int8_t modemSleepRqPin = 19;   // MCU pin used for wake from light sleep (-1 if not applicable)
 const int8_t espStatusPin = -1;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
 const int8_t modemStatusPin = -1;    // MCU pin used to read modem status (-1 if not applicable)
-const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -183,6 +183,7 @@ bool wakeFxn(void)
 // ==========================================================================
 //    Network Information and LoggerModem Object
 // ==========================================================================
+#include <LoggerModem.h>
 
 // Network connection information
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
@@ -190,7 +191,6 @@ const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
 
 // Create the loggerModem instance
-#include <LoggerModem.h>
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
 
@@ -199,6 +199,7 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepF
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
+
 // Create and return the DS3231 sensor object
 MaximDS3231 ds3231(1);
 
@@ -207,7 +208,8 @@ MaximDS3231 ds3231(1);
 //    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
 #include <sensors/CampbellOBS3.h>
-const int8_t OBS3Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+
+const int8_t OBS3Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t OBS3numberReadings = 10;
 const uint8_t OBS3_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
 // Campbell OBS 3+ Low Range calibration in Volts
@@ -215,14 +217,17 @@ const int8_t OBSLowPin = 0;  // The low voltage analog pin ON THE ADS1115 (NOT t
 const float OBSLow_A = 4.0749E+00;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = 9.1011E+01;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibration
+
 // Create and return the Campbell OBS3+ LOW RANGE sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, OBS3_ADS1115Address, OBS3numberReadings);
+
 
 // Campbell OBS 3+ High Range calibration in Volts
 const int8_t OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const float OBSHigh_A = 5.2996E+01;  // The "A" value (X^2) from the high range calibration
 const float OBSHigh_B = 3.7828E+02;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calibration
+
 // Create and return the Campbell OBS3+ HIGH RANGE sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OBS3_ADS1115Address, OBS3numberReadings);
 
@@ -231,27 +236,30 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OB
 //    Decagon CTD Conductivity, Temperature, and Depth Sensor
 // ==========================================================================
 #include <sensors/DecagonCTD.h>
+
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
 const uint8_t CTDnumberReadings = 6;  // The number of readings to average
-const int8_t SDI12Data = 7;  // The pin the CTD is attached to
-const int8_t SDI12Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t SDI12Data = 7;  // The SDI12 data pin
+
 // Create and return the Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 
+
 // ==========================================================================
-//    The array that contains all variables to be logged
+//    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 #include <VariableArray.h>
 
 // Create pointers for all of the variables from the sensors
 // at the same time putting them into an array
 Variable *variableList[] = {
-    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
     new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
+    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
+    new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab")
 };
@@ -261,14 +269,24 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
 
-// Create a new logger instance
+
+// ==========================================================================
+//     The Logger Object[s]
+// ==========================================================================
 #include <LoggerBase.h>
+
+// Create a new logger instance
 Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
-// ThingSpeak Information
+//    ThingSpeak Data Publisher
 // ==========================================================================
+// Create a channel with fields on ThingSpeak in advance
+// The fields will be sent in exactly the order they are in the variable array.
+// Any custom name or identifier given to the field on ThingSpeak fields is irrelevant.
+// No more than 8 fields of data can go to any one channel.  Any fields beyond the
+// eighth in the array will be ignored.
 const char *thingSpeakMQTTKey = "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from Account > MyProfile.
 const char *thingSpeakChannelID = "######";  // The numeric channel id for your channel
 const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
@@ -298,22 +316,11 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 
 
 // Read's the battery voltage
-float getBatteryVoltage(const char *version = MFVersion)
+// NOTE: This will actually return the battery level from the previous update!
+float getBatteryVoltage()
 {
-    float batteryVoltage;
-    if (strcmp(version, "v0.3") == 0 or strcmp(version, "v0.4") == 0)
-    {
-        // Get the battery voltage
-        float rawBattery = analogRead(A6);
-        batteryVoltage = (3.3 / 1023.) * 1.47 * rawBattery;
-    }
-    if (strcmp(version, "v0.5") == 0 or strcmp(version, "v0.5b") == 0)
-    {
-        // Get the battery voltage
-        float rawBattery = analogRead(A6);
-        batteryVoltage = (3.3 / 1023.) * 4.7 * rawBattery;
-    }
-    return batteryVoltage;
+    if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
+    return mcuBoard.sensorValues[0];
 }
 
 
@@ -386,7 +393,17 @@ void setup()
     dataLogger.setTestingModePin(buttonPin);
 
     // Begin the logger
-    dataLogger.begin();
+    // At lowest battery level, skip sensor set-up
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
+    else dataLogger.begin();  // set up sensors
+
+    // At very good battery voltage, or with suspicious time stamp, sync the clock
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() > 3.9 ||
+        dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
+        dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+        dataLogger.syncRTC();
 }
 
 

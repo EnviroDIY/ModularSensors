@@ -105,7 +105,7 @@ int16_t DreamHostPublisher::sendData(Client *_outClient)
 
         if (bufferFree() < 22) printTxBuffer(_outClient);
         strcat(txBuffer, timestampTagDH);
-        itoa(Logger::markedEpochTime - 946684800, tempBuffer, 10);
+        ltoa((Logger::markedEpochTime - 946684800), tempBuffer, 10);  // BASE 10
         strcat(txBuffer, tempBuffer);
 
         for (uint8_t i = 0; i < _baseLogger->getArrayVarCount(); i++)

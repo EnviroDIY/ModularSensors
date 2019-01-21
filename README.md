@@ -109,7 +109,7 @@ For power contributors,fork-it, modify and generate Pull Requests.
 https://github.com/neilh10/ModularSensors/wiki/git-cmds-for-preparing-for-a-PR
 
 ## License
-Software sketches and code are released under the BSD 3-Clause License -- See [LICENSE.md](https://github.com/neilh10/ModularSensors/blob/master/LICENSE.md) file for details.
+Software sketches and code are released under the BSD 3-Clause License -- See [LICENSE.md](https://github.com/EnviroDIY/ModularSensors/blob/master/LICENSE.md) file for details.
 
 Documentation is licensed as [Creative Commons Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/) (CC-BY-SA) copyright.
 

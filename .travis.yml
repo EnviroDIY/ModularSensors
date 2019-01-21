@@ -44,7 +44,7 @@ install:
     # Install serial libraries (these should be ignored by SAMD boards)
     - pio lib -g install https://github.com/PaulStoffregen/AltSoftSerial.git
     - pio lib -g install https://github.com/EnviroDIY/SoftwareSerial_ExtInts.git
-    - pio lib -g install NeoSWSerial
+    - pio lib -g install https://github.com/SRGDamia1/NeoSWSerial.git
     - pio update
 script:
     - platformio ci --project-option="lib_ldf_mode = deep+" --project-option="lib_ignore = RTCZero" --board=mayfly  --board=megaatmega2560
@@ -58,15 +58,9 @@ matrix:
 
       - env:
           - PLATFORMIO_CI_SRC=examples/single_sensor/
-          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT -D ENABLE_SERIAL2 -D ENABLE_SERIAL3"
-      - env:
-          - PLATFORMIO_CI_SRC=examples/multisensor_print/
-          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT"
+          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT -D ENABLE_SERIAL3"
       - env:
           - PLATFORMIO_CI_SRC=examples/simple_logging/
-          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT"
-      - env:
-          - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY/
           - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT"
       - env:
           - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/
@@ -82,13 +76,10 @@ matrix:
           - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT"
       - env:
           - PLATFORMIO_CI_SRC=examples/data_saving/
-          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT -D ENABLE_SERIAL2 -D ENABLE_SERIAL3"
+          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT -D ENABLE_SERIAL2"
       - env:
           - PLATFORMIO_CI_SRC=examples/logging_to_ThingSpeak/
           - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT -D MQTT_MAX_PACKET_SIZE=240"
       - env:
-          - PLATFORMIO_CI_SRC=examples/logging_to_EnviroDIY_Zero/
-          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT"
-      - env:
           - PLATFORMIO_CI_SRC=examples/menu_a_la_carte/
-          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT"
+          - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT -D MQTT_MAX_PACKET_SIZE=240 -D ENABLE_SERIAL2 -D ENABLE_SERIAL3"
