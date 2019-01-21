@@ -98,7 +98,7 @@ public:
     // feed that client back in here.  The TinyGSM library has a bunch of
     // typedef's in the TinyGsmClient.h that make this somewhat invisible to
     // the user.
-        loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
+    loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                 bool (*wakeFxn)(), bool (*sleepFxn)(),
                 TinyGsmModem *inModem, Client *inClient);
 
@@ -127,9 +127,9 @@ public:
     bool startSingleMeasurement(void) override;
     bool addSingleMeasurementResult(void) override;
 
-    void setApn(const char *APN);
-    void setWiFiId(const char *WiFiId);
-    void setWiFiPwd(const char *WiFiPwd);
+    void setApn(const char *APN, bool copyId=false);
+    void setWiFiId(const char *WiFiId, bool copyId=false);
+    void setWiFiPwd(const char *WiFiPwd, bool copyId=false);
     String getApn(void);
     String getWiFiId(void);
     String getWiFiPwd(void);
@@ -151,6 +151,8 @@ protected:
 public:
     int16_t getSignalRSSI(void) {return sensorValues[RSSI_VAR_NUM];}
     int16_t getSignalPercent(void) {return sensorValues[PERCENT_SIGNAL_VAR_NUM];}
+
+    Client * getClient(void){return _tinyClient;}
 
     bool connectInternet(uint32_t waitTime_ms = 50000L);
     void disconnectInternet(void);
@@ -190,11 +192,11 @@ private:
     bool (*_wakeFxn)(void);
     bool (*_sleepFxn)(void);
     const char *_apn;
+          char *_apn_buf=NULL;
     const char *_ssid;
+          char *_ssid_buf=NULL;
     const char *_pwd;
-    String _apn2;
-    String _ssid2;
-    String _pwd2;
+          char *_pwd_buf=NULL;
     uint32_t _lastNISTrequest;
     String _modemName;
 

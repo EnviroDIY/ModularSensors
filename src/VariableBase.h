@@ -10,9 +10,14 @@
 // Header Guards
 #ifndef VariableBase_h
 #define VariableBase_h
+#include <Arduino.h>  // The base Arduino library
+#include "ms_common.h"
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+//#define VariableBase_DBG 1
+#ifdef VariableBase_DBG
+  #define DEBUGGING_SERIAL_OUTPUT Serial
+#endif //VariableBase_DBG
 
 // Forward Declared Dependences
 class Sensor;
@@ -67,7 +72,8 @@ public:
     // This returns the variable UUID, if one has been assigned
     String getVarUUID(void);
     // Set the variable UUID.
-    void   setVarUUID(char *UUID);
+    void   setVarUUID(char *UUID, bool copyUid=false,uint8_t uuidSize=UUIDE_CLOUD_ID_SZ);
+    
 
     // This returns the current value of the variable as a float
     float getValue(bool updateValue = false);
@@ -91,6 +97,7 @@ private:
     const char *_defaultVarCode;
     const char *_customCode;
     const char *_UUID;
+    char *_UUID_buf=NULL;
     static const char* VAR_BASE_UNKNOWN;
 };
 

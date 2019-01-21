@@ -27,7 +27,6 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     _wakeFxn = wakeFxn;
     _sleepFxn = sleepFxn;
     _modemName = "unspecified modem";
-    //_ssid2=NULL;
 }
 loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                          bool (*wakeFxn)(), bool (*sleepFxn)(),
@@ -44,8 +43,6 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     _wakeFxn = wakeFxn;
     _sleepFxn = sleepFxn;
     _modemName = "unspecified modem";
-    _apn2 = APN;
-    //_ssid2=NULL;
 }
 loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                          bool (*wakeFxn)(), bool (*sleepFxn)(),
@@ -62,21 +59,111 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     _wakeFxn = wakeFxn;
     _sleepFxn = sleepFxn;
     _modemName = "unspecified modem";
-    _ssid2 = ssid;
-    _pwd2 = pwd;
 }
 // Destructor
 loggerModem::~loggerModem(){}
 
-void loggerModem::setApn(const char *APN){ _apn = APN; _apn2 = APN;
+void loggerModem::setApn(const char *newAPN,bool copyId)
+{ 
+   uint8_t newAPN_sz = strlen(newAPN);
+    _apn = newAPN; 
+     //TODO: njh test setAPN CopyID functons
+
+    if (copyId) {
+        /* Do size checks, allocate memory for the LoggerID, copy it there
+        *  then set assignment.
+        */
+       // For cell phone note clear what max size is.
+        #define  CELLAPN_MAX_sz 99
+        if (newAPN_sz > CELLAPN_MAX_sz) {
+            char *apn2 = (char *)newAPN;
+            PRINTOUT(F("\n\r   LoggerModem:setAPN too long: Trimmed to "),newAPN_sz);
+            apn2[newAPN_sz] = 0; //Trim max size
+            newAPN_sz=CELLAPN_MAX_sz; 
+        }
+        if (NULL == _apn_buf) {
+            _apn_buf = new char[newAPN_sz+2]; //Allow for trailing 0
+        } else {
+            PRINTOUT(F("\nLoggerModem::setAPN error - expected NULL ptr"));
+        }
+        if (NULL == _apn_buf) {
+            //Major problem
+            PRINTOUT(F("\nLoggerModem::setAPN error -no buffer "),  _apn_buf);
+        } else {
+            strcpy (_apn_buf,newAPN);
+            _apn =  _apn_buf;
+        }
+        MS_DBG(F("\nsetAPN cp "),  _apn," sz: ",newAPN_sz);
+    } 
 }
-void loggerModem::setWiFiId(const char *WiFiId) {_ssid = WiFiId; _ssid2= WiFiId;
+void loggerModem::setWiFiId(const char *newSsid,bool copyId) 
+{
+    uint8_t newSsid_sz = strlen(newSsid);
+    _ssid = newSsid;
+    if (copyId) {
+        /* Do size checks, allocate memory for the LoggerID, copy it there
+        *  then set assignment.
+        */
+        #define  WIFI_SSID_MAX_sz 32
+        if (newSsid_sz > WIFI_SSID_MAX_sz) {
+            char *WiFiId2 = (char *)newSsid;
+            PRINTOUT(F("\n\r   LoggerModem:setWiFiId too long: Trimmed to "),newSsid_sz);
+            WiFiId2[newSsid_sz] = 0; //Trim max size
+            newSsid_sz=WIFI_SSID_MAX_sz; 
+        }
+        if (NULL == _ssid_buf) {
+            _ssid_buf = new char[newSsid_sz+2]; //Allow for trailing 0
+        } else {
+            PRINTOUT(F("\nLoggerModem::setWiFiId error - expected NULL ptr"));
+        }
+        if (NULL == _ssid_buf) {
+            //Major problem
+            PRINTOUT(F("\nLoggerModem::setWiFiId error -no buffer "),  _ssid_buf);
+        } else {
+            strcpy (_ssid_buf,newSsid);
+            _ssid =  _ssid_buf;
+            //_ssid2 =  _ssid_buf;
+        }
+        MS_DBG(F("\nsetWiFiId cp "),  _ssid," sz: ",newSsid_sz);
+    } 
 }
-void loggerModem::setWiFiPwd(const char *WiFiPwd){_pwd = WiFiPwd;_pwd2 = WiFiPwd;
+
+void loggerModem::setWiFiPwd(const char *newPwd,bool copyId)
+/* nh Tested with and without newPwd setting
+*/
+{
+    uint8_t newPwd_sz = strlen(newPwd);
+    _pwd = newPwd;
+
+    if (copyId) {
+        /* Do size checks, allocate memory for the LoggerID, copy it there
+        *  then set assignment.
+        */
+        #define  WIFI_PWD_MAX_sz 63 //Len 63 printable chars + 0
+        if (newPwd_sz > WIFI_PWD_MAX_sz) {
+            char *pwd2 = (char *)newPwd;
+            PRINTOUT(F("\n\r   LoggerModem:setWiFiPwd too long: Trimmed to "),newPwd_sz);
+            pwd2[newPwd_sz] = 0; //Trim max size
+            newPwd_sz=WIFI_PWD_MAX_sz; 
+        }
+        if (NULL == _pwd_buf) {
+            _pwd_buf = new char[newPwd_sz+2]; //Allow for trailing 0
+        } else {
+            PRINTOUT(F("\nLoggerModem::setWiFiPwd error - expected NULL ptr"));
+        }
+        if (NULL == _pwd_buf) {
+            //Major problem
+            PRINTOUT(F("\nLoggerModem::setWiFiPwd error -no buffer "),  _pwd_buf);
+        } else {
+            strcpy (_pwd_buf,newPwd);
+            _pwd =  _pwd_buf;
+        }
+        MS_DBG(F("\nsetWiFiPwd cp "),  _ssid," sz: ",newPwd_sz);
+    }     
  }
-String loggerModem::getApn(void){ return _apn2; }
-String loggerModem::getWiFiId(void) {return _ssid2;}
-String loggerModem::getWiFiPwd(void){return _pwd2; }
+String loggerModem::getApn(void){ return _apn; }
+String loggerModem::getWiFiId(void) {return _ssid;}
+String loggerModem::getWiFiPwd(void){return _pwd; }
 
 String loggerModem::getSensorName(void) { return _modemName; }
 
@@ -623,14 +710,11 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
 {
     bool retVal = true;
 
-    if (bitRead(_sensorStatus, 1) == 0 || bitRead(_sensorStatus, 2) == 0){  // NOT yet powered
-        MS_MOD_DBG(F("connectInternet: modemPowerUp "),_sensorStatus);
+    if (bitRead(_sensorStatus, 1) == 0 || bitRead(_sensorStatus, 2) == 0)  // NOT yet powered
         modemPowerUp();
-    }
 
     if (bitRead(_sensorStatus, 3) == 0)  // No attempts yet to wake the modem
     {
-        MS_MOD_DBG(F("connectInternet: waitForWarmUp "),_sensorStatus);
         waitForWarmUp();
         retVal &= wake();  // This sets the modem to on, will also set-up if necessary
     }
