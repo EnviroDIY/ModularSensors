@@ -92,7 +92,7 @@ AltSoftSerial altSoftSerial;
 // You can use as many instances of NeoSWSerial as you want.
 // Not all AVR boards are supported by NeoSWSerial.
 #include <NeoSWSerial.h>  // for the stream communication
-const int8_t neoSSerial1Rx = 10;     // data in pin
+const int8_t neoSSerial1Rx = 11;     // data in pin
 const int8_t neoSSerial1Tx = -1;     // data out pin
 NeoSWSerial neoSSerial1(neoSSerial1Rx, neoSSerial1Tx);
 // To use NeoSWSerial in this library, we define a function to receive data
@@ -502,7 +502,7 @@ AOSongAM2315 am2315(I2CPower);
 #include <sensors/AOSongDHT.h>
 
 const int8_t DHTPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t DHTPin = 11;  // DHT data pin
+const int8_t DHTPin = 10;  // DHT data pin
 DHTtype dhtType = DHT11;  // DHT type, either DHT11, DHT21, or DHT22
 
 // Create and return the AOSong DHT sensor object
@@ -658,7 +658,7 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
 #include <sensors/ExternalVoltage.h>
 
 const int8_t VoltPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t VoltData = 0;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const int8_t VoltData = 2;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const float VoltGain = 10; // Default 1/gain for grove voltage divider is 10x
 const uint8_t Volt_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
 const uint8_t VoltReadsToAvg = 1; // Only read one sample
@@ -700,8 +700,8 @@ MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 HardwareSerial &sonarSerial = Serial3;  // Use hardware serial if possible
 #else
 // AltSoftSerial &sonarSerial = altSoftSerial;  // For software serial if needed
-// NeoSWSerial &sonarSerial = neoSSerial1;  // For software serial if needed
-SoftwareSerial_ExtInts &sonarSerial = softSerial1;  // For software serial if needed
+NeoSWSerial &sonarSerial = neoSSerial1;  // For software serial if needed
+// SoftwareSerial_ExtInts &sonarSerial = softSerial1;  // For software serial if needed
 #endif
 
 const int8_t SonarPower = sensorPowerPin;  // Excite (power) pin (-1 if unconnected)
@@ -1256,7 +1256,7 @@ DreamHostPublisher DreamHostGET(dataLogger, DreamHostPortalRX);
 // ==========================================================================
 // Create a channel with fields on ThingSpeak in advance
 // The fields will be sent in exactly the order they are in the variable array.
-// Any custom name or identifier given to the field on ThingSpeak fields is irrelevant.
+// Any custom name or identifier given to the field on ThingSpeak is irrelevant.
 // No more than 8 fields of data can go to any one channel.  Any fields beyond the
 // eighth in the array will be ignored.
 const char *thingSpeakMQTTKey = "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from Account > MyProfile.
@@ -1338,10 +1338,10 @@ void setup()
       && not defined(ARDUINO_SODAQ_AUTONOMO) && not defined(ARDUINO_SODAQ_EXPLORER) \
       && not defined(ARDUINO_SODAQ_ONE) && not defined(ARDUINO_SODAQ_SARA) \
       && not defined(ARDUINO_SODAQ_SFF)
-    pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx = SERCOM1 Pad #2
-    pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx = SERCOM1 Pad #0
-    pinPeripheral(2, PIO_SERCOM); // Serial3 Tx = SERCOM2 Pad #2
-    pinPeripheral(5, PIO_SERCOM);  // Serial3 Rx = SERCOM2 Pad #3
+    pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
+    pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
+    pinPeripheral(2, PIO_SERCOM); // Serial3 Tx/Dout = SERCOM2 Pad #2
+    pinPeripheral(5, PIO_SERCOM);  // Serial3 Rx/Din = SERCOM2 Pad #3
     #endif
 
     // Start the serial connection with the modem
@@ -1437,6 +1437,9 @@ void setup()
         dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
         dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
         dataLogger.syncRTC();
+
+    // Call the processor sleep
+    dataLogger.systemSleep();
 }
 
 
