@@ -618,7 +618,7 @@ bool loggerModem::isMeasurementComplete(bool debug)
 
     bool isConnected = _tinyModem->isNetworkConnected();  // Is the network connected
     int signalResponse = _tinyModem->getSignalQuality();
-    if (_tinyModem->isNetworkConnected() && signalResponse != 0 && signalResponse != 99)
+    if (isConnected && signalResponse != 0 && signalResponse != 99)
     {
         if (debug) MS_MOD_DBG(F("It's been "), (elapsed_in_wait), F("ms, and "),
                getSensorName(), F(" is now registered on the network and reporting valid signal strength!"));
@@ -791,7 +791,7 @@ bool loggerModem::modemSleepPowerDown(void)
     if (_dataPin >= 0 && digitalRead(_dataPin) != _statusLevel)
         MS_MOD_DBG(getSensorName(), F(" appears to have already been off.  Will not run sleep function."));
     // Also check against the status bits
-    else if (!bitread(_sensorStatus, 4))
+    else if (!bitRead(_sensorStatus, 4))
         MS_MOD_DBG(getSensorName(), F(" was never sucessfully turned on.  Will not run sleep function."));
     else
     {
