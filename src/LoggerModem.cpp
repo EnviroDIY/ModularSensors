@@ -319,7 +319,7 @@ bool loggerModem::wake(void)
     }
     // NOTE:  It's possible that the status pin is on, but the modem is actually
     // mid-shutdow.  In that case, we'll mistakenly skip re-waking it.
-    else if (_dataPin > 0 && digitalRead(_dataPin) == _statusLevel)
+    else if (_dataPin >= 0 && digitalRead(_dataPin) == _statusLevel)
     {
         MS_MOD_DBG(getSensorName(), F(" was already on!  Will not run wake function."));
         success = true;
