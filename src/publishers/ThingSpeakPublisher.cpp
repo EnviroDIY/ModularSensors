@@ -129,10 +129,11 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
     // NOTE:  The MQTT connect function can do this, but it works better if
     // we do it manually - otherwise sometimes the PubSubLibrary thinks the MQTT
     // client is connected when a different socket is open
-    _outClient->connect(mqttServer, mqttPort);
+    // _outClient->connect(mqttServer, mqttPort);
 
     // Make the MQTT connection
     // Note:  the client id and the user name do not mean anything for ThingSpeak
+    MS_DBG(F("Opening MQTT Connection"));
     if(_mqttClient.connect(mqttClient, mqttUser, _thingSpeakMQTTKey))
     {
         if (_mqttClient.publish(topicBuffer, txBuffer))
@@ -153,6 +154,7 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
     }
 
     // Disconnect from MQTT
+    MS_DBG(F("Disconnecting from MQTT"));
     _mqttClient.disconnect();
     return retVal;
 }

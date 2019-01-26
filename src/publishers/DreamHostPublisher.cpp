@@ -90,6 +90,7 @@ int16_t DreamHostPublisher::sendData(Client *_outClient)
     uint16_t did_respond = 0;
 
     // Open a TCP/IP connection to DreamHost
+    MS_DBG(F("Connecting client"));
     if(_outClient->connect(dreamhostHost, dreamhostPort))
     {
         // copy the initial post header into the tx buffer
@@ -145,6 +146,7 @@ int16_t DreamHostPublisher::sendData(Client *_outClient)
 
         // Close the TCP/IP connection as soon as the first 12 characters are read
         // We don't need anything else and stoping here should save data use.
+        MS_DBG(F("Stopping client"));
         _outClient->stop();
     }
     else PRINTOUT(F("\n -- Unable to Establish Connection to DreamHost -- "));

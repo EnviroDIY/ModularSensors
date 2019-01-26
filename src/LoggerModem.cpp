@@ -51,7 +51,9 @@ loggerModem::~loggerModem(){}
 String loggerModem::getSensorName(void) { return _modemName; }
 
 
-// NOTE!! Power is left ON after set-up
+// NOTE: Unlike other setup functions, this will NOT turn the power to the modem
+// on and off, it will simply check if the power has already been turned on and
+// return quickly if not.  If the power had been on, it isleft ON after set-up.
 bool loggerModem::setup(void)
 {
     bool success = Sensor::setup();  // this will set pin modes and the setup status bit
@@ -282,6 +284,7 @@ bool loggerModem::setup(void)
         MS_MOD_DBG(F("Running modem's sleep function ..."));
         success &= _sleepFxn();
     }
+    else MS_MOD_DBG(F("Leaving modem on after setup ..."));
     // Do NOT power down at the end, because this fxn cannot have powered the
     // modem up.
 

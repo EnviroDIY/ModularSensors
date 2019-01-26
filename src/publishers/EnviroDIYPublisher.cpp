@@ -158,9 +158,10 @@ int16_t EnviroDIYPublisher::sendData(Client *_outClient)
     char tempBuffer[37] = "";
     uint16_t did_respond = 0;
 
-    MS_DBG(F("Outgoing JSON size: "), calculateJsonSize())
+    MS_DBG(F("Outgoing JSON size: "), calculateJsonSize());
 
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
+    MS_DBG(F("Connecting client"));
     if(_outClient->connect(enviroDIYHost, enviroDIYPort))
     {
         // copy the initial post header into the tx buffer
@@ -243,6 +244,7 @@ int16_t EnviroDIYPublisher::sendData(Client *_outClient)
 
         // Close the TCP/IP connection as soon as the first 12 characters are read
         // We don't need anything else and stoping here should save data use.
+        MS_DBG(F("Stopping client"));
         _outClient->stop();
     }
     else PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data Portal -- "));
