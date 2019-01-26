@@ -125,6 +125,12 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
     _mqttClient.setClient(*_outClient);
     _mqttClient.setServer(mqttServer, mqttPort);
 
+    // Open a TCP/IP connection to DreamHost
+    // NOTE:  The MQTT connect function can do this, but it works better if
+    // we do it manually - otherwise sometimes the PubSubLibrary thinks the MQTT
+    // client is connected when a different socket is open
+    _outClient->connect(mqttServer, mqttPort);
+
     // Make the MQTT connection
     // Note:  the client id and the user name do not mean anything for ThingSpeak
     if(_mqttClient.connect(mqttClient, mqttUser, _thingSpeakMQTTKey))

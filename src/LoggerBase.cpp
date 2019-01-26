@@ -1167,9 +1167,6 @@ void Logger::setupSensorsAndFile(void)
 
     PRINTOUT(F("Logger setup finished!"));
     PRINTOUT(F("------------------------------------------\n"));
-
-    // Sleep
-    systemSleep();
 }
 
 

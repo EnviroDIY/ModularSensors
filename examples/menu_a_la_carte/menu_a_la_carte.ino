@@ -1385,7 +1385,10 @@ void setup()
         {
             tinyModem->sendAT(F("SM"),1);  // Pin sleep
             tinyModem->waitResponse();
-            tinyModem->sendAT(F("DO"),0);  // Disable remote manager
+            tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
+            // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
+            // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
+            //so we'll use the Digi pin sleep instead.
             tinyModem->waitResponse();
             tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
             tinyModem->waitResponse();
