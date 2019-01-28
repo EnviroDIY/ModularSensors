@@ -185,6 +185,7 @@ private:
     const char *_ssid;
     const char *_pwd;
     uint32_t _lastNISTrequest;
+    uint32_t _lastConnectionCheck;
     String _modemName;
 
 };

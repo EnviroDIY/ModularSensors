@@ -27,6 +27,7 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     _wakeFxn = wakeFxn;
     _sleepFxn = sleepFxn;
     _modemName = "unspecified modem";
+    _lastConnectionCheck = 0;
 }
 loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                          bool (*wakeFxn)(), bool (*sleepFxn)(),
@@ -43,6 +44,7 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     _wakeFxn = wakeFxn;
     _sleepFxn = sleepFxn;
     _modemName = "unspecified modem";
+    _lastConnectionCheck = 0;
 }
 // Destructor
 loggerModem::~loggerModem(){}
@@ -566,6 +568,10 @@ bool loggerModem::isStable(bool debug)
 // push data.
 bool loggerModem::isMeasurementComplete(bool debug)
 {
+
+    // just defining this to not call multiple times below
+        uint32_t now = millis();
+
     // If a measurement failed to start, the sensor will never return a result,
     // so the measurement time is essentially already passed
     // For a cellular modem nothing happens to "start" a measurement so bit 6
@@ -576,11 +582,9 @@ bool loggerModem::isMeasurementComplete(bool debug)
     {
         if (debug) {MS_DBG(getSensorName(),
             F(" is not measuring and will not return a value!"));}
+        _lastConnectionCheck = now;
         return true;
     }
-
-    // just defining this to not call twice below
-    uint32_t now = millis();
 
     // For Wifi XBee's, we need to open a socket before we get signal strength
     // For ease, we will be opening that socket to NIST in addSingleMeasurementResult.
@@ -590,6 +594,14 @@ bool loggerModem::isMeasurementComplete(bool debug)
     if (_modemName.indexOf(F("XBee")) >= 0  && _tinyModem->hasWifi()
         && now - _lastNISTrequest < 4000)
     {
+        return false;
+    }
+
+    // We don't want to ping any of the modems too fast so they don't get
+    // overwhelmed.  Make sure we've waited a little
+    if (now - _lastConnectionCheck < 250)
+    {
+        _lastConnectionCheck = now;
         return false;
     }
 
@@ -615,6 +627,7 @@ bool loggerModem::isMeasurementComplete(bool debug)
     {
         if (debug) MS_MOD_DBG(F("It's been "), (elapsed_in_wait), F("ms, and "),
                getSensorName(), F(" has maxed out wait for network registration!  Ending wait."));
+        _lastConnectionCheck = now;
          // Leave status bits and times set - can still get a valid value!
         return true;
     }
@@ -625,9 +638,11 @@ bool loggerModem::isMeasurementComplete(bool debug)
     {
         if (debug) MS_MOD_DBG(F("It's been "), (elapsed_in_wait), F("ms, and "),
                getSensorName(), F(" is now registered on the network and reporting valid signal strength!"));
+        _lastConnectionCheck = now;
         return true;
     }
     // If the modem isn't registered yet or doesn't report valid signal, we still need to wait
+    _lastConnectionCheck = now;
     return false;
 }
 
