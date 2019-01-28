@@ -41,13 +41,13 @@ bool Decagon5TM::addSingleMeasurementResult(void)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6))
     {
-        MS_DBG(F("   Activating SDI-12 instance for "), getSensorNameAndLocation());
+        MS_DBG(F("   Activating SDI-12 instance for"), getSensorNameAndLocation());
         // Make this the currently active SDI-12 Object
         // Use begin() instead of just setActive() to ensure timer is set correctly.
         _SDI12Internal.begin();;
         // Empty the buffer
         _SDI12Internal.clearBuffer();
-        MS_DBG(F("   Requesting data from "), getSensorNameAndLocation());
+        MS_DBG(F("   Requesting data from"), getSensorNameAndLocation());
         String getDataCommand = "";
         getDataCommand += _SDI12address;
         getDataCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
@@ -57,7 +57,7 @@ bool Decagon5TM::addSingleMeasurementResult(void)
 
         uint32_t startTime = millis();
         while (_SDI12Internal.available() < 3 && (millis() - startTime) < 1500) {}
-        MS_DBG(F("   Receiving results from "), getSensorNameAndLocation());
+        MS_DBG(F("   Receiving results from"), getSensorNameAndLocation());
         _SDI12Internal.read();  // ignore the repeated SDI12 address
         // First variable returned is the Dialectric E
         ea = _SDI12Internal.parseFloat();
@@ -91,12 +91,12 @@ bool Decagon5TM::addSingleMeasurementResult(void)
     }
     else
     {
-        MS_DBG(F("   "), getSensorNameAndLocation(), F(" is not currently measuring!"));
+        MS_DBG(F("  "), getSensorNameAndLocation(), F("is not currently measuring!"));
     }
 
-    MS_DBG(F("Dialectric E: "), ea);
-    MS_DBG(F(" Temperature: "), temp);
-    MS_DBG(F(" Volumetric Water Content: "), VWC);
+    MS_DBG(F("Dialectric E:"), ea);
+    MS_DBG(F("Temperature:"), temp);
+    MS_DBG(F("Volumetric Water Content:"), VWC);
 
     verifyAndAddMeasurementResult(TM_EA_VAR_NUM, ea);
     verifyAndAddMeasurementResult(TM_TEMP_VAR_NUM, temp);

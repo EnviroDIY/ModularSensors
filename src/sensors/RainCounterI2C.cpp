@@ -73,8 +73,8 @@ bool RainCounterI2C::addSingleMeasurementResult(void)
     }
     else MS_DBG(F("No bytes received from external tipper!"));
 
-    MS_DBG(F("Rain: "), rain);
-    MS_DBG(F("Tips: "), tips);
+    MS_DBG(F("Rain:"), rain);
+    MS_DBG(F("Tips:"), tips);
 
     verifyAndAddMeasurementResult(BUCKET_RAIN_VAR_NUM, rain);
     verifyAndAddMeasurementResult(BUCKET_TIPS_VAR_NUM, tips);

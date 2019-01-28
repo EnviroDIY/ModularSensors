@@ -84,27 +84,27 @@ bool CampbellOBS3::addSingleMeasurementResult(void)
         ads.begin();
 
         // Print out the calibration curve
-        MS_DBG(F("Input calibration Curve: "));
+        MS_DBG(F("Input calibration Curve:"));
         MS_DBG(_x2_coeff_A, F("x^2 + "), _x1_coeff_B, F("x + "), _x0_coeff_C);
 
         // Read Analog to Digital Converter (ADC)
         // Taking this reading includes the 8ms conversion delay.
         // We're allowing the ADS1115 library to do the bit-to-volts conversion for us
         adcVoltage = ads.readADC_SingleEnded_V(_dataPin);  // Getting the reading
-        MS_DBG(F("ads.readADC_SingleEnded_V("), _dataPin, F("): "), adcVoltage, F("\t\t"));
+        MS_DBG(F("ads.readADC_SingleEnded_V("), _dataPin, F("):"), adcVoltage, F("\t\t"));
 
         if (adcVoltage < 3.6 and adcVoltage > -0.3)  // Skip results out of range
         {
             // Apply the unique calibration curve for the given sensor
             calibResult = (_x2_coeff_A * sq(adcVoltage)) + (_x1_coeff_B * adcVoltage) + _x0_coeff_C;
-            MS_DBG(F("calibResult: "), calibResult);
+            MS_DBG(F("calibResult:"), calibResult);
         }
         else  // set invalid voltages back to -9999
         {
             adcVoltage = -9999;
         }
     }
-    else MS_DBG(getSensorNameAndLocation(), F(" is not currently measuring!"));
+    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
 
     verifyAndAddMeasurementResult(OBS3_TURB_VAR_NUM, calibResult);
     verifyAndAddMeasurementResult(OBS3_VOLTAGE_VAR_NUM, adcVoltage);

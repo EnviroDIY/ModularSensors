@@ -134,7 +134,7 @@ bool sleepFxn(void)
     else if (modemSleepRqPin >= 0 && modemStatusPin >= 0)
     {
         tinyModem->sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
-                          String(espStatusPin), F(","), modemStatusLevel);
+                          String(espStatusPin), ',', modemStatusLevel);
         bool success = tinyModem->waitResponse() == 1;
         tinyModem->sendAT(F("+SLEEP=1"));
         success &= tinyModem->waitResponse() == 1;

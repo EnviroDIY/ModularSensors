@@ -158,7 +158,7 @@ int16_t EnviroDIYPublisher::sendData(Client *_outClient)
     char tempBuffer[37] = "";
     uint16_t did_respond = 0;
 
-    MS_DBG(F("Outgoing JSON size: "), calculateJsonSize());
+    MS_DBG(F("Outgoing JSON size:"), calculateJsonSize());
 
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
     MS_DBG(F("Connecting client"));
@@ -247,7 +247,7 @@ int16_t EnviroDIYPublisher::sendData(Client *_outClient)
         MS_DBG(F("Stopping client"));
         _outClient->stop();
     }
-    else PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data Portal -- "));
+    else PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data Portal --"));
 
     // Process the HTTP response
     int16_t responseCode = 0;
@@ -262,7 +262,7 @@ int16_t EnviroDIYPublisher::sendData(Client *_outClient)
     }
     else responseCode=504;
 
-    PRINTOUT(F(" -- Response Code -- "));
+    PRINTOUT(F("-- Response Code --"));
     PRINTOUT(responseCode);
 
     return responseCode;

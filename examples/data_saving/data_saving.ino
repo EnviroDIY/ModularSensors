@@ -599,7 +599,7 @@ void loop()
                 // NOTE:  All loggers have the same clock, pick one
                 if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
                 {
-                    Serial.println(F("  Running a daily clock sync..."));
+                    Serial.println(F("Running a daily clock sync..."));
                     loggerAllVars.setRTClock(modem.getNISTTime());
                 }
 

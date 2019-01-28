@@ -61,7 +61,7 @@ bool MaximDS3231::addSingleMeasurementResult(void)
     // get the temperature value
     MS_DBG(F("Getting temperature from DS3231"));
     float tempVal = rtc.getTemperature();
-    MS_DBG(F("Current temp is "), tempVal);
+    MS_DBG(F("Current temp is"), tempVal);
 
     verifyAndAddMeasurementResult(DS3231_TEMP_VAR_NUM, tempVal);
 

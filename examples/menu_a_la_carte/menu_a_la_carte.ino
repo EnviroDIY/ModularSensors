@@ -290,7 +290,7 @@ bool sleepFxn(void)
     else if (modemSleepRqPin >= 0 && modemStatusPin >= 0)
     {
         tinyModem->sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
-                          String(espStatusPin), F(","), modemStatusLevel);
+                          String(espStatusPin), ',', modemStatusLevel);
         bool success = tinyModem->waitResponse() == 1;
         tinyModem->sendAT(F("+SLEEP=1"));
         success &= tinyModem->waitResponse() == 1;
@@ -1520,7 +1520,7 @@ void loop()
                 // Sync the clock at midnight
                 if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
                 {
-                    Serial.println(F("  Running a daily clock sync..."));
+                    Serial.println(F("Running a daily clock sync..."));
                     dataLogger.setRTClock(modem.getNISTTime());
                 }
 

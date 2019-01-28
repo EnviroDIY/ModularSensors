@@ -73,7 +73,7 @@ bool AOSongDHT::addSingleMeasurementResult(void)
         // Reading temperature or humidity takes about 250 milliseconds!
         for (uint8_t i = 0; i < 5; i++)  // Make 5 attempts to get a decent reading
         {
-            MS_DBG(F("Getting values from "), getSensorNameAndLocation());
+            MS_DBG(F("Getting values from"), getSensorNameAndLocation());
             // First read the humidity
             humid_val = dht_internal.readHumidity();
             // Read temperature as Celsius (the default)
@@ -84,9 +84,9 @@ bool AOSongDHT::addSingleMeasurementResult(void)
             {
                 // Compute heat index in Celsius (isFahreheit = false)
                 hi_val = dht_internal.computeHeatIndex(temp_val, humid_val, false);
-                MS_DBG(F("Temp is: "), temp_val, F("°C"));
-                MS_DBG(F(" Humidity is: "), humid_val, F("%"));
-                MS_DBG(F(" Calculated Heat Index is: "), hi_val, F("°C"));
+                MS_DBG(F("Temp is:"), temp_val, F("°C"));
+                MS_DBG(F("Humidity is:"), humid_val, '%');
+                MS_DBG(F("Calculated Heat Index is:"), hi_val, F("°C"));
                 success = true;
                 break;
             }
@@ -104,7 +104,7 @@ bool AOSongDHT::addSingleMeasurementResult(void)
             }
         }
     }
-    else MS_DBG(getSensorNameAndLocation(), F(" is not currently measuring!"));
+    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
 
     // Store the results in the sensorValues array
     verifyAndAddMeasurementResult(DHT_TEMP_VAR_NUM, temp_val);

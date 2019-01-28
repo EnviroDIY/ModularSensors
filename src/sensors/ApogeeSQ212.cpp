@@ -86,16 +86,16 @@ bool ApogeeSQ212::addSingleMeasurementResult(void)
         // Taking this reading includes the 8ms conversion delay.
         // We're allowing the ADS1115 library to do the bit-to-volts conversion for us
         adcVoltage = ads.readADC_SingleEnded_V(_dataPin);  // Getting the reading
-        MS_DBG(F("ads.readADC_SingleEnded_V("), _dataPin, F("): "), adcVoltage, F("\t\t"));
+        MS_DBG(F("ads.readADC_SingleEnded_V("), _dataPin, F("):"), adcVoltage, F("\t\t"));
 
         if (adcVoltage < 3.6 and adcVoltage > -0.3)  // Skip results out of range
         {
             // Apogee SQ-212 Calibration Factor = 1.0 μmol m-2 s-1 per mV;
             calibResult = 1 * adcVoltage * 1000 ;  // in units of μmol m-2 s-1 (microeinsteinPerSquareMeterPerSecond)
-            MS_DBG(F("calibResult: "), calibResult);
+            MS_DBG(F("calibResult:"), calibResult);
         }
     }
-    else MS_DBG(getSensorNameAndLocation(), F(" is not currently measuring!"));
+    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
 
     verifyAndAddMeasurementResult(SQ212_PAR_VAR_NUM, calibResult);
 

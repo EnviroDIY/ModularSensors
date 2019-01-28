@@ -88,7 +88,7 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
         MS_DBG(F("Only the first 8 fields worth of data will be sent."));
     }
     uint8_t numChannels = min(_baseLogger->getArrayVarCount(), 8);
-    MS_DBG(numChannels, F(" fields will be sent to ThingSpeak"));
+    MS_DBG(numChannels, F("fields will be sent to ThingSpeak"));
 
     // Create a buffer for the portions of the request and response
     char tempBuffer[26] = "";
@@ -97,7 +97,7 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
     strcat(topicBuffer, _thingSpeakChannelID);
     strcat(topicBuffer, "/publish/");
     strcat(topicBuffer, _thingSpeakChannelKey);
-    MS_DBG(F("Topic ["), strlen(topicBuffer), F("]: "), String(topicBuffer));
+    MS_DBG(F("Topic ["), strlen(topicBuffer), F("]:"), String(topicBuffer));
 
     emptyTxBuffer();
 
@@ -119,7 +119,7 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
             txBuffer[strlen(txBuffer)] = '&';
         }
     }
-    MS_DBG(F("Message ["), strlen(txBuffer), F("]: "), String(txBuffer));
+    MS_DBG(F("Message ["), strlen(txBuffer), F("]:"), String(txBuffer));
 
     // Set the client connection parameters
     _mqttClient.setClient(*_outClient);
@@ -138,18 +138,18 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
     {
         if (_mqttClient.publish(topicBuffer, txBuffer))
         {
-            PRINTOUT(F("ThingSpeak topic published!  Current state: "), _mqttClient.state());
+            PRINTOUT(F("ThingSpeak topic published!  Current state:"), _mqttClient.state());
             retVal = true;
         }
         else
         {
-            PRINTOUT(F("MQTT publish failed with state: "), _mqttClient.state());
+            PRINTOUT(F("MQTT publish failed with state:"), _mqttClient.state());
             retVal = false;
         }
     }
     else
     {
-        PRINTOUT(F("MQTT connection failed with state: "), _mqttClient.state());
+        PRINTOUT(F("MQTT connection failed with state:"), _mqttClient.state());
         retVal = false;
     }
 

@@ -90,16 +90,16 @@ bool ExternalVoltage::addSingleMeasurementResult(void)
         // Taking this reading includes the 8ms conversion delay.
         // We're allowing the ADS1115 library to do the bit-to-volts conversion for us
         adcVoltage = ads.readADC_SingleEnded_V(_dataPin);  // Getting the reading
-        MS_DBG(F("ads.readADC_SingleEnded_V("), _dataPin, F("): "), adcVoltage, F("\t\t"));
+        MS_DBG(F("ads.readADC_SingleEnded_V("), _dataPin, F("):"), adcVoltage, F("\t\t"));
 
         if (adcVoltage < 3.6 and adcVoltage > -0.3)  // Skip results out of range
         {
             // Apply the gain calculation, with a defualt gain of 10 V/V Gain
             calibResult = adcVoltage * _gain ;
-            MS_DBG(F("calibResult: "), calibResult);
+            MS_DBG(F("calibResult:"), calibResult);
         }
     }
-    else MS_DBG(getSensorNameAndLocation(), F(" is not currently measuring!"));
+    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
 
     verifyAndAddMeasurementResult(EXT_VOLT_VAR_NUM, calibResult);
 
