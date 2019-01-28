@@ -178,7 +178,7 @@ int16_t EnviroDIYPublisher::sendData(Client *_outClient)
     uint32_t start_timer = millis();
     if(_outClient->connect(enviroDIYHost, enviroDIYPort))
     {
-        MS_DBG(F("Client connected after"), millis() - start_timer, F("ms"));
+        MS_DBG(F("Client connected after"), millis() - start_timer, F("ms\n"));
 
         // copy the initial post header into the tx buffer
         strcpy(txBuffer, postHeader);

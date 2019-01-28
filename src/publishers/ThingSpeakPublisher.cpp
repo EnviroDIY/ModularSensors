@@ -46,7 +46,7 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger,
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client *inClient,
                                    const char *thingSpeakMQTTKey,
                                    const char *thingSpeakChannelID,
-                                   const char *thingSpeakChannelKey,                                   
+                                   const char *thingSpeakChannelKey,
                                    uint8_t sendEveryX, uint8_t sendOffset)
   : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
 {
@@ -140,11 +140,13 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
     _mqttClient.setClient(*_outClient);
     _mqttClient.setServer(mqttServer, mqttPort);
 
-    // Open a TCP/IP connection to DreamHost
+    // Make sure any previous TCP connections are closed
     // NOTE:  The MQTT connect function can do this, but it works better if
     // we do it manually - otherwise sometimes the PubSubLibrary thinks the MQTT
     // client is connected when a different socket is open
-    // _outClient->connect(mqttServer, mqttPort);
+    if (_outClient->connected()) {
+        _outClient->stop();
+    }
 
     // Make the MQTT connection
     // Note:  the client id and the user name do not mean anything for ThingSpeak

@@ -866,7 +866,13 @@ bool loggerModem::modemSleepPowerDown(void)
     else
     {
         MS_MOD_DBG(F("Power to"), getSensorName(), F("is not controlled by this library."));
-         // Do NOT unset the power status bits or timestamps if we didn't really power down!
+        // Unset the power-on time and bits even if we didn't do anything.
+        // This prevents the wake from happening on modems with no power pin
+        // unless modemPowerUp() is called.
+        _millisPowerOn = 0;
+        // Unset the status bits for sensor power (bits 1 & 2),
+        // activation (bits 3 & 4), and measurement request (bits 5 & 6)
+        _sensorStatus &= 0b10000001;
     }
 
     return success;
