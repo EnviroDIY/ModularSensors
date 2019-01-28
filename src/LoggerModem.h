@@ -71,6 +71,7 @@
         template<typename T, typename... Args>
         static void MS_MOD_DBG(T head, Args... tail) {
             MODEM_DEBUGGING_SERIAL_OUTPUT.print(head);
+            MODEM_DEBUGGING_SERIAL_OUTPUT.print(' ');
             MS_MOD_DBG(tail...);
         }
     }
@@ -185,6 +186,7 @@ private:
     const char *_ssid;
     const char *_pwd;
     uint32_t _lastNISTrequest;
+    uint32_t _lastATCheck;
     uint32_t _lastConnectionCheck;
     String _modemName;
 
