@@ -25,10 +25,21 @@ DreamHostPublisher::DreamHostPublisher(Logger& baseLogger,
                                  uint8_t sendEveryX, uint8_t sendOffset)
   : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {}
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client *inClient,
+                                 uint8_t sendEveryX, uint8_t sendOffset)
+  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
+{}
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger,
                                  const char *URL, uint8_t sendEveryX,
                                  uint8_t sendOffset)
   : dataPublisher(baseLogger, sendEveryX, sendOffset)
+{
+    setDreamHostPortalRX(URL);
+}
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client *inClient,
+                                 const char *URL, uint8_t sendEveryX,
+                                 uint8_t sendOffset)
+  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
 {
     setDreamHostPortalRX(URL);
 }

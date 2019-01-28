@@ -35,11 +35,24 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger,
                                  uint8_t sendEveryX, uint8_t sendOffset)
   : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {}
+EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
+                                 uint8_t sendEveryX, uint8_t sendOffset)
+  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
+{}
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger,
                                  const char *registrationToken,
                                  const char *samplingFeatureUUID,
                                  uint8_t sendEveryX, uint8_t sendOffset)
   : dataPublisher(baseLogger, sendEveryX, sendOffset)
+{
+    setToken(registrationToken);
+    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+}
+EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
+                                 const char *registrationToken,
+                                 const char *samplingFeatureUUID,
+                                 uint8_t sendEveryX, uint8_t sendOffset)
+  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
 {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);

@@ -30,8 +30,14 @@ public:
     // Constructor
     DreamHostPublisher(Logger& baseLogger,
                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    DreamHostPublisher(Logger& baseLogger, const char *URL,
+    DreamHostPublisher(Logger& baseLogger, Client *inClient,
                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    DreamHostPublisher(Logger& baseLogger,
+                       const char *URL,
+                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    DreamHostPublisher(Logger& baseLogger, Client *inClient,
+                       const char *URL,
+                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     virtual ~DreamHostPublisher();
 
     // Returns the data destination

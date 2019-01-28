@@ -924,8 +924,8 @@ uint32_t loggerModem::getNISTTime(void)
                 // MS_MOD_DBG(F("\nseconds from 1900 after byte:"),String(secFrom1900, BIN));
                 if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;}
             }
-            MS_MOD_DBG(F("\nSeconds from 1900 returned by NIST (UTC):  "),
-                       secFrom1900, String(secFrom1900, BIN));
+            MS_MOD_DBG(F("\nSeconds from 1900 returned by NIST (UTC):"),
+                       secFrom1900, '=', String(secFrom1900, BIN));
 
             // Close the TCP connection, just in case
             _tinyClient->stop();

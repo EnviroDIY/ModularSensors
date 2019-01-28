@@ -166,20 +166,23 @@ void SERCOM2_Handler()
 // ==========================================================================
 //    Modem MCU Type and TinyGSM Client
 // ==========================================================================
+#define TINY_GSM_DEBUG Serial  // If you want debugging on the main debug port
 
 // Select your modem chip - this determines the exact commands sent to it
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIMCOM SIM800, SIM900, or variant thereof
 // #define TINY_GSM_MODEM_SIM808  // Select for a SIMCOM SIM808 or SIM868, or variant thereof
 // #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
+// #define USE_XBEE_BYPASS  // If you're using a Digi 3G or LTE-M XBee in bypass mode as a u-blox
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
+// #define USE_XBEE_WIFI  // If you're using a S6B wifi XBee
 // #define TINY_GSM_MODEM_M590  // Select for a Neoway M590
 // #define TINY_GSM_MODEM_A6  // Select for an AI-Thinker A6, A6C, A7, A20
 // #define TINY_GSM_MODEM_M95  // Select for a Quectel M95
 // #define TINY_GSM_MODEM_BG96  // Select for a Quectel BG96
 // #define TINY_GSM_MODEM_MC60  // Select for a Quectel MC60 or MC60E
 
-#if defined(TINY_GSM_MODEM_XBEE)
+#if defined(TINY_GSM_MODEM_XBEE) || defined(USE_XBEE_BYPASS)
   #define TINY_GSM_YIELD() { delay(1); }  // Use to counter slow (9600) baud rate
 #endif
 
@@ -205,6 +208,12 @@ TinyGsm *tinyModem = new TinyGsm(modemSerial);
 
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
+// The ublox is very slow to open and close clients, so we can iterate through
+// mutiple data senders much more quickly if we have multiple clients
+#if defined(TINY_GSM_MODEM_UBLOX)
+TinyGsmClient *tinyClient2 = new TinyGsmClient(*tinyModem);
+TinyGsmClient *tinyClient3 = new TinyGsmClient(*tinyModem);
+#endif
 
 
 // ==========================================================================
@@ -212,8 +221,7 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 // ==========================================================================
 
 // This should apply to all Digi brand XBee modules.
-#if defined(TINY_GSM_MODEM_XBEE)
-#define USE_XBEE_WIFI  // If you're using a S6B wifi XBee
+#if defined(TINY_GSM_MODEM_XBEE) || defined(USE_XBEE_BYPASS)
 // Describe the physical pin connection of your modem to your board
 const long ModemBaud = 9600;        // Communication speed of the modem
 const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
@@ -1248,7 +1256,11 @@ const char * DreamHostPortalRX = "xxxx";
 
 // Create a data publisher to DreamHost
 #include <publishers/DreamHostPublisher.h>
+#if defined(TINY_GSM_MODEM_UBLOX)
+DreamHostPublisher DreamHostGET(dataLogger, tinyClient2, DreamHostPortalRX);
+#else
 DreamHostPublisher DreamHostGET(dataLogger, DreamHostPortalRX);
+#endif
 
 
 // ==========================================================================
@@ -1265,7 +1277,11 @@ const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for
 
 // Create a data publisher for ThingSpeak
 #include <publishers/ThingSpeakPublisher.h>
+#if defined(TINY_GSM_MODEM_UBLOX)
+ThingSpeakPublisher TsMqtt(dataLogger, tinyClient3, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
+#else
 ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
+#endif
 
 
 // ==========================================================================
@@ -1376,10 +1392,56 @@ void setup()
     }
 
     // Set up the sleep/wake pin for the modem and put its inital value as "off"
+    #if defined(TINY_GSM_MODEM_ESP8266)
+        if (modemSleepRqPin >= 0)
+        {
+            pinMode(modemSleepRqPin, OUTPUT);
+            digitalWrite(modemSleepRqPin, HIGH);
+        }
+        if (modemResetPin >= 0)
+        {
+            pinMode(modemResetPin, OUTPUT);
+            digitalWrite(modemResetPin, HIGH);
+        }
+    #elif defined(TINY_GSM_MODEM_SIM800)  // ONLY FOR GPRSBee R6!!!!
+        if (modemSleepRqPin >= 0)
+        {
+        pinMode(modemSleepRqPin, OUTPUT);
+        digitalWrite(modemSleepRqPin, LOW);
+        }
+    #else
+        if (modemSleepRqPin >= 0)
+        {
+        pinMode(modemSleepRqPin, OUTPUT);
+        digitalWrite(modemSleepRqPin, HIGH);
+        }
+    #endif
+
+    // Set the timezone and offsets
+    // Logging in the given time zone
+    Logger::setTimeZone(timeZone);
+    // Offset is the same as the time zone because the RTC is in UTC
+    Logger::setTZOffset(timeZone);
+
+    // Attach the modem and information pins to the logger
+    dataLogger.attachModem(modem);
+    dataLogger.setAlertPin(greenLED);
+    dataLogger.setTestingModePin(buttonPin);
+
+    // Begin the logger
+    // Note:  Please change these battery voltages to match your battery
+    // Only power the modem for begin at best battery voltage
+    if (getBatteryVoltage() > 3.7) modem.modemPowerUp();
+    // At lowest battery level, skip sensor set-up
+    if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
+    else dataLogger.begin();  // set up file and sensors
+
+    // For the XBee, we're setting up the sleep modes here
+    // NOTE:  THis will only succeed if the modem is turned on above
     #if defined(TINY_GSM_MODEM_XBEE)
         Serial.println(F("Setting up sleep mode on the XBee."));
-        pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, LOW);  // Turn it on to talk, just in case
+        modem.modemPowerUp();
+        modem.wake();  // Turn it on to talk
         tinyModem->init();  // initialize
         if (tinyModem->commandMode())
         {
@@ -1397,49 +1459,42 @@ void setup()
             tinyModem->writeChanges();
             tinyModem->exitCommand();
         }
-        digitalWrite(modemSleepRqPin, HIGH);  // back to sleep
-    #elif defined(TINY_GSM_MODEM_ESP8266)
-        if (modemSleepRqPin >= 0)
-        {
-            pinMode(modemSleepRqPin, OUTPUT);
-            digitalWrite(modemSleepRqPin, HIGH);
-        }
-        if (modemResetPin >= 0)
-        {
-            pinMode(modemResetPin, OUTPUT);
-            digitalWrite(modemResetPin, HIGH);
-        }
-    #elif defined(TINY_GSM_MODEM_SIM800)  // ONLY FOR GPRSBee R6!!!!
-        pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, LOW);
-    #else
-        pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, HIGH);
+    #elif defined(USE_XBEE_BYPASS)
+        Serial.println(F("Setting up sleep mode on the XBee."));
+        modem.modemPowerUp();
+        modem.wake();  // Turn it on to talk
+        delay(1000);  // Guard time for command mode
+        tinyModem->streamWrite(GF("+++"));  // enter command mode
+        tinyModem->waitResponse(2000, F("OK\r"));
+        tinyModem->sendAT(F("SM"),1);  // Pin sleep
+        tinyModem->waitResponse(F("OK\r"));
+        tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
+        // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
+        // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
+        //so we'll use the Digi pin sleep instead.
+        tinyModem->waitResponse(F("OK\r"));
+        tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
+        tinyModem->waitResponse(F("OK\r"));
+        tinyModem->sendAT(F("AP5"));  // Turn on bypass mode
+        tinyModem->waitResponse(F("OK\r"));
+        tinyModem->sendAT(F("WR"));  // Write changes to flash
+        tinyModem->waitResponse(F("OK\r"));
+        tinyModem->sendAT(F("AC"));  // Apply changes
+        tinyModem->waitResponse(F("OK\r"));
+        tinyModem->sendAT(F("FR"));  // Force reset to enter bypass mode
+        tinyModem->waitResponse(F("OK\r"));
+        tinyModem->init();  // initialize
     #endif
-
-    // Set the timezone and offsets
-    // Logging in the given time zone
-    Logger::setTimeZone(timeZone);
-    // Offset is the same as the time zone because the RTC is in UTC
-    Logger::setTZOffset(timeZone);
-
-    // Attach the modem and information pins to the logger
-    dataLogger.attachModem(modem);
-    dataLogger.setAlertPin(greenLED);
-    dataLogger.setTestingModePin(buttonPin);
-
-    // Begin the logger
-    // At lowest battery level, skip sensor set-up
-    // Note:  Please change these battery voltages to match your battery
-    if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
-    else dataLogger.begin();  // set up sensors
 
     // At very good battery voltage, or with suspicious time stamp, sync the clock
     // Note:  Please change these battery voltages to match your battery
-    if (getBatteryVoltage() > 3.9 ||
+    if (getBatteryVoltage() > 3.7 ||
         dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
         dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
-        dataLogger.syncRTC();
+    {
+        dataLogger.syncRTC();  // There's a sleepPowerDown at the end of this
+    }
+    else modem.modemSleepPowerDown();
 
     // Call the processor sleep
     dataLogger.systemSleep();

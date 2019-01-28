@@ -200,8 +200,8 @@ bool Logger::syncRTC()
         if (_logModem->connectInternet(120000L))
         {
             success = setRTClock(_logModem->getNISTTime());
-            // Disconnect from the network
-            _logModem->disconnectInternet();
+            // Disconnect from the network - ehh, why bother
+            // _logModem->disconnectInternet();
         }
         // Turn off the modem
         _logModem->modemSleepPowerDown();
@@ -233,7 +233,8 @@ void Logger::sendDataToRemotes(void)
         if (dataPublishers[i] != NULL)
         {
             PRINTOUT(F("\nSending data to"), dataPublishers[i]->getEndpoint());
-            dataPublishers[i]->sendData(_logModem->getClient());
+            // dataPublishers[i]->sendData(_logModem->getClient());
+            dataPublishers[i]->sendData();
         }
     }
 }
@@ -1261,9 +1262,9 @@ void Logger::logDataAndSend(void)
                     setRTClock(_logModem->getNISTTime());
                 }
 
-                // Disconnect from the network
-                MS_DBG(F("Disconnecting from the Internet..."));
-                _logModem->disconnectInternet();
+                // Disconnect from the network - ehh, why bother
+                // MS_DBG(F("Disconnecting from the Internet..."));
+                // _logModem->disconnectInternet();
             }
             else {MS_DBG(F("Could not connect to the internet!"));}
             // Turn the modem off

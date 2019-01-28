@@ -51,6 +51,7 @@ class dataPublisher;  // Forward declaration
 // Defines the "Logger" Class
 class Logger
 {
+    friend class dataPublisher;
 
 public:
     // Constructor

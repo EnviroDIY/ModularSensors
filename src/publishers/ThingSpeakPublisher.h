@@ -37,10 +37,17 @@ public:
     // Constructor
     ThingSpeakPublisher(Logger& baseLogger,
                      uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    ThingSpeakPublisher(Logger& baseLogger, Client *inClient,
+                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     ThingSpeakPublisher(Logger& baseLogger,
                      const char *thingSpeakMQTTKey,
                      const char *thingSpeakChannelID,
                      const char *thingSpeakChannelKey,
+                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    ThingSpeakPublisher(Logger& baseLogger, Client *inClient,
+                     const char *thingSpeakMQTTKey,
+                     const char *thingSpeakChannelID,
+                     const char *thingSpeakChannelKey,                     
                      uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     virtual ~ThingSpeakPublisher();
 
