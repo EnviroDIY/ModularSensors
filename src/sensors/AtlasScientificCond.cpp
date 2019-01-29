@@ -11,8 +11,8 @@
 // The constructor - because this is I2C, only need the power pin
 // This sensor has a set I2C address of 0X64, or 100
 AtlasScientificCond::AtlasScientificCond(int8_t powerPin, uint8_t measurementsToAverage)
-    : Sensor("AtlasScientificCond", ATLASCond_NUM_VARIABLES,
-             ATLASCond_WARM_UP_TIME_MS, ATLASCond_STABILIZATION_TIME_MS, ATLASCond_MEASUREMENT_TIME_MS,
+    : Sensor("AtlasScientificCond", ATLAS_COND_NUM_VARIABLES,
+             ATLAS_COND_WARM_UP_TIME_MS, ATLAS_COND_STABILIZATION_TIME_MS, ATLAS_COND_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage)
 {}
 AtlasScientificCond::~AtlasScientificCond(){}
@@ -28,62 +28,62 @@ bool AtlasScientificCond::setup(void)
 }
 
 bool AtlasScientificCond::addSingleMeasurementResult(void) {
-    byte code=0;                     //used to hold the I2C response code. 
-    char Cond_data[20];               //we make a 20 byte character array to hold incoming data from the Cond circuit. 
-    byte in_char=0;                  //used as a 1 byte buffer to store in bound bytes from the Cond Circuit.   
-    byte i=0;                        //counter used for Cond_data array. 
-    int time_=600;                   //used to change the delay needed depending on the command sent to the EZO Class Cond Circuit. 
+    byte code=0;                     //used to hold the I2C response code.
+    char Cond_data[20];               //we make a 20 byte character array to hold incoming data from the Cond circuit.
+    byte in_char=0;                  //used as a 1 byte buffer to store in bound bytes from the Cond Circuit.
+    byte i=0;                        //counter used for Cond_data array.
+    int time_=600;                   //used to change the delay needed depending on the command sent to the EZO Class Cond Circuit.
 
-    Wire.beginTransmission(Condaddress); //call the circuit by its ID number.  
+    Wire.beginTransmission(Condaddress); //call the circuit by its ID number.
     Wire.write('r');                    //transmit the command that was sent through the serial port.
-    Wire.endTransmission();             //end the I2C data transmission. 
+    Wire.endTransmission();             //end the I2C data transmission.
 
-    delay(time_);                       //wait the correct amount of time for the circuit to complete its instruction. 
+    delay(time_);                       //wait the correct amount of time for the circuit to complete its instruction.
 
     Wire.requestFrom(Condaddress,20,1);  //call the circuit and request 20 bytes (this may be more than we need)
-    code=Wire.read();                   //the first byte is the response code, we read this separately.  
+    code=Wire.read();                   //the first byte is the response code, we read this separately.
 
-    switch (code){                      //switch case based on what the response code is.  
-        case 1:                         //decimal 1.  
+    switch (code){                      //switch case based on what the response code is.
+        case 1:                         //decimal 1.
             Serial.println("Success");  //means the command was successful.
         break;                          //exits the switch case.
-    
-        case 2:                         //decimal 2. 
+
+        case 2:                         //decimal 2.
             Serial.println("Failed");   //means the command has failed.
         break;                          //exits the switch case.
-    
+
         case 254:                       //decimal 254.
             Serial.println("Pending");  //means the command has not yet been finished calculating.
         break;                          //exits the switch case.
-     
+
         case 255:                       //decimal 255.
             Serial.println("No Data");  //means there is no further data to send.
         break;                          //exits the switch case.
         }
 
-    while(Wire.available()){            //are there bytes to receive.  
+    while(Wire.available()){            //are there bytes to receive.
         in_char = Wire.read();          //receive a byte.
         Cond_data[i]= in_char;           //load this byte into our array.
-        i+=1;                           //incur the counter for the array element. 
-            if(in_char==0){             //if we see that we have been sent a null command. 
+        i+=1;                           //incur the counter for the array element.
+            if(in_char==0){             //if we see that we have been sent a null command.
                 i=0;                    //reset the counter i to 0.
-                
+
                 Wire.endTransmission(); //end the I2C data transmission.
                 break;                  //exit the while loop.
             }
     }
-  
-Serial.println(Cond_data);          //print the data. 
 
-Wire.beginTransmission(Condaddress); //call the circuit by its ID number.  
+Serial.println(Cond_data);          //print the data.
+
+Wire.beginTransmission(Condaddress); //call the circuit by its ID number.
 Wire.write("Sleep");                    //transmit the command that was sent through the serial port.
-Wire.endTransmission();             //end the I2C data transmission. 
+Wire.endTransmission();             //end the I2C data transmission.
 
 //   return atof(Cond_data);
 
 float tmp_float = atof(Cond_data);
 
-verifyAndAddMeasurementResult(ATLASCond_VAR_NUM, tmp_float);
+verifyAndAddMeasurementResult(ATLAS_COND_VAR_NUM, tmp_float);
 
 // Unset the time stamp for the beginning of this measurement
 _millisMeasurementRequested = 0;

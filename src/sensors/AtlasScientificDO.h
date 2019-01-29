@@ -26,12 +26,12 @@
 #define DOaddress 97
 
 // Sensor Specific Defines
-#define ATLASDO_NUM_VARIABLES 1
-#define ATLASDO_WARM_UP_TIME_MS 0
-#define ATLASDO_STABILIZATION_TIME_MS 0
-#define ATLASDO_MEASUREMENT_TIME_MS 0
-#define ATLASDO_RESOLUTION 4
-#define ATLASDO_VAR_NUM 0
+#define ATLAS_DO_NUM_VARIABLES 1
+#define ATLAS_DO_WARM_UP_TIME_MS 0
+#define ATLAS_DO_STABILIZATION_TIME_MS 0
+#define ATLAS_DO_MEASUREMENT_TIME_MS 0
+#define ATLAS_DO_RESOLUTION 4
+#define ATLAS_DO_VAR_NUM 0
 
 // The main class for the MaxBotix Sonar
 class AtlasScientificDO : public Sensor
@@ -51,9 +51,9 @@ class AtlasScientificDO_DO : public Variable
 public:
     AtlasScientificDO_DO(Sensor *parentSense,
                         const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, ATLASDO_VAR_NUM,
+      : Variable(parentSense, ATLAS_DO_VAR_NUM,
                "DO", "C",
-               ATLASDO_RESOLUTION,
+               ATLAS_DO_RESOLUTION,
                "DORange", UUID, customVarCode)
     {}
     ~AtlasScientificDO_DO(){}

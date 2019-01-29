@@ -26,12 +26,12 @@
 #define RTDaddress 102
 
 // Sensor Specific Defines
-#define ATLASRTD_NUM_VARIABLES 1
-#define ATLASRTD_WARM_UP_TIME_MS 0
-#define ATLASRTD_STABILIZATION_TIME_MS 0
-#define ATLASRTD_MEASUREMENT_TIME_MS 0
-#define ATLASRTD_RESOLUTION 4
-#define ATLASRTD_VAR_NUM 0
+#define ATLAS_RTD_NUM_VARIABLES 1
+#define ATLAS_RTD_WARM_UP_TIME_MS 0
+#define ATLAS_RTD_STABILIZATION_TIME_MS 0
+#define ATLAS_RTD_MEASUREMENT_TIME_MS 0
+#define ATLAS_RTD_RESOLUTION 4
+#define ATLAS_RTD_VAR_NUM 0
 
 // The main class for the MaxBotix Sonar
 class AtlasScientificRTD : public Sensor
@@ -51,9 +51,9 @@ class AtlasScientificRTD_Temp : public Variable
 public:
     AtlasScientificRTD_Temp(Sensor *parentSense,
                         const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, ATLASRTD_VAR_NUM,
+      : Variable(parentSense, ATLAS_RTD_VAR_NUM,
                "Temp", "C",
-               ATLASRTD_RESOLUTION,
+               ATLAS_RTD_RESOLUTION,
                "TempRange", UUID, customVarCode)
     {}
     ~AtlasScientificRTD_Temp(){}

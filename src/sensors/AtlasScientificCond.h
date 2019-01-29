@@ -3,8 +3,8 @@
  *This file was created by Sara Damiano and edited for use of Atlas Scientific Products by Adam Gold
  *
  * The output from the Atlas Scientifc Cond is the range in degrees C.
- *     Accuracy is ± __
- *     Range is __
+ *     Accuracy is ± 2%
+ *     Range is 0.07 − 500,000+ μS/cm
  *
  * Warm up time to completion of header:  __ ms
  */
@@ -23,15 +23,25 @@
 #include <Wire.h>
 
 // I2C address
-#define Condaddress 100
+#define ATLAS_COND_I2C_ADDR 0x64
 
 // Sensor Specific Defines
-#define ATLASCond_NUM_VARIABLES 1
-#define ATLASCond_WARM_UP_TIME_MS 0
-#define ATLASCond_STABILIZATION_TIME_MS 0
-#define ATLASCond_MEASUREMENT_TIME_MS 0
-#define ATLASCond_RESOLUTION 4
-#define ATLASCond_VAR_NUM 0
+#define ATLAS_COND_NUM_VARIABLES 4
+#define ATLAS_COND_WARM_UP_TIME_MS 0
+#define ATLAS_COND_STABILIZATION_TIME_MS 0
+#define ATLAS_COND_MEASUREMENT_TIME_MS 0
+
+#define ATLAS_COND_RESOLUTION 4
+#define ATLAS_COND_VAR_NUM 0
+
+#define ATLAS_TDS_RESOLUTION 4
+#define ATLAS_TDS_VAR_NUM 1
+
+#define ATLAS_SALINITY_RESOLUTION 4
+#define ATLAS_SALINITY_VAR_NUM 2
+
+#define ATLAS_SG_RESOLUTION 4
+#define ATLAS_SG_VAR_NUM 3
 
 // The main class for the MaxBotix Sonar
 class AtlasScientificCond : public Sensor
@@ -51,10 +61,10 @@ class AtlasScientificCond_Cond : public Variable
 public:
     AtlasScientificCond_Cond(Sensor *parentSense,
                         const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, ATLASCond_VAR_NUM,
-               "Cond", "C",
-               ATLASCond_RESOLUTION,
-               "CondRange", UUID, customVarCode)
+      : Variable(parentSense, ATLAS_COND_VAR_NUM,
+                 "specificConductance", "microsiemenPerCentimeter",
+                 ATLAS_COND_RESOLUTION,
+                 "AtlasCond", UUID, customVarCode)
     {}
     ~AtlasScientificCond_Cond(){}
 };
