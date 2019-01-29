@@ -1450,12 +1450,15 @@ void setup()
             tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
             // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
             // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
-            //so we'll use the Digi pin sleep instead.
+            // so we'll use the Digi pin sleep instead.
             tinyModem->waitResponse();
             tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
             tinyModem->waitResponse();
             tinyModem->sendAT(F("SO"),200);  // For WiFi - Disassociate from AP for Deep Sleep
             tinyModem->waitResponse();
+            tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
+            // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
+            tinyModem->waitResponse(F("OK\r"));
             tinyModem->writeChanges();
             tinyModem->exitCommand();
         }
@@ -1471,9 +1474,12 @@ void setup()
         tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
         // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
         // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
-        //so we'll use the Digi pin sleep instead.
+        // so we'll use the Digi pin sleep instead.
         tinyModem->waitResponse(F("OK\r"));
         tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
+        tinyModem->waitResponse(F("OK\r"));
+        tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
+        // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
         tinyModem->waitResponse(F("OK\r"));
         tinyModem->sendAT(F("AP5"));  // Turn on bypass mode
         tinyModem->waitResponse(F("OK\r"));
