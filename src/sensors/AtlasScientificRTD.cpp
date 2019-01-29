@@ -9,10 +9,11 @@
 
 // The constructor - because this is I2C, only need the power pin
 // This sensor has a set I2C address of 0X55, or 102
-AtlasScientificRTD::AtlasScientificRTD(int8_t powerPin, uint8_t measurementsToAverage)
+AtlasScientificRTD::AtlasScientificRTD(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage)
     : Sensor("AtlasScientificRTD", ATLAS_RTD_NUM_VARIABLES,
              ATLAS_RTD_WARM_UP_TIME_MS, ATLAS_RTD_STABILIZATION_TIME_MS, ATLAS_RTD_MEASUREMENT_TIME_MS,
-             powerPin, -1, measurementsToAverage)
+             powerPin, -1, measurementsToAverage),
+      _i2cAddressHex(i2cAddressHex)
 {}
 AtlasScientificRTD::~AtlasScientificRTD(){}
 
@@ -33,13 +34,13 @@ bool AtlasScientificRTD::addSingleMeasurementResult(void) {
     byte i=0;                        //counter used for RTD_data array.
     int time_=600;                   //used to change the delay needed depending on the command sent to the EZO Class RTD Circuit.
 
-    Wire.beginTransmission(RTDaddress); //call the circuit by its ID number.
+    Wire.beginTransmission(_i2cAddressHex); //call the circuit by its ID number.
     Wire.write('r');                    //transmit the command that was sent through the serial port.
     Wire.endTransmission();             //end the I2C data transmission.
 
     delay(time_);                       //wait the correct amount of time for the circuit to complete its instruction.
 
-    Wire.requestFrom(RTDaddress,20,1);  //call the circuit and request 20 bytes (this may be more than we need)
+    Wire.requestFrom(_i2cAddressHex,20,1);  //call the circuit and request 20 bytes (this may be more than we need)
     code=Wire.read();                   //the first byte is the response code, we read this separately.
 
     switch (code){                      //switch case based on what the response code is.
@@ -74,7 +75,7 @@ bool AtlasScientificRTD::addSingleMeasurementResult(void) {
 
 Serial.println(RTD_data);          //print the data.
 
-Wire.beginTransmission(RTDaddress); //call the circuit by its ID number.
+Wire.beginTransmission(_i2cAddressHex); //call the circuit by its ID number.
 Wire.write("Sleep");                    //transmit the command that was sent through the serial port.
 Wire.endTransmission();             //end the I2C data transmission.
 
