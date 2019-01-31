@@ -676,22 +676,6 @@ bool loggerModem::modemSleepPowerDown(void)
         success &= _sleepFxn();
     }
 
-    // If there's a status pin available, wait until modem shows it's ready to be powered off
-    // This allows the modem to shut down gracefully.
-    if (_dataPin >= 0)
-    {
-        MS_MOD_DBG(F("Waiting up to"), _disconnetTime_ms, F("milliseconds for graceful shutdown..."));
-        while (millis() - start < _disconnetTime_ms && digitalRead(_dataPin) == _statusLevel){}
-        if (digitalRead(_dataPin) == _statusLevel)
-            MS_MOD_DBG(F("... "), getSensorName(), F("did not successfully shut down!"));
-        else MS_MOD_DBG(F("... shutdown complete after"), millis() - start, F("ms."));
-    }
-    else if (_disconnetTime_ms > 0)
-    {
-        MS_MOD_DBG(F("Waiting"), _disconnetTime_ms, F("ms for graceful shutdown."));
-        while (millis() - start < _disconnetTime_ms){}
-    }
-
     // Unset the activation time
     _millisSensorActivated = 0;
     // Unset the measurement request time
@@ -703,6 +687,22 @@ bool loggerModem::modemSleepPowerDown(void)
     // Now power down
     if (_powerPin >= 0)
     {
+        // If there's a status pin available, wait until modem shows it's ready to be powered off
+        // This allows the modem to shut down gracefully.
+        if (_dataPin >= 0)
+        {
+            MS_MOD_DBG(F("Waiting up to"), _disconnetTime_ms, F("milliseconds for graceful shutdown..."));
+            while (millis() - start < _disconnetTime_ms && digitalRead(_dataPin) == _statusLevel){}
+            if (digitalRead(_dataPin) == _statusLevel)
+                MS_MOD_DBG(F("... "), getSensorName(), F("did not successfully shut down!"));
+            else MS_MOD_DBG(F("... shutdown complete after"), millis() - start, F("ms."));
+        }
+        else if (_disconnetTime_ms > 0)
+        {
+            MS_MOD_DBG(F("Waiting"), _disconnetTime_ms, F("ms for graceful shutdown."));
+            while (millis() - start < _disconnetTime_ms){}
+        }
+
         MS_MOD_DBG(F("Turning off power to"), getSensorName(), F("with pin"), _powerPin);
         digitalWrite(_powerPin, LOW);
         // Unset the power-on time
@@ -713,6 +713,9 @@ bool loggerModem::modemSleepPowerDown(void)
     }
     else
     {
+        // If we're not going to power the modem down, there's no reason to hold
+        // up the  main processor while waiting for the modem to shut down.
+        // It can just do its thing unwatched while the main processor sleeps.
         MS_MOD_DBG(F("Power to"), getSensorName(), F("is not controlled by this library."));
         // Unset the power-on time and bits even if we didn't do anything.
         // This prevents the wake from happening on modems with no power pin
@@ -964,8 +967,7 @@ void loggerModem::setModemTiming(void)
         _warmUpTime_ms = 0; // Module turns on when power is applied
         _statusTime_ms = 50;  // Documentation does not specify how long between
         // power on and high reading on VAUX / PWRMON pin
-        _stabilizationTime_ms = MODEM_ATRESPONSE_TIME_MS;  // Documentation says to wait up to 25 (!!)
-        // seconds.  I'm not that patient.
+        _stabilizationTime_ms = 25000;  // Documentation says to wait up to 25 (!!) seconds.
         _on_pull_down_ms = 0;  // N/A - standard chip cannot be powered on with pin
         _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
         _disconnetTime_ms = 10000L;  // Wait with 10s time-out for sleep
