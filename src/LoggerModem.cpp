@@ -98,176 +98,24 @@ bool loggerModem::setup(void)
     }
     else MS_MOD_DBG(F("... "), getSensorName(), F("did not wake up and cannot be set up!"));
 
-    // Set some timing for specific cellular chipsets based on their documentation
-    // NOTE:  These times are for raw cellular chips they do no necessarily
-    // apply to assembled break-out boards or modules
-    // **warmUpTime** = Length of time after power is applied to module before the
-    // enable pin can be called to turn on the module or other wake fxn can be used.
-    // If the module boots up as soon as power is applied, this value is 0.
-    // **indicatorTime** = Length of time from the completion of wake up  request
-    // until the modem status pin begins to show an "on" status.
-    // **stabilizationTime** =  Length of time from the completion of wake up
-    // function until UART port becomes available for AT commands.  This becomes
-    // the MAXIMUM amount of time we will wait for a response.  Where I could
-    // find a time listed for boot up in the documentation, I use that time.
-    // Where I could not find it listed, I use 5 seconds.
-    // **disconnetTime** - Approximate length of time for unit to gracefully
-    // close sockets and disconnect from the network.  Most manufactures strongly
-    // recommend allowing a graceful shut-down rather than a sudden power-off.
-    if (_modemName.indexOf(F("SIMCom SIM800")) >= 0)
-    {
-        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a SIMCom SIM800"));
-        _warmUpTime_ms = 450; // Time after power on before "PWRKEY" can be used - >0.4sec
-        _statusTime_ms = 2000;  // Time after end pulse until status pin becomes active (>3sec from start of 1s pulse)
-        _stabilizationTime_ms = 2000;  // Time after end pulse until serial port becomes active (>3sec from start of 1s pulse)
-        // _on_pull_down_ms = 1100;  // >1s
-        // _off_pull_down_ms = 1100;  // 1sec > t > 33sec
-        _disconnetTime_ms = 3100;  // power down (gracefully) takes >3sec
-    }
-    if (_modemName.indexOf(F("SIMCom SIM900")) >= 0)
-    {
-        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a SIMCom SIM900"));
-        _warmUpTime_ms = 1000; // Time after power on before "PWRKEY" can be used (guess - diagram isn't clear)
-        _statusTime_ms = 2200;  // Time after end pulse until status pin becomes active (>2.2sec)
-        _stabilizationTime_ms = 2200;  // Time after end pulse until serial port becomes active (>2.2sec)
-        // _on_pull_down_ms = 1100;  // >1s
-        // _off_pull_down_ms = 600;  // 0.5sec > pull down > 1sec
-        _disconnetTime_ms = 1800;  // power down (gracefully) takes >1.7 sec
-    }
-    if (_modemName.indexOf(F("SARA-R4")) >= 0  ||
-        _modemName.indexOf(F("XBee3™ Cellular LTE-M")) >= 0  ||
-        _modemName.indexOf(F("Digi XBee3™ Cellular NB-IoT")) >= 0)
-    {
-        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a u-blox SARA-R4"));
-        _warmUpTime_ms = 250; // Time after power on before PWR_ON can be used ??? Unclear in documentation!
-        _statusTime_ms = 0;  // V_INT becomes active mid-way through on-pulse
-        _stabilizationTime_ms = 4500;  // Time until system and digital pins are operational (~4.5s)
-        // _on_pull_down_ms = 200;  // 0.15-3.2s
-        // _off_pull_down_ms = 1600;  // >1.5s
-        _disconnetTime_ms = 15000L;  // Power down time "can largely vary depending
-        // on the application / network settings and the concurrent module
-        // activities."  Vint/status pin should be monitored and power not withdrawn
-        // until that pin reads low.  Giving 15sec here in case it is not monitored.
-    }
-    if (_modemName.indexOf(F("SARA-U2")) >= 0  ||
-        _modemName.indexOf(F("XBee® Cellular 3G")) >= 0)
-    {
-        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a u-blox SARA-U2"));
-        _warmUpTime_ms = 0; // Module turns on when power is applied - level of PWR_ON then irrelevant
-        _statusTime_ms = 35;  // Time after end pulse until V_INT becomes active
-                                 // Unspecified in documentation! Taking value from Lisa U2
-        _stabilizationTime_ms = 6000;  // Time until system and digital pins are operational
-        // (6 sec typical for SARA U201, others 5 sec typical)
-        // Time for an AT response may be much longer when using a 3G XBee in bypass mode!
-        // _on_pull_down_ms = 1;  // 50-80µs
-        // _off_pull_down_ms = 1000;  // >1s
-        _disconnetTime_ms = 15000L;  // Power down time "can largely vary depending
-        // on the application / network settings and the concurrent module
-        // activities."  Vint/status pin should be monitored and power not withdrawn
-        // until that pin reads low.  Giving 15sec here in case it is not monitored.
-    }
-    if (_modemName.indexOf(F("SARA-G3")) >= 0)
-    {
-        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a u-blox SARA-G3"));
-        _warmUpTime_ms = 0; // Module turns on when power is applied - level of PWR_ON then irrelevant
-        _statusTime_ms = 35;  // Time after end pulse until V_INT becomes active
-                                 // Unspecified in documentation! Taking value from Lisa U2
-        _stabilizationTime_ms = 5000;  // Time until system and digital pins are operational (5 sec typical)
-        // _on_pull_down_ms = 5;  // >5ms
-        // _off_pull_down_ms = 1000;  // >1s
-        _disconnetTime_ms = 15000L;  // Power down time "can largely vary depending
-        // on the application / network settings and the concurrent module
-        // activities."  Vint/status pin should be monitored and power not withdrawn
-        // until that pin reads low.  Giving 15sec here in case it is not monitored.
-    }
-    if (_modemName.indexOf(F("LISA-U2")) >= 0)
-    {
-        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a u-blox LISA-U2"));
-        _warmUpTime_ms = 0; // Module turns on when power is applied - level of PWR_ON then irrelevant
-        _statusTime_ms = 35;  // Time after end pulse until V_INT becomes active <35ms
-        _stabilizationTime_ms = 3000;  // Time until system and digital pins are operational (3 sec typical)
-        // _on_pull_down_ms = 1;  // 50-80µs
-        // _off_pull_down_ms = 1000;  // >1s
-        _disconnetTime_ms = 400;  // power down (gracefully) takes ~400ms
-    }
-    if (_modemName.indexOf(F("Digi XBee® Cellular LTE Cat 1")) >= 0  ||
-        _modemName.indexOf(F("Digi XBee3™ Cellular LTE CAT 1")) >= 0  ||
-        _modemName.indexOf(F("Telit LE866")) >= 0)
-    {
-        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a Telit LE866"));
-        _warmUpTime_ms = 0; // Module turns on when power is applied
-        _statusTime_ms = 50;  // Documentation does not specify how long between
-        // power on and high reading on VAUX / PWRMON pin
-        _stabilizationTime_ms = MODEM_ATRESPONSE_TIME_MS;  // Documentation says to wait up to 25 (!!)
-        // seconds.  I'm not that patient.
-        // _on_pull_down_ms = 0;  // N/A - standard chip cannot be powered on with pin
-        // _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
-        _disconnetTime_ms = 10000L;  // Wait with 10s time-out for sleep
-    }
-    if (_modemName.indexOf(F("ESP8266")) >= 0)
-    {
-        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a ESP8266"));
-        _warmUpTime_ms = 0; // Module turns on when power is applied
-        _statusTime_ms = 350;  // N/A? - No status pin - use boot time if using a GPIO pin
-        _stabilizationTime_ms = 350;  // Boot up time 200-300ms
-        // _on_pull_down_ms = 10;  // immediate
-        // _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
-        _disconnetTime_ms = 200; // power down ???
-    }
-    if (_modemName.indexOf(F("Neoway M590")) >= 0)
-    {
-        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a Neoway M590"));
-        _warmUpTime_ms = 300; // ON/OFF pin can be held low when power is applied
-        // If the ON/OFF pin is not held low at time power is applied, wait at
-        // least 300ms before dropping it low to turn the module on
-        _statusTime_ms = 300;  // Time after end pulse until VCCIO becomes active
-        _stabilizationTime_ms = 300;  // Time until UART is active (300ms)
-        // _on_pull_down_ms = 510;  // >300ms (>500ms recommended)
-        // _off_pull_down_ms = 510;  // >300ms
-        _disconnetTime_ms = 5000;  // power down (gracefully) takes ~5sec
-    }
-    if (_modemName.indexOf(F("Quectel BG96")) >= 0)
-    {
-        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a Quectel BG96"));
-        _warmUpTime_ms = 30; // Time after VBAT is stable before PWRKEY can be used
-        _statusTime_ms = 4800;  // Time after end pulse until status pin becomes active
-        _stabilizationTime_ms = 4200;  // USB active at >4.2 sec, status at >4.8 sec, URAT at >4.9
-        // _on_pull_down_ms = 110;  // >100ms
-        // _off_pull_down_ms = 700;  // ≥ 650ms
-        _disconnetTime_ms = 3000;  // > 2 sec
-    }
-    if (_modemName.indexOf(F("Quectel M95")) >= 0)
-    {
-        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a Quectel M95"));
-        _warmUpTime_ms = 30; // Time after VBAT is stable before PWRKEY can be used
-        _statusTime_ms = 0;  // Time after end pulse until status pin becomes active (54ms after start of pulse)
-        _stabilizationTime_ms = 500;  // UART should respond as soon as PWRKEY pulse ends
-        // _on_pull_down_ms = 2000;  // until either status key goes on, or > 1.0 sec (~2s)
-        // _off_pull_down_ms = 700;  // 0.6s<Pulldown<1s
-        _disconnetTime_ms = 12000;  // disconnect in 2-12 seconds
-    }
-    if (_modemName.indexOf(F("Quectel MC60")) >= 0)
-    {
-        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a Quectel MC60"));
-        _warmUpTime_ms = 100; // Time after VBAT is stable before PWRKEY can be used
-        _statusTime_ms = 0;  // Time after end pulse until status pin becomes active (54ms after start of pulse)
-        _stabilizationTime_ms = 500;  // UART should respond as soon as PWRKEY pulse ends
-        // _on_pull_down_ms = 1100;  // >1s
-        // _off_pull_down_ms = 700;  // 0.6s<Pulldown<1s
-        _disconnetTime_ms = 12000;  // disconnect in 2-12 seconds
-    }
-    if (_modemName.indexOf(F("XBee")) >= 0)
-    {
-        MS_MOD_DBG(F("Putting connection values into flash memory for the Digi XBee"));
-        _statusTime_ms = 50;  // ??? WAG!
-        // XBee saves all configurations to flash, so we can set them here
-        if (_tinyModem->hasWifi()) _tinyModem->networkConnect(_ssid, _pwd);
-        else _tinyModem->gprsConnect(_apn, "", "");
-    }
+    // Set the timing for modems based on their names
+    // NOTE:  These are based on documentation for the raw chip!
+    setModemTiming();
+
     MS_MOD_DBG(_modemName, F("warms up in"), _warmUpTime_ms, F("ms, indicates status in"),
            _statusTime_ms, F("ms, is responsive to AT commands in less than"),
            _stabilizationTime_ms, F("ms, and takes up to"), _disconnetTime_ms,
            F("ms to close connections and shut down."));
+
+    // XBee saves all configurations to flash, so we can set them here
+    if (_modemName.indexOf(F("XBee")) >= 0)
+    {
+       MS_MOD_DBG(F("Putting connection values into flash memory for the Digi XBee"));
+       if (_tinyModem->hasWifi()) _tinyModem->networkConnect(_ssid, _pwd);
+       else _tinyModem->gprsConnect(_apn, "", "");
+    }
+
+    // Print out some warnings if things seem to be improperly formatted
     if (_tinyModem->hasWifi() && _ssid == NULL)
         MS_MOD_DBG(F("WARNING:  Wifi modem with no SSID given!"));
      if (_tinyModem->hasGPRS() && _apn == NULL)
@@ -832,8 +680,8 @@ bool loggerModem::modemSleepPowerDown(void)
     // This allows the modem to shut down gracefully.
     if (_dataPin >= 0)
     {
-        MS_MOD_DBG(F("Waiting up to 25 seconds for graceful shutdown..."));
-        while (millis() - start < 25000L && digitalRead(_dataPin) == _statusLevel){}
+        MS_MOD_DBG(F("Waiting up to"), _disconnetTime_ms, F("milliseconds for graceful shutdown..."));
+        while (millis() - start < _disconnetTime_ms && digitalRead(_dataPin) == _statusLevel){}
         if (digitalRead(_dataPin) == _statusLevel)
             MS_MOD_DBG(F("... "), getSensorName(), F("did not successfully shut down!"));
         else MS_MOD_DBG(F("... shutdown complete after"), millis() - start, F("ms."));
@@ -908,11 +756,11 @@ uint32_t loggerModem::getNISTTime(void)
     }
     else connectionMade = _tinyClient->connect("time.nist.gov", 37);
 
-    // Wait up to 15 seconds for a response
+    // Wait up to 5 seconds for a response
     if (connectionMade)
     {
         long start = millis();
-        while (_tinyClient->available() < 4 && millis() - start < 15000L){}
+        while (_tinyClient && _tinyClient->available() < 4 && millis() - start < 5000L){}
 
         if (_tinyClient->available() >= 4)
         {
@@ -997,4 +845,212 @@ int16_t loggerModem::getPctFromRSSI(int16_t rssi)
     if (rssi == 0) pct = 0;
     if (rssi == (255-93)) pct = 0;  // This is a no-data-yet value from XBee
     return pct;
+}
+
+
+// Helper to set the timing for specific cellular chipsets based on their documentation
+/***
+NOTE:  These times are for raw cellular chips they do no necessarily
+apply to assembled break-out boards or modules
+**warmUpTime** = Length of time after power is applied to module before the
+enable pin can be called to turn on the module or other wake fxn can be used.
+If the module boots up as soon as power is applied, this value is 0.
+**indicatorTime** = Length of time from the completion of wake up  request
+until the modem status pin begins to show an "on" status.
+**stabilizationTime** =  Length of time from the completion of wake up
+function until UART port becomes available for AT commands.  This becomes
+the MAXIMUM amount of time we will wait for a response.  Where I could
+find a time listed for boot up in the documentation, I use that time.
+Where I could not find it listed, I use 5 seconds.
+**disconnetTime** - Approximate length of time for unit to gracefully
+close sockets and disconnect from the network.  Most manufactures strongly
+recommend allowing a graceful shut-down rather than a sudden power-off.
+***/
+void loggerModem::setModemTiming(void)
+{
+    if (_modemName.indexOf(F("SIMCom SIM800")) >= 0)
+    {
+        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a SIMCom SIM800"));
+        _warmUpTime_ms = 450; // Time after power on before "PWRKEY" can be used - >0.4sec
+        _statusTime_ms = 2000;  // Time after end pulse until status pin becomes active (>3sec from start of 1s pulse)
+        _stabilizationTime_ms = 2000;  // Time after end pulse until serial port becomes active (>3sec from start of 1s pulse)
+        _on_pull_down_ms = 1100;  // >1s
+        _off_pull_down_ms = 1100;  // 1sec > t > 33sec
+        _disconnetTime_ms = 1500;  // power down (gracefully) takes >3sec
+        // (Giving 15sec for shutdown in case it is not monitored.)
+    }
+    if (_modemName.indexOf(F("SIMCom SIM900")) >= 0)
+    {
+        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a SIMCom SIM900"));
+        _warmUpTime_ms = 1000; // Time after power on before "PWRKEY" can be used (guess - diagram isn't clear)
+        _statusTime_ms = 2200;  // Time after end pulse until status pin becomes active (>2.2sec)
+        _stabilizationTime_ms = 2200;  // Time after end pulse until serial port becomes active (>2.2sec)
+        _on_pull_down_ms = 1100;  // >1s
+        _off_pull_down_ms = 600;  // 0.5sec > pull down > 1sec
+        _disconnetTime_ms = 15000;  // power down (gracefully) takes >1.7 sec
+        // (Giving 15sec for shutdown in case it is not monitored.)
+    }
+    if (_modemName.indexOf(F("SIMCom SIM7000")) >= 0)
+    {
+        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a SIMCom SIM7000"));
+        _warmUpTime_ms = 0; // Time after power on before "PWRKEY" can be used
+        _statusTime_ms = 4500;  // Time after end pulse until status pin becomes active (>4.5sec)
+        _stabilizationTime_ms = 4500;  // Time after end pulse until serial port becomes active (>4.5sec)
+        _on_pull_down_ms = 1100;  // >1s
+        _off_pull_down_ms = 1300;  // >1.2sec
+        _disconnetTime_ms = 7000;  // power down (gracefully) takes 1.8-6.9 sec
+    }
+    if (_modemName.indexOf(F("SARA-R4")) >= 0  ||
+        _modemName.indexOf(F("XBee3™ Cellular LTE-M")) >= 0  ||
+        _modemName.indexOf(F("Digi XBee3™ Cellular NB-IoT")) >= 0)
+    {
+        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a u-blox SARA-R4"));
+        _warmUpTime_ms = 250; // Time after power on before PWR_ON can be used ??? Unclear in documentation!
+        _statusTime_ms = 0;  // V_INT becomes active mid-way through on-pulse
+        _stabilizationTime_ms = 4500;  // Time until system and digital pins are operational (~4.5s)
+        _on_pull_down_ms = 200;  // 0.15-3.2s
+        _off_pull_down_ms = 1600;  // >1.5s
+        _disconnetTime_ms = 15000;  // Power down time "can largely vary depending
+        // on the application / network settings and the concurrent module
+        // activities."  Vint/status pin should be monitored and power not withdrawn
+        // until that pin reads low.  Giving 15sec here in case it is not monitored.
+    }
+    if (_modemName.indexOf(F("SARA-U2")) >= 0  ||
+        _modemName.indexOf(F("XBee® Cellular 3G")) >= 0)
+    {
+        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a u-blox SARA-U2"));
+        _warmUpTime_ms = 0; // Module turns on when power is applied - level of PWR_ON then irrelevant
+        _statusTime_ms = 35;  // Time after end pulse until V_INT becomes active
+                                 // Unspecified in documentation! Taking value from Lisa U2
+        _stabilizationTime_ms = 6000;  // Time until system and digital pins are operational
+        // (6 sec typical for SARA U201, others 5 sec typical)
+        // Time for an AT response may be much longer when using a 3G XBee in bypass mode!
+        _on_pull_down_ms = 1;  // 50-80µs
+        _off_pull_down_ms = 1000;  // >1s
+        _disconnetTime_ms = 15000;  // Power down time "can largely vary depending
+        // on the application / network settings and the concurrent module
+        // activities."  Vint/status pin should be monitored and power not withdrawn
+        // until that pin reads low.  Giving 15sec here in case it is not monitored.
+    }
+    if (_modemName.indexOf(F("SARA-G3")) >= 0)
+    {
+        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a u-blox SARA-G3"));
+        _warmUpTime_ms = 0; // Module turns on when power is applied - level of PWR_ON then irrelevant
+        _statusTime_ms = 35;  // Time after end pulse until V_INT becomes active
+                                 // Unspecified in documentation! Taking value from Lisa U2
+        _stabilizationTime_ms = 5000;  // Time until system and digital pins are operational (5 sec typical)
+        _on_pull_down_ms = 6;  // >5ms
+        _off_pull_down_ms = 1100;  // >1s
+        _disconnetTime_ms = 15000;  // Power down time "can largely vary depending
+        // on the application / network settings and the concurrent module
+        // activities."  Vint/status pin should be monitored and power not withdrawn
+        // until that pin reads low.  Giving 15sec here in case it is not monitored.
+    }
+    if (_modemName.indexOf(F("LISA-U2")) >= 0)
+    {
+        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a u-blox LISA-U2"));
+        _warmUpTime_ms = 0; // Module turns on when power is applied - level of PWR_ON then irrelevant
+        _statusTime_ms = 35;  // Time after end pulse until V_INT becomes active <35ms
+        _stabilizationTime_ms = 3000;  // Time until system and digital pins are operational (3 sec typical)
+        _on_pull_down_ms = 1;  // 50-80µs
+        _off_pull_down_ms = 1000;  // >1s
+        _disconnetTime_ms = 400;  // power down (gracefully) takes ~400ms
+    }
+    if (_modemName.indexOf(F("Digi XBee® Cellular LTE Cat 1")) >= 0  ||
+        _modemName.indexOf(F("Digi XBee3™ Cellular LTE CAT 1")) >= 0  ||
+        _modemName.indexOf(F("Telit LE866")) >= 0)
+    {
+        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a Telit LE866"));
+        _warmUpTime_ms = 0; // Module turns on when power is applied
+        _statusTime_ms = 50;  // Documentation does not specify how long between
+        // power on and high reading on VAUX / PWRMON pin
+        _stabilizationTime_ms = MODEM_ATRESPONSE_TIME_MS;  // Documentation says to wait up to 25 (!!)
+        // seconds.  I'm not that patient.
+        _on_pull_down_ms = 0;  // N/A - standard chip cannot be powered on with pin
+        _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
+        _disconnetTime_ms = 10000L;  // Wait with 10s time-out for sleep
+    }
+    if (_modemName.indexOf(F("ESP8266")) >= 0)
+    {
+        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a ESP8266"));
+        _warmUpTime_ms = 0; // Module turns on when power is applied
+        _statusTime_ms = 350;  // N/A? - No status pin - use boot time if using a GPIO pin
+        _stabilizationTime_ms = 350;  // Boot up time 200-300ms
+        _on_pull_down_ms = 10;  // immediate
+        _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
+        _disconnetTime_ms = 500; // power down ???
+    }
+    if (_modemName.indexOf(F("Neoway M590")) >= 0)
+    {
+        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a Neoway M590"));
+        _warmUpTime_ms = 300; // ON/OFF pin can be held low when power is applied
+        // If the ON/OFF pin is not held low at time power is applied, wait at
+        // least 300ms before dropping it low to turn the module on
+        _statusTime_ms = 300;  // Time after end pulse until VCCIO becomes active
+        _stabilizationTime_ms = 300;  // Time until UART is active (300ms)
+        _on_pull_down_ms = 510;  // >300ms (>500ms recommended)
+        _off_pull_down_ms = 510;  // >300ms
+        _disconnetTime_ms = 6000;  // power down (gracefully) takes ~5sec
+    }
+    if (_modemName.indexOf(F("Quectel BG96")) >= 0)
+    {
+        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a Quectel BG96"));
+        _warmUpTime_ms = 30; // Time after VBAT is stable before PWRKEY can be used
+        _statusTime_ms = 4800;  // Time after end pulse until status pin becomes active
+        _stabilizationTime_ms = 4200;  // USB active at >4.2 sec, status at >4.8 sec, URAT at >4.9
+        _on_pull_down_ms = 110;  // >100ms
+        _off_pull_down_ms = 700;  // ≥ 650ms
+        _disconnetTime_ms = 15000;  // > 2 sec (Giving 15sec here in case it is not monitored.)
+    }
+    if (_modemName.indexOf(F("Quectel BC95")) >= 0)
+    {
+        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a Quectel BC95"));
+        _warmUpTime_ms = 1; // Time after VBAT is stable before RESET becomes valid - < 535 µs
+        _statusTime_ms = 1;  // Time after VBAT is stable before RESET becomes valid - < 535 µs
+        _stabilizationTime_ms = 5000;  // ?? Time to UART availability not documented
+        _on_pull_down_ms = 0;  // N/A - standard chip cannot be powered on with pin
+        _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
+        // use AT+CPSMS command for LTE-M power saving - no other power save method
+        _disconnetTime_ms = 0;  // N/A - If the reset pin is used as a status pin, it will not ever turn off
+    }
+    if (_modemName.indexOf(F("Quectel M95")) >= 0)
+    {
+        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a Quectel M95"));
+        _warmUpTime_ms = 30; // Time after VBAT is stable before PWRKEY can be used
+        _statusTime_ms = 0;  // Time after end pulse until status pin becomes active (54ms after start of pulse)
+        _stabilizationTime_ms = 500;  // UART should respond as soon as PWRKEY pulse ends
+        _on_pull_down_ms = 2000;  // until either status key goes on, or > 1.0 sec (~2s)
+        _off_pull_down_ms = 700;  // 0.6s<Pulldown<1s
+        _disconnetTime_ms = 12000;  // disconnect in 2-12 seconds
+    }
+    if (_modemName.indexOf(F("Quectel MC60")) >= 0)
+    {
+        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a Quectel MC60"));
+        _warmUpTime_ms = 100; // Time after VBAT is stable before PWRKEY can be used
+        _statusTime_ms = 0;  // Time after end pulse until status pin becomes active (54ms after start of pulse)
+        _stabilizationTime_ms = 500;  // UART should respond as soon as PWRKEY pulse ends
+        _on_pull_down_ms = 1100;  // >1s
+        _off_pull_down_ms = 700;  // 0.6s<Pulldown<1s
+        _disconnetTime_ms = 12000;  // disconnect in 2-12 seconds
+    }
+    if (_modemName.indexOf(F("Sequans VZM20Q")) >= 0)
+    {
+        MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a Quectel MC60"));
+        _warmUpTime_ms = 0; // Module automatically boots when power is applied
+        _statusTime_ms = 50;  // ?? Undocumented
+        _stabilizationTime_ms = 5000;  // ?? Time to UART availability not documented
+        _on_pull_down_ms = 50;  // ?? Undocumented
+        _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
+        // use AT+CPSMS command for LTE-M power saving
+        // use AT+SQNSSHDN command for device shut down
+        _disconnetTime_ms = 15000;  // ?? Undocumented (Giving 15sec here in case it is not monitored.)
+    }
+    if (_modemName.indexOf(F("XBee")) >= 0)
+    {
+        MS_MOD_DBG(F("Putting connection values into flash memory for the Digi XBee"));
+        _statusTime_ms = 50;  // ??? WAG!
+        // XBee saves all configurations to flash, so we can set them here
+        if (_tinyModem->hasWifi()) _tinyModem->networkConnect(_ssid, _pwd);
+        else _tinyModem->gprsConnect(_apn, "", "");
+    }
 }

@@ -175,11 +175,15 @@ private:
     static int16_t getPctFromCSQ(int16_t csq);
     // Helper to get signal percent from CSQ
     static int16_t getPctFromRSSI(int16_t rssi);
+    // Helper to set the timing for specific cellular chipsets based on their documentation
+    void setModemTiming(void);
 
 private:
     bool _statusLevel;
-    uint32_t _statusTime_ms;
-    uint32_t _disconnetTime_ms;
+    uint16_t _statusTime_ms;
+    uint16_t _disconnetTime_ms;
+    uint16_t _on_pull_down_ms;
+    uint16_t _off_pull_down_ms;
     bool (*_wakeFxn)(void);
     bool (*_sleepFxn)(void);
     const char *_apn;
