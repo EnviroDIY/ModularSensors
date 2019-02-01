@@ -167,13 +167,13 @@ const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool wakeFxn(void)
+bool modemWakeFxn(void)
 {
     digitalWrite(modemSleepRqPin, HIGH);
     digitalWrite(redLED, HIGH);  // A light just for show
     return true;
 }
-bool sleepFxn(void)
+bool modemSleepFxn(void)
 {
     digitalWrite(modemSleepRqPin, LOW);
     digitalWrite(redLED, LOW);
@@ -193,7 +193,7 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
 
 // Create the RSSI and signal strength variable objects for the modem and return
 // variable-type pointers to them

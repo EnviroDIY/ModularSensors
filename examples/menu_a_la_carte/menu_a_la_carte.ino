@@ -233,7 +233,7 @@ const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if 
 // These can be functions of any type and must return a boolean
 // After enabling pin sleep, the sleep request pin is held LOW to keep the XBee on
 // Enable pin sleep in the setup function or using XCTU prior to connecting the XBee
-bool sleepFxn(void)
+bool modemSleepFxn(void)
 {
     if (modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
     {
@@ -243,7 +243,7 @@ bool sleepFxn(void)
     }
     else return true;
 }
-bool wakeFxn(void)
+bool modemWakeFxn(void)
 {
     if (modemVccPin >= 0)  // Turns on when power is applied
         return true;
@@ -271,7 +271,7 @@ const int8_t modemStatusPin = -1;    // MCU pin used to read modem status (-1 if
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool sleepFxn(void)
+bool modemSleepFxn(void)
 {
     // Use this if you have an MCU pin connected to the ESP's reset pin to wake from deep sleep
     if (modemResetPin >= 0)
@@ -317,7 +317,7 @@ bool sleepFxn(void)
     }
     else return true;  // DON'T go to sleep if we can't wake up!
 }
-bool wakeFxn(void)
+bool modemWakeFxn(void)
 {
     if (modemVccPin >= 0)  // Turns on when power is applied
     {
@@ -355,7 +355,7 @@ const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool sleepFxn(void)
+bool modemSleepFxn(void)
 {
     if (modemVccPin >= 0 && modemSleepRqPin < 0)
         return tinyModem->poweroff();
@@ -371,7 +371,7 @@ bool sleepFxn(void)
     }
     else return true;  // DON'T go to sleep if we can't wake up!
 }
-bool wakeFxn(void)
+bool modemWakeFxn(void)
 {
     if (modemVccPin >= 0)  // Turns on when power is applied
         return true;
@@ -401,13 +401,13 @@ const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool wakeFxn(void)
+bool modemWakeFxn(void)
 {
     digitalWrite(modemSleepRqPin, HIGH);
     digitalWrite(redLED, HIGH);  // A light just for show
     return true;
 }
-bool sleepFxn(void)
+bool modemSleepFxn(void)
 {
     digitalWrite(modemSleepRqPin, LOW);
     digitalWrite(redLED, LOW);
@@ -426,7 +426,7 @@ const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool wakeFxn(void)
+bool modemWakeFxn(void)
 {
     digitalWrite(modemSleepRqPin, LOW);
     // delay(1100);  // >1s for SIM800, SIM900, Quectel M95, Quectel MC60
@@ -435,7 +435,7 @@ bool wakeFxn(void)
     digitalWrite(modemSleepRqPin, HIGH);
     return true;
 }
-bool sleepFxn(void)
+bool modemSleepFxn(void)
 {
     digitalWrite(modemSleepRqPin, LOW);
     // delay(1100);  // 1sec > t > 33sec for SIM800 and clones
@@ -461,10 +461,10 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 #if defined(TINY_GSM_MODEM_ESP8266) || defined(USE_XBEE_WIFI)
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
 // ^^ Use this for WiFi
 #else
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
 // ^^ Use this for cellular
 #endif
 

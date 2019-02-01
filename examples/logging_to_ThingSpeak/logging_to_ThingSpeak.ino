@@ -107,7 +107,7 @@ const int8_t modemStatusPin = -1;    // MCU pin used to read modem status (-1 if
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool sleepFxn(void)
+bool modemSleepFxn(void)
 {
     // Use this if you have an MCU pin connected to the ESP's reset pin to wake from deep sleep
     if (modemResetPin >= 0)
@@ -153,7 +153,7 @@ bool sleepFxn(void)
     }
     else return true;  // DON'T go to sleep if we can't wake up!
 }
-bool wakeFxn(void)
+bool modemWakeFxn(void)
 {
     if (modemVccPin >= 0)  // Turns on when power is applied
     {
@@ -192,7 +192,7 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
 
 
 // ==========================================================================
