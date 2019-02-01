@@ -164,9 +164,8 @@ void SERCOM2_Handler()
 
 
 // ==========================================================================
-//    Modem MCU Type and TinyGSM Client
+//    Wifi/Cellular Modem Main Chip Selection
 // ==========================================================================
-#define TINY_GSM_DEBUG Serial  // If you want debugging on the main debug port
 
 // Select your modem chip - this determines the exact commands sent to it
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIMCOM SIM800, SIM900, or variant thereof
@@ -421,9 +420,12 @@ bool modemSleepFxn(void)
 }
 #endif
 
+
 // ==========================================================================
 //    TinyGSM Client
 // ==========================================================================
+
+// #define TINY_GSM_DEBUG Serial  // If you want debugging on the main debug port
 
 #if defined(TINY_GSM_MODEM_XBEE) || defined(USE_XBEE_BYPASS)
   #define TINY_GSM_YIELD() { delay(2); }  // Use to counter slow (9600) baud rate
@@ -1151,12 +1153,50 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 
 
 // ==========================================================================
+//    Calculated Variables
+// ==========================================================================
+
+// Create any calculated variables you want here
+
+// Create the function to give your calculated result.
+// The function should take no input (void) and return a float.
+// You can use any named variable pointers to access values by way of variable->getValue()
+
+/*
+float calculateVariableValue(void)
+{
+    float calculatedResult = -9999;  // Always safest to start with a bad value
+    float inputVar1 = variable1->getValue();
+    float inputVar2 = variable2->getValue();
+    if (inputVar1 != -9999 && inputVar2 != -9999)  // make sure both inputs are good
+    {
+        calculatedResult = inputVar1 + inputVar2;
+    }
+    return calculatedResult;
+}
+
+// Properties of the calculated variable
+const char *calculatedVarName = "varName";  // This must be a value from http://vocabulary.odm2.org/variablename/
+const char *calculatedVarUnit = "varUnit";  // This must be a value from http://vocabulary.odm2.org/units/
+int calculatedVarResolution = 3;  // The number of digits after the decimal place
+const char *calculatedVarUUID = "12345678-abcd-1234-efgh-1234567890ab";  // The (optional) universallly unique identifier
+const char *calculatedVarCode = "CorrectedPressure";  // An (optional) short code for the variable
+
+// Finally, create the calculated variable object and return a variable pointer to it
+Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarName,
+                                       calculatedVarUnit, calculatedVarResolution,
+                                       calculatedVarUUID, calculatedVarCode);
+*/
+
+
+// ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 #include <VariableArray.h>
 
-// Create pointers for all of the variables from the sensors
+// FORM1: Create pointers for all of the variables from the sensors,
 // at the same time putting them into an array
+// NOTE:  Forms one and two can be mixed
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -1235,6 +1275,22 @@ Variable *variableList[] = {
     new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
 };
+
+/*
+// FORM2: Fill array with already created and named variable pointers
+// NOTE:  Forms one and two can be mixed
+Variable *variableList[] = {
+    mcuBoardBatt,
+    mcuBoardAvailableRAM,
+    mcuBoardSampNo,
+    modemRSSI,
+    modemSignalPct,
+    // etc, etc, etc,
+    calculatedVar
+}
+*/
+
+
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
@@ -1525,6 +1581,7 @@ void setup()
 // ==========================================================================
 // Main loop function
 // ==========================================================================
+
 // Use this short loop for simple data logging and sending
 // /*
 void loop()

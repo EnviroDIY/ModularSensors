@@ -62,28 +62,11 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 
 
 // ==========================================================================
-//    Modem MCU Type and TinyGSM Client
+//    Wifi/Cellular Modem Main Chip Selection
 // ==========================================================================
 
 // Select your modem chip - this determines the exact commands sent to it
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
-
-#if defined(TINY_GSM_MODEM_XBEE)
-  #define TINY_GSM_YIELD() { delay(1); }  // Use to counter slow (9600) baud rate
-#endif
-
-// Include TinyGSM for the modem
-// This include must be included below the define of the modem name!
-#include <TinyGsmClient.h>
-
-// Create a reference to the serial port for the modem
-HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
-
-// Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(modemSerial);
-
-// Create a new TCP client on that modem and return a pointer to it
-TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 
 // ==========================================================================
@@ -97,6 +80,7 @@ const bool modemStatusLevel = LOW;  // The level of the status pin when the modu
 const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
+const int8_t modemResetPin = A4;    // MCU pin connected to modem reset pin (-1 if unconnected)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -124,6 +108,28 @@ bool modemWakeFxn(void)
     }
     else return true;
 }
+
+
+// ==========================================================================
+//    TinyGSM Client
+// ==========================================================================
+
+#if defined(TINY_GSM_MODEM_XBEE)
+  #define TINY_GSM_YIELD() { delay(2); }  // Use to counter slow (9600) baud rate
+#endif
+
+// Include TinyGSM for the modem
+// This include must be included below the define of the modem name!
+#include <TinyGsmClient.h>
+
+// Create a reference to the serial port for the modem
+HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
+
+// Create a new TinyGSM modem to run on that serial port and return a pointer to it
+TinyGsm *tinyModem = new TinyGsm(modemSerial, modemResetPin);
+
+// Create a new TCP client on that modem and return a pointer to it
+TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 
 // ==========================================================================
@@ -168,7 +174,7 @@ AOSongAM2315 am2315(I2CPower);
 // ==========================================================================
 #include <VariableArray.h>
 
-// Create pointers for all of the variables from the sensors recording at 1
+// FORM1: Create pointers for all of the variables from the sensors, recording at 1
 // minute intervals and at the same time putting them into an array
 Variable *variableList_at1min[] = {
     new AOSongAM2315_Humidity(&am2315),
@@ -179,7 +185,7 @@ int variableCount1min = sizeof(variableList_at1min) / sizeof(variableList_at1min
 // Create the 1-minute VariableArray object
 VariableArray array1min(variableCount1min, variableList_at1min);
 
-// Create pointers for all of the variables from the sensors recording at 5
+// FORM1: Create pointers for all of the variables from the sensors, recording at 5
 // minute intervals and at the same time putting them into an array
 Variable *variableList_at5min[] = {
     new MaximDS3231_Temp(&ds3231),

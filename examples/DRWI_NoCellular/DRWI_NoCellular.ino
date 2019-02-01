@@ -113,7 +113,7 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 // ==========================================================================
 #include <VariableArray.h>
 
-// Create pointers for all of the variables from the sensors
+// FORM1: Create pointers for all of the variables from the sensors,
 // at the same time putting them into an array
 Variable *variableList[] = {
     new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -221,20 +221,18 @@ void setup()
     // At lowest battery level, skip sensor set-up
     // Note:  Please change these battery voltages to match your battery
     if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
-    else dataLogger.begin();  // set up sensors
+    else dataLogger.begin();  // set up file and sensors
 
-    // At very good battery voltage, or with suspicious time stamp, sync the clock
-    // Note:  Please change these battery voltages to match your battery
-    if (getBatteryVoltage() > 3.9 ||
-        dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
-        dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
-        dataLogger.syncRTC();
+    // Call the processor sleep
+    dataLogger.systemSleep();
 }
 
 
 // ==========================================================================
 // Main loop function
 // ==========================================================================
+
+// Use this short loop for simple data logging and sending
 void loop()
 {
     // Log the data

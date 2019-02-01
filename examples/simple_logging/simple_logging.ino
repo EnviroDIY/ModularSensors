@@ -72,7 +72,7 @@ MaximDS3231 ds3231(1);
 // ==========================================================================
 #include <VariableArray.h>
 
-// Create pointers for all of the variables from the sensors
+// FORM1: Create pointers for all of the variables from the sensors,
 // at the same time putting them into an array
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard),

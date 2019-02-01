@@ -60,34 +60,11 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 
 
 // ==========================================================================
-//    Modem MCU Type and TinyGSM Client
+//    Wifi/Cellular Modem Main Chip Selection
 // ==========================================================================
 
 // Select your modem chip - this determines the exact commands sent to it
 #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
-
-// Include TinyGSM for the modem
-// This include must be included below the define of the modem name!
-#include <TinyGsmClient.h>
-
-// Create a reference to the serial port for the modem
-// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
-// NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
-
-// Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(modemSerial);
-
-// Use this to create a modem if you want to spy on modem communication through
-// a secondary Arduino stream.  Make sure you install the StreamDebugger library!
-// https://github.com/vshymanskyy/StreamDebugger
-// #include <StreamDebugger.h>
-// StreamDebugger modemDebugger(modemSerial, Serial);
-// TinyGsm *tinyModem = new TinyGsm(modemDebugger);
-
-// Create a new TCP client on that modem and return a pointer to it
-TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 
 // ==========================================================================
@@ -99,7 +76,7 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 const long ModemBaud = 57600;        // Communication speed of the modem
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemResetPin = -1;     // MCU pin connected to ESP8266's RSTB/GPIO16 pin (-1 if unconnected)
+const int8_t modemResetPin = A4;     // MCU pin connected to ESP8266's RSTB/GPIO16 pin (-1 if unconnected)
 const int8_t espSleepRqPin = 13;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
 const int8_t modemSleepRqPin = 19;   // MCU pin used for wake from light sleep (-1 if not applicable)
 const int8_t espStatusPin = -1;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
@@ -181,6 +158,34 @@ bool modemWakeFxn(void)
 
 
 // ==========================================================================
+//    TinyGSM Client
+// ==========================================================================
+
+// Include TinyGSM for the modem
+// This include must be included below the define of the modem name!
+#include <TinyGsmClient.h>
+
+// Create a reference to the serial port for the modem
+// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
+HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
+// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
+// NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
+
+// Create a new TinyGSM modem to run on that serial port and return a pointer to it
+TinyGsm *tinyModem = new TinyGsm(modemSerial);
+
+// Use this to create a modem if you want to spy on modem communication through
+// a secondary Arduino stream.  Make sure you install the StreamDebugger library!
+// https://github.com/vshymanskyy/StreamDebugger
+// #include <StreamDebugger.h>
+// StreamDebugger modemDebugger(modemSerial, Serial);
+// TinyGsm *tinyModem = new TinyGsm(modemDebugger);
+
+// Create a new TCP client on that modem and return a pointer to it
+TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
+
+
+// ==========================================================================
 //    Network Information and LoggerModem Object
 // ==========================================================================
 #include <LoggerModem.h>
@@ -251,7 +256,7 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 // ==========================================================================
 #include <VariableArray.h>
 
-// Create pointers for all of the variables from the sensors
+// FORM1: Create pointers for all of the variables from the sensors,
 // at the same time putting them into an array
 Variable *variableList[] = {
     new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -284,7 +289,7 @@ Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 // ==========================================================================
 // Create a channel with fields on ThingSpeak in advance
 // The fields will be sent in exactly the order they are in the variable array.
-// Any custom name or identifier given to the field on ThingSpeak fields is irrelevant.
+// Any custom name or identifier given to the field on ThingSpeak is irrelevant.
 // No more than 8 fields of data can go to any one channel.  Any fields beyond the
 // eighth in the array will be ignored.
 const char *thingSpeakMQTTKey = "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from Account > MyProfile.
@@ -393,23 +398,33 @@ void setup()
     dataLogger.setTestingModePin(buttonPin);
 
     // Begin the logger
-    // At lowest battery level, skip sensor set-up
     // Note:  Please change these battery voltages to match your battery
+    // Only power the modem for begin at best battery voltage
+    if (getBatteryVoltage() > 3.7) modem.modemPowerUp();
+    // At lowest battery level, skip sensor set-up
     if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
-    else dataLogger.begin();  // set up sensors
+    else dataLogger.begin();  // set up file and sensors
 
     // At very good battery voltage, or with suspicious time stamp, sync the clock
     // Note:  Please change these battery voltages to match your battery
     if (getBatteryVoltage() > 3.9 ||
         dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
         dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
-        dataLogger.syncRTC();
+    {
+        dataLogger.syncRTC();  // There's a sleepPowerDown at the end of this
+}
+    else modem.modemSleepPowerDown();
+
+    // Call the processor sleep
+    dataLogger.systemSleep();
 }
 
 
 // ==========================================================================
 // Main loop function
 // ==========================================================================
+
+// Use this short loop for simple data logging and sending
 void loop()
 {
     // Log the data

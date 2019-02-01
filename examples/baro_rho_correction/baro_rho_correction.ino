@@ -66,32 +66,11 @@ Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-
 
 
 // ==========================================================================
-//    Modem MCU Type and TinyGSM Client
+//    Wifi/Cellular Modem Main Chip Selection
 // ==========================================================================
 
 // Select your modem chip - this determines the exact commands sent to it
 #define TINY_GSM_MODEM_SIM800  // Select for a SIMCOM SIM800, SIM900, or variant thereof
-
-
-// Include TinyGSM for the modem
-// This include must be included below the define of the modem name!
-#include <TinyGsmClient.h>
-
-// Create a reference to the serial port for the modem
-HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
-
-// Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(modemSerial);
-
-// Use this to create a modem if you want to spy on modem communication through
-// a secondary Arduino stream.  Make sure you install the StreamDebugger library!
-// https://github.com/vshymanskyy/StreamDebugger
-// #include <StreamDebugger.h>
-// StreamDebugger modemDebugger(modemSerial, Serial);
-// TinyGsm *tinyModem = new TinyGsm(modemDebugger);
-
-// Create a new TCP client on that modem and return a pointer to it
-TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 
 // ==========================================================================
@@ -120,6 +99,31 @@ bool modemSleepFxn(void)
     digitalWrite(redLED, LOW);
     return true;
 }
+
+
+// ==========================================================================
+//    TinyGSM Client
+// ==========================================================================
+
+// Include TinyGSM for the modem
+// This include must be included below the define of the modem name!
+#include <TinyGsmClient.h>
+
+// Create a reference to the serial port for the modem
+HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
+
+// Create a new TinyGSM modem to run on that serial port and return a pointer to it
+TinyGsm *tinyModem = new TinyGsm(modemSerial);
+
+// Use this to create a modem if you want to spy on modem communication through
+// a secondary Arduino stream.  Make sure you install the StreamDebugger library!
+// https://github.com/vshymanskyy/StreamDebugger
+// #include <StreamDebugger.h>
+// StreamDebugger modemDebugger(modemSerial, Serial);
+// TinyGsm *tinyModem = new TinyGsm(modemDebugger);
+
+// Create a new TCP client on that modem and return a pointer to it
+TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 
 // ==========================================================================
@@ -183,12 +187,8 @@ Variable *bme280Alt = new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh
 #include <sensors/MaximDS18.h>
 
 // OneWire Address [array of 8 hex characters]
-// DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA, 0x81, 0x16, 0x03, 0x0C};
 const int8_t OneWireBus = 4;  // Pin attached to the OneWire Bus (-1 if unconnected)
 const int8_t OneWirePower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-
-// Create and return the Maxim DS18 sensor object (use this form for a known address)
-// MaximDS18 ds18_1(OneWireAddress1, OneWirePower, OneWireBus);
 
 // Create and return the Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
 MaximDS18 ds18_u(OneWirePower, OneWireBus);
@@ -220,6 +220,8 @@ Variable *ms5803Temp = new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-efgh-
 // ==========================================================================
 //    Calculated Variables
 // ==========================================================================
+
+// Create any calculated variables you want here
 
 // Create the function to calculate the water pressure
 // Water pressure = pressure from MS5803 (water+baro) - pressure from BME280 (baro)
@@ -311,9 +313,8 @@ Variable *calcCorrDepth = new Variable(calculateWaterDepthTempCorrected, rhoDept
 // ==========================================================================
 #include <VariableArray.h>
 
-// Put all of the variable pointers into an array
-// NOTE:  Since we've created all of the variable pointers above, we can
-// reference them by name here.
+// FORM2: Fill array with already created and named variable pointers
+// NOTE:  Forms one and two can be mixed
 Variable *variableList[] = {
     mcuBoardSampNo,
     mcuBoardBatt,
@@ -431,23 +432,33 @@ void setup()
     // Update the mayfly to get the processor battery level
     mcuBoard.update();
     // Begin the logger
-    // At lowest battery level, skip sensor set-up
     // Note:  Please change these battery voltages to match your battery
-    if (mcuBoardBatt->getValue() < 3.4) dataLogger.begin(true);
-    else dataLogger.begin();  // set up sensors
+    // Only power the modem for begin at best battery voltage
+    if (mcuBoardBatt->getValue() > 3.7) modem.modemPowerUp();
+    // At lowest battery level, skip sensor set-up
+    if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
+    else dataLogger.begin();  // set up file and sensors
 
     // At very good battery voltage, or with suspicious time stamp, sync the clock
     // Note:  Please change these battery voltages to match your battery
     if (mcuBoardBatt->getValue() > 3.9 ||
         dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
         dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
-        dataLogger.syncRTC();
+    {
+        dataLogger.syncRTC();  // There's a sleepPowerDown at the end of this
+}
+    else modem.modemSleepPowerDown();
+
+    // Call the processor sleep
+    dataLogger.systemSleep();
 }
 
 
 // ==========================================================================
 // Main loop function
 // ==========================================================================
+
+// Use this short loop for simple data logging and sending
 void loop()
 {
     // Log the data

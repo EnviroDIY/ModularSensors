@@ -125,32 +125,11 @@ void SERCOM1_Handler()
 
 
 // ==========================================================================
-//    Modem MCU Type and TinyGSM Client
+//    Wifi/Cellular Modem Main Chip Selection
 // ==========================================================================
 
 // Select your modem chip - this determines the exact commands sent to it
 #define TINY_GSM_MODEM_SIM800  // Select for a SIMCOM SIM800, SIM900, or variant thereof
-
-// Include TinyGSM for the modem
-// This include must be included below the define of the modem name!
-#include <TinyGsmClient.h>
-
-// Create a reference to the serial port for the modem
-// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
-
-// Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(modemSerial);
-
-// Use this to create a modem if you want to spy on modem communication through
-// a secondary Arduino stream.  Make sure you install the StreamDebugger library!
-// https://github.com/vshymanskyy/StreamDebugger
-// #include <StreamDebugger.h>
-// StreamDebugger modemDebugger(modemSerial, Serial);
-// TinyGsm *tinyModem = new TinyGsm(modemDebugger);
-
-// Create a new TCP client on that modem and return a pointer to it
-TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 
 // ==========================================================================
@@ -179,6 +158,32 @@ bool modemSleepFxn(void)
     digitalWrite(redLED, LOW);
     return true;
 }
+
+
+// ==========================================================================
+//    TinyGSM Client
+// ==========================================================================
+
+// Include TinyGSM for the modem
+// This include must be included below the define of the modem name!
+#include <TinyGsmClient.h>
+
+// Create a reference to the serial port for the modem
+// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
+HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
+
+// Create a new TinyGSM modem to run on that serial port and return a pointer to it
+TinyGsm *tinyModem = new TinyGsm(modemSerial);
+
+// Use this to create a modem if you want to spy on modem communication through
+// a secondary Arduino stream.  Make sure you install the StreamDebugger library!
+// https://github.com/vshymanskyy/StreamDebugger
+// #include <StreamDebugger.h>
+// StreamDebugger modemDebugger(modemSerial, Serial);
+// TinyGsm *tinyModem = new TinyGsm(modemDebugger);
+
+// Create a new TCP client on that modem and return a pointer to it
+TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 
 // ==========================================================================
@@ -339,9 +344,8 @@ Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-123
 // ==========================================================================
 #include <VariableArray.h>
 
-// Put ALL of the variable pointers into the first array
-// NOTE:  Since we've created all of the variable pointers above, we can
-// reference them by name here.
+// FORM2: Fill array with already created and named variable pointers
+// We put ALL of the variable pointers into the first array
 Variable *variableList_complete[] = {
     mcuBoardSampNo,
     mcuBoardBatt,
@@ -366,7 +370,7 @@ VariableArray arrayComplete(variableCount_complete, variableList_complete);
 
 
 // Put only the particularly interesting variables into a second array
-// NOTE:  We can put some of the exact same variables into multiple arrays
+// NOTE:  We can the same variables into multiple arrays
 Variable *variableList_toGo[] = {
     y504DOmgL,
     y504Temp,
@@ -386,9 +390,10 @@ VariableArray arrayToGo(variableCount_toGo, variableList_toGo);
 // ==========================================================================
 #include <LoggerBase.h>
 
+// Create one new logger instance for the complete array
 Logger loggerAllVars(LoggerID, loggingInterval, sdCardPin, wakePin, &arrayComplete);
 
-// Create the new logger instance
+// Create "another" logger for the variables to go out over the internet
 Logger loggerToGo(LoggerID, loggingInterval,sdCardPin, wakePin, &arrayToGo);
 
 
@@ -401,6 +406,7 @@ const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Dev
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
+// This is only attached to the logger with the shorter variable array
 #include <publishers/EnviroDIYPublisher.h>
 EnviroDIYPublisher EnviroDIYPOST(loggerToGo, registrationToken, samplingFeature);
 
@@ -516,7 +522,13 @@ void setup()
     if (mcuBoardBatt->getValue() > 3.9 ||
         loggerAllVars.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
         loggerAllVars.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
-        loggerAllVars.syncRTC();
+    {
+        loggerAllVars.syncRTC();  // There's a sleepPowerDown at the end of this
+    }
+    else modem.modemSleepPowerDown();
+
+    // Call the processor sleep
+    loggerAllVars.systemSleep();
 }
 
 
@@ -524,6 +536,7 @@ void setup()
 // Main loop function
 // ==========================================================================
 
+// Use this long loop when you want to do something special
 // Because of the way alarms work on the RTC, it will wake the processor and
 // start the loop every minute exactly on the minute.
 // The processor may also be woken up by another interrupt or level change on a
