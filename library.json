@@ -1,6 +1,6 @@
 {
     "name": "EnviroDIY_ModularSensors",
-    "version": "0.19.4",
+    "version": "0.19.5",
     "description":  "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
     "keywords": "modular, sensor, sensors, datalogger, logger, low power, sleeping, EnviroDIY, ModularSensors, Mayfly, WikiWatershed, ThingSpeak",
     "platforms": "atmelavr, atmelsam",
@@ -152,7 +152,7 @@
             "name": "DHT sensor library",
             "library id": "19",
             "url": "http://github.com/adafruit/DHT-sensor-library.git",
-            "version": "=1.3.1",
+            "version": "=1.3.2",
             "note": "AOSong DHT Sensor Library by Adafruit",
             "authors": [
                 "Adafruit"
@@ -294,7 +294,7 @@
         },
         {
             "name": "TinyGSM",
-            "version": "https://github.com/EnviroDIY/TinyGSM.git#de5e5e359e5f8d10a3a1d12e1ec95f7239a439d1",
+            "version": "https://github.com/EnviroDIY/TinyGSM.git#bdfa2ba55cd2d7140011453d29c15ebbdbe33564",
             "version_note": "=0.4.5",
             "note": "A small Arduino library for GPRS modules.",
             "authors": [
