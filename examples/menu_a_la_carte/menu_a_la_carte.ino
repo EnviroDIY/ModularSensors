@@ -170,6 +170,7 @@ void SERCOM2_Handler()
 
 // Select your modem chip - this determines the exact commands sent to it
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIMCOM SIM800, SIM900, or variant thereof
+// define SIM800_GPRSBEE_R6  // These use atypical sleep and wake fxns
 // #define TINY_GSM_MODEM_SIM808  // Select for a SIMCOM SIM808 or SIM868, or variant thereof
 // #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
 // #define USE_XBEE_BYPASS  // If you're using a Digi 3G or LTE-M XBee in bypass mode as a u-blox
@@ -181,39 +182,6 @@ void SERCOM2_Handler()
 // #define TINY_GSM_MODEM_M95  // Select for a Quectel M95
 // #define TINY_GSM_MODEM_BG96  // Select for a Quectel BG96
 // #define TINY_GSM_MODEM_MC60  // Select for a Quectel MC60 or MC60E
-
-#if defined(TINY_GSM_MODEM_XBEE) || defined(USE_XBEE_BYPASS)
-  #define TINY_GSM_YIELD() { delay(1); }  // Use to counter slow (9600) baud rate
-#endif
-
-// Include TinyGSM for the modem
-// This include must be included below the define of the modem name!
-#include <TinyGsmClient.h>
-
-// Create a reference to the serial port for the modem
-// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
-// NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
-
-// Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(modemSerial);
-
-// Use this to create a modem if you want to spy on modem communication through
-// a secondary Arduino stream.  Make sure you install the StreamDebugger library!
-// https://github.com/vshymanskyy/StreamDebugger
-// #include <StreamDebugger.h>
-// StreamDebugger modemDebugger(modemSerial, Serial);
-// TinyGsm *tinyModem = new TinyGsm(modemDebugger);
-
-// Create a new TCP client on that modem and return a pointer to it
-TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
-// The ublox is very slow to open and close clients, so we can iterate through
-// mutiple data senders much more quickly if we have multiple clients
-#if defined(TINY_GSM_MODEM_UBLOX)
-TinyGsmClient *tinyClient2 = new TinyGsmClient(*tinyModem);
-TinyGsmClient *tinyClient3 = new TinyGsmClient(*tinyModem);
-#endif
 
 
 // ==========================================================================
@@ -228,6 +196,7 @@ const bool modemStatusLevel = LOW;  // The level of the status pin when the modu
 const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
+const int8_t modemResetPin = A4;    // MCU pin connected to modem reset pin (-1 if unconnected)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -263,7 +232,7 @@ bool modemWakeFxn(void)
 const long ModemBaud = 57600;        // Communication speed of the modem
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemResetPin = -1;     // MCU pin connected to ESP8266's RSTB/GPIO16 pin (-1 if unconnected)
+const int8_t modemResetPin = A4;     // MCU pin connected to ESP8266's RSTB/GPIO16 pin (-1 if unconnected)
 const int8_t espSleepRqPin = 13;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
 const int8_t modemSleepRqPin = 19;   // MCU pin used for wake from light sleep (-1 if not applicable)
 const int8_t espStatusPin = -1;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
@@ -352,6 +321,7 @@ const bool modemStatusLevel = HIGH;  // The level of the status pin when the mod
 const int8_t modemVccPin = 23;       // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemSleepRqPin = 20;   // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if not applicable)
+const int8_t modemResetPin = A4;     // MCU pin connected to modem reset pin (-1 if unconnected)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -391,13 +361,14 @@ bool modemWakeFxn(void)
 
 
 // THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
-#elif defined(TINY_GSM_MODEM_SIM800)
+#elif defined(TINY_GSM_MODEM_SIM800) && defined(SIM800_GPRSBEE_R6)
 // Describe the physical pin connection of your modem to your board
 const long ModemBaud = 9600;         // Communication speed of the modem
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemSleepRqPin = 23;   // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if not applicable)
+const int8_t modemResetPin = A4;     // MCU pin connected to modem reset pin (-1 if unconnected)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -416,6 +387,8 @@ bool modemSleepFxn(void)
 
 
 // Most cellular chips/breakouts respond to a low pulse of some length to power up and down
+// If we're only using a low pulse on the wake/sleep pin, we could also use the
+// "default" functions and alternate constructor
 #else
 // Describe the physical pin connection of your modem to your board
 const long ModemBaud = 9600;         // Communication speed of the modem
@@ -423,6 +396,7 @@ const bool modemStatusLevel = HIGH;  // The level of the status pin when the mod
 const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemSleepRqPin = 23;   // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if not applicable)
+const int8_t modemResetPin = A4;     // MCU pin connected to modem reset pin (-1 if unconnected)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -447,6 +421,47 @@ bool modemSleepFxn(void)
 }
 #endif
 
+// ==========================================================================
+//    TinyGSM Client
+// ==========================================================================
+
+#if defined(TINY_GSM_MODEM_XBEE) || defined(USE_XBEE_BYPASS)
+  #define TINY_GSM_YIELD() { delay(2); }  // Use to counter slow (9600) baud rate
+#endif
+
+// Include TinyGSM for the modem
+// This include must be included below the define of the modem name!
+#include <TinyGsmClient.h>
+
+// Create a reference to the serial port for the modem
+// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
+HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
+// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
+// NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
+
+// Create a new TinyGSM modem to run on that serial port and return a pointer to it
+#if defined(TINY_GSM_MODEM_XBEE)
+TinyGsm *tinyModem = new TinyGsm(modemSerial, modemResetPin);
+#else
+TinyGsm *tinyModem = new TinyGsm(modemSerial);
+#endif
+
+// Use this to create a modem if you want to spy on modem communication through
+// a secondary Arduino stream.  Make sure you install the StreamDebugger library!
+// https://github.com/vshymanskyy/StreamDebugger
+// #include <StreamDebugger.h>
+// StreamDebugger modemDebugger(modemSerial, Serial);
+// TinyGsm *tinyModem = new TinyGsm(modemDebugger);
+
+// Create a new TCP client on that modem and return a pointer to it
+TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
+// The ublox is very slow to open and close clients, so we can iterate through
+// mutiple data senders much more quickly if we have multiple clients
+#if defined(TINY_GSM_MODEM_UBLOX)
+TinyGsmClient *tinyClient2 = new TinyGsmClient(*tinyModem);
+TinyGsmClient *tinyClient3 = new TinyGsmClient(*tinyModem);
+#endif
+
 
 // ==========================================================================
 //    Network Information and LoggerModem Object
@@ -467,6 +482,9 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, m
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
 // ^^ Use this for cellular
 #endif
+
+// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemSleepRqPin, tinyModem, tinyClient, apn);
+// ^^ Use this for a chip where you want to use the "default" functions
 
 // Create the RSSI and signal strength variable objects for the modem and return
 // variable-type pointers to them
@@ -1392,21 +1410,10 @@ void setup()
     }
 
     // Set up the sleep/wake pin for the modem and put its inital value as "off"
-    #if defined(TINY_GSM_MODEM_ESP8266)
+    #if defined(TINY_GSM_MODEM_SIM800) && defined(SIM800_GPRSBEE_R6)  // ONLY FOR GPRSBee R6!!!!
         if (modemSleepRqPin >= 0)
         {
             pinMode(modemSleepRqPin, OUTPUT);
-            digitalWrite(modemSleepRqPin, HIGH);
-        }
-        if (modemResetPin >= 0)
-        {
-            pinMode(modemResetPin, OUTPUT);
-            digitalWrite(modemResetPin, HIGH);
-        }
-    #elif defined(TINY_GSM_MODEM_SIM800)  // ONLY FOR GPRSBee R6!!!!
-        if (modemSleepRqPin >= 0)
-        {
-        pinMode(modemSleepRqPin, OUTPUT);
         digitalWrite(modemSleepRqPin, LOW);
         }
     #else
@@ -1414,6 +1421,11 @@ void setup()
         {
         pinMode(modemSleepRqPin, OUTPUT);
         digitalWrite(modemSleepRqPin, HIGH);
+        }
+        if (modemResetPin >= 0)
+        {
+            pinMode(modemResetPin, OUTPUT);
+            digitalWrite(modemResetPin, HIGH);
         }
     #endif
 
@@ -1452,13 +1464,16 @@ void setup()
             // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
             // so we'll use the Digi pin sleep instead.
             tinyModem->waitResponse();
-            tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
-            tinyModem->waitResponse();
+            #if defined(USE_XBEE_WIFI)
             tinyModem->sendAT(F("SO"),200);  // For WiFi - Disassociate from AP for Deep Sleep
+            tinyModem->waitResponse();
+            #else
+            tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
             tinyModem->waitResponse();
             tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
             // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
-            tinyModem->waitResponse(F("OK\r"));
+            #endif
+            tinyModem->waitResponse();
             tinyModem->writeChanges();
             tinyModem->exitCommand();
         }
