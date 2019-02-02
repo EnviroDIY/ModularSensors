@@ -685,16 +685,36 @@ Logger dataLogger(LoggerID_def, loggingInterval_def, sdCardPin, wakePin, &varArr
 
 
 // ==========================================================================
+//    A Publisher to WikiWatershed
+// ==========================================================================
 // Device registration and sampling feature information
 //   This should be obtained after registration at http://data.envirodiy.org
-
+#if defined(registrationToken_UUID) && defined(samplingFeature_UUID)
 const char *registrationToken_def = registrationToken_UUID;   // Device registration token
 const char *samplingFeature_def = samplingFeature_UUID;     // Sampling feature UUID
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken_def, samplingFeature_def);
+#endif //registrationToken_UUID
 
+// ==========================================================================
+//    ThingSpeak Data Publisher
+// ==========================================================================
+// Create a channel with fields on ThingSpeak in advance
+// The fields will be sent in exactly the order they are in the variable array.
+// Any custom name or identifier given to the field on ThingSpeak fields is irrelevant.
+// No more than 8 fields of data can go to any one channel.  Any fields beyond the
+// eighth in the array will be ignored.
+#if defined(thingSpeakMQTTKey)
+const char *thingSpeakMQTTKey = "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from Account > MyProfile.
+const char *thingSpeakChannelID = "######";  // The numeric channel id for your channel
+const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
+
+// Create a data publisher for ThingSpeak
+#include <publishers/ThingSpeakPublisher.h>
+ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
+#endif //thingSpeakMQTTKey
 
 // ==========================================================================
 //    Working Functions
