@@ -9,12 +9,12 @@ This version of the ModularSensors library is a rugged solar powered wireless da
 * Transmit that data wirelessly to a web server; and
 * powers sensors when used, and powers the board down to a quiescent of about 3mA between useage.
 ## New for this fork   
-* ONLY applies to ModularSensors\examples\logging_to_EnviroDIY   
+* ONLY applies to ModularSensors\a\atlMayfly   
 * Scales the rollout of multiple loggers with configuration .ini on the SD memory card
 * Manages the available LiIon battery power, with best management practices for power demand management,
 * Tested for ruggedness/reliability with the Xbee WiFi S6 module (and future the Xbee LTE family and Xbee ISM band modules)
 
-To use, from platformio.ini open folder ModularSensors\examples\logging_to_EnviroDIY - and press icon "Build" (the tick mark)
+To use, from platformio.ini open folder ModularSensors\a\atlMayfly - and press icon "Build" (the tick mark)
 This is an open source fork of https://github.com/EnviroDIY/ModularSensors   
 EnviroDIY/ModularSensors is a comprehensive package that covers a number of boards and example usages. Its the recommended starting point for anybody new to ModularSensors, its assumed you read the excellent https://github.com/EnviroDIY/ModularSensors/blob/master/README.md
 There is an comprehensive manual on riparian monitoring using the Mayfly  https://www.envirodiy.org/mayfly-sensor-station-manual/
@@ -25,13 +25,14 @@ Boards for riparian monitoring need solar & LiIon battery, wireless modules such
 Other more extensible boards based on the Arm Cortex M family will probably be supported over time -
  eg Adafruit Feather Alogger
 
-To use this fork, and underestand the New features, at this point you need to have code famalirity with ModularSensor. I hope to make this simpler in the future.   
-Start with a working ModularSensors 0.17.02 or later built using PlatformIO and working with a Mayfly 0.5b
-EnviroDIY/ModularSensors/exampleslogging_to_EnviroDIY.ino
-https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_EnviroDIY
+To use this fork, and underestand the New features, at this point you need to have code famalirity with ModularSensor. 
+I hope to make this simpler in the future.   
+Start with a working ModularSensors 0.19.04 or later built using PlatformIO and working with a Mayfly 0.5b
+EnviroDIY/ModularSensors/examples/menu_a_la_carte
+
 Verify builds and dowloads to your Mayfly.
 
-Now in the platformio.ini substitute
+Now change to ModularSensors/a/atlMayfly/  and not the new platformio.ini
 <blockquote><pre><code>
     ;EnviroDIY_ModularSensors@=0.17.2
     https://github.com/neilh10/ModularSensors#release1
@@ -43,9 +44,8 @@ Now in the platformio.ini substitute
     https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts.git
 </code></pre></blockquote>
 
-Then delete the directories - ModularSensors\examples\logging_to_EnviroDIY\.piolibdeps  and .pioenvs to force areferesh.
 
-Finally build, and download. It now requires the SD card to have a Mayfly.ini https://github.com/neilh10/ModularSensors/wiki/Feature-INI-file
+Finally build, and download. It now requires the SD card to have a ms_cfg.ini https://github.com/neilh10/ModularSensors/wiki/Feature-INI-file
 This library is a volunteer open source effort by the author, and is built on the effort of a number of people who open sourced their effor with ModularSensors - thankyou thankyou. 
 As an open source addition to ModularSensors you are free to use at your own discretion, and at your own risk. I've provided some description of what tests I've run at 
 https://github.com/neilh10/ModularSensors/wiki/Testing-overview
