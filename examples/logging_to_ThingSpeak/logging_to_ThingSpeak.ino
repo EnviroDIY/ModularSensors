@@ -110,25 +110,24 @@ const int8_t espStatusPin = -1;      // ESP8266 GPIO pin used to give modem stat
 // These can be functions of any type and must return a boolean
 bool modemSleepFxn(void)
 {
+    // Use this if you have GPIO16 connected to the reset pin to wake from deep sleep
+    // but no other MCU pin connected to the reset pin.
+    // NOTE:  This will NOT work nicely with "testingMode"
+    /*if (loggingInterval > 1)
+    {
+        uint32_t sleepSeconds = (((uint32_t)loggingInterval) * 60 * 1000) - 75000L;
+        String sleepCommand = String(sleepSeconds);
+        tinyModem->sendAT(F("+GSLP="), sleepCommand);
+        // Power down for 1 minute less than logging interval
+        // Better:  Calculate length of loop and power down for logging interval - loop time
+        return tinyModem->waitResponse() == 1;
+    }*/
     // Use this if you have an MCU pin connected to the ESP's reset pin to wake from deep sleep
     if (modemResetPin >= 0)
     {
         digitalWrite(redLED, LOW);
         return tinyModem->poweroff();
     }
-    // Use this if you have GPIO16 connected to the reset pin to wake from deep sleep
-    // but no other MCU pin connected to the reset pin.
-    // NOTE:  This will NOT work nicely with things like "testingMode" and the
-    // initial 2-minute logging interval at boot up.
-    // if (loggingInterval > 1)
-    // {
-    //     uint32_t sleepSeconds = (((uint32_t)loggingInterval) * 60 * 1000) - 75000L;
-    //     String sleepCommand = String(sleepSeconds);
-    //     tinyModem->sendAT(F("+GSLP="), sleepCommand);
-    //     // Power down for 1 minute less than logging interval
-    //     // Better:  Calculate length of loop and power down for logging interval - loop time
-    //     return tinyModem->waitResponse() == 1;
-    // }
     // Use this if you don't have access to the ESP8266's reset pin for deep sleep but you
     // do have access to another GPIO pin for light sleep.  This also sets up another
     // pin to view the sleep status.
@@ -393,7 +392,7 @@ void setup()
 
     // Begin the logger
     // Note:  Please change these battery voltages to match your battery
-    // Only power the modem for begin at best battery voltage
+    // Check that the battery is OK before powering the modem
     if (getBatteryVoltage() > 3.7) modem.modemPowerUp();
     // At lowest battery level, skip sensor set-up
     if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
@@ -421,9 +420,11 @@ void setup()
 // Use this short loop for simple data logging and sending
 void loop()
 {
-    // Log the data
     // Note:  Please change these battery voltages to match your battery
-    if (getBatteryVoltage() < 3.4) dataLogger.systemSleep();  // just go back to sleep
-    else if (getBatteryVoltage() < 3.7) dataLogger.logData();  // log data, but don't send
-    else dataLogger.logDataAndSend();  // send data
+    // At very low battery, just go back to sleep
+    if (getBatteryVoltage() < 3.4) dataLogger.systemSleep();
+    // At moderate voltage, log data but don't send it over the modem
+    else if (getBatteryVoltage() < 3.7) dataLogger.logData();
+    // If the battery is good, send the data to the world
+    else dataLogger.logDataAndSend();
 }

@@ -238,15 +238,15 @@ EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken, samplingFeature)
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 {
-  for (uint8_t i = 0; i < numFlash; i++) {
-    digitalWrite(greenLED, HIGH);
+    for (uint8_t i = 0; i < numFlash; i++) {
+        digitalWrite(greenLED, HIGH);
+        digitalWrite(redLED, LOW);
+        delay(rate);
+        digitalWrite(greenLED, LOW);
+        digitalWrite(redLED, HIGH);
+        delay(rate);
+    }
     digitalWrite(redLED, LOW);
-    delay(rate);
-    digitalWrite(greenLED, LOW);
-    digitalWrite(redLED, HIGH);
-    delay(rate);
-  }
-  digitalWrite(redLED, LOW);
 }
 
 
@@ -324,11 +324,20 @@ void setup()
 
     // Begin the logger
     // Note:  Please change these battery voltages to match your battery
-    // Only power the modem for begin at best battery voltage
-    if (getBatteryVoltage() > 3.7) modem.modemPowerUp();
+    // Check that the battery is OK before powering the modem
+    if (getBatteryVoltage()> 3.7)
+    {
+        modem.modemPowerUp();
+    }
     // At lowest battery level, skip sensor set-up
-    if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
-    else dataLogger.begin();  // set up file and sensors
+    if (getBatteryVoltage()< 3.4)
+    {
+        dataLogger.begin(true);
+    }
+    else  // set up file and sensors
+    {
+        dataLogger.begin();
+    }
 
     // At very good battery voltage, or with suspicious time stamp, sync the clock
     // Note:  Please change these battery voltages to match your battery
@@ -338,7 +347,10 @@ void setup()
     {
         dataLogger.syncRTC();  // There's a sleepPowerDown at the end of this
     }
-    else modem.modemSleepPowerDown();
+    else
+    {
+        modem.modemSleepPowerDown();
+    }
 
     // Call the processor sleep
     dataLogger.systemSleep();
@@ -352,9 +364,20 @@ void setup()
 // Use this short loop for simple data logging and sending
 void loop()
 {
-    // Log the data
     // Note:  Please change these battery voltages to match your battery
-    if (getBatteryVoltage() < 3.4) dataLogger.systemSleep();  // just go back to sleep
-    else if (getBatteryVoltage() < 3.7) dataLogger.logData();  // log data, but don't send
-    else dataLogger.logDataAndSend();  // send data
+    // At very low battery, just go back to sleep
+    if (getBatteryVoltage() < 3.4)
+    {
+        dataLogger.systemSleep();
+    }
+    // At moderate voltage, log data but don't send it over the modem
+    else if (getBatteryVoltage() < 3.7)
+    {
+        dataLogger.logData();
+    }
+    // If the battery is good, send the data to the world
+    else
+    {
+        dataLogger.logDataAndSend();
+    }
 }
