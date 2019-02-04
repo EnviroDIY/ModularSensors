@@ -442,7 +442,7 @@ void setup()
     // Only power the modem for begin at best battery voltage
     if (mcuBoardBatt->getValue() > 3.7) modem.modemPowerUp();
     // At lowest battery level, skip sensor set-up
-    if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
+    if (mcuBoardBatt->getValue() < 3.4) dataLogger.begin(true);
     else dataLogger.begin();  // set up file and sensors
 
     // At very good battery voltage, or with suspicious time stamp, sync the clock

@@ -210,11 +210,6 @@ void setup()
     // Set up some of the power pins so the board boots up with them off
     // NOTE:  This isn't necessary at all.  The logger begin() function
     // should leave all power pins off when it finishes.
-    if (modemVccPin >= 0)
-    {
-        pinMode(modemVccPin, OUTPUT);
-        digitalWrite(modemVccPin, LOW);
-    }
     if (sensorPowerPin >= 0)
     {
         pinMode(sensorPowerPin, OUTPUT);
@@ -227,7 +222,7 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
-    // Attach the modem and information pins to the logger
+    // Attach information pins to the logger
     dataLogger.setAlertPin(greenLED);
     dataLogger.setTestingModePin(buttonPin);
     dataLogger.setSamplingFeatureUUID(samplingFeature);
