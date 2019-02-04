@@ -1054,6 +1054,9 @@ void Logger::testingMode()
     PRINTOUT(F("Entering sensor testing mode"));
     delay(100);  // This seems to prevent crashes, no clue why ....
 
+    // Power up the modem
+    if (_logModem != NULL) _logModem->modemPowerUp();
+
     // Power up all of the sensors
     _internalArray->sensorsPowerUp();
 
@@ -1083,6 +1086,9 @@ void Logger::testingMode()
     // Put sensors to sleep
     _internalArray->sensorsSleep();
     _internalArray->sensorsPowerDown();
+    
+    // Turn the modem off
+    _logModem->modemSleepPowerDown();
 
     PRINTOUT(F("Exiting testing mode"));
     PRINTOUT(F("------------------------------------------"));
