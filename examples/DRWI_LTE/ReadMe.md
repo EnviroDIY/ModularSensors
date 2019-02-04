@@ -1,6 +1,6 @@
 # Examples using the Modular Sensors Library for DRWI Sites
 
-This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.  This should be used at all sites with cellular 2G service.
+This is the code example that should be used for all groups working with the Stroud Water Research Center within the Delaware River Watershed Initiative.  This should be used at all sites with cellular LTE service.
 
 Before programming your board with this example, you must register your site and sensors at http://data.envirodiy.org/.  Stroud can provide directions for registering your site if you need assistance.
 

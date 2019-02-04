@@ -7,10 +7,11 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.5
+This example sketch is written for ModularSensors library version 0.19.6
 
-This sketch is an example of logging data from a Decagon CTD-10 and a Campbell
-OBS 3+ to an SD card.
+This sketch is an example of logging data to an SD card as should be used by
+groups involved with The William Penn Foundation's Delaware River Watershed
+Initiative at sites without cellular service.
 
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
@@ -27,7 +28,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.19.5";
+const char *libraryVersion = "0.19.6";
 // The name of this file
 const char *sketchName = "DRWI_NoCellular.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -206,6 +207,20 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
+    // Set up some of the power pins so the board boots up with them off
+    // NOTE:  This isn't necessary at all.  The logger begin() function
+    // should leave all power pins off when it finishes.
+    if (modemVccPin >= 0)
+    {
+        pinMode(modemVccPin, OUTPUT);
+        digitalWrite(modemVccPin, LOW);
+    }
+    if (sensorPowerPin >= 0)
+    {
+        pinMode(sensorPowerPin, OUTPUT);
+        digitalWrite(sensorPowerPin, LOW);
+    }
+
     // Set the timezone and offsets
     // Logging in the given time zone
     Logger::setTimeZone(timeZone);
@@ -218,8 +233,8 @@ void setup()
     dataLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Begin the logger
-    // At lowest battery level, skip sensor set-up
     // Note:  Please change these battery voltages to match your battery
+    // At lowest battery level, skip sensor set-up
     if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
     else dataLogger.begin();  // set up file and sensors
 

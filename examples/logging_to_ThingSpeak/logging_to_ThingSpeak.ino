@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.5
+This example sketch is written for ModularSensors library version 0.19.6
 
 This sketch is an example of logging data to an SD card and sending the data to
 ThingSpeak.
@@ -27,7 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.19.5";
+const char *libraryVersion = "0.19.6";
 // The name of this file
 const char *sketchName = "logging_to_ThingSpeak.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -68,19 +68,43 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 
 
 // ==========================================================================
-//    Specific Modem Pins and On-Off Methods
+//    Modem Pins
+// ==========================================================================
+
+const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemSleepRqPin = 19;   // MCU pin used for wake from light sleep (-1 if not applicable)
+const int8_t modemStatusPin = -1;    // MCU pin used to read modem status (-1 if not applicable)
+const int8_t modemResetPin = A4;     // MCU pin connected to ESP8266's RSTB/GPIO16 pin (-1 if unconnected)
+
+
+// ==========================================================================
+//    TinyGSM Client
+// ==========================================================================
+
+// Include TinyGSM for the modem
+// This include must be included below the define of the modem name!
+#include <TinyGsmClient.h>
+
+// Create a reference to the serial port for the modem
+HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
+
+// Create a new TinyGSM modem to run on that serial port and return a pointer to it
+TinyGsm *tinyModem = new TinyGsm(modemSerial);
+
+// Create a new TCP client on that modem and return a pointer to it
+TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
+
+
+// ==========================================================================
+//    Specific Modem On-Off Methods
 // ==========================================================================
 
 // This should work with most ESP8266 breakouts
 // Describe the physical pin connection of your modem to your board
-const long ModemBaud = 57600;        // Communication speed of the modem
+const long ModemBaud = 115200;       // Communication speed of the modem, 115200 is default for ESP8266
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
-const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemResetPin = A4;     // MCU pin connected to ESP8266's RSTB/GPIO16 pin (-1 if unconnected)
 const int8_t espSleepRqPin = 13;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
-const int8_t modemSleepRqPin = 19;   // MCU pin used for wake from light sleep (-1 if not applicable)
 const int8_t espStatusPin = -1;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
-const int8_t modemStatusPin = -1;    // MCU pin used to read modem status (-1 if not applicable)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -158,34 +182,6 @@ bool modemWakeFxn(void)
 
 
 // ==========================================================================
-//    TinyGSM Client
-// ==========================================================================
-
-// Include TinyGSM for the modem
-// This include must be included below the define of the modem name!
-#include <TinyGsmClient.h>
-
-// Create a reference to the serial port for the modem
-// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
-// NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
-
-// Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(modemSerial);
-
-// Use this to create a modem if you want to spy on modem communication through
-// a secondary Arduino stream.  Make sure you install the StreamDebugger library!
-// https://github.com/vshymanskyy/StreamDebugger
-// #include <StreamDebugger.h>
-// StreamDebugger modemDebugger(modemSerial, Serial);
-// TinyGsm *tinyModem = new TinyGsm(modemDebugger);
-
-// Create a new TCP client on that modem and return a pointer to it
-TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
-
-
-// ==========================================================================
 //    Network Information and LoggerModem Object
 // ==========================================================================
 #include <LoggerModem.h>
@@ -219,20 +215,18 @@ const uint8_t OBS3numberReadings = 10;
 const uint8_t OBS3_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
 // Campbell OBS 3+ Low Range calibration in Volts
 const int8_t OBSLowPin = 0;  // The low voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
-const float OBSLow_A = 4.0749E+00;  // The "A" value (X^2) from the low range calibration
-const float OBSLow_B = 9.1011E+01;  // The "B" value (X) from the low range calibration
-const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibration
-
+const float OBSLow_A = 0.000E+00;  // The "A" value (X^2) from the low range calibration
+const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calibration
+const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
 // Create and return the Campbell OBS3+ LOW RANGE sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, OBS3_ADS1115Address, OBS3numberReadings);
 
 
 // Campbell OBS 3+ High Range calibration in Volts
 const int8_t OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
-const float OBSHigh_A = 5.2996E+01;  // The "A" value (X^2) from the high range calibration
-const float OBSHigh_B = 3.7828E+02;  // The "B" value (X) from the high range calibration
-const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calibration
-
+const float OBSHigh_A = 0.000E+00;  // The "A" value (X^2) from the high range calibration
+const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range calibration
+const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
 // Create and return the Campbell OBS3+ HIGH RANGE sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OBS3_ADS1115Address, OBS3numberReadings);
 
@@ -407,7 +401,7 @@ void setup()
 
     // At very good battery voltage, or with suspicious time stamp, sync the clock
     // Note:  Please change these battery voltages to match your battery
-    if (getBatteryVoltage() > 3.9 ||
+    if (getBatteryVoltage() > 3.8 ||
         dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
         dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
     {

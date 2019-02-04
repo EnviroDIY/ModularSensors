@@ -1,5 +1,5 @@
 /*****************************************************************************
-double_logger.ino
+DRWI_LTE.ino
 Written By:  Sara Damiano (sdamiano@stroudcenter.org)
 Development Environment: PlatformIO
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
@@ -9,9 +9,9 @@ Software License: BSD-3.
 
 This example sketch is written for ModularSensors library version 0.19.6
 
-This sketch is an example of logging data from different variables at two
-different logging intervals.  This example uses more of the manual functions
-in the logging loop rather than the simple "log" function.
+This sketch is an example of logging data to an SD card and sending the data to
+both the EnviroDIY data portal as should be used by groups involved with
+The William Penn Foundation's Delaware River Watershed Initiative
 
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
@@ -30,12 +30,11 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // The library version this example was written for
 const char *libraryVersion = "0.19.6";
 // The name of this file
-const char *sketchName = "double_logger.ino";
-// Logger ID - we're only using one logger ID for both "loggers"
+const char *sketchName = "DRWI_LTE.ino";
+// Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "XXXXX";
-// The TWO filenames for the different logging intervals
-const char *FileName5min = "Logger_5MinuteInterval.csv";
-const char *FileName1min = "Logger_1MinuteInterval.csv";
+// How frequently (in minutes) to log data
+const uint8_t loggingInterval = 5;
 // Your logger's timezone.
 const int8_t timeZone = -5;  // Eastern Standard Time
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
@@ -66,6 +65,7 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // ==========================================================================
 
 // Select your modem chip - this determines the exact commands sent to it
+#define USE_XBEE_BYPASS  // If you're using a Digi 3G or LTE-M XBee in bypass mode as a u-blox
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
 
 
@@ -76,16 +76,13 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
-const int8_t modemResetPin = A4;    // MCU pin connected to modem reset pin (-1 if unconnected)
 
 
 // ==========================================================================
 //    TinyGSM Client
 // ==========================================================================
 
-#if defined(TINY_GSM_MODEM_XBEE)
-  #define TINY_GSM_YIELD() { delay(2); }  // Use to counter slow (9600) baud rate
-#endif
+#define TINY_GSM_YIELD() { delay(2); }  // Use to counter slow (9600) baud rate
 
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
@@ -95,7 +92,7 @@ const int8_t modemResetPin = A4;    // MCU pin connected to modem reset pin (-1 
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(modemSerial, modemResetPin);
+TinyGsm *tinyModem = new TinyGsm(modemSerial);
 
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
@@ -107,7 +104,7 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 // This should apply to all Digi brand XBee modules.
 // Describe the physical pin connection of your modem to your board
-const long ModemBaud = 9600;        // Communication speed of the modem
+const long ModemBaud = 9600;        // Communication speed of the modem, 9600 is default for XBee
 const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // Create the wake and sleep methods for the modem
@@ -136,6 +133,35 @@ bool modemWakeFxn(void)
     }
     else return true;
 }
+// An extra function to set up pin sleep and other preferences on the XBee
+// NOTE:  This will only succeed if the modem is turned on and awake!
+void setupXBee(void)
+{
+    delay(1000);  // Guard time for command mode
+    tinyModem->streamWrite(GF("+++"));  // enter command mode
+    tinyModem->waitResponse(2000, F("OK\r"));
+    tinyModem->sendAT(F("SM"),1);  // Pin sleep
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
+    // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
+    // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
+    // so we'll use the Digi pin sleep instead.
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
+    // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("AP5"));  // Turn on bypass mode
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("WR"));  // Write changes to flash
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("AC"));  // Apply changes
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("FR"));  // Force reset to enter bypass mode
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->init();  // initialize
+}
 
 
 // ==========================================================================
@@ -144,15 +170,12 @@ bool modemWakeFxn(void)
 #include <LoggerModem.h>
 
 // Network connection information
-const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
-const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
-const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
+const char *apn = "hologram";  // The APN for the gprs connection, unnecessary for WiFi
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
-
+// ^^ Use this for cellular
 
 
 // ==========================================================================
@@ -165,14 +188,43 @@ MaximDS3231 ds3231(1);
 
 
 // ==========================================================================
-//    AOSong AM2315 Digital Humidity and Temperature Sensor
+//    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
-#include <sensors/AOSongAM2315.h>
+#include <sensors/CampbellOBS3.h>
 
-const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t OBS3Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const uint8_t OBS3numberReadings = 10;
+const uint8_t OBS3_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
+// Campbell OBS 3+ Low Range calibration in Volts
+const int8_t OBSLowPin = 0;  // The low voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const float OBSLow_A = 0.000E+00;  // The "A" value (X^2) from the low range calibration
+const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calibration
+const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
+// Create and return the Campbell OBS3+ LOW RANGE sensor object
+CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, OBS3_ADS1115Address, OBS3numberReadings);
 
-// Create and return the AOSong AM2315 sensor object
-AOSongAM2315 am2315(I2CPower);
+
+// Campbell OBS 3+ High Range calibration in Volts
+const int8_t OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const float OBSHigh_A = 0.000E+00;  // The "A" value (X^2) from the high range calibration
+const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range calibration
+const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
+// Create and return the Campbell OBS3+ HIGH RANGE sensor object
+CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OBS3_ADS1115Address, OBS3numberReadings);
+
+
+// ==========================================================================
+//    Decagon CTD Conductivity, Temperature, and Depth Sensor
+// ==========================================================================
+#include <sensors/DecagonCTD.h>
+
+const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
+const uint8_t CTDnumberReadings = 6;  // The number of readings to average
+const int8_t SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t SDI12Data = 7;  // The SDI12 data pin
+
+// Create and return the Decagon CTD sensor object
+DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 
 
 // ==========================================================================
@@ -180,28 +232,24 @@ AOSongAM2315 am2315(I2CPower);
 // ==========================================================================
 #include <VariableArray.h>
 
-// FORM1: Create pointers for all of the variables from the sensors, recording at 1
-// minute intervals and at the same time putting them into an array
-Variable *variableList_at1min[] = {
-    new AOSongAM2315_Humidity(&am2315),
-    new AOSongAM2315_Temp(&am2315)
+// FORM1: Create pointers for all of the variables from the sensors,
+// at the same time putting them into an array
+Variable *variableList[] = {
+    new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+        new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
+        new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
+    new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
 };
-// Count up the number of pointers in the 1-minute array
-int variableCount1min = sizeof(variableList_at1min) / sizeof(variableList_at1min[0]);
-// Create the 1-minute VariableArray object
-VariableArray array1min(variableCount1min, variableList_at1min);
+// Count up the number of pointers in the array
+int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
-// FORM1: Create pointers for all of the variables from the sensors, recording at 5
-// minute intervals and at the same time putting them into an array
-Variable *variableList_at5min[] = {
-    new MaximDS3231_Temp(&ds3231),
-    new ProcessorStats_Batt(&mcuBoard),
-    new ProcessorStats_FreeRam(&mcuBoard)
-};
-// Count up the number of pointers in the 5-minute array
-int variableCount5min = sizeof(variableList_at5min) / sizeof(variableList_at5min[0]);
-// Create the 5-minute VariableArray object
-VariableArray array5min(variableCount5min, variableList_at5min);
+// Create the VariableArray object
+VariableArray varArray(variableCount, variableList);
 
 
 // ==========================================================================
@@ -209,11 +257,21 @@ VariableArray array5min(variableCount5min, variableList_at5min);
 // ==========================================================================
 #include <LoggerBase.h>
 
-// Create the 1-minute  logger instance
-Logger  logger1min(LoggerID, 1, sdCardPin, wakePin, &array1min);
+// Create a new logger instance
+Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
-// Create the 5-minute  logger instance
-Logger  logger5min(LoggerID, 5, sdCardPin, wakePin, &array5min);
+
+// ==========================================================================
+//    A Publisher to WikiWatershed
+// ==========================================================================
+// Device registration and sampling feature information can be obtained after
+// registration at http://data.WikiWatershed.org
+const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
+const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
+
+// Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
+#include <publishers/EnviroDIYPublisher.h>
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
 
 
 // ==========================================================================
@@ -232,6 +290,15 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
     delay(rate);
   }
   digitalWrite(redLED, LOW);
+}
+
+
+// Read's the battery voltage
+// NOTE: This will actually return the battery level from the previous update!
+float getBatteryVoltage()
+{
+    if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
+    return mcuBoard.sensorValues[0];
 }
 
 
@@ -268,8 +335,24 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
-    // Set up pin for the modem
-    pinMode(modemSleepRqPin, OUTPUT);
+    // Set up some of the power pins so the board boots up with them off
+    // NOTE:  This isn't necessary at all.  The logger begin() function
+    // should leave all power pins off when it finishes.
+    if (modemVccPin >= 0)
+    {
+        pinMode(modemVccPin, OUTPUT);
+        digitalWrite(modemVccPin, LOW);
+    }
+    if (sensorPowerPin >= 0)
+    {
+        pinMode(sensorPowerPin, OUTPUT);
+        digitalWrite(sensorPowerPin, LOW);
+    }
+    if (modemSleepRqPin >= 0)
+    {
+        pinMode(modemSleepRqPin, OUTPUT);
+        digitalWrite(modemSleepRqPin, HIGH);
+    }
 
     // Set the timezone and offsets
     // Logging in the given time zone
@@ -277,53 +360,37 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
+    // Attach the modem and information pins to the logger
+    dataLogger.attachModem(modem);
+    dataLogger.setAlertPin(greenLED);
+    dataLogger.setTestingModePin(buttonPin);
 
-    // Turn on the modem
+    // Begin the logger
+    // Note:  Please change these battery voltages to match your battery
+    // Only power the modem for begin at best battery voltage
+    if (getBatteryVoltage() > 3.7) modem.modemPowerUp();
+    // At lowest battery level, skip sensor set-up
+    if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
+    else dataLogger.begin();  // set up file and sensors
+
+    // Set up XBee
+    Serial.println(F("Setting up sleep mode on the XBee."));
     modem.modemPowerUp();
+    modem.wake();  // Turn it on to talk
+    setupXBee();
 
-    // Set up the sensors (do this directly on the VariableArray)
-    array1min.setupSensors();
-    array5min.setupSensors();
-
-    // Print out the current time
-    Serial.print(F("Current RTC time is: "));
-    Serial.println(Logger::formatDateTime_ISO8601(Logger::getNowEpoch()));
-    // Connect to the network
-    if (modem.connectInternet())
+    // At very good battery voltage, or with suspicious time stamp, sync the clock
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() > 3.8 ||
+        dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
+        dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
     {
-        // Synchronize the RTC
-        logger1min.setRTClock(modem.getNISTTime());
-        // Disconnect from the network
-        modem.disconnectInternet();
+        dataLogger.syncRTC();  // There's a sleepPowerDown at the end of this
     }
-    // Turn off the modem
-    modem.modemSleepPowerDown();
-
-    // Give the loggers different file names
-    // If we wanted to auto-generate the file name, that could also be done by
-    // not calling this function, but in that case if both "loggers" have the
-    // same logger id, they will end up with the same filename
-    logger1min.setFileName(FileName1min);
-    logger5min.setFileName(FileName5min);
-
-    // Setup the logger files.  Specifying true will put a default header at
-    // on to the file when it's created.
-    // Because we've already called setFileName, we do not need to specify the
-    // file name for this function.
-    logger1min.createLogFile(true);
-    logger5min.createLogFile(true);
-
-    // Set up the processor sleep mode
-    // Because there's only one processor, we only need to do this once
-    logger1min.setupSleep();
-
-    Serial.println(F("Logger setup finished!\n"));
-    Serial.println(F("------------------------------------------"));
-    Serial.println();
+    else modem.modemSleepPowerDown();
 
     // Call the processor sleep
-    // Only need to do this for one of the loggers
-    logger1min.systemSleep();
+    dataLogger.systemSleep();
 }
 
 
@@ -331,98 +398,12 @@ void setup()
 // Main loop function
 // ==========================================================================
 
-// Because of the way alarms work on the RTC, it will wake the processor and
-// start the loop every minute exactly on the minute.
-// The processor may also be woken up by another interrupt or level change on a
-// pin - from a button or some other input.
-// The "if" statements in the loop determine what will happen - whether the
-// sensors update, testing mode starts, or it goes back to sleep.
+// Use this short loop for simple data logging and sending
 void loop()
 {
-    // Check if the current time is an even interval of the logging interval
-    // For whichever logger we call first, use the checkInterval() function.
-    if (logger1min.checkInterval())
-    {
-        // Print a line to show new reading
-        Serial.println(F("--------------------->111<---------------------"));
-        // Turn on the LED to show we're taking a reading
-        digitalWrite(greenLED, HIGH);
-
-        // Send power to all of the sensors (do this directly on the VariableArray)
-        Serial.print(F("Powering sensors...\n"));
-        array1min.sensorsPowerUp();
-        // Wake up all of the sensors (do this directly on the VariableArray)
-        Serial.print(F("Waking sensors...\n"));
-        array1min.sensorsWake();
-        // Update the values from all attached sensors (do this directly on the VariableArray)
-        Serial.print(F("Updating sensor values...\n"));
-        array1min.updateAllSensors();
-        // Put sensors to sleep (do this directly on the VariableArray)
-        Serial.print(F("Putting sensors back to sleep...\n"));
-        array1min.sensorsSleep();
-        // Cut sensor power (do this directly on the VariableArray)
-        Serial.print(F("Cutting sensor power...\n"));
-        array1min.sensorsPowerDown();
-
-        // Stream the csv data to the SD card
-        logger1min.logToSD();
-
-        // Turn off the LED
-        digitalWrite(greenLED, LOW);
-        // Print a line to show reading ended
-        Serial.println(F("---------------------<111>---------------------\n"));
-    }
-    // Check if the already marked time is an even interval of the logging interval
-    // For logger[s] other than the first one, use the checkMarkedInterval() function.
-    if (logger5min.checkMarkedInterval())
-    {
-        // Print a line to show new reading
-        Serial.println(F("--------------------->555<---------------------"));
-        // Turn on the LED to show we're taking a reading
-        digitalWrite(redLED, HIGH);
-
-        // Send power to all of the sensors (do this directly on the VariableArray)
-        Serial.print(F("Powering sensors...\n"));
-        array1min.sensorsPowerUp();
-        // Wake up all of the sensors (do this directly on the VariableArray)
-        Serial.print(F("Waking sensors...\n"));
-        array1min.sensorsWake();
-        // Update the values from all attached sensors (do this directly on the VariableArray)
-        Serial.print(F("Updating sensor values...\n"));
-        array1min.updateAllSensors();
-        // Put sensors to sleep (do this directly on the VariableArray)
-        Serial.print(F("Putting sensors back to sleep...\n"));
-        array1min.sensorsSleep();
-        // Cut sensor power (do this directly on the VariableArray)
-        Serial.print(F("Cutting sensor power...\n"));
-        array1min.sensorsPowerDown();
-
-        // Stream the csv data to the SD card
-        logger5min.logToSD();
-
-        // Turn off the LED
-        digitalWrite(redLED, LOW);
-        // Print a line to show reading ended
-        Serial.println(F("--------------------<555>---------------------\n"));
-    }
-    // Once a day, at midnight, sync the clock
-    if (Logger::markedEpochTime % 86400 == 0)
-    {
-        // Turn on the modem
-        modem.modemPowerUp();
-        // Connect to the network
-        if (modem.connectInternet())
-        {
-            // Synchronize the RTC
-            logger1min.setRTClock(modem.getNISTTime());
-            // Disconnect from the network
-            modem.disconnectInternet();
-        }
-        // Turn off the modem
-        modem.modemSleepPowerDown();
-    }
-
-    // Call the processor sleep
-    // Only need to do this for one of the loggers
-    logger1min.systemSleep();
+    // Log the data
+    // Note:  Please change these battery voltages to match your battery
+    if (getBatteryVoltage() < 3.4) dataLogger.systemSleep();  // just go back to sleep
+    else if (getBatteryVoltage() < 3.7) dataLogger.logData();  // log data, but don't send
+    else dataLogger.logDataAndSend();  // send data
 }

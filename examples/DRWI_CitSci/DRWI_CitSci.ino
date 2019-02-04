@@ -7,12 +7,11 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.5
+This example sketch is written for ModularSensors library version 0.19.6
 
 This sketch is an example of logging data to an SD card and sending the data to
-both the EnviroDIY data portal and Stroud's custom data portal as should be
-used by groups involved with The William Penn Foundation's Delaware River
-Watershed Initiative
+both the EnviroDIY data portal as should be used by groups involved with
+The William Penn Foundation's Delaware River Watershed Initiative
 
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
@@ -29,7 +28,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.19.5";
+const char *libraryVersion = "0.19.6";
 // The name of this file
 const char *sketchName = "DWRI_CitSci.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -69,36 +68,19 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 
 
 // ==========================================================================
-//    Specific Modem Pins and On-Off Methods
+//    Modem Pins
 // ==========================================================================
 
-// THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
-// Describe the physical pin connection of your modem to your board
-const long ModemBaud = 9600;         // Communication speed of the modem
-const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
-const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemSleepRqPin = 23;   // MCU pin used for modem sleep/wake request (-1 if not applicable)
-const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if not applicable)
-
-// Create the wake and sleep methods for the modem
-// These can be functions of any type and must return a boolean
-bool modemWakeFxn(void)
-{
-    digitalWrite(modemSleepRqPin, HIGH);
-    digitalWrite(redLED, HIGH);  // A light just for show
-    return true;
-}
-bool modemSleepFxn(void)
-{
-    digitalWrite(modemSleepRqPin, LOW);
-    digitalWrite(redLED, LOW);
-    return true;
-}
+const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
 
 
 // ==========================================================================
 //    TinyGSM Client
 // ==========================================================================
+
+#define TINY_GSM_YIELD() { delay(2); }  // Use to counter slow (9600) baud rate
 
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
@@ -115,15 +97,42 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 
 // ==========================================================================
+//    Specific Modem On-Off Methods
+// ==========================================================================
+
+// THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
+// Describe the physical pin connection of your modem to your board
+const long ModemBaud = 9600;         // Communication speed of the modem
+const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
+
+// Create the wake and sleep methods for the modem
+// These can be functions of any type and must return a boolean
+bool modemSleepFxn(void)
+{
+    digitalWrite(modemSleepRqPin, LOW);
+    digitalWrite(redLED, LOW);
+    return true;
+}
+bool modemWakeFxn(void)
+{
+    digitalWrite(modemSleepRqPin, HIGH);
+    digitalWrite(redLED, HIGH);  // A light just for show
+    return true;
+}
+
+
+// ==========================================================================
 //    Network Information and LoggerModem Object
 // ==========================================================================
 #include <LoggerModem.h>
 
 // Network connection information
 const char *apn = "hologram";  // The APN for the gprs connection, unnecessary for WiFi
+
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
+// ^^ Use this for cellular
 
 
 // ==========================================================================
@@ -223,19 +232,6 @@ EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken, samplingFeature)
 
 
 // ==========================================================================
-//    A Publisher to DreamHost
-// ==========================================================================
-// NOTE:  This is an outdated data collection tool used by the Stroud Center.
-// It us unlikely that you will use this.
-
-const char * DreamHostPortalRX = "xxxx";
-
-// Create a data publisher to DreamHost
-#include <publishers/DreamHostPublisher.h>
-DreamHostPublisher DreamHostGET(dataLogger, DreamHostPortalRX);
-
-
-// ==========================================================================
 //    Working Functions
 // ==========================================================================
 
@@ -296,9 +292,24 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
-    // Set up the sleep/wake pin for the modem and put its inital value as "off"
-    pinMode(modemSleepRqPin, OUTPUT);
-    digitalWrite(modemSleepRqPin, LOW);
+    // Set up some of the power pins so the board boots up with them off
+    // NOTE:  This isn't necessary at all.  The logger begin() function
+    // should leave all power pins off when it finishes.
+    if (modemVccPin >= 0)
+    {
+        pinMode(modemVccPin, OUTPUT);
+        digitalWrite(modemVccPin, LOW);
+    }
+    if (sensorPowerPin >= 0)
+    {
+        pinMode(sensorPowerPin, OUTPUT);
+        digitalWrite(sensorPowerPin, LOW);
+    }
+    if (modemSleepRqPin >= 0)
+    {
+        pinMode(modemSleepRqPin, OUTPUT);
+        digitalWrite(modemSleepRqPin, LOW);
+    }
 
     // Set the timezone and offsets
     // Logging in the given time zone
@@ -321,7 +332,7 @@ void setup()
 
     // At very good battery voltage, or with suspicious time stamp, sync the clock
     // Note:  Please change these battery voltages to match your battery
-    if (getBatteryVoltage() > 3.9 ||
+    if (getBatteryVoltage() > 3.8 ||
         dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
         dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
     {

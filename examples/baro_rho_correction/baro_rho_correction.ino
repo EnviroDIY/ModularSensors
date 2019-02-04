@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.5
+This example sketch is written for ModularSensors library version 0.19.6
 
 This sketch is an example of logging data to an SD card and sending the data to
 the EnviroDIY data portal.
@@ -27,7 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.19.5";
+const char *libraryVersion = "0.19.6";
 // The name of this file
 const char *sketchName = "baro_rho_correction.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -74,31 +74,12 @@ Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-
 
 
 // ==========================================================================
-//    Specific Modem Pins and On-Off Methods
+//    Modem Pins
 // ==========================================================================
 
-// THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
-// Describe the physical pin connection of your modem to your board
-const long ModemBaud = 9600;         // Communication speed of the modem
-const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemSleepRqPin = 23;   // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if not applicable)
-
-// Create the wake and sleep methods for the modem
-// These can be functions of any type and must return a boolean
-bool modemWakeFxn(void)
-{
-    digitalWrite(modemSleepRqPin, HIGH);
-    digitalWrite(redLED, HIGH);  // A light just for show
-    return true;
-}
-bool modemSleepFxn(void)
-{
-    digitalWrite(modemSleepRqPin, LOW);
-    digitalWrite(redLED, LOW);
-    return true;
-}
 
 
 // ==========================================================================
@@ -124,6 +105,31 @@ TinyGsm *tinyModem = new TinyGsm(modemSerial);
 
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
+
+
+// ==========================================================================
+//    Specific Modem On-Off Methods
+// ==========================================================================
+
+// THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
+// Describe the physical pin connection of your modem to your board
+const long ModemBaud = 9600;         // Communication speed of the modem
+const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
+
+// Create the wake and sleep methods for the modem
+// These can be functions of any type and must return a boolean
+bool modemWakeFxn(void)
+{
+    digitalWrite(modemSleepRqPin, HIGH);
+    digitalWrite(redLED, HIGH);  // A light just for show
+    return true;
+}
+bool modemSleepFxn(void)
+{
+    digitalWrite(modemSleepRqPin, LOW);
+    digitalWrite(redLED, LOW);
+    return true;
+}
 
 
 // ==========================================================================
@@ -441,7 +447,7 @@ void setup()
 
     // At very good battery voltage, or with suspicious time stamp, sync the clock
     // Note:  Please change these battery voltages to match your battery
-    if (mcuBoardBatt->getValue() > 3.9 ||
+    if (mcuBoardBatt->getValue() > 3.8 ||
         dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
         dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
     {
