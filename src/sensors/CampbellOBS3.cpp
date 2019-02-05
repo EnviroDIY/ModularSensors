@@ -49,7 +49,11 @@ CampbellOBS3::~CampbellOBS3(){}
 
 String CampbellOBS3::getSensorLocation(void)
 {
+    #ifndef MS_USE_ADS1015
     String sensorLocation = F("ADS1115_0x");
+    #else
+    String sensorLocation = F("ADS1015_0x");
+    #endif
     sensorLocation += String(_i2cAddress, HEX);
     sensorLocation += F("_Pin");
     sensorLocation += String(_dataPin);

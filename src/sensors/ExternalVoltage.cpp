@@ -71,7 +71,11 @@ ExternalVoltage::~ExternalVoltage(){}
 
 String ExternalVoltage::getSensorLocation(void)
 {
+    #ifndef MS_USE_ADS1015
     String sensorLocation = F("ADS1115_0x");
+    #else
+    String sensorLocation = F("ADS1015_0x");
+    #endif
     sensorLocation += String(_i2cAddress, HEX);
     sensorLocation += F("_Pin");
     sensorLocation += String(_dataPin);
@@ -123,6 +127,10 @@ bool ExternalVoltage::addSingleMeasurementResult(void)
             // Apply the gain calculation, with a defualt gain of 10 V/V Gain
             calibResult = adcVoltage * _gain ;
             MS_DBG(F("calibResult:"), calibResult);
+        }
+        else  // set invalid voltages back to -9999
+        {
+            adcVoltage = -9999;
         }
     }
     else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));

@@ -48,7 +48,11 @@ ApogeeSQ212::~ApogeeSQ212(){};
 
 String ApogeeSQ212::getSensorLocation(void)
 {
+    #ifndef MS_USE_ADS1015
     String sensorLocation = F("ADS1115_0x");
+    #else
+    String sensorLocation = F("ADS1015_0x");
+    #endif
     sensorLocation += String(_i2cAddress, HEX);
     sensorLocation += F("_Pin");
     sensorLocation += String(_dataPin);
@@ -102,6 +106,10 @@ bool ApogeeSQ212::addSingleMeasurementResult(void)
             // Apogee SQ-212 Calibration Factor = 1.0 μmol m-2 s-1 per mV;
             calibResult = 1 * adcVoltage * 1000 ;  // in units of μmol m-2 s-1 (microeinsteinPerSquareMeterPerSecond)
             MS_DBG(F("calibResult:"), calibResult);
+        }
+        else  // set invalid voltages back to -9999
+        {
+            adcVoltage = -9999;
         }
     }
     else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
