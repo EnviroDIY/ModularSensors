@@ -480,12 +480,12 @@ void loop()
 {
     // Note:  Please change these battery voltages to match your battery
     // At very low battery, just go back to sleep
-    if (getBatteryVoltage() < 3.4)
+    if (mcuBoardBatt->getValue() < 3.4)
     {
         dataLogger.systemSleep();
     }
     // At moderate voltage, log data but don't send it over the modem
-    else if (getBatteryVoltage() < 3.7)
+    else if (mcuBoardBatt->getValue() < 3.7)
     {
         dataLogger.logData();
     }
