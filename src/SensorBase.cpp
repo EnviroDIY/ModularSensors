@@ -284,6 +284,20 @@ void Sensor::registerVariable(int varNum, Variable* var)
 }
 
 
+/*String Sensor::getStringValueArray(void)
+{
+    String retVal = "[";
+    for (uint8_t i = 0; i < _numReturnedVars; i++)
+    {
+        retVal += String(sensorValues[i]);
+        if (i < _numReturnedVars-1)
+            retVal += ", ";
+    }
+    retVal += ']';
+    return retVal;
+}*/
+
+
 void Sensor::notifyVariables(void)
 {
     MS_DBG(F("Notifying variables registered to"), getSensorNameAndLocation(),

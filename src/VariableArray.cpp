@@ -368,13 +368,20 @@ bool VariableArray::updateAllSensors(void)
                         MS_DBG(i, '.', nMeasurementsCompleted[i]+1,
                               F(" --->> Collected result of reading"),
                               nMeasurementsCompleted[i]+1, F("from"),
-                              arrayOfVars[i]->getParentSensorNameAndLocation(), F("--"));
+                              arrayOfVars[i]->getParentSensorNameAndLocation(), F("..."));
 
                         bool sensorSuccess_result = arrayOfVars[i]->parentSensor->addSingleMeasurementResult();
                         success &= sensorSuccess_result;
                         nMeasurementsCompleted[i] += 1;  // increment the number of measurements that sensor has completed
 
                         if (sensorSuccess_result) {MS_DBG(F("   ... Success. <<---"), i, '.', nMeasurementsCompleted[i]);}
+                       //  if (sensorSuccess_result)
+                       //  {
+                       //      MS_DBG(F("   ... Success"),
+                       //             arrayOfVars[i]->parentSensor->getStringValueArray(),
+                       //             F("<<---"), i, '.',
+                       //             nMeasurementsCompleted[i]);
+                       // }
                         else {MS_DBG(F("   ... Failed! <<---"), i, '.', nMeasurementsCompleted[i]);}
                     }
 
@@ -638,6 +645,13 @@ bool VariableArray::completeUpdate(void)
                         nCompletedOnPin[powerPinIndex[i]] += 1;  // increment the number of measurements that the power pin has completed
 
                         if (sensorSuccess_result) {MS_DBG(F("   ... Success. <<---"), i, '.', nMeasurementsCompleted[i]);}
+                       //  if (sensorSuccess_result)
+                       //  {
+                       //      MS_DBG(F("   ... Success"),
+                       //             arrayOfVars[i]->parentSensor->getStringValueArray(),
+                       //             F("<<---"), i, '.',
+                       //             nMeasurementsCompleted[i]);
+                       // }
                         else {MS_DBG(F("   ... Failed! <<---"), i, '.', nMeasurementsCompleted[i]);}
                     }
 
