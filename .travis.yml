@@ -47,8 +47,8 @@ install:
     - pio lib -g install https://github.com/SRGDamia1/NeoSWSerial.git
     - pio update
 script:
-    - platformio ci --project-option="lib_ldf_mode = deep+" --project-option="lib_ignore = RTCZero" --board=mayfly  --board=megaatmega2560
-    - platformio ci --project-option="lib_ldf_mode = deep+" --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial, NeoSWSerial, SoftI2CMaster" --board=adafruit_feather_m0  --board=sodaq_autonomo
+    - platformio ci --project-option="lib_ldf_mode = chain+" --project-option="lib_ignore = RTCZero" --board=mayfly  --board=megaatmega2560
+    - platformio ci --project-option="lib_ldf_mode = chain+" --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial, NeoSWSerial, SoftI2CMaster" --board=adafruit_feather_m0  --board=sodaq_autonomo
 
 matrix:
     include:
