@@ -16,10 +16,10 @@
  *  Mud: 2% of reading or 1 mg L–1
  *  Sand: 4% of reading or 10 mg L–1
  * Resolution:
- *  16-bit ADC - This is what is supported!
- *      Turbidity: 0.004/0.01 NTU; 0.008/0.03 NTU; 0.01/0.06 NTU
+ *  16-bit ADC
+ *      Turbidity: 0.03125/0.125 NTU; 0.0625/0.25 NTU; 0.125/0.5 NTU
  *  12-bit ADC
- *      Turbidity: 0.06/0.2 NTU; 0.1/0.5 NTU; 0.2/1.0 NTU
+ *      Turbidity: 0.5/2.0 NTU; 1.0/4.0 NTU; 2.0/8.0 NTU
  *
  * Minimum stabilization time: 2s
  * Maximum data rate = 10Hz (100ms/sample)
@@ -51,11 +51,11 @@
 #define OBS3_MEASUREMENT_TIME_MS 100
 
 #define OBS3_TURB_VAR_NUM 0
-#define OBS3_RESOLUTION 3
+#define OBS3_RESOLUTION 2
 #define OBS3_HR_RESOLUTION 2
 
 #define OBS3_VOLTAGE_VAR_NUM 1
-#define OBS3_VOLT_RESOLUTION 5
+#define OBS3_VOLT_RESOLUTION 4
 
 // The main class for the Campbell OBS3
 class CampbellOBS3 : public Sensor

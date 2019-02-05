@@ -17,8 +17,8 @@
  * Range is 0 to 2500 µmol m-2 s-1
  * Accuracy is ± 0.5%
  * Resolution:
- *  16-bit ADC: 0.04 µmol m-2 s-1 - This is what is supported!
- *  12-bit ADC: 2.44 µmol m-2 s-1
+ *  16-bit ADC: 0.3125 µmol m-2 s-1
+ *  12-bit ADC: 5 µmol m-2 s-1
  *
  * Technical specifications for the Apogee SQ-212 can be found at:
  * https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/
@@ -67,17 +67,26 @@ bool ApogeeSQ212::addSingleMeasurementResult(void)
     if (bitRead(_sensorStatus, 6))
     {
         // Create an Auxillary ADD object
-        // We create and set up the ADC object here so that any other sensor on the
-        // ADC that may have set the gain differently does not cause problems.
-        Adafruit_ADS1115 ads(_i2cAddress);     /* Use this for the 16-bit version */
-        // ADS1115 Library default settings:
+        // We create and set up the ADC object here so that each sensor using
+        // the ADC may set the gain appropriately without effecting others.
+        #ifndef MS_USE_ADS1015
+        Adafruit_ADS1115 ads(_i2cAddress);  // Use this for the 16-bit version
+        #else
+        Adafruit_ADS1015 ads(_i2cAddress);  // Use this for the 12-bit version
+        #endif
+        // ADS Library default settings:
+        //  - TI1115 (16 bit)
         //    - single-shot mode (powers down between conversions)
         //    - 128 samples per second (8ms conversion time)
-        //    - 2/3 gain +/- 6.144V range
-        //      (limited to VDD +0.3V max, so only really up to 3.6V when powered at 3.3V!)
+        //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
+        //  - TI1015 (12 bit)
+        //    - single-shot mode (powers down between conversions)
+        //    - 1600 samples per second (625µs conversion time)
+        //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
 
-        // Bump the gain up to 1x = +/- 4.096V range.  (Again, really only to 3.6V when powered at 3.3V)
-        // Sensor return range is 0-2.5V, but the next gain option is 2x which only allows up to 2.048V
+        // Bump the gain up to 1x = +/- 4.096V range
+        // Sensor return range is 0-2.5V, but the next gain option is 2x which
+        // only allows up to 2.048V
         ads.setGain(GAIN_ONE);
         // Begin ADC
         ads.begin();
@@ -98,6 +107,7 @@ bool ApogeeSQ212::addSingleMeasurementResult(void)
     else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
 
     verifyAndAddMeasurementResult(SQ212_PAR_VAR_NUM, calibResult);
+    verifyAndAddMeasurementResult(SQ212_VOLTAGE_VAR_NUM, adcVoltage);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;

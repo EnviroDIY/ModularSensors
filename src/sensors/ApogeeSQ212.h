@@ -17,8 +17,8 @@
  * Range is 0 to 2500 µmol m-2 s-1
  * Accuracy is ± 0.5%
  * Resolution:
- *  16-bit ADC: 0.04 µmol m-2 s-1 - This is what is supported!
- *  12-bit ADC: 2.44 µmol m-2 s-1
+ *  16-bit ADC: 0.3125 µmol m-2 s-1
+ *  12-bit ADC: 5 µmol m-2 s-1
  *
  * Technical specifications for the Apogee SQ-212 can be found at:
  * https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/
@@ -45,7 +45,7 @@
 #define ADS1115_ADDRESS 0x48
 // 1001 000 (ADDR = GND)
 
-#define SQ212_NUM_VARIABLES 1
+#define SQ212_NUM_VARIABLES 2
 // Using the warm-up time of the ADS1115
 #define SQ212_WARM_UP_TIME_MS 2
 // These times are not known!
@@ -53,7 +53,10 @@
 #define SQ212_MEASUREMENT_TIME_MS 2
 
 #define SQ212_PAR_VAR_NUM 0
-#define SQ212_PAR_RESOLUTION 2
+#define SQ212_PAR_RESOLUTION 1
+
+#define SQ212_VOLTAGE_VAR_NUM 1
+#define SQ212_VOLT_RESOLUTION 4
 
 // The main class for the Apogee SQ-212 sensor
 class ApogeeSQ212 : public Sensor
@@ -88,6 +91,21 @@ public:
                  "photosyntheticallyActiveRadiation", UUID, customVarCode)
     {}
     ~ApogeeSQ212_PAR(){};
+};
+
+
+// Defines the PAR variable output from the Apogee SQ-212 sensor
+class ApogeeSQ212_Voltage : public Variable
+{
+public:
+    ApogeeSQ212_Voltage(Sensor *parentSense,
+                    const char *UUID = "", const char *customVarCode = "")
+      : Variable(parentSense, SQ212_VOLTAGE_VAR_NUM,
+                 "voltage", "volt",
+                 SQ212_VOLT_RESOLUTION,
+                 "SQ212Voltage", UUID, customVarCode)
+    {}
+    ~ApogeeSQ212_Voltage(){};
 };
 
 #endif  // Header Guard

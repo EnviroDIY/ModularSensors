@@ -5,22 +5,40 @@
  * Written By:  Bobby Schulz <schu3119@umn.edu>
  * Adapted from ApogeeSQ212.h by Sara Damiano (sdamiano@stroudcenter.org)
 
- * This file is for the grove voltage divider (but will work with any voltage divider with an output in the range of 0 ~ 3.3v)
+ * This file is for the grove voltage divider (but will work with any voltage
+ * divider with an output in the range of 0 ~ 3.3v)
  * This is dependent on the soligen2010 fork of the Adafruit ADS1015 library.
  *
- * The grove voltage divider is a simple voltage divider designed to measure high external voltages on a low voltage
- * ADC. This module employs a variable gain via two pairs of voltage dividers, and a unity gain amplification to reduce output
- * impedance of the module
+ * The grove voltage divider is a simple voltage divider designed to measure
+ * high external voltages on a low voltage ADC. This module employs a variable
+ * gain via two pairs of voltage dividers, and a unity gain amplification to
+ * reduce output impedance of the module.
  *
  * Range:
- *   without voltage divider:  0 - 3.6V
- *   1/gain = 3x: 0.3 ~ 12.9v
- *   1/gain = 10x: 1 ~ 43v
- * Accuracy is < ± 1%
+ *   NOTE:  Range is determined by supply voltage - No more than VDD + 0.3 V or
+            5.5 V (whichever is smaller) must be applied to this device.
+ *   without voltage divider:  0 - 3.6V [when ADC is powered at 3.3V]
+ *   1/gain = 3x: 0.3 ~ 12.9V
+ *   1/gain = 10x: 1 ~ 43V
+ * Accuracy:
+ *   16-bit ADC: < 0.25% (gain error), <0.25 LSB (offset errror)
+ *   12-bit ADC: < 0.15% (gain error), <3 LSB (offset errror)
  * Resolution: 16-bit ADC:
- *   without voltage divider:  0.05mV
- *   1/gain = 3x: 0.2mV
- *   1/gain = 10x: 0.65 mV
+ *   NOTE:  1 bit of resolution is lost in single-ended reading.  The maximum
+            possible resolution is over the differential range from
+            negative to positive full scale, a single ended reading is only over
+            the range from 0 to positive full scale)
+ *   NOTE:  Assuming the ADC is powered at 3.3V, this program sets the the ACD's
+ *          inbuilt gain to 1, which divides the bit resolution over range of
+ *          0-4.096V
+ *   16-bit ADC:
+ *     without voltage divider:  0.125 mV
+ *     1/gain = 3x: 0.375 mV
+ *     1/gain = 10x: 1.25 mV
+ *   12-bit ADC:
+ *     without voltage divider:  2 mV
+ *     1/gain = 3x: 6 mV
+ *     1/gain = 10x: 20 mV
  *
  * Technical specifications for the Grove Voltage Divider can be found at:
  * http://wiki.seeedstudio.com/Grove-Voltage_Divider
@@ -72,16 +90,24 @@ bool ExternalVoltage::addSingleMeasurementResult(void)
     if (bitRead(_sensorStatus, 6))
     {
         // Create an Auxillary ADD object
-        // We create and set up the ADC object here so that any other sensor on the
-        // ADC that may have set the gain differently does not cause problems.
-        Adafruit_ADS1115 ads(_i2cAddress);     /* Use this for the 16-bit version */
-        // ADS1115 Library default settings:
+        // We create and set up the ADC object here so that each sensor using
+        // the ADC may set the gain appropriately without effecting others.
+        #ifndef MS_USE_ADS1015
+        Adafruit_ADS1115 ads(_i2cAddress);  // Use this for the 16-bit version
+        #else
+        Adafruit_ADS1015 ads(_i2cAddress);  // Use this for the 12-bit version
+        #endif
+        // ADS Library default settings:
+        //  - TI1115 (16 bit)
         //    - single-shot mode (powers down between conversions)
         //    - 128 samples per second (8ms conversion time)
-        //    - 2/3 gain +/- 6.144V range
-        //      (limited to VDD +0.3V max, so only really up to 3.6V when powered at 3.3V!)
+        //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
+        //  - TI1015 (12 bit)
+        //    - single-shot mode (powers down between conversions)
+        //    - 1600 samples per second (625µs conversion time)
+        //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
 
-        // Bump the gain up to 1x = +/- 4.096V range.  (Again, really only to 3.6V when powered at 3.3V)
+        // Bump the gain up to 1x = +/- 4.096V range
         ads.setGain(GAIN_ONE);
         // Begin ADC
         ads.begin();
