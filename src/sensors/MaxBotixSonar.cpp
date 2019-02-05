@@ -140,7 +140,8 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6))
     {
-        MS_DBG(F("Getting readings from MaxBotix on"), getSensorLocation());
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
         while (success == false && rangeAttempts < 25)
         {
              // If the sonar is running on a trigger, activating the trigger
@@ -151,7 +152,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
              // the trigger here.
             if(_triggerPin >= 0)
             {
-                MS_DBG(F("Triggering Sonar with"), _triggerPin);
+                MS_DBG(F("  Triggering Sonar with"), _triggerPin);
                 digitalWrite(_triggerPin, HIGH);
                 delayMicroseconds(30);  // Trigger must be held high for >20 µs
                 digitalWrite(_triggerPin, LOW);
@@ -161,7 +162,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
             // "wait" for the measurement.
             result = _stream->parseInt();
             _stream->read();  // To throw away the carriage return
-            MS_DBG(F("Sonar Range:"), result);
+            MS_DBG(F("  Sonar Range:"), result);
             rangeAttempts++;
 
             // If it cannot obtain a result , the sonar is supposed to send a value
@@ -173,12 +174,12 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
             // capable of reading 0, so we also know the 0 value is bad.
             if (result <= 300 || result == 500 || result == 4999 || result == 9999 || result == 0)
             {
-                MS_DBG(F("Bad or Suspicious Result, Retry Attempt #"), rangeAttempts);
+                MS_DBG(F("  Bad or Suspicious Result, Retry Attempt #"), rangeAttempts);
                 result = -9999;
             }
             else
             {
-                MS_DBG(F("Good result found"));
+                MS_DBG(F("  Good result found"));
                 success = true;
             }
         }

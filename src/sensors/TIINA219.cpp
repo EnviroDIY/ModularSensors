@@ -76,8 +76,9 @@ bool TIINA219::addSingleMeasurementResult(void)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6))
     {
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
         // Read values
-        MS_DBG(F("Getting values from INA219"));
         current_mA = ina219_phy.getCurrent_mA();
         if (isnan(current_mA)) current_mA = -9999;
         busV_V = ina219_phy.getBusVoltage_V();
@@ -87,9 +88,9 @@ bool TIINA219::addSingleMeasurementResult(void)
 
         success = true;
 
-        MS_DBG(F("mA, current:"), current_mA);
-        MS_DBG(F("V, BusV:"), busV_V);
-        MS_DBG(F("mW, Power:"), power_mW);
+        MS_DBG(F("  Current [mA]:"), current_mA);
+        MS_DBG(F("  Bus Voltage [V]:"), busV_V);
+        MS_DBG(F("  Power [mW]:"), power_mW);
     }
     else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
 

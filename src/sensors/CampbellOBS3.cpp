@@ -71,6 +71,8 @@ bool CampbellOBS3::addSingleMeasurementResult(void)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6))
     {
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
         // Create an Auxillary ADD object
         // We create and set up the ADC object here so that each sensor using
         // the ADC may set the gain appropriately without effecting others.
@@ -97,20 +99,20 @@ bool CampbellOBS3::addSingleMeasurementResult(void)
         ads.begin();
 
         // Print out the calibration curve
-        MS_DBG(F("Input calibration Curve:"));
-        MS_DBG(_x2_coeff_A, F("x^2 + "), _x1_coeff_B, F("x + "), _x0_coeff_C);
+        MS_DBG(F("  Input calibration Curve:"),
+               _x2_coeff_A, F("x^2 +"), _x1_coeff_B, F("x +"), _x0_coeff_C);
 
         // Read Analog to Digital Converter (ADC)
         // Taking this reading includes the 8ms conversion delay.
         // We're allowing the ADS1115 library to do the bit-to-volts conversion for us
         adcVoltage = ads.readADC_SingleEnded_V(_dataPin);  // Getting the reading
-        MS_DBG(F("ads.readADC_SingleEnded_V("), _dataPin, F("):"), adcVoltage, F("\t\t"));
+        MS_DBG(F("  ads.readADC_SingleEnded_V("), _dataPin, F("):"), adcVoltage);
 
         if (adcVoltage < 3.6 and adcVoltage > -0.3)  // Skip results out of range
         {
             // Apply the unique calibration curve for the given sensor
             calibResult = (_x2_coeff_A * sq(adcVoltage)) + (_x1_coeff_B * adcVoltage) + _x0_coeff_C;
-            MS_DBG(F("calibResult:"), calibResult);
+            MS_DBG(F("  calibResult:"), calibResult);
         }
         else  // set invalid voltages back to -9999
         {

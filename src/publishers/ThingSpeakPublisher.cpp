@@ -141,8 +141,10 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
     _mqttClient.setServer(mqttServer, mqttPort);
 
     // Make sure any previous TCP connections are closed
-    // NOTE:  The MQTT connect function can do this, but it works better if
-    // we do it manually - otherwise sometimes the PubSubLibrary thinks the MQTT
+    // NOTE:  The PubSubClient library used for MQTT connect assumes that as
+    // long as the client is connected, it must be connected to the right place.
+    // Closing any stray client sockets here ensures that a new client socket
+    // is opened to the right place.
     // client is connected when a different socket is open
     if (_outClient->connected()) {
         _outClient->stop();

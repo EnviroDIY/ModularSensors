@@ -152,8 +152,9 @@ bool KellerParent::addSingleMeasurementResult(void)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6))
     {
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
         // Get Values
-        MS_DBG(F("Get Values from"), getSensorNameAndLocation());
         success = sensor.getValues(waterPressureBar, waterTempertureC);
         waterDepthM = sensor.calcWaterDepthM(waterPressureBar, waterTempertureC);  // float calcWaterDepthM(float waterPressureBar, float waterTempertureC)
 
@@ -165,9 +166,9 @@ bool KellerParent::addSingleMeasurementResult(void)
         // For waterPressureBar, convert bar to millibar
         if (waterPressureBar != -9999) waterPressure_mBar = 1000*waterPressureBar;
 
-        MS_DBG(F("    Pressure_mbar:"), waterPressure_mBar);
-        MS_DBG(F("    Temp_C:"), waterTempertureC);
-        MS_DBG(F("    Height_m:"), waterDepthM);
+        MS_DBG(F("  Pressure_mbar:"), waterPressure_mBar);
+        MS_DBG(F("  Temp_C:"), waterTempertureC);
+        MS_DBG(F("  Height_m:"), waterDepthM);
     }
     else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
 

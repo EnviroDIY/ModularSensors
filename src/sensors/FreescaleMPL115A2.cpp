@@ -69,7 +69,8 @@ bool MPL115A2::addSingleMeasurementResult(void)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6))
     {
-        MS_DBG(F("Getting values from"), getSensorNameAndLocation());
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
         // Read values
         mpl115a2_internal.getPT(&press,&temp);
 
@@ -81,8 +82,8 @@ bool MPL115A2::addSingleMeasurementResult(void)
             press = -9999;
         }
 
-        MS_DBG(F("Temperature:"), temp);
-        MS_DBG(F("Pressure:"), press);
+        MS_DBG(F("  Temperature:"), temp);
+        MS_DBG(F("  Pressure:"), press);
     }
     else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
 

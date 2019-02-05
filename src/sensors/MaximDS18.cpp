@@ -89,7 +89,7 @@ bool MaximDS18::setup(void)
     // Find the address if it's not known
     if (!_addressKnown)
     {
-        MS_DBG(F("Probe address is not known!"));
+        MS_DBG(F("Address of DS18 on pin"), _dataPin, F("is not known!"));
 
         DeviceAddress address;  // create a variable to put the found address into
         ntries = 0;
@@ -213,15 +213,15 @@ bool MaximDS18::addSingleMeasurementResult(void)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6))
     {
-        MS_DBG(F("Requesting temperature result from"), getSensorNameAndLocation());
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
         result = _internalDallasTemp.getTempC(_OneWireAddress);
-        MS_DBG(F("Received"), result, F("°C"));
+        MS_DBG(F("  Received"), result, F("°C"));
 
         // If a DS18 cannot get a good measurement, it returns 85
         // If the sensor is not properly connected, it returns -127
         if (result == 85 || result == -127) result = -9999;
         else success = true;
-        MS_DBG(F("Temperature:"), result, F("°C"));
+        // MS_DBG(F("  Temperature:"), result, F("°C"));
     }
     else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
 
