@@ -59,7 +59,7 @@
             "+<publishers/*.cpp>",
             "+<publishers/*.h>"
         ],
-        "libLDFMode": "deep+"
+        "libLDFMode": "chain+"
     },
     "dependencies":
     [

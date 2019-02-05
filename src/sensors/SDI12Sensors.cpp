@@ -302,7 +302,7 @@ bool SDI12Sensors::startSingleMeasurement(void)
     // Set the times we've activated the sensor and asked for a measurement
     if (sdiResponse.length() > 0)
     {
-        MS_DBG(F("  Concurrent measurement started."));
+        MS_DBG(F("    Concurrent measurement started."));
         // Update the time that a measurement was requested
         _millisMeasurementRequested = millis();
         // Set the status bit for measurement start success (bit 6)
