@@ -98,7 +98,7 @@ String loggerModem::getSensorName(void) { return _modemName; }
 
 // NOTE: Unlike other setup functions, this will NOT turn the power to the modem
 // on and off, it will simply check if the power has already been turned on and
-// return quickly if not.  If the power had been on, it isleft ON after set-up.
+// return quickly if not.  If the power had been on, it is left ON after set-up.
 bool loggerModem::setup(void)
 {
     bool success = Sensor::setup();  // this will set pin modes and the setup status bit
@@ -233,7 +233,7 @@ bool loggerModem::wake(void)
         success = true;
     }
     // NOTE:  It's possible that the status pin is on, but the modem is actually
-    // mid-shutdow.  In that case, we'll mistakenly skip re-waking it.
+    // mid-shutdown.  In that case, we'll mistakenly skip re-waking it.
     else if (_dataPin >= 0 && digitalRead(_dataPin) == _statusLevel)
     {
         MS_MOD_DBG(getSensorName(), F("was already on!  Will not run wake function."));
