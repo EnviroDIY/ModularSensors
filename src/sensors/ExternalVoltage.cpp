@@ -4,7 +4,7 @@
  *
  * Written By:  Bobby Schulz <schu3119@umn.edu>
  * Adapted from ApogeeSQ212.h by Sara Damiano (sdamiano@stroudcenter.org)
-
+ *
  * This file is for the grove voltage divider (but will work with any voltage
  * divider with an output in the range of 0 ~ 3.3v)
  * This is dependent on the soligen2010 fork of the Adafruit ADS1015 library.
@@ -16,18 +16,18 @@
  *
  * Range:
  *   NOTE:  Range is determined by supply voltage - No more than VDD + 0.3 V or
-            5.5 V (whichever is smaller) must be applied to this device.
+ *          5.5 V (whichever is smaller) must be applied to this device.
  *   without voltage divider:  0 - 3.6V [when ADC is powered at 3.3V]
  *   1/gain = 3x: 0.3 ~ 12.9V
  *   1/gain = 10x: 1 ~ 43V
  * Accuracy:
  *   16-bit ADC: < 0.25% (gain error), <0.25 LSB (offset errror)
  *   12-bit ADC: < 0.15% (gain error), <3 LSB (offset errror)
- * Resolution: 16-bit ADC:
+ * Resolution:
  *   NOTE:  1 bit of resolution is lost in single-ended reading.  The maximum
-            possible resolution is over the differential range from
-            negative to positive full scale, a single ended reading is only over
-            the range from 0 to positive full scale)
+ *          possible resolution is over the differential range from
+ *          negative to positive full scale, a single ended reading is only over
+ *          the range from 0 to positive full scale)
  *   NOTE:  Assuming the ADC is powered at 3.3V, this program sets the the ACD's
  *          inbuilt gain to 1, which divides the bit resolution over range of
  *          0-4.096V

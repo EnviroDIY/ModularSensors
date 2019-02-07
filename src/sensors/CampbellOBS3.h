@@ -51,11 +51,18 @@
 #define OBS3_MEASUREMENT_TIME_MS 100
 
 #define OBS3_TURB_VAR_NUM 0
-#define OBS3_RESOLUTION 2
-#define OBS3_HR_RESOLUTION 2
+#ifdef MS_USE_ADS1015
+#define OBS3_RESOLUTION 1
+#else
+#define OBS3_RESOLUTION 5
+#endif
 
 #define OBS3_VOLTAGE_VAR_NUM 1
+#ifdef MS_USE_ADS1015
+#define OBS3_VOLT_RESOLUTION 1
+#else
 #define OBS3_VOLT_RESOLUTION 4
+#endif
 
 // The main class for the Campbell OBS3
 class CampbellOBS3 : public Sensor

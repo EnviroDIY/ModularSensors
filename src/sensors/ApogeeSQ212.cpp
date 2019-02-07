@@ -4,7 +4,7 @@
  *
  * Written By:  Anthony Aufdenkampe <aaufdenkampe@limno.com>
  * Adapted from CampbellOBS3.h by Sara Damiano (sdamiano@stroudcenter.org)
-
+ *
  * This file is for the Apogee SQ-212 Quantum Light sensor
  * This is dependent on the soligen2010 fork of the Adafruit ADS1015 library.
  *

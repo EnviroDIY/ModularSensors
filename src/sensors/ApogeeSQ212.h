@@ -4,7 +4,7 @@
  *
  * Written By:  Anthony Aufdenkampe <aaufdenkampe@limno.com>
  * Adapted from CampbellOBS3.h by Sara Damiano (sdamiano@stroudcenter.org)
-
+ *
  * This file is for the Apogee SQ-212 Quantum Light sensor
  * This is dependent on the soligen2010 fork of the Adafruit ADS1015 library.
  *
@@ -53,10 +53,18 @@
 #define SQ212_MEASUREMENT_TIME_MS 2
 
 #define SQ212_PAR_VAR_NUM 0
-#define SQ212_PAR_RESOLUTION 1
+#ifdef MS_USE_ADS1015
+#define SQ212_PAR_RESOLUTION 0
+#else
+#define SQ212_PAR_RESOLUTION 4
+#endif
 
 #define SQ212_VOLTAGE_VAR_NUM 1
+#ifdef MS_USE_ADS1015
+#define SQ212_VOLT_RESOLUTION 1
+#else
 #define SQ212_VOLT_RESOLUTION 4
+#endif
 
 // The main class for the Apogee SQ-212 sensor
 class ApogeeSQ212 : public Sensor
