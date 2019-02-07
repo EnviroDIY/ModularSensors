@@ -820,7 +820,7 @@ const float dividerGain = 10; //  Default 1/gain for grove voltage divider is 10
 const uint8_t VoltReadsToAvg = 1; // Only read one sample
 
 // Create and return the External Voltage sensor object
-ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, ADSi2c_addr,, VoltReadsToAvg);
+ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, ADSi2c_addr, VoltReadsToAvg);
 
 // Create the voltage variable object and return a variable-type pointer to it
 // Variable *extvoltV = new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-efgh-1234567890ab");
