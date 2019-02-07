@@ -129,11 +129,13 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 // SERCOM4    SPI (D21/22/23)    SPI (D21/22/23)     SPI1/Serial2
 // SERCOM5    EDBG/Serial        Available           Serial1
 
+// If using a Sodaq board, do not define the new sercoms, instead:
+// #define ENABLE_SERIAL2
+// #define ENABLE_SERIAL3
 
-#if defined(ARDUINO_ARCH_SAMD) \
-  && not defined(ARDUINO_SODAQ_AUTONOMO) && not defined(ARDUINO_SODAQ_EXPLORER) \
-  && not defined(ARDUINO_SODAQ_ONE) && not defined(ARDUINO_SODAQ_SARA) \
-  && not defined(ARDUINO_SODAQ_SFF)
+
+#if defined (ARDUINO_ARCH_SAMD)
+#if not defined ENABLE_SERIAL2 && not defined ENABLE_SERIAL3
   #include <wiring_private.h> // Needed for SAMD pinPeripheral() function
 // Set up a 'new' UART using SERCOM1
 // The Rx will be on digital pin 11, which is SERCOM1's Pad #0
@@ -160,6 +162,7 @@ void SERCOM2_Handler()
 {
     Serial3.IrqHandler();
 }
+#endif
 #endif  // End hardware serial on SAMD21 boards
 
 
@@ -188,6 +191,7 @@ void SERCOM2_Handler()
 // ==========================================================================
 
 const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
+
 const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
 const int8_t modemResetPin = A4;    // MCU pin connected to modem reset pin (-1 if unconnected)
@@ -259,7 +263,10 @@ bool modemSleepFxn(void)
         digitalWrite(redLED, LOW);
         return true;
     }
-    else return true;
+    else
+    {
+        return true;
+    }
 }
 bool modemWakeFxn(void)
 {
@@ -271,7 +278,10 @@ bool modemWakeFxn(void)
         digitalWrite(redLED, HIGH);  // Because the XBee doesn't have any lights
         return true;
     }
-    else return true;
+    else
+    {
+        return true;
+    }
 }
 // An extra function to set up pin sleep and other preferences on the XBee
 // NOTE:  This will only succeed if the modem is turned on and awake!
@@ -338,8 +348,8 @@ void setupXBee(void)
 // Describe the physical pin connection of your modem to your board
 const long ModemBaud = 115200;       // Communication speed of the modem, 115200 is default for ESP8266
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
-const int8_t espSleepRqPin = 13;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
-const int8_t espStatusPin = -1;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
+const int8_t espSleepRqPin = 14;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
+const int8_t espStatusPin = 13;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -386,22 +396,72 @@ bool modemSleepFxn(void)
         digitalWrite(redLED, LOW);
         return success;
     }
-    else return true;  // DON'T go to sleep if we can't wake up!
+    else  // DON'T go to sleep if we can't wake up!
+    {
+        return true;
+    }
 }
 bool modemWakeFxn(void)
 {
     if (modemVccPin >= 0)  // Turns on when power is applied
     {
         digitalWrite(redLED, HIGH);  // Because the ESP8266 doesn't have any lights
-        return true;
+        // Wait for boot - finished when characters start coming
+        delay(200);  // It will take at least this long
+        uint32_t start = millis();
+        bool success = false;
+        while (!modemSerial.available() && millis() - start < 1000) {}
+        if (modemSerial.available())
+        {
+            success = true;
+            // Clear the junk the ESP sends out after boot-up
+            while (modemSerial.available())
+            {
+                modemSerial.read();
+                delay(2);
+            }
+            // Have to make sure echo is off and re-run the init on wake
+            tinyModem->sendAT(F("E0"));
+            success &= tinyModem->waitResponse() == 1;
+            tinyModem->init();
+        }
+        if (!success)
+        {
+            digitalWrite(redLED, LOW);  // Turn off light if the boot failed
+        }
+        return success;
     }
     else if (modemResetPin >= 0)
     {
+        digitalWrite(redLED, HIGH);
         digitalWrite(modemResetPin, LOW);
         delay(1);
         digitalWrite(modemResetPin, HIGH);
-        digitalWrite(redLED, HIGH);
-        return true;
+
+        // Wait for boot - finished when characters start coming
+        delay(200);  // It will take at least this long
+        uint32_t start = millis();
+        bool success = false;
+        while (!modemSerial.available() && millis() - start < 1000) {}
+        if (modemSerial.available())
+        {
+            success = true;
+            // Clear the junk the ESP sends out after boot-up
+            while (modemSerial.available())
+            {
+                modemSerial.read();
+                delay(2);
+            }
+            // Have to make sure echo is off and re-run the init on wake
+            tinyModem->sendAT(F("E0"));
+            success &= tinyModem->waitResponse() == 1;
+            tinyModem->init();
+        }
+        if (!success)
+        {
+            digitalWrite(redLED, LOW);  // Turn off light if the boot failed
+        }
+        return success;
     }
     else if (modemSleepRqPin >= 0)
     {
@@ -411,7 +471,20 @@ bool modemWakeFxn(void)
         digitalWrite(redLED, HIGH);
         return true;
     }
-    else return true;
+    else
+    {
+        return true;
+    }
+}
+// Set up the light-sleep status pin, if applicable
+void setupESP8266(void)
+{
+    if (modemVccPin < 0 && modemResetPin < 0 && modemSleepRqPin >= 0 && modemStatusPin >= 0)
+    {
+        tinyModem->sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
+                          String(espStatusPin), ',', modemStatusLevel);
+        tinyModem->waitResponse();
+    }
 }
 
 
@@ -437,7 +510,10 @@ bool modemSleepFxn(void)
         digitalWrite(redLED, LOW);
         return true;
     }
-    else return true;  // DON'T go to sleep if we can't wake up!
+    else  // DON'T go to sleep if we can't wake up!
+    {
+        return true;
+    }
 }
 bool modemWakeFxn(void)
 {
@@ -454,7 +530,10 @@ bool modemWakeFxn(void)
         digitalWrite(redLED, LOW);
         return true;
     }
-    else return true;
+    else
+    {
+        return true;
+    }
 }
 
 
@@ -597,7 +676,7 @@ AOSongDHT dht(DHTPower, DHTPin, dhtType);
 #include <sensors/ApogeeSQ212.h>
 
 const int8_t SQ212Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t SQ212Data = 2;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const int8_t SQ212Data = 3;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
 const uint8_t SQ212_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
 
 // Create and return the Apogee SQ212 sensor object
@@ -778,7 +857,7 @@ NeoSWSerial &sonarSerial = neoSSerial1;  // For software serial if needed
 #endif
 
 const int8_t SonarPower = sensorPowerPin;  // Excite (power) pin (-1 if unconnected)
-const int8_t Sonar1Trigger = A1;  // Trigger pin (a unique negative number if unconnected) (A1 = 25)
+const int8_t Sonar1Trigger = A1;  // Trigger pin (a unique negative number if unconnected) (D25 = A1)
 
 // Create and return the MaxBotix Sonar sensor object
 MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger) ;
@@ -799,7 +878,7 @@ DeviceAddress OneWireAddress3 = {0x28, 0xFF, 0x74, 0x2B, 0x82, 0x16, 0x03, 0x57}
 DeviceAddress OneWireAddress4 = {0x28, 0xFF, 0xB6, 0x6E, 0x84, 0x16, 0x05, 0x9B};
 DeviceAddress OneWireAddress5 = {0x28, 0xFF, 0x3B, 0x07, 0x82, 0x16, 0x03, 0xB3};
 const int8_t OneWirePower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t OneWireBus = A0;  // Pin attached to the OneWire Bus (-1 if unconnected)
+const int8_t OneWireBus = A0;  // Pin attached to the OneWire Bus (-1 if unconnected) (D24 = A0)
 
 // Create and return the Maxim DS18 sensor objects (use this form for a known address)
 MaximDS18 ds18_1(OneWireAddress1, OneWirePower, OneWireBus);
@@ -1468,17 +1547,6 @@ void setup()
         enableInterrupt(neoSSerial1Rx, neoSSerial1ISR, CHANGE);
     #endif
 
-    // Assign pins SERCOM functionality for SAMD boards
-    #if defined(ARDUINO_ARCH_SAMD) \
-      && not defined(ARDUINO_SODAQ_AUTONOMO) && not defined(ARDUINO_SODAQ_EXPLORER) \
-      && not defined(ARDUINO_SODAQ_ONE) && not defined(ARDUINO_SODAQ_SARA) \
-      && not defined(ARDUINO_SODAQ_SFF)
-    pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
-    pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
-    pinPeripheral(2, PIO_SERCOM); // Serial3 Tx/Dout = SERCOM2 Pad #2
-    pinPeripheral(5, PIO_SERCOM);  // Serial3 Rx/Din = SERCOM2 Pad #3
-    #endif
-
     // Start the serial connection with the modem
     modemSerial.begin(ModemBaud);
 
@@ -1487,6 +1555,17 @@ void setup()
 
     // Start the SoftwareSerial stream for the sonar; it will always be at 9600 baud
     sonarSerial.begin(9600);
+
+    // Assign pins SERCOM functionality for SAMD boards
+    // NOTE:  This must happen *after* the begin
+    #if defined (ARDUINO_ARCH_SAMD)
+    #if not defined ENABLE_SERIAL2 && not defined ENABLE_SERIAL3
+    pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
+    pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
+    pinPeripheral(2, PIO_SERCOM);  // Serial3 Tx/Dout = SERCOM2 Pad #2
+    pinPeripheral(5, PIO_SERCOM);  // Serial3 Rx/Din = SERCOM2 Pad #3
+    #endif
+    #endif
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
@@ -1564,6 +1643,11 @@ void setup()
     modem.modemPowerUp();
     modem.wake();  // Turn it on to talk
     setupXBee();
+    #endif
+
+    // Extra set-up for the ESP8266
+    #if defined(TINY_GSM_MODEM_ESP8266)
+    setupESP8266();
     #endif
 
     // At very good battery voltage, or with suspicious time stamp, sync the clock
