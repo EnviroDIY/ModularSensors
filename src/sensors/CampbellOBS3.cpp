@@ -55,7 +55,7 @@ String CampbellOBS3::getSensorLocation(void)
     String sensorLocation = F("ADS1015_0x");
     #endif
     sensorLocation += String(_i2cAddress, HEX);
-    sensorLocation += F("_Pin");
+    sensorLocation += F("_Channel");
     sensorLocation += String(_dataPin);
     return sensorLocation;
 }
