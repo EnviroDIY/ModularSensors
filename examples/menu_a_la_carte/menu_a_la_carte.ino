@@ -680,15 +680,15 @@ AOSongDHT dht(DHTPower, DHTPin, dhtType);
 #include <sensors/ApogeeSQ212.h>
 
 const int8_t SQ212Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t SQ212Data = 3;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
-const uint8_t SQ212_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
+const int8_t SQ212ADSChannel = 3;  // The ADS channel for the SQ212
+const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
 
 // Create and return the Apogee SQ212 sensor object
-ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
+ApogeeSQ212 SQ212(SQ212Power, SQ212ADSChannel);
 
 // Create the PAR variable object for the SQ212 and return a variable-type pointer to it
 // Use this to create a variable pointer with a name to use in multiple arrays or any calculated variables.
-// Variable *SQ212PAR = new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *sq212PAR = new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -696,10 +696,10 @@ ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
 // ==========================================================================
 #include <sensors/BoschBME280.h>
 
+// const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 uint8_t BMEi2c_addr = 0x76;
 // The BME280 can be addressed either as 0x77 (Adafruit default) or 0x76 (Grove default)
 // Either can be physically mofidied for the other address
-// const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 
 // Create and return the Bosch BME280 sensor object
 BoschBME280 bme280(I2CPower, BMEi2c_addr);
@@ -719,14 +719,14 @@ BoschBME280 bme280(I2CPower, BMEi2c_addr);
 
 const int8_t OBS3Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t OBS3numberReadings = 10;
-const uint8_t OBS3_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
+// const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
 // Campbell OBS 3+ Low Range calibration in Volts
-const int8_t OBSLowPin = 0;  // The low voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const int8_t OBSLowADSChannel = 0;  // The ADS channel for the low range output
 const float OBSLow_A = 0.000E+00;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
 // Create and return the Campbell OBS3+ LOW RANGE sensor object
-CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, OBS3_ADS1115Address, OBS3numberReadings);
+CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3numberReadings);
 
 // Create the turbidity and voltage variable objects for the low range OBS3 and return variable-type pointers to them
 // Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
@@ -735,12 +735,12 @@ CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, OBS3_AD
 
 
 // Campbell OBS 3+ High Range calibration in Volts
-const int8_t OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
+const int8_t OBSHighADSChannel = 1;  // The ADS channel for the high range output
 const float OBSHigh_A = 0.000E+00;  // The "A" value (X^2) from the high range calibration
 const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
 // Create and return the Campbell OBS3+ HIGH RANGE sensor object
-CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OBS3_ADS1115Address, OBS3numberReadings);
+CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 
 // Create the turbidity and voltage variable objects for the high range OBS3 and return variable-type pointers to them
 // Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
@@ -813,14 +813,14 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
 // ==========================================================================
 #include <sensors/ExternalVoltage.h>
 
-const int8_t VoltPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t VoltData = 2;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
-const float VoltGain = 10; // Default 1/gain for grove voltage divider is 10x
-const uint8_t Volt_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
+const int8_t ADSPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t ADSChannel = 2;  // The ADS channel of interest
+const float dividerGain = 10; //  Default 1/gain for grove voltage divider is 10x
+// const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
 const uint8_t VoltReadsToAvg = 1; // Only read one sample
 
 // Create and return the External Voltage sensor object
-ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, Volt_ADS1115Address, VoltReadsToAvg);
+ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, ADSi2c_addr,, VoltReadsToAvg);
 
 // Create the voltage variable object and return a variable-type pointer to it
 // Variable *extvoltV = new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-efgh-1234567890ab");
