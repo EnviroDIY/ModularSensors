@@ -134,9 +134,10 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 // #define ENABLE_SERIAL3
 
 
-#if defined (ARDUINO_ARCH_SAMD)
-#if not defined ENABLE_SERIAL2 && not defined ENABLE_SERIAL3
-  #include <wiring_private.h> // Needed for SAMD pinPeripheral() function
+#if defined(ARDUINO_ARCH_SAMD)
+#include <wiring_private.h> // Needed for SAMD pinPeripheral() function
+
+#ifndef ENABLE_SERIAL2
 // Set up a 'new' UART using SERCOM1
 // The Rx will be on digital pin 11, which is SERCOM1's Pad #0
 // The Tx will be on digital pin 10, which is SERCOM1's Pad #2
@@ -149,7 +150,9 @@ void SERCOM1_Handler()
 {
     Serial2.IrqHandler();
 }
+#endif
 
+#ifndef ENABLE_SERIAL3
 // Set up a 'new' UART using SERCOM2
 // The Rx will be on digital pin 5, which is SERCOM2's Pad #3
 // The Tx will be on digital pin 2, which is SERCOM2's Pad #2
@@ -163,6 +166,7 @@ void SERCOM2_Handler()
     Serial3.IrqHandler();
 }
 #endif
+
 #endif  // End hardware serial on SAMD21 boards
 
 
@@ -1558,10 +1562,12 @@ void setup()
 
     // Assign pins SERCOM functionality for SAMD boards
     // NOTE:  This must happen *after* the begin
-    #if defined (ARDUINO_ARCH_SAMD)
-    #if not defined ENABLE_SERIAL2 && not defined ENABLE_SERIAL3
+    #if defined(ARDUINO_ARCH_SAMD)
+    #ifndef ENABLE_SERIAL2
     pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
     pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
+    #endif
+    #ifndef ENABLE_SERIAL3
     pinPeripheral(2, PIO_SERCOM);  // Serial3 Tx/Dout = SERCOM2 Pad #2
     pinPeripheral(5, PIO_SERCOM);  // Serial3 Rx/Din = SERCOM2 Pad #3
     #endif
