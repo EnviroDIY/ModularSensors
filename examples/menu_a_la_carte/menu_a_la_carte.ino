@@ -639,11 +639,73 @@ MaximDS3231 ds3231(1);
 
 
 // ==========================================================================
+//    Atlas Scientific EZO-ES Conductivity Sensor
+// ==========================================================================
+#include <sensors/AtlasScientificEC.h>
+
+const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+uint8_t AtlasECi2c_addr = 0x64;  // Default for EC is 0x64 (100)
+// All Atlas sensors have different default I2C addresses, but any of them can
+// be re-addressed to any 8 bit number.  If using the default address for any
+// Atlas Scientific sensor, you may omit this argument.
+
+// Create and return the Atlas Scientific Conductivity sensor object
+AtlasScientificEC atlasEC(I2CPower, AtlasECi2c_addr);
+
+// Create the four variable objects for the EZO-ES and return variable-type pointers to them
+// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
+// Variable *atlasCond = new AtlasScientificEC_Cond(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasTDS = new AtlasScientificEC_TDS(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasSal = new AtlasScientificEC_Salinity(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasGrav = new AtlasScientificEC_SpecificGravity(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab");
+
+
+// ==========================================================================
+//    Atlas Scientific EZO-DO Dissolved Oxygen Sensor
+// ==========================================================================
+#include <sensors/AtlasScientificDO.h>
+
+// const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+uint8_t AtlasDOi2c_addr = 0x61;  // Default for DO is 0x61 (97)
+// All Atlas sensors have different default I2C addresses, but any of them can
+// be re-addressed to any 8 bit number.  If using the default address for any
+// Atlas Scientific sensor, you may omit this argument.
+
+// Create and return the Atlas Scientific DO sensor object
+AtlasScientificDO atlasDO(I2CPower, AtlasDOi2c_addr);
+
+// Create the concentration and percent saturation variable objects for the
+// EZO-DO and return variable-type pointers to them
+// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
+// Variable *atlasDOconc = new AtlasScientificDO_DOmgL(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasDOpct = new AtlasScientificDO_DOpct(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab");
+
+
+// ==========================================================================
+//    Atlas Scientific EZO-RTD Temperature Sensor
+// ==========================================================================
+#include <sensors/AtlasScientificRTD.h>
+
+// const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+uint8_t AtlasRTDi2c_addr = 0x66;  // Default for RTD is 0x66 (102)
+// All Atlas sensors have different default I2C addresses, but any of them can
+// be re-addressed to any 8 bit number.  If using the default address for any
+// Atlas Scientific sensor, you may omit this argument.
+
+// Create and return the Atlas Scientific RTD sensor object
+AtlasScientificRTD atlasRTD(I2CPower, AtlasRTDi2c_addr);
+
+// Create the temperature variable object for the RTD and a return variable-type pointer to it
+// Use this to create a variable pointer with a name to use in multiple arrays or any calculated variables.
+// Variable *atlasTemp = new AtlasScientificRTD_Temp(&atlasRTD, "12345678-abcd-1234-efgh-1234567890ab");
+
+
+// ==========================================================================
 //    AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
 #include <sensors/AOSongAM2315.h>
 
-const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 
 // Create and return the AOSong AM2315 sensor object
 AOSongAM2315 am2315(I2CPower);
@@ -659,7 +721,7 @@ AOSongAM2315 am2315(I2CPower);
 // ==========================================================================
 #include <sensors/AOSongDHT.h>
 
-const int8_t DHTPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// const int8_t DHTPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t DHTPin = 10;  // DHT data pin
 DHTtype dhtType = DHT11;  // DHT type, either DHT11, DHT21, or DHT22
 
@@ -725,6 +787,7 @@ const int8_t OBSLowADSChannel = 0;  // The ADS channel for the low range output
 const float OBSLow_A = 0.000E+00;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
+
 // Create and return the Campbell OBS3+ LOW RANGE sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3numberReadings);
 
@@ -739,6 +802,7 @@ const int8_t OBSHighADSChannel = 1;  // The ADS channel for the high range outpu
 const float OBSHigh_A = 0.000E+00;  // The "A" value (X^2) from the high range calibration
 const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
+
 // Create and return the Campbell OBS3+ HIGH RANGE sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 
@@ -940,10 +1004,9 @@ RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 // ==========================================================================
 #include <sensors/TIINA219.h>
 
-uint8_t INA219i2c_addr = 0x40; // 1000000 (Board A0+A1=GND)
-// The INA219 can be addressed either as 0x40 (Adafruit default) or 0x41 44 45
-// Either can be physically mofidied for the other address
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+uint8_t INA219i2c_addr = 0x40; // 1000000 (Board A0+A1=GND)
+// The INA219 can have one of 16 addresses, depending on the connections of A0 and A1
 const uint8_t INA219ReadingsToAvg = 1;
 
 // Create and return the INA219 sensor object
@@ -1327,6 +1390,13 @@ Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarName
 // NOTE:  Forms one and two can be mixed
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificEC_Cond(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificEC_TDS(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificEC_Salinity(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificEC_SpecificGravity(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificDO_DOmgL(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificDO_DOpct(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificRTD_Temp(&atlasRTD, "12345678-abcd-1234-efgh-1234567890ab"),
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
     new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
     new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
