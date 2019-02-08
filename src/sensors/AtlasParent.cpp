@@ -24,7 +24,7 @@ AtlasParent::AtlasParent(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measure
                          uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
   : Sensor(sensorName, numReturnedVars,
            warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
-           powerPin, dataPin, measurementsToAverage),
+           powerPin, -1, measurementsToAverage),
     _i2cAddressHex(i2cAddressHex)
 {}
 AtlasParent::~AtlasParent(){}
@@ -64,7 +64,7 @@ bool AtlasParent::sleep(void)
     MS_DBG(F("Putting"), getSensorNameAndLocation(), F("to sleep"));
 
     Wire.beginTransmission(_i2cAddressHex);  // Transmit to the sensor
-    success &= Wire.write(F("Sleep"));  // Write "Sleep" to put it in low power mode
+    success &= Wire.write("Sleep");  // Write "Sleep" to put it in low power mode
     success &= !Wire.endTransmission();  // Finish
     // NOTE: The return of 0 from endTransmission indicates success
 
@@ -118,7 +118,8 @@ bool AtlasParent::startSingleMeasurement(void)
     return success;
 }
 
-bool AtlasParent::addSingleMeasurementResult(void) {
+
+bool AtlasParent::addSingleMeasurementResult(void)
 {
     bool success = false;
 
@@ -126,8 +127,8 @@ bool AtlasParent::addSingleMeasurementResult(void) {
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6))
     {
-        Wire.requestFrom(_i2cAddressHex,20,1);  //call the circuit and request 20 bytes (this may be more than we need)
-        code=Wire.read();                   //the first byte is the response code, we read this separately.
+        Wire.requestFrom(_i2cAddressHex,35,1);  // call the circuit and request 35 bytes (this may be more than we need)
+        uint8_t code=Wire.read();  //the first byte is the response code, we read this separately.
 
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
         // Parse the response code
@@ -152,9 +153,10 @@ bool AtlasParent::addSingleMeasurementResult(void) {
         }
         // If the response code is successful, parse the remaining results
         if (success)
+        {
             for (uint8_t i = 0; i < _numReturnedVars; i++)
             {
-                float result = _SDI12Internal.parseFloat();
+                float result = Wire.parseFloat();
                 // The SDI-12 library should return -9999 on timeout
                 if (result == -9999 or isnan(result)) result = -9999;
                 MS_DBG(F("  Result #"), i, ':', result);
