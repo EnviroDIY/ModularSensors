@@ -33,9 +33,12 @@ class dataPublisher
 
 public:
 
-    // Constructor - requires a logger modem
+    // Constructor - requires a logger
     dataPublisher(Logger& baseLogger,
                uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+     // Constructor - with a separately specified client
+     dataPublisher(Logger& baseLogger, Client *inClient,
+                uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     // Destructor
     virtual ~dataPublisher();
 
@@ -46,10 +49,14 @@ public:
     // This depends on an internet connection already being made and a client
     // being available
     virtual int16_t sendData(Client *_outClient) = 0;
+    // This sends data on the "default" client of the modem attached to the logger
+    virtual int16_t sendData();
 
 protected:
     // The internal logger instance
     Logger *_baseLogger;
+    // The internal client
+    Client *_inClient;
 
     static char txBuffer[MS_SEND_BUFFER_SIZE];
     // This returns the number of empty spots in the buffer

@@ -15,7 +15,7 @@
 #include <Arduino.h>
 
 // The current library version number
-#define MODULAR_SENSORS_VERSION "0.19.4"
+#define MODULAR_SENSORS_VERSION "0.19.6"
 
 #ifndef STANDARD_SERIAL_OUTPUT
     // #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
@@ -37,6 +37,7 @@
         template<typename T, typename... Args>
         static void PRINTOUT(T head, Args... tail) {
             STANDARD_SERIAL_OUTPUT.print(head);
+            STANDARD_SERIAL_OUTPUT.print(' ');
             PRINTOUT(tail...);
         }
     }
@@ -53,6 +54,7 @@
         template<typename T, typename... Args>
         static void MS_DBG(T head, Args... tail) {
             DEBUGGING_SERIAL_OUTPUT.print(head);
+            DEBUGGING_SERIAL_OUTPUT.print(' ');
             MS_DBG(tail...);
         }
     }

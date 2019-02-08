@@ -116,6 +116,8 @@ public:
 
     // This is the array of result values for each sensor
     float sensorValues[MAX_NUMBER_VARS];
+    // This is a string with a pretty-print of the values array
+    // String getStringValueArray(void);
     // Clears the values array
     void clearValues();
     // This verifies that a measurement is OK (ie, not -9999) before adding it to the array

@@ -77,9 +77,9 @@ void Variable::attachSensor(int varNum, Sensor *parentSense)
 {
     if (!isCalculated)
     {
-        MS_DBG(F("Attempting to register "), getVarName());
-        MS_DBG(F(" to "), parentSense->getSensorName());
-        MS_DBG(F(" attached at "), parentSense->getSensorLocation(), F("...   "));
+        MS_DBG(F("Attempting to register"), getVarName(), F("to"),
+               parentSense->getSensorName(), F("attached at"),
+               parentSense->getSensorLocation(), F("..."));
         parentSense->registerVariable(varNum, this);
     }
 }
@@ -92,7 +92,7 @@ void Variable::onSensorUpdate(Sensor *parentSense)
     if (!isCalculated)
     {
         _currentValue = parentSense->sensorValues[_varNum];
-        MS_DBG(F("... received "), _currentValue);
+        MS_DBG(F("... received"), _currentValue);
     }
 }
 
