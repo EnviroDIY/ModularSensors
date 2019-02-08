@@ -68,8 +68,8 @@
 class CampbellOBS3 : public Sensor
 {
 public:
-    // The constructor - need the power pin, the data pin, and the calibration info
-    CampbellOBS3(int8_t powerPin, int8_t dataPin,
+    // The constructor - need the power pin, the ADS1X15 data channel, and the calibration info
+    CampbellOBS3(int8_t powerPin, uint8_t adsChannel,
                  float x2_coeff_A, float x1_coeff_B, float x0_coeff_C,
                  uint8_t i2cAddress = ADS1115_ADDRESS, uint8_t measurementsToAverage = 1);
     // Destructor
@@ -80,6 +80,7 @@ public:
     bool addSingleMeasurementResult(void) override;
 
 protected:
+    uint8_t _adsChannel;
     float _x2_coeff_A, _x1_coeff_B, _x0_coeff_C;
     uint8_t _i2cAddress;
 };

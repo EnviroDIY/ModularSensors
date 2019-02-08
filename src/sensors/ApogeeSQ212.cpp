@@ -35,11 +35,12 @@
 
 
 // The constructor - need the power pin and the data pin
-ApogeeSQ212::ApogeeSQ212(int8_t powerPin, int8_t dataPin, uint8_t i2cAddress, uint8_t measurementsToAverage)
+ApogeeSQ212::ApogeeSQ212(int8_t powerPin, uint8_t adsChannel, uint8_t i2cAddress, uint8_t measurementsToAverage)
     : Sensor("ApogeeSQ212", SQ212_NUM_VARIABLES,
              SQ212_WARM_UP_TIME_MS, SQ212_STABILIZATION_TIME_MS, SQ212_MEASUREMENT_TIME_MS,
-             powerPin, dataPin, measurementsToAverage)
+             powerPin, -1, measurementsToAverage)
 {
+    _adsChannel = adsChannel;
     _i2cAddress = i2cAddress;
 }
 // Destructor
@@ -55,7 +56,7 @@ String ApogeeSQ212::getSensorLocation(void)
     #endif
     sensorLocation += String(_i2cAddress, HEX);
     sensorLocation += F("_Channel");
-    sensorLocation += String(_dataPin);
+    sensorLocation += String(_adsChannel);
     return sensorLocation;
 }
 
@@ -100,8 +101,8 @@ bool ApogeeSQ212::addSingleMeasurementResult(void)
         // Read Analog to Digital Converter (ADC)
         // Taking this reading includes the 8ms conversion delay.
         // We're allowing the ADS1115 library to do the bit-to-volts conversion for us
-        adcVoltage = ads.readADC_SingleEnded_V(_dataPin);  // Getting the reading
-        MS_DBG(F("  ads.readADC_SingleEnded_V("), _dataPin, F("):"), adcVoltage);
+        adcVoltage = ads.readADC_SingleEnded_V(_adsChannel);  // Getting the reading
+        MS_DBG(F("  ads.readADC_SingleEnded_V("), _adsChannel, F("):"), adcVoltage);
 
         if (adcVoltage < 3.6 and adcVoltage > -0.3)  // Skip results out of range
         {

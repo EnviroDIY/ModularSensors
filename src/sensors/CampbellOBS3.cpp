@@ -31,13 +31,14 @@
 
 
 // The constructor - need the power pin, the data pin, and the calibration info
-CampbellOBS3::CampbellOBS3(int8_t powerPin, int8_t dataPin,
+CampbellOBS3::CampbellOBS3(int8_t powerPin, uint8_t adsChannel,
                            float x2_coeff_A, float x1_coeff_B, float x0_coeff_C,
                            uint8_t i2cAddress, uint8_t measurementsToAverage)
   : Sensor("CampbellOBS3", OBS3_NUM_VARIABLES,
            OBS3_WARM_UP_TIME_MS, OBS3_STABILIZATION_TIME_MS, OBS3_MEASUREMENT_TIME_MS,
-           powerPin, dataPin, measurementsToAverage)
+           powerPin, -1, measurementsToAverage)
 {
+    _adsChannel = adsChannel;
     _x2_coeff_A = x2_coeff_A;
     _x1_coeff_B = x1_coeff_B;
     _x0_coeff_C = x0_coeff_C;
@@ -56,7 +57,7 @@ String CampbellOBS3::getSensorLocation(void)
     #endif
     sensorLocation += String(_i2cAddress, HEX);
     sensorLocation += F("_Channel");
-    sensorLocation += String(_dataPin);
+    sensorLocation += String(_adsChannel);
     return sensorLocation;
 }
 
@@ -105,8 +106,8 @@ bool CampbellOBS3::addSingleMeasurementResult(void)
         // Read Analog to Digital Converter (ADC)
         // Taking this reading includes the 8ms conversion delay.
         // We're allowing the ADS1115 library to do the bit-to-volts conversion for us
-        adcVoltage = ads.readADC_SingleEnded_V(_dataPin);  // Getting the reading
-        MS_DBG(F("  ads.readADC_SingleEnded_V("), _dataPin, F("):"), adcVoltage);
+        adcVoltage = ads.readADC_SingleEnded_V(_adsChannel);  // Getting the reading
+        MS_DBG(F("  ads.readADC_SingleEnded_V("), _adsChannel, F("):"), adcVoltage);
 
         if (adcVoltage < 3.6 and adcVoltage > -0.3)  // Skip results out of range
         {

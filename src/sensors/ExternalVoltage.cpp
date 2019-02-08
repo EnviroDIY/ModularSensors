@@ -56,12 +56,13 @@
 
 
 // The constructor - need the power pin the data pin, and gain if non standard
-ExternalVoltage::ExternalVoltage(int8_t powerPin, int8_t dataPin, float gain,
+ExternalVoltage::ExternalVoltage(int8_t powerPin, uint8_t adsChannel, float gain,
                                  uint8_t i2cAddress, uint8_t measurementsToAverage)
     : Sensor("ExternalVoltage", EXT_VOLT_NUM_VARIABLES,
              EXT_VOLT_WARM_UP_TIME_MS, EXT_VOLT_STABILIZATION_TIME_MS, EXT_VOLT_MEASUREMENT_TIME_MS,
-             powerPin, dataPin, measurementsToAverage)
+             powerPin, -1, measurementsToAverage)
 {
+    _adsChannel = adsChannel;
     _gain = gain;
     _i2cAddress = i2cAddress;
 }
@@ -78,7 +79,7 @@ String ExternalVoltage::getSensorLocation(void)
     #endif
     sensorLocation += String(_i2cAddress, HEX);
     sensorLocation += F("_Channel");
-    sensorLocation += String(_dataPin);
+    sensorLocation += String(_adsChannel);
     return sensorLocation;
 }
 
@@ -121,8 +122,8 @@ bool ExternalVoltage::addSingleMeasurementResult(void)
         // Read Analog to Digital Converter (ADC)
         // Taking this reading includes the 8ms conversion delay.
         // We're allowing the ADS1115 library to do the bit-to-volts conversion for us
-        adcVoltage = ads.readADC_SingleEnded_V(_dataPin);  // Getting the reading
-        MS_DBG(F("  ads.readADC_SingleEnded_V("), _dataPin, F("):"), adcVoltage);
+        adcVoltage = ads.readADC_SingleEnded_V(_adsChannel);  // Getting the reading
+        MS_DBG(F("  ads.readADC_SingleEnded_V("), _adsChannel, F("):"), adcVoltage);
 
         if (adcVoltage < 3.6 and adcVoltage > -0.3)  // Skip results out of range
         {

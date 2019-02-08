@@ -85,10 +85,10 @@ class ExternalVoltage : public Sensor
 {
 
 public:
-    // The constructor - need the power pin and the data pin  ON THE ADC
+    // The constructor - need the power pin and the data channel on the ADS1x15
     // The gain value, I2C address, and number of measurements to average are optional
     // If nothing is given a 1x gain is used.
-    ExternalVoltage(int8_t powerPin, int8_t dataPin, float gain = 1,
+    ExternalVoltage(int8_t powerPin, uint8_t adsChannel, float gain = 1,
                     uint8_t i2cAddress = ADS1115_ADDRESS, uint8_t measurementsToAverage = 1);
     // Destructor
     ~ExternalVoltage();
@@ -98,6 +98,7 @@ public:
     bool addSingleMeasurementResult(void) override;
 
 protected:
+    uint8_t _adsChannel;
     float _gain;
     uint8_t _i2cAddress;
 };

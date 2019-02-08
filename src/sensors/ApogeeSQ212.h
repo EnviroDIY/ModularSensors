@@ -71,8 +71,8 @@ class ApogeeSQ212 : public Sensor
 {
 
 public:
-    // The constructor - need the power pin and the data pin  ON THE ADC
-    ApogeeSQ212(int8_t powerPin, int8_t dataPin,
+    // The constructor - need the power pin and the data channel on the ADS1x15
+    ApogeeSQ212(int8_t powerPin, uint8_t adsChannel,
                 uint8_t i2cAddress = ADS1115_ADDRESS, uint8_t measurementsToAverage = 1);
     // Destructor
     ~ApogeeSQ212();
@@ -82,6 +82,7 @@ public:
     bool addSingleMeasurementResult(void) override;
 
 protected:
+    uint8_t _adsChannel;
     uint8_t _i2cAddress;
 
 };
