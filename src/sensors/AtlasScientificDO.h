@@ -48,11 +48,11 @@ class AtlasScientificDO : public AtlasParent
 {
 public:
     AtlasScientificDO(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_DO_I2C_ADDR, uint8_t measurementsToAverage = 1)
-     : SDI12Sensors(powerPin, i2cAddressHex, measurementsToAverage,
+     : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
                     "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
                     ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS, ATLAS_DO_MEASUREMENT_TIME_MS)
     {}
-    ~AtlasScientificDO();
+    ~AtlasScientificDO(){}
 };
 
 // The class for the DO Concentration Variable
