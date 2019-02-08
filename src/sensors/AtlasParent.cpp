@@ -1,9 +1,14 @@
 /*
- *AtlasParent.cpp
- *This file is part of the EnviroDIY modular sensors library for Arduino
+ * AtlasParent.cpp
+ * This file is part of the EnviroDIY modular sensors library for Arduino
  *
- *Initial developement for Atlas Sensors was done by Adam Gold
- *Files were edited by Sara Damiano
+ * Initial developement for Atlas Sensors was done by Adam Gold
+ * Files were edited by Sara Damiano
+ *
+ * Most I2C commands have a 300ms processing time from the time the command is
+ * written until it is possible to request a response or result, except for the
+ * commands to take a calibration point or a reading which have a 600ms
+ * processing/response time.
  *
 */
 
@@ -37,70 +42,142 @@ bool AtlasParent::setup(void)
 {
     Wire.begin();  // Start the wire library (sensor power not required)
     return Sensor::setup();  // this will set pin modes and the setup status bit
+    // TODO:  Use setup to make sure all possible response parameters are turned on
+    // The command to turn on a response parameter is dependent on the specific
+    // sensor.
+    // ?? are they all on by default ??
+}
+
+
+// The function to put the sensor to sleep
+// The Atlas sensors must be told to sleep
+bool AtlasParent::sleep(void)
+{
+    if(!checkPowerOn()){return true;}
+    if(_millisSensorActivated == 0)
+    {
+        MS_DBG(getSensorNameAndLocation(), F("was not measuring!"));
+        return true;
+    }
+
+    bool success = true;
+    MS_DBG(F("Putting"), getSensorNameAndLocation(), F("to sleep"));
+
+    Wire.beginTransmission(_i2cAddressHex);  // Transmit to the sensor
+    success &= Wire.write(F("Sleep"));  // Write "Sleep" to put it in low power mode
+    success &= !Wire.endTransmission();  // Finish
+    // NOTE: The return of 0 from endTransmission indicates success
+
+    if(success)
+    {
+        // Unset the activation time
+        _millisSensorActivated = 0;
+        // Unset the measurement request time
+        _millisMeasurementRequested = 0;
+        // Unset the status bits for sensor activation (bits 3 & 4) and measurement
+        // request (bits 5 & 6)
+        _sensorStatus &= 0b10000111;
+        MS_DBG(F("Done"));
+    }
+    else MS_DBG(getSensorNameAndLocation(), F("did not accept sleep command"));
+
+    return success;
+}
+
+
+// To start a measurement we write the command "R" to the sensor
+// NOTE:  documentation says to use a capital "R" but the examples provided
+// by Atlas use a lower case "r".
+bool AtlasParent::startSingleMeasurement(void)
+{
+    // Sensor::startSingleMeasurement() checks that if it's awake/active and sets
+    // the timestamp and status bits.  If it returns false, there's no reason to go on.
+    if (!Sensor::startSingleMeasurement()) return false;
+
+    bool success = true;
+    MS_DBG(F("Starting measurement on"), getSensorNameAndLocation());
+
+    Wire.beginTransmission(_i2cAddressHex);  // Transmit to the sensor
+    success &= Wire.write('r');  // Write "R" to start a reading
+    success &= !Wire.endTransmission();  // Finish
+    // NOTE: The return of 0 from endTransmission indicates success
+
+    if (success)
+    {
+        // Update the time that a measurement was requested
+        _millisMeasurementRequested = millis();
+    }
+    // Otherwise, make sure that the measurement start time and success bit (bit 6) are unset
+    else
+    {
+        MS_DBG(getSensorNameAndLocation(), F("did not successfully start a measurement."));
+        _millisMeasurementRequested = 0;
+        _sensorStatus &= 0b10111111;
+    }
+
+    return success;
 }
 
 bool AtlasParent::addSingleMeasurementResult(void) {
-    byte code=0;                     //used to hold the I2C response code.
-    char dataArray[20];               //we make a 20 byte character array to hold incoming data from the Cond circuit.
-    byte in_char=0;                  //used as a 1 byte buffer to store in bound bytes from the Cond Circuit.
-    byte i=0;                        //counter used for dataArray array.
-    int time_=600;                   //used to change the delay needed depending on the command sent to the EZO Class Cond Circuit.
+{
+    bool success = false;
 
-    Wire.beginTransmission(_i2cAddressHex); //call the circuit by its ID number.
-    Wire.write('r');                    //transmit the command that was sent through the serial port.
-    Wire.endTransmission();             //end the I2C data transmission.
+    // Check a measurement was *successfully* started (status bit 6 set)
+    // Only go on to get a result if it was
+    if (bitRead(_sensorStatus, 6))
+    {
+        Wire.requestFrom(_i2cAddressHex,20,1);  //call the circuit and request 20 bytes (this may be more than we need)
+        code=Wire.read();                   //the first byte is the response code, we read this separately.
 
-    delay(time_);                       //wait the correct amount of time for the circuit to complete its instruction.
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+        // Parse the response code
+        switch (code)
+        {
+            case 1:  // the command was successful.
+                MS_DBG(F("  Measurement successful"));
+                success = true;
+            break;
 
-    Wire.requestFrom(_i2cAddressHex,20,1);  //call the circuit and request 20 bytes (this may be more than we need)
-    code=Wire.read();                   //the first byte is the response code, we read this separately.
+            case 2:   // the command has failed.
+                MS_DBG(F("  Measurement Failed"));
+            break;
 
-    switch (code){                      //switch case based on what the response code is.
-        case 1:                         //decimal 1.
-            Serial.println("Success");  //means the command was successful.
-        break;                          //exits the switch case.
+            case 254:  // the command has not yet been finished calculating.
+                MS_DBG(F("  Measurement Pending"));
+            break;
 
-        case 2:                         //decimal 2.
-            Serial.println("Failed");   //means the command has failed.
-        break;                          //exits the switch case.
-
-        case 254:                       //decimal 254.
-            Serial.println("Pending");  //means the command has not yet been finished calculating.
-        break;                          //exits the switch case.
-
-        case 255:                       //decimal 255.
-            Serial.println("No Data");  //means there is no further data to send.
-        break;                          //exits the switch case.
+            case 255:  // there is no further data to send.
+                MS_DBG(F("  No Data"));
+            break;
         }
+        // If the response code is successful, parse the remaining results
+        if (success)
+            for (uint8_t i = 0; i < _numReturnedVars; i++)
+            {
+                float result = _SDI12Internal.parseFloat();
+                // The SDI-12 library should return -9999 on timeout
+                if (result == -9999 or isnan(result)) result = -9999;
+                MS_DBG(F("  Result #"), i, ':', result);
+                verifyAndAddMeasurementResult(i, result);
 
-    while(Wire.available()){            //are there bytes to receive.
-        in_char = Wire.read();          //receive a byte.
-        dataArray[i]= in_char;           //load this byte into our array.
-        i+=1;                           //incur the counter for the array element.
-            if(in_char==0){             //if we see that we have been sent a null command.
-                i=0;                    //reset the counter i to 0.
-
-                Wire.endTransmission(); //end the I2C data transmission.
-                break;                  //exit the while loop.
             }
+        }
+    }
+    else
+    {
+        // If there's no measurement, need to make sure we send over all
+        // of the "failed" result values
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+       for (uint8_t i = 0; i < _numReturnedVars; i++)
+       {
+           verifyAndAddMeasurementResult(i, (float)-9999);
+       }
     }
 
-Serial.println(dataArray);          //print the data.
+    // Unset the time stamp for the beginning of this measurement
+    _millisMeasurementRequested = 0;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10011111;
 
-Wire.beginTransmission(_i2cAddressHex); //call the circuit by its ID number.
-Wire.write("Sleep");                    //transmit the command that was sent through the serial port.
-Wire.endTransmission();             //end the I2C data transmission.
-
-//   return atof(dataArray);
-
-float tmp_float = atof(dataArray);
-
-verifyAndAddMeasurementResult(ATLAS_COND_VAR_NUM, tmp_float);
-
-// Unset the time stamp for the beginning of this measurement
-_millisMeasurementRequested = 0;
-// Unset the status bits for a measurement request (bits 5 & 6)
- _sensorStatus &= 0b10011111;
-
-// return true;
+    return success;
 }

@@ -1,9 +1,14 @@
 /*
- *AtlasParent.h
- *This file is part of the EnviroDIY modular sensors library for Arduino
+ * AtlasParent.h
+ * This file is part of the EnviroDIY modular sensors library for Arduino
  *
- *Initial developement for Atlas Sensors was done by Adam Gold
- *Files were edited by Sara Damiano
+ * Initial developement for Atlas Sensors was done by Adam Gold
+ * Files were edited by Sara Damiano
+ *
+ * Most I2C commands have a 300ms processing time from the time the command is
+ * written until it is possible to request a response or result, except for the
+ * commands to take a calibration point or a reading which have a 600ms
+ * processing/response time.
  *
  */
 
@@ -31,9 +36,18 @@ public:
 
     String getSensorLocation(void) override;
 
-    bool setup(void) override;
+    // TODO:  Use setup to make sure all possible response parameters are turned on
+    // The command to turn on a response parameter is dependent on the specific
+    // sensor. ?? are they all on by default ??
+    virtual bool setup(void) override;
+    // NOTE:  The sensor should wake as soon as any command is sent.
+    // I assume that means we can use the command to take a reading to both
+    // wake it and ask for a reading.
+    // virtual bool wake(void) override;
+    virtual bool sleep(void) override;
 
-    bool addSingleMeasurementResult(void) override;
+    virtual bool startSingleMeasurement(void) override;
+    virtual bool addSingleMeasurementResult(void) override;
 
 protected:
     uint8_t _i2cAddressHex;
