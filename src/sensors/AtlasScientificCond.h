@@ -1,6 +1,9 @@
 /*
+ *AtlasScientificCond.h
+ *This file is part of the EnviroDIY modular sensors library for Arduino
  *
- *This file was created by Sara Damiano and edited for use of Atlas Scientific Products by Adam Gold
+ *Initial developement for Atlas Sensors was done by Adam Gold
+ *Files were edited by Sara Damiano
  *
  * The output from the Atlas Scientifc Cond is the range in degrees C.
  *     Accuracy is ± 2%
@@ -17,10 +20,8 @@
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 
 // Included Dependencies
-#include "ModSensorDebugger.h"
 #include "VariableBase.h"
-#include "SensorBase.h"
-#include <Wire.h>
+#include "sensors/AtlasParent.h"
 
 // I2C address
 #define ATLAS_COND_I2C_ADDR 0x64  // 100
@@ -43,19 +44,15 @@
 #define ATLAS_SG_RESOLUTION 3
 #define ATLAS_SG_VAR_NUM 3
 
-// The main class for the MaxBotix Sonar
-class AtlasScientificCond : public Sensor
+// The main class for the Atlas Scientific Conductivity sensor
+class AtlasScientificCond : public AtlasParent
 {
 public:
-    AtlasScientificCond(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_COND_I2C_ADDR, uint8_t measurementsToAverage = 1);
+    AtlasScientificCond(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_COND_I2C_ADDR, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(powerPin, i2cAddressHex, measurementsToAverage,
+                    "AtlasScientificCond", ATLAS_COND_NUM_VARIABLES,
+                    ATLAS_COND_WARM_UP_TIME_MS, ATLAS_COND_STABILIZATION_TIME_MS, ATLAS_COND_MEASUREMENT_TIME_MS)
     ~AtlasScientificCond();
-    String getSensorLocation(void) override;
-    bool setup(void) override;
-
-    bool addSingleMeasurementResult(void) override;
-
-protected:
-    uint8_t _i2cAddressHex;
 };
 
 // The class for the Conductivity Variable

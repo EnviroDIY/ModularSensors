@@ -1,6 +1,9 @@
 /*
+ *AtlasScientificRTD.h
+ *This file is part of the EnviroDIY modular sensors library for Arduino
  *
- *This file was created by Sara Damiano and edited for use of Atlas Scientific Products by Adam Gold
+ *Initial developement for Atlas Sensors was done by Adam Gold
+ *Files were edited by Sara Damiano
  *
  * The output from the Atlas Scientifc RTD is the range in degrees C.
  *     Accuracy is ± __
@@ -17,10 +20,8 @@
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 
 // Included Dependencies
-#include "ModSensorDebugger.h"
 #include "VariableBase.h"
-#include "SensorBase.h"
-#include <Wire.h>
+#include "sensors/AtlasParent.h"
 
 // I2C address
 #define ATLAS_RTD_I2C_ADDR 0x66  // 102
@@ -34,19 +35,15 @@
 #define ATLAS_RTD_RESOLUTION 3
 #define ATLAS_RTD_VAR_NUM 0
 
-// The main class for the MaxBotix Sonar
-class AtlasScientificRTD : public Sensor
+// The main class for the Atlas Scientific RTD temperature sensor
+class AtlasScientificRTD : public AtlasParent
 {
 public:
-    AtlasScientificRTD(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_RTD_I2C_ADDR, uint8_t measurementsToAverage = 1);
+    AtlasScientificRTD(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_RTD_I2C_ADDR, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(powerPin, i2cAddressHex, measurementsToAverage,
+                    "AtlasScientificDO", ATLAS_RTD_NUM_VARIABLES,
+                    ATLAS_RTD_WARM_UP_TIME_MS, ATLAS_RTD_STABILIZATION_TIME_MS, ATLAS_RTD_MEASUREMENT_TIME_MS)
     ~AtlasScientificRTD();
-    String getSensorLocation(void) override;
-    bool setup(void) override;
-
-    bool addSingleMeasurementResult(void) override;
-
-protected:
-    uint8_t _i2cAddressHex;
 };
 
 // The class for the Temp Variable

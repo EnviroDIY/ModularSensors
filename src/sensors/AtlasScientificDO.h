@@ -1,6 +1,9 @@
 /*
+ *AtlasScientificDO.h
+ *This file is part of the EnviroDIY modular sensors library for Arduino
  *
- *This file was created by Sara Damiano and edited for use of Atlas Scientific Products by Adam Gold
+ *Initial developement for Atlas Sensors was done by Adam Gold
+ *Files were edited by Sara Damiano
  *
  * The output from the Atlas Scientifc DO is the range in degrees C.
  *     Accuracy is ± __
@@ -17,10 +20,8 @@
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 
 // Included Dependencies
-#include "ModSensorDebugger.h"
 #include "VariableBase.h"
-#include "SensorBase.h"
-#include <Wire.h>
+#include "sensors/AtlasParent.h"
 
 // I2C address
 #define ATLAS_DO_I2C_ADDR 0x61  // 97
@@ -37,19 +38,16 @@
 #define ATLAS_DOPCT_RESOLUTION 1
 #define ATLAS_DOPCT_VAR_NUM 1
 
-// The main class for the MaxBotix Sonar
-class AtlasScientificDO : public Sensor
+// The main class for the Atlas Scientific DO sensor
+class AtlasScientificDO : public AtlasParent
 {
 public:
-    AtlasScientificDO(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_DO_I2C_ADDR, uint8_t measurementsToAverage = 1);
+    AtlasScientificDO(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_DO_I2C_ADDR, uint8_t measurementsToAverage = 1)
+     : SDI12Sensors(powerPin, i2cAddressHex, measurementsToAverage,
+                    "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
+                    ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS, ATLAS_DO_MEASUREMENT_TIME_MS)
+    {}
     ~AtlasScientificDO();
-    String getSensorLocation(void) override;
-    bool setup(void) override;
-
-    bool addSingleMeasurementResult(void) override;
-
-protected:
-    uint8_t _i2cAddressHex;
 };
 
 // The class for the DO Concentration Variable

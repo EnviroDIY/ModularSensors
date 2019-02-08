@@ -1,38 +1,49 @@
 /*
- *Initial library developement by Sara Damiano (sdamiano@stroudcenter.org).
+ *AtlasParent.cpp
+ *This file is part of the EnviroDIY modular sensors library for Arduino
+ *
+ *Initial developement for Atlas Sensors was done by Adam Gold
+ *Files were edited by Sara Damiano
  *
 */
 
-#include "AtlasScientificCond.h"
+#include "AtlasParent.h"
 // #include "AtlasScientificRTD.h"
 #include <Wire.h>
 
 
 // The constructor - because this is I2C, only need the power pin
 // This sensor has a set I2C address of 0X64, or 100
-AtlasScientificCond::AtlasScientificCond(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage)
-    : Sensor("AtlasScientificCond", ATLAS_COND_NUM_VARIABLES,
-             ATLAS_COND_WARM_UP_TIME_MS, ATLAS_COND_STABILIZATION_TIME_MS, ATLAS_COND_MEASUREMENT_TIME_MS,
-             powerPin, -1, measurementsToAverage),
-      _i2cAddressHex(i2cAddressHex)
+AtlasParent::AtlasParent(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage,
+                         const char *sensorName, uint8_t numReturnedVars,
+                         uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
+  : Sensor(sensorName, numReturnedVars,
+           warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
+           powerPin, dataPin, measurementsToAverage),
+    _i2cAddressHex(i2cAddressHex)
 {}
-AtlasScientificCond::~AtlasScientificCond(){}
+AtlasParent::~AtlasParent(){}
 
 
-String AtlasScientificCond::getSensorLocation(void){return F("I2C_0x64");}
+String AtlasParent::getSensorLocation(void)
+{
+    String address = F("I2C_0x");
+    address += String(_i2cAddressHex, HEX);
+    return address;
+}
 
 
-bool AtlasScientificCond::setup(void)
+bool AtlasParent::setup(void)
 {
     Wire.begin();  // Start the wire library (sensor power not required)
     return Sensor::setup();  // this will set pin modes and the setup status bit
 }
 
-bool AtlasScientificCond::addSingleMeasurementResult(void) {
+bool AtlasParent::addSingleMeasurementResult(void) {
     byte code=0;                     //used to hold the I2C response code.
-    char Cond_data[20];               //we make a 20 byte character array to hold incoming data from the Cond circuit.
+    char dataArray[20];               //we make a 20 byte character array to hold incoming data from the Cond circuit.
     byte in_char=0;                  //used as a 1 byte buffer to store in bound bytes from the Cond Circuit.
-    byte i=0;                        //counter used for Cond_data array.
+    byte i=0;                        //counter used for dataArray array.
     int time_=600;                   //used to change the delay needed depending on the command sent to the EZO Class Cond Circuit.
 
     Wire.beginTransmission(_i2cAddressHex); //call the circuit by its ID number.
@@ -64,7 +75,7 @@ bool AtlasScientificCond::addSingleMeasurementResult(void) {
 
     while(Wire.available()){            //are there bytes to receive.
         in_char = Wire.read();          //receive a byte.
-        Cond_data[i]= in_char;           //load this byte into our array.
+        dataArray[i]= in_char;           //load this byte into our array.
         i+=1;                           //incur the counter for the array element.
             if(in_char==0){             //if we see that we have been sent a null command.
                 i=0;                    //reset the counter i to 0.
@@ -74,15 +85,15 @@ bool AtlasScientificCond::addSingleMeasurementResult(void) {
             }
     }
 
-Serial.println(Cond_data);          //print the data.
+Serial.println(dataArray);          //print the data.
 
 Wire.beginTransmission(_i2cAddressHex); //call the circuit by its ID number.
 Wire.write("Sleep");                    //transmit the command that was sent through the serial port.
 Wire.endTransmission();             //end the I2C data transmission.
 
-//   return atof(Cond_data);
+//   return atof(dataArray);
 
-float tmp_float = atof(Cond_data);
+float tmp_float = atof(dataArray);
 
 verifyAndAddMeasurementResult(ATLAS_COND_VAR_NUM, tmp_float);
 
