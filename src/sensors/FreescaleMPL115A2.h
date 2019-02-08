@@ -21,19 +21,20 @@
  * Assume sensor is immediately stable
 */
 
+// Header Guards
 #ifndef FreescaleMPL115A2_h
 #define FreescaleMPL115A2_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
-
-
-#include "SensorBase.h"
 #include "VariableBase.h"
+#include "SensorBase.h"
 #include <Adafruit_MPL115A2.h>
 
+// Sensor Specific Defines
 #define MPL115A2_NUM_VARIABLES 2
 #define MPL115A2_WARM_UP_TIME_MS 6
 #define MPL115A2_STABILIZATION_TIME_MS 0
@@ -51,6 +52,7 @@ class MPL115A2 : public Sensor
 {
 public:
     MPL115A2(int8_t powerPin, uint8_t measurementsToAverage = 1);
+    ~MPL115A2();
 
     bool setup(void) override;
     String getSensorLocation(void) override;
@@ -73,6 +75,7 @@ public:
                MPL115A2_TEMP_RESOLUTION,
                "MPL115A2_Temp", UUID, customVarCode)
     {}
+    ~MPL115A2_Temp(){}
 };
 
 
@@ -87,7 +90,8 @@ public:
                MPL115A2_PRESSURE_RESOLUTION,
                "MPL115A2_Pressure", UUID, customVarCode)
     {}
+    ~MPL115A2_Pressure(){}
 };
 
 
-#endif
+#endif  // Header Guard

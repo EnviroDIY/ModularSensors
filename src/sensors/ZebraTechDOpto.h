@@ -32,12 +32,15 @@
  *
 */
 
+// Header Guards
 #ifndef ZebraTechDOpto_h
 #define ZebraTechDOpto_h
 
-#include "SDI12Sensors.h"
+// Included Dependencies
 #include "VariableBase.h"
+#include "sensors/SDI12Sensors.h"
 
+// Sensor Specific Defines
 #define DOPTO_NUM_VARIABLES 3
 #define DOPTO_WARM_UP_TIME_MS 275
 #define DOPTO_STABILIZATION_TIME_MS 0
@@ -73,6 +76,7 @@ public:
                     "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
                     DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS, DOPTO_MEASUREMENT_TIME_MS)
     {}
+    ~ZebraTechDOpto(){}
 
 };
 
@@ -88,6 +92,7 @@ public:
                 DOPTO_TEMP_RESOLUTION,
                 "DOtempC", UUID, customVarCode)
     {}
+    ~ZebraTechDOpto_Temp(){}
 };
 
 
@@ -102,6 +107,7 @@ public:
                 DOPTO_DOPCT_RESOLUTION,
                 "DOpercent", UUID, customVarCode)
     {}
+    ~ZebraTechDOpto_DOpct(){}
 };
 
 
@@ -116,6 +122,7 @@ public:
                 DOPTO_DOMGL_RESOLUTION,
                 "DOppm", UUID, customVarCode)
     {}
+    ~ZebraTechDOpto_DOmgL(){}
 };
 
-#endif
+#endif  // Header Guard

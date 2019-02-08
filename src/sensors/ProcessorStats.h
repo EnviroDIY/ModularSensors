@@ -12,16 +12,20 @@
  * If the processor is awake, it's ready to take a reading.
 */
 
+// Header Guards
 #ifndef ProcessorStats_h
 #define ProcessorStats_h
 
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
-
-#include "SensorBase.h"
 #include "VariableBase.h"
+#include "SensorBase.h"
 
-#define PROCESSOR_NUM_VARIABLES 2
+// Sensor Specific Defines
+#define PROCESSOR_NUM_VARIABLES 3
 #define PROCESSOR_WARM_UP_TIME_MS 0
 #define PROCESSOR_STABILIZATION_TIME_MS 0
 #define PROCESSOR_MEASUREMENT_TIME_MS 0
@@ -32,6 +36,9 @@
 #define PROCESSOR_RAM_RESOLUTION 0
 #define PROCESSOR_RAM_VAR_NUM 1
 
+#define PROCESSOR_SAMPNUM_RESOLUTION 0
+#define PROCESSOR_SAMPNUM_VAR_NUM 2
+
 
 // The "Main" class for the Processor
 // Only need a sleep and wake since these DON'T use the default of powering up and down
@@ -40,19 +47,16 @@ class ProcessorStats : public Sensor
 public:
     // Need to know the Mayfly version because the battery resistor depends on it
     ProcessorStats(const char *version);
+    ~ProcessorStats();
 
     String getSensorLocation(void) override;
-
-    // Do nothing for the power down and sleep functions
-    // We don't want the processor to go to sleep or power down with the sensors
-    bool sleep(void) override;
-    void powerDown(void) override;
 
     bool addSingleMeasurementResult(void) override;
 
 private:
     const char *_version;
-    int _batteryPin;
+    int8_t _batteryPin;
+    int16_t sampNum;
 };
 
 
@@ -67,6 +71,7 @@ public:
                  PROCESSOR_BATTERY_RESOLUTION,
                  "Battery", UUID, customVarCode)
     {}
+    ~ProcessorStats_Batt(){}
 };
 
 
@@ -81,6 +86,22 @@ public:
                  PROCESSOR_RAM_RESOLUTION,
                  "FreeRam", UUID, customVarCode)
     {}
+    ~ProcessorStats_FreeRam(){}
 };
 
-#endif
+
+// Defines the "Sample Number" This is a board diagnostic
+class ProcessorStats_SampleNumber : public Variable
+{
+public:
+    ProcessorStats_SampleNumber(Sensor *parentSense,
+                           const char *UUID = "", const char *customVarCode = "")
+      : Variable(parentSense, PROCESSOR_SAMPNUM_VAR_NUM,
+                 "sequenceNumber", "Dimensionless",
+                 PROCESSOR_SAMPNUM_RESOLUTION,
+                 "SampNum", UUID, customVarCode)
+    {}
+    ~ProcessorStats_SampleNumber(){}
+};
+
+#endif  // Header Guard

@@ -33,12 +33,15 @@
  * Time between "StartMeasurement" command and stable reading - 4.5sec
 */
 
+// Header Guards
 #ifndef YosemitechY533_h
 #define YosemitechY533_h
 
-#include "YosemitechParent.h"
+// Included Dependencies
 #include "VariableBase.h"
+#include "sensors/YosemitechParent.h"
 
+// Sensor Specific Defines
 #define Y533_NUM_VARIABLES 3
 #define Y533_WARM_UP_TIME_MS 500
 #define Y533_STABILIZATION_TIME_MS 4500
@@ -58,22 +61,23 @@ class YosemitechY533 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY533(byte modbusAddress, Stream* stream, int8_t powerPin,
+    YosemitechY533(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                         Y533, "YosemitechY533", Y533_NUM_VARIABLES,
                         Y533_WARM_UP_TIME_MS, Y533_STABILIZATION_TIME_MS, Y533_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY533(byte modbusAddress, Stream& stream, int8_t powerPin,
+    YosemitechY533(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                         Y533, "YosemitechY533", Y533_NUM_VARIABLES,
                         Y533_WARM_UP_TIME_MS, Y533_STABILIZATION_TIME_MS, Y533_MEASUREMENT_TIME_MS)
     {}
+    ~YosemitechY533(){}
 };
 
 
-// Defines the pH
+// Defines the pH Variable
 class YosemitechY533_pH : public Variable
 {
 public:
@@ -84,6 +88,7 @@ public:
                 Y533_PH_RESOLUTION,
                 "Y533pH", UUID, customVarCode)
     {}
+    ~YosemitechY533_pH(){}
 };
 
 
@@ -96,8 +101,9 @@ public:
      : Variable(parentSense, Y533_TEMP_VAR_NUM,
                 "temperature", "degreeCelsius",
                 Y533_TEMP_RESOLUTION,
-                "Y533temp", UUID, customVarCode)
+                "Y533Temp", UUID, customVarCode)
     {}
+    ~YosemitechY533_Temp(){}
 };
 
 
@@ -112,6 +118,7 @@ public:
                 Y533_VOLT_RESOLUTION,
                 "Y533Potential", UUID, customVarCode)
     {}
+    ~YosemitechY533_Voltage(){}
 };
 
-#endif
+#endif  // Header Guard

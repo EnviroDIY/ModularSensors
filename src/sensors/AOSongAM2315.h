@@ -22,17 +22,19 @@
  * Measurement time: 2sec
 */
 
+// Header Guards
 #ifndef AOSongAM2315_h
 #define AOSongAM2315_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
-
-#include "SensorBase.h"
 #include "VariableBase.h"
+#include "SensorBase.h"
 
+// Sensor Specific Defines
 #define AM2315_NUM_VARIABLES 2
 #define AM2315_WARM_UP_TIME_MS 500
 #define AM2315_STABILIZATION_TIME_MS 500
@@ -51,6 +53,8 @@ class AOSongAM2315 : public Sensor
 public:
     // The constructor - because this is I2C, only need the power pin
     AOSongAM2315(int8_t powerPin, uint8_t measurementsToAverage = 1);
+    // Destructor
+    ~AOSongAM2315();
 
     String getSensorLocation(void) override;
 
@@ -71,6 +75,7 @@ public:
                AM2315_HUMIDITY_RESOLUTION,
                "AM2315Humidity", UUID, customVarCode)
     {}
+    ~AOSongAM2315_Humidity(){};
 };
 
 
@@ -85,6 +90,7 @@ public:
                AM2315_TEMP_RESOLUTION,
                "AM2315Temp", UUID, customVarCode)
     {}
+    ~AOSongAM2315_Temp(){};
 };
 
-#endif
+#endif  // Header Guard

@@ -28,12 +28,15 @@
  * Time between "StartMeasurement" command and stable reading - 10sec
 */
 
+// Header Guards
 #ifndef YosemitechY520_h
 #define YosemitechY520_h
 
-#include "YosemitechParent.h"
+// Included Dependencies
 #include "VariableBase.h"
+#include "sensors/YosemitechParent.h"
 
+// Sensor Specific Defines
 #define Y520_NUM_VARIABLES 2
 #define Y520_WARM_UP_TIME_MS 1600
 #define Y520_STABILIZATION_TIME_MS 10000
@@ -50,18 +53,19 @@ class YosemitechY520 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY520(byte modbusAddress, Stream* stream, int8_t powerPin,
+    YosemitechY520(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                         Y520, "YosemitechY520", Y520_NUM_VARIABLES,
                         Y520_WARM_UP_TIME_MS, Y520_STABILIZATION_TIME_MS, Y520_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY520(byte modbusAddress, Stream& stream, int8_t powerPin,
+    YosemitechY520(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                         Y520, "YosemitechY520", Y520_NUM_VARIABLES,
                         Y520_WARM_UP_TIME_MS, Y520_STABILIZATION_TIME_MS, Y520_MEASUREMENT_TIME_MS)
     {}
+    ~YosemitechY520(){}
 };
 
 
@@ -75,6 +79,7 @@ public:
                 Y520_COND_RESOLUTION,
                 "Y520Cond", UUID, customVarCode)
     {}
+    ~YosemitechY520_Cond(){}
 };
 
 
@@ -86,8 +91,9 @@ public:
      : Variable(parentSense, Y520_TEMP_VAR_NUM,
                 "temperature", "degreeCelsius",
                 Y520_TEMP_RESOLUTION,
-                "Y520temp", UUID, customVarCode)
+                "Y520Temp", UUID, customVarCode)
     {}
+    ~YosemitechY520_Temp(){}
 };
 
-#endif
+#endif  // Header Guard

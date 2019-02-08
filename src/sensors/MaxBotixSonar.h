@@ -13,17 +13,19 @@
  * Warm up time to completion of header:  160ms
  */
 
+// Header Guards
 #ifndef MaxBotixSonar_h
 #define MaxBotixSonar_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
-
-#include "SensorBase.h"
 #include "VariableBase.h"
+#include "SensorBase.h"
 
+// Sensor Specific Defines
 #define HRXL_NUM_VARIABLES 1
 #define HRXL_WARM_UP_TIME_MS 160
 #define HRXL_STABILIZATION_TIME_MS 0
@@ -37,6 +39,7 @@ class MaxBotixSonar : public Sensor
 public:
     MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin = -1, uint8_t measurementsToAverage = 1);
     MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin = -1, uint8_t measurementsToAverage = 1);
+    ~MaxBotixSonar();
 
     String getSensorLocation(void) override;
 
@@ -46,7 +49,7 @@ public:
     bool addSingleMeasurementResult(void) override;
 
 private:
-    int _triggerPin;
+    int8_t _triggerPin;
     Stream* _stream;
 };
 
@@ -62,6 +65,7 @@ public:
                HRXL_RESOLUTION,
                "SonarRange", UUID, customVarCode)
     {}
+    ~MaxBotixSonar_Range(){}
 };
 
-#endif
+#endif  // Header Guard

@@ -31,6 +31,8 @@ MPL115A2::MPL115A2(int8_t powerPin, uint8_t measurementsToAverage)
               MPL115A2_WARM_UP_TIME_MS, MPL115A2_STABILIZATION_TIME_MS, MPL115A2_MEASUREMENT_TIME_MS,
               powerPin, -1, measurementsToAverage)
 {}
+// Destructor
+MPL115A2::~MPL115A2(){}
 
 
 String MPL115A2::getSensorLocation(void){return F("I2C_0x60");}
@@ -38,8 +40,22 @@ String MPL115A2::getSensorLocation(void){return F("I2C_0x60");}
 
 bool MPL115A2::setup(void)
 {
+    bool retVal = Sensor::setup();  // this will set pin modes and the setup status bit
+
+    // This sensor needs power for setup!
+    // The MPL115A2's begin() reads required coefficients from the sensor.
+    bool wasOn = checkPowerOn();
+    if(!wasOn){powerUp();}
+    waitForWarmUp();
+
+    // Run the sensor begin()
+    // This doesn't return anything to indicate failure or success, we just have to hope
     mpl115a2_internal.begin();
-    return Sensor::setup();  // this will set timestamp and status bit
+
+    // Turn the power back off it it had been turned on
+    if(!wasOn){powerDown();}
+
+    return retVal;
 }
 
 
@@ -49,8 +65,12 @@ bool MPL115A2::addSingleMeasurementResult(void)
     float temp = -9999;
     float press = -9999;
 
-    if (_millisMeasurementRequested > 0)
+    // Check a measurement was *successfully* started (status bit 6 set)
+    // Only go on to get a result if it was
+    if (bitRead(_sensorStatus, 6))
     {
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
         // Read values
         mpl115a2_internal.getPT(&press,&temp);
 
@@ -62,20 +82,18 @@ bool MPL115A2::addSingleMeasurementResult(void)
             press = -9999;
         }
 
-        MS_DBG(F("Temperature: "), temp);
-        MS_DBG(F("Pressure: "), press);
+        MS_DBG(F("  Temperature:"), temp);
+        MS_DBG(F("  Pressure:"), press);
     }
-    else MS_DBG(F("Sensor is not currently measuring!\n"));
+    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
 
     verifyAndAddMeasurementResult(MPL115A2_TEMP_VAR_NUM, temp);
     verifyAndAddMeasurementResult(MPL115A2_PRESSURE_VAR_NUM, press);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
-    // Unset the status bit for a measurement having been requested (bit 5)
-    _sensorStatus &= 0b11011111;
-    // Set the status bit for measurement completion (bit 6)
-    _sensorStatus |= 0b01000000;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10011111;
 
     // no way of knowing if successful, just return true
     return true;

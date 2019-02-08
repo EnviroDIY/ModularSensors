@@ -35,12 +35,14 @@ AOSongDHT::AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type, uint8_t meas
 {
     _dhtType = type;
 }
+// Destructor - does nothing.
+AOSongDHT::~AOSongDHT(){}
 
 
 bool AOSongDHT::setup(void)
 {
-    dht_internal.begin();  // Start up the sensor
-    return Sensor::setup();  // this will set timestamp and status bit
+    dht_internal.begin();  // Start up the sensor (only sets pin modes, sensor power not required)
+    return Sensor::setup();  // this will set pin modes and the setup status bit
 }
 
 
@@ -64,11 +66,14 @@ bool AOSongDHT::addSingleMeasurementResult(void)
     float temp_val = -9999;
     float hi_val = -9999;
 
-    if (_millisMeasurementRequested > 0)
+    // Check a measurement was *successfully* started (status bit 6 set)
+    // Only go on to get a result if it was
+    if (bitRead(_sensorStatus, 6))
     {
         // Reading temperature or humidity takes about 250 milliseconds!
         for (uint8_t i = 0; i < 5; i++)  // Make 5 attempts to get a decent reading
         {
+            MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
             // First read the humidity
             humid_val = dht_internal.readHumidity();
             // Read temperature as Celsius (the default)
@@ -79,27 +84,27 @@ bool AOSongDHT::addSingleMeasurementResult(void)
             {
                 // Compute heat index in Celsius (isFahreheit = false)
                 hi_val = dht_internal.computeHeatIndex(temp_val, humid_val, false);
-                MS_DBG(F("Temp is: "), temp_val, F("°C"));
-                MS_DBG(F(" Humidity is: "), humid_val, F("%"));
-                MS_DBG(F(" Calculated Heat Index is: "), hi_val, F("°C\n"));
+                MS_DBG(F("  Temp:"), temp_val, F("°C"));
+                MS_DBG(F("  Humidity:"), humid_val, '%');
+                MS_DBG(F("  Calculated Heat Index:"), hi_val, F("°C"));
                 success = true;
                 break;
             }
             else
             {
                 if (i < 4) {
-                    MS_DBG(F("Failed to read from DHT sensor, Retrying...\n"));
+                    MS_DBG(F("  Failed to read from DHT sensor, Retrying..."));
                     delay(100);
                 }
                 else {
-                    MS_DBG(F("Failed to read from DHT sensor!\n"));
+                    MS_DBG(F("  Failed to read from DHT sensor!"));
                     if (isnan(humid_val)) humid_val = -9999;
                     if (isnan(temp_val)) temp_val = -9999;
                 }
             }
         }
     }
-    else MS_DBG(F("Sensor is not currently measuring!\n"));
+    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
 
     // Store the results in the sensorValues array
     verifyAndAddMeasurementResult(DHT_TEMP_VAR_NUM, temp_val);
@@ -108,10 +113,8 @@ bool AOSongDHT::addSingleMeasurementResult(void)
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
-    // Unset the status bit for a measurement having been requested (bit 5)
-    _sensorStatus &= 0b11011111;
-    // Set the status bit for measurement completion (bit 6)
-    _sensorStatus |= 0b01000000;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10011111;
 
     return success;
 }

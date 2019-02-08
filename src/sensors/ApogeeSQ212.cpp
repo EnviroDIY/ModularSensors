@@ -4,7 +4,7 @@
  *
  * Written By:  Anthony Aufdenkampe <aaufdenkampe@limno.com>
  * Adapted from CampbellOBS3.h by Sara Damiano (sdamiano@stroudcenter.org)
-
+ *
  * This file is for the Apogee SQ-212 Quantum Light sensor
  * This is dependent on the soligen2010 fork of the Adafruit ADS1015 library.
  *
@@ -17,8 +17,8 @@
  * Range is 0 to 2500 µmol m-2 s-1
  * Accuracy is ± 0.5%
  * Resolution:
- *  16-bit ADC: 0.04 µmol m-2 s-1 - This is what is supported!
- *  12-bit ADC: 2.44 µmol m-2 s-1
+ *  16-bit ADC: 0.3125 µmol m-2 s-1
+ *  12-bit ADC: 5 µmol m-2 s-1
  *
  * Technical specifications for the Apogee SQ-212 can be found at:
  * https://www.apogeeinstruments.com/sq-212-amplified-0-2-5-volt-sun-calibration-quantum-sensor/
@@ -35,82 +35,95 @@
 
 
 // The constructor - need the power pin and the data pin
-ApogeeSQ212::ApogeeSQ212(int8_t powerPin, int8_t dataPin, uint8_t i2cAddress, uint8_t measurementsToAverage)
+ApogeeSQ212::ApogeeSQ212(int8_t powerPin, uint8_t adsChannel, uint8_t i2cAddress, uint8_t measurementsToAverage)
     : Sensor("ApogeeSQ212", SQ212_NUM_VARIABLES,
              SQ212_WARM_UP_TIME_MS, SQ212_STABILIZATION_TIME_MS, SQ212_MEASUREMENT_TIME_MS,
-             powerPin, dataPin, measurementsToAverage)
+             powerPin, -1, measurementsToAverage)
 {
+    _adsChannel = adsChannel;
     _i2cAddress = i2cAddress;
 }
+// Destructor
+ApogeeSQ212::~ApogeeSQ212(){};
 
 
 String ApogeeSQ212::getSensorLocation(void)
 {
+    #ifndef MS_USE_ADS1015
     String sensorLocation = F("ADS1115_0x");
+    #else
+    String sensorLocation = F("ADS1015_0x");
+    #endif
     sensorLocation += String(_i2cAddress, HEX);
-    sensorLocation += F("_Pin");
-    sensorLocation += String(_dataPin);
+    sensorLocation += F("_Channel");
+    sensorLocation += String(_adsChannel);
     return sensorLocation;
 }
 
 
 bool ApogeeSQ212::addSingleMeasurementResult(void)
 {
-    // We're actually only starting a measurment within the addSingleMeasurementResult
-    // function.  The measurements are very fast (8ms) so we're not going to worry
-    // about the time we're losing.  Doing it this way means that any other sensor
-    // that uses the same ADD will be able to set the gain properly and will not
-    // have that gain setting over-written here.
-
-    // Create an Auxillary ADD object
-    Adafruit_ADS1115 ads(_i2cAddress);     /* Use this for the 16-bit version */
-    // ADS1115 Library default settings:
-    //    - single-shot mode (powers down between conversions
-    //    - 128 samples per second (8ms conversion time)
-    //    - 2/3 gain +/- 6.144V range
-    //      (limited to VDD +0.3V max, so only really up to 3.6V when powered at 3.3V!)
-
-    // Bump the gain up to 1x = +/- 4.096V range.  (Again, really only to 3.6V when powered at 3.3V)
-    // Sensor return range is 0-2.5V, but the next gain option is 2x which only allows up to 2.048V
-    ads.setGain(GAIN_ONE);
-    // Begin ADC
-    ads.begin();
-    // Mark the time that the measurement started
-    // Again, we're resetting this here because we only just started the ADD!
-    _millisMeasurementRequested = millis();
-
-    // Make sure we've waited long enough for a new reading to be available
-    // We're actually doing the wait here, because unlike most sensors we only
-    // started the measurement in this step.
-    waitForMeasurementCompletion();
-
     // Variables to store the results in
     float adcVoltage = -9999;
     float calibResult = -9999;
 
-    // Read Analog to Digital Converter (ADC)
-    // Taking this reading includes the 8ms conversion delay.  Since it is so
-    // short, I'm not making any effort to avoid it.
-    // In this, we're allowing the library to do the bit-to-volts conversion for us
-    adcVoltage = ads.readADC_SingleEnded_V(_dataPin);  // Getting the reading
-    MS_DBG(F("ads.readADC_SingleEnded_V("), _dataPin, F("): "), adcVoltage, F("\t\t"));
-
-    if (adcVoltage < 3.6 and adcVoltage > -0.3)  // Skip results out of range
+    // Check a measurement was *successfully* started (status bit 6 set)
+    // Only go on to get a result if it was
+    if (bitRead(_sensorStatus, 6))
     {
-        // Apogee SQ-212 Calibration Factor = 1.0 μmol m-2 s-1 per mV;
-        calibResult = 1 * adcVoltage * 1000 ;  // in units of μmol m-2 s-1 (microeinsteinPerSquareMeterPerSecond)
-        MS_DBG(F("calibResult: "), calibResult, F("\n"));
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
+        // Create an Auxillary ADD object
+        // We create and set up the ADC object here so that each sensor using
+        // the ADC may set the gain appropriately without effecting others.
+        #ifndef MS_USE_ADS1015
+        Adafruit_ADS1115 ads(_i2cAddress);  // Use this for the 16-bit version
+        #else
+        Adafruit_ADS1015 ads(_i2cAddress);  // Use this for the 12-bit version
+        #endif
+        // ADS Library default settings:
+        //  - TI1115 (16 bit)
+        //    - single-shot mode (powers down between conversions)
+        //    - 128 samples per second (8ms conversion time)
+        //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
+        //  - TI1015 (12 bit)
+        //    - single-shot mode (powers down between conversions)
+        //    - 1600 samples per second (625µs conversion time)
+        //    - 2/3 gain +/- 6.144V range (limited to VDD +0.3V max)
+
+        // Bump the gain up to 1x = +/- 4.096V range
+        // Sensor return range is 0-2.5V, but the next gain option is 2x which
+        // only allows up to 2.048V
+        ads.setGain(GAIN_ONE);
+        // Begin ADC
+        ads.begin();
+
+        // Read Analog to Digital Converter (ADC)
+        // Taking this reading includes the 8ms conversion delay.
+        // We're allowing the ADS1115 library to do the bit-to-volts conversion for us
+        adcVoltage = ads.readADC_SingleEnded_V(_adsChannel);  // Getting the reading
+        MS_DBG(F("  ads.readADC_SingleEnded_V("), _adsChannel, F("):"), adcVoltage);
+
+        if (adcVoltage < 3.6 and adcVoltage > -0.3)  // Skip results out of range
+        {
+            // Apogee SQ-212 Calibration Factor = 1.0 μmol m-2 s-1 per mV;
+            calibResult = 1 * adcVoltage * 1000 ;  // in units of μmol m-2 s-1 (microeinsteinPerSquareMeterPerSecond)
+            MS_DBG(F("  calibResult:"), calibResult);
+        }
+        else  // set invalid voltages back to -9999
+        {
+            adcVoltage = -9999;
+        }
     }
-    else MS_DBG(F("\n"));
+    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
 
     verifyAndAddMeasurementResult(SQ212_PAR_VAR_NUM, calibResult);
+    verifyAndAddMeasurementResult(SQ212_VOLTAGE_VAR_NUM, adcVoltage);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
-    // Unset the status bit for a measurement having been requested (bit 5)
-    _sensorStatus &= 0b11011111;
-    // Set the status bit for measurement completion (bit 6)
-    _sensorStatus |= 0b01000000;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10011111;
 
     if (adcVoltage < 3.6 and adcVoltage > -0.3) return true;
     else return false;

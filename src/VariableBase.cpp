@@ -18,9 +18,9 @@ const char* Variable::VAR_BASE_UNKNOWN = "Unknown";
 
 // The constructor for a measured variable - that is, one whose values are
 // updated by a sensor.
-Variable::Variable(Sensor *parentSense, int varNum,
+Variable::Variable(Sensor *parentSense, uint8_t varNum,
                    const char *varName, const char *varUnit,
-                   unsigned int decimalResolution,
+                   uint8_t decimalResolution,
                    const char *defaultVarCode,
                    const char *UUID, const char *customVarCode)
 {
@@ -38,6 +38,9 @@ Variable::Variable(Sensor *parentSense, int varNum,
     // When we create the variable, we also want to initialize it with a current
     // value of -9999 (ie, a bad result).
     _currentValue = -9999;
+
+    // Attach to the parent sensor right at object creation
+    attachSensor(_varNum, parentSensor);
 }
 
 // The constructor for a calculated variable  - that is, one whose value is
@@ -45,7 +48,7 @@ Variable::Variable(Sensor *parentSense, int varNum,
 // NOTE:  ALL arguments are required!
 Variable::Variable(float (*calcFxn)(),
                    const char *varName, const char *varUnit,
-                   unsigned int decimalResolution,
+                   uint8_t decimalResolution,
                    const char *UUID, const char *customVarCode)
 {
     isCalculated = true;
@@ -64,6 +67,9 @@ Variable::Variable(float (*calcFxn)(),
     _currentValue = -9999;
 }
 
+// Destructor
+Variable::~Variable(){}
+
 
 // This notifies the parent sensor that it has an observing variable
 // This function should never be called for a calculated variable
@@ -71,9 +77,9 @@ void Variable::attachSensor(int varNum, Sensor *parentSense)
 {
     if (!isCalculated)
     {
-        MS_DBG(F("Attempting to register "), getVarName());
-        MS_DBG(F(" to "), parentSense->getSensorName());
-        MS_DBG(F(" attached at "), parentSense->getSensorLocation(), F("...   \n"));
+        MS_DBG(F("Attempting to register"), getVarName(), F("to"),
+               parentSense->getSensorName(), F("attached at"),
+               parentSense->getSensorLocation(), F("..."));
         parentSense->registerVariable(varNum, this);
     }
 }
@@ -86,17 +92,8 @@ void Variable::onSensorUpdate(Sensor *parentSense)
     if (!isCalculated)
     {
         _currentValue = parentSense->sensorValues[_varNum];
-        MS_DBG(F("... received "), _currentValue, F("\n"));
+        MS_DBG(F("... received"), _currentValue);
     }
-}
-
-
-// This is a helper - it returns the name of the parent sensor, if applicable
-// This is needed for dealing with variables in arrays
-String Variable::getParentSensorLocation(void)
-{
-    if (!isCalculated) return parentSensor->getSensorLocation();
-    else return "Calculated";
 }
 
 
@@ -109,12 +106,21 @@ String Variable::getParentSensorName(void)
 }
 
 
-// This sets up the variable (generally attaching it to its parent)
-bool Variable::setup(void)
+// This is a helper - it returns the name and location of the parent sensor, if applicable
+// This is needed for dealing with variables in arrays
+String Variable::getParentSensorNameAndLocation(void)
 {
-    if (!isCalculated) attachSensor(_varNum, parentSensor);
-    return true;
+    if (!isCalculated) return parentSensor->getSensorNameAndLocation();
+    else return "Calculated";
 }
+
+
+// This sets up the variable (generally attaching it to its parent)
+// bool Variable::setup(void)
+// {
+//     if (!isCalculated) attachSensor(_varNum, parentSensor);
+//     return true;
+// }
 
 // This returns the variable's name using http://vocabulary.odm2.org/variablename/
 String Variable::getVarName(void){return _varName;}
@@ -159,7 +165,7 @@ String Variable::getValueString(bool updateValue)
     // Need this because otherwise get extra spaces in strings from int
     if (_decimalResolution == 0)
     {
-        int val = int(getValue(updateValue));
+        int16_t val = int(getValue(updateValue));
         return String(val);
     }
     else

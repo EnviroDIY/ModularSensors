@@ -27,16 +27,19 @@
  * Time between "StartMeasurement" command and stable reading - 22sec
 */
 
+// Header Guards
 #ifndef YosemitechY511_h
 #define YosemitechY511_h
 
-#include "YosemitechParent.h"
+// Included Dependencies
 #include "VariableBase.h"
+#include "sensors/YosemitechParent.h"
 
+// Sensor Specific Defines
 #define Y511_NUM_VARIABLES 2
-#define Y511_WARM_UP_TIME_MS 500
-#define Y511_STABILIZATION_TIME_MS 22000
-#define Y511_MEASUREMENT_TIME_MS 1700
+#define Y511_WARM_UP_TIME_MS 8000         // 500 ms to receive commands, but if activating brush warmup+stabilization must >20s
+#define Y511_STABILIZATION_TIME_MS 40000  // warmup+stabilization > 48 s for consecutive readings to give different results
+#define Y511_MEASUREMENT_TIME_MS 4000     // could potentially be lower with a longer stabilization time. More testing needed.
 
 #define Y511_TURB_RESOLUTION 2
 #define Y511_TURB_VAR_NUM 0
@@ -49,18 +52,19 @@ class YosemitechY511 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY511(byte modbusAddress, Stream* stream, int8_t powerPin,
+    YosemitechY511(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                         Y511, "YosemitechY511", Y511_NUM_VARIABLES,
                         Y511_WARM_UP_TIME_MS, Y511_STABILIZATION_TIME_MS, Y511_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY511(byte modbusAddress, Stream& stream, int8_t powerPin,
+    YosemitechY511(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream,powerPin,  enablePin, measurementsToAverage,
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                         Y511, "YosemitechY511", Y511_NUM_VARIABLES,
                         Y511_WARM_UP_TIME_MS, Y511_STABILIZATION_TIME_MS, Y511_MEASUREMENT_TIME_MS)
     {}
+    ~YosemitechY511(){}
 };
 
 
@@ -74,6 +78,7 @@ public:
                 Y511_TURB_RESOLUTION,
                 "Y511Turbidity", UUID, customVarCode)
     {}
+    ~YosemitechY511_Turbidity(){}
 };
 
 
@@ -85,8 +90,9 @@ public:
      : Variable(parentSense, Y511_TEMP_VAR_NUM,
                 "temperature", "degreeCelsius",
                 Y511_TEMP_RESOLUTION,
-                "Y511temp", UUID, customVarCode)
+                "Y511Temp", UUID, customVarCode)
     {}
+    ~YosemitechY511_Temp(){}
 };
 
-#endif
+#endif  // Header Guard

@@ -30,19 +30,20 @@
  * Assume sensor is immediately stable
 */
 
+// Header Guards
 #ifndef BoschBME280_h
 #define BoschBME280_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
-
-
-#include "SensorBase.h"
 #include "VariableBase.h"
+#include "SensorBase.h"
 #include <Adafruit_BME280.h>
 
+// Sensor Specific Defines
 #define BME280_NUM_VARIABLES 4
 #define BME280_WARM_UP_TIME_MS 100
 #define BME280_STABILIZATION_TIME_MS 4000   // 0.5 s for good numbers, but optimal at 4 s based on tests using bme280timingTest.ino
@@ -66,6 +67,7 @@ class BoschBME280 : public Sensor
 {
 public:
     BoschBME280(int8_t powerPin, uint8_t i2cAddressHex = 0x76, uint8_t measurementsToAverage = 1);
+    ~BoschBME280();
 
     bool wake(void) override;
     bool setup(void) override;
@@ -73,6 +75,7 @@ public:
 
     // bool startSingleMeasurement(void) override;  // for forced mode
     bool addSingleMeasurementResult(void) override;
+
 protected:
     Adafruit_BME280 bme_internal;
     uint8_t _i2cAddressHex;
@@ -86,10 +89,11 @@ public:
     BoschBME280_Temp(Sensor *parentSense,
                      const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, BME280_TEMP_VAR_NUM,
-               "temperature", "degreeCelsius",
-               BME280_TEMP_RESOLUTION,
-               "BoschBME280Temp", UUID, customVarCode)
+                "temperature", "degreeCelsius",
+                BME280_TEMP_RESOLUTION,
+                "BoschBME280Temp", UUID, customVarCode)
     {}
+    ~BoschBME280_Temp(){};
 };
 
 
@@ -104,6 +108,7 @@ public:
                BME280_HUMIDITY_RESOLUTION,
                "BoschBME280Humidity", UUID, customVarCode)
     {}
+    ~BoschBME280_Humidity(){};
 };
 
 
@@ -135,4 +140,4 @@ public:
 };
 
 
-#endif
+#endif  // Header Guard

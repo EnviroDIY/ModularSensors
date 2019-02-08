@@ -25,21 +25,26 @@
  * Maximum measurement duration: 250ms
 */
 
+// Header Guards
 #ifndef DecagonES2_h
 #define DecagonES2_h
 
-#include "SDI12Sensors.h"
+// Included Dependencies
 #include "VariableBase.h"
+#include "sensors/SDI12Sensors.h"
 
+// Sensor Specific Defines
 #define ES2_NUM_VARIABLES 2
 #define ES2_WARM_UP_TIME_MS 250
 #define ES2_STABILIZATION_TIME_MS 0
 #define ES2_MEASUREMENT_TIME_MS 250
 
-#define ES2_COND_RESOLUTION 0
+#define ES2_COND_RESOLUTION 1
+// adding extra digit to resolution for averaging
 #define ES2_COND_VAR_NUM 0
 
-#define ES2_TEMP_RESOLUTION 1
+#define ES2_TEMP_RESOLUTION 2
+// adding extra digit to resolution for averaging
 #define ES2_TEMP_VAR_NUM 1
 
 // The main class for the Decagon ES-2
@@ -62,6 +67,8 @@ public:
                     "DecagonES2", ES2_NUM_VARIABLES,
                     ES2_WARM_UP_TIME_MS, ES2_STABILIZATION_TIME_MS, ES2_MEASUREMENT_TIME_MS)
     {}
+    // Destructor
+    ~DecagonES2(){}
 };
 
 
@@ -75,6 +82,7 @@ public:
                 ES2_COND_RESOLUTION,
                 "ES2Cond", UUID, customVarCode)
     {}
+    ~DecagonES2_Cond(){}
 };
 
 // Defines the Temperature Variable
@@ -85,8 +93,9 @@ public:
      : Variable(parentSense, ES2_TEMP_VAR_NUM,
                 "temperature", "degreeCelsius",
                 ES2_TEMP_RESOLUTION,
-                "ES2temp", UUID, customVarCode)
+                "ES2Temp", UUID, customVarCode)
     {}
+    ~DecagonES2_Temp(){}
 };
 
-#endif
+#endif  // Header Guard

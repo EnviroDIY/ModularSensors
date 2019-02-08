@@ -41,19 +41,20 @@
  * Assume sensor is immediately stable
 */
 
+// Header Guards
 #ifndef MeaSpecMS5803_h
 #define MeaSpecMS5803_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
-
-
-#include "SensorBase.h"
 #include "VariableBase.h"
-#include "MS5803.h"
+#include "SensorBase.h"
+#include <MS5803.h>
 
+// Sensor Specific Defines
 #define MS5803_NUM_VARIABLES 2
 #define MS5803_WARM_UP_TIME_MS 10
 #define MS5803_STABILIZATION_TIME_MS 0
@@ -71,7 +72,8 @@ class MeaSpecMS5803 : public Sensor
 {
 public:
     MeaSpecMS5803(int8_t powerPin, uint8_t i2cAddressHex = 0x76,
-                  int maxPressure = 14, uint8_t measurementsToAverage = 1);
+                  int16_t maxPressure = 14, uint8_t measurementsToAverage = 1);
+    ~MeaSpecMS5803();
 
     bool setup(void) override;
     String getSensorLocation(void) override;
@@ -80,7 +82,7 @@ public:
 protected:
     MS5803 MS5803_internal;
     uint8_t _i2cAddressHex;
-    int _maxPressure;
+    int16_t _maxPressure;
 };
 
 
@@ -95,6 +97,7 @@ public:
                MS5803_TEMP_RESOLUTION,
                "MeaSpecMS5803Temp", UUID, customVarCode)
     {}
+    ~MeaSpecMS5803_Temp(){}
 };
 
 
@@ -109,7 +112,8 @@ public:
                MS5803_PRESSURE_RESOLUTION,
                "MeaSpecMS5803Pressure", UUID, customVarCode)
     {}
+    ~MeaSpecMS5803_Pressure(){}
 };
 
 
-#endif
+#endif  // Header Guard

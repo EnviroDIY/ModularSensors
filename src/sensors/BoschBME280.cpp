@@ -39,6 +39,8 @@ BoschBME280::BoschBME280(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measure
 {
     _i2cAddressHex  = i2cAddressHex;
 }
+// Destructor
+BoschBME280::~BoschBME280(){};
 
 
 String BoschBME280::getSensorLocation(void)
@@ -51,7 +53,13 @@ String BoschBME280::getSensorLocation(void)
 
 bool BoschBME280::setup(void)
 {
-    bool retVal = Sensor::setup();  // this will set timestamp and status bit
+    bool retVal = Sensor::setup();  // this will set pin modes and the setup status bit
+
+    // This sensor needs power for setup!
+    // The bme280's begin() reads required calibration data from the sensor.
+    bool wasOn = checkPowerOn();
+    if(!wasOn){powerUp();}
+    waitForWarmUp();
 
     // Run begin fxn because it returns true or false for success in contact
     // Make 5 attempts
@@ -66,9 +74,13 @@ bool BoschBME280::setup(void)
     {
         // Set the status error bit (bit 7)
         _sensorStatus |= 0b10000000;
+        // UN-set the set-up bit (bit 0) since setup failed!
+        _sensorStatus &= 0b11111110;
     }
     retVal &= success;
 
+    // Turn the power back off it it had been turned on
+    if(!wasOn){powerDown();}
 
     return retVal;
 }
@@ -76,9 +88,12 @@ bool BoschBME280::setup(void)
 
 bool BoschBME280::wake(void)
 {
-    Sensor::wake();  // this will set timestamp and status bit
+    // Sensor::wake() checks if the power pin is on, setup has been successful,
+    // and sets the wake timestamp and status bits.  If it returns false,
+    // there's no reason to go on.
+    if (!Sensor::wake()) return false;
 
-    // Restart always needed after power-up
+    // Restart always needed after power-up to set sampling modes
     // As of Adafruit library version 1.0.7, this function includes all of the
     // various delays to allow the chip to wake up, get calibrations, get
     // coefficients, and set sampling modes.
@@ -88,8 +103,10 @@ bool BoschBME280::wake(void)
     //  - temperature oversampling = 16x
     //  - pressure oversampling = 16x
     //  - humidity oversampling = 16x
-    //  - built-in IIR filter = off oversampling = 16x
+    //  - built-in IIR filter = off
     //  - sleep time between measurements = 0.5ms
+    // TODO:  Figure out why this is necessary; setSampling should be enough
+    // this adds a bunch of small delays...
     bme_internal.begin(_i2cAddressHex);
 
     // When the Adafruit library is updated to remove the built-in delay after
@@ -117,10 +134,13 @@ bool BoschBME280::addSingleMeasurementResult(void)
     float press = -9999;
     float alt = -9999;
 
-    if (_millisMeasurementRequested > 0)
+    // Check a measurement was *successfully* started (status bit 6 set)
+    // Only go on to get a result if it was
+    if (bitRead(_sensorStatus, 6))
     {
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
         // Read values
-        MS_DBG(F("Getting values from BME280\n"));
         temp = bme_internal.readTemperature();
         if (isnan(temp)) temp = -9999;
         humid = bme_internal.readHumidity();
@@ -134,7 +154,7 @@ bool BoschBME280::addSingleMeasurementResult(void)
         // May also return a very negative temp when receiving a bad response
         if ((temp == 0 && press == 0 && humid == 0) || temp < -40)
         {
-            MS_DBG(F("All values 0 or bad, assuming sensor non-response!\n"));
+            MS_DBG(F("All values 0 or bad, assuming sensor non-response!"));
             temp =  -9999;
             press = -9999;
             humid = -9999;
@@ -142,12 +162,12 @@ bool BoschBME280::addSingleMeasurementResult(void)
         }
         else success = true;
 
-        MS_DBG(F("Temperature: "), temp);
-        MS_DBG(F(" °C, Humidity: "), humid);
-        MS_DBG(F(" %RH, Barometric Pressure: "), press);
-        MS_DBG(F(" Pa, Calculated Altitude: "), alt, F("m ASL\n"));
+        MS_DBG(F("  Temperature:"), temp, F("°C"));
+        MS_DBG(F("  Humidity:"), humid, F("%RH"));
+        MS_DBG(F("  Barometric Pressure:"), press, F("Pa"));
+        MS_DBG(F("  Calculated Altitude:"), alt, F("m ASL"));
     }
-    else MS_DBG(F("Sensor is not currently measuring!\n"));
+    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
 
     verifyAndAddMeasurementResult(BME280_TEMP_VAR_NUM, temp);
     verifyAndAddMeasurementResult(BME280_HUMIDITY_VAR_NUM, humid);
@@ -156,10 +176,8 @@ bool BoschBME280::addSingleMeasurementResult(void)
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
-    // Unset the status bit for a measurement having been requested (bit 5)
-    _sensorStatus &= 0b11011111;
-    // Set the status bit for measurement completion (bit 6)
-    _sensorStatus |= 0b01000000;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10011111;
 
     return success;
 }

@@ -4,30 +4,33 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is for all Decagon Devices that communicate with SDI-12
+ *This file is for all Devices that communicate over SDI-12
  *It is dependent on the EnviroDIY SDI-12 library.
  *
- *Documentation for the SDI-12 Protocol commands and responses
- *for the Decagon CTD-10 can be found at:
- * http://manuals.decagon.com/Integration%20Guides/CTD%20Integrators%20Guide.pdf
- *for the Decagon ES-2 Electrical Conductivity and Temperature:
- * http://manuals.decagon.com/Integration%20Guides/ES-2%20Integrators%20Guide.pdf
- *for the Decagon 5TM Soil Moisture and Temperature:
- * http://manuals.decagon.com/Integration%20Guides/5TM%20Integrators%20Guide.pdf
+ *Documentation for the SDI-12 Protocol commands and responses can be found at:
+ *http://www.sdi-12.org/
 */
 
+// Header Guards
 #ifndef SDI12Sensors_h
 #define SDI12Sensors_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
-
+#include "VariableBase.h"
 #include "SensorBase.h"
+#ifdef SDI12_EXTERNAL_PCINT
+#include <SDI12.h>
+#else
 #include <SDI12_ExtInts.h>
+#endif
+// NOTE:  Can use the "regular" sdi-12 library with build flag -D SDI12_EXTERNAL_PCINT
+// Unfortunately, that is not compatible with the Arduino IDE
 
-// The main class for the Decagon CTD
+// The main class for SDI-12 Sensors
 class SDI12Sensors : public Sensor
 {
 public:
@@ -41,6 +44,7 @@ public:
     SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1,
                  const char *sensorName = "SDI12-Sensor", uint8_t numReturnedVars = 1,
                  uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0);
+    virtual ~SDI12Sensors();
 
     String getSensorVendor(void);
     String getSensorModel(void);
@@ -66,4 +70,4 @@ private:
     String _sensorSerialNumber;
 };
 
-#endif
+#endif  // Header Guard

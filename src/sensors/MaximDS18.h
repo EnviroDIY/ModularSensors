@@ -21,20 +21,21 @@
  * Reset time is < 480 µs
 */
 
+// Header Guards
 #ifndef MaximDS18_h
 #define MaximDS18_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
-
-#include "SensorBase.h"
 #include "VariableBase.h"
-
+#include "SensorBase.h"
 #include <DallasTemperature.h>
 #include <OneWire.h>
 
+// Sensor Specific Defines
 #define DS18_NUM_VARIABLES 1
 #define DS18_WARM_UP_TIME_MS 2
 #define DS18_STABILIZATION_TIME_MS 0
@@ -48,6 +49,7 @@ class MaximDS18 : public Sensor
 public:
     MaximDS18(DeviceAddress OneWireAddress, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
     MaximDS18(int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage = 1);
+    ~MaximDS18();
 
     bool setup(void) override;
     String getSensorLocation(void) override;
@@ -58,10 +60,12 @@ public:
 private:
     DeviceAddress _OneWireAddress;
     bool _addressKnown;
-    // Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
-    OneWire oneWire;
-    // Pass our oneWire reference to Dallas Temperature.
-    DallasTemperature tempSensors;
+    // Setup an internal OneWire instance to communicate with any OneWire devices
+    // (not just Maxim/Dallas temperature ICs)
+    OneWire _internalOneWire;
+    // Set up the internal a "Dallas Temperature" instance for communication
+    // specifically with the temperature sensors.
+    DallasTemperature _internalDallasTemp;
     // Turns the address into a printable string
     String makeAddressString(DeviceAddress OneWireAddress);
 };
@@ -78,6 +82,7 @@ public:
                DS18_TEMP_RESOLUTION,
                "DS18Temp", UUID, customVarCode)
     {}
+    ~MaximDS18_Temp(){}
 };
 
-#endif
+#endif  // Header Guard

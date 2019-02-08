@@ -15,18 +15,20 @@
  * https://github.com/EnviroDIY/KellerModbus
 */
 
+// Header Guards
 #ifndef KellerParent_h
 #define KellerParent_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 // #define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
-#include "ModSensorDebugger.h"
 
+// Included Dependencies
+#include "ModSensorDebugger.h"
 #include "SensorBase.h"
 #include <KellerModbus.h>
 
+// Sensor Specific Defines
 #define KELLER_NUM_VARIABLES 3
 #define KELLER_PRESSURE_VAR_NUM 0
 #define KELLER_TEMP_VAR_NUM 1
@@ -37,26 +39,32 @@ class KellerParent : public Sensor
 {
 public:
     KellerParent(byte modbusAddress, Stream* stream,
-             int8_t powerPin, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
-             kellerModel model = OTHER, const char *sensName = "Keller-Sensor", int numVariables = 3,
+             int8_t powerPin, int8_t powerPin2, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
+             kellerModel model = OTHER, const char *sensName = "Keller-Sensor", uint8_t numVariables = 3,
              uint32_t warmUpTime_ms = 500, uint32_t stabilizationTime_ms = 5000, uint32_t measurementTime_ms = 1500);
     KellerParent(byte modbusAddress, Stream& stream,
-             int8_t powerPin, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
-             kellerModel model = OTHER, const char *sensName = "Keller-Sensor", int numVariables = 3,
+             int8_t powerPin, int8_t powerPin2, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
+             kellerModel model = OTHER, const char *sensName = "Keller-Sensor", uint8_t numVariables = 3,
              uint32_t warmUpTime_ms = 500, uint32_t stabilizationTime_ms = 5000, uint32_t measurementTime_ms = 1500);
+    virtual ~KellerParent();
 
     String getSensorLocation(void) override;
 
     virtual bool setup(void) override;
 
+    // Override these to use two power pins
+    virtual void powerUp(void) override;
+    virtual void powerDown(void) override;
+
     virtual bool addSingleMeasurementResult(void);
 
 private:
+    keller sensor;
     kellerModel _model;
     byte _modbusAddress;
     Stream* _stream;
-    int _RS485EnablePin;
-    keller sensor;
+    int8_t _RS485EnablePin;
+    int8_t _powerPin2;
 };
 
-#endif
+#endif  // Header Guard

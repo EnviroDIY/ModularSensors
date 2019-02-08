@@ -26,24 +26,30 @@
  * Maximum measurement duration: 200ms
 */
 
+// Header Guards
 #ifndef Decagon5TM_h
 #define Decagon5TM_h
 
-#include "SDI12Sensors.h"
+// Included Dependencies
 #include "VariableBase.h"
+#include "sensors/SDI12Sensors.h"
 
+// Sensor Specific Defines
 #define TM_NUM_VARIABLES 3
 #define TM_WARM_UP_TIME_MS 200
 #define TM_STABILIZATION_TIME_MS 0
 #define TM_MEASUREMENT_TIME_MS 200
 
-#define TM_EA_RESOLUTION 4
+#define TM_EA_RESOLUTION 5
+// adding extra digit to resolution for averaging
 #define TM_EA_VAR_NUM 0
 
-#define TM_TEMP_RESOLUTION 1
+#define TM_TEMP_RESOLUTION 2
+// adding extra digit to resolution for averaging
 #define TM_TEMP_VAR_NUM 1
 
-#define TM_VWC_RESOLUTION 2
+#define TM_VWC_RESOLUTION 3
+// adding extra digit to resolution for averaging
 #define TM_VWC_VAR_NUM 2
 
 // The main class for the Decagon 5TM
@@ -66,6 +72,8 @@ public:
                     "Decagon5TM", TM_NUM_VARIABLES,
                     TM_WARM_UP_TIME_MS, TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS)
     {}
+    // Destructor
+    ~Decagon5TM(){}
 
     virtual bool addSingleMeasurementResult(void) override;
 };
@@ -81,6 +89,7 @@ public:
                 TM_EA_RESOLUTION,
                 "SoilEa", UUID, customVarCode)
     {}
+    ~Decagon5TM_Ea(){}
 };
 
 
@@ -94,6 +103,7 @@ public:
                 TM_TEMP_RESOLUTION,
                 "SoilTemp", UUID, customVarCode)
     {}
+    ~Decagon5TM_Temp(){}
 };
 
 
@@ -107,6 +117,7 @@ public:
                 TM_VWC_RESOLUTION,
                 "SoilVWC", UUID, customVarCode)
     {}
+    ~Decagon5TM_VWC(){}
 };
 
-#endif
+#endif  // Header Guard

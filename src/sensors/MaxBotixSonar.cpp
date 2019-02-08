@@ -30,6 +30,8 @@ MaxBotixSonar::MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin,
     _triggerPin = triggerPin;
     _stream = &stream;
 }
+// Destructor
+MaxBotixSonar::~MaxBotixSonar(){}
 
 
 // unfortunately, we really cannot know where the stream is attached.
@@ -54,14 +56,17 @@ bool MaxBotixSonar::setup(void)
     // Even the slowest sensors should respond at a rate of 6Hz (166ms).
     _stream->setTimeout(180);
 
-    return Sensor::setup();  // this will set timestamp and status bit
+    return Sensor::setup();  // this will set pin modes and the setup status bit
 }
 
 
 // Parsing and tossing the header lines in the wake-up
 bool MaxBotixSonar::wake(void)
 {
-    bool isAwake = Sensor::wake();  // takes care of timing stamps and status bits
+    // Sensor::wake() checks if the power pin is on, setup has been successful,
+    // and sets the wake timestamp and status bits.  If it returns false,
+    // there's no reason to go on.
+    if (!Sensor::wake()) return false;
 
     // NOTE: After the power is turned on to the MaxBotix, it sends several lines
     // of header to the serial port, beginning at ~65ms and finising at ~160ms.
@@ -78,14 +83,31 @@ bool MaxBotixSonar::wake(void)
 
     // NOTE ALSO:  Depending on what type of serial stream you are using, there
     // may also be a bunch of junk in the buffer that this will clear out.
-
-    MS_DBG(F("Parsing Header Lines from MaxBotix on "), getSensorLocation(), '\n');
+    MS_DBG(F("Dumping Header Lines from MaxBotix on"), getSensorLocation());
     for(int i = 0; i < 6; i++)
     {
         String headerLine = _stream->readStringUntil('\r');
-        MS_DBG(i, F(" - "), headerLine, F("\n"));
+        MS_DBG(i, '-', headerLine);
     }
-    return isAwake;
+    // Clear anything else out of the stream buffer
+    uint8_t junkChars = _stream->available();
+    if (junkChars)
+    {
+        MS_DBG(F("Dumping"), junkChars, F("characters from MaxBotix stream buffer"));
+        for (uint8_t i = 0; i < junkChars; i++)
+        {
+            #ifdef DEBUGGING_SERIAL_OUTPUT
+            DEBUGGING_SERIAL_OUTPUT.print(_stream->read());
+            #else
+            _stream->read();
+            #endif
+        }
+        #ifdef DEBUGGING_SERIAL_OUTPUT
+        DEBUGGING_SERIAL_OUTPUT.println();
+        #endif
+    }
+
+    return true;
 }
 
 
@@ -93,21 +115,33 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
 {
     // Initialize values
     bool success = false;
-    int rangeAttempts = 0;
-    int result = -9999;
+    uint8_t rangeAttempts = 0;
+    int16_t result = -9999;
 
     // Clear anything out of the stream buffer
-    int junkChars = _stream->available();
+    uint8_t junkChars = _stream->available();
     if (junkChars)
     {
-        MS_DBG(F("Dumping "), junkChars, " characters from MaxBotix stream buffer\n");
+        MS_DBG(F("Dumping"), junkChars, F("characters from MaxBotix stream buffer:"));
         for (uint8_t i = 0; i < junkChars; i++)
-        _stream->read();
+        {
+            #ifdef DEBUGGING_SERIAL_OUTPUT
+            DEBUGGING_SERIAL_OUTPUT.print(_stream->read());
+            #else
+            _stream->read();
+            #endif
+        }
+        #ifdef DEBUGGING_SERIAL_OUTPUT
+        DEBUGGING_SERIAL_OUTPUT.println();
+        #endif
     }
 
-    if (_millisMeasurementRequested > 0)
+    // Check a measurement was *successfully* started (status bit 6 set)
+    // Only go on to get a result if it was
+    if (bitRead(_sensorStatus, 6))
     {
-        MS_DBG(F("Getting readings from MaxBotix on "), getSensorLocation(), '\n');
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
         while (success == false && rangeAttempts < 25)
         {
              // If the sonar is running on a trigger, activating the trigger
@@ -118,7 +152,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
              // the trigger here.
             if(_triggerPin >= 0)
             {
-                MS_DBG(F("Triggering Sonar with "), _triggerPin, '\n');
+                MS_DBG(F("  Triggering Sonar with"), _triggerPin);
                 digitalWrite(_triggerPin, HIGH);
                 delayMicroseconds(30);  // Trigger must be held high for >20 µs
                 digitalWrite(_triggerPin, LOW);
@@ -128,7 +162,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
             // "wait" for the measurement.
             result = _stream->parseInt();
             _stream->read();  // To throw away the carriage return
-            MS_DBG(F("Sonar Range: "), result, F("\n"));
+            MS_DBG(F("  Sonar Range:"), result);
             rangeAttempts++;
 
             // If it cannot obtain a result , the sonar is supposed to send a value
@@ -140,26 +174,24 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
             // capable of reading 0, so we also know the 0 value is bad.
             if (result <= 300 || result == 500 || result == 4999 || result == 9999 || result == 0)
             {
-                MS_DBG(F("Bad or Suspicious Result, Retry Attempt #"), rangeAttempts, F("\n"));
+                MS_DBG(F("  Bad or Suspicious Result, Retry Attempt #"), rangeAttempts);
                 result = -9999;
             }
             else
             {
-                MS_DBG(F("Good result found\n"));
+                MS_DBG(F("  Good result found"));
                 success = true;
             }
         }
     }
-    else MS_DBG(F("Sensor is not currently measuring!\n"));
+    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
 
     verifyAndAddMeasurementResult(HRXL_VAR_NUM, result);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
-    // Unset the status bit for a measurement having been requested (bit 5)
-    _sensorStatus &= 0b11011111;
-    // Set the status bit for measurement completion (bit 6)
-    _sensorStatus |= 0b01000000;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10011111;
 
     // Return values shows if we got a not-obviously-bad reading
     return success;

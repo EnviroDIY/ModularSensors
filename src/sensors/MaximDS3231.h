@@ -17,17 +17,19 @@
  * The temperature conversion typically takes 125 ms, with a max time of 200 ms.
 */
 
+// Header Guards
 #ifndef MaximDS3231_h
 #define MaximDS3231_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
-
-#include "SensorBase.h"
 #include "VariableBase.h"
+#include "SensorBase.h"
 
+// Sensor Specific Defines
 #define DS3231_NUM_VARIABLES 1
 #define DS3231_WARM_UP_TIME_MS 0
 #define DS3231_STABILIZATION_TIME_MS 0
@@ -43,18 +45,11 @@ class MaximDS3231 : public Sensor
 {
 public:
     // Only input is the number of readings to average
-    MaximDS3231(uint8_t measurementsToAverage = 1)
-    : Sensor("MaximDS3231", DS3231_NUM_VARIABLES,
-             DS3231_WARM_UP_TIME_MS, DS3231_STABILIZATION_TIME_MS, DS3231_MEASUREMENT_TIME_MS,
-             -1, -1, measurementsToAverage)
-    {}
+    MaximDS3231(uint8_t measurementsToAverage = 1);
+    // Destructor
+    ~MaximDS3231();
 
     String getSensorLocation(void) override;
-
-    // Do nothing for the power down and sleep functions
-    // The clock never sleeps or powers down
-    bool sleep(void) override;
-    void powerDown(void) override;
 
     bool setup(void) override;
 
@@ -73,6 +68,7 @@ public:
                  DS3231_TEMP_RESOLUTION,
                  "BoardTemp", UUID, customVarCode)
     {}
+    ~MaximDS3231_Temp(){}
 };
 
-#endif
+#endif  // Header Guard

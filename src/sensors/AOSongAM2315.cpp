@@ -31,6 +31,7 @@ AOSongAM2315::AOSongAM2315(int8_t powerPin, uint8_t measurementsToAverage)
              AM2315_WARM_UP_TIME_MS, AM2315_STABILIZATION_TIME_MS, AM2315_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage)
 {}
+AOSongAM2315::~AOSongAM2315(){}
 
 
 String AOSongAM2315::getSensorLocation(void){return F("I2C_0xB8");}
@@ -38,8 +39,8 @@ String AOSongAM2315::getSensorLocation(void){return F("I2C_0xB8");}
 
 bool AOSongAM2315::setup(void)
 {
-    Wire.begin();  // Start the wire library
-    return Sensor::setup();  // this will set timestamp and status bit
+    Wire.begin();  // Start the wire library (sensor power not required)
+    return Sensor::setup();  // this will set pin modes and the setup status bit
 }
 
 
@@ -50,28 +51,30 @@ bool AOSongAM2315::addSingleMeasurementResult(void)
     float humid_val = -9999;
     bool ret_val = false;
 
-    if (_millisMeasurementRequested > 0)
+    // Check a measurement was *successfully* started (status bit 6 set)
+    // Only go on to get a result if it was
+    if (bitRead(_sensorStatus, 6))
     {
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
         Adafruit_AM2315 am2315;  // create a sensor object
         ret_val = am2315.readTemperatureAndHumidity(temp_val, humid_val);
 
         if (!ret_val or isnan(temp_val)) temp_val = -9999;
         if (!ret_val or isnan(humid_val)) humid_val = -9999;
 
-        MS_DBG(F("Temp is: "), temp_val, F("°C"));
-        MS_DBG(F(" and humidity is: "), humid_val, F("%\n"));
+        MS_DBG(F("  Temp:"), temp_val, F("°C"));
+        MS_DBG(F("  Humidity:"), humid_val, '%');
     }
-    else MS_DBG(F("Sensor is not currently measuring!\n"));
+    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
 
     verifyAndAddMeasurementResult(AM2315_TEMP_VAR_NUM, temp_val);
     verifyAndAddMeasurementResult(AM2315_HUMIDITY_VAR_NUM, humid_val);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
-    // Unset the status bit for a measurement having been requested (bit 5)
-    _sensorStatus &= 0b11011111;
-    // Set the status bit for measurement completion (bit 6)
-    _sensorStatus |= 0b01000000;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10011111;
 
     return ret_val;
 }

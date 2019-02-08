@@ -31,12 +31,15 @@
  * Time between "StartMeasurement" command and stable reading - 22sec
 */
 
+// Header Guards
 #ifndef YosemitechY550_h
 #define YosemitechY550_h
 
-#include "YosemitechParent.h"
+// Included Dependencies
 #include "VariableBase.h"
+#include "sensors/YosemitechParent.h"
 
+// Sensor Specific Defines
 #define Y550_NUM_VARIABLES 2
 #define Y550_WARM_UP_TIME_MS 1500
 #define Y550_STABILIZATION_TIME_MS 2000
@@ -56,22 +59,23 @@ class YosemitechY550 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY550(byte modbusAddress, Stream* stream, int8_t powerPin,
+    YosemitechY550(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                         Y550, "YosemitechY550", Y550_NUM_VARIABLES,
                         Y550_WARM_UP_TIME_MS, Y550_STABILIZATION_TIME_MS, Y550_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY550(byte modbusAddress, Stream& stream, int8_t powerPin,
+    YosemitechY550(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream,powerPin,  enablePin, measurementsToAverage,
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                         Y550, "YosemitechY550", Y550_NUM_VARIABLES,
                         Y550_WARM_UP_TIME_MS, Y550_STABILIZATION_TIME_MS, Y550_MEASUREMENT_TIME_MS)
     {}
+    ~YosemitechY550(){}
 };
 
 
-// Defines the Turbidity
+// Defines the Carbon Oxygen Demand
 class YosemitechY550_COD : public Variable
 {
 public:
@@ -81,6 +85,7 @@ public:
                 Y550_COD_RESOLUTION,
                 "Y550COD", UUID, customVarCode)
     {}
+    ~YosemitechY550_COD(){}
 };
 
 
@@ -92,8 +97,9 @@ public:
      : Variable(parentSense, Y550_TEMP_VAR_NUM,
                 "temperature", "degreeCelsius",
                 Y550_TEMP_RESOLUTION,
-                "Y550temp", UUID, customVarCode)
+                "Y550Temp", UUID, customVarCode)
     {}
+    ~YosemitechY550_Temp(){}
 };
 
 
@@ -107,6 +113,7 @@ public:
                 Y550_TURB_RESOLUTION,
                 "Y550Turbidity", UUID, customVarCode)
     {}
+    ~YosemitechY550_Turbidity(){}
 };
 
-#endif
+#endif  // Header Guard

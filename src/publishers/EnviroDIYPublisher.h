@@ -1,5 +1,5 @@
 /*
- *LoggerEnviroDIY.h
+ *EnviroDIYPublisher.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -8,90 +8,84 @@
  * http://data.enviroDIY.org
 */
 
-#ifndef LoggerEnviroDIY_h
-#define LoggerEnviroDIY_h
+// Header Guards
+#ifndef EnviroDIYPublisher_h
+#define EnviroDIYPublisher_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
-#include "ModSensorDebugger.h"
 
-#include "LoggerModem.h"  // To communicate with the internet
-#include "LoggerBase.h"
+// Included Dependencies
+#include "ModSensorDebugger.h"
+#include "dataPublisherBase.h"
+
 
 // ============================================================================
 //  Functions for the EnviroDIY data portal receivers.
 // ============================================================================
-class LoggerEnviroDIY : public Logger
+class EnviroDIYPublisher : public dataPublisher
 {
 public:
     // Constructor
-    LoggerEnviroDIY(const char *loggerID, uint16_t loggingIntervalMinutes,
-                    int8_t SDCardPin, int8_t mcuWakePin,
-                    VariableArray *inputArray);
+    EnviroDIYPublisher(Logger& baseLogger,
+                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
+                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    EnviroDIYPublisher(Logger& baseLogger,
+                    const char *registrationToken,
+                    const char *samplingFeatureUUID,
+                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
+                    const char *registrationToken,
+                    const char *samplingFeatureUUID,
+                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
 
-    // Adds a loggerModem objct to the logger
-    // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
-    void attachModem(loggerModem& modem);
+    virtual ~EnviroDIYPublisher();
+
+    // Returns the data destination
+    virtual String getEndpoint(void){return String(enviroDIYHost);}
 
     // Adds the site registration token
     void setToken(const char *registrationToken);
 
-    // Adds the sampling feature UUID
-    void setSamplingFeatureUUID(const char *samplingFeature);
-
-    // This adds extra data to the datafile header
-    String generateFileHeader(void) override;
-    // This prints a header onto a stream - this removes need to pass around
-    // very long string objects which can crash the logger
-    void streamFileHeader(Stream *stream) override;
+    // Calculates how long the JSON will be
+    uint16_t calculateJsonSize();
+    // Calculates how long the full post request will be, including headers
+    // uint16_t calculatePostSize();
 
     // This generates a properly formatted JSON for EnviroDIY
-    String generateSensorDataJSON(void);
-    void streamSensorDataJSON(Stream *stream);
+    void printSensorDataJSON(Stream *stream);
 
-    // // This generates a fully structured POST request for EnviroDIY
-    // String generateEnviroDIYPostRequest(String enviroDIYjson);
-    // String generateEnviroDIYPostRequest(void);
-
-    // This prints a fully structured post request for EnviroDIY to the
-    // specified stream using the specified json.
-    // This may be necessary to work around very long strings for the post request.
-    void streamEnviroDIYRequest(Stream *stream, String& enviroDIYjson);
-    // This prints a fully structured post request for EnviroDIY to the
-    // specified stream with the default json.
-    void streamEnviroDIYRequest(Stream *stream);
+    // This prints a fully structured post request for WikiWatershed/EnviroDIY
+    // to the specified stream.
+    void printEnviroDIYRequest(Stream *stream);
 
     // This utilizes an attached modem to make a TCP connection to the
     // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
     // over that connection.
     // The return is the http status code of the response.
-    int postDataEnviroDIY(String& enviroDIYjson = LOGGER_EMPTY);
+    // int16_t postDataEnviroDIY(void);
+    virtual int16_t sendData(Client *_outClient);
 
-    // ===================================================================== //
-    // Convience functions to call several of the above functions
-    // ===================================================================== //
+protected:
 
-    // This defines what to do in the testing mode
-    // This version particularly highlights the modem signal strength!
-    virtual void testingMode() override;
+    // portions of the POST request
+    static const char *postEndpoint;
+    static const char *enviroDIYHost;
+    static const int enviroDIYPort;
+    static const char *tokenHeader;
+    // static const char *cacheHeader;
+    // static const char *connectionHeader;
+    static const char *contentLengthHeader;
+    static const char *contentTypeHeader;
 
-    // This calls all of the setup functions - must be run AFTER init
-    // This version syncs the clock!
-    virtual void begin(void);
-
-    // This is a one-and-done to log data
-    virtual void log(void) override;
-
-    // The internal modem instance
-    bool _modemAttached;
-    loggerModem _logModem;
-
+    // portions of the JSON
+    static const char *samplingFeatureTag;
+    static const char *timestampTag;
 
 private:
     // Tokens and UUID's for EnviroDIY
     const char *_registrationToken;
-    const char *_samplingFeature;
 };
 
-#endif
+#endif  // Header Guard

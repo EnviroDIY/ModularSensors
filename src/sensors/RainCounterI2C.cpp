@@ -29,6 +29,8 @@ RainCounterI2C::RainCounterI2C(uint8_t i2cAddressHex, float rainPerTip)
     _i2cAddressHex  = i2cAddressHex;
     _rainPerTip = rainPerTip;
 }
+// Destructor
+RainCounterI2C::~RainCounterI2C(){}
 
 
 String RainCounterI2C::getSensorLocation(void)
@@ -41,9 +43,8 @@ String RainCounterI2C::getSensorLocation(void)
 
 bool RainCounterI2C::setup(void)
 {
-    Sensor::setup();
-    Wire.begin(); //Initalize wire (I2C) functionality
-    return true;
+    Wire.begin();  // Start the wire library (sensor power not required)
+    return Sensor::setup();  // this will set pin modes and the setup status bit
 }
 
 
@@ -54,13 +55,14 @@ bool RainCounterI2C::addSingleMeasurementResult(void)
     uint8_t Byte2 = 0; // High byte of data
 
     float rain = -9999; // Number of mm of rain
-    int tips = -9999; // Number of tip events
+    int16_t tips = -9999; // Number of tip events
 
     // Get data from external tip counter
     // if the 'requestFrom' returns 0, it means no bytes were received
     if (Wire.requestFrom(int(_i2cAddressHex), 2))
     {
-        MS_DBG(F("Receiving data from External Tipper\n"));
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
         Byte1 = Wire.read();
         Byte2 = Wire.read();
 
@@ -69,21 +71,19 @@ bool RainCounterI2C::addSingleMeasurementResult(void)
 
         if (tips < 0) tips = -9999; // If negetive value results, return failure
         if (rain < 0) rain = -9999; // If negetive value results, return failure
-    }
-    else MS_DBG(F("No bytes received from external tipper!\n"));
 
-    MS_DBG(F("Rain: "), rain, '\n');
-    MS_DBG(F("Tips: "), tips, '\n');
+        MS_DBG(F("  Rain:"), rain);
+        MS_DBG(F("  Tips:"), tips);
+    }
+    else MS_DBG(F("No bytes received from"), getSensorNameAndLocation());
 
     verifyAndAddMeasurementResult(BUCKET_RAIN_VAR_NUM, rain);
-    verifyAndAddMeasurementResult(BUCKET_TIPS_VAR_NUM, int(tips));
+    verifyAndAddMeasurementResult(BUCKET_TIPS_VAR_NUM, tips);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
-    // Unset the status bit for a measurement having been requested (bit 5)
-    _sensorStatus &= 0b11011111;
-    // Set the status bit for measurement completion (bit 6)
-    _sensorStatus |= 0b01000000;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10011111;
 
     // Return true when finished
     return true;

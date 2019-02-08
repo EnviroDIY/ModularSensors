@@ -28,12 +28,15 @@
  * Time between "StartMeasurement" command and stable reading - 4.5sec
 */
 
+// Header Guards
 #ifndef YosemitechY532_h
 #define YosemitechY532_h
 
-#include "YosemitechParent.h"
+// Included Dependencies
 #include "VariableBase.h"
+#include "sensors/YosemitechParent.h"
 
+// Sensor Specific Defines
 #define Y532_NUM_VARIABLES 3
 #define Y532_WARM_UP_TIME_MS 500
 #define Y532_STABILIZATION_TIME_MS 4500
@@ -53,18 +56,19 @@ class YosemitechY532 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY532(byte modbusAddress, Stream* stream, int8_t powerPin,
+    YosemitechY532(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                         Y532, "YosemitechY532", Y532_NUM_VARIABLES,
                         Y532_WARM_UP_TIME_MS, Y532_STABILIZATION_TIME_MS, Y532_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY532(byte modbusAddress, Stream& stream, int8_t powerPin,
+    YosemitechY532(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                         Y532, "YosemitechY532", Y532_NUM_VARIABLES,
                         Y532_WARM_UP_TIME_MS, Y532_STABILIZATION_TIME_MS, Y532_MEASUREMENT_TIME_MS)
     {}
+    ~YosemitechY532(){}
 };
 
 
@@ -79,6 +83,7 @@ public:
                 Y532_PH_RESOLUTION,
                 "Y532pH", UUID, customVarCode)
     {}
+    ~YosemitechY532_pH(){}
 };
 
 
@@ -91,8 +96,9 @@ public:
      : Variable(parentSense, Y532_TEMP_VAR_NUM,
                 "temperature", "degreeCelsius",
                 Y532_TEMP_RESOLUTION,
-                "Y532temp", UUID, customVarCode)
+                "Y532Temp", UUID, customVarCode)
     {}
+    ~YosemitechY532_Temp(){}
 };
 
 
@@ -107,6 +113,7 @@ public:
                 Y532_VOLT_RESOLUTION,
                 "Y532Potential", UUID, customVarCode)
     {}
+    ~YosemitechY532_Voltage(){}
 };
 
-#endif
+#endif  // Header Guard

@@ -27,12 +27,15 @@
  * Time between "StartMeasurement" command and stable reading - 8sec
 */
 
+// Header Guards
 #ifndef YosemitechY504_h
 #define YosemitechY504_h
 
-#include "YosemitechParent.h"
+// Included Dependencies
 #include "VariableBase.h"
+#include "sensors/YosemitechParent.h"
 
+// Sensor Specific Defines
 #define Y504_NUM_VARIABLES 3
 #define Y504_WARM_UP_TIME_MS 375
 #define Y504_STABILIZATION_TIME_MS 8000
@@ -52,18 +55,19 @@ class YosemitechY504 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY504(byte modbusAddress, Stream* stream, int8_t powerPin,
+    YosemitechY504(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                         Y504, "YosemitechY504", Y504_NUM_VARIABLES,
                         Y504_WARM_UP_TIME_MS, Y504_STABILIZATION_TIME_MS, Y504_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY504(byte modbusAddress, Stream& stream, int8_t powerPin,
+    YosemitechY504(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                         Y504, "YosemitechY504", Y504_NUM_VARIABLES,
                         Y504_WARM_UP_TIME_MS, Y504_STABILIZATION_TIME_MS, Y504_MEASUREMENT_TIME_MS)
     {}
+    ~YosemitechY504(){}
 };
 
 
@@ -78,6 +82,7 @@ public:
                 Y504_DOPCT_RESOLUTION,
                 "Y504DOpct", UUID, customVarCode)
     {}
+    ~YosemitechY504_DOpct(){}
 };
 
 
@@ -90,8 +95,9 @@ public:
      : Variable(parentSense, Y504_TEMP_VAR_NUM,
                 "temperature", "degreeCelsius",
                 Y504_TEMP_RESOLUTION,
-                "Y504temp", UUID, customVarCode)
+                "Y504Temp", UUID, customVarCode)
     {}
+    ~YosemitechY504_Temp(){}
 };
 
 
@@ -106,6 +112,7 @@ public:
                 Y504_DOMGL_RESOLUTION,
                 "Y504DOmgL", UUID, customVarCode)
     {}
+    ~YosemitechY504_DOmgL(){}
 };
 
-#endif
+#endif  // Header Guard

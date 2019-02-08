@@ -30,25 +30,30 @@
  * Maximum measurement duration: 500ms
 */
 
-
+// Header Guards
 #ifndef DecagonCTD_h
 #define DecagonCTD_h
 
-#include "SDI12Sensors.h"
+// Included Dependencies
 #include "VariableBase.h"
+#include "sensors/SDI12Sensors.h"
 
+// Sensor Specific Defines
 #define CTD_NUM_VARIABLES 3
 #define CTD_WARM_UP_TIME_MS 500
 #define CTD_STABILIZATION_TIME_MS 0
 #define CTD_MEASUREMENT_TIME_MS 500
 
-#define CTD_COND_RESOLUTION 0
+#define CTD_COND_RESOLUTION 1
+// adding extra digit to resolution for averaging
 #define CTD_COND_VAR_NUM 2
 
-#define CTD_TEMP_RESOLUTION 1
+#define CTD_TEMP_RESOLUTION 2
+// adding extra digit to resolution for averaging
 #define CTD_TEMP_VAR_NUM 1
 
-#define CTD_DEPTH_RESOLUTION 0
+#define CTD_DEPTH_RESOLUTION 1
+// adding extra digit to resolution for averaging
 #define CTD_DEPTH_VAR_NUM 0
 
 // The main class for the Decagon CTD
@@ -71,6 +76,8 @@ public:
                     "DecagonCTD", CTD_NUM_VARIABLES,
                     CTD_WARM_UP_TIME_MS, CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS)
     {}
+    // Destructor
+    ~DecagonCTD(){}
 };
 
 
@@ -84,6 +91,7 @@ public:
                 CTD_COND_RESOLUTION,
                 "CTDcond", UUID, customVarCode)
     {}
+    ~DecagonCTD_Cond(){}
 };
 
 
@@ -97,6 +105,7 @@ public:
                 CTD_TEMP_RESOLUTION,
                 "CTDtemp", UUID, customVarCode)
     {}
+    ~DecagonCTD_Temp(){}
 };
 
 
@@ -110,6 +119,7 @@ public:
                 CTD_DEPTH_RESOLUTION,
                 "CTDdepth", UUID, customVarCode)
     {}
+    ~DecagonCTD_Depth(){}
 };
 
-#endif
+#endif  // Header Guard

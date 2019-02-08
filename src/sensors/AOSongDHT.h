@@ -24,18 +24,19 @@
  * Re-sampling time: 2.0sec
 */
 
+// Header Guards
 #ifndef AOSongDHT_h
 #define AOSongDHT_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
-
-#include "SensorBase.h"
 #include "VariableBase.h"
-
+#include "SensorBase.h"
 #include <DHT.h>
+
 // Undefine these macros so I can use a typedef instead
 #undef DHT11
 #undef DHT21
@@ -43,6 +44,7 @@
 #undef DHT22
 #undef AM2302
 
+// Sensor Specific Defines
 #define DHT_NUM_VARIABLES 3
 #define DHT_WARM_UP_TIME_MS 1700
 #define DHT_STABILIZATION_TIME_MS 0
@@ -73,6 +75,8 @@ class AOSongDHT : public Sensor
 public:
     // The constructor - need the power pin, the data pin, and the sensor type
     AOSongDHT(int8_t powerPin, int8_t dataPin, DHTtype type, uint8_t measurementsToAverage = 1);
+    // Destructor
+    ~AOSongDHT();
 
     bool setup(void) override;
     String getSensorName(void) override;
@@ -96,6 +100,7 @@ public:
                DHT_HUMIDITY_RESOLUTION,
                "DHTHumidity", UUID, customVarCode)
     {}
+    ~AOSongDHT_Humidity(){};
 };
 
 
@@ -110,6 +115,7 @@ public:
                DHT_TEMP_RESOLUTION,
                "DHTTemp", UUID, customVarCode)
     {}
+    ~AOSongDHT_Temp(){};
 };
 
 
@@ -124,6 +130,7 @@ public:
                DHT_HI_RESOLUTION,
                "DHTHI", UUID, customVarCode)
     {}
+    ~AOSongDHT_HI(){};
 };
 
-#endif
+#endif  // Header Guard

@@ -19,70 +19,56 @@
 #include <Sodaq_DS3231.h>
 #include "MaximDS3231.h"
 
+// Only input is the number of readings to average
+MaximDS3231::MaximDS3231(uint8_t measurementsToAverage)
+  : Sensor("MaximDS3231", DS3231_NUM_VARIABLES,
+           DS3231_WARM_UP_TIME_MS, DS3231_STABILIZATION_TIME_MS, DS3231_MEASUREMENT_TIME_MS,
+           -1, -1, measurementsToAverage)
+{}
+// Destructor
+MaximDS3231::~MaximDS3231(){}
 
 String MaximDS3231::getSensorLocation(void) {return F("I2C_0x68");}
 
 
 bool MaximDS3231::setup(void)
 {
-    rtc.begin();
-    return Sensor::setup();
+    rtc.begin();  // NOTE:  This also turns of interrupts on the RTC!
+    return Sensor::setup();  // this will set pin modes and the setup status bit
+    // The clock should be continuously powered, so we never need to worry about power up
 }
-
-
-// Do nothing for the power down and sleep functions
-// The clock never sleeps or powers down
-bool MaximDS3231::sleep(void)
-{return true;}
-void MaximDS3231::powerDown(void)
-{}
 
 
 // Sending the device a request to start temp conversion.
 bool MaximDS3231::startSingleMeasurement(void)
 {
-    bool success = true;
+    // Sensor::startSingleMeasurement() checks that if it's awake/active and sets
+    // the timestamp and status bits.  If it returns false, there's no reason to go on.
+    if (!Sensor::startSingleMeasurement()) return false;
 
-    // Check if activated, only wait if it is
-    if (_millisSensorActivated > 0 && bitRead(_sensorStatus, 3))
-    {
-        // force a temperature sampling and conversion
-        // this function already has a forced wait for the conversion to complete
-        // TODO:  Test how long the conversion takes, update DS3231 lib accordingly!
-        MS_DBG(F("Forcing new temperature reading\n"));
-        rtc.convertTemperature(false);
+    // force a temperature sampling and conversion
+    // this function already has a forced wait for the conversion to complete
+    // TODO:  Test how long the conversion takes, update DS3231 lib accordingly!
+    MS_DBG(F("Forcing new temperature reading by DS3231"));
+    rtc.convertTemperature(false);
 
-        // Mark the time that a measurement was requested
-        _millisMeasurementRequested = millis();
-    }
-    // Make sure that the time of a measurement request is not set
-    else _millisMeasurementRequested = 0;
-
-    // Even if we failed to start a measurement, we still want to set the status
-    // bit to show that we attempted to start the measurement.
-    // Set the status bits for measurement requested (bit 5)
-    _sensorStatus |= 0b00100000;
-    // Verify that the status bit for a single measurement completion is not set (bit 6)
-    _sensorStatus &= 0b10111111;
-    return success;
+    return true;
 }
 
 
 bool MaximDS3231::addSingleMeasurementResult(void)
 {
     // get the temperature value
-    MS_DBG(F("Getting value\n"));
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
     float tempVal = rtc.getTemperature();
-    MS_DBG(F("Current temp is "), tempVal, '\n');
+    MS_DBG(F("  Temp:"), tempVal, F("°C"));
 
     verifyAndAddMeasurementResult(DS3231_TEMP_VAR_NUM, tempVal);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
-    // Unset the status bit for a measurement having been requested (bit 5)
-    _sensorStatus &= 0b11011111;
-    // Set the status bit for measurement completion (bit 6)
-    _sensorStatus |= 0b01000000;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10011111;
 
     // Return true when finished
     return true;

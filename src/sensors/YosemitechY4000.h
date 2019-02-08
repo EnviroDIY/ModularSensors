@@ -60,15 +60,20 @@
  * indindividual sensor probes, with Y520 Conductivity taking the longest
 */
 
+// Header Guards
 #ifndef YosemitechY4000_h
 #define YosemitechY4000_h
 
-#include "YosemitechParent.h"
+// Included Dependencies
 #include "VariableBase.h"
+#include "sensors/YosemitechParent.h"
 
+// Sensor Specific Defines
 #define Y4000_NUM_VARIABLES 8
-#define Y4000_WARM_UP_TIME_MS 1600         // Time for communication to begin
-#define Y4000_STABILIZATION_TIME_MS 60000L  // Y4000 Modbus manual says 60s; we find Cond takes about that long to respond.
+#define Y4000_WARM_UP_TIME_MS 1600
+// Time for communication to begin
+#define Y4000_STABILIZATION_TIME_MS 60000L
+// Y4000 Modbus manual says 60s; we find Cond takes about that long to respond.
 #define Y4000_MEASUREMENT_TIME_MS 3000
 
 #define Y4000_DOMGL_RESOLUTION 2
@@ -96,25 +101,24 @@
 #define Y4000_BGA_VAR_NUM 7
 
 
-
-
-// The main class for the Decagon Y4000
+// The main class for the Yosemitech Y4000
 class YosemitechY4000 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY4000(byte modbusAddress, Stream* stream, int8_t powerPin,
+    YosemitechY4000(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                         Y4000, "YosemitechY4000", Y4000_NUM_VARIABLES,
                         Y4000_WARM_UP_TIME_MS, Y4000_STABILIZATION_TIME_MS, Y4000_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY4000(byte modbusAddress, Stream& stream, int8_t powerPin,
+    YosemitechY4000(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                         Y4000, "YosemitechY4000", Y4000_NUM_VARIABLES,
                         Y4000_WARM_UP_TIME_MS, Y4000_STABILIZATION_TIME_MS, Y4000_MEASUREMENT_TIME_MS)
     {}
+    ~YosemitechY4000(){}
 };
 
 
@@ -129,6 +133,7 @@ public:
                 Y4000_DOMGL_RESOLUTION,
                 "Y4000DOmgL", UUID, customVarCode)
     {}
+    ~YosemitechY4000_DOmgL(){}
 };
 
 // Defines the Turbidity
@@ -141,6 +146,7 @@ public:
                 Y4000_TURB_RESOLUTION,
                 "Y4000Turbidity", UUID, customVarCode)
     {}
+    ~YosemitechY4000_Turbidity(){}
 };
 
 // Defines the Conductivity
@@ -153,6 +159,7 @@ public:
                 Y4000_COND_RESOLUTION,
                 "Y4000Cond", UUID, customVarCode)
     {}
+    ~YosemitechY4000_Cond(){}
 };
 
 // Defines the pH
@@ -166,6 +173,7 @@ public:
                 Y4000_PH_RESOLUTION,
                 "Y4000pH", UUID, customVarCode)
     {}
+    ~YosemitechY4000_pH(){}
 };
 
 // Defines the Temperature Variable
@@ -177,8 +185,9 @@ public:
      : Variable(parentSense, Y4000_TEMP_VAR_NUM,
                 "temperature", "degreeCelsius",
                 Y4000_TEMP_RESOLUTION,
-                "Y4000temp", UUID, customVarCode)
+                "Y4000Temp", UUID, customVarCode)
     {}
+    ~YosemitechY4000_Temp(){}
 };
 
 // Defines the Electrode Electrical Potential
@@ -192,6 +201,7 @@ public:
                 Y4000_ORP_RESOLUTION,
                 "Y4000Potential", UUID, customVarCode)
     {}
+    ~YosemitechY4000_ORP(){}
 };
 
 // Defines the Chlorophyll Concentration
@@ -205,6 +215,7 @@ public:
                 Y4000_CHLORO_RESOLUTION,
                 "Y4000Chloro", UUID, customVarCode)
     {}
+    ~YosemitechY4000_Chlorophyll(){}
 };
 
 // Defines the Blue Green Algae (BGA) Concentration
@@ -218,8 +229,9 @@ public:
                 Y4000_BGA_RESOLUTION,
                 "Y4000BGA", UUID, customVarCode)
     {}
+    ~YosemitechY4000_BGA(){}
 };
 
 
 
-#endif
+#endif  // Header Guard

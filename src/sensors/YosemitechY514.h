@@ -28,12 +28,15 @@
  * Time between "StartMeasurement" command and stable reading - 8sec
 */
 
+// Header Guards
 #ifndef YosemitechY514_h
 #define YosemitechY514_h
 
-#include "YosemitechParent.h"
+// Included Dependencies
 #include "VariableBase.h"
+#include "sensors/YosemitechParent.h"
 
+// Sensor Specific Defines
 #define Y514_NUM_VARIABLES 2
 #define Y514_WARM_UP_TIME_MS 1300
 #define Y514_STABILIZATION_TIME_MS 8000
@@ -50,18 +53,19 @@ class YosemitechY514 : public YosemitechParent
 {
 public:
     // Constructors with overloads
-    YosemitechY514(byte modbusAddress, Stream* stream, int8_t powerPin,
+    YosemitechY514(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                         Y514, "YosemitechY514", Y514_NUM_VARIABLES,
                         Y514_WARM_UP_TIME_MS, Y514_STABILIZATION_TIME_MS, Y514_MEASUREMENT_TIME_MS)
     {}
-    YosemitechY514(byte modbusAddress, Stream& stream, int8_t powerPin,
+    YosemitechY514(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
-     : YosemitechParent(modbusAddress, stream, powerPin, enablePin, measurementsToAverage,
+     : YosemitechParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                         Y514, "YosemitechY514", Y514_NUM_VARIABLES,
                         Y514_WARM_UP_TIME_MS, Y514_STABILIZATION_TIME_MS, Y514_MEASUREMENT_TIME_MS)
     {}
+    ~YosemitechY514(){}
 };
 
 
@@ -76,6 +80,7 @@ public:
                 Y514_CHLORO_RESOLUTION,
                 "Y514Chloro", UUID, customVarCode)
     {}
+    ~YosemitechY514_Chlorophyll(){}
 };
 
 
@@ -88,7 +93,8 @@ public:
      : Variable(parentSense, Y514_TEMP_VAR_NUM,
                 "temperature", "degreeCelsius",
                 Y514_TEMP_RESOLUTION,
-                "Y514temp", UUID, customVarCode)
+                "Y514Temp", UUID, customVarCode)
     {}
+    ~YosemitechY514_Temp(){}
 };
-#endif
+#endif  // Header Guard

@@ -7,24 +7,25 @@
  *This file is for the variable array class.
 */
 
+// Header Guards
 #ifndef VariableArray_h
 #define VariableArray_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
-#include "ModSensorDebugger.h"
 
-#include "SensorBase.h"
+// Included Dependencies
+#include "ModSensorDebugger.h"
 #include "VariableBase.h"
+#include "SensorBase.h"
 
 // Defines another class for interfacing with a list of pointers to sensor instances
 class VariableArray
 {
 public:
-    // Initialization - cannot do this in constructor arduino has issues creating
-    // instances of classes with non-empty constructors
-    VariableArray(int variableCount, Variable *variableList[]);
+    // Constructor
+    VariableArray(uint8_t variableCount, Variable *variableList[]);
+    virtual ~VariableArray();
 
     // Leave the internal variable list public
     Variable **arrayOfVars;
@@ -32,13 +33,13 @@ public:
     // Functions to return information about the list
 
     // This just returns the number of variables (as input in the constructor)
-    int getVariableCount(void){return _variableCount;}
+    uint8_t getVariableCount(void){return _variableCount;}
 
     // This counts and returns the number of calculated variables
-    int getCalculatedVariableCount(void);
+    uint8_t getCalculatedVariableCount(void);
 
     // This counts and returns the number of sensors
-    int getSensorCount(void);
+    uint8_t getSensorCount(void);
 
     // Public functions for interfacing with a list of sensors
     // This sets up all of the sensors in the list
@@ -59,30 +60,11 @@ public:
     // This function updates the values for any connected sensors.
     bool updateAllSensors(void);
 
+    // This function powers, wakes, updates values, sleeps and powers down.
+    bool completeUpdate(void);
+
     // This function prints out the results for any connected sensors to a stream
     void printSensorData(Stream *stream = &Serial);
-
-    // These generate some helpful comma-separated lists of variable information
-    // This generates a comma separated list of sensor values WITHOUT TIME STAMP
-    // String generateSensorDataCSV(void);
-    // This generates a comma separated list of parent sensor names
-    // String listParentSensorNames(void);
-    // This generates a comma separated list of variable names
-    // String listVariableNames(void);
-    // This generates a comma separated list of variable units
-    // String listVariableUnits(void);
-    // This generates a comma separated list of variable codes
-    // String listVariableCodes(void);
-    // This generates a comma separated list of variable UUID's
-    // String listVariableUUIDs(void);
-    // These are identical to the above, except they directly send the data to
-    // an arduino stream to avoid passing around long strings.
-    // void streamSensorDataCSV(Stream *stream);
-    // void streamParentSensorNames(Stream *stream);
-    // void streamVariableNames(Stream *stream);
-    // void streamVariableUnits(Stream *stream);
-    // void streamVariableCodes(Stream *stream);
-    // void streamVariableUUIDs(Stream *stream);
 
 protected:
     uint8_t _variableCount;
@@ -92,6 +74,23 @@ protected:
 private:
     bool isLastVarFromSensor(int arrayIndex);
     uint8_t countMaxToAverage(void);
+
+#ifdef DEBUGGING_SERIAL_OUTPUT
+    template<typename T>
+    void prettyPrintArray(T arrayToPrint[])
+    {
+        DEBUGGING_SERIAL_OUTPUT.print("[,\t");
+        for (uint8_t i = 0; i < _variableCount; i++)
+        {
+            DEBUGGING_SERIAL_OUTPUT.print(arrayToPrint[i]);
+            DEBUGGING_SERIAL_OUTPUT.print(",\t");
+        }
+        DEBUGGING_SERIAL_OUTPUT.println("]");
+    }
+#else
+    #define prettyPrintArray(...)
+#endif  // DEBUGGING_SERIAL_OUTPUT
+
 };
 
-#endif
+#endif  // Header Guard

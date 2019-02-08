@@ -17,19 +17,20 @@
  * Assume sensor is immediately stable
 */
 
+// Header Guards
 #ifndef RainCounterI2C_h
 #define RainCounterI2C_h
 
-#include <Arduino.h>
-
+// Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
-
-
-#include "SensorBase.h"
 #include "VariableBase.h"
+#include "SensorBase.h"
 #include <Wire.h>
 
+// Sensor Specific Defines
 #define BUCKET_NUM_VARIABLES 2
 #define BUCKET_WARM_UP_TIME_MS 0
 #define BUCKET_STABILIZATION_TIME_MS 0
@@ -49,6 +50,8 @@ public:
     // Address of I2C device is 0x08 by default
     // Depth of rain per tip event in mm is 0.2mm by default
     RainCounterI2C(uint8_t i2cAddressHex = 0x08, float rainPerTip = 0.2);
+    // Destructor
+    ~RainCounterI2C();
 
     bool setup(void) override;
     String getSensorLocation(void) override;
@@ -70,6 +73,7 @@ public:
                BUCKET_TIPS_RESOLUTION,
                "RainCounterI2CTips", UUID, customVarCode)
     {}
+    ~RainCounterI2C_Tips(){}
 };
 
 // Defines the depth of rain variable, shows the number of mm since the last read
@@ -83,7 +87,8 @@ public:
                BUCKET_RAIN_RESOLUTION,
                "RainCounterI2CVol", UUID, customVarCode)
     {}
+    ~RainCounterI2C_Depth(){}
 };
 
 
-#endif
+#endif  // Header Guard
