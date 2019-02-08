@@ -25,10 +25,21 @@ DreamHostPublisher::DreamHostPublisher(Logger& baseLogger,
                                  uint8_t sendEveryX, uint8_t sendOffset)
   : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {}
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client *inClient,
+                                 uint8_t sendEveryX, uint8_t sendOffset)
+  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
+{}
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger,
                                  const char *URL, uint8_t sendEveryX,
                                  uint8_t sendOffset)
   : dataPublisher(baseLogger, sendEveryX, sendOffset)
+{
+    setDreamHostPortalRX(URL);
+}
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client *inClient,
+                                 const char *URL, uint8_t sendEveryX,
+                                 uint8_t sendOffset)
+  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
 {
     setDreamHostPortalRX(URL);
 }
@@ -90,8 +101,12 @@ int16_t DreamHostPublisher::sendData(Client *_outClient)
     uint16_t did_respond = 0;
 
     // Open a TCP/IP connection to DreamHost
+    MS_DBG(F("Connecting client"));
+    uint32_t start_timer = millis();
     if(_outClient->connect(dreamhostHost, dreamhostPort))
     {
+        MS_DBG(F("Client connected after"), millis() - start_timer, F("ms\n"));
+
         // copy the initial post header into the tx buffer
         strcpy(txBuffer, getHeader);
 
@@ -134,7 +149,7 @@ int16_t DreamHostPublisher::sendData(Client *_outClient)
         // Send out the finished request (or the last unsent section of it)
         printTxBuffer(_outClient);
 
-        uint32_t start_timer = millis();
+        start_timer = millis();
         while ((millis() - start_timer) < 10000L && _outClient->available() < 12)
         {delay(10);}
 
@@ -143,11 +158,13 @@ int16_t DreamHostPublisher::sendData(Client *_outClient)
         // we don't care about.
         did_respond = _outClient->readBytes(tempBuffer, 12);
 
-        // Close the TCP/IP connection as soon as the first 12 characters are read
-        // We don't need anything else and stoping here should save data use.
+        // Close the TCP/IP connection
+        MS_DBG(F("Stopping client"));
+        start_timer = millis();
         _outClient->stop();
+        MS_DBG(F("Client stopped after"), millis() - start_timer, F("ms"));
     }
-    else PRINTOUT(F("\n -- Unable to Establish Connection to DreamHost -- "));
+    else PRINTOUT(F("\n -- Unable to Establish Connection to DreamHost --"));
 
     // Process the HTTP response
     int16_t responseCode = 0;
@@ -162,7 +179,7 @@ int16_t DreamHostPublisher::sendData(Client *_outClient)
     }
     else responseCode=504;
 
-    PRINTOUT(F(" -- Response Code -- "));
+    PRINTOUT(F("-- Response Code --"));
     PRINTOUT(responseCode);
 
     return responseCode;

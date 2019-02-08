@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.4
+This example sketch is written for ModularSensors library version 0.19.6
 
 This sketch is an example of logging data from different variables at two
 different logging intervals.  This example uses more of the manual functions
@@ -28,7 +28,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.19.4";
+const char *libraryVersion = "0.19.6";
 // The name of this file
 const char *sketchName = "double_logger.ino";
 // Logger ID - we're only using one logger ID for both "loggers"
@@ -62,14 +62,29 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 
 
 // ==========================================================================
-//    Modem MCU Type and TinyGSM Client
+//    Wifi/Cellular Modem Main Chip Selection
 // ==========================================================================
 
 // Select your modem chip - this determines the exact commands sent to it
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
 
+
+// ==========================================================================
+//    Modem Pins
+// ==========================================================================
+
+const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
+const int8_t modemResetPin = A4;    // MCU pin connected to modem reset pin (-1 if unconnected)
+
+
+// ==========================================================================
+//    TinyGSM Client
+// ==========================================================================
+
 #if defined(TINY_GSM_MODEM_XBEE)
-  #define TINY_GSM_YIELD() { delay(1); }  // Use to counter slow (9600) baud rate
+  #define TINY_GSM_YIELD() { delay(2); }  // Use to counter slow (9600) baud rate
 #endif
 
 // Include TinyGSM for the modem
@@ -80,29 +95,26 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(modemSerial);
+TinyGsm *tinyModem = new TinyGsm(modemSerial, modemResetPin);
 
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 
 // ==========================================================================
-//    Specific Modem Pins and On-Off Methods
+//    Specific Modem On-Off Methods
 // ==========================================================================
 
 // This should apply to all Digi brand XBee modules.
 // Describe the physical pin connection of your modem to your board
 const long ModemBaud = 9600;        // Communication speed of the modem
 const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
-const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
-const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
 // After enabling pin sleep, the sleep request pin is held LOW to keep the XBee on
 // Enable pin sleep in the setup function or using XCTU prior to connecting the XBee
-bool sleepFxn(void)
+bool modemSleepFxn(void)
 {
     if (modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
     {
@@ -112,7 +124,7 @@ bool sleepFxn(void)
     }
     else return true;
 }
-bool wakeFxn(void)
+bool modemWakeFxn(void)
 {
     if (modemVccPin >= 0)  // Turns on when power is applied
         return true;
@@ -138,8 +150,8 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
+// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
 
 
 
@@ -168,7 +180,7 @@ AOSongAM2315 am2315(I2CPower);
 // ==========================================================================
 #include <VariableArray.h>
 
-// Create pointers for all of the variables from the sensors recording at 1
+// FORM1: Create pointers for all of the variables from the sensors, recording at 1
 // minute intervals and at the same time putting them into an array
 Variable *variableList_at1min[] = {
     new AOSongAM2315_Humidity(&am2315),
@@ -179,7 +191,7 @@ int variableCount1min = sizeof(variableList_at1min) / sizeof(variableList_at1min
 // Create the 1-minute VariableArray object
 VariableArray array1min(variableCount1min, variableList_at1min);
 
-// Create pointers for all of the variables from the sensors recording at 5
+// FORM1: Create pointers for all of the variables from the sensors, recording at 5
 // minute intervals and at the same time putting them into an array
 Variable *variableList_at5min[] = {
     new MaximDS3231_Temp(&ds3231),
@@ -211,15 +223,15 @@ Logger  logger5min(LoggerID, 5, sdCardPin, wakePin, &array5min);
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 {
-  for (uint8_t i = 0; i < numFlash; i++) {
-    digitalWrite(greenLED, HIGH);
+    for (uint8_t i = 0; i < numFlash; i++) {
+        digitalWrite(greenLED, HIGH);
+        digitalWrite(redLED, LOW);
+        delay(rate);
+        digitalWrite(greenLED, LOW);
+        digitalWrite(redLED, HIGH);
+        delay(rate);
+    }
     digitalWrite(redLED, LOW);
-    delay(rate);
-    digitalWrite(greenLED, LOW);
-    digitalWrite(redLED, HIGH);
-    delay(rate);
-  }
-  digitalWrite(redLED, LOW);
 }
 
 

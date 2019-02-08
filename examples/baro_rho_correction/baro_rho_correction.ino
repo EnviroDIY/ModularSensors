@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.4
+This example sketch is written for ModularSensors library version 0.19.6
 
 This sketch is an example of logging data to an SD card and sending the data to
 the EnviroDIY data portal.
@@ -27,7 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.19.4";
+const char *libraryVersion = "0.19.6";
 // The name of this file
 const char *sketchName = "baro_rho_correction.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -66,12 +66,25 @@ Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-
 
 
 // ==========================================================================
-//    Modem MCU Type and TinyGSM Client
+//    Wifi/Cellular Modem Main Chip Selection
 // ==========================================================================
 
 // Select your modem chip - this determines the exact commands sent to it
 #define TINY_GSM_MODEM_SIM800  // Select for a SIMCOM SIM800, SIM900, or variant thereof
 
+
+// ==========================================================================
+//    Modem Pins
+// ==========================================================================
+
+const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
+
+
+// ==========================================================================
+//    TinyGSM Client
+// ==========================================================================
 
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
@@ -95,26 +108,23 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 
 // ==========================================================================
-//    Specific Modem Pins and On-Off Methods
+//    Specific Modem On-Off Methods
 // ==========================================================================
 
 // THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
 // Describe the physical pin connection of your modem to your board
 const long ModemBaud = 9600;         // Communication speed of the modem
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
-const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemSleepRqPin = 23;   // MCU pin used for modem sleep/wake request (-1 if not applicable)
-const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if not applicable)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool wakeFxn(void)
+bool modemWakeFxn(void)
 {
     digitalWrite(modemSleepRqPin, HIGH);
     digitalWrite(redLED, HIGH);  // A light just for show
     return true;
 }
-bool sleepFxn(void)
+bool modemSleepFxn(void)
 {
     digitalWrite(modemSleepRqPin, LOW);
     digitalWrite(redLED, LOW);
@@ -134,7 +144,7 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
 
 // Create the RSSI and signal strength variable objects for the modem and return
 // variable-type pointers to them
@@ -161,10 +171,10 @@ Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-12
 // ==========================================================================
 #include <sensors/BoschBME280.h>
 
+const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 uint8_t BMEi2c_addr = 0x77;
 // The BME280 can be addressed either as 0x77 (Adafruit default) or 0x76 (Grove default)
 // Either can be physically mofidied for the other address
-const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 
 // Create and return the Bosch BME280 sensor object
 BoschBME280 bme280(I2CPower, BMEi2c_addr);
@@ -183,12 +193,8 @@ Variable *bme280Alt = new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh
 #include <sensors/MaximDS18.h>
 
 // OneWire Address [array of 8 hex characters]
-// DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA, 0x81, 0x16, 0x03, 0x0C};
 const int8_t OneWireBus = 4;  // Pin attached to the OneWire Bus (-1 if unconnected)
 const int8_t OneWirePower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-
-// Create and return the Maxim DS18 sensor object (use this form for a known address)
-// MaximDS18 ds18_1(OneWireAddress1, OneWirePower, OneWireBus);
 
 // Create and return the Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
 MaximDS18 ds18_u(OneWirePower, OneWireBus);
@@ -220,6 +226,8 @@ Variable *ms5803Temp = new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-efgh-
 // ==========================================================================
 //    Calculated Variables
 // ==========================================================================
+
+// Create any calculated variables you want here
 
 // Create the function to calculate the water pressure
 // Water pressure = pressure from MS5803 (water+baro) - pressure from BME280 (baro)
@@ -311,9 +319,7 @@ Variable *calcCorrDepth = new Variable(calculateWaterDepthTempCorrected, rhoDept
 // ==========================================================================
 #include <VariableArray.h>
 
-// Put all of the variable pointers into an array
-// NOTE:  Since we've created all of the variable pointers above, we can
-// reference them by name here.
+// FORM2: Fill array with already created and named variable pointers
 Variable *variableList[] = {
     mcuBoardSampNo,
     mcuBoardBatt,
@@ -368,15 +374,15 @@ EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken, samplingFeature)
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 {
-  for (uint8_t i = 0; i < numFlash; i++) {
-    digitalWrite(greenLED, HIGH);
+    for (uint8_t i = 0; i < numFlash; i++) {
+        digitalWrite(greenLED, HIGH);
+        digitalWrite(redLED, LOW);
+        delay(rate);
+        digitalWrite(greenLED, LOW);
+        digitalWrite(redLED, HIGH);
+        delay(rate);
+    }
     digitalWrite(redLED, LOW);
-    delay(rate);
-    digitalWrite(greenLED, LOW);
-    digitalWrite(redLED, HIGH);
-    delay(rate);
-  }
-  digitalWrite(redLED, LOW);
 }
 
 
@@ -431,28 +437,61 @@ void setup()
     // Update the mayfly to get the processor battery level
     mcuBoard.update();
     // Begin the logger
-    // At lowest battery level, skip sensor set-up
     // Note:  Please change these battery voltages to match your battery
-    if (mcuBoardBatt->getValue() < 3.4) dataLogger.begin(true);
-    else dataLogger.begin();  // set up sensors
+    // Check that the battery is OK before powering the modem
+    if (mcuBoardBatt->getValue() > 3.7)
+    {
+        modem.modemPowerUp();
+    }
+    // At lowest battery level, skip sensor set-up
+    if (mcuBoardBatt->getValue() < 3.4)
+    {
+        dataLogger.begin(true);
+    }
+    else  // set up file and sensors
+    {
+        dataLogger.begin();
+    }
 
     // At very good battery voltage, or with suspicious time stamp, sync the clock
     // Note:  Please change these battery voltages to match your battery
-    if (mcuBoardBatt->getValue() > 3.9 ||
+    if (mcuBoardBatt->getValue() > 3.8 ||
         dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
         dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
-        dataLogger.syncRTC();
+    {
+        dataLogger.syncRTC();  // There's a sleepPowerDown at the end of this
+    }
+    else
+    {
+        modem.modemSleepPowerDown();
+    }
+
+    // Call the processor sleep
+    dataLogger.systemSleep();
 }
 
 
 // ==========================================================================
 // Main loop function
 // ==========================================================================
+
+// Use this short loop for simple data logging and sending
 void loop()
 {
-    // Log the data
     // Note:  Please change these battery voltages to match your battery
-    if (mcuBoardBatt->getValue() < 3.4) dataLogger.systemSleep();  // just go back to sleep
-    else if (mcuBoardBatt->getValue() < 3.7) dataLogger.logData();  // log data, but don't send
-    else dataLogger.logDataAndSend();  // send data
+    // At very low battery, just go back to sleep
+    if (mcuBoardBatt->getValue() < 3.4)
+    {
+        dataLogger.systemSleep();
+    }
+    // At moderate voltage, log data but don't send it over the modem
+    else if (mcuBoardBatt->getValue() < 3.7)
+    {
+        dataLogger.logData();
+    }
+    // If the battery is good, send the data to the world
+    else
+    {
+        dataLogger.logDataAndSend();
+    }
 }

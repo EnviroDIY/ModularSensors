@@ -29,10 +29,17 @@ public:
     // Constructor
     EnviroDIYPublisher(Logger& baseLogger,
                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
+                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     EnviroDIYPublisher(Logger& baseLogger,
                     const char *registrationToken,
                     const char *samplingFeatureUUID,
                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
+                    const char *registrationToken,
+                    const char *samplingFeatureUUID,
+                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+
     virtual ~EnviroDIYPublisher();
 
     // Returns the data destination

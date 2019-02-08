@@ -1,5 +1,5 @@
 /*****************************************************************************
-DWRI_CitSci.ino
+DRWI_LTE.ino
 Written By:  Sara Damiano (sdamiano@stroudcenter.org)
 Development Environment: PlatformIO
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
@@ -30,7 +30,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // The library version this example was written for
 const char *libraryVersion = "0.19.6";
 // The name of this file
-const char *sketchName = "DWRI_CitSci.ino";
+const char *sketchName = "DRWI_LTE.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
@@ -64,7 +64,9 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 //    Wifi/Cellular Modem Main Chip Selection
 // ==========================================================================
 
-#define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
+// Select your modem chip - this determines the exact commands sent to it
+#define USE_XBEE_BYPASS  // If you're using a Digi 3G or LTE-M XBee in bypass mode as a u-blox
+#define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
 
 
 // ==========================================================================
@@ -100,24 +102,65 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 //    Specific Modem On-Off Methods
 // ==========================================================================
 
-// THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
+// This should apply to all Digi brand XBee modules.
 // Describe the physical pin connection of your modem to your board
-const long ModemBaud = 9600;         // Communication speed of the modem
-const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
+const long ModemBaud = 9600;        // Communication speed of the modem, 9600 is default for XBee
+const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
+// After enabling pin sleep, the sleep request pin is held LOW to keep the XBee on
+// Enable pin sleep in the setup function or using XCTU prior to connecting the XBee
 bool modemSleepFxn(void)
 {
-    digitalWrite(modemSleepRqPin, LOW);
-    digitalWrite(redLED, LOW);
-    return true;
+    if (modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
+    {
+        digitalWrite(modemSleepRqPin, HIGH);
+        digitalWrite(redLED, LOW);
+        return true;
+    }
+    else return true;
 }
 bool modemWakeFxn(void)
 {
-    digitalWrite(modemSleepRqPin, HIGH);
-    digitalWrite(redLED, HIGH);  // A light just for show
-    return true;
+    if (modemVccPin >= 0)  // Turns on when power is applied
+        return true;
+    else if (modemSleepRqPin >= 0)
+    {
+        digitalWrite(modemSleepRqPin, LOW);
+        digitalWrite(redLED, HIGH);  // Because the XBee doesn't have any lights
+        return true;
+    }
+    else return true;
+}
+// An extra function to set up pin sleep and other preferences on the XBee
+// NOTE:  This will only succeed if the modem is turned on and awake!
+void setupXBee(void)
+{
+    delay(1000);  // Guard time for command mode
+    tinyModem->streamWrite(GF("+++"));  // enter command mode
+    tinyModem->waitResponse(2000, F("OK\r"));
+    tinyModem->sendAT(F("SM"),1);  // Pin sleep
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
+    // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
+    // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
+    // so we'll use the Digi pin sleep instead.
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
+    // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("AP5"));  // Turn on bypass mode
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("WR"));  // Write changes to flash
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("AC"));  // Apply changes
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("FR"));  // Force reset to enter bypass mode
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->init();  // initialize
 }
 
 
@@ -308,7 +351,7 @@ void setup()
     if (modemSleepRqPin >= 0)
     {
         pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, LOW);
+        digitalWrite(modemSleepRqPin, HIGH);
     }
 
     // Set the timezone and offsets
@@ -338,6 +381,12 @@ void setup()
     {
         dataLogger.begin();
     }
+
+    // Set up XBee
+    Serial.println(F("Setting up sleep mode on the XBee."));
+    modem.modemPowerUp();
+    modem.wake();  // Turn it on to talk
+    setupXBee();
 
     // At very good battery voltage, or with suspicious time stamp, sync the clock
     // Note:  Please change these battery voltages to match your battery

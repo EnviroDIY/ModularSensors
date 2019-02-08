@@ -61,7 +61,8 @@ bool RainCounterI2C::addSingleMeasurementResult(void)
     // if the 'requestFrom' returns 0, it means no bytes were received
     if (Wire.requestFrom(int(_i2cAddressHex), 2))
     {
-        MS_DBG(F("Receiving data from External Tipper"));
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
         Byte1 = Wire.read();
         Byte2 = Wire.read();
 
@@ -70,11 +71,11 @@ bool RainCounterI2C::addSingleMeasurementResult(void)
 
         if (tips < 0) tips = -9999; // If negetive value results, return failure
         if (rain < 0) rain = -9999; // If negetive value results, return failure
-    }
-    else MS_DBG(F("No bytes received from external tipper!"));
 
-    MS_DBG(F("Rain: "), rain);
-    MS_DBG(F("Tips: "), tips);
+        MS_DBG(F("  Rain:"), rain);
+        MS_DBG(F("  Tips:"), tips);
+    }
+    else MS_DBG(F("No bytes received from"), getSensorNameAndLocation());
 
     verifyAndAddMeasurementResult(BUCKET_RAIN_VAR_NUM, rain);
     verifyAndAddMeasurementResult(BUCKET_TIPS_VAR_NUM, tips);
