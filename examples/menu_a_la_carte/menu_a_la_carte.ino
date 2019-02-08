@@ -721,7 +721,7 @@ AOSongAM2315 am2315(I2CPower);
 // ==========================================================================
 #include <sensors/AOSongDHT.h>
 
-// const int8_t DHTPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t DHTPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t DHTPin = 10;  // DHT data pin
 DHTtype dhtType = DHT11;  // DHT type, either DHT11, DHT21, or DHT22
 
