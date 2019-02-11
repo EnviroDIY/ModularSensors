@@ -113,18 +113,6 @@
             "platforms": "*"
         },
         {
-            "name": "Adafruit Unified Sensor",
-            "library id": "31",
-            "url": "https://github.com/adafruit/Adafruit_Sensor.git",
-            "version": "=1.0.2",
-            "note": "Adafruit Unified Sensor Library",
-            "authors": [
-                "Adafruit"
-            ],
-            "frameworks": "arduino",
-            "platforms": "atmelavr, atmelsam"
-        },
-        {
             "name": "Adafruit AM2315",
             "library id": "773",
             "url": "https://github.com/adafruit/Adafruit_AM2315.git",
@@ -151,7 +139,7 @@
         {
             "name": "DHT sensor library",
             "library id": "19",
-            "url": "http://github.com/adafruit/DHT-sensor-library.git",
+            "url": "https://github.com/adafruit/DHT-sensor-library.git",
             "version": "=1.3.2",
             "note": "AOSong DHT Sensor Library by Adafruit",
             "authors": [
@@ -163,7 +151,7 @@
         {
             "name": "Adafruit INA219",
             "library id": "160",
-            "url": "https://github.com/adafruit/Adafruit_INA219",
+            "url": "https://github.com/adafruit/Adafruit_INA219.git",
             "version": "=1.0.4",
             "note": "This is a library for the Adafruit INA219 high side DC current sensor boards",
             "authors": [
@@ -182,6 +170,33 @@
                 "Adafruit"
             ],
             "frameworks": "arduino"
+        },
+        {
+            "name": "Adafruit Unified Sensor",
+            "library id": "31",
+            "url": "https://github.com/adafruit/Adafruit_Sensor.git",
+            "version": "=1.0.2",
+            "note": "Adafruit Unified Sensor Library",
+            "authors": [
+                "Adafruit"
+            ],
+            "frameworks": "arduino",
+            "platforms": "atmelavr, atmelsam"
+        },
+        {
+            "name": "DallasTemperature",
+            "library id": "54",
+            "url": "https://github.com/milesburton/Arduino-Temperature-Control-Library.git",
+            "version": "=3.8.0",
+            "note": "DallasTemperature - Arduino Library for Dallas Temperature ICs (DS18B20, DS18S20, DS1822, DS1820)",
+            "authors": [
+                "Guil Barros",
+                "Miles Burton",
+                "Rob Tillart",
+                "Tim Nuewsome"
+            ],
+            "frameworks": "arduino",
+            "platforms": "atmelavr, atmelsam"
         },
         {
             "name": "OneWire",
@@ -207,22 +222,8 @@
             "frameworks": "arduino"
         },
         {
-            "name": "DallasTemperature",
-            "library id": "54",
-            "url": "https://github.com/milesburton/Arduino-Temperature-Control-Library.git",
-            "version": "=3.8.0",
-            "note": "DallasTemperature - Arduino Library for Dallas Temperature ICs (DS18B20, DS18S20, DS1822, DS1820)",
-            "authors": [
-                "Guil Barros",
-                "Miles Burton",
-                "Rob Tillart",
-                "Tim Nuewsome"
-            ],
-            "frameworks": "arduino",
-            "platforms": "atmelavr, atmelsam"
-        },
-        {
             "name": "Arduino-SDI-12",
+            "library id": "1486",
             "version": "=1.3.4",
             "url": "https://github.com/EnviroDIY/Arduino-SDI-12.git",
             "note": "EnviroDIY SDI-12 Library",
