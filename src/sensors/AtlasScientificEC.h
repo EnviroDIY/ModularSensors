@@ -10,11 +10,6 @@
  *     Accuracy is ± 2%
  *     Range is 0.07 − 500,000+ μS/cm
  *     Resolution is 3 decimal places
- *
- * Most I2C commands have a 300ms processing time from the time the command is
- * written until it is possible to request a response or result, except for the
- * commands to take a calibration point or a reading which have a 600ms
- * processing/response time.
  */
 
 // Header Guards
@@ -33,7 +28,7 @@
 
 // Sensor Specific Defines
 #define ATLAS_COND_NUM_VARIABLES 4
-// NOTE:  All Altas sensors seem to have the same timing
+
 #define ATLAS_COND_WARM_UP_TIME_MS 0
 #define ATLAS_COND_STABILIZATION_TIME_MS 0
 #define ATLAS_COND_MEASUREMENT_TIME_MS 600

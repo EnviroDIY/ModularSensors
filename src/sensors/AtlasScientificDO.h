@@ -9,11 +9,6 @@
  *     Accuracy is ± 0.05 mg/L
  *     Range is 0.01 − 100+ mg/L (0.1 − 400+ % saturation)
  *     Resolution is 0.01 mg/L or 0.1 % saturation
- *
- * Most I2C commands have a 300ms processing time from the time the command is
- * written until it is possible to request a response or result, except for the
- * commands to take a calibration point or a reading which have a 600ms
- * processing/response time.
  */
 
 // Header Guards
@@ -32,7 +27,7 @@
 
 // Sensor Specific Defines
 #define ATLAS_DO_NUM_VARIABLES 2
-// NOTE:  All Altas sensors seem to have the same timing
+
 #define ATLAS_DO_WARM_UP_TIME_MS 0
 #define ATLAS_DO_STABILIZATION_TIME_MS 0
 #define ATLAS_DO_MEASUREMENT_TIME_MS 600
