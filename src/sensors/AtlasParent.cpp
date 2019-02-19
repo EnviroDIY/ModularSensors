@@ -154,11 +154,10 @@ bool AtlasParent::addSingleMeasurementResult(void)
             for (uint8_t i = 0; i < _numReturnedVars; i++)
             {
                 float result = Wire.parseFloat();
-                // The SDI-12 library should return -9999 on timeout
-                if (result == -9999 or isnan(result)) result = -9999;
+                if (isnan(result)) result = -9999;
+                if (result < -1020) result = -9999;
                 MS_DBG(F("  Result #"), i, ':', result);
                 verifyAndAddMeasurementResult(i, result);
-
             }
         }
     }

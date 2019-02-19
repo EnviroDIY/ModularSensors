@@ -181,7 +181,7 @@ void Logger::attachModem(loggerModem& modem)
 {
     _logModem = &modem;
     // Print out the modem info
-    PRINTOUT(_logModem->getSensorName(), F("has been tied to this logger!"));
+    PRINTOUT(F("A modem has been tied to this logger!"));
 }
 
 
@@ -1086,7 +1086,7 @@ void Logger::testingMode()
     // Put sensors to sleep
     _internalArray->sensorsSleep();
     _internalArray->sensorsPowerDown();
-    
+
     // Turn the modem off
     _logModem->modemSleepPowerDown();
 
@@ -1133,9 +1133,12 @@ void Logger::setupSensorsAndFile(void)
         zero_sleep_rtc.begin();
     #else
         // Set the pins for I2C
+        PRINTOUT(F("Setting I2C Pins to INPUT_PULLUP"));
         pinMode(SDA, INPUT_PULLUP);
         pinMode(SCL, INPUT_PULLUP);
+        PRINTOUT(F("Beginning wire (I2C)"));
         Wire.begin();
+        PRINTOUT(F("Beginning real time clock"));
         rtc.begin();
         delay(100);
     #endif

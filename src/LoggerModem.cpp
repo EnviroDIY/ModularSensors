@@ -950,7 +950,7 @@ void loggerModem::setModemTiming(void)
     if (_modemName.indexOf(F("SIMCom SIM800")) >= 0)
     {
         MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a SIMCom SIM800"));
-        _warmUpTime_ms = 450; // Time after power on before "PWRKEY" can be used - >0.4sec
+        _warmUpTime_ms = 450;  // Time after power on before "PWRKEY" can be used - >0.4sec
         _statusTime_ms = 2000;  // Time after end pulse until status pin becomes active (>3sec from start of 1s pulse)
         _stabilizationTime_ms = 2000;  // Time after end pulse until serial port becomes active (>3sec from start of 1s pulse)
         _on_pull_down_ms = 1100;  // >1s
@@ -961,7 +961,7 @@ void loggerModem::setModemTiming(void)
     if (_modemName.indexOf(F("SIMCom SIM900")) >= 0)
     {
         MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a SIMCom SIM900"));
-        _warmUpTime_ms = 1000; // Time after power on before "PWRKEY" can be used (guess - diagram isn't clear)
+        _warmUpTime_ms = 1000;  // Time after power on before "PWRKEY" can be used (guess - diagram isn't clear)
         _statusTime_ms = 2200;  // Time after end pulse until status pin becomes active (>2.2sec)
         _stabilizationTime_ms = 2200;  // Time after end pulse until serial port becomes active (>2.2sec)
         _on_pull_down_ms = 1100;  // >1s
@@ -972,7 +972,7 @@ void loggerModem::setModemTiming(void)
     if (_modemName.indexOf(F("SIMCom SIM7000")) >= 0)
     {
         MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a SIMCom SIM7000"));
-        _warmUpTime_ms = 0; // Time after power on before "PWRKEY" can be used
+        _warmUpTime_ms = 0;  // Time after power on before "PWRKEY" can be used
         _statusTime_ms = 4500;  // Time after end pulse until status pin becomes active (>4.5sec)
         _stabilizationTime_ms = 4500;  // Time after end pulse until serial port becomes active (>4.5sec)
         _on_pull_down_ms = 1100;  // >1s
@@ -980,11 +980,12 @@ void loggerModem::setModemTiming(void)
         _disconnetTime_ms = 7000;  // power down (gracefully) takes 1.8-6.9 sec
     }
     if (_modemName.indexOf(F("SARA-R4")) >= 0  ||
+        _modemName.indexOf(F("SARA-N4")) >= 0  ||
         _modemName.indexOf(F("XBee3™ Cellular LTE-M")) >= 0  ||
         _modemName.indexOf(F("Digi XBee3™ Cellular NB-IoT")) >= 0)
     {
         MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a u-blox SARA-R4"));
-        _warmUpTime_ms = 250; // Time after power on before PWR_ON can be used ??? Unclear in documentation!
+        _warmUpTime_ms = 250;  // Time after power on before PWR_ON can be used ??? Unclear in documentation!
         _statusTime_ms = 0;  // V_INT becomes active mid-way through on-pulse
         _stabilizationTime_ms = 4500;  // Time until system and digital pins are operational (~4.5s)
         _on_pull_down_ms = 200;  // 0.15-3.2s
@@ -998,9 +999,9 @@ void loggerModem::setModemTiming(void)
         _modemName.indexOf(F("XBee® Cellular 3G")) >= 0)
     {
         MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a u-blox SARA-U2"));
-        _warmUpTime_ms = 0; // Module turns on when power is applied - level of PWR_ON then irrelevant
+        _warmUpTime_ms = 0;  // Module turns on when power is applied - level of PWR_ON then irrelevant
         _statusTime_ms = 35;  // Time after end pulse until V_INT becomes active
-                                 // Unspecified in documentation! Taking value from Lisa U2
+                              // Unspecified in documentation! Taking value from Lisa U2
         _stabilizationTime_ms = 6000;  // Time until system and digital pins are operational
         // (6 sec typical for SARA U201, others 5 sec typical)
         // Time for an AT response may be much longer when using a 3G XBee in bypass mode!
@@ -1016,7 +1017,7 @@ void loggerModem::setModemTiming(void)
         MS_MOD_DBG(F("Resetting warm-up and disconnect timing for a u-blox SARA-G3"));
         _warmUpTime_ms = 0; // Module turns on when power is applied - level of PWR_ON then irrelevant
         _statusTime_ms = 35;  // Time after end pulse until V_INT becomes active
-                                 // Unspecified in documentation! Taking value from Lisa U2
+                              // Unspecified in documentation! Taking value from Lisa U2
         _stabilizationTime_ms = 5000;  // Time until system and digital pins are operational (5 sec typical)
         _on_pull_down_ms = 6;  // >5ms
         _off_pull_down_ms = 1100;  // >1s

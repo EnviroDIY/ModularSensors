@@ -23,6 +23,13 @@ Although this library was written primarily for the [EnviroDIY Mayfly data logge
 - [Apogee SQ-212: quantum light sensor, via TI ADS1115](https://github.com/EnviroDIY/ModularSensors/wiki/Apogee-SQ212)
 - [AOSong AM2315: humidity & temperature](https://github.com/EnviroDIY/ModularSensors/wiki/AOSong-AM2315)
 - [AOSong DHT: humidity & temperature](https://github.com/EnviroDIY/ModularSensors/wiki/AOSong-DHT)
+- [Atlas Scientific EZO Sensors](https://github.com/EnviroDIY/ModularSensors/wiki/Atlas-Sensors)
+    - EZO-CO2: Carbon Dioxide and Temperature
+    - EZO-DO: Dissolved Oxygen
+    - EZO-EC: Conductivity, Total Dissolved Solids, Salinity, and Specific Gravity
+    - EZO-ORP: Oxidation/Reduction Potential
+    - EZO-pH: pH
+    - EZO-RTD: Temperature
 - [Bosch BME280: barometric pressure, humidity & temperature](https://github.com/EnviroDIY/ModularSensors/wiki/Bosch-BME280)
 - [Campbell Scientific OBS-3+: turbidity, via TI ADS1115](https://github.com/EnviroDIY/ModularSensors/wiki/Campbell-OBS3)
 - [Meter Environmental ECH2O 5TM (formerly Decagon Devices 5TM): soil moisture](https://github.com/EnviroDIY/ModularSensors/wiki/Meter-ECH2O-5TM)
