@@ -31,14 +31,12 @@ class AtlasParent : public Sensor
 public:
     AtlasParent(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage = 1,
                 const char *sensorName = "AtlasSensor", uint8_t numReturnedVars = 1,
-                uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0);
+                uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
+                uint32_t measurementTime_ms = 0);
     virtual ~AtlasParent();
 
     String getSensorLocation(void) override;
 
-    // TODO:  Use setup to make sure all possible response parameters are turned on
-    // The command to turn on a response parameter is dependent on the specific
-    // sensor. ?? are they all on by default ??
     virtual bool setup(void) override;
     // NOTE:  The sensor should wake as soon as any command is sent.
     // I assume that means we can use the command to take a reading to both
@@ -50,7 +48,7 @@ public:
     virtual bool addSingleMeasurementResult(void) override;
 
 protected:
-    uint8_t _i2cAddressHex;
+    int8_t _i2cAddressHex;
 };
 
 #endif  // Header Guard

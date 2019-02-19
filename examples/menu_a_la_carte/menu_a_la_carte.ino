@@ -521,9 +521,11 @@ bool modemSleepFxn(void)
 }
 bool modemWakeFxn(void)
 {
-    if (modemVccPin >= 0)  // Turns on when power is applied
-        return true;
-    else if(modemSleepRqPin >= 0)
+    // SARA/LISA U2/G2 and SARA G3 series turn on when power is applied
+    // SARA R4/N4 series must power on and then pulse on
+    // if (modemVccPin >= 0)
+    //     return true;
+    if (modemSleepRqPin >= 0)
     {
         digitalWrite(modemSleepRqPin, LOW);
         digitalWrite(redLED, HIGH);
@@ -639,18 +641,63 @@ MaximDS3231 ds3231(1);
 
 
 // ==========================================================================
-//    Atlas Scientific EZO-ES Conductivity Sensor
+//    Atlas Scientific EZO-CO2 Carbon Dioxide Sensor
+// ==========================================================================
+#include <sensors/AtlasScientificCO2.h>
+
+const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// uint8_t AtlasCO2i2c_addr = 0x69;  // Default for CO2-EZO is 0x69 (105)
+// All Atlas sensors have different default I2C addresses, but any of them can
+// be re-addressed to any 8 bit number.  If using the default address for any
+// Atlas Scientific sensor, you may omit this argument.
+
+// Create and return the Atlas Scientific CO2 sensor object
+// AtlasScientificCO2 atlasCO2(I2CPower, AtlasCO2i2c_addr);
+AtlasScientificCO2 atlasCO2(I2CPower);
+
+// Create the concentration and temperature variable objects for the
+// EZO-CO2 and return variable-type pointers to them
+// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
+// Variable *atlasCO2 = new AtlasScientificCO2_CO2(&atlasCO2, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasCO2Temp = new AtlasScientificCO2_Temp(&atlasCO2, "12345678-abcd-1234-efgh-1234567890ab");
+
+
+// ==========================================================================
+//    Atlas Scientific EZO-DO Dissolved Oxygen Sensor
+// ==========================================================================
+#include <sensors/AtlasScientificDO.h>
+
+// const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// uint8_t AtlasDOi2c_addr = 0x61;  // Default for DO is 0x61 (97)
+// All Atlas sensors have different default I2C addresses, but any of them can
+// be re-addressed to any 8 bit number.  If using the default address for any
+// Atlas Scientific sensor, you may omit this argument.
+
+// Create and return the Atlas Scientific DO sensor object
+// AtlasScientificDO atlasDO(I2CPower, AtlasDOi2c_addr);
+AtlasScientificDO atlasDO(I2CPower);
+
+// Create the concentration and percent saturation variable objects for the
+// EZO-DO and return variable-type pointers to them
+// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
+// Variable *atlasDOconc = new AtlasScientificDO_DOmgL(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasDOpct = new AtlasScientificDO_DOpct(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab");
+
+
+// ==========================================================================
+//    Atlas Scientific EZO-EC Conductivity Sensor
 // ==========================================================================
 #include <sensors/AtlasScientificEC.h>
 
-const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-uint8_t AtlasECi2c_addr = 0x64;  // Default for EC is 0x64 (100)
+// const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// uint8_t AtlasECi2c_addr = 0x64;  // Default for EC is 0x64 (100)
 // All Atlas sensors have different default I2C addresses, but any of them can
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create and return the Atlas Scientific Conductivity sensor object
-AtlasScientificEC atlasEC(I2CPower, AtlasECi2c_addr);
+// AtlasScientificEC atlasEC(I2CPower, AtlasECi2c_addr);
+AtlasScientificEC atlasEC(I2CPower);
 
 // Create the four variable objects for the EZO-ES and return variable-type pointers to them
 // Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
@@ -661,24 +708,43 @@ AtlasScientificEC atlasEC(I2CPower, AtlasECi2c_addr);
 
 
 // ==========================================================================
-//    Atlas Scientific EZO-DO Dissolved Oxygen Sensor
+//    Atlas Scientific EZO-ORP Oxidation/Reduction Potential Sensor
 // ==========================================================================
-#include <sensors/AtlasScientificDO.h>
+#include <sensors/AtlasScientificORP.h>
 
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-uint8_t AtlasDOi2c_addr = 0x61;  // Default for DO is 0x61 (97)
+// uint8_t AtlasORPi2c_addr = 0x62;  // Default for ORP is 0x62 (98)
 // All Atlas sensors have different default I2C addresses, but any of them can
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
 
-// Create and return the Atlas Scientific DO sensor object
-AtlasScientificDO atlasDO(I2CPower, AtlasDOi2c_addr);
+// Create and return the Atlas Scientific ORP sensor object
+// AtlasScientificORP atlasORP(I2CPower, AtlasORPi2c_addr);
+AtlasScientificORP atlasORP(I2CPower);
 
-// Create the concentration and percent saturation variable objects for the
-// EZO-DO and return variable-type pointers to them
-// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
-// Variable *atlasDOconc = new AtlasScientificDO_DOmgL(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *atlasDOpct = new AtlasScientificDO_DOpct(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab");
+// Create the potential variable object for the ORP and a return variable-type pointer to it
+// Use this to create a variable pointer with a name to use in multiple arrays or any calculated variables.
+// Variable *atlasORPot = new AtlasScientificORP_Potential(&atlasORP, "12345678-abcd-1234-efgh-1234567890ab");
+
+
+// ==========================================================================
+//    Atlas Scientific EZO-pH Sensor
+// ==========================================================================
+#include <sensors/AtlasScientificpH.h>
+
+// const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// uint8_t AtlaspHi2c_addr = 0x63;  // Default for RTD is 0x62 (99)
+// All Atlas sensors have different default I2C addresses, but any of them can
+// be re-addressed to any 8 bit number.  If using the default address for any
+// Atlas Scientific sensor, you may omit this argument.
+
+// Create and return the Atlas Scientific pH sensor object
+// AtlasScientificpH atlaspH(I2CPower, AtlaspHi2c_addr);
+AtlasScientificpH atlaspH(I2CPower);
+
+// Create the pH variable object for the pH and a return variable-type pointer to it
+// Use this to create a variable pointer with a name to use in multiple arrays or any calculated variables.
+// Variable *atlaspHpH = new AtlasScientificpH_pH(&atlaspH, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -1390,12 +1456,16 @@ Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarName
 // NOTE:  Forms one and two can be mixed
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificCO2_CO2(&atlasCO2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificCO2_Temp(&atlasCO2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificDO_DOmgL(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificDO_DOpct(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab"),
     new AtlasScientificEC_Cond(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab"),
     new AtlasScientificEC_TDS(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab"),
     new AtlasScientificEC_Salinity(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab"),
     new AtlasScientificEC_SpecificGravity(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AtlasScientificDO_DOmgL(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AtlasScientificDO_DOpct(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificORP_Potential(&atlasORP, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificpH_pH(&atlaspH, "12345678-abcd-1234-efgh-1234567890ab"),
     new AtlasScientificRTD_Temp(&atlasRTD, "12345678-abcd-1234-efgh-1234567890ab"),
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
     new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),

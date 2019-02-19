@@ -41,10 +41,6 @@ bool AtlasParent::setup(void)
 {
     Wire.begin();  // Start the wire library (sensor power not required)
     return Sensor::setup();  // this will set pin modes and the setup status bit
-    // TODO:  Use setup to make sure all possible response parameters are turned on
-    // The command to turn on a response parameter is dependent on the specific
-    // sensor.
-    // ?? are they all on by default ??
 }
 
 
@@ -126,8 +122,10 @@ bool AtlasParent::addSingleMeasurementResult(void)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6))
     {
-        Wire.requestFrom(_i2cAddressHex,35,1);  // call the circuit and request 35 bytes (this may be more than we need)
-        uint8_t code=Wire.read();  //the first byte is the response code, we read this separately.
+        // call the circuit and request 35 bytes (this may be more than we need)
+        Wire.requestFrom(_i2cAddressHex, 35, 1);
+        // the first byte is the response code, we read this separately.
+        uint8_t code=Wire.read();
 
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
         // Parse the response code
