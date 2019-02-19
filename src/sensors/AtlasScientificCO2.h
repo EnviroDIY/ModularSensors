@@ -8,7 +8,7 @@
  * The output from the Atlas Scientifc CO2 is the temperature in degrees C.
  *     Accuracy is ± 3% or ± 30 ppm
  *     Range is 0 − 10000 ppm
- *     Resolution is 0.001 °C
+ *     Resolution is 1 ppm
  */
 
 // Header Guards
@@ -32,7 +32,7 @@
 #define ATLAS_CO2_STABILIZATION_TIME_MS 10000
 #define ATLAS_CO2_MEASUREMENT_TIME_MS 900
 
-#define ATLAS_CO2_RESOLUTION 0
+#define ATLAS_CO2_RESOLUTION 1
 #define ATLAS_CO2_VAR_NUM 0
 
 #define ATLAS_CO2TEMP_RESOLUTION 0

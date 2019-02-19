@@ -8,7 +8,7 @@
  * The output from the Atlas Scientifc CO2 is the temperature in degrees C.
  *     Accuracy is ± 3% or ± 30 ppm
  *     Range is 0 − 10000 ppm
- *     Resolution is 0.001 °C
+ *     Resolution is 1 ppm
  */
 
 // Included Dependencies
