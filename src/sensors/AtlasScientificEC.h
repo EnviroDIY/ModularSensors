@@ -29,7 +29,8 @@
 // Sensor Specific Defines
 #define ATLAS_COND_NUM_VARIABLES 4
 
-#define ATLAS_COND_WARM_UP_TIME_MS 0
+// TODO:  Test warm up time with real sensor, time take from that for ORP and pH
+#define ATLAS_COND_WARM_UP_TIME_MS 850
 #define ATLAS_COND_STABILIZATION_TIME_MS 0
 #define ATLAS_COND_MEASUREMENT_TIME_MS 600
 
@@ -52,7 +53,7 @@ public:
     AtlasScientificEC(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_COND_I2C_ADDR,
                       uint8_t measurementsToAverage = 1);
     ~AtlasScientificEC();
-    
+
     virtual bool setup(void) override;
 };
 

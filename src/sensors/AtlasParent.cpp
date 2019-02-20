@@ -94,7 +94,9 @@ bool AtlasParent::startSingleMeasurement(void)
 
     Wire.beginTransmission(_i2cAddressHex);  // Transmit to the sensor
     success &= Wire.write('r');  // Write "R" to start a reading
-    success &= !Wire.endTransmission();  // Finish
+    int I2Cstatus = Wire.endTransmission();  // Finish
+    MS_DBG(F("I2Cstatus:"), I2Cstatus);
+    success &= !I2Cstatus;
     // NOTE: The return of 0 from endTransmission indicates success
 
     if (success)

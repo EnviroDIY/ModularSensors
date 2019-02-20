@@ -769,7 +769,7 @@ AtlasScientificORP atlasORP(I2CPower);
 #include <sensors/AtlasScientificpH.h>
 
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-// uint8_t AtlaspHi2c_addr = 0x63;  // Default for RTD is 0x62 (99)
+// uint8_t AtlaspHi2c_addr = 0x63;  // Default for RTD is 0x63 (99)
 // All Atlas sensors have different default I2C addresses, but any of them can
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.

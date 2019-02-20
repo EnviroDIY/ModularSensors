@@ -28,7 +28,8 @@
 // Sensor Specific Defines
 #define ATLAS_DO_NUM_VARIABLES 2
 
-#define ATLAS_DO_WARM_UP_TIME_MS 0
+// TODO:  Test warm up time with real sensor, time take from that for ORP and pH
+#define ATLAS_DO_WARM_UP_TIME_MS 850
 #define ATLAS_DO_STABILIZATION_TIME_MS 0
 #define ATLAS_DO_MEASUREMENT_TIME_MS 600
 
