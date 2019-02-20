@@ -28,9 +28,11 @@
 // Sensor Specific Defines
 #define ATLAS_PH_NUM_VARIABLES 1
 
-#define ATLAS_PH_WARM_UP_TIME_MS 850
+#define ATLAS_PH_WARM_UP_TIME_MS 850  // 846 in SRGD Tests
 #define ATLAS_PH_STABILIZATION_TIME_MS 0
-#define ATLAS_PH_MEASUREMENT_TIME_MS 900
+// NOTE:  Manual says measurement takes 900 ms, but in SRGD tests, no result was
+// available until 1656 ms
+#define ATLAS_PH_MEASUREMENT_TIME_MS 1660
 
 #define ATLAS_PH_RESOLUTION 3
 #define ATLAS_PH_VAR_NUM 0

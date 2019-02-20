@@ -28,9 +28,11 @@
 // Sensor Specific Defines
 #define ATLAS_ORP_NUM_VARIABLES 1
 
-#define ATLAS_ORP_WARM_UP_TIME_MS 850
+#define ATLAS_ORP_WARM_UP_TIME_MS 850  // 846 in SRGD tests
 #define ATLAS_ORP_STABILIZATION_TIME_MS 0
-#define ATLAS_ORP_MEASUREMENT_TIME_MS 900
+// NOTE:  Manual says measurement takes 900 ms, but in SRGD tests, no result was
+// available until 1577 ms
+#define ATLAS_ORP_MEASUREMENT_TIME_MS 1580
 
 #define ATLAS_ORP_RESOLUTION 1
 #define ATLAS_ORP_VAR_NUM 0

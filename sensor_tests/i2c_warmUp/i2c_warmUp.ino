@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-byte address = 0x66;
+int address = 0x63;
 
 uint32_t start;
 bool firstE1 = true;
@@ -51,6 +51,19 @@ void loop()
             Serial.print(" after ");
             Serial.print(millis() - start);
             Serial.println(" ms!");
+            start = millis();
+            while (true)
+            {
+                Wire.requestFrom(address, 1, 1);
+                uint8_t code=Wire.read();
+                if (code == 1)
+                {
+                    Serial.print("Measurement complete after ");
+                    Serial.print(millis() - start);
+                    Serial.println(" ms!");
+                    break;
+                }
+            }
             while (true) {};  // Stop
         case 1:
             if (firstE1)

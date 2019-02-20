@@ -28,9 +28,11 @@
 // Sensor Specific Defines
 #define ATLAS_RTD_NUM_VARIABLES 1
 
-#define ATLAS_RTD_WARM_UP_TIME_MS 740
+#define ATLAS_RTD_WARM_UP_TIME_MS 740  // 731 in SRGD tests
 #define ATLAS_RTD_STABILIZATION_TIME_MS 0
-#define ATLAS_RTD_MEASUREMENT_TIME_MS 600
+// NOTE:  Manual says measurement time is 600, but in SRGD tests, didn't get a
+// result until after 643 ms
+#define ATLAS_RTD_MEASUREMENT_TIME_MS 650
 
 #define ATLAS_RTD_RESOLUTION 3
 #define ATLAS_RTD_VAR_NUM 0
