@@ -16,7 +16,8 @@
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
 // Create a variable for the modem baud rate - this will be used in the begin function for the port
-const long ModemBaud = 9600;  // SARA-U201 default seems to be 9600
+const long ModemBaud = 9600;  // SARA U201 and SARA N211 default is 9600
+// const long ModemBaud = 115200;  // SARA R410M default is 115200
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
 TinyGsm *tinyModem = new TinyGsm(modemSerial);
@@ -34,6 +35,22 @@ const int8_t modemVccPin = -2;  // MCU pin controlling modem power (-1 if not ap
 const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
+
+
+bool uBeeTestAT(unsigned long timeout = 7000L) {
+    for (unsigned long start = millis(); millis() - start < timeout; ) {
+        modemSerial.begin(ModemBaud);
+        if (ModemBaud > 57600) {
+            tinyModem->setBaud(9600);
+            modemSerial.end();
+            modemSerial.begin(9600);
+        }
+        tinyModem->sendAT(GF(""));
+        if (tinyModem->waitResponse(200) == 1) return true;
+        delay(100);
+    }
+    return false;
+}
 
 bool wakeFxn(void){return true;}  // Turns on when power is applied
 bool sleepFxn(void)
@@ -71,7 +88,7 @@ void setup()
     pinMode(23, OUTPUT);
     digitalWrite(23, LOW);
 
-    bool success = tinyModem->testAT(7000L);
+    bool success = uBeeTestAT();
     Serial.print("  All pins LOW: ");
     Serial.println(success);
 
@@ -84,7 +101,7 @@ void setup()
     digitalWrite(20, LOW);
     digitalWrite(23, LOW);
 
-    success = tinyModem->testAT(7000L);
+    success = uBeeTestAT();
     Serial.print("  Pin 19 HIGH, 20 & 23 LOW: ");
     Serial.println(success);
     tinyModem->poweroff();
@@ -97,7 +114,7 @@ void setup()
     delay(15000L);
     digitalWrite(20, HIGH);
 
-    success = tinyModem->testAT(7000L);
+    success = uBeeTestAT();
     Serial.print("  Pin 20 HIGH, 19 & 23 LOW: ");
     Serial.println(success);
     tinyModem->poweroff();
@@ -115,7 +132,7 @@ void setup()
     Serial.println("expect failure from SARA R410M (no pulse), success from U201 (on with power on)");
     digitalWrite(23, HIGH);
 
-    success = tinyModem->testAT(7000L);
+    success = uBeeTestAT();
     Serial.print("  Pin 23 HIGH, 19 & 20 LOW: ");
     Serial.println(success);
     Serial.print("  Pin 19 state: ");
@@ -126,12 +143,11 @@ void setup()
         tinyModem->poweroff();
         Serial.print("  Shutdown time (ms): ");
         uint32_t start = millis();
-        while (true)
+        while ((millis() - start) < 15000L)
         {
             if (!digitalRead(19))
             {
                 Serial.println(millis() - start);
-                tinyModem->testAT(1000L);
                 break;
             }
         }
@@ -148,7 +164,7 @@ void setup()
     digitalWrite(20, HIGH);
     digitalWrite(23, HIGH);
 
-    success = tinyModem->testAT(7000L);
+    success = uBeeTestAT();
     Serial.print("  Pin 20 & 23 HIGH: ");
     Serial.println(success);
     Serial.print("  Pin 19 state: ");
@@ -159,12 +175,11 @@ void setup()
         tinyModem->poweroff();
         Serial.print("  Shutdown time (ms): ");
         uint32_t start = millis();
-        while (true)
+        while ((millis() - start) < 15000L)
         {
             if (!digitalRead(19))
             {
                 Serial.println(millis() - start);
-                tinyModem->testAT(1000L);
                 break;
             }
         }
@@ -179,7 +194,7 @@ void setup()
     delayMicroseconds(60);
     digitalWrite(20, HIGH);
 
-    success = tinyModem->testAT(7000L);
+    success = uBeeTestAT();
     Serial.print("  After pin 20 low pulse, 23 high: ");
     Serial.println(success);
     Serial.print("  Pin 19 state: ");
@@ -190,12 +205,11 @@ void setup()
         tinyModem->poweroff();
         Serial.print("  Shutdown time (ms): ");
         uint32_t start = millis();
-        while (true)
+        while ((millis() - start) < 15000L)
         {
             if (!digitalRead(19))
             {
                 Serial.println(millis() - start);
-                tinyModem->testAT(1000L);
                 break;
             }
         }
@@ -207,25 +221,39 @@ void setup()
     delayMicroseconds(60);
     digitalWrite(20, HIGH);
 
-    success = tinyModem->testAT(7000L);
+    success = uBeeTestAT();
     Serial.print("  After pin 20 60µs low pulse, 23 high: ");
     Serial.println(success);
     Serial.print("  Pin 19 state: ");
     Serial.println(digitalRead(19));
     if (digitalRead(19))
     {
-        Serial.println("Shutting back down with 1.5 sec low pulse on 20");
+        Serial.println("Attempting to shut down with 1.5 sec low pulse on 20");
         digitalWrite(20, LOW);
         delay(1600);
         digitalWrite(20, HIGH);
         Serial.print("  Shutdown time (ms): ");
         uint32_t start = millis();
-        while (true)
+        while ((millis() - start) < 15000L)
         {
             if (!digitalRead(19))
             {
                 Serial.println(millis() - start);
-                tinyModem->testAT(1000L);
+                break;
+            }
+        }
+    }
+    if (digitalRead(19))
+    {
+        Serial.println("Shutting back down with AT command");
+        tinyModem->poweroff();
+        Serial.print("  Shutdown time (ms): ");
+        uint32_t start = millis();
+        while ((millis() - start) < 15000L)
+        {
+            if (!digitalRead(19))
+            {
+                Serial.println(millis() - start);
                 break;
             }
         }
@@ -237,7 +265,7 @@ void setup()
     delay(1100);
     digitalWrite(20, HIGH);
 
-    success = tinyModem->testAT(7000L);
+    success = uBeeTestAT();
     Serial.print("  After pin 20 1 sec low pulse, 23 high: ");
     Serial.println(success);
     Serial.print("  Pin 19 state: ");
@@ -248,12 +276,11 @@ void setup()
         tinyModem->poweroff();
         Serial.print("  Shutdown time (ms): ");
         uint32_t start = millis();
-        while (true)
+        while ((millis() - start) < 15000L)
         {
             if (!digitalRead(19))
             {
                 Serial.println(millis() - start);
-                tinyModem->testAT(1000L);
                 break;
             }
         }
@@ -265,25 +292,39 @@ void setup()
     delay(1100);
     digitalWrite(20, HIGH);
 
-    success = tinyModem->testAT(7000L);
+    success = uBeeTestAT();
     Serial.print("  After pin 20 1 sec low pulse, 23 high: ");
     Serial.println(success);
     Serial.print("  Pin 19 state: ");
     Serial.println(digitalRead(19));
     if (digitalRead(19))
     {
-        Serial.println("Shutting back down with 1.5 sec low pulse on 20");
+        Serial.println("Attempting to shut down with 1.5 sec low pulse on 20");
         digitalWrite(20, LOW);
         delay(1600);
         digitalWrite(20, HIGH);
         Serial.print("  Shutdown time (ms): ");
         uint32_t start = millis();
-        while (true)
+        while ((millis() - start) < 15000L)
         {
             if (!digitalRead(19))
             {
                 Serial.println(millis() - start);
-                tinyModem->testAT(1000L);
+                break;
+            }
+        }
+    }
+    if (digitalRead(19))
+    {
+        Serial.println("Shutting back down with AT command");
+        tinyModem->poweroff();
+        Serial.print("  Shutdown time (ms): ");
+        uint32_t start = millis();
+        while ((millis() - start) < 15000L)
+        {
+            if (!digitalRead(19))
+            {
+                Serial.println(millis() - start);
                 break;
             }
         }
@@ -296,7 +337,7 @@ void setup()
     // pinMode(19, INPUT_PULLUP);
     // delay(15000L);
     //
-    // success = tinyModem->testAT(7000L);
+    // success = uBeeTestAT();
     // Serial.print("  Pin 20 & 23 HIGH: ");
     // Serial.println(success);
     // Serial.print("  Pin 19 state: ");
@@ -309,7 +350,7 @@ void setup()
     // digitalWrite(20, HIGH);
     // delay(15000L);
     //
-    // success = tinyModem->testAT(7000L);
+    // success = uBeeTestAT();
     // Serial.print("  After pin 20 low pulse: ");
     // Serial.println(success);
     // Serial.print("  Pin 19 state: ");
@@ -322,7 +363,7 @@ void setup()
     // digitalWrite(20, HIGH);
     // delay(15000L);
     //
-    // success = tinyModem->testAT(7000L);
+    // success = uBeeTestAT();
     // Serial.print("  After pin 20 low pulse: ");
     // Serial.println(success);
     // Serial.print("  Pin 19 state: ");
@@ -335,12 +376,11 @@ void setup()
     // digitalWrite(20, HIGH);
     // Serial.print("  Shutdown time (ms): ");
     // start = millis();
-    // while (true)
+    // while ((millis() - start) < 15000L)
     // {
     //     if (!digitalRead(19))
     //     {
     //         Serial.println(millis() - start);
-    //         tinyModem->testAT(1000L);
     //         break;
     //     }
     // }
