@@ -641,7 +641,7 @@ MaximDS3231 ds3231(1);
 
 
 // ==========================================================================
-//    Atlas Scientific EZO-CO2 Carbon Dioxide Sensor
+//    Atlas Scientific EZO-CO2 Embedded NDIR Carbon Dioxide Sensor
 // ==========================================================================
 #include <sensors/AtlasScientificCO2.h>
 
@@ -753,13 +753,14 @@ AtlasScientificpH atlaspH(I2CPower);
 #include <sensors/AtlasScientificRTD.h>
 
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-uint8_t AtlasRTDi2c_addr = 0x66;  // Default for RTD is 0x66 (102)
+// uint8_t AtlasRTDi2c_addr = 0x66;  // Default for RTD is 0x66 (102)
 // All Atlas sensors have different default I2C addresses, but any of them can
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create and return the Atlas Scientific RTD sensor object
-AtlasScientificRTD atlasRTD(I2CPower, AtlasRTDi2c_addr);
+// AtlasScientificRTD atlasRTD(I2CPower, AtlasRTDi2c_addr);
+AtlasScientificRTD atlasRTD(I2CPower);
 
 // Create the temperature variable object for the RTD and a return variable-type pointer to it
 // Use this to create a variable pointer with a name to use in multiple arrays or any calculated variables.
