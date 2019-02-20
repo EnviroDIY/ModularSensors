@@ -187,7 +187,6 @@ bool loggerModem::wake(void)
     }
     else
     {
-        waitForWarmUp();
         // Run the input wake function
         MS_MOD_DBG(F("Running wake function for"), getSensorName());
         success &= _modemWakeFxn();
