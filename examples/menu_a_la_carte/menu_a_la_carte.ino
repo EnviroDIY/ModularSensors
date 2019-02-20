@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.20.0
+This example sketch is written for ModularSensors library version 0.20.1
 
 This shows most of the standard functions of the library at once.
 
@@ -26,7 +26,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.20.0";
+const char *libraryVersion = "0.20.1";
 // The name of this file
 const char *sketchName = "menu_a_la_carte.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -51,7 +51,7 @@ const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
-const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
+const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create and return the main processor chip "sensor" - for general metadata
 const char *mcuBoardVersion = "v0.5b";
@@ -252,7 +252,7 @@ TinyGsmClient *tinyClient3 = new TinyGsmClient(*tinyModem);
 // This should apply to all Digi brand XBee modules.
 #if defined(TINY_GSM_MODEM_XBEE) || defined(USE_XBEE_BYPASS)
 // Describe the physical pin connection of your modem to your board
-const long ModemBaud = 9600;        // Communication speed of the modem, 9600 is default for XBee
+const long modemBaud = 9600;        // Communication speed of the modem, 9600 is default for XBee
 const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // Create the wake and sleep methods for the modem
@@ -350,7 +350,7 @@ void setupXBee(void)
 // This should work with most ESP8266 breakouts
 #elif defined(TINY_GSM_MODEM_ESP8266)
 // Describe the physical pin connection of your modem to your board
-const long ModemBaud = 115200;       // Communication speed of the modem, 115200 is default for ESP8266
+const long modemBaud = 115200;       // Communication speed of the modem, 115200 is default for ESP8266
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 const int8_t espSleepRqPin = 14;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
 const int8_t espStatusPin = 13;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
@@ -424,10 +424,20 @@ bool modemWakeFxn(void)
                 modemSerial.read();
                 delay(2);
             }
-            // Have to make sure echo is off and re-run the init on wake
+            // Have to make sure echo is off or all AT commands will be confused
             tinyModem->sendAT(F("E0"));
             success &= tinyModem->waitResponse() == 1;
-            tinyModem->init();
+            // Slow down the baud rate for slow processors
+            #if F_CPU == 8000000L
+            if (modemBaud > 57600)
+            {
+                success &= tinyModem->setBaud(9600);
+                modemSerial.end();
+                modemSerial.begin(9600);
+            }
+            #endif
+            // re-run init to set mux and station mode
+            success &= tinyModem->init();
         }
         if (!success)
         {
@@ -456,10 +466,20 @@ bool modemWakeFxn(void)
                 modemSerial.read();
                 delay(2);
             }
-            // Have to make sure echo is off and re-run the init on wake
+            // Have to make sure echo is off or all AT commands will be confused
             tinyModem->sendAT(F("E0"));
             success &= tinyModem->waitResponse() == 1;
-            tinyModem->init();
+            // Slow down the baud rate for slow processors
+            #if F_CPU == 8000000L
+            if (modemBaud > 57600)
+            {
+                success &= tinyModem->setBaud(9600);
+                modemSerial.end();
+                modemSerial.begin(9600);
+            }
+            #endif
+            // re-run init to set mux and station mode
+            success &= tinyModem->init();
         }
         if (!success)
         {
@@ -495,7 +515,8 @@ void setupESP8266(void)
 // This should work for many u-blox breakouts, but check the timing in wake/sleep functions
 #elif defined(TINY_GSM_MODEM_UBLOX)
 // Describe the physical pin connection of your modem to your board
-const long ModemBaud = 9600;         // Communication speed of the modem
+// Default baud rate for most u-blox is 9600, except the SARA R410M, which is 115200
+const long modemBaud = 9600;         // Communication speed of the modem
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // Create the wake and sleep methods for the modem
@@ -523,17 +544,27 @@ bool modemWakeFxn(void)
 {
     // SARA/LISA U2/G2 and SARA G3 series turn on when power is applied
     // SARA R4/N4 series must power on and then pulse on
-    // if (modemVccPin >= 0)
-    //     return true;
+    if (modemVccPin >= 0)
+        return true;
     if (modemSleepRqPin >= 0)
     {
         digitalWrite(modemSleepRqPin, LOW);
         digitalWrite(redLED, HIGH);
-        delay(200); // 0.15-3.2s pulse for wake on SARA R4/N4
-        // delay(6); // >5ms pulse for wake on SARA G3
-        // delayMicroseconds(65); // 50-80µs pulse for wake on SARA/LISA U2/G2
+        delay(200);  // 0.15-3.2s pulse for wake on SARA R4/N4
+        // delay(6);  // >5ms pulse for wake on SARA G3
+        // delayMicroseconds(65);  // 50-80µs pulse for wake on SARA/LISA U2/G2
         digitalWrite(modemSleepRqPin, HIGH);
         digitalWrite(redLED, LOW);
+        // Need to slow down baud rate for slow processors
+        #if F_CPU == 8000000L
+        if (modemBaud > 57600)
+        {
+            waitForStability();  // Must wait for UART port to become active
+            tinyModem->setBaud(9600);
+            modemSerial.end();
+            modemSerial.begin(9600);
+        }
+        #endif
         return true;
     }
     else
@@ -546,7 +577,7 @@ bool modemWakeFxn(void)
 // THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
 #elif defined(TINY_GSM_MODEM_SIM800) && defined(SIM800_GPRSBEE_R6)
 // Describe the physical pin connection of your modem to your board
-const long ModemBaud = 9600;         // Communication speed of the modem
+const long modemBaud = 9600;         // Communication speed of the modem
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // Create the wake and sleep methods for the modem
@@ -570,7 +601,7 @@ bool modemSleepFxn(void)
 // "default" functions and alternate constructor
 #else
 // Describe the physical pin connection of your modem to your board
-const long ModemBaud = 9600;         // Communication speed of the modem
+const long modemBaud = 9600;         // Communication speed of the modem
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // Create the wake and sleep methods for the modem
@@ -946,9 +977,9 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
 
 const int8_t ADSPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t ADSChannel = 2;  // The ADS channel of interest
-const float dividerGain = 10; //  Default 1/gain for grove voltage divider is 10x
+const float dividerGain = 10;  //  Default 1/gain for grove voltage divider is 10x
 // const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
-const uint8_t VoltReadsToAvg = 1; // Only read one sample
+const uint8_t VoltReadsToAvg = 1;  // Only read one sample
 
 // Create and return the External Voltage sensor object
 ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, ADSi2c_addr, VoltReadsToAvg);
@@ -1072,7 +1103,7 @@ RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 #include <sensors/TIINA219.h>
 
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-uint8_t INA219i2c_addr = 0x40; // 1000000 (Board A0+A1=GND)
+uint8_t INA219i2c_addr = 0x40;  // 1000000 (Board A0+A1=GND)
 // The INA219 can have one of 16 addresses, depending on the connections of A0 and A1
 const uint8_t INA219ReadingsToAvg = 1;
 
@@ -1693,7 +1724,7 @@ void setup()
     #endif
 
     // Start the serial connection with the modem
-    modemSerial.begin(ModemBaud);
+    modemSerial.begin(modemBaud);
 
     // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
     modbusSerial.begin(9600);

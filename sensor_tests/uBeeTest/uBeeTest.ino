@@ -16,8 +16,8 @@
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
 // Create a variable for the modem baud rate - this will be used in the begin function for the port
-const long ModemBaud = 9600;  // SARA U201 and SARA N211 default is 9600
-// const long ModemBaud = 115200;  // SARA R410M default is 115200
+const long modemBaud = 9600;  // SARA U201 and SARA N211 default is 9600
+// const long modemBaud = 115200;  // SARA R410M default is 115200
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
 TinyGsm *tinyModem = new TinyGsm(modemSerial);
@@ -39,8 +39,8 @@ const bool modemStatusLevel = HIGH;  // The level of the status pin when the mod
 
 bool uBeeTestAT(unsigned long timeout = 7000L) {
     for (unsigned long start = millis(); millis() - start < timeout; ) {
-        modemSerial.begin(ModemBaud);
-        if (ModemBaud > 57600) {
+        modemSerial.begin(modemBaud);
+        if (modemBaud > 57600) {
             tinyModem->setBaud(9600);
             modemSerial.end();
             modemSerial.begin(9600);
@@ -77,7 +77,7 @@ const char *apn = "hologram";  // The APN for the gprs connection, unnecessary f
 void setup()
 {
     Serial.begin(115200);
-    Serial1.begin(ModemBaud);
+    Serial1.begin(modemBaud);
     Serial.println("starting with all pins output LOW");
     Serial.println("failure expected");
 

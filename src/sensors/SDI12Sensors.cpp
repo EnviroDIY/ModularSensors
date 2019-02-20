@@ -106,7 +106,7 @@ bool SDI12Sensors::requestSensorAcknowledgement(void)
     MS_DBG(F("  Asking for sensor acknowlegement"));
     String myCommand = "";
     myCommand += (char) _SDI12address;
-    myCommand += "!"; // sends 'acknowledge active' command [address][!]
+    myCommand += "!";  // sends 'acknowledge active' command [address][!]
 
     bool didAcknowledge = false;
     uint8_t ntries = 0;
@@ -169,7 +169,7 @@ bool SDI12Sensors::getSensorInfo(void)
     MS_DBG(F("  Getting sensor info"));
     String myCommand = "";
     myCommand += (char) _SDI12address;
-    myCommand += "I!"; // sends 'info' command [address][I][!]
+    myCommand += "I!";  // sends 'info' command [address][I][!]
     _SDI12Internal.sendCommand(myCommand);
     MS_DBG(F("    >>>"), myCommand);
     delay(30);
@@ -271,7 +271,7 @@ bool SDI12Sensors::startSingleMeasurement(void)
     MS_DBG(F("  Beginning concurrent measurement on"), getSensorNameAndLocation());
     startCommand = "";
     startCommand += _SDI12address;
-    startCommand += "C!"; // Start concurrent measurement - format  [address]['C'][!]
+    startCommand += "C!";  // Start concurrent measurement - format  [address]['C'][!]
     _SDI12Internal.sendCommand(startCommand);
     delay(30);  // It just needs this little delay
     MS_DBG(F("    >>>"), startCommand);
