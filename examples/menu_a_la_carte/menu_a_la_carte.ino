@@ -74,7 +74,7 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // as possible.  In some cases (ie, modbus communication) many sensors can share
 // the same serial port.
 
-#if not defined(ARDUINO_ARCH_SAMD) && not defined(ATMEGA2560)  // For AVR boards
+#if not defined ARDUINO_ARCH_SAMD && not defined ATMEGA2560  // For AVR boards
 // Unfortunately, most AVR boards have only one or two hardware serial ports,
 // so we'll set up three types of extra software serial ports to use
 
@@ -86,7 +86,7 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 #include <AltSoftSerial.h>
 AltSoftSerial altSoftSerial;
 
-#if not defined(ATMEGA32U4)  // NeoSWSerial Doesn't support Leonardo
+#if not defined ATMEGA32U4  // NeoSWSerial Doesn't support Leonardo
 // NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
 // serial that can be used on any pin supporting interrupts.
 // You can use as many instances of NeoSWSerial as you want.
@@ -134,7 +134,7 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 // #define ENABLE_SERIAL3
 
 
-#if defined(ARDUINO_ARCH_SAMD)
+#if defined ARDUINO_ARCH_SAMD
 #include <wiring_private.h> // Needed for SAMD pinPeripheral() function
 
 #ifndef ENABLE_SERIAL2
@@ -179,10 +179,11 @@ void SERCOM2_Handler()
 // define SIM800_GPRSBEE_R6  // These use atypical sleep and wake fxns
 // #define TINY_GSM_MODEM_SIM808  // Select for a SIMCOM SIM808 or SIM868, or variant thereof
 // #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
-// #define USE_XBEE_BYPASS  // If you're using a Digi 3G or LTE-M XBee in bypass mode as a u-blox
+// #define USE_UBLOX_R410M  // Select in addition if you have a u-blox SARA R4 or N4 model
+// #define USE_XBEE_BYPASS  // Select in addition if you're using an Digi 3G or LTE-M XBee in bypass mode
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
-// #define USE_XBEE_WIFI  // If you're using a S6B wifi XBee
+// #define USE_XBEE_WIFI  // Select in addition if you're using a S6B wifi XBee
 // #define TINY_GSM_MODEM_M590  // Select for a Neoway M590
 // #define TINY_GSM_MODEM_A6  // Select for an AI-Thinker A6, A6C, A7, A20
 // #define TINY_GSM_MODEM_M95  // Select for a Quectel M95
@@ -207,7 +208,7 @@ const int8_t modemResetPin = A4;    // MCU pin connected to modem reset pin (-1 
 
 // #define TINY_GSM_DEBUG Serial  // If you want debugging on the main debug port
 
-#if defined(TINY_GSM_MODEM_XBEE) || defined(USE_XBEE_BYPASS)
+#if defined TINY_GSM_MODEM_XBEE || defined USE_XBEE_BYPASS
   #define TINY_GSM_YIELD() { delay(2); }  // Use to counter slow (9600) baud rate
 #endif
 
@@ -222,7 +223,7 @@ HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
-#if defined(TINY_GSM_MODEM_XBEE)
+#if defined TINY_GSM_MODEM_XBEE
 TinyGsm *tinyModem = new TinyGsm(modemSerial, modemResetPin);
 #else
 TinyGsm *tinyModem = new TinyGsm(modemSerial);
@@ -237,9 +238,10 @@ TinyGsm *tinyModem = new TinyGsm(modemSerial);
 
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
-// The ublox is very slow to open and close clients, so we can iterate through
+// The u-blox is very slow to open and close clients, so we can iterate through
 // mutiple data senders much more quickly if we have multiple clients
-#if defined(TINY_GSM_MODEM_UBLOX)
+// The u-blox is the only modem where there's any advantage to this.
+#if defined TINY_GSM_MODEM_UBLOX
 TinyGsmClient *tinyClient2 = new TinyGsmClient(*tinyModem);
 TinyGsmClient *tinyClient3 = new TinyGsmClient(*tinyModem);
 #endif
@@ -250,7 +252,7 @@ TinyGsmClient *tinyClient3 = new TinyGsmClient(*tinyModem);
 // ==========================================================================
 
 // This should apply to all Digi brand XBee modules.
-#if defined(TINY_GSM_MODEM_XBEE) || defined(USE_XBEE_BYPASS)
+#if defined TINY_GSM_MODEM_XBEE || defined USE_XBEE_BYPASS
 // Describe the physical pin connection of your modem to your board
 const long modemBaud = 9600;        // Communication speed of the modem, 9600 is default for XBee
 const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
@@ -289,7 +291,7 @@ bool modemWakeFxn(void)
 }
 // An extra function to set up pin sleep and other preferences on the XBee
 // NOTE:  This will only succeed if the modem is turned on and awake!
-#if defined(TINY_GSM_MODEM_XBEE)
+#if defined TINY_GSM_MODEM_XBEE
 void setupXBee(void)
 {
     tinyModem->init();  // initialize
@@ -302,7 +304,7 @@ void setupXBee(void)
         // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
         // so we'll use the Digi pin sleep instead.
         tinyModem->waitResponse();
-        #if defined(USE_XBEE_WIFI)
+        #if defined USE_XBEE_WIFI
         tinyModem->sendAT(F("SO"),200);  // For WiFi - Disassociate from AP for Deep Sleep
         tinyModem->waitResponse();
         #else
@@ -316,7 +318,7 @@ void setupXBee(void)
         tinyModem->exitCommand();
     }
 }
-#elif defined(USE_XBEE_BYPASS)
+#elif defined USE_XBEE_BYPASS
 void setupXBee(void)
 {
     delay(1000);  // Guard time for command mode
@@ -348,7 +350,7 @@ void setupXBee(void)
 
 
 // This should work with most ESP8266 breakouts
-#elif defined(TINY_GSM_MODEM_ESP8266)
+#elif defined TINY_GSM_MODEM_ESP8266
 // Describe the physical pin connection of your modem to your board
 const long modemBaud = 115200;       // Communication speed of the modem, 115200 is default for ESP8266
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
@@ -513,27 +515,27 @@ void setupESP8266(void)
 
 
 // This should work for many u-blox breakouts, but check the timing in wake/sleep functions
-#elif defined(TINY_GSM_MODEM_UBLOX)
+#elif defined TINY_GSM_MODEM_UBLOX
 // Describe the physical pin connection of your modem to your board
-// Default baud rate for most u-blox is 9600, except the SARA R410M, which is 115200
-const long modemBaud = 9600;         // Communication speed of the modem
+#if defined USE_UBLOX_R410M
+const long modemBaud = 115200;       // Communication speed of the modem, R4/N4 use 115200
+#else
+const long modemBaud = 9600;         // Communication speed of the modem, most u-blox use 9600
+#endif
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
 bool modemSleepFxn(void)
 {
-    if (modemVccPin >= 0 && modemSleepRqPin < 0)
-        return tinyModem->poweroff();
-    else if (modemSleepRqPin >= 0)
+    #if defined USE_UBLOX_R410M
+    if (modemSleepRqPin >= 0)  // R410 must have access to PWR_ON pin to sleep
+    #else
+    if (modemVccPin >= 0 || modemSleepRqPin >= 0)  // others will go on with power on
+    #endif
     {
-        digitalWrite(modemSleepRqPin, LOW);
-        digitalWrite(redLED, HIGH);  // A light to watch to verify pulse timing
-        // delay(1550);  // >1.5s pulse for power down for SARA-R4
-        delay(1050);  // >1s pulse for power down for most others
-        digitalWrite(modemSleepRqPin, HIGH);
-        digitalWrite(redLED, LOW);
-        return true;
+        // Easiest to just go to sleep with the AT command rather than using pins
+        return tinyModem->poweroff();
     }
     else  // DON'T go to sleep if we can't wake up!
     {
@@ -544,26 +546,29 @@ bool modemWakeFxn(void)
 {
     // SARA/LISA U2/G2 and SARA G3 series turn on when power is applied
     // SARA R4/N4 series must power on and then pulse on
+    #ifndef USE_UBLOX_R410M
     if (modemVccPin >= 0)
         return true;
+    #endif
     if (modemSleepRqPin >= 0)
     {
         digitalWrite(modemSleepRqPin, LOW);
         digitalWrite(redLED, HIGH);
+        #if defined USE_UBLOX_R410M
         delay(200);  // 0.15-3.2s pulse for wake on SARA R4/N4
+        #else
         // delay(6);  // >5ms pulse for wake on SARA G3
-        // delayMicroseconds(65);  // 50-80µs pulse for wake on SARA/LISA U2/G2
+        delayMicroseconds(65);  // 50-80µs pulse for wake on SARA/LISA U2/G2
+        #endif
         digitalWrite(modemSleepRqPin, HIGH);
         digitalWrite(redLED, LOW);
-        // Need to slow down baud rate for slow processors
-        #if F_CPU == 8000000L
-        if (modemBaud > 57600)
-        {
-            waitForStability();  // Must wait for UART port to become active
-            tinyModem->setBaud(9600);
-            modemSerial.end();
-            modemSerial.begin(9600);
-        }
+        // Need to slow down R4/N4's default 115200 baud rate for slow processors
+        #if F_CPU == 8000000L && defined USE_UBLOX_R410M
+        waitForStability();  // Must wait for UART port to become active
+        modemSerial.begin(115200);
+        tinyModem->setBaud(9600);  // Don't check for success, just hope
+        modemSerial.end();
+        modemSerial.begin(9600);
         #endif
         return true;
     }
@@ -575,7 +580,7 @@ bool modemWakeFxn(void)
 
 
 // THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
-#elif defined(TINY_GSM_MODEM_SIM800) && defined(SIM800_GPRSBEE_R6)
+#elif defined TINY_GSM_MODEM_SIM800 && defined SIM800_GPRSBEE_R6
 // Describe the physical pin connection of your modem to your board
 const long modemBaud = 9600;         // Communication speed of the modem
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
@@ -640,7 +645,7 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-#if defined(TINY_GSM_MODEM_ESP8266) || defined(USE_XBEE_WIFI)
+#if defined TINY_GSM_MODEM_ESP8266 || defined USE_XBEE_WIFI
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
 // ^^ Use this for WiFi
 #else
@@ -1014,7 +1019,7 @@ MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 // A Maxbotix sonar with the trigger pin disconnect CANNOT share the serial port
 // A Maxbotix sonar using the trigger may be able to share but YMMV
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-#if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial &sonarSerial = Serial3;  // Use hardware serial if possible
 #else
 // AltSoftSerial &sonarSerial = altSoftSerial;  // For software serial if needed
@@ -1124,7 +1129,7 @@ TIINA219 ina219(I2CPower, INA219i2c_addr, INA219ReadingsToAvg);
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-#if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 #else
 AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -1154,7 +1159,7 @@ KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPowe
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -1184,7 +1189,7 @@ KellerNanolevel nanolevel(nanolevelModbusAddress, modbusSerial, rs485AdapterPowe
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -1216,7 +1221,7 @@ YosemitechY504 y504(y504ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -1245,7 +1250,7 @@ YosemitechY510 y510(y510ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -1274,7 +1279,7 @@ YosemitechY511 y511(y511ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -1303,7 +1308,7 @@ YosemitechY514 y514(y514ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -1332,7 +1337,7 @@ YosemitechY520 y520(y520ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -1362,7 +1367,7 @@ YosemitechY532 y532(y532ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -1392,7 +1397,7 @@ YosemitechY550 y550(y550ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -1630,7 +1635,7 @@ const char * DreamHostPortalRX = "xxxx";
 
 // Create a data publisher to DreamHost
 #include <publishers/DreamHostPublisher.h>
-#if defined(TINY_GSM_MODEM_UBLOX)
+#if defined TINY_GSM_MODEM_UBLOX
 DreamHostPublisher DreamHostGET(dataLogger, tinyClient2, DreamHostPortalRX);
 #else
 DreamHostPublisher DreamHostGET(dataLogger, DreamHostPortalRX);
@@ -1651,7 +1656,7 @@ const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for
 
 // Create a data publisher for ThingSpeak
 #include <publishers/ThingSpeakPublisher.h>
-#if defined(TINY_GSM_MODEM_UBLOX)
+#if defined TINY_GSM_MODEM_UBLOX
 ThingSpeakPublisher TsMqtt(dataLogger, tinyClient3, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
 #else
 ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
@@ -1694,7 +1699,7 @@ void setup()
     // Wait for USB connection to be established by PC
     // NOTE:  Only use this when debugging - if not connected to a PC, this
     // will prevent the script from starting
-    #if defined(SERIAL_PORT_USBVIRTUAL)
+    #if defined SERIAL_PORT_USBVIRTUAL
       while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)){}
     #endif
 
@@ -1734,7 +1739,7 @@ void setup()
 
     // Assign pins SERCOM functionality for SAMD boards
     // NOTE:  This must happen *after* the begin
-    #if defined(ARDUINO_ARCH_SAMD)
+    #if defined ARDUINO_ARCH_SAMD
     #ifndef ENABLE_SERIAL2
     pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
     pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
@@ -1768,7 +1773,7 @@ void setup()
     }
 
     // Set up the sleep/wake pin for the modem and put its inital value as "off"
-    #if defined(TINY_GSM_MODEM_SIM800) && defined(SIM800_GPRSBEE_R6)  // ONLY FOR GPRSBee R6!!!!
+    #if defined TINY_GSM_MODEM_SIM800 && defined SIM800_GPRSBEE_R6  // ONLY FOR GPRSBee R6!!!!
         if (modemSleepRqPin >= 0)
         {
             pinMode(modemSleepRqPin, OUTPUT);
@@ -1816,7 +1821,7 @@ void setup()
     }
 
     // Set up XBee
-    #if defined(TINY_GSM_MODEM_XBEE)
+    #if defined TINY_GSM_MODEM_XBEE
     Serial.println(F("Setting up sleep mode on the XBee."));
     modem.modemPowerUp();
     modem.wake();  // Turn it on to talk
@@ -1824,7 +1829,7 @@ void setup()
     #endif
 
     // Extra set-up for the ESP8266
-    #if defined(TINY_GSM_MODEM_ESP8266)
+    #if defined TINY_GSM_MODEM_ESP8266
     setupESP8266();
     #endif
 
