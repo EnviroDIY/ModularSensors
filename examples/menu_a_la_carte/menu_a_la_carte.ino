@@ -1830,6 +1830,8 @@ void setup()
 
     // Extra set-up for the ESP8266
     #if defined TINY_GSM_MODEM_ESP8266
+    modem.modemPowerUp();
+    modem.wake();  // Turn it on to talk
     setupESP8266();
     #endif
 
