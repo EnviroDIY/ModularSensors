@@ -564,7 +564,7 @@ bool modemWakeFxn(void)
         digitalWrite(redLED, LOW);
         // Need to slow down R4/N4's default 115200 baud rate for slow processors
         #if F_CPU == 8000000L && defined USE_UBLOX_R410M
-        waitForStability();  // Must wait for UART port to become active
+        delay(4600);  // Must wait for UART port to become active
         modemSerial.begin(115200);
         tinyModem->setBaud(9600);  // Don't check for success, just hope
         modemSerial.end();
