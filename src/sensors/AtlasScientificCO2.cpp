@@ -38,20 +38,11 @@ bool AtlasScientificCO2::setup()
     waitForWarmUp();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report temperature with CO2"));
-    Wire.beginTransmission(_i2cAddressHex);  // Transmit to the sensor
+    Wire.beginTransmission(_i2cAddressHex);
     success &= Wire.write("O,t,1");  // Enable temperature
-    success &= !Wire.endTransmission();  // Finish
+    success &= !Wire.endTransmission();
     // NOTE: The return of 0 from endTransmission indicates success
-
-    delay(300);  // Sorry!  There's a processing delay X-P
-    // NOTE:  Even if we wanted to send the command and walk away without
-    // checking if it was successful, we'd still have to wait the processing
-    // delay here in the setup just to ensure that the sensor is powered long
-    // enough to implement the change.
-
-    // Check that it was successful
-    Wire.requestFrom(_i2cAddressHex, 3, 1);
-    success &= (Wire.read() == 1);
+    success &= waitForProcessing();
 
     if (!success)
     {

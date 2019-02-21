@@ -49,6 +49,11 @@ public:
 
 protected:
     int8_t _i2cAddressHex;
+    // Wait for a command to process
+    // NOTE:  This should ONLY be used as a wait when no response is
+    // expected except a status code - the response will be "consumed"
+    // and become unavailable.
+    bool waitForProcessing(uint32_t timeout = 1000L);
 };
 
 #endif  // Header Guard

@@ -40,6 +40,14 @@ String AtlasParent::getSensorLocation(void)
 bool AtlasParent::setup(void)
 {
     Wire.begin();  // Start the wire library (sensor power not required)
+    // Eliminate any potential extra waits in the wire library
+    // These waits would be caused by a readBytes or parseX being called
+    // on wire after the Wire buffer has emptied.  The default stream
+    // functions - used by wire - wait a timeout period after reading the
+    // end of the buffer to see if an interrupt puts something into the
+    // buffer.  In the case of the Wire library, that will never happen and
+    // the timeout period is a useless delay.
+    Wire.setTimeout(0);
     return Sensor::setup();  // this will set pin modes and the setup status bit
 }
 
@@ -58,9 +66,9 @@ bool AtlasParent::sleep(void)
     bool success = true;
     MS_DBG(F("Putting"), getSensorNameAndLocation(), F("to sleep"));
 
-    Wire.beginTransmission(_i2cAddressHex);  // Transmit to the sensor
+    Wire.beginTransmission(_i2cAddressHex);
     success &= Wire.write("Sleep");  // Write "Sleep" to put it in low power mode
-    success &= !Wire.endTransmission();  // Finish
+    success &= !Wire.endTransmission();
     // NOTE: The return of 0 from endTransmission indicates success
 
     if(success)
@@ -92,9 +100,9 @@ bool AtlasParent::startSingleMeasurement(void)
     bool success = true;
     MS_DBG(F("Starting measurement on"), getSensorNameAndLocation());
 
-    Wire.beginTransmission(_i2cAddressHex);  // Transmit to the sensor
+    Wire.beginTransmission(_i2cAddressHex);
     success &= Wire.write('r');  // Write "R" to start a reading
-    int I2Cstatus = Wire.endTransmission();  // Finish
+    int I2Cstatus = Wire.endTransmission();
     MS_DBG(F("I2Cstatus:"), I2Cstatus);
     success &= !I2Cstatus;
     // NOTE: The return of 0 from endTransmission indicates success
@@ -124,8 +132,8 @@ bool AtlasParent::addSingleMeasurementResult(void)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6))
     {
-        // call the circuit and request 35 bytes (this may be more than we need)
-        Wire.requestFrom(_i2cAddressHex, 35, 1);
+        // call the circuit and request 40 bytes (this may be more than we need)
+        Wire.requestFrom(_i2cAddressHex, 40, 1);
         // the first byte is the response code, we read this separately.
         uint8_t code=Wire.read();
 
@@ -180,4 +188,23 @@ bool AtlasParent::addSingleMeasurementResult(void)
     _sensorStatus &= 0b10011111;
 
     return success;
+}
+
+
+// Wait for a command to process
+// NOTE:  This should ONLY be used as a wait when no response is
+// expected except a status code - the response will be "consumed"
+// and become unavailable.
+bool AtlasParent::waitForProcessing(uint32_t timeout)
+{
+    // Wait for the command to have been processed and implented
+    bool processed = false;
+    uint32_t start = millis();
+    while (!processed && millis() - start < timeout)
+    {
+        Wire.requestFrom(_i2cAddressHex, 1, 1);
+        uint8_t code=Wire.read();
+        if (code == 1) processed = true;
+    }
+    return processed;
 }

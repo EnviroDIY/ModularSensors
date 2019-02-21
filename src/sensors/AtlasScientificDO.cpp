@@ -38,31 +38,16 @@ bool AtlasScientificDO::setup()
     waitForWarmUp();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report O2 concentration"));
-    Wire.beginTransmission(_i2cAddressHex);  // Transmit to the sensor
+    Wire.beginTransmission(_i2cAddressHex);
     success &= Wire.write("O,mg,1");  // Enable concentration in mg/L
-    success &= !Wire.endTransmission();  // Finish
-    // NOTE: The return of 0 from endTransmission indicates success
-
-    delay(300);  // Sorry!  There's a processing delay X-P
-    // NOTE:  Even if we wanted to send the command and walk away without
-    // checking if it was successful, we'd still have to wait the processing
-    // delay here in the setup just to ensure that the sensor is powered long
-    // enough to implement the change.
-
-    // Check that it was successful
-    Wire.requestFrom(_i2cAddressHex, 3, 1);
-    success &= (Wire.read() == 1);
+    success &= !Wire.endTransmission();
+    success &= waitForProcessing();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report O2 % saturation"));
-    Wire.beginTransmission(_i2cAddressHex);  // Transmit to the sensor
+    Wire.beginTransmission(_i2cAddressHex);
     success &= Wire.write("O,%,1");  // Enable percent saturation
-    success &= !Wire.endTransmission();  // Finish
-
-    delay(300);
-
-    // Check that it was successful
-    Wire.requestFrom(_i2cAddressHex, 3, 1);
-    success &= (Wire.read() == 1);
+    success &= !Wire.endTransmission();
+    success &= waitForProcessing();
 
     if (!success)
     {
