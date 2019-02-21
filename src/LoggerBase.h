@@ -311,8 +311,8 @@ public:
     // Convience functions to call several of the above functions
     // ===================================================================== //
 
-    // Setup the sensors and log files
-    virtual void setupSensorsAndFile(void);
+    // This is just a pass-through function to the underlying array
+    virtual void setupSensors(void);
 
     // This does all of the setup that can't happen in the constructors
     // That is, things that require the actual processor/MCU to do something

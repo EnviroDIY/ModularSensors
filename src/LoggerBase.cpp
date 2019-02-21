@@ -1121,8 +1121,8 @@ void Logger::testingMode()
 // Convience functions to call several of the above functions
 // ===================================================================== //
 
-// Setup the sensors and log files
-void Logger::setupSensorsAndFile(void)
+// This is just a pass-through function to the underlying array
+void Logger::setupSensors(void)
 {
     // if this is done, skip
     if (_areSensorsSetup) return;
@@ -1130,11 +1130,6 @@ void Logger::setupSensorsAndFile(void)
     // Set up the sensors
     PRINTOUT(F("Setting up sensors..."));
     _internalArray->setupSensors();
-
-    // Create the log file, adding the default header to it
-    // Writing to the SD card can be power intensive, so if we're skipping
-    // the sensor setup we'll skip this too.
-    createLogFile(true);
 
     // Mark sensors as having been setup
     _areSensorsSetup = true;
@@ -1202,7 +1197,7 @@ void Logger::logData(void)
     // Set sensors and file up if it hasn't happened already
     // NOTE:  Unless it completed in less than one second, the sensor set-up
     // will take the place of logging for this interval!
-    setupSensorsAndFile();
+    setupSensors();
 
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
@@ -1244,7 +1239,7 @@ void Logger::logDataAndSend(void)
     // Set sensors and file up if it hasn't happened already
     // NOTE:  Unless it completed in less than one second, the sensor set-up
     // will take the place of logging for this interval!
-    setupSensorsAndFile();
+    setupSensors();
 
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval

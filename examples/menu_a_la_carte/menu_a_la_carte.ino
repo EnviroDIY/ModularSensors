@@ -1902,7 +1902,7 @@ void loop()
     // Set sensors and file up if it hasn't happened already
     // NOTE:  Unless it completed in less than one second, the sensor set-up
     // will take the place of logging for this interval!
-    dataLogger.setupSensorsAndFile();
+    dataLogger.setupSensors();
 
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
