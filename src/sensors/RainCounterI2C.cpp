@@ -44,6 +44,14 @@ String RainCounterI2C::getSensorLocation(void)
 bool RainCounterI2C::setup(void)
 {
     Wire.begin();  // Start the wire library (sensor power not required)
+    // Eliminate any potential extra waits in the wire library
+    // These waits would be caused by a readBytes or parseX being called
+    // on wire after the Wire buffer has emptied.  The default stream
+    // functions - used by wire - wait a timeout period after reading the
+    // end of the buffer to see if an interrupt puts something into the
+    // buffer.  In the case of the Wire library, that will never happen and
+    // the timeout period is a useless delay.
+    Wire.setTimeout(0);
     return Sensor::setup();  // this will set pin modes and the setup status bit
 }
 

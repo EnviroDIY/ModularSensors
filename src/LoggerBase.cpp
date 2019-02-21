@@ -529,6 +529,14 @@ void Logger::wakeISR(void)
 
         // Re-start any I2C connections
         Wire.begin();
+        // Eliminate any potential extra waits in the wire library
+        // These waits would be caused by a readBytes or parseX being called
+        // on wire after the Wire buffer has emptied.  The default stream
+        // functions - used by wire - wait a timeout period after reading the
+        // end of the buffer to see if an interrupt puts something into the
+        // buffer.  In the case of the Wire library, that will never happen and
+        // the timeout period is a useless delay.
+        Wire.setTimeout(0);
     }
 
 #elif defined ARDUINO_ARCH_AVR
@@ -673,6 +681,14 @@ void Logger::wakeISR(void)
         pinMode(SDA, INPUT_PULLUP);  // set as input with the pull-up on
         pinMode(SCL, INPUT_PULLUP);
         Wire.begin();
+        // Eliminate any potential extra waits in the wire library
+        // These waits would be caused by a readBytes or parseX being called
+        // on wire after the Wire buffer has emptied.  The default stream
+        // functions - used by wire - wait a timeout period after reading the
+        // end of the buffer to see if an interrupt puts something into the
+        // buffer.  In the case of the Wire library, that will never happen and
+        // the timeout period is a useless delay.
+        Wire.setTimeout(0);
 
         // The logger will now start the next function after the systemSleep
         // function in either the loop or setup
@@ -1138,6 +1154,14 @@ void Logger::setupSensorsAndFile(void)
         pinMode(SCL, INPUT_PULLUP);
         PRINTOUT(F("Beginning wire (I2C)"));
         Wire.begin();
+        // Eliminate any potential extra waits in the wire library
+        // These waits would be caused by a readBytes or parseX being called
+        // on wire after the Wire buffer has emptied.  The default stream
+        // functions - used by wire - wait a timeout period after reading the
+        // end of the buffer to see if an interrupt puts something into the
+        // buffer.  In the case of the Wire library, that will never happen and
+        // the timeout period is a useless delay.
+        Wire.setTimeout(0);
         PRINTOUT(F("Beginning real time clock"));
         rtc.begin();
         delay(100);
