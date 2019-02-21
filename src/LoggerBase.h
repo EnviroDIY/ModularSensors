@@ -317,7 +317,7 @@ public:
     // This does all of the setup that can't happen in the constructors
     // That is, things that require the actual processor/MCU to do something
     // rather than the compiler to do something.
-    virtual void begin(bool skipSensorSetup = false);
+    virtual void begin();
 
     // This is a one-and-done to log data
     virtual void logData(void);

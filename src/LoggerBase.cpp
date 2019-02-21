@@ -1143,7 +1143,7 @@ void Logger::setupSensorsAndFile(void)
 // This does all of the setup that can't happen in the constructors
 // That is, things that require the actual processor/MCU to do something
 // rather than the compiler to do something.
- void Logger::begin(bool skipSensorSetup)
+ void Logger::begin()
 {
     #if defined ARDUINO_ARCH_SAMD
         zero_sleep_rtc.begin();
@@ -1179,8 +1179,6 @@ void Logger::setupSensorsAndFile(void)
              F("come from "),_internalArray->getSensorCount(), F("sensors and"),
              _internalArray->getCalculatedVariableCount(), F("are calculated."));
 
-    if (!skipSensorSetup) setupSensorsAndFile();
-
     // Setup sleep mode
     setupSleep();
 
@@ -1194,12 +1192,7 @@ void Logger::setupSensorsAndFile(void)
                  F("at any time to enter sensor testing mode."));
     }
 
-    // Make sure all sensors are powered down at the end
-    // The should be, but just in case
-    _internalArray->sensorsPowerDown();
-
     PRINTOUT(F("Logger setup finished!"));
-    PRINTOUT(F("------------------------------------------\n"));
 }
 
 

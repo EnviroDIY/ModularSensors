@@ -27,7 +27,7 @@
 
 // Sensor Specific Defines
 #define ATLAS_CO2_NUM_VARIABLES 2
-// TODO:  Test warm up time with real sensor, time take from that for ORP and pH
+// TODO:  Test timing with sensor
 #define ATLAS_CO2_WARM_UP_TIME_MS 850
 // NOTE:  This has a long stabilization time!
 #define ATLAS_CO2_STABILIZATION_TIME_MS 10000

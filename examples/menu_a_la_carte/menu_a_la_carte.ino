@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.20.1
+This example sketch is written for ModularSensors library version 0.20.2
 
 This shows most of the standard functions of the library at once.
 
@@ -26,7 +26,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.20.1";
+const char *libraryVersion = "0.20.2";
 // The name of this file
 const char *sketchName = "menu_a_la_carte.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -196,7 +196,6 @@ void SERCOM2_Handler()
 // ==========================================================================
 
 const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
-
 const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
 const int8_t modemResetPin = A4;    // MCU pin connected to modem reset pin (-1 if unconnected)
@@ -232,6 +231,7 @@ TinyGsm *tinyModem = new TinyGsm(modemSerial);
 // Use this to create a modem if you want to spy on modem communication through
 // a secondary Arduino stream.  Make sure you install the StreamDebugger library!
 // https://github.com/vshymanskyy/StreamDebugger
+// Also make sure you comment out the modem creation above to use this.
 // #include <StreamDebugger.h>
 // StreamDebugger modemDebugger(modemSerial, Serial);
 // TinyGsm *tinyModem = new TinyGsm(modemDebugger);
@@ -652,9 +652,6 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, m
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
 // ^^ Use this for cellular
 #endif
-
-// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemSleepRqPin, tinyModem, tinyClient, apn);
-// ^^ Use this for a chip where you want to use the "default" functions
 
 // Create the RSSI and signal strength variable objects for the modem and return
 // variable-type pointers to them
@@ -1698,7 +1695,7 @@ void setup()
 {
     // Wait for USB connection to be established by PC
     // NOTE:  Only use this when debugging - if not connected to a PC, this
-    // will prevent the script from starting
+    // could prevent the script from starting
     #if defined SERIAL_PORT_USBVIRTUAL
       while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)){}
     #endif
@@ -1804,48 +1801,59 @@ void setup()
     dataLogger.setTestingModePin(buttonPin);
 
     // Begin the logger
+    dataLogger.begin();
+
     // Note:  Please change these battery voltages to match your battery
     // Check that the battery is OK before powering the modem
-    if (getBatteryVoltage()> 3.7)
+    if (getBatteryVoltage() > 3.7)
     {
         modem.modemPowerUp();
-    }
-    // At lowest battery level, skip sensor set-up
-    if (getBatteryVoltage()< 3.4)
-    {
-        dataLogger.begin(true);
-    }
-    else  // set up file and sensors
-    {
-        dataLogger.begin();
+        modem.wake();
+
+        // Extra pre-set-up for the XBee
+        #if defined TINY_GSM_MODEM_XBEE
+        Serial.println(F("Setting up sleep mode on the XBee."));
+        setupXBee();
+        #endif
+
+        // Extra set-up for the ESP8266
+        #if defined TINY_GSM_MODEM_ESP8266
+        setupESP8266();
+        #endif
+
+        // At very good battery voltage, or with suspicious time stamp, sync the clock
+        // Note:  Please change these battery voltages to match your battery
+        if (getBatteryVoltage() > 3.8 ||
+            dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
+            dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+        {
+            // Synchronize the RTC with NIST
+            Serial.println(F("Attempting to synchronize RTC with NIST"));
+            if (modem.connectInternet(120000L))
+            {
+                dataLogger.setRTClock(modem.getNISTTime());
+            }
+        }
     }
 
-    // Set up XBee
-    #if defined TINY_GSM_MODEM_XBEE
-    Serial.println(F("Setting up sleep mode on the XBee."));
-    modem.modemPowerUp();
-    modem.wake();  // Turn it on to talk
-    setupXBee();
-    #endif
-
-    // Extra set-up for the ESP8266
-    #if defined TINY_GSM_MODEM_ESP8266
-    modem.modemPowerUp();
-    modem.wake();  // Turn it on to talk
-    setupESP8266();
-    #endif
-
-    // At very good battery voltage, or with suspicious time stamp, sync the clock
-    // Note:  Please change these battery voltages to match your battery
-    if (getBatteryVoltage() > 3.8 ||
-        dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
-        dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+    // Set up the sensors, except at lowest battery level
+    if (getBatteryVoltage() > 3.4)
     {
-        dataLogger.syncRTC();  // There's a sleepPowerDown at the end of this
+        Serial.println(F("Setting up sensors..."));
+        varArray.setupSensors();
     }
-    else
+
+    // Power down the modem
+    modem.modemSleepPowerDown();
+
+    // Create the log file, adding the default header to it
+    // Do this last so we have the best chance of getting the time correct and
+    // all sensor names correct
+    // Writing to the SD card can be power intensive, so if we're skipping
+    // the sensor setup we'll skip this too.
+    if (getBatteryVoltage() > 3.4)
     {
-        modem.modemSleepPowerDown();
+        dataLogger.createLogFile(true);
     }
 
     // Call the processor sleep

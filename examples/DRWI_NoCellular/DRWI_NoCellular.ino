@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.20.1
+This example sketch is written for ModularSensors library version 0.20.2
 
 This sketch is an example of logging data to an SD card as should be used by
 groups involved with The William Penn Foundation's Delaware River Watershed
@@ -28,7 +28,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.20.1";
+const char *libraryVersion = "0.20.2";
 // The name of this file
 const char *sketchName = "DRWI_NoCellular.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -228,15 +228,23 @@ void setup()
     dataLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Begin the logger
-    // Note:  Please change these battery voltages to match your battery
-    // At lowest battery level, skip sensor set-up
-    if (getBatteryVoltage()< 3.4)
+    dataLogger.begin();
+
+    // Set up the sensors, except at lowest battery level
+    if (getBatteryVoltage() > 3.4)
     {
-        dataLogger.begin(true);
+        Serial.println(F("Setting up sensors..."));
+        varArray.setupSensors();
     }
-    else  // set up file and sensors
+
+    // Create the log file, adding the default header to it
+    // Do this last so we have the best chance of getting the time correct and
+    // all sensor names correct
+    // Writing to the SD card can be power intensive, so if we're skipping
+    // the sensor setup we'll skip this too.
+    if (getBatteryVoltage() > 3.4)
     {
-        dataLogger.begin();
+        dataLogger.createLogFile(true);
     }
 
     // Call the processor sleep

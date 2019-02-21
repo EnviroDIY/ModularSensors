@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.20.1
+This example sketch is written for ModularSensors library version 0.20.2
 
 This sketch is an example of logging data to an SD card and sending only a
 portion of that data to the EnviroDIY data portal.
@@ -27,7 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.20.1";
+const char *libraryVersion = "0.20.2";
 // The name of this file
 const char *sketchName = "data_saving.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -402,7 +402,6 @@ Logger loggerAllVars(LoggerID, loggingInterval, sdCardPin, wakePin, &arrayComple
 // Create "another" logger for the variables to go out over the internet
 Logger loggerToGo(LoggerID, loggingInterval,sdCardPin, wakePin, &arrayToGo);
 
-
 // ==========================================================================
 //    A Publisher to WikiWatershed
 // ==========================================================================
@@ -436,6 +435,15 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 }
 
 
+// Read's the battery voltage
+// NOTE: This will actually return the battery level from the previous update!
+float getBatteryVoltage()
+{
+    if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
+    return mcuBoard.sensorValues[0];
+}
+
+
 // ==========================================================================
 // Main setup function
 // ==========================================================================
@@ -443,8 +451,8 @@ void setup()
 {
     // Wait for USB connection to be established by PC
     // NOTE:  Only use this when debugging - if not connected to a PC, this
-    // will prevent the script from starting
-    #if defined(SERIAL_PORT_USBVIRTUAL)
+    // could prevent the script from starting
+    #if defined SERIAL_PORT_USBVIRTUAL
       while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)){}
     #endif
 
@@ -465,14 +473,6 @@ void setup()
         Serial.println(F(
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
-    // Assign pins SERCOM functionality for SAMD boards
-    #if defined(ARDUINO_ARCH_SAMD) \
-      && not defined(ARDUINO_SODAQ_AUTONOMO) && not defined(ARDUINO_SODAQ_EXPLORER) \
-      && not defined(ARDUINO_SODAQ_ONE) && not defined(ARDUINO_SODAQ_SARA) \
-      && not defined(ARDUINO_SODAQ_SFF)
-    pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
-    pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
-    #endif
 
     // Start the serial connection with the modem
     modemSerial.begin(modemBaud);
@@ -480,6 +480,14 @@ void setup()
     // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
     modbusSerial.begin(9600);
 
+    // Assign pins SERCOM functionality for SAMD boards
+    // NOTE:  This must happen *after* the begin
+    #if defined ARDUINO_ARCH_SAMD
+    #ifndef ENABLE_SERIAL2
+    pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
+    pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
+    #endif
+    #endif
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
     digitalWrite(greenLED, LOW);
@@ -511,30 +519,45 @@ void setup()
     loggerAllVars.setSamplingFeatureUUID(samplingFeature);
     loggerToGo.setSamplingFeatureUUID(samplingFeature);
 
-    // Update the Mayfly "sensor" to get us updated battery voltages
-    // We'll use the battery voltage to decide which version of the begin() to use
-    // NOTE:  This update happens very fast
-    mcuBoard.update();
-
-    // Because we've given it a modem and it knows all of the tokens, we can
-    // just "begin" the complete logger to set up the datafile, clock, sleep,
-    // and all of the sensors.  We don't need to bother with the "begin" for the
-    // other logger because it has the same processor and clock.
-    if (mcuBoardBatt->getValue() < 3.4) loggerAllVars.begin(true);
-    else loggerAllVars.begin();  // set up sensors
-
-    // At very good battery voltage, or with suspicious time stamp, sync the clock
     // Note:  Please change these battery voltages to match your battery
-    if (mcuBoardBatt->getValue() > 3.8 ||
+    if (getBatteryVoltage() > 3.8 ||
         loggerAllVars.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
         loggerAllVars.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
     {
-        loggerAllVars.syncRTC();  // There's a sleepPowerDown at the end of this
+        modem.modemPowerUp();
+        modem.wake();
+
+        // Synchronize the RTC with NIST
+        Serial.println(F("Attempting to synchronize RTC with NIST"));
+        if (modem.connectInternet(120000L))
+        {
+            loggerAllVars.setRTClock(modem.getNISTTime());
+        }
     }
-    else
+
+    // Set up the sensors, except at lowest battery level
+    // Like with the logger, because the variables are duplicated in the arrays,
+    // we only need to do this for the complete array.
+    if (getBatteryVoltage() > 3.4)
     {
-        modem.modemSleepPowerDown();
+        Serial.println(F("Setting up sensors..."));
+        arrayComplete.setupSensors();
     }
+
+    // Power down the modem
+    modem.modemSleepPowerDown();
+
+    // Create the log file, adding the default header to it
+    // Do this last so we have the best chance of getting the time correct and
+    // all sensor names correct
+    // Writing to the SD card can be power intensive, so if we're skipping
+    // the sensor setup we'll skip this too.
+    if (getBatteryVoltage() > 3.4)
+    {
+        loggerAllVars.createLogFile(true);
+    }
+
+    modem.modemSleepPowerDown();
 
     // Call the processor sleep
     loggerAllVars.systemSleep();
@@ -557,7 +580,7 @@ void loop()
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
     // We're only doing anything at all if the battery is above 3.4V
-    if (loggerAllVars.checkInterval() && mcuBoardBatt->getValue() > 3.4)
+    if (loggerAllVars.checkInterval() && getBatteryVoltage() > 3.4)
     {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
@@ -572,7 +595,7 @@ void loop()
         // NOTE:  if the modemPowerUp function is not run before the completeUpdate
         // function is run, the modem will not be powered and will not return
         // a signal strength readign.
-        if (mcuBoardBatt->getValue() > 3.7)
+        if (getBatteryVoltage() > 3.7)
             modem.modemPowerUp();
 
         // Start the stream for the modbus sensors
@@ -610,7 +633,7 @@ void loop()
 
         // Connect to the network
         // Again, we're only doing this if the battery is doing well
-        if (mcuBoardBatt->getValue() > 3.7)
+        if (getBatteryVoltage() > 3.7)
         {
             if (modem.connectInternet())
             {

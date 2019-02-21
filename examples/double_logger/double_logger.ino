@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.20.1
+This example sketch is written for ModularSensors library version 0.20.2
 
 This sketch is an example of logging data from different variables at two
 different logging intervals.  This example uses more of the manual functions
@@ -28,7 +28,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.20.1";
+const char *libraryVersion = "0.20.2";
 // The name of this file
 const char *sketchName = "double_logger.ino";
 // Logger ID - we're only using one logger ID for both "loggers"
@@ -277,9 +277,14 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
+    // Begin the logger
+    // Only need to do this for one of the loggers, just pick one
+    logger5min.begin();
+
 
     // Turn on the modem
     modem.modemPowerUp();
+    modem.wake();
 
     // Set up the sensors (do this directly on the VariableArray)
     array1min.setupSensors();
