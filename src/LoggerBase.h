@@ -88,7 +88,6 @@ protected:
     int8_t _mcuWakePin;
     int8_t _ledPin;
     int8_t _buttonPin;
-    bool _areSensorsSetup;
     const char *_samplingFeatureUUID;
 
     // ===================================================================== //
@@ -193,11 +192,9 @@ public:
     static void markTime(void);
 
     // This checks to see if the CURRENT time is an even interval of the logging rate
-    // or we're in the first 15 minutes of logging
     bool checkInterval(void);
 
     // This checks to see if the MARKED time is an even interval of the logging rate
-    // or we're in the first 15 minutes of logging
     bool checkMarkedInterval(void);
 
 protected:
@@ -310,9 +307,6 @@ public:
     // ===================================================================== //
     // Convience functions to call several of the above functions
     // ===================================================================== //
-
-    // This is just a pass-through function to the underlying array
-    virtual void setupSensors(void);
 
     // This does all of the setup that can't happen in the constructors
     // That is, things that require the actual processor/MCU to do something

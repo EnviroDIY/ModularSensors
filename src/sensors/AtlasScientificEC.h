@@ -78,9 +78,9 @@ public:
     AtlasScientificEC_TDS(Sensor *parentSense,
                         const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, ATLAS_TDS_VAR_NUM,
-                 "electricalConductivity", "microsiemenPerCentimeter",
+                 "solidsTotalDissolved", "partPerMillion",
                  ATLAS_TDS_RESOLUTION,
-                 "AtlasCond", UUID, customVarCode)
+                 "AtlasTDS", UUID, customVarCode)
     {}
     ~AtlasScientificEC_TDS(){}
 };

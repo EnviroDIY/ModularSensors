@@ -48,9 +48,6 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
     _mcuWakePin = mcuWakePin;
     _internalArray = inputArray;
 
-    // Mark sensor set-up as not set up
-    _areSensorsSetup = false;
-
     // Set the testing/logging flags to false
     isLoggingNow = false;
     isTestingNow = false;
@@ -1121,20 +1118,6 @@ void Logger::testingMode()
 // Convience functions to call several of the above functions
 // ===================================================================== //
 
-// This is just a pass-through function to the underlying array
-void Logger::setupSensors(void)
-{
-    // if this is done, skip
-    if (_areSensorsSetup) return;
-
-    // Set up the sensors
-    PRINTOUT(F("Setting up sensors..."));
-    _internalArray->setupSensors();
-
-    // Mark sensors as having been setup
-    _areSensorsSetup = true;
-}
-
 // This does all of the setup that can't happen in the constructors
 // That is, things that require the actual processor/MCU to do something
 // rather than the compiler to do something.
@@ -1194,11 +1177,6 @@ void Logger::setupSensors(void)
 // This is a one-and-done to log data
 void Logger::logData(void)
 {
-    // Set sensors and file up if it hasn't happened already
-    // NOTE:  Unless it completed in less than one second, the sensor set-up
-    // will take the place of logging for this interval!
-    setupSensors();
-
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
     if (checkInterval())
@@ -1236,11 +1214,6 @@ void Logger::logData(void)
 // This is a one-and-done to log data
 void Logger::logDataAndSend(void)
 {
-    // Set sensors and file up if it hasn't happened already
-    // NOTE:  Unless it completed in less than one second, the sensor set-up
-    // will take the place of logging for this interval!
-    setupSensors();
-
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
     if (checkInterval())
