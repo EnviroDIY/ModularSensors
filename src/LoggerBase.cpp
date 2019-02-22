@@ -1140,6 +1140,8 @@ void Logger::testingMode()
         // buffer.  In the case of the Wire library, that will never happen and
         // the timeout period is a useless delay.
         Wire.setTimeout(0);
+        // Short delay to help I2C lines to settle and (hopefully) help prevent hangs
+        delay(250);
         PRINTOUT(F("Beginning real time clock"));
         rtc.begin();
         delay(100);

@@ -69,7 +69,7 @@ void loop()
             case 0:
                 printTime();
                 Serial.print(commands[index]);
-                Serial.println(" sucessfully written");
+                Serial.println(" successfully written");
                 start = millis();
                 while (true)
                 {
