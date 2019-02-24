@@ -274,7 +274,7 @@ void Logger::setTZOffset(int8_t offset)
 
 // This gets the current epoch time (unix time, ie, the number of seconds
 // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
-#if defined(ARDUINO_ARCH_SAMD)
+#if defined(ARDUINO_ARCH_SAMD) || defined MS_SAMD_DS3231
 
     uint32_t Logger::getNowEpoch(void)
     {
