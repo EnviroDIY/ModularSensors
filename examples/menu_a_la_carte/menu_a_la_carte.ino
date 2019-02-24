@@ -238,10 +238,11 @@ TinyGsm *tinyModem = new TinyGsm(modemSerial);
 
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
-// The u-blox is very slow to open and close clients, so we can iterate through
-// mutiple data senders much more quickly if we have multiple clients
-// The u-blox is the only modem where there's any advantage to this.
-#if defined TINY_GSM_MODEM_UBLOX
+// The u-blox SARA R410 is very slow to open and close clients, so we can
+// iterate through mutiple data senders much more quickly if we have multiple
+// clients.  The u-blox SARA R410  is the only modem where there's any advantage
+// to this.
+#if defined USE_UBLOX_R410M
 TinyGsmClient *tinyClient2 = new TinyGsmClient(*tinyModem);
 TinyGsmClient *tinyClient3 = new TinyGsmClient(*tinyModem);
 #endif
