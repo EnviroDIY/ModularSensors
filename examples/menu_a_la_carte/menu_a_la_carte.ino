@@ -1633,7 +1633,7 @@ const char * DreamHostPortalRX = "xxxx";
 
 // Create a data publisher to DreamHost
 #include <publishers/DreamHostPublisher.h>
-#if defined TINY_GSM_MODEM_UBLOX
+#if defined USE_UBLOX_R410M
 DreamHostPublisher DreamHostGET(dataLogger, tinyClient2, DreamHostPortalRX);
 #else
 DreamHostPublisher DreamHostGET(dataLogger, DreamHostPortalRX);
@@ -1654,7 +1654,7 @@ const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for
 
 // Create a data publisher for ThingSpeak
 #include <publishers/ThingSpeakPublisher.h>
-#if defined TINY_GSM_MODEM_UBLOX
+#if defined USE_UBLOX_R410M
 ThingSpeakPublisher TsMqtt(dataLogger, tinyClient3, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
 #else
 ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
