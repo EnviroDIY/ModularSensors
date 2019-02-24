@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.6
+This example sketch is written for ModularSensors library version 0.20.2
 
 This sketch is an example of logging data to an SD card and sending the data to
 both the EnviroDIY data portal as should be used by groups involved with
@@ -28,7 +28,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.19.6";
+const char *libraryVersion = "0.20.2";
 // The name of this file
 const char *sketchName = "DWRI_CitSci.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -53,7 +53,7 @@ const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
-const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
+const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create and return the main processor chip "sensor" - for general metadata
 const char *mcuBoardVersion = "v0.5b";
@@ -102,7 +102,7 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 // THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
 // Describe the physical pin connection of your modem to your board
-const long ModemBaud = 9600;         // Communication speed of the modem
+const long modemBaud = 9600;         // Communication speed of the modem
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // Create the wake and sleep methods for the modem
@@ -157,6 +157,7 @@ const int8_t OBSLowADSChannel = 0;  // The ADS channel for the low range output
 const float OBSLow_A = 0.000E+00;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
+
 // Create and return the Campbell OBS3+ LOW RANGE sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3numberReadings);
 
@@ -166,6 +167,7 @@ const int8_t OBSHighADSChannel = 1;  // The ADS channel for the high range outpu
 const float OBSHigh_A = 0.000E+00;  // The "A" value (X^2) from the high range calibration
 const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
+
 // Create and return the Campbell OBS3+ HIGH RANGE sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 
@@ -282,7 +284,7 @@ void setup()
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
     // Start the serial connection with the modem
-    modemSerial.begin(ModemBaud);
+    modemSerial.begin(modemBaud);
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
@@ -323,33 +325,48 @@ void setup()
     dataLogger.setTestingModePin(buttonPin);
 
     // Begin the logger
+    dataLogger.begin();
+
     // Note:  Please change these battery voltages to match your battery
     // Check that the battery is OK before powering the modem
-    if (getBatteryVoltage()> 3.7)
+    if (getBatteryVoltage() > 3.7)
     {
         modem.modemPowerUp();
-    }
-    // At lowest battery level, skip sensor set-up
-    if (getBatteryVoltage()< 3.4)
-    {
-        dataLogger.begin(true);
-    }
-    else  // set up file and sensors
-    {
-        dataLogger.begin();
+        modem.wake();
+
+        // At very good battery voltage, or with suspicious time stamp, sync the clock
+        // Note:  Please change these battery voltages to match your battery
+        if (getBatteryVoltage() > 3.8 ||
+            dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
+            dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+        {
+            // Synchronize the RTC with NIST
+            Serial.println(F("Attempting to synchronize RTC with NIST"));
+            if (modem.connectInternet(120000L))
+            {
+                dataLogger.setRTClock(modem.getNISTTime());
+            }
+        }
     }
 
-    // At very good battery voltage, or with suspicious time stamp, sync the clock
-    // Note:  Please change these battery voltages to match your battery
-    if (getBatteryVoltage() > 3.8 ||
-        dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
-        dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+    // Set up the sensors, except at lowest battery level
+    if (getBatteryVoltage() > 3.4)
     {
-        dataLogger.syncRTC();  // There's a sleepPowerDown at the end of this
+        Serial.println(F("Setting up sensors..."));
+        varArray.setupSensors();
     }
-    else
+
+    // Power down the modem
+    modem.modemSleepPowerDown();
+
+    // Create the log file, adding the default header to it
+    // Do this last so we have the best chance of getting the time correct and
+    // all sensor names correct
+    // Writing to the SD card can be power intensive, so if we're skipping
+    // the sensor setup we'll skip this too.
+    if (getBatteryVoltage() > 3.4)
     {
-        modem.modemSleepPowerDown();
+        dataLogger.createLogFile(true);
     }
 
     // Call the processor sleep

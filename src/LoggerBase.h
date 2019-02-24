@@ -88,7 +88,6 @@ protected:
     int8_t _mcuWakePin;
     int8_t _ledPin;
     int8_t _buttonPin;
-    bool _areSensorsSetup;
     const char *_samplingFeatureUUID;
 
     // ===================================================================== //
@@ -193,11 +192,9 @@ public:
     static void markTime(void);
 
     // This checks to see if the CURRENT time is an even interval of the logging rate
-    // or we're in the first 15 minutes of logging
     bool checkInterval(void);
 
     // This checks to see if the MARKED time is an even interval of the logging rate
-    // or we're in the first 15 minutes of logging
     bool checkMarkedInterval(void);
 
 protected:
@@ -214,9 +211,6 @@ public:
     // In this case, we're doing nothing, we just want the processor to wake
     // This must be a static function (which means it can only call other static funcions.)
     static void wakeISR(void);
-
-    // Sets up the sleep mode
-    void setupSleep(void);
 
     // Puts the system to sleep to conserve battery life.
     // This DOES NOT sleep or wake the sensors!!
@@ -311,13 +305,10 @@ public:
     // Convience functions to call several of the above functions
     // ===================================================================== //
 
-    // Setup the sensors and log files
-    virtual void setupSensorsAndFile(void);
-
     // This does all of the setup that can't happen in the constructors
     // That is, things that require the actual processor/MCU to do something
     // rather than the compiler to do something.
-    virtual void begin(bool skipSensorSetup = false);
+    virtual void begin();
 
     // This is a one-and-done to log data
     virtual void logData(void);

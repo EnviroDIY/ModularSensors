@@ -65,7 +65,6 @@ include/readme.txt
 .vscode
 
 # Other
-sensor_tests/
 compile_tests/
 logger_test/
 YosemitechDO/

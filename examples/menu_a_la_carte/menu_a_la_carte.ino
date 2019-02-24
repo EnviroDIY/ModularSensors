@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.6
+This example sketch is written for ModularSensors library version 0.20.2
 
 This shows most of the standard functions of the library at once.
 
@@ -26,7 +26,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.19.6";
+const char *libraryVersion = "0.20.2";
 // The name of this file
 const char *sketchName = "menu_a_la_carte.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -51,7 +51,7 @@ const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
-const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
+const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create and return the main processor chip "sensor" - for general metadata
 const char *mcuBoardVersion = "v0.5b";
@@ -74,7 +74,7 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // as possible.  In some cases (ie, modbus communication) many sensors can share
 // the same serial port.
 
-#if not defined(ARDUINO_ARCH_SAMD) && not defined(ATMEGA2560)  // For AVR boards
+#if not defined ARDUINO_ARCH_SAMD && not defined ATMEGA2560  // For AVR boards
 // Unfortunately, most AVR boards have only one or two hardware serial ports,
 // so we'll set up three types of extra software serial ports to use
 
@@ -86,7 +86,7 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 #include <AltSoftSerial.h>
 AltSoftSerial altSoftSerial;
 
-#if not defined(ATMEGA32U4)  // NeoSWSerial Doesn't support Leonardo
+#if not defined ATMEGA32U4  // NeoSWSerial Doesn't support Leonardo
 // NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
 // serial that can be used on any pin supporting interrupts.
 // You can use as many instances of NeoSWSerial as you want.
@@ -134,7 +134,7 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 // #define ENABLE_SERIAL3
 
 
-#if defined(ARDUINO_ARCH_SAMD)
+#if defined ARDUINO_ARCH_SAMD
 #include <wiring_private.h> // Needed for SAMD pinPeripheral() function
 
 #ifndef ENABLE_SERIAL2
@@ -179,10 +179,11 @@ void SERCOM2_Handler()
 // define SIM800_GPRSBEE_R6  // These use atypical sleep and wake fxns
 // #define TINY_GSM_MODEM_SIM808  // Select for a SIMCOM SIM808 or SIM868, or variant thereof
 // #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
-// #define USE_XBEE_BYPASS  // If you're using a Digi 3G or LTE-M XBee in bypass mode as a u-blox
+// #define USE_UBLOX_R410M  // Select in addition if you have a u-blox SARA R4 or N4 model
+// #define USE_XBEE_BYPASS  // Select in addition if you're using an Digi 3G or LTE-M XBee in bypass mode
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
-// #define USE_XBEE_WIFI  // If you're using a S6B wifi XBee
+// #define USE_XBEE_WIFI  // Select in addition if you're using a S6B wifi XBee
 // #define TINY_GSM_MODEM_M590  // Select for a Neoway M590
 // #define TINY_GSM_MODEM_A6  // Select for an AI-Thinker A6, A6C, A7, A20
 // #define TINY_GSM_MODEM_M95  // Select for a Quectel M95
@@ -195,7 +196,6 @@ void SERCOM2_Handler()
 // ==========================================================================
 
 const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
-
 const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
 const int8_t modemResetPin = A4;    // MCU pin connected to modem reset pin (-1 if unconnected)
@@ -207,7 +207,7 @@ const int8_t modemResetPin = A4;    // MCU pin connected to modem reset pin (-1 
 
 // #define TINY_GSM_DEBUG Serial  // If you want debugging on the main debug port
 
-#if defined(TINY_GSM_MODEM_XBEE) || defined(USE_XBEE_BYPASS)
+#if defined TINY_GSM_MODEM_XBEE || defined USE_XBEE_BYPASS
   #define TINY_GSM_YIELD() { delay(2); }  // Use to counter slow (9600) baud rate
 #endif
 
@@ -222,7 +222,7 @@ HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
-#if defined(TINY_GSM_MODEM_XBEE)
+#if defined TINY_GSM_MODEM_XBEE
 TinyGsm *tinyModem = new TinyGsm(modemSerial, modemResetPin);
 #else
 TinyGsm *tinyModem = new TinyGsm(modemSerial);
@@ -231,15 +231,18 @@ TinyGsm *tinyModem = new TinyGsm(modemSerial);
 // Use this to create a modem if you want to spy on modem communication through
 // a secondary Arduino stream.  Make sure you install the StreamDebugger library!
 // https://github.com/vshymanskyy/StreamDebugger
+// Also make sure you comment out the modem creation above to use this.
 // #include <StreamDebugger.h>
 // StreamDebugger modemDebugger(modemSerial, Serial);
 // TinyGsm *tinyModem = new TinyGsm(modemDebugger);
 
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
-// The ublox is very slow to open and close clients, so we can iterate through
-// mutiple data senders much more quickly if we have multiple clients
-#if defined(TINY_GSM_MODEM_UBLOX)
+// The u-blox SARA R410 is very slow to open and close clients, so we can
+// iterate through mutiple data senders much more quickly if we have multiple
+// clients.  The u-blox SARA R410  is the only modem where there's any advantage
+// to this.
+#if defined USE_UBLOX_R410M
 TinyGsmClient *tinyClient2 = new TinyGsmClient(*tinyModem);
 TinyGsmClient *tinyClient3 = new TinyGsmClient(*tinyModem);
 #endif
@@ -250,9 +253,9 @@ TinyGsmClient *tinyClient3 = new TinyGsmClient(*tinyModem);
 // ==========================================================================
 
 // This should apply to all Digi brand XBee modules.
-#if defined(TINY_GSM_MODEM_XBEE) || defined(USE_XBEE_BYPASS)
+#if defined TINY_GSM_MODEM_XBEE || defined USE_XBEE_BYPASS
 // Describe the physical pin connection of your modem to your board
-const long ModemBaud = 9600;        // Communication speed of the modem, 9600 is default for XBee
+const long modemBaud = 9600;        // Communication speed of the modem, 9600 is default for XBee
 const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // Create the wake and sleep methods for the modem
@@ -289,7 +292,7 @@ bool modemWakeFxn(void)
 }
 // An extra function to set up pin sleep and other preferences on the XBee
 // NOTE:  This will only succeed if the modem is turned on and awake!
-#if defined(TINY_GSM_MODEM_XBEE)
+#if defined TINY_GSM_MODEM_XBEE
 void setupXBee(void)
 {
     tinyModem->init();  // initialize
@@ -302,7 +305,7 @@ void setupXBee(void)
         // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
         // so we'll use the Digi pin sleep instead.
         tinyModem->waitResponse();
-        #if defined(USE_XBEE_WIFI)
+        #if defined USE_XBEE_WIFI
         tinyModem->sendAT(F("SO"),200);  // For WiFi - Disassociate from AP for Deep Sleep
         tinyModem->waitResponse();
         #else
@@ -316,7 +319,7 @@ void setupXBee(void)
         tinyModem->exitCommand();
     }
 }
-#elif defined(USE_XBEE_BYPASS)
+#elif defined USE_XBEE_BYPASS
 void setupXBee(void)
 {
     delay(1000);  // Guard time for command mode
@@ -348,9 +351,9 @@ void setupXBee(void)
 
 
 // This should work with most ESP8266 breakouts
-#elif defined(TINY_GSM_MODEM_ESP8266)
+#elif defined TINY_GSM_MODEM_ESP8266
 // Describe the physical pin connection of your modem to your board
-const long ModemBaud = 115200;       // Communication speed of the modem, 115200 is default for ESP8266
+const long modemBaud = 115200;       // Communication speed of the modem, 115200 is default for ESP8266
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 const int8_t espSleepRqPin = 14;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
 const int8_t espStatusPin = 13;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
@@ -424,10 +427,20 @@ bool modemWakeFxn(void)
                 modemSerial.read();
                 delay(2);
             }
-            // Have to make sure echo is off and re-run the init on wake
+            // Have to make sure echo is off or all AT commands will be confused
             tinyModem->sendAT(F("E0"));
             success &= tinyModem->waitResponse() == 1;
-            tinyModem->init();
+            // Slow down the baud rate for slow processors
+            #if F_CPU == 8000000L
+            if (modemBaud > 57600)
+            {
+                success &= tinyModem->setBaud(9600);
+                modemSerial.end();
+                modemSerial.begin(9600);
+            }
+            #endif
+            // re-run init to set mux and station mode
+            success &= tinyModem->init();
         }
         if (!success)
         {
@@ -456,10 +469,20 @@ bool modemWakeFxn(void)
                 modemSerial.read();
                 delay(2);
             }
-            // Have to make sure echo is off and re-run the init on wake
+            // Have to make sure echo is off or all AT commands will be confused
             tinyModem->sendAT(F("E0"));
             success &= tinyModem->waitResponse() == 1;
-            tinyModem->init();
+            // Slow down the baud rate for slow processors
+            #if F_CPU == 8000000L
+            if (modemBaud > 57600)
+            {
+                success &= tinyModem->setBaud(9600);
+                modemSerial.end();
+                modemSerial.begin(9600);
+            }
+            #endif
+            // re-run init to set mux and station mode
+            success &= tinyModem->init();
         }
         if (!success)
         {
@@ -493,26 +516,27 @@ void setupESP8266(void)
 
 
 // This should work for many u-blox breakouts, but check the timing in wake/sleep functions
-#elif defined(TINY_GSM_MODEM_UBLOX)
+#elif defined TINY_GSM_MODEM_UBLOX
 // Describe the physical pin connection of your modem to your board
-const long ModemBaud = 9600;         // Communication speed of the modem
+#if defined USE_UBLOX_R410M
+const long modemBaud = 115200;       // Communication speed of the modem, R4/N4 use 115200
+#else
+const long modemBaud = 9600;         // Communication speed of the modem, most u-blox use 9600
+#endif
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
 bool modemSleepFxn(void)
 {
-    if (modemVccPin >= 0 && modemSleepRqPin < 0)
-        return tinyModem->poweroff();
-    else if (modemSleepRqPin >= 0)
+    #if defined USE_UBLOX_R410M
+    if (modemSleepRqPin >= 0)  // R410 must have access to PWR_ON pin to sleep
+    #else
+    if (modemVccPin >= 0 || modemSleepRqPin >= 0)  // others will go on with power on
+    #endif
     {
-        digitalWrite(modemSleepRqPin, LOW);
-        digitalWrite(redLED, HIGH);  // A light to watch to verify pulse timing
-        // delay(1550);  // >1.5s pulse for power down for SARA-R4
-        delay(1050);  // >1s pulse for power down for most others
-        digitalWrite(modemSleepRqPin, HIGH);
-        digitalWrite(redLED, LOW);
-        return true;
+        // Easiest to just go to sleep with the AT command rather than using pins
+        return tinyModem->poweroff();
     }
     else  // DON'T go to sleep if we can't wake up!
     {
@@ -521,17 +545,32 @@ bool modemSleepFxn(void)
 }
 bool modemWakeFxn(void)
 {
-    if (modemVccPin >= 0)  // Turns on when power is applied
+    // SARA/LISA U2/G2 and SARA G3 series turn on when power is applied
+    // SARA R4/N4 series must power on and then pulse on
+    #ifndef USE_UBLOX_R410M
+    if (modemVccPin >= 0)
         return true;
-    else if(modemSleepRqPin >= 0)
+    #endif
+    if (modemSleepRqPin >= 0)
     {
         digitalWrite(modemSleepRqPin, LOW);
         digitalWrite(redLED, HIGH);
-        delay(200); // 0.15-3.2s pulse for wake on SARA R4/N4
-        // delay(6); // >5ms pulse for wake on SARA G3
-        // delayMicroseconds(65); // 50-80µs pulse for wake on SARA/LISA U2/G2
+        #if defined USE_UBLOX_R410M
+        delay(200);  // 0.15-3.2s pulse for wake on SARA R4/N4
+        #else
+        // delay(6);  // >5ms pulse for wake on SARA G3
+        delayMicroseconds(65);  // 50-80µs pulse for wake on SARA/LISA U2/G2
+        #endif
         digitalWrite(modemSleepRqPin, HIGH);
         digitalWrite(redLED, LOW);
+        // Need to slow down R4/N4's default 115200 baud rate for slow processors
+        #if F_CPU == 8000000L && defined USE_UBLOX_R410M
+        delay(4600);  // Must wait for UART port to become active
+        modemSerial.begin(115200);
+        tinyModem->setBaud(9600);  // Don't check for success, just hope
+        modemSerial.end();
+        modemSerial.begin(9600);
+        #endif
         return true;
     }
     else
@@ -542,9 +581,9 @@ bool modemWakeFxn(void)
 
 
 // THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
-#elif defined(TINY_GSM_MODEM_SIM800) && defined(SIM800_GPRSBEE_R6)
+#elif defined TINY_GSM_MODEM_SIM800 && defined SIM800_GPRSBEE_R6
 // Describe the physical pin connection of your modem to your board
-const long ModemBaud = 9600;         // Communication speed of the modem
+const long modemBaud = 9600;         // Communication speed of the modem
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // Create the wake and sleep methods for the modem
@@ -568,7 +607,7 @@ bool modemSleepFxn(void)
 // "default" functions and alternate constructor
 #else
 // Describe the physical pin connection of your modem to your board
-const long ModemBaud = 9600;         // Communication speed of the modem
+const long modemBaud = 9600;         // Communication speed of the modem
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // Create the wake and sleep methods for the modem
@@ -607,16 +646,13 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-#if defined(TINY_GSM_MODEM_ESP8266) || defined(USE_XBEE_WIFI)
+#if defined TINY_GSM_MODEM_ESP8266 || defined USE_XBEE_WIFI
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
 // ^^ Use this for WiFi
 #else
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
 // ^^ Use this for cellular
 #endif
-
-// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemSleepRqPin, tinyModem, tinyClient, apn);
-// ^^ Use this for a chip where you want to use the "default" functions
 
 // Create the RSSI and signal strength variable objects for the modem and return
 // variable-type pointers to them
@@ -639,11 +675,138 @@ MaximDS3231 ds3231(1);
 
 
 // ==========================================================================
+//    Atlas Scientific EZO-CO2 Embedded NDIR Carbon Dioxide Sensor
+// ==========================================================================
+#include <sensors/AtlasScientificCO2.h>
+
+const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// uint8_t AtlasCO2i2c_addr = 0x69;  // Default for CO2-EZO is 0x69 (105)
+// All Atlas sensors have different default I2C addresses, but any of them can
+// be re-addressed to any 8 bit number.  If using the default address for any
+// Atlas Scientific sensor, you may omit this argument.
+
+// Create and return the Atlas Scientific CO2 sensor object
+// AtlasScientificCO2 atlasCO2(I2CPower, AtlasCO2i2c_addr);
+AtlasScientificCO2 atlasCO2(I2CPower);
+
+// Create the concentration and temperature variable objects for the
+// EZO-CO2 and return variable-type pointers to them
+// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
+// Variable *atlasCO2 = new AtlasScientificCO2_CO2(&atlasCO2, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasCO2Temp = new AtlasScientificCO2_Temp(&atlasCO2, "12345678-abcd-1234-efgh-1234567890ab");
+
+
+// ==========================================================================
+//    Atlas Scientific EZO-DO Dissolved Oxygen Sensor
+// ==========================================================================
+#include <sensors/AtlasScientificDO.h>
+
+// const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// uint8_t AtlasDOi2c_addr = 0x61;  // Default for DO is 0x61 (97)
+// All Atlas sensors have different default I2C addresses, but any of them can
+// be re-addressed to any 8 bit number.  If using the default address for any
+// Atlas Scientific sensor, you may omit this argument.
+
+// Create and return the Atlas Scientific DO sensor object
+// AtlasScientificDO atlasDO(I2CPower, AtlasDOi2c_addr);
+AtlasScientificDO atlasDO(I2CPower);
+
+// Create the concentration and percent saturation variable objects for the
+// EZO-DO and return variable-type pointers to them
+// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
+// Variable *atlasDOconc = new AtlasScientificDO_DOmgL(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasDOpct = new AtlasScientificDO_DOpct(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab");
+
+
+// ==========================================================================
+//    Atlas Scientific EZO-EC Conductivity Sensor
+// ==========================================================================
+#include <sensors/AtlasScientificEC.h>
+
+// const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// uint8_t AtlasECi2c_addr = 0x64;  // Default for EC is 0x64 (100)
+// All Atlas sensors have different default I2C addresses, but any of them can
+// be re-addressed to any 8 bit number.  If using the default address for any
+// Atlas Scientific sensor, you may omit this argument.
+
+// Create and return the Atlas Scientific Conductivity sensor object
+// AtlasScientificEC atlasEC(I2CPower, AtlasECi2c_addr);
+AtlasScientificEC atlasEC(I2CPower);
+
+// Create the four variable objects for the EZO-ES and return variable-type pointers to them
+// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
+// Variable *atlasCond = new AtlasScientificEC_Cond(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasTDS = new AtlasScientificEC_TDS(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasSal = new AtlasScientificEC_Salinity(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasGrav = new AtlasScientificEC_SpecificGravity(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab");
+
+
+// ==========================================================================
+//    Atlas Scientific EZO-ORP Oxidation/Reduction Potential Sensor
+// ==========================================================================
+#include <sensors/AtlasScientificORP.h>
+
+// const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// uint8_t AtlasORPi2c_addr = 0x62;  // Default for ORP is 0x62 (98)
+// All Atlas sensors have different default I2C addresses, but any of them can
+// be re-addressed to any 8 bit number.  If using the default address for any
+// Atlas Scientific sensor, you may omit this argument.
+
+// Create and return the Atlas Scientific ORP sensor object
+// AtlasScientificORP atlasORP(I2CPower, AtlasORPi2c_addr);
+AtlasScientificORP atlasORP(I2CPower);
+
+// Create the potential variable object for the ORP and a return variable-type pointer to it
+// Use this to create a variable pointer with a name to use in multiple arrays or any calculated variables.
+// Variable *atlasORPot = new AtlasScientificORP_Potential(&atlasORP, "12345678-abcd-1234-efgh-1234567890ab");
+
+
+// ==========================================================================
+//    Atlas Scientific EZO-pH Sensor
+// ==========================================================================
+#include <sensors/AtlasScientificpH.h>
+
+// const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// uint8_t AtlaspHi2c_addr = 0x63;  // Default for RTD is 0x63 (99)
+// All Atlas sensors have different default I2C addresses, but any of them can
+// be re-addressed to any 8 bit number.  If using the default address for any
+// Atlas Scientific sensor, you may omit this argument.
+
+// Create and return the Atlas Scientific pH sensor object
+// AtlasScientificpH atlaspH(I2CPower, AtlaspHi2c_addr);
+AtlasScientificpH atlaspH(I2CPower);
+
+// Create the pH variable object for the pH and a return variable-type pointer to it
+// Use this to create a variable pointer with a name to use in multiple arrays or any calculated variables.
+// Variable *atlaspHpH = new AtlasScientificpH_pH(&atlaspH, "12345678-abcd-1234-efgh-1234567890ab");
+
+
+// ==========================================================================
+//    Atlas Scientific EZO-RTD Temperature Sensor
+// ==========================================================================
+#include <sensors/AtlasScientificRTD.h>
+
+// const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// uint8_t AtlasRTDi2c_addr = 0x66;  // Default for RTD is 0x66 (102)
+// All Atlas sensors have different default I2C addresses, but any of them can
+// be re-addressed to any 8 bit number.  If using the default address for any
+// Atlas Scientific sensor, you may omit this argument.
+
+// Create and return the Atlas Scientific RTD sensor object
+// AtlasScientificRTD atlasRTD(I2CPower, AtlasRTDi2c_addr);
+AtlasScientificRTD atlasRTD(I2CPower);
+
+// Create the temperature variable object for the RTD and a return variable-type pointer to it
+// Use this to create a variable pointer with a name to use in multiple arrays or any calculated variables.
+// Variable *atlasTemp = new AtlasScientificRTD_Temp(&atlasRTD, "12345678-abcd-1234-efgh-1234567890ab");
+
+
+// ==========================================================================
 //    AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
 #include <sensors/AOSongAM2315.h>
 
-const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 
 // Create and return the AOSong AM2315 sensor object
 AOSongAM2315 am2315(I2CPower);
@@ -725,6 +888,7 @@ const int8_t OBSLowADSChannel = 0;  // The ADS channel for the low range output
 const float OBSLow_A = 0.000E+00;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
+
 // Create and return the Campbell OBS3+ LOW RANGE sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3numberReadings);
 
@@ -739,6 +903,7 @@ const int8_t OBSHighADSChannel = 1;  // The ADS channel for the high range outpu
 const float OBSHigh_A = 0.000E+00;  // The "A" value (X^2) from the high range calibration
 const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
+
 // Create and return the Campbell OBS3+ HIGH RANGE sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 
@@ -815,9 +980,9 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
 
 const int8_t ADSPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t ADSChannel = 2;  // The ADS channel of interest
-const float dividerGain = 10; //  Default 1/gain for grove voltage divider is 10x
+const float dividerGain = 10;  //  Default 1/gain for grove voltage divider is 10x
 // const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
-const uint8_t VoltReadsToAvg = 1; // Only read one sample
+const uint8_t VoltReadsToAvg = 1;  // Only read one sample
 
 // Create and return the External Voltage sensor object
 ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, ADSi2c_addr, VoltReadsToAvg);
@@ -852,7 +1017,7 @@ MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 // A Maxbotix sonar with the trigger pin disconnect CANNOT share the serial port
 // A Maxbotix sonar using the trigger may be able to share but YMMV
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-#if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial &sonarSerial = Serial3;  // Use hardware serial if possible
 #else
 // AltSoftSerial &sonarSerial = altSoftSerial;  // For software serial if needed
@@ -940,10 +1105,9 @@ RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 // ==========================================================================
 #include <sensors/TIINA219.h>
 
-uint8_t INA219i2c_addr = 0x40; // 1000000 (Board A0+A1=GND)
-// The INA219 can be addressed either as 0x40 (Adafruit default) or 0x41 44 45
-// Either can be physically mofidied for the other address
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+uint8_t INA219i2c_addr = 0x40;  // 1000000 (Board A0+A1=GND)
+// The INA219 can have one of 16 addresses, depending on the connections of A0 and A1
 const uint8_t INA219ReadingsToAvg = 1;
 
 // Create and return the INA219 sensor object
@@ -963,7 +1127,7 @@ TIINA219 ina219(I2CPower, INA219i2c_addr, INA219ReadingsToAvg);
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-#if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 #else
 AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -993,7 +1157,7 @@ KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPowe
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -1023,7 +1187,7 @@ KellerNanolevel nanolevel(nanolevelModbusAddress, modbusSerial, rs485AdapterPowe
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -1055,7 +1219,7 @@ YosemitechY504 y504(y504ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -1084,7 +1248,7 @@ YosemitechY510 y510(y510ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -1113,7 +1277,7 @@ YosemitechY511 y511(y511ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -1142,7 +1306,7 @@ YosemitechY514 y514(y514ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -1171,7 +1335,7 @@ YosemitechY520 y520(y520ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -1201,7 +1365,7 @@ YosemitechY532 y532(y532ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -1231,7 +1395,7 @@ YosemitechY550 y550(y550ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -1327,6 +1491,17 @@ Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarName
 // NOTE:  Forms one and two can be mixed
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificCO2_CO2(&atlasCO2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificCO2_Temp(&atlasCO2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificDO_DOmgL(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificDO_DOpct(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificEC_Cond(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificEC_TDS(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificEC_Salinity(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificEC_SpecificGravity(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificORP_Potential(&atlasORP, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificpH_pH(&atlaspH, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificRTD_Temp(&atlasRTD, "12345678-abcd-1234-efgh-1234567890ab"),
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
     new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
     new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -1458,7 +1633,7 @@ const char * DreamHostPortalRX = "xxxx";
 
 // Create a data publisher to DreamHost
 #include <publishers/DreamHostPublisher.h>
-#if defined(TINY_GSM_MODEM_UBLOX)
+#if defined USE_UBLOX_R410M
 DreamHostPublisher DreamHostGET(dataLogger, tinyClient2, DreamHostPortalRX);
 #else
 DreamHostPublisher DreamHostGET(dataLogger, DreamHostPortalRX);
@@ -1479,7 +1654,7 @@ const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for
 
 // Create a data publisher for ThingSpeak
 #include <publishers/ThingSpeakPublisher.h>
-#if defined(TINY_GSM_MODEM_UBLOX)
+#if defined USE_UBLOX_R410M
 ThingSpeakPublisher TsMqtt(dataLogger, tinyClient3, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
 #else
 ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
@@ -1521,8 +1696,8 @@ void setup()
 {
     // Wait for USB connection to be established by PC
     // NOTE:  Only use this when debugging - if not connected to a PC, this
-    // will prevent the script from starting
-    #if defined(SERIAL_PORT_USBVIRTUAL)
+    // could prevent the script from starting
+    #if defined SERIAL_PORT_USBVIRTUAL
       while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)){}
     #endif
 
@@ -1552,7 +1727,7 @@ void setup()
     #endif
 
     // Start the serial connection with the modem
-    modemSerial.begin(ModemBaud);
+    modemSerial.begin(modemBaud);
 
     // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
     modbusSerial.begin(9600);
@@ -1562,7 +1737,7 @@ void setup()
 
     // Assign pins SERCOM functionality for SAMD boards
     // NOTE:  This must happen *after* the begin
-    #if defined(ARDUINO_ARCH_SAMD)
+    #if defined ARDUINO_ARCH_SAMD
     #ifndef ENABLE_SERIAL2
     pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
     pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
@@ -1596,7 +1771,7 @@ void setup()
     }
 
     // Set up the sleep/wake pin for the modem and put its inital value as "off"
-    #if defined(TINY_GSM_MODEM_SIM800) && defined(SIM800_GPRSBEE_R6)  // ONLY FOR GPRSBee R6!!!!
+    #if defined TINY_GSM_MODEM_SIM800 && defined SIM800_GPRSBEE_R6  // ONLY FOR GPRSBee R6!!!!
         if (modemSleepRqPin >= 0)
         {
             pinMode(modemSleepRqPin, OUTPUT);
@@ -1627,46 +1802,59 @@ void setup()
     dataLogger.setTestingModePin(buttonPin);
 
     // Begin the logger
+    dataLogger.begin();
+
     // Note:  Please change these battery voltages to match your battery
     // Check that the battery is OK before powering the modem
-    if (getBatteryVoltage()> 3.7)
+    if (getBatteryVoltage() > 3.7)
     {
         modem.modemPowerUp();
-    }
-    // At lowest battery level, skip sensor set-up
-    if (getBatteryVoltage()< 3.4)
-    {
-        dataLogger.begin(true);
-    }
-    else  // set up file and sensors
-    {
-        dataLogger.begin();
+        modem.wake();
+
+        // Extra pre-set-up for the XBee
+        #if defined TINY_GSM_MODEM_XBEE
+        Serial.println(F("Setting up sleep mode on the XBee."));
+        setupXBee();
+        #endif
+
+        // Extra set-up for the ESP8266
+        #if defined TINY_GSM_MODEM_ESP8266
+        setupESP8266();
+        #endif
+
+        // At very good battery voltage, or with suspicious time stamp, sync the clock
+        // Note:  Please change these battery voltages to match your battery
+        if (getBatteryVoltage() > 3.8 ||
+            dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
+            dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+        {
+            // Synchronize the RTC with NIST
+            Serial.println(F("Attempting to synchronize RTC with NIST"));
+            if (modem.connectInternet(120000L))
+            {
+                dataLogger.setRTClock(modem.getNISTTime());
+            }
+        }
     }
 
-    // Set up XBee
-    #if defined(TINY_GSM_MODEM_XBEE)
-    Serial.println(F("Setting up sleep mode on the XBee."));
-    modem.modemPowerUp();
-    modem.wake();  // Turn it on to talk
-    setupXBee();
-    #endif
-
-    // Extra set-up for the ESP8266
-    #if defined(TINY_GSM_MODEM_ESP8266)
-    setupESP8266();
-    #endif
-
-    // At very good battery voltage, or with suspicious time stamp, sync the clock
-    // Note:  Please change these battery voltages to match your battery
-    if (getBatteryVoltage() > 3.8 ||
-        dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
-        dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+    // Set up the sensors, except at lowest battery level
+    if (getBatteryVoltage() > 3.4)
     {
-        dataLogger.syncRTC();  // There's a sleepPowerDown at the end of this
+        Serial.println(F("Setting up sensors..."));
+        varArray.setupSensors();
     }
-    else
+
+    // Power down the modem
+    modem.modemSleepPowerDown();
+
+    // Create the log file, adding the default header to it
+    // Do this last so we have the best chance of getting the time correct and
+    // all sensor names correct
+    // Writing to the SD card can be power intensive, so if we're skipping
+    // the sensor setup we'll skip this too.
+    if (getBatteryVoltage() > 3.4)
     {
-        modem.modemSleepPowerDown();
+        dataLogger.createLogFile(true);
     }
 
     // Call the processor sleep
@@ -1715,7 +1903,7 @@ void loop()
     // Set sensors and file up if it hasn't happened already
     // NOTE:  Unless it completed in less than one second, the sensor set-up
     // will take the place of logging for this interval!
-    dataLogger.setupSensorsAndFile();
+    dataLogger.setupSensors();
 
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval

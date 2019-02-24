@@ -88,8 +88,8 @@ bool VariableArray::setupSensors(void)
         {
             if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0) == 1)  // already set up
             {
-                MS_DBG(F("    "), arrayOfVars[i]->getParentSensorNameAndLocation(),
-                       F(" was already set up!"));
+                MS_DBG(F("   "), arrayOfVars[i]->getParentSensorNameAndLocation(),
+                       F("was already set up!"));
 
                 nSensorsSetup++;
             }

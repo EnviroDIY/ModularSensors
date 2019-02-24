@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.6
+This example sketch is written for ModularSensors library version 0.20.2
 
 This sketch is an example of logging data from different variables at two
 different logging intervals.  This example uses more of the manual functions
@@ -28,7 +28,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.19.6";
+const char *libraryVersion = "0.20.2";
 // The name of this file
 const char *sketchName = "double_logger.ino";
 // Logger ID - we're only using one logger ID for both "loggers"
@@ -54,7 +54,7 @@ const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
-const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
+const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create and return the main processor chip "sensor" - for general metadata
 const char *mcuBoardVersion = "v0.5b";
@@ -107,7 +107,7 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 // This should apply to all Digi brand XBee modules.
 // Describe the physical pin connection of your modem to your board
-const long ModemBaud = 9600;        // Communication speed of the modem
+const long modemBaud = 9600;        // Communication speed of the modem
 const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // Create the wake and sleep methods for the modem
@@ -258,7 +258,7 @@ void setup()
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
     // Start the serial connection with the modem
-    modemSerial.begin(ModemBaud);
+    modemSerial.begin(modemBaud);
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
@@ -277,9 +277,14 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
+    // Begin the logger
+    // Only need to do this for one of the loggers, just pick one
+    logger5min.begin();
+
 
     // Turn on the modem
     modem.modemPowerUp();
+    modem.wake();
 
     // Set up the sensors (do this directly on the VariableArray)
     array1min.setupSensors();
@@ -312,10 +317,6 @@ void setup()
     // file name for this function.
     logger1min.createLogFile(true);
     logger5min.createLogFile(true);
-
-    // Set up the processor sleep mode
-    // Because there's only one processor, we only need to do this once
-    logger1min.setupSleep();
 
     Serial.println(F("Logger setup finished!\n"));
     Serial.println(F("------------------------------------------"));

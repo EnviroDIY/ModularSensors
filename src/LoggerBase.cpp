@@ -48,9 +48,6 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
     _mcuWakePin = mcuWakePin;
     _internalArray = inputArray;
 
-    // Mark sensor set-up as not set up
-    _areSensorsSetup = false;
-
     // Set the testing/logging flags to false
     isLoggingNow = false;
     isTestingNow = false;
@@ -181,7 +178,7 @@ void Logger::attachModem(loggerModem& modem)
 {
     _logModem = &modem;
     // Print out the modem info
-    PRINTOUT(_logModem->getSensorName(), F("has been tied to this logger!"));
+    PRINTOUT(F("A modem has been tied to this logger!"));
 }
 
 
@@ -277,7 +274,7 @@ void Logger::setTZOffset(int8_t offset)
 
 // This gets the current epoch time (unix time, ie, the number of seconds
 // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
-#if defined(ARDUINO_ARCH_SAMD)
+#if defined(ARDUINO_ARCH_SAMD) || defined MS_SAMD_DS3231
 
     uint32_t Logger::getNowEpoch(void)
     {
@@ -463,26 +460,6 @@ void Logger::wakeISR(void)
 
 #if defined ARDUINO_ARCH_SAMD
 
-    // Sets up the sleep mode
-    void Logger::setupSleep(void)
-    {
-        // Nothing to do if we don't have a wake pin
-        if(_mcuWakePin < 0)
-        {
-            MS_DBG(F("Use a non-negative wake pin to request sleep!"));
-            return;
-        }
-
-        // Alarms on the RTC built into the SAMD21 appear to be identical to those
-        // in the DS3231.  See more notes below.
-        // We're setting the alarm seconds to 59 and then seting it to go off
-        // whenever the seconds match the 59.  I'm using 59 instead of 00
-        // because there seems to be a bit of a wake-up delay
-        MS_DBG(F("Setting alarm on SAMD built-in RTC for every minute."));
-        zero_sleep_rtc.setAlarmSeconds(59);
-        zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);
-    }
-
     // Puts the system to sleep to conserve battery life.
     // This DOES NOT sleep or wake the sensors!!
     void Logger::systemSleep(void)
@@ -494,7 +471,40 @@ void Logger::wakeISR(void)
             return;
         }
 
-        MS_DBG(F("Putting processor to sleep."));
+        #if defined MS_SAMD_DS3231
+
+        // Unfortunately, because of the way the alarm on the DS3231 is set up, it
+        // cannot interrupt on any frequencies other than every second, minute,
+        // hour, day, or date.  We could set it to alarm hourly every 5 minutes past
+        // the hour, but not every 5 minutes.  This is why we set the alarm for
+        // every minute and use the checkInterval function.  This is a hardware
+        // limitation of the DS3231; it is not due to the libraries or software.
+        MS_DBG(F("Setting alarm on DS3231 RTC for every minute."));
+        rtc.enableInterrupts(EveryMinute);
+
+        // Clear the last interrupt flag in the RTC status register
+        // The next timed interrupt will not be sent until this is cleared
+        rtc.clearINTStatus();
+
+        // Set up a pin to hear clock interrupt and attach the wake ISR to it
+        pinMode(_mcuWakePin, INPUT_PULLUP);
+        enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
+
+        #else
+
+        // Alarms on the RTC built into the SAMD21 appear to be identical to those
+        // in the DS3231.  See more notes below.
+        // We're setting the alarm seconds to 59 and then seting it to go off
+        // whenever the seconds match the 59.  I'm using 59 instead of 00
+        // because there seems to be a bit of a wake-up delay
+        MS_DBG(F("Setting alarm on SAMD built-in RTC for every minute."));
+        zero_sleep_rtc.setAlarmSeconds(59);
+        zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);
+
+        #endif
+
+        // Send one last message before shutting down serial ports
+        MS_DBG(F("Preparing for processor to sleep."));
 
         // Wait until the serial ports have finished transmitting
         // This does not clear their buffers, it just waits until they are finished
@@ -505,10 +515,6 @@ void Logger::wakeISR(void)
         #if defined(DEBUGGING_SERIAL_OUTPUT)
             DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
         #endif
-
-        // This clears the interrrupt flag in status register of the clock
-        // The next timed interrupt will not be sent until this is cleared
-        // rtc.clearINTStatus();
 
         // Stop any I2C connections
         // This function actually disables the two-wire pin functionality and
@@ -529,43 +535,35 @@ void Logger::wakeISR(void)
 
         // Re-start any I2C connections
         Wire.begin();
+        // Eliminate any potential extra waits in the wire library
+        // These waits would be caused by a readBytes or parseX being called
+        // on wire after the Wire buffer has emptied.  The default stream
+        // functions - used by wire - wait a timeout period after reading the
+        // end of the buffer to see if an interrupt puts something into the
+        // buffer.  In the case of the Wire library, that will never happen and
+        // the timeout period is a useless delay.
+        Wire.setTimeout(0);
+
+        #if defined MS_SAMD_DS3231
+        // Stop the clock from sending out any interrupts while we're awake.
+        // There's no reason to waste though on the clock interrupt if it
+        // happens while the processor is awake and doing other things.
+        rtc.disableInterrupts();
+        // Detach the from the pin
+        disableInterrupt(_mcuWakePin);
+
+        #else
+        zero_sleep_rtc.disableAlarm();
+        #endif
+
+        // Wake-up message
+        MS_DBG(F("Processor is now awake!"));
+
+        // The logger will now start the next function after the systemSleep
+        // function in either the loop or setup
     }
 
 #elif defined ARDUINO_ARCH_AVR
-
-    // Sets up the sleep mode
-    void Logger::setupSleep(void)
-    {
-        // Nothing to do if we don't have a wake pin
-        if(_mcuWakePin < 0)
-        {
-            MS_DBG(F("Use a non-negative wake pin to request sleep!"));
-            return;
-        }
-
-        // Set the pin attached to the RTC alarm to be in the right mode to listen to
-        // an interrupt and attach the "Wake" ISR to it.
-        pinMode(_mcuWakePin, INPUT_PULLUP);
-        enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
-
-        // Unfortunately, because of the way the alarm on the DS3231 is set up, it
-        // cannot interrupt on any frequencies other than every second, minute,
-        // hour, day, or date.  We could set it to alarm hourly every 5 minutes past
-        // the hour, but not every 5 minutes.  This is why we set the alarm for
-        // every minute and use the checkInterval function.  This is a hardware
-        // limitation of the DS3231; it is not due to the libraries or software.
-        MS_DBG(F("Setting alarm on DS3231 RTC for every minute."));
-        rtc.enableInterrupts(EveryMinute);
-
-        // Set the sleep mode
-        // In the avr/sleep.h file, the call names of these 5 sleep modes are:
-        // SLEEP_MODE_IDLE         -the least power savings
-        // SLEEP_MODE_ADC
-        // SLEEP_MODE_PWR_SAVE
-        // SLEEP_MODE_STANDBY
-        // SLEEP_MODE_PWR_DOWN     -the most power savings
-        set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-    }
 
     // Puts the system to sleep to conserve battery life.
     // This DOES NOT sleep or wake the sensors!!
@@ -578,7 +576,25 @@ void Logger::wakeISR(void)
             return;
         }
 
-        MS_DBG(F("Putting processor to sleep."));
+        // Unfortunately, because of the way the alarm on the DS3231 is set up, it
+        // cannot interrupt on any frequencies other than every second, minute,
+        // hour, day, or date.  We could set it to alarm hourly every 5 minutes past
+        // the hour, but not every 5 minutes.  This is why we set the alarm for
+        // every minute and use the checkInterval function.  This is a hardware
+        // limitation of the DS3231; it is not due to the libraries or software.
+        MS_DBG(F("Setting alarm on DS3231 RTC for every minute."));
+        rtc.enableInterrupts(EveryMinute);
+
+        // Clear the last interrupt flag in the RTC status register
+        // The next timed interrupt will not be sent until this is cleared
+        rtc.clearINTStatus();
+
+        // Make sure we're still set up to handle the clock interrupt
+        pinMode(_mcuWakePin, INPUT_PULLUP);
+        enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
+
+        // One last message before sleeping
+        MS_DBG(F("Preparing for processor to sleep."));
 
         // Wait until the serial ports have finished transmitting
         // This does not clear their buffers, it just waits until they are finished
@@ -590,16 +606,14 @@ void Logger::wakeISR(void)
             DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
         #endif
 
-        // Make sure the RTC is still sending out interrupts
-        rtc.enableInterrupts(EveryMinute);
-
-        // Clear the last interrupt flag in the RTC status register
-        // The next timed interrupt will not be sent until this is cleared
-        rtc.clearINTStatus();
-
-        // Make sure we're still set up to handle the clock interrupt
-        pinMode(_mcuWakePin, INPUT_PULLUP);
-        enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
+        // Set the sleep mode
+        // In the avr/sleep.h file, the call names of these 5 sleep modes are:
+        // SLEEP_MODE_IDLE         -the least power savings
+        // SLEEP_MODE_ADC
+        // SLEEP_MODE_PWR_SAVE
+        // SLEEP_MODE_STANDBY
+        // SLEEP_MODE_PWR_DOWN     -the most power savings
+        set_sleep_mode(SLEEP_MODE_PWR_DOWN);
 
         // Stop any I2C connections
         // This function actually disables the two-wire pin functionality and
@@ -673,6 +687,24 @@ void Logger::wakeISR(void)
         pinMode(SDA, INPUT_PULLUP);  // set as input with the pull-up on
         pinMode(SCL, INPUT_PULLUP);
         Wire.begin();
+        // Eliminate any potential extra waits in the wire library
+        // These waits would be caused by a readBytes or parseX being called
+        // on wire after the Wire buffer has emptied.  The default stream
+        // functions - used by wire - wait a timeout period after reading the
+        // end of the buffer to see if an interrupt puts something into the
+        // buffer.  In the case of the Wire library, that will never happen and
+        // the timeout period is a useless delay.
+        Wire.setTimeout(0);
+
+        // Stop the clock from sending out any interrupts while we're awake.
+        // There's no reason to waste though on the clock interrupt if it
+        // happens while the processor is awake and doing other things.
+        rtc.disableInterrupts();
+        // Detach the from the pin
+        disableInterrupt(_mcuWakePin);
+
+        // Wake-up message
+        MS_DBG(F("Processor is now awake!"));
 
         // The logger will now start the next function after the systemSleep
         // function in either the loop or setup
@@ -1086,7 +1118,7 @@ void Logger::testingMode()
     // Put sensors to sleep
     _internalArray->sensorsSleep();
     _internalArray->sensorsPowerDown();
-    
+
     // Turn the modem off
     _logModem->modemSleepPowerDown();
 
@@ -1105,45 +1137,40 @@ void Logger::testingMode()
 // Convience functions to call several of the above functions
 // ===================================================================== //
 
-// Setup the sensors and log files
-void Logger::setupSensorsAndFile(void)
-{
-    // if this is done, skip
-    if (_areSensorsSetup) return;
-
-    // Set up the sensors
-    PRINTOUT(F("Setting up sensors..."));
-    _internalArray->setupSensors();
-
-    // Create the log file, adding the default header to it
-    // Writing to the SD card can be power intensive, so if we're skipping
-    // the sensor setup we'll skip this too.
-    createLogFile(true);
-
-    // Mark sensors as having been setup
-    _areSensorsSetup = true;
-}
-
 // This does all of the setup that can't happen in the constructors
 // That is, things that require the actual processor/MCU to do something
 // rather than the compiler to do something.
- void Logger::begin(bool skipSensorSetup)
+ void Logger::begin()
 {
     #if defined ARDUINO_ARCH_SAMD
+        PRINTOUT(F("Beginning internal real time clock"));
         zero_sleep_rtc.begin();
-    #else
-        // Set the pins for I2C
-        pinMode(SDA, INPUT_PULLUP);
-        pinMode(SCL, INPUT_PULLUP);
-        Wire.begin();
+    #endif
+
+    // Set the pins for I2C
+    PRINTOUT(F("Setting I2C Pins to INPUT_PULLUP"));
+    pinMode(SDA, INPUT_PULLUP);
+    pinMode(SCL, INPUT_PULLUP);
+    PRINTOUT(F("Beginning wire (I2C)"));
+    Wire.begin();
+    // Eliminate any potential extra waits in the wire library
+    // These waits would be caused by a readBytes or parseX being called
+    // on wire after the Wire buffer has emptied.  The default stream
+    // functions - used by wire - wait a timeout period after reading the
+    // end of the buffer to see if an interrupt puts something into the
+    // buffer.  In the case of the Wire library, that will never happen and
+    // the timeout period is a useless delay.
+    Wire.setTimeout(0);
+
+    #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
+        PRINTOUT(F("Beginning DS3231 real time clock"));
         rtc.begin();
-        delay(100);
     #endif
 
     // Print out the current time
     PRINTOUT(F("Current RTC time is:"), formatDateTime_ISO8601(getNowEpoch()));
 
-    PRINTOUT(F("Setting up logger"), _loggerID, F("to record at"),
+    PRINTOUT(F("Setting logger"), _loggerID, F("to record at"),
              _loggingIntervalMinutes, F("minute intervals."));
 
     PRINTOUT(F("This logger has a variable array with"),
@@ -1151,11 +1178,6 @@ void Logger::setupSensorsAndFile(void)
              getArrayVarCount() - _internalArray->getCalculatedVariableCount(),
              F("come from "),_internalArray->getSensorCount(), F("sensors and"),
              _internalArray->getCalculatedVariableCount(), F("are calculated."));
-
-    if (!skipSensorSetup) setupSensorsAndFile();
-
-    // Setup sleep mode
-    setupSleep();
 
     // Set up the interrupt to be able to enter sensor testing mode
     // NOTE:  Entering testing mode before the sensors have been set-up may
@@ -1167,23 +1189,13 @@ void Logger::setupSensorsAndFile(void)
                  F("at any time to enter sensor testing mode."));
     }
 
-    // Make sure all sensors are powered down at the end
-    // The should be, but just in case
-    _internalArray->sensorsPowerDown();
-
     PRINTOUT(F("Logger setup finished!"));
-    PRINTOUT(F("------------------------------------------\n"));
 }
 
 
 // This is a one-and-done to log data
 void Logger::logData(void)
 {
-    // Set sensors and file up if it hasn't happened already
-    // NOTE:  Unless it completed in less than one second, the sensor set-up
-    // will take the place of logging for this interval!
-    setupSensorsAndFile();
-
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
     if (checkInterval())
@@ -1221,11 +1233,6 @@ void Logger::logData(void)
 // This is a one-and-done to log data
 void Logger::logDataAndSend(void)
 {
-    // Set sensors and file up if it hasn't happened already
-    // NOTE:  Unless it completed in less than one second, the sensor set-up
-    // will take the place of logging for this interval!
-    setupSensorsAndFile();
-
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
     if (checkInterval())
