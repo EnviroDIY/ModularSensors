@@ -212,9 +212,6 @@ public:
     // This must be a static function (which means it can only call other static funcions.)
     static void wakeISR(void);
 
-    // Sets up the sleep mode
-    void setupSleep(void);
-
     // Puts the system to sleep to conserve battery life.
     // This DOES NOT sleep or wake the sensors!!
     void systemSleep(void);

@@ -318,10 +318,6 @@ void setup()
     logger1min.createLogFile(true);
     logger5min.createLogFile(true);
 
-    // Set up the processor sleep mode
-    // Because there's only one processor, we only need to do this once
-    logger1min.setupSleep();
-
     Serial.println(F("Logger setup finished!\n"));
     Serial.println(F("------------------------------------------"));
     Serial.println();
