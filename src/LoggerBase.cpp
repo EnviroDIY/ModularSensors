@@ -458,258 +458,198 @@ void Logger::wakeISR(void)
     // MS_DBG(F("Clock interrupt!"));
 }
 
-#if defined ARDUINO_ARCH_SAMD
 
-    // Puts the system to sleep to conserve battery life.
-    // This DOES NOT sleep or wake the sensors!!
-    void Logger::systemSleep(void)
+// Puts the system to sleep to conserve battery life.
+// This DOES NOT sleep or wake the sensors!!
+void Logger::systemSleep(void)
+{
+    // Don't go to sleep unless there's a wake pin!
+    if(_mcuWakePin < 0)
     {
-        // Don't go to sleep unless there's a wake pin!
-        if(_mcuWakePin < 0)
-        {
-            MS_DBG(F("Use a non-negative wake pin to request sleep!"));
-            return;
-        }
-
-        #if defined MS_SAMD_DS3231
-
-        // Unfortunately, because of the way the alarm on the DS3231 is set up, it
-        // cannot interrupt on any frequencies other than every second, minute,
-        // hour, day, or date.  We could set it to alarm hourly every 5 minutes past
-        // the hour, but not every 5 minutes.  This is why we set the alarm for
-        // every minute and use the checkInterval function.  This is a hardware
-        // limitation of the DS3231; it is not due to the libraries or software.
-        MS_DBG(F("Setting alarm on DS3231 RTC for every minute."));
-        rtc.enableInterrupts(EveryMinute);
-
-        // Clear the last interrupt flag in the RTC status register
-        // The next timed interrupt will not be sent until this is cleared
-        rtc.clearINTStatus();
-
-        // Set up a pin to hear clock interrupt and attach the wake ISR to it
-        pinMode(_mcuWakePin, INPUT_PULLUP);
-        enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
-
-        #else
-
-        // Alarms on the RTC built into the SAMD21 appear to be identical to those
-        // in the DS3231.  See more notes below.
-        // We're setting the alarm seconds to 59 and then seting it to go off
-        // whenever the seconds match the 59.  I'm using 59 instead of 00
-        // because there seems to be a bit of a wake-up delay
-        MS_DBG(F("Setting alarm on SAMD built-in RTC for every minute."));
-        zero_sleep_rtc.setAlarmSeconds(59);
-        zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);
-
-        #endif
-
-        // Send one last message before shutting down serial ports
-        MS_DBG(F("Preparing for processor to sleep."));
-
-        // Wait until the serial ports have finished transmitting
-        // This does not clear their buffers, it just waits until they are finished
-        // TODO:  Make sure can find all serial ports
-        #if defined(STANDARD_SERIAL_OUTPUT)
-            STANDARD_SERIAL_OUTPUT.flush();  // for debugging
-        #endif
-        #if defined(DEBUGGING_SERIAL_OUTPUT)
-            DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
-        #endif
-
-        // Stop any I2C connections
-        // This function actually disables the two-wire pin functionality and
-        // turns off the internal pull-up resistors.
-        Wire.end();
-
-        // USB connection will end at sleep because it's a separate mode in the processor
-        USBDevice.detach();  // Disable USB
-
-        // Put the processor into sleep mode.
-        zero_sleep_rtc.standbyMode();
-
-        // ---------------------------------------------------------------------
-        // -- The portion below this happens on wake up, after any wake ISR's --
-
-        // Reattach the USB after waking
-        USBDevice.attach();
-
-        // Re-start any I2C connections
-        Wire.begin();
-        // Eliminate any potential extra waits in the wire library
-        // These waits would be caused by a readBytes or parseX being called
-        // on wire after the Wire buffer has emptied.  The default stream
-        // functions - used by wire - wait a timeout period after reading the
-        // end of the buffer to see if an interrupt puts something into the
-        // buffer.  In the case of the Wire library, that will never happen and
-        // the timeout period is a useless delay.
-        Wire.setTimeout(0);
-
-        #if defined MS_SAMD_DS3231
-        // Stop the clock from sending out any interrupts while we're awake.
-        // There's no reason to waste though on the clock interrupt if it
-        // happens while the processor is awake and doing other things.
-        rtc.disableInterrupts();
-        // Detach the from the pin
-        disableInterrupt(_mcuWakePin);
-
-        #else
-        zero_sleep_rtc.disableAlarm();
-        #endif
-
-        // Wake-up message
-        MS_DBG(F("Processor is now awake!"));
-
-        // The logger will now start the next function after the systemSleep
-        // function in either the loop or setup
+        MS_DBG(F("Use a non-negative wake pin to request sleep!"));
+        return;
     }
 
-#elif defined ARDUINO_ARCH_AVR
+    #if MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
 
-    // Puts the system to sleep to conserve battery life.
-    // This DOES NOT sleep or wake the sensors!!
-    void Logger::systemSleep(void)
-    {
-        // Don't go to sleep unless there's a wake pin!
-        if (_mcuWakePin < 0)
-        {
-            MS_DBG(F("Unable to sleep because no wake pin assigned!"));
-            return;
-        }
+    // Unfortunately, because of the way the alarm on the DS3231 is set up, it
+    // cannot interrupt on any frequencies other than every second, minute,
+    // hour, day, or date.  We could set it to alarm hourly every 5 minutes past
+    // the hour, but not every 5 minutes.  This is why we set the alarm for
+    // every minute and use the checkInterval function.  This is a hardware
+    // limitation of the DS3231; it is not due to the libraries or software.
+    MS_DBG(F("Setting alarm on DS3231 RTC for every minute."));
+    rtc.enableInterrupts(EveryMinute);
 
-        // Unfortunately, because of the way the alarm on the DS3231 is set up, it
-        // cannot interrupt on any frequencies other than every second, minute,
-        // hour, day, or date.  We could set it to alarm hourly every 5 minutes past
-        // the hour, but not every 5 minutes.  This is why we set the alarm for
-        // every minute and use the checkInterval function.  This is a hardware
-        // limitation of the DS3231; it is not due to the libraries or software.
-        MS_DBG(F("Setting alarm on DS3231 RTC for every minute."));
-        rtc.enableInterrupts(EveryMinute);
+    // Clear the last interrupt flag in the RTC status register
+    // The next timed interrupt will not be sent until this is cleared
+    rtc.clearINTStatus();
 
-        // Clear the last interrupt flag in the RTC status register
-        // The next timed interrupt will not be sent until this is cleared
-        rtc.clearINTStatus();
+    // Set up a pin to hear clock interrupt and attach the wake ISR to it
+    pinMode(_mcuWakePin, INPUT_PULLUP);
+    enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
 
-        // Make sure we're still set up to handle the clock interrupt
-        pinMode(_mcuWakePin, INPUT_PULLUP);
-        enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
+    #else
 
-        // One last message before sleeping
-        MS_DBG(F("Preparing for processor to sleep."));
+    // Alarms on the RTC built into the SAMD21 appear to be identical to those
+    // in the DS3231.  See more notes below.
+    // We're setting the alarm seconds to 59 and then seting it to go off
+    // whenever the seconds match the 59.  I'm using 59 instead of 00
+    // because there seems to be a bit of a wake-up delay
+    MS_DBG(F("Setting alarm on SAMD built-in RTC for every minute."));
+    zero_sleep_rtc.setAlarmSeconds(59);
+    zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);
 
-        // Wait until the serial ports have finished transmitting
-        // This does not clear their buffers, it just waits until they are finished
-        // TODO:  Make sure can find all serial ports
-        #if defined(STANDARD_SERIAL_OUTPUT)
-            STANDARD_SERIAL_OUTPUT.flush();  // for debugging
-        #endif
-        #if defined(DEBUGGING_SERIAL_OUTPUT)
-            DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
-        #endif
+    #endif
 
-        // Set the sleep mode
-        // In the avr/sleep.h file, the call names of these 5 sleep modes are:
-        // SLEEP_MODE_IDLE         -the least power savings
-        // SLEEP_MODE_ADC
-        // SLEEP_MODE_PWR_SAVE
-        // SLEEP_MODE_STANDBY
-        // SLEEP_MODE_PWR_DOWN     -the most power savings
-        set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+    // Send one last message before shutting down serial ports
+    MS_DBG(F("Preparing for processor to sleep."));
 
-        // Stop any I2C connections
-        // This function actually disables the two-wire pin functionality and
-        // turns off the internal pull-up resistors.
-        // It does NOT set the pin mode!
-        Wire.end();
-        // Now force the I2C pins to LOW
-        // I2C devices have a nasty habit of stealing power from the SCL and SDA pins...
-        // This will only work for the "main" I2C/TWI interface
-        pinMode(SDA, OUTPUT);  // set output mode
-        pinMode(SCL, OUTPUT);
-        digitalWrite(SDA, LOW);  // Set the pins low
-        digitalWrite(SCL, LOW);
+    // Wait until the serial ports have finished transmitting
+    // This does not clear their buffers, it just waits until they are finished
+    // TODO:  Make sure can find all serial ports
+    #if defined(STANDARD_SERIAL_OUTPUT)
+        STANDARD_SERIAL_OUTPUT.flush();  // for debugging
+    #endif
+    #if defined(DEBUGGING_SERIAL_OUTPUT)
+        DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
+    #endif
 
-        // Temporarily disables interrupts, so no mistakes are made when writing
-        // to the processor registers
-        noInterrupts();
+    // Stop any I2C connections
+    // This function actually disables the two-wire pin functionality and
+    // turns off the internal pull-up resistors.
+    Wire.end();
+    // Now force the I2C pins to LOW
+    // I2C devices have a nasty habit of stealing power from the SCL and SDA pins...
+    // This will only work for the "main" I2C/TWI interface
+    #ifdef SDA
+    pinMode(SDA, OUTPUT);
+    digitalWrite(SDA, LOW);
+    #endif
+    #ifdef SCL
+    pinMode(SCL, OUTPUT);
+    digitalWrite(SCL, LOW);
+    #endif
 
-        // Disable the processor ADC (must be disabled before it will power down)
-        // ADCSRA = ADC Control and Status Register A
-        // ADEN = ADC Enable
-        ADCSRA &= ~_BV(ADEN);
+    #if defined ARDUINO_ARCH_SAMD
 
-        // turn off the brown-out detector, if possible
-        // BODS = brown-out detector sleep
-        // BODSE = brown-out detector sleep enable
-        #if defined(BODS) && defined(BODSE)
-            sleep_bod_disable();
-        #endif
+    // USB connection will end at sleep because it's a separate mode in the processor
+    USBDevice.detach();  // Disable USB
 
-        // disable all power-reduction modules (ie, the processor module clocks)
-        // NOTE:  This only shuts down the various clocks on the processor via
-        // the power reduction register!  It does NOT actually disable the
-        // modules themselves or set the pins to any particular state!  This
-        // means that the I2C/Serial/Timer/etc pins will still be active and
-        // powered unless they are turned off prior to calling this function.
-        power_all_disable();
+    // Put the processor into sleep mode.
+    zero_sleep_rtc.standbyMode();
 
-        // Set the sleep enable bit.
-        sleep_enable();
+    #elif defined ARDUINO_ARCH_AVR
 
-        // Re-enables interrupts so we can wake up again
-        interrupts();
+    // Set the sleep mode
+    // In the avr/sleep.h file, the call names of these 5 sleep modes are:
+    // SLEEP_MODE_IDLE         -the least power savings
+    // SLEEP_MODE_ADC
+    // SLEEP_MODE_PWR_SAVE
+    // SLEEP_MODE_STANDBY
+    // SLEEP_MODE_PWR_DOWN     -the most power savings
+    set_sleep_mode(SLEEP_MODE_PWR_DOWN);
 
-        // Actually put the processor into sleep mode.
-        // This must happen after the SE bit is set.
-        sleep_cpu();
+    // Temporarily disables interrupts, so no mistakes are made when writing
+    // to the processor registers
+    noInterrupts();
 
-        // ---------------------------------------------------------------------
-        // -- The portion below this happens on wake up, after any wake ISR's --
+    // Disable the processor ADC (must be disabled before it will power down)
+    // ADCSRA = ADC Control and Status Register A
+    // ADEN = ADC Enable
+    ADCSRA &= ~_BV(ADEN);
 
-        // Temporarily disables interrupts, so no mistakes are made when writing
-        // to the processor registers
-        noInterrupts();
+    // turn off the brown-out detector, if possible
+    // BODS = brown-out detector sleep
+    // BODSE = brown-out detector sleep enable
+    #if defined(BODS) && defined(BODSE)
+        sleep_bod_disable();
+    #endif
 
-        // Re-enable all power modules (ie, the processor module clocks)
-        // NOTE:  This only re-enables the various clocks on the processor!
-        // The modules may need to be re-initialized after the clocks re-start.
-        power_all_enable();
+    // disable all power-reduction modules (ie, the processor module clocks)
+    // NOTE:  This only shuts down the various clocks on the processor via
+    // the power reduction register!  It does NOT actually disable the
+    // modules themselves or set the pins to any particular state!  This
+    // means that the I2C/Serial/Timer/etc pins will still be active and
+    // powered unless they are turned off prior to calling this function.
+    power_all_disable();
 
-        // Clear the SE (sleep enable) bit.
-        sleep_disable();
+    // Set the sleep enable bit.
+    sleep_enable();
 
-        // Re-enable the processor ADC
-        ADCSRA |= _BV(ADEN);
+    // Re-enables interrupts so we can wake up again
+    interrupts();
 
-        // Re-enables interrupts
-        interrupts();
+    // Actually put the processor into sleep mode.
+    // This must happen after the SE bit is set.
+    sleep_cpu();
 
-        // Re-start the I2C interface
-        pinMode(SDA, INPUT_PULLUP);  // set as input with the pull-up on
-        pinMode(SCL, INPUT_PULLUP);
-        Wire.begin();
-        // Eliminate any potential extra waits in the wire library
-        // These waits would be caused by a readBytes or parseX being called
-        // on wire after the Wire buffer has emptied.  The default stream
-        // functions - used by wire - wait a timeout period after reading the
-        // end of the buffer to see if an interrupt puts something into the
-        // buffer.  In the case of the Wire library, that will never happen and
-        // the timeout period is a useless delay.
-        Wire.setTimeout(0);
+    #endif
 
-        // Stop the clock from sending out any interrupts while we're awake.
-        // There's no reason to waste though on the clock interrupt if it
-        // happens while the processor is awake and doing other things.
-        rtc.disableInterrupts();
-        // Detach the from the pin
-        disableInterrupt(_mcuWakePin);
+    // ---------------------------------------------------------------------
+    // -- The portion below this happens on wake up, after any wake ISR's --
 
-        // Wake-up message
-        MS_DBG(F("Processor is now awake!"));
+    #if defined ARDUINO_ARCH_SAMD
+    // Reattach the USB after waking
+    USBDevice.attach();
 
-        // The logger will now start the next function after the systemSleep
-        // function in either the loop or setup
-    }
-#endif
+    #elif defined ARDUINO_ARCH_AVR
+    // Temporarily disables interrupts, so no mistakes are made when writing
+    // to the processor registers
+    noInterrupts();
+
+    // Re-enable all power modules (ie, the processor module clocks)
+    // NOTE:  This only re-enables the various clocks on the processor!
+    // The modules may need to be re-initialized after the clocks re-start.
+    power_all_enable();
+
+    // Clear the SE (sleep enable) bit.
+    sleep_disable();
+
+    // Re-enable the processor ADC
+    ADCSRA |= _BV(ADEN);
+
+    // Re-enables interrupts
+    interrupts();
+
+    #endif
+
+    // Re-start the I2C interface
+    #ifdef SDA
+    pinMode(SDA, INPUT_PULLUP);  // set as input with the pull-up on
+    #endif
+    #ifdef SCL
+    pinMode(SCL, INPUT_PULLUP);
+    #endif
+    Wire.begin();
+    // Eliminate any potential extra waits in the wire library
+    // These waits would be caused by a readBytes or parseX being called
+    // on wire after the Wire buffer has emptied.  The default stream
+    // functions - used by wire - wait a timeout period after reading the
+    // end of the buffer to see if an interrupt puts something into the
+    // buffer.  In the case of the Wire library, that will never happen and
+    // the timeout period is a useless delay.
+    Wire.setTimeout(0);
+
+    #if MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
+    // Stop the clock from sending out any interrupts while we're awake.
+    // There's no reason to waste though on the clock interrupt if it
+    // happens while the processor is awake and doing other things.
+    rtc.disableInterrupts();
+    // Detach the from the pin
+    disableInterrupt(_mcuWakePin);
+
+    #elif defined ARDUINO_ARCH_SAMD
+    zero_sleep_rtc.disableAlarm();
+    #endif
+
+    // Wake-up message
+    MS_DBG(F("Processor is now awake!"));
+
+    // The logger will now start the next function after the systemSleep
+    // function in either the loop or setup
+}
+
 
 // ===================================================================== //
 // Public functions for logging data to an SD card
@@ -1149,8 +1089,12 @@ void Logger::testingMode()
 
     // Set the pins for I2C
     PRINTOUT(F("Setting I2C Pins to INPUT_PULLUP"));
-    pinMode(SDA, INPUT_PULLUP);
+    #ifdef SDA
+    pinMode(SDA, INPUT_PULLUP);  // set as input with the pull-up on
+    #endif
+    #ifdef SCL
     pinMode(SCL, INPUT_PULLUP);
+    #endif
     PRINTOUT(F("Beginning wire (I2C)"));
     Wire.begin();
     // Eliminate any potential extra waits in the wire library
