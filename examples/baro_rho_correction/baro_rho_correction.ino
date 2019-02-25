@@ -86,6 +86,10 @@ const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if 
 //    TinyGSM Client
 // ==========================================================================
 
+// #define TINY_GSM_DEBUG Serial  // If you want debugging on the main debug port
+
+#define TINY_GSM_YIELD() { delay(2); }  // Can help with slow (9600) baud rates
+
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
 #include <TinyGsmClient.h>
@@ -130,6 +134,7 @@ bool modemSleepFxn(void)
     digitalWrite(redLED, LOW);
     return true;
 }
+void extraModemSetup(void){}
 
 
 // ==========================================================================
@@ -500,6 +505,7 @@ void setup()
     }
 
     // Call the processor sleep
+    Serial.println(F("Putting processor to sleep"));
     dataLogger.systemSleep();
 }
 

@@ -176,14 +176,14 @@ void SERCOM2_Handler()
 
 // Select your modem chip - this determines the exact commands sent to it
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIMCOM SIM800, SIM900, or variant thereof
-// define SIM800_GPRSBEE_R6  // These use atypical sleep and wake fxns
+// #define SIM800_GPRSBEE_R6  // Select with SIM800 for - these use atypical sleep and wake fxns
 // #define TINY_GSM_MODEM_SIM808  // Select for a SIMCOM SIM808 or SIM868, or variant thereof
 // #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
-// #define USE_UBLOX_R410M  // Select in addition if you have a u-blox SARA R4 or N4 model
-// #define USE_XBEE_BYPASS  // Select in addition if you're using an Digi 3G or LTE-M XBee in bypass mode
-// #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
-#define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
-// #define USE_XBEE_WIFI  // Select in addition if you're using a S6B wifi XBee
+// #define USE_UBLOX_R410M  // Select with UBLOX for a non-XBee SARA R4 or N4 model
+// #define USE_XBEE_BYPASS  // Select with UBLOX for a Digi 3G or LTE-M XBee in bypass mode
+#define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
+// #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
+// #define USE_XBEE_WIFI  // Select with XBEE for an S6B wifi XBee
 // #define TINY_GSM_MODEM_M590  // Select for a Neoway M590
 // #define TINY_GSM_MODEM_A6  // Select for an AI-Thinker A6, A6C, A7, A20
 // #define TINY_GSM_MODEM_M95  // Select for a Quectel M95
@@ -207,9 +207,7 @@ const int8_t modemResetPin = A4;    // MCU pin connected to modem reset pin (-1 
 
 // #define TINY_GSM_DEBUG Serial  // If you want debugging on the main debug port
 
-#if defined TINY_GSM_MODEM_XBEE || defined USE_XBEE_BYPASS
-  #define TINY_GSM_YIELD() { delay(2); }  // Use to counter slow (9600) baud rate
-#endif
+#define TINY_GSM_YIELD() { delay(2); }  // Can help with slow (9600) baud rates
 
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
@@ -240,7 +238,7 @@ TinyGsm *tinyModem = new TinyGsm(modemSerial);
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 // The u-blox SARA R410 is very slow to open and close clients, so we can
 // iterate through mutiple data senders much more quickly if we have multiple
-// clients.  The u-blox SARA R410  is the only modem where there's any advantage
+// clients.  The u-blox SARA R410 is the only modem where there's any advantage
 // to this.
 #if defined USE_UBLOX_R410M
 TinyGsmClient *tinyClient2 = new TinyGsmClient(*tinyModem);
@@ -293,7 +291,7 @@ bool modemWakeFxn(void)
 // An extra function to set up pin sleep and other preferences on the XBee
 // NOTE:  This will only succeed if the modem is turned on and awake!
 #if defined TINY_GSM_MODEM_XBEE
-void setupXBee(void)
+void extraModemSetup(void)
 {
     tinyModem->init();  // initialize
     if (tinyModem->commandMode())
@@ -320,7 +318,7 @@ void setupXBee(void)
     }
 }
 #elif defined USE_XBEE_BYPASS
-void setupXBee(void)
+void extraModemSetup(void)
 {
     delay(1000);  // Guard time for command mode
     tinyModem->streamWrite(GF("+++"));  // enter command mode
@@ -434,7 +432,7 @@ bool modemWakeFxn(void)
             #if F_CPU == 8000000L
             if (modemBaud > 57600)
             {
-                success &= tinyModem->setBaud(9600);
+                tinyModem->setBaud(9600);
                 modemSerial.end();
                 modemSerial.begin(9600);
             }
@@ -476,7 +474,7 @@ bool modemWakeFxn(void)
             #if F_CPU == 8000000L
             if (modemBaud > 57600)
             {
-                success &= tinyModem->setBaud(9600);
+                tinyModem->setBaud(9600);
                 modemSerial.end();
                 modemSerial.begin(9600);
             }
@@ -504,7 +502,7 @@ bool modemWakeFxn(void)
     }
 }
 // Set up the light-sleep status pin, if applicable
-void setupESP8266(void)
+void extraModemSetup(void)
 {
     if (modemVccPin < 0 && modemResetPin < 0 && modemSleepRqPin >= 0 && modemStatusPin >= 0)
     {
@@ -578,7 +576,16 @@ bool modemWakeFxn(void)
         return true;
     }
 }
-
+#if defined USE_UBLOX_R410M
+// Set band to only use LTE-M (not NB IoT) - this can speed up connection
+void extraModemSetup(void)
+{
+    tinyModem->sendAT(F("+URAT=7"));
+    tinyModem->waitResponse();
+}
+#else
+void extraModemSetup(void){}
+#endif
 
 // THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
 #elif defined TINY_GSM_MODEM_SIM800 && defined SIM800_GPRSBEE_R6
@@ -600,11 +607,9 @@ bool modemSleepFxn(void)
     digitalWrite(redLED, LOW);
     return true;
 }
-
+void extraModemSetup(void){}
 
 // Most cellular chips/breakouts respond to a low pulse of some length to power up and down
-// If we're only using a low pulse on the wake/sleep pin, we could also use the
-// "default" functions and alternate constructor
 #else
 // Describe the physical pin connection of your modem to your board
 const long modemBaud = 9600;         // Communication speed of the modem
@@ -631,6 +636,7 @@ bool modemSleepFxn(void)
     digitalWrite(modemSleepRqPin, HIGH);
     return true;
 }
+void extraModemSetup(void){}
 #endif
 
 
@@ -1472,7 +1478,7 @@ const char *calculatedVarName = "varName";  // This must be a value from http://
 const char *calculatedVarUnit = "varUnit";  // This must be a value from http://vocabulary.odm2.org/units/
 int calculatedVarResolution = 3;  // The number of digits after the decimal place
 const char *calculatedVarUUID = "12345678-abcd-1234-efgh-1234567890ab";  // The (optional) universallly unique identifier
-const char *calculatedVarCode = "CorrectedPressure";  // An (optional) short code for the variable
+const char *calculatedVarCode = "calcVar";  // An (optional) short code for the variable
 
 // Finally, create the calculated variable object and return a variable pointer to it
 Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarName,
@@ -1775,13 +1781,13 @@ void setup()
         if (modemSleepRqPin >= 0)
         {
             pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, LOW);
+            digitalWrite(modemSleepRqPin, LOW);
         }
     #else
         if (modemSleepRqPin >= 0)
         {
-        pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, HIGH);
+            pinMode(modemSleepRqPin, OUTPUT);
+            digitalWrite(modemSleepRqPin, HIGH);
         }
         if (modemResetPin >= 0)
         {
@@ -1811,16 +1817,9 @@ void setup()
         modem.modemPowerUp();
         modem.wake();
 
-        // Extra pre-set-up for the XBee
-        #if defined TINY_GSM_MODEM_XBEE
-        Serial.println(F("Setting up sleep mode on the XBee."));
-        setupXBee();
-        #endif
-
-        // Extra set-up for the ESP8266
-        #if defined TINY_GSM_MODEM_ESP8266
-        setupESP8266();
-        #endif
+        // Run any extra pre-set-up for the modem
+        Serial.println(F("Running extra modem pre-setup"));
+        extraModemSetup();
 
         // At very good battery voltage, or with suspicious time stamp, sync the clock
         // Note:  Please change these battery voltages to match your battery
@@ -1858,6 +1857,7 @@ void setup()
     }
 
     // Call the processor sleep
+    Serial.println(F("Putting processor to sleep"));
     dataLogger.systemSleep();
 }
 
@@ -1900,11 +1900,6 @@ void loop()
 /*
 void loop()
 {
-    // Set sensors and file up if it hasn't happened already
-    // NOTE:  Unless it completed in less than one second, the sensor set-up
-    // will take the place of logging for this interval!
-    dataLogger.setupSensors();
-
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
     // We're only doing anything at all if the battery is above 3.4V
