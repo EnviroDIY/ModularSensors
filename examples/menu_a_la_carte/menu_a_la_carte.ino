@@ -1537,7 +1537,7 @@ Variable *variableList[] = {
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
-VariableArray varArray(variableCount, variableList);
+VariableArray varArray;
 
 
 // ==========================================================================
@@ -1740,6 +1740,7 @@ void setup()
     dataLogger.setLoggerPins(sdCardPin, wakePin, greenLED, buttonPin);
 
     // Begin the logger
+    varArray.begin(variableCount, variableList);
     dataLogger.begin(LoggerID, loggingInterval, &varArray);
 
     // Note:  Please change these battery voltages to match your battery

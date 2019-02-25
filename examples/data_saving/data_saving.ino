@@ -54,7 +54,7 @@ const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
-// Create and return the main processor chip "sensor" - for general metadata
+// Create the main processor chip "sensor" - for general metadata
 const char *mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 

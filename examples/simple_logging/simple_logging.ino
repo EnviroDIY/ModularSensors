@@ -53,7 +53,7 @@ const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
-// Create and return the main processor chip "sensor" - for general metadata
+// Create the main processor chip "sensor" - for general metadata
 const char *mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
@@ -72,8 +72,6 @@ MaximDS3231 ds3231(1);
 // ==========================================================================
 #include <VariableArray.h>
 
-// FORM1: Create pointers for all of the variables from the sensors,
-// at the same time putting them into an array
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard),
     new ProcessorStats_FreeRam(&mcuBoard),
@@ -84,7 +82,7 @@ Variable *variableList[] = {
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
-VariableArray varArray(variableCount, variableList);
+VariableArray varArray;
 
 
 // ==========================================================================
@@ -92,7 +90,7 @@ VariableArray varArray(variableCount, variableList);
 // ==========================================================================
 #include <LoggerBase.h>
 
-// Create a new logger instance
+// Create a logger instance
 Logger dataLogger;
 
 
@@ -155,6 +153,7 @@ void setup()
     dataLogger.setLoggerPins(sdCardPin, wakePin, greenLED, buttonPin);
 
     // Begin the logger
+    varArray.begin(variableCount, variableList);
     dataLogger.begin(LoggerID, loggingInterval, &varArray);
 
     // Set up the sensors

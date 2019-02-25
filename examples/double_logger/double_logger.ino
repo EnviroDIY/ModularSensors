@@ -56,7 +56,7 @@ const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
-// Create and return the main processor chip "sensor" - for general metadata
+// Create the main processor chip "sensor" - for general metadata
 const char *mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
@@ -180,8 +180,7 @@ AOSongAM2315 am2315(I2CPower);
 // ==========================================================================
 #include <VariableArray.h>
 
-// FORM1: Create pointers for all of the variables from the sensors, recording at 1
-// minute intervals and at the same time putting them into an array
+// The variables to record at 1 minute intervals
 Variable *variableList_at1min[] = {
     new AOSongAM2315_Humidity(&am2315),
     new AOSongAM2315_Temp(&am2315)
@@ -189,10 +188,9 @@ Variable *variableList_at1min[] = {
 // Count up the number of pointers in the 1-minute array
 int variableCount1min = sizeof(variableList_at1min) / sizeof(variableList_at1min[0]);
 // Create the 1-minute VariableArray object
-VariableArray array1min(variableCount1min, variableList_at1min);
+VariableArray array1min;
 
-// FORM1: Create pointers for all of the variables from the sensors, recording at 5
-// minute intervals and at the same time putting them into an array
+// The variables to record at 5 minute intervals
 Variable *variableList_at5min[] = {
     new MaximDS3231_Temp(&ds3231),
     new ProcessorStats_Batt(&mcuBoard),
@@ -201,7 +199,7 @@ Variable *variableList_at5min[] = {
 // Count up the number of pointers in the 5-minute array
 int variableCount5min = sizeof(variableList_at5min) / sizeof(variableList_at5min[0]);
 // Create the 5-minute VariableArray object
-VariableArray array5min(variableCount5min, variableList_at5min);
+VariableArray array5min;
 
 
 // ==========================================================================
@@ -210,10 +208,10 @@ VariableArray array5min(variableCount5min, variableList_at5min);
 #include <LoggerBase.h>
 
 // Create the 1-minute  logger instance
-Logger  logger1min(LoggerID, 1, sdCardPin, wakePin, &array1min);
+Logger logger1min;
 
 // Create the 5-minute  logger instance
-Logger  logger5min(LoggerID, 5, sdCardPin, wakePin, &array5min);
+Logger logger5min;
 
 
 // ==========================================================================
@@ -277,9 +275,12 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
-    // Begin the logger
-    // Only need to do this for one of the loggers, just pick one
-    logger5min.begin();
+    // Begin the variable arrays
+    array1min.begin(variableCount1min, variableList_at1min);
+    array5min.begin(variableCount5min, variableList_at5min);
+    // Begin the loggers
+    logger1min.begin(LoggerID, 1, sdCardPin, wakePin, &array1min);
+    logger5min.begin(LoggerID, 5, sdCardPin, wakePin, &array5min);
 
 
     // Turn on the modem

@@ -33,7 +33,7 @@ const char *sketchName = "baro_rho_correction.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 5;
+const uint8_t loggingInterval = 1;
 // Your logger's timezone.
 const int8_t timeZone = -5;  // Eastern Standard Time
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
@@ -54,7 +54,7 @@ const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
-// Create and return the main processor chip "sensor" - for general metadata
+// Create the main processor chip "sensor" - for general metadata
 const char *mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
@@ -347,7 +347,7 @@ Variable *variableList[] = {
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
-VariableArray varArray(variableCount, variableList);
+VariableArray varArray;
 
 
 // ==========================================================================
@@ -355,7 +355,7 @@ VariableArray varArray(variableCount, variableList);
 // ==========================================================================
 #include <LoggerBase.h>
 
-// Create a new logger instance
+// Create a logger instance
 Logger dataLogger;
 
 
@@ -448,6 +448,7 @@ void setup()
     dataLogger.setLoggerPins(sdCardPin, wakePin, greenLED, buttonPin);
 
     // Begin the logger
+    varArray.begin(variableCount, variableList);
     dataLogger.begin(LoggerID, loggingInterval, &varArray);
 
     // Note:  Please change these battery voltages to match your battery

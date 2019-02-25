@@ -55,7 +55,7 @@ const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
-// Create and return the main processor chip "sensor" - for general metadata
+// Create the main processor chip "sensor" - for general metadata
 const char *mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
@@ -82,7 +82,7 @@ const int8_t OBSLowADSChannel = 0;  // The ADS channel for the low range output
 const float OBSLow_A = 0.000E+00;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
-// Create and return the Campbell OBS3+ LOW RANGE sensor object
+// Create the Campbell OBS3+ LOW RANGE sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3numberReadings);
 
 
@@ -91,7 +91,7 @@ const int8_t OBSHighADSChannel = 1;  // The ADS channel for the high range outpu
 const float OBSHigh_A = 0.000E+00;  // The "A" value (X^2) from the high range calibration
 const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
-// Create and return the Campbell OBS3+ HIGH RANGE sensor object
+// Create the Campbell OBS3+ HIGH RANGE sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 
 
@@ -105,7 +105,7 @@ const uint8_t CTDnumberReadings = 6;  // The number of readings to average
 const int8_t SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t SDI12Data = 7;  // The SDI12 data pin
 
-// Create and return the Decagon CTD sensor object
+// Create the Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 
 
@@ -114,8 +114,6 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 // ==========================================================================
 #include <VariableArray.h>
 
-// FORM1: Create pointers for all of the variables from the sensors,
-// at the same time putting them into an array
 Variable *variableList[] = {
     new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -129,7 +127,7 @@ Variable *variableList[] = {
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
-VariableArray varArray(variableCount, variableList);
+VariableArray varArray;
 
 
 // ==========================================================================
@@ -137,7 +135,7 @@ VariableArray varArray(variableCount, variableList);
 // ==========================================================================
 #include <LoggerBase.h>
 
-// Create a new logger instance
+// Create a logger instance
 Logger dataLogger;
 
 
@@ -227,6 +225,7 @@ void setup()
     dataLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Begin the logger
+    varArray.begin(variableCount, variableList);
     dataLogger.begin(LoggerID, loggingInterval, &varArray);
 
     // Set up the sensors, except at lowest battery level

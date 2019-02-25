@@ -54,7 +54,7 @@ const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
-// Create and return the main processor chip "sensor" - for general metadata
+// Create the main processor chip "sensor" - for general metadata
 const char *mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
@@ -151,22 +151,92 @@ bool modemSleepFxn(void)
         digitalWrite(redLED, LOW);
         return success;
     }
-    else return true;  // DON'T go to sleep if we can't wake up!
+    else  // DON'T go to sleep if we can't wake up!
+    {
+        return true;
+    }
 }
 bool modemWakeFxn(void)
 {
     if (modemVccPin >= 0)  // Turns on when power is applied
     {
         digitalWrite(redLED, HIGH);  // Because the ESP8266 doesn't have any lights
-        return true;
+        // Wait for boot - finished when characters start coming
+        delay(200);  // It will take at least this long
+        uint32_t start = millis();
+        bool success = false;
+        while (!modemSerial.available() && millis() - start < 1000) {}
+        if (modemSerial.available())
+        {
+            success = true;
+            // Clear the junk the ESP sends out after boot-up
+            while (modemSerial.available())
+            {
+                modemSerial.read();
+                delay(2);
+            }
+            // Have to make sure echo is off or all AT commands will be confused
+            tinyModem.sendAT(F("E0"));
+            success &= tinyModem.waitResponse() == 1;
+            // Slow down the baud rate for slow processors
+            #if F_CPU == 8000000L
+            if (modemBaud > 57600)
+            {
+                tinyModem.setBaud(9600);
+                modemSerial.end();
+                modemSerial.begin(9600);
+            }
+            #endif
+            // re-run init to set mux and station mode
+            success &= tinyModem.init();
+        }
+        if (!success)
+        {
+            digitalWrite(redLED, LOW);  // Turn off light if the boot failed
+        }
+        return success;
     }
     else if (modemResetPin >= 0)
     {
+        digitalWrite(redLED, HIGH);
         digitalWrite(modemResetPin, LOW);
         delay(1);
         digitalWrite(modemResetPin, HIGH);
-        digitalWrite(redLED, HIGH);
-        return true;
+
+        // Wait for boot - finished when characters start coming
+        delay(200);  // It will take at least this long
+        uint32_t start = millis();
+        bool success = false;
+        while (!modemSerial.available() && millis() - start < 1000) {}
+        if (modemSerial.available())
+        {
+            success = true;
+            // Clear the junk the ESP sends out after boot-up
+            while (modemSerial.available())
+            {
+                modemSerial.read();
+                delay(2);
+            }
+            // Have to make sure echo is off or all AT commands will be confused
+            tinyModem.sendAT(F("E0"));
+            success &= tinyModem.waitResponse() == 1;
+            // Slow down the baud rate for slow processors
+            #if F_CPU == 8000000L
+            if (modemBaud > 57600)
+            {
+                tinyModem.setBaud(9600);
+                modemSerial.end();
+                modemSerial.begin(9600);
+            }
+            #endif
+            // re-run init to set mux and station mode
+            success &= tinyModem.init();
+        }
+        if (!success)
+        {
+            digitalWrite(redLED, LOW);  // Turn off light if the boot failed
+        }
+        return success;
     }
     else if (modemSleepRqPin >= 0)
     {
@@ -176,7 +246,20 @@ bool modemWakeFxn(void)
         digitalWrite(redLED, HIGH);
         return true;
     }
-    else return true;
+    else
+    {
+        return true;
+    }
+}
+// Set up the light-sleep status pin, if applicable
+void extraModemSetup(void)
+{
+    if (modemVccPin < 0 && modemResetPin < 0 && modemSleepRqPin >= 0 && modemStatusPin >= 0)
+    {
+        tinyModem.sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
+                          String(espStatusPin), ',', modemStatusLevel);
+        tinyModem.waitResponse();
+    }
 }
 
 
@@ -218,7 +301,7 @@ const float OBSLow_A = 0.000E+00;  // The "A" value (X^2) from the low range cal
 const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
 
-// Create and return the Campbell OBS3+ LOW RANGE sensor object
+// Create the Campbell OBS3+ LOW RANGE sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3numberReadings);
 
 
@@ -228,7 +311,7 @@ const float OBSHigh_A = 0.000E+00;  // The "A" value (X^2) from the high range c
 const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
 
-// Create and return the Campbell OBS3+ HIGH RANGE sensor object
+// Create the Campbell OBS3+ HIGH RANGE sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 
 
@@ -242,7 +325,7 @@ const uint8_t CTDnumberReadings = 6;  // The number of readings to average
 const int8_t SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t SDI12Data = 7;  // The SDI12 data pin
 
-// Create and return the Decagon CTD sensor object
+// Create the Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 
 
@@ -251,8 +334,6 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 // ==========================================================================
 #include <VariableArray.h>
 
-// FORM1: Create pointers for all of the variables from the sensors,
-// at the same time putting them into an array
 Variable *variableList[] = {
     new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -267,7 +348,7 @@ Variable *variableList[] = {
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
-VariableArray varArray(variableCount, variableList);
+VariableArray varArray;
 
 
 // ==========================================================================
@@ -275,8 +356,8 @@ VariableArray varArray(variableCount, variableList);
 // ==========================================================================
 #include <LoggerBase.h>
 
-// Create a new logger instance
-Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+// Create a logger instance
+Logger dataLogger;
 
 
 // ==========================================================================
@@ -389,11 +470,11 @@ void setup()
 
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modem);
-    dataLogger.setAlertPin(greenLED);
-    dataLogger.setTestingModePin(buttonPin);
+    dataLogger.setLoggerPins(sdCardPin, wakePin, greenLED, buttonPin);
 
     // Begin the logger
-    dataLogger.begin();
+    varArray.begin(variableCount, variableList);
+    dataLogger.begin(LoggerID, loggingInterval, &varArray);
 
     // Note:  Please change these battery voltages to match your battery
     // Check that the battery is OK before powering the modem
