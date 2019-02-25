@@ -401,9 +401,9 @@ bool Logger::checkInterval(void)
 {
     bool retval;
     uint32_t checkTime = getNowEpoch();
-    MS_DBG(F("Current Unix Timestamp:"), checkTime,
-           F("Logging interval in seconds:"), (_loggingIntervalMinutes*60),
-           F("Mod of Logging Interval:"), checkTime % (_loggingIntervalMinutes*60));
+    MS_DBG(F("Current Unix Timestamp:"), checkTime);
+    MS_DBG(F("Logging interval in seconds:"), (_loggingIntervalMinutes*60));
+    MS_DBG(F("Mod of Logging Interval:"), checkTime % (_loggingIntervalMinutes*60));
 
     if (checkTime % (_loggingIntervalMinutes*60) == 0)
     {
@@ -470,7 +470,7 @@ void Logger::systemSleep(void)
         return;
     }
 
-    #if MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
+    #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
 
     // Unfortunately, because of the way the alarm on the DS3231 is set up, it
     // cannot interrupt on any frequencies other than every second, minute,
@@ -503,7 +503,7 @@ void Logger::systemSleep(void)
     #endif
 
     // Send one last message before shutting down serial ports
-    MS_DBG(F("Preparing for processor to sleep."));
+    MS_DBG(F("Putting processor to sleep.  ZZzzz..."));
 
     // Wait until the serial ports have finished transmitting
     // This does not clear their buffers, it just waits until they are finished
@@ -631,7 +631,7 @@ void Logger::systemSleep(void)
     // the timeout period is a useless delay.
     Wire.setTimeout(0);
 
-    #if MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
+    #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
     // Stop the clock from sending out any interrupts while we're awake.
     // There's no reason to waste though on the clock interrupt if it
     // happens while the processor is awake and doing other things.
@@ -644,7 +644,7 @@ void Logger::systemSleep(void)
     #endif
 
     // Wake-up message
-    MS_DBG(F("Processor is now awake!"));
+    MS_DBG(F("... Processor is now awake!"));
 
     // The logger will now start the next function after the systemSleep
     // function in either the loop or setup
@@ -1083,19 +1083,19 @@ void Logger::testingMode()
  void Logger::begin()
 {
     #if defined ARDUINO_ARCH_SAMD
-        PRINTOUT(F("Beginning internal real time clock"));
+        MS_DBG(F("Beginning internal real time clock"));
         zero_sleep_rtc.begin();
     #endif
 
     // Set the pins for I2C
-    PRINTOUT(F("Setting I2C Pins to INPUT_PULLUP"));
+    MS_DBG(F("Setting I2C Pins to INPUT_PULLUP"));
     #ifdef SDA
     pinMode(SDA, INPUT_PULLUP);  // set as input with the pull-up on
     #endif
     #ifdef SCL
     pinMode(SCL, INPUT_PULLUP);
     #endif
-    PRINTOUT(F("Beginning wire (I2C)"));
+    MS_DBG(F("Beginning wire (I2C)"));
     Wire.begin();
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
@@ -1107,7 +1107,7 @@ void Logger::testingMode()
     Wire.setTimeout(0);
 
     #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
-        PRINTOUT(F("Beginning DS3231 real time clock"));
+        MS_DBG(F("Beginning DS3231 real time clock"));
         rtc.begin();
     #endif
 
@@ -1120,7 +1120,7 @@ void Logger::testingMode()
     PRINTOUT(F("This logger has a variable array with"),
              getArrayVarCount(), F("variables, of which"),
              getArrayVarCount() - _internalArray->getCalculatedVariableCount(),
-             F("come from "),_internalArray->getSensorCount(), F("sensors and"),
+             F("come from"), _internalArray->getSensorCount(), F("sensors and"),
              _internalArray->getCalculatedVariableCount(), F("are calculated."));
 
     // Set up the interrupt to be able to enter sensor testing mode

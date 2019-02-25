@@ -58,7 +58,7 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 
 const char *mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
-// Create the battery voltage and free RAM variable objects for the processor and return variable-type pointers to them
+// Create the sample number, battery voltage, and free RAM variable objects for the processor and return variable-type pointers to them
 // Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
 Variable *mcuBoardBatt = new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *mcuBoardAvailableRAM = new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
@@ -153,18 +153,18 @@ const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if 
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
-// Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(modemSerial);
+// Create a TinyGSM modem to run on that serial port
+TinyGsm tinyModem(modemSerial);
 
 // Use this to create a modem if you want to spy on modem communication through
 // a secondary Arduino stream.  Make sure you install the StreamDebugger library!
 // https://github.com/vshymanskyy/StreamDebugger
 // #include <StreamDebugger.h>
 // StreamDebugger modemDebugger(modemSerial, Serial);
-// TinyGsm *tinyModem = new TinyGsm(modemDebugger);
+// TinyGsm tinyModem(modemDebugger);
 
-// Create a new TCP client on that modem and return a pointer to it
-TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
+// Create a TCP client on that modem
+TinyGsmClient tinyClient(tinyModem);
 
 
 // ==========================================================================
@@ -204,7 +204,7 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, &tinyModem, &tinyClient, apn);
 
 // Create the RSSI and signal strength variable objects for the modem and return
 // variable-type pointers to them
@@ -218,7 +218,7 @@ Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-e
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
 
-// Create and return the DS3231 sensor object
+// Create the DS3231 sensor object
 MaximDS3231 ds3231(1);
 
 // Create the temperature variable object for the DS3231 and return a variable-type pointer to it

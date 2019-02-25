@@ -88,11 +88,11 @@ const int8_t modemResetPin = A4;     // MCU pin connected to ESP8266's RSTB/GPIO
 // Create a reference to the serial port for the modem
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
-// Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(modemSerial);
+// Create a TinyGSM modem to run on that serial port
+TinyGsm tinyModem(modemSerial);
 
-// Create a new TCP client on that modem and return a pointer to it
-TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
+// Create a TCP client on that modem
+TinyGsmClient tinyClient(tinyModem);
 
 
 // ==========================================================================
@@ -117,37 +117,37 @@ bool modemSleepFxn(void)
     {
         uint32_t sleepSeconds = (((uint32_t)loggingInterval) * 60 * 1000) - 75000L;
         String sleepCommand = String(sleepSeconds);
-        tinyModem->sendAT(F("+GSLP="), sleepCommand);
+        tinyModem.sendAT(F("+GSLP="), sleepCommand);
         // Power down for 1 minute less than logging interval
         // Better:  Calculate length of loop and power down for logging interval - loop time
-        return tinyModem->waitResponse() == 1;
+        return tinyModem.waitResponse() == 1;
     }*/
     // Use this if you have an MCU pin connected to the ESP's reset pin to wake from deep sleep
     if (modemResetPin >= 0)
     {
         digitalWrite(redLED, LOW);
-        return tinyModem->poweroff();
+        return tinyModem.poweroff();
     }
     // Use this if you don't have access to the ESP8266's reset pin for deep sleep but you
     // do have access to another GPIO pin for light sleep.  This also sets up another
     // pin to view the sleep status.
     else if (modemSleepRqPin >= 0 && modemStatusPin >= 0)
     {
-        tinyModem->sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
+        tinyModem.sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
                           String(espStatusPin), ',', modemStatusLevel);
-        bool success = tinyModem->waitResponse() == 1;
-        tinyModem->sendAT(F("+SLEEP=1"));
-        success &= tinyModem->waitResponse() == 1;
+        bool success = tinyModem.waitResponse() == 1;
+        tinyModem.sendAT(F("+SLEEP=1"));
+        success &= tinyModem.waitResponse() == 1;
         digitalWrite(redLED, LOW);
         return success;
     }
     // Light sleep without the status pin
     else if (modemSleepRqPin >= 0 && modemStatusPin < 0)
     {
-        tinyModem->sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0"));
-        bool success = tinyModem->waitResponse() == 1;
-        tinyModem->sendAT(F("+SLEEP=1"));
-        success &= tinyModem->waitResponse() == 1;
+        tinyModem.sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0"));
+        bool success = tinyModem.waitResponse() == 1;
+        tinyModem.sendAT(F("+SLEEP=1"));
+        success &= tinyModem.waitResponse() == 1;
         digitalWrite(redLED, LOW);
         return success;
     }
@@ -192,7 +192,7 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, &tinyModem, &tinyClient, wifiId, wifiPwd);
 
 
 // ==========================================================================
@@ -200,7 +200,7 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, m
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
 
-// Create and return the DS3231 sensor object
+// Create the DS3231 sensor object
 MaximDS3231 ds3231(1);
 
 

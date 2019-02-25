@@ -91,11 +91,11 @@ const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if 
 // Create a reference to the serial port for the modem
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
-// Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(modemSerial);
+// Create a TinyGSM modem to run on that serial port
+TinyGsm tinyModem(modemSerial);
 
-// Create a new TCP client on that modem and return a pointer to it
-TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
+// Create a TCP client on that modem
+TinyGsmClient tinyClient(tinyModem);
 
 
 // ==========================================================================
@@ -138,29 +138,29 @@ bool modemWakeFxn(void)
 void setupXBee(void)
 {
     delay(1000);  // Guard time for command mode
-    tinyModem->streamWrite(GF("+++"));  // enter command mode
-    tinyModem->waitResponse(2000, F("OK\r"));
-    tinyModem->sendAT(F("SM"),1);  // Pin sleep
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
+    tinyModem.streamWrite(GF("+++"));  // enter command mode
+    tinyModem.waitResponse(2000, F("OK\r"));
+    tinyModem.sendAT(F("SM"),1);  // Pin sleep
+    tinyModem.waitResponse(F("OK\r"));
+    tinyModem.sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
     // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
     // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
     // so we'll use the Digi pin sleep instead.
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
+    tinyModem.waitResponse(F("OK\r"));
+    tinyModem.sendAT(F("SO"),0);  // For Cellular - disconnected sleep
+    tinyModem.waitResponse(F("OK\r"));
+    tinyModem.sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
     // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("AP5"));  // Turn on bypass mode
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("WR"));  // Write changes to flash
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("AC"));  // Apply changes
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("FR"));  // Force reset to enter bypass mode
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->init();  // initialize
+    tinyModem.waitResponse(F("OK\r"));
+    tinyModem.sendAT(F("AP5"));  // Turn on bypass mode
+    tinyModem.waitResponse(F("OK\r"));
+    tinyModem.sendAT(F("WR"));  // Write changes to flash
+    tinyModem.waitResponse(F("OK\r"));
+    tinyModem.sendAT(F("AC"));  // Apply changes
+    tinyModem.waitResponse(F("OK\r"));
+    tinyModem.sendAT(F("FR"));  // Force reset to enter bypass mode
+    tinyModem.waitResponse(F("OK\r"));
+    tinyModem.init();  // initialize
 }
 
 
@@ -174,7 +174,7 @@ const char *apn = "hologram";  // The APN for the gprs connection, unnecessary f
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, &tinyModem, &tinyClient, apn);
 // ^^ Use this for cellular
 
 
@@ -183,7 +183,7 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, m
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
 
-// Create and return the DS3231 sensor object
+// Create the DS3231 sensor object
 MaximDS3231 ds3231(1);
 
 

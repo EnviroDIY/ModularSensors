@@ -62,7 +62,7 @@ bool VariableArray::setupSensors(void)
     #ifdef DEEP_DEBUGGING_SERIAL_OUTPUT
     bool deepDebugTiming = true;
     #else
-    bool deepDebugTiming = flase;
+    bool deepDebugTiming = false;
     #endif
 
     MS_DBG(F("Beginning setup for sensors and variables..."));
@@ -84,7 +84,7 @@ bool VariableArray::setupSensors(void)
     // sensorsPowerUp();
 
     // Now run all the set-up functions
-    MS_DBG(F("Running setup functions."));
+    MS_DBG(F("Running sensor setup..."));
 
     // Check for any sensors that have been set up outside of this (ie, the modem)
     uint8_t nSensorsSetup = 0;
@@ -175,7 +175,7 @@ bool VariableArray::sensorsWake(void)
     #ifdef DEEP_DEBUGGING_SERIAL_OUTPUT
     bool deepDebugTiming = true;
     #else
-    bool deepDebugTiming = flase;
+    bool deepDebugTiming = false;
     #endif
 
     // Check for any sensors that are awake outside of being sent a "wake" command
@@ -288,7 +288,7 @@ bool VariableArray::updateAllSensors(void)
     #ifdef DEEP_DEBUGGING_SERIAL_OUTPUT
     bool deepDebugTiming = true;
     #else
-    bool deepDebugTiming = flase;
+    bool deepDebugTiming = false;
     #endif
 
     // Clear the initial variable arrays
@@ -452,7 +452,7 @@ bool VariableArray::completeUpdate(void)
     #ifdef DEEP_DEBUGGING_SERIAL_OUTPUT
     bool deepDebugTiming = true;
     #else
-    bool deepDebugTiming = flase;
+    bool deepDebugTiming = false;
     #endif
 
     // Create an array with the unique-ness value (so we can skip the function calls later)

@@ -94,11 +94,11 @@ const int8_t modemResetPin = A4;    // MCU pin connected to modem reset pin (-1 
 // Create a reference to the serial port for the modem
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
-// Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(modemSerial, modemResetPin);
+// Create a TinyGSM modem to run on that serial port
+TinyGsm tinyModem(modemSerial, modemResetPin);
 
-// Create a new TCP client on that modem and return a pointer to it
-TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
+// Create a TCP client on that modem
+TinyGsmClient tinyClient(tinyModem);
 
 
 // ==========================================================================
@@ -150,8 +150,8 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
+// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, &tinyModem, &tinyClient, wifiId, wifiPwd);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, &tinyModem, &tinyClient, apn);
 
 
 
@@ -160,7 +160,7 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, m
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
 
-// Create and return the DS3231 sensor object
+// Create the DS3231 sensor object
 MaximDS3231 ds3231(1);
 
 
