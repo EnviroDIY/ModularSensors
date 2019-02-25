@@ -15,13 +15,11 @@
 // ============================================================================
 
 // The constructor
-Sensor::Sensor(const char *sensorName, uint8_t numReturnedVars,
+Sensor::Sensor(const char *sensorName, const uint8_t numReturnedVars,
                uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms,
                int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
+  : _sensorName(sensorName), _numReturnedVars(numReturnedVars)
 {
-    _sensorName = sensorName;
-    _numReturnedVars = numReturnedVars;
-
     _powerPin = powerPin;
     _dataPin = dataPin;
     _measurementsToAverage = measurementsToAverage;
@@ -276,9 +274,9 @@ bool Sensor::startSingleMeasurement(void)
 }
 
 
-void Sensor::registerVariable(int varNum, Variable* var)
+void Sensor::registerVariable(int sensorVarNum, Variable* var)
 {
-    variables[varNum] = var;
+    variables[sensorVarNum] = var;
     MS_DBG(F("... Registration from"), getSensorNameAndLocation(), F("for"),
            var->getVarName(), F("accepted."));
 }
