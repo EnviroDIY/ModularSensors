@@ -224,7 +224,7 @@ void setup()
     dataLogger.setLoggerPins(sdCardPin, wakePin, greenLED, buttonPin);
     dataLogger.setSamplingFeatureUUID(samplingFeature);
 
-    // Begin the logger
+    // Begin the variable array[s], logger[s], and publisher[s]
     varArray.begin(variableCount, variableList);
     dataLogger.begin(LoggerID, loggingInterval, &varArray);
 

@@ -1559,7 +1559,7 @@ const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sam
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
+EnviroDIYPublisher EnviroDIYPOST;
 
 
 // ==========================================================================
@@ -1572,11 +1572,7 @@ const char * DreamHostPortalRX = "xxxx";
 
 // Create a data publisher to DreamHost
 #include <publishers/DreamHostPublisher.h>
-#if defined USE_UBLOX_R410M
-DreamHostPublisher DreamHostGET(dataLogger, &tinyClient2, DreamHostPortalRX);
-#else
-DreamHostPublisher DreamHostGET(dataLogger, DreamHostPortalRX);
-#endif
+DreamHostPublisher DreamHostGET;
 
 
 // ==========================================================================
@@ -1593,11 +1589,7 @@ const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for
 
 // Create a data publisher for ThingSpeak
 #include <publishers/ThingSpeakPublisher.h>
-#if defined USE_UBLOX_R410M
-ThingSpeakPublisher TsMqtt(dataLogger, &tinyClient3, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
-#else
-ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
-#endif
+ThingSpeakPublisher TsMqtt;
 
 
 // ==========================================================================
@@ -1739,9 +1731,17 @@ void setup()
     dataLogger.attachModem(modem);
     dataLogger.setLoggerPins(sdCardPin, wakePin, greenLED, buttonPin);
 
-    // Begin the logger
+    // Begin the variable array[s], logger[s], and publisher[s]
     varArray.begin(variableCount, variableList);
     dataLogger.begin(LoggerID, loggingInterval, &varArray);
+    EnviroDIYPOST.begin(dataLogger, registrationToken, samplingFeature);
+    #if defined USE_UBLOX_R410M
+    DreamHostGET.begin(dataLogger, &tinyClient2, DreamHostPortalRX);
+    TsMqtt.begin(dataLogger, &tinyClient3, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
+    #else
+    DreamHostGET.begin(dataLogger, DreamHostPortalRX);
+    TsMqtt.begin(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
+    #endif
 
     // Note:  Please change these battery voltages to match your battery
     // Check that the battery is OK before powering the modem

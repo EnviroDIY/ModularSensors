@@ -275,10 +275,9 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
-    // Begin the variable arrays
+    // Begin the variable array[s], logger[s], and publisher[s]
     array1min.begin(variableCount1min, variableList_at1min);
     array5min.begin(variableCount5min, variableList_at5min);
-    // Begin the loggers
     logger1min.begin(LoggerID, 1, sdCardPin, wakePin, &array1min);
     logger5min.begin(LoggerID, 5, sdCardPin, wakePin, &array5min);
 

@@ -17,24 +17,46 @@ const char *dataPublisher::HTTPtag = "  HTTP/1.1";
 const char *dataPublisher::hostHeader = "\r\nHost: ";
 
 // Constructor
-dataPublisher::dataPublisher(Logger& baseLogger, uint8_t sendEveryX, uint8_t sendOffset)
+dataPublisher::dataPublisher()
 {
-    _baseLogger = &baseLogger;
-    _baseLogger->registerDataPublisher(this);  // register self with logger
-    _sendEveryX = sendEveryX;
-    _sendOffset = sendOffset;
+    _baseLogger = NULL;
     _inClient = NULL;
-}
-dataPublisher::dataPublisher(Logger& baseLogger, Client *inClient, uint8_t sendEveryX, uint8_t sendOffset)
-{
-    _baseLogger = &baseLogger;
-    _baseLogger->registerDataPublisher(this);  // register self with logger
-    _sendEveryX = sendEveryX;
-    _sendOffset = sendOffset;
-    _inClient = inClient;
 }
 // Destructor
 dataPublisher::~dataPublisher(){}
+
+
+// Sets the client
+void dataPublisher::setClient(Client *inClient){_inClient = inClient;}
+
+
+// Attaches to a logger
+void dataPublisher::attachToLogger(Logger& baseLogger)
+{
+    _baseLogger = &baseLogger;
+    _baseLogger->registerDataPublisher(this);  // register self with logger
+}
+
+
+// Sets the parameters for frequency of sending and any offset, if needed
+// NOTE:  These parameters are not currently used!!
+void dataPublisher::setSendFrequency(uint8_t sendEveryX, uint8_t sendOffset)
+{
+    _sendEveryX = sendEveryX;
+    _sendOffset = sendOffset;
+}
+
+
+// "Begins" the publisher - attaches client and logger
+void dataPublisher::begin(Logger& baseLogger, Client *inClient)
+{
+    setClient(inClient);
+    begin(baseLogger);
+}
+void dataPublisher::begin(Logger& baseLogger)
+{
+    attachToLogger(baseLogger);
+}
 
 
 // Empties the outgoing buffer

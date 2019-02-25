@@ -374,7 +374,7 @@ const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for
 
 // Create a data publisher for ThingSpeak
 #include <publishers/ThingSpeakPublisher.h>
-ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
+ThingSpeakPublisher TsMqtt;
 
 
 // ==========================================================================
@@ -472,9 +472,10 @@ void setup()
     dataLogger.attachModem(modem);
     dataLogger.setLoggerPins(sdCardPin, wakePin, greenLED, buttonPin);
 
-    // Begin the logger
+    // Begin the variable array[s], logger[s], and publisher[s]
     varArray.begin(variableCount, variableList);
     dataLogger.begin(LoggerID, loggingInterval, &varArray);
+    TsMqtt.begin(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
 
     // Note:  Please change these battery voltages to match your battery
     // Check that the battery is OK before powering the modem

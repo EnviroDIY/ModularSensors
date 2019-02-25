@@ -369,7 +369,7 @@ const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sam
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
+EnviroDIYPublisher EnviroDIYPOST;
 
 
 // ==========================================================================
@@ -447,9 +447,10 @@ void setup()
     dataLogger.attachModem(modem);
     dataLogger.setLoggerPins(sdCardPin, wakePin, greenLED, buttonPin);
 
-    // Begin the logger
+    // Begin the variable array[s], logger[s], and publisher[s]
     varArray.begin(variableCount, variableList);
     dataLogger.begin(LoggerID, loggingInterval, &varArray);
+    EnviroDIYPOST.begin(dataLogger, registrationToken, samplingFeature);
 
     // Note:  Please change these battery voltages to match your battery
     // Check that the battery is OK before powering the modem

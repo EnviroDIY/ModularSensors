@@ -30,37 +30,6 @@ const char *EnviroDIYPublisher::samplingFeatureTag = "{\"sampling_feature\":\"";
 const char *EnviroDIYPublisher::timestampTag = "\",\"timestamp\":\"";
 
 
-// Constructor
-EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger,
-                                 uint8_t sendEveryX, uint8_t sendOffset)
-  : dataPublisher(baseLogger, sendEveryX, sendOffset)
-{}
-EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
-                                 uint8_t sendEveryX, uint8_t sendOffset)
-  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
-{}
-EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger,
-                                 const char *registrationToken,
-                                 const char *samplingFeatureUUID,
-                                 uint8_t sendEveryX, uint8_t sendOffset)
-  : dataPublisher(baseLogger, sendEveryX, sendOffset)
-{
-    setToken(registrationToken);
-    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
-}
-EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
-                                 const char *registrationToken,
-                                 const char *samplingFeatureUUID,
-                                 uint8_t sendEveryX, uint8_t sendOffset)
-  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
-{
-    setToken(registrationToken);
-    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
-}
-// Destructor
-EnviroDIYPublisher::~EnviroDIYPublisher(){}
-
-
 void EnviroDIYPublisher::setToken(const char *registrationToken)
 {
     _registrationToken = registrationToken;
@@ -157,6 +126,25 @@ void EnviroDIYPublisher::printEnviroDIYRequest(Stream *stream)
 
     // Stream the JSON itself
     printSensorDataJSON(stream);
+}
+
+
+// A way to begin with everything already set
+void EnviroDIYPublisher::begin(Logger& baseLogger, Client *inClient,
+                               const char *registrationToken,
+                               const char *samplingFeatureUUID)
+{
+    setToken(registrationToken);
+    dataPublisher::begin(baseLogger, inClient);
+    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+}
+void EnviroDIYPublisher::begin(Logger& baseLogger,
+                               const char *registrationToken,
+                               const char *samplingFeatureUUID)
+{
+    setToken(registrationToken);
+    dataPublisher::begin(baseLogger);
+    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
 
 

@@ -28,23 +28,14 @@ class DreamHostPublisher : public dataPublisher
 
 public:
     // Constructor
-    DreamHostPublisher(Logger& baseLogger,
-                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    DreamHostPublisher(Logger& baseLogger, Client *inClient,
-                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    DreamHostPublisher(Logger& baseLogger,
-                       const char *URL,
-                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    DreamHostPublisher(Logger& baseLogger, Client *inClient,
-                       const char *URL,
-                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-    virtual ~DreamHostPublisher();
+    DreamHostPublisher(){};
+    virtual ~DreamHostPublisher(){};
 
     // Returns the data destination
     virtual String getEndpoint(void){return String(dreamhostHost);}
 
     // Functions for private SWRC server
-    void setDreamHostPortalRX(const char *URL);
+    void setDreamHostPortalRX(const char *dhUrl);
 
     // This creates all of the URL parameters
     void printSensorDataDreamHost(Stream *stream);
@@ -52,6 +43,12 @@ public:
     // This prints a fully structured GET request for DreamHost to the
     // specified stream.
     void printDreamHostRequest(Stream *stream);
+
+    // A way to begin with everything already set
+    void begin(Logger& baseLogger, Client *inClient,
+               const char *dhUrl);
+    void begin(Logger& baseLogger,
+              const char *dhUrl);
 
     // This utilizes an attached modem to make a TCP connection to the
     // DreamHost URL and then streams out a get request

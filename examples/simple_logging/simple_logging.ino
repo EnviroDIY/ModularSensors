@@ -152,7 +152,7 @@ void setup()
     // Set information pins
     dataLogger.setLoggerPins(sdCardPin, wakePin, greenLED, buttonPin);
 
-    // Begin the logger
+    // Begin the variable array[s], logger[s], and publisher[s]
     varArray.begin(variableCount, variableList);
     dataLogger.begin(LoggerID, loggingInterval, &varArray);
 

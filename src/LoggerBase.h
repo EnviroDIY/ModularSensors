@@ -322,8 +322,8 @@ public:
     // ===================================================================== //
 
     // This does all of the setup that can't happen in the constructors
-    // That is, things that require the actual processor/MCU to do something
-    // rather than the compiler to do something.
+    // That is, anything that is dependent on another object having been created
+    // first or anything that requires the actual processor/MCU to do something.
     virtual void begin(const char *loggerID, uint16_t loggingIntervalMinutes,
                        int8_t SDCardPin, int8_t mcuWakePin,
                        VariableArray *inputArray);
