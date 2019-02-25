@@ -63,6 +63,25 @@
 #endif  // DEBUGGING_SERIAL_OUTPUT
 
 
+#ifdef DEEP_DEBUGGING_SERIAL_OUTPUT
+    namespace {
+        template<typename T>
+        static void MS_DEEP_DBG(T last) {
+            DEEP_DEBUGGING_SERIAL_OUTPUT.println(last);
+        }
+
+        template<typename T, typename... Args>
+        static void MS_DEEP_DBG(T head, Args... tail) {
+            DEEP_DEBUGGING_SERIAL_OUTPUT.print(head);
+            DEEP_DEBUGGING_SERIAL_OUTPUT.print(' ');
+            MS_DEEP_DBG(tail...);
+        }
+    }
+#else
+    #define MS_DEEP_DBG(...)
+#endif  // DEEP_DEBUGGING_SERIAL_OUTPUT
+
+
 /***
 #if defined(__AVR__)
   typedef const __FlashStringHelper* GsmConstStr;

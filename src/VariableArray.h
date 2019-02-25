@@ -13,6 +13,7 @@
 
 // Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
@@ -75,21 +76,21 @@ private:
     bool isLastVarFromSensor(int arrayIndex);
     uint8_t countMaxToAverage(void);
 
-#ifdef DEBUGGING_SERIAL_OUTPUT
+#ifdef DEEP_DEBUGGING_SERIAL_OUTPUT
     template<typename T>
     void prettyPrintArray(T arrayToPrint[])
     {
-        DEBUGGING_SERIAL_OUTPUT.print("[,\t");
+        DEEP_DEBUGGING_SERIAL_OUTPUT.print("[,\t");
         for (uint8_t i = 0; i < _variableCount; i++)
         {
-            DEBUGGING_SERIAL_OUTPUT.print(arrayToPrint[i]);
-            DEBUGGING_SERIAL_OUTPUT.print(",\t");
+            DEEP_DEBUGGING_SERIAL_OUTPUT.print(arrayToPrint[i]);
+            DEEP_DEBUGGING_SERIAL_OUTPUT.print(",\t");
         }
-        DEBUGGING_SERIAL_OUTPUT.println("]");
+        DEEP_DEBUGGING_SERIAL_OUTPUT.println("]");
     }
 #else
     #define prettyPrintArray(...)
-#endif  // DEBUGGING_SERIAL_OUTPUT
+#endif  // DEEP_DEBUGGING_SERIAL_OUTPUT
 
 };
 
