@@ -11,7 +11,15 @@
 
 
 // Constructor
-VariableArray::VariableArray(uint8_t variableCount, Variable *variableList[])
+// VariableArray::VariableArray(uint8_t variableCount, Variable *variableList[])
+//   : arrayOfVars(variableList), _variableCount(variableCount)
+// {
+//     _maxSamplestoAverage = countMaxToAverage();
+//     _sensorCount = getSensorCount();
+// }
+
+
+void VariableArray::begin(uint8_t variableCount, Variable *variableList[])
 {
     _variableCount = variableCount;
     arrayOfVars = variableList;
@@ -19,8 +27,6 @@ VariableArray::VariableArray(uint8_t variableCount, Variable *variableList[])
     _maxSamplestoAverage = countMaxToAverage();
     _sensorCount = getSensorCount();
 }
-// Destructor
-VariableArray::~VariableArray(){}
 
 
 // This counts and returns the number of calculated variables
@@ -67,7 +73,13 @@ bool VariableArray::setupSensors(void)
 
     MS_DBG(F("Beginning setup for sensors and variables..."));
 
-    // First power all of the sensors
+    // First setup all of the variables
+    // This guarantees that they're registered to their parent sensor
+    MS_DBG(F("Running variable setup..."));
+    for (uint8_t i = 0; i < _variableCount; i++)
+        arrayOfVars[i]->setup();
+
+    // Power all of the sensors
     // NOTE:  Because we are running this *before* running each sensor's setup
     // function, this may actually fail to power a sensors if the pin mode for
     // that sensor's power pin is not correct.  The pin modes are set *during*
@@ -531,6 +543,7 @@ bool VariableArray::completeUpdate(void)
     }
 
     // This is just for debugging
+    #ifdef DEEP_DEBUGGING_SERIAL_OUTPUT
     uint8_t arrayPositions[_variableCount];
     for (uint8_t i = 0; i < _variableCount; i++)
         arrayPositions[i] = i;
@@ -554,6 +567,7 @@ bool VariableArray::completeUpdate(void)
     prettyPrintArray(nMeasurementsOnPin);
     MS_DEEP_DBG(F("powerPinIndex:\t\t\t"));
     prettyPrintArray(powerPinIndex);
+    #endif
 
     // Another array for the number of measurements already completed per power pin
     uint8_t nCompletedOnPin[_variableCount];

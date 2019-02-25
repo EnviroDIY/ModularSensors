@@ -25,8 +25,18 @@ class VariableArray
 {
 public:
     // Constructor
-    VariableArray(uint8_t variableCount, Variable *variableList[]);
-    virtual ~VariableArray();
+    VariableArray(){};
+    // VariableArray(uint8_t variableCount, Variable *variableList[]);
+    virtual ~VariableArray(){};
+
+    // "Begins" the VariableArray - attaches the number and array of variables
+    // Not doing this in the constructor because we expect the VariableArray to
+    // be created in the "global scope" and we cannot control the order in which
+    // objects in that global scope will be created.  That is, we cannot
+    // guarantee that the variables and their pointers in the array will
+    // actually have been created unless we wait until in the setup or loop
+    // function of the main program.
+    void begin(uint8_t variableCount, Variable *variableList[]);
 
     // Leave the internal variable list public
     Variable **arrayOfVars;
