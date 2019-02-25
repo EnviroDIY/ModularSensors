@@ -217,7 +217,7 @@ VariableArray varArray(variableCount, variableList);
 #include <LoggerBase.h>
 
 // Create a new logger instance
-Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+Logger dataLogger;
 
 
 // ==========================================================================
@@ -321,11 +321,10 @@ void setup()
 
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modem);
-    dataLogger.setAlertPin(greenLED);
-    dataLogger.setTestingModePin(buttonPin);
+    dataLogger.setLoggerPins(sdCardPin, wakePin, greenLED, buttonPin);
 
     // Begin the logger
-    dataLogger.begin();
+    dataLogger.begin(LoggerID, loggingInterval, &varArray);
 
     // Note:  Please change these battery voltages to match your battery
     // Check that the battery is OK before powering the modem

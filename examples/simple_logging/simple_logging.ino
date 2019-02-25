@@ -63,7 +63,7 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
 
-// Create and return the DS3231 sensor object
+// Create the DS3231 sensor object
 MaximDS3231 ds3231(1);
 
 
@@ -93,7 +93,7 @@ VariableArray varArray(variableCount, variableList);
 #include <LoggerBase.h>
 
 // Create a new logger instance
-Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+Logger dataLogger;
 
 
 // ==========================================================================
@@ -152,11 +152,10 @@ void setup()
     Logger::setTZOffset(timeZone);
 
     // Set information pins
-    dataLogger.setAlertPin(greenLED);
-    dataLogger.setTestingModePin(buttonPin);
+    dataLogger.setLoggerPins(sdCardPin, wakePin, greenLED, buttonPin);
 
     // Begin the logger
-    dataLogger.begin();
+    dataLogger.begin(LoggerID, loggingInterval, &varArray);
 
     // Set up the sensors
     Serial.println(F("Setting up sensors..."));

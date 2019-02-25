@@ -60,9 +60,9 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 
 // Create the sample number, battery voltage, and free RAM variable objects for the processor and return variable-type pointers to them
 // Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
-Variable *mcuBoardBatt = new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *mcuBoardAvailableRAM = new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
+ProcessorStats_Batt mcuBoardBatt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
+ProcessorStats_FreeRam mcuBoardAvailableRAM(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
+ProcessorStats_SampleNumber mcuBoardSampNo(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -154,8 +154,8 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, m
 // Create the RSSI and signal strength variable objects for the modem and return
 // variable-type pointers to them
 // Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
-Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab");
+Modem_RSSI modemRSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
+Modem_SignalPercent modemSignalPct(&modem, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -168,7 +168,7 @@ MaximDS3231 ds3231(1);
 
 // Create the temperature variable object for the DS3231 and return a variable-type pointer to it
 // Use this to create a variable pointer with a name to use in multiple arrays or any calculated variables.
-Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab");
+MaximDS3231_Temp ds3231Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -186,10 +186,10 @@ BoschBME280 bme280(I2CPower, BMEi2c_addr);
 
 // Create the four variable objects for the BME280 and return variable-type pointers to them
 // Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
-Variable *bme280Humid = new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *bme280Temp = new BoschBME280_Temp(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *bme280Press = new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *bme280Alt = new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
+BoschBME280_Humidity bme280Humid(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
+BoschBME280_Temp bme280Temp(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
+BoschBME280_Pressure bme280Press(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
+BoschBME280_Altitude bme280Alt(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -206,7 +206,7 @@ MaximDS18 ds18_u(OneWirePower, OneWireBus);
 
 // Create the temperature variable object for the DS18 and return a variable-type pointer to it
 // Use this to create a variable pointer with a name to use in multiple arrays or any calculated variables.
-Variable *ds18Temp = new MaximDS18_Temp(&ds18_u, "12345678-abcd-1234-efgh-1234567890ab");
+MaximDS18_Temp ds18Temp(&ds18_u, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -224,8 +224,8 @@ MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803Readings
 
 // Create the conductivity and temperature variable objects for the ES2 and return variable-type pointers to them
 // Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
-Variable *ms5803Press = new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *ms5803Temp = new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-efgh-1234567890ab");
+MeaSpecMS5803_Pressure ms5803Press(&ms5803, "12345678-abcd-1234-efgh-1234567890ab");
+MeaSpecMS5803_Temp ms5803Temp(&ms5803, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -356,7 +356,7 @@ VariableArray varArray(variableCount, variableList);
 #include <LoggerBase.h>
 
 // Create a new logger instance
-Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+Logger dataLogger;
 
 
 // ==========================================================================
@@ -445,11 +445,10 @@ void setup()
 
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modem);
-    dataLogger.setAlertPin(greenLED);
-    dataLogger.setTestingModePin(buttonPin);
+    dataLogger.setLoggerPins(sdCardPin, wakePin, greenLED, buttonPin);
 
     // Begin the logger
-    dataLogger.begin();
+    dataLogger.begin(LoggerID, loggingInterval, &varArray);
 
     // Note:  Please change these battery voltages to match your battery
     // Check that the battery is OK before powering the modem

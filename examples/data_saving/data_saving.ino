@@ -60,9 +60,9 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 
 // Create the sample number, battery voltage, and free RAM variable objects for the processor and return variable-type pointers to them
 // Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
-Variable *mcuBoardBatt = new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *mcuBoardAvailableRAM = new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
+ProcessorStats_Batt mcuBoardBatt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
+ProcessorStats_FreeRam mcuBoardAvailableRAM(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
+ProcessorStats_SampleNumber mcuBoardSampNo(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -209,8 +209,8 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, m
 // Create the RSSI and signal strength variable objects for the modem and return
 // variable-type pointers to them
 // Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
-Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab");
+Modem_RSSI modemRSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
+Modem_SignalPercent modemSignalPct(&modem, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -223,7 +223,7 @@ MaximDS3231 ds3231(1);
 
 // Create the temperature variable object for the DS3231 and return a variable-type pointer to it
 // Use this to create a variable pointer with a name to use in multiple arrays or any calculated variables.
-Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab");
+MaximDS3231_Temp ds3231Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -253,9 +253,9 @@ YosemitechY504 y504(y504ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 // temperature variable objects for the Y504 and return variable-type
 // pointers to them
 // Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
-Variable *y504DOpct = new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *y504DOmgL = new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *y504Temp = new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab");
+YosemitechY504_DOpct y504DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab");
+YosemitechY504_DOmgL y504DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab");
+YosemitechY504_Temp y504Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -283,8 +283,8 @@ YosemitechY511 y511(y511ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create the turbidity and temperature variable objects for the Y511 and return variable-type pointers to them
 // Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
-Variable *y511Turb = new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *y511Temp = new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab");
+YosemitechY511_Turbidity y511Turb(&y511, "12345678-abcd-1234-efgh-1234567890ab");
+YosemitechY511_Temp y511Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -312,8 +312,8 @@ YosemitechY514 y514(y514ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create the chlorophyll concentration and temperature variable objects for the Y514 and return variable-type pointers to them
 // Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
-Variable *y514Chloro = new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *y514Temp = new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab");
+YosemitechY514_Chlorophyll y514Chloro(&y514, "12345678-abcd-1234-efgh-1234567890ab");
+YosemitechY514_Temp y514Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -341,8 +341,8 @@ YosemitechY520 y520(y520ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create the specific conductance and temperature variable objects for the Y520 and return variable-type pointers to them
 // Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
-Variable *y520Cond = new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab");
+YosemitechY520_Cond y520Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab");
+YosemitechY520_Temp y520Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================

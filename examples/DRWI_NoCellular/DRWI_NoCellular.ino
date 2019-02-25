@@ -138,7 +138,7 @@ VariableArray varArray(variableCount, variableList);
 #include <LoggerBase.h>
 
 // Create a new logger instance
-Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+Logger dataLogger;
 
 
 // Device registration and sampling feature information
@@ -223,12 +223,11 @@ void setup()
     Logger::setTZOffset(timeZone);
 
     // Attach information pins to the logger
-    dataLogger.setAlertPin(greenLED);
-    dataLogger.setTestingModePin(buttonPin);
+    dataLogger.setLoggerPins(sdCardPin, wakePin, greenLED, buttonPin);
     dataLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Begin the logger
-    dataLogger.begin();
+    dataLogger.begin(LoggerID, loggingInterval, &varArray);
 
     // Set up the sensors, except at lowest battery level
     if (getBatteryVoltage() > 3.4)

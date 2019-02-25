@@ -38,16 +38,12 @@ volatile bool Logger::startTesting = false;
 
 // Constructor
 Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
-               int8_t SDCardPin, int8_t mcuWakePin,
-               VariableArray *inputArray)
+               int8_t SDCardPin, int8_t mcuWakePin)
+  : _loggerID(loggerID),
+    _loggingIntervalMinutes(loggingIntervalMinutes),
+    _SDCardPin(SDCardPin),
+    _mcuWakePin(mcuWakePin)
 {
-    // Set parameters from constructor
-    _loggerID = loggerID;
-    _loggingIntervalMinutes = loggingIntervalMinutes;
-    _SDCardPin = SDCardPin;
-    _mcuWakePin = mcuWakePin;
-    _internalArray = inputArray;
-
     // Set the testing/logging flags to false
     isLoggingNow = false;
     isTestingNow = false;
@@ -78,12 +74,60 @@ Logger::~Logger(){}
 // Public functions to get and set basic logging paramters
 // ===================================================================== //
 
+// Sets the logger ID
+void Logger::setLoggerID(const char *loggerID)
+{
+    _loggerID = loggerID;
+    MS_DBG(F("Logger ID is:"), _loggerID);
+}
+
+// Sets/Gets the logging interval
+void Logger::setLoggingInterval(uint16_t loggingIntervalMinutes)
+{
+    _loggingIntervalMinutes = loggingIntervalMinutes;
+    MS_DBG(F("Setting logger to record at"),
+           _loggingIntervalMinutes, F("minute intervals."));
+}
+
+
 // Adds the sampling feature UUID
 void Logger::setSamplingFeatureUUID(const char *samplingFeatureUUID)
 {
     _samplingFeatureUUID = samplingFeatureUUID;
-    MS_DBG(F("Sampling feature UUID set!"));
+    MS_DBG(F("Sampling feature UUID is:"), _samplingFeatureUUID);
 }
+
+
+// Sets up a pin for the slave select (chip select) of the SD card
+void Logger::setSDCardSS(int8_t SDCardPin)
+{
+    _SDCardPin = SDCardPin;
+    pinMode(_SDCardPin, OUTPUT);
+    MS_DBG(F("Pin"), _SDCardPin, F("set as SD Card Slave/Chip Select"));
+}
+
+
+// Sets up the wake up pin for an RTC interrupt
+void Logger::setRTCWakePin(int8_t mcuWakePin)
+{
+    _mcuWakePin = mcuWakePin;
+    if(_mcuWakePin < 0)
+    {
+        MS_DBG(F("Logger mcu will not sleep between readings!"));
+        return;
+    }
+
+    #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
+    if(_mcuWakePin >= 0)
+    {
+        pinMode(_mcuWakePin, INPUT_PULLUP);
+    }
+    MS_DBG(F("Pin"), _mcuWakePin, F("set as RTC wake up pin"));
+    #elif defined ARDUINO_ARCH_SAMD
+    MS_DBG(F("MCU's internal clock will be used for wake up"))
+    #endif
+}
+
 
 // Sets up a pin for an LED or other way of alerting that data is being logged
 void Logger::setAlertPin(int8_t ledPin)
@@ -112,8 +156,28 @@ void Logger::alertOff()
 void Logger::setTestingModePin(int8_t buttonPin)
 {
     _buttonPin = buttonPin;
-    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT_PULLUP);
-    MS_DBG(F("Pin"), _buttonPin, F("set as testing mode entry pin"));
+
+    // Set up the interrupt to be able to enter sensor testing mode
+    // NOTE:  Entering testing mode before the sensors have been set-up may
+    // give unexpected results.
+    if (_buttonPin >= 0)
+    {
+        pinMode(_buttonPin, INPUT_PULLUP);
+        enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
+        PRINTOUT(F("Push button on pin"), _buttonPin,
+                F("at any time to enter sensor testing mode."));
+    }
+}
+
+
+// Sets up the four pins of interest for the logger
+void Logger::setLoggerPins(int8_t SDCardPin, int8_t mcuWakePin,
+                           int8_t ledPin, int8_t buttonPin)
+{
+    setSDCardSS(SDCardPin);
+    setTestingModePin(mcuWakePin);
+    setAlertPin(ledPin);
+    setTestingModePin(buttonPin);
 }
 
 
@@ -121,6 +185,17 @@ void Logger::setTestingModePin(int8_t buttonPin)
 // ===================================================================== //
 // Public functions to get information about the attached variable array
 // ===================================================================== //
+
+// Assigns the variable array object
+void Logger::setVariableArray(VariableArray *inputArray)
+{
+    _internalArray = inputArray;
+    PRINTOUT(F("This logger has a variable array with"),
+             getArrayVarCount(), F("variables, of which"),
+             getArrayVarCount() - _internalArray->getCalculatedVariableCount(),
+             F("come from"), _internalArray->getSensorCount(), F("sensors and"),
+             _internalArray->getCalculatedVariableCount(), F("are calculated."));
+}
 
 // Returns the number of variables in the internal array
 uint8_t Logger::getArrayVarCount()
@@ -274,25 +349,26 @@ void Logger::setTZOffset(int8_t offset)
 
 // This gets the current epoch time (unix time, ie, the number of seconds
 // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
-#if defined(ARDUINO_ARCH_SAMD) || defined MS_SAMD_DS3231
+#if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
 
-    uint32_t Logger::getNowEpoch(void)
-    {
-      uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
-      currentEpochTime += _offset*3600;
-      return currentEpochTime;
-    }
-    void Logger::setNowEpoch(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
+uint32_t Logger::getNowEpoch(void)
+{
+  uint32_t currentEpochTime = rtc.now().getEpoch();
+  currentEpochTime += _offset*3600;
+  return currentEpochTime;
+}
+void Logger::setNowEpoch(uint32_t ts){rtc.setEpoch(ts);}
 
-#else
-    // Do not need to create the RTC object; it's created on library import
-    uint32_t Logger::getNowEpoch(void)
-    {
-      uint32_t currentEpochTime = rtc.now().getEpoch();
-      currentEpochTime += _offset*3600;
-      return currentEpochTime;
-    }
-    void Logger::setNowEpoch(uint32_t ts){rtc.setEpoch(ts);}
+#elif defined ARDUINO_ARCH_SAMD
+
+uint32_t Logger::getNowEpoch(void)
+{
+  uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
+  currentEpochTime += _offset*3600;
+  return currentEpochTime;
+}
+void Logger::setNowEpoch(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
+
 #endif
 
 // This gets the current epoch time (unix time, ie, the number of seconds
@@ -489,7 +565,7 @@ void Logger::systemSleep(void)
     pinMode(_mcuWakePin, INPUT_PULLUP);
     enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
 
-    #else
+    #elif defined ARDUINO_ARCH_SAMD
 
     // Alarms on the RTC built into the SAMD21 appear to be identical to those
     // in the DS3231.  See more notes below.
@@ -1080,7 +1156,27 @@ void Logger::testingMode()
 // This does all of the setup that can't happen in the constructors
 // That is, things that require the actual processor/MCU to do something
 // rather than the compiler to do something.
- void Logger::begin()
+void Logger::begin(const char *loggerID, uint16_t loggingIntervalMinutes,
+                   int8_t SDCardPin, int8_t mcuWakePin,
+                   VariableArray *inputArray)
+{
+    setSDCardSS(SDCardPin);
+    setRTCWakePin(mcuWakePin);
+    begin(loggerID, loggingIntervalMinutes, inputArray);
+}
+void Logger::begin(const char *loggerID, uint16_t loggingIntervalMinutes,
+                   VariableArray *inputArray)
+{
+    setLoggerID(loggerID);
+    setLoggingInterval(loggingIntervalMinutes);
+    begin(inputArray);
+}
+void Logger::begin(VariableArray *inputArray)
+{
+    setVariableArray(inputArray);
+    begin();
+}
+void Logger::begin()
 {
     #if defined ARDUINO_ARCH_SAMD
         MS_DBG(F("Beginning internal real time clock"));
@@ -1113,25 +1209,6 @@ void Logger::testingMode()
 
     // Print out the current time
     PRINTOUT(F("Current RTC time is:"), formatDateTime_ISO8601(getNowEpoch()));
-
-    PRINTOUT(F("Setting logger"), _loggerID, F("to record at"),
-             _loggingIntervalMinutes, F("minute intervals."));
-
-    PRINTOUT(F("This logger has a variable array with"),
-             getArrayVarCount(), F("variables, of which"),
-             getArrayVarCount() - _internalArray->getCalculatedVariableCount(),
-             F("come from"), _internalArray->getSensorCount(), F("sensors and"),
-             _internalArray->getCalculatedVariableCount(), F("are calculated."));
-
-    // Set up the interrupt to be able to enter sensor testing mode
-    // NOTE:  Entering testing mode before the sensors have been set-up may
-    // give unexpected results.
-    if (_buttonPin >= 0)
-    {
-        enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
-        PRINTOUT(F("Push button on pin"), _buttonPin,
-                 F("at any time to enter sensor testing mode."));
-    }
 
     PRINTOUT(F("Logger setup finished!"));
 }
