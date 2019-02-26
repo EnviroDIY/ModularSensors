@@ -37,12 +37,7 @@ volatile bool Logger::startTesting = false;
 
 
 // Constructor
-Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
-               int8_t SDCardPin, int8_t mcuWakePin)
-  : _loggerID(loggerID),
-    _loggingIntervalMinutes(loggingIntervalMinutes),
-    _SDCardPin(SDCardPin),
-    _mcuWakePin(mcuWakePin)
+Logger::Logger()
 {
     // Set the testing/logging flags to false
     isLoggingNow = false;
