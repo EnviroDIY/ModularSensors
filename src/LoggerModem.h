@@ -180,14 +180,15 @@ private:
     void setModemTiming(void);
 
 private:
+    bool (*_modemWakeFxn)(void);
+    bool (*_modemSleepFxn)(void);
+
     bool _statusLevel;
     int8_t _modemSleepRqPin;
     uint16_t _statusTime_ms;
     uint16_t _disconnetTime_ms;
-    uint16_t _on_pull_down_ms;
-    uint16_t _off_pull_down_ms;
-    bool (*_modemWakeFxn)(void);
-    bool (*_modemSleepFxn)(void);
+    // uint16_t _on_pull_down_ms;
+    // uint16_t _off_pull_down_ms;
     const char *_apn;
     const char *_ssid;
     const char *_pwd;

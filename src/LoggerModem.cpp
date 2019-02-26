@@ -18,14 +18,13 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES,
              MODEM_WARM_UP_TIME_MS, MODEM_ATRESPONSE_TIME_MS, MODEM_MAX_SEARCH_TIME,
              powerPin, statusPin, 1),
-      _statusLevel(statusLevel), _statusTime_ms(MODEM_STATUS_TIME_MS),
+      _tinyModem(inModem), _tinyClient(inClient),
+      _modemWakeFxn(modemWakeFxn), _modemSleepFxn(modemSleepFxn),
+      _statusLevel(statusLevel),
+      _statusTime_ms(MODEM_STATUS_TIME_MS),
       _disconnetTime_ms(MODEM_DISCONNECT_TIME_MS),
       _apn(APN), _ssid(NULL), _pwd(NULL), _lastNISTrequest(0)
 {
-    _tinyModem = inModem;
-    _tinyClient = inClient;
-    _modemWakeFxn = modemWakeFxn;
-    _modemSleepFxn = modemSleepFxn;
     _modemName = "unspecified modem";
     _lastConnectionCheck = 0;
     _lastATCheck = 0;
@@ -215,13 +214,6 @@ bool loggerModem::wake(void)
         MS_MOD_DBG(getSensorName(), F("should be awake."));
     }
 
-    // check if the modem was successfully set up, run set up if not
-    if (!bitRead(_sensorStatus, 0))
-    {
-        MS_MOD_DBG(getSensorName(), F("was never properly set up, attempting setup now!"));
-        setup();
-    }
-
     return success;
 }
 
@@ -252,6 +244,13 @@ bool loggerModem::startSingleMeasurement(void)
     // Only mark the measurement request time if it is
     if (bitRead(_sensorStatus, 4))
     {
+        // check if the modem was successfully set up, run set up if not
+        if (!bitRead(_sensorStatus, 0))
+        {
+            MS_MOD_DBG(getSensorName(), F("was never properly set up, attempting setup now!"));
+            setup();
+        }
+
         // For the wifi modems, the SSID and password need to be set before they
         // can join a network.
         // For **MOST** cellular modems, network registration (should) happen automatically.
@@ -883,8 +882,8 @@ void loggerModem::setModemTiming(void)
         _warmUpTime_ms = 450;  // Time after power on before "PWRKEY" can be used - >0.4sec
         _statusTime_ms = 2000;  // Time after end pulse until status pin becomes active (>3sec from start of 1s pulse)
         _stabilizationTime_ms = 2000;  // Time after end pulse until serial port becomes active (>3sec from start of 1s pulse)
-        _on_pull_down_ms = 1100;  // >1s
-        _off_pull_down_ms = 1100;  // 1sec > t > 33sec
+        // _on_pull_down_ms = 1100;  // >1s
+        // _off_pull_down_ms = 1100;  // 1sec > t > 33sec
         _disconnetTime_ms = 1500;  // power down (gracefully) takes >3sec
         // (Giving 15sec for shutdown in case it is not monitored.)
     }
@@ -894,8 +893,8 @@ void loggerModem::setModemTiming(void)
         _warmUpTime_ms = 1000;  // Time after power on before "PWRKEY" can be used (guess - diagram isn't clear)
         _statusTime_ms = 2200;  // Time after end pulse until status pin becomes active (>2.2sec)
         _stabilizationTime_ms = 2200;  // Time after end pulse until serial port becomes active (>2.2sec)
-        _on_pull_down_ms = 1100;  // >1s
-        _off_pull_down_ms = 600;  // 0.5sec > pull down > 1sec
+        // _on_pull_down_ms = 1100;  // >1s
+        // _off_pull_down_ms = 600;  // 0.5sec > pull down > 1sec
         _disconnetTime_ms = 15000;  // power down (gracefully) takes >1.7 sec
         // (Giving 15sec for shutdown in case it is not monitored.)
     }
@@ -905,8 +904,8 @@ void loggerModem::setModemTiming(void)
         _warmUpTime_ms = 0;  // Time after power on before "PWRKEY" can be used
         _statusTime_ms = 4500;  // Time after end pulse until status pin becomes active (>4.5sec)
         _stabilizationTime_ms = 4500;  // Time after end pulse until serial port becomes active (>4.5sec)
-        _on_pull_down_ms = 1100;  // >1s
-        _off_pull_down_ms = 1300;  // >1.2sec
+        // _on_pull_down_ms = 1100;  // >1s
+        // _off_pull_down_ms = 1300;  // >1.2sec
         _disconnetTime_ms = 7000;  // power down (gracefully) takes 1.8-6.9 sec
     }
     if (_modemName.indexOf(F("SARA-R4")) >= 0  ||
@@ -918,8 +917,8 @@ void loggerModem::setModemTiming(void)
         _warmUpTime_ms = 250;  // Time after power on before PWR_ON can be used ??? Unclear in documentation!
         _statusTime_ms = 0;  // V_INT becomes active mid-way through on-pulse
         _stabilizationTime_ms = 4500;  // Time until system and digital pins are operational (~4.5s)
-        _on_pull_down_ms = 200;  // 0.15-3.2s
-        _off_pull_down_ms = 1600;  // >1.5s
+        // _on_pull_down_ms = 200;  // 0.15-3.2s
+        // _off_pull_down_ms = 1600;  // >1.5s
         _disconnetTime_ms = 15000;  // Power down time "can largely vary depending
         // on the application / network settings and the concurrent module
         // activities."  Vint/status pin should be monitored and power not withdrawn
@@ -935,8 +934,8 @@ void loggerModem::setModemTiming(void)
         _stabilizationTime_ms = 6000;  // Time until system and digital pins are operational
         // (6 sec typical for SARA U201, others 5 sec typical)
         // Time for an AT response may be much longer when using a 3G XBee in bypass mode!
-        _on_pull_down_ms = 1;  // 50-80µs
-        _off_pull_down_ms = 1000;  // >1s
+        // _on_pull_down_ms = 1;  // 50-80µs
+        // _off_pull_down_ms = 1000;  // >1s
         _disconnetTime_ms = 15000;  // Power down time "can largely vary depending
         // on the application / network settings and the concurrent module
         // activities."  Vint/status pin should be monitored and power not withdrawn
@@ -949,8 +948,8 @@ void loggerModem::setModemTiming(void)
         _statusTime_ms = 35;  // Time after end pulse until V_INT becomes active
                               // Unspecified in documentation! Taking value from Lisa U2
         _stabilizationTime_ms = 5000;  // Time until system and digital pins are operational (5 sec typical)
-        _on_pull_down_ms = 6;  // >5ms
-        _off_pull_down_ms = 1100;  // >1s
+        // _on_pull_down_ms = 6;  // >5ms
+        // _off_pull_down_ms = 1100;  // >1s
         _disconnetTime_ms = 15000;  // Power down time "can largely vary depending
         // on the application / network settings and the concurrent module
         // activities."  Vint/status pin should be monitored and power not withdrawn
@@ -962,8 +961,8 @@ void loggerModem::setModemTiming(void)
         _warmUpTime_ms = 0;  // Module turns on when power is applied - level of PWR_ON then irrelevant
         _statusTime_ms = 35;  // Time after end pulse until V_INT becomes active <35ms
         _stabilizationTime_ms = 3000;  // Time until system and digital pins are operational (3 sec typical)
-        _on_pull_down_ms = 1;  // 50-80µs
-        _off_pull_down_ms = 1000;  // >1s
+        // _on_pull_down_ms = 1;  // 50-80µs
+        // _off_pull_down_ms = 1000;  // >1s
         _disconnetTime_ms = 400;  // power down (gracefully) takes ~400ms
     }
     if (_modemName.indexOf(F("Digi XBee® Cellular LTE Cat 1")) >= 0  ||
@@ -975,8 +974,8 @@ void loggerModem::setModemTiming(void)
         _statusTime_ms = 50;  // Documentation does not specify how long between
         // power on and high reading on VAUX / PWRMON pin
         _stabilizationTime_ms = 25000;  // Documentation says to wait up to 25 (!!) seconds.
-        _on_pull_down_ms = 0;  // N/A - standard chip cannot be powered on with pin
-        _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
+        // _on_pull_down_ms = 0;  // N/A - standard chip cannot be powered on with pin
+        // _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
         _disconnetTime_ms = 10000L;  // Wait with 10s time-out for sleep
     }
     if (_modemName.indexOf(F("ESP8266")) >= 0)
@@ -985,8 +984,8 @@ void loggerModem::setModemTiming(void)
         _warmUpTime_ms = 0;  // Module turns on when power is applied
         _statusTime_ms = 350;  // N/A? - No status pin - use boot time if using a GPIO pin
         _stabilizationTime_ms = 350;  // Boot up time 200-300ms
-        _on_pull_down_ms = 10;  // immediate
-        _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
+        // _on_pull_down_ms = 10;  // immediate
+        // _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
         _disconnetTime_ms = 500;  // power down ???
     }
     if (_modemName.indexOf(F("Neoway M590")) >= 0)
@@ -997,8 +996,8 @@ void loggerModem::setModemTiming(void)
         // least 300ms before dropping it low to turn the module on
         _statusTime_ms = 300;  // Time after end pulse until VCCIO becomes active
         _stabilizationTime_ms = 300;  // Time until UART is active (300ms)
-        _on_pull_down_ms = 510;  // >300ms (>500ms recommended)
-        _off_pull_down_ms = 510;  // >300ms
+        // _on_pull_down_ms = 510;  // >300ms (>500ms recommended)
+        // _off_pull_down_ms = 510;  // >300ms
         _disconnetTime_ms = 6000;  // power down (gracefully) takes ~5sec
     }
     if (_modemName.indexOf(F("Quectel BG96")) >= 0)
@@ -1007,8 +1006,8 @@ void loggerModem::setModemTiming(void)
         _warmUpTime_ms = 30;  // Time after VBAT is stable before PWRKEY can be used
         _statusTime_ms = 4800;  // Time after end pulse until status pin becomes active
         _stabilizationTime_ms = 4200;  // USB active at >4.2 sec, status at >4.8 sec, URAT at >4.9
-        _on_pull_down_ms = 110;  // >100ms
-        _off_pull_down_ms = 700;  // ≥ 650ms
+        // _on_pull_down_ms = 110;  // >100ms
+        // _off_pull_down_ms = 700;  // ≥ 650ms
         _disconnetTime_ms = 15000;  // > 2 sec (Giving 15sec here in case it is not monitored.)
     }
     if (_modemName.indexOf(F("Quectel BC95")) >= 0)
@@ -1017,8 +1016,8 @@ void loggerModem::setModemTiming(void)
         _warmUpTime_ms = 1;  // Time after VBAT is stable before RESET becomes valid - < 535 µs
         _statusTime_ms = 1;  // Time after VBAT is stable before RESET becomes valid - < 535 µs
         _stabilizationTime_ms = 5000;  // ?? Time to UART availability not documented
-        _on_pull_down_ms = 0;  // N/A - standard chip cannot be powered on with pin
-        _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
+        // _on_pull_down_ms = 0;  // N/A - standard chip cannot be powered on with pin
+        // _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
         // use AT+CPSMS command for LTE-M power saving - no other power save method
         _disconnetTime_ms = 0;  // N/A - If the reset pin is used as a status pin, it will not ever turn off
     }
@@ -1028,8 +1027,8 @@ void loggerModem::setModemTiming(void)
         _warmUpTime_ms = 30;  // Time after VBAT is stable before PWRKEY can be used
         _statusTime_ms = 0;  // Time after end pulse until status pin becomes active (54ms after start of pulse)
         _stabilizationTime_ms = 500;  // UART should respond as soon as PWRKEY pulse ends
-        _on_pull_down_ms = 2000;  // until either status key goes on, or > 1.0 sec (~2s)
-        _off_pull_down_ms = 700;  // 0.6s<Pulldown<1s
+        // _on_pull_down_ms = 2000;  // until either status key goes on, or > 1.0 sec (~2s)
+        // _off_pull_down_ms = 700;  // 0.6s<Pulldown<1s
         _disconnetTime_ms = 12000;  // disconnect in 2-12 seconds
     }
     if (_modemName.indexOf(F("Quectel MC60")) >= 0)
@@ -1038,8 +1037,8 @@ void loggerModem::setModemTiming(void)
         _warmUpTime_ms = 100;  // Time after VBAT is stable before PWRKEY can be used
         _statusTime_ms = 0;  // Time after end pulse until status pin becomes active (54ms after start of pulse)
         _stabilizationTime_ms = 500;  // UART should respond as soon as PWRKEY pulse ends
-        _on_pull_down_ms = 1100;  // >1s
-        _off_pull_down_ms = 700;  // 0.6s<Pulldown<1s
+        // _on_pull_down_ms = 1100;  // >1s
+        // _off_pull_down_ms = 700;  // 0.6s<Pulldown<1s
         _disconnetTime_ms = 12000;  // disconnect in 2-12 seconds
     }
     if (_modemName.indexOf(F("Sequans VZM20Q")) >= 0)
@@ -1048,8 +1047,8 @@ void loggerModem::setModemTiming(void)
         _warmUpTime_ms = 0;  // Module automatically boots when power is applied
         _statusTime_ms = 50;  // ?? Undocumented
         _stabilizationTime_ms = 5000;  // ?? Time to UART availability not documented
-        _on_pull_down_ms = 50;  // ?? Undocumented
-        _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
+        // _on_pull_down_ms = 50;  // ?? Undocumented
+        // _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
         // use AT+CPSMS command for LTE-M power saving
         // use AT+SQNSSHDN command for device shut down
         _disconnetTime_ms = 15000;  // ?? Undocumented (Giving 15sec here in case it is not monitored.)
