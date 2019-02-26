@@ -35,7 +35,7 @@ bool AtlasScientificEC::setup()
     // This sensor needs power for setup!
     // We want to turn on all possible measurement parameters
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
+    if (!wasOn) {powerUp();}
     waitForWarmUp();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report conductivity"));
@@ -71,7 +71,7 @@ bool AtlasScientificEC::setup()
     }
 
     // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
+    if (!wasOn) {powerDown();}
 
     return success;
 }

@@ -92,7 +92,7 @@ int16_t DreamHostPublisher::sendData(Client *_outClient)
     // Open a TCP/IP connection to DreamHost
     MS_DBG(F("Connecting client"));
     uint32_t start_timer = millis();
-    if(_outClient->connect(dreamhostHost, dreamhostPort))
+    if (_outClient->connect(dreamhostHost, dreamhostPort))
     {
         MS_DBG(F("Client connected after"), millis() - start_timer, F("ms\n"));
 

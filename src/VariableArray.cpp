@@ -398,7 +398,7 @@ bool VariableArray::updateAllSensors(void)
                     // immediately return true if the attempt to start a
                     // measurement failed (bit 6 not set).  In that case, the
                     // addSingleMeasurementResult() will be "adding" -9999 values.
-                    if(arrayOfVars[i]->parentSensor->isMeasurementComplete(deepDebugTiming))
+                    if (arrayOfVars[i]->parentSensor->isMeasurementComplete(deepDebugTiming))
                     {
                         // Get the value
                         MS_DBG(i, '.', nMeasurementsCompleted[i]+1,
@@ -471,13 +471,17 @@ bool VariableArray::completeUpdate(void)
     MS_DBG(F("Creating a mask array with the uniqueness for each sensor.."));
     bool lastSensorVariable[_variableCount];
     for (uint8_t i = 0; i < _variableCount; i++)
+    {
         lastSensorVariable[i] = isLastVarFromSensor(i);
+    }
 
     // Create an array for the number of measurements already completed and set all to zero
     MS_DBG(F("Creating an array for the number of completed measurements.."));
     uint8_t nMeasurementsCompleted[_variableCount];
     for (uint8_t i = 0; i < _variableCount; i++)
+    {
         nMeasurementsCompleted[i] = 0;
+    }
 
     // Create an array for the number of measurements to average (another short cut)
     MS_DBG(F("Creating an array with the number of measurements to average.."));
@@ -485,8 +489,10 @@ bool VariableArray::completeUpdate(void)
     for (uint8_t i = 0; i < _variableCount; i++)
     {
         if (lastSensorVariable[i])
+        {
             nMeasurementsToAverage[i] =
                 arrayOfVars[i]->parentSensor->getNumberMeasurementsToAverage();
+        }
         else nMeasurementsToAverage[i] = 0;
     }
 
@@ -494,23 +500,30 @@ bool VariableArray::completeUpdate(void)
     MS_DBG(F("Creating an array of the power pins.."));
     int8_t powerPins[_variableCount];
     for (uint8_t i = 0; i < _variableCount; i++)
+    {
         powerPins[i] = arrayOfVars[i]->parentSensor->getPowerPin();
+    }
 
     // Create an array of the last variable on each power pin
     MS_DBG(F("Creating arrays of the power pin locations.."));
     bool lastPinVariable[_variableCount];
     for (uint8_t i = 0; i < _variableCount; i++)
+    {
         lastPinVariable[i] = 1;
+    }
     // Create an array containing the index of the power pin in the powerPins array
     int8_t powerPinIndex[_variableCount];
     for (uint8_t i = 0; i < _variableCount; i++)
+    {
         powerPinIndex[i] = 0;
+    }
     // Create an array to tell us how many measurements must be taken
     // before all the sensors attached to a power pin are done
     uint8_t nMeasurementsOnPin[_variableCount];
     for (uint8_t i = 0; i < _variableCount; i++)
+    {
         nMeasurementsOnPin[i] = nMeasurementsToAverage[i];
-
+    }
     // Now correctly populate the previous three arrays
     for (uint8_t i = 0; i < _variableCount; i++)
     {
@@ -526,7 +539,7 @@ bool VariableArray::completeUpdate(void)
     }
     for (uint8_t i = 0; i < _variableCount; i++)
     {
-        if(lastPinVariable[i])
+        if (lastPinVariable[i])
         {
             powerPinIndex[i] = i;
             nMeasurementsOnPin[i] = nMeasurementsToAverage[i];
@@ -546,10 +559,14 @@ bool VariableArray::completeUpdate(void)
     #ifdef DEEP_DEBUGGING_SERIAL_OUTPUT
     uint8_t arrayPositions[_variableCount];
     for (uint8_t i = 0; i < _variableCount; i++)
+    {
         arrayPositions[i] = i;
+    }
     String nameLocation[_variableCount];
     for (uint8_t i = 0; i < _variableCount; i++)
+    {
         nameLocation[i] = arrayOfVars[i]->getParentSensorNameAndLocation();
+    }
     MS_DEEP_DBG(F("----------------------------------"));
     MS_DEEP_DBG(F("arrayPositions:\t\t\t"));
     prettyPrintArray(arrayPositions);
@@ -572,8 +589,9 @@ bool VariableArray::completeUpdate(void)
     // Another array for the number of measurements already completed per power pin
     uint8_t nCompletedOnPin[_variableCount];
     for (uint8_t i = 0; i < _variableCount; i++)
+    {
         nCompletedOnPin[i] = 0;
-
+    }
 
     // Clear the initial variable arrays
     MS_DBG(F("----->> Clearing all results arrays before taking new measurements. ..."));
@@ -680,7 +698,7 @@ bool VariableArray::completeUpdate(void)
                     // isMeasurementComplete(deepDebugTiming) will do that and we stil want the
                     // addSingleMeasurementResult() function to fill in the -9999
                     // results for a failed measurement.
-                    if(arrayOfVars[i]->parentSensor->isMeasurementComplete(deepDebugTiming))
+                    if (arrayOfVars[i]->parentSensor->isMeasurementComplete(deepDebugTiming))
                     {
                         // Get the value
                         MS_DBG(i, '.', nMeasurementsCompleted[i]+1,

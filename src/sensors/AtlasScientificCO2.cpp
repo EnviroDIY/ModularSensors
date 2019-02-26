@@ -34,7 +34,7 @@ bool AtlasScientificCO2::setup()
     // This sensor needs power for setup!
     // We want to turn on all possible measurement parameters
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
+    if (!wasOn) {powerUp();}
     waitForWarmUp();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report temperature with CO2"));
@@ -53,7 +53,7 @@ bool AtlasScientificCO2::setup()
     }
 
     // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
+    if (!wasOn) {powerDown();}
 
     return success;
 }

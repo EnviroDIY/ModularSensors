@@ -631,7 +631,7 @@ int16_t loggerModem::openTCP(IPAddress ip, uint16_t port)
 
 void loggerModem::closeTCP(void)
 {
-    if(_tinyClient)
+    if (_tinyClient)
         _tinyClient->stop();
     MS_MOD_DBG(F("Closed TCP/IP."));
 }

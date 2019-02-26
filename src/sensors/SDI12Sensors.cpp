@@ -55,7 +55,7 @@ bool SDI12Sensors::setup(void)
 
     // This sensor needs power for setup!
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
+    if (!wasOn) {powerUp();}
     waitForWarmUp();
 
     // Begin the SDI-12 interface
@@ -84,7 +84,7 @@ bool SDI12Sensors::setup(void)
     _SDI12Internal.end();
 
     // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
+    if (!wasOn) {powerDown();}
 
     if (!retVal)  // if set-up failed
     {

@@ -108,14 +108,14 @@ void Logger::setSDCardSS(int8_t SDCardPin)
 void Logger::setRTCWakePin(int8_t mcuWakePin)
 {
     _mcuWakePin = mcuWakePin;
-    if(_mcuWakePin < 0)
+    if (_mcuWakePin < 0)
     {
         MS_DBG(F("Logger mcu will not sleep between readings!"));
         return;
     }
 
     #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
-    if(_mcuWakePin >= 0)
+    if (_mcuWakePin >= 0)
     {
         pinMode(_mcuWakePin, INPUT_PULLUP);
     }
@@ -537,7 +537,7 @@ void Logger::wakeISR(void)
 void Logger::systemSleep(void)
 {
     // Don't go to sleep unless there's a wake pin!
-    if(_mcuWakePin < 0)
+    if (_mcuWakePin < 0)
     {
         MS_DBG(F("Use a non-negative wake pin to request sleep!"));
         return;
@@ -717,7 +717,7 @@ void Logger::systemSleep(void)
     #endif
 
     // Wake-up message
-    MS_DBG(F("... Processor is now awake!"));
+    MS_DBG(F("... zzzZZ Processor is now awake!"));
 
     // The logger will now start the next function after the systemSleep
     // function in either the loop or setup

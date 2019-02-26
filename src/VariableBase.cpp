@@ -35,7 +35,7 @@ Variable::Variable(const uint8_t sensorVarNum,
     // value of -9999 (ie, a bad result).
     _currentValue = -9999;
 
-    MS_DBG(F("Variable object created"));
+    MS_DBG(F("Measured variable object created"));
 }
 
 // The constructor for a calculated variable  - that is, one whose value is
@@ -54,6 +54,8 @@ Variable::Variable()
     // When we create the variable, we also want to initialize it with a current
     // value of -9999 (ie, a bad result).
     _currentValue = -9999;
+
+    MS_DBG(F("Calculated variable object created"));
 }
 
 // Destructor
@@ -67,14 +69,12 @@ Variable *Variable::begin(Sensor *parentSense, const char *uuid,
                           const char *customVarCode)
 {
     setVarCode(customVarCode);
-    begin(parentSense, uuid);
-    return this;
+    return begin(parentSense, uuid);
 }
 Variable *Variable::begin(Sensor *parentSense, const char *uuid)
 {
     setVarUUID(uuid);
-    begin(parentSense);
-    return this;
+    return begin(parentSense);
 }
 Variable *Variable::begin(Sensor *parentSense)
 {
@@ -88,9 +88,9 @@ Variable *Variable::begin(float (*calcFxn)(),
                           const char *varCode,
                           const char *uuid)
 {
+    MS_DBG(F("This is a calculated variable1!"));
     setVarUUID(uuid);
-    begin(calcFxn, decimalResolution, varName, varUnit, varCode);
-    return this;
+    return begin(calcFxn, decimalResolution, varName, varUnit, varCode);
 }
 Variable *Variable::begin(float (*calcFxn)(),
                           uint8_t decimalResolution,

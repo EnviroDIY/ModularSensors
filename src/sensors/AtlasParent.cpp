@@ -56,8 +56,8 @@ bool AtlasParent::setup(void)
 // The Atlas sensors must be told to sleep
 bool AtlasParent::sleep(void)
 {
-    if(!checkPowerOn()){return true;}
-    if(_millisSensorActivated == 0)
+    if (!checkPowerOn()) {return true;}
+    if (_millisSensorActivated == 0)
     {
         MS_DBG(getSensorNameAndLocation(), F("was not measuring!"));
         return true;
@@ -71,7 +71,7 @@ bool AtlasParent::sleep(void)
     success &= !Wire.endTransmission();
     // NOTE: The return of 0 from endTransmission indicates success
 
-    if(success)
+    if (success)
     {
         // Unset the activation time
         _millisSensorActivated = 0;

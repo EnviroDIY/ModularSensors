@@ -164,7 +164,7 @@ int16_t EnviroDIYPublisher::sendData(Client *_outClient)
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
     MS_DBG(F("Connecting client"));
     uint32_t start_timer = millis();
-    if(_outClient->connect(enviroDIYHost, enviroDIYPort))
+    if (_outClient->connect(enviroDIYHost, enviroDIYPort))
     {
         MS_DBG(F("Client connected after"), millis() - start_timer, F("ms\n"));
 

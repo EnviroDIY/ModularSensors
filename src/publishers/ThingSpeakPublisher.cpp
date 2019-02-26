@@ -144,7 +144,7 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
     #if defined DEBUGGING_SERIAL_OUTPUT
       uint32_t start_timer = millis();
     #endif
-    if(_mqttClient.connect(mqttClient, mqttUser, _thingSpeakMQTTKey))
+    if (_mqttClient.connect(mqttClient, mqttUser, _thingSpeakMQTTKey))
     {
         MS_DBG(F("MQTT connected after"), millis() - start_timer, F("ms"));
 
