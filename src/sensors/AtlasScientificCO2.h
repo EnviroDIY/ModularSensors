@@ -54,12 +54,10 @@ public:
 class AtlasScientificCO2_CO2 : public Variable
 {
 public:
-    AtlasScientificCO2_CO2(Sensor *parentSense,
-                        const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, ATLAS_CO2_VAR_NUM,
-                 "carbonDioxide", "partPerMillion",
-                 ATLAS_CO2_RESOLUTION,
-                 "AtlasCO2ppm", UUID, customVarCode)
+    AtlasScientificCO2_CO2()
+      : Variable(ATLAS_CO2_VAR_NUM, ATLAS_CO2_RESOLUTION,
+                 "carbonDioxide", "partPerMillion", "AtlasCO2ppm")
+
     {}
     ~AtlasScientificCO2_CO2(){}
 };
@@ -68,12 +66,10 @@ public:
 class AtlasScientificCO2_Temp : public Variable
 {
 public:
-    AtlasScientificCO2_Temp(Sensor *parentSense,
-                        const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, ATLAS_CO2TEMP_VAR_NUM,
-                 "temperature", "degreeCelsius",
-                 ATLAS_CO2TEMP_RESOLUTION,
-                 "AtlasCO2Temp", UUID, customVarCode)
+    AtlasScientificCO2_Temp()
+      : Variable(ATLAS_CO2TEMP_VAR_NUM, ATLAS_CO2TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius", "AtlasCO2Temp")
+
     {}
     ~AtlasScientificCO2_Temp(){}
 };

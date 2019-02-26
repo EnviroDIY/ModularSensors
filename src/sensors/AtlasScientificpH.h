@@ -55,12 +55,10 @@ public:
 class AtlasScientificpH_pH : public Variable
 {
 public:
-    AtlasScientificpH_pH(Sensor *parentSense,
-                        const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, ATLAS_PH_VAR_NUM,
-                 "pH", "pH",
-                 ATLAS_PH_RESOLUTION,
-                 "AtlaspH", UUID, customVarCode)
+    AtlasScientificpH_pH()
+      : Variable(ATLAS_PH_VAR_NUM, ATLAS_PH_RESOLUTION,
+                 "pH", "pH", "AtlaspH")
+
     {}
     ~AtlasScientificpH_pH(){}
 };

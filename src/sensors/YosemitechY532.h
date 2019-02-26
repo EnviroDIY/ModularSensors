@@ -76,12 +76,10 @@ public:
 class YosemitechY532_pH : public Variable
 {
 public:
-    YosemitechY532_pH(Sensor *parentSense,
-                      const char *UUID = "", const char *customVarCode = "")
-     : Variable(parentSense, Y532_PH_VAR_NUM,
-                "pH", "pH",
-                Y532_PH_RESOLUTION,
-                "Y532pH", UUID, customVarCode)
+    YosemitechY532_pH()
+      : Variable(Y532_PH_VAR_NUM, Y532_PH_RESOLUTION,
+                 "pH", "pH", "Y532pH")
+
     {}
     ~YosemitechY532_pH(){}
 };
@@ -91,12 +89,10 @@ public:
 class YosemitechY532_Temp : public Variable
 {
 public:
-    YosemitechY532_Temp(Sensor *parentSense,
-                        const char *UUID = "", const char *customVarCode = "")
-     : Variable(parentSense, Y532_TEMP_VAR_NUM,
-                "temperature", "degreeCelsius",
-                Y532_TEMP_RESOLUTION,
-                "Y532Temp", UUID, customVarCode)
+    YosemitechY532_Temp()
+      : Variable(Y532_TEMP_VAR_NUM, Y532_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius", "Y532Temp")
+
     {}
     ~YosemitechY532_Temp(){}
 };
@@ -106,12 +102,10 @@ public:
 class YosemitechY532_Voltage : public Variable
 {
 public:
-    YosemitechY532_Voltage(Sensor *parentSense,
-                           const char *UUID = "", const char *customVarCode = "")
-     : Variable(parentSense, Y532_VOLT_VAR_NUM,
-                "voltage", "millivolt",
-                Y532_VOLT_RESOLUTION,
-                "Y532Potential", UUID, customVarCode)
+    YosemitechY532_Voltage()
+      : Variable(Y532_VOLT_VAR_NUM, Y532_VOLT_RESOLUTION,
+                 "voltage", "millivolt", "Y532Potential")
+
     {}
     ~YosemitechY532_Voltage(){}
 };

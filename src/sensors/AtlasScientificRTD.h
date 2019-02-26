@@ -55,12 +55,10 @@ public:
 class AtlasScientificRTD_Temp : public Variable
 {
 public:
-    AtlasScientificRTD_Temp(Sensor *parentSense,
-                        const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, ATLAS_RTD_VAR_NUM,
-                 "temperature", "degreeCelsius",
-                 ATLAS_RTD_RESOLUTION,
-                 "AtlasTemp", UUID, customVarCode)
+    AtlasScientificRTD_Temp()
+      : Variable(ATLAS_RTD_VAR_NUM, ATLAS_RTD_RESOLUTION,
+                 "temperature", "degreeCelsius", "AtlasTemp")
+
     {}
     ~AtlasScientificRTD_Temp(){}
 };

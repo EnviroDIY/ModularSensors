@@ -66,12 +66,10 @@ protected:
 class RainCounterI2C_Tips : public Variable
 {
 public:
-    RainCounterI2C_Tips(Sensor *parentSense,
-                     const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, BUCKET_TIPS_VAR_NUM,
-               "precipitation", "event",
-               BUCKET_TIPS_RESOLUTION,
-               "RainCounterI2CTips", UUID, customVarCode)
+    RainCounterI2C_Tips()
+      : Variable(BUCKET_TIPS_VAR_NUM, BUCKET_TIPS_RESOLUTION,
+                 "precipitation", "event", "RainCounterI2CTips")
+
     {}
     ~RainCounterI2C_Tips(){}
 };
@@ -80,12 +78,10 @@ public:
 class RainCounterI2C_Depth : public Variable
 {
 public:
-    RainCounterI2C_Depth(Sensor *parentSense,
-                     const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, BUCKET_RAIN_VAR_NUM,
-               "precipitation", "millimeter",
-               BUCKET_RAIN_RESOLUTION,
-               "RainCounterI2CVol", UUID, customVarCode)
+    RainCounterI2C_Depth()
+      : Variable(BUCKET_RAIN_VAR_NUM, BUCKET_RAIN_RESOLUTION,
+                 "precipitation", "millimeter", "RainCounterI2CVol")
+
     {}
     ~RainCounterI2C_Depth(){}
 };

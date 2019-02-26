@@ -60,11 +60,10 @@ public:
 class KellerNanolevel_Pressure : public Variable
 {
 public:
-    KellerNanolevel_Pressure(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
-     : Variable(parentSense, KELLER_PRESSURE_VAR_NUM,
-                "pressureGauge", "millibar",
-                NANOLEVEL_PRESSURE_RESOLUTION,
-                "kellerPress", UUID, customVarCode)
+    KellerNanolevel_Pressure()
+      : Variable(KELLER_PRESSURE_VAR_NUM, NANOLEVEL_PRESSURE_RESOLUTION,
+                 "pressureGauge", "millibar", "kellerPress")
+
     {}
     ~KellerNanolevel_Pressure(){}
 };
@@ -74,11 +73,10 @@ public:
 class KellerNanolevel_Temp : public Variable
 {
 public:
-    KellerNanolevel_Temp(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
-     : Variable(parentSense, KELLER_TEMP_VAR_NUM,
-                "temperature", "degreeCelsius",
-                NANOLEVEL_TEMP_RESOLUTION,
-                "kellerTemp", UUID, customVarCode)
+    KellerNanolevel_Temp()
+      : Variable(KELLER_TEMP_VAR_NUM, NANOLEVEL_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius", "kellerTemp")
+
     {}
     ~KellerNanolevel_Temp(){}
 };
@@ -87,11 +85,10 @@ public:
 class KellerNanolevel_Height : public Variable
 {
 public:
-    KellerNanolevel_Height(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
-     : Variable(parentSense, KELLER_HEIGHT_VAR_NUM,
-                "gaugeHeight", "meter",
-                NANOLEVEL_HEIGHT_RESOLUTION,
-                "kellerHeight", UUID, customVarCode)
+    KellerNanolevel_Height()
+      : Variable(KELLER_HEIGHT_VAR_NUM, NANOLEVEL_HEIGHT_RESOLUTION,
+                 "gaugeHeight", "meter", "kellerHeight")
+
     {}
     ~KellerNanolevel_Height(){}
 };

@@ -64,12 +64,10 @@ private:
 class ProcessorStats_Batt : public Variable
 {
 public:
-    ProcessorStats_Batt(Sensor *parentSense,
-                        const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, PROCESSOR_BATTERY_VAR_NUM,
-                 "batteryVoltage", "volt",
-                 PROCESSOR_BATTERY_RESOLUTION,
-                 "Battery", UUID, customVarCode)
+    ProcessorStats_Batt()
+      : Variable(PROCESSOR_BATTERY_VAR_NUM, PROCESSOR_BATTERY_RESOLUTION,
+                 "batteryVoltage", "volt", "Battery")
+
     {}
     ~ProcessorStats_Batt(){}
 };
@@ -79,12 +77,9 @@ public:
 class ProcessorStats_FreeRam : public Variable
 {
 public:
-    ProcessorStats_FreeRam(Sensor *parentSense,
-                           const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, PROCESSOR_RAM_VAR_NUM,
-                 "Free SRAM", "Bit",
-                 PROCESSOR_RAM_RESOLUTION,
-                 "FreeRam", UUID, customVarCode)
+    ProcessorStats_FreeRam()
+      : Variable(PROCESSOR_RAM_VAR_NUM, PROCESSOR_RAM_RESOLUTION,
+                 "freeSRAM", "Bit", "FreeRam")
     {}
     ~ProcessorStats_FreeRam(){}
 };
@@ -94,12 +89,10 @@ public:
 class ProcessorStats_SampleNumber : public Variable
 {
 public:
-    ProcessorStats_SampleNumber(Sensor *parentSense,
-                           const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, PROCESSOR_SAMPNUM_VAR_NUM,
-                 "sequenceNumber", "Dimensionless",
-                 PROCESSOR_SAMPNUM_RESOLUTION,
-                 "SampNum", UUID, customVarCode)
+    ProcessorStats_SampleNumber()
+      : Variable(PROCESSOR_SAMPNUM_VAR_NUM, PROCESSOR_SAMPNUM_RESOLUTION,
+                 "sequenceNumber", "Dimensionless", "SampNum")
+
     {}
     ~ProcessorStats_SampleNumber(){}
 };

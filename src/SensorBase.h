@@ -70,7 +70,8 @@ public:
     // Bit 7 - 0=No known errors, 1=Some sort of error has occurred
     uint8_t getStatus(void);
 
-    // This sets up the sensor, if necessary.  Defaults to true.
+    // This does any one-time preparations needed before the sensor will be able
+    // to take readings.  May not require any action.
     // Generally, the sensor must be powered on for setup.
     virtual bool setup(void);
 

@@ -19,7 +19,7 @@
 // The constructor - because this is I2C, only need the power pin
 // This sensor has a set I2C address of 0X64, or 100
 AtlasParent::AtlasParent(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage,
-                         const char *sensorName, uint8_t numReturnedVars,
+                         const char *sensorName, const uint8_t numReturnedVars,
                          uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
   : Sensor(sensorName, numReturnedVars,
            warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,

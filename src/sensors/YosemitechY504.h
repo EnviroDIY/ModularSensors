@@ -75,12 +75,10 @@ public:
 class YosemitechY504_DOpct : public Variable
 {
 public:
-    YosemitechY504_DOpct(Sensor *parentSense,
-                         const char *UUID = "", const char *customVarCode = "")
-     : Variable(parentSense, Y504_DOPCT_VAR_NUM,
-                "oxygenDissolvedPercentOfSaturation", "percent",
-                Y504_DOPCT_RESOLUTION,
-                "Y504DOpct", UUID, customVarCode)
+    YosemitechY504_DOpct()
+      : Variable(Y504_DOPCT_VAR_NUM, Y504_DOPCT_RESOLUTION,
+                 "oxygenDissolvedPercentOfSaturation", "percent", "Y504DOpct")
+
     {}
     ~YosemitechY504_DOpct(){}
 };
@@ -90,12 +88,10 @@ public:
 class YosemitechY504_Temp : public Variable
 {
 public:
-    YosemitechY504_Temp(Sensor *parentSense,
-                        const char *UUID = "", const char *customVarCode = "")
-     : Variable(parentSense, Y504_TEMP_VAR_NUM,
-                "temperature", "degreeCelsius",
-                Y504_TEMP_RESOLUTION,
-                "Y504Temp", UUID, customVarCode)
+    YosemitechY504_Temp()
+      : Variable(Y504_TEMP_VAR_NUM, Y504_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius", "Y504Temp")
+
     {}
     ~YosemitechY504_Temp(){}
 };
@@ -105,12 +101,10 @@ public:
 class YosemitechY504_DOmgL : public Variable
 {
 public:
-    YosemitechY504_DOmgL(Sensor *parentSense,
-                         const char *UUID = "", const char *customVarCode = "")
-     : Variable(parentSense, Y504_DOMGL_VAR_NUM,
-                "oxygenDissolved", "milligramPerLiter",
-                Y504_DOMGL_RESOLUTION,
-                "Y504DOmgL", UUID, customVarCode)
+    YosemitechY504_DOmgL()
+      : Variable(Y504_DOMGL_VAR_NUM, Y504_DOMGL_RESOLUTION,
+                 "oxygenDissolved", "milligramPerLiter", "Y504DOmgL")
+
     {}
     ~YosemitechY504_DOmgL(){}
 };
