@@ -97,4 +97,9 @@ public:
     ~ProcessorStats_SampleNumber(){}
 };
 
+// Undefine debugging macro, if applicable, so we don't have macro "leaks"
+#ifdef DEBUGGING_SERIAL_OUTPUT
+#undef DEBUGGING_SERIAL_OUTPUT
+#endif
+
 #endif  // Header Guard

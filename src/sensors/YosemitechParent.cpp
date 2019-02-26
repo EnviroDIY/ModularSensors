@@ -66,7 +66,12 @@ bool YosemitechParent::setup(void)
 
     #if defined(DEEP_DEBUGGING_SERIAL_OUTPUT)
         sensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
-    #endif  // Header Guard
+    // Undefine debugging macro, if applicable, so we don't have macro "leaks"
+#ifdef DEBUGGING_SERIAL_OUTPUT
+#undef DEBUGGING_SERIAL_OUTPUT
+#endif
+
+#endif  // Header Guard
 
     // This sensor begin is just setting more pin modes, etc, no sensor power required
     // This realy can't fail so adding the return value is just for show
