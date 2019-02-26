@@ -501,7 +501,11 @@ bool VariableArray::completeUpdate(void)
     int8_t powerPins[_variableCount];
     for (uint8_t i = 0; i < _variableCount; i++)
     {
-        powerPins[i] = arrayOfVars[i]->parentSensor->getPowerPin();
+        if (lastSensorVariable[i])
+        {
+            powerPins[i] = arrayOfVars[i]->parentSensor->getPowerPin();
+        }
+        else lastSensorVariable[i] = 0;
     }
 
     // Create an array of the last variable on each power pin
