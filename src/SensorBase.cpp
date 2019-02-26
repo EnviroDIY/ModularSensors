@@ -391,7 +391,7 @@ bool Sensor::update(void)
 
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
-    if (!wasOn){powerUp();}
+    if (!wasOn) {powerUp();}
 
     // Check if it's awake/active, activate it if not
     bool wasActive = bitRead(getStatus(), 3);
@@ -427,7 +427,7 @@ bool Sensor::update(void)
     if (wasActive){sleep();}
 
     // Turn the power back off it it had been turned on
-    if (!wasOn){powerDown();}
+    if (!wasOn) {powerDown();}
 
     // Update the registered variables with the new values
     notifyVariables();
