@@ -59,6 +59,8 @@ Logger::Logger()
     {
         dataPublishers[i] = NULL;
     }
+
+    MS_DBG(F("Logger object created"));
 }
 // Destructor
 Logger::~Logger(){}
@@ -170,7 +172,7 @@ void Logger::setLoggerPins(int8_t SDCardPin, int8_t mcuWakePin,
                            int8_t ledPin, int8_t buttonPin)
 {
     setSDCardSS(SDCardPin);
-    setTestingModePin(mcuWakePin);
+    setRTCWakePin(mcuWakePin);
     setAlertPin(ledPin);
     setTestingModePin(buttonPin);
 }

@@ -25,7 +25,7 @@ class VariableArray
 {
 public:
     // Constructor
-    VariableArray(){};
+    VariableArray(){MS_DBG(F("VariableArray object created"));};
     // VariableArray(uint8_t variableCount, Variable *variableList[]);
     virtual ~VariableArray(){};
 
@@ -105,6 +105,9 @@ private:
 };
 
 // Undefine debugging macro, if applicable, so we don't have macro "leaks"
+#ifdef DEEP_DEBUGGING_SERIAL_OUTPUT
+#undef DEEP_DEBUGGING_SERIAL_OUTPUT
+#endif
 #ifdef DEBUGGING_SERIAL_OUTPUT
 #undef DEBUGGING_SERIAL_OUTPUT
 #endif

@@ -480,7 +480,7 @@ bool VariableArray::completeUpdate(void)
         nMeasurementsCompleted[i] = 0;
 
     // Create an array for the number of measurements to average (another short cut)
-    MS_DBG(F("Creating a mask with the number of measurements to average.."));
+    MS_DBG(F("Creating an array with the number of measurements to average.."));
     uint8_t nMeasurementsToAverage[_variableCount];
     for (uint8_t i = 0; i < _variableCount; i++)
     {

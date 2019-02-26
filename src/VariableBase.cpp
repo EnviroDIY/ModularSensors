@@ -34,6 +34,8 @@ Variable::Variable(const uint8_t sensorVarNum,
     // When we create the variable, we also want to initialize it with a current
     // value of -9999 (ie, a bad result).
     _currentValue = -9999;
+
+    MS_DBG(F("Variable object created"));
 }
 
 // The constructor for a calculated variable  - that is, one whose value is
