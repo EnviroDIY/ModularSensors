@@ -58,9 +58,9 @@ const char *mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
 // Create the sample number, battery voltage, and free RAM variable objects for the processor
-ProcessorStats_SampleNumber mcuBoardSampNo(&mcuBoard, "mcuBoard-Samp-1234-efgh-1234567890ab");
-ProcessorStats_Batt mcuBoardBatt(&mcuBoard, "mcuBoard-Batt-1234-efgh-1234567890ab");
-ProcessorStats_FreeRam mcuBoardAvailableRAM(&mcuBoard, "mcuBoard-Avai-1234-efgh-1234567890ab");
+ProcessorStats_SampleNumber mcuBoardSampNo;
+ProcessorStats_Batt mcuBoardBatt;
+ProcessorStats_FreeRam mcuBoardAvailableRAM;
 
 
 // ==========================================================================
@@ -85,7 +85,6 @@ ProcessorStats_FreeRam mcuBoardAvailableRAM(&mcuBoard, "mcuBoard-Avai-1234-efgh-
 #include <AltSoftSerial.h>
 AltSoftSerial altSoftSerial;
 
-#if not defined ATMEGA32U4  // NeoSWSerial Doesn't support Leonardo
 // NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
 // serial that can be used on any pin supporting interrupts.
 // You can use as many instances of NeoSWSerial as you want.
@@ -100,7 +99,6 @@ void neoSSerial1ISR()
 {
     NeoSWSerial::rxISR(*portInputRegister(digitalPinToPort(neoSSerial1Rx)));
 }
-#endif  // NeoSWSerial
 
 // The "standard" software serial library uses interrupts that conflict
 // with several other libraries used within this program, we must use a
@@ -180,9 +178,9 @@ void SERCOM2_Handler()
 // #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
 // #define USE_UBLOX_R410M  // Select with UBLOX for a non-XBee SARA R4 or N4 model
 // #define USE_XBEE_BYPASS  // Select with UBLOX for a Digi 3G or LTE-M XBee in bypass mode
-#define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
-// #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
-// #define USE_XBEE_WIFI  // Select with XBEE for an S6B wifi XBee
+// #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
+#define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
+#define USE_XBEE_WIFI  // Select with XBEE for an S6B wifi XBee
 // #define TINY_GSM_MODEM_M590  // Select for a Neoway M590
 // #define TINY_GSM_MODEM_A6  // Select for an AI-Thinker A6, A6C, A7, A20
 // #define TINY_GSM_MODEM_M95  // Select for a Quectel M95
@@ -352,8 +350,8 @@ void extraModemSetup(void)
 // Describe the physical pin connection of your modem to your board
 const long modemBaud = 115200;       // Communication speed of the modem, 115200 is default for ESP8266
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
-const int8_t espSleepRqPin = 14;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
-const int8_t espStatusPin = 13;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
+const int8_t espSleepRqPin = 13;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
+const int8_t espStatusPin = -1;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -660,8 +658,8 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, m
 #endif
 
 // Create the RSSI and signal strength variable objects for the modem
-Modem_RSSI modemRSSI(&modem, "modemRSS-Ixxx-1234-efgh-1234567890ab");
-Modem_SignalPercent modemSignalPct(&modem, "modemSig-nalP-1234-efgh-1234567890ab");
+Modem_RSSI modemRSSI;
+Modem_SignalPercent modemSignalPct;
 
 
 // ==========================================================================
@@ -673,7 +671,7 @@ Modem_SignalPercent modemSignalPct(&modem, "modemSig-nalP-1234-efgh-1234567890ab
 MaximDS3231 ds3231(1);
 
 // Create the temperature variable object for the DS3231
-MaximDS3231_Temp ds3231Temp(&ds3231, "ds3231Te-mpxx-1234-efgh-1234567890ab");
+MaximDS3231_Temp ds3231Temp;
 
 
 // ==========================================================================
@@ -692,8 +690,8 @@ const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 i
 AtlasScientificCO2 atlasCO2(I2CPower);
 
 // Create the concentration and temperature variable objects for the EZO-CO2
-AtlasScientificCO2_CO2 atlasCO2CO2(&atlasCO2, "atlasCO2-CO2x-1234-efgh-1234567890ab");
-AtlasScientificCO2_Temp atlasCO2Temp(&atlasCO2, "atlasCO2-Temp-1234-efgh-1234567890ab");
+AtlasScientificCO2_CO2 atlasCO2CO2;
+AtlasScientificCO2_Temp atlasCO2Temp;
 
 
 // ==========================================================================
@@ -712,8 +710,8 @@ AtlasScientificCO2_Temp atlasCO2Temp(&atlasCO2, "atlasCO2-Temp-1234-efgh-1234567
 AtlasScientificDO atlasDO(I2CPower);
 
 // Create the concentration and percent saturation variable objects for the EZO-DO
-AtlasScientificDO_DOmgL atlasDOconc(&atlasDO, "atlasDOc-oncx-1234-efgh-1234567890ab");
-AtlasScientificDO_DOpct atlasDOpct(&atlasDO, "atlasDOp-ctxx-1234-efgh-1234567890ab");
+AtlasScientificDO_DOmgL atlasDOconc;
+AtlasScientificDO_DOpct atlasDOpct;
 
 
 // ==========================================================================
@@ -732,10 +730,10 @@ AtlasScientificDO_DOpct atlasDOpct(&atlasDO, "atlasDOp-ctxx-1234-efgh-1234567890
 AtlasScientificEC atlasEC(I2CPower);
 
 // Create the four variable objects for the EZO-ES
-AtlasScientificEC_Cond atlasCond(&atlasEC, "atlasCon-dxxx-1234-efgh-1234567890ab");
-AtlasScientificEC_TDS atlasTDS(&atlasEC, "atlasTDS-xxxx-1234-efgh-1234567890ab");
-AtlasScientificEC_Salinity atlasSal(&atlasEC, "atlasSal-xxxx-1234-efgh-1234567890ab");
-AtlasScientificEC_SpecificGravity atlasGrav(&atlasEC, "atlasGra-vxxx-1234-efgh-1234567890ab");
+AtlasScientificEC_Cond atlasCond;
+AtlasScientificEC_TDS atlasTDS;
+AtlasScientificEC_Salinity atlasSal;
+AtlasScientificEC_SpecificGravity atlasGrav;
 
 
 // ==========================================================================
@@ -754,7 +752,7 @@ AtlasScientificEC_SpecificGravity atlasGrav(&atlasEC, "atlasGra-vxxx-1234-efgh-1
 AtlasScientificORP atlasORP(I2CPower);
 
 // Create the potential variable object for the ORP
-AtlasScientificORP_Potential atlasORPot(&atlasORP, "atlasORP-otxx-1234-efgh-1234567890ab");
+AtlasScientificORP_Potential atlasORPot;
 
 
 // ==========================================================================
@@ -773,7 +771,7 @@ AtlasScientificORP_Potential atlasORPot(&atlasORP, "atlasORP-otxx-1234-efgh-1234
 AtlasScientificpH atlaspH(I2CPower);
 
 // Create the pH variable object for the pH sensor
-AtlasScientificpH_pH atlaspHpH(&atlaspH, "atlaspHp-Hxxx-1234-efgh-1234567890ab");
+AtlasScientificpH_pH atlaspHpH;
 
 
 // ==========================================================================
@@ -792,7 +790,7 @@ AtlasScientificpH_pH atlaspHpH(&atlaspH, "atlaspHp-Hxxx-1234-efgh-1234567890ab")
 AtlasScientificRTD atlasRTD(I2CPower);
 
 // Create the temperature variable object for the RTD
-AtlasScientificRTD_Temp atlasTemp(&atlasRTD, "atlasTem-pxxx-1234-efgh-1234567890ab");
+AtlasScientificRTD_Temp atlasTemp;
 
 
 // ==========================================================================
@@ -806,8 +804,8 @@ AtlasScientificRTD_Temp atlasTemp(&atlasRTD, "atlasTem-pxxx-1234-efgh-1234567890
 AOSongAM2315 am2315(I2CPower);
 
 // Create the humidity and temperature variable objects for the AM2315
-AOSongAM2315_Humidity am2315Humid(&am2315, "am2315Hu-midx-1234-efgh-1234567890ab");
-AOSongAM2315_Temp am2315Temp(&am2315, "am2315Te-mpxx-1234-efgh-1234567890ab");
+AOSongAM2315_Humidity am2315Humid;
+AOSongAM2315_Temp am2315Temp;
 
 
 // ==========================================================================
@@ -823,9 +821,9 @@ DHTtype dhtType = DHT11;  // DHT type, either DHT11, DHT21, or DHT22
 AOSongDHT dht(DHTPower, DHTPin, dhtType);
 
 // Create the humidity, temperature and heat index variable objects for the DHT
-AOSongDHT_Humidity dhtHumid(&dht, "dhtHumid-xxxx-1234-efgh-1234567890ab");
-AOSongDHT_Temp dhtTemp(&dht, "dhtTempx-xxxx-1234-efgh-1234567890ab");
-AOSongDHT_HI dhtHI(&dht, "dhtHIxxx-xxxx-1234-efgh-1234567890ab");
+AOSongDHT_Humidity dhtHumid;
+AOSongDHT_Temp dhtTemp;
+AOSongDHT_HI dhtHI;
 
 
 // ==========================================================================
@@ -841,7 +839,7 @@ const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
 ApogeeSQ212 SQ212(SQ212Power, SQ212ADSChannel);
 
 // Create the PAR variable object for the SQ212
-ApogeeSQ212_PAR sq212PAR(&SQ212, "sq212PAR-xxxx-1234-efgh-1234567890ab");
+ApogeeSQ212_PAR sq212PAR;
 
 
 // ==========================================================================
@@ -858,10 +856,10 @@ uint8_t BMEi2c_addr = 0x76;
 BoschBME280 bme280(I2CPower, BMEi2c_addr);
 
 // Create the four variable objects for the BME280
-BoschBME280_Humidity bme280Humid(&bme280, "bme280Hu-midx-1234-efgh-1234567890ab");
-BoschBME280_Temp bme280Temp(&bme280, "bme280Te-mpxx-1234-efgh-1234567890ab");
-BoschBME280_Pressure bme280Press(&bme280, "bme280Pr-essx-1234-efgh-1234567890ab");
-BoschBME280_Altitude bme280Alt(&bme280, "bme280Al-txxx-1234-efgh-1234567890ab");
+BoschBME280_Humidity bme280Humid;
+BoschBME280_Temp bme280Temp;
+BoschBME280_Pressure bme280Press;
+BoschBME280_Altitude bme280Alt;
 
 
 // ==========================================================================
@@ -882,8 +880,8 @@ const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibrati
 CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3numberReadings);
 
 // Create the turbidity and voltage variable objects for the low range of the OBS3
-CampbellOBS3_Turbidity obs3TurbLow(&osb3low, "obs3Turb-Lowx-1234-efgh-1234567890ab", "TurbLow");
-CampbellOBS3_Voltage obs3VoltLow(&osb3low, "obs3Volt-Lowx-1234-efgh-1234567890ab", "TurbLowV");
+CampbellOBS3_Turbidity obs3TurbLow;
+CampbellOBS3_Voltage obs3VoltLow;
 
 
 // Campbell OBS 3+ High Range calibration in Volts
@@ -896,8 +894,8 @@ const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibra
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 
 // Create the turbidity and voltage variable objects for the high range of the OBS3
-CampbellOBS3_Turbidity obs3TurbHigh(&osb3high, "obs3Turb-High-1234-efgh-1234567890ab", "TurbHigh");
-CampbellOBS3_Voltage obs3VoltHigh(&osb3high, "obs3Volt-High-1234-efgh-1234567890ab", "TurbHighV");
+CampbellOBS3_Turbidity obs3TurbHigh;
+CampbellOBS3_Voltage obs3VoltHigh;
 
 
 // ==========================================================================
@@ -914,9 +912,9 @@ Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
 
 // Create the matric potential, volumetric water content, and temperature
 // variable objects for the 5TM
-Decagon5TM_Ea fivetmEa(&fivetm, "fivetmEa-xxxx-1234-efgh-1234567890ab");
-Decagon5TM_VWC fivetmVWC(&fivetm, "fivetmVW-Cxxx-1234-efgh-1234567890ab");
-Decagon5TM_Temp fivetmTemp(&fivetm, "fivetmTe-mpxx-1234-efgh-1234567890ab");
+Decagon5TM_Ea fivetmEa;
+Decagon5TM_VWC fivetmVWC;
+Decagon5TM_Temp fivetmTemp;
 
 
 // ==========================================================================
@@ -933,9 +931,9 @@ const uint8_t CTDnumberReadings = 6;  // The number of readings to average
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 
 // Create the conductivity, temperature, and depth variable objects for the CTD
-DecagonCTD_Cond ctdCond(&ctd, "ctdCondx-xxxx-1234-efgh-1234567890ab");
-DecagonCTD_Temp ctdTemp(&ctd, "ctdTempx-xxxx-1234-efgh-1234567890ab");
-DecagonCTD_Depth ctdDepth(&ctd, "ctdDepth-xxxx-1234-efgh-1234567890ab");
+DecagonCTD_Cond ctdCond;
+DecagonCTD_Temp ctdTemp;
+DecagonCTD_Depth ctdDepth;
 
 
 // ==========================================================================
@@ -952,8 +950,8 @@ const uint8_t ES2NumberReadings = 3;
 DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
 
 // Create the conductivity and temperature variable objects for the ES2
-DecagonES2_Cond es2Cond(&es2, "es2Condx-xxxx-1234-efgh-1234567890ab");
-DecagonES2_Temp es2Temp(&es2, "es2Tempx-xxxx-1234-efgh-1234567890ab");
+DecagonES2_Cond es2Cond;
+DecagonES2_Temp es2Temp;
 
 
 // ==========================================================================
@@ -971,7 +969,7 @@ const uint8_t VoltReadsToAvg = 1;  // Only read one sample
 ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, ADSi2c_addr, VoltReadsToAvg);
 
 // Create the voltage variable object
-ExternalVoltage_Volt extvoltV(&extvolt, "extvoltV-xxxx-1234-efgh-1234567890ab");
+ExternalVoltage_Volt extvoltV;
 
 
 // ==========================================================================
@@ -986,8 +984,8 @@ const uint8_t MPL115A2ReadingsToAvg = 1;
 MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 
 // Create the pressure and temperature variable objects for the MPL
-MPL115A2_Pressure mplPress(&mpl115a2, "mplPress-xxxx-1234-efgh-1234567890ab");
-MPL115A2_Temp mplTemp(&mpl115a2, "mplTempx-xxxx-1234-efgh-1234567890ab");
+MPL115A2_Pressure mplPress;
+MPL115A2_Temp mplTemp;
 
 
 // ==========================================================================
@@ -1014,7 +1012,7 @@ const int8_t Sonar1Trigger = A1;  // Trigger pin (a unique negative number if un
 MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger) ;
 
 // Create the ultrasonic range variable object
-MaxBotixSonar_Range sonar1Range(&sonar1, "sonar1Ra-ngex-1234-efgh-1234567890ab");
+MaxBotixSonar_Range sonar1Range;
 
 
 // ==========================================================================
@@ -1035,7 +1033,7 @@ MaximDS18 ds18(OneWireAddress1, OneWirePower, OneWireBus);
 // MaximDS18 ds18(OneWirePower, OneWireBus);
 
 // Create the temperature variable object for the DS18
-MaximDS18_Temp ds18Temp(&ds18, "ds18Temp-xxxx-1234-efgh-1234567890ab");
+MaximDS18_Temp ds18Temp;
 
 
 // ==========================================================================
@@ -1052,8 +1050,8 @@ const uint8_t MS5803ReadingsToAvg = 1;
 MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803ReadingsToAvg);
 
 // Create the conductivity and temperature variable objects for the MS5803
-MeaSpecMS5803_Pressure ms5803Press(&ms5803, "ms5803Pr-essx-1234-efgh-1234567890ab");
-MeaSpecMS5803_Temp ms5803Temp(&ms5803, "ms5803Te-mpxx-1234-efgh-1234567890ab");
+MeaSpecMS5803_Pressure ms5803Press;
+MeaSpecMS5803_Temp ms5803Temp;
 
 
 // ==========================================================================
@@ -1068,8 +1066,8 @@ const float depthPerTipEvent = 0.2;  // rain depth in mm per tip event
 RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 
 // Create the number of tips and rain depth variable objects for the tipping bucket
-RainCounterI2C_Tips tbi2cTips(&tbi2c, "tbi2cTip-sxxx-1234-efgh-1234567890ab");
-RainCounterI2C_Depth tbi2cDepth(&tbi2c, "tbi2cDep-thxx-1234-efgh-1234567890ab");
+RainCounterI2C_Tips tbi2cTips;
+RainCounterI2C_Depth tbi2cDepth;
 
 
 // ==========================================================================
@@ -1086,9 +1084,9 @@ const uint8_t INA219ReadingsToAvg = 1;
 TIINA219 ina219(I2CPower, INA219i2c_addr, INA219ReadingsToAvg);
 
 // Create the current, voltage, and power variable objects for the INA219
-TIINA219_Current inaCurrent(&ina219, "inaCurre-ntxx-1234-efgh-1234567890ab");
-TIINA219_Volt inaVolt(&ina219, "inaVoltx-xxxx-1234-efgh-1234567890ab");
-TIINA219_Power inaPower(&ina219, "inaPower-xxxx-1234-efgh-1234567890ab");
+TIINA219_Current inaCurrent;
+TIINA219_Volt inaVolt;
+TIINA219_Power inaPower;
 
 
 // ==========================================================================
@@ -1115,9 +1113,9 @@ const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends takin
 KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, acculevelNumberReadings);
 
 // Create the pressure, temperature, and height variable objects for the Acculevel
-KellerAcculevel_Pressure acculevPress(&acculevel, "acculevP-ress-1234-efgh-1234567890ab");
-KellerAcculevel_Temp acculevTemp(&acculevel, "acculevT-empx-1234-efgh-1234567890ab");
-KellerAcculevel_Height acculevHeight(&acculevel, "acculevH-eigh-1234-efgh-1234567890ab");
+KellerAcculevel_Pressure acculevPress;
+KellerAcculevel_Temp acculevTemp;
+KellerAcculevel_Height acculevHeight;
 
 
 // ==========================================================================
@@ -1144,9 +1142,9 @@ const uint8_t nanolevelNumberReadings = 3;  // The manufacturer recommends takin
 KellerNanolevel nanolevel(nanolevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
 
 // Create the pressure, temperature, and height variable objects for the Nanolevel
-KellerNanolevel_Pressure nanolevPress(&nanolevel, "nanolevP-ress-1234-efgh-1234567890ab");
-KellerNanolevel_Temp nanolevTemp(&nanolevel, "nanolevT-empx-1234-efgh-1234567890ab");
-KellerNanolevel_Height nanolevHeight(&nanolevel, "nanolevH-eigh-1234-efgh-1234567890ab");
+KellerNanolevel_Pressure nanolevPress;
+KellerNanolevel_Temp nanolevTemp;
+KellerNanolevel_Height nanolevHeight;
 
 
 // ==========================================================================
@@ -1174,9 +1172,9 @@ YosemitechY504 y504(y504ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create the dissolved oxygen percent, dissolved oxygen concentration, and
 // temperature variable objects for the Y504
-YosemitechY504_DOpct y504DOpct(&y504, "y504DOpc-txxx-1234-efgh-1234567890ab");
-YosemitechY504_DOmgL y504DOmgL(&y504, "y504DOmg-Lxxx-1234-efgh-1234567890ab");
-YosemitechY504_Temp y504Temp(&y504, "y504Temp-xxxx-1234-efgh-1234567890ab");
+YosemitechY504_DOpct y504DOpct;
+YosemitechY504_DOmgL y504DOmgL;
+YosemitechY504_Temp y504Temp;
 
 
 // ==========================================================================
@@ -1203,8 +1201,8 @@ const uint8_t y510NumberReadings = 5;  // The manufacturer recommends averaging 
 YosemitechY510 y510(y510ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y510NumberReadings);
 
 // Create the turbidity and temperature variable objects for the Y510
-YosemitechY510_Turbidity y510Turb(&y510, "y510Turb-xxxx-1234-efgh-1234567890ab");
-YosemitechY510_Temp y510Temp(&y510, "y510Temp-xxxx-1234-efgh-1234567890ab");
+YosemitechY510_Turbidity y510Turb;
+YosemitechY510_Temp y510Temp;
 
 
 // ==========================================================================
@@ -1231,8 +1229,8 @@ const uint8_t y511NumberReadings = 5;  // The manufacturer recommends averaging 
 YosemitechY511 y511(y511ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y511NumberReadings);
 
 // Create the turbidity and temperature variable objects for the Y511
-YosemitechY511_Turbidity y511Turb(&y511, "y511Turb-xxxx-1234-efgh-1234567890ab");
-YosemitechY511_Temp y511Temp(&y511, "y511Temp-xxxx-1234-efgh-1234567890ab");
+YosemitechY511_Turbidity y511Turb;
+YosemitechY511_Temp y511Temp;
 
 
 // ==========================================================================
@@ -1259,8 +1257,8 @@ const uint8_t y514NumberReadings = 5;  // The manufacturer recommends averaging 
 YosemitechY514 y514(y514ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y514NumberReadings);
 
 // Create the chlorophyll concentration and temperature variable objects for the Y514
-YosemitechY514_Chlorophyll y514Chloro(&y514, "y514Chlo-roxx-1234-efgh-1234567890ab");
-YosemitechY514_Temp y514Temp(&y514, "y514Temp-xxxx-1234-efgh-1234567890ab");
+YosemitechY514_Chlorophyll y514Chloro;
+YosemitechY514_Temp y514Temp;
 
 
 // ==========================================================================
@@ -1287,8 +1285,8 @@ const uint8_t y520NumberReadings = 5;  // The manufacturer recommends averaging 
 YosemitechY520 y520(y520ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y520NumberReadings);
 
 // Create the specific conductance and temperature variable objects for the Y520
-YosemitechY520_Cond y520Cond(&y520, "y520Cond-xxxx-1234-efgh-1234567890ab");
-YosemitechY520_Temp y520Temp(&y520, "y520Temp-xxxx-1234-efgh-1234567890ab");
+YosemitechY520_Cond y520Cond;
+YosemitechY520_Temp y520Temp;
 
 
 // ==========================================================================
@@ -1315,9 +1313,9 @@ const uint8_t y532NumberReadings = 1;  // The manufacturer actually doesn't ment
 YosemitechY532 y532(y532ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y532NumberReadings);
 
 // Create the pH, electrical potential, and temperature variable objects for the Y532
-YosemitechY532_Voltage y532Voltage(&y532, "y532Volt-agex-1234-efgh-1234567890ab");
-YosemitechY532_pH y532pH(&y532, "y532pHxx-xxxx-1234-efgh-1234567890ab");
-YosemitechY532_Temp y532Temp(&y532, "y532Temp-xxxx-1234-efgh-1234567890ab");
+YosemitechY532_Voltage y532Voltage;
+YosemitechY532_pH y532pH;
+YosemitechY532_Temp y532Temp;
 
 
 // ==========================================================================
@@ -1344,9 +1342,9 @@ const uint8_t y550NumberReadings = 5;  // The manufacturer recommends averaging 
 YosemitechY550 y550(y550ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y550NumberReadings);
 
 // Create the COD, turbidity, and temperature variable objects for the Y550
-YosemitechY550_COD y550COD(&y550, "y550CODx-xxxx-1234-efgh-1234567890ab");
-YosemitechY550_Turbidity y550Turbid(&y550, "y550Turb-idxx-1234-efgh-1234567890ab");
-YosemitechY550_Temp y550Temp(&y550, "y550Temp-xxxx-1234-efgh-1234567890ab");
+YosemitechY550_COD y550COD;
+YosemitechY550_Turbidity y550Turbid;
+YosemitechY550_Temp y550Temp;
 
 
 // ==========================================================================
@@ -1373,14 +1371,14 @@ const uint8_t y4000NumberReadings = 5;  // The manufacturer recommends averaging
 YosemitechY4000 y4000(y4000ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y4000NumberReadings);
 
 // Create all of the variable objects for the Y4000
-YosemitechY4000_DOmgL y4000DO(&y4000, "y4000DOx-xxxx-1234-efgh-1234567890ab");
-YosemitechY4000_Turbidity y4000Turb(&y4000, "y4000Tur-bxxx-1234-efgh-1234567890ab");
-YosemitechY4000_Cond y4000Cond(&y4000, "y4000Con-dxxx-1234-efgh-1234567890ab");
-YosemitechY4000_pH y4000pH(&y4000, "y4000pHx-xxxx-1234-efgh-1234567890ab");
-YosemitechY4000_Temp y4000Temp(&y4000, "y4000Tem-pxxx-1234-efgh-1234567890ab");
-YosemitechY4000_ORP y4000ORP(&y4000, "y4000ORP-xxxx-1234-efgh-1234567890ab");
-YosemitechY4000_Chlorophyll y4000Chloro(&y4000, "y4000Chl-orox-1234-efgh-1234567890ab");
-YosemitechY4000_BGA y4000BGA(&y4000, "y4000BGA-xxxx-1234-efgh-1234567890ab");
+YosemitechY4000_DOmgL y4000DO;
+YosemitechY4000_Turbidity y4000Turb;
+YosemitechY4000_Cond y4000Cond;
+YosemitechY4000_pH y4000pH;
+YosemitechY4000_Temp y4000Temp;
+YosemitechY4000_ORP y4000ORP;
+YosemitechY4000_Chlorophyll y4000Chloro;
+YosemitechY4000_BGA y4000BGA;
 
 
 // ==========================================================================
@@ -1397,9 +1395,9 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 
 // Create the dissolved oxygen percent, dissolved oxygen concentration, and
 // temperature variable objects for the Zebra Tech
-ZebraTechDOpto_DOpct dOptoDOpct(&dopto, "dOptoDOp-ctxx-1234-efgh-1234567890ab");
-ZebraTechDOpto_DOmgL dOptoDOmgL(&dopto, "dOptoDOm-gLxx-1234-efgh-1234567890ab");
-ZebraTechDOpto_Temp dOptoTemp(&dopto, "dOptoTem-pxxx-1234-efgh-1234567890ab");
+ZebraTechDOpto_DOpct dOptoDOpct;
+ZebraTechDOpto_DOmgL dOptoDOmgL;
+ZebraTechDOpto_Temp dOptoTemp;
 
 
 // ==========================================================================
@@ -1412,31 +1410,28 @@ ZebraTechDOpto_Temp dOptoTemp(&dopto, "dOptoTem-pxxx-1234-efgh-1234567890ab");
 // The function should take no input (void) and return a float.
 // You can use any named variables to access values by way of variable.getValue()
 
-/*
+
 float calculateVariableValue(void)
 {
     float calculatedResult = -9999;  // Always safest to start with a bad value
-    float inputVar1 = variable1.getValue();
-    float inputVar2 = variable2.getValue();
-    if (inputVar1 != -9999 && inputVar2 != -9999)  // make sure both inputs are good
-    {
-        calculatedResult = inputVar1 + inputVar2;
-    }
+    // float inputVar1 = variable1.getValue();
+    // float inputVar2 = variable2.getValue();
+    // if (inputVar1 != -9999 && inputVar2 != -9999)  // make sure both inputs are good
+    // {
+    //     calculatedResult = inputVar1 + inputVar2;
+    // }
     return calculatedResult;
 }
 
 // Properties of the calculated variable
+const uint8_t calculatedVarResolution = 3;  // The number of digits after the decimal place
 const char *calculatedVarName = "varName";  // This must be a value from http://vocabulary.odm2.org/variablename/
 const char *calculatedVarUnit = "varUnit";  // This must be a value from http://vocabulary.odm2.org/units/
-int calculatedVarResolution = 3;  // The number of digits after the decimal place
-const char *calculatedVarUUID = "12345678-abcd-1234-efgh-1234567890ab";  // The (optional) universallly unique identifier
 const char *calculatedVarCode = "calcVar";  // An (optional) short code for the variable
+const char *calculatedVarUUID = "12345678-abcd-1234-efgh-1234567890ab";  // The (optional) universallly unique identifier
 
-// Finally, create the calculated variable object
-Variable calculatedVar(calculateVariableValue, calculatedVarName,
-                       calculatedVarUnit, calculatedVarResolution,
-                       calculatedVarUUID, calculatedVarCode);
-*/
+// Create the shell for the calculated variable object
+Variable calculatedVar;
 
 
 // ==========================================================================
@@ -1530,6 +1525,7 @@ Variable *variableList[] = {
   &dOptoDOpct,
   &dOptoDOmgL,
   &dOptoTemp,
+  &calculatedVar
 };
 
 
@@ -1730,6 +1726,96 @@ void setup()
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modem);
     dataLogger.setLoggerPins(sdCardPin, wakePin, greenLED, buttonPin);
+
+    // Begin all those variables.  The order does not matter at all.
+    mcuBoardSampNo.begin(&mcuBoard, "mcuBoard-Samp-1234-efgh-1234567890ab");
+    mcuBoardBatt.begin(&mcuBoard, "mcuBoard-Batt-1234-efgh-1234567890ab");
+    mcuBoardAvailableRAM.begin(&mcuBoard, "mcuBoard-Avai-labl-eRAM-1234567890ab");
+    ds3231Temp.begin(&ds3231, "ds3231Te-mpxx-1234-efgh-1234567890ab");
+    modemRSSI.begin(&modem, "modemRSS-Ixxx-1234-efgh-1234567890ab");
+    modemSignalPct.begin(&modem, "modemSig-nalP-1234-efgh-1234567890ab");
+    atlasCO2CO2.begin(&atlasCO2, "atlasCO2-CO2x-1234-efgh-1234567890ab");
+    atlasCO2Temp.begin(&atlasCO2, "atlasCO2-Temp-1234-efgh-1234567890ab");
+    atlasDOconc.begin(&atlasDO, "atlasDOc-oncx-1234-efgh-1234567890ab");
+    atlasDOpct.begin(&atlasDO, "atlasDOp-ctxx-1234-efgh-1234567890ab");
+    atlasCond.begin(&atlasEC, "atlasCon-dxxx-1234-efgh-1234567890ab");
+    atlasTDS.begin(&atlasEC, "atlasTDS-xxxx-1234-efgh-1234567890ab");
+    atlasSal.begin(&atlasEC, "atlasSal-xxxx-1234-efgh-1234567890ab");
+    atlasGrav.begin(&atlasEC, "atlasGra-vxxx-1234-efgh-1234567890ab");
+    atlasORPot.begin(&atlasORP, "atlasORP-otxx-1234-efgh-1234567890ab");
+    atlaspHpH.begin(&atlaspH, "atlaspHp-Hxxx-1234-efgh-1234567890ab");
+    atlasTemp.begin(&atlasRTD, "atlasTem-pxxx-1234-efgh-1234567890ab");
+    am2315Humid.begin(&am2315, "am2315Hu-midx-1234-efgh-1234567890ab");
+    am2315Temp.begin(&am2315, "am2315Te-mpxx-1234-efgh-1234567890ab");
+    dhtHumid.begin(&dht, "dhtHumid-xxxx-1234-efgh-1234567890ab");
+    dhtTemp.begin(&dht, "dhtTempx-xxxx-1234-efgh-1234567890ab");
+    dhtHI.begin(&dht, "dhtHIxxx-xxxx-1234-efgh-1234567890ab");
+    sq212PAR.begin(&SQ212, "sq212PAR-xxxx-1234-efgh-1234567890ab");
+    bme280Humid.begin(&bme280, "bme280Hu-midx-1234-efgh-1234567890ab");
+    bme280Temp.begin(&bme280, "bme280Te-mpxx-1234-efgh-1234567890ab");
+    bme280Press.begin(&bme280, "bme280Pr-essx-1234-efgh-1234567890ab");
+    bme280Alt.begin(&bme280, "bme280Al-txxx-1234-efgh-1234567890ab");
+    obs3TurbLow.begin(&osb3low, "obs3Turb-Lowx-1234-efgh-1234567890ab", "TurbLow");
+    obs3VoltLow.begin(&osb3low, "obs3Volt-Lowx-1234-efgh-1234567890ab", "TurbLowV");
+    obs3TurbHigh.begin(&osb3high, "obs3Turb-High-1234-efgh-1234567890ab", "TurbHigh");
+    obs3VoltHigh.begin(&osb3high, "obs3Volt-High-1234-efgh-1234567890ab", "TurbHighV");
+    fivetmEa.begin(&fivetm, "fivetmEa-xxxx-1234-efgh-1234567890ab");
+    fivetmVWC.begin(&fivetm, "fivetmVW-Cxxx-1234-efgh-1234567890ab");
+    fivetmTemp.begin(&fivetm, "fivetmTe-mpxx-1234-efgh-1234567890ab");
+    ctdCond.begin(&ctd, "ctdCondx-xxxx-1234-efgh-1234567890ab");
+    ctdTemp.begin(&ctd, "ctdTempx-xxxx-1234-efgh-1234567890ab");
+    ctdDepth.begin(&ctd, "ctdDepth-xxxx-1234-efgh-1234567890ab");
+    es2Cond.begin(&es2, "es2Condx-xxxx-1234-efgh-1234567890ab");
+    es2Temp.begin(&es2, "es2Tempx-xxxx-1234-efgh-1234567890ab");
+    extvoltV.begin(&extvolt, "extvoltV-xxxx-1234-efgh-1234567890ab");
+    mplPress.begin(&mpl115a2, "mplPress-xxxx-1234-efgh-1234567890ab");
+    mplTemp.begin(&mpl115a2, "mplTempx-xxxx-1234-efgh-1234567890ab");
+    sonar1Range.begin(&sonar1, "sonar1Ra-ngex-1234-efgh-1234567890ab");
+    ds18Temp.begin(&ds18, "ds18Temp-xxxx-1234-efgh-1234567890ab");
+    ms5803Press.begin(&ms5803, "ms5803Pr-essx-1234-efgh-1234567890ab");
+    ms5803Temp.begin(&ms5803, "ms5803Te-mpxx-1234-efgh-1234567890ab");
+    tbi2cTips.begin(&tbi2c, "tbi2cTip-sxxx-1234-efgh-1234567890ab");
+    tbi2cDepth.begin(&tbi2c, "tbi2cDep-thxx-1234-efgh-1234567890ab");
+    inaCurrent.begin(&ina219, "inaCurre-ntxx-1234-efgh-1234567890ab");
+    inaVolt.begin(&ina219, "inaVoltx-xxxx-1234-efgh-1234567890ab");
+    inaPower.begin(&ina219, "inaPower-xxxx-1234-efgh-1234567890ab");
+    acculevPress.begin(&acculevel, "acculevP-ress-1234-efgh-1234567890ab");
+    acculevTemp.begin(&acculevel, "acculevT-empx-1234-efgh-1234567890ab");
+    acculevHeight.begin(&acculevel, "acculevH-eigh-1234-efgh-1234567890ab");
+    nanolevPress.begin(&nanolevel, "nanolevP-ress-1234-efgh-1234567890ab");
+    nanolevTemp.begin(&nanolevel, "nanolevT-empx-1234-efgh-1234567890ab");
+    nanolevHeight.begin(&nanolevel, "nanolevH-eigh-1234-efgh-1234567890ab");
+    y504DOpct.begin(&y504, "y504DOpc-txxx-1234-efgh-1234567890ab");
+    y504DOmgL.begin(&y504, "y504DOmg-Lxxx-1234-efgh-1234567890ab");
+    y504Temp.begin(&y504, "y504Temp-xxxx-1234-efgh-1234567890ab");
+    y510Turb.begin(&y510, "y510Turb-xxxx-1234-efgh-1234567890ab");
+    y510Temp.begin(&y510, "y510Temp-xxxx-1234-efgh-1234567890ab");
+    y511Turb.begin(&y511, "y511Turb-xxxx-1234-efgh-1234567890ab");
+    y511Temp.begin(&y511, "y511Temp-xxxx-1234-efgh-1234567890ab");
+    y514Chloro.begin(&y514, "y514Chlo-roxx-1234-efgh-1234567890ab");
+    y514Temp.begin(&y514, "y514Temp-xxxx-1234-efgh-1234567890ab");
+    y520Cond.begin(&y520, "y520Cond-xxxx-1234-efgh-1234567890ab");
+    y520Temp.begin(&y520, "y520Temp-xxxx-1234-efgh-1234567890ab");
+    y532Voltage.begin(&y532, "y532Volt-agex-1234-efgh-1234567890ab");
+    y532pH.begin(&y532, "y532pHxx-xxxx-1234-efgh-1234567890ab");
+    y532Temp.begin(&y532, "y532Temp-xxxx-1234-efgh-1234567890ab");
+    y550COD.begin(&y550, "y550CODx-xxxx-1234-efgh-1234567890ab");
+    y550Turbid.begin(&y550, "y550Turb-idxx-1234-efgh-1234567890ab");
+    y550Temp.begin(&y550, "y550Temp-xxxx-1234-efgh-1234567890ab");
+    y4000DO.begin(&y4000, "y4000DOx-xxxx-1234-efgh-1234567890ab");
+    y4000Turb.begin(&y4000, "y4000Tur-bxxx-1234-efgh-1234567890ab");
+    y4000Cond.begin(&y4000, "y4000Con-dxxx-1234-efgh-1234567890ab");
+    y4000pH.begin(&y4000, "y4000pHx-xxxx-1234-efgh-1234567890ab");
+    y4000Temp.begin(&y4000, "y4000Tem-pxxx-1234-efgh-1234567890ab");
+    y4000ORP.begin(&y4000, "y4000ORP-xxxx-1234-efgh-1234567890ab");
+    y4000Chloro.begin(&y4000, "y4000Chl-orox-1234-efgh-1234567890ab");
+    y4000BGA.begin(&y4000, "y4000BGA-xxxx-1234-efgh-1234567890ab");
+    dOptoDOpct.begin(&dopto, "dOptoDOp-ctxx-1234-efgh-1234567890ab");
+    dOptoDOmgL.begin(&dopto, "dOptoDOm-gLxx-1234-efgh-1234567890ab");
+    dOptoTemp.begin(&dopto, "dOptoTem-pxxx-1234-efgh-1234567890ab");
+    calculatedVar.begin(calculateVariableValue, calculatedVarResolution,
+                        calculatedVarName, calculatedVarUnit,
+                        calculatedVarCode, calculatedVarUUID);
 
     // Begin the variable array[s], logger[s], and publisher[s]
     varArray.begin(variableCount, variableList);
