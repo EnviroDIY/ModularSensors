@@ -505,7 +505,7 @@ bool VariableArray::completeUpdate(void)
         {
             powerPins[i] = arrayOfVars[i]->parentSensor->getPowerPin();
         }
-        else lastSensorVariable[i] = 0;
+        else powerPins[i] = 0;
     }
 
     // Create an array of the last variable on each power pin
