@@ -44,20 +44,21 @@ public:
     // This does all of the setup that can't happen in the constructors
     // That is, anything that is dependent on another object having been created
     // first or anything that requires the actual processor/MCU to do something.
-    void begin(Sensor *parentSense, const char *uuid, const char *customVarCode);
-    void begin(Sensor *parentSense, const char *uuid);
-    void begin(Sensor *parentSense);
-    void begin(float (*calcFxn)(),
-               uint8_t decimalResolution,
-               const char *varName,
-               const char *varUnit,
-               const char *varCode,
-               const char *uuid);
-    void begin(float (*calcFxn)(),
-              uint8_t decimalResolution,
-              const char *varName,
-              const char *varUnit,
-              const char *varCode);
+    Variable *begin(Sensor *parentSense, const char *uuid,
+                    const char *customVarCode);
+    Variable *begin(Sensor *parentSense, const char *uuid);
+    Variable *begin(Sensor *parentSense);
+    Variable *begin(float (*calcFxn)(),
+                    uint8_t decimalResolution,
+                    const char *varName,
+                    const char *varUnit,
+                    const char *varCode,
+                    const char *uuid);
+    Variable *begin(float (*calcFxn)(),
+                    uint8_t decimalResolution,
+                    const char *varName,
+                    const char *varUnit,
+                    const char *varCode);
 
     // These functions tie the variable and sensor together
     // They should never be called for a calculated variable
@@ -99,7 +100,7 @@ public:
     String getValueString(bool updateValue = false);
 
     // This is the parent sensor for the variable
-    Sensor *_parentSensor;
+    Sensor *parentSensor;
     bool isCalculated;
 
 protected:

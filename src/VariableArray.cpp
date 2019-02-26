@@ -75,9 +75,9 @@ bool VariableArray::setupSensors(void)
 
     // First setup all of the variables
     // This guarantees that they're registered to their parent sensor
-    MS_DBG(F("Running variable setup..."));
-    for (uint8_t i = 0; i < _variableCount; i++)
-        arrayOfVars[i]->setup();
+    // MS_DBG(F("Running variable setup..."));
+    // for (uint8_t i = 0; i < _variableCount; i++)
+    //     arrayOfVars[i]->setup();
 
     // Power all of the sensors
     // NOTE:  Because we are running this *before* running each sensor's setup
