@@ -67,12 +67,4 @@ private:
     int8_t _powerPin2;
 };
 
-// Undefine debugging macro, if applicable, so we don't have macro "leaks"
-#ifdef DEEP_DEBUGGING_SERIAL_OUTPUT
-#undef DEEP_DEBUGGING_SERIAL_OUTPUT
-#endif
-#ifdef DEBUGGING_SERIAL_OUTPUT
-#undef DEBUGGING_SERIAL_OUTPUT
-#endif
-
 #endif  // Header Guard
