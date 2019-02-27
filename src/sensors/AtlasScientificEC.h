@@ -64,7 +64,6 @@ public:
     AtlasScientificEC_Cond()
       : Variable(ATLAS_COND_VAR_NUM, ATLAS_COND_RESOLUTION,
                  "electricalConductivity", "microsiemenPerCentimeter", "AtlasCond")
-
     {}
     ~AtlasScientificEC_Cond(){}
 };
@@ -76,7 +75,6 @@ public:
     AtlasScientificEC_TDS()
       : Variable(ATLAS_TDS_VAR_NUM, ATLAS_TDS_RESOLUTION,
                  "solidsTotalDissolved", "partPerMillion", "AtlasTDS")
-
     {}
     ~AtlasScientificEC_TDS(){}
 };
@@ -88,7 +86,6 @@ public:
     AtlasScientificEC_Salinity()
       : Variable(ATLAS_SALINITY_VAR_NUM, ATLAS_SALINITY_RESOLUTION,
                  "salinity", "practicalSalinityUnit", "AtlasSalinity")
-
     {}
     ~AtlasScientificEC_Salinity(){}
 };
@@ -100,7 +97,6 @@ public:
     AtlasScientificEC_SpecificGravity()
       : Variable(ATLAS_SG_VAR_NUM, ATLAS_SG_RESOLUTION,
                  "specificGravity", "dimensionless", "AtlasSpecGravity")
-
     {}
     ~AtlasScientificEC_SpecificGravity(){}
 };

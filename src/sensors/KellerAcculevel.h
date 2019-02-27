@@ -63,7 +63,6 @@ public:
     KellerAcculevel_Pressure()
       : Variable(KELLER_PRESSURE_VAR_NUM, ACCULEVEL_PRESSURE_RESOLUTION,
                  "pressureGauge", "millibar", "kellerPress")
-
     {}
     ~KellerAcculevel_Pressure(){}
 };
@@ -76,7 +75,6 @@ public:
     KellerAcculevel_Temp()
       : Variable(KELLER_TEMP_VAR_NUM, ACCULEVEL_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "kellerTemp")
-
     {}
     ~KellerAcculevel_Temp(){}
 };
@@ -88,7 +86,6 @@ public:
     KellerAcculevel_Height()
       : Variable(KELLER_HEIGHT_VAR_NUM, ACCULEVEL_HEIGHT_RESOLUTION,
                  "gaugeHeight", "meter", "kellerHeight")
-
     {}
     ~KellerAcculevel_Height(){}
 };

@@ -57,7 +57,6 @@ public:
     AtlasScientificCO2_CO2()
       : Variable(ATLAS_CO2_VAR_NUM, ATLAS_CO2_RESOLUTION,
                  "carbonDioxide", "partPerMillion", "AtlasCO2ppm")
-
     {}
     ~AtlasScientificCO2_CO2(){}
 };
@@ -69,7 +68,6 @@ public:
     AtlasScientificCO2_Temp()
       : Variable(ATLAS_CO2TEMP_VAR_NUM, ATLAS_CO2TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "AtlasCO2Temp")
-
     {}
     ~AtlasScientificCO2_Temp(){}
 };

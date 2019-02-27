@@ -75,7 +75,6 @@ public:
     YosemitechY510_Turbidity()
       : Variable(Y510_TURB_VAR_NUM, Y510_TURB_RESOLUTION,
                  "turbidity", "nephelometricTurbidityUnit", "Y510Turbidity")
-
     {}
     ~YosemitechY510_Turbidity(){}
 };
@@ -88,7 +87,6 @@ public:
     YosemitechY510_Temp()
       : Variable(Y510_TEMP_VAR_NUM, Y510_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "Y510Temp")
-
     {}
     ~YosemitechY510_Temp(){}
 };

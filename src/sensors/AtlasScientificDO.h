@@ -57,7 +57,6 @@ public:
     AtlasScientificDO_DOmgL()
       : Variable(ATLAS_DOMGL_VAR_NUM, ATLAS_DOMGL_RESOLUTION,
                  "oxygenDissolved", "milligramPerLiter", "AtlasDOmgL")
-
     {}
     ~AtlasScientificDO_DOmgL(){}
 };
@@ -69,7 +68,6 @@ public:
     AtlasScientificDO_DOpct()
       : Variable(ATLAS_DOPCT_VAR_NUM, ATLAS_DOPCT_RESOLUTION,
                  "oxygenDissolvedPercentOfSaturation", "percent", "AtlasDOpct")
-
     {}
     ~AtlasScientificDO_DOpct(){}
 };

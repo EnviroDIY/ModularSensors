@@ -67,7 +67,6 @@ public:
     ProcessorStats_Batt()
       : Variable(PROCESSOR_BATTERY_VAR_NUM, PROCESSOR_BATTERY_RESOLUTION,
                  "batteryVoltage", "volt", "Battery")
-
     {}
     ~ProcessorStats_Batt(){}
 };
@@ -92,7 +91,6 @@ public:
     ProcessorStats_SampleNumber()
       : Variable(PROCESSOR_SAMPNUM_VAR_NUM, PROCESSOR_SAMPNUM_RESOLUTION,
                  "sequenceNumber", "Dimensionless", "SampNum")
-
     {}
     ~ProcessorStats_SampleNumber(){}
 };

@@ -75,7 +75,6 @@ public:
     YosemitechY511_Turbidity()
       : Variable(Y511_TURB_VAR_NUM, Y511_TURB_RESOLUTION,
                  "turbidity", "nephelometricTurbidityUnit", "Y511Turbidity")
-
     {}
     ~YosemitechY511_Turbidity(){}
 };
@@ -88,7 +87,6 @@ public:
     YosemitechY511_Temp()
       : Variable(Y511_TEMP_VAR_NUM, Y511_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "Y511Temp")
-
     {}
     ~YosemitechY511_Temp(){}
 };

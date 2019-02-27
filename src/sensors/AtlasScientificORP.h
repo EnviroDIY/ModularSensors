@@ -58,7 +58,6 @@ public:
     AtlasScientificORP_Potential()
       : Variable(ATLAS_ORP_VAR_NUM, ATLAS_ORP_RESOLUTION,
                  "reductionPotential", "millivolt", "AtlasORP")
-
     {}
     ~AtlasScientificORP_Potential(){}
 };

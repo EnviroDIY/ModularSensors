@@ -79,7 +79,6 @@ public:
     DecagonES2_Cond()
       : Variable(ES2_COND_VAR_NUM, ES2_COND_RESOLUTION,
                  "specificConductance", "microsiemenPerCentimeter", "ES2Cond")
-
     {}
     ~DecagonES2_Cond(){}
 };
@@ -91,7 +90,6 @@ public:
     DecagonES2_Temp()
       : Variable(ES2_TEMP_VAR_NUM, ES2_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "ES2Temp")
-
     {}
     ~DecagonES2_Temp(){}
 };

@@ -291,7 +291,7 @@ bool SDI12Sensors::startSingleMeasurement(void)
     if (!wasActive) _SDI12Internal.end();
 
     // Verify the number of results the sensor will send
-    // uint8_t numVariables = sdiResponse.substring(4,5).toInt();
+    // uint8_t numVariables = sdiResponse.substring(4).toInt();
     // if (numVariables != _numReturnedVars)
     // {
     //     MS_DBG(numVariables, F("results expected"),

@@ -96,7 +96,6 @@ public:
     AOSongDHT_Humidity()
       : Variable(DHT_HUMIDITY_VAR_NUM, DHT_HUMIDITY_RESOLUTION,
                  "relativeHumidity", "percent", "DHTHumidity")
-
     {}
     ~AOSongDHT_Humidity(){};
 };
@@ -109,7 +108,6 @@ public:
     AOSongDHT_Temp()
       : Variable(DHT_TEMP_VAR_NUM, DHT_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "DHTTemp")
-
     {}
     ~AOSongDHT_Temp(){};
 };
@@ -122,7 +120,6 @@ public:
     AOSongDHT_HI()
       : Variable(DHT_HI_VAR_NUM, DHT_HI_RESOLUTION,
                  "heatIndex", "degreeCelsius", "DHTHI")
-
     {}
     ~AOSongDHT_HI(){};
 };

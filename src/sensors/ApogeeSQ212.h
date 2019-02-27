@@ -96,7 +96,6 @@ public:
       : Variable(SQ212_PAR_VAR_NUM, SQ212_PAR_RESOLUTION,
                  "radiationIncomingPAR", "microeinsteinPerSquareMeterPerSecond",
                  "photosyntheticallyActiveRadiation")
-
     {}
     ~ApogeeSQ212_PAR(){};
 };
@@ -109,7 +108,6 @@ public:
     ApogeeSQ212_Voltage()
       : Variable(SQ212_VOLTAGE_VAR_NUM, SQ212_VOLT_RESOLUTION,
                  "voltage", "volt", "SQ212Voltage")
-
     {}
     ~ApogeeSQ212_Voltage(){};
 };

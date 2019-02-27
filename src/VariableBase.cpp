@@ -58,6 +58,7 @@ Variable::Variable()
     MS_DBG(F("Calculated variable object created"));
 }
 
+
 // Destructor
 Variable::~Variable(){}
 

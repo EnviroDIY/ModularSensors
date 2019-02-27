@@ -78,7 +78,6 @@ public:
     MaximDS18_Temp()
       : Variable(DS18_TEMP_VAR_NUM, DS18_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "DS18Temp")
-
     {}
     ~MaximDS18_Temp(){}
 };

@@ -58,7 +58,6 @@ public:
     AtlasScientificpH_pH()
       : Variable(ATLAS_PH_VAR_NUM, ATLAS_PH_RESOLUTION,
                  "pH", "pH", "AtlaspH")
-
     {}
     ~AtlasScientificpH_pH(){}
 };

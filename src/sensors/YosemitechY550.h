@@ -82,7 +82,6 @@ public:
     YosemitechY550_COD()
       : Variable(Y550_COD_VAR_NUM, Y550_COD_RESOLUTION,
                  "COD", "milligramPerLiter", "Y550COD")
-
     {}
     ~YosemitechY550_COD(){}
 };
@@ -95,7 +94,6 @@ public:
     YosemitechY550_Temp()
       : Variable(Y550_TEMP_VAR_NUM, Y550_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "Y550Temp")
-
     {}
     ~YosemitechY550_Temp(){}
 };
@@ -108,7 +106,6 @@ public:
     YosemitechY550_Turbidity()
       : Variable(Y550_TURB_VAR_NUM, Y550_TURB_RESOLUTION,
                  "turbidity", "nephelometricTurbidityUnit", "Y550Turbidity")
-
     {}
     ~YosemitechY550_Turbidity(){}
 };

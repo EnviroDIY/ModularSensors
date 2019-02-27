@@ -89,7 +89,6 @@ public:
     BoschBME280_Temp()
       : Variable(BME280_TEMP_VAR_NUM, BME280_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "BoschBME280Temp")
-
     {}
     ~BoschBME280_Temp(){};
 };
@@ -102,7 +101,6 @@ public:
     BoschBME280_Humidity()
       : Variable(BME280_HUMIDITY_VAR_NUM, BME280_HUMIDITY_RESOLUTION,
                  "relativeHumidity", "percent", "BoschBME280Humidity")
-
     {}
     ~BoschBME280_Humidity(){};
 };
@@ -115,7 +113,6 @@ public:
     BoschBME280_Pressure()
       : Variable(BME280_PRESSURE_VAR_NUM, BME280_PRESSURE_RESOLUTION,
                  "barometricPressure", "pascal", "BoschBME280Pressure")
-
     {}
 };
 
@@ -127,7 +124,6 @@ public:
     BoschBME280_Altitude()
       : Variable(BME280_ALTITUDE_VAR_NUM, BME280_ALTITUDE_RESOLUTION,
                  "heightAboveSeaFloor", "meter", "BoschBME280Altitude")
-
     {}
 };
 

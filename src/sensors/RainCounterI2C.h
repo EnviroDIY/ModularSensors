@@ -69,7 +69,6 @@ public:
     RainCounterI2C_Tips()
       : Variable(BUCKET_TIPS_VAR_NUM, BUCKET_TIPS_RESOLUTION,
                  "precipitation", "event", "RainCounterI2CTips")
-
     {}
     ~RainCounterI2C_Tips(){}
 };
@@ -81,7 +80,6 @@ public:
     RainCounterI2C_Depth()
       : Variable(BUCKET_RAIN_VAR_NUM, BUCKET_RAIN_RESOLUTION,
                  "precipitation", "millimeter", "RainCounterI2CVol")
-
     {}
     ~RainCounterI2C_Depth(){}
 };

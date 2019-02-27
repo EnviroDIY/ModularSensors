@@ -129,7 +129,6 @@ public:
     YosemitechY4000_DOmgL()
       : Variable(Y4000_DOMGL_VAR_NUM, Y4000_DOMGL_RESOLUTION,
                  "oxygenDissolved", "milligramPerLiter", "Y4000DOmgL")
-
     {}
     ~YosemitechY4000_DOmgL(){}
 };
@@ -141,7 +140,6 @@ public:
     YosemitechY4000_Turbidity()
       : Variable(Y4000_TURB_VAR_NUM, Y4000_TURB_RESOLUTION,
                  "turbidity", "nephelometricTurbidityUnit", "Y4000Turbidity")
-
     {}
     ~YosemitechY4000_Turbidity(){}
 };
@@ -153,7 +151,6 @@ public:
     YosemitechY4000_Cond()
       : Variable(Y4000_COND_VAR_NUM, Y4000_COND_RESOLUTION,
                  "specificConductance", "microsiemenPerCentimeter", "Y4000Cond")
-
     {}
     ~YosemitechY4000_Cond(){}
 };
@@ -165,7 +162,6 @@ public:
     YosemitechY4000_pH()
       : Variable(Y4000_PH_VAR_NUM, Y4000_PH_RESOLUTION,
                  "pH", "pH", "Y4000pH")
-
     {}
     ~YosemitechY4000_pH(){}
 };
@@ -177,7 +173,6 @@ public:
     YosemitechY4000_Temp()
       : Variable(Y4000_TEMP_VAR_NUM, Y4000_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "Y4000Temp")
-
     {}
     ~YosemitechY4000_Temp(){}
 };
@@ -189,7 +184,6 @@ public:
     YosemitechY4000_ORP()
       : Variable(Y4000_ORP_VAR_NUM, Y4000_ORP_RESOLUTION,
                  "ORP", "millivolt", "Y4000Potential")
-
     {}
     ~YosemitechY4000_ORP(){}
 };
@@ -201,7 +195,6 @@ public:
     YosemitechY4000_Chlorophyll()
       : Variable(Y4000_CHLORO_VAR_NUM, Y4000_CHLORO_RESOLUTION,
                  "chlorophyllFluorescence", "microgramPerLiter", "Y4000Chloro")
-
     {}
     ~YosemitechY4000_Chlorophyll(){}
 };
@@ -213,7 +206,6 @@ public:
     YosemitechY4000_BGA()
       : Variable(Y4000_BGA_VAR_NUM, Y4000_BGA_RESOLUTION,
                  "blueGreenAlgaeCyanobacteriaPhycocyanin", "microgramPerLiter", "Y4000BGA")
-
     {}
     ~YosemitechY4000_BGA(){}
 };

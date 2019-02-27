@@ -96,7 +96,6 @@ public:
     CampbellOBS3_Turbidity()
       : Variable(OBS3_TURB_VAR_NUM, OBS3_RESOLUTION,
                  "turbidity", "nephelometricTurbidityUnit", "OBS3Turbidity")
-
     {}
     ~CampbellOBS3_Turbidity(){}
 };
@@ -110,7 +109,6 @@ public:
     CampbellOBS3_Voltage()
       : Variable(OBS3_VOLTAGE_VAR_NUM, OBS3_VOLT_RESOLUTION,
                  "voltage", "volt", "OBS3Voltage")
-
     {}
     ~CampbellOBS3_Voltage(){}
 };

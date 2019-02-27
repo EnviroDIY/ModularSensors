@@ -88,7 +88,6 @@ public:
     DecagonCTD_Cond()
       : Variable(CTD_COND_VAR_NUM, CTD_COND_RESOLUTION,
                  "specificConductance", "microsiemenPerCentimeter", "CTDcond")
-
     {}
     ~DecagonCTD_Cond(){}
 };
@@ -101,7 +100,6 @@ public:
     DecagonCTD_Temp()
       : Variable(CTD_TEMP_VAR_NUM, CTD_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "CTDtemp")
-
     {}
     ~DecagonCTD_Temp(){}
 };
@@ -114,7 +112,6 @@ public:
     DecagonCTD_Depth()
       : Variable(CTD_DEPTH_VAR_NUM, CTD_DEPTH_RESOLUTION,
                  "waterDepth", "millimeter", "CTDdepth")
-
     {}
     ~DecagonCTD_Depth(){}
 };

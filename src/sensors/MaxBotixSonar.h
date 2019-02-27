@@ -61,7 +61,6 @@ public:
     MaxBotixSonar_Range()
       : Variable(HRXL_VAR_NUM, HRXL_RESOLUTION,
                  "distance", "millimeter", "SonarRange")
-
     {}
     ~MaxBotixSonar_Range(){}
 };

@@ -88,7 +88,6 @@ public:
     ZebraTechDOpto_Temp()
       : Variable(DOPTO_TEMP_VAR_NUM, DOPTO_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "DOtempC")
-
     {}
     ~ZebraTechDOpto_Temp(){}
 };
@@ -101,7 +100,6 @@ public:
     ZebraTechDOpto_DOpct()
       : Variable(DOPTO_DOPCT_VAR_NUM, DOPTO_DOPCT_RESOLUTION,
                  "oxygenDissolvedPercentOfSaturation", "percent", "DOpercent")
-
     {}
     ~ZebraTechDOpto_DOpct(){}
 };
@@ -114,7 +112,6 @@ public:
     ZebraTechDOpto_DOmgL()
       : Variable(DOPTO_DOMGL_VAR_NUM, DOPTO_DOMGL_RESOLUTION,
                  "oxygenDissolved", "milligramPerLiter", "DOppm")
-
     {}
     ~ZebraTechDOpto_DOmgL(){}
 };

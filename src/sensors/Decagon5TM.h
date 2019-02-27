@@ -86,7 +86,6 @@ public:
     Decagon5TM_Ea()
       : Variable(TM_EA_VAR_NUM, TM_EA_RESOLUTION,
                  "permittivity", "faradPerMeter", "SoilEa")
-
     {}
     ~Decagon5TM_Ea(){}
 };
@@ -99,7 +98,6 @@ public:
     Decagon5TM_Temp()
       : Variable(TM_TEMP_VAR_NUM, TM_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "SoilTemp")
-
     {}
     ~Decagon5TM_Temp(){}
 };
@@ -112,7 +110,6 @@ public:
     Decagon5TM_VWC()
       : Variable(TM_VWC_VAR_NUM, TM_VWC_RESOLUTION,
                  "volumetricWaterContent", "percent", "SoilVWC")
-
     {}
     ~Decagon5TM_VWC(){}
 };

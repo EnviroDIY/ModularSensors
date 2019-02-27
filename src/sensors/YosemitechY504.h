@@ -78,7 +78,6 @@ public:
     YosemitechY504_DOpct()
       : Variable(Y504_DOPCT_VAR_NUM, Y504_DOPCT_RESOLUTION,
                  "oxygenDissolvedPercentOfSaturation", "percent", "Y504DOpct")
-
     {}
     ~YosemitechY504_DOpct(){}
 };
@@ -91,7 +90,6 @@ public:
     YosemitechY504_Temp()
       : Variable(Y504_TEMP_VAR_NUM, Y504_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "Y504Temp")
-
     {}
     ~YosemitechY504_Temp(){}
 };
@@ -104,7 +102,6 @@ public:
     YosemitechY504_DOmgL()
       : Variable(Y504_DOMGL_VAR_NUM, Y504_DOMGL_RESOLUTION,
                  "oxygenDissolved", "milligramPerLiter", "Y504DOmgL")
-
     {}
     ~YosemitechY504_DOmgL(){}
 };

@@ -81,7 +81,6 @@ public:
     TIINA219_Current()
       : Variable(INA219_CURRENT_MA_VAR_NUM, INA219_CURRENT_MA_RESOLUTION,
                  "amp", "mA", "TIINA219Amp")
-
     {}
     ~TIINA219_Current(){};
 };
@@ -94,7 +93,6 @@ public:
     TIINA219_Volt()
       : Variable(INA219_BUS_VOLTAGE_VAR_NUM, INA219_BUS_VOLTAGE_RESOLUTION,
                  "Volt", "V", "TIINA219Volt")
-
     {}
     ~TIINA219_Volt(){};
 };
@@ -107,7 +105,6 @@ public:
     TIINA219_Power()
       : Variable(INA219_POWER_MW_VAR_NUM, INA219_POWER_MW_RESOLUTION,
                  "milliwatt", "mW", "TIINA219Power")
-
     {}
 };
 

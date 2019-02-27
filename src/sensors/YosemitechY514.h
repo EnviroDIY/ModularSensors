@@ -76,7 +76,6 @@ public:
     YosemitechY514_Chlorophyll()
       : Variable(Y514_CHLORO_VAR_NUM, Y514_CHLORO_RESOLUTION,
                  "chlorophyllFluorescence", "microgramPerLiter", "Y514Chloro")
-
     {}
     ~YosemitechY514_Chlorophyll(){}
 };
@@ -89,7 +88,6 @@ public:
     YosemitechY514_Temp()
       : Variable(Y514_TEMP_VAR_NUM, Y514_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "Y514Temp")
-
     {}
     ~YosemitechY514_Temp(){}
 };

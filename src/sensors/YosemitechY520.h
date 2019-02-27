@@ -76,7 +76,6 @@ public:
     YosemitechY520_Cond()
       : Variable(Y520_COND_VAR_NUM, Y520_COND_RESOLUTION,
                  "specificConductance", "microsiemenPerCentimeter", "Y520Cond")
-
     {}
     ~YosemitechY520_Cond(){}
 };
@@ -89,7 +88,6 @@ public:
     YosemitechY520_Temp()
       : Variable(Y520_TEMP_VAR_NUM, Y520_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "Y520Temp")
-
     {}
     ~YosemitechY520_Temp(){}
 };

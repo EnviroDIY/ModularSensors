@@ -71,7 +71,6 @@ public:
     MPL115A2_Temp()
       : Variable(MPL115A2_TEMP_VAR_NUM, MPL115A2_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "MPL115A2_Temp")
-
     {}
     ~MPL115A2_Temp(){}
 };
@@ -84,7 +83,6 @@ public:
     MPL115A2_Pressure()
       : Variable(MPL115A2_PRESSURE_VAR_NUM, MPL115A2_PRESSURE_RESOLUTION,
                  "atmosphericPressure", "kilopascal", "MPL115A2_Pressure")
-
     {}
     ~MPL115A2_Pressure(){}
 };

@@ -191,7 +191,6 @@ public:
     Modem_RSSI()
       : Variable(RSSI_VAR_NUM, RSSI_RESOLUTION,
                  "RSSI", "decibelMiliWatt", "RSSI")
-
     {}
     ~Modem_RSSI(){}
 };
@@ -204,7 +203,6 @@ public:
     Modem_SignalPercent()
       : Variable(PERCENT_SIGNAL_VAR_NUM, PERCENT_SIGNAL_RESOLUTION,
                  "signalPercent", "percent", "signalPercent")
-
     {}
     ~Modem_SignalPercent(){}
 };

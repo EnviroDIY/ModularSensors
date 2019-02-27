@@ -71,7 +71,6 @@ public:
     AOSongAM2315_Humidity()
       : Variable(AM2315_HUMIDITY_VAR_NUM, AM2315_HUMIDITY_RESOLUTION,
                  "relativeHumidity", "percent", "AM2315Humidity")
-
     {}
     ~AOSongAM2315_Humidity(){};
 };
@@ -84,7 +83,6 @@ public:
     AOSongAM2315_Temp()
       : Variable(AM2315_TEMP_VAR_NUM, AM2315_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "AM2315Temp")
-
     {}
     ~AOSongAM2315_Temp(){};
 };

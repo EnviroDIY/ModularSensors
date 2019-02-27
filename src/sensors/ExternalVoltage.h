@@ -111,7 +111,6 @@ public:
     ExternalVoltage_Volt()
       : Variable(EXT_VOLT_VAR_NUM, EXT_VOLT_RESOLUTION,
                  "voltage", "volt", "extVoltage")
-
     {}
     ~ExternalVoltage_Volt(){}
 };

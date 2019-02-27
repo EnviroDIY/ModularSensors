@@ -64,7 +64,6 @@ public:
     MaximDS3231_Temp()
       : Variable(DS3231_TEMP_VAR_NUM, DS3231_TEMP_RESOLUTION,
                  "temperatureDatalogger", "degreeCelsius", "BoardTemp")
-
     {}
     ~MaximDS3231_Temp(){}
 };

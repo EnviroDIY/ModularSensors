@@ -79,7 +79,6 @@ public:
     YosemitechY532_pH()
       : Variable(Y532_PH_VAR_NUM, Y532_PH_RESOLUTION,
                  "pH", "pH", "Y532pH")
-
     {}
     ~YosemitechY532_pH(){}
 };
@@ -92,7 +91,6 @@ public:
     YosemitechY532_Temp()
       : Variable(Y532_TEMP_VAR_NUM, Y532_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "Y532Temp")
-
     {}
     ~YosemitechY532_Temp(){}
 };
@@ -105,7 +103,6 @@ public:
     YosemitechY532_Voltage()
       : Variable(Y532_VOLT_VAR_NUM, Y532_VOLT_RESOLUTION,
                  "voltage", "millivolt", "Y532Potential")
-
     {}
     ~YosemitechY532_Voltage(){}
 };
