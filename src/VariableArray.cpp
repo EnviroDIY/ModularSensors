@@ -75,7 +75,7 @@ bool VariableArray::setupSensors(void)
 
     // First setup all of the variables
     // This guarantees that they're registered to their parent sensor
-    // MS_DBG(F("Running variable setup..."));
+    // MS_DBG(F("Running variable setup functions."));
     // for (uint8_t i = 0; i < _variableCount; i++)
     //     arrayOfVars[i]->setup();
 
@@ -96,7 +96,7 @@ bool VariableArray::setupSensors(void)
     // sensorsPowerUp();
 
     // Now run all the set-up functions
-    MS_DBG(F("Running sensor setup..."));
+    MS_DBG(F("Running sensor setup functions."));
 
     // Check for any sensors that have been set up outside of this (ie, the modem)
     uint8_t nSensorsSetup = 0;
@@ -381,7 +381,7 @@ bool VariableArray::updateAllSensors(void)
                     {
                             // Start a reading
                             MS_DBG(i, '.', nMeasurementsCompleted[i]+1,
-                                   F(" --->> Starting reading"), nMeasurementsCompleted[i]+1,
+                                   F("--->> Starting reading"), nMeasurementsCompleted[i]+1,
                                    F("on"), arrayOfVars[i]->getParentSensorNameAndLocation(), '-');
 
                             bool sensorSuccess_start = arrayOfVars[i]->parentSensor->startSingleMeasurement();
@@ -402,7 +402,7 @@ bool VariableArray::updateAllSensors(void)
                     {
                         // Get the value
                         MS_DBG(i, '.', nMeasurementsCompleted[i]+1,
-                              F(" --->> Collected result of reading"),
+                              F("--->> Collected result of reading"),
                               nMeasurementsCompleted[i]+1, F("from"),
                               arrayOfVars[i]->getParentSensorNameAndLocation(), F("..."));
 
@@ -650,7 +650,7 @@ bool VariableArray::completeUpdate(void)
                     // and if it is already warmed up
                     if (arrayOfVars[i]->parentSensor->isWarmedUp(deepDebugTiming))
                     {
-                        MS_DBG(i, F(" --->> Waking"), arrayOfVars[i]->getParentSensorNameAndLocation(), F("..."));
+                        MS_DBG(i, F("--->> Waking"), arrayOfVars[i]->getParentSensorNameAndLocation(), F("..."));
 
                         // Make a single attempt to wake the sensor after it is warmed up
                         bool sensorSuccess_wake = arrayOfVars[i]->parentSensor->wake();
@@ -666,7 +666,7 @@ bool VariableArray::completeUpdate(void)
                 if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) == 1 &&
                     bitRead(arrayOfVars[i]->parentSensor->getStatus(), 4) == 0)
                 {
-                    MS_DBG(i, F(" --->>"), arrayOfVars[i]->getParentSensorNameAndLocation(),
+                    MS_DBG(i, F("--->>"), arrayOfVars[i]->getParentSensorNameAndLocation(),
                            F("did not wake up! No measurements will be taken! <<---"), i);
                     // Set the number of measurements already equal to whatever total
                     // number requested to ensure the sensor is skipped in further loops.

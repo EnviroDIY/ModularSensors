@@ -16,6 +16,7 @@
 // #define MODEM_DEBUGGING_SERIAL_OUTPUT Serial
 
 // Included Dependencies
+#include "ModSensorDebugger.h"
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Arduino.h>
@@ -59,25 +60,6 @@
 
 #define PERCENT_SIGNAL_VAR_NUM 1
 #define PERCENT_SIGNAL_RESOLUTION 0
-
-
-#ifdef MODEM_DEBUGGING_SERIAL_OUTPUT
-    namespace {
-        template<typename T>
-        static void MS_MOD_DBG(T last) {
-            MODEM_DEBUGGING_SERIAL_OUTPUT.println(last);
-        }
-
-        template<typename T, typename... Args>
-        static void MS_MOD_DBG(T head, Args... tail) {
-            MODEM_DEBUGGING_SERIAL_OUTPUT.print(head);
-            MODEM_DEBUGGING_SERIAL_OUTPUT.print(' ');
-            MS_MOD_DBG(tail...);
-        }
-    }
-#else
-    #define MS_MOD_DBG(...)
-#endif  // MODEM_DEBUGGING_SERIAL_OUTPUT
 
 /* ===========================================================================
 * Functions for the modem class

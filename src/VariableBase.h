@@ -79,18 +79,20 @@ public:
     // This sets up the variable (generally attaching it to its parent)
     // virtual bool setup(void);
 
-    // This gets the variable's name using http://vocabulary.odm2.org/variablename/
+    // This gets/sets the variable's resolution for value strings
+    uint8_t getResolution(void);
+    void setResolution(uint8_t decimalResolution);
+    // This gets/sets the variable's name using http://vocabulary.odm2.org/variablename/
     String getVarName(void);
-    // This gets the variable's unit using http://vocabulary.odm2.org/units/
+    void setVarName(const char *varName);
+    // This gets/sets the variable's unit using http://vocabulary.odm2.org/units/
     String getVarUnit(void);
-    // This returns a customized code for the variable, if one is given, and a default if not
+    void setVarUnit(const char *varUnit);
+    // This gets/sets a customized code for the variable
     String getVarCode(void);
-    // This returns the variable UUID, if one has been assigned
-    String getVarUUID(void);
-
-    // This sets the variable code to a new custom value
     void setVarCode(const char *varCode);
-    // This sets the UUID
+    // This gets/sets the variable UUID, if one has been assigned
+    String getVarUUID(void);
     void setVarUUID(const char *uuid);
 
     // This returns the current value of the variable as a float

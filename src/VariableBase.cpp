@@ -172,22 +172,27 @@ void Variable::setCalculation(float (*calcFxn)())
 //     return true;
 // }
 
-// This returns the variable's name using http://vocabulary.odm2.org/variablename/
-String Variable::getVarName(void){return _varName;}
 
-// This returns the variable's unit using http://vocabulary.odm2.org/units/
+// This gets/sets the variable's resolution for value strings
+uint8_t Variable::getResolution(void){return _decimalResolution;}
+void Variable::setResolution(uint8_t decimalResolution)
+{_decimalResolution = decimalResolution;}
+
+// This gets/sets the variable's name using http://vocabulary.odm2.org/variablename/
+String Variable::getVarName(void){return _varName;}
+void Variable::setVarName(const char *varName){_varName = varName;}
+
+// This gets/sets the variable's unit using http://vocabulary.odm2.org/units/
 String Variable::getVarUnit(void){return _varUnit;}
+void Variable::setVarUnit(const char *varUnit){_varUnit = varUnit;}
 
 // This returns a customized code for the variable
 String Variable::getVarCode(void){return _varCode;}
-
-// This returns the variable UUID, if one has been assigned
-String Variable::getVarUUID(void){return _uuid;}
-
-
 // This sets the variable code to a new custom value
 void Variable::setVarCode(const char *varCode){_varCode = varCode;}
 
+// This returns the variable UUID, if one has been assigned
+String Variable::getVarUUID(void){return _uuid;}
 // This sets the UUID
 void Variable::setVarUUID(const char *uuid){_uuid = uuid;}
 

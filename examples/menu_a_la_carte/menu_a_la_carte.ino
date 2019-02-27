@@ -353,6 +353,37 @@ const bool modemStatusLevel = HIGH;  // The level of the status pin when the mod
 const int8_t espSleepRqPin = 13;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
 const int8_t espStatusPin = -1;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
 
+// A helper function to wait for the esp to boot and immediately change some settings
+// We'll use this in the wake function
+bool ESPwaitForBoot(void)
+{
+    // Wait for boot - finished when characters start coming
+    // NOTE: After every "hard" reset (either power off or via RST-B), the ESP
+    // sends out a boot log from the ROM on UART1 at 74880 baud.  We're not
+    // going to worry about the odd baud rate since we're simply throwing the
+    // characters away.
+    delay(200);  // It will take at least this long
+    uint32_t start = millis();
+    bool success = false;
+    while (!modemSerial.available() && millis() - start < 1000) {}
+    if (modemSerial.available())
+    {
+        success = true;
+        // Read the boot log to empty it from the serial buffer
+        while (modemSerial.available())
+        {
+            modemSerial.read();
+            delay(2);
+        }
+        // Have to make sure echo is off or all AT commands will be confused
+        tinyModem.sendAT(F("E0"));
+        success &= tinyModem.waitResponse() == 1;
+        // re-run init to set mux and station mode
+        success &= tinyModem.init();
+    }
+    return success;
+}
+
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
 bool modemSleepFxn(void)
@@ -408,35 +439,7 @@ bool modemWakeFxn(void)
     if (modemVccPin >= 0)  // Turns on when power is applied
     {
         digitalWrite(redLED, HIGH);  // Because the ESP8266 doesn't have any lights
-        // Wait for boot - finished when characters start coming
-        delay(200);  // It will take at least this long
-        uint32_t start = millis();
-        bool success = false;
-        while (!modemSerial.available() && millis() - start < 1000) {}
-        if (modemSerial.available())
-        {
-            success = true;
-            // Clear the junk the ESP sends out after boot-up
-            while (modemSerial.available())
-            {
-                modemSerial.read();
-                delay(2);
-            }
-            // Have to make sure echo is off or all AT commands will be confused
-            tinyModem.sendAT(F("E0"));
-            success &= tinyModem.waitResponse() == 1;
-            // Slow down the baud rate for slow processors
-            #if F_CPU == 8000000L
-            if (modemBaud > 57600)
-            {
-                tinyModem.setBaud(9600);
-                modemSerial.end();
-                modemSerial.begin(9600);
-            }
-            #endif
-            // re-run init to set mux and station mode
-            success &= tinyModem.init();
-        }
+        success &= ESPwaitForBoot();
         if (!success)
         {
             digitalWrite(redLED, LOW);  // Turn off light if the boot failed
@@ -449,36 +452,7 @@ bool modemWakeFxn(void)
         digitalWrite(modemResetPin, LOW);
         delay(1);
         digitalWrite(modemResetPin, HIGH);
-
-        // Wait for boot - finished when characters start coming
-        delay(200);  // It will take at least this long
-        uint32_t start = millis();
-        bool success = false;
-        while (!modemSerial.available() && millis() - start < 1000) {}
-        if (modemSerial.available())
-        {
-            success = true;
-            // Clear the junk the ESP sends out after boot-up
-            while (modemSerial.available())
-            {
-                modemSerial.read();
-                delay(2);
-            }
-            // Have to make sure echo is off or all AT commands will be confused
-            tinyModem.sendAT(F("E0"));
-            success &= tinyModem.waitResponse() == 1;
-            // Slow down the baud rate for slow processors
-            #if F_CPU == 8000000L
-            if (modemBaud > 57600)
-            {
-                tinyModem.setBaud(9600);
-                modemSerial.end();
-                modemSerial.begin(9600);
-            }
-            #endif
-            // re-run init to set mux and station mode
-            success &= tinyModem.init();
-        }
+        success &= ESPwaitForBoot();
         if (!success)
         {
             digitalWrite(redLED, LOW);  // Turn off light if the boot failed
@@ -491,6 +465,7 @@ bool modemWakeFxn(void)
         delay(1);
         digitalWrite(modemSleepRqPin, HIGH);
         digitalWrite(redLED, HIGH);
+        // Don't have to wait for a boot if using light sleep
         return true;
     }
     else
@@ -501,6 +476,18 @@ bool modemWakeFxn(void)
 // Set up the light-sleep status pin, if applicable
 void extraModemSetup(void)
 {
+    // Slow down the baud rate for slow processors - and save the change to
+    // the ESP's non-volatile memory so we don't have to do it every time
+    #if F_CPU == 8000000L
+    if (modemBaud > 57600)
+    {
+        modemSerial.begin(modemBaud);
+        tinyModem.sendAT(F("+UART_DEF=9600,8,1,0,0"));
+        tinyModem.waitResponse();
+        modemSerial.end();
+        modemSerial.begin(9600);
+    }
+    #endif
     if (modemVccPin < 0 && modemResetPin < 0 && modemSleepRqPin >= 0 && modemStatusPin >= 0)
     {
         tinyModem.sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
@@ -1527,8 +1514,6 @@ Variable *variableList[] = {
   &dOptoTemp,
   &calculatedVar
 };
-
-
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
@@ -1839,6 +1824,7 @@ void setup()
         // Run any extra pre-set-up for the modem
         Serial.println(F("Running extra modem pre-setup"));
         extraModemSetup();
+        modem.setup();
 
         // At very good battery voltage, or with suspicious time stamp, sync the clock
         // Note:  Please change these battery voltages to match your battery

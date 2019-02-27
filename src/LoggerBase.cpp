@@ -36,7 +36,19 @@ volatile bool Logger::startTesting = false;
 #endif
 
 
-// Constructor
+// Constructors
+/*Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
+               int8_t SDCardPin, int8_t mcuWakePin,
+               VariableArray *inputArray)
+{
+    // Set parameters from constructor
+    _loggerID = loggerID;
+    _loggingIntervalMinutes = loggingIntervalMinutes;
+    _SDCardPin = SDCardPin;
+    _mcuWakePin = mcuWakePin;
+    _internalArray = inputArray;
+    Logger();
+}*/
 Logger::Logger()
 {
     // Set the testing/logging flags to false

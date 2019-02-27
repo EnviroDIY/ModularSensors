@@ -54,7 +54,10 @@ class Logger
     friend class dataPublisher;
 
 public:
-    // Constructor
+    // Constructors
+    /*Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
+           int8_t SDCardPin, int8_t mcuWakePin,
+           VariableArray *inputArray);*/
     Logger();
     // Destructor
     virtual ~Logger();
