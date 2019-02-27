@@ -47,7 +47,29 @@ volatile bool Logger::startTesting = false;
     _SDCardPin = SDCardPin;
     _mcuWakePin = mcuWakePin;
     _internalArray = inputArray;
-    Logger();
+
+    // Set the testing/logging flags to false
+    isLoggingNow = false;
+    isTestingNow = false;
+    startTesting = false;
+
+    // Initialize with informational pins set void
+    _ledPin = -1;
+    _buttonPin = -1;
+
+    // Initialize with no file name
+    _fileName = "";
+
+    // Start with no feature UUID
+    _samplingFeatureUUID = NULL;
+
+    // Clear arrays
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++)
+    {
+        dataPublishers[i] = NULL;
+    }
+
+    MS_DBG(F("Logger object created"));
 }*/
 Logger::Logger()
 {
