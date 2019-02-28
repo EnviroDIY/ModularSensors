@@ -26,10 +26,22 @@
 class EnviroDIYPublisher : public dataPublisher
 {
 public:
-    // Constructor
-    EnviroDIYPublisher(){};
+    // Constructors
+    EnviroDIYPublisher();
+    EnviroDIYPublisher(Logger& baseLogger,
+                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
+                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    EnviroDIYPublisher(Logger& baseLogger,
+                    const char *registrationToken,
+                    const char *samplingFeatureUUID,
+                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
+                    const char *registrationToken,
+                    const char *samplingFeatureUUID,
+                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     // Destructor
-    virtual ~EnviroDIYPublisher(){};
+    virtual ~EnviroDIYPublisher();
 
     // Returns the data destination
     virtual String getEndpoint(void){return String(enviroDIYHost);}

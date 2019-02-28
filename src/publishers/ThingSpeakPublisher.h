@@ -34,10 +34,24 @@
 class ThingSpeakPublisher : public dataPublisher
 {
 public:
-    // Constructor
-    ThingSpeakPublisher(){};
+    // Constructors
+    ThingSpeakPublisher();
+    ThingSpeakPublisher(Logger& baseLogger,
+                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    ThingSpeakPublisher(Logger& baseLogger, Client *inClient,
+                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    ThingSpeakPublisher(Logger& baseLogger,
+                     const char *thingSpeakMQTTKey,
+                     const char *thingSpeakChannelID,
+                     const char *thingSpeakChannelKey,
+                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    ThingSpeakPublisher(Logger& baseLogger, Client *inClient,
+                     const char *thingSpeakMQTTKey,
+                     const char *thingSpeakChannelID,
+                     const char *thingSpeakChannelKey,
+                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     // Destructor
-    virtual ~ThingSpeakPublisher(){}
+    virtual ~ThingSpeakPublisher()
 
     // Returns the data destination
     virtual String getEndpoint(void){return String(mqttServer);}

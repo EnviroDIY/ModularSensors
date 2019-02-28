@@ -23,23 +23,26 @@ dataPublisher::dataPublisher()
     _inClient = NULL;
     _sendEveryX = 1;
     _sendOffset = 0;
+    MS_DBG(F("dataPublisher object created"));
 }
-/*dataPublisher::dataPublisher(Logger& baseLogger, uint8_t sendEveryX, uint8_t sendOffset)
+dataPublisher::dataPublisher(Logger& baseLogger, uint8_t sendEveryX, uint8_t sendOffset)
 {
     _baseLogger = &baseLogger;
     _baseLogger->registerDataPublisher(this);  // register self with logger
     _sendEveryX = sendEveryX;
     _sendOffset = sendOffset;
     _inClient = NULL;
-}*/
-/*dataPublisher::dataPublisher(Logger& baseLogger, Client *inClient, uint8_t sendEveryX, uint8_t sendOffset)
+    MS_DBG(F("dataPublisher object created"));
+}
+dataPublisher::dataPublisher(Logger& baseLogger, Client *inClient, uint8_t sendEveryX, uint8_t sendOffset)
 {
     _baseLogger = &baseLogger;
     _baseLogger->registerDataPublisher(this);  // register self with logger
     _sendEveryX = sendEveryX;
     _sendOffset = sendOffset;
     _inClient = inClient;
-}*/
+    MS_DBG(F("dataPublisher object created"));
+}
 // Destructor
 dataPublisher::~dataPublisher(){}
 

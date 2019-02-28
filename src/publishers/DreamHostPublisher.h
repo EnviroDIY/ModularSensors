@@ -27,9 +27,20 @@ class DreamHostPublisher : public dataPublisher
 {
 
 public:
-    // Constructor
-    DreamHostPublisher(){};
-    virtual ~DreamHostPublisher(){};
+    // Constructors
+    DreamHostPublisher();
+    DreamHostPublisher(Logger& baseLogger,
+                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    DreamHostPublisher(Logger& baseLogger, Client *inClient,
+                    uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    DreamHostPublisher(Logger& baseLogger,
+                       const char *dhUrl,
+                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    DreamHostPublisher(Logger& baseLogger, Client *inClient,
+                       const char *dhUrl,
+                       uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    // Destructor
+    virtual ~DreamHostPublisher();
 
     // Returns the data destination
     virtual String getEndpoint(void){return String(dreamhostHost);}

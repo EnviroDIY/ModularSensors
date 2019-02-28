@@ -23,6 +23,52 @@ const char *ThingSpeakPublisher::mqttClient = THING_SPEAK_CLIENT_NAME;
 const char *ThingSpeakPublisher::mqttUser = THING_SPEAK_USER_NAME;
 
 
+// Constructors
+ThingSpeakPublisher::ThingSpeakPublisher()
+  : dataPublisher()
+{
+    MS_DBG(F("ThingSpeakPublisher object created"));
+}
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger,
+                                   uint8_t sendEveryX, uint8_t sendOffset)
+  : dataPublisher(baseLogger, sendEveryX, sendOffset)
+{
+    MS_DBG(F("ThingSpeakPublisher object created"));
+}
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client *inClient,
+                                   uint8_t sendEveryX, uint8_t sendOffset)
+  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
+{
+    MS_DBG(F("ThingSpeakPublisher object created"));
+}
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger,
+                                   const char *thingSpeakMQTTKey,
+                                   const char *thingSpeakChannelID,
+                                   const char *thingSpeakChannelKey,
+                                   uint8_t sendEveryX, uint8_t sendOffset)
+  : dataPublisher(baseLogger, sendEveryX, sendOffset)
+{
+   setMQTTKey(thingSpeakMQTTKey);
+   setChannelID(thingSpeakChannelID);
+   setChannelKey(thingSpeakChannelKey);
+   MS_DBG(F("ThingSpeakPublisher object created"));
+}
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client *inClient,
+                                   const char *thingSpeakMQTTKey,
+                                   const char *thingSpeakChannelID,
+                                   const char *thingSpeakChannelKey,
+                                   uint8_t sendEveryX, uint8_t sendOffset)
+  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
+{
+   setMQTTKey(thingSpeakMQTTKey);
+   setChannelID(thingSpeakChannelID);
+   setChannelKey(thingSpeakChannelKey);
+   MS_DBG(F("ThingSpeakPublisher object created"));
+}
+// Destructor
+ThingSpeakPublisher::~ThingSpeakPublisher(){}
+
+
 void ThingSpeakPublisher::setMQTTKey(const char *thingSpeakMQTTKey)
 {
     _thingSpeakMQTTKey = thingSpeakMQTTKey;

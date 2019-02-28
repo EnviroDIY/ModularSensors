@@ -20,6 +20,43 @@ const int DreamHostPublisher::dreamhostPort = 80;
 const char *DreamHostPublisher::loggerTag = "?LoggerID=";
 const char *DreamHostPublisher::timestampTagDH = "&Loggertime=";
 
+// Constructors
+DreamHostPublisher::DreamHostPublisher()
+  : dataPublisher()
+{
+    MS_DBG(F("DreamHostPublisher object created"));
+}
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger,
+                                 uint8_t sendEveryX, uint8_t sendOffset)
+  : dataPublisher(baseLogger, sendEveryX, sendOffset)
+{
+    MS_DBG(F("DreamHostPublisher object created"));
+}
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client *inClient,
+                                 uint8_t sendEveryX, uint8_t sendOffset)
+  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
+{
+    MS_DBG(F("DreamHostPublisher object created"));
+}
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger,
+                                 const char *dhUrl, uint8_t sendEveryX,
+                                 uint8_t sendOffset)
+  : dataPublisher(baseLogger, sendEveryX, sendOffset)
+{
+    setDreamHostPortalRX(dhUrl);
+    MS_DBG(F("DreamHostPublisher object created"));
+}
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client *inClient,
+                                 const char *dhUrl, uint8_t sendEveryX,
+                                 uint8_t sendOffset)
+  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
+{
+    setDreamHostPortalRX(dhUrl);
+    MS_DBG(F("DreamHostPublisher object created"));
+}
+// Destructor
+DreamHostPublisher::~DreamHostPublisher(){}
+
 
 // Functions for private SWRC server
 void DreamHostPublisher::setDreamHostPortalRX(const char *dhUrl)

@@ -30,6 +30,48 @@ const char *EnviroDIYPublisher::samplingFeatureTag = "{\"sampling_feature\":\"";
 const char *EnviroDIYPublisher::timestampTag = "\",\"timestamp\":\"";
 
 
+// Constructors
+EnviroDIYPublisher::EnviroDIYPublisher()
+  : dataPublisher()
+{
+    MS_DBG(F("EnviroDIYPublisher object created"));
+}
+EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger,
+                                 uint8_t sendEveryX, uint8_t sendOffset)
+  : dataPublisher(baseLogger, sendEveryX, sendOffset)
+{
+    MS_DBG(F("EnviroDIYPublisher object created"));
+}
+EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
+                                 uint8_t sendEveryX, uint8_t sendOffset)
+  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
+{
+    MS_DBG(F("EnviroDIYPublisher object created"));
+}
+EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger,
+                                 const char *registrationToken,
+                                 const char *samplingFeatureUUID,
+                                 uint8_t sendEveryX, uint8_t sendOffset)
+  : dataPublisher(baseLogger, sendEveryX, sendOffset)
+{
+    setToken(registrationToken);
+    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    MS_DBG(F("EnviroDIYPublisher object created"));
+}
+EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
+                                 const char *registrationToken,
+                                 const char *samplingFeatureUUID,
+                                 uint8_t sendEveryX, uint8_t sendOffset)
+  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
+{
+    setToken(registrationToken);
+    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    MS_DBG(F("EnviroDIYPublisher object created"));
+}
+// Destructor
+EnviroDIYPublisher::~EnviroDIYPublisher(){}
+
+
 void EnviroDIYPublisher::setToken(const char *registrationToken)
 {
     _registrationToken = registrationToken;
