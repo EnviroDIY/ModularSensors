@@ -73,6 +73,12 @@ public:
 class YosemitechY520_Cond : public Variable
 {
 public:
+    YosemitechY520_Cond(Sensor *parentSense, const char *uuid = "",
+                        const char *customVarCode = "Y520Cond")
+      : Variable(Y520_COND_VAR_NUM, Y520_COND_RESOLUTION,
+                 "specificConductance", "microsiemenPerCentimeter", customVarCode,
+                 uuid, parentSense)
+    {}
     YosemitechY520_Cond()
       : Variable(Y520_COND_VAR_NUM, Y520_COND_RESOLUTION,
                  "specificConductance", "microsiemenPerCentimeter", "Y520Cond")
@@ -85,6 +91,12 @@ public:
 class YosemitechY520_Temp : public Variable
 {
 public:
+    YosemitechY520_Temp(Sensor *parentSense, const char *uuid = "",
+                        const char *customVarCode = "Y520Temp")
+      : Variable(Y520_TEMP_VAR_NUM, Y520_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius", customVarCode,
+                 uuid, parentSense)
+    {}
     YosemitechY520_Temp()
       : Variable(Y520_TEMP_VAR_NUM, Y520_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "Y520Temp")

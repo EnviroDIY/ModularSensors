@@ -93,6 +93,12 @@ protected:
 class CampbellOBS3_Turbidity : public Variable
 {
 public:
+    CampbellOBS3_Turbidity(Sensor *parentSense, const char *uuid = "",
+                           const char *customVarCode = "OBS3Turbidity")
+      : Variable(OBS3_TURB_VAR_NUM, OBS3_RESOLUTION,
+                 "turbidity", "nephelometricTurbidityUnit", customVarCode,
+                 uuid, parentSense)
+    {}
     CampbellOBS3_Turbidity()
       : Variable(OBS3_TURB_VAR_NUM, OBS3_RESOLUTION,
                  "turbidity", "nephelometricTurbidityUnit", "OBS3Turbidity")
@@ -106,6 +112,12 @@ public:
 class CampbellOBS3_Voltage : public Variable
 {
 public:
+    CampbellOBS3_Voltage(Sensor *parentSense, const char *uuid = "",
+                         const char *customVarCode = "OBS3Voltage")
+      : Variable(OBS3_VOLTAGE_VAR_NUM, OBS3_VOLT_RESOLUTION,
+                 "voltage", "volt", customVarCode,
+                 uuid, parentSense)
+    {}
     CampbellOBS3_Voltage()
       : Variable(OBS3_VOLTAGE_VAR_NUM, OBS3_VOLT_RESOLUTION,
                  "voltage", "volt", "OBS3Voltage")

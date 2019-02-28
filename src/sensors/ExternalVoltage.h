@@ -108,6 +108,12 @@ protected:
 class ExternalVoltage_Volt : public Variable
 {
 public:
+    ExternalVoltage_Volt(Sensor *parentSense, const char *uuid = "",
+                         const char *customVarCode = "extVoltage")
+      : Variable(EXT_VOLT_VAR_NUM, EXT_VOLT_RESOLUTION,
+                 "voltage", "volt", customVarCode,
+                 uuid, parentSense)
+    {}
     ExternalVoltage_Volt()
       : Variable(EXT_VOLT_VAR_NUM, EXT_VOLT_RESOLUTION,
                  "voltage", "volt", "extVoltage")

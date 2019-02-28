@@ -60,9 +60,15 @@ public:
 class KellerAcculevel_Pressure : public Variable
 {
 public:
+    KellerAcculevel_Pressure(Sensor *parentSense, const char *uuid = "",
+                             const char *customVarCode = "kellerAccuPress")
+      : Variable(KELLER_PRESSURE_VAR_NUM, ACCULEVEL_PRESSURE_RESOLUTION,
+                 "pressureGauge", "millibar", customVarCode,
+                 uuid, parentSense)
+    {}
     KellerAcculevel_Pressure()
       : Variable(KELLER_PRESSURE_VAR_NUM, ACCULEVEL_PRESSURE_RESOLUTION,
-                 "pressureGauge", "millibar", "kellerPress")
+                 "pressureGauge", "millibar", "kellerAccuPress")
     {}
     ~KellerAcculevel_Pressure(){}
 };
@@ -72,9 +78,15 @@ public:
 class KellerAcculevel_Temp : public Variable
 {
 public:
+    KellerAcculevel_Temp(Sensor *parentSense, const char *uuid = "",
+                         const char *customVarCode = "kellerAccuTemp")
+      : Variable(KELLER_TEMP_VAR_NUM, ACCULEVEL_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius", customVarCode,
+                 uuid, parentSense)
+    {}
     KellerAcculevel_Temp()
       : Variable(KELLER_TEMP_VAR_NUM, ACCULEVEL_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", "kellerTemp")
+                 "temperature", "degreeCelsius", "kellerAccuTemp")
     {}
     ~KellerAcculevel_Temp(){}
 };
@@ -83,9 +95,15 @@ public:
 class KellerAcculevel_Height : public Variable
 {
 public:
+    KellerAcculevel_Height(Sensor *parentSense, const char *uuid = "",
+                           const char *customVarCode = "kellerAccuHeight")
+      : Variable(KELLER_HEIGHT_VAR_NUM, ACCULEVEL_HEIGHT_RESOLUTION,
+                 "gaugeHeight", "meter", customVarCode,
+                 uuid, parentSense)
+    {}
     KellerAcculevel_Height()
       : Variable(KELLER_HEIGHT_VAR_NUM, ACCULEVEL_HEIGHT_RESOLUTION,
-                 "gaugeHeight", "meter", "kellerHeight")
+                 "gaugeHeight", "meter", "kellerAccuHeight")
     {}
     ~KellerAcculevel_Height(){}
 };

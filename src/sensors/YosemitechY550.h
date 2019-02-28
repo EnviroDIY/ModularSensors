@@ -79,6 +79,12 @@ public:
 class YosemitechY550_COD : public Variable
 {
 public:
+    YosemitechY550_COD(Sensor *parentSense, const char *uuid = "",
+                       const char *customVarCode = "Y550COD")
+      : Variable(Y550_COD_VAR_NUM, Y550_COD_RESOLUTION,
+                 "COD", "milligramPerLiter", customVarCode,
+                 uuid, parentSense)
+    {}
     YosemitechY550_COD()
       : Variable(Y550_COD_VAR_NUM, Y550_COD_RESOLUTION,
                  "COD", "milligramPerLiter", "Y550COD")
@@ -91,6 +97,12 @@ public:
 class YosemitechY550_Temp : public Variable
 {
 public:
+    YosemitechY550_Temp(Sensor *parentSense, const char *uuid = "",
+                        const char *customVarCode = "Y550Temp")
+      : Variable(Y550_TEMP_VAR_NUM, Y550_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius", customVarCode,
+                 uuid, parentSense)
+    {}
     YosemitechY550_Temp()
       : Variable(Y550_TEMP_VAR_NUM, Y550_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "Y550Temp")
@@ -103,6 +115,12 @@ public:
 class YosemitechY550_Turbidity : public Variable
 {
 public:
+    YosemitechY550_Turbidity(Sensor *parentSense, const char *uuid = "",
+                             const char *customVarCode = "Y550Turbidity")
+      : Variable(Y550_TURB_VAR_NUM, Y550_TURB_RESOLUTION,
+                 "turbidity", "nephelometricTurbidityUnit", customVarCode,
+                 uuid, parentSense)
+    {}
     YosemitechY550_Turbidity()
       : Variable(Y550_TURB_VAR_NUM, Y550_TURB_RESOLUTION,
                  "turbidity", "nephelometricTurbidityUnit", "Y550Turbidity")

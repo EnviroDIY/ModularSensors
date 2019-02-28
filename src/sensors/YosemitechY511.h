@@ -72,6 +72,12 @@ public:
 class YosemitechY511_Turbidity : public Variable
 {
 public:
+    YosemitechY511_Turbidity(Sensor *parentSense, const char *uuid = "",
+                             const char *customVarCode = "Y511Turbidity")
+      : Variable(Y511_TURB_VAR_NUM, Y511_TURB_RESOLUTION,
+                 "turbidity", "nephelometricTurbidityUnit", customVarCode,
+                 uuid, parentSense)
+    {}
     YosemitechY511_Turbidity()
       : Variable(Y511_TURB_VAR_NUM, Y511_TURB_RESOLUTION,
                  "turbidity", "nephelometricTurbidityUnit", "Y511Turbidity")
@@ -84,6 +90,12 @@ public:
 class YosemitechY511_Temp : public Variable
 {
 public:
+    YosemitechY511_Temp(Sensor *parentSense, const char *uuid = "",
+                        const char *customVarCode = "Y511Temp")
+      : Variable(Y511_TEMP_VAR_NUM, Y511_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius", customVarCode,
+                 uuid, parentSense)
+    {}
     YosemitechY511_Temp()
       : Variable(Y511_TEMP_VAR_NUM, Y511_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "Y511Temp")

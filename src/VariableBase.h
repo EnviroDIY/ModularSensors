@@ -23,20 +23,41 @@ class Sensor;
 class Variable
 {
 public:
-    // The constructor for a measured variable - that is, one whose values are
-    // updated by a sensor.  This can have arguments because they will all be
-    // called in the initializer list from the header file for the sensor type
-    // that the variable will be tied to.
+    // The constructors for a measured variable - that is, one whose values are
+    // updated by a sensor.
+    Variable(const uint8_t sensorVarNum,
+             uint8_t decimalResolution,
+             const char *varName,
+             const char *varUnit,
+             const char *varCode,
+             const char *uuid,
+             Sensor *parentSense);
+    Variable(const uint8_t sensorVarNum,
+             uint8_t decimalResolution,
+             const char *varName,
+             const char *varUnit,
+             const char *varCode,
+             Sensor *parentSense);
     Variable(const uint8_t sensorVarNum,
              uint8_t decimalResolution,
              const char *varName,
              const char *varUnit,
              const char *varCode);
 
-     // The constructor for a calculated variable - that is, one whose value is
-     // calculated by the calcFxn which returns a float.  All arguments for this
-     // have to be set in the begin function.
-     Variable();
+     // The constructors for a calculated variable - that is, one whose value is
+     // calculated by the calcFxn which returns a float.
+    Variable(uint8_t decimalResolution,
+             const char *varName,
+             const char *varUnit,
+             const char *varCode,
+             const char *uuid,
+             float (*calcFxn)());
+    Variable(uint8_t decimalResolution,
+             const char *varName,
+             const char *varUnit,
+             const char *varCode,
+             float (*calcFxn)());
+    Variable();
 
     // Destructor
     virtual ~Variable();

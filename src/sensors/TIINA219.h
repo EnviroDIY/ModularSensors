@@ -78,6 +78,12 @@ protected:
 class TIINA219_Current : public Variable
 {
 public:
+    TIINA219_Current(Sensor *parentSense, const char *uuid = "",
+                     const char *customVarCode = "TIINA219Amp")
+      : Variable(INA219_CURRENT_MA_VAR_NUM, INA219_CURRENT_MA_RESOLUTION,
+                 "amp", "mA", customVarCode,
+                 uuid, parentSense)
+    {}
     TIINA219_Current()
       : Variable(INA219_CURRENT_MA_VAR_NUM, INA219_CURRENT_MA_RESOLUTION,
                  "amp", "mA", "TIINA219Amp")
@@ -90,6 +96,12 @@ public:
 class TIINA219_Volt : public Variable
 {
 public:
+    TIINA219_Volt(Sensor *parentSense, const char *uuid = "",
+                  const char *customVarCode = "TIINA219Volt")
+      : Variable(INA219_BUS_VOLTAGE_VAR_NUM, INA219_BUS_VOLTAGE_RESOLUTION,
+                 "Volt", "V", customVarCode,
+                 uuid, parentSense)
+    {}
     TIINA219_Volt()
       : Variable(INA219_BUS_VOLTAGE_VAR_NUM, INA219_BUS_VOLTAGE_RESOLUTION,
                  "Volt", "V", "TIINA219Volt")
@@ -102,6 +114,12 @@ public:
 class TIINA219_Power : public Variable
 {
 public:
+    TIINA219_Power(Sensor *parentSense, const char *uuid = "",
+                   const char *customVarCode = "TIINA219Power")
+      : Variable(INA219_POWER_MW_VAR_NUM, INA219_POWER_MW_RESOLUTION,
+                 "milliwatt", "mW", customVarCode,
+                 uuid, parentSense)
+    {}
     TIINA219_Power()
       : Variable(INA219_POWER_MW_VAR_NUM, INA219_POWER_MW_RESOLUTION,
                  "milliwatt", "mW", "TIINA219Power")

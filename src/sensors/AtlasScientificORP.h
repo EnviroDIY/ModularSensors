@@ -55,6 +55,12 @@ public:
 class AtlasScientificORP_Potential : public Variable
 {
 public:
+    AtlasScientificORP_Potential(Sensor *parentSense, const char *uuid = "",
+                                 const char *customVarCode = "AtlasORP")
+      : Variable(ATLAS_ORP_VAR_NUM, ATLAS_ORP_RESOLUTION,
+                 "reductionPotential", "millivolt", customVarCode,
+                 uuid, parentSense)
+    {}
     AtlasScientificORP_Potential()
       : Variable(ATLAS_ORP_VAR_NUM, ATLAS_ORP_RESOLUTION,
                  "reductionPotential", "millivolt", "AtlasORP")
