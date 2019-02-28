@@ -24,10 +24,10 @@
 class VariableArray
 {
 public:
-    // Constructor
-    VariableArray(){MS_DBG(F("VariableArray object created"));};
-    // VariableArray(uint8_t variableCount, Variable *variableList[]);
-    virtual ~VariableArray(){};
+    // Constructors
+    VariableArray();
+    VariableArray(uint8_t variableCount, Variable *variableList[]);
+    virtual ~VariableArray();
 
     // "Begins" the VariableArray - attaches the number and array of variables
     // Not doing this in the constructor because we expect the VariableArray to

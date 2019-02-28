@@ -55,9 +55,9 @@ class Logger
 
 public:
     // Constructors
-    /*Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
+    Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
            int8_t SDCardPin, int8_t mcuWakePin,
-           VariableArray *inputArray);*/
+           VariableArray *inputArray);
     Logger();
     // Destructor
     virtual ~Logger();

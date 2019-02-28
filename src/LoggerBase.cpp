@@ -37,7 +37,7 @@ volatile bool Logger::startTesting = false;
 
 
 // Constructors
-/*Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
+Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
                int8_t SDCardPin, int8_t mcuWakePin,
                VariableArray *inputArray)
 {
@@ -70,7 +70,7 @@ volatile bool Logger::startTesting = false;
     }
 
     MS_DBG(F("Logger object created"));
-}*/
+}
 Logger::Logger()
 {
     // Set the testing/logging flags to false

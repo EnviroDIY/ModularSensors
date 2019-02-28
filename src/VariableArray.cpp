@@ -10,13 +10,16 @@
 #include "VariableArray.h"
 
 
-// Constructor
-// VariableArray::VariableArray(uint8_t variableCount, Variable *variableList[])
-//   : arrayOfVars(variableList), _variableCount(variableCount)
-// {
-//     _maxSamplestoAverage = countMaxToAverage();
-//     _sensorCount = getSensorCount();
-// }
+// Constructors
+VariableArray::VariableArray(){}
+VariableArray::VariableArray(uint8_t variableCount, Variable *variableList[])
+  : arrayOfVars(variableList), _variableCount(variableCount)
+{
+    _maxSamplestoAverage = countMaxToAverage();
+    _sensorCount = getSensorCount();
+}
+// Destructor
+VariableArray::~VariableArray(){}
 
 
 void VariableArray::begin(uint8_t variableCount, Variable *variableList[])
