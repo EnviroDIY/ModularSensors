@@ -51,7 +51,7 @@ public:
                      const char *thingSpeakChannelKey,
                      uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     // Destructor
-    virtual ~ThingSpeakPublisher()
+    virtual ~ThingSpeakPublisher();
 
     // Returns the data destination
     virtual String getEndpoint(void){return String(mqttServer);}
