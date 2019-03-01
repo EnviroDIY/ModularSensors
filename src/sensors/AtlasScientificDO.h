@@ -56,12 +56,15 @@ class AtlasScientificDO_DOmgL : public Variable
 public:
     AtlasScientificDO_DOmgL(Sensor *parentSense, const char *uuid = "",
                             const char *customVarCode = "AtlasDOmgL")
-      : Variable(ATLAS_DOMGL_VAR_NUM, ATLAS_DOMGL_RESOLUTION,
-                 "oxygenDissolved", "milligramPerLiter", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)ATLAS_DOMGL_VAR_NUM,
+                 (uint8_t)ATLAS_DOMGL_RESOLUTION,
+                 "oxygenDissolved", "milligramPerLiter",
+                 customVarCode, uuid)
     {}
     AtlasScientificDO_DOmgL()
-      : Variable(ATLAS_DOMGL_VAR_NUM, ATLAS_DOMGL_RESOLUTION,
+      : Variable((const uint8_t)ATLAS_DOMGL_VAR_NUM,
+                 (uint8_t)ATLAS_DOMGL_RESOLUTION,
                  "oxygenDissolved", "milligramPerLiter", "AtlasDOmgL")
     {}
     ~AtlasScientificDO_DOmgL(){}
@@ -73,12 +76,15 @@ class AtlasScientificDO_DOpct : public Variable
 public:
     AtlasScientificDO_DOpct(Sensor *parentSense, const char *uuid = "",
                             const char *customVarCode = "AtlasDOpct")
-      : Variable(ATLAS_DOPCT_VAR_NUM, ATLAS_DOPCT_RESOLUTION,
-                 "oxygenDissolvedPercentOfSaturation", "percent", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)ATLAS_DOPCT_VAR_NUM,
+                 (uint8_t)ATLAS_DOPCT_RESOLUTION,
+                 "oxygenDissolvedPercentOfSaturation", "percent",
+                 customVarCode, uuid)
     {}
     AtlasScientificDO_DOpct()
-      : Variable(ATLAS_DOPCT_VAR_NUM, ATLAS_DOPCT_RESOLUTION,
+      : Variable((const uint8_t)ATLAS_DOPCT_VAR_NUM,
+                 (uint8_t)ATLAS_DOPCT_RESOLUTION,
                  "oxygenDissolvedPercentOfSaturation", "percent", "AtlasDOpct")
     {}
     ~AtlasScientificDO_DOpct(){}

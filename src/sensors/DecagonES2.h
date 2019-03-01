@@ -78,12 +78,15 @@ class DecagonES2_Cond : public Variable
 public:
     DecagonES2_Cond(Sensor *parentSense, const char *uuid = "",
                     const char *customVarCode = "ES2Cond")
-      : Variable(ES2_COND_VAR_NUM, ES2_COND_RESOLUTION,
-                 "specificConductance", "microsiemenPerCentimeter", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)ES2_COND_VAR_NUM,
+                 (uint8_t)ES2_COND_RESOLUTION,
+                 "specificConductance", "microsiemenPerCentimeter",
+                 customVarCode, uuid)
     {}
     DecagonES2_Cond()
-      : Variable(ES2_COND_VAR_NUM, ES2_COND_RESOLUTION,
+      : Variable((const uint8_t)ES2_COND_VAR_NUM,
+                 (uint8_t)ES2_COND_RESOLUTION,
                  "specificConductance", "microsiemenPerCentimeter", "ES2Cond")
     {}
     ~DecagonES2_Cond(){}
@@ -95,12 +98,15 @@ class DecagonES2_Temp : public Variable
 public:
     DecagonES2_Temp(Sensor *parentSense, const char *uuid = "",
                     const char *customVarCode = "ES2Temp")
-      : Variable(ES2_TEMP_VAR_NUM, ES2_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)ES2_TEMP_VAR_NUM,
+                 (uint8_t)ES2_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius",
+                 customVarCode, uuid)
     {}
     DecagonES2_Temp()
-      : Variable(ES2_TEMP_VAR_NUM, ES2_TEMP_RESOLUTION,
+      : Variable((const uint8_t)ES2_TEMP_VAR_NUM,
+                 (uint8_t)ES2_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "ES2Temp")
     {}
     ~DecagonES2_Temp(){}

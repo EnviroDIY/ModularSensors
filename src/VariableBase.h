@@ -25,19 +25,13 @@ class Variable
 public:
     // The constructors for a measured variable - that is, one whose values are
     // updated by a sensor.
-    Variable(const uint8_t sensorVarNum,
+    Variable(Sensor *parentSense,
+             const uint8_t sensorVarNum,
              uint8_t decimalResolution,
              const char *varName,
              const char *varUnit,
              const char *varCode,
-             const char *uuid,
-             Sensor *parentSense);
-    Variable(const uint8_t sensorVarNum,
-             uint8_t decimalResolution,
-             const char *varName,
-             const char *varUnit,
-             const char *varCode,
-             Sensor *parentSense);
+             const char *uuid);
     Variable(const uint8_t sensorVarNum,
              uint8_t decimalResolution,
              const char *varName,
@@ -46,17 +40,17 @@ public:
 
      // The constructors for a calculated variable - that is, one whose value is
      // calculated by the calcFxn which returns a float.
-    Variable(uint8_t decimalResolution,
+    Variable(float (*calcFxn)(),
+             uint8_t decimalResolution,
              const char *varName,
              const char *varUnit,
              const char *varCode,
-             const char *uuid,
-             float (*calcFxn)());
-    Variable(uint8_t decimalResolution,
+             const char *uuid);
+    Variable(float (*calcFxn)(),
+             uint8_t decimalResolution,
              const char *varName,
              const char *varUnit,
-             const char *varCode,
-             float (*calcFxn)());
+             const char *varCode);
     Variable();
 
     // Destructor

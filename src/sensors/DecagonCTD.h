@@ -87,12 +87,15 @@ class DecagonCTD_Cond : public Variable
 public:
     DecagonCTD_Cond(Sensor *parentSense, const char *uuid = "",
                     const char *customVarCode = "CTDcond")
-      : Variable(CTD_COND_VAR_NUM, CTD_COND_RESOLUTION,
-                 "specificConductance", "microsiemenPerCentimeter", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)CTD_COND_VAR_NUM,
+                 (uint8_t)CTD_COND_RESOLUTION,
+                 "specificConductance", "microsiemenPerCentimeter",
+                 customVarCode, uuid)
     {}
     DecagonCTD_Cond()
-      : Variable(CTD_COND_VAR_NUM, CTD_COND_RESOLUTION,
+      : Variable((const uint8_t)CTD_COND_VAR_NUM,
+                 (uint8_t)CTD_COND_RESOLUTION,
                  "specificConductance", "microsiemenPerCentimeter", "CTDcond")
     {}
     ~DecagonCTD_Cond(){}
@@ -105,12 +108,15 @@ class DecagonCTD_Temp : public Variable
 public:
     DecagonCTD_Temp(Sensor *parentSense, const char *uuid = "",
                     const char *customVarCode = "CTDtemp")
-      : Variable(CTD_TEMP_VAR_NUM, CTD_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)CTD_TEMP_VAR_NUM,
+                 (uint8_t)CTD_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius",
+                 customVarCode, uuid)
     {}
     DecagonCTD_Temp()
-      : Variable(CTD_TEMP_VAR_NUM, CTD_TEMP_RESOLUTION,
+      : Variable((const uint8_t)CTD_TEMP_VAR_NUM,
+                 (uint8_t)CTD_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "CTDtemp")
     {}
     ~DecagonCTD_Temp(){}
@@ -123,12 +129,15 @@ class DecagonCTD_Depth : public Variable
 public:
     DecagonCTD_Depth(Sensor *parentSense, const char *uuid = "",
                      const char *customVarCode = "CTDdepth")
-      : Variable(CTD_DEPTH_VAR_NUM, CTD_DEPTH_RESOLUTION,
-                 "waterDepth", "millimeter", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)CTD_DEPTH_VAR_NUM,
+                 (uint8_t)CTD_DEPTH_RESOLUTION,
+                 "waterDepth", "millimeter",
+                 customVarCode, uuid)
     {}
     DecagonCTD_Depth()
-      : Variable(CTD_DEPTH_VAR_NUM, CTD_DEPTH_RESOLUTION,
+      : Variable((const uint8_t)CTD_DEPTH_VAR_NUM,
+                 (uint8_t)CTD_DEPTH_RESOLUTION,
                  "waterDepth", "millimeter", "CTDdepth")
     {}
     ~DecagonCTD_Depth(){}

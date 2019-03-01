@@ -110,12 +110,15 @@ class ExternalVoltage_Volt : public Variable
 public:
     ExternalVoltage_Volt(Sensor *parentSense, const char *uuid = "",
                          const char *customVarCode = "extVoltage")
-      : Variable(EXT_VOLT_VAR_NUM, EXT_VOLT_RESOLUTION,
-                 "voltage", "volt", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)EXT_VOLT_VAR_NUM,
+                 (uint8_t)EXT_VOLT_RESOLUTION,
+                 "voltage", "volt",
+                 customVarCode, uuid)
     {}
     ExternalVoltage_Volt()
-      : Variable(EXT_VOLT_VAR_NUM, EXT_VOLT_RESOLUTION,
+      : Variable((const uint8_t)EXT_VOLT_VAR_NUM,
+                 (uint8_t)EXT_VOLT_RESOLUTION,
                  "voltage", "volt", "extVoltage")
     {}
     ~ExternalVoltage_Volt(){}

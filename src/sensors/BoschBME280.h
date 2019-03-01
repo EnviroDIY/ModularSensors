@@ -88,12 +88,15 @@ class BoschBME280_Temp : public Variable
 public:
     BoschBME280_Temp(Sensor *parentSense, const char *uuid = "",
                      const char *customVarCode = "BoschBME280Temp")
-      : Variable(BME280_TEMP_VAR_NUM, BME280_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)BME280_TEMP_VAR_NUM,
+                 (uint8_t)BME280_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius",
+                 customVarCode, uuid)
     {}
     BoschBME280_Temp()
-      : Variable(BME280_TEMP_VAR_NUM, BME280_TEMP_RESOLUTION,
+      : Variable((const uint8_t)BME280_TEMP_VAR_NUM,
+                 (uint8_t)BME280_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "BoschBME280Temp")
     {}
     ~BoschBME280_Temp(){};
@@ -106,12 +109,15 @@ class BoschBME280_Humidity : public Variable
 public:
     BoschBME280_Humidity(Sensor *parentSense, const char *uuid = "",
                          const char *customVarCode = "BoschBME280Humidity")
-      : Variable(BME280_HUMIDITY_VAR_NUM, BME280_HUMIDITY_RESOLUTION,
-                 "relativeHumidity", "percent", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)BME280_HUMIDITY_VAR_NUM,
+                 (uint8_t)BME280_HUMIDITY_RESOLUTION,
+                 "relativeHumidity", "percent",
+                 customVarCode, uuid)
     {}
     BoschBME280_Humidity()
-      : Variable(BME280_HUMIDITY_VAR_NUM, BME280_HUMIDITY_RESOLUTION,
+      : Variable((const uint8_t)BME280_HUMIDITY_VAR_NUM,
+                 (uint8_t)BME280_HUMIDITY_RESOLUTION,
                  "relativeHumidity", "percent", "BoschBME280Humidity")
     {}
     ~BoschBME280_Humidity(){};
@@ -124,12 +130,15 @@ class BoschBME280_Pressure : public Variable
 public:
     BoschBME280_Pressure(Sensor *parentSense, const char *uuid = "",
                          const char *customVarCode = "BoschBME280Pressure")
-      : Variable(BME280_PRESSURE_VAR_NUM, BME280_PRESSURE_RESOLUTION,
-                 "barometricPressure", "pascal", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)BME280_PRESSURE_VAR_NUM,
+                 (uint8_t)BME280_PRESSURE_RESOLUTION,
+                 "barometricPressure", "pascal",
+                 customVarCode, uuid)
     {}
     BoschBME280_Pressure()
-      : Variable(BME280_PRESSURE_VAR_NUM, BME280_PRESSURE_RESOLUTION,
+      : Variable((const uint8_t)BME280_PRESSURE_VAR_NUM,
+                 (uint8_t)BME280_PRESSURE_RESOLUTION,
                  "barometricPressure", "pascal", "BoschBME280Pressure")
     {}
 };
@@ -141,12 +150,15 @@ class BoschBME280_Altitude : public Variable
 public:
     BoschBME280_Altitude(Sensor *parentSense, const char *uuid = "",
                          const char *customVarCode = "BoschBME280Altitude")
-      : Variable(BME280_ALTITUDE_VAR_NUM, BME280_ALTITUDE_RESOLUTION,
-                 "heightAboveSeaFloor", "meter", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)BME280_ALTITUDE_VAR_NUM,
+                 (uint8_t)BME280_ALTITUDE_RESOLUTION,
+                 "heightAboveSeaFloor", "meter",
+                 customVarCode, uuid)
     {}
     BoschBME280_Altitude()
-      : Variable(BME280_ALTITUDE_VAR_NUM, BME280_ALTITUDE_RESOLUTION,
+      : Variable((const uint8_t)BME280_ALTITUDE_VAR_NUM,
+                 (uint8_t)BME280_ALTITUDE_RESOLUTION,
                  "heightAboveSeaFloor", "meter", "BoschBME280Altitude")
     {}
 };

@@ -66,12 +66,15 @@ class ProcessorStats_Batt : public Variable
 public:
     ProcessorStats_Batt(Sensor *parentSense, const char *uuid = "",
                         const char *customVarCode = "Battery")
-      : Variable(PROCESSOR_BATTERY_VAR_NUM, PROCESSOR_BATTERY_RESOLUTION,
-                 "batteryVoltage", "volt", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)PROCESSOR_BATTERY_VAR_NUM,
+                 (uint8_t)PROCESSOR_BATTERY_RESOLUTION,
+                 "batteryVoltage", "volt",
+                 customVarCode, uuid)
     {}
     ProcessorStats_Batt()
-      : Variable(PROCESSOR_BATTERY_VAR_NUM, PROCESSOR_BATTERY_RESOLUTION,
+      : Variable((const uint8_t)PROCESSOR_BATTERY_VAR_NUM,
+                 (uint8_t)PROCESSOR_BATTERY_RESOLUTION,
                  "batteryVoltage", "volt", "Battery")
     {}
     ~ProcessorStats_Batt(){}
@@ -84,12 +87,15 @@ class ProcessorStats_FreeRam : public Variable
 public:
     ProcessorStats_FreeRam(Sensor *parentSense, const char *uuid = "",
                            const char *customVarCode = "FreeRam")
-      : Variable(PROCESSOR_RAM_VAR_NUM, PROCESSOR_RAM_RESOLUTION,
-                 "freeSRAM", "Bit", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)PROCESSOR_RAM_VAR_NUM,
+                 (uint8_t)PROCESSOR_RAM_RESOLUTION,
+                 "freeSRAM", "Bit",
+                 customVarCode, uuid)
     {}
     ProcessorStats_FreeRam()
-      : Variable(PROCESSOR_RAM_VAR_NUM, PROCESSOR_RAM_RESOLUTION,
+      : Variable((const uint8_t)PROCESSOR_RAM_VAR_NUM,
+                 (uint8_t)PROCESSOR_RAM_RESOLUTION,
                  "freeSRAM", "Bit", "FreeRam")
     {}
     ~ProcessorStats_FreeRam(){}
@@ -102,12 +108,15 @@ class ProcessorStats_SampleNumber : public Variable
 public:
     ProcessorStats_SampleNumber(Sensor *parentSense, const char *uuid = "",
                                 const char *customVarCode = "SampNum")
-      : Variable(PROCESSOR_SAMPNUM_VAR_NUM, PROCESSOR_SAMPNUM_RESOLUTION,
-                 "sequenceNumber", "Dimensionless", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
+                 (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION,
+                 "sequenceNumber", "Dimensionless",
+                 customVarCode, uuid)
     {}
     ProcessorStats_SampleNumber()
-      : Variable(PROCESSOR_SAMPNUM_VAR_NUM, PROCESSOR_SAMPNUM_RESOLUTION,
+      : Variable((const uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
+                 (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION,
                  "sequenceNumber", "Dimensionless", "SampNum")
     {}
     ~ProcessorStats_SampleNumber(){}

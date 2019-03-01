@@ -95,12 +95,15 @@ class AOSongDHT_Humidity : public Variable
 public:
     AOSongDHT_Humidity(Sensor *parentSense, const char *uuid = "",
                        const char *customVarCode = "DHTHumidity")
-      : Variable(DHT_HUMIDITY_VAR_NUM, DHT_HUMIDITY_RESOLUTION,
-                 "relativeHumidity", "percent", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)DHT_HUMIDITY_VAR_NUM,
+                 (uint8_t)DHT_HUMIDITY_RESOLUTION,
+                 "relativeHumidity", "percent",
+                 customVarCode, uuid)
     {}
     AOSongDHT_Humidity()
-      : Variable(DHT_HUMIDITY_VAR_NUM, DHT_HUMIDITY_RESOLUTION,
+      : Variable((const uint8_t)DHT_HUMIDITY_VAR_NUM,
+                 (uint8_t)DHT_HUMIDITY_RESOLUTION,
                  "relativeHumidity", "percent", "DHTHumidity")
     {}
     ~AOSongDHT_Humidity(){};
@@ -113,12 +116,15 @@ class AOSongDHT_Temp : public Variable
 public:
     AOSongDHT_Temp(Sensor *parentSense, const char *uuid = "",
                    const char *customVarCode = "DHTTemp")
-      : Variable(DHT_TEMP_VAR_NUM, DHT_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)DHT_TEMP_VAR_NUM,
+                 (uint8_t)DHT_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius",
+                 customVarCode, uuid)
     {}
     AOSongDHT_Temp()
-      : Variable(DHT_TEMP_VAR_NUM, DHT_TEMP_RESOLUTION,
+      : Variable((const uint8_t)DHT_TEMP_VAR_NUM,
+                 (uint8_t)DHT_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "DHTTemp")
     {}
     ~AOSongDHT_Temp(){};
@@ -131,12 +137,15 @@ class AOSongDHT_HI : public Variable
 public:
     AOSongDHT_HI(Sensor *parentSense, const char *uuid = "",
                  const char *customVarCode = "DHTHI")
-      : Variable(DHT_HI_VAR_NUM, DHT_HI_RESOLUTION,
-                 "heatIndex", "degreeCelsius", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)DHT_HI_VAR_NUM,
+                 (uint8_t)DHT_HI_RESOLUTION,
+                 "heatIndex", "degreeCelsius",
+                 customVarCode, uuid)
     {}
     AOSongDHT_HI()
-      : Variable(DHT_HI_VAR_NUM, DHT_HI_RESOLUTION,
+      : Variable((const uint8_t)DHT_HI_VAR_NUM,
+                 (uint8_t)DHT_HI_RESOLUTION,
                  "heatIndex", "degreeCelsius", "DHTHI")
     {}
     ~AOSongDHT_HI(){};

@@ -95,12 +95,15 @@ class CampbellOBS3_Turbidity : public Variable
 public:
     CampbellOBS3_Turbidity(Sensor *parentSense, const char *uuid = "",
                            const char *customVarCode = "OBS3Turbidity")
-      : Variable(OBS3_TURB_VAR_NUM, OBS3_RESOLUTION,
-                 "turbidity", "nephelometricTurbidityUnit", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)OBS3_TURB_VAR_NUM,
+                 (uint8_t)OBS3_RESOLUTION,
+                 "turbidity", "nephelometricTurbidityUnit",
+                 customVarCode, uuid)
     {}
     CampbellOBS3_Turbidity()
-      : Variable(OBS3_TURB_VAR_NUM, OBS3_RESOLUTION,
+      : Variable((const uint8_t)OBS3_TURB_VAR_NUM,
+                 (uint8_t)OBS3_RESOLUTION,
                  "turbidity", "nephelometricTurbidityUnit", "OBS3Turbidity")
     {}
     ~CampbellOBS3_Turbidity(){}
@@ -114,12 +117,15 @@ class CampbellOBS3_Voltage : public Variable
 public:
     CampbellOBS3_Voltage(Sensor *parentSense, const char *uuid = "",
                          const char *customVarCode = "OBS3Voltage")
-      : Variable(OBS3_VOLTAGE_VAR_NUM, OBS3_VOLT_RESOLUTION,
-                 "voltage", "volt", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)OBS3_VOLTAGE_VAR_NUM,
+                 (uint8_t)OBS3_VOLT_RESOLUTION,
+                 "voltage", "volt",
+                 customVarCode, uuid)
     {}
     CampbellOBS3_Voltage()
-      : Variable(OBS3_VOLTAGE_VAR_NUM, OBS3_VOLT_RESOLUTION,
+      : Variable((const uint8_t)OBS3_VOLTAGE_VAR_NUM,
+                 (uint8_t)OBS3_VOLT_RESOLUTION,
                  "voltage", "volt", "OBS3Voltage")
     {}
     ~CampbellOBS3_Voltage(){}

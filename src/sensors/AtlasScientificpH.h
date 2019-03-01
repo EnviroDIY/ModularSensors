@@ -57,12 +57,15 @@ class AtlasScientificpH_pH : public Variable
 public:
     AtlasScientificpH_pH(Sensor *parentSense, const char *uuid = "",
                          const char *customVarCode = "AtlaspH")
-      : Variable(ATLAS_PH_VAR_NUM, ATLAS_PH_RESOLUTION,
-                 "pH", "pH", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)ATLAS_PH_VAR_NUM,
+                 (uint8_t)ATLAS_PH_RESOLUTION,
+                 "pH", "pH",
+                 customVarCode, uuid)
     {}
     AtlasScientificpH_pH()
-      : Variable(ATLAS_PH_VAR_NUM, ATLAS_PH_RESOLUTION,
+      : Variable((const uint8_t)ATLAS_PH_VAR_NUM,
+                 (uint8_t)ATLAS_PH_RESOLUTION,
                  "pH", "pH", "AtlaspH")
     {}
     ~AtlasScientificpH_pH(){}

@@ -63,12 +63,15 @@ class MaximDS3231_Temp : public Variable
 public:
     MaximDS3231_Temp(Sensor *parentSense, const char *uuid = "",
                      const char *customVarCode = "BoardTemp")
-      : Variable(DS3231_TEMP_VAR_NUM, DS3231_TEMP_RESOLUTION,
-                 "temperatureDatalogger", "degreeCelsius", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)DS3231_TEMP_VAR_NUM,
+                 (uint8_t)DS3231_TEMP_RESOLUTION,
+                 "temperatureDatalogger", "degreeCelsius",
+                 customVarCode, uuid)
     {}
     MaximDS3231_Temp()
-      : Variable(DS3231_TEMP_VAR_NUM, DS3231_TEMP_RESOLUTION,
+      : Variable((const uint8_t)DS3231_TEMP_VAR_NUM,
+                 (uint8_t)DS3231_TEMP_RESOLUTION,
                  "temperatureDatalogger", "degreeCelsius", "BoardTemp")
     {}
     ~MaximDS3231_Temp(){}

@@ -70,12 +70,15 @@ class AOSongAM2315_Humidity : public Variable
 public:
     AOSongAM2315_Humidity(Sensor *parentSense, const char *uuid = "",
                           const char *customVarCode = "AM2315Humidity")
-      : Variable(AM2315_HUMIDITY_VAR_NUM, AM2315_HUMIDITY_RESOLUTION,
-                 "relativeHumidity", "percent", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)AM2315_HUMIDITY_VAR_NUM,
+                 (uint8_t)AM2315_HUMIDITY_RESOLUTION,
+                 "relativeHumidity", "percent",
+                 customVarCode, uuid)
     {}
     AOSongAM2315_Humidity()
-      : Variable(AM2315_HUMIDITY_VAR_NUM, AM2315_HUMIDITY_RESOLUTION,
+      : Variable((const uint8_t)AM2315_HUMIDITY_VAR_NUM,
+                 (uint8_t)AM2315_HUMIDITY_RESOLUTION,
                  "relativeHumidity", "percent", "AM2315Humidity")
     {}
     ~AOSongAM2315_Humidity(){};
@@ -88,12 +91,15 @@ class AOSongAM2315_Temp : public Variable
 public:
     AOSongAM2315_Temp(Sensor *parentSense, const char *uuid = "",
                       const char *customVarCode = "AM2315Temp")
-      : Variable(AM2315_TEMP_VAR_NUM, AM2315_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)AM2315_TEMP_VAR_NUM,
+                 (uint8_t)AM2315_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius",
+                 customVarCode, uuid)
     {}
     AOSongAM2315_Temp()
-      : Variable(AM2315_TEMP_VAR_NUM, AM2315_TEMP_RESOLUTION,
+      : Variable((const uint8_t)AM2315_TEMP_VAR_NUM,
+                 (uint8_t)AM2315_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "AM2315Temp")
     {}
     ~AOSongAM2315_Temp(){};

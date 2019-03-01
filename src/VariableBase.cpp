@@ -16,42 +16,19 @@
 
 // The constructor for a measured variable - that is, one whose values are
 // updated by a sensor.
-Variable::Variable(const uint8_t sensorVarNum,
+Variable::Variable(Sensor *parentSense,
+                   const uint8_t sensorVarNum,
                    uint8_t decimalResolution,
                    const char *varName,
                    const char *varUnit,
                    const char *varCode,
-                   const char *uuid,
-                   Sensor *parentSense)
+                   const char *uuid)
   : _sensorVarNum(sensorVarNum),
     _decimalResolution(decimalResolution),
     _varName(varName),
     _varUnit(varUnit),
     _varCode(varCode),
     _uuid(uuid)
-{
-    isCalculated = false;
-    _calcFxn = NULL;
-    attachSensor(parentSensor);
-
-    // When we create the variable, we also want to initialize it with a current
-    // value of -9999 (ie, a bad result).
-    _currentValue = -9999;
-
-    MS_DBG(F("Measured variable object created"));
-}
-Variable::Variable(const uint8_t sensorVarNum,
-                   uint8_t decimalResolution,
-                   const char *varName,
-                   const char *varUnit,
-                   const char *varCode,
-                   Sensor *parentSense)
-  : _sensorVarNum(sensorVarNum),
-    _decimalResolution(decimalResolution),
-    _varName(varName),
-    _varUnit(varUnit),
-    _varCode(varCode),
-    _uuid("")
 {
     isCalculated = false;
     _calcFxn = NULL;
@@ -88,12 +65,12 @@ Variable::Variable(const uint8_t sensorVarNum,
 
 // The constructor for a calculated variable  - that is, one whose value is
 // calculated by the calcFxn which returns a float.
-Variable::Variable(uint8_t decimalResolution,
+Variable::Variable(float (*calcFxn)(),
+                   uint8_t decimalResolution,
                    const char *varName,
                    const char *varUnit,
                    const char *varCode,
-                   const char *uuid,
-                   float (*calcFxn)())
+                   const char *uuid)
   : _sensorVarNum(0),
     _decimalResolution(decimalResolution),
     _varName(varName),
@@ -111,11 +88,11 @@ Variable::Variable(uint8_t decimalResolution,
 
     MS_DBG(F("Calculated variable object created"));
 }
-Variable::Variable(uint8_t decimalResolution,
+Variable::Variable(float (*calcFxn)(),
+                   uint8_t decimalResolution,
                    const char *varName,
                    const char *varUnit,
-                   const char *varCode,
-                   float (*calcFxn)())
+                   const char *varCode)
   : _sensorVarNum(0),
     _decimalResolution(decimalResolution),
     _varName(varName),

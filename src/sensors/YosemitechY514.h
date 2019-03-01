@@ -75,12 +75,15 @@ class YosemitechY514_Chlorophyll : public Variable
 public:
     YosemitechY514_Chlorophyll(Sensor *parentSense, const char *uuid = "",
                                const char *customVarCode = "Y514Chloro")
-      : Variable(Y514_CHLORO_VAR_NUM, Y514_CHLORO_RESOLUTION,
-                 "chlorophyllFluorescence", "microgramPerLiter", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)Y514_CHLORO_VAR_NUM,
+                 (uint8_t)Y514_CHLORO_RESOLUTION,
+                 "chlorophyllFluorescence", "microgramPerLiter",
+                 customVarCode, uuid)
     {}
     YosemitechY514_Chlorophyll()
-      : Variable(Y514_CHLORO_VAR_NUM, Y514_CHLORO_RESOLUTION,
+      : Variable((const uint8_t)Y514_CHLORO_VAR_NUM,
+                 (uint8_t)Y514_CHLORO_RESOLUTION,
                  "chlorophyllFluorescence", "microgramPerLiter", "Y514Chloro")
     {}
     ~YosemitechY514_Chlorophyll(){}
@@ -93,12 +96,15 @@ class YosemitechY514_Temp : public Variable
 public:
     YosemitechY514_Temp(Sensor *parentSense, const char *uuid = "",
                         const char *customVarCode = "Y514Temp")
-      : Variable(Y514_TEMP_VAR_NUM, Y514_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)Y514_TEMP_VAR_NUM,
+                 (uint8_t)Y514_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius",
+                 customVarCode, uuid)
     {}
     YosemitechY514_Temp()
-      : Variable(Y514_TEMP_VAR_NUM, Y514_TEMP_RESOLUTION,
+      : Variable((const uint8_t)Y514_TEMP_VAR_NUM,
+                 (uint8_t)Y514_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "Y514Temp")
     {}
     ~YosemitechY514_Temp(){}

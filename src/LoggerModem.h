@@ -190,12 +190,15 @@ class Modem_RSSI : public Variable
 public:
     Modem_RSSI(Sensor *parentSense, const char *uuid = "",
                const char *customVarCode = "RSSI")
-      : Variable(RSSI_VAR_NUM, RSSI_RESOLUTION,
-                 "RSSI", "decibelMiliWatt", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)RSSI_VAR_NUM,
+                 (uint8_t)RSSI_RESOLUTION,
+                 "RSSI", "decibelMiliWatt",
+                 customVarCode, uuid)
     {}
     Modem_RSSI()
-      : Variable(RSSI_VAR_NUM, RSSI_RESOLUTION,
+      : Variable((const uint8_t)RSSI_VAR_NUM,
+                 (uint8_t)RSSI_RESOLUTION,
                  "RSSI", "decibelMiliWatt", "RSSI")
     {}
     ~Modem_RSSI(){}
@@ -208,12 +211,15 @@ class Modem_SignalPercent : public Variable
 public:
     Modem_SignalPercent(Sensor *parentSense, const char *uuid = "",
                         const char *customVarCode = "signalPercent")
-      : Variable(PERCENT_SIGNAL_VAR_NUM, PERCENT_SIGNAL_RESOLUTION,
-                 "signalPercent", "percent", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)PERCENT_SIGNAL_VAR_NUM,
+                 (uint8_t)PERCENT_SIGNAL_RESOLUTION,
+                 "signalPercent", "percent",
+                 customVarCode, uuid)
     {}
     Modem_SignalPercent()
-      : Variable(PERCENT_SIGNAL_VAR_NUM, PERCENT_SIGNAL_RESOLUTION,
+      : Variable((const uint8_t)PERCENT_SIGNAL_VAR_NUM,
+                 (uint8_t)PERCENT_SIGNAL_RESOLUTION,
                  "signalPercent", "percent", "signalPercent")
     {}
     ~Modem_SignalPercent(){}

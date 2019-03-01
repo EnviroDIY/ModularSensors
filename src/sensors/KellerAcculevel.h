@@ -62,12 +62,15 @@ class KellerAcculevel_Pressure : public Variable
 public:
     KellerAcculevel_Pressure(Sensor *parentSense, const char *uuid = "",
                              const char *customVarCode = "kellerAccuPress")
-      : Variable(KELLER_PRESSURE_VAR_NUM, ACCULEVEL_PRESSURE_RESOLUTION,
-                 "pressureGauge", "millibar", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)KELLER_PRESSURE_VAR_NUM,
+                 (uint8_t)ACCULEVEL_PRESSURE_RESOLUTION,
+                 "pressureGauge", "millibar",
+                 customVarCode, uuid)
     {}
     KellerAcculevel_Pressure()
-      : Variable(KELLER_PRESSURE_VAR_NUM, ACCULEVEL_PRESSURE_RESOLUTION,
+      : Variable((const uint8_t)KELLER_PRESSURE_VAR_NUM,
+                 (uint8_t)ACCULEVEL_PRESSURE_RESOLUTION,
                  "pressureGauge", "millibar", "kellerAccuPress")
     {}
     ~KellerAcculevel_Pressure(){}
@@ -80,12 +83,15 @@ class KellerAcculevel_Temp : public Variable
 public:
     KellerAcculevel_Temp(Sensor *parentSense, const char *uuid = "",
                          const char *customVarCode = "kellerAccuTemp")
-      : Variable(KELLER_TEMP_VAR_NUM, ACCULEVEL_TEMP_RESOLUTION,
-                 "temperature", "degreeCelsius", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)KELLER_TEMP_VAR_NUM,
+                 (uint8_t)ACCULEVEL_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius",
+                 customVarCode, uuid)
     {}
     KellerAcculevel_Temp()
-      : Variable(KELLER_TEMP_VAR_NUM, ACCULEVEL_TEMP_RESOLUTION,
+      : Variable((const uint8_t)KELLER_TEMP_VAR_NUM,
+                 (uint8_t)ACCULEVEL_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius", "kellerAccuTemp")
     {}
     ~KellerAcculevel_Temp(){}
@@ -97,12 +103,15 @@ class KellerAcculevel_Height : public Variable
 public:
     KellerAcculevel_Height(Sensor *parentSense, const char *uuid = "",
                            const char *customVarCode = "kellerAccuHeight")
-      : Variable(KELLER_HEIGHT_VAR_NUM, ACCULEVEL_HEIGHT_RESOLUTION,
-                 "gaugeHeight", "meter", customVarCode,
-                 uuid, parentSense)
+      : Variable(parentSense,
+                 (const uint8_t)KELLER_HEIGHT_VAR_NUM,
+                 (uint8_t)ACCULEVEL_HEIGHT_RESOLUTION,
+                 "gaugeHeight", "meter",
+                 customVarCode, uuid)
     {}
     KellerAcculevel_Height()
-      : Variable(KELLER_HEIGHT_VAR_NUM, ACCULEVEL_HEIGHT_RESOLUTION,
+      : Variable((const uint8_t)KELLER_HEIGHT_VAR_NUM,
+                 (uint8_t)ACCULEVEL_HEIGHT_RESOLUTION,
                  "gaugeHeight", "meter", "kellerAccuHeight")
     {}
     ~KellerAcculevel_Height(){}
