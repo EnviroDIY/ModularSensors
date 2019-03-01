@@ -75,6 +75,7 @@ public:
 
     // bool startSingleMeasurement(void) override;  // for forced mode
     bool addSingleMeasurementResult(void) override;
+
 protected:
     Adafruit_BME280 bme_internal;
     uint8_t _i2cAddressHex;
@@ -88,9 +89,9 @@ public:
     BoschBME280_Temp(Sensor *parentSense,
                      const char *UUID = "", const char *customVarCode = "")
       : Variable(parentSense, BME280_TEMP_VAR_NUM,
-               "temperature", "degreeCelsius",
-               BME280_TEMP_RESOLUTION,
-               "BoschBME280Temp", UUID, customVarCode)
+                "temperature", "degreeCelsius",
+                BME280_TEMP_RESOLUTION,
+                "BoschBME280Temp", UUID, customVarCode)
     {}
     ~BoschBME280_Temp(){};
 };

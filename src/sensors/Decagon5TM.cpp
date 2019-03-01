@@ -41,23 +41,28 @@ bool Decagon5TM::addSingleMeasurementResult(void)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6))
     {
-        MS_DBG(F("   Activating SDI-12 instance for "), getSensorNameAndLocation());
-        // Make this the currently active SDI-12 Object
+        // MS_DBG(F("   Activating SDI-12 instance for"), getSensorNameAndLocation());
+        // Check if this the currently active SDI-12 Object
+        bool wasActive = _SDI12Internal.isActive();
+        // if (wasActive) {MS_DBG(F("   SDI-12 instance for"), getSensorNameAndLocation(),
+        //                       F("was already active!"));}
+        // If it wasn't active, activate it now.
         // Use begin() instead of just setActive() to ensure timer is set correctly.
-        _SDI12Internal.begin();;
+        if (!wasActive) _SDI12Internal.begin();
         // Empty the buffer
         _SDI12Internal.clearBuffer();
-        MS_DBG(F("   Requesting data from "), getSensorNameAndLocation());
+
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
         String getDataCommand = "";
         getDataCommand += _SDI12address;
         getDataCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
         _SDI12Internal.sendCommand(getDataCommand);
         delay(30);  // It just needs this little delay
-        MS_DBG(F("      >>> "), getDataCommand);
+        MS_DBG(F("    >>>"), getDataCommand);
 
         uint32_t startTime = millis();
         while (_SDI12Internal.available() < 3 && (millis() - startTime) < 1500) {}
-        MS_DBG(F("   Receiving results from "), getSensorNameAndLocation());
+        MS_DBG(F("  Receiving results from"), getSensorNameAndLocation());
         _SDI12Internal.read();  // ignore the repeated SDI12 address
         // First variable returned is the Dialectric E
         ea = _SDI12Internal.parseFloat();
@@ -78,7 +83,7 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         // String sdiResponse = _SDI12Internal.readStringUntil('\n');
         // sdiResponse.trim();
         // _SDI12Internal.clearBuffer();
-        // MS_DBG(F("      <<< "), sdiResponse);
+        // MS_DBG(F("    <<<"), sdiResponse);
 
         // Empty the buffer again
         _SDI12Internal.clearBuffer();
@@ -87,16 +92,16 @@ bool Decagon5TM::addSingleMeasurementResult(void)
         // Use end() instead of just forceHold to un-set the timers
         _SDI12Internal.end();
 
+        MS_DBG(F("  Dialectric E:"), ea);
+        MS_DBG(F("  Temperature:"), temp);
+        MS_DBG(F("  Volumetric Water Content:"), VWC);
+
         success = true;
     }
     else
     {
-        MS_DBG(F("   "), getSensorNameAndLocation(), F(" is not currently measuring!"));
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
     }
-
-    MS_DBG(F("Dialectric E: "), ea);
-    MS_DBG(F(" Temperature: "), temp);
-    MS_DBG(F(" Volumetric Water Content: "), VWC);
 
     verifyAndAddMeasurementResult(TM_EA_VAR_NUM, ea);
     verifyAndAddMeasurementResult(TM_TEMP_VAR_NUM, temp);

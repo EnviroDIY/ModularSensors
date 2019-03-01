@@ -23,6 +23,15 @@ dataPublisher::dataPublisher(Logger& baseLogger, uint8_t sendEveryX, uint8_t sen
     _baseLogger->registerDataPublisher(this);  // register self with logger
     _sendEveryX = sendEveryX;
     _sendOffset = sendOffset;
+    _inClient = NULL;
+}
+dataPublisher::dataPublisher(Logger& baseLogger, Client *inClient, uint8_t sendEveryX, uint8_t sendOffset)
+{
+    _baseLogger = &baseLogger;
+    _baseLogger->registerDataPublisher(this);  // register self with logger
+    _sendEveryX = sendEveryX;
+    _sendOffset = sendOffset;
+    _inClient = inClient;
 }
 // Destructor
 dataPublisher::~dataPublisher(){}
@@ -42,7 +51,7 @@ void dataPublisher::emptyTxBuffer(void)
 // Returns how much space is left in the buffer
 int dataPublisher::bufferFree(void)
 {
-    MS_DBG(F("Current TX Buffer Size: "), strlen(txBuffer));
+    MS_DBG(F("Current TX Buffer Size:"), strlen(txBuffer));
     return MS_SEND_BUFFER_SIZE - strlen(txBuffer);
 }
 
@@ -61,4 +70,17 @@ void dataPublisher::printTxBuffer(Stream *stream)
 
     // empty the buffer after printing it
     emptyTxBuffer();
+}
+
+
+// This sends data on the "default" client of the modem
+int16_t dataPublisher::sendData()
+{
+    if (_inClient == NULL && _baseLogger->_logModem != NULL)
+    {
+        _inClient = _baseLogger->_logModem->getClient();
+    }
+
+    if (_inClient == NULL) return 0;
+    else return sendData(_inClient);
 }

@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.3
+This example sketch is written for ModularSensors library version 0.19.6
 
 This sketch is an example of logging data to an SD card and sending only a
 portion of that data to the EnviroDIY data portal.
@@ -27,7 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.19.3";
+const char *libraryVersion = "0.19.6";
 // The name of this file
 const char *sketchName = "data_saving.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -125,11 +125,25 @@ void SERCOM1_Handler()
 
 
 // ==========================================================================
-//    Modem MCU Type and TinyGSM Client
+//    Wifi/Cellular Modem Main Chip Selection
 // ==========================================================================
 
 // Select your modem chip - this determines the exact commands sent to it
 #define TINY_GSM_MODEM_SIM800  // Select for a SIMCOM SIM800, SIM900, or variant thereof
+
+
+// ==========================================================================
+//    Modem Pins
+// ==========================================================================
+
+const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
+
+
+// ==========================================================================
+//    TinyGSM Client
+// ==========================================================================
 
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
@@ -154,26 +168,23 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 
 // ==========================================================================
-//    Specific Modem Pins and On-Off Methods
+//    Specific Modem On-Off Methods
 // ==========================================================================
 
 // THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
 // Describe the physical pin connection of your modem to your board
 const long ModemBaud = 9600;         // Communication speed of the modem
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
-const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemSleepRqPin = 23;   // MCU pin used for modem sleep/wake request (-1 if not applicable)
-const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if not applicable)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool wakeFxn(void)
+bool modemWakeFxn(void)
 {
     digitalWrite(modemSleepRqPin, HIGH);
     digitalWrite(redLED, HIGH);  // A light just for show
     return true;
 }
-bool sleepFxn(void)
+bool modemSleepFxn(void)
 {
     digitalWrite(modemSleepRqPin, LOW);
     digitalWrite(redLED, LOW);
@@ -193,7 +204,7 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
 
 // Create the RSSI and signal strength variable objects for the modem and return
 // variable-type pointers to them
@@ -339,9 +350,8 @@ Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-123
 // ==========================================================================
 #include <VariableArray.h>
 
-// Put ALL of the variable pointers into the first array
-// NOTE:  Since we've created all of the variable pointers above, we can
-// reference them by name here.
+// FORM2: Fill array with already created and named variable pointers
+// We put ALL of the variable pointers into the first array
 Variable *variableList_complete[] = {
     mcuBoardSampNo,
     mcuBoardBatt,
@@ -366,7 +376,7 @@ VariableArray arrayComplete(variableCount_complete, variableList_complete);
 
 
 // Put only the particularly interesting variables into a second array
-// NOTE:  We can put some of the exact same variables into multiple arrays
+// NOTE:  We can the same variables into multiple arrays
 Variable *variableList_toGo[] = {
     y504DOmgL,
     y504Temp,
@@ -386,9 +396,10 @@ VariableArray arrayToGo(variableCount_toGo, variableList_toGo);
 // ==========================================================================
 #include <LoggerBase.h>
 
+// Create one new logger instance for the complete array
 Logger loggerAllVars(LoggerID, loggingInterval, sdCardPin, wakePin, &arrayComplete);
 
-// Create the new logger instance
+// Create "another" logger for the variables to go out over the internet
 Logger loggerToGo(LoggerID, loggingInterval,sdCardPin, wakePin, &arrayToGo);
 
 
@@ -401,6 +412,7 @@ const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Dev
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
+// This is only attached to the logger with the shorter variable array
 #include <publishers/EnviroDIYPublisher.h>
 EnviroDIYPublisher EnviroDIYPOST(loggerToGo, registrationToken, samplingFeature);
 
@@ -412,15 +424,15 @@ EnviroDIYPublisher EnviroDIYPOST(loggerToGo, registrationToken, samplingFeature)
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 {
-  for (uint8_t i = 0; i < numFlash; i++) {
-    digitalWrite(greenLED, HIGH);
+    for (uint8_t i = 0; i < numFlash; i++) {
+        digitalWrite(greenLED, HIGH);
+        digitalWrite(redLED, LOW);
+        delay(rate);
+        digitalWrite(greenLED, LOW);
+        digitalWrite(redLED, HIGH);
+        delay(rate);
+    }
     digitalWrite(redLED, LOW);
-    delay(rate);
-    digitalWrite(greenLED, LOW);
-    digitalWrite(redLED, HIGH);
-    delay(rate);
-  }
-  digitalWrite(redLED, LOW);
 }
 
 
@@ -458,8 +470,8 @@ void setup()
       && not defined(ARDUINO_SODAQ_AUTONOMO) && not defined(ARDUINO_SODAQ_EXPLORER) \
       && not defined(ARDUINO_SODAQ_ONE) && not defined(ARDUINO_SODAQ_SARA) \
       && not defined(ARDUINO_SODAQ_SFF)
-    pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx = SERCOM1 Pad #2
-    pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx = SERCOM1 Pad #0
+    pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
+    pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
     #endif
 
     // Start the serial connection with the modem
@@ -513,10 +525,19 @@ void setup()
 
     // At very good battery voltage, or with suspicious time stamp, sync the clock
     // Note:  Please change these battery voltages to match your battery
-    if (mcuBoardBatt->getValue() > 3.9 ||
+    if (mcuBoardBatt->getValue() > 3.8 ||
         loggerAllVars.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
         loggerAllVars.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
-        loggerAllVars.syncRTC();
+    {
+        loggerAllVars.syncRTC();  // There's a sleepPowerDown at the end of this
+    }
+    else
+    {
+        modem.modemSleepPowerDown();
+    }
+
+    // Call the processor sleep
+    loggerAllVars.systemSleep();
 }
 
 
@@ -524,6 +545,7 @@ void setup()
 // Main loop function
 // ==========================================================================
 
+// Use this long loop when you want to do something special
 // Because of the way alarms work on the RTC, it will wake the processor and
 // start the loop every minute exactly on the minute.
 // The processor may also be woken up by another interrupt or level change on a
@@ -599,7 +621,7 @@ void loop()
                 // NOTE:  All loggers have the same clock, pick one
                 if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
                 {
-                    Serial.println(F("  Running a daily clock sync..."));
+                    Serial.println(F("Running a daily clock sync..."));
                     loggerAllVars.setRTClock(modem.getNISTTime());
                 }
 

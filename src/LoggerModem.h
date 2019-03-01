@@ -71,6 +71,7 @@
         template<typename T, typename... Args>
         static void MS_MOD_DBG(T head, Args... tail) {
             MODEM_DEBUGGING_SERIAL_OUTPUT.print(head);
+            MODEM_DEBUGGING_SERIAL_OUTPUT.print(' ');
             MS_MOD_DBG(tail...);
         }
     }
@@ -99,15 +100,21 @@ public:
     // typedef's in the TinyGsmClient.h that make this somewhat invisible to
     // the user.
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
-                bool (*wakeFxn)(), bool (*sleepFxn)(),
+                bool (*modemWakeFxn)(), bool (*modemSleepFxn)(),
                 TinyGsmModem *inModem, Client *inClient, const char *APN);
 
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
-                bool (*wakeFxn)(), bool (*sleepFxn)(),
+                bool (*modemWakeFxn)(), bool (*modemSleepFxn)(),
+                TinyGsmModem *inModem, Client *inClient, const char *ssid, const char *pwd);
+
+    loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel, int8_t modemSleepRqPin,
+                TinyGsmModem *inModem, Client *inClient, const char *APN);
+
+    loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel, int8_t modemSleepRqPin,
                 TinyGsmModem *inModem, Client *inClient, const char *ssid, const char *pwd);
 
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
-                bool (*wakeFxn)(), bool (*sleepFxn)(),
+                bool (*modemWakeFxn)(), bool (*modemSleepFxn)(),
                 TinyGsmModem *inModem, Client *inClient);
 
     ~loggerModem();
@@ -185,13 +192,22 @@ private:
     static int16_t getPctFromCSQ(int16_t csq);
     // Helper to get signal percent from CSQ
     static int16_t getPctFromRSSI(int16_t rssi);
+    // Helper to set the timing for specific cellular chipsets based on their documentation
+    void setModemTiming(void);
+    // A default sleep function based on the "normal" method of pulling a pin low
+    bool modemDefaultSleep(void);
+    // A default wake function based on the "normal" method of pulling a pin low
+    bool modemDefaultWake(void);
 
 private:
     bool _statusLevel;
-    uint32_t _statusTime_ms;
-    uint32_t _disconnetTime_ms;
-    bool (*_wakeFxn)(void);
-    bool (*_sleepFxn)(void);
+    int8_t _modemSleepRqPin;
+    uint16_t _statusTime_ms;
+    uint16_t _disconnetTime_ms;
+    uint16_t _on_pull_down_ms;
+    uint16_t _off_pull_down_ms;
+    bool (*_modemWakeFxn)(void);
+    bool (*_modemSleepFxn)(void);
     const char *_apn;
           char *_apn_buf=NULL;
     const char *_ssid;
@@ -199,6 +215,8 @@ private:
     const char *_pwd;
           char *_pwd_buf=NULL;
     uint32_t _lastNISTrequest;
+    uint32_t _lastATCheck;
+    uint32_t _lastConnectionCheck;
     String _modemName;
 
 };

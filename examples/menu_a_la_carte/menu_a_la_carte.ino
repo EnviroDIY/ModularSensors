@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.3
+This example sketch is written for ModularSensors library version 0.19.6
 
 This shows most of the standard functions of the library at once.
 
@@ -26,7 +26,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.19.3";
+const char *libraryVersion = "0.19.6";
 // The name of this file
 const char *sketchName = "menu_a_la_carte.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -92,7 +92,7 @@ AltSoftSerial altSoftSerial;
 // You can use as many instances of NeoSWSerial as you want.
 // Not all AVR boards are supported by NeoSWSerial.
 #include <NeoSWSerial.h>  // for the stream communication
-const int8_t neoSSerial1Rx = 10;     // data in pin
+const int8_t neoSSerial1Rx = 11;     // data in pin
 const int8_t neoSSerial1Tx = -1;     // data out pin
 NeoSWSerial neoSSerial1(neoSSerial1Rx, neoSSerial1Tx);
 // To use NeoSWSerial in this library, we define a function to receive data
@@ -129,12 +129,15 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 // SERCOM4    SPI (D21/22/23)    SPI (D21/22/23)     SPI1/Serial2
 // SERCOM5    EDBG/Serial        Available           Serial1
 
+// If using a Sodaq board, do not define the new sercoms, instead:
+// #define ENABLE_SERIAL2
+// #define ENABLE_SERIAL3
 
-#if defined(ARDUINO_ARCH_SAMD) \
-  && not defined(ARDUINO_SODAQ_AUTONOMO) && not defined(ARDUINO_SODAQ_EXPLORER) \
-  && not defined(ARDUINO_SODAQ_ONE) && not defined(ARDUINO_SODAQ_SARA) \
-  && not defined(ARDUINO_SODAQ_SFF)
-  #include <wiring_private.h> // Needed for SAMD pinPeripheral() function
+
+#if defined(ARDUINO_ARCH_SAMD)
+#include <wiring_private.h> // Needed for SAMD pinPeripheral() function
+
+#ifndef ENABLE_SERIAL2
 // Set up a 'new' UART using SERCOM1
 // The Rx will be on digital pin 11, which is SERCOM1's Pad #0
 // The Tx will be on digital pin 10, which is SERCOM1's Pad #2
@@ -147,7 +150,9 @@ void SERCOM1_Handler()
 {
     Serial2.IrqHandler();
 }
+#endif
 
+#ifndef ENABLE_SERIAL3
 // Set up a 'new' UART using SERCOM2
 // The Rx will be on digital pin 5, which is SERCOM2's Pad #3
 // The Tx will be on digital pin 2, which is SERCOM2's Pad #2
@@ -160,27 +165,50 @@ void SERCOM2_Handler()
 {
     Serial3.IrqHandler();
 }
+#endif
+
 #endif  // End hardware serial on SAMD21 boards
 
 
 // ==========================================================================
-//    Modem MCU Type and TinyGSM Client
+//    Wifi/Cellular Modem Main Chip Selection
 // ==========================================================================
 
 // Select your modem chip - this determines the exact commands sent to it
 // #define TINY_GSM_MODEM_SIM800  // Select for a SIMCOM SIM800, SIM900, or variant thereof
+// define SIM800_GPRSBEE_R6  // These use atypical sleep and wake fxns
 // #define TINY_GSM_MODEM_SIM808  // Select for a SIMCOM SIM808 or SIM868, or variant thereof
 // #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
+// #define USE_XBEE_BYPASS  // If you're using a Digi 3G or LTE-M XBee in bypass mode as a u-blox
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
+// #define USE_XBEE_WIFI  // If you're using a S6B wifi XBee
 // #define TINY_GSM_MODEM_M590  // Select for a Neoway M590
 // #define TINY_GSM_MODEM_A6  // Select for an AI-Thinker A6, A6C, A7, A20
 // #define TINY_GSM_MODEM_M95  // Select for a Quectel M95
 // #define TINY_GSM_MODEM_BG96  // Select for a Quectel BG96
 // #define TINY_GSM_MODEM_MC60  // Select for a Quectel MC60 or MC60E
 
-#if defined(TINY_GSM_MODEM_XBEE)
-  #define TINY_GSM_YIELD() { delay(1); }  // Use to counter slow (9600) baud rate
+
+// ==========================================================================
+//    Modem Pins
+// ==========================================================================
+
+const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
+
+const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
+const int8_t modemResetPin = A4;    // MCU pin connected to modem reset pin (-1 if unconnected)
+
+
+// ==========================================================================
+//    TinyGSM Client
+// ==========================================================================
+
+// #define TINY_GSM_DEBUG Serial  // If you want debugging on the main debug port
+
+#if defined(TINY_GSM_MODEM_XBEE) || defined(USE_XBEE_BYPASS)
+  #define TINY_GSM_YIELD() { delay(2); }  // Use to counter slow (9600) baud rate
 #endif
 
 // Include TinyGSM for the modem
@@ -194,7 +222,11 @@ HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
 
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
+#if defined(TINY_GSM_MODEM_XBEE)
+TinyGsm *tinyModem = new TinyGsm(modemSerial, modemResetPin);
+#else
 TinyGsm *tinyModem = new TinyGsm(modemSerial);
+#endif
 
 // Use this to create a modem if you want to spy on modem communication through
 // a secondary Arduino stream.  Make sure you install the StreamDebugger library!
@@ -205,27 +237,29 @@ TinyGsm *tinyModem = new TinyGsm(modemSerial);
 
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
+// The ublox is very slow to open and close clients, so we can iterate through
+// mutiple data senders much more quickly if we have multiple clients
+#if defined(TINY_GSM_MODEM_UBLOX)
+TinyGsmClient *tinyClient2 = new TinyGsmClient(*tinyModem);
+TinyGsmClient *tinyClient3 = new TinyGsmClient(*tinyModem);
+#endif
 
 
 // ==========================================================================
-//    Specific Modem Pins and On-Off Methods
+//    Specific Modem On-Off Methods
 // ==========================================================================
 
 // This should apply to all Digi brand XBee modules.
-#if defined(TINY_GSM_MODEM_XBEE)
-#define USE_XBEE_WIFI  // If you're using a S6B wifi XBee
+#if defined(TINY_GSM_MODEM_XBEE) || defined(USE_XBEE_BYPASS)
 // Describe the physical pin connection of your modem to your board
-const long ModemBaud = 9600;        // Communication speed of the modem
+const long ModemBaud = 9600;        // Communication speed of the modem, 9600 is default for XBee
 const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
-const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
-const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
 // After enabling pin sleep, the sleep request pin is held LOW to keep the XBee on
 // Enable pin sleep in the setup function or using XCTU prior to connecting the XBee
-bool sleepFxn(void)
+bool modemSleepFxn(void)
 {
     if (modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
     {
@@ -233,9 +267,12 @@ bool sleepFxn(void)
         digitalWrite(redLED, LOW);
         return true;
     }
-    else return true;
+    else
+    {
+        return true;
+    }
 }
-bool wakeFxn(void)
+bool modemWakeFxn(void)
 {
     if (modemVccPin >= 0)  // Turns on when power is applied
         return true;
@@ -245,52 +282,108 @@ bool wakeFxn(void)
         digitalWrite(redLED, HIGH);  // Because the XBee doesn't have any lights
         return true;
     }
-    else return true;
+    else
+    {
+        return true;
+    }
 }
+// An extra function to set up pin sleep and other preferences on the XBee
+// NOTE:  This will only succeed if the modem is turned on and awake!
+#if defined(TINY_GSM_MODEM_XBEE)
+void setupXBee(void)
+{
+    tinyModem->init();  // initialize
+    if (tinyModem->commandMode())
+    {
+        tinyModem->sendAT(F("SM"),1);  // Pin sleep
+        tinyModem->waitResponse();
+        tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
+        // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
+        // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
+        // so we'll use the Digi pin sleep instead.
+        tinyModem->waitResponse();
+        #if defined(USE_XBEE_WIFI)
+        tinyModem->sendAT(F("SO"),200);  // For WiFi - Disassociate from AP for Deep Sleep
+        tinyModem->waitResponse();
+        #else
+        tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
+        tinyModem->waitResponse();
+        tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
+        // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
+        #endif
+        tinyModem->waitResponse();
+        tinyModem->writeChanges();
+        tinyModem->exitCommand();
+    }
+}
+#elif defined(USE_XBEE_BYPASS)
+void setupXBee(void)
+{
+    delay(1000);  // Guard time for command mode
+    tinyModem->streamWrite(GF("+++"));  // enter command mode
+    tinyModem->waitResponse(2000, F("OK\r"));
+    tinyModem->sendAT(F("SM"),1);  // Pin sleep
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
+    // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
+    // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
+    // so we'll use the Digi pin sleep instead.
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
+    // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("AP5"));  // Turn on bypass mode
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("WR"));  // Write changes to flash
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("AC"));  // Apply changes
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("FR"));  // Force reset to enter bypass mode
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->init();  // initialize
+}
+#endif
 
 
 // This should work with most ESP8266 breakouts
 #elif defined(TINY_GSM_MODEM_ESP8266)
 // Describe the physical pin connection of your modem to your board
-const long ModemBaud = 57600;        // Communication speed of the modem
+const long ModemBaud = 115200;       // Communication speed of the modem, 115200 is default for ESP8266
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
-const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemResetPin = -1;     // MCU pin connected to ESP8266's RSTB/GPIO16 pin (-1 if unconnected)
-const int8_t espSleepRqPin = 13;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
-const int8_t modemSleepRqPin = 19;   // MCU pin used for wake from light sleep (-1 if not applicable)
-const int8_t espStatusPin = -1;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
-const int8_t modemStatusPin = -1;    // MCU pin used to read modem status (-1 if not applicable)
+const int8_t espSleepRqPin = 14;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
+const int8_t espStatusPin = 13;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool sleepFxn(void)
+bool modemSleepFxn(void)
 {
+    // Use this if you have GPIO16 connected to the reset pin to wake from deep sleep
+    // but no other MCU pin connected to the reset pin.
+    // NOTE:  This will NOT work nicely with "testingMode"
+    /*if (loggingInterval > 1)
+    {
+        uint32_t sleepSeconds = (((uint32_t)loggingInterval) * 60 * 1000) - 75000L;
+        String sleepCommand = String(sleepSeconds);
+        tinyModem->sendAT(F("+GSLP="), sleepCommand);
+        // Power down for 1 minute less than logging interval
+        // Better:  Calculate length of loop and power down for logging interval - loop time
+        return tinyModem->waitResponse() == 1;
+    }*/
     // Use this if you have an MCU pin connected to the ESP's reset pin to wake from deep sleep
     if (modemResetPin >= 0)
     {
         digitalWrite(redLED, LOW);
         return tinyModem->poweroff();
     }
-    // Use this if you have GPIO16 connected to the reset pin to wake from deep sleep
-    // but no other MCU pin connected to the reset pin.
-    // NOTE:  This will NOT work nicely with things like "testingMode" and the
-    // initial 2-minute logging interval at boot up.
-    // if (loggingInterval > 1)
-    // {
-    //     uint32_t sleepSeconds = (((uint32_t)loggingInterval) * 60 * 1000) - 75000L;
-    //     String sleepCommand = String(sleepSeconds);
-    //     tinyModem->sendAT(F("+GSLP="), sleepCommand);
-    //     // Power down for 1 minute less than logging interval
-    //     // Better:  Calculate length of loop and power down for logging interval - loop time
-    //     return tinyModem->waitResponse() == 1;
-    // }
     // Use this if you don't have access to the ESP8266's reset pin for deep sleep but you
     // do have access to another GPIO pin for light sleep.  This also sets up another
     // pin to view the sleep status.
     else if (modemSleepRqPin >= 0 && modemStatusPin >= 0)
     {
         tinyModem->sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
-                          String(espStatusPin), F(","), modemStatusLevel);
+                          String(espStatusPin), ',', modemStatusLevel);
         bool success = tinyModem->waitResponse() == 1;
         tinyModem->sendAT(F("+SLEEP=1"));
         success &= tinyModem->waitResponse() == 1;
@@ -307,22 +400,72 @@ bool sleepFxn(void)
         digitalWrite(redLED, LOW);
         return success;
     }
-    else return true;  // DON'T go to sleep if we can't wake up!
+    else  // DON'T go to sleep if we can't wake up!
+    {
+        return true;
+    }
 }
-bool wakeFxn(void)
+bool modemWakeFxn(void)
 {
     if (modemVccPin >= 0)  // Turns on when power is applied
     {
         digitalWrite(redLED, HIGH);  // Because the ESP8266 doesn't have any lights
-        return true;
+        // Wait for boot - finished when characters start coming
+        delay(200);  // It will take at least this long
+        uint32_t start = millis();
+        bool success = false;
+        while (!modemSerial.available() && millis() - start < 1000) {}
+        if (modemSerial.available())
+        {
+            success = true;
+            // Clear the junk the ESP sends out after boot-up
+            while (modemSerial.available())
+            {
+                modemSerial.read();
+                delay(2);
+            }
+            // Have to make sure echo is off and re-run the init on wake
+            tinyModem->sendAT(F("E0"));
+            success &= tinyModem->waitResponse() == 1;
+            tinyModem->init();
+        }
+        if (!success)
+        {
+            digitalWrite(redLED, LOW);  // Turn off light if the boot failed
+        }
+        return success;
     }
     else if (modemResetPin >= 0)
     {
+        digitalWrite(redLED, HIGH);
         digitalWrite(modemResetPin, LOW);
         delay(1);
         digitalWrite(modemResetPin, HIGH);
-        digitalWrite(redLED, HIGH);
-        return true;
+
+        // Wait for boot - finished when characters start coming
+        delay(200);  // It will take at least this long
+        uint32_t start = millis();
+        bool success = false;
+        while (!modemSerial.available() && millis() - start < 1000) {}
+        if (modemSerial.available())
+        {
+            success = true;
+            // Clear the junk the ESP sends out after boot-up
+            while (modemSerial.available())
+            {
+                modemSerial.read();
+                delay(2);
+            }
+            // Have to make sure echo is off and re-run the init on wake
+            tinyModem->sendAT(F("E0"));
+            success &= tinyModem->waitResponse() == 1;
+            tinyModem->init();
+        }
+        if (!success)
+        {
+            digitalWrite(redLED, LOW);  // Turn off light if the boot failed
+        }
+        return success;
     }
     else if (modemSleepRqPin >= 0)
     {
@@ -332,7 +475,20 @@ bool wakeFxn(void)
         digitalWrite(redLED, HIGH);
         return true;
     }
-    else return true;
+    else
+    {
+        return true;
+    }
+}
+// Set up the light-sleep status pin, if applicable
+void setupESP8266(void)
+{
+    if (modemVccPin < 0 && modemResetPin < 0 && modemSleepRqPin >= 0 && modemStatusPin >= 0)
+    {
+        tinyModem->sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
+                          String(espStatusPin), ',', modemStatusLevel);
+        tinyModem->waitResponse();
+    }
 }
 
 
@@ -341,13 +497,10 @@ bool wakeFxn(void)
 // Describe the physical pin connection of your modem to your board
 const long ModemBaud = 9600;         // Communication speed of the modem
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
-const int8_t modemVccPin = 23;       // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemSleepRqPin = 20;   // MCU pin used for modem sleep/wake request (-1 if not applicable)
-const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if not applicable)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool sleepFxn(void)
+bool modemSleepFxn(void)
 {
     if (modemVccPin >= 0 && modemSleepRqPin < 0)
         return tinyModem->poweroff();
@@ -361,9 +514,12 @@ bool sleepFxn(void)
         digitalWrite(redLED, LOW);
         return true;
     }
-    else return true;  // DON'T go to sleep if we can't wake up!
+    else  // DON'T go to sleep if we can't wake up!
+    {
+        return true;
+    }
 }
-bool wakeFxn(void)
+bool modemWakeFxn(void)
 {
     if (modemVccPin >= 0)  // Turns on when power is applied
         return true;
@@ -378,28 +534,28 @@ bool wakeFxn(void)
         digitalWrite(redLED, LOW);
         return true;
     }
-    else return true;
+    else
+    {
+        return true;
+    }
 }
 
 
 // THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
-#elif defined(TINY_GSM_MODEM_SIM800)
+#elif defined(TINY_GSM_MODEM_SIM800) && defined(SIM800_GPRSBEE_R6)
 // Describe the physical pin connection of your modem to your board
 const long ModemBaud = 9600;         // Communication speed of the modem
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
-const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemSleepRqPin = 23;   // MCU pin used for modem sleep/wake request (-1 if not applicable)
-const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if not applicable)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool wakeFxn(void)
+bool modemWakeFxn(void)
 {
     digitalWrite(modemSleepRqPin, HIGH);
     digitalWrite(redLED, HIGH);  // A light just for show
     return true;
 }
-bool sleepFxn(void)
+bool modemSleepFxn(void)
 {
     digitalWrite(modemSleepRqPin, LOW);
     digitalWrite(redLED, LOW);
@@ -408,17 +564,16 @@ bool sleepFxn(void)
 
 
 // Most cellular chips/breakouts respond to a low pulse of some length to power up and down
+// If we're only using a low pulse on the wake/sleep pin, we could also use the
+// "default" functions and alternate constructor
 #else
 // Describe the physical pin connection of your modem to your board
 const long ModemBaud = 9600;         // Communication speed of the modem
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
-const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemSleepRqPin = 23;   // MCU pin used for modem sleep/wake request (-1 if not applicable)
-const int8_t modemStatusPin = 19;    // MCU pin used to read modem status (-1 if not applicable)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool wakeFxn(void)
+bool modemWakeFxn(void)
 {
     digitalWrite(modemSleepRqPin, LOW);
     // delay(1100);  // >1s for SIM800, SIM900, Quectel M95, Quectel MC60
@@ -427,7 +582,7 @@ bool wakeFxn(void)
     digitalWrite(modemSleepRqPin, HIGH);
     return true;
 }
-bool sleepFxn(void)
+bool modemSleepFxn(void)
 {
     digitalWrite(modemSleepRqPin, LOW);
     // delay(1100);  // 1sec > t > 33sec for SIM800 and clones
@@ -453,12 +608,15 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 #if defined(TINY_GSM_MODEM_ESP8266) || defined(USE_XBEE_WIFI)
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
 // ^^ Use this for WiFi
 #else
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
 // ^^ Use this for cellular
 #endif
+
+// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemSleepRqPin, tinyModem, tinyClient, apn);
+// ^^ Use this for a chip where you want to use the "default" functions
 
 // Create the RSSI and signal strength variable objects for the modem and return
 // variable-type pointers to them
@@ -502,7 +660,7 @@ AOSongAM2315 am2315(I2CPower);
 #include <sensors/AOSongDHT.h>
 
 const int8_t DHTPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t DHTPin = 11;  // DHT data pin
+const int8_t DHTPin = 10;  // DHT data pin
 DHTtype dhtType = DHT11;  // DHT type, either DHT11, DHT21, or DHT22
 
 // Create and return the AOSong DHT sensor object
@@ -522,15 +680,15 @@ AOSongDHT dht(DHTPower, DHTPin, dhtType);
 #include <sensors/ApogeeSQ212.h>
 
 const int8_t SQ212Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t SQ212Data = 2;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
-const uint8_t SQ212_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
+const int8_t SQ212ADSChannel = 3;  // The ADS channel for the SQ212
+const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
 
 // Create and return the Apogee SQ212 sensor object
-ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
+ApogeeSQ212 SQ212(SQ212Power, SQ212ADSChannel);
 
 // Create the PAR variable object for the SQ212 and return a variable-type pointer to it
 // Use this to create a variable pointer with a name to use in multiple arrays or any calculated variables.
-// Variable *SQ212PAR = new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *sq212PAR = new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -538,10 +696,10 @@ ApogeeSQ212 SQ212(SQ212Power, SQ212Data);
 // ==========================================================================
 #include <sensors/BoschBME280.h>
 
+// const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 uint8_t BMEi2c_addr = 0x76;
 // The BME280 can be addressed either as 0x77 (Adafruit default) or 0x76 (Grove default)
 // Either can be physically mofidied for the other address
-// const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 
 // Create and return the Bosch BME280 sensor object
 BoschBME280 bme280(I2CPower, BMEi2c_addr);
@@ -561,15 +719,14 @@ BoschBME280 bme280(I2CPower, BMEi2c_addr);
 
 const int8_t OBS3Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t OBS3numberReadings = 10;
-const uint8_t OBS3_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
+// const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
 // Campbell OBS 3+ Low Range calibration in Volts
-const int8_t OBSLowPin = 0;  // The low voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
-const float OBSLow_A = 4.0749E+00;  // The "A" value (X^2) from the low range calibration
-const float OBSLow_B = 9.1011E+01;  // The "B" value (X) from the low range calibration
-const float OBSLow_C = -3.9570E-01;  // The "C" value from the low range calibration
-
+const int8_t OBSLowADSChannel = 0;  // The ADS channel for the low range output
+const float OBSLow_A = 0.000E+00;  // The "A" value (X^2) from the low range calibration
+const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calibration
+const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
 // Create and return the Campbell OBS3+ LOW RANGE sensor object
-CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, OBS3_ADS1115Address, OBS3numberReadings);
+CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3numberReadings);
 
 // Create the turbidity and voltage variable objects for the low range OBS3 and return variable-type pointers to them
 // Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
@@ -578,13 +735,12 @@ CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, OBS3_AD
 
 
 // Campbell OBS 3+ High Range calibration in Volts
-const int8_t OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
-const float OBSHigh_A = 5.2996E+01;  // The "A" value (X^2) from the high range calibration
-const float OBSHigh_B = 3.7828E+02;  // The "B" value (X) from the high range calibration
-const float OBSHigh_C = -1.3927E+00;  // The "C" value from the high range calibration
-
+const int8_t OBSHighADSChannel = 1;  // The ADS channel for the high range output
+const float OBSHigh_A = 0.000E+00;  // The "A" value (X^2) from the high range calibration
+const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range calibration
+const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
 // Create and return the Campbell OBS3+ HIGH RANGE sensor object
-CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OBS3_ADS1115Address, OBS3numberReadings);
+CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 
 // Create the turbidity and voltage variable objects for the high range OBS3 and return variable-type pointers to them
 // Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
@@ -657,14 +813,14 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
 // ==========================================================================
 #include <sensors/ExternalVoltage.h>
 
-const int8_t VoltPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t VoltData = 0;  // The data pin ON THE ADS1115 (NOT the Arduino Pin Number)
-const float VoltGain = 10; // Default 1/gain for grove voltage divider is 10x
-const uint8_t Volt_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
+const int8_t ADSPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t ADSChannel = 2;  // The ADS channel of interest
+const float dividerGain = 10; //  Default 1/gain for grove voltage divider is 10x
+// const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
 const uint8_t VoltReadsToAvg = 1; // Only read one sample
 
 // Create and return the External Voltage sensor object
-ExternalVoltage extvolt(VoltPower, VoltData, VoltGain, Volt_ADS1115Address, VoltReadsToAvg);
+ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, ADSi2c_addr, VoltReadsToAvg);
 
 // Create the voltage variable object and return a variable-type pointer to it
 // Variable *extvoltV = new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-efgh-1234567890ab");
@@ -700,12 +856,12 @@ MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 HardwareSerial &sonarSerial = Serial3;  // Use hardware serial if possible
 #else
 // AltSoftSerial &sonarSerial = altSoftSerial;  // For software serial if needed
-// NeoSWSerial &sonarSerial = neoSSerial1;  // For software serial if needed
-SoftwareSerial_ExtInts &sonarSerial = softSerial1;  // For software serial if needed
+NeoSWSerial &sonarSerial = neoSSerial1;  // For software serial if needed
+// SoftwareSerial_ExtInts &sonarSerial = softSerial1;  // For software serial if needed
 #endif
 
 const int8_t SonarPower = sensorPowerPin;  // Excite (power) pin (-1 if unconnected)
-const int8_t Sonar1Trigger = A1;  // Trigger pin (a unique negative number if unconnected) (A1 = 25)
+const int8_t Sonar1Trigger = A1;  // Trigger pin (a unique negative number if unconnected) (D25 = A1)
 
 // Create and return the MaxBotix Sonar sensor object
 MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger) ;
@@ -726,7 +882,7 @@ DeviceAddress OneWireAddress3 = {0x28, 0xFF, 0x74, 0x2B, 0x82, 0x16, 0x03, 0x57}
 DeviceAddress OneWireAddress4 = {0x28, 0xFF, 0xB6, 0x6E, 0x84, 0x16, 0x05, 0x9B};
 DeviceAddress OneWireAddress5 = {0x28, 0xFF, 0x3B, 0x07, 0x82, 0x16, 0x03, 0xB3};
 const int8_t OneWirePower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t OneWireBus = A0;  // Pin attached to the OneWire Bus (-1 if unconnected)
+const int8_t OneWireBus = A0;  // Pin attached to the OneWire Bus (-1 if unconnected) (D24 = A0)
 
 // Create and return the Maxim DS18 sensor objects (use this form for a known address)
 MaximDS18 ds18_1(OneWireAddress1, OneWirePower, OneWireBus);
@@ -1125,12 +1281,50 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 
 
 // ==========================================================================
+//    Calculated Variables
+// ==========================================================================
+
+// Create any calculated variables you want here
+
+// Create the function to give your calculated result.
+// The function should take no input (void) and return a float.
+// You can use any named variable pointers to access values by way of variable->getValue()
+
+/*
+float calculateVariableValue(void)
+{
+    float calculatedResult = -9999;  // Always safest to start with a bad value
+    float inputVar1 = variable1->getValue();
+    float inputVar2 = variable2->getValue();
+    if (inputVar1 != -9999 && inputVar2 != -9999)  // make sure both inputs are good
+    {
+        calculatedResult = inputVar1 + inputVar2;
+    }
+    return calculatedResult;
+}
+
+// Properties of the calculated variable
+const char *calculatedVarName = "varName";  // This must be a value from http://vocabulary.odm2.org/variablename/
+const char *calculatedVarUnit = "varUnit";  // This must be a value from http://vocabulary.odm2.org/units/
+int calculatedVarResolution = 3;  // The number of digits after the decimal place
+const char *calculatedVarUUID = "12345678-abcd-1234-efgh-1234567890ab";  // The (optional) universallly unique identifier
+const char *calculatedVarCode = "CorrectedPressure";  // An (optional) short code for the variable
+
+// Finally, create the calculated variable object and return a variable pointer to it
+Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarName,
+                                       calculatedVarUnit, calculatedVarResolution,
+                                       calculatedVarUUID, calculatedVarCode);
+*/
+
+
+// ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 #include <VariableArray.h>
 
-// Create pointers for all of the variables from the sensors
+// FORM1: Create pointers for all of the variables from the sensors,
 // at the same time putting them into an array
+// NOTE:  Forms one and two can be mixed
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
     new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -1209,6 +1403,22 @@ Variable *variableList[] = {
     new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
 };
+
+/*
+// FORM2: Fill array with already created and named variable pointers
+// NOTE:  Forms one and two can be mixed
+Variable *variableList[] = {
+    mcuBoardBatt,
+    mcuBoardAvailableRAM,
+    mcuBoardSampNo,
+    modemRSSI,
+    modemSignalPct,
+    // etc, etc, etc,
+    calculatedVar
+}
+*/
+
+
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
@@ -1248,7 +1458,11 @@ const char * DreamHostPortalRX = "xxxx";
 
 // Create a data publisher to DreamHost
 #include <publishers/DreamHostPublisher.h>
+#if defined(TINY_GSM_MODEM_UBLOX)
+DreamHostPublisher DreamHostGET(dataLogger, tinyClient2, DreamHostPortalRX);
+#else
 DreamHostPublisher DreamHostGET(dataLogger, DreamHostPortalRX);
+#endif
 
 
 // ==========================================================================
@@ -1256,7 +1470,7 @@ DreamHostPublisher DreamHostGET(dataLogger, DreamHostPortalRX);
 // ==========================================================================
 // Create a channel with fields on ThingSpeak in advance
 // The fields will be sent in exactly the order they are in the variable array.
-// Any custom name or identifier given to the field on ThingSpeak fields is irrelevant.
+// Any custom name or identifier given to the field on ThingSpeak is irrelevant.
 // No more than 8 fields of data can go to any one channel.  Any fields beyond the
 // eighth in the array will be ignored.
 const char *thingSpeakMQTTKey = "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from Account > MyProfile.
@@ -1265,7 +1479,11 @@ const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for
 
 // Create a data publisher for ThingSpeak
 #include <publishers/ThingSpeakPublisher.h>
+#if defined(TINY_GSM_MODEM_UBLOX)
+ThingSpeakPublisher TsMqtt(dataLogger, tinyClient3, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
+#else
 ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
+#endif
 
 
 // ==========================================================================
@@ -1275,15 +1493,15 @@ ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, t
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 {
-  for (uint8_t i = 0; i < numFlash; i++) {
-    digitalWrite(greenLED, HIGH);
+    for (uint8_t i = 0; i < numFlash; i++) {
+        digitalWrite(greenLED, HIGH);
+        digitalWrite(redLED, LOW);
+        delay(rate);
+        digitalWrite(greenLED, LOW);
+        digitalWrite(redLED, HIGH);
+        delay(rate);
+    }
     digitalWrite(redLED, LOW);
-    delay(rate);
-    digitalWrite(greenLED, LOW);
-    digitalWrite(redLED, HIGH);
-    delay(rate);
-  }
-  digitalWrite(redLED, LOW);
 }
 
 
@@ -1333,17 +1551,6 @@ void setup()
         enableInterrupt(neoSSerial1Rx, neoSSerial1ISR, CHANGE);
     #endif
 
-    // Assign pins SERCOM functionality for SAMD boards
-    #if defined(ARDUINO_ARCH_SAMD) \
-      && not defined(ARDUINO_SODAQ_AUTONOMO) && not defined(ARDUINO_SODAQ_EXPLORER) \
-      && not defined(ARDUINO_SODAQ_ONE) && not defined(ARDUINO_SODAQ_SARA) \
-      && not defined(ARDUINO_SODAQ_SFF)
-    pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx = SERCOM1 Pad #2
-    pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx = SERCOM1 Pad #0
-    pinPeripheral(2, PIO_SERCOM); // Serial3 Tx = SERCOM2 Pad #2
-    pinPeripheral(5, PIO_SERCOM);  // Serial3 Rx = SERCOM2 Pad #3
-    #endif
-
     // Start the serial connection with the modem
     modemSerial.begin(ModemBaud);
 
@@ -1352,6 +1559,19 @@ void setup()
 
     // Start the SoftwareSerial stream for the sonar; it will always be at 9600 baud
     sonarSerial.begin(9600);
+
+    // Assign pins SERCOM functionality for SAMD boards
+    // NOTE:  This must happen *after* the begin
+    #if defined(ARDUINO_ARCH_SAMD)
+    #ifndef ENABLE_SERIAL2
+    pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
+    pinPeripheral(11, PIO_SERCOM);  // Serial2 Rx/Din = SERCOM1 Pad #0
+    #endif
+    #ifndef ENABLE_SERIAL3
+    pinPeripheral(2, PIO_SERCOM);  // Serial3 Tx/Dout = SERCOM2 Pad #2
+    pinPeripheral(5, PIO_SERCOM);  // Serial3 Rx/Din = SERCOM2 Pad #3
+    #endif
+    #endif
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
@@ -1376,42 +1596,23 @@ void setup()
     }
 
     // Set up the sleep/wake pin for the modem and put its inital value as "off"
-    #if defined(TINY_GSM_MODEM_XBEE)
-        Serial.println(F("Setting up sleep mode on the XBee."));
-        pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, LOW);  // Turn it on to talk, just in case
-        tinyModem->init();  // initialize
-        if (tinyModem->commandMode())
-        {
-            tinyModem->sendAT(F("SM"),1);  // Pin sleep
-            tinyModem->waitResponse();
-            tinyModem->sendAT(F("DO"),0);  // Disable remote manager
-            tinyModem->waitResponse();
-            tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
-            tinyModem->waitResponse();
-            tinyModem->sendAT(F("SO"),200);  // For WiFi - Disassociate from AP for Deep Sleep
-            tinyModem->waitResponse();
-            tinyModem->writeChanges();
-            tinyModem->exitCommand();
-        }
-        digitalWrite(modemSleepRqPin, HIGH);  // back to sleep
-    #elif defined(TINY_GSM_MODEM_ESP8266)
+    #if defined(TINY_GSM_MODEM_SIM800) && defined(SIM800_GPRSBEE_R6)  // ONLY FOR GPRSBee R6!!!!
         if (modemSleepRqPin >= 0)
         {
             pinMode(modemSleepRqPin, OUTPUT);
-            digitalWrite(modemSleepRqPin, HIGH);
+        digitalWrite(modemSleepRqPin, LOW);
+        }
+    #else
+        if (modemSleepRqPin >= 0)
+        {
+        pinMode(modemSleepRqPin, OUTPUT);
+        digitalWrite(modemSleepRqPin, HIGH);
         }
         if (modemResetPin >= 0)
         {
             pinMode(modemResetPin, OUTPUT);
             digitalWrite(modemResetPin, HIGH);
         }
-    #elif defined(TINY_GSM_MODEM_SIM800)  // ONLY FOR GPRSBee R6!!!!
-        pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, LOW);
-    #else
-        pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, HIGH);
     #endif
 
     // Set the timezone and offsets
@@ -1426,32 +1627,77 @@ void setup()
     dataLogger.setTestingModePin(buttonPin);
 
     // Begin the logger
-    // At lowest battery level, skip sensor set-up
     // Note:  Please change these battery voltages to match your battery
-    if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
-    else dataLogger.begin();  // set up sensors
+    // Check that the battery is OK before powering the modem
+    if (getBatteryVoltage()> 3.7)
+    {
+        modem.modemPowerUp();
+    }
+    // At lowest battery level, skip sensor set-up
+    if (getBatteryVoltage()< 3.4)
+    {
+        dataLogger.begin(true);
+    }
+    else  // set up file and sensors
+    {
+        dataLogger.begin();
+    }
+
+    // Set up XBee
+    #if defined(TINY_GSM_MODEM_XBEE)
+    Serial.println(F("Setting up sleep mode on the XBee."));
+    modem.modemPowerUp();
+    modem.wake();  // Turn it on to talk
+    setupXBee();
+    #endif
+
+    // Extra set-up for the ESP8266
+    #if defined(TINY_GSM_MODEM_ESP8266)
+    setupESP8266();
+    #endif
 
     // At very good battery voltage, or with suspicious time stamp, sync the clock
     // Note:  Please change these battery voltages to match your battery
-    if (getBatteryVoltage() > 3.9 ||
+    if (getBatteryVoltage() > 3.8 ||
         dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
         dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
-        dataLogger.syncRTC();
+    {
+        dataLogger.syncRTC();  // There's a sleepPowerDown at the end of this
+    }
+    else
+    {
+        modem.modemSleepPowerDown();
+    }
+
+    // Call the processor sleep
+    dataLogger.systemSleep();
 }
 
 
 // ==========================================================================
 // Main loop function
 // ==========================================================================
+
 // Use this short loop for simple data logging and sending
 // /*
 void loop()
 {
-    // Log the data
     // Note:  Please change these battery voltages to match your battery
-    if (getBatteryVoltage() < 3.4) dataLogger.systemSleep();  // just go back to sleep
-    else if (getBatteryVoltage() < 3.7) dataLogger.logData();  // log data, but don't send
-    else dataLogger.logDataAndSend();  // send data
+    // At very low battery, just go back to sleep
+    if (getBatteryVoltage() < 3.4)
+    {
+        dataLogger.systemSleep();
+    }
+    // At moderate voltage, log data but don't send it over the modem
+    else if (getBatteryVoltage() < 3.7)
+    {
+        dataLogger.logData();
+    }
+    // If the battery is good, send the data to the world
+    else
+    {
+        dataLogger.logDataAndSend();
+    }
 }
 // */
 
@@ -1514,7 +1760,7 @@ void loop()
                 // Sync the clock at midnight
                 if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
                 {
-                    Serial.println(F("  Running a daily clock sync..."));
+                    Serial.println(F("Running a daily clock sync..."));
                     dataLogger.setRTClock(modem.getNISTTime());
                 }
 
