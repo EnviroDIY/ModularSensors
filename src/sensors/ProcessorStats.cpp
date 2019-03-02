@@ -112,7 +112,7 @@ ProcessorStats::ProcessorStats(const char *version)
         _batteryPin = 10;
     #elif defined(ARDUINO_SODAQ_AUTONOMO)
         if (strcmp(_version, "v0.1") == 0) _batteryPin = 48;
-        else _batteryPin = 61;
+        else _batteryPin = 33;
     #else
         _batteryPin = -1;
     #endif
