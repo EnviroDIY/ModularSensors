@@ -12,7 +12,7 @@ This version of the ModularSensors library is a rugged solar powered wireless da
 * powers sensors when used, and powers the board down to a quiescent of about 3mA between useage.
 ## New for this fork   
 * ONLY applies to ModularSensors\a\atlMayfly   
-* Scales the rollout of multiple loggers with configuration .ini on the SD memory card
+* Scales the rollout of multiple loggers with ms_cfg.ini configuration on the SD memory card
 * Manages the available LiIon battery power, with best management practices for power demand management,
 * Tested for ruggedness/reliability with the Xbee WiFi S6 module (and future the Xbee LTE family and Xbee ISM band modules)
 
@@ -36,7 +36,6 @@ Verify builds and dowloads to your Mayfly.
 
 Now change to ModularSensors/a/atlMayfly/  and not the new platformio.ini
 <blockquote><pre><code>
-    ;EnviroDIY_ModularSensors@=0.17.2
     https://github.com/neilh10/ModularSensors#release1
 ;  ^^ Use this when working from an official release of the library   
 ;    https://github.com/EnviroDIY/ModularSensors.git#develop   
