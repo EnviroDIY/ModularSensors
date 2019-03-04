@@ -45,12 +45,7 @@ public:
              const char *varName,
              const char *varUnit,
              const char *varCode,
-             const char *uuid);
-    Variable(float (*calcFxn)(),
-             uint8_t decimalResolution,
-             const char *varName,
-             const char *varUnit,
-             const char *varCode);
+             const char *uuid = '\0');
     Variable();
 
     // Destructor

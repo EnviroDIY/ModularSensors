@@ -29,11 +29,11 @@ Variable::Variable(Sensor *parentSense,
     setVarCode(varCode);
     setVarUnit(varUnit);
     setVarName(varName);
-    setResolution(_decimalResolution);
+    setResolution(decimalResolution);
 
     isCalculated = false;
     _calcFxn = NULL;
-    attachSensor(parentSensor);
+    attachSensor(parentSense);
 
     // When we create the variable, we also want to initialize it with a current
     // value of -9999 (ie, a bad result).
@@ -52,7 +52,7 @@ Variable::Variable(const uint8_t sensorVarNum,
     setVarCode(varCode);
     setVarUnit(varUnit);
     setVarName(varName);
-    setResolution(_decimalResolution);
+    setResolution(decimalResolution);
 
     isCalculated = false;
     _calcFxn = NULL;
@@ -80,30 +80,7 @@ Variable::Variable(float (*calcFxn)(),
     setVarCode(varCode);
     setVarUnit(varUnit);
     setVarName(varName);
-    setResolution(_decimalResolution);
-
-    isCalculated = true;
-    setCalculation(calcFxn);
-    parentSensor = NULL;
-
-    // When we create the variable, we also want to initialize it with a current
-    // value of -9999 (ie, a bad result).
-    _currentValue = -9999;
-
-    MS_DBG(F("Calculated variable object created"));
-}
-Variable::Variable(float (*calcFxn)(),
-                   uint8_t decimalResolution,
-                   const char *varName,
-                   const char *varUnit,
-                   const char *varCode)
-  : _sensorVarNum(0)
-{
-    setVarUUID('\0');
-    setVarCode(varCode);
-    setVarUnit(varUnit);
-    setVarName(varName);
-    setResolution(_decimalResolution);
+    setResolution(decimalResolution);
 
     isCalculated = true;
     setCalculation(calcFxn);
@@ -180,7 +157,7 @@ Variable *Variable::begin(float (*calcFxn)(),
     setVarCode(varCode);
     setVarUnit(varUnit);
     setVarName(varName);
-    setResolution(_decimalResolution);
+    setResolution(decimalResolution);
     setCalculation(calcFxn);
     return this;
 }
@@ -314,7 +291,7 @@ String Variable::getVarUUID(void){return _uuid;}
 void Variable::setVarUUID(const char *uuid)
 {
     _uuid = uuid;
-    if (_uuid == '\0') MS_DBG(F("No UUID assigned"));
+    if (strlen(_uuid) == 0) MS_DBG(F("No UUID assigned"));
     else MS_DBG(F("Variable UUID is"), _uuid);
 }
 
