@@ -90,13 +90,14 @@ protected:
 class MeaSpecMS5803_Temp : public Variable
 {
 public:
-    MeaSpecMS5803_Temp(Sensor *parentSense, const char *uuid = "",
-                       const char *customVarCode = "MeaSpecMS5803Temp")
+    MeaSpecMS5803_Temp(Sensor *parentSense,
+                       const char *uuid = "",
+                       const char *varCode = "MeaSpecMS5803Temp")
       : Variable(parentSense,
                  (const uint8_t)MS5803_TEMP_VAR_NUM,
                  (uint8_t)MS5803_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     MeaSpecMS5803_Temp()
       : Variable((const uint8_t)MS5803_TEMP_VAR_NUM,
@@ -111,13 +112,14 @@ public:
 class MeaSpecMS5803_Pressure : public Variable
 {
 public:
-    MeaSpecMS5803_Pressure(Sensor *parentSense, const char *uuid = "",
-                           const char *customVarCode = "MeaSpecMS5803Pressure")
+    MeaSpecMS5803_Pressure(Sensor *parentSense,
+                           const char *uuid = "",
+                           const char *varCode = "MeaSpecMS5803Pressure")
       : Variable(parentSense,
                  (const uint8_t)MS5803_PRESSURE_VAR_NUM,
                  (uint8_t)MS5803_PRESSURE_RESOLUTION,
                  "barometricPressure", "millibar",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     MeaSpecMS5803_Pressure()
       : Variable((const uint8_t)MS5803_PRESSURE_VAR_NUM,

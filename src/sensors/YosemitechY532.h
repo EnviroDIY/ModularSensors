@@ -76,13 +76,14 @@ public:
 class YosemitechY532_pH : public Variable
 {
 public:
-    YosemitechY532_pH(Sensor *parentSense, const char *uuid = "",
-                      const char *customVarCode = "Y532pH")
+    YosemitechY532_pH(Sensor *parentSense,
+                      const char *uuid = "",
+                      const char *varCode = "Y532pH")
       : Variable(parentSense,
                  (const uint8_t)Y532_PH_VAR_NUM,
                  (uint8_t)Y532_PH_RESOLUTION,
                  "pH", "pH",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     YosemitechY532_pH()
       : Variable((const uint8_t)Y532_PH_VAR_NUM,
@@ -97,13 +98,14 @@ public:
 class YosemitechY532_Temp : public Variable
 {
 public:
-    YosemitechY532_Temp(Sensor *parentSense, const char *uuid = "",
-                        const char *customVarCode = "Y532Temp")
+    YosemitechY532_Temp(Sensor *parentSense,
+                        const char *uuid = "",
+                        const char *varCode = "Y532Temp")
       : Variable(parentSense,
                  (const uint8_t)Y532_TEMP_VAR_NUM,
                  (uint8_t)Y532_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     YosemitechY532_Temp()
       : Variable((const uint8_t)Y532_TEMP_VAR_NUM,
@@ -118,13 +120,14 @@ public:
 class YosemitechY532_Voltage : public Variable
 {
 public:
-    YosemitechY532_Voltage(Sensor *parentSense, const char *uuid = "",
-                           const char *customVarCode = "Y532Potential")
+    YosemitechY532_Voltage(Sensor *parentSense,
+                           const char *uuid = "",
+                           const char *varCode = "Y532Potential")
       : Variable(parentSense,
                  (const uint8_t)Y532_VOLT_VAR_NUM,
                  (uint8_t)Y532_VOLT_RESOLUTION,
                  "voltage", "millivolt",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     YosemitechY532_Voltage()
       : Variable((const uint8_t)Y532_VOLT_VAR_NUM,

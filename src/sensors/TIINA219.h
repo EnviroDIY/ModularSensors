@@ -78,13 +78,14 @@ protected:
 class TIINA219_Current : public Variable
 {
 public:
-    TIINA219_Current(Sensor *parentSense, const char *uuid = "",
-                     const char *customVarCode = "TIINA219Amp")
+    TIINA219_Current(Sensor *parentSense,
+                     const char *uuid = "",
+                     const char *varCode = "TIINA219Amp")
       : Variable(parentSense,
                  (const uint8_t)INA219_CURRENT_MA_VAR_NUM,
                  (uint8_t)INA219_CURRENT_MA_RESOLUTION,
                  "amp", "mA",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     TIINA219_Current()
       : Variable((const uint8_t)INA219_CURRENT_MA_VAR_NUM,
@@ -99,13 +100,14 @@ public:
 class TIINA219_Volt : public Variable
 {
 public:
-    TIINA219_Volt(Sensor *parentSense, const char *uuid = "",
-                  const char *customVarCode = "TIINA219Volt")
+    TIINA219_Volt(Sensor *parentSense,
+                  const char *uuid = "",
+                  const char *varCode = "TIINA219Volt")
       : Variable(parentSense,
                  (const uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
                  (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION,
                  "Volt", "V",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     TIINA219_Volt()
       : Variable((const uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
@@ -120,13 +122,14 @@ public:
 class TIINA219_Power : public Variable
 {
 public:
-    TIINA219_Power(Sensor *parentSense, const char *uuid = "",
-                   const char *customVarCode = "TIINA219Power")
+    TIINA219_Power(Sensor *parentSense,
+                   const char *uuid = "",
+                   const char *varCode = "TIINA219Power")
       : Variable(parentSense,
                  (const uint8_t)INA219_POWER_MW_VAR_NUM,
                  (uint8_t)INA219_POWER_MW_RESOLUTION,
                  "milliwatt", "mW",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     TIINA219_Power()
       : Variable((const uint8_t)INA219_POWER_MW_VAR_NUM,

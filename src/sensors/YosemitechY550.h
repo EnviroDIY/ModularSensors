@@ -79,13 +79,14 @@ public:
 class YosemitechY550_COD : public Variable
 {
 public:
-    YosemitechY550_COD(Sensor *parentSense, const char *uuid = "",
-                       const char *customVarCode = "Y550COD")
+    YosemitechY550_COD(Sensor *parentSense,
+                       const char *uuid = "",
+                       const char *varCode = "Y550COD")
       : Variable(parentSense,
                  (const uint8_t)Y550_COD_VAR_NUM,
                  (uint8_t)Y550_COD_RESOLUTION,
                  "COD", "milligramPerLiter",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     YosemitechY550_COD()
       : Variable((const uint8_t)Y550_COD_VAR_NUM,
@@ -100,13 +101,14 @@ public:
 class YosemitechY550_Temp : public Variable
 {
 public:
-    YosemitechY550_Temp(Sensor *parentSense, const char *uuid = "",
-                        const char *customVarCode = "Y550Temp")
+    YosemitechY550_Temp(Sensor *parentSense,
+                        const char *uuid = "",
+                        const char *varCode = "Y550Temp")
       : Variable(parentSense,
                  (const uint8_t)Y550_TEMP_VAR_NUM,
                  (uint8_t)Y550_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     YosemitechY550_Temp()
       : Variable((const uint8_t)Y550_TEMP_VAR_NUM,
@@ -121,13 +123,14 @@ public:
 class YosemitechY550_Turbidity : public Variable
 {
 public:
-    YosemitechY550_Turbidity(Sensor *parentSense, const char *uuid = "",
-                             const char *customVarCode = "Y550Turbidity")
+    YosemitechY550_Turbidity(Sensor *parentSense,
+                             const char *uuid = "",
+                             const char *varCode = "Y550Turbidity")
       : Variable(parentSense,
                  (const uint8_t)Y550_TURB_VAR_NUM,
                  (uint8_t)Y550_TURB_RESOLUTION,
                  "turbidity", "nephelometricTurbidityUnit",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     YosemitechY550_Turbidity()
       : Variable((const uint8_t)Y550_TURB_VAR_NUM,

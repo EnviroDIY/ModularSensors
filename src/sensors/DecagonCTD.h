@@ -85,13 +85,14 @@ public:
 class DecagonCTD_Cond : public Variable
 {
 public:
-    DecagonCTD_Cond(Sensor *parentSense, const char *uuid = "",
-                    const char *customVarCode = "CTDcond")
+    DecagonCTD_Cond(Sensor *parentSense,
+                    const char *uuid = "",
+                    const char *varCode = "CTDcond")
       : Variable(parentSense,
                  (const uint8_t)CTD_COND_VAR_NUM,
                  (uint8_t)CTD_COND_RESOLUTION,
                  "specificConductance", "microsiemenPerCentimeter",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     DecagonCTD_Cond()
       : Variable((const uint8_t)CTD_COND_VAR_NUM,
@@ -106,13 +107,14 @@ public:
 class DecagonCTD_Temp : public Variable
 {
 public:
-    DecagonCTD_Temp(Sensor *parentSense, const char *uuid = "",
-                    const char *customVarCode = "CTDtemp")
+    DecagonCTD_Temp(Sensor *parentSense,
+                    const char *uuid = "",
+                    const char *varCode = "CTDtemp")
       : Variable(parentSense,
                  (const uint8_t)CTD_TEMP_VAR_NUM,
                  (uint8_t)CTD_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     DecagonCTD_Temp()
       : Variable((const uint8_t)CTD_TEMP_VAR_NUM,
@@ -127,13 +129,14 @@ public:
 class DecagonCTD_Depth : public Variable
 {
 public:
-    DecagonCTD_Depth(Sensor *parentSense, const char *uuid = "",
-                     const char *customVarCode = "CTDdepth")
+    DecagonCTD_Depth(Sensor *parentSense,
+                     const char *uuid = "",
+                     const char *varCode = "CTDdepth")
       : Variable(parentSense,
                  (const uint8_t)CTD_DEPTH_VAR_NUM,
                  (uint8_t)CTD_DEPTH_RESOLUTION,
                  "waterDepth", "millimeter",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     DecagonCTD_Depth()
       : Variable((const uint8_t)CTD_DEPTH_VAR_NUM,

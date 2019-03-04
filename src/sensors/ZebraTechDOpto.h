@@ -85,13 +85,14 @@ public:
 class ZebraTechDOpto_Temp : public Variable
 {
 public:
-    ZebraTechDOpto_Temp(Sensor *parentSense, const char *uuid = "",
-                        const char *customVarCode = "DOtempC")
+    ZebraTechDOpto_Temp(Sensor *parentSense,
+                        const char *uuid = "",
+                        const char *varCode = "DOtempC")
       : Variable(parentSense,
                  (const uint8_t)DOPTO_TEMP_VAR_NUM,
                  (uint8_t)DOPTO_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     ZebraTechDOpto_Temp()
       : Variable((const uint8_t)DOPTO_TEMP_VAR_NUM,
@@ -106,13 +107,14 @@ public:
 class ZebraTechDOpto_DOpct : public Variable
 {
 public:
-    ZebraTechDOpto_DOpct(Sensor *parentSense, const char *uuid = "",
-                         const char *customVarCode = "DOpercent")
+    ZebraTechDOpto_DOpct(Sensor *parentSense,
+                         const char *uuid = "",
+                         const char *varCode = "DOpercent")
       : Variable(parentSense,
                  (const uint8_t)DOPTO_DOPCT_VAR_NUM,
                  (uint8_t)DOPTO_DOPCT_RESOLUTION,
                  "oxygenDissolvedPercentOfSaturation", "percent",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     ZebraTechDOpto_DOpct()
       : Variable((const uint8_t)DOPTO_DOPCT_VAR_NUM,
@@ -127,13 +129,14 @@ public:
 class ZebraTechDOpto_DOmgL : public Variable
 {
 public:
-    ZebraTechDOpto_DOmgL(Sensor *parentSense, const char *uuid = "",
-                         const char *customVarCode = "DOppm")
+    ZebraTechDOpto_DOmgL(Sensor *parentSense,
+                         const char *uuid = "",
+                         const char *varCode = "DOppm")
       : Variable(parentSense,
                  (const uint8_t)DOPTO_DOMGL_VAR_NUM,
                  (uint8_t)DOPTO_DOMGL_RESOLUTION,
                  "oxygenDissolved", "milligramPerLiter",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     ZebraTechDOpto_DOmgL()
       : Variable((const uint8_t)DOPTO_DOMGL_VAR_NUM,

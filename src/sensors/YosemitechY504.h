@@ -75,13 +75,14 @@ public:
 class YosemitechY504_DOpct : public Variable
 {
 public:
-    YosemitechY504_DOpct(Sensor *parentSense, const char *uuid = "",
-                         const char *customVarCode = "Y504DOpct")
+    YosemitechY504_DOpct(Sensor *parentSense,
+                         const char *uuid = "",
+                         const char *varCode = "Y504DOpct")
       : Variable(parentSense,
                  (const uint8_t)Y504_DOPCT_VAR_NUM,
                  (uint8_t)Y504_DOPCT_RESOLUTION,
                  "oxygenDissolvedPercentOfSaturation", "percent",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     YosemitechY504_DOpct()
       : Variable((const uint8_t)Y504_DOPCT_VAR_NUM,
@@ -96,13 +97,14 @@ public:
 class YosemitechY504_Temp : public Variable
 {
 public:
-    YosemitechY504_Temp(Sensor *parentSense, const char *uuid = "",
-                        const char *customVarCode = "Y504Temp")
+    YosemitechY504_Temp(Sensor *parentSense,
+                        const char *uuid = "",
+                        const char *varCode = "Y504Temp")
       : Variable(parentSense,
                  (const uint8_t)Y504_TEMP_VAR_NUM,
                  (uint8_t)Y504_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     YosemitechY504_Temp()
       : Variable((const uint8_t)Y504_TEMP_VAR_NUM,
@@ -117,13 +119,14 @@ public:
 class YosemitechY504_DOmgL : public Variable
 {
 public:
-    YosemitechY504_DOmgL(Sensor *parentSense, const char *uuid = "",
-                         const char *customVarCode = "Y504DOmgL")
+    YosemitechY504_DOmgL(Sensor *parentSense,
+                         const char *uuid = "",
+                         const char *varCode = "Y504DOmgL")
       : Variable(parentSense,
                  (const uint8_t)Y504_DOMGL_VAR_NUM,
                  (uint8_t)Y504_DOMGL_RESOLUTION,
                  "oxygenDissolved", "milligramPerLiter",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     YosemitechY504_DOmgL()
       : Variable((const uint8_t)Y504_DOMGL_VAR_NUM,

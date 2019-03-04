@@ -40,13 +40,13 @@ class KellerNanolevel : public KellerParent
 public:
     // Constructors with overloads
     KellerNanolevel(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
+                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : KellerParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                     Nanolevel_kellerModel, "KellerNanolevel", KELLER_NUM_VARIABLES,
                     NANOLEVEL_WARM_UP_TIME_MS, NANOLEVEL_STABILIZATION_TIME_MS, NANOLEVEL_MEASUREMENT_TIME_MS)
     {}
     KellerNanolevel(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2 = -1,
-                   int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
+                    int8_t enablePin = -1, uint8_t measurementsToAverage = 1)
      : KellerParent(modbusAddress, stream, powerPin, powerPin2, enablePin, measurementsToAverage,
                     Nanolevel_kellerModel, "KellerNanolevel", KELLER_NUM_VARIABLES,
                     NANOLEVEL_WARM_UP_TIME_MS, NANOLEVEL_STABILIZATION_TIME_MS, NANOLEVEL_MEASUREMENT_TIME_MS)
@@ -60,13 +60,14 @@ public:
 class KellerNanolevel_Pressure : public Variable
 {
 public:
-    KellerNanolevel_Pressure(Sensor *parentSense, const char *uuid = "",
-                             const char *customVarCode = "kellerNanoPress")
+    KellerNanolevel_Pressure(Sensor *parentSense,
+                             const char *uuid = "",
+                             const char *varCode = "kellerNanoPress")
       : Variable(parentSense,
                  (const uint8_t)KELLER_PRESSURE_VAR_NUM,
                  (uint8_t)NANOLEVEL_PRESSURE_RESOLUTION,
                  "pressureGauge", "millibar",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     KellerNanolevel_Pressure()
       : Variable((const uint8_t)KELLER_PRESSURE_VAR_NUM,
@@ -81,13 +82,14 @@ public:
 class KellerNanolevel_Temp : public Variable
 {
 public:
-    KellerNanolevel_Temp(Sensor *parentSense, const char *uuid = "",
-                         const char *customVarCode = "kellerNanoTemp")
+    KellerNanolevel_Temp(Sensor *parentSense,
+                         const char *uuid = "",
+                         const char *varCode = "kellerNanoTemp")
       : Variable(parentSense,
                  (const uint8_t)KELLER_TEMP_VAR_NUM,
                  (uint8_t)NANOLEVEL_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     KellerNanolevel_Temp()
       : Variable((const uint8_t)KELLER_TEMP_VAR_NUM,
@@ -101,13 +103,14 @@ public:
 class KellerNanolevel_Height : public Variable
 {
 public:
-    KellerNanolevel_Height(Sensor *parentSense, const char *uuid = "",
-                           const char *customVarCode = "kellerNanoHeight")
+    KellerNanolevel_Height(Sensor *parentSense,
+                           const char *uuid = "",
+                           const char *varCode = "kellerNanoHeight")
       : Variable(parentSense,
                  (const uint8_t)KELLER_HEIGHT_VAR_NUM,
                  (uint8_t)NANOLEVEL_HEIGHT_RESOLUTION,
                  "gaugeHeight", "meter",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     KellerNanolevel_Height()
       : Variable((const uint8_t)KELLER_HEIGHT_VAR_NUM,

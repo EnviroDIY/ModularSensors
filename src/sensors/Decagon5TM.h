@@ -83,13 +83,14 @@ public:
 class Decagon5TM_Ea : public Variable
 {
 public:
-    Decagon5TM_Ea(Sensor *parentSense, const char *uuid = "",
-                  const char *customVarCode = "SoilEa")
+    Decagon5TM_Ea(Sensor *parentSense,
+                  const char *uuid = "",
+                  const char *varCode = "SoilEa")
       : Variable(parentSense,
                  (const uint8_t)TM_EA_VAR_NUM,
                  (uint8_t)TM_EA_RESOLUTION,
                  "permittivity", "faradPerMeter",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     Decagon5TM_Ea()
       : Variable((const uint8_t)TM_EA_VAR_NUM,
@@ -104,13 +105,14 @@ public:
 class Decagon5TM_Temp : public Variable
 {
 public:
-    Decagon5TM_Temp(Sensor *parentSense, const char *uuid = "",
-                    const char *customVarCode = "SoilTemp")
+    Decagon5TM_Temp(Sensor *parentSense,
+                    const char *uuid = "",
+                    const char *varCode = "SoilTemp")
       : Variable(parentSense,
                  (const uint8_t)TM_TEMP_VAR_NUM,
                  (uint8_t)TM_TEMP_RESOLUTION,
                  "temperature", "degreeCelsius",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     Decagon5TM_Temp()
       : Variable((const uint8_t)TM_TEMP_VAR_NUM,
@@ -125,13 +127,14 @@ public:
 class Decagon5TM_VWC : public Variable
 {
 public:
-    Decagon5TM_VWC(Sensor *parentSense, const char *uuid = "",
-                   const char *customVarCode = "SoilVWC")
+    Decagon5TM_VWC(Sensor *parentSense,
+                   const char *uuid = "",
+                   const char *varCode = "SoilVWC")
       : Variable(parentSense,
                  (const uint8_t)TM_VWC_VAR_NUM,
                  (uint8_t)TM_VWC_RESOLUTION,
                  "volumetricWaterContent", "percent",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     Decagon5TM_VWC()
       : Variable((const uint8_t)TM_VWC_VAR_NUM,

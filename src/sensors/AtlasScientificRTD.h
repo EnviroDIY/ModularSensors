@@ -44,9 +44,9 @@ public:
     AtlasScientificRTD(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_RTD_I2C_ADDR,
                        uint8_t measurementsToAverage = 1)
      : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
-                    "AtlasScientificRTD", ATLAS_RTD_NUM_VARIABLES,
-                    ATLAS_RTD_WARM_UP_TIME_MS, ATLAS_RTD_STABILIZATION_TIME_MS,
-                    ATLAS_RTD_MEASUREMENT_TIME_MS)
+                   "AtlasScientificRTD", ATLAS_RTD_NUM_VARIABLES,
+                   ATLAS_RTD_WARM_UP_TIME_MS, ATLAS_RTD_STABILIZATION_TIME_MS,
+                   ATLAS_RTD_MEASUREMENT_TIME_MS)
     {}
     ~AtlasScientificRTD(){}
 };
@@ -55,13 +55,14 @@ public:
 class AtlasScientificRTD_Temp : public Variable
 {
 public:
-    AtlasScientificRTD_Temp(Sensor *parentSense, const char *uuid = "",
-                            const char *customVarCode = "AtlasTemp")
+    AtlasScientificRTD_Temp(Sensor *parentSense,
+                            const char *uuid = "",
+                            const char *varCode = "AtlasTemp")
       : Variable(parentSense,
                  (const uint8_t)ATLAS_RTD_VAR_NUM,
                  (uint8_t)ATLAS_RTD_RESOLUTION,
                  "temperature", "degreeCelsius",
-                 customVarCode, uuid)
+                 varCode, uuid)
     {}
     AtlasScientificRTD_Temp()
       : Variable((const uint8_t)ATLAS_RTD_VAR_NUM,
