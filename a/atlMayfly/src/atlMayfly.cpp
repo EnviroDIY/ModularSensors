@@ -1395,6 +1395,7 @@ const char UUIDs_pm[] EDIY_PROGMEM = "UUIDs";
 const char index_pm[] EDIY_PROGMEM = "index";
 static uint8_t uuid_index =0;
 
+#if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
 #define RAM_AVAILABLE   ramAvailable();
 #define RAM_REPORT_LEVEL 1
 void ramAvailable(){
@@ -1403,6 +1404,7 @@ void ramAvailable(){
     Serial.print(F(" Ram available:"));
     Serial.println(top_stack );// Stack and heap ??    
 }
+#endif // ARDUINO_AVR_ENVIRODIY_MAYFLY
 static int inihUnhandledFn( const char* section, const char* name, const char* value)
 {
     #if RAM_REPORT_LEVEL > 1
@@ -1680,7 +1682,9 @@ void setup()
     Serial.println(file_name); //Dir and filename
     Serial.print(F("Mayfly "));
     Serial.print(mcuBoardVersion);
+    #ifdef ramAvailable()
     ramAvailable();
+    #endif //ramAvailable
 
     // A vital check on power availability
     do {
