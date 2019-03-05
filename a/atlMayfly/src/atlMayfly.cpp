@@ -26,6 +26,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include "ms_cfg.h" //must be before modular_sensors_common.h
 #include "ms_common.h"
 #define DEBUGGING_SERIAL_OUTPUT Serial
+#define KCONFIG_SHOW_NETWORK_INFO 1
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
@@ -56,7 +57,7 @@ const char file_name[] = __FILE__;
 const long serialBaud = 115200;   // Baud rate for the primary serial port for debugging
 const int8_t greenLED = 8;        // MCU pin for the green LED (-1 if not applicable)
 const int8_t redLED = 9;          // MCU pin for the red LED (-1 if not applicable)
-const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
+const int8_t buttonPin = -1;      // 21 Not used -MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
 const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
@@ -280,6 +281,8 @@ TinyGsmClient *tinyClient3 = new TinyGsmClient(*tinyModem);
 //    Specific Modem On-Off Methods
 // ==========================================================================
 
+bool modemSetup=false;
+
 // This should apply to all Digi brand XBee modules.
 #if defined(TINY_GSM_MODEM_XBEE) || defined(USE_XBEE_BYPASS)
 // Describe the physical pin connection of your modem to your board
@@ -318,6 +321,7 @@ bool modemWakeFxn(void)
     Serial.print(F("modemWakeFxn!"));
     return true;
 }
+
 // An extra function to set up pin sleep and other preferences on the XBee
 // NOTE:  This will only succeed if the modem is turned on and awake!
 #if defined(TINY_GSM_MODEM_XBEE)
@@ -333,9 +337,23 @@ void setupXBee(void)
         // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
         // so we'll use the Digi pin sleep instead.
         tinyModem->waitResponse();
+        #ifdef KCONFIG_SHOW_NETWORK_INFO
+        PRINTOUT(F("Get IP number"));
+        String xbeeRsp;
+        for (int mdm_lp=1;mdm_lp<7;mdm_lp++) {
+            delay(mdm_lp*500);
+            tinyModem->sendAT(F("MY"));  // Request IP #
+            tinyModem->waitResponse(1000,xbeeRsp);
+            PRINTOUT("mdmIP:"+xbeeRsp);
+            if (0!=xbeeRsp.compareTo("0.0.0.0")) {
+                break;
+            }
+            xbeeRsp="";
+        }
+        #endif
         #if defined(USE_XBEE_WIFI)
-        tinyModem->sendAT(F("SO"),200);  // For WiFi - Disassociate from AP for Deep Sleep
-        tinyModem->waitResponse();
+        tinyModem->sendAT(F("SO"),100);  // For WiFi - Disassociate from AP for Deep Sleep
+        //tinyModem->waitResponse();
         #else
         tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
         tinyModem->waitResponse();
@@ -376,7 +394,6 @@ void setupXBee(void)
     tinyModem->init();  // initialize
 }
 #endif
-
 
 #elif defined(TINY_GSM_MODEM_ESP8266)
 #elif defined(TINY_GSM_MODEM_UBLOX)
@@ -1646,82 +1663,6 @@ void mfSystemSleep()
 #endif //mfSLEEP_TEST
 
 // ==========================================================================
-bool modemSetup=false;
-void setupModem() //njh Move to loggerModem???
-{ 
-    // Set up the sleep/wake pin for the modem and put its inital value as "off"
-    #if defined(TINY_GSM_MODEM_XBEE)
-        MS_DBG(F("Setting up sleep mode on the XBee. "));
-        if(modemSleepRqPin >= 0) 
-        {
-            Serial.println(modemSleepRqPin);
-            pinMode(modemSleepRqPin, OUTPUT);
-            digitalWrite(modemSleepRqPin, LOW);  // Turn it on to talk, just in case
-        }
-        if (tinyModem->commandMode())
-        {
-            tinyModem->sendAT(F("SM"),1);  // Pin sleep
-            tinyModem->waitResponse();
-            tinyModem->sendAT(F("DO"),0);  // Disable remote manager
-            tinyModem->waitResponse();
-            //tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
-            //tinyModem->waitResponse();
-        } else {
-            PRINTOUT(F("Xbee Modem Cmd Mode Err - not available! Not set to pin sleep"));
-        }
-        if(modemSleepRqPin >= 0) {
-            digitalWrite(modemSleepRqPin, HIGH);  // back to sleep
-        }
-    #elif defined(TINY_GSM_MODEM_ESP8266)
-        if (modemSleepRqPin >= 0)
-        {
-            pinMode(modemSleepRqPin, OUTPUT);
-            digitalWrite(modemSleepRqPin, HIGH);
-        }
-        if (modemResetPin >= 0)
-        {
-            pinMode(modemResetPin, OUTPUT);
-            digitalWrite(modemResetPin, HIGH);
-        }
-    #elif defined(TINY_GSM_MODEM_UBLOX)
-        pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, HIGH);
-    #else
-        pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, LOW);
-    #endif
-}
-
-// ==========================================================================
-void modemCheckHasIp()  //njh Move to loggerModem???
-{ 
-    #if defined(TINY_GSM_MODEM_XBEE)
-    //expect modemWakeFxn();
-    if (tinyModem->commandMode() )
-    {
-        PRINTOUT(F("IP number is "));
-        tinyModem->sendAT(F("MY"));  // Request IP #
-        tinyModem->waitResponse();
-        if( XBEE_S6B_WIFI == tinyModem->getBeeType()) {
-            MS_DBG(F("  Set XB WiFi\n"));
-            // Cellular 3G Global SM yes, SO no
-            // Cellular LTE-M SM yes, SO no
-            // Cellular LTE CAT1 - SM yes, SO 0
-            // WiFi S6B SM yes, SO yes
-            //For WiFi AP  Bit4/0x140 Associate in sleep or default 0x100 Disassociate for Deep Sleep
-            tinyModem->sendAT(F("SO"),100); //0X140 or 320 decimal
-            tinyModem->waitResponse();
-            tinyModem->writeChanges();
-        }
-        tinyModem->exitCommand();
-    } else {
-        PRINTOUT(F("Xbee Check IP number. not in CMD modem!"));
-    }
-    //Expect modemSleepFxn();
-#endif //TINY_GSM_MODEM_XBEE   
-}
-
-// ==========================================================================
 // Main setup function
 // ==========================================================================
 void setup()
@@ -1933,11 +1874,11 @@ void setup()
     dataLogger.setTestingModePin(buttonPin);
 
     // Begin the logger
-    modemPhy.modemPowerUp();
+    //modemPhy.modemPowerUp();
     dataLogger.begin(true);
 
-    // Set up XBee
-    #if defined(TINY_GSM_MODEM_XBEE)
+    // Set up XBee later on first access
+    #if 0 //defined(TINY_GSM_MODEM_XBEE)
     Serial.println(F("Setting up sleep mode on the XBee."));
     modemPhy.modemPowerUp();
     modemPhy.wake();  // Turn it on to talk
@@ -2027,8 +1968,8 @@ void processSensors()
                     modemSetup = true;
                     MS_DBG(F("  Modem setup up 1st pass\n"));
                     // The first time thru, setup modem. Can't do it in regular setup due to potential power drain.
-                    setupModem();
-                    modemCheckHasIp();
+                    modemPhy.wake();  // Turn it on to talk
+                    setupXBee();
                     if (dataLogger.getNowEpoch() < 1545091200) {  /*Before 12/18/2018*/
                         PRINTOUT(F("  timeSync on startup "));
                         //dataLogger.setRTClock(dataLogger._logModem->getNISTTime());
