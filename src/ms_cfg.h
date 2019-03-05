@@ -85,11 +85,19 @@ const char *wifiPwd_def = "";  // The password for connecting to WiFi, unnecessa
 //**************************************************************************
 #define SENSOR_RS485_PHY 1
 //Standard 
-//#define MFVersion_DEF "v0.5b"
+//For Autonomo
+#define AutonomRev_DEF "r5"
 //This defines rev 0.5ba changes for Mayfly. 
 // Rev0.5ba is an enhancement on 0.5b
 // C4 removed, strap for AA2/Vbat AA3/SolarV, C 100uF Cer across XbeeVcc
+
 #define MFVersion_DEF "v0.5ba"
+#ifdef ARDUINO_AVR_ENVIRODIY_MAYFLY
+#define HwVersion_DEF MFVersion_DEF
+#else  //Mayfly
+#define HwVersion_DEF AutonomRev_DEF
+#endif 
+
 #define LOGGERID_DEF_STR "msLog01"
 #define NEW_LOGGERID_MAX_SIZE 40
 //#define NEW_LOGGERID_MAX_SIZE  3 ///Test

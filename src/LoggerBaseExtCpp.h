@@ -36,7 +36,7 @@ void Logger::setLoggerId(const char *newLoggerId,bool copyId,uint8_t LoggerIdMax
             //Major problem
             PRINTOUT(F("\nLogger::setLoggerId error -no buffer "), newLoggerId);
         } else {
-            strcpy(_LoggerId_buf,(char *)newLoggerId);
+            strcpy((char *)_LoggerId_buf, newLoggerId);
             _loggerID =  _LoggerId_buf;
         }
         MS_DBG(F("\nsetLoggerId cp "),  _loggerID," sz: ",LoggerIdSize);

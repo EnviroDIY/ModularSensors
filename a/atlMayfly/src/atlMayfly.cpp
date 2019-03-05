@@ -65,17 +65,10 @@ const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (m
 const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create and return the main processor chip "sensor" - for general metadata
-#if 1 //defined(PROFILE_NAME)
-#define MFVERSION_SZ 10
- char MFVersion[MFVERSION_SZ] = MFVersion_DEF;//"v0.5b";
-const char *mcuBoardVersion = "v0.5b";
+const char *mcuBoardVersion = HwVersion_DEF;
 #if defined(ProcessorStats_ACT)
 ProcessorStats mcuBoard(mcuBoardVersion);
 #endif //ProcessorStats_ACT
-//ProcessorStats mayflyPhy(MFVersion);
-#endif
-
-
 
 //#define CHECK_SLEEP_POWER
 
@@ -1625,7 +1618,7 @@ const char MAYFLY_INIT_ID_pm[] EDIY_PROGMEM = "MAYFLY_INIT_ID";
 #endif //USE_SD_MAYFLY_INI
 // ==========================================================================
 
-#define mfSLEEP_TEST
+//#define mfSLEEP_TEST
 #ifdef mfSLEEP_TEST
 void sensorsSleep()
 {
@@ -1639,23 +1632,26 @@ void mfSystemSleep()
   //Wait until the serial ports have finished transmitting
   Serial.flush();
   //Serial1.flush();
-  
+#if defined ARDUINO_ARCH_SAMD
+#elif defined ARDUINO_ARCH_AVR
   //The next timed interrupt will not be sent until this is cleared
   rtc.clearINTStatus();
-    
+
   //Disable ADC
   ADCSRA &= ~_BV(ADEN);
-  
+  #endif 
   //Sleep time
   noInterrupts();
   sleep_enable();
   interrupts();
   sleep_cpu();
   sleep_disable();
- 
+
+#if defined ARDUINO_ARCH_SAMD
+#elif defined ARDUINO_ARCH_AVR
   //Enbale ADC
   ADCSRA |= _BV(ADEN);
-  
+#endif  
   //This method handles any sensor specific wake setup
  // sensorsWake();
 }
