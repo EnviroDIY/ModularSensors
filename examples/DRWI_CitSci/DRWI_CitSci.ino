@@ -89,11 +89,11 @@ const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if 
 // Create a reference to the serial port for the modem
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
-// Create a TinyGSM modem to run on that serial port
-TinyGsm tinyModem(modemSerial);
+// Create a new TinyGSM modem to run on that serial port and return a pointer to it
+TinyGsm *tinyModem = new TinyGsm(modemSerial);
 
 // Create a TCP client on that modem
-TinyGsmClient tinyClient(tinyModem);
+TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 
 // ==========================================================================
@@ -107,20 +107,19 @@ const bool modemStatusLevel = HIGH;  // The level of the status pin when the mod
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool modemSleepFxn(void)
-{
-    digitalWrite(modemSleepRqPin, LOW);
-    digitalWrite(redLED, LOW);
-    return true;
-}
 bool modemWakeFxn(void)
 {
     digitalWrite(modemSleepRqPin, HIGH);
     digitalWrite(redLED, HIGH);  // A light just for show
     return true;
 }
-
-
+bool modemSleepFxn(void)
+{
+    digitalWrite(modemSleepRqPin, LOW);
+    digitalWrite(redLED, LOW);
+    return true;
+}
+void extraModemSetup(void){}
 // ==========================================================================
 //    Network Information and LoggerModem Object
 // ==========================================================================
@@ -131,7 +130,7 @@ const char *apn = "hologram";  // The APN for the gprs connection, unnecessary f
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, &tinyModem, &tinyClient, apn);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
 // ^^ Use this for cellular
 
 
@@ -140,7 +139,7 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, m
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
 
-// Create the DS3231 sensor object
+// Create a DS3231 sensor object
 MaximDS3231 ds3231(1);
 
 
@@ -158,7 +157,7 @@ const float OBSLow_A = 0.000E+00;  // The "A" value (X^2) from the low range cal
 const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
 
-// Create the Campbell OBS3+ LOW RANGE sensor object
+// Create a Campbell OBS3+ LOW RANGE sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3numberReadings);
 
 
@@ -168,7 +167,7 @@ const float OBSHigh_A = 0.000E+00;  // The "A" value (X^2) from the high range c
 const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
 
-// Create the Campbell OBS3+ HIGH RANGE sensor object
+// Create a Campbell OBS3+ HIGH RANGE sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 
 
@@ -182,7 +181,7 @@ const uint8_t CTDnumberReadings = 6;  // The number of readings to average
 const int8_t SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t SDI12Data = 7;  // The SDI12 data pin
 
-// Create the Decagon CTD sensor object
+// Create a Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 
 
@@ -206,7 +205,7 @@ Variable *variableList[] = {
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
-VariableArray varArray;
+VariableArray varArray(variableCount, variableList);
 
 
 // ==========================================================================
@@ -214,8 +213,8 @@ VariableArray varArray;
 // ==========================================================================
 #include <LoggerBase.h>
 
-// Create a logger instance
-Logger dataLogger;
+// Create a new logger instance
+Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
@@ -228,7 +227,7 @@ const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sam
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST;
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
 
 
 // ==========================================================================
@@ -321,10 +320,8 @@ void setup()
     dataLogger.attachModem(modem);
     dataLogger.setLoggerPins(sdCardPin, wakePin, greenLED, buttonPin);
 
-    // Begin the variable array[s], logger[s], and publisher[s]
-    varArray.begin(variableCount, variableList);
-    dataLogger.begin(LoggerID, loggingInterval, &varArray);
-    EnviroDIYPOST.begin(dataLogger, registrationToken, samplingFeature);
+    // Begin the logger
+    dataLogger.begin();
 
     // Note:  Please change these battery voltages to match your battery
     // Check that the battery is OK before powering the modem

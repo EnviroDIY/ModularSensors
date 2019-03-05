@@ -65,7 +65,7 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
 
-// Create the DS3231 sensor object
+// Create a DS3231 sensor object
 MaximDS3231 ds3231(1);
 
 
@@ -82,7 +82,8 @@ const int8_t OBSLowADSChannel = 0;  // The ADS channel for the low range output
 const float OBSLow_A = 0.000E+00;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
-// Create the Campbell OBS3+ LOW RANGE sensor object
+
+// Create a Campbell OBS3+ LOW RANGE sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3numberReadings);
 
 
@@ -91,7 +92,8 @@ const int8_t OBSHighADSChannel = 1;  // The ADS channel for the high range outpu
 const float OBSHigh_A = 0.000E+00;  // The "A" value (X^2) from the high range calibration
 const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
-// Create the Campbell OBS3+ HIGH RANGE sensor object
+
+// Create a Campbell OBS3+ HIGH RANGE sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 
 
@@ -105,7 +107,7 @@ const uint8_t CTDnumberReadings = 6;  // The number of readings to average
 const int8_t SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t SDI12Data = 7;  // The SDI12 data pin
 
-// Create the Decagon CTD sensor object
+// Create a Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 
 
@@ -127,7 +129,7 @@ Variable *variableList[] = {
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
-VariableArray varArray;
+VariableArray varArray(variableCount, variableList);
 
 
 // ==========================================================================
@@ -135,8 +137,8 @@ VariableArray varArray;
 // ==========================================================================
 #include <LoggerBase.h>
 
-// Create a logger instance
-Logger dataLogger;
+// Create a new logger instance
+Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // Device registration and sampling feature information
@@ -224,9 +226,8 @@ void setup()
     dataLogger.setLoggerPins(sdCardPin, wakePin, greenLED, buttonPin);
     dataLogger.setSamplingFeatureUUID(samplingFeature);
 
-    // Begin the variable array[s], logger[s], and publisher[s]
-    varArray.begin(variableCount, variableList);
-    dataLogger.begin(LoggerID, loggingInterval, &varArray);
+    // Begin the logger
+    dataLogger.begin();
 
     // Set up the sensors, except at lowest battery level
     if (getBatteryVoltage() > 3.4)
@@ -246,6 +247,7 @@ void setup()
     }
 
     // Call the processor sleep
+    Serial.println(F("Putting processor to sleep"));
     dataLogger.systemSleep();
 }
 

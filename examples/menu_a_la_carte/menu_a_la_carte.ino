@@ -57,10 +57,10 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 
 const char *mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
-// Create the sample number, battery voltage, and free RAM variable objects for the processor
-ProcessorStats_SampleNumber mcuBoardSampNo;
-ProcessorStats_Batt mcuBoardBatt;
-ProcessorStats_FreeRam mcuBoardAvailableRAM;
+// Create sample number, battery voltage, and free RAM variable pointers for the processor
+// Variable *mcuBoardBatt = new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *mcuBoardAvailableRAM = new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -216,11 +216,11 @@ HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 // AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
 
-// Create a TinyGSM modem to run on that serial port
+// Create a new TinyGSM modem to run on that serial port and return a pointer to it
 #if defined TINY_GSM_MODEM_XBEE
-TinyGsm tinyModem(modemSerial, modemResetPin);
+TinyGsm *tinyModem = new TinyGsm(modemSerial, modemResetPin);
 #else
-TinyGsm tinyModem(modemSerial);
+TinyGsm *tinyModem = new TinyGsm(modemSerial);
 #endif
 
 // Use this to create a modem if you want to spy on modem communication through
@@ -229,17 +229,21 @@ TinyGsm tinyModem(modemSerial);
 // Also make sure you comment out the modem creation above to use this.
 // #include <StreamDebugger.h>
 // StreamDebugger modemDebugger(modemSerial, Serial);
-// TinyGsm tinyModem(modemDebugger);
+// #if defined TINY_GSM_MODEM_XBEE
+// TinyGsm *tinyModem = new TinyGsm(modemDebugger, modemResetPin);
+// #else
+// TinyGsm *tinyModem = new TinyGsm(modemDebugger);
+// #endif
 
-// Create a TCP client on that modem
-TinyGsmClient tinyClient(tinyModem);
+// Create a new TCP client on that modem and return a pointer to it
+TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 // The u-blox SARA R410 is very slow to open and close clients, so we can
 // iterate through mutiple data senders much more quickly if we have multiple
 // clients.  The u-blox SARA R410 is the only modem where there's any advantage
 // to this.
 #if defined USE_UBLOX_R410M
-TinyGsmClient tinyClient2(tinyModem);
-TinyGsmClient tinyClient3(tinyModem);
+TinyGsmClient *tinyClient2 = new TinyGsmClient(*tinyModem);
+TinyGsmClient *tinyClient3 = new TinyGsmClient(*tinyModem);
 #endif
 
 
@@ -290,57 +294,57 @@ bool modemWakeFxn(void)
 #if defined TINY_GSM_MODEM_XBEE
 void extraModemSetup(void)
 {
-    tinyModem.init();  // initialize
-    if (tinyModem.commandMode())
+    tinyModem->init();  // initialize
+    if (tinyModem->commandMode())
     {
-        tinyModem.sendAT(F("SM"),1);  // Pin sleep
-        tinyModem.waitResponse();
-        tinyModem.sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
+        tinyModem->sendAT(F("SM"),1);  // Pin sleep
+        tinyModem->waitResponse();
+        tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
         // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
         // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
         // so we'll use the Digi pin sleep instead.
-        tinyModem.waitResponse();
+        tinyModem->waitResponse();
         #if defined USE_XBEE_WIFI
-        tinyModem.sendAT(F("SO"),200);  // For WiFi - Disassociate from AP for Deep Sleep
-        tinyModem.waitResponse();
+        tinyModem->sendAT(F("SO"),200);  // For WiFi - Disassociate from AP for Deep Sleep
+        tinyModem->waitResponse();
         #else
-        tinyModem.sendAT(F("SO"),0);  // For Cellular - disconnected sleep
-        tinyModem.waitResponse();
-        tinyModem.sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
+        tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
+        tinyModem->waitResponse();
+        tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
         // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
         #endif
-        tinyModem.waitResponse();
-        tinyModem.writeChanges();
-        tinyModem.exitCommand();
+        tinyModem->waitResponse();
+        tinyModem->writeChanges();
+        tinyModem->exitCommand();
     }
 }
 #elif defined USE_XBEE_BYPASS
 void extraModemSetup(void)
 {
     delay(1000);  // Guard time for command mode
-    tinyModem.streamWrite(GF("+++"));  // enter command mode
-    tinyModem.waitResponse(2000, F("OK\r"));
-    tinyModem.sendAT(F("SM"),1);  // Pin sleep
-    tinyModem.waitResponse(F("OK\r"));
-    tinyModem.sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
+    tinyModem->streamWrite(GF("+++"));  // enter command mode
+    tinyModem->waitResponse(2000, F("OK\r"));
+    tinyModem->sendAT(F("SM"),1);  // Pin sleep
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
     // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
     // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
     // so we'll use the Digi pin sleep instead.
-    tinyModem.waitResponse(F("OK\r"));
-    tinyModem.sendAT(F("SO"),0);  // For Cellular - disconnected sleep
-    tinyModem.waitResponse(F("OK\r"));
-    tinyModem.sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
     // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
-    tinyModem.waitResponse(F("OK\r"));
-    tinyModem.sendAT(F("AP5"));  // Turn on bypass mode
-    tinyModem.waitResponse(F("OK\r"));
-    tinyModem.sendAT(F("WR"));  // Write changes to flash
-    tinyModem.waitResponse(F("OK\r"));
-    tinyModem.sendAT(F("AC"));  // Apply changes
-    tinyModem.waitResponse(F("OK\r"));
-    tinyModem.sendAT(F("FR"));  // Force reset to enter bypass mode
-    tinyModem.waitResponse(F("OK\r"));
-    tinyModem.init();  // initialize
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("AP5"));  // Turn on bypass mode
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("WR"));  // Write changes to flash
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("AC"));  // Apply changes
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("FR"));  // Force reset to enter bypass mode
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->init();  // initialize
 }
 #endif
 
@@ -376,10 +380,10 @@ bool ESPwaitForBoot(void)
             delay(2);
         }
         // Have to make sure echo is off or all AT commands will be confused
-        tinyModem.sendAT(F("E0"));
-        success &= tinyModem.waitResponse() == 1;
+        tinyModem->sendAT(F("E0"));
+        success &= tinyModem->waitResponse() == 1;
         // re-run init to set mux and station mode
-        success &= tinyModem.init();
+        success &= tinyModem->init();
     }
     return success;
 }
@@ -395,37 +399,37 @@ bool modemSleepFxn(void)
     {
         uint32_t sleepSeconds = (((uint32_t)loggingInterval) * 60 * 1000) - 75000L;
         String sleepCommand = String(sleepSeconds);
-        tinyModem.sendAT(F("+GSLP="), sleepCommand);
+        tinyModem->sendAT(F("+GSLP="), sleepCommand);
         // Power down for 1 minute less than logging interval
         // Better:  Calculate length of loop and power down for logging interval - loop time
-        return tinyModem.waitResponse() == 1;
+        return tinyModem->waitResponse() == 1;
     }*/
     // Use this if you have an MCU pin connected to the ESP's reset pin to wake from deep sleep
     if (modemResetPin >= 0)
     {
         digitalWrite(redLED, LOW);
-        return tinyModem.poweroff();
+        return tinyModem->poweroff();
     }
     // Use this if you don't have access to the ESP8266's reset pin for deep sleep but you
     // do have access to another GPIO pin for light sleep.  This also sets up another
     // pin to view the sleep status.
     else if (modemSleepRqPin >= 0 && modemStatusPin >= 0)
     {
-        tinyModem.sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
+        tinyModem->sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
                           String(espStatusPin), ',', modemStatusLevel);
-        bool success = tinyModem.waitResponse() == 1;
-        tinyModem.sendAT(F("+SLEEP=1"));
-        success &= tinyModem.waitResponse() == 1;
+        bool success = tinyModem->waitResponse() == 1;
+        tinyModem->sendAT(F("+SLEEP=1"));
+        success &= tinyModem->waitResponse() == 1;
         digitalWrite(redLED, LOW);
         return success;
     }
     // Light sleep without the status pin
     else if (modemSleepRqPin >= 0 && modemStatusPin < 0)
     {
-        tinyModem.sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0"));
-        bool success = tinyModem.waitResponse() == 1;
-        tinyModem.sendAT(F("+SLEEP=1"));
-        success &= tinyModem.waitResponse() == 1;
+        tinyModem->sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0"));
+        bool success = tinyModem->waitResponse() == 1;
+        tinyModem->sendAT(F("+SLEEP=1"));
+        success &= tinyModem->waitResponse() == 1;
         digitalWrite(redLED, LOW);
         return success;
     }
@@ -436,6 +440,7 @@ bool modemSleepFxn(void)
 }
 bool modemWakeFxn(void)
 {
+    bool success = true;
     if (modemVccPin >= 0)  // Turns on when power is applied
     {
         digitalWrite(redLED, HIGH);  // Because the ESP8266 doesn't have any lights
@@ -482,17 +487,17 @@ void extraModemSetup(void)
     if (modemBaud > 57600)
     {
         modemSerial.begin(modemBaud);
-        tinyModem.sendAT(F("+UART_DEF=9600,8,1,0,0"));
-        tinyModem.waitResponse();
+        tinyModem->sendAT(F("+UART_DEF=9600,8,1,0,0"));
+        tinyModem->waitResponse();
         modemSerial.end();
         modemSerial.begin(9600);
     }
     #endif
     if (modemVccPin < 0 && modemResetPin < 0 && modemSleepRqPin >= 0 && modemStatusPin >= 0)
     {
-        tinyModem.sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
+        tinyModem->sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
                           String(espStatusPin), ',', modemStatusLevel);
-        tinyModem.waitResponse();
+        tinyModem->waitResponse();
     }
 }
 
@@ -518,7 +523,7 @@ bool modemSleepFxn(void)
     #endif
     {
         // Easiest to just go to sleep with the AT command rather than using pins
-        return tinyModem.poweroff();
+        return tinyModem->poweroff();
     }
     else  // DON'T go to sleep if we can't wake up!
     {
@@ -549,7 +554,7 @@ bool modemWakeFxn(void)
         #if F_CPU == 8000000L && defined USE_UBLOX_R410M
         delay(4600);  // Must wait for UART port to become active
         modemSerial.begin(115200);
-        tinyModem.setBaud(9600);
+        tinyModem->setBaud(9600);
         modemSerial.end();
         modemSerial.begin(9600);
         #endif
@@ -564,12 +569,13 @@ bool modemWakeFxn(void)
 // Set band to only use LTE-M (not NB IoT) - this can speed up connection
 void extraModemSetup(void)
 {
-    tinyModem.sendAT(F("+URAT=7"));
-    tinyModem.waitResponse();
+    tinyModem->sendAT(F("+URAT=7"));
+    tinyModem->waitResponse();
 }
 #else
 void extraModemSetup(void){}
 #endif
+
 
 // THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
 #elif defined TINY_GSM_MODEM_SIM800 && defined SIM800_GPRSBEE_R6
@@ -592,6 +598,7 @@ bool modemSleepFxn(void)
     return true;
 }
 void extraModemSetup(void){}
+
 
 // Most cellular chips/breakouts respond to a low pulse of some length to power up and down
 #else
@@ -637,16 +644,16 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 #if defined TINY_GSM_MODEM_ESP8266 || defined USE_XBEE_WIFI
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, &tinyModem, &tinyClient, wifiId, wifiPwd);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
 // ^^ Use this for WiFi
 #else
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, &tinyModem, &tinyClient, apn);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
 // ^^ Use this for cellular
 #endif
 
-// Create the RSSI and signal strength variable objects for the modem
-Modem_RSSI modemRSSI;
-Modem_SignalPercent modemSignalPct;
+// Create RSSI and signal strength variable pointers for the modem
+// Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -654,11 +661,11 @@ Modem_SignalPercent modemSignalPct;
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
 
-// Create the DS3231 sensor object
+// Create a DS3231 sensor object
 MaximDS3231 ds3231(1);
 
-// Create the temperature variable object for the DS3231
-MaximDS3231_Temp ds3231Temp;
+// Create a temperature variable pointer for the DS3231
+// Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -672,13 +679,13 @@ const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 i
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
 
-// Create the Atlas Scientific CO2 sensor object
+// Create an Atlas Scientific CO2 sensor object
 // AtlasScientificCO2 atlasCO2(I2CPower, AtlasCO2i2c_addr);
 AtlasScientificCO2 atlasCO2(I2CPower);
 
-// Create the concentration and temperature variable objects for the EZO-CO2
-AtlasScientificCO2_CO2 atlasCO2CO2;
-AtlasScientificCO2_Temp atlasCO2Temp;
+// Create concentration and temperature variable pointers for the EZO-CO2
+// Variable *atlasCO2 = new AtlasScientificCO2_CO2(&atlasCO2, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasCO2Temp = new AtlasScientificCO2_Temp(&atlasCO2, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -692,13 +699,13 @@ AtlasScientificCO2_Temp atlasCO2Temp;
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
 
-// Create the Atlas Scientific DO sensor object
+// Create an Atlas Scientific DO sensor object
 // AtlasScientificDO atlasDO(I2CPower, AtlasDOi2c_addr);
 AtlasScientificDO atlasDO(I2CPower);
 
-// Create the concentration and percent saturation variable objects for the EZO-DO
-AtlasScientificDO_DOmgL atlasDOconc;
-AtlasScientificDO_DOpct atlasDOpct;
+// Create concentration and percent saturation variable pointers for the EZO-DO
+// Variable *atlasDOconc = new AtlasScientificDO_DOmgL(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasDOpct = new AtlasScientificDO_DOpct(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -712,15 +719,15 @@ AtlasScientificDO_DOpct atlasDOpct;
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
 
-// Create the Atlas Scientific Conductivity sensor object
+// Create an Atlas Scientific Conductivity sensor object
 // AtlasScientificEC atlasEC(I2CPower, AtlasECi2c_addr);
 AtlasScientificEC atlasEC(I2CPower);
 
-// Create the four variable objects for the EZO-ES
-AtlasScientificEC_Cond atlasCond;
-AtlasScientificEC_TDS atlasTDS;
-AtlasScientificEC_Salinity atlasSal;
-AtlasScientificEC_SpecificGravity atlasGrav;
+// Create four variable pointers for the EZO-ES
+// Variable *atlasCond = new AtlasScientificEC_Cond(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasTDS = new AtlasScientificEC_TDS(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasSal = new AtlasScientificEC_Salinity(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasGrav = new AtlasScientificEC_SpecificGravity(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -734,12 +741,12 @@ AtlasScientificEC_SpecificGravity atlasGrav;
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
 
-// Create the Atlas Scientific ORP sensor object
+// Create an Atlas Scientific ORP sensor object
 // AtlasScientificORP atlasORP(I2CPower, AtlasORPi2c_addr);
 AtlasScientificORP atlasORP(I2CPower);
 
-// Create the potential variable object for the ORP
-AtlasScientificORP_Potential atlasORPot;
+// Create a potential variable pointer for the ORP
+// Variable *atlasORPot = new AtlasScientificORP_Potential(&atlasORP, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -753,12 +760,12 @@ AtlasScientificORP_Potential atlasORPot;
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
 
-// Create the Atlas Scientific pH sensor object
+// Create an Atlas Scientific pH sensor object
 // AtlasScientificpH atlaspH(I2CPower, AtlaspHi2c_addr);
 AtlasScientificpH atlaspH(I2CPower);
 
-// Create the pH variable object for the pH sensor
-AtlasScientificpH_pH atlaspHpH;
+// Create a pH variable pointer for the pH sensor
+// Variable *atlaspHpH = new AtlasScientificpH_pH(&atlaspH, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -772,12 +779,12 @@ AtlasScientificpH_pH atlaspHpH;
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
 
-// Create the Atlas Scientific RTD sensor object
+// Create an Atlas Scientific RTD sensor object
 // AtlasScientificRTD atlasRTD(I2CPower, AtlasRTDi2c_addr);
 AtlasScientificRTD atlasRTD(I2CPower);
 
-// Create the temperature variable object for the RTD
-AtlasScientificRTD_Temp atlasTemp;
+// Create a temperature variable pointer for the RTD
+// Variable *atlasTemp = new AtlasScientificRTD_Temp(&atlasRTD, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -787,12 +794,12 @@ AtlasScientificRTD_Temp atlasTemp;
 
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 
-// Create the AOSong AM2315 sensor object
+// Create an AOSong AM2315 sensor object
 AOSongAM2315 am2315(I2CPower);
 
-// Create the humidity and temperature variable objects for the AM2315
-AOSongAM2315_Humidity am2315Humid;
-AOSongAM2315_Temp am2315Temp;
+// Create humidity and temperature variable pointers for the AM2315
+// Variable *am2315Humid = new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *am2315Temp = new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -804,13 +811,13 @@ const int8_t DHTPower = sensorPowerPin;  // Pin to switch power on and off (-1 i
 const int8_t DHTPin = 10;  // DHT data pin
 DHTtype dhtType = DHT11;  // DHT type, either DHT11, DHT21, or DHT22
 
-// Create the AOSong DHT sensor object
+// Create an AOSong DHT sensor object
 AOSongDHT dht(DHTPower, DHTPin, dhtType);
 
-// Create the humidity, temperature and heat index variable objects for the DHT
-AOSongDHT_Humidity dhtHumid;
-AOSongDHT_Temp dhtTemp;
-AOSongDHT_HI dhtHI;
+// Create humidity, temperature, and heat index variable pointers for the DHT
+// Variable *dhtHumid = new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *dhtTemp = new AOSongDHT_Temp(&dht, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *dhtHI = new AOSongDHT_HI(&dht, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -822,11 +829,11 @@ const int8_t SQ212Power = sensorPowerPin;  // Pin to switch power on and off (-1
 const int8_t SQ212ADSChannel = 3;  // The ADS channel for the SQ212
 const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
 
-// Create the Apogee SQ212 sensor object
+// Create an Apogee SQ212 sensor object
 ApogeeSQ212 SQ212(SQ212Power, SQ212ADSChannel);
 
-// Create the PAR variable object for the SQ212
-ApogeeSQ212_PAR sq212PAR;
+// Create a PAR variable pointer for the SQ212
+// Variable *sq212PAR = new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -839,14 +846,14 @@ uint8_t BMEi2c_addr = 0x76;
 // The BME280 can be addressed either as 0x77 (Adafruit default) or 0x76 (Grove default)
 // Either can be physically mofidied for the other address
 
-// Create the Bosch BME280 sensor object
+// Create a Bosch BME280 sensor object
 BoschBME280 bme280(I2CPower, BMEi2c_addr);
 
-// Create the four variable objects for the BME280
-BoschBME280_Humidity bme280Humid;
-BoschBME280_Temp bme280Temp;
-BoschBME280_Pressure bme280Press;
-BoschBME280_Altitude bme280Alt;
+// Create four variable pointers for the BME280
+// Variable *bme280Humid = new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *bme280Temp = new BoschBME280_Temp(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *bme280Press = new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *bme280Alt = new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -863,12 +870,12 @@ const float OBSLow_A = 0.000E+00;  // The "A" value (X^2) from the low range cal
 const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
 
-// Create the Campbell OBS3+ LOW RANGE sensor object
+// Create a Campbell OBS3+ LOW RANGE sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3numberReadings);
 
-// Create the turbidity and voltage variable objects for the low range of the OBS3
-CampbellOBS3_Turbidity obs3TurbLow;
-CampbellOBS3_Voltage obs3VoltLow;
+// Create turbidity and voltage variable pointers for the low range of the OBS3
+// Variable *obs3TurbLow = new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *obs3VoltLow = new CampbellOBS3_Voltage(&osb3low, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // Campbell OBS 3+ High Range calibration in Volts
@@ -877,12 +884,12 @@ const float OBSHigh_A = 0.000E+00;  // The "A" value (X^2) from the high range c
 const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
 
-// Create the Campbell OBS3+ HIGH RANGE sensor object
+// Create a Campbell OBS3+ HIGH RANGE sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 
-// Create the turbidity and voltage variable objects for the high range of the OBS3
-CampbellOBS3_Turbidity obs3TurbHigh;
-CampbellOBS3_Voltage obs3VoltHigh;
+// Create turbidity and voltage variable pointers for the high range of the OBS3
+// Variable *obs3TurbHigh = new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *obs3VoltHigh = new CampbellOBS3_Voltage(&osb3high, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -894,14 +901,14 @@ const char *TMSDI12address = "2";  // The SDI-12 Address of the 5-TM
 const int8_t SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t SDI12Data = 7;  // The SDI12 data pin
 
-// Create the Decagon 5TM sensor object
+// Create a Decagon 5TM sensor object
 Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
 
 // Create the matric potential, volumetric water content, and temperature
-// variable objects for the 5TM
-Decagon5TM_Ea fivetmEa;
-Decagon5TM_VWC fivetmVWC;
-Decagon5TM_Temp fivetmTemp;
+// variable pointers for the 5TM
+// Variable *fivetmEa = new Decagon5TM_Ea(&fivetm, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *fivetmVWC = new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *fivetmTemp = new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -914,13 +921,13 @@ const uint8_t CTDnumberReadings = 6;  // The number of readings to average
 // const int8_t SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 // const int8_t SDI12Data = 7;  // The SDI12 data pin
 
-// Create the Decagon CTD sensor object
+// Create a Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 
-// Create the conductivity, temperature, and depth variable objects for the CTD
-DecagonCTD_Cond ctdCond;
-DecagonCTD_Temp ctdTemp;
-DecagonCTD_Depth ctdDepth;
+// Create conductivity, temperature, and depth variable pointers for the CTD
+// Variable *ctdCond = new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *ctdTemp = new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *ctdDepth = new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -933,12 +940,12 @@ const char *ES2SDI12address = "3";  // The SDI-12 Address of the ES2
 // const int8_t SDI12Data = 7;  // The SDI12 data pin
 const uint8_t ES2NumberReadings = 3;
 
-// Create the Decagon ES2 sensor object
+// Create a Decagon ES2 sensor object
 DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
 
-// Create the conductivity and temperature variable objects for the ES2
-DecagonES2_Cond es2Cond;
-DecagonES2_Temp es2Temp;
+// Create conductivity and temperature variable pointers for the ES2
+// Variable *es2Cond = new DecagonES2_Cond(&es2, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *es2Temp = new DecagonES2_Temp(&es2, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -952,11 +959,11 @@ const float dividerGain = 10;  //  Default 1/gain for grove voltage divider is 1
 // const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
 const uint8_t VoltReadsToAvg = 1;  // Only read one sample
 
-// Create the External Voltage sensor object
+// Create an External Voltage sensor object
 ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, ADSi2c_addr, VoltReadsToAvg);
 
-// Create the voltage variable object
-ExternalVoltage_Volt extvoltV;
+// Create a voltage variable pointer
+// Variable *extvoltV = new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -967,12 +974,12 @@ ExternalVoltage_Volt extvoltV;
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t MPL115A2ReadingsToAvg = 1;
 
-// Create the MPL115A2 barometer sensor object
+// Create an MPL115A2 barometer sensor object
 MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 
-// Create the pressure and temperature variable objects for the MPL
-MPL115A2_Pressure mplPress;
-MPL115A2_Temp mplTemp;
+// Create pressure and temperature variable pointers for the MPL
+// Variable *mplPress = new MPL115A2_Pressure(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *mplTemp = new MPL115A2_Temp(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -995,11 +1002,17 @@ NeoSWSerial &sonarSerial = neoSSerial1;  // For software serial if needed
 const int8_t SonarPower = sensorPowerPin;  // Excite (power) pin (-1 if unconnected)
 const int8_t Sonar1Trigger = A1;  // Trigger pin (a unique negative number if unconnected) (D25 = A1)
 
-// Create the MaxBotix Sonar sensor object
+// Create a MaxBotix Sonar sensor object
 MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger) ;
 
-// Create the ultrasonic range variable object
-MaxBotixSonar_Range sonar1Range;
+// Create an ultrasonic range variable pointer
+// Variable *sonar1Range = new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-efgh-1234567890ab");
+
+
+// const int8_t Sonar2Trigger = A2;  // Trigger pin (a unique negative number if unconnected) (D26 = A2)
+// MaxBotixSonar sonar2(sonarSerial, SonarPower, Sonar2Trigger) ;
+// Create an ultrasonic range variable pointer
+// Variable *sonar2Range = new MaxBotixSonar_Range(&sonar2, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -1013,14 +1026,14 @@ DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA, 0x81, 0x16, 0x03, 0x0C}
 const int8_t OneWirePower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t OneWireBus = A0;  // Pin attached to the OneWire Bus (-1 if unconnected) (D24 = A0)
 
-// Create the Maxim DS18 sensor objects (use this form for a known address)
+// Create a Maxim DS18 sensor objects (use this form for a known address)
 MaximDS18 ds18(OneWireAddress1, OneWirePower, OneWireBus);
 
-// Create the Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
+// Create a Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
 // MaximDS18 ds18(OneWirePower, OneWireBus);
 
-// Create the temperature variable object for the DS18
-MaximDS18_Temp ds18Temp;
+// Create a temperature variable pointer for the DS18
+// Variable *ds18Temp = new MaximDS18_Temp(&ds18, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -1033,12 +1046,12 @@ const uint8_t MS5803i2c_addr = 0x76;  // The MS5803 can be addressed either as 0
 const int16_t MS5803maxPressure = 14;  // The maximum pressure measurable by the specific MS5803 model
 const uint8_t MS5803ReadingsToAvg = 1;
 
-// Create the MeaSpec MS5803 pressure and temperature sensor object
+// Create a MeaSpec MS5803 pressure and temperature sensor object
 MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803ReadingsToAvg);
 
-// Create the conductivity and temperature variable objects for the MS5803
-MeaSpecMS5803_Pressure ms5803Press;
-MeaSpecMS5803_Temp ms5803Temp;
+// Create pressure and temperature variable pointers for the MS5803
+// Variable *ms5803Press = new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *ms5803Temp = new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -1049,12 +1062,12 @@ MeaSpecMS5803_Temp ms5803Temp;
 const uint8_t RainCounterI2CAddress = 0x08;  // I2C Address for external tip counter
 const float depthPerTipEvent = 0.2;  // rain depth in mm per tip event
 
-// Create the Rain Counter sensor object
+// Create a Rain Counter sensor object
 RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 
-// Create the number of tips and rain depth variable objects for the tipping bucket
-RainCounterI2C_Tips tbi2cTips;
-RainCounterI2C_Depth tbi2cDepth;
+// Create number of tips and rain depth variable pointers for the tipping bucket
+// Variable *tbi2cTips = new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *tbi2cDepth = new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -1067,13 +1080,13 @@ uint8_t INA219i2c_addr = 0x40;  // 1000000 (Board A0+A1=GND)
 // The INA219 can have one of 16 addresses, depending on the connections of A0 and A1
 const uint8_t INA219ReadingsToAvg = 1;
 
-// Create the INA219 sensor object
+// Create an INA219 sensor object
 TIINA219 ina219(I2CPower, INA219i2c_addr, INA219ReadingsToAvg);
 
-// Create the current, voltage, and power variable objects for the INA219
-TIINA219_Current inaCurrent;
-TIINA219_Volt inaVolt;
-TIINA219_Power inaPower;
+// Create current, voltage, and power variable pointers for the INA219
+// Variable *inaCurrent = new TIINA219_Current(&ina219, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *inaVolt = new TIINA219_Volt(&ina219, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *inaPower = new TIINA219_Power(&ina219, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -1096,13 +1109,13 @@ const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (
 const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends taking and averaging a few readings
 
-// Create the Keller Acculevel sensor object
+// Create a Keller Acculevel sensor object
 KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, acculevelNumberReadings);
 
-// Create the pressure, temperature, and height variable objects for the Acculevel
-KellerAcculevel_Pressure acculevPress;
-KellerAcculevel_Temp acculevTemp;
-KellerAcculevel_Height acculevHeight;
+// Create pressure, temperature, and height variable pointers for the Acculevel
+// Variable *acculevPress = new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *acculevTemp = new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *acculevHeight = new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -1125,13 +1138,13 @@ byte nanolevelModbusAddress = 0x01;  // The modbus address of KellerNanolevel
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t nanolevelNumberReadings = 3;  // The manufacturer recommends taking and averaging a few readings
 
-// Create the Keller Nanolevel sensor object
+// Create a Keller Nanolevel sensor object
 KellerNanolevel nanolevel(nanolevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
 
-// Create the pressure, temperature, and height variable objects for the Nanolevel
-KellerNanolevel_Pressure nanolevPress;
-KellerNanolevel_Temp nanolevTemp;
-KellerNanolevel_Height nanolevHeight;
+// Create pressure, temperature, and height variable pointers for the Nanolevel
+// Variable *nanolevPress = new KellerNanolevel_Pressure(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *nanolevTemp = new KellerNanolevel_Temp(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *nanolevHeight = new KellerNanolevel_Height(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -1154,14 +1167,14 @@ byte y504ModbusAddress = 0x04;  // The modbus address of the Y504
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y504NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 
-// Create the Yosemitech Y504 dissolved oxygen sensor object
+// Create a Yosemitech Y504 dissolved oxygen sensor object
 YosemitechY504 y504(y504ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y504NumberReadings);
 
 // Create the dissolved oxygen percent, dissolved oxygen concentration, and
-// temperature variable objects for the Y504
-YosemitechY504_DOpct y504DOpct;
-YosemitechY504_DOmgL y504DOmgL;
-YosemitechY504_Temp y504Temp;
+// temperature variable pointers for the Y504
+// Variable *y504DOpct = new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y504DOmgL = new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y504Temp = new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -1184,12 +1197,12 @@ byte y510ModbusAddress = 0x0B;  // The modbus address of the Y510
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y510NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 
-// Create the Y510-B Turbidity sensor object
+// Create a Y510-B Turbidity sensor object
 YosemitechY510 y510(y510ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y510NumberReadings);
 
-// Create the turbidity and temperature variable objects for the Y510
-YosemitechY510_Turbidity y510Turb;
-YosemitechY510_Temp y510Temp;
+// Create turbidity and temperature variable pointers for the Y510
+// Variable *y510Turb = new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y510Temp = new YosemitechY510_Temp(&y510, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -1212,12 +1225,12 @@ byte y511ModbusAddress = 0x1A;  // The modbus address of the Y511
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y511NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 
-// Create the Y511-A Turbidity sensor object
+// Create a Y511-A Turbidity sensor object
 YosemitechY511 y511(y511ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y511NumberReadings);
 
-// Create the turbidity and temperature variable objects for the Y511
-YosemitechY511_Turbidity y511Turb;
-YosemitechY511_Temp y511Temp;
+// Create turbidity and temperature variable pointers for the Y511
+// Variable *y511Turb = new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y511Temp = new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -1240,12 +1253,12 @@ byte y514ModbusAddress = 0x14;  // The modbus address of the Y514
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y514NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 
-// Create the Y514 chlorophyll sensor object
+// Create a Y514 chlorophyll sensor object
 YosemitechY514 y514(y514ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y514NumberReadings);
 
-// Create the chlorophyll concentration and temperature variable objects for the Y514
-YosemitechY514_Chlorophyll y514Chloro;
-YosemitechY514_Temp y514Temp;
+// Create chlorophyll concentration and temperature variable pointers for the Y514
+// Variable *y514Chloro = new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y514Temp = new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -1268,12 +1281,12 @@ byte y520ModbusAddress = 0x20;  // The modbus address of the Y520
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y520NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 
-// Create the Y520 conductivity sensor object
+// Create a Y520 conductivity sensor object
 YosemitechY520 y520(y520ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y520NumberReadings);
 
-// Create the specific conductance and temperature variable objects for the Y520
-YosemitechY520_Cond y520Cond;
-YosemitechY520_Temp y520Temp;
+// Create specific conductance and temperature variable pointers for the Y520
+// Variable *y520Cond = new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -1296,13 +1309,13 @@ byte y532ModbusAddress = 0x32;  // The modbus address of the Y532
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y532NumberReadings = 1;  // The manufacturer actually doesn't mention averaging for this one
 
-// Create the Yosemitech Y532 pH sensor object
+// Create a Yosemitech Y532 pH sensor object
 YosemitechY532 y532(y532ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y532NumberReadings);
 
-// Create the pH, electrical potential, and temperature variable objects for the Y532
-YosemitechY532_Voltage y532Voltage;
-YosemitechY532_pH y532pH;
-YosemitechY532_Temp y532Temp;
+// Create pH, electrical potential, and temperature variable pointers for the Y532
+// Variable *y532Voltage = new YosemitechY532_Voltage(&y532, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y532pH = new YosemitechY532_pH(&y532, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y532Temp = new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -1325,13 +1338,13 @@ byte y550ModbusAddress = 0x50;  // The modbus address of the Y550
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y550NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 
-// Create the Y550 conductivity sensor object
+// Create a Y550 conductivity sensor object
 YosemitechY550 y550(y550ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y550NumberReadings);
 
-// Create the COD, turbidity, and temperature variable objects for the Y550
-YosemitechY550_COD y550COD;
-YosemitechY550_Turbidity y550Turbid;
-YosemitechY550_Temp y550Temp;
+// Create COD, turbidity, and temperature variable pointers for the Y550
+// Variable *y550COD = new YosemitechY550_COD(&y550, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y550Turbid = new YosemitechY550_Turbidity(&y550, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y550Temp = new YosemitechY550_Temp(&y550, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -1354,18 +1367,18 @@ byte y4000ModbusAddress = 0x05;  // The modbus address of the Y4000
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y4000NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 
-// Create the Yosemitech Y4000 multi-parameter sensor object
+// Create a Yosemitech Y4000 multi-parameter sensor object
 YosemitechY4000 y4000(y4000ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y4000NumberReadings);
 
-// Create all of the variable objects for the Y4000
-YosemitechY4000_DOmgL y4000DO;
-YosemitechY4000_Turbidity y4000Turb;
-YosemitechY4000_Cond y4000Cond;
-YosemitechY4000_pH y4000pH;
-YosemitechY4000_Temp y4000Temp;
-YosemitechY4000_ORP y4000ORP;
-YosemitechY4000_Chlorophyll y4000Chloro;
-YosemitechY4000_BGA y4000BGA;
+// Create all of the variable pointers for the Y4000
+// Variable *y4000DO = new YosemitechY4000_DOmgL(&y4000, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y4000Turb = new YosemitechY4000_Turbidity(&y4000, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y4000Cond = new YosemitechY4000_Cond(&y4000, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y4000pH = new YosemitechY4000_pH(&y4000, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y4000Temp = new YosemitechY4000_Temp(&y4000, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y4000ORP = new YosemitechY4000_ORP(&y4000, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y4000Chloro = new YosemitechY4000_Chlorophyll(&y4000, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y4000BGA = new YosemitechY4000_BGA(&y4000, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -1377,26 +1390,23 @@ const char *DOptoDI12address = "5";  // The SDI-12 Address of the Zebra Tech D-O
 // const int8_t SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 // const int8_t SDI12Data = 7;  // The SDI12 data pin
 
-// Create the Zebra Tech DOpto dissolved oxygen sensor object
+// Create a Zebra Tech DOpto dissolved oxygen sensor object
 ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 
-// Create the dissolved oxygen percent, dissolved oxygen concentration, and
-// temperature variable objects for the Zebra Tech
-ZebraTechDOpto_DOpct dOptoDOpct;
-ZebraTechDOpto_DOmgL dOptoDOmgL;
-ZebraTechDOpto_Temp dOptoTemp;
+// Create dissolved oxygen percent, dissolved oxygen concentration, and
+// temperature variable pointers for the Zebra Tech
+// Variable *dOptoDOpct = new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *dOptoDOmgL = new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *dOptoTemp = new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
 //    Calculated Variables
 // ==========================================================================
 
-// Create any calculated variables you want here
-
 // Create the function to give your calculated result.
 // The function should take no input (void) and return a float.
-// You can use any named variables to access values by way of variable.getValue()
-
+// You can use any named variable pointers to access values by way of variable->getValue()
 
 float calculateVariableValue(void)
 {
@@ -1414,11 +1424,13 @@ float calculateVariableValue(void)
 const uint8_t calculatedVarResolution = 3;  // The number of digits after the decimal place
 const char *calculatedVarName = "varName";  // This must be a value from http://vocabulary.odm2.org/variablename/
 const char *calculatedVarUnit = "varUnit";  // This must be a value from http://vocabulary.odm2.org/units/
-const char *calculatedVarCode = "calcVar";  // An (optional) short code for the variable
+const char *calculatedVarCode = "calcVar";  // A short code for the variable
 const char *calculatedVarUUID = "12345678-abcd-1234-efgh-1234567890ab";  // The (optional) universallly unique identifier
 
-// Create the shell for the calculated variable object
-Variable calculatedVar;
+// Finally, Create a calculated variable pointer and return a variable pointer to it
+Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarResolution,
+                                       calculatedVarName, calculatedVarUnit,
+                                       calculatedVarCode, calculatedVarUUID);
 
 
 // ==========================================================================
@@ -1426,99 +1438,115 @@ Variable calculatedVar;
 // ==========================================================================
 #include <VariableArray.h>
 
+// FORM1: Create pointers for all of the variables from the sensors,
+// at the same time putting them into an array
+// NOTE:  Forms one and two can be mixed
 Variable *variableList[] = {
-  &mcuBoardSampNo,
-  &mcuBoardBatt,
-  &mcuBoardAvailableRAM,
-  &modemRSSI,
-  &modemSignalPct,
-  &ds3231Temp,
-  &atlasCO2CO2,
-  &atlasCO2Temp,
-  &atlasDOconc,
-  &atlasDOpct,
-  &atlasCond,
-  &atlasTDS,
-  &atlasSal,
-  &atlasGrav,
-  &atlasORPot,
-  &atlaspHpH,
-  &atlasTemp,
-  &am2315Humid,
-  &am2315Temp,
-  &dhtHumid,
-  &dhtTemp,
-  &dhtHI,
-  &sq212PAR,
-  &bme280Humid,
-  &bme280Temp,
-  &bme280Press,
-  &bme280Alt,
-  &obs3TurbLow,
-  &obs3VoltLow,
-  &obs3TurbHigh,
-  &obs3VoltHigh,
-  &fivetmEa,
-  &fivetmVWC,
-  &fivetmTemp,
-  &ctdCond,
-  &ctdTemp,
-  &ctdDepth,
-  &es2Cond,
-  &es2Temp,
-  &extvoltV,
-  &mplPress,
-  &mplTemp,
-  &sonar1Range,
-  &ds18Temp,
-  &ms5803Press,
-  &ms5803Temp,
-  &tbi2cTips,
-  &tbi2cDepth,
-  &inaCurrent,
-  &inaVolt,
-  &inaPower,
-  &acculevPress,
-  &acculevTemp,
-  &acculevHeight,
-  &nanolevPress,
-  &nanolevTemp,
-  &nanolevHeight,
-  &y504DOpct,
-  &y504DOmgL,
-  &y504Temp,
-  &y510Turb,
-  &y510Temp,
-  &y511Turb,
-  &y511Temp,
-  &y514Chloro,
-  &y514Temp,
-  &y520Cond,
-  &y520Temp,
-  &y532Voltage,
-  &y532pH,
-  &y532Temp,
-  &y550COD,
-  &y550Turbid,
-  &y550Temp,
-  &y4000DO,
-  &y4000Turb,
-  &y4000Cond,
-  &y4000pH,
-  &y4000Temp,
-  &y4000ORP,
-  &y4000Chloro,
-  &y4000BGA,
-  &dOptoDOpct,
-  &dOptoDOmgL,
-  &dOptoTemp,
-  &calculatedVar
+    new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificCO2_CO2(&atlasCO2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificCO2_Temp(&atlasCO2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificDO_DOmgL(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificDO_DOpct(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificEC_Cond(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificEC_TDS(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificEC_Salinity(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificEC_SpecificGravity(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificORP_Potential(&atlasORP, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificpH_pH(&atlaspH, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AtlasScientificRTD_Temp(&atlasRTD, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AOSongDHT_Temp(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
+    new AOSongDHT_HI(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
+    new BoschBME280_Temp(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
+    new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
+    new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
+    new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
+    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
+    new CampbellOBS3_Voltage(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLowV"),
+    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
+    new CampbellOBS3_Voltage(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHighV"),
+    new Decagon5TM_Ea(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonES2_Cond(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonES2_Temp(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaximDS18_Temp(&ds18, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MPL115A2_Temp(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MPL115A2_Pressure(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab"),
+    new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab"),
+    new TIINA219_Current(&ina219, "12345678-abcd-1234-efgh-1234567890ab"),
+    new TIINA219_Volt(&ina219, "12345678-abcd-1234-efgh-1234567890ab"),
+    new TIINA219_Power(&ina219, "12345678-abcd-1234-efgh-1234567890ab"),
+    new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
+    new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
+    new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
+    new KellerNanolevel_Pressure(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab"),
+    new KellerNanolevel_Temp(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab"),
+    new KellerNanolevel_Height(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY510_Temp(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY532_Voltage(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY532_pH(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_DOmgL(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_Turbidity(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_Cond(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_pH(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_Temp(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_ORP(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_Chlorophyll(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    new YosemitechY4000_BGA(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
+    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
+    calculatedVar,
 };
+
+/*
+// FORM2: Fill array with already created and named variable pointers
+// NOTE:  Forms one and two can be mixed
+Variable *variableList[] = {
+    mcuBoardBatt,
+    mcuBoardAvailableRAM,
+    mcuBoardSampNo,
+    modemRSSI,
+    modemSignalPct,
+    // etc, etc, etc,
+    calculatedVar
+}
+*/
+
+
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
-VariableArray varArray;
+VariableArray varArray(variableCount, variableList);
 
 
 // ==========================================================================
@@ -1526,8 +1554,8 @@ VariableArray varArray;
 // ==========================================================================
 #include <LoggerBase.h>
 
-// Create a logger instance
-Logger dataLogger;
+// Create a new logger instance
+Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
@@ -1540,7 +1568,7 @@ const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sam
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST;
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
 
 
 // ==========================================================================
@@ -1553,7 +1581,11 @@ const char * DreamHostPortalRX = "xxxx";
 
 // Create a data publisher to DreamHost
 #include <publishers/DreamHostPublisher.h>
-DreamHostPublisher DreamHostGET;
+#if defined USE_UBLOX_R410M
+DreamHostPublisher DreamHostGET(dataLogger, tinyClient2, DreamHostPortalRX);
+#else
+DreamHostPublisher DreamHostGET(dataLogger, DreamHostPortalRX);
+#endif
 
 
 // ==========================================================================
@@ -1570,7 +1602,11 @@ const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for
 
 // Create a data publisher for ThingSpeak
 #include <publishers/ThingSpeakPublisher.h>
-ThingSpeakPublisher TsMqtt;
+#if defined USE_UBLOX_R410M
+ThingSpeakPublisher TsMqtt(dataLogger, tinyClient3, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
+#else
+ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
+#endif
 
 
 // ==========================================================================
@@ -1710,109 +1746,11 @@ void setup()
 
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modem);
-    dataLogger.setLoggerPins(sdCardPin, wakePin, greenLED, buttonPin);
+    dataLogger.setAlertPin(greenLED);
+    dataLogger.setTestingModePin(buttonPin);
 
-    // Begin all those variables.  The order does not matter at all.
-    mcuBoardSampNo.begin(&mcuBoard, "mcuBoard-Samp-1234-efgh-1234567890ab");
-    mcuBoardBatt.begin(&mcuBoard, "mcuBoard-Batt-1234-efgh-1234567890ab");
-    mcuBoardAvailableRAM.begin(&mcuBoard, "mcuBoard-Avai-labl-eRAM-1234567890ab");
-    ds3231Temp.begin(&ds3231, "ds3231Te-mpxx-1234-efgh-1234567890ab");
-    modemRSSI.begin(&modem, "modemRSS-Ixxx-1234-efgh-1234567890ab");
-    modemSignalPct.begin(&modem, "modemSig-nalP-1234-efgh-1234567890ab");
-    atlasCO2CO2.begin(&atlasCO2, "atlasCO2-CO2x-1234-efgh-1234567890ab");
-    atlasCO2Temp.begin(&atlasCO2, "atlasCO2-Temp-1234-efgh-1234567890ab");
-    atlasDOconc.begin(&atlasDO, "atlasDOc-oncx-1234-efgh-1234567890ab");
-    atlasDOpct.begin(&atlasDO, "atlasDOp-ctxx-1234-efgh-1234567890ab");
-    atlasCond.begin(&atlasEC, "atlasCon-dxxx-1234-efgh-1234567890ab");
-    atlasTDS.begin(&atlasEC, "atlasTDS-xxxx-1234-efgh-1234567890ab");
-    atlasSal.begin(&atlasEC, "atlasSal-xxxx-1234-efgh-1234567890ab");
-    atlasGrav.begin(&atlasEC, "atlasGra-vxxx-1234-efgh-1234567890ab");
-    atlasORPot.begin(&atlasORP, "atlasORP-otxx-1234-efgh-1234567890ab");
-    atlaspHpH.begin(&atlaspH, "atlaspHp-Hxxx-1234-efgh-1234567890ab");
-    atlasTemp.begin(&atlasRTD, "atlasTem-pxxx-1234-efgh-1234567890ab");
-    am2315Humid.begin(&am2315, "am2315Hu-midx-1234-efgh-1234567890ab");
-    am2315Temp.begin(&am2315, "am2315Te-mpxx-1234-efgh-1234567890ab");
-    dhtHumid.begin(&dht, "dhtHumid-xxxx-1234-efgh-1234567890ab");
-    dhtTemp.begin(&dht, "dhtTempx-xxxx-1234-efgh-1234567890ab");
-    dhtHI.begin(&dht, "dhtHIxxx-xxxx-1234-efgh-1234567890ab");
-    sq212PAR.begin(&SQ212, "sq212PAR-xxxx-1234-efgh-1234567890ab");
-    bme280Humid.begin(&bme280, "bme280Hu-midx-1234-efgh-1234567890ab");
-    bme280Temp.begin(&bme280, "bme280Te-mpxx-1234-efgh-1234567890ab");
-    bme280Press.begin(&bme280, "bme280Pr-essx-1234-efgh-1234567890ab");
-    bme280Alt.begin(&bme280, "bme280Al-txxx-1234-efgh-1234567890ab");
-    obs3TurbLow.begin(&osb3low, "obs3Turb-Lowx-1234-efgh-1234567890ab", "TurbLow");
-    obs3VoltLow.begin(&osb3low, "obs3Volt-Lowx-1234-efgh-1234567890ab", "TurbLowV");
-    obs3TurbHigh.begin(&osb3high, "obs3Turb-High-1234-efgh-1234567890ab", "TurbHigh");
-    obs3VoltHigh.begin(&osb3high, "obs3Volt-High-1234-efgh-1234567890ab", "TurbHighV");
-    fivetmEa.begin(&fivetm, "fivetmEa-xxxx-1234-efgh-1234567890ab");
-    fivetmVWC.begin(&fivetm, "fivetmVW-Cxxx-1234-efgh-1234567890ab");
-    fivetmTemp.begin(&fivetm, "fivetmTe-mpxx-1234-efgh-1234567890ab");
-    ctdCond.begin(&ctd, "ctdCondx-xxxx-1234-efgh-1234567890ab");
-    ctdTemp.begin(&ctd, "ctdTempx-xxxx-1234-efgh-1234567890ab");
-    ctdDepth.begin(&ctd, "ctdDepth-xxxx-1234-efgh-1234567890ab");
-    es2Cond.begin(&es2, "es2Condx-xxxx-1234-efgh-1234567890ab");
-    es2Temp.begin(&es2, "es2Tempx-xxxx-1234-efgh-1234567890ab");
-    extvoltV.begin(&extvolt, "extvoltV-xxxx-1234-efgh-1234567890ab");
-    mplPress.begin(&mpl115a2, "mplPress-xxxx-1234-efgh-1234567890ab");
-    mplTemp.begin(&mpl115a2, "mplTempx-xxxx-1234-efgh-1234567890ab");
-    sonar1Range.begin(&sonar1, "sonar1Ra-ngex-1234-efgh-1234567890ab");
-    ds18Temp.begin(&ds18, "ds18Temp-xxxx-1234-efgh-1234567890ab");
-    ms5803Press.begin(&ms5803, "ms5803Pr-essx-1234-efgh-1234567890ab");
-    ms5803Temp.begin(&ms5803, "ms5803Te-mpxx-1234-efgh-1234567890ab");
-    tbi2cTips.begin(&tbi2c, "tbi2cTip-sxxx-1234-efgh-1234567890ab");
-    tbi2cDepth.begin(&tbi2c, "tbi2cDep-thxx-1234-efgh-1234567890ab");
-    inaCurrent.begin(&ina219, "inaCurre-ntxx-1234-efgh-1234567890ab");
-    inaVolt.begin(&ina219, "inaVoltx-xxxx-1234-efgh-1234567890ab");
-    inaPower.begin(&ina219, "inaPower-xxxx-1234-efgh-1234567890ab");
-    acculevPress.begin(&acculevel, "acculevP-ress-1234-efgh-1234567890ab");
-    acculevTemp.begin(&acculevel, "acculevT-empx-1234-efgh-1234567890ab");
-    acculevHeight.begin(&acculevel, "acculevH-eigh-1234-efgh-1234567890ab");
-    nanolevPress.begin(&nanolevel, "nanolevP-ress-1234-efgh-1234567890ab");
-    nanolevTemp.begin(&nanolevel, "nanolevT-empx-1234-efgh-1234567890ab");
-    nanolevHeight.begin(&nanolevel, "nanolevH-eigh-1234-efgh-1234567890ab");
-    y504DOpct.begin(&y504, "y504DOpc-txxx-1234-efgh-1234567890ab");
-    y504DOmgL.begin(&y504, "y504DOmg-Lxxx-1234-efgh-1234567890ab");
-    y504Temp.begin(&y504, "y504Temp-xxxx-1234-efgh-1234567890ab");
-    y510Turb.begin(&y510, "y510Turb-xxxx-1234-efgh-1234567890ab");
-    y510Temp.begin(&y510, "y510Temp-xxxx-1234-efgh-1234567890ab");
-    y511Turb.begin(&y511, "y511Turb-xxxx-1234-efgh-1234567890ab");
-    y511Temp.begin(&y511, "y511Temp-xxxx-1234-efgh-1234567890ab");
-    y514Chloro.begin(&y514, "y514Chlo-roxx-1234-efgh-1234567890ab");
-    y514Temp.begin(&y514, "y514Temp-xxxx-1234-efgh-1234567890ab");
-    y520Cond.begin(&y520, "y520Cond-xxxx-1234-efgh-1234567890ab");
-    y520Temp.begin(&y520, "y520Temp-xxxx-1234-efgh-1234567890ab");
-    y532Voltage.begin(&y532, "y532Volt-agex-1234-efgh-1234567890ab");
-    y532pH.begin(&y532, "y532pHxx-xxxx-1234-efgh-1234567890ab");
-    y532Temp.begin(&y532, "y532Temp-xxxx-1234-efgh-1234567890ab");
-    y550COD.begin(&y550, "y550CODx-xxxx-1234-efgh-1234567890ab");
-    y550Turbid.begin(&y550, "y550Turb-idxx-1234-efgh-1234567890ab");
-    y550Temp.begin(&y550, "y550Temp-xxxx-1234-efgh-1234567890ab");
-    y4000DO.begin(&y4000, "y4000DOx-xxxx-1234-efgh-1234567890ab");
-    y4000Turb.begin(&y4000, "y4000Tur-bxxx-1234-efgh-1234567890ab");
-    y4000Cond.begin(&y4000, "y4000Con-dxxx-1234-efgh-1234567890ab");
-    y4000pH.begin(&y4000, "y4000pHx-xxxx-1234-efgh-1234567890ab");
-    y4000Temp.begin(&y4000, "y4000Tem-pxxx-1234-efgh-1234567890ab");
-    y4000ORP.begin(&y4000, "y4000ORP-xxxx-1234-efgh-1234567890ab");
-    y4000Chloro.begin(&y4000, "y4000Chl-orox-1234-efgh-1234567890ab");
-    y4000BGA.begin(&y4000, "y4000BGA-xxxx-1234-efgh-1234567890ab");
-    dOptoDOpct.begin(&dopto, "dOptoDOp-ctxx-1234-efgh-1234567890ab");
-    dOptoDOmgL.begin(&dopto, "dOptoDOm-gLxx-1234-efgh-1234567890ab");
-    dOptoTemp.begin(&dopto, "dOptoTem-pxxx-1234-efgh-1234567890ab");
-    calculatedVar.begin(calculateVariableValue, calculatedVarResolution,
-                        calculatedVarName, calculatedVarUnit,
-                        calculatedVarCode, calculatedVarUUID);
-
-    // Begin the variable array[s], logger[s], and publisher[s]
-    varArray.begin(variableCount, variableList);
-    dataLogger.begin(LoggerID, loggingInterval, &varArray);
-    EnviroDIYPOST.begin(dataLogger, registrationToken, samplingFeature);
-    #if defined USE_UBLOX_R410M
-    DreamHostGET.begin(dataLogger, &tinyClient2, DreamHostPortalRX);
-    TsMqtt.begin(dataLogger, &tinyClient3, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
-    #else
-    DreamHostGET.begin(dataLogger, DreamHostPortalRX);
-    TsMqtt.begin(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
-    #endif
+    // Begin the logger
+    dataLogger.begin();
 
     // Note:  Please change these battery voltages to match your battery
     // Check that the battery is OK before powering the modem

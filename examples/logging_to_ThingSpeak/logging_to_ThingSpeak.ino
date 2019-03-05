@@ -106,6 +106,37 @@ const bool modemStatusLevel = HIGH;  // The level of the status pin when the mod
 const int8_t espSleepRqPin = 13;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
 const int8_t espStatusPin = -1;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
 
+// A helper function to wait for the esp to boot and immediately change some settings
+// We'll use this in the wake function
+bool ESPwaitForBoot(void)
+{
+    // Wait for boot - finished when characters start coming
+    // NOTE: After every "hard" reset (either power off or via RST-B), the ESP
+    // sends out a boot log from the ROM on UART1 at 74880 baud.  We're not
+    // going to worry about the odd baud rate since we're simply throwing the
+    // characters away.
+    delay(200);  // It will take at least this long
+    uint32_t start = millis();
+    bool success = false;
+    while (!modemSerial.available() && millis() - start < 1000) {}
+    if (modemSerial.available())
+    {
+        success = true;
+        // Read the boot log to empty it from the serial buffer
+        while (modemSerial.available())
+        {
+            modemSerial.read();
+            delay(2);
+        }
+        // Have to make sure echo is off or all AT commands will be confused
+        tinyModem.sendAT(F("E0"));
+        success &= tinyModem.waitResponse() == 1;
+        // re-run init to set mux and station mode
+        success &= tinyModem.init();
+    }
+    return success;
+}
+
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
 bool modemSleepFxn(void)
@@ -158,38 +189,11 @@ bool modemSleepFxn(void)
 }
 bool modemWakeFxn(void)
 {
+    bool success = true;
     if (modemVccPin >= 0)  // Turns on when power is applied
     {
         digitalWrite(redLED, HIGH);  // Because the ESP8266 doesn't have any lights
-        // Wait for boot - finished when characters start coming
-        delay(200);  // It will take at least this long
-        uint32_t start = millis();
-        bool success = false;
-        while (!modemSerial.available() && millis() - start < 1000) {}
-        if (modemSerial.available())
-        {
-            success = true;
-            // Clear the junk the ESP sends out after boot-up
-            while (modemSerial.available())
-            {
-                modemSerial.read();
-                delay(2);
-            }
-            // Have to make sure echo is off or all AT commands will be confused
-            tinyModem.sendAT(F("E0"));
-            success &= tinyModem.waitResponse() == 1;
-            // Slow down the baud rate for slow processors
-            #if F_CPU == 8000000L
-            if (modemBaud > 57600)
-            {
-                tinyModem.setBaud(9600);
-                modemSerial.end();
-                modemSerial.begin(9600);
-            }
-            #endif
-            // re-run init to set mux and station mode
-            success &= tinyModem.init();
-        }
+        success &= ESPwaitForBoot();
         if (!success)
         {
             digitalWrite(redLED, LOW);  // Turn off light if the boot failed
@@ -202,36 +206,7 @@ bool modemWakeFxn(void)
         digitalWrite(modemResetPin, LOW);
         delay(1);
         digitalWrite(modemResetPin, HIGH);
-
-        // Wait for boot - finished when characters start coming
-        delay(200);  // It will take at least this long
-        uint32_t start = millis();
-        bool success = false;
-        while (!modemSerial.available() && millis() - start < 1000) {}
-        if (modemSerial.available())
-        {
-            success = true;
-            // Clear the junk the ESP sends out after boot-up
-            while (modemSerial.available())
-            {
-                modemSerial.read();
-                delay(2);
-            }
-            // Have to make sure echo is off or all AT commands will be confused
-            tinyModem.sendAT(F("E0"));
-            success &= tinyModem.waitResponse() == 1;
-            // Slow down the baud rate for slow processors
-            #if F_CPU == 8000000L
-            if (modemBaud > 57600)
-            {
-                tinyModem.setBaud(9600);
-                modemSerial.end();
-                modemSerial.begin(9600);
-            }
-            #endif
-            // re-run init to set mux and station mode
-            success &= tinyModem.init();
-        }
+        success &= ESPwaitForBoot();
         if (!success)
         {
             digitalWrite(redLED, LOW);  // Turn off light if the boot failed
@@ -244,6 +219,7 @@ bool modemWakeFxn(void)
         delay(1);
         digitalWrite(modemSleepRqPin, HIGH);
         digitalWrite(redLED, HIGH);
+        // Don't have to wait for a boot if using light sleep
         return true;
     }
     else
@@ -254,6 +230,18 @@ bool modemWakeFxn(void)
 // Set up the light-sleep status pin, if applicable
 void extraModemSetup(void)
 {
+    // Slow down the baud rate for slow processors - and save the change to
+    // the ESP's non-volatile memory so we don't have to do it every time
+    #if F_CPU == 8000000L
+    if (modemBaud > 57600)
+    {
+        modemSerial.begin(modemBaud);
+        tinyModem.sendAT(F("+UART_DEF=9600,8,1,0,0"));
+        tinyModem.waitResponse();
+        modemSerial.end();
+        modemSerial.begin(9600);
+    }
+    #endif
     if (modemVccPin < 0 && modemResetPin < 0 && modemSleepRqPin >= 0 && modemStatusPin >= 0)
     {
         tinyModem.sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
@@ -283,7 +271,7 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, m
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
 
-// Create the DS3231 sensor object
+// Create a DS3231 sensor object
 MaximDS3231 ds3231(1);
 
 
@@ -301,7 +289,7 @@ const float OBSLow_A = 0.000E+00;  // The "A" value (X^2) from the low range cal
 const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
 
-// Create the Campbell OBS3+ LOW RANGE sensor object
+// Create a Campbell OBS3+ LOW RANGE sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3numberReadings);
 
 
@@ -311,7 +299,7 @@ const float OBSHigh_A = 0.000E+00;  // The "A" value (X^2) from the high range c
 const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
 
-// Create the Campbell OBS3+ HIGH RANGE sensor object
+// Create a Campbell OBS3+ HIGH RANGE sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 
 
@@ -325,7 +313,7 @@ const uint8_t CTDnumberReadings = 6;  // The number of readings to average
 const int8_t SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t SDI12Data = 7;  // The SDI12 data pin
 
-// Create the Decagon CTD sensor object
+// Create a Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 
 

@@ -58,11 +58,10 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 
 const char *mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
-// Create the sample number, battery voltage, and free RAM variable objects for the processor and return variable-type pointers to them
-// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
-ProcessorStats_Batt mcuBoardBatt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
-ProcessorStats_FreeRam mcuBoardAvailableRAM(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
-ProcessorStats_SampleNumber mcuBoardSampNo(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
+// Create sample number, battery voltage, and free RAM variable pointers for the processor
+Variable *mcuBoardBatt = new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *mcuBoardAvailableRAM = new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -75,7 +74,7 @@ ProcessorStats_SampleNumber mcuBoardSampNo(&mcuBoard, "12345678-abcd-1234-efgh-1
 // as possible.  In some cases (ie, modbus communication) many sensors can share
 // the same serial port.
 
-#if not defined(ARDUINO_ARCH_SAMD) && not defined(ATMEGA2560)  // For AVR boards
+#if not defined ARDUINO_ARCH_SAMD && not defined ATMEGA2560  // For AVR boards
 // Unfortunately, most AVR boards have only one or two hardware serial ports,
 // so we'll set up three types of extra software serial ports to use
 
@@ -86,6 +85,31 @@ ProcessorStats_SampleNumber mcuBoardSampNo(&mcuBoard, "12345678-abcd-1234-efgh-1
 // Not all AVR boards are supported by AltSoftSerial.
 #include <AltSoftSerial.h>
 AltSoftSerial altSoftSerial;
+
+// NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
+// serial that can be used on any pin supporting interrupts.
+// You can use as many instances of NeoSWSerial as you want.
+// Not all AVR boards are supported by NeoSWSerial.
+#include <NeoSWSerial.h>  // for the stream communication
+const int8_t neoSSerial1Rx = 11;     // data in pin
+const int8_t neoSSerial1Tx = -1;     // data out pin
+NeoSWSerial neoSSerial1(neoSSerial1Rx, neoSSerial1Tx);
+// To use NeoSWSerial in this library, we define a function to receive data
+// This is just a short-cut for later
+void neoSSerial1ISR()
+{
+    NeoSWSerial::rxISR(*portInputRegister(digitalPinToPort(neoSSerial1Rx)));
+}
+
+// The "standard" software serial library uses interrupts that conflict
+// with several other libraries used within this program, we must use a
+// version of software serial that has been stripped of interrupts.
+// NOTE:  Only use if necessary.  This is not a very accurate serial port!
+const int8_t softSerialRx = A3;     // data in pin
+const int8_t softSerialTx = A4;     // data out pin
+
+#include <SoftwareSerial_ExtInts.h>  // for the stream communication
+SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 #endif  // End software serial for avr boards
 
 
@@ -103,12 +127,15 @@ AltSoftSerial altSoftSerial;
 // SERCOM4    SPI (D21/22/23)    SPI (D21/22/23)     SPI1/Serial2
 // SERCOM5    EDBG/Serial        Available           Serial1
 
+// If using a Sodaq board, do not define the new sercoms, instead:
+// #define ENABLE_SERIAL2
+// #define ENABLE_SERIAL3
 
-#if defined(ARDUINO_ARCH_SAMD) \
-  && not defined(ARDUINO_SODAQ_AUTONOMO) && not defined(ARDUINO_SODAQ_EXPLORER) \
-  && not defined(ARDUINO_SODAQ_ONE) && not defined(ARDUINO_SODAQ_SARA) \
-  && not defined(ARDUINO_SODAQ_SFF)
+
+#if defined ARDUINO_ARCH_SAMD
   #include <wiring_private.h> // Needed for SAMD pinPeripheral() function
+
+#ifndef ENABLE_SERIAL2
 // Set up a 'new' UART using SERCOM1
 // The Rx will be on digital pin 11, which is SERCOM1's Pad #0
 // The Tx will be on digital pin 10, which is SERCOM1's Pad #2
@@ -121,6 +148,23 @@ void SERCOM1_Handler()
 {
     Serial2.IrqHandler();
 }
+#endif
+
+#ifndef ENABLE_SERIAL3
+// Set up a 'new' UART using SERCOM2
+// The Rx will be on digital pin 5, which is SERCOM2's Pad #3
+// The Tx will be on digital pin 2, which is SERCOM2's Pad #2
+// NOTE:  SERCOM2 is undefinied on a "standard" Arduino Zero and many clones,
+//        but not all!  Please check the variant.cpp file for you individual board!
+//        Sodaq Autonomo's and Sodaq One's do NOT follow the 'standard' SERCOM definitions!
+Uart Serial3(&sercom2, 5, 2, SERCOM_RX_PAD_3, UART_TX_PAD_2);
+// Hand over the interrupts to the sercom port
+void SERCOM2_Handler()
+{
+    Serial3.IrqHandler();
+}
+#endif
+
 #endif  // End hardware serial on SAMD21 boards
 
 
@@ -153,18 +197,19 @@ const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if 
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
-// Create a TinyGSM modem to run on that serial port
-TinyGsm tinyModem(modemSerial);
+// Create a new TinyGSM modem to run on that serial port and return a pointer to it
+TinyGsm *tinyModem = new TinyGsm(modemSerial);
 
 // Use this to create a modem if you want to spy on modem communication through
 // a secondary Arduino stream.  Make sure you install the StreamDebugger library!
 // https://github.com/vshymanskyy/StreamDebugger
+// Also make sure you comment out the modem creation above to use this.
 // #include <StreamDebugger.h>
 // StreamDebugger modemDebugger(modemSerial, Serial);
-// TinyGsm tinyModem(modemDebugger);
+// TinyGsm *tinyModem = new TinyGsm(modemDebugger);
 
-// Create a TCP client on that modem
-TinyGsmClient tinyClient(tinyModem);
+// Create a new TCP client on that modem and return a pointer to it
+TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 
 // ==========================================================================
@@ -190,6 +235,7 @@ bool modemSleepFxn(void)
     digitalWrite(redLED, LOW);
     return true;
 }
+void extraModemSetup(void){}
 
 
 // ==========================================================================
@@ -204,13 +250,11 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, &tinyModem, &tinyClient, apn);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
 
-// Create the RSSI and signal strength variable objects for the modem and return
-// variable-type pointers to them
-// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
-Modem_RSSI modemRSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
-Modem_SignalPercent modemSignalPct(&modem, "12345678-abcd-1234-efgh-1234567890ab");
+// Create RSSI and signal strength variable pointers for the modem
+Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -218,12 +262,11 @@ Modem_SignalPercent modemSignalPct(&modem, "12345678-abcd-1234-efgh-1234567890ab
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
 
-// Create the DS3231 sensor object
+// Create a DS3231 sensor object
 MaximDS3231 ds3231(1);
 
-// Create the temperature variable object for the DS3231 and return a variable-type pointer to it
-// Use this to create a variable pointer with a name to use in multiple arrays or any calculated variables.
-MaximDS3231_Temp ds3231Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab");
+// Create a temperature variable pointer for the DS3231
+Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -233,7 +276,7 @@ MaximDS3231_Temp ds3231Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab");
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-#if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 #else
 AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -246,16 +289,14 @@ const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (
 const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y504NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 
-// Create and return the Yosemitech Y504 dissolved oxygen sensor object
+// Create a Yosemitech Y504 dissolved oxygen sensor object
 YosemitechY504 y504(y504ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y504NumberReadings);
 
 // Create the dissolved oxygen percent, dissolved oxygen concentration, and
-// temperature variable objects for the Y504 and return variable-type
-// pointers to them
-// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
-YosemitechY504_DOpct y504DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab");
-YosemitechY504_DOmgL y504DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab");
-YosemitechY504_Temp y504Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab");
+// temperature variable pointers for the Y504
+Variable *y504DOpct = new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *y504DOmgL = new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *y504Temp = new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -265,7 +306,7 @@ YosemitechY504_Temp y504Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab");
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -278,13 +319,12 @@ byte y511ModbusAddress = 0x1A;  // The modbus address of the Y511
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y511NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 
-// Create and return the Y511-A Turbidity sensor object
+// Create a Y511-A Turbidity sensor object
 YosemitechY511 y511(y511ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y511NumberReadings);
 
-// Create the turbidity and temperature variable objects for the Y511 and return variable-type pointers to them
-// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
-YosemitechY511_Turbidity y511Turb(&y511, "12345678-abcd-1234-efgh-1234567890ab");
-YosemitechY511_Temp y511Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab");
+// Create turbidity and temperature variable pointers for the Y511
+Variable *y511Turb = new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *y511Temp = new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -294,7 +334,7 @@ YosemitechY511_Temp y511Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab");
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -307,13 +347,12 @@ byte y514ModbusAddress = 0x14;  // The modbus address of the Y514
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y514NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 
-// Create and return the Y514 chlorophyll sensor object
+// Create a Y514 chlorophyll sensor object
 YosemitechY514 y514(y514ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y514NumberReadings);
 
-// Create the chlorophyll concentration and temperature variable objects for the Y514 and return variable-type pointers to them
-// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
-YosemitechY514_Chlorophyll y514Chloro(&y514, "12345678-abcd-1234-efgh-1234567890ab");
-YosemitechY514_Temp y514Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab");
+// Create chlorophyll concentration and temperature variable pointers for the Y514
+Variable *y514Chloro = new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *y514Temp = new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -323,7 +362,7 @@ YosemitechY514_Temp y514Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab");
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -336,13 +375,12 @@ byte y520ModbusAddress = 0x20;  // The modbus address of the Y520
 // const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 const uint8_t y520NumberReadings = 5;  // The manufacturer recommends averaging 10 readings, but we take 5 to minimize power consumption
 
-// Create and return the Y520 conductivity sensor object
+// Create a Y520 conductivity sensor object
 YosemitechY520 y520(y520ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y520NumberReadings);
 
-// Create the specific conductance and temperature variable objects for the Y520 and return variable-type pointers to them
-// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
-YosemitechY520_Cond y520Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab");
-YosemitechY520_Temp y520Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab");
+// Create specific conductance and temperature variable pointers for the Y520
+Variable *y520Cond = new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -520,18 +558,29 @@ void setup()
     loggerToGo.setSamplingFeatureUUID(samplingFeature);
 
     // Note:  Please change these battery voltages to match your battery
-    if (getBatteryVoltage() > 3.8 ||
-        loggerAllVars.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
-        loggerAllVars.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+    // Check that the battery is OK before powering the modem
+    if (getBatteryVoltage() > 3.7)
     {
         modem.modemPowerUp();
         modem.wake();
 
-        // Synchronize the RTC with NIST
-        Serial.println(F("Attempting to synchronize RTC with NIST"));
-        if (modem.connectInternet(120000L))
+        // Run any extra pre-set-up for the modem
+        Serial.println(F("Running extra modem pre-setup"));
+        extraModemSetup();
+        modem.setup();
+
+        // At very good battery voltage, or with suspicious time stamp, sync the clock
+        // Note:  Please change these battery voltages to match your battery
+        if (getBatteryVoltage() > 3.8 ||
+            loggerAllVars.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
+            loggerAllVars.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
         {
-            loggerAllVars.setRTClock(modem.getNISTTime());
+            // Synchronize the RTC with NIST
+            Serial.println(F("Attempting to synchronize RTC with NIST"));
+            if (modem.connectInternet(120000L))
+            {
+                loggerAllVars.setRTClock(modem.getNISTTime());
+            }
         }
     }
 
@@ -556,8 +605,6 @@ void setup()
     {
         loggerAllVars.createLogFile(true);
     }
-
-    modem.modemSleepPowerDown();
 
     // Call the processor sleep
     loggerAllVars.systemSleep();

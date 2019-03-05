@@ -57,7 +57,9 @@ float calcDepth(void)
 // Variable calcVar(functionName, VariableName, VariableUnit, Resolution, UUID, Code);
 // VariableName must be a value from http://vocabulary.odm2.org/variablename/
 // VariableUnit must be a value from http://vocabulary.odm2.org/units/
-Variable waterDepth(calcDepth, "waterDepth", "millimeter", 0, "", "sonarDepth");
+Variable waterDepth(calcDepth, 0,
+                    "waterDepth", "millimeter",
+                    "sonarDepth", "12345678-abcd-1234-efgh-1234567890ab");
 
 // ==========================================================================
 // Board setup info

@@ -92,10 +92,10 @@ const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if 
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
 // Create a TinyGSM modem to run on that serial port
-TinyGsm tinyModem(modemSerial);
+TinyGsm *tinyModem = new TinyGsm(modemSerial);
 
-// Create a TCP client on that modem
-TinyGsmClient tinyClient(tinyModem);
+// Create a new TCP client on that modem and return a pointer to it
+TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 
 // ==========================================================================
@@ -119,7 +119,10 @@ bool modemSleepFxn(void)
         digitalWrite(redLED, LOW);
         return true;
     }
-    else return true;
+    else
+    {
+        return true;
+    }
 }
 bool modemWakeFxn(void)
 {
@@ -131,36 +134,39 @@ bool modemWakeFxn(void)
         digitalWrite(redLED, HIGH);  // Because the XBee doesn't have any lights
         return true;
     }
-    else return true;
+    else
+    {
+        return true;
+    }
 }
 // An extra function to set up pin sleep and other preferences on the XBee
 // NOTE:  This will only succeed if the modem is turned on and awake!
-void setupXBee(void)
+void extraModemSetup(void)
 {
     delay(1000);  // Guard time for command mode
-    tinyModem.streamWrite(GF("+++"));  // enter command mode
-    tinyModem.waitResponse(2000, F("OK\r"));
-    tinyModem.sendAT(F("SM"),1);  // Pin sleep
-    tinyModem.waitResponse(F("OK\r"));
-    tinyModem.sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
+    tinyModem->streamWrite(GF("+++"));  // enter command mode
+    tinyModem->waitResponse(2000, F("OK\r"));
+    tinyModem->sendAT(F("SM"),1);  // Pin sleep
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
     // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
     // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
     // so we'll use the Digi pin sleep instead.
-    tinyModem.waitResponse(F("OK\r"));
-    tinyModem.sendAT(F("SO"),0);  // For Cellular - disconnected sleep
-    tinyModem.waitResponse(F("OK\r"));
-    tinyModem.sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
     // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
-    tinyModem.waitResponse(F("OK\r"));
-    tinyModem.sendAT(F("AP5"));  // Turn on bypass mode
-    tinyModem.waitResponse(F("OK\r"));
-    tinyModem.sendAT(F("WR"));  // Write changes to flash
-    tinyModem.waitResponse(F("OK\r"));
-    tinyModem.sendAT(F("AC"));  // Apply changes
-    tinyModem.waitResponse(F("OK\r"));
-    tinyModem.sendAT(F("FR"));  // Force reset to enter bypass mode
-    tinyModem.waitResponse(F("OK\r"));
-    tinyModem.init();  // initialize
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("AP5"));  // Turn on bypass mode
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("WR"));  // Write changes to flash
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("AC"));  // Apply changes
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("FR"));  // Force reset to enter bypass mode
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->init();  // initialize
 }
 
 
@@ -174,7 +180,7 @@ const char *apn = "hologram";  // The APN for the gprs connection, unnecessary f
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, &tinyModem, &tinyClient, apn);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
 // ^^ Use this for cellular
 
 
@@ -183,7 +189,7 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, m
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
 
-// Create the DS3231 sensor object
+// Create a DS3231 sensor object
 MaximDS3231 ds3231(1);
 
 
@@ -201,7 +207,7 @@ const float OBSLow_A = 0.000E+00;  // The "A" value (X^2) from the low range cal
 const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
 
-// Create the Campbell OBS3+ LOW RANGE sensor object
+// Create a Campbell OBS3+ LOW RANGE sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3numberReadings);
 
 
@@ -211,7 +217,7 @@ const float OBSHigh_A = 0.000E+00;  // The "A" value (X^2) from the high range c
 const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
 
-// Create the Campbell OBS3+ HIGH RANGE sensor object
+// Create a Campbell OBS3+ HIGH RANGE sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 
 
@@ -225,7 +231,7 @@ const uint8_t CTDnumberReadings = 6;  // The number of readings to average
 const int8_t SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t SDI12Data = 7;  // The SDI12 data pin
 
-// Create the Decagon CTD sensor object
+// Create a Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 
 
@@ -249,7 +255,7 @@ Variable *variableList[] = {
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
-VariableArray varArray;
+VariableArray varArray(variableCount, variableList);
 
 
 // ==========================================================================
@@ -257,8 +263,8 @@ VariableArray varArray;
 // ==========================================================================
 #include <LoggerBase.h>
 
-// Create a logger instance
-Logger dataLogger;
+// Create a new logger instance
+Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
 
 
 // ==========================================================================
@@ -271,7 +277,7 @@ const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sam
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST;
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
 
 
 // ==========================================================================
@@ -362,12 +368,11 @@ void setup()
 
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modem);
-    dataLogger.setLoggerPins(sdCardPin, wakePin, greenLED, buttonPin);
+    dataLogger.setAlertPin(greenLED);
+    dataLogger.setTestingModePin(buttonPin);
 
-    // Begin the variable array[s], logger[s], and publisher[s]
-    varArray.begin(variableCount, variableList);
-    dataLogger.begin(LoggerID, loggingInterval, &varArray);
-    EnviroDIYPOST.begin(dataLogger, registrationToken, samplingFeature);
+    // Begin the logger
+    dataLogger.begin();
 
     // Note:  Please change these battery voltages to match your battery
     // Check that the battery is OK before powering the modem
@@ -376,11 +381,10 @@ void setup()
         modem.modemPowerUp();
         modem.wake();
 
-        // Extra pre-set-up for the XBee
-        Serial.println(F("Setting up sleep mode on the XBee."));
-        modem.modemPowerUp();
-        modem.wake();  // Turn it on to talk
-        setupXBee();
+        // Run any extra pre-set-up for the modem
+        Serial.println(F("Running extra modem pre-setup"));
+        extraModemSetup();
+        modem.setup();
 
         // At very good battery voltage, or with suspicious time stamp, sync the clock
         // Note:  Please change these battery voltages to match your battery
@@ -418,6 +422,7 @@ void setup()
     }
 
     // Call the processor sleep
+    Serial.println(F("Putting processor to sleep"));
     dataLogger.systemSleep();
 }
 

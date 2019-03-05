@@ -63,7 +63,7 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
 
-// Create the DS3231 sensor object
+// Create a DS3231 sensor object
 MaximDS3231 ds3231(1);
 
 
