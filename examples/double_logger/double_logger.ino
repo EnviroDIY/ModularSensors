@@ -279,8 +279,10 @@ void setup()
     // Begin the variable array[s], logger[s], and publisher[s]
     array1min.begin(variableCount1min, variableList_at1min);
     array5min.begin(variableCount5min, variableList_at5min);
-    logger1min.begin(LoggerID, 1, sdCardSSPin, wakePin, &array1min);
-    logger5min.begin(LoggerID, 5, sdCardSSPin, wakePin, &array5min);
+    logger1min.begin(LoggerID, 1, &array1min);
+    logger5min.begin(LoggerID, 5, &array5min);
+    logger1min.setLoggerPins(wakePin, sdCardSSPin, sensorPowerPin, buttonPin, greenLED);
+    logger5min.setLoggerPins(wakePin, sdCardSSPin, sensorPowerPin, buttonPin, greenLED);
 
 
     // Turn on the modem
