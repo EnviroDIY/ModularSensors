@@ -36,7 +36,7 @@
 
 #define MCP3421_ADR 0x68
 
-// The main class for the AOSong DHT
+// The main class for the PaleoTerra Redox Sensor
 class PaleoTerraRedox : public Sensor
 {
 public:
@@ -45,7 +45,7 @@ public:
     PaleoTerraRedox(int8_t powerPin, int8_t dataPin, int8_t clockPin, uint8_t measurementsToAverage = 1);
 
     PaleoTerraRedox(int8_t powerPin, uint8_t ADR, uint8_t measurementsToAverage = 1);
-    
+
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
@@ -64,13 +64,18 @@ class PaleoTerraRedox_Volt : public Variable
 {
 public:
     PaleoTerraRedox_Volt(Sensor *parentSense,
-                       const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, PTR_VOLT_VAR_NUM,
-               "Voltage", "mV",
-               PTR_VOLT_RESOLUTION,
-               "PTRVoltage", UUID, customVarCode)
+                         const char *uuid = "",
+                         const char *varCode = "PTRVoltage")
+      : Variable(parentSense,
+                 (const uint8_t)PTR_VOLT_VAR_NUM,
+                 (uint8_t)PTR_VOLT_RESOLUTION,
+                 "Voltage", "mV",
+                 varCode, uuid)
+    {}
+    PaleoTerraRedox_Volt()
+      : Variable((const uint8_t)PTR_VOLT_VAR_NUM,
+                 (uint8_t)PTR_VOLT_RESOLUTION,
+                 "Voltage", "mV", "PTRVoltage")
     {}
 };
-
-
 #endif
