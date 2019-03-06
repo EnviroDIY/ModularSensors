@@ -245,11 +245,11 @@ const int8_t RS485PHY_RX_PIN = CONFIG_HW_RS485PHY_RX_PIN;
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
 //#define STREAMDEBUGGER_DBG
 #if !defined(STREAMDEBUGGER_DBG)
-#if defined(TINY_GSM_MODEM_XBEE)
-TinyGsm *tinyModem = new TinyGsm(modemSerial, modemResetPin);
-#else
-TinyGsm *tinyModem = new TinyGsm(modemSerial);
-#endif
+ #if defined(TINY_GSM_MODEM_XBEE)
+ TinyGsm *tinyModem = new TinyGsm(modemSerial, modemResetPin);
+ #else
+ TinyGsm *tinyModem = new TinyGsm(modemSerial);
+ #endif
 #endif //STREAMDEBUGGER_DBG
 
 // Use this to create a modem if you want to spy on modem communication through
@@ -258,7 +258,12 @@ TinyGsm *tinyModem = new TinyGsm(modemSerial);
 #ifdef STREAMDEBUGGER_DBG
  #include <StreamDebugger.h>
  StreamDebugger modemDebugger(modemSerial, Serial);
+ //TinyGsm *tinyModem = new TinyGsm(modemDebugger);
+ #if defined(TINY_GSM_MODEM_XBEE)
+ TinyGsm *tinyModem = new TinyGsm(modemDebugger, modemResetPin);
+ #else
  TinyGsm *tinyModem = new TinyGsm(modemDebugger);
+ #endif
 #endif //STREAMDEBUGGER_DBG
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
@@ -608,6 +613,7 @@ DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
 // Variable *es2Cond = new DecagonES2_Cond(&es2, "12345678-abcd-1234-efgh-1234567890ab");
 // Variable *es2Temp = new DecagonES2_Temp(&es2, "12345678-abcd-1234-efgh-1234567890ab");
 
+
 #endif //SENSOR_CONFIG_GENERAL
 #ifdef ExternalVoltage_ACT
 // ==========================================================================
@@ -632,6 +638,8 @@ ExternalVoltage extvolt1(ADSPower, ADSChannel1, dividerGain, ADSi2c_addr, VoltRe
 // Variable *extvoltV = new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-efgh-1234567890ab");
 #endif //ExternalVoltage_ACT
 #ifdef SENSOR_CONFIG_GENERAL
+
+
 // ==========================================================================
 //    Freescale Semiconductor MPL115A2 Barometer
 // ==========================================================================
@@ -762,11 +770,11 @@ TIINA219 ina219(I2CPower, INA219i2c_addr, INA219ReadingsToAvg);
 // Variable *inaCurrent = new TIINA219_Current(&ina219, "12345678-abcd-1234-efgh-1234567890ab");
 // Variable *inaVolt = new TIINA219_Volt(&ina219, "12345678-abcd-1234-efgh-1234567890ab");
 // Variable *inaPower = new TIINA219_Power(&ina219, "12345678-abcd-1234-efgh-1234567890ab");
-
-
 #endif //INA219ORIG_PHY_ACT
 #if defined(INA219M_PHY_ACT)
-//    TI INA219 High Side Current/Voltage Sensor (Current mA, Voltage, Power)
+
+
+/*TI INA219 High Side Current/Voltage Sensor (Current mA, Voltage, Power)*/
 #include <sensors/TIINA219M.h>
 
 uint8_t INA219i2c_addr = 0x40; // 1000000 (Board A0+A1=GND)
@@ -799,6 +807,8 @@ const int8_t rs485AdapterPower = sensorPowerPin;  // Pin to switch RS485 adapter
 const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
 #endif //defined(KellerAcculevel_ACT) | defined(KellerNanolevel_ACT)
+
+
 // ==========================================================================
 //    Keller Acculevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
@@ -1144,6 +1154,7 @@ Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarName
 */
 #endif //SENSOR_CONFIG_GENERAL
 
+
 // ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
@@ -1197,7 +1208,6 @@ Variable *variableList[] = {
     new DecagonES2_Temp(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
     new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaxBotixSonar_Range(&sonar2, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_1, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_2, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18_3, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -1618,47 +1628,7 @@ const char MAYFLY_INIT_ID_pm[] EDIY_PROGMEM = "MAYFLY_INIT_ID";
     return 1;
 }
 #endif //USE_SD_MAYFLY_INI
-// ==========================================================================
 
-//#define mfSLEEP_TEST
-#ifdef mfSLEEP_TEST
-void sensorsSleep()
-{
-  //Add any code which your sensors require before sleep
-}
-void mfSystemSleep()
-{
-  //This method handles any sensor specific sleep setup
-  sensorsSleep();
-  
-  //Wait until the serial ports have finished transmitting
-  Serial.flush();
-  //Serial1.flush();
-#if defined ARDUINO_ARCH_SAMD
-#elif defined ARDUINO_ARCH_AVR
-  //The next timed interrupt will not be sent until this is cleared
-  rtc.clearINTStatus();
-
-  //Disable ADC
-  ADCSRA &= ~_BV(ADEN);
-  #endif 
-  //Sleep time
-  noInterrupts();
-  sleep_enable();
-  interrupts();
-  sleep_cpu();
-  sleep_disable();
-
-#if defined ARDUINO_ARCH_SAMD
-#elif defined ARDUINO_ARCH_AVR
-  //Enbale ADC
-  ADCSRA |= _BV(ADEN);
-#endif  
-  //This method handles any sensor specific wake setup
- // sensorsWake();
-}
-
-#endif //mfSLEEP_TEST
 
 // ==========================================================================
 // Main setup function
@@ -1667,7 +1637,7 @@ void setup()
 {
     bool LiBattPower_Unseable;
     uint16_t lp_wait=1;
-    //ADCSRA |= _BV(ADEN);
+
     //uint8_t mcu_status = MCUSR; is already cleared by Arduino startup???
     //MCUSR = 0; //reset for unique read
     // Start the primary serial connection
@@ -1682,7 +1652,7 @@ void setup()
     Serial.println(file_name); //Dir and filename
     Serial.print(F("Mayfly "));
     Serial.print(mcuBoardVersion);
-    #ifdef ramAvailable()
+    #ifdef ramAvailable
     ramAvailable();
     #endif //ramAvailable
 
@@ -1839,28 +1809,7 @@ void setup()
 
     Serial.print(F("Current Time: "));
     Serial.println(Logger::formatDateTime_ISO8601(dataLogger.getNowEpoch()+(timeZone*60)) );
-#if 0
- //FUT: njh now part of Move to loggerModem???
-    // Set up the sleep/wake pin for the modem and put its inital value as "off"
-    Serial.println(F("Setting up sleep mode on the XBee."));
-    pinMode(modemSleepRqPin, OUTPUT);
-    digitalWrite(modemSleepRqPin, LOW);  // Turn it on to talk, just in case
-    tinyModem->init();  // initialize
-    if (tinyModem->commandMode())
-    {
-        tinyModem->sendAT(F("SM"),1);  // Pin sleep
-        tinyModem->waitResponse();
-        tinyModem->sendAT(F("DO"),0);  // Disable remote manager
-        tinyModem->waitResponse();
-        tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
-        tinyModem->waitResponse();
-        tinyModem->sendAT(F("SO"),200);  // For WiFi - Disassociate from AP for Deep Sleep
-        tinyModem->waitResponse();
-        tinyModem->writeChanges();
-        tinyModem->exitCommand();
-    }
-    digitalWrite(modemSleepRqPin, HIGH);  // back to sleep
-#endif
+
     // Set the timezone and offsets
     // Logging in the given time zone
     Logger::setTimeZone(timeZone);
@@ -1868,7 +1817,9 @@ void setup()
     Logger::setTZOffset(timeZone);
 
     // Attach the modem and information pins to the logger
-    //ramAvailable();
+    #ifdef ramAvailable
+    ramAvailable();
+    #endif //ramAvailable
     dataLogger.attachModem(modemPhy);
     dataLogger.setAlertPin(greenLED);
     dataLogger.setTestingModePin(buttonPin);
@@ -1876,21 +1827,6 @@ void setup()
     // Begin the logger
     //modemPhy.modemPowerUp();
     dataLogger.begin(true);
-
-    // Set up XBee later on first access
-    #if 0 //defined(TINY_GSM_MODEM_XBEE)
-    Serial.println(F("Setting up sleep mode on the XBee."));
-    modemPhy.modemPowerUp();
-    modemPhy.wake();  // Turn it on to talk
-    setupXBee();
-    #endif
-#if 0
-    Serial.print(F("WiFiId: '"));
-    Serial.print(modemPhy.getWiFiId());
-    Serial.print(F("' WiFiPwd: '"));
-    Serial.print(modemPhy.getWiFiPwd());
-    Serial.print("' ");
-#endif //
 
     // Call the processor sleep
     dataLogger.systemSleep();
