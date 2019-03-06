@@ -1,6 +1,6 @@
 {
     "name": "EnviroDIY_ModularSensors",
-    "version": "0.20.2",
+    "version": "0.21.0",
     "description":  "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
     "keywords": "modular, sensor, sensors, datalogger, logger, low power, sleeping, EnviroDIY, ModularSensors, Mayfly, WikiWatershed, ThingSpeak",
     "platforms": "atmelavr, atmelsam",
@@ -101,16 +101,16 @@
             "platforms": "atmelavr, atmelsam"
         },
         {
-            "name": "ADS1X15",
+            "name": "Adafruit ADS1X15",
             "library id": "344",
-            "version": "=1.2.0",
-            "url": "https://github.com/soligen2010/Adafruit_ADS1X15.git",
+            "version_note": "=1.2.0",
+            "version": "https://github.com/soligen2010/Adafruit_ADS1X15.git",
             "note": "Driver for TI's ADS1015: 12-bit Differential or Single-Ended ADC with PGA and Comparator.  This fork removes bugs in the Adafruit original library.",
-            "authors": [
+            "authors_note": [
                 "soligen2010"
             ],
-            "frameworks": "arduino",
-            "platforms": "*"
+            "frameworks_note": "arduino",
+            "platforms_note": "*"
         },
         {
             "name": "Adafruit AM2315",
@@ -295,7 +295,7 @@
         },
         {
             "name": "TinyGSM",
-            "version": "https://github.com/EnviroDIY/TinyGSM.git#078cda3b2af9a4d9a9d8b2b53be0611608b69a69",
+            "version": "https://github.com/EnviroDIY/TinyGSM.git#a0315a18418a258725dbf76b2db3d475f35448fe",
             "version_note": "=0.4.5",
             "note": "A small Arduino library for GPRS modules.",
             "authors": [

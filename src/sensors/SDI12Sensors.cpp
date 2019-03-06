@@ -16,7 +16,7 @@
 
 // The constructor - need the number of measurements the sensor will return, SDI-12 address, the power pin, and the data pin
 SDI12Sensors::SDI12Sensors(char SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
-                           const char *sensorName, uint8_t numReturnedVars,
+                           const char *sensorName, const uint8_t numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
@@ -26,7 +26,7 @@ SDI12Sensors::SDI12Sensors(char SDI12address, int8_t powerPin, int8_t dataPin, u
     _SDI12address = SDI12address;
 }
 SDI12Sensors::SDI12Sensors(char *SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
-                           const char *sensorName, uint8_t numReturnedVars,
+                           const char *sensorName, const uint8_t numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
@@ -36,7 +36,7 @@ SDI12Sensors::SDI12Sensors(char *SDI12address, int8_t powerPin, int8_t dataPin, 
     _SDI12address = *SDI12address;
 }
 SDI12Sensors::SDI12Sensors(int SDI12address, int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage,
-                           const char *sensorName, uint8_t numReturnedVars,
+                           const char *sensorName, const uint8_t numReturnedVars,
                            uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms)
     : Sensor(sensorName, numReturnedVars,
              warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
@@ -55,7 +55,7 @@ bool SDI12Sensors::setup(void)
 
     // This sensor needs power for setup!
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
+    if (!wasOn) {powerUp();}
     waitForWarmUp();
 
     // Begin the SDI-12 interface
@@ -84,7 +84,7 @@ bool SDI12Sensors::setup(void)
     _SDI12Internal.end();
 
     // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
+    if (!wasOn) {powerDown();}
 
     if (!retVal)  // if set-up failed
     {
@@ -291,7 +291,7 @@ bool SDI12Sensors::startSingleMeasurement(void)
     if (!wasActive) _SDI12Internal.end();
 
     // Verify the number of results the sensor will send
-    // uint8_t numVariables = sdiResponse.substring(4,5).toInt();
+    // uint8_t numVariables = sdiResponse.substring(4).toInt();
     // if (numVariables != _numReturnedVars)
     // {
     //     MS_DBG(numVariables, F("results expected"),

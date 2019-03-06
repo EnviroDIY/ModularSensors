@@ -29,9 +29,9 @@
 // Sensor Specific Defines
 #define ATLAS_COND_NUM_VARIABLES 4
 
-// TODO:  Test timing with sensor
-#define ATLAS_COND_WARM_UP_TIME_MS 850
+#define ATLAS_COND_WARM_UP_TIME_MS 745  // 739-740 in tests
 #define ATLAS_COND_STABILIZATION_TIME_MS 0
+// 555 measurement time in tests, but keep the 600 recommended by manual
 #define ATLAS_COND_MEASUREMENT_TIME_MS 600
 
 #define ATLAS_COND_RESOLUTION 3
@@ -62,11 +62,18 @@ class AtlasScientificEC_Cond : public Variable
 {
 public:
     AtlasScientificEC_Cond(Sensor *parentSense,
-                        const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, ATLAS_COND_VAR_NUM,
+                           const char *uuid = "",
+                           const char *varCode = "AtlasCond")
+      : Variable(parentSense,
+                 (const uint8_t)ATLAS_COND_VAR_NUM,
+                 (uint8_t)ATLAS_COND_RESOLUTION,
                  "electricalConductivity", "microsiemenPerCentimeter",
-                 ATLAS_COND_RESOLUTION,
-                 "AtlasCond", UUID, customVarCode)
+                 varCode, uuid)
+    {}
+    AtlasScientificEC_Cond()
+      : Variable((const uint8_t)ATLAS_COND_VAR_NUM,
+                 (uint8_t)ATLAS_COND_RESOLUTION,
+                 "electricalConductivity", "microsiemenPerCentimeter", "AtlasCond")
     {}
     ~AtlasScientificEC_Cond(){}
 };
@@ -76,11 +83,18 @@ class AtlasScientificEC_TDS : public Variable
 {
 public:
     AtlasScientificEC_TDS(Sensor *parentSense,
-                        const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, ATLAS_TDS_VAR_NUM,
+                          const char *uuid = "",
+                          const char *varCode = "AtlasTDS")
+      : Variable(parentSense,
+                 (const uint8_t)ATLAS_TDS_VAR_NUM,
+                 (uint8_t)ATLAS_TDS_RESOLUTION,
                  "solidsTotalDissolved", "partPerMillion",
-                 ATLAS_TDS_RESOLUTION,
-                 "AtlasTDS", UUID, customVarCode)
+                 varCode, uuid)
+    {}
+    AtlasScientificEC_TDS()
+      : Variable((const uint8_t)ATLAS_TDS_VAR_NUM,
+                 (uint8_t)ATLAS_TDS_RESOLUTION,
+                 "solidsTotalDissolved", "partPerMillion", "AtlasTDS")
     {}
     ~AtlasScientificEC_TDS(){}
 };
@@ -90,11 +104,18 @@ class AtlasScientificEC_Salinity : public Variable
 {
 public:
     AtlasScientificEC_Salinity(Sensor *parentSense,
-                        const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, ATLAS_SALINITY_VAR_NUM,
+                               const char *uuid = "",
+                               const char *varCode = "AtlasSalinity")
+      : Variable(parentSense,
+                 (const uint8_t)ATLAS_SALINITY_VAR_NUM,
+                 (uint8_t)ATLAS_SALINITY_RESOLUTION,
                  "salinity", "practicalSalinityUnit",
-                 ATLAS_SALINITY_RESOLUTION,
-                 "AtlasSalinity", UUID, customVarCode)
+                 varCode, uuid)
+    {}
+    AtlasScientificEC_Salinity()
+      : Variable((const uint8_t)ATLAS_SALINITY_VAR_NUM,
+                 (uint8_t)ATLAS_SALINITY_RESOLUTION,
+                 "salinity", "practicalSalinityUnit", "AtlasSalinity")
     {}
     ~AtlasScientificEC_Salinity(){}
 };
@@ -104,11 +125,18 @@ class AtlasScientificEC_SpecificGravity : public Variable
 {
 public:
     AtlasScientificEC_SpecificGravity(Sensor *parentSense,
-                        const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, ATLAS_SG_VAR_NUM,
+                                      const char *uuid = "",
+                                      const char *varCode = "AtlasSpecGravity")
+      : Variable(parentSense,
+                 (const uint8_t)ATLAS_SG_VAR_NUM,
+                 (uint8_t)ATLAS_SG_RESOLUTION,
                  "specificGravity", "dimensionless",
-                 ATLAS_SG_RESOLUTION,
-                 "AtlasSpecGravity", UUID, customVarCode)
+                 varCode, uuid)
+    {}
+    AtlasScientificEC_SpecificGravity()
+      : Variable((const uint8_t)ATLAS_SG_VAR_NUM,
+                 (uint8_t)ATLAS_SG_RESOLUTION,
+                 "specificGravity", "dimensionless", "AtlasSpecGravity")
     {}
     ~AtlasScientificEC_SpecificGravity(){}
 };

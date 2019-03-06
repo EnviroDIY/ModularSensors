@@ -69,11 +69,18 @@ class MPL115A2_Temp : public Variable
 {
 public:
     MPL115A2_Temp(Sensor *parentSense,
-                     const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, MPL115A2_TEMP_VAR_NUM,
-               "temperature", "degreeCelsius",
-               MPL115A2_TEMP_RESOLUTION,
-               "MPL115A2_Temp", UUID, customVarCode)
+                  const char *uuid = "",
+                  const char *varCode = "MPL115A2_Temp")
+      : Variable(parentSense,
+                 (const uint8_t)MPL115A2_TEMP_VAR_NUM,
+                 (uint8_t)MPL115A2_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius",
+                 varCode, uuid)
+    {}
+    MPL115A2_Temp()
+      : Variable((const uint8_t)MPL115A2_TEMP_VAR_NUM,
+                 (uint8_t)MPL115A2_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius", "MPL115A2_Temp")
     {}
     ~MPL115A2_Temp(){}
 };
@@ -84,11 +91,18 @@ class MPL115A2_Pressure : public Variable
 {
 public:
     MPL115A2_Pressure(Sensor *parentSense,
-                         const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, MPL115A2_PRESSURE_VAR_NUM,
-               "atmosphericPressure", "kilopascal",
-               MPL115A2_PRESSURE_RESOLUTION,
-               "MPL115A2_Pressure", UUID, customVarCode)
+                      const char *uuid = "",
+                      const char *varCode = "MPL115A2_Pressure")
+      : Variable(parentSense,
+                 (const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
+                 (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
+                 "atmosphericPressure", "kilopascal",
+                 varCode, uuid)
+    {}
+    MPL115A2_Pressure()
+      : Variable((const uint8_t)MPL115A2_PRESSURE_VAR_NUM,
+                 (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
+                 "atmosphericPressure", "kilopascal", "MPL115A2_Pressure")
     {}
     ~MPL115A2_Pressure(){}
 };

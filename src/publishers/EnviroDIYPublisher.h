@@ -26,7 +26,8 @@
 class EnviroDIYPublisher : public dataPublisher
 {
 public:
-    // Constructor
+    // Constructors
+    EnviroDIYPublisher();
     EnviroDIYPublisher(Logger& baseLogger,
                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
@@ -39,7 +40,7 @@ public:
                     const char *registrationToken,
                     const char *samplingFeatureUUID,
                     uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-
+    // Destructor
     virtual ~EnviroDIYPublisher();
 
     // Returns the data destination
@@ -59,6 +60,14 @@ public:
     // This prints a fully structured post request for WikiWatershed/EnviroDIY
     // to the specified stream.
     void printEnviroDIYRequest(Stream *stream);
+
+    // A way to begin with everything already set
+    void begin(Logger& baseLogger, Client *inClient,
+               const char *registrationToken,
+               const char *samplingFeatureUUID);
+    void begin(Logger& baseLogger,
+              const char *registrationToken,
+              const char *samplingFeatureUUID);
 
     // This utilizes an attached modem to make a TCP connection to the
     // EnviroDIY/ODM2DataSharingPortal and then streams out a post request

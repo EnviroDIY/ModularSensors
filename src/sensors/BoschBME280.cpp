@@ -58,7 +58,7 @@ bool BoschBME280::setup(void)
     // This sensor needs power for setup!
     // The bme280's begin() reads required calibration data from the sensor.
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
+    if (!wasOn) {powerUp();}
     waitForWarmUp();
 
     // Run begin fxn because it returns true or false for success in contact
@@ -80,7 +80,7 @@ bool BoschBME280::setup(void)
     retVal &= success;
 
     // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
+    if (!wasOn) {powerDown();}
 
     return retVal;
 }

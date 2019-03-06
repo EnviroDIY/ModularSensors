@@ -28,9 +28,9 @@
 // Sensor Specific Defines
 #define ATLAS_DO_NUM_VARIABLES 2
 
-// TODO:  Test timing with sensor
-#define ATLAS_DO_WARM_UP_TIME_MS 850
+#define ATLAS_DO_WARM_UP_TIME_MS 745  // 737-739 in tests
 #define ATLAS_DO_STABILIZATION_TIME_MS 0
+// 555 measurement time in tests, but keep the 600 recommended by manual
 #define ATLAS_DO_MEASUREMENT_TIME_MS 600
 
 #define ATLAS_DOMGL_RESOLUTION 2
@@ -55,11 +55,18 @@ class AtlasScientificDO_DOmgL : public Variable
 {
 public:
     AtlasScientificDO_DOmgL(Sensor *parentSense,
-                        const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, ATLAS_DOMGL_VAR_NUM,
-               "oxygenDissolved", "milligramPerLiter",
-               ATLAS_DOMGL_RESOLUTION,
-               "AtlasDOmgL", UUID, customVarCode)
+                            const char *uuid = "",
+                            const char *varCode = "AtlasDOmgL")
+      : Variable(parentSense,
+                 (const uint8_t)ATLAS_DOMGL_VAR_NUM,
+                 (uint8_t)ATLAS_DOMGL_RESOLUTION,
+                 "oxygenDissolved", "milligramPerLiter",
+                 varCode, uuid)
+    {}
+    AtlasScientificDO_DOmgL()
+      : Variable((const uint8_t)ATLAS_DOMGL_VAR_NUM,
+                 (uint8_t)ATLAS_DOMGL_RESOLUTION,
+                 "oxygenDissolved", "milligramPerLiter", "AtlasDOmgL")
     {}
     ~AtlasScientificDO_DOmgL(){}
 };
@@ -69,11 +76,18 @@ class AtlasScientificDO_DOpct : public Variable
 {
 public:
     AtlasScientificDO_DOpct(Sensor *parentSense,
-                        const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, ATLAS_DOPCT_VAR_NUM,
-               "oxygenDissolvedPercentOfSaturation", "percent",
-               ATLAS_DOPCT_RESOLUTION,
-               "AtlasDOpct", UUID, customVarCode)
+                            const char *uuid = "",
+                            const char *varCode = "AtlasDOpct")
+      : Variable(parentSense,
+                 (const uint8_t)ATLAS_DOPCT_VAR_NUM,
+                 (uint8_t)ATLAS_DOPCT_RESOLUTION,
+                 "oxygenDissolvedPercentOfSaturation", "percent",
+                 varCode, uuid)
+    {}
+    AtlasScientificDO_DOpct()
+      : Variable((const uint8_t)ATLAS_DOPCT_VAR_NUM,
+                 (uint8_t)ATLAS_DOPCT_RESOLUTION,
+                 "oxygenDissolvedPercentOfSaturation", "percent", "AtlasDOpct")
     {}
     ~AtlasScientificDO_DOpct(){}
 };

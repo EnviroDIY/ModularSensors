@@ -66,7 +66,7 @@ bool YosemitechParent::setup(void)
 
     #if defined(DEEP_DEBUGGING_SERIAL_OUTPUT)
         sensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
-    #endif  // Header Guard
+    #endif
 
     // This sensor begin is just setting more pin modes, etc, no sensor power required
     // This realy can't fail so adding the return value is just for show
@@ -96,7 +96,7 @@ bool YosemitechParent::wake(void)
         ntries++;
     }
 
-    if(success)
+    if (success)
     {
         // Update the time that the sensor was activated
         _millisSensorActivated = millis();
@@ -127,8 +127,8 @@ bool YosemitechParent::wake(void)
 // Different from the standard in that it stops measurements
 bool YosemitechParent::sleep(void)
 {
-    if(!checkPowerOn()){return true;}
-    if(_millisSensorActivated == 0)
+    if (!checkPowerOn()) {return true;}
+    if (_millisSensorActivated == 0)
     {
         MS_DBG(getSensorNameAndLocation(), F("was not measuring!"));
         return true;
@@ -144,7 +144,7 @@ bool YosemitechParent::sleep(void)
         success = sensor.stopMeasurement();
         ntries++;
     }
-    if(success)
+    if (success)
     {
         // Unset the activation time
         _millisSensorActivated = 0;

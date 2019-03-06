@@ -44,9 +44,9 @@ public:
     AtlasScientificORP(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_ORP_I2C_ADDR,
                        uint8_t measurementsToAverage = 1)
      : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
-                    "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
-                    ATLAS_ORP_WARM_UP_TIME_MS, ATLAS_ORP_STABILIZATION_TIME_MS,
-                    ATLAS_ORP_MEASUREMENT_TIME_MS)
+                   "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
+                   ATLAS_ORP_WARM_UP_TIME_MS, ATLAS_ORP_STABILIZATION_TIME_MS,
+                   ATLAS_ORP_MEASUREMENT_TIME_MS)
     {}
     ~AtlasScientificORP(){}
 };
@@ -56,11 +56,18 @@ class AtlasScientificORP_Potential : public Variable
 {
 public:
     AtlasScientificORP_Potential(Sensor *parentSense,
-                        const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, ATLAS_ORP_VAR_NUM,
+                                 const char *uuid = "",
+                                 const char *varCode = "AtlasORP")
+      : Variable(parentSense,
+                 (const uint8_t)ATLAS_ORP_VAR_NUM,
+                 (uint8_t)ATLAS_ORP_RESOLUTION,
                  "reductionPotential", "millivolt",
-                 ATLAS_ORP_RESOLUTION,
-                 "AtlasORP", UUID, customVarCode)
+                 varCode, uuid)
+    {}
+    AtlasScientificORP_Potential()
+      : Variable((const uint8_t)ATLAS_ORP_VAR_NUM,
+                 (uint8_t)ATLAS_ORP_RESOLUTION,
+                 "reductionPotential", "millivolt", "AtlasORP")
     {}
     ~AtlasScientificORP_Potential(){}
 };

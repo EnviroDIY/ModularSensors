@@ -66,7 +66,7 @@ include/readme.txt
 
 # Other
 compile_tests/
-logger_test/
+logger_test*/
 YosemitechDO/
 LongTermLogger/
 barometric_correction/

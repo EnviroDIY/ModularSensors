@@ -36,24 +36,25 @@ volatile bool Logger::startTesting = false;
 #endif
 
 
-// Constructor
+// Constructors
 Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
-               int8_t SDCardPin, int8_t mcuWakePin,
+               int8_t SDCardSSPin, int8_t mcuWakePin,
                VariableArray *inputArray)
 {
     // Set parameters from constructor
-    _loggerID = loggerID;
-    _loggingIntervalMinutes = loggingIntervalMinutes;
-    _SDCardPin = SDCardPin;
-    _mcuWakePin = mcuWakePin;
-    _internalArray = inputArray;
+    setLoggerID(loggerID);
+    setLoggingInterval(loggingIntervalMinutes);
+    setVariableArray(inputArray);
 
     // Set the testing/logging flags to false
     isLoggingNow = false;
     isTestingNow = false;
     startTesting = false;
 
-    // Initialize with informational pins set void
+    // Set the initial pin values
+    _SDCardPowerPin = -1;
+    setSDCardSS(SDCardSSPin);
+    setRTCWakePin(mcuWakePin);
     _ledPin = -1;
     _buttonPin = -1;
 
@@ -68,6 +69,70 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
     {
         dataPublishers[i] = NULL;
     }
+
+    MS_DBG(F("Logger object created"));
+}
+Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
+               VariableArray *inputArray)
+{
+    // Set parameters from constructor
+    setLoggerID(loggerID);
+    setLoggingInterval(loggingIntervalMinutes);
+    setVariableArray(inputArray);
+
+    // Set the testing/logging flags to false
+    isLoggingNow = false;
+    isTestingNow = false;
+    startTesting = false;
+
+    // Set the initial pin values
+    _SDCardPowerPin = -1;
+    _SDCardSSPin = -1;
+    _mcuWakePin = -1;
+    _ledPin = -1;
+    _buttonPin = -1;
+
+    // Initialize with no file name
+    _fileName = "";
+
+    // Start with no feature UUID
+    _samplingFeatureUUID = NULL;
+
+    // Clear arrays
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++)
+    {
+        dataPublishers[i] = NULL;
+    }
+
+    MS_DBG(F("Logger object created"));
+}
+Logger::Logger()
+{
+    // Set the testing/logging flags to false
+    isLoggingNow = false;
+    isTestingNow = false;
+    startTesting = false;
+
+    // Set the initial pin values
+    _SDCardPowerPin = -1;
+    _SDCardSSPin = -1;
+    _mcuWakePin = -1;
+    _ledPin = -1;
+    _buttonPin = -1;
+
+    // Initialize with no file name
+    _fileName = "";
+
+    // Start with no feature UUID
+    _samplingFeatureUUID = NULL;
+
+    // Clear arrays
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++)
+    {
+        dataPublishers[i] = NULL;
+    }
+
+    MS_DBG(F("Logger object created"));
 }
 // Destructor
 Logger::~Logger(){}
@@ -78,12 +143,105 @@ Logger::~Logger(){}
 // Public functions to get and set basic logging paramters
 // ===================================================================== //
 
+// Sets the logger ID
+void Logger::setLoggerID(const char *loggerID)
+{
+    _loggerID = loggerID;
+    MS_DBG(F("Logger ID is:"), _loggerID);
+}
+
+// Sets/Gets the logging interval
+void Logger::setLoggingInterval(uint16_t loggingIntervalMinutes)
+{
+    _loggingIntervalMinutes = loggingIntervalMinutes;
+    MS_DBG(F("Setting logger to record at"),
+           _loggingIntervalMinutes, F("minute intervals."));
+}
+
+
 // Adds the sampling feature UUID
 void Logger::setSamplingFeatureUUID(const char *samplingFeatureUUID)
 {
     _samplingFeatureUUID = samplingFeatureUUID;
-    MS_DBG(F("Sampling feature UUID set!"));
+    MS_DBG(F("Sampling feature UUID is:"), _samplingFeatureUUID);
 }
+
+// Sets up a pin controlling the power to the SD card
+void Logger::setSDCardPwr(int8_t SDCardPowerPin)
+{
+    _SDCardPowerPin = SDCardPowerPin;
+    pinMode(_SDCardPowerPin, OUTPUT);
+    digitalWrite(_SDCardPowerPin, LOW);
+    MS_DBG(F("Pin"), _SDCardPowerPin, F("set as SD Card Power Pin"));
+}
+// NOTE:  Structure of power switching on SD card taken from:
+// https://thecavepearlproject.org/2017/05/21/switching-off-sd-cards-for-low-power-data-logging/
+void Logger::turnOnSDcard(bool waitToSettle)
+{
+    if (_SDCardPowerPin >= 0)
+    {
+        digitalWrite(_SDCardPowerPin, HIGH);
+        if (waitToSettle)  // TODO:  figure out how long to wait
+        {
+            delay(6);
+        }
+    }
+}
+void Logger::turnOffSDcard(bool waitForHousekeeping)
+{
+    if (_SDCardPowerPin >= 0)
+    {
+        // TODO: set All SPI pins to INPUT?
+        // TODO: set ALL SPI pins HIGH (~30k pullup)
+        pinMode(_SDCardPowerPin, OUTPUT);
+        digitalWrite(_SDCardPowerPin, LOW);
+        if (waitForHousekeeping)  // TODO:  wait in lower power mode
+        {
+            // Specs say up to 1s for internal housekeeping after each write
+            delay(1000);
+        }
+    }
+}
+
+
+// Sets up a pin for the slave select (chip select) of the SD card
+void Logger::setSDCardSS(int8_t SDCardSSPin)
+{
+    _SDCardSSPin = SDCardSSPin;
+    pinMode(_SDCardSSPin, OUTPUT);
+    MS_DBG(F("Pin"), _SDCardSSPin, F("set as SD Card Slave/Chip Select"));
+}
+
+
+// Sets both pins related to the SD card
+void Logger::setSDCardPins(int8_t SDCardSSPin, int8_t SDCardPowerPin)
+{
+    setSDCardPwr(SDCardPowerPin);
+    setSDCardSS(SDCardSSPin);
+}
+
+
+// Sets up the wake up pin for an RTC interrupt
+void Logger::setRTCWakePin(int8_t mcuWakePin)
+{
+    _mcuWakePin = mcuWakePin;
+    if (_mcuWakePin < 0)
+    {
+        MS_DBG(F("Logger mcu will not sleep between readings!"));
+        return;
+    }
+
+    #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
+    if (_mcuWakePin >= 0)
+    {
+        pinMode(_mcuWakePin, INPUT_PULLUP);
+    }
+    MS_DBG(F("Pin"), _mcuWakePin, F("set as RTC wake up pin"));
+    #elif defined ARDUINO_ARCH_SAMD
+    MS_DBG(F("MCU's internal clock will be used for wake up"))
+    #endif
+}
+
 
 // Sets up a pin for an LED or other way of alerting that data is being logged
 void Logger::setAlertPin(int8_t ledPin)
@@ -112,8 +270,32 @@ void Logger::alertOff()
 void Logger::setTestingModePin(int8_t buttonPin)
 {
     _buttonPin = buttonPin;
-    if (_buttonPin >= 0) pinMode(_buttonPin, INPUT_PULLUP);
-    MS_DBG(F("Pin"), _buttonPin, F("set as testing mode entry pin"));
+
+    // Set up the interrupt to be able to enter sensor testing mode
+    // NOTE:  Entering testing mode before the sensors have been set-up may
+    // give unexpected results.
+    if (_buttonPin >= 0)
+    {
+        pinMode(_buttonPin, INPUT_PULLUP);
+        enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
+        PRINTOUT(F("Push button on pin"), _buttonPin,
+                F("at any time to enter sensor testing mode."));
+    }
+}
+
+
+// Sets up the five pins of interest for the logger
+void Logger::setLoggerPins(int8_t mcuWakePin,
+                           int8_t SDCardSSPin,
+                           int8_t SDCardPowerPin,
+                           int8_t buttonPin,
+                           int8_t ledPin)
+{
+    setRTCWakePin(mcuWakePin);
+    setSDCardSS(SDCardSSPin);
+    setSDCardPwr(SDCardPowerPin);
+    setTestingModePin(buttonPin);
+    setAlertPin(ledPin);
 }
 
 
@@ -121,6 +303,17 @@ void Logger::setTestingModePin(int8_t buttonPin)
 // ===================================================================== //
 // Public functions to get information about the attached variable array
 // ===================================================================== //
+
+// Assigns the variable array object
+void Logger::setVariableArray(VariableArray *inputArray)
+{
+    _internalArray = inputArray;
+    PRINTOUT(F("This logger has a variable array with"),
+             getArrayVarCount(), F("variables, of which"),
+             getArrayVarCount() - _internalArray->getCalculatedVariableCount(),
+             F("come from"), _internalArray->getSensorCount(), F("sensors and"),
+             _internalArray->getCalculatedVariableCount(), F("are calculated."));
+}
 
 // Returns the number of variables in the internal array
 uint8_t Logger::getArrayVarCount()
@@ -274,25 +467,26 @@ void Logger::setTZOffset(int8_t offset)
 
 // This gets the current epoch time (unix time, ie, the number of seconds
 // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
-#if defined(ARDUINO_ARCH_SAMD) || defined MS_SAMD_DS3231
+#if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
 
-    uint32_t Logger::getNowEpoch(void)
-    {
-      uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
-      currentEpochTime += _offset*3600;
-      return currentEpochTime;
-    }
-    void Logger::setNowEpoch(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
+uint32_t Logger::getNowEpoch(void)
+{
+  uint32_t currentEpochTime = rtc.now().getEpoch();
+  currentEpochTime += _offset*3600;
+  return currentEpochTime;
+}
+void Logger::setNowEpoch(uint32_t ts){rtc.setEpoch(ts);}
 
-#else
-    // Do not need to create the RTC object; it's created on library import
-    uint32_t Logger::getNowEpoch(void)
-    {
-      uint32_t currentEpochTime = rtc.now().getEpoch();
-      currentEpochTime += _offset*3600;
-      return currentEpochTime;
-    }
-    void Logger::setNowEpoch(uint32_t ts){rtc.setEpoch(ts);}
+#elif defined ARDUINO_ARCH_SAMD
+
+uint32_t Logger::getNowEpoch(void)
+{
+  uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
+  currentEpochTime += _offset*3600;
+  return currentEpochTime;
+}
+void Logger::setNowEpoch(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
+
 #endif
 
 // This gets the current epoch time (unix time, ie, the number of seconds
@@ -401,9 +595,9 @@ bool Logger::checkInterval(void)
 {
     bool retval;
     uint32_t checkTime = getNowEpoch();
-    MS_DBG(F("Current Unix Timestamp:"), checkTime,
-           F("Logging interval in seconds:"), (_loggingIntervalMinutes*60),
-           F("Mod of Logging Interval:"), checkTime % (_loggingIntervalMinutes*60));
+    MS_DBG(F("Current Unix Timestamp:"), checkTime);
+    MS_DBG(F("Logging interval in seconds:"), (_loggingIntervalMinutes*60));
+    MS_DBG(F("Mod of Logging Interval:"), checkTime % (_loggingIntervalMinutes*60));
 
     if (checkTime % (_loggingIntervalMinutes*60) == 0)
     {
@@ -464,13 +658,13 @@ void Logger::wakeISR(void)
 void Logger::systemSleep(void)
 {
     // Don't go to sleep unless there's a wake pin!
-    if(_mcuWakePin < 0)
+    if (_mcuWakePin < 0)
     {
         MS_DBG(F("Use a non-negative wake pin to request sleep!"));
         return;
     }
 
-    #if MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
+    #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
 
     // Unfortunately, because of the way the alarm on the DS3231 is set up, it
     // cannot interrupt on any frequencies other than every second, minute,
@@ -489,7 +683,7 @@ void Logger::systemSleep(void)
     pinMode(_mcuWakePin, INPUT_PULLUP);
     enableInterrupt(_mcuWakePin, wakeISR, CHANGE);
 
-    #else
+    #elif defined ARDUINO_ARCH_SAMD
 
     // Alarms on the RTC built into the SAMD21 appear to be identical to those
     // in the DS3231.  See more notes below.
@@ -503,7 +697,7 @@ void Logger::systemSleep(void)
     #endif
 
     // Send one last message before shutting down serial ports
-    MS_DBG(F("Preparing for processor to sleep."));
+    MS_DBG(F("Putting processor to sleep.  ZZzzz..."));
 
     // Wait until the serial ports have finished transmitting
     // This does not clear their buffers, it just waits until they are finished
@@ -511,7 +705,7 @@ void Logger::systemSleep(void)
     #if defined(STANDARD_SERIAL_OUTPUT)
         STANDARD_SERIAL_OUTPUT.flush();  // for debugging
     #endif
-    #if defined(DEBUGGING_SERIAL_OUTPUT)
+    #if defined DEBUGGING_SERIAL_OUTPUT
         DEBUGGING_SERIAL_OUTPUT.flush();  // for debugging
     #endif
 
@@ -631,7 +825,7 @@ void Logger::systemSleep(void)
     // the timeout period is a useless delay.
     Wire.setTimeout(0);
 
-    #if MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
+    #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
     // Stop the clock from sending out any interrupts while we're awake.
     // There's no reason to waste though on the clock interrupt if it
     // happens while the processor is awake and doing other things.
@@ -644,7 +838,7 @@ void Logger::systemSleep(void)
     #endif
 
     // Wake-up message
-    MS_DBG(F("Processor is now awake!"));
+    MS_DBG(F("... zzzZZ Processor is now awake!"));
 
     // The logger will now start the next function after the systemSleep
     // function in either the loop or setup
@@ -764,8 +958,15 @@ void Logger::printSensorDataCSV(Stream *stream)
 // Protected helper function - This checks if the SD card is available and ready
 bool Logger::initializeSDCard(void)
 {
+    // If we don't know the slave select of the sd card, we can't use it
+    if (_SDCardSSPin < 0)
+    {
+        PRINTOUT(F("Slave/Chip select pin for SD card has not been set."));
+        PRINTOUT(F("Data will not be saved!"));
+        return false;
+    }
     // Initialise the SD card
-    if (!sd.begin(_SDCardPin, SPI_FULL_SPEED))
+    if (!sd.begin(_SDCardSSPin, SPI_FULL_SPEED))
     {
         PRINTOUT(F("Error: SD card failed to initialize or is missing."));
         PRINTOUT(F("Data will not be saved!"));
@@ -774,7 +975,7 @@ bool Logger::initializeSDCard(void)
     else  // skip everything else if there's no SD card, otherwise it might hang
     {
         PRINTOUT(F("Successfully connected to SD Card with card/slave select on pin"),
-                 _SDCardPin);
+                 _SDCardSSPin);
         return true;
     }
 }
@@ -830,7 +1031,7 @@ bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader
                 // Add header information
                 printFileHeader(&logFile);
                 // Print out the header for debugging
-                #if defined(DEBUGGING_SERIAL_OUTPUT)
+                #if defined DEBUGGING_SERIAL_OUTPUT
                     MS_DBG(F("\n \\/---- File Header ----\\/"));
                     printFileHeader(&DEBUGGING_SERIAL_OUTPUT);
                     MS_DBG('\n');
@@ -871,7 +1072,7 @@ bool Logger::createLogFile(String& filename, bool writeDefaultHeader)
     if (openFile(filename, true, writeDefaultHeader))
     {
         // Close the file to save it (only do this if we'd opened it)
-        logFile.close();
+        logFile.sync();
         PRINTOUT(F("Data will be saved as"), _fileName);
         return true;
     }
@@ -919,7 +1120,7 @@ bool Logger::logToSD(String& filename, String& rec)
     // Set access date time
     setFileTimestamp(logFile, T_ACCESS);
     // Close the file to save it
-    logFile.close();
+    logFile.sync();
     return true;
 }
 bool Logger::logToSD(String& rec)
@@ -964,7 +1165,7 @@ bool Logger::logToSD(void)
     // Set access date time
     setFileTimestamp(logFile, T_ACCESS);
     // Close the file to save it
-    logFile.close();
+    logFile.sync();
     return true;
 }
 
@@ -1080,22 +1281,34 @@ void Logger::testingMode()
 // This does all of the setup that can't happen in the constructors
 // That is, things that require the actual processor/MCU to do something
 // rather than the compiler to do something.
- void Logger::begin()
+void Logger::begin(const char *loggerID, uint16_t loggingIntervalMinutes,
+                   VariableArray *inputArray)
+{
+    setLoggerID(loggerID);
+    setLoggingInterval(loggingIntervalMinutes);
+    begin(inputArray);
+}
+void Logger::begin(VariableArray *inputArray)
+{
+    setVariableArray(inputArray);
+    begin();
+}
+void Logger::begin()
 {
     #if defined ARDUINO_ARCH_SAMD
-        PRINTOUT(F("Beginning internal real time clock"));
+        MS_DBG(F("Beginning internal real time clock"));
         zero_sleep_rtc.begin();
     #endif
 
     // Set the pins for I2C
-    PRINTOUT(F("Setting I2C Pins to INPUT_PULLUP"));
+    MS_DBG(F("Setting I2C Pins to INPUT_PULLUP"));
     #ifdef SDA
     pinMode(SDA, INPUT_PULLUP);  // set as input with the pull-up on
     #endif
     #ifdef SCL
     pinMode(SCL, INPUT_PULLUP);
     #endif
-    PRINTOUT(F("Beginning wire (I2C)"));
+    MS_DBG(F("Beginning wire (I2C)"));
     Wire.begin();
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
@@ -1107,31 +1320,12 @@ void Logger::testingMode()
     Wire.setTimeout(0);
 
     #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
-        PRINTOUT(F("Beginning DS3231 real time clock"));
+        MS_DBG(F("Beginning DS3231 real time clock"));
         rtc.begin();
     #endif
 
     // Print out the current time
     PRINTOUT(F("Current RTC time is:"), formatDateTime_ISO8601(getNowEpoch()));
-
-    PRINTOUT(F("Setting logger"), _loggerID, F("to record at"),
-             _loggingIntervalMinutes, F("minute intervals."));
-
-    PRINTOUT(F("This logger has a variable array with"),
-             getArrayVarCount(), F("variables, of which"),
-             getArrayVarCount() - _internalArray->getCalculatedVariableCount(),
-             F("come from "),_internalArray->getSensorCount(), F("sensors and"),
-             _internalArray->getCalculatedVariableCount(), F("are calculated."));
-
-    // Set up the interrupt to be able to enter sensor testing mode
-    // NOTE:  Entering testing mode before the sensors have been set-up may
-    // give unexpected results.
-    if (_buttonPin >= 0)
-    {
-        enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
-        PRINTOUT(F("Push button on pin"), _buttonPin,
-                 F("at any time to enter sensor testing mode."));
-    }
 
     PRINTOUT(F("Logger setup finished!"));
 }
@@ -1151,6 +1345,10 @@ void Logger::logData(void)
         PRINTOUT(F("------------------------------------------"));
         // Turn on the LED to show we're taking a reading
         alertOn();
+        // Power up the SD Card
+        // TODO:  Decide how much delay is needed between turning on the card
+        // and writing to it.  Could we turn it on just before writing?
+        turnOnSDcard(false);
 
         // Do a complete sensor update
         MS_DBG(F("    Running a complete sensor update..."));
@@ -1158,6 +1356,8 @@ void Logger::logData(void)
 
         // Create a csv data record and save it to the log file
         logToSD();
+        // Cut power from the SD card, waiting for housekeeping
+        turnOffSDcard(true);
 
         // Turn off the LED
         alertOff();
@@ -1188,6 +1388,10 @@ void Logger::logDataAndSend(void)
         PRINTOUT(F("------------------------------------------"));
         // Turn on the LED to show we're taking a reading
         alertOn();
+        // Power up the SD Card
+        // TODO:  Decide how much delay is needed between turning on the card
+        // and writing to it.  Could we turn it on just before writing?
+        turnOnSDcard(false);
 
         // Turn on the modem to let it start searching for the network
         if (_logModem != NULL) _logModem->modemPowerUp();
@@ -1209,7 +1413,7 @@ void Logger::logDataAndSend(void)
             MS_DBG(F("Connecting to the Internet..."));
             if (_logModem->connectInternet())
             {
-                // Post the data to the WebSDL
+                // Publish data to remotes
                 sendDataToRemotes();
 
                 // Sync the clock at midnight
@@ -1227,6 +1431,14 @@ void Logger::logDataAndSend(void)
             // Turn the modem off
             _logModem->modemSleepPowerDown();
         }
+
+
+        // TODO:  Do some sort of verification that minimum 1 sec has passed
+        // for internal SD card housekeeping before cutting power
+        // It seems very unlikely based on my testing that less than one second
+        // would be taken up in publishing data to remotes
+        // Cut power from the SD card - without additional housekeeping wait
+        turnOffSDcard(false);
 
         // Turn off the LED
         alertOff();
