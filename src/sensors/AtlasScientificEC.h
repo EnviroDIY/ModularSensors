@@ -29,9 +29,9 @@
 // Sensor Specific Defines
 #define ATLAS_COND_NUM_VARIABLES 4
 
-// TODO:  Test timing with sensor
-#define ATLAS_COND_WARM_UP_TIME_MS 850
+#define ATLAS_COND_WARM_UP_TIME_MS 745  // 739-740 in tests
 #define ATLAS_COND_STABILIZATION_TIME_MS 0
+// 555 measurement time in tests, but keep the 600 recommended by manual
 #define ATLAS_COND_MEASUREMENT_TIME_MS 600
 
 #define ATLAS_COND_RESOLUTION 3
