@@ -436,10 +436,10 @@ VariableArray arrayToGo(variableCount_toGo, variableList_toGo);
 #include <LoggerBase.h>
 
 // Create one new logger instance for the complete array
-Logger loggerAllVars(LoggerID, loggingInterval, sdCardSSPin, wakePin, &arrayComplete);
+Logger loggerAllVars(LoggerID, loggingInterval, &arrayComplete);
 
 // Create "another" logger for the variables to go out over the internet
-Logger loggerToGo(LoggerID, loggingInterval,sdCardSSPin, wakePin, &arrayToGo);
+Logger loggerToGo(LoggerID, loggingInterval, &arrayToGo);
 
 // ==========================================================================
 //    A Publisher to WikiWatershed

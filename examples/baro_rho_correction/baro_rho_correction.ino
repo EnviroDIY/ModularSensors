@@ -354,7 +354,7 @@ VariableArray varArray(variableCount, variableList);
 #include <LoggerBase.h>
 
 // Create a new logger instance
-Logger dataLogger(LoggerID, loggingInterval, sdCardSSPin, wakePin, &varArray);
+Logger dataLogger(LoggerID, loggingInterval, &varArray);
 
 
 // ==========================================================================
