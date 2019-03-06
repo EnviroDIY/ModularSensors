@@ -82,11 +82,18 @@ class YosemitechY533_pH : public Variable
 {
 public:
     YosemitechY533_pH(Sensor *parentSense,
-                      const char *UUID = "", const char *customVarCode = "")
-     : Variable(parentSense, Y533_PH_VAR_NUM,
-                "pH", "pH",
-                Y533_PH_RESOLUTION,
-                "Y533pH", UUID, customVarCode)
+                      const char *uuid = "",
+                      const char *varCode = "Y533pH")
+      : Variable(parentSense,
+                 (const uint8_t)Y533_PH_VAR_NUM,
+                 (uint8_t)Y533_PH_RESOLUTION,
+                 "pH", "pH",
+                 varCode, uuid)
+    {}
+    YosemitechY533_pH()
+      : Variable((const uint8_t)Y533_PH_VAR_NUM,
+                 (uint8_t)Y533_PH_RESOLUTION,
+                 "pH", "pH", "Y533pH")
     {}
     ~YosemitechY533_pH(){}
 };
@@ -97,11 +104,18 @@ class YosemitechY533_Temp : public Variable
 {
 public:
     YosemitechY533_Temp(Sensor *parentSense,
-                        const char *UUID = "", const char *customVarCode = "")
-     : Variable(parentSense, Y533_TEMP_VAR_NUM,
-                "temperature", "degreeCelsius",
-                Y533_TEMP_RESOLUTION,
-                "Y533Temp", UUID, customVarCode)
+                        const char *uuid = "",
+                        const char *varCode = "Y533Temp")
+      : Variable(parentSense,
+                 (const uint8_t)Y533_TEMP_VAR_NUM,
+                 (uint8_t)Y533_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius",
+                 varCode, uuid)
+    {}
+    YosemitechY533_Temp()
+      : Variable((const uint8_t)Y533_TEMP_VAR_NUM,
+                 (uint8_t)Y533_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius", "Y533Temp")
     {}
     ~YosemitechY533_Temp(){}
 };
@@ -112,11 +126,18 @@ class YosemitechY533_Voltage : public Variable
 {
 public:
     YosemitechY533_Voltage(Sensor *parentSense,
-                           const char *UUID = "", const char *customVarCode = "")
-     : Variable(parentSense, Y533_VOLT_VAR_NUM,
-                "voltage", "millivolt",
-                Y533_VOLT_RESOLUTION,
-                "Y533Potential", UUID, customVarCode)
+                           const char *uuid = "",
+                           const char *varCode = "Y533Potential")
+      : Variable(parentSense,
+                 (const uint8_t)Y533_VOLT_VAR_NUM,
+                 (uint8_t)Y533_VOLT_RESOLUTION,
+                 "voltage", "millivolt",
+                 varCode, uuid)
+    {}
+    YosemitechY533_Voltage()
+      : Variable((const uint8_t)Y533_VOLT_VAR_NUM,
+                 (uint8_t)Y533_VOLT_RESOLUTION,
+                 "voltage", "millivolt", "Y533Potential")
     {}
     ~YosemitechY533_Voltage(){}
 };

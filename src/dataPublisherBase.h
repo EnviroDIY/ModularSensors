@@ -33,14 +33,34 @@ class dataPublisher
 
 public:
 
-    // Constructor - requires a logger
+    // Constructors
+    dataPublisher();
     dataPublisher(Logger& baseLogger,
-               uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
-     // Constructor - with a separately specified client
-     dataPublisher(Logger& baseLogger, Client *inClient,
-                uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+                  uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    dataPublisher(Logger& baseLogger, Client *inClient,
+                  uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     // Destructor
     virtual ~dataPublisher();
+
+    // Sets the client
+    void setClient(Client *inClient);
+
+    // Attaches to a logger
+    void attachToLogger(Logger& baseLogger);
+
+    // Sets the parameters for frequency of sending and any offset, if needed
+    // NOTE:  These parameters are not currently used!!
+    void setSendFrequency(uint8_t sendEveryX, uint8_t sendOffset);
+
+    // "Begins" the publisher - attaches client and logger
+    // Not doing this in the constructor because we expect the publishers to be
+    // created in the "global scope" and we cannot control the order in which
+    // objects in that global scope will be created.  That is, we cannot
+    // guarantee that the logger will actually be created before the publisher
+    // that wants to attach to it unless we wait to attach the publisher until
+    // in the setup or loop function of the main program.
+    void begin(Logger& baseLogger, Client *inClient);
+    void begin(Logger& baseLogger);
 
     // Returns the data destination
     virtual String getEndpoint(void) = 0;

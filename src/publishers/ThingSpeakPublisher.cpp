@@ -23,15 +23,24 @@ const char *ThingSpeakPublisher::mqttClient = THING_SPEAK_CLIENT_NAME;
 const char *ThingSpeakPublisher::mqttUser = THING_SPEAK_USER_NAME;
 
 
-// Constructor
+// Constructors
+ThingSpeakPublisher::ThingSpeakPublisher()
+  : dataPublisher()
+{
+    MS_DBG(F("ThingSpeakPublisher object created"));
+}
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger,
                                    uint8_t sendEveryX, uint8_t sendOffset)
   : dataPublisher(baseLogger, sendEveryX, sendOffset)
-{}
+{
+    MS_DBG(F("ThingSpeakPublisher object created"));
+}
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client *inClient,
                                    uint8_t sendEveryX, uint8_t sendOffset)
   : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
-{}
+{
+    MS_DBG(F("ThingSpeakPublisher object created"));
+}
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger,
                                    const char *thingSpeakMQTTKey,
                                    const char *thingSpeakChannelID,
@@ -42,6 +51,7 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger,
    setMQTTKey(thingSpeakMQTTKey);
    setChannelID(thingSpeakChannelID);
    setChannelKey(thingSpeakChannelKey);
+   MS_DBG(F("ThingSpeakPublisher object created"));
 }
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client *inClient,
                                    const char *thingSpeakMQTTKey,
@@ -53,6 +63,7 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client *inClient,
    setMQTTKey(thingSpeakMQTTKey);
    setChannelID(thingSpeakChannelID);
    setChannelKey(thingSpeakChannelKey);
+   MS_DBG(F("ThingSpeakPublisher object created"));
 }
 // Destructor
 ThingSpeakPublisher::~ThingSpeakPublisher(){}
@@ -86,6 +97,29 @@ void ThingSpeakPublisher::setThingSpeakParams(const char *MQTTKey,
     setMQTTKey(MQTTKey);
     setChannelID(channelID);
     setChannelKey(channelKey);
+}
+
+
+// A way to begin with everything already set
+void ThingSpeakPublisher::begin(Logger& baseLogger, Client *inClient,
+                                const char *thingSpeakMQTTKey,
+                                const char *thingSpeakChannelID,
+                                const char *thingSpeakChannelKey)
+{
+    setMQTTKey(thingSpeakMQTTKey);
+    setChannelID(thingSpeakChannelID);
+    setChannelKey(thingSpeakChannelKey);
+    dataPublisher::begin(baseLogger, inClient);
+}
+void ThingSpeakPublisher::begin(Logger& baseLogger,
+                                const char *thingSpeakMQTTKey,
+                                const char *thingSpeakChannelID,
+                                const char *thingSpeakChannelKey)
+{
+    setMQTTKey(thingSpeakMQTTKey);
+    setChannelID(thingSpeakChannelID);
+    setChannelKey(thingSpeakChannelKey);
+    dataPublisher::begin(baseLogger);
 }
 
 
@@ -154,9 +188,9 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
     // Note:  the client id and the user name do not mean anything for ThingSpeak
     MS_DBG(F("Opening MQTT Connection"));
     #if defined(DEBUGGING_SERIAL_OUTPUT)
-      uint32_t start_timer = millis();
+        uint32_t start_timer = millis();
     #endif
-    if(_mqttClient.connect(mqttClient, mqttUser, _thingSpeakMQTTKey))
+    if (_mqttClient.connect(mqttClient, mqttUser, _thingSpeakMQTTKey))
     {
         MS_DBG(F("MQTT connected after"), millis() - start_timer, F("ms"));
 
@@ -180,7 +214,7 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
     // Disconnect from MQTT
     MS_DBG(F("Disconnecting from MQTT"));
     #if defined(DEBUGGING_SERIAL_OUTPUT)
-      start_timer = millis();
+        start_timer = millis();
     #endif
     _mqttClient.disconnect();
     MS_DBG(F("Disconnected after"), millis() - start_timer, F("ms"));

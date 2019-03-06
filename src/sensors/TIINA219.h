@@ -79,11 +79,18 @@ class TIINA219_Current : public Variable
 {
 public:
     TIINA219_Current(Sensor *parentSense,
-                     const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, INA219_CURRENT_MA_VAR_NUM,
-               "amp", "mA",
-               INA219_CURRENT_MA_RESOLUTION,
-               "TIINA219Amp", UUID, customVarCode)
+                     const char *uuid = "",
+                     const char *varCode = "TIINA219Amp")
+      : Variable(parentSense,
+                 (const uint8_t)INA219_CURRENT_MA_VAR_NUM,
+                 (uint8_t)INA219_CURRENT_MA_RESOLUTION,
+                 "amp", "mA",
+                 varCode, uuid)
+    {}
+    TIINA219_Current()
+      : Variable((const uint8_t)INA219_CURRENT_MA_VAR_NUM,
+                 (uint8_t)INA219_CURRENT_MA_RESOLUTION,
+                 "amp", "mA", "TIINA219Amp")
     {}
     ~TIINA219_Current(){};
 };
@@ -94,11 +101,18 @@ class TIINA219_Volt : public Variable
 {
 public:
     TIINA219_Volt(Sensor *parentSense,
-                         const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, INA219_BUS_VOLTAGE_VAR_NUM,
-               "Volt", "V",
-               INA219_BUS_VOLTAGE_RESOLUTION,
-               "TIINA219Volt", UUID, customVarCode)
+                  const char *uuid = "",
+                  const char *varCode = "TIINA219Volt")
+      : Variable(parentSense,
+                 (const uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
+                 (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION,
+                 "Volt", "V",
+                 varCode, uuid)
+    {}
+    TIINA219_Volt()
+      : Variable((const uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
+                 (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION,
+                 "Volt", "V", "TIINA219Volt")
     {}
     ~TIINA219_Volt(){};
 };
@@ -109,11 +123,18 @@ class TIINA219_Power : public Variable
 {
 public:
     TIINA219_Power(Sensor *parentSense,
-                         const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, INA219_POWER_MW_VAR_NUM,
-               "milliwatt", "mW",
-               INA219_POWER_MW_RESOLUTION,
-               "TIINA219Power", UUID, customVarCode)
+                   const char *uuid = "",
+                   const char *varCode = "TIINA219Power")
+      : Variable(parentSense,
+                 (const uint8_t)INA219_POWER_MW_VAR_NUM,
+                 (uint8_t)INA219_POWER_MW_RESOLUTION,
+                 "milliwatt", "mW",
+                 varCode, uuid)
+    {}
+    TIINA219_Power()
+      : Variable((const uint8_t)INA219_POWER_MW_VAR_NUM,
+                 (uint8_t)INA219_POWER_MW_RESOLUTION,
+                 "milliwatt", "mW", "TIINA219Power")
     {}
 };
 

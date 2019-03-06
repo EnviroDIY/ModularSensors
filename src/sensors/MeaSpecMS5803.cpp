@@ -64,7 +64,7 @@ bool MeaSpecMS5803::setup(void)
 
     // This sensor needs power for setup!
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
+    if (!wasOn) {powerUp();}
     waitForWarmUp();
 
     // This doesn't return anything to indicate failure or success, we just have to hope
@@ -72,7 +72,7 @@ bool MeaSpecMS5803::setup(void)
     MS5803_internal.reset();
 
     // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
+    if (!wasOn) {powerDown();}
 
     return retVal;
 }

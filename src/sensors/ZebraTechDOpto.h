@@ -86,11 +86,18 @@ class ZebraTechDOpto_Temp : public Variable
 {
 public:
     ZebraTechDOpto_Temp(Sensor *parentSense,
-                        const char *UUID = "", const char *customVarCode = "")
-     : Variable(parentSense, DOPTO_TEMP_VAR_NUM,
-                "temperature", "degreeCelsius",
-                DOPTO_TEMP_RESOLUTION,
-                "DOtempC", UUID, customVarCode)
+                        const char *uuid = "",
+                        const char *varCode = "DOtempC")
+      : Variable(parentSense,
+                 (const uint8_t)DOPTO_TEMP_VAR_NUM,
+                 (uint8_t)DOPTO_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius",
+                 varCode, uuid)
+    {}
+    ZebraTechDOpto_Temp()
+      : Variable((const uint8_t)DOPTO_TEMP_VAR_NUM,
+                 (uint8_t)DOPTO_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius", "DOtempC")
     {}
     ~ZebraTechDOpto_Temp(){}
 };
@@ -101,11 +108,18 @@ class ZebraTechDOpto_DOpct : public Variable
 {
 public:
     ZebraTechDOpto_DOpct(Sensor *parentSense,
-                         const char *UUID = "", const char *customVarCode = "")
-     : Variable(parentSense, DOPTO_DOPCT_VAR_NUM,
-                "oxygenDissolvedPercentOfSaturation", "percent",
-                DOPTO_DOPCT_RESOLUTION,
-                "DOpercent", UUID, customVarCode)
+                         const char *uuid = "",
+                         const char *varCode = "DOpercent")
+      : Variable(parentSense,
+                 (const uint8_t)DOPTO_DOPCT_VAR_NUM,
+                 (uint8_t)DOPTO_DOPCT_RESOLUTION,
+                 "oxygenDissolvedPercentOfSaturation", "percent",
+                 varCode, uuid)
+    {}
+    ZebraTechDOpto_DOpct()
+      : Variable((const uint8_t)DOPTO_DOPCT_VAR_NUM,
+                 (uint8_t)DOPTO_DOPCT_RESOLUTION,
+                 "oxygenDissolvedPercentOfSaturation", "percent", "DOpercent")
     {}
     ~ZebraTechDOpto_DOpct(){}
 };
@@ -116,11 +130,18 @@ class ZebraTechDOpto_DOmgL : public Variable
 {
 public:
     ZebraTechDOpto_DOmgL(Sensor *parentSense,
-                         const char *UUID = "", const char *customVarCode = "")
-     : Variable(parentSense, DOPTO_DOMGL_VAR_NUM,
-                "oxygenDissolved", "milligramPerLiter",
-                DOPTO_DOMGL_RESOLUTION,
-                "DOppm", UUID, customVarCode)
+                         const char *uuid = "",
+                         const char *varCode = "DOppm")
+      : Variable(parentSense,
+                 (const uint8_t)DOPTO_DOMGL_VAR_NUM,
+                 (uint8_t)DOPTO_DOMGL_RESOLUTION,
+                 "oxygenDissolved", "milligramPerLiter",
+                 varCode, uuid)
+    {}
+    ZebraTechDOpto_DOmgL()
+      : Variable((const uint8_t)DOPTO_DOMGL_VAR_NUM,
+                 (uint8_t)DOPTO_DOMGL_RESOLUTION,
+                 "oxygenDissolved", "milligramPerLiter", "DOppm")
     {}
     ~ZebraTechDOpto_DOmgL(){}
 };
