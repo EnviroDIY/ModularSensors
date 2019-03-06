@@ -42,9 +42,9 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
                VariableArray *inputArray)
 {
     // Set parameters from constructor
-    _loggerID = loggerID;
-    _loggingIntervalMinutes = loggingIntervalMinutes;
-    _internalArray = inputArray;
+    setLoggerID(loggerID);
+    setLoggingInterval(loggingIntervalMinutes);
+    setVariableArray(inputArray);
 
     // Set the testing/logging flags to false
     isLoggingNow = false;
@@ -53,8 +53,8 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
 
     // Set the initial pin values
     _SDCardPowerPin = -1;
-    _SDCardSSPin = SDCardSSPin;
-    _mcuWakePin = mcuWakePin;
+    setSDCardSS(SDCardSSPin);
+    setRTCWakePin(mcuWakePin);
     _ledPin = -1;
     _buttonPin = -1;
 
@@ -76,9 +76,9 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
                VariableArray *inputArray)
 {
     // Set parameters from constructor
-    _loggerID = loggerID;
-    _loggingIntervalMinutes = loggingIntervalMinutes;
-    _internalArray = inputArray;
+    setLoggerID(loggerID);
+    setLoggingInterval(loggingIntervalMinutes);
+    setVariableArray(inputArray);
 
     // Set the testing/logging flags to false
     isLoggingNow = false;
