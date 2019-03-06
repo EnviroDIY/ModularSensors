@@ -106,11 +106,11 @@
             "version_note": "=1.2.0",
             "version": "https://github.com/soligen2010/Adafruit_ADS1X15.git",
             "note": "Driver for TI's ADS1015: 12-bit Differential or Single-Ended ADC with PGA and Comparator.  This fork removes bugs in the Adafruit original library.",
-            "authors": [
+            "authors_note": [
                 "soligen2010"
             ],
-            "frameworks": "arduino",
-            "platforms": "*"
+            "frameworks_note": "arduino",
+            "platforms_note": "*"
         },
         {
             "name": "Adafruit AM2315",
