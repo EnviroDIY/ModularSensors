@@ -56,7 +56,9 @@ class Logger
 public:
     // Constructors
     Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
-           int8_t SDCardPin, int8_t mcuWakePin,
+           int8_t SDCardSSPin, int8_t mcuWakePin,
+           VariableArray *inputArray);
+    Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
            VariableArray *inputArray);
     Logger();
     // Destructor
@@ -78,8 +80,17 @@ public:
     void setSamplingFeatureUUID(const char *samplingFeatureUUID);
     const char * getSamplingFeatureUUID(){return _samplingFeatureUUID;}
 
+    // Sets up a pin controlling the power to the SD card
+    // NOTE:  This is not yet functional!
+    void setSDCardPwr(int8_t SDCardPowerPin);
+    void turnOnSDcard(bool waitToSettle=true);
+    void turnOffSDcard(bool waitForHousekeeping=true);
+
     // Sets up a pin for the slave select (chip select) of the SD card
-    void setSDCardSS(int8_t SDCardPin);
+    void setSDCardSS(int8_t SDCardSSPin);
+
+    // Sets both pins related to the SD card
+    void setSDCardPins(int8_t SDCardSSPin, int8_t SDCardPowerPin);
 
     // Sets up the wake up pin for an RTC interrupt
     void setRTCWakePin(int8_t mcuWakePin);
@@ -92,15 +103,19 @@ public:
     // Sets up a pin for an interrupt to enter testing mode
     void setTestingModePin(int8_t buttonPin);
 
-    // Sets up the four pins of interest for the logger
-    void setLoggerPins(int8_t SDCardPin, int8_t mcuWakePin,
-                       int8_t ledPin, int8_t buttonPin);
+    // Sets up the five pins of interest for the logger
+    void setLoggerPins(int8_t mcuWakePin,
+                       int8_t SDCardSSPin,
+                       int8_t SDCardPowerPin,
+                       int8_t buttonPin,
+                       int8_t ledPin);
 
 protected:
     // Initialization variables
     const char *_loggerID;
     uint16_t _loggingIntervalMinutes;
-    int8_t _SDCardPin;
+    int8_t _SDCardSSPin;
+    int8_t _SDCardPowerPin;
     int8_t _mcuWakePin;
     int8_t _ledPin;
     int8_t _buttonPin;
@@ -327,9 +342,6 @@ public:
     // This does all of the setup that can't happen in the constructors
     // That is, anything that is dependent on another object having been created
     // first or anything that requires the actual processor/MCU to do something.
-    virtual void begin(const char *loggerID, uint16_t loggingIntervalMinutes,
-                       int8_t SDCardPin, int8_t mcuWakePin,
-                       VariableArray *inputArray);
     virtual void begin(const char *loggerID, uint16_t loggingIntervalMinutes,
                        VariableArray *inputArray);
     virtual void begin(VariableArray *inputArray);

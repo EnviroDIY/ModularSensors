@@ -51,7 +51,8 @@ const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugg
 const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
+const int8_t sdCardPwrPin = -1;     // MCU SD card power pin (-1 if not applicable)
+const int8_t sdCardSSPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create the main processor chip "sensor" - for general metadata
@@ -353,7 +354,7 @@ VariableArray varArray(variableCount, variableList);
 #include <LoggerBase.h>
 
 // Create a new logger instance
-Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+Logger dataLogger(LoggerID, loggingInterval, sdCardSSPin, wakePin, &varArray);
 
 
 // ==========================================================================
@@ -442,7 +443,7 @@ void setup()
 
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modem);
-    dataLogger.setLoggerPins(sdCardPin, wakePin, greenLED, buttonPin);
+    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sensorPowerPin, buttonPin, greenLED);
 
     // Begin the logger
     dataLogger.begin();
@@ -486,7 +487,9 @@ void setup()
     // the sensor setup we'll skip this too.
     if (getBatteryVoltage() > 3.4)
     {
-        dataLogger.createLogFile(true);
+        dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
+        dataLogger.createLogFile(true);  // true = write a new header
+        dataLogger.turnOffSDcard(true);  // true = wait for internal housekeeping after write
     }
 
     // Call the processor sleep

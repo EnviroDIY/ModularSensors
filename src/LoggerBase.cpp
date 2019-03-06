@@ -38,14 +38,12 @@ volatile bool Logger::startTesting = false;
 
 // Constructors
 Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
-               int8_t SDCardPin, int8_t mcuWakePin,
+               int8_t SDCardSSPin, int8_t mcuWakePin,
                VariableArray *inputArray)
 {
     // Set parameters from constructor
     _loggerID = loggerID;
     _loggingIntervalMinutes = loggingIntervalMinutes;
-    _SDCardPin = SDCardPin;
-    _mcuWakePin = mcuWakePin;
     _internalArray = inputArray;
 
     // Set the testing/logging flags to false
@@ -53,7 +51,44 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
     isTestingNow = false;
     startTesting = false;
 
-    // Initialize with informational pins set void
+    // Set the initial pin values
+    _SDCardPowerPin = -1;
+    _SDCardSSPin = SDCardSSPin;
+    _mcuWakePin = mcuWakePin;
+    _ledPin = -1;
+    _buttonPin = -1;
+
+    // Initialize with no file name
+    _fileName = "";
+
+    // Start with no feature UUID
+    _samplingFeatureUUID = NULL;
+
+    // Clear arrays
+    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++)
+    {
+        dataPublishers[i] = NULL;
+    }
+
+    MS_DBG(F("Logger object created"));
+}
+Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
+               VariableArray *inputArray)
+{
+    // Set parameters from constructor
+    _loggerID = loggerID;
+    _loggingIntervalMinutes = loggingIntervalMinutes;
+    _internalArray = inputArray;
+
+    // Set the testing/logging flags to false
+    isLoggingNow = false;
+    isTestingNow = false;
+    startTesting = false;
+
+    // Set the initial pin values
+    _SDCardPowerPin = -1;
+    _SDCardSSPin = -1;
+    _mcuWakePin = -1;
     _ledPin = -1;
     _buttonPin = -1;
 
@@ -78,7 +113,10 @@ Logger::Logger()
     isTestingNow = false;
     startTesting = false;
 
-    // Initialize with informational pins set void
+    // Set the initial pin values
+    _SDCardPowerPin = -1;
+    _SDCardSSPin = -1;
+    _mcuWakePin = -1;
     _ledPin = -1;
     _buttonPin = -1;
 
@@ -128,13 +166,58 @@ void Logger::setSamplingFeatureUUID(const char *samplingFeatureUUID)
     MS_DBG(F("Sampling feature UUID is:"), _samplingFeatureUUID);
 }
 
+// Sets up a pin controlling the power to the SD card
+void Logger::setSDCardPwr(int8_t SDCardPowerPin)
+{
+    _SDCardPowerPin = SDCardPowerPin;
+    pinMode(_SDCardPowerPin, OUTPUT);
+    digitalWrite(_SDCardPowerPin, LOW);
+    MS_DBG(F("Pin"), _SDCardPowerPin, F("set as SD Card Power Pin"));
+}
+// NOTE:  Structure of power switching on SD card taken from:
+// https://thecavepearlproject.org/2017/05/21/switching-off-sd-cards-for-low-power-data-logging/
+void Logger::turnOnSDcard(bool waitToSettle)
+{
+    if (_SDCardPowerPin >= 0)
+    {
+        digitalWrite(_SDCardPowerPin, HIGH);
+        if (waitToSettle)  // TODO:  figure out how long to wait
+        {
+            delay(6);
+        }
+    }
+}
+void Logger::turnOffSDcard(bool waitForHousekeeping)
+{
+    if (_SDCardPowerPin >= 0)
+    {
+        // TODO: set All SPI pins to INPUT?
+        // TODO: set ALL SPI pins HIGH (~30k pullup)
+        pinMode(_SDCardPowerPin, OUTPUT);
+        digitalWrite(_SDCardPowerPin, LOW);
+        if (waitForHousekeeping)  // TODO:  wait in lower power mode
+        {
+            // Specs say up to 1s for internal housekeeping after each write
+            delay(1000);
+        }
+    }
+}
+
 
 // Sets up a pin for the slave select (chip select) of the SD card
-void Logger::setSDCardSS(int8_t SDCardPin)
+void Logger::setSDCardSS(int8_t SDCardSSPin)
 {
-    _SDCardPin = SDCardPin;
-    pinMode(_SDCardPin, OUTPUT);
-    MS_DBG(F("Pin"), _SDCardPin, F("set as SD Card Slave/Chip Select"));
+    _SDCardSSPin = SDCardSSPin;
+    pinMode(_SDCardSSPin, OUTPUT);
+    MS_DBG(F("Pin"), _SDCardSSPin, F("set as SD Card Slave/Chip Select"));
+}
+
+
+// Sets both pins related to the SD card
+void Logger::setSDCardPins(int8_t SDCardSSPin, int8_t SDCardPowerPin)
+{
+    setSDCardPwr(SDCardPowerPin);
+    setSDCardSS(SDCardSSPin);
 }
 
 
@@ -201,14 +284,18 @@ void Logger::setTestingModePin(int8_t buttonPin)
 }
 
 
-// Sets up the four pins of interest for the logger
-void Logger::setLoggerPins(int8_t SDCardPin, int8_t mcuWakePin,
-                           int8_t ledPin, int8_t buttonPin)
+// Sets up the five pins of interest for the logger
+void Logger::setLoggerPins(int8_t mcuWakePin,
+                           int8_t SDCardSSPin,
+                           int8_t SDCardPowerPin,
+                           int8_t buttonPin,
+                           int8_t ledPin)
 {
-    setSDCardSS(SDCardPin);
     setRTCWakePin(mcuWakePin);
-    setAlertPin(ledPin);
+    setSDCardSS(SDCardSSPin);
+    setSDCardPwr(SDCardPowerPin);
     setTestingModePin(buttonPin);
+    setAlertPin(ledPin);
 }
 
 
@@ -872,7 +959,7 @@ void Logger::printSensorDataCSV(Stream *stream)
 bool Logger::initializeSDCard(void)
 {
     // Initialise the SD card
-    if (!sd.begin(_SDCardPin, SPI_FULL_SPEED))
+    if (!sd.begin(_SDCardSSPin, SPI_FULL_SPEED))
     {
         PRINTOUT(F("Error: SD card failed to initialize or is missing."));
         PRINTOUT(F("Data will not be saved!"));
@@ -881,7 +968,7 @@ bool Logger::initializeSDCard(void)
     else  // skip everything else if there's no SD card, otherwise it might hang
     {
         PRINTOUT(F("Successfully connected to SD Card with card/slave select on pin"),
-                 _SDCardPin);
+                 _SDCardSSPin);
         return true;
     }
 }
@@ -978,7 +1065,7 @@ bool Logger::createLogFile(String& filename, bool writeDefaultHeader)
     if (openFile(filename, true, writeDefaultHeader))
     {
         // Close the file to save it (only do this if we'd opened it)
-        logFile.close();
+        logFile.sync();
         PRINTOUT(F("Data will be saved as"), _fileName);
         return true;
     }
@@ -1026,7 +1113,7 @@ bool Logger::logToSD(String& filename, String& rec)
     // Set access date time
     setFileTimestamp(logFile, T_ACCESS);
     // Close the file to save it
-    logFile.close();
+    logFile.sync();
     return true;
 }
 bool Logger::logToSD(String& rec)
@@ -1071,7 +1158,7 @@ bool Logger::logToSD(void)
     // Set access date time
     setFileTimestamp(logFile, T_ACCESS);
     // Close the file to save it
-    logFile.close();
+    logFile.sync();
     return true;
 }
 
@@ -1188,14 +1275,6 @@ void Logger::testingMode()
 // That is, things that require the actual processor/MCU to do something
 // rather than the compiler to do something.
 void Logger::begin(const char *loggerID, uint16_t loggingIntervalMinutes,
-                   int8_t SDCardPin, int8_t mcuWakePin,
-                   VariableArray *inputArray)
-{
-    setSDCardSS(SDCardPin);
-    setRTCWakePin(mcuWakePin);
-    begin(loggerID, loggingIntervalMinutes, inputArray);
-}
-void Logger::begin(const char *loggerID, uint16_t loggingIntervalMinutes,
                    VariableArray *inputArray)
 {
     setLoggerID(loggerID);
@@ -1259,6 +1338,10 @@ void Logger::logData(void)
         PRINTOUT(F("------------------------------------------"));
         // Turn on the LED to show we're taking a reading
         alertOn();
+        // Power up the SD Card
+        // TODO:  Decide how much delay is needed between turning on the card
+        // and writing to it.  Could we turn it on just before writing?
+        turnOnSDcard(false);
 
         // Do a complete sensor update
         MS_DBG(F("    Running a complete sensor update..."));
@@ -1266,6 +1349,8 @@ void Logger::logData(void)
 
         // Create a csv data record and save it to the log file
         logToSD();
+        // Cut power from the SD card, waiting for housekeeping
+        turnOffSDcard(true);
 
         // Turn off the LED
         alertOff();
@@ -1296,6 +1381,10 @@ void Logger::logDataAndSend(void)
         PRINTOUT(F("------------------------------------------"));
         // Turn on the LED to show we're taking a reading
         alertOn();
+        // Power up the SD Card
+        // TODO:  Decide how much delay is needed between turning on the card
+        // and writing to it.  Could we turn it on just before writing?
+        turnOnSDcard(false);
 
         // Turn on the modem to let it start searching for the network
         if (_logModem != NULL) _logModem->modemPowerUp();
@@ -1317,7 +1406,7 @@ void Logger::logDataAndSend(void)
             MS_DBG(F("Connecting to the Internet..."));
             if (_logModem->connectInternet())
             {
-                // Post the data to the WebSDL
+                // Publish data to remotes
                 sendDataToRemotes();
 
                 // Sync the clock at midnight
@@ -1335,6 +1424,14 @@ void Logger::logDataAndSend(void)
             // Turn the modem off
             _logModem->modemSleepPowerDown();
         }
+
+
+        // TODO:  Do some sort of verification that minimum 1 sec has passed
+        // for internal SD card housekeeping before cutting power
+        // It seems very unlikely based on my testing that less than one second
+        // would be taken up in publishing data to remotes
+        // Cut power from the SD card - without additional housekeeping wait
+        turnOffSDcard(false);
 
         // Turn off the LED
         alertOff();

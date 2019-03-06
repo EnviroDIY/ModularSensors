@@ -53,7 +53,8 @@ const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugg
 const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
+const int8_t sdCardPwrPin = -1;     // MCU SD card power pin (-1 if not applicable)
+const int8_t sdCardSSPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create the main processor chip "sensor" - for general metadata
@@ -278,8 +279,8 @@ void setup()
     // Begin the variable array[s], logger[s], and publisher[s]
     array1min.begin(variableCount1min, variableList_at1min);
     array5min.begin(variableCount5min, variableList_at5min);
-    logger1min.begin(LoggerID, 1, sdCardPin, wakePin, &array1min);
-    logger5min.begin(LoggerID, 5, sdCardPin, wakePin, &array5min);
+    logger1min.begin(LoggerID, 1, sdCardSSPin, wakePin, &array1min);
+    logger5min.begin(LoggerID, 5, sdCardSSPin, wakePin, &array5min);
 
 
     // Turn on the modem
@@ -315,8 +316,10 @@ void setup()
     // on to the file when it's created.
     // Because we've already called setFileName, we do not need to specify the
     // file name for this function.
-    logger1min.createLogFile(true);
-    logger5min.createLogFile(true);
+    logger1min.turnOnSDcard(true);  // true = wait for card to settle after power up
+    logger1min.createLogFile(true);  // true = write a new header
+    logger5min.createLogFile(true);  // true = write a new header
+    logger1min.turnOffSDcard(true);  // true = wait for internal housekeeping after write
 
     Serial.println(F("Logger setup finished!\n"));
     Serial.println(F("------------------------------------------"));
@@ -366,7 +369,9 @@ void loop()
         array1min.sensorsPowerDown();
 
         // Stream the csv data to the SD card
+        logger1min.turnOnSDcard(true);
         logger1min.logToSD();
+        logger1min.turnOffSDcard(true);
 
         // Turn off the LED
         digitalWrite(greenLED, LOW);
@@ -399,7 +404,9 @@ void loop()
         array1min.sensorsPowerDown();
 
         // Stream the csv data to the SD card
+        logger5min.turnOnSDcard(true);
         logger5min.logToSD();
+        logger5min.turnOffSDcard(true);
 
         // Turn off the LED
         digitalWrite(redLED, LOW);

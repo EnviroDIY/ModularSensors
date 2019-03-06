@@ -50,7 +50,8 @@ const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugg
 const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
+const int8_t sdCardPwrPin = -1;     // MCU SD card power pin (-1 if not applicable)
+const int8_t sdCardSSPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create the main processor chip "sensor" - for general metadata
@@ -150,7 +151,7 @@ void setup()
     Logger::setTZOffset(timeZone);
 
     // Set information pins
-    dataLogger.setLoggerPins(sdCardPin, wakePin, greenLED, buttonPin);
+    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sensorPowerPin, buttonPin, greenLED);
 
     // Begin the variable array[s], logger[s], and publisher[s]
     varArray.begin(variableCount, variableList);
@@ -163,7 +164,7 @@ void setup()
     // Create the log file, adding the default header to it
     // Do this last so we have the best chance of getting the time correct and
     // all sensor names correct
-    dataLogger.createLogFile(true);
+    dataLogger.createLogFile(true);  // true = write a new header
 
     // Call the processor sleep
     dataLogger.systemSleep();
