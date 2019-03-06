@@ -46,7 +46,7 @@ String MaxBotixSonar::getSensorLocation(void)
 bool MaxBotixSonar::setup(void)
 {
     // Set up the trigger, if applicable
-    if(_triggerPin >= 0)
+    if (_triggerPin >= 0)
     {
         pinMode(_triggerPin, OUTPUT);
         digitalWrite(_triggerPin, LOW);
@@ -150,7 +150,7 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
              // for each "single measurement" until a valid value is returned
              // and the measurement time is <166ms, we'll actually activate
              // the trigger here.
-            if(_triggerPin >= 0)
+            if (_triggerPin >= 0)
             {
                 MS_DBG(F("  Triggering Sonar with"), _triggerPin);
                 digitalWrite(_triggerPin, HIGH);

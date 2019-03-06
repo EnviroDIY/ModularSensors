@@ -15,13 +15,11 @@
 // ============================================================================
 
 // The constructor
-Sensor::Sensor(const char *sensorName, uint8_t numReturnedVars,
+Sensor::Sensor(const char *sensorName, const uint8_t numReturnedVars,
                uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms, uint32_t measurementTime_ms,
                int8_t powerPin, int8_t dataPin, uint8_t measurementsToAverage)
+  : _sensorName(sensorName), _numReturnedVars(numReturnedVars)
 {
-    _sensorName = sensorName;
-    _numReturnedVars = numReturnedVars;
-
     _powerPin = powerPin;
     _dataPin = dataPin;
     _measurementsToAverage = measurementsToAverage;
@@ -59,6 +57,8 @@ Sensor::Sensor(const char *sensorName, uint8_t numReturnedVars,
 
     // Reset the sensor status
     _sensorStatus = 0;
+
+    MS_DBG(F("Sensor object created"));
 }
 // Destructor
 Sensor::~Sensor(){}
@@ -276,9 +276,9 @@ bool Sensor::startSingleMeasurement(void)
 }
 
 
-void Sensor::registerVariable(int varNum, Variable* var)
+void Sensor::registerVariable(int sensorVarNum, Variable* var)
 {
-    variables[varNum] = var;
+    variables[sensorVarNum] = var;
     MS_DBG(F("... Registration from"), getSensorNameAndLocation(), F("for"),
            var->getVarName(), F("accepted."));
 }
@@ -391,7 +391,7 @@ bool Sensor::update(void)
 
     // Check if the power is on, turn it on if not
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
+    if (!wasOn) {powerUp();}
 
     // Check if it's awake/active, activate it if not
     bool wasActive = bitRead(getStatus(), 3);
@@ -424,10 +424,10 @@ bool Sensor::update(void)
     averageMeasurements();
 
     // Put the sensor back to sleep if it had been activated
-    if(wasActive){sleep();}
+    if (wasActive){sleep();}
 
     // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
+    if (!wasOn) {powerDown();}
 
     // Update the registered variables with the new values
     notifyVariables();

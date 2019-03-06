@@ -44,6 +44,14 @@ String RainCounterI2C::getSensorLocation(void)
 bool RainCounterI2C::setup(void)
 {
     Wire.begin();  // Start the wire library (sensor power not required)
+    // Eliminate any potential extra waits in the wire library
+    // These waits would be caused by a readBytes or parseX being called
+    // on wire after the Wire buffer has emptied.  The default stream
+    // functions - used by wire - wait a timeout period after reading the
+    // end of the buffer to see if an interrupt puts something into the
+    // buffer.  In the case of the Wire library, that will never happen and
+    // the timeout period is a useless delay.
+    Wire.setTimeout(0);
     return Sensor::setup();  // this will set pin modes and the setup status bit
 }
 
@@ -51,11 +59,11 @@ bool RainCounterI2C::setup(void)
 bool RainCounterI2C::addSingleMeasurementResult(void)
 {
     //intialize values
-    uint8_t Byte1 = 0; // Low byte of data
-    uint8_t Byte2 = 0; // High byte of data
+    uint8_t Byte1 = 0;  // Low byte of data
+    uint8_t Byte2 = 0;  // High byte of data
 
-    float rain = -9999; // Number of mm of rain
-    int16_t tips = -9999; // Number of tip events
+    float rain = -9999;  // Number of mm of rain
+    int16_t tips = -9999;  // Number of tip events
 
     // Get data from external tip counter
     // if the 'requestFrom' returns 0, it means no bytes were received
@@ -67,10 +75,10 @@ bool RainCounterI2C::addSingleMeasurementResult(void)
         Byte2 = Wire.read();
 
         tips = (Byte2 << 8) | (Byte1);  // Concatenate tip values
-        rain = float(tips) * _rainPerTip; // Multiply by tip coefficient (0.2 by default)
+        rain = float(tips) * _rainPerTip;  // Multiply by tip coefficient (0.2 by default)
 
-        if (tips < 0) tips = -9999; // If negetive value results, return failure
-        if (rain < 0) rain = -9999; // If negetive value results, return failure
+        if (tips < 0) tips = -9999;  // If negetive value results, return failure
+        if (rain < 0) rain = -9999;  // If negetive value results, return failure
 
         MS_DBG(F("  Rain:"), rain);
         MS_DBG(F("  Tips:"), tips);

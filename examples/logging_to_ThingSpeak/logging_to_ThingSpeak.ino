@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.6
+This example sketch is written for ModularSensors library version 0.21.0
 
 This sketch is an example of logging data to an SD card and sending the data to
 ThingSpeak.
@@ -27,7 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.19.6";
+const char *libraryVersion = "0.21.0";
 // The name of this file
 const char *sketchName = "logging_to_ThingSpeak.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -51,10 +51,11 @@ const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugg
 const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
-const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
+const int8_t sdCardPwrPin = -1;     // MCU SD card power pin (-1 if not applicable)
+const int8_t sdCardSSPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
+const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
-// Create and return the main processor chip "sensor" - for general metadata
+// Create the main processor chip "sensor" - for general metadata
 const char *mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
@@ -88,11 +89,11 @@ const int8_t modemResetPin = A4;     // MCU pin connected to ESP8266's RSTB/GPIO
 // Create a reference to the serial port for the modem
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
-// Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(modemSerial);
+// Create a TinyGSM modem to run on that serial port
+TinyGsm tinyModem(modemSerial);
 
-// Create a new TCP client on that modem and return a pointer to it
-TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
+// Create a TCP client on that modem
+TinyGsmClient tinyClient(tinyModem);
 
 
 // ==========================================================================
@@ -101,10 +102,41 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 // This should work with most ESP8266 breakouts
 // Describe the physical pin connection of your modem to your board
-const long ModemBaud = 115200;       // Communication speed of the modem, 115200 is default for ESP8266
+const long modemBaud = 115200;       // Communication speed of the modem, 115200 is default for ESP8266
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 const int8_t espSleepRqPin = 13;     // ESP8266 GPIO pin used for wake from light sleep (-1 if not applicable)
 const int8_t espStatusPin = -1;      // ESP8266 GPIO pin used to give modem status (-1 if not applicable)
+
+// A helper function to wait for the esp to boot and immediately change some settings
+// We'll use this in the wake function
+bool ESPwaitForBoot(void)
+{
+    // Wait for boot - finished when characters start coming
+    // NOTE: After every "hard" reset (either power off or via RST-B), the ESP
+    // sends out a boot log from the ROM on UART1 at 74880 baud.  We're not
+    // going to worry about the odd baud rate since we're simply throwing the
+    // characters away.
+    delay(200);  // It will take at least this long
+    uint32_t start = millis();
+    bool success = false;
+    while (!modemSerial.available() && millis() - start < 1000) {}
+    if (modemSerial.available())
+    {
+        success = true;
+        // Read the boot log to empty it from the serial buffer
+        while (modemSerial.available())
+        {
+            modemSerial.read();
+            delay(2);
+        }
+        // Have to make sure echo is off or all AT commands will be confused
+        tinyModem.sendAT(F("E0"));
+        success &= tinyModem.waitResponse() == 1;
+        // re-run init to set mux and station mode
+        success &= tinyModem.init();
+    }
+    return success;
+}
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -117,56 +149,70 @@ bool modemSleepFxn(void)
     {
         uint32_t sleepSeconds = (((uint32_t)loggingInterval) * 60 * 1000) - 75000L;
         String sleepCommand = String(sleepSeconds);
-        tinyModem->sendAT(F("+GSLP="), sleepCommand);
+        tinyModem.sendAT(F("+GSLP="), sleepCommand);
         // Power down for 1 minute less than logging interval
         // Better:  Calculate length of loop and power down for logging interval - loop time
-        return tinyModem->waitResponse() == 1;
+        return tinyModem.waitResponse() == 1;
     }*/
     // Use this if you have an MCU pin connected to the ESP's reset pin to wake from deep sleep
     if (modemResetPin >= 0)
     {
         digitalWrite(redLED, LOW);
-        return tinyModem->poweroff();
+        return tinyModem.poweroff();
     }
     // Use this if you don't have access to the ESP8266's reset pin for deep sleep but you
     // do have access to another GPIO pin for light sleep.  This also sets up another
     // pin to view the sleep status.
     else if (modemSleepRqPin >= 0 && modemStatusPin >= 0)
     {
-        tinyModem->sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
+        tinyModem.sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
                           String(espStatusPin), ',', modemStatusLevel);
-        bool success = tinyModem->waitResponse() == 1;
-        tinyModem->sendAT(F("+SLEEP=1"));
-        success &= tinyModem->waitResponse() == 1;
+        bool success = tinyModem.waitResponse() == 1;
+        tinyModem.sendAT(F("+SLEEP=1"));
+        success &= tinyModem.waitResponse() == 1;
         digitalWrite(redLED, LOW);
         return success;
     }
     // Light sleep without the status pin
     else if (modemSleepRqPin >= 0 && modemStatusPin < 0)
     {
-        tinyModem->sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0"));
-        bool success = tinyModem->waitResponse() == 1;
-        tinyModem->sendAT(F("+SLEEP=1"));
-        success &= tinyModem->waitResponse() == 1;
+        tinyModem.sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0"));
+        bool success = tinyModem.waitResponse() == 1;
+        tinyModem.sendAT(F("+SLEEP=1"));
+        success &= tinyModem.waitResponse() == 1;
         digitalWrite(redLED, LOW);
         return success;
     }
-    else return true;  // DON'T go to sleep if we can't wake up!
+    else  // DON'T go to sleep if we can't wake up!
+    {
+        return true;
+    }
 }
 bool modemWakeFxn(void)
 {
+    bool success = true;
     if (modemVccPin >= 0)  // Turns on when power is applied
     {
         digitalWrite(redLED, HIGH);  // Because the ESP8266 doesn't have any lights
-        return true;
+        success &= ESPwaitForBoot();
+        if (!success)
+        {
+            digitalWrite(redLED, LOW);  // Turn off light if the boot failed
+        }
+        return success;
     }
     else if (modemResetPin >= 0)
     {
+        digitalWrite(redLED, HIGH);
         digitalWrite(modemResetPin, LOW);
         delay(1);
         digitalWrite(modemResetPin, HIGH);
-        digitalWrite(redLED, HIGH);
-        return true;
+        success &= ESPwaitForBoot();
+        if (!success)
+        {
+            digitalWrite(redLED, LOW);  // Turn off light if the boot failed
+        }
+        return success;
     }
     else if (modemSleepRqPin >= 0)
     {
@@ -174,9 +220,35 @@ bool modemWakeFxn(void)
         delay(1);
         digitalWrite(modemSleepRqPin, HIGH);
         digitalWrite(redLED, HIGH);
+        // Don't have to wait for a boot if using light sleep
         return true;
     }
-    else return true;
+    else
+    {
+        return true;
+    }
+}
+// Set up the light-sleep status pin, if applicable
+void extraModemSetup(void)
+{
+    // Slow down the baud rate for slow processors - and save the change to
+    // the ESP's non-volatile memory so we don't have to do it every time
+    #if F_CPU == 8000000L
+    if (modemBaud > 57600)
+    {
+        modemSerial.begin(modemBaud);
+        tinyModem.sendAT(F("+UART_DEF=9600,8,1,0,0"));
+        tinyModem.waitResponse();
+        modemSerial.end();
+        modemSerial.begin(9600);
+    }
+    #endif
+    if (modemVccPin < 0 && modemResetPin < 0 && modemSleepRqPin >= 0 && modemStatusPin >= 0)
+    {
+        tinyModem.sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
+                          String(espStatusPin), ',', modemStatusLevel);
+        tinyModem.waitResponse();
+    }
 }
 
 
@@ -192,7 +264,7 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, &tinyModem, &tinyClient, wifiId, wifiPwd);
 
 
 // ==========================================================================
@@ -200,7 +272,7 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, m
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
 
-// Create and return the DS3231 sensor object
+// Create a DS3231 sensor object
 MaximDS3231 ds3231(1);
 
 
@@ -217,7 +289,8 @@ const int8_t OBSLowADSChannel = 0;  // The ADS channel for the low range output
 const float OBSLow_A = 0.000E+00;  // The "A" value (X^2) from the low range calibration
 const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calibration
 const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
-// Create and return the Campbell OBS3+ LOW RANGE sensor object
+
+// Create a Campbell OBS3+ LOW RANGE sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3numberReadings);
 
 
@@ -226,7 +299,8 @@ const int8_t OBSHighADSChannel = 1;  // The ADS channel for the high range outpu
 const float OBSHigh_A = 0.000E+00;  // The "A" value (X^2) from the high range calibration
 const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range calibration
 const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
-// Create and return the Campbell OBS3+ HIGH RANGE sensor object
+
+// Create a Campbell OBS3+ HIGH RANGE sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 
 
@@ -240,7 +314,7 @@ const uint8_t CTDnumberReadings = 6;  // The number of readings to average
 const int8_t SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t SDI12Data = 7;  // The SDI12 data pin
 
-// Create and return the Decagon CTD sensor object
+// Create a Decagon CTD sensor object
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 
 
@@ -249,8 +323,6 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
 // ==========================================================================
 #include <VariableArray.h>
 
-// FORM1: Create pointers for all of the variables from the sensors,
-// at the same time putting them into an array
 Variable *variableList[] = {
     new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -265,7 +337,7 @@ Variable *variableList[] = {
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
-VariableArray varArray(variableCount, variableList);
+VariableArray varArray;
 
 
 // ==========================================================================
@@ -273,8 +345,8 @@ VariableArray varArray(variableCount, variableList);
 // ==========================================================================
 #include <LoggerBase.h>
 
-// Create a new logger instance
-Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+// Create a logger instance
+Logger dataLogger;
 
 
 // ==========================================================================
@@ -291,7 +363,7 @@ const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for
 
 // Create a data publisher for ThingSpeak
 #include <publishers/ThingSpeakPublisher.h>
-ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
+ThingSpeakPublisher TsMqtt;
 
 
 // ==========================================================================
@@ -301,15 +373,15 @@ ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, t
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 {
-  for (uint8_t i = 0; i < numFlash; i++) {
-    digitalWrite(greenLED, HIGH);
+    for (uint8_t i = 0; i < numFlash; i++) {
+        digitalWrite(greenLED, HIGH);
+        digitalWrite(redLED, LOW);
+        delay(rate);
+        digitalWrite(greenLED, LOW);
+        digitalWrite(redLED, HIGH);
+        delay(rate);
+    }
     digitalWrite(redLED, LOW);
-    delay(rate);
-    digitalWrite(greenLED, LOW);
-    digitalWrite(redLED, HIGH);
-    delay(rate);
-  }
-  digitalWrite(redLED, LOW);
 }
 
 
@@ -345,7 +417,7 @@ void setup()
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
     // Start the serial connection with the modem
-    modemSerial.begin(ModemBaud);
+    modemSerial.begin(modemBaud);
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
@@ -387,26 +459,56 @@ void setup()
 
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modem);
-    dataLogger.setAlertPin(greenLED);
-    dataLogger.setTestingModePin(buttonPin);
+    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sensorPowerPin, buttonPin, greenLED);
 
-    // Begin the logger
+    // Begin the variable array[s], logger[s], and publisher[s]
+    varArray.begin(variableCount, variableList);
+    dataLogger.begin(LoggerID, loggingInterval, &varArray);
+    TsMqtt.begin(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
+
     // Note:  Please change these battery voltages to match your battery
     // Check that the battery is OK before powering the modem
-    if (getBatteryVoltage() > 3.7) modem.modemPowerUp();
-    // At lowest battery level, skip sensor set-up
-    if (getBatteryVoltage() < 3.4) dataLogger.begin(true);
-    else dataLogger.begin();  // set up file and sensors
-
-    // At very good battery voltage, or with suspicious time stamp, sync the clock
-    // Note:  Please change these battery voltages to match your battery
-    if (getBatteryVoltage() > 3.8 ||
-        dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
-        dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+    if (getBatteryVoltage() > 3.7)
     {
-        dataLogger.syncRTC();  // There's a sleepPowerDown at the end of this
-}
-    else modem.modemSleepPowerDown();
+        modem.modemPowerUp();
+        modem.wake();
+
+        // At very good battery voltage, or with suspicious time stamp, sync the clock
+        // Note:  Please change these battery voltages to match your battery
+        if (getBatteryVoltage() > 3.8 ||
+            dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
+            dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+        {
+            // Synchronize the RTC with NIST
+            Serial.println(F("Attempting to synchronize RTC with NIST"));
+            if (modem.connectInternet(120000L))
+            {
+                dataLogger.setRTClock(modem.getNISTTime());
+            }
+        }
+    }
+
+    // Set up the sensors, except at lowest battery level
+    if (getBatteryVoltage() > 3.4)
+    {
+        Serial.println(F("Setting up sensors..."));
+        varArray.setupSensors();
+    }
+
+    // Power down the modem
+    modem.modemSleepPowerDown();
+
+    // Create the log file, adding the default header to it
+    // Do this last so we have the best chance of getting the time correct and
+    // all sensor names correct
+    // Writing to the SD card can be power intensive, so if we're skipping
+    // the sensor setup we'll skip this too.
+    if (getBatteryVoltage() > 3.4)
+    {
+        dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
+        dataLogger.createLogFile(true);  // true = write a new header
+        dataLogger.turnOffSDcard(true);  // true = wait for internal housekeeping after write
+    }
 
     // Call the processor sleep
     dataLogger.systemSleep();
@@ -422,9 +524,18 @@ void loop()
 {
     // Note:  Please change these battery voltages to match your battery
     // At very low battery, just go back to sleep
-    if (getBatteryVoltage() < 3.4) dataLogger.systemSleep();
+    if (getBatteryVoltage() < 3.4)
+    {
+        dataLogger.systemSleep();
+    }
     // At moderate voltage, log data but don't send it over the modem
-    else if (getBatteryVoltage() < 3.7) dataLogger.logData();
+    else if (getBatteryVoltage() < 3.7)
+    {
+        dataLogger.logData();
+    }
     // If the battery is good, send the data to the world
-    else dataLogger.logDataAndSend();
+    else
+    {
+        dataLogger.logDataAndSend();
+    }
 }

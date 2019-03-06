@@ -1,6 +1,6 @@
 {
     "name": "EnviroDIY_ModularSensors",
-    "version": "0.19.6",
+    "version": "0.21.0",
     "description":  "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
     "keywords": "modular, sensor, sensors, datalogger, logger, low power, sleeping, EnviroDIY, ModularSensors, Mayfly, WikiWatershed, ThingSpeak",
     "platforms": "atmelavr, atmelsam",
@@ -101,16 +101,16 @@
             "platforms": "atmelavr, atmelsam"
         },
         {
-            "name": "ADS1X15",
+            "name": "Adafruit ADS1X15",
             "library id": "344",
-            "version": "=1.2.0",
-            "url": "https://github.com/soligen2010/Adafruit_ADS1X15.git",
+            "version_note": "=1.2.0",
+            "version": "https://github.com/soligen2010/Adafruit_ADS1X15.git",
             "note": "Driver for TI's ADS1015: 12-bit Differential or Single-Ended ADC with PGA and Comparator.  This fork removes bugs in the Adafruit original library.",
-            "authors": [
+            "authors_note": [
                 "soligen2010"
             ],
-            "frameworks": "arduino",
-            "platforms": "*"
+            "frameworks_note": "arduino",
+            "platforms_note": "*"
         },
         {
             "name": "Adafruit AM2315",
@@ -128,7 +128,7 @@
             "name": "Adafruit BME280 Library",
             "library id": "166",
             "url": "https://github.com/adafruit/Adafruit_BME280_Library.git",
-            "version": "=1.0.7",
+            "version": "=1.0.8",
             "note": "Bosch BME280 Temp/Humidity/Pressure Sensor Library by Adafruit",
             "authors": [
                 "Adafruit"
@@ -140,7 +140,7 @@
             "name": "DHT sensor library",
             "library id": "19",
             "url": "https://github.com/adafruit/DHT-sensor-library.git",
-            "version": "=1.3.2",
+            "version": "=1.3.4",
             "note": "AOSong DHT Sensor Library by Adafruit",
             "authors": [
                 "Adafruit"
@@ -164,7 +164,7 @@
             "name": "Adafruit MPL115A2",
             "library id": "406",
             "url": "https://github.com/adafruit/Adafruit_MPL115A2.git",
-            "version": "=1.0.0",
+            "version": "=1.1.0",
             "note": "MPL115A2 Barometer Library by Adafruit",
             "authors": [
                 "Adafruit"
@@ -295,7 +295,7 @@
         },
         {
             "name": "TinyGSM",
-            "version": "https://github.com/EnviroDIY/TinyGSM.git#bdfa2ba55cd2d7140011453d29c15ebbdbe33564",
+            "version": "https://github.com/EnviroDIY/TinyGSM.git#a0315a18418a258725dbf76b2db3d475f35448fe",
             "version_note": "=0.4.5",
             "note": "A small Arduino library for GPRS modules.",
             "authors": [

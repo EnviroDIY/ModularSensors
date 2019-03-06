@@ -76,11 +76,18 @@ class MaximDS18_Temp : public Variable
 {
 public:
     MaximDS18_Temp(Sensor *parentSense,
-                   const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, DS18_TEMP_VAR_NUM,
-               "temperature", "degreeCelsius",
-               DS18_TEMP_RESOLUTION,
-               "DS18Temp", UUID, customVarCode)
+                   const char *uuid = "",
+                   const char *varCode = "DS18Temp")
+      : Variable(parentSense,
+                 (const uint8_t)DS18_TEMP_VAR_NUM,
+                 (uint8_t)DS18_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius",
+                 varCode, uuid)
+    {}
+    MaximDS18_Temp()
+      : Variable((const uint8_t)DS18_TEMP_VAR_NUM,
+                 (uint8_t)DS18_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius", "DS18Temp")
     {}
     ~MaximDS18_Temp(){}
 };

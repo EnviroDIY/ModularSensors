@@ -30,15 +30,24 @@ const char *EnviroDIYPublisher::samplingFeatureTag = "{\"sampling_feature\":\"";
 const char *EnviroDIYPublisher::timestampTag = "\",\"timestamp\":\"";
 
 
-// Constructor
+// Constructors
+EnviroDIYPublisher::EnviroDIYPublisher()
+  : dataPublisher()
+{
+    MS_DBG(F("EnviroDIYPublisher object created"));
+}
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger,
                                  uint8_t sendEveryX, uint8_t sendOffset)
   : dataPublisher(baseLogger, sendEveryX, sendOffset)
-{}
+{
+    MS_DBG(F("EnviroDIYPublisher object created"));
+}
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
                                  uint8_t sendEveryX, uint8_t sendOffset)
   : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
-{}
+{
+    MS_DBG(F("EnviroDIYPublisher object created"));
+}
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger,
                                  const char *registrationToken,
                                  const char *samplingFeatureUUID,
@@ -47,6 +56,7 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger,
 {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    MS_DBG(F("EnviroDIYPublisher object created"));
 }
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
                                  const char *registrationToken,
@@ -56,6 +66,7 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
 {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    MS_DBG(F("EnviroDIYPublisher object created"));
 }
 // Destructor
 EnviroDIYPublisher::~EnviroDIYPublisher(){}
@@ -160,6 +171,25 @@ void EnviroDIYPublisher::printEnviroDIYRequest(Stream *stream)
 }
 
 
+// A way to begin with everything already set
+void EnviroDIYPublisher::begin(Logger& baseLogger, Client *inClient,
+                               const char *registrationToken,
+                               const char *samplingFeatureUUID)
+{
+    setToken(registrationToken);
+    dataPublisher::begin(baseLogger, inClient);
+    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+}
+void EnviroDIYPublisher::begin(Logger& baseLogger,
+                               const char *registrationToken,
+                               const char *samplingFeatureUUID)
+{
+    setToken(registrationToken);
+    dataPublisher::begin(baseLogger);
+    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+}
+
+
 // This utilizes an attached modem to make a TCP connection to the
 // EnviroDIY/ODM2DataSharingPortal and then streams out a post request
 // over that connection.
@@ -176,7 +206,7 @@ int16_t EnviroDIYPublisher::sendData(Client *_outClient)
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
     MS_DBG(F("Connecting client"));
     uint32_t start_timer = millis();
-    if(_outClient->connect(enviroDIYHost, enviroDIYPort))
+    if (_outClient->connect(enviroDIYHost, enviroDIYPort))
     {
         MS_DBG(F("Client connected after"), millis() - start_timer, F("ms\n"));
 

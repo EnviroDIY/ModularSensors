@@ -34,7 +34,8 @@
 class ThingSpeakPublisher : public dataPublisher
 {
 public:
-    // Constructor
+    // Constructors
+    ThingSpeakPublisher();
     ThingSpeakPublisher(Logger& baseLogger,
                      uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
     ThingSpeakPublisher(Logger& baseLogger, Client *inClient,
@@ -47,8 +48,9 @@ public:
     ThingSpeakPublisher(Logger& baseLogger, Client *inClient,
                      const char *thingSpeakMQTTKey,
                      const char *thingSpeakChannelID,
-                     const char *thingSpeakChannelKey,                     
+                     const char *thingSpeakChannelKey,
                      uint8_t sendEveryX = 1, uint8_t sendOffset = 0);
+    // Destructor
     virtual ~ThingSpeakPublisher();
 
     // Returns the data destination
@@ -66,6 +68,16 @@ public:
     // Sets all 3 ThingSpeak parameters
     void setThingSpeakParams(const char *MQTTKey, const char *channelID,
                              const char *channelKey);
+
+    // A way to begin with everything already set
+    void begin(Logger& baseLogger, Client *inClient,
+               const char *thingSpeakMQTTKey,
+               const char *thingSpeakChannelID,
+               const char *thingSpeakChannelKey);
+    void begin(Logger& baseLogger,
+              const char *thingSpeakMQTTKey,
+              const char *thingSpeakChannelID,
+              const char *thingSpeakChannelKey);
 
     // This sends the data to ThingSpeak
     // bool mqttThingSpeak(void);

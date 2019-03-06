@@ -33,7 +33,7 @@ bool TIINA219::setup(void)
 
     // This sensor needs power for setup!
     wasOn = checkPowerOn();
-    if(!wasOn)
+    if (!wasOn)
     {
         powerUp();
         waitForWarmUp();
@@ -42,7 +42,7 @@ bool TIINA219::setup(void)
     ina219_phy.begin();
 
     // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
+    if (!wasOn) {powerDown();}
 
     return true;
 }

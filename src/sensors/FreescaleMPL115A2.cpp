@@ -45,7 +45,7 @@ bool MPL115A2::setup(void)
     // This sensor needs power for setup!
     // The MPL115A2's begin() reads required coefficients from the sensor.
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
+    if (!wasOn) {powerUp();}
     waitForWarmUp();
 
     // Run the sensor begin()
@@ -53,7 +53,7 @@ bool MPL115A2::setup(void)
     mpl115a2_internal.begin();
 
     // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
+    if (!wasOn) {powerDown();}
 
     return retVal;
 }
@@ -77,7 +77,7 @@ bool MPL115A2::addSingleMeasurementResult(void)
         if (isnan(temp)) temp = -9999;
         if (isnan(press)) press = -9999;
 
-        if(press > 115.0 || temp < -40.0) {
+        if (press > 115.0 || temp < -40.0) {
             temp = -9999;
             press = -9999;
         }
