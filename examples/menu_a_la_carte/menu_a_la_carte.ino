@@ -1747,8 +1747,7 @@ void setup()
 
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modem);
-    dataLogger.setAlertPin(greenLED);
-    dataLogger.setTestingModePin(buttonPin);
+    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sensorPowerPin, buttonPin, greenLED);
 
     // Begin the logger
     dataLogger.begin();
