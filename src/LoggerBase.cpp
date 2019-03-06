@@ -958,6 +958,13 @@ void Logger::printSensorDataCSV(Stream *stream)
 // Protected helper function - This checks if the SD card is available and ready
 bool Logger::initializeSDCard(void)
 {
+    // If we don't know the slave select of the sd card, we can't use it
+    if (_SDCardSSPin < 0)
+    {
+        PRINTOUT(F("Slave/Chip select pin for SD card has not been set."));
+        PRINTOUT(F("Data will not be saved!"));
+        return false;
+    }
     // Initialise the SD card
     if (!sd.begin(_SDCardSSPin, SPI_FULL_SPEED))
     {
