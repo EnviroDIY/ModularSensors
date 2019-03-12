@@ -920,7 +920,8 @@ void loggerModem::setModemTiming(void)
     {
         MS_DBG(F("Resetting warm-up and disconnect timing for a u-blox SARA-R4"));
         _warmUpTime_ms = 250;  // Time after power on before PWR_ON can be used ??? Unclear in documentation!
-        _statusTime_ms = 0;  // V_INT becomes active mid-way through on-pulse
+        _statusTime_ms = 12;  // V_INT becomes active mid-way through on-pulse
+        // But using the status time for LTE XBee3 in bypass mode (~11.5ms first wake, ~928µs after)
         _stabilizationTime_ms = 4500;  // Time until system and digital pins are operational (~4.5s)
         // _on_pull_down_ms = 200;  // 0.15-3.2s
         // _off_pull_down_ms = 1600;  // >1.5s
@@ -1061,7 +1062,7 @@ void loggerModem::setModemTiming(void)
     if (_modemName.indexOf(F("XBee")) >= 0)
     {
         MS_DBG(F("Putting connection values into flash memory for the Digi XBee"));
-        _statusTime_ms = 50;  // ??? WAG!
+        _statusTime_ms = 15;  // ??? WAG!
         // XBee saves all configurations to flash, so we can set them here
         if (_tinyModem->hasWifi()) _tinyModem->networkConnect(_ssid, _pwd);
         else _tinyModem->gprsConnect(_apn, "", "");
