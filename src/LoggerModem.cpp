@@ -518,12 +518,17 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
     bool retVal = true;
 
     if (bitRead(_sensorStatus, 1) == 0 || bitRead(_sensorStatus, 2) == 0)  // NOT yet powered
+    {
         modemPowerUp();
-
+    }
     if (bitRead(_sensorStatus, 3) == 0)  // No attempts yet to wake the modem
     {
         waitForWarmUp();
-        retVal &= wake();  // This sets the modem to on, will also set-up if necessary
+        retVal &= wake();
+    }
+    if (bitRead(_sensorStatus, 0) == 0)  // Not yet setup
+    {
+        retVal &= setup();  // Set-up if necessary
     }
     if (!retVal)
     {
