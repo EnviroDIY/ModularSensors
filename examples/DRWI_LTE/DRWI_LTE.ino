@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.21.0
+This example sketch is written for ModularSensors library version 0.21.1
 
 This sketch is an example of logging data to an SD card and sending the data to
 both the EnviroDIY data portal as should be used by groups involved with
@@ -28,7 +28,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.21.0";
+const char *libraryVersion = "0.21.1";
 // The name of this file
 const char *sketchName = "DRWI_LTE.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -66,8 +66,7 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // ==========================================================================
 
 // Select your modem chip - this determines the exact commands sent to it
-#define USE_XBEE_BYPASS  // If you're using a Digi 3G or LTE-M XBee in bypass mode as a u-blox
-#define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
+#define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
 
 
 // ==========================================================================
@@ -83,7 +82,7 @@ const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if 
 //    TinyGSM Client
 // ==========================================================================
 
-#define TINY_GSM_YIELD() { delay(2); }  // Use to counter slow (9600) baud rate
+#define TINY_GSM_YIELD() { delay(2); }  // Can help with slow (9600) baud rates
 
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
@@ -92,7 +91,7 @@ const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if 
 // Create a reference to the serial port for the modem
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
-// Create a TinyGSM modem to run on that serial port
+// Create a new TinyGSM modem to run on that serial port and return a pointer to it
 TinyGsm *tinyModem = new TinyGsm(modemSerial);
 
 // Create a new TCP client on that modem and return a pointer to it
