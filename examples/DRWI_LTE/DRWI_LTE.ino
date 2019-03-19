@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.21.1
+This example sketch is written for ModularSensors library version 0.21.2
 
 This sketch is an example of logging data to an SD card and sending the data to
 both the EnviroDIY data portal as should be used by groups involved with
@@ -28,7 +28,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.21.1";
+const char *libraryVersion = "0.21.2";
 // The name of this file
 const char *sketchName = "DRWI_LTE.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -148,6 +148,15 @@ void extraModemSetup(void)
     delay(1000);  // Guard time for command mode
     tinyModem->streamWrite(GF("+++"));  // enter command mode
     tinyModem->waitResponse(2000, F("OK\r"));
+    tinyModem->sendAT(F("D8"),1);  // Set DIO8 to be used for sleep requests
+    // NOTE:  Only pin 9/DIO8/DTR can be used for this function
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("D9"),1);  // Turn on status indication pin
+    // NOTE:  Only pin 13/DIO9 can be used for this function
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("D7"),1);  // Turn on CTS pin - as proxy for status indication
+    // NOTE:  Only pin 12/DIO7/CTS can be used for this function
+    tinyModem->waitResponse(F("OK\r"));
     tinyModem->sendAT(F("SM"),1);  // Pin sleep
     tinyModem->waitResponse(F("OK\r"));
     tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
