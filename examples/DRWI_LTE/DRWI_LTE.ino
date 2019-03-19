@@ -157,9 +157,9 @@ void extraModemSetup(void)
     // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
     // so we'll use the Digi pin sleep instead.
     tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("ATP0"),0);  // Make sure USB direct won't be pin enabled
+    tinyModem->sendAT(F("P0"),0);  // Make sure USB direct won't be pin enabled
     tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("ATP1"),0);  // Make sure pins 7&8 are not set for USB direct
+    tinyModem->sendAT(F("P1"),0);  // Make sure pins 7&8 are not set for USB direct
     tinyModem->waitResponse(F("OK\r"));
     tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
     // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
