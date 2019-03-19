@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.21.1
+This example sketch is written for ModularSensors library version 0.21.2
 
 This shows most of the standard functions of the library at once.
 
@@ -26,7 +26,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.21.1";
+const char *libraryVersion = "0.21.2";
 // The name of this file
 const char *sketchName = "menu_a_la_carte.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -298,6 +298,15 @@ void extraModemSetup(void)
     tinyModem->init();  // initialize
     if (tinyModem->commandMode())
     {
+        tinyModem->sendAT(F("D8"),1);  // Set DIO8 to be used for sleep requests
+        // NOTE:  Only pin 9/DIO8/DTR can be used for this function
+        tinyModem->waitResponse();
+        tinyModem->sendAT(F("D9"),1);  // Turn on status indication pin
+        // NOTE:  Only pin 13/DIO9 can be used for this function
+        tinyModem->waitResponse();
+        tinyModem->sendAT(F("D7"),1);  // Turn on CTS pin - as proxy for status indication
+        // NOTE:  Only pin 12/DIO7/CTS can be used for this function
+        tinyModem->waitResponse();
         tinyModem->sendAT(F("SM"),1);  // Pin sleep
         tinyModem->waitResponse();
         tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
@@ -311,10 +320,14 @@ void extraModemSetup(void)
         #else
         tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
         tinyModem->waitResponse();
+        tinyModem->sendAT(F("P0"),0);  // Make sure USB direct won't be pin enabled
+        tinyModem->waitResponse();
+        tinyModem->sendAT(F("P1"),0);  // Make sure pins 7&8 are not set for USB direct
+        tinyModem->waitResponse();
         tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
         // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
-        #endif
         tinyModem->waitResponse();
+        #endif
         tinyModem->writeChanges();
         tinyModem->exitCommand();
     }
@@ -325,18 +338,33 @@ void extraModemSetup(void)
     delay(1000);  // Guard time for command mode
     tinyModem->streamWrite(GF("+++"));  // enter command mode
     tinyModem->waitResponse(2000, F("OK\r"));
+    tinyModem->sendAT(F("D8"),1);  // Set DIO8 to be used for sleep requests
+    // NOTE:  Only pin 9/DIO8/DTR can be used for this function
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("D9"),1);  // Turn on status indication pin
+    // NOTE:  Only pin 13/DIO9 can be used for this function
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("D7"),1);  // Turn on CTS pin - as proxy for status indication
+    // NOTE:  Only pin 12/DIO7/CTS can be used for this function
+    tinyModem->waitResponse(F("OK\r"));
     tinyModem->sendAT(F("SM"),1);  // Pin sleep
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
     tinyModem->waitResponse(F("OK\r"));
     tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
     // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
     // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
     // so we'll use the Digi pin sleep instead.
     tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
+    #if defined USE_UBLOX_R410M
+    tinyModem->sendAT(F("P0"),0);  // Make sure USB direct won't be pin enabled
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("P1"),0);  // Make sure pins 7&8 are not set for USB direct
     tinyModem->waitResponse(F("OK\r"));
     tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
     // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
     tinyModem->waitResponse(F("OK\r"));
+    #endif
     tinyModem->sendAT(F("AP5"));  // Turn on bypass mode
     tinyModem->waitResponse(F("OK\r"));
     tinyModem->sendAT(F("WR"));  // Write changes to flash
@@ -1412,8 +1440,8 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 float calculateVariableValue(void)
 {
     float calculatedResult = -9999;  // Always safest to start with a bad value
-    // float inputVar1 = variable1.getValue();
-    // float inputVar2 = variable2.getValue();
+    // float inputVar1 = variable1->getValue();
+    // float inputVar2 = variable2->getValue();
     // if (inputVar1 != -9999 && inputVar2 != -9999)  // make sure both inputs are good
     // {
     //     calculatedResult = inputVar1 + inputVar2;

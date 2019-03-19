@@ -1072,7 +1072,8 @@ bool Logger::createLogFile(String& filename, bool writeDefaultHeader)
     if (openFile(filename, true, writeDefaultHeader))
     {
         // Close the file to save it (only do this if we'd opened it)
-        logFile.sync();
+        // logFile.sync();
+        logFile.close();
         PRINTOUT(F("Data will be saved as"), _fileName);
         return true;
     }
@@ -1120,7 +1121,8 @@ bool Logger::logToSD(String& filename, String& rec)
     // Set access date time
     setFileTimestamp(logFile, T_ACCESS);
     // Close the file to save it
-    logFile.sync();
+    // logFile.sync();
+    logFile.close();
     return true;
 }
 bool Logger::logToSD(String& rec)
@@ -1165,7 +1167,8 @@ bool Logger::logToSD(void)
     // Set access date time
     setFileTimestamp(logFile, T_ACCESS);
     // Close the file to save it
-    logFile.sync();
+    // logFile.sync();
+    logFile.close();
     return true;
 }
 

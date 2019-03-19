@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.21.1
+This example sketch is written for ModularSensors library version 0.21.2
 
 This sketch is an example of logging data to an SD card and sending the data to
 both the EnviroDIY data portal as should be used by groups involved with
@@ -28,7 +28,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.21.1";
+const char *libraryVersion = "0.21.2";
 // The name of this file
 const char *sketchName = "DRWI_LTE.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -67,6 +67,8 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 
 // Select your modem chip - this determines the exact commands sent to it
 #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
+#define USE_UBLOX_R410M  // Select with UBLOX for a non-XBee SARA R4 or N4 model
+#define USE_XBEE_BYPASS  // Select with UBLOX for a Digi 3G or LTE-M XBee in bypass mode
 
 
 // ==========================================================================
@@ -146,14 +148,27 @@ void extraModemSetup(void)
     delay(1000);  // Guard time for command mode
     tinyModem->streamWrite(GF("+++"));  // enter command mode
     tinyModem->waitResponse(2000, F("OK\r"));
+    tinyModem->sendAT(F("D8"),1);  // Set DIO8 to be used for sleep requests
+    // NOTE:  Only pin 9/DIO8/DTR can be used for this function
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("D9"),1);  // Turn on status indication pin
+    // NOTE:  Only pin 13/DIO9 can be used for this function
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("D7"),1);  // Turn on CTS pin - as proxy for status indication
+    // NOTE:  Only pin 12/DIO7/CTS can be used for this function
+    tinyModem->waitResponse(F("OK\r"));
     tinyModem->sendAT(F("SM"),1);  // Pin sleep
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
     tinyModem->waitResponse(F("OK\r"));
     tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
     // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
     // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
     // so we'll use the Digi pin sleep instead.
     tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
+    tinyModem->sendAT(F("P0"),0);  // Make sure USB direct won't be pin enabled
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("P1"),0);  // Make sure pins 7&8 are not set for USB direct
     tinyModem->waitResponse(F("OK\r"));
     tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
     // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
