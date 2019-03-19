@@ -67,6 +67,8 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 
 // Select your modem chip - this determines the exact commands sent to it
 #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
+#define USE_UBLOX_R410M  // Select with UBLOX for a non-XBee SARA R4 or N4 model
+#define USE_XBEE_BYPASS  // Select with UBLOX for a Digi 3G or LTE-M XBee in bypass mode
 
 
 // ==========================================================================
@@ -148,12 +150,16 @@ void extraModemSetup(void)
     tinyModem->waitResponse(2000, F("OK\r"));
     tinyModem->sendAT(F("SM"),1);  // Pin sleep
     tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
+    tinyModem->waitResponse(F("OK\r"));
     tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
     // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
     // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
     // so we'll use the Digi pin sleep instead.
     tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
+    tinyModem->sendAT(F("ATP0"),0);  // Make sure USB direct won't be pin enabled
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("ATP1"),0);  // Make sure pins 7&8 are not set for USB direct
     tinyModem->waitResponse(F("OK\r"));
     tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
     // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)

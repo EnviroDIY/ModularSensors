@@ -311,10 +311,14 @@ void extraModemSetup(void)
         #else
         tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
         tinyModem->waitResponse();
+        tinyModem->sendAT(F("ATP0"),0);  // Make sure USB direct won't be pin enabled
+        tinyModem->waitResponse();
+        tinyModem->sendAT(F("ATP1"),0);  // Make sure pins 7&8 are not set for USB direct
+        tinyModem->waitResponse();
         tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
         // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
-        #endif
         tinyModem->waitResponse();
+        #endif
         tinyModem->writeChanges();
         tinyModem->exitCommand();
     }
@@ -327,16 +331,22 @@ void extraModemSetup(void)
     tinyModem->waitResponse(2000, F("OK\r"));
     tinyModem->sendAT(F("SM"),1);  // Pin sleep
     tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
+    tinyModem->waitResponse(F("OK\r"));
     tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
     // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
     // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
     // so we'll use the Digi pin sleep instead.
     tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
+    #if defined USE_UBLOX_R410M
+    tinyModem->sendAT(F("ATP0"),0);  // Make sure USB direct won't be pin enabled
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("ATP1"),0);  // Make sure pins 7&8 are not set for USB direct
     tinyModem->waitResponse(F("OK\r"));
     tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
     // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
     tinyModem->waitResponse(F("OK\r"));
+    #endif
     tinyModem->sendAT(F("AP5"));  // Turn on bypass mode
     tinyModem->waitResponse(F("OK\r"));
     tinyModem->sendAT(F("WR"));  // Write changes to flash
@@ -1412,8 +1422,8 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 float calculateVariableValue(void)
 {
     float calculatedResult = -9999;  // Always safest to start with a bad value
-    // float inputVar1 = variable1.getValue();
-    // float inputVar2 = variable2.getValue();
+    // float inputVar1 = variable1->getValue();
+    // float inputVar2 = variable2->getValue();
     // if (inputVar1 != -9999 && inputVar2 != -9999)  // make sure both inputs are good
     // {
     //     calculatedResult = inputVar1 + inputVar2;
