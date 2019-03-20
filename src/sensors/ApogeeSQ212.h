@@ -93,11 +93,19 @@ class ApogeeSQ212_PAR : public Variable
 {
 public:
     ApogeeSQ212_PAR(Sensor *parentSense,
-                    const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, SQ212_PAR_VAR_NUM,
+                    const char *uuid = "",
+                    const char *varCode = "photosyntheticallyActiveRadiation")
+      : Variable(parentSense,
+                 (const uint8_t)SQ212_PAR_VAR_NUM,
+                 (uint8_t)SQ212_PAR_RESOLUTION,
                  "radiationIncomingPAR", "microeinsteinPerSquareMeterPerSecond",
-                 SQ212_PAR_RESOLUTION,
-                 "photosyntheticallyActiveRadiation", UUID, customVarCode)
+                 varCode, uuid)
+    {}
+    ApogeeSQ212_PAR()
+      : Variable((const uint8_t)SQ212_PAR_VAR_NUM,
+                 (uint8_t)SQ212_PAR_RESOLUTION,
+                 "radiationIncomingPAR", "microeinsteinPerSquareMeterPerSecond",
+                 "photosyntheticallyActiveRadiation")
     {}
     ~ApogeeSQ212_PAR(){};
 };
@@ -108,11 +116,18 @@ class ApogeeSQ212_Voltage : public Variable
 {
 public:
     ApogeeSQ212_Voltage(Sensor *parentSense,
-                    const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, SQ212_VOLTAGE_VAR_NUM,
+                        const char *uuid = "",
+                        const char *varCode = "SQ212Voltage")
+      : Variable(parentSense,
+                 (const uint8_t)SQ212_VOLTAGE_VAR_NUM,
+                 (uint8_t)SQ212_VOLT_RESOLUTION,
                  "voltage", "volt",
-                 SQ212_VOLT_RESOLUTION,
-                 "SQ212Voltage", UUID, customVarCode)
+                 varCode, uuid)
+    {}
+    ApogeeSQ212_Voltage()
+      : Variable((const uint8_t)SQ212_VOLTAGE_VAR_NUM,
+                 (uint8_t)SQ212_VOLT_RESOLUTION,
+                 "voltage", "volt", "SQ212Voltage")
     {}
     ~ApogeeSQ212_Voltage(){};
 };

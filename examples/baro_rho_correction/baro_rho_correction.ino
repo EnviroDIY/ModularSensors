@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.6
+This example sketch is written for ModularSensors library version 0.21.2
 
 This sketch is an example of logging data to an SD card and sending the data to
 the EnviroDIY data portal.
@@ -27,13 +27,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.19.6";
+const char *libraryVersion = "0.21.2";
 // The name of this file
 const char *sketchName = "baro_rho_correction.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 5;
+const uint8_t loggingInterval = 1;
 // Your logger's timezone.
 const int8_t timeZone = -5;  // Eastern Standard Time
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
@@ -51,15 +51,15 @@ const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugg
 const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
-const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
+const int8_t sdCardPwrPin = -1;     // MCU SD card power pin (-1 if not applicable)
+const int8_t sdCardSSPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
+const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
-// Create and return the main processor chip "sensor" - for general metadata
+// Create the main processor chip "sensor" - for general metadata
 const char *mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
-// Create the battery voltage and free RAM variable objects for the processor and return variable-type pointers to them
-// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
+// Create sample number, battery voltage, and free RAM variable pointers for the processor
 Variable *mcuBoardBatt = new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *mcuBoardAvailableRAM = new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
@@ -86,6 +86,10 @@ const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if 
 //    TinyGSM Client
 // ==========================================================================
 
+// #define TINY_GSM_DEBUG Serial  // If you want debugging on the main debug port
+
+#define TINY_GSM_YIELD() { delay(2); }  // Can help with slow (9600) baud rates
+
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
 #include <TinyGsmClient.h>
@@ -99,9 +103,10 @@ TinyGsm *tinyModem = new TinyGsm(modemSerial);
 // Use this to create a modem if you want to spy on modem communication through
 // a secondary Arduino stream.  Make sure you install the StreamDebugger library!
 // https://github.com/vshymanskyy/StreamDebugger
+// Also make sure you comment out the modem creation above to use this.
 // #include <StreamDebugger.h>
 // StreamDebugger modemDebugger(modemSerial, Serial);
-// TinyGsm *tinyModem = new TinyGsm(modemDebugger);
+// TinyGsm tinyModem(modemDebugger);
 
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
@@ -113,7 +118,7 @@ TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
 // THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
 // Describe the physical pin connection of your modem to your board
-const long ModemBaud = 9600;         // Communication speed of the modem
+const long modemBaud = 9600;         // Communication speed of the modem
 const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
 
 // Create the wake and sleep methods for the modem
@@ -130,6 +135,7 @@ bool modemSleepFxn(void)
     digitalWrite(redLED, LOW);
     return true;
 }
+void extraModemSetup(void){}
 
 
 // ==========================================================================
@@ -146,9 +152,7 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
 loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
 
-// Create the RSSI and signal strength variable objects for the modem and return
-// variable-type pointers to them
-// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
+// Create RSSI and signal strength variable pointers for the modem
 Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab");
 
@@ -158,11 +162,10 @@ Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-e
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
 
-// Create and return the DS3231 sensor object
+// Create a DS3231 sensor object
 MaximDS3231 ds3231(1);
 
-// Create the temperature variable object for the DS3231 and return a variable-type pointer to it
-// Use this to create a variable pointer with a name to use in multiple arrays or any calculated variables.
+// Create a temperature variable pointer for the DS3231
 Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab");
 
 
@@ -176,11 +179,10 @@ uint8_t BMEi2c_addr = 0x77;
 // The BME280 can be addressed either as 0x77 (Adafruit default) or 0x76 (Grove default)
 // Either can be physically mofidied for the other address
 
-// Create and return the Bosch BME280 sensor object
+// Create a Bosch BME280 sensor object
 BoschBME280 bme280(I2CPower, BMEi2c_addr);
 
-// Create the four variable objects for the BME280 and return variable-type pointers to them
-// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
+// Create four variable pointers for the BME280
 Variable *bme280Humid = new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *bme280Temp = new BoschBME280_Temp(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *bme280Press = new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
@@ -192,16 +194,14 @@ Variable *bme280Alt = new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh
 // ==========================================================================
 #include <sensors/MaximDS18.h>
 
-// OneWire Address [array of 8 hex characters]
-const int8_t OneWireBus = 4;  // Pin attached to the OneWire Bus (-1 if unconnected)
 const int8_t OneWirePower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t OneWireBus = 4;  // Pin attached to the OneWire Bus (-1 if unconnected)
 
-// Create and return the Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
-MaximDS18 ds18_u(OneWirePower, OneWireBus);
+// Create a Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
+MaximDS18 ds18(OneWirePower, OneWireBus);
 
-// Create the temperature variable object for the DS18 and return a variable-type pointer to it
-// Use this to create a variable pointer with a name to use in multiple arrays or any calculated variables.
-Variable *ds18Temp = new MaximDS18_Temp(&ds18_u, "12345678-abcd-1234-efgh-1234567890ab");
+// Create a temperature variable pointer for the DS18
+Variable *ds18Temp = new MaximDS18_Temp(&ds18, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -214,11 +214,10 @@ const uint8_t MS5803i2c_addr = 0x76;  // The MS5803 can be addressed either as 0
 const int16_t MS5803maxPressure = 14;  // The maximum pressure measurable by the specific MS5803 model
 const uint8_t MS5803ReadingsToAvg = 1;
 
-// Create and return the MeaSpec MS5803 pressure and temperature sensor object
+// Create a MeaSpec MS5803 pressure and temperature sensor object
 MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803ReadingsToAvg);
 
-// Create the conductivity and temperature variable objects for the ES2 and return variable-type pointers to them
-// Use these to create variable pointers with names to use in multiple arrays or any calculated variables.
+// Create pressure and temperature variable pointers for the MS5803
 Variable *ms5803Press = new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *ms5803Temp = new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-efgh-1234567890ab");
 
@@ -226,8 +225,6 @@ Variable *ms5803Temp = new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-efgh-
 // ==========================================================================
 //    Calculated Variables
 // ==========================================================================
-
-// Create any calculated variables you want here
 
 // Create the function to calculate the water pressure
 // Water pressure = pressure from MS5803 (water+baro) - pressure from BME280 (baro)
@@ -251,9 +248,9 @@ int waterPressureVarResolution = 3;
 const char *waterPressureUUID = "12345678-abcd-1234-efgh-1234567890ab";
 const char *waterPressureVarCode = "CorrectedPressure";
 // Create the calculated water pressure variable objects and return a variable pointer to it
-Variable *calcWaterPress = new Variable(calculateWaterPressure, waterPressureVarName,
-                                        waterPressureVarUnit, waterPressureVarResolution,
-                                        waterPressureUUID, waterPressureVarCode);
+Variable *calcWaterPress = new Variable(calculateWaterPressure, waterPressureVarResolution,
+                                        waterPressureVarName, waterPressureVarUnit,
+                                        waterPressureVarCode, waterPressureUUID);
 
 // Create the function to calculate the "raw" water depth
 // For this, we're using the conversion between mbar and mm pure water at 4°C
@@ -273,15 +270,18 @@ int waterDepthVarResolution = 3;
 const char *waterDepthUUID = "12345678-abcd-1234-efgh-1234567890ab";
 const char *waterDepthVarCode = "CalcDepth";
 // Create the calculated raw water depth variable objects and return a variable pointer to it
-Variable *calcRawDepth = new Variable(calculateWaterDepthRaw, waterDepthVarName,
-                                      waterDepthVarUnit, waterDepthVarResolution,
-                                      waterDepthUUID, waterDepthVarCode);
+Variable *calcRawDepth = new Variable(calculateWaterDepthRaw,
+                                      waterDepthVarResolution,
+                                      waterDepthVarName,
+                                      waterDepthVarUnit,
+                                      waterDepthVarCode,
+                                      waterDepthUUID);
 
 // Create the function to calculate the water depth after correcting water density for temperature
 // This calculation gives a final result in mm of water
 float calculateWaterDepthTempCorrected(void)
 {
-    const float gravitationalConstant = 9.80665; // m/s2, meters per second squared
+    const float gravitationalConstant = 9.80665;  // m/s2, meters per second squared
     // First get water pressure in Pa for the calculation: 1 mbar = 100 Pa
     float waterPressurePa = 100 * calculateWaterPressure();
     float waterTempertureC = ms5803Temp->getValue();
@@ -309,9 +309,12 @@ int rhoDepthVarResolution = 3;
 const char *rhoDepthUUID = "12345678-abcd-1234-efgh-1234567890ab";
 const char *rhoDepthVarCode = "DensityDepth";
 // Create the temperature corrected water depth variable objects and return a variable pointer to it
-Variable *calcCorrDepth = new Variable(calculateWaterDepthTempCorrected, rhoDepthVarName,
-                                       rhoDepthVarUnit, rhoDepthVarResolution,
-                                       rhoDepthUUID, rhoDepthVarCode);
+Variable *calcCorrDepth = new Variable(calculateWaterDepthTempCorrected,
+                                       rhoDepthVarResolution,
+                                       rhoDepthVarName,
+                                       rhoDepthVarUnit,
+                                       rhoDepthVarCode,
+                                       rhoDepthUUID);
 
 
 // ==========================================================================
@@ -351,7 +354,7 @@ VariableArray varArray(variableCount, variableList);
 #include <LoggerBase.h>
 
 // Create a new logger instance
-Logger dataLogger(LoggerID, loggingInterval, sdCardPin, wakePin, &varArray);
+Logger dataLogger(LoggerID, loggingInterval, &varArray);
 
 
 // ==========================================================================
@@ -386,6 +389,15 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 }
 
 
+// Read's the battery voltage
+// NOTE: This will actually return the battery level from the previous update!
+float getBatteryVoltage()
+{
+    if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
+    return mcuBoard.sensorValues[0];
+}
+
+
 // ==========================================================================
 // Main setup function
 // ==========================================================================
@@ -409,7 +421,7 @@ void setup()
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
     // Start the serial connection with the modem
-    modemSerial.begin(ModemBaud);
+    modemSerial.begin(modemBaud);
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
@@ -431,42 +443,57 @@ void setup()
 
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modem);
-    dataLogger.setAlertPin(greenLED);
-    dataLogger.setTestingModePin(buttonPin);
+    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sensorPowerPin, buttonPin, greenLED);
 
-    // Update the mayfly to get the processor battery level
-    mcuBoard.update();
     // Begin the logger
+    dataLogger.begin();
+
     // Note:  Please change these battery voltages to match your battery
     // Check that the battery is OK before powering the modem
-    if (mcuBoardBatt->getValue() > 3.7)
+    if (getBatteryVoltage() > 3.7)
     {
         modem.modemPowerUp();
-    }
-    // At lowest battery level, skip sensor set-up
-    if (mcuBoardBatt->getValue() < 3.4)
-    {
-        dataLogger.begin(true);
-    }
-    else  // set up file and sensors
-    {
-        dataLogger.begin();
+        modem.wake();
+
+        // At very good battery voltage, or with suspicious time stamp, sync the clock
+        // Note:  Please change these battery voltages to match your battery
+        if (getBatteryVoltage() > 3.8 ||
+            dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
+            dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+        {
+            // Synchronize the RTC with NIST
+            Serial.println(F("Attempting to synchronize RTC with NIST"));
+            if (modem.connectInternet(120000L))
+            {
+                dataLogger.setRTClock(modem.getNISTTime());
+            }
+        }
     }
 
-    // At very good battery voltage, or with suspicious time stamp, sync the clock
-    // Note:  Please change these battery voltages to match your battery
-    if (mcuBoardBatt->getValue() > 3.8 ||
-        dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
-        dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+    // Set up the sensors, except at lowest battery level
+    if (getBatteryVoltage() > 3.4)
     {
-        dataLogger.syncRTC();  // There's a sleepPowerDown at the end of this
+        Serial.println(F("Setting up sensors..."));
+        varArray.setupSensors();
     }
-    else
+
+    // Power down the modem
+    modem.modemSleepPowerDown();
+
+    // Create the log file, adding the default header to it
+    // Do this last so we have the best chance of getting the time correct and
+    // all sensor names correct
+    // Writing to the SD card can be power intensive, so if we're skipping
+    // the sensor setup we'll skip this too.
+    if (getBatteryVoltage() > 3.4)
     {
-        modem.modemSleepPowerDown();
+        dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
+        dataLogger.createLogFile(true);  // true = write a new header
+        dataLogger.turnOffSDcard(true);  // true = wait for internal housekeeping after write
     }
 
     // Call the processor sleep
+    Serial.println(F("Putting processor to sleep"));
     dataLogger.systemSleep();
 }
 
@@ -480,12 +507,12 @@ void loop()
 {
     // Note:  Please change these battery voltages to match your battery
     // At very low battery, just go back to sleep
-    if (mcuBoardBatt->getValue() < 3.4)
+    if (getBatteryVoltage() < 3.4)
     {
         dataLogger.systemSleep();
     }
     // At moderate voltage, log data but don't send it over the modem
-    else if (mcuBoardBatt->getValue() < 3.7)
+    else if (getBatteryVoltage() < 3.7)
     {
         dataLogger.logData();
     }

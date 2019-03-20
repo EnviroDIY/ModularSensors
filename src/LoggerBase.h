@@ -61,10 +61,13 @@ class Logger
     friend class dataPublisher;
 
 public:
-    // Constructor
+    // Constructors
     Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
-           int8_t SDCardPin, int8_t mcuWakePin,
+           int8_t SDCardSSPin, int8_t mcuWakePin,
            VariableArray *inputArray);
+    Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
+           VariableArray *inputArray);
+    Logger();
     // Destructor
     virtual ~Logger();
 
@@ -72,12 +75,32 @@ public:
     // Public functions to get and set basic logging paramters
     // ===================================================================== //
 
-    // A pointer to the internal variable array instance
+    // Sets/Gets the logger ID
+    void setLoggerID(const char *loggerID);
     const char * getLoggerID(){return _loggerID;}
 
-    // Adds the sampling feature UUID
+    // Sets/Gets the logging interval
+    void setLoggingInterval(uint16_t loggingIntervalMinutes);
+    uint16_t getLoggingInterval(){return _loggingIntervalMinutes;}
+
+    // Sets/Gets the sampling feature UUID
     void setSamplingFeatureUUID(const char *samplingFeatureUUID);
     const char * getSamplingFeatureUUID(){return _samplingFeatureUUID;}
+
+    // Sets up a pin controlling the power to the SD card
+    // NOTE:  This is not yet functional!
+    void setSDCardPwr(int8_t SDCardPowerPin);
+    void turnOnSDcard(bool waitToSettle=true);
+    void turnOffSDcard(bool waitForHousekeeping=true);
+
+    // Sets up a pin for the slave select (chip select) of the SD card
+    void setSDCardSS(int8_t SDCardSSPin);
+
+    // Sets both pins related to the SD card
+    void setSDCardPins(int8_t SDCardSSPin, int8_t SDCardPowerPin);
+
+    // Sets up the wake up pin for an RTC interrupt
+    void setRTCWakePin(int8_t mcuWakePin);
 
     // Sets up a pin for an LED or other way of alerting that data is being logged
     void setAlertPin(int8_t ledPin);
@@ -87,15 +110,22 @@ public:
     // Sets up a pin for an interrupt to enter testing mode
     void setTestingModePin(int8_t buttonPin);
 
+    // Sets up the five pins of interest for the logger
+    void setLoggerPins(int8_t mcuWakePin,
+                       int8_t SDCardSSPin,
+                       int8_t SDCardPowerPin,
+                       int8_t buttonPin,
+                       int8_t ledPin);
+
 protected:
     // Initialization variables
     const char *_loggerID;
     uint16_t _loggingIntervalMinutes;
-    int8_t _SDCardPin;
+    int8_t _SDCardSSPin;
+    int8_t _SDCardPowerPin;
     int8_t _mcuWakePin;
     int8_t _ledPin;
     int8_t _buttonPin;
-    bool _areSensorsSetup;
     const char *_samplingFeatureUUID;
 
     // ===================================================================== //
@@ -103,6 +133,9 @@ protected:
     // ===================================================================== //
 
 public:
+    // Assigns the variable array object
+    void setVariableArray(VariableArray *inputArray);
+
     // Returns the number of variables in the internal array
     uint8_t getArrayVarCount();
 
@@ -200,11 +233,9 @@ public:
     static void markTime(void);
 
     // This checks to see if the CURRENT time is an even interval of the logging rate
-    // or we're in the first 15 minutes of logging
     bool checkInterval(void);
 
     // This checks to see if the MARKED time is an even interval of the logging rate
-    // or we're in the first 15 minutes of logging
     bool checkMarkedInterval(void);
 
 protected:
@@ -221,9 +252,6 @@ public:
     // In this case, we're doing nothing, we just want the processor to wake
     // This must be a static function (which means it can only call other static funcions.)
     static void wakeISR(void);
-
-    // Sets up the sleep mode
-    void setupSleep(void);
 
     // Puts the system to sleep to conserve battery life.
     // This DOES NOT sleep or wake the sensors!!
@@ -318,13 +346,13 @@ public:
     // Convience functions to call several of the above functions
     // ===================================================================== //
 
-    // Setup the sensors and log files
-    virtual void setupSensorsAndFile(void);
-
     // This does all of the setup that can't happen in the constructors
-    // That is, things that require the actual processor/MCU to do something
-    // rather than the compiler to do something.
-    virtual void begin(bool skipSensorSetup = false);
+    // That is, anything that is dependent on another object having been created
+    // first or anything that requires the actual processor/MCU to do something.
+    virtual void begin(const char *loggerID, uint16_t loggingIntervalMinutes,
+                       VariableArray *inputArray);
+    virtual void begin(VariableArray *inputArray);
+    virtual void begin();
 
     // This is a one-and-done to log data
     virtual void logData(void);

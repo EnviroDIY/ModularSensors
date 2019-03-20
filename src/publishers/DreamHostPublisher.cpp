@@ -20,37 +20,48 @@ const int DreamHostPublisher::dreamhostPort = 80;
 const char *DreamHostPublisher::loggerTag = "?LoggerID=";
 const char *DreamHostPublisher::timestampTagDH = "&Loggertime=";
 
-// Constructor
+// Constructors
+DreamHostPublisher::DreamHostPublisher()
+  : dataPublisher()
+{
+    MS_DBG(F("DreamHostPublisher object created"));
+}
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger,
                                  uint8_t sendEveryX, uint8_t sendOffset)
-  : dataPublisher(baseLogger, sendEveryX, sendOffset)
-{}
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client *inClient,
-                                 uint8_t sendEveryX, uint8_t sendOffset)
-  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
-{}
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger,
-                                 const char *URL, uint8_t sendEveryX,
-                                 uint8_t sendOffset)
   : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {
-    setDreamHostPortalRX(URL);
+    MS_DBG(F("DreamHostPublisher object created"));
 }
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client *inClient,
-                                 const char *URL, uint8_t sendEveryX,
+                                 uint8_t sendEveryX, uint8_t sendOffset)
+  : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
+{
+    MS_DBG(F("DreamHostPublisher object created"));
+}
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger,
+                                 const char *dhUrl, uint8_t sendEveryX,
+                                 uint8_t sendOffset)
+  : dataPublisher(baseLogger, sendEveryX, sendOffset)
+{
+    setDreamHostPortalRX(dhUrl);
+    MS_DBG(F("DreamHostPublisher object created"));
+}
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client *inClient,
+                                 const char *dhUrl, uint8_t sendEveryX,
                                  uint8_t sendOffset)
   : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
 {
-    setDreamHostPortalRX(URL);
+    setDreamHostPortalRX(dhUrl);
+    MS_DBG(F("DreamHostPublisher object created"));
 }
 // Destructor
 DreamHostPublisher::~DreamHostPublisher(){}
 
 
 // Functions for private SWRC server
-void DreamHostPublisher::setDreamHostPortalRX(const char *URL)
+void DreamHostPublisher::setDreamHostPortalRX(const char *dhUrl)
 {
-    _DreamHostPortalRX = URL;
+    _DreamHostPortalRX = dhUrl;
     MS_DBG(F("Dreamhost portal URL set!"));
 }
 
@@ -92,6 +103,21 @@ void DreamHostPublisher::printDreamHostRequest(Stream *stream)
 }
 
 
+// A way to begin with everything already set
+void DreamHostPublisher::begin(Logger& baseLogger, Client *inClient,
+                               const char *dhUrl)
+{
+    setDreamHostPortalRX(dhUrl);
+    dataPublisher::begin(baseLogger, inClient);
+}
+void DreamHostPublisher::begin(Logger& baseLogger,
+                               const char *dhUrl)
+{
+    setDreamHostPortalRX(dhUrl);
+    dataPublisher::begin(baseLogger);
+}
+
+
 // Post the data to dream host.
 // int16_t DreamHostPublisher::postDataDreamHost(void)
 int16_t DreamHostPublisher::sendData(Client *_outClient)
@@ -103,7 +129,7 @@ int16_t DreamHostPublisher::sendData(Client *_outClient)
     // Open a TCP/IP connection to DreamHost
     MS_DBG(F("Connecting client"));
     uint32_t start_timer = millis();
-    if(_outClient->connect(dreamhostHost, dreamhostPort))
+    if (_outClient->connect(dreamhostHost, dreamhostPort))
     {
         MS_DBG(F("Client connected after"), millis() - start_timer, F("ms\n"));
 

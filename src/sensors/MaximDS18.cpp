@@ -81,7 +81,7 @@ bool MaximDS18::setup(void)
 
     // Need to power up for setup
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
+    if (!wasOn) {powerUp();}
     waitForWarmUp();
 
     _internalDallasTemp.begin();
@@ -109,9 +109,7 @@ bool MaximDS18::setup(void)
         else
         {
             MS_DBG(F("Unable to find address for DS18 on pin"), _dataPin);
-            // set the status error bit! (bit 7)
-            _sensorStatus |= 0b10000000;
-            return false;
+            retVal = false;
         }
     }
     // If the address is known, make sure the given address is valid
@@ -121,15 +119,13 @@ bool MaximDS18::setup(void)
         {
             MS_DBG(F("This sensor address is not valid:"),
                    makeAddressString(_OneWireAddress));
-            // set the status error bit! (bit 7)
-            _sensorStatus |= 0b10000000;
-            return false;
+            retVal = false;
         }
 
         // And then make 5 attempts to connect to the sensor
         ntries = 0;
         bool madeConnection = false;
-        while (!madeConnection and ntries <5)
+        while (retVal && !madeConnection && ntries <5)
         {
             madeConnection = _internalDallasTemp.isConnected(_OneWireAddress);
             ntries++;
@@ -138,9 +134,7 @@ bool MaximDS18::setup(void)
         {
             MS_DBG(F("This sensor is not currently connected:"),
                    makeAddressString(_OneWireAddress));
-            // set the status error bit! (bit 7)
-            _sensorStatus |= 0b10000000;
-            return false;
+            retVal = false;
         }
     }
 
@@ -159,7 +153,7 @@ bool MaximDS18::setup(void)
     _internalDallasTemp.setWaitForConversion(false);
 
     // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
+    if (!wasOn) {powerDown();}
 
     if (!retVal)  // if set-up failed
     {

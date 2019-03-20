@@ -79,11 +79,19 @@ public:
 class YosemitechY550_COD : public Variable
 {
 public:
-    YosemitechY550_COD(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
-     : Variable(parentSense, Y550_COD_VAR_NUM,
-                "COD", "milligramPerLiter",
-                Y550_COD_RESOLUTION,
-                "Y550COD", UUID, customVarCode)
+    YosemitechY550_COD(Sensor *parentSense,
+                       const char *uuid = "",
+                       const char *varCode = "Y550COD")
+      : Variable(parentSense,
+                 (const uint8_t)Y550_COD_VAR_NUM,
+                 (uint8_t)Y550_COD_RESOLUTION,
+                 "COD", "milligramPerLiter",
+                 varCode, uuid)
+    {}
+    YosemitechY550_COD()
+      : Variable((const uint8_t)Y550_COD_VAR_NUM,
+                 (uint8_t)Y550_COD_RESOLUTION,
+                 "COD", "milligramPerLiter", "Y550COD")
     {}
     ~YosemitechY550_COD(){}
 };
@@ -93,11 +101,19 @@ public:
 class YosemitechY550_Temp : public Variable
 {
 public:
-    YosemitechY550_Temp(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
-     : Variable(parentSense, Y550_TEMP_VAR_NUM,
-                "temperature", "degreeCelsius",
-                Y550_TEMP_RESOLUTION,
-                "Y550Temp", UUID, customVarCode)
+    YosemitechY550_Temp(Sensor *parentSense,
+                        const char *uuid = "",
+                        const char *varCode = "Y550Temp")
+      : Variable(parentSense,
+                 (const uint8_t)Y550_TEMP_VAR_NUM,
+                 (uint8_t)Y550_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius",
+                 varCode, uuid)
+    {}
+    YosemitechY550_Temp()
+      : Variable((const uint8_t)Y550_TEMP_VAR_NUM,
+                 (uint8_t)Y550_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius", "Y550Temp")
     {}
     ~YosemitechY550_Temp(){}
 };
@@ -107,11 +123,19 @@ public:
 class YosemitechY550_Turbidity : public Variable
 {
 public:
-    YosemitechY550_Turbidity(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
-     : Variable(parentSense, Y550_TURB_VAR_NUM,
-                "turbidity", "nephelometricTurbidityUnit",
-                Y550_TURB_RESOLUTION,
-                "Y550Turbidity", UUID, customVarCode)
+    YosemitechY550_Turbidity(Sensor *parentSense,
+                             const char *uuid = "",
+                             const char *varCode = "Y550Turbidity")
+      : Variable(parentSense,
+                 (const uint8_t)Y550_TURB_VAR_NUM,
+                 (uint8_t)Y550_TURB_RESOLUTION,
+                 "turbidity", "nephelometricTurbidityUnit",
+                 varCode, uuid)
+    {}
+    YosemitechY550_Turbidity()
+      : Variable((const uint8_t)Y550_TURB_VAR_NUM,
+                 (uint8_t)Y550_TURB_RESOLUTION,
+                 "turbidity", "nephelometricTurbidityUnit", "Y550Turbidity")
     {}
     ~YosemitechY550_Turbidity(){}
 };

@@ -65,9 +65,8 @@ include/readme.txt
 .vscode
 
 # Other
-sensor_tests/
 compile_tests/
-logger_test/
+logger_test*/
 YosemitechDO/
 LongTermLogger/
 barometric_correction/

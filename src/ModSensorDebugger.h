@@ -15,7 +15,7 @@
 #include <Arduino.h>
 
 // The current library version number
-#define MODULAR_SENSORS_VERSION "0.19.6"
+#define MODULAR_SENSORS_VERSION "0.21.2"
 
 #ifndef STANDARD_SERIAL_OUTPUT
     // #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
@@ -61,6 +61,25 @@
 #else
     #define MS_DBG(...)
 #endif  // DEBUGGING_SERIAL_OUTPUT
+
+
+#ifdef DEEP_DEBUGGING_SERIAL_OUTPUT
+    namespace {
+        template<typename T>
+        static void MS_DEEP_DBG(T last) {
+            DEEP_DEBUGGING_SERIAL_OUTPUT.println(last);
+        }
+
+        template<typename T, typename... Args>
+        static void MS_DEEP_DBG(T head, Args... tail) {
+            DEEP_DEBUGGING_SERIAL_OUTPUT.print(head);
+            DEEP_DEBUGGING_SERIAL_OUTPUT.print(' ');
+            MS_DEEP_DBG(tail...);
+        }
+    }
+#else
+    #define MS_DEEP_DBG(...)
+#endif  // DEEP_DEBUGGING_SERIAL_OUTPUT
 
 
 /***
