@@ -29,6 +29,14 @@ const char *libraryVersion = "0.21.2";
 const char *sketchName = "single_sensor.ino";
 
 // ==========================================================================
+// Board setup info
+// ==========================================================================
+
+const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
+const int8_t greenLED = 8;  // Pin for the green LED
+const int8_t redLED = 9;  // Pin for the red LED
+
+// ==========================================================================
 // Set up the sensor object
 // ==========================================================================
 #include <sensors/MaxBotixSonar.h>
@@ -61,12 +69,11 @@ Variable waterDepth(calcDepth, 0,
                     "waterDepth", "millimeter",
                     "sonarDepth", "12345678-abcd-1234-efgh-1234567890ab");
 
+
+
 // ==========================================================================
-// Board setup info
+//    Working Functions
 // ==========================================================================
-const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
-const int8_t greenLED = 8;  // Pin for the green LED
-const int8_t redLED = 9;  // Pin for the red LED
 
 // Flashes to Mayfly's LED's
 void greenredflash(int numFlash = 4)
@@ -81,6 +88,7 @@ void greenredflash(int numFlash = 4)
   }
   digitalWrite(redLED, LOW);
 }
+
 
 // ==========================================================================
 // Main setup function
