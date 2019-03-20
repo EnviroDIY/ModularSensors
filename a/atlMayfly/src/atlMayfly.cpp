@@ -186,11 +186,14 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 
   #if !defined(ARDUINO_SODAQ_AUTONOMO)
   //ARDUINO_SAMD_FEATHER_M0
-  #define Serial Serial1
+  //#define Serial Serial1
+  #define SerialTty Serial1
+  #define DEBUGGING_SERIAL_OUTPUT Serial1
   //#define DEBUGGING_SERIAL_OUTPUT Serial1
   //#define STANDARD_SERIAL_OUTPUT Serial1
   #else
   #define DEBUGGING_SERIAL_OUTPUT Serial
+  #define SerialTty Serial
   #endif
 
 #ifndef ENABLE_SERIAL2
@@ -224,6 +227,7 @@ void SERCOM2_Handler()
 #endif
 #else
 #define SerialTty Serial
+#define DEBUGGING_SERIAL_OUTPUT Serial
 #endif  // End hardware serial on SAMD21 boards
 
 
@@ -1995,9 +1999,10 @@ void processSensors()
                     dataLogger.sendDataToRemotes();
 
                     // Sync the clock at midnight
-                    if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
+                    //if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
+                    if (Logger::markedEpochTime != 0 && (Logger::markedEpochTime & 0xF) % 3600 == 0)
                     {
-                        MS_DBG(F("  Running a daily clock sync..."));
+                        MS_DBG(F("  atl..Running a daily clock sync..."));
                         //dataLogger.setRTClock(dataLogger. _logModem->getNISTTime());
                         dataLogger.syncRTC();
                     }
