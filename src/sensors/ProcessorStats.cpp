@@ -134,6 +134,93 @@ String ProcessorStats::getSensorLocation(void) {return BOARD;}
     }
 #endif
 
+
+bool ProcessorStats::addSingleMeasurementResult(void)
+{
+    // Get the battery voltage
+    MS_DBG(F("Getting battery voltage"));
+
+    float sensorValue_battery = -9999;
+
+    #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
+        if (strcmp(_version, "v0.3") == 0 or strcmp(_version, "v0.4") == 0)
+        {
+            // Get the battery voltage
+            float rawBattery = analogRead(_batteryPin);
+            sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
+        }
+        if (strcmp(_version, "v0.5") == 0 or strcmp(_version, "v0.5b") == 0)
+        {
+            // Get the battery voltage
+            float rawBattery = analogRead(_batteryPin);
+            sensorValue_battery = (3.3 / 1023.) * 4.7 * rawBattery;
+        }
+
+    #elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
+        float measuredvbat = analogRead(_batteryPin);
+        measuredvbat *= 2;    // we divided by 2, so multiply back
+        measuredvbat *= 3.3;  // Multiply by 3.3V, our reference voltage
+        measuredvbat /= 1024;  // convert to voltage
+        sensorValue_battery = measuredvbat;
+
+    #elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA)
+        if (strcmp(_version, "v0.1") == 0)
+        {
+            // Get the battery voltage
+            float rawBattery = analogRead(_batteryPin);
+            sensorValue_battery = (3.3 / 1023.) * 2 * rawBattery;
+        }
+        if (strcmp(_version, "v0.2") == 0)
+        {
+            // Get the battery voltage
+            float rawBattery = analogRead(_batteryPin);
+            sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
+        }
+
+    #elif defined(ARDUINO_AVR_SODAQ_NDOGO) || defined(ARDUINO_SODAQ_AUTONOMO) || defined(ARDUINO_AVR_SODAQ_MBILI)
+        // Get the battery voltage
+        float rawBattery = analogRead(_batteryPin);
+        sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
+
+    #else
+        sensorValue_battery = -9999;
+
+    #endif
+
+    verifyAndAddMeasurementResult(PROCESSOR_BATTERY_VAR_NUM, sensorValue_battery);
+
+    // Used only for debugging - can be removed
+    MS_DBG(F("Getting Free RAM"));
+
+    #if defined __AVR__
+    extern int16_t __heap_start, *__brkval;
+    int16_t v;
+    float sensorValue_freeRam = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+
+    #elif defined(ARDUINO_ARCH_SAMD)
+    float sensorValue_freeRam = FreeRam();
+
+    #else
+    float sensorValue_freeRam = -9999;
+    #endif
+    MS_DBG(F("Free RAM="),(unsigned int)sensorValue_freeRam);
+
+    verifyAndAddMeasurementResult(PROCESSOR_RAM_VAR_NUM, sensorValue_freeRam);
+
+    // bump up the sample number
+    sampNum += 1;
+
+    verifyAndAddMeasurementResult(PROCESSOR_SAMPNUM_VAR_NUM, sampNum);
+
+    // Unset the time stamp for the beginning of this measurement
+    _millisMeasurementRequested = 0;
+    // Unset the status bits for a measurement request (bits 5 & 6)
+    _sensorStatus &= 0b10011111;
+
+    // Return true when finished
+    return true;
+}
+
 void ProcessorStats::setBatteryType(ps_liion_rating_t LiionType) {
     _liion_type = LiionType;
 }
@@ -266,39 +353,3 @@ float ProcessorStats::getBatteryVm1(float *sensorValue_battery ) //sensorValue_b
     return *sensorValue_battery;
 }
 
-bool ProcessorStats::addSingleMeasurementResult(void)
-{
-    // Get the battery voltage
-    // assume earlier getBatteryVm1(&LiIonBatt_V);
-    //MS_DBG(F("LiIonBatt_V="),LiIonBatt_V);
-
-    verifyAndAddMeasurementResult(PROCESSOR_BATTERY_VAR_NUM, LiIonBatt_V);
-
-    #if defined __AVR__
-    extern int16_t __heap_start, *__brkval;
-    int16_t v;
-    float sensorValue_freeRam = (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
-
-    #elif defined(ARDUINO_ARCH_SAMD)
-    float sensorValue_freeRam = FreeRam();
-
-    #else
-    float sensorValue_freeRam = -9999;
-    #endif
-    MS_DBG(F("Free RAM="),(unsigned int)sensorValue_freeRam);
-
-    verifyAndAddMeasurementResult(PROCESSOR_RAM_VAR_NUM, sensorValue_freeRam);
-
-    // bump up the sample number
-    sampNum += 1;
-
-    verifyAndAddMeasurementResult(PROCESSOR_SAMPNUM_VAR_NUM, sampNum);
-
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10011111;
-
-    // Return true when finished
-    return true;
-}

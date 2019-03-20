@@ -29,7 +29,7 @@ class Sensor
 {
 public:
 
-    Sensor(const char *sensorName = "Unknown", uint8_t numReturnedVars = 1,
+    Sensor(const char *sensorName = "Unknown", const uint8_t numReturnedVars = 1,
            uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0,
            int8_t powerPin = -1, int8_t dataPin = -1, uint8_t measurementsToAverage = 1);
     virtual ~Sensor();
@@ -70,7 +70,8 @@ public:
     // Bit 7 - 0=No known errors, 1=Some sort of error has occurred
     uint8_t getStatus(void);
 
-    // This sets up the sensor, if necessary.  Defaults to true.
+    // This does any one-time preparations needed before the sensor will be able
+    // to take readings.  May not require any action.
     // Generally, the sensor must be powered on for setup.
     virtual bool setup(void);
 
@@ -126,7 +127,7 @@ public:
     void averageMeasurements(void);
 
     // These tie the variables to their parent sensor
-    void registerVariable(int varNum, Variable* var);
+    void registerVariable(int sensorVarNum, Variable* var);
     // Notifies attached variables of new values
     void notifyVariables(void);
 
@@ -157,7 +158,7 @@ protected:
     int8_t _dataPin;  // SIGNED int, to allow negative numbers for unused pins
     int8_t _powerPin;  // SIGNED int, to allow negative numbers for unused pins
     const char *_sensorName;
-    uint8_t _numReturnedVars;
+    const uint8_t _numReturnedVars;
     uint8_t _measurementsToAverage;
     uint8_t numberGoodMeasurementsMade[MAX_NUMBER_VARS];
 
