@@ -62,10 +62,21 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // ==========================================================================
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
-#include <sensors/MaximDS3231.h>
+#include <sensors/MaximDS3231.h>  // Includes wrapper functions for Maxim DS3231 RTC
 
-// Create a DS3231 sensor object
+// Create a DS3231 sensor object, using this constructor function:
 MaximDS3231 ds3231(1);
+
+
+// ==========================================================================
+//    Settings for Additional Sensors
+// ==========================================================================
+// Additional sensors can setup here, similar to the RTC, but only if
+//   they have been supported with ModularSensors wrapper functions. See:
+//   https://github.com/EnviroDIY/ModularSensors/wiki#just-getting-started
+// Syntax for the include statement and constructor function for each sensor is at
+//   https://github.com/EnviroDIY/ModularSensors/wiki#these-sensors-are-currently-supported
+//   or can be copied from the `menu_a_la_carte.ino` example
 
 
 // ==========================================================================
@@ -78,6 +89,9 @@ Variable *variableList[] = {
     new ProcessorStats_FreeRam(&mcuBoard),
     new ProcessorStats_Batt(&mcuBoard),
     new MaximDS3231_Temp(&ds3231)
+    // Additional sensor variables can be added here, by copying the syntax
+    //   for creating the variable pointer (FORM1) from the `menu_a_la_carte.ino` example
+    // The example code snippets in the wiki are primarily FORM2.
 };
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
