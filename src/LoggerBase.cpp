@@ -1262,7 +1262,8 @@ void Logger::logDataAndSend(void)
                 sendDataToRemotes();
 
                 // Sync the clock at midnight
-                if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
+                //if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
+                if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 3600 == 0)
                 {
                     MS_DBG(F("Running a daily clock sync..."));
                     setRTClock(_logModem->getNISTTime());
