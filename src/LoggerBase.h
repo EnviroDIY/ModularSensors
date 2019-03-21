@@ -49,7 +49,7 @@
 // The largest number of variables from a single sensor
 #define MAX_NUMBER_SENDERS 4
 
-typedef int (*ini_handler)( const char* section,
+typedef int (*ini_handler_atl485)( const char* section,
                            const char* name, const char* value);
 
 class dataPublisher;  // Forward declaration

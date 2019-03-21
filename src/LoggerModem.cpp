@@ -644,10 +644,10 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
     MS_DBG(F("\nWaiting for"), getSensorName(), F("to respond to AT commands..."));
     if (!_tinyModem->testAT(_stabilizationTime_ms + 500))
     {
-        MS_MOD_DBG(F("No response to AT commands! Need to **reset** Modem"));
+        MS_DBG(F("No response to AT commands! Need to **reset** Modem"));
         if (!_tinyModem->testAT(_stabilizationTime_ms + 1500))
         {
-            MS_MOD_DBG(F("No response to 2nd attemp AT commands! Cannot connect to the internet!"));
+            MS_DBG(F("No response to 2nd attemp AT commands! Cannot connect to the internet!"));
             return false;
         }
     }

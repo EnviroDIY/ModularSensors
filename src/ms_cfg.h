@@ -118,7 +118,7 @@ const uint8_t loggingInterval_def = 15;
 #define KellerNanolevel_ACT 1
 #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
 #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
-#define INA219M_PHY_ACT 
+//#define INA219M_PHY_ACT 
 #ifdef INA219M_PHY_ACT
   #define INA219M_MA_UUID              "INA219_MA_UUID"
   #define INA219M_VOLT_UUID            "INA219_VOLT_UUID"

@@ -109,6 +109,7 @@ public:
     // This gets/sets the variable UUID, if one has been assigned
     String getVarUUID(void);
     void setVarUUID(const char *uuid);
+    void setVarUUID(const char *newUUID, bool copyUid, uint8_t uuidSize);
 
     // This returns the current value of the variable as a float
     float getValue(bool updateValue = false);
@@ -133,6 +134,9 @@ private:
     const char *_varUnit;
     const char *_varCode;
     const char *_uuid;
+    //const char *_UUID;
+    char *_UUID_buf_atl=NULL;
+    //static const char* VAR_BASE_UNKNOWN;
 };
 
 #endif  // Header Guard

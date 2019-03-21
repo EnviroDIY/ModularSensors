@@ -296,7 +296,7 @@ void Variable::setVarUUID(const char *uuid)
 }
 
 // Set the variable UUID.
-void Variable::setVarUUID(char *newUUID, bool copyUid, uint8_t uuidSize) 
+void Variable::setVarUUID(const char *newUUID, bool copyUid, uint8_t uuidSize) 
 { 
     #ifdef DEBUGGING_SERIAL_OUTPUT
         #if defined __AVR__
@@ -311,7 +311,8 @@ void Variable::setVarUUID(char *newUUID, bool copyUid, uint8_t uuidSize)
         int ramStart = -9999;
         #endif
     #endif //DEBUGGING_SERIAL_OUTPUT
-    _UUID =  newUUID;
+    //_UUID_atl =  newUUID;
+    _uuid =  newUUID;
 
     if (copyUid) {
 
@@ -319,15 +320,16 @@ void Variable::setVarUUID(char *newUUID, bool copyUid, uint8_t uuidSize)
         * before assigning reference to it
         */
 
-        if (NULL==_UUID_buf) {
-            _UUID_buf = new char[uuidSize];
+        if (NULL==_UUID_buf_atl) {
+            _UUID_buf_atl = new char[uuidSize];
         } 
-        if (NULL==_UUID_buf) {
+        if (NULL==_UUID_buf_atl) {
             //Major problem
             PRINTOUT(F("setVarUUID error - new didn't work for"), newUUID);
         } else {
-            memcpy (_UUID_buf,newUUID,uuidSize);
-            _UUID =  _UUID_buf;
+            memcpy (_UUID_buf_atl,newUUID,uuidSize);
+            //_UUID =  _UUID_buf_atl;
+            _uuid =  _UUID_buf_atl;
         }
         MS_DBG(F("setVarUUID cp "), newUUID);
 

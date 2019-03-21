@@ -43,7 +43,7 @@ bool TIINA219M::setup(void)
 
     // This sensor needs power for setup!
     wasOn = checkPowerOn();
-    if(!wasOn)
+    if (!wasOn)
     {
         powerUp();
         waitForWarmUp();
@@ -52,7 +52,7 @@ bool TIINA219M::setup(void)
     ina219_phy.begin();
 
     // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
+    if (!wasOn) {powerDown();}
 
     return true;
 }
@@ -86,8 +86,9 @@ bool TIINA219M::addSingleMeasurementResult(void)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6))
     {
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
         // Read values
-        MS_DBG(F("Getting values from INA219"));
         if ( INA219_POLLMASK_A & _ina219_pollmask) {
             current_mA = ina219_phy.getCurrent_mA();
             if (isnan(current_mA)) current_mA = -9999;
@@ -105,8 +106,11 @@ bool TIINA219M::addSingleMeasurementResult(void)
         }
         success = true;
 
+        MS_DBG(F("  Current [mA]:"), current_mA);
+        MS_DBG(F("  Bus Voltage [V]:"), busV_V);
+        MS_DBG(F("  Power [mW]:"), power_mW);
     }
-    else MS_DBG(getSensorNameAndLocation(), F(" is not currently measuring!"));
+    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
 
     verifyAndAddMeasurementResult(INA219_CURRENT_MA_VAR_NUM, current_mA);
     verifyAndAddMeasurementResult(INA219_BUS_VOLTAGE_VAR_NUM, busV_V);

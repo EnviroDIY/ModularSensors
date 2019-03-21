@@ -2,8 +2,8 @@
 // ===================================================================== //
 // Public functions extensions
 // ===================================================================== //
-
-void Logger::setLoggingInterval(uint16_t loggingIntervalMinutes)
+#if 0
+void Logger::setLoggingInterval_atl485(uint16_t loggingIntervalMinutes)
 {
     _loggingIntervalMinutes = loggingIntervalMinutes;
     #ifdef DEBUGGING_SERIAL_OUTPUT
@@ -11,7 +11,7 @@ void Logger::setLoggingInterval(uint16_t loggingIntervalMinutes)
         PRINTOUT(prtout1, _loggingIntervalMinutes);
     #endif
 }
-
+#endif
 void Logger::setLoggerId(const char *newLoggerId,bool copyId,uint8_t LoggerIdMaxSize)
 {
     uint8_t LoggerIdSize = strlen(newLoggerId)+2;
@@ -264,7 +264,7 @@ static int inihandlerFn( const char* section, const char* name, const char* valu
    https://en.wikipedia.org/wiki/INI_file
    https://github.com/benhoyt/inih
 */
-int8_t Logger::inihParseFile(ini_handler handler_fn)
+int8_t Logger::inihParseFile(ini_handler_atl485 handler_fn)
 {
     /* Uses a fair bit of stack (use heap instead if you need to) */
 #if INI_USE_STACK
@@ -394,7 +394,7 @@ int8_t Logger::inihParseFile(ini_handler handler_fn)
     return error;
 }
 
-bool Logger::parseIniSd(const char *ini_fn,ini_handler unhandledFnReq)
+bool Logger::parseIniSd(const char *ini_fn,ini_handler_atl485 unhandledFnReq)
 {
     uint8_t ini_err;
     // Initialise the SD card
