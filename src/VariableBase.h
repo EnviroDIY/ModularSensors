@@ -109,7 +109,7 @@ public:
     // This gets/sets the variable UUID, if one has been assigned
     String getVarUUID(void);
     void setVarUUID(const char *uuid);
-    void setVarUUID(const char *newUUID, bool copyUid, uint8_t uuidSize);
+    void setVarUUID_atl(const char *newUUID, bool copyUid=false, uint8_t uuidSize=UUIDE_CLOUD_ID_SZ);
 
     // This returns the current value of the variable as a float
     float getValue(bool updateValue = false);

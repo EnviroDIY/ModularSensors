@@ -1304,7 +1304,6 @@ const char *calculatedVarName = "varName";  // This must be a value from http://
 const char *calculatedVarUnit = "varUnit";  // This must be a value from http://vocabulary.odm2.org/units/
 const char *calculatedVarCode = "calcVar";  // A short code for the variable
 const char *calculatedVarUUID = "12345678-abcd-1234-efgh-1234567890ab";  // The (optional) universallly unique identifier
-const char *calculatedVarCode = "CorrectedPressure";  // An (optional) short code for the variable
 
 // Finally, Create a calculated variable pointer and return a variable pointer to it
 Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarResolution,
@@ -1415,6 +1414,7 @@ Variable *variableList[] = {
     new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
     new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
     new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
+    calculatedVar,
 #endif // SENSOR_CONFIG_GENERAL
 #if defined(MaximDS3231_Temp_UUID)
     new MaximDS3231_Temp(&ds3231,      MaximDS3231_Temp_UUID),
@@ -1423,7 +1423,7 @@ Variable *variableList[] = {
 #if defined(Modem_SignalPercent_UUID)
     //new Modem_SignalPercent(&modemPhy, Modem_SignalPercent_UUID),
 #endif
-    calculatedVar,
+
 };
 
 /*
@@ -1633,7 +1633,7 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
         do {
             if (strcmp((const char *)variableList[uuid_search_i]->getVarUUID().c_str(),name)==0) 
             {//Found a match
-                variableList[uuid_search_i]->setVarUUID((char *)value,true);
+                variableList[uuid_search_i]->setVarUUID_atl((char *)value,true);
                 uuid_search_i=variableCount;
             }
             uuid_search_i++;
@@ -1648,7 +1648,7 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
                 SerialTty.print(F("} replacing {"));
                 SerialTty.print(variableList[uuid_index]->getVarUUID() );
                 SerialTty.println(F("}"));
-                variableList[uuid_index]->setVarUUID((char *)value,true);           
+                variableList[uuid_index]->setVarUUID_atl((char *)value,true);           
             } else {
                 SerialTty.println(F("} out of range. Notused"));
             }
@@ -1875,7 +1875,7 @@ void setup()
 
     // Start the serial connection with the modem
     modemSetup=false;
-    modemSerial.begin(ModemBaud);
+    modemSerial.begin(modemBaud);
 
 #if !defined(CONFIG_SENSOR_RS485_PHY)
     // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
@@ -2002,7 +2002,8 @@ void setup()
 
     // Begin the logger
     //modemPhy.modemPowerUp();
-    dataLogger.begin(true);
+    dataLogger.begin();
+    varArray.setupSensors(); //Assumption pwr is available
 #if KCONFIG_DEBUG_LEVEL > 0
     // Call the processor sleep
     dataLogger.systemSleep();
@@ -2020,7 +2021,7 @@ void processSensors()
     // Set sensors and file up if it hasn't happened already
     // NOTE:  Unless it completed in less than one second, the sensor set-up
     // will take the place of logging for this interval!
-    dataLogger.setupSensorsAndFile();
+    // dataLogger.setupSensorsAndFile(); !v0.21.2 see v0.19.6 replaced varArray.setupSensors();
 
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
@@ -2082,7 +2083,7 @@ void processSensors()
                     MS_DBG(F("  Modem setup up 1st pass\n"));
                     // The first time thru, setup modem. Can't do it in regular setup due to potential power drain.
                     modemPhy.wake();  // Turn it on to talk
-                    setupXBee();
+                    extraModemSetup();//setupXBee();
                     if (dataLogger.getNowEpoch() < 1545091200) {  /*Before 12/18/2018*/
                         PRINTOUT(F("  timeSync on startup "));
                         //dataLogger.setRTClock(dataLogger._logModem->getNISTTime());

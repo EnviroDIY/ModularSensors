@@ -296,7 +296,7 @@ void Variable::setVarUUID(const char *uuid)
 }
 
 // Set the variable UUID.
-void Variable::setVarUUID(const char *newUUID, bool copyUid, uint8_t uuidSize) 
+void Variable::setVarUUID_atl(const char *newUUID, bool copyUid, uint8_t uuidSize) 
 { 
     #ifdef DEBUGGING_SERIAL_OUTPUT
         #if defined __AVR__
