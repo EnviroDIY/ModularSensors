@@ -181,7 +181,7 @@ void SERCOM2_Handler()
 // #define USE_XBEE_BYPASS  // Select with UBLOX for a Digi 3G or LTE-M XBee in bypass mode
 // #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
-#define USE_XBEE_WIFI  // Select with XBEE for an S6B wifi XBee
+// #define USE_XBEE_WIFI  // Select with XBEE for an S6B wifi XBee
 // #define TINY_GSM_MODEM_M590  // Select for a Neoway M590
 // #define TINY_GSM_MODEM_A6  // Select for an AI-Thinker A6, A6C, A7, A20
 // #define TINY_GSM_MODEM_M95  // Select for a Quectel M95
@@ -1588,10 +1588,10 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 
 
 // ==========================================================================
-//    A Publisher to WikiWatershed
+//    A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
 // ==========================================================================
 // Device registration and sampling feature information can be obtained after
-// registration at http://data.WikiWatershed.org
+// registration at https://monitormywatershed.org or https://data.envirodiy.org
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 
@@ -1713,7 +1713,7 @@ void setup()
     sonarSerial.begin(9600);
 
     // Assign pins SERCOM functionality for SAMD boards
-    // NOTE:  This must happen *after* the begin
+    // NOTE:  This must happen *after* the various serial.begin statements
     #if defined ARDUINO_ARCH_SAMD
     #ifndef ENABLE_SERIAL2
     pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
