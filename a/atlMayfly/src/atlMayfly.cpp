@@ -2100,7 +2100,7 @@ void processSensors()
 
                     // Sync the clock at midnight
                     //if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
-                    if (Logger::markedEpochTime != 0 && (Logger::markedEpochTime & 0xF) % 3600 == 0)
+                    if (Logger::markedEpochTime != 0 && (Logger::markedEpochTime & 0xFFFFFFF0) % 3600 == 0)
                     {
                         MS_DBG(F("  atl..Running a daily clock sync..."));
                         //dataLogger.setRTClock(dataLogger. _logModem->getNISTTime());

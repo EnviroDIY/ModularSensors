@@ -18,7 +18,7 @@
 
 // Debugging Statement
 #ifdef ProcessorStats_DBG
-#define DEBUGGING_SERIAL_OUTPUT Serial
+#define DEBUGGING_SERIAL_OUTPUT SerialTty
 #endif //
 
 

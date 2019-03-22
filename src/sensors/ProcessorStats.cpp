@@ -241,7 +241,7 @@ ps_Lbatt_status_t ProcessorStats::isBatteryStatusAbove(bool newBattReading, ps_p
 {
     ps_Lbatt_status_t lion_status;
     ps_Lbatt_status_t retValue;
-#ifdef ProcessorStats_DBG
+#if defined ProcessorStats_DBG || defined DEBUGGING_SERIAL_OUTPUT
     float threshold_V;
 #define threshold_store(p1) threshold_V=p1
 #else

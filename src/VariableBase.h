@@ -16,7 +16,7 @@
 // Debugging Statement
 //#define VariableBase_DBG 1
 #ifdef VariableBase_DBG
-  #define DEBUGGING_SERIAL_OUTPUT Serial
+  #define DEBUGGING_SERIAL_OUTPUT SerialTty
 #endif //VariableBase_DBG
 
 // Forward Declared Dependences

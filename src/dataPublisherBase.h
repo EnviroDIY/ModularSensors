@@ -13,6 +13,9 @@
 
 // Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+#ifdef dataPublisherBase_DBG
+  #define DEBUGGING_SERIAL_OUTPUT SerialTty
+#endif //dataPublisherBase_DBG
 
 // Send Buffer
 // This determines how many characters to set out at once over the TCP/UDP

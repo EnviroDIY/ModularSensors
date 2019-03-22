@@ -15,7 +15,7 @@
 // Debugging Statement
 //#define LoggerBase_DBG 1
 #ifdef LoggerBase_DBG
-  #define DEBUGGING_SERIAL_OUTPUT Serial
+  #define DEBUGGING_SERIAL_OUTPUT SerialTty
 #endif //LoggerBase_DBG
 
 // Included Dependencies

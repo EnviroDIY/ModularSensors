@@ -13,6 +13,9 @@
 
 // Debugging Statement
 // #define DEBUGGING_SERIAL_OUTPUT Serial
+#ifdef SensorBase_DBG
+  #define DEBUGGING_SERIAL_OUTPUT SerialTty
+#endif //SensorBase_DBG
 
 // Included Dependencies
 #include "ModSensorDebugger.h"

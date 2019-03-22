@@ -30,7 +30,10 @@
 #define TIINA219M_h
 
 // Debugging Statement
-#define DEBUGGING_SERIAL_OUTPUT Serial
+//#define DEBUGGING_SERIAL_OUTPUT Serial
+#ifdef LoggerBase_DBG
+  #define DEBUGGING_SERIAL_OUTPUT SerialTty
+#endif //LoggerBase_DBG
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
