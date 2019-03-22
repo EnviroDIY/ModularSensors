@@ -90,8 +90,8 @@ const char *wifiPwd_def = "";  // The password for connecting to WiFi, unnecessa
 //This defines rev 0.5ba changes for Mayfly. 
 // Rev0.5ba is an enhancement on 0.5b
 // C4 removed, strap for AA2/Vbat AA3/SolarV, C 100uF Cer across XbeeVcc
-
-#define MFVersion_DEF "v0.5ba"
+//This is hardcode to mean things in ProcessorStats !!!!
+#define MFVersion_DEF "v0.5b"
 #ifdef ARDUINO_AVR_ENVIRODIY_MAYFLY
 #define HwVersion_DEF MFVersion_DEF
 #else  //Mayfly

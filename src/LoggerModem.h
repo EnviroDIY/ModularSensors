@@ -16,7 +16,7 @@
 // #define DEBUGGING_SERIAL_OUTPUT Serial
 #ifdef LoggerModem_DBG
   #define DEBUGGING_SERIAL_OUTPUT SerialTty
-#endif //VariableBase_DBG
+#endif //LoggerModem_DBG
 
 // Included Dependencies
 #include "ModSensorDebugger.h"

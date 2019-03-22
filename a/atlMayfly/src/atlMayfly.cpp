@@ -93,7 +93,8 @@ const int8_t sdCardPin = 10;  //JP3-D10 PA18
 #endif
 const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
 // Create and return the main processor chip "sensor" - for general metadata
-const char *mcuBoardVersion = HwVersion_DEF;
+//const char *mcuBoardVersion = HwVersion_DEF;
+const char *mcuBoardVersion = "v0.5";
 #if defined(ProcessorStats_ACT)
 ProcessorStats mcuBoard(mcuBoardVersion);
 #endif //ProcessorStats_ACT
