@@ -85,17 +85,21 @@ const char *wifiPwd_def = "";  // The password for connecting to WiFi, unnecessa
 //**************************************************************************
 #define SENSOR_RS485_PHY 1
 //Standard 
+//This is hardcode to mean things in ProcessorStats !!!!
 //For Autonomo
-#define AutonomRev_DEF "r5"
+#define AutonomoRev_DEF "r5"
+#define AutonomoName_DEF "Autonomo"
 //This defines rev 0.5ba changes for Mayfly. 
 // Rev0.5ba is an enhancement on 0.5b
 // C4 removed, strap for AA2/Vbat AA3/SolarV, C 100uF Cer across XbeeVcc
-//This is hardcode to mean things in ProcessorStats !!!!
 #define MFVersion_DEF "v0.5b"
+#define MFName_DEF "Mayfly"
 #ifdef ARDUINO_AVR_ENVIRODIY_MAYFLY
 #define HwVersion_DEF MFVersion_DEF
+#define HwName_DEF MFName_DEF
 #else  //Mayfly
-#define HwVersion_DEF AutonomRev_DEF
+#define HwVersion_DEF AutonomoRev_DEF
+#define HwName_DEF AutonomoName_DEF
 #endif 
 
 #define LOGGERID_DEF_STR "msLog01"
@@ -124,7 +128,9 @@ const uint8_t loggingInterval_def = 15;
   #define INA219M_VOLT_UUID            "INA219_VOLT_UUID"
 #endif //INA219_PHY_ACT
 
+#ifdef ARDUINO_AVR_ENVIRODIY_MAYFLY
 #define MaximDS3231_Temp_UUID       "MaximDS3231_Temp_UUID"
+#endif //ARDUINO_AVR_ENVIRODIY_MAYFLY
 //#define Modem_RSSI_UUID ""
 // Seems to cause XBEE WiFi S6 to crash
 //#define Modem_SignalPercent_UUID    "SignalPercent_UUID"

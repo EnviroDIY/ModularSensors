@@ -70,7 +70,7 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
         dataPublishers[i] = NULL;
     }
 
-    MS_DBG(F("Logger object created"));
+    //MS_DBG(F("Logger object created"));
 }
 Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
                VariableArray *inputArray)
@@ -104,7 +104,7 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
         dataPublishers[i] = NULL;
     }
 
-    MS_DBG(F("Logger object created"));
+    //MS_DBG(F("Logger object created"));
 }
 Logger::Logger()
 {
@@ -132,7 +132,7 @@ Logger::Logger()
         dataPublishers[i] = NULL;
     }
 
-    MS_DBG(F("Logger object created"));
+    //MS_DBG(F("Logger object created"));
 }
 // Destructor
 Logger::~Logger(){}
@@ -147,15 +147,15 @@ Logger::~Logger(){}
 void Logger::setLoggerID(const char *loggerID)
 {
     _loggerID = loggerID;
-    MS_DBG(F("Logger ID is:"), _loggerID);
+    //MS_DBG(F("Logger ID is:"), _loggerID);
 }
 
 // Sets/Gets the logging interval
 void Logger::setLoggingInterval(uint16_t loggingIntervalMinutes)
 {
     _loggingIntervalMinutes = loggingIntervalMinutes;
-    MS_DBG(F("Setting logger to record at"),
-           _loggingIntervalMinutes, F("minute intervals."));
+    //MS_DBG(F("Setting logger to record at"),
+    //       _loggingIntervalMinutes, F("minute intervals."));
 }
 
 
@@ -209,7 +209,7 @@ void Logger::setSDCardSS(int8_t SDCardSSPin)
 {
     _SDCardSSPin = SDCardSSPin;
     pinMode(_SDCardSSPin, OUTPUT);
-    MS_DBG(F("Pin"), _SDCardSSPin, F("set as SD Card Slave/Chip Select"));
+    //MS_DBG(F("Pin"), _SDCardSSPin, F("set as SD Card Slave/Chip Select"));
 }
 
 
@@ -227,7 +227,7 @@ void Logger::setRTCWakePin(int8_t mcuWakePin)
     _mcuWakePin = mcuWakePin;
     if (_mcuWakePin < 0)
     {
-        MS_DBG(F("Logger mcu will not sleep between readings!"));
+        //MS_DBG(F("Logger mcu will not sleep between readings!"));
         return;
     }
 
@@ -238,7 +238,7 @@ void Logger::setRTCWakePin(int8_t mcuWakePin)
     }
     MS_DBG(F("Pin"), _mcuWakePin, F("set as RTC wake up pin"));
     #elif defined ARDUINO_ARCH_SAMD
-    MS_DBG(F("MCU's internal clock will be used for wake up"))
+    //MS_DBG(F("MCU's internal clock will be used for wake up"));
     #endif
 }
 
@@ -308,11 +308,13 @@ void Logger::setLoggerPins(int8_t mcuWakePin,
 void Logger::setVariableArray(VariableArray *inputArray)
 {
     _internalArray = inputArray;
+    #if 0
     PRINTOUT(F("This logger has a variable array with"),
              getArrayVarCount(), F("variables, of which"),
              getArrayVarCount() - _internalArray->getCalculatedVariableCount(),
              F("come from"), _internalArray->getSensorCount(), F("sensors and"),
              _internalArray->getCalculatedVariableCount(), F("are calculated."));
+    #endif
 }
 
 // Returns the number of variables in the internal array

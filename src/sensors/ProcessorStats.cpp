@@ -92,6 +92,7 @@
 
 #else
    #define BOARD "Unknown"
+   #error BOARD Unknown
 #endif
 
 

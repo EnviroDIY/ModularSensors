@@ -32,11 +32,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #else
 #define KCONFIG_DEBUG_LEVEL 0
 #endif
-//#define atlMayfly_DBG 1
-#ifdef atlMayfly_DBG 
-  //enables MS_DBG
-  #define DEBUGGING_SERIAL_OUTPUT SerialTty
-#endif //atlMayfly_DBG
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
@@ -66,32 +61,31 @@ const char file_name[] = __FILE__;
 
 const long SerialTtyBaud = 115200;   // Baud rate for the primary serial port for debugging
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-const int8_t greenLED = 8;        // MCU pin for the green LED (-1 if not applicable)
+const int8_t greenLED_pin = 8;        // MCU pin for the green LED (-1 if not applicable)
 const int8_t redLED = 9;          // MCU pin for the red LED (-1 if not applicable)
 #elif defined(ARDUINO_SAMD_FEATHER_M0)
-const int8_t greenLED = 8;       //D8 // MCU pin for the green LED (-1 if not applicable)
+const int8_t greenLED_pin = 8;       //D8 // MCU pin for the green LED (-1 if not applicable)
 const int8_t redLED = 13;         //D13 // MCU pin for the red LED (-1 if not applicable)
 
 #elif defined(ARDUINO_SODAQ_AUTONOMO)
-//Only One LED Green - LED_BUILTIN
-const int8_t greenLED=LED_BUILTIN;       //MCU pin for the green LED (-1 if not applicable)
+//Only One LED
+const int8_t redLED = 13;         //D13 // MCU pin for the red LED (-1 if not applicable)
+//const int8_t greenLED_pin=;       //MCU pin for the green LED (-1 if not applicable)
 #else
 #error Undefined LEDS
 #endif
 
 #if defined (redLED)
-#define redLEDphy redLED
-#define setRedLED(state) digitalWrite(redLEDphy, state);
+#define redLEDwr(state) digitalWrite(redLED, state);
 #else
-#define redLEDphy -1
-#define setRedLED(state)
+#define redLEDwr(state)
 #endif //redLED
 
-#if defined (greenLED)
-#define greenLEDphy greenLED
-#define setGreenLED(state) digitalWrite(greenLEDphy, state);
+#if defined (greenLED_pin)
+#define greenLED greenLED_pin
+#define setGreenLED(state) digitalWrite(greenLED, state);
 #else
-#define greenLEDphy -1
+#define greenLED -1
 #define setGreenLED(state)
 #endif //greenLED
 const int8_t buttonPin = -1;      // 21 Not used -MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
@@ -125,6 +119,7 @@ const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 i
 // Create and return the main processor chip "sensor" - for general metadata
 const char *mcuBoardName    = HwName_DEF;
 const char *mcuBoardVersion = HwVersion_DEF;
+//const char *mcuBoardVersion = "v0.5";
 #if defined(ProcessorStats_ACT)
 ProcessorStats mcuBoard(mcuBoardVersion);
 #endif //ProcessorStats_ACT
@@ -195,7 +190,7 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 // SERCOM1    Available          Available           Serial3 (D12/D13)
 // SERCOM2    Available          Available           I2C (A4/A5)
 // SERCOM3    I2C (D20/D21)      I2C (D20/D21)       SPI (D11/12/13)
-// SERCOM4    SPI (D21/22/23)    SPI (D21/22/23)     SPI1/Serial2(D6/D7)
+// SERCOM4    SPI (D21/22/23)    SPI (D21/22/23)     SPI1/Serial2
 // SERCOM5    EDBG/Serial        Available           Serial1/Bee
 
 // If using a Sodaq board, do not define the new sercoms, instead:
@@ -222,12 +217,11 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
   //#define SerialTty Serial
   //#define DEBUGGING_SERIAL_OUTPUT Serial1
   #else
-  //#define DEBUGGING_SERIAL_OUTPUT Serial
-  //#define SerialTty Serial
-  #endif //
+  #define DEBUGGING_SERIAL_OUTPUT Serial
+  #define SerialTty Serial
+  #endif
 
 #ifndef ENABLE_SERIAL2
-// Autonomo uses sercom4 see variant.cpp
 // Set up a 'new' UART using SERCOM1
 // The Rx will be on digital pin 11, which is SERCOM1's Pad #0
 // The Tx will be on digital pin 10, which is SERCOM1's Pad #2
@@ -243,7 +237,6 @@ void SERCOM1_Handler()
 #endif
 
 #ifndef ENABLE_SERIAL3
-//Atuonomo uses sercom1 see variant.cpp
 // Set up a 'new' UART using SERCOM2
 // The Rx will be on digital pin 5, which is SERCOM2's Pad #3
 // The Tx will be on digital pin 2, which is SERCOM2's Pad #2
@@ -258,8 +251,8 @@ void SERCOM2_Handler()
 }
 #endif
 #else
-//#define SerialTty Serial
-//#define DEBUGGING_SERIAL_OUTPUT Serial
+#define SerialTty Serial
+#define DEBUGGING_SERIAL_OUTPUT Serial
 #endif  // End hardware serial on SAMD21 boards
 
 
@@ -318,7 +311,7 @@ HardwareSerial &modemSerial = Serial2;  // TODO:  need to decide
 HardwareSerial &modemSerial = Serial1;  // Bee Socket 
 #else
 #error HardwareSerial undef 
-#endif // ARDUINO_AVR_ENVIRODIY_MAYFLY
+#endif
 // AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
 //#define RS485PHY_TX 5  // AltSoftSerial Tx pin 
@@ -382,7 +375,7 @@ bool modemSleepFxn(void)
     if (modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
     {
         digitalWrite(modemSleepRqPin, HIGH);
-        setRedLED( LOW);
+        digitalWrite(redLED, LOW);
         SerialTty.println(F("modemSleepFxnH"));
         return true;
     }
@@ -398,7 +391,7 @@ bool modemWakeFxn(void)
     }else if (modemSleepRqPin >= 0)
     {
         digitalWrite(modemSleepRqPin, LOW);
-        setRedLED( HIGH);  // Because the XBee doesn't have any lights
+        digitalWrite(redLED, HIGH);  // Because the XBee doesn't have any lights
         SerialTty.println(F("modemWakeFxnL"));
         return true;
     }
@@ -1493,18 +1486,15 @@ VariableArray varArray(variableCount, variableList);
 #ifdef USE_SD_MAYFLY_INI
  persistent_store_t ps;
 #endif //#define USE_SD_MAYFLY_INI
-
 // ==========================================================================
 //     The Logger Object[s]
 // ==========================================================================
 #include <LoggerBase.h>
 
 // Create a new logger instance
-//failing if MS_DBG enabled
 Logger dataLogger(LoggerID_def, loggingInterval_def, sdCardPin, wakePin, &varArray);
-//failing Logger dataLogger(LoggerID_def, loggingInterval_def, &varArray);
 
-//now works !MS_DBG #if KCONFIG_DEBUG_LEVEL > 0   //1238
+
 // ==========================================================================
 //    A Publisher to WikiWatershed
 // ==========================================================================
@@ -1551,13 +1541,13 @@ void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 {
     for (uint8_t i = 0; i < numFlash; i++) {
         setGreenLED(HIGH);
-        setRedLED( LOW);
+        digitalWrite(redLED, LOW);
         delay(rate);
         setGreenLED(LOW);
-        setRedLED( HIGH);
+        digitalWrite(redLED, HIGH);
         delay(rate);
     }
-    setRedLED( LOW);
+    digitalWrite(redLED, LOW);
 }
 
 
@@ -1838,15 +1828,6 @@ const char MAYFLY_INIT_ID_pm[] EDIY_PROGMEM = "MAYFLY_INIT_ID";
 #endif //USE_SD_MAYFLY_INI
 
 
-void ledflash(uint8_t numFlash = 4, uint8_t rate = 75)
-{
-    for (uint8_t i = 0; i < numFlash; i++) {
-        setGreenLED( HIGH);
-        delay(rate);
-        setGreenLED( LOW);
-        delay(rate);
-    }
-}
 // ==========================================================================
 // Main setup function
 // ==========================================================================
@@ -1858,25 +1839,11 @@ void setup()
     //uint8_t mcu_status = MCUSR; is already cleared by Arduino startup???
     //MCUSR = 0; //reset for unique read
     // Start the primary SerialTty connection
-    // Set up pins for the LED's
-    #if defined greenLED
-    pinMode(greenLEDphy, OUTPUT);
-    setGreenLED(HIGH);
-    #endif // greenLED
-    #if defined redLED
-    pinMode(redLEDphy, OUTPUT);
-    setRedLED(LOW);
-    #endif // redLED
-
-    #if 0//SerialTty==SerialUSB
-    while (!SerialUSB && (millis() < 10000)){
-        ledflash(100,1);
-    }
-    //#else
-    //SerialTty.begin(SerialTtyBaud);
+    #if SerialTty==SerialUSB
+        while (!SerialUSB && (millis() < 10000)){}
     #endif
     SerialTty.begin(SerialTtyBaud);
-    SerialTty.print(F("\n---Boot. Build date:")); 
+    SerialTty.print(F("---Boot. Build date:")); 
     SerialTty.print(build_date);
     //SerialTty.write('/');
     //SerialTty.print(build_epochTime,HEX);
@@ -1887,11 +1854,10 @@ void setup()
     SerialTty.print(mcuBoardName);
     SerialTty.print(" ");
     SerialTty.print(mcuBoardVersion);
-
     #ifdef RAM_AVAILABLE
         RAM_AVAILABLE;
     #endif //RAM_AVAILABLE
-
+ #if KCONFIG_DEBUG_LEVEL > 0   
 #if defined(ARDUINO_ARCH_SAMD)
     Serial2.begin(9600);
     Serial2.print("Serial2");
@@ -1971,6 +1937,16 @@ void setup()
     pinPeripheral(5, PIO_SERCOM);  // Serial3 Rx/Din = SERCOM2 Pad #3
     #endif
     #endif
+
+    // Set up pins for the LED's
+    #if defined greenLED_pin
+    pinMode(greenLED, OUTPUT);
+    setGreenLED(LOW);
+    #endif // greenLED_pin
+    pinMode(redLED, OUTPUT);
+    digitalWrite(redLED, LOW);
+    // Blink the LEDs to show the board is on and starting up
+    greenredflash();
 
 #ifdef USE_SD_MAYFLY_INI
     Serial.println(F("---parseIni "));
@@ -2066,17 +2042,17 @@ void setup()
     //modemPhy.modemPowerUp();
     dataLogger.begin();
     varArray.setupSensors(); //Assumption pwr is available
-
+//works #if KCONFIG_DEBUG_LEVEL > 0
     // Call the processor sleep
     dataLogger.systemSleep();
-
+#endif // KCONFIG_DEBUG_LEVEL
 }
 
 
 // **************************************************************************
 // processSensors function
 // **************************************************************************
-//#if KCONFIG_DEBUG_LEVEL > 0
+
 void processSensors()
 {
 
@@ -2188,7 +2164,7 @@ void processSensors()
         //Logger::isLoggingNow = false;
     }
 }
-//#endif //KCONFIG_DEBUG_LEVEL > 0  
+
 // ==========================================================================
 int flash_lp=0;
 void loop()
