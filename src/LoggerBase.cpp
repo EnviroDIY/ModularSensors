@@ -238,7 +238,7 @@ void Logger::setRTCWakePin(int8_t mcuWakePin)
     }
     MS_DBG(F("Pin"), _mcuWakePin, F("set as RTC wake up pin"));
     #elif defined ARDUINO_ARCH_SAMD
-    MS_DBG(F("MCU's internal clock will be used for wake up"))
+    MS_DBG(F("MCU's internal clock will be used for wake up"));
     #endif
 }
 
