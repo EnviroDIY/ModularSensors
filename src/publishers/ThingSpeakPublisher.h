@@ -12,7 +12,11 @@
 #define ThingSpeakPublisher_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_DEBUGGING_STD
+
+#ifdef MS_TSPUBLISHER_DEBUG
+#define MS_DEBUGGING_STD
+#endif
 
 // MQTT User Name
 // The user name doesn't actually mean anything for ThingSpeak
