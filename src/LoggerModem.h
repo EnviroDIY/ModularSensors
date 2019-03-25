@@ -13,10 +13,11 @@
 #define LoggerModem_h
 
 // FOR DEBUGGING
-// #define DEBUGGING_SERIAL_OUTPUT Serial
-#ifdef LoggerModem_DBG
-  #define DEBUGGING_SERIAL_OUTPUT SerialTty
-#endif //LoggerModem_DBG
+// #define MS_MODEM_DEBUG
+
+#ifdef MS_MODEM_DEBUG
+#define MS_DEBUGGING_STD
+#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"

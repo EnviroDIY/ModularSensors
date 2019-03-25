@@ -58,7 +58,7 @@ Sensor::Sensor(const char *sensorName, const uint8_t numReturnedVars,
     // Reset the sensor status
     _sensorStatus = 0;
 
-    MS_DBG(F("Sensor object created"));
+    // MS_DBG(F("Sensor object created"));
 }
 // Destructor
 Sensor::~Sensor(){}

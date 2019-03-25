@@ -12,14 +12,16 @@
 #define VariableArray_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
-// #define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
-#ifdef VariableArray_DBG
-  #define DEBUGGING_SERIAL_OUTPUT SerialTty
-#endif //VariableArray_DBG
-#ifdef VariableArray_DeepDBG
-  #define DEEP_DEBUGGING_SERIAL_OUTPUT SerialTty
-#endif //VariableArray_DeepDBG
+// #define MS_VARIABLEARRAY_DEBUG
+// #define MS_VARIABLEARRAY_DEBUG_DEEP
+
+#ifdef MS_VARIABLEARRAY_DEBUG
+#define MS_DEBUGGING_STD
+#endif
+
+#ifdef MS_VARIABLEARRAY_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP
+#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"

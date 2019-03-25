@@ -12,10 +12,11 @@
 #define dataPublisherBase_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
-#ifdef dataPublisherBase_DBG
-  #define DEBUGGING_SERIAL_OUTPUT SerialTty
-#endif //dataPublisherBase_DBG
+// #define MS_PUBLISHER_DEBUG
+
+#ifdef MS_PUBLISHER_DEBUG
+#define MS_DEBUGGING_STD
+#endif
 
 // Send Buffer
 // This determines how many characters to set out at once over the TCP/UDP

@@ -13,10 +13,11 @@
 #define LoggerBase_h
 
 // Debugging Statement
-//#define LoggerBase_DBG 1
-#ifdef LoggerBase_DBG
-  #define DEBUGGING_SERIAL_OUTPUT SerialTty
-#endif //LoggerBase_DBG
+// #define MS_LOGGER_DEBUG
+
+#ifdef MS_LOGGER_DEBUG
+#define MS_DEBUGGING_STD
+#endif
 
 // Included Dependencies
 //#include <Arduino.h>

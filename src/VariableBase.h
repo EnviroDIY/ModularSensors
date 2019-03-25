@@ -14,10 +14,11 @@
 #include "ms_common.h"
 
 // Debugging Statement
-//#define VariableBase_DBG 1
-#ifdef VariableBase_DBG
-  #define DEBUGGING_SERIAL_OUTPUT SerialTty
-#endif //VariableBase_DBG
+// #define MS_VARIABLEBASE_DEBUG
+
+#ifdef MS_VARIABLEBASE_DEBUG
+#define MS_DEBUGGING_STD
+#endif
 
 // Forward Declared Dependences
 class Sensor;

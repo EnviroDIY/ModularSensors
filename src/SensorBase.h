@@ -12,10 +12,11 @@
 #define SensorBase_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
-#ifdef SensorBase_DBG
-  #define DEBUGGING_SERIAL_OUTPUT SerialTty
-#endif //SensorBase_DBG
+// #define MS_SENSORBASE_DEBUG
+
+#ifdef MS_SENSORBASE_DEBUG
+#define MS_DEBUGGING_STD
+#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
