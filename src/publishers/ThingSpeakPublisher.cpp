@@ -27,19 +27,19 @@ const char *ThingSpeakPublisher::mqttUser = THING_SPEAK_USER_NAME;
 ThingSpeakPublisher::ThingSpeakPublisher()
   : dataPublisher()
 {
-    MS_DBG(F("ThingSpeakPublisher object created"));
+    // MS_DBG(F("ThingSpeakPublisher object created"));
 }
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger,
                                    uint8_t sendEveryX, uint8_t sendOffset)
   : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {
-    MS_DBG(F("ThingSpeakPublisher object created"));
+    // MS_DBG(F("ThingSpeakPublisher object created"));
 }
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client *inClient,
                                    uint8_t sendEveryX, uint8_t sendOffset)
   : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
 {
-    MS_DBG(F("ThingSpeakPublisher object created"));
+    // MS_DBG(F("ThingSpeakPublisher object created"));
 }
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger,
                                    const char *thingSpeakMQTTKey,
@@ -51,7 +51,7 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger,
    setMQTTKey(thingSpeakMQTTKey);
    setChannelID(thingSpeakChannelID);
    setChannelKey(thingSpeakChannelKey);
-   MS_DBG(F("ThingSpeakPublisher object created"));
+   // MS_DBG(F("ThingSpeakPublisher object created"));
 }
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client *inClient,
                                    const char *thingSpeakMQTTKey,
@@ -63,7 +63,7 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client *inClient,
    setMQTTKey(thingSpeakMQTTKey);
    setChannelID(thingSpeakChannelID);
    setChannelKey(thingSpeakChannelKey);
-   MS_DBG(F("ThingSpeakPublisher object created"));
+   // MS_DBG(F("ThingSpeakPublisher object created"));
 }
 // Destructor
 ThingSpeakPublisher::~ThingSpeakPublisher(){}

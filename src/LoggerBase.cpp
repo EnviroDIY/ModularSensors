@@ -70,7 +70,7 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
         dataPublishers[i] = NULL;
     }
 
-    MS_DBG(F("Logger object created"));
+    // MS_DBG(F("Logger object created"));
 }
 Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
                VariableArray *inputArray)
@@ -104,7 +104,7 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
         dataPublishers[i] = NULL;
     }
 
-    MS_DBG(F("Logger object created"));
+    // MS_DBG(F("Logger object created"));
 }
 Logger::Logger()
 {
@@ -132,7 +132,7 @@ Logger::Logger()
         dataPublishers[i] = NULL;
     }
 
-    MS_DBG(F("Logger object created"));
+    // MS_DBG(F("Logger object created"));
 }
 // Destructor
 Logger::~Logger(){}
