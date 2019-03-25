@@ -2203,9 +2203,9 @@ void loop()
     //SerialTty.println();
     greenredflash();
     delay(2000);
-    #elif KCONFIG_DEBUG_LEVEL > 0
+    //#elif KCONFIG_DEBUG_LEVEL > 0
 
-    processSensors();
+    //processSensors();
     // Check if it was instead the testing interrupt that woke us up
     // not implemented yet: if (EnviroDIYLogger.startTesting) EnviroDIYLogger.testingMode();
 
