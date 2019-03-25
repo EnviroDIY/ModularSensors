@@ -481,7 +481,7 @@ void extraModemSetup(void)
 #else
 void extraModemSetup(void){}
 #endif
-
+  
 
 // THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
 #elif defined TINY_GSM_MODEM_SIM800 && defined SIM800_GPRSBEE_R6
