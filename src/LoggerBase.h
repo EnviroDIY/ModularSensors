@@ -13,7 +13,7 @@
 #define LoggerBase_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_LOGGER_DEBUG
 
 #ifdef MS_LOGGER_DEBUG
 #define MS_DEBUGGING_STD

@@ -13,7 +13,7 @@
 #define EnviroDIYPublisher_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_EDIYPUBLISHER_DEBUG
 
 #ifdef MS_EDIYPUBLISHER_DEBUG
 #define MS_DEBUGGING_STD

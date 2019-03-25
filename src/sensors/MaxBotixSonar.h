@@ -18,7 +18,7 @@
 #define MaxBotixSonar_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_MAXBOTIX_DEBUG
 
 #ifdef MS_MAXBOTIX_DEBUG
 #define MS_DEBUGGING_STD

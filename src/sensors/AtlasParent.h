@@ -17,7 +17,7 @@
 #define AtlasParent_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_ATLAS_DEBUG
 
 #ifdef MS_ATLAS_DEBUG
 #define MS_DEBUGGING_STD

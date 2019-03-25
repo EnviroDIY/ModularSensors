@@ -12,7 +12,7 @@
 #define DreamHostPublisher_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_DHPUBLISHER_DEBUG
 
 #ifdef MS_DHPUBLISHER_DEBUG
 #define MS_DEBUGGING_STD

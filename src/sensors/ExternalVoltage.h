@@ -55,7 +55,7 @@
 #define ExternalVoltage_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_EXTVOLT_DEBUG
 
 #ifdef MS_EXTVOLT_DEBUG
 #define MS_DEBUGGING_STD

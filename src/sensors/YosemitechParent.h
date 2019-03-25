@@ -18,8 +18,8 @@
 #define YosemitechParent_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
-// #define MS_DEBUGGING_DEEP
+// #define MS_YOSEMITECH_DEBUG
+// #define MS_YOSEMITECH_DEBUG_DEEP
 
 #ifdef MS_YOSEMITECH_DEBUG
 #define MS_DEBUGGING_STD

@@ -12,8 +12,8 @@
 #define VariableArray_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
-// #define MS_DEBUGGING_DEEP
+// #define MS_VARIABLEARRAY_DEBUG
+// #define MS_VARIABLEARRAY_DEBUG_DEEP
 
 #ifdef MS_VARIABLEARRAY_DEBUG
 #define MS_DEBUGGING_STD

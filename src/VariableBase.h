@@ -12,7 +12,7 @@
 #define VariableBase_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_VARIABLEBASE_DEBUG
 
 #ifdef MS_VARIABLEBASE_DEBUG
 #define MS_DEBUGGING_STD
