@@ -163,7 +163,7 @@ void Logger::setLoggingInterval(uint16_t loggingIntervalMinutes)
 void Logger::setSamplingFeatureUUID(const char *samplingFeatureUUID)
 {
     _samplingFeatureUUID = samplingFeatureUUID;
-    MS_DBG(F("Sampling feature UUID is:"), _samplingFeatureUUID);
+    // MS_DBG(F("Sampling feature UUID is:"), _samplingFeatureUUID);
 }
 
 // Sets up a pin controlling the power to the SD card

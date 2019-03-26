@@ -1,6 +1,6 @@
 /*****************************************************************************
 altMayfly.cpp   (more control than .ino)
-Written By:  Neil Hancock from great example/menu_a_la_carte by Sara Damiano (sdamiano@stroudcenter.org)
+Written By:  Neil Hancock from great /menu_a_la_carte by Sara Damiano (sdamiano@stroudcenter.org)
 Development Environment: PlatformIO
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
 Software License: BSD-3.
@@ -41,7 +41,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.21.2";
+const char *libraryVersion = "0.21.3";
 // The name of this file
 const char *sketchName = "atlMayfly.cpp";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -1500,11 +1500,10 @@ VariableArray varArray(variableCount, variableList);
 #include <LoggerBase.h>
 
 // Create a new logger instance
-//failing if MS_DBG enabled
-Logger dataLogger(LoggerID_def, loggingInterval_def, sdCardPin, wakePin, &varArray);
-//failing Logger dataLogger(LoggerID_def, loggingInterval_def, &varArray);
 
-//now works !MS_DBG #if KCONFIG_DEBUG_LEVEL > 0   //1238
+Logger dataLogger(LoggerID_def, loggingInterval_def, sdCardPin, wakePin, &varArray);
+
+//now works with MS_DBG #if KCONFIG_DEBUG_LEVEL > 0   //0918
 // ==========================================================================
 //    A Publisher to WikiWatershed
 // ==========================================================================
@@ -1541,7 +1540,7 @@ ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, t
 #endif
 #endif //thingSpeakMQTTKey
 
-
+//#endif //#if KCONFIG_DEBUG_LEVEL > 0   //0918
 // ==========================================================================
 //    Working Functions
 // ==========================================================================
