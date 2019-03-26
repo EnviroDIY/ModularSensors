@@ -296,6 +296,16 @@ void Variable::setVarUUID(const char *uuid)
 }
 
 // Set the variable UUID.
+#if defined(__AVR__)
+#define freeRamCalc() (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval)
+#elif defined(ARDUINO_ARCH_SAMD)
+    extern "C" char *sbrk(int i);
+
+ int16_t freeRamCalc () {
+    char stack_dummy = 0;
+    return &stack_dummy - sbrk(0);
+ }
+#endif
 void Variable::setVarUUID_atl(const char *newUUID, bool copyUid, uint8_t uuidSize) 
 { 
     #ifdef DEBUGGING_SERIAL_OUTPUT
@@ -305,7 +315,7 @@ void Variable::setVarUUID_atl(const char *newUUID, bool copyUid, uint8_t uuidSiz
         int ramStart = freeRamCalc();
 
         #elif defined(ARDUINO_ARCH_SAMD)
-        int ramStart = FreeRam();
+        int ramStart = freeRamCalc();
 
         #else
         int ramStart = -9999;

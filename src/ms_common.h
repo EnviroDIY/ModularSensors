@@ -45,8 +45,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define EFP(x) x
   #define EF(x)  x
 #endif
-// Need to declar     int16_t v;
-#define freeRamCalc() (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval)
+
 /*****************************************************************************
  * Persistent structures.
  * Defines data structures for per software build & geographical location customizations 
