@@ -75,7 +75,7 @@ EnviroDIYPublisher::~EnviroDIYPublisher(){}
 void EnviroDIYPublisher::setToken(const char *registrationToken)
 {
     _registrationToken = registrationToken;
-    MS_DBG(F("Registration token set!"));
+    // MS_DBG(F("Registration token set!"));
 }
 
 
