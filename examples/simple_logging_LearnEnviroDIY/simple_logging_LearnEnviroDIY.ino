@@ -80,6 +80,38 @@ MaximDS3231 ds3231(1);
 
 
 // ==========================================================================
+//    Bosch BME280 Environmental Sensor (Temperature, Humidity, Pressure)
+// ==========================================================================
+#include <sensors/BoschBME280.h>
+
+const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+uint8_t BMEi2c_addr = 0x76;
+// The BME280 can be addressed either as 0x77 (Adafruit default) or 0x76 (Grove default)
+// Either can be physically mofidied for the other address
+
+// Create a Bosch BME280 sensor object
+BoschBME280 bme280(I2CPower, BMEi2c_addr);
+
+
+// ==========================================================================
+//    Maxim DS18 One Wire Temperature Sensor
+// ==========================================================================
+#include <sensors/MaximDS18.h>
+
+// OneWire Address [array of 8 hex characters]
+// If only using a single sensor on the OneWire bus, you may omit the address
+// DeviceAddress OneWireAddress1 = {0x28, 0xFF, 0xBD, 0xBA, 0x81, 0x16, 0x03, 0x0C};
+const int8_t OneWirePower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t OneWireBus = 6;  // Pin attached to the OneWire Bus (-1 if unconnected) (D24 = A0)
+
+// Create a Maxim DS18 sensor objects (use this form for a known address)
+// MaximDS18 ds18(OneWireAddress1, OneWirePower, OneWireBus);
+
+// Create a Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
+MaximDS18 ds18(OneWirePower, OneWireBus);
+
+
+// ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 #include <VariableArray.h>
@@ -88,7 +120,12 @@ Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard),
     new ProcessorStats_FreeRam(&mcuBoard),
     new ProcessorStats_Batt(&mcuBoard),
-    new MaximDS3231_Temp(&ds3231)
+    new MaximDS3231_Temp(&ds3231),
+    new BoschBME280_Temp(&bme280),
+    new BoschBME280_Humidity(&bme280),
+    new BoschBME280_Pressure(&bme280),
+    new BoschBME280_Altitude(&bme280),
+    new MaximDS18_Temp(&ds18)
     // Additional sensor variables can be added here, by copying the syntax
     //   for creating the variable pointer (FORM1) from the `menu_a_la_carte.ino` example
     // The example code snippets in the wiki are primarily FORM2.

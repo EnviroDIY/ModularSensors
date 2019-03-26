@@ -282,7 +282,8 @@ bool loggerModem::wake(void)
     // mid-shutdown.  In that case, we'll mistakenly skip re-waking it.
     else if (_dataPin >= 0 && digitalRead(_dataPin) == _statusLevel)
     {
-        MS_DBG(getSensorName(), F("was already on!  Will not run wake function."));
+        MS_DBG(getSensorName(), F("was already on!  (status pin level = "),
+               _statusLevel, F(") Will not run wake function."));
         success = true;
     }
     else
@@ -296,7 +297,7 @@ bool loggerModem::wake(void)
     // Only works if the status pin comes on immediately
     if (_dataPin > 0 && _statusTime_ms == 0 && digitalRead(_dataPin) != _statusLevel)
     {
-        MS_DBG(F("Status pin on"), getSensorName(), F("is"),
+        MS_DBG(F("Status pin level on"), getSensorName(), F("is"),
                    digitalRead(_dataPin), F("indicating it is off!"));
         // Make sure that the wake time and wake success bit (bit 4) are unset
         _millisSensorActivated = 0;
@@ -781,8 +782,8 @@ bool loggerModem::modemSleepPowerDown(void)
     // not turn it back off.
     if (_dataPin >= 0 && digitalRead(_dataPin) != _statusLevel)
         MS_DBG(getSensorName(), F("appears to have already been off.  Will not run sleep function."));
-    // Also check against the status bits
-    else if (!bitRead(_sensorStatus, 4))
+    // If there's no status pin, check against the status bits
+    else if (_dataPin < 0 && !bitRead(_sensorStatus, 4))
         MS_DBG(getSensorName(), F("was never sucessfully turned on.  Will not run sleep function."));
     else
     {

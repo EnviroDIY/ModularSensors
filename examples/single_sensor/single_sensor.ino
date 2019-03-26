@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.21.2
+This example sketch is written for ModularSensors library version 0.21.3
 
 This sketch is an example of getting data from a single sensor, in this case, a
 MaxBotix Ultrasonic Range Finder
@@ -24,9 +24,17 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <VariableBase.h>
 
 // The library version this example was written for
-const char *libraryVersion = "0.21.2";
+const char *libraryVersion = "0.21.3";
 // The name of this file
 const char *sketchName = "single_sensor.ino";
+
+// ==========================================================================
+// Board setup info
+// ==========================================================================
+
+const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
+const int8_t greenLED = 8;  // Pin for the green LED
+const int8_t redLED = 9;  // Pin for the red LED
 
 // ==========================================================================
 // Set up the sensor object
@@ -61,12 +69,11 @@ Variable waterDepth(calcDepth, 0,
                     "waterDepth", "millimeter",
                     "sonarDepth", "12345678-abcd-1234-efgh-1234567890ab");
 
+
+
 // ==========================================================================
-// Board setup info
+//    Working Functions
 // ==========================================================================
-const long serialBaud = 115200;  // Baud rate for the primary serial port for debugging
-const int8_t greenLED = 8;  // Pin for the green LED
-const int8_t redLED = 9;  // Pin for the red LED
 
 // Flashes to Mayfly's LED's
 void greenredflash(int numFlash = 4)
@@ -81,6 +88,7 @@ void greenredflash(int numFlash = 4)
   }
   digitalWrite(redLED, LOW);
 }
+
 
 // ==========================================================================
 // Main setup function

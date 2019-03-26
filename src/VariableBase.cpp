@@ -39,7 +39,7 @@ Variable::Variable(Sensor *parentSense,
     // value of -9999 (ie, a bad result).
     _currentValue = -9999;
 
-    MS_DBG(F("Measured variable object created"));
+    // MS_DBG(F("Measured Variable object created"));
 }
 Variable::Variable(const uint8_t sensorVarNum,
                    uint8_t decimalResolution,
@@ -62,7 +62,7 @@ Variable::Variable(const uint8_t sensorVarNum,
     // value of -9999 (ie, a bad result).
     _currentValue = -9999;
 
-    MS_DBG(F("Measured variable object created"));
+    // MS_DBG(F("Measured Variable object created"));
 }
 
 
@@ -90,7 +90,7 @@ Variable::Variable(float (*calcFxn)(),
     // value of -9999 (ie, a bad result).
     _currentValue = -9999;
 
-    MS_DBG(F("Calculated variable object created"));
+    // MS_DBG(F("Calculated Variable object created"));
 }
 Variable::Variable()
   : _sensorVarNum(0),
@@ -108,7 +108,7 @@ Variable::Variable()
     // value of -9999 (ie, a bad result).
     _currentValue = -9999;
 
-    MS_DBG(F("Calculated variable object created"));
+    // MS_DBG(F("Calculated Variable object created"));
 }
 
 
