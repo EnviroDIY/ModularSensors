@@ -246,6 +246,7 @@ void Logger::setRTCWakePin(int8_t mcuWakePin)
 // Sets up a pin for an LED or other way of alerting that data is being logged
 void Logger::setAlertPin(int8_t ledPin)
 {
+    if (ledPin <0) return;
     _ledPin = ledPin;
     pinMode(_ledPin, OUTPUT);
     MS_DBG(F("Pin"), _ledPin, F("set as LED alert pin"));
@@ -598,9 +599,12 @@ bool Logger::checkInterval(void)
     bool retval;
     uint32_t checkTime = getNowEpoch();
     MS_DBG(F("Current Unix Timestamp:"), checkTime);
+    #ifdef ARDUINO_ARCH_SAMD
+    //Assume that put to sleep for the right amount of time
+    retval = true;
+    #elif defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
     MS_DBG(F("Logging interval in seconds:"), (_loggingIntervalMinutes*60));
     MS_DBG(F("Mod of Logging Interval:"), checkTime % (_loggingIntervalMinutes*60));
-
     if (checkTime % (_loggingIntervalMinutes*60) == 0)
     {
         // Update the time variables with the current time
@@ -614,6 +618,9 @@ bool Logger::checkInterval(void)
         MS_DBG(F("Not time yet."));
         retval = false;
     }
+    #else
+    #error Need Clock definition
+    #endif 
     return retval;
 }
 
@@ -657,17 +664,15 @@ void Logger::wakeISR(void)
 
 // Puts the system to sleep to conserve battery life.
 // This DOES NOT sleep or wake the sensors!!
-void Logger::systemSleep(void)
+void Logger::systemSleep(uint8_t sleep_min)
 {
+    #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
     // Don't go to sleep unless there's a wake pin!
     if (_mcuWakePin < 0)
     {
         MS_DBG(F("Use a non-negative wake pin to request sleep!"));
         return;
     }
-
-    #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
-
     // Unfortunately, because of the way the alarm on the DS3231 is set up, it
     // cannot interrupt on any frequencies other than every second, minute,
     // hour, day, or date.  We could set it to alarm hourly every 5 minutes past
@@ -692,10 +697,16 @@ void Logger::systemSleep(void)
     // We're setting the alarm seconds to 59 and then seting it to go off
     // whenever the seconds match the 59.  I'm using 59 instead of 00
     // because there seems to be a bit of a wake-up delay
-    MS_DBG(F("Setting alarm on SAMD built-in RTC for every minute."));
-    zero_sleep_rtc.setAlarmSeconds(59);
+    uint16_t local_secs;
+    if (0 == sleep_min) {
+        MS_DBG(F("Setting std alarm on SAMD built-in RTC."));
+        local_secs = (_loggingIntervalMinutes*60) -1;
+    } else 
+        MS_DBG(F("Setting custom alarm on SAMD built-in RTC."));{
+        local_secs = (sleep_min*60) -1;
+    }
+    zero_sleep_rtc.setAlarmSeconds(local_secs);
     zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);
-
     #endif
 
     // Send one last message before shutting down serial ports

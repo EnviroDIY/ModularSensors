@@ -256,7 +256,7 @@ public:
 
     // Puts the system to sleep to conserve battery life.
     // This DOES NOT sleep or wake the sensors!!
-    void systemSleep(void);
+    void systemSleep(uint8_t sleep_min=0);
 
     // ===================================================================== //
     // Public functions for logging data to an SD card
