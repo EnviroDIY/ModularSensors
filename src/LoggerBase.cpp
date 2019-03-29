@@ -597,16 +597,12 @@ void Logger::markTime(void)
 bool Logger::checkInterval(void)
 {
     bool retval;
-    #ifdef ARDUINO_ARCH_SAMD
-    //Assume that put to sleep for the right amount of time
-    markTime();
-    MS_DBG(F("Logging epoch time marked:"), Logger::markedEpochTime," ",Logger::formatDateTime_ISO8601(Logger::markedEpochTime));
-    retval = true;
-    #elif defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
+    #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
     uint32_t checkTime = getNowEpoch();
     MS_DBG(F("Current Unix Timestamp:"), checkTime);
     MS_DBG(F("Logging interval in seconds:"), (_loggingIntervalMinutes*60));
     MS_DBG(F("Mod of Logging Interval:"), checkTime % (_loggingIntervalMinutes*60));
+
     if (checkTime % (_loggingIntervalMinutes*60) == 0)
     {
         // Update the time variables with the current time
@@ -620,8 +616,11 @@ bool Logger::checkInterval(void)
         MS_DBG(F("Not time yet."));
         retval = false;
     }
-    #else
-    #error Need Clock definition
+    #else  // ARDUINO_ARCH_SAMD
+    //Assume that have slept for the right amount of time
+    markTime();
+    MS_DBG(F("Logging epoch time marked:"), Logger::markedEpochTime," ",Logger::formatDateTime_ISO8601(Logger::markedEpochTime));
+    retval = true;
     #endif 
     return retval;
 }
@@ -662,17 +661,16 @@ void Logger::wakeISR(void)
 {
     // MS_DBG(F("Clock interrupt!"));
 }
-#if defined ARDUINO_ARCH_SAMD
- #define zsr zero_sleep_rtc
-#define MS_ALM()  MS_DBG("Alm:",zsr.getAlarmYear(),zsr.getAlarmMonth(),zsr.getAlarmDay(),"-",zsr.getAlarmHours(),zsr.getAlarmMinutes(),zsr.getAlarmSeconds());
-#endif  
+
 
 // Puts the system to sleep to conserve battery life.
 // This DOES NOT sleep or wake the sensors!!
 static uint32_t wakeUpTime_secs;
 void Logger::systemSleep(uint8_t sleep_min)
 {
+
     #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
+
     // Don't go to sleep unless there's a wake pin!
     if (_mcuWakePin < 0)
     {
@@ -719,10 +717,10 @@ void Logger::systemSleep(uint8_t sleep_min)
     targetWakeup_secs -= adjust_secs;
     MS_DBG("Setting alarm (",local_secs,"+",timeNow_secs,") on RTC @",targetWakeup_secs," ",formatDateTime_ISO8601(targetWakeup_secs),+" adj=",adjust_secs,"fm now=",timeNow_secs ,"Awake=",timeNow_secs-wakeUpTime_secs);
     zero_sleep_rtc.setAlarmEpoch(targetWakeup_secs);
-    MS_ALM();
-    //zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);
+ #define zsr zero_sleep_rtc
+    MS_DBG("Alm:",zsr.getAlarmYear(),zsr.getAlarmMonth(),zsr.getAlarmDay(),"-",zsr.getAlarmHours(),zsr.getAlarmMinutes(),zsr.getAlarmSeconds());
+    // Assume max is an hour - need to revisit
     zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_MMSS);
-    //zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_YYMMDDHHMMSS); //very risky
     #endif
 
     // Send one last message before shutting down serial ports
@@ -864,11 +862,11 @@ void Logger::systemSleep(uint8_t sleep_min)
 
     #elif defined ARDUINO_ARCH_SAMD
     zero_sleep_rtc.disableAlarm();
-    wakeUpTime_secs = getNowEpoch();
     #endif
 
     // Wake-up message
-    MS_DBG(F("... zzzZZ Processor awake @ "),wakeUpTime_secs);
+    wakeUpTime_secs = getNowEpoch();
+    MS_DBG(F("... zzzZZ Processor awake @"),wakeUpTime_secs);
 
     // The logger will now start the next function after the systemSleep
     // function in either the loop or setup

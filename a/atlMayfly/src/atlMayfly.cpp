@@ -1972,7 +1972,7 @@ void setup()
     //Serial3.begin(9600); //shares with Autonom GreenLED
     //Serial3.print("Serial3");
 #endif //ARDUINO_ARCH_SAMD
-#if defined(SENSOR_RS485_PHY)
+#if defined(CONFIG_SENSOR_RS485_PHY)
     // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
     modbusSerial.begin(9600);
 #else

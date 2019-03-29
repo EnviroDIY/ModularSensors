@@ -59,7 +59,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define MFVersion_DEF "v0.5ba"
 
 // How frequently (in minutes) to log data
-#define loggingInterval_CDEF_MIN 15
+//#define loggingInterval_CDEF_MIN 5
 const char *apn_def = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId_def = "ArthurStrGuest";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd_def = "";  // The password for connecting to WiFi, unnecessary for gprs
@@ -106,7 +106,7 @@ const char *wifiPwd_def = "";  // The password for connecting to WiFi, unnecessa
 #define CONFIG_TIME_ZONE_DEF -8
 
 // How frequently (in minutes) to log data
-#define loggingInterval_CDEF_MIN 15
+//#define loggingInterval_CDEF_MIN 15
 #define APN_CDEF  "xxxx" // The APN for the gprs connection, unnecessary for WiFi
 #define WIFIID_CDEF  "xxxx"  // The WiFi access point, unnecessary for gprs
 #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
@@ -118,7 +118,7 @@ const char *wifiPwd_def = "";  // The password for connecting to WiFi, unnecessa
 #define samplingFeature_UUID   "samplingFeature_UUID"
 #define KellerNanolevel_ACT 1
 #ifdef KellerNanolevel_ACT
-  #define SENSOR_RS485_PHY 1
+  #define CONFIG_SENSOR_RS485_PHY 1
   //Mayfly definitions
   #define CONFIG_HW_RS485PHY_TX_PIN 5  //FUT: mv to ms_cfg.h AltSoftSerial Tx pin 
   #define CONFIG_HW_RS485PHY_RX_PIN 6  // AltSoftSerial Rx pin
@@ -179,7 +179,7 @@ inXbee RTS
 #define CONFIG_TIME_ZONE_DEF -8
 
 // How frequently (in minutes) to log data
-#define  loggingInterval_CDEF_MIN 2
+//#define  loggingInterval_CDEF_MIN 5
 #define  loggingInterval_MAX_CDEF_MIN 120
 #define APN_CDEF  "xxxx" // The APN for the gprs connection, unnecessary for WiFi
 #define WIFIID_CDEF  "xxxx"  // The WiFi access point, unnecessary for gprs
@@ -232,7 +232,7 @@ inXbee RTS
 #define CONFIG_TIME_ZONE_DEF -8
 
 // How frequently (in minutes) to log data
-#define  loggingInterval_CDEF_MIN 2
+//#define  loggingInterval_CDEF_MIN 5
 #define  loggingInterval_MAX_CDEF_MIN 120
 #define APN_CDEF  "xxxx" // The APN for the gprs connection, unnecessary for WiFi
 #define WIFIID_CDEF  "xxxx"  // The WiFi access point, unnecessary for gprs
@@ -274,7 +274,7 @@ inXbee RTS
 #define MFVersion_DEF "v0.5ba"
 
 // How frequently (in minutes) to log data
-#define  loggingInterval_CDEF_MIN 15
+//#define  loggingInterval_CDEF_MIN 5
 const char *apn_def = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId_def = "AzondeNetSsid";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd_def = NULL;//"";  // The password for connecting to WiFi, unnecessary for gprs
@@ -327,7 +327,7 @@ const char *wifiPwd_def = NULL;//"";  // The password for connecting to WiFi, un
 #endif
 
 #if !defined loggingInterval_CDEF_MIN
-#define      loggingInterval_CDEF_MIN 2   
+#define      loggingInterval_CDEF_MIN 15   
 #endif
 #if !defined loggingInterval_MAX_CDEF_MIN
 //This is default for testing - platforms should set own MAX
