@@ -23,8 +23,8 @@
 int8_t Logger::_timeZone = 0;
 // Initialize the static time adjustment
 int8_t Logger::_offset = 0;
-// Initialize the static timestamps
-uint32_t Logger::markedEpochTime = 0;
+// Initialize the static timestamps - should never be zero
+uint32_t Logger::markedEpochTime = 1;
 // Initialize the testing/logging flags
 volatile bool Logger::isLoggingNow = false;
 volatile bool Logger::isTestingNow = false;
@@ -574,7 +574,8 @@ bool Logger::setRTClock(uint32_t setTime)
     else
     {
         PRINTOUT(F("Clock already within 5 seconds of time."));
-        return false;
+        //return false;
+        return true;  //RTC valid
     }
 }
 
@@ -1444,10 +1445,23 @@ void Logger::logDataAndSend(void)
             MS_DBG(F("Connecting to the Internet..."));
             if (_logModem->connectInternet())
             {
+                //uint32_t syncTimeCheck_normalized;
+                //uint32_t syncTimeCheck_remainder;
+                //uint32_t logIntvl_sec = _loggingIntervalMinutes*60;
+                
                 // Publish data to remotes
                 sendDataToRemotes();
 
                 // Sync the clock at midnight
+                #define NIST_SYNC_DAY 86400
+                #define NIST_SYNC_HR 3600
+                #define NIST_SYNC_RATE NIST_SYNC_HR
+#if 0
+                syncTimeCheck_normalized = Logger::markedEpochTime/logIntvl_sec;
+                syncTimeCheck_remainder = syncTimeCheck_normalized %(NIST_SYNC_RATE/logIntvl_sec);
+                MS_DBG(F("SyncTimeCheck "),syncTimeCheck_remainder," Rate",logIntvl_sec," Time",Logger::markedEpochTime);
+                if (Logger::markedEpochTime != 0 && syncTimeCheck_remainder == 0)
+                #endif
                 if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
                 {
                     MS_DBG(F("Running a daily clock sync..."));

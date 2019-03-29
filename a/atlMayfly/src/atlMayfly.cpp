@@ -37,6 +37,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   //enables MS_DBG output to DEBUGGING_SERIAL_OUTPUT
   #define MS_DEBUGGING_STD
 #endif //atlMayfly_DBG
+#define SerialStd STANDARD_SERIAL_OUTPUT
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
@@ -56,13 +57,14 @@ const char *configIniID_def = configIniID_DEF_STR;
 const uint8_t loggingInterval_def_min = loggingInterval_CDEF_MIN;
 // The logger's timezone default.
 int8_t timeZone =  CONFIG_TIME_ZONE_DEF;
-
+uint32_t sysStartTime_sec=1;
+bool nistSyncRtc = false; //Set when a NIST sync RTC is required
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
 #include <sensors/ProcessorStats.h>
 
-const long SerialTtyBaud = 115200;   // Baud rate for the primary serial port for debugging
+const long SerialStdBaud = 115200;   // Baud rate for the primary serial port for debugging
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
 #define greenLEDPin 8        // MCU pin for the green LED (-1 if not applicable)
 #define redLEDPin   9        // MCU pin for the red LED (-1 if not applicable)
@@ -220,11 +222,11 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
     Serial2 ?
     Serial3 - RS485? /SDI12 ?
   */
-  //#define SerialTty Serial
+  //#define SerialStd Serial
   //#define DEBUGGING_SERIAL_OUTPUT Serial1
   #else
   //#define DEBUGGING_SERIAL_OUTPUT Serial
-  //#define SerialTty Serial
+  //#define SerialStd Serial
   #endif //
 
 #ifndef ENABLE_SERIAL2
@@ -259,7 +261,7 @@ void SERCOM2_Handler()
 }
 #endif
 #else
-//#define SerialTty Serial
+//#define SerialStd Serial
 //#define DEBUGGING_SERIAL_OUTPUT Serial
 #endif  // End hardware serial on SAMD21 boards
 
@@ -385,26 +387,26 @@ bool modemSleepFxn(void)
     {
         digitalWrite(modemSleepRqPin, HIGH);
         //setRedLED( LOW);
-        SerialTty.println(F("modemSleepFxnH"));
+        SerialStd.println(F("modemSleepFxnH"));
         return true;
     }
-    SerialTty.println(F("modemSleepFxn!"));
+    SerialStd.println(F("modemSleepFxn!"));
     return true;
 }
 bool modemWakeFxn(void)
 {
     if (modemVccPin >= 0){  // Turns on when power is applied
-        SerialTty.print(F("modemWakeFxnV!="));
-        SerialTty.println(modemVccPin);
+        SerialStd.print(F("modemWakeFxnV!="));
+        SerialStd.println(modemVccPin);
         return true;
     }else if (modemSleepRqPin >= 0)
     {
         digitalWrite(modemSleepRqPin, LOW);
         //setRedLED( HIGH);  // Because the XBee doesn't have any lights
-        SerialTty.println(F("modemWakeFxnL"));
+        SerialStd.println(F("modemWakeFxnL"));
         return true;
     }
-    SerialTty.print(F("modemWakeFxn!"));
+    SerialStd.print(F("modemWakeFxn!"));
     return true;
 }
 // An extra function to set up pin sleep and other preferences on the XBee
@@ -1553,7 +1555,7 @@ ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakMQTTKey, thingSpeakChannelID, t
 void greenredflash(uint8_t numFlash = 4, unsigned long timeOn_ms = 200,unsigned long timeOff_ms = 200)
 {
     for (uint8_t i = 0; i < numFlash; i++) {
-        //SerialTty.print(i);
+        //SerialStd.print(i);
         setGreenLED(HIGH);
         setRedLED( LOW);
         delay(timeOn_ms );
@@ -1614,8 +1616,8 @@ static uint8_t uuid_index =0;
 void ramAvailable(){
     extern int16_t __heap_start, *__brkval;
     uint16_t top_stack = (int) &top_stack  - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
-    SerialTty.print(F(" Ram available:"));
-    SerialTty.println(top_stack );// Stack and heap ??    
+    SerialStd.print(F(" Ram available:"));
+    SerialStd.println(top_stack );// Stack and heap ??    
 }
 #elif defined(ARDUINO_ARCH_SAMD)
 extern "C" char *sbrk(int i);
@@ -1623,8 +1625,8 @@ extern "C" char *sbrk(int i);
 #define RAM_REPORT_LEVEL 1 
 void ramAvailable () {
   char stack_dummy = 0;
-  SerialTty.print(F(" Ram available:"));
-  SerialTty.println(&stack_dummy - sbrk(0) );// Stack and heap ??  
+  SerialStd.print(F(" Ram available:"));
+  SerialStd.println(&stack_dummy - sbrk(0) );// Stack and heap ??  
 }
 #endif // ARDUINO_AVR_ENVIRODIY_MAYFLY
 static int inihUnhandledFn( const char* section, const char* name, const char* value)
@@ -1637,25 +1639,25 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
         if        (strcmp_P(name,REGISTRATION_TOKEN_pm)== 0) {
             //TODO: njh move storage to class EnviroDIYPublisher
             strcpy(ps.provider.s.registration_token, value);
-            SerialTty.print(F("PROVIDER Setting registration token: "));
-            SerialTty.println(ps.provider.s.registration_token );
+            SerialStd.print(F("PROVIDER Setting registration token: "));
+            SerialStd.println(ps.provider.s.registration_token );
             EnviroDIYPOST.setToken(ps.provider.s.registration_token);
         } else if (strcmp_P(name,CLOUD_ID_pm)== 0) {
             //TODO: njh move storage to class EnviroDIYPublisher
             strcpy(ps.provider.s.cloudId, value);
-            SerialTty.print(F("PROVIDER Setting cloudId: "));
-            SerialTty.println(ps.provider.s.cloudId );
+            SerialStd.print(F("PROVIDER Setting cloudId: "));
+            SerialStd.println(ps.provider.s.cloudId );
         } else if (strcmp_P(name,SAMPLING_FEATURE_pm)== 0) {
             //TODO: njh move storage to class EnviroDIYPublisher
             strcpy(ps.provider.s.sampling_feature, value);
-            SerialTty.print(F("PROVIDER Setting SamplingFeature: "));
-            SerialTty.println(ps.provider.s.sampling_feature );
+            SerialStd.print(F("PROVIDER Setting SamplingFeature: "));
+            SerialStd.println(ps.provider.s.sampling_feature );
             dataLogger.setSamplingFeatureUUID(ps.provider.s.sampling_feature);
         } else {
-            SerialTty.print(F("PROVIDER not supported:"));
-            SerialTty.print(name);
-            SerialTty.print("=");
-            SerialTty.println(value);
+            SerialStd.print(F("PROVIDER not supported:"));
+            SerialStd.print(name);
+            SerialStd.print("=");
+            SerialStd.println(value);
         }
     } else if (strcmp_P(section,UUIDs_pm)== 0)
     {
@@ -1670,12 +1672,12 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
 
         uint8_t uuid_search_i=0;
     
-        SerialTty.print(F(""));
-        SerialTty.print(uuid_index);
-        SerialTty.print(":");
-        SerialTty.print(name);
-        SerialTty.print(F("={"));
-        SerialTty.print(value);        
+        SerialStd.print(F(""));
+        SerialStd.print(uuid_index);
+        SerialStd.print(":");
+        SerialStd.print(name);
+        SerialStd.print(F("={"));
+        SerialStd.print(value);        
         do {
             if (strcmp((const char *)variableList[uuid_search_i]->getVarUUID().c_str(),name)==0) 
             {//Found a match
@@ -1686,31 +1688,31 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
         } while (uuid_search_i < variableCount );
         
         if (uuid_search_i > variableCount) {
-            SerialTty.println(F("} match  & added."));
+            SerialStd.println(F("} match  & added."));
         } else 
         if (strcmp_P(name,index_pm)== 0) { //Check if index and then simple reference
             if (uuid_index < variableCount) 
             {
-                SerialTty.print(F("} replacing {"));
-                SerialTty.print(variableList[uuid_index]->getVarUUID() );
-                SerialTty.println(F("}"));
+                SerialStd.print(F("} replacing {"));
+                SerialStd.print(variableList[uuid_index]->getVarUUID() );
+                SerialStd.println(F("}"));
                 variableList[uuid_index]->setVarUUID_atl((char *)value,true);           
             } else {
-                SerialTty.println(F("} out of range. Notused"));
+                SerialStd.println(F("} out of range. Notused"));
             }
         } else 
         {
-            //SerialTty.println();
-            SerialTty.println(F(" UUID not supported"));
-            //SerialTty.print(name);
-            //SerialTty.print("=");
-            //SerialTty.println(value);
+            //SerialStd.println();
+            SerialStd.println(F(" UUID not supported"));
+            //SerialStd.print(name);
+            //SerialStd.print("=");
+            //SerialStd.println(value);
         } 
         uuid_index++;
     } else if (strcmp_P(section,COMMON_pm)== 0) {// [COMMON] processing
         if (strcmp_P(name,LOGGER_ID_pm)== 0) {
-            SerialTty.print(F("COMMON LoggerId Set: "));
-            SerialTty.println(value);
+            SerialStd.print(F("COMMON LoggerId Set: "));
+            SerialStd.println(value);
             dataLogger.setLoggerId(value,true);
         } else if (strcmp_P(name,LOGGING_INTERVAL_MIN_pm)== 0){
             //convert str to num with error checking
@@ -1720,21 +1722,21 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             intervalMin = strtoul(value,&endptr,10);
             if ((intervalMin>0) &&(errno!=ERANGE) ) {
                 if (intervalMin > loggingInterval_MAX_CDEF_MIN) {
-                    SerialTty.print(F("COMMON Logging changed to (min): "));
-                    SerialTty.print(loggingInterval_MAX_CDEF_MIN);
-                    SerialTty.print(F("from read "));
-                    SerialTty.println(intervalMin);
+                    SerialStd.print(F("COMMON Logging changed to (min): "));
+                    SerialStd.print(loggingInterval_MAX_CDEF_MIN);
+                    SerialStd.print(F("from read "));
+                    SerialStd.println(intervalMin);
                     intervalMin= loggingInterval_MAX_CDEF_MIN;
                 } else {
-                    SerialTty.print(F("COMMON Logging Interval(min): "));
-                    SerialTty.println(intervalMin);
+                    SerialStd.print(F("COMMON Logging Interval(min): "));
+                    SerialStd.println(intervalMin);
                 }
                 dataLogger.setLoggingInterval(intervalMin);
             } else {
-                SerialTty.print(F(" Set interval error (range: 1-"));
-                SerialTty.print(loggingInterval_MAX_CDEF_MIN);
-                SerialTty.print(F(") with read:"));                
-                SerialTty.println(intervalMin);
+                SerialStd.print(F(" Set interval error (range: 1-"));
+                SerialStd.print(loggingInterval_MAX_CDEF_MIN);
+                SerialStd.print(F(") with read:"));                
+                SerialStd.println(intervalMin);
             }
         } else if (strcmp_P(name,LIION_TYPE_pm)== 0){
             //convert  str to num with error checking
@@ -1745,11 +1747,11 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             if ((batLiionType < PSLR_NUM) && (batLiionType>0) &&(errno!=ERANGE) ) {
                 mcuBoard.setBatteryType((ps_liion_rating_t )batLiionType);
                 //mayflyPhy.setBatteryType((ps_liion_rating_t )batLiionType);
-                SerialTty.print(F("COMMON LiIon Type: "));
-                SerialTty.println(batLiionType);
+                SerialStd.print(F("COMMON LiIon Type: "));
+                SerialStd.println(batLiionType);
             } else {
-                SerialTty.print(F(" Set LiIon Type error; (range 0-2) read:"));
-                SerialTty.println(batLiionType);
+                SerialStd.print(F(" Set LiIon Type error; (range 0-2) read:"));
+                SerialStd.println(batLiionType);
             }
         } else if (strcmp_P(name,TIME_ZONE_pm)== 0){
             //convert  str to num with error checking
@@ -1758,45 +1760,45 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             errno=0;
             time_zone_local = strtoul(value,&endptr,10);    
             if ((time_zone_local < 13) && (time_zone_local> -13) &&(errno!=ERANGE) ) {
-                SerialTty.print(F("COMMON Set TimeZone ; "));
+                SerialStd.print(F("COMMON Set TimeZone ; "));
                 timeZone=time_zone_local;
             } else {
-                SerialTty.print(F("COMMON Set TimeZone error; (range -12 : +12) read:"));     
+                SerialStd.print(F("COMMON Set TimeZone error; (range -12 : +12) read:"));     
             }
-            SerialTty.println(time_zone_local);           
+            SerialStd.println(time_zone_local);           
         } else {
-            SerialTty.print(F("COMMON tbd "));
-            SerialTty.print(name);
-            SerialTty.print(F(" to "));  
-            SerialTty.println(value);  
+            SerialStd.print(F("COMMON tbd "));
+            SerialStd.print(name);
+            SerialStd.print(F(" to "));  
+            SerialStd.println(value);  
         }
     } else if (strcmp_P(section,NETWORK_pm)== 0) {
         if (strcmp_P(name,apn_pm)== 0) {
-            SerialTty.print(F("NETWORK APN: was '"));
-            SerialTty.print(modemPhy.getApn());
+            SerialStd.print(F("NETWORK APN: was '"));
+            SerialStd.print(modemPhy.getApn());
             modemPhy.setWiFiId(value,true);
-            SerialTty.print(F("' now '"));
-            SerialTty.print(modemPhy.getApn());
-            SerialTty.println("'");            
+            SerialStd.print(F("' now '"));
+            SerialStd.print(modemPhy.getApn());
+            SerialStd.println("'");            
         } else if (strcmp_P(name,WiFiId_pm)== 0)  {
-            SerialTty.print(F("NETWORK WiFiId: was '"));
-            SerialTty.print(modemPhy.getWiFiId());
+            SerialStd.print(F("NETWORK WiFiId: was '"));
+            SerialStd.print(modemPhy.getWiFiId());
             modemPhy.setWiFiId(value,true);
-            SerialTty.print(F("' now '"));
-            SerialTty.print(modemPhy.getWiFiId());
-            SerialTty.println("'");
+            SerialStd.print(F("' now '"));
+            SerialStd.print(modemPhy.getWiFiId());
+            SerialStd.println("'");
         } else if (strcmp_P(name,WiFiPwd_pm)== 0) {
-            SerialTty.print(F("NETWORK WiFiPwd: was '"));
-            SerialTty.print(modemPhy.getWiFiPwd());
+            SerialStd.print(F("NETWORK WiFiPwd: was '"));
+            SerialStd.print(modemPhy.getWiFiPwd());
             modemPhy.setWiFiPwd(value,true);
-            SerialTty.print(F("' now '"));
-            SerialTty.print(modemPhy.getWiFiPwd());
-            SerialTty.println("'");
+            SerialStd.print(F("' now '"));
+            SerialStd.print(modemPhy.getWiFiPwd());
+            SerialStd.println("'");
         } else {
-            SerialTty.print(F("NETWORK tbd "));
-            SerialTty.print(name);
-            SerialTty.print(F(" to "));  
-            SerialTty.println(value);  
+            SerialStd.print(F("NETWORK tbd "));
+            SerialStd.print(name);
+            SerialStd.print(F(" to "));  
+            SerialStd.println(value);  
         }
     } else if (strcmp_P(section,BOOT_pm)== 0) 
     {
@@ -1815,8 +1817,8 @@ const char MAYFLY_INIT_ID_pm[] EDIY_PROGMEM = "MAYFLY_INIT_ID";
             //strcpy(ps.hw_boot.s.Serial_num, value);
             //MFsn_def
             //FUT needs to be checked for sz
-            SerialTty.print(F("Mayfly SerialNum :"));
-            SerialTty.println(value);
+            SerialStd.print(F("Mayfly SerialNum :"));
+            SerialStd.println(value);
 #if 0
 //Need to use to update EEPROM. Can cause problems if wrong. 
         } else if (strcmp_P(name,MAYFLY_REV_pm)== 0) {
@@ -1824,24 +1826,24 @@ const char MAYFLY_INIT_ID_pm[] EDIY_PROGMEM = "MAYFLY_INIT_ID";
             //strcpy(ps.hw_boot.s.rev, value);
             //FUT needs to be checked for sz
             strcpy(MFVersion, value); //won't work with mcuBoardVersion
-            SerialTty.print(F("Mayfly Rev:"));
-            SerialTty.println(mcuBoardVersion);
+            SerialStd.print(F("Mayfly Rev:"));
+            SerialStd.println(mcuBoardVersion);
 #endif //
         } else
         {
-            SerialTty.print(F("BOOT tbd "));
-            SerialTty.print(name);
-            SerialTty.print(F(" to "));  
-            SerialTty.println(value);
+            SerialStd.print(F("BOOT tbd "));
+            SerialStd.print(name);
+            SerialStd.print(F(" to "));  
+            SerialStd.println(value);
         }  
     } else
     {
-        SerialTty.print(F("Not supported ["));
-        SerialTty.print(section);
-        SerialTty.println(F("] "));
-        SerialTty.print(name);
-        SerialTty.print(F("="));  
-        SerialTty.println(value);  
+        SerialStd.print(F("Not supported ["));
+        SerialStd.print(section);
+        SerialStd.println(F("] "));
+        SerialStd.print(name);
+        SerialStd.print(F("="));  
+        SerialStd.println(value);  
     }
     #if RAM_REPORT_LEVEL > 1
     if (ram_track) RAM_AVAILABLE;
@@ -1878,7 +1880,7 @@ void setup()
 
     //uint8_t mcu_status = MCUSR; is already cleared by Arduino startup???
     //MCUSR = 0; //reset for unique read
-    // Start the primary SerialTty connection
+    // Start the primary SerialStd connection
     // Set up pins for the LED's
     #if defined greenLEDPin
     pinMode(greenLEDphy, OUTPUT);
@@ -1889,26 +1891,27 @@ void setup()
     setRedLED(LOW);
     #endif // redLED
 
-    #if 0//SerialTty==SerialUSB
-    while (!SerialUSB && (millis() < 10000)){
+    //#ifdef SerialUSB // SerialStd == SerialUSB
+    //#error Serial Err
+    while (!SerialStd && (millis() < 10000)){
         ledflash(100,1);
     }
     //#else
-    //SerialTty.begin(SerialTtyBaud);
-    #endif
-    SerialTty.begin(SerialTtyBaud);
-    SerialTty.print(F("\n---Boot. Build date:")); 
-    SerialTty.print(build_date);
-    //SerialTty.write('/');
-    //SerialTty.print(build_epochTime,HEX);
-    //SerialTty.print(__TIMESTAMP__); //still a ASC string Tue Dec 04 19:47:20 2018
+    //SerialStd.begin(SerialStdBaud);
+    //#endif
+    SerialStd.begin(SerialStdBaud);
+    SerialStd.print(F("\n---Boot. Build date:")); 
+    SerialStd.print(build_date);
+    //SerialStd.write('/');
+    //SerialStd.print(build_epochTime,HEX);
+    //SerialStd.print(__TIMESTAMP__); //still a ASC string Tue Dec 04 19:47:20 2018
 
-    //MCUSR SerialTty.println(mcu_status,HEX);
-    //SerialTty.println(file_name); //Dir and filename
-    SerialTty.println(sketchName); //Dir and filename
-    SerialTty.print(mcuBoardName);
-    SerialTty.print(" ");
-    SerialTty.print(mcuBoardVersion);
+    //MCUSR SerialStd.println(mcu_status,HEX);
+    //SerialStd.println(file_name); //Dir and filename
+    SerialStd.println(sketchName); //Dir and filename
+    SerialStd.print(mcuBoardName);
+    SerialStd.print(" ");
+    SerialStd.print(mcuBoardVersion);
 
     //ledflash();//works
     #ifdef RAM_AVAILABLE
@@ -1930,27 +1933,27 @@ void setup()
             * On an XbeeS6 WiFi this can take 20seconds for some reason.
             */
             #if 1//defined(CHECK_SLEEP_POWER)
-            SerialTty.print(lp_wait++);
-            SerialTty.print(F(": BatteryLow-Sleep60sec, BatV="));
-            SerialTty.println(mcuBoard.getBatteryVm1(false));
+            SerialStd.print(lp_wait++);
+            SerialStd.print(F(": BatteryLow-Sleep60sec, BatV="));
+            SerialStd.println(mcuBoard.getBatteryVm1(false));
             #endif //(CHECK_SLEEP_POWER)
             //delay(59000); //60Seconds
             //if(_mcuWakePin >= 0){systemSleep();}
             dataLogger.systemSleep(1); 
-            SerialTty.println(F("----Wakeup"));
+            SerialStd.println(F("----Wakeup"));
         }
     } while (LiBattPower_Unseable); 
     //MS_DBG(F("Good BatV="),mcuBoard.getBatteryVm1(false));
-    SerialTty.print(F("\nGood BatV="));
-    SerialTty.print(mcuBoard.getBatteryVm1(false));        
-    SerialTty.println();
+    SerialStd.print(F("\nGood BatV="));
+    SerialStd.print(mcuBoard.getBatteryVm1(false));        
+    SerialStd.println();
     /////// Measured LiIon voltage is good enough to start up
 
-    SerialTty.print(F("Using ModularSensors Library version "));
-    SerialTty.println(MODULAR_SENSORS_VERSION);
+    SerialStd.print(F("Using ModularSensors Library version "));
+    SerialStd.println(MODULAR_SENSORS_VERSION);
 
     if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
-        SerialTty.println(F(
+        SerialStd.println(F(
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
     // Allow interrupts for software serial
@@ -2003,21 +2006,21 @@ void setup()
 #endif //USE_SD_MAYFLY_INI
 
 #if 0
-    SerialTty.print(F(" .ini-Logger:"));
-    SerialTty.println(ps.msc.s.logger_id[0]);
-    SerialTty.println(F(" List of UUIDs"));
+    SerialStd.print(F(" .ini-Logger:"));
+    SerialStd.println(ps.msc.s.logger_id[0]);
+    SerialStd.println(F(" List of UUIDs"));
     uint8_t i_lp;
     for (i_lp=0;i_lp<variableCount;i_lp++)
     {
-        SerialTty.print(F("["));
-        SerialTty.print(i_lp);
-        SerialTty.print(F("] "));
-        SerialTty.println(variableList[i_lp]->getVarUUID() );
+        SerialStd.print(F("["));
+        SerialStd.print(i_lp);
+        SerialStd.print(F("] "));
+        SerialStd.println(variableList[i_lp]->getVarUUID() );
     }
-    //SerialTty.print(F("sF "))
-    SerialTty.print(samplingFeature);
-    SerialTty.print(F("/"));
-    SerialTty.println(ps.provider.s.sampling_feature);
+    //SerialStd.print(F("sF "))
+    SerialStd.print(samplingFeature);
+    SerialStd.print(F("/"));
+    SerialStd.println(ps.provider.s.sampling_feature);
 #endif //1
     //List PowerManagementSystem LiIon Bat thresholds
 
@@ -2026,13 +2029,13 @@ void setup()
 #if 0
     uint8_t psilp,psolp;
     for (psolp=0; psolp<PSLR_NUM;psolp++) {
-        SerialTty.print(psolp);
-        SerialTty.print(F(": "));
+        SerialStd.print(psolp);
+        SerialStd.print(F(": "));
         for (psilp=0; psilp<PS_LPBATT_TBL_NUM;psilp++) {
-            SerialTty.print(mayflyPhy.PS_LBATT_TBL[psolp][psilp]);
-            SerialTty.print(F(", "));
+            SerialStd.print(mayflyPhy.PS_LBATT_TBL[psolp][psilp]);
+            SerialStd.print(F(", "));
         }
-        SerialTty.println();
+        SerialStd.println();
     }
 #endif //0
 
@@ -2073,15 +2076,16 @@ void setup()
         }
     #endif
 
-    SerialTty.print(F("Start Time: "));
-    SerialTty.println(Logger::formatDateTime_ISO8601(dataLogger.getNowEpoch()+(timeZone*60)) );
-
     // Set the timezone and offsets
     // Logging in the given time zone
     Logger::setTimeZone(timeZone);
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
+    SerialStd.print(F("Start Time: "));
+    sysStartTime_sec = dataLogger.getNowEpoch();
+    //SerialStd.println(Logger::formatDateTime_ISO8601(dataLogger.getNowEpoch()+(timeZone*60)) );
+    SerialStd.println(Logger::formatDateTime_ISO8601(sysStartTime_sec));
     // Attach the modem and information pins to the logger
     #ifdef RAM_AVAILABLE
         RAM_AVAILABLE;
@@ -2098,6 +2102,8 @@ void setup()
     // Call the processor sleep
     greenredflash(4,1000);
     //delay(1000);
+    Logger::markTime(); //Init so never zero
+
     //dataLogger.systemSleep();
 
 }
@@ -2177,27 +2183,33 @@ void processSensors()
                     // The first time thru, setup modem. Can't do it in regular setup due to potential power drain.
                     modemPhy.wake();  // Turn it on to talk
                     extraModemSetup();//setupXBee();
-                    if (dataLogger.getNowEpoch() < 1545091200) {  /*Before 12/18/2018*/
-                        PRINTOUT(F("  timeSync on startup "));
-                        //dataLogger.setRTClock(dataLogger._logModem->getNISTTime());
-                        dataLogger.syncRTC();
-                    }
+                    nistSyncRtc = true;
                 }
                 // Connect to the network
                 MS_DBG(F("  Connecting to the Internet...\n"));
                 if (modemPhy.connectInternet())
                 {
                     MS_DBG(F("  sending..\n"));
+
+                   
                     // Post the data to the WebSDL
                     dataLogger.sendDataToRemotes();
 
-                    // Sync the clock at midnight
-                    //if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
-                    if (Logger::markedEpochTime != 0 && (Logger::markedEpochTime & 0xFFFFFFF0) % 3600 == 0)
+                #define DAY_SECS 86400
+                #define HOUR_SECS 3600
+                #define CONFIG_NIST_CHECK_SECS HOUR_SECS
+                #define CONFIG_NIST_ERR_MASK (~0x3F) 
+                uint32_t nistCheckRemainder = Logger::markedEpochTime % CONFIG_NIST_CHECK_SECS;
+                    MS_DBG(F("SyncTimeCheck "),Logger::markedEpochTime
+                    ,"remainder ",nistCheckRemainder
+                    ," check+-",(nistCheckRemainder&CONFIG_NIST_ERR_MASK) );
+                    if (nistSyncRtc || ((nistCheckRemainder&CONFIG_NIST_ERR_MASK ) == 0) )
                     {
-                        MS_DBG(F("  atl..Running a daily clock sync..."));
-                        //dataLogger.setRTClock(dataLogger. _logModem->getNISTTime());
-                        dataLogger.syncRTC();
+                        MS_DBG(F("  atl..Running a NIST clock sync. NeedSync "),nistSyncRtc);
+                        nistSyncRtc = true; //Needs to run every access until sucess
+                        if (true == dataLogger.syncRTC()) {
+                            nistSyncRtc = false; //Sucess
+                        } 
                     }
 
                     // Disconnect from the network
@@ -2227,11 +2239,11 @@ void loop()
     #if 0//KCONFIG_DEBUG_LEVEL==0
     flash_lp++;
 
-    SerialTty.print(F("Current Time ("));
-    SerialTty.print(flash_lp);
-    SerialTty.print(F(" ):"));
-    SerialTty.println(Logger::formatDateTime_ISO8601(dataLogger.getNowEpoch()+(timeZone*60)) );
-    //SerialTty.println();
+    SerialStd.print(F("Current Time ("));
+    SerialStd.print(flash_lp);
+    SerialStd.print(F(" ):"));
+    SerialStd.println(Logger::formatDateTime_ISO8601(dataLogger.getNowEpoch()+(timeZone*60)) );
+    //SerialStd.println();
     greenredflash();
     //delay(2000);
     //#elif KCONFIG_DEBUG_LEVEL > 0
