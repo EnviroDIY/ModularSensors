@@ -51,9 +51,9 @@ const char build_date[] = __DATE__ " " __TIME__;
 
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID_def = LOGGERID_DEF_STR;
-const char *configIniID = configIniID_DEF_STR;  
+const char *configIniID_def = configIniID_DEF_STR;  
 // How frequently (in minutes) to log data
-//const uint8_t loggingInterval = 5;
+const uint8_t loggingInterval_def_min = loggingInterval_CDEF_MIN;
 // The logger's timezone default.
 int8_t timeZone =  CONFIG_TIME_ZONE_DEF;
 
@@ -65,10 +65,10 @@ int8_t timeZone =  CONFIG_TIME_ZONE_DEF;
 const long SerialTtyBaud = 115200;   // Baud rate for the primary serial port for debugging
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
 #define greenLEDPin 8        // MCU pin for the green LED (-1 if not applicable)
-#define redLEDPin 9          // MCU pin for the red LED (-1 if not applicable)
+#define redLEDPin   9        // MCU pin for the red LED (-1 if not applicable)
 #elif defined(ARDUINO_SAMD_FEATHER_M0)
 #define greenLEDPin   8       //D8 // MCU pin for the green LED (-1 if not applicable)
-#define  redLEDPin = 13         //D13 // MCU pin for the red LED (-1 if not applicable)
+#define redLEDPin    13       //D13 // MCU pin for the red LED (-1 if not applicable)
 
 #elif defined(ARDUINO_SODAQ_AUTONOMO)
 //Only One LED Green - LED_BUILTIN
@@ -122,7 +122,7 @@ const int8_t sfSsPin = 43;  //SS   PA23 variant.cpp 'pin'43 serialFlash chip sel
 #else
 #error Undefined SD
 #endif
-const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
+const int8_t sensorPowerPin = sensorPowerPin_DEF; // MCU pin controlling main sensor power (-1 if not applicable)
 // Create and return the main processor chip "sensor" - for general metadata
 const char *mcuBoardName    = HwName_DEF;
 const char *mcuBoardVersion = HwVersion_DEF;
@@ -291,10 +291,10 @@ void SERCOM2_Handler()
 //    Modem Pins
 // ==========================================================================
 
-const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
-const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
-const int8_t modemResetPin = A4;    // MCU pin connected to modem reset pin (-1 if unconnected)
+const int8_t modemVccPin = modemVccPin_DEF;      // -2 MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemSleepRqPin =  modemSleepRqPin_DEF;  // 23 MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemStatusPin = modemStatusPin_DEF;   // MCU pin used to read modem status (-1 if not applicable)
+const int8_t modemResetPin = modemResetPin_DEF;    // MCU pin connected to modem reset pin (-1 if unconnected)
 
 
 // ==========================================================================
@@ -384,7 +384,7 @@ bool modemSleepFxn(void)
     if (modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
     {
         digitalWrite(modemSleepRqPin, HIGH);
-        setRedLED( LOW);
+        //setRedLED( LOW);
         SerialTty.println(F("modemSleepFxnH"));
         return true;
     }
@@ -400,7 +400,7 @@ bool modemWakeFxn(void)
     }else if (modemSleepRqPin >= 0)
     {
         digitalWrite(modemSleepRqPin, LOW);
-        setRedLED( HIGH);  // Because the XBee doesn't have any lights
+        //setRedLED( HIGH);  // Because the XBee doesn't have any lights
         SerialTty.println(F("modemWakeFxnL"));
         return true;
     }
@@ -424,8 +424,10 @@ void extraModemSetup(void)
         tinyModem->sendAT(F("D7"),1);  // Turn on CTS pin - as proxy for status indication
         // NOTE:  Only pin 12/DIO7/CTS can be used for this function
         tinyModem->waitResponse();
-        tinyModem->sendAT(F("SM"),1);  // Pin sleep
-        tinyModem->waitResponse();
+        if (modemSleepRqPin >=0) {
+            tinyModem->sendAT(F("SM"),1);  // Pin sleep
+            tinyModem->waitResponse();
+        } 
         tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
         // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
         // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
@@ -1503,7 +1505,7 @@ VariableArray varArray(variableCount, variableList);
 
 // Create a new logger instance
 
-Logger dataLogger(LoggerID_def, loggingInterval_def, sdCardPin, wakePin, &varArray);
+Logger dataLogger(LoggerID_def, loggingInterval_def_min, sdCardPin, wakePin, &varArray);
 
 //now works with MS_DBG #if KCONFIG_DEBUG_LEVEL > 0   //0918
 // ==========================================================================
@@ -1716,13 +1718,22 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             char *endptr;
             errno=0;
             intervalMin = strtoul(value,&endptr,10);
-            #define INTERVAL_MINUTES_MAX 480
-            if ((intervalMin <= INTERVAL_MINUTES_MAX) && (intervalMin>0) &&(errno!=ERANGE) ) {
+            if ((intervalMin>0) &&(errno!=ERANGE) ) {
+                if (intervalMin > loggingInterval_MAX_CDEF_MIN) {
+                    SerialTty.print(F("COMMON Logging changed to (min): "));
+                    SerialTty.print(loggingInterval_MAX_CDEF_MIN);
+                    SerialTty.print(F("from read "));
+                    SerialTty.println(intervalMin);
+                    intervalMin= loggingInterval_MAX_CDEF_MIN;
+                } else {
+                    SerialTty.print(F("COMMON Logging Interval(min): "));
+                    SerialTty.println(intervalMin);
+                }
                 dataLogger.setLoggingInterval(intervalMin);
-                SerialTty.print(F("COMMON Logging Interval(min): "));
-                SerialTty.println(intervalMin);
             } else {
-                SerialTty.print(F(" Set interval error(0-480) with:"));
+                SerialTty.print(F(" Set interval error (range: 1-"));
+                SerialTty.print(loggingInterval_MAX_CDEF_MIN);
+                SerialTty.print(F(") with read:"));                
                 SerialTty.println(intervalMin);
             }
         } else if (strcmp_P(name,LIION_TYPE_pm)== 0){
@@ -1904,12 +1915,7 @@ void setup()
         RAM_AVAILABLE;
     #endif //RAM_AVAILABLE
 
-#if defined(ARDUINO_ARCH_SAMD)
-    Serial2.begin(9600);
-    Serial2.print("Serial2");
-    //Serial3.begin(9600);
-    //Serial3.print("Serial3");
-#endif //ARDUINO_ARCH_SAMD
+
 
     // A vital check on power availability
     do {
@@ -1959,6 +1965,13 @@ void setup()
     modemSetup=false;
     modemSerial.begin(modemBaud);
 
+#if defined(ARDUINO_ARCH_SAMD)
+
+    Serial2.begin(9600);
+    Serial2.print("Serial2");
+    //Serial3.begin(9600); //shares with Autonom GreenLED
+    //Serial3.print("Serial3");
+#endif //ARDUINO_ARCH_SAMD
 #if defined(SENSOR_RS485_PHY)
     // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
     modbusSerial.begin(9600);
@@ -1986,7 +1999,7 @@ void setup()
 
 #ifdef USE_SD_MAYFLY_INI
     Serial.println(F("---parseIni "));
-    dataLogger.parseIniSd(configIniID,inihUnhandledFn);
+    dataLogger.parseIniSd(configIniID_def,inihUnhandledFn);
 #endif //USE_SD_MAYFLY_INI
 
 #if 0
@@ -2030,6 +2043,7 @@ void setup()
     {
         pinMode(modemVccPin, OUTPUT);
         digitalWrite(modemVccPin, LOW);
+        MS_DBG(F("Set Power Off ModemVccPin "),modemVccPin);
     }
     if (sensorPowerPin >= 0)
     {
@@ -2048,12 +2062,14 @@ void setup()
         if (modemSleepRqPin >= 0)
         {
             pinMode(modemSleepRqPin, OUTPUT);
-            digitalWrite(modemSleepRqPin, HIGH);
+            digitalWrite(modemSleepRqPin, HIGH); //Def sleep
+            MS_DBG(F("Set Sleep on modemSleepRqPin "),modemSleepRqPin);
         }
         if (modemResetPin >= 0)
         {
             pinMode(modemResetPin, OUTPUT);
-            digitalWrite(modemResetPin, HIGH);
+            digitalWrite(modemResetPin, HIGH);  //Def noReset
+            MS_DBG(F("Set HIGH/!reset modemResetPin "),modemResetPin);
         }
     #endif
 
@@ -2120,7 +2136,7 @@ void processSensors()
         // Turn on the LED to show we're taking a reading
         //digitalWrite(greenLED, HIGH);
         // Turn on the LED to show we're taking a reading
-        dataLogger.alertOn();
+        //dataLogger.alertOn();
 #if defined(CONFIG_SENSOR_RS485_PHY)
         // Start the stream for the modbus sensors
         // Because RS485 adapters tend to "steal" current from the data pins
@@ -2208,7 +2224,7 @@ void processSensors()
 int flash_lp=0;
 void loop()
 {
-    #if KCONFIG_DEBUG_LEVEL==0
+    #if 0//KCONFIG_DEBUG_LEVEL==0
     flash_lp++;
 
     SerialTty.print(F("Current Time ("));
@@ -2219,7 +2235,7 @@ void loop()
     greenredflash();
     //delay(2000);
     //#elif KCONFIG_DEBUG_LEVEL > 0
-
+#endif //0
     processSensors();
     // Check if it was instead the testing interrupt that woke us up
     // not implemented yet: if (EnviroDIYLogger.startTesting) EnviroDIYLogger.testingMode();
@@ -2230,5 +2246,5 @@ void loop()
 #if defined(CHECK_SLEEP_POWER)
     PRINTOUT(F("A"));
 #endif //(CHECK_SLEEP_POWER)
-#endif //#if KCONFIG_DEBUG_LEVEL > 0
+
 }

@@ -49,7 +49,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #error undefinded
 #endif
 //Still a WIP
-#define PROFILE02 02
+//#define PROFILE02 02
 //#define  PROFILE_NAME PROFILE02
 
 #if   PROFILE_NAME == PROFILE0A
@@ -59,7 +59,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define MFVersion_DEF "v0.5ba"
 
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval_def = 15;
+#define loggingInterval_CDEF_MIN 15
 const char *apn_def = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId_def = "ArthurStrGuest";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd_def = "";  // The password for connecting to WiFi, unnecessary for gprs
@@ -94,7 +94,10 @@ const char *wifiPwd_def = "";  // The password for connecting to WiFi, unnecessa
 #define HwName_DEF MFName_DEF
 #define USE_SD_MAYFLY_INI 1
 
-
+#define sensorPowerPin_DEF 22
+#define modemSleepRqPin_DEF 23
+#define modemStatusPin_DEF  19  // MCU pin used to read modem status (-1 if not applicable)
+#define modemResetPin_DEF A4    // MCU pin connected to modem reset pin (-1 if unconnected)
 
 #define LOGGERID_DEF_STR "msLog01"
 #define NEW_LOGGERID_MAX_SIZE 40
@@ -103,7 +106,7 @@ const char *wifiPwd_def = "";  // The password for connecting to WiFi, unnecessa
 #define CONFIG_TIME_ZONE_DEF -8
 
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval_def = 15;
+#define loggingInterval_CDEF_MIN 15
 #define APN_CDEF  "xxxx" // The APN for the gprs connection, unnecessary for WiFi
 #define WIFIID_CDEF  "xxxx"  // The WiFi access point, unnecessary for gprs
 #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
@@ -153,6 +156,22 @@ const uint8_t loggingInterval_def = 15;
 #define HwVersion_DEF AutonomoRev_DEF
 #define HwName_DEF AutonomoName_DEF
 
+#define USE_SD_MAYFLY_INI 1
+/*Autonom has built in BEE, on sleep1 with 5 control pins
+BEE_VCC PowerEn=H -seperate regulator 
+input DTR shared ArduinoA8
+inputXbee CTS
+Out  Xbee autonomoModemAssocPin
+inXbee RTS
+
+*/
+#define modemVccPin_DEF BEE_VCC
+#define autonomoModemRtsPin   BEERTS //PB22 same as MCU_CTS output
+#define autonomoModemCtsPin   BEECTS //PB23 output
+#define autonomoModemDtrPin   PIN_A13 //Shared
+#define autonomoModemAssocPin RI_AS  //input
+
+
 #define LOGGERID_DEF_STR "msLog01"
 #define NEW_LOGGERID_MAX_SIZE 40
 //#define NEW_LOGGERID_MAX_SIZE  3 ///Test
@@ -160,7 +179,8 @@ const uint8_t loggingInterval_def = 15;
 #define CONFIG_TIME_ZONE_DEF -8
 
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval_def = 2;
+#define  loggingInterval_CDEF_MIN 2
+#define  loggingInterval_MAX_CDEF_MIN 120
 #define APN_CDEF  "xxxx" // The APN for the gprs connection, unnecessary for WiFi
 #define WIFIID_CDEF  "xxxx"  // The WiFi access point, unnecessary for gprs
 #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
@@ -194,7 +214,59 @@ const uint8_t loggingInterval_def = 2;
 #define ExternalVoltage_Volt0_UUID "Volt0_UUID"
 #define ExternalVoltage_Volt1_UUID "VOLT1_UUID"
 #endif //ExternalVoltage_ACT
+#elif PROFILE_NAME == PROFILE02_ADAFRUIT_FEATHER_M0
+//**************************************************************************
+//#define SENSOR_RS485_PHY 1
+//Standard 
+//This is hardcode to mean things in ProcessorStats !!!!
+//For Adafruit Feather M0 (not Feather M0 Express?)
+#define HwVersion_DEF "r1"
+#define HwName_DEF "FeatherM0"
 
+#define USE_SD_MAYFLY_INI 1
+
+#define LOGGERID_DEF_STR "msLog01"
+#define NEW_LOGGERID_MAX_SIZE 40
+//#define NEW_LOGGERID_MAX_SIZE  3 ///Test
+#define configIniID_DEF_STR "ms_cfg.ini"  
+#define CONFIG_TIME_ZONE_DEF -8
+
+// How frequently (in minutes) to log data
+#define  loggingInterval_CDEF_MIN 2
+#define  loggingInterval_MAX_CDEF_MIN 120
+#define APN_CDEF  "xxxx" // The APN for the gprs connection, unnecessary for WiFi
+#define WIFIID_CDEF  "xxxx"  // The WiFi access point, unnecessary for gprs
+#define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
+
+//#define SENSOR_CONFIG_GENERAL 1
+//#define KellerAcculevel_ACT 1
+//Defaults for data.envirodiy.org
+#define registrationToken_UUID "registrationToken_UUID"
+#define samplingFeature_UUID   "samplingFeature_UUID"
+//#define KellerNanolevel_ACT 1
+#ifdef KellerNanolevel_ACT
+  #define SENSOR_RS485_PHY 1
+  #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
+  #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
+#endif //KellerNanolevel_ACT
+//#define INA219M_PHY_ACT 
+#ifdef INA219M_PHY_ACT
+  #define INA219M_MA_UUID              "INA219_MA_UUID"
+  #define INA219M_VOLT_UUID            "INA219_VOLT_UUID"
+#endif //INA219_PHY_ACT
+
+//#define Modem_RSSI_UUID ""
+// Seems to cause XBEE WiFi S6 to crash
+//#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
+#define ProcessorStats_ACT 1
+#define ProcessorStats_SampleNumber_UUID  "SampleNumber_UUID"
+#define ProcessorStats_Batt_UUID          "Batt_UUID"
+
+//#define ExternalVoltage_ACT 1
+#ifdef ExternalVoltage_ACT
+#define ExternalVoltage_Volt0_UUID "Volt0_UUID"
+#define ExternalVoltage_Volt1_UUID "VOLT1_UUID"
+#endif //ExternalVoltage_ACT
 #elif PROFILE_NAME == PROFILE03
 //**************************************************************************
 //Keller Nanolevel with XBP-u.fl 
@@ -202,7 +274,7 @@ const uint8_t loggingInterval_def = 2;
 #define MFVersion_DEF "v0.5ba"
 
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval_def = 15;
+#define  loggingInterval_CDEF_MIN 15
 const char *apn_def = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId_def = "AzondeNetSsid";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd_def = NULL;//"";  // The password for connecting to WiFi, unnecessary for gprs
@@ -232,4 +304,36 @@ const char *wifiPwd_def = NULL;//"";  // The password for connecting to WiFi, un
 #define Volt1_UUID "c7da692b-6661-4545-bd3d-04938faa285b"
 #endif //PROFILE_NAME
 
+/* Put defintions that need to be avaialbe 
+*/
+
+#if !defined modemVccPin_DEF
+#define modemVccPin_DEF -2
+#endif
+
+#if !defined sensorPowerPin_DEF
+#define      sensorPowerPin_DEF -1
+#endif
+
+#if !defined modemSleepRqPin_DEF
+#define      modemSleepRqPin_DEF -1
+#endif
+#if !defined modemStatusPin_DEF
+#define      modemStatusPin_DEF -1  
+#endif
+#if !defined modemResetPin_DEF
+// MCU pin connected to modem reset pin (-1 if unconnected)
+#define      modemResetPin_DEF -1    
+#endif
+
+#if !defined loggingInterval_CDEF_MIN
+#define      loggingInterval_CDEF_MIN 2   
+#endif
+#if !defined loggingInterval_MAX_CDEF_MIN
+//This is default for testing - platforms should set own MAX
+#define  loggingInterval_MAX_CDEF_MIN 15
+#endif 
+#if !defined NEW_LOGGERID_MAX_SIZE
+#define NEW_LOGGERID_MAX_SIZE 40
+#endif
 #endif //ms_cfg_h
