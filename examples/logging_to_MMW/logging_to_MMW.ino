@@ -481,7 +481,7 @@ void extraModemSetup(void)
 #else
 void extraModemSetup(void){}
 #endif
-  
+
 
 // THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
 #elif defined TINY_GSM_MODEM_SIM800 && defined SIM800_GPRSBEE_R6
@@ -557,10 +557,6 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, m
 // ^^ Use this for cellular
 #endif
 
-// Create RSSI and signal strength variable pointers for the modem
-// Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab");
-
 
 // ==========================================================================
 //    Maxim DS3231 RTC (Real Time Clock)
@@ -569,9 +565,6 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, m
 
 // Create a DS3231 sensor object
 MaximDS3231 ds3231(1);
-
-// Create a temperature variable pointer for the DS3231
-// Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab");
 
 
 // ==========================================================================
@@ -618,6 +611,7 @@ Variable *variableList[] = {
     new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
     new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
