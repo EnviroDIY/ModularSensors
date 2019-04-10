@@ -72,7 +72,7 @@
 #define Y4000_NUM_VARIABLES 8
 #define Y4000_WARM_UP_TIME_MS 1600
 // Time for communication to begin
-#define Y4000_STABILIZATION_TIME_MS 60000L
+#define Y4000_STABILIZATION_TIME_MS 60000
 // Y4000 Modbus manual says 60s; we find Cond takes about that long to respond.
 #define Y4000_MEASUREMENT_TIME_MS 3000
 
