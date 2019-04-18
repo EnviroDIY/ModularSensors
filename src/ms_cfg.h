@@ -1,14 +1,15 @@
 /*****************************************************************************
-ms_cfg.h
+ms_cfg.h  - ModularSensors Configuration - a wip - WorkInProgress
 Written By:  Neil Hancock www.envirodiy.org/members/neilh20/
 Development Environment: PlatformIO
-Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
+Hardware Platform(s): EnviroDIY Mayfly Arduino Datalogger+RS485 Wingboard
+    Adafruit ADAFRUIT_FEATHER_M4_EXPRESS, (Transitional support for FEATHER_M0_EXPRESS/AUTONOMO but likely to be superseded)
 Software License: BSD-3.
   Copyright (c) 2018, Neil Hancock - all rights assigned to Stroud Water Research Center (SWRC)
   and they may change this title to Stroud Water Research Center as required
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.xx.0
+This is written for ModularSensors library version 0.21.3 or greater
 
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
@@ -16,7 +17,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #ifndef ms_cfg_h
 #define ms_cfg_h
 // Local default defitions here
-// FUT: Some board level would be in a per board level EEPROM
+// FUT: Some board level would be in a per board level persistent storage - eg FLASH
 // These are either pre .ini read or per board defintions
 #define MFsn_def  F("unknown")
 
@@ -36,9 +37,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // The following MS_PROFILES are supported.
 // A profile is a defined set of Modular Sensor features 
 #define PROFILE01_MAYFLY_AVR 01
-#define PROFILE02_ADAFRUIT_FEATHER_M0 02
-#define PROFILE03_SODAQ_AUTONOMO_M0 03
-#define PROFILE04_ADAFRUIT_FEATHER_M4 04
+#define PROFILE04_ADAFRUIT_FEATHER_M4 02
+#define PROFILE02_ADAFRUIT_FEATHER_M0 03
+#define PROFILE03_SODAQ_AUTONOMO_M0   04
+
+
+
+//The following is expected to be steered by PlatformIo.ini [env:xxx]
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
 #define PROFILE_NAME PROFILE01_MAYFLY_AVR
 #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
@@ -57,35 +62,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //#define PROFILE02 02
 //#define  PROFILE_NAME PROFILE02
 
-#if   PROFILE_NAME == PROFILE0A
-//**************************************************************************
-// Keller Nanolevel Deployment with basic reliability monitoring
-// Expected to support either Digi Xbee WiFi or Digi Xbee LTE?
-#define MFVersion_DEF "v0.5ba"
-
-// How frequently (in minutes) to log data
-//#define loggingInterval_CDEF_MIN 5
-const char *apn_def = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
-const char *wifiId_def = "ArthurStrGuest";  // The WiFi access point, unnecessary for gprs
-const char *wifiPwd_def = "";  // The password for connecting to WiFi, unnecessary for gprs
-
-#define registrationToken_UUID "registrationToken_UUID"
-#define samplingFeature_UUID   "samplingFeature_UUID"
-#define KellerNanolevel_ACT 1
-#define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
-#define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
-
-
-#define MaximDS3231_Temp_UUID    "4b36e862-8dea-4f8a-a0d1-29ae20a92812"
-#define ProcessorStats_ACT 1
-#define ProcessorStats_Batt_UUID "0f9c6292-3646-4ab6-8aa3-ca542d5eee49"
-#define ProcessorStats_SampleNum_UUID  "c552fac5-c45c-416c-a634-5f22a20672de" 
-
-#define ExternalVoltage_ACT 1
-#define ExternalVoltage_Volt0_UUID "Volt0_UUID"
-#define ExternalVoltage_Volt1_UUID "VOLT1_UUID"
-
-#elif PROFILE_NAME == PROFILE01_MAYFLY_AVR
+#if PROFILE_NAME == PROFILE01_MAYFLY_AVR
 //**************************************************************************
 
 //Standard 
@@ -98,6 +75,9 @@ const char *wifiPwd_def = "";  // The password for connecting to WiFi, unnecessa
 #define HwVersion_DEF MFVersion_DEF
 #define HwName_DEF MFName_DEF
 #define USE_SD_MAYFLY_INI 1
+
+#define greenLEDPin 8        // MCU pin for the green LED (-1 if not applicable)
+#define redLEDPin   9        // MCU pin for the red LED (-1 if not applicable)
 
 #define sensorPowerPin_DEF 22
 #define modemSleepRqPin_DEF 23
@@ -149,6 +129,112 @@ const char *wifiPwd_def = "";  // The password for connecting to WiFi, unnecessa
 #define ExternalVoltage_ACT 1
 #define ExternalVoltage_Volt0_UUID "Volt0_UUID"
 #define ExternalVoltage_Volt1_UUID "VOLT1_UUID"
+
+#elif PROFILE_NAME == PROFILE04_ADAFRUIT_FEATHER_M4
+  //**************************************************************************
+  /*cmd line -D ARDUINO_ARCH_SAMD  ARDUINO_FEATHER_M4 ADAFRUIT_FEATHER_M4_EXPRESS
+    __SAMD51J19A__ __SAMD51__ __FPU_PRESENT ARM_MATH_CM4 
+    Add to cmd line
+    -D SERIAL2_EN -D SERIAL4_EN 
+
+    Board FeatherM4Express            
+  -----  ---------------    
+    USB   Serial SerialUSB
+  SERCOM0 Serial2 (A1/A4/A5)      
+  SERCOM1 SPI (MISO/MOSI/SCK)           
+  SERCOM2 I2C (SDA/SCL)                        
+  SERCOM3 Serial3 (D12/D13/D10)           
+  SERCOM4 Serial4 (A3/A2/D10)     
+  SERCOM5 Serial1/Bee (DO/D1)                      
+  QSPI    2Mbytes SD Flash drive 
+  */
+  //#define SENSOR_RS485_PHY 1
+  //Standard 
+  //This is hardcode to mean things in ProcessorStats !!!!
+  //For Adafruit Feather M0 (not Feather M0 Express?)
+  #define HwVersion_DEF "r1"
+  #define HwName_DEF "FeatherM4"
+
+  //The FEATHER_M4_EXPRESS has 1 neoPixel + RedLED
+  #define NUM_NEOPIXELS 1
+  #define NEOPIXEL_PIN 8
+  #define redLEDPin    13 
+  //FEATHER_M4_EXPRESS has QSPI 2M FLASH
+  #define SD_QSPI_2MFLASH
+
+  //The FEATHERWING_RTC_SD has RTC PCF8523 + uSD/SPI with CS/GPI10
+  //#define ADAFRUIT_FEATHERWING_RTC_SD
+  //#define USE_SD_MAYFLY_INI 1
+  #define SD_SPI_CARD_PIN_DEF 10
+
+
+  #define LOGGERID_DEF_STR "msLog01"
+  #define NEW_LOGGERID_MAX_SIZE 40
+  //#define NEW_LOGGERID_MAX_SIZE  3 ///Test
+  #define configIniID_DEF_STR "ms_cfg.ini"  
+  #define CONFIG_TIME_ZONE_DEF -8
+
+  // How frequently (in minutes) to log data
+  //#define  loggingInterval_CDEF_MIN 5
+  #define  loggingInterval_MAX_CDEF_MIN 120
+  #define APN_CDEF  "xxxx" // The APN for the gprs connection, unnecessary for WiFi
+  #define WIFIID_CDEF  "xxxx"  // The WiFi access point, unnecessary for gprs
+  #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
+
+  //#define SENSOR_CONFIG_GENERAL 1
+  //#define KellerAcculevel_ACT 1
+  //Defaults for data.envirodiy.org
+  #define registrationToken_UUID "registrationToken_UUID"
+  #define samplingFeature_UUID   "samplingFeature_UUID"
+
+  /* variant.cpp std defines  Serial1 
+  variant.cpp enhanced for  Serial2 3 4
+variant.h: has pin definitions
+#define PIN_SERIALx_RX       (0ul)  FTDI Pin4
+#define PIN_SERIALx_TX       (1ul)  FTDI Pin5
+*/
+#define SerialModem Serial1
+
+#if defined SERIAL2_EN
+#define SerialModbus Serial2
+//to be used by modbusSerial 
+#endif // SERIAL2_EN
+#if defined SERIAL3_EN
+//For M4express the RedLed is also on Serial3RX
+//#define SerialExt3 Serial3
+#endif //SERIAL3_EN
+#if defined SERIAL4_EN
+//#define SerialExt4 Serial4
+//add -DSTANDARD_SERIAL_OUTPUT=Serial4
+#define SerialTty Serial4
+//#define SerialStd Serial4
+#define STANDARD_SERIAL_OUTPUT Serial4
+#endif // SERIAL4_EN
+
+  //#define KellerNanolevel_ACT 1
+  #ifdef KellerNanolevel_ACT
+    #define SENSOR_RS485_PHY 1
+    #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
+    #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
+  #endif //KellerNanolevel_ACT
+  //#define INA219M_PHY_ACT 
+  #ifdef INA219M_PHY_ACT
+    #define INA219M_MA_UUID              "INA219_MA_UUID"
+    #define INA219M_VOLT_UUID            "INA219_VOLT_UUID"
+  #endif //INA219_PHY_ACT
+
+  //#define Modem_RSSI_UUID ""
+  // Seems to cause XBEE WiFi S6 to crash
+  //#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
+  #define ProcessorStats_ACT 1
+  #define ProcessorStats_SampleNumber_UUID  "SampleNumber_UUID"
+  #define ProcessorStats_Batt_UUID          "Batt_UUID"
+
+  //#define ExternalVoltage_ACT 1
+  #ifdef ExternalVoltage_ACT
+  #define ExternalVoltage_Volt0_UUID "Volt0_UUID"
+  #define ExternalVoltage_Volt1_UUID "VOLT1_UUID"
+  #endif //ExternalVoltage_ACT
 
 #elif PROFILE_NAME == PROFILE03_SODAQ_AUTONOMO_M0
 //**************************************************************************
@@ -309,61 +395,9 @@ const char *wifiPwd_def = NULL;//"";  // The password for connecting to WiFi, un
 #define Volt1_UUID "c7da692b-6661-4545-bd3d-04938faa285b"
 
 
-#elif PROFILE_NAME == PROFILE04_ADAFRUIT_FEATHER_M4
-//**************************************************************************
-//cmd line -D ARDUINO_ARCH_SAMD  ARDUINO_FEATHER_M4 ADAFRUIT_FEATHER_M4_EXPRESS __SAMD51J19A__ __SAMD51__ __FPU_PRESENT ARM_MATH_CM4 
-//#define SENSOR_RS485_PHY 1
-//Standard 
-//This is hardcode to mean things in ProcessorStats !!!!
-//For Adafruit Feather M0 (not Feather M0 Express?)
-#define HwVersion_DEF "r1"
-#define HwName_DEF "FeatherM4"
 
-#define ARDUINO_FEATHERWING_RTC_SD
-//#define USE_SD_MAYFLY_INI 1
-
-#define LOGGERID_DEF_STR "msLog01"
-#define NEW_LOGGERID_MAX_SIZE 40
-//#define NEW_LOGGERID_MAX_SIZE  3 ///Test
-#define configIniID_DEF_STR "ms_cfg.ini"  
-#define CONFIG_TIME_ZONE_DEF -8
-
-// How frequently (in minutes) to log data
-//#define  loggingInterval_CDEF_MIN 5
-#define  loggingInterval_MAX_CDEF_MIN 120
-#define APN_CDEF  "xxxx" // The APN for the gprs connection, unnecessary for WiFi
-#define WIFIID_CDEF  "xxxx"  // The WiFi access point, unnecessary for gprs
-#define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
-
-//#define SENSOR_CONFIG_GENERAL 1
-//#define KellerAcculevel_ACT 1
-//Defaults for data.envirodiy.org
-#define registrationToken_UUID "registrationToken_UUID"
-#define samplingFeature_UUID   "samplingFeature_UUID"
-//#define KellerNanolevel_ACT 1
-#ifdef KellerNanolevel_ACT
-  #define SENSOR_RS485_PHY 1
-  #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
-  #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
-#endif //KellerNanolevel_ACT
-//#define INA219M_PHY_ACT 
-#ifdef INA219M_PHY_ACT
-  #define INA219M_MA_UUID              "INA219_MA_UUID"
-  #define INA219M_VOLT_UUID            "INA219_VOLT_UUID"
-#endif //INA219_PHY_ACT
-
-//#define Modem_RSSI_UUID ""
-// Seems to cause XBEE WiFi S6 to crash
-//#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
-#define ProcessorStats_ACT 1
-#define ProcessorStats_SampleNumber_UUID  "SampleNumber_UUID"
-#define ProcessorStats_Batt_UUID          "Batt_UUID"
-
-//#define ExternalVoltage_ACT 1
-#ifdef ExternalVoltage_ACT
-#define ExternalVoltage_Volt0_UUID "Volt0_UUID"
-#define ExternalVoltage_Volt1_UUID "VOLT1_UUID"
-#endif //ExternalVoltage_ACT
+#elif !defined PROFILE_NAME
+#error Undefined PROFILE_NAME
 #endif //PROFILE_NAME
 
 /* Put defintions that need to be avaialbe 
@@ -397,5 +431,6 @@ const char *wifiPwd_def = NULL;//"";  // The password for connecting to WiFi, un
 #endif 
 #if !defined NEW_LOGGERID_MAX_SIZE
 #define NEW_LOGGERID_MAX_SIZE 40
-#endif
+#endif 
+
 #endif //ms_cfg_h

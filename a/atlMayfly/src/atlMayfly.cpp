@@ -19,11 +19,11 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
+#include "ms_cfg.h" //must be before ms_common.h & Arduino.h
 #include <Arduino.h>  // The base Arduino library
 //#include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <Time.h>
 #include <errno.h>
-#include "ms_cfg.h" //must be before modular_sensors_common.h
 #include "ms_common.h"
 
 #define KCONFIG_SHOW_NETWORK_INFO 1
@@ -37,7 +37,10 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   //enables MS_DBG output to DEBUGGING_SERIAL_OUTPUT
   #define MS_DEBUGGING_STD
 #endif //atlMayfly_DBG
+#if !defined SerialStd
 #define SerialStd STANDARD_SERIAL_OUTPUT
+#endif //SerialStd
+
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
@@ -66,13 +69,11 @@ bool nistSyncRtc = false; //Set when a NIST sync RTC is required
 
 const long SerialStdBaud = 115200;   // Baud rate for the primary serial port for debugging
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-#define greenLEDPin 8        // MCU pin for the green LED (-1 if not applicable)
-#define redLEDPin   9        // MCU pin for the red LED (-1 if not applicable)
+//ms_cfg:#define greenLEDPin 8        // MCU pin for the green LED (-1 if not applicable)
+//ms_cfg:#define redLEDPin   9        // MCU pin for the red LED (-1 if not applicable)
 #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
 //#define greenLEDPin   8       //D8 // MCU pin for the green LED (-1 if not applicable)
-#define redLEDPin    13       //D13 // MCU pin for the red LED (-1 if not applicable)
-#define NUM_NEOPIXELS 1
-#define NEOPIXEL_PIN 8
+//ms_cfg.h:#define redLEDPin    13       //D13 // MCU pin for the red LED (-1 if not applicable)
 
 #elif defined(ARDUINO_SAMD_FEATHER_M0)
 #define greenLEDPin   8       //D8 // MCU pin for the green LED (-1 if not applicable)
@@ -120,10 +121,12 @@ const int8_t wakePin = -1;        // MCU interrupt/alarm pin to wake from sleep
 //FEATHER_M4_EXPRESS has internal flash on QSPI P
 //QSPI const int8_t sdCardPin = 10;  // PA08 MCU SD card chip select/slave select pin (must be given!)
 //and has FEATHER_RTC_SD_CARD
-    #if defined(ARDUINO_FEATHERWING_RTC_SD)  //nh made up
-    //SD on std port with SD_CS JP3-D10 PA18                 RTC PCF8522+ SD
-    const int8_t sdCardPin = 10;  //JP3-D10 PA18
-    #endif //ARDUINO_FEATHERWING_RTC_SD
+    #if defined(ADAFRUIT_FEATHERWING_RTC_SD) 
+    //SD on std port with SD_CS JP3-D10 PA18  RTC PCF8522+ SD
+    const int8_t sdCardPin = SD_SPI_CARD_PIN_DEF;  //JP3-D10 PA18
+    #else 
+    const int8_t sdCardPin = -1; 
+    #endif //ADAFRUIT_FEATHERWING_RTC_SD
 
 #elif defined(ARDUINO_SAMD_FEATHER_M0)
 const int8_t buttonPin = -1;      // 21 Not used -MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
@@ -140,10 +143,10 @@ const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPin = 4;      // PA08 MCU SD card chip select/slave select pin (must be given!)
 //and has FEATHER_RTC_SD_CARD
-    #if defined(ARDUINO_FEATHERWING_RTC_SD)  //nh made up
+    #if defined(ADAFRUIT_FEATHERWING_RTC_SD)  //nh made up
     //SD on std port with SD_CS JP3-D10 PA18                 RTC PCF8522+ SD
     const int8_t sdCardPin = 10;  //JP3-D10 PA18
-    #endif //ARDUINO_FEATHERWING_RTC_SD
+    #endif //ADAFRUIT_FEATHERWING_RTC_SD
 
 #elif defined(ARDUINO_SODAQ_AUTONOMO)
 const int8_t buttonPin = -1;      // 21 Not used -MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
@@ -158,6 +161,8 @@ const int8_t sfSsPin = 43;  //SS   PA23 variant.cpp 'pin'43 serialFlash chip sel
 #else
 #error Undefined SD
 #endif
+
+
 const int8_t sensorPowerPin = sensorPowerPin_DEF; // MCU pin controlling main sensor power (-1 if not applicable)
 // Create and return the main processor chip "sensor" - for general metadata
 const char *mcuBoardName    = HwName_DEF;
@@ -221,19 +226,23 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 #endif  // End software serial for avr boards
 
 
-// The SAMD21 has 6 "SERCOM" ports, any of which can be used for UART communication.
+// The SAMD21/SAMD51 has 6 "SERCOM" ports, any of which can be used for UART communication.
 // The "core" code for most boards defines one or more UART (Serial) ports with
 // the SERCOMs and uses others for I2C and SPI.  We can create new UART ports on
 // any available SERCOM.  The table below shows definitions for select boards.
-
-// Board =>   Arduino Zero       Adafruit Feather    Sodaq Boards
-// -------    ---------------    ----------------    ----------------
-// SERCOM0    Serial1 (D0/D1)    Serial1 (D0/D1)     Serial (D0/D1)
-// SERCOM1    Available          Available           Serial3 (D12/D13)
-// SERCOM2    Available          Available           I2C (A4/A5)
-// SERCOM3    I2C (D20/D21)      I2C (D20/D21)       SPI (D11/12/13)
-// SERCOM4    SPI (D21/22/23)    SPI (D21/22/23)     SPI1/Serial2(D6/D7)
-// SERCOM5    EDBG/Serial        Available           Serial1/Bee
+// Variant.cpp/.h must be updated for extending SERCOM from std arduino framework.
+//SODAQ AUTONOMO M0 board looks like its being phased out, and not supported.
+/*Board FeatherM4Express    FeatherM0Express   FeatherM0            
+ -----  ---------------    ----------------    ----------------
+  USB   Serial                Serial           Serial
+SERCOM0 Serial2 (A1/A4/A5)    Serial1 (D0/D1)  Serial1 (D0/D1)     
+SERCOM1 SPI (MISO/MOSI/SCK)   Available        Available           
+SERCOM2 I2C (SDA/SCL)         SPI2(Flash)      Available                 
+SERCOM3 Serial3 (D12/D13/D10) I2C (D26/D27)    I2C (D20/D21)           
+SERCOM4 Serial4 (A3/A2/D10)   SPI1 (D28/29/30) SPI (D21/22/23)    
+SERCOM5 Serial1/Bee (DO/D1)   Available        EDBG/Serial5               
+QSPI     Yes                     no                no                 
+*/
 
 // If using a Sodaq board, do not define the new sercoms, instead:
 // #define ENABLE_SERIAL2
@@ -355,6 +364,10 @@ const int8_t RS485PHY_RX_PIN = CONFIG_HW_RS485PHY_RX_PIN;
 #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
 //requires special variant.cpp/h update
 HardwareSerial &modemSerial = Serial1;  // TODO:  need to decide
+//SerialModbus Serial2 RS485
+//RS485 pins
+//ms_cfg.h:SerialTty Serial4 Available Pins
+
 #elif defined ARDUINO_SAMD_FEATHER_M0
 HardwareSerial &modemSerial = Serial2;  // TODO:  need to decide
 #elif defined ARDUINO_SODAQ_AUTONOMO
@@ -933,7 +946,7 @@ MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 // A Maxbotix sonar with the trigger pin disconnect CANNOT share the serial port
 // A Maxbotix sonar using the trigger may be able to share but YMMV
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
+#if defined Serial3 && (defined ARDUINO_ARCH_SAMD || defined ATMEGA2560)
 HardwareSerial &sonarSerial = Serial3;  // Use hardware serial if possible
 #else
 // AltSoftSerial &sonarSerial = altSoftSerial;  // For software serial if needed
@@ -1053,8 +1066,8 @@ TIINA219M ina219m_phy(I2CPower, INA219i2c_addr, INA219ReadingsToAvg);
 #if defined(KellerAcculevel_ACT) || defined(KellerNanolevel_ACT)
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-#if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
-HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
+#if defined SerialModbus && (defined ARDUINO_ARCH_SAMD || defined ATMEGA2560)
+HardwareSerial &modbusSerial = SerialModbus;  // Use hardware serial if possible
 #else
 AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
 // NeoSWSerial &modbusSerial = neoSSerial1;  // For software serial if needed
@@ -2005,14 +2018,9 @@ void setup()
     modemSetup=false;
     modemSerial.begin(modemBaud);
 
-#if defined(ARDUINO_ARCH_SAMD)
 
-    Serial2.begin(9600);
-    Serial2.print("Serial2");
-    //Serial3.begin(9600); //shares with Autonom GreenLED
-    //Serial3.print("Serial3");
-#endif //ARDUINO_ARCH_SAMD
-#if defined(CONFIG_SENSOR_RS485_PHY)
+#if defined(CONFIG_SENSOR_RS485_PHY) && defined(SerialModbus) && defined(ADAFRUIT_FEATHER_M4_EXPRESS)
+ //nh version SerialModbus Serial2
     // Start the stream for the modbus sensors; all currently supported modbus sensors use 9600 baud
     modbusSerial.begin(9600);
 #else
@@ -2273,7 +2281,7 @@ void processSensors()
 int flash_lp=0;
 void loop()
 {
-    #if 0//KCONFIG_DEBUG_LEVEL==0
+    #if KCONFIG_DEBUG_LEVEL==0
     flash_lp++;
 
     SerialStd.print(F("Current Time ("));
@@ -2283,8 +2291,8 @@ void loop()
     //SerialStd.println();
     greenredflash();
     //delay(2000);
-    //#elif KCONFIG_DEBUG_LEVEL > 0
-#endif //0
+    #elif KCONFIG_DEBUG_LEVEL > 0
+
     processSensors();
     // Check if it was instead the testing interrupt that woke us up
     // not implemented yet: if (EnviroDIYLogger.startTesting) EnviroDIYLogger.testingMode();
@@ -2292,6 +2300,7 @@ void loop()
     // Sleep
     //if(_mcuWakePin >= 0){systemSleep();}
     dataLogger.systemSleep();
+    #endif //KCONFIG_DEBUG_LEVEL
 #if defined(CHECK_SLEEP_POWER)
     PRINTOUT(F("A"));
 #endif //(CHECK_SLEEP_POWER)

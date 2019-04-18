@@ -24,8 +24,9 @@
 #include "ModSensorDebugger.h"
 #include "VariableArray.h"
 #include "LoggerModem.h"
-#include <Arduino.h>  // The base Arduino library
 #include "ms_cfg.h"
+#include <Arduino.h>  // The base Arduino library
+
 
 // Bring in the libraries to handle the processor sleep/standby modes
 // The SAMD library can also the built-in clock on those modules
@@ -38,7 +39,14 @@
 
 // Bring in the library to communicate with an external high-precision real time clock
 // This also implements a needed date/time class
+#if !defined ADAFRUIT_FEATHERWING_RTC_SD
 #include <Sodaq_DS3231.h>
+#else 
+
+#include "RTClib.h"
+//Wall Time or Real Time Clock support from ADAFRUIT_FEATHERWING_RTC_SD
+//RTC_PCF8523 rtcExtPhy;
+#endif
 #define EPOCH_TIME_OFF 946684800
 // This is 2000-jan-01 00:00:00 in "epoch" time
 // Need this b/c the date/time class in Sodaq_DS3231 treats a 32-bit long
