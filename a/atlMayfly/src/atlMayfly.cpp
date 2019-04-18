@@ -20,7 +20,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Include the base required libraries
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
-#include <EnableInterrupt.h>  // for external and pin change interrupts
+//#include <EnableInterrupt.h>  // for external and pin change interrupts
 #include <Time.h>
 #include <errno.h>
 #include "ms_cfg.h" //must be before modular_sensors_common.h
@@ -68,6 +68,12 @@ const long SerialStdBaud = 115200;   // Baud rate for the primary serial port fo
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
 #define greenLEDPin 8        // MCU pin for the green LED (-1 if not applicable)
 #define redLEDPin   9        // MCU pin for the red LED (-1 if not applicable)
+#elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
+//#define greenLEDPin   8       //D8 // MCU pin for the green LED (-1 if not applicable)
+#define redLEDPin    13       //D13 // MCU pin for the red LED (-1 if not applicable)
+#define NUM_NEOPIXELS 1
+#define NEOPIXEL_PIN 8
+
 #elif defined(ARDUINO_SAMD_FEATHER_M0)
 #define greenLEDPin   8       //D8 // MCU pin for the green LED (-1 if not applicable)
 #define redLEDPin    13       //D13 // MCU pin for the red LED (-1 if not applicable)
@@ -97,17 +103,41 @@ const long SerialStdBaud = 115200;   // Baud rate for the primary serial port fo
 #define greenLEDphy -1
 #define setGreenLED(state)
 #endif //greenLED
+
+
+#if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
 const int8_t buttonPin = -1;      // 21 Not used -MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
 const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-#if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
 const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
+#elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
+//.platformio\packages\framework-arduinosam\variants\feather_m0_express\variant.cpp
+const int8_t buttonPin = -1;      // 21 Not used -MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
+const int8_t wakePin = -1;        // MCU interrupt/alarm pin to wake from sleep
+// Set the wake pin to -1 if you do not want the main processor to sleep.
+// In a SAMD system where you are using the built-in rtc, set wakePin to 1
+//FEATHER_M4_EXPRESS has internal flash on QSPI P
+//QSPI const int8_t sdCardPin = 10;  // PA08 MCU SD card chip select/slave select pin (must be given!)
+//and has FEATHER_RTC_SD_CARD
+    #if defined(ARDUINO_FEATHERWING_RTC_SD)  //nh made up
+    //SD on std port with SD_CS JP3-D10 PA18                 RTC PCF8522+ SD
+    const int8_t sdCardPin = 10;  //JP3-D10 PA18
+    #endif //ARDUINO_FEATHERWING_RTC_SD
+
 #elif defined(ARDUINO_SAMD_FEATHER_M0)
+const int8_t buttonPin = -1;      // 21 Not used -MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
+const int8_t wakePin = -1;        // MCU interrupt/alarm pin to wake from sleep
+// Set the wake pin to -1 if you do not want the main processor to sleep.
+// In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPin = 4;      // PA08 MCU SD card chip select/slave select pin (must be given!)
 #elif defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
 //.platformio\packages\framework-arduinosam\variants\feather_m0_express\variant.cpp
 //FEATHER_M0_EXPRESS has internal flash on secondary SPI PA13
+const int8_t buttonPin = -1;      // 21 Not used -MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
+const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
+// Set the wake pin to -1 if you do not want the main processor to sleep.
+// In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPin = 4;      // PA08 MCU SD card chip select/slave select pin (must be given!)
 //and has FEATHER_RTC_SD_CARD
     #if defined(ARDUINO_FEATHERWING_RTC_SD)  //nh made up
@@ -116,6 +146,10 @@ const int8_t sdCardPin = 4;      // PA08 MCU SD card chip select/slave select pi
     #endif //ARDUINO_FEATHERWING_RTC_SD
 
 #elif defined(ARDUINO_SODAQ_AUTONOMO)
+const int8_t buttonPin = -1;      // 21 Not used -MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
+const int8_t wakePin = -1;        // MCU interrupt/alarm pin to wake from sleep
+// Set the wake pin to -1 if you do not want the main processor to sleep.
+// In a SAMD system where you are using the built-in rtc, set wakePin to 1
 //uSD card & SerialFlash is SCOM3
 // SAMD21 MOSI/PA20 MISO/PA22 SCK/PA21
 // 
@@ -229,7 +263,7 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
   //#define SerialStd Serial
   #endif //
 
-#ifndef ENABLE_SERIAL2
+#if 0//ndef ENABLE_SERIAL2
 // Autonomo uses sercom4 see variant.cpp
 // Set up a 'new' UART using SERCOM1
 // The Rx will be on digital pin 11, which is SERCOM1's Pad #0
@@ -318,6 +352,9 @@ HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 const int8_t RS485PHY_TX_PIN = CONFIG_HW_RS485PHY_TX_PIN;
 const int8_t RS485PHY_RX_PIN = CONFIG_HW_RS485PHY_RX_PIN;
 
+#elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
+//requires special variant.cpp/h update
+HardwareSerial &modemSerial = Serial1;  // TODO:  need to decide
 #elif defined ARDUINO_SAMD_FEATHER_M0
 HardwareSerial &modemSerial = Serial2;  // TODO:  need to decide
 #elif defined ARDUINO_SODAQ_AUTONOMO

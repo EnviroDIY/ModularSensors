@@ -38,8 +38,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define PROFILE01_MAYFLY_AVR 01
 #define PROFILE02_ADAFRUIT_FEATHER_M0 02
 #define PROFILE03_SODAQ_AUTONOMO_M0 03
+#define PROFILE04_ADAFRUIT_FEATHER_M4 04
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
 #define PROFILE_NAME PROFILE01_MAYFLY_AVR
+#elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
+//"ARDUINO_SAMD_FEATHER_M4"  ADAFRUIT_FEATHER_M4_EXPRESS
+#define PROFILE_NAME PROFILE04_ADAFRUIT_FEATHER_M4
+//#elif defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
 #elif defined(ARDUINO_SAMD_FEATHER_M0)
 #define PROFILE_NAME PROFILE02_ADAFRUIT_FEATHER_M0
 //#elif defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
@@ -302,6 +307,63 @@ const char *wifiPwd_def = NULL;//"";  // The password for connecting to WiFi, un
 #define ExternalVoltage_ACT 1
 #define Volt0_UUID "d3b78c2e-312b-4e2a-b804-8230c963f912"
 #define Volt1_UUID "c7da692b-6661-4545-bd3d-04938faa285b"
+
+
+#elif PROFILE_NAME == PROFILE04_ADAFRUIT_FEATHER_M4
+//**************************************************************************
+//cmd line -D ARDUINO_ARCH_SAMD  ARDUINO_FEATHER_M4 ADAFRUIT_FEATHER_M4_EXPRESS __SAMD51J19A__ __SAMD51__ __FPU_PRESENT ARM_MATH_CM4 
+//#define SENSOR_RS485_PHY 1
+//Standard 
+//This is hardcode to mean things in ProcessorStats !!!!
+//For Adafruit Feather M0 (not Feather M0 Express?)
+#define HwVersion_DEF "r1"
+#define HwName_DEF "FeatherM4"
+
+#define ARDUINO_FEATHERWING_RTC_SD
+//#define USE_SD_MAYFLY_INI 1
+
+#define LOGGERID_DEF_STR "msLog01"
+#define NEW_LOGGERID_MAX_SIZE 40
+//#define NEW_LOGGERID_MAX_SIZE  3 ///Test
+#define configIniID_DEF_STR "ms_cfg.ini"  
+#define CONFIG_TIME_ZONE_DEF -8
+
+// How frequently (in minutes) to log data
+//#define  loggingInterval_CDEF_MIN 5
+#define  loggingInterval_MAX_CDEF_MIN 120
+#define APN_CDEF  "xxxx" // The APN for the gprs connection, unnecessary for WiFi
+#define WIFIID_CDEF  "xxxx"  // The WiFi access point, unnecessary for gprs
+#define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
+
+//#define SENSOR_CONFIG_GENERAL 1
+//#define KellerAcculevel_ACT 1
+//Defaults for data.envirodiy.org
+#define registrationToken_UUID "registrationToken_UUID"
+#define samplingFeature_UUID   "samplingFeature_UUID"
+//#define KellerNanolevel_ACT 1
+#ifdef KellerNanolevel_ACT
+  #define SENSOR_RS485_PHY 1
+  #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
+  #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
+#endif //KellerNanolevel_ACT
+//#define INA219M_PHY_ACT 
+#ifdef INA219M_PHY_ACT
+  #define INA219M_MA_UUID              "INA219_MA_UUID"
+  #define INA219M_VOLT_UUID            "INA219_VOLT_UUID"
+#endif //INA219_PHY_ACT
+
+//#define Modem_RSSI_UUID ""
+// Seems to cause XBEE WiFi S6 to crash
+//#define Modem_SignalPercent_UUID    "SignalPercent_UUID"
+#define ProcessorStats_ACT 1
+#define ProcessorStats_SampleNumber_UUID  "SampleNumber_UUID"
+#define ProcessorStats_Batt_UUID          "Batt_UUID"
+
+//#define ExternalVoltage_ACT 1
+#ifdef ExternalVoltage_ACT
+#define ExternalVoltage_Volt0_UUID "Volt0_UUID"
+#define ExternalVoltage_Volt1_UUID "VOLT1_UUID"
+#endif //ExternalVoltage_ACT
 #endif //PROFILE_NAME
 
 /* Put defintions that need to be avaialbe 
