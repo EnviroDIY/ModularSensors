@@ -1990,6 +1990,7 @@ void setup()
             //delay(59000); //60Seconds
             //if(_mcuWakePin >= 0){systemSleep();}
             dataLogger.systemSleep(1); 
+            delay(1000);//debug
             SerialStd.println(F("----Wakeup"));
         }
     } while (LiBattPower_Unseable); 
