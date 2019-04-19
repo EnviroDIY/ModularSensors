@@ -34,7 +34,10 @@ volatile bool Logger::startTesting = false;
 #if defined(ARDUINO_ARCH_SAMD)
     RTCZero Logger::zero_sleep_rtc;
 #endif
-
+#if defined ADAFRUIT_FEATHERWING_RTC_SD
+//Wall Time or Real Time Clock support from ADAFRUIT_FEATHERWING_RTC_SD
+// Sodaq_DS3231.cpp class RTC_PCF8523 rtcExtPhy;
+#endif //ADAFRUIT_FEATHERWING_RTC_SD
 
 // Constructors
 Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
@@ -1015,7 +1018,11 @@ void Logger::setFileTimestamp(File fileToStamp, uint8_t stampFlag)
 {
     fileToStamp.timestamp(stampFlag, dtFromEpoch(getNowEpoch()).year(),
                                      dtFromEpoch(getNowEpoch()).month(),
+                                     #if 1 //!defined ADAFRUIT_FEATHERWING_RTC_SD
                                      dtFromEpoch(getNowEpoch()).date(),
+                                     #else
+                                     dtFromEpoch(getNowEpoch()).day(),
+                                     #endif //ADAFRUIT_FEATHERWING_RTC_SD
                                      dtFromEpoch(getNowEpoch()).hour(),
                                      dtFromEpoch(getNowEpoch()).minute(),
                                      dtFromEpoch(getNowEpoch()).second());
@@ -1330,6 +1337,14 @@ void Logger::begin()
     #if defined ARDUINO_ARCH_SAMD
         MS_DBG(F("Beginning internal real time clock"));
         zero_sleep_rtc.begin();
+        #if 1
+        rtcExtPhy.begin();
+        rtcExtPhy.initialized();
+        DateTime now = rtcExtPhy.now();
+        zero_sleep_rtc.setTime(now.hour(), now.minute(), now.second());
+        zero_sleep_rtc.setDate(now.date(), now.month(), now.year());
+        MS_DBG(F("Set internal rtc from ext rtc"));
+        #endif //0
     #endif
 
     // Set the pins for I2C

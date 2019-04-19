@@ -2291,7 +2291,7 @@ void loop()
     SerialStd.println(Logger::formatDateTime_ISO8601(dataLogger.getNowEpoch()+(timeZone*60)) );
     //SerialStd.println();
     greenredflash();
-    //delay(2000);
+    delay(2000);
     #elif KCONFIG_DEBUG_LEVEL > 0
 
     processSensors();
