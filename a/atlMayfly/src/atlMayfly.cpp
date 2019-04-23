@@ -30,7 +30,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
 #define KCONFIG_DEBUG_LEVEL 1
 #else
-#define KCONFIG_DEBUG_LEVEL 0
+#define KCONFIG_DEBUG_LEVEL 1
 #endif
 //#define atlMayfly_DBG 1
 #ifdef atlMayfly_DBG 
@@ -395,7 +395,7 @@ HardwareSerial &modemSerial = Serial1;  // Bee Socket
 // https://github.com/vshymanskyy/StreamDebugger
 #ifdef STREAMDEBUGGER_DBG
  #include <StreamDebugger.h>
- StreamDebugger modemDebugger(modemSerial, Serial);
+ StreamDebugger modemDebugger(modemSerial, STANDARD_SERIAL_OUTPUT);
  //TinyGsm *tinyModem = new TinyGsm(modemDebugger);
  #if defined(TINY_GSM_MODEM_XBEE)
  TinyGsm *tinyModem = new TinyGsm(modemDebugger, modemResetPin);
