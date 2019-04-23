@@ -604,7 +604,7 @@ bool Logger::setRTClock(uint32_t setTime)
     {
         DateTime t = setTime;
         rtcExtPhy.adjust(t);
-        MS_DBG("rtcExt updated to UTS ",  setTime,"->",formatDateTime_ISO8601(setTime)));
+        MS_DBG("rtcExt updated to UTS ",  setTime,"->",formatDateTime_ISO8601(setTime));
         retVal= true;
     }
 
