@@ -216,6 +216,8 @@ public:
         static RTCZero zero_sleep_rtc;  // create the rtc object
     #endif
 
+    static uint32_t getNowEpochT0(void); //Get Epoch standard UST
+    static uint32_t getNowEpochTz(void); //Get Epoch with time zone offset
     static uint32_t getNowEpoch(void);
     static void setNowEpoch(uint32_t ts);
 

@@ -60,7 +60,7 @@ const char *configIniID_def = configIniID_DEF_STR;
 const uint8_t loggingInterval_def_min = loggingInterval_CDEF_MIN;
 // The logger's timezone default.
 int8_t timeZone =  CONFIG_TIME_ZONE_DEF;
-uint32_t sysStartTime_sec=1;
+uint32_t sysStartTime_epochTzSec=1;
 bool nistSyncRtc = false; //Set when a NIST sync RTC is required
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
@@ -2128,10 +2128,16 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
+    // Begin the logger
+    dataLogger.begin();
+
     SerialStd.print(F("Start Time: "));
-    sysStartTime_sec = dataLogger.getNowEpoch();
-    //SerialStd.println(Logger::formatDateTime_ISO8601(dataLogger.getNowEpoch()+(timeZone*60)) );
-    SerialStd.println(Logger::formatDateTime_ISO8601(sysStartTime_sec));
+
+    sysStartTime_epochTzSec = dataLogger.getNowEpochTz();
+    //SerialStd.println(Logger::formatDateTime_ISO8601(dataLogger.getNowEpochTz()+(timeZone*60)) );
+    SerialStd.print(Logger::formatDateTime_ISO8601(sysStartTime_epochTzSec  ));
+    SerialStd.print(" TZ=");
+    SerialStd.println(timeZone);
     // Attach the modem and information pins to the logger
     #ifdef RAM_AVAILABLE
         RAM_AVAILABLE;
@@ -2140,9 +2146,8 @@ void setup()
     //dataLogger.setAlertPin(-1);//greenLEDPin
     dataLogger.setTestingModePin(buttonPin);
 
-    // Begin the logger
-    //modemPhy.modemPowerUp();
-    dataLogger.begin();
+
+        //modemPhy.modemPowerUp();
     varArray.setupSensors(); //Assumption pwr is available
 
     // Call the processor sleep
@@ -2288,7 +2293,7 @@ void loop()
     SerialStd.print(F("Current Time ("));
     SerialStd.print(flash_lp);
     SerialStd.print(F(" ):"));
-    SerialStd.println(Logger::formatDateTime_ISO8601(dataLogger.getNowEpoch()+(timeZone*60)) );
+    SerialStd.println(Logger::formatDateTime_ISO8601(dataLogger.getNowEpochTz()) );
     //SerialStd.println();
     greenredflash();
     delay(2000);

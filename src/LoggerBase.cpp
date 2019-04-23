@@ -485,12 +485,24 @@ void Logger::setNowEpoch(uint32_t ts){rtc.setEpoch(ts);}
 
 #elif defined ARDUINO_ARCH_SAMD
 
+uint32_t Logger::getNowEpochT0(void)
+{
+  return zero_sleep_rtc.getEpoch();
+}
+
+uint32_t Logger::getNowEpochTz(void)
+{
+  uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
+  currentEpochTime += _offset*3600;
+  return currentEpochTime;
+}
 uint32_t Logger::getNowEpoch(void)
 {
   uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
   currentEpochTime += _offset*3600;
   return currentEpochTime;
 }
+
 void Logger::setNowEpoch(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
 
 #endif
@@ -549,6 +561,7 @@ String Logger::formatDateTime_ISO8601(uint32_t epochTime)
 // This sets the real time clock to the given time
 bool Logger::setRTClock(uint32_t setTime)
 {
+    bool retVal=false;
     // If the timestamp is zero, just exit
     if  (setTime == 0)
     {
@@ -568,18 +581,35 @@ bool Logger::setRTClock(uint32_t setTime)
     MS_DBG(F("Offset:"), abs(set_logTZ - cur_logTZ));
 
     // If the RTC and NIST disagree by more than 5 seconds, set the clock
+
     if ((abs(set_logTZ - cur_logTZ) > 5) && (setTime != 0))
     {
         setNowEpoch(set_rtcTZ);
         PRINTOUT(F("Clock set!"));
-        return true;
+        retVal= true;
     }
     else
     {
         PRINTOUT(F("Clock already within 5 seconds of time."));
         //return false;
-        return true;  //RTC valid
+        retVal= true;  //RTC valid
     }
+    #if defined ADAFRUIT_FEATHERWING_RTC_SD
+    //Check the current ExtRtc time - 
+    DateTime nowExt = rtcExtPhy.now(); //T0 UST/
+    uint32_t nowExtEpoch_sec =nowExt.getEpoch();
+    MS_DBG("            Time Returned by rtcExt:", nowExtEpoch_sec, "->", \
+        formatDateTime_ISO8601(nowExtEpoch_sec));
+    if ((abs(nowExtEpoch_sec - setTime) > 5) && (setTime != 0))
+    {
+        DateTime t = setTime;
+        rtcExtPhy.adjust(t);
+        MS_DBG("rtcExt updated to UTS ",  setTime,"->",formatDateTime_ISO8601(setTime)));
+        retVal= true;
+    }
+
+    #endif //ADAFRUIT_FEATHERWING_RTC_SD
+    return retVal;
 }
 
 
@@ -1334,18 +1364,6 @@ void Logger::begin(VariableArray *inputArray)
 }
 void Logger::begin()
 {
-    #if defined ARDUINO_ARCH_SAMD
-        MS_DBG(F("Beginning internal real time clock"));
-        zero_sleep_rtc.begin();
-        #if 1
-        rtcExtPhy.begin();
-        rtcExtPhy.initialized();
-        DateTime now = rtcExtPhy.now();
-        zero_sleep_rtc.setTime(now.hour(), now.minute(), now.second());
-        zero_sleep_rtc.setDate(now.date(), now.month(), now.year());
-        MS_DBG(F("Set internal rtc from ext rtc"));
-        #endif //0
-    #endif
 
     // Set the pins for I2C
     MS_DBG(F("Setting I2C Pins to INPUT_PULLUP"));
@@ -1370,11 +1388,42 @@ void Logger::begin()
         MS_DBG(F("Beginning DS3231 real time clock"));
         rtc.begin();
     #endif
+    #if defined ARDUINO_ARCH_SAMD
+        /* Work in progress
+         * Int RTCZero     class Time relative to 1900
+         * Ext RTC_PCF8523 class Time relative to 2000 UTS/GMT/TZ0
+         */
+        MS_DBG("Beginning internal real time clock");
+        zero_sleep_rtc.begin();
+        #if 1
+        rtcExtPhy.begin(); //Always returns true at the moment
 
-    // Print out the current time
-    PRINTOUT(F("Current RTC time is:"), formatDateTime_ISO8601(getNowEpoch()));
+        //eg Apr 22 2019 16:46:09 in this TZ
+        DateTime ccTimeTZ(__DATE__, __TIME__); 
+        MS_DBG("now  ",ccTimeTZ.month(),"-",ccTimeTZ.date(),"-",ccTimeTZ.year2k(),"/",ccTimeTZ.year(), " ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second());
+        DateTime ccTime2k=ccTimeTZ.get()-(getTimeZone()*3600); //set to secs from UST/GMT Year 2000
+        if (! rtcExtPhy.initialized()) 
+        {
+            MS_DBG("ExtRTC !init set to compile time ",__DATE__," ",__TIME__);
+            rtcExtPhy.adjust(ccTime2k);
+        } else {
+            DateTime now = rtcExtPhy.now();
+            if (now.getY2k_secs() < ccTime2k.getY2k_secs()) {
+                MS_DBG("ExtRTC invalid   ",ccTime2k.month(),"-",ccTime2k.date(),"-",ccTime2k.year2k(),"/",ccTime2k.year(), " ",ccTime2k.hour(),":",ccTime2k.minute(),":",ccTime2k.second(), ". Set to compile time ",__DATE__," ",__TIME__);
+                rtcExtPhy.adjust(ccTime2k);
+            }             
+        }
 
-    PRINTOUT(F("Logger setup finished!"));
+        DateTime now = rtcExtPhy.now();
+        MS_DBG("Set internal rtc from ext rtc ",now.year(),"-",now.month(),"-",now.date()," ",now.hour(),":",now.minute(),":",now.second());
+        zero_sleep_rtc.setTime(now.hour(), now.minute(), now.second());
+        zero_sleep_rtc.setDate(now.date(), now.month(), now.year2k());
+        #define zr zero_sleep_rtc 
+        MS_DBG("Read internal rtc ",zr.getYear(),"-",zr.getMonth(),"-",zr.getDay()," ",zr.getHours(),":",zr.getMinutes(),":",zr.getSeconds());
+        #endif //0
+    #endif //ARDUINO_ARCH_SAMD
+
+    MS_DBG(F("Current RTC time is:"), formatDateTime_ISO8601(getNowEpochTz()));
 }
 
 
