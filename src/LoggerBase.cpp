@@ -561,7 +561,12 @@ String Logger::formatDateTime_ISO8601(uint32_t epochTime)
 // This sets the real time clock to the given time
 bool Logger::setRTClock(uint32_t setTime)
 {
-    long   set_logTZ, set_rtcTZ,cur_logTZ;
+    #if defined ARDUINO_ARCH_SAMD
+    long   
+    #else
+    uint32_t
+    #endif
+    set_logTZ, set_rtcTZ,cur_logTZ;
     bool retVal=false;
     // If the timestamp is zero, just exit
     if  (setTime == 0)
@@ -579,9 +584,8 @@ bool Logger::setRTClock(uint32_t setTime)
     cur_logTZ = getNowEpochTz(); //EpochTZ
     MS_DBG(F("         Time Returned by RTC:"), cur_logTZ, F("->"), \
         formatDateTime_ISO8601(cur_logTZ));
-    #define abs2(x) ((x)>0?(x):(-1*(x)))
-    MS_DBG(F("         Offset1:"), abs(set_logTZ - cur_logTZ));
-    MS_DBG(F("         Offset2:"), abs(cur_logTZ- set_logTZ));
+    MS_DBG(F("         Offset:"), abs(set_logTZ - cur_logTZ));
+
     // If the RTC and NIST disagree by more than 5 seconds, set the clock
     #define NIST_TIME_DIFF_SEC 5
     if (abs(set_logTZ - cur_logTZ) > NIST_TIME_DIFF_SEC )
@@ -1392,7 +1396,7 @@ void Logger::begin()
     #endif
     #if defined ARDUINO_ARCH_SAMD
         /* Work in progress
-         * Int RTCZero     class Time relative to 1900
+         * Int RTCZero     class Time relative to 2000 TZ
          * Ext RTC_PCF8523 class Time relative to 2000 UTS/GMT/TZ0
          */
         MS_DBG("Beginning internal real time clock");
