@@ -561,6 +561,7 @@ String Logger::formatDateTime_ISO8601(uint32_t epochTime)
 // This sets the real time clock to the given time
 bool Logger::setRTClock(uint32_t setTime)
 {
+    long   set_logTZ, set_rtcTZ,cur_logTZ;
     bool retVal=false;
     // If the timestamp is zero, just exit
     if  (setTime == 0)
@@ -569,23 +570,24 @@ bool Logger::setRTClock(uint32_t setTime)
         return false;
     }
 
-    uint32_t set_logTZ = setTime + getTimeZone()*3600;
-    uint32_t set_rtcTZ = set_logTZ - getTZOffset()*3600;
+    set_logTZ = setTime + getTimeZone()*3600;
+    set_rtcTZ = set_logTZ - getTZOffset()*3600;
     MS_DBG(F("         Correct Time for Logger:"), set_logTZ, F("->"), \
         formatDateTime_ISO8601(set_logTZ));
 
     // Check the current RTC time
-    uint32_t cur_logTZ = getNowEpoch();
-    MS_DBG(F("            Time Returned by RTC:"), cur_logTZ, F("->"), \
+    cur_logTZ = getNowEpochTz(); //EpochTZ
+    MS_DBG(F("         Time Returned by RTC:"), cur_logTZ, F("->"), \
         formatDateTime_ISO8601(cur_logTZ));
-    MS_DBG(F("Offset:"), abs(set_logTZ - cur_logTZ));
-
+    #define abs2(x) ((x)>0?(x):(-1*(x)))
+    MS_DBG(F("         Offset1:"), abs(set_logTZ - cur_logTZ));
+    MS_DBG(F("         Offset2:"), abs(cur_logTZ- set_logTZ));
     // If the RTC and NIST disagree by more than 5 seconds, set the clock
-
-    if ((abs(set_logTZ - cur_logTZ) > 5) && (setTime != 0))
+    #define NIST_TIME_DIFF_SEC 5
+    if (abs(set_logTZ - cur_logTZ) > NIST_TIME_DIFF_SEC )
     {
         setNowEpoch(set_rtcTZ);
-        PRINTOUT(F("Clock set!"));
+        PRINTOUT(F("         RTC Clock set!"));
         retVal= true;
     }
     else
@@ -598,13 +600,13 @@ bool Logger::setRTClock(uint32_t setTime)
     //Check the current ExtRtc time - 
     DateTime nowExt = rtcExtPhy.now(); //T0 UST/
     uint32_t nowExtEpoch_sec =nowExt.getEpoch();
-    MS_DBG("            Time Returned by rtcExt:", nowExtEpoch_sec, "->", \
+    MS_DBG("         Time Returned by rtcExt:", nowExtEpoch_sec, \
+        "->(T=", getTimeZone(),")", \
         formatDateTime_ISO8601(nowExtEpoch_sec));
-    if ((abs(nowExtEpoch_sec - setTime) > 5) && (setTime != 0))
+    if (abs(nowExtEpoch_sec - setTime) > NIST_TIME_DIFF_SEC)
     {
-        DateTime t = setTime;
-        rtcExtPhy.adjust(t);
-        MS_DBG("rtcExt updated to UTS ",  setTime,"->",formatDateTime_ISO8601(setTime));
+        rtcExtPhy.setTimeEpochT0(setTime);
+        MS_DBG("         rtcExt updated to UTS ",  setTime,"->",formatDateTime_ISO8601(setTime));
         retVal= true;
     }
 
