@@ -755,10 +755,11 @@ void Logger::systemSleep(uint8_t sleep_min)
     targetWakeup_secs = timeNow_secs+local_secs;
     adjust_secs = targetWakeup_secs%60;
     targetWakeup_secs -= adjust_secs;
-    MS_DBG("Setting alarm (",local_secs,"+",timeNow_secs,") on RTC @",targetWakeup_secs," ",formatDateTime_ISO8601(targetWakeup_secs),+" adj=",adjust_secs,"fm now=",timeNow_secs ,"Awake=",timeNow_secs-wakeUpTime_secs);
+    MS_DBG("Setting alarm (",local_secs,"+",timeNow_secs,") on RTC @",targetWakeup_secs," ",formatDateTime_ISO8601(targetWakeup_secs),\
+    " adj=",adjust_secs," fm now=",timeNow_secs ," Awake=",timeNow_secs-wakeUpTime_secs);
     zero_sleep_rtc.setAlarmEpoch(targetWakeup_secs);
  #define zsr zero_sleep_rtc
-    MS_DBG("Alm:",zsr.getAlarmYear(),zsr.getAlarmMonth(),zsr.getAlarmDay(),"-",zsr.getAlarmHours(),zsr.getAlarmMinutes(),zsr.getAlarmSeconds());
+    MS_DBG("Alm:",zsr.getAlarmYear(),zsr.getAlarmMonth(),zsr.getAlarmDay(),"-",zsr.getAlarmHours(),":",zsr.getAlarmMinutes(),":",zsr.getAlarmSeconds());
     // Assume max is an hour - need to revisit
     zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_MMSS);
     #endif
