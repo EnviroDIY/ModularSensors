@@ -324,6 +324,9 @@ void extraModemSetup(void)
         tinyModem->waitResponse();
         tinyModem->sendAT(F("P1"),0);  // Make sure pins 7&8 are not set for USB direct
         tinyModem->waitResponse();
+        tinyModem->sendAT(F("CP"),2);  // Cellular carrier profile - AT&T
+        // Hologram says they can use any network, but I've never succeeded with anything but AT&T
+        tinyModem->waitResponse();
         tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
         // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
         tinyModem->waitResponse();
@@ -360,6 +363,9 @@ void extraModemSetup(void)
     tinyModem->sendAT(F("P0"),0);  // Make sure USB direct won't be pin enabled
     tinyModem->waitResponse(F("OK\r"));
     tinyModem->sendAT(F("P1"),0);  // Make sure pins 7&8 are not set for USB direct
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("CP"),2);  // Cellular carrier profile - AT&T
+    // Hologram says they can use any network, but I've never succeeded with anything but AT&T
     tinyModem->waitResponse(F("OK\r"));
     tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
     // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
