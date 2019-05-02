@@ -31,6 +31,18 @@
 #ifndef YosemitechY511_h
 #define YosemitechY511_h
 
+// Debugging Statement
+// #define MS_YOSEMITECHY511_DEBUG
+// #define MS_YOSEMITECHY511_DEBUG_DEEP
+
+#ifdef MS_YOSEMITECHY511_DEBUG
+#define MS_DEBUGGING_STD
+#endif
+
+#ifdef MS_YOSEMITECHY511_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP
+#endif
+
 // Included Dependencies
 #include "VariableBase.h"
 #include "sensors/YosemitechParent.h"

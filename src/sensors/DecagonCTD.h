@@ -34,6 +34,13 @@
 #ifndef DecagonCTD_h
 #define DecagonCTD_h
 
+// Debugging Statement
+// #define MS_DECAGONCTD_DEBUG
+
+#ifdef MS_DECAGONCTD_DEBUG
+#define MS_DEBUGGING_STD
+#endif
+
 // Included Dependencies
 #include "VariableBase.h"
 #include "sensors/SDI12Sensors.h"

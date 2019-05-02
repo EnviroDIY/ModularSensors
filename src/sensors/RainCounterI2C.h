@@ -22,9 +22,9 @@
 #define RainCounterI2C_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_RAINCOUNTERI2C_DEBUG
 
-#ifdef MS_RAINI2C_DEBUG
+#ifdef MS_RAINCOUNTERI2C_DEBUG
 #define MS_DEBUGGING_STD
 #endif
 

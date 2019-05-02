@@ -16,9 +16,9 @@
 #define AtlasScientificpH_h
 
 // Debugging Statement
-// #define MS_ATLASPH_DEBUG
+// #define MS_ATLASSCIENTIFICPH_DEBUG
 
-#ifdef MS_ATLASPH_DEBUG
+#ifdef MS_ATLASSCIENTIFICPH_DEBUG
 #define MS_DEBUGGING_STD
 #endif
 

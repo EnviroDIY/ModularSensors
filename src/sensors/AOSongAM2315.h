@@ -27,9 +27,9 @@
 #define AOSongAM2315_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_AOSONGAM2315_DEBUG
 
-#ifdef MS_AM2315_DEBUG
+#ifdef MS_AOSONGAM2315_DEBUG
 #define MS_DEBUGGING_STD
 #endif
 

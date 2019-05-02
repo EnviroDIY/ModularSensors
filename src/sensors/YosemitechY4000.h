@@ -64,6 +64,18 @@
 #ifndef YosemitechY4000_h
 #define YosemitechY4000_h
 
+// Debugging Statement
+// #define MS_YOSEMITECHY4000_DEBUG
+// #define MS_YOSEMITECHY4000_DEBUG_DEEP
+
+#ifdef MS_YOSEMITECHY4000_DEBUG
+#define MS_DEBUGGING_STD
+#endif
+
+#ifdef MS_YOSEMITECHY4000_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP
+#endif
+
 // Included Dependencies
 #include "VariableBase.h"
 #include "sensors/YosemitechParent.h"

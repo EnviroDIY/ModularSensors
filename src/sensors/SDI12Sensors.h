@@ -16,9 +16,9 @@
 #define SDI12Sensors_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_SDI12SENSORS_DEBUG
 
-#ifdef MS_SDI12_DEBUG
+#ifdef MS_SDI12SENSORS_DEBUG
 #define MS_DEBUGGING_STD
 #endif
 

@@ -12,9 +12,9 @@
 #define ThingSpeakPublisher_h
 
 // Debugging Statement
-// #define MS_TSPUBLISHER_DEBUG
+// #define MS_THINGSPEAKPUBLISHER_DEBUG
 
-#ifdef MS_TSPUBLISHER_DEBUG
+#ifdef MS_THINGSPEAKPUBLISHER_DEBUG
 #define MS_DEBUGGING_STD
 #endif
 

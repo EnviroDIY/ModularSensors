@@ -30,9 +30,9 @@
 #define CampbellOBS3_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_CAMPBELLOBS3_DEBUG
 
-#ifdef MS_OBS3_DEBUG
+#ifdef MS_CAMPBELLOBS3_DEBUG
 #define MS_DEBUGGING_STD
 #endif
 

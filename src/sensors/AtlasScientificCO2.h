@@ -16,9 +16,9 @@
 #define AtlasScientificCO2_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_ATLASSCIENTIFICCO2_DEBUG
 
-#ifdef MS_ATLASCO2_DEBUG
+#ifdef MS_ATLASSCIENTIFICCO2_DEBUG
 #define MS_DEBUGGING_STD
 #endif
 

@@ -29,9 +29,9 @@
 #define AOSongDHT_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_AOSONGDHT_DEBUG
 
-#ifdef MSDHT_DEBUG
+#ifdef MS_AOSONGDHT_DEBUG
 #define MS_DEBUGGING_STD
 #endif
 
