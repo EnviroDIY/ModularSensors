@@ -1802,7 +1802,7 @@ void setup()
         // Note:  Please change these battery voltages to match your battery
         if (getBatteryVoltage() > 3.8 ||
             dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
-            dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+            dataLogger.getNowEpoch() > 1735689600)  /*After 1/1/2025*/
         {
             // Synchronize the RTC with NIST
             Serial.println(F("Attempting to synchronize RTC with NIST"));
@@ -1898,8 +1898,8 @@ void loop()
         // Only turn the modem on if the battery at the last interval was high enough
         // NOTE:  if the modemPowerUp function is not run before the completeUpdate
         // function is run, the modem will not be powered and will not return
-        // a signal strength readign.
-        if (getBatteryVoltage() > 3.7)
+        // a signal strength reading.
+        if (getBatteryVoltage() > 3.6)
             modem.modemPowerUp();
 
         // Do a complete update on the variable array.
