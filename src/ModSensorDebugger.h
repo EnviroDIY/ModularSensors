@@ -73,7 +73,11 @@
 #endif  // DEBUGGING_SERIAL_OUTPUT
 
 
-#if defined DEBUGGING_SERIAL_OUTPUT && defined MS_DEBUGGING_DEEP
+#ifndef DEEP_DEBUGGING_SERIAL_OUTPUT
+  #define DEEP_DEBUGGING_SERIAL_OUTPUT DEBUGGING_SERIAL_OUTPUT
+#endif  // ifndef DEEP_DEBUGGING_SERIAL_OUTPUT
+
+#if defined DEEP_DEBUGGING_SERIAL_OUTPUT && defined MS_DEBUGGING_DEEP
     namespace {
         template<typename T>
         static void MS_DEEP_DBG(T last) {
