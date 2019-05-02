@@ -94,7 +94,7 @@ private:
     bool isLastVarFromSensor(int arrayIndex);
     uint8_t countMaxToAverage(void);
 
-#ifdef DEEP_DEBUGGING_SERIAL_OUTPUT
+#ifdef MS_VARIABLEARRAY_DEBUG_DEEP
     template<typename T>
     void prettyPrintArray(T arrayToPrint[])
     {

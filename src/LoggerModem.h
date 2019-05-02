@@ -20,10 +20,6 @@
 #define MS_DEBUGGING_STD
 #endif
 
-#ifdef MS_LOGGERMODEM_DEBUG_DEEP
-#define TINY_GSM_DEBUG STANDARD_SERIAL_OUTPUT
-#endif
-
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #include "VariableBase.h"

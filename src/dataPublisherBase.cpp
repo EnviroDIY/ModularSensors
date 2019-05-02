@@ -103,7 +103,7 @@ int dataPublisher::bufferFree(void)
 void dataPublisher::printTxBuffer(Stream *stream)
 {
     // Send the out buffer so far to the serial for debugging
-    #if defined(STANDARD_SERIAL_OUTPUT)
+    #if defined(MS_DATAPUBLISHERBASE_DEBUG)
         STANDARD_SERIAL_OUTPUT.write(txBuffer, strlen(txBuffer));
         PRINTOUT('\n');
         STANDARD_SERIAL_OUTPUT.flush();

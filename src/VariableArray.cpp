@@ -68,7 +68,7 @@ bool VariableArray::setupSensors(void)
 {
     bool success = true;
 
-    #ifdef DEEP_DEBUGGING_SERIAL_OUTPUT
+    #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
     bool deepDebugTiming = true;
     #else
     bool deepDebugTiming = false;
@@ -187,7 +187,7 @@ bool VariableArray::sensorsWake(void)
     bool success = true;
     uint8_t nSensorsAwake = 0;
 
-    #ifdef DEEP_DEBUGGING_SERIAL_OUTPUT
+    #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
     bool deepDebugTiming = true;
     #else
     bool deepDebugTiming = false;
@@ -300,7 +300,7 @@ bool VariableArray::updateAllSensors(void)
 {
     bool success = true;
 
-    #ifdef DEEP_DEBUGGING_SERIAL_OUTPUT
+    #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
     bool deepDebugTiming = true;
     #else
     bool deepDebugTiming = false;
@@ -464,7 +464,7 @@ bool VariableArray::completeUpdate(void)
     bool success = true;
     uint8_t nSensorsCompleted = 0;
 
-    #ifdef DEEP_DEBUGGING_SERIAL_OUTPUT
+    #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
     bool deepDebugTiming = true;
     #else
     bool deepDebugTiming = false;
@@ -563,7 +563,7 @@ bool VariableArray::completeUpdate(void)
     }
 
     // This is just for debugging
-    #ifdef DEEP_DEBUGGING_SERIAL_OUTPUT
+    #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
     uint8_t arrayPositions[_variableCount];
     for (uint8_t i = 0; i < _variableCount; i++)
     {
