@@ -550,7 +550,7 @@ void setup()
     // attaching it to both allows either logger to control NIST synchronization
     loggerAllVars.attachModem(modem);
     loggerToGo.attachModem(modem);
-    loggerAllVars.setLoggerPins(wakePin, sdCardSSPin, sensorPowerPin, buttonPin, greenLED);
+    loggerAllVars.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
 
     // Set up the connection information with EnviroDIY for both loggers
     // Doing this for both loggers ensures that the header of the csv will have the tokens in it

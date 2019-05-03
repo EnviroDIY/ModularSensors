@@ -224,7 +224,7 @@ void setup()
     Logger::setTZOffset(timeZone);
 
     // Attach information pins to the logger
-    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sensorPowerPin, buttonPin, greenLED);
+    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
     dataLogger.setSamplingFeatureUUID(samplingFeature);
 
     // Begin the logger

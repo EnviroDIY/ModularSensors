@@ -459,7 +459,7 @@ void setup()
 
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modem);
-    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sensorPowerPin, buttonPin, greenLED);
+    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
 
     // Begin the variable array[s], logger[s], and publisher[s]
     varArray.begin(variableCount, variableList);

@@ -202,7 +202,7 @@ void setup()
     Logger::setTZOffset(timeZone);
 
     // Set information pins
-    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sensorPowerPin, buttonPin, greenLED);
+    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
 
     // Begin the variable array[s], logger[s], and publisher[s]
     varArray.begin(variableCount, variableList);

@@ -281,8 +281,8 @@ void setup()
     array5min.begin(variableCount5min, variableList_at5min);
     logger1min.begin(LoggerID, 1, &array1min);
     logger5min.begin(LoggerID, 5, &array5min);
-    logger1min.setLoggerPins(wakePin, sdCardSSPin, sensorPowerPin, buttonPin, greenLED);
-    logger5min.setLoggerPins(wakePin, sdCardSSPin, sensorPowerPin, buttonPin, greenLED);
+    logger1min.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
+    logger5min.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
 
 
     // Turn on the modem
