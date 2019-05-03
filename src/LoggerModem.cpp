@@ -360,7 +360,7 @@ bool loggerModem::addSingleMeasurementResult(void)
 bool loggerModem::isStable(bool debug)
 {
     #if defined MS_LOGGERMODEM_DEBUG_DEEP
-    debug = True;
+    debug = true;
     #endif
     // If the modem never "woke", then it will never respond and thus it's
     // essentially already "stable."
@@ -441,7 +441,7 @@ bool loggerModem::isStable(bool debug)
 bool loggerModem::isMeasurementComplete(bool debug)
 {
     #if defined MS_LOGGERMODEM_DEBUG_DEEP
-    debug = True;
+    debug = true;
     #endif
     // If a measurement failed to start, the sensor will never return a result,
     // so the measurement time is essentially already passed
