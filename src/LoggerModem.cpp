@@ -359,6 +359,9 @@ bool loggerModem::addSingleMeasurementResult(void)
 // AT commands
 bool loggerModem::isStable(bool debug)
 {
+    #if defined MS_LOGGERMODEM_DEBUG_DEEP
+    debug = True;
+    #endif
     // If the modem never "woke", then it will never respond and thus it's
     // essentially already "stable."
     if (!bitRead(_sensorStatus, 4))
@@ -437,6 +440,9 @@ bool loggerModem::isStable(bool debug)
 // push data.
 bool loggerModem::isMeasurementComplete(bool debug)
 {
+    #if defined MS_LOGGERMODEM_DEBUG_DEEP
+    debug = True;
+    #endif
     // If a measurement failed to start, the sensor will never return a result,
     // so the measurement time is essentially already passed
     // For a cellular modem nothing happens to "start" a measurement so bit 6
@@ -486,6 +492,8 @@ bool loggerModem::isMeasurementComplete(bool debug)
     else elapsed_in_wait = now - _millisMeasurementRequested;
 
     // If we're connected AND receiving valid signal strength, measurement is complete
+    // In theory these happen at the same time, but in reality one or the other
+    // may happen first.
     bool isConnected = _tinyModem->isNetworkConnected();
     int signalResponse = _tinyModem->getSignalQuality();
     if (isConnected && signalResponse != 0 && signalResponse != 99)
