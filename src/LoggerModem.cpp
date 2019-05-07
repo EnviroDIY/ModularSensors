@@ -546,7 +546,7 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
     }
 
     // Check that the modem is responding to AT commands.  If not, give up.
-    #if defined DEBUGGING_SERIAL_OUTPUT
+    #if defined MS_LOGGERMODEM_DEBUG
         uint32_t start = millis();
     #endif
     MS_DBG(F("\nWaiting for"), getSensorName(), F("to respond to AT commands..."));
@@ -601,7 +601,7 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
 
 void loggerModem::disconnectInternet(void)
 {
-    #if defined DEBUGGING_SERIAL_OUTPUT
+    #if defined MS_LOGGERMODEM_DEBUG
         uint32_t start = millis();
     #endif
     if (_tinyModem->hasGPRS() && _modemName.indexOf(F("XBee")) < 0)  // XBee doesn't like to disconnect
@@ -1058,7 +1058,7 @@ void loggerModem::setModemTiming(void)
     }
     if (_modemName.indexOf(F("Sequans VZM20Q")) >= 0)
     {
-        MS_DBG(F("Resetting warm-up and disconnect timing for a Quectel MC60"));
+        MS_DBG(F("Resetting warm-up and disconnect timing for a Sequans VZM20Q"));
         _warmUpTime_ms = 0;  // Module automatically boots when power is applied
         _statusTime_ms = 50;  // ?? Undocumented
         _stabilizationTime_ms = 5000;  // ?? Time to UART availability not documented
