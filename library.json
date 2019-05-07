@@ -295,7 +295,8 @@
         },
         {
             "name": "TinyGSM",
-            "version": "https://github.com/EnviroDIY/TinyGSM.git#84bfb40504f83aa49fd8eb4c3c855e4c00449896",
+            "version": "https://github.com/EnviroDIY/TinyGSM.git",
+            "version_commit": "84bfb40504f83aa49fd8eb4c3c855e4c00449896"
             "version_note": "=0.4.5",
             "note": "A small Arduino library for GPRS modules.",
             "authors": [
