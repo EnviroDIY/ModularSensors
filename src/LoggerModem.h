@@ -18,7 +18,6 @@
 
 #ifdef MS_LOGGERMODEM_DEBUG
 #define MS_DEBUGGING_STD
-#define TINY_GSM_DEBUG DEBUGGING_SERIAL_OUTPUT
 #endif
 
 // Included Dependencies
