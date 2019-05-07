@@ -43,8 +43,6 @@
     #define BOARD "Feather M0"
 #elif defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
     #define BOARD "Feather M0 Express"
-//#elif defined(ARDUINO_SAMD_FEATHER_M4_EXPRESS)
-//    #define BOARD "Feather M4 Express"
 #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
     #define BOARD "Feather M4 Express"
 // Arduino boards
@@ -113,7 +111,7 @@ ProcessorStats::ProcessorStats(const char *version)
         _batteryPin = A6;
     #elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
         _batteryPin = 9;
-    #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS) || defined(ARDUINO_SAMD_FEATHER_M4_EXPRESS)
+    #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS) 
         _batteryPin = A6;//20;  //Dedicated PB01 V_DIV
     #elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA) || defined(ARDUINO_AVR_SODAQ_NDOGO)
         _batteryPin = 10;
@@ -163,7 +161,7 @@ bool ProcessorStats::addSingleMeasurementResult(void)
             sensorValue_battery = (3.3 / 1023.) * 4.7 * rawBattery;
         }
 
-    #elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
+    #elif defined(ARDUINO_AVR_FEATHER32U4) || defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS) || defined(ADAFRUIT_FEATHER_M4_EXPRESS)
         float measuredvbat = analogRead(_batteryPin);
         measuredvbat *= 2;    // we divided by 2, so multiply back
         measuredvbat *= 3.3;  // Multiply by 3.3V, our reference voltage
@@ -355,8 +353,7 @@ float ProcessorStats::getBatteryVm1(float *sensorValue_battery ) //sensorValue_b
 
     #else
         *sensorValue_battery = -9999;
-        //MS_DBG(F("Unknown _version "), _version);
-        #error message: Unknow processor
+        MS_DBG(F("Unknown _version "), _version);
 
     #endif    
     return *sensorValue_battery;

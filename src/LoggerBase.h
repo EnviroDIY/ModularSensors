@@ -39,12 +39,7 @@
 
 // Bring in the library to communicate with an external high-precision real time clock
 // This also implements a needed date/time class
-//#if !defined ADAFRUIT_FEATHERWING_RTC_SD
 #include <Sodaq_DS3231.h>
-//#else 
-//#if defined ADAFRUIT_FEATHERWING_RTC_SD
-//#include <RTClib.h>
-//#endif
 #define EPOCH_TIME_OFF 946684800
 // This is 2000-jan-01 00:00:00 in "epoch" time
 // Need this b/c the date/time class in Sodaq_DS3231 treats a 32-bit long

@@ -5,4 +5,4 @@ C:\Users\<user>\.platformio\packages\framework-arduinosam\variants\feather_m4
 rename variant.h -> variant.h_orig
 rename variant.cpp -> variant.cpp_orig
 
-Copy in variant.cpp and variant.h 
+Copy in variants\feather_m4\variant.cpp and variant.h 

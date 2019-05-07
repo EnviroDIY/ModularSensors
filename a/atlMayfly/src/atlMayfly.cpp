@@ -10,7 +10,7 @@ Software License: BSD-3.
 This example sketch is written for ModularSensors library version 0.21.2
 
 This sketch is an example of logging data to an SD card and sending the data to
-the EnviroDIY data pKCONFortal.
+the EnviroDIY data portal.
 
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
@@ -21,7 +21,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 #include "ms_cfg.h" //must be before ms_common.h & Arduino.h
 #include <Arduino.h>  // The base Arduino library
-//#include <EnableInterrupt.h>  // for external and pin change interrupts
+#ifdef ARDUINO_AVR_ENVIRODIY_MAYFLY
+#include <EnableInterrupt.h>  // for external and pin change interrupts
+#endif
 #include <Time.h>
 #include <errno.h>
 #include "ms_common.h"
@@ -49,7 +51,13 @@ const char *libraryVersion = "0.21.3";
 // The name of this file
 const char *sketchName = __FILE__; //"atlMayfly.cpp";
 const char build_date[] = __DATE__ " " __TIME__;
-//const char git_version[] = GIT_BRANCH;
+//Windows processing of PIO_SRC_REV drops the "" making it a variable, which then can't be found!!!
+//Encoded as hex to make it come through
+#ifdef PIO_SRC_REV
+const char git_branch[] = PIO_SRC_REV;
+#else 
+const char git_branch[] = "wip";
+#endif
 //const char build_epochTime = __BUILD_TIMESTAMP__;
 //const char build_epochTime = __TIME_UNIX__;
 
@@ -1958,7 +1966,10 @@ void setup()
 
     //MCUSR SerialStd.println(mcu_status,HEX);
     //SerialStd.println(file_name); //Dir and filename
-    SerialStd.println(sketchName); //Dir and filename
+    SerialStd.print(sketchName); //Dir and filename
+    SerialStd.print(" ");
+    SerialStd.println(git_branch);
+
     SerialStd.print(mcuBoardName);
     SerialStd.print(" ");
     SerialStd.print(mcuBoardVersion);
