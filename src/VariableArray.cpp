@@ -536,12 +536,17 @@ bool VariableArray::completeUpdate(void)
     {
         for (uint8_t j = i + 1; j < _variableCount; j++)
         {
-            if (powerPins[i] == powerPins[j])
+            if (lastSensorVariable[i])
             {
                 lastPinVariable[i] = 0;
-                // MS_DBG(i, F("isn't the last variable on pin, matches"), j);
-                i++;
+                // MS_DBG(i, F("isn't the last variable on power pin because not last on sensor."));
             }
+            else if (powerPins[i] == powerPins[j])
+            {
+                lastPinVariable[i] = 0;
+                // MS_DBG(i, F("isn't the last variable on power pin, matches"), j);
+            }
+            i++;
         }
     }
     for (uint8_t i = 0; i < _variableCount; i++)
@@ -572,7 +577,8 @@ bool VariableArray::completeUpdate(void)
     String nameLocation[_variableCount];
     for (uint8_t i = 0; i < _variableCount; i++)
     {
-        nameLocation[i] = arrayOfVars[i]->getParentSensorNameAndLocation();
+        // nameLocation[i] = arrayOfVars[i]->getParentSensorNameAndLocation();
+        nameLocation[i] = arrayOfVars[i]->getParentSensorName();
     }
     MS_DEEP_DBG(F("----------------------------------"));
     MS_DEEP_DBG(F("arrayPositions:\t\t\t"));
