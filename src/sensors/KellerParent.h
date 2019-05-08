@@ -20,14 +20,14 @@
 #define KellerParent_h
 
 // Debugging Statement
-// #define MS_KELLER_DEBUG
-// #define MS_KELLER_DEBUG_DEEP
+// #define MS_KELLERPARENT_DEBUG
+// #define MS_KELLERPARENT_DEBUG_DEEP
 
-#ifdef MS_KELLER_DEBUG
+#ifdef MS_KELLERPARENT_DEBUG
 #define MS_DEBUGGING_STD
 #endif
 
-#ifdef MS_KELLER_DEBUG_DEEP
+#ifdef MS_KELLERPARENT_DEBUG_DEEP
 #define MS_DEBUGGING_DEEP
 #endif
 

@@ -17,9 +17,9 @@
 #define ProcessorStats_h
 
 // Debugging Statement
-// #define MS_PROCSTATS_DEBUG
+// #define MS_PROCESSORSTATS_DEBUG
 
-#ifdef MS_PROCSTATS_DEBUG
+#ifdef MS_PROCESSORSTATS_DEBUG
 #define MS_DEBUGGING_STD
 #endif
 

@@ -34,9 +34,9 @@
 #define ApogeeSQ212_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_APOGEESQ212_DEBUG
 
-#ifdef MS_SQ212_DEBUG
+#ifdef MS_APOGEESQ212_DEBUG
 #define MS_DEBUGGING_STD
 #endif
 

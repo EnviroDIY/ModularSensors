@@ -30,9 +30,9 @@
 #define TIINA219_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_TIINA219_DEBUG
 
-#ifdef MS_INA219_DEBUG
+#ifdef MS_TIINA219_DEBUG
 #define MS_DEBUGGING_STD
 #endif
 

@@ -22,9 +22,9 @@
 #define MaximDS3231_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_MAXIMDS3231_DEBUG
 
-#ifdef MS_DS3231_DEBUG
+#ifdef MS_MAXIMDS3231_DEBUG
 #define MS_DEBUGGING_STD
 #endif
 

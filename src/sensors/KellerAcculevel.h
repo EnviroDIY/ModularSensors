@@ -18,6 +18,18 @@
 #ifndef KellerAcculevel_h
 #define KellerAcculevel_h
 
+// Debugging Statement
+// #define MS_KELLERACCULEVEL_DEBUG
+// #define MS_KELLERACCULEVEL_DEBUG_DEEP
+
+#ifdef MS_KELLERACCULEVEL_DEBUG
+#define MS_DEBUGGING_STD
+#endif
+
+#ifdef MS_KELLERACCULEVEL_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP
+#endif
+
 // Included Dependencies
 #include "VariableBase.h"
 #include "sensors/KellerParent.h"

@@ -29,6 +29,13 @@
 #ifndef DecagonES2_h
 #define DecagonES2_h
 
+// Debugging Statement
+// #define MS_DECAGONES2_DEBUG
+
+#ifdef MS_DECAGONES2_DEBUG
+#define MS_DEBUGGING_STD
+#endif
+
 // Included Dependencies
 #include "VariableBase.h"
 #include "sensors/SDI12Sensors.h"

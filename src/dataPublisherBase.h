@@ -12,9 +12,9 @@
 #define dataPublisherBase_h
 
 // Debugging Statement
-// #define MS_PUBLISHER_DEBUG
+// #define MS_DATAPUBLISHERBASE_DEBUG
 
-#ifdef MS_PUBLISHER_DEBUG
+#ifdef MS_DATAPUBLISHERBASE_DEBUG
 #define MS_DEBUGGING_STD
 #endif
 

@@ -26,9 +26,9 @@
 #define MaximDS18_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_MAXIMDS18_DEBUG
 
-#ifdef MS_DS18_DEBUG
+#ifdef MS_MAXIMDS18_DEBUG
 #define MS_DEBUGGING_STD
 #endif
 

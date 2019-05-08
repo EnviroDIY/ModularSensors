@@ -26,9 +26,9 @@
 #define FreescaleMPL115A2_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_FREESCALEMPL115A2_DEBUG
 
-#ifdef MS_MPL115A2_DEBUG
+#ifdef MS_FREESCALEMPL115A2_DEBUG
 #define MS_DEBUGGING_STD
 #endif
 

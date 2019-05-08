@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.21.3
+This example sketch is written for ModularSensors library version 0.21.4
 
 This shows most of the standard functions of the library at once.
 
@@ -26,7 +26,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.21.3";
+const char *libraryVersion = "0.21.4";
 // The name of this file
 const char *sketchName = "menu_a_la_carte.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -324,6 +324,9 @@ void extraModemSetup(void)
         tinyModem->waitResponse();
         tinyModem->sendAT(F("P1"),0);  // Make sure pins 7&8 are not set for USB direct
         tinyModem->waitResponse();
+        tinyModem->sendAT(F("CP"),2);  // Cellular carrier profile - AT&T
+        // Hologram says they can use any network, but I've never succeeded with anything but AT&T
+        tinyModem->waitResponse();
         tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
         // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
         tinyModem->waitResponse();
@@ -360,6 +363,9 @@ void extraModemSetup(void)
     tinyModem->sendAT(F("P0"),0);  // Make sure USB direct won't be pin enabled
     tinyModem->waitResponse(F("OK\r"));
     tinyModem->sendAT(F("P1"),0);  // Make sure pins 7&8 are not set for USB direct
+    tinyModem->waitResponse(F("OK\r"));
+    tinyModem->sendAT(F("CP"),2);  // Cellular carrier profile - AT&T
+    // Hologram says they can use any network, but I've never succeeded with anything but AT&T
     tinyModem->waitResponse(F("OK\r"));
     tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
     // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
@@ -1796,7 +1802,7 @@ void setup()
         // Note:  Please change these battery voltages to match your battery
         if (getBatteryVoltage() > 3.8 ||
             dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
-            dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+            dataLogger.getNowEpoch() > 1735689600)  /*After 1/1/2025*/
         {
             // Synchronize the RTC with NIST
             Serial.println(F("Attempting to synchronize RTC with NIST"));
@@ -1892,8 +1898,8 @@ void loop()
         // Only turn the modem on if the battery at the last interval was high enough
         // NOTE:  if the modemPowerUp function is not run before the completeUpdate
         // function is run, the modem will not be powered and will not return
-        // a signal strength readign.
-        if (getBatteryVoltage() > 3.7)
+        // a signal strength reading.
+        if (getBatteryVoltage() > 3.6)
             modem.modemPowerUp();
 
         // Do a complete update on the variable array.

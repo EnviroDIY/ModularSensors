@@ -16,9 +16,9 @@
 #define AtlasScientificDO_h
 
 // Debugging Statement
-// #define MS_ATLASDO_DEBUG
+// #define MS_ATLASSCIENTIFICDO_DEBUG
 
-#ifdef MS_ATLASDO_DEBUG
+#ifdef MS_ATLASSCIENTIFICDO_DEBUG
 #define MS_DEBUGGING_STD
 #endif
 

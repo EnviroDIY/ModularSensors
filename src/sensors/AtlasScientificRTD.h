@@ -16,9 +16,9 @@
 #define AtlasScientificRTD_h
 
 // Debugging Statement
-// #define MS_ATLASRTD_DEBUG
+// #define MS_ATLASSCIENTIFICRTD_DEBUG
 
-#ifdef MS_ATLASRTD_DEBUG
+#ifdef MS_ATLASSCIENTIFICRTD_DEBUG
 #define MS_DEBUGGING_STD
 #endif
 

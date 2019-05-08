@@ -46,9 +46,9 @@
 #define MeaSpecMS5803_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_MEASSPECMS5803_DEBUG
 
-#ifdef MS_MS5803_DEBUG
+#ifdef MS_MEASSPECMS5803_DEBUG
 #define MS_DEBUGGING_STD
 #endif
 
