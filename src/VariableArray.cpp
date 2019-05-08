@@ -536,7 +536,7 @@ bool VariableArray::completeUpdate(void)
     {
         for (uint8_t j = i + 1; j < _variableCount; j++)
         {
-            if (lastSensorVariable[i])
+            if (!lastSensorVariable[i])
             {
                 lastPinVariable[i] = 0;
                 // MS_DBG(i, F("isn't the last variable on power pin because not last on sensor."));
