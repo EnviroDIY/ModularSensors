@@ -87,11 +87,25 @@ public:
     // typedef's in the TinyGsmClient.h that make this somewhat invisible to
     // the user.
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
+                int8_t modemResetPin,
                 bool (*modemWakeFxn)(), bool (*modemSleepFxn)(),
                 TinyGsmModem *inModem, Client *inClient, const char *APN);
 
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
+                int8_t modemResetPin,
                 bool (*modemWakeFxn)(), bool (*modemSleepFxn)(),
+                TinyGsmModem *inModem, Client *inClient, const char *ssid, const char *pwd);
+
+    loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
+                int8_t modemResetPin, int8_t modemSleepRqPin,
+                uint16_t max_status_time_ms, uint16_t max_disconnetTime_ms,
+                uint32_t max_warmUpTime_ms, uint32_t max_atresponse_time_ms,
+                TinyGsmModem *inModem, Client *inClient, const char *APN);
+
+    loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
+                int8_t modemResetPin, int8_t modemSleepRqPin,
+                uint16_t max_status_time_ms, uint16_t max_disconnetTime_ms,
+                uint32_t max_warmUpTime_ms, uint32_t max_atresponse_time_ms,
                 TinyGsmModem *inModem, Client *inClient, const char *ssid, const char *pwd);
 
     ~loggerModem();
@@ -128,13 +142,20 @@ protected:
 // These are the unique functions for the modem as an internet connected device
 // ==========================================================================//
 public:
+
+    // Sets an LED to turn on when the modem is on
+    void setModemLED(int8_t modemLEDPin);
+
+    // Get values by other names
     int16_t getSignalRSSI(void) {return sensorValues[RSSI_VAR_NUM];}
     int16_t getSignalPercent(void) {return sensorValues[PERCENT_SIGNAL_VAR_NUM];}
 
+    // Get the client instance in use
     Client * getClient(void){return _tinyClient;}
 
-    bool connectInternet(uint32_t waitTime_ms = 50000L);
-    void disconnectInternet(void);
+    // Access the internet
+    virtual bool connectInternet(uint32_t waitTime_ms = 50000L) = 0;
+    virtual void disconnectInternet(void) = 0;
 
     // This has the same functionality as Client->connect with debugging text
     // int16_t openTCP(const char *host, uint16_t port);
@@ -144,7 +165,7 @@ public:
     // void closeTCP(void);
     // Special sleep and power function for the modem
     void modemPowerUp(void);
-    bool modemSleepPowerDown(void);
+    virtual bool modemSleepPowerDown(void);
 
     // Get the time from NIST via TIME protocol (rfc868)
     // This would be much more efficient if done over UDP, but I'm doing it
@@ -156,7 +177,7 @@ public:
     TinyGsmModem *_tinyModem;
     Client *_tinyClient;
 
-private:
+protected:
     // Helper to get approximate RSSI from CSQ (assuming no noise)
     static int16_t getRSSIFromCSQ(int16_t csq);
     // Helper to get signal percent from CSQ
@@ -166,16 +187,18 @@ private:
     // Helper to set the timing for specific cellular chipsets based on their documentation
     void setModemTiming(void);
 
-private:
+protected:
     bool (*_modemWakeFxn)(void);
     bool (*_modemSleepFxn)(void);
 
-    bool _statusLevel;
     int8_t _modemSleepRqPin;
+    int8_t _modemResetPin;
+    int8_t _modemLEDPin;
+
+    bool _statusLevel;
     uint16_t _statusTime_ms;
     uint16_t _disconnetTime_ms;
-    // uint16_t _on_pull_down_ms;
-    // uint16_t _off_pull_down_ms;
+
     const char *_apn;
     const char *_ssid;
     const char *_pwd;

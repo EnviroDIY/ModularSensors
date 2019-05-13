@@ -13,46 +13,138 @@
 
 // Constructors
 loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
+                         int8_t modemResetPin,
                          bool (*modemWakeFxn)(), bool (*modemSleepFxn)(),
                          TinyGsmModem *inModem, Client *inClient, const char *APN)
     : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES,
              MODEM_WARM_UP_TIME_MS, MODEM_ATRESPONSE_TIME_MS, MODEM_MAX_SEARCH_TIME,
-             powerPin, statusPin, 1),
-      _tinyModem(inModem), _tinyClient(inClient),
-      _modemWakeFxn(modemWakeFxn), _modemSleepFxn(modemSleepFxn),
-      _statusLevel(statusLevel),
-      _statusTime_ms(MODEM_STATUS_TIME_MS),
-      _disconnetTime_ms(MODEM_DISCONNECT_TIME_MS),
-      _apn(APN), _ssid(NULL), _pwd(NULL), _lastNISTrequest(0)
+             powerPin, statusPin, 1)
 {
     _modemName = "unspecified modem";
+    _tinyModem = inModem;
+    _tinyClient = inClient;
+
+    _modemWakeFxn = modemWakeFxn;
+    _modemSleepFxn = modemSleepFxn;
+
+    _modemResetPin = modemResetPin;
+    _modemSleepRqPin = -1;
+    _modemLEDPin = -1;
+
+    _statusLevel = statusLevel;
+    _statusTime_ms = MODEM_STATUS_TIME_MS,
+    _disconnetTime_ms = MODEM_DISCONNECT_TIME_MS;
+
+    _apn = APN;
+    _ssid = NULL;
+    _pwd = NULL;
+
+    _lastNISTrequest = 0;
     _lastConnectionCheck = 0;
     _lastATCheck = 0;
-    _modemSleepRqPin = -1;
 }
 loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
+                         int8_t modemResetPin,
                          bool (*modemWakeFxn)(), bool (*modemSleepFxn)(),
                          TinyGsmModem *inModem, Client *inClient, const char *ssid, const char *pwd)
     : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES,
              MODEM_WARM_UP_TIME_MS, MODEM_ATRESPONSE_TIME_MS, MODEM_MAX_SEARCH_TIME,
-             powerPin, statusPin, 1),
-      _statusLevel(statusLevel), _statusTime_ms(MODEM_STATUS_TIME_MS),
-      _disconnetTime_ms(MODEM_DISCONNECT_TIME_MS),
-      _apn(NULL), _ssid(ssid), _pwd(pwd), _lastNISTrequest(0)
+             powerPin, statusPin, 1)
 {
+    _modemName = "unspecified modem";
     _tinyModem = inModem;
     _tinyClient = inClient;
+
     _modemWakeFxn = modemWakeFxn;
     _modemSleepFxn = modemSleepFxn;
-    _modemName = "unspecified modem";
+
+    _modemResetPin = modemResetPin;
+    _modemSleepRqPin = -1;
+    _modemLEDPin = -1;
+
+    _statusLevel = statusLevel;
+    _statusTime_ms = MODEM_STATUS_TIME_MS,
+    _disconnetTime_ms = MODEM_DISCONNECT_TIME_MS;
+
+    _apn = NULL;
+    _ssid = ssid;
+    _pwd = pwd;
+
+    _lastNISTrequest = 0;
     _lastConnectionCheck = 0;
     _lastATCheck = 0;
+}
+loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
+                         int8_t modemResetPin, int8_t modemSleepRqPin,
+                         uint16_t max_status_time_ms, uint16_t max_disconnetTime_ms,
+                         uint32_t max_warmUpTime_ms, uint32_t max_atresponse_time_ms,
+                         TinyGsmModem *inModem, Client *inClient, const char *APN)
+    : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES,
+             max_warmUpTime_ms, max_atresponse_time_ms, MODEM_MAX_SEARCH_TIME,
+             powerPin, statusPin, 1)
+{
+    _modemName = "unspecified modem";
+    _tinyModem = inModem;
+    _tinyClient = inClient;
+
+    _modemWakeFxn = NULL;
+    _modemSleepFxn = NULL;
+
+    _modemResetPin = modemResetPin;
     _modemSleepRqPin = -1;
+    _modemLEDPin = -1;
+
+    _statusLevel = statusLevel;
+    _statusTime_ms = max_status_time_ms,
+    _disconnetTime_ms = max_disconnetTime_ms;
+
+    _apn = APN;
+    _ssid = NULL;
+    _pwd = NULL;
+
+    _lastNISTrequest = 0;
+    _lastConnectionCheck = 0;
+    _lastATCheck = 0;
+}
+loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
+                         int8_t modemResetPin, int8_t modemSleepRqPin,
+                         uint16_t max_status_time_ms, uint16_t max_disconnetTime_ms,
+                         uint32_t max_warmUpTime_ms, uint32_t max_atresponse_time_ms,
+                         TinyGsmModem *inModem, Client *inClient, const char *ssid, const char *pwd)
+    : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES,
+             max_warmUpTime_ms, max_atresponse_time_ms, MODEM_MAX_SEARCH_TIME,
+             powerPin, statusPin, 1)
+{
+    _modemName = "unspecified modem";
+    _tinyModem = inModem;
+    _tinyClient = inClient;
+
+    _modemWakeFxn = NULL;
+    _modemSleepFxn = NULL;
+
+    _modemResetPin = modemResetPin;
+    _modemSleepRqPin = -1;
+    _modemLEDPin = -1;
+
+    _statusLevel = statusLevel;
+    _statusTime_ms = max_status_time_ms,
+    _disconnetTime_ms = max_disconnetTime_ms;
+
+    _apn = NULL;
+    _ssid = ssid;
+    _pwd = pwd;
+
+    _lastNISTrequest = 0;
+    _lastConnectionCheck = 0;
+    _lastATCheck = 0;
 }
 
 
 // Destructor
 loggerModem::~loggerModem(){}
+
+
+void loggerModem::setModemLED(int8_t modemLEDPin) { _modemLEDPin = modemLEDPin; };
 
 
 String loggerModem::getSensorName(void) { return _modemName; }
@@ -106,6 +198,7 @@ bool loggerModem::setup(void)
     // NOTE:  These are based on documentation for the raw chip!
     setModemTiming();
 
+
     MS_DBG(_modemName, F("warms up in"), _warmUpTime_ms, F("ms, indicates status in"),
            _statusTime_ms, F("ms, is responsive to AT commands in less than"),
            _stabilizationTime_ms, F("ms, and takes up to"), _disconnetTime_ms,
@@ -153,29 +246,20 @@ bool loggerModem::setup(void)
 // There are so many ways to wake a modem that we're requiring an input function
 bool loggerModem::wake(void)
 {
+    // Sensor::wake() checks if the power pin is on, setup has been successful,
+    // and sets the wake timestamp and status bits.  If it returns false,
+    // there's no reason to go on.
+    if (!Sensor::wake()) return false;
+    // NOTE:  This is the ONLY place _millisSensorActivated is set!
+    // NOTE:  This is the ONLY place bit 4 is set!
+
     bool success = true;
-
-    MS_DBG(F("Waking"), getSensorName());
-    // Set the status bit for sensor activation attempt (bit 3)
-    // Setting this bit even if the activation failed, to show the attempt was made
-    _sensorStatus |= 0b00001000;
-
-    // Check if the sensor was successfully powered
-    if (!bitRead(_sensorStatus, 2))
-    {
-        MS_DBG(getSensorName(), F("doesn't have power and will never wake up!"));
-        // Make sure that the wake time and wake success bit (bit 4) are unset
-        _millisSensorActivated = 0;
-        _sensorStatus &= 0b11101111;
-        return false;
-    }
 
     // Check the status pin and wake bits before running wake function
     // Don't want to accidently pulse an already on modem to off
     if ( bitRead(_sensorStatus, 4))
     {
         MS_DBG(getSensorName(), F("has already been woken up!  Will not run wake function."));
-        success = true;
     }
     // NOTE:  It's possible that the status pin is on, but the modem is actually
     // mid-shutdown.  In that case, we'll mistakenly skip re-waking it.
@@ -183,7 +267,6 @@ bool loggerModem::wake(void)
     {
         MS_DBG(getSensorName(), F("was already on!  (status pin level = "),
                _statusLevel, F(") Will not run wake function."));
-        success = true;
     }
     else
     {
@@ -198,21 +281,23 @@ bool loggerModem::wake(void)
     {
         MS_DBG(F("Status pin level on"), getSensorName(), F("is"),
                    digitalRead(_dataPin), F("indicating it is off!"));
-        // Make sure that the wake time and wake success bit (bit 4) are unset
-        _millisSensorActivated = 0;
-        _sensorStatus &= 0b11101111;
-        return false;
+        success = false;
     }
 
     if (success)
     {
-        // Mark the time that the modem woke up
-        // NOTE:  This is the ONLY place _millisSensorActivated is set!
-        if (_millisSensorActivated == 0) _millisSensorActivated = millis();
-        // Set the status bit for sensor wake/activation success (bit 4)
-        // NOTE:  This is the ONLY place bit 4 is set!
-        _sensorStatus |= 0b00010000;
+        if (_modemLEDPin >= 0)
+        {
+            digitalWrite(_modemLEDPin, HIGH);
+        }
         MS_DBG(getSensorName(), F("should be awake."));
+    }
+    else
+    {
+        MS_DBG(getSensorName(), F("failed to wake!"));
+        // Make sure the activation time is zero and the wake success bit (bit 4) is unset
+        _millisSensorActivated = 0;
+        _sensorStatus &= 0b11101111;
     }
 
     return success;
@@ -693,6 +778,11 @@ bool loggerModem::modemSleepPowerDown(void)
         // Run the sleep function
         MS_DBG(F("Running given sleep function for"), getSensorName());
         success &= _modemSleepFxn();
+
+        if (_modemLEDPin >= 0)
+        {
+            digitalWrite(_modemLEDPin, LOW);
+        }
     }
 
     // Unset the activation time
