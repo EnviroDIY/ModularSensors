@@ -25,40 +25,10 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Arduino.h>
-#include <TinyGsmCommon.h>
+#include <Client.h>
 
 
 #define MODEM_NUM_VARIABLES 2
-
-// Set some default timing variables for the modems.
-// Some of these times are reset for specific modems in the modem set-up function
-// based on the values in the modem chip's datasheet.
-
-// Length of time after power is applied to module before the enable pin can be
-// called to turn on the module or other wake fxn can be used.  If the module
-// boots up as soon as power is applied, this value is 0.
-// This is used as the sensor variable _warmUpTime_ms.
-#define MODEM_WARM_UP_TIME_MS 50
-// Length of time from the completion of wake up function until UART port becomes
-// available for AT commands.  This is the MAXIMUM amount of time we will wait
-// for a response from the modem.
-// This is used as the sensor variable _stabilizationTime_ms.
-#define MODEM_ATRESPONSE_TIME_MS 5000L
-// The maximum amount of time we are willing to wait for a network connection
-// before accepting the modem signal strength.  Most modems do not give
-// real signal strength until they've connected to the network, which takes
-// more time in areas of weaker signal.
-// This is used as the sensor variable _measurementTime_ms.
-#define MODEM_MAX_SEARCH_TIME 15000L
-// Length of time from the completion of wake up  request until the modem status
-// pin begins to show an "on" status.
-// This is the modem-only variable _statusTime_ms.
-#define MODEM_STATUS_TIME_MS 5000
-// Approximate length of time for unit to gracefully close sockets and disconnect
-// from the network.  Most manufactures strongly recommend allowing a graceful
-// shut-down rather than a sudden power-off.
-// This is the modem-only variable _disconnetTime_ms.
-#define MODEM_DISCONNECT_TIME_MS 5000
 
 #define RSSI_VAR_NUM 0
 #define RSSI_RESOLUTION 0
@@ -78,35 +48,12 @@ class loggerModem : public Sensor
 // ==========================================================================//
 public:
     // Constructors
-    // Note:  The client for the TinyGSM Modem is needed as an input because
-    // the tiny GSM client class is a subclass of the unique modem class, not
-    // of the generalized modem class.  That means the client cannot be create
-    // until the specific modem is defined.  So the user must first create the
-    // specific modem in their sketch, create that modem's client, and then
-    // feed that client back in here.  The TinyGSM library has a bunch of
-    // typedef's in the TinyGsmClient.h that make this somewhat invisible to
-    // the user.
-    loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
-                int8_t modemResetPin,
-                bool (*modemWakeFxn)(), bool (*modemSleepFxn)(),
-                TinyGsmModem *inModem, Client *inClient, const char *APN);
-
-    loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
-                int8_t modemResetPin,
-                bool (*modemWakeFxn)(), bool (*modemSleepFxn)(),
-                TinyGsmModem *inModem, Client *inClient, const char *ssid, const char *pwd);
-
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                 int8_t modemResetPin, int8_t modemSleepRqPin,
-                uint16_t max_status_time_ms, uint16_t max_disconnetTime_ms,
+                uint32_t max_status_time_ms, uint32_t max_disconnetTime_ms,
                 uint32_t max_warmUpTime_ms, uint32_t max_atresponse_time_ms,
-                TinyGsmModem *inModem, Client *inClient, const char *APN);
-
-    loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
-                int8_t modemResetPin, int8_t modemSleepRqPin,
-                uint16_t max_status_time_ms, uint16_t max_disconnetTime_ms,
-                uint32_t max_warmUpTime_ms, uint32_t max_atresponse_time_ms,
-                TinyGsmModem *inModem, Client *inClient, const char *ssid, const char *pwd);
+                uint32_t max_signalQuality_time_ms,
+                uint8_t measurementsToAverage = 1);
 
     ~loggerModem();
 
@@ -123,8 +70,8 @@ public:
     void powerDown(void) override;
 
     // Turns modem signal strength into a measurement
-    bool startSingleMeasurement(void) override;
-    bool addSingleMeasurementResult(void) override;
+    virtual bool startSingleMeasurement(void) override;
+    virtual bool addSingleMeasurementResult(void) = 0;
 
 protected:
     // We override these because the modem can tell us if it's ready or not
@@ -132,10 +79,6 @@ protected:
     // The modem is "stable" when it responds to AT commands.
     // For a WiFi modem, this actually sets the network connection parameters!!
     bool isStable(bool debug=false) override;
-
-    // The a measurement is "complete" when the modem is registered on the network.
-    // For a cellular modem, this actually sets the GPRS bearer/APN!!
-    bool isMeasurementComplete(bool debug=false) override;
 
 
 // ==========================================================================//
@@ -154,7 +97,7 @@ public:
     Client * getClient(void){return _tinyClient;}
 
     // Access the internet
-    virtual bool connectInternet(uint32_t waitTime_ms = 50000L) = 0;
+    virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) = 0;
     virtual void disconnectInternet(void) = 0;
 
     // This has the same functionality as Client->connect with debugging text
@@ -170,11 +113,10 @@ public:
     // Get the time from NIST via TIME protocol (rfc868)
     // This would be much more efficient if done over UDP, but I'm doing it
     // over TCP because I don't have a UDP library for all the modems.
-    uint32_t getNISTTime(void);
+    virtual uint32_t getNISTTime(void) = 0;
 
 public:
     // All of these must be pointers - these are all abstract classes!
-    TinyGsmModem *_tinyModem;
     Client *_tinyClient;
 
 protected:
@@ -184,24 +126,28 @@ protected:
     static int16_t getPctFromCSQ(int16_t csq);
     // Helper to get signal percent from CSQ
     static int16_t getPctFromRSSI(int16_t rssi);
+
+    // Other helper functions
+    void modemLEDOn(void);
+    void modemLEDOff(void);
+    virtual bool didATRespond(void) = 0;
+    virtual bool modemSleepFxn(void) = 0;
+    virtual bool modemWakeFxn(void) = 0;
+    virtual bool extraModemSetup(void) = 0;
+
     // Helper to set the timing for specific cellular chipsets based on their documentation
-    void setModemTiming(void);
+    // void setModemTiming(void);
 
 protected:
-    bool (*_modemWakeFxn)(void);
-    bool (*_modemSleepFxn)(void);
 
     int8_t _modemSleepRqPin;
     int8_t _modemResetPin;
     int8_t _modemLEDPin;
 
     bool _statusLevel;
-    uint16_t _statusTime_ms;
-    uint16_t _disconnetTime_ms;
+    uint32_t _statusTime_ms;
+    uint32_t _disconnetTime_ms;
 
-    const char *_apn;
-    const char *_ssid;
-    const char *_pwd;
     uint32_t _lastNISTrequest;
     uint32_t _lastATCheck;
     uint32_t _lastConnectionCheck;

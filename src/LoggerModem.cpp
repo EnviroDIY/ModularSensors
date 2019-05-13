@@ -13,126 +13,24 @@
 
 // Constructors
 loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
-                         int8_t modemResetPin,
-                         bool (*modemWakeFxn)(), bool (*modemSleepFxn)(),
-                         TinyGsmModem *inModem, Client *inClient, const char *APN)
-    : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES,
-             MODEM_WARM_UP_TIME_MS, MODEM_ATRESPONSE_TIME_MS, MODEM_MAX_SEARCH_TIME,
-             powerPin, statusPin, 1)
-{
-    _modemName = "unspecified modem";
-    _tinyModem = inModem;
-    _tinyClient = inClient;
-
-    _modemWakeFxn = modemWakeFxn;
-    _modemSleepFxn = modemSleepFxn;
-
-    _modemResetPin = modemResetPin;
-    _modemSleepRqPin = -1;
-    _modemLEDPin = -1;
-
-    _statusLevel = statusLevel;
-    _statusTime_ms = MODEM_STATUS_TIME_MS,
-    _disconnetTime_ms = MODEM_DISCONNECT_TIME_MS;
-
-    _apn = APN;
-    _ssid = NULL;
-    _pwd = NULL;
-
-    _lastNISTrequest = 0;
-    _lastConnectionCheck = 0;
-    _lastATCheck = 0;
-}
-loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
-                         int8_t modemResetPin,
-                         bool (*modemWakeFxn)(), bool (*modemSleepFxn)(),
-                         TinyGsmModem *inModem, Client *inClient, const char *ssid, const char *pwd)
-    : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES,
-             MODEM_WARM_UP_TIME_MS, MODEM_ATRESPONSE_TIME_MS, MODEM_MAX_SEARCH_TIME,
-             powerPin, statusPin, 1)
-{
-    _modemName = "unspecified modem";
-    _tinyModem = inModem;
-    _tinyClient = inClient;
-
-    _modemWakeFxn = modemWakeFxn;
-    _modemSleepFxn = modemSleepFxn;
-
-    _modemResetPin = modemResetPin;
-    _modemSleepRqPin = -1;
-    _modemLEDPin = -1;
-
-    _statusLevel = statusLevel;
-    _statusTime_ms = MODEM_STATUS_TIME_MS,
-    _disconnetTime_ms = MODEM_DISCONNECT_TIME_MS;
-
-    _apn = NULL;
-    _ssid = ssid;
-    _pwd = pwd;
-
-    _lastNISTrequest = 0;
-    _lastConnectionCheck = 0;
-    _lastATCheck = 0;
-}
-loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                          int8_t modemResetPin, int8_t modemSleepRqPin,
-                         uint16_t max_status_time_ms, uint16_t max_disconnetTime_ms,
+                         uint32_t max_status_time_ms, uint32_t max_disconnetTime_ms,
                          uint32_t max_warmUpTime_ms, uint32_t max_atresponse_time_ms,
-                         TinyGsmModem *inModem, Client *inClient, const char *APN)
+                         uint32_t max_signalQuality_time_ms,
+                         uint8_t measurementsToAverage)
     : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES,
-             max_warmUpTime_ms, max_atresponse_time_ms, MODEM_MAX_SEARCH_TIME,
-             powerPin, statusPin, 1)
+             max_warmUpTime_ms, max_atresponse_time_ms, max_signalQuality_time_ms,
+             powerPin, statusPin, measurementsToAverage)
 {
     _modemName = "unspecified modem";
-    _tinyModem = inModem;
-    _tinyClient = inClient;
-
-    _modemWakeFxn = NULL;
-    _modemSleepFxn = NULL;
 
     _modemResetPin = modemResetPin;
-    _modemSleepRqPin = -1;
+    _modemSleepRqPin = modemSleepRqPin;
     _modemLEDPin = -1;
 
     _statusLevel = statusLevel;
     _statusTime_ms = max_status_time_ms,
     _disconnetTime_ms = max_disconnetTime_ms;
-
-    _apn = APN;
-    _ssid = NULL;
-    _pwd = NULL;
-
-    _lastNISTrequest = 0;
-    _lastConnectionCheck = 0;
-    _lastATCheck = 0;
-}
-loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
-                         int8_t modemResetPin, int8_t modemSleepRqPin,
-                         uint16_t max_status_time_ms, uint16_t max_disconnetTime_ms,
-                         uint32_t max_warmUpTime_ms, uint32_t max_atresponse_time_ms,
-                         TinyGsmModem *inModem, Client *inClient, const char *ssid, const char *pwd)
-    : Sensor("Tiny GSM Modem", MODEM_NUM_VARIABLES,
-             max_warmUpTime_ms, max_atresponse_time_ms, MODEM_MAX_SEARCH_TIME,
-             powerPin, statusPin, 1)
-{
-    _modemName = "unspecified modem";
-    _tinyModem = inModem;
-    _tinyClient = inClient;
-
-    _modemWakeFxn = NULL;
-    _modemSleepFxn = NULL;
-
-    _modemResetPin = modemResetPin;
-    _modemSleepRqPin = -1;
-    _modemLEDPin = -1;
-
-    _statusLevel = statusLevel;
-    _statusTime_ms = max_status_time_ms,
-    _disconnetTime_ms = max_disconnetTime_ms;
-
-    _apn = NULL;
-    _ssid = ssid;
-    _pwd = pwd;
 
     _lastNISTrequest = 0;
     _lastConnectionCheck = 0;
@@ -145,6 +43,20 @@ loggerModem::~loggerModem(){}
 
 
 void loggerModem::setModemLED(int8_t modemLEDPin) { _modemLEDPin = modemLEDPin; };
+void loggerModem::modemLEDOn(void)
+{
+    if (_modemLEDPin >= 0)
+    {
+        digitalWrite(_modemLEDPin, HIGH);
+    }
+}
+void loggerModem::modemLEDOff(void)
+{
+    if (_modemLEDPin >= 0)
+    {
+        digitalWrite(_modemLEDPin, LOW);
+    }
+}
 
 
 String loggerModem::getSensorName(void) { return _modemName; }
@@ -176,7 +88,7 @@ bool loggerModem::setup(void)
     {
         waitForWarmUp();
         MS_DBG(F("Running given modem wake function ..."));
-        success &= _modemWakeFxn();
+        success &= wake();
         // NOTE:  not setting wake bits here because we'll go back to sleep
         // before the end of this function if we weren't awake
     }
@@ -187,8 +99,7 @@ bool loggerModem::setup(void)
         // The begin() generally starts with a 5 second testAT(), that should
         // be enough time to allow any modem to be ready to respond
         MS_DBG(F("Running modem's begin function ..."));
-        success &= _tinyModem->begin();
-        _modemName = _tinyModem->getModemName();
+        success &= extraModemSetup();
         if (success) MS_DBG(F("... Complete!  It's a"), getSensorName());
         else MS_DBG(F("... Failed!  It's a"), getSensorName());
     }
@@ -196,27 +107,13 @@ bool loggerModem::setup(void)
 
     // Set the timing for modems based on their names
     // NOTE:  These are based on documentation for the raw chip!
-    setModemTiming();
+    // setModemTiming();
 
 
     MS_DBG(_modemName, F("warms up in"), _warmUpTime_ms, F("ms, indicates status in"),
            _statusTime_ms, F("ms, is responsive to AT commands in less than"),
            _stabilizationTime_ms, F("ms, and takes up to"), _disconnetTime_ms,
            F("ms to close connections and shut down."));
-
-    // XBee saves all configurations to flash, so we can set them here
-    if (_modemName.indexOf(F("XBee")) >= 0)
-    {
-       MS_DBG(F("Putting connection values into flash memory for the Digi XBee"));
-       if (_tinyModem->hasWifi()) _tinyModem->networkConnect(_ssid, _pwd);
-       else _tinyModem->gprsConnect(_apn, "", "");
-    }
-
-    // Print out some warnings if things seem to be improperly formatted
-    if (_tinyModem->hasWifi() && _ssid == NULL)
-        MS_DBG(F("WARNING:  Wifi modem with no SSID given!"));
-     if (_tinyModem->hasGPRS() && _apn == NULL)
-         MS_DBG(F("WARNING:  Cellular modem with no APN given!"));
 
     // Set the status bit marking that the modem has been set up (bit 0)
     // Only set the bit if setup was successful!
@@ -232,7 +129,7 @@ bool loggerModem::setup(void)
     {
         // Run the sleep function
         MS_DBG(F("Running given modem sleep function ..."));
-        success &= _modemSleepFxn();
+        success &= modemSleepFxn();
     }
     else MS_DBG(F("Leaving modem on after setup ..."));
     // Do NOT power down at the end, because this fxn cannot have powered the
@@ -272,7 +169,7 @@ bool loggerModem::wake(void)
     {
         // Run the input wake function
         MS_DBG(F("Running wake function for"), getSensorName());
-        success &= _modemWakeFxn();
+        success &= modemWakeFxn();
     }
 
     // Re-check the status pin
@@ -286,10 +183,7 @@ bool loggerModem::wake(void)
 
     if (success)
     {
-        if (_modemLEDPin >= 0)
-        {
-            digitalWrite(_modemLEDPin, HIGH);
-        }
+        modemLEDOn();
         MS_DBG(getSensorName(), F("should be awake."));
     }
     else
@@ -382,24 +276,6 @@ bool loggerModem::addSingleMeasurementResult(void)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6))
     {
-        // The WiFi XBee needs to make an actual TCP connection and get some sort
-        // of response on that connection before it knows the signal quality.
-        // Connecting to the NIST daytime server, which immediately returns a
-        // 4 byte response and then closes the connection
-        if (_modemName.indexOf(F("XBee")) >= 0  && _tinyModem->hasWifi())
-        {
-            MS_DBG(F("Connecting to NIST daytime server to check connection strength..."));
-            IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
-            success &= _tinyClient->connect(ip, 37);
-            _tinyClient->print('!');  // Need to send something before connection is made
-            delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
-            char junkBuff[5];
-            _tinyClient->readBytes(junkBuff, 4);  // Dump the returned bytes
-            // This should ensure we don't wait for more than 4 character time outs
-            _lastNISTrequest = millis();
-            _tinyClient->stop();  // NIST will close on it's side, but need to stop
-            // because otherwise the Bee won't realize the socket has closed
-        }
 
         // Get signal quality
         // NOTE:  We can't actually distinguish between a bad modem response, no
@@ -482,7 +358,7 @@ bool loggerModem::isStable(bool debug)
     if (now - _lastATCheck < 250) return false;
 
     // If the modem is now responding to AT commands, it's "stable"
-    if (_tinyModem->testAT(10))
+    if (didATRespond())
     {
         if (debug) MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and"),
                getSensorName(), F("is now responding to AT commands!"));
@@ -544,17 +420,6 @@ bool loggerModem::isMeasurementComplete(bool debug)
     // just defining this to not call multiple times below
     uint32_t now = millis();
 
-    // For Wifi XBee's, we need to open a socket before we get signal strength
-    // For ease, we will be opening that socket to NIST in addSingleMeasurementResult.
-    // Because NIST very clearly specifies that we may not ping more frequently
-    // than once every 4 seconds, we need to wait if it hasn't been that long.
-    // See:  https://tf.nist.gov/tf-cgi/servers.cgi
-    if (_modemName.indexOf(F("XBee")) >= 0  && _tinyModem->hasWifi()
-        && now - _lastNISTrequest < 4000)
-    {
-        return false;
-    }
-
     // We don't want to ping any of the modems too fast so they don't get
     // overwhelmed.  Make sure we've waited a little
     if (now - _lastConnectionCheck < 250) return false;
@@ -590,7 +455,7 @@ bool loggerModem::isMeasurementComplete(bool debug)
     }
 
     // If we've exceeded the allowed time to wait for the network, give up
-    if (elapsed_in_wait > MODEM_MAX_SEARCH_TIME)
+    if (elapsed_in_wait > XBEE_SIGNALQUALITY_TIME_MS)
     {
         if (debug) MS_DBG(F("It's been"), (elapsed_in_wait), F("ms, and"),
                getSensorName(), F("has maxed out wait for network registration!  Ending wait."));
@@ -607,7 +472,7 @@ bool loggerModem::isMeasurementComplete(bool debug)
 // ==========================================================================//
 // These are the unique functions for the modem as an internet connected device
 // ==========================================================================//
-bool loggerModem::connectInternet(uint32_t waitTime_ms)
+bool loggerModem::connectInternet(uint32_t maxConnectionTime)
 {
     bool retVal = true;
 
@@ -649,9 +514,9 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
         {
             MS_DBG(F("Sending credentials..."));
             while (!_tinyModem->networkConnect(_ssid, _pwd)) {};
-            MS_DBG(F("Waiting up to"), waitTime_ms/1000,
+            MS_DBG(F("Waiting up to"), maxConnectionTime/1000,
                        F("seconds for connection"));
-            if (!_tinyModem->waitForNetwork(waitTime_ms))
+            if (!_tinyModem->waitForNetwork(maxConnectionTime))
             {
                 MS_DBG(F("... WiFi connection failed"));
                 return false;
@@ -663,9 +528,9 @@ bool loggerModem::connectInternet(uint32_t waitTime_ms)
     }
     else  // must be GPRS
     {
-        MS_DBG(F("\nWaiting up to"), waitTime_ms/1000,
+        MS_DBG(F("\nWaiting up to"), maxConnectionTime/1000,
                    F("seconds for cellular network registration..."));
-        if (_tinyModem->waitForNetwork(waitTime_ms))
+        if (_tinyModem->waitForNetwork(maxConnectionTime))
         {
             MS_DBG(F("... Registered after"), millis() - start,
                        F("milliseconds.  Connecting to GPRS..."));
@@ -777,12 +642,8 @@ bool loggerModem::modemSleepPowerDown(void)
     {
         // Run the sleep function
         MS_DBG(F("Running given sleep function for"), getSensorName());
-        success &= _modemSleepFxn();
-
-        if (_modemLEDPin >= 0)
-        {
-            digitalWrite(_modemLEDPin, LOW);
-        }
+        success &= modemSleepFxn();
+        modemLEDOff();
     }
 
     // Unset the activation time
@@ -977,7 +838,6 @@ Where I could not find it listed, I use 5 seconds.
 **disconnetTime** - Approximate length of time for unit to gracefully
 close sockets and disconnect from the network.  Most manufactures strongly
 recommend allowing a graceful shut-down rather than a sudden power-off.
-***/
 void loggerModem::setModemTiming(void)
 {
     if (_modemName.indexOf(F("SIMCom SIM800")) >= 0)
@@ -1163,7 +1023,7 @@ void loggerModem::setModemTiming(void)
         MS_DBG(F("Putting connection values into flash memory for the Digi XBee"));
         _statusTime_ms = 15;  // ??? WAG!
         // XBee saves all configurations to flash, so we can set them here
-        if (_tinyModem->hasWifi()) _tinyModem->networkConnect(_ssid, _pwd);
         else _tinyModem->gprsConnect(_apn, "", "");
     }
 }
+***/

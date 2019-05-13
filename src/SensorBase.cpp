@@ -313,7 +313,8 @@ void Sensor::notifyVariables(void)
                    variables[i]->getVarName(), F("..."));
                    variables[i]->onSensorUpdate(this);
         }
-        else MS_DBG(F("No variable registered for return value"), i,
+        else MS_DBG(getSensorNameAndLocation(),
+                    F("has no variable registered for return value"), i,
                     F("!  No update sent!"));
     }
 }
