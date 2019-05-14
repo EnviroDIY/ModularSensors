@@ -16,7 +16,7 @@
 #if defined MS_DEBUGGING_STD
 #define MS_MODEM_START_TIMER uint32_t start = millis();
 #else
-#define MS_MODEM_START_TIMER(...)
+#define MS_MODEM_START_TIMER
 #endif
 
 
@@ -155,7 +155,7 @@ bool specificModem::addSingleMeasurementResult(void) \
         /* The TinyGSM getSignalQuality function returns the same "no signal" */ \
         /* value (99 CSQ or 0 RSSI) in all 3 cases. */ \
         MS_DBG(F("Getting signal quality:")); \
-        signalQual = _tinyModem->getSignalQuality(); \
+        signalQual = _tinyModem.getSignalQuality(); \
         MS_DBG(F("Raw signal quality:"), signalQual); \
 \
         /* Convert signal quality to RSSI, if necessary */ \
@@ -231,6 +231,11 @@ bool specificModem::connectInternet(uint32_t maxConnectionTime) \
         MS_DBG(F("... Connected after"), millis() - start, \
                    F("milliseconds.")); \
         return true; \
+    } \
+    else \
+    { \
+        MS_DBG(F("... connection failed.")); \
+        return false; \
     } \
 }
 
