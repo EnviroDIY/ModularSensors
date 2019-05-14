@@ -69,6 +69,24 @@ bool loggerModem::setup(void)
 {
     bool success = Sensor::setup();  // this will set pin modes and the setup status bit
 
+    // Set-up pin modes
+    if (_modemSleepRqPin >= 0)
+    {
+        pinMode(_modemSleepRqPin, OUTPUT);
+        // NOTE:  Not setting level of sleep request pin
+    }
+    int8_t _modemResetPin;
+    if (_modemResetPin >= 0)
+    {
+        pinMode(_modemResetPin, OUTPUT);
+        digitalWrite(_modemResetPin, HIGH);
+    }
+    if (_modemLEDPin >= 0)
+    {
+        pinMode(_modemLEDPin, OUTPUT);
+        digitalWrite(_modemLEDPin, LOW);
+    }
+
     // Initialize the modem
     MS_DBG(F("Setting up the modem ..."));
 
