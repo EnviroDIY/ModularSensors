@@ -53,7 +53,8 @@ public:
                      int8_t powerPin, int8_t statusPin,
                      int8_t modemResetPin, int8_t modemSleepRqPin,
                      const char *ssid, const char *pwd,
-                     uint8_t measurementsToAverage = 1);
+                     uint8_t measurementsToAverage = 1,
+                     int8_t espSleepRqPin = -1, int8_t espStatusPin = -1);
 
 
     // The a measurement is "complete" when the modem is registered on the network.
@@ -82,8 +83,8 @@ private:
     const char *_ssid;
     const char *_pwd;
 
-    int8_t espSleepRqPin;
-    int8_t espStatusPin;
+    int8_t _espSleepRqPin;
+    int8_t _espStatusPin;
 };
 
 #endif

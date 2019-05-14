@@ -19,7 +19,8 @@ EspressifESP8266::EspressifESP8266(Stream* modemStream,
                                    int8_t powerPin, int8_t statusPin,
                                    int8_t modemResetPin, int8_t modemSleepRqPin,
                                    const char *ssid, const char *pwd,
-                                   uint8_t measurementsToAverage)
+                                   uint8_t measurementsToAverage,
+                                   int8_t espSleepRqPin, int8_t espStatusPin)
   : loggerModem(powerPin, statusPin, HIGH,
                 modemResetPin, modemSleepRqPin,
                 ESP8266_STATUS_TIME_MS, ESP8266_DISCONNECT_TIME_MS,
@@ -33,6 +34,8 @@ EspressifESP8266::EspressifESP8266(Stream* modemStream,
     TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);
     _tinyClient = tinyClient;
     _modemStream = modemStream;
+    _espSleepRqPin = espSleepRqPin;
+    _espStatusPin = espStatusPin;
 }
 
 
@@ -134,8 +137,8 @@ bool EspressifESP8266::modemSleepFxn(void)
     // pin to view the sleep status.
     else if (_modemSleepRqPin >= 0 && _dataPin >= 0)
     {
-        _tinyModem.sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
-                          String(espStatusPin), ',', _statusLevel);
+        _tinyModem.sendAT(F("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0,"),
+                          String(_espStatusPin), ',', _statusLevel);
         bool success = _tinyModem.waitResponse() == 1;
         _tinyModem.sendAT(F("+SLEEP=1"));
         success &= _tinyModem.waitResponse() == 1;
@@ -144,7 +147,7 @@ bool EspressifESP8266::modemSleepFxn(void)
     // Light sleep without the status pin
     else if (_modemSleepRqPin >= 0 && _dataPin < 0)
     {
-        _tinyModem.sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0"));
+        _tinyModem.sendAT(F("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0"));
         bool success = _tinyModem.waitResponse() == 1;
         _tinyModem.sendAT(F("+SLEEP=1"));
         success &= _tinyModem.waitResponse() == 1;
@@ -175,8 +178,8 @@ bool EspressifESP8266::extraModemSetup(void)
     // #endif
     if (_powerPin < 0 && _modemResetPin < 0 && _modemSleepRqPin >= 0 && _dataPin >= 0)
     {
-        _tinyModem.sendAT(F("+WAKEUPGPIO=1,"), String(espSleepRqPin), F(",0,"),
-                          String(espStatusPin), ',', _statusLevel);
+        _tinyModem.sendAT(F("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0,"),
+                          String(_espStatusPin), ',', _statusLevel);
         _tinyModem.waitResponse();
     }
     return true;
