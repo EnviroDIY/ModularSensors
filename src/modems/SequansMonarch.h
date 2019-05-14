@@ -1,40 +1,39 @@
 /*
- *Sodaq2GBeeR6.h
+ *SequansMonarch.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is the Sodaq 2GBee revisions 6 and higher - these are based on
- *the SIMCOM SIM800h.
+ *This file is for the Dragino BG96, Nimbelink Skywire 4G LTE-M Global, and
+ *other modules based on the Quectel BG96.
 */
 
 // Header Guards
-#ifndef Sodaq2GBeeR6_h
-#define Sodaq2GBeeR6_h
+#ifndef SequansMonarch_h
+#define SequansMonarch_h
 
 // Debugging Statement
-// #define MS_SODAQ2GBEER6_DEBUG
+// #define MS_SEQUANSMONARCH_DEBUG
 
-#ifdef MS_SODAQ2GBEER6_DEBUG
+#ifdef MS_SEQUANSMONARCH_DEBUG
 #define MS_DEBUGGING_STD
 #define TINY_GSM_DEBUG DEBUGGING_SERIAL_OUTPUT
 #endif
 
-#define TINY_GSM_MODEM_SIM800
+#define TINY_GSM_MODEM_SEQUANS_MONARCH
 
-// Time after end pulse until status pin becomes active (>3sec from start of 1s pulse)
-#define SIM800_STATUS_TIME_MS 2000
-// power down (gracefully) takes >3sec
-// (Giving 15sec for shutdown in case it is not monitored.)
-#define SIM800_DISCONNECT_TIME_MS 15000L
+// ?? Undocumented
+#define MONARCH_STATUS_TIME_MS 50
+// ?? Undocumented (Giving 15sec here in case it is not monitored.)
+#define MONARCH_DISCONNECT_TIME_MS 15000L
 
-// Time after power on before "PWRKEY" can be used - >0.4sec
-#define SIM800_WARM_UP_TIME_MS 450
-// Time after end pulse until serial port becomes active (>3sec from start of 1s pulse)
-#define SIM800_ATRESPONSE_TIME_MS 2000
+// Module automatically boots when power is applied
+#define MONARCH_WARM_UP_TIME_MS 0
+// ?? Time to UART availability not documented
+#define MONARCH_ATRESPONSE_TIME_MS 5000L
 
 // How long we're willing to wait to get signal quality
-#define SIM800_SIGNALQUALITY_TIME_MS 15000L
+#define MONARCH_SIGNALQUALITY_TIME_MS 15000L
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
@@ -42,15 +41,16 @@
 #include "TinyGsmClient.h"
 
 
-class Sodaq2GBeeR6 : public loggerModem
+class SequansMonarch : public loggerModem
 {
 
 public:
     // Constructors
-    Sodaq2GBeeR6(Stream* modemStream,
-                 int8_t powerPin, int8_t statusPin, int8_t modemSleepRqPin,
-                 const char *apn,
-                 uint8_t measurementsToAverage = 1);
+    SequansMonarch(Stream* modemStream,
+                   int8_t powerPin, int8_t statusPin,
+                   int8_t modemResetPin, int8_t modemSleepRqPin,
+                   const char *apn,
+                   uint8_t measurementsToAverage = 1);
 
 
     // The a measurement is "complete" when the modem is registered on the network.

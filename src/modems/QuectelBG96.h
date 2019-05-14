@@ -1,40 +1,39 @@
 /*
- *Sodaq2GBeeR6.h
+ *QuectelBG96.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is the Sodaq 2GBee revisions 6 and higher - these are based on
- *the SIMCOM SIM800h.
+ *This file is for the Dragino BG96, Nimbelink Skywire 4G LTE-M Global, and
+ *other modules based on the Quectel BG96.
 */
 
 // Header Guards
-#ifndef Sodaq2GBeeR6_h
-#define Sodaq2GBeeR6_h
+#ifndef QuectelBG96_h
+#define QuectelBG96_h
 
 // Debugging Statement
-// #define MS_SODAQ2GBEER6_DEBUG
+// #define MS_QUECTELBG96_DEBUG
 
-#ifdef MS_SODAQ2GBEER6_DEBUG
+#ifdef MS_QUECTELBG96_DEBUG
 #define MS_DEBUGGING_STD
 #define TINY_GSM_DEBUG DEBUGGING_SERIAL_OUTPUT
 #endif
 
-#define TINY_GSM_MODEM_SIM800
+#define TINY_GSM_MODEM_BG96
 
-// Time after end pulse until status pin becomes active (>3sec from start of 1s pulse)
-#define SIM800_STATUS_TIME_MS 2000
-// power down (gracefully) takes >3sec
-// (Giving 15sec for shutdown in case it is not monitored.)
-#define SIM800_DISCONNECT_TIME_MS 15000L
+// Time after end pulse until status pin becomes active
+#define BG96_STATUS_TIME_MS 4800L
+// > 2 sec
+#define BG96_DISCONNECT_TIME_MS 5000L
 
-// Time after power on before "PWRKEY" can be used - >0.4sec
-#define SIM800_WARM_UP_TIME_MS 450
-// Time after end pulse until serial port becomes active (>3sec from start of 1s pulse)
-#define SIM800_ATRESPONSE_TIME_MS 2000
+// Time after VBAT is stable before PWRKEY can be used
+#define BG96_WARM_UP_TIME_MS 30
+// USB active at >4.2 sec, status at >4.8 sec, URAT at >4.9
+#define BG96_ATRESPONSE_TIME_MS 4200L
 
 // How long we're willing to wait to get signal quality
-#define SIM800_SIGNALQUALITY_TIME_MS 15000L
+#define BG96_SIGNALQUALITY_TIME_MS 15000L
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
@@ -42,15 +41,16 @@
 #include "TinyGsmClient.h"
 
 
-class Sodaq2GBeeR6 : public loggerModem
+class QuectelBG96 : public loggerModem
 {
 
 public:
     // Constructors
-    Sodaq2GBeeR6(Stream* modemStream,
-                 int8_t powerPin, int8_t statusPin, int8_t modemSleepRqPin,
-                 const char *apn,
-                 uint8_t measurementsToAverage = 1);
+    QuectelBG96(Stream* modemStream,
+                int8_t powerPin, int8_t statusPin,
+                int8_t modemResetPin, int8_t modemSleepRqPin,
+                const char *apn,
+                uint8_t measurementsToAverage = 1);
 
 
     // The a measurement is "complete" when the modem is registered on the network.

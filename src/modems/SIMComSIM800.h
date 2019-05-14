@@ -1,21 +1,22 @@
 /*
- *Sodaq2GBeeR6.h
+ *SIMComSIM800.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is the Sodaq 2GBee revisions 6 and higher - these are based on
+ *This file is for the Adafruit Fona 2G, the Sodaq GPRSBee R4 and almost any
+ * other module based on the SIMCOM SIM800 or SIM900
  *the SIMCOM SIM800h.
 */
 
 // Header Guards
-#ifndef Sodaq2GBeeR6_h
-#define Sodaq2GBeeR6_h
+#ifndef SIMComSIM800_h
+#define SIMComSIM800_h
 
 // Debugging Statement
-// #define MS_SODAQ2GBEER6_DEBUG
+// #define MS_SIMCOMSIM800_DEBUG
 
-#ifdef MS_SODAQ2GBEER6_DEBUG
+#ifdef MS_SIMCOMSIM800_DEBUG
 #define MS_DEBUGGING_STD
 #define TINY_GSM_DEBUG DEBUGGING_SERIAL_OUTPUT
 #endif
@@ -42,15 +43,16 @@
 #include "TinyGsmClient.h"
 
 
-class Sodaq2GBeeR6 : public loggerModem
+class SIMComSIM800 : public loggerModem
 {
 
 public:
     // Constructors
-    Sodaq2GBeeR6(Stream* modemStream,
-                 int8_t powerPin, int8_t statusPin, int8_t modemSleepRqPin,
+    SIMComSIM800(Stream* modemStream,
+                 int8_t powerPin, int8_t statusPin,
+                 int8_t modemResetPin, int8_t modemSleepRqPin,
                  const char *apn,
-                 uint8_t measurementsToAverage = 1);
+                uint8_t measurementsToAverage = 1);
 
 
     // The a measurement is "complete" when the modem is registered on the network.

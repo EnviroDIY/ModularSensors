@@ -33,13 +33,13 @@ EspressifESP8266::EspressifESP8266(Stream* modemStream,
     TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);
     _tinyClient = tinyClient;
     _modemStream = modemStream;
-    _statusLevel = HIGH;
 }
 
 
 MS_MODEM_DID_AT_RESPOND(EspressifESP8266);
 MS_MODEM_IS_INTERNET_AVAILABLE(EspressifESP8266);
 MS_MODEM_IS_MEASUREMENT_COMPLETE(EspressifESP8266);
+MS_MODEM_ADD_SINGLE_MEASUREMENT_RESULT(EspressifESP8266);
 MS_MODEM_CONNECT_INTERNET(EspressifESP8266);
 MS_MODEM_DISCONNECT_INTERNET(EspressifESP8266);
 MS_MODEM_GET_NIST_TIME(EspressifESP8266);
@@ -79,6 +79,37 @@ bool EspressifESP8266::ESPwaitForBoot(void)
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
+bool EspressifESP8266::modemWakeFxn(void)
+{
+    bool success = true;
+    if (_powerPin >= 0)  // Turns on when power is applied
+    {
+        success &= ESPwaitForBoot();
+        return success;
+    }
+    else if (_modemResetPin >= 0)
+    {
+        digitalWrite(_modemResetPin, LOW);
+        delay(1);
+        digitalWrite(_modemResetPin, HIGH);
+        success &= ESPwaitForBoot();
+        return success;
+    }
+    else if (_modemSleepRqPin >= 0)
+    {
+        digitalWrite(_modemSleepRqPin, LOW);
+        delay(1);
+        digitalWrite(_modemSleepRqPin, HIGH);
+        // Don't have to wait for a boot if using light sleep
+        return true;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+
 bool EspressifESP8266::modemSleepFxn(void)
 {
     // Use this if you have GPIO16 connected to the reset pin to wake from deep sleep
@@ -96,7 +127,6 @@ bool EspressifESP8266::modemSleepFxn(void)
     // Use this if you have an MCU pin connected to the ESP's reset pin to wake from deep sleep
     if (_modemResetPin >= 0)
     {
-        digitalWrite(_modemLEDPin, LOW);
         return _tinyModem.poweroff();
     }
     // Use this if you don't have access to the ESP8266's reset pin for deep sleep but you
@@ -109,7 +139,6 @@ bool EspressifESP8266::modemSleepFxn(void)
         bool success = _tinyModem.waitResponse() == 1;
         _tinyModem.sendAT(F("+SLEEP=1"));
         success &= _tinyModem.waitResponse() == 1;
-        digitalWrite(_modemLEDPin, LOW);
         return success;
     }
     // Light sleep without the status pin
@@ -119,7 +148,6 @@ bool EspressifESP8266::modemSleepFxn(void)
         bool success = _tinyModem.waitResponse() == 1;
         _tinyModem.sendAT(F("+SLEEP=1"));
         success &= _tinyModem.waitResponse() == 1;
-        digitalWrite(_modemLEDPin, LOW);
         return success;
     }
     else  // DON'T go to sleep if we can't wake up!
@@ -129,51 +157,10 @@ bool EspressifESP8266::modemSleepFxn(void)
 }
 
 
-bool EspressifESP8266::modemWakeFxn(void)
-{
-    bool success = true;
-    if (_powerPin >= 0)  // Turns on when power is applied
-    {
-        digitalWrite(_modemLEDPin, HIGH);  // Because the ESP8266 doesn't have any lights
-        success &= ESPwaitForBoot();
-        if (!success)
-        {
-            digitalWrite(_modemLEDPin, LOW);  // Turn off light if the boot failed
-        }
-        return success;
-    }
-    else if (_modemResetPin >= 0)
-    {
-        digitalWrite(_modemLEDPin, HIGH);
-        digitalWrite(_modemResetPin, LOW);
-        delay(1);
-        digitalWrite(_modemResetPin, HIGH);
-        success &= ESPwaitForBoot();
-        if (!success)
-        {
-            digitalWrite(_modemLEDPin, LOW);  // Turn off light if the boot failed
-        }
-        return success;
-    }
-    else if (_modemSleepRqPin >= 0)
-    {
-        digitalWrite(_modemSleepRqPin, LOW);
-        delay(1);
-        digitalWrite(_modemSleepRqPin, HIGH);
-        digitalWrite(_modemLEDPin, HIGH);
-        // Don't have to wait for a boot if using light sleep
-        return true;
-    }
-    else
-    {
-        return true;
-    }
-}
-
-
 // Set up the light-sleep status pin, if applicable
 bool EspressifESP8266::extraModemSetup(void)
 {
+    _modemName = _tinyModem.getModemName();
     // Slow down the baud rate for slow processors - and save the change to
     // the ESP's non-volatile memory so we don't have to do it every time
     // #if F_CPU == 8000000L
@@ -233,49 +220,5 @@ bool EspressifESP8266::startSingleMeasurement(void)
         _sensorStatus &= 0b10111111;
         success = false;
     }
-    return success;
-}
-
-
-bool EspressifESP8266::addSingleMeasurementResult(void)
-{
-    bool success = true;
-
-    // Initialize float variable
-    int16_t signalQual = -9999;
-    int16_t percent = -9999;
-    int16_t rssi = -9999;
-
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (bitRead(_sensorStatus, 6))
-    {
-
-        // Get signal quality
-        // NOTE:  We can't actually distinguish between a bad modem response, no
-        // modem response, and a real response from the modem of no service/signal.
-        // The TinyGSM getSignalQuality function returns the same "no signal"
-        // value (99 CSQ or 0 RSSI) in all 3 cases.
-        MS_DBG(F("Getting signal quality:"));
-        signalQual = _tinyModem.getSignalQuality();
-        MS_DBG(F("Raw signal quality:"), signalQual);
-
-        // Convert signal quality to RSSI, if necessary
-        rssi = signalQual;
-        percent = getPctFromRSSI(signalQual);
-
-        MS_DBG(F("RSSI:"), rssi);
-        MS_DBG(F("Percent signal strength:"), percent);
-    }
-    else MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!"));
-
-    verifyAndAddMeasurementResult(RSSI_VAR_NUM, rssi);
-    verifyAndAddMeasurementResult(PERCENT_SIGNAL_VAR_NUM, percent);
-
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10011111;
-
     return success;
 }

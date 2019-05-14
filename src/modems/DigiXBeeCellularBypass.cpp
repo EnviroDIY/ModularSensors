@@ -32,6 +32,7 @@ DigiXBeeCellularBypass::DigiXBeeCellularBypass(Stream* modemStream,
 MS_MODEM_DID_AT_RESPOND(DigiXBeeCellularBypass);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeCellularBypass);
 MS_MODEM_IS_MEASUREMENT_COMPLETE(DigiXBeeCellularBypass);
+MS_MODEM_ADD_SINGLE_MEASUREMENT_RESULT(DigiXBeeCellularBypass);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularBypass);
 MS_MODEM_GET_NIST_TIME(DigiXBeeCellularBypass);
 
@@ -99,49 +100,5 @@ bool DigiXBeeCellularBypass::extraModemSetup(void)
         _modemName = _tinyModem.getModemName();
     }
     else success = false;
-    return success;
-}
-
-
-bool DigiXBeeCellularBypass::addSingleMeasurementResult(void)
-{
-    bool success = true;
-
-    // Initialize float variable
-    int16_t signalQual = -9999;
-    int16_t percent = -9999;
-    int16_t rssi = -9999;
-
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (bitRead(_sensorStatus, 6))
-    {
-
-        // Get signal quality
-        // NOTE:  We can't actually distinguish between a bad modem response, no
-        // modem response, and a real response from the modem of no service/signal.
-        // The TinyGSM getSignalQuality function returns the same "no signal"
-        // value (99 CSQ or 0 RSSI) in all 3 cases.
-        MS_DBG(F("Getting signal quality:"));
-        signalQual = _tinyModem.getSignalQuality();
-        MS_DBG(F("Raw signal quality:"), signalQual);
-
-        // Convert signal quality to RSSI, if necessary
-        rssi = getRSSIFromCSQ(signalQual);
-        percent = getPctFromCSQ(signalQual);
-
-        MS_DBG(F("RSSI:"), rssi);
-        MS_DBG(F("Percent signal strength:"), percent);
-    }
-    else MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!"));
-
-    verifyAndAddMeasurementResult(RSSI_VAR_NUM, rssi);
-    verifyAndAddMeasurementResult(PERCENT_SIGNAL_VAR_NUM, percent);
-
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10011111;
-
     return success;
 }

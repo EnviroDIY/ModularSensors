@@ -23,12 +23,19 @@
 
 #define TINY_GSM_MODEM_ESP8266
 
-#define ESP8266_STATUS_TIME_MS 350  // N/A? - No status pin - use boot time if using a GPIO pin
-#define ESP8266_DISCONNECT_TIME_MS 500 // power down ???
+// No possible status pin on the ESP8266 in deep sleep mode
+// For cases where a pin is defined for light sleep mode, we'll call this
+// the boot time because I have no idea what it would be
+#define ESP8266_STATUS_TIME_MS 350
+// power down ???
+#define ESP8266_DISCONNECT_TIME_MS 500
 
-#define ESP8266_WARM_UP_TIME_MS 0  // Module turns on when power is applied
-#define ESP8266_ATRESPONSE_TIME_MS 5000L
+// Module turns on when power is applied regardless of pin states
+#define ESP8266_WARM_UP_TIME_MS 0
+// Time until system and digital pins are operational
+#define ESP8266_ATRESPONSE_TIME_MS 350
 
+// How long we're willing to wait to get signal quality
 #define ESP8266_SIGNALQUALITY_TIME_MS 15000L
 
 // Included Dependencies

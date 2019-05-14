@@ -8,96 +8,87 @@
 */
 
 // Header Guards
-#ifndef ModularSensorsSpecificModem_h
-#define ModularSensorsSpecificModem_h
+#ifndef SodaqUBeeR410M_h
+#define SodaqUBeeR410M_h
 
 // Debugging Statement
-// #define MS_SODAQUBEER410M_DEBUG
+// #define MS_SodaqUBeeR410M_DEBUG
 
 #ifdef MS_SODAQUBEER410M_DEBUG
 #define MS_DEBUGGING_STD
 #define TINY_GSM_DEBUG DEBUGGING_SERIAL_OUTPUT
 #endif
 
-#define TINY_GSM_YIELD() { delay(2); }  // Can help with slow (9600) baud rates
+#define TINY_GSM_MODEM_UBLOX
+// V_INT becomes active mid-way through on-pulse
+#define R410M_STATUS_TIME_MS 0
+// Power down time "can largely vary depending
+// on the application / network settings and the concurrent module
+// activities."  Vint/status pin should be monitored and power not withdrawn
+// until that pin reads low.  Giving 15sec here in case it is not monitored.
+#define R410M_DISCONNECT_TIME_MS 15000L
+
+// Time after power on before PWR_ON can be used ??? Unclear in documentation!
+#define R410M_WARM_UP_TIME_MS 250
+// Time until system and digital pins are operational (~4.5s)
+#define R410M_ATRESPONSE_TIME_MS 4500L
+
+// How long we're willing to wait to get signal quality
+#define R410M_SIGNALQUALITY_TIME_MS 15000L
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #include "LoggerModem.h"
-
-// ==========================================================================
-//    Wifi/Cellular Modem Main Chip Selection
-// ==========================================================================
-
-// Select your modem chip - this determines the exact commands sent to it
-#define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
+#include "TinyGsmClient.h"
 
 
-// ==========================================================================
-//    Modem Pins
-// ==========================================================================
-
-// Declare the existance of modem pin Variables
-// Use the "extern" keyword to denote that these will actually be defined in
-// the main program rather than in this file.
-
-extern const int8_t modemVccPin;
-extern const int8_t modemSleepRqPin;
-extern const int8_t modemStatusPin;
-extern const int8_t modemResetPin;
-extern const int8_t modemLEDPin;
-
-
-// ==========================================================================
-//    Specific Modem On-Off Methods
-// ==========================================================================
-
-// Create the wake and sleep methods for the modem
-// These can be functions of any type and must return a boolean
-bool modemSleepFxn(void)
+class SodaqUBeeR410M : public loggerModem
 {
-    if (modemSleepRqPin >= 0)  // R410 must have access to PWR_ON pin to sleep
-    {
-        // Easiest to just go to sleep with the AT command rather than using pins
-        return tinyModem->poweroff();
-    }
-    else  // DON'T go to sleep if we can't wake up!
-    {
-        return true;
-    }
-}
-bool modemWakeFxn(void)
-{
-    // SARA R4/N4 series must power on and then pulse on
-    if (modemSleepRqPin >= 0)
-    {
-        digitalWrite(modemSleepRqPin, LOW);
-        digitalWrite(modemLEDPin, HIGH);
-        delay(200);  // 0.15-3.2s pulse for wake on SARA R4/N4
-        digitalWrite(modemSleepRqPin, HIGH);
-        digitalWrite(modemLEDPin, LOW);
-        // Need to slow down R4/N4's default 115200 baud rate for slow processors
-        #if F_CPU == 8000000L && defined USE_UBLOX_R410M
-        delay(4600);  // Must wait for UART port to become active
-        modemSerial.begin(115200);
-        tinyModem->setBaud(9600);
-        modemSerial.end();
-        modemSerial.begin(9600);
-        #endif
-        return true;
-    }
-    else
-    {
-        return true;
-    }
-}
+
+public:
+    // Constructors
+    #if F_CPU == 8000000L
+    // At this slow baud rate, we need to begin and end serial communication,
+    // so we need a Serial instance rather than a stream
+    SodaqUBeeR410M(HardwareSerial* modemStream,
+                   int8_t powerPin, int8_t statusPin, int8_t modemSleepRqPin,
+                   const char *apn,
+                   uint8_t measurementsToAverage = 1);
+    #else
+    SodaqUBeeR410M(Stream* modemStream,
+                   int8_t powerPin, int8_t statusPin, int8_t modemSleepRqPin,
+                   const char *apn,
+                   uint8_t measurementsToAverage = 1);
+    #endif
 
 
-void extraModemSetup(void)
-{
-    tinyModem->sendAT(F("+URAT=7"));
-    tinyModem->waitResponse();
-}
+    // The a measurement is "complete" when the modem is registered on the network.
+    // For a cellular modem, this actually sets the GPRS bearer/APN!!
+    bool startSingleMeasurement(void) override;
+    bool isMeasurementComplete(bool debug=false) override;
+    bool addSingleMeasurementResult(void) override;
 
+    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+    void disconnectInternet(void) override;
+
+    uint32_t getNISTTime(void) override;
+
+    TinyGsm _tinyModem;
+    #if F_CPU == 8000000L
+    HardwareSerial *_modemStream;
+    #else
+    Stream *_modemStream;
+    #endif
+
+protected:
+    virtual bool didATRespond(void) override;
+    virtual bool isInternetAvailable(void) override;
+    virtual bool modemSleepFxn(void) override;
+    virtual bool modemWakeFxn(void) override;
+    virtual bool extraModemSetup(void)override;
+
+private:
+    const char *_apn;
+};
 
 #endif

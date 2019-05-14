@@ -4,118 +4,81 @@
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is the Sodaq UBee based on the u-blox SARA R410M LTE-M Cellular Module
+ *This file is the Sodaq UBee based on the u-blox SARA U201 3G Cellular Module
 */
 
 // Header Guards
-#ifndef ModularSensorsSpecificModem_h
-#define ModularSensorsSpecificModem_h
+#ifndef SodaqUBeeU201_h
+#define SodaqUBeeU201_h
 
 // Debugging Statement
-// #define MS_SODAQUBEEU201_DEBUG
+// #define MS_SodaqUBeeU201_DEBUG
 
 #ifdef MS_SODAQUBEEU201_DEBUG
 #define MS_DEBUGGING_STD
 #define TINY_GSM_DEBUG DEBUGGING_SERIAL_OUTPUT
 #endif
 
-#define TINY_GSM_YIELD() { delay(2); }  // Can help with slow (9600) baud rates
+#define TINY_GSM_MODEM_UBLOX
+// Time after end pulse until V_INT becomes active
+// Unspecified in documentation! Taking value from Lisa U2
+#define U201_STATUS_TIME_MS 35
+// Power down time "can largely vary depending
+// on the application / network settings and the concurrent module
+// activities."  Vint/status pin should be monitored and power not withdrawn
+// until that pin reads low.  Giving 15sec here in case it is not monitored.
+#define U201_DISCONNECT_TIME_MS 15000L
+
+// Module turns on when power is applied - level of PWR_ON then irrelevant
+#define U201_WARM_UP_TIME_MS 0
+// Time until system and digital pins are operational
+// (6 sec typical for SARA U201)
+// Time for an AT response may be even longer when using a 3G XBee in bypass mode!
+#define U201_ATRESPONSE_TIME_MS 6000L
+
+// How long we're willing to wait to get signal quality
+#define U201_SIGNALQUALITY_TIME_MS 15000L
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #include "LoggerModem.h"
-
-// ==========================================================================
-//    Wifi/Cellular Modem Main Chip Selection
-// ==========================================================================
-
-// Select your modem chip - this determines the exact commands sent to it
-#define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
+#include "TinyGsmClient.h"
 
 
-// ==========================================================================
-//    Modem Pins
-// ==========================================================================
-
-// Declare the existance of modem pin Variables
-// Use the "extern" keyword to denote that these will actually be defined in
-// the main program rather than in this file.
-
-extern const int8_t modemVccPin;
-extern const int8_t modemSleepRqPin;
-extern const int8_t modemStatusPin;
-extern const int8_t modemResetPin;
-extern const int8_t modemLEDPin;
-
-
-// ==========================================================================
-//    TinyGSM Client
-// ==========================================================================
-
-// #define TINY_GSM_DEBUG Serial  // If you want debugging on the main debug port
-
-#define TINY_GSM_YIELD() { delay(2); }  // Can help with slow (9600) baud rates
-
-// Include TinyGSM for the modem
-// This include must be included below the define of the modem name!
-#include <TinyGsmClient.h>
-
-// Create a reference to the serial port for the modem
-// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
-// NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
-
-// Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(modemSerial);
-
-// Create a new TCP client on that modem and return a pointer to it
-TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
-
-
-// ==========================================================================
-//    Specific Modem On-Off Methods
-// ==========================================================================
-
-// Create the wake and sleep methods for the modem
-// These can be functions of any type and must return a boolean
-bool modemSleepFxn(void)
+class SodaqUBeeU201 : public loggerModem
 {
-    if (modemVccPin >= 0 || modemSleepRqPin >= 0)  // others will go on with power on
-    {
-        // Easiest to just go to sleep with the AT command rather than using pins
-        return tinyModem->poweroff();
-    }
-    else  // DON'T go to sleep if we can't wake up!
-    {
-        return true;
-    }
-}
+
+public:
+    // Constructors
+    SodaqUBeeU201(Stream* modemStream,
+                  int8_t powerPin, int8_t statusPin, int8_t modemSleepRqPin,
+                  const char *apn,
+                  uint8_t measurementsToAverage = 1);
 
 
-bool modemWakeFxn(void)
-{
-    // SARA/LISA U2/G2 and SARA G3 series turn on when power is applied
-    if (modemVccPin >= 0)
-        return true;
-    if (modemSleepRqPin >= 0)
-    {
-        digitalWrite(modemSleepRqPin, LOW);
-        digitalWrite(modemLEDPin, HIGH);
-        // delay(6);  // >5ms pulse for wake on SARA G3
-        delayMicroseconds(65);  // 50-80µs pulse for wake on SARA/LISA U2/G2
-        digitalWrite(modemSleepRqPin, HIGH);
-        digitalWrite(modemLEDPin, LOW);
-        return true;
-    }
-    else
-    {
-        return true;
-    }
-}
+    // The a measurement is "complete" when the modem is registered on the network.
+    // For a cellular modem, this actually sets the GPRS bearer/APN!!
+    bool startSingleMeasurement(void) override;
+    bool isMeasurementComplete(bool debug=false) override;
+    bool addSingleMeasurementResult(void) override;
 
+    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+    void disconnectInternet(void) override;
 
-void extraModemSetup(void){}
+    uint32_t getNISTTime(void) override;
 
+    TinyGsm _tinyModem;
+    Stream *_modemStream;
+
+protected:
+    virtual bool didATRespond(void) override;
+    virtual bool isInternetAvailable(void) override;
+    virtual bool modemSleepFxn(void) override;
+    virtual bool modemWakeFxn(void) override;
+    virtual bool extraModemSetup(void)override;
+
+private:
+    const char *_apn;
+};
 
 #endif

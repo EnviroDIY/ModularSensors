@@ -19,12 +19,21 @@
 #define TINY_GSM_DEBUG DEBUGGING_SERIAL_OUTPUT
 #endif
 
+// Time after turn on until the status pin is active - total WAG
 #define XBEE_STATUS_TIME_MS 15
+// Power down time "can largely vary depending
+// on the application / network settings and the concurrent module
+// activities."  Vint/status pin should be monitored and power not withdrawn
+// until that pin reads low.  Giving 15sec here in case it is not monitored.
 #define XBEE_DISCONNECT_TIME_MS 5000L
 
-#define XBEE_WARM_UP_TIME_MS 50
+// Time after power-up before we can wake the model
+#define XBEE_WARM_UP_TIME_MS 0
+// Time we'll get back an AT response.  Probably much less than this, except in bypass
 #define XBEE_ATRESPONSE_TIME_MS 5000L
 
+// How long we're willing to wait to get signal quality
+// This can be super slow for cellular modules
 #define XBEE_SIGNALQUALITY_TIME_MS 45000L
 
 // Included Dependencies

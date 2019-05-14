@@ -1,40 +1,38 @@
 /*
- *Sodaq2GBeeR6.h
+ *SIMComSIM7000.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
  *
- *This file is the Sodaq 2GBee revisions 6 and higher - these are based on
- *the SIMCOM SIM800h.
+ *This file is for the Botletics and other modules based on the SIMCOM SIM7000.
 */
 
 // Header Guards
-#ifndef Sodaq2GBeeR6_h
-#define Sodaq2GBeeR6_h
+#ifndef SIMComSIM7000_h
+#define SIMComSIM7000_h
 
 // Debugging Statement
-// #define MS_SODAQ2GBEER6_DEBUG
+// #define MS_SIMCOMSIM7000_DEBUG
 
-#ifdef MS_SODAQ2GBEER6_DEBUG
+#ifdef MS_SIMCOMSIM7000_DEBUG
 #define MS_DEBUGGING_STD
 #define TINY_GSM_DEBUG DEBUGGING_SERIAL_OUTPUT
 #endif
 
-#define TINY_GSM_MODEM_SIM800
+#define TINY_GSM_MODEM_SIM7000
 
-// Time after end pulse until status pin becomes active (>3sec from start of 1s pulse)
-#define SIM800_STATUS_TIME_MS 2000
-// power down (gracefully) takes >3sec
-// (Giving 15sec for shutdown in case it is not monitored.)
-#define SIM800_DISCONNECT_TIME_MS 15000L
+// Time after end pulse until status pin becomes active (>4.5sec)
+#define SIM7000_STATUS_TIME_MS 4500L
+// power down (gracefully) takes 1.8-6.9 sec
+#define SIM7000_DISCONNECT_TIME_MS 7000L
 
-// Time after power on before "PWRKEY" can be used - >0.4sec
-#define SIM800_WARM_UP_TIME_MS 450
-// Time after end pulse until serial port becomes active (>3sec from start of 1s pulse)
-#define SIM800_ATRESPONSE_TIME_MS 2000
+// Time after power on before "PWRKEY" can be used (guess - diagram isn't clear)
+#define SIM7000_WARM_UP_TIME_MS 1000L
+// Time after end pulse until serial port becomes active (>4.5sec)
+#define SIM7000_ATRESPONSE_TIME_MS 4500
 
 // How long we're willing to wait to get signal quality
-#define SIM800_SIGNALQUALITY_TIME_MS 15000L
+#define SIM7000_SIGNALQUALITY_TIME_MS 15000L
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
@@ -42,15 +40,16 @@
 #include "TinyGsmClient.h"
 
 
-class Sodaq2GBeeR6 : public loggerModem
+class SIMComSIM7000 : public loggerModem
 {
 
 public:
     // Constructors
-    Sodaq2GBeeR6(Stream* modemStream,
-                 int8_t powerPin, int8_t statusPin, int8_t modemSleepRqPin,
-                 const char *apn,
-                 uint8_t measurementsToAverage = 1);
+    SIMComSIM7000(Stream* modemStream,
+                  int8_t powerPin, int8_t statusPin,
+                  int8_t modemResetPin, int8_t modemSleepRqPin,
+                  const char *apn,
+                  uint8_t measurementsToAverage = 1);
 
 
     // The a measurement is "complete" when the modem is registered on the network.
