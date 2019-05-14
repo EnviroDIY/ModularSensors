@@ -9,6 +9,7 @@
 
 // Included Dependencies
 #include "DigiXBeeCellularTransparent.h"
+#include "modems/LoggerModemMacros.h"
 
 // Constructors
 DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(Stream* modemStream,
@@ -24,13 +25,15 @@ DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(Stream* modemStream,
     _apn = apn;
     TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);
     _tinyClient = tinyClient;
+    _modemStream = modemStream;
 }
 
 
-bool DigiXBeeCellularTransparent::didATRespond(void)
-{
-    return _tinyModem.testAT(10);
-}
+MS_MODEM_DID_AT_RESPOND(DigiXBeeCellularTransparent);
+MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeCellularTransparent);
+MS_MODEM_IS_MEASUREMENT_COMPLETE(DigiXBeeCellularTransparent);
+MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularTransparent);
+MS_MODEM_GET_NIST_TIME(DigiXBeeCellularTransparent);
 
 
 bool DigiXBeeCellularTransparent::extraModemSetup(void)
@@ -91,83 +94,6 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
 }
 
 
-// This checks to see if enough time has passed for measurement completion
-// In the case of the modem, we consider a measurement to be "complete" when
-// the modem has registered on the network *and* returns good signal strength.
-// In theory, both of these things happen at the same time - as soon as the
-// module detects a network with sufficient signal strength, it connects and
-// will respond corretly to requests for its connection status and the signal
-// strength.  In reality sometimes the modem might respond with successful
-// network connection before it responds with a valid signal strength or it
-// might be able to return a real measurement of cellular signal strength but
-// not be able to register to the network.  We'd prefer to wait until it both
-// responses are good so we're getting an actual signal strength and it's as
-// close as possible to what the antenna is will see when the data publishers
-// push data.
-bool DigiXBeeCellularTransparent::isMeasurementComplete(bool debug)
-{
-    #if defined MS_DIGIXBEECELLULARTRANSPARENT_DEBUG
-    debug = true;
-    #endif
-    // If a measurement failed to start, the sensor will never return a result,
-    // so the measurement time is essentially already passed
-    // For a cellular modem nothing happens to "start" a measurement so bit 6
-    // will be set by startSingleMeasurement() as long as bit 4 was set by wake().
-    // For a Cellular modem, startSingleMeasurement actually sets the Cellular connection
-    // parameters.
-    if (!bitRead(_sensorStatus, 6))
-    {
-        if (debug) {MS_DBG(getSensorName(),
-            F("is not measuring and will not return a value!"));}
-        return true;
-    }
-
-    // just defining this to not call multiple times below
-    uint32_t now = millis();
-
-    // We don't want to ping any of the modems too fast so they don't get
-    // overwhelmed.  Make sure we've waited a little
-    if (now - _lastConnectionCheck < 250) return false;
-
-    // Check how long we've been waiting for the network connection and/or a
-    // good measurement of signal quality.
-    uint32_t elapsed_in_wait;
-
-    // Cellular modems and wifi modems with the connection paramters always
-    // saved to flash (like XBees) begin searching for and attempt to register
-    // to the network as soon as they are awake - the GPRS paramters that need
-    // to be set to actually *use* the network don't have to be set until we
-    // make the attempt to use it.
-    elapsed_in_wait = now - _millisSensorActivated;
-
-    // If we're connected AND receiving valid signal strength, measurement is complete
-    // In theory these happen at the same time, but in reality one or the other
-    // may happen first.
-    bool isConnected = _tinyModem.isNetworkConnected();
-    int signalResponse = _tinyModem.getSignalQuality();
-    if (isConnected && signalResponse != 0 && signalResponse != 99)
-    {
-        if (debug) MS_DBG(F("It's been"), (elapsed_in_wait), F("ms, and"),
-               getSensorName(), F("is now registered on the network and reporting valid signal strength!"));
-        _lastConnectionCheck = now;
-        return true;
-    }
-
-    // If we've exceeded the allowed time to wait for the network, give up
-    if (elapsed_in_wait > XBEE_SIGNALQUALITY_TIME_MS)
-    {
-        if (debug) MS_DBG(F("It's been"), (elapsed_in_wait), F("ms, and"),
-               getSensorName(), F("has maxed out wait for network registration!  Ending wait."));
-         // Leave status bits and times set - can still get a valid value!
-        return true;
-    }
-
-    // If the modem isn't registered yet or doesn't report valid signal, we still need to wait
-    _lastConnectionCheck = now;
-    return false;
-}
-
-
 bool DigiXBeeCellularTransparent::addSingleMeasurementResult(void)
 {
     bool success = true;
@@ -211,134 +137,7 @@ bool DigiXBeeCellularTransparent::addSingleMeasurementResult(void)
 }
 
 
-bool DigiXBeeCellularTransparent::connectInternet(uint32_t maxConnectionTime)
-{
-    bool retVal = true;
-
-    if (bitRead(_sensorStatus, 1) == 0 || bitRead(_sensorStatus, 2) == 0)  // NOT yet powered
-    {
-        modemPowerUp();
-    }
-    if (bitRead(_sensorStatus, 3) == 0)  // No attempts yet to wake the modem
-    {
-        waitForWarmUp();
-        retVal &= wake();
-    }
-    if (bitRead(_sensorStatus, 0) == 0)  // Not yet setup
-    {
-        retVal &= setup();  // Set-up if necessary
-    }
-    if (!retVal)
-    {
-        MS_DBG(F("Modem did't wake up! Cannot connect to the internet!"));
-        return retVal;
-    }
-
-    // Check that the modem is responding to AT commands.  If not, give up.
-    #if defined MS_DIGIXBEECELLULARTRANSPARENT_DEBUG
-        uint32_t start = millis();
-    #endif
-    MS_DBG(F("\nWaiting for"), getSensorName(), F("to respond to AT commands..."));
-    if (!_tinyModem.testAT(_stabilizationTime_ms + 500))
-    {
-        MS_DBG(F("No response to AT commands! Cannot connect to the internet!"));
-        return false;
-    }
-    else MS_DBG(F("... AT OK after"), millis() - start, F("milliseconds!"));
-
-    MS_DBG(F("\nWaiting up to"), maxConnectionTime/1000,
-               F("seconds for cellular network registration..."));
-    if (_tinyModem.waitForNetwork(maxConnectionTime))
-    {
-        MS_DBG(F("... Registered after"), millis() - start,
-                   F("milliseconds.  Connecting to GPRS..."));
-        _tinyModem.gprsConnect(_apn, "", "");
-        MS_DBG(F("... Connected after"), millis() - start,
-                   F("milliseconds."));
-        retVal = true;
-    }
-    else
-    {
-        MS_DBG(F("...GPRS connection failed."));
-        return false;
-    }
-}
-
-
 void DigiXBeeCellularTransparent::disconnectInternet(void)
 {
     // XBee doesn't like to disconnect at all, so we're doing nothing
-}
-
-
-
-// Get the time from NIST via TIME protocol (rfc868)
-// This would be much more efficient if done over UDP, but I'm doing it
-// over TCP because I don't have a UDP library for all the modems.
-uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
-{
-    // bail if not connected to the internet
-    if (!_tinyModem.isGprsConnected())
-    {
-        MS_DBG(F("No internet connection, cannot connect to NIST."));
-        return 0;
-    }
-
-    // Must ensure that we do not ping the daylight more than once every 4 seconds
-    // NIST clearly specifies here that this is a requirement for all software
-    // that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi
-    while (millis() < _lastNISTrequest + 4000) {}
-
-    // Make TCP connection
-    MS_DBG(F("Connecting to NIST daytime Server"));
-    bool connectionMade = false;
-    IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
-    connectionMade = _tinyClient->connect(ip, 37);  // XBee's address lookup falters on time.nist.gov
-    _tinyClient->print('!');  // Need to send something before connection is made
-    delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
-
-    // Wait up to 5 seconds for a response
-    if (connectionMade)
-    {
-        long start = millis();
-        while (_tinyClient && _tinyClient->available() < 4 && millis() - start < 5000L){}
-
-        if (_tinyClient->available() >= 4)
-        {
-            MS_DBG(F("\nNIST responded after"), millis() - start, F("ms"));
-            // Response is returned as 32-bit number as soon as connection is made
-            // Connection is then immediately closed, so there is no need to close it
-            uint32_t secFrom1900 = 0;
-            byte response[4] = {0};
-            for (uint8_t i = 0; i < 4; i++)
-            {
-                response[i] = _tinyClient->read();
-                MS_DBG(F("\nResponse Byte"), i, ':', (char)response[i],
-                           '=', response[i], '=', String(response[i], BIN));
-                secFrom1900 += 0x000000FF & response[i];
-                // MS_DBG(F("\nseconds from 1900 after byte:"),String(secFrom1900, BIN));
-                if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;}
-            }
-            MS_DBG(F("\nSeconds from 1900 returned by NIST (UTC):"),
-                       secFrom1900, '=', String(secFrom1900, BIN));
-
-            // Close the TCP connection, just in case
-            _tinyClient->stop();
-
-            // Return the timestamp
-            uint32_t unixTimeStamp = secFrom1900 - 2208988800;
-            MS_DBG(F("\nUnix Timestamp returned by NIST (UTC):"), unixTimeStamp);
-            // If before Jan 1, 2017 or after Jan 1, 2030, most likely an error
-            if (unixTimeStamp < 1483228800) return 0;
-            else if (unixTimeStamp > 1893456000) return 0;
-            else return unixTimeStamp;
-        }
-        else
-        {
-            MS_DBG(F("NIST Time server did not respond!"));
-            return 0;
-        }
-    }
-    else MS_DBG(F("Unable to open TCP to NIST!"));
-    return 0;
 }

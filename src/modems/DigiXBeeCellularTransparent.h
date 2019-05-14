@@ -49,10 +49,13 @@ public:
 
     uint32_t getNISTTime(void) override;
 
-    bool didATRespond(void) override;
-    bool extraModemSetup(void) override;
-
     TinyGsm _tinyModem;
+    Stream *_modemStream;
+
+protected:
+    bool didATRespond(void) override;
+    bool isInternetAvailable(void) override;
+    bool extraModemSetup(void) override;
 
  private:
     const char *_apn;

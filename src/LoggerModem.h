@@ -78,7 +78,22 @@ protected:
 
     // The modem is "stable" when it responds to AT commands.
     // For a WiFi modem, this actually sets the network connection parameters!!
-    bool isStable(bool debug=false) override;
+    virtual bool isStable(bool debug=false) override;
+
+    // This checks to see if enough time has passed for measurement completion
+    // In the case of the modem, we consider a measurement to be "complete" when
+    // the modem has registered on the network *and* returns good signal strength.
+    // In theory, both of these things happen at the same time - as soon as the
+    // module detects a network with sufficient signal strength, it connects and
+    // will respond corretly to requests for its connection status and the signal
+    // strength.  In reality sometimes the modem might respond with successful
+    // network connection before it responds with a valid signal strength or it
+    // might be able to return a real measurement of cellular signal strength but
+    // not be able to register to the network.  We'd prefer to wait until it both
+    // responses are good so we're getting an actual signal strength and it's as
+    // close as possible to what the antenna is will see when the data publishers
+    // push data.
+    virtual bool isMeasurementComplete(bool debug);
 
 
 // ==========================================================================//
@@ -131,6 +146,7 @@ protected:
     void modemLEDOn(void);
     void modemLEDOff(void);
     virtual bool didATRespond(void) = 0;
+    virtual bool isInternetAvailable(void) = 0;
     virtual bool modemSleepFxn(void) = 0;
     virtual bool modemWakeFxn(void) = 0;
     virtual bool extraModemSetup(void) = 0;

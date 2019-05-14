@@ -230,21 +230,6 @@ bool loggerModem::startSingleMeasurement(void)
             MS_DBG(getSensorName(), F("was never properly set up, attempting setup now!"));
             setup();
         }
-
-        // For the wifi modems, the SSID and password need to be set before they
-        // can join a network.
-        // For **MOST** cellular modems, network registration (should) happen automatically.
-        // The GPRS bearer (APN) is then set after registration when making the GPRS
-        // (data) link.
-        // For XBee models, the SSID, password, and APN are always saved in
-        // the board's memory, even if power is disconnected, so those values
-        // are set in the setup function.
-        if (_ssid && _tinyModem->hasWifi() && !_tinyModem->isNetworkConnected() &&
-            _modemName.indexOf(F("XBee")) < 0 )
-        {
-            success &= _tinyModem->networkConnect(_ssid, _pwd);
-        }
-
         // Mark the time that a measurement was requested
         _millisMeasurementRequested = millis();
         // Set the status bit for measurement start success (bit 6)
@@ -259,58 +244,6 @@ bool loggerModem::startSingleMeasurement(void)
         _sensorStatus &= 0b10111111;
         success = false;
     }
-    return success;
-}
-
-
-bool loggerModem::addSingleMeasurementResult(void)
-{
-    bool success = true;
-
-    // Initialize float variable
-    int16_t signalQual = -9999;
-    int16_t percent = -9999;
-    int16_t rssi = -9999;
-
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (bitRead(_sensorStatus, 6))
-    {
-
-        // Get signal quality
-        // NOTE:  We can't actually distinguish between a bad modem response, no
-        // modem response, and a real response from the modem of no service/signal.
-        // The TinyGSM getSignalQuality function returns the same "no signal"
-        // value (99 CSQ or 0 RSSI) in all 3 cases.
-        MS_DBG(F("Getting signal quality:"));
-        signalQual = _tinyModem->getSignalQuality();
-        MS_DBG(F("Raw signal quality:"), signalQual);
-
-        // Convert signal quality to RSSI, if necessary
-        if ((_modemName.indexOf(F("XBee")) >= 0 || _modemName.indexOf(F("ESP8266")) >= 0))
-        {
-            rssi = signalQual;
-            percent = getPctFromRSSI(signalQual);
-        }
-        else
-        {
-            rssi = getRSSIFromCSQ(signalQual);
-            percent = getPctFromCSQ(signalQual);
-        }
-
-        MS_DBG(F("RSSI:"), rssi);
-        MS_DBG(F("Percent signal strength:"), percent);
-    }
-    else MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!"));
-
-    verifyAndAddMeasurementResult(RSSI_VAR_NUM, rssi);
-    verifyAndAddMeasurementResult(PERCENT_SIGNAL_VAR_NUM, percent);
-
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    _sensorStatus &= 0b10011111;
-
     return success;
 }
 
@@ -386,190 +319,9 @@ bool loggerModem::isStable(bool debug)
 }
 
 
-// This checks to see if enough time has passed for measurement completion
-// In the case of the modem, we consider a measurement to be "complete" when
-// the modem has registered on the network *and* returns good signal strength.
-// In theory, both of these things happen at the same time - as soon as the
-// module detects a network with sufficient signal strength, it connects and
-// will respond corretly to requests for its connection status and the signal
-// strength.  In reality sometimes the modem might respond with successful
-// network connection before it responds with a valid signal strength or it
-// might be able to return a real measurement of cellular signal strength but
-// not be able to register to the network.  We'd prefer to wait until it both
-// responses are good so we're getting an actual signal strength and it's as
-// close as possible to what the antenna is will see when the data publishers
-// push data.
-bool loggerModem::isMeasurementComplete(bool debug)
-{
-    #if defined MS_LOGGERMODEM_DEBUG_DEEP
-    debug = true;
-    #endif
-    // If a measurement failed to start, the sensor will never return a result,
-    // so the measurement time is essentially already passed
-    // For a cellular modem nothing happens to "start" a measurement so bit 6
-    // will be set by startSingleMeasurement() as long as bit 4 was set by wake().
-    // For a WiFi modem, startSingleMeasurement actually sets the WiFi connection
-    // parameters.
-    if (!bitRead(_sensorStatus, 6))
-    {
-        if (debug) {MS_DBG(getSensorName(),
-            F("is not measuring and will not return a value!"));}
-        return true;
-    }
-
-    // just defining this to not call multiple times below
-    uint32_t now = millis();
-
-    // We don't want to ping any of the modems too fast so they don't get
-    // overwhelmed.  Make sure we've waited a little
-    if (now - _lastConnectionCheck < 250) return false;
-
-    // Check how long we've been waiting for the network connection and/or a
-    // good measurement of signal quality.
-    uint32_t elapsed_in_wait;
-
-    // Cellular modems and wifi modems with the connection paramters always
-    // saved to flash (like XBees) begin searching for and attempt to register
-    // to the network as soon as they are awake - the GPRS paramters that need
-    // to be set to actually *use* the network don't have to be set until we
-    // make the attempt to use it.
-    if (_tinyModem->hasGPRS() || _modemName.indexOf(F("XBee")) >= 0)
-        elapsed_in_wait = now - _millisSensorActivated;
-
-    // For Wifi modems without settings in flash, the connection parameters
-    // need to set before it can register to the network - that is done in the
-    // startSingleMeasurement() function and becomes the measurement request time.
-    else elapsed_in_wait = now - _millisMeasurementRequested;
-
-    // If we're connected AND receiving valid signal strength, measurement is complete
-    // In theory these happen at the same time, but in reality one or the other
-    // may happen first.
-    bool isConnected = _tinyModem->isNetworkConnected();
-    int signalResponse = _tinyModem->getSignalQuality();
-    if (isConnected && signalResponse != 0 && signalResponse != 99)
-    {
-        if (debug) MS_DBG(F("It's been"), (elapsed_in_wait), F("ms, and"),
-               getSensorName(), F("is now registered on the network and reporting valid signal strength!"));
-        _lastConnectionCheck = now;
-        return true;
-    }
-
-    // If we've exceeded the allowed time to wait for the network, give up
-    if (elapsed_in_wait > XBEE_SIGNALQUALITY_TIME_MS)
-    {
-        if (debug) MS_DBG(F("It's been"), (elapsed_in_wait), F("ms, and"),
-               getSensorName(), F("has maxed out wait for network registration!  Ending wait."));
-         // Leave status bits and times set - can still get a valid value!
-        return true;
-    }
-
-    // If the modem isn't registered yet or doesn't report valid signal, we still need to wait
-    _lastConnectionCheck = now;
-    return false;
-}
-
-
 // ==========================================================================//
 // These are the unique functions for the modem as an internet connected device
 // ==========================================================================//
-bool loggerModem::connectInternet(uint32_t maxConnectionTime)
-{
-    bool retVal = true;
-
-    if (bitRead(_sensorStatus, 1) == 0 || bitRead(_sensorStatus, 2) == 0)  // NOT yet powered
-    {
-        modemPowerUp();
-    }
-    if (bitRead(_sensorStatus, 3) == 0)  // No attempts yet to wake the modem
-    {
-        waitForWarmUp();
-        retVal &= wake();
-    }
-    if (bitRead(_sensorStatus, 0) == 0)  // Not yet setup
-    {
-        retVal &= setup();  // Set-up if necessary
-    }
-    if (!retVal)
-    {
-        MS_DBG(F("Modem did't wake up! Cannot connect to the internet!"));
-        return retVal;
-    }
-
-    // Check that the modem is responding to AT commands.  If not, give up.
-    #if defined MS_LOGGERMODEM_DEBUG
-        uint32_t start = millis();
-    #endif
-    MS_DBG(F("\nWaiting for"), getSensorName(), F("to respond to AT commands..."));
-    if (!_tinyModem->testAT(_stabilizationTime_ms + 500))
-    {
-        MS_DBG(F("No response to AT commands! Cannot connect to the internet!"));
-        return false;
-    }
-    else MS_DBG(F("... AT OK after"), millis() - start, F("milliseconds!"));
-
-    if (_tinyModem->hasWifi())
-    {
-        MS_DBG(F("\nAttempting to connect to WiFi network..."));
-        if (!(_tinyModem->isNetworkConnected()))
-        {
-            MS_DBG(F("Sending credentials..."));
-            while (!_tinyModem->networkConnect(_ssid, _pwd)) {};
-            MS_DBG(F("Waiting up to"), maxConnectionTime/1000,
-                       F("seconds for connection"));
-            if (!_tinyModem->waitForNetwork(maxConnectionTime))
-            {
-                MS_DBG(F("... WiFi connection failed"));
-                return false;
-            }
-        }
-        MS_DBG(F("... WiFi connected after"), millis() - start,
-                   F("milliseconds!"));
-        return true;
-    }
-    else  // must be GPRS
-    {
-        MS_DBG(F("\nWaiting up to"), maxConnectionTime/1000,
-                   F("seconds for cellular network registration..."));
-        if (_tinyModem->waitForNetwork(maxConnectionTime))
-        {
-            MS_DBG(F("... Registered after"), millis() - start,
-                       F("milliseconds.  Connecting to GPRS..."));
-            _tinyModem->gprsConnect(_apn, "", "");
-            MS_DBG(F("... Connected after"), millis() - start,
-                       F("milliseconds."));
-            retVal = true;
-        }
-        else
-        {
-            MS_DBG(F("...GPRS connection failed."));
-            return false;
-        }
-    }
-    return retVal;
-}
-
-
-void loggerModem::disconnectInternet(void)
-{
-    #if defined MS_LOGGERMODEM_DEBUG
-        uint32_t start = millis();
-    #endif
-    if (_tinyModem->hasGPRS() && _modemName.indexOf(F("XBee")) < 0)  // XBee doesn't like to disconnect
-    {
-        _tinyModem->gprsDisconnect();
-        MS_DBG(F("Disconnected from cellular network after"), millis() - start,
-                   F("milliseconds."));
-    }
-    else if (_modemName.indexOf(F("XBee")) < 0)  // XBee doesn't like to disconnect
-    // If you tell the XBee to disconnect, it will not reconnect to the same
-    // access point until it has been restarted or powered on and off.
-    // Since we may not have control of the power off, we just won't disconnect.
-    {
-        _tinyModem->networkDisconnect();
-        MS_DBG(F("Disconnected from WiFi network after"), millis() - start,
-                   F("milliseconds."));
-    }
-}
 
 
 /***
@@ -699,81 +451,7 @@ bool loggerModem::modemSleepPowerDown(void)
     return success;
 }
 
-// Get the time from NIST via TIME protocol (rfc868)
-// This would be much more efficient if done over UDP, but I'm doing it
-// over TCP because I don't have a UDP library for all the modems.
-uint32_t loggerModem::getNISTTime(void)
-{
-    // bail if not connected to the internet
-    if ( (_tinyModem->hasGPRS() && !_tinyModem->isGprsConnected()) ||
-         (_tinyModem->hasWifi() && !_tinyModem->isNetworkConnected()) )
-    {
-        MS_DBG(F("No internet connection, cannot connect to NIST."));
-        return 0;
-    }
 
-    // Must ensure that we do not ping the daylight more than once every 4 seconds
-    // NIST clearly specifies here that this is a requirement for all software
-    // that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi
-    while (millis() < _lastNISTrequest + 4000) {}
-
-    // Make TCP connection
-    MS_DBG(F("Connecting to NIST daytime Server"));
-    bool connectionMade = false;
-    if (_modemName.indexOf(F("XBee")) >= 0)
-    {
-        IPAddress ip(129, 6, 15, 30);  // This is the IP address of time-c-g.nist.gov
-        connectionMade = _tinyClient->connect(ip, 37);  // XBee's address lookup falters on time.nist.gov
-        _tinyClient->print('!');  // Need to send something before connection is made
-        delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
-    }
-    else connectionMade = _tinyClient->connect("time.nist.gov", 37);
-
-    // Wait up to 5 seconds for a response
-    if (connectionMade)
-    {
-        long start = millis();
-        while (_tinyClient && _tinyClient->available() < 4 && millis() - start < 5000L){}
-
-        if (_tinyClient->available() >= 4)
-        {
-            MS_DBG(F("\nNIST responded after"), millis() - start, F("ms"));
-            // Response is returned as 32-bit number as soon as connection is made
-            // Connection is then immediately closed, so there is no need to close it
-            uint32_t secFrom1900 = 0;
-            byte response[4] = {0};
-            for (uint8_t i = 0; i < 4; i++)
-            {
-                response[i] = _tinyClient->read();
-                MS_DBG(F("\nResponse Byte"), i, ':', (char)response[i],
-                           '=', response[i], '=', String(response[i], BIN));
-                secFrom1900 += 0x000000FF & response[i];
-                // MS_DBG(F("\nseconds from 1900 after byte:"),String(secFrom1900, BIN));
-                if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;}
-            }
-            MS_DBG(F("\nSeconds from 1900 returned by NIST (UTC):"),
-                       secFrom1900, '=', String(secFrom1900, BIN));
-
-            // Close the TCP connection, just in case
-            _tinyClient->stop();
-
-            // Return the timestamp
-            uint32_t unixTimeStamp = secFrom1900 - 2208988800;
-            MS_DBG(F("\nUnix Timestamp returned by NIST (UTC):"), unixTimeStamp);
-            // If before Jan 1, 2017 or after Jan 1, 2030, most likely an error
-            if (unixTimeStamp < 1483228800) return 0;
-            else if (unixTimeStamp > 1893456000) return 0;
-            else return unixTimeStamp;
-        }
-        else
-        {
-            MS_DBG(F("NIST Time server did not respond!"));
-            return 0;
-        }
-    }
-    else MS_DBG(F("Unable to open TCP to NIST!"));
-    return 0;
-}
 
 // Helper to get approximate RSSI from CSQ (assuming no noise)
 int16_t loggerModem::getRSSIFromCSQ(int16_t csq)
@@ -943,16 +621,6 @@ void loggerModem::setModemTiming(void)
         // _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
         _disconnetTime_ms = 10000L;  // Wait with 10s time-out for sleep
     }
-    if (_modemName.indexOf(F("ESP8266")) >= 0)
-    {
-        MS_DBG(F("Resetting warm-up and disconnect timing for a ESP8266"));
-        _warmUpTime_ms = 0;  // Module turns on when power is applied
-        _statusTime_ms = 350;  // N/A? - No status pin - use boot time if using a GPIO pin
-        _stabilizationTime_ms = 350;  // Boot up time 200-300ms
-        // _on_pull_down_ms = 10;  // immediate
-        // _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
-        _disconnetTime_ms = 500;  // power down ???
-    }
     if (_modemName.indexOf(F("Neoway M590")) >= 0)
     {
         MS_DBG(F("Resetting warm-up and disconnect timing for a Neoway M590"));
@@ -1017,13 +685,6 @@ void loggerModem::setModemTiming(void)
         // use AT+CPSMS command for LTE-M power saving
         // use AT+SQNSSHDN command for device shut down
         _disconnetTime_ms = 15000;  // ?? Undocumented (Giving 15sec here in case it is not monitored.)
-    }
-    if (_modemName.indexOf(F("XBee")) >= 0)
-    {
-        MS_DBG(F("Putting connection values into flash memory for the Digi XBee"));
-        _statusTime_ms = 15;  // ??? WAG!
-        // XBee saves all configurations to flash, so we can set them here
-        else _tinyModem->gprsConnect(_apn, "", "");
     }
 }
 ***/
