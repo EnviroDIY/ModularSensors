@@ -63,97 +63,36 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 
 
 // ==========================================================================
-//    Wifi/Cellular Modem Main Chip Selection
+//    Wifi/Cellular Modem Settings
 // ==========================================================================
-
-// Select your modem chip - this determines the exact commands sent to it
-#define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
-
-
-// ==========================================================================
-//    Modem Pins
-// ==========================================================================
-
-const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
-const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
-const int8_t modemResetPin = A4;    // MCU pin connected to modem reset pin (-1 if unconnected)
-
-
-// ==========================================================================
-//    TinyGSM Client
-// ==========================================================================
-
-#if defined(TINY_GSM_MODEM_XBEE)
-  #define TINY_GSM_YIELD() { delay(2); }  // Use to counter slow (9600) baud rate
-#endif
-
-// Include TinyGSM for the modem
-// This include must be included below the define of the modem name!
-#include <TinyGsmClient.h>
 
 // Create a reference to the serial port for the modem
+// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
+// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
+// NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
 
-// Create a TinyGSM modem to run on that serial port
-TinyGsm tinyModem(modemSerial, modemResetPin);
-
-// Create a TCP client on that modem
-TinyGsmClient tinyClient(tinyModem);
-
-
-// ==========================================================================
-//    Specific Modem On-Off Methods
-// ==========================================================================
-
-// This should apply to all Digi brand XBee modules.
-// Describe the physical pin connection of your modem to your board
-const long modemBaud = 9600;        // Communication speed of the modem
-const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
-
-// Create the wake and sleep methods for the modem
-// These can be functions of any type and must return a boolean
-// After enabling pin sleep, the sleep request pin is held LOW to keep the XBee on
-// Enable pin sleep in the setup function or using XCTU prior to connecting the XBee
-bool modemSleepFxn(void)
-{
-    if (modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
-    {
-        digitalWrite(modemSleepRqPin, HIGH);
-        digitalWrite(redLED, LOW);
-        return true;
-    }
-    else return true;
-}
-bool modemWakeFxn(void)
-{
-    if (modemVccPin >= 0)  // Turns on when power is applied
-        return true;
-    else if (modemSleepRqPin >= 0)
-    {
-        digitalWrite(modemSleepRqPin, LOW);
-        digitalWrite(redLED, HIGH);  // Because the XBee doesn't have any lights
-        return true;
-    }
-    else return true;
-}
-
-
-// ==========================================================================
-//    Network Information and LoggerModem Object
-// ==========================================================================
-#include <LoggerModem.h>
+// Modem Pins - Describe the physical pin connection of your modem to your board
+const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
+const int8_t modemResetPin = 20;    // MCU pin connected to modem reset pin (-1 if unconnected)
+const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem status (-1 if unconnected)
 
 // Network connection information
-const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
 
-// Create the loggerModem instance
-// A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, &tinyModem, &tinyClient, wifiId, wifiPwd);
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, &tinyModem, &tinyClient, apn);
-
+// For the Digi Wifi XBee (S6B)
+#include <modems/DigiXBeeWifi.h>
+const long modemBaud = 9600;  // All XBee's use 9600 by default
+const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
+DigiXBeeWifi modemXBWF(&modemSerial,
+                       modemVccPin, modemStatusPin, useCTSforStatus,
+                       modemResetPin, modemSleepRqPin,
+                       wifiId, wifiPwd);
+// Create an extra reference to the modem by a generic name (not necessary)
+DigiXBeeWifi modem = modemXBWF;
 
 
 // ==========================================================================
@@ -267,9 +206,6 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
-    // Set up pin for the modem
-    pinMode(modemSleepRqPin, OUTPUT);
-
     // Set the timezone and offsets
     // Logging in the given time zone
     Logger::setTimeZone(timeZone);
@@ -284,8 +220,8 @@ void setup()
     logger1min.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
     logger5min.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
 
-
     // Turn on the modem
+    modem.setModemLED(modemLEDPin);
     modem.modemPowerUp();
     modem.wake();
 
