@@ -24,7 +24,12 @@ SIMComSIM7000::SIMComSIM7000(Stream* modemStream,
                 SIM7000_WARM_UP_TIME_MS, SIM7000_ATRESPONSE_TIME_MS,
                 SIM7000_SIGNALQUALITY_TIME_MS,
                 measurementsToAverage),
+    #ifdef MS_SIMCOMSIM7000_DEBUG_DEEP
+    _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
+    _tinyModem(_modemATDebugger)
+    #else
     _tinyModem(*modemStream)
+    #endif
 {
     _apn = apn;
     TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);

@@ -15,7 +15,8 @@
 
 // Constructor
 Sodaq2GBeeR6::Sodaq2GBeeR6(Stream* modemStream,
-                           int8_t powerPin, int8_t statusPin, int8_t modemSleepRqPin,
+                           int8_t powerPin, int8_t statusPin,
+                           int8_t modemSleepRqPin,
                            const char *apn,
                            uint8_t measurementsToAverage)
   : loggerModem(powerPin, statusPin, HIGH,
@@ -24,7 +25,12 @@ Sodaq2GBeeR6::Sodaq2GBeeR6(Stream* modemStream,
                 SIM800_WARM_UP_TIME_MS, SIM800_ATRESPONSE_TIME_MS,
                 SIM800_SIGNALQUALITY_TIME_MS,
                 measurementsToAverage),
+    #ifdef MS_SODAQ2GBEER6_DEBUG_DEEP
+    _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
+    _tinyModem(_modemATDebugger)
+    #else
     _tinyModem(*modemStream)
+    #endif
 {
     _apn = apn;
     TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);

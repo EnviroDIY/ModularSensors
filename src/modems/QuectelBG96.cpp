@@ -24,7 +24,12 @@ QuectelBG96::QuectelBG96(Stream* modemStream,
                 BG96_WARM_UP_TIME_MS, BG96_ATRESPONSE_TIME_MS,
                 BG96_SIGNALQUALITY_TIME_MS,
                 measurementsToAverage),
+    #ifdef MS_QUECTELBG96_DEBUG_DEEP
+    _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
+    _tinyModem(_modemATDebugger)
+    #else
     _tinyModem(*modemStream)
+    #endif
 {
     _apn = apn;
     TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);
@@ -40,6 +45,7 @@ MS_MODEM_ADD_SINGLE_MEASUREMENT_RESULT(QuectelBG96);
 MS_MODEM_CONNECT_INTERNET(QuectelBG96);
 MS_MODEM_DISCONNECT_INTERNET(QuectelBG96);
 MS_MODEM_GET_NIST_TIME(QuectelBG96);
+
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean

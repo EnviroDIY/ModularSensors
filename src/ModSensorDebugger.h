@@ -68,8 +68,12 @@
             MS_DBG(tail...);
         }
     }
+#define MS_START_DEBUG_TIMER uint32_t start = millis();
+#define MS_PRINT_DEBUG_TIMER millis() - start
 #else
     #define MS_DBG(...)
+    #define MS_START_DEBUG_TIMER
+    #define MS_PRINT_DEBUG_TIMER
 #endif  // DEBUGGING_SERIAL_OUTPUT
 
 

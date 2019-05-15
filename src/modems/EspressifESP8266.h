@@ -15,6 +15,7 @@
 
 // Debugging Statement
 // #define MS_ESPRESSIFESP8266_DEBUG
+// #define MS_ESPRESSIFESP8266_DEBUG_DEEP
 
 #ifdef MS_ESPRESSIFESP8266_DEBUG
 #define MS_DEBUGGING_STD
@@ -43,6 +44,10 @@
 #include "LoggerModem.h"
 #include "TinyGsmClient.h"
 
+#ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
+#include <StreamDebugger.h>
+#endif
+
 
 class EspressifESP8266 : public loggerModem
 {
@@ -56,9 +61,6 @@ public:
                      uint8_t measurementsToAverage = 1,
                      int8_t espSleepRqPin = -1, int8_t espStatusPin = -1);
 
-
-    // The a measurement is "complete" when the modem is registered on the network.
-    // For a cellular modem, this actually sets the GPRS bearer/APN!!
     bool startSingleMeasurement(void) override;
     bool isMeasurementComplete(bool debug=false) override;
     bool addSingleMeasurementResult(void) override;
@@ -68,15 +70,19 @@ public:
 
     uint32_t getNISTTime(void) override;
 
+    #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
+    StreamDebugger _modemATDebugger;
+    #endif
+
     TinyGsm _tinyModem;
     Stream *_modemStream;
 
 protected:
-    virtual bool didATRespond(void) override;
-    virtual bool isInternetAvailable(void) override;
-    virtual bool modemSleepFxn(void) override;
-    virtual bool modemWakeFxn(void) override;
-    virtual bool extraModemSetup(void)override;
+    bool didATRespond(void) override;
+    bool isInternetAvailable(void) override;
+    bool modemSleepFxn(void) override;
+    bool modemWakeFxn(void) override;
+    bool extraModemSetup(void)override;
 
 private:
     bool ESPwaitForBoot(void);
@@ -85,6 +91,7 @@ private:
 
     int8_t _espSleepRqPin;
     int8_t _espStatusPin;
+
 };
 
 #endif

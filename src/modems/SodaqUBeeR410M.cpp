@@ -15,16 +15,22 @@
 // Constructor
 #if F_CPU == 8000000L
 SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial* modemStream,
-                               int8_t powerPin, int8_t statusPin, int8_t modemSleepRqPin,
+                               int8_t powerPin, int8_t statusPin,
+                               int8_t modemResetPin, int8_t modemSleepRqPin,
                                const char *apn,
                                uint8_t measurementsToAverage)
   : loggerModem(powerPin, statusPin, HIGH,
-                -1, modemSleepRqPin,
+                modemResetPin, modemSleepRqPin,
                 R410M_STATUS_TIME_MS, R410M_DISCONNECT_TIME_MS,
                 R410M_WARM_UP_TIME_MS, R410M_ATRESPONSE_TIME_MS,
                 R410M_SIGNALQUALITY_TIME_MS,
                 measurementsToAverage),
+    #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
+    _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
+    _tinyModem(_modemATDebugger)
+    #else
     _tinyModem(*modemStream)
+    #endif
 {
     _apn = apn;
     TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);
@@ -33,16 +39,22 @@ SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial* modemStream,
 }
 #else
 SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream,
-                               int8_t powerPin, int8_t statusPin, int8_t modemSleepRqPin,
+                               int8_t powerPin, int8_t statusPin,
+                               int8_t modemResetPin, int8_t modemSleepRqPin,
                                const char *apn,
                                uint8_t measurementsToAverage)
   : loggerModem(powerPin, statusPin, HIGH,
-                -1, modemSleepRqPin,
+                modemResetPin, modemSleepRqPin,
                 R410M_STATUS_TIME_MS, R410M_DISCONNECT_TIME_MS,
                 R410M_WARM_UP_TIME_MS, R410M_ATRESPONSE_TIME_MS,
                 R410M_SIGNALQUALITY_TIME_MS,
                 measurementsToAverage),
+    #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
+    _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
+    _tinyModem(_modemATDebugger)
+    #else
     _tinyModem(*modemStream)
+    #endif
 {
     _apn = apn;
     TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);

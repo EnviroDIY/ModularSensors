@@ -12,7 +12,8 @@
 #define DigiXBeeCellularBypass_h
 
 // Debugging Statement
-// #define MS_DIGIXBEECELLULARBYPASS_DEBUG
+// #define MS_SODAQUBEEU201_DEBUG
+// #define MS_SODAQUBEEU201_DEBUG_DEEP
 
 #ifdef MS_DIGIXBEECELLULARBYPASS_DEBUG
 #define MS_DEBUGGING_STD
@@ -22,9 +23,13 @@
 #define TINY_GSM_MODEM_UBLOX
 
 // Included Dependencies
+#include "ModSensorDebugger.h"
 #include "DigiXBee.h"
 #include "TinyGsmClient.h"
 
+#ifdef MS_DIGIXBEECELLULARBYPASS_DEBUG_DEEP
+#include <StreamDebugger.h>
+#endif
 
 class DigiXBeeCellularBypass : public DigiXBee
 {
@@ -37,9 +42,6 @@ public:
                            const char *apn,
                            uint8_t measurementsToAverage = 1);
 
-
-    // The a measurement is "complete" when the modem is registered on the network.
-    // For a cellular modem, this actually sets the GPRS bearer/APN!!
     bool isMeasurementComplete(bool debug=false) override;
     bool addSingleMeasurementResult(void) override;
 
@@ -47,6 +49,10 @@ public:
     void disconnectInternet(void) override;
 
     uint32_t getNISTTime(void) override;
+
+    #ifdef MS_DIGIXBEECELLULARBYPASS_DEBUG_DEEP
+    StreamDebugger _modemATDebugger;
+    #endif
 
     TinyGsm _tinyModem;
     Stream *_modemStream;
@@ -56,10 +62,9 @@ protected:
     bool isInternetAvailable(void) override;
     bool extraModemSetup(void) override;
 
- private:
+private:
     const char *_apn;
 
 };
-
 
 #endif

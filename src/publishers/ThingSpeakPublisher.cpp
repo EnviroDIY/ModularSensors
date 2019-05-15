@@ -187,12 +187,10 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
     // Make the MQTT connection
     // Note:  the client id and the user name do not mean anything for ThingSpeak
     MS_DBG(F("Opening MQTT Connection"));
-    #if defined(MS_THINGSPEAKPUBLISHER_DEBUG)
-        uint32_t start_timer = millis();
-    #endif
+    MS_START_DEBUG_TIMER;
     if (_mqttClient.connect(mqttClient, mqttUser, _thingSpeakMQTTKey))
     {
-        MS_DBG(F("MQTT connected after"), millis() - start_timer, F("ms"));
+        MS_DBG(F("MQTT connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
 
         if (_mqttClient.publish(topicBuffer, txBuffer))
         {
@@ -213,10 +211,8 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
 
     // Disconnect from MQTT
     MS_DBG(F("Disconnecting from MQTT"));
-    #if defined(MS_THINGSPEAKPUBLISHER_DEBUG)
-        start_timer = millis();
-    #endif
+    MS_START_DEBUG_TIMER
     _mqttClient.disconnect();
-    MS_DBG(F("Disconnected after"), millis() - start_timer, F("ms"));
+    MS_DBG(F("Disconnected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     return retVal;
 }

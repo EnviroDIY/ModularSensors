@@ -21,7 +21,12 @@ DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream,
   : DigiXBee(powerPin, statusPin, useCTSStatus,
              modemResetPin, modemSleepRqPin,
              measurementsToAverage),
-    _tinyModem(*modemStream, modemResetPin)
+    #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
+    _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
+    _tinyModem(_modemATDebugger)
+    #else
+    _tinyModem(*modemStream)
+    #endif
 {
     _ssid = ssid;
     _pwd = pwd;

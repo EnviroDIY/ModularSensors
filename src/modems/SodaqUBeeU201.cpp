@@ -14,16 +14,22 @@
 
 // Constructor
 SodaqUBeeU201::SodaqUBeeU201(Stream* modemStream,
-                             int8_t powerPin, int8_t statusPin, int8_t modemSleepRqPin,
+                             int8_t powerPin, int8_t statusPin,
+                             int8_t modemResetPin, int8_t modemSleepRqPin,
                              const char *apn,
                              uint8_t measurementsToAverage)
   : loggerModem(powerPin, statusPin, HIGH,
-                -1, modemSleepRqPin,
+                modemResetPin, modemSleepRqPin,
                 U201_STATUS_TIME_MS, U201_DISCONNECT_TIME_MS,
                 U201_WARM_UP_TIME_MS, U201_ATRESPONSE_TIME_MS,
                 U201_SIGNALQUALITY_TIME_MS,
                 measurementsToAverage),
+    #ifdef MS_SODAQUBEEU201_DEBUG_DEEP
+    _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
+    _tinyModem(_modemATDebugger)
+    #else
     _tinyModem(*modemStream)
+    #endif
 {
     _apn = apn;
     TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);

@@ -93,7 +93,7 @@ protected:
     // responses are good so we're getting an actual signal strength and it's as
     // close as possible to what the antenna is will see when the data publishers
     // push data.
-    virtual bool isMeasurementComplete(bool debug);
+    virtual bool isMeasurementComplete(bool debug) = 0;
 
 
 // ==========================================================================//

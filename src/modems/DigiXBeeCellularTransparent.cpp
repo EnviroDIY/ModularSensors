@@ -20,7 +20,12 @@ DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(Stream* modemStream,
   : DigiXBee(powerPin, statusPin, useCTSStatus,
              modemResetPin, modemSleepRqPin,
              measurementsToAverage),
-    _tinyModem(*modemStream, modemResetPin)
+    #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
+    _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
+    _tinyModem(_modemATDebugger)
+    #else
+    _tinyModem(*modemStream)
+    #endif
 {
     _apn = apn;
     TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);

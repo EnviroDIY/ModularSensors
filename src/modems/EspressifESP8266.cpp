@@ -27,7 +27,12 @@ EspressifESP8266::EspressifESP8266(Stream* modemStream,
                 ESP8266_WARM_UP_TIME_MS, ESP8266_ATRESPONSE_TIME_MS,
                 ESP8266_SIGNALQUALITY_TIME_MS,
                 measurementsToAverage),
+    #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
+    _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
+    _tinyModem(_modemATDebugger)
+    #else
     _tinyModem(*modemStream)
+    #endif
 {
     _ssid = ssid;
     _pwd = pwd;

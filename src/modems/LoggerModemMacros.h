@@ -13,14 +13,6 @@
 #ifndef LoggerModemMacros_h
 #define LoggerModemMacros_h
 
-#if defined MS_DEBUGGING_STD
-#define MS_MODEM_START_TIMER uint32_t start = millis();
-#else
-#define MS_MODEM_START_TIMER
-#endif
-
-
-
 #define MS_MODEM_DID_AT_RESPOND(specificModem) \
 bool specificModem::didATRespond(void) \
 { \
@@ -207,14 +199,14 @@ bool specificModem::addSingleMeasurementResult(void) \
     } \
 \
     /* Check that the modem is responding to AT commands.  If not, give up. */ \
-    MS_MODEM_START_TIMER; \
+    MS_START_DEBUG_TIMER; \
     MS_DBG(F("\nWaiting for"), getSensorName(), F("to respond to AT commands...")); \
     if (!_tinyModem.testAT(_stabilizationTime_ms + 500)) \
     { \
         MS_DBG(F("No response to AT commands! Cannot connect to the internet!")); \
         return false; \
     } \
-    else MS_DBG(F("... AT OK after"), millis() - start, F("milliseconds!"));
+    else MS_DBG(F("... AT OK after"), MS_PRINT_DEBUG_TIMER, F("milliseconds!"));
 
 
 #if defined TINY_GSM_MODEM_XBEE
@@ -228,7 +220,7 @@ bool specificModem::connectInternet(uint32_t maxConnectionTime) \
                F("seconds for internet availability...")); \
     if (_tinyModem.waitForNetwork(maxConnectionTime)) \
     { \
-        MS_DBG(F("... Connected after"), millis() - start, \
+        MS_DBG(F("... Connected after"), MS_PRINT_DEBUG_TIMER, \
                    F("milliseconds.")); \
         return true; \
     } \
@@ -250,10 +242,10 @@ bool specificModem::connectInternet(uint32_t maxConnectionTime) \
                F("seconds for cellular network registration...")); \
     if (_tinyModem.waitForNetwork(maxConnectionTime)) \
     { \
-        MS_DBG(F("... Registered after"), millis() - start, \
+        MS_DBG(F("... Registered after"), MS_PRINT_DEBUG_TIMER, \
                    F("milliseconds.  Connecting to GPRS...")); \
         _tinyModem.gprsConnect(_apn, "", ""); \
-        MS_DBG(F("... Connected after"), millis() - start, \
+        MS_DBG(F("... Connected after"), MS_PRINT_DEBUG_TIMER, \
                    F("milliseconds.")); \
         return true; \
     } \
@@ -285,7 +277,7 @@ bool specificModem::connectInternet(uint32_t maxConnectionTime) \
             return false; \
         } \
     } \
-    MS_DBG(F("... WiFi connected after"), millis() - start, \
+    MS_DBG(F("... WiFi connected after"), MS_PRINT_DEBUG_TIMER, \
                F("milliseconds!")); \
     return true; \
 }
@@ -296,18 +288,18 @@ bool specificModem::connectInternet(uint32_t maxConnectionTime) \
 #define MS_MODEM_DISCONNECT_INTERNET(specificModem) \
 void specificModem::disconnectInternet(void) \
 { \
-    MS_MODEM_START_TIMER; \
+    MS_START_DEBUG_TIMER; \
     _tinyModem.gprsDisconnect(); \
-    MS_DBG(F("Disconnected from cellular network after"), millis() - start, \
+    MS_DBG(F("Disconnected from cellular network after"), MS_PRINT_DEBUG_TIMER, \
                F("milliseconds.")); \
 }
 #else
 #define MS_MODEM_DISCONNECT_INTERNET(specificModem) \
 void specificModem::disconnectInternet(void) \
 { \
-    MS_MODEM_START_TIMER; \
+    MS_START_DEBUG_TIMER; \
     _tinyModem.networkDisconnect(); \
-    MS_DBG(F("Disconnected from WiFi network after"), millis() - start, \
+    MS_DBG(F("Disconnected from WiFi network after"), MS_PRINT_DEBUG_TIMER, \
                F("milliseconds.")); \
 }
 #endif
@@ -350,7 +342,7 @@ uint32_t specificModem::getNISTTime(void) \
     /* Wait up to 5 seconds for a response */ \
     if (connectionMade) \
     { \
-        long start = millis(); \
+        uint32_t start = millis(); \
         while (_tinyClient && _tinyClient->available() < 4 && millis() - start < 5000L){} \
 \
         if (_tinyClient->available() >= 4) \

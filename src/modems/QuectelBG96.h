@@ -13,7 +13,8 @@
 #define QuectelBG96_h
 
 // Debugging Statement
-// #define MS_QUECTELBG96_DEBUG
+// #define MS_SODAQUBEEU201_DEBUG
+// #define MS_SODAQUBEEU201_DEBUG_DEEP
 
 #ifdef MS_QUECTELBG96_DEBUG
 #define MS_DEBUGGING_STD
@@ -40,6 +41,10 @@
 #include "LoggerModem.h"
 #include "TinyGsmClient.h"
 
+#ifdef MS_QUECTELBG96_DEBUG_DEEP
+#include <StreamDebugger.h>
+#endif
+
 
 class QuectelBG96 : public loggerModem
 {
@@ -52,10 +57,6 @@ public:
                 const char *apn,
                 uint8_t measurementsToAverage = 1);
 
-
-    // The a measurement is "complete" when the modem is registered on the network.
-    // For a cellular modem, this actually sets the GPRS bearer/APN!!
-    bool startSingleMeasurement(void) override;
     bool isMeasurementComplete(bool debug=false) override;
     bool addSingleMeasurementResult(void) override;
 
@@ -64,18 +65,23 @@ public:
 
     uint32_t getNISTTime(void) override;
 
+    #ifdef MS_QUECTELBG96_DEBUG_DEEP
+    StreamDebugger _modemATDebugger;
+    #endif
+
     TinyGsm _tinyModem;
     Stream *_modemStream;
 
 protected:
-    virtual bool didATRespond(void) override;
-    virtual bool isInternetAvailable(void) override;
-    virtual bool modemSleepFxn(void) override;
-    virtual bool modemWakeFxn(void) override;
-    virtual bool extraModemSetup(void)override;
+    bool didATRespond(void) override;
+    bool isInternetAvailable(void) override;
+    bool modemSleepFxn(void) override;
+    bool modemWakeFxn(void) override;
+    bool extraModemSetup(void)override;
 
 private:
     const char *_apn;
+
 };
 
 #endif

@@ -346,8 +346,8 @@ bool SDI12Sensors::addSingleMeasurementResult(void)
         delay(30);  // It just needs this little delay
         MS_DBG(F("    >>>"), getDataCommand);
 
-        uint32_t startTime = millis();
-        while (_SDI12Internal.available() < 3 && (millis() - startTime) < 1500) {}
+        uint32_t start = millis();
+        while (_SDI12Internal.available() < 3 && (millis() - start) < 1500) {}
         MS_DBG(F("  Receiving results from"), getSensorNameAndLocation());
         _SDI12Internal.read();  // ignore the repeated SDI12 address
         for (uint8_t i = 0; i < _numReturnedVars; i++)

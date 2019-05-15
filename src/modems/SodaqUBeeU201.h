@@ -12,7 +12,8 @@
 #define SodaqUBeeU201_h
 
 // Debugging Statement
-// #define MS_SodaqUBeeU201_DEBUG
+// #define MS_SODAQUBEEU201_DEBUG
+// #define MS_SODAQUBEEU201_DEBUG_DEEP
 
 #ifdef MS_SODAQUBEEU201_DEBUG
 #define MS_DEBUGGING_STD
@@ -20,6 +21,7 @@
 #endif
 
 #define TINY_GSM_MODEM_UBLOX
+
 // Time after end pulse until V_INT becomes active
 // Unspecified in documentation! Taking value from Lisa U2
 #define U201_STATUS_TIME_MS 35
@@ -44,6 +46,10 @@
 #include "LoggerModem.h"
 #include "TinyGsmClient.h"
 
+#ifdef MS_SODAQUBEEU201_DEBUG_DEEP
+#include <StreamDebugger.h>
+#endif
+
 
 class SodaqUBeeU201 : public loggerModem
 {
@@ -51,14 +57,11 @@ class SodaqUBeeU201 : public loggerModem
 public:
     // Constructors
     SodaqUBeeU201(Stream* modemStream,
-                  int8_t powerPin, int8_t statusPin, int8_t modemSleepRqPin,
+                  int8_t powerPin, int8_t statusPin,
+                  int8_t modemResetPin, int8_t modemSleepRqPin,
                   const char *apn,
                   uint8_t measurementsToAverage = 1);
 
-
-    // The a measurement is "complete" when the modem is registered on the network.
-    // For a cellular modem, this actually sets the GPRS bearer/APN!!
-    bool startSingleMeasurement(void) override;
     bool isMeasurementComplete(bool debug=false) override;
     bool addSingleMeasurementResult(void) override;
 
@@ -67,18 +70,23 @@ public:
 
     uint32_t getNISTTime(void) override;
 
+    #ifdef MS_SODAQUBEEU201_DEBUG_DEEP
+    StreamDebugger _modemATDebugger;
+    #endif
+
     TinyGsm _tinyModem;
     Stream *_modemStream;
 
 protected:
-    virtual bool didATRespond(void) override;
-    virtual bool isInternetAvailable(void) override;
-    virtual bool modemSleepFxn(void) override;
-    virtual bool modemWakeFxn(void) override;
-    virtual bool extraModemSetup(void)override;
+    bool didATRespond(void) override;
+    bool isInternetAvailable(void) override;
+    bool modemSleepFxn(void) override;
+    bool modemWakeFxn(void) override;
+    bool extraModemSetup(void)override;
 
 private:
     const char *_apn;
+
 };
 
 #endif

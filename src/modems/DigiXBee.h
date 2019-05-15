@@ -55,6 +55,4 @@ protected:
     virtual bool modemWakeFxn(void) override;
 };
 
-
-
 #endif

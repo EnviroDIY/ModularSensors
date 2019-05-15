@@ -75,7 +75,6 @@ bool loggerModem::setup(void)
         pinMode(_modemSleepRqPin, OUTPUT);
         // NOTE:  Not setting level of sleep request pin
     }
-    int8_t _modemResetPin;
     if (_modemResetPin >= 0)
     {
         pinMode(_modemResetPin, OUTPUT);

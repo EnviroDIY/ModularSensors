@@ -26,7 +26,12 @@ SIMComSIM800::SIMComSIM800(Stream* modemStream,
                 SIM800_WARM_UP_TIME_MS, SIM800_ATRESPONSE_TIME_MS,
                 SIM800_SIGNALQUALITY_TIME_MS,
                 measurementsToAverage),
+    #ifdef MS_SIMCOMSIM800_DEBUG_DEEP
+    _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
+    _tinyModem(_modemATDebugger)
+    #else
     _tinyModem(*modemStream)
+    #endif
 {
     _apn = apn;
     TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);

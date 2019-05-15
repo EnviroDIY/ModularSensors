@@ -20,7 +20,12 @@ DigiXBeeCellularBypass::DigiXBeeCellularBypass(Stream* modemStream,
   : DigiXBee(powerPin, statusPin, useCTSStatus,
              modemResetPin, modemSleepRqPin,
              measurementsToAverage),
+    #ifdef MS_DIGIXBEECELLULARBYPASS_DEBUG_DEEP
+    _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
+    _tinyModem(_modemATDebugger)
+    #else
     _tinyModem(*modemStream)
+    #endif
 {
     _apn = apn;
     TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);
@@ -34,6 +39,7 @@ MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeCellularBypass);
 MS_MODEM_IS_MEASUREMENT_COMPLETE(DigiXBeeCellularBypass);
 MS_MODEM_ADD_SINGLE_MEASUREMENT_RESULT(DigiXBeeCellularBypass);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularBypass);
+MS_MODEM_DISCONNECT_INTERNET(DigiXBeeCellularBypass);
 MS_MODEM_GET_NIST_TIME(DigiXBeeCellularBypass);
 
 
