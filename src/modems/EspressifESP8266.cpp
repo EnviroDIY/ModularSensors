@@ -29,20 +29,21 @@ EspressifESP8266::EspressifESP8266(Stream* modemStream,
                 measurementsToAverage),
     #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
-    _tinyModem(_modemATDebugger)
+    _tinyModem(_modemATDebugger),
+    _tinyClient(_tinyModem)
     #else
-    _tinyModem(*modemStream)
+    _tinyModem(*modemStream),
+    _tinyClient(_tinyModem)
     #endif
 {
     _ssid = ssid;
     _pwd = pwd;
-    TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);
-    _tinyClient = tinyClient;
-    _modemStream = modemStream;
+
     _espSleepRqPin = espSleepRqPin;
     _espStatusPin = espStatusPin;
-}
 
+    _modemStream = modemStream;
+}
 
 MS_MODEM_DID_AT_RESPOND(EspressifESP8266);
 MS_MODEM_IS_INTERNET_AVAILABLE(EspressifESP8266);

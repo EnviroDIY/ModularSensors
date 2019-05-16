@@ -75,6 +75,9 @@ public:
     #endif
 
     TinyGsm _tinyModem;
+    TinyGsmClient _tinyClient;
+
+    // Need the stream for tossing junk on boot
     Stream *_modemStream;
 
 protected:

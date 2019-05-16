@@ -81,6 +81,8 @@ public:
     #endif
 
     TinyGsm _tinyModem;
+    TinyGsmClient _tinyClient;
+    
     #if F_CPU == 8000000L
     HardwareSerial *_modemSerial;
     #endif

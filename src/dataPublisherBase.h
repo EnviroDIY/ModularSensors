@@ -73,7 +73,6 @@ public:
     // This depends on an internet connection already being made and a client
     // being available
     virtual int16_t sendData(Client *_outClient) = 0;
-    // This sends data on the "default" client of the modem attached to the logger
     virtual int16_t sendData();
 
 protected:

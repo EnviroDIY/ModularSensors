@@ -25,7 +25,6 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Arduino.h>
-#include <Client.h>
 
 
 #define MODEM_NUM_VARIABLES 4
@@ -111,9 +110,6 @@ public:
     void setModemLED(int8_t modemLEDPin);
 
     // Get values by other names
-
-    // Get the client instance in use
-    Client * getClient(void){return _tinyClient;}
     int16_t getSignalRSSI(void) {return sensorValues[MODEM_RSSI_VAR_NUM];}
     int16_t getSignalPercent(void) {return sensorValues[MODEM_PERCENT_SIGNAL_VAR_NUM];}
 
@@ -135,10 +131,6 @@ public:
     // This would be much more efficient if done over UDP, but I'm doing it
     // over TCP because I don't have a UDP library for all the modems.
     virtual uint32_t getNISTTime(void) = 0;
-
-public:
-    // All of these must be pointers - these are all abstract classes!
-    Client *_tinyClient;
 
 protected:
     // Helper to get approximate RSSI from CSQ (assuming no noise)

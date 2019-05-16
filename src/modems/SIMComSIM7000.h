@@ -69,6 +69,7 @@ public:
     #endif
 
     TinyGsm _tinyModem;
+    TinyGsmClient _tinyClient;
 
 protected:
     bool didATRespond(void) override;

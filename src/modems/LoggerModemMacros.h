@@ -331,21 +331,21 @@ uint32_t specificModem::getNISTTime(void) \
         /* This is the IP address of time-c-g.nist.gov */ \
         /* XBee's address lookup falters on time.nist.gov */ \
         IPAddress ip(129, 6, 15, 30); \
-        connectionMade = _tinyClient->connect(ip, 37); \
+        connectionMade = _tinyClient.connect(ip, 37); \
         /* Need to send something before connection is made */ \
-        _tinyClient->print('!'); \
+        _tinyClient.print('!'); \
         /* Need this delay!  Can get away with 50, but 100 is safer. */ \
         delay(100); \
     } \
-    else connectionMade = _tinyClient->connect("time.nist.gov", 37); \
+    else connectionMade = _tinyClient.connect("time.nist.gov", 37); \
 \
     /* Wait up to 5 seconds for a response */ \
     if (connectionMade) \
     { \
         uint32_t start = millis(); \
-        while (_tinyClient && _tinyClient->available() < 4 && millis() - start < 5000L){} \
+        while (_tinyClient && _tinyClient.available() < 4 && millis() - start < 5000L){} \
 \
-        if (_tinyClient->available() >= 4) \
+        if (_tinyClient.available() >= 4) \
         { \
             MS_DBG(F("\nNIST responded after"), millis() - start, F("ms")); \
             /* Response is returned as 32-bit number as soon as connection is made */ \
@@ -354,7 +354,7 @@ uint32_t specificModem::getNISTTime(void) \
             byte response[4] = {0}; \
             for (uint8_t i = 0; i < 4; i++) \
             { \
-                response[i] = _tinyClient->read(); \
+                response[i] = _tinyClient.read(); \
                 MS_DBG(F("\nResponse Byte"), i, ':', (char)response[i], \
                            '=', response[i], '=', String(response[i], BIN)); \
                 secFrom1900 += 0x000000FF & response[i]; \
@@ -365,7 +365,7 @@ uint32_t specificModem::getNISTTime(void) \
                        secFrom1900, '=', String(secFrom1900, BIN)); \
 \
             /* Close the TCP connection, just in case */ \
-            _tinyClient->stop(); \
+            _tinyClient.stop(); \
 \
             /* Return the timestamp */ \
             uint32_t unixTimeStamp = secFrom1900 - 2208988800; \

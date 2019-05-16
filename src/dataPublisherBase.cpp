@@ -119,11 +119,6 @@ void dataPublisher::printTxBuffer(Stream *stream)
 // This sends data on the "default" client of the modem
 int16_t dataPublisher::sendData()
 {
-    if (_inClient == NULL && _baseLogger->_logModem != NULL)
-    {
-        _inClient = _baseLogger->_logModem->getClient();
-    }
-
     if (_inClient == NULL) return 0;
     else return sendData(_inClient);
 }
