@@ -37,7 +37,6 @@ MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeCellularBypass);
 MS_MODEM_IS_MEASUREMENT_COMPLETE(DigiXBeeCellularBypass);
 MS_MODEM_ADD_SINGLE_MEASUREMENT_RESULT(DigiXBeeCellularBypass);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularBypass);
-MS_MODEM_DISCONNECT_INTERNET(DigiXBeeCellularBypass);
 MS_MODEM_GET_NIST_TIME(DigiXBeeCellularBypass);
 
 
@@ -116,4 +115,10 @@ bool DigiXBeeCellularBypass::extraModemSetup(void)
     if (success) MS_DBG(F("... Setup successful!"));
     else MS_DBG(F("... failed!"));
     return success;
+}
+
+
+void DigiXBeeCellularBypass::disconnectInternet(void)
+{
+    // XBee doesn't like to disconnect at all, so we're doing nothing
 }

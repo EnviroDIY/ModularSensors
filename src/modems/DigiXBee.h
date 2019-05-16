@@ -25,7 +25,7 @@
 // on the application / network settings and the concurrent module
 // activities."  Vint/status pin should be monitored and power not withdrawn
 // until that pin reads low.  Giving 15sec here in case it is not monitored.
-#define XBEE_DISCONNECT_TIME_MS 5000L
+#define XBEE_DISCONNECT_TIME_MS 15000L
 
 // Time after power-up before we can wake the model
 #define XBEE_WARM_UP_TIME_MS 0

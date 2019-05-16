@@ -13,7 +13,7 @@
 #define LoggerModem_h
 
 // FOR DEBUGGING
-#define MS_LOGGERMODEM_DEBUG
+// #define MS_LOGGERMODEM_DEBUG
 // #define MS_LOGGERMODEM_DEBUG_DEEP
 
 #ifdef MS_LOGGERMODEM_DEBUG
