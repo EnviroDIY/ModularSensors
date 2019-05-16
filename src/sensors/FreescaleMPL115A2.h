@@ -29,7 +29,7 @@
 // #define MS_FREESCALEMPL115A2_DEBUG
 
 #ifdef MS_FREESCALEMPL115A2_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "FreescaleMPL115A2"
 #endif
 
 // Included Dependencies

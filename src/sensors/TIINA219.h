@@ -33,7 +33,7 @@
 // #define MS_TIINA219_DEBUG
 
 #ifdef MS_TIINA219_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "TIINA219"
 #endif
 
 // Included Dependencies

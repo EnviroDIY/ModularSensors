@@ -69,11 +69,11 @@
 // #define MS_YOSEMITECHY4000_DEBUG_DEEP
 
 #ifdef MS_YOSEMITECHY4000_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "YosemitechY4000"
 #endif
 
 #ifdef MS_YOSEMITECHY4000_DEBUG_DEEP
-#define MS_DEBUGGING_DEEP
+#define MS_DEBUGGING_DEEP "YosemitechY4000"
 #endif
 
 // Included Dependencies

@@ -40,7 +40,7 @@
 // #define MS_ZEBRATECHDOPTO_DEBUG
 
 #ifdef MS_ZEBRATECHDOPTO_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "ZebraTechDOpto"
 #endif
 
 // Included Dependencies

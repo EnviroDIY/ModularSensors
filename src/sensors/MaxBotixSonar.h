@@ -21,7 +21,7 @@
 // #define MS_MAXBOTIXSONAR_DEBUG
 
 #ifdef MS_MAXBOTIXSONAR_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "MaxBotixSonar"
 #endif
 
 // Included Dependencies

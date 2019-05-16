@@ -17,7 +17,7 @@
 // #define MS_LOGGERMODEM_DEBUG_DEEP
 
 #ifdef MS_LOGGERMODEM_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "LoggerModem"
 #endif
 
 // Included Dependencies

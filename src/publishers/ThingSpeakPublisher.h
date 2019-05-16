@@ -15,7 +15,7 @@
 // #define MS_THINGSPEAKPUBLISHER_DEBUG
 
 #ifdef MS_THINGSPEAKPUBLISHER_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "ThingSpeakPublisher"
 #endif
 
 // MQTT User Name

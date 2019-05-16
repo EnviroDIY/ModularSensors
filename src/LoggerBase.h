@@ -16,7 +16,7 @@
 // #define MS_LOGGERBASE_DEBUG
 
 #ifdef MS_LOGGERBASE_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "LoggerBase"
 #endif
 
 // Included Dependencies

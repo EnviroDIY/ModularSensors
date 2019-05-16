@@ -37,7 +37,7 @@
 // #define MS_APOGEESQ212_DEBUG
 
 #ifdef MS_APOGEESQ212_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "ApogeeSQ212"
 #endif
 
 // Included Dependencies

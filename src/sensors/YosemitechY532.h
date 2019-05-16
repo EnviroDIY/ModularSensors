@@ -37,11 +37,11 @@
 // #define MS_YOSEMITECHY532_DEBUG_DEEP
 
 #ifdef MS_YOSEMITECHY532_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "YosemitechY532"
 #endif
 
 #ifdef MS_YOSEMITECHY532_DEBUG_DEEP
-#define MS_DEBUGGING_DEEP
+#define MS_DEBUGGING_DEEP "YosemitechY532"
 #endif
 
 // Included Dependencies

@@ -15,7 +15,7 @@
 // #define MS_SENSORBASE_DEBUG
 
 #ifdef MS_SENSORBASE_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "SensorBase"
 #endif
 
 // Included Dependencies

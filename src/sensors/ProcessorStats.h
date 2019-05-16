@@ -20,7 +20,7 @@
 // #define MS_PROCESSORSTATS_DEBUG
 
 #ifdef MS_PROCESSORSTATS_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "ProcessorStats"
 #endif
 
 // Included Dependencies

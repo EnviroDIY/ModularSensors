@@ -49,7 +49,7 @@
 // #define MS_MEASSPECMS5803_DEBUG
 
 #ifdef MS_MEASSPECMS5803_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "MeaSpecMS5803"
 #endif
 
 // Included Dependencies

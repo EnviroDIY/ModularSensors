@@ -29,7 +29,7 @@
 // #define MS_MAXIMDS18_DEBUG
 
 #ifdef MS_MAXIMDS18_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "MaximDS18"
 #endif
 
 // Included Dependencies

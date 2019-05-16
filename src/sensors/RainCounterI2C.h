@@ -25,7 +25,7 @@
 // #define MS_RAINCOUNTERI2C_DEBUG
 
 #ifdef MS_RAINCOUNTERI2C_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "RainCounterI2C"
 #endif
 
 // Included Dependencies

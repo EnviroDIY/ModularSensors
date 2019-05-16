@@ -23,11 +23,11 @@
 // #define MS_KELLERACCULEVEL_DEBUG_DEEP
 
 #ifdef MS_KELLERACCULEVEL_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "KellerAcculevel"
 #endif
 
 #ifdef MS_KELLERACCULEVEL_DEBUG_DEEP
-#define MS_DEBUGGING_DEEP
+#define MS_DEBUGGING_DEEP "KellerAcculevel"
 #endif
 
 // Included Dependencies

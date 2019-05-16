@@ -19,7 +19,7 @@
 // #define MS_ATLASSCIENTIFICDO_DEBUG
 
 #ifdef MS_ATLASSCIENTIFICDO_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "AtlasScientificDO"
 #endif
 
 // Included Dependencies

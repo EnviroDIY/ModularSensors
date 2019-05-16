@@ -38,7 +38,7 @@
 // #define MS_BOSCHBME280_DEBUG
 
 #ifdef MS_BOSCHBME280_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "BoschBME280"
 #endif
 
 // Included Dependencies

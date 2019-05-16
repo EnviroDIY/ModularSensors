@@ -58,7 +58,7 @@
 // #define MS_EXTERNALVOLTAGE_DEBUG
 
 #ifdef MS_EXTERNALVOLTAGE_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "ExternalVoltage"
 #endif
 
 // Included Dependencies

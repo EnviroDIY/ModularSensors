@@ -34,7 +34,7 @@
 // #define MS_DECAGON5TM_DEBUG
 
 #ifdef MS_DECAGON5TM_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "Decagon5TM"
 #endif
 
 // Included Dependencies

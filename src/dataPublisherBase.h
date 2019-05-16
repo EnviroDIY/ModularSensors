@@ -15,7 +15,7 @@
 // #define MS_DATAPUBLISHERBASE_DEBUG
 
 #ifdef MS_DATAPUBLISHERBASE_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "dataPublisherBase"
 #endif
 
 // Send Buffer

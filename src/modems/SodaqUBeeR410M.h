@@ -16,7 +16,7 @@
 // #define MS_SODAQUBEER410M_DEBUG_DEEP
 
 #ifdef MS_SODAQUBEER410M_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "SodaqUBeeR410M"
 #define TINY_GSM_DEBUG DEBUGGING_SERIAL_OUTPUT
 #endif
 
@@ -82,7 +82,7 @@ public:
 
     TinyGsm gsmModem;
     TinyGsmClient gsmClient;
-    
+
     #if F_CPU == 8000000L
     HardwareSerial *_modemSerial;
     #endif

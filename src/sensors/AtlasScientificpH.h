@@ -19,7 +19,7 @@
 // #define MS_ATLASSCIENTIFICPH_DEBUG
 
 #ifdef MS_ATLASSCIENTIFICPH_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "AtlasScientificpH"
 #endif
 
 // Included Dependencies

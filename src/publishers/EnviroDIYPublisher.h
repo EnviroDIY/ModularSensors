@@ -16,7 +16,7 @@
 // #define MS_ENVIRODIYPUBLISHER_DEBUG
 
 #ifdef MS_ENVIRODIYPUBLISHER_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "EnviroDIYPublisher"
 #endif
 
 // Included Dependencies

@@ -19,7 +19,7 @@
 // #define MS_ATLASORP_DEBUG
 
 #ifdef MS_ATLASORP_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "AtlasScientificORP"
 #endif
 
 // Included Dependencies

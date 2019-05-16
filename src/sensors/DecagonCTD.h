@@ -38,7 +38,7 @@
 // #define MS_DECAGONCTD_DEBUG
 
 #ifdef MS_DECAGONCTD_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "DecagonCTD"
 #endif
 
 // Included Dependencies
