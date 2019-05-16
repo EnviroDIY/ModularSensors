@@ -133,7 +133,7 @@ VariableArray array1min;
 // The variables to record at 5 minute intervals
 Variable *variableList_at5min[] = {
     new MaximDS3231_Temp(&ds3231),
-    new ProcessorStats_Batt(&mcuBoard),
+    new ProcessorStats_Battery(&mcuBoard),
     new ProcessorStats_FreeRam(&mcuBoard)
 };
 // Count up the number of pointers in the 5-minute array

@@ -154,7 +154,7 @@ Variable *variableList[] = {
     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
-    new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),

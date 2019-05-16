@@ -119,7 +119,7 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard),
     new ProcessorStats_FreeRam(&mcuBoard),
-    new ProcessorStats_Batt(&mcuBoard),
+    new ProcessorStats_Battery(&mcuBoard),
     new MaximDS3231_Temp(&ds3231),
     new BoschBME280_Temp(&bme280),
     new BoschBME280_Humidity(&bme280),

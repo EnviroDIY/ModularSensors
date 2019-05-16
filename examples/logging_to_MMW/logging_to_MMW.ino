@@ -146,7 +146,7 @@ Variable *variableList[] = {
     new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
     new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS18_Temp(&ds18, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),

@@ -87,7 +87,7 @@ MaximDS3231 ds3231(1);
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard),
     new ProcessorStats_FreeRam(&mcuBoard),
-    new ProcessorStats_Batt(&mcuBoard),
+    new ProcessorStats_Battery(&mcuBoard),
     new MaximDS3231_Temp(&ds3231)
     // Additional sensor variables can be added here, by copying the syntax
     //   for creating the variable pointer (FORM1) from the `menu_a_la_carte.ino` example
