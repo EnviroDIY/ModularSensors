@@ -30,11 +30,10 @@ EspressifESP8266::EspressifESP8266(Stream* modemStream,
     #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
     _tinyModem(_modemATDebugger),
-    _tinyClient(_tinyModem)
     #else
     _tinyModem(*modemStream),
-    _tinyClient(_tinyModem)
     #endif
+    _tinyClient(_tinyModem)
 {
     _ssid = ssid;
     _pwd = pwd;

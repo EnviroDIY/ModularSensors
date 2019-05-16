@@ -23,11 +23,10 @@ DigiXBeeCellularBypass::DigiXBeeCellularBypass(Stream* modemStream,
     #ifdef MS_DIGIXBEECELLULARBYPASS_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
     _tinyModem(_modemATDebugger),
-    _tinyClient(_tinyModem)
     #else
     _tinyModem(*modemStream),
-    _tinyClient(_tinyModem)
     #endif
+    _tinyClient(_tinyModem)
 {
     _apn = apn;
 }

@@ -29,11 +29,10 @@ SIMComSIM800::SIMComSIM800(Stream* modemStream,
     #ifdef MS_SIMCOMSIM800_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
     _tinyModem(_modemATDebugger),
-    _tinyClient(_tinyModem)
     #else
     _tinyModem(*modemStream),
-    _tinyClient(_tinyModem)
     #endif
+    _tinyClient(_tinyModem)
 {
     _apn = apn;
 }

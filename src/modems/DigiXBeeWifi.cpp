@@ -24,11 +24,10 @@ DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream,
     #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
     _tinyModem(_modemATDebugger),
-    _tinyClient(_tinyModem)
     #else
     _tinyModem(*modemStream),
-    _tinyClient(_tinyModem)
     #endif
+    _tinyClient(_tinyModem)
 {
     _ssid = ssid;
     _pwd = pwd;
@@ -109,13 +108,13 @@ bool DigiXBeeWifi::addSingleMeasurementResult(void)
         {
             usedGoogle = true;
             IPAddress ip(8, 8, 8, 8);  // This is the IP address of time-c-g.nist.gov
-            success &= _tinyClient->connect(ip, 80);
+            success &= _tinyClient.connect(ip, 80);
         }
-        _tinyClient->print('!');  // Need to send something before connection is made
+        _tinyClient.print('!');  // Need to send something before connection is made
         delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
         if (usedGoogle)
         {
-            _tinyClient->stop();
+            _tinyClient.stop();
         }
 
         // Get signal quality

@@ -28,11 +28,10 @@ Sodaq2GBeeR6::Sodaq2GBeeR6(Stream* modemStream,
     #ifdef MS_SODAQ2GBEER6_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
     _tinyModem(_modemATDebugger),
-    _tinyClient(_tinyModem)
     #else
     _tinyModem(*modemStream),
-    _tinyClient(_tinyModem)
     #endif
+    _tinyClient(_tinyModem)
 {
     _apn = apn;
 }
