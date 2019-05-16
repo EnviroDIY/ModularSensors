@@ -99,4 +99,4 @@ private:
 
 };
 
-#endif
+#endif  // Header Guard

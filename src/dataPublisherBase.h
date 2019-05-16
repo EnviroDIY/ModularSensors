@@ -27,7 +27,6 @@
 #define MS_SEND_BUFFER_SIZE 750
 
 // Included Dependencies
-//#include <Arduino.h>
 #include "ModSensorDebugger.h"
 #include "LoggerBase.h"
 #include "Client.h"

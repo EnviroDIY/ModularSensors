@@ -48,6 +48,7 @@
 #endif
 
 // Included Dependencies
+#include "ModSensorDebugger.h"
 #include "VariableBase.h"
 #include "sensors/YosemitechParent.h"
 
