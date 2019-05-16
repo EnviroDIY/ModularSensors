@@ -75,7 +75,6 @@ public:
     #endif
 
     TinyGsm _tinyModem;
-    Stream *_modemStream;
 
 protected:
     bool didATRespond(void) override;

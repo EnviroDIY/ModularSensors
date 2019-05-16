@@ -34,7 +34,6 @@ QuectelBG96::QuectelBG96(Stream* modemStream,
     _apn = apn;
     TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);
     _tinyClient = tinyClient;
-    _modemStream = modemStream;
 }
 
 
@@ -78,6 +77,7 @@ bool QuectelBG96::modemSleepFxn(void)
 
 bool QuectelBG96::extraModemSetup(void)
 {
+    _tinyModem.init();
     _modemName = _tinyModem.getModemName();
     return true;
 }

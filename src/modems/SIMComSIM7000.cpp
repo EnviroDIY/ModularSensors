@@ -34,7 +34,6 @@ SIMComSIM7000::SIMComSIM7000(Stream* modemStream,
     _apn = apn;
     TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);
     _tinyClient = tinyClient;
-    _modemStream = modemStream;
 }
 
 
@@ -77,6 +76,7 @@ bool SIMComSIM7000::modemSleepFxn(void)
 
 bool SIMComSIM7000::extraModemSetup(void)
 {
+    _tinyModem.init();
     _modemName = _tinyModem.getModemName();
     return true;
 }

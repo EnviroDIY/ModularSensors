@@ -34,7 +34,6 @@ SodaqUBeeU201::SodaqUBeeU201(Stream* modemStream,
     _apn = apn;
     TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);
     _tinyClient = tinyClient;
-    _modemStream = modemStream;
 }
 
 
@@ -85,6 +84,7 @@ bool SodaqUBeeU201::modemSleepFxn(void)
 
 bool SodaqUBeeU201::extraModemSetup(void)
 {
+    _tinyModem.init();
     _modemName = _tinyModem.getModemName();
     return true;
 }

@@ -30,7 +30,6 @@ DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(Stream* modemStream,
     _apn = apn;
     TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);
     _tinyClient = tinyClient;
-    _modemStream = modemStream;
 }
 
 
@@ -45,10 +44,13 @@ MS_MODEM_GET_NIST_TIME(DigiXBeeCellularTransparent);
 bool DigiXBeeCellularTransparent::extraModemSetup(void)
 {
     bool success = true;
+    MS_DBG(F("Initializing the XBee..."));
     success &= _tinyModem.init();  // initialize
     _modemName = _tinyModem.getModemName();
+    MS_DBG(F("Putting XBee into command mode..."));
     if (_tinyModem.commandMode())
     {
+        MS_DBG(F("Setting I/O Pins..."));
         // Set DIO8 to be used for sleep requests
         // NOTE:  Only pin 9/DIO8/DTR can be used for this function
         _tinyModem.sendAT(F("D8"),1);
@@ -63,11 +65,13 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         _tinyModem.sendAT(F("D7"),1);
         success &= _tinyModem.waitResponse() == 1;
         // Put the XBee in pin sleep mode
+        MS_DBG(F("Setting Sleep Options..."));
         _tinyModem.sendAT(F("SM"),1);
         success &= _tinyModem.waitResponse() == 1;
         // Disassociate from network for lowest power deep sleep
         _tinyModem.sendAT(F("SO"),0);
         success &= _tinyModem.waitResponse() == 1;
+        MS_DBG(F("Setting Other Options..."));
         // Disable remote manager, USB Direct, and LTE PSM
         // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
         // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
@@ -80,6 +84,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         // Make sure pins 7&8 are not set for USB direct on XBee3 units
         _tinyModem.sendAT(F("P1"),0);
         success &= _tinyModem.waitResponse() == 1;
+        MS_DBG(F("Setting Cellular Carrier Options..."));
         // Cellular carrier profile - AT&T
         // Hologram says they can use any network, but I've never succeeded with anything but AT&T
         _tinyModem.sendAT(F("CP"),2);
@@ -96,6 +101,8 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         _tinyModem.exitCommand();
     }
     else success = false;
+    if (success) MS_DBG(F("... Setup successful!"));
+    else MS_DBG(F("... failed!"));
     return success;
 }
 

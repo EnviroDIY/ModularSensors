@@ -32,7 +32,6 @@ DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream,
     _pwd = pwd;
     TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);
     _tinyClient = tinyClient;
-    _modemStream = modemStream;
 }
 
 
@@ -46,10 +45,13 @@ MS_MODEM_GET_NIST_TIME(DigiXBeeWifi);
 bool DigiXBeeWifi::extraModemSetup(void)
 {
     bool success = true;
+    MS_DBG(F("Initializing the XBee..."));
     success &= _tinyModem.init();  // initialize
     _modemName = _tinyModem.getModemName();
+    MS_DBG(F("Putting XBee into command mode..."));
     if (_tinyModem.commandMode())
     {
+        MS_DBG(F("Setting I/O Pins..."));
         // Set DIO8 to be used for sleep requests
         // NOTE:  Only pin 9/DIO8/DTR can be used for this function
         _tinyModem.sendAT(F("D8"),1);
@@ -64,11 +66,13 @@ bool DigiXBeeWifi::extraModemSetup(void)
         _tinyModem.sendAT(F("D7"),1);
         success &= _tinyModem.waitResponse() == 1;
         // Put the XBee in pin sleep mode
+        MS_DBG(F("Setting Sleep Options..."));
         _tinyModem.sendAT(F("SM"),1);
         success &= _tinyModem.waitResponse() == 1;
         // Disassociate from network for lowest power deep sleep
         _tinyModem.sendAT(F("SO"),200);
         success &= _tinyModem.waitResponse() == 1;
+        MS_DBG(F("Setting Wifi Network Options..."));
         // Put the network connection parameters into flash
         success &= _tinyModem.networkConnect(_ssid, _pwd);
         // Write changes to flash and apply them
@@ -77,6 +81,8 @@ bool DigiXBeeWifi::extraModemSetup(void)
         _tinyModem.exitCommand();
     }
     else success = false;
+    if (success) MS_DBG(F("... Setup successful!"));
+    else MS_DBG(F("... failed!"));
     return success;
 }
 
@@ -130,8 +136,8 @@ bool DigiXBeeWifi::addSingleMeasurementResult(void)
     }
     else MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!"));
 
-    verifyAndAddMeasurementResult(RSSI_VAR_NUM, rssi);
-    verifyAndAddMeasurementResult(PERCENT_SIGNAL_VAR_NUM, percent);
+    verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi);
+    verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;

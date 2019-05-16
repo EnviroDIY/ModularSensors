@@ -12,8 +12,8 @@
 #define DigiXBeeCellularBypass_h
 
 // Debugging Statement
-// #define MS_SODAQUBEEU201_DEBUG
-// #define MS_SODAQUBEEU201_DEBUG_DEEP
+// #define MS_DIGIXBEECELLULARBYPASS_DEBUG
+// #define MS_DIGIXBEECELLULARBYPASS_DEBUG_DEEP
 
 #ifdef MS_DIGIXBEECELLULARBYPASS_DEBUG
 #define MS_DEBUGGING_STD
@@ -55,7 +55,6 @@ public:
     #endif
 
     TinyGsm _tinyModem;
-    Stream *_modemStream;
 
 protected:
     bool didATRespond(void) override;

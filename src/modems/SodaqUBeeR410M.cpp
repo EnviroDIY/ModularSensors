@@ -35,7 +35,6 @@ SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial* modemStream,
     _apn = apn;
     TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);
     _tinyClient = tinyClient;
-    _modemStream = modemStream;
 }
 #else
 SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream,
@@ -59,7 +58,7 @@ SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream,
     _apn = apn;
     TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);
     _tinyClient = tinyClient;
-    _modemStream = modemStream;
+    _modemSerial = modemStream;
     _statusLevel = HIGH;
 }
 #endif
@@ -91,10 +90,10 @@ bool SodaqUBeeR410M::modemWakeFxn(void)
         if (_powerPin >= 0)
         {
             delay(4600);  // Must wait for UART port to become active
-            _modemStream->begin(115200);
+            _modemSerial->begin(115200);
             _tinyModem.setBaud(9600);
-            _modemStream->end();
-            _modemStream->begin(9600);
+            _modemSerial->end();
+            _modemSerial->begin(9600);
         }
         #endif
         return true;
@@ -122,8 +121,10 @@ bool SodaqUBeeR410M::modemSleepFxn(void)
 
 bool SodaqUBeeR410M::extraModemSetup(void)
 {
+    _tinyModem.init();
     _modemName = _tinyModem.getModemName();
     // Set to only use LTE-M, which should cause connection more quickly
     _tinyModem.sendAT(F("+URAT=7"));
+    _tinyModem.waitResponse();
     return true;
 }

@@ -82,9 +82,7 @@ public:
 
     TinyGsm _tinyModem;
     #if F_CPU == 8000000L
-    HardwareSerial *_modemStream;
-    #else
-    Stream *_modemStream;
+    HardwareSerial *_modemSerial;
     #endif
 
 protected:

@@ -35,7 +35,6 @@ Sodaq2GBeeR6::Sodaq2GBeeR6(Stream* modemStream,
     _apn = apn;
     TinyGsmClient *tinyClient = new TinyGsmClient(_tinyModem);
     _tinyClient = tinyClient;
-    _modemStream = modemStream;
 }
 
 
@@ -65,6 +64,7 @@ bool Sodaq2GBeeR6::modemSleepFxn(void)
 
 bool Sodaq2GBeeR6::extraModemSetup(void)
 {
+    _tinyModem.init();
     _modemName = _tinyModem.getModemName();
     return true;
 }
