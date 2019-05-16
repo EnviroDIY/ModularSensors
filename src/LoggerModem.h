@@ -198,14 +198,14 @@ public:
                         const char *uuid = "",
                         const char *varCode = "signalPercent")
       : Variable(parentSense,
-                 (const uint8_t)MODEM_BATTERY_VAR_NUM,
-                 (uint8_t)MODEM_BATTERY_RESOLUTION,
+                 (const uint8_t)MODEM_PERCENT_SIGNAL_VAR_NUM,
+                 (uint8_t)MODEM_PERCENT_SIGNAL_RESOLUTION,
                  "signalPercent", "percent",
                  varCode, uuid)
     {}
     Modem_SignalPercent()
-      : Variable((const uint8_t)MODEM_BATTERY_VAR_NUM,
-                 (uint8_t)MODEM_BATTERY_RESOLUTION,
+      : Variable((const uint8_t)MODEM_PERCENT_SIGNAL_VAR_NUM,
+                 (uint8_t)MODEM_PERCENT_SIGNAL_RESOLUTION,
                  "signalPercent", "percent", "signalPercent")
     {}
     ~Modem_SignalPercent(){}
@@ -220,14 +220,14 @@ public:
                         const char *uuid = "",
                         const char *varCode = "modemBattery")
       : Variable(parentSense,
-                 (const uint8_t)MODEM_PERCENT_SIGNAL_VAR_NUM,
-                 (uint8_t)MODEM_PERCENT_SIGNAL_RESOLUTION,
+                 (const uint8_t)MODEM_BATTERY_VAR_NUM,
+                 (uint8_t)MODEM_BATTERY_RESOLUTION,
                  "batteryVoltage", "volt",
                  varCode, uuid)
     {}
     Modem_Battery()
-      : Variable((const uint8_t)MODEM_PERCENT_SIGNAL_VAR_NUM,
-                 (uint8_t)MODEM_PERCENT_SIGNAL_RESOLUTION,
+      : Variable((const uint8_t)MODEM_BATTERY_VAR_NUM,
+                 (uint8_t)MODEM_BATTERY_RESOLUTION,
                  "batteryVoltage", "volt", "modemBattery")
     {}
     ~Modem_Battery(){}
