@@ -159,8 +159,8 @@ bool specificModem::addSingleMeasurementResult(void) \
     } \
     else MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!")); \
 \
-    verifyAndAddMeasurementResult(RSSI_VAR_NUM, rssi); \
-    verifyAndAddMeasurementResult(PERCENT_SIGNAL_VAR_NUM, percent); \
+    verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi); \
+    verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent); \
 \
     /* Unset the time stamp for the beginning of this measurement */ \
     _millisMeasurementRequested = 0; \

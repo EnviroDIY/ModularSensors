@@ -13,7 +13,7 @@
 #define LoggerModem_h
 
 // FOR DEBUGGING
-// #define MS_LOGGERMODEM_DEBUG
+#define MS_LOGGERMODEM_DEBUG
 // #define MS_LOGGERMODEM_DEBUG_DEEP
 
 #ifdef MS_LOGGERMODEM_DEBUG
@@ -28,13 +28,19 @@
 #include <Client.h>
 
 
-#define MODEM_NUM_VARIABLES 2
+#define MODEM_NUM_VARIABLES 4
 
-#define RSSI_VAR_NUM 0
-#define RSSI_RESOLUTION 0
+#define MODEM_RSSI_VAR_NUM 0
+#define MODEM_RSSI_RESOLUTION 0
 
-#define PERCENT_SIGNAL_VAR_NUM 1
-#define PERCENT_SIGNAL_RESOLUTION 0
+#define MODEM_PERCENT_SIGNAL_VAR_NUM 1
+#define MODEM_PERCENT_SIGNAL_RESOLUTION 0
+
+#define MODEM_BATTERY_VAR_NUM 2
+#define MODEM_BATTERY_RESOLUTION 2
+
+#define MODEM_TEMPERATURE_VAR_NUM 3
+#define MODEM_TEMPERATURE_RESOLUTION 1
 
 /* ===========================================================================
 * Functions for the modem class
@@ -55,7 +61,7 @@ public:
                 uint32_t max_signalQuality_time_ms,
                 uint8_t measurementsToAverage = 1);
 
-    ~loggerModem();
+    virtual ~loggerModem();
 
     String getSensorName(void) override;
 
@@ -105,11 +111,11 @@ public:
     void setModemLED(int8_t modemLEDPin);
 
     // Get values by other names
-    int16_t getSignalRSSI(void) {return sensorValues[RSSI_VAR_NUM];}
-    int16_t getSignalPercent(void) {return sensorValues[PERCENT_SIGNAL_VAR_NUM];}
 
     // Get the client instance in use
     Client * getClient(void){return _tinyClient;}
+    int16_t getSignalRSSI(void) {return sensorValues[MODEM_RSSI_VAR_NUM];}
+    int16_t getSignalPercent(void) {return sensorValues[MODEM_PERCENT_SIGNAL_VAR_NUM];}
 
     // Access the internet
     virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) = 0;
@@ -182,14 +188,14 @@ public:
                const char *uuid = "",
                const char *varCode = "RSSI")
       : Variable(parentSense,
-                 (const uint8_t)RSSI_VAR_NUM,
-                 (uint8_t)RSSI_RESOLUTION,
+                 (const uint8_t)MODEM_RSSI_VAR_NUM,
+                 (uint8_t)MODEM_RSSI_RESOLUTION,
                  "RSSI", "decibelMiliWatt",
                  varCode, uuid)
     {}
     Modem_RSSI()
-      : Variable((const uint8_t)RSSI_VAR_NUM,
-                 (uint8_t)RSSI_RESOLUTION,
+      : Variable((const uint8_t)MODEM_RSSI_VAR_NUM,
+                 (uint8_t)MODEM_RSSI_RESOLUTION,
                  "RSSI", "decibelMiliWatt", "RSSI")
     {}
     ~Modem_RSSI(){}
@@ -204,17 +210,61 @@ public:
                         const char *uuid = "",
                         const char *varCode = "signalPercent")
       : Variable(parentSense,
-                 (const uint8_t)PERCENT_SIGNAL_VAR_NUM,
-                 (uint8_t)PERCENT_SIGNAL_RESOLUTION,
+                 (const uint8_t)MODEM_BATTERY_VAR_NUM,
+                 (uint8_t)MODEM_BATTERY_RESOLUTION,
                  "signalPercent", "percent",
                  varCode, uuid)
     {}
     Modem_SignalPercent()
-      : Variable((const uint8_t)PERCENT_SIGNAL_VAR_NUM,
-                 (uint8_t)PERCENT_SIGNAL_RESOLUTION,
+      : Variable((const uint8_t)MODEM_BATTERY_VAR_NUM,
+                 (uint8_t)MODEM_BATTERY_RESOLUTION,
                  "signalPercent", "percent", "signalPercent")
     {}
     ~Modem_SignalPercent(){}
+};
+
+
+// Defines the Signal Percentage
+class Modem_Battery : public Variable
+{
+public:
+    Modem_Battery(Sensor *parentSense,
+                        const char *uuid = "",
+                        const char *varCode = "modemBattery")
+      : Variable(parentSense,
+                 (const uint8_t)MODEM_PERCENT_SIGNAL_VAR_NUM,
+                 (uint8_t)MODEM_PERCENT_SIGNAL_RESOLUTION,
+                 "batteryVoltage", "volt",
+                 varCode, uuid)
+    {}
+    Modem_Battery()
+      : Variable((const uint8_t)MODEM_PERCENT_SIGNAL_VAR_NUM,
+                 (uint8_t)MODEM_PERCENT_SIGNAL_RESOLUTION,
+                 "batteryVoltage", "volt", "modemBattery")
+    {}
+    ~Modem_Battery(){}
+};
+
+
+// Defines the Temperature Sensor on the modem (not all modems have one)
+class Modem_Temp : public Variable
+{
+public:
+    Modem_Temp(Sensor *parentSense,
+                        const char *uuid = "",
+                        const char *varCode = "modemTemp")
+      : Variable(parentSense,
+                 (const uint8_t)MODEM_TEMPERATURE_VAR_NUM,
+                 (uint8_t)MODEM_TEMPERATURE_RESOLUTION,
+                 "temperature", "degreeCelsius",
+                 varCode, uuid)
+    {}
+    Modem_Temp()
+      : Variable((const uint8_t)MODEM_TEMPERATURE_VAR_NUM,
+                 (uint8_t)MODEM_TEMPERATURE_RESOLUTION,
+                 "temperature", "degreeCelsius", "modemTemp")
+    {}
+    ~Modem_Temp(){}
 };
 
 #endif  // Header Guard
