@@ -54,6 +54,7 @@ bool SequansMonarch::modemWakeFxn(void)
         return true;
     if (_modemSleepRqPin >= 0)
     {
+        MS_DBG(F("Sending a wake-up pulse on pin"), _modemSleepRqPin, F("for Sequans Monarch"));
         digitalWrite(_modemSleepRqPin, LOW);
         delayMicroseconds(50);  // ?? Time isn't documented
         digitalWrite(_modemSleepRqPin, HIGH);
@@ -71,6 +72,7 @@ bool SequansMonarch::modemSleepFxn(void)
     if (_powerPin >= 0 || _modemSleepRqPin >= 0)  // will go on with power on
     {
         // Easiest to just go to sleep with the AT command rather than using pins
+        MS_DBG(F("Asking Sequans Monarch to power down"));
         return gsmModem.poweroff();
     }
     else  // DON'T go to sleep if we can't wake up!

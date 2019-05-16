@@ -51,6 +51,7 @@ bool SIMComSIM7000::modemWakeFxn(void)
     // Must power on and then pulse on
     if (_modemSleepRqPin >= 0)
     {
+        MS_DBG(F("Sending a wake-up pulse on pin"), _modemSleepRqPin, F("for SIM7000"));
         digitalWrite(_modemSleepRqPin, LOW);
         delay(1100);  // >1s
         digitalWrite(_modemSleepRqPin, LOW);
@@ -64,6 +65,7 @@ bool SIMComSIM7000::modemSleepFxn(void)
     if (_modemSleepRqPin >= 0) // R410 must have access to PWRKEY pin to sleep
     {
         // Easiest to just go to sleep with the AT command rather than using pins
+        MS_DBG(F("Asking SIM7000 to power down"));
         return gsmModem.poweroff();
     }
     else  // DON'T go to sleep if we can't wake up!

@@ -32,7 +32,8 @@ bool DigiXBee::modemWakeFxn(void)
 {
     if (_modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
     {
-        digitalWrite(_modemSleepRqPin, HIGH);
+        MS_DBG(F("Setting pin"), _modemSleepRqPin, F("LOW to wake XBee"));
+        digitalWrite(_modemSleepRqPin, LOW);
         return true;
     }
     else
@@ -48,8 +49,8 @@ bool DigiXBee::modemSleepFxn(void)
         return true;
     else if (_modemSleepRqPin >= 0)
     {
-        digitalWrite(_modemSleepRqPin, LOW);
-        digitalWrite(_modemLEDPin, HIGH);  // Because the XBee doesn't have any lights
+        MS_DBG(F("Setting pin"), _modemSleepRqPin, F("HIGH to put XBee to sleep"));
+        digitalWrite(_modemSleepRqPin, HIGH);
         return true;
     }
     else

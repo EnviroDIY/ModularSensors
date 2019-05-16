@@ -78,6 +78,7 @@ bool SodaqUBeeR410M::modemWakeFxn(void)
     // SARA R4/N4 series must power on and then pulse on
     if (_modemSleepRqPin >= 0)
     {
+        MS_DBG(F("Sending a wake-up pulse on pin"), _modemSleepRqPin, F("for Sodaq UBee R410M"));
         digitalWrite(_modemSleepRqPin, LOW);
         delay(200);  // 0.15-3.2s pulse for wake on SARA R4/N4
         digitalWrite(_modemSleepRqPin, HIGH);
@@ -108,6 +109,7 @@ bool SodaqUBeeR410M::modemSleepFxn(void)
     if (_modemSleepRqPin >= 0) // R410 must have access to PWR_ON pin to sleep
     {
         // Easiest to just go to sleep with the AT command rather than using pins
+        MS_DBG(F("Asking u-blox R410M to power down"));
         return gsmModem.poweroff();
     }
     else  // DON'T go to sleep if we can't wake up!

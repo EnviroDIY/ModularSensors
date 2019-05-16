@@ -49,6 +49,7 @@ MS_MODEM_GET_NIST_TIME(Sodaq2GBeeR6);
 // These can be functions of any type and must return a boolean
 bool Sodaq2GBeeR6::modemWakeFxn(void)
 {
+    MS_DBG(F("Setting pin"), _modemSleepRqPin, F("high to wake GPRSBeeR6"));
     digitalWrite(_modemSleepRqPin, HIGH);
     return true;
 }
@@ -56,6 +57,7 @@ bool Sodaq2GBeeR6::modemWakeFxn(void)
 
 bool Sodaq2GBeeR6::modemSleepFxn(void)
 {
+    MS_DBG(F("Sending pin"), _modemSleepRqPin, F("low to stop GPRSBeeR6"));
     digitalWrite(_modemSleepRqPin, LOW);
     return true;
 }

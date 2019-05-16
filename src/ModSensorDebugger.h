@@ -59,7 +59,7 @@
         template<typename T>
         static void MS_DBG(T last) {
             DEBUGGING_SERIAL_OUTPUT.print(last);
-            DEBUGGING_SERIAL_OUTPUT.print(" --");
+            DEBUGGING_SERIAL_OUTPUT.print(" <--");
             DEBUGGING_SERIAL_OUTPUT.println(MS_DEBUGGING_STD);
         }
 
@@ -94,7 +94,7 @@
         template<typename T>
         static void MS_DEEP_DBG(T last) {
             DEEP_DEBUGGING_SERIAL_OUTPUT.print(last);
-            DEEP_DEBUGGING_SERIAL_OUTPUT.print(" --");
+            DEEP_DEBUGGING_SERIAL_OUTPUT.print(" <--");
             DEEP_DEBUGGING_SERIAL_OUTPUT.println(MS_DEBUGGING_STD);
         }
 

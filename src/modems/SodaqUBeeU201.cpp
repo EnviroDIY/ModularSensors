@@ -55,6 +55,7 @@ bool SodaqUBeeU201::modemWakeFxn(void)
         return true;
     if (_modemSleepRqPin >= 0)
     {
+        MS_DBG(F("Sending a wake-up pulse on pin"), _modemSleepRqPin, F("for Sodaq UBee U201"));
         digitalWrite(_modemSleepRqPin, LOW);
         delayMicroseconds(65);  // 50-80µs pulse for wake on SARA/LISA U2/G2
         digitalWrite(_modemSleepRqPin, HIGH);
@@ -72,6 +73,7 @@ bool SodaqUBeeU201::modemSleepFxn(void)
     if (_powerPin >= 0 || _modemSleepRqPin >= 0)  // will go on with power on
     {
         // Easiest to just go to sleep with the AT command rather than using pins
+        MS_DBG(F("Asking u-blox SARA U201 to power down"));
         return gsmModem.poweroff();
     }
     else  // DON'T go to sleep if we can't wake up!

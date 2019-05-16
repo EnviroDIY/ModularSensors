@@ -62,6 +62,7 @@ bool EspressifESP8266::ESPwaitForBoot(void)
     // sends out a boot log from the ROM on UART1 at 74880 baud.  We're not
     // going to worry about the odd baud rate since we're simply throwing the
     // characters away.
+    MS_DBG(F("Waiting for boot-up message from ESP8266"));
     delay(200);  // It will take at least this long
     uint32_t start = millis();
     bool success = false;
@@ -97,6 +98,8 @@ bool EspressifESP8266::modemWakeFxn(void)
     }
     else if (_modemResetPin >= 0)
     {
+        MS_DBG(F("Sending a reset pulse to pin"), _modemResetPin,
+               F("to wake ESP8266 from deep sleep"))
         digitalWrite(_modemResetPin, LOW);
         delay(1);
         digitalWrite(_modemResetPin, HIGH);
@@ -105,6 +108,8 @@ bool EspressifESP8266::modemWakeFxn(void)
     }
     else if (_modemSleepRqPin >= 0)
     {
+        MS_DBG(F("Sending a pulse to pin"), _modemSleepRqPin,
+               F("to wake ESP8266 from light sleep"))
         digitalWrite(_modemSleepRqPin, LOW);
         delay(1);
         digitalWrite(_modemSleepRqPin, HIGH);
@@ -135,6 +140,7 @@ bool EspressifESP8266::modemSleepFxn(void)
     // Use this if you have an MCU pin connected to the ESP's reset pin to wake from deep sleep
     if (_modemResetPin >= 0)
     {
+        MS_DBG(F("Requesting deep sleep for ESP8266"));
         return gsmModem.poweroff();
     }
     // Use this if you don't have access to the ESP8266's reset pin for deep sleep but you
@@ -142,6 +148,7 @@ bool EspressifESP8266::modemSleepFxn(void)
     // pin to view the sleep status.
     else if (_modemSleepRqPin >= 0 && _dataPin >= 0)
     {
+        MS_DBG(F("Requesting light sleep for ESP8266 with status indication"));
         gsmModem.sendAT(F("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0,"),
                           String(_espStatusPin), ',', _statusLevel);
         bool success = gsmModem.waitResponse() == 1;
@@ -152,6 +159,7 @@ bool EspressifESP8266::modemSleepFxn(void)
     // Light sleep without the status pin
     else if (_modemSleepRqPin >= 0 && _dataPin < 0)
     {
+        MS_DBG(F("Requesting light sleep for ESP8266"));
         gsmModem.sendAT(F("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0"));
         bool success = gsmModem.waitResponse() == 1;
         gsmModem.sendAT(F("+SLEEP=1"));
