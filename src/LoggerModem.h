@@ -74,10 +74,6 @@ public:
     void powerUp(void) override;
     void powerDown(void) override;
 
-    // Turns modem signal strength into a measurement
-    virtual bool startSingleMeasurement(void) override;
-    virtual bool addSingleMeasurementResult(void) = 0;
-
 protected:
     // We override these because the modem can tell us if it's ready or not
 

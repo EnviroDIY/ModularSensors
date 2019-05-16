@@ -63,9 +63,8 @@ bool MaxBotixSonar::setup(void)
 // Parsing and tossing the header lines in the wake-up
 bool MaxBotixSonar::wake(void)
 {
-    // Sensor::wake() checks if the power pin is on, setup has been successful,
-    // and sets the wake timestamp and status bits.  If it returns false,
-    // there's no reason to go on.
+    // Sensor::wake() checks if the power pin is on and sets the wake timestamp 
+    // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
 
     // NOTE: After the power is turned on to the MaxBotix, it sends several lines

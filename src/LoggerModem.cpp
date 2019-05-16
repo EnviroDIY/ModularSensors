@@ -160,9 +160,8 @@ bool loggerModem::setup(void)
 // There are so many ways to wake a modem that we're requiring an input function
 bool loggerModem::wake(void)
 {
-    // Sensor::wake() checks if the power pin is on, setup has been successful,
-    // and sets the wake timestamp and status bits.  If it returns false,
-    // there's no reason to go on.
+    // Sensor::wake() checks if the power pin is on and sets the wake timestamp
+    // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
     // NOTE:  This is the ONLY place _millisSensorActivated is set!
     // NOTE:  This is the ONLY place bit 4 is set!
@@ -226,42 +225,6 @@ void loggerModem::powerUp(void)
 void loggerModem::powerDown(void)
 {
     MS_DBG(F("Skipping"), getSensorName(), F("in sensor power down!"));
-}
-
-
-bool loggerModem::startSingleMeasurement(void)
-{
-    bool success = true;
-    MS_DBG(F("Starting measurement on"), getSensorName());
-    // Set the status bits for measurement requested (bit 5)
-    // Setting this bit even if we failed to start a measurement to show that an attempt was made.
-    _sensorStatus |= 0b00100000;
-
-    // Check if the modem was successfully awoken (bit 4 set)
-    // Only mark the measurement request time if it is
-    if (bitRead(_sensorStatus, 4))
-    {
-        // check if the modem was successfully set up, run set up if not
-        if (!bitRead(_sensorStatus, 0))
-        {
-            MS_DBG(getSensorName(), F("was never properly set up, attempting setup now!"));
-            setup();
-        }
-        // Mark the time that a measurement was requested
-        _millisMeasurementRequested = millis();
-        // Set the status bit for measurement start success (bit 6)
-        _sensorStatus |= 0b01000000;
-    }
-    // Otherwise, make sure that the measurement start time and success bit (bit 6) are unset
-    else
-    {
-        MS_DBG(getSensorNameAndLocation(),
-               F("isn't awake/active!  A measurement cannot be started."));
-        _millisMeasurementRequested = 0;
-        _sensorStatus &= 0b10111111;
-        success = false;
-    }
-    return success;
 }
 
 

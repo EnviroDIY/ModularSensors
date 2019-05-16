@@ -194,40 +194,32 @@ bool EspressifESP8266::extraModemSetup(void)
 
 bool EspressifESP8266::startSingleMeasurement(void)
 {
+    // Sensor::startSingleMeasurement() checks that if it's awake/active and sets
+    // the timestamp and status bits.  If it returns false, there's no reason to go on.
+    if (!Sensor::startSingleMeasurement()) return false;
+
     bool success = true;
     MS_DBG(F("Starting measurement on"), getSensorName());
     // Set the status bits for measurement requested (bit 5)
     // Setting this bit even if we failed to start a measurement to show that an attempt was made.
     _sensorStatus |= 0b00100000;
 
-    // Check if the modem was successfully awoken (bit 4 set)
-    // Only mark the measurement request time if it is
-    if (bitRead(_sensorStatus, 4))
+    // The SSID and password need to be set before the ESP8266m can join a
+    //network and get signal strength
+    success &= gsmModem.networkConnect(_ssid, _pwd);
+
+    if (success)
     {
-        // check if the modem was successfully set up, run set up if not
-        if (!bitRead(_sensorStatus, 0))
-        {
-            MS_DBG(getSensorName(), F("was never properly set up, attempting setup now!"));
-            setup();
-        }
-
-        // For the wifi modems, the SSID and password need to be set before they
-        // can join a network.
-        success &= gsmModem.networkConnect(_ssid, _pwd);
-
-        // Mark the time that a measurement was requested
+        // Update the time that a measurement was requested
         _millisMeasurementRequested = millis();
-        // Set the status bit for measurement start success (bit 6)
-        _sensorStatus |= 0b01000000;
     }
     // Otherwise, make sure that the measurement start time and success bit (bit 6) are unset
     else
     {
-        MS_DBG(getSensorNameAndLocation(),
-               F("isn't awake/active!  A measurement cannot be started."));
+        MS_DBG(getSensorNameAndLocation(), F("did not successfully start a measurement."));
         _millisMeasurementRequested = 0;
         _sensorStatus &= 0b10111111;
-        success = false;
     }
+    
     return success;
 }
