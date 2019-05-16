@@ -168,17 +168,18 @@ bool EspressifESP8266::modemSleepFxn(void)
 // Set up the light-sleep status pin, if applicable
 bool EspressifESP8266::extraModemSetup(void)
 {
+    _tinyModem.init();
     _modemName = _tinyModem.getModemName();
     // Slow down the baud rate for slow processors - and save the change to
     // the ESP's non-volatile memory so we don't have to do it every time
     // #if F_CPU == 8000000L
     // if (modemBaud > 57600)
     // {
-    //     _modemStream->begin(modemBaud);
+    //     _modemSerial->begin(modemBaud);
     //     _tinyModem.sendAT(F("+UART_DEF=9600,8,1,0,0"));
     //     _tinyModem.waitResponse();
-    //     _modemStream->end();
-    //     _modemStream->begin(9600);
+    //     _modemSerial->end();
+    //     _modemSerial->begin(9600);
     // }
     // #endif
     if (_powerPin < 0 && _modemResetPin < 0 && _modemSleepRqPin >= 0 && _dataPin >= 0)
