@@ -1262,7 +1262,7 @@ const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sam
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(dataLogger, modem._tinyClient, registrationToken, samplingFeature);
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient, registrationToken, samplingFeature);
 
 
 // ==========================================================================
@@ -1275,7 +1275,7 @@ const char * DreamHostPortalRX = "xxxx";
 
 // Create a data publisher to DreamHost
 #include <publishers/DreamHostPublisher.h>
-DreamHostPublisher DreamHostGET(dataLogger, modem._tinyClient, DreamHostPortalRX);
+DreamHostPublisher DreamHostGET(dataLogger, &modem.gsmClient, DreamHostPortalRX);
 
 
 // ==========================================================================
@@ -1292,7 +1292,7 @@ const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for
 
 // Create a data publisher for ThingSpeak
 #include <publishers/ThingSpeakPublisher.h>
-ThingSpeakPublisher TsMqtt(dataLogger, modem._tinyClient, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
+ThingSpeakPublisher TsMqtt(dataLogger, &modem.gsmClient, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
 
 
 // ==========================================================================

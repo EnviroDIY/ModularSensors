@@ -287,7 +287,7 @@ void setup()
     // Begin the variable array[s], logger[s], and publisher[s]
     varArray.begin(variableCount, variableList);
     dataLogger.begin(LoggerID, loggingInterval, &varArray);
-    TsMqtt.begin(dataLogger, modem._tinyClient, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
+    TsMqtt.begin(dataLogger, &modem.gsmClient, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
 
     // Note:  Please change these battery voltages to match your battery
     // Check that the battery is OK before powering the modem

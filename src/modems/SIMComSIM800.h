@@ -71,8 +71,8 @@ public:
     StreamDebugger _modemATDebugger;
     #endif
 
-    TinyGsm _tinyModem;
-    TinyGsmClient _tinyClient;
+    TinyGsm gsmModem;
+    TinyGsmClient gsmClient;
 
 protected:
     bool didATRespond(void) override;

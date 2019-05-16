@@ -80,8 +80,8 @@ public:
     StreamDebugger _modemATDebugger;
     #endif
 
-    TinyGsm _tinyModem;
-    TinyGsmClient _tinyClient;
+    TinyGsm gsmModem;
+    TinyGsmClient gsmClient;
     
     #if F_CPU == 8000000L
     HardwareSerial *_modemSerial;

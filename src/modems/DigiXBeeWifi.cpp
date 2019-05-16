@@ -23,11 +23,11 @@ DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream,
              measurementsToAverage),
     #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
-    _tinyModem(_modemATDebugger),
+    gsmModem(_modemATDebugger),
     #else
-    _tinyModem(*modemStream),
+    gsmModem(*modemStream),
     #endif
-    _tinyClient(_tinyModem)
+    gsmClient(gsmModem)
 {
     _ssid = ssid;
     _pwd = pwd;
@@ -45,39 +45,39 @@ bool DigiXBeeWifi::extraModemSetup(void)
 {
     bool success = true;
     MS_DBG(F("Initializing the XBee..."));
-    success &= _tinyModem.init();  // initialize
-    _modemName = _tinyModem.getModemName();
+    success &= gsmModem.init();  // initialize
+    _modemName = gsmModem.getModemName();
     MS_DBG(F("Putting XBee into command mode..."));
-    if (_tinyModem.commandMode())
+    if (gsmModem.commandMode())
     {
         MS_DBG(F("Setting I/O Pins..."));
         // Set DIO8 to be used for sleep requests
         // NOTE:  Only pin 9/DIO8/DTR can be used for this function
-        _tinyModem.sendAT(F("D8"),1);
-        success &= _tinyModem.waitResponse() == 1;
+        gsmModem.sendAT(F("D8"),1);
+        success &= gsmModem.waitResponse() == 1;
         // Turn on status indication pin - it will be HIGH when the XBee is awake
         // NOTE:  Only pin 13/ON/SLEEPnot/DIO9 can be used for this function
-        _tinyModem.sendAT(F("D9"),1);
-        success &= _tinyModem.waitResponse() == 1;
+        gsmModem.sendAT(F("D9"),1);
+        success &= gsmModem.waitResponse() == 1;
         // Turn on CTS pin - it will be LOW when the XBee is ready to receive commands
         // This can be used as proxy for status indication if the true status pin is not accessible
         // NOTE:  Only pin 12/DIO7/CTS can be used for this function
-        _tinyModem.sendAT(F("D7"),1);
-        success &= _tinyModem.waitResponse() == 1;
+        gsmModem.sendAT(F("D7"),1);
+        success &= gsmModem.waitResponse() == 1;
         // Put the XBee in pin sleep mode
         MS_DBG(F("Setting Sleep Options..."));
-        _tinyModem.sendAT(F("SM"),1);
-        success &= _tinyModem.waitResponse() == 1;
+        gsmModem.sendAT(F("SM"),1);
+        success &= gsmModem.waitResponse() == 1;
         // Disassociate from network for lowest power deep sleep
-        _tinyModem.sendAT(F("SO"),200);
-        success &= _tinyModem.waitResponse() == 1;
+        gsmModem.sendAT(F("SO"),200);
+        success &= gsmModem.waitResponse() == 1;
         MS_DBG(F("Setting Wifi Network Options..."));
         // Put the network connection parameters into flash
-        success &= _tinyModem.networkConnect(_ssid, _pwd);
+        success &= gsmModem.networkConnect(_ssid, _pwd);
         // Write changes to flash and apply them
-        _tinyModem.writeChanges();
+        gsmModem.writeChanges();
         // Exit command mode
-        _tinyModem.exitCommand();
+        gsmModem.exitCommand();
     }
     else success = false;
     if (success) MS_DBG(F("... Setup successful!"));
@@ -104,17 +104,17 @@ bool DigiXBeeWifi::addSingleMeasurementResult(void)
         // Connecting to the Google DNS servers for now
         MS_DBG(F("Opening connection to check connection strength..."));
         bool usedGoogle = false;
-        if (!_tinyModem.gotIPforSavedHost())
+        if (!gsmModem.gotIPforSavedHost())
         {
             usedGoogle = true;
             IPAddress ip(8, 8, 8, 8);  // This is the IP address of time-c-g.nist.gov
-            success &= _tinyClient.connect(ip, 80);
+            success &= gsmClient.connect(ip, 80);
         }
-        _tinyClient.print('!');  // Need to send something before connection is made
+        gsmClient.print('!');  // Need to send something before connection is made
         delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
         if (usedGoogle)
         {
-            _tinyClient.stop();
+            gsmClient.stop();
         }
 
         // Get signal quality
@@ -123,7 +123,7 @@ bool DigiXBeeWifi::addSingleMeasurementResult(void)
         // The TinyGSM getSignalQuality function returns the same "no signal"
         // value (99 CSQ or 0 RSSI) in all 3 cases.
         MS_DBG(F("Getting signal quality:"));
-        signalQual = _tinyModem.getSignalQuality();
+        signalQual = gsmModem.getSignalQuality();
         MS_DBG(F("Raw signal quality:"), signalQual);
 
         // Convert signal quality to RSSI

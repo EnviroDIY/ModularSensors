@@ -16,7 +16,7 @@
 #define MS_MODEM_DID_AT_RESPOND(specificModem) \
 bool specificModem::didATRespond(void) \
 { \
-    return _tinyModem.testAT(10); \
+    return gsmModem.testAT(10); \
 }
 
 
@@ -24,13 +24,13 @@ bool specificModem::didATRespond(void) \
 #define MS_MODEM_IS_INTERNET_AVAILABLE(specificModem) \
 bool specificModem::isInternetAvailable(void) \
 { \
-    return _tinyModem.isGprsConnected(); \
+    return gsmModem.isGprsConnected(); \
 }
 #else
 #define MS_MODEM_IS_INTERNET_AVAILABLE(specificModem) \
 bool specificModem::isInternetAvailable(void) \
 { \
-    return _tinyModem.isNetworkConnected(); \
+    return gsmModem.isNetworkConnected(); \
 }
 #endif
 
@@ -94,8 +94,8 @@ bool specificModem::isMeasurementComplete(bool debug) \
     /* If we're connected AND receiving valid signal strength, measurement is complete */ \
     /* In theory these happen at the same time, but in reality one or the other */ \
     /* may happen first. */ \
-    bool isConnected = _tinyModem.isNetworkConnected(); \
-    int signalResponse = _tinyModem.getSignalQuality(); \
+    bool isConnected = gsmModem.isNetworkConnected(); \
+    int signalResponse = gsmModem.getSignalQuality(); \
     if (isConnected && signalResponse != 0 && signalResponse != 99) \
     { \
         if (debug) MS_DBG(F("It's been"), (elapsed_in_wait), F("ms, and"), \
@@ -147,7 +147,7 @@ bool specificModem::addSingleMeasurementResult(void) \
         /* The TinyGSM getSignalQuality function returns the same "no signal" */ \
         /* value (99 CSQ or 0 RSSI) in all 3 cases. */ \
         MS_DBG(F("Getting signal quality:")); \
-        signalQual = _tinyModem.getSignalQuality(); \
+        signalQual = gsmModem.getSignalQuality(); \
         MS_DBG(F("Raw signal quality:"), signalQual); \
 \
         /* Convert signal quality to RSSI, if necessary */ \
@@ -201,7 +201,7 @@ bool specificModem::addSingleMeasurementResult(void) \
     /* Check that the modem is responding to AT commands.  If not, give up. */ \
     MS_START_DEBUG_TIMER; \
     MS_DBG(F("\nWaiting for"), getSensorName(), F("to respond to AT commands...")); \
-    if (!_tinyModem.testAT(_stabilizationTime_ms + 500)) \
+    if (!gsmModem.testAT(_stabilizationTime_ms + 500)) \
     { \
         MS_DBG(F("No response to AT commands! Cannot connect to the internet!")); \
         return false; \
@@ -218,7 +218,7 @@ bool specificModem::connectInternet(uint32_t maxConnectionTime) \
 \
     MS_DBG(F("\nWaiting up to"), maxConnectionTime/1000, \
                F("seconds for internet availability...")); \
-    if (_tinyModem.waitForNetwork(maxConnectionTime)) \
+    if (gsmModem.waitForNetwork(maxConnectionTime)) \
     { \
         MS_DBG(F("... Connected after"), MS_PRINT_DEBUG_TIMER, \
                    F("milliseconds.")); \
@@ -240,11 +240,11 @@ bool specificModem::connectInternet(uint32_t maxConnectionTime) \
 \
     MS_DBG(F("\nWaiting up to"), maxConnectionTime/1000, \
                F("seconds for cellular network registration...")); \
-    if (_tinyModem.waitForNetwork(maxConnectionTime)) \
+    if (gsmModem.waitForNetwork(maxConnectionTime)) \
     { \
         MS_DBG(F("... Registered after"), MS_PRINT_DEBUG_TIMER, \
                    F("milliseconds.  Connecting to GPRS...")); \
-        _tinyModem.gprsConnect(_apn, "", ""); \
+        gsmModem.gprsConnect(_apn, "", ""); \
         MS_DBG(F("... Connected after"), MS_PRINT_DEBUG_TIMER, \
                    F("milliseconds.")); \
         return true; \
@@ -265,13 +265,13 @@ bool specificModem::connectInternet(uint32_t maxConnectionTime) \
     MS_MODEM_CONNECT_INTERNET_FIRST_CHUNK \
     \
     MS_DBG(F("\nAttempting to connect to WiFi network...")); \
-    if (!(_tinyModem.isNetworkConnected())) \
+    if (!(gsmModem.isNetworkConnected())) \
     { \
         MS_DBG(F("Sending credentials...")); \
-        while (!_tinyModem.networkConnect(_ssid, _pwd)) {}; \
+        while (!gsmModem.networkConnect(_ssid, _pwd)) {}; \
         MS_DBG(F("Waiting up to"), maxConnectionTime/1000, \
                    F("seconds for connection")); \
-        if (!_tinyModem.waitForNetwork(maxConnectionTime)) \
+        if (!gsmModem.waitForNetwork(maxConnectionTime)) \
         { \
             MS_DBG(F("... WiFi connection failed")); \
             return false; \
@@ -289,7 +289,7 @@ bool specificModem::connectInternet(uint32_t maxConnectionTime) \
 void specificModem::disconnectInternet(void) \
 { \
     MS_START_DEBUG_TIMER; \
-    _tinyModem.gprsDisconnect(); \
+    gsmModem.gprsDisconnect(); \
     MS_DBG(F("Disconnected from cellular network after"), MS_PRINT_DEBUG_TIMER, \
                F("milliseconds.")); \
 }
@@ -298,7 +298,7 @@ void specificModem::disconnectInternet(void) \
 void specificModem::disconnectInternet(void) \
 { \
     MS_START_DEBUG_TIMER; \
-    _tinyModem.networkDisconnect(); \
+    gsmModem.networkDisconnect(); \
     MS_DBG(F("Disconnected from WiFi network after"), MS_PRINT_DEBUG_TIMER, \
                F("milliseconds.")); \
 }
@@ -331,21 +331,21 @@ uint32_t specificModem::getNISTTime(void) \
         /* This is the IP address of time-c-g.nist.gov */ \
         /* XBee's address lookup falters on time.nist.gov */ \
         IPAddress ip(129, 6, 15, 30); \
-        connectionMade = _tinyClient.connect(ip, 37); \
+        connectionMade = gsmClient.connect(ip, 37); \
         /* Need to send something before connection is made */ \
-        _tinyClient.print('!'); \
+        gsmClient.print('!'); \
         /* Need this delay!  Can get away with 50, but 100 is safer. */ \
         delay(100); \
     } \
-    else connectionMade = _tinyClient.connect("time.nist.gov", 37); \
+    else connectionMade = gsmClient.connect("time.nist.gov", 37); \
 \
     /* Wait up to 5 seconds for a response */ \
     if (connectionMade) \
     { \
         uint32_t start = millis(); \
-        while (_tinyClient && _tinyClient.available() < 4 && millis() - start < 5000L){} \
+        while (gsmClient && gsmClient.available() < 4 && millis() - start < 5000L){} \
 \
-        if (_tinyClient.available() >= 4) \
+        if (gsmClient.available() >= 4) \
         { \
             MS_DBG(F("\nNIST responded after"), millis() - start, F("ms")); \
             /* Response is returned as 32-bit number as soon as connection is made */ \
@@ -354,7 +354,7 @@ uint32_t specificModem::getNISTTime(void) \
             byte response[4] = {0}; \
             for (uint8_t i = 0; i < 4; i++) \
             { \
-                response[i] = _tinyClient.read(); \
+                response[i] = gsmClient.read(); \
                 MS_DBG(F("\nResponse Byte"), i, ':', (char)response[i], \
                            '=', response[i], '=', String(response[i], BIN)); \
                 secFrom1900 += 0x000000FF & response[i]; \
@@ -365,7 +365,7 @@ uint32_t specificModem::getNISTTime(void) \
                        secFrom1900, '=', String(secFrom1900, BIN)); \
 \
             /* Close the TCP connection, just in case */ \
-            _tinyClient.stop(); \
+            gsmClient.stop(); \
 \
             /* Return the timestamp */ \
             uint32_t unixTimeStamp = secFrom1900 - 2208988800; \

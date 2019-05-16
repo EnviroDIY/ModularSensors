@@ -395,7 +395,7 @@ const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sam
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 // This is only attached to the logger with the shorter variable array
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(loggerToGo, registrationToken, samplingFeature);
+EnviroDIYPublisher EnviroDIYPOST(loggerToGo, &modem.gsmClient, registrationToken, samplingFeature);
 
 
 // ==========================================================================

@@ -182,7 +182,7 @@ const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sam
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(dataLogger, modem._tinyClient, registrationToken, samplingFeature);
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient, registrationToken, samplingFeature);
 
 
 // ==========================================================================

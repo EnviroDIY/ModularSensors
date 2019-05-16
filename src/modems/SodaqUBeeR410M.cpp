@@ -27,11 +27,11 @@ SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial* modemStream,
                 measurementsToAverage),
     #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
-    _tinyModem(_modemATDebugger),
+    gsmModem(_modemATDebugger),
     #else
-    _tinyModem(*modemStream),
+    gsmModem(*modemStream),
     #endif
-    _tinyClient(_tinyModem)
+    gsmClient(gsmModem)
 {
     _apn = apn;
 }
@@ -49,11 +49,11 @@ SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream,
                 measurementsToAverage),
     #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
-    _tinyModem(_modemATDebugger),
+    gsmModem(_modemATDebugger),
     #else
-    _tinyModem(*modemStream),
+    gsmModem(*modemStream),
     #endif
-    _tinyClient(_tinyModem)
+    gsmClient(gsmModem)
 {
     _apn = apn;
 
@@ -89,7 +89,7 @@ bool SodaqUBeeR410M::modemWakeFxn(void)
         {
             delay(4600);  // Must wait for UART port to become active
             _modemSerial->begin(115200);
-            _tinyModem.setBaud(9600);
+            gsmModem.setBaud(9600);
             _modemSerial->end();
             _modemSerial->begin(9600);
         }
@@ -108,7 +108,7 @@ bool SodaqUBeeR410M::modemSleepFxn(void)
     if (_modemSleepRqPin >= 0) // R410 must have access to PWR_ON pin to sleep
     {
         // Easiest to just go to sleep with the AT command rather than using pins
-        return _tinyModem.poweroff();
+        return gsmModem.poweroff();
     }
     else  // DON'T go to sleep if we can't wake up!
     {
@@ -119,10 +119,10 @@ bool SodaqUBeeR410M::modemSleepFxn(void)
 
 bool SodaqUBeeR410M::extraModemSetup(void)
 {
-    _tinyModem.init();
-    _modemName = _tinyModem.getModemName();
+    gsmModem.init();
+    _modemName = gsmModem.getModemName();
     // Set to only use LTE-M, which should cause connection more quickly
-    _tinyModem.sendAT(F("+URAT=7"));
-    _tinyModem.waitResponse();
+    gsmModem.sendAT(F("+URAT=7"));
+    gsmModem.waitResponse();
     return true;
 }

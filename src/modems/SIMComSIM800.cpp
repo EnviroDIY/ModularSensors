@@ -28,11 +28,11 @@ SIMComSIM800::SIMComSIM800(Stream* modemStream,
                 measurementsToAverage),
     #ifdef MS_SIMCOMSIM800_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
-    _tinyModem(_modemATDebugger),
+    gsmModem(_modemATDebugger),
     #else
-    _tinyModem(*modemStream),
+    gsmModem(*modemStream),
     #endif
-    _tinyClient(_tinyModem)
+    gsmClient(gsmModem)
 {
     _apn = apn;
 }
@@ -66,7 +66,7 @@ bool SIMComSIM800::modemSleepFxn(void)
     if (_modemSleepRqPin >= 0) // R410 must have access to PWRKEY pin to sleep
     {
         // Easiest to just go to sleep with the AT command rather than using pins
-        return _tinyModem.poweroff();
+        return gsmModem.poweroff();
     }
     else  // DON'T go to sleep if we can't wake up!
     {
@@ -77,7 +77,7 @@ bool SIMComSIM800::modemSleepFxn(void)
 
 bool SIMComSIM800::extraModemSetup(void)
 {
-    _tinyModem.init();
-    _modemName = _tinyModem.getModemName();
+    gsmModem.init();
+    _modemName = gsmModem.getModemName();
     return true;
 }

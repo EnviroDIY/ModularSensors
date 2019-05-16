@@ -345,7 +345,7 @@ bool loggerModem::isStable(bool debug)
 int16_t loggerModem::openTCP(const char *host, uint16_t port)
 {
     MS_DBG(F("Connecting to"), host, F("..."));
-    int16_t ret_val = _tinyClient->connect(host, port);
+    int16_t ret_val = gsmClient->connect(host, port);
     if (ret_val) MS_DBG(F("...Success!"));
     else MS_DBG(F("...Connection failed."));
     return ret_val;
@@ -355,7 +355,7 @@ int16_t loggerModem::openTCP(const char *host, uint16_t port)
 int16_t loggerModem::openTCP(IPAddress ip, uint16_t port)
 {
     MS_DBG(F("Connecting to"), ip, F("..."));
-    int16_t ret_val = _tinyClient->connect(ip, port);
+    int16_t ret_val = gsmClient->connect(ip, port);
     if (ret_val) MS_DBG(F("...Success!"));
     else MS_DBG(F("...Connection failed."));
     return ret_val;
@@ -364,8 +364,8 @@ int16_t loggerModem::openTCP(IPAddress ip, uint16_t port)
 
 void loggerModem::closeTCP(void)
 {
-    if (_tinyClient)
-        _tinyClient->stop();
+    if (gsmClient)
+        gsmClient->stop();
     MS_DBG(F("Closed TCP/IP."));
 }
 ***/

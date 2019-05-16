@@ -27,11 +27,11 @@ Sodaq2GBeeR6::Sodaq2GBeeR6(Stream* modemStream,
                 measurementsToAverage),
     #ifdef MS_SODAQ2GBEER6_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
-    _tinyModem(_modemATDebugger),
+    gsmModem(_modemATDebugger),
     #else
-    _tinyModem(*modemStream),
+    gsmModem(*modemStream),
     #endif
-    _tinyClient(_tinyModem)
+    gsmClient(gsmModem)
 {
     _apn = apn;
 }
@@ -63,7 +63,7 @@ bool Sodaq2GBeeR6::modemSleepFxn(void)
 
 bool Sodaq2GBeeR6::extraModemSetup(void)
 {
-    _tinyModem.init();
-    _modemName = _tinyModem.getModemName();
+    gsmModem.init();
+    _modemName = gsmModem.getModemName();
     return true;
 }

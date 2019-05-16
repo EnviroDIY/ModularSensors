@@ -29,11 +29,11 @@ EspressifESP8266::EspressifESP8266(Stream* modemStream,
                 measurementsToAverage),
     #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
-    _tinyModem(_modemATDebugger),
+    gsmModem(_modemATDebugger),
     #else
-    _tinyModem(*modemStream),
+    gsmModem(*modemStream),
     #endif
-    _tinyClient(_tinyModem)
+    gsmClient(gsmModem)
 {
     _ssid = ssid;
     _pwd = pwd;
@@ -76,10 +76,10 @@ bool EspressifESP8266::ESPwaitForBoot(void)
             delay(2);
         }
         // Have to make sure echo is off or all AT commands will be confused
-        _tinyModem.sendAT(F("E0"));
-        success &= _tinyModem.waitResponse() == 1;
+        gsmModem.sendAT(F("E0"));
+        success &= gsmModem.waitResponse() == 1;
         // re-run init to set mux and station mode
-        success &= _tinyModem.init();
+        success &= gsmModem.init();
     }
     return success;
 }
@@ -127,35 +127,35 @@ bool EspressifESP8266::modemSleepFxn(void)
     {
         uint32_t sleepSeconds = (((uint32_t)loggingInterval) * 60 * 1000) - 75000L;
         String sleepCommand = String(sleepSeconds);
-        _tinyModem.sendAT(F("+GSLP="), sleepCommand);
+        gsmModem.sendAT(F("+GSLP="), sleepCommand);
         // Power down for 1 minute less than logging interval
         // Better:  Calculate length of loop and power down for logging interval - loop time
-        return _tinyModem.waitResponse() == 1;
+        return gsmModem.waitResponse() == 1;
     }*/
     // Use this if you have an MCU pin connected to the ESP's reset pin to wake from deep sleep
     if (_modemResetPin >= 0)
     {
-        return _tinyModem.poweroff();
+        return gsmModem.poweroff();
     }
     // Use this if you don't have access to the ESP8266's reset pin for deep sleep but you
     // do have access to another GPIO pin for light sleep.  This also sets up another
     // pin to view the sleep status.
     else if (_modemSleepRqPin >= 0 && _dataPin >= 0)
     {
-        _tinyModem.sendAT(F("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0,"),
+        gsmModem.sendAT(F("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0,"),
                           String(_espStatusPin), ',', _statusLevel);
-        bool success = _tinyModem.waitResponse() == 1;
-        _tinyModem.sendAT(F("+SLEEP=1"));
-        success &= _tinyModem.waitResponse() == 1;
+        bool success = gsmModem.waitResponse() == 1;
+        gsmModem.sendAT(F("+SLEEP=1"));
+        success &= gsmModem.waitResponse() == 1;
         return success;
     }
     // Light sleep without the status pin
     else if (_modemSleepRqPin >= 0 && _dataPin < 0)
     {
-        _tinyModem.sendAT(F("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0"));
-        bool success = _tinyModem.waitResponse() == 1;
-        _tinyModem.sendAT(F("+SLEEP=1"));
-        success &= _tinyModem.waitResponse() == 1;
+        gsmModem.sendAT(F("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0"));
+        bool success = gsmModem.waitResponse() == 1;
+        gsmModem.sendAT(F("+SLEEP=1"));
+        success &= gsmModem.waitResponse() == 1;
         return success;
     }
     else  // DON'T go to sleep if we can't wake up!
@@ -168,25 +168,25 @@ bool EspressifESP8266::modemSleepFxn(void)
 // Set up the light-sleep status pin, if applicable
 bool EspressifESP8266::extraModemSetup(void)
 {
-    _tinyModem.init();
-    _modemName = _tinyModem.getModemName();
+    gsmModem.init();
+    _modemName = gsmModem.getModemName();
     // Slow down the baud rate for slow processors - and save the change to
     // the ESP's non-volatile memory so we don't have to do it every time
     // #if F_CPU == 8000000L
     // if (modemBaud > 57600)
     // {
     //     _modemSerial->begin(modemBaud);
-    //     _tinyModem.sendAT(F("+UART_DEF=9600,8,1,0,0"));
-    //     _tinyModem.waitResponse();
+    //     gsmModem.sendAT(F("+UART_DEF=9600,8,1,0,0"));
+    //     gsmModem.waitResponse();
     //     _modemSerial->end();
     //     _modemSerial->begin(9600);
     // }
     // #endif
     if (_powerPin < 0 && _modemResetPin < 0 && _modemSleepRqPin >= 0 && _dataPin >= 0)
     {
-        _tinyModem.sendAT(F("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0,"),
+        gsmModem.sendAT(F("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0,"),
                           String(_espStatusPin), ',', _statusLevel);
-        _tinyModem.waitResponse();
+        gsmModem.waitResponse();
     }
     return true;
 }
@@ -213,7 +213,7 @@ bool EspressifESP8266::startSingleMeasurement(void)
 
         // For the wifi modems, the SSID and password need to be set before they
         // can join a network.
-        success &= _tinyModem.networkConnect(_ssid, _pwd);
+        success &= gsmModem.networkConnect(_ssid, _pwd);
 
         // Mark the time that a measurement was requested
         _millisMeasurementRequested = millis();

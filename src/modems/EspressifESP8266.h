@@ -74,8 +74,8 @@ public:
     StreamDebugger _modemATDebugger;
     #endif
 
-    TinyGsm _tinyModem;
-    TinyGsmClient _tinyClient;
+    TinyGsm gsmModem;
+    TinyGsmClient gsmClient;
 
     // Need the stream for tossing junk on boot
     Stream *_modemStream;
