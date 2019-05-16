@@ -28,7 +28,7 @@ EspressifESP8266::EspressifESP8266(Stream* modemStream,
                 ESP8266_SIGNALQUALITY_TIME_MS,
                 measurementsToAverage),
     #ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
-    _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
+    _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
     gsmModem(_modemATDebugger),
     #else
     gsmModem(*modemStream),

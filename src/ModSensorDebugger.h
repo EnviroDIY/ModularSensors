@@ -59,6 +59,9 @@
         template<typename T>
         static void MS_DBG(T last) {
             DEBUGGING_SERIAL_OUTPUT.println(last);
+            // DEBUGGING_SERIAL_OUTPUT.print(" (");
+            // DEBUGGING_SERIAL_OUTPUT.print(MS_DEBUGGING_STD);
+            // DEBUGGING_SERIAL_OUTPUT.println(')');
         }
 
         template<typename T, typename... Args>
@@ -78,7 +81,13 @@
 
 
 #ifndef DEEP_DEBUGGING_SERIAL_OUTPUT
-  #define DEEP_DEBUGGING_SERIAL_OUTPUT DEBUGGING_SERIAL_OUTPUT
+    // #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
+    #if defined(SERIAL_PORT_USBVIRTUAL)
+      // #define Serial SERIAL_PORT_USBVIRTUAL
+      #define DEEP_DEBUGGING_SERIAL_OUTPUT SERIAL_PORT_USBVIRTUAL
+    #elif defined __AVR__
+      #define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
+    #endif
 #endif  // ifndef DEEP_DEBUGGING_SERIAL_OUTPUT
 
 #if defined DEEP_DEBUGGING_SERIAL_OUTPUT && defined MS_DEBUGGING_DEEP

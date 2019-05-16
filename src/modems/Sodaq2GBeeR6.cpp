@@ -26,7 +26,7 @@ Sodaq2GBeeR6::Sodaq2GBeeR6(Stream* modemStream,
                 SIM800_SIGNALQUALITY_TIME_MS,
                 measurementsToAverage),
     #ifdef MS_SODAQ2GBEER6_DEBUG_DEEP
-    _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
+    _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
     gsmModem(_modemATDebugger),
     #else
     gsmModem(*modemStream),

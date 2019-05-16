@@ -26,7 +26,7 @@ SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial* modemStream,
                 R410M_SIGNALQUALITY_TIME_MS,
                 measurementsToAverage),
     #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
-    _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
+    _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
     gsmModem(_modemATDebugger),
     #else
     gsmModem(*modemStream),
@@ -48,7 +48,7 @@ SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream,
                 R410M_SIGNALQUALITY_TIME_MS,
                 measurementsToAverage),
     #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
-    _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
+    _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
     gsmModem(_modemATDebugger),
     #else
     gsmModem(*modemStream),

@@ -25,7 +25,7 @@ SequansMonarch::SequansMonarch(Stream* modemStream,
                 MONARCH_SIGNALQUALITY_TIME_MS,
                 measurementsToAverage),
     #ifdef MS_SEQUANSMONARCH_DEBUG_DEEP
-    _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
+    _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
     gsmModem(_modemATDebugger),
     #else
     gsmModem(*modemStream),

@@ -20,7 +20,6 @@
 #endif
 
 // Included Dependencies
-//#include <Arduino.h>
 #include "ModSensorDebugger.h"
 #include "VariableArray.h"
 #include "LoggerModem.h"

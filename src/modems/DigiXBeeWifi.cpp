@@ -22,7 +22,7 @@ DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream,
              modemResetPin, modemSleepRqPin,
              measurementsToAverage),
     #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
-    _modemATDebugger(*modemStream, DEBUGGING_SERIAL_OUTPUT),
+    _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
     gsmModem(_modemATDebugger),
     #else
     gsmModem(*modemStream),
