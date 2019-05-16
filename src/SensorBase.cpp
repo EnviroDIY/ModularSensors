@@ -210,15 +210,6 @@ bool Sensor::wake(void)
     // Set the status bit for sensor wake/activation success (bit 4)
     _sensorStatus |= 0b00010000;
 
-    // check if the sensor was successfully set up, run set up if not
-    // NOTE:  we're setting the wake status bits and time regardless of the
-    // result of this setup attempt!
-    if (!bitRead(_sensorStatus, 0))
-    {
-        MS_DBG(getSensorNameAndLocation(), F("was never properly set up, attempting setup now!"));
-        setup();
-    }
-
     return true;
 }
 
@@ -250,6 +241,15 @@ bool Sensor::sleep(void)
 bool Sensor::startSingleMeasurement(void)
 {
     bool success = true;
+
+    // check if the sensor was successfully set up, run set up if not
+    // NOTE:  We continue regardless of the success of this attempt
+    if (!bitRead(_sensorStatus, 0))
+    {
+        MS_DBG(getSensorNameAndLocation(), F("was never properly set up, attempting setup now!"));
+        setup();
+    }
+
     MS_DBG(F("Starting measurement on"), getSensorNameAndLocation());
     // Set the status bits for measurement requested (bit 5)
     // Setting this bit even if we failed to start a measurement to show that an attempt was made.
