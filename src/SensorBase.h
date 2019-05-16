@@ -20,6 +20,7 @@
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include <pins_arduino.h>
 
 // The largest number of variables from a single sensor

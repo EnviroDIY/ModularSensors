@@ -23,6 +23,7 @@ class Sensor;
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 
 class Variable
 {

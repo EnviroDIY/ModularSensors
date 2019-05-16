@@ -28,6 +28,7 @@
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "LoggerBase.h"
 #include "Client.h"
 

@@ -41,6 +41,7 @@
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "LoggerModem.h"
 #include "TinyGsmClient.h"
 
