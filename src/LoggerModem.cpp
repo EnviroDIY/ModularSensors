@@ -13,7 +13,7 @@
 
 // Constructors
 loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
-                         int8_t modemResetPin, int8_t modemSleepRqPin,
+                         int8_t modemResetPin, int8_t modemSleepRqPin, bool alwaysRunWake,
                          uint32_t max_status_time_ms, uint32_t max_disconnetTime_ms,
                          uint32_t max_warmUpTime_ms, uint32_t max_atresponse_time_ms,
                          uint32_t max_signalQuality_time_ms,
@@ -27,6 +27,7 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     _modemResetPin = modemResetPin;
     _modemSleepRqPin = modemSleepRqPin;
     _modemLEDPin = -1;
+    _alwaysRunWake = alwaysRunWake;
 
     _statusLevel = statusLevel;
     _statusTime_ms = max_status_time_ms,
@@ -170,13 +171,13 @@ bool loggerModem::wake(void)
 
     // Check the status pin and wake bits before running wake function
     // Don't want to accidently pulse an already on modem to off
-    if ( bitRead(_sensorStatus, 4))
+    if ( bitRead(_sensorStatus, 4) && !_alwaysRunWake)
     {
         MS_DBG(getSensorName(), F("has already been woken up!  Will not run wake function."));
     }
     // NOTE:  It's possible that the status pin is on, but the modem is actually
     // mid-shutdown.  In that case, we'll mistakenly skip re-waking it.
-    else if (_dataPin >= 0 && digitalRead(_dataPin) == _statusLevel)
+    else if (_dataPin >= 0 && digitalRead(_dataPin) == _statusLevel && !_alwaysRunWake)
     {
         MS_DBG(getSensorName(), F("was already on!  (status pin level = "),
                _statusLevel, F(") Will not run wake function."));
@@ -365,10 +366,10 @@ bool loggerModem::modemSleepPowerDown(void)
     // on and thus status pin isn't valid yet.  In that case, we wouldn't yet
     // know it's coming on and so we'd mistakenly assume it's already off and
     // not turn it back off.
-    if (_dataPin >= 0 && digitalRead(_dataPin) != _statusLevel)
+    if (_dataPin >= 0 && digitalRead(_dataPin) != _statusLevel && !_alwaysRunWake)
         MS_DBG(getSensorName(), F("appears to have already been off.  Will not run sleep function."));
     // If there's no status pin, check against the status bits
-    else if (_dataPin < 0 && !bitRead(_sensorStatus, 4))
+    else if (_dataPin < 0 && !bitRead(_sensorStatus, 4) && !_alwaysRunWake)
         MS_DBG(getSensorName(), F("was never sucessfully turned on.  Will not run sleep function."));
     else
     {

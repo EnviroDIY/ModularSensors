@@ -20,7 +20,7 @@ SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial* modemStream,
                                const char *apn,
                                uint8_t measurementsToAverage)
   : loggerModem(powerPin, statusPin, HIGH,
-                modemResetPin, modemSleepRqPin,
+                modemResetPin, modemSleepRqPin, true,
                 R410M_STATUS_TIME_MS, R410M_DISCONNECT_TIME_MS,
                 R410M_WARM_UP_TIME_MS, R410M_ATRESPONSE_TIME_MS,
                 R410M_SIGNALQUALITY_TIME_MS,

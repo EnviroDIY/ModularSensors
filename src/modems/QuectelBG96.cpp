@@ -19,7 +19,7 @@ QuectelBG96::QuectelBG96(Stream* modemStream,
                          const char *apn,
                          uint8_t measurementsToAverage)
   : loggerModem(powerPin, statusPin, HIGH,
-                modemResetPin, modemSleepRqPin,
+                modemResetPin, modemSleepRqPin, false,
                 BG96_STATUS_TIME_MS, BG96_DISCONNECT_TIME_MS,
                 BG96_WARM_UP_TIME_MS, BG96_ATRESPONSE_TIME_MS,
                 BG96_SIGNALQUALITY_TIME_MS,

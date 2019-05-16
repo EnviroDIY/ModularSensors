@@ -19,7 +19,7 @@ SodaqUBeeU201::SodaqUBeeU201(Stream* modemStream,
                              const char *apn,
                              uint8_t measurementsToAverage)
   : loggerModem(powerPin, statusPin, HIGH,
-                modemResetPin, modemSleepRqPin,
+                modemResetPin, modemSleepRqPin, true,
                 U201_STATUS_TIME_MS, U201_DISCONNECT_TIME_MS,
                 U201_WARM_UP_TIME_MS, U201_ATRESPONSE_TIME_MS,
                 U201_SIGNALQUALITY_TIME_MS,

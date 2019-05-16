@@ -19,7 +19,7 @@ SIMComSIM7000::SIMComSIM7000(Stream* modemStream,
                              const char *apn,
                              uint8_t measurementsToAverage)
   : loggerModem(powerPin, statusPin, HIGH,
-                modemResetPin, modemSleepRqPin,
+                modemResetPin, modemSleepRqPin, false,
                 SIM7000_STATUS_TIME_MS, SIM7000_DISCONNECT_TIME_MS,
                 SIM7000_WARM_UP_TIME_MS, SIM7000_ATRESPONSE_TIME_MS,
                 SIM7000_SIGNALQUALITY_TIME_MS,

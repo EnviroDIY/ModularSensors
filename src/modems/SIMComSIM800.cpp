@@ -21,7 +21,7 @@ SIMComSIM800::SIMComSIM800(Stream* modemStream,
                            const char *apn,
                            uint8_t measurementsToAverage)
   : loggerModem(powerPin, statusPin, HIGH,
-                modemResetPin, modemSleepRqPin,
+                modemResetPin, modemSleepRqPin, false,
                 SIM800_STATUS_TIME_MS, SIM800_DISCONNECT_TIME_MS,
                 SIM800_WARM_UP_TIME_MS, SIM800_ATRESPONSE_TIME_MS,
                 SIM800_SIGNALQUALITY_TIME_MS,

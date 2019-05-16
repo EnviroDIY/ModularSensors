@@ -19,7 +19,7 @@ SequansMonarch::SequansMonarch(Stream* modemStream,
                                const char *apn,
                                uint8_t measurementsToAverage)
   : loggerModem(powerPin, statusPin, HIGH,
-                modemResetPin, modemSleepRqPin,
+                modemResetPin, modemSleepRqPin, true,
                 MONARCH_STATUS_TIME_MS, MONARCH_DISCONNECT_TIME_MS,
                 MONARCH_WARM_UP_TIME_MS, MONARCH_ATRESPONSE_TIME_MS,
                 MONARCH_SIGNALQUALITY_TIME_MS,

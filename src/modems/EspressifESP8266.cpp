@@ -22,7 +22,7 @@ EspressifESP8266::EspressifESP8266(Stream* modemStream,
                                    uint8_t measurementsToAverage,
                                    int8_t espSleepRqPin, int8_t espStatusPin)
   : loggerModem(powerPin, statusPin, HIGH,
-                modemResetPin, modemSleepRqPin,
+                modemResetPin, modemSleepRqPin, true,
                 ESP8266_STATUS_TIME_MS, ESP8266_DISCONNECT_TIME_MS,
                 ESP8266_WARM_UP_TIME_MS, ESP8266_ATRESPONSE_TIME_MS,
                 ESP8266_SIGNALQUALITY_TIME_MS,
@@ -182,12 +182,6 @@ bool EspressifESP8266::extraModemSetup(void)
     //     _modemSerial->begin(9600);
     // }
     // #endif
-    if (_powerPin < 0 && _modemResetPin < 0 && _modemSleepRqPin >= 0 && _dataPin >= 0)
-    {
-        gsmModem.sendAT(F("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0,"),
-                          String(_espStatusPin), ',', _statusLevel);
-        gsmModem.waitResponse();
-    }
     return true;
 }
 
@@ -220,6 +214,6 @@ bool EspressifESP8266::startSingleMeasurement(void)
         _millisMeasurementRequested = 0;
         _sensorStatus &= 0b10111111;
     }
-    
+
     return success;
 }

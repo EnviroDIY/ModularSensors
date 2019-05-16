@@ -58,10 +58,9 @@
     namespace {
         template<typename T>
         static void MS_DBG(T last) {
-            DEBUGGING_SERIAL_OUTPUT.println(last);
-            // DEBUGGING_SERIAL_OUTPUT.print(" (");
-            // DEBUGGING_SERIAL_OUTPUT.print(MS_DEBUGGING_STD);
-            // DEBUGGING_SERIAL_OUTPUT.println(')');
+            DEBUGGING_SERIAL_OUTPUT.print(last);
+            DEBUGGING_SERIAL_OUTPUT.print(" --");
+            DEBUGGING_SERIAL_OUTPUT.println(MS_DEBUGGING_STD);
         }
 
         template<typename T, typename... Args>
@@ -94,7 +93,9 @@
     namespace {
         template<typename T>
         static void MS_DEEP_DBG(T last) {
-            DEEP_DEBUGGING_SERIAL_OUTPUT.println(last);
+            DEEP_DEBUGGING_SERIAL_OUTPUT.print(last);
+            DEEP_DEBUGGING_SERIAL_OUTPUT.print(" --");
+            DEEP_DEBUGGING_SERIAL_OUTPUT.println(MS_DEBUGGING_STD);
         }
 
         template<typename T, typename... Args>

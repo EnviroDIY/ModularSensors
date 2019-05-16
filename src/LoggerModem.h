@@ -54,7 +54,7 @@ class loggerModem : public Sensor
 public:
     // Constructors
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
-                int8_t modemResetPin, int8_t modemSleepRqPin,
+                int8_t modemResetPin, int8_t modemSleepRqPin, bool alwaysRunWake,
                 uint32_t max_status_time_ms, uint32_t max_disconnetTime_ms,
                 uint32_t max_warmUpTime_ms, uint32_t max_atresponse_time_ms,
                 uint32_t max_signalQuality_time_ms,
@@ -153,6 +153,10 @@ protected:
     int8_t _modemSleepRqPin;
     int8_t _modemResetPin;
     int8_t _modemLEDPin;
+
+    // THis denotes whether we should run the wake/sleep functions regardless
+    // of the state of the status pins or if we should check the status pin first.
+    bool _alwaysRunWake;
 
     bool _statusLevel;
     uint32_t _statusTime_ms;
