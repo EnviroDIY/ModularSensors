@@ -299,9 +299,58 @@ bool loggerModem::isStable(bool debug)
     return false;
 }
 
+
 bool loggerModem::isMeasurementComplete(bool debug)
 {
     return verifyMeasurementComplete(debug);
+}
+
+
+bool loggerModem::addSingleMeasurementResult(void)
+{
+    bool success = true;
+
+    /* Initialize float variable */
+    int16_t percent = -9999;
+    int16_t rssi = -9999;
+    float volt = -9999;
+    float temp = -9999;
+
+    /* Check a measurement was *successfully* started (status bit 6 set) */
+    /* Only go on to get a result if it was */
+    if (bitRead(_sensorStatus, 6))
+    {
+        /* Get signal quality */
+        /* NOTE:  We can't actually distinguish between a bad modem response, no */
+        /* modem response, and a real response from the modem of no service/signal. */
+        /* The TinyGSM getSignalQuality function returns the same "no signal" */
+        /* value (99 CSQ or 0 RSSI) in all 3 cases. */
+        MS_DBG(F("Getting signal quality:"));
+        success &= getModemSignalQuality(rssi, percent);
+        MS_DBG(F("RSSI:"), rssi);
+        MS_DBG(F("Percent signal strength:"), percent);
+
+        MS_DBG(F("Getting battery, if possible:"));
+        volt = getModemBatteryVoltage();
+        MS_DBG(F("Battery voltage:"), volt);
+
+        MS_DBG(F("Getting chip temperature, if possible:"));
+        temp = getModemTemperature();
+        MS_DBG(F("Battery voltage:"), temp);
+    }
+    else MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!"));
+
+    verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi);
+    verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent);
+    verifyAndAddMeasurementResult(MODEM_BATTERY_VAR_NUM, volt);
+    verifyAndAddMeasurementResult(MODEM_TEMPERATURE_VAR_NUM, temp);
+
+    /* Unset the time stamp for the beginning of this measurement */
+    _millisMeasurementRequested = 0;
+    /* Unset the status bits for a measurement request (bits 5 & 6) */
+    _sensorStatus &= 0b10011111;
+
+    return success;
 }
 
 

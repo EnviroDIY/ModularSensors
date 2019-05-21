@@ -66,7 +66,7 @@ public:
 
     virtual bool setup(void) override;
     virtual bool wake(void) override;
-    virtual bool addSingleMeasurementResult(void) = 0;
+    virtual bool addSingleMeasurementResult(void);
 
     // Do NOT turn the modem on and off with the regular power up and down!
     // This is because when it is run in an array with other sensors, we will
@@ -106,13 +106,14 @@ public:
     // Sets an LED to turn on when the modem is on
     void setModemLED(int8_t modemLEDPin);
 
-    // Get values by other names
-    int16_t getSignalRSSI(void) {return sensorValues[MODEM_RSSI_VAR_NUM];}
-    int16_t getSignalPercent(void) {return sensorValues[MODEM_PERCENT_SIGNAL_VAR_NUM];}
-
     // Access the internet
     virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) = 0;
     virtual void disconnectInternet(void) = 0;
+
+    // Get values by other names
+    virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) = 0;
+    virtual float getModemBatteryVoltage(void) = 0;
+    virtual float getModemTemperature(void) = 0;
 
     // This has the same functionality as Client->connect with debugging text
     // int16_t openTCP(const char *host, uint16_t port);

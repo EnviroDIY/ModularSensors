@@ -39,7 +39,9 @@ DigiXBeeCellularTransparent::~DigiXBeeCellularTransparent(){}
 MS_MODEM_DID_AT_RESPOND(DigiXBeeCellularTransparent);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeCellularTransparent);
 MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(DigiXBeeCellularTransparent);
-MS_MODEM_ADD_SINGLE_MEASUREMENT_RESULT(DigiXBeeCellularTransparent);
+MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeCellularTransparent);
+MS_MODEM_GET_MODEM_BATTERY_VOLTAGE_NA(DigiXBeeCellularTransparent);
+MS_MODEM_GET_MODEM_TEMPERATURE_NA(DigiXBeeCellularTransparent);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularTransparent);
 MS_MODEM_GET_NIST_TIME(DigiXBeeCellularTransparent);
 

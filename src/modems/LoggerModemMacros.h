@@ -127,47 +127,65 @@ bool specificModem::verifyMeasurementComplete(bool debug) \
 #define MS_MODEM_CALC_SIGNAL_PERCENT percent = getPctFromCSQ(signalQual);
 #endif
 
-#define MS_MODEM_ADD_SINGLE_MEASUREMENT_RESULT(specificModem) \
-bool specificModem::addSingleMeasurementResult(void) \
+#define MS_MODEM_GET_MODEM_SIGNAL_QUALITY(specificModem) \
+bool specificModem::getModemSignalQuality(int16_t &rssi, int16_t &percent) \
 { \
-    bool success = true; \
+    /* Get signal quality */ \
+    /* NOTE:  We can't actually distinguish between a bad modem response, no */ \
+    /* modem response, and a real response from the modem of no service/signal. */ \
+    /* The TinyGSM getSignalQuality function returns the same "no signal" */ \
+    /* value (99 CSQ or 0 RSSI) in all 3 cases. */ \
+    MS_DBG(F("Getting signal quality:")); \
+    uint16_t signalQual = gsmModem.getSignalQuality(); \
+    MS_DBG(F("Raw signal quality:"), signalQual); \
 \
-    /* Initialize float variable */ \
-    int16_t signalQual = -9999; \
-    int16_t percent = -9999; \
-    int16_t rssi = -9999; \
+    /* Convert signal quality to RSSI, if necessary */ \
+    MS_MODEM_CALC_SIGNAL_RSSI; \
+    MS_MODEM_CALC_SIGNAL_PERCENT; \
 \
-    /* Check a measurement was *successfully* started (status bit 6 set) */ \
-    /* Only go on to get a result if it was */ \
-    if (bitRead(_sensorStatus, 6)) \
-    { \
-        /* Get signal quality */ \
-        /* NOTE:  We can't actually distinguish between a bad modem response, no */ \
-        /* modem response, and a real response from the modem of no service/signal. */ \
-        /* The TinyGSM getSignalQuality function returns the same "no signal" */ \
-        /* value (99 CSQ or 0 RSSI) in all 3 cases. */ \
-        MS_DBG(F("Getting signal quality:")); \
-        signalQual = gsmModem.getSignalQuality(); \
-        MS_DBG(F("Raw signal quality:"), signalQual); \
+    MS_DBG(F("RSSI:"), rssi); \
+    MS_DBG(F("Percent signal strength:"), percent); \
 \
-        /* Convert signal quality to RSSI, if necessary */ \
-        MS_MODEM_CALC_SIGNAL_RSSI; \
-        MS_MODEM_CALC_SIGNAL_PERCENT; \
+    return true; \
+}
+
+
+#define MS_MODEM_GET_MODEM_BATTERY_VOLTAGE_AVAILABLE(specificModem) \
+float specificModem::getModemBatteryVoltage(void) \
+{ \
+    MS_DBG(F("Getting battery voltage:")); \
+    float volt = gsmModem.getBattVoltage(); \
+    MS_DBG(F("Voltage:"), volt); \
 \
-        MS_DBG(F("RSSI:"), rssi); \
-        MS_DBG(F("Percent signal strength:"), percent); \
-    } \
-    else MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!")); \
+    return volt; \
+}
+
+
+#define MS_MODEM_GET_MODEM_BATTERY_VOLTAGE_NA(specificModem) \
+float specificModem::getModemBatteryVoltage(void) \
+{ \
+    MS_DBG(F("This modem doesn't return battery voltage!")); \
+    return (float)-9999; \
+}
+
+
+#define MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(specificModem) \
+float specificModem::getModemBatteryVoltage(void) \
+{ \
+    MS_DBG(F("Getting temperature:")); \
+    float temp = gsmModem.getBattVoltage(); \
+    MS_DBG(F("Temperature:"), temp); \
 \
-    verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi); \
-    verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent); \
-\
-    /* Unset the time stamp for the beginning of this measurement */ \
-    _millisMeasurementRequested = 0; \
-    /* Unset the status bits for a measurement request (bits 5 & 6) */ \
-    _sensorStatus &= 0b10011111; \
-\
-    return success; \
+    return temp; \
+}
+
+
+// NOTE:  Most modems don't give this
+#define MS_MODEM_GET_MODEM_TEMPERATURE_NA(specificModem) \
+float specificModem::getModemTemperature(void) \
+{ \
+    MS_DBG(F("This modem doesn't return temperature!")); \
+    return (float)-9999; \
 }
 
 

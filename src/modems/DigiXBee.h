@@ -52,11 +52,14 @@ public:
              uint8_t measurementsToAverage = 1);
     virtual ~DigiXBee();
 
-    virtual bool addSingleMeasurementResult(void) = 0;
-
     // Access the internet
     virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) = 0;
     virtual void disconnectInternet(void) = 0;
+
+    // Get values by other names
+    virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) = 0;
+    virtual float getModemBatteryVoltage(void) = 0;
+    virtual float getModemTemperature(void) = 0;
 
     // Get the time from NIST via TIME protocol (rfc868)
     // This would be much more efficient if done over UDP, but I'm doing it
