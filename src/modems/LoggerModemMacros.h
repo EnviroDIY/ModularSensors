@@ -63,8 +63,8 @@ bool specificModem::isInternetAvailable(void) \
 #endif
 
 
-#define MS_MODEM_IS_MEASUREMENT_COMPLETE(specificModem) \
-bool specificModem::isMeasurementComplete(bool debug) \
+#define MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(specificModem) \
+bool specificModem::verifyMeasurementComplete(bool debug) \
 { \
     /* If a measurement failed to start, the sensor will never return a result, */ \
     /* so the measurement time is essentially already passed */ \

@@ -51,7 +51,7 @@ class Sodaq2GBeeR6 : public loggerModem
 {
 
 public:
-    // Constructors
+    // Constructor/Destructor
     // NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
     Sodaq2GBeeR6(Stream* modemStream,
                  int8_t powerPin, int8_t statusPin,
@@ -60,7 +60,6 @@ public:
                  uint8_t measurementsToAverage = 1);
     virtual ~Sodaq2GBeeR6(){}
 
-    bool isMeasurementComplete(bool debug=false) override;
     bool addSingleMeasurementResult(void) override;
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
@@ -78,6 +77,7 @@ public:
 protected:
     bool didATRespond(void) override;
     bool isInternetAvailable(void) override;
+    bool verifyMeasurementComplete(bool debug=false) override;
     bool modemSleepFxn(void) override;
     bool modemWakeFxn(void) override;
     bool extraModemSetup(void)override;

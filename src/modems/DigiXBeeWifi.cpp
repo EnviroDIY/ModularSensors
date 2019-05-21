@@ -12,7 +12,7 @@
 #include "modems/LoggerModemMacros.h"
 
 
-// Constructors
+// Constructor/Destructor
 DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream,
                            int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                            int8_t modemResetPin, int8_t modemSleepRqPin,
@@ -36,7 +36,7 @@ DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream,
 
 MS_MODEM_DID_AT_RESPOND(DigiXBeeWifi);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeWifi);
-MS_MODEM_IS_MEASUREMENT_COMPLETE(DigiXBeeWifi);
+MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(DigiXBeeWifi);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeWifi);
 MS_MODEM_GET_NIST_TIME(DigiXBeeWifi);
 

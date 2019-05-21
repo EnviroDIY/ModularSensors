@@ -11,7 +11,7 @@
 #include "DigiXBeeCellularTransparent.h"
 #include "modems/LoggerModemMacros.h"
 
-// Constructors
+// Constructor/Destructor
 DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(Stream* modemStream,
                            int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                            int8_t modemResetPin, int8_t modemSleepRqPin,
@@ -34,7 +34,7 @@ DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(Stream* modemStream,
 
 MS_MODEM_DID_AT_RESPOND(DigiXBeeCellularTransparent);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeCellularTransparent);
-MS_MODEM_IS_MEASUREMENT_COMPLETE(DigiXBeeCellularTransparent);
+MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(DigiXBeeCellularTransparent);
 MS_MODEM_ADD_SINGLE_MEASUREMENT_RESULT(DigiXBeeCellularTransparent);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularTransparent);
 MS_MODEM_GET_NIST_TIME(DigiXBeeCellularTransparent);

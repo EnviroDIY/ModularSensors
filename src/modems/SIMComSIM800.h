@@ -53,15 +53,14 @@ class SIMComSIM800 : public loggerModem
 {
 
 public:
-    // Constructors
+    // Constructor/Destructor
     SIMComSIM800(Stream* modemStream,
                  int8_t powerPin, int8_t statusPin,
                  int8_t modemResetPin, int8_t modemSleepRqPin,
                  const char *apn,
                  uint8_t measurementsToAverage = 1);
-    virtual ~SIMComSIM800(){}             
+    virtual ~SIMComSIM800(){}
 
-    bool isMeasurementComplete(bool debug=false) override;
     bool addSingleMeasurementResult(void) override;
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
@@ -79,6 +78,7 @@ public:
 protected:
     bool didATRespond(void) override;
     bool isInternetAvailable(void) override;
+    bool verifyMeasurementComplete(bool debug=false) override;
     bool modemSleepFxn(void) override;
     bool modemWakeFxn(void) override;
     bool extraModemSetup(void)override;

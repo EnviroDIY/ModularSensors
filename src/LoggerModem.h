@@ -53,20 +53,20 @@ class loggerModem : public Sensor
 //          These are the functions that set the modem up as a sensor
 // ==========================================================================//
 public:
-    // Constructors
+    // Constructor/Destructor
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
                 int8_t modemResetPin, int8_t modemSleepRqPin, bool alwaysRunWake,
                 uint32_t max_status_time_ms, uint32_t max_disconnetTime_ms,
                 uint32_t max_warmUpTime_ms, uint32_t max_atresponse_time_ms,
                 uint32_t max_signalQuality_time_ms,
                 uint8_t measurementsToAverage = 1);
-
     virtual ~loggerModem();
 
     String getSensorName(void) override;
 
     virtual bool setup(void) override;
     virtual bool wake(void) override;
+    virtual bool addSingleMeasurementResult(void) = 0;
 
     // Do NOT turn the modem on and off with the regular power up and down!
     // This is because when it is run in an array with other sensors, we will
@@ -95,7 +95,7 @@ protected:
     // responses are good so we're getting an actual signal strength and it's as
     // close as possible to what the antenna is will see when the data publishers
     // push data.
-    virtual bool isMeasurementComplete(bool debug) = 0;
+    virtual bool isMeasurementComplete(bool debug = false) override;
 
 
 // ==========================================================================//
@@ -122,7 +122,7 @@ public:
     // void closeTCP(void);
     // Special sleep and power function for the modem
     void modemPowerUp(void);
-    virtual bool modemSleepPowerDown(void);
+    bool modemSleepPowerDown(void);
 
     // Get the time from NIST via TIME protocol (rfc868)
     // This would be much more efficient if done over UDP, but I'm doing it
@@ -142,6 +142,7 @@ protected:
     void modemLEDOff(void);
     virtual bool didATRespond(void) = 0;
     virtual bool isInternetAvailable(void) = 0;
+    virtual bool verifyMeasurementComplete(bool debug = false) = 0;
     virtual bool modemSleepFxn(void) = 0;
     virtual bool modemWakeFxn(void) = 0;
     virtual bool extraModemSetup(void) = 0;

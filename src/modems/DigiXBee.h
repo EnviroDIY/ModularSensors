@@ -46,7 +46,7 @@ class DigiXBee : public loggerModem
 {
 
 public:
-    // Constructors
+    // Constructor/Destructor
     DigiXBee(int8_t powerPin, int8_t statusPin, bool useCTSStatus,
              int8_t modemResetPin, int8_t modemSleepRqPin,
              uint8_t measurementsToAverage = 1);

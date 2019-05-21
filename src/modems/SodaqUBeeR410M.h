@@ -52,7 +52,7 @@ class SodaqUBeeR410M : public loggerModem
 {
 
 public:
-    // Constructors
+    // Constructor/Destructor
     #if F_CPU == 8000000L
     // At this slow baud rate, we need to begin and end serial communication,
     // so we need a Serial instance rather than a stream
@@ -70,7 +70,6 @@ public:
     #endif
     virtual ~SodaqUBeeR410M(){}
 
-    bool isMeasurementComplete(bool debug=false) override;
     bool addSingleMeasurementResult(void) override;
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
@@ -92,6 +91,7 @@ public:
 protected:
     bool didATRespond(void) override;
     bool isInternetAvailable(void) override;
+    bool verifyMeasurementComplete(bool debug=false) override;
     bool modemSleepFxn(void) override;
     bool modemWakeFxn(void) override;
     bool extraModemSetup(void)override;

@@ -11,7 +11,7 @@
 #include "DigiXBeeCellularBypass.h"
 #include "modems/LoggerModemMacros.h"
 
-// Constructors
+// Constructor/Destructor
 DigiXBeeCellularBypass::DigiXBeeCellularBypass(Stream* modemStream,
                            int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                            int8_t modemResetPin, int8_t modemSleepRqPin,
@@ -34,7 +34,7 @@ DigiXBeeCellularBypass::DigiXBeeCellularBypass(Stream* modemStream,
 
 MS_MODEM_DID_AT_RESPOND(DigiXBeeCellularBypass);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeCellularBypass);
-MS_MODEM_IS_MEASUREMENT_COMPLETE(DigiXBeeCellularBypass);
+MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(DigiXBeeCellularBypass);
 MS_MODEM_ADD_SINGLE_MEASUREMENT_RESULT(DigiXBeeCellularBypass);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularBypass);
 MS_MODEM_GET_NIST_TIME(DigiXBeeCellularBypass);

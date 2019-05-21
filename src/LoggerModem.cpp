@@ -299,6 +299,11 @@ bool loggerModem::isStable(bool debug)
     return false;
 }
 
+bool loggerModem::isMeasurementComplete(bool debug)
+{
+    return verifyMeasurementComplete(debug);
+}
+
 
 // ==========================================================================//
 // These are the unique functions for the modem as an internet connected device
