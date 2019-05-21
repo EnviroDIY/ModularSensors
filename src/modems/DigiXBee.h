@@ -50,11 +50,26 @@ public:
     DigiXBee(int8_t powerPin, int8_t statusPin, bool useCTSStatus,
              int8_t modemResetPin, int8_t modemSleepRqPin,
              uint8_t measurementsToAverage = 1);
-    virtual ~DigiXBee();
+    virtual ~DigiXBee(){}
+
+    virtual bool addSingleMeasurementResult(void) = 0;
+
+    // Access the internet
+    virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) = 0;
+    virtual void disconnectInternet(void) = 0;
+
+    // Get the time from NIST via TIME protocol (rfc868)
+    // This would be much more efficient if done over UDP, but I'm doing it
+    // over TCP because I don't have a UDP library for all the modems.
+    virtual uint32_t getNISTTime(void) = 0;
 
 protected:
+    virtual bool didATRespond(void) = 0;
+    virtual bool isInternetAvailable(void) = 0;
+    virtual bool verifyMeasurementComplete(bool debug = false) = 0;
     virtual bool modemSleepFxn(void) override;
     virtual bool modemWakeFxn(void) override;
+    virtual bool extraModemSetup(void) = 0;
 };
 
 #endif  // Header Guard

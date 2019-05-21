@@ -42,7 +42,7 @@ public:
                  int8_t modemResetPin, int8_t modemSleepRqPin,
                  const char *ssid, const char *pwd,
                  uint8_t measurementsToAverage = 1);
-    virtual ~DigiXBeeWifi();
+    virtual ~DigiXBeeWifi(){}
 
     bool addSingleMeasurementResult(void) override;
 
