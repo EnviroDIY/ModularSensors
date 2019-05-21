@@ -34,6 +34,10 @@ DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream,
 }
 
 
+// Destructor
+DigiXBeeWifi::~DigiXBeeWifi(){}
+
+
 MS_MODEM_DID_AT_RESPOND(DigiXBeeWifi);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeWifi);
 MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(DigiXBeeWifi);

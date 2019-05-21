@@ -59,7 +59,7 @@ public:
                  int8_t modemResetPin, int8_t modemSleepRqPin,
                  const char *apn,
                  uint8_t measurementsToAverage = 1);
-    virtual ~SIMComSIM800(){}
+    virtual ~SIMComSIM800();
 
     bool addSingleMeasurementResult(void) override;
 

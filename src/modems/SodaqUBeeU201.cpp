@@ -36,6 +36,10 @@ SodaqUBeeU201::SodaqUBeeU201(Stream* modemStream,
 }
 
 
+// Destructor
+SodaqUBeeU201::~SodaqUBeeU201(){}
+
+
 MS_MODEM_DID_AT_RESPOND(SodaqUBeeU201);
 MS_MODEM_IS_INTERNET_AVAILABLE(SodaqUBeeU201);
 MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(SodaqUBeeU201);

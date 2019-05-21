@@ -24,6 +24,10 @@ DigiXBee::DigiXBee(int8_t powerPin, int8_t statusPin, bool useCTSStatus,
 {}
 
 
+// Destructor
+DigiXBee::~DigiXBee(){}
+
+
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
 // After enabling pin sleep, the sleep request pin is held LOW to keep the XBee on

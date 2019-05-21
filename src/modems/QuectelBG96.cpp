@@ -36,6 +36,10 @@ QuectelBG96::QuectelBG96(Stream* modemStream,
 }
 
 
+// Destructor
+QuectelBG96::~QuectelBG96(){}
+
+
 MS_MODEM_DID_AT_RESPOND(QuectelBG96);
 MS_MODEM_IS_INTERNET_AVAILABLE(QuectelBG96);
 MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(QuectelBG96);

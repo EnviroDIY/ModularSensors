@@ -32,6 +32,10 @@ DigiXBeeCellularBypass::DigiXBeeCellularBypass(Stream* modemStream,
 }
 
 
+// Destructor
+DigiXBeeCellularBypass::~DigiXBeeCellularBypass(){}
+
+
 MS_MODEM_DID_AT_RESPOND(DigiXBeeCellularBypass);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeCellularBypass);
 MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(DigiXBeeCellularBypass);

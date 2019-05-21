@@ -68,7 +68,7 @@ public:
                    const char *apn,
                    uint8_t measurementsToAverage = 1);
     #endif
-    virtual ~SodaqUBeeR410M(){}
+    virtual ~SodaqUBeeR410M();
 
     bool addSingleMeasurementResult(void) override;
 

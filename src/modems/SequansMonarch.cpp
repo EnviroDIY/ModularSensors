@@ -36,6 +36,10 @@ SequansMonarch::SequansMonarch(Stream* modemStream,
 }
 
 
+// Destructor
+SequansMonarch::~SequansMonarch(){}
+
+
 MS_MODEM_DID_AT_RESPOND(SequansMonarch);
 MS_MODEM_IS_INTERNET_AVAILABLE(SequansMonarch);
 MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(SequansMonarch);

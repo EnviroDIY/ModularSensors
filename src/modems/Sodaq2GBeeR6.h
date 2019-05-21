@@ -58,7 +58,7 @@ public:
                  int8_t modemSleepRqPin,
                  const char *apn,
                  uint8_t measurementsToAverage = 1);
-    virtual ~Sodaq2GBeeR6(){}
+    virtual ~Sodaq2GBeeR6();
 
     bool addSingleMeasurementResult(void) override;
 

@@ -37,6 +37,10 @@ Sodaq2GBeeR6::Sodaq2GBeeR6(Stream* modemStream,
 }
 
 
+// Destructor
+Sodaq2GBeeR6::~Sodaq2GBeeR6(){}
+
+
 MS_MODEM_DID_AT_RESPOND(Sodaq2GBeeR6);
 MS_MODEM_IS_INTERNET_AVAILABLE(Sodaq2GBeeR6);
 MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(Sodaq2GBeeR6);

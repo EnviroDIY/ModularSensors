@@ -32,6 +32,10 @@ DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(Stream* modemStream,
 }
 
 
+// Destructor
+DigiXBeeCellularTransparent::~DigiXBeeCellularTransparent(){}
+
+
 MS_MODEM_DID_AT_RESPOND(DigiXBeeCellularTransparent);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeCellularTransparent);
 MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(DigiXBeeCellularTransparent);

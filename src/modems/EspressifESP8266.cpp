@@ -44,6 +44,11 @@ EspressifESP8266::EspressifESP8266(Stream* modemStream,
     _modemStream = modemStream;
 }
 
+
+// Destructor
+EspressifESP8266::~EspressifESP8266(){}
+
+
 MS_MODEM_DID_AT_RESPOND(EspressifESP8266);
 MS_MODEM_IS_INTERNET_AVAILABLE(EspressifESP8266);
 MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(EspressifESP8266);
