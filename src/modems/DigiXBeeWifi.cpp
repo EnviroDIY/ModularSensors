@@ -214,9 +214,3 @@ bool DigiXBeeWifi::addSingleMeasurementResult(void)
 
     return success;
 }
-
-
-void DigiXBeeWifi::disconnectInternet(void)
-{
-    // XBee doesn't like to disconnect at all, so we're doing nothing
-}

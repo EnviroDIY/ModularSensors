@@ -166,6 +166,7 @@ bool specificModem::getModemBatteryStats(uint8_t &chargeState, int8_t &percent, 
 }
 
 
+// NOTE:  Most modems don't give this
 #define MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(specificModem) \
 float specificModem::getModemTemperature(void) \
 { \
@@ -177,7 +178,6 @@ float specificModem::getModemTemperature(void) \
 }
 
 
-// NOTE:  Most modems don't give this
 #define MS_MODEM_GET_MODEM_TEMPERATURE_NA(specificModem) \
 float specificModem::getModemTemperature(void) \
 { \

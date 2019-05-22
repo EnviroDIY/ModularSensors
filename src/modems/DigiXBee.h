@@ -54,7 +54,7 @@ public:
 
     // Access the internet
     virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) = 0;
-    virtual void disconnectInternet(void) = 0;
+    void disconnectInternet(void);
 
     // Get values by other names
     virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) = 0;
@@ -70,8 +70,8 @@ protected:
     virtual bool didATRespond(void) = 0;
     virtual bool isInternetAvailable(void) = 0;
     virtual bool verifyMeasurementComplete(bool debug = false) = 0;
-    virtual bool modemSleepFxn(void) override;
-    virtual bool modemWakeFxn(void) override;
+    bool modemSleepFxn(void) override;
+    bool modemWakeFxn(void) override;
     virtual bool extraModemSetup(void) = 0;
 };
 

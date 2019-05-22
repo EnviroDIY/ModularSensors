@@ -170,9 +170,3 @@ bool DigiXBeeCellularTransparent::addSingleMeasurementResult(void)
 
     return success;
 }
-
-
-void DigiXBeeCellularTransparent::disconnectInternet(void)
-{
-    // XBee doesn't like to disconnect at all, so we're doing nothing
-}

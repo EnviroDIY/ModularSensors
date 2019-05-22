@@ -119,9 +119,3 @@ bool DigiXBeeLTEBypass::extraModemSetup(void)
     else MS_DBG(F("... failed!"));
     return success;
 }
-
-
-void DigiXBeeLTEBypass::disconnectInternet(void)
-{
-    // XBee doesn't like to disconnect at all, so we're doing nothing
-}

@@ -55,6 +55,9 @@
             "+<sensors/*.c>",
             "+<sensors/*.cpp>",
             "+<sensors/*.h>",
+            "+<modems/*.c>",
+            "+<modems/*.cpp>",
+            "+<modems/*.h>",
             "+<publishers/*.c>",
             "+<publishers/*.cpp>",
             "+<publishers/*.h>"

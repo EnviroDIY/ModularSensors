@@ -68,7 +68,7 @@ public:
                    const char *apn,
                    uint8_t measurementsToAverage = 1);
     #endif
-    virtual ~SodaqUBeeR410M();
+    ~SodaqUBeeR410M();
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
     void disconnectInternet(void) override;

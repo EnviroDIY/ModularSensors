@@ -62,3 +62,10 @@ bool DigiXBee::modemSleepFxn(void)
         return true;
     }
 }
+
+
+void DigiXBee::disconnectInternet(void)
+{
+    // XBee doesn't like to disconnect AT ALL, so we're doing nothing
+    // If you do disconnect, you must power cycle before you can reconnecte
+}

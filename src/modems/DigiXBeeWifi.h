@@ -42,12 +42,11 @@ public:
                  int8_t modemResetPin, int8_t modemSleepRqPin,
                  const char *ssid, const char *pwd,
                  uint8_t measurementsToAverage = 1);
-    virtual ~DigiXBeeWifi();
+    ~DigiXBeeWifi();
 
     bool addSingleMeasurementResult(void) override;
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet(void) override;
 
     // Get values by other names
     bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;

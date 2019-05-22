@@ -108,9 +108,3 @@ bool DigiXBee3GBypass::extraModemSetup(void)
     else MS_DBG(F("... failed!"));
     return success;
 }
-
-
-void DigiXBee3GBypass::disconnectInternet(void)
-{
-    // XBee doesn't like to disconnect at all, so we're doing nothing
-}

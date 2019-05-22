@@ -62,7 +62,7 @@ public:
                   int8_t modemResetPin, int8_t modemSleepRqPin,
                   const char *apn,
                   uint8_t measurementsToAverage = 1);
-    virtual ~SodaqUBeeU201();
+    ~SodaqUBeeU201();
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
     void disconnectInternet(void) override;
