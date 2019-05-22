@@ -199,7 +199,7 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 
 // // For any Digi Cellular XBee's
 // // NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global)
-// // are more stable used in bypass mode (above)
+// // are more stable used in bypass mode (below)
 // // The Telit based Digi XBees (LTE Cat1) can only use this mode.
 // #include <modems/DigiXBeeCellularTransparent.h>
 // const long modemBaud = 9600;  // All XBee's use 9600 by default

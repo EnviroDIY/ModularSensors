@@ -52,7 +52,7 @@ bool DigiXBeeLTEBypass::extraModemSetup(void)
     delay(1010);  // Wait the required guard time before entering command mode
     MS_DBG(F("Putting XBee into command mode..."));
     gsmModem.streamWrite(GF("+++"));  // enter command mode
-    if (success &= gsmModem.waitResponse(2000, F("OK\r")) == 1)
+    if (success &= gsmModem.waitResponse(2000, GF("OK\r")) == 1)
     {
         MS_DBG(F("Setting I/O Pins..."));
         // Set DIO8 to be used for sleep requests
