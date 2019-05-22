@@ -275,17 +275,17 @@ class Modem_BatteryVoltage : public Variable
 public:
     Modem_BatteryVoltage(Sensor *parentSense,
                          const char *uuid = "",
-                         const char *varCode = "modemBatterymVolt")
+                         const char *varCode = "modemBatterymV")
       : Variable(parentSense,
                  (const uint8_t)MODEM_BATTERY_VOLT_VAR_NUM,
                  (uint8_t)MODEM_BATTERY_VOLT_RESOLUTION,
-                 "batteryVoltage", "milliVolt",
+                 "batteryVoltage", "millivolt",
                  varCode, uuid)
     {}
     Modem_BatteryVoltage()
       : Variable((const uint8_t)MODEM_BATTERY_VOLT_VAR_NUM,
                  (uint8_t)MODEM_BATTERY_VOLT_RESOLUTION,
-                 "batteryVoltage", "milliVolt", "modemBatterymVolt")
+                 "batteryVoltage", "millivolt", "modemBatterymV")
     {}
     ~Modem_BatteryVoltage(){}
 };
