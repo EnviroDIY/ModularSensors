@@ -1,5 +1,5 @@
 /*
- *DigiXBeeCellularBypass.h
+ *DigiXBeeLTEBypass.h
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -8,19 +8,19 @@
 */
 
 // Header Guards
-#ifndef DigiXBeeCellularBypass_h
-#define DigiXBeeCellularBypass_h
+#ifndef DigiXBeeLTEBypass_h
+#define DigiXBeeLTEBypass_h
 
 // Debugging Statement
-// #define MS_DIGIXBEECELLULARBYPASS_DEBUG
-// #define MS_DIGIXBEECELLULARBYPASS_DEBUG_DEEP
+// #define MS_DIGIXBEELTEBYPASS_DEBUG
+// #define MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
 
-#ifdef MS_DIGIXBEECELLULARBYPASS_DEBUG
-#define MS_DEBUGGING_STD "DigiXBeeCellularBypass"
+#ifdef MS_DIGIXBEELTEBYPASS_DEBUG
+#define MS_DEBUGGING_STD "DigiXBeeLTEBypass"
 #define TINY_GSM_DEBUG DEBUGGING_SERIAL_OUTPUT
 #endif
 
-#define TINY_GSM_MODEM_UBLOX
+#define TINY_GSM_MODEM_SARAR4
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
@@ -28,33 +28,33 @@
 #include "DigiXBee.h"
 #include "TinyGsmClient.h"
 
-#ifdef MS_DIGIXBEECELLULARBYPASS_DEBUG_DEEP
+#ifdef MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
 
-class DigiXBeeCellularBypass : public DigiXBee
+class DigiXBeeLTEBypass : public DigiXBee
 {
 
 public:
     // Constructor/Destructor
-    DigiXBeeCellularBypass(Stream* modemStream,
+    DigiXBeeLTEBypass(Stream* modemStream,
                            int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                            int8_t modemResetPin, int8_t modemSleepRqPin,
                            const char *apn,
                            uint8_t measurementsToAverage = 1);
-    virtual ~DigiXBeeCellularBypass();
+    virtual ~DigiXBeeLTEBypass();
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
     void disconnectInternet(void) override;
 
     // Get values by other names
     bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    float getModemBatteryVoltage(void) override;
+    bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
     float getModemTemperature(void) override;
 
     uint32_t getNISTTime(void) override;
 
-    #ifdef MS_DIGIXBEECELLULARBYPASS_DEBUG_DEEP
+    #ifdef MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
     #endif
 

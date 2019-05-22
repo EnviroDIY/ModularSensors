@@ -1,5 +1,5 @@
 /*
- *DigiXBeeCellularBypass.cpp
+ *DigiXBeeLTEBypass.cpp
  *This file is part of the EnviroDIY modular sensors library for Arduino
  *
  *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
@@ -8,11 +8,11 @@
 */
 
 // Included Dependencies
-#include "DigiXBeeCellularBypass.h"
+#include "DigiXBeeLTEBypass.h"
 #include "modems/LoggerModemMacros.h"
 
 // Constructor/Destructor
-DigiXBeeCellularBypass::DigiXBeeCellularBypass(Stream* modemStream,
+DigiXBeeLTEBypass::DigiXBeeLTEBypass(Stream* modemStream,
                            int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                            int8_t modemResetPin, int8_t modemSleepRqPin,
                            const char *apn,
@@ -20,7 +20,7 @@ DigiXBeeCellularBypass::DigiXBeeCellularBypass(Stream* modemStream,
   : DigiXBee(powerPin, statusPin, useCTSStatus,
              modemResetPin, modemSleepRqPin,
              measurementsToAverage),
-    #ifdef MS_DIGIXBEECELLULARBYPASS_DEBUG_DEEP
+    #ifdef MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
     gsmModem(_modemATDebugger),
     #else
@@ -33,20 +33,20 @@ DigiXBeeCellularBypass::DigiXBeeCellularBypass(Stream* modemStream,
 
 
 // Destructor
-DigiXBeeCellularBypass::~DigiXBeeCellularBypass(){}
+DigiXBeeLTEBypass::~DigiXBeeLTEBypass(){}
 
 
-MS_MODEM_DID_AT_RESPOND(DigiXBeeCellularBypass);
-MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeCellularBypass);
-MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(DigiXBeeCellularBypass);
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeCellularBypass);
-MS_MODEM_GET_MODEM_BATTERY_VOLTAGE_NA(DigiXBeeCellularBypass);
-MS_MODEM_GET_MODEM_TEMPERATURE_NA(DigiXBeeCellularBypass);
-MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularBypass);
-MS_MODEM_GET_NIST_TIME(DigiXBeeCellularBypass);
+MS_MODEM_DID_AT_RESPOND(DigiXBeeLTEBypass);
+MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeLTEBypass);
+MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(DigiXBeeLTEBypass);
+MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeLTEBypass);
+MS_MODEM_GET_MODEM_BATTERY_AVAILABLE(DigiXBeeLTEBypass);
+MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(DigiXBeeLTEBypass);
+MS_MODEM_CONNECT_INTERNET(DigiXBeeLTEBypass);
+MS_MODEM_GET_NIST_TIME(DigiXBeeLTEBypass);
 
 
-bool DigiXBeeCellularBypass::extraModemSetup(void)
+bool DigiXBeeLTEBypass::extraModemSetup(void)
 {
     bool success = true;
     delay(1010);  // Wait the required guard time before entering command mode
@@ -71,9 +71,6 @@ bool DigiXBeeCellularBypass::extraModemSetup(void)
         // Put the XBee in pin sleep mode
         MS_DBG(F("Setting Sleep Options..."));
         gsmModem.sendAT(F("SM"),1);
-        success &= gsmModem.waitResponse(F("OK\r")) == 1;
-        // Disassociate from network for lowest power deep sleep
-        gsmModem.sendAT(F("SO"),0);
         success &= gsmModem.waitResponse(F("OK\r")) == 1;
         MS_DBG(F("Setting Other Options..."));
         // Disable remote manager, USB Direct, and LTE PSM
@@ -124,7 +121,7 @@ bool DigiXBeeCellularBypass::extraModemSetup(void)
 }
 
 
-void DigiXBeeCellularBypass::disconnectInternet(void)
+void DigiXBeeLTEBypass::disconnectInternet(void)
 {
     // XBee doesn't like to disconnect at all, so we're doing nothing
 }

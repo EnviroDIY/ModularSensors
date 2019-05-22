@@ -313,8 +313,13 @@ bool loggerModem::addSingleMeasurementResult(void)
     /* Initialize float variable */
     int16_t percent = -9999;
     int16_t rssi = -9999;
-    float volt = -9999;
+    uint8_t state = -99;
+    int8_t bpercent = -99;
+    uint16_t volt = -9999;
     float temp = -9999;
+    float fstate = -9999;
+    float fbpercent = -9999;
+    float fvolt = -9999;
 
     /* Check a measurement was *successfully* started (status bit 6 set) */
     /* Only go on to get a result if it was */
@@ -330,19 +335,27 @@ bool loggerModem::addSingleMeasurementResult(void)
         MS_DBG(F("RSSI:"), rssi);
         MS_DBG(F("Percent signal strength:"), percent);
 
-        MS_DBG(F("Getting battery, if possible:"));
-        volt = getModemBatteryVoltage();
+        MS_DBG(F("Getting battery info, if possible:"));
+        success &= getModemBatteryStats(state, bpercent, volt);
+        MS_DBG(F("Battery charge state:"), state);
+        MS_DBG(F("Battery percentage:"), bpercent);
         MS_DBG(F("Battery voltage:"), volt);
+        // convert responses to floats
+        if (state != 99) fstate = (float)state;
+        if (bpercent != 99) fbpercent = (float)bpercent;
+        if (volt != 9999) fvolt = (float)volt;
 
         MS_DBG(F("Getting chip temperature, if possible:"));
         temp = getModemTemperature();
-        MS_DBG(F("Battery voltage:"), temp);
+        MS_DBG(F("Modem temperature:"), temp);
     }
     else MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!"));
 
     verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi);
     verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent);
-    verifyAndAddMeasurementResult(MODEM_BATTERY_VAR_NUM, volt);
+    verifyAndAddMeasurementResult(MODEM_BATTERY_STATE_VAR_NUM, fstate);
+    verifyAndAddMeasurementResult(MODEM_BATTERY_PERCENT_VAR_NUM, fbpercent);
+    verifyAndAddMeasurementResult(MODEM_BATTERY_VOLT_VAR_NUM, fvolt);
     verifyAndAddMeasurementResult(MODEM_TEMPERATURE_VAR_NUM, temp);
 
     /* Unset the time stamp for the beginning of this measurement */

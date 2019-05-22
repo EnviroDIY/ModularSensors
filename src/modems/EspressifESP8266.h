@@ -70,7 +70,7 @@ public:
 
     // Get values by other names
     bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
-    float getModemBatteryVoltage(void) override;
+    bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
     float getModemTemperature(void) override;
 
     uint32_t getNISTTime(void) override;

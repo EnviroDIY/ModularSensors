@@ -40,8 +40,8 @@ MS_MODEM_DID_AT_RESPOND(DigiXBeeCellularTransparent);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeCellularTransparent);
 MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(DigiXBeeCellularTransparent);
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeCellularTransparent);
-MS_MODEM_GET_MODEM_BATTERY_VOLTAGE_NA(DigiXBeeCellularTransparent);
-MS_MODEM_GET_MODEM_TEMPERATURE_NA(DigiXBeeCellularTransparent);
+MS_MODEM_GET_MODEM_BATTERY_NA(DigiXBeeCellularTransparent);
+MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(DigiXBeeCellularTransparent);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularTransparent);
 MS_MODEM_GET_NIST_TIME(DigiXBeeCellularTransparent);
 
@@ -108,6 +108,66 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
     else success = false;
     if (success) MS_DBG(F("... Setup successful!"));
     else MS_DBG(F("... failed!"));
+    return success;
+}
+
+
+bool DigiXBeeCellularTransparent::addSingleMeasurementResult(void)
+{
+    bool success = true;
+
+    /* Initialize float variable */
+    int16_t signalQual = -9999;
+    int16_t percent = -9999;
+    int16_t rssi = -9999;
+    float temp = -9999;
+
+    /* Check a measurement was *successfully* started (status bit 6 set) */
+    /* Only go on to get a result if it was */
+    if (bitRead(_sensorStatus, 6))
+    {
+        // Enter command mode only once
+        MS_DBG(F("Entering Command Mode:"));
+        gsmModem.commandMode();
+
+        // Get signal quality
+        // NOTE:  We can't actually distinguish between a bad modem response, no
+        // modem response, and a real response from the modem of no service/signal.
+        // The TinyGSM getSignalQuality function returns the same "no signal"
+        // value (99 CSQ or 0 RSSI) in all 3 cases.
+        MS_DBG(F("Getting signal quality:"));
+        signalQual = gsmModem.getSignalQuality();
+        MS_DBG(F("Raw signal quality:"), signalQual);
+
+        // Convert signal quality to RSSI
+        rssi = signalQual;
+        percent = getPctFromRSSI(signalQual);
+
+        MS_DBG(F("RSSI:"), rssi);
+        MS_DBG(F("Percent signal strength:"), percent);
+
+        MS_DBG(F("Getting chip temperature:"));
+        temp = getModemTemperature();
+        MS_DBG(F("Modem temperature:"), temp);
+
+        // Exit command modem
+        MS_DBG(F("Leaving Command Mode:"));
+        gsmModem.exitCommand();
+    }
+    else MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!"));
+
+    verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi);
+    verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent);
+    verifyAndAddMeasurementResult(MODEM_BATTERY_STATE_VAR_NUM, (float)-9999);
+    verifyAndAddMeasurementResult(MODEM_BATTERY_PERCENT_VAR_NUM, (float)-9999);
+    verifyAndAddMeasurementResult(MODEM_BATTERY_VOLT_VAR_NUM, (float)-9999);
+    verifyAndAddMeasurementResult(MODEM_TEMPERATURE_VAR_NUM, temp);
+
+    /* Unset the time stamp for the beginning of this measurement */
+    _millisMeasurementRequested = 0;
+    /* Unset the status bits for a measurement request (bits 5 & 6) */
+    _sensorStatus &= 0b10011111;
+
     return success;
 }
 

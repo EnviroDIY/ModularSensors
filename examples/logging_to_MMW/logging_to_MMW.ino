@@ -79,18 +79,18 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem st
 // Network connection information
 const char *apn = "xxxxx";  // The APN for the gprs connection
 
-// For the u-blox based Digi XBee's (3G global and LTE-M global)
+// For the u-blox SARA R410M based Digi LTE-M XBee3
 // NOTE:  According to the manual, this should be less stable than transparent
 // mode, but my experience is the complete reverse.
-#include <modems/DigiXBeeCellularBypass.h>
+#include <modems/DigiXBeeLTEBypass.h>
 const long modemBaud = 9600;  // All XBee's use 9600 by default
 const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status.  Only applies to Digi XBee's
-DigiXBeeCellularBypass modemXBCB(&modemSerial,
-                                 modemVccPin, modemStatusPin, useCTSforStatus,
-                                 modemResetPin, modemSleepRqPin,
-                                 apn);
+DigiXBeeLTEBypass modemXBLTEB(&modemSerial,
+                              modemVccPin, modemStatusPin, useCTSforStatus,
+                              modemResetPin, modemSleepRqPin,
+                              apn);
 // Create an extra reference to the modem by a generic name (not necessary)
-DigiXBeeCellularBypass modem = modemXBCB;
+DigiXBeeLTEBypass modem = modemXBLTEB;
 
 
 // ==========================================================================

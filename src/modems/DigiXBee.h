@@ -58,7 +58,7 @@ public:
 
     // Get values by other names
     virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) = 0;
-    virtual float getModemBatteryVoltage(void) = 0;
+    virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) = 0;
     virtual float getModemTemperature(void) = 0;
 
     // Get the time from NIST via TIME protocol (rfc868)

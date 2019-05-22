@@ -150,30 +150,27 @@ bool specificModem::getModemSignalQuality(int16_t &rssi, int16_t &percent) \
 }
 
 
-#define MS_MODEM_GET_MODEM_BATTERY_VOLTAGE_AVAILABLE(specificModem) \
-float specificModem::getModemBatteryVoltage(void) \
+#define MS_MODEM_GET_MODEM_BATTERY_AVAILABLE(specificModem) \
+bool specificModem::getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) \
 { \
     MS_DBG(F("Getting battery voltage:")); \
-    float volt = gsmModem.getBattVoltage(); \
-    MS_DBG(F("Voltage:"), volt); \
-\
-    return volt; \
+    return gsmModem.getBattStats(chargeState, percent, milliVolts); \
 }
 
 
-#define MS_MODEM_GET_MODEM_BATTERY_VOLTAGE_NA(specificModem) \
-float specificModem::getModemBatteryVoltage(void) \
+#define MS_MODEM_GET_MODEM_BATTERY_NA(specificModem) \
+bool specificModem::getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) \
 { \
-    MS_DBG(F("This modem doesn't return battery voltage!")); \
-    return (float)-9999; \
+    MS_DBG(F("This modem doesn't return battery infromation!")); \
+    return false; \
 }
 
 
 #define MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(specificModem) \
-float specificModem::getModemBatteryVoltage(void) \
+float specificModem::getModemTemperature(void) \
 { \
     MS_DBG(F("Getting temperature:")); \
-    float temp = gsmModem.getBattVoltage(); \
+    float temp = gsmModem.getTemperature(); \
     MS_DBG(F("Temperature:"), temp); \
 \
     return temp; \

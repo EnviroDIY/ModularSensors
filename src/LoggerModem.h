@@ -28,7 +28,7 @@
 #include <Arduino.h>
 
 
-#define MODEM_NUM_VARIABLES 4
+#define MODEM_NUM_VARIABLES 6
 
 #define MODEM_RSSI_VAR_NUM 0
 #define MODEM_RSSI_RESOLUTION 0
@@ -36,10 +36,16 @@
 #define MODEM_PERCENT_SIGNAL_VAR_NUM 1
 #define MODEM_PERCENT_SIGNAL_RESOLUTION 0
 
-#define MODEM_BATTERY_VAR_NUM 2
-#define MODEM_BATTERY_RESOLUTION 2
+#define MODEM_BATTERY_STATE_VAR_NUM 2
+#define MODEM_BATTERY_STATE_RESOLUTION 0
 
-#define MODEM_TEMPERATURE_VAR_NUM 3
+#define MODEM_BATTERY_PERCENT_VAR_NUM 3
+#define MODEM_BATTERY_PERCENT_RESOLUTION 0
+
+#define MODEM_BATTERY_VOLT_VAR_NUM 4
+#define MODEM_BATTERY_VOLT_RESOLUTION 3
+
+#define MODEM_TEMPERATURE_VAR_NUM 5
 #define MODEM_TEMPERATURE_RESOLUTION 1
 
 /* ===========================================================================
@@ -112,7 +118,7 @@ public:
 
     // Get values by other names
     virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) = 0;
-    virtual float getModemBatteryVoltage(void) = 0;
+    virtual bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) = 0;
     virtual float getModemTemperature(void) = 0;
 
     // This has the same functionality as Client->connect with debugging text
@@ -219,25 +225,69 @@ public:
 };
 
 
-// Defines the Signal Percentage
-class Modem_Battery : public Variable
+// Defines the Battery Charge State
+class Modem_BatteryState : public Variable
 {
 public:
-    Modem_Battery(Sensor *parentSense,
-                        const char *uuid = "",
-                        const char *varCode = "modemBattery")
+    Modem_BatteryState(Sensor *parentSense,
+                       const char *uuid = "",
+                       const char *varCode = "modemBatteryCS")
       : Variable(parentSense,
-                 (const uint8_t)MODEM_BATTERY_VAR_NUM,
-                 (uint8_t)MODEM_BATTERY_RESOLUTION,
+                 (const uint8_t)MODEM_BATTERY_STATE_VAR_NUM,
+                 (uint8_t)MODEM_BATTERY_STATE_RESOLUTION,
+                 "batteryChargeState", "number",
+                 varCode, uuid)
+    {}
+    Modem_BatteryState()
+      : Variable((const uint8_t)MODEM_BATTERY_STATE_VAR_NUM,
+                 (uint8_t)MODEM_BATTERY_STATE_RESOLUTION,
+                 "batteryChargeState", "number", "modemBatteryCS")
+    {}
+    ~Modem_BatteryState(){}
+};
+
+
+// Defines the Battery Charge Percent
+class Modem_BatteryPercent : public Variable
+{
+public:
+    Modem_BatteryPercent(Sensor *parentSense,
+                         const char *uuid = "",
+                         const char *varCode = "modemBatteryPct")
+      : Variable(parentSense,
+                 (const uint8_t)MODEM_BATTERY_PERCENT_VAR_NUM,
+                 (uint8_t)MODEM_BATTERY_PERCENT_RESOLUTION,
+                 "batteryVoltage", "percent",
+                 varCode, uuid)
+    {}
+    Modem_BatteryPercent()
+      : Variable((const uint8_t)MODEM_BATTERY_PERCENT_VAR_NUM,
+                 (uint8_t)MODEM_BATTERY_PERCENT_RESOLUTION,
+                 "batteryVoltage", "percent", "modemBatteryPct")
+    {}
+    ~Modem_BatteryPercent(){}
+};
+
+
+// Defines the Battery Voltage
+class Modem_BatteryVoltage : public Variable
+{
+public:
+    Modem_BatteryVoltage(Sensor *parentSense,
+                         const char *uuid = "",
+                         const char *varCode = "modemBatteryVolt")
+      : Variable(parentSense,
+                 (const uint8_t)MODEM_BATTERY_VOLT_VAR_NUM,
+                 (uint8_t)MODEM_BATTERY_VOLT_RESOLUTION,
                  "batteryVoltage", "volt",
                  varCode, uuid)
     {}
-    Modem_Battery()
-      : Variable((const uint8_t)MODEM_BATTERY_VAR_NUM,
-                 (uint8_t)MODEM_BATTERY_RESOLUTION,
-                 "batteryVoltage", "volt", "modemBattery")
+    Modem_BatteryVoltage()
+      : Variable((const uint8_t)MODEM_BATTERY_VOLT_VAR_NUM,
+                 (uint8_t)MODEM_BATTERY_VOLT_RESOLUTION,
+                 "batteryVoltage", "volt", "modemBatteryVolt")
     {}
-    ~Modem_Battery(){}
+    ~Modem_BatteryVoltage(){}
 };
 
 
