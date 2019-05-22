@@ -43,7 +43,7 @@
 #define MODEM_BATTERY_PERCENT_RESOLUTION 0
 
 #define MODEM_BATTERY_VOLT_VAR_NUM 4
-#define MODEM_BATTERY_VOLT_RESOLUTION 3
+#define MODEM_BATTERY_VOLT_RESOLUTION 0
 
 #define MODEM_TEMPERATURE_VAR_NUM 5
 #define MODEM_TEMPERATURE_RESOLUTION 1
@@ -275,17 +275,17 @@ class Modem_BatteryVoltage : public Variable
 public:
     Modem_BatteryVoltage(Sensor *parentSense,
                          const char *uuid = "",
-                         const char *varCode = "modemBatteryVolt")
+                         const char *varCode = "modemBatterymVolt")
       : Variable(parentSense,
                  (const uint8_t)MODEM_BATTERY_VOLT_VAR_NUM,
                  (uint8_t)MODEM_BATTERY_VOLT_RESOLUTION,
-                 "batteryVoltage", "volt",
+                 "batteryVoltage", "milliVolt",
                  varCode, uuid)
     {}
     Modem_BatteryVoltage()
       : Variable((const uint8_t)MODEM_BATTERY_VOLT_VAR_NUM,
                  (uint8_t)MODEM_BATTERY_VOLT_RESOLUTION,
-                 "batteryVoltage", "volt", "modemBatteryVolt")
+                 "batteryVoltage", "milliVolt", "modemBatterymVolt")
     {}
     ~Modem_BatteryVoltage(){}
 };

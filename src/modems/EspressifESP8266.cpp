@@ -84,7 +84,7 @@ bool EspressifESP8266::ESPwaitForBoot(void)
             delay(2);
         }
         // Have to make sure echo is off or all AT commands will be confused
-        gsmModem.sendAT(F("E0"));
+        gsmModem.sendAT(GF("E0"));
         success &= gsmModem.waitResponse() == 1;
         // re-run init to set mux and station mode
         success &= gsmModem.init();
@@ -139,7 +139,7 @@ bool EspressifESP8266::modemSleepFxn(void)
     {
         uint32_t sleepSeconds = (((uint32_t)loggingInterval) * 60 * 1000) - 75000L;
         String sleepCommand = String(sleepSeconds);
-        gsmModem.sendAT(F("+GSLP="), sleepCommand);
+        gsmModem.sendAT(GF("+GSLP="), sleepCommand);
         // Power down for 1 minute less than logging interval
         // Better:  Calculate length of loop and power down for logging interval - loop time
         return gsmModem.waitResponse() == 1;
@@ -156,10 +156,10 @@ bool EspressifESP8266::modemSleepFxn(void)
     else if (_modemSleepRqPin >= 0 && _dataPin >= 0)
     {
         MS_DBG(F("Requesting light sleep for ESP8266 with status indication"));
-        gsmModem.sendAT(F("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0,"),
+        gsmModem.sendAT(GF("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0,"),
                           String(_espStatusPin), ',', _statusLevel);
         bool success = gsmModem.waitResponse() == 1;
-        gsmModem.sendAT(F("+SLEEP=1"));
+        gsmModem.sendAT(GF("+SLEEP=1"));
         success &= gsmModem.waitResponse() == 1;
         return success;
     }
@@ -167,9 +167,9 @@ bool EspressifESP8266::modemSleepFxn(void)
     else if (_modemSleepRqPin >= 0 && _dataPin < 0)
     {
         MS_DBG(F("Requesting light sleep for ESP8266"));
-        gsmModem.sendAT(F("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0"));
+        gsmModem.sendAT(GF("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0"));
         bool success = gsmModem.waitResponse() == 1;
-        gsmModem.sendAT(F("+SLEEP=1"));
+        gsmModem.sendAT(GF("+SLEEP=1"));
         success &= gsmModem.waitResponse() == 1;
         return success;
     }
@@ -191,7 +191,7 @@ bool EspressifESP8266::extraModemSetup(void)
     // if (modemBaud > 57600)
     // {
     //     _modemSerial->begin(modemBaud);
-    //     gsmModem.sendAT(F("+UART_DEF=9600,8,1,0,0"));
+    //     gsmModem.sendAT(GF("+UART_DEF=9600,8,1,0,0"));
     //     gsmModem.waitResponse();
     //     _modemSerial->end();
     //     _modemSerial->begin(9600);

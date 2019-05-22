@@ -58,45 +58,45 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         MS_DBG(F("Setting I/O Pins..."));
         // Set DIO8 to be used for sleep requests
         // NOTE:  Only pin 9/DIO8/DTR can be used for this function
-        gsmModem.sendAT(F("D8"),1);
+        gsmModem.sendAT(GF("D8"),1);
         success &= gsmModem.waitResponse() == 1;
         // Turn on status indication pin - it will be HIGH when the XBee is awake
         // NOTE:  Only pin 13/ON/SLEEPnot/DIO9 can be used for this function
-        gsmModem.sendAT(F("D9"),1);
+        gsmModem.sendAT(GF("D9"),1);
         success &= gsmModem.waitResponse() == 1;
         // Turn on CTS pin - it will be LOW when the XBee is ready to receive commands
         // This can be used as proxy for status indication if the true status pin is not accessible
         // NOTE:  Only pin 12/DIO7/CTS can be used for this function
-        gsmModem.sendAT(F("D7"),1);
+        gsmModem.sendAT(GF("D7"),1);
         success &= gsmModem.waitResponse() == 1;
         // Put the XBee in pin sleep mode
         MS_DBG(F("Setting Sleep Options..."));
-        gsmModem.sendAT(F("SM"),1);
+        gsmModem.sendAT(GF("SM"),1);
         success &= gsmModem.waitResponse() == 1;
         // Disassociate from network for lowest power deep sleep
-        gsmModem.sendAT(F("SO"),0);
+        gsmModem.sendAT(GF("SO"),0);
         success &= gsmModem.waitResponse() == 1;
         MS_DBG(F("Setting Other Options..."));
         // Disable remote manager, USB Direct, and LTE PSM
         // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
         // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
         // so we'll use the Digi pin sleep instead.
-        gsmModem.sendAT(F("DO"),0);
+        gsmModem.sendAT(GF("DO"),0);
         success &= gsmModem.waitResponse() == 1;
         // Make sure USB direct won't be pin enabled on XBee3 units
-        gsmModem.sendAT(F("P0"),0);
+        gsmModem.sendAT(GF("P0"),0);
         success &= gsmModem.waitResponse() == 1;
         // Make sure pins 7&8 are not set for USB direct on XBee3 units
-        gsmModem.sendAT(F("P1"),0);
+        gsmModem.sendAT(GF("P1"),0);
         success &= gsmModem.waitResponse() == 1;
         MS_DBG(F("Setting Cellular Carrier Options..."));
         // Cellular carrier profile - AT&T
         // Hologram says they can use any network, but I've never succeeded with anything but AT&T
-        gsmModem.sendAT(F("CP"),2);
+        gsmModem.sendAT(GF("CP"),2);
         success &= gsmModem.waitResponse() == 1;
         // Cellular network technology - LTE-M Only
         // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
-        gsmModem.sendAT(F("N#"),2);
+        gsmModem.sendAT(GF("N#"),2);
         success &= gsmModem.waitResponse() == 1;
         // Put the network connection parameters into flash
         success &= gsmModem.gprsConnect(_apn);

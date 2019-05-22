@@ -59,23 +59,23 @@ bool DigiXBeeWifi::extraModemSetup(void)
         MS_DBG(F("Setting I/O Pins..."));
         // Set DIO8 to be used for sleep requests
         // NOTE:  Only pin 9/DIO8/DTR can be used for this function
-        gsmModem.sendAT(F("D8"),1);
+        gsmModem.sendAT(GF("D8"),1);
         success &= gsmModem.waitResponse() == 1;
         // Turn on status indication pin - it will be HIGH when the XBee is awake
         // NOTE:  Only pin 13/ON/SLEEPnot/DIO9 can be used for this function
-        gsmModem.sendAT(F("D9"),1);
+        gsmModem.sendAT(GF("D9"),1);
         success &= gsmModem.waitResponse() == 1;
         // Turn on CTS pin - it will be LOW when the XBee is ready to receive commands
         // This can be used as proxy for status indication if the true status pin is not accessible
         // NOTE:  Only pin 12/DIO7/CTS can be used for this function
-        gsmModem.sendAT(F("D7"),1);
+        gsmModem.sendAT(GF("D7"),1);
         success &= gsmModem.waitResponse() == 1;
         // Put the XBee in pin sleep mode
         MS_DBG(F("Setting Sleep Options..."));
-        gsmModem.sendAT(F("SM"),1);
+        gsmModem.sendAT(GF("SM"),1);
         success &= gsmModem.waitResponse() == 1;
         // Disassociate from network for lowest power deep sleep
-        gsmModem.sendAT(F("SO"),200);
+        gsmModem.sendAT(GF("SO"),200);
         success &= gsmModem.waitResponse() == 1;
         MS_DBG(F("Setting Wifi Network Options..."));
         // Put the network connection parameters into flash
