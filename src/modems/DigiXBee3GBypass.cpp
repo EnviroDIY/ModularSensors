@@ -93,11 +93,11 @@ bool DigiXBee3GBypass::extraModemSetup(void)
         // Apply changes
         gsmModem.sendAT(GF("AC"));
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        // Force reset to actually enter bypass mode - this effectively exits bypass mode
+        // Force reset to actually enter bypass mode - this effectively exits command mode
         MS_DBG(F("Resetting the module to reboot in bypass mode..."));
         gsmModem.sendAT(GF("FR"));
-        success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        delay(200);  // Allow the unit to reset
+        success &= gsmModem.waitResponse(5000L, GF("OK\r")) == 1;
+        delay(500);  // Allow the unit to reset
         // re-initialize
         MS_DBG(F("Attempting to reconnect to the u-blox module..."));
         success &= gsmModem.init();
