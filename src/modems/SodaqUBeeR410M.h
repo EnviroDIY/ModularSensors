@@ -20,7 +20,7 @@
 #define TINY_GSM_DEBUG DEBUGGING_SERIAL_OUTPUT
 #endif
 
-#define TINY_GSM_MODEM_UBLOX
+#define TINY_GSM_MODEM_SARAR4
 
 // V_INT becomes active mid-way through on-pulse
 #define R410M_STATUS_TIME_MS 0

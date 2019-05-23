@@ -50,8 +50,8 @@ const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugg
 const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPwrPin = -1;     // MCU SD card power pin (-1 if not applicable)
-const int8_t sdCardSSPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
+const int8_t sdCardPwrPin = -1;    // MCU SD card power pin (-1 if not applicable)
+const int8_t sdCardSSPin = 12;     // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create the main processor chip "sensor" - for general metadata
@@ -219,9 +219,9 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 const long modemBaud = 9600;  // All XBee's use 9600 by default
 const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
 DigiXBeeLTEBypass modemXBLTEB(&modemSerial,
-                                 modemVccPin, modemStatusPin, useCTSforStatus,
-                                 modemResetPin, modemSleepRqPin,
-                                 apn);
+                              modemVccPin, modemStatusPin, useCTSforStatus,
+                              modemResetPin, modemSleepRqPin,
+                              apn);
 // Create an extra reference to the modem by a generic name (not necessary)
 DigiXBeeLTEBypass modem = modemXBLTEB;
 // ==========================================================================
@@ -256,7 +256,7 @@ DigiXBeeLTEBypass modem = modemXBLTEB;
 // const long modemBaud = 115200;  // Communication speed of the modem
 // // NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The module
 // // should be programmed to a slower baud rate or set to auto-baud using the
-// // AT+UART_CUR or AT+UART_DEF command.
+// // AT+UART_CUR or AT+UART_DEF command *before* attempting conrrol with this library.
 // // Pins for light sleep on the ESP8266.
 // // For power savings, I recommend NOT using these if it's possible to use deep sleep.
 // const int8_t espSleepRqPin = -1;  // Pin ON THE ESP8266 to assign for light sleep request (-1 if not applicable)
@@ -337,7 +337,8 @@ DigiXBeeLTEBypass modem = modemXBLTEB;
 // // every power loss, the module will return to the default baud rate of 115200.
 // // NOTE:  115200 is TOO FAST for an 8MHz Arduino.  This library attempts to
 // // compensate by sending a baud rate change command in the wake function.
-// // YMMV!
+// // Because of this, 8MHz boards, LIKE THE MAYFLY, *MUST* use a HardwareSerial
+// // instance as modemSerial.
 // SodaqUBeeR410M modemR410(&modemSerial,
 //                          modemVccPin, modemStatusPin,
 //                          modemResetPin, modemSleepRqPin,
