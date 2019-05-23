@@ -60,6 +60,18 @@ void loggerModem::modemLEDOff(void)
 }
 
 
+void loggerModem::modemHardReset(void)
+{
+    if (_modemResetPin >= 0)
+    {
+        MS_DBG(F("Doing a hard reset!"));
+        digitalWrite(_modemResetPin, LOW);
+        delay(1);
+        digitalWrite(_modemResetPin, LOW);
+    }
+}
+
+
 String loggerModem::getSensorName(void) { return _modemName; }
 
 
@@ -191,11 +203,13 @@ bool loggerModem::wake(void)
 
     // Re-check the status pin
     // Only works if the status pin comes on immediately
-    if (_dataPin > 0 && _statusTime_ms == 0 && digitalRead(_dataPin) != _statusLevel)
+    if (_dataPin >= 0 && _statusTime_ms == 0 && digitalRead(_dataPin) != _statusLevel)
     {
         MS_DBG(F("Status pin level on"), getSensorName(), F("is"),
                    digitalRead(_dataPin), F("indicating it is off!"));
         success = false;
+        modemHardReset();
+        success = digitalRead(_dataPin) == _statusLevel;
     }
 
     if (success)
