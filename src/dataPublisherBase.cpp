@@ -13,7 +13,7 @@ char dataPublisher::txBuffer[MS_SEND_BUFFER_SIZE] = {'\0'};
 // Basic chunks of HTTP
 const char *dataPublisher::getHeader = "GET ";
 const char *dataPublisher::postHeader = "POST ";
-const char *dataPublisher::HTTPtag = "  HTTP/1.1";
+const char *dataPublisher::HTTPtag = " HTTP/1.1";
 const char *dataPublisher::hostHeader = "\r\nHost: ";
 
 // Constructors
