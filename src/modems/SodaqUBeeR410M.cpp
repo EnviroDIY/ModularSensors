@@ -34,6 +34,8 @@ SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial* modemStream,
     gsmClient(gsmModem)
 {
     _apn = apn;
+
+    _modemSerial = modemStream;
 }
 #else
 SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream,
@@ -56,8 +58,6 @@ SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream,
     gsmClient(gsmModem)
 {
     _apn = apn;
-
-    _modemSerial = modemStream;
 }
 #endif
 

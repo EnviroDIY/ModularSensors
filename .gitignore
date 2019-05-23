@@ -52,6 +52,7 @@ Temporary Items
 # Atom / PlatformIO
 .pioenvs
 .piolibdeps
+.pio/*
 .clang_complete
 .gcc-flags.json
 lib/readme.txt
