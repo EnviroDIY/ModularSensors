@@ -347,10 +347,12 @@ uint32_t specificModem::getNISTTime(void) \
         /* XBee's address lookup falters on time.nist.gov */ \
         IPAddress ip(129, 6, 15, 30); \
         connectionMade = gsmClient.connect(ip, 37); \
+        /* Wait again so NIST doesn't refuse us! */ \
+        delay(4000L); \
         /* Need to send something before connection is made */ \
-        gsmClient.print('!'); \
+        gsmClient.println('!'); \
         /* Need this delay!  Can get away with 50, but 100 is safer. */ \
-        delay(100); \
+        /*delay(100);*/ \
     } \
     else connectionMade = gsmClient.connect("time.nist.gov", 37); \
 \

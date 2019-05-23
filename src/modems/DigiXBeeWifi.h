@@ -28,7 +28,7 @@
 #include "DigiXBee.h"
 #include "TinyGsmClient.h"
 
-#ifdef defineMS_DIGIXBEEWIFI_DEBUG_DEEP
+#ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
 

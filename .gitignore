@@ -52,6 +52,9 @@ Temporary Items
 # Atom / PlatformIO
 .pioenvs
 .piolibdeps
+.pio
+.pio/libdeps
+.pio/build
 .pio/*
 .clang_complete
 .gcc-flags.json
