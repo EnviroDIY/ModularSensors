@@ -66,8 +66,8 @@ void loggerModem::modemHardReset(void)
     {
         MS_DBG(F("Doing a hard reset!"));
         digitalWrite(_modemResetPin, LOW);
-        delay(1);
-        digitalWrite(_modemResetPin, LOW);
+        delay(200);
+        digitalWrite(_modemResetPin, HIGH);
     }
 }
 
