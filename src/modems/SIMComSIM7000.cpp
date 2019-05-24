@@ -60,7 +60,7 @@ bool SIMComSIM7000::modemWakeFxn(void)
         MS_DBG(F("Sending a wake-up pulse on pin"), _modemSleepRqPin, F("for SIM7000"));
         digitalWrite(_modemSleepRqPin, LOW);
         delay(1100);  // >1s
-        digitalWrite(_modemSleepRqPin, LOW);
+        digitalWrite(_modemSleepRqPin, HIGH);
     }
     return true;
 }

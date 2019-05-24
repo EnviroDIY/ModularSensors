@@ -60,7 +60,7 @@ bool QuectelBG96::modemWakeFxn(void)
     {
         digitalWrite(_modemSleepRqPin, LOW);
         delay(160);  // ≥100ms
-        digitalWrite(_modemSleepRqPin, LOW);
+        digitalWrite(_modemSleepRqPin, HIGH);
     }
     return true;
 }
