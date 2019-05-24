@@ -183,13 +183,9 @@ bool loggerModem::wake(void)
 
     // Check the status pin and wake bits before running wake function
     // Don't want to accidently pulse an already on modem to off
-    if ( bitRead(_sensorStatus, 4) && !_alwaysRunWake)
-    {
-        MS_DBG(getSensorName(), F("has already been woken up!  Will not run wake function."));
-    }
     // NOTE:  It's possible that the status pin is on, but the modem is actually
     // mid-shutdown.  In that case, we'll mistakenly skip re-waking it.
-    else if (_dataPin >= 0 && digitalRead(_dataPin) == _statusLevel && !_alwaysRunWake)
+    if (_dataPin >= 0 && digitalRead(_dataPin) == _statusLevel && !_alwaysRunWake)
     {
         MS_DBG(getSensorName(), F("was already on!  (status pin level = "),
                _statusLevel, F(") Will not run wake function."));
