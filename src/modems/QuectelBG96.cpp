@@ -83,6 +83,7 @@ bool QuectelBG96::modemSleepFxn(void)
 bool QuectelBG96::extraModemSetup(void)
 {
     gsmModem.init();
+    gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
     return true;
 }

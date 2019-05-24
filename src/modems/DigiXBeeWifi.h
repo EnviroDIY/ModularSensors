@@ -17,7 +17,6 @@
 
 #ifdef MS_DIGIXBEEWIFI_DEBUG
 #define MS_DEBUGGING_STD "DigiXBeeWifi"
-#define TINY_GSM_DEBUG DEBUGGING_SERIAL_OUTPUT
 #endif
 
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's

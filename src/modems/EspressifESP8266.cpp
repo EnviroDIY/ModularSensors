@@ -88,6 +88,7 @@ bool EspressifESP8266::ESPwaitForBoot(void)
         success &= gsmModem.waitResponse() == 1;
         // re-run init to set mux and station mode
         success &= gsmModem.init();
+        gsmClient.init(&gsmModem);
     }
     return success;
 }
@@ -184,6 +185,7 @@ bool EspressifESP8266::modemSleepFxn(void)
 bool EspressifESP8266::extraModemSetup(void)
 {
     gsmModem.init();
+    gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
     // Slow down the baud rate for slow processors - and save the change to
     // the ESP's non-volatile memory so we don't have to do it every time

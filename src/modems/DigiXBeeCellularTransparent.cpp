@@ -50,7 +50,8 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
 {
     bool success = true;
     MS_DBG(F("Initializing the XBee..."));
-    success &= gsmModem.init();  // initialize
+    success &= gsmModem.init();
+    gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
     MS_DBG(F("Putting XBee into command mode..."));
     if (gsmModem.commandMode())

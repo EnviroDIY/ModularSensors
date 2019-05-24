@@ -72,6 +72,7 @@ bool Sodaq2GBeeR6::modemSleepFxn(void)
 bool Sodaq2GBeeR6::extraModemSetup(void)
 {
     gsmModem.init();
+    gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
     return true;
 }

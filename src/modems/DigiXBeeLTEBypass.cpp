@@ -112,6 +112,7 @@ bool DigiXBeeLTEBypass::extraModemSetup(void)
         // re-initialize
         MS_DBG(F("Attempting to reconnect to the u-blox module..."));
         success &= gsmModem.init();
+        gsmClient.init(&gsmModem);
         _modemName = gsmModem.getModemName();
     }
     else success = false;

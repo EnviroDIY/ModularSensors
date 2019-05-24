@@ -91,6 +91,7 @@ bool SequansMonarch::modemSleepFxn(void)
 bool SequansMonarch::extraModemSetup(void)
 {
     gsmModem.init();
+    gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
     return true;
 }

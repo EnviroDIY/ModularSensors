@@ -84,6 +84,7 @@ bool SIMComSIM7000::modemSleepFxn(void)
 bool SIMComSIM7000::extraModemSetup(void)
 {
     gsmModem.init();
+    gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
     return true;
 }

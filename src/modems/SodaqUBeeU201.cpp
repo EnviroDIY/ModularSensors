@@ -92,6 +92,7 @@ bool SodaqUBeeU201::modemSleepFxn(void)
 bool SodaqUBeeU201::extraModemSetup(void)
 {
     gsmModem.init();
+    gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
     return true;
 }

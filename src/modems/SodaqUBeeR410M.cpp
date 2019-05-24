@@ -128,6 +128,7 @@ bool SodaqUBeeR410M::modemSleepFxn(void)
 bool SodaqUBeeR410M::extraModemSetup(void)
 {
     gsmModem.init();
+    gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
     // Set to only use LTE-M, which should cause connection more quickly
     gsmModem.sendAT(GF("+URAT=7"));
