@@ -143,9 +143,6 @@ bool specificModem::getModemSignalQuality(int16_t &rssi, int16_t &percent) \
     MS_MODEM_CALC_SIGNAL_RSSI; \
     MS_MODEM_CALC_SIGNAL_PERCENT; \
 \
-    MS_DBG(F("RSSI:"), rssi); \
-    MS_DBG(F("Percent signal strength:"), percent); \
-\
     return true; \
 }
 
@@ -153,7 +150,7 @@ bool specificModem::getModemSignalQuality(int16_t &rssi, int16_t &percent) \
 #define MS_MODEM_GET_MODEM_BATTERY_AVAILABLE(specificModem) \
 bool specificModem::getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) \
 { \
-    MS_DBG(F("Getting battery voltage:")); \
+    MS_DBG(F("Getting modem battery data:")); \
     return gsmModem.getBattStats(chargeState, percent, milliVolts); \
 }
 
@@ -161,7 +158,7 @@ bool specificModem::getModemBatteryStats(uint8_t &chargeState, int8_t &percent, 
 #define MS_MODEM_GET_MODEM_BATTERY_NA(specificModem) \
 bool specificModem::getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) \
 { \
-    MS_DBG(F("This modem doesn't return battery infromation!")); \
+    MS_DBG(F("This modem doesn't return battery information!")); \
     return false; \
 }
 

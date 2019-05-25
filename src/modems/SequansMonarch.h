@@ -23,7 +23,7 @@
 #define TINY_GSM_MODEM_SEQUANS_MONARCH
 
 // ?? Undocumented
-#define MONARCH_STATUS_TIME_MS 50
+#define MONARCH_STATUS_TIME_MS 500
 // ?? Undocumented (Giving 15sec here in case it is not monitored.)
 #define MONARCH_DISCONNECT_TIME_MS 15000L
 

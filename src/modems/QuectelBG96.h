@@ -22,8 +22,8 @@
 
 #define TINY_GSM_MODEM_BG96
 
-// Time after end pulse until status pin becomes active
-#define BG96_STATUS_TIME_MS 4800L
+// Time after end pulse until status pin becomes active - 4.8s
+#define BG96_STATUS_TIME_MS 5000L
 // > 2 sec
 #define BG96_DISCONNECT_TIME_MS 5000L
 

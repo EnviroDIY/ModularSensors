@@ -23,7 +23,7 @@
 
 // Time after end pulse until V_INT becomes active
 // Unspecified in documentation! Taking value from Lisa U2
-#define U201_STATUS_TIME_MS 35
+#define U201_STATUS_TIME_MS 100
 // Power down time "can largely vary depending
 // on the application / network settings and the concurrent module
 // activities."  Vint/status pin should be monitored and power not withdrawn

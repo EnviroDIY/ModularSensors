@@ -14,7 +14,7 @@
 #define SIMComSIM800_h
 
 // Debugging Statement
-// #define MS_SIMCOMSIM800_DEBUG
+#define MS_SIMCOMSIM800_DEBUG
 // #define MS_SIMCOMSIM800_DEBUG_DEEP
 
 #ifdef MS_SIMCOMSIM800_DEBUG
@@ -23,8 +23,10 @@
 
 #define TINY_GSM_MODEM_SIM800
 
-// Time after end pulse until status pin becomes active (>3sec from start of 1s pulse)
-#define SIM800_STATUS_TIME_MS 2000
+// Time after end pulse until status pin becomes active
+// SIM800 - >3sec from start of 1s pulse
+// SIM900 - >2.2sec from end of pulse
+#define SIM800_STATUS_TIME_MS 2500
 // power down (gracefully) takes >3sec
 // (Giving 15sec for shutdown in case it is not monitored.)
 #define SIM800_DISCONNECT_TIME_MS 15000L

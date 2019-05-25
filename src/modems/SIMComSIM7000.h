@@ -22,7 +22,7 @@
 #define TINY_GSM_MODEM_SIM7000
 
 // Time after end pulse until status pin becomes active (>4.5sec)
-#define SIM7000_STATUS_TIME_MS 4500L
+#define SIM7000_STATUS_TIME_MS 5000L
 // power down (gracefully) takes 1.8-6.9 sec
 #define SIM7000_DISCONNECT_TIME_MS 7000L
 

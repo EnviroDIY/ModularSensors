@@ -297,8 +297,8 @@ class Modem_Temp : public Variable
 {
 public:
     Modem_Temp(Sensor *parentSense,
-                        const char *uuid = "",
-                        const char *varCode = "modemTemp")
+               const char *uuid = "",
+               const char *varCode = "modemTemp")
       : Variable(parentSense,
                  (const uint8_t)MODEM_TEMPERATURE_VAR_NUM,
                  (uint8_t)MODEM_TEMPERATURE_RESOLUTION,

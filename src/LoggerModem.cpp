@@ -323,9 +323,9 @@ bool loggerModem::addSingleMeasurementResult(void)
     /* Initialize float variable */
     int16_t percent = -9999;
     int16_t rssi = -9999;
-    uint8_t state = -99;
+    uint8_t state = 99;
     int8_t bpercent = -99;
-    uint16_t volt = -9999;
+    uint16_t volt = 9999;
     float temp = -9999;
     float fstate = -9999;
     float fbpercent = -9999;
@@ -340,20 +340,24 @@ bool loggerModem::addSingleMeasurementResult(void)
         /* modem response, and a real response from the modem of no service/signal. */
         /* The TinyGSM getSignalQuality function returns the same "no signal" */
         /* value (99 CSQ or 0 RSSI) in all 3 cases. */
-        MS_DBG(F("Getting signal quality:"));
+        MS_DBG(F("Asking modem to give signal quality:"));
         success &= getModemSignalQuality(rssi, percent);
-        MS_DBG(F("RSSI:"), rssi);
-        MS_DBG(F("Percent signal strength:"), percent);
+        // MS_DBG(F("RSSI:"), rssi);
+        // MS_DBG(F("Percent signal strength:"), percent);
 
         MS_DBG(F("Getting battery info, if possible:"));
         success &= getModemBatteryStats(state, bpercent, volt);
-        MS_DBG(F("Battery charge state:"), state);
-        MS_DBG(F("Battery percentage:"), bpercent);
-        MS_DBG(F("Battery voltage:"), volt);
         // convert responses to floats
-        if (state != 99) fstate = (float)state;
-        if (bpercent != 99) fbpercent = (float)bpercent;
-        if (volt != 9999) fvolt = (float)volt;
+        if (success)
+        {
+            if (state != 99) fstate = (float)state;
+            if (bpercent != -99) fbpercent = (float)bpercent;
+            if (volt != 9999) fvolt = (float)volt;
+            MS_DBG(F("Modem battery charge state:"), fstate);
+            MS_DBG(F("Modem battery percentage:"), fbpercent);
+            MS_DBG(F("Modem battery voltage:"), fvolt);
+        }
+        else MS_DBG(F("Battery information not returned!"));
 
         MS_DBG(F("Getting chip temperature, if possible:"));
         temp = getModemTemperature();
@@ -424,7 +428,7 @@ void loggerModem::modemPowerUp(void)
     else
     {
         MS_DBG(F("Power to"), getSensorName(), F("is not controlled by this library."));
-        // Mark the power-on time, just in case it  had not been marked
+        // Mark the power-on time, just in case it had not been marked
         if (_millisPowerOn == 0) _millisPowerOn = millis();
     }
     // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
