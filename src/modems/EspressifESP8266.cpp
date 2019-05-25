@@ -107,7 +107,7 @@ bool EspressifESP8266::modemWakeFxn(void)
     else if (_modemResetPin >= 0)
     {
         MS_DBG(F("Sending a reset pulse to pin"), _modemResetPin,
-               F("to wake ESP8266 from deep sleep"))
+               F("to wake ESP8266 from deep sleep"));
         digitalWrite(_modemResetPin, LOW);
         delay(1);
         digitalWrite(_modemResetPin, HIGH);
@@ -117,7 +117,7 @@ bool EspressifESP8266::modemWakeFxn(void)
     else if (_modemSleepRqPin >= 0)
     {
         MS_DBG(F("Sending a pulse to pin"), _modemSleepRqPin,
-               F("to wake ESP8266 from light sleep"))
+               F("to wake ESP8266 from light sleep"));
         digitalWrite(_modemSleepRqPin, LOW);
         delay(1);
         digitalWrite(_modemSleepRqPin, HIGH);
