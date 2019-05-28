@@ -101,10 +101,18 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         success &= gsmModem.waitResponse() == 1;
         // Put the network connection parameters into flash
         success &= gsmModem.gprsConnect(_apn);
+        MS_DBG(F("Ensuring XBee is in transparent mode..."));
+        // Make sure we're really in transparent mode
+        gsmModem.sendAT(GF("AP1"));
+        success &= gsmModem.waitResponse() == 1;
         // Write changes to flash and apply them
+        MS_DBG(F("Applying chages..."));
         gsmModem.writeChanges();
         // Exit command mode
         gsmModem.exitCommand();
+        // Force restart the modem, just for good measure
+        MS_DBG(F("Restarting XBee..."));
+        success &= gsmModem.restart();
     }
     else success = false;
     if (success) MS_DBG(F("... Setup successful!"));
