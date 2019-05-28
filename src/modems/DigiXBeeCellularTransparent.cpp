@@ -106,7 +106,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         gsmModem.sendAT(GF("AP1"));
         success &= gsmModem.waitResponse() == 1;
         // Write changes to flash and apply them
-        MS_DBG(F("Applying chages..."));
+        MS_DBG(F("Applying changes..."));
         gsmModem.writeChanges();
         // Exit command mode
         gsmModem.exitCommand();
