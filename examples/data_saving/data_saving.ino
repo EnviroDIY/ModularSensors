@@ -51,8 +51,8 @@ const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugg
 const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPwrPin = -1;     // MCU SD card power pin (-1 if not applicable)
-const int8_t sdCardSSPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
+const int8_t sdCardPwrPin = -1;    // MCU SD card power pin (-1 if not applicable)
+const int8_t sdCardSSPin = 12;     // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create the main processor chip "sensor" - for general metadata
@@ -385,10 +385,10 @@ Logger loggerAllVars(LoggerID, loggingInterval, &arrayComplete);
 Logger loggerToGo(LoggerID, loggingInterval, &arrayToGo);
 
 // ==========================================================================
-//    A Publisher to WikiWatershed
+//    A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
 // ==========================================================================
 // Device registration and sampling feature information can be obtained after
-// registration at http://data.WikiWatershed.org
+// registration at https://monitormywatershed.org or https://data.envirodiy.org
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 
@@ -462,7 +462,7 @@ void setup()
     modbusSerial.begin(9600);
 
     // Assign pins SERCOM functionality for SAMD boards
-    // NOTE:  This must happen *after* the begin
+    // NOTE:  This must happen *after* the various serial.begin statements
     #if defined ARDUINO_ARCH_SAMD
     #ifndef ENABLE_SERIAL2
     pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2

@@ -1232,6 +1232,10 @@ Variable *variableList[] = {
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Modem_BatteryState(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Modem_BatteryPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Modem_BatteryVoltage(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
+    new Modem_Temp(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     calculatedVar,
 };
 
@@ -1462,11 +1466,6 @@ void setup()
         varArray.setupSensors();
     }
 
-    // Power down the modem - but only if there will be more than 15 seconds before
-    // the first logging interval - it can take the modem that long to shut down
-    if (Logger::getNowEpoch() % (loggingInterval*60) > 15)
-        modem.modemSleepPowerDown();
-
     // Create the log file, adding the default header to it
     // Do this last so we have the best chance of getting the time correct and
     // all sensor names correct
@@ -1474,9 +1473,23 @@ void setup()
     // the sensor setup we'll skip this too.
     if (getBatteryVoltage() > 3.4)
     {
+        Serial.println(F("Setting up file on SD card"));
         dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
         dataLogger.createLogFile(true);  // true = write a new header
         dataLogger.turnOffSDcard(true);  // true = wait for internal housekeeping after write
+    }
+
+    // Power down the modem - but only if there will be more than 15 seconds before
+    // the first logging interval - it can take the LTE modem that long to shut down
+    if (Logger::getNowEpoch() % (loggingInterval*60) > 15 ||
+        Logger::getNowEpoch() % (loggingInterval*60) < 6)
+    {
+        Serial.println(F("Putting modem to sleep"));
+        modem.modemSleepPowerDown();
+    }
+    else
+    {
+        Serial.println(F("Leaving modem on until after first measurement"));
     }
 
     // Call the processor sleep
