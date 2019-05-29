@@ -132,7 +132,7 @@ rssi = getRSSIFromCSQ(signalQual); \
 MS_DBG(F("RSSI Estimated from CSQ:"), rssi);
 #define MS_MODEM_CALC_SIGNAL_PERCENT \
 percent = getPctFromCSQ(signalQual); \
-MS_DBG(F("ignal percent calcuated from CSQ:"), percent);
+MS_DBG(F("Signal percent calcuated from CSQ:"), percent);
 #endif
 
 #define MS_MODEM_GET_MODEM_SIGNAL_QUALITY(specificModem) \

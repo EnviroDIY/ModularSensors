@@ -342,8 +342,8 @@ bool loggerModem::addSingleMeasurementResult(void)
         /* value (99 CSQ or 0 RSSI) in all 3 cases. */
         MS_DBG(F("Asking modem to give signal quality:"));
         success &= getModemSignalQuality(rssi, percent);
-        // MS_DBG(F("RSSI:"), rssi);
-        // MS_DBG(F("Percent signal strength:"), percent);
+        MS_DBG(F("RSSI:"), rssi);
+        MS_DBG(F("Percent signal strength:"), percent);
 
         MS_DBG(F("Getting battery info, if possible:"));
         success &= getModemBatteryStats(state, bpercent, volt);
@@ -363,7 +363,7 @@ bool loggerModem::addSingleMeasurementResult(void)
         temp = getModemTemperature();
         MS_DBG(F("Modem temperature:"), temp);
     }
-    else MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!"));
+    else MS_DBG(getSensorName(), F("is not expected to return measurement results!"));
 
     verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi);
     verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent);
