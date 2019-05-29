@@ -120,11 +120,19 @@ bool specificModem::verifyMeasurementComplete(bool debug) \
 
 
 #if defined TINY_GSM_MODEM_XBEE || defined TINY_GSM_MODEM_ESP8266
-#define MS_MODEM_CALC_SIGNAL_RSSI rssi = signalQual;
-#define MS_MODEM_CALC_SIGNAL_PERCENT percent = getPctFromRSSI(signalQual);
+#define MS_MODEM_CALC_SIGNAL_RSSI \
+rssi = signalQual; \
+MS_DBG(F("Raw signal is already in units of RSSI:"), rssi);
+#define MS_MODEM_CALC_SIGNAL_PERCENT \
+percent = getPctFromRSSI(signalQual);
+MS_DBG(F("Signal percent calcuated from RSSI:"), percent);
 #else
-#define MS_MODEM_CALC_SIGNAL_RSSI rssi = getRSSIFromCSQ(signalQual);
-#define MS_MODEM_CALC_SIGNAL_PERCENT percent = getPctFromCSQ(signalQual);
+#define MS_MODEM_CALC_SIGNAL_RSSI \
+rssi = getRSSIFromCSQ(signalQual); \
+MS_DBG(F("RSSI Estimated from CSQ:"), rssi);
+#define MS_MODEM_CALC_SIGNAL_PERCENT \
+percent = getPctFromCSQ(signalQual); \
+MS_DBG(F("ignal percent calcuated from CSQ:"), percent);
 #endif
 
 #define MS_MODEM_GET_MODEM_SIGNAL_QUALITY(specificModem) \
