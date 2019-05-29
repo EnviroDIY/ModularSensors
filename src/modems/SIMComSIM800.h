@@ -14,7 +14,7 @@
 #define SIMComSIM800_h
 
 // Debugging Statement
-#define MS_SIMCOMSIM800_DEBUG
+// #define MS_SIMCOMSIM800_DEBUG
 // #define MS_SIMCOMSIM800_DEBUG_DEEP
 
 #ifdef MS_SIMCOMSIM800_DEBUG
