@@ -13,7 +13,7 @@ char dataPublisher::txBuffer[MS_SEND_BUFFER_SIZE] = {'\0'};
 // Basic chunks of HTTP
 const char *dataPublisher::getHeader = "GET ";
 const char *dataPublisher::postHeader = "POST ";
-const char *dataPublisher::HTTPtag = "  HTTP/1.1";
+const char *dataPublisher::HTTPtag = " HTTP/1.1";
 const char *dataPublisher::hostHeader = "\r\nHost: ";
 
 // Constructors
@@ -119,11 +119,10 @@ void dataPublisher::printTxBuffer(Stream *stream)
 // This sends data on the "default" client of the modem
 int16_t dataPublisher::sendData()
 {
-    if (_inClient == NULL && _baseLogger->_logModem != NULL)
+    if (_inClient == NULL)
     {
-        _inClient = _baseLogger->_logModem->getClient();
+        PRINTOUT(F("ERROR! No web client assigned to publish data!"));
+        return 0;
     }
-
-    if (_inClient == NULL) return 0;
     else return sendData(_inClient);
 }

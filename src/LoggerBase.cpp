@@ -974,7 +974,7 @@ bool Logger::initializeSDCard(void)
     }
     else  // skip everything else if there's no SD card, otherwise it might hang
     {
-        PRINTOUT(F("Successfully connected to SD Card with card/slave select on pin"),
+        MS_DBG(F("Successfully connected to SD Card with card/slave select on pin"),
                  _SDCardSSPin);
         return true;
     }

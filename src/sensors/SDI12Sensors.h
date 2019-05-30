@@ -19,11 +19,12 @@
 // #define MS_SDI12SENSORS_DEBUG
 
 #ifdef MS_SDI12SENSORS_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "SDI12Sensors"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
 #ifdef SDI12_EXTERNAL_PCINT

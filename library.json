@@ -1,6 +1,6 @@
 {
     "name": "EnviroDIY_ModularSensors",
-    "version": "0.21.4",
+    "version": "0.22.2",
     "description":  "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
     "keywords": "modular, sensor, sensors, datalogger, logger, low power, sleeping, EnviroDIY, ModularSensors, Mayfly, WikiWatershed, ThingSpeak",
     "platforms": "atmelavr, atmelsam",
@@ -55,6 +55,9 @@
             "+<sensors/*.c>",
             "+<sensors/*.cpp>",
             "+<sensors/*.h>",
+            "+<modems/*.c>",
+            "+<modems/*.cpp>",
+            "+<modems/*.h>",
             "+<publishers/*.c>",
             "+<publishers/*.cpp>",
             "+<publishers/*.h>"
@@ -296,8 +299,7 @@
         {
             "name": "TinyGSM",
             "version": "https://github.com/EnviroDIY/TinyGSM.git",
-            "version_commit": "84bfb40504f83aa49fd8eb4c3c855e4c00449896",
-            "version_note": "=0.6.1",
+            "version_note": "=0.7.10",
             "note": "A small Arduino library for GPRS modules.",
             "authors": [
                 "Volodymyr Shymanskyy",

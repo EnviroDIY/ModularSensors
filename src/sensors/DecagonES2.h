@@ -33,10 +33,12 @@
 // #define MS_DECAGONES2_DEBUG
 
 #ifdef MS_DECAGONES2_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "DecagonES2"
 #endif
 
 // Included Dependencies
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "sensors/SDI12Sensors.h"
 

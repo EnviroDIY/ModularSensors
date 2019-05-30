@@ -49,11 +49,12 @@
 // #define MS_MEASSPECMS5803_DEBUG
 
 #ifdef MS_MEASSPECMS5803_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "MeaSpecMS5803"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <MS5803.h>

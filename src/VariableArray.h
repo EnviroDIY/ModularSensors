@@ -16,15 +16,16 @@
 // #define MS_VARIABLEARRAY_DEBUG_DEEP
 
 #ifdef MS_VARIABLEARRAY_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "VariableArray"
 #endif
 
 #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
-#define MS_DEBUGGING_DEEP
+#define MS_DEBUGGING_DEEP "VariableArray"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
 

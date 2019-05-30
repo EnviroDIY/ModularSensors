@@ -32,11 +32,12 @@
 // #define MS_AOSONGDHT_DEBUG
 
 #ifdef MS_AOSONGDHT_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "AOSongDHT"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <DHT.h>

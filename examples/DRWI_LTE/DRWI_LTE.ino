@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.21.4
+This example sketch is written for ModularSensors library version 0.22.2
 
 This sketch is an example of logging data to an SD card and sending the data to
 both the EnviroDIY data portal as should be used by groups involved with
@@ -28,7 +28,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.21.4";
+const char *libraryVersion = "0.22.2";
 // The name of this file
 const char *sketchName = "DRWI_LTE.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -62,144 +62,34 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 
 
 // ==========================================================================
-//    Wifi/Cellular Modem Main Chip Selection
+//    Wifi/Cellular Modem Settings
 // ==========================================================================
-
-// Select your modem chip - this determines the exact commands sent to it
-#define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
-#define USE_UBLOX_R410M  // Select with UBLOX for a non-XBee SARA R4 or N4 model
-#define USE_XBEE_BYPASS  // Select with UBLOX for a Digi 3G or LTE-M XBee in bypass mode
-
-
-// ==========================================================================
-//    Modem Pins
-// ==========================================================================
-
-const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
-const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
-
-
-// ==========================================================================
-//    TinyGSM Client
-// ==========================================================================
-
-#define TINY_GSM_YIELD() { delay(2); }  // Can help with slow (9600) baud rates
-
-// Include TinyGSM for the modem
-// This include must be included below the define of the modem name!
-#include <TinyGsmClient.h>
 
 // Create a reference to the serial port for the modem
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
-// Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(modemSerial);
-
-// Create a new TCP client on that modem and return a pointer to it
-TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
-
-
-// ==========================================================================
-//    Specific Modem On-Off Methods
-// ==========================================================================
-
-// This should apply to all Digi brand XBee modules.
-// Describe the physical pin connection of your modem to your board
-const long modemBaud = 9600;        // Communication speed of the modem, 9600 is default for XBee
-const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
-
-// Create the wake and sleep methods for the modem
-// These can be functions of any type and must return a boolean
-// After enabling pin sleep, the sleep request pin is held LOW to keep the XBee on
-// Enable pin sleep in the setup function or using XCTU prior to connecting the XBee
-bool modemSleepFxn(void)
-{
-    if (modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
-    {
-        digitalWrite(modemSleepRqPin, HIGH);
-        digitalWrite(redLED, LOW);
-        return true;
-    }
-    else
-    {
-        return true;
-    }
-}
-bool modemWakeFxn(void)
-{
-    if (modemVccPin >= 0)  // Turns on when power is applied
-        return true;
-    else if (modemSleepRqPin >= 0)
-    {
-        digitalWrite(modemSleepRqPin, LOW);
-        digitalWrite(redLED, HIGH);  // Because the XBee doesn't have any lights
-        return true;
-    }
-    else
-    {
-        return true;
-    }
-}
-// An extra function to set up pin sleep and other preferences on the XBee
-// NOTE:  This will only succeed if the modem is turned on and awake!
-void extraModemSetup(void)
-{
-    delay(1000);  // Guard time for command mode
-    tinyModem->streamWrite(GF("+++"));  // enter command mode
-    tinyModem->waitResponse(2000, F("OK\r"));
-    tinyModem->sendAT(F("D8"),1);  // Set DIO8 to be used for sleep requests
-    // NOTE:  Only pin 9/DIO8/DTR can be used for this function
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("D9"),1);  // Turn on status indication pin
-    // NOTE:  Only pin 13/DIO9 can be used for this function
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("D7"),1);  // Turn on CTS pin - as proxy for status indication
-    // NOTE:  Only pin 12/DIO7/CTS can be used for this function
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("SM"),1);  // Pin sleep
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
-    // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
-    // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
-    // so we'll use the Digi pin sleep instead.
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("P0"),0);  // Make sure USB direct won't be pin enabled
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("P1"),0);  // Make sure pins 7&8 are not set for USB direct
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("CP"),2);  // Cellular carrier profile - AT&T
-    // Hologram says they can use any network, but I've never succeeded with anything but AT&T
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
-    // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("AP5"));  // Turn on bypass mode
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("WR"));  // Write changes to flash
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("AC"));  // Apply changes
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("FR"));  // Force reset to enter bypass mode
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->init();  // initialize
-}
-
-
-// ==========================================================================
-//    Network Information and LoggerModem Object
-// ==========================================================================
-#include <LoggerModem.h>
+// Modem Pins - Describe the physical pin connection of your modem to your board
+const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
+const int8_t modemResetPin = 20;    // MCU pin connected to modem reset pin (-1 if unconnected)
+const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem status (-1 if unconnected)
 
 // Network connection information
-const char *apn = "hologram";  // The APN for the gprs connection, unnecessary for WiFi
+const char *apn = "hologram";  // The APN for the gprs connection
 
-// Create the loggerModem instance
-// A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
-// ^^ Use this for cellular
+// For the u-blox SARA R410M based Digi LTE-M XBee3
+// NOTE:  According to the manual, this should be less stable than transparent
+// mode, but my experience is the complete reverse.
+#include <modems/DigiXBeeLTEBypass.h>
+const long modemBaud = 9600;  // All XBee's use 9600 by default
+const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
+DigiXBeeLTEBypass modemXBLTEB(&modemSerial,
+                              modemVccPin, modemStatusPin, useCTSforStatus,
+                              modemResetPin, modemSleepRqPin,
+                              apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+DigiXBeeLTEBypass modem = modemXBLTEB;
 
 
 // ==========================================================================
@@ -212,12 +102,12 @@ MaximDS3231 ds3231(1);
 
 
 // ==========================================================================
-//    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
+//    Campbell OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
 #include <sensors/CampbellOBS3.h>
 
 const int8_t OBS3Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const uint8_t OBS3numberReadings = 10;
+const uint8_t OBS3NumberReadings = 10;
 const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
 // Campbell OBS 3+ Low Range calibration in Volts
 const int8_t OBSLowADSChannel = 0;  // The ADS channel for the low range output
@@ -226,7 +116,7 @@ const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calib
 const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
 
 // Create a Campbell OBS3+ LOW RANGE sensor object
-CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3numberReadings);
+CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3NumberReadings);
 
 
 // Campbell OBS 3+ High Range calibration in Volts
@@ -236,7 +126,7 @@ const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range cal
 const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
 
 // Create a Campbell OBS3+ HIGH RANGE sensor object
-CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
+CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3NumberReadings);
 
 
 // ==========================================================================
@@ -245,12 +135,12 @@ CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHig
 #include <sensors/DecagonCTD.h>
 
 const char *CTDSDI12address = "1";  // The SDI-12 Address of the CTD
-const uint8_t CTDnumberReadings = 6;  // The number of readings to average
+const uint8_t CTDNumberReadings = 6;  // The number of readings to average
 const int8_t SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const int8_t SDI12Data = 7;  // The SDI12 data pin
 
 // Create a Decagon CTD sensor object
-DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDnumberReadings);
+DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 
 
 // ==========================================================================
@@ -264,7 +154,7 @@ Variable *variableList[] = {
     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
     new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
-    new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -295,7 +185,7 @@ const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sam
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient, registrationToken, samplingFeature);
 
 
 // ==========================================================================
@@ -386,6 +276,7 @@ void setup()
 
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modem);
+    modem.setModemLED(modemLEDPin);
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
 
     // Begin the logger
@@ -397,17 +288,13 @@ void setup()
     {
         modem.modemPowerUp();
         modem.wake();
-
-        // Run any extra pre-set-up for the modem
-        Serial.println(F("Running extra modem pre-setup"));
-        extraModemSetup();
         modem.setup();
 
         // At very good battery voltage, or with suspicious time stamp, sync the clock
         // Note:  Please change these battery voltages to match your battery
         if (getBatteryVoltage() > 3.8 ||
             dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
-            dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+            dataLogger.getNowEpoch() > 1735689600)  /*After 1/1/2025*/
         {
             // Synchronize the RTC with NIST
             Serial.println(F("Attempting to synchronize RTC with NIST"));
@@ -425,9 +312,6 @@ void setup()
         varArray.setupSensors();
     }
 
-    // Power down the modem
-    modem.modemSleepPowerDown();
-
     // Create the log file, adding the default header to it
     // Do this last so we have the best chance of getting the time correct and
     // all sensor names correct
@@ -435,9 +319,23 @@ void setup()
     // the sensor setup we'll skip this too.
     if (getBatteryVoltage() > 3.4)
     {
+        Serial.println(F("Setting up file on SD card"));
         dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
         dataLogger.createLogFile(true);  // true = write a new header
         dataLogger.turnOffSDcard(true);  // true = wait for internal housekeeping after write
+    }
+
+    // Power down the modem - but only if there will be more than 15 seconds before
+    // the first logging interval - it can take the LTE modem that long to shut down
+    if (Logger::getNowEpoch() % (loggingInterval*60) > 15 ||
+        Logger::getNowEpoch() % (loggingInterval*60) < 6)
+    {
+        Serial.println(F("Putting modem to sleep"));
+        modem.modemSleepPowerDown();
+    }
+    else
+    {
+        Serial.println(F("Leaving modem on until after first measurement"));
     }
 
     // Call the processor sleep

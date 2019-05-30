@@ -23,14 +23,16 @@
 // #define MS_KELLERNANOLEVEL_DEBUG_DEEP
 
 #ifdef MS_KELLERNANOLEVEL_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "KellerNanolevel"
 #endif
 
 #ifdef MS_KELLERNANOLEVEL_DEBUG_DEEP
-#define MS_DEBUGGING_DEEP
+#define MS_DEBUGGING_DEEP "KellerNanolevel"
 #endif
 
 // Included Dependencies
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "sensors/KellerParent.h"
 
