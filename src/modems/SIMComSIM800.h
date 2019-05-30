@@ -34,7 +34,7 @@
 // Time after power on before "PWRKEY" can be used - >0.4sec
 #define SIM800_WARM_UP_TIME_MS 450
 // Time after end pulse until serial port becomes active (>3sec from start of 1s pulse)
-#define SIM800_ATRESPONSE_TIME_MS 2000
+#define SIM800_ATRESPONSE_TIME_MS 2500
 
 // How long we're willing to wait to get signal quality
 #define SIM800_SIGNALQUALITY_TIME_MS 15000L

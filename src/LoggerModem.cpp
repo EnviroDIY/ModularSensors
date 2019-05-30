@@ -261,7 +261,7 @@ bool loggerModem::isStable(bool debug)
 
     uint32_t elapsed_since_wake_up = now - _millisSensorActivated;
     // If the modem has a status pin and it's off, give up
-    if ( (_dataPin >= 0 && elapsed_since_wake_up > _statusTime_ms &&
+    if ( (_dataPin >= 0 && elapsed_since_wake_up > (_statusTime_ms + 250) &&
               digitalRead(_dataPin) != _statusLevel))
     {
         if (debug) MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and status pin on"),
@@ -290,8 +290,8 @@ bool loggerModem::isStable(bool debug)
         return true;
     }
 
-    // If we've exceeded the documented time until UART should respond (plus 500ms buffer), give up
-    if (elapsed_since_wake_up > (_stabilizationTime_ms + 500))
+    // If we've exceeded the documented time until UART should respond (plus 750ms buffer), give up
+    if (elapsed_since_wake_up > (_stabilizationTime_ms + 750))
     {
         if (debug) MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and"),
                getSensorName(), F("has maxed out wait for AT command reply!  Ending wait."));
@@ -659,18 +659,6 @@ void loggerModem::setModemTiming(void)
         // _on_pull_down_ms = 1100;  // >1s
         // _off_pull_down_ms = 700;  // 0.6s<Pulldown<1s
         _disconnetTime_ms = 12000;  // disconnect in 2-12 seconds
-    }
-    if (_modemName.indexOf(F("Sequans VZM20Q")) >= 0)
-    {
-        MS_DBG(F("Resetting warm-up and disconnect timing for a Sequans VZM20Q"));
-        _warmUpTime_ms = 0;  // Module automatically boots when power is applied
-        _statusTime_ms = 50;  // ?? Undocumented
-        _stabilizationTime_ms = 5000;  // ?? Time to UART availability not documented
-        // _on_pull_down_ms = 50;  // ?? Undocumented
-        // _off_pull_down_ms = 0;  // N/A - standard chip cannot be powered down with pin
-        // use AT+CPSMS command for LTE-M power saving
-        // use AT+SQNSSHDN command for device shut down
-        _disconnetTime_ms = 15000;  // ?? Undocumented (Giving 15sec here in case it is not monitored.)
     }
 }
 ***/

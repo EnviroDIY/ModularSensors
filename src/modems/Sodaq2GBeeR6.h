@@ -28,10 +28,11 @@
 // (Giving 15sec for shutdown in case it is not monitored.)
 #define SIM800_DISCONNECT_TIME_MS 15000L
 
-// Time after power on before "PWRKEY" can be used - >0.4sec
-#define SIM800_WARM_UP_TIME_MS 450
+// NOTE:  The GPRSBee R6+ has the PWR_KEY tied to the input voltage, so there is
+// no warm-up time needed
+#define SIM800_WARM_UP_TIME_MS 0
 // Time after end pulse until serial port becomes active (>3sec from start of 1s pulse)
-#define SIM800_ATRESPONSE_TIME_MS 2000
+#define SIM800_ATRESPONSE_TIME_MS 2500
 
 // How long we're willing to wait to get signal quality
 #define SIM800_SIGNALQUALITY_TIME_MS 15000L
