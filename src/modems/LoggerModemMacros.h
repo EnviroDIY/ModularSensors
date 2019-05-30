@@ -124,7 +124,7 @@ bool specificModem::verifyMeasurementComplete(bool debug) \
 rssi = signalQual; \
 MS_DBG(F("Raw signal is already in units of RSSI:"), rssi);
 #define MS_MODEM_CALC_SIGNAL_PERCENT \
-percent = getPctFromRSSI(signalQual);
+percent = getPctFromRSSI(signalQual); \
 MS_DBG(F("Signal percent calcuated from RSSI:"), percent);
 #else
 #define MS_MODEM_CALC_SIGNAL_RSSI \
