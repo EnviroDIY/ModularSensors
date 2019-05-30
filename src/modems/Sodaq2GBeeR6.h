@@ -23,7 +23,7 @@
 #define TINY_GSM_MODEM_SIM800
 
 // Time after end pulse until status pin becomes active (>3sec from start of 1s pulse)
-#define SIM800_STATUS_TIME_MS 2500
+#define SIM800_STATUS_TIME_MS 3000
 // power down (gracefully) takes >3sec
 // (Giving 15sec for shutdown in case it is not monitored.)
 #define SIM800_DISCONNECT_TIME_MS 15000L
@@ -32,7 +32,7 @@
 // no warm-up time needed
 #define SIM800_WARM_UP_TIME_MS 0
 // Time after end pulse until serial port becomes active (>3sec from start of 1s pulse)
-#define SIM800_ATRESPONSE_TIME_MS 2500
+#define SIM800_ATRESPONSE_TIME_MS 3000
 
 // How long we're willing to wait to get signal quality
 #define SIM800_SIGNALQUALITY_TIME_MS 15000L

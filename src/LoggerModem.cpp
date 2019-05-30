@@ -261,7 +261,7 @@ bool loggerModem::isStable(bool debug)
 
     uint32_t elapsed_since_wake_up = now - _millisSensorActivated;
     // If the modem has a status pin and it's off, give up
-    if ( (_dataPin >= 0 && elapsed_since_wake_up > (_statusTime_ms + 250) &&
+    if ( (_dataPin >= 0 && elapsed_since_wake_up > (_statusTime_ms + 500) &&
               digitalRead(_dataPin) != _statusLevel))
     {
         if (debug) MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and status pin on"),
