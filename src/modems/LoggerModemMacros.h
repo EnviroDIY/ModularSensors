@@ -344,7 +344,7 @@ uint32_t specificModem::getNISTTime(void) \
     while (millis() < _lastNISTrequest + 4000) {} \
 \
     /* Make TCP connection */ \
-    MS_DBG(F("Connecting to NIST daytime Server")); \
+    MS_DBG(F("\nConnecting to NIST daytime Server")); \
     bool connectionMade = false; \
     if (_modemName.indexOf(F("XBee")) >= 0) \
     { \
@@ -391,7 +391,7 @@ uint32_t specificModem::getNISTTime(void) \
 \
             /* Return the timestamp */ \
             uint32_t unixTimeStamp = secFrom1900 - 2208988800; \
-            MS_DBG(F("Unix Timestamp returned by NIST (UTC):"), unixTimeStamp); \
+            MS_DBG(F("Unix Timestamp returned by NIST (UTC):"), unixTimeStamp, '\n'); \
             /* If before Jan 1, 2017 or after Jan 1, 2030, most likely an error */ \
             if (unixTimeStamp < 1483228800) return 0; \
             else if (unixTimeStamp > 1893456000) return 0; \
