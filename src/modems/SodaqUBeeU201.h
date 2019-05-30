@@ -34,7 +34,6 @@
 #define U201_WARM_UP_TIME_MS 0
 // Time until system and digital pins are operational
 // (6 sec typical for SARA U201)
-// Time for an AT response may be even longer when using a 3G XBee in bypass mode!
 #define U201_ATRESPONSE_TIME_MS 6000L
 
 // How long we're willing to wait to get signal quality

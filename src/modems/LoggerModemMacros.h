@@ -219,6 +219,7 @@ float specificModem::getModemTemperature(void) \
     } \
 \
     /* Check that the modem is responding to AT commands.  If not, give up. */ \
+    /* TODO:  Check status pin? */ \
     MS_START_DEBUG_TIMER; \
     MS_DBG(F("\nWaiting for"), getSensorName(), F("to respond to AT commands...")); \
     if (!gsmModem.testAT(_stabilizationTime_ms + 500)) \
