@@ -299,6 +299,7 @@ void VariableArray::sensorsPowerDown(void)
 bool VariableArray::updateAllSensors(void)
 {
     bool success = true;
+    uint8_t nSensorsCompleted = 0;
 
     #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
     bool deepDebugTiming = true;
@@ -306,27 +307,51 @@ bool VariableArray::updateAllSensors(void)
     bool deepDebugTiming = false;
     #endif
 
+    // Create an array with the unique-ness value (so we can skip the function calls later)
+    MS_DBG(F("Creating a mask array with the uniqueness for each sensor.."));
+    bool lastSensorVariable[_variableCount];
+    for (uint8_t i = 0; i < _variableCount; i++)
+    {
+        lastSensorVariable[i] = isLastVarFromSensor(i);
+    }
+
+    // Create an array for the number of measurements already completed and set all to zero
+    MS_DBG(F("Creating an array for the number of completed measurements.."));
+    uint8_t nMeasurementsCompleted[_variableCount];
+    for (uint8_t i = 0; i < _variableCount; i++)
+    {
+        nMeasurementsCompleted[i] = 0;
+    }
+
+    // Create an array for the number of measurements to average (another short cut)
+    MS_DBG(F("Creating an array with the number of measurements to average.."));
+    uint8_t nMeasurementsToAverage[_variableCount];
+    for (uint8_t i = 0; i < _variableCount; i++)
+    {
+        if (lastSensorVariable[i])
+        {
+            nMeasurementsToAverage[i] =
+                arrayOfVars[i]->parentSensor->getNumberMeasurementsToAverage();
+        }
+        else nMeasurementsToAverage[i] = 0;
+    }
+
     // Clear the initial variable arrays
     MS_DBG(F("----->> Clearing all results arrays before taking new measurements. ..."));
     for (uint8_t i = 0; i < _variableCount; i++)
     {
-        if (isLastVarFromSensor(i))
+        if (lastSensorVariable[i])
         {
             arrayOfVars[i]->parentSensor->clearValues();
         }
     }
     MS_DBG(F("    ... Complete. <<-----"));
 
-    uint8_t nSensorsCompleted = 0;
-    uint8_t nMeasurementsCompleted[_variableCount];
-    for (uint8_t i = 0; i < _variableCount; i++)
-        nMeasurementsCompleted[i] = 0;
-
     // Check for any sensors that didn't wake up and mark them as "complete" so
     // they will be skipped in further looping.
     for (uint8_t i = 0; i < _variableCount; i++)
     {
-        if (isLastVarFromSensor(i)) // Skip non-unique sensors
+        if (lastSensorVariable[i]) // Skip non-unique sensors
         {
             if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 3) == 0 ||  // No attempt made to wake the sensor up
                 bitRead(arrayOfVars[i]->parentSensor->getStatus(), 4) == 0 )  // OR Wake up failed
@@ -336,7 +361,7 @@ bool VariableArray::updateAllSensors(void)
 
                 // Set the number of measurements already equal to whatever total
                 // number requested to ensure the sensor is skipped in further loops.
-                nMeasurementsCompleted[i] = arrayOfVars[i]->parentSensor->getNumberMeasurementsToAverage();
+                nMeasurementsCompleted[i] = nMeasurementsToAverage[i];
                 // Bump up the finished count.
                 nSensorsCompleted++;
             }
@@ -352,8 +377,8 @@ bool VariableArray::updateAllSensors(void)
             // THIS IS PURELY FOR DEEP DEBUGGING OF THE TIMING!
             // Leave this whole section commented out unless you want excessive
             // printouts (ie, thousands of lines) of the timing information!!
-            if (isLastVarFromSensor(i) and
-                arrayOfVars[i]->parentSensor->getNumberMeasurementsToAverage() > nMeasurementsCompleted[i])
+            if (lastSensorVariable[i] and
+                nMeasurementsToAverage[i] > nMeasurementsCompleted[i])
             {
                 MS_DEEP_DBG(i), '-', arrayOfVars[i]->getParentSensorNameAndLocation(),
                            F("- millis:"), millis(),
@@ -372,8 +397,8 @@ bool VariableArray::updateAllSensors(void)
             ***/
 
             // Only do checks on sensors that still have measurements to finish
-            if (isLastVarFromSensor(i) and
-                arrayOfVars[i]->parentSensor->getNumberMeasurementsToAverage() > nMeasurementsCompleted[i])
+            if (lastSensorVariable[i] and
+                nMeasurementsToAverage[i] > nMeasurementsCompleted[i])
             {
                 // first, make sure the sensor is stable
                 if ( arrayOfVars[i]->parentSensor->isStable(deepDebugTiming))
@@ -427,7 +452,7 @@ bool VariableArray::updateAllSensors(void)
                 }
 
                 // if all the measurements are done, mark the whole sensor as done
-                if (nMeasurementsCompleted[i] == arrayOfVars[i]->parentSensor->getNumberMeasurementsToAverage())
+                if (nMeasurementsCompleted[i] == nMeasurementsToAverage[i])
                 {
                     MS_DBG(F("--- Finished all measurements from"),
                            arrayOfVars[i]->getParentSensorNameAndLocation(), F("---"));
@@ -443,7 +468,7 @@ bool VariableArray::updateAllSensors(void)
     MS_DBG(F("----->> Averaging results and notifying all variables. ..."));
     for (uint8_t i = 0; i < _variableCount; i++)
     {
-        if (isLastVarFromSensor(i))
+        if (lastSensorVariable[i])
         {
             // MS_DBG(F("--- Averaging results from"), arrayOfVars[i]->getParentSensorNameAndLocation(), F("---"));
             arrayOfVars[i]->parentSensor->averageMeasurements();
@@ -630,7 +655,7 @@ bool VariableArray::completeUpdate(void)
             // THIS IS PURELY FOR DEEP DEBUGGING OF THE TIMING!
             // Leave this whole section commented out unless you want excessive
             // printouts (ie, thousands of lines) of the timing information!!
-            if (isLastVarFromSensor(i) and
+            if (lastSensorVariable[i] and
                 nMeasurementsToAverage[i] > nMeasurementsCompleted[i])
             {
                 MS_DEEP_DBG(i), '-',
