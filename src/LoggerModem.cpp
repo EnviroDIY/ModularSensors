@@ -36,6 +36,8 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     _lastNISTrequest = 0;
     _lastConnectionCheck = 0;
     _lastATCheck = 0;
+
+    previousCommunicationFailed = false;
 }
 
 
@@ -68,6 +70,10 @@ void loggerModem::modemHardReset(void)
         digitalWrite(_modemResetPin, LOW);
         delay(200);
         digitalWrite(_modemResetPin, HIGH);
+        // Re-set _millisSensorActivated  - the hard reset is a new activation
+        _millisSensorActivated = millis();
+        // Unset the flag for prior communication failure
+        previousCommunicationFailed = false;
     }
 }
 
@@ -176,9 +182,8 @@ bool loggerModem::wake(void)
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
-    // NOTE:  This is the ONLY place _millisSensorActivated is set!
-    // NOTE:  This is the ONLY place bit 4 is set!
-
+    // NOTE:  _millisSensorActivated can be set here or by modemHardReset
+    // NOTE:  This is the ONLY place status bit 4 is set!
     bool success = true;
 
     // Check the status pin and wake bits before running wake function
@@ -198,7 +203,7 @@ bool loggerModem::wake(void)
     }
 
     // Re-check the status pin
-    // Only works if the status pin comes on immediately
+    // Only works if the status pin comes on immediately - most don't
     if (_dataPin >= 0 && _statusTime_ms == 0 && digitalRead(_dataPin) != _statusLevel)
     {
         MS_DBG(F("Status pin"), _dataPin, F("on"), getSensorName(), F("is"),
@@ -247,6 +252,7 @@ bool loggerModem::isStable(bool debug)
     #if defined MS_LOGGERMODEM_DEBUG_DEEP
     debug = true;
     #endif
+
     // If the modem never "woke", then it will never respond and thus it's
     // essentially already "stable."
     if (!bitRead(_sensorStatus, 4))
@@ -260,21 +266,36 @@ bool loggerModem::isStable(bool debug)
     uint32_t now = millis();
 
     uint32_t elapsed_since_wake_up = now - _millisSensorActivated;
-    // If the modem has a status pin and it's off, give up
+    // If the modem has a status pin and it's still off after the specified time
+    // plus a 500ms buffer, then, if it's the first time this happened give up
+    // and move on.  If it's happened twice in a row, try a hard reset and
+    // keep waiting.
     if ( (_dataPin >= 0 && elapsed_since_wake_up > (_statusTime_ms + 500) &&
               digitalRead(_dataPin) != _statusLevel))
     {
-        if (debug) MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and status pin"),
+        // if we maxed out the wait for the status pin after the previous wake
+        // and we've maxed it again after the most recent wake, do a hard reset
+        // and continue waiting
+        if (previousCommunicationFailed)
+        {
+            modemHardReset();
+            return false;
+        }
+        else
+        {
+            if (debug) MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and status pin"),
               _dataPin, F("on"), getSensorName(), F("is"), digitalRead(_dataPin),
               F("indicating it is off.  Will not continue to attempt communication!"));
-        // Unset status bit 4 (wake up success) and _millisSensorActivated
-        // We unset these bits here because it's possible that a modem "passed"
-        // the wake command, but never really woke.  For sensors that take time
-        // before their status pin becomes active, (_statusTime_ms > 0) we
-        // don't know immediately that they failed to wake
-        _millisSensorActivated = 0;
-        _sensorStatus &= 0b11101111;
-        return true;
+            // Unset status bit 4 (wake up success) and _millisSensorActivated
+            // We unset these bits here because it's possible that a modem "passed"
+            // the wake command, but never really woke.  For sensors that take time
+            // before their status pin becomes active, (_statusTime_ms > 0) we
+            // don't know that they failed to wake until we check here
+            _millisSensorActivated = 0;
+            _sensorStatus &= 0b11101111;
+            previousCommunicationFailed = true;
+            return true;
+        }
     }
 
     // We don't want to ping any of the modems too fast so they don't get
@@ -287,20 +308,35 @@ bool loggerModem::isStable(bool debug)
         if (debug) MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and"),
                getSensorName(), F("is now responding to AT commands!"));
         _lastATCheck = now;
+        previousCommunicationFailed = false;
         return true;
     }
 
-    // If we've exceeded the documented time until UART should respond (plus 750ms buffer), give up
+    // If we've exceeded the documented time until UART should respond (plus
+    // 750ms buffer), then, if it's the first time this happened give up
+    // and move on.  If it's happened twice in a row, try a hard reset and
+    // keep waiting.
     if (elapsed_since_wake_up > (_stabilizationTime_ms + 750))
     {
-        if (debug) MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and"),
-               getSensorName(), F("has maxed out wait for AT command reply!  Ending wait."));
-         // Unset status bit 4 (wake up success) and _millisSensorActivated
-         // It's safe to unset these here because we've already tested and failed
-         // to respond to AT commands.
-         _millisSensorActivated = 0;
-         _sensorStatus &= 0b11101111;
-        return true;
+        if (previousCommunicationFailed)
+        {
+            // if we maxed out the wait last time and we've maxed it again,
+            // do a hard reset and continue waiting
+            modemHardReset();
+            return false;
+        }
+        else
+        {
+            if (debug) MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and"),
+                   getSensorName(), F("has maxed out wait for AT command reply!  Ending wait."));
+             // Unset status bit 4 (wake up success) and _millisSensorActivated
+             // It's safe to unset these here because we've already tested and failed
+             // to respond to AT commands.
+             _millisSensorActivated = 0;
+             _sensorStatus &= 0b11101111;
+             previousCommunicationFailed = true;
+            return true;
+        }
     }
 
     // If the modem isn't responding to AT commands yet, but its status pin shows
