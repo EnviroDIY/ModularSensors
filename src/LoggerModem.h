@@ -164,7 +164,7 @@ protected:
     int8_t _modemResetPin;
     int8_t _modemLEDPin;
 
-    // THis denotes whether we should run the wake/sleep functions regardless
+    // This denotes whether we should run the wake/sleep functions regardless
     // of the state of the status pins or if we should check the status pin first.
     bool _alwaysRunWake;
 
@@ -172,9 +172,13 @@ protected:
     uint32_t _statusTime_ms;
     uint32_t _disconnetTime_ms;
 
+    // A flag noting if the last wait for AT command responses failed
+    bool previousCommunicationFailed;
+
     uint32_t _lastNISTrequest;
     uint32_t _lastATCheck;
     uint32_t _lastConnectionCheck;
+
     String _modemName;
 
 };
