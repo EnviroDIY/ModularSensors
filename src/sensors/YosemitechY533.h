@@ -37,7 +37,21 @@
 #ifndef YosemitechY533_h
 #define YosemitechY533_h
 
+// Debugging Statement
+// #define MS_YOSEMITECHY533_DEBUG
+// #define MS_YOSEMITECHY533_DEBUG_DEEP
+
+#ifdef MS_YOSEMITECHY533_DEBUG
+#define MS_DEBUGGING_STD "YosemitechY533"
+#endif
+
+#ifdef MS_YOSEMITECHY533_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "YosemitechY533"
+#endif
+
 // Included Dependencies
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "sensors/YosemitechParent.h"
 

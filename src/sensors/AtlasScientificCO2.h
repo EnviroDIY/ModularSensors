@@ -16,9 +16,15 @@
 #define AtlasScientificCO2_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_ATLASSCIENTIFICCO2_DEBUG
+
+#ifdef MS_ATLASSCIENTIFICCO2_DEBUG
+#define MS_DEBUGGING_STD "AtlasScientificCO2"
+#endif
 
 // Included Dependencies
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "sensors/AtlasParent.h"
 

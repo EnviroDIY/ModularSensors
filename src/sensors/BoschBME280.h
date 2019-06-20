@@ -35,10 +35,15 @@
 #define BoschBME280_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_BOSCHBME280_DEBUG
+
+#ifdef MS_BOSCHBME280_DEBUG
+#define MS_DEBUGGING_STD "BoschBME280"
+#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Adafruit_BME280.h>
@@ -48,6 +53,8 @@
 #define BME280_WARM_UP_TIME_MS 100
 #define BME280_STABILIZATION_TIME_MS 4000   // 0.5 s for good numbers, but optimal at 4 s based on tests using bme280timingTest.ino
 #define BME280_MEASUREMENT_TIME_MS 1100     // 1.0 s according to datasheet, but slightly better stdev when 1.1 s
+// For details on BME280 stabilization time updates, include testing sketch and link to data in Google Sheet,
+//  see https://github.com/EnviroDIY/ModularSensors/commit/27e3cb531162ed6971a41f3c38f5920d356089e9
 
 #define BME280_TEMP_RESOLUTION 2
 #define BME280_TEMP_VAR_NUM 0

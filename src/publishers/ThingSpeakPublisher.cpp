@@ -27,19 +27,19 @@ const char *ThingSpeakPublisher::mqttUser = THING_SPEAK_USER_NAME;
 ThingSpeakPublisher::ThingSpeakPublisher()
   : dataPublisher()
 {
-    MS_DBG(F("ThingSpeakPublisher object created"));
+    // MS_DBG(F("ThingSpeakPublisher object created"));
 }
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger,
                                    uint8_t sendEveryX, uint8_t sendOffset)
   : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {
-    MS_DBG(F("ThingSpeakPublisher object created"));
+    // MS_DBG(F("ThingSpeakPublisher object created"));
 }
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client *inClient,
                                    uint8_t sendEveryX, uint8_t sendOffset)
   : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
 {
-    MS_DBG(F("ThingSpeakPublisher object created"));
+    // MS_DBG(F("ThingSpeakPublisher object created"));
 }
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger,
                                    const char *thingSpeakMQTTKey,
@@ -51,7 +51,7 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger,
    setMQTTKey(thingSpeakMQTTKey);
    setChannelID(thingSpeakChannelID);
    setChannelKey(thingSpeakChannelKey);
-   MS_DBG(F("ThingSpeakPublisher object created"));
+   // MS_DBG(F("ThingSpeakPublisher object created"));
 }
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client *inClient,
                                    const char *thingSpeakMQTTKey,
@@ -63,7 +63,7 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client *inClient,
    setMQTTKey(thingSpeakMQTTKey);
    setChannelID(thingSpeakChannelID);
    setChannelKey(thingSpeakChannelKey);
-   MS_DBG(F("ThingSpeakPublisher object created"));
+   // MS_DBG(F("ThingSpeakPublisher object created"));
 }
 // Destructor
 ThingSpeakPublisher::~ThingSpeakPublisher(){}
@@ -187,12 +187,10 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
     // Make the MQTT connection
     // Note:  the client id and the user name do not mean anything for ThingSpeak
     MS_DBG(F("Opening MQTT Connection"));
-    #if defined(DEBUGGING_SERIAL_OUTPUT)
-        uint32_t start_timer = millis();
-    #endif
+    MS_START_DEBUG_TIMER;
     if (_mqttClient.connect(mqttClient, mqttUser, _thingSpeakMQTTKey))
     {
-        MS_DBG(F("MQTT connected after"), millis() - start_timer, F("ms"));
+        MS_DBG(F("MQTT connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
 
         if (_mqttClient.publish(topicBuffer, txBuffer))
         {
@@ -213,10 +211,8 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
 
     // Disconnect from MQTT
     MS_DBG(F("Disconnecting from MQTT"));
-    #if defined(DEBUGGING_SERIAL_OUTPUT)
-        start_timer = millis();
-    #endif
+    MS_START_DEBUG_TIMER
     _mqttClient.disconnect();
-    MS_DBG(F("Disconnected after"), millis() - start_timer, F("ms"));
+    MS_DBG(F("Disconnected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     return retVal;
 }

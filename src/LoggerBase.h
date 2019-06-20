@@ -13,11 +13,15 @@
 #define LoggerBase_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_LOGGERBASE_DEBUG
+
+#ifdef MS_LOGGERBASE_DEBUG
+#define MS_DEBUGGING_STD "LoggerBase"
+#endif
 
 // Included Dependencies
-//#include <Arduino.h>
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableArray.h"
 #include "LoggerModem.h"
 

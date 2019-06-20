@@ -16,9 +16,15 @@
 #define AtlasScientificRTD_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_ATLASSCIENTIFICRTD_DEBUG
+
+#ifdef MS_ATLASSCIENTIFICRTD_DEBUG
+#define MS_DEBUGGING_STD "AtlasScientificRTD"
+#endif
 
 // Included Dependencies
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "sensors/AtlasParent.h"
 

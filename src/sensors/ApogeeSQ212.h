@@ -34,10 +34,15 @@
 #define ApogeeSQ212_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_APOGEESQ212_DEBUG
+
+#ifdef MS_APOGEESQ212_DEBUG
+#define MS_DEBUGGING_STD "ApogeeSQ212"
+#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
 

@@ -30,10 +30,15 @@
 #define CampbellOBS3_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_CAMPBELLOBS3_DEBUG
+
+#ifdef MS_CAMPBELLOBS3_DEBUG
+#define MS_DEBUGGING_STD "CampbellOBS3"
+#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
 

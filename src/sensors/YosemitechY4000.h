@@ -64,7 +64,21 @@
 #ifndef YosemitechY4000_h
 #define YosemitechY4000_h
 
+// Debugging Statement
+// #define MS_YOSEMITECHY4000_DEBUG
+// #define MS_YOSEMITECHY4000_DEBUG_DEEP
+
+#ifdef MS_YOSEMITECHY4000_DEBUG
+#define MS_DEBUGGING_STD "YosemitechY4000"
+#endif
+
+#ifdef MS_YOSEMITECHY4000_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "YosemitechY4000"
+#endif
+
 // Included Dependencies
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "sensors/YosemitechParent.h"
 
@@ -72,7 +86,7 @@
 #define Y4000_NUM_VARIABLES 8
 #define Y4000_WARM_UP_TIME_MS 1600
 // Time for communication to begin
-#define Y4000_STABILIZATION_TIME_MS 60000L
+#define Y4000_STABILIZATION_TIME_MS 60000
 // Y4000 Modbus manual says 60s; we find Cond takes about that long to respond.
 #define Y4000_MEASUREMENT_TIME_MS 3000
 

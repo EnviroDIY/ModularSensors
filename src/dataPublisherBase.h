@@ -12,7 +12,11 @@
 #define dataPublisherBase_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_DATAPUBLISHERBASE_DEBUG
+
+#ifdef MS_DATAPUBLISHERBASE_DEBUG
+#define MS_DEBUGGING_STD "dataPublisherBase"
+#endif
 
 // Send Buffer
 // This determines how many characters to set out at once over the TCP/UDP
@@ -23,8 +27,8 @@
 #define MS_SEND_BUFFER_SIZE 750
 
 // Included Dependencies
-//#include <Arduino.h>
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "LoggerBase.h"
 #include "Client.h"
 
@@ -69,7 +73,6 @@ public:
     // This depends on an internet connection already being made and a client
     // being available
     virtual int16_t sendData(Client *_outClient) = 0;
-    // This sends data on the "default" client of the modem attached to the logger
     virtual int16_t sendData();
 
 protected:

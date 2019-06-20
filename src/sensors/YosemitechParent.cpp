@@ -80,9 +80,8 @@ bool YosemitechParent::setup(void)
 // Different from the standard in that it waits for warm up and starts measurements
 bool YosemitechParent::wake(void)
 {
-    // Sensor::wake() checks if the power pin is on, setup has been successful,
-    // and sets the wake timestamp and status bits.  If it returns false,
-    // there's no reason to go on.
+    // Sensor::wake() checks if the power pin is on and sets the wake timestamp 
+    // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
 
     // Send the command to begin taking readings, trying up to 5 times

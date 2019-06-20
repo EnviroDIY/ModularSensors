@@ -22,10 +22,15 @@
 #define MaximDS3231_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_MAXIMDS3231_DEBUG
+
+#ifdef MS_MAXIMDS3231_DEBUG
+#define MS_DEBUGGING_STD "MaximDS3231"
+#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
 

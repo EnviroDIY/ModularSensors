@@ -16,9 +16,15 @@
 #define AtlasScientificORP_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_ATLASORP_DEBUG
+
+#ifdef MS_ATLASORP_DEBUG
+#define MS_DEBUGGING_STD "AtlasScientificORP"
+#endif
 
 // Included Dependencies
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "sensors/AtlasParent.h"
 

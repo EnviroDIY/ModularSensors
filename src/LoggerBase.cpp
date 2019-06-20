@@ -70,7 +70,7 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
         dataPublishers[i] = NULL;
     }
 
-    MS_DBG(F("Logger object created"));
+    // MS_DBG(F("Logger object created"));
 }
 Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
                VariableArray *inputArray)
@@ -104,7 +104,7 @@ Logger::Logger(const char *loggerID, uint16_t loggingIntervalMinutes,
         dataPublishers[i] = NULL;
     }
 
-    MS_DBG(F("Logger object created"));
+    // MS_DBG(F("Logger object created"));
 }
 Logger::Logger()
 {
@@ -132,7 +132,7 @@ Logger::Logger()
         dataPublishers[i] = NULL;
     }
 
-    MS_DBG(F("Logger object created"));
+    // MS_DBG(F("Logger object created"));
 }
 // Destructor
 Logger::~Logger(){}
@@ -238,7 +238,7 @@ void Logger::setRTCWakePin(int8_t mcuWakePin)
     }
     MS_DBG(F("Pin"), _mcuWakePin, F("set as RTC wake up pin"));
     #elif defined ARDUINO_ARCH_SAMD
-    MS_DBG(F("MCU's internal clock will be used for wake up"))
+    MS_DBG(F("MCU's internal clock will be used for wake up"));
     #endif
 }
 
@@ -974,7 +974,7 @@ bool Logger::initializeSDCard(void)
     }
     else  // skip everything else if there's no SD card, otherwise it might hang
     {
-        PRINTOUT(F("Successfully connected to SD Card with card/slave select on pin"),
+        MS_DBG(F("Successfully connected to SD Card with card/slave select on pin"),
                  _SDCardSSPin);
         return true;
     }
@@ -1072,7 +1072,8 @@ bool Logger::createLogFile(String& filename, bool writeDefaultHeader)
     if (openFile(filename, true, writeDefaultHeader))
     {
         // Close the file to save it (only do this if we'd opened it)
-        logFile.sync();
+        // logFile.sync();
+        logFile.close();
         PRINTOUT(F("Data will be saved as"), _fileName);
         return true;
     }
@@ -1120,7 +1121,8 @@ bool Logger::logToSD(String& filename, String& rec)
     // Set access date time
     setFileTimestamp(logFile, T_ACCESS);
     // Close the file to save it
-    logFile.sync();
+    // logFile.sync();
+    logFile.close();
     return true;
 }
 bool Logger::logToSD(String& rec)
@@ -1165,7 +1167,8 @@ bool Logger::logToSD(void)
     // Set access date time
     setFileTimestamp(logFile, T_ACCESS);
     // Close the file to save it
-    logFile.sync();
+    // logFile.sync();
+    logFile.close();
     return true;
 }
 

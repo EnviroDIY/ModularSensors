@@ -34,19 +34,19 @@ const char *EnviroDIYPublisher::timestampTag = "\",\"timestamp\":\"";
 EnviroDIYPublisher::EnviroDIYPublisher()
   : dataPublisher()
 {
-    MS_DBG(F("EnviroDIYPublisher object created"));
+    // MS_DBG(F("dataPublisher object created"));
 }
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger,
                                  uint8_t sendEveryX, uint8_t sendOffset)
   : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {
-    MS_DBG(F("EnviroDIYPublisher object created"));
+    // MS_DBG(F("dataPublisher object created"));
 }
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
                                  uint8_t sendEveryX, uint8_t sendOffset)
   : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
 {
-    MS_DBG(F("EnviroDIYPublisher object created"));
+    // MS_DBG(F("dataPublisher object created"));
 }
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger,
                                  const char *registrationToken,
@@ -56,7 +56,7 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger,
 {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
-    MS_DBG(F("EnviroDIYPublisher object created"));
+    // MS_DBG(F("dataPublisher object created"));
 }
 EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
                                  const char *registrationToken,
@@ -66,7 +66,7 @@ EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client *inClient,
 {
     setToken(registrationToken);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
-    MS_DBG(F("EnviroDIYPublisher object created"));
+    // MS_DBG(F("dataPublisher object created"));
 }
 // Destructor
 EnviroDIYPublisher::~EnviroDIYPublisher(){}
@@ -205,10 +205,10 @@ int16_t EnviroDIYPublisher::sendData(Client *_outClient)
 
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
     MS_DBG(F("Connecting client"));
-    uint32_t start_timer = millis();
+    MS_START_DEBUG_TIMER;
     if (_outClient->connect(enviroDIYHost, enviroDIYPort))
     {
-        MS_DBG(F("Client connected after"), millis() - start_timer, F("ms\n"));
+        MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
 
         // copy the initial post header into the tx buffer
         strcpy(txBuffer, postHeader);
@@ -279,8 +279,9 @@ int16_t EnviroDIYPublisher::sendData(Client *_outClient)
         // Send out the finished request (or the last unsent section of it)
         printTxBuffer(_outClient);
 
-        start_timer = millis();
-        while ((millis() - start_timer) < 10000L && _outClient->available() < 12)
+        // Wait 10 seconds for a response from the server
+        uint32_t start = millis();
+        while ((millis() - start) < 10000L && _outClient->available() < 12)
         {delay(10);}
 
         // Read only the first 12 characters of the response
@@ -290,9 +291,9 @@ int16_t EnviroDIYPublisher::sendData(Client *_outClient)
 
         // Close the TCP/IP connection
         MS_DBG(F("Stopping client"));
-        start_timer = millis();
+        MS_START_DEBUG_TIMER;
         _outClient->stop();
-        MS_DBG(F("Client stopped after"), millis() - start_timer, F("ms"));
+        MS_DBG(F("Client stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     }
     else PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data Portal --"));
 

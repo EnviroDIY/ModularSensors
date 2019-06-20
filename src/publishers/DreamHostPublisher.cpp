@@ -24,19 +24,19 @@ const char *DreamHostPublisher::timestampTagDH = "&Loggertime=";
 DreamHostPublisher::DreamHostPublisher()
   : dataPublisher()
 {
-    MS_DBG(F("DreamHostPublisher object created"));
+    // MS_DBG(F("DreamHostPublisher object created"));
 }
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger,
                                  uint8_t sendEveryX, uint8_t sendOffset)
   : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {
-    MS_DBG(F("DreamHostPublisher object created"));
+    // MS_DBG(F("DreamHostPublisher object created"));
 }
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client *inClient,
                                  uint8_t sendEveryX, uint8_t sendOffset)
   : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
 {
-    MS_DBG(F("DreamHostPublisher object created"));
+    // MS_DBG(F("DreamHostPublisher object created"));
 }
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger,
                                  const char *dhUrl, uint8_t sendEveryX,
@@ -44,7 +44,7 @@ DreamHostPublisher::DreamHostPublisher(Logger& baseLogger,
   : dataPublisher(baseLogger, sendEveryX, sendOffset)
 {
     setDreamHostPortalRX(dhUrl);
-    MS_DBG(F("DreamHostPublisher object created"));
+    // MS_DBG(F("DreamHostPublisher object created"));
 }
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client *inClient,
                                  const char *dhUrl, uint8_t sendEveryX,
@@ -52,7 +52,7 @@ DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client *inClient,
   : dataPublisher(baseLogger, inClient, sendEveryX, sendOffset)
 {
     setDreamHostPortalRX(dhUrl);
-    MS_DBG(F("DreamHostPublisher object created"));
+    // MS_DBG(F("DreamHostPublisher object created"));
 }
 // Destructor
 DreamHostPublisher::~DreamHostPublisher(){}
@@ -128,10 +128,10 @@ int16_t DreamHostPublisher::sendData(Client *_outClient)
 
     // Open a TCP/IP connection to DreamHost
     MS_DBG(F("Connecting client"));
-    uint32_t start_timer = millis();
+    MS_START_DEBUG_TIMER ;
     if (_outClient->connect(dreamhostHost, dreamhostPort))
     {
-        MS_DBG(F("Client connected after"), millis() - start_timer, F("ms\n"));
+        MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
 
         // copy the initial post header into the tx buffer
         strcpy(txBuffer, getHeader);
@@ -175,8 +175,9 @@ int16_t DreamHostPublisher::sendData(Client *_outClient)
         // Send out the finished request (or the last unsent section of it)
         printTxBuffer(_outClient);
 
-        start_timer = millis();
-        while ((millis() - start_timer) < 10000L && _outClient->available() < 12)
+        // Wait 10 seconds for a response from the server
+        uint32_t start = millis();
+        while ((millis() - start) < 10000L && _outClient->available() < 12)
         {delay(10);}
 
         // Read only the first 12 characters of the response
@@ -186,9 +187,9 @@ int16_t DreamHostPublisher::sendData(Client *_outClient)
 
         // Close the TCP/IP connection
         MS_DBG(F("Stopping client"));
-        start_timer = millis();
+        MS_START_DEBUG_TIMER;
         _outClient->stop();
-        MS_DBG(F("Client stopped after"), millis() - start_timer, F("ms"));
+        MS_DBG(F("Client stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     }
     else PRINTOUT(F("\n -- Unable to Establish Connection to DreamHost --"));
 

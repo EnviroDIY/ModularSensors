@@ -13,10 +13,15 @@
 #define EnviroDIYPublisher_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_ENVIRODIYPUBLISHER_DEBUG
+
+#ifdef MS_ENVIRODIYPUBLISHER_DEBUG
+#define MS_DEBUGGING_STD "EnviroDIYPublisher"
+#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "dataPublisherBase.h"
 
 

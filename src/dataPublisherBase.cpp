@@ -13,7 +13,7 @@ char dataPublisher::txBuffer[MS_SEND_BUFFER_SIZE] = {'\0'};
 // Basic chunks of HTTP
 const char *dataPublisher::getHeader = "GET ";
 const char *dataPublisher::postHeader = "POST ";
-const char *dataPublisher::HTTPtag = "  HTTP/1.1";
+const char *dataPublisher::HTTPtag = " HTTP/1.1";
 const char *dataPublisher::hostHeader = "\r\nHost: ";
 
 // Constructors
@@ -23,7 +23,7 @@ dataPublisher::dataPublisher()
     _inClient = NULL;
     _sendEveryX = 1;
     _sendOffset = 0;
-    MS_DBG(F("dataPublisher object created"));
+    // MS_DBG(F("dataPublisher object created"));
 }
 dataPublisher::dataPublisher(Logger& baseLogger, uint8_t sendEveryX, uint8_t sendOffset)
 {
@@ -32,7 +32,7 @@ dataPublisher::dataPublisher(Logger& baseLogger, uint8_t sendEveryX, uint8_t sen
     _sendEveryX = sendEveryX;
     _sendOffset = sendOffset;
     _inClient = NULL;
-    MS_DBG(F("dataPublisher object created"));
+    // MS_DBG(F("dataPublisher object created"));
 }
 dataPublisher::dataPublisher(Logger& baseLogger, Client *inClient, uint8_t sendEveryX, uint8_t sendOffset)
 {
@@ -41,7 +41,7 @@ dataPublisher::dataPublisher(Logger& baseLogger, Client *inClient, uint8_t sendE
     _sendEveryX = sendEveryX;
     _sendOffset = sendOffset;
     _inClient = inClient;
-    MS_DBG(F("dataPublisher object created"));
+    // MS_DBG(F("dataPublisher object created"));
 }
 // Destructor
 dataPublisher::~dataPublisher(){}
@@ -103,7 +103,7 @@ int dataPublisher::bufferFree(void)
 void dataPublisher::printTxBuffer(Stream *stream)
 {
     // Send the out buffer so far to the serial for debugging
-    #if defined(STANDARD_SERIAL_OUTPUT)
+    #if defined(MS_DATAPUBLISHERBASE_DEBUG)
         STANDARD_SERIAL_OUTPUT.write(txBuffer, strlen(txBuffer));
         PRINTOUT('\n');
         STANDARD_SERIAL_OUTPUT.flush();
@@ -119,11 +119,10 @@ void dataPublisher::printTxBuffer(Stream *stream)
 // This sends data on the "default" client of the modem
 int16_t dataPublisher::sendData()
 {
-    if (_inClient == NULL && _baseLogger->_logModem != NULL)
+    if (_inClient == NULL)
     {
-        _inClient = _baseLogger->_logModem->getClient();
+        PRINTOUT(F("ERROR! No web client assigned to publish data!"));
+        return 0;
     }
-
-    if (_inClient == NULL) return 0;
     else return sendData(_inClient);
 }

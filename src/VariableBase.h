@@ -12,13 +12,18 @@
 #define VariableBase_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_VARIABLEBASE_DEBUG
+
+#ifdef MS_VARIABLEBASE_DEBUG
+#define MS_DEBUGGING_STD "VariableBase"
+#endif
 
 // Forward Declared Dependences
 class Sensor;
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 
 class Variable
 {

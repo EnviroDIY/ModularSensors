@@ -18,7 +18,21 @@
 #ifndef KellerAcculevel_h
 #define KellerAcculevel_h
 
+// Debugging Statement
+// #define MS_KELLERACCULEVEL_DEBUG
+// #define MS_KELLERACCULEVEL_DEBUG_DEEP
+
+#ifdef MS_KELLERACCULEVEL_DEBUG
+#define MS_DEBUGGING_STD "KellerAcculevel"
+#endif
+
+#ifdef MS_KELLERACCULEVEL_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "KellerAcculevel"
+#endif
+
 // Included Dependencies
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "sensors/KellerParent.h"
 

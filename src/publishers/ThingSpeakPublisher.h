@@ -12,7 +12,11 @@
 #define ThingSpeakPublisher_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_THINGSPEAKPUBLISHER_DEBUG
+
+#ifdef MS_THINGSPEAKPUBLISHER_DEBUG
+#define MS_DEBUGGING_STD "ThingSpeakPublisher"
+#endif
 
 // MQTT User Name
 // The user name doesn't actually mean anything for ThingSpeak
@@ -24,6 +28,7 @@
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "dataPublisherBase.h"
 #include <PubSubClient.h>
 
