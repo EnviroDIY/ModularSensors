@@ -66,7 +66,7 @@ bool KellerParent::setup(void)
     if (_RS485EnablePin >= 0) pinMode(_RS485EnablePin, OUTPUT);
     if (_powerPin2 >= 0) pinMode(_powerPin2, OUTPUT);
 
-    #if defined(DEEP_DEBUGGING_SERIAL_OUTPUT)
+    #ifdef MS_KELLERPARENT_DEBUG_DEEP
         sensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
     #endif
 
