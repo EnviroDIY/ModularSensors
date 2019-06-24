@@ -147,15 +147,12 @@ Logger::~Logger(){}
 void Logger::setLoggerID(const char *loggerID)
 {
     _loggerID = loggerID;
-    MS_DBG(F("Logger ID is:"), _loggerID);
 }
 
 // Sets/Gets the logging interval
 void Logger::setLoggingInterval(uint16_t loggingIntervalMinutes)
 {
     _loggingIntervalMinutes = loggingIntervalMinutes;
-    MS_DBG(F("Setting logger to record at"),
-           _loggingIntervalMinutes, F("minute intervals."));
 }
 
 
@@ -163,16 +160,17 @@ void Logger::setLoggingInterval(uint16_t loggingIntervalMinutes)
 void Logger::setSamplingFeatureUUID(const char *samplingFeatureUUID)
 {
     _samplingFeatureUUID = samplingFeatureUUID;
-    MS_DBG(F("Sampling feature UUID is:"), _samplingFeatureUUID);
 }
 
 // Sets up a pin controlling the power to the SD card
 void Logger::setSDCardPwr(int8_t SDCardPowerPin)
 {
     _SDCardPowerPin = SDCardPowerPin;
-    pinMode(_SDCardPowerPin, OUTPUT);
-    digitalWrite(_SDCardPowerPin, LOW);
-    MS_DBG(F("Pin"), _SDCardPowerPin, F("set as SD Card Power Pin"));
+    if (_SDCardPowerPin >= 0)
+    {
+        pinMode(_SDCardPowerPin, OUTPUT);
+        digitalWrite(_SDCardPowerPin, LOW);
+    }
 }
 // NOTE:  Structure of power switching on SD card taken from:
 // https://thecavepearlproject.org/2017/05/21/switching-off-sd-cards-for-low-power-data-logging/
@@ -208,8 +206,10 @@ void Logger::turnOffSDcard(bool waitForHousekeeping)
 void Logger::setSDCardSS(int8_t SDCardSSPin)
 {
     _SDCardSSPin = SDCardSSPin;
-    pinMode(_SDCardSSPin, OUTPUT);
-    MS_DBG(F("Pin"), _SDCardSSPin, F("set as SD Card Slave/Chip Select"));
+    if (_SDCardSSPin >= 0)
+    {
+        pinMode(_SDCardSSPin, OUTPUT);
+    }
 }
 
 
@@ -225,21 +225,10 @@ void Logger::setSDCardPins(int8_t SDCardSSPin, int8_t SDCardPowerPin)
 void Logger::setRTCWakePin(int8_t mcuWakePin)
 {
     _mcuWakePin = mcuWakePin;
-    if (_mcuWakePin < 0)
-    {
-        MS_DBG(F("Logger mcu will not sleep between readings!"));
-        return;
-    }
-
-    #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
     if (_mcuWakePin >= 0)
     {
         pinMode(_mcuWakePin, INPUT_PULLUP);
     }
-    MS_DBG(F("Pin"), _mcuWakePin, F("set as RTC wake up pin"));
-    #elif defined ARDUINO_ARCH_SAMD
-    MS_DBG(F("MCU's internal clock will be used for wake up"));
-    #endif
 }
 
 
@@ -247,8 +236,10 @@ void Logger::setRTCWakePin(int8_t mcuWakePin)
 void Logger::setAlertPin(int8_t ledPin)
 {
     _ledPin = ledPin;
-    pinMode(_ledPin, OUTPUT);
-    MS_DBG(F("Pin"), _ledPin, F("set as LED alert pin"));
+    if (_ledPin >= 0 )
+    {
+        pinMode(_ledPin, OUTPUT);
+    }
 }
 void Logger::alertOn()
 {
@@ -261,7 +252,7 @@ void Logger::alertOff()
 {
     if (_ledPin >= 0)
     {
-    digitalWrite(_ledPin, LOW);
+        digitalWrite(_ledPin, LOW);
     }
 }
 
@@ -278,8 +269,6 @@ void Logger::setTestingModePin(int8_t buttonPin)
     {
         pinMode(_buttonPin, INPUT_PULLUP);
         enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
-        PRINTOUT(F("Push button on pin"), _buttonPin,
-                F("at any time to enter sensor testing mode."));
     }
 }
 
@@ -308,18 +297,15 @@ void Logger::setLoggerPins(int8_t mcuWakePin,
 void Logger::setVariableArray(VariableArray *inputArray)
 {
     _internalArray = inputArray;
-    PRINTOUT(F("This logger has a variable array with"),
-             getArrayVarCount(), F("variables, of which"),
-             getArrayVarCount() - _internalArray->getCalculatedVariableCount(),
-             F("come from"), _internalArray->getSensorCount(), F("sensors and"),
-             _internalArray->getCalculatedVariableCount(), F("are calculated."));
 }
+
 
 // Returns the number of variables in the internal array
 uint8_t Logger::getArrayVarCount()
 {
     return _internalArray->getVariableCount();
 }
+
 
 // This gets the name of the parent sensor, if applicable
 String Logger::getParentSensorNameAtI(uint8_t position_i)
@@ -370,8 +356,6 @@ String Logger::getValueStringAtI(uint8_t position_i)
 void Logger::attachModem(loggerModem& modem)
 {
     _logModem = &modem;
-    // Print out the modem info
-    PRINTOUT(F("A modem has been tied to this logger!"));
 }
 
 
@@ -1298,6 +1282,48 @@ void Logger::begin(VariableArray *inputArray)
 }
 void Logger::begin()
 {
+    MS_DBG(F("Logger ID is:"), _loggerID);
+    MS_DBG(F("Logger is set to record at"),
+           _loggingIntervalMinutes, F("minute intervals."));
+
+    PRINTOUT(F("This logger has a variable array with"),
+            getArrayVarCount(), F("variables, of which"),
+            getArrayVarCount() - _internalArray->getCalculatedVariableCount(),
+            F("come from"), _internalArray->getSensorCount(), F("sensors and"),
+            _internalArray->getCalculatedVariableCount(), F("are calculated."));
+
+    if (_samplingFeatureUUID != NULL)
+    {
+        MS_DBG(F("Sampling feature UUID is:"), _samplingFeatureUUID);
+    }
+
+    // Set pin modes for sd card power
+    if (_SDCardPowerPin >= 0)
+    {
+        pinMode(_SDCardPowerPin, OUTPUT);
+        digitalWrite(_SDCardPowerPin, LOW);
+        MS_DBG(F("Pin"), _SDCardPowerPin, F("set as SD Card Power Pin"));
+    }
+    // Set pin modes for sd card slave select (aka chip select)
+    if (_SDCardSSPin >= 0)
+    {
+        pinMode(_SDCardSSPin, OUTPUT);
+        MS_DBG(F("Pin"), _SDCardSSPin, F("set as SD Card Slave/Chip Select"));
+    }
+    // Set pin mode for LED pin
+    if (_ledPin >= 0 )
+    {
+        pinMode(_ledPin, OUTPUT);
+        MS_DBG(F("Pin"), _ledPin, F("set as LED alert pin"));
+    }
+    if (_buttonPin >= 0)
+    {
+        pinMode(_buttonPin, INPUT_PULLUP);
+        enableInterrupt(_buttonPin, Logger::testingISR, CHANGE);
+        MS_DBG(F("Button on pin"), _buttonPin,
+               F("can be used to enter sensor testing mode."));
+    }
+
     #if defined ARDUINO_ARCH_SAMD
         MS_DBG(F("Beginning internal real time clock"));
         zero_sleep_rtc.begin();
@@ -1323,6 +1349,15 @@ void Logger::begin()
     Wire.setTimeout(0);
 
     #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
+        if (_mcuWakePin < 0)
+        {
+            MS_DBG(F("Logger mcu will not sleep between readings!"));
+        }
+        else
+        {
+            pinMode(_mcuWakePin, INPUT_PULLUP);
+            MS_DBG(F("Pin"), _mcuWakePin, F("set as RTC wake up pin"));
+        }
         MS_DBG(F("Beginning DS3231 real time clock"));
         rtc.begin();
     #endif
