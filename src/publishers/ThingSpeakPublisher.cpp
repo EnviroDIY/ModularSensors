@@ -72,21 +72,21 @@ ThingSpeakPublisher::~ThingSpeakPublisher(){}
 void ThingSpeakPublisher::setMQTTKey(const char *thingSpeakMQTTKey)
 {
     _thingSpeakMQTTKey = thingSpeakMQTTKey;
-    MS_DBG(F("MQTT Key set!"));
+    // MS_DBG(F("MQTT Key set!"));
 }
 
 
 void ThingSpeakPublisher::setChannelID(const char *thingSpeakChannelID)
 {
     _thingSpeakChannelID = thingSpeakChannelID;
-    MS_DBG(F("Channel ID set!"));
+    // MS_DBG(F("Channel ID set!"));
 }
 
 
 void ThingSpeakPublisher::setChannelKey(const char *thingSpeakChannelKey)
 {
     _thingSpeakChannelKey = thingSpeakChannelKey;
-    MS_DBG(F("Channel Key set!"));
+    // MS_DBG(F("Channel Key set!"));
 }
 
 // Sets all 3 ThingSpeak parameters

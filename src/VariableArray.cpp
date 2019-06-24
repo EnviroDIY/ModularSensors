@@ -55,7 +55,7 @@ uint8_t VariableArray::getSensorCount(void)
     {
         if (isLastVarFromSensor(i)) numSensors++;
     }
-    MS_DBG(F("There are"), numSensors, F("unique sensors in the group."));
+    // MS_DBG(F("There are"), numSensors, F("unique sensors in the group."));
     return numSensors;
 }
 
@@ -902,6 +902,6 @@ uint8_t VariableArray::countMaxToAverage(void)
             numReps = max(numReps, arrayOfVars[i]->parentSensor->getNumberMeasurementsToAverage());
         }
     }
-    MS_DBG(F("The largest number of measurements to average will be"), numReps);
+    // MS_DBG(F("The largest number of measurements to average will be"), numReps);
     return numReps;
 }

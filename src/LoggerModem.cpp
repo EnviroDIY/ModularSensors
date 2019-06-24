@@ -123,7 +123,7 @@ bool loggerModem::setup(void)
     if (!wasAwake)
     {
         waitForWarmUp();
-        MS_DBG(F("Running given modem wake function ..."));
+        MS_DBG(F("Running modem wake function ..."));
         success &= wake();
         // NOTE:  not setting wake bits here because we'll go back to sleep
         // before the end of this function if we weren't awake

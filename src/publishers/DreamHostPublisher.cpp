@@ -62,7 +62,7 @@ DreamHostPublisher::~DreamHostPublisher(){}
 void DreamHostPublisher::setDreamHostPortalRX(const char *dhUrl)
 {
     _DreamHostPortalRX = dhUrl;
-    MS_DBG(F("Dreamhost portal URL set!"));
+    // MS_DBG(F("Dreamhost portal URL set!"));
 }
 
 
