@@ -217,13 +217,17 @@ public:
     static DateTime dtFromEpoch(uint32_t epochTime);
 
     // This converts a date-time object into a ISO8601 formatted string
+    // It assumes the supplied date/time is in the LOGGER's timezone and adds
+    // the LOGGER's offset as the time zone offset in the string.
     static String formatDateTime_ISO8601(DateTime& dt);
 
     // This converts an epoch time (unix time) into a ISO8601 formatted string
+    // It assumes the supplied date/time is in the LOGGER's timezone and adds
+    // the LOGGER's offset as the time zone offset in the string.
     static String formatDateTime_ISO8601(uint32_t epochTime);
 
     // This sets the real time clock to the given time
-    bool setRTClock(uint32_t setTime);
+    bool setRTClock(uint32_t UTCEpochSeconds);
 
     // This sets static variables for the date/time - this is needed so that all
     // data outputs (SD, EnviroDIY, serial printing, etc) print the same time

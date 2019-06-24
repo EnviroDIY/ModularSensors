@@ -492,7 +492,7 @@ int8_t Logger::getTZOffset(void)
 uint32_t Logger::getNowEpoch(void)
 {
   uint32_t currentEpochTime = rtc.now().getEpoch();
-  currentEpochTime += _loggerRTCOffset*3600;
+  currentEpochTime += ((uint32_t)_loggerRTCOffset)*3600;
   return currentEpochTime;
 }
 void Logger::setNowEpoch(uint32_t ts){rtc.setEpoch(ts);}
@@ -502,7 +502,7 @@ void Logger::setNowEpoch(uint32_t ts){rtc.setEpoch(ts);}
 uint32_t Logger::getNowEpoch(void)
 {
   uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
-  currentEpochTime += _loggerRTCOffset*3600;
+  currentEpochTime += ((uint32_t)_loggerRTCOffset)*3600;
   return currentEpochTime;
 }
 void Logger::setNowEpoch(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
@@ -518,6 +518,8 @@ DateTime Logger::dtFromEpoch(uint32_t epochTime)
 }
 
 // This converts a date-time object into a ISO8601 formatted string
+// It assumes the supplied date/time is in the LOGGER's timezone and adds
+// the LOGGER's offset as the time zone offset in the string.
 String Logger::formatDateTime_ISO8601(DateTime& dt)
 {
     // Set up an inital string
@@ -552,6 +554,8 @@ String Logger::formatDateTime_ISO8601(DateTime& dt)
 
 
 // This converts an epoch time (unix time) into a ISO8601 formatted string
+// It assumes the supplied date/time is in the LOGGER's timezone and adds
+// the LOGGER's offset as the time zone offset in the string.
 String Logger::formatDateTime_ISO8601(uint32_t epochTime)
 {
     // Create a DateTime object from the epochTime
@@ -561,28 +565,32 @@ String Logger::formatDateTime_ISO8601(uint32_t epochTime)
 
 
 // This sets the real time clock to the given time
-bool Logger::setRTClock(uint32_t setTime)
+bool Logger::setRTClock(uint32_t UTCEpochSeconds)
 {
     // If the timestamp is zero, just exit
-    if  (setTime == 0)
+    if  (UTCEpochSeconds == 0)
     {
         PRINTOUT(F("Bad timestamp, not setting clock."));
         return false;
     }
 
-    uint32_t set_logTZ = setTime + getLoggerTimeZone()*3600;
-    uint32_t set_rtcTZ = set_logTZ - getTZOffset()*3600;
-    MS_DBG(F("         Correct Time for Logger:"), set_logTZ, F("->"), \
-        formatDateTime_ISO8601(set_logTZ));
+    // The "setTime" is the number of seconds since Jan 1, 1970 in UTC
+    // We're interested in the setTime in the logger's and RTC's timezone
+    // The RTC's timezone is equal to the logger's timezone minus the offset
+    // between the logger and the RTC.
+    uint32_t set_logTZ = UTCEpochSeconds + ((uint32_t)getLoggerTimeZone())*3600;
+    uint32_t set_rtcTZ = set_logTZ - ((uint32_t)getTZOffset())*3600;
+    MS_DBG(F("    Time for Logger supplied by NIST:"), set_logTZ, \
+        F("->"), formatDateTime_ISO8601(set_logTZ));
 
     // Check the current RTC time
     uint32_t cur_logTZ = getNowEpoch();
-    MS_DBG(F("            Time Returned by RTC:"), cur_logTZ, F("->"), \
+    MS_DBG(F("    Current Time on RTC:"), cur_logTZ, F("->"), \
         formatDateTime_ISO8601(cur_logTZ));
-    MS_DBG(F("Offset:"), abs(set_logTZ - cur_logTZ));
+    MS_DBG(F("    Offset between NIST and RTC:"), abs(set_logTZ - cur_logTZ));
 
     // If the RTC and NIST disagree by more than 5 seconds, set the clock
-    if ((abs(set_logTZ - cur_logTZ) > 5) && (setTime != 0))
+    if ((abs(set_logTZ - cur_logTZ) > 5) && (UTCEpochSeconds != 0))
     {
         setNowEpoch(set_rtcTZ);
         PRINTOUT(F("Clock set!"));
@@ -615,7 +623,8 @@ bool Logger::checkInterval(void)
 {
     bool retval;
     uint32_t checkTime = getNowEpoch();
-    MS_DBG(F("Current Unix Timestamp:"), checkTime);
+    MS_DBG(F("Current Unix Timestamp:"), checkTime, F("->"), \
+        formatDateTime_ISO8601(checkTime));
     MS_DBG(F("Logging interval in seconds:"), (_loggingIntervalMinutes*60));
     MS_DBG(F("Mod of Logging Interval:"), checkTime % (_loggingIntervalMinutes*60));
 
@@ -669,6 +678,7 @@ bool Logger::checkMarkedInterval(void)
 // This must be a static function (which means it can only call other static funcions.)
 void Logger::wakeISR(void)
 {
+    Logger::markTime();
     // MS_DBG(F("Clock interrupt!"));
 }
 
