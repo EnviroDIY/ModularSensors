@@ -45,7 +45,15 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
 loggerModem::~loggerModem(){}
 
 
-void loggerModem::setModemLED(int8_t modemLEDPin) { _modemLEDPin = modemLEDPin; };
+void loggerModem::setModemLED(int8_t modemLEDPin)
+{
+    _modemLEDPin = modemLEDPin;
+    if (_modemLEDPin >= 0)
+    {
+        pinMode(_modemLEDPin, OUTPUT);
+        digitalWrite(_modemLEDPin, LOW);
+    }
+};
 void loggerModem::modemLEDOn(void)
 {
     if (_modemLEDPin >= 0)
@@ -123,7 +131,7 @@ bool loggerModem::setup(void)
     if (!wasAwake)
     {
         waitForWarmUp();
-        MS_DBG(F("Running given modem wake function ..."));
+        MS_DBG(F("Running modem wake function ..."));
         success &= wake();
         // NOTE:  not setting wake bits here because we'll go back to sleep
         // before the end of this function if we weren't awake

@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.22.3
+This example sketch is written for ModularSensors library version 0.22.5
 
 This sketch is an example of logging data to an SD card and sending the data to
 the EnviroDIY data portal.
@@ -27,7 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.22.3";
+const char *libraryVersion = "0.22.5";
 // The name of this file
 const char *sketchName = "baro_rho_correction.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -371,11 +371,11 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
-    // Set the timezone and offsets
+    // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
-    Logger::setTimeZone(timeZone);
-    // Offset is the same as the time zone because the RTC is in UTC
-    Logger::setTZOffset(timeZone);
+    Logger::setLoggerTimeZone(timeZone);
+    // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
+    Logger::setRTCTimeZone(0);
 
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modem);
@@ -400,10 +400,14 @@ void setup()
             dataLogger.getNowEpoch() > 1735689600)  /*After 1/1/2025*/
         {
             // Synchronize the RTC with NIST
-            Serial.println(F("Attempting to synchronize RTC with NIST"));
+            Serial.println(F("Attempting to connect to the internet and synchronize RTC with NIST"));
             if (modem.connectInternet(120000L))
             {
                 dataLogger.setRTClock(modem.getNISTTime());
+            }
+            else
+            {
+                Serial.println(F("Could not connect to internet for clock sync."));
             }
         }
     }
@@ -459,6 +463,6 @@ void loop()
     // If the battery is good, send the data to the world
     else
     {
-        dataLogger.logDataAndSend();
+        dataLogger.logDataAndPublish();
     }
 }

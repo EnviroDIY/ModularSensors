@@ -134,6 +134,7 @@ public:
     // Get the time from NIST via TIME protocol (rfc868)
     // This would be much more efficient if done over UDP, but I'm doing it
     // over TCP because I don't have a UDP library for all the modems.
+    // NOTE:  The return is the number of seconds since Jan 1, 1970 IN UTC
     virtual uint32_t getNISTTime(void) = 0;
 
 protected:

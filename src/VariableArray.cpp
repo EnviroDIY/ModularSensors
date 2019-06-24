@@ -55,7 +55,7 @@ uint8_t VariableArray::getSensorCount(void)
     {
         if (isLastVarFromSensor(i)) numSensors++;
     }
-    MS_DBG(F("There are"), numSensors, F("unique sensors in the group."));
+    // MS_DBG(F("There are"), numSensors, F("unique sensors in the group."));
     return numSensors;
 }
 
@@ -860,14 +860,14 @@ void VariableArray::printSensorData(Stream *stream)
 // Check for unique sensors
 bool VariableArray::isLastVarFromSensor(int arrayIndex)
 {
-    MS_DEEP_DBG(F("Checking if"), arrayOfVars[arrayIndex]->getVarName(), '(',
-           arrayIndex, F(") is the last variable from a sensor..."));
+    /*MS_DEEP_DBG(F("Checking if"), arrayOfVars[arrayIndex]->getVarName(), '(',
+           arrayIndex, F(") is the last variable from a sensor..."));*/
 
     // Calculated variables are never the last variable from a sensor, simply
     // because the don't come from a sensor at all.
     if (arrayOfVars[arrayIndex]->isCalculated)
     {
-        MS_DEEP_DBG(F("   ... Nope, it's calculated!"));
+        // MS_DEEP_DBG(F("   ... Nope, it's calculated!"));
         return false;
     }
 
@@ -880,11 +880,11 @@ bool VariableArray::isLastVarFromSensor(int arrayIndex)
             if (sensNameLoc == arrayOfVars[j]->getParentSensorNameAndLocation())
             {
                 unique = false;
-                MS_DEEP_DBG(F("   ... Nope, there are others after it!"));
+                // MS_DEEP_DBG(F("   ... Nope, there are others after it!"));
                 break;
             }
         }
-        if (unique) MS_DEEP_DBG(F("   ... Yes, it is!"));
+        // if (unique) MS_DEEP_DBG(F("   ... Yes, it is!"));
         return unique;
     }
 }
@@ -902,6 +902,6 @@ uint8_t VariableArray::countMaxToAverage(void)
             numReps = max(numReps, arrayOfVars[i]->parentSensor->getNumberMeasurementsToAverage());
         }
     }
-    MS_DBG(F("The largest number of measurements to average will be"), numReps);
+    // MS_DBG(F("The largest number of measurements to average will be"), numReps);
     return numReps;
 }

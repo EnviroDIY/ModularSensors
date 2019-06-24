@@ -72,8 +72,8 @@ public:
     // This opens a socket to the correct receiver and sends out the formatted data
     // This depends on an internet connection already being made and a client
     // being available
-    virtual int16_t sendData(Client *_outClient) = 0;
-    virtual int16_t sendData();
+    virtual int16_t publishData(Client *_outClient) = 0;
+    virtual int16_t publishData();
 
 protected:
     // The internal logger instance

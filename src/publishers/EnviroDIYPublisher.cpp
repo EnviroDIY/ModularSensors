@@ -75,7 +75,7 @@ EnviroDIYPublisher::~EnviroDIYPublisher(){}
 void EnviroDIYPublisher::setToken(const char *registrationToken)
 {
     _registrationToken = registrationToken;
-    MS_DBG(F("Registration token set!"));
+    // MS_DBG(F("Registration token set!"));
 }
 
 
@@ -195,7 +195,7 @@ void EnviroDIYPublisher::begin(Logger& baseLogger,
 // over that connection.
 // The return is the http status code of the response.
 // int16_t EnviroDIYPublisher::postDataEnviroDIY(void)
-int16_t EnviroDIYPublisher::sendData(Client *_outClient)
+int16_t EnviroDIYPublisher::publishData(Client *_outClient)
 {
     // Create a buffer for the portions of the request and response
     char tempBuffer[37] = "";

@@ -172,7 +172,7 @@ public:
     // These tie the variables to their parent sensor
     void registerDataPublisher(dataPublisher* publisher);
     // Notifies attached variables of new values
-    void sendDataToRemotes(void);
+    void publishDataToRemotes(void);
 
 protected:
     // The internal modem instance
@@ -189,16 +189,21 @@ protected:
     // ===================================================================== //
 
 public:
-    // Sets the static timezone - this must be set
-    static void setTimeZone(int8_t timeZone);
-    static int8_t getTimeZone(void) { return Logger::_timeZone; }
+    // Sets the static timezone that the data will be logged in - this must be set
+    static void setLoggerTimeZone(int8_t timeZone);
+    static int8_t getLoggerTimeZone(void);
+
+    // Sets the static timezone that the RTC is programmed in
+    // I VERY VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC
+    static void setRTCTimeZone(int8_t timeZone);
+    static int8_t getRTCTimeZone(void);
 
     // This set the offset between the built-in clock and the time zone where
     // the data is being recorded.  If your RTC is set in UTC and your logging
     // timezone is EST, this should be -5.  If your RTC is set in EST and your
     // timezone is EST this does not need to be called.
     static void setTZOffset(int8_t offset);
-    static int8_t getTZOffset(void) { return Logger::_offset; }
+    static int8_t getTZOffset(void);
 
     // This gets the current epoch time (unix time, ie, the number of seconds
     // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
@@ -212,13 +217,17 @@ public:
     static DateTime dtFromEpoch(uint32_t epochTime);
 
     // This converts a date-time object into a ISO8601 formatted string
+    // It assumes the supplied date/time is in the LOGGER's timezone and adds
+    // the LOGGER's offset as the time zone offset in the string.
     static String formatDateTime_ISO8601(DateTime& dt);
 
     // This converts an epoch time (unix time) into a ISO8601 formatted string
+    // It assumes the supplied date/time is in the LOGGER's timezone and adds
+    // the LOGGER's offset as the time zone offset in the string.
     static String formatDateTime_ISO8601(uint32_t epochTime);
 
     // This sets the real time clock to the given time
-    bool setRTClock(uint32_t setTime);
+    bool setRTClock(uint32_t UTCEpochSeconds);
 
     // This sets static variables for the date/time - this is needed so that all
     // data outputs (SD, EnviroDIY, serial printing, etc) print the same time
@@ -237,8 +246,8 @@ public:
 
 protected:
     // Static variables - identical for EVERY logger
-    static int8_t _timeZone;
-    static int8_t _offset;
+    static int8_t _loggerTimeZone;
+    static int8_t _loggerRTCOffset;
 
     // ============================================================================
     //  Public Functions for sleeping the logger
@@ -353,7 +362,7 @@ public:
 
     // This is a one-and-done to log data
     virtual void logData(void);
-    void logDataAndSend(void);
+    void logDataAndPublish(void);
 
     // Public variables
     // Time stamps - want to set them at a single time and carry them forward

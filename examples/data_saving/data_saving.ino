@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.22.3
+This example sketch is written for ModularSensors library version 0.22.5
 
 This sketch is an example of logging data to an SD card and sending only a
 portion of that data to the EnviroDIY data portal.
@@ -27,7 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.22.3";
+const char *libraryVersion = "0.22.5";
 // The name of this file
 const char *sketchName = "data_saving.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -477,11 +477,11 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
-    // Set the timezone and offsets
+    // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
-    Logger::setTimeZone(timeZone);
-    // Offset is the same as the time zone because the RTC is in UTC
-    Logger::setTZOffset(timeZone);
+    Logger::setLoggerTimeZone(timeZone);
+    // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
+    Logger::setRTCTimeZone(0);
 
     // Attach the same modem to both loggers
     // It is only needed for the logger that will be sending out data, but
@@ -511,7 +511,7 @@ void setup()
             loggerAllVars.getNowEpoch() > 1735689600)  /*After 1/1/2025*/
         {
             // Synchronize the RTC with NIST
-            Serial.println(F("Attempting to synchronize RTC with NIST"));
+            Serial.println(F("Attempting to connect to the internet and synchronize RTC with NIST"));
             if (modem.connectInternet(120000L))
             {
                 loggerAllVars.setRTClock(modem.getNISTTime());
@@ -624,7 +624,7 @@ void loop()
             if (modem.connectInternet())
             {
                 // Publish data to remotes
-                loggerToGo.sendDataToRemotes();
+                loggerToGo.publishDataToRemotes();
 
                 // Sync the clock at midnight
                 // NOTE:  All loggers have the same clock, pick one
