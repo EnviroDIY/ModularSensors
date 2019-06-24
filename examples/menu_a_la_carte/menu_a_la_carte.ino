@@ -763,6 +763,34 @@ MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803Readings
 
 
 // ==========================================================================
+//    PaleoTerra Redox Sensors
+// ==========================================================================
+#include <sensors/PaleoTerraRedox.h>
+
+int8_t paleoTerraPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+uint8_t paleoI2CAddress = 0x68;  // The I2C address of the redox sensor
+
+// Create one PaleoTerra sensor connected to hardware I2C
+PaleoTerraRedox ptRedox1(paleoTerraPower, paleoI2CAddress);
+
+// Create the voltage variable for the redox sensor
+// Variable *ptVolt1 = new PaleoTerraRedox_Volt(&ptRedox1, "12345678-abcd-1234-efgh-1234567890ab");
+
+#if defined ARDUINO_ARCH_AVR
+// Create the software wire instance
+// Make sure you install SoftwareWire:  https://github.com/Testato/SoftwareWire
+#include <SoftwareWire.h>
+SoftwareWire myWire(2, 3);
+
+// Create one PaleoTerra sensor connected to a software I2C instance
+PaleoTerraRedox ptRedox2(&myWire, paleoTerraPower, paleoI2CAddress);
+
+// Create the voltage variable for the redox sensor
+// Variable *ptVolt2 = new PaleoTerraRedox_Volt(&ptRedox2, "12345678-abcd-1234-efgh-1234567890ab");
+#endif
+
+
+// ==========================================================================
 //    External I2C Rain Tipping Bucket Counter
 // ==========================================================================
 #include <sensors/RainCounterI2C.h>
@@ -1191,6 +1219,7 @@ Variable *variableList[] = {
     new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-efgh-1234567890ab"),
     new MPL115A2_Temp(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
     new MPL115A2_Pressure(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new PaleoTerraRedox_Volt(&ptRedox1, "12345678-abcd-1234-efgh-1234567890ab"),
     new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab"),
     new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab"),
     new TIINA219_Current(&ina219, "12345678-abcd-1234-efgh-1234567890ab"),
