@@ -172,7 +172,7 @@ public:
     // These tie the variables to their parent sensor
     void registerDataPublisher(dataPublisher* publisher);
     // Notifies attached variables of new values
-    void sendDataToRemotes(void);
+    void publishDataToRemotes(void);
 
 protected:
     // The internal modem instance
@@ -353,7 +353,7 @@ public:
 
     // This is a one-and-done to log data
     virtual void logData(void);
-    void logDataAndSend(void);
+    void logDataAndPublish(void);
 
     // Public variables
     // Time stamps - want to set them at a single time and carry them forward

@@ -86,7 +86,7 @@ public:
 
     // This sends the data to ThingSpeak
     // bool mqttThingSpeak(void);
-    virtual int16_t sendData(Client *_outClient);
+    virtual int16_t publishData(Client *_outClient);
 
 protected:
     static const char *mqttServer;

@@ -120,7 +120,7 @@ void DreamHostPublisher::begin(Logger& baseLogger,
 
 // Post the data to dream host.
 // int16_t DreamHostPublisher::postDataDreamHost(void)
-int16_t DreamHostPublisher::sendData(Client *_outClient)
+int16_t DreamHostPublisher::publishData(Client *_outClient)
 {
     // Create a buffer for the portions of the request and response
     char tempBuffer[37] = "";

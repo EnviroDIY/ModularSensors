@@ -79,7 +79,7 @@ public:
     // over that connection.
     // The return is the http status code of the response.
     // int16_t postDataEnviroDIY(void);
-    virtual int16_t sendData(Client *_outClient);
+    virtual int16_t publishData(Client *_outClient);
 
 protected:
 

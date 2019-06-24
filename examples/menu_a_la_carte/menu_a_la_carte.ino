@@ -1520,7 +1520,7 @@ void loop()
     // If the battery is good, send the data to the world
     else
     {
-        dataLogger.logDataAndSend();
+        dataLogger.logDataAndPublish();
     }
 }
 // */
@@ -1576,7 +1576,7 @@ void loop()
             if (modem.connectInternet())
             {
                 // Publish data to remotes
-                dataLogger.sendDataToRemotes();
+                dataLogger.publishDataToRemotes();
 
                 // Sync the clock at midnight
                 if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)

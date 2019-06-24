@@ -624,7 +624,7 @@ void loop()
             if (modem.connectInternet())
             {
                 // Publish data to remotes
-                loggerToGo.sendDataToRemotes();
+                loggerToGo.publishDataToRemotes();
 
                 // Sync the clock at midnight
                 // NOTE:  All loggers have the same clock, pick one

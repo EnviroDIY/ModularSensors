@@ -414,7 +414,7 @@ void Logger::registerDataPublisher(dataPublisher* publisher)
 }
 
 
-void Logger::sendDataToRemotes(void)
+void Logger::publishDataToRemotes(void)
 {
     MS_DBG(F("Sending out remote data."));
 
@@ -423,8 +423,8 @@ void Logger::sendDataToRemotes(void)
         if (dataPublishers[i] != NULL)
         {
             PRINTOUT(F("\nSending data to"), dataPublishers[i]->getEndpoint());
-            // dataPublishers[i]->sendData(_logModem->getClient());
-            dataPublishers[i]->sendData();
+            // dataPublishers[i]->publishData(_logModem->getClient());
+            dataPublishers[i]->publishData();
         }
     }
 }
@@ -1378,7 +1378,7 @@ void Logger::logData(void)
     systemSleep();
 }
 // This is a one-and-done to log data
-void Logger::logDataAndSend(void)
+void Logger::logDataAndPublish(void)
 {
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
@@ -1417,7 +1417,7 @@ void Logger::logDataAndSend(void)
             if (_logModem->connectInternet())
             {
                 // Publish data to remotes
-                sendDataToRemotes();
+                publishDataToRemotes();
 
                 // Sync the clock at midnight
                 if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)
