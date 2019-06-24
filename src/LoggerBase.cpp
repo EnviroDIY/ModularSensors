@@ -678,7 +678,6 @@ bool Logger::checkMarkedInterval(void)
 // This must be a static function (which means it can only call other static funcions.)
 void Logger::wakeISR(void)
 {
-    Logger::markTime();
     // MS_DBG(F("Clock interrupt!"));
 }
 
