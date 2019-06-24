@@ -45,7 +45,15 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
 loggerModem::~loggerModem(){}
 
 
-void loggerModem::setModemLED(int8_t modemLEDPin) { _modemLEDPin = modemLEDPin; };
+void loggerModem::setModemLED(int8_t modemLEDPin)
+{
+    _modemLEDPin = modemLEDPin;
+    if (_modemLEDPin >= 0)
+    {
+        pinMode(_modemLEDPin, OUTPUT);
+        digitalWrite(_modemLEDPin, LOW);
+    }
+};
 void loggerModem::modemLEDOn(void)
 {
     if (_modemLEDPin >= 0)
