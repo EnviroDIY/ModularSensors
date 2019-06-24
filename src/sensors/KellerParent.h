@@ -24,15 +24,16 @@
 // #define MS_KELLERPARENT_DEBUG_DEEP
 
 #ifdef MS_KELLERPARENT_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "KellerParent"
 #endif
 
 #ifdef MS_KELLERPARENT_DEBUG_DEEP
-#define MS_DEBUGGING_DEEP
+#define MS_DEBUGGING_DEEP "KellerParent"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "SensorBase.h"
 #include <KellerModbus.h>
 

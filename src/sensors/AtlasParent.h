@@ -20,11 +20,12 @@
 // #define MS_ATLASPARENT_DEBUG
 
 #ifdef MS_ATLASPARENT_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "AtlasParent"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Wire.h>

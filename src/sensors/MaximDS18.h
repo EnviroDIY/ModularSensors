@@ -29,11 +29,12 @@
 // #define MS_MAXIMDS18_DEBUG
 
 #ifdef MS_MAXIMDS18_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "MaximDS18"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <DallasTemperature.h>

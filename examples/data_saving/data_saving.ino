@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.21.4
+This example sketch is written for ModularSensors library version 0.22.5
 
 This sketch is an example of logging data to an SD card and sending only a
 portion of that data to the EnviroDIY data portal.
@@ -27,7 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.21.4";
+const char *libraryVersion = "0.22.5";
 // The name of this file
 const char *sketchName = "data_saving.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -51,8 +51,8 @@ const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugg
 const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPwrPin = -1;     // MCU SD card power pin (-1 if not applicable)
-const int8_t sdCardSSPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
+const int8_t sdCardPwrPin = -1;    // MCU SD card power pin (-1 if not applicable)
+const int8_t sdCardSSPin = 12;     // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create the main processor chip "sensor" - for general metadata
@@ -60,7 +60,7 @@ const char *mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
 // Create sample number, battery voltage, and free RAM variable pointers for the processor
-Variable *mcuBoardBatt = new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *mcuBoardBatt = new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *mcuBoardAvailableRAM = new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
 Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
 
@@ -170,88 +170,31 @@ void SERCOM2_Handler()
 
 
 // ==========================================================================
-//    Wifi/Cellular Modem Main Chip Selection
+//    Wifi/Cellular Modem Settings
 // ==========================================================================
-
-// Select your modem chip - this determines the exact commands sent to it
-#define TINY_GSM_MODEM_SIM800  // Select for a SIMCOM SIM800, SIM900, or variant thereof
-
-
-// ==========================================================================
-//    Modem Pins
-// ==========================================================================
-
-const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
-const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
-
-
-// ==========================================================================
-//    TinyGSM Client
-// ==========================================================================
-
-// Include TinyGSM for the modem
-// This include must be included below the define of the modem name!
-#include <TinyGsmClient.h>
 
 // Create a reference to the serial port for the modem
-// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
-// Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(modemSerial);
-
-// Use this to create a modem if you want to spy on modem communication through
-// a secondary Arduino stream.  Make sure you install the StreamDebugger library!
-// https://github.com/vshymanskyy/StreamDebugger
-// Also make sure you comment out the modem creation above to use this.
-// #include <StreamDebugger.h>
-// StreamDebugger modemDebugger(modemSerial, Serial);
-// TinyGsm *tinyModem = new TinyGsm(modemDebugger);
-
-// Create a new TCP client on that modem and return a pointer to it
-TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
-
-
-// ==========================================================================
-//    Specific Modem On-Off Methods
-// ==========================================================================
-
-// THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
-// Describe the physical pin connection of your modem to your board
-const long modemBaud = 9600;         // Communication speed of the modem
-const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
-
-// Create the wake and sleep methods for the modem
-// These can be functions of any type and must return a boolean
-bool modemWakeFxn(void)
-{
-    digitalWrite(modemSleepRqPin, HIGH);
-    digitalWrite(redLED, HIGH);  // A light just for show
-    return true;
-}
-bool modemSleepFxn(void)
-{
-    digitalWrite(modemSleepRqPin, LOW);
-    digitalWrite(redLED, LOW);
-    return true;
-}
-void extraModemSetup(void){}
-
-
-// ==========================================================================
-//    Network Information and LoggerModem Object
-// ==========================================================================
-#include <LoggerModem.h>
+// Modem Pins - Describe the physical pin connection of your modem to your board
+const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
+const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem status (-1 if unconnected)
 
 // Network connection information
-const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
-const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
-const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
+const char *apn = "xxxxx";  // The APN for the gprs connection
 
-// Create the loggerModem instance
-// A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
+// For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
+// NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
+#include <modems/Sodaq2GBeeR6.h>
+const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
+Sodaq2GBeeR6 modem2GB(&modemSerial,
+                      modemVccPin, modemStatusPin,
+                      modemSleepRqPin,
+                      apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+Sodaq2GBeeR6 modem = modem2GB;
 
 // Create RSSI and signal strength variable pointers for the modem
 Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
@@ -442,17 +385,17 @@ Logger loggerAllVars(LoggerID, loggingInterval, &arrayComplete);
 Logger loggerToGo(LoggerID, loggingInterval, &arrayToGo);
 
 // ==========================================================================
-//    A Publisher to WikiWatershed
+//    A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
 // ==========================================================================
 // Device registration and sampling feature information can be obtained after
-// registration at http://data.WikiWatershed.org
+// registration at https://monitormywatershed.org or https://data.envirodiy.org
 const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
 const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 // This is only attached to the logger with the shorter variable array
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(loggerToGo, registrationToken, samplingFeature);
+EnviroDIYPublisher EnviroDIYPOST(loggerToGo, &modem.gsmClient, registrationToken, samplingFeature);
 
 
 // ==========================================================================
@@ -512,7 +455,6 @@ void setup()
         Serial.println(F(
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
-
     // Start the serial connection with the modem
     modemSerial.begin(modemBaud);
 
@@ -520,7 +462,7 @@ void setup()
     modbusSerial.begin(9600);
 
     // Assign pins SERCOM functionality for SAMD boards
-    // NOTE:  This must happen *after* the begin
+    // NOTE:  This must happen *after* the various serial.begin statements
     #if defined ARDUINO_ARCH_SAMD
     #ifndef ENABLE_SERIAL2
     pinPeripheral(10, PIO_SERCOM);  // Serial2 Tx/Dout = SERCOM1 Pad #2
@@ -535,22 +477,19 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
-    // Set up the sleep/wake pin for the modem and put its inital value as "off"
-    pinMode(modemSleepRqPin, OUTPUT);
-    digitalWrite(modemSleepRqPin, LOW);
-
-    // Set the timezone and offsets
+    // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
-    Logger::setTimeZone(timeZone);
-    // Offset is the same as the time zone because the RTC is in UTC
-    Logger::setTZOffset(timeZone);
+    Logger::setLoggerTimeZone(timeZone);
+    // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
+    Logger::setRTCTimeZone(0);
 
     // Attach the same modem to both loggers
     // It is only needed for the logger that will be sending out data, but
     // attaching it to both allows either logger to control NIST synchronization
     loggerAllVars.attachModem(modem);
     loggerToGo.attachModem(modem);
-    loggerAllVars.setLoggerPins(wakePin, sdCardSSPin, sensorPowerPin, buttonPin, greenLED);
+    modem.setModemLED(modemLEDPin);
+    loggerAllVars.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
 
     // Set up the connection information with EnviroDIY for both loggers
     // Doing this for both loggers ensures that the header of the csv will have the tokens in it
@@ -563,20 +502,16 @@ void setup()
     {
         modem.modemPowerUp();
         modem.wake();
-
-        // Run any extra pre-set-up for the modem
-        Serial.println(F("Running extra modem pre-setup"));
-        extraModemSetup();
         modem.setup();
 
         // At very good battery voltage, or with suspicious time stamp, sync the clock
         // Note:  Please change these battery voltages to match your battery
         if (getBatteryVoltage() > 3.8 ||
             loggerAllVars.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
-            loggerAllVars.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+            loggerAllVars.getNowEpoch() > 1735689600)  /*After 1/1/2025*/
         {
             // Synchronize the RTC with NIST
-            Serial.println(F("Attempting to synchronize RTC with NIST"));
+            Serial.println(F("Attempting to connect to the internet and synchronize RTC with NIST"));
             if (modem.connectInternet(120000L))
             {
                 loggerAllVars.setRTClock(modem.getNISTTime());
@@ -689,7 +624,7 @@ void loop()
             if (modem.connectInternet())
             {
                 // Publish data to remotes
-                loggerToGo.sendDataToRemotes();
+                loggerToGo.publishDataToRemotes();
 
                 // Sync the clock at midnight
                 // NOTE:  All loggers have the same clock, pick one

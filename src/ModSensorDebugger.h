@@ -15,7 +15,7 @@
 #include <Arduino.h>
 
 // The current library version number
-#define MODULAR_SENSORS_VERSION "0.21.4"
+#define MODULAR_SENSORS_VERSION "0.22.5"
 
 #ifndef STANDARD_SERIAL_OUTPUT
     // #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
@@ -58,7 +58,9 @@
     namespace {
         template<typename T>
         static void MS_DBG(T last) {
-            DEBUGGING_SERIAL_OUTPUT.println(last);
+            DEBUGGING_SERIAL_OUTPUT.print(last);
+            DEBUGGING_SERIAL_OUTPUT.print(" <--");
+            DEBUGGING_SERIAL_OUTPUT.println(MS_DEBUGGING_STD);
         }
 
         template<typename T, typename... Args>
@@ -68,20 +70,32 @@
             MS_DBG(tail...);
         }
     }
+#define MS_START_DEBUG_TIMER uint32_t start = millis();
+#define MS_PRINT_DEBUG_TIMER millis() - start
 #else
     #define MS_DBG(...)
+    #define MS_START_DEBUG_TIMER
+    #define MS_PRINT_DEBUG_TIMER
 #endif  // DEBUGGING_SERIAL_OUTPUT
 
 
 #ifndef DEEP_DEBUGGING_SERIAL_OUTPUT
-  #define DEEP_DEBUGGING_SERIAL_OUTPUT DEBUGGING_SERIAL_OUTPUT
+    // #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
+    #if defined(SERIAL_PORT_USBVIRTUAL)
+      // #define Serial SERIAL_PORT_USBVIRTUAL
+      #define DEEP_DEBUGGING_SERIAL_OUTPUT SERIAL_PORT_USBVIRTUAL
+    #elif defined __AVR__
+      #define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
+    #endif
 #endif  // ifndef DEEP_DEBUGGING_SERIAL_OUTPUT
 
 #if defined DEEP_DEBUGGING_SERIAL_OUTPUT && defined MS_DEBUGGING_DEEP
     namespace {
         template<typename T>
         static void MS_DEEP_DBG(T last) {
-            DEEP_DEBUGGING_SERIAL_OUTPUT.println(last);
+            DEEP_DEBUGGING_SERIAL_OUTPUT.print(last);
+            DEEP_DEBUGGING_SERIAL_OUTPUT.print(" <--");
+            DEEP_DEBUGGING_SERIAL_OUTPUT.println(MS_DEBUGGING_STD);
         }
 
         template<typename T, typename... Args>

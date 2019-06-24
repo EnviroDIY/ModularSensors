@@ -170,13 +170,13 @@ void Variable::attachSensor(Sensor *parentSense)
     if (!isCalculated)
     {
         parentSensor = parentSense;
-        MS_DBG(F("Attempting to register"), getVarName(),
+        /*MS_DBG(F("Attempting to register"), getVarName(),
                F("as variable number"), _sensorVarNum, F("to"),
                parentSensor->getSensorName(), F("attached at"),
-               parentSensor->getSensorLocation(), F("..."));
+               parentSensor->getSensorLocation(), F("..."));*/
         parentSensor->registerVariable(_sensorVarNum, this);
     }
-    else MS_DBG(F("This is a calculated variable.  It cannot have a parent sensor!"));
+    // else MS_DBG(F("This is a calculated variable.  It cannot have a parent sensor!"));
 }
 
 
@@ -237,10 +237,10 @@ void Variable::setCalculation(float (*calcFxn)())
 {
     if (isCalculated)
     {
-        MS_DBG(F("Calculation function set"));
+        // MS_DBG(F("Calculation function set"));
         _calcFxn = calcFxn;
     }
-    else MS_DBG(F("This is a measured variable.  It cannot have a calculation function!"));
+    // else MS_DBG(F("This is a measured variable.  It cannot have a calculation function!"));
 }
 
 
@@ -257,7 +257,7 @@ uint8_t Variable::getResolution(void){return _decimalResolution;}
 void Variable::setResolution(uint8_t decimalResolution)
 {
     _decimalResolution = decimalResolution;
-    MS_DBG(F("Variable resolution is"), _decimalResolution, F("decimal places"));
+    // MS_DBG(F("Variable resolution is"), _decimalResolution, F("decimal places"));
 }
 
 // This gets/sets the variable's name using http://vocabulary.odm2.org/variablename/
@@ -265,7 +265,7 @@ String Variable::getVarName(void){return _varName;}
 void Variable::setVarName(const char *varName)
 {
     _varName = varName;
-    MS_DBG(F("Variable name is"), _varName);
+    // MS_DBG(F("Variable name is"), _varName);
 }
 
 // This gets/sets the variable's unit using http://vocabulary.odm2.org/units/
@@ -273,7 +273,7 @@ String Variable::getVarUnit(void){return _varUnit;}
 void Variable::setVarUnit(const char *varUnit)
 {
     _varUnit = varUnit;
-    MS_DBG(F("Variable unit is"), _varUnit);
+    // MS_DBG(F("Variable unit is"), _varUnit);
 }
 
 // This returns a customized code for the variable
@@ -282,7 +282,7 @@ String Variable::getVarCode(void){return _varCode;}
 void Variable::setVarCode(const char *varCode)
 {
     _varCode = varCode;
-    MS_DBG(F("Variable code is"), _varCode);
+    // MS_DBG(F("Variable code is"), _varCode);
 }
 
 // This returns the variable UUID, if one has been assigned
@@ -291,8 +291,8 @@ String Variable::getVarUUID(void){return _uuid;}
 void Variable::setVarUUID(const char *uuid)
 {
     _uuid = uuid;
-    if (strlen(_uuid) == 0) MS_DBG(F("No UUID assigned"));
-    else MS_DBG(F("Variable UUID is"), _uuid);
+    // if (strlen(_uuid) == 0) MS_DBG(F("No UUID assigned"));
+    // else MS_DBG(F("Variable UUID is"), _uuid);
 }
 
 

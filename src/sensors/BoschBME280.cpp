@@ -88,9 +88,8 @@ bool BoschBME280::setup(void)
 
 bool BoschBME280::wake(void)
 {
-    // Sensor::wake() checks if the power pin is on, setup has been successful,
-    // and sets the wake timestamp and status bits.  If it returns false,
-    // there's no reason to go on.
+    // Sensor::wake() checks if the power pin is on and sets the wake timestamp
+    // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
 
     // Restart always needed after power-up to set sampling modes

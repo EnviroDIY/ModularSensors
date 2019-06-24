@@ -22,15 +22,16 @@
 // #define MS_YOSEMITECHPARENT_DEBUG_DEEP
 
 #ifdef MS_YOSEMITECHPARENT_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "YosemitechParent"
 #endif
 
 #ifdef MS_YOSEMITECHPARENT_DEBUG_DEEP
-#define MS_DEBUGGING_DEEP
+#define MS_DEBUGGING_DEEP "YosemitechParent"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <YosemitechModbus.h>

@@ -16,11 +16,12 @@
 // #define MS_ENVIRODIYPUBLISHER_DEBUG
 
 #ifdef MS_ENVIRODIYPUBLISHER_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "EnviroDIYPublisher"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "dataPublisherBase.h"
 
 
@@ -78,7 +79,7 @@ public:
     // over that connection.
     // The return is the http status code of the response.
     // int16_t postDataEnviroDIY(void);
-    virtual int16_t sendData(Client *_outClient);
+    virtual int16_t publishData(Client *_outClient);
 
 protected:
 

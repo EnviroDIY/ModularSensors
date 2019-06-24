@@ -36,14 +36,16 @@
 // #define MS_YOSEMITECHY510B_DEBUG_DEEP
 
 #ifdef MS_YOSEMITECHY510B_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "YosemitechY510"
 #endif
 
 #ifdef MS_YOSEMITECHY510B_DEBUG_DEEP
-#define MS_DEBUGGING_DEEP
+#define MS_DEBUGGING_DEEP "YosemitechY510"
 #endif
 
 // Included Dependencies
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "sensors/YosemitechParent.h"
 

@@ -53,6 +53,10 @@ Temporary Items
 .pio
 .pioenvs
 .piolibdeps
+.pio
+.pio/libdeps
+.pio/build
+.pio/*
 .clang_complete
 .gcc-flags.json
 lib/readme.txt
