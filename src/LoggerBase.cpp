@@ -20,9 +20,9 @@
 
 
 // Initialize the static timezone
-int8_t Logger::_timeZone = 0;
+int8_t Logger::_loggerTimeZone = 0;
 // Initialize the static time adjustment
-int8_t Logger::_offset = 0;
+int8_t Logger::_loggerRTCOffset = 0;
 // Initialize the static timestamps
 uint32_t Logger::markedEpochTime = 0;
 // Initialize the testing/logging flags
@@ -419,17 +419,47 @@ void Logger::publishDataToRemotes(void)
 // Public functions to access the clock in proper format and time zone
 // ===================================================================== //
 
-// Sets the static timezone - this must be set
-void Logger::setTimeZone(int8_t timeZone)
+// Sets the static timezone that the data will be logged in - this must be set
+void Logger::setLoggerTimeZone(int8_t timeZone)
 {
-    _timeZone = timeZone;
+    _loggerTimeZone = timeZone;
     // Some helpful prints for debugging
     #ifdef STANDARD_SERIAL_OUTPUT
         const char* prtout1 = "Logger timezone is set to UTC";
-        if (_timeZone == 0) PRINTOUT(prtout1);
-        else if (_timeZone > 0) PRINTOUT(prtout1, '+', _timeZone);
-        else PRINTOUT(prtout1, _timeZone);
+        if (_loggerTimeZone == 0)
+            PRINTOUT(prtout1);
+        else if (_loggerTimeZone > 0)
+            PRINTOUT(prtout1, '+', _loggerTimeZone);
+        else
+            PRINTOUT(prtout1, _loggerTimeZone);
     #endif
+}
+int8_t Logger::getLoggerTimeZone(void)
+{
+    return Logger::_loggerTimeZone;
+}
+
+// Sets the static timezone that the RTC is programmed in
+// I VERY VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC
+// You can either set the RTC offset directly or set the offset between the
+// RTC and the logger
+void Logger::setRTCTimeZone(int8_t timeZone)
+{
+    _loggerRTCOffset = _loggerTimeZone - timeZone;
+    // Some helpful prints for debugging
+    #ifdef STANDARD_SERIAL_OUTPUT
+        const char* prtout1 = "RTC timezone is set to UTC";
+        if ((_loggerTimeZone - _loggerRTCOffset) == 0)
+            PRINTOUT(prtout1);
+        else if ((_loggerTimeZone - _loggerRTCOffset) > 0)
+            PRINTOUT(prtout1, '+', (_loggerTimeZone - _loggerRTCOffset));
+        else
+            PRINTOUT(prtout1, (_loggerTimeZone - _loggerRTCOffset));
+    #endif
+}
+int8_t Logger::getRTCTimeZone(void)
+{
+    return Logger::_loggerTimeZone - Logger::_loggerRTCOffset;
 }
 
 
@@ -437,16 +467,22 @@ void Logger::setTimeZone(int8_t timeZone)
 // the data is being recorded.  If your RTC is set in UTC and your logging
 // timezone is EST, this should be -5.  If your RTC is set in EST and your
 // timezone is EST this does not need to be called.
+// You can either set the RTC offset directly or set the offset between the
+// RTC and the logger
 void Logger::setTZOffset(int8_t offset)
 {
-    _offset = offset;
+    _loggerRTCOffset = offset;
     // Some helpful prints for debugging
-    #ifdef STANDARD_SERIAL_OUTPUT
-        const char* prtout1 = "RTC timezone is set to UTC";
-        if ((_timeZone - _offset) == 0) PRINTOUT(prtout1);
-        else if ((_timeZone - _offset) > 0) PRINTOUT(prtout1, '+', (_timeZone - _offset));
-        else PRINTOUT(prtout1, (_timeZone - _offset));
-    #endif
+    if (_loggerRTCOffset == 0)
+        PRINTOUT(F("RTC and Logger are set in the same timezone."));
+    else if (_loggerRTCOffset < 0)
+        PRINTOUT(F("RTC is set"), -1*_loggerRTCOffset, F("hours ahead of logging timezone"));
+    else
+        PRINTOUT(F("RTC is set"), _loggerRTCOffset, F("hours behind the logging timezone"));
+}
+int8_t Logger::getTZOffset(void)
+{
+    return Logger::_loggerRTCOffset;
 }
 
 // This gets the current epoch time (unix time, ie, the number of seconds
@@ -456,7 +492,7 @@ void Logger::setTZOffset(int8_t offset)
 uint32_t Logger::getNowEpoch(void)
 {
   uint32_t currentEpochTime = rtc.now().getEpoch();
-  currentEpochTime += _offset*3600;
+  currentEpochTime += _loggerRTCOffset*3600;
   return currentEpochTime;
 }
 void Logger::setNowEpoch(uint32_t ts){rtc.setEpoch(ts);}
@@ -466,7 +502,7 @@ void Logger::setNowEpoch(uint32_t ts){rtc.setEpoch(ts);}
 uint32_t Logger::getNowEpoch(void)
 {
   uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
-  currentEpochTime += _offset*3600;
+  currentEpochTime += _loggerRTCOffset*3600;
   return currentEpochTime;
 }
 void Logger::setNowEpoch(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
@@ -489,24 +525,24 @@ String Logger::formatDateTime_ISO8601(DateTime& dt)
     // Convert the DateTime object to a String
     dt.addToString(dateTimeStr);
     dateTimeStr.replace(" ", "T");
-    String tzString = String(_timeZone);
-    if (-24 <= _timeZone && _timeZone <= -10)
+    String tzString = String(_loggerTimeZone);
+    if (-24 <= _loggerTimeZone && _loggerTimeZone <= -10)
     {
         tzString += F(":00");
     }
-    else if (-10 < _timeZone && _timeZone < 0)
+    else if (-10 < _loggerTimeZone && _loggerTimeZone < 0)
     {
         tzString = tzString.substring(0,1) + '0' + tzString.substring(1,2) + F(":00");
     }
-    else if (_timeZone == 0)
+    else if (_loggerTimeZone == 0)
     {
         tzString = 'Z';
     }
-    else if (0 < _timeZone && _timeZone < 10)
+    else if (0 < _loggerTimeZone && _loggerTimeZone < 10)
     {
         tzString = "+0" + tzString + F(":00");
     }
-    else if (10 <= _timeZone && _timeZone <= 24)
+    else if (10 <= _loggerTimeZone && _loggerTimeZone <= 24)
     {
         tzString = "+" + tzString + F(":00");
     }
@@ -534,7 +570,7 @@ bool Logger::setRTClock(uint32_t setTime)
         return false;
     }
 
-    uint32_t set_logTZ = setTime + getTimeZone()*3600;
+    uint32_t set_logTZ = setTime + getLoggerTimeZone()*3600;
     uint32_t set_rtcTZ = set_logTZ - getTZOffset()*3600;
     MS_DBG(F("         Correct Time for Logger:"), set_logTZ, F("->"), \
         formatDateTime_ISO8601(set_logTZ));
@@ -914,8 +950,8 @@ void Logger::printFileHeader(Stream *stream)
 
     // We'll finish up the the custom variable codes
     String dtRowHeader = F("Date and Time in UTC");
-    if (_timeZone > 0) dtRowHeader += '+' + _timeZone;
-    else if (_timeZone < 0) dtRowHeader += _timeZone;
+    if (_loggerTimeZone > 0) dtRowHeader += '+' + _loggerTimeZone;
+    else if (_loggerTimeZone < 0) dtRowHeader += _loggerTimeZone;
     STREAM_CSV_ROW(dtRowHeader, getVarCodeAtI(i));
 }
 
