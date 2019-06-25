@@ -412,6 +412,7 @@ void Logger::publishDataToRemotes(void)
         }
     }
 }
+void Logger::sendDataToRemotes(void) { publishDataToRemotes(); }
 
 
 
@@ -438,6 +439,9 @@ int8_t Logger::getLoggerTimeZone(void)
 {
     return Logger::_loggerTimeZone;
 }
+// Duplicates for backwards compatibility
+void Logger::setTimeZone(int8_t timeZone) { setLoggerTimeZone(timeZone); }
+int8_t Logger::getTimeZone(void) { return getLoggerTimeZone(); }
 
 // Sets the static timezone that the RTC is programmed in
 // I VERY VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC

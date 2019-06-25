@@ -173,6 +173,8 @@ public:
     void registerDataPublisher(dataPublisher* publisher);
     // Notifies attached variables of new values
     void publishDataToRemotes(void);
+    // These are duplicates of the above functions for backwards compatibility
+    void sendDataToRemotes(void);
 
 protected:
     // The internal modem instance
@@ -192,6 +194,9 @@ public:
     // Sets the static timezone that the data will be logged in - this must be set
     static void setLoggerTimeZone(int8_t timeZone);
     static int8_t getLoggerTimeZone(void);
+    // Duplicates for backwards compatibility
+    static void setTimeZone(int8_t timeZone);
+    static int8_t getTimeZone(void);
 
     // Sets the static timezone that the RTC is programmed in
     // I VERY VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC

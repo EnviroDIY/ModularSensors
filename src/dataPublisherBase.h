@@ -74,6 +74,10 @@ public:
     // being available
     virtual int16_t publishData(Client *_outClient) = 0;
     virtual int16_t publishData();
+    // These are duplicates of the above functions for backwards compatibility
+    virtual int16_t sendData(Client *_outClient);
+    virtual int16_t sendData();
+
 
 protected:
     // The internal logger instance
