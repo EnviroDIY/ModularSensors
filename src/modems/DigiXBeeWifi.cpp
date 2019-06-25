@@ -44,7 +44,6 @@ MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(DigiXBeeWifi);
 MS_MODEM_GET_MODEM_BATTERY_NA(DigiXBeeWifi);
 MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(DigiXBeeWifi);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeWifi);
-MS_MODEM_GET_NIST_TIME(DigiXBeeWifi);
 
 
 bool DigiXBeeWifi::extraModemSetup(void)
@@ -71,6 +70,14 @@ bool DigiXBeeWifi::extraModemSetup(void)
         // NOTE:  Only pin 12/DIO7/CTS can be used for this function
         gsmModem.sendAT(GF("D7"),1);
         success &= gsmModem.waitResponse() == 1;
+        // Turn on the associate LED (if you're using a board with one)
+        // NOTE:  Only pin 15/DIO5 can be used for this function
+        gsmModem.sendAT(GF("D5"),1);
+        success &= gsmModem.waitResponse() == 1;
+        // Turn on the RSSI indicator LED (if you're using a board with one)
+        // NOTE:  Only pin 6/DIO10/PWM0 can be used for this function
+        gsmModem.sendAT(GF("P0"),1);
+        success &= gsmModem.waitResponse() == 1;
         // Put the XBee in pin sleep mode
         MS_DBG(F("Setting Sleep Options..."));
         gsmModem.sendAT(GF("SM"),1);
@@ -93,6 +100,78 @@ bool DigiXBeeWifi::extraModemSetup(void)
 }
 
 
+// Get the time from NIST via TIME protocol (rfc868)
+uint32_t DigiXBeeWifi::getNISTTime(void)
+{
+    /* bail if not connected to the internet */
+    if (!isInternetAvailable())
+    {
+        MS_DBG(F("No internet connection, cannot connect to NIST."));
+        return 0;
+    }
+
+    /* Must ensure that we do not ping the daylight more than once every 4 seconds */
+    /* NIST clearly specifies here that this is a requirement for all software */
+    /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
+    while (millis() < _lastNISTrequest + 4000) {}
+
+    /* Make TCP connection */
+    MS_DBG(F("nConnecting to NIST daytime Server"));
+    bool connectionMade = false;
+
+    /* This is the IP address of time-c-g.nist.gov */
+    /* XBee's address lookup falters on time.nist.gov */
+    IPAddress ip(129, 6, 15, 30);
+    connectionMade = gsmClient.connect(ip, 37, 15);
+    /* Wait again so NIST doesn't refuse us! */
+    delay(4000L);
+    /* Need to send something before connection is made */
+    gsmClient.println('!');
+
+    /* Wait up to 5 seconds for a response */
+    if (connectionMade)
+    {
+        uint32_t start = millis();
+        while (gsmClient && gsmClient.available() < 4 && millis() - start < 5000L){}
+
+        if (gsmClient.available() >= 4)
+        {
+            MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
+            /* Response is returned as 32-bit number as soon as connection is made */
+            /* Connection is then immediately closed, so there is no need to close it */
+            uint32_t secFrom1900 = 0;
+            byte response[4] = {0};
+            for (uint8_t i = 0; i < 4; i++)
+            {
+                response[i] = gsmClient.read();
+                MS_DBG(F("Response Byte"), i, ':', (char)response[i],
+                           '=', response[i], '=', String(response[i], BIN));
+                secFrom1900 += 0x000000FF & response[i];
+                /* MS_DBG(F("nseconds from 1900 after byte:"),String(secFrom1900, BIN)); */
+                if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;}
+            }
+            MS_DBG(F("Seconds from 1900 returned by NIST (UTC):"),
+                       secFrom1900, '=', String(secFrom1900, BIN));
+
+            /* Return the timestamp */
+            uint32_t unixTimeStamp = secFrom1900 - 2208988800;
+            MS_DBG(F("Unix Timestamp returned by NIST (UTC):"), unixTimeStamp, 'n');
+            /* If before Jan 1, 2017 or after Jan 1, 2030, most likely an error */
+            if (unixTimeStamp < 1483228800) return 0;
+            else if (unixTimeStamp > 1893456000) return 0;
+            else return unixTimeStamp;
+        }
+        else
+        {
+            MS_DBG(F("NIST Time server did not respond!"));
+            return 0;
+        }
+    }
+    else MS_DBG(F("Unable to open TCP to NIST!"));
+    return 0;
+}
+
+
 bool DigiXBeeWifi::getModemSignalQuality(int16_t &rssi, int16_t &percent)
 {
     // Initialize float variable
@@ -109,14 +188,14 @@ bool DigiXBeeWifi::getModemSignalQuality(int16_t &rssi, int16_t &percent)
     if (!gsmModem.gotIPforSavedHost())
     {
         usedGoogle = true;
-        IPAddress ip(8, 8, 8, 8);  // This is the IP address of time-c-g.nist.gov
-        success &= gsmClient.connect(ip, 80);
+        IPAddress ip(8, 8, 8, 8);  // This is one of Google's IP's
+        success &= gsmClient.connect(ip, 80, 5);  // 5 second timeout
     }
     gsmClient.print('!');  // Need to send something before connection is made
     delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
     if (usedGoogle)
     {
-        gsmClient.stop();
+        gsmClient.stop(15000L);
     }
 
     // Get signal quality
@@ -161,14 +240,14 @@ bool DigiXBeeWifi::addSingleMeasurementResult(void)
         if (!gsmModem.gotIPforSavedHost())
         {
             usedGoogle = true;
-            IPAddress ip(8, 8, 8, 8);  // This is the IP address of time-c-g.nist.gov
-            success &= gsmClient.connect(ip, 80);
+            IPAddress ip(8, 8, 8, 8);  // This is one of Google's IP's
+            success &= gsmClient.connect(ip, 80, 5);  // 5 second timeout
         }
         gsmClient.print('!');  // Need to send something before connection is made
         delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
         if (usedGoogle)
         {
-            gsmClient.stop();
+            gsmClient.stop(15000L);
         }
 
         // Enter command mode only once

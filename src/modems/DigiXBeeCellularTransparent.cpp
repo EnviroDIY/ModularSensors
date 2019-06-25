@@ -43,7 +43,6 @@ MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeCellularTransparent);
 MS_MODEM_GET_MODEM_BATTERY_NA(DigiXBeeCellularTransparent);
 MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(DigiXBeeCellularTransparent);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularTransparent);
-MS_MODEM_GET_NIST_TIME(DigiXBeeCellularTransparent);
 
 
 bool DigiXBeeCellularTransparent::extraModemSetup(void)
@@ -67,8 +66,16 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         success &= gsmModem.waitResponse() == 1;
         // Turn on CTS pin - it will be LOW when the XBee is ready to receive commands
         // This can be used as proxy for status indication if the true status pin is not accessible
-        // NOTE:  Only pin 12/DIO7/CTS can be used for this function
+        // NOTE:  Only pin 12/DIO5/CTS can be used for this function
         gsmModem.sendAT(GF("D7"),1);
+        success &= gsmModem.waitResponse() == 1;
+        // Turn on the associate LED (if you're using a board with one)
+        // NOTE:  Only pin 15/DIO5 can be used for this function
+        gsmModem.sendAT(GF("D5"),1);
+        success &= gsmModem.waitResponse() == 1;
+        // Turn on the RSSI indicator LED (if you're using a board with one)
+        // NOTE:  Only pin 6/DIO10/PWM0 can be used for this function
+        gsmModem.sendAT(GF("P0"),1);
         success &= gsmModem.waitResponse() == 1;
         // Put the XBee in pin sleep mode
         MS_DBG(F("Setting Sleep Options..."));
@@ -83,9 +90,6 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
         // so we'll use the Digi pin sleep instead.
         gsmModem.sendAT(GF("DO"),0);
-        success &= gsmModem.waitResponse() == 1;
-        // Make sure USB direct won't be pin enabled on XBee3 units
-        gsmModem.sendAT(GF("P0"),0);
         success &= gsmModem.waitResponse() == 1;
         // Make sure pins 7&8 are not set for USB direct on XBee3 units
         gsmModem.sendAT(GF("P1"),0);
@@ -118,6 +122,32 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
     if (success) MS_DBG(F("... Setup successful!"));
     else MS_DBG(F("... failed!"));
     return success;
+}
+
+
+// Get the time from NIST via TIME protocol (rfc868)
+// This would be much more efficient if done over UDP, but I'm doing it
+// over TCP because I don't have a UDP library for all the modems.
+uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
+{
+    // bail if not connected to the internet
+    gsmModem.commandMode();
+    if (!gsmModem.isNetworkConnected())
+    {
+        MS_DBG(F("No internet connection, cannot connect to NIST."));
+        gsmModem.exitCommand();
+        return 0;
+    }
+
+    // We can get the NIST timestamp directly from the XBee
+    gsmModem.sendAT(GF("DT0"));
+    String res = gsmModem.readResponseString();
+    gsmModem.exitCommand();
+    char buf[5] = {0,};
+    res.toCharArray(buf, 5);
+    uint32_t intRes = strtoul(buf, 0, 16);
+    return intRes;
+    return res.toInt();
 }
 
 
