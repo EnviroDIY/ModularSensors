@@ -346,21 +346,7 @@ uint32_t specificModem::getNISTTime(void) \
 \
     /* Make TCP connection */ \
     MS_DBG(F("\nConnecting to NIST daytime Server")); \
-    bool connectionMade = false; \
-    if (_modemName.indexOf(F("XBee")) >= 0) \
-    { \
-        /* This is the IP address of time-c-g.nist.gov */ \
-        /* XBee's address lookup falters on time.nist.gov */ \
-        IPAddress ip(129, 6, 15, 30); \
-        connectionMade = gsmClient.connect(ip, 37); \
-        /* Wait again so NIST doesn't refuse us! */ \
-        delay(4000L); \
-        /* Need to send something before connection is made */ \
-        gsmClient.println('!'); \
-        /* Need this delay!  Can get away with 50, but 100 is safer. */ \
-        /*delay(100);*/ \
-    } \
-    else connectionMade = gsmClient.connect("time.nist.gov", 37); \
+    bool connectionMade = gsmClient.connect("time.nist.gov", 37, 15); \
 \
     /* Wait up to 5 seconds for a response */ \
     if (connectionMade) \
@@ -388,7 +374,8 @@ uint32_t specificModem::getNISTTime(void) \
                        secFrom1900, '=', String(secFrom1900, BIN)); \
 \
             /* Close the TCP connection, just in case */ \
-            gsmClient.stop(); \
+            /* Don't close connection! It takes too long and then the time stamp is out of date! */ \
+            /*gsmClient.stop(15000L);*/ \
 \
             /* Return the timestamp */ \
             uint32_t unixTimeStamp = secFrom1900 - 2208988800; \
