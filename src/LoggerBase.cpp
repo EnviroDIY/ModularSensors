@@ -594,7 +594,7 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
     MS_DBG(F("    Offset between NIST and RTC:"), abs(set_logTZ - cur_logTZ));
 
     // If the RTC and NIST disagree by more than 5 seconds, set the clock
-    if ((abs(set_logTZ - cur_logTZ) > 5) && (UTCEpochSeconds != 0))
+    if (abs(set_logTZ - cur_logTZ) > 5)
     {
         setNowEpoch(set_rtcTZ);
         PRINTOUT(F("Clock set!"));
@@ -1388,6 +1388,7 @@ void Logger::begin()
     #endif
     MS_DBG(F("Beginning wire (I2C)"));
     Wire.begin();
+
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
     // on wire after the Wire buffer has emptied.  The default stream
@@ -1503,8 +1504,8 @@ void Logger::logDataAndPublish(void)
                 // Publish data to remotes
                 publishDataToRemotes();
 
-                // Sync the clock at midnight
                 if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 43200)
+                // Sync the clock at noon
                 {
                     MS_DBG(F("Running a daily clock sync..."));
                     setRTClock(_logModem->getNISTTime());

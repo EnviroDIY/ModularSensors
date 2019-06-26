@@ -274,6 +274,7 @@ bool loggerModem::isStable(bool debug)
     uint32_t now = millis();
 
     uint32_t elapsed_since_wake_up = now - _millisSensorActivated;
+
     // If the modem has a status pin and it's still off after the specified time
     // plus a 500ms buffer, then, if it's the first time this happened give up
     // and move on.  If it's happened twice in a row, try a hard reset and

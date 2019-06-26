@@ -121,6 +121,9 @@ bool EspressifESP8266::modemWakeFxn(void)
         digitalWrite(_modemSleepRqPin, LOW);
         delay(1);
         digitalWrite(_modemSleepRqPin, HIGH);
+        // Have to make sure echo is off or all AT commands will be confused
+        gsmModem.sendAT(GF("E0"));
+        success &= gsmModem.waitResponse() == 1;
         // Don't have to wait for a boot if using light sleep
         return true;
     }
