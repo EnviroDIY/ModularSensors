@@ -143,11 +143,11 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
     gsmModem.sendAT(GF("DT0"));
     String res = gsmModem.readResponseString();
     gsmModem.exitCommand();
-    char buf[5] = {0,};
-    res.toCharArray(buf, 5);
-    uint32_t intRes = strtoul(buf, 0, 16);
+    char buf[9] = {0,};
+    res.toCharArray(buf, 9);
+    uint32_t intRes = strtol(buf, 0, 16);
+    intRes += 946684800 ; // Convert from seconds since Jan 1, 2000 to 1970
     return intRes;
-    return res.toInt();
 }
 
 
