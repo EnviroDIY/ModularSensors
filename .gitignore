@@ -50,6 +50,7 @@ Temporary Items
 .idea/
 
 # Atom / PlatformIO
+.pio
 .pioenvs
 .piolibdeps
 .pio
