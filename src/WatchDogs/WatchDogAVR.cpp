@@ -18,16 +18,20 @@
 #include <avr/interrupt.h>
 #include <avr/wdt.h>
 
-extendedWatchDogAVR::extendedWatchDogAVR(uint32_t resetTime_s)
-  : extendedWatchDog(resetTime_s)
+extendedWatchDogAVR::extendedWatchDogAVR(){}
+extendedWatchDogAVR::~extendedWatchDogAVR()
 {
-    _barksUntilReset = _resetTime_s;  // interrupt is in place of the reset
+    disableWatchDog();
 }
 
 
 
 // One-time initialization of watchdog timer.
-void extendedWatchDogAVR::setupWatchDog(){}
+void extendedWatchDogAVR::setupWatchDog(uint32_t resetTime_s)
+{
+    _resetTime_s = resetTime_s;
+    _barksUntilReset = _resetTime_s;
+}
 
 
 void extendedWatchDogAVR::enableWatchDog()

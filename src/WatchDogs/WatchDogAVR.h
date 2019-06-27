@@ -31,10 +31,11 @@ class extendedWatchDogAVR : extendedWatchDog
 
 public:
     // Constructor
-    extendedWatchDogAVR(uint32_t resetTime_s);
+    extendedWatchDogAVR();
+    virtual ~extendedWatchDogAVR();
 
     // One-time initialization of watchdog timer.
-    void setupWatchDog();
+    void setupWatchDog(uint32_t resetTime_s);
     void enableWatchDog();
     void disableWatchDog();
 

@@ -35,10 +35,11 @@ class extendedWatchDogSAMD : extendedWatchDog
 
 public:
     // Constructor
-    extendedWatchDogSAMD(uint32_t resetTime_s);
+    extendedWatchDogSAMD();
+    virtual ~extendedWatchDogSAMD();
 
     // One-time initialization of watchdog timer.
-    void setupWatchDog();
+    void setupWatchDog(uint32_t resetTime_s);
     void enableWatchDog();
     void disableWatchDog();
 

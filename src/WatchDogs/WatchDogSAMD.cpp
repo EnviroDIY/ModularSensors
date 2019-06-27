@@ -15,16 +15,18 @@
 // link all .cpp files regardless of platform.
 #if defined(ARDUINO_ARCH_SAMD)
 
-extendedWatchDogSAMD::extendedWatchDogSAMD(uint32_t resetTime_s)
-  : extendedWatchDog(resetTime_s)
+extendedWatchDogSAMD::extendedWatchDogSAMD(){}
+extendedWatchDogSAMD::~extendedWatchDogSAMD()
 {
-    _barksUntilReset = _resetTime_s*2;  // warning is 1/2 second early
+    disableWatchDog();
 }
 
-
 // One-time initialization of watchdog timer.
-void extendedWatchDogSAMD::setupWatchDog();
+void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s);
 {
+    _resetTime_s = resetTime_s;
+    _barksUntilReset = _resetTime_s*2;  // warning is 1/2 second early
+
 #if defined(__SAMD51__)
     // SAMD51 WDT uses OSCULP32k as input clock now
     // section: 20.5.3

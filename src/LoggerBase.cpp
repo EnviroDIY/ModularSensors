@@ -763,6 +763,9 @@ void Logger::systemSleep(void)
     // USB connection will end at sleep because it's a separate mode in the processor
     USBDevice.detach();  // Disable USB
 
+    // Disable the watch-dog timer
+    watchDogTimer->disableWatchDog();
+
     // Put the processor into sleep mode.
     zero_sleep_rtc.standbyMode();
 
@@ -776,6 +779,9 @@ void Logger::systemSleep(void)
     // SLEEP_MODE_STANDBY
     // SLEEP_MODE_PWR_DOWN     -the most power savings
     set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+
+    // Disable the watch-dog timer
+    watchDogTimer->disableWatchDog();
 
     // Temporarily disables interrupts, so no mistakes are made when writing
     // to the processor registers
@@ -817,10 +823,17 @@ void Logger::systemSleep(void)
     // -- The portion below this happens on wake up, after any wake ISR's --
 
     #if defined ARDUINO_ARCH_SAMD
+
+    // Re-enable the watch-dog timer
+    watchDogTimer->enableWatchDog();
     // Reattach the USB after waking
     USBDevice.attach();
 
     #elif defined ARDUINO_ARCH_AVR
+
+    // Re-enable the watch-dog timer
+    watchDogTimer->enableWatchDog();
+    
     // Temporarily disables interrupts, so no mistakes are made when writing
     // to the processor registers
     noInterrupts();
@@ -1346,6 +1359,11 @@ void Logger::begin()
         MS_DBG(F("Sampling feature UUID is:"), _samplingFeatureUUID);
     }
 
+    MS_DBG(F("Setting up a watch-dog timer for 3x the logging interval"));
+    watchDogTimer->setupWatchDog(((uint32_t)_loggingIntervalMinutes)*60*3);
+    // Enable the watchdog
+    watchDogTimer->enableWatchDog();
+
     // Set pin modes for sd card power
     if (_SDCardPowerPin >= 0)
     {
@@ -1415,6 +1433,9 @@ void Logger::begin()
     // Print out the current time
     PRINTOUT(F("Current RTC time is:"), formatDateTime_ISO8601(getNowEpoch()));
 
+    // Reset the watchdog
+    watchDogTimer->resetWatchDog();
+
     PRINTOUT(F("Logger setup finished!"));
 }
 
@@ -1422,6 +1443,9 @@ void Logger::begin()
 // This is a one-and-done to log data
 void Logger::logData(void)
 {
+    // Reset the watchdog
+    watchDogTimer->resetWatchDog();
+
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
     if (checkInterval())
@@ -1465,6 +1489,9 @@ void Logger::logData(void)
 // This is a one-and-done to log data
 void Logger::logDataAndPublish(void)
 {
+    // Reset the watchdog
+    watchDogTimer->resetWatchDog();
+
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
     if (checkInterval())

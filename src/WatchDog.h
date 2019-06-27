@@ -30,14 +30,10 @@ class extendedWatchDog
 
 public:
     // Constructor
-    extendedWatchDog(uint32_t resetTime_s);
+    extendedWatchDog(){}
+    virtual ~extendedWatchDog(){}
 
-    // Set/Get the time before reset
-    void setResetTime(uint32_t resetTime_s);
-    uint32_t getResetTime();
-
-    // One-time initialization of watchdog timer.
-    virtual void setupWatchDog() = 0;
+    virtual void setupWatchDog(uint32_t resetTime_s) = 0;
     virtual void enableWatchDog() = 0;
     virtual void disableWatchDog() = 0;
 

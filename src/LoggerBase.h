@@ -29,9 +29,11 @@
 // The SAMD library can also the built-in clock on those modules
 #if defined(ARDUINO_ARCH_SAMD)
   #include <RTCZero.h>
+  #include "WatchDogSAMD.h"
 #elif defined __AVR__
   #include <avr/sleep.h>
   #include <avr/power.h>
+  #include "WatchDogAVR.h"
 #endif
 
 // Bring in the library to communicate with an external high-precision real time clock
@@ -267,6 +269,9 @@ public:
     // Puts the system to sleep to conserve battery life.
     // This DOES NOT sleep or wake the sensors!!
     void systemSleep(void);
+
+    // A watch-dog to check for lock-ups
+    extendedWatchDog *watchDogTimer;
 
     // ===================================================================== //
     // Public functions for logging data to an SD card
