@@ -23,7 +23,7 @@
 #define TallyCounterI2C_h
 
 // Debugging Statement
-// #define MS_TALLYCOUNTERI2C_DEBUG
+#define MS_TALLYCOUNTERI2C_DEBUG
 
 #ifdef MS_TALLYCOUNTERI2C_DEBUG
 #define MS_DEBUGGING_STD "TallyCounterI2C"
@@ -43,7 +43,7 @@
 #define TALLY_MEASUREMENT_TIME_MS 0
 
 #define TALLY_EVENTS_RESOLUTION 0
-#define TALLY_EVENTS_VAR_NUM 1
+#define TALLY_EVENTS_VAR_NUM 0
 
 // The main class for the external event counter
 class TallyCounterI2C : public Sensor
@@ -56,6 +56,7 @@ public:
     // Destructor
     ~TallyCounterI2C();
 
+    bool wake(void) override;
     bool setup(void) override;
     String getSensorLocation(void) override;
 

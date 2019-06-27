@@ -98,14 +98,14 @@ Variable *tallyEvents = new TallyCounterI2C_Events(&tallyi2c, "12345678-abcd-123
 #include <VariableArray.h>
 
 Variable *variableList[] = {
-    new ProcessorStats_SampleNumber(&mcuBoard),
-    new ProcessorStats_FreeRam(&mcuBoard),
-    new ProcessorStats_Battery(&mcuBoard),
-    new MaximDS3231_Temp(&ds3231),
+    // new ProcessorStats_SampleNumber(&mcuBoard),
+    // new ProcessorStats_FreeRam(&mcuBoard),
+    // new ProcessorStats_Battery(&mcuBoard),
+    // new MaximDS3231_Temp(&ds3231),
     // Additional sensor variables can be added here, by copying the syntax
     //   for creating the variable pointer (FORM1) from the `menu_a_la_carte.ino` example
     // The example code snippets in the wiki are primarily FORM2.
-    tallyEvents
+    tallyEvents,
 };
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);

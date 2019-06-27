@@ -43,8 +43,49 @@ String TallyCounterI2C::getSensorLocation(void)
 
 bool TallyCounterI2C::setup(void)
 {
-    counter_internal.begin();
-    return Sensor::setup();  // this will set pin modes and the setup status bit
+    bool retVal = Sensor::setup();  // this will set pin modes and the setup status bit
+
+    // This sensor needs power for setup!
+    bool wasOn = checkPowerOn();
+    if (!wasOn) {powerUp();}
+    waitForWarmUp();
+
+    // Run begin fxn because it returns true or false for success in contact
+    // Make 5 attempts
+    uint8_t ntries = 0;
+    bool success = false;
+    while (!success and ntries < 5)
+    {
+        success = counter_internal.begin();
+        ntries++;
+    }
+    if (!success)
+    {
+        // Set the status error bit (bit 7)
+        _sensorStatus |= 0b10000000;
+        // UN-set the set-up bit (bit 0) since setup failed!
+        _sensorStatus &= 0b11111110;
+    }
+    retVal &= success;
+
+
+    // Turn the power back off it it had been turned on
+    if (!wasOn) {powerDown();}
+
+    return retVal;
+}
+
+
+bool TallyCounterI2C::wake(void)
+{
+    // Sensor::wake() checks if the power pin is on and sets the wake timestamp
+    // and status bits.  If it returns false, there's no reason to go on.
+    if (!Sensor::wake()) return false;
+
+    // Restart always needed after power-up to set sampling modes
+    counter_internal.begin(_i2cAddressHex);
+
+    return true;
 }
 
 
