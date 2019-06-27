@@ -29,11 +29,11 @@
 // The SAMD library can also the built-in clock on those modules
 #if defined(ARDUINO_ARCH_SAMD)
   #include <RTCZero.h>
-  #include "WatchDogSAMD.h"
+  #include "WatchDogs/WatchDogSAMD.h"
 #elif defined __AVR__
   #include <avr/sleep.h>
   #include <avr/power.h>
-  #include "WatchDogAVR.h"
+  #include "WatchDogs/WatchDogAVR.h"
 #endif
 
 // Bring in the library to communicate with an external high-precision real time clock
