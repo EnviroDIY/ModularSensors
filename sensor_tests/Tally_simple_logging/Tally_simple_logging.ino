@@ -117,7 +117,7 @@ float calculateWindSpeed(void)
 }
 
 // Properties of the calculated variable
-const uint8_t calculatedVarResolution = 1;  // The number of digits after the decimal place
+const uint8_t calculatedVarResolution = 3;  // The number of digits after the decimal place
 const char *calculatedVarName = "windSpeed";  // This must be a value from http://vocabulary.odm2.org/variablename/
 const char *calculatedVarUnit = "KilometerPerHour";  // This must be a value from http://vocabulary.odm2.org/units/
 const char *calculatedVarCode = "TallyWindSpeed";  // A short code for the variable

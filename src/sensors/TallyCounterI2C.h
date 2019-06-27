@@ -23,7 +23,7 @@
 #define TallyCounterI2C_h
 
 // Debugging Statement
-#define MS_TALLYCOUNTERI2C_DEBUG
+// #define MS_TALLYCOUNTERI2C_DEBUG
 
 #ifdef MS_TALLYCOUNTERI2C_DEBUG
 #define MS_DEBUGGING_STD "TallyCounterI2C"
