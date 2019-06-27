@@ -30,7 +30,7 @@ extendedWatchDogAVR::~extendedWatchDogAVR()
 void extendedWatchDogAVR::setupWatchDog(uint32_t resetTime_s)
 {
     _resetTime_s = resetTime_s;
-    extendedWatchDog::_barksUntilReset = _resetTime_s;
+    extendedWatchDog::_barksUntilReset = _resetTime_s/8;
     MS_DBG(F("Watch-dog timeout is set for"),
            _resetTime_s,
            F("with the interrupt firing"),
@@ -42,7 +42,7 @@ void extendedWatchDogAVR::setupWatchDog(uint32_t resetTime_s)
 void extendedWatchDogAVR::enableWatchDog()
 {
     MS_DBG(F("Enabling watch dog..."),
-    
+
     cli();                              // disable interrupts
 
     MCUSR = 0;                          // reset status register flags
@@ -50,9 +50,9 @@ void extendedWatchDogAVR::enableWatchDog()
                                      // Put timer in interrupt-only mode:
     WDTCSR |= 0b00011000;               // Set WDCE (5th from left) and WDE (4th from left) to enter config mode,
                                      // using bitwise OR assignment (leaves other bits unchanged).
-    WDTCSR =  0b01000000 | 0b000110;    // set WDIE (interrupt enable...7th from left, on left side of bar)
+    WDTCSR =  0b01000000 | 0b100001;    // set WDIE (interrupt enable...7th from left, on left side of bar)
                                      // clr WDE (reset enable...4th from left)
-                                     // and set delay interval (right side of bar) to 1 second,
+                                     // and set delay interval (right side of bar) to 8 seconds,
                                      // using bitwise OR operator.
 
     sei();                              // re-enable interrupts
@@ -66,7 +66,7 @@ void extendedWatchDogAVR::enableWatchDog()
     //  4 seconds: 0b100000
     //  8 seconds: 0b100001
 
-    extendedWatchDog::_barksUntilReset = _resetTime_s;
+    extendedWatchDog::_barksUntilReset = _resetTime_s/8;
     MS_DBG(F("The watch dog enabled in interrupt-only mode.  The interrupt will fire"),
            extendedWatchDog::_barksUntilReset,
            F("times before the system resets."));
@@ -82,7 +82,7 @@ void extendedWatchDogAVR::disableWatchDog()
 
 void extendedWatchDogAVR::resetWatchDog()
 {
-    extendedWatchDog::_barksUntilReset = _resetTime_s;
+    extendedWatchDog::_barksUntilReset = _resetTime_s/8;
     // Reset the watchdog.
     wdt_reset();
 }
