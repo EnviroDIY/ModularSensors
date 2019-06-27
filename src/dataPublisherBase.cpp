@@ -109,6 +109,7 @@ void dataPublisher::printTxBuffer(Stream *stream)
         STANDARD_SERIAL_OUTPUT.flush();
     #endif
     stream->write(txBuffer, strlen(txBuffer));
+    stream->print("\r\n");
     stream->flush();
 
     // empty the buffer after printing it

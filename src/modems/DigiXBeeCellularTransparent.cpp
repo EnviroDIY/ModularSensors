@@ -91,6 +91,9 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         // so we'll use the Digi pin sleep instead.
         gsmModem.sendAT(GF("DO"),0);
         success &= gsmModem.waitResponse() == 1;
+        // Ask data to be "packetized" and sent out with every new line (0x0A
+        gsmModem.sendAT(GF("TD0A"));
+        success &= gsmModem.waitResponse() == 1;
         // Make sure pins 7&8 are not set for USB direct on XBee3 units
         gsmModem.sendAT(GF("P1"),0);
         success &= gsmModem.waitResponse() == 1;
