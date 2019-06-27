@@ -156,6 +156,8 @@ protected:
     virtual bool modemWakeFxn(void) = 0;
     virtual bool extraModemSetup(void) = 0;
 
+    uint32_t parseNISTBytes(byte nistBytes[4]);
+
     // Helper to set the timing for specific cellular chipsets based on their documentation
     // void setModemTiming(void);
 
