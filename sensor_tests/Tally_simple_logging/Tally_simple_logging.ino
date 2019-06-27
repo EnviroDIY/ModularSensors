@@ -32,7 +32,7 @@ const char *sketchName = "simple_logging.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
-const uint8_t loggingInterval = 5;
+const uint8_t loggingInterval = 1;
 // Your logger's timezone.
 const int8_t timeZone = -5;  // Eastern Standard Time
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
@@ -93,6 +93,43 @@ Variable *tallyEvents = new TallyCounterI2C_Events(&tallyi2c, "12345678-abcd-123
 
 
 // ==========================================================================
+//    Calculated Variables
+// ==========================================================================
+
+// Create the function to give your calculated result.
+// The function should take no input (void) and return a float.
+// You can use any named variable pointers to access values by way of variable->getValue()
+
+float calculateWindSpeed(void)
+{
+    float tallyWindSpeed = -9999;  // Always safest to start with a bad value
+    float period = -9999;  // seconds between gettting event counts
+    float frequency = -9999;  // average event frequency in Hz
+    float tallyEventCount = tallyEvents->getValue();
+    if (tallyEventCount != -9999)  // make sure both inputs are good
+    {
+        period = loggingInterval * 60.0;
+        frequency = tallyEventCount/period; // average event frequency in Hz
+        tallyWindSpeed = frequency * 2.5 * 1.60934;  // in km/h, from 2.5 mph/Hz & 1.60934 kmph/mph
+    	// 2.5 mph/Hz conversion factor from https://www.store.inspeed.com/Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R.htm
+    }
+    return tallyWindSpeed;
+}
+
+// Properties of the calculated variable
+const uint8_t calculatedVarResolution = 1;  // The number of digits after the decimal place
+const char *calculatedVarName = "windSpeed";  // This must be a value from http://vocabulary.odm2.org/variablename/
+const char *calculatedVarUnit = "KilometerPerHour";  // This must be a value from http://vocabulary.odm2.org/units/
+const char *calculatedVarCode = "TallyWindSpeed";  // A short code for the variable
+const char *calculatedVarUUID = "12345678-abcd-1234-efgh-1234567890ab";  // The (optional) universallly unique identifier
+
+// Finally, Create a calculated variable pointer and return a variable pointer to it
+Variable *calculatedWindSpeed = new Variable(calculateWindSpeed, calculatedVarResolution,
+                                       calculatedVarName, calculatedVarUnit,
+                                       calculatedVarCode, calculatedVarUUID);
+
+
+// ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 #include <VariableArray.h>
@@ -106,6 +143,7 @@ Variable *variableList[] = {
     //   for creating the variable pointer (FORM1) from the `menu_a_la_carte.ino` example
     // The example code snippets in the wiki are primarily FORM2.
     tallyEvents,
+    calculatedWindSpeed,
 };
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
