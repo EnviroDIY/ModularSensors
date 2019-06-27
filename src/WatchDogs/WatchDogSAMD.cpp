@@ -25,7 +25,13 @@ extendedWatchDogSAMD::~extendedWatchDogSAMD()
 void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s);
 {
     _resetTime_s = resetTime_s;
-    _barksUntilReset = _resetTime_s*2;  // warning is 1/2 second early
+    extendedWatchDog::_barksUntilReset = _resetTime_s*2;  // warning is 1/2 second early
+
+    MS_DBG(F("Setting up watch-dog timeout for"),
+           _resetTime_s,
+           F("with the interrupt firing"),
+           extendedWatchDog::_barksUntilReset,
+           F("times before the reset."));
 
 #if defined(__SAMD51__)
     // SAMD51 WDT uses OSCULP32k as input clock now
@@ -74,6 +80,8 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s);
 
 void extendedWatchDogSAMD::enableWatchDog()
 {
+    MS_DBG(F("Enabling watch dog..."),
+
 #if defined(__SAMD51__)
     WDT->CTRLA.reg = 0; // Disable watchdog for config
     while(WDT->SYNCBUSY.reg);
@@ -106,6 +114,11 @@ void extendedWatchDogSAMD::enableWatchDog()
 #else
     while(WDT->STATUS.bit.SYNCBUSY);
 #endif
+
+MS_DBG(F("Watch dog is enabled in normal mode at 1 second with a interrupt 0.5 seconds before reset."),
+       F("The interrupt will fire"),
+       extendedWatchDog::_barksUntilReset,
+       F("times before the system resets."));
 }
 
 
@@ -125,7 +138,7 @@ void extendedWatchDogSAMD::disableWatchDog()
 
 void extendedWatchDogSAMD::resetWatchDog()
 {
-    _barksUntilReset = _resetTime_s*2;  // warning is 1/2 second early
+    extendedWatchDog::_barksUntilReset = _resetTime_s*2;  // warning is 1/2 second early
     // Write the watchdog clear key value (0xA5) to the watchdog
     // clear register to clear the watchdog timer and reset it.
     WDT->CLEAR.reg = WDT_CLEAR_CLEAR_KEY;
@@ -139,8 +152,8 @@ void extendedWatchDogSAMD::resetWatchDog()
 
 void WDT_Handler(void)  // ISR for watchdog early warning
 {
-    _barksUntilReset--;  // Increament down the counter, makes multi cycle WDT possible
-    if (_barksUntilReset<=0)
+    extendedWatchDog::extendedWatchDog::_barksUntilReset--;  // Increament down the counter, makes multi cycle WDT possible
+    if (extendedWatchDog::extendedWatchDog::_barksUntilReset<=0)
     {   // Software EWT counter run out of time : Reset
         WDT->CLEAR.reg = 0xFF;  // value different than WDT_CLEAR_CLEAR_KEY causes reset
         while(true);

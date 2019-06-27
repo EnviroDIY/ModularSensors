@@ -23,21 +23,21 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 
-volatile uint32_t _barksUntilReset;
 
 class extendedWatchDog
 {
 
 public:
     // Constructor
-    extendedWatchDog(){}
-    virtual ~extendedWatchDog(){}
+    extendedWatchDog();
+    virtual ~extendedWatchDog();
 
     virtual void setupWatchDog(uint32_t resetTime_s) = 0;
     virtual void enableWatchDog() = 0;
     virtual void disableWatchDog() = 0;
 
     virtual void resetWatchDog() = 0;
+    static volatile uint32_t _barksUntilReset;
 
 protected:
     uint32_t _resetTime_s;

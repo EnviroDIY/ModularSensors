@@ -17,7 +17,7 @@
 // Debugging Statement
 // #define MS_WATCHDOGAVR_DEBUG
 
-#ifdef MS_WatchDogAVR_DEBUG
+#ifdef MS_WATCHDOGAVR_DEBUG
 #define MS_DEBUGGING_STD "WatchDogAVR"
 #endif
 

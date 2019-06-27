@@ -271,7 +271,11 @@ public:
     void systemSleep(void);
 
     // A watch-dog to check for lock-ups
-    extendedWatchDog *watchDogTimer;
+    #if defined(ARDUINO_ARCH_SAMD)
+    extendedWatchDogSAMD watchDogTimer;
+    #else
+    extendedWatchDogAVR watchDogTimer;
+    #endif
 
     // ===================================================================== //
     // Public functions for logging data to an SD card
