@@ -165,7 +165,7 @@ void extendedWatchDogSAMD::resetWatchDog()
 void WDT_Handler(void)  // ISR for watchdog early warning
 {
     extendedWatchDog::_barksUntilReset--;  // Increament down the counter, makes multi cycle WDT possible
-    MS_DBG(F("Watchdog interrupt!"), extendedWatchDog::_barksUntilReset--);
+    MS_DBG(F("Watchdog interrupt!"), extendedWatchDog::_barksUntilReset);
     if (extendedWatchDog::_barksUntilReset<=0)
     {   // Software EWT counter run out of time : Reset
         WDT->CLEAR.reg = 0xFF;  // value different than WDT_CLEAR_CLEAR_KEY causes reset

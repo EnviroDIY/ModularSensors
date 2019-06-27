@@ -67,7 +67,7 @@ void extendedWatchDogAVR::enableWatchDog()
     //  8 seconds: 0b100001
 
     extendedWatchDog::_barksUntilReset = _resetTime_s/8;
-    MS_DBG(F("The watch dog enabled in interrupt-only mode."));" 
+    MS_DBG(F("The watch dog enabled in interrupt-only mode."));"
     MS_DBG(F("The interrupt will fire"),
            extendedWatchDog::_barksUntilReset,
            F("times before the system resets."));
@@ -92,7 +92,7 @@ void extendedWatchDogAVR::resetWatchDog()
 ISR(WDT_vect)  // ISR for watchdog early warning
 {
     extendedWatchDog::_barksUntilReset--;  // Increament down the counter, makes multi cycle WDT possible
-    MS_DBG(F("Watchdog interrupt!"), extendedWatchDog::_barksUntilReset--);
+    MS_DBG(F("Watchdog interrupt!"), extendedWatchDog::_barksUntilReset);
     if (extendedWatchDog::_barksUntilReset<=0)
     {
 
