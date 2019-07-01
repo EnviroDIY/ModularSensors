@@ -96,20 +96,25 @@ bool TallyCounterI2C::addSingleMeasurementResult(void)
     //intialize values
     int16_t events = -9999;  // Number of events
 
-    // Get data from external event counter
-    // // if the 'requestFrom' returns 0, it means no bytes were received
-    // if (Wire.requestFrom(int(_i2cAddressHex), 2))
-    // {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+    // Check a measurement was *successfully* started (status bit 6 set)
+    // Only go on to get a result if it was
+    if (bitRead(_sensorStatus, 6))
+    {
+        // Get data from external event counter
+        // // if the 'requestFrom' returns 0, it means no bytes were received
+        // if (Wire.requestFrom(int(_i2cAddressHex), 2))
+        // {
+            MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        events = counter_internal.Peek(); //Read data from counter without clearing
-        counter_internal.Clear(); //Clear count value
+            events = counter_internal.Peek(); //Read data from counter without clearing
+            counter_internal.Clear(); //Clear count value
 
-        if (events < 0) events = -9999;  // If negetive value results, return failure
+            if (events < 0) events = -9999;  // If negetive value results, return failure
 
-        MS_DBG(F("  Events:"), events);
-    // }
-    // else MS_DBG(F("No bytes received from"), getSensorNameAndLocation());
+            MS_DBG(F("  Events:"), events);
+        // }
+        // else MS_DBG(F("No bytes received from"), getSensorNameAndLocation());
+    }
 
     verifyAndAddMeasurementResult(TALLY_EVENTS_VAR_NUM, events);
 

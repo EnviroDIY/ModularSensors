@@ -50,8 +50,7 @@ class TallyCounterI2C : public Sensor
 {
 public:
     // The constructor - all arguments are optional
-    // Address of I2C device is 0x08 by default
-    // Depth of rain per tip event in mm is 0.2mm by default
+    // Address of I2C device is 0x33 by default
     TallyCounterI2C(uint8_t i2cAddressHex = 0x33);
     // Destructor
     ~TallyCounterI2C();
