@@ -44,6 +44,9 @@ public:
     void disableWatchDog();
 
     void resetWatchDog();
+
+private:
+    void waitForWDTBitSync();
 };
 
 #endif

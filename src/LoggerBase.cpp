@@ -409,6 +409,7 @@ void Logger::publishDataToRemotes(void)
             PRINTOUT(F("\nSending data to"), dataPublishers[i]->getEndpoint());
             // dataPublishers[i]->publishData(_logModem->getClient());
             dataPublishers[i]->publishData();
+            watchDogTimer.resetWatchDog();
         }
     }
 }
@@ -682,7 +683,7 @@ bool Logger::checkMarkedInterval(void)
 // This must be a static function (which means it can only call other static funcions.)
 void Logger::wakeISR(void)
 {
-    // MS_DBG(F("Clock interrupt!"));
+    // MS_DBG(F("\nClock interrupt!"));
 }
 
 
@@ -718,12 +719,17 @@ void Logger::systemSleep(void)
 
     #elif defined ARDUINO_ARCH_SAMD
 
+    // Make sure interrupts are enabled for the clock
+    NVIC_EnableIRQ(RTC_IRQn);  // enable RTC interrupt
+    NVIC_SetPriority(RTC_IRQn, 0);  // highest priority
+
     // Alarms on the RTC built into the SAMD21 appear to be identical to those
     // in the DS3231.  See more notes below.
     // We're setting the alarm seconds to 59 and then seting it to go off
     // whenever the seconds match the 59.  I'm using 59 instead of 00
     // because there seems to be a bit of a wake-up delay
     MS_DBG(F("Setting alarm on SAMD built-in RTC for every minute."));
+    zero_sleep_rtc.attachInterrupt(wakeISR);
     zero_sleep_rtc.setAlarmSeconds(59);
     zero_sleep_rtc.enableAlarm(zero_sleep_rtc.MATCH_SS);
 
@@ -760,14 +766,26 @@ void Logger::systemSleep(void)
 
     #if defined ARDUINO_ARCH_SAMD
 
-    // USB connection will end at sleep because it's a separate mode in the processor
-    USBDevice.detach();  // Disable USB
-
     // Disable the watch-dog timer
     watchDogTimer.disableWatchDog();
 
-    // Put the processor into sleep mode.
-    zero_sleep_rtc.standbyMode();
+    // Sleep code from ArduinoLowPowerClass::sleep()
+    bool restoreUSBDevice = false;
+	// if (SERIAL_PORT_USBVIRTUAL)
+    // {
+	// 	USBDevice.standby();
+	// }
+    // else
+    // {
+		USBDevice.detach();
+		restoreUSBDevice = true;
+	// }
+	// Disable systick interrupt:  See https://www.avrfreaks.net/forum/samd21-samd21e16b-sporadically-locks-and-does-not-wake-standby-sleep-mode
+	SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
+    // Now go to sleep
+	SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+	__DSB();
+    __WFI();
 
     #elif defined ARDUINO_ARCH_AVR
 
@@ -818,21 +836,26 @@ void Logger::systemSleep(void)
     sleep_cpu();
 
     #endif
+    // ---------------------------------------------------------------------
+
 
     // ---------------------------------------------------------------------
     // -- The portion below this happens on wake up, after any wake ISR's --
 
     #if defined ARDUINO_ARCH_SAMD
-
-    // Re-enable the watch-dog timer
-    watchDogTimer.enableWatchDog();
     // Reattach the USB after waking
+	// Enable systick interrupt
+	SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
+	if (restoreUSBDevice)
+    {
     USBDevice.attach();
+        // delay(500);
+        uint32_t startTimer = millis();
+        while (!SERIAL_PORT_USBVIRTUAL && ((millis()- startTimer) < 1000L)){}
+    }
+    #endif
 
-    #elif defined ARDUINO_ARCH_AVR
-
-    // Re-enable the watch-dog timer
-    watchDogTimer.enableWatchDog();
+    #if defined ARDUINO_ARCH_AVR
 
     // Temporarily disables interrupts, so no mistakes are made when writing
     // to the processor registers
@@ -854,6 +877,9 @@ void Logger::systemSleep(void)
 
     #endif
 
+    // Re-enable the watch-dog timer
+    watchDogTimer.enableWatchDog();
+
     // Re-start the I2C interface
     #ifdef SDA
     pinMode(SDA, INPUT_PULLUP);  // set as input with the pull-up on
@@ -873,7 +899,7 @@ void Logger::systemSleep(void)
 
     #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
     // Stop the clock from sending out any interrupts while we're awake.
-    // There's no reason to waste though on the clock interrupt if it
+    // There's no reason to waste thought on the clock interrupt if it
     // happens while the processor is awake and doing other things.
     rtc.disableInterrupts();
     // Detach the from the pin
@@ -884,7 +910,7 @@ void Logger::systemSleep(void)
     #endif
 
     // Wake-up message
-    MS_DBG(F("... zzzZZ Processor is now awake!"));
+    MS_DBG(F("\n\n\n... zzzZZ Processor is now awake!"));
 
     // The logger will now start the next function after the systemSleep
     // function in either the loop or setup
@@ -1289,6 +1315,7 @@ void Logger::testingMode()
     for (uint8_t i = 0; i < 25; i++)
     {
         PRINTOUT(F("------------------------------------------"));
+        watchDogTimer.resetWatchDog();
         // Update the values from all attached sensors
         // NOTE:  NOT using complete update because we want everything left
         // on between iterations in testing mode.
@@ -1301,6 +1328,7 @@ void Logger::testingMode()
             _internalArray->printSensorData(&STANDARD_SERIAL_OUTPUT);
         #endif
         PRINTOUT(F("-----------------------"));
+        watchDogTimer.resetWatchDog();
 
         delay(5000);
     }
@@ -1314,6 +1342,7 @@ void Logger::testingMode()
 
     PRINTOUT(F("Exiting testing mode"));
     PRINTOUT(F("------------------------------------------"));
+    watchDogTimer.resetWatchDog();
 
     // Unset testing mode flag
     Logger::isTestingNow = false;
@@ -1359,8 +1388,9 @@ void Logger::begin()
         MS_DBG(F("Sampling feature UUID is:"), _samplingFeatureUUID);
     }
 
-    MS_DBG(F("Setting up a watch-dog timer for 3x the logging interval"));
-    watchDogTimer.setupWatchDog(((uint32_t)_loggingIntervalMinutes)*60*3);
+    MS_DBG(F("Setting up a watch-dog timer to fire after 5 minutes of inactivity"));
+    // watchDogTimer.setupWatchDog(((uint32_t)_loggingIntervalMinutes)*60*3);
+    watchDogTimer.setupWatchDog((uint32_t)(5*60*3));
     // Enable the watchdog
     watchDogTimer.enableWatchDog();
 
@@ -1395,6 +1425,7 @@ void Logger::begin()
         MS_DBG(F("Beginning internal real time clock"));
         zero_sleep_rtc.begin();
     #endif
+    watchDogTimer.resetWatchDog();
 
     // Set the pins for I2C
     MS_DBG(F("Setting I2C Pins to INPUT_PULLUP"));
@@ -1406,6 +1437,7 @@ void Logger::begin()
     #endif
     MS_DBG(F("Beginning wire (I2C)"));
     Wire.begin();
+    watchDogTimer.resetWatchDog();
 
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
@@ -1429,6 +1461,7 @@ void Logger::begin()
         MS_DBG(F("Beginning DS3231 real time clock"));
         rtc.begin();
     #endif
+    watchDogTimer.resetWatchDog();
 
     // Print out the current time
     PRINTOUT(F("Current RTC time is:"), formatDateTime_ISO8601(getNowEpoch()));
@@ -1452,6 +1485,8 @@ void Logger::logData(void)
     {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
+        // Reset the watchdog
+        watchDogTimer.resetWatchDog();
 
         // Print a line to show new reading
         PRINTOUT(F("------------------------------------------"));
@@ -1464,7 +1499,9 @@ void Logger::logData(void)
 
         // Do a complete sensor update
         MS_DBG(F("    Running a complete sensor update..."));
+        watchDogTimer.resetWatchDog();
         _internalArray->completeUpdate();
+        watchDogTimer.resetWatchDog();
 
         // Create a csv data record and save it to the log file
         logToSD();
@@ -1498,6 +1535,8 @@ void Logger::logDataAndPublish(void)
     {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
+        // Reset the watchdog
+        watchDogTimer.resetWatchDog();
 
         // Print a line to show new reading
         PRINTOUT(F("------------------------------------------"));
@@ -1517,7 +1556,9 @@ void Logger::logDataAndPublish(void)
         // NOTE:  The wake function for each sensor should force sensor setup
         // to run if the sensor was not previously set up.
         MS_DBG(F("Running a complete sensor update..."));
+        watchDogTimer.resetWatchDog();
         _internalArray->completeUpdate();
+        watchDogTimer.resetWatchDog();
 
         // Create a csv data record and save it to the log file
         logToSD();
@@ -1529,20 +1570,27 @@ void Logger::logDataAndPublish(void)
             if (_logModem->connectInternet())
             {
                 // Publish data to remotes
+                watchDogTimer.resetWatchDog();
                 publishDataToRemotes();
+                watchDogTimer.resetWatchDog();
 
                 if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 43200)
                 // Sync the clock at noon
                 {
                     MS_DBG(F("Running a daily clock sync..."));
                     setRTClock(_logModem->getNISTTime());
+                    watchDogTimer.resetWatchDog();
                 }
 
                 // Disconnect from the network - ehh, why bother
                 // MS_DBG(F("Disconnecting from the Internet..."));
                 // _logModem->disconnectInternet();
             }
-            else {MS_DBG(F("Could not connect to the internet!"));}
+            else
+            {
+                MS_DBG(F("Could not connect to the internet!"));
+                watchDogTimer.resetWatchDog();
+            }
             // Turn the modem off
             _logModem->modemSleepPowerDown();
         }

@@ -30,9 +30,23 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s)
 
     MS_DBG(F("Setting up watch-dog timeout for"),
            _resetTime_s,
-           F("with the interrupt firing"),
+           F("sec with the interrupt firing"),
            extendedWatchDog::_barksUntilReset,
            F("times before the reset."));
+
+    // Enable WDT early-warning interrupt
+    NVIC_DisableIRQ(WDT_IRQn);
+    NVIC_ClearPendingIRQ(WDT_IRQn);
+    NVIC_SetPriority(WDT_IRQn, 1);  // Priority behind RTC!
+    NVIC_EnableIRQ(WDT_IRQn);
+
+    #if defined(__SAMD51__)
+        WDT->CTRLA.reg = 0; // Disable watchdog for config
+        while(WDT->SYNCBUSY.reg);
+    #else
+        WDT->CTRL.reg = 0; // Disable watchdog for config
+        while(WDT->STATUS.bit.SYNCBUSY);
+    #endif
 
 #if defined(__SAMD51__)
     // SAMD51 WDT uses OSCULP32k as input clock now
@@ -50,52 +64,40 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s)
 
 #else  // SAMD21
 
-    // Generic clock generator 2, divisor = 32 (2^(DIV+1))  = 4
-    GCLK->GENDIV.reg = GCLK_GENDIV_ID(2) | GCLK_GENDIV_DIV(4);
-    // Enable clock generator 2 using low-power 32.768kHz oscillator.
+    // We're going to use generic clock generator *5*
+    // Many watch-dog examples use 2, but this conflicts with RTC-zero
+    // Generic clock generator 5, divisor = 32 (2^(DIV+1))  = 4
+    GCLK->GENDIV.reg = GCLK_GENDIV_ID(5) |          // Select Generic Clock Generator 5
+                       GCLK_GENDIV_DIV(4);          // Divide the clock source by 32
+    while(GCLK->STATUS.bit.SYNCBUSY);
+
+    // Enable clock generator 5 using low-power 32.768kHz oscillator.
     // With /32 divisor above, this yields 1024Hz clock.
-    GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(2) |
-                        GCLK_GENCTRL_GENEN |
-                        GCLK_GENCTRL_SRC_OSCULP32K |
-                        GCLK_GENCTRL_DIVSEL;
-    while(GCLK->STATUS.bit.SYNCBUSY);
-    // WDT clock = clock gen 2
-    GCLK->CLKCTRL.reg = GCLK_CLKCTRL_ID_WDT |
-                        GCLK_CLKCTRL_CLKEN |
-                        GCLK_CLKCTRL_GEN_GCLK2;
+    GCLK->GENCTRL.reg = GCLK_GENCTRL_ID(5) |          // Select GCLK5
+                        GCLK_GENCTRL_GENEN |          // Enable the generic clock clontrol
+                        GCLK_GENCTRL_SRC_OSCULP32K |  // Select the ultra-low power oscillator
+                        GCLK_GENCTRL_IDC |            // Set the duty cycle to 50/50 HIGH/LOW
+                        GCLK_GENCTRL_DIVSEL;          // Select to divide clock by the prescaler above
     while(GCLK->STATUS.bit.SYNCBUSY);
 
-    disableWatchDog();
-#endif
-}
+    // Feed GCLK5 to WDT (Watchdog Timer)
+    GCLK->CLKCTRL.reg = GCLK_CLKCTRL_GEN_GCLK5 |  // Select generic clock 5
+                        GCLK_CLKCTRL_CLKEN |      // Enable the generic clock clontrol
+                        GCLK_CLKCTRL_ID_WDT;      // Feed the GCLK to the WDT
+    while(GCLK->STATUS.bit.SYNCBUSY);
 
-
-void extendedWatchDogSAMD::enableWatchDog()
-{
-    MS_DBG(F("Enabling watch dog..."));
-
-    // Enable WDT early-warning interrupt
-    NVIC_DisableIRQ(WDT_IRQn);
-    NVIC_ClearPendingIRQ(WDT_IRQn);
-    NVIC_SetPriority(WDT_IRQn, 0); // Top priority
-    NVIC_EnableIRQ(WDT_IRQn);
-
-#if defined(__SAMD51__)
-    WDT->CTRLA.reg = 0; // Disable watchdog for config
-    while(WDT->SYNCBUSY.reg);
-#else
-    WDT->CTRL.reg = 0; // Disable watchdog for config
-    while(WDT->STATUS.bit.SYNCBUSY);
 #endif
 
-#if defined(__SAMD51__)
-    WDT->INTFLAG.bit.EW      = 1;     // Clear interrupt flag
-#endif
-
-    WDT->INTENSET.bit.EW     = 1;     // Enable early warning interrupt
+    // Set up the watch dog control parameters
     WDT->CTRL.bit.WEN        = 0;     // Disable window mode
+    waitForWDTBitSync();  // ?? Needed here ??
+    WDT->CTRL.bit.ALWAYSON   = 0;     // NOT always on!
+    waitForWDTBitSync();  // ?? Needed here ??
+
     WDT->CONFIG.bit.PER      = 0xB;   // Period = 16384 clockcycles @ 1024hz = 16 seconds
     WDT->EWCTRL.bit.EWOFFSET = 0xA;   // Early Warning Interrupt Time Offset 0xA = 8192 clockcycles @ 1024hz = 8 seconds
+    WDT->INTENSET.bit.EW     = 1;     // Enable early warning interrupt
+    waitForWDTBitSync();  // ?? Needed here ??
 
     /*In normal mode, the Early Warning interrupt generation is defined by the
     Early Warning Offset in the Early Warning Control register (EWCTRL.EWOFFSET).
@@ -111,14 +113,15 @@ void extendedWatchDogSAMD::enableWatchDog()
     time-out period, the watchdog time-out system reset is generated prior to
     the Early Warning interrupt. Thus, the Early Warning interrupt will never be
     generated.*/
+}
 
-#if defined(__SAMD51__)
-    while(WDT->SYNCBUSY.reg);
-#else
-    while(WDT->STATUS.bit.SYNCBUSY);
-#endif
 
+void extendedWatchDogSAMD::enableWatchDog()
+{
+    MS_DBG(F("Enabling watch dog..."));
     resetWatchDog();
+
+    // Set the enable bit
 #if defined(__SAMD51__)
     WDT->CTRLA.bit.ENABLE = 1;
     while(WDT->SYNCBUSY.reg);
@@ -126,18 +129,11 @@ void extendedWatchDogSAMD::enableWatchDog()
     WDT->CTRL.bit.ENABLE = 1;
     while(WDT->STATUS.bit.SYNCBUSY);
 #endif
-
-MS_DBG(F("Watch dog is enabled in normal mode at 16s with an interrupt at 8s."));
-MS_DBG(F("The interrupt should fire"),
-       extendedWatchDog::_barksUntilReset,
-       F("times before the system resets."));
 }
 
 
 void extendedWatchDogSAMD::disableWatchDog()
 {
-    NVIC_DisableIRQ(WDT_IRQn);        // disable IRQ
-    NVIC_ClearPendingIRQ(WDT_IRQn);
 #if defined(__SAMD51__)
     WDT->CTRLA.bit.ENABLE = 0;
     while(WDT->SYNCBUSY.reg);
@@ -145,6 +141,7 @@ void extendedWatchDogSAMD::disableWatchDog()
     WDT->CTRL.bit.ENABLE = 0;
     while(WDT->STATUS.bit.SYNCBUSY);
 #endif
+    MS_DBG(F("Watch dog disabled."));
 }
 
 
@@ -154,32 +151,44 @@ void extendedWatchDogSAMD::resetWatchDog()
     // Write the watchdog clear key value (0xA5) to the watchdog
     // clear register to clear the watchdog timer and reset it.
     WDT->CLEAR.reg = WDT_CLEAR_CLEAR_KEY;
-#if defined(__SAMD51__)
-    while(WDT->SYNCBUSY.reg);
-#else
-    while(WDT->STATUS.bit.SYNCBUSY);
-#endif
+    waitForWDTBitSync();
+    // Clear Early Warning (EW) Interrupt Flag
+    WDT->INTFLAG.bit.EW = 1;
+}
+
+void extendedWatchDogSAMD::waitForWDTBitSync()
+{
+    #if defined(__SAMD51__)
+        while(WDT->SYNCBUSY.reg);
+    #else
+        while(WDT->STATUS.bit.SYNCBUSY);
+    #endif
 }
 
 
 void WDT_Handler(void)  // ISR for watchdog early warning
 {
-    extendedWatchDog::_barksUntilReset--;  // Increament down the counter, makes multi cycle WDT possible
-    MS_DBG(F("Watchdog interrupt!"), extendedWatchDog::_barksUntilReset);
+    // Increament down the counter, makes multi cycle WDT possible
+    extendedWatchDog::_barksUntilReset--;
+    // MS_DBG(F("\nWatchdog interrupt!"), extendedWatchDog::_barksUntilReset);
     if (extendedWatchDog::_barksUntilReset<=0)
-    {   // Software EWT counter run out of time : Reset
-        WDT->CLEAR.reg = 0xFF;  // value different than WDT_CLEAR_CLEAR_KEY causes reset
+    {   // Clear Early Warning (EW) Interrupt Flag
+        WDT->INTFLAG.bit.EW = 1;
+        // Writing a value different than WDT_CLEAR_CLEAR_KEY causes reset
+        WDT->CLEAR.reg = 0xFF;
         while(true);
     }
     else
     {
-        WDT->INTFLAG.bit.EW = 1;              // Clear INT EW Flag
-        WDT->CLEAR.reg = WDT_CLEAR_CLEAR_KEY; // Clear WTD bit
-     #if defined(__SAMD51__)
+        // Write the clear key
+        WDT->CLEAR.reg = WDT_CLEAR_CLEAR_KEY;
+    #if defined(__SAMD51__)
         while(WDT->SYNCBUSY.reg);
-     #else
-        while(WDT->STATUS.bit.SYNCBUSY); // Sync CTRL write
-     #endif
+    #else
+        while(WDT->STATUS.bit.SYNCBUSY);
+    #endif
+        // Clear Early Warning (EW) Interrupt Flag
+        WDT->INTFLAG.bit.EW = 1;
     }
 }
 
