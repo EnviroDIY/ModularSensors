@@ -848,7 +848,7 @@ void Logger::systemSleep(void)
 	SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
 	if (restoreUSBDevice)
     {
-    USBDevice.attach();
+		USBDevice.attach();
         // delay(500);
         uint32_t startTimer = millis();
         while (!SERIAL_PORT_USBVIRTUAL && ((millis()- startTimer) < 1000L)){}
