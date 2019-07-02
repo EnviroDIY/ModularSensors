@@ -15,17 +15,7 @@
 #ifndef AtlasScientificpH_h
 #define AtlasScientificpH_h
 
-// Debugging Statement
-// #define MS_ATLASSCIENTIFICPH_DEBUG
-
-#ifdef MS_ATLASSCIENTIFICPH_DEBUG
-#define MS_DEBUGGING_STD "AtlasScientificpH"
-#endif
-
 // Included Dependencies
-#include "ModSensorDebugger.h"
-#undef MS_DEBUGGING_STD
-#include "VariableBase.h"
 #include "sensors/AtlasParent.h"
 
 // I2C address

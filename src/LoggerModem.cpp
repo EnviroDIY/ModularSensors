@@ -337,13 +337,13 @@ bool loggerModem::isStable(bool debug)
         else
         {
             if (debug) MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and"),
-                   getSensorName(), F("has maxed out wait for AT command reply!  Ending wait."));
-             // Unset status bit 4 (wake up success) and _millisSensorActivated
-             // It's safe to unset these here because we've already tested and failed
-             // to respond to AT commands.
-             _millisSensorActivated = 0;
-             _sensorStatus &= 0b11101111;
-             previousCommunicationFailed = true;
+                getSensorName(), F("has maxed out wait for AT command reply!  Ending wait."));
+            // Unset status bit 4 (wake up success) and _millisSensorActivated
+            // It's safe to unset these here because we've already tested and failed
+            // to respond to AT commands.
+            _millisSensorActivated = 0;
+            _sensorStatus &= 0b11101111;
+            previousCommunicationFailed = true;
             return true;
         }
     }
