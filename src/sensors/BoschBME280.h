@@ -73,7 +73,10 @@
 class BoschBME280 : public Sensor
 {
 public:
-    BoschBME280(int8_t powerPin, uint8_t i2cAddressHex = 0x76, uint8_t measurementsToAverage = 1);
+    BoschBME280(TwoWire *theI2C, int8_t powerPin, uint8_t i2cAddressHex = 0x76,
+                uint8_t measurementsToAverage = 1);
+    BoschBME280(int8_t powerPin, uint8_t i2cAddressHex = 0x76,
+                uint8_t measurementsToAverage = 1);
     ~BoschBME280();
 
     bool wake(void) override;
@@ -85,7 +88,8 @@ public:
 
 protected:
     Adafruit_BME280 bme_internal;
-    uint8_t _i2cAddressHex;
+    uint8_t _i2cAddressHex;  // Hardware slave address
+    TwoWire *_i2c;  // Wire instance - hardware or software
 };
 
 

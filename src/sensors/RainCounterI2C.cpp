@@ -20,13 +20,24 @@
 #include "RainCounterI2C.h"
 
 
-// The constructor - because this is I2C, only need the power pin and rain per event if a non-standard value is used
+// The constructor - because this is I2C, only need the power pin and
+// rain per event if a non-standard value is used
+RainCounterI2C::RainCounterI2C(TwoWire *theI2C, uint8_t i2cAddressHex, float rainPerTip)
+     : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES,
+              BUCKET_WARM_UP_TIME_MS, BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS,
+              -1, -1, 1)
+{
+    _i2cAddressHex = i2cAddressHex;
+    _i2c = theI2C;
+    _rainPerTip = rainPerTip;
+}
 RainCounterI2C::RainCounterI2C(uint8_t i2cAddressHex, float rainPerTip)
      : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES,
               BUCKET_WARM_UP_TIME_MS, BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS,
               -1, -1, 1)
 {
-    _i2cAddressHex  = i2cAddressHex;
+    _i2cAddressHex = i2cAddressHex;
+    _i2c = &Wire;
     _rainPerTip = rainPerTip;
 }
 // Destructor
@@ -43,7 +54,7 @@ String RainCounterI2C::getSensorLocation(void)
 
 bool RainCounterI2C::setup(void)
 {
-    Wire.begin();  // Start the wire library (sensor power not required)
+    _i2c->begin();  // Start the wire library (sensor power not required)
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
     // on wire after the Wire buffer has emptied.  The default stream
@@ -51,7 +62,7 @@ bool RainCounterI2C::setup(void)
     // end of the buffer to see if an interrupt puts something into the
     // buffer.  In the case of the Wire library, that will never happen and
     // the timeout period is a useless delay.
-    Wire.setTimeout(0);
+    _i2c->setTimeout(0);
     return Sensor::setup();  // this will set pin modes and the setup status bit
 }
 
@@ -67,12 +78,12 @@ bool RainCounterI2C::addSingleMeasurementResult(void)
 
     // Get data from external tip counter
     // if the 'requestFrom' returns 0, it means no bytes were received
-    if (Wire.requestFrom(int(_i2cAddressHex), 2))
+    if (_i2c->requestFrom(int(_i2cAddressHex), 2))
     {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        Byte1 = Wire.read();
-        Byte2 = Wire.read();
+        Byte1 = _i2c->read();
+        Byte2 = _i2c->read();
 
         tips = (Byte2 << 8) | (Byte1);  // Concatenate tip values
         rain = float(tips) * _rainPerTip;  // Multiply by tip coefficient (0.2 by default)

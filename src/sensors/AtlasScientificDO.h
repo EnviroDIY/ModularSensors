@@ -49,6 +49,9 @@
 class AtlasScientificDO : public AtlasParent
 {
 public:
+    AtlasScientificDO(TwoWire *theI2C, int8_t powerPin,
+                      uint8_t i2cAddressHex = ATLAS_DO_I2C_ADDR,
+                      uint8_t measurementsToAverage = 1);
     AtlasScientificDO(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_DO_I2C_ADDR,
                       uint8_t measurementsToAverage = 1);
     ~AtlasScientificDO();

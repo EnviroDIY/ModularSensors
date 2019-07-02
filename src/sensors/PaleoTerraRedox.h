@@ -62,7 +62,7 @@ public:
     bool addSingleMeasurementResult(void) override;
 
 private:
-    uint8_t _i2cAddressHex; // Hardware slave address
+    uint8_t _i2cAddressHex;  // Hardware slave address
     TwoWire *_i2c;  // Wire instance - hardware or software
 };
 

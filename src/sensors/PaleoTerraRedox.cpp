@@ -31,7 +31,7 @@ PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin,
              PTR_WARM_UP_TIME_MS, PTR_STABILIZATION_TIME_MS, PTR_MEASUREMENT_TIME_MS,
              powerPin, measurementsToAverage)
 {
-    _i2cAddressHex = i2cAddressHex; // Copy slave address
+    _i2cAddressHex = i2cAddressHex;
     _i2c = &Wire;
 }
 PaleoTerraRedox::~PaleoTerraRedox(){}

@@ -14,7 +14,15 @@
 // Included Dependencies
 #include "AtlasScientificDO.h"
 
-// Constructor
+// Constructors
+AtlasScientificDO::AtlasScientificDO(TwoWire *theI2C, int8_t powerPin,
+                                     uint8_t i2cAddressHex,
+                                     uint8_t measurementsToAverage)
+  : AtlasParent(theI2C, powerPin, i2cAddressHex, measurementsToAverage,
+                "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
+                ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
+                ATLAS_DO_MEASUREMENT_TIME_MS)
+{}
 AtlasScientificDO::AtlasScientificDO(int8_t powerPin, uint8_t i2cAddressHex,
                                      uint8_t measurementsToAverage)
   : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
@@ -38,15 +46,15 @@ bool AtlasScientificDO::setup()
     waitForWarmUp();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report O2 concentration"));
-    Wire.beginTransmission(_i2cAddressHex);
-    success &= Wire.write("O,mg,1");  // Enable concentration in mg/L
-    success &= !Wire.endTransmission();
+    _i2c->beginTransmission(_i2cAddressHex);
+    success &= _i2c->write("O,mg,1");  // Enable concentration in mg/L
+    success &= !_i2c->endTransmission();
     success &= waitForProcessing();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report O2 % saturation"));
-    Wire.beginTransmission(_i2cAddressHex);
-    success &= Wire.write("O,%,1");  // Enable percent saturation
-    success &= !Wire.endTransmission();
+    _i2c->beginTransmission(_i2cAddressHex);
+    success &= _i2c->write("O,%,1");  // Enable percent saturation
+    success &= !_i2c->endTransmission();
     success &= waitForProcessing();
 
     if (!success)

@@ -56,7 +56,10 @@
 class MPL115A2 : public Sensor
 {
 public:
-    MPL115A2(int8_t powerPin, uint8_t measurementsToAverage = 1);
+    MPL115A2(TwoWire *theI2C, int8_t powerPin, uint8_t i2cAddressHex = 0x60,
+             uint8_t measurementsToAverage = 1);
+    MPL115A2(int8_t powerPin, uint8_t i2cAddressHex = 0x60,
+             uint8_t measurementsToAverage = 1);
     ~MPL115A2();
 
     bool setup(void) override;
@@ -65,7 +68,8 @@ public:
     bool addSingleMeasurementResult(void) override;
 protected:
     Adafruit_MPL115A2 mpl115a2_internal;
-    uint8_t _i2cAddressHex;
+    uint8_t _i2cAddressHex;  // Hardware slave address
+    TwoWire *_i2c;  // Wire instance - hardware or software
 };
 
 

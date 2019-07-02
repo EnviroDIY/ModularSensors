@@ -65,7 +65,12 @@
 class TIINA219 : public Sensor
 {
 public:
-    TIINA219(int8_t powerPin, uint8_t i2cAddressHex = INA219_ADDRESS_BASE, uint8_t measurementsToAverage = 1);
+    TIINA219(TwoWire *theI2C, int8_t powerPin,
+             uint8_t i2cAddressHex = INA219_ADDRESS_BASE,
+             uint8_t measurementsToAverage = 1);
+    TIINA219(int8_t powerPin,
+             uint8_t i2cAddressHex = INA219_ADDRESS_BASE,
+             uint8_t measurementsToAverage = 1);
     ~TIINA219();
 
     bool wake(void) override;
@@ -75,7 +80,8 @@ public:
     bool addSingleMeasurementResult(void) override;
 protected:
     Adafruit_INA219 ina219_phy;
-    uint8_t _i2cAddressHex;
+    uint8_t _i2cAddressHex;  // Hardware slave address
+    TwoWire *_i2c;  // Wire instance - hardware or software
 };
 
 
