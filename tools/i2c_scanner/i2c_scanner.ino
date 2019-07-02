@@ -29,14 +29,23 @@
 
 #include <Arduino.h>
 #include <Wire.h>
+#include <SoftwareWire.h>  // for the stream communication
+
+
+const int8_t softwareSDA = 5;     // data in pin
+const int8_t softwareSCL = 4;     // data out pin
+SoftwareWire softI2C(softwareSDA, softwareSCL);
+
+#define THEWIRE Wire
+#define THEWIRE softI2C
 
 
 void setup()
 {
   pinMode(22, OUTPUT);
-  Wire.begin();
+  THEWIRE.begin();
 
-  Serial.begin(9600);
+  Serial.begin(115200);
   while (!Serial);             // Leonardo: wait for serial monitor
   Serial.println("\nI2C Scanner");
 }
@@ -56,8 +65,8 @@ void loop()
     // The i2c_scanner uses the return value of
     // the Write.endTransmisstion to see if
     // a device did acknowledge to the address.
-    Wire.beginTransmission(address);
-    error = Wire.endTransmission();
+    THEWIRE.beginTransmission(address);
+    error = THEWIRE.endTransmission();
 
     if (error == 0)
     {
