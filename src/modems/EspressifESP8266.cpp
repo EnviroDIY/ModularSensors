@@ -84,7 +84,7 @@ bool EspressifESP8266::ESPwaitForBoot(void)
         }
         // Have to make sure echo is off or all AT commands will be confused
         gsmModem.sendAT(GF("E0"));
-        success &= gsmModem.waitResponse() == 1;
+        gsmModem.waitResponse();  // Will return "ERROR" if echo wasn't on
         // re-run init to set mux and station mode
         success &= gsmModem.init();
         gsmClient.init(&gsmModem);
@@ -245,7 +245,7 @@ bool EspressifESP8266::startSingleMeasurement(void)
 uint32_t EspressifESP8266::getNISTTime(void)
 {
     // NOTE:  For the ESP, we're not checking for internet connection first
-    
+
     /* Must ensure that we do not ping the daylight more than once every 4 seconds */
     /* NIST clearly specifies here that this is a requirement for all software */
     /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
