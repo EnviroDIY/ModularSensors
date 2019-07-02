@@ -45,15 +45,16 @@
 class PaleoTerraRedox : public Sensor
 {
 public:
-    // The constructor - need the power pin, the I2C data pin (SDA), the I2C
-    // clock pin (SCL), and optionally a number of measurements to average
+    // The constructor - need the power pin, optionally can give an instance
+    // of TwoWire for I2C communbication, an address, and  a number of
+    // measurements to average
     PaleoTerraRedox(TwoWire *theI2C, int8_t powerPin,
                     uint8_t i2cAddressHex = MCP3421_ADR,
                     uint8_t measurementsToAverage = 1);
-
     PaleoTerraRedox(int8_t powerPin,
                     uint8_t i2cAddressHex = MCP3421_ADR,
                     uint8_t measurementsToAverage = 1);
+    ~PaleoTerraRedox();
 
     bool setup(void) override;
     String getSensorLocation(void) override;

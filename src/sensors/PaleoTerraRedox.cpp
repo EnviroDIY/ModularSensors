@@ -15,7 +15,7 @@
 #include "PaleoTerraRedox.h"
 
 
-// The constructor for software mode- need the power pin, data pin, and type of DHT
+// Constructors/Destructors
 PaleoTerraRedox::PaleoTerraRedox(TwoWire *theI2C, int8_t powerPin,
                                  uint8_t i2cAddressHex, uint8_t measurementsToAverage)
     : Sensor("PaleoTerraRedox", PTR_NUM_VARIABLES,
@@ -25,8 +25,6 @@ PaleoTerraRedox::PaleoTerraRedox(TwoWire *theI2C, int8_t powerPin,
     _i2cAddressHex = i2cAddressHex;
     _i2c = theI2C;
 }
-
-// The constructor for hardware mode- need the power pin, and ADR
 PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin,
                                  uint8_t i2cAddressHex, uint8_t measurementsToAverage)
     : Sensor("PaleoTerraRedox", PTR_NUM_VARIABLES,
@@ -36,6 +34,8 @@ PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin,
     _i2cAddressHex = i2cAddressHex; // Copy slave address
     _i2c = &Wire;
 }
+PaleoTerraRedox::~PaleoTerraRedox(){}
+
 
 
 String PaleoTerraRedox::getSensorLocation(void)
@@ -48,7 +48,7 @@ String PaleoTerraRedox::getSensorLocation(void)
 
 bool PaleoTerraRedox::setup(void)
 {
-    Wire.begin();  // Start the wire library (sensor power not required)
+    _i2c->begin();  // Start the wire library (sensor power not required)
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
     // on wire after the Wire buffer has emptied.  The default stream
@@ -56,7 +56,7 @@ bool PaleoTerraRedox::setup(void)
     // end of the buffer to see if an interrupt puts something into the
     // buffer.  In the case of the Wire library, that will never happen and
     // the timeout period is a useless delay.
-    Wire.setTimeout(0);
+    _i2c->setTimeout(0);
     return Sensor::setup();  // this will set pin modes and the setup status bit
 }
 
