@@ -274,6 +274,7 @@ bool loggerModem::isStable(bool debug)
     uint32_t now = millis();
 
     uint32_t elapsed_since_wake_up = now - _millisSensorActivated;
+
     // If the modem has a status pin and it's still off after the specified time
     // plus a 500ms buffer, then, if it's the first time this happened give up
     // and move on.  If it's happened twice in a row, try a hard reset and
@@ -336,13 +337,13 @@ bool loggerModem::isStable(bool debug)
         else
         {
             if (debug) MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and"),
-                   getSensorName(), F("has maxed out wait for AT command reply!  Ending wait."));
-             // Unset status bit 4 (wake up success) and _millisSensorActivated
-             // It's safe to unset these here because we've already tested and failed
-             // to respond to AT commands.
-             _millisSensorActivated = 0;
-             _sensorStatus &= 0b11101111;
-             previousCommunicationFailed = true;
+                getSensorName(), F("has maxed out wait for AT command reply!  Ending wait."));
+            // Unset status bit 4 (wake up success) and _millisSensorActivated
+            // It's safe to unset these here because we've already tested and failed
+            // to respond to AT commands.
+            _millisSensorActivated = 0;
+            _sensorStatus &= 0b11101111;
+            previousCommunicationFailed = true;
             return true;
         }
     }
@@ -428,36 +429,6 @@ bool loggerModem::addSingleMeasurementResult(void)
 // ==========================================================================//
 // These are the unique functions for the modem as an internet connected device
 // ==========================================================================//
-
-
-/***
-int16_t loggerModem::openTCP(const char *host, uint16_t port)
-{
-    MS_DBG(F("Connecting to"), host, F("..."));
-    int16_t ret_val = gsmClient->connect(host, port);
-    if (ret_val) MS_DBG(F("...Success!"));
-    else MS_DBG(F("...Connection failed."));
-    return ret_val;
-}
-
-
-int16_t loggerModem::openTCP(IPAddress ip, uint16_t port)
-{
-    MS_DBG(F("Connecting to"), ip, F("..."));
-    int16_t ret_val = gsmClient->connect(ip, port);
-    if (ret_val) MS_DBG(F("...Success!"));
-    else MS_DBG(F("...Connection failed."));
-    return ret_val;
-}
-
-
-void loggerModem::closeTCP(void)
-{
-    if (gsmClient)
-        gsmClient->stop();
-    MS_DBG(F("Closed TCP/IP."));
-}
-***/
 
 
 void loggerModem::modemPowerUp(void)
@@ -608,6 +579,37 @@ int16_t loggerModem::getPctFromRSSI(int16_t rssi)
     if (rssi == 0) pct = 0;
     if (rssi == (255-93)) pct = 0;  // This is a no-data-yet value from XBee
     return pct;
+}
+
+
+
+uint32_t loggerModem::parseNISTBytes(byte nistBytes[4])
+{
+    /* Response is returned as 32-bit number as soon as connection is made */
+    /* Connection is then immediately closed, so there is no need to close it */
+    uint32_t secFrom1900 = 0;
+    for (uint8_t i = 0; i < 4; i++)
+    {
+        MS_DBG(F("Response Byte"), i, ':', (char)nistBytes[i],
+                   '=', nistBytes[i], '=', String(nistBytes[i], BIN));
+        secFrom1900 += 0x000000FF & nistBytes[i];
+        /* MS_DBG(F("\nseconds from 1900 after byte:"),String(secFrom1900, BIN)); */
+        if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;}
+    }
+    MS_DBG(F("Seconds from Jan 1, 1900 returned by NIST (UTC):"),
+               secFrom1900, '=', String(secFrom1900, BIN));
+
+    /* Close the TCP connection, just in case */
+    /* Don't close connection! It takes too long and then the time stamp is out of date! */
+    /*gsmClient.stop(15000L);*/
+
+    /* Return the timestamp */
+    uint32_t unixTimeStamp = secFrom1900 - 2208988800;
+    MS_DBG(F("Unix Timestamp returned by NIST (UTC):"), unixTimeStamp);
+    /* If before Jan 1, 2019 or after Jan 1, 2030, most likely an error */
+    if (unixTimeStamp < 1546300800) return 0;
+    else if (unixTimeStamp > 1893456000) return 0;
+    else return unixTimeStamp;
 }
 
 

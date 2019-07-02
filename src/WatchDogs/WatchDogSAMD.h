@@ -1,0 +1,52 @@
+/*
+ *WatchDogSAMD.h
+
+ *This file is part of the EnviroDIY modular sensors library for Arduino
+ *
+ *Initial library developement done by Sara Damiano (sdamiano@stroudcenter.org).
+ *
+ *This file is for the watchdog timer
+ *Code for this is taken from the Adafruit SleepyDog library:
+ *  https://github.com/adafruit/Adafruit_SleepyDog/
+ *and this library:  https://github.com/javos65/WDTZero
+*/
+
+// Header Guards
+#ifndef WatchDogSAMD_h
+#define WatchDogSAMD_h
+
+// Debugging Statement
+// #define MS_WATCHDOGSAMD_DEBUG
+
+#ifdef MS_WATCHDOGSAMD_DEBUG
+#define MS_DEBUGGING_STD "WatchDogSAMD"
+#endif
+
+// Included Dependencies
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
+#include "WatchDog.h"
+
+
+void WDT_Handler(void); // ISR HANDLER FOR WDT EW INTERRUPT
+
+class extendedWatchDogSAMD : extendedWatchDog
+{
+
+public:
+    // Constructor
+    extendedWatchDogSAMD();
+    virtual ~extendedWatchDogSAMD();
+
+    // One-time initialization of watchdog timer.
+    void setupWatchDog(uint32_t resetTime_s);
+    void enableWatchDog();
+    void disableWatchDog();
+
+    void resetWatchDog();
+
+private:
+    void waitForWDTBitSync();
+};
+
+#endif
