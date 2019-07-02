@@ -21,16 +21,24 @@
  * Warm up/stability/re-sampling time: 2sec
 */
 #include "AOSongAM2315.h"
-#include <Adafruit_AM2315.h>
 
 
 // The constructor - because this is I2C, only need the power pin
 // This sensor has a set I2C address of 0XB8
+AOSongAM2315::AOSongAM2315(TwoWire *theI2C, int8_t powerPin, uint8_t measurementsToAverage)
+    : Sensor("AOSongAM2315", AM2315_NUM_VARIABLES,
+             AM2315_WARM_UP_TIME_MS, AM2315_STABILIZATION_TIME_MS, AM2315_MEASUREMENT_TIME_MS,
+             powerPin, -1, measurementsToAverage)
+{
+    _i2c = theI2C;
+}
 AOSongAM2315::AOSongAM2315(int8_t powerPin, uint8_t measurementsToAverage)
     : Sensor("AOSongAM2315", AM2315_NUM_VARIABLES,
              AM2315_WARM_UP_TIME_MS, AM2315_STABILIZATION_TIME_MS, AM2315_MEASUREMENT_TIME_MS,
              powerPin, -1, measurementsToAverage)
-{}
+{
+    _i2c = &Wire;
+}
 AOSongAM2315::~AOSongAM2315(){}
 
 
@@ -39,7 +47,7 @@ String AOSongAM2315::getSensorLocation(void){return F("I2C_0xB8");}
 
 bool AOSongAM2315::setup(void)
 {
-    Wire.begin();  // Start the wire library (sensor power not required)
+    _i2c->begin();  // Start the wire library (sensor power not required)
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
     // on wire after the Wire buffer has emptied.  The default stream
@@ -47,7 +55,7 @@ bool AOSongAM2315::setup(void)
     // end of the buffer to see if an interrupt puts something into the
     // buffer.  In the case of the Wire library, that will never happen and
     // the timeout period is a useless delay.
-    Wire.setTimeout(0);
+    _i2c->setTimeout(0);
     return Sensor::setup();  // this will set pin modes and the setup status bit
 }
 
@@ -65,7 +73,7 @@ bool AOSongAM2315::addSingleMeasurementResult(void)
     {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        Adafruit_AM2315 am2315;  // create a sensor object
+        Adafruit_AM2315 am2315(_i2c);  // create a sensor object
         ret_val = am2315.readTemperatureAndHumidity(&temp_val, &humid_val);
 
         if (!ret_val or isnan(temp_val)) temp_val = -9999;

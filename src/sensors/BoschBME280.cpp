@@ -47,7 +47,7 @@ BoschBME280::BoschBME280(int8_t powerPin, uint8_t i2cAddressHex,
            BME280_WARM_UP_TIME_MS, BME280_STABILIZATION_TIME_MS, BME280_MEASUREMENT_TIME_MS,
            powerPin, -1, measurementsToAverage)
 {
-     _i2cAddressHex = i2cAddressHex; // Copy slave address
+     _i2cAddressHex = i2cAddressHex;
      _i2c = &Wire;
 }
 // Destructor
