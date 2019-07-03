@@ -592,6 +592,13 @@ bool VariableArray::completeUpdate(void)
         }
     }
 
+    // Another array for the number of measurements already completed per power pin
+    uint8_t nCompletedOnPin[_variableCount];
+    for (uint8_t i = 0; i < _variableCount; i++)
+    {
+        nCompletedOnPin[i] = 0;
+    }
+
     // This is just for debugging
     #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
     uint8_t arrayPositions[_variableCount];
@@ -614,22 +621,19 @@ bool VariableArray::completeUpdate(void)
     prettyPrintArray(lastSensorVariable);
     MS_DEEP_DBG(F("nMeasurementsToAverage:\t\t"));
     prettyPrintArray(nMeasurementsToAverage);
+    MS_DEEP_DBG(F("nMeasurementsCompleted:\t\t"));
+    prettyPrintArray(nMeasurementsCompleted);
     MS_DEEP_DBG(F("powerPins:\t\t\t"));
     prettyPrintArray(powerPins);
     MS_DEEP_DBG(F("lastPinVariable:\t\t"));
     prettyPrintArray(lastPinVariable);
-    MS_DEEP_DBG(F("nMeasurementsOnPin:\t\t"));
-    prettyPrintArray(nMeasurementsOnPin);
     MS_DEEP_DBG(F("powerPinIndex:\t\t\t"));
     prettyPrintArray(powerPinIndex);
+    MS_DEEP_DBG(F("nMeasurementsOnPin:\t\t"));
+    prettyPrintArray(nMeasurementsOnPin);
+    MS_DEEP_DBG(F("nCompletedOnPin:\t\t\t"));
+    prettyPrintArray(nCompletedOnPin);
     #endif
-
-    // Another array for the number of measurements already completed per power pin
-    uint8_t nCompletedOnPin[_variableCount];
-    for (uint8_t i = 0; i < _variableCount; i++)
-    {
-        nCompletedOnPin[i] = 0;
-    }
 
     // Clear the initial variable arrays
     MS_DBG(F("----->> Clearing all results arrays before taking new measurements. ..."));
@@ -672,6 +676,15 @@ bool VariableArray::completeUpdate(void)
                             bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0),
                             F("- measurement #"), (nMeasurementsCompleted[i] + 1);
             }
+            MS_DEEP_DBG(F("----------------------------------"));
+            MS_DEEP_DBG(F("nMeasurementsToAverage:\t\t"));
+            prettyPrintArray(nMeasurementsToAverage);
+            MS_DEEP_DBG(F("nMeasurementsCompleted:\t\t"));
+            prettyPrintArray(nMeasurementsCompleted);
+            MS_DEEP_DBG(F("nMeasurementsOnPin:\t\t"));
+            prettyPrintArray(nMeasurementsOnPin);
+            MS_DEEP_DBG(F("nCompletedOnPin:\t\t\t"));
+            prettyPrintArray(nCompletedOnPin);
             // END CHUNK FOR DEBUGGING!
             ***/
 
