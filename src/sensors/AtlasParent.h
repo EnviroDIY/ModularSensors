@@ -123,13 +123,17 @@ public:
             return true;
         }
 
-        bool success = true;
+        bool success = false;
         MS_ATLAS_DBG(F("Putting"), getSensorNameAndLocation(), F("to sleep"));
 
-        _i2c.beginTransmission(_i2cAddressHex);
-        success &= _i2c.write((const uint8_t*)"Sleep", 6);  // Write "Sleep" to put it in low power mode
-        success &= !_i2c.endTransmission();
-        // NOTE: The return of 0 from endTransmission indicates success
+        while (!success )
+        for (int8_t sleepAttempts = 5; sleepAttempts > 0; sleepAttempts--)
+        {
+            _i2c.beginTransmission(_i2cAddressHex);
+            success = _i2c.write((const uint8_t*)"Sleep", 6);  // Write "Sleep" to put it in low power mode
+            success &= !_i2c.endTransmission();
+            // NOTE: The return of 0 from endTransmission indicates success
+        }
 
         if (success)
         {
