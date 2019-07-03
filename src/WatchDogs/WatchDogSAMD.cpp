@@ -15,6 +15,8 @@
 // link all .cpp files regardless of platform.
 #if defined(ARDUINO_ARCH_SAMD)
 
+volatile uint32_t extendedWatchDogSAMD::_barksUntilReset = 0;
+
 extendedWatchDogSAMD::extendedWatchDogSAMD(){}
 extendedWatchDogSAMD::~extendedWatchDogSAMD()
 {
@@ -26,12 +28,12 @@ void extendedWatchDogSAMD::setupWatchDog(uint32_t resetTime_s)
 {
     _resetTime_s = resetTime_s;
     // Longest interrupt is 16s, so we loop that as many times as needed
-    extendedWatchDog::_barksUntilReset = _resetTime_s/8;
+    extendedWatchDogSAMD::_barksUntilReset = _resetTime_s/8;
 
     MS_DBG(F("Setting up watch-dog timeout for"),
            _resetTime_s,
            F("sec with the interrupt firing"),
-           extendedWatchDog::_barksUntilReset,
+           extendedWatchDogSAMD::_barksUntilReset,
            F("times before the reset."));
 
     // Enable WDT early-warning interrupt
@@ -147,7 +149,7 @@ void extendedWatchDogSAMD::disableWatchDog()
 
 void extendedWatchDogSAMD::resetWatchDog()
 {
-    extendedWatchDog::_barksUntilReset = _resetTime_s/8;
+    extendedWatchDogSAMD::_barksUntilReset = _resetTime_s/8;
     // Write the watchdog clear key value (0xA5) to the watchdog
     // clear register to clear the watchdog timer and reset it.
     WDT->CLEAR.reg = WDT_CLEAR_CLEAR_KEY;
@@ -169,9 +171,9 @@ void extendedWatchDogSAMD::waitForWDTBitSync()
 void WDT_Handler(void)  // ISR for watchdog early warning
 {
     // Increament down the counter, makes multi cycle WDT possible
-    extendedWatchDog::_barksUntilReset--;
-    // MS_DBG(F("\nWatchdog interrupt!"), extendedWatchDog::_barksUntilReset);
-    if (extendedWatchDog::_barksUntilReset<=0)
+    extendedWatchDogSAMD::_barksUntilReset--;
+    // MS_DBG(F("\nWatchdog interrupt!"), extendedWatchDogSAMD::_barksUntilReset);
+    if (extendedWatchDogSAMD::_barksUntilReset<=0)
     {   // Clear Early Warning (EW) Interrupt Flag
         WDT->INTFLAG.bit.EW = 1;
         // Writing a value different than WDT_CLEAR_CLEAR_KEY causes reset

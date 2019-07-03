@@ -59,7 +59,7 @@ public:
     Variable();
 
     // Destructor
-    virtual ~Variable();
+    ~Variable();
 
     // This does all of the setup that can't happen in the constructors
     // That is, anything that is dependent on another object having been created
@@ -85,7 +85,7 @@ public:
     // This notifies the parent sensor that it has an observing variable
     void attachSensor(Sensor *parentSense);
     // This is the function called by the parent sensor's notifyVariables() function
-    virtual void onSensorUpdate(Sensor *parentSense);
+    void onSensorUpdate(Sensor *parentSense);
     // This is a helper - it returns the name of the parent sensor, if applicable
     // This is needed for dealing with variables in arrays
     String getParentSensorName(void);
@@ -97,7 +97,7 @@ public:
     void setCalculation(float (*calcFxn)());
 
     // This sets up the variable (generally attaching it to its parent)
-    // virtual bool setup(void);
+    // bool setup(void);
 
     // This gets/sets the variable's resolution for value strings
     uint8_t getResolution(void);

@@ -18,6 +18,8 @@
 #include <avr/interrupt.h>
 #include <avr/wdt.h>
 
+volatile uint32_t extendedWatchDogAVR::_barksUntilReset = 0;
+
 extendedWatchDogAVR::extendedWatchDogAVR(){}
 extendedWatchDogAVR::~extendedWatchDogAVR()
 {
@@ -30,11 +32,11 @@ extendedWatchDogAVR::~extendedWatchDogAVR()
 void extendedWatchDogAVR::setupWatchDog(uint32_t resetTime_s)
 {
     _resetTime_s = resetTime_s;
-    extendedWatchDog::_barksUntilReset = _resetTime_s/8;
+    extendedWatchDogAVR::_barksUntilReset = _resetTime_s/8;
     MS_DBG(F("Watch-dog timeout is set for"),
            _resetTime_s,
            F("sec with the interrupt firing"),
-           extendedWatchDog::_barksUntilReset,
+           extendedWatchDogAVR::_barksUntilReset,
            F("times before the reset."));
 }
 
@@ -66,10 +68,10 @@ void extendedWatchDogAVR::enableWatchDog()
     //  4 seconds: 0b100000
     //  8 seconds: 0b100001
 
-    extendedWatchDog::_barksUntilReset = _resetTime_s/8;
+    extendedWatchDogAVR::_barksUntilReset = _resetTime_s/8;
     MS_DBG(F("The watch dog is enabled in interrupt-only mode."));
     MS_DBG(F("The interrupt will fire"),
-           extendedWatchDog::_barksUntilReset,
+           extendedWatchDogAVR::_barksUntilReset,
            F("times before the system resets."));
 }
 
@@ -83,7 +85,7 @@ void extendedWatchDogAVR::disableWatchDog()
 
 void extendedWatchDogAVR::resetWatchDog()
 {
-    extendedWatchDog::_barksUntilReset = _resetTime_s/8;
+    extendedWatchDogAVR::_barksUntilReset = _resetTime_s/8;
     // Reset the watchdog.
     wdt_reset();
 }
@@ -91,9 +93,9 @@ void extendedWatchDogAVR::resetWatchDog()
 
 ISR(WDT_vect)  // ISR for watchdog early warning
 {
-    extendedWatchDog::_barksUntilReset--;  // Increament down the counter, makes multi cycle WDT possible
-    // MS_DBG(F("\nWatchdog interrupt!"), extendedWatchDog::_barksUntilReset);
-    if (extendedWatchDog::_barksUntilReset<=0)
+    extendedWatchDogAVR::_barksUntilReset--;  // Increament down the counter, makes multi cycle WDT possible
+    // MS_DBG(F("\nWatchdog interrupt!"), extendedWatchDogAVR::_barksUntilReset);
+    if (extendedWatchDogAVR::_barksUntilReset<=0)
     {
 
       MCUSR = 0;                          // reset flags

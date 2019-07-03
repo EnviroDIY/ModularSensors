@@ -37,7 +37,7 @@ public:
     // Constructors
     VariableArray();
     VariableArray(uint8_t variableCount, Variable *variableList[]);
-    virtual ~VariableArray();
+    ~VariableArray();
 
     // "Begins" the VariableArray - attaches the number and array of variables
     // Not doing this in the constructor because we expect the VariableArray to
