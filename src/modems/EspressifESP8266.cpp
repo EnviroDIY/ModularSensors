@@ -219,7 +219,8 @@ bool EspressifESP8266::startSingleMeasurement(void)
 
     // The SSID and password need to be set before the ESP8266m can join a
     //network and get signal strength
-    success &= gsmModem.networkConnect(_ssid, _pwd);
+    bool alreadyConnect = gsmModem.isNetworkConnected();
+    if (!alreadyConnect) success &= gsmModem.networkConnect(_ssid, _pwd);
 
     if (success)
     {
