@@ -129,7 +129,7 @@ public:
         if (!wasOn) {powerUp();}
         waitForWarmUp();
 
-        MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report temperature with CO2"));
+        MS_ATLAS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report temperature with CO2"));
         _i2c.beginTransmission(_i2cAddressHex);
         success &= _i2c.write((const uint8_t*)"O,t,1", 6);  // Enable temperature
         success &= !_i2c.endTransmission();

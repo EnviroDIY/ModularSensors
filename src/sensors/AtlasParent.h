@@ -17,7 +17,7 @@
 #define AtlasParent_h
 
 // Debugging Statement
-#define MS_ATLASPARENT_DEBUG
+// #define MS_ATLASPARENT_DEBUG
 
 #ifdef MS_ATLASPARENT_DEBUG
 #define MS_DEBUGGING_STD "AtlasParent"
@@ -25,6 +25,27 @@
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+
+#if defined MS_DEBUGGING_STD  && not defined MS_ATLAS_DBG
+    namespace {
+        template<typename T>
+        static void MS_ATLAS_DBG(T last) {
+            DEBUGGING_SERIAL_OUTPUT.print(last);
+            DEBUGGING_SERIAL_OUTPUT.print(" <--");
+            DEBUGGING_SERIAL_OUTPUT.println(MS_DEBUGGING_STD);
+        }
+
+        template<typename T, typename... Args>
+        static void MS_ATLAS_DBG(T head, Args... tail) {
+            DEBUGGING_SERIAL_OUTPUT.print(head);
+            DEBUGGING_SERIAL_OUTPUT.print(' ');
+            MS_ATLAS_DBG(tail...);
+        }
+    }
+#else
+    #define MS_ATLAS_DBG(...)
+#endif  // DEBUGGING_SERIAL_OUTPUT
+
 #undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
@@ -98,12 +119,12 @@ public:
         if (!checkPowerOn()) {return true;}
         if (_millisSensorActivated == 0)
         {
-            MS_DBG(getSensorNameAndLocation(), F("was not measuring!"));
+            MS_ATLAS_DBG(getSensorNameAndLocation(), F("was not measuring!"));
             return true;
         }
 
         bool success = true;
-        MS_DBG(F("Putting"), getSensorNameAndLocation(), F("to sleep"));
+        MS_ATLAS_DBG(F("Putting"), getSensorNameAndLocation(), F("to sleep"));
 
         _i2c.beginTransmission(_i2cAddressHex);
         success &= _i2c.write((const uint8_t*)"Sleep", 6);  // Write "Sleep" to put it in low power mode
@@ -119,9 +140,9 @@ public:
             // Unset the status bits for sensor activation (bits 3 & 4) and measurement
             // request (bits 5 & 6)
             _sensorStatus &= 0b10000111;
-            MS_DBG(F("Done"));
+            MS_ATLAS_DBG(F("Done"));
         }
-        else MS_DBG(getSensorNameAndLocation(), F("did not accept sleep command"));
+        else MS_ATLAS_DBG(getSensorNameAndLocation(), F("did not accept sleep command"));
 
         return success;
     }
@@ -137,12 +158,12 @@ public:
         if (!Sensor::startSingleMeasurement()) return false;
 
         bool success = true;
-        MS_DBG(F("Starting measurement on"), getSensorNameAndLocation());
+        MS_ATLAS_DBG(F("Starting measurement on"), getSensorNameAndLocation());
 
         _i2c.beginTransmission(_i2cAddressHex);
         success &= _i2c.write('r');  // Write "R" to start a reading
         int I2Cstatus = _i2c.endTransmission();
-        MS_DBG(F("I2Cstatus:"), I2Cstatus);
+        MS_ATLAS_DBG(F("I2Cstatus:"), I2Cstatus);
         success &= !I2Cstatus;
         // NOTE: The return of 0 from endTransmission indicates success
 
@@ -154,7 +175,7 @@ public:
         // Otherwise, make sure that the measurement start time and success bit (bit 6) are unset
         else
         {
-            MS_DBG(getSensorNameAndLocation(), F("did not successfully start a measurement."));
+            MS_ATLAS_DBG(getSensorNameAndLocation(), F("did not successfully start a measurement."));
             _millisMeasurementRequested = 0;
             _sensorStatus &= 0b10111111;
         }
@@ -176,25 +197,25 @@ public:
             // the first byte is the response code, we read this separately.
             uint8_t code=_i2c.read();
 
-            MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+            MS_ATLAS_DBG(getSensorNameAndLocation(), F("is reporting:"));
             // Parse the response code
             switch (code)
             {
                 case 1:  // the command was successful.
-                    MS_DBG(F("  Measurement successful"));
+                    MS_ATLAS_DBG(F("  Measurement successful"));
                     success = true;
                 break;
 
                 case 2:   // the command has failed.
-                    MS_DBG(F("  Measurement Failed"));
+                    MS_ATLAS_DBG(F("  Measurement Failed"));
                 break;
 
                 case 254:  // the command has not yet been finished calculating.
-                    MS_DBG(F("  Measurement Pending"));
+                    MS_ATLAS_DBG(F("  Measurement Pending"));
                 break;
 
                 case 255:  // there is no further data to send.
-                    MS_DBG(F("  No Data"));
+                    MS_ATLAS_DBG(F("  No Data"));
                 break;
             }
             // If the response code is successful, parse the remaining results
@@ -205,7 +226,7 @@ public:
                     float result = _i2c.parseFloat();
                     if (isnan(result)) result = -9999;
                     if (result < -1020) result = -9999;
-                    MS_DBG(F("  Result #"), i, ':', result);
+                    MS_ATLAS_DBG(F("  Result #"), i, ':', result);
                     verifyAndAddMeasurementResult(i, result);
                 }
             }
@@ -214,7 +235,7 @@ public:
         {
             // If there's no measurement, need to make sure we send over all
             // of the "failed" result values
-            MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+            MS_ATLAS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
         for (uint8_t i = 0; i < _numReturnedVars; i++)
         {
             verifyAndAddMeasurementResult(i, (float)-9999);

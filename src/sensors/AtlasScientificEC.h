@@ -134,25 +134,25 @@ public:
         if (!wasOn) {powerUp();}
         waitForWarmUp();
 
-        MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report conductivity"));
+        MS_ATLAS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report conductivity"));
         _i2c.beginTransmission(_i2cAddressHex);
         success &= _i2c.write((const uint8_t*)"O,EC,1", 7);  // Enable conductivity
         success &= !_i2c.endTransmission();
         success &= waitForProcessing();
 
-        MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report total dissolved solids"));
+        MS_ATLAS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report total dissolved solids"));
         _i2c.beginTransmission(_i2cAddressHex);
         success &= _i2c.write((const uint8_t*)"O,TDS,1", 8);  // Enable total dissolved solids
         success &= !_i2c.endTransmission();
         success &= waitForProcessing();
 
-        MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report salinity"));
+        MS_ATLAS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report salinity"));
         _i2c.beginTransmission(_i2cAddressHex);
         success &= _i2c.write((const uint8_t*)"O,S,1", 6);  // Enable salinity
         success &= !_i2c.endTransmission();
         success &= waitForProcessing();
 
-        MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report specific gravity"));
+        MS_ATLAS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report specific gravity"));
         _i2c.beginTransmission(_i2cAddressHex);
         success &= _i2c.write((const uint8_t*)"O,SG,1", 7);  // Enable specific gravity
         success &= !_i2c.endTransmission();
