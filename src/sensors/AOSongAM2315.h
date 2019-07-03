@@ -66,8 +66,6 @@ public:
 
     String getSensorLocation(void) override;
 
-    bool setup(void) override;
-
     bool addSingleMeasurementResult(void) override;
 
 private:
