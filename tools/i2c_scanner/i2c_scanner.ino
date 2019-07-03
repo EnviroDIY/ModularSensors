@@ -34,30 +34,34 @@
 
 const int8_t softwareSDA = 5;     // data in pin
 const int8_t softwareSCL = 4;     // data out pin
-SoftwareWire softI2C(softwareSDA, softwareSCL);
+SoftwareWire softWire(5, 4);
 
-#define THEWIRE Wire
-#define THEWIRE softI2C
-
-
-void setup()
-{
-  pinMode(22, OUTPUT);
-  THEWIRE.begin();
-
-  Serial.begin(115200);
-  while (!Serial);             // Leonardo: wait for serial monitor
-  Serial.println("\nI2C Scanner");
+template<typename THEWIRE>
+THEWIRE createWire(int8_t sda = -1, int8_t scl = -1){
+  return THEWIRE(sda, scl);
+}
+template<>
+TwoWire createWire<TwoWire>(int8_t sda, int8_t scl){
+  return Wire;
 }
 
 
-void loop()
-{
-  digitalWrite(22, HIGH);
+template<typename THEWIRE>
+void startWire(THEWIRE i2c){
+  i2c.begin();
+  // i2c.printStatus(Serial);
+}
+
+
+// void scan(int8_t sda = -1, int8_t scl = -1)
+// {
+//   THEWIRE i2c = createWire<THEWIRE>(sda, scl);
+//   i2c.begin();
+template<typename THEWIRE>
+void scan(THEWIRE i2c){
+
   byte error, address;
   int nDevices;
-
-  Serial.println("Scanning...");
 
   nDevices = 0;
   for(address = 1; address < 127; address++ )
@@ -65,12 +69,11 @@ void loop()
     // The i2c_scanner uses the return value of
     // the Write.endTransmisstion to see if
     // a device did acknowledge to the address.
-    THEWIRE.beginTransmission(address);
-    error = THEWIRE.endTransmission();
+    i2c.beginTransmission(address);
+    error = i2c.endTransmission();
 
-    if (error == 0)
-    {
-      Serial.print("I2C device found at address 0x");
+    if (error == 0) {
+      Serial.print("    I2C device found at address 0x");
       if (address<16)
         Serial.print("0");
       Serial.print(address,HEX);
@@ -78,18 +81,42 @@ void loop()
 
       nDevices++;
     }
-    else if (error==4)
-    {
-      Serial.print("Unknown error at address 0x");
+    else if (error==4) {
+      Serial.print("    Unknown error at address 0x");
       if (address<16)
         Serial.print("0");
       Serial.println(address,HEX);
     }
   }
   if (nDevices == 0)
-    Serial.println("No I2C devices found\n");
-  else
-    Serial.println("done\n");
+    Serial.println("No I2C devices found");
+
+}
+
+
+void setup()
+{
+  pinMode(22, OUTPUT);
+
+  Serial.begin(115200);
+  while (!Serial);             // Leonardo: wait for serial monitor
+  Serial.println("\nI2C Scanner");
+  digitalWrite(22, HIGH);
+}
+
+
+void loop()
+{
+
+  Serial.println("Hardware I2C Objects:");
+  scan<TwoWire>(Wire);
+  Serial.print("Software I2C Objects on SDA=:");
+  Serial.print(softwareSDA);
+  Serial.print(", SCL=");
+  Serial.print(softwareSCL);
+  Serial.println(":");
+  scan<SoftwareWire>(softWire);
+  Serial.println();
 
   delay(5000);           // wait 5 seconds for next scan
 }
