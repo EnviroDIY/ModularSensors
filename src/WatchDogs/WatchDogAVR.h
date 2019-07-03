@@ -26,13 +26,13 @@
 #undef MS_DEBUGGING_STD
 #include "WatchDog.h"
 
-class extendedWatchDogAVR : extendedWatchDog
+class extendedWatchDogAVR
 {
 
 public:
     // Constructor
     extendedWatchDogAVR();
-    virtual ~extendedWatchDogAVR();
+    ~extendedWatchDogAVR();
 
     // One-time initialization of watchdog timer.
     void setupWatchDog(uint32_t resetTime_s);
@@ -40,6 +40,10 @@ public:
     void disableWatchDog();
 
     void resetWatchDog();
+
+    static volatile uint32_t _barksUntilReset;
+private:
+    uint32_t _resetTime_s;
 };
 
 #endif
