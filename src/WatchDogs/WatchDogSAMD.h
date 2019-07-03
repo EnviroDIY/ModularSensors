@@ -25,7 +25,6 @@
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#include "WatchDog.h"
 
 
 void WDT_Handler(void); // ISR HANDLER FOR WDT EW INTERRUPT
