@@ -54,6 +54,8 @@ public:
     // The constructor - all arguments are optional
     // Address of I2C device is 0x08 by default
     // Depth of rain per tip event in mm is 0.2mm by default
+    RainCounterI2C(TwoWire *theI2C, uint8_t i2cAddressHex = 0x08,
+                   float rainPerTip = 0.2);
     RainCounterI2C(uint8_t i2cAddressHex = 0x08, float rainPerTip = 0.2);
     // Destructor
     ~RainCounterI2C();
@@ -65,6 +67,7 @@ public:
 protected:
     float _rainPerTip;
     uint8_t _i2cAddressHex;
+    TwoWire *_i2c;  // Wire instance
 };
 
 // Defines the tip varible, shows the number of tips since last read
