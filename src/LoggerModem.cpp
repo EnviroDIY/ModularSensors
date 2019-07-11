@@ -126,8 +126,7 @@ bool loggerModem::setup(void)
     // Check if the modem was awake, wake it if not
     // NOTE:  We ar NOT powering up the modem!  Set up will NOT be successful
     // unless the modem is already powered external to this function.
-    bool wasAwake = ( (_dataPin >= 0 && digitalRead(_dataPin) == _statusLevel)
-                     || bitRead(_sensorStatus, 4) );
+    bool wasAwake = (bitRead(_sensorStatus, 4));
     if (!wasAwake)
     {
         waitForWarmUp();
@@ -167,8 +166,7 @@ bool loggerModem::setup(void)
 
     // Put the modem to sleep after finishing setup
     // Only go to sleep if it had been asleep and is now awake
-    bool isAwake = ( (_dataPin >= 0 && digitalRead(_dataPin) == _statusLevel)
-                    || bitRead(_sensorStatus, 4) );
+    bool isAwake = (bitRead(_sensorStatus, 4));
     if (!wasAwake && isAwake)
     {
         // Run the sleep function
