@@ -126,17 +126,14 @@ bool loggerModem::setup(void)
     // Check if the modem was awake, wake it if not
     // NOTE:  We ar NOT powering up the modem!  Set up will NOT be successful
     // unless the modem is already powered external to this function.
-    bool wasAwake = ( (_dataPin >= 0 && digitalRead(_dataPin) == _statusLevel)
-                     || bitRead(_sensorStatus, 4) );
+    bool wasAwake = (bitRead(_sensorStatus, 4));
     if (!wasAwake)
     {
         waitForWarmUp();
-        MS_DBG(F("Running modem wake function ..."));
+        MS_DBG(F("Waking up the modem for setup ..."));
         success &= wake();
-        // NOTE:  not setting wake bits here because we'll go back to sleep
-        // before the end of this function if we weren't awake
     }
-    else MS_DBG(F("Modem was already awake."));
+    else MS_DBG(F("Modem was already awake and should be ready for setup."));
 
     if (success)
     {
@@ -148,11 +145,6 @@ bool loggerModem::setup(void)
         else MS_DBG(F("... Failed!  It's a"), getSensorName());
     }
     else MS_DBG(F("... "), getSensorName(), F("did not wake up and cannot be set up!"));
-
-    // Set the timing for modems based on their names
-    // NOTE:  These are based on documentation for the raw chip!
-    // setModemTiming();
-
 
     MS_DBG(_modemName, F("warms up in"), _warmUpTime_ms, F("ms, indicates status in"),
            _statusTime_ms, F("ms, is responsive to AT commands in less than"),
@@ -167,8 +159,7 @@ bool loggerModem::setup(void)
 
     // Put the modem to sleep after finishing setup
     // Only go to sleep if it had been asleep and is now awake
-    bool isAwake = ( (_dataPin >= 0 && digitalRead(_dataPin) == _statusLevel)
-                    || bitRead(_sensorStatus, 4) );
+    bool isAwake = (bitRead(_sensorStatus, 4));
     if (!wasAwake && isAwake)
     {
         // Run the sleep function
@@ -224,6 +215,7 @@ bool loggerModem::wake(void)
     if (success)
     {
         modemLEDOn();
+        _millisSensorActivated = millis();  // Reset time to be from *end* of wake
         MS_DBG(getSensorName(), F("should be awake."));
     }
     else

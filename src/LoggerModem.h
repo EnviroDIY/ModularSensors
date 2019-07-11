@@ -148,7 +148,7 @@ protected:
     // Other helper functions
     void modemLEDOn(void);
     void modemLEDOff(void);
-    void modemHardReset(void);
+    virtual void modemHardReset(void);
     virtual bool didATRespond(void) = 0;
     virtual bool isInternetAvailable(void) = 0;
     virtual bool verifyMeasurementComplete(bool debug = false) = 0;

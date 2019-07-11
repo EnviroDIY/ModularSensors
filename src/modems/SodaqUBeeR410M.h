@@ -79,6 +79,8 @@ public:
 
     uint32_t getNISTTime(void) override;
 
+    void modemHardReset(void) override;
+
     #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
     #endif
