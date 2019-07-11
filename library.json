@@ -134,7 +134,7 @@
             "name": "Adafruit BME280 Library",
             "library id": "166",
             "url": "https://github.com/adafruit/Adafruit_BME280_Library.git",
-            "version": "=1.0.8",
+            "version": "=1.0.9",
             "note": "Bosch BME280 Temp/Humidity/Pressure Sensor Library by Adafruit",
             "authors": [
                 "Adafruit"
@@ -146,7 +146,7 @@
             "name": "DHT sensor library",
             "library id": "19",
             "url": "https://github.com/adafruit/DHT-sensor-library.git",
-            "version": "=1.3.4",
+            "version": "=1.3.6",
             "note": "AOSong DHT Sensor Library by Adafruit",
             "authors": [
                 "Adafruit"
@@ -158,7 +158,7 @@
             "name": "Adafruit INA219",
             "library id": "160",
             "url": "https://github.com/adafruit/Adafruit_INA219.git",
-            "version": "=1.0.4",
+            "version": "=1.0.5",
             "note": "This is a library for the Adafruit INA219 high side DC current sensor boards",
             "authors": [
                 "Adafruit"
@@ -279,7 +279,7 @@
             "name": "RTCZero",
             "library id": "873",
             "url": "https://github.com/arduino-libraries/RTCZero.git",
-            "version": "=1.5.3",
+            "version": "=1.6.0",
             "note": "Functions for using the processor real time clock in SAMD21 processors",
             "authors": [
                 "Arduino"
@@ -302,7 +302,7 @@
         {
             "name": "TinyGSM",
             "version": "https://github.com/EnviroDIY/TinyGSM.git",
-            "version_note": "=0.7.10",
+            "version_note": "=0.8.0",
             "note": "A small Arduino library for GPRS modules.",
             "authors": [
                 "Volodymyr Shymanskyy",
