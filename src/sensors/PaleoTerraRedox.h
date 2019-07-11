@@ -51,6 +51,16 @@ public:
     // The constructor - need the power pin, optionally can give an instance
     // of TwoWire for I2C communbication, an address, and  a number of
     // measurements to average
+    PaleoTerraRedox(THEWIRE *theI2C, int8_t powerPin,
+                    uint8_t i2cAddressHex = MCP3421_ADR,
+                    uint8_t measurementsToAverage = 1)
+      : Sensor("PaleoTerraRedox", PTR_NUM_VARIABLES,
+               PTR_WARM_UP_TIME_MS, PTR_STABILIZATION_TIME_MS, PTR_MEASUREMENT_TIME_MS,
+               powerPin, -1, measurementsToAverage)
+    {
+        _i2cAddressHex = i2cAddressHex;
+        _i2c = &theI2C;
+    }
     PaleoTerraRedox(THEWIRE theI2C, int8_t powerPin,
                     uint8_t i2cAddressHex = MCP3421_ADR,
                     uint8_t measurementsToAverage = 1)
@@ -156,7 +166,7 @@ public:
 
 private:
     uint8_t _i2cAddressHex;  // Hardware slave address
-    THEWIRE _i2c;  // Wire instance - hardware or software
+    THEWIRE _i2c = Wire;  // Wire instance - hardware or software
 };
 
 
