@@ -93,6 +93,7 @@ bool SodaqUBeeR410M::modemWakeFxn(void)
             uint32_t startTimer = millis();
             // 0.15-3.2s pulse for wake on SARA R4/N4 (ie, max is 3.2s)
             while (digitalRead(_dataPin) != _statusLevel && millis() - startTimer < 3200L) {}
+            MS_DBG(F("Pulsed for"), millis() - startTimer, F("ms"));
         }
         else delay(200);  // 0.15-3.2s pulse for wake on SARA R4/N4
 
@@ -103,7 +104,8 @@ bool SodaqUBeeR410M::modemWakeFxn(void)
         #if F_CPU == 8000000L
         if (_powerPin >= 0)
         {
-            delay(R410M_ATRESPONSE_TIME_MS);  // Must wait for UART port to become active
+            MS_DBG(F("Waiting for UART to become active and requesting a slower baud rate."));
+            delay(R410M_ATRESPONSE_TIME_MS + 250);  // Must wait for UART port to become active
             _modemSerial->begin(115200);
             gsmModem.setBaud(9600);
             _modemSerial->end();
