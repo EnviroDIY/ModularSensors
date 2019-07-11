@@ -130,12 +130,10 @@ bool loggerModem::setup(void)
     if (!wasAwake)
     {
         waitForWarmUp();
-        MS_DBG(F("Running modem wake function ..."));
+        MS_DBG(F("Waking up the modem for setup ..."));
         success &= wake();
-        // NOTE:  not setting wake bits here because we'll go back to sleep
-        // before the end of this function if we weren't awake
     }
-    else MS_DBG(F("Modem was already awake."));
+    else MS_DBG(F("Modem was already awake and shoule be ready for setup."));
 
     if (success)
     {
@@ -147,11 +145,6 @@ bool loggerModem::setup(void)
         else MS_DBG(F("... Failed!  It's a"), getSensorName());
     }
     else MS_DBG(F("... "), getSensorName(), F("did not wake up and cannot be set up!"));
-
-    // Set the timing for modems based on their names
-    // NOTE:  These are based on documentation for the raw chip!
-    // setModemTiming();
-
 
     MS_DBG(_modemName, F("warms up in"), _warmUpTime_ms, F("ms, indicates status in"),
            _statusTime_ms, F("ms, is responsive to AT commands in less than"),
