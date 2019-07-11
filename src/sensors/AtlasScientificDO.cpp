@@ -15,6 +15,16 @@
 #include "AtlasScientificDO.h"
 
 // Constructors
+#if defined MS_ATLAS_SOFTWAREWIRE
+AtlasScientificDO::AtlasScientificDO(SoftwareWire *theI2C, int8_t powerPin,
+                                     uint8_t i2cAddressHex,
+                                     uint8_t measurementsToAverage)
+  : AtlasParent(theI2C, powerPin, i2cAddressHex, measurementsToAverage,
+                "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
+                ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
+                ATLAS_DO_MEASUREMENT_TIME_MS)
+{}
+#else
 AtlasScientificDO::AtlasScientificDO(TwoWire *theI2C, int8_t powerPin,
                                      uint8_t i2cAddressHex,
                                      uint8_t measurementsToAverage)
@@ -30,6 +40,7 @@ AtlasScientificDO::AtlasScientificDO(int8_t powerPin, uint8_t i2cAddressHex,
                 ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
                 ATLAS_DO_MEASUREMENT_TIME_MS)
 {}
+#endif
 // Destructor
 AtlasScientificDO::~AtlasScientificDO(){}
 

@@ -81,7 +81,7 @@ public:
 protected:
     Adafruit_INA219 ina219_phy;
     uint8_t _i2cAddressHex;  // Hardware slave address
-    TwoWire *_i2c;  // Wire instance - hardware or software
+    TwoWire *_i2c;
 };
 
 

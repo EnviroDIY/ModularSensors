@@ -30,10 +30,21 @@
 #include "SensorBase.h"
 #include <Wire.h>
 
+#if defined MS_ATLAS_SOFTWAREWIRE
+#include <SoftwareWire.h>  // Testato's SoftwareWire
+#endif
+
 // A parent class for Atlas sensors
 class AtlasParent : public Sensor
 {
 public:
+    #if defined MS_ATLAS_SOFTWAREWIRE
+    AtlasParent(SoftwareWire *theI2C, int8_t powerPin, uint8_t i2cAddressHex,
+                uint8_t measurementsToAverage = 1,
+                const char *sensorName = "AtlasSensor", const uint8_t numReturnedVars = 1,
+                uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
+                uint32_t measurementTime_ms = 0);
+    #else
     AtlasParent(TwoWire *theI2C, int8_t powerPin, uint8_t i2cAddressHex,
                 uint8_t measurementsToAverage = 1,
                 const char *sensorName = "AtlasSensor", const uint8_t numReturnedVars = 1,
@@ -43,6 +54,7 @@ public:
                 const char *sensorName = "AtlasSensor", const uint8_t numReturnedVars = 1,
                 uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
                 uint32_t measurementTime_ms = 0);
+    #endif
     virtual ~AtlasParent();
 
     String getSensorLocation(void) override;
@@ -62,7 +74,11 @@ public:
 
 protected:
     uint8_t _i2cAddressHex;
-    TwoWire *_i2c;  // Wire instance
+    #if defined MS_ATLAS_SOFTWAREWIRE
+    SoftwareWire *_i2c;  // Software Wire
+    #else
+    TwoWire *_i2c;  // Hardware Wire
+    #endif
     // Wait for a command to process
     // NOTE:  This should ONLY be used as a wait when no response is
     // expected except a status code - the response will be "consumed"

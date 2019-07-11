@@ -22,6 +22,17 @@
 
 // The constructor - because this is I2C, only need the power pin and
 // rain per event if a non-standard value is used
+#if defined MS_RAIN_SOFTWAREWIRE
+RainCounterI2C::RainCounterI2C(SoftwareWire *theI2C, uint8_t i2cAddressHex, float rainPerTip)
+     : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES,
+              BUCKET_WARM_UP_TIME_MS, BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS,
+              -1, -1, 1)
+{
+    _i2cAddressHex = i2cAddressHex;
+    _i2c = theI2C;
+    _rainPerTip = rainPerTip;
+}
+#else
 RainCounterI2C::RainCounterI2C(TwoWire *theI2C, uint8_t i2cAddressHex, float rainPerTip)
      : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES,
               BUCKET_WARM_UP_TIME_MS, BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS,
@@ -40,6 +51,7 @@ RainCounterI2C::RainCounterI2C(uint8_t i2cAddressHex, float rainPerTip)
     _i2c = &Wire;
     _rainPerTip = rainPerTip;
 }
+#endif
 // Destructor
 RainCounterI2C::~RainCounterI2C(){}
 

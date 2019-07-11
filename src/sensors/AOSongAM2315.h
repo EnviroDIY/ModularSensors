@@ -69,7 +69,7 @@ public:
     bool addSingleMeasurementResult(void) override;
 
 private:
-    TwoWire *_i2c;  // Wire instance - hardware or software
+    TwoWire *_i2c;
 };
 
 

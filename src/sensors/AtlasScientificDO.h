@@ -49,11 +49,17 @@
 class AtlasScientificDO : public AtlasParent
 {
 public:
+    #if defined MS_ATLAS_SOFTWAREWIRE
+    AtlasScientificDO(SoftwareWire *theI2C, int8_t powerPin,
+                      uint8_t i2cAddressHex = ATLAS_DO_I2C_ADDR,
+                      uint8_t measurementsToAverage = 1);
+    #else
     AtlasScientificDO(TwoWire *theI2C, int8_t powerPin,
                       uint8_t i2cAddressHex = ATLAS_DO_I2C_ADDR,
                       uint8_t measurementsToAverage = 1);
     AtlasScientificDO(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_DO_I2C_ADDR,
                       uint8_t measurementsToAverage = 1);
+    #endif
     ~AtlasScientificDO();
 
     virtual bool setup(void) override;

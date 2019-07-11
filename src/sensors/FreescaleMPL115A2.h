@@ -67,7 +67,7 @@ public:
     bool addSingleMeasurementResult(void) override;
 protected:
     Adafruit_MPL115A2 mpl115a2_internal;
-    TwoWire *_i2c;  // Wire instance - hardware or software
+    TwoWire *_i2c;
 };
 
 

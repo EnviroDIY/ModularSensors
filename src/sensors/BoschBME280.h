@@ -89,7 +89,7 @@ public:
 protected:
     Adafruit_BME280 bme_internal;
     uint8_t _i2cAddressHex;  // Hardware slave address
-    TwoWire *_i2c;  // Wire instance - hardware or software
+    TwoWire *_i2c;
 };
 
 
