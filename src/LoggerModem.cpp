@@ -224,6 +224,7 @@ bool loggerModem::wake(void)
     if (success)
     {
         modemLEDOn();
+        _millisSensorActivated = millis();  // Reset time to be from *end* of wake
         MS_DBG(getSensorName(), F("should be awake."));
     }
     else

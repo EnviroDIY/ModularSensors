@@ -86,7 +86,16 @@ bool SodaqUBeeR410M::modemWakeFxn(void)
     {
         MS_DBG(F("Sending a wake-up pulse on pin"), _modemSleepRqPin, F("for Sodaq UBee R410M"));
         digitalWrite(_modemSleepRqPin, LOW);
-        delay(200);  // 0.15-3.2s pulse for wake on SARA R4/N4
+
+        // If possible, monitor the v_int pin waiting for it to become high before ending pulse
+        if (_dataPin >= 0)
+        {
+            uint32_t startTimer = millis();
+            // 0.15-3.2s pulse for wake on SARA R4/N4 (ie, max is 3.2s)
+            while (digitalRead(_dataPin) != _statusLevel && millis() - startTimer < 3200L) {}
+        }
+        else delay(200);  // 0.15-3.2s pulse for wake on SARA R4/N4
+
         digitalWrite(_modemSleepRqPin, HIGH);
         // Need to slow down R4/N4's default 115200 baud rate for slow processors
         // The baud rate setting is NOT saved to non-volatile memory, so it must
@@ -94,7 +103,7 @@ bool SodaqUBeeR410M::modemWakeFxn(void)
         #if F_CPU == 8000000L
         if (_powerPin >= 0)
         {
-            delay(4600);  // Must wait for UART port to become active
+            delay(R410M_ATRESPONSE_TIME_MS);  // Must wait for UART port to become active
             _modemSerial->begin(115200);
             gsmModem.setBaud(9600);
             _modemSerial->end();
@@ -134,4 +143,20 @@ bool SodaqUBeeR410M::extraModemSetup(void)
     gsmModem.sendAT(GF("+URAT=7"));
     gsmModem.waitResponse();
     return true;
+}
+
+
+void SodaqUBeeR410M::modemHardReset(void)
+{
+    if (_modemResetPin >= 0)
+    {
+        MS_DBG(F("Doing a hard reset.  This takes 10s, be patient."));
+        digitalWrite(_modemResetPin, LOW);
+        delay(10000L);
+        digitalWrite(_modemResetPin, HIGH);
+        // Re-set _millisSensorActivated  - the hard reset is a new activation
+        _millisSensorActivated = millis();
+        // Unset the flag for prior communication failure
+        previousCommunicationFailed = false;
+    }
 }
