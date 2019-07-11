@@ -17,7 +17,7 @@
 #define PaleoTerraRedox_h
 
 // Debugging Statement
-// #define MS_RAINCOUNTERI2C_DEBUG
+// #define MS_PALEOTERRAREDOX_DEBUG
 
 #ifdef MS_PALEOTERRAREDOX_DEBUG
 #define MS_DEBUGGING_STD "PaleoTerraRedox"
