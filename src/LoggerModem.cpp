@@ -133,7 +133,7 @@ bool loggerModem::setup(void)
         MS_DBG(F("Waking up the modem for setup ..."));
         success &= wake();
     }
-    else MS_DBG(F("Modem was already awake and shoule be ready for setup."));
+    else MS_DBG(F("Modem was already awake and should be ready for setup."));
 
     if (success)
     {
