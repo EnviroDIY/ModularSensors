@@ -60,11 +60,15 @@ public:
     AtlasScientificEC(SoftwareWire *theI2C, int8_t powerPin,
                       uint8_t i2cAddressHex = ATLAS_COND_I2C_ADDR,
                       uint8_t measurementsToAverage = 1);
+    AtlasScientificEC(int8_t powerPin, int8_t dataPin, int8_t clockPin,
+                      uint8_t i2cAddressHex = ATLAS_COND_I2C_ADDR,
+                      uint8_t measurementsToAverage = 1);
     #else
     AtlasScientificEC(TwoWire *theI2C, int8_t powerPin,
                       uint8_t i2cAddressHex = ATLAS_COND_I2C_ADDR,
                       uint8_t measurementsToAverage = 1);
-    AtlasScientificEC(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_COND_I2C_ADDR,
+    AtlasScientificEC(int8_t powerPin,
+                      uint8_t i2cAddressHex = ATLAS_COND_I2C_ADDR,
                       uint8_t measurementsToAverage = 1);
     #endif
     ~AtlasScientificEC();

@@ -41,7 +41,17 @@ public:
     AtlasScientificRTD(SoftwareWire *theI2C, int8_t powerPin,
                        uint8_t i2cAddressHex = ATLAS_RTD_I2C_ADDR,
                        uint8_t measurementsToAverage = 1)
-     : AtlasParent(theI2C, powerPin, i2cAddressHex, measurementsToAverage,
+     : AtlasParent(theI2C, powerPin,
+                   i2cAddressHex, measurementsToAverage,
+                   "AtlasScientificRTD", ATLAS_RTD_NUM_VARIABLES,
+                   ATLAS_RTD_WARM_UP_TIME_MS, ATLAS_RTD_STABILIZATION_TIME_MS,
+                   ATLAS_RTD_MEASUREMENT_TIME_MS)
+    {}
+    AtlasScientificRTD(int8_t powerPin, int8_t dataPin, int8_t clockPin,
+                       uint8_t i2cAddressHex = ATLAS_RTD_I2C_ADDR,
+                       uint8_t measurementsToAverage = 1)
+     : AtlasParent(powerPin, dataPin, clockPin,
+                   i2cAddressHex, measurementsToAverage,
                    "AtlasScientificRTD", ATLAS_RTD_NUM_VARIABLES,
                    ATLAS_RTD_WARM_UP_TIME_MS, ATLAS_RTD_STABILIZATION_TIME_MS,
                    ATLAS_RTD_MEASUREMENT_TIME_MS)
@@ -50,14 +60,17 @@ public:
     AtlasScientificRTD(TwoWire *theI2C, int8_t powerPin,
                        uint8_t i2cAddressHex = ATLAS_RTD_I2C_ADDR,
                        uint8_t measurementsToAverage = 1)
-     : AtlasParent(theI2C, powerPin, i2cAddressHex, measurementsToAverage,
+     : AtlasParent(theI2C, powerPin,
+                   i2cAddressHex, measurementsToAverage,
                    "AtlasScientificRTD", ATLAS_RTD_NUM_VARIABLES,
                    ATLAS_RTD_WARM_UP_TIME_MS, ATLAS_RTD_STABILIZATION_TIME_MS,
                    ATLAS_RTD_MEASUREMENT_TIME_MS)
     {}
-    AtlasScientificRTD(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_RTD_I2C_ADDR,
+    AtlasScientificRTD(int8_t powerPin,
+                       uint8_t i2cAddressHex = ATLAS_RTD_I2C_ADDR,
                        uint8_t measurementsToAverage = 1)
-     : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
+     : AtlasParent(powerPin,
+                   i2cAddressHex, measurementsToAverage,
                    "AtlasScientificRTD", ATLAS_RTD_NUM_VARIABLES,
                    ATLAS_RTD_WARM_UP_TIME_MS, ATLAS_RTD_STABILIZATION_TIME_MS,
                    ATLAS_RTD_MEASUREMENT_TIME_MS)

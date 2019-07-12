@@ -39,18 +39,24 @@ class AtlasParent : public Sensor
 {
 public:
     #if defined MS_ATLAS_SOFTWAREWIRE
-    AtlasParent(SoftwareWire *theI2C, int8_t powerPin, uint8_t i2cAddressHex,
-                uint8_t measurementsToAverage = 1,
+    AtlasParent(SoftwareWire *theI2C, int8_t powerPin,
+                uint8_t i2cAddressHex, uint8_t measurementsToAverage = 1,
+                const char *sensorName = "AtlasSensor", const uint8_t numReturnedVars = 1,
+                uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
+                uint32_t measurementTime_ms = 0);
+    AtlasParent(int8_t powerPin, int8_t dataPin, int8_t clockPin,
+                uint8_t i2cAddressHex, uint8_t measurementsToAverage = 1,
                 const char *sensorName = "AtlasSensor", const uint8_t numReturnedVars = 1,
                 uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
                 uint32_t measurementTime_ms = 0);
     #else
-    AtlasParent(TwoWire *theI2C, int8_t powerPin, uint8_t i2cAddressHex,
-                uint8_t measurementsToAverage = 1,
+    AtlasParent(TwoWire *theI2C, int8_t powerPin,
+                uint8_t i2cAddressHex, uint8_t measurementsToAverage = 1,
                 const char *sensorName = "AtlasSensor", const uint8_t numReturnedVars = 1,
                 uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
                 uint32_t measurementTime_ms = 0);
-    AtlasParent(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage = 1,
+    AtlasParent(int8_t powerPin,
+                uint8_t i2cAddressHex, uint8_t measurementsToAverage = 1,
                 const char *sensorName = "AtlasSensor", const uint8_t numReturnedVars = 1,
                 uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
                 uint32_t measurementTime_ms = 0);
@@ -76,6 +82,7 @@ protected:
     uint8_t _i2cAddressHex;
     #if defined MS_ATLAS_SOFTWAREWIRE
     SoftwareWire *_i2c;  // Software Wire
+    bool createdSoftwareWire;
     #else
     TwoWire *_i2c;  // Hardware Wire
     #endif

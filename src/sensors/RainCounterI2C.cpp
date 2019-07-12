@@ -23,17 +23,31 @@
 // The constructor - because this is I2C, only need the power pin and
 // rain per event if a non-standard value is used
 #if defined MS_RAIN_SOFTWAREWIRE
-RainCounterI2C::RainCounterI2C(SoftwareWire *theI2C, uint8_t i2cAddressHex, float rainPerTip)
+RainCounterI2C::RainCounterI2C(SoftwareWire *theI2C,
+                               uint8_t i2cAddressHex, float rainPerTip)
      : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES,
               BUCKET_WARM_UP_TIME_MS, BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS,
               -1, -1, 1)
 {
     _i2cAddressHex = i2cAddressHex;
     _i2c = theI2C;
+    createdSoftwareWire = false;
+    _rainPerTip = rainPerTip;
+}
+RainCounterI2C::RainCounterI2C(int8_t powerPin, int8_t dataPin, int8_t clockPin,
+                               uint8_t i2cAddressHex, float rainPerTip)
+     : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES,
+              BUCKET_WARM_UP_TIME_MS, BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS,
+              -1, dataPin, 1)
+{
+    _i2cAddressHex = i2cAddressHex;
+    _i2c = new SoftwareWire(dataPin, clockPin);
+    createdSoftwareWire = true;
     _rainPerTip = rainPerTip;
 }
 #else
-RainCounterI2C::RainCounterI2C(TwoWire *theI2C, uint8_t i2cAddressHex, float rainPerTip)
+RainCounterI2C::RainCounterI2C(TwoWire *theI2C,
+                               uint8_t i2cAddressHex, float rainPerTip)
      : Sensor("RainCounterI2C", BUCKET_NUM_VARIABLES,
               BUCKET_WARM_UP_TIME_MS, BUCKET_STABILIZATION_TIME_MS, BUCKET_MEASUREMENT_TIME_MS,
               -1, -1, 1)
@@ -52,8 +66,19 @@ RainCounterI2C::RainCounterI2C(uint8_t i2cAddressHex, float rainPerTip)
     _rainPerTip = rainPerTip;
 }
 #endif
-// Destructor
+
+
+// Destructors
+#if defined MS_RAIN_SOFTWAREWIRE
+// If we created a new SoftwareWire instance, we need to destroy it or
+// there will be a memory leak
+RainCounterI2C::~RainCounterI2C()
+{
+    if (createdSoftwareWire) delete _i2c;
+}
+#else
 RainCounterI2C::~RainCounterI2C(){}
+#endif
 
 
 String RainCounterI2C::getSensorLocation(void)

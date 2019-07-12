@@ -19,7 +19,17 @@
 AtlasScientificDO::AtlasScientificDO(SoftwareWire *theI2C, int8_t powerPin,
                                      uint8_t i2cAddressHex,
                                      uint8_t measurementsToAverage)
-  : AtlasParent(theI2C, powerPin, i2cAddressHex, measurementsToAverage,
+  : AtlasParent(theI2C, powerPin,
+                i2cAddressHex, measurementsToAverage,
+                "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
+                ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
+                ATLAS_DO_MEASUREMENT_TIME_MS)
+{}
+AtlasScientificDO::AtlasScientificDO(SoftwareWire *theI2C, int8_t powerPin,
+                                     uint8_t i2cAddressHex,
+                                     uint8_t measurementsToAverage)
+  : AtlasParent(powerPin, dataPin, clockPin,
+                i2cAddressHex, measurementsToAverage,
                 "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
                 ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
                 ATLAS_DO_MEASUREMENT_TIME_MS)
@@ -28,14 +38,17 @@ AtlasScientificDO::AtlasScientificDO(SoftwareWire *theI2C, int8_t powerPin,
 AtlasScientificDO::AtlasScientificDO(TwoWire *theI2C, int8_t powerPin,
                                      uint8_t i2cAddressHex,
                                      uint8_t measurementsToAverage)
-  : AtlasParent(theI2C, powerPin, i2cAddressHex, measurementsToAverage,
+  : AtlasParent(theI2C, powerPin,
+                i2cAddressHex, measurementsToAverage,
                 "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
                 ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
                 ATLAS_DO_MEASUREMENT_TIME_MS)
 {}
-AtlasScientificDO::AtlasScientificDO(int8_t powerPin, uint8_t i2cAddressHex,
+AtlasScientificDO::AtlasScientificDO(int8_t powerPin,
+                                     uint8_t i2cAddressHex,
                                      uint8_t measurementsToAverage)
-  : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
+  : AtlasParent(powerPin,
+                i2cAddressHex, measurementsToAverage,
                 "AtlasScientificDO", ATLAS_DO_NUM_VARIABLES,
                 ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
                 ATLAS_DO_MEASUREMENT_TIME_MS)

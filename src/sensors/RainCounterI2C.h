@@ -61,6 +61,8 @@ public:
     #if defined MS_RAIN_SOFTWAREWIRE
     RainCounterI2C(SoftwareWire *theI2C, uint8_t i2cAddressHex = 0x08,
                    float rainPerTip = 0.2);
+    RainCounterI2C(int8_t powerPin, int8_t dataPin, int8_t clockPin,
+                   uint8_t i2cAddressHex = 0x08, float rainPerTip = 0.2);
     #else
     RainCounterI2C(TwoWire *theI2C, uint8_t i2cAddressHex = 0x08,
                    float rainPerTip = 0.2);
@@ -78,6 +80,7 @@ protected:
     uint8_t _i2cAddressHex;
     #if defined MS_RAIN_SOFTWAREWIRE
     SoftwareWire *_i2c;  // Software Wire
+    bool createdSoftwareWire;
     #else
     TwoWire *_i2c;  // Hardware Wire
     #endif

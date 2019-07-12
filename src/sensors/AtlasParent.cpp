@@ -16,11 +16,11 @@
 #include <Wire.h>
 
 
-// The constructor - because this is I2C, only need the power pin
+// The constructors - because this is I2C, only need the power pin
 // This sensor has a set I2C address of 0X64, or 100
 #if defined MS_ATLAS_SOFTWAREWIRE
-AtlasParent::AtlasParent(SoftwareWire *theI2C, int8_t powerPin, uint8_t i2cAddressHex,
-                         uint8_t measurementsToAverage,
+AtlasParent::AtlasParent(SoftwareWire *theI2C, int8_t powerPin,
+                         uint8_t i2cAddressHex, uint8_t measurementsToAverage,
                          const char *sensorName, const uint8_t numReturnedVars,
                          uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms,
                          uint32_t measurementTime_ms)
@@ -30,10 +30,24 @@ AtlasParent::AtlasParent(SoftwareWire *theI2C, int8_t powerPin, uint8_t i2cAddre
 {
     _i2cAddressHex = i2cAddressHex;
     _i2c = theI2C;
+    createdSoftwareWire = false;
+}
+AtlasParent::AtlasParent(int8_t powerPin, int8_t dataPin, int8_t clockPin,
+                         uint8_t i2cAddressHex, uint8_t measurementsToAverage,
+                         const char *sensorName, const uint8_t numReturnedVars,
+                         uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms,
+                         uint32_t measurementTime_ms)
+  : Sensor(sensorName, numReturnedVars,
+           warmUpTime_ms, stabilizationTime_ms, measurementTime_ms,
+           powerPin, dataPin, measurementsToAverage)
+{
+    _i2cAddressHex = i2cAddressHex;
+    _i2c = new SoftwareWire(dataPin, clockPin);
+    createdSoftwareWire = true;
 }
 #else
-AtlasParent::AtlasParent(TwoWire *theI2C, int8_t powerPin, uint8_t i2cAddressHex,
-                         uint8_t measurementsToAverage,
+AtlasParent::AtlasParent(TwoWire *theI2C, int8_t powerPin,
+                         uint8_t i2cAddressHex, uint8_t measurementsToAverage,
                          const char *sensorName, const uint8_t numReturnedVars,
                          uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms,
                          uint32_t measurementTime_ms)
@@ -44,8 +58,8 @@ AtlasParent::AtlasParent(TwoWire *theI2C, int8_t powerPin, uint8_t i2cAddressHex
     _i2cAddressHex = i2cAddressHex;
     _i2c = theI2C;
 }
-AtlasParent::AtlasParent(int8_t powerPin, uint8_t i2cAddressHex,
-                         uint8_t measurementsToAverage,
+AtlasParent::AtlasParent(int8_t powerPin,
+                         uint8_t i2cAddressHex, uint8_t measurementsToAverage,
                          const char *sensorName, const uint8_t numReturnedVars,
                          uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms,
                          uint32_t measurementTime_ms)
@@ -57,7 +71,19 @@ AtlasParent::AtlasParent(int8_t powerPin, uint8_t i2cAddressHex,
     _i2c = &Wire;
 }
 #endif
+
+
+// Destructors
+#if defined MS_ATLAS_SOFTWAREWIRE
+// If we created a new SoftwareWire instance, we need to destroy it or
+// there will be a memory leak
+AtlasParent::~AtlasParent()
+{
+    if (createdSoftwareWire) delete _i2c;
+}
+#else
 AtlasParent::~AtlasParent(){}
+#endif
 
 
 String AtlasParent::getSensorLocation(void)
