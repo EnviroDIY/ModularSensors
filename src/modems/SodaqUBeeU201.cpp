@@ -58,6 +58,7 @@ bool SodaqUBeeU201::modemWakeFxn(void)
     // SARA/LISA U2/G2 and SARA G3 series turn on when power is applied
     // No pulsing required in this case
     if (_powerPin >= 0)
+        digitalWrite(_modemSleepRqPin, HIGH);  // to make sure it's set to something
         return true;
     if (_modemSleepRqPin >= 0)
     {

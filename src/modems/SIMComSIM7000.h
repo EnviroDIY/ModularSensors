@@ -66,6 +66,8 @@ public:
     float getModemTemperature(void) override;
 
     uint32_t getNISTTime(void) override;
+    
+    void modemPowerUp(void) override;
 
     #ifdef MS_SIMCOMSIM7000_DEBUG_DEEP
     StreamDebugger _modemATDebugger;

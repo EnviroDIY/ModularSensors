@@ -777,7 +777,9 @@ void Logger::systemSleep(void)
 	// }
     // else
     // {
+        #ifndef USE_TINYUSB
 		USBDevice.detach();
+        #endif
 		restoreUSBDevice = true;
 	// }
 	// Disable systick interrupt:  See https://www.avrfreaks.net/forum/samd21-samd21e16b-sporadically-locks-and-does-not-wake-standby-sleep-mode
@@ -848,8 +850,9 @@ void Logger::systemSleep(void)
 	SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
 	if (restoreUSBDevice)
     {
+        #ifndef USE_TINYUSB
 		USBDevice.attach();
-        // delay(500);
+        #endif
         uint32_t startTimer = millis();
         while (!SERIAL_PORT_USBVIRTUAL && ((millis()- startTimer) < 1000L)){}
     }
