@@ -400,7 +400,7 @@ MaximDS3231 ds3231(1);
 #include <sensors/AtlasScientificCO2.h>
 
 const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-// uint8_t AtlasCO2i2c_addr = 0x69;  // Default for CO2-EZO is 0x69 (105)
+uint8_t AtlasCO2i2c_addr = 0x69;  // Default for CO2-EZO is 0x69 (105)
 // All Atlas sensors have different default I2C addresses, but any of them can
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
@@ -408,7 +408,7 @@ const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 i
 // Create an Atlas Scientific CO2 sensor object
 #ifdef MS_ATLAS_SOFTWAREWIRE
 // AtlasScientificCO2 atlasCO2(I2CPower, softwareSDA, softwareSCL, AtlasCO2i2c_addr);
-// AtlasScientificCO2 atlasCO2(&softI2C, I2CPower, AtlasCO2i2c_addr);
+AtlasScientificCO2 atlasCO2(&softI2C, I2CPower, AtlasCO2i2c_addr);
 #else
 // AtlasScientificCO2 atlasCO2(I2CPower, AtlasCO2i2c_addr);
 AtlasScientificCO2 atlasCO2(I2CPower);
@@ -425,7 +425,7 @@ AtlasScientificCO2 atlasCO2(I2CPower);
 #include <sensors/AtlasScientificDO.h>
 
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-// uint8_t AtlasDOi2c_addr = 0x61;  // Default for DO is 0x61 (97)
+uint8_t AtlasDOi2c_addr = 0x61;  // Default for DO is 0x61 (97)
 // All Atlas sensors have different default I2C addresses, but any of them can
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
@@ -433,7 +433,7 @@ AtlasScientificCO2 atlasCO2(I2CPower);
 // Create an Atlas Scientific DO sensor object
 #ifdef MS_ATLAS_SOFTWAREWIRE
 // AtlasScientificDO atlasDO(I2CPower, softwareSDA, softwareSCL, AtlasDOi2c_addr);
-// AtlasScientificDO atlasDO(&softI2C, I2CPower, AtlasDOi2c_addr);
+AtlasScientificDO atlasDO(&softI2C, I2CPower, AtlasDOi2c_addr);
 #else
 // AtlasScientificDO atlasDO(I2CPower, AtlasDOi2c_addr);
 AtlasScientificDO atlasDO(I2CPower);
@@ -450,7 +450,7 @@ AtlasScientificDO atlasDO(I2CPower);
 #include <sensors/AtlasScientificEC.h>
 
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-// uint8_t AtlasECi2c_addr = 0x64;  // Default for EC is 0x64 (100)
+uint8_t AtlasECi2c_addr = 0x64;  // Default for EC is 0x64 (100)
 // All Atlas sensors have different default I2C addresses, but any of them can
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
@@ -458,7 +458,7 @@ AtlasScientificDO atlasDO(I2CPower);
 // Create an Atlas Scientific Conductivity sensor object
 #ifdef MS_ATLAS_SOFTWAREWIRE
 // AtlasScientificEC atlasEC(I2CPower, softwareSDA, softwareSCL, AtlasECi2c_addr);
-// AtlasScientificEC atlasEC(&softI2C, I2CPower, AtlasECi2c_addr);
+AtlasScientificEC atlasEC(&softI2C, I2CPower, AtlasECi2c_addr);
 #else
 // AtlasScientificEC atlasEC(I2CPower, AtlasECi2c_addr);
 AtlasScientificEC atlasEC(I2CPower);
@@ -477,7 +477,7 @@ AtlasScientificEC atlasEC(I2CPower);
 #include <sensors/AtlasScientificORP.h>
 
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-// uint8_t AtlasORPi2c_addr = 0x62;  // Default for ORP is 0x62 (98)
+uint8_t AtlasORPi2c_addr = 0x62;  // Default for ORP is 0x62 (98)
 // All Atlas sensors have different default I2C addresses, but any of them can
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
@@ -501,7 +501,7 @@ AtlasScientificORP atlasORP(I2CPower);
 #include <sensors/AtlasScientificpH.h>
 
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-// uint8_t AtlaspHi2c_addr = 0x63;  // Default for pH is 0x63 (99)
+uint8_t AtlaspHi2c_addr = 0x63;  // Default for pH is 0x63 (99)
 // All Atlas sensors have different default I2C addresses, but any of them can
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
@@ -525,7 +525,7 @@ AtlasScientificpH atlaspH(I2CPower);
 #include <sensors/AtlasScientificRTD.h>
 
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-// uint8_t AtlasRTDi2c_addr = 0x66;  // Default for RTD is 0x66 (102)
+uint8_t AtlasRTDi2c_addr = 0x66;  // Default for RTD is 0x66 (102)
 // All Atlas sensors have different default I2C addresses, but any of them can
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.

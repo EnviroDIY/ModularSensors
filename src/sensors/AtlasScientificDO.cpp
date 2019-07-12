@@ -25,7 +25,7 @@ AtlasScientificDO::AtlasScientificDO(SoftwareWire *theI2C, int8_t powerPin,
                 ATLAS_DO_WARM_UP_TIME_MS, ATLAS_DO_STABILIZATION_TIME_MS,
                 ATLAS_DO_MEASUREMENT_TIME_MS)
 {}
-AtlasScientificDO::AtlasScientificDO(SoftwareWire *theI2C, int8_t powerPin,
+AtlasScientificDO::AtlasScientificDO(int8_t powerPin, int8_t dataPin, int8_t clockPin,
                                      uint8_t i2cAddressHex,
                                      uint8_t measurementsToAverage)
   : AtlasParent(powerPin, dataPin, clockPin,

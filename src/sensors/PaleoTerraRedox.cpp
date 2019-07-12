@@ -76,7 +76,7 @@ PaleoTerraRedox::~PaleoTerraRedox(){}
 String PaleoTerraRedox::getSensorLocation(void)
 {
     #if defined MS_PALEOTERRA_SOFTWAREWIRE
-    String address = F("SoftwareWire")
+    String address = F("SoftwareWire");
     address +=_dataPin;
     address += F("_0x");
     #else

@@ -26,7 +26,7 @@ AtlasScientificEC::AtlasScientificEC(SoftwareWire *theI2C, int8_t powerPin,
                 ATLAS_COND_WARM_UP_TIME_MS, ATLAS_COND_STABILIZATION_TIME_MS,
                 ATLAS_COND_MEASUREMENT_TIME_MS)
 {}
-AtlasScientificEC::AtlasScientificEC(SoftwareWire *theI2C, int8_t powerPin,
+AtlasScientificEC::AtlasScientificEC(int8_t powerPin, int8_t dataPin, int8_t clockPin,
                                      uint8_t i2cAddressHex,
                                      uint8_t measurementsToAverage)
   : AtlasParent(powerPin, dataPin, clockPin,

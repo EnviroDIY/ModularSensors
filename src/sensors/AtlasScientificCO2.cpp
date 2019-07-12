@@ -25,7 +25,7 @@ AtlasScientificCO2::AtlasScientificCO2(SoftwareWire *theI2C, int8_t powerPin,
                 ATLAS_CO2_WARM_UP_TIME_MS, ATLAS_CO2_STABILIZATION_TIME_MS,
                 ATLAS_CO2_MEASUREMENT_TIME_MS)
 {}
-AtlasScientificCO2::AtlasScientificCO2(SoftwareWire *theI2C, int8_t powerPin,
+AtlasScientificCO2::AtlasScientificCO2(int8_t powerPin, int8_t dataPin, int8_t clockPin,
                                        uint8_t i2cAddressHex,
                                        uint8_t measurementsToAverage)
   : AtlasParent(powerPin, dataPin, clockPin,
