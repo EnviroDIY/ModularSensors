@@ -89,7 +89,9 @@ AtlasParent::~AtlasParent(){}
 String AtlasParent::getSensorLocation(void)
 {
     #if defined MS_ATLAS_SOFTWAREWIRE
-    String address = F("SoftwareWire_0x");
+    String address = F("SoftwareWire")
+    address +=_dataPin;
+    address += F("_0x");
     #else
     String address = F("I2C_0x");
     #endif
