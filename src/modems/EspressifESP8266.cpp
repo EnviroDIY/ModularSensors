@@ -100,6 +100,7 @@ bool EspressifESP8266::modemWakeFxn(void)
     bool success = true;
     if (_powerPin >= 0)  // Turns on when power is applied
     {
+        digitalWrite(_modemSleepRqPin, HIGH);  // Pick a state
         success &= ESPwaitForBoot();
         return success;
     }

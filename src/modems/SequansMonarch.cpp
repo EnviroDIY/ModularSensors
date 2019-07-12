@@ -57,6 +57,7 @@ bool SequansMonarch::modemWakeFxn(void)
     // Module turns on when power is applied
     // No pulsing required in this case
     if (_powerPin >= 0)
+        digitalWrite(_modemSleepRqPin, HIGH);  // to make sure it's set to something
         return true;
     if (_modemSleepRqPin >= 0)
     {

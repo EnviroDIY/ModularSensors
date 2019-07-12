@@ -128,7 +128,7 @@ public:
     // This has the same functionality as Client->close with debugging text
     // void closeTCP(void);
     // Special sleep and power function for the modem
-    void modemPowerUp(void);
+    virtual void modemPowerUp(void);
     bool modemSleepPowerDown(void);
 
     // Get the time from NIST via TIME protocol (rfc868)
