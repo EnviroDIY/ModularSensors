@@ -74,7 +74,7 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // as possible.  In some cases (ie, modbus communication) many sensors can share
 // the same serial port.
 
-#if not defined ARDUINO_ARCH_SAMD && not defined ATMEGA2560  // For AVR boards
+#if not defined ARDUINO_ARCH_SAMD  // For AVR boards
 // Unfortunately, most AVR boards have only one or two hardware serial ports,
 // so we'll set up three types of extra software serial ports to use
 
@@ -110,6 +110,21 @@ const int8_t softSerialTx = A4;     // data out pin
 
 #include <SoftwareSerial_ExtInts.h>  // for the stream communication
 SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
+
+// A software I2C (Wire) instance using Testato's SoftwareWire
+// To use SoftwareWire, you must also set a define for the sensor you want to use
+// Software I2C for, ie:
+// #define MS_ATLAS_SOFTWAREWIRE
+// #define MMS_RAIN_SOFTWAREWIRE
+// #define MMS_PALEOTERRA_SOFTWAREWIRE
+// or set the build flag:
+// -DMS_ATLAS_SOFTWAREWIRE
+// -DMS_RAIN_SOFTWAREWIRE
+// -DMS_PALEOTERRA_SOFTWAREWIRE
+#include <SoftwareWire.h>  // for the stream communication
+const int8_t softwareSDA = 5;
+const int8_t softwareSCL = 4;
+SoftwareWire softI2C(softwareSDA, softwareSCL);
 #endif  // End software serial for avr boards
 
 
@@ -388,6 +403,7 @@ const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 i
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific CO2 sensor object
+// AtlasScientificCO2 atlasCO2(&softI2C, I2CPower, AtlasCO2i2c_addr);
 // AtlasScientificCO2 atlasCO2(I2CPower, AtlasCO2i2c_addr);
 AtlasScientificCO2 atlasCO2(I2CPower);
 
@@ -408,6 +424,7 @@ AtlasScientificCO2 atlasCO2(I2CPower);
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific DO sensor object
+// AtlasScientificDO atlasDO(&softI2C, I2CPower, AtlasDOi2c_addr);
 // AtlasScientificDO atlasDO(I2CPower, AtlasDOi2c_addr);
 AtlasScientificDO atlasDO(I2CPower);
 
@@ -428,6 +445,7 @@ AtlasScientificDO atlasDO(I2CPower);
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific Conductivity sensor object
+// AtlasScientificEC atlasEC(&softI2C, I2CPower, AtlasECi2c_addr);
 // AtlasScientificEC atlasEC(I2CPower, AtlasECi2c_addr);
 AtlasScientificEC atlasEC(I2CPower);
 
@@ -450,6 +468,7 @@ AtlasScientificEC atlasEC(I2CPower);
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific ORP sensor object
+// AtlasScientificORP atlasORP(&softI2C, I2CPower, AtlasORPi2c_addr);
 // AtlasScientificORP atlasORP(I2CPower, AtlasORPi2c_addr);
 AtlasScientificORP atlasORP(I2CPower);
 
@@ -469,6 +488,7 @@ AtlasScientificORP atlasORP(I2CPower);
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific pH sensor object
+// AtlasScientificpH atlaspH(&softI2C, I2CPower, AtlaspHi2c_addr);
 // AtlasScientificpH atlaspH(I2CPower, AtlaspHi2c_addr);
 AtlasScientificpH atlaspH(I2CPower);
 
@@ -488,6 +508,7 @@ AtlasScientificpH atlaspH(I2CPower);
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific RTD sensor object
+// AtlasScientificRTD atlasRTD(&softI2C, I2CPower, AtlasRTDi2c_addr);
 // AtlasScientificRTD atlasRTD(I2CPower, AtlasRTDi2c_addr);
 AtlasScientificRTD atlasRTD(I2CPower);
 
@@ -770,19 +791,10 @@ MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803Readings
 int8_t paleoTerraPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 uint8_t paleoI2CAddress = 0x68;  // The I2C address of the redox sensor
 
-#if defined ARDUINO_ARCH_AVR
-// A software I2C (Wire) instance using Testato's SoftwareWire
-// There are no interrupt type conflicts with this library.
-// You should also be able to use todbot's SoftI2CMaster or Steve Marple's SoftWire
-#include <SoftwareWire.h>  // for the stream communication
-const int8_t softwareSDA = 5;
-const int8_t softwareSCL = 4;
-SoftwareWire softI2C(softwareSDA, softwareSCL);
-#endif
-
 // Create the PaleoTerra sensor object
-// PaleoTerraRedox<SoftwareWire> ptRedox(softI2C, paleoTerraPower, paleoI2CAddress);
-PaleoTerraRedox<TwoWire> ptRedox(paleoTerraPower, paleoI2CAddress);
+// PaleoTerraRedox ptRedox(&softI2C, paleoTerraPower, paleoI2CAddress);
+// PaleoTerraRedox ptRedox(paleoTerraPower, softwareSDA, softwareSCL, paleoI2CAddress);
+PaleoTerraRedox ptRedox(paleoTerraPower, paleoI2CAddress);
 
 // Create the voltage variable for the redox sensor
 // Variable *ptVolt = new PaleoTerraRedox_Volt(&ptRedox, "12345678-abcd-1234-efgh-1234567890ab");
@@ -797,7 +809,8 @@ const uint8_t RainCounterI2CAddress = 0x08;  // I2C Address for external tip cou
 const float depthPerTipEvent = 0.2;  // rain depth in mm per tip event
 
 // Create a Rain Counter sensor object
-RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
+RainCounterI2C tbi2c(&softI2C, RainCounterI2CAddress, depthPerTipEvent);
+// RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 
 // Create number of tips and rain depth variable pointers for the tipping bucket
 // Variable *tbi2cTips = new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab");
@@ -1391,6 +1404,7 @@ void setup()
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
+    Serial.println();
 
     if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
         Serial.println(F(
