@@ -77,7 +77,7 @@ String PaleoTerraRedox::getSensorLocation(void)
 {
     #if defined MS_PALEOTERRA_SOFTWAREWIRE
     String address = F("SoftwareWire");
-    address +=_dataPin;
+    if (_dataPin >=0) address +=_dataPin;
     address += F("_0x");
     #else
     String address = F("I2C_0x");

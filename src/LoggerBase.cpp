@@ -1472,7 +1472,7 @@ void Logger::begin()
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
-    PRINTOUT(F("Logger setup finished!"));
+    PRINTOUT(F("Logger portion of setup complete"));
 }
 
 
