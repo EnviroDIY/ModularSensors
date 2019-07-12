@@ -30,7 +30,7 @@
 #if defined(ARDUINO_ARCH_SAMD)
   #include <RTCZero.h>
   #include "WatchDogs/WatchDogSAMD.h"
-#elif defined __AVR__
+#elif defined(ARDUINO_ARCH_AVR) || defined(__AVR__)
   #include <avr/sleep.h>
   #include <avr/power.h>
   #include "WatchDogs/WatchDogAVR.h"
