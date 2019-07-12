@@ -75,7 +75,11 @@ PaleoTerraRedox::~PaleoTerraRedox(){}
 
 String PaleoTerraRedox::getSensorLocation(void)
 {
-    String sensorLocation = F("I2C_0x");
+    #if defined MS_PALEOTERRA_SOFTWAREWIRE
+    String address = F("SoftwareWire_0x");
+    #else
+    String address = F("I2C_0x");
+    #endif
     sensorLocation += String(_i2cAddressHex, HEX);
     return sensorLocation;
 }

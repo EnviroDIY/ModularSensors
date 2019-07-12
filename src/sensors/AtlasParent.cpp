@@ -88,8 +88,13 @@ AtlasParent::~AtlasParent(){}
 
 String AtlasParent::getSensorLocation(void)
 {
+    #if defined MS_ATLAS_SOFTWAREWIRE
+    String address = F("SoftwareWire_0x");
+    #else
     String address = F("I2C_0x");
+    #endif
     address += String(_i2cAddressHex, HEX);
+    #endif
     return address;
 }
 
