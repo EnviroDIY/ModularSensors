@@ -124,7 +124,7 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 // -DMS_RAIN_SOFTWAREWIRE
 // -DMS_PALEOTERRA_SOFTWAREWIRE
 #if defined MS_PALEOTERRA_SOFTWAREWIRE || defined MS_ATLAS_SOFTWAREWIRE || defined MS_RAIN_SOFTWAREWIRE
-#include <SoftwareWire.h>  // for the stream communication
+#include <SoftwareWire.h>  // Testato's Software I2C
 const int8_t softwareSDA = 5;
 const int8_t softwareSCL = 4;
 SoftwareWire softI2C(softwareSDA, softwareSCL);
