@@ -78,6 +78,7 @@ private:
     uint8_t _i2cAddressHex;
     #if defined MS_PALEOTERRA_SOFTWAREWIRE
     SoftwareWire *_i2c;  // Software Wire
+    bool createdSoftwareWire;
     #else
     TwoWire *_i2c;  // Hardware Wire
     #endif

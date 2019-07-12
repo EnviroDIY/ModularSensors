@@ -15,7 +15,7 @@
 #include "PaleoTerraRedox.h"
 
 
-// Constructors/Destructors
+// Constructors
 #if defined MS_PALEOTERRA_SOFTWAREWIRE
 PaleoTerraRedox::PaleoTerraRedox(SoftwareWire *theI2C, int8_t powerPin,
                                  uint8_t i2cAddressHex, uint8_t measurementsToAverage)
@@ -25,6 +25,7 @@ PaleoTerraRedox::PaleoTerraRedox(SoftwareWire *theI2C, int8_t powerPin,
 {
     _i2cAddressHex = i2cAddressHex;
     _i2c = theI2C;
+    createdSoftwareWire = false;
 }
 PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin, int8_t dataPin, int8_t clockPin,
                                  uint8_t i2cAddressHex, uint8_t measurementsToAverage)
@@ -34,6 +35,7 @@ PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin, int8_t dataPin, int8_t clockPi
 {
     _i2cAddressHex = i2cAddressHex;
     _i2c = new SoftwareWire(dataPin, clockPin);
+    createdSoftwareWire = true;
 }
 #else
 PaleoTerraRedox::PaleoTerraRedox(TwoWire *theI2C, int8_t powerPin,
@@ -55,7 +57,19 @@ PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin,
     _i2c = &Wire;
 }
 #endif
+
+
+// Destructors
+#if defined MS_PALEOTERRA_SOFTWAREWIRE
+// If we created a new SoftwareWire instance, we need to destroy it or
+// there will be a memory leak
+PaleoTerraRedox::~PaleoTerraRedox()
+{
+    if (createdSoftwareWire) delete _i2c;
+}
+#else
 PaleoTerraRedox::~PaleoTerraRedox(){}
+#endif
 
 
 
