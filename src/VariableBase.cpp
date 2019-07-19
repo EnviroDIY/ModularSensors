@@ -48,7 +48,7 @@ Variable::Variable(const uint8_t sensorVarNum,
                    const char *varCode)
   : _sensorVarNum(sensorVarNum)
 {
-    setVarUUID('\0');
+    _uuid = NULL;
     setVarCode(varCode);
     setVarUnit(varUnit);
     setVarName(varName);
@@ -92,14 +92,38 @@ Variable::Variable(float (*calcFxn)(),
 
     // MS_DBG(F("Calculated Variable object created"));
 }
+Variable::Variable(float (*calcFxn)(),
+                   uint8_t decimalResolution,
+                   const char *varName,
+                   const char *varUnit,
+                   const char *varCode)
+  : _sensorVarNum(0)
+{
+    _uuid = NULL;
+    setVarCode(varCode);
+    setVarUnit(varUnit);
+    setVarName(varName);
+    setResolution(decimalResolution);
+
+    isCalculated = true;
+    setCalculation(calcFxn);
+    parentSensor = NULL;
+
+    // When we create the variable, we also want to initialize it with a current
+    // value of -9999 (ie, a bad result).
+    _currentValue = -9999;
+
+    // MS_DBG(F("Calculated Variable object created"));
+}
 Variable::Variable()
   : _sensorVarNum(0),
-    _decimalResolution(0),
-    _varName('\0'),
-    _varUnit('\0'),
-    _varCode('\0'),
-    _uuid('\0')
+    _decimalResolution(0)
 {
+    _varName = NULL;
+    _varUnit = NULL;
+    _varCode = NULL;
+    _uuid = NULL;
+
     isCalculated = true;
     _calcFxn = NULL;
     parentSensor = NULL;

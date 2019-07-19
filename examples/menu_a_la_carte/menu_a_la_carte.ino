@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.22.6
+This example sketch is written for ModularSensors library version 0.23.1
 
 This shows most of the standard functions of the library at once.
 
@@ -26,7 +26,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.22.6";
+const char *libraryVersion = "0.23.1";
 // The name of this file
 const char *sketchName = "menu_a_la_carte.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -463,7 +463,7 @@ AtlasScientificORP atlasORP(I2CPower);
 #include <sensors/AtlasScientificpH.h>
 
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-// uint8_t AtlaspHi2c_addr = 0x63;  // Default for RTD is 0x63 (99)
+// uint8_t AtlaspHi2c_addr = 0x63;  // Default for pH is 0x63 (99)
 // All Atlas sensors have different default I2C addresses, but any of them can
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.

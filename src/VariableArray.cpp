@@ -68,11 +68,11 @@ bool VariableArray::setupSensors(void)
 {
     bool success = true;
 
-    #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
-    bool deepDebugTiming = true;
-    #else
-    bool deepDebugTiming = false;
-    #endif
+    // #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
+    // bool deepDebugTiming = true;
+    // #else
+    // bool deepDebugTiming = false;
+    // #endif
 
     MS_DBG(F("Beginning setup for sensors and variables..."));
 
@@ -132,8 +132,8 @@ bool VariableArray::setupSensors(void)
                 if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0) == 0)
                 {
                     // and if it is already warmed up
-                    if (arrayOfVars[i]->parentSensor->isWarmedUp(deepDebugTiming))
-                    {
+                    // if (arrayOfVars[i]->parentSensor->isWarmedUp(deepDebugTiming))
+                    // {
                         MS_DBG(F("    Set up of"), arrayOfVars[i]->getParentSensorNameAndLocation(),
                                F("..."));
 
@@ -143,7 +143,7 @@ bool VariableArray::setupSensors(void)
 
                         if (!sensorSuccess) {MS_DBG(F("        ... failed!"));}
                         else {MS_DBG(F("        ... succeeded."));}
-                    }
+                    // }
                 }
             }
         }

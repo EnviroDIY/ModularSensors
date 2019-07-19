@@ -32,22 +32,7 @@
 #ifndef YosemitechY520_h
 #define YosemitechY520_h
 
-// Debugging Statement
-// #define MS_YOSEMITECHY520_DEBUG
-// #define MS_YOSEMITECHY520_DEBUG_DEEP
-
-#ifdef MS_YOSEMITECHY520_DEBUG
-#define MS_DEBUGGING_STD "YosemitechY520"
-#endif
-
-#ifdef MS_YOSEMITECHY520_DEBUG_DEEP
-#define MS_DEBUGGING_DEEP "YosemitechY520"
-#endif
-
 // Included Dependencies
-#include "ModSensorDebugger.h"
-#undef MS_DEBUGGING_STD
-#include "VariableBase.h"
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines

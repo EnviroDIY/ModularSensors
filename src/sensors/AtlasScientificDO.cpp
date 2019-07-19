@@ -39,13 +39,13 @@ bool AtlasScientificDO::setup()
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report O2 concentration"));
     Wire.beginTransmission(_i2cAddressHex);
-    success &= Wire.write("O,mg,1");  // Enable concentration in mg/L
+    success &= Wire.write((const uint8_t *)"O,mg,1", 6);  // Enable concentration in mg/L
     success &= !Wire.endTransmission();
     success &= waitForProcessing();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report O2 % saturation"));
     Wire.beginTransmission(_i2cAddressHex);
-    success &= Wire.write("O,%,1");  // Enable percent saturation
+    success &= Wire.write((const uint8_t *)"O,%,1", 5);  // Enable percent saturation
     success &= !Wire.endTransmission();
     success &= waitForProcessing();
 
