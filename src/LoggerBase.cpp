@@ -1380,17 +1380,6 @@ void Logger::begin()
     MS_DBG(F("Logger is set to record at"),
            _loggingIntervalMinutes, F("minute intervals."));
 
-    PRINTOUT(F("This logger has a variable array with"),
-            getArrayVarCount(), F("variables, of which"),
-            getArrayVarCount() - _internalArray->getCalculatedVariableCount(),
-            F("come from"), _internalArray->getSensorCount(), F("sensors and"),
-            _internalArray->getCalculatedVariableCount(), F("are calculated."));
-
-    if (_samplingFeatureUUID != NULL)
-    {
-        MS_DBG(F("Sampling feature UUID is:"), _samplingFeatureUUID);
-    }
-
     MS_DBG(F("Setting up a watch-dog timer to fire after 5 minutes of inactivity"));
     // watchDogTimer.setupWatchDog(((uint32_t)_loggingIntervalMinutes)*60*3);
     watchDogTimer.setupWatchDog((uint32_t)(5*60*3));
@@ -1472,7 +1461,20 @@ void Logger::begin()
     // Reset the watchdog
     watchDogTimer.resetWatchDog();
 
-    PRINTOUT(F("Logger setup finished!"));
+    // Begin the internal array
+    _internalArray->begin();
+    PRINTOUT(F("This logger has a variable array with"),
+         getArrayVarCount(), F("variables, of which"),
+         getArrayVarCount() - _internalArray->getCalculatedVariableCount(),
+         F("come from"), _internalArray->getSensorCount(), F("sensors and"),
+         _internalArray->getCalculatedVariableCount(), F("are calculated."));
+
+    if (_samplingFeatureUUID != NULL)
+    {
+        MS_DBG(F("Sampling feature UUID is:"), _samplingFeatureUUID);
+    }
+
+    PRINTOUT(F("Logger portion of setup finished."));
 }
 
 
