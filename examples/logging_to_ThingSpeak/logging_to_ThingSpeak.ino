@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.1
+This example sketch is written for ModularSensors library version 0.23.2
 
 This sketch is an example of logging data to an SD card and sending the data to
 ThingSpeak.
@@ -27,7 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.1";
+const char *libraryVersion = "0.23.2";
 // The name of this file
 const char *sketchName = "logging_to_ThingSpeak.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -156,14 +156,14 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 #include <VariableArray.h>
 
 Variable *variableList[] = {
-    new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
-    new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab")
+    new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
+    new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
+    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
+    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-ef00-1234567890ab", "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-ef00-1234567890ab", "TurbHigh"),
+    new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
+    new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab")
 };
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
