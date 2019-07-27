@@ -18,20 +18,7 @@
 #ifndef KellerNanolevel_h
 #define KellerNanolevel_h
 
-// Debugging Statement
-// #define MS_KELLERNANOLEVEL_DEBUG
-// #define MS_KELLERNANOLEVEL_DEBUG_DEEP
-
-#ifdef MS_KELLERNANOLEVEL_DEBUG
-#define MS_DEBUGGING_STD
-#endif
-
-#ifdef MS_KELLERNANOLEVEL_DEBUG_DEEP
-#define MS_DEBUGGING_DEEP
-#endif
-
 // Included Dependencies
-#include "VariableBase.h"
 #include "sensors/KellerParent.h"
 
 // Sensor Specific Defines

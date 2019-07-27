@@ -38,11 +38,12 @@
 // #define MS_BOSCHBME280_DEBUG
 
 #ifdef MS_BOSCHBME280_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "BoschBME280"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Adafruit_BME280.h>

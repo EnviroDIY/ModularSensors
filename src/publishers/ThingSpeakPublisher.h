@@ -15,7 +15,7 @@
 // #define MS_THINGSPEAKPUBLISHER_DEBUG
 
 #ifdef MS_THINGSPEAKPUBLISHER_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "ThingSpeakPublisher"
 #endif
 
 // MQTT User Name
@@ -28,6 +28,7 @@
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "dataPublisherBase.h"
 #include <PubSubClient.h>
 
@@ -85,7 +86,7 @@ public:
 
     // This sends the data to ThingSpeak
     // bool mqttThingSpeak(void);
-    virtual int16_t sendData(Client *_outClient);
+    virtual int16_t publishData(Client *_outClient);
 
 protected:
     static const char *mqttServer;

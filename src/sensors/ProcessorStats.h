@@ -20,11 +20,12 @@
 // #define MS_PROCESSORSTATS_DEBUG
 
 #ifdef MS_PROCESSORSTATS_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "ProcessorStats"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
 
@@ -157,10 +158,10 @@ private:
 
 
 // For the battery supplying power to the processor
-class ProcessorStats_Batt : public Variable
+class ProcessorStats_Battery : public Variable
 {
 public:
-    ProcessorStats_Batt(Sensor *parentSense,
+    ProcessorStats_Battery(Sensor *parentSense,
                         const char *uuid = "",
                         const char *varCode = "Battery")
       : Variable(parentSense,
@@ -169,12 +170,12 @@ public:
                  "batteryVoltage", "volt",
                  varCode, uuid)
     {}
-    ProcessorStats_Batt()
+    ProcessorStats_Battery()
       : Variable((const uint8_t)PROCESSOR_BATTERY_VAR_NUM,
                  (uint8_t)PROCESSOR_BATTERY_RESOLUTION,
                  "batteryVoltage", "volt", "Battery")
     {}
-    ~ProcessorStats_Batt(){}
+    ~ProcessorStats_Battery(){}
 };
 
 

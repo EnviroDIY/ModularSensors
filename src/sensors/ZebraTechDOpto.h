@@ -36,15 +36,7 @@
 #ifndef ZebraTechDOpto_h
 #define ZebraTechDOpto_h
 
-// Debugging Statement
-// #define MS_ZEBRATECHDOPTO_DEBUG
-
-#ifdef MS_ZEBRATECHDOPTO_DEBUG
-#define MS_DEBUGGING_STD
-#endif
-
 // Included Dependencies
-#include "VariableBase.h"
 #include "sensors/SDI12Sensors.h"
 
 // Sensor Specific Defines

@@ -32,20 +32,7 @@
 #ifndef YosemitechY514_h
 #define YosemitechY514_h
 
-// Debugging Statement
-// #define MS_YOSEMITECHY514_DEBUG
-// #define MS_YOSEMITECHY514_DEBUG_DEEP
-
-#ifdef MS_YOSEMITECHY514_DEBUG
-#define MS_DEBUGGING_STD
-#endif
-
-#ifdef MS_YOSEMITECHY514_DEBUG_DEEP
-#define MS_DEBUGGING_DEEP
-#endif
-
 // Included Dependencies
-#include "VariableBase.h"
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines

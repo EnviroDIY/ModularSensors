@@ -67,7 +67,7 @@ bool AtlasParent::sleep(void)
     MS_DBG(F("Putting"), getSensorNameAndLocation(), F("to sleep"));
 
     Wire.beginTransmission(_i2cAddressHex);
-    success &= Wire.write("Sleep");  // Write "Sleep" to put it in low power mode
+    success &= Wire.write((const uint8_t *)"Sleep", 5);  // Write "Sleep" to put it in low power mode
     success &= !Wire.endTransmission();
     // NOTE: The return of 0 from endTransmission indicates success
 

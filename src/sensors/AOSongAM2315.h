@@ -30,11 +30,12 @@
 // #define MS_AOSONGAM2315_DEBUG
 
 #ifdef MS_AOSONGAM2315_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "AOSongAM2315"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
 
