@@ -44,8 +44,7 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
 // Destructor
 loggerModem::~loggerModem(){}
 
-#if 0
-I don't think I did this - looks like it doesn't belong anymore
+//Az Extensions
 void loggerModem::setApn(const char *newAPN,bool copyId)
 { 
    uint8_t newAPN_sz = strlen(newAPN);
