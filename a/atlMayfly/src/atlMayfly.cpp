@@ -2005,11 +2005,11 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
         }
     } else if (strcmp_P(section,NETWORK_pm)== 0) {
         if (strcmp_P(name,apn_pm)== 0) {
-            SerialStd.print(F("NETWORK APN: was '"));
-            SerialStd.print(modemPhy.getApn());
-            modemPhy.setWiFiId(value,true);
+            SerialStd.print(F("NETWORK APN: was 'TODO"));
+            //TODO SerialStd.print(modemPhy.getApn());
+            //TODO modemPhy.setApn(value,true);
             SerialStd.print(F("' now '"));
-            SerialStd.print(modemPhy.getApn());
+            //TODO SerialStd.print(modemPhy.getApn());
             SerialStd.println("'");            
         } else if (strcmp_P(name,WiFiId_pm)== 0)  {
             SerialStd.print(F("NETWORK WiFiId: was '"));

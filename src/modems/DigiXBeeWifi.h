@@ -61,6 +61,12 @@ public:
     TinyGsm gsmModem;
     TinyGsmClient gsmClient;
 
+    //Az extension
+    void setWiFiId(const char *WiFiId, bool copyId=false);
+    void setWiFiPwd(const char *WiFiPwd, bool copyId=false);
+    String getWiFiId(void);
+    String getWiFiPwd(void);
+
 protected:
     bool didATRespond(void) override;
     bool isInternetAvailable(void) override;
@@ -70,6 +76,9 @@ protected:
 private:
     const char *_ssid;
     const char *_pwd;
+    //Az extension
+    const char *_ssid_buf=NULL;
+    const char *_pwd_buf=NULL;
 
 };
 
