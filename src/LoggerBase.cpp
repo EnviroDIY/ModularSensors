@@ -496,7 +496,7 @@ int8_t Logger::getTZOffset(void)
 uint32_t Logger::getNowEpochTz(void)
 {
   uint32_t currentEpochTime = rtc.now().getEpoch();
-  currentEpochTime += _offset*3600;
+  //currentEpochTime += _offset*3600;
   return currentEpochTime;
 }
 
@@ -518,7 +518,7 @@ uint32_t Logger::getNowEpochT0(void)
 uint32_t Logger::getNowEpochTz(void)
 {
   uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
-  currentEpochTime += _offset*3600;
+  //currentEpochTime += _offset*3600;
   return currentEpochTime;
 }
 uint32_t Logger::getNowEpoch(void)
@@ -598,14 +598,14 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
         return false;
     }
 
-    // The "setTime" is the number of seconds since Jan 1, 1970 in UTC
-    // We're interested in the setTime in the logger's and RTC's timezone
+    // The "UTCEpochSeconds" is the number of seconds since Jan 1, 1970 in UTC
+    // We're interested in the UTCEpochSeconds in the logger's and RTC's timezone
     // The RTC's timezone is equal to the logger's timezone minus the offset
     // between the logger and the RTC.
 #if 1 // <<<<<<< HEAD
     // Only works for ARM CC if long, AVR was uint32_t
     //long set_logTZ, set_rtcTZ,cur_logTZ;
-    long set_logTZ = setTime + getTimeZone()*3600;
+    long set_logTZ = UTCEpochSeconds + getTimeZone()*3600;
     long set_rtcTZ = set_logTZ - getTZOffset()*3600;
     MS_DBG(F("         Correct Time for Logger:"), set_logTZ, F("->"), \
         formatDateTime_ISO8601(set_logTZ));
@@ -653,10 +653,10 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
     MS_DBG("         Time Returned by rtcExt:", nowExtEpoch_sec, \
         "->(T=", getTimeZone(),")", \
         formatDateTime_ISO8601(nowExtEpoch_sec));
-    if (abs(nowExtEpoch_sec - setTime) > NIST_TIME_DIFF_SEC)
+    if (abs(nowExtEpoch_sec - UTCEpochSeconds) > NIST_TIME_DIFF_SEC)
     {
-        rtcExtPhy.setTimeEpochT0(setTime);
-        MS_DBG("         rtcExt updated to UTS ",  setTime,"->",formatDateTime_ISO8601(setTime));
+        rtcExtPhy.setTimeEpochT0(UTCEpochSeconds);
+        MS_DBG("         rtcExt updated to UTS ",  UTCEpochSeconds,"->",formatDateTime_ISO8601(UTCEpochSeconds));
         retVal= true;
     }
 

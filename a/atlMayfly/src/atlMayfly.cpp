@@ -119,7 +119,8 @@ const int8_t buttonPin = -1;      // 21 Not used -MCU pin for a button to use to
 const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
+const int8_t sdCardPwrPin = -1;    // MCU SD card power pin (-1 if not applicable)
+const int8_t sdCardSSPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
 #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
 //.platformio\packages\framework-arduinosam\variants\feather_m0_express\variant.cpp
 const int8_t buttonPin = -1;      // 21 Not used -MCU pin for a button to use to enter debugging mode  (-1 if not applicable)
@@ -127,13 +128,13 @@ const int8_t wakePin = -1;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 //FEATHER_M4_EXPRESS has internal flash on QSPI P
-//QSPI const int8_t sdCardPin = 10;  // PA08 MCU SD card chip select/slave select pin (must be given!)
+//QSPI const int8_t sdCardSSPin = 10;  // PA08 MCU SD card chip select/slave select pin (must be given!)
 //and has FEATHER_RTC_SD_CARD
     #if defined(ADAFRUIT_FEATHERWING_RTC_SD) 
     //SD on std port with SD_CS JP3-D10 PA18  RTC PCF8522+ SD
-    const int8_t sdCardPin = SD_SPI_CARD_PIN_DEF;  //JP3-D10 PA18
+    const int8_t sdCardSSPin = SD_SPI_CARD_PIN_DEF;  //JP3-D10 PA18
     #else 
-    const int8_t sdCardPin = -1; 
+    const int8_t sdCardSSPin = -1; 
     #endif //ADAFRUIT_FEATHERWING_RTC_SD
 
 #elif defined(ARDUINO_SAMD_FEATHER_M0)
@@ -141,7 +142,7 @@ const int8_t buttonPin = -1;      // 21 Not used -MCU pin for a button to use to
 const int8_t wakePin = -1;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPin = 4;      // PA08 MCU SD card chip select/slave select pin (must be given!)
+const int8_t sdCardSSPin = 4;      // PA08 MCU SD card chip select/slave select pin (must be given!)
 #elif defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
 //.platformio\packages\framework-arduinosam\variants\feather_m0_express\variant.cpp
 //FEATHER_M0_EXPRESS has internal flash on secondary SPI PA13
@@ -149,11 +150,11 @@ const int8_t buttonPin = -1;      // 21 Not used -MCU pin for a button to use to
 const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPin = 4;      // PA08 MCU SD card chip select/slave select pin (must be given!)
+const int8_t sdCardSSPin = 4;      // PA08 MCU SD card chip select/slave select pin (must be given!)
 //and has FEATHER_RTC_SD_CARD
     #if defined(ADAFRUIT_FEATHERWING_RTC_SD)  //nh made up
     //SD on std port with SD_CS JP3-D10 PA18                 RTC PCF8522+ SD
-    const int8_t sdCardPin = 10;  //JP3-D10 PA18
+    const int8_t sdCardSSPin = 10;  //JP3-D10 PA18
     #endif //ADAFRUIT_FEATHERWING_RTC_SD
 
 #elif defined(ARDUINO_SODAQ_AUTONOMO)
@@ -164,7 +165,7 @@ const int8_t wakePin = -1;        // MCU interrupt/alarm pin to wake from sleep
 //uSD card & SerialFlash is SCOM3
 // SAMD21 MOSI/PA20 MISO/PA22 SCK/PA21
 // 
-const int8_t sdCardPin = 46;//SS_2 PA27 variant.cpp 'pin'46  uSD  card  chip select/slave select pin 
+const int8_t sdCardSSPin = 46;//SS_2 PA27 variant.cpp 'pin'46  uSD  card  chip select/slave select pin 
 const int8_t sfSsPin = 43;  //SS   PA23 variant.cpp 'pin'43 serialFlash chip select/slave select pin 
 #else
 #error Undefined SD
@@ -323,7 +324,30 @@ void SERCOM2_Handler()
 
 // Create a reference to the serial port for the modem
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
+#if defined ARDUINO_AVR_ENVIRODIY_MAYFLY
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
+const int8_t RS485PHY_TX_PIN = CONFIG_HW_RS485PHY_TX_PIN;
+const int8_t RS485PHY_RX_PIN = CONFIG_HW_RS485PHY_RX_PIN;
+
+#elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
+//requires special variant.cpp/h update
+HardwareSerial &modemSerial = Serial1;  // TODO:  need to decide
+//SerialModbus Serial2 RS485
+//RS485 pins
+//ms_cfg.h:SerialTty Serial4 Available Pins
+
+#elif defined ARDUINO_SAMD_FEATHER_M0
+HardwareSerial &modemSerial = Serial2;  // TODO:  need to decide
+#elif defined ARDUINO_SODAQ_AUTONOMO
+HardwareSerial &modemSerial = Serial1;  // Bee Socket 
+#else
+#error HardwareSerial undef 
+#endif // ARDUINO_AVR_ENVIRODIY_MAYFLY
+// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
+// NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
+//#define RS485PHY_TX 5  // AltSoftSerial Tx pin 
+//#define RS485PHY_RX 6  // AltSoftSerial Rx pin
+
 // AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
 // Select the modem chip, in ms_cfg.h 
@@ -333,9 +357,16 @@ HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 const int8_t modemVccPin = modemVccPin_DEF;      // -2 MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemSleepRqPin =  modemSleepRqPin_DEF;  // 23 MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemStatusPin = modemStatusPin_DEF;   // MCU pin used to read modem status (-1 if not applicable)
 const int8_t modemResetPin = modemResetPin_DEF;    // MCU pin connected to modem reset pin (-1 if unconnected)
+const int8_t modemSleepRqPin =  modemSleepRqPin_DEF;  // 23 MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemLEDPin = redLEDPin;  // MCU pin connected an LED to show modem status (-1 if unconnected)
+
+// Network connection information
+const char *apn_def = APN_CDEF;  // The APN for the gprs connection, unnecessary for WiFi
+const char *wifiId_def = WIFIID_CDEF;  // The WiFi access point, unnecessary for gprs
+const char *wifiPwd_def = WIFIPWD_CDEF;  // The password for connecting to WiFi, unnecessary for gprs
+
 
 
 // ==========================================================================
@@ -510,32 +541,6 @@ DigiXBeeWifi modemPhy = modemXBWF;
 // Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 
-// Create a reference to the serial port for the modem
-// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-#if defined ARDUINO_AVR_ENVIRODIY_MAYFLY
-HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
-const int8_t RS485PHY_TX_PIN = CONFIG_HW_RS485PHY_TX_PIN;
-const int8_t RS485PHY_RX_PIN = CONFIG_HW_RS485PHY_RX_PIN;
-
-#elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
-//requires special variant.cpp/h update
-HardwareSerial &modemSerial = Serial1;  // TODO:  need to decide
-//SerialModbus Serial2 RS485
-//RS485 pins
-//ms_cfg.h:SerialTty Serial4 Available Pins
-
-#elif defined ARDUINO_SAMD_FEATHER_M0
-HardwareSerial &modemSerial = Serial2;  // TODO:  need to decide
-#elif defined ARDUINO_SODAQ_AUTONOMO
-HardwareSerial &modemSerial = Serial1;  // Bee Socket 
-#else
-#error HardwareSerial undef 
-#endif // ARDUINO_AVR_ENVIRODIY_MAYFLY
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
-// NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
-//#define RS485PHY_TX 5  // AltSoftSerial Tx pin 
-//#define RS485PHY_RX 6  // AltSoftSerial Rx pin
-
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
 //#define STREAMDEBUGGER_DBG
 #if !defined(STREAMDEBUGGER_DBG)
@@ -578,7 +583,7 @@ TinyGsmClient *tinyClient3 = new TinyGsmClient(*tinyModem);
 bool modemSetup=false;
 
 // This should apply to all Digi brand XBee modules.
-#if defined TINY_GSM_MODEM_XBEE || defined USE_XBEE_BYPASS
+#if 0 //moved radio defined TINY_GSM_MODEM_XBEE || defined USE_XBEE_BYPASS
 // Describe the physical pin connection of your modem to your board
 const long modemBaud = 9600;        // Communication speed of the modem, 9600 is default for XBee
 const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
@@ -615,7 +620,7 @@ bool modemWakeFxn(void)
     SerialStd.print(F("modemWakeFxn!"));
     return true;
 }
-#if 0 //Moved to DigiXbeeWiFi.cpp
+
 // An extra function to set up pin sleep and other preferences on the XBee
 // NOTE:  This will only succeed if the modem is turned on and awake!
 #if defined TINY_GSM_MODEM_XBEE
@@ -724,17 +729,11 @@ void extraModemSetup(void)
 #elif defined(TINY_GSM_MODEM_SIM800) && defined(SIM800_GPRSBEE_R6)
 #else
 #endif
-#endif //0
 
 // ==========================================================================
 //    Network Information and LoggerModem Object
 // ==========================================================================
 #include <LoggerModem.h>
-
-// Network connection information
-const char *apn_def = APN_CDEF;  // The APN for the gprs connection, unnecessary for WiFi
-const char *wifiId_def = WIFIID_CDEF;  // The WiFi access point, unnecessary for gprs
-const char *wifiPwd_def = WIFIPWD_CDEF;  // The password for connecting to WiFi, unnecessary for gprs
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
@@ -1410,7 +1409,7 @@ YosemitechY514 y514(y514ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
-// #if defined(ARDUINO_ARCH_SAMD) || defined(ATMEGA2560)
+// #if defined ARDUINO_ARCH_SAMD || defined ATMEGA2560
 // HardwareSerial &modbusSerial = Serial2;  // Use hardware serial if possible
 // #else
 // AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
@@ -1427,8 +1426,8 @@ const uint8_t y520NumberReadings = 5;  // The manufacturer recommends averaging 
 YosemitechY520 y520(y520ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y520NumberReadings);
 
 // Create specific conductance and temperature variable pointers for the Y520
-// Variable *y520Cond = new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y520Cond = new YosemitechY520_Cond(&y520, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -1540,7 +1539,7 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 // Variable *dOptoDOpct = new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *dOptoDOmgL = new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *dOptoTemp = new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-ef00-1234567890ab");
-
+#endif //SENSOR_CONFIG_GENERAL
 
 // ==========================================================================
 //    Calculated Variables
@@ -1573,7 +1572,6 @@ const char *calculatedVarUUID = "12345678-abcd-1234-ef00-1234567890ab";  // The 
 Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarResolution,
                                        calculatedVarName, calculatedVarUnit,
                                        calculatedVarCode, calculatedVarUUID);
-#endif //SENSOR_CONFIG_GENERAL
 
 
 // ==========================================================================
@@ -1590,7 +1588,7 @@ Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard,ProcessorStats_SampleNumber_UUID),
 #endif
 #if defined(ProcessorStats_Batt_UUID)
-    new ProcessorStats_Batt(&mcuBoard,   ProcessorStats_Batt_UUID),//was mayflyPhy
+    new ProcessorStats_Battery(&mcuBoard,   ProcessorStats_Batt_UUID),//was mayflyPhy
 #endif
 #if defined(ExternalVoltage_Volt0_UUID)
     new ExternalVoltage_Volt(&extvolt0, ExternalVoltage_Volt0_UUID),
@@ -1705,7 +1703,7 @@ Variable *variableList[] = {
     new Modem_BatteryVoltage(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_Temp(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
 #endif // SENSOR_CONFIG_GENERAL
-    calculatedVar,
+    calculatedVar
 };
 
 /*
@@ -1743,7 +1741,7 @@ VariableArray varArray(variableCount, variableList);
 #include <LoggerBase.h>
 
 // Create a new logger instance
-Logger dataLogger(LoggerID_def, loggingInterval_def_min, sdCardPin, wakePin, &varArray);
+Logger dataLogger(LoggerID_def, loggingInterval_def_min, sdCardSSPin, wakePin, &varArray);
 
 //now works with MS_DBG #if KCONFIG_DEBUG_LEVEL > 0   //0918
 // ==========================================================================
@@ -2317,7 +2315,7 @@ void setup()
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modemPhy);
     modemPhy.setModemLED(modemLEDPin);
-    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
+    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLEDPin);
 
     // Begin the logger
     dataLogger.begin();
@@ -2424,7 +2422,7 @@ void processSensors()
                     MS_DBG(F("  Modem setup up 1st pass\n"));
                     // The first time thru, setup modem. Can't do it in regular setup due to potential power drain.
                     modemPhy.wake();  // Turn it on to talk
-                    extraModemSetup();//setupXBee();
+                    //protected ?? modemPhy.extraModemSetup();//setupXBee();
                     nistSyncRtc = true;
                 }
                 // Connect to the network
