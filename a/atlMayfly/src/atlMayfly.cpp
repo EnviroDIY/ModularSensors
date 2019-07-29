@@ -1,6 +1,6 @@
 /*****************************************************************************
 altMayfly.cpp   (more control than .ino)
-Written By:  Neil Hancock from great /menu_a_la_carte by Sara Damiano (sdamiano@stroudcenter.org)
+Written By:  Neil Hancock from great example /menu_a_la_carte by Sara Damiano
 Development Environment: PlatformIO
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
 Software License: BSD-3.
@@ -170,7 +170,6 @@ const int8_t sfSsPin = 43;  //SS   PA23 variant.cpp 'pin'43 serialFlash chip sel
 #else
 #error Undefined SD
 #endif
-
 
 const int8_t sensorPowerPin = sensorPowerPin_DEF; // MCU pin controlling main sensor power (-1 if not applicable)
 // Create and return the main processor chip "sensor" - for general metadata
@@ -342,18 +341,13 @@ HardwareSerial &modemSerial = Serial1;  // TODO:  need to decide
 
 #elif defined ARDUINO_SAMD_FEATHER_M0
 HardwareSerial &modemSerial = Serial2;  // TODO:  need to decide
+
 #elif defined ARDUINO_SODAQ_AUTONOMO
 HardwareSerial &modemSerial = Serial1;  // Bee Socket 
+
 #else
 #error HardwareSerial undef 
 #endif // ARDUINO_AVR_ENVIRODIY_MAYFLY
-
-
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
-// NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
-// Select the modem chip, in ms_cfg.h 
-//was #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
-//was #define USE_XBEE_WIFI  // Select with XBEE for an S6B wifi XBee
 
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
@@ -363,6 +357,7 @@ const int8_t modemResetPin = modemResetPin_DEF;    // MCU pin connected to modem
 const int8_t modemSleepRqPin =  modemSleepRqPin_DEF;  // 23 MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemLEDPin = redLEDPin;  // MCU pin connected an LED to show modem status (-1 if unconnected)
 
+bool modemSetup=false;
 // Network connection information
 const char *apn_def = APN_CDEF;  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId_def = WIFIID_CDEF;  // The WiFi access point, unnecessary for gprs
@@ -571,184 +566,8 @@ DigiXBeeWifi modemPhy = modemXBWF;
 #endif //STREAMDEBUGGER_DBG
 // Create a new TCP client on that modem and return a pointer to it
 TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
-// The u-blox SARA R410 is very slow to open and close clients, so we can
-// iterate through mutiple data senders much more quickly if we have multiple
-// clients.  The u-blox SARA R410 is the only modem where there's any advantage
-// to this.
-#if defined USE_UBLOX_R410M
-TinyGsmClient *tinyClient2 = new TinyGsmClient(*tinyModem);
-TinyGsmClient *tinyClient3 = new TinyGsmClient(*tinyModem);
-#endif
-
 #endif //0
-// ==========================================================================
-//    Specific Modem On-Off Methods
-// ==========================================================================
 
-bool modemSetup=false;
-
-// This should apply to all Digi brand XBee modules.
-#if 0 //moved radio defined TINY_GSM_MODEM_XBEE || defined USE_XBEE_BYPASS
-// Describe the physical pin connection of your modem to your board
-const long modemBaud = 9600;        // Communication speed of the modem, 9600 is default for XBee
-const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
-
-// Create the wake and sleep methods for the modem
-// These can be functions of any type and must return a boolean
-// After enabling pin sleep, the sleep request pin is held LOW to keep the XBee on
-// Enable pin sleep in the setup function or using XCTU prior to connecting the XBee
-bool modemSleepFxn(void)
-{
-    if (modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
-    {
-        digitalWrite(modemSleepRqPin, HIGH);
-        //setRedLED( LOW);
-        SerialStd.println(F("modemSleepFxnH"));
-        return true;
-    }
-    SerialStd.println(F("modemSleepFxn!"));
-    return true;
-}
-bool modemWakeFxn(void)
-{
-    if (modemVccPin >= 0){  // Turns on when power is applied
-        SerialStd.print(F("modemWakeFxnV!="));
-        SerialStd.println(modemVccPin);
-        return true;
-    }else if (modemSleepRqPin >= 0)
-    {
-        digitalWrite(modemSleepRqPin, LOW);
-        //setRedLED( HIGH);  // Because the XBee doesn't have any lights
-        SerialStd.println(F("modemWakeFxnL"));
-        return true;
-    }
-    SerialStd.print(F("modemWakeFxn!"));
-    return true;
-}
-
-// An extra function to set up pin sleep and other preferences on the XBee
-// NOTE:  This will only succeed if the modem is turned on and awake!
-#if defined TINY_GSM_MODEM_XBEE
-void extraModemSetup(void)
-{
-    tinyModem->init();  // initialize
-    if (tinyModem->commandMode())
-    {
-        tinyModem->sendAT(F("D8"),1);  // Set DIO8 to be used for sleep requests
-        // NOTE:  Only pin 9/DIO8/DTR can be used for this function
-        tinyModem->waitResponse();
-        tinyModem->sendAT(F("D9"),1);  // Turn on status indication pin
-        // NOTE:  Only pin 13/DIO9 can be used for this function
-        tinyModem->waitResponse();
-        tinyModem->sendAT(F("D7"),1);  // Turn on CTS pin - as proxy for status indication
-        // NOTE:  Only pin 12/DIO7/CTS can be used for this function
-        tinyModem->waitResponse();
-        if (modemSleepRqPin >=0) {
-            tinyModem->sendAT(F("SM"),1);  // Pin sleep
-            tinyModem->waitResponse();
-        } 
-        tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
-        // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
-        // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
-        // so we'll use the Digi pin sleep instead.
-        tinyModem->waitResponse();
-        #ifdef KCONFIG_SHOW_NETWORK_INFO
-        PRINTOUT(F("Get IP number"));
-        String xbeeRsp;
-        for (int mdm_lp=1;mdm_lp<11;mdm_lp++) {
-            delay(mdm_lp*500);
-            tinyModem->sendAT(F("MY"));  // Request IP #
-            tinyModem->waitResponse(1000,xbeeRsp);
-            PRINTOUT("mdmIP:"+xbeeRsp);
-            if (0!=xbeeRsp.compareTo("0.0.0.0")) {
-                break;
-            }
-            xbeeRsp="";
-        }
-        #endif
-        #if defined(USE_XBEE_WIFI)
-        tinyModem->sendAT(F("SO"),100);  // For WiFi - Disassociate from AP for Deep Sleep
-        tinyModem->waitResponse();
-        #else
-        tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
-        tinyModem->waitResponse();
-        tinyModem->sendAT(F("P0"),0);  // Make sure USB direct won't be pin enabled
-        tinyModem->waitResponse();
-        tinyModem->sendAT(F("P1"),0);  // Make sure pins 7&8 are not set for USB direct
-        tinyModem->waitResponse();
-        tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
-        // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
-        tinyModem->waitResponse();
-        #endif
-        tinyModem->writeChanges();
-        tinyModem->exitCommand();
-    }
-}
-#elif defined USE_XBEE_BYPASS
-void extraModemSetup(void)
-{
-    delay(1000);  // Guard time for command mode
-    tinyModem->streamWrite(GF("+++"));  // enter command mode
-    tinyModem->waitResponse(2000, F("OK\r"));
-    tinyModem->sendAT(F("D8"),1);  // Set DIO8 to be used for sleep requests
-    // NOTE:  Only pin 9/DIO8/DTR can be used for this function
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("D9"),1);  // Turn on status indication pin
-    // NOTE:  Only pin 13/DIO9 can be used for this function
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("D7"),1);  // Turn on CTS pin - as proxy for status indication
-    // NOTE:  Only pin 12/DIO7/CTS can be used for this function
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("SM"),1);  // Pin sleep
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("SO"),0);  // For Cellular - disconnected sleep
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("DO"),0);  // Disable remote manager, USB Direct, and LTE PSM
-    // NOTE:  LTE-M's PSM (Power Save Mode) sounds good, but there's no
-    // easy way on the LTE-M Bee to wake the cell chip itself from PSM,
-    // so we'll use the Digi pin sleep instead.
-    tinyModem->waitResponse(F("OK\r"));
-    #if defined USE_UBLOX_R410M
-    tinyModem->sendAT(F("P0"),0);  // Make sure USB direct won't be pin enabled
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("P1"),0);  // Make sure pins 7&8 are not set for USB direct
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("N#"),2);  // Cellular network technology - LTE-M Only
-    // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
-    tinyModem->waitResponse(F("OK\r"));
-    #endif
-    tinyModem->sendAT(F("AP5"));  // Turn on bypass mode
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("WR"));  // Write changes to flash
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("AC"));  // Apply changes
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->sendAT(F("FR"));  // Force reset to enter bypass mode
-    tinyModem->waitResponse(F("OK\r"));
-    tinyModem->init();  // initialize
-}
-#endif
-
-#elif defined(TINY_GSM_MODEM_ESP8266)
-#elif defined(TINY_GSM_MODEM_UBLOX)
-#elif defined(TINY_GSM_MODEM_SIM800) && defined(SIM800_GPRSBEE_R6)
-#else
-#endif
-
-// ==========================================================================
-//    Network Information and LoggerModem Object
-// ==========================================================================
-#include <LoggerModem.h>
-
-// Create the loggerModem instance
-// A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-#if defined TINY_GSM_MODEM_ESP8266 || defined USE_XBEE_WIFI
-//old? loggerModem modemPhy(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, wifiId_def, wifiPwd_def);
-// ^^ Use this for WiFi
-#else
-//old? loggerModem modemPhy(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn_def);
-// ^^ Use this for cellular
-#endif
 
 // Create RSSI and signal strength variable pointers for the modem
 // Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
@@ -765,28 +584,11 @@ void extraModemSetup(void)
 MaximDS3231 ds3231(1);
 
 // Create a temperature variable pointer for the DS3231
-// Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab");
-//#elif ARDUINO_ARCH_SAMD
-//           RTCZero
-//#include 
-//#else
-//#error no RTC
+// Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab");
 #endif
 
+
 #ifdef SENSOR_CONFIG_GENERAL
-
-// ==========================================================================
-//    Maxim DS3231 RTC (Real Time Clock)
-// ==========================================================================
-#include <sensors/MaximDS3231.h>
-
-// Create a DS3231 sensor object
-MaximDS3231 ds3231(1);
-
-// Create a temperature variable pointer for the DS3231
-// Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab");
-
-
 // ==========================================================================
 //    Atlas Scientific EZO-CO2 Embedded NDIR Carbon Dioxide Sensor
 // ==========================================================================
@@ -1544,6 +1346,7 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 // Variable *dOptoDOpct = new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *dOptoDOmgL = new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *dOptoTemp = new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-ef00-1234567890ab");
+
 #endif //SENSOR_CONFIG_GENERAL
 
 // ==========================================================================
@@ -1748,6 +1551,7 @@ VariableArray varArray(variableCount, variableList);
 // Create a new logger instance
 Logger dataLogger(LoggerID_def, loggingInterval_def_min, sdCardSSPin, wakePin, &varArray);
 
+
 //now works with MS_DBG #if KCONFIG_DEBUG_LEVEL > 0   //0918
 // ==========================================================================
 //    A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
@@ -1779,7 +1583,7 @@ const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for
 // Create a data publisher for ThingSpeak
 #include <publishers/ThingSpeakPublisher.h>
 ThingSpeakPublisher TsMqtt(dataLogger, &modemPhy.gsmClient, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
-//ThingSpeakPublisher TsMqtt(dataLogger,                    thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
+
 #endif //thingSpeakMQTTKey
 
 //#endif //#if KCONFIG_DEBUG_LEVEL > 0   //0918
@@ -1810,6 +1614,8 @@ float getBatteryVoltage()
     if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
+
+
 // ==========================================================================
 // inihUnhandled 
 // For any Unhandled sections this is called
@@ -2095,15 +1901,6 @@ const char MAYFLY_INIT_ID_pm[] EDIY_PROGMEM = "MAYFLY_INIT_ID";
 }
 #endif //USE_SD_MAYFLY_INI
 
-#if 0
-void loop() 
-{
-  digitalWrite(LED_GREEN , HIGH);
-  delay(1000);
-  digitalWrite(LED_GREEN , LOW);
-  delay(4000);
-}
-#endif
 void ledflash(uint8_t numFlash = 4, unsigned long onTime_ms = 75,unsigned long offTime_ms = 150)
 {
     for (uint8_t i = 0; i < numFlash; i++) {
