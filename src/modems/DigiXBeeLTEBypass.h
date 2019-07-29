@@ -59,6 +59,10 @@ public:
     TinyGsm gsmModem;
     TinyGsmClient gsmClient;
 
+    //Az Extensions
+    void setApn(const char *APN, bool copyId=false);
+    String getApn(void);
+
 protected:
     bool didATRespond(void) override;
     bool isInternetAvailable(void) override;
@@ -68,6 +72,8 @@ protected:
 private:
     const char *_apn;
 
+    //Az extension
+    const char *_apn_buf;
 };
 
 #endif  // Header Guard

@@ -393,7 +393,8 @@ const char *wifiPwd_def = WIFIPWD_CDEF;  // The password for connecting to WiFi,
 // For the u-blox SARA R410M based Digi LTE-M XBee3
 // NOTE:  According to the manual, this should be less stable than transparent
 // mode, but my experience is the complete reverse.
-/*#include <modems/DigiXBeeLTEBypass.h>
+#ifdef DigiXBeeLTE_Module 
+#include <modems/DigiXBeeLTEBypass.h>
 const long modemBaud = 9600;  // All XBee's use 9600 by default
 const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
 DigiXBeeLTEBypass modemXBLTEB(&modemSerial,
@@ -401,7 +402,8 @@ DigiXBeeLTEBypass modemXBLTEB(&modemSerial,
                               modemResetPin, modemSleepRqPin,
                               apn_def);
 // Create an extra reference to the modem by a generic name (not necessary)
-DigiXBeeLTEBypass modem = modemXBLTEB; */
+DigiXBeeLTEBypass modem = modemXBLTEB;
+#endif //DigiXBeeLTE_Module 
 // ==========================================================================
 
 // // For the u-blox SARA U201 based Digi 3G XBee with 2G fallback
@@ -418,6 +420,7 @@ DigiXBeeLTEBypass modem = modemXBLTEB; */
 // // ==========================================================================
 
 // // For the Digi Wifi XBee (S6B)
+#ifdef DigiXBeeWifi_Module 
 #include <modems/DigiXBeeWifi.h>
 const long modemBaud = 9600;  // All XBee's use 9600 by default
 const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
@@ -427,6 +430,7 @@ DigiXBeeWifi modemXBWF(&modemSerial,
                         wifiId_def, wifiPwd_def);
 // // Create an extra reference to the modem by a generic name (not necessary)
 DigiXBeeWifi modemPhy = modemXBWF;
+#endif //DigiXBeeWifi_Module 
 // // ==========================================================================
 
 // // For almost anything based on the Espressif ESP8266 using the AT command firmware
@@ -442,7 +446,7 @@ DigiXBeeWifi modemPhy = modemXBWF;
 // EspressifESP8266 modemESP(&modemSerial,
 //                           modemVccPin, modemStatusPin,
 //                           modemResetPin, modemSleepRqPin,
-//                           wifiId, wifiPwd,
+//                           wifiId_def, wifiPwd_def,
 //                           1,  // measurements to average, optional
 //                           espSleepRqPin, espStatusPin  // Optional arguments
 //                          );
@@ -2002,16 +2006,21 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             SerialStd.print(name);
             SerialStd.print(F(" to "));  
             SerialStd.println(value);  
-        }
+        }       
     } else if (strcmp_P(section,NETWORK_pm)== 0) {
+#ifdef DigiXBeeLTE_Module    
         if (strcmp_P(name,apn_pm)== 0) {
             SerialStd.print(F("NETWORK APN: was 'TODO"));
             //TODO SerialStd.print(modemPhy.getApn());
             //TODO modemPhy.setApn(value,true);
             SerialStd.print(F("' now '"));
             //TODO SerialStd.print(modemPhy.getApn());
-            SerialStd.println("'");            
-        } else if (strcmp_P(name,WiFiId_pm)== 0)  {
+            SerialStd.println("'");
+           
+        } 
+#endif //#ifdef DigiXBeeLTE_Module  
+#ifdef DigiXBeeWifi_Module          
+        if (strcmp_P(name,WiFiId_pm)== 0)  {
             SerialStd.print(F("NETWORK WiFiId: was '"));
             SerialStd.print(modemPhy.getWiFiId());
             modemPhy.setWiFiId(value,true);
@@ -2025,6 +2034,7 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             SerialStd.print(F("' now '"));
             SerialStd.print(modemPhy.getWiFiPwd());
             SerialStd.println("'");
+#endif //DigiXBeeWifi_Module
         } else {
             SerialStd.print(F("NETWORK tbd "));
             SerialStd.print(name);

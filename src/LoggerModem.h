@@ -81,13 +81,6 @@ public:
     void powerUp(void) override;
     void powerDown(void) override;
 
-    //Az Extensions - moved to radios
-    //void setApn(const char *APN, bool copyId=false);
-    //void setWiFiId(const char *WiFiId, bool copyId=false);
-    //void setWiFiPwd(const char *WiFiPwd, bool copyId=false);
-    //String getApn(void);
-    //String getWiFiId(void);
-    //String getWiFiPwd(void);
 protected:
     // We override these because the modem can tell us if it's ready or not
 
