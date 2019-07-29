@@ -328,6 +328,10 @@ void SERCOM2_Handler()
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 const int8_t RS485PHY_TX_PIN = CONFIG_HW_RS485PHY_TX_PIN;
 const int8_t RS485PHY_RX_PIN = CONFIG_HW_RS485PHY_RX_PIN;
+// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
+// NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
+//#define RS485PHY_TX 5  // AltSoftSerial Tx pin 
+//#define RS485PHY_RX 6  // AltSoftSerial Rx pin
 
 #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
 //requires special variant.cpp/h update
@@ -343,10 +347,7 @@ HardwareSerial &modemSerial = Serial1;  // Bee Socket
 #else
 #error HardwareSerial undef 
 #endif // ARDUINO_AVR_ENVIRODIY_MAYFLY
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
-// NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
-//#define RS485PHY_TX 5  // AltSoftSerial Tx pin 
-//#define RS485PHY_RX 6  // AltSoftSerial Rx pin
+
 
 // AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
 // NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
@@ -544,7 +545,7 @@ DigiXBeeWifi modemPhy = modemXBWF;
 // Create RSSI and signal strength variable pointers for the modem
 // Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
-
+#if 0
 // Create a new TinyGSM modem to run on that serial port and return a pointer to it
 //#define STREAMDEBUGGER_DBG
 #if !defined(STREAMDEBUGGER_DBG)
@@ -579,7 +580,7 @@ TinyGsmClient *tinyClient2 = new TinyGsmClient(*tinyModem);
 TinyGsmClient *tinyClient3 = new TinyGsmClient(*tinyModem);
 #endif
 
-
+#endif //0
 // ==========================================================================
 //    Specific Modem On-Off Methods
 // ==========================================================================
@@ -2034,8 +2035,9 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             SerialStd.print(F("' now '"));
             SerialStd.print(modemPhy.getWiFiPwd());
             SerialStd.println("'");
+        } 
 #endif //DigiXBeeWifi_Module
-        } else {
+        else {
             SerialStd.print(F("NETWORK tbd "));
             SerialStd.print(name);
             SerialStd.print(F(" to "));  

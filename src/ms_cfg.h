@@ -92,6 +92,12 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 // How frequently (in minutes) to log data
 //#define loggingInterval_CDEF_MIN 15
+//define one  _Module
+//#define DigiXBeeLTE_Module 
+#define DigiXBeeWifi_Module
+
+//end of _Module
+
 #define APN_CDEF  "xxxx" // The APN for the gprs connection, unnecessary for WiFi
 #define WIFIID_CDEF  "xxxx"  // The WiFi access point, unnecessary for gprs
 #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
