@@ -73,7 +73,7 @@ private:
     const char *_apn;
 
     //Az extension
-    const char *_apn_buf;
+    char *_apn_buf = NULL; //Pointer to updated buffer
 };
 
 #endif  // Header Guard

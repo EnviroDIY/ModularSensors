@@ -89,8 +89,9 @@ const long SerialStdBaud = 115200;   // Baud rate for the primary serial port fo
 
 #elif defined(ARDUINO_SODAQ_AUTONOMO)
 //Only One LED Green - LED_BUILTIN
-//const int8_t greenLED=LED_BUILTIN;       //MCU pin for the green LED (-1 if not applicable)
+//const int8_t greenLED=LED_BUILTIN;  //MCU pin for the green LED (-1 if not applicable)
 #define greenLEDPin LED_BUILTIN       //MCU pin for the green LED (-1 if not applicable)
+#define redLEDPin -1                  //Doesn't exist 
 #else
 #error Undefined LEDS
 #endif
@@ -162,6 +163,7 @@ const int8_t buttonPin = -1;      // 21 Not used -MCU pin for a button to use to
 const int8_t wakePin = -1;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
+const int8_t sdCardPwrPin = -1;    //TODO check MCU SD card power pin (-1 if not applicable)
 //uSD card & SerialFlash is SCOM3
 // SAMD21 MOSI/PA20 MISO/PA22 SCK/PA21
 // 
@@ -418,6 +420,7 @@ DigiXBeeLTEBypass modem = modemXBLTEB;
 // // For the Digi Wifi XBee (S6B)
 #ifdef DigiXBeeWifi_Module 
 #include <modems/DigiXBeeWifi.h>
+#warning  processing DigiXBeeWifi_Module
 const long modemBaud = 9600;  // All XBee's use 9600 by default
 const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
 DigiXBeeWifi modemXBWF(&modemSerial,
@@ -1824,9 +1827,9 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             //TODO SerialStd.print(modemPhy.getApn());
             SerialStd.println("'");
            
-        } 
+        } else
 #endif //#ifdef DigiXBeeLTE_Module  
-#ifdef DigiXBeeWifi_Module          
+#if defined  DigiXBeeWifi_Module          
         if (strcmp_P(name,WiFiId_pm)== 0)  {
             SerialStd.print(F("NETWORK WiFiId: was '"));
             SerialStd.print(modemPhy.getWiFiId());
@@ -1841,9 +1844,10 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             SerialStd.print(F("' now '"));
             SerialStd.print(modemPhy.getWiFiPwd());
             SerialStd.println("'");
-        } 
+        } else
+        #warning DigiXBeeWifi_Module2
 #endif //DigiXBeeWifi_Module
-        else {
+        {
             SerialStd.print(F("NETWORK tbd "));
             SerialStd.print(name);
             SerialStd.print(F(" to "));  

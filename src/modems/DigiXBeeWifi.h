@@ -76,9 +76,10 @@ protected:
 private:
     const char *_ssid;
     const char *_pwd;
+
     //Az extension
-    const char *_ssid_buf=NULL;
-    const char *_pwd_buf=NULL;
+    char *_ssid_buf=NULL;
+    char *_pwd_buf=NULL;
 
 };
 

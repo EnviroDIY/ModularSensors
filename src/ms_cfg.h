@@ -183,6 +183,11 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   // How frequently (in minutes) to log data
   //#define  loggingInterval_CDEF_MIN 5
   #define  loggingInterval_MAX_CDEF_MIN 120
+//define one  _Module
+//#define DigiXBeeLTE_Module 
+#define DigiXBeeWifi_Module
+
+//end of _Module
   #define APN_CDEF  "xxxx" // The APN for the gprs connection, unnecessary for WiFi
   #define WIFIID_CDEF  "xxxx"  // The WiFi access point, unnecessary for gprs
   #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
@@ -277,6 +282,13 @@ inXbee RTS
 
 // How frequently (in minutes) to log data
 //#define  loggingInterval_CDEF_MIN 5
+
+//define one  _Module
+//#define DigiXBeeLTE_Module 
+#define DigiXBeeWifi_Module 1
+#warning DigiXBeeWifi_Module
+//end of _Module
+
 #define  loggingInterval_MAX_CDEF_MIN 120
 #define APN_CDEF  "xxxx" // The APN for the gprs connection, unnecessary for WiFi
 #define WIFIID_CDEF  "xxxx"  // The WiFi access point, unnecessary for gprs
@@ -364,7 +376,8 @@ inXbee RTS
 #define ExternalVoltage_Volt0_UUID "Volt0_UUID"
 #define ExternalVoltage_Volt1_UUID "VOLT1_UUID"
 #endif //ExternalVoltage_ACT
-#elif PROFILE_NAME == PROFILE03
+
+#elif 0 //PROFILE_NAME == PROFILE03
 //**************************************************************************
 //Keller Nanolevel with XBP-u.fl 
 #define SENSOR_RS485_PHY 1
@@ -399,7 +412,6 @@ const char *wifiPwd_def = NULL;//"";  // The password for connecting to WiFi, un
 #define ExternalVoltage_ACT 1
 #define Volt0_UUID "d3b78c2e-312b-4e2a-b804-8230c963f912"
 #define Volt1_UUID "c7da692b-6661-4545-bd3d-04938faa285b"
-
 
 
 #elif !defined PROFILE_NAME
