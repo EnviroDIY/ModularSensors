@@ -24,7 +24,9 @@
 // decreasing it will save memory.  Do not make it smaller than 47 (to keep all
 // variable values with their UUID's) or bigger than 1500 (a typical TCP/UDP
 // Maximum Transmission Unit).
+#ifndef MS_SEND_BUFFER_SIZE
 #define MS_SEND_BUFFER_SIZE 750
+#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
