@@ -1567,6 +1567,7 @@ const char *samplingFeature_def = samplingFeature_UUID;     // Sampling feature 
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
+// Need to set with begin( ,Token, samplingFeature)
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken_def, samplingFeature_def);
 #endif //registrationToken_UUID
 
