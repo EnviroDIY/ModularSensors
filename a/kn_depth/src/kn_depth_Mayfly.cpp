@@ -1,16 +1,15 @@
 /*****************************************************************************
-altMayfly.cpp   (more control than .ino)
+kn_depth_Mayfly.cpp   (Keller Nanolevel Depth)
 Written By:  Neil Hancock from great example /menu_a_la_carte by Sara Damiano
 Development Environment: PlatformIO
-Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
+Hardware Platform Supported: EnviroDIY Mayfly Arduino Datalogger
 Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.2
+Use with  ModularSensors library version 0.23.2
 
-This sketch is an example of logging data to an SD card and sending the data to
-the EnviroDIY data portal.
+This sends readings to EnviroDIY data portal, and logs to an SD card.
 
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
@@ -49,7 +48,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // The library version this example was written for
 const char *libraryVersion = "0.23.2";
 // The name of this file
-const char *sketchName = __FILE__; //"atlMayfly.cpp";
+const char *sketchName = __FILE__; //"xxx.cpp";
 const char build_date[] = __DATE__ " " __TIME__;
 //Windows processing of PIO_SRC_REV drops the "" making it a variable, which then can't be found!!!
 //Encoded as hex to make it come through

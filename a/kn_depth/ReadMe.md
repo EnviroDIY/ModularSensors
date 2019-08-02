@@ -1,5 +1,7 @@
-# atlMayfly - short for axolotl swimming with the the Mayfly
-A ruggidized Modular Sensors Library optomized for a few pieces of communications hardware and easier options for destination Data Portals configured on through a SD card.
+# kn_depth - short for keller Nanolevel Depth Monitor
+A ruggidized Modular Sensors Library optomized for a few pieces of communications hardware.
+
+Data Portals configured through a SD card, for more reliable testing and scaling.
 
 To use the internet viewing capability you need a data portal account - sites supported
   (http://data.envirodiy.org/).  After you have registered the site and sensors, the portal will generate a registration token and universally unique identifier (UUID) for each site and further UUID's for each variable.  
@@ -10,8 +12,10 @@ Modems supported Xbee WiFi S6, and (tbd Xbee LTE)
 _______
 
 ## To Use this Example: - the following still tbd
+From Platformio File->Open Folfer  "a/kn_depth" 
+On the bottom bar - press the Tick mark - "build" 
 
-
+Press build icon 
 #### Prepare and set up PlatformIO
 - Register a site and sensors at the WikiWatershed/EnviroDIY data portal (http://data.WikiWatershed.org/)
 - Create a new PlatformIO project
