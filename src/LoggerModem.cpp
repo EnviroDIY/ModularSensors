@@ -44,6 +44,7 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
 // Destructor
 loggerModem::~loggerModem(){}
 
+
 void loggerModem::setModemLED(int8_t modemLEDPin)
 {
     _modemLEDPin = modemLEDPin;

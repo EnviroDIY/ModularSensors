@@ -34,11 +34,11 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #else
 #define KCONFIG_DEBUG_LEVEL 1
 #endif
-//#define atlMayfly_DBG 1
-#ifdef atlMayfly_DBG 
+//#define MS_ATLMAYFLY_DEBUG 1
+#ifdef MS_ATLMAYFLY_DEBUG 
   //enables MS_DBG output to DEBUGGING_SERIAL_OUTPUT
   #define MS_DEBUGGING_STD
-#endif //atlMayfly_DBG
+#endif //MS_ATLMAYFLY_DBG
 #if !defined SerialStd
 #define SerialStd STANDARD_SERIAL_OUTPUT
 #endif //SerialStd
@@ -1567,8 +1567,9 @@ const char *samplingFeature_def = samplingFeature_UUID;     // Sampling feature 
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-// Need to set with begin( ,Token, samplingFeature)
-EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken_def, samplingFeature_def);
+//EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken_def, samplingFeature_def);
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, 15,0);
+//EnviroDIYPublisher EnviroDIYPOST();
 #endif //registrationToken_UUID
 
 // ==========================================================================
@@ -1687,9 +1688,9 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             strcpy(ps.provider.s.registration_token, value);
             SerialStd.print(F("PROVIDER Setting registration token: "));
             SerialStd.println(ps.provider.s.registration_token );
-            EnviroDIYPOST.setToken(ps.provider.s.registration_token);
+            //EnviroDIYPOST.setToken(ps.provider.s.registration_token);
         } else if (strcmp_P(name,CLOUD_ID_pm)== 0) {
-            //TODO: njh move storage to class EnviroDIYPublisher
+            //TODO: njh move storage to class EnviroDIYPublisher - though hardcoded
             strcpy(ps.provider.s.cloudId, value);
             SerialStd.print(F("PROVIDER Setting cloudId: "));
             SerialStd.println(ps.provider.s.cloudId );
@@ -1698,7 +1699,7 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             strcpy(ps.provider.s.sampling_feature, value);
             SerialStd.print(F("PROVIDER Setting SamplingFeature: "));
             SerialStd.println(ps.provider.s.sampling_feature );
-            dataLogger.setSamplingFeatureUUID(ps.provider.s.sampling_feature);
+            //dataLogger.setSamplingFeatureUUID(ps.provider.s.sampling_feature);
         } else {
             SerialStd.print(F("PROVIDER not supported:"));
             SerialStd.print(name);
@@ -2133,7 +2134,7 @@ void setup()
 
     // Begin the logger
     dataLogger.begin();
-
+    EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps.provider.s.registration_token, ps.provider.s.sampling_feature);
     SerialStd.print(F("Start Time: "));
 
     sysStartTime_epochTzSec = dataLogger.getNowEpochTz();

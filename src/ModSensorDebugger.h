@@ -66,7 +66,7 @@
         template<typename T, typename... Args>
         static void MS_DBG(T head, Args... tail) {
             DEBUGGING_SERIAL_OUTPUT.print(head);
-            //DEBUGGING_SERIAL_OUTPUT.print(' ');
+            DEBUGGING_SERIAL_OUTPUT.print(' ');
             MS_DBG(tail...);
         }
     }
