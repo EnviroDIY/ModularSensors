@@ -15,17 +15,7 @@
 #ifndef AtlasScientificORP_h
 #define AtlasScientificORP_h
 
-// Debugging Statement
-// #define MS_ATLASORP_DEBUG
-
-#ifdef MS_ATLASORP_DEBUG
-#define MS_DEBUGGING_STD "AtlasScientificORP"
-#endif
-
 // Included Dependencies
-#include "ModSensorDebugger.h"
-#undef MS_DEBUGGING_STD
-#include "VariableBase.h"
 #include "sensors/AtlasParent.h"
 
 // I2C address
@@ -47,13 +37,45 @@
 class AtlasScientificORP : public AtlasParent
 {
 public:
-    AtlasScientificORP(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_ORP_I2C_ADDR,
+    #if defined MS_ATLAS_SOFTWAREWIRE
+    AtlasScientificORP(SoftwareWire *theI2C, int8_t powerPin,
+                       uint8_t i2cAddressHex = ATLAS_ORP_I2C_ADDR,
                        uint8_t measurementsToAverage = 1)
-     : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
+     : AtlasParent(theI2C, powerPin,
+                   i2cAddressHex, measurementsToAverage,
                    "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
                    ATLAS_ORP_WARM_UP_TIME_MS, ATLAS_ORP_STABILIZATION_TIME_MS,
                    ATLAS_ORP_MEASUREMENT_TIME_MS)
     {}
+    AtlasScientificORP(int8_t powerPin, int8_t dataPin, int8_t clockPin,
+                       uint8_t i2cAddressHex = ATLAS_ORP_I2C_ADDR,
+                       uint8_t measurementsToAverage = 1)
+     : AtlasParent(powerPin, dataPin, clockPin,
+                   i2cAddressHex, measurementsToAverage,
+                   "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
+                   ATLAS_ORP_WARM_UP_TIME_MS, ATLAS_ORP_STABILIZATION_TIME_MS,
+                   ATLAS_ORP_MEASUREMENT_TIME_MS)
+    {}
+    #else
+    AtlasScientificORP(TwoWire *theI2C, int8_t powerPin,
+                       uint8_t i2cAddressHex = ATLAS_ORP_I2C_ADDR,
+                       uint8_t measurementsToAverage = 1)
+     : AtlasParent(theI2C, powerPin,
+                   i2cAddressHex, measurementsToAverage,
+                   "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
+                   ATLAS_ORP_WARM_UP_TIME_MS, ATLAS_ORP_STABILIZATION_TIME_MS,
+                   ATLAS_ORP_MEASUREMENT_TIME_MS)
+    {}
+    AtlasScientificORP(int8_t powerPin,
+                       uint8_t i2cAddressHex = ATLAS_ORP_I2C_ADDR,
+                       uint8_t measurementsToAverage = 1)
+     : AtlasParent(powerPin,
+                   i2cAddressHex, measurementsToAverage,
+                   "AtlasScientificORP", ATLAS_ORP_NUM_VARIABLES,
+                   ATLAS_ORP_WARM_UP_TIME_MS, ATLAS_ORP_STABILIZATION_TIME_MS,
+                   ATLAS_ORP_MEASUREMENT_TIME_MS)
+    {}
+    #endif
     ~AtlasScientificORP(){}
 };
 

@@ -55,7 +55,7 @@ uint8_t VariableArray::getSensorCount(void)
     {
         if (isLastVarFromSensor(i)) numSensors++;
     }
-    MS_DBG(F("There are"), numSensors, F("unique sensors in the group."));
+    // MS_DBG(F("There are"), numSensors, F("unique sensors in the group."));
     return numSensors;
 }
 
@@ -68,11 +68,11 @@ bool VariableArray::setupSensors(void)
 {
     bool success = true;
 
-    #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
-    bool deepDebugTiming = true;
-    #else
-    bool deepDebugTiming = false;
-    #endif
+    // #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
+    // bool deepDebugTiming = true;
+    // #else
+    // bool deepDebugTiming = false;
+    // #endif
 
     MS_DBG(F("Beginning setup for sensors and variables..."));
 
@@ -132,8 +132,8 @@ bool VariableArray::setupSensors(void)
                 if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0) == 0)
                 {
                     // and if it is already warmed up
-                    if (arrayOfVars[i]->parentSensor->isWarmedUp(deepDebugTiming))
-                    {
+                    // if (arrayOfVars[i]->parentSensor->isWarmedUp(deepDebugTiming))
+                    // {
                         MS_DBG(F("    Set up of"), arrayOfVars[i]->getParentSensorNameAndLocation(),
                                F("..."));
 
@@ -143,7 +143,7 @@ bool VariableArray::setupSensors(void)
 
                         if (!sensorSuccess) {MS_DBG(F("        ... failed!"));}
                         else {MS_DBG(F("        ... succeeded."));}
-                    }
+                    // }
                 }
             }
         }
@@ -592,6 +592,13 @@ bool VariableArray::completeUpdate(void)
         }
     }
 
+    // Another array for the number of measurements already completed per power pin
+    uint8_t nCompletedOnPin[_variableCount];
+    for (uint8_t i = 0; i < _variableCount; i++)
+    {
+        nCompletedOnPin[i] = 0;
+    }
+
     // This is just for debugging
     #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
     uint8_t arrayPositions[_variableCount];
@@ -614,22 +621,19 @@ bool VariableArray::completeUpdate(void)
     prettyPrintArray(lastSensorVariable);
     MS_DEEP_DBG(F("nMeasurementsToAverage:\t\t"));
     prettyPrintArray(nMeasurementsToAverage);
+    MS_DEEP_DBG(F("nMeasurementsCompleted:\t\t"));
+    prettyPrintArray(nMeasurementsCompleted);
     MS_DEEP_DBG(F("powerPins:\t\t\t"));
     prettyPrintArray(powerPins);
     MS_DEEP_DBG(F("lastPinVariable:\t\t"));
     prettyPrintArray(lastPinVariable);
-    MS_DEEP_DBG(F("nMeasurementsOnPin:\t\t"));
-    prettyPrintArray(nMeasurementsOnPin);
     MS_DEEP_DBG(F("powerPinIndex:\t\t\t"));
     prettyPrintArray(powerPinIndex);
+    MS_DEEP_DBG(F("nMeasurementsOnPin:\t\t"));
+    prettyPrintArray(nMeasurementsOnPin);
+    MS_DEEP_DBG(F("nCompletedOnPin:\t\t\t"));
+    prettyPrintArray(nCompletedOnPin);
     #endif
-
-    // Another array for the number of measurements already completed per power pin
-    uint8_t nCompletedOnPin[_variableCount];
-    for (uint8_t i = 0; i < _variableCount; i++)
-    {
-        nCompletedOnPin[i] = 0;
-    }
 
     // Clear the initial variable arrays
     MS_DBG(F("----->> Clearing all results arrays before taking new measurements. ..."));
@@ -672,6 +676,15 @@ bool VariableArray::completeUpdate(void)
                             bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0),
                             F("- measurement #"), (nMeasurementsCompleted[i] + 1);
             }
+            MS_DEEP_DBG(F("----------------------------------"));
+            MS_DEEP_DBG(F("nMeasurementsToAverage:\t\t"));
+            prettyPrintArray(nMeasurementsToAverage);
+            MS_DEEP_DBG(F("nMeasurementsCompleted:\t\t"));
+            prettyPrintArray(nMeasurementsCompleted);
+            MS_DEEP_DBG(F("nMeasurementsOnPin:\t\t"));
+            prettyPrintArray(nMeasurementsOnPin);
+            MS_DEEP_DBG(F("nCompletedOnPin:\t\t\t"));
+            prettyPrintArray(nCompletedOnPin);
             // END CHUNK FOR DEBUGGING!
             ***/
 
@@ -860,14 +873,14 @@ void VariableArray::printSensorData(Stream *stream)
 // Check for unique sensors
 bool VariableArray::isLastVarFromSensor(int arrayIndex)
 {
-    MS_DEEP_DBG(F("Checking if"), arrayOfVars[arrayIndex]->getVarName(), '(',
-           arrayIndex, F(") is the last variable from a sensor..."));
+    /*MS_DEEP_DBG(F("Checking if"), arrayOfVars[arrayIndex]->getVarName(), '(',
+           arrayIndex, F(") is the last variable from a sensor..."));*/
 
     // Calculated variables are never the last variable from a sensor, simply
     // because the don't come from a sensor at all.
     if (arrayOfVars[arrayIndex]->isCalculated)
     {
-        MS_DEEP_DBG(F("   ... Nope, it's calculated!"));
+        // MS_DEEP_DBG(F("   ... Nope, it's calculated!"));
         return false;
     }
 
@@ -880,11 +893,11 @@ bool VariableArray::isLastVarFromSensor(int arrayIndex)
             if (sensNameLoc == arrayOfVars[j]->getParentSensorNameAndLocation())
             {
                 unique = false;
-                MS_DEEP_DBG(F("   ... Nope, there are others after it!"));
+                // MS_DEEP_DBG(F("   ... Nope, there are others after it!"));
                 break;
             }
         }
-        if (unique) MS_DEEP_DBG(F("   ... Yes, it is!"));
+        // if (unique) MS_DEEP_DBG(F("   ... Yes, it is!"));
         return unique;
     }
 }
@@ -902,6 +915,6 @@ uint8_t VariableArray::countMaxToAverage(void)
             numReps = max(numReps, arrayOfVars[i]->parentSensor->getNumberMeasurementsToAverage());
         }
     }
-    MS_DBG(F("The largest number of measurements to average will be"), numReps);
+    // MS_DBG(F("The largest number of measurements to average will be"), numReps);
     return numReps;
 }

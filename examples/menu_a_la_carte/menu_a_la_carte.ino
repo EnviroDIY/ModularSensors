@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.22.3
+This example sketch is written for ModularSensors library version 0.24.0
 
 This shows most of the standard functions of the library at once.
 
@@ -26,7 +26,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.22.3";
+const char *libraryVersion = "0.24.0";
 // The name of this file
 const char *sketchName = "menu_a_la_carte.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -74,7 +74,7 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // as possible.  In some cases (ie, modbus communication) many sensors can share
 // the same serial port.
 
-#if not defined ARDUINO_ARCH_SAMD && not defined ATMEGA2560  // For AVR boards
+#if defined ARDUINO_ARCH_AVR  // For AVR boards
 // Unfortunately, most AVR boards have only one or two hardware serial ports,
 // so we'll set up three types of extra software serial ports to use
 
@@ -110,7 +110,25 @@ const int8_t softSerialTx = A4;     // data out pin
 
 #include <SoftwareSerial_ExtInts.h>  // for the stream communication
 SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
+
 #endif  // End software serial for avr boards
+
+// A software I2C (Wire) instance using Testato's SoftwareWire
+// To use SoftwareWire, you must also set a define for the sensor you want to use
+// Software I2C for, ie:
+// #define MS_ATLAS_SOFTWAREWIRE
+// #define MS_RAIN_SOFTWAREWIRE
+// #define MS_PALEOTERRA_SOFTWAREWIRE
+// or set the build flag(s):
+// -DMS_ATLAS_SOFTWAREWIRE
+// -DMS_RAIN_SOFTWAREWIRE
+// -DMS_PALEOTERRA_SOFTWAREWIRE
+#if defined MS_PALEOTERRA_SOFTWAREWIRE || defined MS_ATLAS_SOFTWAREWIRE || defined MS_RAIN_SOFTWAREWIRE
+#include <SoftwareWire.h>  // Testato's Software I2C
+const int8_t softwareSDA = 5;
+const int8_t softwareSCL = 4;
+SoftwareWire softI2C(softwareSDA, softwareSCL);
+#endif
 
 
 // The SAMD21 has 6 "SERCOM" ports, any of which can be used for UART communication.
@@ -382,14 +400,19 @@ MaximDS3231 ds3231(1);
 #include <sensors/AtlasScientificCO2.h>
 
 const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-// uint8_t AtlasCO2i2c_addr = 0x69;  // Default for CO2-EZO is 0x69 (105)
+uint8_t AtlasCO2i2c_addr = 0x69;  // Default for CO2-EZO is 0x69 (105)
 // All Atlas sensors have different default I2C addresses, but any of them can
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific CO2 sensor object
+#ifdef MS_ATLAS_SOFTWAREWIRE
+// AtlasScientificCO2 atlasCO2(I2CPower, softwareSDA, softwareSCL, AtlasCO2i2c_addr);
+AtlasScientificCO2 atlasCO2(&softI2C, I2CPower, AtlasCO2i2c_addr);
+#else
 // AtlasScientificCO2 atlasCO2(I2CPower, AtlasCO2i2c_addr);
 AtlasScientificCO2 atlasCO2(I2CPower);
+#endif
 
 // Create concentration and temperature variable pointers for the EZO-CO2
 // Variable *atlasCO2 = new AtlasScientificCO2_CO2(&atlasCO2, "12345678-abcd-1234-efgh-1234567890ab");
@@ -402,14 +425,19 @@ AtlasScientificCO2 atlasCO2(I2CPower);
 #include <sensors/AtlasScientificDO.h>
 
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-// uint8_t AtlasDOi2c_addr = 0x61;  // Default for DO is 0x61 (97)
+uint8_t AtlasDOi2c_addr = 0x61;  // Default for DO is 0x61 (97)
 // All Atlas sensors have different default I2C addresses, but any of them can
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific DO sensor object
+#ifdef MS_ATLAS_SOFTWAREWIRE
+// AtlasScientificDO atlasDO(I2CPower, softwareSDA, softwareSCL, AtlasDOi2c_addr);
+AtlasScientificDO atlasDO(&softI2C, I2CPower, AtlasDOi2c_addr);
+#else
 // AtlasScientificDO atlasDO(I2CPower, AtlasDOi2c_addr);
 AtlasScientificDO atlasDO(I2CPower);
+#endif
 
 // Create concentration and percent saturation variable pointers for the EZO-DO
 // Variable *atlasDOconc = new AtlasScientificDO_DOmgL(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab");
@@ -422,14 +450,19 @@ AtlasScientificDO atlasDO(I2CPower);
 #include <sensors/AtlasScientificEC.h>
 
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-// uint8_t AtlasECi2c_addr = 0x64;  // Default for EC is 0x64 (100)
+uint8_t AtlasECi2c_addr = 0x64;  // Default for EC is 0x64 (100)
 // All Atlas sensors have different default I2C addresses, but any of them can
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific Conductivity sensor object
+#ifdef MS_ATLAS_SOFTWAREWIRE
+// AtlasScientificEC atlasEC(I2CPower, softwareSDA, softwareSCL, AtlasECi2c_addr);
+AtlasScientificEC atlasEC(&softI2C, I2CPower, AtlasECi2c_addr);
+#else
 // AtlasScientificEC atlasEC(I2CPower, AtlasECi2c_addr);
 AtlasScientificEC atlasEC(I2CPower);
+#endif
 
 // Create four variable pointers for the EZO-ES
 // Variable *atlasCond = new AtlasScientificEC_Cond(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab");
@@ -444,14 +477,19 @@ AtlasScientificEC atlasEC(I2CPower);
 #include <sensors/AtlasScientificORP.h>
 
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-// uint8_t AtlasORPi2c_addr = 0x62;  // Default for ORP is 0x62 (98)
+uint8_t AtlasORPi2c_addr = 0x62;  // Default for ORP is 0x62 (98)
 // All Atlas sensors have different default I2C addresses, but any of them can
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific ORP sensor object
+#ifdef MS_ATLAS_SOFTWAREWIRE
+AtlasScientificORP atlasORP(&softI2C, I2CPower, AtlasORPi2c_addr);
+// AtlasScientificORP atlasORP(I2CPower, softwareSDA, softwareSCL, AtlasORPi2c_addr);
+#else
 // AtlasScientificORP atlasORP(I2CPower, AtlasORPi2c_addr);
 AtlasScientificORP atlasORP(I2CPower);
+#endif
 
 // Create a potential variable pointer for the ORP
 // Variable *atlasORPot = new AtlasScientificORP_Potential(&atlasORP, "12345678-abcd-1234-efgh-1234567890ab");
@@ -463,14 +501,19 @@ AtlasScientificORP atlasORP(I2CPower);
 #include <sensors/AtlasScientificpH.h>
 
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-// uint8_t AtlaspHi2c_addr = 0x63;  // Default for RTD is 0x63 (99)
+uint8_t AtlaspHi2c_addr = 0x63;  // Default for pH is 0x63 (99)
 // All Atlas sensors have different default I2C addresses, but any of them can
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific pH sensor object
+#ifdef MS_ATLAS_SOFTWAREWIRE
+AtlasScientificpH atlaspH(&softI2C, I2CPower, AtlaspHi2c_addr);
+// AtlasScientificpH atlaspH(I2CPower, softwareSDA, softwareSCL, AtlaspHi2c_addr);
+#else
 // AtlasScientificpH atlaspH(I2CPower, AtlaspHi2c_addr);
 AtlasScientificpH atlaspH(I2CPower);
+#endif
 
 // Create a pH variable pointer for the pH sensor
 // Variable *atlaspHpH = new AtlasScientificpH_pH(&atlaspH, "12345678-abcd-1234-efgh-1234567890ab");
@@ -482,14 +525,19 @@ AtlasScientificpH atlaspH(I2CPower);
 #include <sensors/AtlasScientificRTD.h>
 
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-// uint8_t AtlasRTDi2c_addr = 0x66;  // Default for RTD is 0x66 (102)
+uint8_t AtlasRTDi2c_addr = 0x66;  // Default for RTD is 0x66 (102)
 // All Atlas sensors have different default I2C addresses, but any of them can
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
 
 // Create an Atlas Scientific RTD sensor object
+#ifdef MS_ATLAS_SOFTWAREWIRE
+AtlasScientificRTD atlasRTD(&softI2C, I2CPower, AtlasRTDi2c_addr);
+// AtlasScientificRTD atlasRTD(I2CPower, softwareSDA, softwareSCL, AtlasRTDi2c_addr);
+#else
 // AtlasScientificRTD atlasRTD(I2CPower, AtlasRTDi2c_addr);
 AtlasScientificRTD atlasRTD(I2CPower);
+#endif
 
 // Create a temperature variable pointer for the RTD
 // Variable *atlasTemp = new AtlasScientificRTD_Temp(&atlasRTD, "12345678-abcd-1234-efgh-1234567890ab");
@@ -763,6 +811,26 @@ MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803Readings
 
 
 // ==========================================================================
+//    PaleoTerra Redox Sensors
+// ==========================================================================
+#include <sensors/PaleoTerraRedox.h>
+
+int8_t paleoTerraPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
+uint8_t paleoI2CAddress = 0x68;  // The I2C address of the redox sensor
+
+// Create the PaleoTerra sensor object
+#ifdef MS_PALEOTERRA_SOFTWAREWIRE
+PaleoTerraRedox ptRedox(&softI2C, paleoTerraPower, paleoI2CAddress);
+// PaleoTerraRedox ptRedox(paleoTerraPower, softwareSDA, softwareSCL, paleoI2CAddress);
+#else
+PaleoTerraRedox ptRedox(paleoTerraPower, paleoI2CAddress);
+#endif
+
+// Create the voltage variable for the redox sensor
+// Variable *ptVolt = new PaleoTerraRedox_Volt(&ptRedox, "12345678-abcd-1234-efgh-1234567890ab");
+
+
+// ==========================================================================
 //    External I2C Rain Tipping Bucket Counter
 // ==========================================================================
 #include <sensors/RainCounterI2C.h>
@@ -771,7 +839,12 @@ const uint8_t RainCounterI2CAddress = 0x08;  // I2C Address for external tip cou
 const float depthPerTipEvent = 0.2;  // rain depth in mm per tip event
 
 // Create a Rain Counter sensor object
+#ifdef MS_RAIN_SOFTWAREWIRE
+RainCounterI2C tbi2c(&softI2C, RainCounterI2CAddress, depthPerTipEvent);
+// RainCounterI2C tbi2c(softwareSDA, softwareSCL, RainCounterI2CAddress, depthPerTipEvent);
+#else
 RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
+#endif
 
 // Create number of tips and rain depth variable pointers for the tipping bucket
 // Variable *tbi2cTips = new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab");
@@ -1191,6 +1264,7 @@ Variable *variableList[] = {
     new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-efgh-1234567890ab"),
     new MPL115A2_Temp(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
     new MPL115A2_Pressure(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
+    new PaleoTerraRedox_Volt(&ptRedox, "12345678-abcd-1234-efgh-1234567890ab"),
     new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab"),
     new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab"),
     new TIINA219_Current(&ina219, "12345678-abcd-1234-efgh-1234567890ab"),
@@ -1350,21 +1424,21 @@ void setup()
     // NOTE:  Only use this when debugging - if not connected to a PC, this
     // could prevent the script from starting
     #if defined SERIAL_PORT_USBVIRTUAL
-      while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)){}
+      while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)){}
     #endif
 
     // Start the primary serial connection
     Serial.begin(serialBaud);
 
     // Print a start-up note to the first serial port
-    Serial.print(F("Now running "));
+    Serial.print(F("\n\nNow running "));
     Serial.print(sketchName);
     Serial.print(F(" on Logger "));
     Serial.println(LoggerID);
-    Serial.println();
 
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
+    Serial.println();
 
     if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
         Serial.println(F(
@@ -1422,11 +1496,11 @@ void setup()
         digitalWrite(sensorPowerPin, LOW);
     }
 
-    // Set the timezone and offsets
+    // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
-    Logger::setTimeZone(timeZone);
-    // Offset is the same as the time zone because the RTC is in UTC
-    Logger::setTZOffset(timeZone);
+    Logger::setLoggerTimeZone(timeZone);
+    // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
+    Logger::setRTCTimeZone(0);
 
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modem);
@@ -1451,10 +1525,14 @@ void setup()
             dataLogger.getNowEpoch() > 1735689600)  /*After 1/1/2025*/
         {
             // Synchronize the RTC with NIST
-            Serial.println(F("Attempting to synchronize RTC with NIST"));
+            Serial.println(F("Attempting to connect to the internet and synchronize RTC with NIST"));
             if (modem.connectInternet(120000L))
             {
                 dataLogger.setRTClock(modem.getNISTTime());
+            }
+            else
+            {
+                Serial.println(F("Could not connect to internet for clock sync."));
             }
         }
     }
@@ -1520,7 +1598,7 @@ void loop()
     // If the battery is good, send the data to the world
     else
     {
-        dataLogger.logDataAndSend();
+        dataLogger.logDataAndPublish();
     }
 }
 // */
@@ -1576,7 +1654,7 @@ void loop()
             if (modem.connectInternet())
             {
                 // Publish data to remotes
-                dataLogger.sendDataToRemotes();
+                dataLogger.publishDataToRemotes();
 
                 // Sync the clock at midnight
                 if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 0)

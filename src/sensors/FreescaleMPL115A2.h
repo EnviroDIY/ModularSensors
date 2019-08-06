@@ -53,9 +53,11 @@
 
 
 // The main class for the MPL115A2
+// The sensor address is set at 0X60 and cannot be changed
 class MPL115A2 : public Sensor
 {
 public:
+    MPL115A2(TwoWire *theI2C, int8_t powerPin, uint8_t measurementsToAverage = 1);
     MPL115A2(int8_t powerPin, uint8_t measurementsToAverage = 1);
     ~MPL115A2();
 
@@ -65,7 +67,7 @@ public:
     bool addSingleMeasurementResult(void) override;
 protected:
     Adafruit_MPL115A2 mpl115a2_internal;
-    uint8_t _i2cAddressHex;
+    TwoWire *_i2c;
 };
 
 

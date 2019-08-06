@@ -30,14 +30,37 @@
 #include "SensorBase.h"
 #include <Wire.h>
 
+#if defined MS_ATLAS_SOFTWAREWIRE
+#include <SoftwareWire.h>  // Testato's SoftwareWire
+#endif
+
 // A parent class for Atlas sensors
 class AtlasParent : public Sensor
 {
 public:
-    AtlasParent(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurementsToAverage = 1,
+    #if defined MS_ATLAS_SOFTWAREWIRE
+    AtlasParent(SoftwareWire *theI2C, int8_t powerPin,
+                uint8_t i2cAddressHex, uint8_t measurementsToAverage = 1,
                 const char *sensorName = "AtlasSensor", const uint8_t numReturnedVars = 1,
                 uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
                 uint32_t measurementTime_ms = 0);
+    AtlasParent(int8_t powerPin, int8_t dataPin, int8_t clockPin,
+                uint8_t i2cAddressHex, uint8_t measurementsToAverage = 1,
+                const char *sensorName = "AtlasSensor", const uint8_t numReturnedVars = 1,
+                uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
+                uint32_t measurementTime_ms = 0);
+    #else
+    AtlasParent(TwoWire *theI2C, int8_t powerPin,
+                uint8_t i2cAddressHex, uint8_t measurementsToAverage = 1,
+                const char *sensorName = "AtlasSensor", const uint8_t numReturnedVars = 1,
+                uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
+                uint32_t measurementTime_ms = 0);
+    AtlasParent(int8_t powerPin,
+                uint8_t i2cAddressHex, uint8_t measurementsToAverage = 1,
+                const char *sensorName = "AtlasSensor", const uint8_t numReturnedVars = 1,
+                uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
+                uint32_t measurementTime_ms = 0);
+    #endif
     virtual ~AtlasParent();
 
     String getSensorLocation(void) override;
@@ -47,13 +70,22 @@ public:
     // I assume that means we can use the command to take a reading to both
     // wake it and ask for a reading.
     // virtual bool wake(void) override;
+
+    // The function to put the sensor to sleep
+    // The Atlas sensors must be told to sleep
     virtual bool sleep(void) override;
 
     virtual bool startSingleMeasurement(void) override;
     virtual bool addSingleMeasurementResult(void) override;
 
 protected:
-    int8_t _i2cAddressHex;
+    uint8_t _i2cAddressHex;
+    #if defined MS_ATLAS_SOFTWAREWIRE
+    SoftwareWire *_i2c;  // Software Wire
+    bool createdSoftwareWire;
+    #else
+    TwoWire *_i2c;  // Hardware Wire
+    #endif
     // Wait for a command to process
     // NOTE:  This should ONLY be used as a wait when no response is
     // expected except a status code - the response will be "consumed"

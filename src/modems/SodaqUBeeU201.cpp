@@ -19,7 +19,7 @@ SodaqUBeeU201::SodaqUBeeU201(Stream* modemStream,
                              const char *apn,
                              uint8_t measurementsToAverage)
   : loggerModem(powerPin, statusPin, HIGH,
-                modemResetPin, modemSleepRqPin, true,
+                modemResetPin, modemSleepRqPin, false,
                 U201_STATUS_TIME_MS, U201_DISCONNECT_TIME_MS,
                 U201_WARM_UP_TIME_MS, U201_ATRESPONSE_TIME_MS,
                 U201_SIGNALQUALITY_TIME_MS,
@@ -58,7 +58,10 @@ bool SodaqUBeeU201::modemWakeFxn(void)
     // SARA/LISA U2/G2 and SARA G3 series turn on when power is applied
     // No pulsing required in this case
     if (_powerPin >= 0)
+    {
+        digitalWrite(_modemSleepRqPin, HIGH);  // to make sure it's set to something
         return true;
+    }
     if (_modemSleepRqPin >= 0)
     {
         MS_DBG(F("Sending a wake-up pulse on pin"), _modemSleepRqPin, F("for Sodaq UBee U201"));

@@ -15,14 +15,46 @@
 // Included Dependencies
 #include "AtlasScientificEC.h"
 
-// Constructor
-AtlasScientificEC::AtlasScientificEC(int8_t powerPin, uint8_t i2cAddressHex,
-                  uint8_t measurementsToAverage)
- : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
+// Constructors
+#if defined MS_ATLAS_SOFTWAREWIRE
+AtlasScientificEC::AtlasScientificEC(SoftwareWire *theI2C, int8_t powerPin,
+                                     uint8_t i2cAddressHex,
+                                     uint8_t measurementsToAverage)
+  : AtlasParent(theI2C, powerPin,
+                i2cAddressHex, measurementsToAverage,
                 "AtlasScientificEC", ATLAS_COND_NUM_VARIABLES,
                 ATLAS_COND_WARM_UP_TIME_MS, ATLAS_COND_STABILIZATION_TIME_MS,
                 ATLAS_COND_MEASUREMENT_TIME_MS)
 {}
+AtlasScientificEC::AtlasScientificEC(int8_t powerPin, int8_t dataPin, int8_t clockPin,
+                                     uint8_t i2cAddressHex,
+                                     uint8_t measurementsToAverage)
+  : AtlasParent(powerPin, dataPin, clockPin,
+                i2cAddressHex, measurementsToAverage,
+                "AtlasScientificEC", ATLAS_COND_NUM_VARIABLES,
+                ATLAS_COND_WARM_UP_TIME_MS, ATLAS_COND_STABILIZATION_TIME_MS,
+                ATLAS_COND_MEASUREMENT_TIME_MS)
+{}
+#else
+AtlasScientificEC::AtlasScientificEC(TwoWire *theI2C, int8_t powerPin,
+                                     uint8_t i2cAddressHex,
+                                     uint8_t measurementsToAverage)
+  : AtlasParent(theI2C, powerPin,
+                i2cAddressHex, measurementsToAverage,
+                "AtlasScientificEC", ATLAS_COND_NUM_VARIABLES,
+                ATLAS_COND_WARM_UP_TIME_MS, ATLAS_COND_STABILIZATION_TIME_MS,
+                ATLAS_COND_MEASUREMENT_TIME_MS)
+{}
+AtlasScientificEC::AtlasScientificEC(int8_t powerPin,
+                                     uint8_t i2cAddressHex,
+                                     uint8_t measurementsToAverage)
+  : AtlasParent(powerPin,
+                i2cAddressHex, measurementsToAverage,
+                "AtlasScientificEC", ATLAS_COND_NUM_VARIABLES,
+                ATLAS_COND_WARM_UP_TIME_MS, ATLAS_COND_STABILIZATION_TIME_MS,
+                ATLAS_COND_MEASUREMENT_TIME_MS)
+{}
+#endif
 // Destructor
 AtlasScientificEC::~AtlasScientificEC(){}
 
@@ -39,27 +71,27 @@ bool AtlasScientificEC::setup()
     waitForWarmUp();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report conductivity"));
-    Wire.beginTransmission(_i2cAddressHex);
-    success &= Wire.write("O,EC,1");  // Enable conductivity
-    success &= !Wire.endTransmission();
+    _i2c->beginTransmission(_i2cAddressHex);
+    success &= _i2c->write((const uint8_t *)"O,EC,1", 6);  // Enable conductivity
+    success &= !_i2c->endTransmission();
     success &= waitForProcessing();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report total dissolved solids"));
-    Wire.beginTransmission(_i2cAddressHex);
-    success &= Wire.write("O,TDS,1");  // Enable total dissolved solids
-    success &= !Wire.endTransmission();
+    _i2c->beginTransmission(_i2cAddressHex);
+    success &= _i2c->write((const uint8_t *)"O,TDS,1", 7);  // Enable total dissolved solids
+    success &= !_i2c->endTransmission();
     success &= waitForProcessing();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report salinity"));
-    Wire.beginTransmission(_i2cAddressHex);
-    success &= Wire.write("O,S,1");  // Enable salinity
-    success &= !Wire.endTransmission();
+    _i2c->beginTransmission(_i2cAddressHex);
+    success &= _i2c->write((const uint8_t *)"O,S,1", 5);  // Enable salinity
+    success &= !_i2c->endTransmission();
     success &= waitForProcessing();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report specific gravity"));
-    Wire.beginTransmission(_i2cAddressHex);
-    success &= Wire.write("O,SG,1");  // Enable specific gravity
-    success &= !Wire.endTransmission();
+    _i2c->beginTransmission(_i2cAddressHex);
+    success &= _i2c->write((const uint8_t *)"O,SG,1", 6);  // Enable specific gravity
+    success &= !_i2c->endTransmission();
     success &= waitForProcessing();
 
     if (!success)

@@ -128,12 +128,13 @@ public:
     // This has the same functionality as Client->close with debugging text
     // void closeTCP(void);
     // Special sleep and power function for the modem
-    void modemPowerUp(void);
+    virtual void modemPowerUp(void);
     bool modemSleepPowerDown(void);
 
     // Get the time from NIST via TIME protocol (rfc868)
     // This would be much more efficient if done over UDP, but I'm doing it
     // over TCP because I don't have a UDP library for all the modems.
+    // NOTE:  The return is the number of seconds since Jan 1, 1970 IN UTC
     virtual uint32_t getNISTTime(void) = 0;
 
 protected:
@@ -147,13 +148,15 @@ protected:
     // Other helper functions
     void modemLEDOn(void);
     void modemLEDOff(void);
-    void modemHardReset(void);
+    virtual void modemHardReset(void);
     virtual bool didATRespond(void) = 0;
     virtual bool isInternetAvailable(void) = 0;
     virtual bool verifyMeasurementComplete(bool debug = false) = 0;
     virtual bool modemSleepFxn(void) = 0;
     virtual bool modemWakeFxn(void) = 0;
     virtual bool extraModemSetup(void) = 0;
+
+    uint32_t parseNISTBytes(byte nistBytes[4]);
 
     // Helper to set the timing for specific cellular chipsets based on their documentation
     // void setModemTiming(void);

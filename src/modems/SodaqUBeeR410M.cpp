@@ -20,7 +20,7 @@ SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial* modemStream,
                                const char *apn,
                                uint8_t measurementsToAverage)
   : loggerModem(powerPin, statusPin, HIGH,
-                modemResetPin, modemSleepRqPin, true,
+                modemResetPin, modemSleepRqPin, false,
                 R410M_STATUS_TIME_MS, R410M_DISCONNECT_TIME_MS,
                 R410M_WARM_UP_TIME_MS, R410M_ATRESPONSE_TIME_MS,
                 R410M_SIGNALQUALITY_TIME_MS,
@@ -44,7 +44,7 @@ SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream,
                                const char *apn,
                                uint8_t measurementsToAverage)
   : loggerModem(powerPin, statusPin, HIGH,
-                modemResetPin, modemSleepRqPin,
+                modemResetPin, modemSleepRqPin, false,
                 R410M_STATUS_TIME_MS, R410M_DISCONNECT_TIME_MS,
                 R410M_WARM_UP_TIME_MS, R410M_ATRESPONSE_TIME_MS,
                 R410M_SIGNALQUALITY_TIME_MS,
@@ -86,7 +86,21 @@ bool SodaqUBeeR410M::modemWakeFxn(void)
     {
         MS_DBG(F("Sending a wake-up pulse on pin"), _modemSleepRqPin, F("for Sodaq UBee R410M"));
         digitalWrite(_modemSleepRqPin, LOW);
-        delay(200);  // 0.15-3.2s pulse for wake on SARA R4/N4
+
+        // If possible, monitor the v_int pin waiting for it to become high before ending pulse
+        if (_dataPin >= 0)
+        {
+            uint32_t startTimer = millis();
+            // 0.15-3.2s pulse for wake on SARA R4/N4 (ie, max is 3.2s)
+            // Wait no more than 3.2s
+            while (digitalRead(_dataPin) != _statusLevel && millis() - startTimer < 3200L) {}
+            MS_DBG(F("Status pin came on after"), millis() - startTimer, F("ms"));
+            // But at least 0.15s
+            while (millis() - startTimer < 150) {}
+            MS_DBG(F("Pulsed for"), millis() - startTimer, F("ms"));
+        }
+        else delay(200);  // 0.15-3.2s pulse for wake on SARA R4/N4
+
         digitalWrite(_modemSleepRqPin, HIGH);
         // Need to slow down R4/N4's default 115200 baud rate for slow processors
         // The baud rate setting is NOT saved to non-volatile memory, so it must
@@ -94,7 +108,8 @@ bool SodaqUBeeR410M::modemWakeFxn(void)
         #if F_CPU == 8000000L
         if (_powerPin >= 0)
         {
-            delay(4600);  // Must wait for UART port to become active
+            MS_DBG(F("Waiting for UART to become active and requesting a slower baud rate."));
+            delay(R410M_ATRESPONSE_TIME_MS + 250);  // Must wait for UART port to become active
             _modemSerial->begin(115200);
             gsmModem.setBaud(9600);
             _modemSerial->end();
@@ -134,4 +149,45 @@ bool SodaqUBeeR410M::extraModemSetup(void)
     gsmModem.sendAT(GF("+URAT=7"));
     gsmModem.waitResponse();
     return true;
+}
+
+
+void SodaqUBeeR410M::modemHardReset(void)
+{
+    if (_modemResetPin >= 0)
+    {
+        MS_DBG(F("Doing a hard reset.  This takes 10s, be patient."));
+        digitalWrite(_modemResetPin, LOW);
+        delay(10000L);
+        digitalWrite(_modemResetPin, HIGH);
+        // Re-set _millisSensorActivated  - the hard reset is a new activation
+        _millisSensorActivated = millis();
+        // Unset the flag for prior communication failure
+        previousCommunicationFailed = false;
+    }
+}
+
+
+void SodaqUBeeR410M::modemPowerUp(void)
+{
+    if (_powerPin >= 0)
+    {
+        if (_modemSleepRqPin >= 0)
+        {
+            // The PWR_ON pin MUST be high at power up.
+            digitalWrite(_modemSleepRqPin, HIGH);
+        }
+        MS_DBG(F("Powering"), getSensorName(), F("with pin"), _powerPin);
+        digitalWrite(_powerPin, HIGH);
+        // Mark the time that the sensor was powered
+        _millisPowerOn = millis();
+    }
+    else
+    {
+        MS_DBG(F("Power to"), getSensorName(), F("is not controlled by this library."));
+        // Mark the power-on time, just in case it had not been marked
+        if (_millisPowerOn == 0) _millisPowerOn = millis();
+    }
+    // Set the status bit for sensor power attempt (bit 1) and success (bit 2)
+    _sensorStatus |= 0b00000110;
 }

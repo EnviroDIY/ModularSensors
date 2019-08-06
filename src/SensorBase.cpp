@@ -279,8 +279,8 @@ bool Sensor::startSingleMeasurement(void)
 void Sensor::registerVariable(int sensorVarNum, Variable* var)
 {
     variables[sensorVarNum] = var;
-    MS_DBG(F("... Registration from"), getSensorNameAndLocation(), F("for"),
-           var->getVarName(), F("accepted."));
+    /*MS_DBG(F("... Registration from"), getSensorNameAndLocation(), F("for"),
+           var->getVarName(), F("accepted."));*/
 }
 
 

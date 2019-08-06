@@ -26,11 +26,20 @@
 
 // The constructor - because this is I2C, only need the power pin
 // This sensor has a set I2C address of 0x60.
+MPL115A2::MPL115A2(TwoWire *theI2C, int8_t powerPin, uint8_t measurementsToAverage)
+  : Sensor("MPL115A2", MPL115A2_NUM_VARIABLES,
+           MPL115A2_WARM_UP_TIME_MS, MPL115A2_STABILIZATION_TIME_MS, MPL115A2_MEASUREMENT_TIME_MS,
+           powerPin, -1, measurementsToAverage)
+{
+    _i2c = theI2C;
+}
 MPL115A2::MPL115A2(int8_t powerPin, uint8_t measurementsToAverage)
-     : Sensor("MPL115A2", MPL115A2_NUM_VARIABLES,
-              MPL115A2_WARM_UP_TIME_MS, MPL115A2_STABILIZATION_TIME_MS, MPL115A2_MEASUREMENT_TIME_MS,
-              powerPin, -1, measurementsToAverage)
-{}
+  : Sensor("MPL115A2", MPL115A2_NUM_VARIABLES,
+           MPL115A2_WARM_UP_TIME_MS, MPL115A2_STABILIZATION_TIME_MS, MPL115A2_MEASUREMENT_TIME_MS,
+           powerPin, -1, measurementsToAverage)
+{
+    _i2c = &Wire;
+}
 // Destructor
 MPL115A2::~MPL115A2(){}
 
@@ -50,7 +59,7 @@ bool MPL115A2::setup(void)
 
     // Run the sensor begin()
     // This doesn't return anything to indicate failure or success, we just have to hope
-    mpl115a2_internal.begin();
+    mpl115a2_internal.begin(_i2c);
 
     // Turn the power back off it it had been turned on
     if (!wasOn) {powerDown();}

@@ -12,20 +12,29 @@
  *https://paleoterra.nl/
 */
 
+// Header Guards
 #ifndef PaleoTerraRedox_h
 #define PaleoTerraRedox_h
 
-#include <Arduino.h>
+// Debugging Statement
+// #define MS_PALEOTERRAREDOX_DEBUG
 
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+#ifdef MS_PALEOTERRAREDOX_DEBUG
+#define MS_DEBUGGING_STD "PaleoTerraRedox"
+#endif
+
+// Included Dependencies
 #include "ModSensorDebugger.h"
-
-#include "SensorBase.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
-
-#include <SoftI2CMaster.h>
+#include "SensorBase.h"
 #include <Wire.h>
 
+#if defined MS_PALEOTERRA_SOFTWAREWIRE
+#include <SoftwareWire.h>  // Testato's SoftwareWire
+#endif
+
+// Sensor Specific Defines
 #define PTR_NUM_VARIABLES 1
 #define PTR_WARM_UP_TIME_MS 1
 #define PTR_STABILIZATION_TIME_MS 0
@@ -40,22 +49,39 @@
 class PaleoTerraRedox : public Sensor
 {
 public:
-    // The constructor - need the power pin, the I2C data pin (SDA), the I2C
-    // clock pin (SCL), and optionally a number of measurements to average
-    PaleoTerraRedox(int8_t powerPin, int8_t dataPin, int8_t clockPin, uint8_t measurementsToAverage = 1);
+    // The constructor - need the power pin, optionally can give an instance
+    // of TwoWire for I2C communbication, an address, and  a number of
+    // measurements to average
+    #if defined MS_PALEOTERRA_SOFTWAREWIRE
+    PaleoTerraRedox(SoftwareWire *theI2C, int8_t powerPin,
+                    uint8_t i2cAddressHex = MCP3421_ADR,
+                    uint8_t measurementsToAverage = 1);
+    PaleoTerraRedox(int8_t powerPin, int8_t dataPin, int8_t clockPin,
+                    uint8_t i2cAddressHex = MCP3421_ADR,
+                    uint8_t measurementsToAverage = 1);
+    #else
+    PaleoTerraRedox(TwoWire *theI2C, int8_t powerPin,
+                    uint8_t i2cAddressHex = MCP3421_ADR,
+                    uint8_t measurementsToAverage = 1);
+    PaleoTerraRedox(int8_t powerPin,
+                    uint8_t i2cAddressHex = MCP3421_ADR,
+                    uint8_t measurementsToAverage = 1);
+    #endif
+    ~PaleoTerraRedox();
 
-    PaleoTerraRedox(int8_t powerPin, uint8_t ADR, uint8_t measurementsToAverage = 1);
-
+    bool setup(void) override;
     String getSensorLocation(void) override;
 
     bool addSingleMeasurementResult(void) override;
 
 private:
-    SoftI2CMaster i2c_soft;
-    uint8_t _dataPin;
-    uint8_t _clockPin;
-    uint8_t _ADR; //Hardware slave address
-    bool HardwareI2C = false; //Default hardware to false
+    uint8_t _i2cAddressHex;
+    #if defined MS_PALEOTERRA_SOFTWAREWIRE
+    SoftwareWire *_i2c;  // Software Wire
+    bool createdSoftwareWire;
+    #else
+    TwoWire *_i2c;  // Hardware Wire
+    #endif
 };
 
 

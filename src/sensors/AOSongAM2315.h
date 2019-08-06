@@ -38,6 +38,7 @@
 #undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
+#include <Adafruit_AM2315.h>
 
 // Sensor Specific Defines
 #define AM2315_NUM_VARIABLES 2
@@ -57,15 +58,18 @@ class AOSongAM2315 : public Sensor
 {
 public:
     // The constructor - because this is I2C, only need the power pin
+    // The sensor address is set at 0XB8 and cannot be changed
+    AOSongAM2315(TwoWire *theI2C, int8_t powerPin, uint8_t measurementsToAverage = 1);
     AOSongAM2315(int8_t powerPin, uint8_t measurementsToAverage = 1);
     // Destructor
     ~AOSongAM2315();
 
     String getSensorLocation(void) override;
 
-    bool setup(void) override;
-
     bool addSingleMeasurementResult(void) override;
+
+private:
+    TwoWire *_i2c;
 };
 
 

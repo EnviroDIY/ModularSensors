@@ -346,21 +346,7 @@ uint32_t specificModem::getNISTTime(void) \
 \
     /* Make TCP connection */ \
     MS_DBG(F("\nConnecting to NIST daytime Server")); \
-    bool connectionMade = false; \
-    if (_modemName.indexOf(F("XBee")) >= 0) \
-    { \
-        /* This is the IP address of time-c-g.nist.gov */ \
-        /* XBee's address lookup falters on time.nist.gov */ \
-        IPAddress ip(129, 6, 15, 30); \
-        connectionMade = gsmClient.connect(ip, 37); \
-        /* Wait again so NIST doesn't refuse us! */ \
-        delay(4000L); \
-        /* Need to send something before connection is made */ \
-        gsmClient.println('!'); \
-        /* Need this delay!  Can get away with 50, but 100 is safer. */ \
-        /*delay(100);*/ \
-    } \
-    else connectionMade = gsmClient.connect("time.nist.gov", 37); \
+    bool connectionMade = gsmClient.connect("time.nist.gov", 37, 15); \
 \
     /* Wait up to 5 seconds for a response */ \
     if (connectionMade) \
@@ -371,32 +357,9 @@ uint32_t specificModem::getNISTTime(void) \
         if (gsmClient.available() >= 4) \
         { \
             MS_DBG(F("NIST responded after"), millis() - start, F("ms")); \
-            /* Response is returned as 32-bit number as soon as connection is made */ \
-            /* Connection is then immediately closed, so there is no need to close it */ \
-            uint32_t secFrom1900 = 0; \
             byte response[4] = {0}; \
-            for (uint8_t i = 0; i < 4; i++) \
-            { \
-                response[i] = gsmClient.read(); \
-                MS_DBG(F("Response Byte"), i, ':', (char)response[i], \
-                           '=', response[i], '=', String(response[i], BIN)); \
-                secFrom1900 += 0x000000FF & response[i]; \
-                /* MS_DBG(F("\nseconds from 1900 after byte:"),String(secFrom1900, BIN)); */ \
-                if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;} \
-            } \
-            MS_DBG(F("Seconds from 1900 returned by NIST (UTC):"), \
-                       secFrom1900, '=', String(secFrom1900, BIN)); \
-\
-            /* Close the TCP connection, just in case */ \
-            gsmClient.stop(); \
-\
-            /* Return the timestamp */ \
-            uint32_t unixTimeStamp = secFrom1900 - 2208988800; \
-            MS_DBG(F("Unix Timestamp returned by NIST (UTC):"), unixTimeStamp, '\n'); \
-            /* If before Jan 1, 2017 or after Jan 1, 2030, most likely an error */ \
-            if (unixTimeStamp < 1483228800) return 0; \
-            else if (unixTimeStamp > 1893456000) return 0; \
-            else return unixTimeStamp; \
+            gsmClient.read(response, 4); \
+            return parseNISTBytes(response); \
         } \
         else \
         { \

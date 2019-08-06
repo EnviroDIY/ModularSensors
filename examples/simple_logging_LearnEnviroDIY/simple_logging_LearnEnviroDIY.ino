@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.22.3
+This example sketch is written for ModularSensors library version 0.24.0
 
 This sketch is an example of logging data to an SD card
 
@@ -26,7 +26,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.22.3";
+const char *libraryVersion = "0.24.0";
 // The name of this file
 const char *sketchName = "simple_logging.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -195,11 +195,11 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
-    // Set the timezone and offsets
+    // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
-    Logger::setTimeZone(timeZone);
-    // Offset is the same as the time zone because the RTC is in UTC
-    Logger::setTZOffset(timeZone);
+    Logger::setLoggerTimeZone(timeZone);
+    // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
+    Logger::setRTCTimeZone(0);
 
     // Set information pins
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);

@@ -57,7 +57,6 @@ MS_MODEM_GET_MODEM_BATTERY_NA(EspressifESP8266);
 MS_MODEM_GET_MODEM_TEMPERATURE_NA(EspressifESP8266);
 MS_MODEM_CONNECT_INTERNET(EspressifESP8266);
 MS_MODEM_DISCONNECT_INTERNET(EspressifESP8266);
-MS_MODEM_GET_NIST_TIME(EspressifESP8266);
 
 
 // A helper function to wait for the esp to boot and immediately change some settings
@@ -85,7 +84,7 @@ bool EspressifESP8266::ESPwaitForBoot(void)
         }
         // Have to make sure echo is off or all AT commands will be confused
         gsmModem.sendAT(GF("E0"));
-        success &= gsmModem.waitResponse() == 1;
+        gsmModem.waitResponse();  // Will return "ERROR" if echo wasn't on
         // re-run init to set mux and station mode
         success &= gsmModem.init();
         gsmClient.init(&gsmModem);
@@ -101,6 +100,7 @@ bool EspressifESP8266::modemWakeFxn(void)
     bool success = true;
     if (_powerPin >= 0)  // Turns on when power is applied
     {
+        digitalWrite(_modemSleepRqPin, HIGH);  // Pick a state
         success &= ESPwaitForBoot();
         return success;
     }
@@ -121,6 +121,9 @@ bool EspressifESP8266::modemWakeFxn(void)
         digitalWrite(_modemSleepRqPin, LOW);
         delay(1);
         digitalWrite(_modemSleepRqPin, HIGH);
+        // Have to make sure echo is off or all AT commands will be confused
+        gsmModem.sendAT(GF("E0"));
+        success &= gsmModem.waitResponse() == 1;
         // Don't have to wait for a boot if using light sleep
         return true;
     }
@@ -217,7 +220,8 @@ bool EspressifESP8266::startSingleMeasurement(void)
 
     // The SSID and password need to be set before the ESP8266m can join a
     //network and get signal strength
-    success &= gsmModem.networkConnect(_ssid, _pwd);
+    bool alreadyConnect = gsmModem.isNetworkConnected();
+    if (!alreadyConnect) success &= gsmModem.networkConnect(_ssid, _pwd);
 
     if (success)
     {
@@ -233,4 +237,45 @@ bool EspressifESP8266::startSingleMeasurement(void)
     }
 
     return success;
+}
+
+
+
+// Get the time from NIST via TIME protocol (rfc868)
+// This would be much more efficient if done over UDP, but I'm doing it
+// over TCP because I don't have a UDP library for all the modems.
+uint32_t EspressifESP8266::getNISTTime(void)
+{
+    // NOTE:  For the ESP, we're not checking for internet connection first
+
+    /* Must ensure that we do not ping the daylight more than once every 4 seconds */
+    /* NIST clearly specifies here that this is a requirement for all software */
+    /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
+    while (millis() < _lastNISTrequest + 4000) {}
+
+    /* Make TCP connection */
+    MS_DBG(F("\nConnecting to NIST daytime Server"));
+    bool connectionMade = gsmClient.connect("time.nist.gov", 37, 15);
+
+    /* Wait up to 5 seconds for a response */
+    if (connectionMade)
+    { \
+        uint32_t start = millis();
+        while (gsmClient && gsmClient.available() < 4 && millis() - start < 5000L){}
+
+        if (gsmClient.available() >= 4)
+        {
+            MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
+            byte response[4] = {0};
+            gsmClient.read(response, 4);
+            return parseNISTBytes(response);
+        }
+        else
+        {
+            MS_DBG(F("NIST Time server did not respond!"));
+            return 0;
+        }
+    }
+    else MS_DBG(F("Unable to open TCP to NIST!"));
+    return 0;
 }

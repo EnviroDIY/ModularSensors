@@ -35,6 +35,10 @@
 #include "SensorBase.h"
 #include <Wire.h>
 
+#if defined MS_RAIN_SOFTWAREWIRE
+#include <SoftwareWire.h>  // Testato's SoftwareWire
+#endif
+
 // Sensor Specific Defines
 #define BUCKET_NUM_VARIABLES 2
 #define BUCKET_WARM_UP_TIME_MS 0
@@ -54,7 +58,16 @@ public:
     // The constructor - all arguments are optional
     // Address of I2C device is 0x08 by default
     // Depth of rain per tip event in mm is 0.2mm by default
+    #if defined MS_RAIN_SOFTWAREWIRE
+    RainCounterI2C(SoftwareWire *theI2C, uint8_t i2cAddressHex = 0x08,
+                   float rainPerTip = 0.2);
+    RainCounterI2C(int8_t powerPin, int8_t dataPin, int8_t clockPin,
+                   uint8_t i2cAddressHex = 0x08, float rainPerTip = 0.2);
+    #else
+    RainCounterI2C(TwoWire *theI2C, uint8_t i2cAddressHex = 0x08,
+                   float rainPerTip = 0.2);
     RainCounterI2C(uint8_t i2cAddressHex = 0x08, float rainPerTip = 0.2);
+    #endif
     // Destructor
     ~RainCounterI2C();
 
@@ -65,6 +78,12 @@ public:
 protected:
     float _rainPerTip;
     uint8_t _i2cAddressHex;
+    #if defined MS_RAIN_SOFTWAREWIRE
+    SoftwareWire *_i2c;  // Software Wire
+    bool createdSoftwareWire;
+    #else
+    TwoWire *_i2c;  // Hardware Wire
+    #endif
 };
 
 // Defines the tip varible, shows the number of tips since last read

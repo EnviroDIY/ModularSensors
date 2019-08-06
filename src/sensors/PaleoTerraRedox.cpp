@@ -15,92 +15,122 @@
 #include "PaleoTerraRedox.h"
 
 
-// The constructor for software mode- need the power pin, data pin, and type of DHT
-PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin, int8_t dataPin, int8_t clockPin, uint8_t measurementsToAverage)
+// Constructors
+#if defined MS_PALEOTERRA_SOFTWAREWIRE
+PaleoTerraRedox::PaleoTerraRedox(SoftwareWire *theI2C, int8_t powerPin,
+                                 uint8_t i2cAddressHex, uint8_t measurementsToAverage)
     : Sensor("PaleoTerraRedox", PTR_NUM_VARIABLES,
              PTR_WARM_UP_TIME_MS, PTR_STABILIZATION_TIME_MS, PTR_MEASUREMENT_TIME_MS,
-             powerPin, dataPin, measurementsToAverage),
-    i2c_soft(dataPin, clockPin, 0)
+             powerPin, -1, measurementsToAverage)
 {
-    _dataPin = dataPin;
-    _clockPin = clockPin;
+    _i2cAddressHex = i2cAddressHex;
+    _i2c = theI2C;
+    createdSoftwareWire = false;
 }
-
-// The constructor for hardware mode- need the power pin, and ADR
-PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin, uint8_t ADR, uint8_t measurementsToAverage)
+PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin, int8_t dataPin, int8_t clockPin,
+                                 uint8_t i2cAddressHex, uint8_t measurementsToAverage)
+    : Sensor("PaleoTerraRedox", PTR_NUM_VARIABLES,
+             PTR_WARM_UP_TIME_MS, PTR_STABILIZATION_TIME_MS, PTR_MEASUREMENT_TIME_MS,
+             powerPin, dataPin, measurementsToAverage)
+{
+    _i2cAddressHex = i2cAddressHex;
+    _i2c = new SoftwareWire(dataPin, clockPin);
+    createdSoftwareWire = true;
+}
+#else
+PaleoTerraRedox::PaleoTerraRedox(TwoWire *theI2C, int8_t powerPin,
+                                 uint8_t i2cAddressHex, uint8_t measurementsToAverage)
+    : Sensor("PaleoTerraRedox", PTR_NUM_VARIABLES,
+             PTR_WARM_UP_TIME_MS, PTR_STABILIZATION_TIME_MS, PTR_MEASUREMENT_TIME_MS,
+             powerPin, -1, measurementsToAverage)
+{
+    _i2cAddressHex = i2cAddressHex;
+    _i2c = theI2C;
+}
+PaleoTerraRedox::PaleoTerraRedox(int8_t powerPin,
+                                 uint8_t i2cAddressHex, uint8_t measurementsToAverage)
     : Sensor("PaleoTerraRedox", PTR_NUM_VARIABLES,
              PTR_WARM_UP_TIME_MS, PTR_STABILIZATION_TIME_MS, PTR_MEASUREMENT_TIME_MS,
              powerPin, measurementsToAverage)
 {
-    Wire.begin();
-    _ADR = ADR; //Copy slave address
-    HardwareI2C = true; //Set hardware flag
+    _i2cAddressHex = i2cAddressHex;
+    _i2c = &Wire;
 }
+#endif
+
+
+// Destructors
+#if defined MS_PALEOTERRA_SOFTWAREWIRE
+// If we created a new SoftwareWire instance, we need to destroy it or
+// there will be a memory leak
+PaleoTerraRedox::~PaleoTerraRedox()
+{
+    if (createdSoftwareWire) delete _i2c;
+}
+#else
+PaleoTerraRedox::~PaleoTerraRedox(){}
+#endif
+
 
 
 String PaleoTerraRedox::getSensorLocation(void)
 {
-    String sensorLocation = "";
-    if(HardwareI2C) {  //If using hardware, return address
-        sensorLocation = F("I2C_0x");
-        sensorLocation += String(_ADR, HEX);
-    }
-
-    else{  //If using software, return pins
-        sensorLocation = F("I2C");
-        sensorLocation += String(_dataPin);
-        sensorLocation += F(",");
-        sensorLocation += String(_clockPin);
-    }
-    return sensorLocation;
+    #if defined MS_PALEOTERRA_SOFTWAREWIRE
+    String address = F("SoftwareWire");
+    if (_dataPin >=0) address +=_dataPin;
+    address += F("_0x");
+    #else
+    String address = F("I2C_0x");
+    #endif
+    address += String(_i2cAddressHex, HEX);
+    return address;
 }
+
+
+bool PaleoTerraRedox::setup(void)
+{
+    _i2c->begin();  // Start the wire library (sensor power not required)
+    // Eliminate any potential extra waits in the wire library
+    // These waits would be caused by a readBytes or parseX being called
+    // on wire after the Wire buffer has emptied.  The default stream
+    // functions - used by wire - wait a timeout period after reading the
+    // end of the buffer to see if an interrupt puts something into the
+    // buffer.  In the case of the Wire library, that will never happen and
+    // the timeout period is a useless delay.
+    _i2c->setTimeout(0);
+    return Sensor::setup();  // this will set pin modes and the setup status bit
+}
+
 
 
 bool PaleoTerraRedox::addSingleMeasurementResult(void)
 {
     bool success = false;
 
-    byte res1 = 0;  //Data transfer values
+    byte res1 = 0;  // Data transfer values
     byte res2 = 0;
     byte res3 = 0;
     byte config = 0;
 
-    float res = 0;  //Calculated voltage in uV
+    float res = 0;  // Calculated voltage in uV
 
     byte i2c_status = -1;
     if (_millisMeasurementRequested > 0)
     {
-        if(HardwareI2C) {
-            Wire.beginTransmission(_ADR);
-            Wire.write(B10001100);  // initiate conversion, One-Shot mode, 18 bits, PGA x1
-            i2c_status = Wire.endTransmission();
+        _i2c->beginTransmission(_i2cAddressHex);
+        _i2c->write(B10001100);  // initiate conversion, One-Shot mode, 18 bits, PGA x1
+        i2c_status = _i2c->endTransmission();
 
-            delay(300);
+        delay(300);
 
-            Wire.requestFrom(_ADR, 4); //Get 4 bytes from device
-            res1 = Wire.read();
-            res2 = Wire.read();
-            res3 = Wire.read();
-            config = Wire.read();
-        }
-
-        else {
-            i2c_status = i2c_soft.beginTransmission(MCP3421_ADR);
-            i2c_soft.write(B10001100);  // initiate conversion, One-Shot mode, 18 bits, PGA x1
-            i2c_soft.endTransmission();
-
-            delay(300);
-
-            i2c_soft.requestFrom(MCP3421_ADR);
-            res1 = i2c_soft.read();
-            res2 = i2c_soft.read();
-            res3 = i2c_soft.read();
-            config = i2c_soft.readLast();
-            i2c_soft.endTransmission();
-        }
+        _i2c->requestFrom(int(_i2cAddressHex), 4);  // Get 4 bytes from device
+        res1 = _i2c->read();
+        res2 = _i2c->read();
+        res3 = _i2c->read();
+        config = _i2c->read();
 
         res = 0;
-        int sign = bitRead(res1,1); // one but least significant bit
+        int sign = bitRead(res1,1);  // one but least significant bit
         if (sign==1){
             res1 = ~res1; res2 = ~res2; res3 = ~res3; // two's complements
             res = bitRead(res1,0) * -1024; // 256 * 256 * 15.625 uV per LSB = 16
@@ -108,7 +138,7 @@ bool PaleoTerraRedox::addSingleMeasurementResult(void)
             res -= res3 * 0.015625;
             res -= 0.015625;
             } else {
-            res = bitRead(res1,0) * 1024; // 256 * 256 * 15.625 uV per LSB = 16
+            res = bitRead(res1,0) * 1024;  // 256 * 256 * 15.625 uV per LSB = 16
             res += res2 * 4;
             res += res3 * 0.015625;
         }

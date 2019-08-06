@@ -15,17 +15,7 @@
 #ifndef AtlasScientificpH_h
 #define AtlasScientificpH_h
 
-// Debugging Statement
-// #define MS_ATLASSCIENTIFICPH_DEBUG
-
-#ifdef MS_ATLASSCIENTIFICPH_DEBUG
-#define MS_DEBUGGING_STD "AtlasScientificpH"
-#endif
-
 // Included Dependencies
-#include "ModSensorDebugger.h"
-#undef MS_DEBUGGING_STD
-#include "VariableBase.h"
 #include "sensors/AtlasParent.h"
 
 // I2C address
@@ -47,13 +37,45 @@
 class AtlasScientificpH : public AtlasParent
 {
 public:
-    AtlasScientificpH(int8_t powerPin, uint8_t i2cAddressHex = ATLAS_PH_I2C_ADDR,
+    #if defined MS_ATLAS_SOFTWAREWIRE
+    AtlasScientificpH(SoftwareWire *theI2C, int8_t powerPin,
+                      uint8_t i2cAddressHex = ATLAS_PH_I2C_ADDR,
                       uint8_t measurementsToAverage = 1)
-     : AtlasParent(powerPin, i2cAddressHex, measurementsToAverage,
+     : AtlasParent(theI2C, powerPin,
+                   i2cAddressHex, measurementsToAverage,
                    "AtlasScientificpH", ATLAS_PH_NUM_VARIABLES,
                    ATLAS_PH_WARM_UP_TIME_MS, ATLAS_PH_STABILIZATION_TIME_MS,
                    ATLAS_PH_MEASUREMENT_TIME_MS)
     {}
+    AtlasScientificpH(int8_t powerPin, int8_t dataPin, int8_t clockPin,
+                      uint8_t i2cAddressHex = ATLAS_PH_I2C_ADDR,
+                      uint8_t measurementsToAverage = 1)
+     : AtlasParent(powerPin, dataPin, clockPin,
+                   i2cAddressHex, measurementsToAverage,
+                   "AtlasScientificpH", ATLAS_PH_NUM_VARIABLES,
+                   ATLAS_PH_WARM_UP_TIME_MS, ATLAS_PH_STABILIZATION_TIME_MS,
+                   ATLAS_PH_MEASUREMENT_TIME_MS)
+    {}
+    #else
+    AtlasScientificpH(TwoWire *theI2C, int8_t powerPin,
+                      uint8_t i2cAddressHex = ATLAS_PH_I2C_ADDR,
+                      uint8_t measurementsToAverage = 1)
+     : AtlasParent(theI2C, powerPin,
+                   i2cAddressHex, measurementsToAverage,
+                   "AtlasScientificpH", ATLAS_PH_NUM_VARIABLES,
+                   ATLAS_PH_WARM_UP_TIME_MS, ATLAS_PH_STABILIZATION_TIME_MS,
+                   ATLAS_PH_MEASUREMENT_TIME_MS)
+    {}
+    AtlasScientificpH(int8_t powerPin,
+                      uint8_t i2cAddressHex = ATLAS_PH_I2C_ADDR,
+                      uint8_t measurementsToAverage = 1)
+     : AtlasParent(powerPin,
+                   i2cAddressHex, measurementsToAverage,
+                   "AtlasScientificpH", ATLAS_PH_NUM_VARIABLES,
+                   ATLAS_PH_WARM_UP_TIME_MS, ATLAS_PH_STABILIZATION_TIME_MS,
+                   ATLAS_PH_MEASUREMENT_TIME_MS)
+    {}
+    #endif
     ~AtlasScientificpH(){}
 };
 

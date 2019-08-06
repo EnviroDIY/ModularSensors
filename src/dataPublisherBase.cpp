@@ -103,12 +103,13 @@ int dataPublisher::bufferFree(void)
 void dataPublisher::printTxBuffer(Stream *stream)
 {
     // Send the out buffer so far to the serial for debugging
-    #if defined(MS_DATAPUBLISHERBASE_DEBUG)
+    #if defined(STANDARD_SERIAL_OUTPUT)
         STANDARD_SERIAL_OUTPUT.write(txBuffer, strlen(txBuffer));
         PRINTOUT('\n');
         STANDARD_SERIAL_OUTPUT.flush();
     #endif
     stream->write(txBuffer, strlen(txBuffer));
+    stream->print("\r\n");
     stream->flush();
 
     // empty the buffer after printing it
@@ -117,12 +118,21 @@ void dataPublisher::printTxBuffer(Stream *stream)
 
 
 // This sends data on the "default" client of the modem
-int16_t dataPublisher::sendData()
+int16_t dataPublisher::publishData()
 {
     if (_inClient == NULL)
     {
         PRINTOUT(F("ERROR! No web client assigned to publish data!"));
         return 0;
     }
-    else return sendData(_inClient);
+    else return publishData(_inClient);
+}
+// Duplicates for backwards compatibility
+int16_t dataPublisher::sendData(Client *_outClient)
+{
+    return publishData(_outClient);
+}
+int16_t dataPublisher::sendData()
+{
+    return publishData();
 }
