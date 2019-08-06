@@ -93,7 +93,7 @@ protected:
     // This fills the TX buffer with nulls ('\0')
     static void emptyTxBuffer(void);
     // This writes the TX buffer to a stream and also to the debugging port
-    static void printTxBuffer(Stream *stream);
+    static void printTxBuffer(Stream *stream, bool addNewLine = false);
 
     uint8_t _sendEveryX;
     uint8_t _sendOffset;
