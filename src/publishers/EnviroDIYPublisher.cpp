@@ -277,7 +277,7 @@ int16_t EnviroDIYPublisher::publishData(Client *_outClient)
         }
 
         // Send out the finished request (or the last unsent section of it)
-        printTxBuffer(_outClient);
+        printTxBuffer(_outClient, true);
 
         // Wait 10 seconds for a response from the server
         uint32_t start = millis();

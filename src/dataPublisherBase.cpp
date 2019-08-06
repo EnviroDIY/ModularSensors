@@ -100,16 +100,22 @@ int dataPublisher::bufferFree(void)
 
 
 // Sends the tx buffer to a stream and then clears it
-void dataPublisher::printTxBuffer(Stream *stream)
+void dataPublisher::printTxBuffer(Stream *stream, bool addNewLine)
 {
     // Send the out buffer so far to the serial for debugging
     #if defined(STANDARD_SERIAL_OUTPUT)
         STANDARD_SERIAL_OUTPUT.write(txBuffer, strlen(txBuffer));
-        PRINTOUT('\n');
+        if (addNewLine)
+        {
+            PRINTOUT('\n');
+        }
         STANDARD_SERIAL_OUTPUT.flush();
     #endif
     stream->write(txBuffer, strlen(txBuffer));
-    stream->print("\r\n");
+    if (addNewLine) \
+    {
+        stream->print("\r\n");        
+    }
     stream->flush();
 
     // empty the buffer after printing it
