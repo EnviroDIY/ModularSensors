@@ -291,7 +291,7 @@ int16_t EnviroDIYPublisher::publishData(Client *_outClient)
 
         // Close the TCP/IP connection
         MS_DBG(F("Stopping client"));
-        MS_START_DEBUG_TIMER;
+        MS_RESET_DEBUG_TIMER;
         _outClient->stop();
         MS_DBG(F("Client stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     }
