@@ -1,7 +1,8 @@
-# kn_depth - short for keller Nanolevel Depth Monitor
-A ruggidized Modular Sensors Library optomized for a few pieces of communications hardware.
+# kn_depth - keller Nanolevel Depth Monitor
 
-Data Portals configured through a SD card, for more reliable testing and scaling.
+A ruggidized data logger using the Keller Nanolevel and XbeeWiFi module using the Modular Sensors Library. 
+
+Data Portals configured through a SD card, for more reliable testing and scaling. The same .hex can be deployed to many systems, and configured throuhg
 
 To use the internet viewing capability you need a data portal account - sites supported
   (http://data.envirodiy.org/).  After you have registered the site and sensors, the portal will generate a registration token and universally unique identifier (UUID) for each site and further UUID's for each variable.  

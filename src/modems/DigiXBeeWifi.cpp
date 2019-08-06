@@ -51,12 +51,12 @@ bool DigiXBeeWifi::extraModemSetup(void)
     bool success = true;
     MS_DBG(F("Initializing the XBee..."));
     success &= gsmModem.init();
+    if (!success)  MS_DBG(F("Failed init")); 
     gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
-    MS_DBG(F("Putting XBee into command mode..."));
     if (gsmModem.commandMode())
     {
-        MS_DBG(F("Setting I/O Pins..."));
+        MS_DBG( _modemName,F(" in Cmd Mode. Setting I/O Pins..."));
         // Set DIO8 to be used for sleep requests
         // NOTE:  Only pin 9/DIO8/DTR can be used for this function
         gsmModem.sendAT(GF("D8"),1);
@@ -83,19 +83,46 @@ bool DigiXBeeWifi::extraModemSetup(void)
         gsmModem.sendAT(GF("SM"),1);
         success &= gsmModem.waitResponse() == 1;
         // Disassociate from network for lowest power deep sleep
-        gsmModem.sendAT(GF("SO"),200);
+        gsmModem.sendAT(GF("SO"),100);
         success &= gsmModem.waitResponse() == 1;
-        MS_DBG(F("Setting Wifi Network Options..."));
+        if (!success)  MS_DBG(F("Failed Setup"));
+
         // Put the network connection parameters into flash
         success &= gsmModem.networkConnect(_ssid, _pwd);
+        if (success) {MS_DBG(F("Setup Wifi Network "),_ssid);} 
+        else  {MS_DBG(F("Failed Setting WiFi"),_ssid);}
         // Write changes to flash and apply them
         gsmModem.writeChanges();
+
+        #ifdef MS_DIGIXBEEWIFI_DEBUG 
+            MS_DBG(F("Get IP number"));
+            String xbeeRsp;
+            uint8_t index;
+            bool AllocatedIpSuccess = false;
+            for (int mdm_lp=1;mdm_lp<11;mdm_lp++) {
+                delay(mdm_lp*500);
+                gsmModem.sendAT(F("MY"));  // Request IP #
+                index &= gsmModem.waitResponse(1000,xbeeRsp);
+                MS_DBG(F("mdmIP["),toAscii(index),F("]"),xbeeRsp);
+                if (0!=xbeeRsp.compareTo("0.0.0.0")) {
+                    AllocatedIpSuccess = true;
+                    break;
+                }
+                xbeeRsp="";
+            }
+            if (AllocatedIpSuccess) {
+                int16_t rssi, percent;
+                getModemSignalQuality(rssi, percent);
+            }
+        #endif //MS_DIGIXBEEWIFI_DEBUG
         // Exit command mode
         gsmModem.exitCommand();
     }
-    else success = false;
-    if (success) MS_DBG(F("... Setup successful!"));
-    else MS_DBG(F("... failed!"));
+    else 
+    {
+        success = false;
+        MS_DBG( _modemName,F(" failed to set Cmd Mode."));
+    }
     return success;
 }
 
