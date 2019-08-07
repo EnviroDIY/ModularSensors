@@ -1,5 +1,5 @@
 /*****************************************************************************
-kn_depth_Mayfly.cpp   (Keller Nanolevel Depth)
+tu_mon.cpp  TU power Monitor
 Written By:  Neil Hancock from great example /menu_a_la_carte by Sara Damiano
 Development Environment: PlatformIO
 Hardware Platform Supported: EnviroDIY Mayfly Arduino Datalogger
@@ -33,11 +33,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #else
 #define KCONFIG_DEBUG_LEVEL 1
 #endif
-//#define MS_ATLMAYFLY_DEBUG 1
-#ifdef MS_ATLMAYFLY_DEBUG 
-  //enables MS_DBG output to DEBUGGING_SERIAL_OUTPUT
-  #define MS_DEBUGGING_STD
-#endif //MS_ATLMAYFLY_DBG
+#ifdef MS_KN_DEPTH_DEBUG
+#define MS_DEBUGGING_STD "kn_depth"
+#endif //MS_KN_DEPTH_DEBUG
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
+
+
 #if !defined SerialStd
 #define SerialStd STANDARD_SERIAL_OUTPUT
 #endif //SerialStd
@@ -1026,7 +1028,10 @@ TIINA219 ina219(I2CPower, INA219i2c_addr, INA219ReadingsToAvg);
 
 /*TI INA219M High Side Current/Voltage Sensor (Current mA, Voltage, Power)*/
 #include <sensors/TIINA219M.h>
-
+const int8_t I2CPower = -1;//sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+uint8_t INA219i2c_addr = 0x40;  // 1000000 (Board A0+A1=GND)
+// The INA219 can have one of 16 addresses, depending on the connections of A0 and A1
+const uint8_t INA219ReadingsToAvg = 1;
 // Create an INA219 sensor object
 TIINA219M ina219m_phy(I2CPower, INA219i2c_addr, INA219ReadingsToAvg);
 //was TIINA219M ina219_phy(I2CPower);
@@ -1651,7 +1656,7 @@ void setup()
     //SerialStd.begin(SerialStdBaud);
     //#endif
     SerialStd.begin(SerialStdBaud);
-    SerialStd.print(F("\n---Boot. Build date:")); 
+    SerialStd.print(F("\n---Boot. Build date: ")); 
     SerialStd.print(build_date);
     //SerialStd.write('/');
     //SerialStd.print(build_epochTime,HEX);
@@ -1659,6 +1664,7 @@ void setup()
 
     //MCUSR SerialStd.println(mcu_status,HEX);
     //SerialStd.println(file_name); //Dir and filename
+    SerialStd.print(" ");
     SerialStd.print(sketchName); //Dir and filename
     SerialStd.print(" ");
     SerialStd.println(git_branch);
@@ -1671,8 +1677,6 @@ void setup()
     #ifdef RAM_AVAILABLE
         RAM_AVAILABLE;
     #endif //RAM_AVAILABLE
-
-
 
     // A vital check on power availability
     do {
@@ -1698,13 +1702,11 @@ void setup()
             SerialStd.println(F("----Wakeup"));
         }
     } while (LiBattPower_Unseable); 
-    //MS_DBG(F("Good BatV="),mcuBoard.getBatteryVm1(false));
-    SerialStd.print(F("\nGood BatV="));
+    SerialStd.print(F("Good BatV="));
     SerialStd.print(mcuBoard.getBatteryVm1(false));        
-    SerialStd.println();
     /////// Measured LiIon voltage is good enough to start up
 
-    SerialStd.print(F("Using ModularSensors Library version "));
+    SerialStd.print(F("\nUsing ModularSensors Library version "));
     SerialStd.println(MODULAR_SENSORS_VERSION);
 
     if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
@@ -1754,6 +1756,9 @@ void setup()
     Serial.println(F("---parseIni "));
     dataLogger.parseIniSd(configIniID_def,inihUnhandledFn);
 #endif //USE_SD_MAYFLY_INI
+    const float customAmpMult=2.5;
+    ina219m_phy.setCustomAmpMult((float *) &customAmpMult);
+    Serial.print(ina219m_phy.which_sensors_active());
 
 #if 0
     SerialStd.print(F(" .ini-Logger:"));
@@ -1802,29 +1807,23 @@ void setup()
     {
         pinMode(sensorPowerPin, OUTPUT);
         digitalWrite(sensorPowerPin, LOW);
+        MS_DBG(F("Set sensorPowerPin "),sensorPowerPin);
     }
 
     // Set up the sleep/wake pin for the modem and put its inital value as "off"
-    #if defined TINY_GSM_MODEM_SIM800 && defined SIM800_GPRSBEE_R6  // ONLY FOR GPRSBee R6!!!!
-        if (modemSleepRqPin >= 0)
-        {
-            pinMode(modemSleepRqPin, OUTPUT);
-            digitalWrite(modemSleepRqPin, LOW);
-        }
-    #else
-        if (modemSleepRqPin >= 0)
-        {
-            pinMode(modemSleepRqPin, OUTPUT);
-            digitalWrite(modemSleepRqPin, HIGH); //Def sleep
-            MS_DBG(F("Set Sleep on modemSleepRqPin "),modemSleepRqPin);
-        }
-        if (modemResetPin >= 0)
-        {
-            pinMode(modemResetPin, OUTPUT);
-            digitalWrite(modemResetPin, HIGH);  //Def noReset
-            MS_DBG(F("Set HIGH/!reset modemResetPin "),modemResetPin);
-        }
-    #endif
+
+    if (modemSleepRqPin >= 0)
+    {
+        pinMode(modemSleepRqPin, OUTPUT);
+        digitalWrite(modemSleepRqPin, HIGH); //Def sleep
+        MS_DBG(F("Set Sleep on modemSleepRqPin "),modemSleepRqPin);
+    }
+    if (modemResetPin >= 0)
+    {
+        pinMode(modemResetPin, OUTPUT);
+        digitalWrite(modemResetPin, HIGH);  //Def noReset
+        MS_DBG(F("Set HIGH/!reset modemResetPin "),modemResetPin);
+    }
 
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
@@ -1895,7 +1894,7 @@ void processSensors()
             return;
         }
         // Print a line to show new reading
-        PRINTOUT(F("---NewReading-----------------------------"));
+        PRINTOUT(F("---NewReading--Complete Sensor Update"));
         MS_DBG(F("Lbatt_V="),mcuBoard.getBatteryVm1(false));
         //PRINTOUT(F("----------------------------\n"));
         #if !defined(CHECK_SLEEP_POWER)
@@ -1910,8 +1909,6 @@ void processSensors()
         modbusSerial.begin(9600);
 #endif // CONFIG_SENSOR_RS485_PHY
         // Do a complete sensor update
-        MS_DBG(F("    Running a complete sensor update...\n"));
-        //_internalArray->completeUpdate();
         varArray.completeUpdate();
 
 #if defined(CONFIG_SENSOR_RS485_PHY)
@@ -1931,7 +1928,7 @@ void processSensors()
         //if Modem  is Cellular then PS_PWR_HEAVY_REQ
         if (PS_LBATT_UNUSEABLE_STATUS==mcuBoard.isBatteryStatusAbove(false,PS_PWR_MEDIUM_REQ)) 
         {          
-            MS_DBG(F("---NewCloud Update CANCELLED---\n"));
+            MS_DBG(F("---NewCloud Update CANCELLED"));
         } else 
         {
             //if (dataLogger._logModem != NULL)
@@ -1939,19 +1936,17 @@ void processSensors()
                 modemPhy.modemPowerUp();
                 if (!modemSetup) {
                     modemSetup = true;
-                    MS_DBG(F("  Modem setup up 1st pass\n"));
+                    MS_DBG(F("  Modem setup up 1st pass"));
                     // The first time thru, setup modem. Can't do it in regular setup due to potential power drain.
                     modemPhy.wake();  // Turn it on to talk
                     //protected ?? modemPhy.extraModemSetup();//setupXBee();
                     nistSyncRtc = true;
                 }
                 // Connect to the network
-                MS_DBG(F("  Connecting to the Internet...\n"));
+                MS_DBG(F("  Connecting to the Internet... "));
                 if (modemPhy.connectInternet())
                 {
-                    MS_DBG(F("  sending..\n"));
-
-                   
+                    MS_DBG(F("  sending... "));
                     // Post the data to the WebSDL
                     dataLogger.sendDataToRemotes();
 
@@ -1973,13 +1968,13 @@ void processSensors()
                     }
 
                     // Disconnect from the network
-                    MS_DBG(F("  Disconnecting from the Internet...\n"));
+                    MS_DBG(F("  Disconnecting from the Internet..."));
                     modemPhy.disconnectInternet();
-                } else {MS_DBG(F("  No internet connection...\n"));}
+                } else {MS_DBG(F("  No internet connection..."));}
                 // Turn the modem off
                 modemPhy.modemSleepPowerDown();
             } //else MS_DBG(F("  No Modem configured.\n"));
-            PRINTOUT(F("---Complete-------------------------------\n"));
+            PRINTOUT(F("---Complete "));
         }
         // Turn off the LED
         //digitalWrite(greenLED, LOW);

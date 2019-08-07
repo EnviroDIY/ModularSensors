@@ -33,11 +33,12 @@
 // #define MS_TIINA219M_DEBUG
 
 #ifdef MS_TIINA219M_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "TIINA219M"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Adafruit_INA219.h>
@@ -82,11 +83,16 @@ public:
     bool addSingleMeasurementResult(void) override;
     void set_active_sensors(uint8_t sensors_mask);
     uint8_t which_sensors_active(void);
+    void setCustomAmpMult(float *newAmpMult); 
+
 
 protected:
     Adafruit_INA219 ina219_phy;
     uint8_t _i2cAddressHex;
     uint8_t _ina219_pollmask;
+
+private:
+    float _ampMult;
 };
 
 

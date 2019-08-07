@@ -65,7 +65,8 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #if PROFILE_NAME == PROFILE01_MAYFLY_AVR
 //**************************************************************************
 
-//Standard 
+//Standard - target TU power Mon using INA219 0-10A, 0-16V
+// Wireless XbeeS6 wiFi and Xbee LTE 
 //This is hardcoded to mean things in ProcessorStats !!!!
 //This defines rev 0.5ba changes for Mayfly. 
 // Rev0.5ba is an enhancement on 0.5b
@@ -116,7 +117,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
   #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
   #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
 #endif // KellerNanolevel_ACT
-//#define INA219M_PHY_ACT 
+#define INA219M_PHY_ACT 1
 #ifdef INA219M_PHY_ACT
   #define INA219M_MA_UUID              "INA219_MA_UUID"
   #define INA219M_VOLT_UUID            "INA219_VOLT_UUID"
@@ -132,9 +133,11 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define ProcessorStats_SampleNumber_UUID  "SampleNumber_UUID"
 #define ProcessorStats_Batt_UUID          "Batt_UUID"
 
-#define ExternalVoltage_ACT 1
-#define ExternalVoltage_Volt0_UUID "Volt0_UUID"
-#define ExternalVoltage_Volt1_UUID "VOLT1_UUID"
+//#define ExternalVoltage_ACT 1
+#ifdef ExternalVoltage_ACT
+  #define ExternalVoltage_Volt0_UUID "Volt0_UUID"
+  #define ExternalVoltage_Volt1_UUID "VOLT1_UUID"
+#endif //ExternalVoltage_ACT
 
 #elif PROFILE_NAME == PROFILE04_ADAFRUIT_FEATHER_M4
   //**************************************************************************

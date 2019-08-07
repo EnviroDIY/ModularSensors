@@ -14,6 +14,7 @@ TIINA219M::TIINA219M(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurement
 {
     _i2cAddressHex  = i2cAddressHex;
     _ina219_pollmask=INA219_POLLMASK_ALL;
+    //_ampMult = 1.0;
 }
 // Destructor
 TIINA219M::~TIINA219M(){};
@@ -60,9 +61,8 @@ bool TIINA219M::setup(void)
 
 bool TIINA219M::wake(void)
 {
-    // Sensor::wake() checks if the power pin is on, setup has been successful,
-    // and sets the wake timestamp and status bits.  If it returns false,
-    // there's no reason to go on.
+    // Sensor::wake() checks if the power pin is on and sets the wake timestamp 
+    // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
 
     // Begin/Init needs to be rerun after every power-up to set the calibration
@@ -90,7 +90,8 @@ bool TIINA219M::addSingleMeasurementResult(void)
 
         // Read values
         if ( INA219_POLLMASK_A & _ina219_pollmask) {
-            current_mA = ina219_phy.getCurrent_mA();
+            current_mA = (ina219_phy.getCurrent_mA() * _ampMult);
+            //current_mA = (ina219_phy.getCurrent_mA());
             if (isnan(current_mA)) current_mA = -9999;
             MS_DBG(F("mA, current: "), current_mA);
         }
@@ -123,4 +124,10 @@ bool TIINA219M::addSingleMeasurementResult(void)
     _sensorStatus &= 0b10011111;
 
     return success;
+}
+
+//Az extensions
+void TIINA219M::setCustomAmpMult(float *newAmpMult) 
+{
+    _ampMult = *newAmpMult;
 }
