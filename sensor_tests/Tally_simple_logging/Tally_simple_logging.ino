@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.22.6
+This example sketch is written for ModularSensors library version 0.23.4
 
 This sketch is an example of logging data to an SD card
 
@@ -26,7 +26,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.22.6";
+const char *libraryVersion = "0.23.4";
 // The name of this file
 const char *sketchName = "simple_logging.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -135,10 +135,10 @@ Variable *calculatedWindSpeed = new Variable(calculateWindSpeed, calculatedVarRe
 #include <VariableArray.h>
 
 Variable *variableList[] = {
-    // new ProcessorStats_SampleNumber(&mcuBoard),
-    // new ProcessorStats_FreeRam(&mcuBoard),
-    // new ProcessorStats_Battery(&mcuBoard),
-    // new MaximDS3231_Temp(&ds3231),
+    new ProcessorStats_SampleNumber(&mcuBoard),
+    new ProcessorStats_FreeRam(&mcuBoard),
+    new ProcessorStats_Battery(&mcuBoard),
+    new MaximDS3231_Temp(&ds3231),
     // Additional sensor variables can be added here, by copying the syntax
     //   for creating the variable pointer (FORM1) from the `menu_a_la_carte.ino` example
     // The example code snippets in the wiki are primarily FORM2.

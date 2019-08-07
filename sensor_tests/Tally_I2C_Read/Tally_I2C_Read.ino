@@ -25,7 +25,8 @@ void setup() {
 	Serial.println("Welcome to the Counting Machine...");  //Obligatory welcome
 	Serial.print("Period = "); Serial.print(Period); Serial.println(" ms"); //Display preset period
 	Serial.print("Status = ");  //Prints status of device, if device is detected, prints PASS, otherwise prints ERROR
-	Stat = Counter.begin();
+	Stat = Counter.begin(); //Initalize counter
+	Counter.Sleep();  //Engage sleep mode
 	if(Stat == 0) Serial.println("PASS");
 	else Serial.println("ERROR");
 	Counter.Clear(); //Clear device count on startup to ensure first reading is valid
