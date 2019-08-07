@@ -15,7 +15,7 @@
 #include <Arduino.h>
 
 // The current library version number
-#define MODULAR_SENSORS_VERSION "0.22.6"
+#define MODULAR_SENSORS_VERSION "0.23.4"
 
 #ifndef STANDARD_SERIAL_OUTPUT
     // #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
@@ -71,10 +71,12 @@
         }
     }
 #define MS_START_DEBUG_TIMER uint32_t start = millis();
+#define MS_RESET_DEBUG_TIMER start = millis();
 #define MS_PRINT_DEBUG_TIMER millis() - start
 #else
     #define MS_DBG(...)
     #define MS_START_DEBUG_TIMER
+    #define MS_RESET_DEBUG_TIMER
     #define MS_PRINT_DEBUG_TIMER
 #endif  // DEBUGGING_SERIAL_OUTPUT
 

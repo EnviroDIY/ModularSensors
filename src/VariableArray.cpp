@@ -29,8 +29,14 @@ void VariableArray::begin(uint8_t variableCount, Variable *variableList[])
 
     _maxSamplestoAverage = countMaxToAverage();
     _sensorCount = getSensorCount();
+    checkVariableUUIDs();
 }
-
+void VariableArray::begin()
+{
+    _maxSamplestoAverage = countMaxToAverage();
+    _sensorCount = getSensorCount();
+    checkVariableUUIDs();
+}
 
 // This counts and returns the number of calculated variables
 uint8_t VariableArray::getCalculatedVariableCount(void)
@@ -68,11 +74,11 @@ bool VariableArray::setupSensors(void)
 {
     bool success = true;
 
-    #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
-    bool deepDebugTiming = true;
-    #else
-    bool deepDebugTiming = false;
-    #endif
+    // #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
+    // bool deepDebugTiming = true;
+    // #else
+    // bool deepDebugTiming = false;
+    // #endif
 
     MS_DBG(F("Beginning setup for sensors and variables..."));
 
@@ -132,8 +138,8 @@ bool VariableArray::setupSensors(void)
                 if (bitRead(arrayOfVars[i]->parentSensor->getStatus(), 0) == 0)
                 {
                     // and if it is already warmed up
-                    if (arrayOfVars[i]->parentSensor->isWarmedUp(deepDebugTiming))
-                    {
+                    // if (arrayOfVars[i]->parentSensor->isWarmedUp(deepDebugTiming))
+                    // {
                         MS_DBG(F("    Set up of"), arrayOfVars[i]->getParentSensorNameAndLocation(),
                                F("..."));
 
@@ -143,7 +149,7 @@ bool VariableArray::setupSensors(void)
 
                         if (!sensorSuccess) {MS_DBG(F("        ... failed!"));}
                         else {MS_DBG(F("        ... succeeded."));}
-                    }
+                    // }
                 }
             }
         }
@@ -904,4 +910,21 @@ uint8_t VariableArray::countMaxToAverage(void)
     }
     // MS_DBG(F("The largest number of measurements to average will be"), numReps);
     return numReps;
+}
+
+
+// Check that all variable have valid UUID's, if they are assigned
+bool VariableArray::checkVariableUUIDs(void)
+{
+    bool success = true;
+    for (uint8_t i = 0; i < _variableCount; i++)
+    {
+        if (!arrayOfVars[i]->checkUUIDFormat()) // Skip non-unique sensors
+        {
+            PRINTOUT(arrayOfVars[i]->getVarCode(), F("has an invalid UUID!"));
+            success = false;
+        }
+    }
+    if (success) PRINTOUT(F("All variable UUID's appear to be correctly formed."));
+    return success;
 }

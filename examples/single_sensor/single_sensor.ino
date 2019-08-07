@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.22.6
+This example sketch is written for ModularSensors library version 0.23.4
 
 This sketch is an example of getting data from a single sensor, in this case, a
 MaxBotix Ultrasonic Range Finder
@@ -24,7 +24,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <VariableBase.h>
 
 // The library version this example was written for
-const char *libraryVersion = "0.22.6";
+const char *libraryVersion = "0.23.4";
 // The name of this file
 const char *sketchName = "single_sensor.ino";
 
@@ -67,7 +67,7 @@ float calcDepth(void)
 // VariableUnit must be a value from http://vocabulary.odm2.org/units/
 Variable waterDepth(calcDepth, 0,
                     "waterDepth", "millimeter",
-                    "sonarDepth", "12345678-abcd-1234-efgh-1234567890ab");
+                    "sonarDepth", "12345678-abcd-1234-ef00-1234567890ab");
 
 
 

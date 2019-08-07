@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.22.6
+This example sketch is written for ModularSensors library version 0.23.4
 
 This shows most of the standard functions of the library at once.
 
@@ -26,7 +26,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.22.6";
+const char *libraryVersion = "0.23.4";
 // The name of this file
 const char *sketchName = "logging_to MMW.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -140,16 +140,16 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 #include <VariableArray.h>
 
 Variable *variableList[] = {
-    new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Temp(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS18_Temp(&ds18, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
+    new BoschBME280_Temp(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
+    new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
+    new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
+    new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab"),
+    new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
+    new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
+    new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
 };
 
 
@@ -174,8 +174,8 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 // ==========================================================================
 // Device registration and sampling feature information can be obtained after
 // registration at https://monitormywatershed.org or https://data.envirodiy.org
-const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
-const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
+const char *registrationToken = "12345678-abcd-1234-ef00-1234567890ab";   // Device registration token
+const char *samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";     // Sampling feature UUID
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>

@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.22.6
+This example sketch is written for ModularSensors library version 0.23.4
 
 This sketch is an example of logging data to an SD card and sending the data to
 both the EnviroDIY data portal as should be used by groups involved with
@@ -28,7 +28,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.22.6";
+const char *libraryVersion = "0.23.4";
 // The name of this file
 const char *sketchName = "DRWI_LTE.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -78,18 +78,19 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem st
 // Network connection information
 const char *apn = "hologram";  // The APN for the gprs connection
 
-// For the u-blox SARA R410M based Digi LTE-M XBee3
-// NOTE:  According to the manual, this should be less stable than transparent
-// mode, but my experience is the complete reverse.
-#include <modems/DigiXBeeLTEBypass.h>
+// For any Digi Cellular XBee's
+// NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global)
+// are more stable used in bypass mode (below)
+// The Telit based Digi XBees (LTE Cat1) can only use this mode.
+#include <modems/DigiXBeeCellularTransparent.h>
 const long modemBaud = 9600;  // All XBee's use 9600 by default
-const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
-DigiXBeeLTEBypass modemXBLTEB(&modemSerial,
-                              modemVccPin, modemStatusPin, useCTSforStatus,
-                              modemResetPin, modemSleepRqPin,
-                              apn);
+const bool useCTSforStatus = false;   // Flag to use the modem CTS pin for status
+DigiXBeeCellularTransparent modemXBCT(&modemSerial,
+                                      modemVccPin, modemStatusPin, useCTSforStatus,
+                                      modemResetPin, modemSleepRqPin,
+                                      apn);
 // Create an extra reference to the modem by a generic name (not necessary)
-DigiXBeeLTEBypass modem = modemXBLTEB;
+DigiXBeeCellularTransparent modem = modemXBCT;
 
 
 // ==========================================================================
@@ -149,15 +150,15 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 #include <VariableArray.h>
 
 Variable *variableList[] = {
-    new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
-    new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
+    new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
+    new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
+    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
+    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-ef00-1234567890ab", "TurbLow"),
+    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-ef00-1234567890ab", "TurbHigh"),
+    new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
+    new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
+    new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
 };
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
@@ -180,8 +181,8 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 // ==========================================================================
 // Device registration and sampling feature information can be obtained after
 // registration at http://data.WikiWatershed.org
-const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
-const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
+const char *registrationToken = "12345678-abcd-1234-ef00-1234567890ab";   // Device registration token
+const char *samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";     // Sampling feature UUID
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>

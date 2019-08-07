@@ -31,22 +31,7 @@
 #ifndef YosemitechY511_h
 #define YosemitechY511_h
 
-// Debugging Statement
-// #define MS_YOSEMITECHY511_DEBUG
-// #define MS_YOSEMITECHY511_DEBUG_DEEP
-
-#ifdef MS_YOSEMITECHY511_DEBUG
-#define MS_DEBUGGING_STD "YosemitechY511"
-#endif
-
-#ifdef MS_YOSEMITECHY511_DEBUG_DEEP
-#define MS_DEBUGGING_DEEP "YosemitechY511"
-#endif
-
 // Included Dependencies
-#include "ModSensorDebugger.h"
-#undef MS_DEBUGGING_STD
-#include "VariableBase.h"
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines

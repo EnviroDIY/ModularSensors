@@ -26,6 +26,7 @@
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 #include "VariableBase.h"
 #include "SensorBase.h"
 
@@ -36,7 +37,7 @@ public:
     // Constructors
     VariableArray();
     VariableArray(uint8_t variableCount, Variable *variableList[]);
-    virtual ~VariableArray();
+    ~VariableArray();
 
     // "Begins" the VariableArray - attaches the number and array of variables
     // Not doing this in the constructor because we expect the VariableArray to
@@ -46,6 +47,7 @@ public:
     // actually have been created unless we wait until in the setup or loop
     // function of the main program.
     void begin(uint8_t variableCount, Variable *variableList[]);
+    void begin();
 
     // Leave the internal variable list public
     Variable **arrayOfVars;
@@ -94,6 +96,7 @@ protected:
 private:
     bool isLastVarFromSensor(int arrayIndex);
     uint8_t countMaxToAverage(void);
+    bool checkVariableUUIDs(void);
 
 #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
     template<typename T>

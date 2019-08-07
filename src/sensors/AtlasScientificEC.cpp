@@ -40,25 +40,25 @@ bool AtlasScientificEC::setup()
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report conductivity"));
     Wire.beginTransmission(_i2cAddressHex);
-    success &= Wire.write("O,EC,1");  // Enable conductivity
+    success &= Wire.write((const uint8_t *)"O,EC,1", 6);  // Enable conductivity
     success &= !Wire.endTransmission();
     success &= waitForProcessing();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report total dissolved solids"));
     Wire.beginTransmission(_i2cAddressHex);
-    success &= Wire.write("O,TDS,1");  // Enable total dissolved solids
+    success &= Wire.write((const uint8_t *)"O,TDS,1", 7);  // Enable total dissolved solids
     success &= !Wire.endTransmission();
     success &= waitForProcessing();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report salinity"));
     Wire.beginTransmission(_i2cAddressHex);
-    success &= Wire.write("O,S,1");  // Enable salinity
+    success &= Wire.write((const uint8_t *)"O,S,1", 5);  // Enable salinity
     success &= !Wire.endTransmission();
     success &= waitForProcessing();
 
     MS_DBG(F("Asking"), getSensorNameAndLocation(), F("to report specific gravity"));
     Wire.beginTransmission(_i2cAddressHex);
-    success &= Wire.write("O,SG,1");  // Enable specific gravity
+    success &= Wire.write((const uint8_t *)"O,SG,1", 6);  // Enable specific gravity
     success &= !Wire.endTransmission();
     success &= waitForProcessing();
 

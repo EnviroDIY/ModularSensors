@@ -48,7 +48,7 @@ Variable::Variable(const uint8_t sensorVarNum,
                    const char *varCode)
   : _sensorVarNum(sensorVarNum)
 {
-    setVarUUID('\0');
+    _uuid = NULL;
     setVarCode(varCode);
     setVarUnit(varUnit);
     setVarName(varName);
@@ -92,14 +92,38 @@ Variable::Variable(float (*calcFxn)(),
 
     // MS_DBG(F("Calculated Variable object created"));
 }
+Variable::Variable(float (*calcFxn)(),
+                   uint8_t decimalResolution,
+                   const char *varName,
+                   const char *varUnit,
+                   const char *varCode)
+  : _sensorVarNum(0)
+{
+    _uuid = NULL;
+    setVarCode(varCode);
+    setVarUnit(varUnit);
+    setVarName(varName);
+    setResolution(decimalResolution);
+
+    isCalculated = true;
+    setCalculation(calcFxn);
+    parentSensor = NULL;
+
+    // When we create the variable, we also want to initialize it with a current
+    // value of -9999 (ie, a bad result).
+    _currentValue = -9999;
+
+    // MS_DBG(F("Calculated Variable object created"));
+}
 Variable::Variable()
   : _sensorVarNum(0),
-    _decimalResolution(0),
-    _varName('\0'),
-    _varUnit('\0'),
-    _varCode('\0'),
-    _uuid('\0')
+    _decimalResolution(0)
 {
+    _varName = NULL;
+    _varUnit = NULL;
+    _varCode = NULL;
+    _uuid = NULL;
+
     isCalculated = true;
     _calcFxn = NULL;
     parentSensor = NULL;
@@ -293,6 +317,53 @@ void Variable::setVarUUID(const char *uuid)
     _uuid = uuid;
     // if (strlen(_uuid) == 0) MS_DBG(F("No UUID assigned"));
     // else MS_DBG(F("Variable UUID is"), _uuid);
+}
+// This checks that the UUID is properly formatted
+bool Variable::checkUUIDFormat(void)
+{
+    // If no UUID, move on
+    if (strlen(_uuid) == 0)
+    {
+        // MS_DBG(F("No UUID assigned to"), getVarCode());
+        return true;
+    }
+
+    // MS_DBG(F("Variable UUID for"), getVarCode(), F("is"), _uuid);
+    // Should be 36 characters long with dashes
+    if (strlen(_uuid) != 36)
+    {
+        MS_DBG(F("UUID length for"), getVarCode(), '(', _uuid, ')',
+               F("is incorrect, should be 36 characters not"), strlen(_uuid));
+        return false;
+    }
+
+    // "12345678-abcd-1234-ef00-1234567890ab"
+    const char * acceptableChars = "0123456789abcdefABCDEF-";
+    if (_uuid[8] != '-' || _uuid[13] != '-' || _uuid[18] != '-' || _uuid[23] != '-')
+    {
+        MS_DBG(F("UUID format for"), getVarCode(), '(', _uuid, ')',
+               F("is incorrect, expecting dashes at positions 9, 14, 19, and 24."));
+        return false;
+    }
+    for (uint8_t i = 0; i < 36; i++)
+    {
+        bool isAcceptable = false;
+        for (uint8_t j = 0; !isAcceptable && j < 23; j++)
+        {
+            if (_uuid[i] == acceptableChars[j])
+            {
+                isAcceptable = true;
+                j = 23;  // Stop the inner loop
+            }
+        }
+        if (!isAcceptable)
+        {
+            MS_DBG(F("UUID for"), getVarCode(), '(', _uuid, ')',
+                   F("has a bad character"), _uuid[i], F("at"), i+1);
+            return false;
+        }
+    }
+    return true;
 }
 
 

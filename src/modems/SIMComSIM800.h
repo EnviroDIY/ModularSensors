@@ -87,6 +87,8 @@ protected:
     bool modemWakeFxn(void) override;
     bool extraModemSetup(void)override;
 
+    void modemPowerUp(void) override;
+
 private:
     const char *_apn;
 

@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.22.6
+This example sketch is written for ModularSensors library version 0.23.4
 
 This shows most of the standard functions of the library at once.
 
@@ -26,7 +26,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.22.6";
+const char *libraryVersion = "0.23.4";
 // The name of this file
 const char *sketchName = "menu_a_la_carte.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -59,9 +59,9 @@ const char *mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
 // Create sample number, battery voltage, and free RAM variable pointers for the processor
-// Variable *mcuBoardBatt = new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *mcuBoardAvailableRAM = new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *mcuBoardBatt = new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *mcuBoardAvailableRAM = new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -360,8 +360,8 @@ DigiXBeeLTEBypass modem = modemXBLTEB;
 
 
 // Create RSSI and signal strength variable pointers for the modem
-// Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -373,7 +373,7 @@ DigiXBeeLTEBypass modem = modemXBLTEB;
 MaximDS3231 ds3231(1);
 
 // Create a temperature variable pointer for the DS3231
-// Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -392,8 +392,8 @@ const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 i
 AtlasScientificCO2 atlasCO2(I2CPower);
 
 // Create concentration and temperature variable pointers for the EZO-CO2
-// Variable *atlasCO2 = new AtlasScientificCO2_CO2(&atlasCO2, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *atlasCO2Temp = new AtlasScientificCO2_Temp(&atlasCO2, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasCO2 = new AtlasScientificCO2_CO2(&atlasCO2, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *atlasCO2Temp = new AtlasScientificCO2_Temp(&atlasCO2, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -412,8 +412,8 @@ AtlasScientificCO2 atlasCO2(I2CPower);
 AtlasScientificDO atlasDO(I2CPower);
 
 // Create concentration and percent saturation variable pointers for the EZO-DO
-// Variable *atlasDOconc = new AtlasScientificDO_DOmgL(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *atlasDOpct = new AtlasScientificDO_DOpct(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasDOconc = new AtlasScientificDO_DOmgL(&atlasDO, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *atlasDOpct = new AtlasScientificDO_DOpct(&atlasDO, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -432,10 +432,10 @@ AtlasScientificDO atlasDO(I2CPower);
 AtlasScientificEC atlasEC(I2CPower);
 
 // Create four variable pointers for the EZO-ES
-// Variable *atlasCond = new AtlasScientificEC_Cond(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *atlasTDS = new AtlasScientificEC_TDS(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *atlasSal = new AtlasScientificEC_Salinity(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *atlasGrav = new AtlasScientificEC_SpecificGravity(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasCond = new AtlasScientificEC_Cond(&atlasEC, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *atlasTDS = new AtlasScientificEC_TDS(&atlasEC, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *atlasSal = new AtlasScientificEC_Salinity(&atlasEC, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *atlasGrav = new AtlasScientificEC_SpecificGravity(&atlasEC, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -454,7 +454,7 @@ AtlasScientificEC atlasEC(I2CPower);
 AtlasScientificORP atlasORP(I2CPower);
 
 // Create a potential variable pointer for the ORP
-// Variable *atlasORPot = new AtlasScientificORP_Potential(&atlasORP, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasORPot = new AtlasScientificORP_Potential(&atlasORP, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -463,7 +463,7 @@ AtlasScientificORP atlasORP(I2CPower);
 #include <sensors/AtlasScientificpH.h>
 
 // const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-// uint8_t AtlaspHi2c_addr = 0x63;  // Default for RTD is 0x63 (99)
+// uint8_t AtlaspHi2c_addr = 0x63;  // Default for pH is 0x63 (99)
 // All Atlas sensors have different default I2C addresses, but any of them can
 // be re-addressed to any 8 bit number.  If using the default address for any
 // Atlas Scientific sensor, you may omit this argument.
@@ -473,7 +473,7 @@ AtlasScientificORP atlasORP(I2CPower);
 AtlasScientificpH atlaspH(I2CPower);
 
 // Create a pH variable pointer for the pH sensor
-// Variable *atlaspHpH = new AtlasScientificpH_pH(&atlaspH, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlaspHpH = new AtlasScientificpH_pH(&atlaspH, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -492,7 +492,7 @@ AtlasScientificpH atlaspH(I2CPower);
 AtlasScientificRTD atlasRTD(I2CPower);
 
 // Create a temperature variable pointer for the RTD
-// Variable *atlasTemp = new AtlasScientificRTD_Temp(&atlasRTD, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *atlasTemp = new AtlasScientificRTD_Temp(&atlasRTD, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -506,8 +506,8 @@ AtlasScientificRTD atlasRTD(I2CPower);
 AOSongAM2315 am2315(I2CPower);
 
 // Create humidity and temperature variable pointers for the AM2315
-// Variable *am2315Humid = new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *am2315Temp = new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *am2315Humid = new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *am2315Temp = new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -523,9 +523,9 @@ DHTtype dhtType = DHT11;  // DHT type, either DHT11, DHT21, or DHT22
 AOSongDHT dht(DHTPower, DHTPin, dhtType);
 
 // Create humidity, temperature, and heat index variable pointers for the DHT
-// Variable *dhtHumid = new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *dhtTemp = new AOSongDHT_Temp(&dht, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *dhtHI = new AOSongDHT_HI(&dht, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *dhtHumid = new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *dhtTemp = new AOSongDHT_Temp(&dht, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *dhtHI = new AOSongDHT_HI(&dht, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -541,7 +541,7 @@ const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
 ApogeeSQ212 SQ212(SQ212Power, SQ212ADSChannel);
 
 // Create a PAR variable pointer for the SQ212
-// Variable *sq212PAR = new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *sq212PAR = new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -558,10 +558,10 @@ uint8_t BMEi2c_addr = 0x76;
 BoschBME280 bme280(I2CPower, BMEi2c_addr);
 
 // Create four variable pointers for the BME280
-// Variable *bme280Humid = new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *bme280Temp = new BoschBME280_Temp(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *bme280Press = new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *bme280Alt = new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *bme280Humid = new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *bme280Temp = new BoschBME280_Temp(&bme280, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *bme280Press = new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *bme280Alt = new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -582,8 +582,8 @@ const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibrati
 CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3NumberReadings);
 
 // Create turbidity and voltage variable pointers for the low range of the OBS3
-// Variable *obs3TurbLow = new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *obs3VoltLow = new CampbellOBS3_Voltage(&osb3low, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *obs3TurbLow = new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *obs3VoltLow = new CampbellOBS3_Voltage(&osb3low, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // Campbell OBS 3+ High Range calibration in Volts
@@ -596,8 +596,8 @@ const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibra
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3NumberReadings);
 
 // Create turbidity and voltage variable pointers for the high range of the OBS3
-// Variable *obs3TurbHigh = new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *obs3VoltHigh = new CampbellOBS3_Voltage(&osb3high, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *obs3TurbHigh = new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *obs3VoltHigh = new CampbellOBS3_Voltage(&osb3high, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -614,9 +614,9 @@ Decagon5TM fivetm(*TMSDI12address, SDI12Power, SDI12Data);
 
 // Create the matric potential, volumetric water content, and temperature
 // variable pointers for the 5TM
-// Variable *fivetmEa = new Decagon5TM_Ea(&fivetm, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *fivetmVWC = new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *fivetmTemp = new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *fivetmEa = new Decagon5TM_Ea(&fivetm, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *fivetmVWC = new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *fivetmTemp = new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -633,9 +633,9 @@ const uint8_t CTDNumberReadings = 6;  // The number of readings to average
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 
 // Create conductivity, temperature, and depth variable pointers for the CTD
-// Variable *ctdCond = new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *ctdTemp = new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *ctdDepth = new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *ctdCond = new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *ctdTemp = new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *ctdDepth = new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -652,8 +652,8 @@ const uint8_t ES2NumberReadings = 3;
 DecagonES2 es2(*ES2SDI12address, SDI12Power, SDI12Data, ES2NumberReadings);
 
 // Create conductivity and temperature variable pointers for the ES2
-// Variable *es2Cond = new DecagonES2_Cond(&es2, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *es2Temp = new DecagonES2_Temp(&es2, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *es2Cond = new DecagonES2_Cond(&es2, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *es2Temp = new DecagonES2_Temp(&es2, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -671,7 +671,7 @@ const uint8_t VoltReadsToAvg = 1;  // Only read one sample
 ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, ADSi2c_addr, VoltReadsToAvg);
 
 // Create a voltage variable pointer
-// Variable *extvoltV = new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *extvoltV = new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -686,8 +686,8 @@ const uint8_t MPL115A2ReadingsToAvg = 1;
 MPL115A2 mpl115a2(I2CPower, MPL115A2ReadingsToAvg);
 
 // Create pressure and temperature variable pointers for the MPL
-// Variable *mplPress = new MPL115A2_Pressure(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *mplTemp = new MPL115A2_Temp(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *mplPress = new MPL115A2_Pressure(&mpl115a2, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *mplTemp = new MPL115A2_Temp(&mpl115a2, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -714,13 +714,13 @@ const int8_t Sonar1Trigger = A1;  // Trigger pin (a unique negative number if un
 MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger) ;
 
 // Create an ultrasonic range variable pointer
-// Variable *sonar1Range = new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *sonar1Range = new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // const int8_t Sonar2Trigger = A2;  // Trigger pin (a unique negative number if unconnected) (D26 = A2)
 // MaxBotixSonar sonar2(sonarSerial, SonarPower, Sonar2Trigger) ;
 // Create an ultrasonic range variable pointer
-// Variable *sonar2Range = new MaxBotixSonar_Range(&sonar2, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *sonar2Range = new MaxBotixSonar_Range(&sonar2, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -741,7 +741,7 @@ MaximDS18 ds18(OneWireAddress1, OneWirePower, OneWireBus);
 // MaximDS18 ds18(OneWirePower, OneWireBus);
 
 // Create a temperature variable pointer for the DS18
-// Variable *ds18Temp = new MaximDS18_Temp(&ds18, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *ds18Temp = new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -758,8 +758,8 @@ const uint8_t MS5803ReadingsToAvg = 1;
 MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803ReadingsToAvg);
 
 // Create pressure and temperature variable pointers for the MS5803
-// Variable *ms5803Press = new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *ms5803Temp = new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *ms5803Press = new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *ms5803Temp = new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -774,8 +774,8 @@ const float depthPerTipEvent = 0.2;  // rain depth in mm per tip event
 RainCounterI2C tbi2c(RainCounterI2CAddress, depthPerTipEvent);
 
 // Create number of tips and rain depth variable pointers for the tipping bucket
-// Variable *tbi2cTips = new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *tbi2cDepth = new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *tbi2cTips = new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *tbi2cDepth = new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -792,9 +792,9 @@ const uint8_t INA219ReadingsToAvg = 1;
 TIINA219 ina219(I2CPower, INA219i2c_addr, INA219ReadingsToAvg);
 
 // Create current, voltage, and power variable pointers for the INA219
-// Variable *inaCurrent = new TIINA219_Current(&ina219, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *inaVolt = new TIINA219_Volt(&ina219, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *inaPower = new TIINA219_Power(&ina219, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *inaCurrent = new TIINA219_Current(&ina219, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *inaVolt = new TIINA219_Volt(&ina219, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *inaPower = new TIINA219_Power(&ina219, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -821,9 +821,9 @@ const uint8_t acculevelNumberReadings = 5;  // The manufacturer recommends takin
 KellerAcculevel acculevel(acculevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, acculevelNumberReadings);
 
 // Create pressure, temperature, and height variable pointers for the Acculevel
-// Variable *acculevPress = new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *acculevTemp = new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *acculevHeight = new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *acculevPress = new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *acculevTemp = new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *acculevHeight = new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -850,9 +850,9 @@ const uint8_t nanolevelNumberReadings = 3;  // The manufacturer recommends takin
 KellerNanolevel nanolevel(nanolevelModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, nanolevelNumberReadings);
 
 // Create pressure, temperature, and height variable pointers for the Nanolevel
-// Variable *nanolevPress = new KellerNanolevel_Pressure(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *nanolevTemp = new KellerNanolevel_Temp(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *nanolevHeight = new KellerNanolevel_Height(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *nanolevPress = new KellerNanolevel_Pressure(&nanolevel, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *nanolevTemp = new KellerNanolevel_Temp(&nanolevel, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *nanolevHeight = new KellerNanolevel_Height(&nanolevel, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -880,9 +880,9 @@ YosemitechY504 y504(y504ModbusAddress, modbusSerial, rs485AdapterPower, modbusSe
 
 // Create the dissolved oxygen percent, dissolved oxygen concentration, and
 // temperature variable pointers for the Y504
-// Variable *y504DOpct = new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *y504DOmgL = new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *y504Temp = new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y504DOpct = new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *y504DOmgL = new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *y504Temp = new YosemitechY504_Temp(&y504, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -909,8 +909,8 @@ const uint8_t y510NumberReadings = 5;  // The manufacturer recommends averaging 
 YosemitechY510 y510(y510ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y510NumberReadings);
 
 // Create turbidity and temperature variable pointers for the Y510
-// Variable *y510Turb = new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *y510Temp = new YosemitechY510_Temp(&y510, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y510Turb = new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *y510Temp = new YosemitechY510_Temp(&y510, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -937,8 +937,8 @@ const uint8_t y511NumberReadings = 5;  // The manufacturer recommends averaging 
 YosemitechY511 y511(y511ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y511NumberReadings);
 
 // Create turbidity and temperature variable pointers for the Y511
-// Variable *y511Turb = new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *y511Temp = new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y511Turb = new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *y511Temp = new YosemitechY511_Temp(&y511, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -965,8 +965,8 @@ const uint8_t y514NumberReadings = 5;  // The manufacturer recommends averaging 
 YosemitechY514 y514(y514ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y514NumberReadings);
 
 // Create chlorophyll concentration and temperature variable pointers for the Y514
-// Variable *y514Chloro = new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *y514Temp = new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y514Chloro = new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *y514Temp = new YosemitechY514_Temp(&y514, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -993,8 +993,8 @@ const uint8_t y520NumberReadings = 5;  // The manufacturer recommends averaging 
 YosemitechY520 y520(y520ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y520NumberReadings);
 
 // Create specific conductance and temperature variable pointers for the Y520
-// Variable *y520Cond = new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y520Cond = new YosemitechY520_Cond(&y520, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -1021,9 +1021,9 @@ const uint8_t y532NumberReadings = 1;  // The manufacturer actually doesn't ment
 YosemitechY532 y532(y532ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y532NumberReadings);
 
 // Create pH, electrical potential, and temperature variable pointers for the Y532
-// Variable *y532Voltage = new YosemitechY532_Voltage(&y532, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *y532pH = new YosemitechY532_pH(&y532, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *y532Temp = new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y532Voltage = new YosemitechY532_Voltage(&y532, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *y532pH = new YosemitechY532_pH(&y532, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *y532Temp = new YosemitechY532_Temp(&y532, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -1050,9 +1050,9 @@ const uint8_t y550NumberReadings = 5;  // The manufacturer recommends averaging 
 YosemitechY550 y550(y550ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y550NumberReadings);
 
 // Create COD, turbidity, and temperature variable pointers for the Y550
-// Variable *y550COD = new YosemitechY550_COD(&y550, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *y550Turbid = new YosemitechY550_Turbidity(&y550, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *y550Temp = new YosemitechY550_Temp(&y550, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y550COD = new YosemitechY550_COD(&y550, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *y550Turbid = new YosemitechY550_Turbidity(&y550, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *y550Temp = new YosemitechY550_Temp(&y550, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -1079,14 +1079,14 @@ const uint8_t y4000NumberReadings = 5;  // The manufacturer recommends averaging
 YosemitechY4000 y4000(y4000ModbusAddress, modbusSerial, rs485AdapterPower, modbusSensorPower, max485EnablePin, y4000NumberReadings);
 
 // Create all of the variable pointers for the Y4000
-// Variable *y4000DO = new YosemitechY4000_DOmgL(&y4000, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *y4000Turb = new YosemitechY4000_Turbidity(&y4000, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *y4000Cond = new YosemitechY4000_Cond(&y4000, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *y4000pH = new YosemitechY4000_pH(&y4000, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *y4000Temp = new YosemitechY4000_Temp(&y4000, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *y4000ORP = new YosemitechY4000_ORP(&y4000, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *y4000Chloro = new YosemitechY4000_Chlorophyll(&y4000, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *y4000BGA = new YosemitechY4000_BGA(&y4000, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *y4000DO = new YosemitechY4000_DOmgL(&y4000, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *y4000Turb = new YosemitechY4000_Turbidity(&y4000, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *y4000Cond = new YosemitechY4000_Cond(&y4000, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *y4000pH = new YosemitechY4000_pH(&y4000, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *y4000Temp = new YosemitechY4000_Temp(&y4000, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *y4000ORP = new YosemitechY4000_ORP(&y4000, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *y4000Chloro = new YosemitechY4000_Chlorophyll(&y4000, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *y4000BGA = new YosemitechY4000_BGA(&y4000, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -1103,9 +1103,9 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 
 // Create dissolved oxygen percent, dissolved oxygen concentration, and
 // temperature variable pointers for the Zebra Tech
-// Variable *dOptoDOpct = new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *dOptoDOmgL = new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab");
-// Variable *dOptoTemp = new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-efgh-1234567890ab");
+// Variable *dOptoDOpct = new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *dOptoDOmgL = new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *dOptoTemp = new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -1133,7 +1133,7 @@ const uint8_t calculatedVarResolution = 3;  // The number of digits after the de
 const char *calculatedVarName = "varName";  // This must be a value from http://vocabulary.odm2.org/variablename/
 const char *calculatedVarUnit = "varUnit";  // This must be a value from http://vocabulary.odm2.org/units/
 const char *calculatedVarCode = "calcVar";  // A short code for the variable
-const char *calculatedVarUUID = "12345678-abcd-1234-efgh-1234567890ab";  // The (optional) universallly unique identifier
+const char *calculatedVarUUID = "12345678-abcd-1234-ef00-1234567890ab";  // The (optional) universallly unique identifier
 
 // Finally, Create a calculated variable pointer and return a variable pointer to it
 Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarResolution,
@@ -1150,92 +1150,92 @@ Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarReso
 // at the same time putting them into an array
 // NOTE:  Forms one and two can be mixed
 Variable *variableList[] = {
-    new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AtlasScientificCO2_CO2(&atlasCO2, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AtlasScientificCO2_Temp(&atlasCO2, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AtlasScientificDO_DOmgL(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AtlasScientificDO_DOpct(&atlasDO, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AtlasScientificEC_Cond(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AtlasScientificEC_TDS(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AtlasScientificEC_Salinity(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AtlasScientificEC_SpecificGravity(&atlasEC, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AtlasScientificORP_Potential(&atlasORP, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AtlasScientificpH_pH(&atlaspH, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AtlasScientificRTD_Temp(&atlasRTD, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongDHT_Temp(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
-    new AOSongDHT_HI(&dht, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Temp(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234567890ab"),
-    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLow"),
-    new CampbellOBS3_Voltage(&osb3low, "12345678-abcd-1234-efgh-1234567890ab", "TurbLowV"),
-    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHigh"),
-    new CampbellOBS3_Voltage(&osb3high, "12345678-abcd-1234-efgh-1234567890ab", "TurbHighV"),
-    new Decagon5TM_Ea(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonES2_Cond(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
-    new DecagonES2_Temp(&es2, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS18_Temp(&ds18, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MPL115A2_Temp(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MPL115A2_Pressure(&mpl115a2, "12345678-abcd-1234-efgh-1234567890ab"),
-    new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab"),
-    new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-efgh-1234567890ab"),
-    new TIINA219_Current(&ina219, "12345678-abcd-1234-efgh-1234567890ab"),
-    new TIINA219_Volt(&ina219, "12345678-abcd-1234-efgh-1234567890ab"),
-    new TIINA219_Power(&ina219, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerNanolevel_Pressure(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerNanolevel_Temp(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab"),
-    new KellerNanolevel_Height(&nanolevel, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY504_Temp(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY510_Temp(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY511_Temp(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY514_Temp(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY520_Temp(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY520_Cond(&y520, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY532_Temp(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY532_Voltage(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY532_pH(&y532, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY4000_DOmgL(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY4000_Turbidity(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY4000_Cond(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY4000_pH(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY4000_Temp(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY4000_ORP(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY4000_Chlorophyll(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
-    new YosemitechY4000_BGA(&y4000, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
-    new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_BatteryState(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_BatteryPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_BatteryVoltage(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
-    new Modem_Temp(&modem, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
+    new AtlasScientificCO2_CO2(&atlasCO2, "12345678-abcd-1234-ef00-1234567890ab"),
+    new AtlasScientificCO2_Temp(&atlasCO2, "12345678-abcd-1234-ef00-1234567890ab"),
+    new AtlasScientificDO_DOmgL(&atlasDO, "12345678-abcd-1234-ef00-1234567890ab"),
+    new AtlasScientificDO_DOpct(&atlasDO, "12345678-abcd-1234-ef00-1234567890ab"),
+    new AtlasScientificEC_Cond(&atlasEC, "12345678-abcd-1234-ef00-1234567890ab"),
+    new AtlasScientificEC_TDS(&atlasEC, "12345678-abcd-1234-ef00-1234567890ab"),
+    new AtlasScientificEC_Salinity(&atlasEC, "12345678-abcd-1234-ef00-1234567890ab"),
+    new AtlasScientificEC_SpecificGravity(&atlasEC, "12345678-abcd-1234-ef00-1234567890ab"),
+    new AtlasScientificORP_Potential(&atlasORP, "12345678-abcd-1234-ef00-1234567890ab"),
+    new AtlasScientificpH_pH(&atlaspH, "12345678-abcd-1234-ef00-1234567890ab"),
+    new AtlasScientificRTD_Temp(&atlasRTD, "12345678-abcd-1234-ef00-1234567890ab"),
+    new AOSongAM2315_Humidity(&am2315, "12345678-abcd-1234-ef00-1234567890ab"),
+    new AOSongAM2315_Temp(&am2315, "12345678-abcd-1234-ef00-1234567890ab"),
+    new AOSongDHT_Humidity(&dht, "12345678-abcd-1234-ef00-1234567890ab"),
+    new AOSongDHT_Temp(&dht, "12345678-abcd-1234-ef00-1234567890ab"),
+    new AOSongDHT_HI(&dht, "12345678-abcd-1234-ef00-1234567890ab"),
+    new ApogeeSQ212_PAR(&SQ212, "12345678-abcd-1234-ef00-1234567890ab"),
+    new BoschBME280_Temp(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
+    new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
+    new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
+    new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-ef00-1234567890ab"),
+    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-ef00-1234567890ab", "TurbLow"),
+    new CampbellOBS3_Voltage(&osb3low, "12345678-abcd-1234-ef00-1234567890ab", "TurbLowV"),
+    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-ef00-1234567890ab", "TurbHigh"),
+    new CampbellOBS3_Voltage(&osb3high, "12345678-abcd-1234-ef00-1234567890ab", "TurbHighV"),
+    new Decagon5TM_Ea(&fivetm, "12345678-abcd-1234-ef00-1234567890ab"),
+    new Decagon5TM_Temp(&fivetm, "12345678-abcd-1234-ef00-1234567890ab"),
+    new Decagon5TM_VWC(&fivetm, "12345678-abcd-1234-ef00-1234567890ab"),
+    new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
+    new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
+    new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
+    new DecagonES2_Cond(&es2, "12345678-abcd-1234-ef00-1234567890ab"),
+    new DecagonES2_Temp(&es2, "12345678-abcd-1234-ef00-1234567890ab"),
+    new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MPL115A2_Temp(&mpl115a2, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MPL115A2_Pressure(&mpl115a2, "12345678-abcd-1234-ef00-1234567890ab"),
+    new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-ef00-1234567890ab"),
+    new RainCounterI2C_Depth(&tbi2c, "12345678-abcd-1234-ef00-1234567890ab"),
+    new TIINA219_Current(&ina219, "12345678-abcd-1234-ef00-1234567890ab"),
+    new TIINA219_Volt(&ina219, "12345678-abcd-1234-ef00-1234567890ab"),
+    new TIINA219_Power(&ina219, "12345678-abcd-1234-ef00-1234567890ab"),
+    new KellerAcculevel_Pressure(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
+    new KellerAcculevel_Temp(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
+    new KellerAcculevel_Height(&acculevel, "12345678-abcd-1234-ef00-1234567890ab"),
+    new KellerNanolevel_Pressure(&nanolevel, "12345678-abcd-1234-ef00-1234567890ab"),
+    new KellerNanolevel_Temp(&nanolevel, "12345678-abcd-1234-ef00-1234567890ab"),
+    new KellerNanolevel_Height(&nanolevel, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY504_DOpct(&y504, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY504_Temp(&y504, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY504_DOmgL(&y504, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY510_Temp(&y510, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY510_Turbidity(&y510, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY511_Temp(&y511, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY511_Turbidity(&y511, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY514_Temp(&y514, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY514_Chlorophyll(&y514, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY520_Temp(&y520, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY520_Cond(&y520, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY532_Temp(&y532, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY532_Voltage(&y532, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY532_pH(&y532, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY4000_DOmgL(&y4000, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY4000_Turbidity(&y4000, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY4000_Cond(&y4000, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY4000_pH(&y4000, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY4000_Temp(&y4000, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY4000_ORP(&y4000, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY4000_Chlorophyll(&y4000, "12345678-abcd-1234-ef00-1234567890ab"),
+    new YosemitechY4000_BGA(&y4000, "12345678-abcd-1234-ef00-1234567890ab"),
+    new ZebraTechDOpto_Temp(&dopto, "12345678-abcd-1234-ef00-1234567890ab"),
+    new ZebraTechDOpto_DOpct(&dopto, "12345678-abcd-1234-ef00-1234567890ab"),
+    new ZebraTechDOpto_DOmgL(&dopto, "12345678-abcd-1234-ef00-1234567890ab"),
+    new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
+    new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
+    new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
+    new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
+    new Modem_BatteryState(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
+    new Modem_BatteryPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
+    new Modem_BatteryVoltage(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
+    new Modem_Temp(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
     calculatedVar,
 };
 
@@ -1275,8 +1275,8 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 // ==========================================================================
 // Device registration and sampling feature information can be obtained after
 // registration at https://monitormywatershed.org or https://data.envirodiy.org
-const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
-const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
+const char *registrationToken = "12345678-abcd-1234-ef00-1234567890ab";   // Device registration token
+const char *samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";     // Sampling feature UUID
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
