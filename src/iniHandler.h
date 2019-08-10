@@ -26,7 +26,7 @@ const char WiFiId_pm[] EDIY_PROGMEM = "WiFiId";
 const char WiFiPwd_pm[] EDIY_PROGMEM = "WiFiPwd";
 
 const char INA219M_MA_MULT_pm[] EDIY_PROGMEM = "INA219M_MA_MULT";
-const char INA219M_V_pm ="INA219M_V_THRESHLOW";
+const char INA219M_V_THRESHLOW_pm[] EDIY_PROGMEM ="INA219M_V_THRESHLOW";
 const char PROVIDER_pm[] EDIY_PROGMEM = "PROVIDER";
 const char CLOUD_ID_pm[] EDIY_PROGMEM = "CLOUD_ID";
 const char REGISTRATION_TOKEN_pm[] EDIY_PROGMEM = "REGISTRATION_TOKEN";
@@ -212,8 +212,18 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             SerialStd.print(F("' set to '"));
             SerialStd.print(ina219m_phy.getCustomAmpMult());
             SerialStd.println("'");
+        } else if (strcmp_P(name,INA219M_V_THRESHLOW_pm)== 0)  {
+            //For INA219M_V_THRESHLOW_pm expect a string with number and covert to float
+            float voltThreshold = (float) strtod(value,NULL);
+            //MS_DBG("Found ", value," conv ", voltThreshold);
+            SerialStd.print(F("SENSORS INA219_V_THRESHOLD was'"));
+            SerialStd.print(ina219m_phy.getCustomVoltThreshold());
+            ina219m_phy.setCustomVoltThreshold(voltThreshold,ina219m_voltLowThresholdAlertFn); 
+            SerialStd.print(F("' set to '"));
+            SerialStd.print(ina219m_phy.getCustomVoltThreshold());
+            SerialStd.println("'");  
+
         } else
-        #warning INA219M_MA_MULT
 #endif //INA219M_PHY_ACT 
         {
             SerialStd.print(F("SENSORS tbd "));

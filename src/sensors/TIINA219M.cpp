@@ -15,6 +15,8 @@ TIINA219M::TIINA219M(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurement
     _i2cAddressHex  = i2cAddressHex;
     _ina219_pollmask=INA219_POLLMASK_ALL;
     _ampMult = 1.0;
+    _voltLowThreshold_V =0;
+    _thresholdAlertFxn = NULL;
 }
 // Destructor
 TIINA219M::~TIINA219M(){};
@@ -135,4 +137,15 @@ void TIINA219M::setCustomAmpMult(float newAmpMult)
 float TIINA219M::getCustomAmpMult(void) 
 {
     return _ampMult;
+}
+
+void TIINA219M::setCustomVoltThreshold(float voltLowThreshold_V,void (*thresholdAlertFxn)(bool exceed,float value_V))
+{
+    _voltLowThreshold_V = voltLowThreshold_V;
+    _thresholdAlertFxn = thresholdAlertFxn;
+}
+
+float TIINA219M::getCustomVoltThreshold(void) 
+{
+    return _voltLowThreshold_V;
 }

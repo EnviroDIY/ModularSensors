@@ -83,8 +83,10 @@ public:
     bool addSingleMeasurementResult(void) override;
     void set_active_sensors(uint8_t sensors_mask);
     uint8_t which_sensors_active(void);
-    void setCustomAmpMult(float ampMult); 
+    void  setCustomAmpMult(float ampMult); 
     float getCustomAmpMult(void) ;
+    void  setCustomVoltThreshold(float voltLowThreshold_V,void (*thresholdFxn)(bool exceed,float value_V));
+    float getCustomVoltThreshold(void) ;
 
 protected:
     Adafruit_INA219 ina219_phy;
@@ -93,6 +95,8 @@ protected:
 
 private:
     float _ampMult;
+    float _voltLowThreshold_V; //0 is off, Drops below activate _thresholdAlertFxn() 
+    void (*_thresholdAlertFxn)(bool exceed,float value_V); //Fn to Alert when threshold is exceeded
 };
 
 

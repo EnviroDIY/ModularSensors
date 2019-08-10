@@ -328,12 +328,6 @@ void SERCOM2_Handler()
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
 #if defined ARDUINO_AVR_ENVIRODIY_MAYFLY
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
-const int8_t RS485PHY_TX_PIN = CONFIG_HW_RS485PHY_TX_PIN;
-const int8_t RS485PHY_RX_PIN = CONFIG_HW_RS485PHY_RX_PIN;
-// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
-// NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
-//#define RS485PHY_TX 5  // AltSoftSerial Tx pin 
-//#define RS485PHY_RX 6  // AltSoftSerial Rx pin
 
 #elif defined(ADAFRUIT_FEATHER_M4_EXPRESS)
 //requires special variant.cpp/h update
@@ -1041,15 +1035,21 @@ TIINA219M ina219m_phy(I2CPower, INA219i2c_addr, INA219ReadingsToAvg);
 // Variable *inaCurrent = new TIINA219_Current(&ina219, "12345678-abcd-1234-efgh-1234567890ab");
 // Variable *inaVolt = new TIINA219_Volt(&ina219, "12345678-abcd-1234-efgh-1234567890ab");
 // NO Power
+void ina219m_voltLowThresholdAlertFn(bool exceed,float value_V) {
+    //Place holder for processing a measured low alert.
+    //Expect to orginate a Cell TXT msg the first time receive this.
+    MS_DBG(F("ina219m_voltLowThresholdAlert "),exceed,F(":"),value_V);
+}
 #endif //INA219M_PHY_ACT
 
 
 // ==========================================================================
 //    Keller Acculevel High Accuracy Submersible Level Transmitter
 // ==========================================================================
-#include <sensors/KellerAcculevel.h>
-
 #if defined(KellerAcculevel_ACT) || defined(KellerNanolevel_ACT)
+#define KellerXxxLevel_ACT 1
+//#include <sensors/KellerAcculevel.h>
+
 // Create a reference to the serial port for modbus
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
 #if defined SerialModbus && (defined ARDUINO_ARCH_SAMD || defined ATMEGA2560)
@@ -1061,6 +1061,10 @@ AltSoftSerial &modbusSerial = altSoftSerial;  // For software serial if needed
 const int8_t rs485AdapterPower = sensorPowerPin;  // Pin to switch RS485 adapter power on and off (-1 if unconnected)
 const int8_t modbusSensorPower = A3;  // Pin to switch sensor power on and off (-1 if unconnected)
 const int8_t max485EnablePin = -1;  // Pin connected to the RE/DE on the 485 chip (-1 if unconnected)
+
+const int8_t RS485PHY_TX_PIN = CONFIG_HW_RS485PHY_TX_PIN;
+const int8_t RS485PHY_RX_PIN = CONFIG_HW_RS485PHY_RX_PIN;
+
 #endif //defined KellerAcculevel_ACT  || defined KellerNanolevel_ACT
 
 #if defined KellerAcculevel_ACT
@@ -1518,7 +1522,7 @@ Variable *variableList[] = {
     new Modem_BatteryVoltage(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_Temp(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
 #endif // SENSOR_CONFIG_GENERAL
-    ina219M_A_LowVar
+    // Fut ina219M_A_LowVar
 };
 
 /*

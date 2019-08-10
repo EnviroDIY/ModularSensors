@@ -108,7 +108,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //Defaults for data.envirodiy.org
 #define registrationToken_UUID "registrationToken_UUID"
 #define samplingFeature_UUID   "samplingFeature_UUID"
-#define KellerNanolevel_ACT 1
+//#define KellerNanolevel_ACT 1
 #ifdef KellerNanolevel_ACT
   #define CONFIG_SENSOR_RS485_PHY 1
   //Mayfly definitions
