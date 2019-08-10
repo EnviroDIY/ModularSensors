@@ -96,7 +96,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //define one  _Module
 //#define DigiXBeeLTE_Module 
 #define DigiXBeeWifi_Module
-
 //end of _Module
 
 #define APN_CDEF  "xxxx" // The APN for the gprs connection, unnecessary for WiFi
@@ -308,10 +307,10 @@ inXbee RTS
   #define KellerNanolevel_Height_UUID "KellerNanolevel_Height_UUID"
   #define KellerNanolevel_Temp_UUID   "KellerNanolevel_Temp_UUID"
 #endif //KellerNanolevel_ACT
-//#define INA219M_PHY_ACT 
+#define INA219M_PHY_ACT 1
 #ifdef INA219M_PHY_ACT
-  #define INA219M_MA_UUID              "INA219_MA_UUID"
-  #define INA219M_VOLT_UUID            "INA219_VOLT_UUID"
+  #define INA219M_MA_UUID       "INA219_MA_UUID"
+  #define INA219M_VOLT_UUID     "INA219_VOLT_UUID"
 #endif //INA219_PHY_ACT
 
 //#define Modem_RSSI_UUID ""
@@ -321,6 +320,7 @@ inXbee RTS
 #define ProcessorStats_SampleNumber_UUID  "SampleNumber_UUID"
 #define ProcessorStats_Batt_UUID          "Batt_UUID"
 
+//Need internal ADC
 //#define ExternalVoltage_ACT 1
 #ifdef ExternalVoltage_ACT
 #define ExternalVoltage_Volt0_UUID "Volt0_UUID"

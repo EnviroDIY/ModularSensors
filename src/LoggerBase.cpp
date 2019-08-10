@@ -1541,12 +1541,13 @@ void Logger::begin()
          */
         MS_DBG("Beginning internal real time clock");
         zero_sleep_rtc.begin();
-        rtcExtPhy.begin();
 
         //eg Apr 22 2019 16:46:09 in this TZ
         DateTime ccTimeTZ(__DATE__, __TIME__);
         MS_DBG("now  ",ccTimeTZ.month(),"-",ccTimeTZ.date(),"-",ccTimeTZ.year2k(),"/",ccTimeTZ.year(), " ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second());
         DateTime ccTime2k=ccTimeTZ.get()-(getTimeZone()*3600); //set to secs from UST/GMT Year 2000
+        #if defined ADAFRUIT_FEATHERWING_RTC_SD
+        rtcExtPhy.begin();
         if (! rtcExtPhy.initialized())
         {
             MS_DBG("ExtRTC !init set to compile time ",__DATE__," ",__TIME__);
@@ -1558,6 +1559,7 @@ void Logger::begin()
                 rtcExtPhy.adjust(ccTime2k);
             }
         }
+        
     watchDogTimer.resetWatchDog();
 
         DateTime now = rtcExtPhy.now();
@@ -1566,6 +1568,7 @@ void Logger::begin()
         zero_sleep_rtc.setDate(now.date(), now.month(), now.year2k());
         #define zr zero_sleep_rtc
         MS_DBG("Read internal rtc ",zr.getYear(),"-",zr.getMonth(),"-",zr.getDay()," ",zr.getHours(),":",zr.getMinutes(),":",zr.getSeconds());
+        #endif // ADAFRUIT_FEATHERWING_RTC_SD
     #endif //ARDUINO_ARCH_SAMD
 
     MS_DBG(F("Current RTC time is:"), formatDateTime_ISO8601(getNowEpochTz()));
