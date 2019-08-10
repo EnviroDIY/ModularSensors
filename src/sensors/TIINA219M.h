@@ -83,8 +83,8 @@ public:
     bool addSingleMeasurementResult(void) override;
     void set_active_sensors(uint8_t sensors_mask);
     uint8_t which_sensors_active(void);
-    void setCustomAmpMult(float *newAmpMult); 
-
+    void setCustomAmpMult(float ampMult); 
+    float getCustomAmpMult(void) ;
 
 protected:
     Adafruit_INA219 ina219_phy;

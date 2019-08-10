@@ -421,7 +421,7 @@ DigiXBeeLTEBypass modem = modemXBLTEB;
 // // For the Digi Wifi XBee (S6B)
 #ifdef DigiXBeeWifi_Module 
 #include <modems/DigiXBeeWifi.h>
-#warning  processing DigiXBeeWifi_Module
+//#warning  processing DigiXBeeWifi_Module
 const long modemBaud = 9600;  // All XBee's use 9600 by default
 const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
 DigiXBeeWifi modemXBWF(&modemSerial,
@@ -1364,7 +1364,7 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 // The function should take no input (void) and return a float.
 // You can use any named variable pointers to access values by way of variable->getValue()
 
-float calculateVariableValue(void)
+float ina219M_A_LowFn(void)
 {
     float calculatedResult = -9999;  // Always safest to start with a bad value
     // float inputVar1 = variable1->getValue();
@@ -1377,16 +1377,16 @@ float calculateVariableValue(void)
 }
 
 // Properties of the calculated variable
-const uint8_t calculatedVarResolution = 3;  // The number of digits after the decimal place
-const char *calculatedVarName = "varName";  // This must be a value from http://vocabulary.odm2.org/variablename/
-const char *calculatedVarUnit = "varUnit";  // This must be a value from http://vocabulary.odm2.org/units/
-const char *calculatedVarCode = "calcVar";  // A short code for the variable
-const char *calculatedVarUUID = "12345678-abcd-1234-ef00-1234567890ab";  // The (optional) universallly unique identifier
+const uint8_t ina219M_A_LowResolution = 3;  // The number of digits after the decimal place
+const char *ina219M_A_LowName = "Low_A";  // This must be a value from http://vocabulary.odm2.org/variablename/
+const char *ina219M_A_LowUnit = "A";  // This must be a value from http://vocabulary.odm2.org/units/
+const char *ina219M_A_LowCode = "Low_A_Var";  // A short code for the variable
+const char *ina219M_A_LowUUID = "ina219M_A_LowUUID";  // The (optional) universallly unique identifier
 
 // Finally, Create a calculated variable pointer and return a variable pointer to it
-Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarResolution,
-                                       calculatedVarName, calculatedVarUnit,
-                                       calculatedVarCode, calculatedVarUUID);
+Variable *ina219M_A_LowVar = new Variable(ina219M_A_LowFn, ina219M_A_LowResolution,
+                                       ina219M_A_LowName, ina219M_A_LowUnit,
+                                       ina219M_A_LowCode, ina219M_A_LowUUID);
 
 
 // ==========================================================================
@@ -1518,7 +1518,7 @@ Variable *variableList[] = {
     new Modem_BatteryVoltage(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_Temp(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
 #endif // SENSOR_CONFIG_GENERAL
-    calculatedVar
+    ina219M_A_LowVar
 };
 
 /*
@@ -1531,7 +1531,7 @@ Variable *variableList[] = {
     modemRSSI,
     modemSignalPct,
     // etc, etc, etc,
-    calculatedVar
+    ina219M_A_Low
 }
 */
 
@@ -1756,9 +1756,6 @@ void setup()
     Serial.println(F("---parseIni "));
     dataLogger.parseIniSd(configIniID_def,inihUnhandledFn);
 #endif //USE_SD_MAYFLY_INI
-    const float customAmpMult=2.5;
-    ina219m_phy.setCustomAmpMult((float *) &customAmpMult);
-    Serial.print(ina219m_phy.which_sensors_active());
 
 #if 0
     SerialStd.print(F(" .ini-Logger:"));

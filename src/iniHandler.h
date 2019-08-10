@@ -25,12 +25,15 @@ const char apn_pm[] EDIY_PROGMEM = "apn";
 const char WiFiId_pm[] EDIY_PROGMEM = "WiFiId";
 const char WiFiPwd_pm[] EDIY_PROGMEM = "WiFiPwd";
 
+const char INA219M_MA_MULT_pm[] EDIY_PROGMEM = "INA219M_MA_MULT";
+const char INA219M_V_pm ="INA219M_V_THRESHLOW";
 const char PROVIDER_pm[] EDIY_PROGMEM = "PROVIDER";
 const char CLOUD_ID_pm[] EDIY_PROGMEM = "CLOUD_ID";
 const char REGISTRATION_TOKEN_pm[] EDIY_PROGMEM = "REGISTRATION_TOKEN";
 const char SAMPLING_FEATURE_pm[] EDIY_PROGMEM = "SAMPLING_FEATURE";
 
 const char UUIDs_pm[] EDIY_PROGMEM = "UUIDs";
+const char SENSORS_pm[] EDIY_PROGMEM = "SENSORS";
 const char index_pm[] EDIY_PROGMEM = "index";
 static uint8_t uuid_index =0;
 
@@ -181,6 +184,7 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             //convert  str to num with error checking
             long time_zone_local;
             char *endptr;
+            *endptr = '\0';
             errno=0;
             time_zone_local = strtoul(value,&endptr,10);    
             if ((time_zone_local < 13) && (time_zone_local> -13) &&(errno!=ERANGE) ) {
@@ -196,6 +200,27 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             SerialStd.print(F(" to "));  
             SerialStd.println(value);  
         }       
+    } else if (strcmp_P(section,SENSORS_pm)== 0) {
+#if defined  INA219M_PHY_ACT      
+        if (strcmp_P(name,INA219M_MA_MULT_pm)== 0)  {
+            //For INA219M_MA_MULT expect a string with number and covert to float
+            float ampMult = (float) strtod(value,NULL);
+            //MS_DBG("Found ", value," conv ", ampMult);
+            SerialStd.print(F("SENSORS INA219_MA_MULT was '"));
+            SerialStd.print(ina219m_phy.getCustomAmpMult());
+            ina219m_phy.setCustomAmpMult(ampMult); 
+            SerialStd.print(F("' set to '"));
+            SerialStd.print(ina219m_phy.getCustomAmpMult());
+            SerialStd.println("'");
+        } else
+        #warning INA219M_MA_MULT
+#endif //INA219M_PHY_ACT 
+        {
+            SerialStd.print(F("SENSORS tbd "));
+            SerialStd.print(name);
+            SerialStd.print(F(" to "));  
+            SerialStd.println(value);  
+        }
     } else if (strcmp_P(section,NETWORK_pm)== 0) {
 #ifdef DigiXBeeLTE_Module    
         if (strcmp_P(name,apn_pm)== 0) {
@@ -224,7 +249,6 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             SerialStd.print(modemPhy.getWiFiPwd());
             SerialStd.println("'");
         } else
-        #warning DigiXBeeWifi_Module2
 #endif //DigiXBeeWifi_Module
         {
             SerialStd.print(F("NETWORK tbd "));

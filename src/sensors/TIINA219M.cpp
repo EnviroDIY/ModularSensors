@@ -14,7 +14,7 @@ TIINA219M::TIINA219M(int8_t powerPin, uint8_t i2cAddressHex, uint8_t measurement
 {
     _i2cAddressHex  = i2cAddressHex;
     _ina219_pollmask=INA219_POLLMASK_ALL;
-    //_ampMult = 1.0;
+    _ampMult = 1.0;
 }
 // Destructor
 TIINA219M::~TIINA219M(){};
@@ -93,23 +93,23 @@ bool TIINA219M::addSingleMeasurementResult(void)
             current_mA = (ina219_phy.getCurrent_mA() * _ampMult);
             //current_mA = (ina219_phy.getCurrent_mA());
             if (isnan(current_mA)) current_mA = -9999;
-            MS_DBG(F("mA, current: "), current_mA);
+            MS_DBG(F("  mA, current: "), current_mA);
         }
         if ( INA219_POLLMASK_V & _ina219_pollmask) {
             busV_V = ina219_phy.getBusVoltage_V();
             if (isnan(busV_V)) busV_V = -9999;
-            MS_DBG(F(" V, BusV: "), busV_V);
+            MS_DBG(F("  V, BusV: "), busV_V);
         }
         if ( INA219_POLLMASK_W & _ina219_pollmask) {
             power_mW = ina219_phy.getPower_mW();
             if (isnan(power_mW)) power_mW = -9999;
-            MS_DBG(F("mW, Power: "), power_mW);
+            MS_DBG(F("  mW, Power: "), power_mW);
         }
         success = true;
 
-        MS_DBG(F("  Current [mA]:"), current_mA);
-        MS_DBG(F("  Bus Voltage [V]:"), busV_V);
-        MS_DBG(F("  Power [mW]:"), power_mW);
+        //MS_DBG(F("  Current [mA]:"), current_mA);
+        //MS_DBG(F("  Bus Voltage [V]:"), busV_V);
+        //MS_DBG(F("  Power [mW]:"), power_mW);
     }
     else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
 
@@ -127,7 +127,12 @@ bool TIINA219M::addSingleMeasurementResult(void)
 }
 
 //Az extensions
-void TIINA219M::setCustomAmpMult(float *newAmpMult) 
+void TIINA219M::setCustomAmpMult(float newAmpMult) 
 {
-    _ampMult = *newAmpMult;
+    _ampMult = newAmpMult;
+}
+
+float TIINA219M::getCustomAmpMult(void) 
+{
+    return _ampMult;
 }
