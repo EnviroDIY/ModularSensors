@@ -1544,9 +1544,11 @@ void Logger::begin()
 
         //eg Apr 22 2019 16:46:09 in this TZ
         DateTime ccTimeTZ(__DATE__, __TIME__);
-        MS_DBG("now  ",ccTimeTZ.month(),"-",ccTimeTZ.date(),"-",ccTimeTZ.year2k(),"/",ccTimeTZ.year(), " ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second());
-        DateTime ccTime2k=ccTimeTZ.get()-(getTimeZone()*3600); //set to secs from UST/GMT Year 2000
+        //MS_DBG("now  ",ccTimeTZ.month(),"-",ccTimeTZ.date(),"-",ccTimeTZ.year2k(),"/",ccTimeTZ.year(), " ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second());
+        MS_DBG("now  ",ccTimeTZ.month(),"-",ccTimeTZ.date(),"-",ccTimeTZ.year(), " ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second());
+
         #if defined ADAFRUIT_FEATHERWING_RTC_SD
+        DateTime ccTime2k=ccTimeTZ.get()-(getTimeZone()*3600); //set to secs from UST/GMT Year 2000
         rtcExtPhy.begin();
         if (! rtcExtPhy.initialized())
         {

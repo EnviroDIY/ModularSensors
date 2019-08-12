@@ -252,7 +252,7 @@ variant.h: has pin definitions
 #elif PROFILE_NAME == PROFILE03_SODAQ_AUTONOMO_M0
 //**************************************************************************
 //#define SENSOR_RS485_PHY 1
-//Standard 
+//Standard  .platformio\packages\framework-arduinosam\variants\sodaq_autonomo
 //This is hardcode to mean things in ProcessorStats !!!!
 //For Autonomo
 #define AutonomoRev_DEF "r5"
@@ -261,19 +261,24 @@ variant.h: has pin definitions
 #define HwName_DEF AutonomoName_DEF
 
 #define USE_SD_MAYFLY_INI 1
-/*Autonom has built in BEE, on sleep1 with 5 control pins
+/*nh debug cable to Autonomo Serial
+  FTDI/Yellow ProcTx/JP2-3/D0/PA9/SCOM2PAD1 & 
+  FTDI/Orange ProcRx/JP2-4/D1/PA10/SCOM2PAD2 
+
+Autonom has built in BEE, on sleep1 with 5 control pins
 BEE_VCC PowerEn=H -seperate regulator 
 input DTR shared ArduinoA8
 inputXbee CTS
 Out  Xbee autonomoModemAssocPin
 inXbee RTS
-
+BEE TX Serial PB30/SCOM5PAD0 To Bee from Proc
+BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 */
-#define modemVccPin_DEF BEE_VCC
-#define autonomoModemRtsPin   BEERTS //PB22 same as MCU_CTS output
-#define autonomoModemCtsPin   BEECTS //PB23 output
-#define autonomoModemDtrPin   PIN_A13 //Shared
-#define autonomoModemAssocPin RI_AS  //input
+#define modemVccPin_DEF BEE_VCC   //PA28 
+#define autonomoModemRtsPin BEERTS //PB23 same as MCU_CTS output
+#define modemStatusPin_DEF  BEECTS //PB22 BEE CTS PB23 output
+#define modemSleepRqPin_DEF PIN_A13 //DTS Shared with JP1-A13
+#define modemAssocPin_DEF   RI_AS  //ASSOC output
 
 
 #define LOGGERID_DEF_STR "msLog01"

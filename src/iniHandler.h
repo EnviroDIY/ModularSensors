@@ -56,11 +56,13 @@ void ramAvailable () {
   SerialStd.println(&stack_dummy - sbrk(0) );// Stack and heap ??  
 }
 #endif // ARDUINO_AVR_ENVIRODIY_MAYFLY
+void ledflash(uint8_t numFlash = 4, unsigned long onTime_ms = 75,unsigned long offTime_ms = 150);
 static int inihUnhandledFn( const char* section, const char* name, const char* value)
 {
     #if RAM_REPORT_LEVEL > 1
     bool ram_track = true;
     #endif
+    //MS_DBG(F("inih "),section," ",name," ",value);
     if (strcmp_P(section,PROVIDER_pm)== 0)
     {
         if        (strcmp_P(name,REGISTRATION_TOKEN_pm)== 0) {
@@ -137,16 +139,15 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
         } 
         uuid_index++;
     } else if (strcmp_P(section,COMMON_pm)== 0) {// [COMMON] processing
+        char *endptr;
+        errno=0;
         if (strcmp_P(name,LOGGER_ID_pm)== 0) {
             SerialStd.print(F("COMMON LoggerId Set: "));
             SerialStd.println(value);
             dataLogger.setLoggerId(value,true);
         } else if (strcmp_P(name,LOGGING_INTERVAL_MIN_pm)== 0){
             //convert str to num with error checking
-            long intervalMin;
-            char *endptr;
-            errno=0;
-            intervalMin = strtoul(value,&endptr,10);
+            long intervalMin = strtoul(value,&endptr,10);
             if ((intervalMin>0) &&(errno!=ERANGE) ) {
                 if (intervalMin > loggingInterval_MAX_CDEF_MIN) {
                     SerialStd.print(F("COMMON Logging changed to (min): "));
@@ -167,10 +168,7 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             }
         } else if (strcmp_P(name,LIION_TYPE_pm)== 0){
             //convert  str to num with error checking
-            long batLiionType;
-            char *endptr;
-            errno=0;
-            batLiionType = strtoul(value,&endptr,10);
+            long batLiionType = strtoul(value,&endptr,10);
             if ((batLiionType < PSLR_NUM) && (batLiionType>0) &&(errno!=ERANGE) ) {
                 mcuBoard.setBatteryType((ps_liion_rating_t )batLiionType);
                 //mayflyPhy.setBatteryType((ps_liion_rating_t )batLiionType);
@@ -182,11 +180,7 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             }
         } else if (strcmp_P(name,TIME_ZONE_pm)== 0){
             //convert  str to num with error checking
-            long time_zone_local;
-            char *endptr;
-            *endptr = '\0';
-            errno=0;
-            time_zone_local = strtoul(value,&endptr,10);    
+            long time_zone_local = strtol(value,&endptr,10);    
             if ((time_zone_local < 13) && (time_zone_local> -13) &&(errno!=ERANGE) ) {
                 SerialStd.print(F("COMMON Set TimeZone ; "));
                 timeZone=time_zone_local;
@@ -204,7 +198,13 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
 #if defined  INA219M_PHY_ACT      
         if (strcmp_P(name,INA219M_MA_MULT_pm)== 0)  {
             //For INA219M_MA_MULT expect a string with number and covert to float
-            float ampMult = (float) strtod(value,NULL);
+            char *endptr;
+            float ampMult = (float) strtod(value,&endptr);
+            SerialStd.print(F("DBG INA219_MA_MULT "));
+            SerialStd.print(value);
+            SerialStd.print(F(" conv "));
+            SerialStd.print(ampMult);
+             SerialStd.println();           
             //MS_DBG("Found ", value," conv ", ampMult);
             SerialStd.print(F("SENSORS INA219_MA_MULT was '"));
             SerialStd.print(ina219m_phy.getCustomAmpMult());
@@ -318,7 +318,8 @@ const char MAYFLY_INIT_ID_pm[] EDIY_PROGMEM = "MAYFLY_INIT_ID";
 }
 #endif //USE_SD_MAYFLY_INI
 
-void ledflash(uint8_t numFlash = 4, unsigned long onTime_ms = 75,unsigned long offTime_ms = 150)
+//void ledflash(uint8_t numFlash = 4, unsigned long onTime_ms = 75,unsigned long offTime_ms = 150)
+void ledflash(uint8_t numFlash, unsigned long onTime_ms,unsigned long offTime_ms)
 {
     for (uint8_t i = 0; i < numFlash; i++) {
         setGreenLED( HIGH);

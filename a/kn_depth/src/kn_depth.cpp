@@ -39,7 +39,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 
-
 #if !defined SerialStd
 #define SerialStd STANDARD_SERIAL_OUTPUT
 #endif //SerialStd
@@ -97,7 +96,7 @@ const long SerialStdBaud = 115200;   // Baud rate for the primary serial port fo
 #error Undefined LEDS
 #endif
 
-#if defined redLEDPin
+#if defined redLEDPin && (redLEDPin != -1)
 #define redLEDphy redLEDPin
 #define setRedLED(state) digitalWrite(redLEDphy, state);
 #else
@@ -105,7 +104,7 @@ const long SerialStdBaud = 115200;   // Baud rate for the primary serial port fo
 #define setRedLED(state)
 #endif //redLED
 
-#if defined greenLEDPin
+#if defined greenLEDPin && (greenLEDPin != -1)
 #define greenLEDphy greenLEDPin
 #define setGreenLED(state) digitalWrite(greenLEDphy, state);
 #define setGreenLEDon()  digitalWrite(greenLEDphy, HIGH);
@@ -421,7 +420,6 @@ DigiXBeeLTEBypass modem = modemXBLTEB;
 // // For the Digi Wifi XBee (S6B)
 #ifdef DigiXBeeWifi_Module 
 #include <modems/DigiXBeeWifi.h>
-#warning  processing DigiXBeeWifi_Module
 const long modemBaud = 9600;  // All XBee's use 9600 by default
 const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
 DigiXBeeWifi modemXBWF(&modemSerial,
@@ -1635,12 +1633,12 @@ void setup()
     //MCUSR = 0; //reset for unique read
     // Start the primary SerialStd connection
     // Set up pins for the LED's
-    #if defined greenLEDPin
+    #if defined greenLEDPin && (greenLEDPin != -1)
     pinMode(greenLEDphy, OUTPUT);
     setGreenLED(HIGH);
     #endif // greenLED
-    #if defined redLEDPin
-    pinMode(redLEDphy, OUTPUT);
+    #if defined redLEDPin  && (redLEDPin != -1)
+       pinMode(redLEDphy, OUTPUT);
     setRedLED(LOW);
     #endif // redLED
 
@@ -1962,13 +1960,13 @@ void processSensors()
                     }
 
                     // Disconnect from the network
-                    MS_DBG(F("  Disconnecting from the Internet...\n"));
+                    MS_DBG(F("  Disconnecting from the Internet..."));
                     modemPhy.disconnectInternet();
-                } else {MS_DBG(F("  No internet connection...\n"));}
+                } else {MS_DBG(F("  No internet connection..."));}
                 // Turn the modem off
                 modemPhy.modemSleepPowerDown();
             } //else MS_DBG(F("  No Modem configured.\n"));
-            PRINTOUT(F("---Complete-------------------------------\n"));
+            PRINTOUT(F("---Complete "));
         }
         // Turn off the LED
         //digitalWrite(greenLED, LOW);

@@ -39,7 +39,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 
-
 #if !defined SerialStd
 #define SerialStd STANDARD_SERIAL_OUTPUT
 #endif //SerialStd
@@ -97,7 +96,7 @@ const long SerialStdBaud = 115200;   // Baud rate for the primary serial port fo
 #error Undefined LEDS
 #endif
 
-#if defined redLEDPin
+#if defined redLEDPin && (redLEDPin != -1)
 #define redLEDphy redLEDPin
 #define setRedLED(state) digitalWrite(redLEDphy, state);
 #else
@@ -105,7 +104,7 @@ const long SerialStdBaud = 115200;   // Baud rate for the primary serial port fo
 #define setRedLED(state)
 #endif //redLED
 
-#if defined greenLEDPin
+#if defined greenLEDPin && (greenLEDPin != -1)
 #define greenLEDphy greenLEDPin
 #define setGreenLED(state) digitalWrite(greenLEDphy, state);
 #define setGreenLEDon()  digitalWrite(greenLEDphy, HIGH);
@@ -348,10 +347,10 @@ HardwareSerial &modemSerial = Serial1;  // Bee Socket
 
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
-const int8_t modemVccPin = modemVccPin_DEF;      // -2 MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemStatusPin = modemStatusPin_DEF;   // MCU pin used to read modem status (-1 if not applicable)
-const int8_t modemResetPin = modemResetPin_DEF;    // MCU pin connected to modem reset pin (-1 if unconnected)
-const int8_t modemSleepRqPin =  modemSleepRqPin_DEF;  // 23 MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemVccPin = modemVccPin_DEF;         // -2 MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemStatusPin = modemStatusPin_DEF;   //RTS 19 MCU pin used to read modem status (-1 if not applicable)
+const int8_t modemResetPin = modemResetPin_DEF;     // MCU pin connected to modem reset pin (-1 if unconnected)
+const int8_t modemSleepRqPin =  modemSleepRqPin_DEF;//DTR 23 MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemLEDPin = redLEDPin;  // MCU pin connected an LED to show modem status (-1 if unconnected)
 
 bool modemSetup=false;
@@ -415,7 +414,6 @@ DigiXBeeLTEBypass modem = modemXBLTEB;
 // // For the Digi Wifi XBee (S6B)
 #ifdef DigiXBeeWifi_Module 
 #include <modems/DigiXBeeWifi.h>
-//#warning  processing DigiXBeeWifi_Module
 const long modemBaud = 9600;  // All XBee's use 9600 by default
 const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
 DigiXBeeWifi modemXBWF(&modemSerial,
@@ -889,6 +887,27 @@ ExternalVoltage extvolt1(ADSPower, ADSChannel1, dividerGain, ADSi2c_addr, VoltRe
 
 // Create a voltage variable pointer
 // Variable *extvoltV = new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab");
+#endif //ExternalVoltage_ACT
+#ifdef AdcProc_ACT
+// ==========================================================================
+//    External Voltage via AdcProc
+// ==========================================================================
+#include <sensors/adcProc.h>
+
+const int8_t AdcProcPower = -1;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t AdcProcChannel0 = 0;  // The AdcProc channel of interest
+//const int8_t AdcProcChannel1 = 1;  // The AdcProc channel of interest
+//const int8_t AdcProcChannel2 = 2;  // The AdcProc channel of interest
+//const int8_t AdcProcChannel3 = 3;  // The AdcProc channel of interest
+const float adcProcDividerGain = 2; //  Default 1/gain for grove voltage divider is 10x
+const uint8_t adcReadsToAvg = 1; // Only read one sample
+
+// Create an External Voltage sensor object
+AdcProc adcProc0(ADSPower, ADSChannel0, AdcProcDividerGain, ADSi2c_addr, adcReadsToAvg);
+//AdcProc adcProc1(ADSPower, ADSChannel1, AdcProcDividerGain, ADSi2c_addr, adcReadsToAvg);
+
+// Create a voltage variable pointer
+// Variable *extvoltV = new AdcProc_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab");
 #endif //ExternalVoltage_ACT
 #ifdef SENSOR_CONFIG_GENERAL
 
@@ -1415,6 +1434,12 @@ Variable *variableList[] = {
 #if defined(ExternalVoltage_Volt1_UUID)
     new ExternalVoltage_Volt(&extvolt1, ExternalVoltage_Volt1_UUID),
 #endif
+#if defined(AdcProc_Volt0_UUID)
+    new AdcProc_Volt(&extvolt0, AdcProc_Volt0_UUID),
+#endif
+#if defined(AdcProc_Volt1_UUID)
+    new AdcProc_Volt(&extvolt1, AdcProc_Volt1_UUID),
+#endif
 #if defined(INA219M_MA_UUID)
     new TIINA219M_Current(&ina219m_phy, INA219M_MA_UUID),
 #endif
@@ -1642,19 +1667,21 @@ void setup()
     //MCUSR = 0; //reset for unique read
     // Start the primary SerialStd connection
     // Set up pins for the LED's
-    #if defined greenLEDPin
+    #if defined greenLEDPin && (greenLEDPin != -1)
     pinMode(greenLEDphy, OUTPUT);
     setGreenLED(HIGH);
     #endif // greenLED
-    #if defined redLEDPin
-    pinMode(redLEDphy, OUTPUT);
+    #if defined redLEDPin  && (redLEDPin != -1)
+       pinMode(redLEDphy, OUTPUT);
     setRedLED(LOW);
     #endif // redLED
 
     //#ifdef SerialUSB // SerialStd == SerialUSB
     //#error Serial Err
-    while (!SerialStd && (millis() < 10000)){
-        ledflash(100,1);
+    //doesn't work while ((!SerialUSB) && (millis() < 50000)) {
+        //Variable startup use elapsed millis()
+    while ((!SerialStd) && (millis() < 10000)){
+        ledflash(10,500,500);
     }
     //#else
     //SerialStd.begin(SerialStdBaud);
