@@ -197,32 +197,36 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
     } else if (strcmp_P(section,SENSORS_pm)== 0) {
 #if defined  INA219M_PHY_ACT      
         if (strcmp_P(name,INA219M_MA_MULT_pm)== 0)  {
-            //For INA219M_MA_MULT expect a string with number and covert to float
+            //For INA219M_MA_MULT expect a string with +ve number and covert to float
             char *endptr;
-            float ampMult = (float) strtod(value,&endptr);
-            SerialStd.print(F("DBG INA219_MA_MULT "));
-            SerialStd.print(value);
-            SerialStd.print(F(" conv "));
-            SerialStd.print(ampMult);
-             SerialStd.println();           
+            float ampMult = (float) strtod(value,&endptr); 
             //MS_DBG("Found ", value," conv ", ampMult);
-            SerialStd.print(F("SENSORS INA219_MA_MULT was '"));
-            SerialStd.print(ina219m_phy.getCustomAmpMult());
-            ina219m_phy.setCustomAmpMult(ampMult); 
-            SerialStd.print(F("' set to '"));
-            SerialStd.print(ina219m_phy.getCustomAmpMult());
-            SerialStd.println("'");
+            if ((ampMult>0) &&(errno!=ERANGE) ) {
+                SerialStd.print(F("SENSORS INA219_MA_MULT was '"));
+                SerialStd.print(ina219m_phy.getCustomAmpMult());
+                ina219m_phy.setCustomAmpMult(ampMult); 
+                SerialStd.print(F("' set to '"));
+                SerialStd.print(ina219m_phy.getCustomAmpMult());
+                SerialStd.println("'");
+            } else {
+                SerialStd.print(F("SENSOR INA219_MA_MULT error:"));
+                SerialStd.println(value);
+            }
         } else if (strcmp_P(name,INA219M_V_THRESHLOW_pm)== 0)  {
-            //For INA219M_V_THRESHLOW_pm expect a string with number and covert to float
+            //For INA219M_V_THRESHLOW_pm expect a string with +ve number and covert to float
             float voltThreshold = (float) strtod(value,NULL);
             //MS_DBG("Found ", value," conv ", voltThreshold);
-            SerialStd.print(F("SENSORS INA219_V_THRESHOLD was'"));
-            SerialStd.print(ina219m_phy.getCustomVoltThreshold());
-            ina219m_phy.setCustomVoltThreshold(voltThreshold,ina219m_voltLowThresholdAlertFn); 
-            SerialStd.print(F("' set to '"));
-            SerialStd.print(ina219m_phy.getCustomVoltThreshold());
-            SerialStd.println("'");  
-
+            if ((voltThreshold>0) &&(errno!=ERANGE) ) {
+                SerialStd.print(F("SENSORS INA219_V_THRESHOLD was'"));
+                SerialStd.print(ina219m_phy.getCustomVoltThreshold());
+                ina219m_phy.setCustomVoltThreshold(voltThreshold,ina219m_voltLowThresholdAlertFn); 
+                SerialStd.print(F("' set to '"));
+                SerialStd.print(ina219m_phy.getCustomVoltThreshold());
+                SerialStd.println("'");  
+            } else {
+                SerialStd.print(F("SENSOR INA219_V_THRESHOLD error:"));
+                SerialStd.println(value);
+            }
         } else
 #endif //INA219M_PHY_ACT 
         {
