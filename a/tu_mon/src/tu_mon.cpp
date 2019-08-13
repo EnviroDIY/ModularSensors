@@ -394,7 +394,7 @@ DigiXBeeLTEBypass modemXBLTEB(&modemSerial,
                               modemResetPin, modemSleepRqPin,
                               apn_def);
 // Create an extra reference to the modem by a generic name (not necessary)
-DigiXBeeLTEBypass modem = modemXBLTEB;
+DigiXBeeLTEBypass modemPhy = modemXBLTEB;
 #endif //DigiXBeeLTE_Module 
 // ==========================================================================
 

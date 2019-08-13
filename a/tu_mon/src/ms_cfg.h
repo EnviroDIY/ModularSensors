@@ -291,13 +291,13 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 //#define  loggingInterval_CDEF_MIN 5
 
 //define one  _Module
-//#define DigiXBeeLTE_Module 
-#define DigiXBeeWifi_Module 1
-#warning DigiXBeeWifi_Module
+#define DigiXBeeLTE_Module 
+//#define DigiXBeeWifi_Module 1
+#warning DigiXBeeLTE
 //end of _Module
 
 #define  loggingInterval_MAX_CDEF_MIN 120
-#define APN_CDEF  "xxxx" // The APN for the gprs connection, unnecessary for WiFi
+#define APN_CDEF  "hologram" // The APN for the gprs connection, unnecessary for WiFi
 #define WIFIID_CDEF  "xxxx"  // The WiFi access point, unnecessary for gprs
 #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
 
