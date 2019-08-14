@@ -18,7 +18,11 @@
 #define MaxBotixSonar_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_MAXBOTIX_DEBUG
+
+#ifdef MS_MAXBOTIX_DEBUG
+#define MS_DEBUGGING_STD
+#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
@@ -58,12 +62,18 @@ private:
 class MaxBotixSonar_Range : public Variable
 {
 public:
-    MaxBotixSonar_Range(Sensor *parentSense,
-                        const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, HRXL_VAR_NUM,
-               "distance", "millimeter",
-               HRXL_RESOLUTION,
-               "SonarRange", UUID, customVarCode)
+    MaxBotixSonar_Range(Sensor *parentSense, const char *uuid = "",
+                        const char *varCode = "SonarRange")
+      : Variable(parentSense,
+                 (const uint8_t)HRXL_VAR_NUM,
+                 (uint8_t)HRXL_RESOLUTION,
+                 "distance", "millimeter",
+                 varCode, uuid)
+    {}
+    MaxBotixSonar_Range()
+      : Variable((const uint8_t)HRXL_VAR_NUM,
+                 (uint8_t)HRXL_RESOLUTION,
+                 "distance", "millimeter", "SonarRange")
     {}
     ~MaxBotixSonar_Range(){}
 };

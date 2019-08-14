@@ -14,74 +14,169 @@
 //  The class and functions for interfacing with a specific variable.
 // ============================================================================
 
-const char* Variable::VAR_BASE_UNKNOWN = "Unknown";
-
 // The constructor for a measured variable - that is, one whose values are
 // updated by a sensor.
-Variable::Variable(Sensor *parentSense, uint8_t varNum,
-                   const char *varName, const char *varUnit,
+Variable::Variable(Sensor *parentSense,
+                   const uint8_t sensorVarNum,
                    uint8_t decimalResolution,
-                   const char *defaultVarCode,
-                   const char *UUID, const char *customVarCode)
+                   const char *varName,
+                   const char *varUnit,
+                   const char *varCode,
+                   const char *uuid)
+  : _sensorVarNum(sensorVarNum)
 {
+    setVarUUID(uuid);
+    setVarCode(varCode);
+    setVarUnit(varUnit);
+    setVarName(varName);
+    setResolution(decimalResolution);
+
     isCalculated = false;
     _calcFxn = NULL;
-    parentSensor = parentSense;
-    _varNum = varNum;
-    _varName = varName;
-    _varUnit = varUnit;
-    _decimalResolution = decimalResolution;
-    _defaultVarCode = defaultVarCode;
-    _customCode = customVarCode;
-    _UUID = UUID;
+    attachSensor(parentSense);
 
     // When we create the variable, we also want to initialize it with a current
     // value of -9999 (ie, a bad result).
     _currentValue = -9999;
 
-    // Attach to the parent sensor right at object creation
-    attachSensor(_varNum, parentSensor);
+    // MS_DBG(F("Measured Variable object created"));
 }
+Variable::Variable(const uint8_t sensorVarNum,
+                   uint8_t decimalResolution,
+                   const char *varName,
+                   const char *varUnit,
+                   const char *varCode)
+  : _sensorVarNum(sensorVarNum)
+{
+    setVarUUID('\0');
+    setVarCode(varCode);
+    setVarUnit(varUnit);
+    setVarName(varName);
+    setResolution(decimalResolution);
+
+    isCalculated = false;
+    _calcFxn = NULL;
+    parentSensor = NULL;
+
+    // When we create the variable, we also want to initialize it with a current
+    // value of -9999 (ie, a bad result).
+    _currentValue = -9999;
+
+    // MS_DBG(F("Measured Variable object created"));
+}
+
 
 // The constructor for a calculated variable  - that is, one whose value is
 // calculated by the calcFxn which returns a float.
-// NOTE:  ALL arguments are required!
 Variable::Variable(float (*calcFxn)(),
-                   const char *varName, const char *varUnit,
                    uint8_t decimalResolution,
-                   const char *UUID, const char *customVarCode)
+                   const char *varName,
+                   const char *varUnit,
+                   const char *varCode,
+                   const char *uuid)
+  : _sensorVarNum(0)
 {
+    setVarUUID(uuid);
+    setVarCode(varCode);
+    setVarUnit(varUnit);
+    setVarName(varName);
+    setResolution(decimalResolution);
+
     isCalculated = true;
-    _calcFxn = calcFxn;
+    setCalculation(calcFxn);
     parentSensor = NULL;
-    _varNum = 0;
-    _varName = varName;
-    _varUnit = varUnit;
-    _decimalResolution = decimalResolution;
-    _defaultVarCode = "";
-    _customCode = customVarCode;
-    _UUID = UUID;
 
     // When we create the variable, we also want to initialize it with a current
     // value of -9999 (ie, a bad result).
     _currentValue = -9999;
+
+    // MS_DBG(F("Calculated Variable object created"));
 }
+Variable::Variable()
+  : _sensorVarNum(0),
+    _decimalResolution(0),
+    _varName('\0'),
+    _varUnit('\0'),
+    _varCode('\0'),
+    _uuid('\0')
+{
+    isCalculated = true;
+    _calcFxn = NULL;
+    parentSensor = NULL;
+
+    // When we create the variable, we also want to initialize it with a current
+    // value of -9999 (ie, a bad result).
+    _currentValue = -9999;
+
+    // MS_DBG(F("Calculated Variable object created"));
+}
+
 
 // Destructor
 Variable::~Variable(){}
 
 
+// This does all of the setup that can't happen in the constructors
+// That is, anything that is dependent on another object having been created
+// first or anything that requires the actual processor/MCU to do something.
+Variable *Variable::begin(Sensor *parentSense, const char *uuid,
+                          const char *customVarCode)
+{
+    setVarCode(customVarCode);
+    return begin(parentSense, uuid);
+}
+Variable *Variable::begin(Sensor *parentSense, const char *uuid)
+{
+    setVarUUID(uuid);
+    return begin(parentSense);
+}
+Variable *Variable::begin(Sensor *parentSense)
+{
+    attachSensor(parentSense);
+    return this;
+}
+
+
+// Begin functions for calculated variables
+Variable *Variable::begin(float (*calcFxn)(),
+                          uint8_t decimalResolution,
+                          const char *varName,
+                          const char *varUnit,
+                          const char *varCode,
+                          const char *uuid)
+{
+    setVarUUID(uuid);
+    return begin(calcFxn, decimalResolution, varName, varUnit, varCode);
+}
+Variable *Variable::begin(float (*calcFxn)(),
+                          uint8_t decimalResolution,
+                          const char *varName,
+                          const char *varUnit,
+                          const char *varCode)
+{
+    setVarCode(varCode);
+    setVarUnit(varUnit);
+    setVarName(varName);
+    setResolution(decimalResolution);
+    setCalculation(calcFxn);
+    return this;
+}
+
+
 // This notifies the parent sensor that it has an observing variable
 // This function should never be called for a calculated variable
-void Variable::attachSensor(int varNum, Sensor *parentSense)
+void Variable::attachSensor(Sensor *parentSense)
 {
     if (!isCalculated)
     {
-        MS_DBG(F("Attempting to register "), getVarName());
-        MS_DBG(F(" to "), parentSense->getSensorName());
-        MS_DBG(F(" attached at "), parentSense->getSensorLocation(), F("...   "));
-        parentSense->registerVariable(varNum, this);
+        parentSensor = parentSense;
+        MS_DBG(F("Attempting to register"), getVarName(),
+               F("as variable number"), _sensorVarNum, F("to"),
+               parentSensor->getSensorName(), F("attached at"),
+               parentSensor->getSensorLocation(), F("..."));
+        parentSensor->registerVariable(_sensorVarNum, this);
     }
+    else MS_DBG(F("This is a calculated variable.  It cannot have a parent sensor!"));
 }
 
 
@@ -91,8 +186,8 @@ void Variable::onSensorUpdate(Sensor *parentSense)
 {
     if (!isCalculated)
     {
-        _currentValue = parentSense->sensorValues[_varNum];
-        MS_DBG(F("... received "), _currentValue);
+        _currentValue = parentSensor->sensorValues[_sensorVarNum];
+        MS_DBG(F("... received"), _currentValue);
     }
 }
 
@@ -101,8 +196,19 @@ void Variable::onSensorUpdate(Sensor *parentSense)
 // This is needed for dealing with variables in arrays
 String Variable::getParentSensorName(void)
 {
-    if (!isCalculated) return parentSensor->getSensorName();
-    else return "Calculated";
+    if (isCalculated)
+    {
+        return "Calculated";
+    }
+    else if (parentSensor == NULL)
+    {
+        MS_DBG(F("ERROR! This variable is missing a parent sensor!"));
+        return "";
+    }
+    else
+    {
+        return parentSensor->getSensorName();
+    }
 }
 
 
@@ -110,8 +216,31 @@ String Variable::getParentSensorName(void)
 // This is needed for dealing with variables in arrays
 String Variable::getParentSensorNameAndLocation(void)
 {
-    if (!isCalculated) return parentSensor->getSensorNameAndLocation();
-    else return "Calculated";
+    if (isCalculated)
+    {
+        return "Calculated";
+    }
+    else if (parentSensor == NULL)
+    {
+        MS_DBG(F("ERROR! This variable is missing a parent sensor!"));
+        return "";
+    }
+    else
+    {
+        return parentSensor->getSensorNameAndLocation();
+    }
+}
+
+
+// This ties a calculated variable to its calculation function
+void Variable::setCalculation(float (*calcFxn)())
+{
+    if (isCalculated)
+    {
+        MS_DBG(F("Calculation function set"));
+        _calcFxn = calcFxn;
+    }
+    else MS_DBG(F("This is a measured variable.  It cannot have a calculation function!"));
 }
 
 
@@ -122,21 +251,49 @@ String Variable::getParentSensorNameAndLocation(void)
 //     return true;
 // }
 
-// This returns the variable's name using http://vocabulary.odm2.org/variablename/
-String Variable::getVarName(void){return _varName;}
 
-// This returns the variable's unit using http://vocabulary.odm2.org/units/
-String Variable::getVarUnit(void){return _varUnit;}
-
-// This returns a customized code for the variable, if one is given, and a default if not
-String Variable::getVarCode(void)
+// This gets/sets the variable's resolution for value strings
+uint8_t Variable::getResolution(void){return _decimalResolution;}
+void Variable::setResolution(uint8_t decimalResolution)
 {
-    if (strcmp(_customCode,"") != 0) return _customCode;
-    else return _defaultVarCode;
+    _decimalResolution = decimalResolution;
+    MS_DBG(F("Variable resolution is"), _decimalResolution, F("decimal places"));
+}
+
+// This gets/sets the variable's name using http://vocabulary.odm2.org/variablename/
+String Variable::getVarName(void){return _varName;}
+void Variable::setVarName(const char *varName)
+{
+    _varName = varName;
+    MS_DBG(F("Variable name is"), _varName);
+}
+
+// This gets/sets the variable's unit using http://vocabulary.odm2.org/units/
+String Variable::getVarUnit(void){return _varUnit;}
+void Variable::setVarUnit(const char *varUnit)
+{
+    _varUnit = varUnit;
+    MS_DBG(F("Variable unit is"), _varUnit);
+}
+
+// This returns a customized code for the variable
+String Variable::getVarCode(void){return _varCode;}
+// This sets the variable code to a new custom value
+void Variable::setVarCode(const char *varCode)
+{
+    _varCode = varCode;
+    MS_DBG(F("Variable code is"), _varCode);
 }
 
 // This returns the variable UUID, if one has been assigned
-String Variable::getVarUUID(void) {return _UUID;}
+String Variable::getVarUUID(void){return _uuid;}
+// This sets the UUID
+void Variable::setVarUUID(const char *uuid)
+{
+    _uuid = uuid;
+    if (strlen(_uuid) == 0) MS_DBG(F("No UUID assigned"));
+    else MS_DBG(F("Variable UUID is"), _uuid);
+}
 
 
 // This returns the current value of the variable as a float

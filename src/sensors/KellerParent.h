@@ -20,8 +20,16 @@
 #define KellerParent_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
-// #define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_KELLER_DEBUG
+// #define MS_KELLER_DEBUG_DEEP
+
+#ifdef MS_KELLER_DEBUG
+#define MS_DEBUGGING_STD
+#endif
+
+#ifdef MS_KELLER_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP
+#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
@@ -39,13 +47,13 @@ class KellerParent : public Sensor
 {
 public:
     KellerParent(byte modbusAddress, Stream* stream,
-             int8_t powerPin, int8_t powerPin2, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
-             kellerModel model = OTHER, const char *sensName = "Keller-Sensor", uint8_t numVariables = 3,
-             uint32_t warmUpTime_ms = 500, uint32_t stabilizationTime_ms = 5000, uint32_t measurementTime_ms = 1500);
+                 int8_t powerPin, int8_t powerPin2, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
+                 kellerModel model = OTHER, const char *sensName = "Keller-Sensor", uint8_t numVariables = 3,
+                 uint32_t warmUpTime_ms = 500, uint32_t stabilizationTime_ms = 5000, uint32_t measurementTime_ms = 1500);
     KellerParent(byte modbusAddress, Stream& stream,
-             int8_t powerPin, int8_t powerPin2, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
-             kellerModel model = OTHER, const char *sensName = "Keller-Sensor", uint8_t numVariables = 3,
-             uint32_t warmUpTime_ms = 500, uint32_t stabilizationTime_ms = 5000, uint32_t measurementTime_ms = 1500);
+                 int8_t powerPin, int8_t powerPin2, int8_t enablePin = -1, uint8_t measurementsToAverage = 1,
+                 kellerModel model = OTHER, const char *sensName = "Keller-Sensor", uint8_t numVariables = 3,
+                 uint32_t warmUpTime_ms = 500, uint32_t stabilizationTime_ms = 5000, uint32_t measurementTime_ms = 1500);
     virtual ~KellerParent();
 
     String getSensorLocation(void) override;

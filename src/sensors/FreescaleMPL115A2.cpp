@@ -45,7 +45,7 @@ bool MPL115A2::setup(void)
     // This sensor needs power for setup!
     // The MPL115A2's begin() reads required coefficients from the sensor.
     bool wasOn = checkPowerOn();
-    if(!wasOn){powerUp();}
+    if (!wasOn) {powerUp();}
     waitForWarmUp();
 
     // Run the sensor begin()
@@ -53,7 +53,7 @@ bool MPL115A2::setup(void)
     mpl115a2_internal.begin();
 
     // Turn the power back off it it had been turned on
-    if(!wasOn){powerDown();}
+    if (!wasOn) {powerDown();}
 
     return retVal;
 }
@@ -69,22 +69,23 @@ bool MPL115A2::addSingleMeasurementResult(void)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6))
     {
-        MS_DBG(F("Getting values from "), getSensorNameAndLocation());
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
         // Read values
         mpl115a2_internal.getPT(&press,&temp);
 
         if (isnan(temp)) temp = -9999;
         if (isnan(press)) press = -9999;
 
-        if(press > 115.0 || temp < -40.0) {
+        if (press > 115.0 || temp < -40.0) {
             temp = -9999;
             press = -9999;
         }
 
-        MS_DBG(F("Temperature: "), temp);
-        MS_DBG(F("Pressure: "), press);
+        MS_DBG(F("  Temperature:"), temp);
+        MS_DBG(F("  Pressure:"), press);
     }
-    else MS_DBG(getSensorNameAndLocation(), F(" is not currently measuring!"));
+    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
 
     verifyAndAddMeasurementResult(MPL115A2_TEMP_VAR_NUM, temp);
     verifyAndAddMeasurementResult(MPL115A2_PRESSURE_VAR_NUM, press);

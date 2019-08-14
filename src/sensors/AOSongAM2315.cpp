@@ -40,6 +40,14 @@ String AOSongAM2315::getSensorLocation(void){return F("I2C_0xB8");}
 bool AOSongAM2315::setup(void)
 {
     Wire.begin();  // Start the wire library (sensor power not required)
+    // Eliminate any potential extra waits in the wire library
+    // These waits would be caused by a readBytes or parseX being called
+    // on wire after the Wire buffer has emptied.  The default stream
+    // functions - used by wire - wait a timeout period after reading the
+    // end of the buffer to see if an interrupt puts something into the
+    // buffer.  In the case of the Wire library, that will never happen and
+    // the timeout period is a useless delay.
+    Wire.setTimeout(0);
     return Sensor::setup();  // this will set pin modes and the setup status bit
 }
 
@@ -55,17 +63,18 @@ bool AOSongAM2315::addSingleMeasurementResult(void)
     // Only go on to get a result if it was
     if (bitRead(_sensorStatus, 6))
     {
-        MS_DBG(F("Getting values from "), getSensorName());
+        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
         Adafruit_AM2315 am2315;  // create a sensor object
         ret_val = am2315.readTemperatureAndHumidity(temp_val, humid_val);
 
         if (!ret_val or isnan(temp_val)) temp_val = -9999;
         if (!ret_val or isnan(humid_val)) humid_val = -9999;
 
-        MS_DBG(F("Temp is: "), temp_val, F("°C"));
-        MS_DBG(F(" and humidity is: "), humid_val, F("%"));
+        MS_DBG(F("  Temp:"), temp_val, F("°C"));
+        MS_DBG(F("  Humidity:"), humid_val, '%');
     }
-    else MS_DBG(getSensorNameAndLocation(), F(" is not currently measuring!"));
+    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
 
     verifyAndAddMeasurementResult(AM2315_TEMP_VAR_NUM, temp_val);
     verifyAndAddMeasurementResult(AM2315_HUMIDITY_VAR_NUM, humid_val);

@@ -22,7 +22,11 @@
 #define MaximDS3231_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_DEBUGGING_STD
+
+#ifdef MS_DS3231_DEBUG
+#define MS_DEBUGGING_STD
+#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
@@ -62,11 +66,18 @@ class MaximDS3231_Temp : public Variable
 {
 public:
     MaximDS3231_Temp(Sensor *parentSense,
-                     const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, DS3231_TEMP_VAR_NUM,
+                     const char *uuid = "",
+                     const char *varCode = "BoardTemp")
+      : Variable(parentSense,
+                 (const uint8_t)DS3231_TEMP_VAR_NUM,
+                 (uint8_t)DS3231_TEMP_RESOLUTION,
                  "temperatureDatalogger", "degreeCelsius",
-                 DS3231_TEMP_RESOLUTION,
-                 "BoardTemp", UUID, customVarCode)
+                 varCode, uuid)
+    {}
+    MaximDS3231_Temp()
+      : Variable((const uint8_t)DS3231_TEMP_VAR_NUM,
+                 (uint8_t)DS3231_TEMP_RESOLUTION,
+                 "temperatureDatalogger", "degreeCelsius", "BoardTemp")
     {}
     ~MaximDS3231_Temp(){}
 };

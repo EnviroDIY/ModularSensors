@@ -112,7 +112,7 @@ ProcessorStats::ProcessorStats(const char *version)
         _batteryPin = 10;
     #elif defined(ARDUINO_SODAQ_AUTONOMO)
         if (strcmp(_version, "v0.1") == 0) _batteryPin = 48;
-        else _batteryPin = 61;
+        else _batteryPin = 33;
     #else
         _batteryPin = -1;
     #endif
@@ -159,7 +159,7 @@ bool ProcessorStats::addSingleMeasurementResult(void)
         float measuredvbat = analogRead(_batteryPin);
         measuredvbat *= 2;    // we divided by 2, so multiply back
         measuredvbat *= 3.3;  // Multiply by 3.3V, our reference voltage
-        measuredvbat /= 1024; // convert to voltage
+        measuredvbat /= 1024;  // convert to voltage
         sensorValue_battery = measuredvbat;
 
     #elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA)

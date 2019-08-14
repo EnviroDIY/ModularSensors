@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.19.0
+This example sketch is written for ModularSensors library version 0.21.3
 
 This sketch is an example of logging data from different variables at two
 different logging intervals.  This example uses more of the manual functions
@@ -22,22 +22,23 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
-#include <LoggerBase.h>
-#include <LoggerModem.h>
 
 
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
+// The library version this example was written for
+const char *libraryVersion = "0.21.3";
 // The name of this file
-const char *sketchName = "logger_test.ino";
-// Logger ID - since it's the same logger device, we only need one
+const char *sketchName = "double_logger.ino";
+// Logger ID - we're only using one logger ID for both "loggers"
 const char *LoggerID = "XXXXX";
 // The TWO filenames for the different logging intervals
 const char *FileName5min = "Logger_5MinuteInterval.csv";
 const char *FileName1min = "Logger_1MinuteInterval.csv";
 // Your logger's timezone.
-const int8_t timeZone = -5;
+const int8_t timeZone = -5;  // Eastern Standard Time
+// NOTE:  Daylight savings time will not be applied!  Please use standard time!
 
 
 // ==========================================================================
@@ -52,70 +53,106 @@ const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugg
 const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
-const int8_t sensorPowerPin = 22; // MCU pin controlling main sensor power (-1 if not applicable)
+const int8_t sdCardPwrPin = -1;     // MCU SD card power pin (-1 if not applicable)
+const int8_t sdCardSSPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
+const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
-// Create and return the processor "sensor"
-const char *MFVersion = "v0.5b";
-ProcessorStats mayfly(MFVersion);
+// Create the main processor chip "sensor" - for general metadata
+const char *mcuBoardVersion = "v0.5b";
+ProcessorStats mcuBoard(mcuBoardVersion);
 
 
 // ==========================================================================
-//    Modem/Internet connection options
+//    Wifi/Cellular Modem Main Chip Selection
 // ==========================================================================
 
-// Select your modem chip, comment out all of the others
-// #define TINY_GSM_MODEM_SIM800  // Select for a SIM800, SIM900, or variant thereof
-// #define TINY_GSM_MODEM_UBLOX  // Select for most u-blox cellular modems
-// #define TINY_GSM_MODEM_ESP8266  // Select for an ESP8266 using the DEFAULT AT COMMAND FIRMWARE
+// Select your modem chip - this determines the exact commands sent to it
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
+
+
+// ==========================================================================
+//    Modem Pins
+// ==========================================================================
+
+const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
+const int8_t modemResetPin = A4;    // MCU pin connected to modem reset pin (-1 if unconnected)
+
+
+// ==========================================================================
+//    TinyGSM Client
+// ==========================================================================
+
+#if defined(TINY_GSM_MODEM_XBEE)
+  #define TINY_GSM_YIELD() { delay(2); }  // Use to counter slow (9600) baud rate
+#endif
 
 // Include TinyGSM for the modem
 // This include must be included below the define of the modem name!
 #include <TinyGsmClient.h>
 
- // Set the serial port for the modem - software serial can also be used.
-HardwareSerial &ModemSerial = Serial1;
+// Create a reference to the serial port for the modem
+HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
-// Create a variable for the modem baud rate - this will be used in the begin function for the port
-const long ModemBaud = 9600;
+// Create a TinyGSM modem to run on that serial port
+TinyGsm tinyModem(modemSerial, modemResetPin);
 
-// Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(ModemSerial);
+// Create a TCP client on that modem
+TinyGsmClient tinyClient(tinyModem);
 
-// Create a new TCP client on that modem and return a pointer to it
-TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
 
+// ==========================================================================
+//    Specific Modem On-Off Methods
+// ==========================================================================
+
+// This should apply to all Digi brand XBee modules.
 // Describe the physical pin connection of your modem to your board
-const int8_t modemVccPin = -2;  // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
-const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
-const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
+const long modemBaud = 9600;        // Communication speed of the modem
+const bool modemStatusLevel = LOW;  // The level of the status pin when the module is active (HIGH or LOW)
 
-// And create the wake and sleep methods for the modem
+// Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool wakeFxn(void)
+// After enabling pin sleep, the sleep request pin is held LOW to keep the XBee on
+// Enable pin sleep in the setup function or using XCTU prior to connecting the XBee
+bool modemSleepFxn(void)
 {
-    digitalWrite(modemSleepRqPin, LOW);
-    digitalWrite(redLED, HIGH);  // Because the XBee doesn't have any lights
-    return true;
+    if (modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
+    {
+        digitalWrite(modemSleepRqPin, HIGH);
+        digitalWrite(redLED, LOW);
+        return true;
+    }
+    else return true;
 }
-bool sleepFxn(void)
+bool modemWakeFxn(void)
 {
-    digitalWrite(modemSleepRqPin, HIGH);
-    digitalWrite(redLED, LOW);
-    return true;
+    if (modemVccPin >= 0)  // Turns on when power is applied
+        return true;
+    else if (modemSleepRqPin >= 0)
+    {
+        digitalWrite(modemSleepRqPin, LOW);
+        digitalWrite(redLED, HIGH);  // Because the XBee doesn't have any lights
+        return true;
+    }
+    else return true;
 }
 
-// And we still need the connection information for the network
+
+// ==========================================================================
+//    Network Information and LoggerModem Object
+// ==========================================================================
+#include <LoggerModem.h>
+
+// Network connection information
 const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
 const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
 const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
 
 // Create the loggerModem instance
 // A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, wifiId, wifiPwd);
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepFxn, tinyModem, tinyClient, apn);
+// loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, &tinyModem, &tinyClient, wifiId, wifiPwd);
+loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, &tinyModem, &tinyClient, apn);
 
 
 
@@ -123,7 +160,8 @@ loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, wakeFxn, sleepF
 //    Maxim DS3231 RTC (Real Time Clock)
 // ==========================================================================
 #include <sensors/MaximDS3231.h>
-// Create and return the DS3231 sensor object
+
+// Create a DS3231 sensor object
 MaximDS3231 ds3231(1);
 
 
@@ -131,42 +169,50 @@ MaximDS3231 ds3231(1);
 //    AOSong AM2315 Digital Humidity and Temperature Sensor
 // ==========================================================================
 #include <sensors/AOSongAM2315.h>
-const int8_t I2CPower = 22;  // Pin to switch power on and off (-1 if unconnected)
+
+const int8_t I2CPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+
 // Create and return the AOSong AM2315 sensor object
 AOSongAM2315 am2315(I2CPower);
 
 
 // ==========================================================================
-// The two arrays that contains the variables for the different intervals
+//    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-// Create pointers for all of the variables from the sensors recording at 1
-// minute intervals and at the same time putting them into an array
+#include <VariableArray.h>
+
+// The variables to record at 1 minute intervals
 Variable *variableList_at1min[] = {
     new AOSongAM2315_Humidity(&am2315),
     new AOSongAM2315_Temp(&am2315)
-    // new YOUR_variableName_HERE(&)
 };
 // Count up the number of pointers in the 1-minute array
 int variableCount1min = sizeof(variableList_at1min) / sizeof(variableList_at1min[0]);
 // Create the 1-minute VariableArray object
-VariableArray array1min(variableCount1min, variableList_at1min);
-// Create the 1-minute  logger instance
-Logger  logger1min(LoggerID, 1, sdCardPin, wakePin, &array1min);
+VariableArray array1min;
 
-// Create pointers for all of the variables from the sensors recording at 5
-// minute intervals and at the same time putting them into an array
+// The variables to record at 5 minute intervals
 Variable *variableList_at5min[] = {
     new MaximDS3231_Temp(&ds3231),
-    new ProcessorStats_Batt(&mayfly),
-    new ProcessorStats_FreeRam(&mayfly)
-    // new YOUR_variableName_HERE(&)
+    new ProcessorStats_Batt(&mcuBoard),
+    new ProcessorStats_FreeRam(&mcuBoard)
 };
 // Count up the number of pointers in the 5-minute array
 int variableCount5min = sizeof(variableList_at5min) / sizeof(variableList_at5min[0]);
 // Create the 5-minute VariableArray object
-VariableArray array5min(variableCount5min, variableList_at5min);
+VariableArray array5min;
+
+
+// ==========================================================================
+//     The Logger Object[s]
+// ==========================================================================
+#include <LoggerBase.h>
+
 // Create the 1-minute  logger instance
-Logger  logger5min(LoggerID, 5, sdCardPin, wakePin, &array5min);
+Logger logger1min;
+
+// Create the 5-minute  logger instance
+Logger logger5min;
 
 
 // ==========================================================================
@@ -176,15 +222,15 @@ Logger  logger5min(LoggerID, 5, sdCardPin, wakePin, &array5min);
 // Flashes the LED's on the primary board
 void greenredflash(uint8_t numFlash = 4, uint8_t rate = 75)
 {
-  for (uint8_t i = 0; i < numFlash; i++) {
-    digitalWrite(greenLED, HIGH);
+    for (uint8_t i = 0; i < numFlash; i++) {
+        digitalWrite(greenLED, HIGH);
+        digitalWrite(redLED, LOW);
+        delay(rate);
+        digitalWrite(greenLED, LOW);
+        digitalWrite(redLED, HIGH);
+        delay(rate);
+    }
     digitalWrite(redLED, LOW);
-    delay(rate);
-    digitalWrite(greenLED, LOW);
-    digitalWrite(redLED, HIGH);
-    delay(rate);
-  }
-  digitalWrite(redLED, LOW);
 }
 
 
@@ -206,8 +252,12 @@ void setup()
     Serial.print(F("Using ModularSensors Library version "));
     Serial.println(MODULAR_SENSORS_VERSION);
 
+    if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
+        Serial.println(F(
+            "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
+
     // Start the serial connection with the modem
-    ModemSerial.begin(ModemBaud);
+    modemSerial.begin(modemBaud);
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
@@ -226,9 +276,18 @@ void setup()
     // Offset is the same as the time zone because the RTC is in UTC
     Logger::setTZOffset(timeZone);
 
+    // Begin the variable array[s], logger[s], and publisher[s]
+    array1min.begin(variableCount1min, variableList_at1min);
+    array5min.begin(variableCount5min, variableList_at5min);
+    logger1min.begin(LoggerID, 1, &array1min);
+    logger5min.begin(LoggerID, 5, &array5min);
+    logger1min.setLoggerPins(wakePin, sdCardSSPin, sensorPowerPin, buttonPin, greenLED);
+    logger5min.setLoggerPins(wakePin, sdCardSSPin, sensorPowerPin, buttonPin, greenLED);
+
 
     // Turn on the modem
     modem.modemPowerUp();
+    modem.wake();
 
     // Set up the sensors (do this directly on the VariableArray)
     array1min.setupSensors();
@@ -259,12 +318,10 @@ void setup()
     // on to the file when it's created.
     // Because we've already called setFileName, we do not need to specify the
     // file name for this function.
-    logger1min.createLogFile(true);
-    logger5min.createLogFile(true);
-
-    // Set up the processor sleep mode
-    // Because there's only one processor, we only need to do this once
-    logger1min.setupSleep();
+    logger1min.turnOnSDcard(true);  // true = wait for card to settle after power up
+    logger1min.createLogFile(true);  // true = write a new header
+    logger5min.createLogFile(true);  // true = write a new header
+    logger1min.turnOffSDcard(true);  // true = wait for internal housekeeping after write
 
     Serial.println(F("Logger setup finished!\n"));
     Serial.println(F("------------------------------------------"));
@@ -280,8 +337,12 @@ void setup()
 // Main loop function
 // ==========================================================================
 
-// Because of the way the sleep mode is set up, the processor will wake up
-// and start the loop every minute exactly on the minute.
+// Because of the way alarms work on the RTC, it will wake the processor and
+// start the loop every minute exactly on the minute.
+// The processor may also be woken up by another interrupt or level change on a
+// pin - from a button or some other input.
+// The "if" statements in the loop determine what will happen - whether the
+// sensors update, testing mode starts, or it goes back to sleep.
 void loop()
 {
     // Check if the current time is an even interval of the logging interval
@@ -310,7 +371,9 @@ void loop()
         array1min.sensorsPowerDown();
 
         // Stream the csv data to the SD card
+        logger1min.turnOnSDcard(true);
         logger1min.logToSD();
+        logger1min.turnOffSDcard(true);
 
         // Turn off the LED
         digitalWrite(greenLED, LOW);
@@ -343,7 +406,9 @@ void loop()
         array1min.sensorsPowerDown();
 
         // Stream the csv data to the SD card
+        logger5min.turnOnSDcard(true);
         logger5min.logToSD();
+        logger5min.turnOffSDcard(true);
 
         // Turn off the LED
         digitalWrite(redLED, LOW);

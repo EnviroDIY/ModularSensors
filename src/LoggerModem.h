@@ -13,9 +13,14 @@
 #define LoggerModem_h
 
 // FOR DEBUGGING
-// #define MODEM_DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_MODEM_DEBUG
+
+#ifdef MS_MODEM_DEBUG
+#define MS_DEBUGGING_STD
+#endif
 
 // Included Dependencies
+#include "ModSensorDebugger.h"
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Arduino.h>
@@ -60,24 +65,6 @@
 #define PERCENT_SIGNAL_VAR_NUM 1
 #define PERCENT_SIGNAL_RESOLUTION 0
 
-
-#ifdef MODEM_DEBUGGING_SERIAL_OUTPUT
-    namespace {
-        template<typename T>
-        static void MS_MOD_DBG(T last) {
-            MODEM_DEBUGGING_SERIAL_OUTPUT.println(last);
-        }
-
-        template<typename T, typename... Args>
-        static void MS_MOD_DBG(T head, Args... tail) {
-            MODEM_DEBUGGING_SERIAL_OUTPUT.print(head);
-            MS_MOD_DBG(tail...);
-        }
-    }
-#else
-    #define MS_MOD_DBG(...)
-#endif  // MODEM_DEBUGGING_SERIAL_OUTPUT
-
 /* ===========================================================================
 * Functions for the modem class
 * This is basically a wrapper for TinyGsm
@@ -99,12 +86,13 @@ public:
     // typedef's in the TinyGsmClient.h that make this somewhat invisible to
     // the user.
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
-                bool (*wakeFxn)(), bool (*sleepFxn)(),
+                bool (*modemWakeFxn)(), bool (*modemSleepFxn)(),
                 TinyGsmModem *inModem, Client *inClient, const char *APN);
 
     loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
-                bool (*wakeFxn)(), bool (*sleepFxn)(),
+                bool (*modemWakeFxn)(), bool (*modemSleepFxn)(),
                 TinyGsmModem *inModem, Client *inClient, const char *ssid, const char *pwd);
+
     ~loggerModem();
 
     String getSensorName(void) override;
@@ -174,17 +162,25 @@ private:
     static int16_t getPctFromCSQ(int16_t csq);
     // Helper to get signal percent from CSQ
     static int16_t getPctFromRSSI(int16_t rssi);
+    // Helper to set the timing for specific cellular chipsets based on their documentation
+    void setModemTiming(void);
 
 private:
+    bool (*_modemWakeFxn)(void);
+    bool (*_modemSleepFxn)(void);
+
     bool _statusLevel;
-    uint32_t _statusTime_ms;
-    uint32_t _disconnetTime_ms;
-    bool (*_wakeFxn)(void);
-    bool (*_sleepFxn)(void);
+    int8_t _modemSleepRqPin;
+    uint16_t _statusTime_ms;
+    uint16_t _disconnetTime_ms;
+    // uint16_t _on_pull_down_ms;
+    // uint16_t _off_pull_down_ms;
     const char *_apn;
     const char *_ssid;
     const char *_pwd;
     uint32_t _lastNISTrequest;
+    uint32_t _lastATCheck;
+    uint32_t _lastConnectionCheck;
     String _modemName;
 
 };
@@ -196,11 +192,19 @@ private:
 class Modem_RSSI : public Variable
 {
 public:
-    Modem_RSSI(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
-     : Variable(parentSense, RSSI_VAR_NUM,
-                "RSSI", "decibelMiliWatt",
-                RSSI_RESOLUTION,
-                "RSSI", UUID, customVarCode)
+    Modem_RSSI(Sensor *parentSense,
+               const char *uuid = "",
+               const char *varCode = "RSSI")
+      : Variable(parentSense,
+                 (const uint8_t)RSSI_VAR_NUM,
+                 (uint8_t)RSSI_RESOLUTION,
+                 "RSSI", "decibelMiliWatt",
+                 varCode, uuid)
+    {}
+    Modem_RSSI()
+      : Variable((const uint8_t)RSSI_VAR_NUM,
+                 (uint8_t)RSSI_RESOLUTION,
+                 "RSSI", "decibelMiliWatt", "RSSI")
     {}
     ~Modem_RSSI(){}
 };
@@ -210,11 +214,19 @@ public:
 class Modem_SignalPercent : public Variable
 {
 public:
-    Modem_SignalPercent(Sensor *parentSense, const char *UUID = "", const char *customVarCode = "")
-     : Variable(parentSense, PERCENT_SIGNAL_VAR_NUM,
-                "signalPercent", "percent",
-                PERCENT_SIGNAL_RESOLUTION,
-                "signalPercent", UUID, customVarCode)
+    Modem_SignalPercent(Sensor *parentSense,
+                        const char *uuid = "",
+                        const char *varCode = "signalPercent")
+      : Variable(parentSense,
+                 (const uint8_t)PERCENT_SIGNAL_VAR_NUM,
+                 (uint8_t)PERCENT_SIGNAL_RESOLUTION,
+                 "signalPercent", "percent",
+                 varCode, uuid)
+    {}
+    Modem_SignalPercent()
+      : Variable((const uint8_t)PERCENT_SIGNAL_VAR_NUM,
+                 (uint8_t)PERCENT_SIGNAL_RESOLUTION,
+                 "signalPercent", "percent", "signalPercent")
     {}
     ~Modem_SignalPercent(){}
 };

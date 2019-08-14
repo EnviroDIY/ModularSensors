@@ -25,44 +25,44 @@ const char *LoggerID = "XXXX";
 
 #### Set the calibration coefficients for the Campbell OBS3+
 - The OBS3+ ships with a calibration certificate; you need this sheet!
-- Change _**all**_ of the the ```xxxxE+xx``` values in this section of code to the values on that calibration sheet.  Use numbers from the side of the calibration sheet that shows the calibration in _**volts**_.
+- Change _**all**_ of the the ```0.000E+00``` and ```1.000E+00``` values in this section of code to the values on that calibration sheet.  Use numbers from the side of the calibration sheet that shows the calibration in _**volts**_.
     - The sketch will not compile if these values are not entered properly.
-    - Do not change any values except those that are ```xxxxE+xx```!
+    - Do not change any values except those that are ```0.000E+00``` and ```1.000E+00```!
 
 ```cpp
 // ==========================================================================
 //    CAMPBELL OBS 3 / OBS 3+ Analog Turbidity Sensor
 // ==========================================================================
 #include <sensors/CampbellOBS3.h>
-const int8_t OBS3Power = 22;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t OBS3Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
 const uint8_t OBS3numberReadings = 10;
-const uint8_t OBS3_ADS1115Address = 0x48;  // The I2C address of the ADS1115 ADC
+const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
 // Campbell OBS 3+ Low Range calibration in Volts
-const int8_t OBSLowPin = 0;  // The low voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
-const float OBSLow_A = xxxxE+xx;  // The "A" value (X^2) from the low range calibration
-const float OBSLow_B = xxxxE+xx;  // The "B" value (X) from the low range calibration
-const float OBSLow_C = xxxxE+xx;  // The "C" value from the low range calibration
-CampbellOBS3 osb3low(OBS3Power, OBSLowPin, OBSLow_A, OBSLow_B, OBSLow_C, OBS3_ADS1115Address, OBS3numberReadings);
+const int8_t OBSLowADSChannel = 0;  // The ADS channel for the low range output
+const float OBSLow_A = 0.000E+00;  // The "A" value (X^2) from the low range calibration
+const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calibration
+const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
+CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3numberReadings);
 // Campbell OBS 3+ High Range calibration in Volts
-const int8_t OBSHighPin = 1;  // The high voltage analog pin ON THE ADS1115 (NOT the Arduino Pin Number)
-const float OBSHigh_A = xxxxE+xx;  // The "A" value (X^2) from the high range calibration
-const float OBSHigh_B = xxxxE+xx;  // The "B" value (X) from the high range calibration
-const float OBSHigh_C = xxxxE+xx;  // The "C" value from the high range calibration
-CampbellOBS3 osb3high(OBS3Power, OBSHighPin, OBSHigh_A, OBSHigh_B, OBSHigh_C, OBS3_ADS1115Address, OBS3numberReadings);
+const int8_t OBSHighADSChannel = 1;  // The ADS channel for the high range output
+const float OBSHigh_A = 0.000E+00;  // The "A" value (X^2) from the high range calibration
+const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range calibration
+const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
+CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3numberReadings);
 ```
 
 #### Set the universally universal identifiers (UUID) for each variable
 - Change _**all**_ of the the ```"12345678-abcd-1234-efgh-1234567890ab"``` values in this section of code to the values shown on the EnviroDIY data portal for your variables.
     - After you register your site and variables, you should see a group of empty plots on the page for your site.  The plots have titles like "Temperature" and below the plot will be a list of the "Medium", "Sensor", and "UUID" for that variable.
     - Copy the appropriate UUID from below each plot to its proper place in this section of the code.
-    - For example, the ```"12345678-abcd-1234-efgh-1234567890ab"``` in the first line (```new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab")```) will be replaced by the UUID listed under the plot titled "Battery Voltage" with the sensor listed below as "EnviroDIY_Mayfly Data Logger".
+    - For example, the ```"12345678-abcd-1234-efgh-1234567890ab"``` in the first line (```new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab")```) should be replaced by the UUID listed under the plot titled "Battery Voltage" with the sensor listed below as "EnviroDIY_Mayfly Data Logger".
 
 ```cpp
 // ==========================================================================
-//    The array that contains all variables to be logged
+//    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 Variable *variableList[] = {
-    new ProcessorStats_Batt(&mayfly, "12345678-abcd-1234-efgh-1234567890ab"),
+    new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab"),
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),
     new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-efgh-1234567890ab"),

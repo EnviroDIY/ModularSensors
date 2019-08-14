@@ -16,10 +16,10 @@
  *  Mud: 2% of reading or 1 mg L–1
  *  Sand: 4% of reading or 10 mg L–1
  * Resolution:
- *  16-bit ADC - This is what is supported!
- *      Turbidity: 0.004/0.01 NTU; 0.008/0.03 NTU; 0.01/0.06 NTU
+ *  16-bit ADC
+ *      Turbidity: 0.03125/0.125 NTU; 0.0625/0.25 NTU; 0.125/0.5 NTU
  *  12-bit ADC
- *      Turbidity: 0.06/0.2 NTU; 0.1/0.5 NTU; 0.2/1.0 NTU
+ *      Turbidity: 0.5/2.0 NTU; 1.0/4.0 NTU; 2.0/8.0 NTU
  *
  * Minimum stabilization time: 2s
  * Maximum data rate = 10Hz (100ms/sample)
@@ -30,7 +30,11 @@
 #define CampbellOBS3_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_DEBUGGING_STD
+
+#ifdef MS_OBS3_DEBUG
+#define MS_DEBUGGING_STD
+#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
@@ -51,18 +55,25 @@
 #define OBS3_MEASUREMENT_TIME_MS 100
 
 #define OBS3_TURB_VAR_NUM 0
-#define OBS3_RESOLUTION 3
-#define OBS3_HR_RESOLUTION 2
+#ifdef MS_USE_ADS1015
+#define OBS3_RESOLUTION 1
+#else
+#define OBS3_RESOLUTION 5
+#endif
 
 #define OBS3_VOLTAGE_VAR_NUM 1
-#define OBS3_VOLT_RESOLUTION 5
+#ifdef MS_USE_ADS1015
+#define OBS3_VOLT_RESOLUTION 1
+#else
+#define OBS3_VOLT_RESOLUTION 4
+#endif
 
 // The main class for the Campbell OBS3
 class CampbellOBS3 : public Sensor
 {
 public:
-    // The constructor - need the power pin, the data pin, and the calibration info
-    CampbellOBS3(int8_t powerPin, int8_t dataPin,
+    // The constructor - need the power pin, the ADS1X15 data channel, and the calibration info
+    CampbellOBS3(int8_t powerPin, uint8_t adsChannel,
                  float x2_coeff_A, float x1_coeff_B, float x0_coeff_C,
                  uint8_t i2cAddress = ADS1115_ADDRESS, uint8_t measurementsToAverage = 1);
     // Destructor
@@ -73,6 +84,7 @@ public:
     bool addSingleMeasurementResult(void) override;
 
 protected:
+    uint8_t _adsChannel;
     float _x2_coeff_A, _x1_coeff_B, _x0_coeff_C;
     uint8_t _i2cAddress;
 };
@@ -86,11 +98,18 @@ class CampbellOBS3_Turbidity : public Variable
 {
 public:
     CampbellOBS3_Turbidity(Sensor *parentSense,
-                           const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, OBS3_TURB_VAR_NUM,
+                           const char *uuid = "",
+                           const char *varCode = "OBS3Turbidity")
+      : Variable(parentSense,
+                 (const uint8_t)OBS3_TURB_VAR_NUM,
+                 (uint8_t)OBS3_RESOLUTION,
                  "turbidity", "nephelometricTurbidityUnit",
-                 OBS3_RESOLUTION,
-                 "OBS3Turbidity", UUID, customVarCode)
+                 varCode, uuid)
+    {}
+    CampbellOBS3_Turbidity()
+      : Variable((const uint8_t)OBS3_TURB_VAR_NUM,
+                 (uint8_t)OBS3_RESOLUTION,
+                 "turbidity", "nephelometricTurbidityUnit", "OBS3Turbidity")
     {}
     ~CampbellOBS3_Turbidity(){}
 };
@@ -102,11 +121,18 @@ class CampbellOBS3_Voltage : public Variable
 {
 public:
     CampbellOBS3_Voltage(Sensor *parentSense,
-                         const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, OBS3_VOLTAGE_VAR_NUM,
+                         const char *uuid = "",
+                         const char *varCode = "OBS3Voltage")
+      : Variable(parentSense,
+                 (const uint8_t)OBS3_VOLTAGE_VAR_NUM,
+                 (uint8_t)OBS3_VOLT_RESOLUTION,
                  "voltage", "volt",
-                 OBS3_VOLT_RESOLUTION,
-                 "OBS3Voltage", UUID, customVarCode)
+                 varCode, uuid)
+    {}
+    CampbellOBS3_Voltage()
+      : Variable((const uint8_t)OBS3_VOLTAGE_VAR_NUM,
+                 (uint8_t)OBS3_VOLT_RESOLUTION,
+                 "voltage", "volt", "OBS3Voltage")
     {}
     ~CampbellOBS3_Voltage(){}
 };

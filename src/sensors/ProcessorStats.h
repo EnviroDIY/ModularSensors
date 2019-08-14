@@ -17,7 +17,11 @@
 #define ProcessorStats_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_PROCSTATS_DEBUG
+
+#ifdef MS_PROCSTATS_DEBUG
+#define MS_DEBUGGING_STD
+#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
@@ -65,11 +69,18 @@ class ProcessorStats_Batt : public Variable
 {
 public:
     ProcessorStats_Batt(Sensor *parentSense,
-                        const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, PROCESSOR_BATTERY_VAR_NUM,
+                        const char *uuid = "",
+                        const char *varCode = "Battery")
+      : Variable(parentSense,
+                 (const uint8_t)PROCESSOR_BATTERY_VAR_NUM,
+                 (uint8_t)PROCESSOR_BATTERY_RESOLUTION,
                  "batteryVoltage", "volt",
-                 PROCESSOR_BATTERY_RESOLUTION,
-                 "Battery", UUID, customVarCode)
+                 varCode, uuid)
+    {}
+    ProcessorStats_Batt()
+      : Variable((const uint8_t)PROCESSOR_BATTERY_VAR_NUM,
+                 (uint8_t)PROCESSOR_BATTERY_RESOLUTION,
+                 "batteryVoltage", "volt", "Battery")
     {}
     ~ProcessorStats_Batt(){}
 };
@@ -80,11 +91,18 @@ class ProcessorStats_FreeRam : public Variable
 {
 public:
     ProcessorStats_FreeRam(Sensor *parentSense,
-                           const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, PROCESSOR_RAM_VAR_NUM,
-                 "Free SRAM", "Bit",
-                 PROCESSOR_RAM_RESOLUTION,
-                 "FreeRam", UUID, customVarCode)
+                           const char *uuid = "",
+                           const char *varCode = "FreeRam")
+      : Variable(parentSense,
+                 (const uint8_t)PROCESSOR_RAM_VAR_NUM,
+                 (uint8_t)PROCESSOR_RAM_RESOLUTION,
+                 "freeSRAM", "Bit",
+                 varCode, uuid)
+    {}
+    ProcessorStats_FreeRam()
+      : Variable((const uint8_t)PROCESSOR_RAM_VAR_NUM,
+                 (uint8_t)PROCESSOR_RAM_RESOLUTION,
+                 "freeSRAM", "Bit", "FreeRam")
     {}
     ~ProcessorStats_FreeRam(){}
 };
@@ -95,11 +113,18 @@ class ProcessorStats_SampleNumber : public Variable
 {
 public:
     ProcessorStats_SampleNumber(Sensor *parentSense,
-                           const char *UUID = "", const char *customVarCode = "")
-      : Variable(parentSense, PROCESSOR_SAMPNUM_VAR_NUM,
+                                const char *uuid = "",
+                                const char *varCode = "SampNum")
+      : Variable(parentSense,
+                 (const uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
+                 (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION,
                  "sequenceNumber", "Dimensionless",
-                 PROCESSOR_SAMPNUM_RESOLUTION,
-                 "SampNum", UUID, customVarCode)
+                 varCode, uuid)
+    {}
+    ProcessorStats_SampleNumber()
+      : Variable((const uint8_t)PROCESSOR_SAMPNUM_VAR_NUM,
+                 (uint8_t)PROCESSOR_SAMPNUM_RESOLUTION,
+                 "sequenceNumber", "Dimensionless", "SampNum")
     {}
     ~ProcessorStats_SampleNumber(){}
 };

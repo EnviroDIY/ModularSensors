@@ -12,7 +12,16 @@
 #define VariableArray_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_VARIABLEARRAY_DEBUG
+// #define MS_VARIABLEARRAY_DEBUG_DEEP
+
+#ifdef MS_VARIABLEARRAY_DEBUG
+#define MS_DEBUGGING_STD
+#endif
+
+#ifdef MS_VARIABLEARRAY_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP
+#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
@@ -23,9 +32,19 @@
 class VariableArray
 {
 public:
-    // Constructor
+    // Constructors
+    VariableArray();
     VariableArray(uint8_t variableCount, Variable *variableList[]);
     virtual ~VariableArray();
+
+    // "Begins" the VariableArray - attaches the number and array of variables
+    // Not doing this in the constructor because we expect the VariableArray to
+    // be created in the "global scope" and we cannot control the order in which
+    // objects in that global scope will be created.  That is, we cannot
+    // guarantee that the variables and their pointers in the array will
+    // actually have been created unless we wait until in the setup or loop
+    // function of the main program.
+    void begin(uint8_t variableCount, Variable *variableList[]);
 
     // Leave the internal variable list public
     Variable **arrayOfVars;
@@ -75,21 +94,21 @@ private:
     bool isLastVarFromSensor(int arrayIndex);
     uint8_t countMaxToAverage(void);
 
-#ifdef DEBUGGING_SERIAL_OUTPUT
+#ifdef DEEP_DEBUGGING_SERIAL_OUTPUT
     template<typename T>
     void prettyPrintArray(T arrayToPrint[])
     {
-        DEBUGGING_SERIAL_OUTPUT.print("[,\t");
+        DEEP_DEBUGGING_SERIAL_OUTPUT.print("[,\t");
         for (uint8_t i = 0; i < _variableCount; i++)
         {
-            DEBUGGING_SERIAL_OUTPUT.print(arrayToPrint[i]);
-            DEBUGGING_SERIAL_OUTPUT.print(",\t");
+            DEEP_DEBUGGING_SERIAL_OUTPUT.print(arrayToPrint[i]);
+            DEEP_DEBUGGING_SERIAL_OUTPUT.print(",\t");
         }
-        DEBUGGING_SERIAL_OUTPUT.println("]");
+        DEEP_DEBUGGING_SERIAL_OUTPUT.println("]");
     }
 #else
     #define prettyPrintArray(...)
-#endif  // DEBUGGING_SERIAL_OUTPUT
+#endif  // DEEP_DEBUGGING_SERIAL_OUTPUT
 
 };
 

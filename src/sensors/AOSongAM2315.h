@@ -27,7 +27,11 @@
 #define AOSongAM2315_h
 
 // Debugging Statement
-// #define DEBUGGING_SERIAL_OUTPUT Serial
+// #define MS_DEBUGGING_STD
+
+#ifdef MS_AM2315_DEBUG
+#define MS_DEBUGGING_STD
+#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
@@ -69,11 +73,18 @@ class AOSongAM2315_Humidity : public Variable
 {
 public:
     AOSongAM2315_Humidity(Sensor *parentSense,
-                          const char *UUID = "", const char *customVarCode = "") :
-      Variable(parentSense, AM2315_HUMIDITY_VAR_NUM,
-               "relativeHumidity", "percent",
-               AM2315_HUMIDITY_RESOLUTION,
-               "AM2315Humidity", UUID, customVarCode)
+                          const char *uuid = "",
+                          const char *varCode = "AM2315Humidity")
+      : Variable(parentSense,
+                 (const uint8_t)AM2315_HUMIDITY_VAR_NUM,
+                 (uint8_t)AM2315_HUMIDITY_RESOLUTION,
+                 "relativeHumidity", "percent",
+                 varCode, uuid)
+    {}
+    AOSongAM2315_Humidity()
+      : Variable((const uint8_t)AM2315_HUMIDITY_VAR_NUM,
+                 (uint8_t)AM2315_HUMIDITY_RESOLUTION,
+                 "relativeHumidity", "percent", "AM2315Humidity")
     {}
     ~AOSongAM2315_Humidity(){};
 };
@@ -84,11 +95,18 @@ class AOSongAM2315_Temp : public Variable
 {
 public:
     AOSongAM2315_Temp(Sensor *parentSense,
-                      const char *UUID = "", const char *customVarCode = "") :
-      Variable(parentSense, AM2315_TEMP_VAR_NUM,
-               "temperature", "degreeCelsius",
-               AM2315_TEMP_RESOLUTION,
-               "AM2315Temp", UUID, customVarCode)
+                      const char *uuid = "",
+                      const char *varCode = "AM2315Temp")
+      : Variable(parentSense,
+                 (const uint8_t)AM2315_TEMP_VAR_NUM,
+                 (uint8_t)AM2315_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius",
+                 varCode, uuid)
+    {}
+    AOSongAM2315_Temp()
+      : Variable((const uint8_t)AM2315_TEMP_VAR_NUM,
+                 (uint8_t)AM2315_TEMP_RESOLUTION,
+                 "temperature", "degreeCelsius", "AM2315Temp")
     {}
     ~AOSongAM2315_Temp(){};
 };
