@@ -64,7 +64,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 
 #if PROFILE_NAME == PROFILE01_MAYFLY_AVR
 //**************************************************************************
-
+//This configuration expects a standard Mayfly0.bb  with a Adafruit-904 INA219 on I2C 
 //Standard - target TU power Mon using INA219 0-10A, 0-16V
 // Wireless XbeeS6 wiFi and Xbee LTE 
 //This is hardcoded to mean things in ProcessorStats !!!!
@@ -251,7 +251,7 @@ variant.h: has pin definitions
 
 #elif PROFILE_NAME == PROFILE03_SODAQ_AUTONOMO_M0
 //**************************************************************************
-//#define SENSOR_RS485_PHY 1
+//This configuration expects a standard AUTONOMO with a Adafruit-3650 INA219(FeatherWing) connected on I2C 
 //Standard  .platformio\packages\framework-arduinosam\variants\sodaq_autonomo
 //This is hardcode to mean things in ProcessorStats !!!!
 //For Autonomo
@@ -293,7 +293,7 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 //define one  _Module
 #define DigiXBeeLTE_Module 
 //#define DigiXBeeWifi_Module 1
-#warning DigiXBeeLTE
+#warning DigiXBeeXx
 //end of _Module
 
 #define  loggingInterval_MAX_CDEF_MIN 120

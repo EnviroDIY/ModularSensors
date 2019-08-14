@@ -16,7 +16,10 @@
 // #define MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
 
 #ifdef MS_DIGIXBEELTEBYPASS_DEBUG
-#define MS_DEBUGGING_STD "DigiXBeeLTEBypass"
+#define MS_DEBUGGING_STD "DigiXBeeLTEBypassS"
+#endif
+#ifdef MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "DigiXBeeLTEBypassD"
 #endif
 
 #define TINY_GSM_MODEM_SARAR4
@@ -24,6 +27,8 @@
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
+
 #include "DigiXBee.h"
 #include "TinyGsmClient.h"
 

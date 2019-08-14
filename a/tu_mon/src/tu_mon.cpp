@@ -34,7 +34,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define KCONFIG_DEBUG_LEVEL 1
 #endif
 #ifdef MS_KN_DEPTH_DEBUG
-#define MS_DEBUGGING_STD "kn_depth"
+#define MS_DEBUGGING_STD "tu_mon"
 #endif //MS_KN_DEPTH_DEBUG
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
@@ -1828,8 +1828,10 @@ void setup()
     if (modemVccPin >= 0)
     {
         pinMode(modemVccPin, OUTPUT);
-        digitalWrite(modemVccPin, LOW);
-        MS_DBG(F("Set Power Off ModemVccPin "),modemVccPin);
+        //digitalWrite(modemVccPin, LOW);
+        //MS_DBG(F("Set Power Off ModemVccPin "),modemVccPin);
+        digitalWrite(modemVccPin, HIGH);
+        MS_DBG(F("Set Power On High ModemVccPin "),modemVccPin);
     }
     if (sensorPowerPin >= 0)
     {
@@ -1844,7 +1846,7 @@ void setup()
     {
         pinMode(modemSleepRqPin, OUTPUT);
         digitalWrite(modemSleepRqPin, HIGH); //Def sleep
-        MS_DBG(F("Set Sleep on modemSleepRqPin "),modemSleepRqPin);
+        MS_DBG(F("Set Sleep on High modemSleepRqPin "),modemSleepRqPin);
     }
     if (modemResetPin >= 0)
     {
@@ -1878,16 +1880,15 @@ void setup()
     #ifdef RAM_AVAILABLE
         RAM_AVAILABLE;
     #endif //RAM_AVAILABLE
-    dataLogger.attachModem(modemPhy);
-    //dataLogger.setAlertPin(-1);//greenLEDPin
-    dataLogger.setTestingModePin(buttonPin);
+    //dataLogger.attachModem(modemPhy);
+    //dataLogger.setTestingModePin(buttonPin);
 
 
         //modemPhy.modemPowerUp();
     varArray.setupSensors(); //Assumption pwr is available
 
     // Call the processor sleep
-    greenredflash(4,1000);
+    //greenredflash(4,1000);
     //delay(1000);
     Logger::markTime(); //Init so never zero
 
@@ -1961,12 +1962,12 @@ void processSensors()
         {
             //if (dataLogger._logModem != NULL)
             {
-                modemPhy.modemPowerUp();
+                //modemPhy.modemPowerUp();
                 if (!modemSetup) {
                     modemSetup = true;
                     MS_DBG(F("  Modem setup up 1st pass"));
                     // The first time thru, setup modem. Can't do it in regular setup due to potential power drain.
-                    modemPhy.wake();  // Turn it on to talk
+                    //modemPhy.wake();  // Turn it on to talk
                     //protected ?? modemPhy.extraModemSetup();//setupXBee();
                     nistSyncRtc = true;
                 }
@@ -1974,9 +1975,9 @@ void processSensors()
                 MS_DBG(F("  Connecting to the Internet... "));
                 if (modemPhy.connectInternet())
                 {
-                    MS_DBG(F("  sending... "));
+                    MS_DBG(F("  publishing... "));
                     // Post the data to the WebSDL
-                    dataLogger.sendDataToRemotes();
+                    dataLogger.publishDataToRemotes();
 
                 #define DAY_SECS 86400
                 #define HOUR_SECS 3600
@@ -2004,6 +2005,8 @@ void processSensors()
             } //else MS_DBG(F("  No Modem configured.\n"));
             PRINTOUT(F("---Complete "));
         }
+        // Cut power from the SD card - without additional housekeeping wait
+        dataLogger.turnOffSDcard(false);        
         // Turn off the LED
         //digitalWrite(greenLED, LOW);
         dataLogger.alertOff();
