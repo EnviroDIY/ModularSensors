@@ -79,7 +79,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         success &= gsmModem.waitResponse() == 1;
         // Put the XBee in pin sleep mode
         MS_DBG(F("Setting Sleep Options..."));
-        gsmModem.sendAT(GF("SM"),1);
+        gsmModem.sendAT(GF("SM"),0);  //was  1 Use Pin Sleep_Req
         success &= gsmModem.waitResponse() == 1;
         // Disassociate from network for lowest power deep sleep
         gsmModem.sendAT(GF("SO"),0);
@@ -100,7 +100,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         MS_DBG(F("Setting Cellular Carrier Options..."));
         // Cellular carrier profile - AT&T
         // Hologram says they can use any network, but I've never succeeded with anything but AT&T
-        gsmModem.sendAT(GF("CP"),2);
+        gsmModem.sendAT(GF("CP"),0);//do auto-detect was 2 ATT
         gsmModem.waitResponse();  // Don't check for success - only works on LTE
         // Cellular network technology - LTE-M Only
         // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
@@ -110,16 +110,46 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         success &= gsmModem.gprsConnect(_apn);
         MS_DBG(F("Ensuring XBee is in transparent mode..."));
         // Make sure we're really in transparent mode
-        gsmModem.sendAT(GF("AP1"));
+        gsmModem.sendAT(GF("AP0"));
         success &= gsmModem.waitResponse() == 1;
         // Write changes to flash and apply them
         MS_DBG(F("Applying changes..."));
         gsmModem.writeChanges();
+        delay(100);
+        {
+        String ui_vers = gsmModem.sendATGetString(F("VR"));
+        //ui_vers += " "+gsmModem.sendATGetString(F("VL"));
+        MS_DBG(F("Version "), ui_vers);
+  
+        uint16_t loops=0;
+        int16_t ui_db;
+        int8_t status;
+        String ui_op;
+        bool cellRegistered=false;
+        MS_DBG(F("Loop=mS ] rx db : Status ' Operator '  <--- Polled Cell Status"));
+        for ( unsigned long start = millis(); millis() - start < 300000; loops++) {
+            ui_db = gsmModem.getSignalQuality();
+            gsmModem.sendAT(F("AI"));
+            status=gsmModem.readResponseInt(10000L);
+            ui_op = String(loops)+"="+String((float)millis()/1000)+"]"+String(ui_db)+":0x"+String(status,HEX)+"'"+ gsmModem.getOperator()+"'";
+            //ui_op += gsmModem.sendATGetString(F("AS")); //Scan
+
+            //MS_DBG(loops,"=",(float)millis()/1000,"]db",ui_db,ui_op);
+            MS_DBG(ui_op);
+            if ((0==status) ||(0x23 ==status)) {cellRegistered=true;break;}
+            delay(1000);
+        }
+        if (cellRegistered) {
+            String ui_scan = gsmModem.sendATGetString(GF("AS")); //Scan
+            DBG(F("Cell scan '"),ui_scan,"'");
+        } else {success = false;}
+        }
+ 
         // Exit command mode
         gsmModem.exitCommand();
         // Force restart the modem, just for good measure
-        MS_DBG(F("Restarting XBee..."));
-        success &= gsmModem.restart();
+        //MS_DBG(F("Restarting XBee..."));
+        //success &= gsmModem.restart();
     }
     else success = false;
     if (success) MS_DBG(F("... Setup successful!"));

@@ -83,7 +83,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define sensorPowerPin_DEF 22
 #define modemSleepRqPin_DEF 23
 #define modemStatusPin_DEF  19  // MCU pin used to read modem status (-1 if not applicable)
-#define modemResetPin_DEF A4    // MCU pin connected to modem reset pin (-1 if unconnected)
+#define modemResetPin_DEF   20  // MCU pin connected to modem reset pin (-1 if unconnected)
 
 #define LOGGERID_DEF_STR "msLog01"
 #define NEW_LOGGERID_MAX_SIZE 40
@@ -94,11 +94,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // How frequently (in minutes) to log data
 //#define loggingInterval_CDEF_MIN 15
 //define one  _Module
-//#define DigiXBeeLTE_Module 
-#define DigiXBeeWifi_Module
+//#define DigiXBeeWifi_Module 1
+#define DigiXBeeCellularTranspare_Module 1
+// #define DigiXBeeLTE_Module 1 - unstable
+#warning infoMayflyWithDigiXBeeCellTransparent
 //end of _Module
 
-#define APN_CDEF  "xxxx" // The APN for the gprs connection, unnecessary for WiFi
+#define APN_CDEF  "hologram" // The APN for the gprs connection, unnecessary for WiFi
 #define WIFIID_CDEF  "xxxx"  // The WiFi access point, unnecessary for gprs
 #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
 
@@ -291,9 +293,10 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 //#define  loggingInterval_CDEF_MIN 5
 
 //define one  _Module
-#define DigiXBeeLTE_Module 
 //#define DigiXBeeWifi_Module 1
-#warning DigiXBeeXx
+#define DigiXBeeCellularTranspare_Module 1
+// #define DigiXBeeLTE_Module 1 - unstable
+#warning infoAutonomoWithDigiXBeeCellTransparent
 //end of _Module
 
 #define  loggingInterval_MAX_CDEF_MIN 120

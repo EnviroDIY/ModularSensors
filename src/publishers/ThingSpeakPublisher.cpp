@@ -211,7 +211,7 @@ int16_t ThingSpeakPublisher::publishData(Client *_outClient)
 
     // Disconnect from MQTT
     MS_DBG(F("Disconnecting from MQTT"));
-    MS_START_DEBUG_TIMER
+    MS_RESET_DEBUG_TIMER
     _mqttClient.disconnect();
     MS_DBG(F("Disconnected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     return retVal;

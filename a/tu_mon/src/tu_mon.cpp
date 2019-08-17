@@ -371,15 +371,17 @@ const char *wifiPwd_def = WIFIPWD_CDEF;  // The password for connecting to WiFi,
 // // NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global)
 // // are more stable used in bypass mode (below)
 // // The Telit based Digi XBees (LTE Cat1) can only use this mode.
-// #include <modems/DigiXBeeCellularTransparent.h>
-// const long modemBaud = 9600;  // All XBee's use 9600 by default
-// const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
-// DigiXBeeCellularTransparent modemXBCT(&modemSerial,
-//                                       modemVccPin, modemStatusPin, useCTSforStatus,
-//                                       modemResetPin, modemSleepRqPin,
-//                                       apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// DigiXBeeCellularTransparent modem = modemXBCT;
+#ifdef DigiXBeeCellularTranspare_Module 
+#include <modems/DigiXBeeCellularTransparent.h>
+ const long modemBaud = 9600;  // All XBee's use 9600 by default
+ const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
+ DigiXBeeCellularTransparent modemXBCT(&modemSerial,
+                                       modemVccPin, modemStatusPin, useCTSforStatus,
+                                       modemResetPin, modemSleepRqPin,
+                                       apn_def);
+ // Create an extra reference to the modem by a generic name (not necessary)
+ DigiXBeeCellularTransparent modemPhy = modemXBCT;
+#endif // DigiXBeeCellularTranspare_Module 
 // // ==========================================================================
 
 // For the u-blox SARA R410M based Digi LTE-M XBee3
@@ -1828,17 +1830,17 @@ void setup()
     if (modemVccPin >= 0)
     {
         pinMode(modemVccPin, OUTPUT);
-        //digitalWrite(modemVccPin, LOW);
-        //MS_DBG(F("Set Power Off ModemVccPin "),modemVccPin);
-        digitalWrite(modemVccPin, HIGH);
-        MS_DBG(F("Set Power On High ModemVccPin "),modemVccPin);
-    }
+        digitalWrite(modemVccPin, LOW);
+        MS_DBG(F("Set Power Off ModemVccPin "),modemVccPin);
+        //digitalWrite(modemVccPin, HIGH);
+        //MS_DBG(F("Set Power On High ModemVccPin "),modemVccPin);
+    } else {MS_DBG(F("ModemVccPin not used "),modemVccPin);}
     if (sensorPowerPin >= 0)
     {
         pinMode(sensorPowerPin, OUTPUT);
         digitalWrite(sensorPowerPin, LOW);
         MS_DBG(F("Set sensorPowerPin "),sensorPowerPin);
-    }
+    } else {MS_DBG(F("sensorPowerPin not used "),sensorPowerPin);}
 
     // Set up the sleep/wake pin for the modem and put its inital value as "off"
 
@@ -1847,13 +1849,13 @@ void setup()
         pinMode(modemSleepRqPin, OUTPUT);
         digitalWrite(modemSleepRqPin, HIGH); //Def sleep
         MS_DBG(F("Set Sleep on High modemSleepRqPin "),modemSleepRqPin);
-    }
+    } else {MS_DBG(F("modemSleepRqPin not used "),modemSleepRqPin);}
     if (modemResetPin >= 0)
     {
         pinMode(modemResetPin, OUTPUT);
         digitalWrite(modemResetPin, HIGH);  //Def noReset
         MS_DBG(F("Set HIGH/!reset modemResetPin "),modemResetPin);
-    }
+    } else {MS_DBG(F("modemResetPin not used "),modemResetPin);}
 
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
@@ -1910,8 +1912,8 @@ void processSensors()
     // dataLogger.setupSensorsAndFile(); !v0.21.2 see v0.19.6 replaced varArray.setupSensors();
 
     // Assuming we were woken up by the clock, check if the current time is an
-    // even interval of the logging interval
-    if (dataLogger.checkInterval())
+    // even interval of the logging interval or first time through.
+    if (dataLogger.checkInterval() || (!modemSetup))
     {
         // Flag to notify that we're in already awake and logging a point
         //Logger::isLoggingNow = true;
@@ -1962,12 +1964,12 @@ void processSensors()
         {
             //if (dataLogger._logModem != NULL)
             {
-                //modemPhy.modemPowerUp();
+                modemPhy.modemPowerUp();
                 if (!modemSetup) {
                     modemSetup = true;
                     MS_DBG(F("  Modem setup up 1st pass"));
                     // The first time thru, setup modem. Can't do it in regular setup due to potential power drain.
-                    //modemPhy.wake();  // Turn it on to talk
+                    modemPhy.wake();  // Turn it on to talk
                     //protected ?? modemPhy.extraModemSetup();//setupXBee();
                     nistSyncRtc = true;
                 }
