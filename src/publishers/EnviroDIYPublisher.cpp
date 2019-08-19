@@ -291,7 +291,7 @@ int16_t EnviroDIYPublisher::publishData(Client *_outClient)
         did_respond = _outClient->readBytes(tempBuffer, 12);
 
         // Close the TCP/IP connection
-        MS_DBG(F("POST took "),(millis()-start),F("ms. Timeout "), HTTP_RESPONSE_TIMER/1000,F("Sec"));
+        MS_DBG(F("POST took "),((float)millis()-start/1000),F("Sec. Timeout "), HTTP_RESPONSE_TIMER/1000,F("Sec"));
         MS_RESET_DEBUG_TIMER;
         _outClient->stop();
         MS_DBG(F("Client stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
