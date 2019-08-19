@@ -281,7 +281,8 @@ int16_t EnviroDIYPublisher::publishData(Client *_outClient)
 
         // Wait 10 seconds for a response from the server
         uint32_t start = millis();
-        while ((millis() - start) < 10000L && _outClient->available() < 12)
+        #define HTTP_RESPONSE_TIMER 30000L
+        while (((millis() - start) < HTTP_RESPONSE_TIMER) && (_outClient->available() < 12))
         {delay(10);}
 
         // Read only the first 12 characters of the response
@@ -290,7 +291,7 @@ int16_t EnviroDIYPublisher::publishData(Client *_outClient)
         did_respond = _outClient->readBytes(tempBuffer, 12);
 
         // Close the TCP/IP connection
-        MS_DBG(F("Stopping client"));
+        MS_DBG(F("POST took "),(millis()-start),F("ms. Timeout "), HTTP_RESPONSE_TIMER/1000,F("Sec"));
         MS_RESET_DEBUG_TIMER;
         _outClient->stop();
         MS_DBG(F("Client stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));

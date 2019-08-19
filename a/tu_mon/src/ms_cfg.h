@@ -95,9 +95,11 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //#define loggingInterval_CDEF_MIN 15
 //define one  _Module
 //#define DigiXBeeWifi_Module 1
+//#warning infoMayflyWithDigiXBeeWiFi
 #define DigiXBeeCellularTranspare_Module 1
-// #define DigiXBeeLTE_Module 1 - unstable
 #warning infoMayflyWithDigiXBeeCellTransparent
+// #define DigiXBeeLTE_Module 1 - unstable
+
 //end of _Module
 
 #define APN_CDEF  "hologram" // The APN for the gprs connection, unnecessary for WiFi
