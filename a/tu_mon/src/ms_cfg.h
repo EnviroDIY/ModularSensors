@@ -454,7 +454,7 @@ const char *wifiPwd_def = NULL;//"";  // The password for connecting to WiFi, un
 #endif
 
 #if !defined loggingInterval_CDEF_MIN
-#define      loggingInterval_CDEF_MIN 15   
+#define      loggingInterval_CDEF_MIN (15)   
 #endif
 #if !defined loggingInterval_MAX_CDEF_MIN
 //This is default for testing - platforms should set own MAX

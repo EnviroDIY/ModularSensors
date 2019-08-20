@@ -149,15 +149,17 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             //convert str to num with error checking
             long intervalMin = strtoul(value,&endptr,10);
             if ((intervalMin>0) &&(errno!=ERANGE) ) {
-                if (intervalMin > loggingInterval_MAX_CDEF_MIN) {
-                    SerialStd.print(F("COMMON Logging changed to (min): "));
+                if (intervalMin < loggingInterval_MAX_CDEF_MIN) {
+                    SerialStd.print(F("COMMON LOGGING_INTERVAL_MIN must be greater than : "));
                     SerialStd.print(loggingInterval_MAX_CDEF_MIN);
-                    SerialStd.print(F("from read "));
+                    SerialStd.print(F(" Reading ignored "));
                     SerialStd.println(intervalMin);
                     intervalMin= loggingInterval_MAX_CDEF_MIN;
                 } else {
-                    SerialStd.print(F("COMMON Logging Interval(min): "));
-                    SerialStd.println(intervalMin);
+                    SerialStd.print(F("COMMON LOGGING_INTERVAL_MIN set to: "));
+                    SerialStd.print(intervalMin);
+                    SerialStd.print(F("(min) from default "));
+                    SerialStd.println(loggingInterval_def_min);
                 }
                 dataLogger.setLoggingInterval(intervalMin);
             } else {
