@@ -116,7 +116,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         MS_DBG(F("Applying changes..."));
         gsmModem.writeChanges();
         {
-        String ui_vers = gsmModem.sendATGetString(F("VR"));
+        String ui_vers = gsmModem.sendATGetString(GF("VR"));
         //ui_vers += " "+gsmModem.sendATGetString(F("VL"));
         MS_DBG(F("Version "), ui_vers);
   
@@ -128,7 +128,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         PRINTOUT(F("Loop=Sec] rx db : Status ' Operator ' #Polled Cell Status every 1sec"));
         for ( unsigned long start = millis(); millis() - start < 300000; loops++) {
             ui_db = gsmModem.getSignalQuality();
-            gsmModem.sendAT(F("AI"));
+            gsmModem.sendAT(GF("AI"));
             status=gsmModem.readResponseInt(10000L);
             ui_op = String(loops)+"="+String((float)millis()/1000)+"] "+String(ui_db)+":0x"+String(status,HEX)+" '"+ gsmModem.getOperator()+"'";
             PRINTOUT(ui_op);
