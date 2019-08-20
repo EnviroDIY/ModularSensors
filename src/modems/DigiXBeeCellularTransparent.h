@@ -18,12 +18,16 @@
 #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG
 #define MS_DEBUGGING_STD "DigiXBeeCellularTransparent"
 #endif
-
+#ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "DigiXBeeCellularTransparentD"
+#endif
 #define TINY_GSM_MODEM_XBEE  // Select for Digi brand WiFi or Cellular XBee's
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
+
 #include "DigiXBee.h"
 #include "TinyGsmClient.h"
 
@@ -61,6 +65,10 @@ public:
     TinyGsm gsmModem;
     TinyGsmClient gsmClient;
 
+    //Az Extensions
+    void setApn(const char *APN, bool copyId=false);
+    String getApn(void);
+
 protected:
     bool didATRespond(void) override;
     bool isInternetAvailable(void) override;
@@ -69,7 +77,8 @@ protected:
 
 private:
     const char *_apn;
-
+    //Az extension
+    char *_apn_buf = NULL; //Pointer to updated buffer
 };
 
 #endif  // Header Guard

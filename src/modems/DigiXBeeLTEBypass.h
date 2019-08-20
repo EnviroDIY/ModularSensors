@@ -16,10 +16,7 @@
 // #define MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
 
 #ifdef MS_DIGIXBEELTEBYPASS_DEBUG
-#define MS_DEBUGGING_STD "DigiXBeeLTEBypassS"
-#endif
-#ifdef MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
-#define MS_DEBUGGING_DEEP "DigiXBeeLTEBypassD"
+#define MS_DEBUGGING_STD "DigiXBeeLTEBypass"
 #endif
 
 #define TINY_GSM_MODEM_SARAR4
@@ -27,8 +24,6 @@
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#undef MS_DEBUGGING_DEEP
-
 #include "DigiXBee.h"
 #include "TinyGsmClient.h"
 
@@ -64,10 +59,6 @@ public:
     TinyGsm gsmModem;
     TinyGsmClient gsmClient;
 
-    //Az Extensions
-    void setApn(const char *APN, bool copyId=false);
-    String getApn(void);
-
 protected:
     bool didATRespond(void) override;
     bool isInternetAvailable(void) override;
@@ -77,8 +68,6 @@ protected:
 private:
     const char *_apn;
 
-    //Az extension
-    char *_apn_buf = NULL; //Pointer to updated buffer
 };
 
 #endif  // Header Guard

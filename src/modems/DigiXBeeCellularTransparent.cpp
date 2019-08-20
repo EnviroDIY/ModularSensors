@@ -293,3 +293,40 @@ bool DigiXBeeCellularTransparent::addSingleMeasurementResult(void)
 
     return success;
 }
+
+//Az extensions
+void DigiXBeeCellularTransparent::setApn(const char *newAPN,bool copyId)
+{ 
+   uint8_t newAPN_sz = strlen(newAPN);
+    _apn = newAPN; 
+     //TODO: njh test setAPN CopyID functons
+
+    if (copyId) {
+        /* Do size checks, allocate memory for the LoggerID, copy it there
+        *  then set assignment.
+        */
+       // For cell phone note clear what max size is.
+        #define  CELLAPN_MAX_sz 99
+        if (newAPN_sz > CELLAPN_MAX_sz) {
+            char *apn2 = (char *)newAPN;
+            PRINTOUT(F("\n\r   LoggerModem:setAPN too long: Trimmed to "),newAPN_sz);
+            apn2[newAPN_sz] = 0; //Trim max size
+            newAPN_sz=CELLAPN_MAX_sz; 
+        }
+        if (NULL == _apn_buf) {
+            _apn_buf = new char[newAPN_sz+2]; //Allow for trailing 0
+        } else {
+            PRINTOUT(F("\nLoggerModem::setAPN error - expected NULL ptr"));
+        }
+        if (NULL == _apn_buf) {
+            //Major problem
+            PRINTOUT(F("\nLoggerModem::setAPN error -no buffer "),  _apn_buf);
+        } else {
+            strcpy (_apn_buf,newAPN);
+            _apn =  _apn_buf;
+        }
+        MS_DBG(F("\nsetAPN cp "),  _apn," sz: ",newAPN_sz);
+    } 
+}
+
+String DigiXBeeCellularTransparent::getApn(void){ return _apn; }

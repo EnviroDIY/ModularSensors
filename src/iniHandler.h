@@ -238,17 +238,17 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             SerialStd.println(value);  
         }
     } else if (strcmp_P(section,NETWORK_pm)== 0) {
-#ifdef DigiXBeeLTE_Module    
+#if defined DigiXBeeCellularTransparent_Module 
         if (strcmp_P(name,apn_pm)== 0) {
-            SerialStd.print(F("NETWORK APN: was 'TODO"));
-            //TODO SerialStd.print(modemPhy.getApn());
-            //TODO modemPhy.setApn(value,true);
-            SerialStd.print(F("' now '"));
-            //TODO SerialStd.print(modemPhy.getApn());
+            SerialStd.print(F("NETWORK APN was '"));
+            SerialStd.print(modemPhy.getApn());
+            modemPhy.setApn(value,true);
+            SerialStd.print(F("', new set to '"));
+            SerialStd.print(modemPhy.getApn());
             SerialStd.println("'");
            
         } else
-#endif //#ifdef DigiXBeeLTE_Module  
+#endif //DigiXBeeCellularTransparent_Module  
 #if defined  DigiXBeeWifi_Module          
         if (strcmp_P(name,WiFiId_pm)== 0)  {
             SerialStd.print(F("NETWORK WiFiId: was '"));

@@ -96,13 +96,13 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //define one  _Module
 //#define DigiXBeeWifi_Module 1
 //#warning infoMayflyWithDigiXBeeWiFi
-#define DigiXBeeCellularTranspare_Module 1
-#warning infoMayflyWithDigiXBeeCellTransparent
+#define DigiXBeeCellularTransparent_Module 1
+//#warning infoMayflyWithDigiXBeeCellTransparent
 // #define DigiXBeeLTE_Module 1 - unstable
 
 //end of _Module
 
-#define APN_CDEF  "hologram" // The APN for the gprs connection, unnecessary for WiFi
+#define APN_CDEF  "def_apn" // The APN for the gprs connection, unnecessary for WiFi
 #define WIFIID_CDEF  "xxxx"  // The WiFi access point, unnecessary for gprs
 #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
 
@@ -296,7 +296,7 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 
 //define one  _Module
 //#define DigiXBeeWifi_Module 1
-#define DigiXBeeCellularTranspare_Module 1
+#define DigiXBeeCellularTransparent_Module 1
 // #define DigiXBeeLTE_Module 1 - unstable
 #warning infoAutonomoWithDigiXBeeCellTransparent
 //end of _Module

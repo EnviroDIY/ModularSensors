@@ -371,7 +371,7 @@ const char *wifiPwd_def = WIFIPWD_CDEF;  // The password for connecting to WiFi,
 // // NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global)
 // // are more stable used in bypass mode (below)
 // // The Telit based Digi XBees (LTE Cat1) can only use this mode.
-#ifdef DigiXBeeCellularTranspare_Module 
+#ifdef DigiXBeeCellularTransparent_Module 
 #include <modems/DigiXBeeCellularTransparent.h>
  const long modemBaud = 9600;  // All XBee's use 9600 by default
  const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
@@ -381,7 +381,7 @@ const char *wifiPwd_def = WIFIPWD_CDEF;  // The password for connecting to WiFi,
                                        apn_def);
  // Create an extra reference to the modem by a generic name (not necessary)
  DigiXBeeCellularTransparent modemPhy = modemXBCT;
-#endif // DigiXBeeCellularTranspare_Module 
+#endif // DigiXBeeCellularTransparent_Module 
 // // ==========================================================================
 
 // For the u-blox SARA R410M based Digi LTE-M XBee3
