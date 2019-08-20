@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-Use with  ModularSensors library version 0.23.2
+Use with  ModularSensors library
 
 This sends readings to EnviroDIY data portal, and logs to an SD card.
 
@@ -47,7 +47,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.2";
+const char *libraryVersion = "0.23.4";
 // The name of this file
 const char *sketchName = __FILE__; //"xxx.cpp";
 const char build_date[] = __DATE__ " " __TIME__;
