@@ -56,7 +56,9 @@ bool DigiXBeeWifi::extraModemSetup(void)
     _modemName = gsmModem.getModemName();
     if (gsmModem.commandMode())
     {
-        MS_DBG( _modemName,F(" in Cmd Mode. Setting I/O Pins..."));
+        gsmModem.getSeries();
+        _modemName = gsmModem.getModemName();
+        MS_DBG(F("'"),_modemName,F("' in command mode. Setting I/O Pins..."));
         // Set DIO8 to be used for sleep requests
         // NOTE:  Only pin 9/DIO8/DTR can be used for this function
         gsmModem.sendAT(GF("D8"),1);

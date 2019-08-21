@@ -243,7 +243,7 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             SerialStd.print(F("NETWORK APN was '"));
             SerialStd.print(modemPhy.getApn());
             modemPhy.setApn(value,true);
-            SerialStd.print(F("', new set to '"));
+            SerialStd.print(F("', now set to '"));
             SerialStd.print(modemPhy.getApn());
             SerialStd.println("'");
            

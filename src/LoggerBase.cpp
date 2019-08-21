@@ -602,7 +602,6 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
     // We're interested in the UTCEpochSeconds in the logger's and RTC's timezone
     // The RTC's timezone is equal to the logger's timezone minus the offset
     // between the logger and the RTC.
-#if 1 // <<<<<<< HEAD
     // Only works for ARM CC if long, AVR was uint32_t
     //long set_logTZ, set_rtcTZ,cur_logTZ;
     long set_logTZ = UTCEpochSeconds + getTimeZone()*3600;
@@ -619,22 +618,6 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
     // If the RTC and NIST disagree by more than 5 seconds, set the clock
     #define NIST_TIME_DIFF_SEC 5
     if (abs(set_logTZ - cur_logTZ) > NIST_TIME_DIFF_SEC )
-//=======
-#else 
-    uint32_t set_logTZ = UTCEpochSeconds + ((uint32_t)getLoggerTimeZone())*3600;
-    uint32_t set_rtcTZ = set_logTZ - ((uint32_t)getTZOffset())*3600;
-    MS_DBG(F("    Time for Logger supplied by NIST:"), set_logTZ, \
-        F("->"), formatDateTime_ISO8601(set_logTZ));
-
-    // Check the current RTC time
-    uint32_t cur_logTZ = getNowEpoch();
-    MS_DBG(F("    Current Time on RTC:"), cur_logTZ, F("->"), \
-        formatDateTime_ISO8601(cur_logTZ));
-    MS_DBG(F("    Offset between NIST and RTC:"), abs(set_logTZ - cur_logTZ));
-
-    // If the RTC and NIST disagree by more than 5 seconds, set the clock
-    if (abs(set_logTZ - cur_logTZ) > 5)
-#endif //>>>>>>> master
     {
         setNowEpoch(set_rtcTZ);
         PRINTOUT(F("Clock set!"));
@@ -1539,13 +1522,11 @@ void Logger::begin()
          * Int RTCZero     class Time relative to 2000 TZ
          * Ext RTC_PCF8523 class Time relative to 2000 UTS/GMT/TZ0
          */
-        MS_DBG("Beginning internal real time clock");
-        zero_sleep_rtc.begin();
 
         //eg Apr 22 2019 16:46:09 in this TZ
         DateTime ccTimeTZ(__DATE__, __TIME__);
         //MS_DBG("now  ",ccTimeTZ.month(),"-",ccTimeTZ.date(),"-",ccTimeTZ.year2k(),"/",ccTimeTZ.year(), " ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second());
-        MS_DBG("now  ",ccTimeTZ.month(),"-",ccTimeTZ.date(),"-",ccTimeTZ.year(), " ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second());
+        MS_DBG("Sw Build Time  ",ccTimeTZ.month(),"-",ccTimeTZ.date(),"-",ccTimeTZ.year(), " ",ccTimeTZ.hour(),":",ccTimeTZ.minute(),":",ccTimeTZ.second());
 
         #if defined ADAFRUIT_FEATHERWING_RTC_SD
         DateTime ccTime2k=ccTimeTZ.get()-(getTimeZone()*3600); //set to secs from UST/GMT Year 2000
@@ -1570,6 +1551,13 @@ void Logger::begin()
         zero_sleep_rtc.setDate(now.date(), now.month(), now.year2k());
         #define zr zero_sleep_rtc
         MS_DBG("Read internal rtc ",zr.getYear(),"-",zr.getMonth(),"-",zr.getDay()," ",zr.getHours(),":",zr.getMinutes(),":",zr.getSeconds());
+        #else // no ADAFRUIT_FEATHERWING_RTC_SD
+        // If Power-on Reset Rcause.Bit0 have specific processing
+        #define zr zero_sleep_rtc
+        if ( (0== zr.getYear()) && (1==zr.getMonth()) && (1==zr.getDay()) ) {
+            MS_DBG("RTC.setDay to 2 for Power-On Reset case ");
+            zr.setDay(2); // Allow for calcs for -11hrs
+        }
         #endif // ADAFRUIT_FEATHERWING_RTC_SD
     #endif //ARDUINO_ARCH_SAMD
 

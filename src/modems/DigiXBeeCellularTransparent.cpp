@@ -52,10 +52,11 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
     success &= gsmModem.init();
     gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
-    MS_DBG(F("Putting XBee into command mode..."));
     if (gsmModem.commandMode())
     {
-        MS_DBG(F("Setting I/O Pins..."));
+        gsmModem.getSeries();
+        _modemName = gsmModem.getModemName();
+        MS_DBG(F("'"),_modemName,F("' in command mode. Setting I/O Pins..."));
         // Set DIO8 to be used for sleep requests
         // NOTE:  Only pin 9/DIO8/DTR can be used for this function
         gsmModem.sendAT(GF("D8"),1);
@@ -143,9 +144,6 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
  
         // Exit command mode
         gsmModem.exitCommand();
-        // Force restart the modem, just for good measure
-        //MS_DBG(F("Restarting XBee..."));
-        //success &= gsmModem.restart();
     }
     else success = false;
     if (success) MS_DBG(F("... Setup successful!"));
