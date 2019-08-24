@@ -368,7 +368,7 @@ void DigiXBeeWifi::setWiFiPwd(const char *newPwd,bool copyId)
             strcpy (_pwd_buf,newPwd);
             _pwd =  _pwd_buf;
         }
-        MS_DBG(F("\nsetWiFiPwd cp "),  _ssid," sz: ",newPwd_sz);
+        MS_DEEP_DBG(F("\nsetWiFiPwd cp "),  _ssid," sz: ",newPwd_sz);
     }     
  }
 

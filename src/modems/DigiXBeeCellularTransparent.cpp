@@ -198,6 +198,7 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
     /* NIST clearly specifies here that this is a requirement for all software */
     /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
     while (millis() < _lastNISTrequest + 4000) {}
+    //_lastNISTrequest =millis();
 
     /* Make TCP connection */
     MS_DBG(F("\nConnecting to NIST daytime Server"));
@@ -205,17 +206,34 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
 
     /* This is the IP address of time-c-g.nist.gov */
     /* XBee's address lookup falters on time.nist.gov */
-    IPAddress ip(129, 6, 15, 30);
-    connectionMade = gsmClient.connect(ip, 37, 15);
-
+    //FUT: There are about 30 servers, so could try lookup and caching 
+const char *timeNistHost = "time.nist.gov";
+const int timeNistPort = 37; 
+    IPAddress IP_MA1(129,  6, 15, 30);
+    IPAddress IP_CO1(132,163, 96,  3);
+    #define NIST_IP IP_CO1
+    #define NIST_CONNECTION_TIMER 15
+    connectionMade = gsmClient.connect(timeNistHost, timeNistPort,NIST_CONNECTION_TIMER);
+    if (!connectionMade) {
+        
+        connectionMade = gsmClient.connect(NIST_IP, timeNistPort, NIST_CONNECTION_TIMER);
+        MS_DBG(F("NIST.TIME.GOV lookup failed, tried "),NIST_IP,F(" and connect="),connectionMade );
+    }
+    
     /* Wait up to 5 seconds for a response */
+    #define NIST_RSP_TIMER 5
     if (connectionMade)
     {
+        //poll for IP connection
+        delay(4000L);
+        /* Need to send something before connection is made */
+        gsmClient.println('!');
+
         uint32_t start = millis();
-        while (gsmClient && gsmClient.available() < 4 && millis() - start < 5000L){}
+        while (gsmClient && (gsmClient.available() <= NIST_RSP_TIMER) && ((millis() - start) < NIST_RSP_TIMER*1000L) ){}
 
 
-        if (gsmClient.available() >= 4)
+        if (gsmClient.available() >= NIST_RSP_TIMER)
         {
             MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
             byte response[4] = {0};
@@ -224,11 +242,11 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
         }
         else
         {
-            MS_DBG(F("NIST Time server did not respond!"));
+            MS_DBG(F("NIST Time server did not respond in "),NIST_RSP_TIMER,F("secs"));
             return 0;
         }
     }
-    else MS_DBG(F("Unable to open TCP to NIST!"));
+    else MS_DBG(F("Unable to open TCP to NIST in "),NIST_CONNECTION_TIMER,F("secs"));
     return 0;
 }
 

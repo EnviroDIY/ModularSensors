@@ -594,7 +594,7 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
     // If the timestamp is zero, just exit
     if  (UTCEpochSeconds == 0)
     {
-        PRINTOUT(F("Bad timestamp, not setting clock."));
+        PRINTOUT(F("Bad timestamp 0, not setting clock."));
         return false;
     }
 
@@ -605,7 +605,7 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
     // Only works for ARM CC if long, AVR was uint32_t
     //long set_logTZ, set_rtcTZ,cur_logTZ;
     long set_logTZ = UTCEpochSeconds + getTimeZone()*3600;
-    long set_rtcTZ = set_logTZ - getTZOffset()*3600;
+    //long set_rtcTZ = set_logTZ - getTZOffset()*3600;
     MS_DBG(F("         Correct Time for Logger:"), set_logTZ, F("->"), \
         formatDateTime_ISO8601(set_logTZ));
 
@@ -619,8 +619,9 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
     #define NIST_TIME_DIFF_SEC 5
     if (abs(set_logTZ - cur_logTZ) > NIST_TIME_DIFF_SEC )
     {
-        setNowEpoch(set_rtcTZ);
-        PRINTOUT(F("Clock set!"));
+        //setNowEpoch(set_rtcTZ);
+        setNowEpoch(set_logTZ);
+        PRINTOUT(F("Clock set "),formatDateTime_ISO8601(set_logTZ));
         retVal= true;
     }
     else

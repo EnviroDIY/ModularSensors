@@ -94,9 +94,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // How frequently (in minutes) to log data
 //#define loggingInterval_CDEF_MIN 15
 //define one  _Module
-//#define DigiXBeeWifi_Module 1
-//#warning infoMayflyWithDigiXBeeWiFi
-#define DigiXBeeCellularTransparent_Module 1
+#define DigiXBeeWifi_Module 1
+#warning infoMayflyWithDigiXBeeWiFi
+//#define DigiXBeeCellularTransparent_Module 1
 //#warning infoMayflyWithDigiXBeeCellTransparent
 // #define DigiXBeeLTE_Module 1 - unstable
 
@@ -291,17 +291,24 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 #define configIniID_DEF_STR "ms_cfg.ini"  
 #define CONFIG_TIME_ZONE_DEF -8
 
+#define  loggers2 5
+#define  loggingInterval_Fast_MIN (1)
 // How frequently (in minutes) to log data
-//#define  loggingInterval_CDEF_MIN 5
+#define  loggingInterval_CDEF_MIN (loggingInterval_Fast_MIN*loggers2) 
+// Maximum logging setting allowed
+#define  loggingInterval_MAX_CDEF_MIN 6*60
+//If second more frequent logging - how fast
+
 
 //define one  _Module
-//#define DigiXBeeWifi_Module 1
-#define DigiXBeeCellularTransparent_Module 1
+#define DigiXBeeWifi_Module 1
+#warning infoAutonomoWithDigiXBeeWiFi
+//#define DigiXBeeCellularTransparent_Module 1
 // #define DigiXBeeLTE_Module 1 - unstable
-#warning infoAutonomoWithDigiXBeeCellTransparent
+//#warning infoAutonomoWithDigiXBeeCellTransparent
 //end of _Module
 
-#define  loggingInterval_MAX_CDEF_MIN 5
+
 #define APN_CDEF  "hologram" // The APN for the gprs connection, unnecessary for WiFi
 #define WIFIID_CDEF  "xxxx"  // The WiFi access point, unnecessary for gprs
 #define WIFIPWD_CDEF  NULL  // NULL for none, or  password for connecting to WiFi, unnecessary for gprs
@@ -320,6 +327,8 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 #define INA219M_PHY_ACT 1
 #ifdef INA219M_PHY_ACT
   #define INA219M_MA_UUID       "INA219_MA_UUID"
+  #define INA219M_A_MAX_UUID    "INA219_A_MAX_UUID"
+  #define INA219M_A_MIN_UUID    "INA219_A_MIN_UUID"
   #define INA219M_VOLT_UUID     "INA219_VOLT_UUID"
 #endif //INA219_PHY_ACT
 
@@ -458,8 +467,11 @@ const char *wifiPwd_def = NULL;//"";  // The password for connecting to WiFi, un
 #endif
 #if !defined loggingInterval_MAX_CDEF_MIN
 //This is default for testing - platforms should set own MAX
-#define  loggingInterval_MAX_CDEF_MIN 15
-#endif 
+#define  loggingInterval_MAX_CDEF_MIN 24+60
+#endif
+#if !defined loggingInterval_Fast_MIN  
+#define  loggingInterval_Fast_MIN  1
+#endif //loggingInterval_Fast_MIN  
 #if !defined NEW_LOGGERID_MAX_SIZE
 #define NEW_LOGGERID_MAX_SIZE 40
 #endif 

@@ -2,7 +2,7 @@
 tu_mon.cpp  TU power Monitor
 Written By:  Neil Hancock from great example /menu_a_la_carte by Sara Damiano
 Development Environment: PlatformIO
-Hardware Platform Supported: EnviroDIY Mayfly Arduino Datalogger
+Hardware Platform Supported: EnviroDIY Mayfly Arduino dataLogger
 Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
@@ -33,9 +33,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #else
 #define KCONFIG_DEBUG_LEVEL 1
 #endif
-#ifdef MS_KN_DEPTH_DEBUG
+#ifdef MS_TU_MON_DEBUG
 #define MS_DEBUGGING_STD "tu_mon"
-#endif //MS_KN_DEPTH_DEBUG
+#endif //MS_TU_MON_DEBUG
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 
@@ -66,6 +66,7 @@ const char *LoggerID_def = LOGGERID_DEF_STR;
 const char *configIniID_def = configIniID_DEF_STR;  
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval_def_min = loggingInterval_CDEF_MIN;
+const uint8_t loggingInterval_Fast_def_min = loggingInterval_Fast_MIN;
 // The logger's timezone default.
 int8_t timeZone =  CONFIG_TIME_ZONE_DEF;
 uint32_t sysStartTime_epochTzSec=1;
@@ -1385,34 +1386,23 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 //    Calculated Variables
 // ==========================================================================
 
-// Create the function to give your calculated result.
-// The function should take no input (void) and return a float.
-// You can use any named variable pointers to access values by way of variable->getValue()
-
+static float ina219M_A_LowReading=+9999; 
 float ina219M_A_LowFn(void)
 {
-    float calculatedResult = -9999;  // Always safest to start with a bad value
-    // float inputVar1 = variable1->getValue();
-    // float inputVar2 = variable2->getValue();
-    // if (inputVar1 != -9999 && inputVar2 != -9999)  // make sure both inputs are good
-    // {
-    //     calculatedResult = inputVar1 + inputVar2;
-    // }
-    return calculatedResult;
+    MS_DBG(F("ina219M_A_LowFn "),ina219M_A_LowReading);
+    return ina219M_A_LowReading;
 }
-
-// Properties of the calculated variable
-const uint8_t ina219M_A_LowResolution = 3;  // The number of digits after the decimal place
-const char *ina219M_A_LowName = "Low_A";  // This must be a value from http://vocabulary.odm2.org/variablename/
-const char *ina219M_A_LowUnit = "A";  // This must be a value from http://vocabulary.odm2.org/units/
-const char *ina219M_A_LowCode = "Low_A_Var";  // A short code for the variable
-const char *ina219M_A_LowUUID = "ina219M_A_LowUUID";  // The (optional) universallly unique identifier
-
-// Finally, Create a calculated variable pointer and return a variable pointer to it
-Variable *ina219M_A_LowVar = new Variable(ina219M_A_LowFn, ina219M_A_LowResolution,
-                                       ina219M_A_LowName, ina219M_A_LowUnit,
-                                       ina219M_A_LowCode, ina219M_A_LowUUID);
-
+static float ina219M_A_HighReading=-9999; 
+float ina219M_A_HighFn(void)
+{
+    MS_DBG(F("ina219M_A_HighFn "),ina219M_A_HighReading);
+    return ina219M_A_HighReading;
+}
+void ina219M_A_init()
+{
+    ina219M_A_LowReading=+9999; 
+    ina219M_A_HighReading=-9999; 
+}
 
 // ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
@@ -1443,7 +1433,7 @@ Variable *variableList[] = {
     new AdcProc_Volt(&extvolt1, AdcProc_Volt1_UUID),
 #endif
 #if defined(INA219M_MA_UUID)
-    new TIINA219M_Current(&ina219m_phy, INA219M_MA_UUID),
+    //new TIINA219M_Current(&ina219m_phy, INA219M_MA_UUID),
 #endif
 #if defined(INA219M_VOLT_UUID)
     new TIINA219M_Volt(&ina219m_phy, INA219M_VOLT_UUID),
@@ -1549,9 +1539,20 @@ Variable *variableList[] = {
     new Modem_BatteryVoltage(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_Temp(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
 #endif // SENSOR_CONFIG_GENERAL
-    // Fut ina219M_A_LowVar
+#if defined INA219M_A_MIN_UUID
+    new Variable(ina219M_A_LowFn,2,"Min_A", "A","Min_A_Var", INA219M_A_MIN_UUID),
+#endif
+#if defined INA219M_A_MAX_UUID
+    new Variable(ina219M_A_HighFn,2,"Max_A","A","Max_A_Var",INA219M_A_MAX_UUID),
+#endif
 };
-
+#if defined loggers2
+Variable *variableLstFast[] = {
+    #if defined(INA219M_MA_UUID)
+    new TIINA219M_Current(&ina219m_phy, INA219M_MA_UUID),
+    #endif
+};
+#endif //loggers2
 /*
 // FORM2: Fill array with already created and named variable pointers
 // NOTE:  Forms one and two can be mixed
@@ -1572,7 +1573,10 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
-
+#if defined loggers2
+int variableCntFast = sizeof(variableLstFast) / sizeof(variableLstFast[0]);
+VariableArray varArrFast(variableCntFast, variableLstFast);
+#endif //int variableCntFast = sizeof(variableLstFast) / sizeof(variableLstFast[0]);
 
 // ==========================================================================
 //     Local storage - evolving
@@ -1588,7 +1592,9 @@ VariableArray varArray(variableCount, variableList);
 
 // Create a new logger instance
 Logger dataLogger(LoggerID_def, loggingInterval_def_min, sdCardSSPin, wakePin, &varArray);
-
+#if defined loggers2
+Logger dataLogFast(LoggerID_def, loggingInterval_Fast_def_min,&varArrFast);
+#endif //loggers2
 
 //now works with MS_DBG #if KCONFIG_DEBUG_LEVEL > 0   //0918
 // ==========================================================================
@@ -1871,8 +1877,11 @@ void setup()
     // Begin the logger
     dataLogger.begin();
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps.provider.s.registration_token, ps.provider.s.sampling_feature);
-    SerialStd.print(F("Start Time: "));
+    #if defined loggers2
+    dataLogFast.begin();
+    #endif //loggers2
 
+    SerialStd.print(F("Start Time: "));
     sysStartTime_epochTzSec = dataLogger.getNowEpochTz();
     //SerialStd.println(Logger::formatDateTime_ISO8601(dataLogger.getNowEpochTz()+(timeZone*60)) );
     SerialStd.print(Logger::formatDateTime_ISO8601(sysStartTime_epochTzSec  ));
@@ -1885,10 +1894,8 @@ void setup()
     //dataLogger.attachModem(modemPhy);
     //dataLogger.setTestingModePin(buttonPin);
 
-
-        //modemPhy.modemPowerUp();
     varArray.setupSensors(); //Assumption pwr is available
-
+    varArrFast.setupSensors(); //Assumption pwr is available
     // Call the processor sleep
     //greenredflash(4,1000);
     //delay(1000);
@@ -1903,6 +1910,8 @@ void setup()
 // processSensors function
 // **************************************************************************
 //#if KCONFIG_DEBUG_LEVEL > 0
+static int simpleUpdateCnt=0;
+static bool varArrayPub=false;
 void processSensors()
 {
 
@@ -1913,7 +1922,13 @@ void processSensors()
 
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval or first time through.
-    if (dataLogger.checkInterval() || (!modemSetup))
+    if ((!modemSetup) ||
+        #ifdef loggers2
+        dataLogFast.checkInterval()
+        #else
+        dataLogger.checkInterval()
+        #endif 
+        )
     {
         // Flag to notify that we're in already awake and logging a point
         //Logger::isLoggingNow = true;
@@ -1925,7 +1940,7 @@ void processSensors()
             return;
         }
         // Print a line to show new reading
-        PRINTOUT(F("---NewReading--Complete Sensor Update"));
+        PRINTOUT(F("---NewReading--  Update"));
         MS_DBG(F("Lbatt_V="),mcuBoard.getBatteryVm1(false));
         //PRINTOUT(F("----------------------------\n"));
         #if !defined(CHECK_SLEEP_POWER)
@@ -1933,14 +1948,37 @@ void processSensors()
         //digitalWrite(greenLED, HIGH);
         // Turn on the LED to show we're taking a reading
         //dataLogger.alertOn();
+
 #if defined(CONFIG_SENSOR_RS485_PHY)
         // Start the stream for the modbus sensors
         // Because RS485 adapters tend to "steal" current from the data pins
         // we will explicitly start and end the serial connection in the loop.
         modbusSerial.begin(9600);
 #endif // CONFIG_SENSOR_RS485_PHY
+        #ifdef loggers2
         // Do a complete sensor update
-        varArray.completeUpdate();
+        varArrFast.completeUpdate();
+        //uint16 dataLogFast.getValueStringAtI(0)
+        #if 1
+        float lastReading=variableLstFast[0]->getValue();
+        if (lastReading < ina219M_A_LowReading) {
+            MS_DBG(F("The LastReading lower="),lastReading,F(" than "),ina219M_A_LowReading);
+            ina219M_A_LowReading =lastReading;
+        } else if  (lastReading >ina219M_A_HighReading){
+            MS_DBG(F("The LastReading higher="),lastReading,F(" than "),ina219M_A_HighReading);
+            ina219M_A_HighReading =lastReading;
+        } else {
+             MS_DBG(F("The LastReading "),lastReading,F(" within "),ina219M_A_LowReading,F("-"),ina219M_A_HighReading);
+        }
+        #endif //0
+        if (5 <++simpleUpdateCnt)
+        #endif //loggers2 
+        {
+            varArray.completeUpdate();
+            simpleUpdateCnt=0;
+            varArrayPub=true;
+            ina219M_A_init();
+        }
 
 #if defined(CONFIG_SENSOR_RS485_PHY)
         // End the stream for the modbus sensors
@@ -1952,67 +1990,76 @@ void processSensors()
         digitalWrite( RS485PHY_TX_PIN, LOW);   // Reset AltSoftSerial Tx pin to LOW
         digitalWrite( RS485PHY_RX_PIN, LOW);   // Reset AltSoftSerial Rx pin to LOW
 #endif //CONFIG_SENSOR_RS485_PHY
-        // Create a csv data record and save it to the log file
-        dataLogger.logToSD();
-         // Turn on the modem to let it start searching for the network
 
-        //if Modem  is Cellular then PS_PWR_HEAVY_REQ
-        if (PS_LBATT_UNUSEABLE_STATUS==mcuBoard.isBatteryStatusAbove(false,PS_PWR_MEDIUM_REQ)) 
-        {          
-            MS_DBG(F("---NewCloud Update CANCELLED"));
-        } else 
-        {
-            //if (dataLogger._logModem != NULL)
+        if (varArrayPub) {
+            varArrayPub = false;
+            // Create a csv data record and save it to the log file
+            dataLogger.logToSD();
+
+            // Turn on the modem to let it start searching for the network
+
+            //if Modem  is Cellular then PS_PWR_HEAVY_REQ
+            if (PS_LBATT_UNUSEABLE_STATUS==mcuBoard.isBatteryStatusAbove(false,PS_PWR_MEDIUM_REQ)) 
+            {          
+                MS_DBG(F("---NewCloud Update CANCELLED"));
+            } else 
             {
-                modemPhy.modemPowerUp();
-                if (!modemSetup) {
-                    modemSetup = true;
-                    MS_DBG(F("  Modem setup up 1st pass"));
-                    // The first time thru, setup modem. Can't do it in regular setup due to potential power drain.
-                    modemPhy.wake();  // Turn it on to talk
-                    //protected ?? modemPhy.extraModemSetup();//setupXBee();
-                    nistSyncRtc = true;
-                }
-                // Connect to the network
-                MS_DBG(F("  Connecting to the Internet... "));
-                if (modemPhy.connectInternet())
+                //if (dataLogger._logModem != NULL)
                 {
-                    MS_DBG(F("  publishing... "));
-                    // Post the data to the WebSDL
-                    dataLogger.publishDataToRemotes();
-
-                #define DAY_SECS 86400
-                #define HOUR_SECS 3600
-                #define CONFIG_NIST_CHECK_SECS HOUR_SECS
-                #define CONFIG_NIST_ERR_MASK (~0x3F) 
-                uint32_t nistCheckRemainder = Logger::markedEpochTime % CONFIG_NIST_CHECK_SECS;
-                    MS_DBG(F("SyncTimeCheck "),Logger::markedEpochTime
-                    ,"remainder ",nistCheckRemainder
-                    ," check+-",(nistCheckRemainder&CONFIG_NIST_ERR_MASK) );
-                    if (nistSyncRtc || ((nistCheckRemainder&CONFIG_NIST_ERR_MASK ) == 0) )
-                    {
-                        MS_DBG(F("  atl..Running a NIST clock sync. NeedSync "),nistSyncRtc);
-                        nistSyncRtc = true; //Needs to run every access until sucess
-                        if (true == dataLogger.syncRTC()) {
-                            nistSyncRtc = false; //Sucess
-                        } 
+                    modemPhy.modemPowerUp();
+                    if (!modemSetup) {
+                        modemSetup = true;
+                        MS_DBG(F("  Modem setup up 1st pass"));
+                        // The first time thru, setup modem. Can't do it in regular setup due to potential power drain.
+                        modemPhy.wake();  // Turn it on to talk
+                        //protected ?? modemPhy.extraModemSetup();//setupXBee();
+                        nistSyncRtc = true;
                     }
+                    // Connect to the network
+                    MS_DBG(F("  Connecting to the Internet... "));
+                    if (modemPhy.connectInternet())
+                    {
 
-                    // Disconnect from the network
-                    MS_DBG(F("  Disconnecting from the Internet..."));
-                    modemPhy.disconnectInternet();
-                } else {MS_DBG(F("  No internet connection..."));}
-                // Turn the modem off
-                modemPhy.modemSleepPowerDown();
-            } //else MS_DBG(F("  No Modem configured.\n"));
-            PRINTOUT(F("---Complete "));
+                        MS_DBG(F("  publishing... "));
+                        // Post the data to the WebSDL
+                        dataLogger.publishDataToRemotes();
+                        
+                        #define DAY_SECS 86400
+                        #define HOUR_SECS 3600
+                        #define CONFIG_NIST_CHECK_SECS HOUR_SECS
+                        #define CONFIG_NIST_ERR_MASK (~0x3F) 
+                        uint32_t nistCheckRemainder = Logger::markedEpochTime % CONFIG_NIST_CHECK_SECS;
+                        MS_DBG(F("SyncTimeCheck "),Logger::markedEpochTime
+                        ,"remainder ",nistCheckRemainder
+                        ," check+-",(nistCheckRemainder&CONFIG_NIST_ERR_MASK) );
+                        nistSyncRtc=true; //debug
+                        if (nistSyncRtc || ((nistCheckRemainder&CONFIG_NIST_ERR_MASK ) == 0) )
+                        {
+                            MS_DBG(F("  atl..Running a NIST clock sync. NeedSync "),nistSyncRtc);
+                            nistSyncRtc = true; //Needs to run every access until sucess
+                            if (true == dataLogger.syncRTC()) {
+                                nistSyncRtc = false; //Sucess
+                            } 
+                            //If time very different should ensure publish is accurate - possibly cancel
+                        }
+
+
+                        // Disconnect from the network
+                        MS_DBG(F("  Disconnecting from the Internet..."));
+                        modemPhy.disconnectInternet();
+                    } else {MS_DBG(F("  No internet connection..."));}
+                    // Turn the modem off
+                    modemPhy.modemSleepPowerDown();
+                } //else MS_DBG(F("  No Modem configured.\n"));
+                PRINTOUT(F("---Complete "));
+            }
+            // Cut power from the SD card - without additional housekeeping wait
+            dataLogger.turnOffSDcard(false);        
+            // Turn off the LED
+            //digitalWrite(greenLED, LOW);
+            dataLogger.alertOff();
+            // Print a line to show reading ended
         }
-        // Cut power from the SD card - without additional housekeeping wait
-        dataLogger.turnOffSDcard(false);        
-        // Turn off the LED
-        //digitalWrite(greenLED, LOW);
-        dataLogger.alertOff();
-        // Print a line to show reading ended
 
         #endif //(CHECK_SLEEP_POWER)
         // Unset flag
@@ -2042,7 +2089,12 @@ void loop()
 
     // Sleep
     //if(_mcuWakePin >= 0){systemSleep();}
-    dataLogger.systemSleep();
+    #if defined loggers2
+        MS_DBG(F("dataLogFast Sleep "));
+        dataLogFast.systemSleep();
+    #else 
+        dataLogger.systemSleep();
+    #endif //loggers2
     #endif //KCONFIG_DEBUG_LEVEL
 #if defined(CHECK_SLEEP_POWER)
     PRINTOUT(F("A"));
