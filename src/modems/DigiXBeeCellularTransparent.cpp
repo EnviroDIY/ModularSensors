@@ -110,7 +110,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         success &= gsmModem.gprsConnect(_apn);
         MS_DBG(F("Ensuring XBee is in transparent mode..."));
         // Make sure we're really in transparent mode
-        gsmModem.sendAT(GF("AP1"));
+        gsmModem.sendAT(GF("AP0"));
         success &= gsmModem.waitResponse() == 1;
         // Write changes to flash and apply them
         MS_DBG(F("Applying changes..."));
