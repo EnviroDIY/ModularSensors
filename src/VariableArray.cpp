@@ -876,7 +876,6 @@ bool VariableArray::isLastVarFromSensor(int arrayIndex)
         // MS_DEEP_DBG(F("   ... Nope, it's calculated!"));
         return false;
     }
-
     else
     {
         String sensNameLoc = arrayOfVars[arrayIndex]->getParentSensorNameAndLocation();

@@ -176,7 +176,9 @@ float calculateWaterPressure(void)
     float baroPressureFromBME280 = bme280Press->getValue();
     float waterPressure = totalPressureFromMS5803 - (baroPressureFromBME280)*0.01;
     if (totalPressureFromMS5803 == -9999 || baroPressureFromBME280 == -9999)
+    {
         waterPressure = -9999;
+    }
     // Serial.print(F("Water pressure is "));  // for debugging
     // Serial.println(waterPressure);  // for debugging
     return waterPressure;
@@ -237,7 +239,9 @@ float calculateWaterDepthTempCorrected(void)
     // from P = rho * g * h
     float rhoDepth = 1000 * waterPressurePa/(waterDensity * gravitationalConstant);
     if (calculateWaterPressure() == -9999 || waterTempertureC == -9999)
+    {
         rhoDepth = -9999;
+    }
     // Serial.print(F("Temperature corrected water depth is "));  // for debugging
     // Serial.println(rhoDepth);  // for debugging
     return rhoDepth;
@@ -357,8 +361,10 @@ void setup()
     Serial.println(MODULAR_SENSORS_VERSION);
 
     if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
+    {
         Serial.println(F(
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
+    }
 
     // Start the serial connection with the modem
     modemSerial.begin(modemBaud);

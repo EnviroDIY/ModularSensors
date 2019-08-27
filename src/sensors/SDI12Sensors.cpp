@@ -208,7 +208,10 @@ bool SDI12Sensors::getSensorInfo(void)
         MS_DBG(F("  Sensor Serial Number:"), _sensorSerialNumber);
         return true;
     }
-    else return false;
+    else
+    {
+        return false;
+    }
 }
 
 

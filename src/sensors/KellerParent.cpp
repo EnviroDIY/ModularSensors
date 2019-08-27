@@ -170,7 +170,10 @@ bool KellerParent::addSingleMeasurementResult(void)
         MS_DBG(F("  Temp_C:"), waterTempertureC);
         MS_DBG(F("  Height_m:"), waterDepthM);
     }
-    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    else
+    {
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    }
 
     // Put values into the array
     verifyAndAddMeasurementResult(KELLER_PRESSURE_VAR_NUM, waterPressure_mBar);

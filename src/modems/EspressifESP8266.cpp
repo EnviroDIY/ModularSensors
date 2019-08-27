@@ -276,6 +276,9 @@ uint32_t EspressifESP8266::getNISTTime(void)
             return 0;
         }
     }
-    else MS_DBG(F("Unable to open TCP to NIST!"));
+    else
+    {
+        MS_DBG(F("Unable to open TCP to NIST!"));
+    }
     return 0;
 }

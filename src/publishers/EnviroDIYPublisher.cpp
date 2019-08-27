@@ -295,7 +295,10 @@ int16_t EnviroDIYPublisher::publishData(Client *_outClient)
         _outClient->stop();
         MS_DBG(F("Client stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     }
-    else PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data Portal --"));
+    else
+    {
+        PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data Portal --"));
+    }
 
     // Process the HTTP response
     int16_t responseCode = 0;
@@ -308,7 +311,10 @@ int16_t EnviroDIYPublisher::publishData(Client *_outClient)
         }
         responseCode = atoi(responseCode_char);
     }
-    else responseCode=504;
+    else
+    {
+        responseCode=504;
+    }
 
     PRINTOUT(F("-- Response Code --"));
     PRINTOUT(responseCode);

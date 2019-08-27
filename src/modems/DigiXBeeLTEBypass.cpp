@@ -120,8 +120,18 @@ bool DigiXBeeLTEBypass::extraModemSetup(void)
         gsmClient.init(&gsmModem);
         _modemName = gsmModem.getModemName();
     }
-    else success = false;
-    if (success) MS_DBG(F("... Setup successful!"));
-    else MS_DBG(F("... failed!"));
+    else
+    {
+        success = false;
+    }
+
+    if (success)
+    {
+        MS_DBG(F("... Setup successful!"));
+    }
+    else
+    {
+        MS_DBG(F("... failed!"));
+    }
     return success;
 }

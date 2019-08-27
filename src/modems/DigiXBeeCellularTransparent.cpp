@@ -121,9 +121,19 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         MS_DBG(F("Restarting XBee..."));
         success &= gsmModem.restart();
     }
-    else success = false;
-    if (success) MS_DBG(F("... Setup successful!"));
-    else MS_DBG(F("... failed!"));
+    else
+    {
+        success = false;
+    }
+
+    if (success)
+    {
+        MS_DBG(F("... Setup successful!"));
+    }
+    else
+    {
+        MS_DBG(F("... failed!"));
+    }
     return success;
 }
 
@@ -157,9 +167,18 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
     MS_DBG(F("Unix Timestamp returned by NIST (UTC):"), unixTimeStamp);
 
     // If before Jan 1, 2019 or after Jan 1, 2030, most likely an error
-    if (unixTimeStamp < 1546300800) return 0;
-    else if (unixTimeStamp > 1893456000) return 0;
-    else return unixTimeStamp;
+    if (unixTimeStamp < 1546300800)
+    {
+        return 0;
+    }
+    else if (unixTimeStamp > 1893456000)
+    {
+        return 0;
+    }
+    else
+    {
+        return unixTimeStamp;
+    }
 }*/
 uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
 {
@@ -204,7 +223,10 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
             return 0;
         }
     }
-    else MS_DBG(F("Unable to open TCP to NIST!"));
+    else
+    {
+        MS_DBG(F("Unable to open TCP to NIST!"));
+    }
     return 0;
 }
 
@@ -251,7 +273,10 @@ bool DigiXBeeCellularTransparent::addSingleMeasurementResult(void)
         MS_DBG(F("Leaving Command Mode:"));
         gsmModem.exitCommand();
     }
-    else MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!"));
+    else
+    {
+        MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!"));
+    }
 
     verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi);
     verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent);

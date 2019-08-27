@@ -227,7 +227,10 @@ float specificModem::getModemTemperature(void) \
         MS_DBG(F("No response to AT commands! Cannot connect to the internet!")); \
         return false; \
     } \
-    else MS_DBG(F("... AT OK after"), MS_PRINT_DEBUG_TIMER, F("milliseconds!"));
+    else \
+    { \
+        MS_DBG(F("... AT OK after"), MS_PRINT_DEBUG_TIMER, F("milliseconds!")); \
+    }
 
 
 #if defined TINY_GSM_MODEM_XBEE
@@ -367,7 +370,10 @@ uint32_t specificModem::getNISTTime(void) \
             return 0; \
         } \
     } \
-    else MS_DBG(F("Unable to open TCP to NIST!")); \
+    else \
+    { \
+        MS_DBG(F("Unable to open TCP to NIST!")); \
+    } \
     return 0; \
 }
 

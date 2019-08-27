@@ -74,7 +74,10 @@ bool AOSongAM2315::addSingleMeasurementResult(void)
         MS_DBG(F("  Temp:"), temp_val, F("°C"));
         MS_DBG(F("  Humidity:"), humid_val, '%');
     }
-    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    else
+    {
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    }
 
     verifyAndAddMeasurementResult(AM2315_TEMP_VAR_NUM, temp_val);
     verifyAndAddMeasurementResult(AM2315_HUMIDITY_VAR_NUM, humid_val);

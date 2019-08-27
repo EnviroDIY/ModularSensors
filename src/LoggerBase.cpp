@@ -429,11 +429,17 @@ void Logger::setLoggerTimeZone(int8_t timeZone)
     #ifdef STANDARD_SERIAL_OUTPUT
         const char* prtout1 = "Logger timezone is set to UTC";
         if (_loggerTimeZone == 0)
+        {
             PRINTOUT(prtout1);
+        }
         else if (_loggerTimeZone > 0)
+        {
             PRINTOUT(prtout1, '+', _loggerTimeZone);
+        }
         else
+        {
             PRINTOUT(prtout1, _loggerTimeZone);
+        }
     #endif
 }
 int8_t Logger::getLoggerTimeZone(void)
@@ -455,11 +461,17 @@ void Logger::setRTCTimeZone(int8_t timeZone)
     #ifdef STANDARD_SERIAL_OUTPUT
         const char* prtout1 = "RTC timezone is set to UTC";
         if ((_loggerTimeZone - _loggerRTCOffset) == 0)
+        {
             PRINTOUT(prtout1);
+        }
         else if ((_loggerTimeZone - _loggerRTCOffset) > 0)
+        {
             PRINTOUT(prtout1, '+', (_loggerTimeZone - _loggerRTCOffset));
+        }
         else
+        {
             PRINTOUT(prtout1, (_loggerTimeZone - _loggerRTCOffset));
+        }
     #endif
 }
 int8_t Logger::getRTCTimeZone(void)
@@ -479,11 +491,17 @@ void Logger::setTZOffset(int8_t offset)
     _loggerRTCOffset = offset;
     // Some helpful prints for debugging
     if (_loggerRTCOffset == 0)
+    {
         PRINTOUT(F("RTC and Logger are set in the same timezone."));
+    }
     else if (_loggerRTCOffset < 0)
+    {
         PRINTOUT(F("RTC is set"), -1*_loggerRTCOffset, F("hours ahead of logging timezone"));
+    }
     else
+    {
         PRINTOUT(F("RTC is set"), _loggerRTCOffset, F("hours behind the logging timezone"));
+    }
 }
 int8_t Logger::getTZOffset(void)
 {
@@ -1005,8 +1023,14 @@ void Logger::printFileHeader(Stream *stream)
 
     // We'll finish up the the custom variable codes
     String dtRowHeader = F("Date and Time in UTC");
-    if (_loggerTimeZone > 0) dtRowHeader += '+' + _loggerTimeZone;
-    else if (_loggerTimeZone < 0) dtRowHeader += _loggerTimeZone;
+    if (_loggerTimeZone > 0)
+    {
+        dtRowHeader += '+' + _loggerTimeZone;
+    }
+    else if (_loggerTimeZone < 0)
+    {
+        dtRowHeader += _loggerTimeZone;
+    }
     STREAM_CSV_ROW(dtRowHeader, getVarCodeAtI(i));
 }
 

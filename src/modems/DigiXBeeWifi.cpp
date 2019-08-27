@@ -93,9 +93,19 @@ bool DigiXBeeWifi::extraModemSetup(void)
         // Exit command mode
         gsmModem.exitCommand();
     }
-    else success = false;
-    if (success) MS_DBG(F("... Setup successful!"));
-    else MS_DBG(F("... failed!"));
+    else
+    {
+        success = false;
+    }
+
+    if (success)
+    {
+        MS_DBG(F("... Setup successful!"));
+    }
+    else
+    {
+        MS_DBG(F("... failed!"));
+    }
     return success;
 }
 
@@ -148,7 +158,10 @@ uint32_t DigiXBeeWifi::getNISTTime(void)
             return 0;
         }
     }
-    else MS_DBG(F("Unable to open TCP to NIST!"));
+    else
+    {
+        MS_DBG(F("Unable to open TCP to NIST!"));
+    }
     return 0;
 }
 
@@ -259,7 +272,10 @@ bool DigiXBeeWifi::addSingleMeasurementResult(void)
         MS_DBG(F("Leaving Command Mode:"));
         gsmModem.exitCommand();
     }
-    else MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!"));
+    else
+    {
+        MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!"));
+    }
 
     verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi);
     verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent);

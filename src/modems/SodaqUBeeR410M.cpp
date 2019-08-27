@@ -99,7 +99,10 @@ bool SodaqUBeeR410M::modemWakeFxn(void)
             while (millis() - startTimer < 150) {}
             MS_DBG(F("Pulsed for"), millis() - startTimer, F("ms"));
         }
-        else delay(200);  // 0.15-3.2s pulse for wake on SARA R4/N4
+        else
+        {
+            delay(200);  // 0.15-3.2s pulse for wake on SARA R4/N4
+        }
 
         digitalWrite(_modemSleepRqPin, HIGH);
         // Need to slow down R4/N4's default 115200 baud rate for slow processors

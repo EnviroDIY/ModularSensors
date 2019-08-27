@@ -269,5 +269,8 @@ void loop()
         dataLogger.systemSleep();
     }
     // If the battery is OK, log data
-    else dataLogger.logData();
+    else
+    {
+        dataLogger.logData();
+    }
 }
