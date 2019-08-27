@@ -213,7 +213,7 @@ void Variable::onSensorUpdate(Sensor *parentSense)
 {
     if (!isCalculated)
     {
-        _currentValue = parentSensor->sensorValues[_sensorVarNum];
+        _currentValue = parentSense->sensorValues[_sensorVarNum];
         MS_DBG(F("... received"), _currentValue);
     }
 }
