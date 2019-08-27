@@ -99,12 +99,13 @@ bool DigiXBeeWifi::extraModemSetup(void)
         #ifdef MS_DIGIXBEEWIFI_DEBUG 
             MS_DBG(F("Get IP number"));
             String xbeeRsp;
-            uint8_t index;
+            uint8_t index=0;
             bool AllocatedIpSuccess = false;
+            //Display IP allocation
             for (int mdm_lp=1;mdm_lp<11;mdm_lp++) {
                 delay(mdm_lp*500);
                 gsmModem.sendAT(F("MY"));  // Request IP #
-                index &= gsmModem.waitResponse(1000,xbeeRsp);
+                index = gsmModem.waitResponse(1000,xbeeRsp);
                 MS_DBG(F("mdmIP["),toAscii(index),F("]"),xbeeRsp);
                 if (0!=xbeeRsp.compareTo("0.0.0.0")) {
                     AllocatedIpSuccess = true;
@@ -112,7 +113,21 @@ bool DigiXBeeWifi::extraModemSetup(void)
                 }
                 xbeeRsp="";
             }
-            if (AllocatedIpSuccess) {
+            //Display DNS allocation
+            for (int mdm_lp=1;mdm_lp<11;mdm_lp++) {
+                delay(mdm_lp*500);
+                gsmModem.sendAT(F("NS"));  // Request DNS #
+                index &= gsmModem.waitResponse(1000,xbeeRsp);
+                MS_DBG(F("mdmDNS["),toAscii(index),F("]"),xbeeRsp);
+                if (0!=xbeeRsp.compareTo("0.0.0.0")) {
+                    AllocatedIpSuccess = true;
+                    break;
+                }
+                xbeeRsp="";
+            }            
+            //if (false) 
+            if (AllocatedIpSuccess)
+            {
                 int16_t rssi, percent;
                 getModemSignalQuality(rssi, percent);
             }
@@ -167,8 +182,9 @@ uint32_t DigiXBeeWifi::getNISTTime(void)
         if (gsmClient.available() >= 4)
         {
             MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
-            byte response[4] = {0};
+            byte response[100] = {0}; //Needs to be larger enough for complete response
             gsmClient.read(response, 4);
+            MS_DBG(F("<<< something fm gsmClient.read"));
             return parseNISTBytes(response);
         }
         else
@@ -192,7 +208,10 @@ bool DigiXBeeWifi::getModemSignalQuality(int16_t &rssi, int16_t &percent)
 
     // The WiFi XBee needs to make an actual TCP connection and get some sort
     // of response on that connection before it knows the signal quality.
+    // assume connection made
+#if 0
     // Connecting to the Google DNS servers for now
+
     MS_DBG(F("Opening connection to check connection strength..."));
     bool usedGoogle = false;
     if (!gsmModem.gotIPforSavedHost())
@@ -207,7 +226,7 @@ bool DigiXBeeWifi::getModemSignalQuality(int16_t &rssi, int16_t &percent)
     {
         gsmClient.stop(15000L);
     }
-
+#endif 
     // Get signal quality
     // NOTE:  We can't actually distinguish between a bad modem response, no
     // modem response, and a real response from the modem of no service/signal.

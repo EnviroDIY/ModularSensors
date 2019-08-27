@@ -128,7 +128,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         bool cellRegistered=false;
         PRINTOUT(F("Loop=Sec] rx db : Status ' Operator ' #Polled Cell Status every 1sec"));
         for ( unsigned long start = millis(); millis() - start < 300000; loops++) {
-            ui_db = gsmModem.getSignalQuality();
+            ui_db = 0;// gsmModem.getSignalQuality();
             gsmModem.sendAT(GF("AI"));
             status=gsmModem.readResponseInt(10000L);
             ui_op = String(loops)+"="+String((float)millis()/1000)+"] "+String(ui_db)+":0x"+String(status,HEX)+" '"+ gsmModem.getOperator()+"'";

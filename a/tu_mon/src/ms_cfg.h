@@ -55,6 +55,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //#elif defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS)
 #elif defined(ARDUINO_SODAQ_AUTONOMO)
 #define PROFILE_NAME PROFILE03_SODAQ_AUTONOMO_M0
+
 #else
 #error undefinded
 #endif
@@ -91,8 +92,19 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #define configIniID_DEF_STR "ms_cfg.ini"  
 #define CONFIG_TIME_ZONE_DEF -8
 
+// ** How frequently (in minutes) to log data **
+//For two Loggers defined logger2Mult with the faster loggers timeout and the multiplier to the slower loggger 
+#define  loggingInterval_Fast_MIN (1)
+//#define  logger2Mult 5 //Not working for mayfly
 // How frequently (in minutes) to log data
-//#define loggingInterval_CDEF_MIN 15
+#if defined logger2Mult
+#define  loggingInterval_CDEF_MIN (loggingInterval_Fast_MIN*logger2Mult) 
+#else
+#define  loggingInterval_CDEF_MIN 15
+#endif //logger2Mult
+// Maximum logging setting allowed
+#define  loggingInterval_MAX_CDEF_MIN 6*60
+
 //define one  _Module
 #define DigiXBeeWifi_Module 1
 #warning infoMayflyWithDigiXBeeWiFi
@@ -291,16 +303,20 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 #define configIniID_DEF_STR "ms_cfg.ini"  
 #define CONFIG_TIME_ZONE_DEF -8
 
-#define  loggers2 5
+// ** How frequently (in minutes) to log data **
+//For two Loggers defined logger2Mult with the faster loggers timeout and the multiplier to the slower loggger 
 #define  loggingInterval_Fast_MIN (1)
+#define  logger2Mult 5
 // How frequently (in minutes) to log data
-#define  loggingInterval_CDEF_MIN (loggingInterval_Fast_MIN*loggers2) 
+#if defined logger2Mult
+#define  loggingInterval_CDEF_MIN (loggingInterval_Fast_MIN*logger2Mult) 
+#else
+#define  loggingInterval_CDEF_MIN 15
+#endif //logger2Mult
 // Maximum logging setting allowed
 #define  loggingInterval_MAX_CDEF_MIN 6*60
-//If second more frequent logging - how fast
 
-
-//define one  _Module
+//define one Radio  _Module
 #define DigiXBeeWifi_Module 1
 #warning infoAutonomoWithDigiXBeeWiFi
 //#define DigiXBeeCellularTransparent_Module 1

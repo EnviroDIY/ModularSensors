@@ -225,9 +225,13 @@ public:
 
     static uint32_t getNowEpochT0(void); //Get Epoch standard UST
     static uint32_t getNowEpochTz(void); //Get Epoch with time zone offset
+    static void setNowEpochT0(uint32_t ts); //Set Epoch with standard UST
+    //static void setNowEpochTz(uint32_t ts); //Set Epoch with standard UST
     static uint32_t getNowEpoch(void);
     static void setNowEpoch(uint32_t ts);
 
+    static DateTime dtFromEpochT0(uint32_t epochTime);
+    static DateTime dtFromEpochTz(uint32_t epochTime);
     static DateTime dtFromEpoch(uint32_t epochTime);
 
     // This converts a date-time object into a ISO8601 formatted string

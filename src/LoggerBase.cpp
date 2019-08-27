@@ -19,6 +19,7 @@
 #include <Wire.h>
 
 
+//Time Zone support in hours from UTC/GMT −10 to +14 https://en.wikipedia.org/wiki/Coordinated_Universal_Time
 // Initialize the static timezone
 int8_t Logger::_loggerTimeZone = 0;
 // Initialize the static time adjustment
@@ -493,20 +494,22 @@ int8_t Logger::getTZOffset(void)
 // This gets the current epoch time (unix time, ie, the number of seconds
 // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
 #if defined MS_SAMD_DS3231 || not defined ARDUINO_ARCH_SAMD
-uint32_t Logger::getNowEpochTz(void)
+uint32_t Logger::getNowEpochT0(void)
 {
   uint32_t currentEpochTime = rtc.now().getEpoch();
-  //currentEpochTime += _offset*3600;
   return currentEpochTime;
 }
 
-uint32_t Logger::getNowEpoch(void)
+uint32_t Logger::getNowEpochTz(void)
 {
   uint32_t currentEpochTime = rtc.now().getEpoch();
   currentEpochTime += ((uint32_t)_loggerRTCOffset)*3600;
   return currentEpochTime;
 }
-void Logger::setNowEpoch(uint32_t ts){rtc.setEpoch(ts);}
+uint32_t Logger::getNowEpoch(void) {return getNowEpochTz();} //Depreciated in 0.23.4, left in for compatiblity 
+
+void Logger::setNowEpochT0(uint32_t ts){rtc.setEpoch(ts);}
+void Logger::setNowEpoch(uint32_t ts){rtc.setEpoch(ts);} //Depreciated in 0.23.4, left in for compatiblity 
 
 #elif defined ARDUINO_ARCH_SAMD
 
@@ -518,27 +521,31 @@ uint32_t Logger::getNowEpochT0(void)
 uint32_t Logger::getNowEpochTz(void)
 {
   uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
-  //currentEpochTime += _offset*3600;
-  return currentEpochTime;
-}
-uint32_t Logger::getNowEpoch(void)
-{
-  uint32_t currentEpochTime = zero_sleep_rtc.getEpoch();
   currentEpochTime += ((uint32_t)_loggerRTCOffset)*3600;
   return currentEpochTime;
 }
-void Logger::setNowEpoch(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
+uint32_t Logger::getNowEpoch(void) {return getNowEpochTz();} //Depreciated in 0.23.4, left in for compatiblity 
+
+void Logger::setNowEpochT0(uint32_t ts){zero_sleep_rtc.setEpoch(ts);}
+void Logger::setNowEpoch(uint32_t ts){zero_sleep_rtc.setEpoch(ts);} //Depreciated in 0.23.4, left in for compatiblity 
 
 #endif
 
 // This gets the current epoch time (unix time, ie, the number of seconds
+// from January 1, 1970 00:00:00 UTC) 
+DateTime Logger::dtFromEpochT0(uint32_t epochTime)
+{
+    DateTime dt(epochTime);
+    return dt;
+}
+// This gets the current epoch time (unix time, ie, the number of seconds
 // from January 1, 1970 00:00:00 UTC) and corrects it for the specified time zone
-DateTime Logger::dtFromEpoch(uint32_t epochTime)
+DateTime Logger::dtFromEpochTz(uint32_t epochTime)
 {
     DateTime dt(epochTime - EPOCH_TIME_OFF);
     return dt;
 }
-
+DateTime Logger::dtFromEpoch(uint32_t epochTime) {return dtFromEpochTz(epochTime);} //Depreciated
 // This converts a date-time object into a ISO8601 formatted string
 // It assumes the supplied date/time is in the LOGGER's timezone and adds
 // the LOGGER's offset as the time zone offset in the string.
@@ -578,11 +585,11 @@ String Logger::formatDateTime_ISO8601(DateTime& dt)
 // This converts an epoch time (unix time) into a ISO8601 formatted string
 // It assumes the supplied date/time is in the LOGGER's timezone and adds
 // the LOGGER's offset as the time zone offset in the string.
-String Logger::formatDateTime_ISO8601(uint32_t epochTime)
+String Logger::formatDateTime_ISO8601(uint32_t epochTimeTz)
 {
     // Create a DateTime object from the epochTime
-    DateTime dt = dtFromEpoch(epochTime);
-    return formatDateTime_ISO8601(dt);
+    DateTime dtTz = dtFromEpoch(epochTimeTz);
+    return formatDateTime_ISO8601(dtTz);
 }
 
 
@@ -600,33 +607,31 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
 
     // The "UTCEpochSeconds" is the number of seconds since Jan 1, 1970 in UTC
     // We're interested in the UTCEpochSeconds in the logger's and RTC's timezone
-    // The RTC's timezone is equal to the logger's timezone minus the offset
+    // The RTC's timezone is a label and isn't used in calculations, only the offset is used to make it more readable
     // between the logger and the RTC.
     // Only works for ARM CC if long, AVR was uint32_t
-    //long set_logTZ, set_rtcTZ,cur_logTZ;
-    long set_logTZ = UTCEpochSeconds + getTimeZone()*3600;
-    //long set_rtcTZ = set_logTZ - getTZOffset()*3600;
-    MS_DBG(F("         Correct Time for Logger:"), set_logTZ, F("->"), \
-        formatDateTime_ISO8601(set_logTZ));
+    uint32_t nistTz_sec = UTCEpochSeconds+ ((int32_t)getTZOffset())*3600;
+    MS_DBG(F("    NIST Time:"), UTCEpochSeconds, \
+        F("->"), formatDateTime_ISO8601(nistTz_sec));
 
     // Check the current RTC time
-    long cur_logTZ = getNowEpochTz(); //EpochTZ
-    MS_DBG(F("         Time Returned by RTC:"), cur_logTZ, F("->"), \
-        formatDateTime_ISO8601(cur_logTZ));
-    MS_DBG(F("         Offset:"), abs(set_logTZ - cur_logTZ));
+    uint32_t cur_logT0_sec = getNowEpochT0();
+    uint32_t cur_logTz_sec = getNowEpochTz();
+    MS_DBG(F("    Current Epoch Time on RTC :"), cur_logT0_sec, F("->"), \
+        formatDateTime_ISO8601(cur_logTz_sec));
+    MS_DBG(F("    Offset between epoch NIST and RTC:"), abs(cur_logT0_sec - UTCEpochSeconds));
 
     // If the RTC and NIST disagree by more than 5 seconds, set the clock
     #define NIST_TIME_DIFF_SEC 5
-    if (abs(set_logTZ - cur_logTZ) > NIST_TIME_DIFF_SEC )
+    if (abs(cur_logT0_sec - UTCEpochSeconds) > NIST_TIME_DIFF_SEC )
     {
-        //setNowEpoch(set_rtcTZ);
-        setNowEpoch(set_logTZ);
-        PRINTOUT(F("Clock set "),formatDateTime_ISO8601(set_logTZ));
+        setNowEpochT0(UTCEpochSeconds);
+        PRINTOUT(F("Internal Clock set "),formatDateTime_ISO8601(nistTz_sec));
         retVal= true;
     }
     else
     {
-        PRINTOUT(F("Clock already within 5 seconds of time."));
+        PRINTOUT(F("Internal Clock within "),NIST_TIME_DIFF_SEC,F("seconds of NIST."));
         //return false;
         retVal= true;  //RTC valid
     }
@@ -977,7 +982,7 @@ void Logger::systemSleep(uint8_t sleep_min)
     #endif
 
     // Wake-up message
-    wakeUpTime_secs = getNowEpoch();
+    wakeUpTime_secs = getNowEpochTz();
     MS_DBG(F("\n\n\n... zzzZZ Processor awake @"),wakeUpTime_secs);
 
     // The logger will now start the next function after the systemSleep

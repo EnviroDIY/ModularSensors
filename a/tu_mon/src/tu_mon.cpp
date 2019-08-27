@@ -70,7 +70,7 @@ const uint8_t loggingInterval_Fast_def_min = loggingInterval_Fast_MIN;
 // The logger's timezone default.
 int8_t timeZone =  CONFIG_TIME_ZONE_DEF;
 uint32_t sysStartTime_epochTzSec=1;
-bool nistSyncRtc = false; //Set when a NIST sync RTC is required
+bool nistSyncRtc = true; //true on power up. Set when a NIST sync RTC is required
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
@@ -1546,13 +1546,13 @@ Variable *variableList[] = {
     new Variable(ina219M_A_HighFn,2,"Max_A","A","Max_A_Var",INA219M_A_MAX_UUID),
 #endif
 };
-#if defined loggers2
+#if defined logger2Mult
 Variable *variableLstFast[] = {
     #if defined(INA219M_MA_UUID)
     new TIINA219M_Current(&ina219m_phy, INA219M_MA_UUID),
     #endif
 };
-#endif //loggers2
+#endif //logger2Mult
 /*
 // FORM2: Fill array with already created and named variable pointers
 // NOTE:  Forms one and two can be mixed
@@ -1573,10 +1573,10 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
-#if defined loggers2
+#if defined logger2Mult
 int variableCntFast = sizeof(variableLstFast) / sizeof(variableLstFast[0]);
 VariableArray varArrFast(variableCntFast, variableLstFast);
-#endif //int variableCntFast = sizeof(variableLstFast) / sizeof(variableLstFast[0]);
+#endif //logger2Mult
 
 // ==========================================================================
 //     Local storage - evolving
@@ -1592,9 +1592,9 @@ VariableArray varArrFast(variableCntFast, variableLstFast);
 
 // Create a new logger instance
 Logger dataLogger(LoggerID_def, loggingInterval_def_min, sdCardSSPin, wakePin, &varArray);
-#if defined loggers2
+#if defined logger2Mult
 Logger dataLogFast(LoggerID_def, loggingInterval_Fast_def_min,&varArrFast);
-#endif //loggers2
+#endif //logger2Mult
 
 //now works with MS_DBG #if KCONFIG_DEBUG_LEVEL > 0   //0918
 // ==========================================================================
@@ -1877,9 +1877,9 @@ void setup()
     // Begin the logger
     dataLogger.begin();
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps.provider.s.registration_token, ps.provider.s.sampling_feature);
-    #if defined loggers2
+    #if defined logger2Mult
     dataLogFast.begin();
-    #endif //loggers2
+    #endif //logger2Mult
 
     SerialStd.print(F("Start Time: "));
     sysStartTime_epochTzSec = dataLogger.getNowEpochTz();
@@ -1895,7 +1895,9 @@ void setup()
     //dataLogger.setTestingModePin(buttonPin);
 
     varArray.setupSensors(); //Assumption pwr is available
+    #if defined logger2Mult
     varArrFast.setupSensors(); //Assumption pwr is available
+    #endif //logger2Mult
     // Call the processor sleep
     //greenredflash(4,1000);
     //delay(1000);
@@ -1923,11 +1925,11 @@ void processSensors()
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval or first time through.
     if ((!modemSetup) ||
-        #ifdef loggers2
+        #ifdef logger2Mult
         dataLogFast.checkInterval()
         #else
         dataLogger.checkInterval()
-        #endif 
+        #endif  //logger2Mult
         )
     {
         // Flag to notify that we're in already awake and logging a point
@@ -1955,11 +1957,10 @@ void processSensors()
         // we will explicitly start and end the serial connection in the loop.
         modbusSerial.begin(9600);
 #endif // CONFIG_SENSOR_RS485_PHY
-        #ifdef loggers2
+        #ifdef logger2Mult
         // Do a complete sensor update
         varArrFast.completeUpdate();
         //uint16 dataLogFast.getValueStringAtI(0)
-        #if 1
         float lastReading=variableLstFast[0]->getValue();
         if (lastReading < ina219M_A_LowReading) {
             MS_DBG(F("The LastReading lower="),lastReading,F(" than "),ina219M_A_LowReading);
@@ -1970,14 +1971,15 @@ void processSensors()
         } else {
              MS_DBG(F("The LastReading "),lastReading,F(" within "),ina219M_A_LowReading,F("-"),ina219M_A_HighReading);
         }
-        #endif //0
-        if (5 <++simpleUpdateCnt)
-        #endif //loggers2 
+        if (logger2Mult < ++simpleUpdateCnt)
+        #endif //logger2Mult 
         {
+            #if defined logger2Mult
+            varArrFast.completeUpdate();
+            #endif 
             varArray.completeUpdate();
             simpleUpdateCnt=0;
             varArrayPub=true;
-            ina219M_A_init();
         }
 
 #if defined(CONFIG_SENSOR_RS485_PHY)
@@ -2029,11 +2031,13 @@ void processSensors()
                         #define CONFIG_NIST_CHECK_SECS HOUR_SECS
                         #define CONFIG_NIST_ERR_MASK (~0x3F) 
                         uint32_t nistCheckRemainder = Logger::markedEpochTime % CONFIG_NIST_CHECK_SECS;
+                        bool nistSyncNow=false;
+                        if (nistSyncRtc || ((nistCheckRemainder&CONFIG_NIST_ERR_MASK ) == 0)) nistSyncNow=true;
                         MS_DBG(F("SyncTimeCheck "),Logger::markedEpochTime
                         ,"remainder ",nistCheckRemainder
                         ," check+-",(nistCheckRemainder&CONFIG_NIST_ERR_MASK) );
-                        nistSyncRtc=true; //debug
-                        if (nistSyncRtc || ((nistCheckRemainder&CONFIG_NIST_ERR_MASK ) == 0) )
+
+                        if (nistSyncNow )
                         {
                             MS_DBG(F("  atl..Running a NIST clock sync. NeedSync "),nistSyncRtc);
                             nistSyncRtc = true; //Needs to run every access until sucess
@@ -2053,6 +2057,7 @@ void processSensors()
                 } //else MS_DBG(F("  No Modem configured.\n"));
                 PRINTOUT(F("---Complete "));
             }
+            ina219M_A_init();
             // Cut power from the SD card - without additional housekeeping wait
             dataLogger.turnOffSDcard(false);        
             // Turn off the LED
@@ -2089,12 +2094,13 @@ void loop()
 
     // Sleep
     //if(_mcuWakePin >= 0){systemSleep();}
-    #if defined loggers2
+    #if defined logger2Mult
         MS_DBG(F("dataLogFast Sleep "));
         dataLogFast.systemSleep();
     #else 
+        MS_DBG(F("dataLogger Sleep "));
         dataLogger.systemSleep();
-    #endif //loggers2
+    #endif //logger2Mult
     #endif //KCONFIG_DEBUG_LEVEL
 #if defined(CHECK_SLEEP_POWER)
     PRINTOUT(F("A"));

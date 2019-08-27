@@ -580,16 +580,17 @@ uint32_t loggerModem::parseNISTBytes(byte nistBytes[4])
     /* Response is returned as 32-bit number as soon as connection is made */
     /* Connection is then immediately closed, so there is no need to close it */
     uint32_t secFrom1900 = 0;
+    MS_DBG(F("NIST Response"));
     for (uint8_t i = 0; i < 4; i++)
     {
-        MS_DBG(F("Response Byte"), i, ':', (char)nistBytes[i],
-                   '=', nistBytes[i], '=', String(nistBytes[i], BIN));
+        MS_DBG(F("Response Byte"), i,
+                   '=', nistBytes[i]);
         secFrom1900 += 0x000000FF & nistBytes[i];
         /* MS_DBG(F("\nseconds from 1900 after byte:"),String(secFrom1900, BIN)); */
         if (i+1 < 4) {secFrom1900 = secFrom1900 << 8;}
     }
     MS_DBG(F("Seconds from Jan 1, 1900 returned by NIST (UTC):"),
-               secFrom1900, '=', String(secFrom1900, BIN));
+               secFrom1900);
 
     /* Close the TCP connection, just in case */
     /* Don't close connection! It takes too long and then the time stamp is out of date! */
