@@ -26,7 +26,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.4";
+const char *libraryVersion = "0.23.5";
 // The name of this file
 const char *sketchName = "menu_a_la_carte.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -197,34 +197,34 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 //    Note:  Don't use more than one!
 // ==========================================================================
 
-// // For any Digi Cellular XBee's
-// // NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global)
-// // are more stable used in bypass mode (below)
-// // The Telit based Digi XBees (LTE Cat1) can only use this mode.
-// #include <modems/DigiXBeeCellularTransparent.h>
+// For any Digi Cellular XBee's
+// NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global)
+// are more stable used in bypass mode (below) if not using an LTEBee Adapter board, https://github.com/EnviroDIY/LTEbee-Adapter
+// The Telit based Digi XBees (LTE Cat1) can only use this mode.
+#include <modems/DigiXBeeCellularTransparent.h>
+const long modemBaud = 9600;  // All XBee's use 9600 by default
+const bool useCTSforStatus = false;   // Flag to use the modem CTS pin for status. `false` if using a Mayfly with the LTEBee Adapter board, `true` if using a Mayfly without the LTEBee adapter board (because pin 19 of the mayfly (that you set as the status pin) is connected to Bee pin 12, which is CTS_not)
+DigiXBeeCellularTransparent modemXBCT(&modemSerial,
+                                      modemVccPin, modemStatusPin, useCTSforStatus,
+                                      modemResetPin, modemSleepRqPin,
+                                      apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+DigiXBeeCellularTransparent modem = modemXBCT;
+// ==========================================================================
+
+// // For the u-blox SARA R410M based Digi LTE-M XBee3
+// // NOTE:  According to the manual, this should be less stable than transparent
+// // mode, but my experience is the complete reverse.
+// #include <modems/DigiXBeeLTEBypass.h>
 // const long modemBaud = 9600;  // All XBee's use 9600 by default
 // const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
-// DigiXBeeCellularTransparent modemXBCT(&modemSerial,
-//                                       modemVccPin, modemStatusPin, useCTSforStatus,
-//                                       modemResetPin, modemSleepRqPin,
-//                                       apn);
+// DigiXBeeLTEBypass modemXBLTEB(&modemSerial,
+//                               modemVccPin, modemStatusPin, useCTSforStatus,
+//                               modemResetPin, modemSleepRqPin,
+//                               apn);
 // // Create an extra reference to the modem by a generic name (not necessary)
-// DigiXBeeCellularTransparent modem = modemXBCT;
+// DigiXBeeLTEBypass modem = modemXBLTEB;
 // // ==========================================================================
-
-// For the u-blox SARA R410M based Digi LTE-M XBee3
-// NOTE:  According to the manual, this should be less stable than transparent
-// mode, but my experience is the complete reverse.
-#include <modems/DigiXBeeLTEBypass.h>
-const long modemBaud = 9600;  // All XBee's use 9600 by default
-const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
-DigiXBeeLTEBypass modemXBLTEB(&modemSerial,
-                              modemVccPin, modemStatusPin, useCTSforStatus,
-                              modemResetPin, modemSleepRqPin,
-                              apn);
-// Create an extra reference to the modem by a generic name (not necessary)
-DigiXBeeLTEBypass modem = modemXBLTEB;
-// ==========================================================================
 
 // // For the u-blox SARA U201 based Digi 3G XBee with 2G fallback
 // // NOTE:  According to the manual, this should be less stable than transparent
@@ -708,10 +708,11 @@ NeoSWSerial &sonarSerial = neoSSerial1;  // For software serial if needed
 #endif
 
 const int8_t SonarPower = sensorPowerPin;  // Excite (power) pin (-1 if unconnected)
-const int8_t Sonar1Trigger = A1;  // Trigger pin (a unique negative number if unconnected) (D25 = A1)
+const int8_t Sonar1Trigger = -1;  // Trigger pin (a unique negative number if unconnected) (D25 = A1)
+const uint8_t sonar1NumberReadings = 3;  // The number of readings to average
 
 // Create a MaxBotix Sonar sensor object
-MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger) ;
+MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger, sonar1NumberReadings);
 
 // Create an ultrasonic range variable pointer
 // Variable *sonar1Range = new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab");
@@ -1421,6 +1422,11 @@ void setup()
         pinMode(sensorPowerPin, OUTPUT);
         digitalWrite(sensorPowerPin, LOW);
     }
+    if (modemSleepRqPin >= 0)
+    {
+        pinMode(modemSleepRqPin, OUTPUT);
+        digitalWrite(modemSleepRqPin, HIGH);
+    }
 
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
@@ -1438,7 +1444,7 @@ void setup()
 
     // Note:  Please change these battery voltages to match your battery
     // Check that the battery is OK before powering the modem
-    if (getBatteryVoltage() > 3.7)
+    if (getBatteryVoltage() > 3.65)
     {
         modem.modemPowerUp();
         modem.wake();
@@ -1455,6 +1461,10 @@ void setup()
             if (modem.connectInternet(120000L))
             {
                 dataLogger.setRTClock(modem.getNISTTime());
+            }
+            else
+            {
+                Serial.println(F("Could not connect to internet for clock sync."));
             }
         }
     }
@@ -1513,7 +1523,7 @@ void loop()
         dataLogger.systemSleep();
     }
     // At moderate voltage, log data but don't send it over the modem
-    else if (getBatteryVoltage() < 3.7)
+    else if (getBatteryVoltage() < 3.65)
     {
         dataLogger.logData();
     }
@@ -1571,7 +1581,7 @@ void loop()
 
         // Connect to the network
         // Again, we're only doing this if the battery is doing well
-        if (getBatteryVoltage() > 3.7)
+        if (getBatteryVoltage() > 3.65)
         {
             if (modem.connectInternet())
             {
