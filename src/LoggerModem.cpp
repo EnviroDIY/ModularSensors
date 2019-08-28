@@ -278,8 +278,10 @@ bool loggerModem::isStable(bool debug)
     // essentially already "stable."
     if (!bitRead(_sensorStatus, 4))
     {
-        if (debug) MS_DBG(getSensorName(),
-                F("did not wake; AT commands will not be attempted!"));
+        if (debug)
+        {
+            MS_DBG(getSensorName(), F("did not wake; AT commands will not be attempted!"));
+        }
         return true;
     }
 
@@ -305,9 +307,12 @@ bool loggerModem::isStable(bool debug)
         }
         else
         {
-            if (debug) MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and status pin"),
-              _dataPin, F("on"), getSensorName(), F("is"), digitalRead(_dataPin),
-              F("indicating it is off.  Will not continue to attempt communication!"));
+            if (debug)
+            {
+                MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and status pin"),
+                       _dataPin, F("on"), getSensorName(), F("is"), digitalRead(_dataPin),
+                       F("indicating it is off.  Will not continue to attempt communication!"));
+            }
             // Unset status bit 4 (wake up success) and _millisSensorActivated
             // We unset these bits here because it's possible that a modem "passed"
             // the wake command, but never really woke.  For sensors that take time
@@ -327,8 +332,11 @@ bool loggerModem::isStable(bool debug)
     // If the modem is now responding to AT commands, it's "stable"
     if (didATRespond())
     {
-        if (debug) MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and"),
-               getSensorName(), F("is now responding to AT commands!"));
+        if (debug)
+        {
+            MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and"),
+                   getSensorName(), F("is now responding to AT commands!"));
+        }
         _lastATCheck = now;
         previousCommunicationFailed = false;
         return true;
@@ -349,8 +357,11 @@ bool loggerModem::isStable(bool debug)
         }
         else
         {
-            if (debug) MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and"),
-                getSensorName(), F("has maxed out wait for AT command reply!  Ending wait."));
+            if (debug)
+            {
+                MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and"),
+                       getSensorName(), F("has maxed out wait for AT command reply!  Ending wait."));
+            }
             // Unset status bit 4 (wake up success) and _millisSensorActivated
             // It's safe to unset these here because we've already tested and failed
             // to respond to AT commands.

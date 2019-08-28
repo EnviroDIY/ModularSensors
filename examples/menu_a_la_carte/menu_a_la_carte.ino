@@ -74,7 +74,7 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // as possible.  In some cases (ie, modbus communication) many sensors can share
 // the same serial port.
 
-#if not defined ARDUINO_ARCH_SAMD && not defined ATMEGA2560  // For AVR boards
+#if defined(ARDUINO_ARCH_AVR) || defined(__AVR__)  // For AVR boards
 // Unfortunately, most AVR boards have only one or two hardware serial ports,
 // so we'll set up three types of extra software serial ports to use
 
@@ -197,13 +197,16 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 //    Note:  Don't use more than one!
 // ==========================================================================
 
+#if not defined MS_BUILD_TESTING || defined MS_BUILD_TEST_XBEE_CELLULAR
 // For any Digi Cellular XBee's
-// NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global)
-// are more stable used in bypass mode (below) if not using an LTEBee Adapter board, https://github.com/EnviroDIY/LTEbee-Adapter
+// NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global) can be used
+// in either bypass or transparent mode, each with pros and cons
 // The Telit based Digi XBees (LTE Cat1) can only use this mode.
 #include <modems/DigiXBeeCellularTransparent.h>
 const long modemBaud = 9600;  // All XBee's use 9600 by default
-const bool useCTSforStatus = false;   // Flag to use the modem CTS pin for status. `false` if using a Mayfly with the LTEBee Adapter board, `true` if using a Mayfly without the LTEBee adapter board (because pin 19 of the mayfly (that you set as the status pin) is connected to Bee pin 12, which is CTS_not)
+const bool useCTSforStatus = false;   // Flag to use the XBee CTS pin for status
+// NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
+// the CTS pin can also be used if necessary
 DigiXBeeCellularTransparent modemXBCT(&modemSerial,
                                       modemVccPin, modemStatusPin, useCTSforStatus,
                                       modemResetPin, modemSleepRqPin,
@@ -212,151 +215,170 @@ DigiXBeeCellularTransparent modemXBCT(&modemSerial,
 DigiXBeeCellularTransparent modem = modemXBCT;
 // ==========================================================================
 
-// // For the u-blox SARA R410M based Digi LTE-M XBee3
-// // NOTE:  According to the manual, this should be less stable than transparent
-// // mode, but my experience is the complete reverse.
-// #include <modems/DigiXBeeLTEBypass.h>
-// const long modemBaud = 9600;  // All XBee's use 9600 by default
-// const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
-// DigiXBeeLTEBypass modemXBLTEB(&modemSerial,
-//                               modemVccPin, modemStatusPin, useCTSforStatus,
-//                               modemResetPin, modemSleepRqPin,
-//                               apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// DigiXBeeLTEBypass modem = modemXBLTEB;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_XBEE_LTE_B
+// For the u-blox SARA R410M based Digi LTE-M XBee3
+// NOTE:  According to the manual, this should be less stable than transparent
+// mode, but my experience is the complete reverse.
+#include <modems/DigiXBeeLTEBypass.h>
+const long modemBaud = 9600;  // All XBee's use 9600 by default
+const bool useCTSforStatus = false;   // Flag to use the XBee CTS pin for status
+// NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
+// the CTS pin can also be used if necessary
+DigiXBeeLTEBypass modemXBLTEB(&modemSerial,
+                              modemVccPin, modemStatusPin, useCTSforStatus,
+                              modemResetPin, modemSleepRqPin,
+                              apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+DigiXBeeLTEBypass modem = modemXBLTEB;
+// ==========================================================================
 
-// // For the u-blox SARA U201 based Digi 3G XBee with 2G fallback
-// // NOTE:  According to the manual, this should be less stable than transparent
-// // mode, but my experience is the complete reverse.
-// #include <modems/DigiXBee3GBypass.h>
-// const long modemBaud = 9600;  // All XBee's use 9600 by default
-// DigiXBeeLTEBypass modemXB3GB(&modemSerial,
-//                              modemVccPin, modemStatusPin, useCTSforStatus,
-//                              modemResetPin, modemSleepRqPin,
-//                              apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// DigiXBee3GBypass modem = modemXB3GB;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_XBEE_3G_B
+// For the u-blox SARA U201 based Digi 3G XBee with 2G fallback
+// NOTE:  According to the manual, this should be less stable than transparent
+// mode, but my experience is the complete reverse.
+#include <modems/DigiXBee3GBypass.h>
+const long modemBaud = 9600;  // All XBee's use 9600 by default
+const bool useCTSforStatus = false;   // Flag to use the XBee CTS pin for status
+// NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
+// the CTS pin can also be used if necessary
+DigiXBeeLTEBypass modemXB3GB(&modemSerial,
+                             modemVccPin, modemStatusPin, useCTSforStatus,
+                             modemResetPin, modemSleepRqPin,
+                             apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+DigiXBee3GBypass modem = modemXB3GB;
+// ==========================================================================
 
-// // For the Digi Wifi XBee (S6B)
-// #include <modems/DigiXBeeWifi.h>
-// const long modemBaud = 9600;  // All XBee's use 9600 by default
-// const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status
-// DigiXBeeWifi modemXBWF(&modemSerial,
-//                        modemVccPin, modemStatusPin, useCTSforStatus,
-//                        modemResetPin, modemSleepRqPin,
-//                        wifiId, wifiPwd);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// DigiXBeeWifi modem = modemXBWF;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_XBEE_WIFI
+// For the Digi Wifi XBee (S6B)
+#include <modems/DigiXBeeWifi.h>
+const long modemBaud = 9600;  // All XBee's use 9600 by default
+const bool useCTSforStatus = false;   // Flag to use the XBee CTS pin for status
+// NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
+// the CTS pin can also be used if necessary
+DigiXBeeWifi modemXBWF(&modemSerial,
+                       modemVccPin, modemStatusPin, useCTSforStatus,
+                       modemResetPin, modemSleepRqPin,
+                       wifiId, wifiPwd);
+// Create an extra reference to the modem by a generic name (not necessary)
+DigiXBeeWifi modem = modemXBWF;
+// ==========================================================================
 
-// // For almost anything based on the Espressif ESP8266 using the AT command firmware
-// #include <modems/EspressifESP8266.h>
-// const long modemBaud = 115200;  // Communication speed of the modem
-// // NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The module
-// // should be programmed to a slower baud rate or set to auto-baud using the
-// // AT+UART_CUR or AT+UART_DEF command *before* attempting conrrol with this library.
-// // Pins for light sleep on the ESP8266.
-// // For power savings, I recommend NOT using these if it's possible to use deep sleep.
-// const int8_t espSleepRqPin = -1;  // Pin ON THE ESP8266 to assign for light sleep request (-1 if not applicable)
-// const int8_t espStatusPin = -1;  // Pin ON THE ESP8266 to assign for light sleep status (-1 if not applicable)
-// EspressifESP8266 modemESP(&modemSerial,
-//                           modemVccPin, modemStatusPin,
-//                           modemResetPin, modemSleepRqPin,
-//                           wifiId, wifiPwd,
-//                           1,  // measurements to average, optional
-//                           espSleepRqPin, espStatusPin  // Optional arguments
-//                          );
-// // Create an extra reference to the modem by a generic name (not necessary)
-// EspressifESP8266 modem = modemESP;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_ESP8266
+// For almost anything based on the Espressif ESP8266 using the AT command firmware
+#include <modems/EspressifESP8266.h>
+const long modemBaud = 115200;  // Communication speed of the modem
+// NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The module
+// should be programmed to a slower baud rate or set to auto-baud using the
+// AT+UART_CUR or AT+UART_DEF command *before* attempting conrrol with this library.
+// Pins for light sleep on the ESP8266.
+// For power savings, I recommend NOT using these if it's possible to use deep sleep.
+const int8_t espSleepRqPin = 13;  // Pin ON THE ESP8266 to assign for light sleep request (-1 if not applicable)
+const int8_t espStatusPin = -1;  // Pin ON THE ESP8266 to assign for light sleep status (-1 if not applicable)
+EspressifESP8266 modemESP(&modemSerial,
+                          modemVccPin, modemStatusPin,
+                          modemResetPin, modemSleepRqPin,
+                          wifiId, wifiPwd,
+                          1,  // measurements to average, optional
+                          espSleepRqPin, espStatusPin  // Optional arguments
+                         );
+// Create an extra reference to the modem by a generic name (not necessary)
+EspressifESP8266 modem = modemESP;
+// ==========================================================================
 
-// // For the Dragino, Nimbelink or other boards based on the Quectel BG96
-// #include <modems/QuectelBG96.h>
-// const long modemBaud = 115200;  // Communication speed of the modem
-// QuectelBG96 modemBG96(&modemSerial,
-//                       modemVccPin, modemStatusPin,
-//                       modemResetPin, modemSleepRqPin,
-//                       apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// QuectelBG96 modem = modemBG96;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_BG96
+// For the Dragino, Nimbelink or other boards based on the Quectel BG96
+#include <modems/QuectelBG96.h>
+const long modemBaud = 115200;  // Communication speed of the modem
+QuectelBG96 modemBG96(&modemSerial,
+                      modemVccPin, modemStatusPin,
+                      modemResetPin, modemSleepRqPin,
+                      apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+QuectelBG96 modem = modemBG96;
+// ==========================================================================
 
-// // For the Nimbelink LTE-M Verizon/Sequans or other boards based on the Sequans Monarch series
-// #include <modems/SequansMonarch.h>
-// const long modemBaud = 921600;  // Default baud rate of SVZM20 is 921600
-// // NOTE:  This baud rate is much too fast for many Arduinos!  The module should
-// // be programmed to a slower baud rate or set to auto-baud using the AT+IPR command.
-// SequansMonarch modemSVZM(&modemSerial,
-//                          modemVccPin, modemStatusPin,
-//                          modemResetPin, modemSleepRqPin,
-//                          apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// SequansMonarch modem = modemSVZM;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_MONARCH
+// For the Nimbelink LTE-M Verizon/Sequans or other boards based on the Sequans Monarch series
+#include <modems/SequansMonarch.h>
+const long modemBaud = 921600;  // Default baud rate of SVZM20 is 921600
+// NOTE:  This baud rate is much too fast for many Arduinos!  The module should
+// be programmed to a slower baud rate or set to auto-baud using the AT+IPR command.
+SequansMonarch modemSVZM(&modemSerial,
+                         modemVccPin, modemStatusPin,
+                         modemResetPin, modemSleepRqPin,
+                         apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+SequansMonarch modem = modemSVZM;
+// ==========================================================================
 
-// // For almost anything based on the SIMCom SIM800 EXCEPT the Sodaq 2GBee R6 and higher
-// #include <modems/SIMComSIM800.h>
-// const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
-// SIMComSIM800 modemS800(&modemSerial,
-//                        modemVccPin, modemStatusPin,
-//                        modemResetPin, modemSleepRqPin,
-//                        apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// SIMComSIM800 modem = modemS800;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_SIM800
+// For almost anything based on the SIMCom SIM800 EXCEPT the Sodaq 2GBee R6 and higher
+#include <modems/SIMComSIM800.h>
+const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
+SIMComSIM800 modemS800(&modemSerial,
+                       modemVccPin, modemStatusPin,
+                       modemResetPin, modemSleepRqPin,
+                       apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+SIMComSIM800 modem = modemS800;
+// ==========================================================================
 
-// // For almost anything based on the SIMCom SIM7000
-// #include <modems/SIMComSIM7000.h>
-// const long modemBaud = 9600;  //  SIM7000 does auto-bauding by default
-// SIMComSIM7000 modem7000(&modemSerial,
-//                         modemVccPin, modemStatusPin,
-//                         modemResetPin, modemSleepRqPin,
-//                         apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// SIMComSIM7000 modem = modem7000;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_SIM7000
+// For almost anything based on the SIMCom SIM7000
+#include <modems/SIMComSIM7000.h>
+const long modemBaud = 9600;  //  SIM7000 does auto-bauding by default
+SIMComSIM7000 modem7000(&modemSerial,
+                        modemVccPin, modemStatusPin,
+                        modemResetPin, modemSleepRqPin,
+                        apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+SIMComSIM7000 modem = modem7000;
+// ==========================================================================
 
-// // For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
-// // NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
-// #include <modems/Sodaq2GBeeR6.h>
-// const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
-// Sodaq2GBeeR6 modem2GB(&modemSerial,
-//                       modemVccPin, modemStatusPin,
-//                       modemSleepRqPin,
-//                       apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// Sodaq2GBeeR6 modem = modem2GB;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_S2GB
+// For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
+// NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
+#include <modems/Sodaq2GBeeR6.h>
+const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
+Sodaq2GBeeR6 modem2GB(&modemSerial,
+                      modemVccPin, modemStatusPin,
+                      modemSleepRqPin,
+                      apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+Sodaq2GBeeR6 modem = modem2GB;
+// ==========================================================================
 
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_UBEE_R410M
 // For the Sodaq UBee based on the 4G LTE-M u-blox SARA R410M
-// #include <modems/SodaqUBeeR410M.h>
-// const long modemBaud = 115200;  // Default baud rate of the SARA R410M is 115200
-// // NOTE:  The SARA R410N DOES NOT save baud rate to non-volatile memory.  After
-// // every power loss, the module will return to the default baud rate of 115200.
-// // NOTE:  115200 is TOO FAST for an 8MHz Arduino.  This library attempts to
-// // compensate by sending a baud rate change command in the wake function.
-// // Because of this, 8MHz boards, LIKE THE MAYFLY, *MUST* use a HardwareSerial
-// // instance as modemSerial.
-// SodaqUBeeR410M modemR410(&modemSerial,
-//                          modemVccPin, modemStatusPin,
-//                          modemResetPin, modemSleepRqPin,
-//                          apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// SodaqUBeeR410M modem = modemR410;
-// // ==========================================================================
+#include <modems/SodaqUBeeR410M.h>
+const long modemBaud = 115200;  // Default baud rate of the SARA R410M is 115200
+// NOTE:  The SARA R410N DOES NOT save baud rate to non-volatile memory.  After
+// every power loss, the module will return to the default baud rate of 115200.
+// NOTE:  115200 is TOO FAST for an 8MHz Arduino.  This library attempts to
+// compensate by sending a baud rate change command in the wake function.
+// Because of this, 8MHz boards, LIKE THE MAYFLY, *MUST* use a HardwareSerial
+// instance as modemSerial.
+SodaqUBeeR410M modemR410(&modemSerial,
+                         modemVccPin, modemStatusPin,
+                         modemResetPin, modemSleepRqPin,
+                         apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+SodaqUBeeR410M modem = modemR410;
+// ==========================================================================
 
-// // For the Sodaq UBee based on the 3G u-blox SARA U201
-// #include <modems/SodaqUBeeU201.h>
-// const long modemBaud = 9600;  //  SARA U2xx module does auto-bauding by default
-// SodaqUBeeU201 modemU201(&modemSerial,
-//                         modemVccPin, modemStatusPin,
-//                         modemResetPin, modemSleepRqPin,
-//                         apn);
-// // Create an extra reference to the modem by a generic name (not necessary)
-// SodaqUBeeU201 modem = modemU201;
-// // ==========================================================================
+#elif defined MS_BUILD_TESTING && defined MS_BUILD_TEST_UBEE_U201
+// For the Sodaq UBee based on the 3G u-blox SARA U201
+#include <modems/SodaqUBeeU201.h>
+const long modemBaud = 9600;  //  SARA U2xx module does auto-bauding by default
+SodaqUBeeU201 modemU201(&modemSerial,
+                        modemVccPin, modemStatusPin,
+                        modemResetPin, modemSleepRqPin,
+                        apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+SodaqUBeeU201 modem = modemU201;
+// ==========================================================================
+#endif
 
 
 // Create RSSI and signal strength variable pointers for the modem
