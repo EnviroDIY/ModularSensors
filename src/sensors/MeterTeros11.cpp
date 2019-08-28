@@ -63,7 +63,7 @@ bool MeterTeros11::addSingleMeasurementResult(void)
         getDataCommand += _SDI12address;
         getDataCommand += "D0!";  // SDI-12 command to get data [address][D][dataOption][!]
         _SDI12Internal.sendCommand(getDataCommand);
-        delay(50);  // It just needs this little delay
+        delay(30);  // It just needs this little delay
         MS_DBG(F("    >>>"), getDataCommand);
 
         uint32_t start = millis();
@@ -118,9 +118,9 @@ bool MeterTeros11::addSingleMeasurementResult(void)
         MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
     }
 
-    verifyAndAddMeasurementResult(TM_EA_VAR_NUM, ea);
-    verifyAndAddMeasurementResult(TM_TEMP_VAR_NUM, temp);
-    verifyAndAddMeasurementResult(TM_VWC_VAR_NUM, VWC);
+    verifyAndAddMeasurementResult(TEROS11_EA_VAR_NUM, ea);
+    verifyAndAddMeasurementResult(TEROS11_TEMP_VAR_NUM, temp);
+    verifyAndAddMeasurementResult(TEROS11_VWC_VAR_NUM, VWC);
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;
