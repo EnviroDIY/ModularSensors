@@ -764,6 +764,26 @@ MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803Readings
 
 
 // ==========================================================================
+//    METER TEROS 11 Soil Moisture Sensor
+// ==========================================================================
+#include <sensors/MeterTeros11.h>
+
+const char *teros11SDI12address = "4";  // The SDI-12 Address of the Teros 11
+// const int8_t SDI12Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// const int8_t SDI12Data = 7;  // The SDI12 data pin
+const uint8_t teros11NumberReadings = 3;  // The number of readings to average
+
+// Create a METER TEROS 11 sensor object
+MeterTeros11 teros11(*teros11SDI12address, SDI12Power, SDI12Data, teros11NumberReadings);
+
+// Create the matric potential, volumetric water content, and temperature
+// variable pointers for the Teros 11
+// Variable *teros11Ea = new MeterTeros11_Ea(&teros11, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *teros11Temp = new MeterTeros11_Temp(&teros11, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *teros11VWC = new MeterTeros11_VWC(&teros11, "12345678-abcd-1234-ef00-1234567890ab");
+
+
+// ==========================================================================
 //    External I2C Rain Tipping Bucket Counter
 // ==========================================================================
 #include <sensors/RainCounterI2C.h>
@@ -1190,6 +1210,9 @@ Variable *variableList[] = {
     new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab"),
     new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-ef00-1234567890ab"),
     new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MeterTeros11_Ea(&teros11, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MeterTeros11_Temp(&teros11, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MeterTeros11_VWC(&teros11, "12345678-abcd-1234-ef00-1234567890ab"),
     new MPL115A2_Temp(&mpl115a2, "12345678-abcd-1234-ef00-1234567890ab"),
     new MPL115A2_Pressure(&mpl115a2, "12345678-abcd-1234-ef00-1234567890ab"),
     new RainCounterI2C_Tips(&tbi2c, "12345678-abcd-1234-ef00-1234567890ab"),
