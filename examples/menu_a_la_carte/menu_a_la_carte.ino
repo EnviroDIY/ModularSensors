@@ -241,7 +241,7 @@ const long modemBaud = 9600;  // All XBee's use 9600 by default
 const bool useCTSforStatus = false;   // Flag to use the XBee CTS pin for status
 // NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
 // the CTS pin can also be used if necessary
-DigiXBeeLTEBypass modemXB3GB(&modemSerial,
+DigiXBee3GBypass modemXB3GB(&modemSerial,
                              modemVccPin, modemStatusPin, useCTSforStatus,
                              modemResetPin, modemSleepRqPin,
                              apn);
