@@ -22,7 +22,7 @@
     #if defined(SERIAL_PORT_USBVIRTUAL)
       // #define Serial SERIAL_PORT_USBVIRTUAL
       #define STANDARD_SERIAL_OUTPUT SERIAL_PORT_USBVIRTUAL
-    #elif defined __AVR__
+    #elif defined __AVR__ || defined ARDUINO_ARCH_AVR
       #define STANDARD_SERIAL_OUTPUT Serial
     #endif
 #endif  // ifndef STANDARD_SERIAL_OUTPUT
