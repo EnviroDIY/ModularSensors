@@ -1130,7 +1130,7 @@ bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader
                 // Add header information
                 printFileHeader(&logFile);
                 // Print out the header for debugging
-                #if defined DEBUGGING_SERIAL_OUTPUT
+                #if defined DEBUGGING_SERIAL_OUTPUT && defined MS_DEBUGGING_STD
                     MS_DBG(F("\n \\/---- File Header ----\\/"));
                     printFileHeader(&DEBUGGING_SERIAL_OUTPUT);
                     MS_DBG('\n');
