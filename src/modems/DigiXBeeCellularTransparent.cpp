@@ -202,6 +202,10 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
     /* XBee's address lookup falters on time.nist.gov */
     IPAddress ip(129, 6, 15, 30);
     connectionMade = gsmClient.connect(ip, 37, 15);
+    /* Wait again so NIST doesn't refuse us! */
+    delay(4000L);
+    /* Try sending something to ensure connection */
+    gsmClient.println('!');
 
     /* Wait up to 5 seconds for a response */
     if (connectionMade)
