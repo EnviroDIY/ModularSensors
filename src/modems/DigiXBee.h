@@ -53,7 +53,7 @@ public:
 
     // Access the internet
     virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) = 0;
-    void disconnectInternet(void);
+    void disconnectInternet(void) override;
 
     // Get values by other names
     virtual bool getModemSignalQuality(int16_t &rssi, int16_t &percent) = 0;

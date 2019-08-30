@@ -1184,7 +1184,7 @@ bool Logger::createLogFile(String& filename, bool writeDefaultHeader)
 }
 bool Logger::createLogFile(bool writeDefaultHeader)
 {
-    if (_fileName = "") generateAutoFileName();
+    if (_fileName == "") generateAutoFileName();
     return createLogFile(_fileName, writeDefaultHeader);
 }
 
@@ -1242,7 +1242,7 @@ bool Logger::logToSD(void)
     {
         // Next try to create a new file, bail if we couldn't create it
         // Generate a filename with the current date, if the file name isn't set
-        if (_fileName = "") generateAutoFileName();
+        if (_fileName == "") generateAutoFileName();
         // Do add a default header to the new file!
         if (!openFile(_fileName, true, true))
         {
