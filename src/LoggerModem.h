@@ -28,7 +28,7 @@
 #include <Arduino.h>
 
 
-#define MODEM_NUM_VARIABLES 6
+#define MODEM_NUM_VARIABLES 7
 
 #define MODEM_RSSI_VAR_NUM 0
 #define MODEM_RSSI_RESOLUTION 0

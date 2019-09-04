@@ -442,7 +442,7 @@ bool loggerModem::addSingleMeasurementResult(void)
         MS_DBG(getSensorName(), F("is not expected to return measurement results!"));
     }
 
-    MS_DBG(F("PRIOR modem active time:"), _priorActivationDuration);
+    MS_DBG(F("PRIOR modem active time:"), String(_priorActivationDuration, 3);
 
     verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi);
     verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent);
