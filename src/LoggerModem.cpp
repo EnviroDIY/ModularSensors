@@ -515,7 +515,7 @@ bool loggerModem::modemSleepPowerDown(void)
         // Run the sleep function
         MS_DBG(F("Running given sleep function for"), getSensorName());
         success &= modemSleepFxn();
-        _priorActivationDuration = (millis() - _millisSensorActivated)/1000;
+        _priorActivationDuration = ((float)(millis() - _millisSensorActivated))/1000;
         MS_DBG(F("Total modem active time (s):"), String(_priorActivationDuration, 3));
         modemLEDOff();
     }
