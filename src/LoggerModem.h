@@ -185,7 +185,7 @@ protected:
     uint32_t _lastATCheck;
     uint32_t _lastConnectionCheck;
 
-    uint32_t _priorActivationDuration;
+    float _priorActivationDuration;
 
     String _modemName;
 
