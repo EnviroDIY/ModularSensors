@@ -49,9 +49,7 @@ bool DigiXBee::modemWakeFxn(void)
 
 bool DigiXBee::modemSleepFxn(void)
 {
-    if (_powerPin >= 0)  // Turns on when power is applied
-        return true;
-    else if (_modemSleepRqPin >= 0)
+    if (_modemSleepRqPin >= 0)
     {
         MS_DBG(F("Setting pin"), _modemSleepRqPin, F("HIGH to put XBee to sleep"));
         digitalWrite(_modemSleepRqPin, HIGH);
