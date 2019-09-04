@@ -278,6 +278,7 @@ bool DigiXBeeWifi::addSingleMeasurementResult(void)
     }
 
     MS_DBG(F("PRIOR modem active time:"), String(_priorActivationDuration, 3));
+    MS_DBG(F("PRIOR modem powered time:"), String(_priorPoweredDuration, 3));
 
     verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi);
     verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent);
@@ -286,6 +287,7 @@ bool DigiXBeeWifi::addSingleMeasurementResult(void)
     verifyAndAddMeasurementResult(MODEM_BATTERY_VOLT_VAR_NUM, (float)-9999);
     verifyAndAddMeasurementResult(MODEM_TEMPERATURE_VAR_NUM, temp);
     verifyAndAddMeasurementResult(MODEM_ACTIVATION_VAR_NUM, _priorActivationDuration);
+    verifyAndAddMeasurementResult(MODEM_ACTIVATION_VAR_NUM, _priorPoweredDuration);
 
     /* Unset the time stamp for the beginning of this measurement */
     _millisMeasurementRequested = 0;
