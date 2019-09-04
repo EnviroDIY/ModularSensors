@@ -282,7 +282,7 @@ bool DigiXBeeCellularTransparent::addSingleMeasurementResult(void)
         MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!"));
     }
 
-    MS_DBG(F("PRIOR modem active time:"), String(_priorActivationDuration, 3);
+    MS_DBG(F("PRIOR modem active time:"), String(_priorActivationDuration, 3));
 
     verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi);
     verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent);

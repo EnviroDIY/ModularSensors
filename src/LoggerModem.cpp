@@ -442,7 +442,7 @@ bool loggerModem::addSingleMeasurementResult(void)
         MS_DBG(getSensorName(), F("is not expected to return measurement results!"));
     }
 
-    MS_DBG(F("PRIOR modem active time:"), String(_priorActivationDuration, 3);
+    MS_DBG(F("PRIOR modem active time:"), String(_priorActivationDuration, 3));
 
     verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi);
     verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent);
@@ -516,6 +516,7 @@ bool loggerModem::modemSleepPowerDown(void)
         MS_DBG(F("Running given sleep function for"), getSensorName());
         success &= modemSleepFxn();
         _priorActivationDuration = (millis() - _millisSensorActivated)/1000;
+        MS_DBG(F("Total modem active time (s):"), String(_priorActivationDuration, 3));
         modemLEDOff();
     }
 
