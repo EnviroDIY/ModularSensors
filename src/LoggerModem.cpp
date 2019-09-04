@@ -450,7 +450,7 @@ bool loggerModem::addSingleMeasurementResult(void)
     verifyAndAddMeasurementResult(MODEM_BATTERY_PERCENT_VAR_NUM, fbpercent);
     verifyAndAddMeasurementResult(MODEM_BATTERY_VOLT_VAR_NUM, fvolt);
     verifyAndAddMeasurementResult(MODEM_TEMPERATURE_VAR_NUM, temp);
-    verifyAndAddMeasurementResult(MODEM_ACTIVATION_VAR_NUM, (float)_priorActivationDuration);
+    verifyAndAddMeasurementResult(MODEM_ACTIVATION_VAR_NUM, _priorActivationDuration);
 
     /* Unset the time stamp for the beginning of this measurement */
     _millisMeasurementRequested = 0;
@@ -515,7 +515,7 @@ bool loggerModem::modemSleepPowerDown(void)
         // Run the sleep function
         MS_DBG(F("Running given sleep function for"), getSensorName());
         success &= modemSleepFxn();
-        _priorActivationDuration = millis() - _millisSensorActivated;
+        _priorActivationDuration = (millis() - _millisSensorActivated)/1000;
         modemLEDOff();
     }
 

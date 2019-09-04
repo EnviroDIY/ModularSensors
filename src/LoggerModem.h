@@ -49,7 +49,7 @@
 #define MODEM_TEMPERATURE_RESOLUTION 1
 
 #define MODEM_ACTIVATION_VAR_NUM 6
-#define MODEM_ACTIVATION_RESOLUTION 0
+#define MODEM_ACTIVATION_RESOLUTION 3
 
 /* ===========================================================================
 * Functions for the modem class
@@ -332,17 +332,17 @@ class Modem_ActivationDuration : public Variable
 public:
     Modem_ActivationDuration(Sensor *parentSense,
                const char *uuid = "",
-               const char *varCode = "modemActiveMS")
+               const char *varCode = "modemActiveSec")
       : Variable(parentSense,
                  (const uint8_t)MODEM_ACTIVATION_VAR_NUM,
                  (uint8_t)MODEM_ACTIVATION_RESOLUTION,
-                 "timeElapsed", "millisecond",
+                 "timeElapsed", "second",
                  varCode, uuid)
     {}
     Modem_ActivationDuration()
       : Variable((const uint8_t)MODEM_ACTIVATION_VAR_NUM,
                  (uint8_t)MODEM_ACTIVATION_RESOLUTION,
-                 "timeElapsed", "millisecond", "modemActiveMS")
+                 "timeElapsed", "second", "modemActiveSec")
     {}
     ~Modem_ActivationDuration(){}
 };
