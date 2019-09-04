@@ -384,6 +384,11 @@ SodaqUBeeU201 modem = modemU201;
 // Create RSSI and signal strength variable pointers for the modem
 // Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 // Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *modemSignalPct = new Modem_BatteryState(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *modemSignalPct = new Modem_BatteryPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *modemSignalPct = new Modem_BatteryVoltage(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *modemSignalPct = new Modem_Temp(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+// Variable *modemSignalPct = new Modem_ActivationDuration(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -1282,6 +1287,7 @@ Variable *variableList[] = {
     new Modem_BatteryPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_BatteryVoltage(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_Temp(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
+    new Modem_ActivationDuration(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
     calculatedVar,
 };
 
