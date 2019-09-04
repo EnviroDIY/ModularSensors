@@ -48,6 +48,9 @@
 #define MODEM_TEMPERATURE_VAR_NUM 5
 #define MODEM_TEMPERATURE_RESOLUTION 1
 
+#define MODEM_ACTIVATION_VAR_NUM 6
+#define MODEM_ACTIVATION_RESOLUTION 0
+
 /* ===========================================================================
 * Functions for the modem class
 * This is basically a wrapper for TinyGsm
@@ -72,7 +75,7 @@ public:
 
     virtual bool setup(void) override;
     virtual bool wake(void) override;
-    virtual bool addSingleMeasurementResult(void);
+    virtual bool addSingleMeasurementResult(void) override;
 
     // Do NOT turn the modem on and off with the regular power up and down!
     // This is because when it is run in an array with other sensors, we will
@@ -181,6 +184,8 @@ protected:
     uint32_t _lastNISTrequest;
     uint32_t _lastATCheck;
     uint32_t _lastConnectionCheck;
+
+    uint32_t _priorActivationDuration;
 
     String _modemName;
 
@@ -318,6 +323,28 @@ public:
                  "temperature", "degreeCelsius", "modemTemp")
     {}
     ~Modem_Temp(){}
+};
+
+
+// Defines a diagnostic variable for how long the modem was last active
+class Modem_ActivationDuration : public Variable
+{
+public:
+    Modem_ActivationDuration(Sensor *parentSense,
+               const char *uuid = "",
+               const char *varCode = "modemActiveMS")
+      : Variable(parentSense,
+                 (const uint8_t)MODEM_ACTIVATION_VAR_NUM,
+                 (uint8_t)MODEM_ACTIVATION_RESOLUTION,
+                 "timeElapsed", "millisecond",
+                 varCode, uuid)
+    {}
+    Modem_ActivationDuration()
+      : Variable((const uint8_t)MODEM_ACTIVATION_VAR_NUM,
+                 (uint8_t)MODEM_ACTIVATION_RESOLUTION,
+                 "timeElapsed", "millisecond", "modemActiveMS")
+    {}
+    ~Modem_ActivationDuration(){}
 };
 
 #endif  // Header Guard

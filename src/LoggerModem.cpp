@@ -37,6 +37,8 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
     _lastConnectionCheck = 0;
     _lastATCheck = 0;
 
+    _priorActivationDuration = 0;
+
     previousCommunicationFailed = false;
 }
 
@@ -440,12 +442,15 @@ bool loggerModem::addSingleMeasurementResult(void)
         MS_DBG(getSensorName(), F("is not expected to return measurement results!"));
     }
 
+    MS_DBG(F("PRIOR modem active time:"), _priorActivationDuration);
+
     verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi);
     verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent);
     verifyAndAddMeasurementResult(MODEM_BATTERY_STATE_VAR_NUM, fstate);
     verifyAndAddMeasurementResult(MODEM_BATTERY_PERCENT_VAR_NUM, fbpercent);
     verifyAndAddMeasurementResult(MODEM_BATTERY_VOLT_VAR_NUM, fvolt);
     verifyAndAddMeasurementResult(MODEM_TEMPERATURE_VAR_NUM, temp);
+    verifyAndAddMeasurementResult(MODEM_ACTIVATION_VAR_NUM, (float)_priorActivationDuration);
 
     /* Unset the time stamp for the beginning of this measurement */
     _millisMeasurementRequested = 0;
@@ -495,18 +500,22 @@ bool loggerModem::modemSleepPowerDown(void)
     if (_dataPin >= 0 && digitalRead(_dataPin) != _statusLevel && !_alwaysRunWake)
     {
         MS_DBG(F("Status pin"), _dataPin, F("on"), getSensorName(), F("is"),
-               digitalRead(_dataPin), F("indicating it is already off!  Will not run sleep function."));
+               digitalRead(_dataPin),
+               F("indicating it is already off!  Will not run sleep function."));
+        _priorActivationDuration = 0;
     }
     // If there's no status pin, check against the status bits
     else if (_dataPin < 0 && !bitRead(_sensorStatus, 4) && !_alwaysRunWake)
     {
         MS_DBG(getSensorName(), F("was never sucessfully turned on.  Will not run sleep function."));
+        _priorActivationDuration = 0;
     }
     else
     {
         // Run the sleep function
         MS_DBG(F("Running given sleep function for"), getSensorName());
         success &= modemSleepFxn();
+        _priorActivationDuration = millis() - _millisSensorActivated;
         modemLEDOff();
     }
 
@@ -525,7 +534,8 @@ bool loggerModem::modemSleepPowerDown(void)
         // This allows the modem to shut down gracefully.
         if (_dataPin >= 0)
         {
-            MS_DBG(F("Waiting up to"), _disconnetTime_ms, F("milliseconds for graceful shutdown as indicated by pin"),
+            MS_DBG(F("Waiting up to"), _disconnetTime_ms,
+            F("milliseconds for graceful shutdown as indicated by pin"),
                    _dataPin, F("going"), !_statusLevel, F("..."));
             while (millis() - start < _disconnetTime_ms && digitalRead(_dataPin) == _statusLevel){}
             if (digitalRead(_dataPin) == _statusLevel)

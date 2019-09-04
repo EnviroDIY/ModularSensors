@@ -277,12 +277,15 @@ bool DigiXBeeWifi::addSingleMeasurementResult(void)
         MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!"));
     }
 
+    MS_DBG(F("PRIOR modem active time:"), _priorActivationDuration);
+
     verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi);
     verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent);
     verifyAndAddMeasurementResult(MODEM_BATTERY_STATE_VAR_NUM, (float)-9999);
     verifyAndAddMeasurementResult(MODEM_BATTERY_PERCENT_VAR_NUM, (float)-9999);
     verifyAndAddMeasurementResult(MODEM_BATTERY_VOLT_VAR_NUM, (float)-9999);
     verifyAndAddMeasurementResult(MODEM_TEMPERATURE_VAR_NUM, temp);
+    verifyAndAddMeasurementResult(MODEM_ACTIVATION_VAR_NUM, (float)_priorActivationDuration);
 
     /* Unset the time stamp for the beginning of this measurement */
     _millisMeasurementRequested = 0;
