@@ -292,7 +292,7 @@ bool DigiXBeeCellularTransparent::addSingleMeasurementResult(void)
     verifyAndAddMeasurementResult(MODEM_BATTERY_VOLT_VAR_NUM, (float)-9999);
     verifyAndAddMeasurementResult(MODEM_TEMPERATURE_VAR_NUM, temp);
     verifyAndAddMeasurementResult(MODEM_ACTIVATION_VAR_NUM, _priorActivationDuration);
-    verifyAndAddMeasurementResult(MODEM_ACTIVATION_VAR_NUM, _priorPoweredDuration);
+    verifyAndAddMeasurementResult(MODEM_POWERED_VAR_NUM, _priorPoweredDuration);
 
     /* Unset the time stamp for the beginning of this measurement */
     _millisMeasurementRequested = 0;
