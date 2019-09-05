@@ -140,14 +140,28 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
             String ui_scan = gsmModem.sendATGetString(GF("AS")); //Scan
             PRINTOUT(F("Cell scan '"),ui_scan,"'");
         } else {success = false;}
+ 
+        uint32_t cell_time_epoch_sec=getTimeCellTower();
+        PRINTOUT(F("Celltower Time "),cell_time_epoch_sec,"sec" ); /**/
+
         }
  
         // Exit command mode
         gsmModem.exitCommand();
     }
-    else success = false;
-    if (success) MS_DBG(F("... Setup successful!"));
-    else MS_DBG(F("... failed!"));
+    else
+    {
+        success = false;
+    }
+
+    if (success)
+    {
+        MS_DBG(F("... Setup successful!"));
+    }
+    else
+    {
+        MS_DBG(F("... failed!"));
+    }
     return success;
 }
 
@@ -155,37 +169,160 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
 // Get the time from NIST via TIME protocol (rfc868)
 // This would be much more efficient if done over UDP, but I'm doing it
 // over TCP because I don't have a UDP library for all the modems.
-/*uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
+//#else // 2 == USE_NTP
+#if 0
+// Get the time from NIST via NTP protocol. Can't be used behind a firewall.
+uint32_t DigiXBeeCellularTransparent::getTimeNTP(void)
 {
-    // bail if not connected to the internet
-    gsmModem.commandMode();
-    if (!gsmModem.isNetworkConnected())
+    bool success = true;
+    uint32_t _currentEpoc=0;
+    /* bail if not connected to WIFI SSID */
+    if (!isInternetAvailable())
     {
-        MS_DBG(F("No internet connection, cannot connect to NIST."));
-        gsmModem.exitCommand();
+        MS_DBG(F("No WiFi connection, cannot connect to NTP."));
         return 0;
     }
 
+    /* Must ensure that we do not ping the daylight more than once every 4 seconds */
+    /* NIST clearly specifies here that this is a requirement for all software */
+    /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
+    //while (millis() < _lastNISTrequest + 4000) {}
+
+    /* Make TCP connection */
+    delay(2000); //Allow buffer to clear - or should it be flush
+    MS_DBG(F("\nConnecting to NTP/UDP Server"));
+    bool connectionMade = false;
+
+    gsmModem.sendAT(GF("IP"), 0);  // Put in UDP mode
+    success &= (1 == gsmModem.waitResponse());
+    //https://tf.nist.gov/tf-cgi/servers.cgi
+    //use 192.241.211.46  
+    String host("192.241.211.46"); //from ping pool.ntp.org
+
+    //host.reserve(16);
+
+    gsmModem.sendAT(GF("DL"), host);  // Set the "Destination Address Low"
+    success &= (1 == gsmModem.waitResponse());
+    //#define NTP_DEFAULT_LOCAL_PORT 1337
+    #define NTP_REQUESTS_PORT 123
+    gsmModem.sendAT(GF("DE"), String(NTP_REQUESTS_PORT, HEX));  // Set the destination port
+    success &= (1 == gsmModem.waitResponse());
+
+    //delay(4000L);
+    /* Need to send something before connection is made */
+    //gsmClient.println('!');
+
+  // Initialize values needed to form NTP request
+  // (see URL above for details on the packets)
+    {
+        byte  _packetBuffer[NTP_PACKET_SIZE+10];
+        memset(_packetBuffer, 0, NTP_PACKET_SIZE+10);
+        _packetBuffer[0] = 0b11100011;   // LI, Version, Mode
+        _packetBuffer[1] = 0;     // Stratum, or type of clock
+        _packetBuffer[2] = 6;     // Polling Interval
+        _packetBuffer[3] = 0xEC;  // Peer Clock Precision
+        // 8 bytes of zero for Root Delay & Root Dispersion
+        _packetBuffer[12]  = 49;
+        _packetBuffer[13]  = 0x4E;
+        _packetBuffer[14]  = 49;
+        _packetBuffer[15]  = 52;
+        gsmClient.write(_packetBuffer,NTP_PACKET_SIZE);
+    }
+    /* Wait up to 5 seconds for a response */
+    if (connectionMade)
+    {
+        uint32_t start = millis();
+        while (gsmClient && (gsmClient.available() < NTP_PACKET_SIZE) && ((millis() - start) < 5000L)){}
+        int Nist_pkt_sz = gsmClient.available();
+        MS_DBG(F("NIST responded after"), millis() - start, F("ms with "),Nist_pkt_sz);
+        if (Nist_pkt_sz >= 44)
+        {
+            byte  _packetRx[NTP_PACKET_SIZE+10];
+            memset(_packetRx, 0, NTP_PACKET_SIZE+10);
+  
+            //byte response[100] = {0}; //Needs to be larger enough for complete response
+            gsmClient.read(_packetRx, NTP_PACKET_SIZE);
+            uint32_t highWord = word( _packetRx[40],  _packetRx[41]);
+            uint32_t lowWord = word( _packetRx[42],  _packetRx[43]);
+            // combine the four bytes (two words) into a long integer
+            // this is NTP time (seconds since Jan 1 1900):
+            uint32_t secsSince1900 = highWord << 16 | lowWord;
+            /* If before Jan 1, 2019 or after Jan 1, 2030, most likely an error */
+            // Should be after compile date
+            if ((_currentEpoc > 1546300800) &&  (_currentEpoc< 1893456000)) {
+                _currentEpoc = secsSince1900 - SEVENZYYEARS;
+                MS_DBG(F("NIST time "), _currentEpoc);
+            } else {
+                MS_DBG(F("NIST invalid time "), secsSince1900);
+            }
+        }
+        else
+        {
+            MS_DBG(F("NIST Time server did not respond!"));
+        }
+    }
+    else {MS_DBG(F("Unable to open UDP to NIST!"));}
+    gsmModem.sendAT(GF("IP"), 1);  // Leave in TCP mode
+    return _currentEpoc;
+}
+#endif //0
+//#endif //USE_NTP
+
+uint32_t DigiXBeeCellularTransparent::getTimeCellTower(void)
+{
+    uint32_t timeTzEpoch_sec = 0 ; //base 1970 Jan 1
+    // bail if not connected to the internet
+    if (!gsmModem.commandMode())
+    //if (!gsmModem.isNetworkConnected())
+    {
+        MS_DBG(F("getTimeCellTower: No Cell LTE connection. "));
+        gsmModem.exitCommand();
+        return timeTzEpoch_sec;
+    }/**/
     // We can get the NIST timestamp directly from the XBee
-    gsmModem.sendAT(GF("DT0"));
-    String res = gsmModem.readResponseString();
-    gsmModem.exitCommand();
-    MS_DBG(F("Raw hex response from XBee:"), res);
-    char buf[9] = {0,};
+    String res; 
+    bool rxCellTime=false;
+    uint16_t rxCell_cnt=10;
+    do {
+        MS_DBG(F("CellTowerPollReq"),rxCell_cnt);
+        gsmModem.sendAT(GF("DT0"));
+        res = gsmModem.readResponseString(10000);
+        if (res == "" || res == " OK ") 
+        {
+            res = gsmModem.readResponseString(10000);
+            if (!(res == "" || res == " OK ")) {
+                rxCellTime=true;
+                 MS_DBG(F("CellReqRsp2 '"),res,"'");
+            } 
+        } else {
+            rxCellTime=true;
+            MS_DBG(F("CellReqRsp1 '"),res,"'");
+        }
+    } while ((false==rxCellTime) && --rxCell_cnt);
+
+    //MS_DBG(F("wait 10secs '"),res,"'");
+    //delay(10000); //Debug in case missed it 
+    //gsmModem.exitCommand();
+    //MS_DBG(F("Raw hex response from XBee:"), res);
+    char buf[10] = {0,};
+    //res ' 24FD8365 '
     res.toCharArray(buf, 9);
     uint32_t secFrom2000 = strtol(buf, 0, 16);
     MS_DBG(F("Seconds from Jan 1, 2000 from XBee (UTC):"), secFrom2000);
 
     // Convert from seconds since Jan 1, 2000 to 1970
-    uint32_t unixTimeStamp = secFrom2000 + 946684800 ;
-    MS_DBG(F("Unix Timestamp returned by NIST (UTC):"), unixTimeStamp);
+    if (0 != secFrom2000) 
+    {
+       timeTzEpoch_sec = secFrom2000 + 946684800 ;
+        MS_DBG(F("Epoch Timestamp returned by NIST (UTC):"),timeTzEpoch_sec);
 
-    // If before Jan 1, 2019 or after Jan 1, 2030, most likely an error
-    if (unixTimeStamp < 1546300800) return 0;
-    else if (unixTimeStamp > 1893456000) return 0;
-    else return unixTimeStamp;
-}*/
-uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
+        // If before Jan 1, 2019 or after Jan 1, 2030, most likely an error
+        if (timeTzEpoch_sec < 1546300800) return 0;
+        else if (timeTzEpoch_sec > 1893456000) return 0;
+    }
+    return timeTzEpoch_sec;
+}
+uint32_t DigiXBeeCellularTransparent::getTimeNIST(void)
 {
     /* bail if not connected to the internet */
     if (!isInternetAvailable())
@@ -213,6 +350,9 @@ const int timeNistPort = 37;
     IPAddress IP_CO1(132,163, 96,  3);
     #define NIST_IP IP_CO1
     #define NIST_CONNECTION_TIMER 15
+
+    gsmModem.sendAT(GF("TD0A")); //expect    "TD0A"
+    gsmModem.waitResponse(); 
     connectionMade = gsmClient.connect(timeNistHost, timeNistPort,NIST_CONNECTION_TIMER);
     if (!connectionMade) {
         
@@ -221,14 +361,15 @@ const int timeNistPort = 37;
     }
     
     /* Wait up to 5 seconds for a response */
-    #define NIST_RSP_TIMER 5
+    #define NIST_RSP_TIMER 10
     if (connectionMade)
     {
         //poll for IP connection
         delay(4000L);
         /* Need to send something before connection is made */
+        //gsmClient.println("TryToRquestTime");
+        //gsmClient.println("Try2ndTime");
         gsmClient.println('!');
-
         uint32_t start = millis();
         while (gsmClient && (gsmClient.available() <= NIST_RSP_TIMER) && ((millis() - start) < NIST_RSP_TIMER*1000L) ){}
 
@@ -249,7 +390,12 @@ const int timeNistPort = 37;
     else MS_DBG(F("Unable to open TCP to NIST in "),NIST_CONNECTION_TIMER,F("secs"));
     return 0;
 }
+uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
+{
+    //getTimeNIST
+    return (getTimeCellTower()+(8*3600));
 
+}
 
 bool DigiXBeeCellularTransparent::addSingleMeasurementResult(void)
 {

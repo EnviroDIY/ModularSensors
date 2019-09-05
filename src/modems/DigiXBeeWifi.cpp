@@ -10,6 +10,13 @@
 // Included DependenciesV
 #include "DigiXBeeWifi.h"
 #include "modems/LoggerModemMacros.h"
+//#define USE_NTP 1
+#if defined USE_NTP
+#include "NTPClientTinyGsm.h"
+//WiFiUDP ntpUDP;
+//NTPClient timeClient(ntpUDP);
+NTPClient timeClient();
+#endif //USE_NTP
 
 
 // Constructor/Destructor
@@ -87,8 +94,7 @@ bool DigiXBeeWifi::extraModemSetup(void)
         // Disassociate from network for lowest power deep sleep
         gsmModem.sendAT(GF("SO"),100);
         success &= gsmModem.waitResponse() == 1;
-        if (!success)  MS_DBG(F("Failed Setup"));
-
+        MS_DBG(F("Setting Wifi Network Options..."));
         // Put the network connection parameters into flash
         success &= gsmModem.networkConnect(_ssid, _pwd);
         if (success) {MS_DBG(F("Setup Wifi Network "),_ssid);} 
@@ -135,7 +141,7 @@ bool DigiXBeeWifi::extraModemSetup(void)
         // Exit command mode
         gsmModem.exitCommand();
     }
-    else 
+    else
     {
         success = false;
         MS_DBG( _modemName,F(" failed to set Cmd Mode."));
@@ -143,7 +149,7 @@ bool DigiXBeeWifi::extraModemSetup(void)
     return success;
 }
 
-
+#if !defined USE_NTP
 // Get the time from NIST via TIME protocol (rfc868)
 uint32_t DigiXBeeWifi::getNISTTime(void)
 {
@@ -193,11 +199,76 @@ uint32_t DigiXBeeWifi::getNISTTime(void)
             return 0;
         }
     }
-    else MS_DBG(F("Unable to open TCP to NIST!"));
+    else
+    {
+        MS_DBG(F("Unable to open TCP to NIST!"));
+    }
     return 0;
 }
+#elif 1 == USE_NTP
+// Get the time from Http TIME protocol 
+uint32_t DigiXBeeWifi::getNISTTime(void)
+{
+    uint32_t _currentEpoc=0;
+    /* bail if not connected to the internet */
+    if (!isInternetAvailable())
+    {
+        MS_DBG(F("No internet connection, cannot connect to NIST."));
+        return 0;
+    }
+
+    /* Must ensure that we do not ping the daylight more than once every 4 seconds */
+    /* NIST clearly specifies here that this is a requirement for all software */
+    /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
+    //while (millis() < _lastNISTrequest + 4000) {}
+
+    /* Make TCP connection */
+    MS_DBG(F("\nUsing HTP for time"));
+   // bool connectionMade = false;
+
+    /* This is the IP address of time-c-g.nist.gov */
+    /* XBee's address lookup falters on time.nist.gov */
+    //IPAddress ip(129, 6, 15, 30);
+    //connectionMade = gsmClient.connect(ip, 37, 15);
+    /* Wait again so NIST doesn't refuse us! */
+    //delay(4000L);
+    /* Need to send something before connection is made */
+    String ui_vers = gsmModem.sendATGetString(GF("VR"));
+    gsmModem.sendAT(GF("IP"), 0);  // Put in UDP mode
+    //gsmClient.println("ATP0");
+    //gsmClient.println("DL192.241.211.46");
+
+    /* Wait up to 5 seconds for a response */
+    //if (connectionMade)
+    {
+        uint32_t start = millis();
+        /*Look for
+        [00] HTTP/1.1 400 Bad Request
+        [27] Server: nginx/1.10.3 (Ubuntu)
+        [58] Date: Wed, 28 Aug 2019 22:50:25 GMT
+        [95] Content-Type: text/html
+        */ 
+        while (gsmClient && gsmClient.available() < 95 && millis() - start < 5000L){}
 
 
+        if (gsmClient.available() >= 4)
+        {
+            MS_DBG(F("Web responded after"), millis() - start, F("ms"));
+            byte response[101] = {0}; //Needs to be larger enough for complete response
+            gsmClient.read(response, 100);
+            
+            MS_DBG(F("<<< something fm gsmClient.read"));
+            MS_DBG(F("rsp"),response[58]);
+            //parseNISTBytes(response);
+        }
+        else
+        {
+            MS_DBG(F("HTTP server did not respond!"));
+        }
+    }
+    return _currentEpoc;
+}
+#endif //
 bool DigiXBeeWifi::getModemSignalQuality(int16_t &rssi, int16_t &percent)
 {
     // Initialize float variable
@@ -307,7 +378,10 @@ bool DigiXBeeWifi::addSingleMeasurementResult(void)
         MS_DBG(F("Leaving Command Mode:"));
         gsmModem.exitCommand();
     }
-    else MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!"));
+    else
+    {
+        MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!"));
+    }
 
     verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi);
     verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent);

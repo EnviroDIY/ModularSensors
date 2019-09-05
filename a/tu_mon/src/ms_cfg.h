@@ -95,7 +95,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ** How frequently (in minutes) to log data **
 //For two Loggers defined logger2Mult with the faster loggers timeout and the multiplier to the slower loggger 
 #define  loggingInterval_Fast_MIN (1)
-//#define  logger2Mult 5 //Not working for mayfly
+#define  logger2Mult 5 //Not working for mayfly
 // How frequently (in minutes) to log data
 #if defined logger2Mult
 #define  loggingInterval_CDEF_MIN (loggingInterval_Fast_MIN*logger2Mult) 
@@ -320,8 +320,9 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 #define DigiXBeeWifi_Module 1
 #warning infoAutonomoWithDigiXBeeWiFi
 //#define DigiXBeeCellularTransparent_Module 1
-// #define DigiXBeeLTE_Module 1 - unstable
 //#warning infoAutonomoWithDigiXBeeCellTransparent
+// #define DigiXBeeLTE_Module 1 - unstable
+
 //end of _Module
 
 

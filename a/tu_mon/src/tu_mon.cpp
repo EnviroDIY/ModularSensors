@@ -1901,6 +1901,26 @@ void setup()
     // Call the processor sleep
     //greenredflash(4,1000);
     //delay(1000);
+
+#if defined ARDUINO_ARCH_SAMD
+    //ARCH_SAMD doesn't have persistent clock - get time
+    MS_DBG(F("  Modem setup & Timesync at init"));
+    modemPhy.modemPowerUp();
+    modemPhy.wake();
+    if (modemPhy.connectInternet())
+    {
+        modemSetup=true;
+        if (true == dataLogger.syncRTC()) {
+            nistSyncRtc = false; //Sucess
+            MS_DBG(F("  Timesync success"));
+        } else {MS_DBG(F("  Timesync fails"));}
+        // Disconnect from the network
+        modemPhy.disconnectInternet();
+    } else {MS_DBG(F("  No internet connection..."));}
+    // Turn the modem off
+    modemPhy.modemSleepPowerDown();        
+#endif //ARDUINO_ARCH_SAMD
+
     Logger::markTime(); //Init so never zero
 
     //dataLogger.systemSleep();
@@ -1971,7 +1991,7 @@ void processSensors()
         } else {
              MS_DBG(F("The LastReading "),lastReading,F(" within "),ina219M_A_LowReading,F("-"),ina219M_A_HighReading);
         }
-        if (logger2Mult < ++simpleUpdateCnt)
+        if (logger2Mult <= ++simpleUpdateCnt)
         #endif //logger2Mult 
         {
             #if defined logger2Mult

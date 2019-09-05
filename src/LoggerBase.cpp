@@ -430,11 +430,17 @@ void Logger::setLoggerTimeZone(int8_t timeZone)
     #ifdef STANDARD_SERIAL_OUTPUT
         const char* prtout1 = "Logger timezone is set to UTC";
         if (_loggerTimeZone == 0)
+        {
             PRINTOUT(prtout1);
+        }
         else if (_loggerTimeZone > 0)
+        {
             PRINTOUT(prtout1, '+', _loggerTimeZone);
+        }
         else
+        {
             PRINTOUT(prtout1, _loggerTimeZone);
+        }
     #endif
 }
 int8_t Logger::getLoggerTimeZone(void)
@@ -456,11 +462,17 @@ void Logger::setRTCTimeZone(int8_t timeZone)
     #ifdef STANDARD_SERIAL_OUTPUT
         const char* prtout1 = "RTC timezone is set to UTC";
         if ((_loggerTimeZone - _loggerRTCOffset) == 0)
+        {
             PRINTOUT(prtout1);
+        }
         else if ((_loggerTimeZone - _loggerRTCOffset) > 0)
+        {
             PRINTOUT(prtout1, '+', (_loggerTimeZone - _loggerRTCOffset));
+        }
         else
+        {
             PRINTOUT(prtout1, (_loggerTimeZone - _loggerRTCOffset));
+        }
     #endif
 }
 int8_t Logger::getRTCTimeZone(void)
@@ -480,11 +492,17 @@ void Logger::setTZOffset(int8_t offset)
     _loggerRTCOffset = offset;
     // Some helpful prints for debugging
     if (_loggerRTCOffset == 0)
+    {
         PRINTOUT(F("RTC and Logger are set in the same timezone."));
+    }
     else if (_loggerRTCOffset < 0)
+    {
         PRINTOUT(F("RTC is set"), -1*_loggerRTCOffset, F("hours ahead of logging timezone"));
+    }
     else
+    {
         PRINTOUT(F("RTC is set"), _loggerRTCOffset, F("hours behind the logging timezone"));
+    }
 }
 int8_t Logger::getTZOffset(void)
 {
@@ -1075,8 +1093,14 @@ void Logger::printFileHeader(Stream *stream)
 
     // We'll finish up the the custom variable codes
     String dtRowHeader = F("Date and Time in UTC");
-    if (_loggerTimeZone > 0) dtRowHeader += '+' + _loggerTimeZone;
-    else if (_loggerTimeZone < 0) dtRowHeader += _loggerTimeZone;
+    if (_loggerTimeZone > 0)
+    {
+        dtRowHeader += '+' + _loggerTimeZone;
+    }
+    else if (_loggerTimeZone < 0)
+    {
+        dtRowHeader += _loggerTimeZone;
+    }
     STREAM_CSV_ROW(dtRowHeader, getVarCodeAtI(i));
 }
 
@@ -1176,7 +1200,7 @@ bool Logger::openFile(String& filename, bool createFile, bool writeDefaultHeader
                 // Add header information
                 printFileHeader(&logFile);
                 // Print out the header for debugging
-                #if defined DEBUGGING_SERIAL_OUTPUT
+                #if defined DEBUGGING_SERIAL_OUTPUT && defined MS_DEBUGGING_STD
                     MS_DBG(F("\n \\/---- File Header ----\\/"));
                     printFileHeader(&DEBUGGING_SERIAL_OUTPUT);
                     MS_DBG('\n');
@@ -1230,7 +1254,7 @@ bool Logger::createLogFile(String& filename, bool writeDefaultHeader)
 }
 bool Logger::createLogFile(bool writeDefaultHeader)
 {
-    if (_fileName = "") generateAutoFileName();
+    if (_fileName == "") generateAutoFileName();
     return createLogFile(_fileName, writeDefaultHeader);
 }
 
@@ -1288,7 +1312,7 @@ bool Logger::logToSD(void)
     {
         // Next try to create a new file, bail if we couldn't create it
         // Generate a filename with the current date, if the file name isn't set
-        if (_fileName = "") generateAutoFileName();
+        if (_fileName == "") generateAutoFileName();
         // Do add a default header to the new file!
         if (!openFile(_fileName, true, true))
         {

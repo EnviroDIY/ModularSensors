@@ -57,6 +57,10 @@ public:
     float getModemTemperature(void) override;
 
     uint32_t getNISTTime(void) override;
+    uint32_t getTimeNIST(void);
+    uint32_t getTimeNTP(void);
+    uint32_t getTimeCellTower(void);
+
 
     #ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
