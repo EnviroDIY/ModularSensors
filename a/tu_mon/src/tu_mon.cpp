@@ -1610,7 +1610,7 @@ const char *samplingFeature_def = samplingFeature_UUID;     // Sampling feature 
 #include <publishers/EnviroDIYPublisher.h>
 //EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken_def, samplingFeature_def);
 EnviroDIYPublisher EnviroDIYPOST(dataLogger, 15,0);
-//EnviroDIYPublisher EnviroDIYPOST();
+//EnviroDIYPublisher EnviroDIYPOST(); //"error: request for member 'begin' in 'EnviroDIYPOST', which is of non-class type 'EnviroDIYPublisher()'"
 #endif //registrationToken_UUID
 
 // ==========================================================================

@@ -58,14 +58,14 @@ bool DigiXBeeWifi::extraModemSetup(void)
     bool success = true;
     MS_DBG(F("Initializing the XBee..."));
     success &= gsmModem.init();
-    if (!success)  MS_DBG(F("Failed init")); 
+    if (!success) {MS_DBG(F("Failed init")); } 
     gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
     if (gsmModem.commandMode())
     {
         gsmModem.getSeries();
         _modemName = gsmModem.getModemName();
-        MS_DBG(F("'"),_modemName,F("' in command mode. Setting I/O Pins..."));
+        PRINTOUT(F("XbeeWiFi Initializing Internet comms with modem '"),_modemName,F("'"));
         // Set DIO8 to be used for sleep requests
         // NOTE:  Only pin 9/DIO8/DTR can be used for this function
         gsmModem.sendAT(GF("D8"),1);
@@ -102,50 +102,53 @@ bool DigiXBeeWifi::extraModemSetup(void)
         // Write changes to flash and apply them
         gsmModem.writeChanges();
 
-        #ifdef MS_DIGIXBEEWIFI_DEBUG 
-            MS_DBG(F("Get IP number"));
-            String xbeeRsp;
-            uint8_t index=0;
-            bool AllocatedIpSuccess = false;
-            //Display IP allocation
-            for (int mdm_lp=1;mdm_lp<11;mdm_lp++) {
-                delay(mdm_lp*500);
-                gsmModem.sendAT(F("MY"));  // Request IP #
-                index = gsmModem.waitResponse(1000,xbeeRsp);
-                MS_DBG(F("mdmIP["),toAscii(index),F("]"),xbeeRsp);
-                if (0!=xbeeRsp.compareTo("0.0.0.0")) {
-                    AllocatedIpSuccess = true;
-                    break;
-                }
-                xbeeRsp="";
+        MS_DBG(F("Get IP number"));
+        String xbeeRsp;
+        uint8_t index=0;
+        bool AllocatedIpSuccess = false;
+        //Display IP allocation
+        for (int mdm_lp=1;mdm_lp<11;mdm_lp++) {
+            delay(mdm_lp*500);
+            gsmModem.sendAT(F("MY"));  // Request IP #
+            index = gsmModem.waitResponse(1000,xbeeRsp);
+            MS_DBG(F("mdmIP["),toAscii(index),F("]"),xbeeRsp);
+            if (0!=xbeeRsp.compareTo("0.0.0.0")) {
+                AllocatedIpSuccess = true;
+                break;
             }
+            xbeeRsp="";
+        }
+        success &= AllocatedIpSuccess;
+        PRINTOUT(F("XbeeWiFi IP# ["),xbeeRsp,F("]"));
+
+        #ifdef MS_DIGIXBEEWIFI_DEBUG 
             //Display DNS allocation
-            for (int mdm_lp=1;mdm_lp<11;mdm_lp++) {
+            for (int mdm_lp=1;mdm_lp<11;mdm_lp++) 
+            {
                 delay(mdm_lp*500);
                 gsmModem.sendAT(F("NS"));  // Request DNS #
                 index &= gsmModem.waitResponse(1000,xbeeRsp);
                 MS_DBG(F("mdmDNS["),toAscii(index),F("]"),xbeeRsp);
-                if (0!=xbeeRsp.compareTo("0.0.0.0")) {
-                    AllocatedIpSuccess = true;
+                if (0!=xbeeRsp.compareTo("0.0.0.0")) 
+                {
                     break;
                 }
                 xbeeRsp="";
             }            
-            //if (false) 
-            if (AllocatedIpSuccess)
-            {
-                int16_t rssi, percent;
-                getModemSignalQuality(rssi, percent);
-            }
+
+            int16_t rssi, percent;
+            getModemSignalQuality(rssi, percent);
+            MS_DBG(F("mdmSQ["),toAscii(rssi),F(","),percent,F("%]"));
         #endif //MS_DIGIXBEEWIFI_DEBUG
-        // Exit command mode
+
         gsmModem.exitCommand();
     }
-    else
+    
+    if (false== success) 
     {
-        success = false;
-        MS_DBG( _modemName,F(" failed to set Cmd Mode."));
+        PRINTOUT(F("Xbee '"),_modemName,F("' failed."));
     }
+
     return success;
 }
 
