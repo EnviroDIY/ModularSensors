@@ -110,6 +110,14 @@ bool DigiXBeeWifi::extraModemSetup(void)
 }
 
 
+void DigiXBeeWifi::disconnectInternet(void)
+{
+    // Wifi XBee doesn't like to disconnect AT ALL, so we're doing nothing
+    // If you do disconnect, you must power cycle before you can reconnect
+    // to the same access point.
+}
+
+
 // Get the time from NIST via TIME protocol (rfc868)
 uint32_t DigiXBeeWifi::getNISTTime(void)
 {

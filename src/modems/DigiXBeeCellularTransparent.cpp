@@ -138,6 +138,15 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
 }
 
 
+void DigiXBeeCellularTransparent::disconnectInternet(void)
+{
+    MS_START_DEBUG_TIMER;
+    gsmModem.gprsDisconnect();
+    MS_DBG(F("Disconnected from cellular network after"), MS_PRINT_DEBUG_TIMER,
+           F("milliseconds."));
+}
+
+
 // Get the time from NIST via TIME protocol (rfc868)
 // This would be much more efficient if done over UDP, but I'm doing it
 // over TCP because I don't have a UDP library for all the modems.

@@ -41,10 +41,11 @@ MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBee3GBypass);
 MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(DigiXBee3GBypass);
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBee3GBypass);
 MS_MODEM_GET_MODEM_BATTERY_AVAILABLE(DigiXBee3GBypass);
-// NOTE:  Could actually get temperature from the Digi chip by entering bypass mode
+// NOTE:  Could actually get temperature from the Digi chip by entering command mode
 MS_MODEM_GET_MODEM_TEMPERATURE_NA(DigiXBee3GBypass);
 MS_MODEM_CONNECT_INTERNET(DigiXBee3GBypass);
 MS_MODEM_GET_NIST_TIME(DigiXBee3GBypass);
+MS_MODEM_DISCONNECT_INTERNET(DigiXBee3GBypass);
 
 
 bool DigiXBee3GBypass::extraModemSetup(void)
