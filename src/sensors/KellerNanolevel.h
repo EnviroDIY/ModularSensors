@@ -19,7 +19,6 @@
 #define KellerNanolevel_h
 
 // Included Dependencies
-#include "VariableBase.h"
 #include "sensors/KellerParent.h"
 
 // Sensor Specific Defines

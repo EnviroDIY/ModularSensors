@@ -66,7 +66,7 @@ bool KellerParent::setup(void)
     if (_RS485EnablePin >= 0) pinMode(_RS485EnablePin, OUTPUT);
     if (_powerPin2 >= 0) pinMode(_powerPin2, OUTPUT);
 
-    #if defined(DEEP_DEBUGGING_SERIAL_OUTPUT)
+    #ifdef MS_KELLERPARENT_DEBUG_DEEP
         sensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
     #endif
 
@@ -170,7 +170,10 @@ bool KellerParent::addSingleMeasurementResult(void)
         MS_DBG(F("  Temp_C:"), waterTempertureC);
         MS_DBG(F("  Height_m:"), waterDepthM);
     }
-    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    else
+    {
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    }
 
     // Put values into the array
     verifyAndAddMeasurementResult(KELLER_PRESSURE_VAR_NUM, waterPressure_mBar);

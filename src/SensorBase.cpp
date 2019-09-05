@@ -210,15 +210,6 @@ bool Sensor::wake(void)
     // Set the status bit for sensor wake/activation success (bit 4)
     _sensorStatus |= 0b00010000;
 
-    // check if the sensor was successfully set up, run set up if not
-    // NOTE:  we're setting the wake status bits and time regardless of the
-    // result of this setup attempt!
-    if (!bitRead(_sensorStatus, 0))
-    {
-        MS_DBG(getSensorNameAndLocation(), F("was never properly set up, attempting setup now!"));
-        setup();
-    }
-
     return true;
 }
 
@@ -250,6 +241,15 @@ bool Sensor::sleep(void)
 bool Sensor::startSingleMeasurement(void)
 {
     bool success = true;
+
+    // check if the sensor was successfully set up, run set up if not
+    // NOTE:  We continue regardless of the success of this attempt
+    if (!bitRead(_sensorStatus, 0))
+    {
+        MS_DBG(getSensorNameAndLocation(), F("was never properly set up, attempting setup now!"));
+        setup();
+    }
+
     MS_DBG(F("Starting measurement on"), getSensorNameAndLocation());
     // Set the status bits for measurement requested (bit 5)
     // Setting this bit even if we failed to start a measurement to show that an attempt was made.
@@ -279,8 +279,8 @@ bool Sensor::startSingleMeasurement(void)
 void Sensor::registerVariable(int sensorVarNum, Variable* var)
 {
     variables[sensorVarNum] = var;
-    MS_DBG(F("... Registration from"), getSensorNameAndLocation(), F("for"),
-           var->getVarName(), F("accepted."));
+    /*MS_DBG(F("... Registration from"), getSensorNameAndLocation(), F("for"),
+           var->getVarName(), F("accepted."));*/
 }
 
 
@@ -313,8 +313,12 @@ void Sensor::notifyVariables(void)
                    variables[i]->getVarName(), F("..."));
                    variables[i]->onSensorUpdate(this);
         }
-        else MS_DBG(F("No variable registered for return value"), i,
-                    F("!  No update sent!"));
+        else
+        {
+            MS_DBG(getSensorNameAndLocation(),
+                   F("has no variable registered for return value"), i,
+                   F("!  No update sent!"));
+        }
     }
 }
 
@@ -354,14 +358,18 @@ void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber, float resultVal
     }
     // If the new result is bad and there were only bad results, do nothing
     else if (sensorValues[resultNumber] == -9999 and resultValue == -9999)
+    {
         MS_DBG(F("Ignoring bad result for variable"),
                resultNumber, F("from"), getSensorNameAndLocation(),
                F("; no good results yet."));
+    }
     // If the new result is bad and there were already good results, do nothing
     else if (sensorValues[resultNumber] != -9999 and resultValue == -9999)
+    {
         MS_DBG(F("Ignoring bad result for variable"),
                resultNumber, F("from"), getSensorNameAndLocation(),
                F("; good results already in array."));
+    }
 }
 void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber, int16_t resultValue)
 {

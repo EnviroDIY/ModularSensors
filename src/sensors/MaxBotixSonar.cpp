@@ -63,9 +63,8 @@ bool MaxBotixSonar::setup(void)
 // Parsing and tossing the header lines in the wake-up
 bool MaxBotixSonar::wake(void)
 {
-    // Sensor::wake() checks if the power pin is on, setup has been successful,
-    // and sets the wake timestamp and status bits.  If it returns false,
-    // there's no reason to go on.
+    // Sensor::wake() checks if the power pin is on and sets the wake timestamp
+    // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
 
     // NOTE: After the power is turned on to the MaxBotix, it sends several lines
@@ -96,13 +95,13 @@ bool MaxBotixSonar::wake(void)
         MS_DBG(F("Dumping"), junkChars, F("characters from MaxBotix stream buffer"));
         for (uint8_t i = 0; i < junkChars; i++)
         {
-            #ifdef DEBUGGING_SERIAL_OUTPUT
+            #ifdef MS_MAXBOTIXSONAR_DEBUG
             DEBUGGING_SERIAL_OUTPUT.print(_stream->read());
             #else
             _stream->read();
             #endif
         }
-        #ifdef DEBUGGING_SERIAL_OUTPUT
+        #ifdef MS_MAXBOTIXSONAR_DEBUG
         DEBUGGING_SERIAL_OUTPUT.println();
         #endif
     }
@@ -125,13 +124,13 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
         MS_DBG(F("Dumping"), junkChars, F("characters from MaxBotix stream buffer:"));
         for (uint8_t i = 0; i < junkChars; i++)
         {
-            #ifdef DEBUGGING_SERIAL_OUTPUT
+            #ifdef MS_MAXBOTIXSONAR_DEBUG
             DEBUGGING_SERIAL_OUTPUT.print(_stream->read());
             #else
             _stream->read();
             #endif
         }
-        #ifdef DEBUGGING_SERIAL_OUTPUT
+        #ifdef MS_MAXBOTIXSONAR_DEBUG
         DEBUGGING_SERIAL_OUTPUT.println();
         #endif
     }
@@ -184,7 +183,10 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
             }
         }
     }
-    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    else
+    {
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    }
 
     verifyAndAddMeasurementResult(HRXL_VAR_NUM, result);
 

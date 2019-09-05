@@ -92,11 +92,13 @@ bool AOSongDHT::addSingleMeasurementResult(void)
             }
             else
             {
-                if (i < 4) {
+                if (i < 4)
+                {
                     MS_DBG(F("  Failed to read from DHT sensor, Retrying..."));
                     delay(100);
                 }
-                else {
+                else
+                {
                     MS_DBG(F("  Failed to read from DHT sensor!"));
                     if (isnan(humid_val)) humid_val = -9999;
                     if (isnan(temp_val)) temp_val = -9999;
@@ -104,7 +106,10 @@ bool AOSongDHT::addSingleMeasurementResult(void)
             }
         }
     }
-    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    else
+    {
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    }
 
     // Store the results in the sensorValues array
     verifyAndAddMeasurementResult(DHT_TEMP_VAR_NUM, temp_val);

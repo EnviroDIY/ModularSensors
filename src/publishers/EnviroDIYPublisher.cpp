@@ -75,7 +75,7 @@ EnviroDIYPublisher::~EnviroDIYPublisher(){}
 void EnviroDIYPublisher::setToken(const char *registrationToken)
 {
     _registrationToken = registrationToken;
-    MS_DBG(F("Registration token set!"));
+    // MS_DBG(F("Registration token set!"));
 }
 
 
@@ -195,7 +195,7 @@ void EnviroDIYPublisher::begin(Logger& baseLogger,
 // over that connection.
 // The return is the http status code of the response.
 // int16_t EnviroDIYPublisher::postDataEnviroDIY(void)
-int16_t EnviroDIYPublisher::sendData(Client *_outClient)
+int16_t EnviroDIYPublisher::publishData(Client *_outClient)
 {
     // Create a buffer for the portions of the request and response
     char tempBuffer[37] = "";
@@ -205,10 +205,10 @@ int16_t EnviroDIYPublisher::sendData(Client *_outClient)
 
     // Open a TCP/IP connection to the Enviro DIY Data Portal (WebSDL)
     MS_DBG(F("Connecting client"));
-    uint32_t start_timer = millis();
+    MS_START_DEBUG_TIMER;
     if (_outClient->connect(enviroDIYHost, enviroDIYPort))
     {
-        MS_DBG(F("Client connected after"), millis() - start_timer, F("ms\n"));
+        MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms\n"));
 
         // copy the initial post header into the tx buffer
         strcpy(txBuffer, postHeader);
@@ -277,10 +277,11 @@ int16_t EnviroDIYPublisher::sendData(Client *_outClient)
         }
 
         // Send out the finished request (or the last unsent section of it)
-        printTxBuffer(_outClient);
+        printTxBuffer(_outClient, true);
 
-        start_timer = millis();
-        while ((millis() - start_timer) < 10000L && _outClient->available() < 12)
+        // Wait 10 seconds for a response from the server
+        uint32_t start = millis();
+        while ((millis() - start) < 10000L && _outClient->available() < 12)
         {delay(10);}
 
         // Read only the first 12 characters of the response
@@ -290,11 +291,14 @@ int16_t EnviroDIYPublisher::sendData(Client *_outClient)
 
         // Close the TCP/IP connection
         MS_DBG(F("Stopping client"));
-        start_timer = millis();
+        MS_RESET_DEBUG_TIMER;
         _outClient->stop();
-        MS_DBG(F("Client stopped after"), millis() - start_timer, F("ms"));
+        MS_DBG(F("Client stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     }
-    else PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data Portal --"));
+    else
+    {
+        PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data Portal --"));
+    }
 
     // Process the HTTP response
     int16_t responseCode = 0;
@@ -307,7 +311,10 @@ int16_t EnviroDIYPublisher::sendData(Client *_outClient)
         }
         responseCode = atoi(responseCode_char);
     }
-    else responseCode=504;
+    else
+    {
+        responseCode=504;
+    }
 
     PRINTOUT(F("-- Response Code --"));
     PRINTOUT(responseCode);

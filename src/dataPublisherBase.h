@@ -12,10 +12,10 @@
 #define dataPublisherBase_h
 
 // Debugging Statement
-// #define MS_PUBLISHER_DEBUG
+// #define MS_DATAPUBLISHERBASE_DEBUG
 
-#ifdef MS_PUBLISHER_DEBUG
-#define MS_DEBUGGING_STD
+#ifdef MS_DATAPUBLISHERBASE_DEBUG
+#define MS_DEBUGGING_STD "dataPublisherBase"
 #endif
 
 // Send Buffer
@@ -24,11 +24,13 @@
 // decreasing it will save memory.  Do not make it smaller than 47 (to keep all
 // variable values with their UUID's) or bigger than 1500 (a typical TCP/UDP
 // Maximum Transmission Unit).
+#ifndef MS_SEND_BUFFER_SIZE
 #define MS_SEND_BUFFER_SIZE 750
+#endif
 
 // Included Dependencies
-//#include <Arduino.h>
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "LoggerBase.h"
 #include "Client.h"
 
@@ -72,9 +74,12 @@ public:
     // This opens a socket to the correct receiver and sends out the formatted data
     // This depends on an internet connection already being made and a client
     // being available
-    virtual int16_t sendData(Client *_outClient) = 0;
-    // This sends data on the "default" client of the modem attached to the logger
+    virtual int16_t publishData(Client *_outClient) = 0;
+    virtual int16_t publishData();
+    // These are duplicates of the above functions for backwards compatibility
+    virtual int16_t sendData(Client *_outClient);
     virtual int16_t sendData();
+
 
 protected:
     // The internal logger instance
@@ -88,7 +93,7 @@ protected:
     // This fills the TX buffer with nulls ('\0')
     static void emptyTxBuffer(void);
     // This writes the TX buffer to a stream and also to the debugging port
-    static void printTxBuffer(Stream *stream);
+    static void printTxBuffer(Stream *stream, bool addNewLine = false);
 
     uint8_t _sendEveryX;
     uint8_t _sendOffset;

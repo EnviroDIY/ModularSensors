@@ -48,7 +48,7 @@ Variable::Variable(const uint8_t sensorVarNum,
                    const char *varCode)
   : _sensorVarNum(sensorVarNum)
 {
-    setVarUUID('\0');
+    _uuid = NULL;
     setVarCode(varCode);
     setVarUnit(varUnit);
     setVarName(varName);
@@ -92,14 +92,38 @@ Variable::Variable(float (*calcFxn)(),
 
     // MS_DBG(F("Calculated Variable object created"));
 }
+Variable::Variable(float (*calcFxn)(),
+                   uint8_t decimalResolution,
+                   const char *varName,
+                   const char *varUnit,
+                   const char *varCode)
+  : _sensorVarNum(0)
+{
+    _uuid = NULL;
+    setVarCode(varCode);
+    setVarUnit(varUnit);
+    setVarName(varName);
+    setResolution(decimalResolution);
+
+    isCalculated = true;
+    setCalculation(calcFxn);
+    parentSensor = NULL;
+
+    // When we create the variable, we also want to initialize it with a current
+    // value of -9999 (ie, a bad result).
+    _currentValue = -9999;
+
+    // MS_DBG(F("Calculated Variable object created"));
+}
 Variable::Variable()
   : _sensorVarNum(0),
-    _decimalResolution(0),
-    _varName('\0'),
-    _varUnit('\0'),
-    _varCode('\0'),
-    _uuid('\0')
+    _decimalResolution(0)
 {
+    _varName = NULL;
+    _varUnit = NULL;
+    _varCode = NULL;
+    _uuid = NULL;
+
     isCalculated = true;
     _calcFxn = NULL;
     parentSensor = NULL;
@@ -170,13 +194,16 @@ void Variable::attachSensor(Sensor *parentSense)
     if (!isCalculated)
     {
         parentSensor = parentSense;
-        MS_DBG(F("Attempting to register"), getVarName(),
+        /*MS_DBG(F("Attempting to register"), getVarName(),
                F("as variable number"), _sensorVarNum, F("to"),
                parentSensor->getSensorName(), F("attached at"),
-               parentSensor->getSensorLocation(), F("..."));
+               parentSensor->getSensorLocation(), F("..."));*/
         parentSensor->registerVariable(_sensorVarNum, this);
     }
-    else MS_DBG(F("This is a calculated variable.  It cannot have a parent sensor!"));
+    // else
+    // {
+    //     MS_DBG(F("This is a calculated variable.  It cannot have a parent sensor!"));
+    // }
 }
 
 
@@ -186,7 +213,7 @@ void Variable::onSensorUpdate(Sensor *parentSense)
 {
     if (!isCalculated)
     {
-        _currentValue = parentSensor->sensorValues[_sensorVarNum];
+        _currentValue = parentSense->sensorValues[_sensorVarNum];
         MS_DBG(F("... received"), _currentValue);
     }
 }
@@ -237,10 +264,13 @@ void Variable::setCalculation(float (*calcFxn)())
 {
     if (isCalculated)
     {
-        MS_DBG(F("Calculation function set"));
+        // MS_DBG(F("Calculation function set"));
         _calcFxn = calcFxn;
     }
-    else MS_DBG(F("This is a measured variable.  It cannot have a calculation function!"));
+    // else
+    // {
+    //     MS_DBG(F("This is a measured variable.  It cannot have a calculation function!"));
+    // }
 }
 
 
@@ -257,7 +287,7 @@ uint8_t Variable::getResolution(void){return _decimalResolution;}
 void Variable::setResolution(uint8_t decimalResolution)
 {
     _decimalResolution = decimalResolution;
-    MS_DBG(F("Variable resolution is"), _decimalResolution, F("decimal places"));
+    // MS_DBG(F("Variable resolution is"), _decimalResolution, F("decimal places"));
 }
 
 // This gets/sets the variable's name using http://vocabulary.odm2.org/variablename/
@@ -265,7 +295,7 @@ String Variable::getVarName(void){return _varName;}
 void Variable::setVarName(const char *varName)
 {
     _varName = varName;
-    MS_DBG(F("Variable name is"), _varName);
+    // MS_DBG(F("Variable name is"), _varName);
 }
 
 // This gets/sets the variable's unit using http://vocabulary.odm2.org/units/
@@ -273,7 +303,7 @@ String Variable::getVarUnit(void){return _varUnit;}
 void Variable::setVarUnit(const char *varUnit)
 {
     _varUnit = varUnit;
-    MS_DBG(F("Variable unit is"), _varUnit);
+    // MS_DBG(F("Variable unit is"), _varUnit);
 }
 
 // This returns a customized code for the variable
@@ -282,7 +312,7 @@ String Variable::getVarCode(void){return _varCode;}
 void Variable::setVarCode(const char *varCode)
 {
     _varCode = varCode;
-    MS_DBG(F("Variable code is"), _varCode);
+    // MS_DBG(F("Variable code is"), _varCode);
 }
 
 // This returns the variable UUID, if one has been assigned
@@ -291,8 +321,61 @@ String Variable::getVarUUID(void){return _uuid;}
 void Variable::setVarUUID(const char *uuid)
 {
     _uuid = uuid;
-    if (strlen(_uuid) == 0) MS_DBG(F("No UUID assigned"));
-    else MS_DBG(F("Variable UUID is"), _uuid);
+    // if (strlen(_uuid) == 0)
+    // {
+    //     MS_DBG(F("No UUID assigned"));
+    // }
+    // else
+    // {
+    //     MS_DBG(F("Variable UUID is"), _uuid);
+    // }
+}
+// This checks that the UUID is properly formatted
+bool Variable::checkUUIDFormat(void)
+{
+    // If no UUID, move on
+    if (strlen(_uuid) == 0)
+    {
+        // MS_DBG(F("No UUID assigned to"), getVarCode());
+        return true;
+    }
+
+    // MS_DBG(F("Variable UUID for"), getVarCode(), F("is"), _uuid);
+    // Should be 36 characters long with dashes
+    if (strlen(_uuid) != 36)
+    {
+        MS_DBG(F("UUID length for"), getVarCode(), '(', _uuid, ')',
+               F("is incorrect, should be 36 characters not"), strlen(_uuid));
+        return false;
+    }
+
+    // "12345678-abcd-1234-ef00-1234567890ab"
+    const char * acceptableChars = "0123456789abcdefABCDEF-";
+    if (_uuid[8] != '-' || _uuid[13] != '-' || _uuid[18] != '-' || _uuid[23] != '-')
+    {
+        MS_DBG(F("UUID format for"), getVarCode(), '(', _uuid, ')',
+               F("is incorrect, expecting dashes at positions 9, 14, 19, and 24."));
+        return false;
+    }
+    for (uint8_t i = 0; i < 36; i++)
+    {
+        bool isAcceptable = false;
+        for (uint8_t j = 0; !isAcceptable && j < 23; j++)
+        {
+            if (_uuid[i] == acceptableChars[j])
+            {
+                isAcceptable = true;
+                j = 23;  // Stop the inner loop
+            }
+        }
+        if (!isAcceptable)
+        {
+            MS_DBG(F("UUID for"), getVarCode(), '(', _uuid, ')',
+                   F("has a bad character"), _uuid[i], F("at"), i+1);
+            return false;
+        }
+    }
+    return true;
 }
 
 

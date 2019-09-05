@@ -18,14 +18,15 @@
 #define MaxBotixSonar_h
 
 // Debugging Statement
-// #define MS_MAXBOTIX_DEBUG
+// #define MS_MAXBOTIXSONAR_DEBUG
 
-#ifdef MS_MAXBOTIX_DEBUG
-#define MS_DEBUGGING_STD
+#ifdef MS_MAXBOTIXSONAR_DEBUG
+#define MS_DEBUGGING_STD "MaxBotixSonar"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
 

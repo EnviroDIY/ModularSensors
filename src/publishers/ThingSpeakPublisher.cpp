@@ -72,21 +72,21 @@ ThingSpeakPublisher::~ThingSpeakPublisher(){}
 void ThingSpeakPublisher::setMQTTKey(const char *thingSpeakMQTTKey)
 {
     _thingSpeakMQTTKey = thingSpeakMQTTKey;
-    MS_DBG(F("MQTT Key set!"));
+    // MS_DBG(F("MQTT Key set!"));
 }
 
 
 void ThingSpeakPublisher::setChannelID(const char *thingSpeakChannelID)
 {
     _thingSpeakChannelID = thingSpeakChannelID;
-    MS_DBG(F("Channel ID set!"));
+    // MS_DBG(F("Channel ID set!"));
 }
 
 
 void ThingSpeakPublisher::setChannelKey(const char *thingSpeakChannelKey)
 {
     _thingSpeakChannelKey = thingSpeakChannelKey;
-    MS_DBG(F("Channel Key set!"));
+    // MS_DBG(F("Channel Key set!"));
 }
 
 // Sets all 3 ThingSpeak parameters
@@ -125,7 +125,7 @@ void ThingSpeakPublisher::begin(Logger& baseLogger,
 
 // This sends the data to ThingSpeak
 // bool ThingSpeakPublisher::mqttThingSpeak(void)
-int16_t ThingSpeakPublisher::sendData(Client *_outClient)
+int16_t ThingSpeakPublisher::publishData(Client *_outClient)
 {
     bool retVal = false;
 
@@ -180,19 +180,18 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
     // Closing any stray client sockets here ensures that a new client socket
     // is opened to the right place.
     // client is connected when a different socket is open
-    if (_outClient->connected()) {
+    if (_outClient->connected())
+    {
         _outClient->stop();
     }
 
     // Make the MQTT connection
     // Note:  the client id and the user name do not mean anything for ThingSpeak
     MS_DBG(F("Opening MQTT Connection"));
-    #if defined(DEBUGGING_SERIAL_OUTPUT)
-        uint32_t start_timer = millis();
-    #endif
+    MS_START_DEBUG_TIMER;
     if (_mqttClient.connect(mqttClient, mqttUser, _thingSpeakMQTTKey))
     {
-        MS_DBG(F("MQTT connected after"), millis() - start_timer, F("ms"));
+        MS_DBG(F("MQTT connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
 
         if (_mqttClient.publish(topicBuffer, txBuffer))
         {
@@ -213,10 +212,8 @@ int16_t ThingSpeakPublisher::sendData(Client *_outClient)
 
     // Disconnect from MQTT
     MS_DBG(F("Disconnecting from MQTT"));
-    #if defined(DEBUGGING_SERIAL_OUTPUT)
-        start_timer = millis();
-    #endif
+    MS_RESET_DEBUG_TIMER
     _mqttClient.disconnect();
-    MS_DBG(F("Disconnected after"), millis() - start_timer, F("ms"));
+    MS_DBG(F("Disconnected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     return retVal;
 }

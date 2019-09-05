@@ -136,7 +136,10 @@ bool ExternalVoltage::addSingleMeasurementResult(void)
             adcVoltage = -9999;
         }
     }
-    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    else
+    {
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    }
 
     verifyAndAddMeasurementResult(EXT_VOLT_VAR_NUM, calibResult);
 
@@ -145,6 +148,12 @@ bool ExternalVoltage::addSingleMeasurementResult(void)
     // Unset the status bits for a measurement request (bits 5 & 6)
     _sensorStatus &= 0b10011111;
 
-    if (adcVoltage < 3.6 and adcVoltage > -0.3) return true;
-    else return false;
+    if (adcVoltage < 3.6 and adcVoltage > -0.3)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

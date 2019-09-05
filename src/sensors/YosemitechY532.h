@@ -33,7 +33,6 @@
 #define YosemitechY532_h
 
 // Included Dependencies
-#include "VariableBase.h"
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines

@@ -12,14 +12,15 @@
 #define DreamHostPublisher_h
 
 // Debugging Statement
-// #define MS_DHPUBLISHER_DEBUG
+// #define MS_DREAMHOSTPUBLISHER_DEBUG
 
-#ifdef MS_DHPUBLISHER_DEBUG
-#define MS_DEBUGGING_STD
+#ifdef MS_DREAMHOSTPUBLISHER_DEBUG
+#define MS_DEBUGGING_STD "DreamHostPublisher"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "dataPublisherBase.h"
 
 
@@ -70,7 +71,7 @@ public:
     // over that connection.
     // The return is the http status code of the response.
     // int16_t postDataDreamHost(void);
-    int16_t sendData(Client *_outClient);
+    int16_t publishData(Client *_outClient);
 
 protected:
     // portions of the GET request

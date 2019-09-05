@@ -22,14 +22,15 @@
 #define RainCounterI2C_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_RAINCOUNTERI2C_DEBUG
 
-#ifdef MS_RAINI2C_DEBUG
-#define MS_DEBUGGING_STD
+#ifdef MS_RAINCOUNTERI2C_DEBUG
+#define MS_DEBUGGING_STD "RainCounterI2C"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Wire.h>

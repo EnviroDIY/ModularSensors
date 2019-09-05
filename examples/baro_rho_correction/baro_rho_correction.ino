@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.21.3
+This example sketch is written for ModularSensors library version 0.23.6
 
 This sketch is an example of logging data to an SD card and sending the data to
 the EnviroDIY data portal.
@@ -27,7 +27,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.21.3";
+const char *libraryVersion = "0.23.6";
 // The name of this file
 const char *sketchName = "baro_rho_correction.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -51,8 +51,8 @@ const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugg
 const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPwrPin = -1;     // MCU SD card power pin (-1 if not applicable)
-const int8_t sdCardSSPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
+const int8_t sdCardPwrPin = -1;    // MCU SD card power pin (-1 if not applicable)
+const int8_t sdCardSSPin = 12;     // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create the main processor chip "sensor" - for general metadata
@@ -60,101 +60,41 @@ const char *mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
 // Create sample number, battery voltage, and free RAM variable pointers for the processor
-Variable *mcuBoardBatt = new ProcessorStats_Batt(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *mcuBoardAvailableRAM = new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *mcuBoardBatt = new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+Variable *mcuBoardAvailableRAM = new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
+Variable *mcuBoardSampNo = new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
-//    Wifi/Cellular Modem Main Chip Selection
+//    Wifi/Cellular Modem Settings
 // ==========================================================================
-
-// Select your modem chip - this determines the exact commands sent to it
-#define TINY_GSM_MODEM_SIM800  // Select for a SIMCOM SIM800, SIM900, or variant thereof
-
-
-// ==========================================================================
-//    Modem Pins
-// ==========================================================================
-
-const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
-const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
-
-
-// ==========================================================================
-//    TinyGSM Client
-// ==========================================================================
-
-// #define TINY_GSM_DEBUG Serial  // If you want debugging on the main debug port
-
-#define TINY_GSM_YIELD() { delay(2); }  // Can help with slow (9600) baud rates
-
-// Include TinyGSM for the modem
-// This include must be included below the define of the modem name!
-#include <TinyGsmClient.h>
 
 // Create a reference to the serial port for the modem
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
-// Create a new TinyGSM modem to run on that serial port and return a pointer to it
-TinyGsm *tinyModem = new TinyGsm(modemSerial);
-
-// Use this to create a modem if you want to spy on modem communication through
-// a secondary Arduino stream.  Make sure you install the StreamDebugger library!
-// https://github.com/vshymanskyy/StreamDebugger
-// Also make sure you comment out the modem creation above to use this.
-// #include <StreamDebugger.h>
-// StreamDebugger modemDebugger(modemSerial, Serial);
-// TinyGsm tinyModem(modemDebugger);
-
-// Create a new TCP client on that modem and return a pointer to it
-TinyGsmClient *tinyClient = new TinyGsmClient(*tinyModem);
-
-
-// ==========================================================================
-//    Specific Modem On-Off Methods
-// ==========================================================================
-
-// THIS ONLY APPLIES TO A SODAQ GPRSBEE R6!!!
-// Describe the physical pin connection of your modem to your board
-const long modemBaud = 9600;         // Communication speed of the modem
-const bool modemStatusLevel = HIGH;  // The level of the status pin when the module is active (HIGH or LOW)
-
-// Create the wake and sleep methods for the modem
-// These can be functions of any type and must return a boolean
-bool modemWakeFxn(void)
-{
-    digitalWrite(modemSleepRqPin, HIGH);
-    digitalWrite(redLED, HIGH);  // A light just for show
-    return true;
-}
-bool modemSleepFxn(void)
-{
-    digitalWrite(modemSleepRqPin, LOW);
-    digitalWrite(redLED, LOW);
-    return true;
-}
-void extraModemSetup(void){}
-
-
-// ==========================================================================
-//    Network Information and LoggerModem Object
-// ==========================================================================
-#include <LoggerModem.h>
+// Modem Pins - Describe the physical pin connection of your modem to your board
+const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
+const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
+const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem status (-1 if unconnected)
 
 // Network connection information
-const char *apn = "xxxxx";  // The APN for the gprs connection, unnecessary for WiFi
-const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
-const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
+const char *apn = "xxxxx";  // The APN for the gprs connection
 
-// Create the loggerModem instance
-// A "loggerModem" is a combination of a TinyGSM Modem, a Client, and functions for wake and sleep
-loggerModem modem(modemVccPin, modemStatusPin, modemStatusLevel, modemWakeFxn, modemSleepFxn, tinyModem, tinyClient, apn);
+// For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
+// NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
+#include <modems/Sodaq2GBeeR6.h>
+const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
+Sodaq2GBeeR6 modem2GB(&modemSerial,
+                      modemVccPin, modemStatusPin,
+                      modemSleepRqPin,
+                      apn);
+// Create an extra reference to the modem by a generic name (not necessary)
+Sodaq2GBeeR6 modem = modem2GB;
 
 // Create RSSI and signal strength variable pointers for the modem
-Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *modemRSSI = new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab");
+Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -166,7 +106,7 @@ Variable *modemSignalPct = new Modem_SignalPercent(&modem, "12345678-abcd-1234-e
 MaximDS3231 ds3231(1);
 
 // Create a temperature variable pointer for the DS3231
-Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -183,10 +123,10 @@ uint8_t BMEi2c_addr = 0x77;
 BoschBME280 bme280(I2CPower, BMEi2c_addr);
 
 // Create four variable pointers for the BME280
-Variable *bme280Humid = new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *bme280Temp = new BoschBME280_Temp(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *bme280Press = new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *bme280Alt = new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *bme280Humid = new BoschBME280_Humidity(&bme280, "12345678-abcd-1234-ef00-1234567890ab");
+Variable *bme280Temp = new BoschBME280_Temp(&bme280, "12345678-abcd-1234-ef00-1234567890ab");
+Variable *bme280Press = new BoschBME280_Pressure(&bme280, "12345678-abcd-1234-ef00-1234567890ab");
+Variable *bme280Alt = new BoschBME280_Altitude(&bme280, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -201,7 +141,7 @@ const int8_t OneWireBus = 4;  // Pin attached to the OneWire Bus (-1 if unconnec
 MaximDS18 ds18(OneWirePower, OneWireBus);
 
 // Create a temperature variable pointer for the DS18
-Variable *ds18Temp = new MaximDS18_Temp(&ds18, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *ds18Temp = new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -218,8 +158,8 @@ const uint8_t MS5803ReadingsToAvg = 1;
 MeaSpecMS5803 ms5803(I2CPower, MS5803i2c_addr, MS5803maxPressure, MS5803ReadingsToAvg);
 
 // Create pressure and temperature variable pointers for the MS5803
-Variable *ms5803Press = new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-efgh-1234567890ab");
-Variable *ms5803Temp = new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-efgh-1234567890ab");
+Variable *ms5803Press = new MeaSpecMS5803_Pressure(&ms5803, "12345678-abcd-1234-ef00-1234567890ab");
+Variable *ms5803Temp = new MeaSpecMS5803_Temp(&ms5803, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -236,7 +176,9 @@ float calculateWaterPressure(void)
     float baroPressureFromBME280 = bme280Press->getValue();
     float waterPressure = totalPressureFromMS5803 - (baroPressureFromBME280)*0.01;
     if (totalPressureFromMS5803 == -9999 || baroPressureFromBME280 == -9999)
+    {
         waterPressure = -9999;
+    }
     // Serial.print(F("Water pressure is "));  // for debugging
     // Serial.println(waterPressure);  // for debugging
     return waterPressure;
@@ -245,7 +187,7 @@ float calculateWaterPressure(void)
 const char *waterPressureVarName = "pressureGauge";  // This must be a value from http://vocabulary.odm2.org/variablename/
 const char *waterPressureVarUnit = "millibar";  // This must be a value from http://vocabulary.odm2.org/units/
 int waterPressureVarResolution = 3;
-const char *waterPressureUUID = "12345678-abcd-1234-efgh-1234567890ab";
+const char *waterPressureUUID = "12345678-abcd-1234-ef00-1234567890ab";
 const char *waterPressureVarCode = "CorrectedPressure";
 // Create the calculated water pressure variable objects and return a variable pointer to it
 Variable *calcWaterPress = new Variable(calculateWaterPressure, waterPressureVarResolution,
@@ -267,7 +209,7 @@ float calculateWaterDepthRaw(void)
 const char *waterDepthVarName = "waterDepth";  // This must be a value from http://vocabulary.odm2.org/variablename/
 const char *waterDepthVarUnit = "millimeter";  // This must be a value from http://vocabulary.odm2.org/units/
 int waterDepthVarResolution = 3;
-const char *waterDepthUUID = "12345678-abcd-1234-efgh-1234567890ab";
+const char *waterDepthUUID = "12345678-abcd-1234-ef00-1234567890ab";
 const char *waterDepthVarCode = "CalcDepth";
 // Create the calculated raw water depth variable objects and return a variable pointer to it
 Variable *calcRawDepth = new Variable(calculateWaterDepthRaw,
@@ -297,7 +239,9 @@ float calculateWaterDepthTempCorrected(void)
     // from P = rho * g * h
     float rhoDepth = 1000 * waterPressurePa/(waterDensity * gravitationalConstant);
     if (calculateWaterPressure() == -9999 || waterTempertureC == -9999)
+    {
         rhoDepth = -9999;
+    }
     // Serial.print(F("Temperature corrected water depth is "));  // for debugging
     // Serial.println(rhoDepth);  // for debugging
     return rhoDepth;
@@ -306,7 +250,7 @@ float calculateWaterDepthTempCorrected(void)
 const char *rhoDepthVarName = "waterDepth";  // This must be a value from http://vocabulary.odm2.org/variablename/
 const char *rhoDepthVarUnit = "millimeter";  // This must be a value from http://vocabulary.odm2.org/units/
 int rhoDepthVarResolution = 3;
-const char *rhoDepthUUID = "12345678-abcd-1234-efgh-1234567890ab";
+const char *rhoDepthUUID = "12345678-abcd-1234-ef00-1234567890ab";
 const char *rhoDepthVarCode = "DensityDepth";
 // Create the temperature corrected water depth variable objects and return a variable pointer to it
 Variable *calcCorrDepth = new Variable(calculateWaterDepthTempCorrected,
@@ -358,16 +302,16 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 
 
 // ==========================================================================
-//    A Publisher to WikiWatershed
+//    A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
 // ==========================================================================
 // Device registration and sampling feature information can be obtained after
-// registration at http://data.WikiWatershed.org
-const char *registrationToken = "12345678-abcd-1234-efgh-1234567890ab";   // Device registration token
-const char *samplingFeature = "12345678-abcd-1234-efgh-1234567890ab";     // Sampling feature UUID
+// registration at https://monitormywatershed.org or https://data.envirodiy.org
+const char *registrationToken = "12345678-abcd-1234-ef00-1234567890ab";   // Device registration token
+const char *samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";     // Sampling feature UUID
 
 // Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
 #include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPOST(dataLogger, registrationToken, samplingFeature);
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient, registrationToken, samplingFeature);
 
 
 // ==========================================================================
@@ -417,8 +361,10 @@ void setup()
     Serial.println(MODULAR_SENSORS_VERSION);
 
     if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
+    {
         Serial.println(F(
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
+    }
 
     // Start the serial connection with the modem
     modemSerial.begin(modemBaud);
@@ -431,19 +377,16 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
-    // Set up the sleep/wake pin for the modem and put its inital value as "off"
-    pinMode(modemSleepRqPin, OUTPUT);
-    digitalWrite(modemSleepRqPin, LOW);
-
-    // Set the timezone and offsets
+    // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
-    Logger::setTimeZone(timeZone);
-    // Offset is the same as the time zone because the RTC is in UTC
-    Logger::setTZOffset(timeZone);
+    Logger::setLoggerTimeZone(timeZone);
+    // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
+    Logger::setRTCTimeZone(0);
 
     // Attach the modem and information pins to the logger
     dataLogger.attachModem(modem);
-    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sensorPowerPin, buttonPin, greenLED);
+    modem.setModemLED(modemLEDPin);
+    dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
 
     // Begin the logger
     dataLogger.begin();
@@ -454,18 +397,23 @@ void setup()
     {
         modem.modemPowerUp();
         modem.wake();
+        modem.setup();
 
         // At very good battery voltage, or with suspicious time stamp, sync the clock
         // Note:  Please change these battery voltages to match your battery
         if (getBatteryVoltage() > 3.8 ||
             dataLogger.getNowEpoch() < 1546300800 ||  /*Before 01/01/2019*/
-            dataLogger.getNowEpoch() > 1735689600)  /*Before 1/1/2025*/
+            dataLogger.getNowEpoch() > 1735689600)  /*After 1/1/2025*/
         {
             // Synchronize the RTC with NIST
-            Serial.println(F("Attempting to synchronize RTC with NIST"));
+            Serial.println(F("Attempting to connect to the internet and synchronize RTC with NIST"));
             if (modem.connectInternet(120000L))
             {
                 dataLogger.setRTClock(modem.getNISTTime());
+            }
+            else
+            {
+                Serial.println(F("Could not connect to internet for clock sync."));
             }
         }
     }
@@ -477,9 +425,6 @@ void setup()
         varArray.setupSensors();
     }
 
-    // Power down the modem
-    modem.modemSleepPowerDown();
-
     // Create the log file, adding the default header to it
     // Do this last so we have the best chance of getting the time correct and
     // all sensor names correct
@@ -487,10 +432,15 @@ void setup()
     // the sensor setup we'll skip this too.
     if (getBatteryVoltage() > 3.4)
     {
+        Serial.println(F("Setting up file on SD card"));
         dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
         dataLogger.createLogFile(true);  // true = write a new header
         dataLogger.turnOffSDcard(true);  // true = wait for internal housekeeping after write
     }
+
+    // Power down the modem
+    Serial.println(F("Putting modem to sleep"));
+    modem.modemSleepPowerDown();
 
     // Call the processor sleep
     Serial.println(F("Putting processor to sleep"));
@@ -519,6 +469,6 @@ void loop()
     // If the battery is good, send the data to the world
     else
     {
-        dataLogger.logDataAndSend();
+        dataLogger.logDataAndPublish();
     }
 }

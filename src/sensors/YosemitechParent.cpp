@@ -64,7 +64,7 @@ bool YosemitechParent::setup(void)
     if (_RS485EnablePin >= 0) pinMode(_RS485EnablePin, OUTPUT);
     if (_powerPin2 >= 0) pinMode(_powerPin2, OUTPUT);
 
-    #if defined(DEEP_DEBUGGING_SERIAL_OUTPUT)
+    #ifdef MS_YOSEMITECHPARENT_DEBUG_DEEP
         sensor.setDebugStream(&DEEP_DEBUGGING_SERIAL_OUTPUT);
     #endif
 
@@ -80,9 +80,8 @@ bool YosemitechParent::setup(void)
 // Different from the standard in that it waits for warm up and starts measurements
 bool YosemitechParent::wake(void)
 {
-    // Sensor::wake() checks if the power pin is on, setup has been successful,
-    // and sets the wake timestamp and status bits.  If it returns false,
-    // there's no reason to go on.
+    // Sensor::wake() checks if the power pin is on and sets the wake timestamp
+    // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
 
     // Send the command to begin taking readings, trying up to 5 times
@@ -115,8 +114,14 @@ bool YosemitechParent::wake(void)
     if ( _model == Y511 or _model == Y514 or _model == Y550 or _model == Y4000)
     {
         MS_DBG(F("Activate Brush on"), getSensorNameAndLocation());
-        if (sensor.activateBrush()) MS_DBG(F("Brush activated."));
-        else MS_DBG(F("Brush NOT activated!"));
+        if (sensor.activateBrush())
+        {
+            MS_DBG(F("Brush activated."));
+        }
+        else
+        {
+            MS_DBG(F("Brush NOT activated!"));
+        }
     }
 
     return success;
@@ -155,7 +160,10 @@ bool YosemitechParent::sleep(void)
         _sensorStatus &= 0b10000111;
         MS_DBG(F("Measurements stopped."));
     }
-    else MS_DBG(F("Measurements NOT stopped!"));
+    else
+    {
+        MS_DBG(F("Measurements NOT stopped!"));
+    }
 
     return success;
 }
@@ -312,7 +320,10 @@ bool YosemitechParent::addSingleMeasurementResult(void)
             }
         }
     }
-    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    else
+    {
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    }
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;

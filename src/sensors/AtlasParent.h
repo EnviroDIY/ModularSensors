@@ -17,14 +17,15 @@
 #define AtlasParent_h
 
 // Debugging Statement
-// #define MS_ATLAS_DEBUG
+// #define MS_ATLASPARENT_DEBUG
 
-#ifdef MS_ATLAS_DEBUG
-#define MS_DEBUGGING_STD
+#ifdef MS_ATLASPARENT_DEBUG
+#define MS_DEBUGGING_STD "AtlasParent"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Wire.h>

@@ -38,7 +38,6 @@
 #define YosemitechY533_h
 
 // Included Dependencies
-#include "VariableBase.h"
 #include "sensors/YosemitechParent.h"
 
 // Sensor Specific Defines

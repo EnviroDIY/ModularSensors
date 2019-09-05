@@ -17,13 +17,15 @@
 #define AtlasScientificEC_h
 
 // Debugging Statement
-// #define MS_ATLASEC_DEBUG
+// #define MS_ATLASSCIENTIFICEC_DEBUG
 
-#ifdef MS_ATLASEC_DEBUG
-#define MS_DEBUGGING_STD
+#ifdef MS_ATLASSCIENTIFICEC_DEBUG
+#define MS_DEBUGGING_STD "AtlasScientificEC"
 #endif
 
 // Included Dependencies
+#include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "sensors/AtlasParent.h"
 

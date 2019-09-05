@@ -120,7 +120,10 @@ bool CampbellOBS3::addSingleMeasurementResult(void)
             adcVoltage = -9999;
         }
     }
-    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    else
+    {
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    }
 
     verifyAndAddMeasurementResult(OBS3_TURB_VAR_NUM, calibResult);
     verifyAndAddMeasurementResult(OBS3_VOLTAGE_VAR_NUM, adcVoltage);
@@ -130,6 +133,12 @@ bool CampbellOBS3::addSingleMeasurementResult(void)
     // Unset the status bits for a measurement request (bits 5 & 6)
     _sensorStatus &= 0b10011111;
 
-    if (adcVoltage < 3.6 and adcVoltage > -0.3) return true;
-    else return false;
+    if (adcVoltage < 3.6 and adcVoltage > -0.3)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

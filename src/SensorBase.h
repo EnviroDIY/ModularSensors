@@ -15,11 +15,12 @@
 // #define MS_SENSORBASE_DEBUG
 
 #ifdef MS_SENSORBASE_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "SensorBase"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include <pins_arduino.h>
 
 // The largest number of variables from a single sensor

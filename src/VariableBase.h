@@ -15,7 +15,7 @@
 // #define MS_VARIABLEBASE_DEBUG
 
 #ifdef MS_VARIABLEBASE_DEBUG
-#define MS_DEBUGGING_STD
+#define MS_DEBUGGING_STD "VariableBase"
 #endif
 
 // Forward Declared Dependences
@@ -23,6 +23,7 @@ class Sensor;
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 
 class Variable
 {
@@ -49,11 +50,16 @@ public:
              const char *varName,
              const char *varUnit,
              const char *varCode,
-             const char *uuid = '\0');
+             const char *uuid);
+    Variable(float (*calcFxn)(),
+             uint8_t decimalResolution,
+             const char *varName,
+             const char *varUnit,
+             const char *varCode);
     Variable();
 
     // Destructor
-    virtual ~Variable();
+    ~Variable();
 
     // This does all of the setup that can't happen in the constructors
     // That is, anything that is dependent on another object having been created
@@ -79,7 +85,7 @@ public:
     // This notifies the parent sensor that it has an observing variable
     void attachSensor(Sensor *parentSense);
     // This is the function called by the parent sensor's notifyVariables() function
-    virtual void onSensorUpdate(Sensor *parentSense);
+    void onSensorUpdate(Sensor *parentSense);
     // This is a helper - it returns the name of the parent sensor, if applicable
     // This is needed for dealing with variables in arrays
     String getParentSensorName(void);
@@ -91,7 +97,7 @@ public:
     void setCalculation(float (*calcFxn)());
 
     // This sets up the variable (generally attaching it to its parent)
-    // virtual bool setup(void);
+    // bool setup(void);
 
     // This gets/sets the variable's resolution for value strings
     uint8_t getResolution(void);
@@ -108,6 +114,7 @@ public:
     // This gets/sets the variable UUID, if one has been assigned
     String getVarUUID(void);
     void setVarUUID(const char *uuid);
+    bool checkUUIDFormat(void);
 
     // This returns the current value of the variable as a float
     float getValue(bool updateValue = false);

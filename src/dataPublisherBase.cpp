@@ -13,7 +13,7 @@ char dataPublisher::txBuffer[MS_SEND_BUFFER_SIZE] = {'\0'};
 // Basic chunks of HTTP
 const char *dataPublisher::getHeader = "GET ";
 const char *dataPublisher::postHeader = "POST ";
-const char *dataPublisher::HTTPtag = "  HTTP/1.1";
+const char *dataPublisher::HTTPtag = " HTTP/1.1";
 const char *dataPublisher::hostHeader = "\r\nHost: ";
 
 // Constructors
@@ -100,15 +100,22 @@ int dataPublisher::bufferFree(void)
 
 
 // Sends the tx buffer to a stream and then clears it
-void dataPublisher::printTxBuffer(Stream *stream)
+void dataPublisher::printTxBuffer(Stream *stream, bool addNewLine)
 {
     // Send the out buffer so far to the serial for debugging
     #if defined(STANDARD_SERIAL_OUTPUT)
         STANDARD_SERIAL_OUTPUT.write(txBuffer, strlen(txBuffer));
-        PRINTOUT('\n');
+        if (addNewLine)
+        {
+            PRINTOUT('\n');
+        }
         STANDARD_SERIAL_OUTPUT.flush();
     #endif
     stream->write(txBuffer, strlen(txBuffer));
+    if (addNewLine) \
+    {
+        stream->print("\r\n");
+    }
     stream->flush();
 
     // empty the buffer after printing it
@@ -117,13 +124,24 @@ void dataPublisher::printTxBuffer(Stream *stream)
 
 
 // This sends data on the "default" client of the modem
+int16_t dataPublisher::publishData()
+{
+    if (_inClient == NULL)
+    {
+        PRINTOUT(F("ERROR! No web client assigned to publish data!"));
+        return 0;
+    }
+    else
+    {
+        return publishData(_inClient);
+    }
+}
+// Duplicates for backwards compatibility
+int16_t dataPublisher::sendData(Client *_outClient)
+{
+    return publishData(_outClient);
+}
 int16_t dataPublisher::sendData()
 {
-    if (_inClient == NULL && _baseLogger->_logModem != NULL)
-    {
-        _inClient = _baseLogger->_logModem->getClient();
-    }
-
-    if (_inClient == NULL) return 0;
-    else return sendData(_inClient);
+    return publishData();
 }

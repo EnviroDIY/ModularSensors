@@ -15,15 +15,7 @@
 #ifndef AtlasScientificRTD_h
 #define AtlasScientificRTD_h
 
-// Debugging Statement
-// #define MS_ATLASRTD_DEBUG
-
-#ifdef MS_ATLASRTD_DEBUG
-#define MS_DEBUGGING_STD
-#endif
-
 // Included Dependencies
-#include "VariableBase.h"
 #include "sensors/AtlasParent.h"
 
 // I2C address

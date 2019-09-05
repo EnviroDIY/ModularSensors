@@ -30,14 +30,15 @@
 #define TIINA219_h
 
 // Debugging Statement
-// #define MS_DEBUGGING_STD
+// #define MS_TIINA219_DEBUG
 
-#ifdef MS_INA219_DEBUG
-#define MS_DEBUGGING_STD
+#ifdef MS_TIINA219_DEBUG
+#define MS_DEBUGGING_STD "TIINA219"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
 #include <Adafruit_INA219.h>

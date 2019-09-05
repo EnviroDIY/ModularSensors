@@ -35,7 +35,6 @@
 #define DecagonCTD_h
 
 // Included Dependencies
-#include "VariableBase.h"
 #include "sensors/SDI12Sensors.h"
 
 // Sensor Specific Defines

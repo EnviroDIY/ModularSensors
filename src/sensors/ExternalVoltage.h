@@ -55,14 +55,15 @@
 #define ExternalVoltage_h
 
 // Debugging Statement
-// #define MS_EXTVOLT_DEBUG
+// #define MS_EXTERNALVOLTAGE_DEBUG
 
-#ifdef MS_EXTVOLT_DEBUG
-#define MS_DEBUGGING_STD
+#ifdef MS_EXTERNALVOLTAGE_DEBUG
+#define MS_DEBUGGING_STD "ExternalVoltage"
 #endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
+#undef MS_DEBUGGING_STD
 #include "VariableBase.h"
 #include "SensorBase.h"
 
