@@ -390,6 +390,11 @@ void Logger::registerDataPublisher(dataPublisher* publisher)
     uint8_t i = 0;
     for (; i < MAX_NUMBER_SENDERS; i++)
     {
+        if (dataPublishers[i] == publisher) 
+        {
+            MS_DBG(F("dataPublisher already registered."));
+            return;
+        }
         if (dataPublishers[i] == NULL) break;
     }
 
@@ -406,7 +411,7 @@ void Logger::publishDataToRemotes(void)
     {
         if (dataPublishers[i] != NULL)
         {
-            PRINTOUT(F("\nSending data to"), dataPublishers[i]->getEndpoint());
+            PRINTOUT(F("\nSending data to ["),i,F("]"), dataPublishers[i]->getEndpoint());
             // dataPublishers[i]->publishData(_logModem->getClient());
             dataPublishers[i]->publishData();
             watchDogTimer.resetWatchDog();
