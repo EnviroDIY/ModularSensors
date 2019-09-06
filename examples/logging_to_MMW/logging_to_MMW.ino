@@ -322,6 +322,7 @@ void setup()
     }
 
     // Power down the modem
+    modem.disconnectInternet();
     modem.modemSleepPowerDown();
 
     // Create the log file, adding the default header to it

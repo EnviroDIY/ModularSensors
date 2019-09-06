@@ -440,6 +440,7 @@ void setup()
 
     // Power down the modem
     Serial.println(F("Putting modem to sleep"));
+    modem.disconnectInternet();
     modem.modemSleepPowerDown();
 
     // Call the processor sleep

@@ -336,6 +336,7 @@ void setup()
         Logger::getNowEpoch() % (loggingInterval*60) < 6)
     {
         Serial.println(F("Putting modem to sleep"));
+        modem.disconnectInternet();
         modem.modemSleepPowerDown();
     }
     else
