@@ -44,6 +44,7 @@ MS_MODEM_GET_MODEM_BATTERY_AVAILABLE(DigiXBeeLTEBypass);
 MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(DigiXBeeLTEBypass);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeLTEBypass);
 MS_MODEM_GET_NIST_TIME(DigiXBeeLTEBypass);
+MS_MODEM_DISCONNECT_INTERNET(DigiXBeeLTEBypass);
 
 
 bool DigiXBeeLTEBypass::extraModemSetup(void)
@@ -98,6 +99,10 @@ bool DigiXBeeLTEBypass::extraModemSetup(void)
         // Cellular network technology - LTE-M Only
         // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
         gsmModem.sendAT(GF("N#"),2);
+        success &= gsmModem.waitResponse(GF("OK\r")) == 1;
+        // Make sure airplane mode is off - bypass and airplane mode are incompatible
+        MS_DBG(F("Making sure airplane mode is off..."));
+        gsmModem.sendAT(GF("AM"),0);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
         MS_DBG(F("Turning on Bypass Mode..."));
         // Turn on bypass mode

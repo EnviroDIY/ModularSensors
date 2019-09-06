@@ -28,7 +28,7 @@
 #include <Arduino.h>
 
 
-#define MODEM_NUM_VARIABLES 7
+#define MODEM_NUM_VARIABLES 8
 
 #define MODEM_RSSI_VAR_NUM 0
 #define MODEM_RSSI_RESOLUTION 0
@@ -50,6 +50,9 @@
 
 #define MODEM_ACTIVATION_VAR_NUM 6
 #define MODEM_ACTIVATION_RESOLUTION 3
+
+#define MODEM_POWERED_VAR_NUM 7
+#define MODEM_POWERED_RESOLUTION 3
 
 /* ===========================================================================
 * Functions for the modem class
@@ -186,6 +189,7 @@ protected:
     uint32_t _lastConnectionCheck;
 
     float _priorActivationDuration;
+    float _priorPoweredDuration;
 
     String _modemName;
 
@@ -345,6 +349,28 @@ public:
                  "timeElapsed", "second", "modemActiveSec")
     {}
     ~Modem_ActivationDuration(){}
+};
+
+
+// Defines a diagnostic variable for how long the modem was last active
+class Modem_PoweredDuration : public Variable
+{
+public:
+    Modem_PoweredDuration(Sensor *parentSense,
+               const char *uuid = "",
+               const char *varCode = "modemPoweredSec")
+      : Variable(parentSense,
+                 (const uint8_t)MODEM_POWERED_VAR_NUM,
+                 (uint8_t)MODEM_POWERED_RESOLUTION,
+                 "timeElapsed", "second",
+                 varCode, uuid)
+    {}
+    Modem_PoweredDuration()
+      : Variable((const uint8_t)MODEM_POWERED_VAR_NUM,
+                 (uint8_t)MODEM_POWERED_RESOLUTION,
+                 "timeElapsed", "second", "modemPoweredSec")
+    {}
+    ~Modem_PoweredDuration(){}
 };
 
 #endif  // Header Guard

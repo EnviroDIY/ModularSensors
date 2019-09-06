@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.6
+This example sketch is written for ModularSensors library version 0.23.7
 
 This sketch is an example of logging data from different variables at two
 different logging intervals.  This example uses more of the manual functions
@@ -22,13 +22,14 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
+#include <LoggerBase.h>  // The modular sensors library
 
 
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.6";
+const char *libraryVersion = "0.23.7";
 // The name of this file
 const char *sketchName = "double_logger.ino";
 // Logger ID - we're only using one logger ID for both "loggers"
@@ -118,7 +119,6 @@ AOSongAM2315 am2315(I2CPower);
 // ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-#include <VariableArray.h>
 
 // The variables to record at 1 minute intervals
 Variable *variableList_at1min[] = {
@@ -145,7 +145,6 @@ VariableArray array5min;
 // ==========================================================================
 //     The Logger Object[s]
 // ==========================================================================
-#include <LoggerBase.h>
 
 // Create the 1-minute  logger instance
 Logger logger1min;

@@ -374,8 +374,8 @@ bool Logger::syncRTC()
         if (_logModem->connectInternet(120000L))
         {
             success = setRTClock(_logModem->getNISTTime());
-            // Disconnect from the network - ehh, why bother
-            // _logModem->disconnectInternet();
+            // Disconnect from the network
+            _logModem->disconnectInternet();
         }
         // Turn off the modem
         _logModem->modemSleepPowerDown();
@@ -1370,6 +1370,7 @@ void Logger::testingMode()
     _internalArray->sensorsPowerDown();
 
     // Turn the modem off
+    _logModem->disconnectInternet();
     _logModem->modemSleepPowerDown();
 
     PRINTOUT(F("Exiting testing mode"));
@@ -1616,9 +1617,9 @@ void Logger::logDataAndPublish(void)
                     watchDogTimer.resetWatchDog();
                 }
 
-                // Disconnect from the network - ehh, why bother
-                // MS_DBG(F("Disconnecting from the Internet..."));
-                // _logModem->disconnectInternet();
+                // Disconnect from the network
+                MS_DBG(F("Disconnecting from the Internet..."));
+                _logModem->disconnectInternet();
             }
             else
             {

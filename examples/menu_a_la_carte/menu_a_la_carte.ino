@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.6
+This example sketch is written for ModularSensors library version 0.23.7
 
 This shows most of the standard functions of the library at once.
 
@@ -20,13 +20,14 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
+#include <LoggerBase.h>  // The modular sensors library
 
 
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.6";
+const char *libraryVersion = "0.23.7";
 // The name of this file
 const char *sketchName = "menu_a_la_carte.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -1192,7 +1193,6 @@ Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarReso
 // ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-#include <VariableArray.h>
 
 // FORM1: Create pointers for all of the variables from the sensors,
 // at the same time putting them into an array
@@ -1316,7 +1316,6 @@ VariableArray varArray(variableCount, variableList);
 // ==========================================================================
 //     The Logger Object[s]
 // ==========================================================================
-#include <LoggerBase.h>
 
 // Create a new logger instance
 Logger dataLogger(LoggerID, loggingInterval, &varArray);
@@ -1546,6 +1545,7 @@ void setup()
         Logger::getNowEpoch() % (loggingInterval*60) < 6)
     {
         Serial.println(F("Putting modem to sleep"));
+        modem.disconnectInternet();
         modem.modemSleepPowerDown();
     }
     else

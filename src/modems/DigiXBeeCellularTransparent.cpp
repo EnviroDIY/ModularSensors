@@ -43,6 +43,7 @@ MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeCellularTransparent);
 MS_MODEM_GET_MODEM_BATTERY_NA(DigiXBeeCellularTransparent);
 MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(DigiXBeeCellularTransparent);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularTransparent);
+MS_MODEM_DISCONNECT_INTERNET(DigiXBeeCellularTransparent);
 
 
 bool DigiXBeeCellularTransparent::extraModemSetup(void)
@@ -108,6 +109,10 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         gsmModem.waitResponse();  // Don't check for success - only works on LTE
         // Put the network connection parameters into flash
         success &= gsmModem.gprsConnect(_apn);
+        // Make sure airplane mode is off
+        MS_DBG(F("Making sure airplane mode is off..."));
+        gsmModem.sendAT(GF("AM"),0);
+        success &= gsmModem.waitResponse() == 1;
         MS_DBG(F("Ensuring XBee is in transparent mode..."));
         // Make sure we're really in transparent mode
         gsmModem.sendAT(GF("AP0"));
@@ -283,6 +288,7 @@ bool DigiXBeeCellularTransparent::addSingleMeasurementResult(void)
     }
 
     MS_DBG(F("PRIOR modem active time:"), String(_priorActivationDuration, 3));
+    MS_DBG(F("PRIOR modem powered time:"), String(_priorPoweredDuration, 3));
 
     verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi);
     verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent);
@@ -291,6 +297,7 @@ bool DigiXBeeCellularTransparent::addSingleMeasurementResult(void)
     verifyAndAddMeasurementResult(MODEM_BATTERY_VOLT_VAR_NUM, (float)-9999);
     verifyAndAddMeasurementResult(MODEM_TEMPERATURE_VAR_NUM, temp);
     verifyAndAddMeasurementResult(MODEM_ACTIVATION_VAR_NUM, _priorActivationDuration);
+    verifyAndAddMeasurementResult(MODEM_POWERED_VAR_NUM, _priorPoweredDuration);
 
     /* Unset the time stamp for the beginning of this measurement */
     _millisMeasurementRequested = 0;
