@@ -92,6 +92,10 @@ bool DigiXBee3GBypass::extraModemSetup(void)
         // Hologram says they can use any network, but I've never succeeded with anything but AT&T
         gsmModem.sendAT(GF("CP"),2);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
+        // Make sure airplane mode is off - bypass and airplane mode are incompatible
+        MS_DBG(F("Making sure airplane mode is off..."));
+        gsmModem.sendAT(GF("AM"),0);
+        success &= gsmModem.waitResponse(GF("OK\r")) == 1;
         MS_DBG(F("Turning on Bypass Mode..."));
         // Turn on bypass mode
         gsmModem.sendAT(GF("AP5"));

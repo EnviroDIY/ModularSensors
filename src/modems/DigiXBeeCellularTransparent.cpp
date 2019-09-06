@@ -108,6 +108,10 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         gsmModem.waitResponse();  // Don't check for success - only works on LTE
         // Put the network connection parameters into flash
         success &= gsmModem.gprsConnect(_apn);
+        // Make sure airplane mode is off
+        MS_DBG(F("Making sure airplane mode is off..."));
+        gsmModem.sendAT(GF("AM"),0);
+        success &= gsmModem.waitResponse() == 1;
         MS_DBG(F("Ensuring XBee is in transparent mode..."));
         // Make sure we're really in transparent mode
         gsmModem.sendAT(GF("AP0"));

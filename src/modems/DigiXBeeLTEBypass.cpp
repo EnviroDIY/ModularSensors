@@ -100,6 +100,10 @@ bool DigiXBeeLTEBypass::extraModemSetup(void)
         // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
         gsmModem.sendAT(GF("N#"),2);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
+        // Make sure airplane mode is off - bypass and airplane mode are incompatible
+        MS_DBG(F("Making sure airplane mode is off..."));
+        gsmModem.sendAT(GF("AM"),0);
+        success &= gsmModem.waitResponse(GF("OK\r")) == 1;
         MS_DBG(F("Turning on Bypass Mode..."));
         // Turn on bypass mode
         gsmModem.sendAT(GF("AP5"));
