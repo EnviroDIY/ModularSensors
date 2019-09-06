@@ -20,6 +20,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
+#include <LoggerBase.h>  // The modular sensors library
 
 
 // ==========================================================================
@@ -82,7 +83,6 @@ MaximDS3231 ds3231(1);
 // ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-#include <VariableArray.h>
 
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard),
@@ -103,7 +103,6 @@ VariableArray varArray;
 // ==========================================================================
 //     The Logger Object[s]
 // ==========================================================================
-#include <LoggerBase.h>
 
 // Create a logger instance
 Logger dataLogger;

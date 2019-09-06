@@ -21,6 +21,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
+#include <LoggerBase.h>  // The modular sensors library
 
 
 // ==========================================================================
@@ -330,7 +331,6 @@ Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-ef00-123
 // ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-#include <VariableArray.h>
 
 // FORM2: Fill array with already created and named variable pointers
 // We put ALL of the variable pointers into the first array
@@ -376,7 +376,6 @@ VariableArray arrayToGo(variableCount_toGo, variableList_toGo);
 // ==========================================================================
 //     The Logger Object[s]
 // ==========================================================================
-#include <LoggerBase.h>
 
 // Create one new logger instance for the complete array
 Logger loggerAllVars(LoggerID, loggingInterval, &arrayComplete);

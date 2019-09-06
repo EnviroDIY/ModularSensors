@@ -20,6 +20,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
+#include <LoggerBase.h>  // The modular sensors library
 
 
 // ==========================================================================
@@ -1192,7 +1193,6 @@ Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarReso
 // ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-#include <VariableArray.h>
 
 // FORM1: Create pointers for all of the variables from the sensors,
 // at the same time putting them into an array
@@ -1316,7 +1316,6 @@ VariableArray varArray(variableCount, variableList);
 // ==========================================================================
 //     The Logger Object[s]
 // ==========================================================================
-#include <LoggerBase.h>
 
 // Create a new logger instance
 Logger dataLogger(LoggerID, loggingInterval, &varArray);

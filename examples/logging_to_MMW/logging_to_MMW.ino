@@ -20,6 +20,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
+#include <LoggerBase.h>  // The modular sensors library
 
 
 // ==========================================================================
@@ -137,7 +138,6 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 // ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-#include <VariableArray.h>
 
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
@@ -163,7 +163,6 @@ VariableArray varArray(variableCount, variableList);
 // ==========================================================================
 //     The Logger Object[s]
 // ==========================================================================
-#include <LoggerBase.h>
 
 // Create a new logger instance
 Logger dataLogger(LoggerID, loggingInterval, &varArray);
