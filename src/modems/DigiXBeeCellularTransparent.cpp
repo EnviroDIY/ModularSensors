@@ -43,6 +43,7 @@ MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeCellularTransparent);
 MS_MODEM_GET_MODEM_BATTERY_NA(DigiXBeeCellularTransparent);
 MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(DigiXBeeCellularTransparent);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularTransparent);
+MS_MODEM_DISCONNECT_INTERNET(DigiXBeeCellularTransparent);
 
 
 bool DigiXBeeCellularTransparent::extraModemSetup(void)
@@ -139,15 +140,6 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         MS_DBG(F("... failed!"));
     }
     return success;
-}
-
-
-void DigiXBeeCellularTransparent::disconnectInternet(void)
-{
-    MS_START_DEBUG_TIMER;
-    gsmModem.gprsDisconnect();
-    MS_DBG(F("Disconnected from cellular network after"), MS_PRINT_DEBUG_TIMER,
-           F("milliseconds."));
 }
 
 
