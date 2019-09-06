@@ -918,10 +918,19 @@ bool VariableArray::checkVariableUUIDs(void)
     bool success = true;
     for (uint8_t i = 0; i < _variableCount; i++)
     {
-        if (!arrayOfVars[i]->checkUUIDFormat()) // Skip non-unique sensors
+        if (!arrayOfVars[i]->checkUUIDFormat())
         {
             PRINTOUT(arrayOfVars[i]->getVarCode(), F("has an invalid UUID!"));
             success = false;
+        }
+        for (uint8_t j = i + 1; j < _variableCount; j++)
+        {
+            if (arrayOfVars[i]->getVarUUID() == arrayOfVars[j]->getVarUUID())
+            {
+                PRINTOUT(arrayOfVars[i]->getVarCode(),
+                         F("has a non-unique UUID!"));
+                success = false;
+            }
         }
     }
     if (success) PRINTOUT(F("All variable UUID's appear to be correctly formed."));
