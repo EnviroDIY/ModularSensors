@@ -29,8 +29,14 @@ void VariableArray::begin(uint8_t variableCount, Variable *variableList[])
 
     _maxSamplestoAverage = countMaxToAverage();
     _sensorCount = getSensorCount();
+    checkVariableUUIDs();
 }
-
+void VariableArray::begin()
+{
+    _maxSamplestoAverage = countMaxToAverage();
+    _sensorCount = getSensorCount();
+    checkVariableUUIDs();
+}
 
 // This counts and returns the number of calculated variables
 uint8_t VariableArray::getCalculatedVariableCount(void)
@@ -883,7 +889,6 @@ bool VariableArray::isLastVarFromSensor(int arrayIndex)
         // MS_DEEP_DBG(F("   ... Nope, it's calculated!"));
         return false;
     }
-
     else
     {
         String sensNameLoc = arrayOfVars[arrayIndex]->getParentSensorNameAndLocation();
@@ -917,4 +922,32 @@ uint8_t VariableArray::countMaxToAverage(void)
     }
     // MS_DBG(F("The largest number of measurements to average will be"), numReps);
     return numReps;
+}
+
+
+// Check that all variable have valid UUID's, if they are assigned
+bool VariableArray::checkVariableUUIDs(void)
+{
+    bool success = true;
+    for (uint8_t i = 0; i < _variableCount; i++)
+    {
+        if (!arrayOfVars[i]->checkUUIDFormat())
+        {
+            PRINTOUT(arrayOfVars[i]->getVarCode(), F("has an invalid UUID!"));
+            success = false;
+        }
+        for (uint8_t j = i + 1; j < _variableCount; j++)
+        {
+            if (arrayOfVars[i]->getVarUUID() == arrayOfVars[j]->getVarUUID())
+            {
+                PRINTOUT(arrayOfVars[i]->getVarCode(),
+                         F("has a non-unique UUID!"));
+                success = false;
+                // don't keep looping
+                j = _variableCount;
+            }
+        }
+    }
+    if (success) PRINTOUT(F("All variable UUID's appear to be correctly formed."));
+    return success;
 }

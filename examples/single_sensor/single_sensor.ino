@@ -67,7 +67,7 @@ float calcDepth(void)
 // VariableUnit must be a value from http://vocabulary.odm2.org/units/
 Variable waterDepth(calcDepth, 0,
                     "waterDepth", "millimeter",
-                    "sonarDepth", "12345678-abcd-1234-efgh-1234567890ab");
+                    "sonarDepth", "12345678-abcd-1234-ef00-1234567890ab");
 
 
 

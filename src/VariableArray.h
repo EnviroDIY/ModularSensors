@@ -47,6 +47,7 @@ public:
     // actually have been created unless we wait until in the setup or loop
     // function of the main program.
     void begin(uint8_t variableCount, Variable *variableList[]);
+    void begin();
 
     // Leave the internal variable list public
     Variable **arrayOfVars;
@@ -95,6 +96,7 @@ protected:
 private:
     bool isLastVarFromSensor(int arrayIndex);
     uint8_t countMaxToAverage(void);
+    bool checkVariableUUIDs(void);
 
 #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
     template<typename T>

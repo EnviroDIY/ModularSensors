@@ -102,7 +102,10 @@ bool TIINA219::addSingleMeasurementResult(void)
         MS_DBG(F("  Bus Voltage [V]:"), busV_V);
         MS_DBG(F("  Power [mW]:"), power_mW);
     }
-    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    else
+    {
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    }
 
     verifyAndAddMeasurementResult(INA219_CURRENT_MA_VAR_NUM, current_mA);
     verifyAndAddMeasurementResult(INA219_BUS_VOLTAGE_VAR_NUM, busV_V);

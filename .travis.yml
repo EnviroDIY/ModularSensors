@@ -48,9 +48,6 @@ install:
     - pio lib -g install SoftwareWire
     - pio update
 script:
-    # - platformio ci --project-option="lib_ldf_mode = deep+" --project-option="lib_ignore = RTCZero" --board=mayfly  --board=megaatmega2560
-    # - platformio ci --project-option="lib_ldf_mode = deep+" --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial, NeoSWSerial, SoftI2CMaster" --board=adafruit_feather_m0
-    # - platformio ci --project-option="lib_ldf_mode = deep+" --project-option="lib_ignore = SoftwareSerial_ExtInts, AltSoftSerial, NeoSWSerial, SoftI2CMaster" --board=sodaq_autonomo
     - platformio ci --project-conf="travis/platformio.ini"
 
 matrix:
@@ -60,29 +57,20 @@ matrix:
         script: jsonlint -q library.json
 
       - env:
-          - PLATFORMIO_CI_SRC=examples/single_sensor/
-          # - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT"
+          - PLATFORMIO_CI_SRC=examples/single_sensor/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
       - env:
-          - PLATFORMIO_CI_SRC=examples/simple_logging/
-          # - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT"
+          - PLATFORMIO_CI_SRC=examples/simple_logging/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
       - env:
-          - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/
-          # - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT"
+          - PLATFORMIO_CI_SRC=examples/DRWI_CitSci/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
       - env:
-          - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/
-          # - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT"
+          - PLATFORMIO_CI_SRC=examples/DRWI_NoCellular/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
       - env:
-          - PLATFORMIO_CI_SRC=examples/double_logger/
-          # - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT"
+          - PLATFORMIO_CI_SRC=examples/double_logger/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
       - env:
-          - PLATFORMIO_CI_SRC=examples/baro_rho_correction/
-          # - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT"
+          - PLATFORMIO_CI_SRC=examples/baro_rho_correction/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
       - env:
-          - PLATFORMIO_CI_SRC=examples/data_saving/
-          # - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT"
+          - PLATFORMIO_CI_SRC=examples/data_saving/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
       - env:
-          - PLATFORMIO_CI_SRC=examples/logging_to_ThingSpeak/
-          # - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT -D MQTT_MAX_PACKET_SIZE=240"
+          - PLATFORMIO_CI_SRC=examples/logging_to_ThingSpeak/ PLATFORMIO_DEFAULT_ENVS="mayfly, adafruit_feather_m0, autonomo, mega"
       - env:
           - PLATFORMIO_CI_SRC=examples/menu_a_la_carte/
-          # - PLATFORMIO_BUILD_FLAGS="-D SDI12_EXTERNAL_PCINT -D NEOSWSERIAL_EXTERNAL_PCINT -D MQTT_MAX_PACKET_SIZE=240 -D ENABLE_SERIAL2 -D ENABLE_SERIAL3"

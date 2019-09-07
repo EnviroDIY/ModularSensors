@@ -200,7 +200,10 @@ void Variable::attachSensor(Sensor *parentSense)
                parentSensor->getSensorLocation(), F("..."));*/
         parentSensor->registerVariable(_sensorVarNum, this);
     }
-    // else MS_DBG(F("This is a calculated variable.  It cannot have a parent sensor!"));
+    // else
+    // {
+    //     MS_DBG(F("This is a calculated variable.  It cannot have a parent sensor!"));
+    // }
 }
 
 
@@ -210,7 +213,7 @@ void Variable::onSensorUpdate(Sensor *parentSense)
 {
     if (!isCalculated)
     {
-        _currentValue = parentSensor->sensorValues[_sensorVarNum];
+        _currentValue = parentSense->sensorValues[_sensorVarNum];
         MS_DBG(F("... received"), _currentValue);
     }
 }
@@ -264,7 +267,10 @@ void Variable::setCalculation(float (*calcFxn)())
         // MS_DBG(F("Calculation function set"));
         _calcFxn = calcFxn;
     }
-    // else MS_DBG(F("This is a measured variable.  It cannot have a calculation function!"));
+    // else
+    // {
+    //     MS_DBG(F("This is a measured variable.  It cannot have a calculation function!"));
+    // }
 }
 
 
@@ -315,8 +321,61 @@ String Variable::getVarUUID(void){return _uuid;}
 void Variable::setVarUUID(const char *uuid)
 {
     _uuid = uuid;
-    // if (strlen(_uuid) == 0) MS_DBG(F("No UUID assigned"));
-    // else MS_DBG(F("Variable UUID is"), _uuid);
+    // if (strlen(_uuid) == 0)
+    // {
+    //     MS_DBG(F("No UUID assigned"));
+    // }
+    // else
+    // {
+    //     MS_DBG(F("Variable UUID is"), _uuid);
+    // }
+}
+// This checks that the UUID is properly formatted
+bool Variable::checkUUIDFormat(void)
+{
+    // If no UUID, move on
+    if (strlen(_uuid) == 0)
+    {
+        // MS_DBG(F("No UUID assigned to"), getVarCode());
+        return true;
+    }
+
+    // MS_DBG(F("Variable UUID for"), getVarCode(), F("is"), _uuid);
+    // Should be 36 characters long with dashes
+    if (strlen(_uuid) != 36)
+    {
+        MS_DBG(F("UUID length for"), getVarCode(), '(', _uuid, ')',
+               F("is incorrect, should be 36 characters not"), strlen(_uuid));
+        return false;
+    }
+
+    // "12345678-abcd-1234-ef00-1234567890ab"
+    const char * acceptableChars = "0123456789abcdefABCDEF-";
+    if (_uuid[8] != '-' || _uuid[13] != '-' || _uuid[18] != '-' || _uuid[23] != '-')
+    {
+        MS_DBG(F("UUID format for"), getVarCode(), '(', _uuid, ')',
+               F("is incorrect, expecting dashes at positions 9, 14, 19, and 24."));
+        return false;
+    }
+    for (uint8_t i = 0; i < 36; i++)
+    {
+        bool isAcceptable = false;
+        for (uint8_t j = 0; !isAcceptable && j < 23; j++)
+        {
+            if (_uuid[i] == acceptableChars[j])
+            {
+                isAcceptable = true;
+                j = 23;  // Stop the inner loop
+            }
+        }
+        if (!isAcceptable)
+        {
+            MS_DBG(F("UUID for"), getVarCode(), '(', _uuid, ')',
+                   F("has a bad character"), _uuid[i], F("at"), i+1);
+            return false;
+        }
+    }
+    return true;
 }
 
 

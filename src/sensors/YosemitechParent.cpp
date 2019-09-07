@@ -114,8 +114,14 @@ bool YosemitechParent::wake(void)
     if ( _model == Y511 or _model == Y514 or _model == Y550 or _model == Y4000)
     {
         MS_DBG(F("Activate Brush on"), getSensorNameAndLocation());
-        if (sensor.activateBrush()) MS_DBG(F("Brush activated."));
-        else MS_DBG(F("Brush NOT activated!"));
+        if (sensor.activateBrush())
+        {
+            MS_DBG(F("Brush activated."));
+        }
+        else
+        {
+            MS_DBG(F("Brush NOT activated!"));
+        }
     }
 
     return success;
@@ -154,7 +160,10 @@ bool YosemitechParent::sleep(void)
         _sensorStatus &= 0b10000111;
         MS_DBG(F("Measurements stopped."));
     }
-    else MS_DBG(F("Measurements NOT stopped!"));
+    else
+    {
+        MS_DBG(F("Measurements NOT stopped!"));
+    }
 
     return success;
 }
@@ -311,7 +320,10 @@ bool YosemitechParent::addSingleMeasurementResult(void)
             }
         }
     }
-    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    else
+    {
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    }
 
     // Unset the time stamp for the beginning of this measurement
     _millisMeasurementRequested = 0;

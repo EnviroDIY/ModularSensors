@@ -187,11 +187,14 @@ int16_t DreamHostPublisher::publishData(Client *_outClient)
 
         // Close the TCP/IP connection
         MS_DBG(F("Stopping client"));
-        MS_START_DEBUG_TIMER;
+        MS_RESET_DEBUG_TIMER;
         _outClient->stop();
         MS_DBG(F("Client stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     }
-    else PRINTOUT(F("\n -- Unable to Establish Connection to DreamHost --"));
+    else
+    {
+        PRINTOUT(F("\n -- Unable to Establish Connection to DreamHost --"));
+    }
 
     // Process the HTTP response
     int16_t responseCode = 0;
@@ -204,7 +207,10 @@ int16_t DreamHostPublisher::publishData(Client *_outClient)
         }
         responseCode = atoi(responseCode_char);
     }
-    else responseCode=504;
+    else
+    {
+        responseCode=504;
+    }
 
     PRINTOUT(F("-- Response Code --"));
     PRINTOUT(responseCode);

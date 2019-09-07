@@ -22,7 +22,7 @@
     #if defined(SERIAL_PORT_USBVIRTUAL)
       // #define Serial SERIAL_PORT_USBVIRTUAL
       #define STANDARD_SERIAL_OUTPUT SERIAL_PORT_USBVIRTUAL
-    #elif defined __AVR__
+    #elif defined __AVR__ || defined ARDUINO_ARCH_AVR
       #define STANDARD_SERIAL_OUTPUT Serial
     #endif
 #endif  // ifndef STANDARD_SERIAL_OUTPUT
@@ -49,7 +49,7 @@
     #if defined(SERIAL_PORT_USBVIRTUAL)
       // #define Serial SERIAL_PORT_USBVIRTUAL
       #define DEBUGGING_SERIAL_OUTPUT SERIAL_PORT_USBVIRTUAL
-    #elif defined __AVR__
+    #elif defined __AVR__ || defined ARDUINO_ARCH_AVR
       #define DEBUGGING_SERIAL_OUTPUT Serial
     #endif
 #endif  // ifndef DEBUGGING_SERIAL_OUTPUT
@@ -71,10 +71,12 @@
         }
     }
 #define MS_START_DEBUG_TIMER uint32_t start = millis();
+#define MS_RESET_DEBUG_TIMER start = millis();
 #define MS_PRINT_DEBUG_TIMER millis() - start
 #else
     #define MS_DBG(...)
     #define MS_START_DEBUG_TIMER
+    #define MS_RESET_DEBUG_TIMER
     #define MS_PRINT_DEBUG_TIMER
 #endif  // DEBUGGING_SERIAL_OUTPUT
 
@@ -84,7 +86,7 @@
     #if defined(SERIAL_PORT_USBVIRTUAL)
       // #define Serial SERIAL_PORT_USBVIRTUAL
       #define DEEP_DEBUGGING_SERIAL_OUTPUT SERIAL_PORT_USBVIRTUAL
-    #elif defined __AVR__
+    #elif defined __AVR__ || defined ARDUINO_ARCH_AVR
       #define DEEP_DEBUGGING_SERIAL_OUTPUT Serial
     #endif
 #endif  // ifndef DEEP_DEBUGGING_SERIAL_OUTPUT
@@ -111,7 +113,7 @@
 
 
 /***
-#if defined(__AVR__)
+#if defined __AVR__ || defined ARDUINO_ARCH_AVR
   typedef const __FlashStringHelper* GsmConstStr;
   #define GFP(x) (reinterpret_cast<GsmConstStr>(x))
   #define GF(x)  F(x)

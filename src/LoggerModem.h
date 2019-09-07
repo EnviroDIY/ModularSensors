@@ -28,7 +28,7 @@
 #include <Arduino.h>
 
 
-#define MODEM_NUM_VARIABLES 6
+#define MODEM_NUM_VARIABLES 8
 
 #define MODEM_RSSI_VAR_NUM 0
 #define MODEM_RSSI_RESOLUTION 0
@@ -47,6 +47,12 @@
 
 #define MODEM_TEMPERATURE_VAR_NUM 5
 #define MODEM_TEMPERATURE_RESOLUTION 1
+
+#define MODEM_ACTIVATION_VAR_NUM 6
+#define MODEM_ACTIVATION_RESOLUTION 3
+
+#define MODEM_POWERED_VAR_NUM 7
+#define MODEM_POWERED_RESOLUTION 3
 
 /* ===========================================================================
 * Functions for the modem class
@@ -72,7 +78,7 @@ public:
 
     virtual bool setup(void) override;
     virtual bool wake(void) override;
-    virtual bool addSingleMeasurementResult(void);
+    virtual bool addSingleMeasurementResult(void) override;
 
     // Do NOT turn the modem on and off with the regular power up and down!
     // This is because when it is run in an array with other sensors, we will
@@ -85,7 +91,6 @@ protected:
     // We override these because the modem can tell us if it's ready or not
 
     // The modem is "stable" when it responds to AT commands.
-    // For a WiFi modem, this actually sets the network connection parameters!!
     virtual bool isStable(bool debug=false) override;
 
     // This checks to see if enough time has passed for measurement completion
@@ -181,6 +186,9 @@ protected:
     uint32_t _lastNISTrequest;
     uint32_t _lastATCheck;
     uint32_t _lastConnectionCheck;
+
+    float _priorActivationDuration;
+    float _priorPoweredDuration;
 
     String _modemName;
 
@@ -318,6 +326,50 @@ public:
                  "temperature", "degreeCelsius", "modemTemp")
     {}
     ~Modem_Temp(){}
+};
+
+
+// Defines a diagnostic variable for how long the modem was last active
+class Modem_ActivationDuration : public Variable
+{
+public:
+    Modem_ActivationDuration(Sensor *parentSense,
+               const char *uuid = "",
+               const char *varCode = "modemActiveSec")
+      : Variable(parentSense,
+                 (const uint8_t)MODEM_ACTIVATION_VAR_NUM,
+                 (uint8_t)MODEM_ACTIVATION_RESOLUTION,
+                 "timeElapsed", "second",
+                 varCode, uuid)
+    {}
+    Modem_ActivationDuration()
+      : Variable((const uint8_t)MODEM_ACTIVATION_VAR_NUM,
+                 (uint8_t)MODEM_ACTIVATION_RESOLUTION,
+                 "timeElapsed", "second", "modemActiveSec")
+    {}
+    ~Modem_ActivationDuration(){}
+};
+
+
+// Defines a diagnostic variable for how long the modem was last active
+class Modem_PoweredDuration : public Variable
+{
+public:
+    Modem_PoweredDuration(Sensor *parentSense,
+               const char *uuid = "",
+               const char *varCode = "modemPoweredSec")
+      : Variable(parentSense,
+                 (const uint8_t)MODEM_POWERED_VAR_NUM,
+                 (uint8_t)MODEM_POWERED_RESOLUTION,
+                 "timeElapsed", "second",
+                 varCode, uuid)
+    {}
+    Modem_PoweredDuration()
+      : Variable((const uint8_t)MODEM_POWERED_VAR_NUM,
+                 (uint8_t)MODEM_POWERED_RESOLUTION,
+                 "timeElapsed", "second", "modemPoweredSec")
+    {}
+    ~Modem_PoweredDuration(){}
 };
 
 #endif  // Header Guard

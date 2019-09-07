@@ -143,7 +143,10 @@ bool AtlasParent::sleep(void)
         _sensorStatus &= 0b10000111;
         MS_DBG(F("Done"));
     }
-    else MS_DBG(getSensorNameAndLocation(), F("did not accept sleep command"));
+    else
+    {
+        MS_DBG(getSensorNameAndLocation(), F("did not accept sleep command"));
+    }
 
     return success;
 }

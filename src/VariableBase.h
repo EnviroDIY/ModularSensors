@@ -114,6 +114,7 @@ public:
     // This gets/sets the variable UUID, if one has been assigned
     String getVarUUID(void);
     void setVarUUID(const char *uuid);
+    bool checkUUIDFormat(void);
 
     // This returns the current value of the variable as a float
     float getValue(bool updateValue = false);

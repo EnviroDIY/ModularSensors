@@ -58,6 +58,7 @@ Temporary Items
 .pio/*
 .clang_complete
 .gcc-flags.json
+.atomrc.cson
 lib/readme.txt
 include/readme.txt
 /platformio.ini

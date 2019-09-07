@@ -86,7 +86,8 @@ bool MPL115A2::addSingleMeasurementResult(void)
         if (isnan(temp)) temp = -9999;
         if (isnan(press)) press = -9999;
 
-        if (press > 115.0 || temp < -40.0) {
+        if (press > 115.0 || temp < -40.0)
+        {
             temp = -9999;
             press = -9999;
         }
@@ -94,7 +95,10 @@ bool MPL115A2::addSingleMeasurementResult(void)
         MS_DBG(F("  Temperature:"), temp);
         MS_DBG(F("  Pressure:"), press);
     }
-    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    else
+    {
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    }
 
     verifyAndAddMeasurementResult(MPL115A2_TEMP_VAR_NUM, temp);
     verifyAndAddMeasurementResult(MPL115A2_PRESSURE_VAR_NUM, press);

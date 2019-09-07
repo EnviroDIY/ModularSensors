@@ -180,7 +180,8 @@ int16_t ThingSpeakPublisher::publishData(Client *_outClient)
     // Closing any stray client sockets here ensures that a new client socket
     // is opened to the right place.
     // client is connected when a different socket is open
-    if (_outClient->connected()) {
+    if (_outClient->connected())
+    {
         _outClient->stop();
     }
 
@@ -211,7 +212,7 @@ int16_t ThingSpeakPublisher::publishData(Client *_outClient)
 
     // Disconnect from MQTT
     MS_DBG(F("Disconnecting from MQTT"));
-    MS_START_DEBUG_TIMER
+    MS_RESET_DEBUG_TIMER
     _mqttClient.disconnect();
     MS_DBG(F("Disconnected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     return retVal;

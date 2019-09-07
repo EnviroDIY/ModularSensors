@@ -170,14 +170,20 @@ bool BoschBME280::addSingleMeasurementResult(void)
             humid = -9999;
             alt = -9999;
         }
-        else success = true;
+        else
+        {
+            success = true;
+        }
 
         MS_DBG(F("  Temperature:"), temp, F("°C"));
         MS_DBG(F("  Humidity:"), humid, F("%RH"));
         MS_DBG(F("  Barometric Pressure:"), press, F("Pa"));
         MS_DBG(F("  Calculated Altitude:"), alt, F("m ASL"));
     }
-    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    else
+    {
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    }
 
     verifyAndAddMeasurementResult(BME280_TEMP_VAR_NUM, temp);
     verifyAndAddMeasurementResult(BME280_HUMIDITY_VAR_NUM, humid);

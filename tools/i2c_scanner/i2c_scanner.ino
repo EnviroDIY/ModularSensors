@@ -72,7 +72,8 @@ void scan(THEWIRE i2c){
     i2c.beginTransmission(address);
     error = i2c.endTransmission();
 
-    if (error == 0) {
+    if (error == 0)
+    {
       Serial.print("    I2C device found at address 0x");
       if (address<16)
         Serial.print("0");
@@ -81,7 +82,8 @@ void scan(THEWIRE i2c){
 
       nDevices++;
     }
-    else if (error==4) {
+    else if (error==4)
+    {
       Serial.print("    Unknown error at address 0x");
       if (address<16)
         Serial.print("0");

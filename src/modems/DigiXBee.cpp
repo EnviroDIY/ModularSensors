@@ -49,9 +49,7 @@ bool DigiXBee::modemWakeFxn(void)
 
 bool DigiXBee::modemSleepFxn(void)
 {
-    if (_powerPin >= 0)  // Turns on when power is applied
-        return true;
-    else if (_modemSleepRqPin >= 0)
+    if (_modemSleepRqPin >= 0)
     {
         MS_DBG(F("Setting pin"), _modemSleepRqPin, F("HIGH to put XBee to sleep"));
         digitalWrite(_modemSleepRqPin, HIGH);
@@ -61,11 +59,4 @@ bool DigiXBee::modemSleepFxn(void)
     {
         return true;
     }
-}
-
-
-void DigiXBee::disconnectInternet(void)
-{
-    // XBee doesn't like to disconnect AT ALL, so we're doing nothing
-    // If you do disconnect, you must power cycle before you can reconnecte
 }
