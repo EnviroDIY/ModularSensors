@@ -50,7 +50,7 @@ bool TIINA219::setup(void)
 
 bool TIINA219::wake(void)
 {
-    // Sensor::wake() checks if the power pin is on and sets the wake timestamp 
+    // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
 
@@ -91,7 +91,10 @@ bool TIINA219::addSingleMeasurementResult(void)
         MS_DBG(F("  Bus Voltage [V]:"), busV_V);
         MS_DBG(F("  Power [mW]:"), power_mW);
     }
-    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    else
+    {
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    }
 
     verifyAndAddMeasurementResult(INA219_CURRENT_MA_VAR_NUM, current_mA);
     verifyAndAddMeasurementResult(INA219_BUS_VOLTAGE_VAR_NUM, busV_V);

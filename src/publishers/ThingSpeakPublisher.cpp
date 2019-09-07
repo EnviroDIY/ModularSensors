@@ -180,7 +180,8 @@ int16_t ThingSpeakPublisher::publishData(Client *_outClient)
     // Closing any stray client sockets here ensures that a new client socket
     // is opened to the right place.
     // client is connected when a different socket is open
-    if (_outClient->connected()) {
+    if (_outClient->connected())
+    {
         _outClient->stop();
     }
 

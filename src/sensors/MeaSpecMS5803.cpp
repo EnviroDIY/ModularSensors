@@ -114,7 +114,10 @@ bool MeaSpecMS5803::addSingleMeasurementResult(void)
         MS_DBG(F("  Temperature:"), temp);
         MS_DBG(F("  Pressure:"), press);
     }
-    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    else
+    {
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    }
 
     verifyAndAddMeasurementResult(MS5803_TEMP_VAR_NUM, temp);
     verifyAndAddMeasurementResult(MS5803_PRESSURE_VAR_NUM, press);
