@@ -102,7 +102,7 @@ HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemStatusPin = -1;    // MCU pin used to read modem status (-1 if not applicable)
 const int8_t modemResetPin = -1;     // MCU pin connected to modem reset pin (-1 if unconnected)
-const int8_t modemSleepRqPin = 19;   // MCU pin used for wake from light sleep (-1 if not applicable)
+const int8_t modemSleepRqPin = -1;   // MCU pin used for wake from light sleep (-1 if not applicable)
 const int8_t modemLEDPin = redLED;   // MCU pin connected an LED to show modem status (-1 if unconnected)
 
 // Network connection information
@@ -123,7 +123,7 @@ const long modemBaud = 115200;  // Communication speed of the modem
 // AT+UART_CUR or AT+UART_DEF command *before* attempting control with this library.
 // Pins for light sleep on the ESP8266.
 // For power savings, I recommend NOT using these if it's possible to use deep sleep.
-const int8_t espSleepRqPin = 13;  // Pin ON THE ESP8266 to assign for light sleep request (-1 if not applicable)
+const int8_t espSleepRqPin = -1;  // Pin ON THE ESP8266 to assign for light sleep request (-1 if not applicable)
 const int8_t espStatusPin = -1;  // Pin ON THE ESP8266 to assign for light sleep status (-1 if not applicable)
 EspressifESP8266 modemESP(&modemSerial,
                           modemVccPin, modemStatusPin,
@@ -197,6 +197,9 @@ const uint8_t sonar1NumberReadings = 3;  // The number of readings to average
 // Create a MaxBotix Sonar sensor object
 MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger, sonar1NumberReadings);
 
+// Create an ultrasonic range variable pointer
+// Variable *sonar1Range = new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab");
+
 
 // ==========================================================================
 //    Maxim DS18 One Wire Temperature Sensor
@@ -220,29 +223,29 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 // The function should take no input (void) and return a float.
 // You can use any named variable pointers to access values by way of variable->getValue()
 
-float calculateVariableValue(void)
-{
-    float calculatedResult = -9999;  // Always safest to start with a bad value
-    // float inputVar1 = variable1->getValue();
-    // float inputVar2 = variable2->getValue();
-    // if (inputVar1 != -9999 && inputVar2 != -9999)  // make sure both inputs are good
-    // {
-    //     calculatedResult = inputVar1 + inputVar2;
-    // }
-    return calculatedResult;
-}
-
-// Properties of the calculated variable
-const uint8_t calculatedVarResolution = 3;  // The number of digits after the decimal place
-const char *calculatedVarName = "waterDepth";  // This must be a value from http://vocabulary.odm2.org/variablename/
-const char *calculatedVarUnit = "meter";  // This must be a value from http://vocabulary.odm2.org/units/
-const char *calculatedVarCode = "sonarDepth";  // A short code for the variable
-const char *calculatedVarUUID = "12345678-abcd-1234-ef00-1234567890ab";  // The (optional) universallly unique identifier
-
-// Finally, Create a calculated variable pointer and return a variable pointer to it
-Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarResolution,
-                                       calculatedVarName, calculatedVarUnit,
-                                       calculatedVarCode, calculatedVarUUID);
+// float calculateVariableValue(void)
+// {
+//     float calculatedDepth = -9999;  // Always safest to start with a bad value
+//     float heightOfSonar = 0.5;
+//     float inputDistance = sonar1Range->getValue();
+//     if (inputDistance != -9999)  // make sure inputs are good
+//     {
+//         calculatedDepth = heightOfSonar - inputDistance/1000;
+//     }
+//     return calculatedDepth;
+// }
+//
+// // Properties of the calculated variable
+// const uint8_t calculatedVarResolution = 3;  // The number of digits after the decimal place
+// const char *calculatedVarName = "waterDepth";  // This must be a value from http://vocabulary.odm2.org/variablename/
+// const char *calculatedVarUnit = "meter";  // This must be a value from http://vocabulary.odm2.org/units/
+// const char *calculatedVarCode = "sonarDepth";  // A short code for the variable
+// const char *calculatedVarUUID = "12345678-abcd-1234-ef00-1234567890ab";  // The (optional) universallly unique identifier
+//
+// // Finally, Create a calculated variable pointer and return a variable pointer to it
+// Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarResolution,
+//                                        calculatedVarName, calculatedVarUnit,
+//                                        calculatedVarCode, calculatedVarUUID);
 
 
 // ==========================================================================
@@ -265,7 +268,8 @@ Variable *variableList[] = {
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
     new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
-    calculatedVar,
+    // sonar1Range,
+    // calculatedVar,
 };
 
 // Count up the number of pointers in the array
