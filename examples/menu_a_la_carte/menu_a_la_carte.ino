@@ -271,7 +271,7 @@ DigiXBeeWifi modem = modemXBWF;
 const long modemBaud = 115200;  // Communication speed of the modem
 // NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The module
 // should be programmed to a slower baud rate or set to auto-baud using the
-// AT+UART_CUR or AT+UART_DEF command *before* attempting conrrol with this library.
+// AT+UART_CUR or AT+UART_DEF command *before* attempting control with this library.
 // Pins for light sleep on the ESP8266.
 // For power savings, I recommend NOT using these if it's possible to use deep sleep.
 const int8_t espSleepRqPin = 13;  // Pin ON THE ESP8266 to assign for light sleep request (-1 if not applicable)

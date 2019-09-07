@@ -68,7 +68,7 @@ bool SDI12Sensors::setup(void)
     // Force the timeout value to be -9999 (This should be library default.)
     _SDI12Internal.setTimeoutValue(-9999);
 
-    #ifdef __AVR__
+    #if defined __AVR__ || defined ARDUINO_ARCH_AVR
     // Allow the SDI-12 library access to interrupts
     MS_DBG(F("Enabling interrupts for SDI12 on pin"), _dataPin);
     enableInterrupt(_dataPin, SDI12::handleInterrupt, CHANGE);

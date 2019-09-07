@@ -930,6 +930,8 @@ bool VariableArray::checkVariableUUIDs(void)
                 PRINTOUT(arrayOfVars[i]->getVarCode(),
                          F("has a non-unique UUID!"));
                 success = false;
+                // don't keep looping
+                j = _variableCount;
             }
         }
     }
