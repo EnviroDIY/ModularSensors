@@ -313,9 +313,12 @@ void Sensor::notifyVariables(void)
                    variables[i]->getVarName(), F("..."));
                    variables[i]->onSensorUpdate(this);
         }
-        else MS_DBG(getSensorNameAndLocation(),
-                    F("has no variable registered for return value"), i,
-                    F("!  No update sent!"));
+        else
+        {
+            MS_DBG(getSensorNameAndLocation(),
+                   F("has no variable registered for return value"), i,
+                   F("!  No update sent!"));
+        }
     }
 }
 
@@ -355,14 +358,18 @@ void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber, float resultVal
     }
     // If the new result is bad and there were only bad results, do nothing
     else if (sensorValues[resultNumber] == -9999 and resultValue == -9999)
+    {
         MS_DBG(F("Ignoring bad result for variable"),
                resultNumber, F("from"), getSensorNameAndLocation(),
                F("; no good results yet."));
+    }
     // If the new result is bad and there were already good results, do nothing
     else if (sensorValues[resultNumber] != -9999 and resultValue == -9999)
+    {
         MS_DBG(F("Ignoring bad result for variable"),
                resultNumber, F("from"), getSensorNameAndLocation(),
                F("; good results already in array."));
+    }
 }
 void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber, int16_t resultValue)
 {

@@ -79,6 +79,8 @@ public:
     TinyGsm gsmModem;
     TinyGsmClient gsmClient;
 
+    void modemPowerUp(void) override;
+
 protected:
     bool didATRespond(void) override;
     bool isInternetAvailable(void) override;
@@ -86,8 +88,6 @@ protected:
     bool modemSleepFxn(void) override;
     bool modemWakeFxn(void) override;
     bool extraModemSetup(void)override;
-
-    void modemPowerUp(void) override;
 
 private:
     const char *_apn;

@@ -114,7 +114,7 @@ void dataPublisher::printTxBuffer(Stream *stream, bool addNewLine)
     stream->write(txBuffer, strlen(txBuffer));
     if (addNewLine) \
     {
-        stream->print("\r\n");        
+        stream->print("\r\n");
     }
     stream->flush();
 
@@ -131,7 +131,10 @@ int16_t dataPublisher::publishData()
         PRINTOUT(F("ERROR! No web client assigned to publish data!"));
         return 0;
     }
-    else return publishData(_inClient);
+    else
+    {
+        return publishData(_inClient);
+    }
 }
 // Duplicates for backwards compatibility
 int16_t dataPublisher::sendData(Client *_outClient)

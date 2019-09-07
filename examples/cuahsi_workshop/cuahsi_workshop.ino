@@ -1,5 +1,5 @@
 /*****************************************************************************
-logging_to_thingSpeak.ino
+menu_a_la_carte.ino
 Written By:  Sara Damiano (sdamiano@stroudcenter.org)
 Development Environment: PlatformIO
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
@@ -9,8 +9,7 @@ Software License: BSD-3.
 
 This example sketch is written for ModularSensors library version 0.23.7
 
-This sketch is an example of logging data to an SD card and sending the data to
-ThingSpeak.
+This shows most of the standard functions of the library at once.
 
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
@@ -30,7 +29,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // The library version this example was written for
 const char *libraryVersion = "0.23.7";
 // The name of this file
-const char *sketchName = "logging_to_ThingSpeak.ino";
+const char *sketchName = "cuahsi_workshop.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "XXXXX";
 // How frequently (in minutes) to log data
@@ -52,8 +51,8 @@ const int8_t buttonPin = 21;      // MCU pin for a button to use to enter debugg
 const int8_t wakePin = A7;        // MCU interrupt/alarm pin to wake from sleep
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
-const int8_t sdCardPwrPin = -1;     // MCU SD card power pin (-1 if not applicable)
-const int8_t sdCardSSPin = 12;      // MCU SD card chip select/slave select pin (must be given!)
+const int8_t sdCardPwrPin = -1;    // MCU SD card power pin (-1 if not applicable)
+const int8_t sdCardSSPin = 12;     // MCU SD card chip select/slave select pin (must be given!)
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create the main processor chip "sensor" - for general metadata
@@ -61,30 +60,67 @@ const char *mcuBoardVersion = "v0.5b";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
 
+
+// ==========================================================================
+//    Settings for Additional Serial Ports
+// ==========================================================================
+
+// The modem and a number of sensors communicate over UART/TTL - often called "serial".
+// "Hardware" serial ports (automatically controlled by the MCU) are generally
+// the most accurate and should be configured and used for as many peripherals
+// as possible.  In some cases (ie, modbus communication) many sensors can share
+// the same serial port.
+
+// NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
+// serial that can be used on any pin supporting interrupts.
+// You can use as many instances of NeoSWSerial as you want.
+// Not all AVR boards are supported by NeoSWSerial.
+#include <NeoSWSerial.h>  // for the stream communication
+const int8_t neoSSerial1Rx = 11;     // data in pin
+const int8_t neoSSerial1Tx = -1;     // data out pin
+NeoSWSerial neoSSerial1(neoSSerial1Rx, neoSSerial1Tx);
+// To use NeoSWSerial in this library, we define a function to receive data
+// This is just a short-cut for later
+void neoSSerial1ISR()
+{
+    NeoSWSerial::rxISR(*portInputRegister(digitalPinToPort(neoSSerial1Rx)));
+}
+
+
 // ==========================================================================
 //    Wifi/Cellular Modem Settings
 // ==========================================================================
 
 // Create a reference to the serial port for the modem
+// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
+// AltSoftSerial &modemSerial = altSoftSerial;  // For software serial if needed
+// NeoSWSerial &modemSerial = neoSSerial1;  // For software serial if needed
 
-// Modem Pins - Describe the physical pin connection of your modem to your board
-const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
-const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
-const int8_t modemResetPin = 20;    // MCU pin connected to modem reset pin (-1 if unconnected)
-const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
-const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem status (-1 if unconnected)
+
+// Modem Pins - Describe the physical pin connection of your modem to your board// DFRobot ESP8266 Bee with Mayfly
+const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemStatusPin = -1;    // MCU pin used to read modem status (-1 if not applicable)
+const int8_t modemResetPin = -1;     // MCU pin connected to modem reset pin (-1 if unconnected)
+const int8_t modemSleepRqPin = -1;   // MCU pin used for wake from light sleep (-1 if not applicable)
+const int8_t modemLEDPin = redLED;   // MCU pin connected an LED to show modem status (-1 if unconnected)
 
 // Network connection information
-const char *wifiId = "xxxxx";  // The WiFi access point
-const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi
+const char *wifiId = "xxxxx";  // The WiFi access point, unnecessary for gprs
+const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecessary for gprs
+
+
+// ==========================================================================
+//    The modem object
+//    Note:  Don't use more than one!
+// ==========================================================================
 
 // For almost anything based on the Espressif ESP8266 using the AT command firmware
 #include <modems/EspressifESP8266.h>
 const long modemBaud = 115200;  // Communication speed of the modem
 // NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The module
 // should be programmed to a slower baud rate or set to auto-baud using the
-// AT+UART_CUR or AT+UART_DEF command.
+// AT+UART_CUR or AT+UART_DEF command *before* attempting control with this library.
 // Pins for light sleep on the ESP8266.
 // For power savings, I recommend NOT using these if it's possible to use deep sleep.
 const int8_t espSleepRqPin = -1;  // Pin ON THE ESP8266 to assign for light sleep request (-1 if not applicable)
@@ -108,33 +144,8 @@ EspressifESP8266 modem = modemESP;
 // Create a DS3231 sensor object
 MaximDS3231 ds3231(1);
 
-
-// ==========================================================================
-//    Campbell OBS 3 / OBS 3+ Analog Turbidity Sensor
-// ==========================================================================
-#include <sensors/CampbellOBS3.h>
-
-const int8_t OBS3Power = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const uint8_t OBS3NumberReadings = 10;
-const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
-// Campbell OBS 3+ Low Range calibration in Volts
-const int8_t OBSLowADSChannel = 0;  // The ADS channel for the low range output
-const float OBSLow_A = 0.000E+00;  // The "A" value (X^2) from the low range calibration
-const float OBSLow_B = 1.000E+00;  // The "B" value (X) from the low range calibration
-const float OBSLow_C = 0.000E+00;  // The "C" value from the low range calibration
-
-// Create a Campbell OBS3+ LOW RANGE sensor object
-CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C, ADSi2c_addr, OBS3NumberReadings);
-
-
-// Campbell OBS 3+ High Range calibration in Volts
-const int8_t OBSHighADSChannel = 1;  // The ADS channel for the high range output
-const float OBSHigh_A = 0.000E+00;  // The "A" value (X^2) from the high range calibration
-const float OBSHigh_B = 1.000E+00;  // The "B" value (X) from the high range calibration
-const float OBSHigh_C = 0.000E+00;  // The "C" value from the high range calibration
-
-// Create a Campbell OBS3+ HIGH RANGE sensor object
-CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B, OBSHigh_C, ADSi2c_addr, OBS3NumberReadings);
+// Create a temperature variable pointer for the DS3231
+// Variable *ds3231Temp = new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab");
 
 
 // ==========================================================================
@@ -152,49 +163,141 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 
 
 // ==========================================================================
+//    External Voltage via TI ADS1115
+// ==========================================================================
+#include <sensors/ExternalVoltage.h>
+
+const int8_t ADSPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t ADSChannel = 2;  // The ADS channel of interest
+const float dividerGain = 10;  //  Default 1/gain for grove voltage divider is 10x
+const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
+const uint8_t VoltReadsToAvg = 1;  // Only read one sample
+
+// Create an External Voltage sensor object
+ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, ADSi2c_addr, VoltReadsToAvg);
+
+
+// ==========================================================================
+//    Maxbotix HRXL Ultrasonic Range Finder
+// ==========================================================================
+#include <sensors/MaxBotixSonar.h>
+
+// Create a reference to the serial port for the sonar
+// A Maxbotix sonar with the trigger pin disconnect CANNOT share the serial port
+// A Maxbotix sonar using the trigger may be able to share but YMMV
+// Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
+// AltSoftSerial &sonarSerial = altSoftSerial;  // For software serial if needed
+NeoSWSerial &sonarSerial = neoSSerial1;  // For software serial if needed
+// SoftwareSerial_ExtInts &sonarSerial = softSerial1;  // For software serial if needed
+
+const int8_t SonarPower = sensorPowerPin;  // Excite (power) pin (-1 if unconnected)
+const int8_t Sonar1Trigger = -1;  // Trigger pin (a unique negative number if unconnected) (D25 = A1)
+const uint8_t sonar1NumberReadings = 3;  // The number of readings to average
+
+// Create a MaxBotix Sonar sensor object
+MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger, sonar1NumberReadings);
+
+// Create an ultrasonic range variable pointer
+// Variable *sonar1Range = new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab");
+
+
+// ==========================================================================
+//    Maxim DS18 One Wire Temperature Sensor
+// ==========================================================================
+#include <sensors/MaximDS18.h>
+
+// OneWire Address [array of 8 hex characters]
+// If only using a single sensor on the OneWire bus, you may omit the address
+const int8_t OneWirePower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t OneWireBus = 4;  // Pin attached to the OneWire Bus (-1 if unconnected) (D24 = A0)
+
+// Create a Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
+MaximDS18 ds18(OneWirePower, OneWireBus);
+
+
+// ==========================================================================
+//    Calculated Variables
+// ==========================================================================
+
+// Create the function to give your calculated result.
+// The function should take no input (void) and return a float.
+// You can use any named variable pointers to access values by way of variable->getValue()
+
+// float calculateVariableValue(void)
+// {
+//     float calculatedDepth = -9999;  // Always safest to start with a bad value
+//     float heightOfSonar = 0.5;
+//     float inputDistance = sonar1Range->getValue();
+//     if (inputDistance != -9999)  // make sure inputs are good
+//     {
+//         calculatedDepth = heightOfSonar - inputDistance/1000;
+//     }
+//     return calculatedDepth;
+// }
+//
+// // Properties of the calculated variable
+// const uint8_t calculatedVarResolution = 3;  // The number of digits after the decimal place
+// const char *calculatedVarName = "waterDepth";  // This must be a value from http://vocabulary.odm2.org/variablename/
+// const char *calculatedVarUnit = "meter";  // This must be a value from http://vocabulary.odm2.org/units/
+// const char *calculatedVarCode = "sonarDepth";  // A short code for the variable
+// const char *calculatedVarUUID = "12345678-abcd-1234-ef00-1234567890ab";  // The (optional) universallly unique identifier
+//
+// // Finally, Create a calculated variable pointer and return a variable pointer to it
+// Variable *calculatedVar = new Variable(calculateVariableValue, calculatedVarResolution,
+//                                        calculatedVarName, calculatedVarUnit,
+//                                        calculatedVarCode, calculatedVarUUID);
+
+
+// ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
 
+// FORM1: Create pointers for all of the variables from the sensors,
+// at the same time putting them into an array
+// NOTE:  Forms one and two can be mixed
 Variable *variableList[] = {
+    new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
     new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
     new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
-    new CampbellOBS3_Turbidity(&osb3low, "12345678-abcd-1234-ef00-1234567890ab", "TurbLow"),
-    new CampbellOBS3_Turbidity(&osb3high, "12345678-abcd-1234-ef00-1234567890ab", "TurbHigh"),
+    new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab"),
+    new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab"),
+    new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
     new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
     new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
-    new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab")
+    new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
+    new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
+    // sonar1Range,
+    // calculatedVar,
 };
+
 // Count up the number of pointers in the array
 int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
-VariableArray varArray;
+VariableArray varArray(variableCount, variableList);
 
 
 // ==========================================================================
 //     The Logger Object[s]
 // ==========================================================================
 
-// Create a logger instance
-Logger dataLogger;
+// Create a new logger instance
+Logger dataLogger(LoggerID, loggingInterval, &varArray);
 
 
 // ==========================================================================
-//    ThingSpeak Data Publisher
+//    A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
 // ==========================================================================
-// Create a channel with fields on ThingSpeak in advance
-// The fields will be sent in exactly the order they are in the variable array.
-// Any custom name or identifier given to the field on ThingSpeak is irrelevant.
-// No more than 8 fields of data can go to any one channel.  Any fields beyond the
-// eighth in the array will be ignored.
-const char *thingSpeakMQTTKey = "XXXXXXXXXXXXXXXX";  // Your MQTT API Key from Account > MyProfile.
-const char *thingSpeakChannelID = "######";  // The numeric channel id for your channel
-const char *thingSpeakChannelKey = "XXXXXXXXXXXXXXXX";  // The Write API Key for your channel
+// Device registration and sampling feature information can be obtained after
+// registration at https://monitormywatershed.org or https://data.envirodiy.org
+const char *registrationToken = "12345678-abcd-1234-ef00-1234567890ab";   // Device registration token
+const char *samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";     // Sampling feature UUID
 
-// Create a data publisher for ThingSpeak
-#include <publishers/ThingSpeakPublisher.h>
-ThingSpeakPublisher TsMqtt;
+// Create a data publisher for the EnviroDIY/WikiWatershed POST endpoint
+#include <publishers/EnviroDIYPublisher.h>
+EnviroDIYPublisher EnviroDIYPOST(dataLogger, &modem.gsmClient, registrationToken, samplingFeature);
 
 
 // ==========================================================================
@@ -230,6 +333,13 @@ float getBatteryVoltage()
 // ==========================================================================
 void setup()
 {
+    // Wait for USB connection to be established by PC
+    // NOTE:  Only use this when debugging - if not connected to a PC, this
+    // could prevent the script from starting
+    #if defined SERIAL_PORT_USBVIRTUAL
+      while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000)){}
+    #endif
+
     // Start the primary serial connection
     Serial.begin(serialBaud);
 
@@ -247,8 +357,16 @@ void setup()
         Serial.println(F(
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
+    // Allow interrupts for software serial
+    #if defined NeoSWSerial_h
+        enableInterrupt(neoSSerial1Rx, neoSSerial1ISR, CHANGE);
+    #endif
+
     // Start the serial connection with the modem
     modemSerial.begin(modemBaud);
+
+    // Start the SoftwareSerial stream for the sonar; it will always be at 9600 baud
+    sonarSerial.begin(9600);
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
@@ -258,14 +376,6 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
-    // Set up some of the power pins so the board boots up with them off
-    // NOTE:  This isn't necessary at all.  The logger begin() function
-    // should leave all power pins off when it finishes.
-    if (modemVccPin >= 0)
-    {
-        pinMode(modemVccPin, OUTPUT);
-        digitalWrite(modemVccPin, LOW);
-    }
     if (sensorPowerPin >= 0)
     {
         pinMode(sensorPowerPin, OUTPUT);
@@ -283,17 +393,28 @@ void setup()
     modem.setModemLED(modemLEDPin);
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin, greenLED);
 
-    // Begin the variable array[s], logger[s], and publisher[s]
-    varArray.begin(variableCount, variableList);
-    dataLogger.begin(LoggerID, loggingInterval, &varArray);
-    TsMqtt.begin(dataLogger, &modem.gsmClient, thingSpeakMQTTKey, thingSpeakChannelID, thingSpeakChannelKey);
+    // Begin the logger
+    dataLogger.begin();
 
     // Note:  Please change these battery voltages to match your battery
     // Check that the battery is OK before powering the modem
-    if (getBatteryVoltage() > 3.7)
+    if (getBatteryVoltage() > 3.65)
     {
         modem.modemPowerUp();
         modem.wake();
+
+        #if F_CPU == 8000000L
+        if (modemBaud > 57600)
+        {
+            modemSerial.begin(115200);
+            modem.gsmModem.sendAT(GF("+UART_DEF=9600,8,1,0,0"));
+            modem.gsmModem.waitResponse();
+            modemSerial.end();
+            modemSerial.begin(9600);
+        }
+        #endif
+
+        modem.setup();
 
         // At very good battery voltage, or with suspicious time stamp, sync the clock
         // Note:  Please change these battery voltages to match your battery
@@ -321,10 +442,6 @@ void setup()
         varArray.setupSensors();
     }
 
-    // Power down the modem
-    modem.disconnectInternet();
-    modem.modemSleepPowerDown();
-
     // Create the log file, adding the default header to it
     // Do this last so we have the best chance of getting the time correct and
     // all sensor names correct
@@ -332,12 +449,28 @@ void setup()
     // the sensor setup we'll skip this too.
     if (getBatteryVoltage() > 3.4)
     {
+        Serial.println(F("Setting up file on SD card"));
         dataLogger.turnOnSDcard(true);  // true = wait for card to settle after power up
         dataLogger.createLogFile(true);  // true = write a new header
         dataLogger.turnOffSDcard(true);  // true = wait for internal housekeeping after write
     }
 
+    // Power down the modem - but only if there will be more than 15 seconds before
+    // the first logging interval - it can take the LTE modem that long to shut down
+    if (Logger::getNowEpoch() % (loggingInterval*60) > 15 ||
+        Logger::getNowEpoch() % (loggingInterval*60) < 6)
+    {
+        Serial.println(F("Putting modem to sleep"));
+        modem.disconnectInternet();
+        modem.modemSleepPowerDown();
+    }
+    else
+    {
+        Serial.println(F("Leaving modem on until after first measurement"));
+    }
+
     // Call the processor sleep
+    Serial.println(F("Putting processor to sleep"));
     dataLogger.systemSleep();
 }
 
@@ -347,6 +480,7 @@ void setup()
 // ==========================================================================
 
 // Use this short loop for simple data logging and sending
+// /*
 void loop()
 {
     // Note:  Please change these battery voltages to match your battery
@@ -356,7 +490,7 @@ void loop()
         dataLogger.systemSleep();
     }
     // At moderate voltage, log data but don't send it over the modem
-    else if (getBatteryVoltage() < 3.7)
+    else if (getBatteryVoltage() < 3.65)
     {
         dataLogger.logData();
     }

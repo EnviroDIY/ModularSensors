@@ -43,6 +43,7 @@ MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeCellularTransparent);
 MS_MODEM_GET_MODEM_BATTERY_NA(DigiXBeeCellularTransparent);
 MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(DigiXBeeCellularTransparent);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularTransparent);
+MS_MODEM_DISCONNECT_INTERNET(DigiXBeeCellularTransparent);
 
 
 bool DigiXBeeCellularTransparent::extraModemSetup(void)
@@ -97,6 +98,9 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         // Make sure pins 7&8 are not set for USB direct on XBee3 units
         gsmModem.sendAT(GF("P1"),0);
         success &= gsmModem.waitResponse() == 1;
+        // Set the socket timeout to 10s
+        gsmModem.sendAT(GF("TM"),64);
+        success &= gsmModem.waitResponse() == 1;
         MS_DBG(F("Setting Cellular Carrier Options..."));
         // Cellular carrier profile - AT&T
         // Hologram says they can use any network, but I've never succeeded with anything but AT&T
@@ -108,9 +112,13 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         gsmModem.waitResponse();  // Don't check for success - only works on LTE
         // Put the network connection parameters into flash
         success &= gsmModem.gprsConnect(_apn);
+        // Make sure airplane mode is off
+        MS_DBG(F("Making sure airplane mode is off..."));
+        gsmModem.sendAT(GF("AM"),0);
+        success &= gsmModem.waitResponse() == 1;
         MS_DBG(F("Ensuring XBee is in transparent mode..."));
         // Make sure we're really in transparent mode
-        gsmModem.sendAT(GF("AP1"));
+        gsmModem.sendAT(GF("AP0"));
         success &= gsmModem.waitResponse() == 1;
         // Write changes to flash and apply them
         MS_DBG(F("Applying changes..."));
@@ -121,9 +129,19 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         MS_DBG(F("Restarting XBee..."));
         success &= gsmModem.restart();
     }
-    else success = false;
-    if (success) MS_DBG(F("... Setup successful!"));
-    else MS_DBG(F("... failed!"));
+    else
+    {
+        success = false;
+    }
+
+    if (success)
+    {
+        MS_DBG(F("... Setup successful!"));
+    }
+    else
+    {
+        MS_DBG(F("... failed!"));
+    }
     return success;
 }
 
@@ -157,9 +175,18 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
     MS_DBG(F("Unix Timestamp returned by NIST (UTC):"), unixTimeStamp);
 
     // If before Jan 1, 2019 or after Jan 1, 2030, most likely an error
-    if (unixTimeStamp < 1546300800) return 0;
-    else if (unixTimeStamp > 1893456000) return 0;
-    else return unixTimeStamp;
+    if (unixTimeStamp < 1546300800)
+    {
+        return 0;
+    }
+    else if (unixTimeStamp > 1893456000)
+    {
+        return 0;
+    }
+    else
+    {
+        return unixTimeStamp;
+    }
 }*/
 uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
 {
@@ -183,6 +210,10 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
     /* XBee's address lookup falters on time.nist.gov */
     IPAddress ip(129, 6, 15, 30);
     connectionMade = gsmClient.connect(ip, 37, 15);
+    /* Wait again so NIST doesn't refuse us! */
+    delay(4000L);
+    /* Try sending something to ensure connection */
+    gsmClient.println('!');
 
     /* Wait up to 5 seconds for a response */
     if (connectionMade)
@@ -204,7 +235,10 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
             return 0;
         }
     }
-    else MS_DBG(F("Unable to open TCP to NIST!"));
+    else
+    {
+        MS_DBG(F("Unable to open TCP to NIST!"));
+    }
     return 0;
 }
 
@@ -251,7 +285,13 @@ bool DigiXBeeCellularTransparent::addSingleMeasurementResult(void)
         MS_DBG(F("Leaving Command Mode:"));
         gsmModem.exitCommand();
     }
-    else MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!"));
+    else
+    {
+        MS_DBG(getSensorName(), F("is not connected to the network; unable to get signal quality!"));
+    }
+
+    MS_DBG(F("PRIOR modem active time:"), String(_priorActivationDuration, 3));
+    MS_DBG(F("PRIOR modem powered time:"), String(_priorPoweredDuration, 3));
 
     verifyAndAddMeasurementResult(MODEM_RSSI_VAR_NUM, rssi);
     verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent);
@@ -259,6 +299,8 @@ bool DigiXBeeCellularTransparent::addSingleMeasurementResult(void)
     verifyAndAddMeasurementResult(MODEM_BATTERY_PERCENT_VAR_NUM, (float)-9999);
     verifyAndAddMeasurementResult(MODEM_BATTERY_VOLT_VAR_NUM, (float)-9999);
     verifyAndAddMeasurementResult(MODEM_TEMPERATURE_VAR_NUM, temp);
+    verifyAndAddMeasurementResult(MODEM_ACTIVATION_VAR_NUM, _priorActivationDuration);
+    verifyAndAddMeasurementResult(MODEM_POWERED_VAR_NUM, _priorPoweredDuration);
 
     /* Unset the time stamp for the beginning of this measurement */
     _millisMeasurementRequested = 0;

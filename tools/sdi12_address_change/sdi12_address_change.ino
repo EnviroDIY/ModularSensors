@@ -142,7 +142,9 @@ void loop(){
   if(!found){
     Serial.println("No sensor detected. Check physical connections."); // couldn't find a sensor. check connections..
   }
-  else{
+  else
+  {
+
     Serial.print("Sensor active at address ");                        // found a sensor!
     Serial.print(oldAddress);
     Serial.println(".");
@@ -160,9 +162,7 @@ void loop(){
       newAdd = Serial.read();
     }
 
-/* the syntax of the change address command is:
-[currentAddress]A[newAddress]! */
-
+    // the syntax of the change address command is:[currentAddress]A[newAddress]!
     Serial.println("Readdressing sensor.");
     myCommand = "";
     myCommand += (char) oldAddress;
@@ -171,8 +171,7 @@ void loop(){
     myCommand += "!";
     mySDI12.sendCommand(myCommand);
 
-/* wait for the response then throw it away by
-clearing the buffer with clearBuffer()  */
+    // wait for the response then throw it away by clearing the buffer with clearBuffer()
     delay(300);
     mySDI12.clearBuffer();
 

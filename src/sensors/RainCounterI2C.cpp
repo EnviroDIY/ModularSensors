@@ -83,7 +83,10 @@ bool RainCounterI2C::addSingleMeasurementResult(void)
         MS_DBG(F("  Rain:"), rain);
         MS_DBG(F("  Tips:"), tips);
     }
-    else MS_DBG(F("No bytes received from"), getSensorNameAndLocation());
+    else
+    {
+        MS_DBG(F("No bytes received from"), getSensorNameAndLocation());
+    }
 
     verifyAndAddMeasurementResult(BUCKET_RAIN_VAR_NUM, rain);
     verifyAndAddMeasurementResult(BUCKET_TIPS_VAR_NUM, tips);

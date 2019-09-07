@@ -200,7 +200,10 @@ void Variable::attachSensor(Sensor *parentSense)
                parentSensor->getSensorLocation(), F("..."));*/
         parentSensor->registerVariable(_sensorVarNum, this);
     }
-    // else MS_DBG(F("This is a calculated variable.  It cannot have a parent sensor!"));
+    // else
+    // {
+    //     MS_DBG(F("This is a calculated variable.  It cannot have a parent sensor!"));
+    // }
 }
 
 
@@ -210,7 +213,7 @@ void Variable::onSensorUpdate(Sensor *parentSense)
 {
     if (!isCalculated)
     {
-        _currentValue = parentSensor->sensorValues[_sensorVarNum];
+        _currentValue = parentSense->sensorValues[_sensorVarNum];
         MS_DBG(F("... received"), _currentValue);
     }
 }
@@ -264,7 +267,10 @@ void Variable::setCalculation(float (*calcFxn)())
         // MS_DBG(F("Calculation function set"));
         _calcFxn = calcFxn;
     }
-    // else MS_DBG(F("This is a measured variable.  It cannot have a calculation function!"));
+    // else
+    // {
+    //     MS_DBG(F("This is a measured variable.  It cannot have a calculation function!"));
+    // }
 }
 
 
@@ -315,8 +321,14 @@ String Variable::getVarUUID(void){return _uuid;}
 void Variable::setVarUUID(const char *uuid)
 {
     _uuid = uuid;
-    // if (strlen(_uuid) == 0) MS_DBG(F("No UUID assigned"));
-    // else MS_DBG(F("Variable UUID is"), _uuid);
+    // if (strlen(_uuid) == 0)
+    // {
+    //     MS_DBG(F("No UUID assigned"));
+    // }
+    // else
+    // {
+    //     MS_DBG(F("Variable UUID is"), _uuid);
+    // }
 }
 // This checks that the UUID is properly formatted
 bool Variable::checkUUIDFormat(void)

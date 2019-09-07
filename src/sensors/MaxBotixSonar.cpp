@@ -183,7 +183,10 @@ bool MaxBotixSonar::addSingleMeasurementResult(void)
             }
         }
     }
-    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    else
+    {
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    }
 
     verifyAndAddMeasurementResult(HRXL_VAR_NUM, result);
 
