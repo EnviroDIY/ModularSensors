@@ -98,6 +98,9 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         // Make sure pins 7&8 are not set for USB direct on XBee3 units
         gsmModem.sendAT(GF("P1"),0);
         success &= gsmModem.waitResponse() == 1;
+        // Set the socket timeout to 10s
+        gsmModem.sendAT(GF("TM"),64);
+        success &= gsmModem.waitResponse() == 1;
         MS_DBG(F("Setting Cellular Carrier Options..."));
         // Cellular carrier profile - AT&T
         // Hologram says they can use any network, but I've never succeeded with anything but AT&T

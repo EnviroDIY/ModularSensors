@@ -117,7 +117,7 @@ const char *wifiPwd = "xxxxx";  // The password for connecting to WiFi, unnecess
 
 // For almost anything based on the Espressif ESP8266 using the AT command firmware
 #include <modems/EspressifESP8266.h>
-const long modemBaud = 9600;  // Communication speed of the modem
+const long modemBaud = 115200;  // Communication speed of the modem
 // NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The module
 // should be programmed to a slower baud rate or set to auto-baud using the
 // AT+UART_CUR or AT+UART_DEF command *before* attempting control with this library.
@@ -398,6 +398,18 @@ void setup()
     {
         modem.modemPowerUp();
         modem.wake();
+
+        #if F_CPU == 8000000L
+        if (modemBaud > 57600)
+        {
+            modemSerial.begin(115200);
+            modem.gsmModem.sendAT(GF("+UART_DEF=9600,8,1,0,0"));
+            modem.gsmModem.waitResponse();
+            modemSerial.end();
+            modemSerial.begin(9600);
+        }
+        #endif
+
         modem.setup();
 
         // At very good battery voltage, or with suspicious time stamp, sync the clock

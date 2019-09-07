@@ -91,7 +91,6 @@ protected:
     // We override these because the modem can tell us if it's ready or not
 
     // The modem is "stable" when it responds to AT commands.
-    // For a WiFi modem, this actually sets the network connection parameters!!
     virtual bool isStable(bool debug=false) override;
 
     // This checks to see if enough time has passed for measurement completion

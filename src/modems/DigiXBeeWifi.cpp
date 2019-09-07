@@ -41,7 +41,7 @@ DigiXBeeWifi::~DigiXBeeWifi(){}
 MS_MODEM_DID_AT_RESPOND(DigiXBeeWifi);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeWifi);
 MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(DigiXBeeWifi);
-MS_MODEM_GET_MODEM_BATTERY_NA(DigiXBeeWifi);
+MS_MODEM_GET_MODEM_BATTERY_AVAILABLE(DigiXBeeWifi);
 MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(DigiXBeeWifi);
 MS_MODEM_CONNECT_INTERNET(DigiXBeeWifi);
 
@@ -88,6 +88,9 @@ bool DigiXBeeWifi::extraModemSetup(void)
         MS_DBG(F("Setting Wifi Network Options..."));
         // Put the network connection parameters into flash
         success &= gsmModem.networkConnect(_ssid, _pwd);
+        // Set the socket timeout to 10s (this is default)
+        gsmModem.sendAT(GF("TM"),64);
+        success &= gsmModem.waitResponse() == 1;
         // Write changes to flash and apply them
         gsmModem.writeChanges();
         // Exit command mode
@@ -110,6 +113,73 @@ bool DigiXBeeWifi::extraModemSetup(void)
 }
 
 
+// This checks to see if enough time has passed for measurement completion
+// In the case of the modem, we consider a measurement to be "complete" when
+// the modem has registered on the network.
+bool DigiXBeeWifi::isMeasurementComplete(bool debug)
+{
+    #if defined MS_DIGIXBEEWIFI_DEBUG
+    debug = true;
+    #endif
+    
+    // If a measurement failed to start, the sensor will never return a result,
+    // so the measurement time is essentially already passed
+    // For a cellular modem nothing happens to "start" a measurement so bit 6
+    // will be set by startSingleMeasurement() as long as bit 4 was set by wake().
+    // For a WiFi modem, startSingleMeasurement actually sets the WiFi connection
+    // parameters.
+    if (!bitRead(_sensorStatus, 6))
+    {
+        if (debug) {MS_DBG(getSensorName(),
+            F("is not measuring and will not return a value!"));}
+        return true;
+    }
+
+    // just defining this to not call multiple times below
+    uint32_t now = millis();
+
+    // We don't want to ping any of the modems too fast so they don't get
+    // overwhelmed.  Make sure we've waited a little
+    if (now - _lastConnectionCheck < 250) return false;
+
+    // Check how long we've been waiting for the network connection and/or a
+    // good measurement of signal quality.
+    uint32_t elapsed_in_wait;
+
+    // Cellular modems and wifi modems with the connection paramters always
+    // saved to flash (like XBees) begin searching for and attempt to register
+    // to the network as soon as they are awake - the GPRS paramters that need
+    // to be set to actually *use* the network don't have to be set until we
+    // make the attempt to use it.
+    elapsed_in_wait = now - _millisSensorActivated;
+
+    // If we're connected AND receiving valid signal strength, measurement is complete
+    // In theory these happen at the same time, but in reality one or the other
+    // may happen first.
+    bool isConnected = gsmModem.isNetworkConnected();
+    if (isConnected)
+    {
+        if (debug) MS_DBG(F("It's been"), (elapsed_in_wait), F("ms, and"),
+               getSensorName(), F("is now registered on the network and reporting valid signal strength!"));
+        _lastConnectionCheck = now;
+        return true;
+    }
+
+    // If we've exceeded the allowed time to wait for the network, give up
+    if (elapsed_in_wait > XBEE_SIGNALQUALITY_TIME_MS)
+    {
+        if (debug) MS_DBG(F("It's been"), (elapsed_in_wait), F("ms, and"),
+               getSensorName(), F("has maxed out wait for network registration!  Ending wait."));
+         // Leave status bits and times set - can still get a valid value!
+        return true;
+    }
+
+    // If the modem isn't registered yet or doesn't report valid signal, we still need to wait
+    _lastConnectionCheck = now;
+    return false;
+}
+
+
 void DigiXBeeWifi::disconnectInternet(void)
 {
     // Wifi XBee doesn't like to disconnect AT ALL, so we're doing nothing
@@ -128,6 +198,8 @@ uint32_t DigiXBeeWifi::getNISTTime(void)
         return 0;
     }
 
+    gsmClient.stop();
+
     /* Must ensure that we do not ping the daylight more than once every 4 seconds */
     /* NIST clearly specifies here that this is a requirement for all software */
     /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
@@ -140,11 +212,12 @@ uint32_t DigiXBeeWifi::getNISTTime(void)
     /* This is the IP address of time-c-g.nist.gov */
     /* XBee's address lookup falters on time.nist.gov */
     IPAddress ip(129, 6, 15, 30);
-    connectionMade = gsmClient.connect(ip, 37, 15);
+    connectionMade = gsmClient.connect(ip, 37);
     /* Wait again so NIST doesn't refuse us! */
     delay(4000L);
     /* Need to send something before connection is made */
     gsmClient.println('!');
+    // delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
 
     /* Wait up to 5 seconds for a response */
     if (connectionMade)
@@ -191,14 +264,22 @@ bool DigiXBeeWifi::getModemSignalQuality(int16_t &rssi, int16_t &percent)
     {
         usedGoogle = true;
         IPAddress ip(8, 8, 8, 8);  // This is one of Google's IP's
-        success &= gsmClient.connect(ip, 80, 5);  // 5 second timeout
+        gsmClient.stop();
+        success &= gsmClient.connect(ip, 80);
     }
     gsmClient.print('!');  // Need to send something before connection is made
     delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
-    if (usedGoogle)
-    {
-        gsmClient.stop(15000L);
-    }
+
+    // MS_DBG(F("Opening connection to NIST to check connection strength..."));
+    // /* This is the IP address of time-c-g.nist.gov */
+    // /* XBee's address lookup falters on time.nist.gov */
+    // IPAddress ip(129, 6, 15, 30);
+    // gsmClient.connect(ip, 37);
+    // /* Wait again so NIST doesn't refuse us! */
+    // delay(4000L);
+    // /* Need to send something before connection is made */
+    // gsmClient.println('!');
+    // delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
 
     // Get signal quality
     // NOTE:  We can't actually distinguish between a bad modem response, no
@@ -208,6 +289,11 @@ bool DigiXBeeWifi::getModemSignalQuality(int16_t &rssi, int16_t &percent)
     MS_DBG(F("Getting signal quality:"));
     signalQual = gsmModem.getSignalQuality();
     MS_DBG(F("Raw signal quality:"), signalQual);
+
+    if (usedGoogle)
+    {
+        gsmClient.stop();
+    }
 
     // Convert signal quality to RSSI
     rssi = signalQual;
@@ -229,32 +315,48 @@ bool DigiXBeeWifi::addSingleMeasurementResult(void)
     int16_t percent = -9999;
     int16_t rssi = -9999;
     float temp = -9999;
+    float volt = -9999;
 
     /* Check a measurement was *successfully* started (status bit 6 set) */
     /* Only go on to get a result if it was */
     if (bitRead(_sensorStatus, 6))
     {
-        // The WiFi XBee needs to make an actual TCP connection and get some sort
-        // of response on that connection before it knows the signal quality.
-        // Connecting to the Google DNS servers for now
-        MS_DBG(F("Opening connection to check connection strength..."));
-        bool usedGoogle = false;
-        if (!gsmModem.gotIPforSavedHost())
-        {
-            usedGoogle = true;
-            IPAddress ip(8, 8, 8, 8);  // This is one of Google's IP's
-            success &= gsmClient.connect(ip, 80, 5);  // 5 second timeout
-        }
-        gsmClient.print('!');  // Need to send something before connection is made
-        delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
-        if (usedGoogle)
-        {
-            gsmClient.stop(15000L);
-        }
 
         // Enter command mode only once
         MS_DBG(F("Entering Command Mode:"));
         gsmModem.commandMode();
+
+        // // The WiFi XBee needs to make an actual TCP connection and get some sort
+        // // of response on that connection before it knows the signal quality.
+        // // Connecting to the Google DNS servers for now
+        // MS_DBG(F("Opening connection to check connection strength..."));
+        // bool usedGoogle = false;
+        // if (!gsmModem.gotIPforSavedHost())
+        // {
+        //     usedGoogle = true;
+        //     IPAddress ip(8, 8, 8, 8);  // This is one of Google's IP's
+        //     gsmClient.stop();
+        //     success &= gsmClient.connect(ip, 80);
+        // }
+        // gsmClient.print('!');  // Need to send something before connection is made
+        // delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
+
+        // Must ensure that we do not ping the daylight more than once every 4 seconds
+        // NIST clearly specifies here that this is a requirement for all software
+        // that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi
+        while (millis() < _lastNISTrequest + 4000) {}
+        // The WiFi XBee needs to make an actual TCP connection and get some sort
+        // of response on that connection before it knows the signal quality.
+        MS_DBG(F("Opening connection to NIST to check connection strength..."));
+        /* This is the IP address of time-c-g.nist.gov */
+        /* XBee's address lookup falters on time.nist.gov */
+        IPAddress ip(129, 6, 15, 30);
+        gsmClient.connect(ip, 37);
+        /* Wait again so NIST doesn't refuse us! */
+        delay(4000L);
+        /* Need to send something before connection is made */
+        gsmClient.println('!');
+        delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
 
         // Get signal quality
         // NOTE:  We can't actually distinguish between a bad modem response, no
@@ -265,12 +367,21 @@ bool DigiXBeeWifi::addSingleMeasurementResult(void)
         signalQual = gsmModem.getSignalQuality();
         MS_DBG(F("Raw signal quality:"), signalQual);
 
+        // if (usedGoogle)
+        // {
+        //     gsmClient.stop();
+        // }
+
         // Convert signal quality to RSSI
         rssi = signalQual;
         percent = getPctFromRSSI(signalQual);
 
         MS_DBG(F("RSSI:"), rssi);
         MS_DBG(F("Percent signal strength:"), percent);
+
+        MS_DBG(F("Getting input voltage temperature:"));
+        volt = gsmModem.getBattVoltage();
+        MS_DBG(F("Modem input battery voltage:"), volt);
 
         MS_DBG(F("Getting chip temperature:"));
         temp = getModemTemperature();
@@ -292,7 +403,7 @@ bool DigiXBeeWifi::addSingleMeasurementResult(void)
     verifyAndAddMeasurementResult(MODEM_PERCENT_SIGNAL_VAR_NUM, percent);
     verifyAndAddMeasurementResult(MODEM_BATTERY_STATE_VAR_NUM, (float)-9999);
     verifyAndAddMeasurementResult(MODEM_BATTERY_PERCENT_VAR_NUM, (float)-9999);
-    verifyAndAddMeasurementResult(MODEM_BATTERY_VOLT_VAR_NUM, (float)-9999);
+    verifyAndAddMeasurementResult(MODEM_BATTERY_VOLT_VAR_NUM, volt);
     verifyAndAddMeasurementResult(MODEM_TEMPERATURE_VAR_NUM, temp);
     verifyAndAddMeasurementResult(MODEM_ACTIVATION_VAR_NUM, _priorActivationDuration);
     verifyAndAddMeasurementResult(MODEM_POWERED_VAR_NUM, _priorPoweredDuration);

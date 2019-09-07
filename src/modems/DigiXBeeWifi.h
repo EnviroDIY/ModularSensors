@@ -53,6 +53,8 @@ public:
     bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
     float getModemTemperature(void) override;
 
+    bool isMeasurementComplete(bool debug = false) override;
+
     uint32_t getNISTTime(void) override;
 
     #ifdef MS_DIGIXBEEWIFI_DEBUG_DEEP
