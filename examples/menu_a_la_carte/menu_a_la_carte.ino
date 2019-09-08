@@ -7,13 +7,34 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.7
+This example sketch is written for ModularSensors library version 0.23.8
 
 This shows most of the standard functions of the library at once.
 
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
+
+// ==========================================================================
+//    Defines for the Arduino IDE
+//    In PlatformIO, set these build flags in your platformio.ini
+// ==========================================================================
+#ifndef SDI12_EXTERNAL_PCINT
+#define SDI12_EXTERNAL_PCINT
+#endif
+#ifndef NEOSWSERIAL_EXTERNAL_PCINT
+#define NEOSWSERIAL_EXTERNAL_PCINT
+#endif
+#ifndef TINY_GSM_RX_BUFFER
+#define TINY_GSM_RX_BUFFER 512
+#endif
+#ifndef TINY_GSM_YIELD_MS
+#define TINY_GSM_YIELD_MS 2
+#endif
+#ifndef MQTT_MAX_PACKET_SIZE
+#define MQTT_MAX_PACKET_SIZE 240
+#endif
+
 
 // ==========================================================================
 //    Include the base required libraries
@@ -27,7 +48,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.7";
+const char *libraryVersion = "0.23.8";
 // The name of this file
 const char *sketchName = "menu_a_la_carte.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -91,9 +112,6 @@ AltSoftSerial altSoftSerial;
 // serial that can be used on any pin supporting interrupts.
 // You can use as many instances of NeoSWSerial as you want.
 // Not all AVR boards are supported by NeoSWSerial.
-#ifndef NEOSWSERIAL_EXTERNAL_PCINT
-#define NEOSWSERIAL_EXTERNAL_PCINT
-#endif
 #include <NeoSWSerial.h>  // for the stream communication
 const int8_t neoSSerial1Rx = 11;     // data in pin
 const int8_t neoSSerial1Tx = -1;     // data out pin
