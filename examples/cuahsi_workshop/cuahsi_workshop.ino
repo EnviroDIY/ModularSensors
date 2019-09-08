@@ -183,14 +183,14 @@ ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, ADSi2c_addr, VoltRead
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
 // AltSoftSerial &sonarSerial = altSoftSerial;  // For software serial if needed
 // NeoSWSerial &sonarSerial = neoSSerial1;  // For software serial if needed
-SoftwareSerial_ExtInts &sonarSerial = softSerial1;  // For software serial if needed
+//SoftwareSerial_ExtInts &sonarSerial = softSerial1;  // For software serial if needed
 
-const int8_t SonarPower = sensorPowerPin;  // Excite (power) pin (-1 if unconnected)
-const int8_t Sonar1Trigger = -1;  // Trigger pin (a unique negative number if unconnected) (D25 = A1)
-const uint8_t sonar1NumberReadings = 3;  // The number of readings to average
+//const int8_t SonarPower = sensorPowerPin;  // Excite (power) pin (-1 if unconnected)
+//const int8_t Sonar1Trigger = -1;  // Trigger pin (a unique negative number if unconnected) (D25 = A1)
+//const uint8_t sonar1NumberReadings = 3;  // The number of readings to average
 
 // Create a MaxBotix Sonar sensor object
-MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger, sonar1NumberReadings);
+//MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger, sonar1NumberReadings);
 
 // Create an ultrasonic range variable pointer
 // Variable *sonar1Range = new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab");
@@ -251,18 +251,18 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 // at the same time putting them into an array
 // NOTE:  Forms one and two can be mixed
 Variable *variableList[] = {
-    new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
+//    new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
     new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
     new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
     new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab"),
-    new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab"),
+//    new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab"),
     new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab"),
-    new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
-    new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
-    new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
-    new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
+//    new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
+//    new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
+//    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
+//    new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
+//    new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
     // sonar1Range,
     // calculatedVar,
 };
@@ -361,7 +361,7 @@ void setup()
     modemSerial.begin(modemBaud);
 
     // Start the SoftwareSerial stream for the sonar; it will always be at 9600 baud
-    sonarSerial.begin(9600);
+   // sonarSerial.begin(9600);
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
