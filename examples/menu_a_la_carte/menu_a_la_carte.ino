@@ -91,6 +91,9 @@ AltSoftSerial altSoftSerial;
 // serial that can be used on any pin supporting interrupts.
 // You can use as many instances of NeoSWSerial as you want.
 // Not all AVR boards are supported by NeoSWSerial.
+#ifndef NEOSWSERIAL_EXTERNAL_PCINT
+#define NEOSWSERIAL_EXTERNAL_PCINT
+#endif
 #include <NeoSWSerial.h>  // for the stream communication
 const int8_t neoSSerial1Rx = 11;     // data in pin
 const int8_t neoSSerial1Tx = -1;     // data out pin

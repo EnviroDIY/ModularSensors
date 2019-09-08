@@ -71,20 +71,15 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // as possible.  In some cases (ie, modbus communication) many sensors can share
 // the same serial port.
 
-// NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
-// serial that can be used on any pin supporting interrupts.
-// You can use as many instances of NeoSWSerial as you want.
-// Not all AVR boards are supported by NeoSWSerial.
-#include <NeoSWSerial.h>  // for the stream communication
-const int8_t neoSSerial1Rx = 11;     // data in pin
-const int8_t neoSSerial1Tx = -1;     // data out pin
-NeoSWSerial neoSSerial1(neoSSerial1Rx, neoSSerial1Tx);
-// To use NeoSWSerial in this library, we define a function to receive data
-// This is just a short-cut for later
-void neoSSerial1ISR()
-{
-    NeoSWSerial::rxISR(*portInputRegister(digitalPinToPort(neoSSerial1Rx)));
-}
+// The "standard" software serial library uses interrupts that conflict
+// with several other libraries used within this program, we must use a
+// version of software serial that has been stripped of interrupts.
+// NOTE:  Only use if necessary.  This is not a very accurate serial port!
+const int8_t softSerialRx = 11;     // data in pin
+const int8_t softSerialTx = -1;     // data out pin
+
+#include <SoftwareSerial_ExtInts.h>  // for the stream communication
+SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 
 
 // ==========================================================================
@@ -187,8 +182,8 @@ ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, ADSi2c_addr, VoltRead
 // A Maxbotix sonar using the trigger may be able to share but YMMV
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
 // AltSoftSerial &sonarSerial = altSoftSerial;  // For software serial if needed
-NeoSWSerial &sonarSerial = neoSSerial1;  // For software serial if needed
-// SoftwareSerial_ExtInts &sonarSerial = softSerial1;  // For software serial if needed
+// NeoSWSerial &sonarSerial = neoSSerial1;  // For software serial if needed
+SoftwareSerial_ExtInts &sonarSerial = softSerial1;  // For software serial if needed
 
 const int8_t SonarPower = sensorPowerPin;  // Excite (power) pin (-1 if unconnected)
 const int8_t Sonar1Trigger = -1;  // Trigger pin (a unique negative number if unconnected) (D25 = A1)
@@ -358,8 +353,8 @@ void setup()
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
     // Allow interrupts for software serial
-    #if defined NeoSWSerial_h
-        enableInterrupt(neoSSerial1Rx, neoSSerial1ISR, CHANGE);
+    #if defined SoftwareSerial_ExtInts_h
+        enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
     #endif
 
     // Start the serial connection with the modem
