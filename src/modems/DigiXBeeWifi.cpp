@@ -121,7 +121,7 @@ bool DigiXBeeWifi::isMeasurementComplete(bool debug)
     #if defined MS_DIGIXBEEWIFI_DEBUG
     debug = true;
     #endif
-    
+
     // If a measurement failed to start, the sensor will never return a result,
     // so the measurement time is essentially already passed
     // For a cellular modem nothing happens to "start" a measurement so bit 6
@@ -159,8 +159,11 @@ bool DigiXBeeWifi::isMeasurementComplete(bool debug)
     bool isConnected = gsmModem.isNetworkConnected();
     if (isConnected)
     {
-        if (debug) MS_DBG(F("It's been"), (elapsed_in_wait), F("ms, and"),
+        if (debug)
+        {
+            MS_DBG(F("It's been"), (elapsed_in_wait), F("ms, and"),
                getSensorName(), F("is now registered on the network and reporting valid signal strength!"));
+        }
         _lastConnectionCheck = now;
         return true;
     }
@@ -168,8 +171,12 @@ bool DigiXBeeWifi::isMeasurementComplete(bool debug)
     // If we've exceeded the allowed time to wait for the network, give up
     if (elapsed_in_wait > XBEE_SIGNALQUALITY_TIME_MS)
     {
-        if (debug) MS_DBG(F("It's been"), (elapsed_in_wait), F("ms, and"),
-               getSensorName(), F("has maxed out wait for network registration!  Ending wait."));
+        if (debug)
+        {
+            MS_DBG(F("It's been"), (elapsed_in_wait), F("ms, and"),
+                   getSensorName(),
+                   F("has maxed out wait for network registration!  Ending wait."));
+        }
          // Leave status bits and times set - can still get a valid value!
         return true;
     }

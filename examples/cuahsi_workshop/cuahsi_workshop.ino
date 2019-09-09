@@ -109,10 +109,10 @@ HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
 
 // Modem Pins - Describe the physical pin connection of your modem to your board// DFRobot ESP8266 Bee with Mayfly
-const int8_t modemVccPin = A5;       // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemVccPin = -1;       // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemStatusPin = -1;    // MCU pin used to read modem status (-1 if not applicable)
 const int8_t modemResetPin = -1;     // MCU pin connected to modem reset pin (-1 if unconnected)
-const int8_t modemSleepRqPin = 19;   // MCU pin used for wake from light sleep (-1 if not applicable)
+const int8_t modemSleepRqPin = -1;   // MCU pin used for wake from light sleep (-1 if not applicable)
 const int8_t modemLEDPin = redLED;   // MCU pin connected an LED to show modem status (-1 if unconnected)
 
 // Network connection information
@@ -133,7 +133,7 @@ const long modemBaud = 115200;  // Communication speed of the modem
 // AT+UART_CUR or AT+UART_DEF command *before* attempting control with this library.
 // Pins for light sleep on the ESP8266.
 // For power savings, I recommend NOT using these if it's possible to use deep sleep.
-const int8_t espSleepRqPin = 13;  // GPIO# ON THE ESP8266 to assign for light sleep request (-1 if not applicable)
+const int8_t espSleepRqPin = -1;  // GPIO# ON THE ESP8266 to assign for light sleep request (-1 if not applicable)
 const int8_t espStatusPin = -1;  // GPIO# ON THE ESP8266 to assign for light sleep status (-1 if not applicable)
 EspressifESP8266 modemESP(&modemSerial,
                           modemVccPin, modemStatusPin,

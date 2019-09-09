@@ -63,7 +63,7 @@ bool Sodaq2GBeeR6::modemWakeFxn(void)
 
 bool Sodaq2GBeeR6::modemSleepFxn(void)
 {
-    MS_DBG(F("Sending pin"), _modemSleepRqPin, F("low to stop GPRSBeeR6"));
+    MS_DBG(F("Setting Pin"), _modemSleepRqPin, F("low to stop GPRSBeeR6"));
     digitalWrite(_modemSleepRqPin, LOW);
     return true;
 }
