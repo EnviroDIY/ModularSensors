@@ -119,7 +119,7 @@ bool EspressifESP8266::modemWakeFxn(void)
         MS_DBG(F("Sending a pulse to pin"), _modemSleepRqPin,
                F("to wake ESP8266 from light sleep"));
         digitalWrite(_modemSleepRqPin, LOW);
-        delay(1);
+        delay(5);
         digitalWrite(_modemSleepRqPin, HIGH);
         // Have to make sure echo is off or all AT commands will be confused
         gsmModem.sendAT(GF("E0"));
@@ -157,6 +157,20 @@ bool EspressifESP8266::modemSleepFxn(void)
     // Use this if you don't have access to the ESP8266's reset pin for deep sleep but you
     // do have access to another GPIO pin for light sleep.  This also sets up another
     // pin to view the sleep status.
+    // AT+WAKEUPGPIO=<enable>,<trigger_GPIO>,<trigger_level>[,<awake_GPIO>,<awake_level>]
+    // <enable>
+    //   1: ESP8266 can be woken up from light-sleep by GPIO.
+    // <trigger_GPIO>
+    //   Sets the GPIO to wake ESP8266 up; range of value: [0, 15].
+    // <trigger_level>
+    //   0: The GPIO wakes up ESP8266 on low level.
+    // [<awake_GPIO>]
+    //   Optional; this parameter is used to set a GPIO as a flag of ESP8266’s
+    //   being awoken form Light-sleep; range of value: [0, 15].
+    // [<awake_level>]
+    //   Optional;
+    //   0: The GPIO is set to be low level after the wakeup process.
+    //   1: The GPIO is set to be high level after the wakeup process.
     else if (_modemSleepRqPin >= 0 && _dataPin >= 0)
     {
         MS_DBG(F("Requesting light sleep for ESP8266 with status indication"));
@@ -187,6 +201,10 @@ bool EspressifESP8266::modemSleepFxn(void)
 // Set up the light-sleep status pin, if applicable
 bool EspressifESP8266::extraModemSetup(void)
 {
+    if (_modemSleepRqPin >= 0)
+    {
+        digitalWrite(_modemSleepRqPin, OUTPUT);
+    }
     gsmModem.init();
     gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();

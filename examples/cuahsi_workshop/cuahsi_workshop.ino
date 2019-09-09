@@ -19,9 +19,9 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Defines for the Arduino IDE
 //    In PlatformIO, set these build flags in your platformio.ini
 // ==========================================================================
-#ifndef SDI12_EXTERNAL_PCINT
-#define SDI12_EXTERNAL_PCINT
-#endif
+// #ifndef SDI12_EXTERNAL_PCINT
+// #define SDI12_EXTERNAL_PCINT
+// #endif
 #ifndef TINY_GSM_RX_BUFFER
 #define TINY_GSM_RX_BUFFER 512
 #endif
@@ -112,7 +112,7 @@ HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemStatusPin = -1;    // MCU pin used to read modem status (-1 if not applicable)
 const int8_t modemResetPin = -1;     // MCU pin connected to modem reset pin (-1 if unconnected)
-const int8_t modemSleepRqPin = -1;   // MCU pin used for wake from light sleep (-1 if not applicable)
+const int8_t modemSleepRqPin = 19;   // MCU pin used for wake from light sleep (-1 if not applicable)
 const int8_t modemLEDPin = redLED;   // MCU pin connected an LED to show modem status (-1 if unconnected)
 
 // Network connection information
@@ -133,8 +133,8 @@ const long modemBaud = 115200;  // Communication speed of the modem
 // AT+UART_CUR or AT+UART_DEF command *before* attempting control with this library.
 // Pins for light sleep on the ESP8266.
 // For power savings, I recommend NOT using these if it's possible to use deep sleep.
-const int8_t espSleepRqPin = -1;  // Pin ON THE ESP8266 to assign for light sleep request (-1 if not applicable)
-const int8_t espStatusPin = -1;  // Pin ON THE ESP8266 to assign for light sleep status (-1 if not applicable)
+const int8_t espSleepRqPin = 13;  // GPIO# ON THE ESP8266 to assign for light sleep request (-1 if not applicable)
+const int8_t espStatusPin = -1;  // GPIO# ON THE ESP8266 to assign for light sleep status (-1 if not applicable)
 EspressifESP8266 modemESP(&modemSerial,
                           modemVccPin, modemStatusPin,
                           modemResetPin, modemSleepRqPin,
@@ -172,25 +172,25 @@ const int8_t SDI12Data = 7;  // The SDI12 data pin
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 
 
-// ==========================================================================
-//    External Voltage via TI ADS1115
-// ==========================================================================
-#include <sensors/ExternalVoltage.h>
+// // ==========================================================================
+// //    External Voltage via TI ADS1115
+// // ==========================================================================
+// #include <sensors/ExternalVoltage.h>
+//
+// const int8_t ADSPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// const int8_t ADSChannel = 2;  // The ADS channel of interest
+// const float dividerGain = 10;  //  Default 1/gain for grove voltage divider is 10x
+// const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
+// const uint8_t VoltReadsToAvg = 1;  // Only read one sample
+//
+// // Create an External Voltage sensor object
+// ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, ADSi2c_addr, VoltReadsToAvg);
 
-const int8_t ADSPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t ADSChannel = 2;  // The ADS channel of interest
-const float dividerGain = 10;  //  Default 1/gain for grove voltage divider is 10x
-const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
-const uint8_t VoltReadsToAvg = 1;  // Only read one sample
 
-// Create an External Voltage sensor object
-ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, ADSi2c_addr, VoltReadsToAvg);
-
-
-// ==========================================================================
-//    Maxbotix HRXL Ultrasonic Range Finder
-// ==========================================================================
-#include <sensors/MaxBotixSonar.h>
+// // ==========================================================================
+// //    Maxbotix HRXL Ultrasonic Range Finder
+// // ==========================================================================
+// #include <sensors/MaxBotixSonar.h>
 
 // Create a reference to the serial port for the sonar
 // A Maxbotix sonar with the trigger pin disconnect CANNOT share the serial port
@@ -211,18 +211,18 @@ ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, ADSi2c_addr, VoltRead
 // Variable *sonar1Range = new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab");
 
 
-// ==========================================================================
-//    Maxim DS18 One Wire Temperature Sensor
-// ==========================================================================
-#include <sensors/MaximDS18.h>
-
-// OneWire Address [array of 8 hex characters]
-// If only using a single sensor on the OneWire bus, you may omit the address
-const int8_t OneWirePower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t OneWireBus = 4;  // Pin attached to the OneWire Bus (-1 if unconnected) (D24 = A0)
-
-// Create a Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
-MaximDS18 ds18(OneWirePower, OneWireBus);
+// // ==========================================================================
+// //    Maxim DS18 One Wire Temperature Sensor
+// // ==========================================================================
+// #include <sensors/MaximDS18.h>
+//
+// // OneWire Address [array of 8 hex characters]
+// // If only using a single sensor on the OneWire bus, you may omit the address
+// const int8_t OneWirePower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// const int8_t OneWireBus = 4;  // Pin attached to the OneWire Bus (-1 if unconnected) (D24 = A0)
+//
+// // Create a Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
+// MaximDS18 ds18(OneWirePower, OneWireBus);
 
 
 // ==========================================================================
@@ -270,14 +270,14 @@ Variable *variableList[] = {
     new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
     new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
-    new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab"),
-//    new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab"),
-    new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab"),
-//    new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
-//    new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
-//    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
-//    new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
-//    new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
+    // new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab"),
+    // new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab"),
+    // new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab"),
+   new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
+   new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
+   new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
+   new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
+   new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
     // sonar1Range,
     // calculatedVar,
 };

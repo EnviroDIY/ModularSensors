@@ -295,8 +295,8 @@ const long modemBaud = 115200;  // Communication speed of the modem
 // AT+UART_CUR or AT+UART_DEF command *before* attempting control with this library.
 // Pins for light sleep on the ESP8266.
 // For power savings, I recommend NOT using these if it's possible to use deep sleep.
-const int8_t espSleepRqPin = 13;  // Pin ON THE ESP8266 to assign for light sleep request (-1 if not applicable)
-const int8_t espStatusPin = -1;  // Pin ON THE ESP8266 to assign for light sleep status (-1 if not applicable)
+const int8_t espSleepRqPin = 13;  // GPIO# ON THE ESP8266 to assign for light sleep request (-1 if not applicable)
+const int8_t espStatusPin = -1;  // GPIO# ON THE ESP8266 to assign for light sleep status (-1 if not applicable)
 EspressifESP8266 modemESP(&modemSerial,
                           modemVccPin, modemStatusPin,
                           modemResetPin, modemSleepRqPin,

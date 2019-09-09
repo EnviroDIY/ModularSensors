@@ -23,7 +23,8 @@
 
 #define TINY_GSM_MODEM_ESP8266
 
-// No possible status pin on the ESP8266 in deep sleep mode
+// It is not possible to get status from the ESP8266 in deep sleep mode.
+// During deep sleep the pin state is undefined
 // For cases where a pin is defined for light sleep mode, we'll call this
 // the boot time because I have no idea what it would be
 #define ESP8266_STATUS_TIME_MS 350
