@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.8
+This example sketch is written for ModularSensors library version 0.23.9
 
 This shows most of the standard functions of the library at once.
 
@@ -42,7 +42,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.8";
+const char *libraryVersion = "0.23.9";
 // The name of this file
 const char *sketchName = "cuahsi_workshop.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -71,7 +71,7 @@ const int8_t sdCardSSPin = 12;     // MCU SD card chip select/slave select pin (
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create the main processor chip "sensor" - for general metadata
-const char *mcuBoardVersion = "v0.5b";
+const char *mcuBoardVersion = "v0.3";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
 
@@ -109,7 +109,7 @@ HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
 
 // Modem Pins - Describe the physical pin connection of your modem to your board// DFRobot ESP8266 Bee with Mayfly
-const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemVccPin = A5;       // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemStatusPin = -1;    // MCU pin used to read modem status (-1 if not applicable)
 const int8_t modemResetPin = -1;     // MCU pin connected to modem reset pin (-1 if unconnected)
 const int8_t modemSleepRqPin = 19;   // MCU pin used for wake from light sleep (-1 if not applicable)
@@ -266,18 +266,18 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 // at the same time putting them into an array
 // NOTE:  Forms one and two can be mixed
 Variable *variableList[] = {
-//    new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
     new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
     new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
+    new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
+    // new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
     // new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab"),
     // new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab"),
     // new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab"),
-   new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
-   new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
-   new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
-   new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
-   new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
+    // new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
+    // new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
+    // new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
+    // new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
     // sonar1Range,
     // calculatedVar,
 };
