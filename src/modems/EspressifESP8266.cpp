@@ -203,7 +203,7 @@ bool EspressifESP8266::extraModemSetup(void)
 {
     if (_modemSleepRqPin >= 0)
     {
-        digitalWrite(_modemSleepRqPin, OUTPUT);
+        digitalWrite(_modemSleepRqPin, HIGH);
     }
     gsmModem.init();
     gsmClient.init(&gsmModem);
