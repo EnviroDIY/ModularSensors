@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.10
+This example sketch is written for ModularSensors library version 0.23.11
 
 This sketch is an example of getting data from a single sensor, in this case, a
 MaxBotix Ultrasonic Range Finder
@@ -19,9 +19,6 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Defines for the Arduino IDE
 //    In PlatformIO, set these build flags in your platformio.ini
 // ==========================================================================
-#ifndef SDI12_EXTERNAL_PCINT
-#define SDI12_EXTERNAL_PCINT
-#endif
 
 // ==========================================================================
 // Include the base required libraries
@@ -32,7 +29,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 #include <VariableBase.h>
 
 // The library version this example was written for
-const char *libraryVersion = "0.23.10";
+const char *libraryVersion = "0.23.11";
 // The name of this file
 const char *sketchName = "single_sensor.ino";
 

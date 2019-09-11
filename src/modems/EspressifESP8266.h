@@ -34,7 +34,7 @@
 #define ESP8266_DISCONNECT_TIME_MS 500
 
 // Module turns on when power is applied regardless of pin states
-#define ESP8266_WARM_UP_TIME_MS 0
+#define ESP8266_WARM_UP_TIME_MS 350
 // Time until system and digital pins are operational
 #define ESP8266_ATRESPONSE_TIME_MS 350
 

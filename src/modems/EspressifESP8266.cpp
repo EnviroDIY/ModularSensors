@@ -83,9 +83,12 @@ bool EspressifESP8266::ESPwaitForBoot(void)
             delay(2);
         }
         // Have to make sure echo is off or all AT commands will be confused
+        success &= gsmModem.testAT();
+        MS_DBG(F("Confirming that ESP8266's echo is off"));
         gsmModem.sendAT(GF("E0"));
         gsmModem.waitResponse();  // Will return "ERROR" if echo wasn't on
         // re-run init to set mux and station mode
+        MS_DBG(F("Re-Initializing ESP826"));
         success &= gsmModem.init();
         gsmClient.init(&gsmModem);
     }
@@ -121,10 +124,11 @@ bool EspressifESP8266::modemWakeFxn(void)
                F("LOW to wake ESP8266 from light sleep"));
         digitalWrite(_modemSleepRqPin, LOW);
         // Have to make sure echo is off or all AT commands will be confused
+        success &= gsmModem.testAT();
         gsmModem.sendAT(GF("E0"));
-        success &= gsmModem.waitResponse() == 1;
+        gsmModem.waitResponse();  // Will return "ERROR" if echo wasn't on
         // Don't have to wait for a boot if using light sleep
-        return true;
+        return success;
     }
     else
     {
@@ -186,6 +190,7 @@ bool EspressifESP8266::modemSleepFxn(void)
         bool success = gsmModem.waitResponse() == 1;
         gsmModem.sendAT(GF("+SLEEP=1"));
         success &= gsmModem.waitResponse() == 1;
+        delay(5);
         return success;
     }
     // Light sleep without the status pin
@@ -199,6 +204,7 @@ bool EspressifESP8266::modemSleepFxn(void)
         bool success = gsmModem.waitResponse() == 1;
         gsmModem.sendAT(GF("+SLEEP=1"));
         success &= gsmModem.waitResponse() == 1;
+        delay(5);
         return success;
     }
     else  // DON'T go to sleep if we can't wake up!
