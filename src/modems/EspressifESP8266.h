@@ -23,15 +23,18 @@
 
 #define TINY_GSM_MODEM_ESP8266
 
-// No possible status pin on the ESP8266 in deep sleep mode
-// For cases where a pin is defined for light sleep mode, we'll call this
-// the boot time because I have no idea what it would be
+// It is not possible to get status from the ESP8266 in deep sleep mode.
+// During deep sleep the pin state is undefined
+// For cases where a pin is defined for light sleep mode, the Espressif
+// documentation states:  ince the system needs some time to wake up from
+// light sleep, it is suggested that wait at least 5ms before sending next AT
+// command.  They don't say anything about the pin state though.
 #define ESP8266_STATUS_TIME_MS 350
 // power down ???
 #define ESP8266_DISCONNECT_TIME_MS 500
 
 // Module turns on when power is applied regardless of pin states
-#define ESP8266_WARM_UP_TIME_MS 0
+#define ESP8266_WARM_UP_TIME_MS 350
 // Time until system and digital pins are operational
 #define ESP8266_ATRESPONSE_TIME_MS 350
 

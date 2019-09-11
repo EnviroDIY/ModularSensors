@@ -1,5 +1,5 @@
 /*****************************************************************************
-menu_a_la_carte.ino
+cuahsi_workshop.ino
 Written By:  Sara Damiano (sdamiano@stroudcenter.org)
 Development Environment: PlatformIO
 Hardware Platform: EnviroDIY Mayfly Arduino Datalogger
@@ -7,13 +7,28 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.7
+This example sketch is written for ModularSensors library version 0.23.11
 
 This shows most of the standard functions of the library at once.
 
 DISCLAIMER:
 THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
+
+// ==========================================================================
+//    Defines for the Arduino IDE
+//    In PlatformIO, set these build flags in your platformio.ini
+// ==========================================================================
+// #ifndef SDI12_EXTERNAL_PCINT
+// #define SDI12_EXTERNAL_PCINT
+// #endif
+#ifndef TINY_GSM_RX_BUFFER
+#define TINY_GSM_RX_BUFFER 512
+#endif
+#ifndef TINY_GSM_YIELD_MS
+#define TINY_GSM_YIELD_MS 2
+#endif
+
 
 // ==========================================================================
 //    Include the base required libraries
@@ -27,7 +42,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.7";
+const char *libraryVersion = "0.23.11";
 // The name of this file
 const char *sketchName = "cuahsi_workshop.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -56,7 +71,7 @@ const int8_t sdCardSSPin = 12;     // MCU SD card chip select/slave select pin (
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power (-1 if not applicable)
 
 // Create the main processor chip "sensor" - for general metadata
-const char *mcuBoardVersion = "v0.5b";
+const char *mcuBoardVersion = "v0.3";
 ProcessorStats mcuBoard(mcuBoardVersion);
 
 
@@ -71,20 +86,15 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 // as possible.  In some cases (ie, modbus communication) many sensors can share
 // the same serial port.
 
-// NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
-// serial that can be used on any pin supporting interrupts.
-// You can use as many instances of NeoSWSerial as you want.
-// Not all AVR boards are supported by NeoSWSerial.
-#include <NeoSWSerial.h>  // for the stream communication
-const int8_t neoSSerial1Rx = 11;     // data in pin
-const int8_t neoSSerial1Tx = -1;     // data out pin
-NeoSWSerial neoSSerial1(neoSSerial1Rx, neoSSerial1Tx);
-// To use NeoSWSerial in this library, we define a function to receive data
-// This is just a short-cut for later
-void neoSSerial1ISR()
-{
-    NeoSWSerial::rxISR(*portInputRegister(digitalPinToPort(neoSSerial1Rx)));
-}
+// The "standard" software serial library uses interrupts that conflict
+// with several other libraries used within this program, we must use a
+// version of software serial that has been stripped of interrupts.
+// NOTE:  Only use if necessary.  This is not a very accurate serial port!
+const int8_t softSerialRx = 11;     // data in pin
+const int8_t softSerialTx = -1;     // data out pin
+
+#include <SoftwareSerial_ExtInts.h>  // for the stream communication
+SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 
 
 // ==========================================================================
@@ -99,7 +109,7 @@ HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
 
 // Modem Pins - Describe the physical pin connection of your modem to your board// DFRobot ESP8266 Bee with Mayfly
-const int8_t modemVccPin = -2;       // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemVccPin = -1;       // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemStatusPin = -1;    // MCU pin used to read modem status (-1 if not applicable)
 const int8_t modemResetPin = -1;     // MCU pin connected to modem reset pin (-1 if unconnected)
 const int8_t modemSleepRqPin = -1;   // MCU pin used for wake from light sleep (-1 if not applicable)
@@ -123,8 +133,8 @@ const long modemBaud = 115200;  // Communication speed of the modem
 // AT+UART_CUR or AT+UART_DEF command *before* attempting control with this library.
 // Pins for light sleep on the ESP8266.
 // For power savings, I recommend NOT using these if it's possible to use deep sleep.
-const int8_t espSleepRqPin = -1;  // Pin ON THE ESP8266 to assign for light sleep request (-1 if not applicable)
-const int8_t espStatusPin = -1;  // Pin ON THE ESP8266 to assign for light sleep status (-1 if not applicable)
+const int8_t espSleepRqPin = -1;  // GPIO# ON THE ESP8266 to assign for light sleep request (-1 if not applicable)
+const int8_t espStatusPin = -1;  // GPIO# ON THE ESP8266 to assign for light sleep status (-1 if not applicable)
 EspressifESP8266 modemESP(&modemSerial,
                           modemVccPin, modemStatusPin,
                           modemResetPin, modemSleepRqPin,
@@ -162,57 +172,57 @@ const int8_t SDI12Data = 7;  // The SDI12 data pin
 DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 
 
-// ==========================================================================
-//    External Voltage via TI ADS1115
-// ==========================================================================
-#include <sensors/ExternalVoltage.h>
+// // ==========================================================================
+// //    External Voltage via TI ADS1115
+// // ==========================================================================
+// #include <sensors/ExternalVoltage.h>
+//
+// const int8_t ADSPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// const int8_t ADSChannel = 2;  // The ADS channel of interest
+// const float dividerGain = 10;  //  Default 1/gain for grove voltage divider is 10x
+// const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
+// const uint8_t VoltReadsToAvg = 1;  // Only read one sample
+//
+// // Create an External Voltage sensor object
+// ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, ADSi2c_addr, VoltReadsToAvg);
 
-const int8_t ADSPower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t ADSChannel = 2;  // The ADS channel of interest
-const float dividerGain = 10;  //  Default 1/gain for grove voltage divider is 10x
-const uint8_t ADSi2c_addr = 0x48;  // The I2C address of the ADS1115 ADC
-const uint8_t VoltReadsToAvg = 1;  // Only read one sample
 
-// Create an External Voltage sensor object
-ExternalVoltage extvolt(ADSPower, ADSChannel, dividerGain, ADSi2c_addr, VoltReadsToAvg);
-
-
-// ==========================================================================
-//    Maxbotix HRXL Ultrasonic Range Finder
-// ==========================================================================
-#include <sensors/MaxBotixSonar.h>
+// // ==========================================================================
+// //    Maxbotix HRXL Ultrasonic Range Finder
+// // ==========================================================================
+// #include <sensors/MaxBotixSonar.h>
 
 // Create a reference to the serial port for the sonar
 // A Maxbotix sonar with the trigger pin disconnect CANNOT share the serial port
 // A Maxbotix sonar using the trigger may be able to share but YMMV
 // Extra hardware and software serial ports are created in the "Settings for Additional Serial Ports" section
 // AltSoftSerial &sonarSerial = altSoftSerial;  // For software serial if needed
-NeoSWSerial &sonarSerial = neoSSerial1;  // For software serial if needed
-// SoftwareSerial_ExtInts &sonarSerial = softSerial1;  // For software serial if needed
+// NeoSWSerial &sonarSerial = neoSSerial1;  // For software serial if needed
+//SoftwareSerial_ExtInts &sonarSerial = softSerial1;  // For software serial if needed
 
-const int8_t SonarPower = sensorPowerPin;  // Excite (power) pin (-1 if unconnected)
-const int8_t Sonar1Trigger = -1;  // Trigger pin (a unique negative number if unconnected) (D25 = A1)
-const uint8_t sonar1NumberReadings = 3;  // The number of readings to average
+//const int8_t SonarPower = sensorPowerPin;  // Excite (power) pin (-1 if unconnected)
+//const int8_t Sonar1Trigger = -1;  // Trigger pin (a unique negative number if unconnected) (D25 = A1)
+//const uint8_t sonar1NumberReadings = 3;  // The number of readings to average
 
 // Create a MaxBotix Sonar sensor object
-MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger, sonar1NumberReadings);
+//MaxBotixSonar sonar1(sonarSerial, SonarPower, Sonar1Trigger, sonar1NumberReadings);
 
 // Create an ultrasonic range variable pointer
 // Variable *sonar1Range = new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab");
 
 
-// ==========================================================================
-//    Maxim DS18 One Wire Temperature Sensor
-// ==========================================================================
-#include <sensors/MaximDS18.h>
-
-// OneWire Address [array of 8 hex characters]
-// If only using a single sensor on the OneWire bus, you may omit the address
-const int8_t OneWirePower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t OneWireBus = 4;  // Pin attached to the OneWire Bus (-1 if unconnected) (D24 = A0)
-
-// Create a Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
-MaximDS18 ds18(OneWirePower, OneWireBus);
+// // ==========================================================================
+// //    Maxim DS18 One Wire Temperature Sensor
+// // ==========================================================================
+// #include <sensors/MaximDS18.h>
+//
+// // OneWire Address [array of 8 hex characters]
+// // If only using a single sensor on the OneWire bus, you may omit the address
+// const int8_t OneWirePower = sensorPowerPin;  // Pin to switch power on and off (-1 if unconnected)
+// const int8_t OneWireBus = 4;  // Pin attached to the OneWire Bus (-1 if unconnected) (D24 = A0)
+//
+// // Create a Maxim DS18 sensor object (use this form for a single sensor on bus with an unknown address)
+// MaximDS18 ds18(OneWirePower, OneWireBus);
 
 
 // ==========================================================================
@@ -256,18 +266,18 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 // at the same time putting them into an array
 // NOTE:  Forms one and two can be mixed
 Variable *variableList[] = {
-    new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
     new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
     new DecagonCTD_Temp(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
     new DecagonCTD_Depth(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
-    new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab"),
-    new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab"),
-    new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab"),
-    new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
     new ProcessorStats_Battery(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
-    new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
-    new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
-    new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
+    // new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
+    // new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab"),
+    // new MaxBotixSonar_Range(&sonar1, "12345678-abcd-1234-ef00-1234567890ab"),
+    // new MaximDS18_Temp(&ds18, "12345678-abcd-1234-ef00-1234567890ab"),
+    // new ProcessorStats_FreeRam(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
+    // new MaximDS3231_Temp(&ds3231, "12345678-abcd-1234-ef00-1234567890ab"),
+    // new Modem_RSSI(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
+    // new Modem_SignalPercent(&modem, "12345678-abcd-1234-ef00-1234567890ab"),
     // sonar1Range,
     // calculatedVar,
 };
@@ -358,15 +368,15 @@ void setup()
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
 
     // Allow interrupts for software serial
-    #if defined NeoSWSerial_h
-        enableInterrupt(neoSSerial1Rx, neoSSerial1ISR, CHANGE);
+    #if defined SoftwareSerial_ExtInts_h
+        enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt, CHANGE);
     #endif
 
     // Start the serial connection with the modem
     modemSerial.begin(modemBaud);
 
     // Start the SoftwareSerial stream for the sonar; it will always be at 9600 baud
-    sonarSerial.begin(9600);
+   // sonarSerial.begin(9600);
 
     // Set up pins for the LED's
     pinMode(greenLED, OUTPUT);
