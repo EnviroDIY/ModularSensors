@@ -80,6 +80,9 @@ public:
     virtual int16_t sendData(Client *_outClient);
     virtual int16_t sendData();
 
+    // This spits out a string description of the PubSubClient codes
+    String parseMQTTState(int state);
+
 
 protected:
     // The internal logger instance
