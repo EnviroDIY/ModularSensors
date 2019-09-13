@@ -305,8 +305,8 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 
 // ** How frequently (in minutes) to log data **
 //For two Loggers defined logger2Mult with the faster loggers timeout and the multiplier to the slower loggger 
-#define  loggingInterval_Fast_MIN (1)
-#define  logger2Mult 5
+#define loggingInterval_Fast_MIN (2)
+#define loggingMultiplier_MAX_CDEF 2
 // How frequently (in minutes) to log data
 #if defined logger2Mult
 #define  loggingInterval_CDEF_MIN (loggingInterval_Fast_MIN*logger2Mult) 
@@ -485,7 +485,14 @@ const char *wifiPwd_def = NULL;//"";  // The password for connecting to WiFi, un
 #if !defined loggingInterval_CDEF_MIN
 #define      loggingInterval_CDEF_MIN (15)   
 #endif
+#if !defined loggingMultiplier_MAX_CDEF
+//Maximium Logging Multiplier  
+//This is default for testing - platforms should set own MAX
+// don't define #define  loggingMultiplier_MAX_CDEF 0
+#endif
 #if !defined loggingInterval_MAX_CDEF_MIN
+//Maximium Logging Interfaval Default - 
+// issue for ARCH_SAMD may be impacted by WatchDog? 
 //This is default for testing - platforms should set own MAX
 #define  loggingInterval_MAX_CDEF_MIN 24+60
 #endif

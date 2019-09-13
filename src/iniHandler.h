@@ -15,7 +15,8 @@ const char MAYFLY_INIT_ID_pm[] EDIY_PROGMEM = "MAYFLY_INIT_ID";
 const char COMMON_pm[] EDIY_PROGMEM = "COMMON";
 const char LOGGER_ID_pm[] EDIY_PROGMEM = "LOGGER_ID";
 //mCONST_UNI(LOGGER_ID);// = "nh07k" ;
-const char LOGGING_INTERVAL_MIN_pm[] EDIY_PROGMEM = "LOGGING_INTERVAL_MIN";
+const char LOGGING_INTERVAL_MINUTES_pm[] EDIY_PROGMEM = "LOGGING_INTERVAL_MINUTES";
+const char LOGGING_INTERVAL_MULTIPLIER_pm[] EDIY_PROGMEM = "LOGGING_INTERVAL_MULTIPLIER";
 const char LIION_TYPE_pm[] EDIY_PROGMEM = "LIION_TYPE";
 const char TIME_ZONE_pm[] EDIY_PROGMEM = "TIME_ZONE";
 //FUT const char GEOGRAPHICAL_ID_pm[] EDIY_PROGMEM = "GEOGRAPHICAL_ID";
@@ -147,29 +148,55 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
             SerialStd.print(F("COMMON LoggerId Set: "));
             SerialStd.println(value);
             dataLogger.setLoggerId(value,true);
-        } else if (strcmp_P(name,LOGGING_INTERVAL_MIN_pm)== 0){
+        } else if (strcmp_P(name,LOGGING_INTERVAL_MINUTES_pm)== 0){
             //convert str to num with error checking
             long intervalMin = strtoul(value,&endptr,10);
             if ((intervalMin>0) &&(errno!=ERANGE) ) {
                 if (intervalMin > loggingInterval_MAX_CDEF_MIN) {
-                    SerialStd.print(F("COMMON LOGGING_INTERVAL_MIN must be less than : "));
+                    SerialStd.print(F("COMMON LOGGING_INTERVAL_MINUTES must be less than : "));
                     SerialStd.print(loggingInterval_MAX_CDEF_MIN);
                     SerialStd.print(F(" Using Max. Reading ignored "));
                     SerialStd.println(intervalMin);
                     intervalMin= loggingInterval_MAX_CDEF_MIN;
                 } else {
-                    SerialStd.print(F("COMMON LOGGING_INTERVAL_MIN set to: "));
+                    SerialStd.print(F("COMMON LOGGING_INTERVAL_MINUTES set to: "));
                     SerialStd.print(intervalMin);
                     SerialStd.print(F("(min) from default "));
                     SerialStd.println(loggingInterval_def_min);
                 }
                 dataLogger.setLoggingInterval(intervalMin);
+                #if defined loggingMultiplier_MAX_CDEF
+                dataLogFast.setLoggingInterval(intervalMin);
+                #endif //loggingMultiplier_MAX_CDEF
+                //loggingInterval_def_min = intervalMin; //Dup for time being
             } else {
                 SerialStd.print(F(" Set interval error (range: 1-"));
                 SerialStd.print(loggingInterval_MAX_CDEF_MIN);
                 SerialStd.print(F(") with read:"));                
                 SerialStd.println(intervalMin);
             }
+#if defined loggingMultiplier_MAX_CDEF
+       } else if (strcmp_P(name,LOGGING_INTERVAL_MULTIPLIER_pm)== 0){
+            //convert str to num with error checking
+            long multNum = strtoul(value,&endptr,10);
+            if ((multNum>0) &&(errno!=ERANGE) ) {
+                if (multNum > loggingInterval_MAX_CDEF_MIN) {
+                    PRINTOUT(F("COMMON LOGGING_MULTIPLIER must be less than : "),
+                        loggingInterval_MAX_CDEF_MIN,F(" Using Max. Reading ignored "),
+                        multNum);
+                    multNum= loggingInterval_MAX_CDEF_MIN;
+                } else {
+                    PRINTOUT(F("COMMON LOGGING_MULTIPLIER set to: "),multNum,
+                        F("(min) from default "),loggingInterval_MAX_CDEF_MIN);
+                }
+                loggingMultiplierTop= multNum; //In the main program
+            } else {
+                SerialStd.print(F(" Set interval error (range: 1-"));
+                SerialStd.print(loggingInterval_MAX_CDEF_MIN);
+                SerialStd.print(F(") with read:"));                
+                SerialStd.println(multNum);
+            }
+#endif //loggingMultiplier_MAX_CDEF            
         } else if (strcmp_P(name,LIION_TYPE_pm)== 0){
             //convert  str to num with error checking
             long batLiionType = strtoul(value,&endptr,10);

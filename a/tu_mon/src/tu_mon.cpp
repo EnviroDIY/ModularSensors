@@ -66,11 +66,16 @@ const char *LoggerID_def = LOGGERID_DEF_STR;
 const char *configIniID_def = configIniID_DEF_STR;  
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval_def_min = loggingInterval_CDEF_MIN;
-const uint8_t loggingInterval_Fast_def_min = loggingInterval_Fast_MIN;
+//const uint8_t loggingInterval_Fast_def_min = loggingInterval_Fast_MIN;
 // The logger's timezone default.
 int8_t timeZone =  CONFIG_TIME_ZONE_DEF;
 uint32_t sysStartTime_epochTzSec=1;
 bool nistSyncRtc = true; //true on power up. Set when a NIST sync RTC is required
+static int loggingMultiplierCnt=0;
+#if defined loggingMultiplier_MAX_CDEF
+static int loggingMultiplierTop=loggingMultiplier_MAX_CDEF; //Working TOP threshold
+#endif //loggingMultiplier_MAX_CDEF
+static bool varArrayPub=false;
 // ==========================================================================
 //    Primary Arduino-Based Board and Processor
 // ==========================================================================
@@ -1545,7 +1550,7 @@ Variable *variableList[] = {
     new Variable(&ina219M_A_HighFn,2,"Max_A","A","Max_A_Var",INA219M_A_MAX_UUID),
 #endif
 };
-#if defined logger2Mult
+#if defined loggingMultiplier_MAX_CDEF
 Variable *variableLstFast[] = {
     #if defined(INA219M_MA_UUID)
     new TIINA219M_Current(&ina219m_phy, INA219M_MA_UUID),
@@ -1555,7 +1560,7 @@ Variable *variableLstFast[] = {
     new processorAdc_Volt(&procVolt0, ProcVolt_Volt0_UUID),
     #endif
 };
-#endif //logger2Mult
+#endif //loggingMultiplier_MAX_CDEF
 /*
 // FORM2: Fill array with already created and named variable pointers
 // NOTE:  Forms one and two can be mixed
@@ -1576,10 +1581,10 @@ int variableCount = sizeof(variableList) / sizeof(variableList[0]);
 
 // Create the VariableArray object
 VariableArray varArray(variableCount, variableList);
-#if defined logger2Mult
+#if defined loggingMultiplier_MAX_CDEF
 int variableCntFast = sizeof(variableLstFast) / sizeof(variableLstFast[0]);
 VariableArray varArrFast(variableCntFast, variableLstFast);
-#endif //logger2Mult
+#endif //loggingMultiplier_MAX_CDEF
 
 // ==========================================================================
 //     Local storage - evolving
@@ -1595,9 +1600,11 @@ VariableArray varArrFast(variableCntFast, variableLstFast);
 
 // Create a new logger instance
 Logger dataLogger(LoggerID_def, loggingInterval_def_min, sdCardSSPin, wakePin, &varArray);
-#if defined logger2Mult
-Logger dataLogFast(LoggerID_def, loggingInterval_Fast_def_min,&varArrFast);
-#endif //logger2Mult
+#if defined loggingMultiplier_MAX_CDEF
+//A 2 logger runs faster and raises the Nyquist sampling rate for the true dataLogger
+Logger dataLogFast(LoggerID_def, loggingInterval_def_min,&varArrFast);
+//Logger dataLogFast(LoggerID_def, loggingInterval_Fast_def_min,&varArrFast);
+#endif //loggingMultiplier_MAX_CDEF
 
 //now works with MS_DBG #if KCONFIG_DEBUG_LEVEL > 0   //0918
 // ==========================================================================
@@ -1880,9 +1887,9 @@ void setup()
     // Begin the logger
     dataLogger.begin();
     EnviroDIYPOST.begin(dataLogger, &modemPhy.gsmClient, ps.provider.s.registration_token, ps.provider.s.sampling_feature);
-    #if defined logger2Mult
+    #if defined loggingMultiplier_MAX_CDEF
     dataLogFast.begin();
-    #endif //logger2Mult
+    #endif //loggingMultiplier_MAX_CDEF
 
     SerialStd.print(F("Start Time: "));
     sysStartTime_epochTzSec = dataLogger.getNowEpochTz();
@@ -1898,9 +1905,9 @@ void setup()
     //dataLogger.setTestingModePin(buttonPin);
 
     varArray.setupSensors(); //Assumption pwr is available
-    #if defined logger2Mult
+    #if defined loggingMultiplier_MAX_CDEF
     varArrFast.setupSensors(); //Assumption pwr is available
-    #endif //logger2Mult
+    #endif //loggingMultiplier_MAX_CDEF
     // Call the processor sleep
     //greenredflash(4,1000);
     //delay(1000);
@@ -1935,8 +1942,6 @@ void setup()
 // processSensors function
 // **************************************************************************
 //#if KCONFIG_DEBUG_LEVEL > 0
-static int simpleUpdateCnt=0;
-static bool varArrayPub=false;
 void processSensors()
 {
 
@@ -1948,11 +1953,11 @@ void processSensors()
     // Assuming we were woken up by the clock, check if the current time is an
     // even interval of the logging interval or first time through.
     if ((!modemSetup) ||
-        #ifdef logger2Mult
+        #ifdef loggingMultiplier_MAX_CDEF
         dataLogFast.checkInterval()
         #else
         dataLogger.checkInterval()
-        #endif  //logger2Mult
+        #endif  //loggingMultiplier_MAX_CDEF
         )
     {
         // Flag to notify that we're in already awake and logging a point
@@ -1980,7 +1985,7 @@ void processSensors()
         // we will explicitly start and end the serial connection in the loop.
         modbusSerial.begin(9600);
 #endif // CONFIG_SENSOR_RS485_PHY
-        #ifdef logger2Mult
+        #ifdef loggingMultiplier_MAX_CDEF
         // Do a complete sensor update
         varArrFast.completeUpdate();
         //uint16 dataLogFast.getValueStringAtI(0)
@@ -1999,14 +2004,14 @@ void processSensors()
         if (false==readingUpdated) {
              MS_DBG(F("ina219 reading="),lastReading,F("within"),ina219M_A_LowReading,F("-"),ina219M_A_HighReading);
         }
-        if (logger2Mult <= ++simpleUpdateCnt)
-        #endif //logger2Mult 
+        if (loggingMultiplierTop<= ++loggingMultiplierCnt)
+        #endif //loggingMultiplier_MAX_CDEF 
         {
-            #if defined logger2Mult
+            #if defined loggingMultiplier_MAX_CDEF
             varArrFast.completeUpdate();
-            #endif 
+            #endif //loggingMultiplier_MAX_CDEF
             varArray.completeUpdate();
-            simpleUpdateCnt=0;
+            loggingMultiplierCnt=0;
             varArrayPub=true;
         }
 
@@ -2122,13 +2127,13 @@ void loop()
 
     // Sleep
     //if(_mcuWakePin >= 0){systemSleep();}
-    #if defined logger2Mult
+    #if defined loggingMultiplier_MAX_CDEF
         MS_DBG(F("dataLogFast Sleep "));
         dataLogFast.systemSleep();
     #else 
         MS_DBG(F("dataLogger Sleep "));
         dataLogger.systemSleep();
-    #endif //logger2Mult
+    #endif //loggingMultiplier_MAX_CDEF
     #endif //KCONFIG_DEBUG_LEVEL
 #if defined(CHECK_SLEEP_POWER)
     PRINTOUT(F("A"));
