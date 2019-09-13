@@ -893,10 +893,9 @@ ExternalVoltage extvolt1(ADSPower, ADSChannel1, dividerGain, ADSi2c_addr, VoltRe
 #endif //ExternalVoltage_ACT
 #ifdef ProcVolt_ACT
 // ==========================================================================
-//    External Voltage via AdcProc
+//    External Voltage  ProcessorAdc
 // ==========================================================================
 #include <sensors/processorAdc.h>
-//#include <sensors/adcProc.h>
 
 
 const int8_t procVoltPower = -1;  // Pin to switch power on and off (-1 if unconnected)
@@ -909,10 +908,8 @@ const uint8_t procVoltReadsToAvg = 1; // Only read one sample
 
 // Create an External Voltage sensor object
 processorAdc procVolt0(procVoltPower, procVoltChan0, procVoltDividerGain, procVoltReadsToAvg);
-//AdcProc adcProc1(ADSPower, ADSChannel1, AdcProcDividerGain, ADSi2c_addr, adcReadsToAvg);
+//processorAdc procVolt1(procVoltPower, procVoltChan1, procVoltDividerGain, procVoltReadsToAvg);
 
-// Create a voltage variable pointer
-// Variable *extvoltV = new AdcProc_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab");
 #endif //ExternalVoltage_ACT
 #ifdef SENSOR_CONFIG_GENERAL
 

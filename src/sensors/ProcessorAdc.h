@@ -63,6 +63,10 @@
 #define PROC_ADC_RESOLUTION 4
 #endif
 
+#define ProcAdcDef_Resolution 10
+#define ProcAdc_Max ((1<<ProcAdcDef_Resolution)-1)
+
+
 // The main class for the external votlage monitor
 class processorAdc : public Sensor
 {

@@ -44,6 +44,9 @@
 #define PROCESSOR_SAMPNUM_RESOLUTION 0
 #define PROCESSOR_SAMPNUM_VAR_NUM 2
 
+#define ProcessorStatsDef_Resolution 10
+#define ProcAdc_Max ((1<< ProcessorStatsDef_Resolution)-1)
+
 /* Battery Thresholds - may need adjusting for specific battery sizes and Mayfly loads.
    A LiIon manufactuer typically has a protection IC that will do a 
    Low Voltage Disconnect (LVD) at some voltage ~ 3.0V to protect the chemistry of the battery.
