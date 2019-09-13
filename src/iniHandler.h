@@ -25,8 +25,10 @@ const char apn_pm[] EDIY_PROGMEM = "apn";
 const char WiFiId_pm[] EDIY_PROGMEM = "WiFiId";
 const char WiFiPwd_pm[] EDIY_PROGMEM = "WiFiPwd";
 
+// INA219 configurable parms
 const char INA219M_MA_MULT_pm[] EDIY_PROGMEM = "INA219M_MA_MULT";
-const char INA219M_V_THRESHLOW_pm[] EDIY_PROGMEM ="INA219M_V_THRESHLOW";
+const char INA219M_V_THRESHLOW_pm[] EDIY_PROGMEM ="INA219M_V_THRESHLOW"; 
+
 const char PROVIDER_pm[] EDIY_PROGMEM = "PROVIDER";
 const char CLOUD_ID_pm[] EDIY_PROGMEM = "CLOUD_ID";
 const char REGISTRATION_TOKEN_pm[] EDIY_PROGMEM = "REGISTRATION_TOKEN";

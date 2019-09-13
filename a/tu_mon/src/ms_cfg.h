@@ -358,8 +358,7 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 
 //To Use internal ADC (Only SAMD21 tested)
 #define ProcVolt_ACT 1
-//#define ProcVolt_Volt0_UUID "ProcVolt_VOLT0_UUID"
-#define ProcVolt_Volt0_UUID "cdb27cd6-29a8-4dd5-98be-d9745e60c0ec"
+#define ProcVolt_Volt0_UUID "ProcVolt_Volt0_UUID"
 
 //#define ExternalVoltage_ACT 1
 #ifdef ExternalVoltage_ACT
