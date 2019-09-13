@@ -184,8 +184,11 @@ bool ProcessorStats::addSingleMeasurementResult(void)
 
     #elif defined(ARDUINO_AVR_SODAQ_NDOGO) || defined(ARDUINO_SODAQ_AUTONOMO) || defined(ARDUINO_AVR_SODAQ_MBILI)
         // Get the battery voltage
+#define ProcAdcDef_Resolution 10
+#define ProcAdc_Max ((1<<ProcAdcDef_Resolution)-1)
+        //analogReadResolution(ProcAdcDef_Resolution);
         float rawBattery = analogRead(_batteryPin);
-        sensorValue_battery = (3.3 / 1023.) * 1.47 * rawBattery;
+        sensorValue_battery = (3.3 / ProcAdc_Max) * 1.47 * rawBattery;
 
     #else
         sensorValue_battery = -9999;

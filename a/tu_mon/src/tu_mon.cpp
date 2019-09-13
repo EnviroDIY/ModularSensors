@@ -891,22 +891,24 @@ ExternalVoltage extvolt1(ADSPower, ADSChannel1, dividerGain, ADSi2c_addr, VoltRe
 // Create a voltage variable pointer
 // Variable *extvoltV = new ExternalVoltage_Volt(&extvolt, "12345678-abcd-1234-ef00-1234567890ab");
 #endif //ExternalVoltage_ACT
-#ifdef AdcProc_ACT
+#ifdef ProcVolt_ACT
 // ==========================================================================
 //    External Voltage via AdcProc
 // ==========================================================================
-#include <sensors/adcProc.h>
+#include <sensors/processorAdc.h>
+//#include <sensors/adcProc.h>
 
-const int8_t AdcProcPower = -1;  // Pin to switch power on and off (-1 if unconnected)
-const int8_t AdcProcChannel0 = 0;  // The AdcProc channel of interest
-//const int8_t AdcProcChannel1 = 1;  // The AdcProc channel of interest
-//const int8_t AdcProcChannel2 = 2;  // The AdcProc channel of interest
-//const int8_t AdcProcChannel3 = 3;  // The AdcProc channel of interest
-const float adcProcDividerGain = 2; //  Default 1/gain for grove voltage divider is 10x
-const uint8_t adcReadsToAvg = 1; // Only read one sample
+
+const int8_t procVoltPower = -1;  // Pin to switch power on and off (-1 if unconnected)
+const int8_t procVoltChan0 = PIN_A8;  // Autonomo A8 The AdcProc channel of interest
+//const int8_t procVoltChan1 = 1;  // The AdcProc channel of interest
+//const int8_t procVoltChan2 = 2;  // The AdcProc channel of interest
+//const int8_t procVoltChan3 = 3;  // The AdcProc channel of interest
+const float procVoltDividerGain = 30.3; //  tu_mon 1M/33K* measuredAdc(V) or 30.3 15.15
+const uint8_t procVoltReadsToAvg = 1; // Only read one sample
 
 // Create an External Voltage sensor object
-AdcProc adcProc0(ADSPower, ADSChannel0, AdcProcDividerGain, ADSi2c_addr, adcReadsToAvg);
+processorAdc procVolt0(procVoltPower, procVoltChan0, procVoltDividerGain, procVoltReadsToAvg);
 //AdcProc adcProc1(ADSPower, ADSChannel1, AdcProcDividerGain, ADSi2c_addr, adcReadsToAvg);
 
 // Create a voltage variable pointer
@@ -1389,13 +1391,13 @@ ZebraTechDOpto dopto(*DOptoDI12address, SDI12Power, SDI12Data);
 static float ina219M_A_LowReading=+9999; 
 float ina219M_A_LowFn(void)
 {
-    MS_DBG(F("ina219M_A_LowFn "),ina219M_A_LowReading);
+    //MS_DBG(F("ina219M_A_LowFn "),ina219M_A_LowReading);
     return ina219M_A_LowReading;
 }
 static float ina219M_A_HighReading=-9999; 
 float ina219M_A_HighFn(void)
 {
-    MS_DBG(F("ina219M_A_HighFn "),ina219M_A_HighReading);
+    //MS_DBG(F("ina219M_A_HighFn "),ina219M_A_HighReading);
     return ina219M_A_HighReading;
 }
 void ina219M_A_init()
@@ -1418,7 +1420,7 @@ Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard,ProcessorStats_SampleNumber_UUID),
 #endif
 #if defined(ProcessorStats_Batt_UUID)
-    new ProcessorStats_Battery(&mcuBoard,   ProcessorStats_Batt_UUID),//was mayflyPhy
+    new ProcessorStats_Battery(&mcuBoard,   ProcessorStats_Batt_UUID),
 #endif
 #if defined(ExternalVoltage_Volt0_UUID)
     new ExternalVoltage_Volt(&extvolt0, ExternalVoltage_Volt0_UUID),
@@ -1426,8 +1428,8 @@ Variable *variableList[] = {
 #if defined(ExternalVoltage_Volt1_UUID)
     new ExternalVoltage_Volt(&extvolt1, ExternalVoltage_Volt1_UUID),
 #endif
-#if defined(AdcProc_Volt0_UUID)
-    new AdcProc_Volt(&extvolt0, AdcProc_Volt0_UUID),
+#if defined(ProcVolt_Volt0_UUID)
+    new processorAdc_Volt(&procVolt0, ProcVolt_Volt0_UUID),
 #endif
 #if defined(AdcProc_Volt1_UUID)
     new AdcProc_Volt(&extvolt1, AdcProc_Volt1_UUID),
@@ -1540,16 +1542,20 @@ Variable *variableList[] = {
     new Modem_Temp(&modemPhy, "12345678-abcd-1234-ef00-1234567890ab"),
 #endif // SENSOR_CONFIG_GENERAL
 #if defined INA219M_A_MIN_UUID
-    new Variable(ina219M_A_LowFn,2,"Min_A", "A","Min_A_Var", INA219M_A_MIN_UUID),
+    new Variable(&ina219M_A_LowFn,2,"Min_A", "A","Min_A_Var", INA219M_A_MIN_UUID),
 #endif
 #if defined INA219M_A_MAX_UUID
-    new Variable(ina219M_A_HighFn,2,"Max_A","A","Max_A_Var",INA219M_A_MAX_UUID),
+    new Variable(&ina219M_A_HighFn,2,"Max_A","A","Max_A_Var",INA219M_A_MAX_UUID),
 #endif
 };
 #if defined logger2Mult
 Variable *variableLstFast[] = {
     #if defined(INA219M_MA_UUID)
     new TIINA219M_Current(&ina219m_phy, INA219M_MA_UUID),
+    #endif
+    //Debug
+    #if  0 //defined(ProcVolt_Volt0_UUID)
+    new processorAdc_Volt(&procVolt0, ProcVolt_Volt0_UUID),
     #endif
 };
 #endif //logger2Mult
@@ -1962,7 +1968,7 @@ void processSensors()
             return;
         }
         // Print a line to show new reading
-        PRINTOUT(F("---NewReading--  Update"));
+        PRINTOUT(F("---NewReading--  Update "), Logger::formatDateTime_ISO8601(dataLogger.getNowEpochTz()) );
         MS_DBG(F("Lbatt_V="),mcuBoard.getBatteryVm1(false));
         //PRINTOUT(F("----------------------------\n"));
         #if !defined(CHECK_SLEEP_POWER)
@@ -1982,14 +1988,19 @@ void processSensors()
         varArrFast.completeUpdate();
         //uint16 dataLogFast.getValueStringAtI(0)
         float lastReading=variableLstFast[0]->getValue();
+        bool readingUpdated =false;
         if (lastReading < ina219M_A_LowReading) {
-            MS_DBG(F("The LastReading lower="),lastReading,F(" than "),ina219M_A_LowReading);
+            MS_DBG(F("ina219 reading="),lastReading,F("lower than"),ina219M_A_LowReading);
             ina219M_A_LowReading =lastReading;
-        } else if  (lastReading >ina219M_A_HighReading){
-            MS_DBG(F("The LastReading higher="),lastReading,F(" than "),ina219M_A_HighReading);
+            readingUpdated =true;
+        } 
+        if  (lastReading >ina219M_A_HighReading){
+            MS_DBG(F("ina219 reading="),lastReading,F("higher than"),ina219M_A_HighReading);
             ina219M_A_HighReading =lastReading;
-        } else {
-             MS_DBG(F("The LastReading "),lastReading,F(" within "),ina219M_A_LowReading,F("-"),ina219M_A_HighReading);
+            readingUpdated =true;
+        }
+        if (false==readingUpdated) {
+             MS_DBG(F("ina219 reading="),lastReading,F("within"),ina219M_A_LowReading,F("-"),ina219M_A_HighReading);
         }
         if (logger2Mult <= ++simpleUpdateCnt)
         #endif //logger2Mult 

@@ -39,7 +39,7 @@
 // #define MS_PROCESSORADC_DEBUG
 
 #ifdef MS_PROCESSORADC_DEBUG
-#define MS_DEBUGGING_STD "processorAdc"
+#define MS_DEBUGGING_STD "ProcessorAdc"
 #endif
 
 // Included Dependencies

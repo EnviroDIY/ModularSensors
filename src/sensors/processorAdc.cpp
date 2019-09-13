@@ -103,7 +103,8 @@ processorAdc::processorAdc(int8_t powerPin, uint8_t adcChannel, float gain,
 {
     _adcChannel = adcChannel;
     _gain = gain;
-    //_i2cAddress = i2cAddress;
+#define ProcAdcDef_Resolution 10
+#define ProcAdc_Max ((1<<ProcAdcDef_Resolution)-1)
 }
 // Destructor
 processorAdc::~processorAdc(){}
@@ -129,11 +130,13 @@ bool processorAdc::addSingleMeasurementResult(void)
     {
         MS_DBG(getSensorNameAndLocation(), F(" is reporting:"));
 
+        //analogReadResolution(ProcAdcDef_Resolution);
         // Create an Auxillary ADD object
         // We create and set up the ADC object here so that each sensor using
         // the ADC may set the gain appropriately without effecting others.
         float rawAdc = analogRead(_adcChannel);
-        adcVoltage = (3.3 / 2047) * 4.7 * rawAdc;
+        adcVoltage = (3.3 /ProcAdc_Max) * rawAdc;
+        //adcVoltage = (3.3 / 1024) * rawAdc; //default 10bits? 
         MS_DBG(F("  adc_SingleEnded_V("), _adcChannel, F("):"), adcVoltage);
 
         if (adcVoltage < 3.6 and adcVoltage > -0.3)  // Skip results out of range

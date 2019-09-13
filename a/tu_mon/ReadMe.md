@@ -5,17 +5,17 @@ A ruggidized remote unit "power monitor" using XbeeCellular or XbeeWifi Wireless
 The powermonitoring is done using an INA291 I2C. 
 https://www.adafruit.com/product/904
 The part needs to be configure with I2C wires, and may need to have the current sensing resistore replaced.
-Please give each of you modified configurations a unique ID, and each unique part a serial number.
+Please give each modified configuration a unique ID, and each unique part a serial number.
 
-All power connections must be described. Its the resoponsibility of the local installer to ensure 
+All power connections must be described. Its the resoponsibility of the local installer to ensure they understand how the power flows. 
 
-Data Portals configured through a SD card, for more reliable testing and scaling.
+Data Portals are configured through a SD card, for more reliable testing and scaling.
 
 To use the internet viewing capability you need a data portal account - sites supported
   (http://data.envirodiy.org/).  After you have registered the site and sensors, the portal will generate a registration token and universally unique identifier (UUID) for each site and further UUID's for each variable.  
   You will need to apply all of those UUID values into your Mayfly.ini .  
   thingSpeak - tbd.
-Modems supported Xbee WiFi S6, and (tbd Xbee LTE) 
+Modems supported Xbee WiFi S6, and Xbee LTE (and tbd LoRa) 
 
 _______
 
@@ -25,6 +25,7 @@ create (or copy configured) ms_cfg.ini
 edit ms_cfg.ini (eg notepad)
 go to https://data.envirodiy.org/sites
 
+(possibly dup - see https://github.com/neilh10/ModularSensors/wiki/Setting-up-data.enviroDIY-for-TU-RC)
 create new site - and copy REGISTRATION_TOKEN/SAMPLING_FEATURE  
 On web click on "Manage Sensors"
 Click on + to create new sensor  - the order the sensors are created in as the order of the preview graphs.
