@@ -66,7 +66,6 @@ const char *LoggerID_def = LOGGERID_DEF_STR;
 const char *configIniID_def = configIniID_DEF_STR;  
 // How frequently (in minutes) to log data
 const uint8_t loggingInterval_def_min = loggingInterval_CDEF_MIN;
-//const uint8_t loggingInterval_Fast_def_min = loggingInterval_Fast_MIN;
 // The logger's timezone default.
 int8_t timeZone =  CONFIG_TIME_ZONE_DEF;
 uint32_t sysStartTime_epochTzSec=1;
@@ -1970,8 +1969,8 @@ void processSensors()
             return;
         }
         // Print a line to show new reading
-        PRINTOUT(F("---NewReading--  Update "), Logger::formatDateTime_ISO8601(dataLogger.getNowEpochTz()) );
-        MS_DBG(F("Lbatt_V="),mcuBoard.getBatteryVm1(false));
+        PRINTOUT(F("---NewReading--- Lbatt_V="),mcuBoard.getBatteryVm1(false), Logger::formatDateTime_ISO8601(dataLogger.getNowEpochTz()) );
+        //MS_DBG(F("Lbatt_V="),mcuBoard.getBatteryVm1(false));
         //PRINTOUT(F("----------------------------\n"));
         #if !defined(CHECK_SLEEP_POWER)
         // Turn on the LED to show we're taking a reading
@@ -2002,7 +2001,7 @@ void processSensors()
             readingUpdated =true;
         }
         if (false==readingUpdated) {
-             MS_DBG(F("ina219 reading="),lastReading,F("within"),ina219M_A_LowReading,F("-"),ina219M_A_HighReading);
+             MS_DBG(F("ina219 reading="),lastReading,F("within"),ina219M_A_LowReading,F("~"),ina219M_A_HighReading);
         }
         if (loggingMultiplierTop<= ++loggingMultiplierCnt)
         #endif //loggingMultiplier_MAX_CDEF 

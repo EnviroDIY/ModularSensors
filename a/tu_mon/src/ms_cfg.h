@@ -304,15 +304,18 @@ BEE RX Serial PB31/SCOM5PAD1 From Bee to Proc
 #define CONFIG_TIME_ZONE_DEF -8
 
 // ** How frequently (in minutes) to log data **
-//For two Loggers defined logger2Mult with the faster loggers timeout and the multiplier to the slower loggger 
-#define loggingInterval_Fast_MIN (2)
-#define loggingMultiplier_MAX_CDEF 2
-// How frequently (in minutes) to log data
-#if defined logger2Mult
-#define  loggingInterval_CDEF_MIN (loggingInterval_Fast_MIN*logger2Mult) 
+//For two Loggers - define loggingMultiplier_MAX_CDEF
+// The loggingInterval_CDEF_MIN becomes sampling rate 
+#define loggingMultiplier_MAX_CDEF 5
+// How frequently (in minutes) to sample data 
+#ifdef loggingMultiplier_MAX_CDEF
+//logging to SD/Publishing happens as loggingMultiplier_MAX_CDEF*loggingInterval_CDEF_MIN
+#define  loggingInterval_CDEF_MIN 2
 #else
+//logging to SD/Publishing and sampling are same
 #define  loggingInterval_CDEF_MIN 15
-#endif //logger2Mult
+#endif //loggingMultiplier_MAX_CDEF
+
 // Maximum logging setting allowed
 #define  loggingInterval_MAX_CDEF_MIN 6*60
 

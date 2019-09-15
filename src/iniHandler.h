@@ -184,10 +184,10 @@ static int inihUnhandledFn( const char* section, const char* name, const char* v
                     PRINTOUT(F("COMMON LOGGING_MULTIPLIER must be less than : "),
                         loggingInterval_MAX_CDEF_MIN,F(" Using Max. Reading ignored "),
                         multNum);
-                    multNum= loggingInterval_MAX_CDEF_MIN;
+                    multNum= loggingMultiplier_MAX_CDEF;
                 } else {
                     PRINTOUT(F("COMMON LOGGING_MULTIPLIER set to: "),multNum,
-                        F("(min) from default "),loggingInterval_MAX_CDEF_MIN);
+                        F("(min) from default "),loggingMultiplier_MAX_CDEF);
                 }
                 loggingMultiplierTop= multNum; //In the main program
             } else {
