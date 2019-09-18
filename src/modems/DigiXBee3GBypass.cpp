@@ -41,10 +41,11 @@ MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBee3GBypass);
 MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(DigiXBee3GBypass);
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBee3GBypass);
 MS_MODEM_GET_MODEM_BATTERY_AVAILABLE(DigiXBee3GBypass);
-// NOTE:  Could actually get temperature from the Digi chip by entering bypass mode
+// NOTE:  Could actually get temperature from the Digi chip by entering command mode
 MS_MODEM_GET_MODEM_TEMPERATURE_NA(DigiXBee3GBypass);
 MS_MODEM_CONNECT_INTERNET(DigiXBee3GBypass);
 MS_MODEM_GET_NIST_TIME(DigiXBee3GBypass);
+MS_MODEM_DISCONNECT_INTERNET(DigiXBee3GBypass);
 
 
 bool DigiXBee3GBypass::extraModemSetup(void)
@@ -91,6 +92,10 @@ bool DigiXBee3GBypass::extraModemSetup(void)
         // Hologram says they can use any network, but I've never succeeded with anything but AT&T
         gsmModem.sendAT(GF("CP"),2);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
+        // Make sure airplane mode is off - bypass and airplane mode are incompatible
+        MS_DBG(F("Making sure airplane mode is off..."));
+        gsmModem.sendAT(GF("AM"),0);
+        success &= gsmModem.waitResponse(GF("OK\r")) == 1;
         MS_DBG(F("Turning on Bypass Mode..."));
         // Turn on bypass mode
         gsmModem.sendAT(GF("AP5"));
@@ -112,8 +117,18 @@ bool DigiXBee3GBypass::extraModemSetup(void)
         gsmClient.init(&gsmModem);
         _modemName = gsmModem.getModemName();
     }
-    else success = false;
-    if (success) MS_DBG(F("... Setup successful!"));
-    else MS_DBG(F("... failed!"));
+    else
+    {
+        success = false;
+    }
+
+    if (success)
+    {
+        MS_DBG(F("... Setup successful!"));
+    }
+    else
+    {
+        MS_DBG(F("... failed!"));
+    }
     return success;
 }

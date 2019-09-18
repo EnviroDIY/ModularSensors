@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.4
+This example sketch is written for ModularSensors library version 0.23.11
 
 This sketch is an example of logging data to an SD card and sending the data to
 both the EnviroDIY data portal as should be used by groups involved with
@@ -18,17 +18,29 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
 // ==========================================================================
+//    Defines for the Arduino IDE
+//    In PlatformIO, set these build flags in your platformio.ini
+// ==========================================================================
+#ifndef TINY_GSM_RX_BUFFER
+#define TINY_GSM_RX_BUFFER 512
+#endif
+#ifndef TINY_GSM_YIELD_MS
+#define TINY_GSM_YIELD_MS 2
+#endif
+
+// ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
+#include <LoggerBase.h>  // The modular sensors library
 
 
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.4";
+const char *libraryVersion = "0.23.11";
 // The name of this file
 const char *sketchName = "DWRI_CitSci.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -143,7 +155,6 @@ DecagonCTD ctd(*CTDSDI12address, SDI12Power, SDI12Data, CTDNumberReadings);
 // ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-#include <VariableArray.h>
 
 Variable *variableList[] = {
     new DecagonCTD_Cond(&ctd, "12345678-abcd-1234-ef00-1234567890ab"),
@@ -166,7 +177,6 @@ VariableArray varArray(variableCount, variableList);
 // ==========================================================================
 //     The Logger Object[s]
 // ==========================================================================
-#include <LoggerBase.h>
 
 // Create a new logger instance
 Logger dataLogger(LoggerID, loggingInterval, &varArray);

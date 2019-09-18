@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.4
+This example sketch is written for ModularSensors library version 0.23.11
 
 This sketch is an example of logging data to an SD card and sending the data to
 the EnviroDIY data portal.
@@ -17,17 +17,33 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
 // ==========================================================================
+//    Defines for the Arduino IDE
+//    In PlatformIO, set these build flags in your platformio.ini
+// ==========================================================================
+#ifndef TINY_GSM_RX_BUFFER
+#define TINY_GSM_RX_BUFFER 512
+#endif
+#ifndef TINY_GSM_YIELD_MS
+#define TINY_GSM_YIELD_MS 2
+#endif
+#ifndef MQTT_MAX_PACKET_SIZE
+#define MQTT_MAX_PACKET_SIZE 240
+#endif
+
+
+// ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
+#include <LoggerBase.h>  // The modular sensors library
 
 
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.4";
+const char *libraryVersion = "0.23.11";
 // The name of this file
 const char *sketchName = "baro_rho_correction.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -176,7 +192,9 @@ float calculateWaterPressure(void)
     float baroPressureFromBME280 = bme280Press->getValue();
     float waterPressure = totalPressureFromMS5803 - (baroPressureFromBME280)*0.01;
     if (totalPressureFromMS5803 == -9999 || baroPressureFromBME280 == -9999)
+    {
         waterPressure = -9999;
+    }
     // Serial.print(F("Water pressure is "));  // for debugging
     // Serial.println(waterPressure);  // for debugging
     return waterPressure;
@@ -237,7 +255,9 @@ float calculateWaterDepthTempCorrected(void)
     // from P = rho * g * h
     float rhoDepth = 1000 * waterPressurePa/(waterDensity * gravitationalConstant);
     if (calculateWaterPressure() == -9999 || waterTempertureC == -9999)
+    {
         rhoDepth = -9999;
+    }
     // Serial.print(F("Temperature corrected water depth is "));  // for debugging
     // Serial.println(rhoDepth);  // for debugging
     return rhoDepth;
@@ -260,7 +280,6 @@ Variable *calcCorrDepth = new Variable(calculateWaterDepthTempCorrected,
 // ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-#include <VariableArray.h>
 
 // FORM2: Fill array with already created and named variable pointers
 Variable *variableList[] = {
@@ -291,7 +310,6 @@ VariableArray varArray(variableCount, variableList);
 // ==========================================================================
 //     The Logger Object[s]
 // ==========================================================================
-#include <LoggerBase.h>
 
 // Create a new logger instance
 Logger dataLogger(LoggerID, loggingInterval, &varArray);
@@ -357,8 +375,10 @@ void setup()
     Serial.println(MODULAR_SENSORS_VERSION);
 
     if (String(MODULAR_SENSORS_VERSION) !=  String(libraryVersion))
+    {
         Serial.println(F(
             "WARNING: THIS EXAMPLE WAS WRITTEN FOR A DIFFERENT VERSION OF MODULAR SENSORS!!"));
+    }
 
     // Start the serial connection with the modem
     modemSerial.begin(modemBaud);
@@ -434,6 +454,7 @@ void setup()
 
     // Power down the modem
     Serial.println(F("Putting modem to sleep"));
+    modem.disconnectInternet();
     modem.modemSleepPowerDown();
 
     // Call the processor sleep

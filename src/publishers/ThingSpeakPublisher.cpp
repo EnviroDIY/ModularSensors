@@ -195,18 +195,22 @@ int16_t ThingSpeakPublisher::publishData(Client *_outClient)
 
         if (_mqttClient.publish(topicBuffer, txBuffer))
         {
-            PRINTOUT(F("ThingSpeak topic published!  Current state:"), _mqttClient.state());
+            PRINTOUT(F("ThingSpeak topic published!  Current state:"),
+                     parseMQTTState(_mqttClient.state()));
             retVal = true;
         }
         else
         {
-            PRINTOUT(F("MQTT publish failed with state:"), _mqttClient.state());
+            PRINTOUT(F("MQTT publish failed with state:"),
+                     parseMQTTState(_mqttClient.state()));
             retVal = false;
         }
     }
     else
     {
-        PRINTOUT(F("MQTT connection failed with state:"), _mqttClient.state());
+        PRINTOUT(F("MQTT connection failed with state:"),
+                 parseMQTTState(_mqttClient.state()));
+        delay(1000);
         retVal = false;
     }
 

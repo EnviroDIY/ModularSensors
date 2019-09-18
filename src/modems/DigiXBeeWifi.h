@@ -43,9 +43,11 @@ public:
                  uint8_t measurementsToAverage = 1);
     ~DigiXBeeWifi();
 
+    bool startSingleMeasurement(void) override;
     bool addSingleMeasurementResult(void) override;
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+    void disconnectInternet(void) override;
 
     // Get values by other names
     bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;

@@ -83,9 +83,12 @@ bool EspressifESP8266::ESPwaitForBoot(void)
             delay(2);
         }
         // Have to make sure echo is off or all AT commands will be confused
+        success &= gsmModem.testAT();
+        MS_DBG(F("Confirming that ESP8266's echo is off"));
         gsmModem.sendAT(GF("E0"));
         gsmModem.waitResponse();  // Will return "ERROR" if echo wasn't on
         // re-run init to set mux and station mode
+        MS_DBG(F("Re-Initializing ESP826"));
         success &= gsmModem.init();
         gsmClient.init(&gsmModem);
     }
@@ -100,7 +103,7 @@ bool EspressifESP8266::modemWakeFxn(void)
     bool success = true;
     if (_powerPin >= 0)  // Turns on when power is applied
     {
-        digitalWrite(_modemSleepRqPin, HIGH);  // Pick a state
+        digitalWrite(_modemSleepRqPin, HIGH);
         success &= ESPwaitForBoot();
         return success;
     }
@@ -111,21 +114,21 @@ bool EspressifESP8266::modemWakeFxn(void)
         digitalWrite(_modemResetPin, LOW);
         delay(1);
         digitalWrite(_modemResetPin, HIGH);
+        digitalWrite(_modemSleepRqPin, HIGH);
         success &= ESPwaitForBoot();
         return success;
     }
     else if (_modemSleepRqPin >= 0)
     {
-        MS_DBG(F("Sending a pulse to pin"), _modemSleepRqPin,
-               F("to wake ESP8266 from light sleep"));
+        MS_DBG(F("Setting pin"), _modemSleepRqPin,
+               F("LOW to wake ESP8266 from light sleep"));
         digitalWrite(_modemSleepRqPin, LOW);
-        delay(1);
-        digitalWrite(_modemSleepRqPin, HIGH);
         // Have to make sure echo is off or all AT commands will be confused
+        success &= gsmModem.testAT();
         gsmModem.sendAT(GF("E0"));
-        success &= gsmModem.waitResponse() == 1;
+        gsmModem.waitResponse();  // Will return "ERROR" if echo wasn't on
         // Don't have to wait for a boot if using light sleep
-        return true;
+        return success;
     }
     else
     {
@@ -149,7 +152,8 @@ bool EspressifESP8266::modemSleepFxn(void)
         return gsmModem.waitResponse() == 1;
     }*/
     // Use this if you have an MCU pin connected to the ESP's reset pin to wake from deep sleep
-    if (_modemResetPin >= 0)
+    // We'll also put it in deep sleep before yanking power
+    if (_modemResetPin >= 0 || _powerPin >= 0)
     {
         MS_DBG(F("Requesting deep sleep for ESP8266"));
         return gsmModem.poweroff();
@@ -157,24 +161,50 @@ bool EspressifESP8266::modemSleepFxn(void)
     // Use this if you don't have access to the ESP8266's reset pin for deep sleep but you
     // do have access to another GPIO pin for light sleep.  This also sets up another
     // pin to view the sleep status.
+    // AT+WAKEUPGPIO=<enable>,<trigger_GPIO>,<trigger_level>[,<awake_GPIO>,<awake_level>]
+    // <enable>
+    //   1: ESP8266 can be woken up from light-sleep by GPIO.
+    // <trigger_GPIO>
+    //   Sets the GPIO to wake ESP8266 up; range of value: [0, 15].
+    // <trigger_level>
+    //   0: The GPIO wakes up ESP8266 on low level.
+    // [<awake_GPIO>]
+    //   Optional; this parameter is used to set a GPIO as a flag of ESP8266’s
+    //   being awoken form Light-sleep; range of value: [0, 15].
+    // [<awake_level>]
+    //   Optional;
+    //   0: The GPIO is set to be low level after the wakeup process.
+    //   1: The GPIO is set to be high level after the wakeup process.
+    // After being woken up by <trigger_GPIO> from Light-sleep, when the ESP8266
+    // attempts to sleep again, it will check the status of the <trigger_GPIO>:
+    // - if it is still in the wakeup status, the EP8266 will enter Modem-sleep mode instead;
+    // - if it is NOT in the wakeup status, the ESP8266 will enter Light-sleep mode.
     else if (_modemSleepRqPin >= 0 && _dataPin >= 0)
     {
+        MS_DBG(F("Setting pin"), _modemSleepRqPin,
+               F("HIGH to allow ESP8266 to enter light sleep"));
+        digitalWrite(_modemSleepRqPin, HIGH);
         MS_DBG(F("Requesting light sleep for ESP8266 with status indication"));
         gsmModem.sendAT(GF("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0,"),
                           String(_espStatusPin), ',', _statusLevel);
         bool success = gsmModem.waitResponse() == 1;
         gsmModem.sendAT(GF("+SLEEP=1"));
         success &= gsmModem.waitResponse() == 1;
+        delay(5);
         return success;
     }
     // Light sleep without the status pin
     else if (_modemSleepRqPin >= 0 && _dataPin < 0)
     {
+        MS_DBG(F("Setting pin"), _modemSleepRqPin,
+               F("HIGH to allow ESP8266 to enter light sleep"));
+        digitalWrite(_modemSleepRqPin, HIGH);
         MS_DBG(F("Requesting light sleep for ESP8266"));
         gsmModem.sendAT(GF("+WAKEUPGPIO=1,"), String(_espSleepRqPin), F(",0"));
         bool success = gsmModem.waitResponse() == 1;
         gsmModem.sendAT(GF("+SLEEP=1"));
         success &= gsmModem.waitResponse() == 1;
+        delay(5);
         return success;
     }
     else  // DON'T go to sleep if we can't wake up!
@@ -187,9 +217,19 @@ bool EspressifESP8266::modemSleepFxn(void)
 // Set up the light-sleep status pin, if applicable
 bool EspressifESP8266::extraModemSetup(void)
 {
+    if (_modemSleepRqPin >= 0)
+    {
+        digitalWrite(_modemSleepRqPin, HIGH);
+    }
     gsmModem.init();
     gsmClient.init(&gsmModem);
     _modemName = gsmModem.getModemName();
+    // And make sure we're staying in station mode so sleep can happen
+    gsmModem.sendAT(GF("+CWMODE_DEF=1"));
+    gsmModem.waitResponse();
+    // Make sure that, at minimum, modem-sleep is on
+    gsmModem.sendAT(GF("+SLEEP=2"));
+    gsmModem.waitResponse();
     // Slow down the baud rate for slow processors - and save the change to
     // the ESP's non-volatile memory so we don't have to do it every time
     // #if F_CPU == 8000000L
@@ -276,6 +316,9 @@ uint32_t EspressifESP8266::getNISTTime(void)
             return 0;
         }
     }
-    else MS_DBG(F("Unable to open TCP to NIST!"));
+    else
+    {
+        MS_DBG(F("Unable to open TCP to NIST!"));
+    }
     return 0;
 }

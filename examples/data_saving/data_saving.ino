@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.4
+This example sketch is written for ModularSensors library version 0.23.11
 
 This sketch is an example of logging data to an SD card and sending only a
 portion of that data to the EnviroDIY data portal.
@@ -17,17 +17,32 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
 // ==========================================================================
+//    Defines for the Arduino IDE
+//    In PlatformIO, set these build flags in your platformio.ini
+// ==========================================================================
+#ifndef TINY_GSM_RX_BUFFER
+#define TINY_GSM_RX_BUFFER 512
+#endif
+#ifndef TINY_GSM_YIELD_MS
+#define TINY_GSM_YIELD_MS 2
+#endif
+#ifndef MQTT_MAX_PACKET_SIZE
+#define MQTT_MAX_PACKET_SIZE 240
+#endif
+
+// ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
+#include <LoggerBase.h>  // The modular sensors library
 
 
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.4";
+const char *libraryVersion = "0.23.11";
 // The name of this file
 const char *sketchName = "data_saving.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -330,7 +345,6 @@ Variable *y520Temp = new YosemitechY520_Temp(&y520, "12345678-abcd-1234-ef00-123
 // ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-#include <VariableArray.h>
 
 // FORM2: Fill array with already created and named variable pointers
 // We put ALL of the variable pointers into the first array
@@ -376,7 +390,6 @@ VariableArray arrayToGo(variableCount_toGo, variableList_toGo);
 // ==========================================================================
 //     The Logger Object[s]
 // ==========================================================================
-#include <LoggerBase.h>
 
 // Create one new logger instance for the complete array
 Logger loggerAllVars(LoggerID, loggingInterval, &arrayComplete);
@@ -529,6 +542,7 @@ void setup()
     }
 
     // Power down the modem
+    modem.disconnectInternet();
     modem.modemSleepPowerDown();
 
     // Create the log file, adding the default header to it

@@ -21,9 +21,9 @@ Sodaq2GBeeR6::Sodaq2GBeeR6(Stream* modemStream,
                            uint8_t measurementsToAverage)
   : loggerModem(powerPin, statusPin, HIGH,
                 -1, modemSleepRqPin, true,
-                SIM800_STATUS_TIME_MS, SIM800_DISCONNECT_TIME_MS,
-                SIM800_WARM_UP_TIME_MS, SIM800_ATRESPONSE_TIME_MS,
-                SIM800_SIGNALQUALITY_TIME_MS,
+                S2GBR6_STATUS_TIME_MS, S2GBR6_DISCONNECT_TIME_MS,
+                S2GBR6_WARM_UP_TIME_MS, S2GBR6_ATRESPONSE_TIME_MS,
+                S2GBR6_SIGNALQUALITY_TIME_MS,
                 measurementsToAverage),
     #ifdef MS_SODAQ2GBEER6_DEBUG_DEEP
     _modemATDebugger(*modemStream, DEEP_DEBUGGING_SERIAL_OUTPUT),
@@ -63,7 +63,7 @@ bool Sodaq2GBeeR6::modemWakeFxn(void)
 
 bool Sodaq2GBeeR6::modemSleepFxn(void)
 {
-    MS_DBG(F("Sending pin"), _modemSleepRqPin, F("low to stop GPRSBeeR6"));
+    MS_DBG(F("Setting Pin"), _modemSleepRqPin, F("low to stop GPRSBeeR6"));
     digitalWrite(_modemSleepRqPin, LOW);
     return true;
 }

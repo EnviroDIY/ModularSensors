@@ -213,11 +213,20 @@ bool MaximDS18::addSingleMeasurementResult(void)
 
         // If a DS18 cannot get a good measurement, it returns 85
         // If the sensor is not properly connected, it returns -127
-        if (result == 85 || result == -127) result = -9999;
-        else success = true;
+        if (result == 85 || result == -127)
+        {
+            result = -9999;
+        }
+        else
+        {
+            success = true;
+        }
         // MS_DBG(F("  Temperature:"), result, F("°C"));
     }
-    else MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    else
+    {
+        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    }
 
     // Put value into the array
     verifyAndAddMeasurementResult(DS18_TEMP_VAR_NUM, result);

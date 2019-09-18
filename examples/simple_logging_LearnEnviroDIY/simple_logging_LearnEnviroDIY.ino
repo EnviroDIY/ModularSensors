@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.4
+This example sketch is written for ModularSensors library version 0.23.11
 
 This sketch is an example of logging data to an SD card
 
@@ -20,13 +20,14 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
+#include <LoggerBase.h>  // The modular sensors library
 
 
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.4";
+const char *libraryVersion = "0.23.11";
 // The name of this file
 const char *sketchName = "simple_logging.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -114,7 +115,6 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 // ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-#include <VariableArray.h>
 
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard),
@@ -140,7 +140,6 @@ VariableArray varArray;
 // ==========================================================================
 //     The Logger Object[s]
 // ==========================================================================
-#include <LoggerBase.h>
 
 // Create a logger instance
 Logger dataLogger;

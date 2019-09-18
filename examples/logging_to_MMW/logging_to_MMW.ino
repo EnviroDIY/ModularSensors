@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.4
+This example sketch is written for ModularSensors library version 0.23.11
 
 This shows most of the standard functions of the library at once.
 
@@ -16,17 +16,32 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 *****************************************************************************/
 
 // ==========================================================================
+//    Defines for the Arduino IDE
+//    In PlatformIO, set these build flags in your platformio.ini
+// ==========================================================================
+#ifndef TINY_GSM_RX_BUFFER
+#define TINY_GSM_RX_BUFFER 512
+#endif
+#ifndef TINY_GSM_YIELD_MS
+#define TINY_GSM_YIELD_MS 2
+#endif
+#ifndef MQTT_MAX_PACKET_SIZE
+#define MQTT_MAX_PACKET_SIZE 240
+#endif
+
+// ==========================================================================
 //    Include the base required libraries
 // ==========================================================================
 #include <Arduino.h>  // The base Arduino library
 #include <EnableInterrupt.h>  // for external and pin change interrupts
+#include <LoggerBase.h>  // The modular sensors library
 
 
 // ==========================================================================
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.4";
+const char *libraryVersion = "0.23.11";
 // The name of this file
 const char *sketchName = "logging_to MMW.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -137,7 +152,6 @@ MaximDS18 ds18(OneWirePower, OneWireBus);
 // ==========================================================================
 //    Creating the Variable Array[s] and Filling with Variable Objects
 // ==========================================================================
-#include <VariableArray.h>
 
 Variable *variableList[] = {
     new ProcessorStats_SampleNumber(&mcuBoard, "12345678-abcd-1234-ef00-1234567890ab"),
@@ -163,7 +177,6 @@ VariableArray varArray(variableCount, variableList);
 // ==========================================================================
 //     The Logger Object[s]
 // ==========================================================================
-#include <LoggerBase.h>
 
 // Create a new logger instance
 Logger dataLogger(LoggerID, loggingInterval, &varArray);
@@ -322,6 +335,7 @@ void setup()
     }
 
     // Power down the modem
+    modem.disconnectInternet();
     modem.modemSleepPowerDown();
 
     // Create the log file, adding the default header to it
