@@ -58,6 +58,10 @@ bool DigiXBeeCellularTransparent::modemWakeFxn(void)
         {
             gsmModem.sendAT(GF("AM"),0);
             gsmModem.waitResponse();
+            // Write changes to flash and apply them
+            gsmModem.writeChanges();
+            // Exit command mode
+            gsmModem.exitCommand();
         }
         return true;
     }
@@ -78,6 +82,10 @@ bool DigiXBeeCellularTransparent::modemSleepFxn(void)
         {
             gsmModem.sendAT(GF("AM"),0);
             gsmModem.waitResponse();
+            // Write changes to flash and apply them
+            gsmModem.writeChanges();
+            // Exit command mode
+            gsmModem.exitCommand();
         }
         MS_DBG(F("Setting pin"), _modemSleepRqPin, F("HIGH to put XBee to sleep"));
         digitalWrite(_modemSleepRqPin, HIGH);
