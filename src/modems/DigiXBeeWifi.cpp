@@ -118,7 +118,6 @@ bool DigiXBeeWifi::extraModemSetup(void)
             gsmModem.sendAT(F("MY"));  // Request IP #
             index = gsmModem.waitResponse(1000,xbeeRsp);
             MS_DBG(F("mdmIP["),mdm_lp,"/",MDM_LP_MAX,F("]"),xbeeRsp);
-            //MS_DBG(F("mdmIP["),toAscii(mdm_lp),"/",toAscii(MDM_LP_MAX),F("]"),xbeeRsp);
             if (0!=xbeeRsp.compareTo("0.0.0.0")) {
                 AllocatedIpSuccess = true;
                 break;
