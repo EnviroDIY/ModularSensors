@@ -90,7 +90,8 @@ bool TIINA219M::addSingleMeasurementResult(void)
     {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-        // Read values
+        // Read values - turn on internal ADC
+        ina219_phy.powerSave(false);
         if ( INA219_POLLMASK_A & _ina219_pollmask) {
             current_mA = (ina219_phy.getCurrent_mA() * _ampMult);
             //current_mA = (ina219_phy.getCurrent_mA());
@@ -107,6 +108,7 @@ bool TIINA219M::addSingleMeasurementResult(void)
             if (isnan(power_mW)) power_mW = -9999;
             MS_DBG(F("  mW, Power: "), power_mW);
         }
+        ina219_phy.powerSave(true); //Turn off continuous conversion
         success = true;
 
         //MS_DBG(F("  Current [mA]:"), current_mA);

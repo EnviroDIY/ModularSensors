@@ -11,9 +11,7 @@ void setup(void)
       // will pause Zero, Leonardo, etc until serial console opens
       delay(1);
   }
-
-  uint32_t currentFrequency;
-    
+ 
   Serial.println("getcurrent v0.01 Using Adafruit INA219 for measuring V and A");
   
   // Initialize the INA219.
@@ -26,7 +24,7 @@ void setup(void)
   ina219.setCalibration_16V_400mA();
 
 }
-long elapsed_time_sec=0;
+int elapsed_time_sec=0;
 #define SAMPLE_DELAY_SEC 2
 void loop(void) 
 {
@@ -39,16 +37,18 @@ void loop(void)
   elapsed_time_sec += SAMPLE_DELAY_SEC;
   sprintf(time_now,"%5d",elapsed_time_sec);
   //shuntvoltage = ina219.getShuntVoltage_mV();
+  ina219.powerSave(false);
   busvoltage = ina219.getBusVoltage_V();
   current_mA = ina219.getCurrent_mA();
   //power_mW = ina219.getPower_mW();
   //loadvoltage = busvoltage + (shuntvoltage / 1000);
-  
-Serial.print(time_now); Serial.print(":  ");
-Serial.print(busvoltage); Serial.print("V  ");
+  ina219.powerSave(true);
+
+  Serial.print(time_now); Serial.print(":  ");
+  Serial.print(busvoltage); Serial.print("V  ");
 //  Serial.print("Shunt Voltage: "); Serial.print(shuntvoltage); Serial.println(" mV");
 // Serial.print("Load Voltage:  "); Serial.print(loadvoltage); Serial.println(" V");
-Serial.print(current_mA); Serial.println("mA");
+  Serial.print(current_mA); Serial.println("mA");
   //Serial.print("Power:         "); Serial.print(power_mW); Serial.println(" mW");
 //  Serial.println("");
 
