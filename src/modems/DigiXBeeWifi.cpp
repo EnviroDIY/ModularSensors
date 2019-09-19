@@ -112,11 +112,13 @@ bool DigiXBeeWifi::extraModemSetup(void)
         uint8_t index=0;
         bool AllocatedIpSuccess = false;
         //Display IP allocation
-        for (int mdm_lp=1;mdm_lp<31;mdm_lp++) {
+        #define MDM_LP_MAX 21
+        for (int mdm_lp=1;mdm_lp<MDM_LP_MAX;mdm_lp++) {
             delay(mdm_lp*500);
             gsmModem.sendAT(F("MY"));  // Request IP #
             index = gsmModem.waitResponse(1000,xbeeRsp);
-            MS_DBG(F("mdmIP["),toAscii(index),F("]"),xbeeRsp);
+            MS_DBG(F("mdmIP["),mdm_lp,"/",MDM_LP_MAX,F("]"),xbeeRsp);
+            //MS_DBG(F("mdmIP["),toAscii(mdm_lp),"/",toAscii(MDM_LP_MAX),F("]"),xbeeRsp);
             if (0!=xbeeRsp.compareTo("0.0.0.0")) {
                 AllocatedIpSuccess = true;
                 break;
@@ -147,7 +149,7 @@ bool DigiXBeeWifi::extraModemSetup(void)
         {
                 success = false;
         }        
-        #ifdef MS_DIGIXBEEWIFI_DEBUG 
+        #if 0 //defined MS_DIGIXBEEWIFI_DEBUG 
             int16_t rssi, percent;
             getModemSignalQuality(rssi, percent);
             MS_DBG(F("mdmSQ["),toAscii(rssi),F(","),percent,F("%]"));
