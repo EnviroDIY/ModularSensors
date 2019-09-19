@@ -86,6 +86,9 @@ bool DigiXBeeWifi::extraModemSetup(void)
         // NOTE:  Only pin 6/DIO10/PWM0 can be used for this function
         gsmModem.sendAT(GF("P0"),1);
         success &= gsmModem.waitResponse() == 1;
+        //Set to TCP mode
+        gsmModem.sendAT(GF("IP"),1);
+        success &= gsmModem.waitResponse() == 1;
         // Put the XBee in pin sleep mode
         MS_DBG(F("Setting Sleep Options..."));
         gsmModem.sendAT(GF("SM"),1);
@@ -109,7 +112,7 @@ bool DigiXBeeWifi::extraModemSetup(void)
         uint8_t index=0;
         bool AllocatedIpSuccess = false;
         //Display IP allocation
-        for (int mdm_lp=1;mdm_lp<11;mdm_lp++) {
+        for (int mdm_lp=1;mdm_lp<31;mdm_lp++) {
             delay(mdm_lp*500);
             gsmModem.sendAT(F("MY"));  // Request IP #
             index = gsmModem.waitResponse(1000,xbeeRsp);
@@ -120,11 +123,12 @@ bool DigiXBeeWifi::extraModemSetup(void)
             }
             xbeeRsp="";
         }
-        success &= AllocatedIpSuccess;
+        //success &= AllocatedIpSuccess;
         PRINTOUT(F("XbeeWiFi IP# ["),xbeeRsp,F("]"));
 
-        #ifdef MS_DIGIXBEEWIFI_DEBUG 
+        //#ifdef MS_DIGIXBEEWIFI_DEBUG 
             //Display DNS allocation
+            bool DnsIpSuccess = false;
             for (int mdm_lp=1;mdm_lp<11;mdm_lp++) 
             {
                 delay(mdm_lp*500);
@@ -133,11 +137,17 @@ bool DigiXBeeWifi::extraModemSetup(void)
                 MS_DBG(F("mdmDNS["),toAscii(index),F("]"),xbeeRsp);
                 if (0!=xbeeRsp.compareTo("0.0.0.0")) 
                 {
+                    DnsIpSuccess = true;
                     break;
+
                 }
                 xbeeRsp="";
-            }            
-
+            }
+        if ( true != (AllocatedIpSuccess || DnsIpSuccess))
+        {
+                success = false;
+        }        
+        #ifdef MS_DIGIXBEEWIFI_DEBUG 
             int16_t rssi, percent;
             getModemSignalQuality(rssi, percent);
             MS_DBG(F("mdmSQ["),toAscii(rssi),F(","),percent,F("%]"));
