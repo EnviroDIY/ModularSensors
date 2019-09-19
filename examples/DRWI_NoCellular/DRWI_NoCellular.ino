@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.24.0
+This example sketch is written for ModularSensors library version 0.23.13
 
 This sketch is an example of logging data to an SD card as should be used by
 groups involved with The William Penn Foundation's Delaware River Watershed
@@ -34,7 +34,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.24.0";
+const char *libraryVersion = "0.23.13";
 // The name of this file
 const char *sketchName = "DRWI_NoCellular.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card

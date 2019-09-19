@@ -631,6 +631,25 @@ bool Logger::setRTClock(uint32_t UTCEpochSeconds)
     }
 }
 
+// This checks that the logger time is within a "sane" range
+bool Logger::isRTCSane(void)
+{
+    uint32_t curRTC = getNowEpoch();
+    return isRTCSane(curRTC);
+}
+bool Logger::isRTCSane(uint32_t epochTime)
+{
+    if (epochTime < 1546300800 ||  /*Before September 01, 2019*/
+        epochTime > 1735689600)  /*After January 1, 2025*/
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
 
 // This sets static variables for the date/time - this is needed so that all
 // data outputs (SD, EnviroDIY, serial printing, etc) print the same time
@@ -646,7 +665,6 @@ void Logger::markTime(void)
 
 
 // This checks to see if the CURRENT time is an even interval of the logging rate
-// or we're in the first 15 minutes of logging
 bool Logger::checkInterval(void)
 {
     bool retval;
@@ -669,12 +687,59 @@ bool Logger::checkInterval(void)
         MS_DBG(F("Not time yet."));
         retval = false;
     }
+    if (!isRTCSane(checkTime))
+    {
+        PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(F("!!!!!!!!!! ----- WARNING ----- !!!!!!!!!!"));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(F("!!!!!!!!!!!!!!!!!!!! ----- WARNING ----- "));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(' ');
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(F("The current clock timestamp is not valid!"));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(' ');
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(F("----- WARNING ----- !!!!!!!!!!!!!!!!!!!!"));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(F("!!!!!!!!!! ----- WARNING ----- !!!!!!!!!!"));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+        PRINTOUT(F("!!!!!!!!!!!!!!!!!!!! ----- WARNING ----- "));
+        alertOn();
+        delay(25);
+        alertOff();
+        delay(25);
+    }
     return retval;
 }
 
 
 // This checks to see if the MARKED time is an even interval of the logging rate
-// or we're in the first 15 minutes of logging
 bool Logger::checkMarkedInterval(void)
 {
     bool retval;
@@ -1609,7 +1674,9 @@ void Logger::logDataAndPublish(void)
                 publishDataToRemotes();
                 watchDogTimer.resetWatchDog();
 
-                if (Logger::markedEpochTime != 0 && Logger::markedEpochTime % 86400 == 43200)
+                if ((Logger::markedEpochTime != 0 &&
+                     Logger::markedEpochTime % 86400 == 43200) ||
+                    !isRTCSane(Logger::markedEpochTime))
                 // Sync the clock at noon
                 {
                     MS_DBG(F("Running a daily clock sync..."));
