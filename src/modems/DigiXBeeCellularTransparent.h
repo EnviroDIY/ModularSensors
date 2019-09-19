@@ -43,6 +43,8 @@ public:
                                 uint8_t measurementsToAverage = 1);
     ~DigiXBeeCellularTransparent();
 
+    bool modemWakeFxn(void) override;
+    bool modemSleepFxn(void) override;
     bool addSingleMeasurementResult(void) override;
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
