@@ -94,18 +94,21 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem st
 // Network connection information
 const char *apn = "xxxxx";  // The APN for the gprs connection
 
-// For the u-blox SARA R410M based Digi LTE-M XBee3
-// NOTE:  According to the manual, this should be less stable than transparent
-// mode, but my experience is the complete reverse.
-#include <modems/DigiXBeeLTEBypass.h>
+// For any Digi Cellular XBee's
+// NOTE:  The u-blox based Digi XBee's (3G global and LTE-M global) can be used
+// in either bypass or transparent mode, each with pros and cons
+// The Telit based Digi XBees (LTE Cat1) can only use this mode.
+#include <modems/DigiXBeeCellularTransparent.h>
 const long modemBaud = 9600;  // All XBee's use 9600 by default
-const bool useCTSforStatus = true;   // Flag to use the modem CTS pin for status.  Only applies to Digi XBee's
-DigiXBeeLTEBypass modemXBLTEB(&modemSerial,
-                              modemVccPin, modemStatusPin, useCTSforStatus,
-                              modemResetPin, modemSleepRqPin,
-                              apn);
+const bool useCTSforStatus = false;   // Flag to use the XBee CTS pin for status
+// NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
+// the CTS pin can also be used if necessary
+DigiXBeeCellularTransparent modemXBCT(&modemSerial,
+                                      modemVccPin, modemStatusPin, useCTSforStatus,
+                                      modemResetPin, modemSleepRqPin,
+                                      apn);
 // Create an extra reference to the modem by a generic name (not necessary)
-DigiXBeeLTEBypass modem = modemXBLTEB;
+DigiXBeeCellularTransparent modem = modemXBCT;
 
 
 // ==========================================================================
