@@ -2116,12 +2116,16 @@ void processSensors()
                         
                         #define DAY_SECS 86400
                         #define HOUR_SECS 3600
+                        #if defined MS_TU_MON_DEBUG
                         #define CONFIG_NIST_CHECK_SECS HOUR_SECS
+                        #else
+                        #define CONFIG_NIST_CHECK_SECS DAY_SECS
+                        #endif
                         #define CONFIG_NIST_ERR_MASK (~0x3F) 
                         uint32_t nistCheckRemainder = Logger::markedEpochTime % CONFIG_NIST_CHECK_SECS;
                         bool nistSyncNow=false;
                         if (nistSyncRtc || ((nistCheckRemainder&CONFIG_NIST_ERR_MASK ) == 0)) nistSyncNow=true;
-                        MS_DBG(F("SyncTimeCheck "),Logger::markedEpochTime
+                        PRINTOUT(F("SyncTimeCheck "),Logger::markedEpochTime
                         ,"remainder ",nistCheckRemainder
                         ," check+-",(nistCheckRemainder&CONFIG_NIST_ERR_MASK) );
 
