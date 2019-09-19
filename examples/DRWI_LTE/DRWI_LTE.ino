@@ -295,26 +295,21 @@ void setup()
 
     // Note:  Please change these battery voltages to match your battery
     // Check that the battery is OK before powering the modem
-    if (getBatteryVoltage() > 3.7)
+    if (getBatteryVoltage() > 3.55 || !dataLogger.isRTCSane())
     {
         modem.modemPowerUp();
         modem.wake();
         modem.setup();
 
-        // At very good battery voltage, or with suspicious time stamp, sync the clock
-        // Note:  Please change these battery voltages to match your battery
-        if (getBatteryVoltage() > 3.8 || !dataLogger.isRTCSane())
+        // Synchronize the RTC with NIST
+        Serial.println(F("Attempting to connect to the internet and synchronize RTC with NIST"));
+        if (modem.connectInternet(120000L))
         {
-            // Synchronize the RTC with NIST
-            Serial.println(F("Attempting to connect to the internet and synchronize RTC with NIST"));
-            if (modem.connectInternet(120000L))
-            {
-                dataLogger.setRTClock(modem.getNISTTime());
-            }
-            else
-            {
-                Serial.println(F("Could not connect to internet for clock sync."));
-            }
+            dataLogger.setRTClock(modem.getNISTTime());
+        }
+        else
+        {
+            Serial.println(F("Could not connect to internet for clock sync."));
         }
     }
 
