@@ -106,9 +106,8 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         // Hologram says they can use any network, but I've never succeeded with anything but AT&T
         gsmModem.sendAT(GF("CP"),2);
         gsmModem.waitResponse();  // Don't check for success - only works on LTE
-        // Cellular network technology - LTE-M Only
-        // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
-        gsmModem.sendAT(GF("N#"),2);
+        // Cellular network technology - LTE-M/NB IoT
+        gsmModem.sendAT(GF("N#"),0);
         gsmModem.waitResponse();  // Don't check for success - only works on LTE
         // Put the network connection parameters into flash
         success &= gsmModem.gprsConnect(_apn);

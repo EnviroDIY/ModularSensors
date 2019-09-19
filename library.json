@@ -39,6 +39,8 @@
             "doc/*",
             "sensor_tests/*",
             "compile_tests/*"
+            "travis/*"
+            "pioScripts/*"
         ]
     },
     "examples":
