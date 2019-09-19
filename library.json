@@ -38,8 +38,8 @@
         [
             "doc/*",
             "sensor_tests/*",
-            "compile_tests/*"
-            "travis/*"
+            "compile_tests/*",
+            "travis/*",
             "pioScripts/*"
         ]
     },
