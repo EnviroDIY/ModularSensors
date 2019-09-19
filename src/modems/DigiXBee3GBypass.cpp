@@ -87,11 +87,6 @@ bool DigiXBee3GBypass::extraModemSetup(void)
         // Disable remote manager, enable 2G fallback
         gsmModem.sendAT(GF("DO"),02);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        MS_DBG(F("Setting Cellular Carrier Options..."));
-        // Cellular carrier profile - AT&T
-        // Hologram says they can use any network, but I've never succeeded with anything but AT&T
-        gsmModem.sendAT(GF("CP"),2);
-        success &= gsmModem.waitResponse(GF("OK\r")) == 1;
         // Make sure airplane mode is off - bypass and airplane mode are incompatible
         MS_DBG(F("Making sure airplane mode is off..."));
         gsmModem.sendAT(GF("AM"),0);

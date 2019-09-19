@@ -333,53 +333,60 @@
 // Get the time from NIST via TIME protocol (rfc868)
 // This would be much more efficient if done over UDP, but I'm doing it
 // over TCP because I don't have a UDP library for all the modems.
-#define MS_MODEM_GET_NIST_TIME(specificModem)                                             \
-    uint32_t specificModem::getNISTTime(void)                                             \
-    {                                                                                     \
-        /* bail if not connected to the internet */                                       \
-        if (!isInternetAvailable())                                                       \
-        {                                                                                 \
-            MS_DBG(F("No internet connection, cannot connect to NIST."));                 \
-            return 0;                                                                     \
-        }                                                                                 \
-                                                                                          \
-        /* Must ensure that we do not ping the daylight more than once every 4 seconds */ \
-        /* NIST clearly specifies here that this is a requirement for all software */     \
-        /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */          \
-        while (millis() < _lastNISTrequest + 4000)                                        \
-        {                                                                                 \
-        }                                                                                 \
-                                                                                          \
-        /* Make TCP connection */                                                         \
-        MS_DBG(F("\nConnecting to NIST daytime Server"));                                 \
-        bool connectionMade = gsmClient.connect("time.nist.gov", 37, 15);                 \
-                                                                                          \
-        /* Wait up to 5 seconds for a response */                                         \
-        if (connectionMade)                                                               \
-        {                                                                                 \
-            uint32_t start = millis();                                                    \
-            while (gsmClient && gsmClient.available() < 4 && millis() - start < 5000L)    \
-            {                                                                             \
-            }                                                                             \
-                                                                                          \
-            if (gsmClient.available() >= 4)                                               \
-            {                                                                             \
-                MS_DBG(F("NIST responded after"), millis() - start, F("ms"));             \
-                byte response[4] = {0};                                                   \
-                gsmClient.read(response, 4);                                              \
-                return parseNISTBytes(response);                                          \
-            }                                                                             \
-            else                                                                          \
-            {                                                                             \
-                MS_DBG(F("NIST Time server did not respond!"));                           \
-                return 0;                                                                 \
-            }                                                                             \
-        }                                                                                 \
-        else                                                                              \
-        {                                                                                 \
-            MS_DBG(F("Unable to open TCP to NIST!"));                                     \
-        }                                                                                 \
-        return 0;                                                                         \
+#define MS_MODEM_GET_NIST_TIME(specificModem)                                                        \
+    uint32_t specificModem::getNISTTime(void)                                                        \
+    {                                                                                                \
+        /* bail if not connected to the internet */                                                  \
+        if (!isInternetAvailable())                                                                  \
+        {                                                                                            \
+            MS_DBG(F("No internet connection, cannot connect to NIST."));                            \
+            return 0;                                                                                \
+        }                                                                                            \
+                                                                                                     \
+        /* Try up to 12 times to get a timestamp from NIST */                                         \
+        for (uint8_t i = 0; i < 12; i++)                                                              \
+        {                                                                                            \
+            /* Must ensure that we do not ping the daylight server more than once every 4 seconds */ \
+            /* NIST clearly specifies here that this is a requirement for all software */            \
+            /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */                 \
+            while (millis() < _lastNISTrequest + 4000)                                               \
+            {                                                                                        \
+            }                                                                                        \
+                                                                                                     \
+            /* Make TCP connection */                                                                \
+            MS_DBG(F("\nConnecting to NIST daytime Server"));                                        \
+            bool connectionMade = gsmClient.connect("time.nist.gov", 37, 15);                        \
+                                                                                                     \
+            /* Wait up to 5 seconds for a response */                                                \
+            if (connectionMade)                                                                      \
+            {                                                                                        \
+                uint32_t start = millis();                                                           \
+                while (gsmClient && gsmClient.available() < 4 && millis() - start < 5000L)           \
+                {                                                                                    \
+                }                                                                                    \
+                                                                                                     \
+                if (gsmClient.available() >= 4)                                                      \
+                {                                                                                    \
+                    MS_DBG(F("NIST responded after"), millis() - start, F("ms"));                    \
+                    byte response[4] = {0};                                                          \
+                    gsmClient.read(response, 4);                                                     \
+                    if (gsmClient.connected())                                                       \
+                        gsmClient.stop();                                                            \
+                    return parseNISTBytes(response);                                                 \
+                }                                                                                    \
+                else                                                                                 \
+                {                                                                                    \
+                    MS_DBG(F("NIST Time server did not respond!"));                                  \
+                    if (gsmClient.connected())                                                       \
+                        gsmClient.stop();                                                            \
+                }                                                                                    \
+            }                                                                                        \
+            else                                                                                     \
+            {                                                                                        \
+                MS_DBG(F("Unable to open TCP to NIST!"));                                            \
+            }                                                                                        \
+        }                                                                                            \
+        return 0;                                                                                    \
     }
 
 #endif
