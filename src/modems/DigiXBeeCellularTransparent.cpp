@@ -46,6 +46,58 @@ MS_MODEM_CONNECT_INTERNET(DigiXBeeCellularTransparent);
 MS_MODEM_DISCONNECT_INTERNET(DigiXBeeCellularTransparent);
 
 
+// We turn off airplane mode in the wake.
+bool DigiXBeeCellularTransparent::modemWakeFxn(void)
+{
+    if (_modemSleepRqPin >= 0)  // Don't go to sleep if there's not a wake pin!
+    {
+        MS_DBG(F("Setting pin"), _modemSleepRqPin, F("LOW to wake XBee"));
+        digitalWrite(_modemSleepRqPin, LOW);
+        MS_DBG(F("Turning off airplane mode..."));
+        if (gsmModem.commandMode())
+        {
+            gsmModem.sendAT(GF("AM"),0);
+            gsmModem.waitResponse();
+            // Write changes to flash and apply them
+            gsmModem.writeChanges();
+            // Exit command mode
+            gsmModem.exitCommand();
+        }
+        return true;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+
+// We turn on airplane mode in before sleep
+bool DigiXBeeCellularTransparent::modemSleepFxn(void)
+{
+    if (_modemSleepRqPin >= 0)
+    {
+        MS_DBG(F("Turning on airplane mode..."));
+        if (gsmModem.commandMode())
+        {
+            gsmModem.sendAT(GF("AM"),0);
+            gsmModem.waitResponse();
+            // Write changes to flash and apply them
+            gsmModem.writeChanges();
+            // Exit command mode
+            gsmModem.exitCommand();
+        }
+        MS_DBG(F("Setting pin"), _modemSleepRqPin, F("HIGH to put XBee to sleep"));
+        digitalWrite(_modemSleepRqPin, HIGH);
+        return true;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+
 bool DigiXBeeCellularTransparent::extraModemSetup(void)
 {
     bool success = true;
@@ -67,7 +119,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         success &= gsmModem.waitResponse() == 1;
         // Turn on CTS pin - it will be LOW when the XBee is ready to receive commands
         // This can be used as proxy for status indication if the true status pin is not accessible
-        // NOTE:  Only pin 12/DIO5/CTS can be used for this function
+        // NOTE:  Only pin 12/DIO7/CTS can be used for this function
         gsmModem.sendAT(GF("D7"),1);
         success &= gsmModem.waitResponse() == 1;
         // Turn on the associate LED (if you're using a board with one)
@@ -102,20 +154,14 @@ bool DigiXBeeCellularTransparent::extraModemSetup(void)
         gsmModem.sendAT(GF("TM"),64);
         success &= gsmModem.waitResponse() == 1;
         MS_DBG(F("Setting Cellular Carrier Options..."));
-        // Cellular carrier profile - AT&T
-        // Hologram says they can use any network, but I've never succeeded with anything but AT&T
-        gsmModem.sendAT(GF("CP"),2);
+        // Carrier Profile - Automatic
+        gsmModem.sendAT(GF("CP"),0);
         gsmModem.waitResponse();  // Don't check for success - only works on LTE
-        // Cellular network technology - LTE-M Only
-        // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
-        gsmModem.sendAT(GF("N#"),2);
+        // Cellular network technology - LTE-M/NB IoT
+        gsmModem.sendAT(GF("N#"),0);
         gsmModem.waitResponse();  // Don't check for success - only works on LTE
         // Put the network connection parameters into flash
         success &= gsmModem.gprsConnect(_apn);
-        // Make sure airplane mode is off
-        MS_DBG(F("Making sure airplane mode is off..."));
-        gsmModem.sendAT(GF("AM"),0);
-        success &= gsmModem.waitResponse() == 1;
         MS_DBG(F("Ensuring XBee is in transparent mode..."));
         // Make sure we're really in transparent mode
         gsmModem.sendAT(GF("AP0"));
@@ -197,47 +243,56 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime(void)
         return 0;
     }
 
-    /* Must ensure that we do not ping the daylight more than once every 4 seconds */
-    /* NIST clearly specifies here that this is a requirement for all software */
-    /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
-    while (millis() < _lastNISTrequest + 4000) {}
-
-    /* Make TCP connection */
-    MS_DBG(F("\nConnecting to NIST daytime Server"));
-    bool connectionMade = false;
-
-    /* This is the IP address of time-c-g.nist.gov */
-    /* XBee's address lookup falters on time.nist.gov */
-    IPAddress ip(129, 6, 15, 30);
-    connectionMade = gsmClient.connect(ip, 37, 15);
-    /* Wait again so NIST doesn't refuse us! */
-    delay(4000L);
-    /* Try sending something to ensure connection */
-    gsmClient.println('!');
-
-    /* Wait up to 5 seconds for a response */
-    if (connectionMade)
+    /* Try up to 12 times to get a timestamp from NIST */
+    for (uint8_t i = 0; i < 12; i++)
     {
-        uint32_t start = millis();
-        while (gsmClient && gsmClient.available() < 4 && millis() - start < 5000L){}
 
-
-        if (gsmClient.available() >= 4)
+        /* Must ensure that we do not ping the daylight more than once every 4 seconds */
+        /* NIST clearly specifies here that this is a requirement for all software */
+        /* that accesses its servers:  https://tf.nist.gov/tf-cgi/servers.cgi */
+        while (millis() < _lastNISTrequest + 4000)
         {
-            MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
-            byte response[4] = {0};
-            gsmClient.read(response, 4);
-            return parseNISTBytes(response);
+        }
+
+        /* Make TCP connection */
+        MS_DBG(F("\nConnecting to NIST daytime Server"));
+        bool connectionMade = false;
+
+        /* This is the IP address of time-e-wwv.nist.gov  */
+        /* XBee's address lookup falters on time.nist.gov */
+        IPAddress ip(132, 163, 97, 6);
+        connectionMade = gsmClient.connect(ip, 37, 15);
+        /* Wait again so NIST doesn't refuse us! */
+        delay(4000L);
+        /* Try sending something to ensure connection */
+        gsmClient.println('!');
+
+        /* Wait up to 5 seconds for a response */
+        if (connectionMade)
+        {
+            uint32_t start = millis();
+            while (gsmClient && gsmClient.available() < 4 && millis() - start < 5000L)
+            {
+            }
+
+            if (gsmClient.available() >= 4)
+            {
+                MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
+                byte response[4] = {0};
+                gsmClient.read(response, 4);
+                gsmClient.stop();
+                return parseNISTBytes(response);
+            }
+            else
+            {
+                MS_DBG(F("NIST Time server did not respond!"));
+                gsmClient.stop();
+            }
         }
         else
         {
-            MS_DBG(F("NIST Time server did not respond!"));
-            return 0;
+            MS_DBG(F("Unable to open TCP to NIST!"));
         }
-    }
-    else
-    {
-        MS_DBG(F("Unable to open TCP to NIST!"));
     }
     return 0;
 }

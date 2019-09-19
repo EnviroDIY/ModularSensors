@@ -92,13 +92,11 @@ bool DigiXBeeLTEBypass::extraModemSetup(void)
         gsmModem.sendAT(GF("P1"),0);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
         MS_DBG(F("Setting Cellular Carrier Options..."));
-        // Cellular carrier profile - AT&T
-        // Hologram says they can use any network, but I've never succeeded with anything but AT&T
-        gsmModem.sendAT(GF("CP"),2);
+        // Carrier Profile - Automatic
+        gsmModem.sendAT(GF("CP"),0);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
-        // Cellular network technology - LTE-M Only
-        // LTE-M XBee connects much faster on AT&T/Hologram when set to LTE-M only (instead of LTE-M/NB IoT)
-        gsmModem.sendAT(GF("N#"),2);
+        // Cellular network technology - LTE-M/NB IoT
+        gsmModem.sendAT(GF("N#"),0);
         success &= gsmModem.waitResponse(GF("OK\r")) == 1;
         // Make sure airplane mode is off - bypass and airplane mode are incompatible
         MS_DBG(F("Making sure airplane mode is off..."));
