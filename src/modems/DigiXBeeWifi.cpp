@@ -89,12 +89,15 @@ bool DigiXBeeWifi::extraModemSetup(void)
         //Set to TCP mode
         gsmModem.sendAT(GF("IP"),1);
         success &= gsmModem.waitResponse() == 1;
-        // Put the XBee in pin sleep mode
+        // Put the XBee in pin sleep mode in conjuction with D8=1
         MS_DBG(F("Setting Sleep Options..."));
         gsmModem.sendAT(GF("SM"),1);
         success &= gsmModem.waitResponse() == 1;
         // Disassociate from network for lowest power deep sleep
-        gsmModem.sendAT(GF("SO"),100);
+        // 40 - Aay associated with AP during sleep - draws more current (+10mA?)
+        //100 -Cyclic sleep ST specifies time before reutnring to sleep
+        //200 - SRGD magic number
+        gsmModem.sendAT(GF("SO"),200);
         success &= gsmModem.waitResponse() == 1;
         MS_DBG(F("Setting Wifi Network Options..."));
         // Put the network connection parameters into flash
@@ -106,6 +109,8 @@ bool DigiXBeeWifi::extraModemSetup(void)
         else  {MS_DBG(F("Failed Setting WiFi"),_ssid);}
         // Write changes to flash and apply them
         gsmModem.writeChanges();
+
+        //Fut: Could Scan for access points here AS commnd
 
         MS_DBG(F("Get IP number"));
         String xbeeRsp;
@@ -185,7 +190,7 @@ bool DigiXBeeWifi::startSingleMeasurement(void)
 
     if (success)
     {
-
+        MS_DBG(F("Connected (not clear why this is needed- no IP attempted)..."));
         // The WiFi XBee needs to make an actual TCP connection and get some sort
         // of response on that connection before it knows the signal quality.
         // MS_DBG(F("Opening connection to check connection strength..."));
@@ -203,11 +208,11 @@ bool DigiXBeeWifi::startSingleMeasurement(void)
         // }
         // gsmClient.print('!');  // Need to send something before connection is made
 
-        MS_DBG(F("Opening connection to NIST to check connection strength..."));
+       // MS_DBG(F("Opening connection to NIST to check connection strength..."));
         // This is the IP address of time-e-wwv.nist.gov
         // XBee's address lookup falters on time.nist.gov
-        IPAddress ip(132, 163, 97, 6);
-        gsmClient.connect(ip, 37);
+        //IPAddress ip(132, 163, 97, 6);
+        //gsmClient.connect(ip, 37);
 
         // Unfortunately, using a ping doesn't work
         // gsmModem.commandMode();
