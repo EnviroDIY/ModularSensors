@@ -410,12 +410,6 @@ bool loggerModem::isStable(bool debug)
     // If the modem isn't responding to AT commands yet, but its status pin shows
     // it's on and we haven't maxed out the response time, we still need to wait
     _lastATCheck = now;
-    if (debug)
-    {
-        MS_DBG(F("_lastATCheck"), _lastATCheck);
-        MS_DBG(F("elapsed_since_wake_up"), elapsed_since_wake_up);
-        MS_DBG(F("previousCommunicationFailed"), previousCommunicationFailed);
-    }
     return false;
 }
 
