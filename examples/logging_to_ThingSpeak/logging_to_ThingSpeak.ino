@@ -272,20 +272,6 @@ void setup()
     // Blink the LEDs to show the board is on and starting up
     greenredflash();
 
-    // Set up some of the power pins so the board boots up with them off
-    // NOTE:  This isn't necessary at all.  The logger begin() function
-    // should leave all power pins off when it finishes.
-    if (modemVccPin >= 0)
-    {
-        pinMode(modemVccPin, OUTPUT);
-        digitalWrite(modemVccPin, LOW);
-    }
-    if (sensorPowerPin >= 0)
-    {
-        pinMode(sensorPowerPin, OUTPUT);
-        digitalWrite(sensorPowerPin, LOW);
-    }
-
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
     Logger::setLoggerTimeZone(timeZone);
