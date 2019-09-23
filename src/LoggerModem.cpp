@@ -96,7 +96,12 @@ void loggerModem::modemHardReset(void)
         _millisSensorActivated = millis();
         // Unset the flag for prior communication failure
         previousCommunicationFailed = false;
-}
+    }
+    else
+    {
+        MS_DBG(F("No way has been provided to reset the modem!"));
+        previousCommunicationFailed = false;
+    }
 }
 
 
@@ -243,7 +248,8 @@ bool loggerModem::wake(void)
     if (_dataPin >= 0 && _statusTime_ms == 0 && digitalRead(_dataPin) != _statusLevel)
     {
         MS_DBG(F("Status pin"), _dataPin, F("on"), getSensorName(), F("is"),
-                   digitalRead(_dataPin), F("indicating it is off!"));
+               digitalRead(_dataPin), F("indicating it is off!"));
+        MS_DBG(F("Attempting a hard reset on the modem!"));
         success = false;
         modemHardReset();
         success = digitalRead(_dataPin) == _statusLevel;
@@ -318,6 +324,12 @@ bool loggerModem::isStable(bool debug)
         // and continue waiting
         if (previousCommunicationFailed)
         {
+            if (debug)
+            {
+                MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and status pin"),
+                       _dataPin, F("on"), getSensorName(), F("is"), digitalRead(_dataPin),
+                       F("indicating it is off.  Attempting a hard reset on the modem!"));
+            }
             modemHardReset();
             return false;
         }
@@ -369,6 +381,12 @@ bool loggerModem::isStable(bool debug)
         {
             // if we maxed out the wait last time and we've maxed it again,
             // do a hard reset and continue waiting
+            if (debug)
+            {
+                MS_DBG(F("It's been"), (elapsed_since_wake_up), F("ms, and status pin"),
+                       _dataPin, F("on"), getSensorName(), F("is"), digitalRead(_dataPin),
+                       F("indicating it is off.  Attempting a hard reset on the modem!"));
+            }
             modemHardReset();
             return false;
         }
@@ -392,6 +410,12 @@ bool loggerModem::isStable(bool debug)
     // If the modem isn't responding to AT commands yet, but its status pin shows
     // it's on and we haven't maxed out the response time, we still need to wait
     _lastATCheck = now;
+    if (debug)
+    {
+        MS_DBG(F("_lastATCheck"), _lastATCheck);
+        MS_DBG(F("elapsed_since_wake_up"), elapsed_since_wake_up);
+        MS_DBG(F("previousCommunicationFailed"), previousCommunicationFailed);
+    }
     return false;
 }
 
