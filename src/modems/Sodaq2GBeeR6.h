@@ -28,7 +28,6 @@
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
 #include "modems/SIMComSIM800.h"
-#include "TinyGsmClient.h"
 
 class Sodaq2GBeeR6 : public SIMComSIM800
 {
