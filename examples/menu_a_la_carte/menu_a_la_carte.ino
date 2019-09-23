@@ -269,7 +269,7 @@ DigiXBee3GBypass modem = modemXB3GB;
 // For the Digi Wifi XBee (S6B)
 #include <modems/DigiXBeeWifi.h>
 const long modemBaud = 9600;  // All XBee's use 9600 by default
-const bool useCTSforStatus = false;   // Flag to use the XBee CTS pin for status
+const bool useCTSforStatus = true;   // Flag to use the XBee CTS pin for status
 // NOTE:  If possible, use the STATUS/SLEEP_not (XBee pin 13) for status, but
 // the CTS pin can also be used if necessary
 DigiXBeeWifi modemXBWF(&modemSerial,
@@ -359,7 +359,6 @@ SIMComSIM7000 modem = modem7000;
 const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
 Sodaq2GBeeR6 modem2GB(&modemSerial,
                       modemVccPin, modemStatusPin,
-                      modemSleepRqPin,
                       apn);
 // Create an extra reference to the modem by a generic name (not necessary)
 Sodaq2GBeeR6 modem = modem2GB;

@@ -81,9 +81,8 @@ ProcessorStats mcuBoard(mcuBoardVersion);
 HardwareSerial &modemSerial = Serial1;  // Use hardware serial if possible
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
-const int8_t modemVccPin = -2;      // MCU pin controlling modem power (-1 if not applicable)
+const int8_t modemVccPin = 23;      // MCU pin controlling modem power (-1 if not applicable)
 const int8_t modemStatusPin = 19;   // MCU pin used to read modem status (-1 if not applicable)
-const int8_t modemSleepRqPin = 23;  // MCU pin used for modem sleep/wake request (-1 if not applicable)
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem status (-1 if unconnected)
 
 // Network connection information
@@ -95,7 +94,6 @@ const char *apn = "hologram";  // The APN for the gprs connection
 const long modemBaud = 9600;  //  SIM800 does auto-bauding by default
 Sodaq2GBeeR6 modem2GB(&modemSerial,
                       modemVccPin, modemStatusPin,
-                      modemSleepRqPin,
                       apn);
 // Create an extra reference to the modem by a generic name (not necessary)
 Sodaq2GBeeR6 modem = modem2GB;
@@ -268,11 +266,6 @@ void setup()
     {
         pinMode(sensorPowerPin, OUTPUT);
         digitalWrite(sensorPowerPin, LOW);
-    }
-    if (modemSleepRqPin >= 0)
-    {
-        pinMode(modemSleepRqPin, OUTPUT);
-        digitalWrite(modemSleepRqPin, LOW);
     }
 
     // Set the timezones for the logger/data and the RTC
