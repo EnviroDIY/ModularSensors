@@ -20,6 +20,9 @@
 #endif
 
 #define TINY_GSM_MODEM_SIM7000
+#ifndef TINY_GSM_RX_BUFFER
+#define TINY_GSM_RX_BUFFER 512
+#endif
 
 // Time after end pulse until status pin becomes active (>4.5sec)
 #define SIM7000_STATUS_TIME_MS 5000L

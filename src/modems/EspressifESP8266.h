@@ -22,6 +22,9 @@
 #endif
 
 #define TINY_GSM_MODEM_ESP8266
+#ifndef TINY_GSM_RX_BUFFER
+#define TINY_GSM_RX_BUFFER 512
+#endif
 
 // It is not possible to get status from the ESP8266 in deep sleep mode.
 // During deep sleep the pin state is undefined

@@ -21,6 +21,9 @@
 #endif
 
 #define TINY_GSM_MODEM_SIM800
+#ifndef TINY_GSM_RX_BUFFER
+#define TINY_GSM_RX_BUFFER 512
+#endif
 
 // Time after end pulse until status pin becomes active (>3sec from start of 1s pulse)
 #define S2GBR6_STATUS_TIME_MS 3000

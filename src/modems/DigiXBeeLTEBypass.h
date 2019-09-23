@@ -20,6 +20,9 @@
 #endif
 
 #define TINY_GSM_MODEM_SARAR4
+#ifndef TINY_GSM_RX_BUFFER
+#define TINY_GSM_RX_BUFFER 512
+#endif
 
 // Included Dependencies
 #include "ModSensorDebugger.h"

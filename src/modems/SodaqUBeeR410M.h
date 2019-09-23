@@ -20,6 +20,9 @@
 #endif
 
 #define TINY_GSM_MODEM_SARAR4
+#ifndef TINY_GSM_RX_BUFFER
+#define TINY_GSM_RX_BUFFER 512
+#endif
 
 // V_INT becomes active mid-way through on-pulse
 #define R410M_STATUS_TIME_MS 0
