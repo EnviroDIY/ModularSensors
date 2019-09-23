@@ -20,17 +20,34 @@
 #define MS_DEBUGGING_STD "Sodaq2GBeeR6"
 #endif
 
+#define TINY_GSM_MODEM_SIM800
+
+// Time after end pulse until status pin becomes active (>3sec from start of 1s pulse)
+#define S2GBR6_STATUS_TIME_MS 3000
+// power down (gracefully) takes >3sec
+// (Giving 15sec for shutdown in case it is not monitored.)
+#define S2GBR6_DISCONNECT_TIME_MS 15000L
+
 // NOTE:  The GPRSBee R6+ has the PWR_KEY tied to the input voltage, so there is
 // no warm-up time needed
 #define S2GBR6_WARM_UP_TIME_MS 0
+// Time after end pulse until serial port becomes active (>3sec from start of 1s pulse)
+#define S2GBR6_ATRESPONSE_TIME_MS 3000
+
+// How long we're willing to wait to get signal quality
+#define S2GBR6_SIGNALQUALITY_TIME_MS 15000L
 
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#include "modems/SIMComSIM800.h"
+#include "LoggerModem.h"
 #include "TinyGsmClient.h"
 
-class Sodaq2GBeeR6 : public SIMComSIM800
+#ifdef MS_SODAQ2GBEER6_DEBUG_DEEP
+#include <StreamDebugger.h>
+#endif
+
+class Sodaq2GBeeR6 : public loggerModem
 {
 
 public:
@@ -43,11 +60,33 @@ public:
                  uint8_t measurementsToAverage = 1);
     ~Sodaq2GBeeR6();
 
-    void modemPowerUp(void) override;
+    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+    void disconnectInternet(void) override;
+
+    // Get values by other names
+    bool getModemSignalQuality(int16_t &rssi, int16_t &percent) override;
+    bool getModemBatteryStats(uint8_t &chargeState, int8_t &percent, uint16_t &milliVolts) override;
+    float getModemTemperature(void) override;
+
+    uint32_t getNISTTime(void) override;
+
+    #ifdef MS_SODAQ2GBEER6_DEBUG_DEEP
+    StreamDebugger _modemATDebugger;
+    #endif
+
+    TinyGsm gsmModem;
+    TinyGsmClient gsmClient;
 
 protected:
+    bool didATRespond(void) override;
+    bool isInternetAvailable(void) override;
+    bool verifyMeasurementComplete(bool debug=false) override;
     bool modemSleepFxn(void) override;
     bool modemWakeFxn(void) override;
+    bool extraModemSetup(void)override;
+
+private:
+    const char *_apn;
 
 };
 
