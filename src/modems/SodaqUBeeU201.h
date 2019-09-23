@@ -19,8 +19,6 @@
 #define MS_DEBUGGING_STD "SodaqUBeeU201"
 #endif
 
-#define TINY_GSM_MODEM_UBLOX
-
 // Time after end pulse until V_INT becomes active
 // Unspecified in documentation! Taking value from Lisa U2
 #define U201_STATUS_TIME_MS 100
@@ -42,15 +40,13 @@
 // Included Dependencies
 #include "ModSensorDebugger.h"
 #undef MS_DEBUGGING_STD
-#include "LoggerModem.h"
-#include "TinyGsmClient.h"
+#include "ublox2and3G.h"
 
 #ifdef MS_SODAQUBEEU201_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
 
-
-class SodaqUBeeU201 : public loggerModem
+classSodaqUBeeU201 : public ublox2and3G
 {
 
 public:
@@ -82,12 +78,10 @@ public:
 protected:
     bool didATRespond(void) override;
     bool isInternetAvailable(void) override;
-    bool verifyMeasurementComplete(bool debug=false) override;
+    bool verifyMeasurementComplete(bool debug = false) override;
     bool modemSleepFxn(void) override;
     bool modemWakeFxn(void) override;
-    bool extraModemSetup(void)override;
-
-private:
+    bool extraModemSetup(void) override;
     const char *_apn;
 
 };
