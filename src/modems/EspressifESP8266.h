@@ -51,6 +51,7 @@
 #include <StreamDebugger.h>
 #endif
 
+
 class EspressifESP8266 : public loggerModem
 {
 
@@ -92,7 +93,7 @@ protected:
     bool verifyMeasurementComplete(bool debug=false) override;
     bool modemSleepFxn(void) override;
     bool modemWakeFxn(void) override;
-    bool extraModemSetup(void) override;
+    bool extraModemSetup(void)override;
 
 private:
     bool ESPwaitForBoot(void);

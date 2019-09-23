@@ -45,6 +45,7 @@
 #include <StreamDebugger.h>
 #endif
 
+
 class QuectelBG96 : public loggerModem
 {
 
@@ -82,7 +83,9 @@ protected:
     bool verifyMeasurementComplete(bool debug=false) override;
     bool modemSleepFxn(void) override;
     bool modemWakeFxn(void) override;
-    bool extraModemSetup(void) override;
+    bool extraModemSetup(void)override;
+
+private:
     const char *_apn;
 
 };

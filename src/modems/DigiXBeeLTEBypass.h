@@ -65,6 +65,8 @@ protected:
     bool isInternetAvailable(void) override;
     bool verifyMeasurementComplete(bool debug=false) override;
     bool extraModemSetup(void) override;
+
+private:
     const char *_apn;
 
 };
