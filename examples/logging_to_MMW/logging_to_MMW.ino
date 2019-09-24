@@ -7,7 +7,7 @@ Software License: BSD-3.
   Copyright (c) 2017, Stroud Water Research Center (SWRC)
   and the EnviroDIY Development Team
 
-This example sketch is written for ModularSensors library version 0.23.14
+This example sketch is written for ModularSensors library version 0.23.15
 
 This shows most of the standard functions of the library at once.
 
@@ -41,7 +41,7 @@ THIS CODE IS PROVIDED "AS IS" - NO WARRANTY IS GIVEN.
 //    Data Logger Settings
 // ==========================================================================
 // The library version this example was written for
-const char *libraryVersion = "0.23.14";
+const char *libraryVersion = "0.23.15";
 // The name of this file
 const char *sketchName = "logging_to MMW.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card

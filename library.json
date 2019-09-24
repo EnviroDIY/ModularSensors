@@ -1,6 +1,6 @@
 {
     "name": "EnviroDIY_ModularSensors",
-    "version": "0.23.14",
+    "version": "0.23.15",
     "description":  "A library that allows access to multiple sensors through a unified interface.  This allows the user to simply access many sensors to log the data or send the data to data repositories like the EnviroDIY data portal.",
     "keywords": "modular, sensor, sensors, datalogger, logger, low power, sleeping, EnviroDIY, ModularSensors, Mayfly, WikiWatershed, ThingSpeak",
     "platforms": "atmelavr, atmelsam",
@@ -136,7 +136,7 @@
             "name": "Adafruit BME280 Library",
             "library id": "166",
             "url": "https://github.com/adafruit/Adafruit_BME280_Library.git",
-            "version": "=1.0.9",
+            "version": "=1.0.10",
             "note": "Bosch BME280 Temp/Humidity/Pressure Sensor Library by Adafruit",
             "authors": [
                 "Adafruit"
