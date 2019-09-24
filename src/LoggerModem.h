@@ -84,34 +84,12 @@ public:
     // gone to sleep and powered down so the modem can send out data
     void powerUp(void) override;
     void powerDown(void) override;
-
-protected:
-    // We override these because the modem can tell us if it's ready or not
-
-    // The modem is "stable" when it responds to AT commands.
-    virtual bool isStable(bool debug = false) override;
-
-    // This checks to see if enough time has passed for measurement completion
-    // In the case of the modem, we consider a measurement to be "complete" when
-    // the modem has registered on the network *and* returns good signal strength.
-    // In theory, both of these things happen at the same time - as soon as the
-    // module detects a network with sufficient signal strength, it connects and
-    // will respond corretly to requests for its connection status and the signal
-    // strength.  In reality sometimes the modem might respond with successful
-    // network connection before it responds with a valid signal strength or it
-    // might be able to return a real measurement of cellular signal strength but
-    // not be able to register to the network.  We'd prefer to wait until it both
-    // responses are good so we're getting an actual signal strength and it's as
-    // close as possible to what the antenna is will see when the data publishers
-    // push data.
-    virtual bool isMeasurementComplete(bool debug = false) override;
     bool wake(void) override;
 
 
 // ==========================================================================//
 // These are the unique functions for the modem as an internet connected device
 // ==========================================================================//
-public:
 
     // Sets an LED to turn on when the modem is on
     void setModemLED(int8_t modemLEDPin);
@@ -159,9 +137,8 @@ protected:
     void modemLEDOn(void);
     void modemLEDOff(void);
     virtual void modemHardReset(void);
-    virtual bool didATRespond(void) = 0;
+
     virtual bool isInternetAvailable(void) = 0;
-    virtual bool verifyMeasurementComplete(bool debug = false) = 0;
     virtual bool modemSleepFxn(void) = 0;
     virtual bool modemWakeFxn(void) = 0;
     virtual bool extraModemSetup(void) = 0;

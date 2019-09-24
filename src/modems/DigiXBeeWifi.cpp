@@ -35,8 +35,6 @@ DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream,
 // Destructor
 DigiXBeeWifi::~DigiXBeeWifi(){}
 
-
-MS_MODEM_DID_AT_RESPOND(DigiXBeeWifi);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeWifi);
 MS_MODEM_GET_MODEM_BATTERY_AVAILABLE(DigiXBeeWifi);
 MS_MODEM_GET_MODEM_TEMPERATURE_AVAILABLE(DigiXBeeWifi);
@@ -171,88 +169,6 @@ bool DigiXBeeWifi::startSingleMeasurement(void)
     }
 
     return success;
-}
-
-
-// This checks to see if enough time has passed for measurement completion
-// In the case of the modem, we consider a measurement to be "complete" when
-// the modem has registered on the network.
-bool DigiXBeeWifi::verifyMeasurementComplete(bool debug)
-{
-    /* If a measurement failed to start, the sensor will never return a result, */
-    /* so the measurement time is essentially already passed */
-    /* For a cellular modem nothing happens to "start" a measurement so bit 6 */
-    /* will be set by startSingleMeasurement() as long as bit 4 was set by wake(). */
-    /* For a WiFi modem, startSingleMeasurement actually sets the WiFi connection */
-    /* parameters. */
-    if (!bitRead(_sensorStatus, 6))
-    {
-        if (debug)
-        {
-            MS_DBG(getSensorName(),
-                   F("is not measuring and will not return a value!"));
-        }
-        return true;
-    }
-
-    /* just defining this to not call multiple times below */
-    uint32_t now = millis();
-
-    /* We don't want to ping any of the modems too fast so they don't get */
-    /* overwhelmed.  Make sure we've waited a little */
-    if (now - _lastConnectionCheck < 250)
-        return false;
-
-    /* Check how long we've been waiting for the network connection and/or a */
-    /* good measurement of signal quality. */
-    uint32_t elapsed_in_wait;
-    MS_MODEM_IMEC_WAIT_LINE
-
-    /* If we're connected AND receiving valid signal strength, measurement is complete */
-    /* In theory these happen at the same time, but in reality one or the other */
-    /* may happen first. */
-    bool isConnected = gsmModem.isNetworkConnected();
-    int signalResponse = gsmModem.getSignalQuality();
-    /* The Wifi XBee is unique in that it cannot get signal quality until it */
-    /* not only is connected to an access point and has opened a socket, but */
-    /* has actually received data on that socket.  There's no command to force */
-    /* open the socket, so we do it by sending out one character. */
-    if (isConnected && signalResponse == 0 && millis() > _lastNISTrequest + 4000)
-    {
-        if (debug)
-        {
-            MS_DBG(F("Attempting to force open a connection to try and get valid signal strength!"));
-        }
-        gsmClient.print('!');  // Need to send something before connection is made
-        delay(100);  // Need this delay!  Can get away with 50, but 100 is safer.
-        return false;
-    }
-    if (isConnected && signalResponse != 0 && signalResponse != 99)
-    {
-        if (debug)
-        {
-            MS_DBG(F("It's been"), (elapsed_in_wait), F("ms, and"), getSensorName(),
-            F("is now registered on the network and reporting valid signal strength!"));
-        }
-        _lastConnectionCheck = now;
-        return true;
-    }
-
-    /* If we've exceeded the allowed time to wait for the network, give up */
-    if (elapsed_in_wait > _measurementTime_ms)
-    {
-        if (debug)
-        {
-            MS_DBG(F("It's been"), (elapsed_in_wait), F("ms, and"), getSensorName(),
-             F("has maxed out wait for network registration!  Ending wait."));
-        }
-        /* Leave status bits and times set - can still get a valid value! */
-        return true;
-    }
-
-    /* If the modem isn't registered yet or doesn't report valid signal, we still need to wait */
-    _lastConnectionCheck = now;
-    return false;
 }
 
 

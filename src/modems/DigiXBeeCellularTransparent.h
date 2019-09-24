@@ -67,9 +67,7 @@ public:
     TinyGsmClient gsmClient;
 
 protected:
-    bool didATRespond(void) override;
     bool isInternetAvailable(void) override;
-    bool verifyMeasurementComplete(bool debug=false) override;
     bool extraModemSetup(void) override;
 
 private:

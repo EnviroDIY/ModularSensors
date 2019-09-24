@@ -33,10 +33,7 @@ DigiXBee3GBypass::DigiXBee3GBypass(Stream* modemStream,
 // Destructor
 DigiXBee3GBypass::~DigiXBee3GBypass(){}
 
-
-MS_MODEM_DID_AT_RESPOND(DigiXBee3GBypass);
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBee3GBypass);
-MS_MODEM_VERIFY_MEASUREMENT_COMPLETE(DigiXBee3GBypass);
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBee3GBypass);
 MS_MODEM_GET_MODEM_BATTERY_AVAILABLE(DigiXBee3GBypass);
 // NOTE:  Could actually get temperature from the Digi chip by entering command mode
